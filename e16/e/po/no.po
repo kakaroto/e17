@@ -1,13 +1,13 @@
-# Norwegian translation of Enlightenment 0.16 (bokmål dialect)
-# Copyright (C) 1999 Free Software Foundation, Inc.
-# Terje Røsten <terjeros@phys.ntnu.no>, 1999.
+# This is the Norwegian (bokmål dialect) locale definition for Enlightenment.
+# Copyright (C) 1999-2000 Free Software Foundation, Inc.
+# Terje Røsten <terjeros@phys.ntnu.no>, 1999-2000.
 #
 #, fuzzy
 msgid ""
 msgstr ""
-"Project-Id-Version: Enlightenment 0.16\n"
-"POT-Creation-Date: 1999-12-29 14:32-0800\n"
-"PO-Revision-Date: 1999-12-09 18:30-04:00\n"
+"Project-Id-Version: enlightenment 0.16.4\n"
+"POT-Creation-Date: 2000-01-04 23:14+0100\n"
+"PO-Revision-Date: 2000-01-04 23:15+0100\n"
 "Last-Translator: Terje Røsten <terjeros@phys.ntnu.no>\n"
 "Language-Team: Norwegian <no@li.org>\n"
 "MIME-Version: 1.0\n"
@@ -79,7 +79,7 @@ msgstr ""
 "du har tillatelse til å kjøre det.\n"
 
 #: src/actions.c:719
-#, fuzzy, c-format
+#, c-format
 msgid ""
 "There was an error running the program:\n"
 "%s\n"
@@ -107,7 +107,7 @@ msgstr ""
 #: src/actions.c:3139
 #, c-format
 msgid "About Enlightenment %s"
-msgstr "Om enlightenment %s"
+msgstr "Om Enlightenment %s"
 
 #: src/actions.c:3155
 msgid "Welcome to the "
@@ -170,7 +170,7 @@ msgid ""
 "\n"
 "It is possible your X Server does not deal well with being\n"
 "asked to switch modes quickly and it may hang, glitch,\n"
-"display artifacts or perhaps simply refuse to work.\n"
+"display artefacts or perhaps simply refuse to work.\n"
 "\n"
 "This is a warning and will only be displayed this one time.\n"
 "If your Server does not behave well then you will probably\n"
@@ -788,7 +788,7 @@ msgid ""
 "You have just started the Ripples Effect.\n"
 "\n"
 "If you look closely on your desktop background, and if it\n"
-"doesn't have a solid colour (ie has a background texture or\n"
+"doesn't have a solid colour (i.e. has a background texture or\n"
 "image), you will see a pool of water at the bottom of your\n"
 "screen that reflects everything above it and \"ripples\".\n"
 "\n"
@@ -876,7 +876,7 @@ msgid ""
 "You have just started the Raindrops Effect.\n"
 "\n"
 "If you look closely on your desktop background, and if it\n"
-"doesn't have a solid colour (ie has a background texture or\n"
+"doesn't have a solid colour (i.e. has a background texture or\n"
 "image), you will see \"raindrops\" hit the background and\n"
 "make little splashes. This Effect can be VERY CPU intensive.\n"
 "\n"
@@ -899,13 +899,12 @@ msgid "Starting up Waves FX..."
 msgstr "Starter opp Bølge FX"
 
 #: src/fx.c:719
-#, fuzzy
 msgid ""
 "\n"
 "You have just started the Waves Effect.\n"
 "\n"
 "If you look closely on your desktop background, and if it\n"
-"doesn't have a solid color (ie has a background texture or\n"
+"doesn't have a solid colour (i.e. has a background texture or\n"
 "image), you will see a pool of water at the bottom of your\n"
 "screen that reflects everything above it and \"waves\".\n"
 "\n"
@@ -1011,7 +1010,6 @@ msgid "Close"
 msgstr "Avbryt"
 
 #: src/handlers.c:59
-#, fuzzy
 msgid ""
 "Enlightenment performed an Illegal Instruction.\n"
 "\n"
@@ -1026,7 +1024,7 @@ msgstr ""
 "\n"
 "Sannsynligvis skyldes dette at du installert en prekompilert\n"
 "versjon av Enlightenment eller bibliotekfiler som var \n"
-"kompilert for en annen maskinvare eller som ikke er 100% kompatibel\n"
+"kompilert for en annen maskinvare eller som ikke er 100%% kompatibel\n"
 "med din egen. Finn en pakke som er kompatibel med din maskinvare\n"
 "eller kompiler opp Enlightenment selv.\n"
 "Tilsvarende gjelder for alle støtte bibliotekene Enlightenment trenger.\n"
@@ -1112,7 +1110,7 @@ msgid ""
 "You will have to quit your current Window Manager first before\n"
 "you can successfully run Enlightenment.\n"
 "\n"
-"If you haven't edited your user startup files, Enlightenment\n"
+"If you haven't edited your user start-up files, Enlightenment\n"
 "can do that now for you, so when you log in again after\n"
 "quitting your current window manager, you will have\n"
 "Enlightenment running.\n"
@@ -1153,12 +1151,11 @@ msgid "NO (do not edit)"
 msgstr "Nei (ikke modifiser fila)"
 
 #: src/handlers.c:238
-#, fuzzy
 msgid ""
 "Are you absolutely sure you want to have Enlightenment\n"
-"edit your startup files for you?\n"
+"edit your start-up files for you?\n"
 "\n"
-"If your startup files are highly customised this may not\n"
+"If your start-up files are highly customised this may not\n"
 "work.\n"
 "\n"
 "Are you ABSOLUTELY sure?\n"
@@ -1259,7 +1256,7 @@ msgid "Cannot allocate enough memory"
 msgstr "Kan ikke finne nok minne."
 
 #: src/memory.c:199
-#, fuzzy, c-format
+#, c-format
 msgid ""
 "WARNING!!!!!!\n"
 "\n"
@@ -1278,7 +1275,7 @@ msgid ""
 msgstr ""
 "Advarsel!:\n"
 "\n"
-"Allokering av %i bytes (%3.0f Kb eller %3.1f Mb) kunne ikke gjøres.\n"
+"Allokering av %i bytes (%3.0f kB eller %3.1f MB) kunne ikke gjøres.\n"
 "\n"
 "Enten er dette en bug der støre mengder minne blir allokert, eller\n"
 "så har ditt system gått tom for både reelt og virtuelt minne og \n"
@@ -1296,7 +1293,7 @@ msgid "Error in reallocating memory that hasn't been allocated"
 msgstr "Feilen ved reallokering av minne som ikke har blitt allokert."
 
 #: src/memory.c:281
-#, fuzzy, c-format
+#, c-format
 msgid ""
 "WARNING!!!!!!\n"
 "\n"
@@ -1310,7 +1307,7 @@ msgid ""
 "The error occurred at %s, line %d.\n"
 msgstr ""
 "Advarsel!\n"
-"Reallokering av %i bytes (%3.0f Kb eller %f3.1 Mb)\n"
+"Reallokering av %i bytes (%3.0f kB eller %3.1f MB)\n"
 "for peker %x prøver og reallokere minne som ikke vært allokert\n"
 "og som allerede er firgjort.\n"
 "\n"
@@ -1324,7 +1321,7 @@ msgstr ""
 msgid ""
 "WARNING!!!!!!\n"
 "\n"
-"Re-allocation for %i bytes (%3.0f Kb or %3.1f Mb) did not succeed.\n"
+"Re-allocation for %i bytes (%3.0f kB or %3.1f MB) did not succeed.\n"
 "\n"
 "Either this is a bug where ridiculous amounts of memory\n"
 "are being allocated, or your system has run out of both\n"
@@ -1339,7 +1336,7 @@ msgid ""
 msgstr ""
 "Advarsel!:\n"
 "\n"
-"Reallokering av %i bytes (%3.0f Kb eller %3.1f Mb) kunne ikke gjøres.\n"
+"Reallokering av %i bytes (%3.0f kB eller %3.1f MB) kunne ikke gjøres.\n"
 "\n"
 "Enten er dette en bug der store mengder minne blir allokert, eller\n"
 "så har ditt system gått tom for både reelt og virtuelt minne og \n"
@@ -1389,7 +1386,7 @@ msgid "Ignore this (safe)"
 msgstr "Overse dette (helt trygt)"
 
 #: src/memory.c:400
-#, fuzzy, c-format
+#, c-format
 msgid ""
 "WARNING!!!!!!\n"
 "\n"
@@ -1399,7 +1396,7 @@ msgid ""
 "It is safe to ignore this error and continue running Enlightenment.\n"
 "\n"
 "The pointer value was %x.\n"
-"The error occured at %s, line %d.\n"
+"The error occurred at %s, line %d.\n"
 msgstr ""
 "Advarsel!\n"
 "\n"
@@ -1643,7 +1640,6 @@ msgstr ""
 "Dette for å nedre ytelsen til Enlightenment.\n"
 
 #: src/pager.c:545
-#, fuzzy
 msgid ""
 "\n"
 "Your X Server is capable of doing Shared Memory but you do\n"
@@ -1904,7 +1900,7 @@ msgid "Send mouse pointer to window on focus switch"
 msgstr "Send muspeker til vindu ved fokusskifte"
 
 #: src/settings.c:511
-msgid "Display and use focuslist"
+msgid "Display and use focus list"
 msgstr "Vis og bruk fokusliste"
 
 #: src/settings.c:520
@@ -1987,7 +1983,6 @@ msgstr ""
 "skjermer (i størrelse)"
 
 #: src/settings.c:1003
-#, fuzzy
 msgid "Virtual Desktop Settings"
 msgstr "Innstillinger for virtuelle skrivebord"
 
@@ -2179,7 +2174,7 @@ msgid "Desktop Background Settings"
 msgstr "Innstillinger for skrivebordsbakgrunn"
 
 #: src/settings.c:3027
-msgid "BG Color\n"
+msgid "BG Colour\n"
 msgstr "Bakgrunnsfarge\n"
 
 #: src/settings.c:3038
@@ -2237,15 +2232,15 @@ msgstr ""
 "justering\n"
 
 #: src/settings.c:3221
-msgid "Use dithering in Hi-Color"
-msgstr "Bruk dithering ved Hi-Color"
+msgid "Use dithering in Hi-Colour"
+msgstr "Bruk dithering ved Hi-Colour"
 
 #: src/settings.c:3228
 msgid "Background overrides theme"
 msgstr "Bakgrunn overkjører temaet"
 
 #: src/settings.c:3285
-msgid "Prescan BG's"
+msgid "Pre-scan BG's"
 msgstr "Se etter bakgrunner på forhånd"
 
 #: src/settings.c:3295
@@ -2470,18 +2465,16 @@ msgstr ""
 "Avslutter.\n"
 
 #: src/setup.c:328
-#, fuzzy
 msgid "Imlib initialisation error"
 msgstr "Feil ved initering av Imlib"
 
 #: src/setup.c:330
-#, fuzzy
 msgid ""
 "FATAL ERROR:\n"
 "\n"
 "Enlightenment is unable to initialise Imlib.\n"
 "\n"
-"This is unusual. Unable to contiune.\n"
+"This is unusual. Unable to continue.\n"
 "Exiting.\n"
 msgstr ""
 "Fatal feil:\n"
@@ -2497,7 +2490,7 @@ msgid ""
 "\n"
 "Enlightenment is unable to initialise Fnlib.\n"
 "\n"
-"This is unusual. Unable to contiune.\n"
+"This is unusual. Unable to continue.\n"
 "Exiting.\n"
 msgstr ""
 "Fatal feil:\n"
@@ -2516,7 +2509,7 @@ msgid "Ignore this error"
 msgstr "Overse denne feilen"
 
 #: src/setup.c:407
-#, fuzzy, c-format
+#, c-format
 msgid ""
 "WARNING:\n"
 "This is not an X11 Xserver. It in fact talks the X%i protocol.\n"
@@ -2645,14 +2638,12 @@ msgstr ""
 "sjekke din konfigurasjon.\n"
 
 #: src/sound.c:262
-#, fuzzy
 msgid "Error initialising sound"
 msgstr "Feil ved initering av støtte for lyd."
 
 #: src/sound.c:265
-#, fuzzy
 msgid ""
-"Audio was enabled for Enlightenemnt but there was an error\n"
+"Audio was enabled for Enlightenment but there was an error\n"
 "communicating with the audio server (Esound). Audio will\n"
 "now be disabled.\n"
 msgstr ""

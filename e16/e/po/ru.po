@@ -1,15 +1,15 @@
-# RUSSIAN MESSAGES FOR ENLIGHTENMENT.
-# Copyright (C) 1999 Free Software Foundation, Inc.
-# Vladimir STEPANOV <stepanov@bird.iki.rssi.ru>, 1999.
+# This is the Russian locale definition for Enlightenment.
+# Copyright (C) 1999-2000 Free Software Foundation, Inc.
+# Vladimir STEPANOV <stepanov@bird.iki.rssi.ru>, 1999-2000.
 #
 #, fuzzy
 msgid ""
 msgstr ""
-"Project-Id-Version: ENLIGHTENMENT CVS\n"
-"POT-Creation-Date: 1999-12-29 14:32-0800\n"
-"PO-Revision-Date: 1999-12-09 21:00+0300\n"
+"Project-Id-Version: enlightenment 0.16.4\n"
+"POT-Creation-Date: 2000-01-04 23:14+0100\n"
+"PO-Revision-Date: 2000-01-04 23:15+0100\n"
 "Last-Translator: Vladimir STEPANOV <stepanov@bird.iki.rssi.ru>\n"
-"Language-Team: RUSSIAN <ru@li.org>\n"
+"Language-Team: Russian <ru@li.org>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=koi8-r\n"
 "Content-Transfer-Encoding: 8bit\n"
@@ -173,7 +173,7 @@ msgid ""
 "\n"
 "It is possible your X Server does not deal well with being\n"
 "asked to switch modes quickly and it may hang, glitch,\n"
-"display artifacts or perhaps simply refuse to work.\n"
+"display artefacts or perhaps simply refuse to work.\n"
 "\n"
 "This is a warning and will only be displayed this one time.\n"
 "If your Server does not behave well then you will probably\n"
@@ -791,13 +791,12 @@ msgid "Starting up Ripples FX..."
 msgstr "Запускаем спецэффект Рябь..."
 
 #: src/fx.c:255
-#, fuzzy
 msgid ""
 "\n"
 "You have just started the Ripples Effect.\n"
 "\n"
 "If you look closely on your desktop background, and if it\n"
-"doesn't have a solid colour (ie has a background texture or\n"
+"doesn't have a solid colour (i.e. has a background texture or\n"
 "image), you will see a pool of water at the bottom of your\n"
 "screen that reflects everything above it and \"ripples\".\n"
 "\n"
@@ -892,13 +891,12 @@ msgid "Starting up Raindrops FX..."
 msgstr "Запускаем спецэффект Дождь..."
 
 #: src/fx.c:424
-#, fuzzy
 msgid ""
 "\n"
 "You have just started the Raindrops Effect.\n"
 "\n"
 "If you look closely on your desktop background, and if it\n"
-"doesn't have a solid colour (ie has a background texture or\n"
+"doesn't have a solid colour (i.e. has a background texture or\n"
 "image), you will see \"raindrops\" hit the background and\n"
 "make little splashes. This Effect can be VERY CPU intensive.\n"
 "\n"
@@ -927,7 +925,7 @@ msgid ""
 "You have just started the Waves Effect.\n"
 "\n"
 "If you look closely on your desktop background, and if it\n"
-"doesn't have a solid color (ie has a background texture or\n"
+"doesn't have a solid colour (i.e. has a background texture or\n"
 "image), you will see a pool of water at the bottom of your\n"
 "screen that reflects everything above it and \"waves\".\n"
 "\n"
@@ -1034,7 +1032,6 @@ msgid "Close"
 msgstr "Закрыть"
 
 #: src/handlers.c:59
-#, fuzzy
 msgid ""
 "Enlightenment performed an Illegal Instruction.\n"
 "\n"
@@ -1137,7 +1134,7 @@ msgid ""
 "You will have to quit your current Window Manager first before\n"
 "you can successfully run Enlightenment.\n"
 "\n"
-"If you haven't edited your user startup files, Enlightenment\n"
+"If you haven't edited your user start-up files, Enlightenment\n"
 "can do that now for you, so when you log in again after\n"
 "quitting your current window manager, you will have\n"
 "Enlightenment running.\n"
@@ -1178,12 +1175,11 @@ msgid "NO (do not edit)"
 msgstr "НЕТ (не править)"
 
 #: src/handlers.c:238
-#, fuzzy
 msgid ""
 "Are you absolutely sure you want to have Enlightenment\n"
-"edit your startup files for you?\n"
+"edit your start-up files for you?\n"
 "\n"
-"If your startup files are highly customised this may not\n"
+"If your start-up files are highly customised this may not\n"
 "work.\n"
 "\n"
 "Are you ABSOLUTELY sure?\n"
@@ -1349,11 +1345,11 @@ msgstr ""
 "Ошибка возникла в %s, строка %d.\n"
 
 #: src/memory.c:301
-#, fuzzy, c-format
+#, c-format
 msgid ""
 "WARNING!!!!!!\n"
 "\n"
-"Re-allocation for %i bytes (%3.0f Kb or %3.1f Mb) did not succeed.\n"
+"Re-allocation for %i bytes (%3.0f kB or %3.1f MB) did not succeed.\n"
 "\n"
 "Either this is a bug where ridiculous amounts of memory\n"
 "are being allocated, or your system has run out of both\n"
@@ -1418,7 +1414,7 @@ msgid "Ignore this (safe)"
 msgstr "Игнорировать (ничего страшного)"
 
 #: src/memory.c:400
-#, fuzzy, c-format
+#, c-format
 msgid ""
 "WARNING!!!!!!\n"
 "\n"
@@ -1428,7 +1424,7 @@ msgid ""
 "It is safe to ignore this error and continue running Enlightenment.\n"
 "\n"
 "The pointer value was %x.\n"
-"The error occured at %s, line %d.\n"
+"The error occurred at %s, line %d.\n"
 msgstr ""
 "ПРЕДУПРЕЖДЕНИЕ!!!!!!\n"
 "\n"
@@ -1943,8 +1939,7 @@ msgid "Send mouse pointer to window on focus switch"
 msgstr "Посылать курсор в окно при получении фокуса"
 
 #: src/settings.c:511
-#, fuzzy
-msgid "Display and use focuslist"
+msgid "Display and use focus list"
 msgstr "Отображать и использовать список окон для передачи фокуса"
 
 #: src/settings.c:520
@@ -2027,7 +2022,6 @@ msgstr ""
 "экран"
 
 #: src/settings.c:1003
-#, fuzzy
 msgid "Virtual Desktop Settings"
 msgstr "Установки виртуальных рабочих столов"
 
@@ -2219,7 +2213,7 @@ msgid "Desktop Background Settings"
 msgstr "Установки фонового рисунка"
 
 #: src/settings.c:3027
-msgid "BG Color\n"
+msgid "BG Colour\n"
 msgstr "Цвет фона\n"
 
 #: src/settings.c:3038
@@ -2277,7 +2271,7 @@ msgstr ""
 "рисунка\n"
 
 #: src/settings.c:3221
-msgid "Use dithering in Hi-Color"
+msgid "Use dithering in Hi-Colour"
 msgstr ""
 
 #: src/settings.c:3228
@@ -2285,7 +2279,7 @@ msgid "Background overrides theme"
 msgstr "Фоновый рисунок перекрывает установки темы"
 
 #: src/settings.c:3285
-msgid "Prescan BG's"
+msgid "Pre-scan BG's"
 msgstr "Предв.сканировать"
 
 #: src/settings.c:3295
@@ -2497,7 +2491,7 @@ msgid ""
 "\n"
 "Enlightenment is unable to initialise Imlib.\n"
 "\n"
-"This is unusual. Unable to contiune.\n"
+"This is unusual. Unable to continue.\n"
 "Exiting.\n"
 msgstr ""
 
@@ -2507,7 +2501,7 @@ msgid ""
 "\n"
 "Enlightenment is unable to initialise Fnlib.\n"
 "\n"
-"This is unusual. Unable to contiune.\n"
+"This is unusual. Unable to continue.\n"
 "Exiting.\n"
 msgstr ""
 
@@ -2624,13 +2618,12 @@ msgid ""
 msgstr ""
 
 #: src/sound.c:262
-#, fuzzy
 msgid "Error initialising sound"
 msgstr "Ошибка инициализации звука"
 
 #: src/sound.c:265
 msgid ""
-"Audio was enabled for Enlightenemnt but there was an error\n"
+"Audio was enabled for Enlightenment but there was an error\n"
 "communicating with the audio server (Esound). Audio will\n"
 "now be disabled.\n"
 msgstr ""
