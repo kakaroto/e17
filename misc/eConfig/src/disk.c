@@ -15,7 +15,7 @@
 #include "eConfig.internal.h"
 #include "eConfig.h"
 
-unsigned long
+unsigned long 
 _econf_finddatapointerinpath(char *path, char *loc, unsigned long *position,
 			     unsigned long *timestamp)
 {
@@ -114,7 +114,6 @@ _econf_get_data_from_disk(char *loc, unsigned long *length)
 	if (allocedspace)
 	   return allocedspace;
      }
-
    /* obviously we didn't find it anywhere in here */
 
    *length = 0;
@@ -122,7 +121,7 @@ _econf_get_data_from_disk(char *loc, unsigned long *length)
 
 }
 
-unsigned long
+unsigned long 
 _econf_append_data_to_disk_at_path(char *path, unsigned long length, void *data)
 {
    /* This function is pretty simplistic.  it just saves out a bit of *data to
@@ -171,7 +170,7 @@ _econf_append_data_to_disk_at_path(char *path, unsigned long length, void *data)
    return 0;
 }
 
-int
+int 
 _econf_save_data_to_disk_at_position(unsigned long position, char *path,
 				     unsigned long length, void *data)
 {
@@ -219,7 +218,7 @@ _econf_save_data_to_disk_at_position(unsigned long position, char *path,
 
 }
 
-int
+int 
 _econf_new_fat_entry_to_disk(char *loc, unsigned long length, char *path)
 {
 
@@ -266,7 +265,7 @@ _econf_new_fat_entry_to_disk(char *loc, unsigned long length, char *path)
 
 }
 
-int
+int 
 _econf_replace_fat_entry_to_disk(char *loc, unsigned long length, char *path)
 {
 
@@ -327,7 +326,7 @@ _econf_replace_fat_entry_to_disk(char *loc, unsigned long length, char *path)
    return 0;
 }
 
-int
+int 
 _econf_save_data_to_disk(void *data, char *loc, unsigned long length,
 			 char *path)
 {
@@ -418,7 +417,7 @@ _econf_save_data_to_disk(void *data, char *loc, unsigned long length,
 
 }
 
-int
+int 
 _econf_purge_data_from_disk_at_path(char *loc, char *path)
 {
 
@@ -481,7 +480,7 @@ _econf_purge_data_from_disk_at_path(char *loc, char *path)
 
 }
 
-int
+int 
 _econf_purge_data_from_disk(char *loc)
 {
 
@@ -524,7 +523,6 @@ _econf_purge_data_from_disk(char *loc)
 	  }
 	free(paths);
      }
-
    /* num_undeleted should be set to 0 if everything went according to plan
     * -- it would be nice if I could count how many times it was successfully
     * deleted also, but that's outside the api as spec'd
@@ -534,7 +532,7 @@ _econf_purge_data_from_disk(char *loc)
 
 }
 
-int
+int 
 _econf_create_new_data_repository(char *path)
 {
 
@@ -551,7 +549,10 @@ _econf_create_new_data_repository(char *path)
    int                 retval;
 
    if (!path)
-      return -1;
+     {
+	printf("no path for creation!\n");
+	return -1;
+     }
 
    retval = 0;
    if (stat(path, &st) < 0)
@@ -560,8 +561,8 @@ _econf_create_new_data_repository(char *path)
 	if (mkdir(path, S_IRWXU) < 0)
 	  {
 	     /* we couldn't make the directory -  return an error */
+	     printf("no create directory batman!");
 	     return -4;
-
 	  }
 	stat(path, &st);
      }
@@ -576,9 +577,11 @@ _econf_create_new_data_repository(char *path)
 		  /* The directory is a regular file.  this is not a good thing.
 		   * return a -2 error
 		   */
+		  printf("directory is file\n");
 		  return -2;
 	       }
 	     /* some other oddity here happened, return "unknown issue" error */
+	     printf("strange shit\n");
 	     return -3;
 	  }
 	retval++;
@@ -587,7 +590,7 @@ _econf_create_new_data_repository(char *path)
    /* now we have a directory, it's time to populate it with some files */
 
    sprintf(testingfile, "%s/fat", path);
-   if (stat(path, &st) < 0)
+   if (stat(testingfile, &st) < 0)
      {
 	/* the fat table doesn't exist so lets create it */
 	FILE               *FATTABLE;
@@ -596,6 +599,7 @@ _econf_create_new_data_repository(char *path)
 	if (!FATTABLE)
 	  {
 	     /* we couldn't write to that file.  return an error */
+	     printf("couldn't write to fat table\n");
 	     return -6;
 	  }
 	fclose(FATTABLE);
@@ -607,13 +611,14 @@ _econf_create_new_data_repository(char *path)
 	  {
 	     /* we're not a regular file, so there are probably some issues
 	      * here - returning an error */
+	     printf("odd things.  number 1 -5\n");
 	     return -5;
 	  }
 	retval++;
      }
 
    sprintf(testingfile, "%s/data", path);
-   if (stat(path, &st) < 0)
+   if (stat(testingfile, &st) < 0)
      {
 	/* the data table doesn't exist so lets create it */
 	FILE               *CONFTABLE;
@@ -622,6 +627,7 @@ _econf_create_new_data_repository(char *path)
 	if (!CONFTABLE)
 	  {
 	     /* we couldn't write to that file.  return an error */
+	     printf("couldn't write to data table\n");
 	     return -7;
 	  }
 	fclose(CONFTABLE);
@@ -633,11 +639,13 @@ _econf_create_new_data_repository(char *path)
 	  {
 	     /* we're not a regular file, so there are probably some issues
 	      * here - returning an error */
+	     printf("odd things.  -5\n");
 	     return -5;
 	  }
 	retval++;
      }
 
+   printf("I think we should have been okay\n");
    return retval;
 
 }

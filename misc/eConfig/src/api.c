@@ -34,7 +34,6 @@ eConfigGetData(char *loc, unsigned long *length)
 	*length = 0;
 	return NULL;
      }
-
    cur_data = eConfig.data;
 
    if (cur_data)
@@ -50,13 +49,11 @@ eConfigGetData(char *loc, unsigned long *length)
 	     cur_data = cur_data->next;
 	  }
      }
-
    if ((data = _econf_get_data_from_disk(loc, length)))
      {
 	eConfigUpdateCache();
 	return data;
      }
-
    eConfigUpdateCache();
 
    *length = 0;
@@ -84,7 +81,6 @@ eConfigRefreshData(char *loc, unsigned long *length)
 	*length = 0;
 	return NULL;
      }
-
    cur_data = eConfig.data;
 
    if (cur_data)
@@ -99,14 +95,13 @@ eConfigRefreshData(char *loc, unsigned long *length)
 	     cur_data = cur_data->next;
 	  }
      }
-
    eConfigUpdateCache();
    *length = 0;
    return NULL;
 
 }
 
-int
+int 
 eConfigUnloadData(char *loc)
 {
 
@@ -140,14 +135,13 @@ eConfigUnloadData(char *loc)
 	     cur_data = cur_data->next;
 	  }
      }
-
    eConfigUpdateCache();
 
    return 0;
 
 }
 
-int
+int 
 eConfigStoreData(char *loc, void *data, unsigned long length, char *path)
 {
 
@@ -195,7 +189,7 @@ eConfigStoreData(char *loc, void *data, unsigned long length, char *path)
 
 }
 
-int
+int 
 eConfigStoreDataToFirstAvailablePath(char *loc, void *data,
 				     unsigned long length)
 {
