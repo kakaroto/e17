@@ -408,8 +408,9 @@ ways of performing these.
 If you hold down the ALT key and hold down left mouse button anywhere in the
 window (on the border OR in the application part) whilst dragging, you will 
 move this window around. Doing the same but with the middle mouse button will
-resize the window in that direction. Clicking button 3 anywhere in the window
-whilst holding down the ALT key will bring up the window operations menu.
+resize the window in that direction. Clicking the right mouse button anywhere 
+in the window whilst holding down the ALT key will bring up the window 
+operations menu.
 
 
 
@@ -530,7 +531,7 @@ application windows.
 <img src=E_deskarray.png x=350 y=140>
 <p>
 Windows normally live on one desktop, but can be made
-to exit on all desktops - whenever you change to a new desktop the window
+to exist on all desktops - whenever you change to a new desktop the window
 will follow you and be on that desktop too. This is known as being sticky.
 if a window is sticky it will "stick to the glass of your screen" and stay
 there until it is not sticky anymore or the window is closed.
