@@ -65,10 +65,12 @@ extern "C" {
                   GTK_GEVAS_RENDER_MODE, val, NULL);
 #define gevas_set_font_cache( gevas, val ) \
 	  gtk_object_set(GTK_OBJECT(gevas), \
-                  GTK_GEVAS_FONT_CACHE, (gint)val, NULL);
+                  GTK_GEVAS_FONT_CACHE, (gint)val, NULL); \
+		  evas_set_font_cache(gevas_get_evas(gevas), val);
 #define gevas_set_image_cache( gevas, val ) \
 	  gtk_object_set(GTK_OBJECT(gevas), \
-                  GTK_GEVAS_IMAGE_CACHE, (gint)val, NULL);
+                  GTK_GEVAS_IMAGE_CACHE, (gint)val, NULL); \
+		  evas_set_image_cache(gevas_get_evas(gevas), val);
 #define gevas_set_size_request_x( gevas, val ) \
 	  gtk_object_set(GTK_OBJECT(gevas), \
                   GTK_GEVAS_SIZE_REQUEST_X, (gint)val, NULL);
