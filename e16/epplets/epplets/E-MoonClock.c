@@ -29,7 +29,7 @@
 #include <sys/resource.h>
 #include <stdio.h>
 #include <time.h>
-#include <epplet.h>
+#include "epplet.h"
 #include "CalcEphem.h"
 
 Epplet_gadget close_button, help_button, moon_pixmap;
