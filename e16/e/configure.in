@@ -202,7 +202,6 @@ echo "  We highly suggest that you rectify this situation immediately."
 AC_OUTPUT([
 Makefile
 src/Makefile
-src/themes/Makefile
 dox/Makefile
 eesh/Makefile
 epp/Makefile

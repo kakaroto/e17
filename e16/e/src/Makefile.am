@@ -1,4 +1,4 @@
-SUBDIRS = themes
+SUBDIRS =
 
 EXTRA_DIST = README ChangeLog ewmh.c gnome.c snprintf.c
 
