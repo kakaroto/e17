@@ -115,8 +115,8 @@ winwidget_create_from_file (char *filename, char *name)
       imlib_context_set_image (ret->im);
       ret->w = ret->im_w = imlib_image_get_width ();
       ret->h = ret->im_h = imlib_image_get_height ();
-      winwidget_create_blank_bg (ret);
       winwidget_create_window (ret, ret->w, ret->h);
+      winwidget_create_blank_bg (ret);
       winwidget_render_image (ret);
     }
 

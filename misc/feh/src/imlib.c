@@ -135,13 +135,12 @@ progress (Imlib_Image im, char percent, int update_x, int update_y,
       progwin->w = progwin->im_w = imlib_image_get_width ();
       progwin->h = progwin->im_h = imlib_image_get_height ();
       winwidget_create_window (progwin, progwin->w, progwin->h);
+      winwidget_create_blank_bg (progwin);
       if (progwin->bg_pmap)
 	XFreePixmap (disp, progwin->bg_pmap);
       progwin->bg_pmap =
 	XCreatePixmap (disp, progwin->win, progwin->im_w, progwin->im_h,
 		       depth);
-      winwidget_create_blank_bg (progwin);
-      XResizeWindow (disp, progwin->win, progwin->im_w, progwin->im_h);
       imlib_context_set_drawable (progwin->bg_pmap);
       imlib_context_set_image (progwin->blank_im);
       imlib_render_image_on_drawable (0, 0);
@@ -150,13 +149,15 @@ progress (Imlib_Image im, char percent, int update_x, int update_y,
       XMapWindow (disp, progwin->win);
       XSync (disp, False);
     }
+  imlib_context_set_drawable (progwin->bg_pmap);
+  imlib_context_set_image (im);
   imlib_context_set_anti_alias (0);
   imlib_context_set_dither (0);
   imlib_context_set_blend (1);
-  imlib_blend_image_onto_image (im, 0,
-				update_x, update_y,
-				update_w, update_h,
-				update_x, update_y, update_w, update_h);
+  imlib_render_image_part_on_drawable_at_size (update_x, update_y,
+					       update_w, update_h,
+					       update_x, update_y, update_w,
+					       update_h);
   imlib_context_set_blend (0);
   imlib_render_image_part_on_drawable_at_size (update_x, update_y,
 					       update_w, update_h,

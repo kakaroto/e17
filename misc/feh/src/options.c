@@ -52,7 +52,7 @@ init_parse_options (int argc, char **argv)
   opt.stretch = 0;
   opt.font = NULL;
   opt.title_font = NULL;
-  opt.progressive = 0;
+  opt.progressive = 1;
 
   opt.thumb_w = 60;
   opt.thumb_h = 60;
