@@ -1153,6 +1153,7 @@ typedef struct _emode
      TextClass          *icon_textclass;
      int                 icon_mode;
      EWin               *kde_dock;
+     int                 kde_support;
   }
 EMode;
 

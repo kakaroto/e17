@@ -516,6 +516,7 @@ SetupX()
    mode.manual_placement = 0;
    mode.raise_on_next_focus = 1;
    mode.raise_after_next_focus = 1;
+   mode.kde_support = 0;
 #ifdef WITH_TARTY_WARP
    mode.display_warp = 1;
 #else

@@ -488,6 +488,11 @@ doSMExit(void *params)
       SetEInfoOnAll();
 
    SaveSession(1);
+
+   /* kill off kde */
+   if (mode.kde_support)
+      KDE_Shutdown();
+
    if (params)
      {
 	SoundExit();
@@ -586,6 +591,7 @@ doSMExit(void *params)
 	     return;
 	  }
      }
+
    AUDIO_PLAY("SOUND_EXIT");
    if ((!master_flag) && (do_master_kill))
       kill(master_pid, SIGTERM);
@@ -1083,6 +1089,10 @@ doSMExit(void *params)
    /* already been asked to log out */
    if (disp)
       SetEInfoOnAll();
+
+   /* kill off kde */
+   if (mode.kde_support)
+      KDE_Shutdown();
 
    if (master_pid != getpid())
      {

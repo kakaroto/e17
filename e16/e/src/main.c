@@ -252,8 +252,15 @@ main(int argc, char **argv)
 	init_win_ext = 0;
      }
    GNOME_SetClientList();
+
+   /* start up any kde crap we might need to start up */
+   if (mode.kde_support)
+      KDE_Init();
+
+   /* sync just to make sure */
    XSync(disp, False);
    queue_up = 1;
+
    /* hello!  we don't have a resizemode of 5! */
    if (mode.resizemode == 5)
       mode.resizemode = 0;
@@ -286,6 +293,7 @@ main(int argc, char **argv)
    /* let's make sure we set this up and go to our desk anyways */
    ICCCM_GetMainEInfo();
    GotoDesktop(desks.current);
+
    /* The primary event loop */
    for (;;)
       WaitEvent();

@@ -640,6 +640,9 @@ Config_Control(FILE * ConfigFile)
 	     sscanf(s, "%*s %d %d ", &mode.dockstartx,
 		    &mode.dockstarty);
 	     break;
+	  case CONTROL_KDESUPPORT:
+	     mode.kde_support = i2;
+	     break;
 	  case CONTROL_ICONTEXT:
 	     {
 		char                s2[FILEPATH_LEN_MAX];
@@ -3593,6 +3596,7 @@ SaveUserControlConfig(FILE * autosavefile)
 	fprintf(autosavefile, "1354 %i\n", (int)mode.display_warp);
 	fprintf(autosavefile, "1355 %i\n", (int)mode.warp_after_next_focus);
 	fprintf(autosavefile, "1356 %i\n", (int)mode.pager_scanspeed);
+	fprintf(autosavefile, "1358 %i\n", (int)mode.kde_support);
 	fprintf(autosavefile, "1000\n");
 	fprintf(autosavefile, "1001 0\n");
 	ac = (ActionClass *) FindItem("KEYBINDINGS", 0,
