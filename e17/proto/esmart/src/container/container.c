@@ -351,6 +351,9 @@ _container_element_new(Container *cont, Evas_Object *obj)
   evas_object_clip_set(el->obj, cont->clipper);
   evas_object_clip_set(el->grabber, cont->clipper);
 
+  evas_object_layer_set(el->obj, evas_object_layer_get(cont->obj));
+  evas_object_layer_set(el->grabber, evas_object_layer_get(cont->obj));
+
   evas_object_event_callback_add(el->grabber, EVAS_CALLBACK_MOUSE_DOWN, _cb_element_down, el);
   evas_object_event_callback_add(el->grabber, EVAS_CALLBACK_MOUSE_UP, _cb_element_up, el);
   evas_object_event_callback_add(el->grabber, EVAS_CALLBACK_MOUSE_MOVE, _cb_element_move, el);
