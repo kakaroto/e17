@@ -286,7 +286,7 @@
         signal, "mouse,out";		\
         source, NAME"_back";		\
         action, STATE_SET "default" 0.0;\
-        transition, DECELERATE, 0.5;	\
+        transition, DECELERATE 0.5;	\
         target, NAME"_back";		\
       }					\
       program {				\
@@ -315,7 +315,7 @@
         signal, "mouse,out";		\
         source, NAME"_next";		\
         action, STATE_SET "default" 0.0;\
-        transition, DECELERATE, 0.5;	\
+        transition, DECELERATE 0.5;	\
         target, NAME"_next";		\
       }					\
       program {				\

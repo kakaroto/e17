@@ -3,7 +3,7 @@
 	signal, "mouse,up,1";		
 	source, "playlistOpenner";			
 	action, STATE_SET "open" 0.0;	
-        transition, DECELERATE, 0.5;	
+        transition, DECELERATE 0.5;	
 	target, "bottom";
 	target, "playlistOpenner";
 	target, "playlistCloser";
@@ -13,7 +13,7 @@
 	signal, "mouse,up,1";		
 	source, "playlistCloser";			
 	action, STATE_SET "default" 0.0;	
-        transition, DECELERATE, 0.5;	
+        transition, DECELERATE 0.5;	
 	target, "bottom";
 	target, "playlistOpenner";
 	target, "playlistCloser";

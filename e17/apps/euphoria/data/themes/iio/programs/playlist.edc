@@ -3,11 +3,11 @@ program { name, "selected_mouse"; signal, "mouse,clicked,1"; source, "*";
 	action, SIGNAL_EMIT "PLAYLIST_ITEM_SELECTED" ""; }
 
 program { name, "selected"; signal, "PLAYLIST_ITEM_SELECTED"; source, "";
-	action, STATE_SET "selected" 0.0; transition, LINEAR, 0.2; 
+	action, STATE_SET "selected" 0.0; transition, LINEAR 0.2; 
 	target, "title"; target, "length"; target, "background"; }
 
 program { name, "unselected"; signal, "PLAYLIST_ITEM_UNSELECTED"; source, "";
-	action, STATE_SET "default" 0.0; transition, LINEAR, 0.2; 
+	action, STATE_SET "default" 0.0; transition, LINEAR 0.2; 
 	target, "title"; target, "length"; target, "background"; }
 
 program { name, "dbl_clicked"; signal, "mouse,down,1,double"; source, "*";
