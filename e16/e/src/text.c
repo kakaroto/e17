@@ -355,7 +355,7 @@ TextDraw(TextClass * tclass, Window win, int active, int sticky, int state,
 
    EDBUG(4, "TextDraw");
 
-   if (!text)
+   if (!tclass || !text)
       EDBUG_RETURN_;
 
    ts = TextGetState(tclass, active, sticky, state);

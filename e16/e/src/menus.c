@@ -840,117 +840,75 @@ MenuRedraw(Menu * m)
 static void
 MenuDrawItem(Menu * m, MenuItem * mi, char shape)
 {
-   GC                  gc;
-   XGCValues           gcv;
-   unsigned int        w, h;
-   int                 x, y;
-   char                pq;
    PmapMask           *mi_pmm;
+   char                pq;
 
    EDBUG(5, "MenuDrawItem");
    pq = Mode.queue_up;
    Mode.queue_up = 0;
 
    mi_pmm = &(mi->pmm[(int)(mi->state)]);
+
    if (m->redraw)
       FreePmapMask(mi_pmm);
+
    if (!mi_pmm->pmap)
      {
-	if (mi->text)
-	  {
-	     GetWinWH(mi->win, &w, &h);
-	     GetWinXY(mi->win, &x, &y);
-	     if (!m->style->use_item_bg)
-	       {
-		  mi_pmm->type = 0;
-		  mi_pmm->pmap =
-		     ECreatePixmap(disp, mi->win, w, h, VRoot.depth);
-		  gc = XCreateGC(disp, m->pmm.pmap, 0, &gcv);
-		  XCopyArea(disp, m->pmm.pmap, mi_pmm->pmap, gc, x, y, w, h, 0,
-			    0);
-		  mi_pmm->mask = None;
-		  if ((mi->state != STATE_NORMAL) || (mi->child))
-		    {
-		       PmapMask            pmm;
+	GC                  gc;
+	XGCValues           gcv;
+	unsigned int        w, h;
+	int                 x, y;
+	int                 item_type;
+	ImageClass         *ic;
 
-		       if (mi->child)
-			  IclassApplyCopy(m->style->sub_iclass, mi->win, w, h,
-					  0, 0, mi->state, &pmm, 1,
-					  ST_MENU_ITEM);
-		       else
-			  IclassApplyCopy(m->style->item_iclass, mi->win, w,
-					  h, 0, 0, mi->state, &pmm, 1,
-					  ST_MENU_ITEM);
-		       if (pmm.mask)
-			 {
-			    XSetClipMask(disp, gc, pmm.mask);
-			    XSetClipOrigin(disp, gc, 0, 0);
-			 }
-		       XCopyArea(disp, pmm.pmap, mi_pmm->pmap, gc, 0, 0, w, h,
-				 0, 0);
-		       FreePmapMask(&pmm);
-		    }
-		  XFreeGC(disp, gc);
-	       }
-	     else
-	       {
-		  if (mi->child)
-		     IclassApplyCopy(m->style->sub_iclass, mi->win, w, h, 0,
-				     0, mi->state, mi_pmm, 1, ST_MENU_ITEM);
-		  else
-		     IclassApplyCopy(m->style->item_iclass, mi->win, w, h, 0,
-				     0, mi->state, mi_pmm, 1, ST_MENU_ITEM);
-	       }
-	  }
-     }
-
-   if ((m->style->tclass) && (mi->text))
-     {
-	TextDraw(m->style->tclass, mi_pmm->pmap, 0, 0, mi->state,
-		 mi->text, mi->text_x, mi->text_y, mi->text_w, mi->text_h, 17,
-		 m->style->tclass->justification);
-     }
-
-   if (mi->text)
-     {
-	ESetWindowBackgroundPixmap(disp, mi->win, mi_pmm->pmap);
-	EShapeCombineMask(disp, mi->win, ShapeBounding, 0, 0, mi_pmm->mask,
-			  ShapeSet);
-	XClearWindow(disp, mi->win);
-     }
-   else
-     {
 	GetWinWH(mi->win, &w, &h);
 	GetWinXY(mi->win, &x, &y);
+
+	mi_pmm->type = 0;
+	mi_pmm->pmap = ECreatePixmap(disp, mi->win, w, h, VRoot.depth);
+	mi_pmm->mask = None;
+
+	ic = (mi->child) ? m->style->sub_iclass : m->style->item_iclass;
+	item_type = (mi->state != STATE_NORMAL) ? ST_MENU_ITEM : ST_MENU;
+
 	if (!m->style->use_item_bg)
 	  {
+	     gc = XCreateGC(disp, m->pmm.pmap, 0, &gcv);
+	     XCopyArea(disp, m->pmm.pmap, mi_pmm->pmap, gc, x, y, w, h, 0, 0);
 	     if ((mi->state != STATE_NORMAL) || (mi->child))
 	       {
-		  IclassApply(m->style->item_iclass, mi->win, w, h, 0, 0,
-			      mi->state, 0, ST_MENU);
+		  PmapMask            pmm;
+
+		  IclassApplyCopy(ic, mi->win, w, h, 0, 0, mi->state, &pmm, 1,
+				  item_type);
+		  if (pmm.mask)
+		    {
+		       XSetClipMask(disp, gc, pmm.mask);
+		       XSetClipOrigin(disp, gc, 0, 0);
+		    }
+		  XCopyArea(disp, pmm.pmap, mi_pmm->pmap, gc, 0, 0, w, h, 0, 0);
+		  FreePmapMask(&pmm);
 	       }
-	     else
-	       {
-		  ESetWindowBackgroundPixmap(disp, mi->win, ParentRelative);
-		  EShapeCombineMask(disp, mi->win, ShapeBounding, 0, 0, None,
-				    ShapeSet);
-		  XClearWindow(disp, mi->win);
-	       }
+	     XFreeGC(disp, gc);
 	  }
 	else
 	  {
-	     if (mi->child)
-	       {
-		  IclassApply(m->style->sub_iclass, mi->win, w, h, 0, 0,
-			      mi->state, 0, ST_MENU);
-	       }
-	     else
-	       {
-		  IclassApply(m->style->item_iclass, mi->win, w, h, 0, 0,
-			      mi->state, 0, ST_MENU);
-	       }
+	     IclassApplyCopy(ic, mi_pmm->pmap, w, h, 0, 0, mi->state, mi_pmm, 1,
+			     item_type);
+	  }
+
+	if (mi->text)
+	  {
+	     TextDraw(m->style->tclass, mi_pmm->pmap, 0, 0, mi->state,
+		      mi->text, mi->text_x, mi->text_y, mi->text_w, mi->text_h,
+		      17, m->style->tclass->justification);
 	  }
      }
+
+   ESetWindowBackgroundPixmap(disp, mi->win, mi_pmm->pmap);
+   EShapeCombineMask(disp, mi->win, ShapeBounding, 0, 0, mi_pmm->mask,
+		     ShapeSet);
+   XClearWindow(disp, mi->win);
 
    if ((shape) && (m->style->use_item_bg))
       PropagateShapes(m->win);
