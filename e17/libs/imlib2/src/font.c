@@ -778,6 +778,8 @@ __imlib_list_fonts(int *num_ret)
          {
             path = malloc(strlen(fpath[i]) + strlen(dir[j]) + 2);
             sprintf(path, "%s/%s", fpath[i], dir[j]);
+            if(!__imlib_ItemInList(list, l, dir[j]))
+            {
 		  if (__imlib_FileIsFile(path))
 		    {
 		       TT_Face f;
@@ -795,6 +797,7 @@ __imlib_list_fonts(int *num_ret)
 			 }
 		       free(dir[j]);
 		    }
+            }
 		     free(path);
 	       }
 	     free(dir);

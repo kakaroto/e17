@@ -143,7 +143,7 @@ void              __imlib_CleanupImagePixmapCache(void);
 ImlibLoader      *__imlib_ProduceLoader(char *file);
 char            **__imlib_ListLoaders(int *num_ret);
 char            **__imlib_TrimLoaderList(char **list, int *num);
-int               __imlib_LoaderInList(char **list, int size, char *item);
+int               __imlib_ItemInList(char **list, int size, char *item);
 void              __imlib_ConsumeLoader(ImlibLoader *l);
 void              __imlib_RescanLoaders(void);
 void              __imlib_RemoveAllLoaders(void);

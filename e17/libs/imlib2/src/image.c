@@ -649,7 +649,7 @@ char **__imlib_TrimLoaderList(char **list, int *num)
 	{
 	    *ext = '\0';
 	    /* Don't add the same loader multiple times... */
-	    if(!__imlib_LoaderInList(ret, size, list[i]))
+	    if(!__imlib_ItemInList(ret, size, list[i]))
 	    {
 	      ret = realloc(ret, sizeof(char *) * (size + 1));
 	      ret[size++] = strdup(list[i]);
@@ -664,7 +664,7 @@ char **__imlib_TrimLoaderList(char **list, int *num)
     return ret;
 }
 
-int __imlib_LoaderInList(char **list, int size, char *item)
+int __imlib_ItemInList(char **list, int size, char *item)
 {
     int i;
     if(!size)
