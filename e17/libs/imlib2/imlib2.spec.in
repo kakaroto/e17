@@ -14,9 +14,6 @@ BuildRoot: %{_tmppath}/%{name}-root
 Packager: Lyle Kempler <term@kempler.net>, Joakim Bodin <bodin@dreamhosted.com>
 URL: http://www.rasterman.com/raster/imlib.html
 Requires: freetype >= 1.2
-Requires: libjpeg
-Requires: libpng
-Requires: edb
 Requires: XFree86
 Requires: imlib2-loader_jpeg
 Requires: imlib2-loader_png
