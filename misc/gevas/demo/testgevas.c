@@ -728,7 +728,7 @@ void setup_menu_raptor(GtkWidget * gevas)
 void make_selectable( GtkgEvasObj* object )
 {
 	GtkgEvasObj *ct;
-	GtkObject *evh = gevasevh_selectable_new();
+	GtkObject *evh = gevasevh_selectable_new( evh_selector );
     gevasevh_selectable_set_confine( evh, 1 );
 
 	gevasobj_add_evhandler(object, evh);
@@ -752,8 +752,6 @@ void make_selectable( GtkgEvasObj* object )
 	gevasobj_set_layer(ct, 9999);
 
 	gevasevh_selectable_set_selected_gevasobj( evh, ct );
-	gevasevh_selectable_set_selector(GTK_GEVASEVH_SELECTABLE(evh),
-									 evh_selector);
 
     
 }

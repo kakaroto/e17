@@ -126,6 +126,8 @@ GtkObject *gevasevh_group_selector_new(void);
                                      gint cy, double* x, double* y, double* rw,
                                      double* rh);
     void gevasevh_group_selector_dragging( GtkgEvasEvHGroupSelector *ev, gboolean d );
+
+    GtkgEvasObjCollection* gevasevh_group_selector_get_collection( GtkgEvasEvHGroupSelector *ev );
     
 
 #ifdef __cplusplus

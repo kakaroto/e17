@@ -61,6 +61,7 @@ typedef struct _GtkgEvasEvHSelectableClass GtkgEvasEvHSelectableClass;
 struct _GtkgEvasEvHSelectable 
 {
 	GtkgEvasEvH evh_obj;
+    
 	GtkgEvas* gevas;
 	GtkgEvasObj* normal;
 	GtkgEvasObj* selected;
@@ -88,14 +89,14 @@ struct _GtkgEvasEvHSelectableClass {
 
 
 guint gevasevh_selectable_get_type(void);
-GtkObject *gevasevh_selectable_new(void);
+GtkObject *gevasevh_selectable_new( GtkObject* evh_selector );
 
 
 /* public*/
     void gevasevh_selectable_set_normal_gevasobj(
         GtkgEvasEvHSelectable* ev, 
         GtkgEvasObj* nor );
-    void gevasevh_selectable_set_selector( GtkgEvasEvHSelectable* evh, GtkObject* evh_selector );
+//    void gevasevh_selectable_set_selector( GtkgEvasEvHSelectable* evh, GtkObject* evh_selector );
     void gevasevh_selectable_set_confine( GtkgEvasEvHSelectable* evh, gboolean c );
     GtkgEvasEvHSelectable* gevas_selectable_get_backref(
         GtkgEvas* gevas,
@@ -110,7 +111,6 @@ GtkObject *gevasevh_selectable_new(void);
 
 /* package:*/
     void gevas_selectable_select( GtkgEvasEvHSelectable * ev, gboolean s );
-    void gevas_selectable_move( GtkgEvasEvHSelectable * ev, gint32 dx, gint32 dy );
     void gevas_selectable_set_backref(GtkgEvasEvHSelectable * ev, GtkgEvasObj* o );
     
     

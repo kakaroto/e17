@@ -105,6 +105,8 @@ enum {
 enum {
     SIG_ADD,
     SIG_REMOVE,
+    SIG_MOVE_ABSOLUTE,
+    SIG_MOVE,
     SIG_LAST
 };
 
@@ -353,6 +355,8 @@ gevas_obj_collection_move(   GtkgEvasObjCollection* ev, gint32 x, gint32 y )
     for( li=ev->selected_objs; li; li = li->next)
         if(li->data)
         {
+            gtk_signal_emit(GTK_OBJECT(ev), signals[SIG_MOVE_ABSOLUTE], li->data, &x, &y );
+            gtk_signal_emit(GTK_OBJECT(ev), signals[SIG_MOVE], li->data, &x, &y );
             gevasobj_move( li->data, x, y );
         }
 }
@@ -361,7 +365,6 @@ gevas_obj_collection_move(   GtkgEvasObjCollection* ev, gint32 x, gint32 y )
 void
 gevas_obj_collection_move_relative( GtkgEvasObjCollection* ev, gint32 dx, gint32 dy )
 {
-	double x=0, y=0;
     Evas_List li = 0;
 
     g_return_if_fail (ev != NULL);
@@ -371,12 +374,15 @@ gevas_obj_collection_move_relative( GtkgEvasObjCollection* ev, gint32 dx, gint32
     for( li=ev->selected_objs; li; li = li->next)
         if(li->data)
         {
-            gevasobj_get_location( li->data, &x, &y );
-            x+=dx;	
-            y+=dy;
-
-//    _gevas_selectable_confine( ev, ev->normal->gevas, &x, &y );
-    
+            double lx=0, ly=0;
+            gint32 x, y;
+            
+            gevasobj_get_location( li->data, &lx, &ly );
+            x = lx + dx;	
+            y = ly + dy;
+            
+//            printf("gevas_obj_collection_move_relative() x:%d y:%d\n",x,y);
+            gtk_signal_emit(GTK_OBJECT(ev), signals[SIG_MOVE], li->data, &x, &y );
             gevasobj_move( li->data, x, y );
         }
 }
@@ -524,7 +530,15 @@ gevas_obj_collection_class_init(GtkgEvasObjCollectionClass * klass)
                         gtk_marshal_NONE__POINTER,
                         GTK_TYPE_NONE, 1,
                         GTK_TYPE_OBJECT);
-    
+    signals[SIG_MOVE_ABSOLUTE] =
+        gtk_signal_new ("move_absolute", GTK_RUN_LAST, object_class->type, 0,
+                        gtk_marshal_NONE__POINTER_POINTER_POINTER,
+                        GTK_TYPE_NONE, 3, GTK_TYPE_OBJECT, GTK_TYPE_LONG, GTK_TYPE_LONG);
+    signals[SIG_MOVE] =
+        gtk_signal_new ("move", GTK_RUN_LAST, object_class->type, 0,
+                        gtk_marshal_NONE__POINTER_POINTER_POINTER,
+                        GTK_TYPE_NONE, 3, GTK_TYPE_OBJECT, GTK_TYPE_LONG, GTK_TYPE_LONG);
+
     gtk_object_class_add_signals (object_class, signals, SIG_LAST);
 
 
