@@ -1,4 +1,5 @@
-grab application icons from apps if there is no mapping
-add lower - alpha - draw on background version 
-add option to switch betwwn them
+allow (option for) icons to override mapped icons for applinks
+ability to screenshot instead of window icon for minimised apps
 add ecore_config to colors
+a "background cache" when in on top mode stops so many window resizes
+
