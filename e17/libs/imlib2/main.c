@@ -225,7 +225,6 @@ int main (int argc, char **argv)
 	XResizeWindow(disp, win, w, h);
 	XSync(disp, False);
 	im = imlib_create_image(w, h);
-	imlib_image_set_has_alpha(im, 1);
 	imlib_set_cache_size(4 * 1024 * 1024);
 	i = 0;
 	up = imlib_update_append_rect(up, 0, 0, w, h);
