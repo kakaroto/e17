@@ -1261,7 +1261,9 @@ Adopt(Window win)
    ICCCM_GetGeoms(ewin, 0);
    HintsGetWindowHints(ewin);
    SessionGetInfo(ewin, 0);
+#if 0				/* Do we want this? */
    MatchEwinToSM(ewin);
+#endif
    MatchEwinToSnapInfo(ewin);
    if (Mode.wm.startup)
       ICCCM_GetEInfo(ewin);

@@ -305,7 +305,9 @@ main(int argc, char **argv)
    ECursorsInit();
    ECsrApply(ECSR_ROOT, VRoot.win);
 
+#if 0				/* AAA: Why here? */
    Mode.wm.startup = 0;
+#endif
    Mode.wm.save_ok = Mode.wm.master;
    /* ok - paranoia - save current settings to disk */
    if (VRoot.scr == 0)
@@ -361,7 +363,9 @@ main(int argc, char **argv)
    if (Mode.firsttime)
       runDocBrowser();
 
+#if 0				/* Not if AAA */
    Mode.wm.startup = 1;
+#endif
    SpawnSnappedCmds();
    Mode.wm.startup = 0;
 
