@@ -17,7 +17,7 @@
 		    }
 		    image {
 		        normal, "main.png";
-				border, 10 10 20 10;
+			border, 10 10 20 10;
 		    }
 		}
 	    } //part
@@ -43,7 +43,7 @@
 		    }
 		    image {
 		        normal, "top_grad.png";
-				border, 10 10 10 10;
+			border, 10 10 10 10;
 		    }
 		}
 	    } //part
@@ -65,7 +65,7 @@
 	  }
 	  image {
 	    normal, "screen.png";
-		border, 5 5 5 5;
+	    border, 5 5 5 5;
 	  }
 	}
       }
@@ -102,7 +102,6 @@
 /*
 	      description {
 	        state, "default" 0.0;
-	        border, 0 0 0 0;
 	        min, 199 10;
 	        rel1 {
 	          to_x, "main";
@@ -116,6 +115,7 @@
 	        }
 	        image {
 	          normal, "bot.png";
+	          border, 0 0 0 0;
 	        }
 	        border, 7 7 0 0;
 	      }

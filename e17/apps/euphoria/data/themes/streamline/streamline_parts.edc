@@ -308,7 +308,7 @@
 
                                 rel2 {
                                         relative, 0.0 0.0;
-                                        offset, 316, 86;
+                                        offset, 316 86;
                                 }
 
                                 image {
@@ -689,6 +689,7 @@
 
                                 description {
                                         state, "disabled" 0.0;
+					inherit, "default" 0.0;
                                         visible, 0;
                                 }
                         }
@@ -699,11 +700,6 @@
 
                                 description {
                                         state, "default" 0.0;
-                                        visible, 0;
-                                }
-
-                                description {
-                                        state, "enabled" 0.0;
                                         visible, 0;
                                         min, 57 20;
                                         max, 57 20;
@@ -723,6 +719,12 @@
                                         image {
                                                 normal, "button-on.png";
                                         }
+                                }
+
+                                description {
+                                        state, "enabled" 0.0;
+					inherit, "default" 0.0;
+                                        visible, 0;
                                 }
                         }
                         part {
@@ -772,7 +774,7 @@
 
                                 rel1 {
                                         relative, 0.0 0.0;
-                                        offset, 282, 17;
+                                        offset, 282 17;
                                 }
                                 rel2 {
                                         relative, 0.0 0.0;
