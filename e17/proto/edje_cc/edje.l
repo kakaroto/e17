@@ -72,7 +72,7 @@
     #define FLOAT_RETURN()  yylval.val = atof(yytext); \
                             VAL_RETURN(FLOAT);
 
-    #define CHAR_RETURN()   VAL_RETURN(yytext[0]);
+    #define CHAR_RETURN()   VAL_RETURN(yytext[0]); 
 %}
 
 %option noyywrap
@@ -81,7 +81,7 @@
 start_part [-+]?
 exponent_part [eE][-+]?[0-9]+
 fractional_constant ([0-9]*"."[0-9]+)|([0-9]+".")
-floating_constant ((({start_part}{fractional_constant}{exponent_part}?)|({start_part}[0-9]+{exponent_part}))[FfLl]?)|({start_part}[0-9][0-9]*)
+floating_constant ((({fractional_constant}{exponent_part}?)|({start_part}[0-9]+{exponent_part}))[FfLl]?)|([0-9][0-9]*)
 
 %x SC_COMMENT
 %x SC_SCRIPT
@@ -177,6 +177,13 @@ x					{ KEYWORD_RETURN(X); }
 y					{ KEYWORD_RETURN(Y); }
 (\"[^\"]*\")*       { STRING_RETURN(); }
 {floating_constant} { FLOAT_RETURN(); }
+\+                              { KEYWORD_RETURN(PLUS); }
+\-                              { KEYWORD_RETURN(MINUS); }
+\*                              { KEYWORD_RETURN(TIMES); }
+\/                              { KEYWORD_RETURN(DIVIDE); }
+\(                              { KEYWORD_RETURN(OPEN_PAREN); }
+\)                              { KEYWORD_RETURN(CLOSE_PAREN); }
+
 \}                  { KEYWORD_RETURN(CLOSE_BRACE); }
 \{                  { KEYWORD_RETURN(OPEN_BRACE); }
 [:,]		        { KEYWORD_RETURN(COLON); }
@@ -206,6 +213,7 @@ script              { SCRIPT_START(); }
   \{                { SCRIPT_OPEN_BRACE(); }
   \}                { SCRIPT_CLOSE_BRACE(); }
 }
+
 .                   { CHAR_RETURN(); }
 
 

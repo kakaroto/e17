@@ -41,6 +41,10 @@
 %token SINUSOIDAL ACCELERATE DECELERATE IMAGE RECT SWALLOW
 %token NONE PLAIN OUTLINE SOFT_OUTLINE SHADOW SOFT_SHADOW USER
 %token OUTLINE_SHADOW OUTLINE_SOFT_SHADOW VERTICAL HORIZONTAL BOTH
+%left MINUS PLUS
+%left TIMES DIVIDE
+%left NEG     /* negation--unary minus */
+%token OPEN_PAREN CLOSE_PAREN
 
 %type <string> STRING 
 %type <val> FLOAT
@@ -50,6 +54,7 @@
 %type <image_type> image_type
 %type <text_effect> effect_type
 %type <aspect_pref> aspect_pref_type
+%type <val> exp
 
 %%
 
@@ -93,7 +98,7 @@ image: IMAGE COLON STRING image_type SEMICOLON {
                 etcher_parse_image($3, $4, 0);
 		printf("got image '%s' of type %d\n", $3, $4);
 	}
-	| IMAGE COLON STRING image_type FLOAT SEMICOLON {
+	| IMAGE COLON STRING image_type exp SEMICOLON {
                 etcher_parse_image($3, $4, $5);
 		printf("got image '%s' of type %d (%f)\n", $3, $4, $5);
 	}
@@ -188,13 +193,13 @@ program_source: SOURCE COLON STRING SEMICOLON {
 	}
 	;
 
-program_in: IN COLON FLOAT FLOAT SEMICOLON {
+program_in: IN COLON exp exp SEMICOLON {
                 etcher_parse_program_in($3, $4);
 		printf("in %f %f\n", $3, $4);
 	}
 	;
 
-program_action: ACTION COLON action_type STRING FLOAT SEMICOLON {
+program_action: ACTION COLON action_type STRING exp SEMICOLON {
                 etcher_parse_program_action($3, $4, NULL, $5, 0);
 		printf("action %d %s %f\n", $3, $4, $5);
 	}
@@ -202,7 +207,7 @@ program_action: ACTION COLON action_type STRING FLOAT SEMICOLON {
                 etcher_parse_program_action($3, $4, $5, 0, 0);
 		printf("action %d %s %s\n", $3, $4, $5);
 	}
-	| ACTION COLON action_type FLOAT FLOAT SEMICOLON {
+	| ACTION COLON action_type exp exp SEMICOLON {
                 etcher_parse_program_action($3, NULL, NULL, $4, $5);
 		printf("action %d %f %f\n", $3, $4, $5);
 	}
@@ -220,7 +225,7 @@ action_type: SIGNAL_EMIT { $$ = ETCHER_ACTION_SIGNAL_EMIT; }
 	| DRAG_VAL_PAGE { $$ = ETCHER_ACTION_DRAG_VAL_PAGE; }
 	;
 
-program_transition: TRANSITION COLON transition_type FLOAT SEMICOLON {
+program_transition: TRANSITION COLON transition_type exp SEMICOLON {
                 etcher_parse_program_transition($3, $4);
 		printf("transition %d %f\n", $3, $4);
 	}
@@ -290,7 +295,7 @@ group_preamble_entry: name
 	| max
 	;
 
-min: MIN COLON FLOAT FLOAT SEMICOLON {
+min: MIN COLON exp exp SEMICOLON {
                 switch(section)
                 {
                   case GROUP:
@@ -309,7 +314,7 @@ min: MIN COLON FLOAT FLOAT SEMICOLON {
 	}
 	;
 
-max: MAX COLON FLOAT FLOAT SEMICOLON {
+max: MAX COLON exp exp SEMICOLON {
                 switch(section)
                 {
                   case GROUP:
@@ -381,13 +386,13 @@ effect_type: NONE { $$ = ETCHER_TEXT_EFFECT_NONE; }
 	| OUTLINE_SOFT_SHADOW { $$ = ETCHER_TEXT_EFFECT_OUTLINE_SOFT_SHADOW; }
 	;
 
-mouse_events: MOUSE_EVENTS COLON FLOAT SEMICOLON {
+mouse_events: MOUSE_EVENTS COLON exp SEMICOLON {
                 etcher_parse_part_mouse_events($3);
 		printf("mouse event %f\n", $3);
 	}
 	;
 
-repeat_events: REPEAT_EVENTS COLON FLOAT SEMICOLON {
+repeat_events: REPEAT_EVENTS COLON exp SEMICOLON {
                 etcher_parse_part_repeat_events($3);
 		printf("repeat events %d\n", $3);
 	}
@@ -432,13 +437,13 @@ dragable_body: x
 	| confine
 	;
 
-x: X COLON FLOAT FLOAT FLOAT SEMICOLON {
+x: X COLON exp exp exp SEMICOLON {
                 etcher_parse_part_dragable_x((int)$3, (int)$4, (int)$5);
 		printf("x %f %f %f\n", $3, $4, $5);
 	}
 	;
 
-y: Y COLON FLOAT FLOAT FLOAT SEMICOLON {
+y: Y COLON exp exp exp SEMICOLON {
                 etcher_parse_part_dragable_y((int)$3, (int)$4, (int)$5);
 		printf("y %f %f %f\n", $3, $4, $5);
 	}
@@ -472,19 +477,19 @@ desc_preamble_entry: state
 	| aspect_preference
 	;
 
-state: STATE COLON STRING FLOAT SEMICOLON {
+state: STATE COLON STRING exp SEMICOLON {
                 etcher_parse_state_name($3, $4);
 		printf("state %s %f\n", $3, $4);
 	}
 	;
 
-visible: VISIBLE COLON FLOAT SEMICOLON {
+visible: VISIBLE COLON exp SEMICOLON {
                 etcher_parse_state_visible((int)$3);
 		printf("visible %f\n", $3);
 	}
 	;
 
-align: ALIGN COLON FLOAT FLOAT SEMICOLON {
+align: ALIGN COLON exp exp SEMICOLON {
                 switch(section)
                 {
                   case STATE:
@@ -500,13 +505,13 @@ align: ALIGN COLON FLOAT FLOAT SEMICOLON {
 	}
 	;
 
-step: STEP COLON FLOAT FLOAT SEMICOLON {
+step: STEP COLON exp exp SEMICOLON {
                 etcher_parse_state_step($3, $4);
 		printf("step %f %f\n", $3, $4);
 	}
 	;
 
-aspect: ASPECT COLON FLOAT FLOAT SEMICOLON {
+aspect: ASPECT COLON exp exp SEMICOLON {
                 etcher_parse_state_aspect($3, $4);
 		printf("aspect %f %f\n", $3, $4);
 	}
@@ -558,7 +563,7 @@ rel_body: relative
 	| to_y
 	;
 
-relative: RELATIVE COLON FLOAT FLOAT SEMICOLON {
+relative: RELATIVE COLON exp exp SEMICOLON {
                 switch(section)
                 {
                   case REL1:
@@ -580,7 +585,7 @@ relative: RELATIVE COLON FLOAT FLOAT SEMICOLON {
 	}
 	;
 
-offset: OFFSET COLON FLOAT FLOAT SEMICOLON {
+offset: OFFSET COLON exp exp SEMICOLON {
                 switch(section)
                 {
                   case REL1:
@@ -676,7 +681,7 @@ tween: TWEEN COLON STRING SEMICOLON {
 	}
 	;
 
-border: BORDER COLON FLOAT FLOAT FLOAT FLOAT SEMICOLON {
+border: BORDER COLON exp exp exp exp SEMICOLON {
                 etcher_parse_state_border((int)$3, (int)$4, (int)$5, (int)$6);
 		printf("border %f %f %f %f\n", $3, $4, $5, $6);
 	}
@@ -695,7 +700,7 @@ fill_body: smooth
 	| size
 	;
 
-smooth: SMOOTH COLON FLOAT SEMICOLON {
+smooth: SMOOTH COLON exp SEMICOLON {
                 etcher_parse_state_fill_smooth((int)$3);
 		printf("smooth %f\n", $3);
 	}
@@ -722,19 +727,19 @@ color_class: COLOR_CLASS COLON STRING SEMICOLON {
 	}
 	;
 
-color: COLOR COLON FLOAT FLOAT FLOAT FLOAT SEMICOLON {
+color: COLOR COLON exp exp exp exp SEMICOLON {
                 etcher_parse_state_color((int)$3, (int)$4, (int)$5, (int)$6);
 		printf("color %f %f %f %f\n", $3, $4, $5, $6);
 	}
 	;
 
-color2: COLOR2 COLON FLOAT FLOAT FLOAT FLOAT SEMICOLON {
+color2: COLOR2 COLON exp exp exp exp SEMICOLON {
                 etcher_parse_state_color2((int)$3, (int)$4, (int)$5, (int)$6);
 		printf("color2 %f %f %f %f\n", $3, $4, $5, $6);
 	}
 	;
 		
-color3: COLOR3 COLON FLOAT FLOAT FLOAT FLOAT SEMICOLON {
+color3: COLOR3 COLON exp exp exp exp SEMICOLON {
                 etcher_parse_state_color3((int)$3, (int)$4, (int)$5, (int)$6);
 		printf("color3 %f %f %f %f\n", $3, $4, $5, $6);
 	}
@@ -775,19 +780,26 @@ font_entry: FONT COLON STRING SEMICOLON {
 	}
 	;
 
-size_entry: SIZE COLON FLOAT SEMICOLON {
+size_entry: SIZE COLON exp SEMICOLON {
                 etcher_parse_state_text_size((int)$3);
 		printf("size %f\n", $3);
 	}
 	;
 
-fit: FIT COLON FLOAT FLOAT SEMICOLON {
+fit: FIT COLON exp exp SEMICOLON {
                 etcher_parse_state_text_fit((int)$3, (int)$4);
 		printf("fit %f %f\n", $3, $4);
 	}
 	;
 
-
+exp: FLOAT                              { $$ = $1;          }
+        | exp PLUS exp                  { $$ = $1 + $3;     }
+        | exp MINUS exp                 { $$ = $1 - $3;     }
+        | exp TIMES exp                 { $$ = $1 * $3;     }
+        | exp DIVIDE exp                { $$ = $1 / $3;     }
+        | MINUS exp %prec NEG           { $$ = -$2;         }
+        | OPEN_PAREN exp CLOSE_PAREN    { $$ = $2;          }
+        ;
 %%
 
 void yyerror(const char *str) {

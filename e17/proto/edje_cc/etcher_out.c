@@ -402,7 +402,7 @@ _etcher_output_state(Etcher_Part *part, Etcher_Part_State *state, FILE *out)
     fprintf(out, "\t\t\t\t\tcolor3: %d %d %d %d;\n",
             state->color3.r, state->color3.g, state->color3.b, state->color3.a);
 
-  if (part->type == ETCHER_PART_TYPE_IMAGE)
+  if (part->type == ETCHER_PART_TYPE_IMAGE && state->image.normal )
   {
     fprintf(out, "\t\t\t\t\timage {\n");
     fprintf(out, "\t\t\t\t\t\tnormal: \"%s\";\n", state->image.normal->name);
