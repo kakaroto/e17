@@ -87,7 +87,7 @@ Ewl_Widget     *ewl_fileselector_new(Ewl_Callback_Function clicked)
 
 	memset(fs, 0, sizeof(Ewl_Fileselector));
 
-	ewl_fileselector_init(fs, file_clicked);
+	ewl_fileselector_init(fs, clicked);
 
 	DRETURN_PTR(EWL_WIDGET(fs), DLEVEL_STABLE);
 }

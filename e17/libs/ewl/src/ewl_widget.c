@@ -135,7 +135,7 @@ void ewl_widget_realize(Ewl_Widget * w)
 
 	w->flags |= EWL_FLAGS_REALIZED;
 
-	f (w->parent && !REALIZED(w->parent))
+	if (w->parent && !REALIZED(w->parent))
 		ewl_widget_realize(w->parent);
 
 	ewl_callback_call(w, EWL_CALLBACK_REALIZE);
