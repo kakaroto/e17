@@ -117,10 +117,8 @@ static bool sylpheed_load_config (MailBox *mb, E_DB_File *edb,
 static bool sylpheed_check (MailBox *mb)
 {
 	xmlDocPtr xml;
-	xmlNodeSetPtr nodeset;
-	xmlXPathObjectPtr result_new, result_total;
-	char xpath[100];
-	int total = 0, unseen = 0;
+	const char *tags[] = {"new", "total"};
+	int i;
 
 	assert (mb);
 
@@ -130,34 +128,37 @@ static bool sylpheed_check (MailBox *mb)
 		return false;
 	}
 
-	snprintf (xpath, sizeof (xpath),
-			"//folderlist/folder[@name=\'%s\']/folderitem[@name=\'%s\']/@new",
-			(char*) mailbox_property_get (mb, "mailbox"),
-			(char*) mailbox_property_get (mb, "folder"));
+	for (i = 0; i < 2; i++) {
+		xmlXPathObjectPtr set;
+		xmlNodePtr node;
+		xmlChar *ch;
+		char xpath[256];
 
-	result_new = get_nodeset (xml, xpath);
-	if (!result_new)
-		return false;
+		snprintf (xpath, sizeof (xpath),
+		          "//folderlist/folder[@name=\'%s\']"
+		          "/folderitem[@name=\'%s\']/@%s",
+		          (char *) mailbox_property_get (mb, "mailbox"),
+		          (char *) mailbox_property_get (mb, "folder"),
+		          tags[i]);
 
-	snprintf (xpath, sizeof (xpath),
-			"//folderlist/folder[@name=\'%s\']/folderitem[@name=\'%s\']/@total",
-			(char*) mailbox_property_get (mb, "mailbox"),
-			(char*) mailbox_property_get (mb, "folder"));
+		set = get_nodeset (xml, xpath);
+		if (!set)
+			continue;
 
-	result_total = get_nodeset (xml, xpath);
-	if (!result_total)
-		return false;
+		node = set->nodesetval->nodeTab[0]->xmlChildrenNode;
+		assert (node);
 
-	nodeset = result_new->nodesetval;
-	unseen = (int) xmlXPathCastStringToNumber (xmlNodeListGetString (xml,
-		nodeset->nodeTab[0]->xmlChildrenNode, 1));
+		ch = xmlNodeListGetString (xml, node, 1);
+		assert (ch);
 
-	nodeset = result_total->nodesetval;
-	total = (int) xmlXPathCastStringToNumber (xmlNodeListGetString (xml,
-		nodeset->nodeTab[0]->xmlChildrenNode, 1));
+		if (!i)
+			mailbox_unseen_set (mb, xmlXPathCastStringToNumber (ch));
+		else
+			mailbox_total_set (mb, xmlXPathCastStringToNumber (ch));
 
-	xmlXPathFreeObject (result_new);
-	xmlXPathFreeObject (result_total);
+		xmlXPathFreeObject (set);
+	}
+
 	xmlFreeDoc (xml);
 	xmlCleanupParser ();
 
