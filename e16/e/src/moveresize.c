@@ -242,7 +242,6 @@ ActionMoveResume(void)
    if (Mode.mode == MODE_MOVE_PENDING)
       Mode.mode = MODE_MOVE;
 
-   XLowerWindow(disp, ewin->win);
    x = ewin->x;
    y = ewin->y;
    ewin->x = -99999;
