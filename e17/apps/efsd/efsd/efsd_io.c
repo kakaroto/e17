@@ -280,7 +280,7 @@ read_file_cmd(int sockfd, EfsdCommand *ec)
   if (ec->efsd_file_cmd.num_options > 0)
     {
       ec->efsd_file_cmd.options = (EfsdOption*)
-	malloc(sizeof(EfsdOption) *	ec->efsd_file_cmd.num_options);
+	malloc(sizeof(EfsdOption) * ec->efsd_file_cmd.num_options);
   
       for (i = 0; i < ec->efsd_file_cmd.num_options; i++)
 	{

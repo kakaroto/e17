@@ -96,18 +96,30 @@
 	before the API is explained in detail.
       </para>
       <section>
-	<title>Sending Commands</title>
+	<title>Opening a Connection to &efsd;</title>
 	<para>
 	  Before you can launch any commands, you need to establish a
 	  connection to &efsd; via <link linkend="API-efsd-open">
 	    <function>efsd_open()</function></link>. The returned
-	  &efsd; pointer id used to identify
-	  the connection and is passed as first parameter to basically every
-	  function. When you're done, you can tear down the connection
+	  &efsd; pointer is used to identify the connection and is passed as
+	  first parameter to basically every function. When you're done, you can tear down the connection
 	  and release the allocated memory using <link linkend="API-efsd-close">
 	    <function>efsd_close()</function></link>.
+	  <programlisting>
+
+EfsdConnection *ec;
+
+if ( (ec = efsd_open()) == NULL)
+  {
+     /* Oops. Couldn't establish connection. Is Efsd really running ? */
+  }
+	  </programlisting>
 	</para>
+      </section>
+      <section>
+	<title>Sending Commands</title>
 	<para>
+	  After opening a connection, the client is ready to launch commands.
 	  You can send commands for the following tasks:
 
 	  <itemizedlist mark="opencircle">
@@ -144,7 +156,7 @@
 	    </listitem>
 	  </itemizedlist>
 	  
-	  When a command is sent to the server, you get a command id in
+	  When a command is sent to the server, you get a command ID in
 	  return, which is guaranteed to be unique, and can therefore be
 	  used to associate replies from &efsd; and
 	  sent commands. The exception is the unlikely case that the
@@ -155,8 +167,13 @@
 
 	  <programlisting>
 
-EfsdConnection *ec = efsd_open();
+EfsdConnection *ec;
 EfsdCmdId id;
+
+if ( (ec = efsd_open()) == NULL)
+  {
+     /* Oops. Couldn't establish connection. Is Efsd really running ? */
+  }
 
 if ( (id = efsd_makedir(ec, "foo/bar")) < 0)
   {
@@ -164,9 +181,18 @@ if ( (id = efsd_makedir(ec, "foo/bar")) < 0)
   }
 	  </programlisting>
 
-	  Otherwise the receiving part of your client may be waiting for
-	  a reply to a command that never got sent to &efsd;. &efsd; does
-	  not queue those requests on the client side, as the urgency of
+	  <note>
+	    <title>A return value &lt; 0 does not mean that an error occured when processing the command.</title>
+	    <para>
+	      It means that the command didn't get sent to the server in the
+	      first place. Errors during actual execution of the commands are
+	      reported as error codes in the returned replies.
+	    </para>
+	  </note>
+
+	  If you don't check the return value, the receiving part of your client
+	  may be waiting for reply to a command that never got sent to &efsd;.
+	  &efsd; does not queue those requests on the client side, as the urgency of
 	  the commands depends on the application setting. For some scenarios,
 	  queueing may be appropriate, while for others, simply discarding
 	  the command may be better. The decision is left to the client.
@@ -290,10 +316,12 @@ if ( (id = efsd_listdir(ec, "foo/bar", ops)) < 0)
 	      (e.g., every function declared in <function>efsd_monitor.h</function> begins
 	      with <function>efsd_monitor_</function>). This should make it easy enough
 	      to quickly find things even on a first read.
+	    </para>
 	  </listitem>
 	  <listitem>
 	    <para>Static functions use the same sub-prefix, but don't have the
 	      <function>efsd</function> prefix.
+	    </para>
 	  </listitem>
 	</itemizedlist>
       </para>
@@ -341,6 +369,27 @@ if ( (id = efsd_listdir(ec, "foo/bar", ops)) < 0)
     <section>
       <title>To Do</title>
       <para>
+	Well, software is never finished, and this also applies to &efsd;. You can always look at the
+	TODO file in CVS to see what's currently missing. Patches are appreciated. At the time of this
+	writing, the following things are missing:
+
+	<itemizedlist mark="opencircle">
+	  <listitem>
+	    <para>A thorough testsuite, especially for the cache interaction and the
+	      functions in <function>efsd_fs.c</function>, i.e. the file copy/move/remove
+	      code. Ideally this would be an automated set of tests to check if changes
+	      broke anything. Think XP.
+	    </para>
+	  </listitem>
+	  <listitem>
+	    <para>
+	      A great feature would be to not only get the filetypes in a MIME type-ish notation,
+	      but also in fully human-readable form (sort of like the file(1) output). Ideally
+	      this would include internationalization.
+	    </para>
+	  </listitem>
+	</itemizedlist>
+
       </para>
     </section>
   </chapter>

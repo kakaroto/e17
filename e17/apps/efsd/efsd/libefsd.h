@@ -552,41 +552,89 @@ EfsdCmdId      efsd_get_filetype(EfsdConnection *ec, char *filename);
  */
 EfsdOptions  *efsd_ops(int num_options, ...);
 
-EfsdOptions  *efsd_ops_create(int num_options);
+/**
+ * efsd_ops_create - create an empty EfsdOptions object.
+ *
+ * Use this function when you need to pass a number of options and do not
+ * know their number at compile time. Pass the returned EfsdOptions object
+ * to subsequent efsd_ops_add() calls, then pass it to the actual command.
+ */
+EfsdOptions  *efsd_ops_create(void);
+
+/**
+ * efsd_ops_add - adds an option to an EfsdOptions object.
+ * @ops: EfsdOptions object, created via efsd_ops_create()
+ * @op: Option to add, created via one of the efsd_op_XXX() calls
+ *
+ * Add options to an EfsdOptions object using this function.
+ */
 void          efsd_ops_add(EfsdOptions *ops, EfsdOption *op);
 
-/* Send stat events for all files seen in a directory: 
+/**
+ * efsd_op_get_stat - requests stat events
+ * 
+ * Creates an option that causes stat() results to be sent to the
+ * client for all files seen in %EFSD_FILE_EXIST events.
  */
 EfsdOption    *efsd_op_get_stat(void);
 
-/* Send lstat events for all files seen in a directory: 
+/**
+ * efsd_op_get_stat - requests lstat events
+ * 
+ * Creates an option that causes lstat() results to be sent to the
+ * client for all files seen in %EFSD_FILE_EXIST events.
  */
 EfsdOption    *efsd_op_get_lstat(void);
 
-/* Send metadata for certain key and data type for all files
- *  seen in a directory. The key is duplicated inside, i.e.
- *  you need not allocate a copy of the string before passing.
+/**
+ * efsd_op_get_metadata - request metadata information
+ * @key: character string that identifies the metadata
+ * @type: datatype of the metadata, one of %EFSD_INT,
+ * %EFSD_FLOAT, %EFSD_STRING or %EFSD_RAW.
+ *
+ * Creates an option that causes metadata of certain key and type
+ * to be sent to the client, for all files reported in %EFSD_FILE_EXIST
+ * events.
  */
 EfsdOption    *efsd_op_get_metadata(char *key, EfsdDatatype type);
 
-/* Send FILE type for all files seen in a directory
+/**
+ * efsd_op_get_filetype - request filetype information
+ *
+ * Creates an option that causes file type information to be sent
+ * to the client, for all files reported in %EFSD_FILE_EXIST
+ * events.
  */
 EfsdOption    *efsd_op_get_filetype(void);
 
-/* "Force" and "recursive" options for commands like rm, cp,
- *  mv, as known and loved on the command line.
+/**
+ * efsd_op_force - request "-f" behaviour
+ *
+ * Creates an option that causes commands like efsd_move(), efsd_copy()
+ * and efsd_remove() to operate like the command-line versions, when
+ * passed the "-f" option.
  */
 EfsdOption    *efsd_op_force(void);
+
+/**
+ * efsd_op_force - request recursive behaviour
+ *
+ * Creates an option that causes commands like efsd_copy()
+ * and efsd_remove() to operate like the command-line versions, when
+ * passed the "-r" option.
+ */
 EfsdOption    *efsd_op_recursive(void);
 
-/* "Sort" option for efsd_start_monitor_dir --
- *  EFSD_FILE_EXISTS events are reported in alphabetical
- *  order when selected.
+/**
+ * efsd_op_sort - report %EFSD_FILE_EXISTS events alphabetically.
+ *
+ * This option constructor returns an EfsdOption that causes %EFSD_FILE_EXISTS events to
+ * be reported in alphabetical order.
  */
 EfsdOption    *efsd_op_sort(void);
 
-/* Include files starting with . in listings, like ls -a.
- *  They're otherwise not reported.
+/**
+ * efsd_op_list_all - include hidden files in %EFSD_FILE_EXISTS events.
  */
 EfsdOption    *efsd_op_list_all(void);
 

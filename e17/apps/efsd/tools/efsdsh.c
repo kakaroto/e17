@@ -527,7 +527,7 @@ command_line(EfsdConnection *ec)
 		      
 	      if (num_options > 0)
 		{
-		  ops = efsd_ops_create(num_options);
+		  ops = efsd_ops_create();
 		  
 		  if (force) efsd_ops_add(ops, efsd_op_force());
 		  if (rec)   efsd_ops_add(ops, efsd_op_recursive());
@@ -611,7 +611,7 @@ command_line(EfsdConnection *ec)
 
 		      if (num_options > 0)
 			{
-			  ops = efsd_ops_create(num_options);
+			  ops = efsd_ops_create();
 
 			  if (show_all)  efsd_ops_add(ops, efsd_op_list_all());
 			  if (get_stat)  efsd_ops_add(ops, efsd_op_get_stat());
@@ -669,7 +669,7 @@ command_line(EfsdConnection *ec)
 
 	      if (num_options > 0)
 		{
-		  ops = efsd_ops_create(num_options);
+		  ops = efsd_ops_create();
 		  
 		  if (force) efsd_ops_add(ops, efsd_op_force());
 		  if (rec)   efsd_ops_add(ops, efsd_op_recursive());

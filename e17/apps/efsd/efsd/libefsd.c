@@ -845,36 +845,8 @@ efsd_get_filetype(EfsdConnection *ec, char *filename)
 }
 
 
-EfsdOptions  *
-efsd_ops(int num_options, ...)
-{
-  int i;
-  va_list ap;
-  EfsdOption  *op;
-  EfsdOptions *ops;
-
-  D_ENTER;
-
-  va_start (ap, num_options);
-
-  ops = efsd_ops_create(num_options);
-  if (!ops)
-    D_RETURN_(NULL);
-
-  for (i = 0; i < num_options; i++)
-    {
-      op = va_arg(ap, EfsdOption*);
-      efsd_ops_add(ops, op);
-    }
-
-  va_end(ap);
-
-  D_RETURN_(ops);
-}
-
-
-EfsdOptions  *
-efsd_ops_create(int num_options)
+static EfsdOptions *
+ops_create(int num_options)
 {
   EfsdOptions *ops;
 
@@ -892,7 +864,47 @@ efsd_ops_create(int num_options)
       FREE(ops);
       D_RETURN_(NULL);
     }
+  
+  D_RETURN_(ops);
+}
 
+
+
+EfsdOptions  *
+efsd_ops(int num_options, ...)
+{
+  int i;
+  va_list ap;
+  EfsdOption  *op;
+  EfsdOptions *ops;
+
+  D_ENTER;
+
+  va_start (ap, num_options);
+
+  ops = ops_create(num_options);
+  if (!ops)
+    D_RETURN_(NULL);
+
+  for (i = 0; i < num_options; i++)
+    {
+      op = va_arg(ap, EfsdOption*);
+      efsd_ops_add(ops, op);
+    }
+
+  va_end(ap);
+
+  D_RETURN_(ops);
+}
+
+
+EfsdOptions  *
+efsd_ops_create(void)
+{
+  EfsdOptions *ops;
+
+  D_ENTER;
+  ops = ops_create(5);  /* Good guess for initial value */
   D_RETURN_(ops);
 }
 
@@ -905,16 +917,15 @@ efsd_ops_add(EfsdOptions *ops, EfsdOption *op)
   if (!ops || !op)
     D_RETURN;
 
-  if (ops->num_used < ops->num_options)
+  if (ops->num_used == ops->num_options)
     {
-      ops->ops[ops->num_used] = *op;
-      ops->num_used++;
-    }
-  else
-    {
-      efsd_option_cleanup(op);
+      /* Double the number of slots if space isn't sufficient. */
+      ops->ops = realloc(ops->ops, 2 * ops->num_options * sizeof(EfsdOption));
+      ops->num_options *= 2;
     }
 
+  ops->ops[ops->num_used] = *op;
+  ops->num_used++;
   FREE(op);
 
   D_RETURN;

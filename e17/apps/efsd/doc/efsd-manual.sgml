@@ -96,18 +96,30 @@
 	before the API is explained in detail.
       </para>
       <section>
-	<title>Sending Commands</title>
+	<title>Opening a Connection to &efsd;</title>
 	<para>
 	  Before you can launch any commands, you need to establish a
 	  connection to &efsd; via <link linkend="API-efsd-open">
 	    <function>efsd_open()</function></link>. The returned
-	  &efsd; pointer id used to identify
-	  the connection and is passed as first parameter to basically every
-	  function. When you're done, you can tear down the connection
+	  &efsd; pointer is used to identify the connection and is passed as
+	  first parameter to basically every function. When you're done, you can tear down the connection
 	  and release the allocated memory using <link linkend="API-efsd-close">
 	    <function>efsd_close()</function></link>.
+	  <programlisting>
+
+EfsdConnection *ec;
+
+if ( (ec = efsd_open()) == NULL)
+  {
+     /* Oops. Couldn't establish connection. Is Efsd really running ? */
+  }
+	  </programlisting>
 	</para>
+      </section>
+      <section>
+	<title>Sending Commands</title>
 	<para>
+	  After opening a connection, the client is ready to launch commands.
 	  You can send commands for the following tasks:
 
 	  <itemizedlist mark="opencircle">
@@ -144,7 +156,7 @@
 	    </listitem>
 	  </itemizedlist>
 	  
-	  When a command is sent to the server, you get a command id in
+	  When a command is sent to the server, you get a command ID in
 	  return, which is guaranteed to be unique, and can therefore be
 	  used to associate replies from &efsd; and
 	  sent commands. The exception is the unlikely case that the
@@ -155,8 +167,13 @@
 
 	  <programlisting>
 
-EfsdConnection *ec = efsd_open();
+EfsdConnection *ec;
 EfsdCmdId id;
+
+if ( (ec = efsd_open()) == NULL)
+  {
+     /* Oops. Couldn't establish connection. Is Efsd really running ? */
+  }
 
 if ( (id = efsd_makedir(ec, "foo/bar")) < 0)
   {
@@ -164,9 +181,18 @@ if ( (id = efsd_makedir(ec, "foo/bar")) < 0)
   }
 	  </programlisting>
 
-	  Otherwise the receiving part of your client may be waiting for
-	  a reply to a command that never got sent to &efsd;. &efsd; does
-	  not queue those requests on the client side, as the urgency of
+	  <note>
+	    <title>A return value &lt; 0 does not mean that an error occured when processing the command.</title>
+	    <para>
+	      It means that the command didn't get sent to the server in the
+	      first place. Errors during actual execution of the commands are
+	      reported as error codes in the returned replies.
+	    </para>
+	  </note>
+
+	  If you don't check the return value, the receiving part of your client
+	  may be waiting for reply to a command that never got sent to &efsd;.
+	  &efsd; does not queue those requests on the client side, as the urgency of
 	  the commands depends on the application setting. For some scenarios,
 	  queueing may be appropriate, while for others, simply discarding
 	  the command may be better. The decision is left to the client.
@@ -2153,6 +2179,418 @@ if ( (id = efsd_listdir(ec, "foo/bar", ops)) < 0)
 </refsect1>
 </refentry>
 
+<refentry>
+<refmeta>
+<refentrytitle><phrase id="API-efsd-ops-create">efsd_ops_create</phrase></refentrytitle>
+</refmeta>
+<refnamediv>
+ <refname>efsd_ops_create</refname>
+ <refpurpose>
+      create an empty EfsdOptions object.
+ </refpurpose>
+</refnamediv>
+<refsynopsisdiv>
+ <title>Synopsis</title>
+  <funcsynopsis>
+   <funcdef>EfsdOptions  * <function>efsd_ops_create </function></funcdef>
+   <paramdef> <parameter>void</parameter></paramdef>
+  </funcsynopsis>
+</refsynopsisdiv>
+<refsect1>
+ <title>Arguments</title>
+ <variablelist>
+  <varlistentry>
+   <term><parameter>void</parameter></term>
+   <listitem>
+    <para>
+    </para>
+   </listitem>
+  </varlistentry>
+ </variablelist>
+</refsect1>
+<refsect1>
+ <title>Description</title>
+ <para>
+   </para><para>
+
+   Use this function when you need to pass a number of options and do not
+   know their number at compile time. Pass the returned EfsdOptions object
+   to subsequent <function>efsd_ops_add</function> calls, then pass it to the actual command.
+ </para>
+</refsect1>
+</refentry>
+
+<refentry>
+<refmeta>
+<refentrytitle><phrase id="API-efsd-ops-add">efsd_ops_add</phrase></refentrytitle>
+</refmeta>
+<refnamediv>
+ <refname>efsd_ops_add</refname>
+ <refpurpose>
+      adds an option to an EfsdOptions object.
+ </refpurpose>
+</refnamediv>
+<refsynopsisdiv>
+ <title>Synopsis</title>
+  <funcsynopsis>
+   <funcdef>void <function>efsd_ops_add </function></funcdef>
+   <paramdef>EfsdOptions * <parameter>ops</parameter></paramdef>
+   <paramdef>EfsdOption * <parameter>op</parameter></paramdef>
+  </funcsynopsis>
+</refsynopsisdiv>
+<refsect1>
+ <title>Arguments</title>
+ <variablelist>
+  <varlistentry>
+   <term><parameter>ops</parameter></term>
+   <listitem>
+    <para>
+      EfsdOptions object, created via <function>efsd_ops_create</function>
+    </para>
+   </listitem>
+  </varlistentry>
+  <varlistentry>
+   <term><parameter>op</parameter></term>
+   <listitem>
+    <para>
+      Option to add, created via one of the <function>efsd_op_XXX</function> calls
+    </para>
+   </listitem>
+  </varlistentry>
+ </variablelist>
+</refsect1>
+<refsect1>
+ <title>Description</title>
+ <para>
+   Add options to an EfsdOptions object using this function.
+ </para>
+</refsect1>
+</refentry>
+
+<refentry>
+<refmeta>
+<refentrytitle><phrase id="API-efsd-op-get-stat">efsd_op_get_stat</phrase></refentrytitle>
+</refmeta>
+<refnamediv>
+ <refname>efsd_op_get_stat</refname>
+ <refpurpose>
+      requests stat events
+ </refpurpose>
+</refnamediv>
+<refsynopsisdiv>
+ <title>Synopsis</title>
+  <funcsynopsis>
+   <funcdef>EfsdOption    * <function>efsd_op_get_stat </function></funcdef>
+   <paramdef> <parameter>void</parameter></paramdef>
+  </funcsynopsis>
+</refsynopsisdiv>
+<refsect1>
+ <title>Arguments</title>
+ <variablelist>
+  <varlistentry>
+   <term><parameter>void</parameter></term>
+   <listitem>
+    <para>
+    </para>
+   </listitem>
+  </varlistentry>
+ </variablelist>
+</refsect1>
+<refsect1>
+ <title>Description</title>
+ <para>
+   </para><para>
+
+   Creates an option that causes <function>stat</function> results to be sent to the
+   client for all files seen in <constant>EFSD_FILE_EXIST</constant> events.
+ </para>
+</refsect1>
+</refentry>
+
+<refentry>
+<refmeta>
+<refentrytitle><phrase id="API-efsd-op-get-lstat">efsd_op_get_lstat</phrase></refentrytitle>
+</refmeta>
+<refnamediv>
+ <refname>efsd_op_get_lstat</refname>
+ <refpurpose>
+      requests lstat events
+ </refpurpose>
+</refnamediv>
+<refsynopsisdiv>
+ <title>Synopsis</title>
+  <funcsynopsis>
+   <funcdef>EfsdOption    * <function>efsd_op_get_lstat </function></funcdef>
+   <paramdef> <parameter>void</parameter></paramdef>
+  </funcsynopsis>
+</refsynopsisdiv>
+<refsect1>
+ <title>Arguments</title>
+ <variablelist>
+  <varlistentry>
+   <term><parameter>void</parameter></term>
+   <listitem>
+    <para>
+    </para>
+   </listitem>
+  </varlistentry>
+ </variablelist>
+</refsect1>
+<refsect1>
+ <title>Description</title>
+ <para>
+   </para><para>
+
+   Creates an option that causes <function>lstat</function> results to be sent to the
+   client for all files seen in <constant>EFSD_FILE_EXIST</constant> events.
+ </para>
+</refsect1>
+</refentry>
+
+<refentry>
+<refmeta>
+<refentrytitle><phrase id="API-efsd-op-get-metadata">efsd_op_get_metadata</phrase></refentrytitle>
+</refmeta>
+<refnamediv>
+ <refname>efsd_op_get_metadata</refname>
+ <refpurpose>
+      request metadata information
+ </refpurpose>
+</refnamediv>
+<refsynopsisdiv>
+ <title>Synopsis</title>
+  <funcsynopsis>
+   <funcdef>EfsdOption    * <function>efsd_op_get_metadata </function></funcdef>
+   <paramdef>char * <parameter>key</parameter></paramdef>
+   <paramdef>EfsdDatatype <parameter>type</parameter></paramdef>
+  </funcsynopsis>
+</refsynopsisdiv>
+<refsect1>
+ <title>Arguments</title>
+ <variablelist>
+  <varlistentry>
+   <term><parameter>key</parameter></term>
+   <listitem>
+    <para>
+      character string that identifies the metadata
+    </para>
+   </listitem>
+  </varlistentry>
+  <varlistentry>
+   <term><parameter>type</parameter></term>
+   <listitem>
+    <para>
+      datatype of the metadata, one of <constant>EFSD_INT</constant>,
+     <constant>EFSD_FLOAT</constant>, <constant>EFSD_STRING</constant> or <constant>EFSD_RAW</constant>.
+    </para>
+   </listitem>
+  </varlistentry>
+ </variablelist>
+</refsect1>
+<refsect1>
+ <title>Description</title>
+ <para>
+   Creates an option that causes metadata of certain key and type
+   to be sent to the client, for all files reported in <constant>EFSD_FILE_EXIST</constant>
+   events.
+ </para>
+</refsect1>
+</refentry>
+
+<refentry>
+<refmeta>
+<refentrytitle><phrase id="API-efsd-op-get-filetype">efsd_op_get_filetype</phrase></refentrytitle>
+</refmeta>
+<refnamediv>
+ <refname>efsd_op_get_filetype</refname>
+ <refpurpose>
+      request filetype information
+ </refpurpose>
+</refnamediv>
+<refsynopsisdiv>
+ <title>Synopsis</title>
+  <funcsynopsis>
+   <funcdef>EfsdOption    * <function>efsd_op_get_filetype </function></funcdef>
+   <paramdef> <parameter>void</parameter></paramdef>
+  </funcsynopsis>
+</refsynopsisdiv>
+<refsect1>
+ <title>Arguments</title>
+ <variablelist>
+  <varlistentry>
+   <term><parameter>void</parameter></term>
+   <listitem>
+    <para>
+    </para>
+   </listitem>
+  </varlistentry>
+ </variablelist>
+</refsect1>
+<refsect1>
+ <title>Description</title>
+ <para>
+   </para><para>
+
+   Creates an option that causes file type information to be sent
+   to the client, for all files reported in <constant>EFSD_FILE_EXIST</constant>
+   events.
+ </para>
+</refsect1>
+</refentry>
+
+<refentry>
+<refmeta>
+<refentrytitle><phrase id="API-efsd-op-force">efsd_op_force</phrase></refentrytitle>
+</refmeta>
+<refnamediv>
+ <refname>efsd_op_force</refname>
+ <refpurpose>
+      request <quote>-f</quote> behaviour
+ </refpurpose>
+</refnamediv>
+<refsynopsisdiv>
+ <title>Synopsis</title>
+  <funcsynopsis>
+   <funcdef>EfsdOption    * <function>efsd_op_force </function></funcdef>
+   <paramdef> <parameter>void</parameter></paramdef>
+  </funcsynopsis>
+</refsynopsisdiv>
+<refsect1>
+ <title>Arguments</title>
+ <variablelist>
+  <varlistentry>
+   <term><parameter>void</parameter></term>
+   <listitem>
+    <para>
+    </para>
+   </listitem>
+  </varlistentry>
+ </variablelist>
+</refsect1>
+<refsect1>
+ <title>Description</title>
+ <para>
+   </para><para>
+
+   Creates an option that causes commands like <function>efsd_move</function>, <function>efsd_copy</function>
+   and <function>efsd_remove</function> to operate like the command-line versions, when
+   passed the <quote>-f</quote> option.
+ </para>
+</refsect1>
+</refentry>
+
+<refentry>
+<refmeta>
+<refentrytitle><phrase id="API-efsd-op-recursive">efsd_op_recursive</phrase></refentrytitle>
+</refmeta>
+<refnamediv>
+ <refname>efsd_op_recursive</refname>
+ <refpurpose>
+      request recursive behaviour
+ </refpurpose>
+</refnamediv>
+<refsynopsisdiv>
+ <title>Synopsis</title>
+  <funcsynopsis>
+   <funcdef>EfsdOption    * <function>efsd_op_recursive </function></funcdef>
+   <paramdef> <parameter>void</parameter></paramdef>
+  </funcsynopsis>
+</refsynopsisdiv>
+<refsect1>
+ <title>Arguments</title>
+ <variablelist>
+  <varlistentry>
+   <term><parameter>void</parameter></term>
+   <listitem>
+    <para>
+    </para>
+   </listitem>
+  </varlistentry>
+ </variablelist>
+</refsect1>
+<refsect1>
+ <title>Description</title>
+ <para>
+   </para><para>
+
+   Creates an option that causes commands like <function>efsd_copy</function>
+   and <function>efsd_remove</function> to operate like the command-line versions, when
+   passed the <quote>-r</quote> option.
+ </para>
+</refsect1>
+</refentry>
+
+<refentry>
+<refmeta>
+<refentrytitle><phrase id="API-efsd-op-sort">efsd_op_sort</phrase></refentrytitle>
+</refmeta>
+<refnamediv>
+ <refname>efsd_op_sort</refname>
+ <refpurpose>
+      report <constant>EFSD_FILE_EXISTS</constant> events alphabetically.
+ </refpurpose>
+</refnamediv>
+<refsynopsisdiv>
+ <title>Synopsis</title>
+  <funcsynopsis>
+   <funcdef>EfsdOption    * <function>efsd_op_sort </function></funcdef>
+   <paramdef> <parameter>void</parameter></paramdef>
+  </funcsynopsis>
+</refsynopsisdiv>
+<refsect1>
+ <title>Arguments</title>
+ <variablelist>
+  <varlistentry>
+   <term><parameter>void</parameter></term>
+   <listitem>
+    <para>
+    </para>
+   </listitem>
+  </varlistentry>
+ </variablelist>
+</refsect1>
+<refsect1>
+ <title>Description</title>
+ <para>
+   </para><para>
+
+   This option constructor returns an EfsdOption that causes <constant>EFSD_FILE_EXISTS</constant> events to
+   be reported in alphabetical order.
+ </para>
+</refsect1>
+</refentry>
+
+<refentry>
+<refmeta>
+<refentrytitle><phrase id="API-efsd-op-list-all">efsd_op_list_all</phrase></refentrytitle>
+</refmeta>
+<refnamediv>
+ <refname>efsd_op_list_all</refname>
+ <refpurpose>
+      include hidden files in <constant>EFSD_FILE_EXISTS</constant> events.
+ </refpurpose>
+</refnamediv>
+<refsynopsisdiv>
+ <title>Synopsis</title>
+  <funcsynopsis>
+   <funcdef>EfsdOption    * <function>efsd_op_list_all </function></funcdef>
+   <paramdef> <parameter>void</parameter></paramdef>
+  </funcsynopsis>
+</refsynopsisdiv>
+<refsect1>
+ <title>Arguments</title>
+ <variablelist>
+  <varlistentry>
+   <term><parameter>void</parameter></term>
+   <listitem>
+    <para>
+    </para>
+   </listitem>
+  </varlistentry>
+ </variablelist>
+</refsect1>
+</refentry>
+
     </section>
   </chapter>
 
@@ -2182,10 +2620,12 @@ if ( (id = efsd_listdir(ec, "foo/bar", ops)) < 0)
 	      (e.g., every function declared in <function>efsd_monitor.h</function> begins
 	      with <function>efsd_monitor_</function>). This should make it easy enough
 	      to quickly find things even on a first read.
+	    </para>
 	  </listitem>
 	  <listitem>
 	    <para>Static functions use the same sub-prefix, but don't have the
 	      <function>efsd</function> prefix.
+	    </para>
 	  </listitem>
 	</itemizedlist>
       </para>
@@ -2233,6 +2673,27 @@ if ( (id = efsd_listdir(ec, "foo/bar", ops)) < 0)
     <section>
       <title>To Do</title>
       <para>
+	Well, software is never finished, and this also applies to &efsd;. You can always look at the
+	TODO file in CVS to see what's currently missing. Patches are appreciated. At the time of this
+	writing, the following things are missing:
+
+	<itemizedlist mark="opencircle">
+	  <listitem>
+	    <para>A thorough testsuite, especially for the cache interaction and the
+	      functions in <function>efsd_fs.c</function>, i.e. the file copy/move/remove
+	      code. Ideally this would be an automated set of tests to check if changes
+	      broke anything. Think XP.
+	    </para>
+	  </listitem>
+	  <listitem>
+	    <para>
+	      A great feature would be to not only get the filetypes in a MIME type-ish notation,
+	      but also in fully human-readable form (sort of like the file(1) output). Ideally
+	      this would include internationalization.
+	    </para>
+	  </listitem>
+	</itemizedlist>
+
       </para>
     </section>
   </chapter>
