@@ -1,13 +1,31 @@
 #ifndef ENGRAVE_FILE_H
 #define ENGRAVE_FILE_H
 
+/**
+ * @file engrave_file.h Engrave_File object functions.
+ * @brief Contains all of the functions related to the Engrave file object
+ */
+
+/**
+ * @defgroup Engrave_File Engrave_File: Functions to work with the Engrave file object
+ *
+ * @{
+ */
+
+/**
+ * The Engrave_File typedef.
+ */
 typedef struct _Engrave_File Engrave_File;
+
+/**
+ * Structure to hold the file information.
+ */
 struct _Engrave_File
 {
-  Evas_List *images;
-  Evas_List *fonts;
-  Evas_List *data;
-  Evas_List *groups;  
+  Evas_List *images; /**< The list of images in the file */
+  Evas_List *fonts;  /**< The list of fonts in the file  */
+  Evas_List *data;   /**< The list of data items in the file */
+  Evas_List *groups; /**< The list of groups in the file */
 };
 
 Engrave_File *engrave_file_new(void);
@@ -20,6 +38,10 @@ Engrave_Group *engrave_file_group_last_get(Engrave_File *ef);
 
 Engrave_Image * engrave_file_image_by_name_find(Engrave_File *ef,
                                                       char *name);
+
+/**
+ * @}
+ */
 
 #endif
 

@@ -1,17 +1,6 @@
 #include <Engrave.h>
 
 /**
- * @file engrave_program.h Engrave_Program object functions.
- * @brief Contains all of the functions to mainuplulate Engrave_Program objects.
- */
-
-/**
- * @defgroup Engrave_Program Engrave_Program: Functions to work with Engrave_Program objects.
- *
- * @{
- */
-
-/**
  * engrave_program_new - create a new Engrave_Program object.
  *
  * @return Returns a pointer to the newly allocated Engrave_Program object
@@ -172,8 +161,4 @@ engrave_program_transition_set(Engrave_Program *ep, Engrave_Transition trans,
   ep->transition = trans;
   ep->duration = duration;
 }
-
-/**
- * @}
- */
  

@@ -3,18 +3,6 @@
 #include <stdarg.h>
 #include "Engrave.h"
 
-/**
- * @file engrave_out.h Functions to faciliate outputing the Engrave information.
- * @brief Provided the needed functions to output the Engrave information into various formats.
- */
-
-/**
- * @defgroup Engrave_Out Functions needed to output the Engrave data into
- * different file formats.
- *
- * @{
- */
-
 static void _engrave_output_group(Engrave_Group *group, FILE *out);
 static void _engrave_output_part(Engrave_Part *part, FILE *out);
 static void _engrave_output_program(Engrave_Program *program, FILE *out);
@@ -562,9 +550,5 @@ _engrave_output_state(Engrave_Part *part, Engrave_Part_State *state, FILE *out)
 
   engrave_out_end(out);
 }
-
-/**
- * @}
- */
 
 

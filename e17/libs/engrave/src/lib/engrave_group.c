@@ -1,17 +1,6 @@
 #include <Engrave.h>
 
 /**
- * @file engrave_group.h Engrave_Group functions
- * @brief Contains all of the functions to maniuplate Engrave_Group objects.
- */
-
-/**
- * @defgroup Engrave_Group Engrave_Group: Functions to work with an Engrave_Group.
- *
- * @{
- */
-
-/**
  * engrave_group_new - create a new Engrave_Group object.
  * 
  * @return Returns a pointer to a newly allocated Engrave_Group object on success or
@@ -147,9 +136,5 @@ engrave_group_program_last_get(Engrave_Group *eg)
   if (!eg) return NULL;
   return evas_list_data(evas_list_last(eg->programs));
 }
-
-/**
- * @}
- */
 
 

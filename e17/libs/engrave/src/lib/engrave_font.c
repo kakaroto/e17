@@ -1,17 +1,6 @@
 #include <Engrave.h>
 
 /**
- * @file engrave_font.h Engrave_Font block 
- * @brief Contains all of the functions to maniuplate Engrave_Font blocks
- */
-
-/**
- * @defgroup Engrave_Font Engrave_Font: Functions to work with engrave font objects
- *
- * @{
- */
-
-/**
  * engrave_font_new - create a new Engrave_Font object.
  * @param path: The path to the font
  * @param name: The name for the font
@@ -30,8 +19,4 @@ engrave_font_new(char *path, char *name)
     ef->path = (path ? strdup(path) : NULL);
     return ef;
 }
-
-/**
- * @}
- */
 

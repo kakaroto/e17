@@ -3,18 +3,6 @@
 #include "Engrave.h"
 #include "engrave_parse.h"
 
-/**
- * @file engrave_load.h Engrave loading functions
- * @brief Contains the functions to load either an EDC or EET into Engrave.
- */
-
-/**
- * @defgroup Engrave_Load Engrave_Load: Contains the functions to load EDC
- * and EET files into Engrave.
- * 
- * @{
- */
-
 #define MAIN_EDC_NAME "main_edje_source.edc"
 
 char *engrave_filename = NULL;

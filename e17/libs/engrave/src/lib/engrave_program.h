@@ -1,27 +1,51 @@
 #ifndef ENGRAVE_PROGRAM_H
 #define ENGRAVE_PROGRAM_H
 
+/**
+ * @file engrave_program.h Engrave_Program object functions.
+ * @brief Contains all of the functions to mainuplulate Engrave_Program objects.
+ */
+
+/**
+ * @defgroup Engrave_Program Engrave_Program: Functions to work with Engrave_Program objects.
+ *
+ * @{
+ */
+
+/**
+ * The Engrave_Program typedef.
+ */
 typedef struct _Engrave_Program Engrave_Program;
+
+/**
+ * Contains all the info to define a program
+ */
 struct _Engrave_Program 
 {
-  char *name;
-  char *signal;
-  char *source;
-  Evas_List *targets;
-  Evas_List *afters;
+  char *name;           /**< The program name */
+  char *signal;         /**< The signal to act on */
+  char *source;         /**< The souce to act on */
+  Evas_List *targets;   /**< The list of targets */
+  Evas_List *afters;    /**< The list of afters */
 
+  /**
+   * Stores the in settings for the program 
+   */
   struct {
-    double from, range;
+    double from;    /**< The from in setting */
+    double range;   /**< The range in setting */
   } in;
   
-  Engrave_Action action;
-  char *state, *state2;
-  double value, value2;
+  Engrave_Action action;    /**< The action assocated with the program */
+  char *state;              /**< The state setting for the action */
+  char *state2;             /**< The state2 setting for the action */
+  double value;             /**< The value setting for the action */
+  double value2;            /**< The value2 setting for the action */
 
-  Engrave_Transition transition;
-  double duration;
+  Engrave_Transition transition;    /**< The transition type of the program */
+  double duration;                  /**< The duration of the transition */
  
-  char *script;
+  char *script;             /**< The script associated with the program */
 };
 
 Engrave_Program *engrave_program_new(void);
@@ -37,6 +61,10 @@ void engrave_program_action_set(Engrave_Program *ep, Engrave_Action action,
                                                 double value, double value2);
 void engrave_program_transition_set(Engrave_Program *ep,
                                 Engrave_Transition trans, double duration);
+
+/**
+ * @}
+ */
 
 #endif
 

@@ -1,28 +1,55 @@
 #ifndef ENGRAVE_PART_H
 #define ENGRAVE_PART_H
 
+/**
+ * @file engrave_part.h Engrave_Part object functions.
+ * @brief Contains all functions to maniuplate the Engrave_Part object.
+ */
+
+/**
+ * @defgroup Engrave_Part Engrave_Part: Functions to work with part objects
+ *
+ * @{
+ */
+
+/**
+ * The Engrave_Part typedef 
+ */
 typedef struct _Engrave_Part Engrave_Part;
+
+/**
+ * All values needed to define a part 
+ */
 struct _Engrave_Part
 {
-  char *name;
-  Engrave_Part_Type type;
-  Engrave_Text_Effect effect;
-  int mouse_events;
-  int repeat_events;
-  char *clip_to;
+  char *name;                   /**< The part name */
+  Engrave_Part_Type type;       /**< The part type */
+  Engrave_Text_Effect effect;   /**< The parts text effect */
+  int mouse_events;             /**< The mouse events flag */
+  int repeat_events;            /**< The repeat events flag */
+  char *clip_to;                /**< The part to clip too */
 
+  /**
+   * The dragable settings for the part 
+   */
   struct
   {
-    signed char x, y; /* can drag in x/y, and which dir to count in */
+    signed char x; /**< Can drag in x direction */
+    signed char y; /**< Can drag in y direction */
+
+    /**
+     * The step and count values for the dragable
+     */
     struct
     {
-      int x, y;
+      int x;    /**< The x value */
+      int y;    /**< The y value */
     } step, count; 
-    char *confine;
+    char *confine;  /**< The confine setting for the dragable */
 
   } dragable;
 
-  Evas_List *states;
+  Evas_List *states;    /**< The list of states assocated with the part */
 };
 
 Engrave_Part * engrave_part_new(Engrave_Part_Type type);
@@ -39,6 +66,10 @@ void engrave_part_dragable_x_set(Engrave_Part *ep, int x, int step, int count);
 void engrave_part_dragable_y_set(Engrave_Part *ep, int y, int step, int count);
 void engrave_part_dragable_confine_set(Engrave_Part *ep, char *confine);
 void engrave_part_state_add(Engrave_Part *ep, Engrave_Part_State *eps);
+
+/**
+ * @}
+ */
 
 #endif
 

@@ -1,17 +1,6 @@
 #include <Engrave.h>
 
 /**
- * @file engrave_file.h Engrave_File object functions.
- * @brief Contains all of the functions related to the Engrave file object
- */
-
-/**
- * @defgroup Engrave_File Engrave_File: Functions to work with the Engrave file object
- *
- * @{
- */
-
-/**
  * engrave_file_new - create a new Engrave_File object
  *
  * @return Returns a pointer to a newly allocated file object on success, NULL on
@@ -114,8 +103,4 @@ engrave_file_image_by_name_find(Engrave_File *ef, char *name)
   }
   return NULL;
 }
-
-/**
- * @}
- */
 

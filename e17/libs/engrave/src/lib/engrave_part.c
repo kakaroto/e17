@@ -1,17 +1,6 @@
 #include <Engrave.h>
 
 /**
- * @file engrave_part.h Engrave_Part object functions.
- * @brief Contains all functions to maniuplate the Engrave_Part object.
- */
-
-/**
- * @defgroup Engrave_Part Engrave_Part: Functions to work with part objects
- *
- * @{
- */
-
-/**
  * engrave_part_new - create a new part object.
  * @param type: The Engrave_Part_Type for the part.
  * 
@@ -193,8 +182,4 @@ engrave_part_state_add(Engrave_Part *ep, Engrave_Part_State *eps)
   if (!ep || !eps) return;
   ep->states = evas_list_append(ep->states, eps);
 }
-
-/**
- * @}
- */
 

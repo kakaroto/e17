@@ -1,17 +1,6 @@
 #include <Engrave.h>
 
 /**
- * @file engrave_image.h Engrave_Image object functions.
- * @brief Contains all of the functions to manipulate Engrave_Image objects.
- */
-
-/**
- * @defgroup Engrave_Image Engrave_Image: Functions to work with Engrave_Image blocks.
- *
- * @{
- */
-
-/**
  * engrave_image_new - create a new Engrave_Image object.
  * @param name: The name of the given image
  * @param type: The Engrave_Image_Type of the given image.
@@ -33,8 +22,4 @@ engrave_image_new(char *name, Engrave_Image_Type type, double value)
   image->value = value;
   return image;
 }
-
-/**
- * @}
- */
 

@@ -59,6 +59,13 @@
  *
  * gcc -o engrave_test `engrave-config --cflags --libs` engrave_test.c
  *
+ * @section Conclusion
+ * Engrave has been designed to make it easy to open and maniuplate Edje
+ * files, be they EET or EDC.
+ *
+ * If you have any questions or comments about Engrave please email
+ * dj2 <zero@perplexity.org> or Rephorm <rephorm@rephorm.com>
+ *
  */
 
 #ifdef __cplusplus
