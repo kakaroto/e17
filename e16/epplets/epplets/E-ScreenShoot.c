@@ -330,6 +330,12 @@ cb_dont_cloak (void *data)
     {
       Epplet_gadget_hide (da);
       cloaked = 0;
+      Epplet_gadget_show (btn_close);
+      Epplet_gadget_show (btn_conf);
+      Epplet_gadget_show (btn_help);
+      Epplet_gadget_show (btn_shoot);
+      Epplet_gadget_show (sldr_qual);
+      Epplet_gadget_show (tog_win);
     }
   Epplet_remove_timer ("CLOAK_TIMER");
   return;

@@ -197,6 +197,14 @@ cb_dont_cloak (void *data)
 {
   opt.do_cloak = 0;
   Epplet_remove_timer ("CLOAK_TIMER");
+  if (cloaked)
+    {
+      Epplet_gadget_hide (da);
+      cloaked = 0;
+      Epplet_gadget_show (btn_close);
+      Epplet_gadget_show (btn_conf);
+      Epplet_gadget_show (btn_help);
+    }
   return;
   data = NULL;
 }
