@@ -46,6 +46,8 @@ fi
 
 echo "Generating configuration files for Enlightenment, please wait...."
 
+echo " gettextize -f"
+gettextize -f
 echo "  aclocal $ACLOCAL_FLAGS"
 aclocal $ACLOCAL_FLAGS
 echo "  autoheader"
