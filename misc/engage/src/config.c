@@ -103,20 +103,20 @@ od_config_init(void)
   ecore_config_int_create_bound("engage.options.mode", OM_BELOW, 0, 1, 1, 'm',
                                 "mode",
                                 "The display mode, 0 = ontop + shaped, 1 = below + transp");
-  ecore_config_int_create_bound("engage.options.grab_min_icons", 1, 0, 1, 1,
-                                'g', "grab-min",
-                                "Capture the icons of minimised applications");
-  ecore_config_int_create_bound("engage.options.grab_app_icons", 1, 0, 1, 1,
-                                'G', "grab-app",
-                                "Capture the icons of all running applications");
-  ecore_config_int_create_bound("engage.options.auto_hide", 0, 0, 1, 1, 'A',
-                                "auto-hide", "Auto hide the engage bar");
+  ecore_config_boolean_create("engage.options.grab_min_icons", 1, 'g',
+                              "grab-min",
+                              "Capture the icons of minimised applications");
+  ecore_config_boolean_create("engage.options.grab_app_icons", 1, 'G',
+                               "grab-app",
+                               "Capture the icons of all running applications");
+  ecore_config_boolean_create("engage.options.auto_hide", 0, 'A', "auto-hide",
+                              "Auto hide the engage bar");
 
   ecore_config_int_create("engage.options.size", 40, 's', "size",
                           "Size of icons in default state");
   ecore_config_int_create("engage.options.spacing", 4, 'S', "spacing",
                           "Space in pixels between each icon");
-  ecore_config_int_create_bound("engage.options.zoom", 1, 0, 1, 1, 'z', "zoom",
+  ecore_config_boolean_create("engage.options.zoom", 1, 'z', "zoom",
                                 "Should we zoom icons?");
   ecore_config_float_create("engage.options.zoom_factor", 2.0, 'Z',
                             "zoom-factor",
