@@ -2,6 +2,7 @@
 #include <string.h>
 #include <Edb.h>
 #include <Evas.h>
+#include <Evas_Engine_Software_X11.h>
 #include <gdk/gdkx.h>
 
 #include "macros.h"
@@ -16,7 +17,7 @@
 typedef struct etcher_preferences
 {
    char                etcher_config[4096];	/* config file name */
-   Evas_List           files;	/* List of char*, files to load on startup */
+   Evas_List *           files;	/* List of char*, files to load on startup */
 
    gint                render_method;
    gint                zoom_method;
@@ -30,10 +31,11 @@ typedef struct etcher_preferences
    char               *grid_image_file;
    char               *grid_image_file_old;
 
-   Evas                pref_evas;
-   Evas_Object         o_pref_image, bg_rect;
+   Evas *                pref_evas;
+   Evas_Object        *o_pref_image, *bg_rect;
    gint                pref_idle;
    gint                new_pref_evas;
+   gint                smartsize;
 
 }
 EtcherPreferences;
@@ -72,11 +74,11 @@ pref_update_preview(void)
 	   strdup(gtk_entry_get_text
 		  (GTK_ENTRY
 		   (gtk_object_get_data(GTK_OBJECT(pref_dialog), "entry1"))));
-	evas_set_image_file(pref.pref_evas, pref.o_pref_image,
-			    pref.grid_image_file);
-	evas_move(pref.pref_evas, pref.o_pref_image, 0, 0);
-	evas_resize(pref.pref_evas, pref.o_pref_image, 99999, 99999);
-	evas_set_color(pref.pref_evas, pref.o_pref_image,
+	evas_object_image_file_set(pref.o_pref_image,
+				   pref.grid_image_file, NULL);
+	evas_object_move(pref.o_pref_image, 0, 0);
+	evas_object_resize(pref.o_pref_image, 99999, 99999);
+	evas_object_color_set(pref.o_pref_image,
 		       pref.colors[0], pref.colors[1], pref.colors[2], 255);
 	QUEUE_DRAW(pref.pref_idle, pref_view_redraw);
      }
@@ -91,6 +93,7 @@ on_pref_da_expose_event2(GtkWidget * widget,
 	char               *file;
 
 	pref.new_pref_evas = 0;
+	/* replaced
 	evas_set_output(pref.pref_evas,
 			GDK_WINDOW_XDISPLAY(widget->window),
 			GDK_WINDOW_XWINDOW(widget->window),
@@ -98,30 +101,51 @@ on_pref_da_expose_event2(GtkWidget * widget,
 					   (widget)),
 			GDK_COLORMAP_XCOLORMAP(gtk_widget_get_colormap
 					       (widget)));
-	evas_set_output_size(pref.pref_evas, widget->allocation.width,
+	*/
+	{
+	  Evas_Engine_Info_Software_X11 *einfo;
+
+	  einfo = (Evas_Engine_Info_Software_X11 *) evas_engine_info_get(pref.pref_evas);
+
+	  /* the following is specific to the engine */
+	  einfo->info.display = GDK_WINDOW_XDISPLAY(widget->window);
+	  einfo->info.visual = GDK_VISUAL_XVISUAL(gtk_widget_get_visual
+						  (widget));
+	  einfo->info.colormap = GDK_COLORMAP_XCOLORMAP(gtk_widget_get_colormap
+							(widget));
+
+	  einfo->info.drawable = GDK_WINDOW_XWINDOW(widget->window);
+	  einfo->info.depth = DefaultDepth(einfo->info.display, DefaultScreen(einfo->info.display));
+	  einfo->info.rotation = 0;
+	  einfo->info.debug = 0;
+	  evas_engine_info_set(pref.pref_evas, (Evas_Engine_Info *) einfo);
+	}
+
+	evas_output_size_set(pref.pref_evas, widget->allocation.width,
 			     widget->allocation.height);
-	evas_set_output_viewport(pref.pref_evas, 0, 0,
+	evas_output_viewport_set(pref.pref_evas, 0, 0,
 				 widget->allocation.width,
 				 widget->allocation.height);
-	evas_set_image_cache(pref.pref_evas, 8 * 1024 * 1024);
+	evas_object_image_cache_set(pref.pref_evas, 8 * 1024 * 1024);
 	gdk_window_set_back_pixmap(widget->window, NULL, FALSE);
 	file = gtk_entry_get_text(GTK_ENTRY
 				  (gtk_object_get_data
 				   (GTK_OBJECT(pref_dialog), "entry1")));
-	pref.o_pref_image = evas_add_image_from_file(pref.pref_evas, file);
-	evas_show(pref.pref_evas, pref.o_pref_image);
+	pref.o_pref_image = evas_object_image_add(pref.pref_evas);
+	evas_object_image_file_set(pref.o_pref_image, file, NULL);
+	evas_object_show(pref.o_pref_image);
 
-	pref.bg_rect = evas_add_rectangle(pref.pref_evas);
-	evas_set_layer(pref.pref_evas, pref.bg_rect, -9999);
-	evas_set_color(pref.pref_evas, pref.bg_rect, 255, 255, 255, 255);
-	evas_move(pref.pref_evas, pref.bg_rect, 0, 0);
-	evas_resize(pref.pref_evas, pref.bg_rect, 9999, 9999);
-	evas_show(pref.pref_evas, pref.bg_rect);
+	pref.bg_rect = evas_object_rectangle_add(pref.pref_evas);
+	evas_object_layer_set(pref.bg_rect, -9999);
+	evas_object_color_set(pref.bg_rect, 255, 255, 255, 255);
+	evas_object_move(pref.bg_rect, 0, 0);
+	evas_object_resize(pref.bg_rect, 9999, 9999);
+	evas_object_show(pref.bg_rect);
 	pref_update_preview();
      }
 
-   evas_update_rect(pref.pref_evas, event->area.x, event->area.y,
-		    event->area.width, event->area.height);
+   evas_damage_rectangle_add(pref.pref_evas, event->area.x, event->area.y,
+			     event->area.width, event->area.height);
    QUEUE_DRAW(pref.pref_idle, pref_view_redraw);
 
    return FALSE;
@@ -173,7 +197,7 @@ int
 pref_init(void)
 {
    int                 config_ok = 0, config_zoom_method, config_render_method;
-   int                 col_r, col_g, col_b, splash;
+   int                 col_r, col_g, col_b, splash, smarts;
    char               *s = NULL;
 
    E_DB_INT_GET(pref.etcher_config, "/display/zoom_method",
@@ -211,6 +235,9 @@ pref_init(void)
 	pref.grid_image_file = strdup(s);
 	free(s);
      }
+   E_DB_INT_GET(pref.etcher_config, "/settings/smartsize", smarts, config_ok);
+   if (config_ok)
+      pref.smartsize = smarts;
 
    pref.pref_evas = NULL;
    pref.o_pref_image = NULL;
@@ -234,6 +261,7 @@ pref_set_defaults(void)
    E_DB_INT_SET(pref.etcher_config, "/grid/b", 255);
    E_DB_INT_SET(pref.etcher_config, "/display/zoom_method", (int)Smooth);
    E_DB_INT_SET(pref.etcher_config, "/splash/show", 1);
+   E_DB_INT_SET(pref.etcher_config, "/settings/smartsize", 0);
    e_db_flush();
 
    dialog = create_render_method();
@@ -254,7 +282,7 @@ pref_add_file(char *filename)
    pref.files = evas_list_append(pref.files, filename);
 }
 
-Evas_List
+Evas_List *
 pref_get_files(void)
 {
    return pref.files;
@@ -315,6 +343,12 @@ pref_splashscreen_enabled(void)
    return pref.splash;
 }
 
+gboolean
+pref_smartsize_enabled(void)
+{
+   return pref.smartsize;
+}
+
 void
 pref_preferences1_activate(GtkMenuItem * menuitem, gpointer user_data)
 {
@@ -328,19 +362,25 @@ pref_preferences1_activate(GtkMenuItem * menuitem, gpointer user_data)
 	GdkColormap        *gdk_pref_cmap;
 
 	pref.pref_evas = evas_new();
-	evas_set_output_method(pref.pref_evas, RENDER_METHOD_ALPHA_SOFTWARE);
+	evas_output_method_set(pref.pref_evas, evas_render_method_lookup("software_x11"));
 	{
 	   Visual             *vis;
 	   Colormap            cmap;
 
+	   /* checkme
 	   vis = evas_get_optimal_visual(pref.pref_evas,
 					 GDK_WINDOW_XDISPLAY
 					 (GDK_ROOT_PARENT()));
+	   */
+	   vis = DefaultVisual(GDK_WINDOW_XDISPLAY(GDK_ROOT_PARENT()), DefaultScreen(GDK_WINDOW_XDISPLAY(GDK_ROOT_PARENT())));
 	   gdk_pref_vis = gdkx_visual_get(XVisualIDFromVisual(vis));
-	   cmap = evas_get_optimal_colormap(pref.pref_evas,
+	   /* checkme 
+           cmap = evas_get_optimal_colormap(pref.pref_evas,
 					    GDK_WINDOW_XDISPLAY
 					    (GDK_ROOT_PARENT()));
-	   gdk_pref_cmap = gdkx_colormap_get(cmap);
+	   */
+	   cmap = DefaultColormap(GDK_WINDOW_XDISPLAY(GDK_ROOT_PARENT()), DefaultScreen(GDK_WINDOW_XDISPLAY(GDK_ROOT_PARENT())));
+		 gdk_pref_cmap = gdkx_colormap_get(cmap);
 	   /* workaround for bug in gdk - well oversight in api */
 	   ((GdkColormapPrivate *) gdk_pref_cmap)->visual = gdk_pref_vis;
 	}

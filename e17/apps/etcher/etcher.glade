@@ -2554,52 +2554,6 @@
 		</widget>
 
 		<widget>
-		  <class>GtkCheckButton</class>
-		  <name>use_contents_h</name>
-		  <can_focus>True</can_focus>
-		  <label>Use Horizontal Size of Contents</label>
-		  <active>False</active>
-		  <draw_indicator>True</draw_indicator>
-		  <child>
-		    <left_attach>0</left_attach>
-		    <right_attach>3</right_attach>
-		    <top_attach>5</top_attach>
-		    <bottom_attach>6</bottom_attach>
-		    <xpad>0</xpad>
-		    <ypad>0</ypad>
-		    <xexpand>False</xexpand>
-		    <yexpand>False</yexpand>
-		    <xshrink>False</xshrink>
-		    <yshrink>False</yshrink>
-		    <xfill>True</xfill>
-		    <yfill>False</yfill>
-		  </child>
-		</widget>
-
-		<widget>
-		  <class>GtkCheckButton</class>
-		  <name>use_contents_v</name>
-		  <can_focus>True</can_focus>
-		  <label>Use Vertical Size of Contents</label>
-		  <active>False</active>
-		  <draw_indicator>True</draw_indicator>
-		  <child>
-		    <left_attach>0</left_attach>
-		    <right_attach>3</right_attach>
-		    <top_attach>6</top_attach>
-		    <bottom_attach>7</bottom_attach>
-		    <xpad>0</xpad>
-		    <ypad>0</ypad>
-		    <xexpand>False</xexpand>
-		    <yexpand>False</yexpand>
-		    <xshrink>False</xshrink>
-		    <yshrink>False</yshrink>
-		    <xfill>True</xfill>
-		    <yfill>False</yfill>
-		  </child>
-		</widget>
-
-		<widget>
 		  <class>GtkHSeparator</class>
 		  <name>hseparator1</name>
 		  <child>
@@ -2693,6 +2647,107 @@
 		    <yshrink>False</yshrink>
 		    <xfill>True</xfill>
 		    <yfill>True</yfill>
+		  </child>
+		</widget>
+
+		<widget>
+		  <class>GtkCheckButton</class>
+		  <name>use_contents_h</name>
+		  <can_focus>True</can_focus>
+		  <label>Use Horizontal Size of Contents</label>
+		  <active>False</active>
+		  <draw_indicator>True</draw_indicator>
+		  <child>
+		    <left_attach>0</left_attach>
+		    <right_attach>2</right_attach>
+		    <top_attach>5</top_attach>
+		    <bottom_attach>6</bottom_attach>
+		    <xpad>0</xpad>
+		    <ypad>0</ypad>
+		    <xexpand>False</xexpand>
+		    <yexpand>False</yexpand>
+		    <xshrink>False</xshrink>
+		    <yshrink>False</yshrink>
+		    <xfill>True</xfill>
+		    <yfill>False</yfill>
+		  </child>
+		</widget>
+
+		<widget>
+		  <class>GtkCheckButton</class>
+		  <name>use_contents_v</name>
+		  <can_focus>True</can_focus>
+		  <label>Use Vertical Size of Contents</label>
+		  <active>False</active>
+		  <draw_indicator>True</draw_indicator>
+		  <child>
+		    <left_attach>0</left_attach>
+		    <right_attach>2</right_attach>
+		    <top_attach>6</top_attach>
+		    <bottom_attach>7</bottom_attach>
+		    <xpad>0</xpad>
+		    <ypad>0</ypad>
+		    <xexpand>False</xexpand>
+		    <yexpand>False</yexpand>
+		    <xshrink>False</xshrink>
+		    <yshrink>False</yshrink>
+		    <xfill>True</xfill>
+		    <yfill>False</yfill>
+		  </child>
+		</widget>
+
+		<widget>
+		  <class>GtkCheckButton</class>
+		  <name>use_smart_size</name>
+		  <can_focus>True</can_focus>
+		  <signal>
+		    <name>clicked</name>
+		    <handler>on_use_smart_size_clicked</handler>
+		    <last_modification_time>Sat, 14 Sep 2002 00:18:06 GMT</last_modification_time>
+		  </signal>
+		  <label>Smart Size</label>
+		  <active>False</active>
+		  <draw_indicator>True</draw_indicator>
+		  <child>
+		    <left_attach>2</left_attach>
+		    <right_attach>3</right_attach>
+		    <top_attach>5</top_attach>
+		    <bottom_attach>6</bottom_attach>
+		    <xpad>0</xpad>
+		    <ypad>0</ypad>
+		    <xexpand>False</xexpand>
+		    <yexpand>False</yexpand>
+		    <xshrink>False</xshrink>
+		    <yshrink>False</yshrink>
+		    <xfill>False</xfill>
+		    <yfill>False</yfill>
+		  </child>
+		</widget>
+
+		<widget>
+		  <class>GtkButton</class>
+		  <name>smartsize_set</name>
+		  <can_focus>True</can_focus>
+		  <signal>
+		    <name>clicked</name>
+		    <handler>on_smartsize_set_clicked</handler>
+		    <last_modification_time>Sat, 14 Sep 2002 12:38:23 GMT</last_modification_time>
+		  </signal>
+		  <label>Smart Size</label>
+		  <relief>GTK_RELIEF_NORMAL</relief>
+		  <child>
+		    <left_attach>2</left_attach>
+		    <right_attach>3</right_attach>
+		    <top_attach>6</top_attach>
+		    <bottom_attach>7</bottom_attach>
+		    <xpad>0</xpad>
+		    <ypad>0</ypad>
+		    <xexpand>False</xexpand>
+		    <yexpand>False</yexpand>
+		    <xshrink>False</xshrink>
+		    <yshrink>False</yshrink>
+		    <xfill>True</xfill>
+		    <yfill>False</yfill>
 		  </child>
 		</widget>
 	      </widget>
@@ -4280,7 +4335,7 @@ Tile Integer
 		  <wrap>False</wrap>
 		  <value>1</value>
 		  <lower>0</lower>
-		  <upper>100</upper>
+		  <upper>999999</upper>
 		  <step>1</step>
 		  <page>10</page>
 		  <page_size>10</page_size>
@@ -4312,7 +4367,7 @@ Tile Integer
 		  <wrap>False</wrap>
 		  <value>1</value>
 		  <lower>0</lower>
-		  <upper>100</upper>
+		  <upper>999999</upper>
 		  <step>1</step>
 		  <page>10</page>
 		  <page_size>10</page_size>

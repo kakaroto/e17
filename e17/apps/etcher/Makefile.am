@@ -1,6 +1,6 @@
 ## Process this file with automake to produce Makefile.in
 
-SUBDIRS = intl po src
+SUBDIRS = m4  po src
 
 MAINTAINERCLEANFILES = Makefile.in aclocal.m4 config.guess \
                        config.h.in config.sub configure install-sh \
@@ -64,4 +64,6 @@ dist-hook:
 	  done \
 	fi
 
-EXTRA_DIST = README AUTHORS COPYING etcher.spec etcher.spec.in
+EXTRA_DIST = config.rpath  README AUTHORS COPYING etcher.spec etcher.spec.in
+
+ACLOCAL_AMFLAGS = -I m4

@@ -1,4 +1,15 @@
+/* Ebits */
+#if 0
+#define _EBITS_INTERNAL 1
+#include "Ebits.h"
+#include "Ebits_private.h"
+
+/* Etcher */
+#else
 #include "bits.h"
+#endif
+/* End */
+
 #include <stdio.h>
 #include <unistd.h>
 #include <stdlib.h>
@@ -9,7 +20,7 @@
 
 static int          __ebits_cache_zero = 0;
 static int          __ebits_cache_size = 8;
-static Evas_List    __bit_descriptions = NULL;
+static Evas_List *    __bit_descriptions = NULL;
 
 Ebits_Object_Bit_State _ebits_get_bit_class(Ebits_Object o, char *name);
 static Ebits_Object_Description _ebits_find_description(char *file);
@@ -27,6 +38,7 @@ static void         _ebits_object_calculate(Ebits_Object o);
 static void         _ebits_calculate_min_size(Ebits_Object o);
 
 #define EBITS_FILE_REDIRECT "%s:/images/%s"
+#define EBITS_EVAS_KEY_PREFIX "/images/"
 #define FREE(ptr) \
 	{ \
 		free(ptr); \
@@ -34,12 +46,15 @@ static void         _ebits_calculate_min_size(Ebits_Object o);
 	}
 #define IF_FREE(ptr) { if (ptr) FREE(ptr); }
 
-/* #define LENIENT 1 */
+#if 0
+/* let's not enable this */
+#define LENIENT 1
+#endif
 
 Ebits_Object_Bit_State
 ebits_get_bit_name(Ebits_Object o, char *name)
 {
-   Evas_List           l;
+   Evas_List *           l;
 
    for (l = o->bits; l; l = l->next)
      {
@@ -58,7 +73,7 @@ ebits_get_bit_name(Ebits_Object o, char *name)
 Ebits_Object_Bit_State
 _ebits_get_bit_class(Ebits_Object o, char *class)
 {
-   Evas_List           l;
+   Evas_List *           l;
 
    for (l = o->bits; l; l = l->next)
      {
@@ -79,7 +94,12 @@ _ebits_evaluate_fill(Ebits_Object_Bit_State state)
 {
    double              fill_w, fill_h;
 
-   evas_set_image_border(state->o->state.evas, state->object,
+   if(state->object)
+     {
+   /* only images */
+   if( !strcmp(evas_object_type_get(state->object),"image"))
+     {
+   evas_object_image_border_set(state->object,
 			 state->description->border.l,
 			 state->description->border.r,
 			 state->description->border.t,
@@ -89,7 +109,7 @@ _ebits_evaluate_fill(Ebits_Object_Bit_State state)
      {
 	int                 im_w;
 
-	evas_get_image_size(state->o->state.evas, state->object, &im_w, NULL);
+	evas_object_image_size_get(state->object, &im_w, NULL);
 	if (im_w > 0)
 	   fill_w = im_w;
      }
@@ -97,7 +117,7 @@ _ebits_evaluate_fill(Ebits_Object_Bit_State state)
      {
 	int                 im_w;
 
-	evas_get_image_size(state->o->state.evas, state->object, &im_w, NULL);
+	evas_object_image_size_get(state->object, &im_w, NULL);
 	if (im_w > 0)
 	  {
 	     int                 num;
@@ -113,7 +133,7 @@ _ebits_evaluate_fill(Ebits_Object_Bit_State state)
      {
 	int                 im_h;
 
-	evas_get_image_size(state->o->state.evas, state->object, NULL, &im_h);
+	evas_object_image_size_get(state->object, NULL, &im_h);
 	if (im_h > 0)
 	   fill_h = im_h;
      }
@@ -121,7 +141,7 @@ _ebits_evaluate_fill(Ebits_Object_Bit_State state)
      {
 	int                 im_h;
 
-	evas_get_image_size(state->o->state.evas, state->object, NULL, &im_h);
+	evas_object_image_size_get(state->object, NULL, &im_h);
 	if (im_h > 0)
 	  {
 	     int                 num;
@@ -132,15 +152,17 @@ _ebits_evaluate_fill(Ebits_Object_Bit_State state)
 	     fill_h = state->h / (double)num;
 	  }
      }
-   evas_set_image_fill(state->o->state.evas, state->object,
+   evas_object_image_fill_set(state->object,
 		       0, 0, fill_w, fill_h);
-   evas_resize(state->o->state.evas, state->object, state->w, state->h);
+     }
+   evas_object_resize(state->object, state->w, state->h);
+     }
 }
 
 static void
 _ebits_object_calculate(Ebits_Object o)
 {
-   Evas_List           l;
+   Evas_List *           l;
 
    for (l = o->bits; l; l = l->next)
      {
@@ -154,11 +176,17 @@ _ebits_object_calculate(Ebits_Object o)
 	Ebits_Object_Bit_State state;
 
 	state = l->data;
+
 	_ebits_calculate(state);
-	_ebits_evaluate_fill(state);
-	evas_move(state->o->state.evas, state->object,
-		  o->state.x + state->x, o->state.y + state->y);
-	evas_resize(state->o->state.evas, state->object, state->w, state->h);
+	if(state->object)
+	  {
+	    /* only images */
+	      _ebits_evaluate_fill(state);
+
+	    evas_object_move(state->object,
+			     o->state.x + state->x, o->state.y + state->y);
+	    evas_object_resize(state->object, state->w, state->h);
+	  }
 	if (state->func_move)
 	   state->func_move(state->func_data,
 			    o->state.x + state->x, o->state.y + state->y);
@@ -335,12 +363,12 @@ _ebits_calculate(Ebits_Object_Bit_State state)
 static void
 _ebits_sync_bits(Ebits_Object_Bit_State state)
 {
-   Evas_List           l;
+   Evas_List *           l;
 
    state->syncing = 1;
    if (state->object)
      {
-	char                buf[4096];
+	char                buf[4096], key[4096];
 	char               *st = NULL;
 
 #ifdef EDITOR
@@ -351,16 +379,67 @@ _ebits_sync_bits(Ebits_Object_Bit_State state)
 #endif
 	   st = _ebits_get_file(state->description, state->state);
 	if (st && strlen(st) > 2)
-	   snprintf(buf, sizeof(buf), EBITS_FILE_REDIRECT,
-		    state->o->description->file, st);
+	  {
+	    strcpy(buf,state->o->description->file);
+	    snprintf(key, sizeof(key), EBITS_EVAS_KEY_PREFIX "%s", st);
+	  }
 #ifndef EDITOR
 	else
-	   strcpy(buf, "");
+	  {
+	    strcpy(buf, "");
+	    strcpy(key, "");
+	  }
 #endif
 
-	evas_set_image_file(state->o->state.evas, state->object, buf);
+	/* if not an image at present */
+	if( strcmp(evas_object_type_get(state->object),"image"))
+	  {
+	    Evas * st_e;
+	    st_e = evas_object_evas_get(state->object);
 
-	_ebits_evaluate_fill(state);
+	    evas_object_del(state->object);
+	    state->object = evas_object_image_add(st_e);
+	  }
+
+	    /* only images */
+	if( !strcmp(evas_object_type_get(state->object),"image"))
+	      {
+		evas_object_image_file_set(state->object, buf, key);
+
+#if 1
+
+		state->image_status = 
+		  evas_object_image_load_error_get(state->object);
+		if(state->image_status)
+		  {
+		    Evas * st_e;
+		    st_e = evas_object_evas_get(state->object);
+		    evas_object_del(state->object);
+#if 1
+		    state->object = NULL;
+#else
+		    /* todo - event rects? */
+		    state->object = evas_object_rectangle_add(st_e);
+		    if ((state->description->class) &&
+			(!strcmp(state->description->class, "Decoration")))
+		      evas_object_pass_events_set(state->object, 1);
+		    /*evas_object_color_set(state->object, 255, 255, 255, 0);*/
+		    evas_object_color_set(state->object, 255, 0, 0, 255);
+		    state->image_status = -1;
+
+#endif
+		  }
+		else
+		  {
+		    if ((state->description->class) &&
+			(!strcmp(state->description->class, "Decoration")))
+		      evas_object_pass_events_set(state->object, 1);
+		  }
+
+#endif
+
+		_ebits_evaluate_fill(state);
+	      }
      }
    for (l = state->description->sync; l; l = l->next)
      {
@@ -371,6 +450,9 @@ _ebits_sync_bits(Ebits_Object_Bit_State state)
 	  {
 	     IF_FREE(state2->state);
 	     state2->state = strdup(state->state);
+
+	     state2->is_selected = state->is_selected;
+	     state2->description->is_selected = state->description->is_selected;
 	     _ebits_sync_bits(state2);
 	  }
      }
@@ -378,10 +460,11 @@ _ebits_sync_bits(Ebits_Object_Bit_State state)
 }
 
 static void
-_ebits_handle_mouse_down(void *_data, Evas _e, Evas_Object _o, int _b,
-			 int _x, int _y)
+_ebits_handle_mouse_down(void *_data, Evas * _e, Evas_Object * _o, 
+			 void *ev_info)
 {
    Ebits_Object_Bit_State state;
+   Evas_Event_Mouse_Down *event_info = ev_info;
 
    state = _data;
    if (!strncasecmp(state->state, "disabled", 8))
@@ -391,16 +474,18 @@ _ebits_handle_mouse_down(void *_data, Evas _e, Evas_Object _o, int _b,
    _ebits_sync_bits(state);
    if (state->callbacks)
      {
-	Evas_List           l;
+	Evas_List *           l;
 
 	for (l = state->callbacks; l; l = l->next)
 	  {
 	     Ebits_Callback      cb;
 
 	     cb = l->data;
-	     if (cb->type == CALLBACK_MOUSE_DOWN)
+	     if (cb->type == EVAS_CALLBACK_MOUSE_DOWN)
 		cb->func(cb->data, state->o,
-			 state->description->class, _b, _x, _y,
+			 state->description->class,
+			 event_info->button, 
+			 event_info->output.x, event_info->output.y,
 			 state->o->state.x + state->x,
 			 state->o->state.y + state->y, state->w, state->h);
 	  }
@@ -412,10 +497,11 @@ _ebits_handle_mouse_down(void *_data, Evas _e, Evas_Object _o, int _b,
 }
 
 static void
-_ebits_handle_mouse_up(void *_data, Evas _e, Evas_Object _o, int _b, int _x,
-		       int _y)
+_ebits_handle_mouse_up(void *_data, Evas * _e, Evas_Object * _o,
+		       void *ev_info)
 {
    Ebits_Object_Bit_State state;
+   Evas_Event_Mouse_Up *event_info = ev_info;
 
    state = _data;
    if (!strncasecmp(state->state, "disabled", 8))
@@ -428,16 +514,18 @@ _ebits_handle_mouse_up(void *_data, Evas _e, Evas_Object _o, int _b, int _x,
    _ebits_sync_bits(state);
    if (state->callbacks)
      {
-	Evas_List           l;
+	Evas_List *           l;
 
 	for (l = state->callbacks; l; l = l->next)
 	  {
 	     Ebits_Callback      cb;
 
 	     cb = l->data;
-	     if (cb->type == CALLBACK_MOUSE_UP)
+	     if (cb->type == EVAS_CALLBACK_MOUSE_UP)
 		cb->func(cb->data, state->o,
-			 state->description->class, _b, _x, _y,
+			 state->description->class, 
+			 event_info->button, 
+			 event_info->output.x, event_info->output.y,
 			 state->o->state.x + state->x,
 			 state->o->state.y + state->y, state->w, state->h);
 	  }
@@ -449,28 +537,33 @@ _ebits_handle_mouse_up(void *_data, Evas _e, Evas_Object _o, int _b, int _x,
 }
 
 static void
-_ebits_handle_mouse_move(void *_data, Evas _e, Evas_Object _o, int _b,
-			 int _x, int _y)
+_ebits_handle_mouse_move(void *_data, Evas * _e, Evas_Object * _o,
+			 void *ev_info)
 {
    Ebits_Object_Bit_State state;
+   Evas_Event_Mouse_Move *event_info = ev_info;
 
    state = _data;
    if (!strncasecmp(state->state, "disabled", 8))
       return;
    if (state->callbacks)
      {
-	Evas_List           l;
+	Evas_List *           l;
 
 	for (l = state->callbacks; l; l = l->next)
 	  {
 	     Ebits_Callback      cb;
 
 	     cb = l->data;
-	     if (cb->type == CALLBACK_MOUSE_MOVE)
+	     if (cb->type == EVAS_CALLBACK_MOUSE_MOVE)
+	       {
 		cb->func(cb->data, state->o,
-			 state->description->class, _b, _x, _y,
+			 state->description->class, 
+			 event_info->buttons, 
+			 event_info->cur.output.x, event_info->cur.output.y,
 			 state->o->state.x + state->x,
 			 state->o->state.y + state->y, state->w, state->h);
+	       }
 	  }
      }
 
@@ -480,10 +573,11 @@ _ebits_handle_mouse_move(void *_data, Evas _e, Evas_Object _o, int _b,
 }
 
 static void
-_ebits_handle_mouse_in(void *_data, Evas _e, Evas_Object _o, int _b, int _x,
-		       int _y)
+_ebits_handle_mouse_in(void *_data, Evas * _e, Evas_Object * _o,
+		       void *ev_info)
 {
    Ebits_Object_Bit_State state;
+   Evas_Event_Mouse_In *event_info = ev_info;
 
    state = _data;
    if (!strncasecmp(state->state, "disabled", 8))
@@ -497,18 +591,22 @@ _ebits_handle_mouse_in(void *_data, Evas _e, Evas_Object _o, int _b, int _x,
    _ebits_sync_bits(state);
    if (state->callbacks)
      {
-	Evas_List           l;
+	Evas_List *           l;
 
 	for (l = state->callbacks; l; l = l->next)
 	  {
 	     Ebits_Callback      cb;
 
 	     cb = l->data;
-	     if (cb->type == CALLBACK_MOUSE_IN)
-		cb->func(cb->data, state->o,
-			 state->description->class, _b, _x, _y,
-			 state->o->state.x + state->x,
-			 state->o->state.y + state->y, state->w, state->h);
+	     if (cb->type == EVAS_CALLBACK_MOUSE_IN)
+	       {
+		 cb->func(cb->data, state->o,
+			  state->description->class, 
+			  event_info->buttons, 
+			  event_info->output.x, event_info->output.y,
+			  state->o->state.x + state->x,
+			  state->o->state.y + state->y, state->w, state->h);
+	       }
 	  }
      }
 
@@ -518,10 +616,11 @@ _ebits_handle_mouse_in(void *_data, Evas _e, Evas_Object _o, int _b, int _x,
 }
 
 static void
-_ebits_handle_mouse_out(void *_data, Evas _e, Evas_Object _o, int _b, int _x,
-			int _y)
+_ebits_handle_mouse_out(void *_data, Evas * _e, Evas_Object * _o,
+			void *ev_info)
 {
    Ebits_Object_Bit_State state;
+   Evas_Event_Mouse_Out *event_info = ev_info;
 
    state = _data;
    if (!strncasecmp(state->state, "disabled", 8))
@@ -535,16 +634,18 @@ _ebits_handle_mouse_out(void *_data, Evas _e, Evas_Object _o, int _b, int _x,
    _ebits_sync_bits(state);
    if (state->callbacks)
      {
-	Evas_List           l;
+	Evas_List *           l;
 
 	for (l = state->callbacks; l; l = l->next)
 	  {
 	     Ebits_Callback      cb;
 
 	     cb = l->data;
-	     if (cb->type == CALLBACK_MOUSE_OUT)
+	     if (cb->type == EVAS_CALLBACK_MOUSE_OUT)
 		cb->func(cb->data, state->o,
-			 state->description->class, _b, _x, _y,
+			 state->description->class, 
+			 event_info->buttons, 
+			 event_info->output.x, event_info->output.y,
 			 state->o->state.x + state->x,
 			 state->o->state.y + state->y, state->w, state->h);
 	  }
@@ -561,7 +662,7 @@ _ebits_handle_mouse_out(void *_data, Evas _e, Evas_Object _o, int _b, int _x,
 static int
 _ebits_image_state_saved(Ebits_Object_Bit_State state, char *s)
 {
-   Evas_List           l;
+   Evas_List *           l;
    int                 len;
 
    if (!s)
@@ -571,6 +672,9 @@ _ebits_image_state_saved(Ebits_Object_Bit_State state, char *s)
 
    if (!len)
       return 0;
+
+   if (state->is_selected && state->description->selected.image)
+      return state->selected.saved;
 
    if (!strncasecmp(s, "normal", len))
      {
@@ -696,9 +800,12 @@ _ebits_get_file(Ebits_Object_Bit_Description d, char *state)
    if (!len)
       return "";
 
+   if (d->is_selected && d->selected.image)
+      return d->selected.image;
+
    if (!strncasecmp(state, "normal", len))
      {
-	Evas_List           l;
+	Evas_List *           l;
 
 	if (d->normal.image)
 	   return d->normal.image;
@@ -726,7 +833,7 @@ _ebits_get_file(Ebits_Object_Bit_Description d, char *state)
      }
    else if (!strncasecmp(state, "hilited", len))
      {
-	Evas_List           l;
+	Evas_List *           l;
 
 	if (d->hilited.image)
 	   return d->hilited.image;
@@ -754,7 +861,7 @@ _ebits_get_file(Ebits_Object_Bit_Description d, char *state)
      }
    else if (!strncasecmp(state, "clicked", len))
      {
-	Evas_List           l;
+	Evas_List *           l;
 
 	if (d->clicked.image)
 	   return d->clicked.image;
@@ -782,7 +889,7 @@ _ebits_get_file(Ebits_Object_Bit_Description d, char *state)
      }
    else if (!strncasecmp(state, "disabled", len))
      {
-	Evas_List           l;
+	Evas_List *           l;
 
 	if (d->disabled.image)
 	   return d->disabled.image;
@@ -810,7 +917,7 @@ _ebits_get_file(Ebits_Object_Bit_Description d, char *state)
      }
    else
      {
-	Evas_List           l;
+	Evas_List *           l;
 
 	for (l = d->state_description; l; l = l->next)
 	  {
@@ -844,7 +951,7 @@ static              Ebits_Object_Description
 _ebits_find_description(char *file)
 {
    Ebits_Object_Description d = NULL;
-   Evas_List           l;
+   Evas_List *           l;
    E_DB_File          *db;
    int                 version;
 
@@ -971,6 +1078,8 @@ _ebits_find_description(char *file)
 	   bit->hilited.image = e_db_str_get(db, key);
 	   snprintf(key, sizeof(key), "/bits/bit/%i/clicked/image", i);
 	   bit->clicked.image = e_db_str_get(db, key);
+	   snprintf(key, sizeof(key), "/bits/bit/%i/selected/image", i);
+	   bit->selected.image = e_db_str_get(db, key);
 	   snprintf(key, sizeof(key), "/bits/bit/%i/disabled/image", i);
 	   bit->disabled.image = e_db_str_get(db, key);
 
@@ -1108,19 +1217,38 @@ _ebits_find_description(char *file)
 void
 ebits_set_state(Ebits_Object o, char *st)
 {
-   Evas_List           l;
+   Evas_List *           l;
 
-   for (l = o->bits; l; l = l->next)
+   if (strncasecmp(st, "selected", strlen(st)))
      {
-	Ebits_Object_Bit_State state;
+	for (l = o->bits; l; l = l->next)
+	  {
+	     Ebits_Object_Bit_State state;
 
-	state = l->data;
+	     state = l->data;
 
-	IF_FREE(state->state);
+	     IF_FREE(state->state);
 
-	state->state = strdup(st);
+	     state->state = strdup(st);
+	     state->is_selected = 0;
+	     state->description->is_selected = 0;
 
-	_ebits_sync_bits(state);
+	     _ebits_sync_bits(state);
+	  }
+     }
+   else
+     {
+	for (l = o->bits; l; l = l->next)
+	  {
+	     Ebits_Object_Bit_State state;
+
+	     state = l->data;
+
+	     state->is_selected = 1;
+	     state->description->is_selected = 1;
+
+	     _ebits_sync_bits(state);
+	  }
      }
 }
 
@@ -1147,7 +1275,7 @@ ebits_new_description(void)
 void
 _ebits_evaluate(Ebits_Object_Bit_State state)
 {
-   Evas_List           l;
+   Evas_List *           l;
 
    if (state->description->normal.image && !state->normal.image)
       state->normal.image = imlib_load_image(state->description->normal.image);
@@ -1157,6 +1285,9 @@ _ebits_evaluate(Ebits_Object_Bit_State state)
    if (state->description->clicked.image && !state->clicked.image)
       state->clicked.image =
 	 imlib_load_image(state->description->clicked.image);
+   if (state->description->selected.image && !state->selected.image)
+      state->selected.image =
+	 imlib_load_image(state->description->selected.image);
    if (state->description->disabled.image && !state->disabled.image)
       state->disabled.image =
 	 imlib_load_image(state->description->disabled.image);
@@ -1196,10 +1327,10 @@ _ebits_evaluate(Ebits_Object_Bit_State state)
 void
 ebits_del_bit(Ebits_Object o, Ebits_Object_Bit_State state)
 {
-   Evas_List           l;
+   Evas_List *           l;
 
    if (state->object)
-      evas_del_object(o->state.evas, state->object);
+      evas_object_del(state->object);
    if (state->normal.image)
      {
 	imlib_context_set_image(state->normal.image);
@@ -1213,6 +1344,11 @@ ebits_del_bit(Ebits_Object o, Ebits_Object_Bit_State state)
    if (state->clicked.image)
      {
 	imlib_context_set_image(state->clicked.image);
+	imlib_free_image_and_decache();
+     }
+   if (state->selected.image)
+     {
+	imlib_context_set_image(state->selected.image);
 	imlib_free_image_and_decache();
      }
    if (state->disabled.image)
@@ -1242,6 +1378,7 @@ ebits_del_bit(Ebits_Object o, Ebits_Object_Bit_State state)
    IF_FREE(state->description->normal.image);
    IF_FREE(state->description->hilited.image);
    IF_FREE(state->description->clicked.image);
+   IF_FREE(state->description->selected.image);
    IF_FREE(state->description->disabled.image);
 
    /* XXX */
@@ -1295,34 +1432,43 @@ ebits_new_bit(Ebits_Object o, char *file)
 
    bit->normal.image = malloc(strlen(file) + 1);
    strcpy(bit->normal.image, file);
-   state->object =
-      evas_add_image_from_file(o->state.evas,
-			       _ebits_get_file(state->description,
-					       state->state));
+   state->object = evas_object_image_add(o->state.evas);
+   /* todo */
+   evas_object_image_file_set(state->object,
+			      _ebits_get_file(state->description, state->state),
+			      NULL );
+   state->image_status = evas_object_image_load_error_get(state->object);
+
+	     if(state->image_status)
+	       {
+		 evas_object_del(state->object);
+		 state->object = NULL;
+	       }
+	     else
+	       {
+	       }
+	if(state->object)
    {
-      evas_callback_add(o->state.evas, state->object,
-			CALLBACK_MOUSE_DOWN, _ebits_handle_mouse_down, state);
-      evas_callback_add(o->state.evas, state->object,
-			CALLBACK_MOUSE_UP, _ebits_handle_mouse_up, state);
-      evas_callback_add(o->state.evas, state->object,
-			CALLBACK_MOUSE_MOVE, _ebits_handle_mouse_move, state);
-      evas_callback_add(o->state.evas, state->object,
-			CALLBACK_MOUSE_IN, _ebits_handle_mouse_in, state);
-      evas_callback_add(o->state.evas, state->object,
-			CALLBACK_MOUSE_OUT, _ebits_handle_mouse_out, state);
-   }
-   if ((o->state.evas) && (state->object))
-      evas_set_color(o->state.evas, state->object,
+      evas_object_event_callback_add(state->object,
+			EVAS_CALLBACK_MOUSE_DOWN, _ebits_handle_mouse_down, state);
+      evas_object_event_callback_add(state->object,
+			EVAS_CALLBACK_MOUSE_UP, _ebits_handle_mouse_up, state);
+      evas_object_event_callback_add(state->object,
+			EVAS_CALLBACK_MOUSE_MOVE, _ebits_handle_mouse_move, state);
+      evas_object_event_callback_add(state->object,
+			EVAS_CALLBACK_MOUSE_IN, _ebits_handle_mouse_in, state);
+      evas_object_event_callback_add(state->object,
+			EVAS_CALLBACK_MOUSE_OUT, _ebits_handle_mouse_out, state);
+   if ((o->state.evas) && (state->object) && (!state->image_status))
+      evas_object_color_set(state->object,
 		     state->r, state->g, state->b, state->a);
 
-   evas_set_layer(o->state.evas, state->object, o->state.layer);
+   evas_object_layer_set(state->object, o->state.layer);
    if (o->state.visible)
-      evas_show(o->state.evas, state->object);
+      evas_object_show(state->object);
+   }
 
    {
-      int                 w, h;
-
-      evas_get_image_size(o->state.evas, state->object, &w, &h);
       bit->rel1.x = 0;
       bit->rel1.y = 0;
       bit->rel1.rx = 0.0;
@@ -1357,7 +1503,7 @@ _ebits_cache_flush(void)
 {
    while (__ebits_cache_zero > __ebits_cache_size)
      {
-	Evas_List           l;
+	Evas_List *           l;
 	Ebits_Object_Description d, del;
 
 	del = NULL;
@@ -1378,7 +1524,7 @@ _ebits_cache_flush(void)
 		  for (l = d->bits; l; l = l->next)
 		    {
 		       Ebits_Object_Bit_Description bit;
-		       Evas_List           ll;
+		       Evas_List *           ll;
 
 		       bit = l->data;
 		       IF_FREE(bit->name);
@@ -1387,6 +1533,7 @@ _ebits_cache_flush(void)
 		       IF_FREE(bit->normal.image);
 		       IF_FREE(bit->hilited.image);
 		       IF_FREE(bit->clicked.image);
+		       IF_FREE(bit->selected.image);
 		       IF_FREE(bit->disabled.image);
 
 		       /* XXX */
@@ -1419,7 +1566,7 @@ static void
 _ebits_calculate_min_size(Ebits_Object o)
 {
    int                 pw, ph;
-   Evas_List           l;
+   Evas_List *           l;
    Ebits_Object_Bit_State state;
    int                 maxw, maxh, mw, mh;
 
@@ -1502,7 +1649,7 @@ ebits_load(char *file)
 {
    Ebits_Object        o;
    Ebits_Object_Description d;
-   Evas_List           l;
+   Evas_List *           l;
    char                realf[PATH_MAX];
 
    if (!realpath(file, realf))
@@ -1520,7 +1667,7 @@ ebits_load(char *file)
 	Ebits_Object_Bit_State state;
 
 #ifdef EDITOR
-	Evas_List           ll;
+	Evas_List *           ll;
 	char                image[4096];
 #endif
 
@@ -1567,6 +1714,16 @@ ebits_load(char *file)
 #ifdef LENIENT
 	     if (!state->clicked.image)
 		state->clicked.image = imlib_load_image(bit->clicked.image);
+#endif
+	  }
+	if (bit->selected.image)
+	  {
+	     snprintf(image, sizeof(image), EBITS_FILE_REDIRECT,
+		      realf, bit->selected.image);
+	     state->selected.image = imlib_load_image(image);
+#ifdef LENIENT
+	     if (!state->selected.image)
+		state->selected.image = imlib_load_image(bit->selected.image);
 #endif
 	  }
 	if (bit->disabled.image)
@@ -1627,16 +1784,16 @@ ebits_free(Ebits_Object o)
    _ebits_cache_flush();
    if (o->bits)
      {
-	Evas_List           l;
+	Evas_List *           l;
 
 	for (l = o->bits; l; l = l->next)
 	  {
 	     Ebits_Object_Bit_State state;
-	     Evas_List           ll;
+	     Evas_List *           ll;
 
 	     state = l->data;
 	     if ((state->object) && (o->state.evas))
-		evas_del_object(o->state.evas, state->object);
+		evas_object_del(state->object);
 	     if (state->callbacks)
 	       {
 		  for (ll = state->callbacks; ll; ll = ll->next)
@@ -1657,6 +1814,11 @@ ebits_free(Ebits_Object o)
 	     if (state->clicked.image)
 	       {
 		  imlib_context_set_image(state->clicked.image);
+		  imlib_free_image_and_decache();
+	       }
+	     if (state->selected.image)
+	       {
+		  imlib_context_set_image(state->selected.image);
 		  imlib_free_image_and_decache();
 	       }
 	     if (state->disabled.image)
@@ -1688,45 +1850,83 @@ ebits_free(Ebits_Object o)
 }
 
 void
-ebits_add_to_evas(Ebits_Object o, Evas e)
+ebits_add_to_evas(Ebits_Object o, Evas * e)
 {
-   Evas_List           l;
+   Evas_List *           l;
 
    o->state.evas = e;
    for (l = o->bits; l; l = l->next)
      {
 	Ebits_Object_Bit_State state;
-	Evas_List           ll;
-	char                buf[4096];
+	Evas_List *           ll;
+	char                buf[4096], key[4096];
 	char               *st;
 
 	state = l->data;
 	st = _ebits_get_file(state->description, state->state);
 	if (strlen(st) > 0)
 	  {
-	     snprintf(buf, sizeof(buf), EBITS_FILE_REDIRECT,
-		      state->o->description->file, st);
+	    strcpy(buf,state->o->description->file);
+	    snprintf(key, sizeof(key), EBITS_EVAS_KEY_PREFIX "%s", st);
 	  }
 	else
-	   strcpy(buf, "");
+	  {
+	    strcpy(buf, "");
+	    strcpy(key, "");
+	  }
 	if ((state->description->normal.image) &&
 	    (!strcmp(state->description->normal.image, "-")))
 	  {
-	     state->object = evas_add_rectangle(o->state.evas);
+	     state->object = evas_object_rectangle_add(o->state.evas);
 	     if ((state->description->class) &&
 		 (!strcmp(state->description->class, "Decoration")))
-		evas_set_pass_events(o->state.evas, state->object, 1);
-	     evas_set_color(o->state.evas, state->object, 255, 255, 255, 0);
+		evas_object_pass_events_set(state->object, 1);
+	     evas_object_color_set(state->object, 255, 255, 255, 0);
+	     state->image_status = -1;
 	  }
 	else
 	  {
-	     state->object = evas_add_image_from_file(o->state.evas, buf);
-	     if ((state->description->class) &&
-		 (!strcmp(state->description->class, "Decoration")))
-		evas_set_pass_events(o->state.evas, state->object, 1);
+	     state->object = evas_object_image_add(o->state.evas);
+	     evas_object_image_file_set(state->object, buf, key);
+	     state->image_status = 
+	       evas_object_image_load_error_get(state->object);
+
+	     if(state->image_status)
+	       {
+		 evas_object_del(state->object);
+#if 1
+		 state->object = NULL;
+#else
+		 /* todo - event rects? */
+		 state->object = evas_object_rectangle_add(o->state.evas);
+		 if ((state->description->class) &&
+		     (!strcmp(state->description->class, "Decoration")))
+		   evas_object_pass_events_set(state->object, 1);
+		 /*evas_object_color_set(state->object, 255, 255, 255, 0);*/
+		 evas_object_color_set(state->object, 255, 0, 0, 255);
+		 state->image_status = -1;
+
+#endif
+	       }
+	     else
+	       {
+		 /*int iw,ih;*/
+
+		 if ((state->description->class) &&
+		     (!strcmp(state->description->class, "Decoration")))
+		   evas_object_pass_events_set(state->object, 1);
+
+		 /* Not needed */
+		 /*
+		 evas_object_image_size_get(state->object, &iw, &ih);
+		 evas_object_resize(state->object, iw, ih);
+		 evas_object_image_fill_set(state->object,
+					    0, 0, iw, ih);
+		 */
+	       }
 	  }
-	if ((state->o->state.evas) && (state->object))
-	   evas_set_color(state->o->state.evas, state->object,
+	if ((state->o->state.evas) && (state->object) && (!state->image_status))
+	   evas_object_color_set(state->object,
 			  state->r, state->g, state->b, state->a);
 #ifdef EDITOR
 	if (state->normal.image)
@@ -1735,6 +1935,8 @@ ebits_add_to_evas(Ebits_Object o, Evas e)
 	   state->hilited.saved = 1;
 	if (state->clicked.image)
 	   state->clicked.saved = 1;
+	if (state->selected.image)
+	   state->selected.saved = 1;
 	if (state->disabled.image)
 	   state->disabled.saved = 1;
 	for (ll = state->state_source_description; ll; ll = ll->next)
@@ -1746,23 +1948,26 @@ ebits_add_to_evas(Ebits_Object o, Evas e)
 	     ss_d->saved = 1;
 	  }
 #endif
-	evas_callback_add(o->state.evas, state->object,
-			  CALLBACK_MOUSE_DOWN, _ebits_handle_mouse_down, state);
-	evas_callback_add(o->state.evas, state->object,
-			  CALLBACK_MOUSE_UP, _ebits_handle_mouse_up, state);
-	evas_callback_add(o->state.evas, state->object,
-			  CALLBACK_MOUSE_MOVE, _ebits_handle_mouse_move, state);
-	evas_callback_add(o->state.evas, state->object,
-			  CALLBACK_MOUSE_IN, _ebits_handle_mouse_in, state);
-	evas_callback_add(o->state.evas, state->object,
-			  CALLBACK_MOUSE_OUT, _ebits_handle_mouse_out, state);
+	if(state->object)
+	  {
+	evas_object_event_callback_add(state->object,
+			  EVAS_CALLBACK_MOUSE_DOWN, _ebits_handle_mouse_down, state);
+	evas_object_event_callback_add(state->object,
+			  EVAS_CALLBACK_MOUSE_UP, _ebits_handle_mouse_up, state);
+	evas_object_event_callback_add(state->object,
+			  EVAS_CALLBACK_MOUSE_MOVE, _ebits_handle_mouse_move, state);
+	evas_object_event_callback_add(state->object,
+			  EVAS_CALLBACK_MOUSE_IN, _ebits_handle_mouse_in, state);
+	evas_object_event_callback_add(state->object,
+			  EVAS_CALLBACK_MOUSE_OUT, _ebits_handle_mouse_out, state);
+	  }
      }
 }
 
 void
 ebits_show(Ebits_Object o)
 {
-   Evas_List           l;
+   Evas_List *           l;
 
    if (o->state.visible)
       return;
@@ -1773,16 +1978,18 @@ ebits_show(Ebits_Object o)
 
 	state = l->data;
 	_ebits_sync_bits(state);
-	evas_show(state->o->state.evas, state->object);
+	
+	if(state->object)
+	  evas_object_show(state->object);
 	if (state->func_show)
-	   state->func_show(state->func_data);
+	  state->func_show(state->func_data);
      }
 }
 
 void
 ebits_hide(Ebits_Object o)
 {
-   Evas_List           l;
+   Evas_List *           l;
 
    if (!o->state.visible)
       return;
@@ -1792,7 +1999,8 @@ ebits_hide(Ebits_Object o)
 	Ebits_Object_Bit_State state;
 
 	state = l->data;
-	evas_hide(state->o->state.evas, state->object);
+	if(state->object)
+	  evas_object_hide(state->object);
 	if (state->func_hide)
 	   state->func_hide(state->func_data);
      }
@@ -1801,7 +2009,7 @@ ebits_hide(Ebits_Object o)
 void
 ebits_set_layer(Ebits_Object o, int layer)
 {
-   Evas_List           l;
+   Evas_List *           l;
 
    if (layer == o->state.layer)
       return;
@@ -1811,7 +2019,8 @@ ebits_set_layer(Ebits_Object o, int layer)
 	Ebits_Object_Bit_State state;
 
 	state = l->data;
-	evas_set_layer(state->o->state.evas, state->object, layer);
+	if(state->object)
+	  evas_object_layer_set(state->object, layer);
 	if (state->func_set_layer)
 	   state->func_set_layer(state->func_data, layer);
      }
@@ -1820,23 +2029,24 @@ ebits_set_layer(Ebits_Object o, int layer)
 void
 ebits_raise(Ebits_Object o)
 {
-   Evas_List           l;
+   Evas_List *           l;
 
    for (l = o->bits; l; l = l->next)
      {
 	Ebits_Object_Bit_State state;
 
 	state = l->data;
-	evas_raise(state->o->state.evas, state->object);
+	if(state->object)
+	  evas_object_raise(state->object);
 	if (state->func_raise)
-	   state->func_raise(state->func_data);
+	  state->func_raise(state->func_data);
      }
 }
 
 void
 ebits_lower(Ebits_Object o)
 {
-   Evas_List           l;
+   Evas_List *           l;
 
    for (l = o->bits; l->next; l = l->next);
    for (; l; l = l->prev)
@@ -1844,16 +2054,17 @@ ebits_lower(Ebits_Object o)
 	Ebits_Object_Bit_State state;
 
 	state = l->data;
-	evas_lower(state->o->state.evas, state->object);
+	if(state->object)
+	  evas_object_lower(state->object);
 	if (state->func_lower)
-	   state->func_lower(state->func_data);
+	  state->func_lower(state->func_data);
      }
 }
 
 void
 ebits_move(Ebits_Object o, double x, double y)
 {
-   Evas_List           l;
+   Evas_List *           l;
 
    o->state.x = x;
    o->state.y = y;
@@ -1863,17 +2074,18 @@ ebits_move(Ebits_Object o, double x, double y)
 
 	state = l->data;
 	if (state->func_move)
-	   state->func_move(state->func_data,
-			    o->state.x + state->x, o->state.y + state->y);
-	evas_move(state->o->state.evas, state->object,
-		  o->state.x + state->x, o->state.y + state->y);
+	  state->func_move(state->func_data,
+			   o->state.x + state->x, o->state.y + state->y);
+	if(state->object)
+	  evas_object_move(state->object,
+			   o->state.x + state->x, o->state.y + state->y);
      }
 }
 
 void
-ebits_set_clip(Ebits_Object o, Evas_Object clip)
+ebits_set_clip(Ebits_Object o, Evas_Object * clip)
 {
-   Evas_List           l;
+   Evas_List *           l;
 
    o->state.clip = clip;
    for (l = o->bits; l; l = l->next)
@@ -1881,16 +2093,17 @@ ebits_set_clip(Ebits_Object o, Evas_Object clip)
 	Ebits_Object_Bit_State state;
 
 	state = l->data;
-	evas_set_clip(state->o->state.evas, state->object, clip);
+	if(state->object)
+	  evas_object_clip_set(state->object, clip);
 	if (state->func_set_clip)
-	   state->func_set_clip(state->func_data, clip);
+	  state->func_set_clip(state->func_data, clip);
      }
 }
 
 void
 ebits_unset_clip(Ebits_Object o)
 {
-   Evas_List           l;
+   Evas_List *           l;
 
    o->state.clip = NULL;
    for (l = o->bits; l; l = l->next)
@@ -1898,9 +2111,10 @@ ebits_unset_clip(Ebits_Object o)
 	Ebits_Object_Bit_State state;
 
 	state = l->data;
-	evas_unset_clip(state->o->state.evas, state->object);
+	if(state->object)
+	  evas_object_clip_unset(state->object);
 	if (state->func_set_clip)
-	   state->func_set_clip(state->func_data, NULL);
+	  state->func_set_clip(state->func_data, NULL);
      }
 }
 
@@ -2033,7 +2247,7 @@ ebits_set_classed_bit_callback(Ebits_Object o, char *c,
 					     int _y, int _ox, int _oy,
 					     int _ow, int _oh), void *data)
 {
-   Evas_List           l;
+   Evas_List *           l;
 
    for (l = o->bits; l; l = l->next)
      {
@@ -2060,7 +2274,7 @@ ebits_set_classed_bit_callback(Ebits_Object o, char *c,
 void
 ebits_set_color_class(Ebits_Object o, char *cc, int r, int g, int b, int a)
 {
-   Evas_List           l;
+   Evas_List *           l;
 
    for (l = o->bits; l; l = l->next)
      {
@@ -2075,8 +2289,8 @@ ebits_set_color_class(Ebits_Object o, char *cc, int r, int g, int b, int a)
 		  state->g = g;
 		  state->b = b;
 		  state->a = a;
-		  if ((state->o->state.evas) && (state->object))
-		     evas_set_color(state->o->state.evas,
+		  if ((state->o->state.evas) && (state->object) && (!state->image_status))
+		     evas_object_color_set(
 				    state->object, state->r,
 				    state->g, state->b, state->a);
 	       }
@@ -2106,15 +2320,19 @@ void
 ebits_save(Ebits_Object o, char *file)
 {
    Ebits_Object_Description d;
-   Evas_List           l;
+   Evas_List *           l;
    E_DB_File          *db;
    int                 i, count;
+   char                tmpfile[4096];
 
    d = o->description;
-   /* delete the original */
-   unlink(file);
+   /* Don't delete the parent 'file' just yet.  Imlib2 sometimes */
+   /* delays loading of images until needed.  If we delete */
+   /* the old file, the image data won't be available */
+   /* for the save routine to load. */
    /* open it now */
-   db = e_db_open(file);
+   snprintf( tmpfile, sizeof(tmpfile), "%s~", file);
+   db = e_db_open(tmpfile);
    if (!db)
       return;
 
@@ -2163,7 +2381,7 @@ ebits_save(Ebits_Object o, char *file)
      {
 	Ebits_Object_Bit_Description bit;
 	Ebits_Object_Bit_State state;
-	Evas_List           ll;
+	Evas_List *           ll;
 	char                image[4096];
 
 	state = l->data;
@@ -2172,7 +2390,7 @@ ebits_save(Ebits_Object o, char *file)
 	if ((state->normal.image) && (bit->normal.image))
 	  {
 	     snprintf(image, sizeof(image), EBITS_FILE_REDIRECT,
-		      file, bit->normal.image);
+		      tmpfile, bit->normal.image);
 	     imlib_context_set_image(state->normal.image);
 	     imlib_image_set_format("db");
 	     imlib_save_image(image);
@@ -2181,7 +2399,7 @@ ebits_save(Ebits_Object o, char *file)
 	if ((state->hilited.image) && (bit->hilited.image))
 	  {
 	     snprintf(image, sizeof(image), EBITS_FILE_REDIRECT,
-		      file, bit->hilited.image);
+		      tmpfile, bit->hilited.image);
 	     imlib_context_set_image(state->hilited.image);
 	     imlib_image_set_format("db");
 	     imlib_save_image(image);
@@ -2190,16 +2408,25 @@ ebits_save(Ebits_Object o, char *file)
 	if ((state->clicked.image) && (bit->clicked.image))
 	  {
 	     snprintf(image, sizeof(image), EBITS_FILE_REDIRECT,
-		      file, bit->clicked.image);
+		      tmpfile, bit->clicked.image);
 	     imlib_context_set_image(state->clicked.image);
 	     imlib_image_set_format("db");
 	     imlib_save_image(image);
 	     state->clicked.saved = 1;
 	  }
+	if ((state->selected.image) && (bit->selected.image))
+	  {
+	     snprintf(image, sizeof(image), EBITS_FILE_REDIRECT,
+		      tmpfile, bit->selected.image);
+	     imlib_context_set_image(state->selected.image);
+	     imlib_image_set_format("db");
+	     imlib_save_image(image);
+	     state->selected.saved = 1;
+	  }
 	if ((state->disabled.image) && (bit->disabled.image))
 	  {
 	     snprintf(image, sizeof(image), EBITS_FILE_REDIRECT,
-		      file, bit->disabled.image);
+		      tmpfile, bit->disabled.image);
 	     imlib_context_set_image(state->disabled.image);
 	     imlib_image_set_format("db");
 	     imlib_save_image(image);
@@ -2213,7 +2440,7 @@ ebits_save(Ebits_Object o, char *file)
 	     state_d = ll->data;
 
 	     snprintf(image, sizeof(image), EBITS_FILE_REDIRECT,
-		      file, state_d->image);
+		      tmpfile, state_d->image);
 	     imlib_context_set_image(state_d->ss_d->image);
 	     imlib_image_set_format("db");
 	     imlib_save_image(image);
@@ -2224,7 +2451,7 @@ ebits_save(Ebits_Object o, char *file)
    for (i = 0, l = d->bits; l; l = l->next, i++)
      {
 	Ebits_Object_Bit_Description bit;
-	Evas_List           ll;
+	Evas_List *           ll;
 	char                key[4096];
 	int                 j, sync_count;
 
@@ -2233,21 +2460,31 @@ ebits_save(Ebits_Object o, char *file)
 	snprintf(key, sizeof(key), "/bits/bit/%i/name", i);
 	if (bit->name)
 	   e_db_str_set(db, key, bit->name);
+
 	snprintf(key, sizeof(key), "/bits/bit/%i/class", i);
 	if (bit->class)
 	   e_db_str_set(db, key, bit->class);
+
 	snprintf(key, sizeof(key), "/bits/bit/%i/color_class", i);
 	if (bit->color_class)
 	   e_db_str_set(db, key, bit->color_class);
+
 	snprintf(key, sizeof(key), "/bits/bit/%i/normal/image", i);
 	if (bit->normal.image)
 	   e_db_str_set(db, key, bit->normal.image);
+
 	snprintf(key, sizeof(key), "/bits/bit/%i/hilited/image", i);
 	if (bit->hilited.image)
 	   e_db_str_set(db, key, bit->hilited.image);
+
 	snprintf(key, sizeof(key), "/bits/bit/%i/clicked/image", i);
 	if (bit->clicked.image)
 	   e_db_str_set(db, key, bit->clicked.image);
+
+	snprintf(key, sizeof(key), "/bits/bit/%i/selected/image", i);
+	if (bit->selected.image)
+	   e_db_str_set(db, key, bit->selected.image);
+
 	snprintf(key, sizeof(key), "/bits/bit/%i/disabled/image", i);
 	if (bit->disabled.image)
 	   e_db_str_set(db, key, bit->disabled.image);
@@ -2344,6 +2581,15 @@ ebits_save(Ebits_Object o, char *file)
 
    e_db_close(db);
    e_db_flush();
+
+   /* delete the original */
+   unlink(file);
+   /* replace with the new version */
+   /* the save routine appends .db, and I didn't bother to do */
+   /* more complicated temp file name generation. */
+   snprintf( tmpfile, sizeof(tmpfile), "%s~.db", file);
+   rename(tmpfile,file);
+
 }
 #endif
 
@@ -2359,7 +2605,7 @@ ebits_set_named_bit_replace(Ebits_Object o, char *c,
 			    void (*func_lower) (void *_data),
 			    void (*func_set_layer) (void *_data, int l),
 			    void (*func_set_clip) (void *_data,
-						   Evas_Object clip),
+						   Evas_Object * clip),
 			    void (*func_set_color_class) (void *_data,
 							  char *cc, int r,
 							  int g, int b,
@@ -2370,7 +2616,7 @@ ebits_set_named_bit_replace(Ebits_Object o, char *c,
 						       double *w, double *h),
 			    void *data)
 {
-   Evas_List           l;
+   Evas_List *           l;
 
    for (l = o->bits; l; l = l->next)
      {
@@ -2394,22 +2640,25 @@ ebits_set_named_bit_replace(Ebits_Object o, char *c,
 	     if (state->func_set_clip)
 	       {
 		  state->func_set_clip(state->func_data, state->object);
-		  evas_set_color(o->state.evas, state->object,
-				 255, 255, 255, 255);
+		  if(state->object)
+		    {
+		      evas_object_color_set(state->object,
+					    255, 255, 255, 255);
+		    }
 	       }
 	     if ((o->state.visible) && (func_show))
-		func_show(data);
+	        func_show(data);
 	     else if ((!o->state.visible) && (func_hide))
-		func_hide(data);
+	        func_hide(data);
 	     if ((state->description->color_class) && (func_set_color_class))
-		func_set_color_class(data,
+	        func_set_color_class(data,
 				     state->description->
 				     color_class, state->r,
 				     state->g, state->b, state->a);
 	     if (func_set_layer)
-		func_set_layer(data, o->state.layer);
+	        func_set_layer(data, o->state.layer);
 	     if (func_set_clip)
-		func_set_clip(data, o->state.clip);
+	        func_set_clip(data, o->state.clip);
 	     _ebits_object_calculate(o);
 	     ebits_raise(o);
 	     return;
@@ -2420,7 +2669,7 @@ ebits_set_named_bit_replace(Ebits_Object o, char *c,
 void
 ebits_set_named_bit_state(Ebits_Object o, char *c, char *state)
 {
-   Evas_List           l;
+   Evas_List *           l;
 
    for (l = o->bits; l; l = l->next)
      {
@@ -2437,10 +2686,30 @@ ebits_set_named_bit_state(Ebits_Object o, char *c, char *state)
      }
 }
 
-Evas_List
+void
+ebits_set_named_bit_selected(Ebits_Object o, char *c, unsigned int s)
+{
+   Evas_List *           l;
+
+   for (l = o->bits; l; l = l->next)
+     {
+	Ebits_Object_Bit_State st;
+
+	st = l->data;
+	if (!strcmp(st->description->name, c))
+	  {
+	     st->is_selected = s;
+	     st->description->is_selected = s;
+
+	     _ebits_sync_bits(st);
+	  }
+     }
+}
+
+Evas_List *
 ebits_get_bit_names(Ebits_Object o)
 {
-   Evas_List           l, name_list;
+   Evas_List           *l, *name_list;
 
    name_list = NULL;
 
@@ -2455,7 +2724,7 @@ ebits_get_bit_names(Ebits_Object o)
    return name_list;
 }
 
-Evas_List
+Evas_List *
 ebits_get_state_names(Ebits_Object o)
 {
    if (!o)
@@ -2464,11 +2733,17 @@ ebits_get_state_names(Ebits_Object o)
    return o->description->state_names;
 }
 
+int
+ebits_is_shaped(Ebits_Object o)
+{
+  return 1;
+}
+
 #ifdef EDITOR
 void
 ebits_add_state_name(Ebits_Object o, char *name)
 {
-   Evas_List           l;
+   Evas_List *           l;
    int                 i, len;
 
    if (!o || !name || !(len = strlen(name)))
@@ -2488,7 +2763,7 @@ ebits_add_state_name(Ebits_Object o, char *name)
 void
 ebits_del_state_name(Ebits_Object o, char *name)
 {
-   Evas_List           l;
+   Evas_List *           l;
    int                 len;
 
    if (!o || !name || !(len = strlen(name)))
@@ -2500,9 +2775,9 @@ ebits_del_state_name(Ebits_Object o, char *name)
      {
 	if (!strncasecmp(l->data, name, len))
 	  {
-	     FREE(l->data);
 	     o->description->state_names =
 		evas_list_remove(o->description->state_names, l->data);
+	     FREE(l->data);
 	     break;
 	  }
      }
@@ -2511,7 +2786,7 @@ ebits_del_state_name(Ebits_Object o, char *name)
 void
 ebits_add_bit_state(Ebits_Object_Bit_State bit, char *state, char *image)
 {
-   Evas_List           l;
+   Evas_List *           l;
    int                 found = 0, len, len2;
 
    if (!bit || !state)

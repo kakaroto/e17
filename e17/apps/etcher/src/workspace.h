@@ -15,7 +15,7 @@ Etching            *workspace_get_current_etching(void);
 void                workspace_add_etching(Etching * e);
 void                workspace_add_item(char *filename);
 void                workspace_remove_etching(Etching * e);
-Evas                workspace_get_evas(void);
+Evas *                workspace_get_evas(void);
 
 void                workspace_show_splash(void);
 void                workspace_set_light(LampColor color);
@@ -60,5 +60,7 @@ void                workspace_expose_event(GtkWidget * widget,
 					   GdkEventExpose * event);
 void                workspace_configure_event(GtkWidget * widget);
 void                workspace_set_state(char *state);
+void                workspace_image_smart_size(Ebits_Object_Bit_State state);
+void                workspace_smart_size_selected(void);
 
 #endif

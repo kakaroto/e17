@@ -67,11 +67,13 @@ main(int argc, char *argv[])
       Visual             *vis;
       Colormap            cmap;
 
+      /* checkme
       vis = evas_get_optimal_visual(workspace_get_evas(),
 				    GDK_WINDOW_XDISPLAY(GDK_ROOT_PARENT()));
+      */
+      vis = DefaultVisual(GDK_WINDOW_XDISPLAY(GDK_ROOT_PARENT()), DefaultScreen(GDK_WINDOW_XDISPLAY(GDK_ROOT_PARENT())));
       gdk_vis = gdkx_visual_get(XVisualIDFromVisual(vis));
-      cmap = evas_get_optimal_colormap(workspace_get_evas(),
-				       GDK_WINDOW_XDISPLAY(GDK_ROOT_PARENT()));
+      cmap = DefaultColormap(GDK_WINDOW_XDISPLAY(GDK_ROOT_PARENT()), DefaultScreen(GDK_WINDOW_XDISPLAY(GDK_ROOT_PARENT())));
       gdk_cmap = gdkx_colormap_get(cmap);
       /* workaround for bug in gdk - well oversight in api */
       ((GdkColormapPrivate *) gdk_cmap)->visual = gdk_vis;

@@ -59,6 +59,12 @@ on_file_ok_clicked(GtkButton * button, gpointer user_data)
 	     workspace_add_etching(e);
 	     workspace_set_current_etching(e);
 	  }
+	else
+	  {
+	    printf(" Open failed on file: >%s<", 
+		   gtk_file_selection_get_filename
+		   (GTK_FILE_SELECTION(top)));
+	  }
      }
    else if (gtk_object_get_data(GTK_OBJECT(top), "new_image"))
      {
@@ -447,7 +453,7 @@ on_etchings1_activate(GtkMenuItem * menuitem, gpointer user_data)
 void
 on_remove_state_clicked(GtkButton * button, gpointer user_data)
 {
-   Evas_Object         o;
+   Evas_Object *         o;
    GtkWidget          *w;
    gchar              *row_data = NULL;
 
@@ -637,3 +643,23 @@ on_state_entry_ok_clicked(GtkButton * button, gpointer user_data)
 
    gtk_clist_unselect_all(GTK_CLIST(clist));
 }
+
+void
+on_use_smart_size_clicked(GtkButton *button, gpointer user_data)
+{
+  GtkWidget          *w;
+
+  w = gtk_object_get_data(GTK_OBJECT(main_win), "use_smart_size");
+  E_DB_INT_SET(pref_get_config(), "/settings/smartsize", 
+	       gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(w)));
+  e_db_flush();
+
+}
+
+void
+on_smartsize_set_clicked               (GtkButton       *button,
+                                        gpointer         user_data)
+{
+  workspace_smart_size_selected();
+}
+

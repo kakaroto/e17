@@ -6,6 +6,7 @@
 
 #include <Evas.h>
 #include <Edb.h>
+#include <Evas_Engine_Software_X11.h>
 #include <gdk/gdkx.h>
 
 #include <stdio.h>
@@ -28,45 +29,45 @@
 
 typedef struct workspace
 {
-   Evas_List           etchings;
+   Evas_List *           etchings;
    Etching            *e;
 
-   Evas                view_evas;
+   Evas *                view_evas;
    guint               current_idle;
 
    int                 new_evas;
 
    struct
    {
-      Evas_Object         grid, bg_rect;
+      Evas_Object         *grid, *bg_rect;
 
       struct
       {
-	 Evas_Object         tl, tr, bl, br;
+	 Evas_Object         *tl, *tr, *bl, *br;
       }
       handles;
       struct
       {
-	 Evas_Object         l, r, t, b;
+	 Evas_Object         *l, *r, *t, *b;
       }
       border;
       struct
       {
-	 Evas_Object         l, r, t, b;
+	 Evas_Object         *l, *r, *t, *b;
       }
       selection;
       struct
       {
-	 Evas_Object         abs, rel, adj;
+	 Evas_Object         *abs, *rel, *adj;
       }
       selection_tl;
       struct
       {
-	 Evas_Object         abs, rel, adj;
+	 Evas_Object         *abs, *rel, *adj;
       }
       selection_br;
 
-      Evas_Object         pointer, backing, sel;
+      Evas_Object         *pointer, *backing, *sel;
    }
    obj;
 
@@ -80,29 +81,29 @@ Workspace;
 
 Workspace           ws;
 
-static void         handle_bg_mouse_down(void *_data, Evas _e, Evas_Object _o,
-					 int _b, int _x, int _y);
-static void         handle_mouse_down(void *_data, Evas _e, Evas_Object _o,
-				      int _b, int _x, int _y);
-static void         handle_mouse_up(void *_data, Evas _e, Evas_Object _o,
-				    int _b, int _x, int _y);
-static void         handle_mouse_move(void *_data, Evas _e, Evas_Object _o,
-				      int _b, int _x, int _y);
-static void         handle_bit_mouse_down(void *_data, Evas _e, Evas_Object _o,
-					  int _b, int _x, int _y);
-static void         handle_bit_mouse_up(void *_data, Evas _e, Evas_Object _o,
-					int _b, int _x, int _y);
-static void         handle_bit_mouse_move(void *_data, Evas _e, Evas_Object _o,
-					  int _b, int _x, int _y);
-static void         handle_adjuster_mouse_down(void *_data, Evas _e,
-					       Evas_Object _o, int _b, int _x,
-					       int _y);
-static void         handle_adjuster_mouse_up(void *_data, Evas _e,
-					     Evas_Object _o, int _b, int _x,
-					     int _y);
-static void         handle_adjuster_mouse_move(void *_data, Evas _e,
-					       Evas_Object _o, int _b, int _x,
-					       int _y);
+static void         handle_bg_mouse_down(void *_data, Evas * _e, Evas_Object * _o,
+					 void *ev_info);
+static void         handle_mouse_down(void *_data, Evas * _e, Evas_Object * _o,
+				      void *ev_info);
+static void         handle_mouse_up(void *_data, Evas * _e, Evas_Object * _o,
+				    void *ev_info);
+static void         handle_mouse_move(void *_data, Evas * _e, Evas_Object * _o,
+				      void *ev_info);
+static void         handle_bit_mouse_down(void *_data, Evas * _e, Evas_Object * _o,
+					  void *ev_info);
+static void         handle_bit_mouse_up(void *_data, Evas * _e, Evas_Object * _o,
+					void *ev_info);
+static void         handle_bit_mouse_move(void *_data, Evas * _e, Evas_Object * _o,
+					  void *ev_info);
+static void         handle_adjuster_mouse_down(void *_data, Evas * _e,
+					       Evas_Object * _o,
+					       void *ev_info);
+static void         handle_adjuster_mouse_up(void *_data, Evas * _e,
+					     Evas_Object * _o,
+					     void *ev_info);
+static void         handle_adjuster_mouse_move(void *_data, Evas * _e,
+					       Evas_Object * _o,
+					       void *ev_info);
 
 static gint         workspace_create_handles(gpointer data);
 static gint         workspace_configure_handles(gpointer data);
@@ -163,10 +164,14 @@ workspace_init(void)
    ws.new_evas = 1;
    ws.view_evas = evas_new();
    ws.color = Red;
+#if 0
    if (pref_get_render_method() == Hardware)
       evas_set_output_method(ws.view_evas, RENDER_METHOD_3D_HARDWARE);
    else
-      evas_set_output_method(ws.view_evas, RENDER_METHOD_ALPHA_SOFTWARE);
+#endif
+     evas_output_method_set(ws.view_evas, 
+			    evas_render_method_lookup("software_x11"));
+
 }
 
 void
@@ -204,7 +209,7 @@ void
 workspace_set_current_etching(Etching * e)
 {
    GtkWidget          *w;
-   Evas_List           l;
+   Evas_List *           l;
    Ebits_Object        bits;
 
    if (e)
@@ -233,14 +238,17 @@ workspace_set_current_etching(Etching * e)
 	     Ebits_Object_Bit_State state;
 
 	     state = l->data;
-	     evas_callback_add(ws.view_evas, state->object,
-			       CALLBACK_MOUSE_DOWN,
+	     if( state && state->object )
+	       {
+	     evas_object_event_callback_add(state->object,
+			       EVAS_CALLBACK_MOUSE_DOWN,
 			       handle_bit_mouse_down, state);
-	     evas_callback_add(ws.view_evas, state->object,
-			       CALLBACK_MOUSE_UP, handle_bit_mouse_up, state);
-	     evas_callback_add(ws.view_evas, state->object,
-			       CALLBACK_MOUSE_MOVE,
+	     evas_object_event_callback_add(state->object,
+			       EVAS_CALLBACK_MOUSE_UP, handle_bit_mouse_up, state);
+	     evas_object_event_callback_add(state->object,
+			       EVAS_CALLBACK_MOUSE_MOVE,
 			       handle_bit_mouse_move, state);
+	       }
 	  }
 
 	gtk_clist_freeze(GTK_CLIST(w));
@@ -304,7 +312,7 @@ workspace_remove_etching(Etching * e)
      }
 }
 
-Evas
+Evas *
 workspace_get_evas(void)
 {
    return ws.view_evas;
@@ -314,7 +322,7 @@ void
 workspace_add_item(char *filename)
 {
    Ebits_Object_Bit_State state;
-   Evas_List           l;
+   Evas_List *           l;
    char                buf[512];
    int                 num, exists;
 
@@ -322,12 +330,28 @@ workspace_add_item(char *filename)
       return;
 
    state = ebits_new_bit(etching_get_bits(ws.e), filename);
-   evas_callback_add(ws.view_evas, state->object, CALLBACK_MOUSE_DOWN,
-		     handle_bit_mouse_down, state);
-   evas_callback_add(ws.view_evas, state->object, CALLBACK_MOUSE_UP,
-		     handle_bit_mouse_up, state);
-   evas_callback_add(ws.view_evas, state->object, CALLBACK_MOUSE_MOVE,
-		     handle_bit_mouse_move, state);
+   if(state->object)
+     {
+       GtkWidget          *w;
+
+       evas_object_event_callback_add(state->object, EVAS_CALLBACK_MOUSE_DOWN,
+				      handle_bit_mouse_down, state);
+       evas_object_event_callback_add(state->object, EVAS_CALLBACK_MOUSE_UP,
+				      handle_bit_mouse_up, state);
+       evas_object_event_callback_add(state->object, EVAS_CALLBACK_MOUSE_MOVE,
+				      handle_bit_mouse_move, state);
+
+       w = gtk_object_get_data(GTK_OBJECT(main_win), "use_smart_size");
+       if( gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(w)))
+	 {
+	   workspace_image_smart_size(state);
+	 }
+     }
+   else
+     {
+       printf("workspace_add_item(): failed to load ebit >%s<\n",
+	      filename);
+     }
    workspace_queue_draw();
 
    exists = 1;
@@ -354,10 +378,15 @@ workspace_add_item(char *filename)
 
    state->description->name = strdup(buf);
 
+   etching_set_selected_item(ws.e, state);
+
    workspace_update_relative_combos();
    workspace_update_image_list();
    workspace_update_sync_list();
    etching_set_dirty(ws.e);
+   workspace_update_visible_selection();
+   workspace_update_widget_from_selection();
+   workspace_queue_draw();
 
    E_DB_STR_SET(pref_get_config(), "/paths/image", filename);
    e_db_flush();
@@ -379,7 +408,7 @@ void
 workspace_update_states(void)
 {
    Ebits_Object        o;
-   Evas_List           l;
+   Evas_List *           l;
    GtkWidget          *states, *states2;
    gchar              *text;
 
@@ -434,7 +463,7 @@ workspace_update_selection_from_widget(void)
 
    if (selected)
      {
-	Evas_List           l, ll;
+	Evas_List          *l, *ll;
 	gchar              *prev_i1 = NULL, *prev_i2 = NULL, *prev_i3 =
 	   NULL, *prev_i4 = NULL, key[4096];
 
@@ -488,7 +517,7 @@ workspace_update_selection_from_widget(void)
 
 	if (selected->description->sync)
 	  {
-	     Evas_List           ll;
+	     Evas_List *           ll;
 
 	     for (ll = selected->description->sync; ll; ll = ll->next)
 		free(ll->data);
@@ -700,7 +729,7 @@ workspace_update_widget_from_selection(void)
    if (selected)
      {
 
-	/* update_relative_combos(); */
+        workspace_update_relative_combos(); 
 
 	w = gtk_object_get_data(GTK_OBJECT(main_win), "properties");
 	gtk_widget_set_sensitive(w, 1);
@@ -785,7 +814,7 @@ workspace_update_widget_from_selection(void)
 			    g_strdup(selected->description->disabled.image));
 
 	{
-	   Evas_List           l;
+	   Evas_List *           l;
 
 	   for (l = selected->description->state_description; l; l = l->next)
 	     {
@@ -845,18 +874,18 @@ workspace_update_visible_selection(void)
      {
 	int                 w, h;
 
-	evas_move(ws.view_evas, ws.obj.sel,
+	evas_object_move(ws.obj.sel,
 		  selected_state->o->state.x + selected_state->x,
 		  selected_state->o->state.y + selected_state->y);
-	evas_resize(ws.view_evas, ws.obj.sel, selected_state->w,
+	evas_object_resize(ws.obj.sel, selected_state->w,
 		    selected_state->h);
-	evas_set_line_xy(ws.view_evas, ws.obj.selection.l,
+	evas_object_line_xy_set(ws.obj.selection.l,
 			 selected_state->o->state.x + selected_state->x,
 			 selected_state->o->state.y + selected_state->y,
 			 selected_state->o->state.x + selected_state->x,
 			 selected_state->o->state.y +
 			 selected_state->y + selected_state->h - 1);
-	evas_set_line_xy(ws.view_evas, ws.obj.selection.r,
+	evas_object_line_xy_set(ws.obj.selection.r,
 			 selected_state->o->state.x +
 			 selected_state->x + selected_state->w - 1,
 			 selected_state->o->state.y + selected_state->y,
@@ -864,13 +893,13 @@ workspace_update_visible_selection(void)
 			 selected_state->x + selected_state->w - 1,
 			 selected_state->o->state.y +
 			 selected_state->y + selected_state->h - 1);
-	evas_set_line_xy(ws.view_evas, ws.obj.selection.t,
+	evas_object_line_xy_set(ws.obj.selection.t,
 			 selected_state->o->state.x + selected_state->x,
 			 selected_state->o->state.y + selected_state->y,
 			 selected_state->o->state.x +
 			 selected_state->x + selected_state->w - 1,
 			 selected_state->o->state.y + selected_state->y);
-	evas_set_line_xy(ws.view_evas, ws.obj.selection.b,
+	evas_object_line_xy_set(ws.obj.selection.b,
 			 selected_state->o->state.x + selected_state->x,
 			 selected_state->o->state.y +
 			 selected_state->y + selected_state->h - 1,
@@ -878,62 +907,62 @@ workspace_update_visible_selection(void)
 			 selected_state->x + selected_state->w - 1,
 			 selected_state->o->state.y +
 			 selected_state->y + selected_state->h - 1);
-	evas_get_image_size(ws.view_evas, ws.obj.selection_tl.abs, &w, &h);
-	evas_move(ws.view_evas, ws.obj.selection_tl.abs,
+	evas_object_image_size_get(ws.obj.selection_tl.abs, &w, &h);
+	evas_object_move(ws.obj.selection_tl.abs,
 		  selected_state->o->state.x + selected_state->x - w,
 		  selected_state->o->state.y + selected_state->y - h);
-	evas_get_image_size(ws.view_evas, ws.obj.selection_tl.rel, &w, &h);
-	evas_move(ws.view_evas, ws.obj.selection_tl.rel,
+	evas_object_image_size_get(ws.obj.selection_tl.rel, &w, &h);
+	evas_object_move(ws.obj.selection_tl.rel,
 		  selected_state->o->state.x + selected_state->x - w,
 		  selected_state->o->state.y + selected_state->y);
-	evas_get_image_size(ws.view_evas, ws.obj.selection_tl.adj, &w, &h);
-	evas_move(ws.view_evas, ws.obj.selection_tl.adj,
+	evas_object_image_size_get(ws.obj.selection_tl.adj, &w, &h);
+	evas_object_move(ws.obj.selection_tl.adj,
 		  selected_state->o->state.x + selected_state->x,
 		  selected_state->o->state.y + selected_state->y - h);
 
-	evas_get_image_size(ws.view_evas, ws.obj.selection_br.abs, &w, &h);
-	evas_move(ws.view_evas, ws.obj.selection_br.abs,
+	evas_object_image_size_get(ws.obj.selection_br.abs, &w, &h);
+	evas_object_move(ws.obj.selection_br.abs,
 		  selected_state->o->state.x + selected_state->x +
 		  selected_state->w,
 		  selected_state->o->state.y + selected_state->y +
 		  selected_state->h);
-	evas_get_image_size(ws.view_evas, ws.obj.selection_br.rel, &w, &h);
-	evas_move(ws.view_evas, ws.obj.selection_br.rel,
+	evas_object_image_size_get(ws.obj.selection_br.rel, &w, &h);
+	evas_object_move(ws.obj.selection_br.rel,
 		  selected_state->o->state.x + selected_state->x +
 		  selected_state->w,
 		  selected_state->o->state.y + selected_state->y +
 		  selected_state->h - h);
-	evas_get_image_size(ws.view_evas, ws.obj.selection_br.adj, &w, &h);
-	evas_move(ws.view_evas, ws.obj.selection_br.adj,
+	evas_object_image_size_get(ws.obj.selection_br.adj, &w, &h);
+	evas_object_move(ws.obj.selection_br.adj,
 		  selected_state->o->state.x + selected_state->x +
 		  selected_state->w - w,
 		  selected_state->o->state.y + selected_state->y +
 		  selected_state->h);
-	evas_show(ws.view_evas, ws.obj.sel);
-	evas_show(ws.view_evas, ws.obj.selection.l);
-	evas_show(ws.view_evas, ws.obj.selection.r);
-	evas_show(ws.view_evas, ws.obj.selection.t);
-	evas_show(ws.view_evas, ws.obj.selection.b);
-	evas_show(ws.view_evas, ws.obj.selection_tl.abs);
-	evas_show(ws.view_evas, ws.obj.selection_tl.rel);
-	evas_show(ws.view_evas, ws.obj.selection_tl.adj);
-	evas_show(ws.view_evas, ws.obj.selection_br.abs);
-	evas_show(ws.view_evas, ws.obj.selection_br.rel);
-	evas_show(ws.view_evas, ws.obj.selection_br.adj);
+	evas_object_show(ws.obj.sel);
+	evas_object_show(ws.obj.selection.l);
+	evas_object_show(ws.obj.selection.r);
+	evas_object_show(ws.obj.selection.t);
+	evas_object_show(ws.obj.selection.b);
+	evas_object_show(ws.obj.selection_tl.abs);
+	evas_object_show(ws.obj.selection_tl.rel);
+	evas_object_show(ws.obj.selection_tl.adj);
+	evas_object_show(ws.obj.selection_br.abs);
+	evas_object_show(ws.obj.selection_br.rel);
+	evas_object_show(ws.obj.selection_br.adj);
      }
    else
      {
-	evas_hide(ws.view_evas, ws.obj.sel);
-	evas_hide(ws.view_evas, ws.obj.selection.l);
-	evas_hide(ws.view_evas, ws.obj.selection.r);
-	evas_hide(ws.view_evas, ws.obj.selection.t);
-	evas_hide(ws.view_evas, ws.obj.selection.b);
-	evas_hide(ws.view_evas, ws.obj.selection_tl.abs);
-	evas_hide(ws.view_evas, ws.obj.selection_tl.rel);
-	evas_hide(ws.view_evas, ws.obj.selection_tl.adj);
-	evas_hide(ws.view_evas, ws.obj.selection_br.abs);
-	evas_hide(ws.view_evas, ws.obj.selection_br.rel);
-	evas_hide(ws.view_evas, ws.obj.selection_br.adj);
+	evas_object_hide(ws.obj.sel);
+	evas_object_hide(ws.obj.selection.l);
+	evas_object_hide(ws.obj.selection.r);
+	evas_object_hide(ws.obj.selection.t);
+	evas_object_hide(ws.obj.selection.b);
+	evas_object_hide(ws.obj.selection_tl.abs);
+	evas_object_hide(ws.obj.selection_tl.rel);
+	evas_object_hide(ws.obj.selection_tl.adj);
+	evas_object_hide(ws.obj.selection_br.abs);
+	evas_object_hide(ws.obj.selection_br.rel);
+	evas_object_hide(ws.obj.selection_br.adj);
      }
 }
 
@@ -942,7 +971,7 @@ workspace_update_relative_combos(void)
 {
    GtkWidget          *w;
    GList              *bitnames = NULL;
-   Evas_List           l;
+   Evas_List *           l;
 
    for (l = etching_get_bits(ws.e)->bits; l; l = l->next)
      {
@@ -972,7 +1001,7 @@ void
 workspace_update_image_list(void)
 {
    GtkWidget          *w;
-   Evas_List           l = NULL;
+   Evas_List *           l = NULL;
 
    w = gtk_object_get_data(GTK_OBJECT(main_win), "images");
 
@@ -1014,7 +1043,7 @@ workspace_update_sync_list(void)
 	gtk_clist_clear(GTK_CLIST(w));
 
 	{
-	   Evas_List           l = NULL, ll = NULL;
+	   Evas_List          *l = NULL, *ll = NULL;
 
 	   for (l =
 		etching_get_selected_item(ws.e)->o->description->
@@ -1051,7 +1080,11 @@ workspace_update_sync_list(void)
 gint
 workspace_redraw(gpointer data)
 {
+  if (ws.new_evas){}
+  else
+    {
    evas_render(ws.view_evas);
+    }
    workspace_zoom_redraw(ws.zoom_x, ws.zoom_y);
    ws.current_idle = 0;
 
@@ -1145,8 +1178,8 @@ workspace_zoom_out(void)
 }
 
 static void
-handle_bg_mouse_down(void *_data, Evas _e, Evas_Object _o, int _b, int _x,
-		     int _y)
+handle_bg_mouse_down(void *_data, Evas * _e, Evas_Object * _o,
+		     void *ev_info)
 {
    etching_set_selected_item(ws.e, NULL);
    workspace_update_widget_from_selection();
@@ -1155,11 +1188,13 @@ handle_bg_mouse_down(void *_data, Evas _e, Evas_Object _o, int _b, int _x,
 }
 
 static void
-handle_mouse_down(void *_data, Evas _e, Evas_Object _o, int _b, int _x, int _y)
+handle_mouse_down(void *_data, Evas * _e, Evas_Object * _o, void *ev_info)
 {
-   evas_put_data(_e, _o, "clicked", (void *)1);
-   evas_put_data(_e, _o, "x", (void *)_x);
-   evas_put_data(_e, _o, "y", (void *)_y);
+   Evas_Event_Mouse_Down *event_info = ev_info;
+
+   evas_object_data_set(_o, "clicked", (void *)1);
+   evas_object_data_set(_o, "x", (void *)event_info->output.x);
+   evas_object_data_set(_o, "y", (void *)event_info->output.y);
 
    workspace_update_widget_from_selection();
    workspace_update_visible_selection();
@@ -1167,28 +1202,31 @@ handle_mouse_down(void *_data, Evas _e, Evas_Object _o, int _b, int _x, int _y)
 }
 
 static void
-handle_mouse_up(void *_data, Evas _e, Evas_Object _o, int _b, int _x, int _y)
+handle_mouse_up(void *_data, Evas * _e, Evas_Object * _o, void *ev_info)
 {
-   evas_remove_data(_e, _o, "clicked");
+   evas_object_data_del(_o, "clicked");
 }
 
 static void
-handle_mouse_move(void *_data, Evas _e, Evas_Object _o, int _b, int _x, int _y)
+handle_mouse_move(void *_data, Evas * _e, Evas_Object * _o, 
+		  void *ev_info)
 {
-   if (evas_get_data(_e, _o, "clicked"))
+   Evas_Event_Mouse_Move *event_info = ev_info;
+
+   if (evas_object_data_get(_o, "clicked"))
      {
 	int                 x, y;
 
-	x = (int)evas_get_data(_e, _o, "x");
-	y = (int)evas_get_data(_e, _o, "y");
-	evas_put_data(_e, _o, "x", (void *)_x);
-	evas_put_data(_e, _o, "y", (void *)_y);
+	x = (int)evas_object_data_get(_o, "x");
+	y = (int)evas_object_data_get(_o, "y");
+	evas_object_data_set(_o, "x", (void *)event_info->cur.output.x);
+	evas_object_data_set(_o, "y", (void *)event_info->cur.output.y);
 	if (_o == ws.obj.handles.tl)
 	  {
-	     ws.backing_x += (_x - x);
-	     ws.backing_y += (_y - y);
-	     ws.backing_w += (x - _x);
-	     ws.backing_h += (y - _y);
+	     ws.backing_x += (event_info->cur.output.x - x);
+	     ws.backing_y += (event_info->cur.output.y - y);
+	     ws.backing_w += (x - event_info->cur.output.x);
+	     ws.backing_h += (y - event_info->cur.output.y);
 	     if (ws.backing_w < 1)
 	       {
 		  ws.backing_x -= 1 - ws.backing_w;
@@ -1202,9 +1240,9 @@ handle_mouse_move(void *_data, Evas _e, Evas_Object _o, int _b, int _x, int _y)
 	  }
 	else if (_o == ws.obj.handles.tr)
 	  {
-	     ws.backing_y += (_y - y);
-	     ws.backing_w += (_x - x);
-	     ws.backing_h += (y - _y);
+	     ws.backing_y += (event_info->cur.output.y - y);
+	     ws.backing_w += (event_info->cur.output.x - x);
+	     ws.backing_h += (y - event_info->cur.output.y);
 	     if (ws.backing_w < 1)
 	       {
 		  ws.backing_w = 1;
@@ -1217,9 +1255,9 @@ handle_mouse_move(void *_data, Evas _e, Evas_Object _o, int _b, int _x, int _y)
 	  }
 	else if (_o == ws.obj.handles.bl)
 	  {
-	     ws.backing_x += (_x - x);
-	     ws.backing_w += (x - _x);
-	     ws.backing_h += (_y - y);
+	     ws.backing_x += (event_info->cur.output.x - x);
+	     ws.backing_w += (x - event_info->cur.output.x);
+	     ws.backing_h += (event_info->cur.output.y - y);
 	     if (ws.backing_w < 1)
 	       {
 		  ws.backing_x -= 1 - ws.backing_w;
@@ -1232,8 +1270,8 @@ handle_mouse_move(void *_data, Evas _e, Evas_Object _o, int _b, int _x, int _y)
 	  }
 	else if (_o == ws.obj.handles.br)
 	  {
-	     ws.backing_w += (_x - x);
-	     ws.backing_h += (_y - y);
+	     ws.backing_w += (event_info->cur.output.x - x);
+	     ws.backing_h += (event_info->cur.output.y - y);
 	     if (ws.backing_w < 1)
 	       {
 		  ws.backing_w = 1;
@@ -1245,8 +1283,8 @@ handle_mouse_move(void *_data, Evas _e, Evas_Object _o, int _b, int _x, int _y)
 	  }
 	else if (_o == ws.obj.backing)
 	  {
-	     ws.backing_x += (_x - x);
-	     ws.backing_y += (_y - y);
+	     ws.backing_x += (event_info->cur.output.x - x);
+	     ws.backing_y += (event_info->cur.output.y - y);
 	  }
 	workspace_configure_handles(NULL);
 	etching_set_dirty(ws.e);
@@ -1254,10 +1292,11 @@ handle_mouse_move(void *_data, Evas _e, Evas_Object _o, int _b, int _x, int _y)
 }
 
 static void
-handle_bit_mouse_down(void *_data, Evas _e, Evas_Object _o, int _b, int _x,
-		      int _y)
+handle_bit_mouse_down(void *_data, Evas * _e, Evas_Object * _o,
+		      void *ev_info)
 {
    Ebits_Object_Bit_State state;
+   Evas_Event_Mouse_Down *event_info = ev_info;
 
    state = _data;
    etching_set_selected_item(ws.e, state);
@@ -1265,9 +1304,9 @@ handle_bit_mouse_down(void *_data, Evas _e, Evas_Object _o, int _b, int _x,
    if (ws.draft_mode)
      {
 	workspace_update_visible_selection();
-	evas_put_data(_e, _o, "clicked", (void *)1);
-	evas_put_data(_e, _o, "x", (void *)_x);
-	evas_put_data(_e, _o, "y", (void *)_y);
+	evas_object_data_set(_o, "clicked", (void *)1);
+	evas_object_data_set(_o, "x", (void *)event_info->output.x);
+	evas_object_data_set(_o, "y", (void *)event_info->output.y);
      }
 
    workspace_update_image_list();
@@ -1277,36 +1316,36 @@ handle_bit_mouse_down(void *_data, Evas _e, Evas_Object _o, int _b, int _x,
 }
 
 static void
-handle_bit_mouse_up(void *_data, Evas _e, Evas_Object _o, int _b, int _x,
-		    int _y)
+handle_bit_mouse_up(void *_data, Evas * _e, Evas_Object * _o, void *ev_info)
 {
-   evas_remove_data(_e, _o, "clicked");
+   evas_object_data_del(_o, "clicked");
    workspace_queue_draw();
 }
 
 static void
-handle_bit_mouse_move(void *_data, Evas _e, Evas_Object _o, int _b, int _x,
-		      int _y)
+handle_bit_mouse_move(void *_data, Evas * _e, Evas_Object * _o,
+		      void *ev_info)
 {
    Ebits_Object_Bit_State selected_state;
    Ebits_Object        bits;
+   Evas_Event_Mouse_Move *event_info = ev_info;
    int                 x, y;
 
    if ((ws.draft_mode) && (selected_state = etching_get_selected_item(ws.e)))
      {
-	if (evas_get_data(_e, _o, "clicked"))
+	if (evas_object_data_get(_o, "clicked"))
 	  {
 	     bits = etching_get_bits(ws.e);
 
-	     x = (int)evas_get_data(_e, _o, "x");
-	     y = (int)evas_get_data(_e, _o, "y");
-	     evas_put_data(_e, _o, "x", (void *)_x);
-	     evas_put_data(_e, _o, "y", (void *)_y);
+	     x = (int)evas_object_data_get(_o, "x");
+	     y = (int)evas_object_data_get(_o, "y");
+	     evas_object_data_set(_o, "x", (void *)event_info->cur.output.x);
+	     evas_object_data_set(_o, "y", (void *)event_info->cur.output.y);
 
-	     selected_state->description->rel1.x += (_x - x);
-	     selected_state->description->rel1.y += (_y - y);
-	     selected_state->description->rel2.x += (_x - x);
-	     selected_state->description->rel2.y += (_y - y);
+	     selected_state->description->rel1.x += (event_info->cur.output.x - x);
+	     selected_state->description->rel1.y += (event_info->cur.output.y - y);
+	     selected_state->description->rel2.x += (event_info->cur.output.x - x);
+	     selected_state->description->rel2.y += (event_info->cur.output.y - y);
 
 	     ebits_move(bits, ws.backing_x, ws.backing_y);
 	     ebits_resize(bits, ws.backing_w + 10, ws.backing_h + 10);
@@ -1321,43 +1360,45 @@ handle_bit_mouse_move(void *_data, Evas _e, Evas_Object _o, int _b, int _x,
 }
 
 static void
-handle_adjuster_mouse_down(void *_data, Evas _e, Evas_Object _o, int _b, int _x,
-			   int _y)
+handle_adjuster_mouse_down(void *_data, Evas * _e, Evas_Object * _o,
+			   void *ev_info)
 {
-   evas_put_data(_e, _o, "clicked", (void *)1);
-   evas_put_data(_e, _o, "x", (void *)_x);
-   evas_put_data(_e, _o, "y", (void *)_y);
+   Evas_Event_Mouse_Down *event_info = ev_info;
+
+   evas_object_data_set(_o, "clicked", (void *)1);
+   evas_object_data_set(_o, "x", (void *)event_info->output.x);
+   evas_object_data_set(_o, "y", (void *)event_info->output.y);
    workspace_queue_draw();
 }
 
 static void
-handle_adjuster_mouse_up(void *_data, Evas _e, Evas_Object _o, int _b, int _x,
-			 int _y)
+handle_adjuster_mouse_up(void *_data, Evas * _e, Evas_Object * _o, void *ev_info)
 {
-   evas_remove_data(_e, _o, "clicked");
+   evas_object_data_del(_o, "clicked");
    workspace_queue_draw();
 }
 
 static void
-handle_adjuster_mouse_move(void *_data, Evas _e, Evas_Object _o, int _b, int _x,
-			   int _y)
+handle_adjuster_mouse_move(void *_data, Evas * _e, Evas_Object * _o,
+			   void *ev_info)
 {
    Ebits_Object_Bit_State state;
    Ebits_Object_Bit_State selected_state;
    Ebits_Object        bits;
+   Evas_Event_Mouse_Move *event_info = ev_info;
    int                 x, y, dx, dy;
 
-   if (evas_get_data(_e, _o, "clicked"))
+   if (evas_object_data_get(_o, "clicked"))
      {
 	selected_state = etching_get_selected_item(ws.e);
 	bits = etching_get_bits(ws.e);
 
-	x = (int)evas_get_data(_e, _o, "x");
-	y = (int)evas_get_data(_e, _o, "y");
-	evas_put_data(_e, _o, "x", (void *)_x);
-	evas_put_data(_e, _o, "y", (void *)_y);
-	dx = (_x - x);
-	dy = (_y - y);
+	x = (int)evas_object_data_get(_o, "x");
+	y = (int)evas_object_data_get(_o, "y");
+	evas_object_data_set(_o, "x", (void *)event_info->cur.output.x);
+	evas_object_data_set(_o, "y", (void *)event_info->cur.output.y);
+	dx = (event_info->cur.output.x - x);
+	dy = (event_info->cur.output.y - y);
 
 	if (_o == ws.obj.selection_tl.abs)
 	  {
@@ -1477,36 +1518,36 @@ workspace_configure_handles(gpointer data)
 	ws.backing_h = bits->state.h;
      }
 
-   evas_get_image_size(ws.view_evas, ws.obj.handles.tl, &w, &h);
-   evas_move(ws.view_evas, ws.obj.handles.tl, ws.backing_x - w,
+   evas_object_image_size_get(ws.obj.handles.tl, &w, &h);
+   evas_object_move(ws.obj.handles.tl, ws.backing_x - w,
 	     ws.backing_y - h);
 
-   evas_get_image_size(ws.view_evas, ws.obj.handles.tr, &w, &h);
-   evas_move(ws.view_evas, ws.obj.handles.tr, ws.backing_x + ws.backing_w,
+   evas_object_image_size_get(ws.obj.handles.tr, &w, &h);
+   evas_object_move(ws.obj.handles.tr, ws.backing_x + ws.backing_w,
 	     ws.backing_y - h);
 
-   evas_get_image_size(ws.view_evas, ws.obj.handles.bl, &w, &h);
-   evas_move(ws.view_evas, ws.obj.handles.bl, ws.backing_x - w,
+   evas_object_image_size_get(ws.obj.handles.bl, &w, &h);
+   evas_object_move(ws.obj.handles.bl, ws.backing_x - w,
 	     ws.backing_y + ws.backing_h);
 
-   evas_get_image_size(ws.view_evas, ws.obj.handles.br, &w, &h);
-   evas_move(ws.view_evas, ws.obj.handles.br, ws.backing_x + ws.backing_w,
+   evas_object_image_size_get(ws.obj.handles.br, &w, &h);
+   evas_object_move(ws.obj.handles.br, ws.backing_x + ws.backing_w,
 	     ws.backing_y + ws.backing_h);
 
-   evas_move(ws.view_evas, ws.obj.backing, ws.backing_x - 1, ws.backing_y - 1);
-   evas_resize(ws.view_evas, ws.obj.backing, ws.backing_w + 2,
+   evas_object_move(ws.obj.backing, ws.backing_x - 1, ws.backing_y - 1);
+   evas_object_resize(ws.obj.backing, ws.backing_w + 2,
 	       ws.backing_h + 2);
 
-   evas_set_line_xy(ws.view_evas, ws.obj.border.l,
+   evas_object_line_xy_set(ws.obj.border.l,
 		    ws.backing_x - 1, ws.backing_y - 1,
 		    ws.backing_x - 1, ws.backing_y + ws.backing_h);
-   evas_set_line_xy(ws.view_evas, ws.obj.border.t,
+   evas_object_line_xy_set(ws.obj.border.t,
 		    ws.backing_x - 1, ws.backing_y - 1,
 		    ws.backing_x + ws.backing_w, ws.backing_y - 1);
-   evas_set_line_xy(ws.view_evas, ws.obj.border.b,
+   evas_object_line_xy_set(ws.obj.border.b,
 		    ws.backing_x - 1, ws.backing_y + ws.backing_h,
 		    ws.backing_x + ws.backing_w, ws.backing_y + ws.backing_h);
-   evas_set_line_xy(ws.view_evas, ws.obj.border.r,
+   evas_object_line_xy_set(ws.obj.border.r,
 		    ws.backing_x + ws.backing_w, ws.backing_y - 1,
 		    ws.backing_x + ws.backing_w, ws.backing_y + ws.backing_h);
 
@@ -1533,67 +1574,77 @@ workspace_configure_handles(gpointer data)
 static              gint
 workspace_create_handles(gpointer data)
 {
-   evas_show(ws.view_evas, ws.obj.handles.tl =
-	     evas_add_image_from_file(ws.view_evas,
-				      PACKAGE_DATA_DIR "/pixmaps/handle1.png"));
-   evas_show(ws.view_evas, ws.obj.handles.tr =
-	     evas_add_image_from_file(ws.view_evas,
-				      PACKAGE_DATA_DIR "/pixmaps/handle2.png"));
-   evas_show(ws.view_evas, ws.obj.handles.bl =
-	     evas_add_image_from_file(ws.view_evas,
-				      PACKAGE_DATA_DIR "/pixmaps/handle3.png"));
-   evas_show(ws.view_evas, ws.obj.handles.br =
-	     evas_add_image_from_file(ws.view_evas,
-				      PACKAGE_DATA_DIR "/pixmaps/handle4.png"));
-   evas_show(ws.view_evas, ws.obj.border.l = evas_add_line(ws.view_evas));
-   evas_show(ws.view_evas, ws.obj.border.t = evas_add_line(ws.view_evas));
-   evas_show(ws.view_evas, ws.obj.border.b = evas_add_line(ws.view_evas));
-   evas_show(ws.view_evas, ws.obj.border.r = evas_add_line(ws.view_evas));
-   evas_show(ws.view_evas, ws.obj.backing =
-	     evas_add_image_from_file(ws.view_evas,
-				      PACKAGE_DATA_DIR "/pixmaps/backing.png"));
-   evas_set_color(ws.view_evas, ws.obj.border.l, 0, 0, 0, 255);
-   evas_set_color(ws.view_evas, ws.obj.border.t, 0, 0, 0, 255);
-   evas_set_color(ws.view_evas, ws.obj.border.b, 0, 0, 0, 255);
-   evas_set_color(ws.view_evas, ws.obj.border.r, 0, 0, 0, 255);
-   evas_set_layer(ws.view_evas, ws.obj.handles.tl, 5);
-   evas_set_layer(ws.view_evas, ws.obj.handles.tr, 5);
-   evas_set_layer(ws.view_evas, ws.obj.handles.bl, 5);
-   evas_set_layer(ws.view_evas, ws.obj.handles.br, 5);
-   evas_set_layer(ws.view_evas, ws.obj.border.l, 4);
-   evas_set_layer(ws.view_evas, ws.obj.border.t, 4);
-   evas_set_layer(ws.view_evas, ws.obj.border.b, 4);
-   evas_set_layer(ws.view_evas, ws.obj.border.r, 4);
-   evas_set_layer(ws.view_evas, ws.obj.backing, 3);
-   evas_callback_add(ws.view_evas, ws.obj.handles.tl, CALLBACK_MOUSE_DOWN,
+   ws.obj.handles.tl = evas_object_image_add(ws.view_evas); 
+   e_evas_object_image_file_set( ws.obj.handles.tl,
+			       PACKAGE_DATA_DIR "/pixmaps/handle1.png", NULL);
+   evas_object_show(ws.obj.handles.tl);
+
+   ws.obj.handles.tr = evas_object_image_add(ws.view_evas); 
+   e_evas_object_image_file_set( ws.obj.handles.tr,
+			       PACKAGE_DATA_DIR "/pixmaps/handle2.png", NULL);
+   evas_object_show(ws.obj.handles.tr);
+
+   ws.obj.handles.bl = evas_object_image_add(ws.view_evas); 
+   e_evas_object_image_file_set( ws.obj.handles.bl,
+			       PACKAGE_DATA_DIR "/pixmaps/handle3.png", NULL);
+   evas_object_show(ws.obj.handles.bl);
+
+   ws.obj.handles.br = evas_object_image_add(ws.view_evas); 
+   e_evas_object_image_file_set( ws.obj.handles.br,
+			       PACKAGE_DATA_DIR "/pixmaps/handle4.png", NULL);
+   evas_object_show(ws.obj.handles.br);
+
+   evas_object_show(ws.obj.border.l = evas_object_line_add(ws.view_evas));
+   evas_object_show(ws.obj.border.t = evas_object_line_add(ws.view_evas));
+   evas_object_show(ws.obj.border.b = evas_object_line_add(ws.view_evas));
+   evas_object_show(ws.obj.border.r = evas_object_line_add(ws.view_evas));
+   ws.obj.backing = evas_object_image_add(ws.view_evas); 
+   e_evas_object_image_file_set( ws.obj.backing,
+			       PACKAGE_DATA_DIR "/pixmaps/backing.png", NULL);
+   evas_object_show(ws.obj.backing);
+
+   evas_object_color_set(ws.obj.border.l, 0, 0, 0, 255);
+   evas_object_color_set(ws.obj.border.t, 0, 0, 0, 255);
+   evas_object_color_set(ws.obj.border.b, 0, 0, 0, 255);
+   evas_object_color_set(ws.obj.border.r, 0, 0, 0, 255);
+   evas_object_layer_set(ws.obj.handles.tl, 5);
+   evas_object_layer_set(ws.obj.handles.tr, 5);
+   evas_object_layer_set(ws.obj.handles.bl, 5);
+   evas_object_layer_set(ws.obj.handles.br, 5);
+   evas_object_layer_set(ws.obj.border.l, 4);
+   evas_object_layer_set(ws.obj.border.t, 4);
+   evas_object_layer_set(ws.obj.border.b, 4);
+   evas_object_layer_set(ws.obj.border.r, 4);
+   evas_object_layer_set(ws.obj.backing, 3);
+   evas_object_event_callback_add(ws.obj.handles.tl, EVAS_CALLBACK_MOUSE_DOWN,
 		     handle_mouse_down, NULL);
-   evas_callback_add(ws.view_evas, ws.obj.handles.tl, CALLBACK_MOUSE_UP,
+   evas_object_event_callback_add(ws.obj.handles.tl, EVAS_CALLBACK_MOUSE_UP,
 		     handle_mouse_up, NULL);
-   evas_callback_add(ws.view_evas, ws.obj.handles.tl, CALLBACK_MOUSE_MOVE,
+   evas_object_event_callback_add(ws.obj.handles.tl, EVAS_CALLBACK_MOUSE_MOVE,
 		     handle_mouse_move, NULL);
-   evas_callback_add(ws.view_evas, ws.obj.handles.tr, CALLBACK_MOUSE_DOWN,
+   evas_object_event_callback_add(ws.obj.handles.tr, EVAS_CALLBACK_MOUSE_DOWN,
 		     handle_mouse_down, NULL);
-   evas_callback_add(ws.view_evas, ws.obj.handles.tr, CALLBACK_MOUSE_UP,
+   evas_object_event_callback_add(ws.obj.handles.tr, EVAS_CALLBACK_MOUSE_UP,
 		     handle_mouse_up, NULL);
-   evas_callback_add(ws.view_evas, ws.obj.handles.tr, CALLBACK_MOUSE_MOVE,
+   evas_object_event_callback_add(ws.obj.handles.tr, EVAS_CALLBACK_MOUSE_MOVE,
 		     handle_mouse_move, NULL);
-   evas_callback_add(ws.view_evas, ws.obj.handles.bl, CALLBACK_MOUSE_DOWN,
+   evas_object_event_callback_add(ws.obj.handles.bl, EVAS_CALLBACK_MOUSE_DOWN,
 		     handle_mouse_down, NULL);
-   evas_callback_add(ws.view_evas, ws.obj.handles.bl, CALLBACK_MOUSE_UP,
+   evas_object_event_callback_add(ws.obj.handles.bl, EVAS_CALLBACK_MOUSE_UP,
 		     handle_mouse_up, NULL);
-   evas_callback_add(ws.view_evas, ws.obj.handles.bl, CALLBACK_MOUSE_MOVE,
+   evas_object_event_callback_add(ws.obj.handles.bl, EVAS_CALLBACK_MOUSE_MOVE,
 		     handle_mouse_move, NULL);
-   evas_callback_add(ws.view_evas, ws.obj.handles.br, CALLBACK_MOUSE_DOWN,
+   evas_object_event_callback_add(ws.obj.handles.br, EVAS_CALLBACK_MOUSE_DOWN,
 		     handle_mouse_down, NULL);
-   evas_callback_add(ws.view_evas, ws.obj.handles.br, CALLBACK_MOUSE_UP,
+   evas_object_event_callback_add(ws.obj.handles.br, EVAS_CALLBACK_MOUSE_UP,
 		     handle_mouse_up, NULL);
-   evas_callback_add(ws.view_evas, ws.obj.handles.br, CALLBACK_MOUSE_MOVE,
+   evas_object_event_callback_add(ws.obj.handles.br, EVAS_CALLBACK_MOUSE_MOVE,
 		     handle_mouse_move, NULL);
-   evas_callback_add(ws.view_evas, ws.obj.backing, CALLBACK_MOUSE_DOWN,
+   evas_object_event_callback_add(ws.obj.backing, EVAS_CALLBACK_MOUSE_DOWN,
 		     handle_mouse_down, NULL);
-   evas_callback_add(ws.view_evas, ws.obj.backing, CALLBACK_MOUSE_UP,
+   evas_object_event_callback_add(ws.obj.backing, EVAS_CALLBACK_MOUSE_UP,
 		     handle_mouse_up, NULL);
-   evas_callback_add(ws.view_evas, ws.obj.backing, CALLBACK_MOUSE_MOVE,
+   evas_object_event_callback_add(ws.obj.backing, EVAS_CALLBACK_MOUSE_MOVE,
 		     handle_mouse_move, NULL);
 
    workspace_configure_handles(NULL);
@@ -1603,25 +1654,23 @@ workspace_create_handles(gpointer data)
 void
 workspace_set_grid_image(char *filename)
 {
-   int                 ww, hh, ok, r, g, b;
+   int                 ok, r, g, b;
 
    if (!filename)
       return;
 
    E_DB_STR_SET(pref_get_config(), "/grid/image", filename);
 
-   evas_set_image_file(ws.view_evas, ws.obj.grid, filename);
-   evas_get_image_size(ws.view_evas, ws.obj.grid, &ww, &hh);
-   evas_set_image_fill(ws.view_evas, ws.obj.grid, 0, 0, ww, hh);
-   evas_move(ws.view_evas, ws.obj.grid, 0, 0);
-   evas_resize(ws.view_evas, ws.obj.grid, 9999, 9999);
+   e_evas_object_image_file_set(ws.obj.grid, filename, NULL);
+   evas_object_move(ws.obj.grid, 0, 0);
+   evas_object_resize(ws.obj.grid, 9999, 9999);
    ok = 0;
    E_DB_INT_GET(pref_get_config(), "/grid/r", r, ok);
    E_DB_INT_GET(pref_get_config(), "/grid/g", g, ok);
    E_DB_INT_GET(pref_get_config(), "/grid/b", b, ok);
 
    if (ok)
-      evas_set_color(ws.view_evas, ws.obj.grid, r, g, b, 255);
+      evas_object_color_set(ws.obj.grid, r, g, b, 255);
 
    e_db_flush();
 }
@@ -1629,7 +1678,7 @@ workspace_set_grid_image(char *filename)
 void
 workspace_set_grid_tint(int r, int g, int b)
 {
-   evas_set_color(ws.view_evas, ws.obj.grid, r, g, b, 255);
+   evas_object_color_set(ws.obj.grid, r, g, b, 255);
    workspace_queue_draw();
 }
 
@@ -1640,22 +1689,22 @@ workspace_move_to(int x, int y)
    ws.zoom_y = y;
 
    if (ws.obj.pointer)
-      evas_move(ws.view_evas, ws.obj.pointer, x, y);
+      evas_object_move(ws.obj.pointer, x, y);
 
-   evas_event_move(ws.view_evas, x, y);
+   evas_event_feed_mouse_move(ws.view_evas, x, y);
    workspace_queue_draw();
 }
 
 void
 workspace_button_press_event(int x, int y, int button)
 {
-   evas_event_button_down(ws.view_evas, x, y, button);
+   evas_event_feed_mouse_down(ws.view_evas, button);
 }
 
 void
 workspace_button_release_event(int x, int y, int button)
 {
-   evas_event_button_up(ws.view_evas, x, y, button);
+   evas_event_feed_mouse_up(ws.view_evas, button);
 }
 
 void
@@ -1670,8 +1719,8 @@ workspace_enter_notify_event(GdkEventCrossing * ev)
      {
 	/* move cursor to new location first, then show it.
 	 * Avoids some flickering. */
-	evas_move(ws.view_evas, ws.obj.pointer, ev->x, ev->y);
-	evas_show(ws.view_evas, ws.obj.pointer);
+	evas_object_move(ws.obj.pointer, ev->x, ev->y);
+	evas_object_show(ws.obj.pointer);
      }
    workspace_queue_draw();
 }
@@ -1685,7 +1734,7 @@ workspace_leave_notify_event(GdkEventCrossing * ev)
    gtk_widget_hide(w);
 
    if (ws.obj.pointer)
-      evas_hide(ws.view_evas, ws.obj.pointer);
+      evas_object_hide(ws.obj.pointer);
    workspace_queue_draw();
 }
 
@@ -1698,6 +1747,7 @@ workspace_expose_event(GtkWidget * widget, GdkEventExpose * ev)
 
 	ws.new_evas = 0;
 	gdk_window_set_back_pixmap(widget->window, NULL, FALSE);
+	/* replaced
 	evas_set_output(ws.view_evas,
 			GDK_WINDOW_XDISPLAY(widget->window),
 			GDK_WINDOW_XWINDOW(widget->window),
@@ -1705,21 +1755,41 @@ workspace_expose_event(GtkWidget * widget, GdkEventExpose * ev)
 					   (widget)),
 			GDK_COLORMAP_XCOLORMAP(gtk_widget_get_colormap
 					       (widget)));
-	evas_set_output_size(ws.view_evas, widget->allocation.width,
+	*/
+	{
+	  Evas_Engine_Info_Software_X11 *einfo;
+
+	  einfo = (Evas_Engine_Info_Software_X11 *) evas_engine_info_get(ws.view_evas);
+
+	  /* the following is specific to the engine */
+	  einfo->info.display = GDK_WINDOW_XDISPLAY(widget->window);
+	  einfo->info.visual = GDK_VISUAL_XVISUAL(gtk_widget_get_visual
+						  (widget));
+	  einfo->info.colormap = GDK_COLORMAP_XCOLORMAP(gtk_widget_get_colormap
+							(widget));
+
+	  einfo->info.drawable = GDK_WINDOW_XWINDOW(widget->window);
+	  einfo->info.depth = DefaultDepth(einfo->info.display, DefaultScreen(einfo->info.display));
+	  einfo->info.rotation = 0;
+	  einfo->info.debug = 0;
+	  evas_engine_info_set(ws.view_evas, (Evas_Engine_Info *) einfo);
+	}
+
+	evas_output_size_set(ws.view_evas, widget->allocation.width,
 			     widget->allocation.height);
-	evas_set_output_viewport(ws.view_evas, 0, 0,
+	evas_output_viewport_set(ws.view_evas, 0, 0,
 				 widget->allocation.width,
 				 widget->allocation.height);
 
-	evas_set_font_cache(ws.view_evas, 1 * 1024 * 1024);
-	evas_set_image_cache(ws.view_evas, 8 * 1024 * 1024);
+	evas_object_font_cache_set(ws.view_evas, 1 * 1024 * 1024);
+	evas_object_image_cache_set(ws.view_evas, 8 * 1024 * 1024);
 
-	ws.obj.bg_rect = evas_add_rectangle(ws.view_evas);
-	evas_set_layer(ws.view_evas, ws.obj.bg_rect, -9999);
-	evas_set_color(ws.view_evas, ws.obj.bg_rect, 255, 255, 255, 255);
-	evas_move(ws.view_evas, ws.obj.bg_rect, 0, 0);
-	evas_resize(ws.view_evas, ws.obj.bg_rect, 9999, 9999);
-	evas_show(ws.view_evas, ws.obj.bg_rect);
+	ws.obj.bg_rect = evas_object_rectangle_add(ws.view_evas);
+	evas_object_layer_set(ws.obj.bg_rect, -9999);
+	evas_object_color_set(ws.obj.bg_rect, 255, 255, 255, 255);
+	evas_object_move(ws.obj.bg_rect, 0, 0);
+	evas_object_resize(ws.obj.bg_rect, 9999, 9999);
+	evas_object_show(ws.obj.bg_rect);
 	{
 	   char               *tile = NULL;
 	   int                 ok = 0, r, g, b;
@@ -1727,12 +1797,16 @@ workspace_expose_event(GtkWidget * widget, GdkEventExpose * ev)
 	   E_DB_STR_GET(pref_get_config(), "/grid/image", tile, ok);
 
 	   if (!tile)
-	      ws.obj.grid =
-		 evas_add_image_from_file(ws.view_evas,
-					  PACKAGE_DATA_DIR "/pixmaps/tile.png");
+	     {
+	       ws.obj.grid =
+		 evas_object_image_add(ws.view_evas); 
+	       e_evas_object_image_file_set( ws.obj.grid,
+					     PACKAGE_DATA_DIR "/pixmaps/tile.png", NULL);
+	     }
 	   else
 	     {
-		ws.obj.grid = evas_add_image_from_file(ws.view_evas, tile);
+		ws.obj.grid = evas_object_image_add(ws.view_evas); 
+		e_evas_object_image_file_set( ws.obj.grid, tile, NULL);
 		free(tile);
 	     }
 
@@ -1742,18 +1816,18 @@ workspace_expose_event(GtkWidget * widget, GdkEventExpose * ev)
 	   E_DB_INT_GET(pref_get_config(), "/grid/b", b, ok);
 
 	   if (ok)
-	      evas_set_color(ws.view_evas, ws.obj.grid, r, g, b, 255);
+	      evas_object_color_set(ws.obj.grid, r, g, b, 255);
 
 	   e_db_flush();
 	}
 
-	evas_callback_add(ws.view_evas, ws.obj.grid,
-			  CALLBACK_MOUSE_DOWN, handle_bg_mouse_down, NULL);
-	evas_get_image_size(ws.view_evas, ws.obj.grid, &w, &h);
-	evas_set_image_fill(ws.view_evas, ws.obj.grid, 0, 0, w, h);
-	evas_show(ws.view_evas, ws.obj.grid);
-	evas_move(ws.view_evas, ws.obj.grid, 0, 0);
-	evas_resize(ws.view_evas, ws.obj.grid, 9999, 9999);
+	evas_object_event_callback_add(ws.obj.grid,
+			  EVAS_CALLBACK_MOUSE_DOWN, handle_bg_mouse_down, NULL);
+	evas_object_image_size_get(ws.obj.grid, &w, &h);
+	evas_object_image_fill_set(ws.obj.grid, 0, 0, w, h);
+	evas_object_show(ws.obj.grid);
+	evas_object_move(ws.obj.grid, 0, 0);
+	evas_object_resize(ws.obj.grid, 9999, 9999);
 
 	/* Splash setup was here long ago -- cK */
 
@@ -1763,10 +1837,11 @@ workspace_expose_event(GtkWidget * widget, GdkEventExpose * ev)
 	ws.backing_h = widget->allocation.height - 64;
 
 	ws.obj.pointer =
-	   evas_add_image_from_file(ws.view_evas,
-				    PACKAGE_DATA_DIR "/pixmaps/pointer.png");
-	evas_set_layer(ws.view_evas, ws.obj.pointer, 999);
-	evas_set_pass_events(ws.view_evas, ws.obj.pointer, 1);
+	   evas_object_image_add(ws.view_evas); 
+	e_evas_object_image_file_set( ws.obj.pointer,
+				      PACKAGE_DATA_DIR "/pixmaps/pointer.png", NULL);
+	evas_object_layer_set(ws.obj.pointer, 999);
+	evas_object_pass_events_set(ws.obj.pointer, 1);
 
 	/*
 	 * ws.handle_bits = ebits_new();
@@ -1779,101 +1854,115 @@ workspace_expose_event(GtkWidget * widget, GdkEventExpose * ev)
 	 * ebits_resize(ws.handle_bits, ws.backing_w, ws.backing_h);
 	 */
 
-	ws.obj.sel = evas_add_rectangle(ws.view_evas);
-	ws.obj.selection.l = evas_add_line(ws.view_evas);
-	ws.obj.selection.r = evas_add_line(ws.view_evas);
-	ws.obj.selection.t = evas_add_line(ws.view_evas);
-	ws.obj.selection.b = evas_add_line(ws.view_evas);
+	ws.obj.sel = evas_object_rectangle_add(ws.view_evas);
+	ws.obj.selection.l = evas_object_line_add(ws.view_evas);
+	ws.obj.selection.r = evas_object_line_add(ws.view_evas);
+	ws.obj.selection.t = evas_object_line_add(ws.view_evas);
+	ws.obj.selection.b = evas_object_line_add(ws.view_evas);
 	ws.obj.selection_tl.abs =
-	   evas_add_image_from_file(ws.view_evas,
-				    PACKAGE_DATA_DIR "/pixmaps/handle_abs.png");
+	   evas_object_image_add(ws.view_evas); 
+	e_evas_object_image_file_set( ws.obj.selection_tl.abs,
+				      PACKAGE_DATA_DIR "/pixmaps/handle_abs.png", NULL);
 	ws.obj.selection_tl.rel =
-	   evas_add_image_from_file(ws.view_evas,
-				    PACKAGE_DATA_DIR "/pixmaps/handle_rel.png");
+	   evas_object_image_add(ws.view_evas); 
+	e_evas_object_image_file_set( ws.obj.selection_tl.rel,
+				      PACKAGE_DATA_DIR "/pixmaps/handle_rel.png", NULL);
 	ws.obj.selection_tl.adj =
-	   evas_add_image_from_file(ws.view_evas,
-				    PACKAGE_DATA_DIR "/pixmaps/handle_adj.png");
+	   evas_object_image_add(ws.view_evas); 
+	e_evas_object_image_file_set( ws.obj.selection_tl.adj,
+				      PACKAGE_DATA_DIR "/pixmaps/handle_adj.png", NULL);
 	ws.obj.selection_br.abs =
-	   evas_add_image_from_file(ws.view_evas,
-				    PACKAGE_DATA_DIR "/pixmaps/handle_abs.png");
+	   evas_object_image_add(ws.view_evas); 
+	e_evas_object_image_file_set( ws.obj.selection_br.abs,
+				      PACKAGE_DATA_DIR "/pixmaps/handle_abs.png", NULL);
 	ws.obj.selection_br.rel =
-	   evas_add_image_from_file(ws.view_evas,
-				    PACKAGE_DATA_DIR "/pixmaps/handle_rel.png");
+	   evas_object_image_add(ws.view_evas); 
+	e_evas_object_image_file_set( ws.obj.selection_br.rel,
+				      PACKAGE_DATA_DIR "/pixmaps/handle_rel.png", NULL);
 	ws.obj.selection_br.adj =
-	   evas_add_image_from_file(ws.view_evas,
-				    PACKAGE_DATA_DIR "/pixmaps/handle_adj.png");
-	evas_set_color(ws.view_evas, ws.obj.sel, 255, 255, 255, 80);
-	evas_set_color(ws.view_evas, ws.obj.selection.l, 200, 50, 50, 200);
-	evas_set_color(ws.view_evas, ws.obj.selection.r, 200, 50, 50, 200);
-	evas_set_color(ws.view_evas, ws.obj.selection.t, 200, 50, 50, 200);
-	evas_set_color(ws.view_evas, ws.obj.selection.b, 200, 50, 50, 200);
-	evas_set_layer(ws.view_evas, ws.obj.sel, 100);
-	evas_set_layer(ws.view_evas, ws.obj.selection.l, 100);
-	evas_set_layer(ws.view_evas, ws.obj.selection.r, 100);
-	evas_set_layer(ws.view_evas, ws.obj.selection.t, 100);
-	evas_set_layer(ws.view_evas, ws.obj.selection.b, 100);
-	evas_set_layer(ws.view_evas, ws.obj.selection_tl.abs, 100);
-	evas_set_layer(ws.view_evas, ws.obj.selection_tl.rel, 100);
-	evas_set_layer(ws.view_evas, ws.obj.selection_tl.adj, 100);
-	evas_set_layer(ws.view_evas, ws.obj.selection_br.abs, 100);
-	evas_set_layer(ws.view_evas, ws.obj.selection_br.rel, 100);
-	evas_set_layer(ws.view_evas, ws.obj.selection_br.adj, 100);
-	evas_set_pass_events(ws.view_evas, ws.obj.sel, 1);
-	evas_set_pass_events(ws.view_evas, ws.obj.selection.l, 1);
-	evas_set_pass_events(ws.view_evas, ws.obj.selection.r, 1);
-	evas_set_pass_events(ws.view_evas, ws.obj.selection.t, 1);
-	evas_set_pass_events(ws.view_evas, ws.obj.selection.b, 1);
-	evas_callback_add(ws.view_evas, ws.obj.selection_tl.abs,
-			  CALLBACK_MOUSE_DOWN,
+	   evas_object_image_add(ws.view_evas); 
+	e_evas_object_image_file_set( ws.obj.selection_br.adj,
+				      PACKAGE_DATA_DIR "/pixmaps/handle_adj.png", NULL);
+	evas_object_color_set(ws.obj.sel, 255, 255, 255, 80);
+	evas_object_color_set(ws.obj.selection.l, 200, 50, 50, 200);
+	evas_object_color_set(ws.obj.selection.r, 200, 50, 50, 200);
+	evas_object_color_set(ws.obj.selection.t, 200, 50, 50, 200);
+	evas_object_color_set(ws.obj.selection.b, 200, 50, 50, 200);
+	evas_object_layer_set(ws.obj.sel, 100);
+	evas_object_layer_set(ws.obj.selection.l, 100);
+	evas_object_layer_set(ws.obj.selection.r, 100);
+	evas_object_layer_set(ws.obj.selection.t, 100);
+	evas_object_layer_set(ws.obj.selection.b, 100);
+	evas_object_layer_set(ws.obj.selection_tl.abs, 100);
+	evas_object_layer_set(ws.obj.selection_tl.rel, 100);
+	evas_object_layer_set(ws.obj.selection_tl.adj, 100);
+	evas_object_layer_set(ws.obj.selection_br.abs, 100);
+	evas_object_layer_set(ws.obj.selection_br.rel, 100);
+	evas_object_layer_set(ws.obj.selection_br.adj, 100);
+	evas_object_pass_events_set(ws.obj.sel, 1);
+	evas_object_pass_events_set(ws.obj.selection.l, 1);
+	evas_object_pass_events_set(ws.obj.selection.r, 1);
+	evas_object_pass_events_set(ws.obj.selection.t, 1);
+	evas_object_pass_events_set(ws.obj.selection.b, 1);
+	evas_object_event_callback_add(ws.obj.selection_tl.abs,
+			  EVAS_CALLBACK_MOUSE_DOWN,
 			  handle_adjuster_mouse_down, NULL);
-	evas_callback_add(ws.view_evas, ws.obj.selection_tl.abs,
-			  CALLBACK_MOUSE_UP, handle_adjuster_mouse_up, NULL);
-	evas_callback_add(ws.view_evas, ws.obj.selection_tl.abs,
-			  CALLBACK_MOUSE_MOVE,
+	evas_object_event_callback_add(ws.obj.selection_tl.abs,
+			  EVAS_CALLBACK_MOUSE_UP, handle_adjuster_mouse_up, NULL);
+	evas_object_event_callback_add(ws.obj.selection_tl.abs,
+			  EVAS_CALLBACK_MOUSE_MOVE,
 			  handle_adjuster_mouse_move, NULL);
-	evas_callback_add(ws.view_evas, ws.obj.selection_tl.rel,
-			  CALLBACK_MOUSE_DOWN,
+	evas_object_event_callback_add(ws.obj.selection_tl.rel,
+			  EVAS_CALLBACK_MOUSE_DOWN,
 			  handle_adjuster_mouse_down, NULL);
-	evas_callback_add(ws.view_evas, ws.obj.selection_tl.rel,
-			  CALLBACK_MOUSE_UP, handle_adjuster_mouse_up, NULL);
-	evas_callback_add(ws.view_evas, ws.obj.selection_tl.rel,
-			  CALLBACK_MOUSE_MOVE,
+	evas_object_event_callback_add(ws.obj.selection_tl.rel,
+			  EVAS_CALLBACK_MOUSE_UP, handle_adjuster_mouse_up, NULL);
+	evas_object_event_callback_add(ws.obj.selection_tl.rel,
+			  EVAS_CALLBACK_MOUSE_MOVE,
 			  handle_adjuster_mouse_move, NULL);
-	evas_callback_add(ws.view_evas, ws.obj.selection_tl.adj,
-			  CALLBACK_MOUSE_DOWN,
+	evas_object_event_callback_add(ws.obj.selection_tl.adj,
+			  EVAS_CALLBACK_MOUSE_DOWN,
 			  handle_adjuster_mouse_down, NULL);
-	evas_callback_add(ws.view_evas, ws.obj.selection_tl.adj,
-			  CALLBACK_MOUSE_UP, handle_adjuster_mouse_up, NULL);
-	evas_callback_add(ws.view_evas, ws.obj.selection_tl.adj,
-			  CALLBACK_MOUSE_MOVE,
+	evas_object_event_callback_add(ws.obj.selection_tl.adj,
+			  EVAS_CALLBACK_MOUSE_UP, handle_adjuster_mouse_up, NULL);
+	evas_object_event_callback_add(ws.obj.selection_tl.adj,
+			  EVAS_CALLBACK_MOUSE_MOVE,
 			  handle_adjuster_mouse_move, NULL);
-	evas_callback_add(ws.view_evas, ws.obj.selection_br.abs,
-			  CALLBACK_MOUSE_DOWN,
+	evas_object_event_callback_add(ws.obj.selection_br.abs,
+			  EVAS_CALLBACK_MOUSE_DOWN,
 			  handle_adjuster_mouse_down, NULL);
-	evas_callback_add(ws.view_evas, ws.obj.selection_br.abs,
-			  CALLBACK_MOUSE_UP, handle_adjuster_mouse_up, NULL);
-	evas_callback_add(ws.view_evas, ws.obj.selection_br.abs,
-			  CALLBACK_MOUSE_MOVE,
+	evas_object_event_callback_add(ws.obj.selection_br.abs,
+			  EVAS_CALLBACK_MOUSE_UP, handle_adjuster_mouse_up, NULL);
+	evas_object_event_callback_add(ws.obj.selection_br.abs,
+			  EVAS_CALLBACK_MOUSE_MOVE,
 			  handle_adjuster_mouse_move, NULL);
-	evas_callback_add(ws.view_evas, ws.obj.selection_br.rel,
-			  CALLBACK_MOUSE_DOWN,
+	evas_object_event_callback_add(ws.obj.selection_br.rel,
+			  EVAS_CALLBACK_MOUSE_DOWN,
 			  handle_adjuster_mouse_down, NULL);
-	evas_callback_add(ws.view_evas, ws.obj.selection_br.rel,
-			  CALLBACK_MOUSE_UP, handle_adjuster_mouse_up, NULL);
-	evas_callback_add(ws.view_evas, ws.obj.selection_br.rel,
-			  CALLBACK_MOUSE_MOVE,
+	evas_object_event_callback_add(ws.obj.selection_br.rel,
+			  EVAS_CALLBACK_MOUSE_UP, handle_adjuster_mouse_up, NULL);
+	evas_object_event_callback_add(ws.obj.selection_br.rel,
+			  EVAS_CALLBACK_MOUSE_MOVE,
 			  handle_adjuster_mouse_move, NULL);
-	evas_callback_add(ws.view_evas, ws.obj.selection_br.adj,
-			  CALLBACK_MOUSE_DOWN,
+	evas_object_event_callback_add(ws.obj.selection_br.adj,
+			  EVAS_CALLBACK_MOUSE_DOWN,
 			  handle_adjuster_mouse_down, NULL);
-	evas_callback_add(ws.view_evas, ws.obj.selection_br.adj,
-			  CALLBACK_MOUSE_UP, handle_adjuster_mouse_up, NULL);
-	evas_callback_add(ws.view_evas, ws.obj.selection_br.adj,
-			  CALLBACK_MOUSE_MOVE,
+	evas_object_event_callback_add(ws.obj.selection_br.adj,
+			  EVAS_CALLBACK_MOUSE_UP, handle_adjuster_mouse_up, NULL);
+	evas_object_event_callback_add(ws.obj.selection_br.adj,
+			  EVAS_CALLBACK_MOUSE_MOVE,
 			  handle_adjuster_mouse_move, NULL);
 
 	if (!ws.obj.handles.tl)
 	   workspace_create_handles(NULL);
+
+	{
+	  GtkWidget          *w;
+
+	  w = gtk_object_get_data(GTK_OBJECT(main_win), "use_smart_size");
+	  gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(w), 
+				       pref_smartsize_enabled());
+	}
 
 	if (pref_splashscreen_enabled())
 	  {
@@ -1882,7 +1971,7 @@ workspace_expose_event(GtkWidget * widget, GdkEventExpose * ev)
 
 /*      else */
 	{
-	   Evas_List           files;
+	   Evas_List *           files;
 
 	   if ((files = pref_get_files()))
 	     {
@@ -1927,7 +2016,7 @@ workspace_expose_event(GtkWidget * widget, GdkEventExpose * ev)
 
      }
 
-   evas_update_rect(ws.view_evas, ev->area.x, ev->area.y, ev->area.width,
+   evas_damage_rectangle_add(ws.view_evas, ev->area.x, ev->area.y, ev->area.width,
 		    ev->area.height);
    workspace_queue_draw();
 }
@@ -1935,7 +2024,7 @@ workspace_expose_event(GtkWidget * widget, GdkEventExpose * ev)
 void
 workspace_select_image(int index)
 {
-   Evas_List           l;
+   Evas_List *           l;
    int                 count;
    Ebits_Object_Bit_State selected;
 
@@ -1967,12 +2056,12 @@ workspace_configure_event(GtkWidget * widget)
    if (!ws.view_evas)
       return;
 
-   evas_set_output_size(ws.view_evas,
+   evas_output_size_set(ws.view_evas,
 			widget->allocation.width, widget->allocation.height);
-   evas_set_output_viewport(ws.view_evas, 0, 0,
+   evas_output_viewport_set(ws.view_evas, 0, 0,
 			    widget->allocation.width,
 			    widget->allocation.height);
-   evas_update_rect(ws.view_evas, 0, 0,
+   evas_damage_rectangle_add(ws.view_evas, 0, 0,
 		    widget->allocation.width, widget->allocation.height);
    workspace_queue_draw();
 }
@@ -2010,7 +2099,7 @@ workspace_raise_selection(void)
 			    selected_state->description);
 
 	if (selected_state->object)
-	   evas_raise(selected_state->o->state.evas, selected_state->object);
+	   evas_object_raise(selected_state->object);
 
 	workspace_update_widget_from_selection();
 	workspace_update_visible_selection();
@@ -2040,7 +2129,7 @@ workspace_lower_selection(void)
 			     bits, selected_state->description);
 
 	if (selected_state->object)
-	   evas_lower(selected_state->o->state.evas, selected_state->object);
+	   evas_object_lower(selected_state->object);
 
 	workspace_update_widget_from_selection();
 	workspace_update_visible_selection();
@@ -2071,7 +2160,7 @@ workspace_reset_selection(void)
 {
    int                 ew, eh;
 
-   evas_get_drawable_size(ws.view_evas, &ew, &eh);
+   evas_output_size_get(ws.view_evas, &ew, &eh);
    ws.backing_x = 32;
    ws.backing_y = 32;
    ws.backing_w = ew - 64;
@@ -2087,57 +2176,57 @@ workspace_set_draft_mode(int onoff)
 
    if (ws.draft_mode)
      {
-	evas_show(ws.view_evas, ws.obj.handles.tl);
-	evas_show(ws.view_evas, ws.obj.handles.tr);
-	evas_show(ws.view_evas, ws.obj.handles.bl);
-	evas_show(ws.view_evas, ws.obj.handles.br);
-	evas_show(ws.view_evas, ws.obj.border.l);
-	evas_show(ws.view_evas, ws.obj.border.t);
-	evas_show(ws.view_evas, ws.obj.border.b);
-	evas_show(ws.view_evas, ws.obj.border.r);
-	evas_show(ws.view_evas, ws.obj.backing);
+	evas_object_show(ws.obj.handles.tl);
+	evas_object_show(ws.obj.handles.tr);
+	evas_object_show(ws.obj.handles.bl);
+	evas_object_show(ws.obj.handles.br);
+	evas_object_show(ws.obj.border.l);
+	evas_object_show(ws.obj.border.t);
+	evas_object_show(ws.obj.border.b);
+	evas_object_show(ws.obj.border.r);
+	evas_object_show(ws.obj.backing);
 
 	if (etching_get_selected_item(ws.e))
 	  {
 	     workspace_update_visible_selection();
-	     evas_show(ws.view_evas, ws.obj.sel);
-	     evas_show(ws.view_evas, ws.obj.selection.l);
-	     evas_show(ws.view_evas, ws.obj.selection.r);
-	     evas_show(ws.view_evas, ws.obj.selection.t);
-	     evas_show(ws.view_evas, ws.obj.selection.b);
-	     evas_show(ws.view_evas, ws.obj.selection_tl.abs);
-	     evas_show(ws.view_evas, ws.obj.selection_tl.rel);
-	     evas_show(ws.view_evas, ws.obj.selection_tl.adj);
-	     evas_show(ws.view_evas, ws.obj.selection_br.abs);
-	     evas_show(ws.view_evas, ws.obj.selection_br.rel);
-	     evas_show(ws.view_evas, ws.obj.selection_br.adj);
+	     evas_object_show(ws.obj.sel);
+	     evas_object_show(ws.obj.selection.l);
+	     evas_object_show(ws.obj.selection.r);
+	     evas_object_show(ws.obj.selection.t);
+	     evas_object_show(ws.obj.selection.b);
+	     evas_object_show(ws.obj.selection_tl.abs);
+	     evas_object_show(ws.obj.selection_tl.rel);
+	     evas_object_show(ws.obj.selection_tl.adj);
+	     evas_object_show(ws.obj.selection_br.abs);
+	     evas_object_show(ws.obj.selection_br.rel);
+	     evas_object_show(ws.obj.selection_br.adj);
 	  }
      }
    else
      {
-	evas_hide(ws.view_evas, ws.obj.handles.tl);
-	evas_hide(ws.view_evas, ws.obj.handles.tr);
-	evas_hide(ws.view_evas, ws.obj.handles.bl);
-	evas_hide(ws.view_evas, ws.obj.handles.br);
-	evas_hide(ws.view_evas, ws.obj.border.l);
-	evas_hide(ws.view_evas, ws.obj.border.t);
-	evas_hide(ws.view_evas, ws.obj.border.b);
-	evas_hide(ws.view_evas, ws.obj.border.r);
-	evas_hide(ws.view_evas, ws.obj.backing);
+	evas_object_hide(ws.obj.handles.tl);
+	evas_object_hide(ws.obj.handles.tr);
+	evas_object_hide(ws.obj.handles.bl);
+	evas_object_hide(ws.obj.handles.br);
+	evas_object_hide(ws.obj.border.l);
+	evas_object_hide(ws.obj.border.t);
+	evas_object_hide(ws.obj.border.b);
+	evas_object_hide(ws.obj.border.r);
+	evas_object_hide(ws.obj.backing);
 
 	if (etching_get_selected_item(ws.e))
 	  {
-	     evas_hide(ws.view_evas, ws.obj.sel);
-	     evas_hide(ws.view_evas, ws.obj.selection.l);
-	     evas_hide(ws.view_evas, ws.obj.selection.r);
-	     evas_hide(ws.view_evas, ws.obj.selection.t);
-	     evas_hide(ws.view_evas, ws.obj.selection.b);
-	     evas_hide(ws.view_evas, ws.obj.selection_tl.abs);
-	     evas_hide(ws.view_evas, ws.obj.selection_tl.rel);
-	     evas_hide(ws.view_evas, ws.obj.selection_tl.adj);
-	     evas_hide(ws.view_evas, ws.obj.selection_br.abs);
-	     evas_hide(ws.view_evas, ws.obj.selection_br.rel);
-	     evas_hide(ws.view_evas, ws.obj.selection_br.adj);
+	     evas_object_hide(ws.obj.sel);
+	     evas_object_hide(ws.obj.selection.l);
+	     evas_object_hide(ws.obj.selection.r);
+	     evas_object_hide(ws.obj.selection.t);
+	     evas_object_hide(ws.obj.selection.b);
+	     evas_object_hide(ws.obj.selection_tl.abs);
+	     evas_object_hide(ws.obj.selection_tl.rel);
+	     evas_object_hide(ws.obj.selection_tl.adj);
+	     evas_object_hide(ws.obj.selection_br.abs);
+	     evas_object_hide(ws.obj.selection_br.rel);
+	     evas_object_hide(ws.obj.selection_br.adj);
 	  }
      }
 
@@ -2156,4 +2245,66 @@ workspace_apply_settings(void)
    workspace_update_widget_from_selection();
    workspace_queue_draw();
    etching_set_dirty(ws.e);
+}
+
+
+void
+workspace_image_smart_size(Ebits_Object_Bit_State state)
+{
+  int w,h;
+  double ratio;
+
+  if(state->object)
+    {
+      evas_object_image_size_get(state->object, &w, &h);
+	   
+      if( w > 0 && h > 0 )
+	{
+	  ratio = (double) w / h;
+	  
+	  printf( "size %d,%d, r %f\n", w, h, ratio );
+
+	  /* Large height, small width, assume vertical element */
+	  if(ratio < .25)
+	    {
+	      state->description->min.w = w;
+	      state->description->max.w = w;
+	      state->description->min.h = 0;
+	      state->description->max.h = 999999;
+	    }
+	  /* Symmetric object, assume square */
+	  else if( ratio > .99 && ratio < 1.01 )
+	    {
+	      state->description->min.w = w;
+	      state->description->max.w = w;
+	      state->description->min.h = h;
+	      state->description->max.h = h;
+	    }
+	  /* Large width, small height, assume horizontal element */
+	  else if( ratio > 4 )
+	    {
+	      state->description->min.h = h;
+	      state->description->max.h = h;
+	      state->description->min.w = 0;
+	      state->description->max.w = 999999;
+	    }
+	  /* Everything else */
+	  else
+	    {
+	    }
+	}
+    }
+}
+
+
+void
+workspace_smart_size_selected(void)
+{
+   Ebits_Object_Bit_State selected;
+
+   selected = etching_get_selected_item(ws.e);
+   workspace_image_smart_size(selected);
+
+   workspace_update_widget_from_selection();
+
 }

@@ -32,9 +32,10 @@ EtcherZoomMethod    pref_get_zoom_method(void);
 
 void                pref_enable_splashscreen(gboolean yesno);
 gboolean            pref_splashscreen_enabled(void);
+gboolean            pref_smartsize_enabled(void);
 
 void                pref_add_file(char *filename);
-Evas_List           pref_get_files(void);
+Evas_List          *pref_get_files(void);
 
 void                pref_preferences1_activate(GtkMenuItem * menuitem,
 					       gpointer user_data);

@@ -1,3 +1,11 @@
+2003-01-15  gettextize  <bug-gnu-gettext@gnu.org>
+
+	* Makefile.am (SUBDIRS): Add m4.
+	(SUBDIRS): Remove intl.
+	(ACLOCAL_AMFLAGS): New variable.
+	(EXTRA_DIST): Add config.rpath.
+	* configure.in (AC_OUTPUT): Add m4/Makefile.
+
 Sun Mar 17 12:17:52 2002 Christopher Rosendahl <crosendahl@trustlab.com>
 	* Made etcher handle the prefered size field.
 

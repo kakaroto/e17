@@ -378,3 +378,11 @@ void
 void
  
              on_state_entry_ok_clicked(GtkButton * button, gpointer user_data);
+
+void
+on_use_smart_size_clicked              (GtkButton       *button,
+                                        gpointer         user_data);
+void
+on_smartsize_set_clicked               (GtkButton       *button,
+                                        gpointer         user_data);
+

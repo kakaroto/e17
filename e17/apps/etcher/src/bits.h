@@ -1,9 +1,20 @@
 #ifndef EBITS_PRIVATE_H
 #define EBITS_PRIVATE_H 1
 
+/* Ebits */
+#if 0
+/* Nothing */
+
+/* Etcher */
+#else
 #define EDITOR 1
 #define _EBITS_INTERNAL
 #include <Ebits.h>
+#include <X11/Xlib.h>
+#include <Imlib2.h>
+#endif
+/* End */
+
 #include <Edb.h>
 #ifdef WITH_DMALLOC
 #include <dmalloc.h>
@@ -81,7 +92,7 @@ struct _Ebits_Object_Description
       int                 l, r, t, b;
    }
    padding            , inset;
-   Evas_List           bits;
+   Evas_List *           bits;
    struct
    {
       int                 caculated;
@@ -90,7 +101,7 @@ struct _Ebits_Object_Description
    }
    real_min_size;
 
-   Evas_List           state_names;
+   Evas_List *           state_names;
 };
 
 struct _Ebits_Object_Bit_Description
@@ -98,12 +109,13 @@ struct _Ebits_Object_Bit_Description
    char               *name;
    char               *class;
    char               *color_class;
+   unsigned int        is_selected;
    struct
    {
       char               *image;
    }
-   normal             , hilited, clicked, disabled;
-   Evas_List           state_description;
+   normal             , hilited, clicked, selected, disabled;
+   Evas_List *           state_description;
    struct
    {
       int                 l, r, t, b;
@@ -137,7 +149,7 @@ struct _Ebits_Object_Bit_Description
       int                 w, h;
    }
    min                , max;
-   Evas_List           sync;
+   Evas_List *           sync;
 };
 
 struct _Ebits_Object_State
@@ -145,8 +157,8 @@ struct _Ebits_Object_State
    double              x, y, w, h;
    int                 layer;
    int                 visible;
-   Evas_Object         clip;
-   Evas                evas;
+   Evas_Object *         clip;
+   Evas *                evas;
 };
 
 struct _Ebits_Callback
@@ -161,7 +173,8 @@ struct _Ebits_Callback
 struct _Ebits_Object_Bit_State
 {
    Ebits_Object        o;
-   Evas_Object         object;
+   Evas_Object *         object;
+   int                 image_status;
    Ebits_Object_Bit_Description description;
    int                 r, g, b, a;
    int                 recalc;
@@ -170,9 +183,10 @@ struct _Ebits_Object_Bit_State
    int                 x, y, w, h;
    int                 mouse_in;
    char               *state;
+   unsigned int        is_selected;
    int                 syncing;
    int                 want_w, want_h;
-   Evas_List           callbacks;
+   Evas_List *           callbacks;
 
    /* callbacks for when you embed an object in a bit */
    void               *func_data;
@@ -184,7 +198,7 @@ struct _Ebits_Object_Bit_State
    void                (*func_raise) (void *_data);
    void                (*func_lower) (void *_data);
    void                (*func_set_layer) (void *_data, int l);
-   void                (*func_set_clip) (void *_data, Evas_Object clip);
+   void                (*func_set_clip) (void *_data, Evas_Object * clip);
    void                (*func_get_min_size) (void *_data, double *w, double *h);
    void                (*func_get_max_size) (void *_data, double *w, double *h);
    void                (*func_set_color_class) (void *_data, char *cc, int r,
@@ -196,9 +210,9 @@ struct _Ebits_Object_Bit_State
       int                 saved;
       Imlib_Image         image;
    }
-   normal             , hilited, clicked, disabled;
+   normal             , hilited, clicked, selected, disabled;
 
-   Evas_List           state_source_description;
+   Evas_List *           state_source_description;
 #endif
 };
 
@@ -206,7 +220,7 @@ struct _Ebits_Object
 {
    Ebits_Object_Description description;
    Ebits_Object_State  state;
-   Evas_List           bits;
+   Evas_List *           bits;
 };
 
 #endif
