@@ -46,6 +46,4 @@ edb_ed $DB add /entrance/session/7/title str "Failsafe"
 edb_ed $DB add /entrance/session/7/icon str "failsafe.png"
 edb_ed $DB add /entrance/system/reboot int 1
 edb_ed $DB add /entrance/system/halt int 1
-#edb_ed $DB add /entrance/user/count int 1
-#edb_ed $DB add /entrance/user/0/edje str "atmos.eet"
-#edb_ed $DB add /entrance/user/0/user str "atmos"
+edb_ed $DB add /entrance/user/save int 1
