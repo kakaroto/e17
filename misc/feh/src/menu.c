@@ -854,19 +854,30 @@ void
 feh_menu_draw_submenu_at(int x, int y, int w, int h, Imlib_Image dst, int ox,
                          int oy, int selected)
 {
-   int x1, y1, x2, y2;
+   ImlibPolygon poly;
 
    D_ENTER(5);
+
    x -= ox;
    y -= oy;
-   x1 = x;
-   y1 = y + 2;
-   x2 = x + w - 3;
-   y2 = y + (h / 2);
-   feh_imlib_image_draw_line(dst, x1, y1, x2, y2, 0, 0, 0, 0, 255);
-   x1 = x;
-   y1 = y + h - 2;
-   feh_imlib_image_draw_line(dst, x1, y1, x2, y2, 0, 0, 0, 0, 255);
+
+   imlib_context_set_image(dst);
+   poly = imlib_polygon_new();
+   imlib_polygon_add_point(poly, x + 2, y + 5);
+   imlib_polygon_add_point(poly, x + 5, y + 7);
+   imlib_polygon_add_point(poly, x + 2, y + 11);
+   imlib_context_set_color(0, 0, 0, 60);
+   imlib_image_fill_polygon(poly);
+   imlib_polygon_free(poly);
+
+   poly = imlib_polygon_new();
+   imlib_polygon_add_point(poly, x, y + 3);
+   imlib_polygon_add_point(poly, x + 3, y + 6);
+   imlib_polygon_add_point(poly, x, y + 9);
+   imlib_context_set_color(0, 0, 0, 255);
+   imlib_image_fill_polygon(poly);
+   imlib_polygon_free(poly);
+
    D_RETURN_(5);
    selected = 0;
 }
@@ -983,7 +994,7 @@ feh_menu_init_main(void)
    m = feh_menu_new();
    m->name = estrdup("FILE");
    feh_menu_add_entry(m, "Reset", NULL, NULL, feh_menu_cb_reset, NULL, NULL);
-   feh_menu_add_entry(m, "Resize window", NULL, NULL, feh_menu_cb_fit, NULL,
+   feh_menu_add_entry(m, "Resize win", NULL, NULL, feh_menu_cb_fit, NULL,
                       NULL);
    feh_menu_add_entry(m, "Reload", NULL, NULL, feh_menu_cb_reload, NULL,
                       NULL);
@@ -1174,7 +1185,7 @@ feh_menu_init_single_win(void)
    m = feh_menu_new();
    m->name = estrdup("SINGLEWIN_FILE");
    feh_menu_add_entry(m, "Reset", NULL, NULL, feh_menu_cb_reset, NULL, NULL);
-   feh_menu_add_entry(m, "Resize window", NULL, NULL, feh_menu_cb_fit, NULL,
+   feh_menu_add_entry(m, "Resize win", NULL, NULL, feh_menu_cb_fit, NULL,
                       NULL);
    feh_menu_add_entry(m, "Reload", NULL, NULL, feh_menu_cb_reload, NULL,
                       NULL);
@@ -1223,7 +1234,7 @@ feh_menu_init_thumbnail_win(void)
    m = feh_menu_new();
    m->name = estrdup("THUMBWIN_FILE");
    feh_menu_add_entry(m, "Reset", NULL, NULL, feh_menu_cb_reset, NULL, NULL);
-   feh_menu_add_entry(m, "Resize window", NULL, NULL, feh_menu_cb_fit, NULL,
+   feh_menu_add_entry(m, "Resize win", NULL, NULL, feh_menu_cb_fit, NULL,
                       NULL);
    feh_menu_add_entry(m, "Save Image", NULL, NULL, feh_menu_cb_save_image,
                       NULL, NULL);
@@ -1259,7 +1270,7 @@ feh_menu_init_thumbnail_viewer(void)
    m = feh_menu_new();
    m->name = estrdup("THUMBVIEW_FILE");
    feh_menu_add_entry(m, "Reset", NULL, NULL, feh_menu_cb_reset, NULL, NULL);
-   feh_menu_add_entry(m, "Resize window", NULL, NULL, feh_menu_cb_fit, NULL,
+   feh_menu_add_entry(m, "Resize win", NULL, NULL, feh_menu_cb_fit, NULL,
                       NULL);
    feh_menu_add_entry(m, "Reload", NULL, NULL, feh_menu_cb_reload, NULL,
                       NULL);
