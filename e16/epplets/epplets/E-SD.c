@@ -67,7 +67,7 @@ load_config (void)
   opt.do_cloak = atoi (Epplet_query_config_def ("DO_CLOAK", "1"));
   opt.cloak_anim = atoi (Epplet_query_config_def ("CLOAK_ANIM", "4"));
   opt.cloak_delay = atof (Epplet_query_config_def ("CLOAK_DELAY", "3"));
-  opt.draw_interval = atof (Epplet_query_config_def ("DRAW_INTERVAL", "0.1"));
+  opt.draw_interval = atof (Epplet_query_config_def ("DRAW_INTERVAL", "0.05"));
   if (opt.dir)
     free (opt.dir);
   opt.dir = _Strdup (Epplet_query_config_def ("DIRECTORY", "~/"));

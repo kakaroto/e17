@@ -550,9 +550,16 @@ I was bored. Ok?
 
 -------------------------------------------------------------------------------
 
-Sat Nov 13 21:03:02 GMT 1999
+Sun Nov 14 00:33:11 GMT 1999
 (gilbertt)
 
 Added E-ScreenSave. Will control xscreensaver, but currently just locks the
 screen on demand.
+
+-------------------------------------------------------------------------------
+
+Sun Nov 14 01:34:43 GMT 1999
+(gilbertt)
+
+Should have quashed all lag in E-SD. Please let me know
 
