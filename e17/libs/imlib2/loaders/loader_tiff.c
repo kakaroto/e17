@@ -286,8 +286,12 @@ save (ImlibImage *im, ImlibProgressFunction progress,
    uint8		r, g, b, a;
    int			has_alpha = IMAGE_HAS_ALPHA(im);
    int			i = 0, pl = 0;
-   char		pper = 0;
-   
+   char			pper = 0;
+   /* By default uses patent-free use COMPRESSION_DEFLATE,
+      another lossless compression technique */
+   ImlibImageTag 	*tag;
+   int			compression_type = COMPRESSION_DEFLATE;
+
    if (!im->data)
       return 0;
    
@@ -305,7 +309,45 @@ save (ImlibImage *im, ImlibProgressFunction progress,
    TIFFSetField(tif, TIFFTAG_PLANARCONFIG, PLANARCONFIG_CONTIG);
    TIFFSetField(tif, TIFFTAG_ORIENTATION, ORIENTATION_TOPLEFT);
    TIFFSetField(tif, TIFFTAG_RESOLUTIONUNIT, RESUNIT_NONE);
-   TIFFSetField(tif, TIFFTAG_COMPRESSION, COMPRESSION_LZW);
+
+   /* look for tags attached to image to get extra parameters like quality */
+   /* settings etc. - this is the "api" to hint for extra information for */
+   /* saver modules */
+
+   /* compression */
+   tag = __imlib_GetTag(im, "compression_type");
+   if (tag) {
+       compression_type = tag->val;
+       switch (compression_type) {
+	   case COMPRESSION_NONE: break;
+	   case COMPRESSION_CCITTRLE: break;
+	   case COMPRESSION_CCITTFAX3: break;     
+	   case COMPRESSION_CCITTFAX4: break;     
+	   case COMPRESSION_LZW: break;           
+	   case COMPRESSION_OJPEG: break;         
+	   case COMPRESSION_JPEG: break;          
+	   case COMPRESSION_NEXT: break;          
+	   case COMPRESSION_CCITTRLEW: break;     
+	   case COMPRESSION_PACKBITS: break;      
+	   case COMPRESSION_THUNDERSCAN: break;   
+	   case COMPRESSION_IT8CTPAD: break;      
+	   case COMPRESSION_IT8LW: break;         
+	   case COMPRESSION_IT8MP: break;         
+	   case COMPRESSION_IT8BL: break;         
+	   case COMPRESSION_PIXARFILM: break;     
+	   case COMPRESSION_PIXARLOG: break;      
+	   case COMPRESSION_DEFLATE: break;       
+	   case COMPRESSION_ADOBE_DEFLATE: break; 
+	   case COMPRESSION_DCS: break;           
+	   case COMPRESSION_JBIG: break;          
+	   case COMPRESSION_SGILOG: break;        
+	   case COMPRESSION_SGILOG24: break;
+	   default: compression_type = COMPRESSION_DEFLATE;
+       }
+
+   }
+   TIFFSetField(tif, TIFFTAG_COMPRESSION, compression_type);
+
    if (has_alpha)
      {
 	TIFFSetField(tif, TIFFTAG_SAMPLESPERPIXEL, 4);
