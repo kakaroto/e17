@@ -326,11 +326,121 @@ geist_poly_part_is_transparent(geist_object * obj, int x, int y)
 void
 geist_poly_resize(geist_object * obj, int x, int y)
 {
+   double dx, dy;
+   geist_poly* poly;
+   gib_list *l;
+   geist_point *p;
    D_ENTER(5);
 
    D(5, ("resize to %d,%d\n", x, y));
 
-   /* TODO */
+   poly = (geist_poly*)obj;
+   
+    switch (obj->resize)
+   {
+      case RESIZE_RIGHT:
+	 /* calculate resize ratio*/
+	 dx = (double)(x - obj->x) / (double)obj->w;
+
+	 for (l = poly->points; l ;l=l->next)
+	 {
+	    p = (geist_point*) l->data;
+	    p->x = obj->x + (p->x - obj->x) * dx;
+	 }
+	 break;
+	 
+      case RESIZE_LEFT:
+	 /* calculate resize ratio*/
+	 dx = (double)(obj->x - x + obj->w) / (double)obj->w;
+
+	 for (l = poly->points; l ;l=l->next)
+	 {
+	    p = (geist_point*) l->data;
+	    p->x = obj->x + obj->w - (obj->x +obj->w -p->x) * dx;
+	 }
+	 break;
+      
+      case RESIZE_BOTTOM:
+	 /* calculate resize ratio*/
+	 dy = (double)(y - obj->y) / (double)obj->h;
+
+	 for (l = poly->points; l ;l=l->next)
+	 {
+	    p = (geist_point*) l->data;
+	    p->y = obj->y + (p->y - obj->y) * dy;
+	 }
+	 break;
+  
+      case RESIZE_BOTTOMRIGHT:
+	 /* calculate resize ratio*/
+	 dx = (double)(x - obj->x) / (double)obj->w;
+	 dy = (double)(y - obj->y) / (double)obj->h;
+	 
+	 for (l = poly->points; l ;l=l->next)
+	 {
+	    p = (geist_point*) l->data;
+	    p->x = obj->x + (p->x - obj->x) * dx; 
+	    p->y = obj->y + (p->y - obj->y) * dy;
+	 }
+	 break;
+	 
+      case RESIZE_BOTTOMLEFT:
+	 /* calculate resize ratio*/
+	 dx = (double)(obj->x - x + obj->w) / (double)obj->w; 
+	 dy = (double)(y - obj->y) / (double)obj->h;
+	 
+	 for (l = poly->points; l ;l=l->next)
+	 {
+	    p = (geist_point*) l->data;
+	    p->x = obj->x + obj->w - (obj->x +obj->w -p->x) * dx;
+	    p->y = obj->y + (p->y - obj->y) * dy;
+	 }
+	 break;
+      
+      case RESIZE_TOP:
+	 /* calculate resize ratio*/
+	 dy = (double)(obj->y - y + obj->h) / (double)obj->h;
+
+	 for (l = poly->points; l ;l=l->next)
+	 {
+	    p = (geist_point*) l->data;
+	    p->y = obj->y + obj->h - (obj->y +obj->h -p->y) * dy;
+	 }
+	 break;
+
+      case RESIZE_TOPRIGHT:
+	 /* calculate resize ratio*/
+	 dx = (double)(x - obj->x) / (double)obj->w; 
+	 dy = (double)(obj->y - y + obj->h) / (double)obj->h;
+	 
+	 for (l = poly->points; l ;l=l->next)
+	 {
+	    p = (geist_point*) l->data;
+	    p->x = obj->x + (p->x - obj->x) * dx;
+	    p->y = obj->y + obj->h - (obj->y +obj->h -p->y) * dy;
+	 }
+	 break;
+	 
+      case RESIZE_TOPLEFT:
+	 /* calculate resize ratio*/
+
+	 dx = (double)(obj->x - x + obj->w) / (double)obj->w;
+	 dy = (double)(obj->y - y + obj->h) / (double)obj->h;
+	 
+	 for (l = poly->points; l ;l=l->next)
+	 {
+	    p = (geist_point*) l->data;
+	    p->x = obj->x + obj->w - (obj->x + obj->w - p->x) * dx;
+	    p->y = obj->y + obj->w - (obj->y + obj->w - p->y) * dy;
+	 }
+	 break;     
+	 
+      default:
+	 break;
+   }
+   poly->need_update = TRUE;
+   geist_poly_update_imlib_polygon(poly);
+   geist_poly_update_bounds(poly);
 
    D_RETURN_(5);
 }

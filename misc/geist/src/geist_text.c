@@ -1338,7 +1338,6 @@ geist_display_fontstyler_window(GtkWidget * widget, gpointer * obj)
 
    frame = gtk_frame_new("Edit Options");
    gtk_container_set_border_width(GTK_CONTAINER(frame), 1);
-   gtk_widget_set_usize(GTK_WIDGET(frame), 105, 150);
    gtk_box_pack_start(GTK_BOX(box2), frame, FALSE, FALSE, 1);
    gtk_widget_show(frame);
 
