@@ -170,7 +170,7 @@ static EfsdMagic *magic_new(char *key, char *params);
 static void       magic_free(EfsdMagic *em);
 static void       magic_cleanup_level(EfsdMagic *em);
 static void       magic_add_child(EfsdMagic *em_dad, EfsdMagic *em_kid);
-static char      *magic_test_level(EfsdMagic *em, FILE *f, char *ptr);
+static char      *magic_test_level(EfsdMagic *em, FILE *f, char *ptr, char stop_when_found);
 static char      *magic_test_perform(EfsdMagic *em, FILE *f);
 static void       magic_init_level(char *key, char *ptr, EfsdMagic *em_parent);
 static void       pattern_init(char *pattern_dbfile);
@@ -644,7 +644,7 @@ magic_test_perform(EfsdMagic *em, FILE *f)
 
 
 static char *
-magic_test_level(EfsdMagic *level, FILE *f, char *ptr)
+magic_test_level(EfsdMagic *level, FILE *f, char *ptr, char stop_when_found)
 {
   EfsdMagic *em;
   char      *s;
@@ -660,8 +660,13 @@ magic_test_level(EfsdMagic *level, FILE *f, char *ptr)
 	  ptr = ptr + strlen(ptr);
 	  result = ptr;
 
-	  if ((ptr = magic_test_level(em->kids, f, ptr)))
+	  if ((ptr = magic_test_level(em->kids, f, ptr, FALSE)))
 	    result = ptr;
+
+	  if (stop_when_found)
+	    {
+	      D_RETURN_(result);
+	    }
 	}
     }
 
@@ -833,7 +838,7 @@ magic_test_data(char *filename)
   if ((f = fopen(filename, "r")) == NULL)
     { D_RETURN_(NULL); }
   
-  result = magic_test_level(magic.kids, f, s);
+  result = magic_test_level(magic.kids, f, s, TRUE);
 
   fclose(f);
 
