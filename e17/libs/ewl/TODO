@@ -1,6 +1,14 @@
 TODO
 ----
 
+Entry Multiline edit (in progress)
+Tree selection mode set and themeing (MULTI/SINGLE/EXTENDED/NONE)
+	- Highlight on mouse over
+	- Invert on mouse click (behavior depends upon select mode)
+	- determination of whether a row is selected or not (ewl_[tree_]row_selected)
+Enabled/Disabled status for ALL applicable widgets
+Fix Box cutoff of elements with padding/insets (?) > 0
+
 0.0.1 goals
 -----------
  + Object class (complete)
