@@ -1,5 +1,4 @@
 #!/bin/sh
-
 # This is the Debian Enlightened Squash System. It was inspired by a mutual
 # dislike of the large number of debhelper files in the e/debian/ dir. I was
 # able to kill several birds with one stone, too. The debianize.sh script does
