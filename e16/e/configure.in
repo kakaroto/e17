@@ -205,7 +205,7 @@ edocexec=`echo $edocexec`
 AC_SUBST(edocdata)
 AC_SUBST(edocexec)
 
-AC_OUTPUT([ m4/Makefile  intl/Makefile 
+AC_OUTPUT([
 Makefile
 src/Makefile
 src/themes/Makefile

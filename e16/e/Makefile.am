@@ -1,4 +1,4 @@
-SUBDIRS = m4  \
+SUBDIRS = \
         scripts \
 	dox \
 	eesh \
