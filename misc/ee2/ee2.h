@@ -21,22 +21,23 @@
 /* functions */
 void LoadImage(char *imagetoload);
 void DrawChecks(void);
-void CloseWindow(GtkWidget *widget, GdkEvent *event, gpointer data);
-void CloseFileSel(GtkWidget *widget, GdkEvent *event, gpointer data);
+void CloseWindow(GtkWidget *widget, gpointer data);
+void CloseFileSel(GtkWidget *widget, gpointer data);
 void FileOpen(GtkWidget *widget, GtkFileSelection *fs);
-void OpenImageFromMenu(GtkWidget *widget, GdkEvent *event, gpointer data);
-void SaveImage(GtkWidget *widget, GdkEvent *event, gpointer data);
-void ShowSaveSel(GtkWidget *widget, GdkEvent *event, gpointer data);
-void CloseSaveSel(GtkWidget *widget, GdkEvent *event, gpointer data);
+void OpenImageFromMenu(GtkWidget *widget, gpointer data);
+void SaveImage(GtkWidget *widget, gpointer data);
+void ShowSaveSel(GtkWidget *widget, gpointer data);
+void CloseSaveSel(GtkWidget *widget, gpointer data);
 void SaveImageAs(GtkWidget *widget, GtkFileSelection *fs);
-void RefreshImage(GtkWidget *widget, GdkEvent *event, gpointer data);
-void BlurImage(GtkWidget *widget, GdkEvent *event, gpointer data);
-void BlurImageMore(GtkWidget *widget, GdkEvent *event, gpointer data);
-void SharpenImage(GtkWidget *widget, GdkEvent *event, gpointer data);
-void SharpenImageMore(GtkWidget *widget, GdkEvent *event, gpointer data);
-void Flip1(GtkWidget *widget, GdkEvent *event, gpointer data);
-void Flip2(GtkWidget *widget, GdkEvent *event, gpointer data);
-void Flip3(GtkWidget *widget, GdkEvent *event, gpointer data);
+void RefreshImage(GtkWidget *widget, gpointer data);
+void BlurImage(GtkWidget *widget, gpointer data);
+void BlurImageMore(GtkWidget *widget, gpointer data);
+void SharpenImage(GtkWidget *widget, gpointer data);
+void SharpenImageMore(GtkWidget *widget, gpointer data);
+void Flip1(GtkWidget *widget, gpointer data);
+void Flip2(GtkWidget *widget, gpointer data);
+void Flip3(GtkWidget *widget, gpointer data);
+
 gint ButtonPressed(GtkWidget *widget, GdkEvent *event, gpointer data);
 
 gboolean a_config(GtkWidget *widget, GdkEventConfigure *event, gpointer user_data);

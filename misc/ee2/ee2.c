@@ -225,12 +225,12 @@ void DrawChecks(void)
 {
 }
 
-void CloseWindow(GtkWidget *widget, GdkEvent *event, gpointer data)
+void CloseWindow(GtkWidget *widget, gpointer data)
 {
 	gtk_main_quit();
 }
 
-void CloseFileSel(GtkWidget *widget, GdkEvent *event, gpointer data)
+void CloseFileSel(GtkWidget *widget, gpointer data)
 {
 	gtk_widget_hide(FileSel);
 }
@@ -255,23 +255,23 @@ void FileOpen(GtkWidget *widget, GtkFileSelection *fs)
 	gtk_widget_show(area);
 }
 
-void OpenImageFromMenu(GtkWidget *widget, GdkEvent *event, gpointer data)
+void OpenImageFromMenu(GtkWidget *widget, gpointer data)
 {
 	gtk_widget_show(FileSel);
 }
 
-void SaveImage(GtkWidget *widget, GdkEvent *event, gpointer data)
+void SaveImage(GtkWidget *widget, gpointer data)
 {
 	printf("Saving %s\n...", currentimage);
 	imlib_save_image(currentimage);
 }
 
-void ShowSaveSel(GtkWidget *widget, GdkEvent *event, gpointer data)
+void ShowSaveSel(GtkWidget *widget, gpointer data)
 {
 	gtk_widget_show(SaveSel);
 }
 
-void CloseSaveSel(GtkWidget *widget, GdkEvent *event, gpointer data)
+void CloseSaveSel(GtkWidget *widget, gpointer data)
 {
 	gtk_widget_hide(SaveSel);
 }
@@ -283,50 +283,50 @@ void SaveImageAs(GtkWidget *widget, GtkFileSelection *fs)
 	imlib_save_image(imagefile);
 }
 
-void RefreshImage(GtkWidget *widget, GdkEvent *event, gpointer data)
+void RefreshImage(GtkWidget *widget, gpointer data)
 {
 	gtk_widget_hide(area);
 	imlib_render_image_on_drawable(0, 0);
 	gtk_widget_show(area);
 }
 
-void BlurImage(GtkWidget *widget, GdkEvent *event, gpointer data)
+void BlurImage(GtkWidget *widget, gpointer data)
 {
 	imlib_image_blur(1);
 	imlib_render_image_on_drawable(0, 0);
 }
 
-void BlurImageMore(GtkWidget *widget, GdkEvent *event, gpointer data)
+void BlurImageMore(GtkWidget *widget, gpointer data)
 {
 	imlib_image_blur(2);
 	imlib_render_image_on_drawable(0, 0);
 }
 
-void SharpenImage(GtkWidget *widget, GdkEvent *event, gpointer data)
+void SharpenImage(GtkWidget *widget, gpointer data)
 {
 	imlib_image_sharpen(1);
 	imlib_render_image_on_drawable(0, 0);
 }
 
-void SharpenImageMore(GtkWidget *widget, GdkEvent *event, gpointer data)
+void SharpenImageMore(GtkWidget *widget, gpointer data)
 {
 	imlib_image_sharpen(2);
 	imlib_render_image_on_drawable(0, 0);
 }
 
-void Flip1(GtkWidget *widget, GdkEvent *event, gpointer data)
+void Flip1(GtkWidget *widget, gpointer data)
 {
 	imlib_image_flip_horizontal();
 	imlib_render_image_on_drawable(0, 0);
 }
 
-void Flip2(GtkWidget *widget, GdkEvent *event, gpointer data)
+void Flip2(GtkWidget *widget, gpointer data)
 {
 	imlib_image_flip_vertical();
 	imlib_render_image_on_drawable(0, 0);
 }
 
-void Flip3(GtkWidget *widget, GdkEvent *event, gpointer data)
+void Flip3(GtkWidget *widget, gpointer data)
 {
 	gtk_widget_hide(area);
 	imlib_image_flip_diagonal();
