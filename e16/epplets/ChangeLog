@@ -1461,3 +1461,12 @@ Also, I modified E-Slides and E-NetGraph so that if the config file or the
 default settings don't provide a valid image directory (for E-Slides) or a
 valid network interface (E-NetGraph), rather than immediately exiting, you
 will be presented with the config dialog.  Very handy.
+
+-------------------------------------------------------------------------------
+
+Tue Dec  7 18:02:22 PST 1999
+(KainX)
+
+Fixed a seg fault in E-Mountbox if the images in the config file aren't found.
+It first falls back on the compiled-in defaults, and if that doesn't work
+either, it exits with an error.

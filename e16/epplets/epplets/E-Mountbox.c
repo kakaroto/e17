@@ -746,42 +746,37 @@ SetupGraphx(void)
   /* load all images, scaled appropriately */
   memset(images, 0, MAXTYPE * sizeof(ImlibImage*));
   tmp = Imlib_load_image(id, Epplet_query_config("CD_IMAGE"));  
-  if (tmp)
+  if (tmp || (tmp = Imlib_load_image(id, defaults[TYPE_CD].value)))
     {
       images[TYPE_CD] = Imlib_clone_scaled_image(id, tmp, 44, 32);
       Imlib_destroy_image(id, tmp);
-      tmp = NULL;
     }
   tmp = Imlib_load_image(id, Epplet_query_config("HD_IMAGE"));  
-  if (tmp)
+  if (tmp || (tmp = Imlib_load_image(id, defaults[TYPE_HD].value)))
     {
       images[TYPE_HD] = Imlib_clone_scaled_image(id, tmp, 44, 32);
       Imlib_destroy_image(id, tmp);
-      tmp = NULL;
     }
   tmp = Imlib_load_image(id, Epplet_query_config("FD_IMAGE"));  
-  if (tmp)
+  if (tmp || (tmp = Imlib_load_image(id, defaults[TYPE_FD].value)))
     {
       images[TYPE_FD] = Imlib_clone_scaled_image(id, tmp, 44, 32);
       Imlib_destroy_image(id, tmp);
-      tmp = NULL;
     }
   tmp = Imlib_load_image(id, Epplet_query_config("ZIP_IMAGE"));  
-  if (tmp)
+  if (tmp || (tmp = Imlib_load_image(id, defaults[TYPE_ZIP].value)))
     {
       images[TYPE_ZIP] = Imlib_clone_scaled_image(id, tmp, 44, 32);
       Imlib_destroy_image(id, tmp);
-      tmp = NULL;
     }
   tmp = Imlib_load_image(id, Epplet_query_config("BG_IMAGE"));  
-  if (tmp)
+  if (tmp || (tmp = Imlib_load_image(id, defaults[TYPE_BG].value)))
     {
       sscanf(Epplet_query_config("BG_BORDER"), "%i %i %i %i",
 	     &(border.left), &(border.right), &(border.top), &(border.bottom));    
       Imlib_set_image_border(id, tmp, &border);
       images[TYPE_BG] = Imlib_clone_scaled_image(id, tmp, 44 * num_tiles, 32);
       Imlib_destroy_image(id, tmp);
-      tmp = NULL;
     }
 
   /* see if we got all of them */
@@ -789,8 +784,11 @@ SetupGraphx(void)
     check = (check && images[i]);
   if (!check)
     {
+      /* Even the fallbacks didn't work.  If we don't exit
+         here, we'll seg fault about 60 lines down.  -- mej */
       Epplet_dialog_ok("Could not load all images.");
-      /* should I abort here ? .... hmmm dunno yet */
+      Esync();
+      exit(-1);
     }
 
   /* set tile images according to mountpoint types */
