@@ -69,7 +69,7 @@ __create_table_test_window(Ewl_Widget * w, void *ev_data, void *user_data)
 	cell = ewl_cell_new();
 	button[0] = ewl_button_new("FIRST");
 	ewl_container_append_child(EWL_CONTAINER(cell), button[0]);
-	ewl_table_add(EWL_TABLE(table), cell, 3, 4, 2, 3);
+	ewl_table_add(EWL_TABLE(table), EWL_CELL(cell), 3, 4, 2, 3);
 	ewl_widget_show(button[0]);
 	ewl_widget_show(cell);
 
