@@ -427,14 +427,13 @@ void ewl_window_realize_cb(Ewl_Widget * w, void *ev_data, void *user_data)
 			(ewl_get_engine_mask() & EWL_ENGINE_FB)) {
 		Evas_Engine_Info_FB *fbinfo;
 
-		fbinfo = (Evas_Engine_Info_FB *)info;
+		window->window = fbinfo = (Evas_Engine_Info_FB *)info;
 
 		fbinfo->info.virtual_terminal = 0;
 		fbinfo->info.device_number = 0;
 		fbinfo->info.refresh = 0;
 		fbinfo->info.rotation = 0;
 		evas_engine_info_set(evas, (Evas_Engine_Info *)fbinfo);
-		printf("Using the fb engine\n");
 		ewl_object_request_geometry(EWL_OBJECT(w), 0, 0, 240, 320);
 	}
 	else
