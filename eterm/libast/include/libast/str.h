@@ -51,6 +51,10 @@ extern spif_str_t spif_str_new_from_fp(FILE *);
 extern spif_str_t spif_str_new_from_fd(int);
 extern spif_bool_t spif_str_del(spif_str_t);
 extern spif_bool_t spif_str_init(spif_str_t);
+extern spif_bool_t spif_str_init_from_ptr(spif_str_t, spif_charptr_t);
+extern spif_bool_t spif_str_init_from_buff(spif_str_t, spif_charptr_t, size_t);
+extern spif_bool_t spif_str_init_from_fp(spif_str_t, FILE *);
+extern spif_bool_t spif_str_init_from_fd(spif_str_t, int);
 extern spif_bool_t spif_str_done(spif_str_t);
 extern spif_str_t spif_str_dup(spif_str_t);
 extern int spif_str_cmp(spif_str_t, spif_str_t);
@@ -80,4 +84,5 @@ extern spif_bool_t spif_str_set_size(spif_str_t, size_t);
 extern size_t spif_str_get_len(spif_str_t);
 extern spif_bool_t spif_str_set_len(spif_str_t, size_t);
 extern spif_bool_t spif_str_show(spif_str_t, spif_charptr_t);
+
 #endif /* _LIBAST_STR_H_ */

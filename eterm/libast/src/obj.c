@@ -85,7 +85,7 @@ spif_obj_del(spif_obj_t self)
 spif_bool_t
 spif_obj_init(spif_obj_t self)
 {
-  spif_obj_set_classname(self, SPIF_CLASSNAME(obj));
+  spif_obj_set_classname(self, SPIF_CLASSNAME_TYPE(obj));
   return TRUE;
 }
 
@@ -99,7 +99,7 @@ spif_obj_done(spif_obj_t self)
 spif_classname_t
 spif_obj_get_classname(spif_obj_t self)
 {
-  return ((self) ? (self->classname) : ((spif_classname_t) SPIF_NULL_STR(obj)));
+  return ((self) ? (self->classname) : ((spif_classname_t) SPIF_NULLSTR_TYPE(obj)));
 }
 
 spif_bool_t
@@ -112,3 +112,9 @@ spif_obj_set_classname(spif_obj_t self, spif_classname_t newname)
   return TRUE;
 }
 
+spif_bool_t
+spif_obj_show(spif_obj_t self, spif_charptr_t name)
+{
+  printf("%s:  (spif_obj_t) { \"%s\" }\n", name, self->classname);
+  return TRUE;
+}

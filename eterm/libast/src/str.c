@@ -48,11 +48,8 @@ spif_str_new_from_ptr(spif_charptr_t old)
 {
   spif_str_t self;
 
-  self = spif_str_new();
-  self->len = strlen(old);
-  self->mem = self->len + 1;
-  self->s = SPIF_TYPE(charptr) MALLOC(self->mem);
-  memcpy(self->s, old, self->mem);
+  self = SPIF_ALLOC(str);
+  spif_str_init_from_ptr(self, old);
   return self;
 }
 
@@ -61,7 +58,63 @@ spif_str_new_from_buff(spif_charptr_t buff, size_t size)
 {
   spif_str_t self;
 
-  self = spif_str_new();
+  self = SPIF_ALLOC(str);
+  spif_str_init_from_buff(self, buff, size);
+  return self;
+}
+
+spif_str_t
+spif_str_new_from_fp(FILE *fp)
+{
+  spif_str_t self;
+
+  self = SPIF_ALLOC(str);
+  spif_str_init_from_fp(self, fp);
+  return self;
+}
+
+spif_str_t
+spif_str_new_from_fd(int fd)
+{
+  spif_str_t self;
+
+  self = SPIF_ALLOC(str);
+  spif_str_init_from_fd(self, fd);
+  return self;
+}
+
+spif_bool_t
+spif_str_del(spif_str_t self)
+{
+  spif_str_done(self);
+  SPIF_DEALLOC(self);
+  return TRUE;
+}
+
+spif_bool_t
+spif_str_init(spif_str_t self)
+{
+  spif_obj_init(SPIF_OBJ(self));
+  spif_obj_set_classname(SPIF_OBJ(self), SPIF_CLASSNAME_TYPE(str));
+  self->s = SPIF_NULL_TYPE(charptr);
+  self->len = 0;
+  self->mem = 0;
+  return TRUE;
+}
+
+spif_bool_t
+spif_str_init_from_ptr(spif_str_t self, spif_charptr_t old)
+{
+  self->len = strlen(old);
+  self->mem = self->len + 1;
+  self->s = SPIF_TYPE(charptr) MALLOC(self->mem);
+  memcpy(self->s, old, self->mem);
+  return TRUE;
+}
+
+spif_bool_t
+spif_str_init_from_buff(spif_str_t self, spif_charptr_t buff, size_t size)
+{
   self->mem = size;
   self->len = strnlen(buff, size);
   if (self->mem == self->len) {
@@ -70,16 +123,14 @@ spif_str_new_from_buff(spif_charptr_t buff, size_t size)
   self->s = SPIF_TYPE(charptr) MALLOC(self->mem);
   memcpy(self->s, buff, self->len);
   self->s[self->len] = 0;
-  return self;
+  return TRUE;
 }
 
-spif_str_t
-spif_str_new_from_fp(FILE *fp)
+spif_bool_t
+spif_str_init_from_fp(spif_str_t self, FILE *fp)
 {
-  spif_str_t self;
   spif_charptr_t p, end = NULL;
 
-  self = spif_str_new();
   self->mem = buff_inc;
   self->len = 0;
   self->s = SPIF_TYPE(charptr) MALLOC(self->mem);
@@ -98,17 +149,15 @@ spif_str_new_from_fp(FILE *fp)
                         : ((int) strlen(self->s)));
   self->mem = self->len + 1;
   self->s = SPIF_TYPE(charptr) REALLOC(self->s, self->mem);
-  return self;
+  return TRUE;
 }
 
-spif_str_t
-spif_str_new_from_fd(int fd)
+spif_bool_t
+spif_str_init_from_fd(spif_str_t self, int fd)
 {
-  spif_str_t self;
   int n;
   spif_charptr_t p;
 
-  self = spif_str_new();
   self->mem = buff_inc;
   self->len = 0;
   self->s = SPIF_TYPE(charptr) MALLOC(self->mem);
@@ -122,25 +171,6 @@ spif_str_new_from_fd(int fd)
   self->mem = self->len + 1;
   self->s = SPIF_TYPE(charptr) REALLOC(self->s, self->mem);
   self->s[self->len] = 0;
-  return self;
-}
-
-spif_bool_t
-spif_str_del(spif_str_t self)
-{
-  spif_str_done(self);
-  SPIF_DEALLOC(self);
-  return TRUE;
-}
-
-spif_bool_t
-spif_str_init(spif_str_t self)
-{
-  spif_obj_init(SPIF_OBJ(self));
-  spif_obj_set_classname(SPIF_OBJ(self), SPIF_CLASSNAME(str));
-  self->s = SPIF_NULL_TYPE(charptr);
-  self->len = 0;
-  self->mem = 0;
   return TRUE;
 }
 
@@ -162,7 +192,7 @@ spif_str_dup(spif_str_t orig)
   spif_str_t self;
 
   self = SPIF_ALLOC(str);
-  memcpy(self, orig, SPIF_OBJ_SIZEOF(str));
+  memcpy(self, orig, SPIF_SIZEOF_TYPE(str));
   self->s = STRDUP(SPIF_STR_STR(orig));
   self->len = orig->len;
   self->mem = orig->mem;

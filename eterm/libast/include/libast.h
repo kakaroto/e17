@@ -73,6 +73,7 @@
 #include <libast/types.h>
 #include <libast/obj.h>
 #include <libast/str.h>
+#include <libast/tok.h>
 
 /******************************* GENERIC GOOP *********************************/
 #define USE_VAR(x)   (void) x

@@ -38,6 +38,7 @@ int test_strings(void);
 int test_snprintf(void);
 int test_obj(void);
 int test_str(void);
+int test_tok(void);
 
 int
 test_macros(void)
@@ -217,7 +218,7 @@ test_obj(void)
 
   TEST_BEGIN("spif_obj_get_classname");
   cname = spif_obj_get_classname(testobj);
-  TEST_FAIL_IF(cname != SPIF_CLASSNAME(obj));
+  TEST_FAIL_IF(cname != SPIF_CLASSNAME_TYPE(obj));
   TEST_PASS();
 
   TEST_BEGIN("spif_obj_del");
@@ -247,7 +248,7 @@ test_str(void)
 
   TEST_BEGIN("spif_obj_get_classname");
   cname = spif_obj_get_classname(SPIF_OBJ(teststr));
-  TEST_FAIL_IF(cname != SPIF_CLASSNAME(str));
+  TEST_FAIL_IF(cname != SPIF_CLASSNAME_TYPE(str));
   TEST_PASS();
 
   TEST_BEGIN("spif_str_del");
@@ -456,6 +457,43 @@ test_str(void)
 }
 
 int
+test_tok(void)
+{
+  spif_tok_t testtok, test2tok;
+  spif_classname_t cname;
+  signed char tmp[] = "I \"can\'t\" feel my legs!";
+  signed char tmp2[] = ":::some:seedy:colon-delimited::data";
+  signed char tmp3[] = "\"this is one token\" and this \'over here\' is \"another one\"";
+  signed char tmp4[] = "\"there shouldn't be\"\' any problems at\'\"\"\'\'\' \'\"all parsing this\"";
+  spif_charptr_t foo;
+
+  TEST_BEGIN("spif_tok_new");
+  testtok = spif_tok_new();
+  TEST_FAIL_IF(SPIF_OBJ_ISNULL(testtok));
+  TEST_PASS();
+
+  TEST_BEGIN("spif_obj_get_classname");
+  cname = spif_obj_get_classname(SPIF_OBJ(testtok));
+  TEST_FAIL_IF(cname != SPIF_CLASSNAME_TYPE(tok));
+  TEST_PASS();
+
+  TEST_BEGIN("spif_tok_del");
+  TEST_FAIL_IF(spif_tok_del(testtok) != TRUE);
+  TEST_PASS();
+
+  TEST_BEGIN("spif_tok_new_from_ptr");
+  testtok = spif_tok_new_from_ptr(tmp);
+  TEST_FAIL_IF(spif_str_cmp_with_ptr(SPIF_STR(testtok), tmp));
+  spif_tok_del(testtok);
+  TEST_PASS();
+
+
+
+  TEST_PASSED("spif_tok_t");
+  return 0;
+}
+
+int
 main(int argc, char *argv[])
 {
   int ret = 0;
@@ -479,6 +517,9 @@ main(int argc, char *argv[])
     return ret;
   }
   if ((ret = test_str()) != 0) {
+    return ret;
+  }
+  if ((ret = test_tok()) != 0) {
     return ret;
   }
 
