@@ -20,6 +20,7 @@
  * IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN
  * CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
+#define DECLARE_STRUCT_BACKGROUND
 #define DECLARE_STRUCT_BUTTON
 #define DECLARE_STRUCT_ICONBOX
 #define DECLARE_STRUCT_MENU
@@ -1827,7 +1828,6 @@ Config_Desktop(FILE * ConfigFile)
 			    bg = BackgroundCreate(name, &xclr, bg1, i1, i2, i3,
 						  i4, i5, i6, bg2, j1, j2, j3,
 						  j4, j5);
-			    AddItem(bg, bg->name, 0, LIST_TYPE_BACKGROUND);
 			    if (cm)
 			      {
 				 cm->ref_count++;
@@ -1882,15 +1882,14 @@ Config_Desktop(FILE * ConfigFile)
 				 bg = BackgroundCreate(name, &xclr, bg1, i1, i2,
 						       i3, i4, i5, i6, bg2, j1,
 						       j2, j3, j4, j5);
-				 AddItem(bg, bg->name, 0, LIST_TYPE_BACKGROUND);
 			      }
 			    if (!strcmp(bg->name, "NONE"))
 			      {
-				 SetDesktopBg(atoi(s2), NULL);
+				 DesktopSetBg(atoi(s2), NULL, 0);
 			      }
 			    else
 			      {
-				 SetDesktopBg(atoi(s2), bg);
+				 DesktopSetBg(atoi(s2), bg, 0);
 			      }
 #if !USE_IMLIB2
 			    if ((prImlib_Context) && (atoi(s2) == 0))
@@ -1911,11 +1910,11 @@ Config_Desktop(FILE * ConfigFile)
 			      {
 				 if (!strcmp(bg->name, "NONE"))
 				   {
-				      SetDesktopBg(atoi(s2), NULL);
+				      DesktopSetBg(atoi(s2), NULL, 0);
 				   }
 				 else
 				   {
-				      SetDesktopBg(atoi(s2), bg);
+				      DesktopSetBg(atoi(s2), bg, 0);
 				   }
 #if !USE_IMLIB2
 				 if ((prImlib_Context) && (atoi(s2) == 0))

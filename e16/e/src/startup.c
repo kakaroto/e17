@@ -218,9 +218,7 @@ CreateStartupDisplay(char start)
 	Mode.queue_up = pq;
 	BackgroundApply(bg, win1, 1);
 	BackgroundApply(bg, win2, 1);
-	if (bg->pmap)
-	   imlib_free_pixmap_and_mask(bg->pmap);
-	bg->pmap = 0;
+	BackgroundImagesFree(bg, 1);
 	init_win1 = w1;
 	init_win2 = w2;
 	EMapRaised(disp, w1);

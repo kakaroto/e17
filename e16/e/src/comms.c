@@ -20,6 +20,7 @@
  * IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN
  * CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
+#define DECLARE_STRUCT_BACKGROUND
 #include "E.h"
 
 static Window       comms_win = 0;
@@ -479,43 +480,13 @@ HandleComms(XClientMessageEvent * ev)
      }
    else if (!strcmp(w, "del_bg"))
      {
-	Background         *bg;
-	int                 i;
-	char                dodel = 1;
-
 	sscanf(s, "%*s %1000s", w);
-	bg = (Background *) FindItem(w, 0, LIST_FINDBY_NAME,
-				     LIST_TYPE_BACKGROUND);
-	if (bg)
-	  {
-	     /* check for desktops referencing this bg - if there are - don't */
-	     /* delete it */
-	     for (i = 0; i < ENLIGHTENMENT_CONF_NUM_DESKTOPS; i++)
-	       {
-		  if (desks.desk[i].bg == bg)
-		     dodel = 0;
-	       }
-	     if (dodel)
-	       {
-		  bg = (Background *) RemoveItem(w, 0, LIST_FINDBY_NAME,
-						 LIST_TYPE_BACKGROUND);
-		  if (bg->name)
-		     Efree(bg->name);
-		  if (bg->bg.file)
-		     Efree(bg->bg.file);
-		  if (bg->top.file)
-		     Efree(bg->top.file);
-		  if (bg->pmap)
-		     imlib_free_pixmap_and_mask(bg->pmap);
-		  Efree(bg);
-	       }
-	  }
+	BackgroundDestroyByName(w);
      }
    else if (!strcmp(w, "use_bg"))
      {
 	Background         *bg;
 	int                 i, wd;
-	char                view;
 
 	sscanf(s, "%*s %1000s", w);
 	bg = (Background *) FindItem(w, 0, LIST_FINDBY_NAME,
@@ -531,28 +502,7 @@ HandleComms(XClientMessageEvent * ev)
 		  if (w[0])
 		    {
 		       i = atoi(w);
-		       if ((i >= 0) && (i < ENLIGHTENMENT_CONF_NUM_DESKTOPS))
-			 {
-			    if (desks.desk[i].bg)
-			       desks.desk[i].bg->last_viewed = 0;
-			    view = desks.desk[i].viewable;
-			    desks.desk[i].viewable = 0;
-			    BackgroundsAccounting();
-			    desks.desk[i].viewable = view;
-			    desks.desk[i].bg = bg;
-			    if (i < Conf.desks.num)
-			      {
-				 if (desks.desk[i].viewable)
-				    RefreshDesktop(i);
-				 if (i == desks.current)
-				   {
-				      RedrawPagersForDesktop(i, 2);
-				      ForceUpdatePagersForDesktop(i);
-				   }
-				 else
-				    RedrawPagersForDesktop(i, 1);
-			      }
-			 }
+		       DesktopSetBg(i, bg, 1);
 		    }
 	       }
 	  }
@@ -560,7 +510,6 @@ HandleComms(XClientMessageEvent * ev)
    else if (!strcmp(w, "use_no_bg"))
      {
 	int                 i, wd;
-	char                view;
 
 	wd = 2;
 	w[0] = ' ';
@@ -571,28 +520,7 @@ HandleComms(XClientMessageEvent * ev)
 	     if (w[0])
 	       {
 		  i = atoi(w);
-		  if ((i >= 0) && (i < ENLIGHTENMENT_CONF_NUM_DESKTOPS))
-		    {
-		       if (desks.desk[i].bg)
-			  desks.desk[i].bg->last_viewed = 0;
-		       view = desks.desk[i].viewable;
-		       desks.desk[i].viewable = 0;
-		       BackgroundsAccounting();
-		       desks.desk[i].viewable = view;
-		       desks.desk[i].bg = NULL;
-		       if (i < Conf.desks.num)
-			 {
-			    if (desks.desk[i].viewable)
-			       RefreshDesktop(i);
-			    if (i == desks.current)
-			      {
-				 RedrawPagersForDesktop(i, 2);
-				 ForceUpdatePagersForDesktop(i);
-			      }
-			    else
-			       RedrawPagersForDesktop(i, 1);
-			 }
-		    }
+		  DesktopSetBg(i, NULL, 1);
 	       }
 	  }
      }
@@ -1134,17 +1062,7 @@ HandleComms(XClientMessageEvent * ev)
 		  for (i = 0; i < ENLIGHTENMENT_CONF_NUM_DESKTOPS; i++)
 		    {
 		       if (desks.desk[i].bg == bg)
-			 {
-			    if (desks.desk[i].viewable)
-			       RefreshDesktop(i);
-			    if (i == desks.current)
-			      {
-				 RedrawPagersForDesktop(i, 2);
-				 ForceUpdatePagersForDesktop(i);
-			      }
-			    else
-			       RedrawPagersForDesktop(i, 1);
-			 }
+			  DesktopSetBg(i, bg, 0);
 		    }
 	       }
 	  }
@@ -1166,7 +1084,6 @@ HandleComms(XClientMessageEvent * ev)
 		Efree(bgf);
 	     if (topf)
 		Efree(topf);
-	     AddItem(bg, bg->name, 0, LIST_TYPE_BACKGROUND);
 	  }
      }
    else if (!strcmp(w, "draw_bg_to"))

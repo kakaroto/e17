@@ -664,8 +664,8 @@ PagerRedraw(Pager * p, char newbg)
 			  BackgroundGetUniqueString(desks.desk[p->desktop].bg);
 		       Esnprintf(s, sizeof(s), "%s/cached/pager/%s.%i.%i.%s",
 				 EDirUserCache(),
-				 desks.desk[p->desktop].bg->name, (p->w / ax),
-				 (p->h / ay), uniq);
+				 BackgroundGetName(desks.desk[p->desktop].bg),
+				 (p->w / ax), (p->h / ay), uniq);
 		       Efree(uniq);
 
 		       im = imlib_load_image(s);

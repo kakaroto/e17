@@ -65,7 +65,7 @@ ChangeNumberOfDesktops(int quantity)
 }
 
 void
-ShowDesktopControls()
+ShowDesktopControls(void)
 {
    Button            **blst;
    int                 num, i;
@@ -81,7 +81,7 @@ ShowDesktopControls()
 }
 
 void
-ShowDesktopTabs()
+ShowDesktopTabs(void)
 {
    Button            **blst;
    int                 num, i;
@@ -97,7 +97,7 @@ ShowDesktopTabs()
 }
 
 void
-HideDesktopTabs()
+HideDesktopTabs(void)
 {
    Button            **blst;
    int                 num, i;
@@ -218,7 +218,7 @@ SlideWindowTo(Window win, int fx, int fy, int tx, int ty, int speed)
 }
 
 void
-RefreshCurrentDesktop()
+RefreshCurrentDesktop(void)
 {
    EDBUG(5, "RefreshCurrentDesktop");
    RefreshDesktop(desks.current);
@@ -245,7 +245,19 @@ RefreshDesktop(int desk)
 }
 
 void
-InitDesktopBgs()
+DesktopsRefresh(void)
+{
+   int                 i;
+
+   for (i = 0; i < ENLIGHTENMENT_CONF_NUM_DESKTOPS; i++)
+     {
+	if (desks.desk[i].bg)
+	   DesktopSetBg(i, desks.desk[i].bg, 1);
+     }
+}
+
+void
+InitDesktopBgs(void)
 {
    int                 i;
    Desk               *d;
@@ -262,10 +274,10 @@ InitDesktopBgs()
 	d->y = 0;
 	d->current_area_x = 0;
 	d->current_area_y = 0;
+	d->viewable = 0;
 	if (i == 0)
 	  {
 	     d->win = root.win;
-	     d->viewable = 0;
 	  }
 	else
 	  {
@@ -277,7 +289,6 @@ InitDesktopBgs()
 			  | ButtonMotionMask | PropertyChangeMask |
 			  SubstructureRedirectMask | KeyPressMask |
 			  KeyReleaseMask | PointerMotionMask);
-	     d->viewable = 0;
 	  }
 	at = XInternAtom(disp, "ENLIGHTENMENT_DESKTOP", False);
 	XChangeProperty(disp, d->win, at, XA_CARDINAL, 32, PropModeReplace,
@@ -293,11 +304,10 @@ InitDesktopBgs()
      }
 
    EDBUG_RETURN_;
-
 }
 
 void
-InitDesktopControls()
+InitDesktopControls(void)
 {
    int                 i;
    ActionClass        *ac, *ac2, *ac3;
@@ -564,32 +574,29 @@ InitDesktopControls()
 }
 
 void
-SetDesktopBg(int desk, Background * bg)
+DesktopSetBg(int desk, Background * bg, int refresh)
 {
-   EDBUG(5, "SetDesktopBg");
+   EDBUG(5, "DesktopSetBg");
 
-   if (desk < 0)
-      EDBUG_RETURN_;
-   if (desk >= ENLIGHTENMENT_CONF_NUM_DESKTOPS)
+   if (desk < 0 || desk >= ENLIGHTENMENT_CONF_NUM_DESKTOPS)
       EDBUG_RETURN_;
 
-   if (desks.desk[desk].bg)
+   if (refresh)
+      BackgroundPixmapFree(desks.desk[desk].bg);
+
+   if (desks.desk[desk].bg != bg)
      {
-	if (desks.desk[desk].bg != bg)
-	  {
-	     desks.desk[desk].bg->ref_count--;
-	     if (desks.desk[desk].bg->ref_count < 1)
-	       {
-		  desks.desk[desk].bg->last_viewed = 0;
-		  BackgroundsAccounting();
-	       }
-	     if (bg)
-		bg->ref_count++;
-	  }
+	if (desks.desk[desk].bg)
+	   BackgroundDecRefcount(desks.desk[desk].bg);
+	if (bg)
+	   BackgroundIncRefcount(bg);
      }
+
    desks.desk[desk].bg = bg;
+
    if (desks.desk[desk].viewable)
       RefreshDesktop(desk);
+
    if (desk == desks.current)
      {
 	RedrawPagersForDesktop(desk, 2);
@@ -597,6 +604,7 @@ SetDesktopBg(int desk, Background * bg)
      }
    else
       RedrawPagersForDesktop(desk, 1);
+
    EDBUG_RETURN_;
 }
 
@@ -836,9 +844,8 @@ MoveDesktop(int desk, int x, int y)
 	  {
 	     for (i = n + 1; i < ENLIGHTENMENT_CONF_NUM_DESKTOPS; i++)
 	       {
-		  if ((desks.desk[desks.order[i]].viewable)
-		      && (desks.desk[desks.order[i]].bg))
-		     desks.desk[desks.order[i]].bg->last_viewed = time(NULL);
+		  if (desks.desk[desks.order[i]].viewable)
+		     BackgroundTouch(desks.desk[desks.order[i]].bg);
 		  desks.desk[desks.order[i]].viewable = 0;
 	       }
 	  }
@@ -876,12 +883,8 @@ MoveDesktop(int desk, int x, int y)
 		    }
 		  else
 		    {
-		       if ((!v) && (desks.desk[desks.order[i]].viewable)
-			   && (desks.desk[desks.order[i]].bg))
-			 {
-			    desks.desk[desks.order[i]].bg->last_viewed =
-			       time(NULL);
-			 }
+		       if ((!v) && (desks.desk[desks.order[i]].viewable))
+			  BackgroundTouch(desks.desk[desks.order[i]].bg);
 		       desks.desk[desks.order[i]].viewable = v;
 		    }
 
@@ -991,8 +994,8 @@ HideDesktop(int desk)
    if (desk == 0)
       EDBUG_RETURN_;
 
-   if ((desks.desk[desk].viewable) && (desks.desk[desk].bg))
-      desks.desk[desk].bg->last_viewed = time(NULL);
+   if (desks.desk[desk].viewable)
+      BackgroundTouch(desks.desk[desk].bg);
    desks.desk[desk].viewable = 0;
    EMoveWindow(disp, desks.desk[desk].win, root.w, 0);
 
@@ -1030,7 +1033,7 @@ ShowDesktop(int desk)
 }
 
 void
-StackDesktops()
+StackDesktops(void)
 {
    EDBUG(2, "StackDesktops");
 

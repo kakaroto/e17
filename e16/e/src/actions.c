@@ -2616,7 +2616,7 @@ doBackgroundSet(EWin * edummy, const void *params)
 {
    int                 desk;
    Background         *bg;
-   char                view, s[1024];
+   char                s[1024];
 
    EDBUG(6, "doBackgroundSet");
 
@@ -2626,29 +2626,13 @@ doBackgroundSet(EWin * edummy, const void *params)
    desk = desks.current;
    if (sscanf((char *)params, "%1000s %i", s, &desk) < 2)
       desk = desks.current;
+
    bg = (Background *) FindItem(s, 0, LIST_FINDBY_NAME, LIST_TYPE_BACKGROUND);
    if (!bg)
       EDBUG_RETURN(0);
 
    if (desks.desk[desk].bg != bg)
-     {
-	char                pq;
-
-	if (desks.desk[desk].bg)
-	   desks.desk[desk].bg->last_viewed = 0;
-	view = desks.desk[desk].viewable;
-	desks.desk[desk].viewable = 0;
-	BackgroundsAccounting();
-	desks.desk[desk].viewable = view;
-	BGSettingsGoTo(bg);
-	pq = Mode.queue_up;
-	Mode.queue_up = 0;
-	SetDesktopBg(desk, bg);
-	RefreshDesktop(desk);
-	RedrawPagersForDesktop(desk, 2);
-	ForceUpdatePagersForDesktop(desk);
-	Mode.queue_up = pq;
-     }
+      DesktopSetBg(desk, bg, 0);
    autosave();
 
    EDBUG_RETURN(0);

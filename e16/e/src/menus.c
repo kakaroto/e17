@@ -1125,7 +1125,6 @@ MenuCreateFromDirectory(const char *name, MenuStyle * ms, const char *dir)
 						       keep_asp, justx, justy,
 						       scalex, scaley, NULL, 0,
 						       0, 0, 0, 0);
-				 AddItem(bg, bg->name, 0, LIST_TYPE_BACKGROUND);
 			      }
 			    else
 			       ok = 0;
@@ -1336,7 +1335,6 @@ MenuCreateFromDirectory(const char *name, MenuStyle * ms, const char *dir)
 			    bg = BackgroundCreate(s3, &xclr, ss, tile, keep_asp,
 						  512, 512, scalex, scaley,
 						  NULL, 0, 0, 0, 0, 0);
-			    AddItem(bg, bg->name, 0, LIST_TYPE_BACKGROUND);
 			 }
 		       else
 			  ok = 0;

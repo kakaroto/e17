@@ -53,7 +53,6 @@ int
 main(int argc, char **argv)
 {
    int                 i;
-   Background         *bg;
    ECursor            *ec = NULL;
    struct utsname      ubuf;
    char               *str;
@@ -344,12 +343,8 @@ main(int argc, char **argv)
    if (!Conf.mapslide)
       CreateStartupDisplay(0);
 
-   if ((bg = RemoveItem("STARTUP_BACKGROUND_SIDEWAYS", 0,
-			LIST_FINDBY_NAME, LIST_TYPE_BACKGROUND)))
-      BackgroundDestroy(bg);
-   if ((bg = RemoveItem("STARTUP_BACKGROUND", 0,
-			LIST_FINDBY_NAME, LIST_TYPE_BACKGROUND)))
-      BackgroundDestroy(bg);
+   BackgroundDestroyByName("STARTUP_BACKGROUND_SIDEWAYS");
+   BackgroundDestroyByName("STARTUP_BACKGROUND");
 
 #ifdef SIGCONT
    for (i = 0; i < child_count; i++)

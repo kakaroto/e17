@@ -20,6 +20,7 @@
  * IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN
  * CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
+#define DECLARE_STRUCT_BACKGROUND
 #define DECLARE_STRUCT_ICONBOX
 #include "E.h"
 #include <time.h>
@@ -2426,7 +2427,6 @@ static DItem       *bg_mini_disp;
 static DItem       *bg_filename;
 static DItem       *tmp_w[10];
 static int          tmp_bg_sel_sliderval = 0;
-static Background  *tbg = NULL;
 static Background  *tmp_bg;
 static int          tmp_bg_r;
 static int          tmp_bg_g;
@@ -2465,23 +2465,16 @@ CB_ConfigureBG(int val, void *data)
 	tmp_bg->bg.yjust = 1024 - tmp_bg_yjust;
 	tmp_bg->bg.xperc = tmp_bg_xperc;
 	tmp_bg->bg.yperc = 1024 - tmp_bg_yperc;
+
 	if (!tmp_bg_image)
 	   BackgroundImagesRemove(tmp_bg);
+
 	for (i = 0; i < ENLIGHTENMENT_CONF_NUM_DESKTOPS; i++)
 	  {
 	     if (desks.desk[i].bg == tmp_bg)
-	       {
-		  if (desks.desk[i].viewable)
-		     RefreshDesktop(i);
-		  if (i == desks.current)
-		    {
-		       RedrawPagersForDesktop(i, 2);
-		       ForceUpdatePagersForDesktop(i);
-		    }
-		  else
-		     RedrawPagersForDesktop(i, 1);
-	       }
+		DesktopSetBg(i, tmp_bg, 0);
 	  }
+
 	{
 	   char                s[4096];
 	   Imlib_Image        *im;
@@ -2505,20 +2498,7 @@ CB_ConfigureBG(int val, void *data)
      {
 	BackgroundImagesKeep(tmp_bg, 0);
      }
-   if (tbg)
-     {
-	BackgroundDestroy(tbg);
-	tbg = NULL;
-     }
-   BackgroundsAccounting();
    autosave();
-   /* This is kind of a hack - somehow it loses the correct current desktop
-    * information when we actually open up the dialog box, so this
-    * should fix the atom which apparently gets clobbered somewhere
-    * above here
-    * --Mandrake
-    */
-   RefreshDesktop(desks.current);
 
    data = NULL;
 }
@@ -2526,74 +2506,56 @@ CB_ConfigureBG(int val, void *data)
 static void
 CB_DesktopMiniDisplayRedraw(int val, void *data)
 {
+   Background         *bg;
    int                 w, h;
    DItem              *di;
    Window              win;
    Pixmap              pmap;
    XColor              xclr;
+   const char         *fbg, *ffg;
+
+   if (!tmp_bg)
+      return;
 
    di = (DItem *) data;
    win = DialogItemAreaGetWindow(di);
    DialogItemAreaGetSize(di, &w, &h);
 
+   fbg = (tmp_bg_image) ? tmp_bg->bg.file : NULL;
+   ffg = (tmp_bg_image) ? tmp_bg->top.file : NULL;
    ESetColor(&xclr, tmp_bg_r, tmp_bg_g, tmp_bg_b);
-   if (!tbg)
-     {
-	if (!tmp_bg_image)
-	   tbg =
-	      BackgroundCreate("TEMP", &xclr, NULL, tmp_bg_tile,
-			       tmp_bg_keep_aspect, tmp_bg_xjust,
-			       1024 - tmp_bg_yjust, tmp_bg_xperc,
-			       1024 - tmp_bg_yperc, tmp_bg->top.file,
-			       tmp_bg->top.keep_aspect, tmp_bg->top.xjust,
-			       tmp_bg->top.yjust, tmp_bg->top.xperc,
-			       tmp_bg->top.yperc);
-	else
-	   tbg =
-	      BackgroundCreate("TEMP", &xclr, tmp_bg->bg.file, tmp_bg_tile,
-			       tmp_bg_keep_aspect, tmp_bg_xjust,
-			       1024 - tmp_bg_yjust, tmp_bg_xperc,
-			       1024 - tmp_bg_yperc, tmp_bg->top.file,
-			       tmp_bg->top.keep_aspect, tmp_bg->top.xjust,
-			       tmp_bg->top.yjust, tmp_bg->top.xperc,
-			       tmp_bg->top.yperc);
-     }
-   else
-     {
-	if (tbg->pmap)
-	   imlib_free_pixmap_and_mask(tbg->pmap);
-	ESetColor(&(tbg->bg_solid), tmp_bg_r, tmp_bg_g, tmp_bg_b);
-	if (tbg->bg.file)
-	   Efree(tbg->bg.file);
-	tbg->bg.file = NULL;
-	if (tmp_bg_image)
-	   tbg->bg.file = Estrdup(tmp_bg->bg.file);
-	else
-	  {
-	     if (tbg->bg.im)
-	       {
-		  imlib_context_set_image(tbg->bg.im);
-		  imlib_free_image();
-		  tbg->bg.im = NULL;
-	       }
-	  }
-	if (tbg->bg.real_file)
-	   Efree(tbg->bg.real_file);
-	tbg->bg.real_file = NULL;
-	tbg->bg_tile = tmp_bg_tile;
-	tbg->bg.keep_aspect = tmp_bg_keep_aspect;
-	tbg->bg.xjust = tmp_bg_xjust;
-	tbg->bg.yjust = 1024 - tmp_bg_yjust;
-	tbg->bg.xperc = tmp_bg_xperc;
-	tbg->bg.yperc = 1024 - tmp_bg_yperc;
-     }
-   BackgroundImagesKeep(tbg, 1);
+   bg = BackgroundCreate("TEMP", &xclr, fbg, tmp_bg_tile,
+			 tmp_bg_keep_aspect, tmp_bg_xjust,
+			 1024 - tmp_bg_yjust, tmp_bg_xperc,
+			 1024 - tmp_bg_yperc, ffg,
+			 tmp_bg->top.keep_aspect, tmp_bg->top.xjust,
+			 tmp_bg->top.yjust, tmp_bg->top.xperc,
+			 tmp_bg->top.yperc);
+
    pmap = ECreatePixmap(disp, win, w, h, root.depth);
    ESetWindowBackgroundPixmap(disp, win, pmap);
-   BackgroundApply(tbg, pmap, 0);
+   BackgroundApply(bg, pmap, 0);
    XClearWindow(disp, win);
    EFreePixmap(disp, pmap);
+
+   BackgroundDestroy(bg);
    val = 0;
+}
+
+static void
+BG_GetValues(void)
+{
+   tmp_bg_image = (tmp_bg->bg.file) ? 1 : 0;
+
+   BackgroundImagesKeep(tmp_bg, 1);
+
+   EGetColor(&(tmp_bg->bg_solid), &tmp_bg_r, &tmp_bg_g, &tmp_bg_b);
+   tmp_bg_tile = tmp_bg->bg_tile;
+   tmp_bg_keep_aspect = tmp_bg->bg.keep_aspect;
+   tmp_bg_xjust = tmp_bg->bg.xjust;
+   tmp_bg_yjust = 1024 - tmp_bg->bg.yjust;
+   tmp_bg_xperc = tmp_bg->bg.xperc;
+   tmp_bg_yperc = 1024 - tmp_bg->bg.yperc;
 }
 
 static void
@@ -2602,12 +2564,7 @@ BG_DoDialog(void)
    char               *stmp;
    char                s[1024];
 
-   if (tmp_bg->bg.file)
-      tmp_bg_image = 1;
-   else
-      tmp_bg_image = 0;
-
-   BackgroundImagesKeep(tmp_bg, 1);
+   BG_GetValues();
 
    if (tmp_bg->bg.file)
       stmp = fullfileof(tmp_bg->bg.file);
@@ -2620,13 +2577,6 @@ BG_DoDialog(void)
    DialogItemTextSetText(bg_filename, s);
    DialogDrawItems(bg_sel_dialog, bg_filename, 0, 0, 99999, 99999);
 
-   EGetColor(&(tmp_bg->bg_solid), &tmp_bg_r, &tmp_bg_g, &tmp_bg_b);
-   tmp_bg_tile = tmp_bg->bg_tile;
-   tmp_bg_keep_aspect = tmp_bg->bg.keep_aspect;
-   tmp_bg_xjust = tmp_bg->bg.xjust;
-   tmp_bg_yjust = 1024 - tmp_bg->bg.yjust;
-   tmp_bg_xperc = tmp_bg->bg.xperc;
-   tmp_bg_yperc = 1024 - tmp_bg->bg.yperc;
    DialogItemSliderSetVal(tmp_w[0], tmp_bg_r);
    DialogItemCheckButtonSetState(tmp_w[1], tmp_bg_image);
    DialogItemSliderSetVal(tmp_w[2], tmp_bg_g);
@@ -2637,11 +2587,7 @@ BG_DoDialog(void)
    DialogItemSliderSetVal(tmp_w[7], tmp_bg_yjust);
    DialogItemSliderSetVal(tmp_w[8], tmp_bg_yperc);
    DialogItemSliderSetVal(tmp_w[9], tmp_bg_xperc);
-   if (tbg)
-     {
-	BackgroundDestroy(tbg);
-	tbg = NULL;
-     }
+
    CB_DesktopMiniDisplayRedraw(0, bg_mini_disp);
 }
 
@@ -2650,28 +2596,23 @@ CB_ConfigureNewBG(int val, void *data)
 {
    char                s[1024];
    XColor              xclr;
-   Background         *bg;
    int                 lower, upper;
 
-   Esnprintf(s, sizeof(s), "__NEWBG_%i\n", (unsigned)time(NULL));
+   Esnprintf(s, sizeof(s), "__NEWBG_%i", (unsigned)time(NULL));
    ESetColor(&xclr, tmp_bg_r, tmp_bg_g, tmp_bg_b);
-   bg = BackgroundCreate(s, &xclr, tmp_bg->bg.file, tmp_bg_tile,
-			 tmp_bg_keep_aspect, tmp_bg_xjust, 1024 - tmp_bg_yjust,
-			 tmp_bg_xperc, 1024 - tmp_bg_yperc, tmp_bg->top.file,
-			 tmp_bg->top.keep_aspect, tmp_bg->top.xjust,
-			 tmp_bg->top.yjust, tmp_bg->top.xperc,
-			 tmp_bg->top.yperc);
-   AddItem(bg, bg->name, 0, LIST_TYPE_BACKGROUND);
-   tmp_bg = bg;
-   desks.desk[desks.current].bg = bg;
+   tmp_bg = BackgroundCreate(s, &xclr, tmp_bg->bg.file, tmp_bg_tile,
+			     tmp_bg_keep_aspect, tmp_bg_xjust,
+			     1024 - tmp_bg_yjust, tmp_bg_xperc,
+			     1024 - tmp_bg_yperc, tmp_bg->top.file,
+			     tmp_bg->top.keep_aspect, tmp_bg->top.xjust,
+			     tmp_bg->top.yjust, tmp_bg->top.xperc,
+			     tmp_bg->top.yperc);
    DialogItemSliderGetBounds(bg_sel_slider, &lower, &upper);
    upper += 4;
    DialogItemSliderSetBounds(bg_sel_slider, lower, upper);
    DialogItemSliderSetVal(bg_sel_slider, 0);
    DialogDrawItems(bg_sel_dialog, bg_sel_slider, 0, 0, 99999, 99999);
-   RefreshCurrentDesktop();
-   RedrawPagersForDesktop(desks.current, 2);
-   ForceUpdatePagersForDesktop(desks.current);
+   DesktopSetBg(desks.current, tmp_bg, 0);
    BG_RedrawView(0);
    autosave();
    val = 0;
@@ -2696,26 +2637,22 @@ CB_ConfigureRemBG(int val, void *data)
 	if (slider > upper)
 	   DialogItemSliderSetVal(bg_sel_slider, upper);
 
+	bg = NULL;
 	for (i = 0; i < num; i++)
 	  {
 	     if (bglist[i] == tmp_bg)
 	       {
-		  bg = RemoveItem((char *)tmp_bg, 0, LIST_FINDBY_POINTER,
-				  LIST_TYPE_BACKGROUND);
 		  if (i < (num - 1))
-		     tmp_bg = bglist[i + 1];
+		     bg = bglist[i + 1];
 		  else
-		     tmp_bg = bglist[i - 1];
-		  i = num;
-		  if (bg)
-		     BackgroundDestroy(bg);
-		  BG_DoDialog();
+		     bg = bglist[i - 1];
+		  break;
 	       }
 	  }
-	desks.desk[desks.current].bg = tmp_bg;
-	RedrawPagersForDesktop(desks.current, 2);
-	ForceUpdatePagersForDesktop(desks.current);
-	RefreshCurrentDesktop();
+	DesktopSetBg(desks.current, bg, 0);
+	BackgroundDestroy(tmp_bg);
+	tmp_bg = bg;
+	BG_DoDialog();
 	BG_RedrawView(0);
 	for (i = 0; i < 10; i++)
 	   DialogDrawItems(bg_sel_dialog, tmp_w[i], 0, 0, 99999, 99999);
@@ -2746,50 +2683,23 @@ CB_ConfigureDelBG(int val, void *data)
 	if (slider > upper)
 	   DialogItemSliderSetVal(bg_sel_slider, upper);
 
+	bg = NULL;
 	for (i = 0; i < num; i++)
 	  {
 	     if (bglist[i] == tmp_bg)
 	       {
-		  bg = RemoveItem((char *)tmp_bg, 0, LIST_FINDBY_POINTER,
-				  LIST_TYPE_BACKGROUND);
 		  if (i < (num - 1))
-		     tmp_bg = bglist[i + 1];
+		     bg = bglist[i + 1];
 		  else
-		     tmp_bg = bglist[i - 1];
-		  i = num;
-		  if (bg)
-		    {
-		       if (bg->bg.file)
-			 {
-			    char               *f;
-
-			    f = FindFile(bg->bg.file);
-			    if (f)
-			      {
-				 E_rm(f);
-				 Efree(f);
-			      }
-			 }
-		       if (bg->top.file)
-			 {
-			    char               *f;
-
-			    f = FindFile(bg->top.file);
-			    if (f)
-			      {
-				 E_rm(f);
-				 Efree(f);
-			      }
-			 }
-		       BackgroundDestroy(bg);
-		    }
-		  BG_DoDialog();
+		     bg = bglist[i - 1];
+		  break;
 	       }
 	  }
-	desks.desk[desks.current].bg = tmp_bg;
-	RedrawPagersForDesktop(desks.current, 2);
-	ForceUpdatePagersForDesktop(desks.current);
-	RefreshCurrentDesktop();
+
+	DesktopSetBg(desks.current, bg, 0);
+	BackgroundDelete(tmp_bg);
+	tmp_bg = bg;
+	BG_DoDialog();
 	BG_RedrawView(0);
 	for (i = 0; i < 10; i++)
 	   DialogDrawItems(bg_sel_dialog, tmp_w[i], 0, 0, 99999, 99999);
@@ -2989,10 +2899,7 @@ CB_BGAreaEvent(int val, void *data)
 	     BackgroundImagesKeep(tmp_bg, 0);
 	     tmp_bg = bglist[tmp_bg_selected];
 	     BG_DoDialog();
-	     desks.desk[desks.current].bg = tmp_bg;
-	     RedrawPagersForDesktop(desks.current, 2);
-	     ForceUpdatePagersForDesktop(desks.current);
-	     RefreshCurrentDesktop();
+	     DesktopSetBg(desks.current, tmp_bg, 0);
 	     BG_RedrawView(0);
 	     for (x = 0; x < 10; x++)
 		DialogDrawItems(bg_sel_dialog, tmp_w[x], 0, 0, 99999, 99999);
@@ -3073,23 +2980,17 @@ CB_BGPrev(int val, void *data)
    int                 i, num;
 
    bglist = (Background **) ListItemType(&num, LIST_TYPE_BACKGROUND);
-   if (bglist)
+   for (i = 0; i < num; i++)
      {
-	for (i = 0; i < num; i++)
+	if ((bglist[i] == tmp_bg) && (i > 0))
 	  {
-	     if ((bglist[i] == tmp_bg) && (i > 0))
-	       {
-		  desks.desk[desks.current].bg = bglist[i - 1];
-		  BGSettingsGoTo(bglist[i - 1]);
-		  RedrawPagersForDesktop(desks.current, 2);
-		  ForceUpdatePagersForDesktop(desks.current);
-		  RefreshCurrentDesktop();
-		  Efree(bglist);
-		  return;
-	       }
+	     BGSettingsGoTo(bglist[i - 1]);
+	     DesktopSetBg(desks.current, bglist[i - 1], 0);
+	     break;;
 	  }
-	Efree(bglist);
      }
+   if (bglist)
+      Efree(bglist);
    val = 0;
    data = NULL;
 }
@@ -3101,23 +3002,17 @@ CB_BGNext(int val, void *data)
    int                 i, num;
 
    bglist = (Background **) ListItemType(&num, LIST_TYPE_BACKGROUND);
-   if (bglist)
+   for (i = 0; i < num; i++)
      {
-	for (i = 0; i < num; i++)
+	if ((bglist[i] == tmp_bg) && (i < (num - 1)))
 	  {
-	     if ((bglist[i] == tmp_bg) && (i < (num - 1)))
-	       {
-		  desks.desk[desks.current].bg = bglist[i + 1];
-		  BGSettingsGoTo(bglist[i + 1]);
-		  RedrawPagersForDesktop(desks.current, 2);
-		  ForceUpdatePagersForDesktop(desks.current);
-		  RefreshCurrentDesktop();
-		  Efree(bglist);
-		  return;
-	       }
+	     BGSettingsGoTo(bglist[i + 1]);
+	     DesktopSetBg(desks.current, bglist[i + 1], 0);
+	     break;
 	  }
-	Efree(bglist);
      }
+   if (bglist)
+      Efree(bglist);
    val = 0;
    data = NULL;
 }
@@ -3272,28 +3167,14 @@ SettingsBackground(Background * bg)
 
    if ((!bg) || ((bg) && (!strcmp(bg->name, "NONE"))))
      {
-	Esnprintf(s, sizeof(s), "__NEWBG_%i\n", (unsigned)time(NULL));
+	Esnprintf(s, sizeof(s), "__NEWBG_%i", (unsigned)time(NULL));
 	bg = BackgroundCreate(s, NULL, NULL, 1, 1, 0, 0, 0, 0, NULL, 1,
 			      512, 512, 0, 0);
-	AddItem(bg, bg->name, 0, LIST_TYPE_BACKGROUND);
-	/*
-	 * desks.desk[desks.current].bg = bg;
-	 */
      }
    tmp_bg = bg;
-   if (bg->bg.file)
-      tmp_bg_image = 1;
-   else
-      tmp_bg_image = 0;
-   tmp_bg->keepim = 1;
 
-   EGetColor(&(bg->bg_solid), &tmp_bg_r, &tmp_bg_g, &tmp_bg_b);
-   tmp_bg_tile = bg->bg_tile;
-   tmp_bg_keep_aspect = bg->bg.keep_aspect;
-   tmp_bg_xjust = bg->bg.xjust;
-   tmp_bg_yjust = 1024 - bg->bg.yjust;
-   tmp_bg_xperc = bg->bg.xperc;
-   tmp_bg_yperc = 1024 - bg->bg.yperc;
+   BG_GetValues();
+
    tmp_hiq = Conf.backgrounds.hiquality;
    tmp_userbg = Conf.backgrounds.user;
    tmp_bg_timeout = Conf.backgrounds.timeout;

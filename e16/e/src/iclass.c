@@ -54,15 +54,21 @@ TransparencyMakeColorModifier(void)
 void
 TransparencySet(int transparency)
 {
+   int                 changed;
+
    if (transparency < 0)
       transparency = 0;
    else if (transparency > 255)
       transparency = 255;
 
+   changed = Conf.theme.transparency != transparency;
    Conf.theme.transparency = transparency;
 
    /* Generate the color modifier tables */
    TransparencyMakeColorModifier();
+
+   if (changed)
+      DesktopsRefresh();
 }
 
 #else
@@ -433,11 +439,9 @@ ImageStateMakePmapMask(ImageState * is, Drawable win, PmapMask * pmm,
 	if (xx < root.w && yy < root.h && xx + w >= 0 && yy + h >= 0)
 	  {
 	     /* Create the background base image */
-	     bg = root.win;
-	     if ((is->transparent & 0x02) == 0 &&
-		 desks.desk[desks.current].bg
-		 && desks.desk[desks.current].bg->pmap)
-		bg = desks.desk[desks.current].bg->pmap;
+	     bg = BackgroundGetPixmap(desks.desk[desks.current].bg);
+	     if ((is->transparent & 0x02) != 0 || bg == None)
+		bg = root.win;
 	     imlib_context_set_drawable(bg);
 	     ii = imlib_create_image_from_drawable(0, xx, yy, w, h, 1);
 	     imlib_context_set_image(ii);

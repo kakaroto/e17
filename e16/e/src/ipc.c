@@ -20,6 +20,7 @@
  * IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN
  * CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
+#define DECLARE_STRUCT_BACKGROUND
 #include "E.h"
 #include "timestamp.h"
 #include <ctype.h>
@@ -1047,7 +1048,8 @@ IPC_Background(const char *params, Client * c)
 		    {
 		       EGetColor(&(bg->bg_solid), &r, &g, &b);
 		       Esnprintf(buf, sizeof(buf),
-				 "%s ref_count %u\n" " bg.solid\t %i %i %i \n"
+				 "%s ref_count %u keepim %u\n"
+				 " bg.solid\t %i %i %i \n"
 				 " bg.file\t %s \ttop.file\t %s \n"
 				 " bg.tile\t %i \n"
 				 " bg.keep_aspect\t %i \ttop.keep_aspect\t %i \n"
@@ -1055,7 +1057,7 @@ IPC_Background(const char *params, Client * c)
 				 " bg.yjust\t %i \ttop.yjust\t %i \n"
 				 " bg.xperc\t %i \ttop.xperc\t %i \n"
 				 " bg.yperc\t %i \ttop.yperc\t %i \n", bg->name,
-				 bg->ref_count, r, g, b,
+				 bg->ref_count, bg->keepim, r, g, b,
 				 bg->bg.file, bg->top.file, bg->bg_tile,
 				 bg->bg.keep_aspect, bg->top.keep_aspect,
 				 bg->bg.xjust, bg->top.xjust, bg->bg.yjust,
@@ -1077,7 +1079,6 @@ IPC_Background(const char *params, Client * c)
 		    {
 		       bg = BackgroundCreate(Estrdup(name), NULL, NULL, 0, 0, 0,
 					     0, 0, 0, NULL, 0, 0, 0, 0, 0);
-		       AddItem(bg, bg->name, 0, LIST_TYPE_BACKGROUND);
 		    }
 		  if (!bg)
 		     Esnprintf(buf, sizeof(buf),
@@ -1175,11 +1176,7 @@ IPC_Background(const char *params, Client * c)
 	     if (bg)
 	       {
 		  if (bg->ref_count == 0)
-		    {
-		       RemoveItem(name, 0,
-				  LIST_FINDBY_NAME, LIST_TYPE_BACKGROUND);
-		       BackgroundDestroy(bg);
-		    }
+		     BackgroundDestroy(bg);
 		  else
 		     Esnprintf(buf, sizeof(buf),
 			       "Error: ref_count for background '%s' is %u.",

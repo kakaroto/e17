@@ -1038,6 +1038,7 @@ struct _button
 };
 #endif /* DECLARE_STRUCT_BUTTON */
 
+#ifdef DECLARE_STRUCT_BACKGROUND
 typedef struct
 {
    char               *file;
@@ -1062,6 +1063,7 @@ struct _background
    char                keepim;
    unsigned int        ref_count;
 };
+#endif /* DECLARE_STRUCT_BACKGROUND */
 
 typedef struct _desk
 {
@@ -1648,16 +1650,25 @@ void                deleteHint(Window win, Atom atom);
 
 /* backgrounds.c */
 char               *BackgroundGetUniqueString(Background * bg);
-void                BackgroundImagesKeep(Background * bg, char onoff);
+void                BackgroundPixmapFree(Background * bg);
+void                BackgroundImagesFree(Background * bg, int free_pmap);
+void                BackgroundImagesKeep(Background * bg, int onoff);
 void                BackgroundImagesRemove(Background * bg);
-void                BackgroundDestroy(Background * bg);
+int                 BackgroundDestroy(Background * bg);
+void                BackgroundDelete(Background * bg);
 Background         *BackgroundCreate(const char *name, XColor * solid,
 				     const char *bg, char tile,
 				     char keep_aspect, int xjust, int yjust,
 				     int xperc, int yperc, const char *top,
 				     char tkeep_aspect, int txjust, int tyjust,
 				     int txperc, int typerc);
+void                BackgroundDestroyByName(const char *name);
 void                BackgroundApply(Background * bg, Window win, int setbg);
+void                BackgroundIncRefcount(Background * bg);
+void                BackgroundDecRefcount(Background * bg);
+void                BackgroundTouch(Background * bg);
+const char         *BackgroundGetName(const Background * bg);
+Pixmap              BackgroundGetPixmap(const Background * bg);
 void                BackgroundsAccounting(void);
 void                BackgroundsInit(void);
 
@@ -1839,9 +1850,10 @@ void                SlideWindowTo(Window win, int fx, int fy, int tx, int ty,
 				  int speed);
 void                RefreshCurrentDesktop(void);
 void                RefreshDesktop(int num);
+void                DesktopsRefresh(void);
 void                InitDesktopBgs(void);
 void                InitDesktopControls(void);
-void                SetDesktopBg(int desk, Background * bg);
+void                DesktopSetBg(int desk, Background * bg, int refresh);
 void                ConformEwinToDesktop(EWin * ewin);
 int                 DesktopAt(int x, int y);
 void                GotoDesktop(int num);

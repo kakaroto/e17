@@ -20,6 +20,7 @@
  * IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN
  * CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
+#define DECLARE_STRUCT_BACKGROUND
 #include "E.h"
 #include <time.h>
 
@@ -111,7 +112,17 @@ BackgroundGetUniqueString(Background * bg)
    return Estrdup(s);
 }
 
-static void
+void
+BackgroundPixmapFree(Background * bg)
+{
+   if (bg && bg->pmap)
+     {
+	imlib_free_pixmap_and_mask(bg->pmap);
+	bg->pmap = 0;
+     }
+}
+
+void
 BackgroundImagesFree(Background * bg, int free_pmap)
 {
    if (bg->bg.im)
@@ -127,14 +138,11 @@ BackgroundImagesFree(Background * bg, int free_pmap)
 	bg->top.im = NULL;
      }
    if (free_pmap && bg->pmap)
-     {
-	imlib_free_pixmap_and_mask(bg->pmap);
-	bg->pmap = 0;
-     }
+      BackgroundPixmapFree(bg);
 }
 
 void
-BackgroundImagesKeep(Background * bg, char onoff)
+BackgroundImagesKeep(Background * bg, int onoff)
 {
    if (onoff)
      {
@@ -158,26 +166,35 @@ BackgroundImagesRemove(Background * bg)
       Efree(bg->bg.real_file);
    bg->bg.real_file = NULL;
 
+   if (bg->top.file)
+      Efree(bg->top.file);
+   bg->top.file = NULL;
+
+   if (bg->top.real_file)
+      Efree(bg->top.real_file);
+   bg->top.real_file = NULL;
+
    BackgroundImagesFree(bg, 1);
 
    bg->keepim = 0;
 }
 
-void
+int
 BackgroundDestroy(Background * bg)
 {
    EDBUG(6, "BackgroundDestroy");
 
    if (!bg)
-      EDBUG_RETURN_;
+      EDBUG_RETURN(-1);
 
    if (bg->ref_count > 0)
      {
 	DialogOK(_("Background Error!"), _("%u references remain\n"),
 		 bg->ref_count);
-	EDBUG_RETURN_;
+	EDBUG_RETURN(-1);
      }
 
+   RemoveItem((char *)bg, 0, LIST_FINDBY_POINTER, LIST_TYPE_BACKGROUND);
    BackgroundImagesRemove(bg);
 
    if (bg->name)
@@ -185,57 +202,98 @@ BackgroundDestroy(Background * bg)
 
    Efree(bg);
 
+   EDBUG_RETURN(0);
+}
+
+void
+BackgroundDelete(Background * bg)
+{
+   char               *f;
+
+   EDBUG(6, "BackgroundDelete");
+
+   if (BackgroundDestroy(bg))
+      EDBUG_RETURN_;
+
+   /* And delete the actual image files */
+   if (bg->bg.file)
+     {
+	f = FindFile(bg->bg.file);
+	if (f)
+	  {
+	     E_rm(f);
+	     Efree(f);
+	  }
+     }
+   if (bg->top.file)
+     {
+	f = FindFile(bg->top.file);
+	if (f)
+	  {
+	     E_rm(f);
+	     Efree(f);
+	  }
+     }
+
    EDBUG_RETURN_;
 }
 
 Background         *
-BackgroundCreate(const char *name, XColor * solid, const char *bg, char tile,
+BackgroundCreate(const char *name, XColor * solid, const char *bgn, char tile,
 		 char keep_aspect, int xjust, int yjust, int xperc,
 		 int yperc, const char *top, char tkeep_aspect, int txjust,
 		 int tyjust, int txperc, int typerc)
 {
-   Background         *d;
+   Background         *bg;
 
    EDBUG(6, "BackgroundCreate");
 
-   d = Emalloc(sizeof(Background));
-   if (!d)
+   bg = Emalloc(sizeof(Background));
+   if (!bg)
       EDBUG_RETURN(NULL);
-   d->name = Estrdup(name);
-   d->pmap = 0;
-   d->last_viewed = 0;
+   bg->name = Estrdup(name);
+   bg->pmap = 0;
+   bg->last_viewed = 0;
 
-   ESetColor(&(d->bg_solid), 160, 160, 160);
+   ESetColor(&(bg->bg_solid), 160, 160, 160);
    if (solid)
-      d->bg_solid = *solid;
-   d->bg.file = NULL;
-   if (bg)
-      d->bg.file = Estrdup(bg);
-   d->bg.real_file = NULL;
-   d->bg.im = NULL;
-   d->bg_tile = tile;
-   d->bg.keep_aspect = keep_aspect;
-   d->bg.xjust = xjust;
-   d->bg.yjust = yjust;
-   d->bg.xperc = xperc;
-   d->bg.yperc = yperc;
+      bg->bg_solid = *solid;
+   bg->bg.file = NULL;
+   if (bgn)
+      bg->bg.file = Estrdup(bgn);
+   bg->bg.real_file = NULL;
+   bg->bg.im = NULL;
+   bg->bg_tile = tile;
+   bg->bg.keep_aspect = keep_aspect;
+   bg->bg.xjust = xjust;
+   bg->bg.yjust = yjust;
+   bg->bg.xperc = xperc;
+   bg->bg.yperc = yperc;
 
-   d->top.file = NULL;
+   bg->top.file = NULL;
    if (top)
-      d->top.file = Estrdup(top);
-   d->top.real_file = NULL;
-   d->top.im = NULL;
-   d->top.keep_aspect = tkeep_aspect;
-   d->top.xjust = txjust;
-   d->top.yjust = tyjust;
-   d->top.xperc = txperc;
-   d->top.yperc = typerc;
+      bg->top.file = Estrdup(top);
+   bg->top.real_file = NULL;
+   bg->top.im = NULL;
+   bg->top.keep_aspect = tkeep_aspect;
+   bg->top.xjust = txjust;
+   bg->top.yjust = tyjust;
+   bg->top.xperc = txperc;
+   bg->top.yperc = typerc;
 
-   d->cmclass = NULL;
-   d->keepim = 0;
-   d->ref_count = 0;
+   bg->cmclass = NULL;
+   bg->keepim = 0;
+   bg->ref_count = 0;
 
-   EDBUG_RETURN(d);
+   AddItem(bg, bg->name, 0, LIST_TYPE_BACKGROUND);
+
+   EDBUG_RETURN(bg);
+}
+
+void
+BackgroundDestroyByName(const char *name)
+{
+   BackgroundDestroy(FindItem(name, 0, LIST_FINDBY_NAME, LIST_TYPE_BACKGROUND));
 }
 
 static void
@@ -523,14 +581,55 @@ BackgroundApply(Background * bg, Window win, int setbg)
 }
 
 void
+BackgroundIncRefcount(Background * bg)
+{
+   if (bg == NULL)
+      return;
+   bg->ref_count++;
+}
+
+void
+BackgroundDecRefcount(Background * bg)
+{
+   if (bg == NULL)
+      return;
+   bg->ref_count--;
+   if (bg->ref_count <= 0)
+      bg->last_viewed = 0;	/* Clean out asap */
+}
+
+void
+BackgroundTouch(Background * bg)
+{
+   if (bg == NULL)
+      return;
+   bg->last_viewed = time(NULL);
+}
+
+const char         *
+BackgroundGetName(const Background * bg)
+{
+   return (bg) ? bg->name : NULL;
+}
+
+Pixmap
+BackgroundGetPixmap(const Background * bg)
+{
+   return (bg) ? bg->pmap : None;
+}
+
+void
 BackgroundsAccounting(void)
 {
    time_t              now;
    int                 i, j, num;
    Background        **lst;
+   Window              win;
 
    EDBUG(3, "BackgroundsAccounting");
+
    now = time(NULL);
+
    for (i = 0; i < ENLIGHTENMENT_CONF_NUM_DESKTOPS; i++)
      {
 	if ((desks.desk[i].bg) && (desks.desk[i].viewable))
@@ -538,34 +637,39 @@ BackgroundsAccounting(void)
      }
 
    lst = (Background **) ListItemType(&num, LIST_TYPE_BACKGROUND);
-   if (lst)
+   for (i = 0; i < num; i++)
      {
-	for (i = 0; i < num; i++)
+	/* Skip if no pixmap or not timed out */
+	if ((lst[i]->pmap == 0) ||
+	    ((now - lst[i]->last_viewed) <= Conf.backgrounds.timeout))
+	   continue;
+
+	/* Skip if associated with any viewable desktop */
+	for (j = 0; j < ENLIGHTENMENT_CONF_NUM_DESKTOPS; j++)
+	   if (lst[i] == desks.desk[j].bg && desks.desk[j].viewable)
+	      goto next;
+
+	for (j = 0; j < ENLIGHTENMENT_CONF_NUM_DESKTOPS; j++)
 	  {
-	     if ((lst[i]->pmap == 0) ||
-		 ((now - lst[i]->last_viewed) <= Conf.backgrounds.timeout))
+	     if (lst[i] != desks.desk[j].bg || desks.desk[j].viewable)
 		continue;
 
-	     for (j = 0; j < ENLIGHTENMENT_CONF_NUM_DESKTOPS; j++)
-	       {
-		  if ((desks.desk[j].bg == lst[i]) && (!desks.desk[j].viewable))
-		    {
-		       Window              win = desks.desk[j].win;
-
-		       HintsSetRootInfo(win, 0, 0);
-		       XSetWindowBackground(disp, win, 0);
-		       XClearWindow(disp, win);
-
-		       IMLIB1_SET_CONTEXT(lst[i] == desks.desk[0].bg);
-		       imlib_free_pixmap_and_mask(lst[i]->pmap);
-		       lst[i]->pmap = 0;
-		    }
-	       }
-
+	     /* Unviewable desktop - update the virtual root hints */
+	     win = desks.desk[j].win;
+	     HintsSetRootInfo(win, 0, 0);
+	     XSetWindowBackground(disp, win, 0);
+	     XClearWindow(disp, win);
 	  }
-	Efree(lst);
-	IMLIB1_SET_CONTEXT(0);
+
+	IMLIB1_SET_CONTEXT(lst[i] == desks.desk[0].bg);
+	BackgroundPixmapFree(lst[i]);
+
+      next:
+	;
      }
+   if (lst)
+      Efree(lst);
+   IMLIB1_SET_CONTEXT(0);
 
    EDBUG_RETURN_;
 }
