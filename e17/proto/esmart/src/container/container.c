@@ -100,6 +100,7 @@ void e_container_scroll(Evas_Object *container, int val)
   else if (cont->scroll_offset > 0)
     cont->scroll_offset = 0;
   
+  _container_elements_changed(cont);
   _container_elements_fix(cont);
 }
 
@@ -112,6 +113,7 @@ void e_container_scroll_offset_set(Evas_Object *container, int scroll_offset)
   if (cont->scroll_offset == scroll_offset) return;
   cont->scroll_offset = scroll_offset;
 
+  _container_elements_changed(cont);
   _container_elements_fix(cont);
 }
 
@@ -163,6 +165,7 @@ void e_container_fill_policy_set(Evas_Object *container,
   
   cont->fill = fill;
 
+  _container_elements_changed(cont);
   _container_elements_fix(cont);
   
 }
@@ -186,6 +189,7 @@ void e_container_spacing_set(Evas_Object *container, int spacing)
 
   cont->spacing = spacing;
 
+  _container_elements_changed(cont);
   _container_elements_fix(cont);
 }
 
@@ -361,6 +365,18 @@ _container_element_new(Container *cont, Evas_Object *obj)
   return el;
 }
 
+void
+_container_elements_changed(Container *cont)
+{
+  int r, g, b;
+  evas_object_color_get(cont->clipper, &r, &g, &b, NULL);
+  if(evas_list_count(cont->elements) > 0)
+      evas_object_color_set(cont->clipper, r, g, b, cont->clipper_orig_alpha);
+  else
+      evas_object_color_set(cont->clipper, r, g, b, 0);
+  if (cont->plugin && cont->plugin->changed)
+    cont->plugin->changed(cont);
+}
 void
 _container_elements_fix(Container *cont)
 {

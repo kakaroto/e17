@@ -203,6 +203,7 @@ main (int argc, char *argv[])
 	      e_container_element_append (cont, o);
 	    }
 	}
+      evas_object_resize (cont, 300, 120);
       ecore_evas_show (ee);
       ecore_main_loop_begin ();
     }

@@ -86,6 +86,7 @@ _container_add(Evas_Object *obj)
   data->clipper = evas_object_rectangle_add(data->evas);
   evas_object_smart_member_add(obj, data->clipper);
   evas_object_repeat_events_set(data->clipper, 1);
+  evas_object_color_set(data->clipper, 255, 255, 255, 0);
   
   data->clipper_orig_alpha = 255;
 
@@ -93,6 +94,9 @@ _container_add(Evas_Object *obj)
   evas_object_color_set(data->grabber, 40, 40, 255, 0);
   evas_object_repeat_events_set(data->grabber, 1);
   evas_object_smart_member_add(obj, data->grabber);
+  /*
+  evas_object_clip_set(data->grabber, data->clipper);
+  */
 
   evas_object_event_callback_add(data->grabber, EVAS_CALLBACK_MOUSE_DOWN, _cb_container, data);
   evas_object_event_callback_add(data->grabber, EVAS_CALLBACK_MOUSE_UP, _cb_container, data);
@@ -222,13 +226,13 @@ _container_move(Evas_Object *obj, double x, double y)
   data = evas_object_smart_data_get(obj);
   if((data->x == x) && (data->y == y))
       return;
-  
   evas_object_move(data->clipper, x, y);
   evas_object_move(data->grabber, x, y);
 
   data->x = x;
   data->y = y;
-
+ 
+  _container_elements_changed(data);
   _container_elements_fix(data);
 }
 
@@ -247,13 +251,10 @@ _container_resize(Evas_Object *obj, double w, double h)
   evas_object_resize(data->clipper, w, h);
   evas_object_resize(data->grabber, w, h);
 
-//  data->scroll_offset = 0;
-
-  
-
   data->w = w;
   data->h = h;
 
+  _container_elements_changed(data);
   _container_elements_fix(data);
   _container_scale_scroll(data, old_length);
 }

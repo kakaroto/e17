@@ -151,7 +151,9 @@ e_container_layout_plugin_set(Evas_Object *container, const char *plugin)
       return 0;
     }
   }
-  
+  if(cont->plugin->post_init)
+      cont->plugin->post_init(cont);
+
   return 1;
 }
 

@@ -20,7 +20,6 @@ _entice_layout (Container * cont)
   double w, h;
   double ey = 0.0, ex = 0.0;
 
-  evas_object_color_set (cont->clipper, 255, 255, 255, 255);
   if (!(center_el = evas_list_nth_list (cont->elements, _entice_current)))
     return;
 

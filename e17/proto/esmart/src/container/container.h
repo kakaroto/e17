@@ -116,6 +116,9 @@ struct _Container_Layout_Plugin{
   void (*scroll_start)(Container *cont, double velocity);
   void (*scroll_stop)(Container *cont);
   void (*scroll_to)(Container *cont, Container_Element *el);
+
+  void (*post_init)(Container *cont);
+  void (*changed)(Container *cont);
 };
 
 

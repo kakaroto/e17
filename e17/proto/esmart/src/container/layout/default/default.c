@@ -44,10 +44,6 @@ _default_layout(Container *cont)
   
   
   evas_object_color_get(cont->clipper, &r, &g, &b, NULL);
-  if(num > 0)
-	  evas_object_color_set(cont->clipper, r,g,b, cont->clipper_orig_alpha);
-  else
-	  evas_object_color_set(cont->clipper, r,g,b, 0);
 
   for (l = cont->elements; l; l = l->next)
   {
