@@ -42,8 +42,8 @@ install: build
 	dh_clean -k
 	dh_installdirs
 
-	# Add here commands to install the package into debian/tmp.
-	$(MAKE) install prefix=`pwd`/debian/tmp/usr
+	# Add here commands to install the package into debian/scrot.
+	$(MAKE) install prefix=`pwd`/debian/scrot/usr
 
 
 # Build architecture-independent files here.
