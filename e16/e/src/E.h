@@ -1803,9 +1803,10 @@ void                CoordsHide(void);
 #define ECSR_NONE           0
 #define ECSR_ROOT           1
 #define ECSR_GRAB           2
-#define ECSR_ACT_MOVE       3
-#define ECSR_ACT_RESIZE     4
-#define ECSR_COUNT          5
+#define ECSR_PGRAB          3
+#define ECSR_ACT_MOVE       4
+#define ECSR_ACT_RESIZE     5
+#define ECSR_COUNT          6
 void                ECursorsInit(void);
 ECursor            *ECursorCreate(const char *name, const char *image,
 				  int native_id, XColor * fg, XColor * bg);

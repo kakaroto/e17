@@ -161,13 +161,19 @@ FocusEwinSetGrabs(EWin * ewin)
      {
 	XGrabButton(disp, AnyButton, AnyModifier, ewin->win_container,
 		    False, ButtonPressMask, GrabModeSync, GrabModeAsync,
-		    None, None);
-/*	Eprintf("FocusEwinSetGrabs: %#lx grab\n", ewin->client.win); */
+		    ewin->win_container, ECsrGet(ECSR_PGRAB));
+#if 0
+	Eprintf("FocusEwinSetGrabs: %#lx grab %s\n", ewin->client.win,
+		EwinGetTitle(ewin));
+#endif
      }
    else
      {
 	XUngrabButton(disp, AnyButton, AnyModifier, ewin->win_container);
-/*	Eprintf("FocusEwinSetGrabs: %#lx ungrab\n", ewin->client.win); */
+#if 0
+	Eprintf("FocusEwinSetGrabs: %#lx ungrab %s\n", ewin->client.win,
+		EwinGetTitle(ewin));
+#endif
      }
 }
 

@@ -202,6 +202,7 @@ ECursorsInit(void)
    ECsrs[ECSR_NONE] = None;
    ECsrs[ECSR_ROOT] = ECursorGetByName("DEFAULT", XC_left_ptr);
    ECsrs[ECSR_GRAB] = ECursorGetByName("GRAB", XC_crosshair);
+   ECsrs[ECSR_PGRAB] = ECursorGetByName("PGRAB", XC_X_cursor);
    ECsrs[ECSR_ACT_MOVE] = ECursorGetByName("GRAB_MOVE", XC_fleur);
    ECsrs[ECSR_ACT_RESIZE] = ECursorGetByName("GRAB_RESIZE", XC_sizing);
 }

@@ -4439,7 +4439,14 @@ IPC_Debug(const char *params, Client * c __UNUSED__)
 	l = 0;
 	sscanf(p, "%1000s %n", param, &l);
 	p += l;
-	if (!strncmp(param, "unset", 2))
+	if (!strncmp(param, "allow", 2))
+	  {
+	     l = 0;
+	     sscanf(p, "%d", &l);
+	     XAllowEvents(disp, l, CurrentTime);
+	     IpcPrintf("XAllowEvents\n");
+	  }
+	else if (!strncmp(param, "unset", 2))
 	  {
 	     UnGrabTheButtons();
 	     IpcPrintf("Ungrab\n");
