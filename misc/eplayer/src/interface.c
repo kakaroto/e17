@@ -28,6 +28,14 @@ int setup_gui(ePlayer *player) {
 		ee = ecore_evas_gl_x11_new(NULL, 0,  0, 0, 500, 500);
 	else
 		ee = ecore_evas_software_x11_new(NULL, 0,  0, 0, 500, 500);
+
+	if (!ee) {
+		debug(DEBUG_LEVEL_CRITICAL,
+		      "Cannot create Ecore Evas (using %s engine)\n",
+		      player->cfg.evas_engine);
+
+		return 1;
+	}
 	
 	ecore_evas_title_set(ee, "eVorbisPlayer");
 	ecore_evas_name_class_set(ee, "ecore_test", "test_evas");
