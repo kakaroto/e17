@@ -2088,17 +2088,16 @@ collections
 	    program
 	    {
 		name, "ShowPreview";
-		signal, "EnticeImagePreviewShow";
+		signal, "EnticeImagePreviewPrep";
 		source, "";
 		action, STATE_SET "default" 0.0;
 		transition, ACCELERATE 0.1;
 		target, "EnticeImagePreview";
-		after, "ShowPreviewAfter";
 	    }
 	    program
 	    {
 		name, "ShowPreviewAfter";
-		signal, "";
+		signal, "EnticeImagePreviewShow";
 		source, "";
 		action, STATE_SET "visible" 0.0;
 		transition, ACCELERATE 0.25;
