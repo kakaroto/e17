@@ -29,9 +29,9 @@
 #include "e16menu.h"
 #include "callbacks.h"
 #include "nls.h"
+#include "e16menuedit2.h"
 
-extern int app_errno;
-extern char app_errno_str[APP_ERRNO_STR_LEN];
+extern struct global_variables gv;
 
 static GtkTargetEntry row_targets[] =
   {
@@ -194,7 +194,7 @@ void save_table_to_menu (GtkWidget *treeview_menu)
   model = gtk_tree_view_get_model (GTK_TREE_VIEW (treeview_menu));
   gtk_tree_model_foreach (GTK_TREE_MODEL(model), table_check_func, NULL);
 
-  if (app_errno == AE_NO_ERROR)
+  if (gv.app_errno == AE_NO_ERROR)
   {
     gtk_tree_model_foreach (GTK_TREE_MODEL(model), table_save_func, NULL);
     print_statusbar (_("Menu saved!"));
@@ -208,10 +208,10 @@ void save_table_to_menu (GtkWidget *treeview_menu)
   }
   else
   {
-    if (app_errno == AE_EMPTY_SUBMENU)
+    if (gv.app_errno == AE_EMPTY_SUBMENU)
     {
       gtk_tree_view_set_cursor (GTK_TREE_VIEW (treeview_menu),
-                                gtk_tree_path_new_from_string  (app_errno_str),
+                                gtk_tree_path_new_from_string  (gv.app_errno_str),
                                 gtk_tree_view_get_column (
                                   GTK_TREE_VIEW (treeview_menu),
                                   COL_PARAMS),

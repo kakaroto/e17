@@ -39,6 +39,7 @@
 #define to_utf8(String) g_locale_to_utf8(String,-1,0,0,0)
 #define from_utf8(String) g_locale_from_utf8(String,-1,0,0,0)
 
+#define APP_ERRNO_STR_LEN 1024
 #define APP_HOME ".e16menuedit2"
 #define ICON_DIR "icons"
 #define DEBUG_OUTPUT printf ("(%s, %d): ", __FILE__, __LINE__);
@@ -50,6 +51,24 @@ gboolean browser_func (GtkTreeModel *model, GtkTreePath *path,
                        GtkTreeIter *iter, gpointer user_data);
 void parse_options (int argc, char **argv);
 void show_version ();
+
+struct global_variables
+{
+  int app_errno;
+  char app_errno_str[APP_ERRNO_STR_LEN];
+  int librsvg_cmp;
+  char *browser;
+  char *glade_file;
+  char *epath;
+  int emenu;
+};
+
+/* app_errno codes */
+enum
+{
+  AE_NO_ERROR = 0,
+  AE_EMPTY_SUBMENU
+};
 
 enum
 {

@@ -34,11 +34,7 @@
 #include "e16menu.h"
 #include "treeview.h"
 
-int librsvg_cmp;
-char *browser;
-char *glade_file;
-char *epath;
-int emenu;
+struct global_variables gv;
 
 int main (int argc, char *argv[])
 {
@@ -75,8 +71,8 @@ int main (int argc, char *argv[])
     menu_file[i] = NULL;
   }
 
-  glade_file = searchGladeFile ("e16menuedit2.glade");
-  main_xml = glade_xml_new (glade_file, "main_window", NULL);
+  gv.glade_file = searchGladeFile ("e16menuedit2.glade");
+  main_xml = glade_xml_new (gv.glade_file, "main_window", NULL);
 
   register_libglade_parent (main_xml, "main_window");
 
@@ -102,7 +98,7 @@ int main (int argc, char *argv[])
 
   /* get librsvg version and check if good enough */
   version = pkg_config_version (package);
-  librsvg_cmp = version_cmp (version, librsvg_version);
+  gv.librsvg_cmp = version_cmp (version, librsvg_version);
   g_free (version);
 
   print_statusbar (_("Menu successfully loaded!"));
@@ -116,9 +112,9 @@ int main (int argc, char *argv[])
   {
     fscanf (fz_properties, "%s = %s", key, value);
 
-    g_free (browser);
-    browser = g_malloc (strlen (value)+1);
-    strncpy (browser, value, strlen (value)+1);
+    g_free (gv.browser);
+    gv.browser = g_malloc (strlen (value)+1);
+    strncpy (gv.browser, value, strlen (value)+1);
 
     fclose (fz_properties);
   }
@@ -127,8 +123,8 @@ int main (int argc, char *argv[])
 
   gtk_main ();
 
-  free (epath);
-  g_free (glade_file);
+  free (gv.epath);
+  g_free (gv.glade_file);
 
   return 0;
 }
@@ -179,9 +175,9 @@ gboolean browser_func (GtkTreeModel *model, GtkTreePath *path,
     gtk_combo_box_set_active (GTK_COMBO_BOX (comboboxentry1),
                               atoi (tree_path_str));
 
-    g_free (browser);
-    browser = g_malloc (strlen (value)+1);
-    strncpy (browser, value, strlen (value)+1);
+    g_free (gv.browser);
+    gv.browser = g_malloc (strlen (value)+1);
+    strncpy (gv.browser, value, strlen (value)+1);
 
     g_free(tree_path_str);
     return TRUE;
@@ -196,12 +192,12 @@ void parse_options (int argc, char **argv)
 {
   poptContext context;
   int option;
-  epath = NULL;
+  gv.epath = NULL;
   struct stat buf;
   gboolean epath_missing = TRUE;
   char *tmp;
   
-  emenu = EMENU_AUTODETECT;
+  gv.emenu = EMENU_AUTODETECT;
 
   struct poptOption options[] =
     {
@@ -215,17 +211,17 @@ void parse_options (int argc, char **argv)
 
   /* get E path */
   tmp = getenv ("ECONFDIR");
-  epath = g_strdup_printf (tmp);
+  gv.epath = g_strdup_printf (tmp);
   
-  if (!epath)
+  if (!gv.epath)
   {
-    epath = g_strdup_printf ("%s/%s", homedir (getuid ()),
+    gv.epath = g_strdup_printf ("%s/%s", homedir (getuid ()),
                                   ENLIGHTENMENT_PATH);
   }
-  epath_missing = stat (epath, &buf);
+  epath_missing = stat (gv.epath, &buf);
   if (epath_missing)
   {
-    g_critical ("The direcory %s seems not to be a E16 conf path!\n", epath);
+    g_critical ("The direcory %s seems not to be a E16 conf path!\n", gv.epath);
   }
 
   context = poptGetContext ("popt1", argc, (const char **) argv, options, 0);
@@ -236,7 +232,7 @@ void parse_options (int argc, char **argv)
     switch (option)
     {
     case ARG_MENUS:
-      emenu = EMENU_MENUS;
+      gv.emenu = EMENU_MENUS;
       break;
     case ARG_VERSION:
       show_version ();

@@ -30,10 +30,7 @@
 #include "e16menuedit2.h"
 #include "treeview.h"
 
-int app_errno;
-char app_errno_str[APP_ERRNO_STR_LEN];
-extern char *epath;
-extern int emenu;
+extern struct global_variables gv;
 
 GtkTreeModel *load_menus_from_disk (void)
 {
@@ -51,22 +48,22 @@ GtkTreeModel *load_menus_from_disk (void)
                               G_TYPE_STRING,
                               G_TYPE_STRING);
 
-  if (emenu == EMENU_AUTODETECT)
+  if (gv.emenu == EMENU_AUTODETECT)
   {
     struct stat stat_buf;
     gboolean epath_missing = TRUE;
 
-    sprintf (buf, "%s/file.menu", epath);
+    sprintf (buf, "%s/file.menu", gv.epath);
     epath_missing = stat (buf, &stat_buf);
 
     if (epath_missing)
     {
-      sprintf (buf, "%s/menus/file.menu", epath);
+      sprintf (buf, "%s/menus/file.menu", gv.epath);
     }
   }
-  else if (emenu == EMENU_MENUS)
+  else if (gv.emenu == EMENU_MENUS)
   {
-    sprintf (buf, "%s/menus/file.menu", epath);
+    sprintf (buf, "%s/menus/file.menu", gv.epath);
   }
   else
   {
@@ -184,7 +181,7 @@ void load_sub_menu_from_disk (char *file_to_load, GtkTreeStore *store,
   if (!file_to_load)
     return;
   if (file_to_load[0] != '/')
-    sprintf (buf, "%s/%s", epath, file_to_load);
+    sprintf (buf, "%s/%s", gv.epath, file_to_load);
   else
     sprintf (buf, "%s", file_to_load);
 
@@ -286,7 +283,7 @@ gboolean table_save_func (GtkTreeModel *model, GtkTreePath *path,
   if (!g_path_is_absolute (params))
   {
     /* Tarnation! A relative path */
-    realfile = g_strjoin (epath, params, NULL);
+    realfile = g_strjoin (gv.epath, params, NULL);
   }
   else
   {
@@ -416,8 +413,8 @@ gboolean table_check_func (GtkTreeModel *model, GtkTreePath *path,
   has_child = gtk_tree_model_iter_has_child (model, iter);
   depth = gtk_tree_path_get_depth (path) - 1;
 
-  app_errno = 0;
-  strcpy (app_errno_str, "");
+  gv.app_errno = 0;
+  strcpy (gv.app_errno_str, "");
 
   if (depth + 1 >= MAX_RECURSION)
   {
@@ -432,8 +429,8 @@ gboolean table_check_func (GtkTreeModel *model, GtkTreePath *path,
       /* some checks for submenus */
       if (!strcmp (params, ""))
       {
-        app_errno = AE_EMPTY_SUBMENU;
-        strncpy (app_errno_str, tree_path_str, APP_ERRNO_STR_LEN);
+        gv.app_errno = AE_EMPTY_SUBMENU;
+        strncpy (gv.app_errno_str, tree_path_str, APP_ERRNO_STR_LEN);
 
         return TRUE;
       }

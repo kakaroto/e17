@@ -34,8 +34,7 @@
 #include "e16menu.h"
 #include "treeview.h"
 
-extern char *browser;
-extern char *glade_file;
+extern struct global_variables gv;
 
 void bind_toolbar_callbacks (GtkWidget *treeview_menu)
 {
@@ -161,7 +160,7 @@ void on_menu_info_activate (GtkMenuItem *menuitem,
   GladeXML *info_xml;
   char *pixmap_file;
 
-  info_xml = glade_xml_new (glade_file,
+  info_xml = glade_xml_new (gv.glade_file,
                             "info_window", NULL);
 
   register_libglade_parent (info_xml, "info_window");
@@ -300,8 +299,8 @@ void on_menu_contents_activate (GtkMenuItem *menuitem,
 
   if (help_error)
   {
-    g_print ("running browser: %s\n", browser);
-    help_error = run_help (browser, YELP_HELP_DIR, PACKAGE".html");
+    g_print ("running browser: %s\n", gv.browser);
+    help_error = run_help (gv.browser, YELP_HELP_DIR, PACKAGE".html");
 
     if (help_error == 1)
     {
@@ -328,7 +327,7 @@ on_menu_properties_activate            (GtkMenuItem     *menuitem,
   GtkTreeModel* treemodel;
   char *pixmap_file;
 
-  properties_xml = glade_xml_new (glade_file, "properties_window", NULL);
+  properties_xml = glade_xml_new (gv.glade_file, "properties_window", NULL);
 
   register_libglade_parent (properties_xml, "properties_window");
   glade_xml_signal_autoconnect (properties_xml);
@@ -394,9 +393,9 @@ on_properties_close_clicked            (GtkButton       *button,
                           0, &value,
                           -1);
 
-      g_free (browser);
-      browser = g_malloc (strlen (value)+1);
-      strncpy (browser, value, strlen (value)+1);
+      g_free (gv.browser);
+      gv.browser = g_malloc (strlen (value)+1);
+      strncpy (gv.browser, value, strlen (value)+1);
 
       fprintf (fz_properties, "%s = %s\n", "browser", value);
     }

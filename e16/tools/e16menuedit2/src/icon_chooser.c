@@ -33,7 +33,7 @@
 #include "file.h"
 #include "treeview.h"
 
-extern int librsvg_cmp;
+extern struct global_variables gv;
 
 void open_icon_chooser (GtkWidget *treeview_menu)
 {
@@ -144,7 +144,7 @@ void open_icon_chooser (GtkWidget *treeview_menu)
          */
         right = g_malloc (3);
         strsplit (filename, &right, g_utf8_strlen (filename, -1) - 3);
-        if ((strcmp (right, "svg")) || (librsvg_cmp >= 0))
+        if ((strcmp (right, "svg")) || (gv.librsvg_cmp >= 0))
         {
           gdk_pixbuf_get_file_info (filename,
                                     &width,
@@ -304,7 +304,7 @@ void update_preview_cb (GtkFileChooser *file_chooser, gpointer data)
     right = g_malloc (3);
     strsplit (filename, &right, g_utf8_strlen (filename, -1) - 3);
 
-    if ((strcmp (right, "svg")) || (librsvg_cmp >= 0))
+    if ((strcmp (right, "svg")) || (gv.librsvg_cmp >= 0))
     {
       gdk_pixbuf_get_file_info (filename, &width, &height);
     }
