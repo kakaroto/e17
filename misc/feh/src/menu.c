@@ -95,6 +95,7 @@ static void feh_menu_cb_save_image(feh_menu * m, feh_menu_item * i,
                                    void *data);
 static void feh_menu_cb_save_filelist(feh_menu * m, feh_menu_item * i,
                                       void *data);
+static void feh_menu_cb_fit(feh_menu * m, feh_menu_item * i, void *data);
 
 
 feh_menu *
@@ -982,6 +983,8 @@ feh_menu_init_main(void)
    m = feh_menu_new();
    m->name = estrdup("FILE");
    feh_menu_add_entry(m, "Reset", NULL, NULL, feh_menu_cb_reset, NULL, NULL);
+   feh_menu_add_entry(m, "Resize window", NULL, NULL, feh_menu_cb_fit, NULL,
+                      NULL);
    feh_menu_add_entry(m, "Reload", NULL, NULL, feh_menu_cb_reload, NULL,
                       NULL);
    feh_menu_add_entry(m, "Save Image", NULL, NULL, feh_menu_cb_save_image,
@@ -1171,6 +1174,8 @@ feh_menu_init_single_win(void)
    m = feh_menu_new();
    m->name = estrdup("SINGLEWIN_FILE");
    feh_menu_add_entry(m, "Reset", NULL, NULL, feh_menu_cb_reset, NULL, NULL);
+   feh_menu_add_entry(m, "Resize window", NULL, NULL, feh_menu_cb_fit, NULL,
+                      NULL);
    feh_menu_add_entry(m, "Reload", NULL, NULL, feh_menu_cb_reload, NULL,
                       NULL);
    feh_menu_add_entry(m, "Save Image", NULL, NULL, feh_menu_cb_save_image,
@@ -1218,6 +1223,8 @@ feh_menu_init_thumbnail_win(void)
    m = feh_menu_new();
    m->name = estrdup("THUMBWIN_FILE");
    feh_menu_add_entry(m, "Reset", NULL, NULL, feh_menu_cb_reset, NULL, NULL);
+   feh_menu_add_entry(m, "Resize window", NULL, NULL, feh_menu_cb_fit, NULL,
+                      NULL);
    feh_menu_add_entry(m, "Save Image", NULL, NULL, feh_menu_cb_save_image,
                       NULL, NULL);
    feh_menu_add_entry(m, "Save Filelist", NULL, NULL,
@@ -1252,6 +1259,8 @@ feh_menu_init_thumbnail_viewer(void)
    m = feh_menu_new();
    m->name = estrdup("THUMBVIEW_FILE");
    feh_menu_add_entry(m, "Reset", NULL, NULL, feh_menu_cb_reset, NULL, NULL);
+   feh_menu_add_entry(m, "Resize window", NULL, NULL, feh_menu_cb_fit, NULL,
+                      NULL);
    feh_menu_add_entry(m, "Reload", NULL, NULL, feh_menu_cb_reload, NULL,
                       NULL);
    feh_menu_add_entry(m, "Save Image", NULL, NULL, feh_menu_cb_save_image,
@@ -1617,6 +1626,15 @@ feh_menu_cb_jump_to(feh_menu * m, feh_menu_item * i, void *data)
    D_RETURN_(4);
    i = NULL;
    m = NULL;
+}
+
+static void
+feh_menu_cb_fit(feh_menu * m, feh_menu_item * i, void *data)
+{
+   D_ENTER(4);
+   winwidget_size_to_image(m->fehwin);
+   D_RETURN_(4);
+   data = NULL;
 }
 
 static void

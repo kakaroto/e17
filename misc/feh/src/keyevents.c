@@ -151,6 +151,10 @@ handle_keypress_event(XEvent * ev, Window win)
      case 'F':
         feh_save_filelist();
         break;
+     case 'w':
+     case 'W':
+        winwidget_size_to_image(winwid);
+        break;
      case 'x':
      case 'X':
         winwidget_destroy(winwid);

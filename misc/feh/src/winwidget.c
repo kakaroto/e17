@@ -795,3 +795,14 @@ winwidget_sanitise_offsets(winwidget winwid)
 
    D_RETURN_(4);
 }
+
+
+void winwidget_size_to_image(winwidget winwid)
+{
+   D_ENTER(4);
+   winwidget_resize(winwid,winwid->im_w * winwid->zoom,
+                    winwid->im_h * winwid->zoom);
+   winwid->im_x = winwid->im_y = 0;
+   winwidget_render_image(winwid, 0, 1);
+   D_RETURN_(4);
+}
