@@ -555,16 +555,16 @@ GtkWidget *
 	GtkWidget *table2;
 	GtkWidget *prefs_label8;
 	GtkWidget *label15;
-	GtkWidget *alignment1;
 	GSList *alignment1_group = NULL;
 	GtkWidget *radiobutton1;
-	GtkWidget *alignment2;
 	GtkWidget *radiobutton2;
 	GtkWidget *hbox8;
 	GtkWidget *button8;
 	GtkWidget *button9;
 
 	Preferences_Window = gtk_window_new(GTK_WINDOW_TOPLEVEL);
+	gtk_container_set_border_width(GTK_CONTAINER(Preferences_Window),5);
+
 	gtk_object_set_data(GTK_OBJECT(Preferences_Window), "Preferences_Window",
 		   	Preferences_Window);
 	GTK_WIDGET_SET_FLAGS(Preferences_Window, GTK_CAN_FOCUS);
@@ -759,15 +759,6 @@ GtkWidget *
 					 (GtkAttachOptions) (0),
 					 (GtkAttachOptions) (0), 0, 0);
 
-	alignment1 = gtk_alignment_new(0.5, 7.45058e-09, 1, 1);
-	gtk_widget_ref(alignment1);
-	gtk_object_set_data_full(GTK_OBJECT(Preferences_Window), "alignment1",
-		   	alignment1, (GtkDestroyNotify) gtk_widget_unref);
-	gtk_widget_show(alignment1);
-	gtk_table_attach(GTK_TABLE(table2), alignment1, 1, 2, 0, 1,
-					 (GtkAttachOptions) (0),
-					 (GtkAttachOptions) (0), 0, 0);
-
 	radiobutton1 = gtk_radio_button_new_with_label(alignment1_group,
 		   	"## % of system memory");
 	alignment1_group = gtk_radio_button_group(GTK_RADIO_BUTTON(radiobutton1));
@@ -775,15 +766,8 @@ GtkWidget *
 	gtk_object_set_data_full(GTK_OBJECT(Preferences_Window), "radiobutton1",
 		   	radiobutton1, (GtkDestroyNotify) gtk_widget_unref);
 	gtk_widget_show(radiobutton1);
-	gtk_container_add(GTK_CONTAINER(alignment1), radiobutton1);
-
-	alignment2 = gtk_alignment_new(0.5, 0, 1, 1);
-	gtk_widget_ref(alignment2);
-	gtk_object_set_data_full(GTK_OBJECT(Preferences_Window), "alignment2",
-		   	alignment2, (GtkDestroyNotify) gtk_widget_unref);
-	gtk_widget_show(alignment2);
-	gtk_table_attach(GTK_TABLE(table2), alignment2, 1, 2, 1, 2,
-					 (GtkAttachOptions) (0),
+	gtk_table_attach(GTK_TABLE(table2), radiobutton1, 1, 2, 0, 1,
+					 (GtkAttachOptions) (!GTK_EXPAND | !GTK_SHRINK | GTK_FILL),
 					 (GtkAttachOptions) (0), 0, 0);
 
 	radiobutton2 = gtk_radio_button_new_with_label(alignment1_group,
@@ -793,7 +777,9 @@ GtkWidget *
 	gtk_object_set_data_full(GTK_OBJECT(Preferences_Window), "radiobutton2",
 		   	radiobutton2, (GtkDestroyNotify) gtk_widget_unref);
 	gtk_widget_show(radiobutton2);
-	gtk_container_add(GTK_CONTAINER(alignment2), radiobutton2);
+	gtk_table_attach(GTK_TABLE(table2), radiobutton2, 1, 2, 1, 2,
+					 (GtkAttachOptions) (!GTK_EXPAND | !GTK_SHRINK | GTK_FILL),
+					 (GtkAttachOptions) (0), 0, 0);
 
 	hbox8 = gtk_hbox_new(TRUE, 0);
 	gtk_widget_ref(hbox8);
