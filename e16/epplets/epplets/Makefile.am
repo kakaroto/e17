@@ -2,15 +2,26 @@
 
 bindir = $(EBIN)
 
+if EPPLET_MIXER
+E_Mixer_prog = E-Mixer.epplet
+E_Mixer_sources = E-Mixer.c
+E_Mixer_depend = $(top_srcdir)/api/libepplet.la
+E_Mixer_ldflags = -rpath $(libdir):$(pkglibdir)
+endif
+
 bin_PROGRAMS = E-Load.epplet E-Clock.epplet E-Time.epplet E-Net.epplet \
 E-Cpu.epplet EppletTest.epplet E-Biff.epplet E-Power.epplet Emix.epplet \
 E-MemWatch.epplet E-Disk.epplet E-Areas.epplet EppletConfigTest.epplet \
 E-NetFlame.epplet E-Sys.epplet E-ScreenShoot.epplet E-Slides.epplet \
-E-Xss.epplet E-Mountbox.epplet E-Exec.epplet
+E-Xss.epplet E-Mountbox.epplet E-Exec.epplet $(E_Mixer_prog)
 
 E_Exec_epplet_SOURCES = E-Exec.c
 E_Exec_epplet_DEPENDENCIES = $(top_srcdir)/api/libepplet.la
 E_Exec_epplet_LDFLAGS = -rpath $(libdir):$(pkglibdir)
+
+E_Mixer_epplet_SOURCES = $(E_Mixer_sources)
+E_Mixer_epplet_DEPENDENCIES = $(E_Mixer_depend)
+E_Mixer_epplet_LDFLAGS = $(E_Mixer_ldflags)
 
 E_Load_epplet_SOURCES = E-Load.c
 E_Load_epplet_DEPENDENCIES = $(top_srcdir)/api/libepplet.la
@@ -107,12 +118,14 @@ E-ScreenShoot.ABOUT/aircut3.ttf \
 E-ScreenShoot.ABOUT/E_ScreenShoot_buttons.png \
 E-ScreenShoot.ABOUT/E_ScreenShoot_cloak.png \
 E-Mountbox.ABOUT/MAIN E-Mountbox.ABOUT/bg.png E-Mountbox.ABOUT/aircut3.ttf \
-E-Mountbox.ABOUT/shot.png E-Mountbox.ABOUT/shot_unmounted.png
+E-Mountbox.ABOUT/shot.png E-Mountbox.ABOUT/shot_unmounted.png \
+E-Mixer.ABOUT/MAIN E-Mixer.ABOUT/aircut3.ttf E-Mixer.ABOUT/bg.png
 
 ICONS = \
 E-Load.icon E-Clock.icon E-Net.icon E-Cpu.icon E-Power.icon E-Biff.icon \
 Emix.icon E-NetFlame.icon E-ScreenShoot.icon E-Slides.icon E-Disk.icon \
-E-MemWatch.icon E-Sys.icon E-Time.icon E-Xss.icon E-Mountbox.icon
+E-MemWatch.icon E-Sys.icon E-Time.icon E-Xss.icon E-Mountbox.icon \
+E-Mixer.icon
 
 IMAGES =\
 E-Clock-Image.png E-Power-Bat-0.png E-Power-Bat-10.png E-Power-Bat-20.png \
@@ -135,6 +148,7 @@ install-data-hook:
 	$(mkinstalldirs) $(EROOT)/epplet_icons/Emix.ABOUT/
 	$(mkinstalldirs) $(EROOT)/epplet_icons/E-NetFlame.ABOUT/
 	$(mkinstalldirs) $(EROOT)/epplet_icons/E-ScreenShoot.ABOUT/
+	$(mkinstalldirs) $(EROOT)/epplet_icons/E-Mixer.ABOUT/
 	$(mkinstalldirs) $(EROOT)/epplet_icons/E-Mountbox.ABOUT/
 	@for i in ${ICONS}; do \
 	  echo $(INSTALL_DATA) $(srcdir)/$$i $(EROOT)/epplet_icons/ ; \
