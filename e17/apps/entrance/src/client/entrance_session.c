@@ -9,7 +9,7 @@
 
 /**
 @file entrance_session.c
-@brief Variables and Data relating to an instance of the interface
+@brief Variables and Data relating to an instance of the application as a whole
 
 */
 
@@ -32,7 +32,8 @@ extern int _entrance_test_en;
 
 /**
  * entrance_session_new: allocate a new  Entrance_Session
- * Returns a valid Entrance_Session
+ * @param config - parse this config file instead of the normal system one
+ * @return a valid Entrance_Session
  * Also Allocates the auth, and parse the config struct 
  */
 Entrance_Session *
@@ -66,8 +67,8 @@ entrance_session_new(const char *config)
 
 /**
  * entrance_session_free: free the entrance session
- * @e - the Entrance_Session to set the ecore evas for
- * @ee - the pointer to a fully setup Ecore_Evas we want to run
+ * @param e - the Entrance_Session to set the ecore evas for
+ * @param ee - the pointer to a fully setup Ecore_Evas we want to run
  */
 void
 entrance_session_ecore_evas_set(Entrance_Session * e, Ecore_Evas * ee)
@@ -94,7 +95,7 @@ entrance_session_ecore_evas_set(Entrance_Session * e, Ecore_Evas * ee)
 
 /**
  * entrance_session_free: free the entrance session
- * @e - the Entrance_Session to free
+ * @param e - the Entrance_Session to free
  */
 void
 entrance_session_free(Entrance_Session * e)
@@ -118,7 +119,7 @@ entrance_session_free(Entrance_Session * e)
 
 /**
  * entrance_session_run: Be a login dm, start running
- * @e - the Entrance_Session to be run
+ * @param e - the Entrance_Session to be run
  */
 void
 entrance_session_run(Entrance_Session * e)
@@ -129,8 +130,8 @@ entrance_session_run(Entrance_Session * e)
 
 /**
  * entrance_session_auth_user: attempt to authenticate the user
- * @e - the entrance session we're trying to auth
- * Returns 0 on success errors otherwise
+ * @param e - the entrance session we're trying to auth
+ * @return 0 on success errors otherwise
  */
 int
 entrance_session_auth_user(Entrance_Session * e)
@@ -145,7 +146,7 @@ entrance_session_auth_user(Entrance_Session * e)
 
 /**
  * entrance_session_user_reset: forget what we know about the current user
- * @e - the entrance session we should forget the user for 
+ * @param e - the entrance session we should forget the user for 
  */
 void
 entrance_session_user_reset(Entrance_Session * e)
@@ -165,8 +166,8 @@ entrance_session_user_reset(Entrance_Session * e)
  * entrance_session_user_set: forget what we know about the current user,
  * load what info we can from the entrance user parameter, so we have a new
  * user in our "EntranceFace" edje
- * @e - the entrance sesssion currently running
- * @eu - the new entrance user we're setting as "current"
+ * @param e - the entrance sesssion currently running
+ * @param eu - the new entrance user we're setting as "current"
  */
 void
 entrance_session_user_set(Entrance_Session * e, Entrance_User * eu)
@@ -246,7 +247,7 @@ entrance_session_user_set(Entrance_Session * e, Entrance_User * eu)
  * context.  This only will get written if someone successfully auths after
  * a selection like this is made, but it allows themes etc to have dialogs
  * deciding whether or not they should save this new session as default
- * @e - the currently running session
+ * @param e - the currently running session
  */
 void
 entrance_session_user_session_default_set(Entrance_Session * e)
@@ -267,7 +268,7 @@ entrance_session_user_session_default_set(Entrance_Session * e)
 /**
  * entrance_session_start_user_session : If the user is authed, try to log
  * their asses in.
- * @e - the currently running session
+ * @param e - the currently running session
  */
 void
 entrance_session_start_user_session(Entrance_Session * e)
@@ -360,8 +361,8 @@ entrance_session_start_user_session(Entrance_Session * e)
  * entrance_session_xsession_set.  It only frees the current EntranceSession
  * object in the main edje if loading the newly requested one was
  * successful.
- * @e - the entrance session you want to set the session for
- * @key - the key in the config hash that has this session
+ * @param e - the entrance session you want to set the session for
+ * @param key - the key in the config hash that has this session
  */
 static void
 entrance_session_xsession_load(Entrance_Session * e, const char *key)
@@ -396,8 +397,8 @@ entrance_session_xsession_load(Entrance_Session * e, const char *key)
  * entrance_session_xsession_set : Set the current xsesssion to the
  * specified key, emit a signal to the main edje letting it know the main
  * session has changed
- * @e - the entrance session you want to set the session for
- * @key - the key in the config hash that has this session
+ * @param e - the entrance session you want to set the session for
+ * @param key - the key in the config hash that has this session
  */
 void
 entrance_session_xsession_set(Entrance_Session * e, const char *key)
@@ -426,8 +427,8 @@ entrance_session_xsession_set(Entrance_Session * e, const char *key)
 /**
  * entrance_session_edje_object_set : Set the main edje for the session to
  * be the parameter passed in
- * @e - the entrance session you want to modify
- * @o - the new edje you're specifying
+ * @param e - the entrance session you want to modify
+ * @param o - the new edje you're specifying
  */
 void
 entrance_session_edje_object_set(Entrance_Session * e, Evas_Object * obj)
@@ -443,6 +444,7 @@ entrance_session_edje_object_set(Entrance_Session * e, Evas_Object * obj)
  * entrance_session_list_add : fine the "EntranceSessionList" part in the
  * main edje, setup the container to hold the elements, and create session
  * edjes for the container based on our session list in the config
+ * @param e - the entrance session you want to add the xsession list to
  */
 void
 entrance_session_list_add(Entrance_Session * e)
@@ -489,6 +491,7 @@ entrance_session_list_add(Entrance_Session * e)
  * entrance_session_user_list_add : find the "EntranceUserList" object in
  * the main edje, setup the container to hold the elements, and create user
  * edjes for the container with our user list in the config
+ * @param e - the entrance session you want to add the user list to
  */
 void
 entrance_session_user_list_add(Entrance_Session * e)
@@ -533,6 +536,7 @@ entrance_session_user_list_add(Entrance_Session * e)
 /**
  * entrance_session_default_xsession_get : Return the hash key for the
  * session that's the first item in the system's session list
+ * @param e - the entrance session you're working with
  */
 const char *
 entrance_session_default_xsession_get(Entrance_Session * e)
@@ -556,6 +560,8 @@ entrance_session_default_xsession_get(Entrance_Session * e)
  * valid edje eet or anything your evas has images loaders for.
  * FIXME: Should this be its own smart object, user images are done similar 
  * FIXME: Should it support a "key" paramater as well
+ * @param e - the entrance session you're working with
+ * @param file - the file in $pkgdatadir/images/sessions/ we want to load
  */
 static Evas_Object *
 _entrance_session_icon_load(Evas_Object * o, const char *file)
@@ -591,7 +597,10 @@ _entrance_session_icon_load(Evas_Object * o, const char *file)
 /**
  * _entrance_session_load_session : given the key, try loading an instance
  * of the "Session" group from the current theme.  printf on failure. :(
- * Returns the new session object, or NULL on failure.
+ * @return the new session object, or NULL on failure.
+ * @param e - the entrance session you're working with
+ * @param key - the key for the EntranceSessionIcon file in the
+ * EntranceSession edje
  */
 static Evas_Object *
 _entrance_session_load_session(Entrance_Session * e, const char *key)
@@ -663,6 +672,7 @@ _entrance_session_load_session(Entrance_Session * e, const char *key)
  * _entrance_session_user_list_fix : update the user's list with the current
  * user as the new head of the list.  If it's the first time the user has
  * logged in, create a new user element and prepend it to the list.
+ * @param e - the entrance session you're working with
  */
 static void
 _entrance_session_user_list_fix(Entrance_Session * e)

@@ -63,7 +63,7 @@ _entrance_auth_pam_conv(int num_msg, const struct pam_message **msg,
 
 /**
  * entrance_auth_new
- * Returns a 0'd out Entrance_Auth Struct
+ * @return a 0'd out Entrance_Auth Struct
  */
 Entrance_Auth *
 entrance_auth_new(void)
@@ -183,7 +183,7 @@ _entrance_auth_pam_initialize(Entrance_Auth * e)
 /**
  * entrance_auth_cmp_pam - attempt to auth the user
  * @e The Entrance_Auth struct to attempt to validate on the system
- * Returns - 0 on success, 1 on error
+ * @return - 0 on success, 1 on error
  */
 int
 entrance_auth_cmp_pam(Entrance_Auth * e)
@@ -271,7 +271,7 @@ entrance_auth_set_pass(Entrance_Auth * e, const char *str)
  * entrance_auth_set_user - set the username in the struct
  * @e - the Entrance_Auth to set the user of
  * @str - a string to set the user to, NULL is fine
- * Returns - 0 on success, 1 on failure(User not in system)
+ * @return 0 on success, 1 on failure(User not in system)
  * Check to see if the user exists on the system, if they do, e->user is set
  * to the passed in string, if they don't, e->user is unmodified.
  */

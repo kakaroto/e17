@@ -7,6 +7,12 @@
 #include <limits.h>
 #include "../config.h"
 
+/**
+@file entrance_user.c
+@brief Variables and Data relating to an instance of a user in entrance
+
+*/
+
 /** 
  * protos 
  */
@@ -21,9 +27,9 @@ extern void user_unselected_cb(void *data, Evas_Object * o,
  * Entrance_User instance.  We don't copy the pointers here, simply use
  * them, it allows for us to pass in NULL, and easily use edb supplied data
  * w/o having to free it.
- * @user - the user's user id on the system
- * @icon - the user's "face" icon, an edje or eet
- * @session - the key into the session hash that this user considers their
+ * @param user - the user's user id on the system
+ * @param icon - the user's "face" icon, an edje or eet
+ * @param session - the key into the session hash that this user considers their
  * "default"
  */
 Entrance_User *
@@ -44,8 +50,8 @@ entrance_user_new(char *user, char *icon, char *session)
 /**
  * entrance_user_auto_login_set : allow this user to auto login, currently
  * not used
- * @e - the Entrance_User the request is for
- * @allow - true(1) to allow, false(0) to disallow
+ * @param e - the Entrance_User the request is for
+ * @param allow - true(1) to allow, false(0) to disallow
  */
 void
 entrance_user_auto_login_set(Entrance_User * e, int allow)
@@ -56,7 +62,7 @@ entrance_user_auto_login_set(Entrance_User * e, int allow)
 
 /**
  * entrance_user_free: free this Entrance_User
- * @e - the Entrance_User to free
+ * @param e - the Entrance_User to free
  */
 void
 entrance_user_free(Entrance_User * e)
@@ -74,9 +80,9 @@ entrance_user_free(Entrance_User * e)
 /**
  * entrance_user_edje_get : get the Evas_Object(edje||image) that is
  * specified in config db.  Their "EntranceFace"
- * @e - the Entrance_User to get the edje for
- * @edje - a pointer to the main edje in entrance
- * Returns NULL on failure, a valid Evas_Object on success
+ * @param e - the Entrance_User to get the edje for
+ * @para edje - a pointer to the main edje in entrance
+ * @return NULL on failure, a valid Evas_Object on success
  */
 Evas_Object *
 entrance_user_edje_get(Entrance_User * e, Evas_Object * edje)
@@ -133,9 +139,9 @@ entrance_user_edje_get(Entrance_User * e, Evas_Object * edje)
 /**
  * _entrance_user_icon_load : It says this is the filename, gimme an evas
  * object for it, I don't care what type. :)
- * @o - another object in the Canvas
- * @file - the filename on disk, might be an edje, might be an image
- * Returns - NULL on failure, a valid Evas_Object on success
+ * @param o - another object in the Canvas
+ * @param file - the filename on disk, might be an edje, might be an image
+ * @return NULL on failure, a valid Evas_Object on success
  */
 static Evas_Object *
 _entrance_user_icon_load(Evas_Object * o, char *file)

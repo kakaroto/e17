@@ -498,26 +498,27 @@ timer_cb(void *data)
  * main - where it all starts !
  * @argc - the number of arguments entrance was called with
  * @argv - the args entrance was called with 
- * Entrance works like this:
- * 1.  Init Ecore
- * 2.  Parse command line arguments
- * 3.  Create a New Entrance_Session(Parses config for you)
- * 4.  Init Ecore_X
- * 5.  Init Ecore_Evas
- * 6.  Init Edje
- * 7.  Detect Ecore_Evas type from config, software or gl
- * 8.  Set the cursor specified in the config
- * 9.  Add key modifiers, setup caches and paths
- * 10. Load theme specified in config, or from cli(cli overrides config)
- * 11. Swallow the username and password entries into the edje
- * 12. Detect theme part presence, swallow/setup as appropriate
- * 13. Setup signal callbacks that our main edje might emit
- * 14. Show the main edje
- * 15. Emit an "In" signal on the main entry for lazy themers
- * 16. Tell the Entrance_Sesssion that the Ecore_Evas belongs to it
- * 17. Run.............. until ecore_main_loop_quit is called
- * 18. If the user is authenticated, try to run their session
- * 19. Shut down edje, ecore_evas, ecore_x, ecore
+ * <p>Entrance works like this:<ol>
+ * <li> Init Ecore </li>
+ * <li> Parse command line arguments </li>
+ * <li> Create a New Entrance_Session(Parses config for you) </li>
+ * <li> Init Ecore_X </li>
+ * <li> Init Ecore_Evas </li>
+ * <li> Init Edje </li>
+ * <li> Detect Ecore_Evas type from config, software or gl</li>
+ * <li> Set the cursor specified in the config </li>
+ * <li> Add key modifiers, setup caches and paths </li>
+ * <li> Load theme specified in config, or from cli(cli overrides
+ * config)</li>
+ * <li> Swallow the username and password entries into the edje </li>
+ * <li> Detect theme part presence, swallow/setup as appropriate </li>
+ * <li> Setup signal callbacks that our main edje might emit </li>
+ * <li> Show the main edje </li>
+ * <li> Emit an "In" signal on the main entry for lazy themers </li>
+ * <li> Tell the Entrance_Sesssion that the Ecore_Evas belongs to it</li>
+ * <li> Run.............. until ecore_main_loop_quit is called</li>
+ * <li> If the user is authenticated, try to run their session</li>
+ * <li>Shut down edje, ecore_evas, ecore_x, ecore</li>
  */
 int
 main(int argc, char *argv[])

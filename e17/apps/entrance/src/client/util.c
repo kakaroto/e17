@@ -1,5 +1,16 @@
 #include "util.h"
 
+/**
+@file util.c
+@brief Functions that do things that don't quite fit anywhere else
+
+*/
+
+/**
+ * struct_passwd_dup : duplicate a struct passwd *
+ * @param pwent - the struct passwd pointer we want to copy
+ * @return a valid pointer to an allocated struct passwd * 
+ */
 struct passwd *
 struct_passwd_dup(struct passwd *pwent)
 {
@@ -27,6 +38,11 @@ struct_passwd_dup(struct passwd *pwent)
    return (result);
 }
 
+/**
+ * struct_passwd_free: free a struct passwd *
+ * @param pwent - the struct passwd pointer we want to free
+ * @return NULL
+ */
 void *
 struct_passwd_free(struct passwd *pwent)
 {
@@ -47,6 +63,10 @@ struct_passwd_free(struct passwd *pwent)
    return (NULL);
 }
 
+/**
+ * entrance_debug: print a message if debugging is on
+ * @param msg - the character string you want printed in debug mode
+ */
 void
 entrance_debug(char *msg)
 {
