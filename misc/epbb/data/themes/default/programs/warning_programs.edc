@@ -1,0 +1,26 @@
+#define WARNING_CB(pname, psig, pstate) \
+	    program { name, pname; signal, psig; source, ""; \
+		action, STATE_SET pstate 0.0; target, "mainimage"; } \
+	    program { name, pname"show"; signal, psig; source, ""; \
+		action, SIGNAL_EMIT "window,show" ""; } \
+	    program { name, "hidewin"pname; signal, psig; source, "" ;\
+			after, "hidewinlong"; } \
+	    program { name, pname"fadein"; signal, psig; source, ""; \
+		action, STATE_SET "visible" 0.0; \
+		transition, DECELERATE 0.5; target, "miclip"; } \
+	    program { name, "fadeout"pname; signal, psig; source, ""; \
+			after, "fadeoutlong"; }
+
+WARNING_CB("BatteryWarningOne", "pbb,warning,battery,1", "battery1");
+WARNING_CB("BatteryWarningTwo", "pbb,warning,battery,2", "battery2");
+WARNING_CB("BatteryWarningThree", "pbb,warning,battery,3", "battery3");
+WARNING_CB("SleepWarning", "pbb,warning,sleep", "sleep");
+	    
+	    program { name, "hidewinlong"; action, ACTION_STOP; 
+			target, "hidewinlongcb"; after, "hidewinlongcb"; }
+	    program { name, "hidewinlongcb"; 
+		action, SIGNAL_EMIT "window,hide" ""; in, 5.0 0.0; } 
+	    program { name, "fadeoutlong"; action, ACTION_STOP; \
+		    target, "fadeoutlong_cb"; after, "fadeoutlong_cb"; }
+	    program { name, "fadeoutlong_cb"; action, STATE_SET "default" 0.0; 
+		target, "miclip"; transition, ACCELERATE 1.0; in, 4.0 0.0; } 

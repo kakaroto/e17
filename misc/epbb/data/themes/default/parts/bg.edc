@@ -72,8 +72,8 @@
     rel2 { relative, 1.0 1.0; offset, -15 -30; } \
     color, 255 255 255 128; image { normal, simage; } } \
     description { state, "pulse2" 0.0; visible, 1; align, 0.5 0.5; \
-    rel1 { relative, -0.5 -0.5; offset, 15 5; } \
-    rel2 { relative, 1.5 1.5; offset, -15 -30; } \
+    rel1 { relative, 0.0 0.0; offset, -15 -30; } \
+    rel2 { relative, 1.0 1.0; offset, 15 -5; } \
     color, 255 255 255 128; image { normal, simage; } } }
 
     part { 
@@ -84,7 +84,7 @@
 	MIITEM("default", "volume.png")
 	MIITEM("volume", "volume.png")
 	MIITEM("brightness", "brightness.png")
-	MIITEM("mute", "noaudio.png") 
+	MIITEM("mute", "mute.png") 
 	MIITEM("sleep", "sleep.png") 
 	MIITEM("battery1", "battery.png") 
 	MIITEM("battery2", "battery.png") 
@@ -92,5 +92,5 @@
     }
     PIITEM("volume", "volume.png")
     PIITEM("brightness", "brightness.png")
-    PIITEM("mute", "noaudio.png") 
+    PIITEM("mute", "mute.png") 
 

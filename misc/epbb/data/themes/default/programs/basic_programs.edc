@@ -1,0 +1,37 @@
+#define BASIC_CB(pname, psig, pstate) \
+	    program { name, pname; signal, psig; source, ""; \
+		action, STATE_SET pstate 0.0; target, "mainimage"; } \
+	    program { name, pname"show"; signal, psig; source, ""; \
+		action, SIGNAL_EMIT "window,show" ""; } \
+	    program { name, "hidewin"pname; signal, psig; source, "" ;\
+			after, "hidewin"; } \
+	    program { name, pname"fadein"; signal, psig; source, ""; \
+		action, STATE_SET "visible" 0.0; \
+		transition, DECELERATE 0.5; target, "miclip"; target, \
+		"pulseclip"; } \
+	    program { name, "fadeout"pname; signal, psig; source, ""; \
+			after, "fadeout"; } \
+	    program { name, "pulseup"pname; signal, psig; source, "" ;\
+		action, STATE_SET "pulse1" 0.0; transition, LINEAR 0.01; \
+			target, pstate; after, "pulsedown"pname; } \
+	    program { name, "pulsedown"pname; signal, psig; source, "" ;\
+		action, STATE_SET "pulse2" 0.0; transition, LINEAR 0.5; \
+			target, pstate; after, "pulseup"pname; } \
+	    program { name, pname"killpulsers"; signal, psig; \
+		action, ACTION_STOP; target, "pulseup"pname; \
+		target, "pulsedown"pname; in, 1.0 0.0;} \
+	    program { name, pname"hidepulsers"; signal, psig; \
+		action, STATE_SET "default" 0.0; target, pstate; \
+		in, 1.0 0.0; transition, DECELERATE 0.3; } 
+BASIC_CB("VolumeSwitch", "pbb,audio,volume", "volume");
+BASIC_CB("BrightnessSwitch", "pbb,display,brightness", "brightness");
+BASIC_CB("MutedSwitch", "pbb,audio,mute", "mute");
+	    program { name, "hidewin"; action, ACTION_STOP; 
+			target, "hidewincb"; after, "hidewincb"; }
+	    program { name, "hidewincb"; 
+		action, SIGNAL_EMIT "window,hide" ""; in, 2.0 0.0; } 
+	    program { name, "fadeout"; action, ACTION_STOP; \
+		    target, "fadeout_cb"; after, "fadeout_cb"; }
+	    program { name, "fadeout_cb"; action, STATE_SET "default" 0.0; 
+		target, "miclip"; target, "pulseclip"; \
+		transition, ACCELERATE 0.5; in, 1.5 0.0; } 
