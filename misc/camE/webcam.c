@@ -461,6 +461,9 @@ grab_one(int *width, int *height)
    int i = 0;
    int j = lag_reduce;
 
+   if(grab_fd == -1)
+     grab_init();
+
    if (j == 0)
       j++;
 
