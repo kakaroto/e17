@@ -1,6 +1,6 @@
 /*
 
-Copyright (C) 2000, 2001 Christian Kreibich <kreibich@aciri.org>.
+Copyright (C) 2000, 2001 Christian Kreibich <cK@whoop.org>.
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to
@@ -285,7 +285,7 @@ efsd_handle_connections(void)
 
   bzero(&serv_sun, sizeof(serv_sun));
   serv_sun.sun_family = AF_UNIX;
-  strncpy(serv_sun.sun_path, efsd_get_socket_file(), sizeof(serv_sun.sun_path));
+  strncpy(serv_sun.sun_path, efsd_common_get_socket_file(), sizeof(serv_sun.sun_path));
 
   if (bind(listen_fd, (struct sockaddr *)&serv_sun, sizeof(serv_sun)) < 0)
     {
@@ -446,7 +446,7 @@ efsd_cleanup(void)
     }
   
   close(listen_fd);
-  efsd_remove_socket_file();
+  efsd_misc_remove_socket_file();
   FAMClose(&famcon);
   efsd_fam_cleanup();
   exit(0);
@@ -459,6 +459,7 @@ static void
 efsd_initialize(void)
 {
   D_ENTER;
+
 #ifndef __EMX__
   if (geteuid() == 0)
     {
@@ -466,6 +467,7 @@ efsd_initialize(void)
       exit(-1);
     }
 #endif  
+
    /* lots of paranoia - clean up dead socket on exit no matter what */
    /* only case it doesnt work: SIGKILL (kill -9) */
   signal(SIGABRT,   efsd_cleanup_signal_callback);
@@ -494,7 +496,10 @@ efsd_initialize(void)
   signal(SIGXFSZ,   efsd_cleanup_signal_callback);
 #endif
   signal(SIGPIPE, SIG_IGN);
-  atexit(efsd_remove_socket_file);
+
+  atexit(efsd_misc_remove_socket_file);
+
+  efsd_misc_check_dir();
 
   D_RETURN;
 }
@@ -562,7 +567,7 @@ efsd_check_options(int argc, char**argv)
 	}
     }
 
-  if (efsd_misc_file_exists(efsd_get_socket_file()))
+  if (efsd_misc_file_exists(efsd_common_get_socket_file()))
     {
       if (opt_careful)
 	{      
@@ -570,7 +575,7 @@ efsd_check_options(int argc, char**argv)
 	  exit(-1);
 	}
 
-      if (unlink(efsd_get_socket_file()) < 0)
+      if (unlink(efsd_common_get_socket_file()) < 0)
 	{
 	  fprintf(stderr, "Socket file exists and cannot be removed -- exiting.\n");
 	  exit(-1);

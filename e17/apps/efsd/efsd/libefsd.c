@@ -1,6 +1,6 @@
 /*
 
-Copyright (C) 2000, 2001 Christian Kreibich <kreibich@aciri.org>.
+Copyright (C) 2000, 2001 Christian Kreibich <cK@whoop.org>.
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to
@@ -184,7 +184,7 @@ efsd_open(void)
 
   bzero(&cli_sun, sizeof(cli_sun));
   cli_sun.sun_family = AF_UNIX;
-  strncpy(cli_sun.sun_path, efsd_get_socket_file(), sizeof(cli_sun.sun_path));
+  strncpy(cli_sun.sun_path, efsd_common_get_socket_file(), sizeof(cli_sun.sun_path));
 
   if (connect(ec->fd, (struct sockaddr*)&cli_sun, sizeof(cli_sun)) < 0)
     {

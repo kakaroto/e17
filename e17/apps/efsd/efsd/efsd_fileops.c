@@ -1,6 +1,6 @@
 /*
 
-Copyright (C) 2000, 2001 Christian Kreibich <kreibich@aciri.org>.
+Copyright (C) 2000, 2001 Christian Kreibich <cK@whoop.org>.
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to
@@ -39,6 +39,7 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 #include <signal.h>
 
 #include <efsd_common.h>
+#include <efsd_macros.h>
 #include <efsd_debug.h>
 #include <efsd_fam.h>
 #include <efsd_fileops.h>
@@ -310,9 +311,15 @@ efsd_file_getmime(EfsdCommand *cmd, int client)
 
   if (!initialized)
     {
-      efsd_magic_init(efsd_get_magic_db(),
-		      efsd_get_patterns_db());
-      initialized = 1;
+      if (efsd_magic_init())
+	{
+	  D(("Magic initialization succeeded.\n"));
+	  initialized = 1;
+	}
+      else
+	{
+	  D(("Magic initialization failed.\n"));
+	}
     }
 
   if ( (mime = efsd_magic_get(cmd->efsd_file_cmd.file)) != NULL)

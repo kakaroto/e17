@@ -1,6 +1,6 @@
 /*
 
-Copyright (C) 2000, 2001 Christian Kreibich <kreibich@aciri.org>.
+Copyright (C) 2000, 2001 Christian Kreibich <cK@whoop.org>.
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to
@@ -25,19 +25,6 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 #ifndef __efsd_misc_h
 #define __efsd_misc_h
 
-#ifndef	FALSE
-#define	FALSE	(0)
-#endif
-
-#ifndef	TRUE
-#define	TRUE	(!FALSE)
-#endif
-
-
-#define NEW(X)  ((X*) malloc(sizeof(X)))
-#define FREE(X) { if (X) { free(X); X = NULL; } }
-
-
 int    efsd_misc_file_exists(char *filename);
 int    efsd_misc_file_is_dir(char *filename);
 int    efsd_misc_mkdir(char *filename);
@@ -45,11 +32,11 @@ void   efsd_misc_remove_trailing_slashes(char *path);
 int    efsd_misc_is_absolute_path(char *path);
 char **efsd_misc_get_path_dirs(char *path, int *num_dirs);
 
-/* Could somebody tell me if memdup() is portable? */
-void  *efsd_misc_memdup(void *data, int size);
-
 #ifdef __EMX__  
 void   efsd_slashify(char *path);
 #endif
+
+void    efsd_misc_check_dir(void);
+void    efsd_misc_remove_socket_file(void);
 
 #endif

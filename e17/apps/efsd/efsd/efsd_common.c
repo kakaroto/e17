@@ -1,6 +1,6 @@
 /*
 
-Copyright (C) 2000, 2001 Christian Kreibich <kreibich@aciri.org>.
+Copyright (C) 2000, 2001 Christian Kreibich <cK@whoop.org>.
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to
@@ -44,7 +44,7 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
 
 char *
-efsd_get_efsd_dir(void)
+efsd_common_get_user_dir(void)
 {
   char         *dir = NULL;
   static char  s[4096] = "\0";
@@ -61,19 +61,31 @@ efsd_get_efsd_dir(void)
    * or Solaris here...
    */
 
+  /* FIXME -- I need to properly handle the case
+     where I cannot determine the home directory.
+     This will break if multiple users run E on the
+     same machine:
+  */
+
   if (!dir)
     dir = "/tmp";
 
-  snprintf(s, sizeof(s), "%s/.e", dir);
-  if (!efsd_misc_file_is_dir(s))
-    efsd_misc_mkdir(s);
+  snprintf(s, sizeof(s), "%s/.e/efsd", dir);
 
   D_RETURN_(s);
 }
 
 
 char *
-efsd_get_socket_file(void)
+efsd_common_get_sys_dir(void)
+{
+  D_ENTER;
+  D_RETURN_(PACKAGE_DATA_DIR);
+}
+
+
+char *
+efsd_common_get_socket_file(void)
 {
   static char s[4096] = "\0";
   
@@ -82,53 +94,31 @@ efsd_get_socket_file(void)
   if (s[0] != '\0')
     D_RETURN_(s);
 #ifndef __EMX__
-  snprintf(s, sizeof(s), "%s/efsd_socket", efsd_get_efsd_dir());
+  snprintf(s, sizeof(s), "%s/efsd_socket", efsd_common_get_user_dir());
 #else
-  snprintf(s, sizeof(s), "\\socket\\%s/efsd_socket", efsd_get_efsd_dir());
+  snprintf(s, sizeof(s), "\\socket\\%s/efsd_socket", efsd_common_get_user_dir());
 #endif
   s[sizeof(s)-1] = '\0';
   D_RETURN_(s);
 }
 
 
-void
-efsd_remove_socket_file(void)
+void  *
+efsd_common_memdup(void *data, int size)
 {
+  void *result = NULL;
+
   D_ENTER;
-  unlink(efsd_get_socket_file());
-  D_RETURN;
+
+  if (!data)
+    {
+      D_RETURN_(NULL);
+    }
+
+  result = malloc(size);
+  memcpy(result, data, size);
+
+  D_RETURN_(result);
 }
 
 
-char   *
-efsd_get_magic_db(void)
-{
-  static char s[4096] = "\0";
-  
-  D_ENTER;
-
-  if (s[0] != '\0')
-    D_RETURN_(s);
-
-  snprintf(s, sizeof(s), "%s/magic.db", efsd_get_efsd_dir());
-  s[sizeof(s)-1] = '\0';
-
-  D_RETURN_(s);
-}
-
-
-char   *
-efsd_get_patterns_db(void)
-{
-  static char s[4096] = "\0";
-  
-  D_ENTER;
-
-  if (s[0] != '\0')
-    D_RETURN_(s);
-
-  snprintf(s, sizeof(s), "%s/patterns.db", efsd_get_efsd_dir());
-  s[sizeof(s)-1] = '\0';
-
-  D_RETURN_(s);
-}

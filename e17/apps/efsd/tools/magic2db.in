@@ -1,7 +1,7 @@
 #! @PERL@ -w
 
 #
-# Copyright (C) 2000, 2001 Christian Kreibich <kreibich@aciri.org>.
+# Copyright (C) 2000, 2001 Christian Kreibich <cK@whoop.org>.
 #
 # Permission is hereby granted, free of charge, to any person obtaining a copy
 # of this software and associated documentation files (the "Software"), to
@@ -141,7 +141,15 @@ sub write_magic {
   if (defined($$magic_ptr{"value"}))
     {
       $key = $s . "value";
-      e_db_int_set($db_file, $key, $$magic_ptr{"value"});
+
+      if ($$magic_ptr{"type"} == $EFSD_MAGIC_STRING)
+	{
+	  e_db_str_set($db_file, $key, $$magic_ptr{"value"});
+	}
+      else
+	{
+	  e_db_int_set($db_file, $key, $$magic_ptr{"value"});
+	}
     }
   if (defined($$magic_ptr{"mime"}))
     {
@@ -169,7 +177,7 @@ sub do_it {
 
   while ($line = <MAGIC>)
     {     
-      unless (($line =~ /#.*/m) || ($line =~ /^$/m))
+      unless (($line =~ /^#.*/m) || ($line =~ /^$/m))
 	{
 
 	 # clear hash:
@@ -184,7 +192,7 @@ sub do_it {
 	                (be|le)??(byte|short|long|string)   # endianness and type, no date
                         (&(?:0x)??[0-9a-fA-F]+)?? \s+       # possibly, a mask for the value
 	                ([!<>&\^=]?)((?:0x)??[0-9a-fA-F]+?| # test for either a num. value
-                        (?:\\ |\S){2,}?|[^x]{1}) \s+        # or a string
+                        (?:\\\s+|\S){2,}|[^x]{1}) \s+        # or a string
 	                (.*)$/x)                            # and finally, the comment.
 	   {
 	     $level = length($1);
@@ -312,27 +320,38 @@ sub do_it {
 	     # rid of all kind of weird formatting stuff.
 
 	     $item = $8;
-	     $item =~ s/%.//g;  # get rid of print formatters
-	     $item =~ s/\\.//g; # get rid of anything escaped
-	     $item =~ s/\W/-/g; # replace anything non-alpha with dashes
-	     $item =~ s/-+/-/g; # replace multiple dashes with single one.
-	     $item =~ s/^(-+)//;# remove any dashes at beginning
-	     $item =~ s/(-+)$//;# remove any dashes at end
+
+	     $item =~ s/%.//g;           # get rid of print formatters
+	     $item =~ s/\\.//g;          # get rid of anything escaped
+	     $item =~ s/[^\+\-\/\w]/-/g; # replace anything non-alpha and not "/" with dashes
+	     $item =~ s/-+/-/g;          # replace multiple dashes with single one.
+	     $item =~ s/^(-+)//;         # remove any dashes at beginning
+	     $item =~ s/(-+)$//;         # remove any dashes at end
 	     $item = lc($item);
 
 	     if ($level == 0)
 	       {
-		 if (length($item) == 0)
+		 if (length($item) > 0)
 		   {
-		     $item = "empty";
-		   } 
-		 $item = $item . "/";
+		     if (!($item =~ /^.*\/.*$/))
+		       {
+			 $item = $item . "/";
+		       }
+		     else
+		       {
+			 $item = $item . "-";
+		       }
+		   }
 	       }
 	     else
 	       {
-		 $item = $item . "-";
+		 if (length($item) > 0)
+		   {
+		     $item = $item . "-";
+		   }
 	       }
-		 
+
+	     $item =~ s/-+/-/g;
 	     $magic{"mime"} = $item;
 
 	     write_magic(\@indices, $level, \%magic);

@@ -1,6 +1,6 @@
 /*
 
-Copyright (C) 2000, 2001 Christian Kreibich <kreibich@aciri.org>.
+Copyright (C) 2000, 2001 Christian Kreibich <cK@whoop.org>.
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to
@@ -25,12 +25,12 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 #ifndef __efsd_common_h
 #define __efsd_common_h
 
-char   *efsd_get_efsd_dir(void);
+char   *efsd_common_get_user_dir(void);
+char   *efsd_common_get_sys_dir(void);
+char   *efsd_common_get_socket_file(void);
 
-char   *efsd_get_socket_file(void);
-void    efsd_remove_socket_file(void);
+/* Could somebody tell me if memdup() is portable? */
+void  *efsd_common_memdup(void *data, int size);
 
-char   *efsd_get_magic_db(void);
-char   *efsd_get_patterns_db(void);
 
 #endif

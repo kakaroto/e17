@@ -1,6 +1,6 @@
 /*
 
-Copyright (C) 2000, 2001 Christian Kreibich <kreibich@aciri.org>.
+Copyright (C) 2000, 2001 Christian Kreibich <cK@whoop.org>.
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to
@@ -44,8 +44,10 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 #endif
 
 #include <efsd.h>
+#include <efsd_macros.h>
 #include <efsd_debug.h>
 #include <efsd_misc.h>
+#include <efsd_common.h>
 #include <efsd_magic.h>
 
 #ifndef MAXPATHLEN
@@ -157,9 +159,14 @@ static EfsdMagic  magic;
 /* The db where everything is stored. */
 static E_DB_File *magic_db = NULL;
 
+/* Filename patterns */
 static char     **patterns = NULL;
 static char     **pattern_mimetypes = NULL;
 static int        num_patterns;
+
+static char     **patterns_user = NULL;
+static char     **pattern_mimetypes_user = NULL;
+static int        num_patterns_user;
 
 /* db helper functions */
 int               e_db_int8_t_get(E_DB_File * db, char *key, u_int8_t *val);
@@ -173,12 +180,78 @@ static void       magic_add_child(EfsdMagic *em_dad, EfsdMagic *em_kid);
 static char      *magic_test_level(EfsdMagic *em, FILE *f, char *ptr, char stop_when_found);
 static char      *magic_test_perform(EfsdMagic *em, FILE *f);
 static void       magic_init_level(char *key, char *ptr, EfsdMagic *em_parent);
-static void       pattern_init(char *pattern_dbfile);
+static int        patterns_init(void);
 static void       fix_byteorder(EfsdMagic *em);
 
 static char      *magic_test_fs(char *filename);
 static char      *magic_test_data(char *filename);
 static char      *magic_test_pattern(char *filename);
+
+char             *get_magic_db(void);
+char             *get_sys_patterns_db(void);
+char             *get_user_patterns_db(void);
+
+
+char   *
+get_magic_db(void)
+{
+  static char s[4096] = "\0";
+  
+  D_ENTER;
+
+  if (s[0] != '\0')
+    D_RETURN_(s);
+
+  snprintf(s, sizeof(s), "%s/magic.db", efsd_common_get_sys_dir());
+  s[sizeof(s)-1] = '\0';
+
+  if (efsd_misc_file_exists(s))
+    D_RETURN_(s);
+
+  D_RETURN_(NULL);
+}
+
+
+char   *
+get_sys_patterns_db(void)
+{
+  static char s[4096] = "\0";
+  
+  D_ENTER;
+
+  if (s[0] != '\0')
+    D_RETURN_(s);
+
+  snprintf(s, sizeof(s), "%s/pattern.db", efsd_common_get_sys_dir());
+  s[sizeof(s)-1] = '\0';
+
+  if (efsd_misc_file_exists(s))
+    D_RETURN_(s);
+
+  D_RETURN_(NULL);
+}
+
+
+char   *
+get_user_patterns_db(void)
+{
+  static char s[4096] = "\0";
+  
+  D_ENTER;
+
+  if (s[0] != '\0')
+    D_RETURN_(s);
+
+  snprintf(s, sizeof(s), "%s/pattern.db", efsd_common_get_user_dir());
+  s[sizeof(s)-1] = '\0';
+
+  if (efsd_misc_file_exists(s))
+    D_RETURN_(s);
+
+  D_RETURN_(NULL);
+}
+
+
 
 int               
 e_db_int8_t_get(E_DB_File * db, char *key, u_int8_t *val)
@@ -368,7 +441,7 @@ fix_byteorder(EfsdMagic *em)
       if ((em->byteorder == host_byteorder)  || 
 	  (em->byteorder == EFSD_BYTEORDER_HOST))
 	{
-	  D(("Not changing byteorder.\n"));
+	  /* D(("Not changing byteorder.\n")); */
 	  D_RETURN;
 	}
 
@@ -395,7 +468,7 @@ fix_byteorder(EfsdMagic *em)
     }
   else
     {
-      D(("Not changing byteorder.\n"));
+      /* D(("Not changing byteorder.\n")); */
     }
   
   D_RETURN;
@@ -689,8 +762,6 @@ magic_init_level(char *key, char *ptr, EfsdMagic *em_parent)
 
       sprintf(item_ptr, "%s", "/offset");
 
-      D(("Key string: '%s'\n", key));
-
       if (e_db_int_get(magic_db, key, &dummy))
 	{
 	  EfsdMagic *em;
@@ -726,7 +797,7 @@ magic_test_fs(char *filename)
   if (statfs(filename, &stfs) < 0)
     D_RETURN_(NULL);
 
-    switch (stfs.f_type)
+  switch (stfs.f_type)
     {
     case AFFS_SUPER_MAGIC:
       sprintf(s, "%s", "affs");
@@ -864,29 +935,71 @@ magic_test_data(char *filename)
 }
 
 
-static void       
-pattern_init(char *pattern_dbfile)
+static int
+patterns_init(void)
 {
+  char      *s;
   E_DB_File *db;
-  int i;
+  int        i;
  
   D_ENTER;
 
-  patterns = e_db_dump_key_list(pattern_dbfile, &num_patterns);
+  s = get_user_patterns_db();
 
-  if (num_patterns > 0)
+  if (s)
     {
-      pattern_mimetypes = malloc(sizeof(char*) * num_patterns);
+      patterns_user = e_db_dump_key_list(s, &num_patterns_user);
       
-      db = e_db_open(pattern_dbfile);
-      
-      for (i = 0; i < num_patterns; i++)
-	pattern_mimetypes[i] = e_db_str_get(db, patterns[i]);
-      
-      e_db_close(db);
-    }  
+      if (num_patterns_user > 0)
+	{
+	  pattern_mimetypes_user = malloc(sizeof(char*) * num_patterns_user);
+	  
+	  db = e_db_open_read(s);
+	  
+	  for (i = 0; i < num_patterns_user; i++)
+	    pattern_mimetypes_user[i] = e_db_str_get(db, patterns_user[i]);
+	  
+	  e_db_close(db);
+	}  
+    }
+  else
+    {
+      num_patterns_user = 0;
+      D(("User pattern db not found.\n"));
+    }
 
-  D_RETURN;
+  s = get_sys_patterns_db();
+
+  if (!s)
+    {
+      D(("System pattern db not found.\n"));
+      D_RETURN_(0);
+    }
+
+  D(("System pattern db at %s\n", s));
+
+  if (s)
+    {
+      patterns = e_db_dump_key_list(s, &num_patterns);
+
+      if (num_patterns > 0)
+	{
+	  pattern_mimetypes = malloc(sizeof(char*) * num_patterns);
+	  
+	  D(("opening '%s'\n", s));
+	  db = e_db_open_read(s);
+      
+	  for (i = 0; i < num_patterns; i++)
+	    pattern_mimetypes[i] = e_db_str_get(db, patterns[i]);
+      
+	  e_db_close(db);
+	}  
+    }
+
+  D(("%i keys in user pattern db, %i keys in system pattern db.\n",
+     num_patterns_user, num_patterns));
+
+  D_RETURN_(1);
 }
 
 
@@ -901,7 +1014,9 @@ magic_test_pattern(char *filename)
   if (!filename)
     D_RETURN_(NULL);
 
-  for (i = 0; i < num_patterns; i++)
+  /* Test user-defined patterns first: */
+
+  for (i = 0; i < num_patterns_user; i++)
     {
       ptr = strrchr(filename, '/');
       if (!ptr)
@@ -909,7 +1024,21 @@ magic_test_pattern(char *filename)
       else
 	ptr++;
 
-      D(("Testing for pattern: %s\n", ptr));
+      if (!fnmatch(patterns_user[i], ptr, FNM_PATHNAME | FNM_PERIOD))
+	{
+	  D_RETURN(pattern_mimetypes_user[i]);
+	}
+    }
+
+  /* If not found, use system-wide definitions. */
+
+  for (i = 0; i < num_patterns; i++)
+    {
+      ptr = strrchr(filename, '/');
+      if (!ptr)
+	ptr = filename;
+      else
+	ptr++;
 
       if (!fnmatch(patterns[i], ptr, FNM_PATHNAME | FNM_PERIOD))
 	{
@@ -921,27 +1050,28 @@ magic_test_pattern(char *filename)
 }
 
 
-void       
-efsd_magic_init(char *magic_dbfile, char *pattern_dbfile)
+int       
+efsd_magic_init(void)
 {
   char        key[MAXPATHLEN];
   char       *ptr;
 
   D_ENTER;
 
-  if (!magic_dbfile || magic_dbfile[0] == '\0' ||
-      !pattern_dbfile || pattern_dbfile[0] == '\0')
-    {
-      D(("Missing db files.\n"));
-      D_RETURN;
-    }
+  ptr = get_magic_db();
   
-  magic_db = e_db_open_read(magic_dbfile);
+  if (!ptr)
+    {
+      D(("System magic db not found.\n"));
+      D_RETURN_(0);
+    }
+     
+  magic_db = e_db_open_read(ptr);
 
   if (!magic_db)
     { 
       D(("Could not open magic db!\n"));
-      D_RETURN;
+      D_RETURN_(0);
     }
 
   bzero(&magic, sizeof(EfsdMagic));
@@ -950,9 +1080,7 @@ efsd_magic_init(char *magic_dbfile, char *pattern_dbfile)
   magic_init_level(key, ptr, &magic);
   e_db_close(magic_db);
 
-  pattern_init(pattern_dbfile);
-
-  D_RETURN;
+  D_RETURN_(patterns_init());
 }
 
 

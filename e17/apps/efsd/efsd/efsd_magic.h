@@ -1,6 +1,6 @@
 /*
 
-Copyright (C) 2000, 2001 Christian Kreibich <kreibich@aciri.org>.
+Copyright (C) 2000, 2001 Christian Kreibich <cK@whoop.org>.
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to
@@ -25,11 +25,11 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 #ifndef __efsd_magic_h
 #define __efsd_magic_h
 
-/* Initializes the magic tests from a given db file,
-   and the patterns from a second one.
+/* Initializes the magic tests. Returns value > 0
+   when at least a minum number of necessary db's
+   could be found.
  */
-void       efsd_magic_init(char *magic_dbfile,
-			   char *pattern_dbfile);
+int        efsd_magic_init(void);
 
 /* Clears the current magic test hierarchy.
  */

@@ -1,6 +1,6 @@
 /*
 
-Copyright (C) 2000, 2001 Christian Kreibich <kreibich@aciri.org>.
+Copyright (C) 2000, 2001 Christian Kreibich <cK@whoop.org>.
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to
@@ -28,9 +28,11 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
 #include <sys/types.h>
 #include <sys/stat.h>
+#include <sys/param.h>
 #include <unistd.h>
 #include <stdio.h>
 #include <string.h>
+#include <stdlib.h>
 
 #ifdef __EMX__
 #include <stdlib.h>
@@ -39,6 +41,8 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
 #include <efsd_debug.h>
 #include <efsd_misc.h>
+#include <efsd_common.h>
+#include <efsd_macros.h>
 
 static mode_t         default_mode = (S_IRUSR | S_IWUSR | S_IXUSR | S_IRGRP |
 				      S_IXGRP | S_IROTH | S_IXOTH);
@@ -224,20 +228,49 @@ void efsd_slashify(char *s)
 #endif
 
 
-void  *
-efsd_misc_memdup(void *data, int size)
+void    
+efsd_misc_check_dir(void)
 {
-  void *result = NULL;
+  char *dir = NULL;
+  char  s[MAXPATHLEN];
 
   D_ENTER;
 
-  if (!data)
+  dir = getenv("HOME");
+
+  /* I'm not using getenv("TMPDIR") --
+   * I don't see TMPDIR on Linux, FreeBSD
+   * or Solaris here...
+   */
+
+  if (!dir)
+    dir = "/tmp";
+
+  snprintf(s, sizeof(s), "%s/.e", dir);
+
+  if (!efsd_misc_file_is_dir(s))
+    efsd_misc_mkdir(s);
+
+  snprintf(s, sizeof(s), "%s/.e/efsd", dir);
+
+  if (!efsd_misc_file_is_dir(s))
+    efsd_misc_mkdir(s);
+
+  D_RETURN;
+}
+
+
+void
+efsd_misc_remove_socket_file(void)
+{
+  D_ENTER;
+
+  if (unlink(efsd_common_get_socket_file()) < 0)
     {
-      D_RETURN_(NULL);
+      D(("Could not remove socket file.\n"));
     }
 
-  result = malloc(size);
-  memcpy(result, data, size);
-
-  D_RETURN_(result);
+  D_RETURN;
 }
+
+
