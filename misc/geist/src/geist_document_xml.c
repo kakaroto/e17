@@ -446,6 +446,14 @@ geist_parse_text_xml(xmlDocPtr doc, xmlNsPtr ns, xmlNodePtr cur)
          fontname = xmlNodeGetContent(cur->children);
       else if ((!strcmp(cur->name, "Text")) && (cur->ns == ns))
          text = xmlNodeGetContent(cur->children);
+      else if ((!strcmp(cur->name, "Justification")) && (cur->ns == ns))
+      {
+         char *temp;
+
+         temp = xmlNodeGetContent(cur->children);
+         ret->sizemode = geist_text_get_justification_from_string(temp);
+         xmlFree(temp);
+      }
       cur = cur->next;
    }
 
@@ -646,6 +654,8 @@ geist_save_text_xml(geist_text * txt, xmlNodePtr parent, xmlNsPtr ns)
    geist_xml_write_int(parent, "B", txt->b);
    geist_xml_write_int(parent, "A", txt->a);
    geist_xml_write_int(parent, "Wordwrap", txt->wordwrap);
+   xmlNewTextChild(parent, ns, "Justification",
+                   geist_text_get_justification_string(txt->justification));
 
    D_RETURN_(3);
 }

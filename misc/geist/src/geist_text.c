@@ -7,6 +7,7 @@ struct _addtext_ok_data
    GtkWidget *win;
    GtkWidget *text;
    GtkWidget *font;
+   GtkWidget *just;
    GtkWidget *size;
    GtkWidget *cr;
    GtkWidget *cg;
@@ -21,7 +22,14 @@ static void refresh_a_cb(GtkWidget * widget, gpointer * obj);
 static void refresh_size_cb(GtkWidget * widget, gpointer * obj);
 static void refresh_text_cb(GtkWidget * widget, gpointer * obj);
 static void refresh_font_cb(GtkWidget * widget, gpointer * obj);
+static void refresh_just_cb(GtkWidget * widget, gpointer * obj);
 
+char *text_justifications[] = {
+   "Left",
+   "Right",
+   "Center",
+   "XXXXX"
+};
 
 geist_object *
 geist_text_new(void)
@@ -58,6 +66,7 @@ geist_text_init(geist_text * txt)
    obj->alignment = ALIGN_CENTER;
    geist_object_set_type(obj, GEIST_TYPE_TEXT);
    obj->name = estrdup("New text");
+   txt->justification = JUST_LEFT;
 
    D_RETURN_(5);
 }
@@ -91,7 +100,9 @@ geist_text_new_with_text(int x, int y, char *fontname, int fontsize,
    obj->rendered_x = 0;
    obj->rendered_y = 0;
 
-   txt->im = geist_text_create_image(txt, &obj->w, &obj->h);
+   geist_text_create_image(txt);
+   obj->w = obj->rendered_w;
+   obj->h = obj->rendered_h;
 
    D_RETURN(5, GEIST_OBJECT(txt));
 }
@@ -116,6 +127,8 @@ geist_text_free(geist_object * obj)
       geist_imlib_free_font(txt->fn);
    if (txt->im)
       geist_imlib_free_image(txt->im);
+   if (txt->lines)
+      geist_text_free_lines(txt);
 
    efree(txt);
 
@@ -194,7 +207,8 @@ geist_text_update_image(geist_text * txt)
    geist_object_dirty(obj);
    if (txt->im)
       geist_imlib_free_image_and_decache(txt->im);
-   txt->im = geist_text_create_image(txt, &obj->rendered_w, &obj->rendered_h);
+   txt->im = NULL;
+   geist_text_create_image(txt);
    obj->w = obj->rendered_w;
    obj->h = obj->rendered_h;
    obj->rendered_x = 0;
@@ -218,36 +232,61 @@ geist_text_change_text(geist_text * txt, char *newtext)
    D_RETURN_(3);
 }
 
-Imlib_Image
-geist_text_create_image(geist_text * txt, int *w, int *h)
+void
+geist_text_create_image(geist_text * txt)
 {
    DATA8 atab[256];
    Imlib_Image im;
    geist_object *obj;
+   geist_list *l;
+   char *p;
+   int w = 0, h = 0, ww, hh;
+   int x = 0, y = 0;
 
    D_ENTER(3);
+   obj = GEIST_OBJECT(txt);
 
    if (!txt->fn)
    {
       weprintf("no font for text.");
-      D_RETURN(3, NULL);
+      D_RETURN_(3);
    }
    if (!txt->text)
    {
       weprintf("no text in text object.");
-      D_RETURN(3, NULL);
+      D_RETURN_(3);
+   }
+   if (strlen(txt->text) == 0)
+   {
+      D(2, ("empty text in text object\n"));
+      D_RETURN_(3);
    }
 
-   obj = GEIST_OBJECT(txt);
-   geist_imlib_get_text_size(txt->fn, txt->text, w, h, IMLIB_TEXT_TO_RIGHT);
-   obj->rendered_w = *w;
-   obj->rendered_h = *h;
+   geist_text_free_lines(txt);
 
-   im = imlib_create_image(*w, *h);
+   geist_text_calculate_lines(txt);
+   if (!txt->lines)
+      D_RETURN_(3);
+
+   l = txt->lines;
+   while (l)
+   {
+      p = (char *) l->data;
+      geist_imlib_get_text_size(txt->fn, p, &ww, &hh, IMLIB_TEXT_TO_RIGHT);
+      if (ww > w)
+         w = ww;
+      h += hh + TEXT_LINE_SPACING;
+      l = l->next;
+   }
+
+   obj->rendered_w = w;
+   obj->rendered_h = h;
+
+   im = imlib_create_image(w, h);
    if (!im)
    {
       weprintf("couldn't create imlib image for text area.");
-      D_RETURN(3, NULL);
+      D_RETURN_(3);
    }
 
    /* make image transparent (HACK - imlib2 should do this nicely) */
@@ -256,15 +295,92 @@ geist_text_create_image(geist_text * txt, int *w, int *h)
    geist_imlib_apply_color_modifier_to_rectangle(im, 0, 0, obj->w, obj->h,
                                                  NULL, NULL, NULL, atab);
 
+   /* todo - put offset, margin etc into txt struct */
+   l = txt->lines;
+   while (l)
+   {
+      p = (char *) l->data;
+      geist_imlib_get_text_size(txt->fn, p, &ww, &hh, IMLIB_TEXT_TO_RIGHT);
+      /* TODO do justification here */
+      switch (txt->justification)
+      {
+        case JUST_LEFT:
+           x = 0;
+           break;
+        case JUST_CENTER:
+           x = (w - ww) / 2;
+           break;
+        case JUST_RIGHT:
+           x = w - ww;
+           break;
+        default:
+           break;
+      }
+      geist_imlib_text_draw(im, txt->fn, x, y, p, IMLIB_TEXT_TO_RIGHT,
+                            txt->r, txt->g, txt->b, txt->a);
+      y += hh + TEXT_LINE_SPACING;
+      l = l->next;
+   }
+   txt->im = im;
 
-   /* todo - put offset, margin, color etc into txt struct */
-   geist_imlib_text_draw(im, txt->fn, 0, 0, txt->text, IMLIB_TEXT_TO_RIGHT,
-                         txt->r, txt->g, txt->b, txt->a);
-
-   D_RETURN(3, im);
+   D_RETURN_(3);
 }
 
-Imlib_Image geist_text_get_rendered_image(geist_object * obj)
+void
+geist_text_free_lines(geist_text * txt)
+{
+   geist_list *l;
+
+   D_ENTER(3);
+
+   if (!txt->lines)
+      return;
+
+   l = txt->lines;
+   while (l)
+   {
+      if (l->data)
+         efree(l->data);
+      l = l->next;
+   }
+   geist_list_free(txt->lines);
+   txt->lines = NULL;
+
+   D_RETURN_(3);
+}
+
+void
+geist_text_calculate_lines(geist_text * txt)
+{
+   geist_object *obj;
+   geist_list *l = NULL;
+   char *string, *p;
+   char delim[2] = { '\n', '\0' };
+
+   D_ENTER(3);
+
+   obj = GEIST_OBJECT(txt);
+
+   /* TODO word wrap when splitting, not just on \n */
+   if (!txt->text)
+      D_RETURN_(3);
+
+   string = estrdup(txt->text);
+   p = strtok(string, delim);
+   while (p)
+   {
+      D(5, ("got string %s\n", p));
+      l = geist_list_add_end(l, estrdup(p));
+      p = strtok(NULL, delim);
+   }
+   efree(string);
+   txt->lines = l;
+
+   D_RETURN_(3);
+}
+
+Imlib_Image
+geist_text_get_rendered_image(geist_object * obj)
 {
    D_ENTER(3);
 
@@ -292,10 +408,12 @@ geist_text_duplicate(geist_object * obj)
    {
       ret->state = obj->state;
       ret->alias = obj->alias;
+      GEIST_TEXT(ret)->justification = txt->justification;
       ret->name =
          g_strjoin(" ", "Copy of", obj->name ? obj->name : "Untitled object",
                    NULL);
    }
+   geist_text_update_image(txt);
 
    D_RETURN(3, ret);
 }
@@ -387,6 +505,22 @@ refresh_font_cb(GtkWidget * widget, gpointer * obj)
 }
 
 void
+refresh_just_cb(GtkWidget * widget, gpointer * obj)
+{
+   char *just;
+   geist_text *txt;
+   
+   txt = GEIST_TEXT(obj);
+   
+   just = gtk_entry_get_text(GTK_ENTRY(widget));
+
+   txt->justification = geist_text_get_justification_from_string(just);
+   geist_text_update_image(txt);
+   geist_document_render_updates(GEIST_OBJECT_DOC(obj));
+}  
+
+
+void
 refresh_r_cb(GtkWidget * widget, gpointer * obj)
 {
 
@@ -440,24 +574,22 @@ geist_text_display_props(geist_object * obj)
 {
    addtext_ok_data *ok_data = NULL;
    GtkWidget *table, *text_l, *font_l, *size_l, *hbox, *cr_l, *cg_l, *cb_l,
-
-      *ca_l;
+      *ca_l, *just_l;
    int i, num;
    char **fonts;
    GList *list = g_list_alloc();
+   GList *list2 = g_list_alloc();
    GtkAdjustment *a1, *a2, *a3, *a4, *a5;
 
    a1 = (GtkAdjustment *) gtk_adjustment_new(0, 0, 255, 1, 2, 3);
    a2 = (GtkAdjustment *) gtk_adjustment_new(0, 0, 255, 1, 2, 3);
    a3 = (GtkAdjustment *) gtk_adjustment_new(0, 0, 255, 1, 2, 3);
    a4 = (GtkAdjustment *) gtk_adjustment_new(0, 0, 255, 1, 2, 3);
-   a5 = (GtkAdjustment *) gtk_adjustment_new(12, 2, 96, 1, 2, 3);
+   a5 = (GtkAdjustment *) gtk_adjustment_new(12, 2, 128, 1, 2, 3);
 
    ok_data = emalloc(sizeof(addtext_ok_data));
 
    ok_data->win = gtk_hbox_new(FALSE, 0);
-
-
 
    if (!ok_data)
       printf("ARGH");
@@ -466,7 +598,7 @@ geist_text_display_props(geist_object * obj)
    if (!fonts)
       printf("ARGH!\n");
 
-   table = gtk_table_new(4, 2, FALSE);
+   table = gtk_table_new(5, 2, FALSE);
    gtk_container_set_border_width(GTK_CONTAINER(ok_data->win), 5);
    gtk_container_add(GTK_CONTAINER(ok_data->win), table);
 
@@ -492,8 +624,8 @@ geist_text_display_props(geist_object * obj)
    gtk_table_attach(GTK_TABLE(table), ok_data->font, 1, 2, 2, 3,
                     GTK_FILL | GTK_EXPAND, 0, 2, 2);
    for (i = 0; i < num; i++)
-      list = g_list_append(list, (gpointer) fonts[i]);
-   gtk_combo_set_popdown_strings(GTK_COMBO(ok_data->font), list);
+      list2 = g_list_append(list2, (gpointer) fonts[i]);
+   gtk_combo_set_popdown_strings(GTK_COMBO(ok_data->font), list2);
    gtk_widget_show(ok_data->font);
 
    size_l = gtk_label_new("Size:");
@@ -507,9 +639,27 @@ geist_text_display_props(geist_object * obj)
                     GTK_FILL | GTK_EXPAND, 0, 2, 2);
    gtk_widget_show(ok_data->size);
 
+
+   just_l = gtk_label_new("Justification:");
+   gtk_misc_set_alignment(GTK_MISC(just_l), 1.0, 0.5);
+   gtk_table_attach(GTK_TABLE(table), just_l, 0, 1, 4, 5,
+                    GTK_FILL | GTK_EXPAND, 0, 2, 2);
+   gtk_widget_show(just_l);
+
+   ok_data->just = gtk_combo_new();
+   gtk_table_attach(GTK_TABLE(table), ok_data->just, 1, 2, 4, 5,
+                    GTK_FILL | GTK_EXPAND, 0, 2, 2);
+   for (i = 0; i < JUST_MAX; i++)
+      list =
+         g_list_append(list,
+                       (gpointer) geist_text_get_justification_string(i));
+   gtk_combo_set_popdown_strings(GTK_COMBO(ok_data->just), list);
+   gtk_widget_show(ok_data->just);
+
+
    hbox = gtk_hbox_new(FALSE, 0);
 
-   gtk_table_attach(GTK_TABLE(table), hbox, 0, 2, 4, 5, GTK_FILL | GTK_EXPAND,
+   gtk_table_attach(GTK_TABLE(table), hbox, 0, 2, 5, 6, GTK_FILL | GTK_EXPAND,
                     0, 2, 2);
 
    cr_l = gtk_label_new("R:");
@@ -560,6 +710,9 @@ geist_text_display_props(geist_object * obj)
 
    gtk_entry_set_text(GTK_ENTRY(GTK_COMBO(ok_data->font)->entry),
                       GEIST_TEXT(obj)->fontname);
+   gtk_entry_set_text(GTK_ENTRY(GTK_COMBO(ok_data->just)->entry),
+                      geist_text_get_justification_string(GEIST_TEXT(obj)->
+                                                          justification));
    gtk_spin_button_set_value(GTK_SPIN_BUTTON(ok_data->size),
                              GEIST_TEXT(obj)->fontsize);
    gtk_entry_set_text(GTK_ENTRY(ok_data->text), GEIST_TEXT(obj)->text);
@@ -578,9 +731,34 @@ geist_text_display_props(geist_object * obj)
 
    gtk_signal_connect(GTK_OBJECT(GTK_COMBO(ok_data->font)->entry), "changed",
                       GTK_SIGNAL_FUNC(refresh_font_cb), (gpointer) obj);
+   gtk_signal_connect(GTK_OBJECT(GTK_COMBO(ok_data->just)->entry), "changed",
+                      GTK_SIGNAL_FUNC(refresh_just_cb), (gpointer) obj);
    gtk_signal_connect(GTK_OBJECT(ok_data->text), "changed",
                       GTK_SIGNAL_FUNC(refresh_text_cb), (gpointer) obj);
 
 
    return (ok_data->win);
+}
+
+char *
+geist_text_get_justification_string(int just)
+{
+   D_ENTER(3);
+
+   D_RETURN(3, text_justifications[just]);
+}
+
+int
+geist_text_get_justification_from_string(char *s)
+{
+   int i;
+
+   D_ENTER(3);
+
+   for (i = 0; i < JUST_MAX; i++)
+   {
+      if (!strcmp(text_justifications[i], s))
+         D_RETURN(3, i);
+   }
+   D_RETURN(3, 0);
 }
