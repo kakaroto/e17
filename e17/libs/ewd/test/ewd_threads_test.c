@@ -39,7 +39,7 @@ void *producer(void *arg)
 void consume()
 {
 	char *text = NULL;
-	char *old_text = NULL;
+	static char *old_text = NULL;
 
 	text = (char *)ewd_dlist_remove_last(list);
 
