@@ -35,6 +35,7 @@ AC_OUTPUT([
 Makefile
 giblib.spec
 giblib-config
+giblib.pc
 giblib/Makefile
 ], [
 chmod +x giblib-config

@@ -36,6 +36,7 @@ AC_CONFIG_FILES([
 Makefile
 giblib.spec
 giblib-config
+giblib.pc
 giblib/Makefile
 ])
 AC_CONFIG_COMMANDS([default],[[
