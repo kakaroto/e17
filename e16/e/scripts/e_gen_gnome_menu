@@ -39,7 +39,10 @@ OUT=$3
 if [ $# -eq 4 ]; then
   DIR=$4
 else
-  DIR=`gnome-config --prefix`"/share/gnome/apps"
+  DIR=$HOME"/gnome/apps"
+  if [ ! -d "$DIR" ]; then
+    DIR=`gnome-config --prefix`"/share/gnome/apps"
+  fi
   if [ ! -d "$DIR" ]; then
     DIR=/usr/share/gnome/apps
   fi
