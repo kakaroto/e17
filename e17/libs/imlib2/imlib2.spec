@@ -26,6 +26,7 @@ rendering and blending, dynamic binary filters, scripting, and more.
 Summary: Imlib2 headers, static libraries and documentation
 Group: System Environment/Libraries
 Requires: %{name} = %{version}
+Requires: freetype-devel >= 2
 %description devel
 Headers, static libraries and documentation for Imlib2.
 
