@@ -263,7 +263,11 @@ spif_socket_open(spif_socket_t self)
         /* Get remote address, if we have one. */
         if (SPIF_SOCKET_FLAGS_IS_SET(self, SPIF_SOCKET_FLAGS_FAMILY_INET)) {
             self->fam = AF_INET;
-            self->addr = SPIF_CAST(sockaddr) spif_url_get_ipaddr(self->remote_url);
+            if (!SPIF_URL_ISNULL(self->remote_url)) {
+                self->addr = SPIF_CAST(sockaddr) spif_url_get_ipaddr(self->remote_url);
+            } else {
+                self->addr = SPIF_NULL_TYPE(sockaddr);
+            }
             if (self->addr == SPIF_NULL_TYPE(sockaddr)) {
                 self->len = 0;
             } else {
@@ -271,7 +275,11 @@ spif_socket_open(spif_socket_t self)
             }
         } else if (SPIF_SOCKET_FLAGS_IS_SET(self, SPIF_SOCKET_FLAGS_FAMILY_UNIX)) {
             self->fam = AF_UNIX;
-            self->addr = SPIF_CAST(sockaddr) spif_url_get_unixaddr(self->remote_url);
+            if (!SPIF_URL_ISNULL(self->remote_url)) {
+                self->addr = SPIF_CAST(sockaddr) spif_url_get_unixaddr(self->remote_url);
+            } else {
+                self->addr = SPIF_NULL_TYPE(sockaddr);
+            }
             if (self->addr == SPIF_NULL_TYPE(sockaddr)) {
                 self->len = 0;
             } else {

@@ -460,7 +460,7 @@ spif_linked_list_append(spif_linked_list_t self, spif_obj_t obj)
     } else {
         self->head = item;
     }
-    item->next = SPIF_NULL_TYPE(linked_list_item);
+
     self->len++;
     return TRUE;
 }

@@ -1395,7 +1395,6 @@ test_vector(void)
         spif_str_init_from_ptr(s, "GRIN");
         s2 = SPIF_CAST(str) SPIF_VECTOR_REMOVE(testvector, s);
         TEST_FAIL_IF(!SPIF_OBJ_ISNULL(s2));
-        spif_str_del(s2);
         spif_str_del(s);
         TEST_PASS();
 

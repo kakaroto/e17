@@ -421,7 +421,7 @@ spif_array_get(spif_array_t self, spif_listidx_t idx)
     if (idx < 0) {
         idx += self->len;
     }
-    return (((idx > 0) && (idx < self->len)) ? (self->items[idx]) : (SPIF_NULL_TYPE(obj)));
+    return (((idx >= 0) && (idx < self->len)) ? (self->items[idx]) : (SPIF_NULL_TYPE(obj)));
 }
 
 static spif_listidx_t

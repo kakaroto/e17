@@ -558,7 +558,7 @@ spif_dlinked_list_index(spif_dlinked_list_t self, spif_obj_t obj)
     spif_dlinked_list_item_t current;
 
     ASSERT_RVAL(!SPIF_LIST_ISNULL(self), SPIF_CAST(listidx) -1);
-    for (current = self->head, i = 0; current && !SPIF_CMP_IS_EQUAL(SPIF_OBJ_COMP(current->data, obj)); i++, current = current->next);
+    for (current = self->head, i = 0; current && !SPIF_CMP_IS_EQUAL(SPIF_OBJ_COMP(obj, current->data)); i++, current = current->next);
     return (current ? i : ((spif_listidx_t) (-1)));
 }
 
@@ -605,7 +605,7 @@ spif_dlinked_list_insert_at(spif_dlinked_list_t self, spif_obj_t obj, spif_listi
         /* Negative indexes go backward from the end of the list. */
         idx += self->len;
     }
-    REQUIRE_RVAL((idx + 1) >= 0, FALSE);
+    REQUIRE_RVAL((idx + 1) > 0, FALSE);
 
     if (idx == 0 || SPIF_DLINKED_LIST_ITEM_ISNULL(self->head)) {
         return spif_dlinked_list_prepend(self, obj);
@@ -745,7 +745,7 @@ spif_dlinked_list_remove_at(spif_dlinked_list_t self, spif_listidx_t idx)
     }
 
     tmp = spif_dlinked_list_item_get_data(current);
-    spif_dlinked_list_item_set_data(current, SPIF_NULL_TYPE(obj));
+    current->data = SPIF_NULL_TYPE(obj);
     spif_dlinked_list_item_del(current);
 
     self->len--;

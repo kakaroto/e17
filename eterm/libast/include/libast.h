@@ -26,7 +26,7 @@
  * Global LibAST header file.
  *
  * This file contains all general-purpose macros, function
- * declarations, etc.  for LibAST.  It is also responsible for
+ * declarations, etc. for LibAST.  It is also responsible for
  * including all required system headers and LibAST Object headers.
  *
  * @author Michael Jennings <mej@eterm.org>

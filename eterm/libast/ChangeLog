@@ -597,3 +597,7 @@ Tue Feb  3 18:18:32 2004                        Michael Jennings (mej)
 
 Cleanups are done.  Almost done with the NULL handling for lists too.
 ----------------------------------------------------------------------
+Wed Feb  4 10:53:04 2004                        Michael Jennings (mej)
+
+Should be all fixed now.
+----------------------------------------------------------------------
