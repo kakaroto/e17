@@ -48,3 +48,10 @@ Fixed configure.in so that user-specified $CFLAGS will be honored.  Also
 removed all the warnings from compiling.
 
 -------------------------------------------------------------------------------
+
+Sat Oct 23 00:15:29 PDT 1999
+(KainX)
+
+E-MemWatch, a memory/swap monitor.
+
+-------------------------------------------------------------------------------
