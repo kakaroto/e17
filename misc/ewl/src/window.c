@@ -136,10 +136,14 @@ void       ewl_window_expose_callback(void     *object,
                                     void     *data)
 {
 	EwlWindow *window = EWL_WINDOW(object);
-	EwlRect *expose_rect = ewl_event_get_data(event, "rect");
+	EwlRect *expose_rect = ewl_event_get_data(event, "rect"),
+	        *rect;
 	UNUSED(data);
 	
 	/*fprintf(stderr,"window expose {%d,%d,%d,%d}\n", expose_rect->x, expose_rect->y, expose_rect->w, expose_rect->h);*/
+	rect = ewl_widget_get_rect(EWL_WIDGET(object));
+	if (rect->w<1||rect->h<1)
+		return;
 	evas_update_rect(window->evas, expose_rect->x, expose_rect->y,
 	                               expose_rect->w, expose_rect->h);
 
