@@ -74,7 +74,7 @@
 # define FALSE   ((unsigned char)(0))
 #endif
 
-
+#define USE_VAR(x)   (void) x
 
 /****************************** DEBUGGING GOOP ********************************/
 #ifndef LIBAST_DEBUG_FD
@@ -343,6 +343,7 @@ extern GC libast_x_create_gc(const char *, unsigned long, Display *, Drawable, u
 extern void libast_x_free_gc(const char *, const char *, unsigned long, Display *, GC);
 extern void libast_dump_gc_tables(void);
 #endif
+extern void free_array(void **, size_t);
 
 /* file.c */
 extern int libast_temp_file(char *, size_t);
@@ -357,6 +358,7 @@ extern unsigned char regexp_match_r(const char *str, const char *pattern, regex_
 #endif
 extern char **split(const char *, const char *);
 extern char **split_regexp(const char *, const char *);
+extern char *join(const char *, char **);
 extern char *get_word(unsigned long, const char *);
 extern char *get_pword(unsigned long, const char *);
 extern unsigned long num_words(const char *);

@@ -277,6 +277,32 @@ split_regexp(const char *regexp, const char *str)
 
 }
 
+char *
+join(const char *sep, char **slist)
+{
+  register unsigned long i;
+  size_t len, slen;
+  char *new_str;
+
+  if (sep == NULL) {
+    sep = "";
+  }
+  slen = strlen(sep);
+  for (i = len = 0; slist[i]; i++) {
+    len += strlen(slist[i]);
+  }
+  len += slen * (i - 1);
+  new_str = (char *) MALLOC(len);
+  strcpy(new_str, slist[0]);
+  for (i = 1; slist[i]; i++) {
+    if (slen) {
+      strcat(new_str, sep);
+    }
+    strcat(new_str, slist[i]);
+  }
+  return new_str;
+}
+
 /* Return malloc'd pointer to index-th word in str.  "..." counts as 1 word. */
 #undef IS_DELIM
 #define IS_DELIM(c)  (delim ? ((c) == delim) : isspace(c))

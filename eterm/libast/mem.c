@@ -447,5 +447,20 @@ libast_dump_gc_tables(void)
   fprintf(LIBAST_DEBUG_FD, "Dumping X11 GC allocation table:\n");
   memrec_dump_resources(&gc_rec);
 }
-
 #endif
+
+/* Convenience function for freeing a list. */
+void
+free_array(void **list, size_t count)
+{
+  register size_t i;
+
+  if (count == 0) {
+    count = (size_t) -1;
+  }
+  for (i = 0; i < count && list[i]; i++) {
+    FREE(list[i]);
+    list[i] = NULL;
+  }
+  FREE(list);
+}

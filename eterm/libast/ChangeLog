@@ -47,3 +47,10 @@ Mon May  7 22:16:11 PDT 2001	Michael Jennings <mej@eterm.org>
 	Moved chomp() to libast.  It's awfully handy.
 	
 -------------------------------------------------------------------------------
+Tue May  8 19:51:51 PDT 2001	Michael Jennings <mej@eterm.org>
+
+	Added two more convenience functions:  join(), also borrowed from
+	Perl, and free_array() for freeing lists.  I also threw in a USE_VAR()
+	macro for getting rid of bogus unused variable warnings.
+	
+-------------------------------------------------------------------------------
