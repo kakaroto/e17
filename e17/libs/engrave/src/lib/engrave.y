@@ -392,7 +392,7 @@ boolean: ON { $$ = 1; }
 		int i = $1;
 		if ((i != 0) && (i != 1)) {
 			printf("Invalid boolean %d at line %d\n", i, engrave_lnum);
-			i = 0;
+   			i = 0;
 		}
 		$$ = i;
 	}

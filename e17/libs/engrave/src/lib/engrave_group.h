@@ -42,6 +42,8 @@ struct _Engrave_Group
 Engrave_Group *engrave_group_new(void);
 void engrave_group_data_add(Engrave_Group *eg, Engrave_Data *ed);
 void engrave_group_part_add(Engrave_Group *eg, Engrave_Part *ep);
+void engrave_group_program_add(Engrave_Group *eg, Engrave_Program *ep);
+
 void engrave_group_script_set(Engrave_Group *eg, char *script);
 void engrave_group_name_set(Engrave_Group *eg, char *name);
 void engrave_group_min_size_set(Engrave_Group *eg, int w, int h);

@@ -110,6 +110,19 @@ engrave_group_part_add(Engrave_Group *eg, Engrave_Part *ep)
 }
 
 /**
+ * engrave_group_program_add - add the program to the group
+ * @param eg: The Engrave_Group to add the program too.
+ * @param ep: The Engrave_Program to add to the group.
+ *
+ * @return Returns no value.
+ */
+void
+engrave_group_program_add(Engrave_Group *eg, Engrave_Program *ep)
+{
+  eg->programs = evas_list_append(eg->programs, ep);
+}
+
+/**
  * engrave_group_part_last_get - retrieve the last part in the group.
  * @param eg: The Engrave_Group to retrieve the last part from.
  *

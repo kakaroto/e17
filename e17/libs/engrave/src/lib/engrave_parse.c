@@ -762,8 +762,7 @@ engrave_parse_program()
 
   program = engrave_program_new();
   group = engrave_file_group_last_get(engrave_file);
-
-  group->programs = evas_list_append(group->programs, program);
+  engrave_group_program_add(group, program);
 }
 
 void
