@@ -26,12 +26,12 @@ setup_cc(void)
 	ControlCentre  *cc = &controlcentre;
 	char           *edjefn = malloc(PATH_MAX);
 	char           *fontpath = malloc(PATH_MAX);
-	double          edje_w, edje_h;
+	Evas_Coord      edje_w, edje_h;
 
 	/* Setup the Window */
 	cc->win = ecore_evas_software_x11_new(NULL, 0, 0, 0, 250, 250);
 	ecore_evas_title_set(cc->win, "Enotes");
-	ecore_evas_name_class_set (cc->win, "Enotes", "Enotes");
+	ecore_evas_name_class_set(cc->win, "Enotes", "Enotes");
 	ecore_evas_borderless_set(cc->win, 1);
 	ecore_evas_shaped_set(cc->win, 1);
 	ecore_evas_show(cc->win);
