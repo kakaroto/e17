@@ -19,8 +19,8 @@ static void _e_thumb_raise (Evas_Object * o);
 static void _e_thumb_lower (Evas_Object * o);
 static void _e_thumb_clip_unset (Evas_Object * o);
 static void _e_thumb_layer_set (Evas_Object * o, int layer);
-static void _e_thumb_move (Evas_Object * o, double x, double y);
-static void _e_thumb_resize (Evas_Object * o, double w, double h);
+static void _e_thumb_move (Evas_Object * o, Evas_Coord x, Evas_Coord y);
+static void _e_thumb_resize (Evas_Object * o, Evas_Coord w, Evas_Coord h);
 static void _e_thumb_clip_set (Evas_Object * o, Evas_Object * clip);
 static void _e_thumb_stack_above (Evas_Object * o, Evas_Object * above);
 static void _e_thumb_stack_below (Evas_Object * o, Evas_Object * below);
@@ -355,7 +355,7 @@ _e_thumb_stack_below (Evas_Object * o, Evas_Object * below)
  * @y - the y-coordinate 
  */
 static void
-_e_thumb_move (Evas_Object * o, double x, double y)
+_e_thumb_move (Evas_Object * o, Evas_Coord x, Evas_Coord y)
 {
   if (o)
     {
@@ -376,20 +376,20 @@ _e_thumb_move (Evas_Object * o, double x, double y)
  * @h - the new height
  */
 static void
-_e_thumb_resize (Evas_Object * o, double w, double h)
+_e_thumb_resize (Evas_Object * o, Evas_Coord w, Evas_Coord h)
 {
   if (o && (w > 1) && (h > 1))
     {
       Esmart_Thumb *e = NULL;
       if ((e = (Esmart_Thumb *) evas_object_smart_data_get (o)))
 	{
-	  double ww = w, hh = h;
+	  Evas_Coord ww = w, hh = h;
 	  e->w = w;
 	  e->h = h;
 	  if (e->tw > e->th)
-	    hh *= (double) e->th / (double) e->tw;
+	    hh *= (Evas_Coord) e->th / (Evas_Coord) e->tw;
 	  else
-	    ww *= (double) e->tw / (double) e->th;
+	    ww *= (Evas_Coord) e->tw / (Evas_Coord) e->th;
 
 	  evas_object_resize (e->image, ww, hh);
 	  evas_object_image_fill_set (e->image, 0.0, 0.0, ww, hh);

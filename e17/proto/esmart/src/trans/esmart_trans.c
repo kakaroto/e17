@@ -31,8 +31,8 @@ static void _esmart_trans_x11_raise(Evas_Object *o);
 static void _esmart_trans_x11_lower(Evas_Object *o);
 static void _esmart_trans_x11_stack_above(Evas_Object *o, Evas_Object *above);
 static void _esmart_trans_x11_stack_below(Evas_Object *o, Evas_Object *below);
-static void _esmart_trans_x11_move(Evas_Object *o, double x, double y);
-static void _esmart_trans_x11_resize(Evas_Object *o, double w, double h);
+static void _esmart_trans_x11_move(Evas_Object *o, Evas_Coord x, Evas_Coord y);
+static void _esmart_trans_x11_resize(Evas_Object *o, Evas_Coord w, Evas_Coord h);
 static void _esmart_trans_x11_show(Evas_Object *o);
 static void _esmart_trans_x11_hide(Evas_Object *o);
 static void _esmart_trans_x11_color_set(Evas_Object *o, int r, int g, int b, int a);
@@ -514,7 +514,7 @@ _esmart_trans_x11_stack_below(Evas_Object *o, Evas_Object *below)
 }
 
 static void
-_esmart_trans_x11_move(Evas_Object *o, double x, double y)
+_esmart_trans_x11_move(Evas_Object *o, Evas_Coord x, Evas_Coord y)
 {
   Esmart_Trans_X11 *data;
   
@@ -528,7 +528,7 @@ _esmart_trans_x11_move(Evas_Object *o, double x, double y)
 }
 
 static void
-_esmart_trans_x11_resize(Evas_Object *o, double w, double h)
+_esmart_trans_x11_resize(Evas_Object *o, Evas_Coord w, Evas_Coord h)
 {
   Esmart_Trans_X11 *data;
   
