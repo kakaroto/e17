@@ -287,7 +287,7 @@ create_window (void)
   flot_adj = gtk_adjustment_new (0, -1e+16, 1e+16, 1, 10, 10);
   flot = gtk_spin_button_new (GTK_ADJUSTMENT (flot_adj), 0.1, 3);
   gtk_widget_ref (flot);
-  gtk_object_set_data_full (GTK_OBJECT (window), "flot", flot,
+  gtk_object_set_data_full (GTK_OBJECT (window), "float", flot,
                             (GtkDestroyNotify) gtk_widget_unref);
   gtk_widget_show (flot);
   gtk_container_add (GTK_CONTAINER (notebook1), flot);
