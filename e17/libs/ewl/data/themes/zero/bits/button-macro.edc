@@ -120,7 +120,7 @@
 
 #define BUTTON_PROG() \
     program { \
-        name, "clicked"; \
+        name, "button_clicked"; \
         signal, "mouse,down,*"; \
         source, "*"; \
         action, STATE_SET "clicked" 0.0; \
@@ -128,7 +128,7 @@
         target, "base"; \
     } \
     program { \
-        name, "unclick"; \
+        name, "button_unclick"; \
         signal, "mouse,up,*"; \
         source, "*"; \
         action, STATE_SET "over" 0.0; \
