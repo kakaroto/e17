@@ -170,8 +170,6 @@ DeIconifyEwin(EWin * ewin)
    if (ewin->iconified)
      {
 	ib = SelectIconboxForEwin(ewin);
-	if (ib)
-	   IB_Animate(0, ewin, ib->ewin);
 	RemoveMiniIcon(ewin);
 	if (!ewin->sticky)
 	  {
@@ -182,6 +180,8 @@ DeIconifyEwin(EWin * ewin)
 	  }
 	else
 	   ConformEwinToDesktop(ewin);
+	if (ib)
+	   IB_Animate(0, ewin, ib->ewin);
 	RaiseEwin(ewin);
 	ShowEwin(ewin);
 	ICCCM_DeIconify(ewin);
