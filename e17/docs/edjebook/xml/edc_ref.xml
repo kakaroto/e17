@@ -633,8 +633,7 @@ f
         </entry>
   <entry>"next-program";
         </entry>
-  <entry>Specifies a program run after the current program completes.  The source and signal parameters of a program
-        run as an "after" are ignored.
+		<entry>Specifies a program run after the current program completes.  The source and signal parameters of a program run as an "after" are ignored.  Multiple "after" statements can be specified per program.
         </entry>
 </row>
 
