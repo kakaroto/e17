@@ -305,11 +305,7 @@ winwidget_render_image(winwidget winwid, int resize, int alias)
    if (!opt.full_screen && resize)
    {
       winwidget_resize(winwid, winwid->im_w, winwid->im_h);
-      winwid->im_x = 0;
-      winwid->im_y = 0;
-      winwid->im_angle = 0.0;
-      winwid->has_rotated = 0;
-      winwid->zoom = 1.0;
+      winwidget_reset_image(winwid);
    }
 
    /* bounds checks for panning */
