@@ -102,8 +102,8 @@ entrance_auth_session_end(Entrance_Auth * e)
 void
 entrance_auth_clear_pass(Entrance_Auth * e)
 {
-   if(e->pw)
-      if(e->pw->pw_passwd)
+   if (e->pw)
+      if (e->pw->pw_passwd)
          free(e->pw->pw_passwd);
    memset(e->pass, 0, sizeof(e->pass));
 }
@@ -115,7 +115,7 @@ entrance_auth_clear_pass(Entrance_Auth * e)
 void
 entrance_auth_free(Entrance_Auth * e)
 {
-   if(e->pw)
+   if (e->pw)
       e->pw = struct_passwd_free(e->pw);
 
    memset(e->pass, 0, sizeof(e->pass));

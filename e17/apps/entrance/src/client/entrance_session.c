@@ -87,10 +87,14 @@ entrance_session_free(Entrance_Session * e)
 {
    if (e)
    {
-      if(e->auth) entrance_auth_free(e->auth);
-      if(e->config) entrance_config_free(e->config);
-      if(e->ee) ecore_evas_free(e->ee);
-      if(e->session) free(e->session);
+      if (e->auth)
+         entrance_auth_free(e->auth);
+      if (e->config)
+         entrance_config_free(e->config);
+      if (e->ee)
+         ecore_evas_free(e->ee);
+      if (e->session)
+         free(e->session);
 
       free(e);
    }
@@ -268,38 +272,38 @@ entrance_session_start_user_session(Entrance_Session * e)
       if (pam_open_session(e->auth->pam.handle, 0) != PAM_SUCCESS)
       {
          syslog(LOG_CRIT, "Unable to open PAM session. Aborting.");
-	 ecore_main_loop_quit();
+         ecore_main_loop_quit();
       }
    }
 #endif
 
-   switch((pid = fork()))
+   switch ((pid = fork()))
    {
      case 0:
-	if (initgroups(e->auth->pw->pw_name, e->auth->pw->pw_gid))
-	    syslog(LOG_CRIT,
-             "Unable to initialize group (is entrance running as root?).");
-	if (setgid(e->auth->pw->pw_gid))
-	    syslog(LOG_CRIT, "Unable to set group id.");
-	if (setuid(e->auth->pw->pw_uid))
-	    syslog(LOG_CRIT, "Unable to set user id.");
-	entrance_auth_free(e->auth); 
-	e->auth = NULL;
-	execl("/bin/sh", "/bin/sh", "-c", buf, NULL);
-	exit(0);
-	break;
+        if (initgroups(e->auth->pw->pw_name, e->auth->pw->pw_gid))
+           syslog(LOG_CRIT,
+                  "Unable to initialize group (is entrance running as root?).");
+        if (setgid(e->auth->pw->pw_gid))
+           syslog(LOG_CRIT, "Unable to set group id.");
+        if (setuid(e->auth->pw->pw_uid))
+           syslog(LOG_CRIT, "Unable to set user id.");
+        entrance_auth_free(e->auth);
+        e->auth = NULL;
+        execl("/bin/sh", "/bin/sh", "-c", buf, NULL);
+        exit(0);
+        break;
      case -1:
         syslog(LOG_INFO, "FORK FAILED, UH OH");
-	exit(0);
+        exit(0);
      default:
-	break;
+        break;
    }
    /* clear users's password out of memory */
-   entrance_auth_clear_pass(e->auth); 
+   entrance_auth_clear_pass(e->auth);
    if (waitpid(pid, NULL, 0) == pid)
    {
-	entrance_auth_session_end(e->auth);
-	syslog(LOG_CRIT, "User Xsession Ended");
+      entrance_auth_session_end(e->auth);
+      syslog(LOG_CRIT, "User Xsession Ended");
    }
 }
 

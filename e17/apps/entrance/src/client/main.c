@@ -58,7 +58,7 @@ get_my_hostname(void)
 static int
 exit_cb(void *data, int ev_type, void *ev)
 {
-    fprintf(stderr, "HELP\n");
+   fprintf(stderr, "HELP\n");
    ecore_main_loop_quit();
    return 1;
 }
@@ -293,7 +293,8 @@ static void
 done_cb(void *data, Evas_Object * o, const char *emission, const char *source)
 {
    if (!session->authed)
-      syslog(LOG_CRIT, "Theme attempted to launch session without finishing authentication. Please fix your theme.");
+      syslog(LOG_CRIT,
+             "Theme attempted to launch session without finishing authentication. Please fix your theme.");
    ecore_main_loop_quit();
 }
 
@@ -374,7 +375,7 @@ reboot_cb(void *data, Evas_Object * o, const char *emission,
    if (session->config->reboot.allow)
    {
       pid_t pid;
-      
+
       entrance_session_free(session);
       session = NULL;
       switch (pid = fork())
@@ -444,26 +445,40 @@ entrance_help(char **argv)
 {
    printf("Entrance - The Enlightened Display Manager\n");
    printf("Usage: %s [OPTION]...\n\n", argv[0]);
-   printf("---------------------------------------------------------------------------\n");
-   printf("  -d, --display=DISPLAY        Specify which display Entrance should use\n");
+   printf
+      ("---------------------------------------------------------------------------\n");
+   printf
+      ("  -d, --display=DISPLAY        Specify which display Entrance should use\n");
    printf("  -h, --help                   Display this help message\n");
-   printf("  -g, --geometry=WIDTHxHEIGHT  Specify the size of the Entrance window.\n");
-   printf("                               Use of this option disables fullscreen mode.\n");
-   printf("  -t, --theme=THEME            Specify the theme to load. You may specify\n");
-   printf("                               either the name of an installed theme, or an\n");
-   printf("                               arbitrary path to an eet file (use ./ for\n");
+   printf
+      ("  -g, --geometry=WIDTHxHEIGHT  Specify the size of the Entrance window.\n");
+   printf
+      ("                               Use of this option disables fullscreen mode.\n");
+   printf
+      ("  -t, --theme=THEME            Specify the theme to load. You may specify\n");
+   printf
+      ("                               either the name of an installed theme, or an\n");
+   printf
+      ("                               arbitrary path to an eet file (use ./ for\n");
    printf("                               the current directory).\n");
-   printf("  -T, --test                   Enable testing mode. This will cause xterm\n");
-   printf("                               to be executed instead of the selected\n");
-   printf("                               session upon authentication, and uses a\n");
-   printf("                               geometry of 800x600 (-g overrides this)\n");
-   printf("===========================================================================\n\n");
-   printf("Note: To automatically launch an X server that will be managed, please use\n");
-   printf("      entranced instead of entrance. Entrance requires an existing X server\n");
+   printf
+      ("  -T, --test                   Enable testing mode. This will cause xterm\n");
+   printf
+      ("                               to be executed instead of the selected\n");
+   printf
+      ("                               session upon authentication, and uses a\n");
+   printf
+      ("                               geometry of 800x600 (-g overrides this)\n");
+   printf
+      ("===========================================================================\n\n");
+   printf
+      ("Note: To automatically launch an X server that will be managed, please use\n");
+   printf
+      ("      entranced instead of entrance. Entrance requires an existing X server\n");
    printf("      to run. Run entranced --help for more information.\n\n");
    exit(0);
 }
-         
+
 /**
  * timer_cb - we handle this iteration outside of the theme
  */
@@ -510,12 +525,12 @@ main(int argc, char *argv[])
    int g_x = WINW, g_y = WINH;
    char *theme = NULL;
    int fs_en = 1;
-   
+
    session = entrance_session_new();
 
 /*   if (argv[1])
       snprintf(buf, PATH_MAX, "%s", argv[1]);*/
-   
+
    /* Basic ecore initialization */
    if (!ecore_init())
       return (-1);
@@ -525,65 +540,73 @@ main(int argc, char *argv[])
    while (1)
    {
       char *t;
+
       c = getopt_long(argc, argv, "hd:g:t:T", d_opt, NULL);
       if (c == -1)
          break;
       switch (c)
       {
-         case 'h':
-            entrance_help(argv);
-         case 'd':
-            display = strdup(optarg);
-            break;
-         case 'g':
-            t = strchr((const char *) optarg, 'x');
-            if(!t || t >= (optarg + strlen(optarg)))
-            {
-               syslog(LOG_CRIT, "Invalid argument '%s' given for geometry. Exiting.", optarg);
-               return (-1);
-            }
-            else
-            {
-               g_x = atoi((const char *) optarg);
-               g_y = atoi((const char *) (t + 1));
-               if (!g_x || !g_y)
-               {
-                  syslog(LOG_CRIT, "Invalid argument '%s' given for geometry. Exiting.", optarg);
-                  return (-1);
-               }
-               fs_en = 0;
-            }
-            break;
-         case 't':
-            /* Allow arbitrary paths to theme files */
-            t = strchr((const char *) optarg, '/');
-            if (t)
-               theme = strdup(optarg);
-            else
-            {
-               theme = calloc(1, PATH_MAX);
-               t = strrchr((const char *) optarg, '.');
-               if (t && !strcmp(t, ".eet"))
-                  snprintf(theme, PATH_MAX, "%s/themes/%s", PACKAGE_DATA_DIR, optarg);
-               else
-                  snprintf(theme, PATH_MAX, "%s/themes/%s.eet", PACKAGE_DATA_DIR, optarg);
-            }
-            break;
-         case 'T':
-            _entrance_test_en = 1;
-            fs_en = 0;
-            break;
-         default:
-            entrance_help(argv);
+        case 'h':
+           entrance_help(argv);
+        case 'd':
+           display = strdup(optarg);
+           break;
+        case 'g':
+           t = strchr((const char *) optarg, 'x');
+           if (!t || t >= (optarg + strlen(optarg)))
+           {
+              syslog(LOG_CRIT,
+                     "Invalid argument '%s' given for geometry. Exiting.",
+                     optarg);
+              return (-1);
+           }
+           else
+           {
+              g_x = atoi((const char *) optarg);
+              g_y = atoi((const char *) (t + 1));
+              if (!g_x || !g_y)
+              {
+                 syslog(LOG_CRIT,
+                        "Invalid argument '%s' given for geometry. Exiting.",
+                        optarg);
+                 return (-1);
+              }
+              fs_en = 0;
+           }
+           break;
+        case 't':
+           /* Allow arbitrary paths to theme files */
+           t = strchr((const char *) optarg, '/');
+           if (t)
+              theme = strdup(optarg);
+           else
+           {
+              theme = calloc(1, PATH_MAX);
+              t = strrchr((const char *) optarg, '.');
+              if (t && !strcmp(t, ".eet"))
+                 snprintf(theme, PATH_MAX, "%s/themes/%s", PACKAGE_DATA_DIR,
+                          optarg);
+              else
+                 snprintf(theme, PATH_MAX, "%s/themes/%s.eet",
+                          PACKAGE_DATA_DIR, optarg);
+           }
+           break;
+        case 'T':
+           _entrance_test_en = 1;
+           fs_en = 0;
+           break;
+        default:
+           entrance_help(argv);
       }
    }
-   
+
 #if 1
    if (!ecore_x_init(display))
    {
       if (display)
          syslog(LOG_CRIT,
-                "Cannot initialize requested display \"%s\". Exiting.", display);
+                "Cannot initialize requested display \"%s\". Exiting.",
+                display);
       else if ((str = getenv("DISPLAY")))
          syslog(LOG_CRIT,
                 "Cannot initialize default display \"%s\". Exiting.", str);
@@ -618,7 +641,7 @@ main(int argc, char *argv[])
       }
 
       ew = ecore_evas_software_x11_window_get(e);
-      if(_entrance_test_en)
+      if (_entrance_test_en)
          ecore_evas_title_set(e, "Entrance - Testing Mode");
       else
          ecore_evas_title_set(e, "Entrance");
@@ -650,7 +673,7 @@ main(int argc, char *argv[])
       if (!edje_object_file_set(edje, buf, "Main"))
       {
          syslog(LOG_CRIT, "Failed to load theme %s\n", theme);
-	 entrance_session_free(session);
+         entrance_session_free(session);
          exit(1);
       }
       evas_object_move(edje, 0, 0);
@@ -738,7 +761,7 @@ main(int argc, char *argv[])
 
 #if (X_TESTING == 0)
       ecore_evas_resize(e, g_x, g_y);
-      if(fs_en)
+      if (fs_en)
          ecore_evas_fullscreen_set(e, 1);
 #elif (X_TESTING == 1)
       ecore_evas_resize(e, g_x, g_y);
@@ -747,16 +770,19 @@ main(int argc, char *argv[])
       entrance_session_ecore_evas_set(session, e);
       entrance_session_run(session);
       fprintf(stderr, "%s", "BING\n");
-      
-      if(session->authed) {
-	entrance_session_start_user_session(session);
+
+      if (session->authed)
+      {
+         entrance_session_start_user_session(session);
       }
       entrance_session_free(session);
       closelog();
       ecore_evas_shutdown();
       ecore_x_shutdown();
       ecore_shutdown();
-   } else {
+   }
+   else
+   {
       fprintf(stderr, "Fatal error: Could not initialize ecore_evas!\n");
       exit(1);
    }
