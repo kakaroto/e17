@@ -1,0 +1,22 @@
+Source: estyle
+Section: libs
+Priority: optional
+Maintainer: Laurence J. Lane <ljlane@debian.org>
+Build-Depends: debhelper (>= 2.0)
+Standards-Version: 3.2.1.0
+
+Package: libestyle0
+Architecture: any
+Section: libs
+Depends: ${shlibs:Depends}
+Description: estyle is a simple text decoration library
+ Estyle adds decorations to text that will be displayed by evas.
+ 
+Package: libestyle0-dev
+Architecture: any
+Section: devel
+Architecture: any
+Depends: libestyle0 (= ${Source-Version})
+Description: libestyle0 headers, static libraries and documentation
+ Headers, static libraries and documentation for Imlib2.
+

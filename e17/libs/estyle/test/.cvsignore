@@ -1,0 +1,5 @@
+etox_test
+.libs
+.deps
+Makefile
+Makefile.in
