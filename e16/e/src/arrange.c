@@ -704,8 +704,8 @@ SnapEwin(EWin * ewin, int dx, int dy, int *new_dx, int *new_dy)
 		    {
 		       if (ewin->y >= screens[i].y_org)
 			 {
-			    if (ewin->y <= (screens[i].height +
-					    screens[i].y_org))
+			    if (ewin->y <=
+				(screens[i].height + screens[i].y_org))
 			      {
 				 left_bound = screens[i].x_org;
 				 right_bound =
@@ -725,7 +725,6 @@ SnapEwin(EWin * ewin, int dx, int dy, int *new_dx, int *new_dy)
 
 	  }
      }
-
 #endif
 
    lst = (EWin **) ListItemType(&num, LIST_TYPE_EWIN);

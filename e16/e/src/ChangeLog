@@ -4482,3 +4482,12 @@ Sun Mar 26 13:42:23 PST 2000
 (Mandrake)
 
 fixed edge resistance between heads when you're using xinerama.
+
+-------------------------------------------------------------------------------
+
+Sun Mar 26 14:16:39 PST 2000
+(Mandrake)
+
+added xinerama support for maximizing windows.  They'll stay on the current
+had unless you use the "absolute" option, which means you want as much space
+as possible

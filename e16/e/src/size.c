@@ -57,6 +57,43 @@ MaxHeight(EWin * ewin, char *resize_type)
 		       y1 = 0;
 		       y2 = root.h;
 		    }
+#ifdef HAS_XINERAMA
+		  if (xinerama_active)
+		    {
+		       XineramaScreenInfo *screens;
+		       int                 num_screens;
+
+		       screens = XineramaQueryScreens(disp, &num_screens);
+		       for (i = 0; i < num_screens; i++)
+			 {
+			    if (ewin->x >= screens[i].x_org)
+			      {
+				 if (ewin->x <=
+				     (screens[i].width + screens[i].x_org))
+				   {
+				      if (ewin->y >= screens[i].y_org)
+					{
+					   if (ewin->y <=
+					       (screens[i].height +
+						screens[i].y_org))
+					     {
+						if (screens[i].y_org > y1)
+						  {
+						     y1 = screens[i].y_org;
+						  }
+						if (screens[i].y_org +
+						    screens[i].height < y2)
+						  {
+						     y2 = screens[i].y_org +
+							screens[i].height;
+						  }
+					     }
+					}
+				   }
+			      }
+			 }
+		    }
+#endif
 		  for (i = 0; i < num; i++)
 		    {
 		       if (((ewin->desktop == lst[i]->desktop) ||
@@ -100,6 +137,43 @@ MaxHeight(EWin * ewin, char *resize_type)
 		       y1 = 0;
 		       y2 = root.h;
 		    }
+#ifdef HAS_XINERAMA
+		  if (xinerama_active)
+		    {
+		       XineramaScreenInfo *screens;
+		       int                 num_screens;
+
+		       screens = XineramaQueryScreens(disp, &num_screens);
+		       for (i = 0; i < num_screens; i++)
+			 {
+			    if (ewin->x >= screens[i].x_org)
+			      {
+				 if (ewin->x <=
+				     (screens[i].width + screens[i].x_org))
+				   {
+				      if (ewin->y >= screens[i].y_org)
+					{
+					   if (ewin->y <=
+					       (screens[i].height +
+						screens[i].y_org))
+					     {
+						if (screens[i].y_org > y1)
+						  {
+						     y1 = screens[i].y_org;
+						  }
+						if (screens[i].y_org +
+						    screens[i].height < y2)
+						  {
+						     y2 = screens[i].y_org +
+							screens[i].height;
+						  }
+					     }
+					}
+				   }
+			      }
+			 }
+		    }
+#endif
 		  for (i = 0; i < num; i++)
 		    {
 		       if (((ewin->desktop == lst[i]->desktop) ||
@@ -178,6 +252,43 @@ MaxWidth(EWin * ewin, char *resize_type)
 		       x1 = 0;
 		       x2 = root.w;
 		    }
+#ifdef HAS_XINERAMA
+		  if (xinerama_active)
+		    {
+		       XineramaScreenInfo *screens;
+		       int                 num_screens;
+
+		       screens = XineramaQueryScreens(disp, &num_screens);
+		       for (i = 0; i < num_screens; i++)
+			 {
+			    if (ewin->x >= screens[i].x_org)
+			      {
+				 if (ewin->x <=
+				     (screens[i].width + screens[i].x_org))
+				   {
+				      if (ewin->y >= screens[i].y_org)
+					{
+					   if (ewin->y <=
+					       (screens[i].height +
+						screens[i].y_org))
+					     {
+						if (screens[i].x_org > x1)
+						  {
+						     x1 = screens[i].x_org;
+						  }
+						if (screens[i].x_org +
+						    screens[i].width < x2)
+						  {
+						     x2 = screens[i].x_org +
+							screens[i].width;
+						  }
+					     }
+					}
+				   }
+			      }
+			 }
+		    }
+#endif
 		  for (i = 0; i < num; i++)
 		    {
 		       if (((ewin->desktop == lst[i]->desktop) ||
@@ -221,6 +332,43 @@ MaxWidth(EWin * ewin, char *resize_type)
 		       x1 = 0;
 		       x2 = root.w;
 		    }
+#ifdef HAS_XINERAMA
+		  if (xinerama_active)
+		    {
+		       XineramaScreenInfo *screens;
+		       int                 num_screens;
+
+		       screens = XineramaQueryScreens(disp, &num_screens);
+		       for (i = 0; i < num_screens; i++)
+			 {
+			    if (ewin->x >= screens[i].x_org)
+			      {
+				 if (ewin->x <=
+				     (screens[i].width + screens[i].x_org))
+				   {
+				      if (ewin->y >= screens[i].y_org)
+					{
+					   if (ewin->y <=
+					       (screens[i].height +
+						screens[i].y_org))
+					     {
+						if (screens[i].x_org > x1)
+						  {
+						     x1 = screens[i].x_org;
+						  }
+						if (screens[i].x_org +
+						    screens[i].width < x2)
+						  {
+						     x2 = screens[i].x_org +
+							screens[i].width;
+						  }
+					     }
+					}
+				   }
+			      }
+			 }
+		    }
+#endif
 		  for (i = 0; i < num; i++)
 		    {
 		       if ((lst[i] != ewin) && (!(lst[i]->ignorearrange)) &&
@@ -305,6 +453,53 @@ MaxSize(EWin * ewin, char *resize_type)
 		       y1 = 0;
 		       y2 = root.h;
 		    }
+#ifdef HAS_XINERAMA
+		  if (xinerama_active)
+		    {
+		       XineramaScreenInfo *screens;
+		       int                 num_screens;
+
+		       screens = XineramaQueryScreens(disp, &num_screens);
+		       for (i = 0; i < num_screens; i++)
+			 {
+			    if (ewin->x >= screens[i].x_org)
+			      {
+				 if (ewin->x <=
+				     (screens[i].width + screens[i].x_org))
+				   {
+				      if (ewin->y >= screens[i].y_org)
+					{
+					   if (ewin->y <=
+					       (screens[i].height +
+						screens[i].y_org))
+					     {
+						if (screens[i].x_org > x1)
+						  {
+						     x1 = screens[i].x_org;
+						  }
+						if (screens[i].x_org +
+						    screens[i].width < x2)
+						  {
+						     x2 = screens[i].x_org +
+							screens[i].width;
+						  }
+						if (screens[i].y_org > y1)
+						  {
+						     y1 = screens[i].y_org;
+						  }
+						if (screens[i].y_org +
+						    screens[i].height < y2)
+						  {
+						     y2 = screens[i].y_org +
+							screens[i].height;
+						  }
+					     }
+					}
+				   }
+			      }
+			 }
+		    }
+#endif
 		  for (i = 0; i < num; i++)
 		    {
 		       if (((ewin->desktop == lst[i]->desktop) ||
@@ -374,6 +569,53 @@ MaxSize(EWin * ewin, char *resize_type)
 		       y1 = 0;
 		       y2 = root.h;
 		    }
+#ifdef HAS_XINERAMA
+		  if (xinerama_active)
+		    {
+		       XineramaScreenInfo *screens;
+		       int                 num_screens;
+
+		       screens = XineramaQueryScreens(disp, &num_screens);
+		       for (i = 0; i < num_screens; i++)
+			 {
+			    if (ewin->x >= screens[i].x_org)
+			      {
+				 if (ewin->x <=
+				     (screens[i].width + screens[i].x_org))
+				   {
+				      if (ewin->y >= screens[i].y_org)
+					{
+					   if (ewin->y <=
+					       (screens[i].height +
+						screens[i].y_org))
+					     {
+						if (screens[i].x_org > x1)
+						  {
+						     x1 = screens[i].x_org;
+						  }
+						if (screens[i].x_org +
+						    screens[i].width < x2)
+						  {
+						     x2 = screens[i].x_org +
+							screens[i].width;
+						  }
+						if (screens[i].y_org > y1)
+						  {
+						     y1 = screens[i].y_org;
+						  }
+						if (screens[i].y_org +
+						    screens[i].height < y2)
+						  {
+						     y2 = screens[i].y_org +
+							screens[i].height;
+						  }
+					     }
+					}
+				   }
+			      }
+			 }
+		    }
+#endif
 		  for (i = 0; i < num; i++)
 		    {
 		       if ((lst[i] != ewin) && (!(lst[i]->ignorearrange)) &&
