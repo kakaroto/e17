@@ -1,3 +1,10 @@
+Fri Dec 24 13:22:19 1999  Tom Gilbert  <gilbertt@tomgilbert.freeserve.co.uk>
+
+	* I've switched to using XFindContext et al to associate X Windows
+	with internal structures. Much faster than my rubbish list
+	searching.
+	* Dammit. Why don't people tell me you can *do* stuff like this ;)
+
 Fri Dec 24 01:01:49 1999  Tom Gilbert  <gilbertt@tomgilbert.freeserve.co.uk>
 
 	* And now we can crop :) Thanks Andrew.

@@ -45,17 +45,16 @@ winwidget_allocate (void)
   ret->zoom = 1.0;
   ret->timeout = 0;
 
-  ret->rectangle_drawing_mode=0;
-  ret->rec_x=0;
-  ret->rec_y=0;
-  ret->rec_w=0;
-  ret->rec_h=0;
+  ret->rectangle_drawing_mode = 0;
+  ret->rec_x = 0;
+  ret->rec_y = 0;
+  ret->rec_w = 0;
+  ret->rec_h = 0;
 
   return ret;
 }
 
-winwidget
-winwidget_create_from_image (Imlib_Image * im, char *name)
+winwidget winwidget_create_from_image (Imlib_Image * im, char *name)
 {
   winwidget ret = NULL;
 
@@ -82,8 +81,7 @@ winwidget_create_from_image (Imlib_Image * im, char *name)
   return ret;
 }
 
-winwidget
-winwidget_create_from_file (char *filename, char *name)
+winwidget winwidget_create_from_file (char *filename, char *name)
 {
   winwidget ret = NULL;
 
@@ -199,7 +197,7 @@ winwidget_render_image (winwidget winwid)
   imlib_context_set_drawable (winwid->bg_pmap);
   imlib_context_set_image (winwid->im);
   if (imlib_image_has_alpha ())
-      feh_draw_checks (winwid);
+    feh_draw_checks (winwid);
 
   imlib_context_set_image (winwid->im);
   imlib_render_image_on_drawable (0, 0);
@@ -247,7 +245,7 @@ winwidget_rerender_image (winwidget winwid)
   imlib_context_set_blend (0);
   imlib_context_set_drawable (winwid->bg_pmap);
   if (imlib_image_has_alpha ())
-      feh_draw_checks (winwid);
+    feh_draw_checks (winwid);
   if (imlib_image_has_alpha ())
     imlib_context_set_blend (1);
   imlib_context_set_image (winwid->im);
@@ -261,9 +259,9 @@ void
 winwidget_destroy (winwidget winwid)
 {
   D (("In winwidget_destroy\n"));
+  winwidget_unregister (winwid);
   if (winwid->win)
     XDestroyWindow (disp, winwid->win);
-  winwidget_unregister (winwid);
   if (winwid->bg_pmap)
     XFreePixmap (disp, winwid->bg_pmap);
   if (winwid->name)
@@ -326,6 +324,8 @@ winwidget_register (winwidget win)
   else
     windows = emalloc (window_num * sizeof (winwidget));
   windows[window_num - 1] = win;
+
+  XSaveContext (disp, win->win, xid_context, (XPointer) win);
 }
 
 static void
@@ -349,11 +349,12 @@ winwidget_unregister (winwidget win)
 	    }
 	}
     }
+  XDeleteContext (disp, win->win, xid_context);
 }
 
-winwidget
-winwidget_get_from_window (Window win)
+winwidget winwidget_get_from_window (Window win)
 {
+#if 0
   /* Loop through windows */
   int i;
   D (("In winwidget_get_from_window, Window is %ld\n", win));
@@ -364,4 +365,13 @@ winwidget_get_from_window (Window win)
     }
   D (("Oh dear, returning NULL from winwidget_get_from_window\n"));
   return NULL;
+#endif
+
+  winwidget ret = NULL;
+
+  D(("About to XFindContext\n"));
+  if (XFindContext (disp, win, xid_context, (XPointer *) &ret) != XCNOENT)
+    return ret;
+  else
+    return NULL;
 }

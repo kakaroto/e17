@@ -32,13 +32,15 @@ init_x_and_imlib (void)
   depth = DefaultDepth (disp, DefaultScreen (disp));
   cm = DefaultColormap (disp, DefaultScreen (disp));
   root = RootWindow (disp, DefaultScreen (disp));
+  xid_context = XUniqueContext();
+  
   imlib_context_set_display (disp);
   imlib_context_set_visual (vis);
   imlib_context_set_colormap (cm);
   imlib_context_set_color_modifier (NULL);
   imlib_context_set_operation (IMLIB_OP_COPY);
   wmDeleteWindow = XInternAtom (disp, "WM_DELETE_WINDOW", False);
-
+  imlib_context_set_dither(0);
   imlib_context_set_blend (0);
 
   checks = imlib_create_image (CHECK_SIZE, CHECK_SIZE);

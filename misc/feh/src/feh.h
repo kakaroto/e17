@@ -24,6 +24,7 @@
 #include <X11/Xatom.h>
 #include <X11/Xos.h>
 #include <X11/keysym.h>
+#include <X11/Xresource.h>
 #include <stdio.h>
 #include <string.h>
 #include <stdlib.h>
@@ -198,3 +199,4 @@ extern int actual_file_num;
 extern Imlib_Image *checks;
 extern int rectangles_on;
 extern Window root;
+extern XContext xid_context;
