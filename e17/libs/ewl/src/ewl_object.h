@@ -5,6 +5,8 @@
  * @defgroup Ewl_Object Basic Object Inherited by Ewl_Widget
  * @brief Defines the Ewl_Object class along with methods and macros related
  * to it.
+ *
+ * @{
  */
 
 /**
@@ -200,7 +202,7 @@ unsigned int    ewl_object_get_flags(Ewl_Object *o, unsigned int mask);
 /**
  * @def ewl_object_set_recursive(o)
  * @param o: the object to change the recursive flag
- * @val: a boolean indicating the value of the recursive flag
+ * @param val: a boolean indicating the value of the recursive flag
  * @return Returns no value.
  * @brief Changes the recursive flag value to match @a val.
  */
@@ -223,7 +225,7 @@ unsigned int    ewl_object_get_flags(Ewl_Object *o, unsigned int mask);
 /**
  * @def ewl_object_set_toplevel(o, val)
  * @param o: the object to change the top level flag
- * @val: a boolean indicating the value of the top level flag
+ * @param val: a boolean indicating the value of the top level flag
  * @return Returns no value.
  * @brief Changes the top level flag value to match @a val.
  */
@@ -346,5 +348,9 @@ unsigned int    ewl_object_get_flags(Ewl_Object *o, unsigned int mask);
  * Used to determine if a widget is hidden.
  */
 #define HIDDEN(o) (!(EWL_OBJECT(o)->flags & EWL_FLAG_VISIBLE_SHOWN))
+
+/**
+ * @}
+ */
 
 #endif				/* __EWL_OBJECT_H__ */

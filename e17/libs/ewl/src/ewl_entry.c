@@ -73,6 +73,7 @@ void ewl_entry_init(Ewl_Entry * e, char *text)
 			__ewl_entry_child_resize, NULL);
 	ewl_object_set_fill_policy(EWL_OBJECT(w), EWL_FLAG_FILL_HSHRINK |
 			EWL_FLAG_FILL_HFILL);
+	ewl_container_intercept_callback(EWL_CONTAINER(w), EWL_CALLBACK_SELECT);
 
 	e->text = ewl_text_new(text);
 	ewl_container_append_child(EWL_CONTAINER(e), e->text);
@@ -109,15 +110,11 @@ void ewl_entry_init(Ewl_Entry * e, char *text)
  */
 void ewl_entry_set_text(Ewl_Entry * e, char *t)
 {
-	int pos;
-
 	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR("e", e);
 
 	ewl_text_set_text(EWL_TEXT(e->text), t);
-
-	pos = ewl_text_get_length(EWL_TEXT(e->text)) + 1;
-	ewl_cursor_set_base(EWL_CURSOR(e->cursor), pos);
+	ewl_cursor_set_base(EWL_CURSOR(e->cursor), 1);
 
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
@@ -234,9 +231,9 @@ void __ewl_entry_configure(Ewl_Widget * w, void *ev_data, void *user_data)
 	}
 
 	/*
-	 * Scroll the text to fit the contents.
+	 * Scroll the text to fit the cursor position.
 	 */
-	if ((c_spos == base) && ((ex + ew) > (int)(xx + ww))) {
+	if ((c_spos == base) && ((int)(ex + ew) > (int)(xx + ww))) {
 		dx -= (int)((ex + ew) - (xx + ww));
 	}
 	else if ((c_epos == base) && (sx < xx)) {
@@ -523,6 +520,7 @@ void __ewl_entry_insert_text(Ewl_Widget * w, char *s)
 	strcat(s3, &(s2[ep - 1]));
 
 	ewl_entry_set_text(EWL_ENTRY(w), s3);
+	ewl_cursor_set_base(EWL_CURSOR(e->cursor), ep);
 
 	FREE(s2);
 	FREE(s3);

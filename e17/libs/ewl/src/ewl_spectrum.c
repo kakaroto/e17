@@ -11,7 +11,6 @@ void            _hsv_to_rgb(float hue, float saturation, float value, int *_r,
 			    int *_g, int *_b);
 
 void            __draw_spectrum(Ewl_Spectrum * sp);
-int             __ewl_spectrum_idler(void *data);
 
 /**
  *

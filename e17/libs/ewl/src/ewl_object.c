@@ -1247,7 +1247,7 @@ void ewl_object_add_flags(Ewl_Object *o, unsigned int flags, unsigned int mask)
 
 /**
  * @param o: the object to remove specified state flags
- * @param state: a bitmask of state flags to be removed from the object
+ * @param flags: a bitmask of flags to be removed from the object
  * @param mask: a bitmask limiting removed flags to a certain set
  * @return Returns no value.
  * @brief Removes the set of state flags specified in @a flags from @a o.
@@ -1280,6 +1280,7 @@ unsigned int ewl_object_get_flags(Ewl_Object *o, unsigned int mask)
 /**
  * @param o: the object to check for a specified flags
  * @param flags: the bitmask of flags to check on the object
+ * @param mask: get only the flags specified in mask
  * @return Returns TRUE if the specified flags are set, FALSE otherwise.
  * @brief Determines if an object has the requested @a flags set.
  */
