@@ -1,26 +1,27 @@
 /* filelist.c
- *
- * Copyright (C) 2000 Tom Gilbert
- *
- * Permission is hereby granted, free of charge, to any person obtaining a copy
- * of this software and associated documentation files (the "Software"), to
- * deal in the Software without restriction, including without limitation the
- * rights to use, copy, modify, merge, publish, distribute, sublicense, and/or
- * sell copies of the Software, and to permit persons to whom the Software is
- * furnished to do so, subject to the following conditions:
- *
- * The above copyright notice and this permission notice shall be included in
- * all copies of the Software, its documentation and marketing & publicity
- * materials, and acknowledgment shall be given in the documentation, materials
- * and software packages that this Software was used.
- *
- * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
- * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
- * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL
- * THE AUTHORS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER
- * IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN
- * CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
- */
+
+Copyright (C) 1999,2000 Tom Gilbert.
+
+Permission is hereby granted, free of charge, to any person obtaining a copy
+of this software and associated documentation files (the "Software"), to
+deal in the Software without restriction, including without limitation the
+rights to use, copy, modify, merge, publish, distribute, sublicense, and/or
+sell copies of the Software, and to permit persons to whom the Software is
+furnished to do so, subject to the following conditions:
+
+The above copyright notice and this permission notice shall be included in
+all copies of the Software and its documentation and acknowledgment shall be
+given in the documentation and software packages that this Software was
+used.
+
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL
+THE AUTHORS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER
+IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN
+CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
+
+*/
 
 #include "feh.h"
 #include "feh_list.h"
@@ -51,7 +52,7 @@ feh_file_new(char *filename)
    else
       newfile->name = estrdup(filename);
    newfile->info = NULL;
-   D_RETURN(4,newfile);
+   D_RETURN(4, newfile);
 }
 
 void
@@ -87,7 +88,7 @@ feh_file_info_new(void)
    info->format = NULL;
    info->extension = NULL;
 
-   D_RETURN(4,info);
+   D_RETURN(4, info);
 }
 
 void
@@ -109,7 +110,7 @@ feh_file_rm_and_free(feh_list * list, feh_list * l)
 {
    D_ENTER(4);
    unlink(FEH_FILE(l->data)->filename);
-   D_RETURN(4,feh_file_remove_from_list(list, l));
+   D_RETURN(4, feh_file_remove_from_list(list, l));
 }
 
 feh_list *
@@ -117,7 +118,7 @@ feh_file_remove_from_list(feh_list * list, feh_list * l)
 {
    D_ENTER(4);
    feh_file_free(FEH_FILE(l->data));
-   D_RETURN(4,feh_list_remove(list, l));
+   D_RETURN(4, feh_list_remove(list, l));
 }
 
 /* Recursive */
@@ -132,7 +133,7 @@ add_file_to_filelist_recursively(char *origpath, unsigned char level)
       D_RETURN_(5);
 
    path = estrdup(origpath);
-   D(4,("file is %s\n", path));
+   D(4, ("file is %s\n", path));
 
    if (level == FILELIST_FIRST)
    {
@@ -146,7 +147,7 @@ add_file_to_filelist_recursively(char *origpath, unsigned char level)
       if ((!strncmp(path, "http://", 7)) || (!strncmp(path, "ftp://", 6)))
       {
          /* Its a url */
-         D(3,("Adding url %s to filelist\n", path));
+         D(3, ("Adding url %s to filelist\n", path));
          filelist = feh_list_add_front(filelist, feh_file_new(path));
          /* We'll download it later... */
          free(path);
@@ -196,7 +197,7 @@ add_file_to_filelist_recursively(char *origpath, unsigned char level)
       struct dirent *de;
       DIR *dir;
 
-      D(4,("It is a directory\n"));
+      D(4, ("It is a directory\n"));
 
       if ((dir = opendir(path)) == NULL)
       {
@@ -229,7 +230,7 @@ add_file_to_filelist_recursively(char *origpath, unsigned char level)
    }
    else if (S_ISREG(st.st_mode))
    {
-      D(5,("Adding regular file %s to filelist\n", path));
+      D(5, ("Adding regular file %s to filelist\n", path));
       filelist = feh_list_add_front(filelist, feh_file_new(path));
    }
    free(path);
@@ -258,8 +259,9 @@ delete_rm_files(void)
 feh_list *
 feh_file_info_preload(feh_list * list)
 {
-   feh_list *l, *last = NULL;
+   feh_list *l;
    feh_file *file = NULL;
+   feh_list *remove_list = NULL;
 
    D_ENTER(4);
    if (opt.verbose)
@@ -268,17 +270,12 @@ feh_file_info_preload(feh_list * list)
    for (l = list; l; l = l->next)
    {
       file = FEH_FILE(l->data);
-      D(5,("file %p, file->next %p, file->name %s\n", l, l->next, file->name));
-      if (last)
-      {
-         D(4,("removing item %p from list\n", last));
-         filelist = list = feh_list_remove(list, last);
-         last = NULL;
-      }
+      D(5,
+        ("file %p, file->next %p, file->name %s\n", l, l->next, file->name));
       if (feh_file_info_load(file, NULL))
       {
-         D(3,("Failed to load file %p\n", file));
-         last = l;
+         D(3, ("Failed to load file %p\n", file));
+         remove_list = feh_list_add_front(remove_list, l);
          if (opt.verbose)
             feh_display_status('x');
       }
@@ -288,10 +285,15 @@ feh_file_info_preload(feh_list * list)
    if (opt.verbose)
       fprintf(stdout, "\n");
 
-   if (last)
-      list = feh_list_remove(list, last);
+   if (remove_list)
+   {
+      for (l = remove_list; l; l = l->next)
+         filelist = list = feh_list_remove(list, (feh_list *) l->data);
 
-   D_RETURN(4,list);
+      feh_list_free(remove_list);
+   }
+
+   D_RETURN(4, list);
 }
 
 int
@@ -299,8 +301,11 @@ feh_file_info_load(feh_file * file, Imlib_Image im)
 {
    struct stat st;
    int need_free = 1;
+   Imlib_Image im1;
 
    D_ENTER(4);
+
+   D(4, ("im is %p\n", im));
 
    if (im)
       need_free = 0;
@@ -331,80 +336,87 @@ feh_file_info_load(feh_file * file, Imlib_Image im)
               weprintf("couldn't open %s ", file->filename);
            break;
       }
-      D_RETURN(4,1);
+      D_RETURN(4, 1);
    }
 
-   if (im || feh_load_image(&im, file, NULL))
-   {
-      file->info = feh_file_info_new();
+   if (im)
+      im1 = im;
+   else if (!feh_load_image(&im1, file, NULL))
+      D_RETURN(4, 1);
 
-      file->info->width = feh_imlib_image_get_width(im);
-      file->info->height = feh_imlib_image_get_height(im);
+   if (!im)
+      D_RETURN(4, 1);
 
-      file->info->has_alpha = feh_imlib_image_has_alpha(im);
+   file->info = feh_file_info_new();
 
-      file->info->pixels = file->info->width * file->info->height;
+   file->info->width = feh_imlib_image_get_width(im1);
+   file->info->height = feh_imlib_image_get_height(im1);
 
-      file->info->format = estrdup(feh_imlib_image_format(im));
+   file->info->has_alpha = feh_imlib_image_has_alpha(im1);
 
-      file->info->size = st.st_size;
+   file->info->pixels = file->info->width * file->info->height;
 
-      if (need_free)
-         feh_imlib_free_image_and_decache(im);
+   file->info->format = estrdup(feh_imlib_image_format(im1));
 
-      D_RETURN(4,0);
-   }
-   D_RETURN(4,1);
+   file->info->size = st.st_size;
+
+   if (need_free && im1)
+      feh_imlib_free_image_and_decache(im1);
+
+   D_RETURN(4, 0);
 }
 
 int
 feh_cmp_filename(void *file1, void *file2)
 {
    D_ENTER(4);
-   D_RETURN(4,strcmp(FEH_FILE(file1)->filename, FEH_FILE(file2)->filename));
+   D_RETURN(4, strcmp(FEH_FILE(file1)->filename, FEH_FILE(file2)->filename));
 }
 
 int
 feh_cmp_name(void *file1, void *file2)
 {
    D_ENTER(4);
-   D_RETURN(4,strcmp(FEH_FILE(file1)->name, FEH_FILE(file2)->name));
+   D_RETURN(4, strcmp(FEH_FILE(file1)->name, FEH_FILE(file2)->name));
 }
 
 int
 feh_cmp_width(void *file1, void *file2)
 {
    D_ENTER(4);
-   D_RETURN(4,(FEH_FILE(file1)->info->width - FEH_FILE(file2)->info->width));
+   D_RETURN(4, (FEH_FILE(file1)->info->width - FEH_FILE(file2)->info->width));
 }
 
 int
 feh_cmp_height(void *file1, void *file2)
 {
    D_ENTER(4);
-   D_RETURN(4,(FEH_FILE(file1)->info->height - FEH_FILE(file2)->info->height));
+   D_RETURN(4,
+            (FEH_FILE(file1)->info->height - FEH_FILE(file2)->info->height));
 }
 
 int
 feh_cmp_pixels(void *file1, void *file2)
 {
    D_ENTER(4);
-   D_RETURN(4,(FEH_FILE(file1)->info->pixels - FEH_FILE(file2)->info->pixels));
+   D_RETURN(4,
+            (FEH_FILE(file1)->info->pixels - FEH_FILE(file2)->info->pixels));
 }
 
 int
 feh_cmp_size(void *file1, void *file2)
 {
    D_ENTER(4);
-   D_RETURN(4,(FEH_FILE(file1)->info->size - FEH_FILE(file2)->info->size));
+   D_RETURN(4, (FEH_FILE(file1)->info->size - FEH_FILE(file2)->info->size));
 }
 
 int
 feh_cmp_format(void *file1, void *file2)
 {
    D_ENTER(4);
-   D_RETURN(4,strcmp
-            (FEH_FILE(file1)->info->format, FEH_FILE(file2)->info->format));
+   D_RETURN(4,
+            strcmp(FEH_FILE(file1)->info->format,
+                   FEH_FILE(file2)->info->format));
 }
 
 void
@@ -420,7 +432,7 @@ feh_prepare_filelist(void)
          show_mini_usage();
    }
 
-   D(3,("sort mode requested is: %d\n", opt.sort));
+   D(3, ("sort mode requested is: %d\n", opt.sort));
    switch (opt.sort)
    {
      case SORT_NONE:
@@ -463,7 +475,7 @@ feh_prepare_filelist(void)
    /* no point reversing a random list */
    if (opt.reverse && (opt.sort != SORT_NONE))
    {
-      D(3,("Reversing filelist as requested\n"));
+      D(3, ("Reversing filelist as requested\n"));
       filelist = feh_list_reverse(filelist);
    }
 
@@ -479,13 +491,13 @@ feh_write_filelist(feh_list * list, char *filename)
    D_ENTER(4);
 
    if (!list || !filename)
-      D_RETURN(4,0);
+      D_RETURN(4, 0);
 
    errno = 0;
    if ((fp = fopen(filename, "w")) == NULL)
    {
       weprintf("can't write filelist %s:", filename);
-      D_RETURN(4,0);
+      D_RETURN(4, 0);
    }
 
    for (l = list; l; l = l->next)
@@ -493,7 +505,7 @@ feh_write_filelist(feh_list * list, char *filename)
 
    fclose(fp);
 
-   D_RETURN(4,1);
+   D_RETURN(4, 1);
 }
 
 feh_list *
@@ -506,30 +518,30 @@ feh_read_filelist(char *filename)
    D_ENTER(4);
 
    if (!filename)
-      D_RETURN(4,NULL);
+      D_RETURN(4, NULL);
 
    errno = 0;
    if ((fp = fopen(filename, "r")) == NULL)
    {
       /* return quietly, as it's okay to specify a filelist file that doesn't
          exist. In that case we create it on exit. */
-      D_RETURN(4,NULL);
+      D_RETURN(4, NULL);
    }
 
    for (; fgets(s, sizeof(s), fp);)
    {
-      D(5,("Got line '%s'\n", s));
+      D(5, ("Got line '%s'\n", s));
       s1[0] = '\0';
       sscanf(s, "%s", (char *) &s1);
       if (!(*s1) || (*s1 == '\n'))
          continue;
-      D(5,("Got filename %s from filelist file\n", s1));
+      D(5, ("Got filename %s from filelist file\n", s1));
       /* Add it to the new list */
       list = feh_list_add_front(list, feh_file_new(s1));
    }
    fclose(fp);
 
-   D_RETURN(4,list);
+   D_RETURN(4, list);
 }
 
 char *
@@ -543,13 +555,13 @@ feh_absolute_path(char *path)
    D_ENTER(4);
 
    if (!path)
-      D_RETURN(4,NULL);
+      D_RETURN(4, NULL);
    if (path[0] == '/')
-      D_RETURN(4,estrdup(path));
+      D_RETURN(4, estrdup(path));
    /* This path is not relative. We're gonna convert it, so that a
       filelist file can be saved anywhere and feh will still find the
       images */
-   D(4,("Need to convert %s to an absolute form\n", path));
+   D(4, ("Need to convert %s to an absolute form\n", path));
    /* I SHOULD be able to just use a simple realpath() here, but dumb * 
       old Solaris's realpath doesn't return an absolute path if the
       path you give it is relative. Linux and BSD get this right... */
@@ -563,6 +575,6 @@ feh_absolute_path(char *path)
    {
       ret = estrdup(temp);
    }
-   D(4,("Converted path to %s\n", ret));
-   D_RETURN(4,ret);
+   D(4, ("Converted path to %s\n", ret));
+   D_RETURN(4, ret);
 }
