@@ -392,19 +392,42 @@ spif_str_find_from_ptr(spif_str_t self, spif_charptr_t other)
 spif_str_t
 spif_str_substr(spif_str_t self, spif_int32_t idx, spif_int32_t cnt)
 {
+    spif_int32_t start_pos, char_count;
+
     ASSERT_RVAL(!SPIF_STR_ISNULL(self), SPIF_NULL_TYPE(str));
-    return spif_str_new_from_buff(SPIF_STR_STR(self) + ((idx < 0) ? (self->len) : (0)) + idx, cnt);
+    if (idx < 0) {
+        start_pos = self->len + idx;
+    } else {
+        start_pos = idx;
+    }
+    if (cnt <= 0) {
+        char_count = self->len - start_pos + cnt;
+    } else {
+        char_count = cnt;
+    }
+    return spif_str_new_from_buff(SPIF_STR_STR(self) + start_pos, char_count);
 }
 
 spif_charptr_t
 spif_str_substr_to_ptr(spif_str_t self, spif_int32_t idx, spif_int32_t cnt)
 {
     spif_charptr_t newstr;
+    spif_int32_t start_pos, char_count;
 
     ASSERT_RVAL(!SPIF_STR_ISNULL(self), SPIF_NULL_TYPE(charptr));
-    newstr = SPIF_CAST(charptr) MALLOC(cnt + 1);
-    memcpy(newstr, SPIF_STR_STR(self) + ((idx < 0) ? (self->len) : (0)) + idx, cnt);
-    newstr[cnt] = 0;
+    if (idx < 0) {
+        start_pos = self->len + idx;
+    } else {
+        start_pos = idx;
+    }
+    if (cnt <= 0) {
+        char_count = self->len - start_pos + cnt;
+    } else {
+        char_count = cnt;
+    }
+    newstr = SPIF_CAST(charptr) MALLOC(char_count + 1);
+    memcpy(newstr, SPIF_STR_STR(self) + start_pos, char_count);
+    newstr[char_count] = 0;
     return newstr;
 }
 

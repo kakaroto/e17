@@ -95,49 +95,35 @@ perf_strings(void)
 
     PERF_SET_REPS(1000);
 
-    PERF_BEGIN("left_str() function");
-    PERF_TEST(s1 = left_str("bugger all", 3); FREE(s1););
-    PERF_TEST(s2 = left_str("testing 1-2-3", 7); FREE(s2););
-    PERF_TEST(s3 = left_str(NULL, 0); FREE(s3););
-    PERF_TEST(s4 = left_str("eat me", 0); FREE(s4););
-    PERF_END();
-
-    PERF_BEGIN("mid_str() function");
-    PERF_TEST(s1 = mid_str("pneumonoultramicroscopicsilicovolcanoconiosis", 8, 16); FREE(s1););
-    PERF_TEST(s2 = mid_str("abc", 7, 5); FREE(s2););
-    PERF_TEST(s3 = mid_str(NULL, 0, 0); FREE(s3););
-    PERF_TEST(s4 = mid_str("what the heck", -5, 42); FREE(s4););
-    PERF_END();
-
-    PERF_BEGIN("right_str() function");
-    PERF_TEST(s1 = right_str("bugger all", 3); FREE(s1););
-    PERF_TEST(s2 = right_str("testing 1-2-3", 5); FREE(s2););
-    PERF_TEST(s3 = right_str(NULL, 0); FREE(s3););
-    PERF_TEST(s4 = right_str("eat me", 0); FREE(s4););
+    PERF_BEGIN("spiftool_substr() function");
+    PERF_TEST(s1 = spiftool_substr("pneumonoultramicroscopicsilicovolcanoconiosis", 8, 16); FREE(s1););
+    PERF_TEST(s2 = spiftool_substr("abc", 7, 5); FREE(s2););
+    PERF_TEST(s3 = spiftool_substr(NULL, 0, 0); FREE(s3););
+    PERF_TEST(s4 = spiftool_substr("what the heck", -5, 42); FREE(s4););
     PERF_END();
 
     PERF_SET_REPS(10);
 
 #if HAVE_REGEX_H
-    PERF_BEGIN("regexp_match() function");
-    PERF_TEST(regexp_match("One particular string", "part"););
-    PERF_TEST(regexp_match("Some other strange string", "^[A-Za-z]+$"););
-    PERF_TEST(regexp_match("some-rpm-package-1.0.1-4.src.rpm", "^(.*)-([^-]+)-([^-])\\.([a-z0-9]+)\\.rpm$"););
-    PERF_TEST(regexp_match("/the/path/to/some/odd/file.txt", "/this/should/not/match"););
-    PERF_TEST(regexp_match("1600x1200", "[[:digit:]]+x[[:digit:]]+"););
-    PERF_TEST(regexp_match("xxx", NULL););
-    PERF_TEST(regexp_match_r("AbCdEfGhIjKlMnOpQrStUvWxYz", "[[:upper:]]", &r););
-    PERF_TEST(regexp_match_r("abcdefjhijklmnopqrstuvwxyz", NULL, &r););
-    PERF_TEST(regexp_match_r("aaaaa", "[[:lower:]]", &r););
+    PERF_BEGIN("spiftool_regexp_match() function");
+    PERF_TEST(spiftool_regexp_match("One particular string", "part"););
+    PERF_TEST(spiftool_regexp_match("Some other strange string", "^[A-Za-z]+$"););
+    PERF_TEST(spiftool_regexp_match("some-rpm-package-1.0.1-4.src.rpm", "^(.*)-([^-]+)-([^-])\\.([a-z0-9]+)\\.rpm$"););
+    PERF_TEST(spiftool_regexp_match("/the/path/to/some/odd/file.txt", "/this/should/not/match"););
+    PERF_TEST(spiftool_regexp_match("1600x1200", "[[:digit:]]+x[[:digit:]]+"););
+    PERF_TEST(spiftool_regexp_match("xxx", NULL););
+    PERF_TEST(spiftool_regexp_match_r("AbCdEfGhIjKlMnOpQrStUvWxYz", "[[:upper:]]", &r););
+    PERF_TEST(spiftool_regexp_match_r("abcdefjhijklmnopqrstuvwxyz", NULL, &r););
+    PERF_TEST(spiftool_regexp_match_r("aaaaa", "[[:lower:]]", &r););
     PERF_END();
 #endif
 
     PERF_BEGIN("split() function");
-    PERF_TEST(slist = split(" ", "Splitting a string on spaces"); spiftool_free_array(slist, -1););
-    PERF_TEST(slist = split(NULL, "          a\t \ta        a a a a       a     "); spiftool_free_array(slist, -1););
-    PERF_TEST(slist = split(NULL, "  first \"just the second\" third \'fourth and \'\"fifth to\"gether last"); spiftool_free_array(slist, -1););
-    PERF_TEST(slist = split(NULL, "\'don\\\'t\' try this    at home \"\" "); spiftool_free_array(slist, -1););
-    PERF_TEST(slist = split(":", "A:B:C:D:::E"); spiftool_free_array(slist, -1););
+    PERF_TEST(slist = spiftool_split(" ", "Splitting a string on spaces"); spiftool_free_array(slist, -1););
+    PERF_TEST(slist = spiftool_split(NULL, "          a\t \ta        a a a a       a     "); spiftool_free_array(slist, -1););
+    PERF_TEST(slist = spiftool_split(NULL, "  first \"just the second\" third \'fourth and \'\"fifth to\"gether last"); spiftool_free_array(slist, -1););
+    PERF_TEST(slist = spiftool_split(NULL, "\'don\\\'t\' try this    at home \"\" "); spiftool_free_array(slist, -1););
+    PERF_TEST(slist = spiftool_split(":", "A:B:C:D:::E"); spiftool_free_array(slist, -1););
     PERF_END();
 
     PERF_ENDED("string");

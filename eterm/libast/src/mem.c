@@ -216,10 +216,13 @@ memrec_rem_var(memrec_t *memrec, const char *var, const char *filename, unsigned
     register ptr_t *p;
 
     ASSERT(memrec != NULL);
+    USE_VAR(var);
+    USE_VAR(filename);
+    USE_VAR(line);
 
     if ((p = memrec_find_var(memrec, ptr)) == NULL) {
-        D_MEM(("ERROR:  File %s, line %d attempted to free variable %s (%010p) which was not allocated with MALLOC/REALLOC\n", filename, line,
-               var, ptr));
+        D_MEM(("ERROR:  File %s, line %d attempted to free variable %s (%010p) which was not allocated with MALLOC/REALLOC\n",
+               filename, line, var, ptr));
         return;
     }
     D_MEM(("Removing variable %s (%010p) of size %lu\n", var, ptr, p->size));
@@ -254,6 +257,7 @@ memrec_chg_var(memrec_t *memrec, const char *var, const char *filename, unsigned
     register ptr_t *p;
 
     ASSERT(memrec != NULL);
+    USE_VAR(var);
 
     if ((p = memrec_find_var(memrec, oldp)) == NULL) {
         D_MEM(("ERROR:  File %s, line %d attempted to realloc variable %s (%010p) which was not allocated with MALLOC/REALLOC\n", filename,
@@ -315,7 +319,7 @@ memrec_dump_pointers(memrec_t *memrec)
             fprintf(LIBAST_DEBUG_FD, "   ");
         }
         /* Finally, print the printable ASCII string for those l bytes */
-        fprintf(LIBAST_DEBUG_FD, "| %-8s\n", safe_str((char *) buff, l));
+        fprintf(LIBAST_DEBUG_FD, "| %-8s\n", spiftool_safe_str((char *) buff, l));
         /* Flush after every line in case we crash */
         fflush(LIBAST_DEBUG_FD);
     }
@@ -340,7 +344,7 @@ memrec_dump_pointers(memrec_t *memrec)
                 fprintf(LIBAST_DEBUG_FD, "   ");
             }
             /* Finally, print the printable ASCII string for those l bytes */
-            fprintf(LIBAST_DEBUG_FD, "| %-8s\n", safe_str((char *) buff, l));
+            fprintf(LIBAST_DEBUG_FD, "| %-8s\n", spiftool_safe_str((char *) buff, l));
             /* Flush after every line in case we crash */
             fflush(LIBAST_DEBUG_FD);
         }
@@ -574,6 +578,7 @@ spifmem_strdup(const char *var, const char *filename, unsigned long line, const 
     register char *newstr;
     register size_t len;
 
+    USE_VAR(var);
     D_MEM(("Variable %s (%010p) at %s:%lu\n", var, str, filename, line));
 
     len = strlen(str) + 1;      /* Copy NUL byte also */
@@ -690,6 +695,7 @@ spifmem_x_free_pixmap(const char *var, const char *filename, unsigned long line,
 void
 spifmem_imlib_register_pixmap(const char *var, const char *filename, unsigned long line, Pixmap p)
 {
+    USE_VAR(var);
     D_MEM(("Registering pixmap %s (0x%08x) created by Imlib2 at %s:%lu\n", var, p, filename, line));
     if (p) {
         if (DEBUG_LEVEL >= DEBUG_MEM) {

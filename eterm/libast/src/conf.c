@@ -292,11 +292,11 @@ builtin_random(char *param)
         rseed = (unsigned int) (getpid() * time(NULL) % ((unsigned int) -1));
         srand(rseed);
     }
-    n = num_words(param);
+    n = spiftool_num_words(param);
     index = (int) (n * ((float) rand()) / (RAND_MAX + 1.0)) + 1;
     D_PARSE(("random index == %lu\n", index));
 
-    return (get_word(index, param));
+    return (spiftool_get_word(index, param));
 }
 
 static char *
@@ -335,7 +335,7 @@ builtin_exec(char *param)
             Output[fsize] = 0;
             fclose(fp);
             remove(OutFile);
-            Output = condense_whitespace(Output);
+            Output = spiftool_condense_whitespace(Output);
         } else {
             libast_print_warning("Command at line %lu of file %s returned no output.\n", file_peek_line(), file_peek_path());
         }
@@ -353,16 +353,16 @@ builtin_get(char *param)
     char *s, *f, *v;
     unsigned short n;
 
-    if (!param || ((n = num_words(param)) > 2)) {
+    if (!param || ((n = spiftool_num_words(param)) > 2)) {
         libast_print_error("Parse error in file %s, line %lu:  Invalid syntax for %get().  Syntax is:  %get(variable)\n", file_peek_path(),
                     file_peek_line());
         return NULL;
     }
 
     D_PARSE(("builtin_get(%s) called\n", param));
-    s = get_word(1, param);
+    s = spiftool_get_word(1, param);
     if (n == 2) {
-        f = get_word(2, param);
+        f = spiftool_get_word(2, param);
     } else {
         f = NULL;
     }
@@ -385,15 +385,15 @@ builtin_put(char *param)
 {
     char *var, *val;
 
-    if (!param || (num_words(param) != 2)) {
+    if (!param || (spiftool_num_words(param) != 2)) {
         libast_print_error("Parse error in file %s, line %lu:  Invalid syntax for %put().  Syntax is:  %put(variable value)\n", file_peek_path(),
                     file_peek_line());
         return NULL;
     }
 
     D_PARSE(("builtin_put(%s) called\n", param));
-    var = get_word(1, param);
-    val = get_word(2, param);
+    var = spiftool_get_word(1, param);
+    val = spiftool_get_word(2, param);
     spifconf_put_var(var, val);
     return NULL;
 }
@@ -408,13 +408,13 @@ builtin_dirscan(char *param)
     struct stat filestat;
     char *dir, *buff;
 
-    if (!param || (num_words(param) != 1)) {
+    if (!param || (spiftool_num_words(param) != 1)) {
         libast_print_error("Parse error in file %s, line %lu:  Invalid syntax for %dirscan().  Syntax is:  %dirscan(directory)\n",
                     file_peek_path(), file_peek_line());
         return NULL;
     }
     D_PARSE(("builtin_dirscan(%s)\n", param));
-    dir = get_word(1, param);
+    dir = spiftool_get_word(1, param);
     dirp = opendir(dir);
     if (!dirp) {
         return NULL;
@@ -784,7 +784,7 @@ spifconf_open_file(char *name)
         fgets(buff, 256, fp);
         if (strncasecmp(buff, test, strlen(test))) {
             libast_print_warning("%s exists but does not contain the proper magic string (<%s-%s>)\n", name, libast_program_name,
-                          libast_program_version);
+                                 libast_program_version);
             fclose(fp);
             fp = NULL;
         } else {
@@ -792,7 +792,7 @@ spifconf_open_file(char *name)
             if ((end_ptr = strchr(buff, '>')) != NULL) {
                 *end_ptr = 0;
             }
-            ver = version_compare(begin_ptr, libast_program_version);
+            ver = spiftool_version_compare(begin_ptr, libast_program_version);
             if (SPIF_CMP_IS_GREATER(ver)) {
                 libast_print_warning("Config file is designed for a newer version of %s\n", libast_program_name);
             }
@@ -817,32 +817,32 @@ spifconf_parse_line(FILE * fp, char *buff)
     if (fp == NULL) {
         file_push(NULL, "<argv>", NULL, 0, 0);
         ctx_begin(1);
-        buff = get_pword(2, buff);
+        buff = spiftool_get_pword(2, buff);
         if (!buff) {
             SPIFCONF_PARSE_RET();
         }
     }
     id = ctx_peek_id();
-    chomp(buff);
+    spiftool_chomp(buff);
     D_CONF(("Parsing line #%lu of file %s\n", file_peek_line(), file_peek_path()));
     switch (*buff) {
       case '#':
       case '\0':
           SPIFCONF_PARSE_RET();
       case '%':
-          if (!BEG_STRCASECMP(get_pword(1, buff + 1), "include ")) {
+          if (!BEG_STRCASECMP(spiftool_get_pword(1, buff + 1), "include ")) {
               char *path;
               FILE *fp;
 
               spifconf_shell_expand(buff);
-              path = get_word(2, buff + 1);
+              path = spiftool_get_word(2, buff + 1);
               if ((fp = spifconf_open_file(path)) == NULL) {
                   libast_print_error("Parsing file %s, line %lu:  Unable to locate %%included config file %s (%s), continuing\n", file_peek_path(),
                               file_peek_line(), path, strerror(errno));
               } else {
                   file_push(fp, path, NULL, 1, 0);
               }
-          } else if (!BEG_STRCASECMP(get_pword(1, buff + 1), "preproc ")) {
+          } else if (!BEG_STRCASECMP(spiftool_get_pword(1, buff + 1), "preproc ")) {
               char cmd[PATH_MAX], fname[PATH_MAX], *outfile;
               int fd;
               FILE *fp;
@@ -853,7 +853,7 @@ spifconf_parse_line(FILE * fp, char *buff)
               strcpy(fname, "Eterm-preproc-");
               fd = spiftool_temp_file(fname, PATH_MAX);
               outfile = STRDUP(fname);
-              snprintf(cmd, PATH_MAX, "%s < %s > %s", get_pword(2, buff), file_peek_path(), fname);
+              snprintf(cmd, PATH_MAX, "%s < %s > %s", spiftool_get_pword(2, buff), file_peek_path(), fname);
               system(cmd);
               fp = fdopen(fd, "rt");
               if (fp != NULL) {

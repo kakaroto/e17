@@ -2611,23 +2611,38 @@ extern void spiftool_free_array(void *, size_t);
 extern int spiftool_temp_file(char *, size_t);
 
 /* strings.c */
-extern char *left_str(const char *, unsigned long);
-extern char *mid_str(const char *, unsigned long, unsigned long);
-extern char *right_str(const char *, unsigned long);
+extern spif_charptr_t spiftool_substr(const spif_charptr_t, spif_int32_t, spif_int32_t);
 #if LIBAST_REGEXP_SUPPORT_POSIX && HAVE_REGEX_H
-extern spif_bool_t regexp_match(const char *, const char *);
-extern spif_bool_t regexp_match_r(const char *str, const char *pattern, regex_t **rexp);
+extern spif_bool_t spiftool_regexp_match(const char *, const char *);
+extern spif_bool_t spiftool_regexp_match_r(const char *str, const char *pattern, regex_t **rexp);
 #endif
-extern char **split(const char *, const char *);
-extern char **split_regexp(const char *, const char *);
-extern char *join(const char *, char **);
-extern char *get_word(unsigned long, const char *);
-extern char *get_pword(unsigned long, const char *);
-extern unsigned long num_words(const char *);
-extern char *chomp(char *);
-extern char *strip_whitespace(char *);
-extern char *downcase_str(char *);
-extern char *upcase_str(char *);
+extern char **spiftool_split(const char *, const char *);
+extern char **spiftool_split_regexp(const char *, const char *);
+extern char *spiftool_join(const char *, char **);
+extern char *spiftool_get_word(unsigned long, const char *);
+extern char *spiftool_get_pword(unsigned long, const char *);
+extern unsigned long spiftool_num_words(const char *);
+extern char *spiftool_chomp(char *);
+extern char *spiftool_strip_whitespace(char *);
+extern char *spiftool_downcase_str(char *);
+extern char *spiftool_upcase_str(char *);
+extern char *spiftool_safe_str(char *, unsigned short);
+extern char *spiftool_condense_whitespace(char *);
+extern void spiftool_hex_dump(void *, size_t);
+extern spif_cmp_t spiftool_version_compare(const char *, const char *);
+#if !(HAVE_MEMMEM)
+extern void *memmem(const void *, size_t, const void *, size_t);
+#endif
+#if !(HAVE_STRNLEN)
+extern size_t strnlen(const char *, size_t);
+#endif
+#if !(HAVE_USLEEP)
+extern void usleep(unsigned long);
+#endif
+#if !(HAVE_SNPRINTF)
+extern int vsnprintf(char *str, size_t count, const char *fmt, va_list args);
+extern int snprintf(char *str, size_t count, const char *fmt, ...);
+#endif
 #if !(HAVE_STRCASESTR)
 extern char *strcasestr(const char *, const char *);
 #endif
@@ -2642,25 +2657,6 @@ extern char *strrev(char *);
 #endif
 #if !(HAVE_STRSEP)
 extern char *strsep(char **, char *);
-#endif
-extern char *safe_str(char *, unsigned short);
-extern char *garbage_collect(char *, size_t);
-extern char *file_garbage_collect(char *, size_t);
-extern char *condense_whitespace(char *);
-extern void hex_dump(void *, size_t);
-extern spif_cmp_t version_compare(const char *, const char *);
-#if !(HAVE_MEMMEM)
-extern void *memmem(const void *, size_t, const void *, size_t);
-#endif
-#if !(HAVE_STRNLEN)
-extern size_t strnlen(const char *, size_t);
-#endif
-#if !(HAVE_USLEEP)
-extern void usleep(unsigned long);
-#endif
-#if !(HAVE_SNPRINTF)
-extern int vsnprintf(char *str, size_t count, const char *fmt, va_list args);
-extern int snprintf(char *str, size_t count, const char *fmt, ...);
 #endif
 
 /* conf.c */
@@ -2731,6 +2727,23 @@ typedef spifconf_func_ptr_t conf_func_ptr_t;
 static void (*print_error)(const char *, ...) = libast_print_error;
 static void (*print_warning)(const char *, ...) = libast_print_warning;
 static void (*fatal_error)(const char *, ...) = libast_fatal_error;
+
+/* strings.c */
+# define regexp_match(a, b)                                      spiftool_regexp_match((a), (b))
+# define regexp_match_r(a, b, c)                                 spiftool_regexp_match_r((a), (b), (c))
+# define split(a, b)                                             spiftool_split((a), (b))
+# define join(a, b)                                              spiftool_join((a), (b))
+# define get_word(a, b)                                          spiftool_get_word((a), (b))
+# define get_pword(a, b)                                         spiftool_get_pword((a), (b))
+# define num_words(a)                                            spiftool_num_words(a)
+# define chomp(a)                                                spiftool_chomp(a)
+# define strip_whitespace(a)                                     spiftool_strip_whitespace(a)
+# define downcase_str(a)                                         spiftool_downcase_str(a)
+# define upcase_str(a)                                           spiftool_upcase_str(a)
+# define safe_str(a, b)                                          spiftool_safe_str((a), (b))
+# define condense_whitespace(a)                                  spiftool_condense_whitespace(a)
+# define hex_dump(a, b)                                          spiftool_hex_dump((a), (b))
+# define version_compare(a, b)                                   spiftool_version_compare((a), (b))
 
 #endif /* LIBAST_COMPAT_05_API */
 

@@ -108,45 +108,15 @@ test_strings(void)
 #endif
     char **slist;
 
-    TEST_BEGIN("left_str() function");
-    s1 = left_str("bugger all", 3);
-    s2 = left_str("testing 1-2-3", 7);
-    s3 = left_str(NULL, 0);
-    s4 = left_str("eat me", 0);
-    TEST_FAIL_IF(strcmp(s1, "bug"));
-    TEST_FAIL_IF(strcmp(s2, "testing"));
-    TEST_FAIL_IF(s3 != NULL);
-    TEST_FAIL_IF(s4 != NULL);
-    FREE(s1);
-    FREE(s2);
-    FREE(s3);
-    FREE(s4);
-    TEST_PASS();
-
-    TEST_BEGIN("mid_str() function");
-    s1 = mid_str("pneumonoultramicroscopicsilicovolcanoconiosis", 8, 16);
-    s2 = mid_str("abc", 7, 5);
-    s3 = mid_str(NULL, 0, 0);
-    s4 = mid_str("what the heck", -5, 42);
+    TEST_BEGIN("spiftool_substr() function");
+    s1 = spiftool_substr("pneumonoultramicroscopicsilicovolcanoconiosis", 8, 16);
+    s2 = spiftool_substr("abc", 7, 5);
+    s3 = spiftool_substr(NULL, 0, 0);
+    s4 = spiftool_substr("what the heck", -5, 42);
     TEST_FAIL_IF(strcmp(s1, "ultramicroscopic"));
     TEST_FAIL_IF(s2 != NULL);
     TEST_FAIL_IF(s3 != NULL);
-    TEST_FAIL_IF(s4 != NULL);
-    FREE(s1);
-    FREE(s2);
-    FREE(s3);
-    FREE(s4);
-    TEST_PASS();
-
-    TEST_BEGIN("right_str() function");
-    s1 = right_str("bugger all", 3);
-    s2 = right_str("testing 1-2-3", 5);
-    s3 = right_str(NULL, 0);
-    s4 = right_str("eat me", 0);
-    TEST_FAIL_IF(strcmp(s1, "all"));
-    TEST_FAIL_IF(strcmp(s2, "1-2-3"));
-    TEST_FAIL_IF(s3 != NULL);
-    TEST_FAIL_IF(s4 != NULL);
+    TEST_FAIL_IF(strcmp(s4, " heck"));
     FREE(s1);
     FREE(s2);
     FREE(s3);
@@ -154,23 +124,23 @@ test_strings(void)
     TEST_PASS();
 
 #if HAVE_REGEX_H
-    TEST_BEGIN("regexp_match() function");
-    TEST_FAIL_IF(!regexp_match("One particular string", "part"));
-    TEST_FAIL_IF(regexp_match("Some other strange string", "^[A-Za-z]+$"));
-    TEST_FAIL_IF(!regexp_match("some-rpm-package-1.0.1-4.src.rpm", "^(.*)-([^-]+)-([^-])\\.([a-z0-9]+)\\.rpm$"));
-    TEST_FAIL_IF(regexp_match("/the/path/to/some/odd/file.txt", "/this/should/not/match"));
-    TEST_FAIL_IF(!regexp_match("1600x1200", "[[:digit:]]+x[[:digit:]]+"));
-    TEST_FAIL_IF(regexp_match("xxx", NULL));
-    regexp_match(NULL, NULL);
-    TEST_FAIL_IF(!regexp_match_r("AbCdEfGhIjKlMnOpQrStUvWxYz", "[[:upper:]]", &r));
-    TEST_FAIL_IF(regexp_match_r("abcdefjhijklmnopqrstuvwxyz", NULL, &r));
-    TEST_FAIL_IF(!regexp_match_r("aaaaa", "[[:lower:]]", &r));
+    TEST_BEGIN("spiftool_regexp_match() function");
+    TEST_FAIL_IF(!spiftool_regexp_match("One particular string", "part"));
+    TEST_FAIL_IF(spiftool_regexp_match("Some other strange string", "^[A-Za-z]+$"));
+    TEST_FAIL_IF(!spiftool_regexp_match("some-rpm-package-1.0.1-4.src.rpm", "^(.*)-([^-]+)-([^-])\\.([a-z0-9]+)\\.rpm$"));
+    TEST_FAIL_IF(spiftool_regexp_match("/the/path/to/some/odd/file.txt", "/this/should/not/match"));
+    TEST_FAIL_IF(!spiftool_regexp_match("1600x1200", "[[:digit:]]+x[[:digit:]]+"));
+    TEST_FAIL_IF(spiftool_regexp_match("xxx", NULL));
+    spiftool_regexp_match(NULL, NULL);
+    TEST_FAIL_IF(!spiftool_regexp_match_r("AbCdEfGhIjKlMnOpQrStUvWxYz", "[[:upper:]]", &r));
+    TEST_FAIL_IF(spiftool_regexp_match_r("abcdefjhijklmnopqrstuvwxyz", NULL, &r));
+    TEST_FAIL_IF(!spiftool_regexp_match_r("aaaaa", "[[:lower:]]", &r));
     FREE(r);
     TEST_PASS();
 #endif
 
-    TEST_BEGIN("split() function");
-    slist = split(" ", "Splitting a string on spaces");
+    TEST_BEGIN("spiftool_split() function");
+    slist = spiftool_split(" ", "Splitting a string on spaces");
     TEST_FAIL_IF(!slist);
     TEST_FAIL_IF(!slist[0] || !slist[1] || !slist[2] || !slist[3] || !slist[4] || slist[5]);
     TEST_FAIL_IF(strcmp(slist[0], "Splitting"));
@@ -180,7 +150,7 @@ test_strings(void)
     TEST_FAIL_IF(strcmp(slist[4], "spaces"));
     spiftool_free_array(SPIF_CAST(ptr) slist, 5);
 
-    slist = split(NULL, "          a\t \ta        a a a a       a     ");
+    slist = spiftool_split(NULL, "          a\t \ta        a a a a       a     ");
     TEST_FAIL_IF(!slist);
     TEST_FAIL_IF(!slist[0] || !slist[1] || !slist[2] || !slist[3] || !slist[4] || !slist[5] || !slist[6] || slist[7]);
     TEST_FAIL_IF(strcmp(slist[0], "a"));
@@ -192,7 +162,7 @@ test_strings(void)
     TEST_FAIL_IF(strcmp(slist[6], "a"));
     spiftool_free_array(SPIF_CAST(ptr) slist, 7);
 
-    slist = split(NULL, "  first \"just the second\" third \'fourth and \'\"fifth to\"gether last");
+    slist = spiftool_split(NULL, "  first \"just the second\" third \'fourth and \'\"fifth to\"gether last");
     TEST_FAIL_IF(!slist);
     TEST_FAIL_IF(!slist[0] || !slist[1] || !slist[2] || !slist[3] || !slist[4] || slist[5]);
     TEST_FAIL_IF(strcmp(slist[0], "first"));
@@ -202,7 +172,7 @@ test_strings(void)
     TEST_FAIL_IF(strcmp(slist[4], "last"));
     spiftool_free_array(SPIF_CAST(ptr) slist, 5);
 
-    slist = split(NULL, "\'don\\\'t\' try this    at home \"\" ");
+    slist = spiftool_split(NULL, "\'don\\\'t\' try this    at home \"\" ");
     TEST_FAIL_IF(!slist);
     TEST_FAIL_IF(!slist[0] || !slist[1] || !slist[2] || !slist[3] || !slist[4] || !slist[5] || slist[6]);
     TEST_FAIL_IF(strcmp(slist[0], "don\'t"));
@@ -213,7 +183,7 @@ test_strings(void)
     TEST_FAIL_IF(slist[5][0]);
     spiftool_free_array(SPIF_CAST(ptr) slist, 6);
 
-    slist = split(":", "A:B:C:D:::E");
+    slist = spiftool_split(":", "A:B:C:D:::E");
     TEST_FAIL_IF(!slist);
     TEST_FAIL_IF(!slist[0] || !slist[1] || !slist[2] || !slist[3] || !slist[4] || slist[5]);
     TEST_FAIL_IF(strcmp(slist[0], "A"));
@@ -224,23 +194,23 @@ test_strings(void)
     spiftool_free_array(SPIF_CAST(ptr) slist, 5);
     TEST_PASS();
 
-    TEST_BEGIN("version_compare() function");
-    TEST_FAIL_IF(!SPIF_CMP_IS_LESS(version_compare("1.0", "1.0.1")));
-    TEST_FAIL_IF(!SPIF_CMP_IS_LESS(version_compare("2.9.99", "3.0")));
-    TEST_FAIL_IF(!SPIF_CMP_IS_LESS(version_compare("3.0", "29.9.9")));
-    TEST_FAIL_IF(!SPIF_CMP_IS_LESS(version_compare("1.0pre2", "1.0")));
-    TEST_FAIL_IF(!SPIF_CMP_IS_LESS(version_compare("9.9", "9.9rc1")));
-    TEST_FAIL_IF(!SPIF_CMP_IS_GREATER(version_compare("0.5.3", "0.5.3snap4")));
-    TEST_FAIL_IF(!SPIF_CMP_IS_GREATER(version_compare("2.2.4", "2.2.4beta3")));
-    TEST_FAIL_IF(!SPIF_CMP_IS_GREATER(version_compare("2.2.4beta3", "2.2.4alpha7")));
-    TEST_FAIL_IF(!SPIF_CMP_IS_GREATER(version_compare("1.27.3", "1.13.1")));
-    TEST_FAIL_IF(!SPIF_CMP_IS_GREATER(version_compare("0.10", "0.9.2")));
-    TEST_FAIL_IF(!SPIF_CMP_IS_GREATER(version_compare("2.3.2a", "2.3.2")));
-    TEST_FAIL_IF(!SPIF_CMP_IS_GREATER(version_compare("4.0p1", "4.0")));
-    TEST_FAIL_IF(!SPIF_CMP_IS_EQUAL(version_compare("3.4.5", "3.4.5")));
-    TEST_FAIL_IF(!SPIF_CMP_IS_EQUAL(version_compare("1.2.0b3", "1.2.0b3")));
-    TEST_FAIL_IF(!SPIF_CMP_IS_EQUAL(version_compare("2.0alpha", "2.0alpha")));
-    TEST_FAIL_IF(!SPIF_CMP_IS_EQUAL(version_compare("5.4pre1", "5.4pre1")));
+    TEST_BEGIN("spiftool_version_compare() function");
+    TEST_FAIL_IF(!SPIF_CMP_IS_LESS(spiftool_version_compare("1.0", "1.0.1")));
+    TEST_FAIL_IF(!SPIF_CMP_IS_LESS(spiftool_version_compare("2.9.99", "3.0")));
+    TEST_FAIL_IF(!SPIF_CMP_IS_LESS(spiftool_version_compare("3.0", "29.9.9")));
+    TEST_FAIL_IF(!SPIF_CMP_IS_LESS(spiftool_version_compare("1.0pre2", "1.0")));
+    TEST_FAIL_IF(!SPIF_CMP_IS_LESS(spiftool_version_compare("9.9", "9.9rc1")));
+    TEST_FAIL_IF(!SPIF_CMP_IS_GREATER(spiftool_version_compare("0.5.3", "0.5.3snap4")));
+    TEST_FAIL_IF(!SPIF_CMP_IS_GREATER(spiftool_version_compare("2.2.4", "2.2.4beta3")));
+    TEST_FAIL_IF(!SPIF_CMP_IS_GREATER(spiftool_version_compare("2.2.4beta3", "2.2.4alpha7")));
+    TEST_FAIL_IF(!SPIF_CMP_IS_GREATER(spiftool_version_compare("1.27.3", "1.13.1")));
+    TEST_FAIL_IF(!SPIF_CMP_IS_GREATER(spiftool_version_compare("0.10", "0.9.2")));
+    TEST_FAIL_IF(!SPIF_CMP_IS_GREATER(spiftool_version_compare("2.3.2a", "2.3.2")));
+    TEST_FAIL_IF(!SPIF_CMP_IS_GREATER(spiftool_version_compare("4.0p1", "4.0")));
+    TEST_FAIL_IF(!SPIF_CMP_IS_EQUAL(spiftool_version_compare("3.4.5", "3.4.5")));
+    TEST_FAIL_IF(!SPIF_CMP_IS_EQUAL(spiftool_version_compare("1.2.0b3", "1.2.0b3")));
+    TEST_FAIL_IF(!SPIF_CMP_IS_EQUAL(spiftool_version_compare("2.0alpha", "2.0alpha")));
+    TEST_FAIL_IF(!SPIF_CMP_IS_EQUAL(spiftool_version_compare("5.4pre1", "5.4pre1")));
     TEST_PASS();
 
     TEST_PASSED("string");

@@ -259,7 +259,7 @@ typedef struct memrec_t_struct {
  */
 #define ctx_begin(idx)             do { \
                                      char *name; \
-                                     name = get_word(idx, buff); \
+                                     name = spiftool_get_word(idx, buff); \
                                      ctx_name_to_id(id, name, i); \
                                      ctx_push(id); \
                                      state = (*ctx_id_to_func(id))(SPIFCONF_BEGIN_STRING, ctx_peek_last_state()); \

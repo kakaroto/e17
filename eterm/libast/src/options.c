@@ -479,11 +479,11 @@ handle_arglist(spif_int32_t n, char *val_ptr, unsigned char hasequal,
     D_OPTIONS(("Argument list option detected\n"));
     if (hasequal) {
         /* There's an equals sign, so just parse the rest of this option into words. */
-        tmp = (char **) MALLOC(sizeof(char *) * (num_words(val_ptr) + 1));
+        tmp = (char **) MALLOC(sizeof(char *) * (spiftool_num_words(val_ptr) + 1));
 
         for (k = 0; val_ptr; k++) {
-            tmp[k] = get_word(1, val_ptr);
-            val_ptr = get_pword(2, val_ptr);
+            tmp[k] = spiftool_get_word(1, val_ptr);
+            val_ptr = spiftool_get_pword(2, val_ptr);
             D_OPTIONS(("tmp[%d] == %s\n", k, tmp[k]));
         }
         tmp[k] = (char *) NULL;

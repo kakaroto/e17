@@ -539,3 +539,7 @@ Tue Dec  9 21:53:50 2003                        Michael Jennings (mej)
 
 Add --libs flag to libast-config.
 ----------------------------------------------------------------------
+Fri Dec 12 22:01:42 2003                        Michael Jennings (mej)
+
+Finished up namespace cleanups.
+----------------------------------------------------------------------
