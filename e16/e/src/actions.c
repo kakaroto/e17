@@ -26,7 +26,7 @@
 #include <process.h>
 #endif
 
-static char mode_action_destroy = 0;
+static char         mode_action_destroy = 0;
 
 ActionClass        *
 CreateAclass(char *name)
