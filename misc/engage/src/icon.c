@@ -62,10 +62,10 @@ od_icon_new_dicon(const char *command, const char *name, const char *icon_name)
 }
 
 OD_Icon        *
-od_icon_new_sysicon(const char *name, const char *icon_name)
+od_icon_new_sysicon(const char *name, const char *icon_name, Ecore_X_Window win)
 {
     OD_Icon        *ret = od_icon_new(name, name, icon_name, system_icon);
-
+    ret->data.minwin.window = win;
   return ret;
 }
 

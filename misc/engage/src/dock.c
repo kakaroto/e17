@@ -95,6 +95,7 @@ od_dock_reposition()
 				x += 0.5 * (__icon->scale * options.size + options.spacing); \
 				__icon->x = x; \
 				__icon->y = y; \
+				if (__icon->type == system_icon) od_tray_move(__icon);\
 				x += 0.5 * (__icon->scale * options.size + options.spacing); \
 				__item = __item->next; \
 			} \

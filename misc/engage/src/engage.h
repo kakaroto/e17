@@ -45,11 +45,16 @@ void            od_dock_redraw(Ecore_Evas * ee);
 void            od_dock_zoom_in();
 void            od_dock_zoom_out();
 
+void            od_tray_init();
+void            od_tray_move(OD_Icon *icon);
+
 void            od_icon_mapping_add(const char *winclass, const char *name,
                                     const char *icon_name);
 OD_Icon        *od_icon_new_applnk(const char *command, const char *winclass);
 OD_Icon        *od_icon_new_dicon(const char *command, const char *name,
                                   const char *icon_name);
+OD_Icon        *od_icon_new_sysicon(const char *name, const char *icon_path,
+                                    Ecore_X_Window win);
 OD_Icon        *od_icon_new_minwin(Ecore_X_Window win);
 
 void            od_icon_grab(OD_Icon * icon, Ecore_X_Window win);

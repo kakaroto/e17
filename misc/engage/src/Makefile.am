@@ -20,6 +20,7 @@ dock.c \
 icon.c \
 wm.c \
 window.c \
+tray.c \
 userconfig.c
 
 

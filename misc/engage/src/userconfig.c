@@ -110,7 +110,7 @@ userconfig_sysicons_load(void)
     strncpy(file_title, next->d_name, title_len);
     *(file_title + title_len) = '\0';
 
-    od_dock_add_sysicon(od_icon_new_sysicon(""/*file_title*/, file_path));
+    od_dock_add_sysicon(od_icon_new_sysicon(""/*file_title*/, file_path, NULL));
 
     free(file_path);
     free(file_title);
