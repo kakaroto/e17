@@ -65,7 +65,7 @@
 #ifdef DO_MMX_ASM
 static DATA8 mmx_data[] = 
 { 
-   255,  0,255,  0,255,  0,255,  0, /* zero */
+   255,  0,255,  0,255,  0,255,  0, /* components */
    255,  0,  0,  0,  0,  0,  0,  0, /* mask_red */
    0,    0,255,  0,  0,  0,  0,  0, /* mask_green */
    0,    0,  0,  0,  255,0,  0,  0, /* mask_blue  */
