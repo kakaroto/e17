@@ -17,22 +17,19 @@ configure_options = --prefix=/usr --enable-fsstd=yes
 programs = enlightenment enlightenment-nosound enlightenment-dox
 themes = enlightenment-theme-ganymede enlightenment-theme-brushedmetal enlightenment-theme-shinymetal
 
-build: debian-stamp configure-stamp build-stamp
+build: configure-stamp build-stamp
 build-stamp:
 	dh_testdir
 	$(MAKE)
 	touch $@
 
 configure-stamp:
+	$(SHELL) -x debian/debianize.sh
 	test -x autogen.sh && ./autogen.sh
 	./configure $(configure_options)
 	-mv src/themes/Makefile.am.old src/themes/Makefile.am
 	-mv src/Makefile.am.old src/Makefile.am
 	mv econfig.h econfig.h.old; sed -n '/LIBESD/ d; w econfig.h' econfig.h.old
-	touch $@
-
-debian-stamp:
-	$(SHELL) -x debian/debianize.sh
 	touch $@
 
 clean:
