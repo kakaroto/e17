@@ -6,7 +6,7 @@ AC_CANONICAL_BUILD
 AC_CANONICAL_HOST
 AC_CANONICAL_TARGET
 AC_ISC_POSIX
-AM_INIT_AUTOMAKE(imlib2, 1.1.1)
+AM_INIT_AUTOMAKE(imlib2, 1.1.2)
 AM_CONFIG_HEADER(config.h)
 
 AC_C_BIGENDIAN	      
@@ -17,31 +17,35 @@ AC_C_CONST
 AM_ENABLE_SHARED
 AM_PROG_LIBTOOL
 
-if test "x${exec_prefix}" = "xNONE"; then
-  if test "x${prefix}" = "xNONE"; then
-    bindir="${ac_default_prefix}/bin";
+if test "x${bindir}" = "xNONE"; then
+  if test "x${exec_prefix}" = "xNONE"; then
+    if test "x${prefix}" = "xNONE"; then
+      bindir="${ac_default_prefix}/bin";
+    else
+      bindir="${prefix}/bin";
+    fi
   else
-    bindir="${prefix}/bin";
-  fi
-else
-  if test "x${prefix}" = "xNONE"; then
-    bindir="${ac_default_prefix}/bin";
-  else
-    bindir="${prefix}/bin";
+    if test "x${prefix}" = "xNONE"; then
+      bindir="${ac_default_prefix}/bin";
+    else
+      bindir="${prefix}/bin";
+    fi
   fi
 fi
 
-if test "x${exec_prefix}" = "xNONE"; then
-  if test "x${prefix}" = "xNONE"; then
-    libdir="${ac_default_prefix}/lib";
+if test "x${libdir}" = "xNONE"; then
+  if test "x${exec_prefix}" = "xNONE"; then
+    if test "x${prefix}" = "xNONE"; then
+      libdir="${ac_default_prefix}/lib";
+    else
+      libdir="${prefix}/lib";
+    fi
   else
-    libdir="${prefix}/lib";
-  fi
-else
-  if test "x${prefix}" = "xNONE"; then
-    libdir="${ac_default_prefix}/lib";
-  else
-    libdir="${prefix}/lib";
+    if test "x${prefix}" = "xNONE"; then
+      libdir="${ac_default_prefix}/lib";
+    else
+      libdir="${prefix}/lib";
+    fi
   fi
 fi
 
