@@ -169,16 +169,37 @@ int ewl_text_length_get(Ewl_Text *ta)
  */
 void ewl_text_color_set(Ewl_Text *ta, int r, int g, int b, int a)
 {
+	Ewl_Text_Op *op;
+
 	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR("ta", ta);
 
+	op = ewl_text_op_color_new(ta, r, g, b, a);
+	ecore_list_append(ta->ops, op);
 	if (REALIZED(ta))
-		etox_context_set_color(ta->context, r, g, b, a);
-	else {
-		Ewl_Text_Op *op;
-		op = ewl_text_op_color_new(ta, r, g, b, a);
-		ecore_list_append(ta->ops, op);
-	}
+		ewl_text_ops_apply(ta);
+
+	DLEAVE_FUNCTION(DLEVEL_STABLE);
+}
+
+/**
+ * @param ta: the text widget to change font
+ * @param font: the name of the font
+ * @param size: the size of the font
+ * @brief Changes the currently applied font of the text to specified values
+ * @return Returns no value.
+ */
+void ewl_text_font_set(Ewl_Text *ta, char *font, int size)
+{
+	Ewl_Text_Op *op;
+
+	DENTER_FUNCTION(DLEVEL_STABLE);
+	DCHECK_PARAM_PTR("ta", ta);
+
+	op = ewl_text_op_font_new(ta, font, size);
+	ecore_list_append(ta->ops, op);
+	if (REALIZED(ta))
+		ewl_text_ops_apply(ta);
 
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
