@@ -472,13 +472,14 @@ add_tab(char *name)
   button = ewl_text_new(name);
   ewl_widget_show(button);
 
-  pane = ewl_vbox_new();
   scrollpane = ewl_scrollpane_new();
-
   ewl_object_alignment_set(EWL_OBJECT(scrollpane), EWL_FLAG_ALIGN_TOP);
   ewl_widget_show(scrollpane);
-      
+
+  pane = ewl_vbox_new();
   ewl_object_alignment_set(EWL_OBJECT(pane), EWL_FLAG_ALIGN_TOP);
+  ewl_object_fill_policy_set(EWL_OBJECT(pane), EWL_FLAG_FILL_VSHRINK |
+                                               EWL_FLAG_FILL_HFILL);
   ewl_widget_show(pane);
 
   ewl_container_child_append(EWL_CONTAINER(scrollpane), pane);
