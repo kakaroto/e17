@@ -25,6 +25,18 @@
 #define _LIBAST_OBJ_H_
 
 
+/**
+ * @file obj.h
+ * LibAST Object Infrastructure -- Generic Objects
+ *
+ * This file contains macros and type definitions for creating and
+ * manipulating basic generic objects.
+ *
+ * @author Michael Jennings <mej@eterm.org>
+ * $Revision$
+ * $Date$
+ */
+
 /*@{*/
 /**
  * @name Object Definition and Declaration Macros
@@ -423,14 +435,13 @@
 /**
  * Access the class for a given object.
  *
- * Every object has a member variable that references its @link
- * spif_class_t class @endlink.  There is a single class object for
- * each individual object type, and all instances of that type
- * reference the same class object.  If you know the type of an
- * object, you can use SPIF_CLASS_VAR() to access its class object
- * (i.e., the class object for that type).  However, this macro can be
- * used to access the class object of @em any object, regardless of
- * whether or not you know its type.
+ * Every object has a member variable that references its class.
+ * There is a single class object for each individual object type, and
+ * all instances of that type reference the same class object.  If you
+ * know the type of an object, you can use SPIF_CLASS_VAR() to access
+ * its class object (i.e., the class object for that type).  However,
+ * this macro can be used to access the class object of @em any
+ * object, regardless of whether or not you know its type.
  *
  * @note This macro returns an object of type spif_class_t, so only
  * methods common to all objects can be called using this macro.
@@ -440,7 +451,7 @@
  * @param obj An object of arbitrary/unknown type.
  * @return    The class object for the given object.
  *
- * @see DOXGRP_OBJ, SPIF_CLASS(), SPIF_OBJ(), spif_class_t
+ * @see DOXGRP_OBJ, SPIF_CLASS(), SPIF_OBJ()
  */
 #define SPIF_OBJ_CLASS(obj)              (SPIF_CLASS(SPIF_OBJ(obj)->cls))
 
@@ -464,12 +475,12 @@
  * Call the named method for a given object.
  *
  * The methods which can be called on a given object are defined by
- * that object's @link spif_class_t class @endlink.  Since all objects
- * are derived from spif_obj_t, and all classes are derived from
- * spif_class_t (the class type for "obj"), the methods defined by
- * spif_class_t can be called on any arbitrary object, regardless of
- * its actual object/class types.  This macro provides the mechanism
- * by which this is done.
+ * that object's class.  Since all objects are derived from
+ * spif_obj_t, and all classes are derived from spif_class_t (the
+ * class type for "obj"), the methods defined by spif_class_t can be
+ * called on any arbitrary object, regardless of its actual
+ * object/class types.  This macro provides the mechanism by which
+ * this is done.
  *
  * @note This macro should not be called directly.  It is used by the
  * SPIF_OBJ_*() macros and as a template for interface classes.
@@ -662,18 +673,28 @@
  */
 
 /**
- * @anchor spif_class_t
  * Object class structure.
  *
- * This class contains the object class structure.
+ * This class contains the object class structure.  It contains the
+ * string representation of the class name followed by a series of
+ * function pointers to the member functions for the class.  The basic
+ * class type contains methods that all objects require.  The
+ * structure members should not be accessed directly, but rather via
+ * the appropriate macros.
+ *
+ * @note Doxygen doesn't understand how to handle the macro-based
+ * class definition for this structure, so it thinks it's a function.
+ * It's actually a struct definition (spif_const_class_t) and a
+ * pointer definition (spif_class_t) as provided by the
+ * SPIF_DEFINE_OBJ() macro.
+ *
+ * @see DOXGRP_OBJ, SPIF_OBJ_CALL_METHOD()
  */
 SPIF_DECL_OBJ(class) {
     /** Text representation of class name. */
     spif_classname_t classname;
 
-    /** Pointer to object's constructor. */
     spif_func_t noo;
-    /** Pointer to object's initializer. */
     spif_func_t init;
     spif_func_t done;
     spif_func_t del;
@@ -685,6 +706,22 @@ SPIF_DECL_OBJ(class) {
 
 /* An obj is the most basic object type.  It contains simply a pointer to
    the class name (a const char * so you can test it with ==). */
+
+/**
+ * Generic object structure.
+ *
+ * The @c obj type is the parent of all other object types.  Since it
+ * doesn't actually store any data, the only member of the @c obj
+ * type is its spif_class_t 
+ *
+ * @note Doxygen doesn't understand how to handle the macro-based
+ * class definition for this structure, so it thinks it's a function.
+ * It's actually a struct definition (spif_const_obj_t) and a pointer
+ * definition (spif_obj_t) as provided by the SPIF_DEFINE_OBJ()
+ * macro.
+ *
+ * @see DOXGRP_OBJ
+ */
 SPIF_DECL_OBJ(obj) {
     spif_class_t cls;
 };

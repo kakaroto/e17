@@ -25,8 +25,7 @@
  * @file obj.c
  * LibAST Object Infrastructure -- Generic Objects
  *
- * This file contains the basic object class along with its smaller
- * (non-object) analogue, the "null" object.
+ * This file contains the basic object class.
  *
  * @author Michael Jennings <mej@eterm.org>
  * $Revision$
@@ -42,6 +41,7 @@ static const char cvs_ident[] = "$Id$";
 #include <libast_internal.h>
 
 /* *INDENT-OFF* */
+/* The actual class structure for the "obj" type. */
 static SPIF_CONST_TYPE(class) o_class = {
     SPIF_DECL_CLASSNAME(obj),
     (spif_func_t) spif_obj_new,
@@ -53,9 +53,45 @@ static SPIF_CONST_TYPE(class) o_class = {
     (spif_func_t) spif_obj_dup,
     (spif_func_t) spif_obj_type
 };
+
+/*
+ * The class instance for the "obj" type...a pointer to the struct
+ * above.  This pointer value is the very first thing stored in each
+ * instance of an "obj."
+ */
 SPIF_TYPE(class) SPIF_CLASS_VAR(obj) = &o_class;
 /* *INDENT-ON* */
 
+
+
+/*@{*/
+/**
+ * @name Generic Object Member Functions
+ * ---
+ *
+ * These functions are members of the @c obj class.  They can be
+ * called directly or via the macros which dereference the function
+ * pointers in the @c obj class structure.  By convention, functions
+ * are called directly when the object type is known and via macros
+ * when the type is unknown.
+ *
+ * Most of these functions are not intended to actually be called.
+ * Rather, they serve as models for the implementation of standard
+ * methods in other (derived) object types.
+ *
+ * @ingroup DOXGRP_OBJ
+ */
+
+/**
+ * Create a new @c obj instance.
+ *
+ * This function creates and returns a new instance of an @c obj.  The
+ * new instance is initialized using the spif_obj_init() function.
+ *
+ * @return A new @c obj instance.
+ *
+ * @see DOXGRP_OBJ
+ */
 spif_obj_t
 spif_obj_new(void)
 {
@@ -66,6 +102,19 @@ spif_obj_new(void)
     return self;
 }
 
+/**
+ * Delete an @c obj instance.
+ *
+ * This function deletes an instance of an @c obj.  The done method,
+ * spif_obj_done(), is called to free any object resources prior to
+ * deallocation of the object itself.
+ *
+ * @param self The @c obj instance to be deleted.
+ * @return     #TRUE if successful, #FALSE otherwise.
+ *
+ * @see DOXGRP_OBJ
+ * @ingroup DOXGRP_OBJ
+ */
 spif_bool_t
 spif_obj_del(spif_obj_t self)
 {
@@ -75,6 +124,18 @@ spif_obj_del(spif_obj_t self)
     return TRUE;
 }
 
+/**
+ * Initialize an @c obj instance.
+ *
+ * This function initializes the member variables of the @c obj
+ * instance to their appropriate "bootstrap" values.
+ *
+ * @param self The @c obj instance to be initialized.
+ * @return     #TRUE if successful, #FALSE otherwise.
+ *
+ * @see DOXGRP_OBJ
+ * @ingroup DOXGRP_OBJ
+ */
 spif_bool_t
 spif_obj_init(spif_obj_t self)
 {
@@ -82,6 +143,18 @@ spif_obj_init(spif_obj_t self)
     return TRUE;
 }
 
+/**
+ * Deallocate and reinitialize @c obj resources.
+ *
+ * This function frees up any object resources and re-initializes them
+ * to their "bootstrap" values.
+ *
+ * @param self The @c obj instance to be zeroed and reinitialized.
+ * @return     #TRUE if successful, #FALSE otherwise.
+ *
+ * @see DOXGRP_OBJ
+ * @ingroup DOXGRP_OBJ
+ */
 spif_bool_t
 spif_obj_done(spif_obj_t self)
 {
@@ -147,6 +220,8 @@ spif_obj_type(spif_obj_t self)
     return SPIF_OBJ_CLASSNAME(self);
 }
 
+/*@}*/
+
 
 
 /**
@@ -200,7 +275,7 @@ spif_obj_type(spif_obj_t self)
  * Example code for using the LibAST Object Infrastructure
  *
  * This is a contrived, but informational, example of using LibAST's
- * object system.  <MORE HERE>
+ * object system.  MORE HERE
  *
  * Here's the complete source code:
  */

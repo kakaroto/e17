@@ -452,3 +452,7 @@ methods of a property which is not an object.  It should be used in
 place of SPIF_DEFINE_PROPERTY_FUNC() for spif_*_t types that are not
 objects, such as spif_int32_t and spif_sockport_t.
 ----------------------------------------------------------------------
+Sat Nov  1 13:56:22 2003                        Michael Jennings (mej)
+
+Documentation updates for doxygen 1.3.x.
+----------------------------------------------------------------------
