@@ -427,6 +427,8 @@ ActionMoveHandleMotion(void)
    int                 ndx, ndy;
    int                 prx, pry;
    int                 screen_snap_dist;
+   char                jumpx, jumpy;
+   int                 min_dx, max_dx, min_dy, max_dy;
 
    ewin = mode_moveresize_ewin;
    if (!ewin)
@@ -447,178 +449,156 @@ ActionMoveHandleMotion(void)
    dx = Mode.x - Mode.px;
    dy = Mode.y - Mode.py;
 
-   {
-      char                jumpx, jumpy;
-      int                 min_dx, max_dx, min_dy, max_dy;
+   jumpx = 0;
+   jumpy = 0;
+   min_dx = dx;
+   min_dy = dy;
+   max_dx = dx;
+   max_dy = dy;
 
-      jumpx = 0;
-      jumpy = 0;
-      min_dx = dx;
-      min_dy = dy;
-      max_dx = dx;
-      max_dy = dy;
-      for (i = 0; i < num; i++)
-	{
-	   ndx = dx;
-	   ndy = dy;
-	   /* make our ewin resist other ewins around the place */
-	   SnapEwin(gwins[i], dx, dy, &ndx, &ndy);
-	   if ((dx < 0) && (ndx <= 0))
-	     {
-		if (ndx > min_dx)
-		   min_dx = ndx;
-		if (ndx < max_dx)
-		   max_dx = ndx;
-	     }
-	   else if (ndx >= 0)
-	     {
-		if (ndx < min_dx)
-		   min_dx = ndx;
-		if (ndx > max_dx)
-		   max_dx = ndx;
-	     }
-	   if ((dy < 0) && (ndy <= 0))
-	     {
-		if (ndy > min_dy)
-		   min_dy = ndy;
-		if (ndy < max_dy)
-		   max_dy = ndy;
-	     }
-	   else if (ndy >= 0)
-	     {
-		if (ndy < min_dy)
-		   min_dy = ndy;
-		if (ndy > max_dy)
-		   max_dy = ndy;
-	     }
-	}
-      if (min_dx == dx)
-	 ndx = max_dx;
-      else
-	 ndx = min_dx;
-      if (min_dy == dy)
-	 ndy = max_dy;
-      else
-	 ndy = min_dy;
-      screen_snap_dist =
-	 Mode.constrained ? (VRoot.w + VRoot.h) : Conf.snap.screen_snap_dist;
-      for (i = 0; i < num; i++)
-	{
-	   /* jump out of snap horizontally */
-	   if ((ndx != dx)
-	       && (((gwins[i]->x == 0)
-		    &&
-		    (!(IN_RANGE
-		       (gwins[i]->reqx, gwins[i]->x,
-			screen_snap_dist))))
-		   || ((gwins[i]->x == (VRoot.w - gwins[i]->w))
-		       &&
-		       (!(IN_RANGE
-			  (gwins[i]->reqx, gwins[i]->x,
-			   screen_snap_dist))))
-		   || ((gwins[i]->x != 0)
-		       && (gwins[i]->x != (VRoot.w - gwins[i]->w)
-			   &&
-			   (!(IN_RANGE
-			      (gwins[i]->reqx, gwins[i]->x,
-			       Conf.snap.edge_snap_dist)))))))
-	     {
-		jumpx = 1;
-		ndx = gwins[i]->reqx - gwins[i]->x + dx;
-	     }
-	   /* jump out of snap vertically */
-	   if ((ndy != dy)
-	       && (((gwins[i]->y == 0)
-		    &&
-		    (!(IN_RANGE
-		       (gwins[i]->reqy, gwins[i]->y,
-			screen_snap_dist))))
-		   || ((gwins[i]->y == (VRoot.h - gwins[i]->h))
-		       &&
-		       (!(IN_RANGE
-			  (gwins[i]->reqy, gwins[i]->y,
-			   screen_snap_dist))))
-		   || ((gwins[i]->y != 0)
-		       && (gwins[i]->y != (VRoot.h - gwins[i]->h)
-			   &&
-			   (!(IN_RANGE
-			      (gwins[i]->reqy, gwins[i]->y,
-			       Conf.snap.edge_snap_dist)))))))
-	     {
-		jumpy = 1;
-		ndy = gwins[i]->reqy - gwins[i]->y + dy;
-	     }
-	}
-      for (i = 0; i < num; i++)
-	{
-	   /* if its opaque move mode check to see if we have to float */
-	   /* the window aboe all desktops (reparent to root) */
-	   if (Conf.movemode == 0)
-	      DetermineEwinFloat(gwins[i], ndx, ndy);
-	   /* draw the new position of the window */
-	   prx = gwins[i]->reqx;
-	   pry = gwins[i]->reqy;
-	   DrawEwinShape(gwins[i], Conf.movemode, gwins[i]->x + ndx,
-			 gwins[i]->y + ndy, gwins[i]->client.w,
-			 gwins[i]->client.h, Mode.firstlast);
-	   /* if we didnt jump the winow after a resist at the edge */
-	   /* reset the requested x to be the prev. requested + delta */
-	   if (!(jumpx))
-	      gwins[i]->reqx = prx + dx;
-	   if (!(jumpy))
-	      gwins[i]->reqy = pry + dy;
+   for (i = 0; i < num; i++)
+     {
+	ndx = dx;
+	ndy = dy;
+	/* make our ewin resist other ewins around the place */
+	SnapEwin(gwins[i], dx, dy, &ndx, &ndy);
+	if ((dx < 0) && (ndx <= 0))
+	  {
+	     if (ndx > min_dx)
+		min_dx = ndx;
+	     if (ndx < max_dx)
+		max_dx = ndx;
+	  }
+	else if (ndx >= 0)
+	  {
+	     if (ndx < min_dx)
+		min_dx = ndx;
+	     if (ndx > max_dx)
+		max_dx = ndx;
+	  }
+	if ((dy < 0) && (ndy <= 0))
+	  {
+	     if (ndy > min_dy)
+		min_dy = ndy;
+	     if (ndy < max_dy)
+		max_dy = ndy;
+	  }
+	else if (ndy >= 0)
+	  {
+	     if (ndy < min_dy)
+		min_dy = ndy;
+	     if (ndy > max_dy)
+		max_dy = ndy;
+	  }
+     }
+   if (min_dx == dx)
+      ndx = max_dx;
+   else
+      ndx = min_dx;
+   if (min_dy == dy)
+      ndy = max_dy;
+   else
+      ndy = min_dy;
 
-	   /* swapping of group member locations: */
-	   if (Mode.swapmovemode && Conf.group_swapmove)
-	     {
-		EWin              **all_gwins;
-		int                 all_gwins_num;
+   screen_snap_dist =
+      Mode.constrained ? (VRoot.w + VRoot.h) : Conf.snap.screen_snap_dist;
 
-		all_gwins =
-		   ListWinGroupMembersForEwin(ewin, ACTION_NONE, 0,
-					      &all_gwins_num);
+   for (i = 0; i < num; i++)
+     {
+	/* jump out of snap horizontally */
+	if ((ndx != dx) &&
+	    (((gwins[i]->x == 0) &&
+	      (!(IN_RANGE(gwins[i]->reqx, gwins[i]->x, screen_snap_dist)))) ||
+	     ((gwins[i]->x == (VRoot.w - gwins[i]->w)) &&
+	      (!(IN_RANGE(gwins[i]->reqx, gwins[i]->x, screen_snap_dist)))) ||
+	     ((gwins[i]->x != 0) &&
+	      (gwins[i]->x != (VRoot.w - gwins[i]->w) &&
+	       (!(IN_RANGE(gwins[i]->reqx, gwins[i]->x,
+			   Conf.snap.edge_snap_dist)))))))
+	  {
+	     jumpx = 1;
+	     ndx = gwins[i]->reqx - gwins[i]->x + dx;
+	  }
 
-		for (j = 0; j < all_gwins_num; j++)
-		  {
-		     if (gwins[i] == all_gwins[j])
-			continue;
+	/* jump out of snap vertically */
+	if ((ndy != dy) &&
+	    (((gwins[i]->y == 0) &&
+	      (!(IN_RANGE(gwins[i]->reqy, gwins[i]->y, screen_snap_dist)))) ||
+	     ((gwins[i]->y == (VRoot.h - gwins[i]->h)) &&
+	      (!(IN_RANGE(gwins[i]->reqy, gwins[i]->y, screen_snap_dist)))) ||
+	     ((gwins[i]->y != 0) &&
+	      (gwins[i]->y != (VRoot.h - gwins[i]->h) &&
+	       (!(IN_RANGE(gwins[i]->reqy, gwins[i]->y,
+			   Conf.snap.edge_snap_dist)))))))
+	  {
+	     jumpy = 1;
+	     ndy = gwins[i]->reqy - gwins[i]->y + dy;
+	  }
+     }
 
-		     /* check for sufficient overlap and avoid flickering */
-		     if (((gwins
-			   [i]->x >= all_gwins[j]->x
-			   && gwins[i]->x <=
-			   all_gwins[j]->x + all_gwins[j]->w / 2
-			   && Mode.x <= Mode.px)
-			  || (gwins[i]->x <= all_gwins[j]->x
-			      && gwins[i]->x + gwins[i]->w / 2 >=
-			      all_gwins[j]->x && Mode.x >= Mode.px))
-			 &&
-			 ((gwins
-			   [i]->y >= all_gwins[j]->y
-			   && gwins[i]->y <=
-			   all_gwins[j]->y + all_gwins[j]->h / 2
-			   && Mode.y <= Mode.py)
-			  || (gwins[i]->y <= all_gwins[j]->y
-			      && gwins[i]->y + gwins[i]->h / 2 >=
-			      all_gwins[j]->y && Mode.y >= Mode.py)))
-		       {
-			  int                 tmp_swapcoord_x;
-			  int                 tmp_swapcoord_y;
+   for (i = 0; i < num; i++)
+     {
+	/* if its opaque move mode check to see if we have to float */
+	/* the window aboe all desktops (reparent to root) */
+	if (Conf.movemode == 0)
+	   DetermineEwinFloat(gwins[i], ndx, ndy);
+	/* draw the new position of the window */
+	prx = gwins[i]->reqx;
+	pry = gwins[i]->reqy;
+	DrawEwinShape(gwins[i], Conf.movemode, gwins[i]->x + ndx,
+		      gwins[i]->y + ndy, gwins[i]->client.w,
+		      gwins[i]->client.h, Mode.firstlast);
+	/* if we didnt jump the winow after a resist at the edge */
+	/* reset the requested x to be the prev. requested + delta */
+	if (!(jumpx))
+	   gwins[i]->reqx = prx + dx;
+	if (!(jumpy))
+	   gwins[i]->reqy = pry + dy;
 
-			  tmp_swapcoord_x = Mode.swapcoord_x;
-			  tmp_swapcoord_y = Mode.swapcoord_y;
-			  Mode.swapcoord_x = all_gwins[j]->x;
-			  Mode.swapcoord_y = all_gwins[j]->y;
-			  MoveEwin(all_gwins[j], tmp_swapcoord_x,
-				   tmp_swapcoord_y);
-			  break;
-		       }
-		  }
+	/* swapping of group member locations: */
+	if (Mode.swapmovemode && Conf.group_swapmove)
+	  {
+	     EWin              **all_gwins;
+	     int                 all_gwins_num;
 
-		Efree(all_gwins);
-	     }
-	}
-   }
+	     all_gwins =
+		ListWinGroupMembersForEwin(ewin, ACTION_NONE, 0,
+					   &all_gwins_num);
+
+	     for (j = 0; j < all_gwins_num; j++)
+	       {
+		  if (gwins[i] == all_gwins[j])
+		     continue;
+
+		  /* check for sufficient overlap and avoid flickering */
+		  if (((gwins[i]->x >= all_gwins[j]->x &&
+			gwins[i]->x <= all_gwins[j]->x + all_gwins[j]->w / 2 &&
+			Mode.x <= Mode.px) ||
+		       (gwins[i]->x <= all_gwins[j]->x &&
+			gwins[i]->x + gwins[i]->w / 2 >= all_gwins[j]->x &&
+			Mode.x >= Mode.px)) &&
+		      ((gwins[i]->y >= all_gwins[j]->y &&
+			gwins[i]->y <= all_gwins[j]->y + all_gwins[j]->h / 2 &&
+			Mode.y <= Mode.py) ||
+		       (gwins[i]->y <= all_gwins[j]->y &&
+			gwins[i]->y + gwins[i]->h / 2 >= all_gwins[j]->y &&
+			Mode.y >= Mode.py)))
+		    {
+		       int                 tmp_swapcoord_x;
+		       int                 tmp_swapcoord_y;
+
+		       tmp_swapcoord_x = Mode.swapcoord_x;
+		       tmp_swapcoord_y = Mode.swapcoord_y;
+		       Mode.swapcoord_x = all_gwins[j]->x;
+		       Mode.swapcoord_y = all_gwins[j]->y;
+		       MoveEwin(all_gwins[j], tmp_swapcoord_x, tmp_swapcoord_y);
+		       break;
+		    }
+	       }
+
+	     Efree(all_gwins);
+	  }
+     }
    Efree(gwins);
 }
 
