@@ -1,5 +1,5 @@
-data/Makefile
-data/Makefile.in
-data/equate.eet
-data/text.eet
+Makefile
+Makefile.in
+equate.eet
+text.eet
 

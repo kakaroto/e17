@@ -1,6 +1,6 @@
-src/.deps
-src/.libs
-src/Makefile
-src/Makefile.in
-src/equate
+.deps
+.libs
+Makefile
+Makefile.in
+equate
 
