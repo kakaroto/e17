@@ -348,9 +348,9 @@ int options(int argc, char **argv, flag_t f){
       case 's':
         opt_rsh_command;
       case 'T':
-        opt_transparent_proxy_config_file;
-      case 't':
         opt_transparent_proxy_init_script;
+      case 't':
+        opt_transparent_proxy_config_file;
       case 'u':
         opt_user;
       case '?':
@@ -505,10 +505,10 @@ int options_to_stream(FILE *stream){
     "\n"
     ,
     opt.master_host,
-    opt.ipvs_config_file,
     opt.ipvs_init_script,
-    opt.transparent_proxy_config_file,
+    opt.ipvs_config_file,
     opt.transparent_proxy_init_script,
+    opt.transparent_proxy_config_file,
     opt.rsh_command,
     opt.rcp_command,
     opt.user

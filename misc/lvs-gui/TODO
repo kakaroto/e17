@@ -1,2 +1,6 @@
 * dont use cwd for ipvs and transparent_proxy tmp files - use /tmp tmpfile();'s
+* Add funtionatlity to retrieve servers status
+  For now all we have is
+  ssh <blah> /etc/rc.d/init.d/ipvs status
+  ssh <blah> /etc/rc.d/init.d/transparent_proxy status
 
