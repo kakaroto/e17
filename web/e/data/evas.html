@@ -181,10 +181,19 @@ This is what it would look like:
 @:para@
 <a href=evas_text_eg_0.html><img src=img/evas_text_eg_0_thumb.png width=80 height=80 border=1></a>
 @:para@
+As you can see - it is really easy to create some text in an Evas canvas,
+and it is just as easy to change its contents with calls such as the following
 @:para@
+<pre>
+evas_set_text(evas, object, "Some new text here");
+evas_set_font(evas, object, "arial", 30);
+evas_set_color(evas, object, 255, 0, 0, 255);
+</pre>
 @:para@
-@:para@
-@:para@
+Just modifying the properties of an object this way directly leads to it
+changing as you would expect. There are enough text query calls too to
+impliment almost anything you need using text objects, including text entry
+boxes, word processors, html and text formatting engines and much much more.
 @:para@
 @tile_area_end@
 

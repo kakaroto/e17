@@ -312,10 +312,19 @@ This is what it would look like:
 <font face=arial,helvetica,lucida size=2><p>
 <a href=evas_text_eg_0.html><img src=img/evas_text_eg_0_thumb.png width=80 height=80 border=1></a>
 <font face=arial,helvetica,lucida size=2><p>
+As you can see - it is really easy to create some text in an Evas canvas,
+and it is just as easy to change its contents with calls such as the following
 <font face=arial,helvetica,lucida size=2><p>
+<pre>
+evas_set_text(evas, object, "Some new text here");
+evas_set_font(evas, object, "arial", 30);
+evas_set_color(evas, object, 255, 0, 0, 255);
+</pre>
 <font face=arial,helvetica,lucida size=2><p>
-<font face=arial,helvetica,lucida size=2><p>
-<font face=arial,helvetica,lucida size=2><p>
+Just modifying the properties of an object this way directly leads to it
+changing as you would expect. There are enough text query calls too to
+impliment almost anything you need using text objects, including text entry
+boxes, word processors, html and text formatting engines and much much more.
 <font face=arial,helvetica,lucida size=2><p>
 </td></tr></table></td>
 </tr><tr>
