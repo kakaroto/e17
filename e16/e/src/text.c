@@ -151,6 +151,8 @@ TextStateLoadFont(TextState * ts)
 #endif
       EDBUG_RETURN_;
 
+   ts->need_utf8 = Mode.text.utf8_int;
+
 #if USE_FNLIB
    /* Try Fnlib */
    ts->font = Fnlib_load_font(pFnlibData, ts->fontname);
