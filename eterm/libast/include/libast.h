@@ -80,6 +80,11 @@
 # endif
 #endif
 
+#ifndef __GNUC__
+#  define __attribute__(x)
+#  define __extension__(x)
+#endif
+
 #if LIBAST_REGEXP_SUPPORT_PCRE
 #  if HAVE_PCRE_H
 #    include <pcre.h>
@@ -257,9 +262,9 @@ extern int re_exec();
  * @param b The second variable.
  */
 #ifdef __GNUC__
-# define SWAP(a, b)  (void) __extension__ ({__typeof__(a) tmp = (a); (a) = (b); (b) = tmp;})
+# define SWAP(a, b)  (void) __extension__ ({__typeof__(a) __tmp = (a); (a) = (b); (b) = __tmp;})
 #else
-# define SWAP(a, b)  do {void *tmp = ((void *)(a)); (a) = (b); (b) = tmp;} while (0)
+# define SWAP(a, b)  do {void *__tmp = ((void *)(a)); (a) = (b); (b) = __tmp;} while (0)
 #endif
 /**
  * Swaps two values.
@@ -1784,7 +1789,7 @@ extern const char *true_vals[], *false_vals[];
  *          convenience macros for type requirements.
  * @param m The bitmask for a boolean option, or 0 for other types.
  */
-#define SPIFOPT_OPTION(s, l, d, f, p, m)  { s, l, d, f, p, m }
+#define SPIFOPT_OPTION(s, l, d, f, p, m)  { s, SPIF_CHARPTR(l), SPIF_CHARPTR(d), f, p, m }
 /**
  * Declare a boolean option.
  *
@@ -1800,7 +1805,7 @@ extern const char *true_vals[], *false_vals[];
  * @see SPIFOPT_OPTION()
  */
 #define SPIFOPT_BOOL(s, l, d, v, m) \
-    SPIFOPT_OPTION(s, l, d, (SPIFOPT_FLAG_BOOLEAN), &(v), m)
+    SPIFOPT_OPTION(s, SPIF_CHARPTR(l), SPIF_CHARPTR(d), (SPIFOPT_FLAG_BOOLEAN), &(v), m)
 /**
  * Declare a pre-parsed boolean option.
  *
@@ -1816,7 +1821,7 @@ extern const char *true_vals[], *false_vals[];
  * @see SPIFOPT_OPTION()
  */
 #define SPIFOPT_BOOL_PP(s, l, d, v, m) \
-    SPIFOPT_OPTION(s, l, d, (SPIFOPT_FLAG_BOOLEAN | SPIFOPT_FLAG_PREPARSE), &(v), m)
+    SPIFOPT_OPTION(s, SPIF_CHARPTR(l), SPIF_CHARPTR(d), (SPIFOPT_FLAG_BOOLEAN | SPIFOPT_FLAG_PREPARSE), &(v), m)
 /**
  * Declare a long-only boolean option.
  *
@@ -1831,7 +1836,7 @@ extern const char *true_vals[], *false_vals[];
  * @see SPIFOPT_OPTION()
  */
 #define SPIFOPT_BOOL_LONG(l, d, v, m) \
-    SPIFOPT_OPTION(0, l, d, (SPIFOPT_FLAG_BOOLEAN), &(v), m)
+    SPIFOPT_OPTION(0, SPIF_CHARPTR(l), SPIF_CHARPTR(d), (SPIFOPT_FLAG_BOOLEAN), &(v), m)
 /**
  * Declare a long-only, pre-parsed boolean option.
  *
@@ -1846,7 +1851,7 @@ extern const char *true_vals[], *false_vals[];
  * @see SPIFOPT_OPTION()
  */
 #define SPIFOPT_BOOL_LONG_PP(l, d, v, m) \
-    SPIFOPT_OPTION(0, l, d, (SPIFOPT_FLAG_BOOLEAN | SPIFOPT_FLAG_PREPARSE), &(v), m)
+    SPIFOPT_OPTION(0, SPIF_CHARPTR(l), SPIF_CHARPTR(d), (SPIFOPT_FLAG_BOOLEAN | SPIFOPT_FLAG_PREPARSE), &(v), m)
 /**
  * Declare an integer option.
  *
@@ -1861,7 +1866,7 @@ extern const char *true_vals[], *false_vals[];
  * @see SPIFOPT_OPTION()
  */
 #define SPIFOPT_INT(s, l, d, v) \
-    SPIFOPT_OPTION(s, l, d, (SPIFOPT_FLAG_INTEGER), &(v), 0)
+    SPIFOPT_OPTION(s, SPIF_CHARPTR(l), SPIF_CHARPTR(d), (SPIFOPT_FLAG_INTEGER), &(v), 0)
 /**
  * Declare a pre-parsed integer option.
  *
@@ -1876,7 +1881,7 @@ extern const char *true_vals[], *false_vals[];
  * @see SPIFOPT_OPTION()
  */
 #define SPIFOPT_INT_PP(s, l, d, v) \
-    SPIFOPT_OPTION(s, l, d, (SPIFOPT_FLAG_INTEGER | SPIFOPT_FLAG_PREPARSE), &(v), 0)
+    SPIFOPT_OPTION(s, SPIF_CHARPTR(l), SPIF_CHARPTR(d), (SPIFOPT_FLAG_INTEGER | SPIFOPT_FLAG_PREPARSE), &(v), 0)
 /**
  * Declare a long-only integer option.
  *
@@ -1890,7 +1895,7 @@ extern const char *true_vals[], *false_vals[];
  * @see SPIFOPT_OPTION()
  */
 #define SPIFOPT_INT_LONG(l, d, v) \
-    SPIFOPT_OPTION(0, l, d, (SPIFOPT_FLAG_INTEGER), &(v), 0)
+    SPIFOPT_OPTION(0, SPIF_CHARPTR(l), SPIF_CHARPTR(d), (SPIFOPT_FLAG_INTEGER), &(v), 0)
 /**
  * Declare a long-only, pre-parsed integer option.
  *
@@ -1904,7 +1909,7 @@ extern const char *true_vals[], *false_vals[];
  * @see SPIFOPT_OPTION()
  */
 #define SPIFOPT_INT_LONG_PP(l, d, v) \
-    SPIFOPT_OPTION(0, l, d, (SPIFOPT_FLAG_INTEGER | SPIFOPT_FLAG_PREPARSE), &(v), 0)
+    SPIFOPT_OPTION(0, SPIF_CHARPTR(l), SPIF_CHARPTR(d), (SPIFOPT_FLAG_INTEGER | SPIFOPT_FLAG_PREPARSE), &(v), 0)
 /**
  * Declare a string option.
  *
@@ -1919,7 +1924,7 @@ extern const char *true_vals[], *false_vals[];
  * @see SPIFOPT_OPTION()
  */
 #define SPIFOPT_STR(s, l, d, v) \
-    SPIFOPT_OPTION(s, l, d, (SPIFOPT_FLAG_STRING), &(v), 0)
+    SPIFOPT_OPTION(s, SPIF_CHARPTR(l), SPIF_CHARPTR(d), (SPIFOPT_FLAG_STRING), &(v), 0)
 /**
  * Declare a pre-parsed string option.
  *
@@ -1934,7 +1939,7 @@ extern const char *true_vals[], *false_vals[];
  * @see SPIFOPT_OPTION()
  */
 #define SPIFOPT_STR_PP(s, l, d, v) \
-    SPIFOPT_OPTION(s, l, d, (SPIFOPT_FLAG_STRING | SPIFOPT_FLAG_PREPARSE), &(v), 0)
+    SPIFOPT_OPTION(s, SPIF_CHARPTR(l), SPIF_CHARPTR(d), (SPIFOPT_FLAG_STRING | SPIFOPT_FLAG_PREPARSE), &(v), 0)
 /**
  * Declare a long-only string option.
  *
@@ -1948,7 +1953,7 @@ extern const char *true_vals[], *false_vals[];
  * @see SPIFOPT_OPTION()
  */
 #define SPIFOPT_STR_LONG(l, d, v) \
-    SPIFOPT_OPTION(0, l, d, (SPIFOPT_FLAG_STRING), &(v), 0)
+    SPIFOPT_OPTION(0, SPIF_CHARPTR(l), SPIF_CHARPTR(d), (SPIFOPT_FLAG_STRING), &(v), 0)
 /**
  * Declare a long-only, pre-parsed string option.
  *
@@ -1962,7 +1967,7 @@ extern const char *true_vals[], *false_vals[];
  * @see SPIFOPT_OPTION()
  */
 #define SPIFOPT_STR_LONG_PP(l, d, v) \
-    SPIFOPT_OPTION(0, l, d, (SPIFOPT_FLAG_STRING | SPIFOPT_FLAG_PREPARSE), &(v), 0)
+    SPIFOPT_OPTION(0, SPIF_CHARPTR(l), SPIF_CHARPTR(d), (SPIFOPT_FLAG_STRING | SPIFOPT_FLAG_PREPARSE), &(v), 0)
 /**
  * Declare an argument list option.
  *
@@ -1982,7 +1987,7 @@ extern const char *true_vals[], *false_vals[];
  * @see SPIFOPT_OPTION()
  */
 #define SPIFOPT_ARGS(s, l, d, p) \
-    SPIFOPT_OPTION(s, l, d, (SPIFOPT_FLAG_ARGLIST), &(p), 0)
+    SPIFOPT_OPTION(s, SPIF_CHARPTR(l), SPIF_CHARPTR(d), (SPIFOPT_FLAG_ARGLIST), &(p), 0)
 /**
  * Declare a pre-parsed argument list option.
  *
@@ -2002,7 +2007,7 @@ extern const char *true_vals[], *false_vals[];
  * @see SPIFOPT_OPTION()
  */
 #define SPIFOPT_ARGS_PP(s, l, d, p) \
-    SPIFOPT_OPTION(s, l, d, (SPIFOPT_FLAG_ARGLIST | SPIFOPT_FLAG_PREPARSE), &(p), 0)
+    SPIFOPT_OPTION(s, SPIF_CHARPTR(l), SPIF_CHARPTR(d), (SPIFOPT_FLAG_ARGLIST | SPIFOPT_FLAG_PREPARSE), &(p), 0)
 /**
  * Declare a long-only argument list option.
  *
@@ -2021,7 +2026,7 @@ extern const char *true_vals[], *false_vals[];
  * @see SPIFOPT_OPTION()
  */
 #define SPIFOPT_ARGS_LONG(l, d, p) \
-    SPIFOPT_OPTION(0, l, d, (SPIFOPT_FLAG_ARGLIST), &(p), 0)
+    SPIFOPT_OPTION(0, SPIF_CHARPTR(l), SPIF_CHARPTR(d), (SPIFOPT_FLAG_ARGLIST), &(p), 0)
 /**
  * Declare a long-only, pre-parsed argument list option.
  *
@@ -2040,7 +2045,7 @@ extern const char *true_vals[], *false_vals[];
  * @see SPIFOPT_OPTION()
  */
 #define SPIFOPT_ARGS_LONG_PP(l, d, p) \
-    SPIFOPT_OPTION(0, l, d, (SPIFOPT_FLAG_ARGLIST | SPIFOPT_FLAG_PREPARSE), &(p), 0)
+    SPIFOPT_OPTION(0, SPIF_CHARPTR(l), SPIF_CHARPTR(d), (SPIFOPT_FLAG_ARGLIST | SPIFOPT_FLAG_PREPARSE), &(p), 0)
 /**
  * Declare an abstract option.
  *
@@ -2056,7 +2061,7 @@ extern const char *true_vals[], *false_vals[];
  * @see SPIFOPT_OPTION(), spifopt_abstract_handler_t
  */
 #define SPIFOPT_ABST(s, l, d, f) \
-    SPIFOPT_OPTION(s, l, d, (SPIFOPT_FLAG_ABSTRACT), f, 0)
+    SPIFOPT_OPTION(s, SPIF_CHARPTR(l), SPIF_CHARPTR(d), (SPIFOPT_FLAG_ABSTRACT), SPIF_CAST(ptr) f, 0)
 /**
  * Declare a pre-parsed abstract option.
  *
@@ -2072,7 +2077,7 @@ extern const char *true_vals[], *false_vals[];
  * @see SPIFOPT_OPTION(), spifopt_abstract_handler_t
  */
 #define SPIFOPT_ABST_PP(s, l, d, f) \
-    SPIFOPT_OPTION(s, l, d, (SPIFOPT_FLAG_ABSTRACT | SPIFOPT_FLAG_PREPARSE), f, 0)
+    SPIFOPT_OPTION(s, SPIF_CHARPTR(l), SPIF_CHARPTR(d), (SPIFOPT_FLAG_ABSTRACT | SPIFOPT_FLAG_PREPARSE), SPIF_CAST(ptr) f, 0)
 /**
  * Declare a long-only abstract option.
  *
@@ -2087,7 +2092,7 @@ extern const char *true_vals[], *false_vals[];
  * @see SPIFOPT_OPTION(), spifopt_abstract_handler_t
  */
 #define SPIFOPT_ABST_LONG(l, d, f) \
-    SPIFOPT_OPTION(0, l, d, (SPIFOPT_FLAG_ABSTRACT), f, 0)
+    SPIFOPT_OPTION(0, SPIF_CHARPTR(l), SPIF_CHARPTR(d), (SPIFOPT_FLAG_ABSTRACT), SPIF_CAST(ptr) f, 0)
 /**
  * Declare a long-only, pre-parsed abstract option.
  *
@@ -2102,7 +2107,7 @@ extern const char *true_vals[], *false_vals[];
  * @see SPIFOPT_OPTION(), spifopt_abstract_handler_t
  */
 #define SPIFOPT_ABST_LONG_PP(l, d, f) \
-    SPIFOPT_OPTION(0, l, d, (SPIFOPT_FLAG_ABSTRACT | SPIFOPT_FLAG_PREPARSE), f, 0)
+    SPIFOPT_OPTION(0, SPIF_CHARPTR(l), SPIF_CHARPTR(d), (SPIFOPT_FLAG_ABSTRACT | SPIFOPT_FLAG_PREPARSE), SPIF_CAST(ptr) f, 0)
 /*@}*/
 
 /*@{*/
@@ -2719,7 +2724,6 @@ extern spif_charptr_t spiftool_get_word(unsigned long, const spif_charptr_t);
 extern spif_charptr_t spiftool_get_pword(unsigned long, const spif_charptr_t);
 extern unsigned long spiftool_num_words(const spif_charptr_t);
 extern spif_charptr_t spiftool_chomp(spif_charptr_t);
-extern spif_charptr_t spiftool_strip_whitespace(spif_charptr_t);
 extern spif_charptr_t spiftool_downcase_str(spif_charptr_t);
 extern spif_charptr_t spiftool_upcase_str(spif_charptr_t);
 extern spif_charptr_t spiftool_safe_str(spif_charptr_t, unsigned short);

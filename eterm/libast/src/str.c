@@ -21,7 +21,7 @@
  * CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 
-static const char cvs_ident[] = "$Id$";
+static const char __attribute__((unused)) cvs_ident[] = "$Id$";
 
 #ifdef HAVE_CONFIG_H
 # include <config.h>
@@ -233,17 +233,17 @@ spif_str_init_from_fd(spif_str_t self, int fd)
 spif_bool_t
 spif_str_init_from_num(spif_str_t self, long num)
 {
-    char buff[28];
+    spif_char_t buff[28];
 
     ASSERT_RVAL(!SPIF_STR_ISNULL(self), FALSE);
     /* ***NOT NEEDED*** spif_obj_init(SPIF_OBJ(self)); */
     spif_obj_set_class(SPIF_OBJ(self), SPIF_CLASS_VAR(str));
 
-    snprintf(buff, sizeof(buff), "%ld", num);
-    self->len = strlen(buff);
+    snprintf(SPIF_CHARPTR_C(buff), sizeof(buff), "%ld", num);
+    self->len = strlen(SPIF_CHARPTR_C(buff));
     self->size = self->len + 1;
     self->s = SPIF_CAST(charptr) MALLOC(self->size);
-    strcpy(self->s, buff);
+    strcpy(SPIF_CHARPTR_C(self->s), SPIF_CHARPTR_C(buff));
 
     return TRUE;
 }
@@ -281,7 +281,9 @@ spif_str_show(spif_str_t self, spif_charptr_t name, spif_str_t buff, size_t inde
     }
 
     memset(tmp, ' ', indent);
-    snprintf(tmp + indent, sizeof(tmp) - indent, "(spif_str_t) %s:  %10p { \"", name, self);
+    snprintf(SPIF_CHARPTR_C(tmp) + indent, sizeof(tmp) - indent,
+             "(spif_str_t) %s:  %10p { \"",
+             name, SPIF_CAST(ptr) self);
     if (SPIF_STR_ISNULL(buff)) {
         buff = spif_str_new_from_ptr(tmp);
     } else {
@@ -290,7 +292,7 @@ spif_str_show(spif_str_t self, spif_charptr_t name, spif_str_t buff, size_t inde
 
     spif_str_append(buff, self);
 
-    snprintf(tmp, sizeof(tmp), "\", len %lu, size %lu }\n", (unsigned long) self->len,
+    snprintf(SPIF_CHARPTR_C(tmp), sizeof(tmp), "\", len %lu, size %lu }\n", (unsigned long) self->len,
              (unsigned long) self->size);
     spif_str_append_from_ptr(buff, tmp);
     return buff;
@@ -319,7 +321,7 @@ spif_str_dup(spif_str_t self)
 spif_classname_t
 spif_str_type(spif_str_t self)
 {
-    ASSERT_RVAL(!SPIF_STR_ISNULL(self), SPIF_NULLSTR_TYPE(classname));
+    ASSERT_RVAL(!SPIF_STR_ISNULL(self), SPIF_CAST(classname) SPIF_NULLSTR_TYPE(classname));
     return SPIF_OBJ_CLASSNAME(self);
 }
 
@@ -346,7 +348,7 @@ spif_str_append_char(spif_str_t self, spif_char_t c)
         self->size++;
         self->s = SPIF_CAST(charptr) REALLOC(self->s, self->size);
     }
-    SPIF_CAST(char) (self->s[self->len - 1]) = c;
+    self->s[self->len - 1] = c;
     self->s[self->len] = 0;
     return TRUE;
 }
@@ -371,15 +373,21 @@ spif_str_append_from_ptr(spif_str_t self, spif_charptr_t other)
 spif_cmp_t
 spif_str_casecmp(spif_str_t self, spif_str_t other)
 {
+    int c;
+
     SPIF_OBJ_COMP_CHECK_NULL(self, other);
-    return SPIF_CMP_FROM_INT(strcasecmp(SPIF_CONST_CAST_C(char *) SPIF_STR_STR(self), SPIF_CONST_CAST_C(char *)SPIF_STR_STR(other)));
+    c = strcasecmp(SPIF_CHARPTR_C(SPIF_STR_STR(self)), SPIF_CHARPTR_C(SPIF_STR_STR(other)));
+    return SPIF_CMP_FROM_INT(c);
 }
 
 spif_cmp_t
 spif_str_casecmp_with_ptr(spif_str_t self, spif_charptr_t other)
 {
+    int c;
+
     SPIF_OBJ_COMP_CHECK_NULL(self, other);
-    return SPIF_CMP_FROM_INT(strcasecmp(SPIF_CONST_CAST_C(char *) SPIF_STR_STR(self), SPIF_CONST_CAST_C(char *)other));
+    c = strcasecmp(SPIF_CHARPTR_C(SPIF_STR_STR(self)), SPIF_CHARPTR_C(other));
+    return SPIF_CMP_FROM_INT(c);
 }
 
 spif_bool_t
@@ -394,21 +402,27 @@ spif_str_clear(spif_str_t self, spif_char_t c)
 spif_cmp_t
 spif_str_cmp(spif_str_t self, spif_str_t other)
 {
+    int c;
+
     SPIF_OBJ_COMP_CHECK_NULL(self, other);
-    return SPIF_CMP_FROM_INT(strcmp(SPIF_CONST_CAST_C(char *) SPIF_STR_STR(self), SPIF_CONST_CAST_C(char *)SPIF_STR_STR(other)));
+    c = strcmp(SPIF_CHARPTR_C(SPIF_STR_STR(self)), SPIF_CHARPTR_C(SPIF_STR_STR(other)));
+    return SPIF_CMP_FROM_INT(c);
 }
 
 spif_cmp_t
 spif_str_cmp_with_ptr(spif_str_t self, spif_charptr_t other)
 {
+    int c;
+
     SPIF_OBJ_COMP_CHECK_NULL(self, other);
-    return SPIF_CMP_FROM_INT(strcmp(SPIF_CONST_CAST_C(char *) SPIF_STR_STR(self), SPIF_CONST_CAST_C(char *)other));
+    c = strcmp(SPIF_CHARPTR_C(SPIF_STR_STR(self)), SPIF_CHARPTR_C(other));
+    return SPIF_CMP_FROM_INT(c);
 }
 
 spif_bool_t
 spif_str_downcase(spif_str_t self)
 {
-    char *tmp;
+    spif_charptr_t tmp;
 
     ASSERT_RVAL(!SPIF_STR_ISNULL(self), FALSE);
     for (tmp = self->s; *tmp; tmp++) {
@@ -466,29 +480,41 @@ spif_str_index(spif_str_t self, spif_char_t c)
 spif_cmp_t
 spif_str_ncasecmp(spif_str_t self, spif_str_t other, spif_stridx_t cnt)
 {
+    int c;
+
     SPIF_OBJ_COMP_CHECK_NULL(self, other);
-    return SPIF_CMP_FROM_INT(strncasecmp(SPIF_CONST_CAST_C(char *) SPIF_STR_STR(self), SPIF_CONST_CAST_C(char *)SPIF_STR_STR(other), cnt));
+    c = strncasecmp(SPIF_CHARPTR_C(SPIF_STR_STR(self)), SPIF_CHARPTR_C(SPIF_STR_STR(other)), cnt);
+    return SPIF_CMP_FROM_INT(c);
 }
 
 spif_cmp_t
 spif_str_ncasecmp_with_ptr(spif_str_t self, spif_charptr_t other, spif_stridx_t cnt)
 {
+    int c;
+
     SPIF_OBJ_COMP_CHECK_NULL(self, other);
-    return SPIF_CMP_FROM_INT(strncasecmp(SPIF_CONST_CAST_C(char *) SPIF_STR_STR(self), SPIF_CONST_CAST_C(char *)other, cnt));
+    c = strncasecmp(SPIF_CHARPTR_C(SPIF_STR_STR(self)), SPIF_CHARPTR_C(other), cnt);
+    return SPIF_CMP_FROM_INT(c);
 }
 
 spif_cmp_t
 spif_str_ncmp(spif_str_t self, spif_str_t other, spif_stridx_t cnt)
 {
+    int c;
+
     SPIF_OBJ_COMP_CHECK_NULL(self, other);
-    return SPIF_CMP_FROM_INT(strncmp(SPIF_CONST_CAST_C(char *) SPIF_STR_STR(self), SPIF_CONST_CAST_C(char *)SPIF_STR_STR(other), cnt));
+    c = strncmp(SPIF_CHARPTR_C(SPIF_STR_STR(self)), SPIF_CHARPTR_C(SPIF_STR_STR(other)), cnt);
+    return SPIF_CMP_FROM_INT(c);
 }
 
 spif_cmp_t
 spif_str_ncmp_with_ptr(spif_str_t self, spif_charptr_t other, spif_stridx_t cnt)
 {
+    int c;
+
     SPIF_OBJ_COMP_CHECK_NULL(self, other);
-    return SPIF_CMP_FROM_INT(strncmp(SPIF_CONST_CAST_C(char *) SPIF_STR_STR(self), SPIF_CONST_CAST_C(char *)other, cnt));
+    c = strncmp(SPIF_CHARPTR_C(SPIF_STR_STR(self)), SPIF_CHARPTR_C(other), cnt);
+    return SPIF_CMP_FROM_INT(c);
 }
 
 spif_bool_t
@@ -716,7 +742,7 @@ spif_str_trim(spif_str_t self)
 spif_bool_t
 spif_str_upcase(spif_str_t self)
 {
-    char *tmp;
+    spif_charptr_t tmp;
 
     ASSERT_RVAL(!SPIF_STR_ISNULL(self), FALSE);
     for (tmp = self->s; *tmp; tmp++) {
@@ -725,5 +751,5 @@ spif_str_upcase(spif_str_t self)
     return TRUE;
 }
 
-SPIF_DEFINE_PROPERTY_FUNC_C(str, spif_stridx_t, size);
-SPIF_DEFINE_PROPERTY_FUNC_C(str, spif_stridx_t, len);
+SPIF_DEFINE_PROPERTY_FUNC_C(str, spif_stridx_t, size)
+SPIF_DEFINE_PROPERTY_FUNC_C(str, spif_stridx_t, len)

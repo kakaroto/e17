@@ -21,7 +21,7 @@
  * CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 
-static const char cvs_ident[] = "$Id$";
+static const char __attribute__((unused)) cvs_ident[] = "$Id$";
 
 #ifdef HAVE_CONFIG_H
 # include <config.h>
@@ -212,31 +212,33 @@ spif_tok_show(spif_tok_t self, spif_charptr_t name, spif_str_t buff, size_t inde
     }
 
     memset(tmp, ' ', indent);
-    snprintf(tmp + indent, sizeof(tmp) - indent, "(spif_tok_t) %s:  %10p {\n", name, self);
+    snprintf(SPIF_CHARPTR_C(tmp) + indent, sizeof(tmp) - indent,
+             "(spif_tok_t) %s:  %10p {\n",
+             name, SPIF_CAST(ptr) self);
     if (SPIF_STR_ISNULL(buff)) {
         buff = spif_str_new_from_ptr(tmp);
     } else {
         spif_str_append_from_ptr(buff, tmp);
     }
-    buff = spif_str_show(SPIF_STR(self->src), "src", buff, indent + 2);
-    buff = spif_str_show(SPIF_STR(self->sep), "sep", buff, indent + 2);
+    buff = spif_str_show(SPIF_STR(self->src), SPIF_CHARPTR("src"), buff, indent + 2);
+    buff = spif_str_show(SPIF_STR(self->sep), SPIF_CHARPTR("sep"), buff, indent + 2);
 
     indent += 2;
     memset(tmp, ' ', indent);
-    snprintf(tmp + indent, sizeof(tmp) - indent, "(spif_char_t) quote:  '%c' (0x%02x)\n",
+    snprintf(SPIF_CHARPTR_C(tmp) + indent, sizeof(tmp) - indent, "(spif_char_t) quote:  '%c' (0x%02x)\n",
              (char) self->quote, (unsigned int) self->quote);
     spif_str_append_from_ptr(buff, tmp);
-    snprintf(tmp + indent, sizeof(tmp) - indent, "(spif_char_t) dquote:  '%c' (0x%02x)\n",
+    snprintf(SPIF_CHARPTR_C(tmp) + indent, sizeof(tmp) - indent, "(spif_char_t) dquote:  '%c' (0x%02x)\n",
              (char) self->dquote, (unsigned int) self->dquote);
     spif_str_append_from_ptr(buff, tmp);
-    snprintf(tmp + indent, sizeof(tmp) - indent, "(spif_char_t) escape:  '%c' (0x%02x)\n",
+    snprintf(SPIF_CHARPTR_C(tmp) + indent, sizeof(tmp) - indent, "(spif_char_t) escape:  '%c' (0x%02x)\n",
              (char) self->escape, (unsigned int) self->escape);
     spif_str_append_from_ptr(buff, tmp);
 
     SPIF_LIST_SHOW(self->tokens, buff, indent);
     indent -= 2;
 
-    snprintf(tmp + indent, sizeof(tmp) - indent, "}\n");
+    snprintf(SPIF_CHARPTR_C(tmp) + indent, sizeof(tmp) - indent, "}\n");
     spif_str_append_from_ptr(buff, tmp);
     return buff;
 }
@@ -305,7 +307,7 @@ spif_tok_eval(spif_tok_t self)
     /* The outermost for loop is where we traverse the string.  Each new
        word brings us back to the top where we resize our string list. */
     for (quote = 0; *pstr; ) {
-        tmp = spif_str_new_from_buff("", len);
+        tmp = spif_str_new_from_buff(SPIF_CHARPTR(""), len);
         spif_str_clear(tmp, 0);
 
         /* This for loop is where we process each character. */
@@ -347,9 +349,9 @@ spif_tok_eval(spif_tok_t self)
     return TRUE;
 }
 
-SPIF_DEFINE_PROPERTY_FUNC(tok, str, src);
-SPIF_DEFINE_PROPERTY_FUNC_NONOBJ(tok, char, quote);
-SPIF_DEFINE_PROPERTY_FUNC_NONOBJ(tok, char, dquote);
-SPIF_DEFINE_PROPERTY_FUNC_NONOBJ(tok, char, escape);
-SPIF_DEFINE_PROPERTY_FUNC(tok, str, sep);
-SPIF_DEFINE_PROPERTY_FUNC(tok, list, tokens);
+SPIF_DEFINE_PROPERTY_FUNC(tok, str, src)
+SPIF_DEFINE_PROPERTY_FUNC_NONOBJ(tok, char, quote)
+SPIF_DEFINE_PROPERTY_FUNC_NONOBJ(tok, char, dquote)
+SPIF_DEFINE_PROPERTY_FUNC_NONOBJ(tok, char, escape)
+SPIF_DEFINE_PROPERTY_FUNC(tok, str, sep)
+SPIF_DEFINE_PROPERTY_FUNC(tok, list, tokens)

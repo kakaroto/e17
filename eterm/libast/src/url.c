@@ -21,7 +21,7 @@
  * CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 
-static const char cvs_ident[] = "$Id$";
+static const char __attribute__((unused)) cvs_ident[] = "$Id$";
 
 #ifdef HAVE_CONFIG_H
 # include <config.h>
@@ -197,22 +197,24 @@ spif_url_show(spif_url_t self, spif_charptr_t name, spif_str_t buff, size_t inde
     }
 
     memset(tmp, ' ', indent);
-    snprintf(tmp + indent, sizeof(tmp) - indent, "(spif_url_t) %s:  %10p {\n", name, self);
+    snprintf(SPIF_CHARPTR_C(tmp) + indent, sizeof(tmp) - indent,
+             "(spif_url_t) %s:  %10p {\n",
+             name, SPIF_CAST(ptr) self);
     if (SPIF_STR_ISNULL(buff)) {
         buff = spif_str_new_from_ptr(tmp);
     } else {
         spif_str_append_from_ptr(buff, tmp);
     }
 
-    buff = spif_str_show(self->proto, "proto", buff, indent + 2);
-    buff = spif_str_show(self->user, "user", buff, indent + 2);
-    buff = spif_str_show(self->passwd, "passwd", buff, indent + 2);
-    buff = spif_str_show(self->host, "host", buff, indent + 2);
-    buff = spif_str_show(self->port, "port", buff, indent + 2);
-    buff = spif_str_show(self->path, "path", buff, indent + 2);
-    buff = spif_str_show(self->query, "query", buff, indent + 2);
+    buff = spif_str_show(self->proto, SPIF_CHARPTR("proto"), buff, indent + 2);
+    buff = spif_str_show(self->user, SPIF_CHARPTR("user"), buff, indent + 2);
+    buff = spif_str_show(self->passwd, SPIF_CHARPTR("passwd"), buff, indent + 2);
+    buff = spif_str_show(self->host, SPIF_CHARPTR("host"), buff, indent + 2);
+    buff = spif_str_show(self->port, SPIF_CHARPTR("port"), buff, indent + 2);
+    buff = spif_str_show(self->path, SPIF_CHARPTR("path"), buff, indent + 2);
+    buff = spif_str_show(self->query, SPIF_CHARPTR("query"), buff, indent + 2);
 
-    snprintf(tmp + indent, sizeof(tmp) - indent, "}\n");
+    snprintf(SPIF_CHARPTR_C(tmp) + indent, sizeof(tmp) - indent, "}\n");
     spif_str_append_from_ptr(buff, tmp);
     return buff;
 }
@@ -241,25 +243,25 @@ spif_url_type(spif_url_t self)
     return SPIF_OBJ_CLASSNAME(self);
 }
 
-SPIF_DEFINE_PROPERTY_FUNC(url, str, proto);
-SPIF_DEFINE_PROPERTY_FUNC(url, str, user);
-SPIF_DEFINE_PROPERTY_FUNC(url, str, passwd);
-SPIF_DEFINE_PROPERTY_FUNC(url, str, host);
-SPIF_DEFINE_PROPERTY_FUNC(url, str, port);
-SPIF_DEFINE_PROPERTY_FUNC(url, str, path);
-SPIF_DEFINE_PROPERTY_FUNC(url, str, query);
+SPIF_DEFINE_PROPERTY_FUNC(url, str, proto)
+SPIF_DEFINE_PROPERTY_FUNC(url, str, user)
+SPIF_DEFINE_PROPERTY_FUNC(url, str, passwd)
+SPIF_DEFINE_PROPERTY_FUNC(url, str, host)
+SPIF_DEFINE_PROPERTY_FUNC(url, str, port)
+SPIF_DEFINE_PROPERTY_FUNC(url, str, path)
+SPIF_DEFINE_PROPERTY_FUNC(url, str, query)
 
 static spif_bool_t
 spif_url_parse(spif_url_t self)
 {
-    const char *s = SPIF_STR_STR(SPIF_STR(self));
-    const char *pstr, *pend, *ptmp;
+    spif_charptr_t s = SPIF_STR_STR(SPIF_STR(self));
+    spif_charptr_t pstr, pend, ptmp;
 
     ASSERT_RVAL(!SPIF_URL_ISNULL(self), FALSE);
     pstr = s;
 
     /* Check for "proto:" at the beginning. */
-    pend = strchr(s, ':');
+    pend = SPIF_CHARPTR(strchr(SPIF_CHARPTR_C(s), ':'));
     if (pend != NULL) {
         for (; pstr < pend; pstr++) {
             if (!isalnum(*pstr)) {
@@ -268,7 +270,7 @@ spif_url_parse(spif_url_t self)
         }
         if (pstr == pend) {
             /* Got one. */
-            self->proto = spif_str_new_from_buff(SPIF_CAST(charptr) s, pend - s);
+            self->proto = spif_str_new_from_buff(s, pend - s);
             pstr++;
         } else {
             /* Nope, reset. */
@@ -281,45 +283,45 @@ spif_url_parse(spif_url_t self)
     }
 
     /* Knock out the path and query if they're there. */
-    pend = strchr(pstr, '/');
+    pend = SPIF_CHARPTR(strchr(SPIF_CHARPTR_C(pstr), '/'));
     if (pend != NULL) {
-        char *tmp = strchr(pend, '?');
+        spif_charptr_t tmp = SPIF_CHARPTR(strchr(SPIF_CHARPTR_C(pend), '?'));
 
         if (tmp != NULL) {
-            self->query = spif_str_new_from_ptr(SPIF_CAST(charptr) (tmp + 1));
-            self->path = spif_str_new_from_buff(SPIF_CAST(charptr) pend, tmp - pend);
+            self->query = spif_str_new_from_ptr(tmp + 1);
+            self->path = spif_str_new_from_buff(pend, tmp - pend);
         } else {
-          self->path = spif_str_new_from_ptr(SPIF_CAST(charptr) pend);
+          self->path = spif_str_new_from_ptr(pend);
         }
-    } else if ((pend = strchr(pstr, '?')) != NULL) {
-        self->query = spif_str_new_from_ptr(SPIF_CAST(charptr) (pend + 1));
+    } else if ((pend = SPIF_CHARPTR(strchr(SPIF_CHARPTR_C(pstr), '?'))) != NULL) {
+        self->query = spif_str_new_from_ptr(pend + 1);
     } else {
         for (pend = pstr; *pend; pend++);
     }
     /* At this point, pend *must* point to the end of the user/pass/host/port part. */
 
     /* Check for an @ sign, which would mean we have auth info. */
-    ptmp = strchr(pstr, '@');
+    ptmp = SPIF_CHARPTR(strchr(SPIF_CHARPTR_C(pstr), '@'));
     if ((ptmp != NULL) && (ptmp < pend)) {
-        char *tmp = strchr(pstr, ':');
+        spif_charptr_t tmp = SPIF_CHARPTR(strchr(SPIF_CHARPTR_C(pstr), ':'));
 
         if ((tmp != NULL) && (tmp < ptmp)) {
             /* Both username and password. */
-            self->user = spif_str_new_from_buff(SPIF_CAST(charptr) pstr, tmp - pstr);
-            self->passwd = spif_str_new_from_buff(SPIF_CAST(charptr) (tmp + 1), ptmp - tmp - 1);
+            self->user = spif_str_new_from_buff(pstr, tmp - pstr);
+            self->passwd = spif_str_new_from_buff((tmp + 1), ptmp - tmp - 1);
         } else {
-            self->user = spif_str_new_from_buff(SPIF_CAST(charptr) pstr, ptmp - pstr);
+            self->user = spif_str_new_from_buff(pstr, ptmp - pstr);
         }
         pstr = ptmp + 1;
     }
 
     /* All that remains now between pstr and pend is host and maybe port. */
-    ptmp = strchr(pstr, ':');
+    ptmp = SPIF_CHARPTR(strchr(SPIF_CHARPTR_C(pstr), ':'));
     if ((ptmp != NULL) && (ptmp < pend)) {
-        self->host = spif_str_new_from_buff(SPIF_CAST(charptr) pstr, ptmp - pstr);
-        self->port = spif_str_new_from_buff(SPIF_CAST(charptr) (ptmp + 1), pend - ptmp - 1);
+        self->host = spif_str_new_from_buff(pstr, ptmp - pstr);
+        self->port = spif_str_new_from_buff((ptmp + 1), pend - ptmp - 1);
     } else if (pstr != pend) {
-        self->host = spif_str_new_from_buff(SPIF_CAST(charptr) pstr, pend - pstr);
+        self->host = spif_str_new_from_buff(pstr, pend - pstr);
     }
 
     /* If we have a proto but no port, see if we can resolve the port using the proto. */
@@ -327,12 +329,12 @@ spif_url_parse(spif_url_t self)
         spif_protoinfo_t proto;
         spif_servinfo_t serv;
 
-        proto = getprotobyname(SPIF_STR_STR(self->proto));
+        proto = getprotobyname(SPIF_CHARPTR_C(SPIF_STR_STR(self->proto)));
         if (proto == NULL) {
             /* If it's not a protocol, it's probably a service. */
-            serv = getservbyname(SPIF_STR_STR(self->proto), "tcp");
+            serv = getservbyname(SPIF_CHARPTR_C(SPIF_STR_STR(self->proto)), "tcp");
             if (serv == NULL) {
-                serv = getservbyname(SPIF_STR_STR(self->proto), "udp");
+                serv = getservbyname(SPIF_CHARPTR_C(SPIF_STR_STR(self->proto)), "udp");
             }
             if (serv != NULL) {
                 proto = getprotobyname(serv->s_proto);
@@ -340,9 +342,9 @@ spif_url_parse(spif_url_t self)
             }
         }
         if (proto != NULL) {
-            char buff[32];
+            spif_char_t buff[32];
 
-            snprintf(buff, sizeof(buff), "%d", ntohs(serv->s_port));
+            snprintf(SPIF_CHARPTR_C(buff), sizeof(buff), "%d", ntohs(serv->s_port));
             self->port = spif_str_new_from_ptr(buff);
         }
     }
@@ -353,53 +355,50 @@ spif_url_parse(spif_url_t self)
 spif_bool_t
 spif_url_unparse(spif_url_t self)
 {
-    spif_str_t tmp_str;
-
     ASSERT_RVAL(!SPIF_URL_ISNULL(self), FALSE);
-    tmp_str = spif_str_new_from_buff(SPIF_NULL_TYPE(charptr), 128);
+    spif_str_done(SPIF_STR(self));
+    spif_str_init_from_ptr(SPIF_STR(self), SPIF_CHARPTR(""));
 
     /* First, proto followed by a colon. */
     if (!SPIF_STR_ISNULL(self->proto)) {
-        spif_str_append(tmp_str, self->proto);
-        spif_str_append_char(tmp_str, ':');
+        spif_str_append(SPIF_STR(self), self->proto);
+        spif_str_append_char(SPIF_STR(self), ':');
     }
 
     /* If we have a port but no host, make it localhost. */
     if (!SPIF_STR_ISNULL(self->port) && SPIF_STR_ISNULL(self->host)) {
-        self->host = spif_str_new_from_ptr("localhost");
+        self->host = spif_str_new_from_ptr(SPIF_CHARPTR("localhost"));
     }
 
     /* We need the // if we have a hostname. */
     if (!SPIF_STR_ISNULL(self->host)) {
-        spif_str_append_from_ptr(tmp_str, "//");
+        spif_str_append_from_ptr(SPIF_STR(self), SPIF_CHARPTR("//"));
     }
 
     if (!SPIF_STR_ISNULL(self->user)) {
-        spif_str_append(tmp_str, self->user);
+        spif_str_append(SPIF_STR(self), self->user);
         if (!SPIF_STR_ISNULL(self->passwd)) {
-            spif_str_append_char(tmp_str, ':');
-            spif_str_append(tmp_str, self->passwd);
+            spif_str_append_char(SPIF_STR(self), ':');
+            spif_str_append(SPIF_STR(self), self->passwd);
         }
-        spif_str_append_char(tmp_str, '@');
+        spif_str_append_char(SPIF_STR(self), '@');
     }
 
     if (!SPIF_STR_ISNULL(self->host)) {
-        spif_str_append(tmp_str, self->host);
+        spif_str_append(SPIF_STR(self), self->host);
         if (!SPIF_STR_ISNULL(self->port)) {
-            spif_str_append_char(tmp_str, ':');
-            spif_str_append(tmp_str, self->port);
+            spif_str_append_char(SPIF_STR(self), ':');
+            spif_str_append(SPIF_STR(self), self->port);
         }
     }
 
     if (!SPIF_STR_ISNULL(self->path)) {
-        spif_str_append(tmp_str, self->path);
+        spif_str_append(SPIF_STR(self), self->path);
     }
 
     if (!SPIF_STR_ISNULL(self->query)) {
-        spif_str_append_char(tmp_str, '?');
-        spif_str_append(tmp_str, self->query);
+        spif_str_append_char(SPIF_STR(self), '?');
+        spif_str_append(SPIF_STR(self), self->query);
     }
-
-    SPIF_STR(self) = tmp_str;
     return TRUE;
 }

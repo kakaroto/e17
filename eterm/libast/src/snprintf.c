@@ -9,7 +9,7 @@
 # undef HAVE_STDARG_H
 #endif
 
-static const char cvs_ident[] = "$Id$";
+static const char __attribute__((unused)) cvs_ident[] = "$Id$";
 
 /* 
  * Shamelessly snarfed from Enlightenment...

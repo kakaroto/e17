@@ -673,3 +673,7 @@ Wed Jul 21 22:48:14 2004                        Michael Jennings (mej)
 
 More cleanups and fixed compile problems.
 ----------------------------------------------------------------------
+Fri Jul 23 17:36:45 2004                        Michael Jennings (mej)
+
+Finally we have strict C99 compliance.
+----------------------------------------------------------------------

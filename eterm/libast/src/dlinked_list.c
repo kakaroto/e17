@@ -21,7 +21,7 @@
  * CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 
-static const char cvs_ident[] = "$Id$";
+static const char __attribute__((unused)) cvs_ident[] = "$Id$";
 
 #ifdef HAVE_CONFIG_H
 # include <config.h>
@@ -972,7 +972,7 @@ spif_dlinked_list_reverse(spif_dlinked_list_t self)
     for (current = self->head; current; ) {
         tmp = current;
         current = current->next;
-        BINSWAP(tmp->prev, tmp->next);
+        SWAP(tmp->prev, tmp->next);
     }
     self->head = tmp;
     return TRUE;

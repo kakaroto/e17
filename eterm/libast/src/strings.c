@@ -30,7 +30,7 @@
  * @author Michael Jennings <mej@eterm.org>
  */
 
-static const char cvs_ident[] = "$Id$";
+static const char __attribute__((unused)) cvs_ident[] = "$Id$";
 
 #ifdef HAVE_CONFIG_H
 # include <config.h>
@@ -228,8 +228,8 @@ spiftool_safe_strncat(spif_charptr_t dest, const spif_charptr_t src, spif_int32_
     REQUIRE_RVAL(!SPIF_PTR_ISNULL(src), FALSE);
     REQUIRE_RVAL(size > 0, FALSE);
 
-    len = strnlen(dest, size);
-    if ((len < 0) || (len >= size)) {
+    len = strnlen(SPIF_CHARPTR_C(dest), size);
+    if (len >= size) {
         return FALSE;
     } else {
         return spiftool_safe_strncpy(dest + len, src, size - len);
@@ -248,7 +248,7 @@ spiftool_substr(spif_charptr_t str, spif_int32_t idx, spif_int32_t cnt)
 
     REQUIRE_RVAL(str != SPIF_NULL_TYPE(charptr), SPIF_NULL_TYPE(charptr));
 
-    len = SPIF_CAST(uint32) strlen(str);
+    len = SPIF_CAST(uint32) strlen(SPIF_CHARPTR_C(str));
 
     if (idx < 0) {
         start_pos = len + idx;
@@ -342,7 +342,7 @@ spiftool_regexp_match_r(register const spif_charptr_t str, register const spif_c
 }
 #endif
 
-#define IS_DELIM(c)  ((delim != NULL) ? (strchr(delim, (c)) != NULL) : (isspace(c)))
+#define IS_DELIM(c)  ((delim != NULL) ? (strchr(SPIF_CHARPTR_C(delim), (c)) != NULL) : (isspace(c)))
 #define IS_QUOTE(c)  (quote && quote == (c))
 
 spif_charptr_t *
@@ -377,7 +377,7 @@ spiftool_split(const spif_charptr_t delim, const spif_charptr_t str)
 
         /* The string we're about to create can't possibly be larger than the remainder
            of the string we have yet to parse, so allocate that much space to start. */
-        len = strlen(pstr) + 1;
+        len = strlen(SPIF_CHARPTR_C(pstr)) + 1;
         if ((slist[cnt] = SPIF_CAST(charptr) MALLOC(len)) == NULL) {
             libast_print_error("split():  Unable to allocate memory -- %s.\n", strerror(errno));
             return ((spif_charptr_t *) NULL);
@@ -413,13 +413,14 @@ spiftool_split(const spif_charptr_t delim, const spif_charptr_t str)
         *pdest = 0;
 
         /* Reallocate the new string to be just the right size. */
-        len = strlen(slist[cnt]) + 1;
+        len = strlen(SPIF_CHARPTR_C(slist[cnt])) + 1;
         slist[cnt] = SPIF_CAST(charptr) REALLOC(slist[cnt], len);
 
         /* Move past any trailing "whitespace." */
         for (; *pstr && IS_DELIM(*pstr); pstr++);
     }
     if (cnt == 0) {
+        FREE(slist);
         return NULL;
     } else {
         /* The last element of slist[] should be NULL. */
@@ -444,21 +445,22 @@ spiftool_join(spif_charptr_t sep, spif_charptr_t *slist)
     spif_charptr_t new_str;
 
     ASSERT_RVAL(slist != SPIF_NULL_TYPE(ptr), SPIF_NULL_TYPE(ptr));
+    REQUIRE_RVAL(*slist != SPIF_NULL_TYPE(ptr), SPIF_NULL_TYPE(ptr));
     if (sep == NULL) {
-        sep = "";
+        sep = SPIF_CHARPTR("");
     }
-    slen = strlen(sep);
+    slen = strlen(SPIF_CHARPTR_C(sep));
     for (i = len = 0; slist[i]; i++) {
-        len += strlen(slist[i]);
+        len += strlen(SPIF_CHARPTR_C(slist[i]));
     }
     len += slen * (i - 1);
     new_str = SPIF_CAST(charptr) MALLOC(len);
-    strcpy(new_str, slist[0]);
+    strcpy(SPIF_CHARPTR_C(new_str), SPIF_CHARPTR_C(slist[0]));
     for (i = 1; slist[i]; i++) {
         if (slen) {
-            strcat(new_str, sep);
+            strcat(SPIF_CHARPTR_C(new_str), SPIF_CHARPTR_C(sep));
         }
-        strcat(new_str, slist[i]);
+        strcat(SPIF_CHARPTR_C(new_str), SPIF_CHARPTR_C(slist[i]));
     }
     return new_str;
 }
@@ -475,7 +477,7 @@ spiftool_get_word(unsigned long index, const spif_charptr_t str)
     register unsigned long i, j, k;
 
     ASSERT_RVAL(str != SPIF_NULL_TYPE(ptr), SPIF_NULL_TYPE(ptr));
-    k = strlen(str) + 1;
+    k = strlen(SPIF_CHARPTR_C(str)) + 1;
     if ((tmpstr = SPIF_CAST(charptr) MALLOC(k)) == NULL) {
         libast_print_error("get_word(%lu, %s):  Unable to allocate memory -- %s.\n", index, str, strerror(errno));
         return (SPIF_CAST(charptr) NULL);
@@ -517,7 +519,7 @@ spiftool_get_word(unsigned long index, const spif_charptr_t str)
         D_STRINGS(("get_word(%lu, %s) returning NULL.\n", index, str));
         return (SPIF_CAST(charptr) NULL);
     } else {
-        tmpstr = SPIF_CAST(charptr) REALLOC(tmpstr, strlen(tmpstr) + 1);
+        tmpstr = SPIF_CAST(charptr) REALLOC(tmpstr, strlen(SPIF_CHARPTR_C(tmpstr)) + 1);
         D_STRINGS(("get_word(%lu, %s) returning \"%s\".\n", index, str, tmpstr));
         return (tmpstr);
     }
@@ -593,30 +595,16 @@ spiftool_chomp(spif_charptr_t s)
     register spif_charptr_t front, back;
 
     ASSERT_RVAL(s != NULL, NULL);
+    REQUIRE_RVAL(*s, s);
+
     for (front = s; *front && isspace(*front); front++);
-    for (back = s + strlen(s) - 1; *back && isspace(*back) && back > front; back--);
+    for (back = s + strlen(SPIF_CHARPTR_C(s)) - 1; *back && isspace(*back) && back > front; back--);
 
     *(++back) = 0;
     if (front != s) {
         memmove(s, front, back - front + 1);
     }
     return (s);
-}
-
-spif_charptr_t 
-spiftool_strip_whitespace(register spif_charptr_t str)
-{
-    register unsigned long i, j;
-
-    ASSERT_RVAL(str != NULL, NULL);
-    if ((j = strlen(str))) {
-        for (i = j - 1; isspace(*(str + i)); i--);
-        str[j = i + 1] = 0;
-        for (i = 0; isspace(*(str + i)); i++);
-        j -= i;
-        memmove(str, str + i, j + 1);
-    }
-    return (str);
 }
 
 spif_charptr_t 
@@ -671,7 +659,7 @@ spiftool_condense_whitespace(spif_charptr_t s)
         pbuff--;
     *pbuff = 0;
     D_STRINGS(("condense_whitespace() returning \"%s\".\n", s));
-    return (SPIF_CAST(charptr) REALLOC(s, strlen(s) + 1));
+    return (SPIF_CAST(charptr) REALLOC(s, strlen(SPIF_CHARPTR_C(s)) + 1));
 }
 
 spif_charptr_t 
@@ -694,12 +682,12 @@ spiftool_hex_dump(void *buff, register size_t count)
 {
     register unsigned long j, k, l;
     register spif_charptr_t ptr;
-    unsigned char buffr[9];
+    spif_char_t buffr[9];
 
     ASSERT(buff != SPIF_NULL_TYPE(ptr));
     fprintf(stderr, "  Address  |  Size  | Offset  | 00 01 02 03 04 05 06 07 |  ASCII  \n");
     fprintf(stderr, "-----------+--------+---------+-------------------------+---------\n");
-    for (ptr = (unsigned char *) buff, j = 0; j < count; j += 8) {
+    for (ptr = buff, j = 0; j < count; j += 8) {
         fprintf(stderr, " %10p | %06lu | %07x | ", buff, (unsigned long) count, (unsigned int) j);
         l = ((count - j < 8) ? (count - j) : (8));
         memcpy(buffr, ptr + j, l);
@@ -739,26 +727,26 @@ spiftool_version_compare(spif_charptr_t v1, spif_charptr_t v2)
             spiftool_downcase_str(buff2);
 
             /* Some strings require special handling. */
-            if (!strcmp(buff1, "snap")) {
+            if (!strcmp(SPIF_CHARPTR_C(buff1), "snap")) {
                 ival1 = 1;
-            } else if (!strcmp(buff1, "pre")) {
+            } else if (!strcmp(SPIF_CHARPTR_C(buff1), "pre")) {
                 ival1 = 2;
-            } else if (!strcmp(buff1, "alpha")) {
+            } else if (!strcmp(SPIF_CHARPTR_C(buff1), "alpha")) {
                 ival1 = 3;
-            } else if (!strcmp(buff1, "beta")) {
+            } else if (!strcmp(SPIF_CHARPTR_C(buff1), "beta")) {
                 ival1 = 4;
-            } else if (!strcmp(buff1, "rc")) {
+            } else if (!strcmp(SPIF_CHARPTR_C(buff1), "rc")) {
                 ival1 = 5;
             }
-            if (!strcmp(buff2, "snap")) {
+            if (!strcmp(SPIF_CHARPTR_C(buff2), "snap")) {
                 ival2 = 1;
-            } else if (!strcmp(buff2, "pre")) {
+            } else if (!strcmp(SPIF_CHARPTR_C(buff2), "pre")) {
                 ival2 = 2;
-            } else if (!strcmp(buff2, "alpha")) {
+            } else if (!strcmp(SPIF_CHARPTR_C(buff2), "alpha")) {
                 ival2 = 3;
-            } else if (!strcmp(buff2, "beta")) {
+            } else if (!strcmp(SPIF_CHARPTR_C(buff2), "beta")) {
                 ival2 = 4;
-            } else if (!strcmp(buff2, "rc")) {
+            } else if (!strcmp(SPIF_CHARPTR_C(buff2), "rc")) {
                 ival2 = 5;
             }
             if (ival1 != ival2) {
@@ -768,7 +756,7 @@ spiftool_version_compare(spif_charptr_t v1, spif_charptr_t v2)
                 int c;
 
                 /* Two arbitrary strings.  Compare them too. */
-                if ((c = strcmp(buff1, buff2)) != 0) {
+                if ((c = strcmp(SPIF_CHARPTR_C(buff1), SPIF_CHARPTR_C(buff2))) != 0) {
                     return SPIF_CMP_FROM_INT(c);
                 }
             }
@@ -783,8 +771,8 @@ spiftool_version_compare(spif_charptr_t v1, spif_charptr_t v2)
             *p1 = *p2 = 0;
 
             /* Convert the strings into actual integers. */
-            ival1 = SPIF_CAST(int32) strtol(buff1, (char **) NULL, 10);
-            ival2 = SPIF_CAST(int32) strtol(buff2, (char **) NULL, 10);
+            ival1 = SPIF_CAST(int32) strtol(SPIF_CHARPTR_C(buff1), (char **) NULL, 10);
+            ival2 = SPIF_CAST(int32) strtol(SPIF_CHARPTR_C(buff2), (char **) NULL, 10);
 
             /* Compare the integers and return if not equal. */
             c = SPIF_CMP_FROM_INT(ival1 - ival2);
@@ -800,26 +788,26 @@ spiftool_version_compare(spif_charptr_t v1, spif_charptr_t v2)
             for (; !isalnum(*v2); v2++, p2++) *p2 = *v2;
             *p1 = *p2 = 0;
 
-            c = SPIF_CMP_FROM_INT(strcasecmp(buff1, buff2));
+            c = SPIF_CMP_FROM_INT(strcasecmp(SPIF_CHARPTR_C(buff1), SPIF_CHARPTR_C(buff2)));
             if (!SPIF_CMP_IS_EQUAL(c)) {
                 return c;
             }
         } else {
-            return SPIF_CMP_FROM_INT(strcasecmp(buff1, buff2));
+            return SPIF_CMP_FROM_INT(strcasecmp(SPIF_CHARPTR_C(buff1), SPIF_CHARPTR_C(buff2)));
         }
     }
 
     /* We've reached the end of one of the strings. */
     if (*v1) {
-        if (!BEG_STRCASECMP(v1, "snap") || !BEG_STRCASECMP(v1, "pre")
-            || !BEG_STRCASECMP(v1, "alpha") || !BEG_STRCASECMP(v1, "beta")) {
+        if (!BEG_STRCASECMP(SPIF_CHARPTR_C(v1), "snap") || !BEG_STRCASECMP(SPIF_CHARPTR_C(v1), "pre")
+            || !BEG_STRCASECMP(SPIF_CHARPTR_C(v1), "alpha") || !BEG_STRCASECMP(SPIF_CHARPTR_C(v1), "beta")) {
             return SPIF_CMP_LESS;
         } else {
             return SPIF_CMP_GREATER;
         }
     } else if (*v2) {
-        if (!BEG_STRCASECMP(v2, "snap") || !BEG_STRCASECMP(v2, "pre")
-            || !BEG_STRCASECMP(v2, "alpha") || !BEG_STRCASECMP(v2, "beta")) {
+        if (!BEG_STRCASECMP(SPIF_CHARPTR_C(v2), "snap") || !BEG_STRCASECMP(SPIF_CHARPTR_C(v2), "pre")
+            || !BEG_STRCASECMP(SPIF_CHARPTR_C(v2), "alpha") || !BEG_STRCASECMP(SPIF_CHARPTR_C(v2), "beta")) {
             return SPIF_CMP_GREATER;
         } else {
             return SPIF_CMP_LESS;

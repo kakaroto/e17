@@ -31,7 +31,7 @@
  * @author Michael Jennings <mej@eterm.org>
  */
 
-static const char cvs_ident[] = "$Id$";
+static const char __attribute__((unused)) cvs_ident[] = "$Id$";
 
 #ifdef HAVE_CONFIG_H
 # include <config.h>
