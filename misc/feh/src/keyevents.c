@@ -37,6 +37,7 @@ handle_keypress_event(XEvent * ev, Window win)
    KeySym keysym;
    XKeyEvent *kev;
    winwidget winwid = NULL;
+   int curr_screen = 0;
 
    D_ENTER(4);
 
@@ -201,7 +202,52 @@ handle_keypress_event(XEvent * ev, Window win)
      case '<':
         feh_edit_inplace_orient(winwid, 3);
         break;
-	 case '=':
+     case 'v':
+     case 'V':
+#ifdef HAVE_LIBXINERAMA
+        if (opt.xinerama && xinerama_screens) {
+          int i, rect[4];
+
+          /* FIXME: this doesn't do what it should;  XGetGeometry always
+           * returns x,y == 0,0.  I think that's due to the hints being passed
+           * (or more specifically, a missing hint) to X in winwidget_create
+           */
+          winwidget_get_geometry(winwid, rect);
+          /* printf("window: (%d, %d)\n", rect[0], rect[1]);
+          printf("found %d screens.\n", num_xinerama_screens); */
+          for (i = 0; i < num_xinerama_screens; i++) {
+            xinerama_screen = 0;
+            /* printf("%d: [%d, %d, %d, %d] (%d, %d)\n",
+                   i,
+                   xinerama_screens[i].x_org, xinerama_screens[i].y_org,
+                   xinerama_screens[i].width, xinerama_screens[i].height,
+                   rect[0], rect[1]);*/
+            if (XY_IN_RECT(rect[0], rect[1],
+                  xinerama_screens[i].x_org, xinerama_screens[i].y_org,
+                  xinerama_screens[i].width, xinerama_screens[i].height)) {
+              curr_screen = xinerama_screen = i;
+              break;
+            }
+          }
+        }
+#endif /* HAVE_LIBXINERAMA */
+        winwid->full_screen = !winwid->full_screen;
+        winwidget_destroy_xwin(winwid);
+        winwidget_create_window(winwid, winwid->im_w, winwid->im_h);
+        winwidget_render_image(winwid, 1, 1);
+        winwidget_show(winwid);
+#ifdef HAVE_LIBXINERAMA
+        /* if we have xinerama and we're using it, then full screen the window
+         * on the head that the window was active on */
+        if (winwid->full_screen == TRUE &&
+            opt.xinerama && xinerama_screens) {
+          xinerama_screen = curr_screen;
+          winwidget_move(winwid,
+                         xinerama_screens[curr_screen].x_org,
+                         xinerama_screens[curr_screen].y_org);
+        }
+#endif /* HAVE_LIBXINERAMA */
+	   case '=':
      case '+':
         if (opt.reload < SLIDESHOW_RELOAD_MAX)
            opt.reload++;

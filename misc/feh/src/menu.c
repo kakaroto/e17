@@ -29,7 +29,6 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 #include "winwidget.h"
 #include "filelist.h"
 #include "options.h"
-#include <math.h>
 
 Window menu_cover = 0;
 feh_menu *menu_root = NULL;

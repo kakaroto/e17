@@ -52,6 +52,8 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 #include <stdarg.h>
 #include <signal.h>
 #include <sys/wait.h>
+#include <math.h>
+
 #include <Imlib2.h>
 #include <giblib/giblib.h>
 
@@ -66,6 +68,10 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
 #define SLIDESHOW_RELOAD_MAX 4096
 
+#ifndef TRUE
+#define FALSE	0
+#define TRUE	!FALSE
+#endif
 
 #ifndef __GNUC__
 # define __attribute__(x)

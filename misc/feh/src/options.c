@@ -988,6 +988,7 @@ show_usage(void)
            " p, P, <BACKSPACE>, <LEFT>  Goto previous slide\n"
            " n, N, <SPACE>, <RIGHT>     Goto next slide\n"
            " r, R                       Reload image (good for webcams)\n"
+           " v, V                       Toggle fullscreen\n"
            " w, W                       Size window to current image dimensions\n"
            " h, H                       Pause the slideshow (only useful when using\n"
            " s, S                       Save current image to unique filename\n"

@@ -1,3 +1,8 @@
+Sun Nov 24 22:47:43 GMT 2002  Tom Gilbert <tom@linuxbrit.co.uk>
+
+  * Patch from Daniel Ashbrook <anjiro@cc.gatech.edu> to bind a key (v) to
+    switching between window and fullscreen mode
+
 Sun Oct 20 22:45:01 2002 EDT, Paul Duncan <pabs@pablotron.org>
 
   * added requested screen-clip option (allows you to disable window size
