@@ -231,41 +231,6 @@ spif_url_dup(spif_url_t self)
 
     ASSERT_RVAL(!SPIF_URL_ISNULL(self), SPIF_NULL_TYPE(url));
     tmp = spif_url_new_from_str(SPIF_STR(self));
-    if (SPIF_STR_ISNULL(self->proto)) {
-        tmp->proto = SPIF_NULL_TYPE(str);
-    } else {
-        tmp->proto = spif_str_dup(self->proto);
-    }
-    if (SPIF_STR_ISNULL(self->user)) {
-        tmp->user = SPIF_NULL_TYPE(str);
-    } else {
-        tmp->user = spif_str_dup(self->user);
-    }
-    if (SPIF_STR_ISNULL(self->passwd)) {
-        tmp->passwd = SPIF_NULL_TYPE(str);
-    } else {
-        tmp->passwd = spif_str_dup(self->passwd);
-    }
-    if (SPIF_STR_ISNULL(self->host)) {
-        tmp->host = SPIF_NULL_TYPE(str);
-    } else {
-        tmp->host = spif_str_dup(self->host);
-    }
-    if (SPIF_STR_ISNULL(self->port)) {
-        tmp->port = SPIF_NULL_TYPE(str);
-    } else {
-        tmp->port = spif_str_dup(self->port);
-    }
-    if (SPIF_STR_ISNULL(self->path)) {
-        tmp->path = SPIF_NULL_TYPE(str);
-    } else {
-        tmp->path = spif_str_dup(self->path);
-    }
-    if (SPIF_STR_ISNULL(self->query)) {
-        tmp->query = SPIF_NULL_TYPE(str);
-    } else {
-        tmp->query = spif_str_dup(self->query);
-    }
     return tmp;
 }
 

@@ -605,3 +605,8 @@ Wed Feb  4 17:24:56 2004                        Michael Jennings (mej)
 
 Some test improvements.
 ----------------------------------------------------------------------
+Thu Feb  5 16:31:43 2004                        Michael Jennings (mej)
+
+Plugged a few leaks and cleaned up one uninitialized parameter
+problem.
+----------------------------------------------------------------------

@@ -1177,6 +1177,7 @@ test_list(void)
         TEST_FAIL_IF(j != 13);
         TEST_FAIL_IF(SPIF_ITERATOR_HAS_NEXT(it));
         TEST_FAIL_IF(!SPIF_OBJ_ISNULL(SPIF_ITERATOR_NEXT(it)));
+        SPIF_ITERATOR_DEL(it);
         TEST_PASS();
 
         TEST_BEGIN("SPIF_LIST_REMOVE() macro");
@@ -1293,6 +1294,7 @@ test_list(void)
         spif_str_init_from_ptr(s, "5");
         TEST_FAIL_IF(!SPIF_CMP_IS_EQUAL(SPIF_OBJ_COMP(list_array[0], s)));
         spif_str_del(s);
+        SPIF_DEALLOC(list_array);
         TEST_PASS();
 
         /*SPIF_SHOW(testlist, stdout);*/
@@ -1397,6 +1399,7 @@ test_vector(void)
         TEST_FAIL_IF(j != 6);
         TEST_FAIL_IF(SPIF_ITERATOR_HAS_NEXT(it));
         TEST_FAIL_IF(!SPIF_OBJ_ISNULL(SPIF_ITERATOR_NEXT(it)));
+        SPIF_ITERATOR_DEL(it);
         TEST_PASS();
 
         TEST_BEGIN("SPIF_VECTOR_REMOVE() macro");
@@ -1429,6 +1432,7 @@ test_vector(void)
         spif_str_init_from_ptr(s, "5");
         TEST_FAIL_IF(!SPIF_CMP_IS_EQUAL(SPIF_OBJ_COMP(vector_array[4], s)));
         spif_str_del(s);
+        SPIF_DEALLOC(vector_array);
         TEST_PASS();
 
         /*SPIF_SHOW(testvector, stdout);*/

@@ -426,6 +426,7 @@ spif_socket_accept(spif_socket_t self)
     ASSERT_RVAL(!SPIF_SOCKET_ISNULL(self), SPIF_NULL_TYPE(socket));
 
     addr = SPIF_ALLOC(sockaddr);
+    len = SPIF_SIZEOF_TYPE(sockaddr);
     do {
         newfd = accept(self->fd, addr, &len);
     } while ((newfd < 0) && ((errno == EAGAIN) || (errno == EWOULDBLOCK)));
@@ -444,6 +445,7 @@ spif_socket_accept(spif_socket_t self)
     } else if (SPIF_SOCKET_FLAGS_IS_SET(self, SPIF_SOCKET_FLAGS_FAMILY_UNIX)) {
         tmp->remote_url = spif_url_new_from_unixaddr(SPIF_CAST(unixsockaddr) addr);
     }
+    SPIF_DEALLOC(addr);
     if (SPIF_SOCKET_FLAGS_IS_SET(self, SPIF_SOCKET_FLAGS_NBIO)) {
         spif_socket_set_nbio(tmp);
     }
