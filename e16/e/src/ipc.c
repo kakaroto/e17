@@ -335,12 +335,11 @@ IPC_WinList(const char *params, Client * c __UNUSED__)
 	     break;
 
 	  case 'p':
-	     IpcPrintf("%#10lx : %4d %4d %4dx%4d :: %2d : \"%s\" \"%s\" %s\n",
-		       e->client.win,
-		       EoGetX(e), EoGetY(e), EoGetW(e), EoGetH(e),
-		       (EoIsSticky(e)) ? -1 : EoGetDesk(e),
-		       SS(e->icccm.wm_res_name), SS(e->icccm.wm_res_class),
-		       SS(e->icccm.wm_name));
+	     IpcPrintf
+		("%#10lx : %4d %4d %4dx%4d :: %2d : \"%s\" \"%s\" \"%s\"\n",
+		 e->client.win, EoGetX(e), EoGetY(e), EoGetW(e), EoGetH(e),
+		 (EoIsSticky(e)) ? -1 : EoGetDesk(e), SS(e->icccm.wm_res_name),
+		 SS(e->icccm.wm_res_class), SS(e->icccm.wm_name));
 	     break;
 	  }
      }
