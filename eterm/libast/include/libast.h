@@ -157,12 +157,13 @@
 /* A quick and dirty macro to say, "Hi!  I got here without crashing!" */
 #define MOO()  do {__DEBUG(); libast_dprintf("Moo.\n");} while (0)
 
-/* Assertion/abort macros which are quite a bit more useful than assert() and abort(). */
+/* Assertion/abort macros which are quite a bit more useful than assert() and abort().  These are defined
+   differently based on the use of gcc, the presence of __FILE__ and __LINE__, and the DEBUG setting. */
 #if DEBUG >= 1
 # if defined(__FILE__) && defined(__LINE__)
 #  ifdef __GNUC__
 #   define ASSERT(x)  do {if (!(x)) {if (DEBUG_LEVEL>=1) {fatal_error("ASSERT failed in %s() at %s:%d:  %s\n", __FUNCTION__, __FILE__, __LINE__, #x);} \
-                                                    else {print_warning("ASSERT failed in %s() at %s:%d:  %s\n", __FUNCTION__, __FILE__, __LINE__, #x);}}} while (0)
+                                                    else {print_warning("ASSERT failed in %s() at %s:%d:  %s\n", __FUNCTION__, __FILE__, __LINE__, #x); return;}}} while (0)
 #   define ASSERT_RVAL(x, val)  do {if (!(x)) {if (DEBUG_LEVEL>=1) {fatal_error("ASSERT failed in %s() at %s:%d:  %s\n", __FUNCTION__, __FILE__, __LINE__, #x);} \
                                                               else {print_warning("ASSERT failed in %s() at %s:%d:  %s\n", __FUNCTION__, __FILE__, __LINE__, #x);} \
                                                return (val);}} while (0)
@@ -175,7 +176,7 @@
 #   define ABORT() fatal_error("Aborting in %s() at %s:%d.\n", __FUNCTION__, __FILE__, __LINE__)
 #  else
 #   define ASSERT(x)  do {if (!(x)) {if (DEBUG_LEVEL>=1) {fatal_error("ASSERT failed at %s:%d:  %s\n", __FILE__, __LINE__, #x);} \
-                                                    else {print_warning("ASSERT failed at %s:%d:  %s\n", __FILE__, __LINE__, #x);}}} while (0)
+                                                    else {print_warning("ASSERT failed at %s:%d:  %s\n", __FILE__, __LINE__, #x); return;}}} while (0)
 #   define ASSERT_RVAL(x, val)  do {if (!(x)) {if (DEBUG_LEVEL>=1) {fatal_error("ASSERT failed at %s:%d:  %s\n", __FILE__, __LINE__, #x);} \
                                                               else {print_warning("ASSERT failed at %s:%d:  %s\n", __FILE__, __LINE__, #x);} \
                                                return (val);}} while (0)
@@ -189,7 +190,7 @@
 #  endif
 # else
 #  define ASSERT(x)  do {if (!(x)) {if (DEBUG_LEVEL>=1) {fatal_error("ASSERT failed:  %s\n", #x);} \
-                                                   else {print_warning("ASSERT failed:  %s\n", #x);}}} while (0)
+                                                   else {print_warning("ASSERT failed:  %s\n", #x); return;}}} while (0)
 #  define ASSERT_RVAL(x, val)  do {if (!(x)) {if (DEBUG_LEVEL>=1) {fatal_error("ASSERT failed:  %s\n", #x);} \
                                                              else {print_warning("ASSERT failed:  %s\n", #x);} return (val);}} while (0)
 #  define ASSERT_NOTREACHED()           return
