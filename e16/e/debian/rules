@@ -74,7 +74,7 @@ install-stamp: build-stamp
 	$(INSTALL) -m 755 src/enlightenment debian/enlightenment-nosound/usr/bin/
 	dh_installwm -penlightenment-nosound enlightenment
 	
-	$(INSTALL) -m 644  AUTHORS INSTALL README debian/enlightenment-docs/usr/share/doc/enlightenment-docs/
+	$(INSTALL) -m 644 NEWS AUTHORS INSTALL README debian/enlightenment-docs/usr/share/doc/enlightenment-docs/
 	$(INSTALL) -m 644  src/ChangeLog debian/enlightenment-docs/usr/share/doc/enlightenment-docs/changelog
 	dh_installchangelogs -penlightenment-docs
 	dh_compress -penlightenment-docs

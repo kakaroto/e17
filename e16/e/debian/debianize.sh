@@ -45,18 +45,15 @@ END
 
 cat > "debian/enlightenment-nosound.conffiles" <<- "END"
 /etc/menu-methods/enlightenment-nosound
-
 END
 
 cat > "debian/enlightenment-nosound.links" <<- "END"
 usr/share/doc/enlightenment-doc usr/share/doc/enlightenment-nosound
-
 END
 
 cat > "debian/enlightenment-nosound.menu" <<- "END"
 ?package(enlightenment-nosound):needs="wm" section="WindowManagers"\
    title="Enlightenment" command="/usr/X11R6/bin/enlightenment"
-
 END
 
 cat > "debian/enlightenment-nosound.menu-method" <<- "END"
@@ -126,12 +123,10 @@ END
 
 cat > "debian/enlightenment-theme-bluesteel.links" <<- "END"
 usr/share/doc/enlightenment-docs usr/share/doc/enlightenment-theme-bluesteel
-
 END
 
 cat > "debian/enlightenment-theme-brushedmetal.links" <<- "END"
 usr/share/doc/enlightenment-docs usr/share/doc/enlightenment-theme-brushedmetal
-
 END
 
 cat > "debian/enlightenment-theme-brushedmetal.postinst" <<- "END"
@@ -174,13 +169,11 @@ END
 
 cat > "debian/enlightenment.links" <<- "END"
 usr/share/doc/enlightenment-docs usr/share/doc/enlightenment
-
 END
 
 cat > "debian/enlightenment.menu" <<- "END"
 ?package(enlightenment):needs="wm" section="WindowManagers"\
    title="Enlightenment" command="/usr/bin/enlightenment"
-
 END
 
 cat > "debian/enlightenment.menu-method" <<- "END"
@@ -250,13 +243,11 @@ END
 
 cat > "debian/enlightenment-docs.dirs" <<- "END"
 usr/share/doc/enlightenment-docs
-
 END
 
 cat > "debian/enlightenment-dox.files" <<- "END"
 usr/bin/dox
 usr/share/enlightenment/E-docs
-
 END
 
 cat > "debian/debianize-stub.sh" <<- "END"
@@ -304,22 +295,18 @@ END
 
 cat > "debian/enlightenment-dox.dirs" <<- "END"
 usr/share/enlightenment/E-docs
-
 END
 
 cat > "debian/enlightenment-theme-brushedmetal.dirs" <<- "END"
 usr/share/enlightenment/themes/BrushedM
-
 END
 
 cat > "debian/enlightenment-theme-bluesteel.dirs" <<- "END"
 usr/share/enlightenment/themes/BlueSteel
-
 END
 
 cat > "debian/enlightenment-nosound.dirs" <<- "END"
 usr/share/enlightenment/themes
-
 END
 
 cat > "debian/enlightenment-theme-bluesteel.postinst" <<- "END"
@@ -337,22 +324,18 @@ END
 
 cat > "debian/enlightenment-theme-shinymetal.dirs" <<- "END"
 usr/share/enlightenment/themes/ShinyMetal
-
 END
 
 cat > "debian/enlightenment-theme-shinymetal.links" <<- "END"
 usr/share/doc/enlightenment-docs usr/share/doc/enlightenment-theme-shinymetal
-
 END
 
 cat > "debian/enlightenment.conffiles" <<- "END"
 /etc/menu-methods/enlightenment
-
 END
 
 cat > "debian/enlightenment.dirs" <<- "END"
 usr/share/enlightenment/themes
-
 END
 
 cat > "debian/enlightenment-theme-bluesteel.prerm" <<- "END"
