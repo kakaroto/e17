@@ -14,7 +14,7 @@ AC_PROG_MAKE_SET
 
 AM_MAINTAINER_MODE
 
-AC_PATH_GENERIC(giblib, 1.1.0, [
+AC_PATH_GENERIC(giblib, 1.2.1, [
   AC_SUBST(GIBLIB_LIBS)
   AC_SUBST(GIBLIB_CFLAGS) ],
   AC_MSG_ERROR(Cannot find giblib: Is giblib-config in the path?) )
