@@ -70,7 +70,7 @@ static void *theme_keys[] = {
 	"/appearance/notebook/tab_box/base.bits.db",
 	"/appearance/notebook/tab_box/base/visible", "no",
 	"/appearance/notebook/tab_button/base",
-	"/appearance/notebook/tab_button/base.bits.db",
+	"/appearance/notebook/tab_button/base-top.bits.db",
 	"/appearance/notebook/tab_button/base/visible", "yes",
 
 	"/appearance/seeker/horizontal/base",

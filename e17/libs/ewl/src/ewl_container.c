@@ -1,17 +1,16 @@
 
 #include <Ewl.h>
 
-static void __ewl_container_configure(Ewl_Widget * w, void *event_data,
-				      void *user_data);
-static void __ewl_container_realize(Ewl_Widget * w, void *event_data,
-				    void *user_data);
-static void __ewl_container_reparent(Ewl_Widget * w, void *event_data,
-				     void *user_data);
-static void __ewl_container_destroy(Ewl_Widget * w, void *event_data,
-				    void *user_data);
-static void __ewl_container_destroy_recursive(Ewl_Widget * w,
-					      void *event_data,
-					      void *user_data);
+void __ewl_container_realize(Ewl_Widget * w, void *event_data,
+			     void *user_data);
+void __ewl_container_configure(Ewl_Widget * w, void *event_data,
+			       void *user_data);
+void __ewl_container_reparent(Ewl_Widget * w, void *event_data,
+			      void *user_data);
+void __ewl_container_destroy(Ewl_Widget * w, void *event_data,
+			     void *user_data);
+void __ewl_container_destroy_recursive(Ewl_Widget * w, void *event_data,
+				       void *user_data);
 
 void
 ewl_container_init(Ewl_Container * c, char *appearance)
@@ -205,7 +204,7 @@ ewl_container_get_child_at_recursive(Ewl_Container * widget, int x, int y)
  * When reparenting a container, it's children need the updated information
  * about the container, such as evas and evas_window.
  */
-static void
+void
 __ewl_container_reparent(Ewl_Widget * w, void *event_data, void *user_data)
 {
 	Ewl_Widget *child;
@@ -231,7 +230,7 @@ __ewl_container_reparent(Ewl_Widget * w, void *event_data, void *user_data)
  * creating and showing a clip box, as well as clipping the clip box to parent
  * clip boxes.
  */
-static void
+void
 __ewl_container_realize(Ewl_Widget * w, void *event_data, void *user_data)
 {
 	Ewl_Container *c;
@@ -279,29 +278,31 @@ __ewl_container_realize(Ewl_Widget * w, void *event_data, void *user_data)
 	DLEAVE_FUNCTION;
 }
 
-static void
+void
 __ewl_container_configure(Ewl_Widget * w, void *event_data, void *user_data)
 {
-	int l = 0, r = 0, t = 0, b = 0;
-
 	DENTER_FUNCTION;
 	DCHECK_PARAM_PTR("w", w);
 
 	if (EWL_CONTAINER(w)->clip_box)
 	  {
+		  int ll = 0, rr = 0, tt = 0, bb = 0;
+
 		  if (w->ebits_object)
-			  ebits_get_insets(w->ebits_object, &l, &r, &t, &b);
+			  ebits_get_insets(w->ebits_object, &ll, &rr, &tt,
+					   &bb);
 
 		  evas_move(w->evas, EWL_CONTAINER(w)->clip_box,
-			    CURRENT_X(w) + l, CURRENT_Y(w) + t);
+			    CURRENT_X(w) + ll, CURRENT_Y(w) + tt);
 		  evas_resize(w->evas, EWL_CONTAINER(w)->clip_box,
-			      CURRENT_W(w) - (l + r), CURRENT_H(w) - (t + b));
+			      CURRENT_W(w) - (ll + rr),
+			      CURRENT_H(w) - (tt + bb));
 	  }
 
 	DLEAVE_FUNCTION;
 }
 
-static void
+void
 __ewl_container_destroy(Ewl_Widget * w, void *event_data, void *user_data)
 {
 	DENTER_FUNCTION;
@@ -326,7 +327,7 @@ __ewl_container_destroy(Ewl_Widget * w, void *event_data, void *user_data)
 	DLEAVE_FUNCTION;
 }
 
-static void
+void
 __ewl_container_destroy_recursive(Ewl_Widget * w, void *event_data,
 				  void *user_data)
 {

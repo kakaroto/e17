@@ -21,6 +21,7 @@ struct _ewl_notebook
 	Ewl_Container container;
 
 	Ewl_Widget *tab_box;
+	Ewl_Position tabs_position;
 
 	Ewl_NotebookPage *visible_np;
 	Ewd_List *pages;
@@ -32,5 +33,12 @@ void ewl_notebook_prepend_page(Ewl_Widget * w, Ewl_Widget * c,
 			       Ewl_Widget * l);
 void ewl_notebook_insert_page(Ewl_Widget * w, Ewl_Widget * c,
 			      Ewl_Widget * l, int p);
+
+void ewl_notebook_set_tabs_alignment(Ewl_Widget * w, Ewl_Alignment a);
+Ewl_Alignment ewl_notebook_get_tabs_alignment(Ewl_Widget * w);
+
+void ewl_notebook_set_tabs_position(Ewl_Widget * w, Ewl_Position p);
+Ewl_Position ewl_notebook_get_tabs_position(Ewl_Widget * w);
+
 
 #endif /* __EWL_NOTEBOOK_H__ */

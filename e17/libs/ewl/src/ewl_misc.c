@@ -6,7 +6,7 @@ void ewl_idle_render(void *data);
 
 extern Ewd_List *ewl_window_list;
 
-Ewl_Options ewl_options;
+char *xdisplay = NULL;
 
 static void ewl_init_parse_options(int argc, char **argv);
 static void ewl_parse_option_array(int argc, char **argv);
@@ -22,9 +22,6 @@ ewl_init(int argc, char **argv)
 	DENTER_FUNCTION;
 
 	ewl_init_parse_options(argc, argv);
-
-	if (ewl_options.xdisplay)
-		xdisplay = ewl_options.xdisplay;
 
 	if (!e_display_init(xdisplay))
 	  {
@@ -55,7 +52,7 @@ ewl_init(int argc, char **argv)
 }
 
 void
-ewl_main()
+ewl_main(void)
 {
 	DENTER_FUNCTION;
 
@@ -70,14 +67,14 @@ ewl_main()
 void
 ewl_idle_render(void *data)
 {
-	Ewl_Widget *widget;
+	Ewl_Widget *w;
 
 	DENTER_FUNCTION;
 
 	if (!ewl_window_list)
 	  {
 		  DERROR("FATAL ERROR: EWL has not been initialized\n");
-		  exit(1);
+		  exit(-1);
 	  }
 
 	if (ewd_list_is_empty(ewl_window_list))
@@ -85,21 +82,21 @@ ewl_idle_render(void *data)
 
 	ewd_list_goto_first(ewl_window_list);
 
-	while ((widget = EWL_WIDGET(ewd_list_next(ewl_window_list))) != NULL)
+	while ((w = EWL_WIDGET(ewd_list_next(ewl_window_list))) != NULL)
 	  {
 
 		  /*
 		   * If we have any unrealized windows at this point, we want to
 		   * realize and configure them to layout the children correct.
 		   */
-		  if (!REALIZED(widget))
+		  if (!REALIZED(w))
 		    {
-			    ewl_widget_realize(widget);
-			    ewl_widget_configure(widget);
+			    ewl_widget_realize(w);
+			    ewl_widget_configure(w);
 		    }
 
-		  if (widget->evas)
-			  evas_render(widget->evas);
+		  if (w->evas)
+			  evas_render(w->evas);
 	  }
 
 	DRETURN;
@@ -107,21 +104,13 @@ ewl_idle_render(void *data)
 }
 
 void
-ewl_main_quit()
+ewl_main_quit(void)
 {
-	Ewl_Widget *widget;
-
 	DENTER_FUNCTION;
 
-	if (ewl_window_list)
-	  {
-		  ewd_list_goto_first(ewl_window_list);
+	e_event_loop_quit();
 
-		  while ((widget = ewd_list_next(ewl_window_list)) != NULL)
-			  ewl_widget_destroy_recursive(widget);
-	  }
-
-	exit(-1);
+	DLEAVE_FUNCTION;
 }
 
 static void
@@ -129,7 +118,6 @@ ewl_init_parse_options(int argc, char **argv)
 {
 	DENTER_FUNCTION;
 
-	memset(&ewl_options, 0, sizeof(Ewl_Options));
 	ewl_parse_option_array(argc, argv);
 
 	DLEAVE_FUNCTION;
@@ -142,7 +130,6 @@ ewl_parse_option_array(int argc, char **argv)
 		"a:A:b:BcC:dD:e:f:Fg:hH:iIklL:mM:nNo:O:pPqQrR:sS:tT:uUvVwW:xXy:zZ1:2:3:4:56:78:90:";
 
 	static struct option lopts[] = {
-		{"ewl_debug-level", 1, 0, '@'},
 		{"ewl_display", 1, 0, '$'},
 		{0, 0, 0, 0}
 	};
@@ -157,18 +144,9 @@ ewl_parse_option_array(int argc, char **argv)
 		    {
 		    case 0:
 			    break;
-
-		    case '@':
-			    ewl_options.debug_level = atoi(optarg);
-			    D(0,
-			      ("Setting debug level to %i",
-			       ewl_options.debug_level));
-			    break;
-
 		    case '$':
-			    ewl_options.xdisplay = optarg;
+			    xdisplay = optarg;
 			    break;
-
 		    default:
 			    break;
 		    }

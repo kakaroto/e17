@@ -7,15 +7,18 @@ extern Ewl_Widget *last_key;
 extern Ewl_Widget *last_focused;
 extern Ewl_Widget *dnd_widget;
 
-static void __ewl_widget_show(Ewl_Widget * w, void *event_data,
-			      void *user_data);
-static void __ewl_widget_hide(Ewl_Widget * w, void *event_data,
-			      void *user_data);
-static void __ewl_widget_realize(Ewl_Widget * w, void *event_data,
+static void __ewl_widget_show(Ewl_Widget * w, void *ev_data, void *user_data);
+static void __ewl_widget_hide(Ewl_Widget * w, void *ev_data, void *user_data);
+static void __ewl_widget_realize(Ewl_Widget * w, void *ev_data,
 				 void *user_data);
-static void __ewl_widget_destroy(Ewl_Widget * w, void *event_data,
+void
+__ewl_widget_configure_ebits_object(Ewl_Widget * w, void *ev_data,
+				    void *user_data);
+void __ewl_widget_configure_fx_clip_box(Ewl_Widget * w, void *ev_data,
+					void *user_data);
+static void __ewl_widget_destroy(Ewl_Widget * w, void *ev_data,
 				 void *user_data);
-static void __ewl_widget_reparent(Ewl_Widget * w, void *event_data,
+static void __ewl_widget_reparent(Ewl_Widget * w, void *ev_data,
 				  void *user_data);
 
 void
@@ -44,7 +47,9 @@ ewl_widget_init(Ewl_Widget * w, char *appearance)
 	ewl_callback_append(w, EWL_CALLBACK_REALIZE, __ewl_widget_realize,
 			    NULL);
 	ewl_callback_append(w, EWL_CALLBACK_CONFIGURE,
-			    __ewl_widget_configure, NULL);
+			    __ewl_widget_configure_fx_clip_box, NULL);
+	ewl_callback_append(w, EWL_CALLBACK_CONFIGURE,
+			    __ewl_widget_configure_ebits_object, NULL);
 	ewl_callback_append(w, EWL_CALLBACK_THEME_UPDATE,
 			    __ewl_widget_theme_update, NULL);
 	ewl_callback_append(w, EWL_CALLBACK_DESTROY, __ewl_widget_destroy,
@@ -299,6 +304,7 @@ __ewl_widget_destroy(Ewl_Widget * w, void *ev_data, void *data)
 		  ebits_hide(w->ebits_object);
 		  ebits_unset_clip(w->ebits_object);
 		  ebits_free(w->ebits_object);
+		  w->ebits_object = NULL;
 	  }
 
 	/*
@@ -309,6 +315,7 @@ __ewl_widget_destroy(Ewl_Widget * w, void *ev_data, void *data)
 		  evas_hide(w->evas, w->fx_clip_box);
 		  evas_unset_clip(w->evas, w->fx_clip_box);
 		  evas_del_object(w->evas, w->fx_clip_box);
+		  w->fx_clip_box = NULL;
 	  }
 
 	/*
@@ -324,12 +331,6 @@ __ewl_widget_destroy(Ewl_Widget * w, void *ev_data, void *data)
 	 * the remaining callbacks. This preserves the list of the destroy
 	 * type so we don't get a segfault.
 	 */
-	if (w->callbacks[EWL_CALLBACK_DESTROY])
-	  {
-		  ewd_list_clear(w->callbacks[EWL_CALLBACK_DESTROY]);
-		  w->callbacks[EWL_CALLBACK_DESTROY] = NULL;
-	  }
-
 	ewl_callback_clear(w);
 
 	FREE(w);
@@ -341,7 +342,7 @@ __ewl_widget_destroy(Ewl_Widget * w, void *ev_data, void *data)
  * Every widget must show it's fx_clip_box to be seen
  */
 static void
-__ewl_widget_show(Ewl_Widget * w, void *event_data, void *user_data)
+__ewl_widget_show(Ewl_Widget * w, void *ev_data, void *user_data)
 {
 	DENTER_FUNCTION;
 	DCHECK_PARAM_PTR("w", w);
@@ -356,7 +357,7 @@ __ewl_widget_show(Ewl_Widget * w, void *event_data, void *user_data)
  * Every widget must hide it's fx_clip_box in order to hide
  */
 static void
-__ewl_widget_hide(Ewl_Widget * w, void *event_data, void *user_data)
+__ewl_widget_hide(Ewl_Widget * w, void *ev_data, void *user_data)
 {
 	DENTER_FUNCTION;
 	DCHECK_PARAM_PTR("w", w);
@@ -371,7 +372,7 @@ __ewl_widget_hide(Ewl_Widget * w, void *event_data, void *user_data)
  * Perform the basic operations necessary for realizing a widget
  */
 static void
-__ewl_widget_realize(Ewl_Widget * w, void *event_data, void *user_data)
+__ewl_widget_realize(Ewl_Widget * w, void *ev_data, void *user_data)
 {
 	Ewl_Container *pc;
 
@@ -403,12 +404,11 @@ __ewl_widget_realize(Ewl_Widget * w, void *event_data, void *user_data)
  * Perform the basic operations necessary for configuring a widget
  */
 void
-__ewl_widget_configure(Ewl_Widget * w, void *event_data, void *user_data)
+__ewl_widget_configure_ebits_object(Ewl_Widget * w, void *ev_data,
+				    void *user_data)
 {
 	DENTER_FUNCTION;
 	DCHECK_PARAM_PTR("w", w);
-
-	ewl_object_apply_requested(w);
 
 	/*
 	 * Move the base ebits object to the correct size and position
@@ -419,9 +419,18 @@ __ewl_widget_configure(Ewl_Widget * w, void *event_data, void *user_data)
 		  ebits_resize(w->ebits_object, CURRENT_W(w), CURRENT_H(w));
 	  }
 
-	/*
-	 * Now move the clipbox to the correct size and position
-	 */
+	DLEAVE_FUNCTION;
+}
+
+void
+__ewl_widget_configure_fx_clip_box(Ewl_Widget * w, void *ev_data,
+				   void *user_data)
+{
+	DENTER_FUNCTION;
+	DCHECK_PARAM_PTR("w", w);
+
+	ewl_object_apply_requested(w);
+
 	if (w->fx_clip_box)
 	  {
 		  evas_move(w->evas, w->fx_clip_box, CURRENT_X(w),
@@ -433,12 +442,11 @@ __ewl_widget_configure(Ewl_Widget * w, void *event_data, void *user_data)
 	DLEAVE_FUNCTION;
 }
 
-
 /*
  * This simplifies updating the appearance of the widget
  */
 void
-__ewl_widget_theme_update(Ewl_Widget * w, void *event_data, void *user_data)
+__ewl_widget_theme_update(Ewl_Widget * w, void *ev_data, void *user_data)
 {
 	int len;
 	char *i;
@@ -522,7 +530,7 @@ __ewl_widget_theme_update(Ewl_Widget * w, void *event_data, void *user_data)
  * Perform the basic operations necessary for reparenting a widget
  */
 static void
-__ewl_widget_reparent(Ewl_Widget * w, void *event_data, void *user_data)
+__ewl_widget_reparent(Ewl_Widget * w, void *ev_data, void *user_data)
 {
 	DENTER_FUNCTION;
 	DCHECK_PARAM_PTR("w", w);

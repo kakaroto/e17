@@ -19,10 +19,12 @@ __destroy_image_test_window(Ewl_Widget * w, void *ev_data, void *user_data)
 
 	ewd_dlist_goto_first(images);
 
-	while ((str = ewd_dlist_next(images)) != NULL)
+	while ((str = ewd_dlist_remove_last(images)) != NULL)
 		FREE(str);
 
-	ewl_widget_destroy(w);
+	ewd_dlist_destroy(images);
+
+	ewl_widget_destroy_recursive(w);
 
 	ewl_callback_append(image_button, EWL_CALLBACK_CLICKED,
 			    __create_image_test_window, NULL);

@@ -14,7 +14,7 @@ __spinner_main_window_configure(Ewl_Widget * w, void *ev_data,
 void
 __destroy_spinner_test_window(Ewl_Widget * w, void *ev_data, void *user_data)
 {
-	ewl_widget_destroy(w);
+	ewl_widget_destroy_recursive(w);
 
 	ewl_callback_append(spinner_button, EWL_CALLBACK_CLICKED,
 			    __create_spinner_test_window, NULL);

@@ -1,3 +1,9 @@
+Sun Oct  02 03:45:39 2001 Christopher Rosendahl <crosendahl@northernwatch.com>
+	* Added functions to change the position and alignment of the tabs in
+	  a Ewl_Notebook.
+	* Made ewl_main_quit only exit the ecore event loop.
+	  We don't destroy all widgets or call exit() anymore.
+
 Sun Sep  30 03:38:44 2001 Christopher Rosendahl <crosendahl@northernwatch.com>
 	* Added a padd structure to the Ewl_Object.
 	* Made the Ewl_Box make use of the new padding in the Ewl_Object, and
