@@ -21,11 +21,6 @@ main(int argc, char **argv)
       exit(0);
   }
   
-  if((ecore_x_init(NULL)) == 0) {
-     ecore_shutdown();
-     exit(0);
-  }
-
   if((ecore_config_init("engage")) == ECORE_CONFIG_ERR_FAIL) {
      ecore_x_shutdown();
      ecore_shutdown();
@@ -39,6 +34,12 @@ main(int argc, char **argv)
     ecore_shutdown();
     exit(0);
   }
+
+  if((ecore_x_init(NULL)) == 0) {
+     ecore_shutdown();
+     exit(0);
+  }
+
   e_app_init();
 
   ecore_event_handler_add(ECORE_EVENT_SIGNAL_EXIT, exit_cb, NULL);
