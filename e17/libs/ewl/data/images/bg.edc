@@ -5,6 +5,7 @@ images {
 	image, "elicit.png" LOSSY 98;
 	image, "elicit1.png" LOSSY 98;
 	image, "elicit2.png" LOSSY 98;
+	image, "elicit3.png" LOSSY 98;
 	image, "entrance.png" LOSSY 98;
 	image, "e-logo.png" LOSSY 98;
 }
@@ -167,7 +168,8 @@ collections {
 						offset, -1 -1;
 					}
 					image {
-						normal, "elicit2.png";
+						normal, "elicit3.png";
+						tween, "elicit2.png";
 						tween, "elicit1.png";
 					}
 				}
@@ -239,7 +241,7 @@ collections {
 			program {
 				name,       "change_entrance";
 				action,     STATE_SET "entrance" 0.2;
-				transition, LINEAR 0.3;
+				transition, LINEAR 3.0;
 				target,     "display";
 				in,         5.0 0.0;
 				after,      "change_text_entrance";
