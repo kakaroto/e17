@@ -212,7 +212,7 @@ EwinDestroy(EWin * ewin)
    if (ewin->icccm.wm_command)
       Efree(ewin->icccm.wm_command);
    if (ewin->icccm.wm_command_argv)
-      freestrlist(ewin->icccm.wm_command_argv, ewin->icccm.wm_command_argc);
+      EstrlistFree(ewin->icccm.wm_command_argv, ewin->icccm.wm_command_argc);
    if (ewin->icccm.wm_machine)
       Efree(ewin->icccm.wm_machine);
 #if ENABLE_EWMH

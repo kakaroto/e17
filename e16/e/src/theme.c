@@ -147,7 +147,7 @@ append_merge_dir(char *dir, char ***list, int *count)
 	     (*list)[(*count) - 1] = Estrdup(ss);
 	  }
      }
-   freestrlist(str, num);
+   EstrlistFree(str, num);
 
    return def;
 }
@@ -249,7 +249,7 @@ ThemeGetDefault(void)
 	   break;
      }
    if (lst)
-      freestrlist(lst, num);
+      EstrlistFree(lst, num);
    if (path)
       return ThemeGetPath(path);
 
@@ -469,7 +469,7 @@ ThemesIpc(const char *params, Client * c __UNUSED__)
 	for (i = 0; i < num; i++)
 	   IpcPrintf("%s\n", lst[i]);
 	if (lst)
-	   freestrlist(lst, num);
+	   EstrlistFree(lst, num);
      }
    else if (!strcmp(cmd, "use"))
      {

@@ -155,6 +155,28 @@ execApplication(const char *params)
 }
 
 void
+Espawn(int argc __UNUSED__, char **argv)
+{
+   int                 fd;
+
+   if (!argv || !argv[0])
+      return;
+
+   if (fork())
+      return;
+
+   setsid();
+   /* Close all file descriptors except the std 3 */
+   for (fd = 3; fd < 1024; fd++)
+      close(fd);
+
+   execvp(argv[0], argv);
+
+   DialogAlertOK(_("There was an error running the program:\n%s\n"), argv[0]);
+   exit(100);
+}
+
+void
 ActionsHandleMotion(void)
 {
    switch (Mode.mode)

@@ -460,6 +460,161 @@ Estrdupcat2(char *ss, const char *s1, const char *s2)
    return s;
 }
 
+char              **
+EstrlistDup(char **lst, int num)
+{
+   char              **ss;
+   int                 i;
+
+   if (!lst || num <= 0)
+      return NULL;
+
+   ss = (char **)Emalloc((num + 1) * sizeof(char *));
+   for (i = 0; i < num; i++)
+      ss[i] = Estrdup(lst[i]);
+   ss[i] = NULL;
+
+   return ss;
+}
+
+void
+EstrlistFree(char **lst, int num)
+{
+   if (!lst)
+      return;
+   while (num--)
+      if (lst[num])
+	 Efree(lst[num]);
+   Efree(lst);
+}
+
+char               *
+EstrlistJoin(char **lst, int num)
+{
+   int                 i, size;
+   char               *s;
+
+   if (!lst || num <= 0)
+      return NULL;
+
+   s = NULL;
+
+   size = strlen(lst[0]) + 1;
+   s = Emalloc(size);
+   strcpy(s, lst[0]);
+   for (i = 1; i < num; i++)
+     {
+	size += strlen(lst[i]) + 1;
+	s = Erealloc(s, size);
+	strcat(s, " ");
+	strcat(s, lst[i]);
+     }
+
+   return s;
+}
+
+char               *
+EstrlistEncodeEscaped(char *buf, int len, char **lst, int num)
+{
+   int                 i, j, ch;
+   char               *s, *p;
+
+   if (!lst || num <= 0)
+      return NULL;
+
+   j = 0;
+   s = buf;
+   p = lst[0];
+   for (i = 0; i < len - 2; i++)
+     {
+	ch = *p++;
+	switch (ch)
+	  {
+	  default:
+	     *s++ = ch;
+	     break;
+	  case '\0':
+	     if (++j >= num)
+		goto done;
+	     p = lst[j];
+	     *s++ = ' ';
+	     break;
+	  case ' ':
+	     *s++ = '\\';
+	     *s++ = ' ';
+	     i++;
+	     break;
+	  }
+     }
+
+ done:
+   *s = '\0';
+   return buf;
+}
+
+char              **
+EstrlistDecodeEscaped(const char *str, int *pnum)
+{
+   int                 num, len;
+   const char         *s, *p;
+   char              **lst;
+
+   if (!str)
+      return NULL;
+
+   lst = NULL;
+   num = 0;
+   s = str;
+   for (;;)
+     {
+	while (*s == ' ')
+	   s++;
+	if (*s == '\0')
+	   break;
+
+	lst = Erealloc(lst, (num + 1) * sizeof(char *));
+	lst[num] = NULL;
+	len = 0;
+
+	for (;;)
+	  {
+	     p = strchr(s, ' ');
+	     if (!p)
+		p = s + strlen(s);
+
+	     lst[num] = Erealloc(lst[num], len + p - s + 1);
+	     memcpy(lst[num] + len, s, p - s);
+	     len += p - s;
+	     lst[num][len] = '\0';
+
+	     s = p;
+	     if (p[-1] == '\\')
+	       {
+		  if (*p)
+		     lst[num][len - 1] = ' ';
+		  else
+		     break;
+	       }
+	     else
+	       {
+		  break;
+	       }
+	     while (*s == ' ')
+		s++;
+	     if (*s == '\0')
+		break;
+	  }
+	num++;
+     }
+
+   /* Append NULL item */
+   lst = Erealloc(lst, (num + 1) * sizeof(char *));
+   lst[num] = NULL;
+
+   *pnum = num;
+   return lst;
+}
+
 #if !USE_LIBC_SETENV
 int
 Esetenv(const char *name, const char *value, int overwrite __UNUSED__)

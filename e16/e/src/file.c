@@ -196,17 +196,6 @@ E_ls(const char *dir, int *num)
 }
 
 void
-freestrlist(char **l, int num)
-{
-   if (!l)
-      return;
-   while (num--)
-      if (l[num])
-	 Efree(l[num]);
-   Efree(l);
-}
-
-void
 E_rm(const char *s)
 {
    if ((!s) || (!*s))

@@ -1162,7 +1162,7 @@ int                 ActionsEnd(EWin * ewin);
 void                About(void);
 
 int                 execApplication(const char *params);
-int                 doDragButtonEnd(const char *params);
+void                Espawn(int argc, char **argv);
 
 /* alert.c */
 void                AlertInit(void);
@@ -1677,7 +1677,6 @@ int                 isfile(const char *s);
 int                 isdir(const char *s);
 int                 isabspath(const char *s);
 char              **E_ls(const char *dir, int *num);
-void                freestrlist(char **l, int num);
 void                E_rm(const char *s);
 void                E_mv(const char *s, const char *ss);
 void                E_cp(const char *s, const char *ss);
@@ -1922,6 +1921,12 @@ const char         *EGetSavePrefixCommon(void);
 
 /* memory.c */
 void                EDisplayMemUse(void);
+char              **EstrlistDup(char **lst, int num);
+void                EstrlistFree(char **lst, int num);
+char               *EstrlistJoin(char **lst, int num);
+char               *EstrlistEncodeEscaped(char *buf, int len, char **lst,
+					  int num);
+char              **EstrlistDecodeEscaped(const char *str, int *pnum);
 
 /* menus.c */
 int                 MenuStyleConfigLoad(FILE * fs);

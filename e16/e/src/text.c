@@ -300,7 +300,7 @@ TextSize(TextClass * tclass, int active, int sticky, int state,
 		*width = wid;
 	  }
      }
-   freestrlist(lines, num_lines);
+   EstrlistFree(lines, num_lines);
 }
 
 void
@@ -765,7 +765,7 @@ TextstateDrawText(TextState * ts, Window win, const char *text, int x, int y,
 	     yy += ts->xfont->ascent + ts->xfont->descent;
 	  }
      }
-   freestrlist(lines, num_lines);
+   EstrlistFree(lines, num_lines);
 }
 
 void

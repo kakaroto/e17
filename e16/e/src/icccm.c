@@ -523,31 +523,6 @@ ICCCM_GetGeoms(EWin * ewin, Atom atom_change)
 	      ewin->client.w, ewin->client.h, EwinGetName(ewin));
 }
 
-static char        *
-Estrlistjoin(char **pstr, int nstr)
-{
-   int                 i, size;
-   char               *s;
-
-   if (!pstr || nstr <= 0)
-      return NULL;
-
-   s = NULL;
-
-   size = strlen(pstr[0]) + 1;
-   s = Emalloc(size);
-   strcpy(s, pstr[0]);
-   for (i = 1; i < nstr; i++)
-     {
-	size += strlen(pstr[i]) + 1;
-	s = Erealloc(s, size);
-	strcat(s, " ");
-	strcat(s, pstr[i]);
-     }
-
-   return s;
-}
-
 #define TryGroup(e) (((e)->client.group != None) && ((e)->client.group != (e)->client.win))
 
 void
@@ -573,6 +548,9 @@ ICCCM_GetInfo(EWin * ewin, Atom atom_change)
    if (atom_change == 0 || atom_change == ECORE_X_ATOM_WM_COMMAND)
      {
 	_EFREE(ewin->icccm.wm_command);
+	if (ewin->icccm.wm_command_argv)
+	   EstrlistFree(ewin->icccm.wm_command_argv,
+			ewin->icccm.wm_command_argc);
 
 	ewin->icccm.wm_command_argv =
 	   ecore_x_window_prop_string_list_get(ewin->client.win,
@@ -584,8 +562,9 @@ ICCCM_GetInfo(EWin * ewin, Atom atom_change)
 						  ECORE_X_ATOM_WM_COMMAND,
 						  &(ewin->icccm.
 						    wm_command_argc));
+
 	ewin->icccm.wm_command =
-	   Estrlistjoin(ewin->icccm.wm_command_argv,
+	   EstrlistJoin(ewin->icccm.wm_command_argv,
 			ewin->icccm.wm_command_argc);
      }
 
