@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: enlightenment 0.16.4\n"
 "POT-Creation-Date: 2000-01-14 15:06+0100\n"
-"PO-Revision-Date: 2000-01-04 23:15+0100\n"
+"PO-Revision-Date: 2000-01-15 02:15-0500\n"
 "Last-Translator: Antonio Ognio Cesti  <ognio@altavista.net>\n"
 "Language-Team: Spanish <es@li.org>\n"
 "MIME-Version: 1.0\n"
@@ -188,8 +188,8 @@ msgstr ""
 "Servidor y por eso no ha sido muy bien probaba.\n"
 "\n"
 "Es posible que su Servidor X does no maneje bien el\n"
-"pedido de cambiar de modos rápidamente y se pueda colgar, glitch,\n"
-"mostrar imágenes mutiladas ó quizás sencillamente rehusarse a trabajar.\n"
+"pedido de cambiar de modos rápidamente y se pueda colgar,\n"
+"mostrar restos de imágenes ó sencillamente rehusarse a trabajar.\n"
 "\n"
 "Este es un aviso y solo sera mostrado por esta única vez.\n"
 "Si su Servidor no funciona correctamente entonces probablemente\n"
@@ -222,8 +222,8 @@ msgid ""
 "%s\n"
 msgstr ""
 "Mensaje de Cliente desconocido recibido.\n"
-"Nombre  del Cliente:    %s\n"
-"versión del Cliente: %s\n"
+"Nombre del Cliente:  %s\n"
+"Versión del Cliente: %s\n"
 "Contenido del Mensaje:\n"
 "\n"
 "%s\n"
@@ -248,7 +248,7 @@ msgstr "CONFIG: ignorando data extra en \"%s\"\n"
 #: src/config.c:3377
 #, c-format
 msgid "CONFIG: missing required data in \"%s\"\n"
-msgstr "CONFIG: data requerida no disponible en \"%s\"\n"
+msgstr "CONFIG: data requerida no disponible en  \"%s\"\n"
 
 #: src/config.c:438 src/config.c:515
 #, c-format
@@ -553,7 +553,7 @@ msgstr ""
 
 #: src/config.c:3186
 msgid "error"
-msgstr "error"
+msgstr ""
 
 #: src/config.c:3386
 msgid "Theme versioning ERROR"
@@ -561,7 +561,7 @@ msgstr "ERROR en la versión del tema"
 
 #: src/config.c:3387 src/config.c:3421
 msgid "Restart with Defaults"
-msgstr "Reiniciar con los valores por defecto"
+msgstr "Reiniciar con los valores por omisión"
 
 #: src/config.c:3388 src/config.c:3422
 msgid "Abort and Exit"
@@ -632,9 +632,9 @@ msgstr ""
 "para ser compatible.\n"
 "\n"
 "Si Ud. acaba de actualizar E a una nueva versión\n"
-"Reiniciar Con Valores Por Defecto eliminará las\n"
+"Reiniciar con Valores por omisión eliminará las\n"
 "preferencias de usuario existentes e iniciará límpiamente\n"
-"con los valores por defecto del sistema. Luego puede volver a modificar\n"
+"con los valores por omisión del sistema. Luego puede volver a modificar\n"
 "la configuración a su gusto de manera segura.\n"
 
 #: src/config.c:3696
@@ -681,17 +681,18 @@ msgid ""
 msgstr ""
 "Enlightenment ha experimentado algunos problemas graves\n"
 "al intentar cargar el tema que Ud. eligió ó el directorio\n"
-"de configuración por defecto:\n"
+"de configuración por omisión:\n"
 "%s/config/\n"
 "Esto impedirá que Enlightenment carga cualquier tipo de\n"
 "archivos de configuración.\n"
-"Ya que nada ha sido encontrado, Enlightenment probablemento\n"
+"Ya que nada ha sido encontrado, Enlightenment probablemente\n"
 "no va a encontrar archivos para su  configuración en ninguna parte\n"
 "del sistema, asi que casi no tendrá ninguna configuración cargada\n"
-"al momento de empezar a ejecutarse. Es muy probable que este sea el\n"
-"simbolo de una mala instalación de Enlightenment si no existe dicho "
+"al momento de empezar a ejecutarse. Es muy probable que este sea una\n"
+"señal de una mala instalación de Enlightenment si no existe dicho "
 "directorio.\n"
-"Las probables causas incluyen aquella en que el paquete (binario) ha sido\n"
+"Las probables causas incluyen aquella en la que el paquete (binario) ha "
+"sido\n"
 "mal construido, ó 'make install' no ha sido digitado\n"
 "o durante la instalación el directorio mencionado arriba\n"
 "no pudo ser copiado ó creado debido a problemas con los\n"
@@ -817,14 +818,14 @@ msgid ""
 "it off.\n"
 msgstr ""
 "\n"
-"Acaba de activar el efecto Espejo de Agua.\n"
+"Acaba de habilitar el efecto Espejo de Agua.\n"
 "\n"
 "Si observa con cuidado el fondo de su escritorio, y si este\n"
 "no es un color sólido (por ejemplo es una textura, loseta o\n"
 "imagen), verá un pozo de agua en la parte inferior de su\n"
 "pantalla que refleja todo lo que está encima de él.\n"
 "\n"
-"Para desactivar este efecto solo vuelva a seleccionarlo para\n"
+"Para deshabilitar este efecto solo vuelva a seleccionarlo para\n"
 "que deje de trabajar.\n"
 
 #: src/fx.c:386 src/fx.c:404
@@ -860,7 +861,7 @@ msgstr ""
 "\n"
 "Puede corregir esta situación con el comando 'imlib_config'\n"
 "o copiando el archivo imrc del sistema (/usr/etc/imrc) a ~/.imrc\n"
-"y editándolo para activar la memoria compartida.\n"
+"y editándolo para habilitar la memoria compartida.\n"
 "\n"
 
 #: src/fx.c:405
@@ -911,14 +912,14 @@ msgid ""
 "it off.\n"
 msgstr ""
 "\n"
-"Acaba de activar el efecto Gotas de Lluvia.\n"
+"Acaba de habilitar el efecto Gotas de Lluvia.\n"
 "\n"
 "Si observa con cuidado el fondo de su escritorio, y si este\n"
 "no es un color sólido (por ejemplo es una textura, loseta o\n"
 "imagen), verá como gotas de lluvia caen en el fondo del escritorio.\n"
 "Este efecto puede hacer un uso intensivo del CPU.\n"
 "\n"
-"Para desactivar este efecto solo vuelva a seleccionarlo para\n"
+"Para deshabilitar este efecto solo vuelva a seleccionarlo para\n"
 "que deje de trabajar.\n"
 
 #: src/fx.c:715
@@ -939,14 +940,14 @@ msgid ""
 "it off.\n"
 msgstr ""
 "\n"
-"Acaba de activar el efecto Olas.\n"
+"Acaba de habilitar el efecto Olas.\n"
 "\n"
 "Si observa con cuidado el fondo de su escritorio, y si este\n"
 "no es un color sólido (por ejemplo es una textura, loseta ó\n"
 "imagen), verá un pozo de agua en la parte inferior de su pantalla\n"
 "que refleja todo lo que está encima de él haciendo \"olas\".\n"
 "\n"
-"Para desactivar este efecto solo vuelva a seleccionarlo para\n"
+"Para deshabilitar este efecto solo vuelva a seleccionarlo para\n"
 "que deje de trabajar.\n"
 
 #: src/fx.c:881
@@ -962,9 +963,9 @@ msgid ""
 "it off.\n"
 msgstr ""
 "\n"
-"Acaba de activar el efecto Imagespinners.\n"
+"Acaba de habilitar el efecto Imagespinners.\n"
 "\n"
-"Para desactivar este efecto solo vuelva a seleccionarlo para\n"
+"Para deshabilitar este efecto solo vuelva a seleccionarlo para\n"
 "que deje de trabajar.\n"
 
 #: src/groups.c:117 src/groups.c:150
@@ -1034,7 +1035,7 @@ msgstr "Selección de Grupo de Ventanas"
 #: src/settings.c:3341 src/settings.c:3686 src/settings.c:3984
 #: src/settings.c:4122
 msgid "Close"
-msgstr "Close"
+msgstr ""
 
 #: src/handlers.c:59
 msgid ""
@@ -1157,7 +1158,7 @@ msgstr ""
 "Tendrá que dejar de ejecutar su Administrador de Ventanas activo\n"
 "antes de que puede ejecutar Enlightenment con éxito.\n"
 "\n"
-"Si Ud. no ha editado aún sus archivos de inicialización de usuario\n"
+"Si Ud. no ha editado aún sus archivos de inicio de usuario\n"
 "Enlightenment puede hacerlo por Ud. y la próxima vez que ingrese\n"
 "al sistema, luego de salir del Administrador de Ventanas actual,\n"
 "Ud. estará ejecutando Enlightenment.\n"
@@ -1192,7 +1193,7 @@ msgid ""
 "Are you ABSOLUTELY sure?\n"
 msgstr ""
 "¿Está absolutamente seguro de que desea que Enlightenment\n"
-"edite sus archivos de inicialización por Ud.?\n"
+"edite sus archivos de inicio por Ud.?\n"
 "\n"
 "Si sus archivos de configuración están muy personalizados\n"
 "esta operación podría no funcionar.\n"
@@ -1205,7 +1206,7 @@ msgstr "Opciones del Portaíconos"
 
 #: src/iconify.c:2431
 msgid "This Iconbox Settings..."
-msgstr "Configuración de este Portaíconos..."
+msgstr "Configuración de este Portaíconos"
 
 #: src/iconify.c:2434
 msgid "Close Iconbox"
@@ -1252,7 +1253,7 @@ msgid ""
 "code is current to    : %s\n"
 msgstr ""
 "Versión de Enlightenment: %s\n"
-"Código actualizado al: %s\n"
+"Código actualizado al   : %s\n"
 
 #. Set up all the text bits that belong on the GSOD
 #: src/main.c:89
@@ -1540,7 +1541,7 @@ msgstr ""
 "Por favor, rectifique esta situación y asegúrese de que la\n"
 "documentación se haya instalado correctamente.\n"
 "\n"
-"La razón por la que este archivo no ss encuentra puede estar en\n"
+"La razón por la que este archivo no se encuentra puede estar en\n"
 "paquetes mal construidos, la eliminación manual de dicho programa\n"
 "ó un error en la instalación de Enlightenment.\n"
 
@@ -1559,38 +1560,38 @@ msgid ""
 msgstr ""
 "!!!!!!!! ERROR ERROR ERROR ERROR !!!!!!!!\n"
 "\n"
-"No se encuentra el tema POR DEFECTO de Enlightenment ó no está\n"
-"configurado correctamente para ser usado como tema POR DEFECTO.\n"
+"No se encuentra el tema por omisión de Enlightenment ó no está\n"
+"configurado correctamente para ser usado como tema por omisión.\n"
 "\n"
 "Este es un error fatal y Enlightenment dejará de ejecutarse.\n"
 "Por favor, rectifíque esta situación y asegúrese de que dicho tema\n"
-"se haya instalado correctamente. El tema POR DEFECTO con el que\n"
+"se haya instalado correctamente. El tema por omisión con el que\n"
 "Enlightenment viene generalmente es BrushedMetal-Tigert, que es un\n"
-"tema adecuado como tema para ser tema por defecto.\n"
+"tema adecuado como para ser utilizado como tema por omisión.\n"
 
 #: src/misc.c:422
 msgid "Theme does not contain a borders.cfg file\n"
-msgstr "El tema no contiene un archivo borders.cfg file\n"
+msgstr "El tema no contiene un archivo borders.cfg\n"
 
 #: src/misc.c:428
 msgid "Theme does not contain a buttons.cfg file\n"
-msgstr "El tema no contiene un archivo buttons.cfg file\n"
+msgstr "El tema no contiene un archivo buttons.cfg\n"
 
 #: src/misc.c:434
 msgid "Theme does not contain a colormodifiers.cfg file\n"
-msgstr "El tema no contiene un archivo colormodifiers.cfg file\n"
+msgstr "El tema no contiene un archivo colormodifiers.cfg\n"
 
 #: src/misc.c:440
 msgid "Theme does not contain a cursors.cfg file\n"
-msgstr "El tema no contiene un archivo cursors.cfg file\n"
+msgstr "El tema no contiene un archivo cursors.cfg\n"
 
 #: src/misc.c:446
 msgid "Theme does not contain a desktops.cfg file\n"
-msgstr "El tema no contiene un archivo desktops.cfg file\n"
+msgstr "El tema no contiene un archivo desktops.cfg\n"
 
 #: src/misc.c:452
 msgid "Theme does not contain a imageclasses.cfg file\n"
-msgstr "El tema no contiene un archivo imageclasses.cfg file\n"
+msgstr "El tema no contiene un archivo imageclasses.cfg\n"
 
 #: src/misc.c:458
 msgid "Theme does not contain a init.cfg file\n"
@@ -1676,7 +1677,7 @@ msgstr ""
 "modo de Miniaturas si continúa ejecutando ese modo del Pager\n"
 "bajo estas condiciones.\n"
 "\n"
-"Se le sugiere que cambia la configuración de su Pager para\n"
+"Se le sugiere que cambie la configuración de su Pager para\n"
 "inhabilitar las miniaturas y mejorar el rendimiento.\n"
 "\n"
 
@@ -1697,7 +1698,7 @@ msgstr ""
 "\n"
 "Por favor, habilite la función Pixmaps Compartidos en Imlib y\n"
 "luego reinicie Enlightenment para ganar mayor rendimiento\n"
-"en los pagers cuando el modo Miniaturas está activado.\n"
+"en los pagers cuando el modo Miniaturas está habilitado.\n"
 "\n"
 
 #: src/pager.c:558
@@ -1760,7 +1761,7 @@ msgstr "Miniaturas Habilitadas"
 
 #: src/pager.c:1310
 msgid "Snapshotting Off"
-msgstr "Miniaturas inhabilitadas"
+msgstr "Miniaturas Inhabilitadas"
 
 #: src/pager.c:1317
 msgid "High Quality On"
@@ -1768,7 +1769,7 @@ msgstr "Calidad Alta Habilitada"
 
 #: src/pager.c:1322
 msgid "High Quality Off"
-msgstr "Calidad Alta inhabilitada"
+msgstr "Calidad Alta Inhabilitada"
 
 #: src/session.c:245
 msgid ""
@@ -1785,7 +1786,7 @@ msgid ""
 "There was an error saving your autosave data - filing\n"
 "system problems.\n"
 msgstr ""
-"Ocurrió un error salvado su data autosalvable.\n"
+"Ocurrió un error salvando sus datos autosalvables.\n"
 "Problemas con su sistema de archivos.\n"
 
 #. Less of the hope.... E survives
@@ -2021,7 +2022,7 @@ msgid ""
 "Screens in size"
 msgstr ""
 "%i x %i\n"
-"pantallas de Tamaño"
+"pantallas de tamaño"
 
 #: src/settings.c:963 src/settings.c:1027
 msgid ""
@@ -2029,7 +2030,7 @@ msgid ""
 "Screen in size"
 msgstr ""
 "1\n"
-"Pantalla de Tamaño"
+"Pantalla de tamaño"
 
 #: src/settings.c:992
 msgid "Virtual Desktop Settings"
@@ -2041,11 +2042,11 @@ msgstr "Tamaño de Escritorio Virtual:\n"
 
 #: src/settings.c:1072
 msgid "Enable edge flip"
-msgstr "Enable edge flip"
+msgstr "habilitar cambio de bordes"
 
 #: src/settings.c:1079
 msgid "Resistance at edge of screen:\n"
-msgstr "Resistencia al filo de la pantalla:\n"
+msgstr "Resistencia al borde de la pantalla:\n"
 
 #: src/settings.c:1144
 msgid "Window Placement Settings"
@@ -2085,7 +2086,7 @@ msgstr "Mostrar Tooltips"
 
 #: src/settings.c:1380
 msgid "Display Root Window Tips"
-msgstr "Mostrar Tips de la Ventana Raíz"
+msgstr "Mostrar Tips de la Ventana Raíz (Root)"
 
 #: src/settings.c:1388
 msgid "Tooltip Delay:\n"
@@ -2145,7 +2146,7 @@ msgstr "Siempre hacer aparecer menúes en la pantalla"
 
 #: src/settings.c:1769
 msgid "Use saveunders to reduce window exposures"
-msgstr "Use saveunders to reduce window exposures"
+msgstr "Usar saveunders para reducir la exposición de ventanas"
 
 #: src/settings.c:1778
 msgid "Animate shading and unshading of windows"
@@ -2202,7 +2203,7 @@ msgid ""
 "File: %s\n"
 msgstr ""
 "Información de la definición de Fondo:\n"
-"Nombre: %s\n"
+"Nombre:  %s\n"
 "Archivo: %s\n"
 
 #: src/settings.c:2460 src/settings.c:2462
@@ -2282,7 +2283,7 @@ msgstr ""
 
 #: src/settings.c:3198
 msgid "Use dithering in Hi-Colour"
-msgstr ""
+msgstr "Usar dithering en Hi-Color"
 
 #: src/settings.c:3205
 msgid "Background overrides theme"
@@ -2338,7 +2339,7 @@ msgstr "Animación al momento de iconizar Portaíconos"
 
 #: src/settings.c:3517
 msgid "Alignment of anchoring when automatically resizing:"
-msgstr "Alignment of anchoring when automatically resizing:"
+msgstr "Alineamiento de anclaje cuando se redimensiona automáticamente:"
 
 #: src/settings.c:3539
 msgid "Icon image display policy (if one operation fails, try the next):"
@@ -2375,7 +2376,7 @@ msgstr "Flechas de Barra de Desplazamiento:"
 
 #: src/settings.c:3617
 msgid "Horizontal"
-msgstr "Horizontal"
+msgstr ""
 
 #: src/settings.c:3624
 msgid "Left / Top"
@@ -2387,7 +2388,7 @@ msgstr "Inicio"
 
 #: src/settings.c:3638
 msgid "Vertical"
-msgstr "Vertical"
+msgstr ""
 
 #: src/settings.c:3646
 msgid "Right / Bottom"
@@ -2428,7 +2429,7 @@ msgid ""
 "  The following actions are  \n"
 "  applied to all group members:  "
 msgstr ""
-"  Las siguientes acciones son aplicadas\n"
+"  Las siguientes acciones son aplicadas  \n"
 "  a todos los miembros del grupo:  "
 
 #: src/settings.c:3902 src/settings.c:4054
@@ -2461,11 +2462,11 @@ msgstr "Plegando"
 
 #: src/settings.c:3972 src/settings.c:4110
 msgid "Mirror Shade/Iconify/Stick"
-msgstr "Mirror Shade/Iconify/Stick"
+msgstr "Espejo Plegar/Iconizar/Pegar"
 
 #: src/settings.c:4028
 msgid "Default Group Control Settings"
-msgstr "Configuración de Control de Grupo por Defecto"
+msgstr "Configuración de Control de Grupo por omisión"
 
 #: src/setup.c:222
 msgid ""
@@ -2513,11 +2514,11 @@ msgstr ""
 "\n"
 "Probablemente su Servidor X sea muy antiguo ó esté mal configurado.\n"
 "\n"
-"Saliendo.\n"
+"Saliendo...\n"
 
 #: src/setup.c:328
 msgid "Imlib initialisation error"
-msgstr "Error en la inicialización de Imlib"
+msgstr "Error en la iniciación de Imlib"
 
 #: src/setup.c:330
 msgid ""
@@ -2530,10 +2531,10 @@ msgid ""
 msgstr ""
 "ERROR FATAL:\n"
 "\n"
-"Enlightenment no puede inicializar Imlib.\n"
+"Enlightenment no puede iniciar Imlib.\n"
 "\n"
-"Es es poco usual. No se puede continuar.\n"
-"Saliendo.\n"
+"Esto es poco usual. No se puede continuar.\n"
+"Saliendo...\n"
 
 #: src/setup.c:343
 msgid ""
@@ -2546,10 +2547,10 @@ msgid ""
 msgstr ""
 "ERROR FATAL:\n"
 "\n"
-"Enlightenment no puede inicializar Fnlib.\n"
+"Enlightenment no puede iniciar Fnlib.\n"
 "\n"
-"Es es poco usual. No se puede continuar.\n"
-"Saliendo.\n"
+"Esto es poco usual. No se puede continuar.\n"
+"Saliendo...\n"
 
 #: src/setup.c:404
 msgid "X server version error"
@@ -2570,11 +2571,11 @@ msgid ""
 "access to, nor have heard of.\n"
 msgstr ""
 "Advertencia\n"
-"Este no es un Servidor X X11. En realidad habla el protocolo X%i.\n"
+"Este no es un Servidor X11. En realidad habla el protocolo X%i.\n"
 "Esto significa que Enlightenment no funcionará, ó\n"
 "funcionará de forma incorrecta. Si es posterior a X11, entonces\n"
-"el autor de Enlightenment nunca ha tenido acceso ni ha escuchado\n"
-"hablar de su servidor.\n"
+"los autores de Enlightenment nunca han tenido acceso ni han escuchado\n"
+"hablar de dicho servidor.\n"
 
 #: src/setup.c:620
 #, c-format
@@ -2668,7 +2669,7 @@ msgstr "Cancelar"
 
 #: src/snaps.c:837
 msgid "Error saving snaps file\n"
-msgstr "Error saving snaps file\n"
+msgstr "Error al guardar el archivo de snaps\n"
 
 #: src/sound.c:53
 msgid "Error finding sound file"
@@ -2691,7 +2692,7 @@ msgstr ""
 
 #: src/sound.c:262
 msgid "Error initialising sound"
-msgstr "Error inicializando el sonido"
+msgstr "Error iniciando el sonido"
 
 #: src/sound.c:264
 msgid ""
@@ -2699,9 +2700,9 @@ msgid ""
 "communicating with the audio server (Esound). Audio will\n"
 "now be disabled.\n"
 msgstr ""
-"El Audio ha sido activado en Enlightenment pero ha ocurrido\n"
-"un error de comunicación con el Servidor de Audio (Esound).  Audio will\n"
-" now be disabled.\n"
+"El Audio ha sido habilitado en Enlightenemnt pero ha ocurrido\n"
+"un error de comunicación con el Servidor de Audio (Esound). El audio\n"
+"será deshabilitado.\n"
 
 #: src/theme.c:293
 msgid "Unknown\n"
@@ -2709,7 +2710,7 @@ msgstr "Desconocido\n"
 
 #: src/theme.c:316 src/theme.c:328
 msgid "Theme file/directory does not exist\n"
-msgstr "El archivo/directorio con el tema no existe\n"
+msgstr "El archivo ó directorio con el tema no existe\n"
 
 #: src/theme.c:348
 #, c-format
@@ -2725,7 +2726,7 @@ msgstr ""
 "El tema:\n"
 "%s\n"
 "Es un paquete de tema mal estructurado y por eso no esta siendo usado.\n"
-"Enlightenment usará el tema POR DEFECTO en su lugar.\n"
+"Enlightenment usará el tema por omisión en su lugar.\n"
 "\n"
 "La razón de la existencia de errores en el tema es:\n"
 "%s"
