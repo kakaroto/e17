@@ -290,7 +290,7 @@ draw_ewl(Mode draw_mode)
    else
       disp_table = ewl_grid_new(1, 1);
    disp_cell[1] = ewl_cell_new();
-   eqn_disp = ewl_text_new("0");
+   eqn_disp = ewl_text_new("");
 
    if (calc_mode == SCI) {
       ewl_object_set_alignment(EWL_OBJECT(eqn_disp), EWL_FLAG_ALIGN_LEFT);
