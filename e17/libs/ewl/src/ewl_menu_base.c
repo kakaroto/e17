@@ -25,7 +25,7 @@ void ewl_menu_base_init(Ewl_Menu_Base * menu, char *image, char *title)
 	ewl_menu_item_init(EWL_MENU_ITEM(menu), image, title);
 	ewl_widget_appearance_set(EWL_WIDGET(menu), "menu_base");
 
-	ewl_callback_append(EWL_WIDGET(menu), EWL_CALLBACK_MOUSE_DOWN,
+	ewl_callback_append(EWL_WIDGET(menu), EWL_CALLBACK_SELECT,
 			    ewl_menu_base_expand_cb, NULL);
 
 	ewl_callback_append(EWL_WIDGET(menu), EWL_CALLBACK_DESELECT,
@@ -96,6 +96,7 @@ int ewl_menu_item_init(Ewl_Menu_Item * item, char *image, char *text)
 	 */
 	if (!ewl_box_init(EWL_BOX(item), EWL_ORIENTATION_HORIZONTAL))
 		DRETURN_INT(FALSE, DLEVEL_STABLE);
+	ewl_widget_appearance_set(EWL_WIDGET(item), "menuitem");
 
 	ewl_object_fill_policy_set(EWL_OBJECT(item), EWL_FLAG_FILL_HFILL);
 
