@@ -71,7 +71,6 @@ void playlist_item_remove(PlayList *pl, PlayListItem *pli) {
 	assert(pli);
 
 	pl->duration -= playlist_item_duration_get(pli);
-
 	pl->items = evas_list_remove(pl->items, pli);
 	playlist_item_free(pli);
 }
@@ -123,12 +122,31 @@ PlayListItem *playlist_item_add(PlayList *pl, unsigned int id)
 
 PlayListItem *playlist_set_current(PlayList *pl, unsigned int id)
 {
-	PlayListItem *pli;
+	PlayListItem *pli = NULL;
 
-	pli = playlist_item_find_by_id (pl, id);
-	assert(pli);
-
-	pl->current_item = pli;
-
+	assert(pl);
+	if((pli = playlist_item_find_by_id (pl, id)))
+	{
+	    pl->current_item = pli;
+	}
+	else
+	{
+	    fprintf(stderr, "%p %d\n", pl, id); 
+	}
 	return pli;
+}
+bool
+playlist_load_file(PlayList *pl, const char *fileuri, bool append)
+{
+    if(pl)
+    {
+	if(fileuri)
+	{
+	    xmmsc_playlist_add(pl->xmms, (char*)fileuri);
+	    return(true);
+	}
+    }
+    else
+	fprintf(stderr, "Playlist was NULL in playlist_load_file\n");
+    return(false);
 }

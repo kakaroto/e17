@@ -38,10 +38,9 @@ unsigned int playlist_item_duration_get(PlayListItem *pli) {
  * @param pli
  */
 void playlist_item_free(PlayListItem *pli) {
-	if (!pli)
-		return;
+	assert(pli);
 
-	if (pli->container)
+	if (pli->container && pli->edje)
 		e_container_element_destroy(pli->container, pli->edje);
 
 	free(pli);

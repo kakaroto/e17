@@ -185,13 +185,17 @@ EDJE_CB(playlist_item_play) {
 }
 
 static void remove_playlist_item(Euphoria *e, PlayListItem *pli) {
-	unsigned int id = pli->id;
-
+	
 	assert(pli);
-
+	
+	xmmsc_playlist_remove(e->xmms, pli->id);
+	/* This is all commented out pending xmms feeding us a valid id, on
+	 * playlist item removal */
+	/*
+	if(e->playlist->current_item == pli && e->track_current_pos > 0)
+	    xmmsc_playback_next(e->xmms);
 	playlist_item_remove(e->playlist, pli);
-	xmmsc_playlist_remove(e->xmms, id);
-	xmmsc_playback_next(e->xmms);
+	 */
 }
 
 EDJE_CB(playlist_item_remove) {
@@ -417,9 +421,8 @@ cb_key_release(void *data, Evas *evas, Evas_Object *obj, void *event_info) {
 
 }
 
-#if 0
 /* Callback to to close the filedialog window */
-void destroy_ewl_filedialog(Ewl_Widget * w, void *ev_data,
+static void destroy_ewl_filedialog(Ewl_Widget * w, void *ev_data,
                             void *user_data)
 {
 	ewl_widget_destroy(w);
@@ -427,19 +430,21 @@ void destroy_ewl_filedialog(Ewl_Widget * w, void *ev_data,
 }
 
 static void cb_file_dialog_value_changed(Ewl_Widget *w, void *ev_data,
-                                         void *udata) {
+                                         void *udata) 
+{
 	Euphoria *e = udata;
 
 	if (ev_data)
-		playlist_load_any(e->playlist, ev_data, true);
-
+	{
+	    char buf[PATH_MAX];
+	    snprintf(buf, PATH_MAX, "file://%s", (char*)ev_data);
+	    xmmsc_playlist_add(e->xmms, buf);
+	}
 	ewl_widget_hide(_fd_win);
 }
-#endif
 
 /* File Dialog to add files, thanx to EWL */
 EDJE_CB(playlist_add) {
-#if 0
     Ewl_Widget *fd_win = NULL;
     Ewl_Widget *fd = NULL;
     Ewl_Widget *vbox = NULL;
@@ -466,6 +471,8 @@ EDJE_CB(playlist_add) {
 	ewl_widget_show(vbox);
 
 	fd = ewl_filedialog_new(EWL_FILEDIALOG_TYPE_OPEN);
+	ewl_object_set_fill_policy(EWL_OBJECT(fd), EWL_FLAG_FILL_FILL |
+	                           EWL_FLAG_FILL_SHRINK);
 
 	ewl_callback_append(fd, EWL_CALLBACK_VALUE_CHANGED,
 	                    cb_file_dialog_value_changed, e);
@@ -475,7 +482,6 @@ EDJE_CB(playlist_add) {
 
 	_fd_win = fd_win;
     ewl_widget_show(_fd_win);
-#endif
 }
 
 EDJE_CB(playlist_del) {
@@ -515,12 +521,22 @@ XMMS_CB(playback_playtime) {
 
 XMMS_CB(playback_currentid) {
 	unsigned int id = (unsigned int) arg;
-
+	unsigned int *ids = NULL;
 	/* if there's no current item, use the first one instead */
 	id = MAX(id, 1);
-
-	playlist_set_current(e->playlist, id);
-	xmmsc_playlist_get_mediainfo(e->xmms, id);
+	if((id = xmmscs_playback_current_id(e->xmms)) < 1)
+	{
+	    if((ids = xmmscs_playlist_list(e->xmms)))
+	    {
+		if(ids[0])
+		    id = ids[0];
+	    }
+	}
+	if(id >= 1)
+	{
+	    playlist_set_current(e->playlist, id);
+	    xmmsc_playlist_get_mediainfo(e->xmms, id);
+	}
 	hilight_current_track(e);
 }
 
@@ -546,8 +562,10 @@ XMMS_CB(playlist_mediainfo) {
 
 XMMS_CB(playlist_list) {
 	int i, *id = arg;
-
+	
+	/*
 	playlist_remove_all(e->playlist);
+	 */
 
 	if (!id)
 		return;
@@ -564,11 +582,22 @@ XMMS_CB(playlist_add) {
 }
 
 XMMS_CB(playlist_remove) {
-	PlayListItem *pli;
+	PlayListItem *pli = NULL;
 	unsigned int id = (unsigned int) arg;
-
-	pli = playlist_item_find_by_id(e->playlist, id);
-	assert(pli);
-
-	playlist_item_remove(e->playlist, pli);
+	
+	/* FIXME: I think this is xmms2, id is always 0, stopping segv */
+	if(id < 1)
+	    fprintf(stderr, "Is %d what really was removed??? :)\n", id);
+	else
+	{
+	    pli = playlist_item_find_by_id(e->playlist, id);
+	    assert(pli);
+	    playlist_item_remove(e->playlist, pli);
+	}
+}
+XMMS_CB(playlist_clear) {
+	PlayListItem *pli;
+	
+	playlist_remove_all(e->playlist);
+	/* FIXME: Set the text in the player to the default */
 }

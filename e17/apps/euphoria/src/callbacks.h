@@ -67,6 +67,7 @@ XMMS_CB(playlist_mediainfo);
 XMMS_CB(playlist_list);
 XMMS_CB(playlist_add);
 XMMS_CB(playlist_remove);
+XMMS_CB(playlist_clear);
 
 #endif
 
