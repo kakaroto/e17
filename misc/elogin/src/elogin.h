@@ -12,24 +12,6 @@
 #include <Ebits.h>
 
 
-typedef struct _Elogin_Greeter Elogin_Greeter;
-
-struct _Elogin_Greeter
-{
-   /* gui stuffs */
-   Evas_Object greet_win;
-   Evas_Object user_input;
-   Evas_Object pass_input;
-   int w, h;
-
-   /* other goodies */
-   char *user;
-   char *password;
-   int attempts;
-};
-
-char *elogin_greeter_msg(char *str);
-
 /* entry stuffs */
 typedef struct _E_Entry E_Entry;
 
@@ -65,6 +47,26 @@ struct _E_Entry
    void (*func_focus_out) (E_Entry *entry, void *data);
    void *data_focus_out;
 };
+
+/* greeter */
+typedef struct _Elogin_Greeter Elogin_Greeter;
+
+struct _Elogin_Greeter
+{
+   /* gui stuffs */
+   Evas_Object greet_win;
+   E_Entry *user_input;
+   E_Entry *pass_input;
+   int w, h;
+
+   /* other goodies */
+   char *user;
+   char *password;
+   int attempts;
+};
+
+char *elogin_greeter_msg(char *str);
+
 
 void e_entry_init(void);
 void e_entry_free(E_Entry *entry);

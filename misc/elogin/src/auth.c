@@ -125,7 +125,8 @@ void elogin_set_environment(Userinfo *uinfo)
 int elogin_start_client(Userinfo *uinfo)
 {
    struct passwd *pw = uinfo->pw;
-
+   char *app = strcat(pw->pw_dir, "/.elogin");
+   
    e_sync();
    XCloseDisplay(e_display_get());
 
@@ -135,7 +136,8 @@ int elogin_start_client(Userinfo *uinfo)
    {
       printf("could not switch user id\n");
    }
-   execl("/bin/sh", "/bin/sh", "-c", "/usr/bin/X11/xterm", NULL);
+   execl("/bin/sh", "/bin/sh", "-c", app, NULL);
+/*   execl(pw->pw_shell, pw->pw_shell, "-c", app, NULL); */
 
    return SUCCESS;
 }

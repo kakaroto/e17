@@ -22,10 +22,10 @@ int starting_x = 0;
  * tcp/ip stack - so localhost:whatever is ONLY a chak for xnest
  */
 /* defines */
-/* #define X_SERVER "/usr/X11R6/bin/X -terminate -ac -quiet" */
-#define X_SERVER "/usr/X11R6/bin/Xnest -terminate -geometry 640x480 -ac -full :1"
-#define X_DISP "localhost:1"
-#define ELOGIN "/home/chris/devel/elogin/src/elogin"
+#define X_SERVER "/usr/X11R6/bin/X -terminate -ac -quiet"
+/* #define X_SERVER "/usr/X11R6/bin/Xnest -terminate -geometry 640x480 -ac -full :1" */
+#define X_DISP "localhost:0"
+#define ELOGIN "/home/chris/cvs/e17/misc/elogin/src/elogin"
 /* ================================================ */
 
 /* main */
@@ -106,6 +106,7 @@ void elogin_exit(int signum)
 		  XSync(d->display, False);
 		  XCloseDisplay(d->display);
 		  d->display = NULL;
+		  kill(x_pid, SIGTERM);
  	       }
 	  }
 	else if (pid == x_pid)

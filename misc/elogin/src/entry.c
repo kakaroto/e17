@@ -65,6 +65,7 @@ e_entry_down_cb(void *_data, Evas _e, Evas_Object _o, int _b, int _x, int _y)
    int pos;
    
    entry = _data;
+   
    if ((_b == 2) && (!entry->mouse_down))       
      {
 	if (entry->paste_win) e_window_destroy(entry->paste_win);
@@ -372,7 +373,7 @@ e_entry_new(void)
    entry->buffer=strdup("");
    entry->select.start = -1;
    entry->end_width = 4;
-   entries = evas_list_prepend(entries, entry);
+   entries = evas_list_append(entries, entry);
    return entry;
 }
 
@@ -442,6 +443,50 @@ e_entry_handle_keypress(E_Entry *entry, Ev_Key_Down *e)
 	entry->focused = 0;
 	if (entry->func_enter) 
 	  entry->func_enter(entry, entry->data_enter);
+     }
+   else if (!strcmp(e->key, "Tab"))
+     {
+	Evas_List l;
+	int this_is_it = 0;
+	int i = 0;
+
+	for (l = entries; l; l = l->next)
+	{
+	   E_Entry *this_entry;
+	   this_entry = l->data;
+
+	   if (this_is_it)
+	   {
+	      e_entry_set_focus(this_entry, 1);
+	      e_entry_set_focus(entry, 0);
+	      this_is_it = 0;
+	   }
+
+	   if (this_entry == entry)
+	   {
+	      this_is_it = 1;
+	   }
+	}
+
+	if (this_is_it)
+	for (l = entries; l; l = l->prev)
+	{
+	   E_Entry *this_entry;
+	   this_entry = l->data;
+
+	   if (this_is_it)
+	   {
+	      e_entry_set_focus(this_entry, 1);
+	      e_entry_set_focus(entry, 0);
+	      this_is_it = 0;
+	   }
+
+	   if (this_entry == entry)
+	   {
+	      this_is_it = 1;
+	   }
+	}
+
      }
    else
      {
