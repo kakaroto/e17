@@ -97,7 +97,6 @@ LDADD = \
 	$(IMLIB_LIBS) 		\
 	$(XTST_LIBS) 		\
 	$(XVM_LIBS) 		\
-	$(GHTTP_LIBS)		\
 	$(DL_LIBS)		\
 	$(XINERAMA_LIBS)	\
 	$(X_PRE_LIBS) 		\
