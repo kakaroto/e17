@@ -2152,3 +2152,10 @@ Tue Sep 21 19:51:51 PDT 1999
 (Raster)
 
 get rid of 2 warnings
+
+-------------------------------------------------------------------------------
+
+Tue Sep 21 23:17:24 PDT 1999
+(Raster)
+
+only allow one "default group settings" configuration dialog at a time

@@ -3762,7 +3762,7 @@ SettingsDefaultGroupControl(void)
    Dialog             *d;
    DItem              *table, *di;
 
-   if ((d = FindItem("CONFIGURE_MOVERESIZE", 0, LIST_FINDBY_NAME,
+   if ((d = FindItem("CONFIGURE_DEFAULT_GROUP_CONTROL", 0, LIST_FINDBY_NAME,
 		     LIST_TYPE_DIALOG)))
      {
 	AUDIO_PLAY("SOUND_SETTINGS_ACTIVE");
