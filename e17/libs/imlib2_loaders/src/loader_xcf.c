@@ -55,6 +55,7 @@
 #include <string.h>
 #include <netinet/in.h>
 #include <X11/Xlib.h>
+#include <sys/types.h>
 
 #include "common.h"
 #include "image.h"
