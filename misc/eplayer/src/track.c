@@ -38,8 +38,10 @@ int track_update_time(void *udata) {
 	PlayListItem *current_item = playlist_current_item_get(player->playlist);
 	static int old_time = -1;
 	int cur_time;
+	double song_pos;
 
 	cur_time = current_item->current_pos;
+	song_pos = (double)cur_time / (double)current_item->duration;
 	
 	if (player->cfg.time_display == TIME_DISPLAY_LEFT)
 		cur_time = current_item->duration - cur_time;
@@ -49,6 +51,7 @@ int track_update_time(void *udata) {
 
 	old_time = cur_time;
 	ui_refresh_time(player, cur_time);
+	ui_refresh_seeker(player, song_pos);
 
 	return 1;
 }

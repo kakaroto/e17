@@ -234,6 +234,7 @@ static int load_playlist(void *data) {
 		track_open(player);
 	
 	ui_refresh_time(player, 0);
+	ui_refresh_seeker(player, 0);
 
 	return 0; /* stop timer */
 }
