@@ -75,9 +75,7 @@ load_new_menu_from_disk (char *file_to_load, GtkCTreeNode * my_parent)
 					       NULL, text, 5, NULL, NULL,
 					       NULL, NULL, FALSE, FALSE);
 	      if (!strcasecmp (act, "menu"))
-		{
-		  load_new_menu_from_disk (params, current);
-		}
+		load_new_menu_from_disk (params, current);
 
 	      if (txt)
 		g_free (txt);
@@ -108,6 +106,7 @@ load_menus_from_disk (void)
   char s[4096];
   GtkCTreeNode *parent = NULL;
 
+  /* currently hardcoded, but not a big issue to change later */
   sprintf (buf, "%s/.enlightenment/file.menu", homedir (getuid ()));
   menufile = fopen (buf, "r");
   if (!menufile)
@@ -175,10 +174,8 @@ load_menus_from_disk (void)
 				       5, NULL, NULL, NULL, NULL, FALSE,
 				       FALSE);
 
-	      if (!strcmp (act, "menu"))
-		{
-		  load_new_menu_from_disk (params, current);
-		}
+	      if (!strcasecmp (act, "menu"))
+		load_new_menu_from_disk (params, current);
 
 	      if (txt)
 		g_free (txt);
@@ -202,24 +199,21 @@ void
 selection_made (GtkCTree * my_ctree, GList * node, gint column,
 		gpointer user_data)
 {
+  static int first = 1;
   gchar *col1 = NULL;
   gchar *col2 = NULL;
   gchar *col3 = NULL;
   gchar *source = NULL;
   GtkCTreeNode *last_node = NULL;
 
-  if (user_data)
+  if (first)
     {
-      my_ctree = NULL;
-      column = 0;
-      node = NULL;
+      gtk_widget_set_sensitive (GTK_WIDGET (txt_exec), TRUE);
+      gtk_widget_set_sensitive (GTK_WIDGET (txt_icon), TRUE);
+      gtk_widget_set_sensitive (GTK_WIDGET (txt_description), TRUE);
+      gtk_widget_set_sensitive (GTK_WIDGET (btn_browse), TRUE);
+      first = 0;
     }
-
-  gtk_widget_set_sensitive (GTK_WIDGET (txt_exec), TRUE);
-  gtk_widget_set_sensitive (GTK_WIDGET (txt_icon), TRUE);
-  gtk_widget_set_sensitive (GTK_WIDGET (txt_description), TRUE);
-  gtk_widget_set_sensitive (GTK_WIDGET (btn_browse), TRUE);
-
   last_node = GTK_CTREE_NODE ((GTK_CLIST (ctree)->selection)->data);
   gtk_ctree_node_get_text (GTK_CTREE (ctree), GTK_CTREE_NODE (last_node), 0,
 			   &col1);
@@ -237,6 +231,12 @@ selection_made (GtkCTree * my_ctree, GList * node, gint column,
     gtk_label_set_text (GTK_LABEL (lbl_params), "Submenu");
   else
     gtk_label_set_text (GTK_LABEL (lbl_params), "Executes");
+
+  return;
+  user_data = NULL;
+  my_ctree = NULL;
+  column = 0;
+  node = NULL;
 }
 
 GtkWidget *
@@ -287,7 +287,8 @@ create_main_window (void)
     CreateMenuItem (menu, "Quit", "", "Quit Without Saving", quit_cb,
 		    "quit program");
 
-  menu = CreateRightAlignBarSubMenu (menubar, "Help");
+  /* I hate right aligned menus =) It just puts stuff out of the way */
+  menu = CreateBarSubMenu (menubar, "Help");
   menuitem = CreateMenuItem (menu, "About", "", "About E Menu Editor",
 			     NULL, "about");
   menuitem = CreateMenuItem (menu, "Documentation", "",
@@ -430,6 +431,7 @@ create_main_window (void)
   return win;
 }
 
+/* Stick the contents of the entries into the tree */
 void
 entries_to_ctree (GtkWidget * widget, gpointer user_data)
 {
@@ -495,8 +497,8 @@ delete_entry (GtkWidget * widget, gpointer user_data)
 {
   if (GTK_CLIST (ctree)->selection)
     gtk_ctree_remove_node (GTK_CTREE (ctree),
-			   gtk_ctree_node_nth (GTK_CTREE (ctree),
-					       GTK_CLIST (ctree)->focus_row));
+			   GTK_CTREE_NODE (GTK_CLIST (ctree)->selection->
+					   data));
   return;
   widget = NULL;
   user_data = NULL;
@@ -733,11 +735,11 @@ main (int argc, char *argv[])
   GtkWidget *main_win;
   gtk_set_locale ();
   gtk_init (&argc, &argv);
-  gdk_imlib_init ();
+/*  gdk_imlib_init (); */
   tooltips = gtk_tooltips_new ();
   accel_group = gtk_accel_group_new ();
-  gtk_widget_push_visual (gdk_imlib_get_visual ());
-  gtk_widget_push_colormap (gdk_imlib_get_colormap ());
+/*  gtk_widget_push_visual (gdk_imlib_get_visual ()); */
+/*  gtk_widget_push_colormap (gdk_imlib_get_colormap ()); */
   main_win = create_main_window ();
   gtk_signal_connect (GTK_OBJECT (main_win), "destroy",
 		      GTK_SIGNAL_FUNC (on_exit_application), NULL);
@@ -812,7 +814,8 @@ ok_dialog (gchar * message)
 
   dialog_window = gtk_dialog_new ();
   gtk_window_set_transient_for (GTK_WINDOW (dialog_window), GTK_WINDOW (win));
-  gtk_window_set_position(GTK_WINDOW (dialog_window), GTK_WIN_POS_CENTER_ALWAYS);
+  gtk_window_set_position (GTK_WINDOW (dialog_window),
+			   GTK_WIN_POS_CENTER_ALWAYS);
 
   gtk_signal_connect (GTK_OBJECT (dialog_window), "destroy",
 		      GTK_SIGNAL_FUNC (gtk_widget_destroyed), &dialog_window);
