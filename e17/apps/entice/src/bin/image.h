@@ -8,6 +8,9 @@
  */
 #include <Evas.h>
 #include <Ecore.h>
+#define X_DISPLAY_MISSING
+#include <Imlib2.h>
+#undef X_DISPLAY_MISSING
 
 typedef struct _Entice_Image Entice_Image;
 typedef enum _Entice_Image_Scroll_Direction Entice_Scroll_Direction;
@@ -60,5 +63,6 @@ void entice_image_scroll_stop(Evas_Object * o);
 void entice_image_scroll_start(Evas_Object * o, Entice_Scroll_Direction d);
 void entice_image_scroll(Evas_Object * o, Entice_Scroll_Direction d, int val);
 const char *entice_image_file_get(Evas_Object * o);
+void entice_image_rotate(Evas_Object * o, int orientation);
 
 #endif

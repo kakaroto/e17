@@ -178,10 +178,12 @@ entice_config_generate_original_db(char *filename)
    char *signals[] = { "EnticeZoomIn", "EnticeZoomOut", "EnticeFullScreen",
       "EnticeImageNext", "EnticeImagePrev",
       "EnticeZoomDefault", "EnticeZoomFit",
-      "EnticeQuit"
+      "EnticeQuit", "EnticeRotateLeft", "EnticeRotateRight"
    };
    char *keys[] =
-      { "equal", "minus", "f", "space", "BackSpace", "n", "w", "q" };
+      { "equal", "minus", "f", "space", "BackSpace", "n", "w", "q", "Left",
+      "Right"
+   };
    count = sizeof(signals) / sizeof(char *);
 
    if (filename)

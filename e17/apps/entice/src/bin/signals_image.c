@@ -153,6 +153,7 @@ void
 _entice_rotate_left(void *data, Evas_Object * o, const char *emission,
                     const char *source)
 {
+   entice_rotate_image_left();
    return;
    data = NULL;
    o = NULL;
@@ -165,6 +166,7 @@ void
 _entice_rotate_right(void *data, Evas_Object * o, const char *emission,
                      const char *source)
 {
+   entice_rotate_image_right();
    return;
    data = NULL;
    o = NULL;
@@ -331,6 +333,21 @@ _entice_quit(void *data, Evas_Object * o, const char *emission,
              const char *source)
 {
    ecore_main_loop_quit();
+   return;
+   data = NULL;
+   o = NULL;
+   emission = NULL;
+   source = NULL;
+}
+
+/* EnticeImageModified */
+void
+_entice_image_modified(void *data, Evas_Object * o, const char *emission,
+                       const char *source)
+{
+#if DEBUG
+   fprintf(stderr, "Image has been modified !!! :)\n");
+#endif
    return;
    data = NULL;
    o = NULL;

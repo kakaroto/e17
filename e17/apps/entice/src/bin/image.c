@@ -17,6 +17,42 @@ static void entice_image_resize(Evas_Object * o, double w, double h);
 static int _entice_image_scroll_timer(void *data);
 
 void
+entice_image_rotate(Evas_Object * o, int orientation)
+{
+   int iw, ih;
+   double w, h;
+   Entice_Image *im = NULL;
+   Imlib_Image imlib_im = NULL;
+
+   if ((im = evas_object_smart_data_get(o)))
+   {
+      evas_object_image_size_get(im->obj, &iw, &ih);
+      evas_object_geometry_get(o, NULL, NULL, &w, &h);
+
+      if (imlib_im =
+          imlib_create_image_using_copied_data(iw, ih,
+                                               evas_object_image_data_get(im->
+                                                                          obj,
+                                                                          1)))
+      {
+         imlib_context_set_image(imlib_im);
+         imlib_image_orientate(orientation);
+         im->iw = imlib_image_get_width();
+         im->ih = imlib_image_get_height();
+         evas_object_image_size_set(im->obj, im->iw, im->ih);
+         evas_object_image_data_copy_set(im->obj,
+                                         imlib_image_get_data_for_reading_only
+                                         ());
+         evas_object_resize(o, w, h);
+         /* if we're fitting, it'll need to be recalculated */
+         if (entice_image_zoom_fit_get(o))
+            entice_image_zoom_fit(o);
+         imlib_free_image();
+      }
+   }
+}
+
+void
 entice_image_file_set(Evas_Object * o, char *filename)
 {
    char buf[PATH_MAX];

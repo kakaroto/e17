@@ -48,7 +48,7 @@ hookup_edje_signals(Evas_Object * o)
       "EnticeThumbsScrollStop",
       "EnticeImageScrollEastStart", "EnticeImageScrollWestStart",
       "EnticeImageScrollNorthStart", "EnticeImageScrollSouthStart",
-      "EnticeImageScrollStop",
+      "EnticeImageScrollStop", "EnticeImageModified",
       "EnticeQuit"
    };
    edje_callbacks funcs[] = { _entice_delete_current, _entice_remove_current,
@@ -63,7 +63,7 @@ hookup_edje_signals(Evas_Object * o)
       _entice_thumbs_scroll_stop,
       _entice_image_scroll_east_start, _entice_image_scroll_west_start,
       _entice_image_scroll_north_start, _entice_image_scroll_south_start,
-      _entice_image_scroll_stop,
+      _entice_image_scroll_stop, _entice_image_modified,
       _entice_quit, NULL
    };
    count = sizeof(signals) / sizeof(char *);
@@ -326,16 +326,23 @@ entice_file_add_job_cb(void *data)
    {
       file = (char *) data;
 
-      if (file && file[0] == '/')
-         snprintf(buf, PATH_MAX, "%s", file);
-      else
+      if (file)
       {
-         char mycwd[PATH_MAX];
-
-         memset(mycwd, 0, sizeof(mycwd));
-         if (getcwd(mycwd, PATH_MAX))
+         if (file[0] == '/')
+            snprintf(buf, PATH_MAX, "%s", file);
+         else if ((strlen(file) > 7) && strncmp(file, "http://", 7))
          {
-            snprintf(buf, PATH_MAX, "%s/%s", mycwd, file);
+            fprintf(stderr, "http file request\n");
+         }
+         else
+         {
+            char mycwd[PATH_MAX];
+
+            memset(mycwd, 0, sizeof(mycwd));
+            if (getcwd(mycwd, PATH_MAX))
+            {
+               snprintf(buf, PATH_MAX, "%s/%s", mycwd, file);
+            }
          }
       }
       if ((o = e_thumb_new(ecore_evas_get(entice->ee), buf)))
@@ -614,5 +621,24 @@ entice_preview_thumb(Evas_Object * o)
       {
          fprintf(stderr, "Unable to allocate a new preview\n");
       }
+   }
+}
+
+void
+entice_rotate_image_right(void)
+{
+   if (entice && entice->current)
+   {
+      entice_image_rotate(entice->current, 1);
+      edje_object_signal_emit(entice->edje, "EnticeImageModified", "");
+   }
+}
+void
+entice_rotate_image_left(void)
+{
+   if (entice && entice->current)
+   {
+      entice_image_rotate(entice->current, 3);
+      edje_object_signal_emit(entice->edje, "EnticeImageModified", "");
    }
 }
