@@ -2,4 +2,5 @@ Carsten Haitzler <raster@rasterman.com>
   main code
 Nolan Goodnight <n_goodnight@coloradocollege.edu>
   extra key bindings
-  help window
+Daniel Hulme <dh286@cam.ac.uk>
+  update to ecore2 and general code rewriting

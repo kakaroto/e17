@@ -18,10 +18,13 @@ e_scroll_list(void *data)
    icon_y -= (d / 4);
    e_fix_icons();
    if (dd > 3) {
-      if (v == 0)
+      if (v == 0) {
          ecore_timer_add(0.05, e_scroll_list, data);
+         v++;
+      }
       return 1;
    }
+   v=0;
    return 0;
 }
 

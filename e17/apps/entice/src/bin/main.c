@@ -45,8 +45,6 @@ int                 max_colors = MAX_EVAS_COLORS;
 int                 smoothness = 1;
 int                 win_w = W, win_h = H;
 int                 win_x = 0, win_y = 0;
-Ecore_X_Window      main_win;
-Ecore_X_Window      ewin;
 
 int                 icon_x = 0;
 int                 icon_y = 0;
@@ -190,17 +188,13 @@ main(int argc, char **argv)
 	smoothness = atoi(entice_smooth);
      }
    /* image list parsing */
-   if (!(argc - 1))
+   if (argc == 1)
      {
+        /* to be honest, I don't like this behaviour
 	char               *homedir;
 
-	/* CS */
-	printf("CS\n");
-
 	homedir = getenv("HOME");
-	/* homedir="/home/omarhawk/tmp/pics"; */
 
-	/* CS */
 	printf("%s\n", homedir);
 
 	if (homedir == NULL)
@@ -210,6 +204,22 @@ main(int argc, char **argv)
 	  }
 
 	image_create_list_dir(homedir);
+	*/
+      char* dir;
+      /* portability nightmare: this goes in configure. If you don't
+       * like it like this, put it there yourself and send me a patch.
+       */
+#ifdef _GNU_SOURCE
+      dir = get_current_dir_name();
+#else
+      dir = getcwd(NULL, 0);
+#endif
+      if (!dir) {
+	fprintf(stderr, "No file name passed on command line and unable to get the current directory. Exiting.");
+	return EXIT_FAILURE;
+      }
+      image_create_list_dir(dir);
+      
      }
    else
       image_create_list(argc, argv);
@@ -236,6 +246,11 @@ main(int argc, char **argv)
 	exit(-1);
      }
 
+   /* initialise Ecore */
+   if (!ecore_init()) {
+     printf("Maximal evil: unable to init Ecore!\n");
+     return -1;
+   }
    /* find if another entice is running... if it is .. message it. */
    //find_current(); // XXX
 

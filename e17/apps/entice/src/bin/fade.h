@@ -4,6 +4,7 @@
 int                e_fade_info_in(void *data);
 int                e_fade_info_out(void *data);
 
+int		   e_fade_scroller(void *data);
 int                e_fade_scroller_in(void *data);
 int                e_fade_scroller_out(void *data);
 

@@ -111,9 +111,51 @@ e_fade_info_out(void *data)
 }
 
 int
+e_fade_scroller(void * data)
+{
+   static double start = 0.0;
+   double duration = 0.5; // soon-to-be-configurable time taken to slide
+   double val = 0.0;
+   double delay = 0.05; // soon-to-be-configurable time between frames
+   static enum active_state action;
+   static Ecore_Timer *timer = NULL;
+
+   if (!o_mini_image)
+      return 0;
+   if (data) { // not called by timer
+      if (!timer) { // we are starting afresh
+         start = get_time();
+      } else { // there is a fade already going on
+	 start = 2*get_time() - duration - start;
+	 ecore_timer_del(timer);
+      }
+      timer = ecore_timer_add(delay, e_fade_scroller, NULL);
+      action = *(enum active_state *)data;
+      buttons_active = action;
+      return 1;
+   } else
+      val = (get_time() - start) / duration;
+   if (val > 1.0) val = 1.0;
+   if (action == active_in) {
+      evas_object_color_set(o_mini_image, 255, 255, 255, (val * 255));
+      evas_object_color_set(o_mini_select, 255, 255, 255, (val * 255));
+   } else {
+      evas_object_color_set(o_mini_image, 255, 255, 255, ((1.0 - val) * 255));
+      evas_object_color_set(o_mini_select, 255, 255, 255, ((1.0 - val) * 255));
+   }
+
+   if (val < 0.99) // keep going
+      return 1;
+   else { // stick a fork in us, we're done
+      timer = NULL;
+      return 0;
+   }
+}
+/*
+int
 e_fade_scroller_in(void *data)
 {
-   /* int i; */
+   * int i; *
    static int	       v = 0;
    static double       start = 0.0;
    double              duration = 0.5;
@@ -145,7 +187,7 @@ e_fade_scroller_in(void *data)
 int
 e_fade_scroller_out(void *data)
 {
-   /* int i; */
+   * int i; *
    static int	       v = 0;
    static double       start = 0.0;
    double              duration = 2.0;
@@ -170,6 +212,21 @@ e_fade_scroller_out(void *data)
       v = 0;
       return 0;
    }
+}
+*/
+
+int
+e_fade_scroller_in(void *data) {
+   enum active_state command = active_in;
+   e_fade_scroller(&command);
+   return 1;
+}
+
+int
+e_fade_scroller_out(void *data) {
+   enum active_state command = active_out;
+   e_fade_scroller(&command);
+   return 1;
 }
 
 int

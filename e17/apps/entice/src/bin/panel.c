@@ -15,14 +15,19 @@ e_slide_panel(void * data)
 
 
    if (data) { // not called by timer
+      action = *(enum active_state *)data;
       if (!timer) { // we are starting afresh
+	 if ((panel_active == active_force_in && action != active_force_out) ||
+	     (panel_active == active_force_out && action != active_force_in) ||
+	     (panel_active == active_in && action == active_in) ||
+	     (panel_active == active_out && action == active_out))
+	   return 0;
          start = get_time();
+	 panel_active = active_running;
       } else { // there is a slide already going on
 	 start = 2*get_time() - duration - start;
 	 ecore_timer_del(timer);
       }
-      action = *(enum active_state *)data;
-      panel_active = action;
       timer = ecore_timer_add(delay, e_slide_panel, NULL);
       return 1;
    } else
@@ -46,6 +51,7 @@ e_slide_panel(void * data)
    if (val < 0.99) // keep going
       return 1;
    else { // stick a fork in us, we're done
+      panel_active = action;
       timer = NULL;
       return 0;
    }

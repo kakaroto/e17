@@ -188,15 +188,20 @@ e_slide_buttons(void * data)
 
 
    if (data) { // not called by timer
+      action = *(enum active_state *)data;
       if (!timer) { // we are starting afresh
+	 if ((buttons_active == active_force_in && action != active_force_out) ||
+	     (buttons_active == active_force_out && action != active_force_in) ||
+	     (buttons_active == active_in && action == active_in) ||
+	     (buttons_active == active_out && action == active_out))
+	   return 0;
          start = get_time();
+	 buttons_active = active_running;
       } else { // there is a slide already going on
 	 start = 2*get_time() - duration - start;
 	 ecore_timer_del(timer);
       }
       timer = ecore_timer_add(delay, e_slide_buttons, NULL);
-      action = *(enum active_state *)data;
-      buttons_active = action;
       return 1;
    } else
       val = (get_time() - start) / duration;
@@ -219,6 +224,7 @@ e_slide_buttons(void * data)
    if (val < 0.99) // keep going
       return 1;
    else { // stick a fork in us, we're done
+      buttons_active = action;
       timer = NULL;
       return 0;
    }

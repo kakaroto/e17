@@ -54,7 +54,8 @@ enum active_state
    active_out       = 0,
    active_in        = 1,
    active_force_out = 2,
-   active_force_in  = 3
+   active_force_in  = 3,
+   active_running   = 4
 };
 
 #include "buttons.h"

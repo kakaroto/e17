@@ -77,7 +77,6 @@ e_handle_resize(void)
       evas_object_move(o_bt_close, win_w + 256, 0);
    }
    evas_object_move(o_showbuttons, win_w - 288, 0);
-   evas_object_resize(o_showbuttons, 288, 32);
    evas_object_layer_set(o_showbuttons, 1500);
    evas_object_repeat_events_set(o_showbuttons, 1);
    evas_object_layer_set(o_bt_close, 1300);

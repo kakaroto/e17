@@ -6,12 +6,22 @@ and run with the same functionality as the old entice, minus a few features:
 * DND support is not in Ecore2 yet
 * window properties have not been sorted out
 * does not search for existing entice windows on startup
-* BUG: minor drawing problem with panel
-* maybe one or two more I forgot about
 
-However, a few minor bugs have been fixed. On the TODO list at present are:
+However, a few minor bugs have been fixed and new features are being added.
+On the TODO list at present, in order of randomness, are:
 * building a file list from a directory rather than having to be passed names on
   the command line
+* ask for confirmation on file deletion
+* make dragged thumbnails fade gradually as they approach the trashcan
+  rather than suddenly as the cursor passes its boundary
+* maybe add the ability to drag images from one position to another in
+  the list
+* maybe make the file info (name & size) fade out after a few seconds
+* make "Error loading x" messages appear properly rather than in the
+  titlebar
 
+There are some known bugs also:
+* image flipping does not update the image: doing a drag or other operation
+  makes the changes appear
 Any bugs not mentioned here should be raised on Edevel, in #edevelop, or to
-dh286@cam.ac.uk (or to raster@rasterman.com).
+dh286@cam.ac.uk since I appear to be the de facto maintainer.

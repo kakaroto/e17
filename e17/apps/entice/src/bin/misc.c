@@ -32,35 +32,17 @@ setup(void)
    Ecore_X_Atom        a_entice;
    char                string[] = "entice";
 
-   /* setup callbacks for events  legacy code *
-   ecore_event_handler_add(ECORE_X_EVENT_WINDOW_DAMAGE, e_window_damage, NULL);
-   ecore_event_handler_add(ECORE_X_EVENT_MOUSE_MOVE, e_mouse_move, NULL);
-   ecore_event_handler_add(ECORE_X_EVENT_MOUSE_BUTTON_DOWN, e_mouse_down, NULL);
-   ecore_event_handler_add(ECORE_X_EVENT_MOUSE_BUTTON_UP, e_mouse_up, NULL);
-   ecore_event_handler_add(ECORE_X_EVENT_WINDOW_CONFIGURE,
-				  e_window_configure, NULL);
-   ecore_event_handler_add(ECORE_X_EVENT_KEY_DOWN, e_key_down, NULL);
-   ecore_event_handler_add(ECORE_X_EVENT_KEY_UP, e_key_up, NULL);
-   */
-/*   ecore_event_handler_add(ECORE_X_EVENT_WINDOW_PROPERTY, e_property, NULL);
-
-   ecore_event_handler_add(ECORE_X_EVENT_DND_DROP, e_dnd_drop, NULL);
-   ecore_event_handler_add(ECORE_X_EVENT_DND_DROP_REQUEST,
-				  e_dnd_drop_request, NULL);
- */
    /* handler for when the event queue goes idle */
    ecore_idler_add(e_idle, NULL);
    /* create a 400x300 toplevel window */
    ecore_evas = ecore_evas_software_x11_new(NULL, 0, 0, 0, win_w, win_h);
    ecore_evas_callback_resize_set(ecore_evas, e_window_resize);
    // main_win = ecore_evas_software_x11_window_get(ecore_evas);
-   // ecore_window_set_events(win, XEV_CONFIGURE | XEV_PROPERTY | XEV_KEY);
    ecore_evas_name_class_set(ecore_evas, "Entice", "Main");
    ecore_evas_size_min_set(ecore_evas, 256, 128);
    ecore_evas_size_max_set(ecore_evas, 8000, 8000);
    a_entice = ecore_x_atom_get("_ENTICE_APP_WINDOW");
    ecore_evas_title_set(ecore_evas, string);
-   /*ecore_window_dnd_advertise(main_win); XXX */
    evas = ecore_evas_get(ecore_evas);
    evas_output_method_set(evas, render_method);
    evas_output_size_set(evas, win_w, win_h);
@@ -68,6 +50,7 @@ setup(void)
    evas_font_path_append(evas, FONT_DIRECTORY);
    evas_font_cache_set(evas, MAX_FONT_CACHE);
    evas_image_cache_set(evas, MAX_IMAGE_CACHE);
+   ecore_evas_show(ecore_evas);
    /*
    {
       Evas_Engine_Info_Software_X11 *einfo;
@@ -90,7 +73,6 @@ setup(void)
       evas_engine_info_set(evas, (Evas_Engine_Info *) einfo);
    }
    */
-   ecore_evas_show(ecore_evas);
    /* now... create objects in the evas */
 
    o_bg = e_newim(evas, IM "bg.png");
@@ -123,10 +105,10 @@ setup(void)
    evas_object_color_set(o_trash_can, 255, 255, 255, 0);
 
    evas_object_color_set(o_logo, 255, 255, 255, 0);
-   evas_object_color_set(o_showpanel, 0, 0, 0, 0);
-   evas_object_color_set(o_hidepanel, 0, 0, 0, 0);
-   evas_object_color_set(o_showbuttons, 0, 0, 0, 0);
-   evas_object_pass_events_set(o_panel, 1);
+   evas_object_color_set(o_showpanel, 0, 0, 255, 0);
+   evas_object_color_set(o_hidepanel, 0, 255, 0, 0);
+   evas_object_color_set(o_showbuttons, 255, 0, 0, 0);
+   // evas_object_pass_events_set(o_panel, 1);
    for (j = 0; j < 2; j++)
      {
 	for (i = 0; i < 5; i++)
@@ -150,6 +132,7 @@ setup(void)
    evas_object_show(o_panel);
    evas_object_show(o_showpanel);
    evas_object_show(o_hidepanel);
+   evas_object_resize(o_showbuttons, 288, 32);
    evas_object_show(o_showbuttons);
 
    evas_object_show(o_panel_arrow_u);
@@ -167,8 +150,13 @@ setup(void)
 
    evas_object_show(o_trash);
 
-   //e_slide_panel_out(NULL);
-   //e_slide_buttons_out(NULL);
+   {
+      enum active_state command = active_out;
+      panel_active = active_in;
+      buttons_active = active_in;
+      e_slide_panel(&command);
+      e_slide_buttons(&command);
+   }
 
    evas_object_event_callback_add(o_showpanel, EVAS_CALLBACK_MOUSE_IN,
 				  show_panel, NULL);
@@ -491,7 +479,6 @@ e_size_match(void)
 	double w, h;
 	
 	evas_object_geometry_get(o_image, NULL, NULL, &w, &h);
-	//ecore_x_window_resize(main_win, w, h);
 	ecore_evas_resize(ecore_evas, w, h);
      }
 }

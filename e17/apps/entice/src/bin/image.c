@@ -166,7 +166,7 @@ image_create_thumbnails(void)
 	evas_object_move(im->o_thumb, 2, 2 + ((48 + 2) * (i - 1)));
 	evas_object_resize(im->o_thumb, 48, 48);
 	evas_object_image_fill_set(im->o_thumb, 0, 0, 48, 48);
-	evas_object_layer_set(im->o_thumb, 210);
+	evas_object_layer_set(im->o_thumb, 249);
 	evas_object_show(im->o_thumb);
      }
 }

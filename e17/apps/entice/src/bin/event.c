@@ -58,7 +58,7 @@ e_idle(void *data)
 					2 + ((48 - w) / 2) + icon_x,
 					2 + ((48 + 2) * (i - 1)) +
 					((48 - h) / 2) + icon_y);
-		       evas_object_layer_set(im->o_thumb, 210);
+		       evas_object_layer_set(im->o_thumb, 249);
 		       evas_object_show(im->o_thumb);
 		       im->subst = 0;
 		    }
@@ -77,88 +77,6 @@ e_idle(void *data)
    return 1;
 }
 
-/* legacy code
-int
-e_window_damage(void* data, int ev_type, Ecore_Event * ev)
-{
-   Ecore_X_Event_Window_Damage *e;
-
-   e = (Ecore_X_Event_Window_Damage *) ev;
-   if (e->win != ewin)
-      return 1;
-   evas_damage_rectangle_add(evas, e->x, e->y, e->w, e->h);
-   return 1;
-}
-
-int
-e_mouse_move(void* data, int ev_type, Ecore_Event * ev)
-{
-   Ecore_X_Event_Mouse_Move *e;
-
-   e = (Ecore_X_Event_Mouse_Move *) ev;
-   if (e->win != ewin)
-      return 1;
-   evas_event_feed_mouse_move(evas, e->x, e->y);
-   return 1;
-}
-
-int
-e_mouse_down(void* data, int ev_type, Ecore_Event * ev)
-{
-   Ecore_X_Event_Mouse_Button_Down *e;
-
-   e = (Ecore_X_Event_Mouse_Button_Down *) ev;
-   if (e->win != ewin)
-      return 1;
-   evas_event_feed_mouse_move(evas, e->x, e->y);
-   evas_event_feed_mouse_down(evas, e->button);
-   return 1;
-}
-
-int
-e_mouse_up(void* data, int ev_type, Ecore_Event * ev)
-{
-   Ecore_X_Event_Mouse_Button_Up *e;
-
-   e = (Ecore_X_Event_Mouse_Button_Up *) ev;
-   if (e->win != ewin)
-      return 1;
-   evas_event_feed_mouse_move(evas, e->x, e->y);
-   evas_event_feed_mouse_up(evas, e->button);
-   return 1;
-}
-
-int
-e_window_configure(void* data, int ev_type, Ecore_Event * ev)
-{
-   Ecore_X_Event_Window_Configure *e;
-   enum active_state command;
-
-   e = (Ecore_X_Event_Window_Configure *) ev;
-   if (e->win == main_win)
-     {
-	win_w = e->w;
-	win_h = e->h;
-	if (e->from_wm)
-	  {
-	     win_x = e->x;
-	     win_y = e->y;
-	  }
-	ecore_evas_resize(ecore_evas, win_w, win_h);
-	evas_output_viewport_set(evas, 0, 0, win_w, win_h);
-	evas_output_size_set(evas, win_w, win_h);
-	e_handle_resize();
-	if (panel_active == active_in) {
-	   command = active_out;
-	   e_slide_panel(&command);
-	}
-	if (buttons_active == active_in)
-	   command = active_out;
-	   e_slide_buttons(&command);
-     }
-   return 1;
-}
-*/
 void
 e_window_resize(Ecore_Evas *ee)
 {

@@ -48,8 +48,6 @@ extern int          win_w;
 extern int          win_h;
 extern int          win_x;
 extern int          win_y;
-extern Ecore_X_Window       main_win;
-extern Ecore_X_Window       ewin;
 
 extern int          icon_x;
 extern int          icon_y;
