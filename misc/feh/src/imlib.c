@@ -520,7 +520,7 @@ feh_http_load_image(char *url)
 
          if (opt.wget_timestamp)
          {
-            execlp("wget", "wget", "-N", "-O", tmpname_timestamper, newurl,
+            execlp("wget", "wget", "-N", "-O", basename, newurl,
                    quiet, NULL);
          }
          else
@@ -545,8 +545,9 @@ feh_http_load_image(char *url)
          {
             char cmd[2048];
 
-            snprintf(cmd, sizeof(cmd), "/bin/cp %s %s", tmpname_timestamper,
+            snprintf(cmd, sizeof(cmd), "/bin/cp %s %s", basename,
                      tmpname);
+            fprintf(stderr, "*** %s ***\n", cmd);
             system(cmd);
          }
       }

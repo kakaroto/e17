@@ -302,7 +302,7 @@ static void
 feh_parse_option_array(int argc, char **argv)
 {
    static char stropts[] =
-      "a:A:b:BcC:dD:e:f:Fg:GhH:iIj:klL:mM:nNo:O:pqQrR:sS:tT:uUvVwW:xXy:zZ1:2:4:56:78:90:";
+      "a:A:b:BcC:dD:e:E:f:Fg:GhH:iIj:klL:mM:nNo:O:pqQrR:sS:tT:uUvVwW:xXy:zZ1:2:4:56:78:90:.@:^:~:):|:_:+:";
    static struct option lopts[] = {
       /* actions */
       {"help", 0, 0, 'h'},                  /* okay */
@@ -335,6 +335,8 @@ feh_parse_option_array(int argc, char **argv)
       {"builtin", 0, 0, 'Q'},
       {"menu-ctrl-mask", 0, 0, '5'},        /* okay */
       {"scale-down", 0, 0, '.'},            /* okay */
+      {"no-rotate-ctrl-mask", 0, 0, '7'},
+      {"no-blur-ctrl-mask", 0, 0, '9'},
       /* options with values */
       {"output", 1, 0, 'o'},                /* okay */
       {"output-only", 1, 0, 'O'},           /* okay */
@@ -363,9 +365,7 @@ feh_parse_option_array(int argc, char **argv)
       {"zoom-button", 1, 0, '2'},
       {"menu-button", 1, 0, '4'},
       {"rotate-button", 1, 0, '6'},
-      {"no-rotate-ctrl-mask", 0, 0, '7'},
       {"blur-button", 1, 0, '8'},
-      {"no-blur-ctrl-mask", 0, 0, '9'},
       {"reload-button", 1, 0, '0'},
       {"start-at", 1, 0, '|'},
       {"rcfile", 1, 0, '_'},

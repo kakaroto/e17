@@ -9,8 +9,8 @@ use Getopt::Long;
 my $feh   = "feh";
 
 # additional feh cmdline options
-my $PRE  = " -q -G -w -Twebcam -1 0 -0 1 ";
-my $POST = ""; 
+my $PRE  = " -V -G -w -Twebcam -1 0 -0 1 ";
+my $POST = ">>$ENV{HOME}/.camlog 2>&1"; 
 #############################################
 #############################################
 
