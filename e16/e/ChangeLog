@@ -3204,3 +3204,10 @@ Fri Dec 17 21:07:37 CET 2004
 Bump version numbers.
 Fix backgrounds with only non-fullscreen foreground image.
 Fix "Background Error! 1 references remain".
+
+-------------------------------------------------------------------------------
+
+Wed Dec 29 01:13:18 CET 2004
+(Kim)
+
+--- 0.16.8 0.01 ---
