@@ -29,6 +29,8 @@
  * option parser.
  *
  * @author Michael Jennings <mej@eterm.org>
+ * $Revision$
+ * $Date$
  */
 
 static const char cvs_ident[] = "$Id$";
@@ -39,16 +41,57 @@ static const char cvs_ident[] = "$Id$";
 
 #include <libast_internal.h>
 
+/*@{*/
+/**
+ * @name Internal Parser Macros
+ * Macros to simply certain parser operations.
+ *
+ * This group of macros is used internally by the command line option
+ * parser.  They are not available for use by client programs and are
+ * documented here solely for completeness and clarity.
+ *
+ * @see DOXGRP_OPT
+ * @ingroup DOXGRP_OPT
+ */
+
+/** Next argument.  Proceed to parsing the next argument in the argv[] list. */
 #define NEXT_ARG()       D_OPTIONS(("NEXT_ARG()\n")); i++; opt = argv[i]; continue
+/** Next letter.  Proceed to the next letter in a bundled option series. */
 #define NEXT_LETTER()    D_OPTIONS(("NEXT_LETTER(%s)\n", opt)); if (*(opt + 1)) {opt++;} else {NEXT_ARG();} continue
+/** Next loop.  Proceed to the next parsing stage (letter or word). */
 #define NEXT_LOOP()      D_OPTIONS(("NEXT_LOOP()\n")); if (islong || val_ptr) {NEXT_ARG();} else {NEXT_LETTER();} NOP
+/** Option parse test.  Returns true IFF the option should be parsed on this pass. */
 #define SHOULD_PARSE(j)  ((SPIFOPT_FLAGS_IS_SET(SPIFOPT_SETTING_POSTPARSE) && !SPIFOPT_OPT_IS_PREPARSE(j)) \
                            || (!SPIFOPT_FLAGS_IS_SET(SPIFOPT_SETTING_POSTPARSE) && SPIFOPT_OPT_IS_PREPARSE(j)))
+/*@}*/
 
+/**
+ * Internal option parser settings.
+ *
+ * This variable holds the actual structure containing the settings
+ * for the option parser.  It should never be accessed directly, but
+ * rather through use of the Option Parser Settings Macros.
+ *
+ * @see DOXGRP_OPT
+ * @ingroup DOXGRP_OPT
+ */
 spifopt_settings_t spifopt_settings;
 
+/**
+ * Option-type-to-string translator.
+ *
+ * This function is used internally by spifopt_usage() to convert an
+ * option's numerical type to a short string representing that type of
+ * option.
+ *
+ * @param type The numeric option type (SPIFOPT_OPT_FLAGS()).
+ * @return     A 6-char-max string describing the option type.
+ *
+ * @see DOXGRP_OPT
+ * @ingroup DOXGRP_OPT
+ */
 static const char *
-get_option_type_string(spif_uint32_t type)
+get_option_type_string(spif_uint16_t type)
 {
     switch (type) {
         case SPIFOPT_FLAG_BOOLEAN: return "(bool)"; break;
@@ -59,6 +102,17 @@ get_option_type_string(spif_uint32_t type)
     ASSERT_NOTREACHED_RVAL(NULL);
 }
 
+/**
+ * Built-in default function for displaying help information.
+ *
+ * This is the default "help handler" function.  It displays a list of
+ * long and short options along with the description of each.  It also
+ * prints out a brief type identifier as produced by
+ * get_option_type_string().
+ *
+ * @see DOXGRP_MEM, SPIFOPT_HELPHANDLER_SET(), spifopt_helphandler_t
+ * @ingroup DOXGRP_MEM
+ */
 void
 spifopt_usage(void)
 {
@@ -114,6 +168,18 @@ spifopt_usage(void)
     exit(EXIT_FAILURE);
 }
 
+/**
+ * Find matching long option.
+ *
+ * This function searches the option list for a long option which
+ * matches the given string.
+ *
+ * @param opt The long option string to match against.
+ * @return    The index of the matching option, or -1 if not found.
+ *
+ * @see DOXGRP_OPT, is_valid_option()
+ * @ingroup DOXGRP_OPT
+ */
 static spif_int32_t
 find_long_option(char *opt)
 {
@@ -139,6 +205,18 @@ find_long_option(char *opt)
     return ((spif_int32_t) -1);
 }
 
+/**
+ * Find matching short option.
+ *
+ * This function searches the option list for a short option which
+ * matches the given character.
+ *
+ * @param opt The short option character to match against.
+ * @return    The index of the matching option, or -1 if not found.
+ *
+ * @see DOXGRP_OPT, is_valid_option()
+ * @ingroup DOXGRP_OPT
+ */
 static spif_int32_t
 find_short_option(char opt)
 {
@@ -156,6 +234,23 @@ find_short_option(char opt)
     return ((spif_int32_t) -1);
 }
 
+/**
+ * Find the value for a long option.
+ *
+ * This function looks for and returns the value associated with a
+ * long option, or NULL if one is not found.
+ *
+ * @param arg      The argument containing the long option.
+ * @param next_arg The next word on the command line.
+ * @param hasequal Address of a toggle variable to return whether or
+ *                 not the value was appended to the option with an
+ *                 equals sign ('=').
+ * @return         The option's value string, or NULL if no value is
+ *                 found.
+ *
+ * @see DOXGRP_OPT, spifopt_parse()
+ * @ingroup DOXGRP_OPT
+ */
 static char *
 find_value_long(char *arg, char *next_arg, unsigned char *hasequal)
 {
@@ -170,10 +265,24 @@ find_value_long(char *arg, char *next_arg, unsigned char *hasequal)
         }
         *hasequal = 0;
     }
-    D_OPTIONS(("hasequal == %d  val_ptr == %10.8p \"%s\"\n", *hasequal, val_ptr, (val_ptr ? val_ptr : "(nil)")));
+    D_OPTIONS(("hasequal == %d  val_ptr == %10.8p \"%s\"\n", *hasequal, val_ptr, NONULL(val_ptr)));
     return val_ptr;
 }
 
+/**
+ * Find the value for a short option.
+ *
+ * This function looks for and returns the value associated with a
+ * short option, or NULL if one is not found.
+ *
+ * @param arg      The argument containing the short option.
+ * @param next_arg The next word on the command line.
+ * @return         The option's value string, or NULL if no value is
+ *                 found.
+ *
+ * @see DOXGRP_OPT, spifopt_parse()
+ * @ingroup DOXGRP_OPT
+ */
 static char *
 find_value_short(char *arg, char *next_arg)
 {
@@ -188,6 +297,18 @@ find_value_short(char *arg, char *next_arg)
     return val_ptr;
 }
 
+/**
+ * Test for a valid boolean value.
+ *
+ * This function compares the given value pointer to the possible
+ * values for a boolean option.
+ *
+ * @param val_ptr The value to be tested.
+ * @return        TRUE if boolean, FALSE if not.
+ *
+ * @see DOXGRP_OPT, spifopt_parse()
+ * @ingroup DOXGRP_OPT
+ */
 static spif_bool_t
 is_boolean_value(char *val_ptr)
 {
@@ -197,6 +318,19 @@ is_boolean_value(char *val_ptr)
     return ((BOOL_OPT_ISTRUE(val_ptr) || BOOL_OPT_ISFALSE(val_ptr)) ? (TRUE) : (FALSE));
 }
 
+/**
+ * Check for a match to the current option.
+ *
+ * This function does some initial parsing, then calls the appropriate
+ * sub-function to look for matches.
+ *
+ * @param opt The argument string.
+ * @return    TRUE if a match is found, FALSE otherwise.
+ *
+ * @see DOXGRP_OPT, spifopt_parse(), find_long_option(),
+ *      find_short_option()
+ * @ingroup DOXGRP_OPT
+ */
 static spif_bool_t
 is_valid_option(char *opt)
 {
@@ -219,6 +353,23 @@ is_valid_option(char *opt)
     return FALSE;
 }
 
+/**
+ * Handle a boolean option.
+ *
+ * This function is reponsible for taking the proper action for a
+ * boolean option.  It sets the appropriate bitfield on the
+ * appropriate variable as defined by the settings for that option.
+ *
+ * @param n       The index for the option within the option list.
+ * @param val_ptr A pointer (possibly NULL) to the value specified
+ *                with the option.
+ * @param islong  0 if the option was short, non-zero otherwise.
+ * @return    TRUE if a match is found, FALSE otherwise.
+ *
+ * @see DOXGRP_OPT, spifopt_parse(), find_long_option(),
+ *      find_short_option()
+ * @ingroup DOXGRP_OPT
+ */
 static spif_bool_t
 handle_boolean(spif_int32_t n, char *val_ptr, unsigned char islong)
 {
@@ -257,6 +408,20 @@ handle_boolean(spif_int32_t n, char *val_ptr, unsigned char islong)
     return TRUE;
 }
 
+/**
+ * Handle an integer option.
+ *
+ * This function is responsible for taking the appropriate action when
+ * an integer option is encountered.  The variable whose address was
+ * given to the option structure is assigned the value of the option.
+ *
+ * @param n       The index of the option.
+ * @param val_ptr The value passed to the option.
+ *
+ * @see DOXGRP_OPT, spifopt_parse(), find_long_option(),
+ *      find_short_option()
+ * @ingroup DOXGRP_OPT
+ */
 static void
 handle_integer(spif_int32_t n, char *val_ptr)
 {
@@ -264,6 +429,20 @@ handle_integer(spif_int32_t n, char *val_ptr)
     *((int *) SPIFOPT_OPT_VALUE(n)) = strtol(val_ptr, (char **) NULL, 0);
 }
 
+/**
+ * Handle a string option.
+ *
+ * This function is responsible for taking the appropriate action when
+ * a string option is encountered.  The variable whose address was
+ * given to the option structure is assigned the value of the option.
+ *
+ * @param n       The index of the option.
+ * @param val_ptr The value passed to the option.
+ *
+ * @see DOXGRP_OPT, spifopt_parse(), find_long_option(),
+ *      find_short_option()
+ * @ingroup DOXGRP_OPT
+ */
 static void
 handle_string(spif_int32_t n, char *val_ptr)
 {
@@ -271,6 +450,25 @@ handle_string(spif_int32_t n, char *val_ptr)
     *((const char **) SPIFOPT_OPT_VALUE(n)) = STRDUP(val_ptr);
 }
 
+
+/**
+ * Handle an argument list option.
+ *
+ * This function is responsible for taking the appropriate action when
+ * an argument list option is encountered.  An array of arguments is
+ * created at the specified address.  There can be only one of these.
+ *
+ * @param n        The index of the option.
+ * @param val_ptr  The value passed to the option.
+ * @param hasequal TRUE if the long option used '=', FALSE otherwise.
+ * @param i        The index of the current option within argc[].
+ * @param argc     The argument count.
+ * @param argv     The argument list.
+ *
+ * @see DOXGRP_OPT, spifopt_parse(), find_long_option(),
+ *      find_short_option()
+ * @ingroup DOXGRP_OPT
+ */
 static void
 handle_arglist(spif_int32_t n, char *val_ptr, unsigned char hasequal,
                spif_int32_t i, int argc, char *argv[])
@@ -305,6 +503,19 @@ handle_arglist(spif_int32_t n, char *val_ptr, unsigned char hasequal,
     }
 }
 
+/**
+ * Parse the command line arguments for options.
+ *
+ * This function iterates through the command line arguments looking
+ * for options which have been defined.  Each option encountered is
+ * handled according to its type.
+ *
+ * @param argc The number of arguments.
+ * @param argv The array of argument strings.
+ *
+ * @see DOXGRP_OPT
+ * @ingroup DOXGRP_OPT
+ */
 void
 spifopt_parse(int argc, char *argv[])
 {

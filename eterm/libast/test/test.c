@@ -229,6 +229,7 @@ test_strings(void)
     TEST_FAIL_IF(!SPIF_CMP_IS_LESS(version_compare("2.9.99", "3.0")));
     TEST_FAIL_IF(!SPIF_CMP_IS_LESS(version_compare("3.0", "29.9.9")));
     TEST_FAIL_IF(!SPIF_CMP_IS_LESS(version_compare("1.0pre2", "1.0")));
+    TEST_FAIL_IF(!SPIF_CMP_IS_LESS(version_compare("9.9", "9.9rc1")));
     TEST_FAIL_IF(!SPIF_CMP_IS_GREATER(version_compare("0.5.3", "0.5.3snap4")));
     TEST_FAIL_IF(!SPIF_CMP_IS_GREATER(version_compare("2.2.4", "2.2.4beta3")));
     TEST_FAIL_IF(!SPIF_CMP_IS_GREATER(version_compare("2.2.4beta3", "2.2.4alpha7")));

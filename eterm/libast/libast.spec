@@ -1,7 +1,7 @@
 Summary: Library of Assorted Spiffy Things
 Name: libast
 Version: 0.6
-Release: 0.1
+Release: 0.2
 Copyright: BSD
 Group: System Environment/Libraries
 Source: %{name}-%{version}.tar.gz
@@ -25,8 +25,7 @@ version number that begins with 0.
 %build
 CFLAGS="$RPM_OPT_FLAGS"
 export CFLAGS
-if [ -e ./configure ]
-then
+if [ -e ./configure ]; then
   %configure --prefix=%{_prefix} --bindir=%{_bindir} --libdir=%{_libdir} --includedir=%{_includedir} --datadir=%{_datadir}
 else
   ./autogen.sh --prefix=%{_prefix} --bindir=%{_bindir} --libdir=%{_libdir} --includedir=%{_includedir} --datadir=%{_datadir}
@@ -37,10 +36,10 @@ make
 make DESTDIR=$RPM_BUILD_ROOT install
 
 %post
-test -x /sbin/ldconfig && /sbin/ldconfig
+test -x /sbin/ldconfig && /sbin/ldconfig || :
 
 %postun
-test -x /sbin/ldconfig && /sbin/ldconfig
+test -x /sbin/ldconfig && /sbin/ldconfig || :
 
 %clean
 rm -rf $RPM_BUILD_ROOT

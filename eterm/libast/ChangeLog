@@ -405,3 +405,9 @@ Fri Apr 11 17:10:15 2003                        Michael Jennings (mej)
 
 Completed documentation of the memory management system.
 ----------------------------------------------------------------------
+Mon Jun 16 20:43:43 2003                        Michael Jennings (mej)
+
+Additional documentation.
+
+Added support for versions containing "rc."
+----------------------------------------------------------------------

@@ -768,7 +768,7 @@ version_compare(const char *v1, const char *v2)
     for (; *v1 && *v2; ) {
         if (isalpha(*v1) && isalpha(*v2)) {
             char *p1 = buff1, *p2 = buff2;
-            spif_int8_t ival1 = 5, ival2 = 5;
+            spif_int8_t ival1 = 6, ival2 = 6;
 
             /* Compare words.  First, copy each word into buffers. */
             for (; isalpha(*v1); v1++, p1++) *p1 = *v1;
@@ -788,6 +788,8 @@ version_compare(const char *v1, const char *v2)
                 ival1 = 3;
             } else if (!strcmp(buff1, "beta")) {
                 ival1 = 4;
+            } else if (!strcmp(buff1, "rc")) {
+                ival1 = 5;
             }
             if (!strcmp(buff2, "snap")) {
                 ival2 = 1;
@@ -797,11 +799,13 @@ version_compare(const char *v1, const char *v2)
                 ival2 = 3;
             } else if (!strcmp(buff2, "beta")) {
                 ival2 = 4;
+            } else if (!strcmp(buff2, "rc")) {
+                ival2 = 5;
             }
             if (ival1 != ival2) {
                 /* If the values are different, compare them. */
                 return SPIF_CMP_FROM_INT(ival1 - ival2);
-            } else if (ival1 == 5) {
+            } else if (ival1 == 6) {
                 int c;
 
                 /* Two arbitrary strings.  Compare them too. */
