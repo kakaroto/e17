@@ -351,3 +351,7 @@ removal code, so I'm hoping that some kind soul who has had a data
 structures class more recently than I have will jump in and finish it
 for me.  (*hint hint*)  :-)
 ----------------------------------------------------------------------
+Mon Dec 30 18:10:42 2002                        Michael Jennings (mej)
+
+Pass "make distcheck" please and thank you. :)
+----------------------------------------------------------------------
