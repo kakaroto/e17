@@ -185,6 +185,7 @@ note_ecore_resize(Ecore_Evas * ee)
 	ecore_evas_geometry_get(ee, &x, &y, &w, &h);
 	evas_object_resize(evas_object_name_find
 			   (ecore_evas_get(ee), "edje"), w, h);
+	evas_object_resize (evas_object_name_find (ecore_evas_get (ee), "dragger"), w, h);
 	return;
 }
 

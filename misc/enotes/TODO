@@ -14,9 +14,12 @@
 
     BUGS & BASIC FUNCTIONALITY:
 
-I'm Liking This!! :)
+I'm liking this! :)
 
     FEATURES:
 
 Optionable change of location for note storage to a http based (post/get) method.
 Investigate the "timing" of a note, as an alert.
+Option for automatic saving of all open notes on exit and loading on startup (us
+e separate storage file for this, always local).
+Add an option to disable the control centre, but make sure the IPC supports the closing of enotes before you do this!
