@@ -6,7 +6,7 @@
 
 <ul class="navsection"><p class="navtitle">Project</p>
 <li><a class="navelement" href="main.html">Overview</a>
-<li><a class="navelement" href="news.html"><font color="red">News</font></a>
+<li><a class="navelement" href="news.html"><font color=#A36209>News</font></a>
 <li><a class="navelement" href="faq.html">FAQ</a>
 <li><a class="navelement" href="docs.html">Documentation</a>
 <li><a class="navelement" href="http://sourceforge.net/project/showfiles.php?group_id=2">Releases</a>
@@ -76,7 +76,6 @@
 <li><a class="navelement" href="http://xcomputerman.com/pages/entrance.html">Entrance</a>
 <li><a class="navelement" href="http://www.cuddletech.com/">Euphoria</a>
 <li><a class="navelement" href="erss.html">eRSS</a>
-<li><a class="navelement" href="ewler.html">ewler</a>
 </ul>
 
 <a href="http://sourceforge.net/projects/enlightenment/"><img src="http://sourceforge.net/sflogo.php?group_id=2&amp;type=1" width="88" height="31" border="0" alt="SourceForge Logo"></a>
