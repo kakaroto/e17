@@ -37,8 +37,6 @@ void ewl_menu_base_init(Ewl_Menu_Base * menu, char *image, char *title)
 	menu->popbox = ewl_vbox_new();
 	ewl_object_set_alignment(EWL_OBJECT(menu->popbox),
 				 EWL_FLAG_ALIGN_LEFT | EWL_FLAG_ALIGN_TOP);
-	ewl_callback_append(EWL_WIDGET(menu->popbox), EWL_CALLBACK_MOUSE_DOWN,
-			    ewl_menu_popup_hold_cb, menu);
 	ewl_widget_show(menu->popbox);
 
 	/*
@@ -263,7 +261,9 @@ void
 ewl_menu_base_expand_cb(Ewl_Widget *w, void *ev_data, void *user_data)
 {
 	Ewl_Widget *child;
+	Ewl_Container *pb;
 	Ewl_Menu_Base *menu = EWL_MENU_BASE(w);
+	Ewl_Menu_Item *item = EWL_MENU_ITEM(w);
 
 	DENTER_FUNCTION(DLEVEL_STABLE);
 
@@ -273,19 +273,35 @@ ewl_menu_base_expand_cb(Ewl_Widget *w, void *ev_data, void *user_data)
 	if (!REALIZED(menu->popup))
 		ewl_container_append_child(EWL_CONTAINER(menu->popup),
 					   menu->popbox);
-	ewl_widget_show(menu->popup);
 
-	if (EWL_MENU_ITEM(w)->submenu)
+	if (item->inmenu) {
+		if (!REALIZED(menu->popup)) {
+			ewl_callback_append(menu->popup, EWL_CALLBACK_SHOW,
+					    ewl_menu_base_popup_show_cb,
+					    item->inmenu);
+			ewl_callback_append(menu->popup, EWL_CALLBACK_HIDE,
+					    ewl_menu_base_popup_hide_cb,
+					    item->inmenu);
+		}
 		ewl_object_set_minimum_w(EWL_OBJECT(menu->popup),
 					 CURRENT_W(menu));
+	}
 
-	ecore_list_goto_first(EWL_CONTAINER(menu->popbox)->children);
+	pb = EWL_CONTAINER(menu->popbox);
 
-	while ((child = ecore_list_next(EWL_CONTAINER(menu->popbox)->children))) {
+	ecore_list_goto_first(pb->children);
+
+	/*
+	 * Give all the items in the submenu a reference to this popup.
+	 */
+	while ((child = ecore_list_next(pb->children))) {
 		if (ewl_widget_is_type(child, "menuitem")) {
-			EWL_MENU_ITEM(child)->submenu = 1;
+			item = EWL_MENU_ITEM(child);
+			item->inmenu = menu->popup;
 		}
 	}
+
+	ewl_widget_show(menu->popup);
 
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
@@ -305,6 +321,28 @@ ewl_menu_base_collapse_cb(Ewl_Widget * w, void *ev_data, void *user_data)
 }
 
 void
+ewl_menu_base_popup_hide_cb(Ewl_Widget * w, void *ev_data, void *user_data)
+{
+	Ewl_Widget *ppop = user_data;
+	DENTER_FUNCTION(DLEVEL_STABLE);
+
+	ewl_widget_hide(ppop);
+
+	DLEAVE_FUNCTION(DLEVEL_STABLE);
+}
+
+void
+ewl_menu_base_popup_show_cb(Ewl_Widget * w, void *ev_data, void *user_data)
+{
+	Ewl_Widget *ppop = user_data;
+	DENTER_FUNCTION(DLEVEL_STABLE);
+
+	ewl_widget_show(ppop);
+
+	DLEAVE_FUNCTION(DLEVEL_STABLE);
+}
+
+void
 ewl_menu_base_destroy_cb(Ewl_Widget * w, void *ev_data, void *user_data)
 {
 	Ewl_Menu_Base      *menu;
@@ -315,18 +353,6 @@ ewl_menu_base_destroy_cb(Ewl_Widget * w, void *ev_data, void *user_data)
 
 	if (menu->popup)
 		ewl_widget_destroy(menu->popup);
-
-	DLEAVE_FUNCTION(DLEVEL_STABLE);
-}
-
-void
-ewl_menu_popup_hold_cb(Ewl_Widget * w, void *ev_data, void *user_data)
-{
-	Ewl_Menu_Base *menu;
-
-	DENTER_FUNCTION(DLEVEL_STABLE);
-
-	menu  = EWL_MENU_BASE(user_data);
 
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }

@@ -72,7 +72,7 @@ void ewl_imenu_configure_cb(Ewl_Widget *w, void *ev_data, void *user_data)
 	/*
 	 * Position the popup menu relative to the menu.
 	 */
-	if (EWL_MENU_ITEM(w)->submenu) {
+	if (EWL_MENU_ITEM(w)->inmenu) {
 		ewl_floater_set_position(EWL_FLOATER(menu->base.popup),
 					 CURRENT_W(w), 0);
 	}

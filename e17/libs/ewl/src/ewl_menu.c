@@ -79,7 +79,7 @@ void ewl_menu_expand_cb(Ewl_Widget * w, void *ev_data, void *user_data)
 	/*
 	 * Position the popup menu relative to the menu.
 	 */
-	if (EWL_MENU_ITEM(w)->submenu) {
+	if (EWL_MENU_ITEM(w)->inmenu) {
 		xx = CURRENT_X(w) + CURRENT_W(w);
 		yy = CURRENT_Y(w);
 	} else {

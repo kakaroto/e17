@@ -31,8 +31,7 @@ struct Ewl_Menu_Item
 	Ewl_Container   container; /**< Inherit from Ewl_Container */
 	Ewl_Widget     *icon; /**< The image in this menu item */
 	Ewl_Widget     *text; /**< The text label for this menu item  */
-	int             submenu; /**< Indicates if this is inside a menu */
-	int             hold; /**< Indicates not to hide this on a deselect */
+	Ewl_Widget     *inmenu; /**< Set if inside a menu */
 };
 
 /**
@@ -74,6 +73,7 @@ struct Ewl_Menu_Base
 	Ewl_Menu_Item   item; /**< Inherit from Ewl_Menu_Item */
 	Ewl_Widget     *popup; /**< The popup portion of the menu */
 	Ewl_Widget     *popbox; /**< Box for layout in popup */
+	int             hold; /**< Indicates not to hide this on a deselect */
 };
 
 Ewl_Widget     *ewl_menu_item_new(char *image, char *title);
@@ -92,12 +92,16 @@ void            ewl_menu_base_init(Ewl_Menu_Base * menu, char *image,
 void ewl_menu_base_expand_cb(Ewl_Widget *w, void *ev_data, void *user_data);
 void ewl_menu_base_collapse_cb(Ewl_Widget * w, void *ev_data, void *user_data);
 void ewl_menu_base_destroy_cb(Ewl_Widget * w, void *ev_data, void *user_data);
-void ewl_menu_popup_hold_cb(Ewl_Widget * w, void *ev_data, void *user_data);
 
 void ewl_menu_item_configure_cb(Ewl_Widget *w, void *ev_data, void *user_data);
 void ewl_menu_item_child_show_cb(Ewl_Container *parent, Ewl_Widget *child);
 void ewl_menu_item_child_resize_cb(Ewl_Container *parent, Ewl_Widget *child,
 			     int size, Ewl_Orientation o);
+
+void ewl_menu_base_popup_show_cb(Ewl_Widget * w, void *ev_data,
+				 void *user_data);
+void ewl_menu_base_popup_hide_cb(Ewl_Widget * w, void *ev_data,
+				 void *user_data);
 
 /**
  * @}
