@@ -707,3 +707,9 @@ the NULL checks.  fixed now.
 - fixed the rendering problem -- widgets without backgrounds get a
 transparent one. :)
 
+-----
+20000818-1612-EDT, x5rings
+
+Added window property code to set values and hints etc before window creation.
+See main.c for example. =)
+
