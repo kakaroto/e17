@@ -1,0 +1,249 @@
+dnl Process this file with autoconf to produce a configure script.
+
+AC_INIT
+AC_CONFIG_SRCDIR([configure.in])
+AM_INIT_AUTOMAKE(efsd, 0.0.1)
+AM_CONFIG_HEADER(config.h)
+
+if test "$prefix" = "NONE"; then
+  prefix=$ac_default_prefix
+fi
+
+AC_ISC_POSIX
+AC_PROG_CC
+AM_PROG_CC_STDC
+AC_HEADER_STDC
+AM_PROG_LIBTOOL
+
+AC_C_BIGENDIAN       
+AC_DIAGNOSE([obsolete],[AC_STRUCT_ST_BLKSIZE:
+        your code should no longer depend upon `HAVE_ST_BLKSIZE', but
+        `HAVE_STRUCT_STAT_ST_BLKSIZE'.  Remove this warning and
+        the `AC_DEFINE' when you adjust the code.])
+AC_CHECK_MEMBERS([struct stat.st_blksize],[AC_DEFINE(HAVE_ST_BLKSIZE, 1,
+                            [Define if your `struct stat' has
+                             `st_blksize'.  Deprecated, use
+                             `HAVE_STRUCT_STAT_ST_BLKSIZE' instead.])])
+
+AC_STRUCT_ST_BLOCKS
+
+use_threads="yes"
+
+dnl Check for functions that we need to be thread-safe.
+AC_CHECK_FUNCS(readdir_r ctime_r, , have_all_threadsafe_funcs="no")
+if test "$have_all_threadsafe_funcs" = "no"; then
+   use_threads="no"   
+   AC_MSG_WARN(Not all functions needed for multithreaded build found, not using threads.)
+fi
+
+dnl Check for statfs call or other alternatives.
+AC_CHECK_FUNC(statfs, , have_statfs="no")
+if test "$have_statfs" = "no"; then
+   AC_CHECK_FUNC(statvfs, have_statvfs="yes")
+   if test "$have_stavtfs" = "yes"; then
+      AC_DEFINE(HAVE_STATVFS, 1)
+   fi
+else
+   AC_DEFINE(HAVE_STATFS, 1)
+fi
+  
+
+dnl Check for fam.
+AC_ARG_WITH(fam,
+       [  --with-fam=DIR          use DIR where fam is installed.],
+       [CPPFLAGS="$CPPFLAGS -I$withval/include"; LDFLAGS="$LDFLAGS -L$withval/lib"])
+AC_CHECK_HEADER(fam.h, , fam_header_ok="no")
+AC_CHECK_LIB(fam, main, , fam_lib_ok="no")
+if test "$fam_header_ok" = "no" -o "$fam_lib_ok" = "no"; then cat <<EOF;
+
+------------------------------------------------------
+ERROR: Could not find a complete installation of FAM,
+the File Alteration Monitor, on your system.
+
+You can download FAM at:
+http://oss.sgi.com/projects/fam
+------------------------------------------------------
+EOF
+exit 1;
+fi;
+
+
+dnl Check for pthreads. Make sure we have both
+dnl header and lib, otherwise, or when --disable-threads
+dnl was given, build without thread support.
+AC_ARG_ENABLE(threads, [  --enable-threads        enable thread support [default=yes]], use_threads="no")
+
+dnl This needs revisiting
+PTHREAD_CFLAGS=
+PTHREAD_LIB=
+if test "$use_threads" = "yes"; then
+   AC_CHECK_HEADER(pthread.h, pthread_header_ok="yes", pthread_header_ok="no")
+   if test "$pthread_header_ok" = "yes"; then
+      AC_CHECK_LIB(pthread, main, PTHREAD_LIB="-lpthread", PTHREAD_LIB="error")
+      if test "$PTHREAD_LIB" = "error"; then
+         AC_CHECK_LIB(c_r, main, PTHREAD_LIB="-pthread", pthread_lib_ok="no")
+      fi
+   fi
+   if test "$pthread_header_ok" = "no" -o "$pthread_lib_ok" = "no"; then
+      cat <<EOF;
+------------------------------------------------------
+WARNING: Could not find a complete POSIX threads
+(pthreads) installation on your system -- building
+without thread support.
+------------------------------------------------------
+EOF
+      AM_CONDITIONAL(USE_THREADS_FILES, false)
+   else
+      AC_DEFINE(USE_THREADS, 1)
+      AM_CONDITIONAL(USE_THREADS_FILES, true)
+      if test "$PTHREAD_LIB" = "-pthread"; then
+         PTHREAD_CFLAGS="-D_THREAD_SAFE -D_REENTRANT -D_POSIX_PTHREAD_SEMANTICS"
+      else
+         PTHREAD_CFLAGS="-D_REENTRANT -D_POSIX_PTHREAD_SEMANTICS"
+      fi
+      CFLAGS="$CFLAGS $PTHREAD_CFLAGS"
+      LIBS="$LIBS $PTHREAD_LIB"
+   fi
+else
+   AM_CONDITIONAL(USE_THREADS_FILES, false)
+fi
+
+AC_SUBST(PTHREAD_CFLAGS)
+AC_SUBST(PTHREAD_LIB)
+
+dnl Check for edb.
+AC_ARG_WITH(edb,
+        [  --with-edb=DIR          use edb in <DIR>],
+        [CFLAGS="$CFLAGS -I$withval/include"
+         LIBS="-L$withval/lib $LIBS"])
+
+AC_PATH_GENERIC(edb, 1.0.2, [
+    AC_SUBST(edb_libs)
+    AC_SUBST(edb_cflags)],
+    AC_MSG_ERROR(Cannot find edb: Is edb-config in path?))
+edb_libs=`edb-config --libs`
+edb_cflags=`edb-config --cflags`
+
+dnl Look for Linux 2.4.xx sources for sgml documentation scripts.
+AC_MSG_CHECKING("for a Linux 2.4 source tree")
+linux_readme="NONE"
+
+if test -f /usr/src/linux/README; then
+  linux_sources="/usr/src/linux"
+elif test -f /usr/local/src/linux/README; then
+  linux_sources="/usr/local/src/linux"
+fi
+
+if test "x${linux_sources}" != "xNONE"; then
+  head -1 "${linux_sources}/README" | grep 2\.4 > /dev/null;
+  if test $? -eq 0; then
+    AC_MSG_RESULT("yes")
+    DOCGEN="${linux_sources}/scripts/docgen"
+    if test ! -f $DOCGEN; then
+      echo "Docgen script not found, documentation won't be generateable.";
+    fi
+    AC_SUBST(DOCGEN)
+    AM_CONDITIONAL(HAVE_DOCGEN, true)
+    LINUX_SRC="${linux_sources}"
+    AC_SUBST(LINUX_SRC)
+    toplevel_abs=`pwd`
+    AC_SUBST(toplevel_abs)
+    echo "stealing ${DOCGEN} for manual generation"
+  else
+    AC_MSG_RESULT("no")
+  fi
+else
+  AC_MSG_RESULT("no")
+fi
+
+
+dnl Set PACKAGE_LOCALE_DIR in config.h.
+if test "x${prefix}" = "xNONE"; then
+  AC_DEFINE_UNQUOTED(PACKAGE_LOCALE_DIR, "${ac_default_prefix}/${DATADIRNAME}/locale")
+else
+  AC_DEFINE_UNQUOTED(PACKAGE_LOCALE_DIR, "${prefix}/${DATADIRNAME}/locale")
+fi
+
+
+dnl Set PACKAGE_DATA_DIR in config.h.
+if test "x${datadir}" = 'x${prefix}/share'; then
+  if test "x${prefix}" = "xNONE"; then
+    AC_DEFINE_UNQUOTED(PACKAGE_DATA_DIR, "${ac_default_prefix}/share/${PACKAGE}")
+  else
+    AC_DEFINE_UNQUOTED(PACKAGE_DATA_DIR, "${prefix}/share/${PACKAGE}")
+  fi
+else
+  AC_DEFINE_UNQUOTED(PACKAGE_DATA_DIR, "${datadir}/${PACKAGE}")
+fi
+
+
+dnl Set PACKAGE_SOURCE_DIR in config.h.
+packagesrcdir=`cd $srcdir && pwd`
+AC_DEFINE_UNQUOTED(PACKAGE_SOURCE_DIR, "${packagesrcdir}")
+
+
+dnl Use -Wall if we have gcc.
+changequote(,)dnl
+if test "x$GCC" = "xyes"; then
+  case " $CFLAGS " in
+  *[\ \	]-Wall[\ \	]*) ;;
+  *) CFLAGS="$CFLAGS -Wall" ;;
+  esac
+fi
+changequote([,])dnl
+
+
+dnl Backtrace generation code, based on code from Eterm. Cheers Michael :)
+AC_PATH_PROG(DBX, dbx, no)
+if test "$DBX" != "no"; then
+  AC_DEFINE_UNQUOTED(DBX, "$DBX")
+fi
+AC_PATH_PROG(GDB, gdb, no)
+if test "$GDB" != "no"; then
+  AC_DEFINE_UNQUOTED(GDB, "$GDB")
+fi
+AC_PATH_PROG(PSTACK, pstack, no, $PATH:/usr/proc/bin:/usr/sbin)
+if test "$PSTACK" != "no"; then
+  AC_DEFINE_UNQUOTED(PSTACK, "$PSTACK")
+fi
+AC_CHECK_LIB(cl, U_STACK_TRACE, LIBS="$LIBS -lcl")
+
+if test "$GDB" != "no"; then
+  GDB_CMD_FILE=`eval eval eval eval echo "$datadir/$PACKAGE/gdb.scr"`
+  AC_DEFINE_UNQUOTED(GDB_CMD_FILE, "$GDB_CMD_FILE")
+else
+  GDB_CMD_FILE=""
+fi
+AC_SUBST(GDB_CMD_FILE)
+
+
+dnl We need perl and edb_ed to build the filetype databases.
+AC_PATH_PROG(PERL, perl)
+AC_PATH_PROG(EDB_ED, edb_ed)
+
+
+dnl Look for jade for sgml translations.
+AC_ARG_WITH(dbsheets,
+       [  --with-dbsheets=DIR     use DIR to specify your DocBook stylesheets installation path.],
+       DB_STYLESHEETS="$withval", DB_STYLESHEETS="/usr/lib/sgml/stylesheet/dsssl/docbook/nwalsh")
+AC_SUBST(DB_STYLESHEETS)
+AC_PATH_PROG(JADE, jade)
+AM_CONDITIONAL(HAVE_JADE, test "x$JADE" != "x" && test -d "$DB_STYLESHEETS")
+
+
+AC_CONFIG_FILES([
+Makefile
+efsd-config
+efsd/Makefile
+demo/Makefile
+tools/Makefile
+tools/magic2db
+tools/build_pattern_db
+doc/Makefile
+doc/efsd-manual.raw
+doc/html-customizations.dsl
+])
+AC_CONFIG_COMMANDS([default],[[
+chmod +x efsd-config
+]],[[]])
+AC_OUTPUT
