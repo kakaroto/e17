@@ -632,7 +632,6 @@ feh_parse_option_array(int argc, char **argv)
            break;
         case 'j':
            opt.output_dir = estrdup(optarg);
-            fprintf(stderr,"pabsbug: set uput dir to \"%s\".\n", opt.output_dir);
            break;
         default:
            break;
