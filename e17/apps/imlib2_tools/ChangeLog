@@ -1,0 +1,15 @@
+ChnageLog
+
+imlib2_tools
+Clone of ImageMagick command line progtammes using Imlib2.
+Copyright (C) 2001  Horms <horms@vergenet.net>
+----------------------------------------------------------------------
+
+5th November 2001
+(Horms)
+
+  * Version 0.0.0alpah0
+  - Ok, so it isn't really a release, but it is a birthday present
+    for John Ferlito that I hacked together while on holidays
+    in Wellington.
+
