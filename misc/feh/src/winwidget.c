@@ -174,7 +174,7 @@ winwidget_create_window(winwidget ret,
   } else if (opt.geom) {
     w = opt.geom_w;
     h = opt.geom_h;
-  } else {
+  } else if (opt.screen_clip) {
     if (w > scr->width)
       w = scr->width;
     if (h > scr->height)
@@ -722,8 +722,10 @@ winwidget_resize(winwidget winwid,
   if (winwid && ((winwid->w != w) || (winwid->h != h))) {
     D(4, ("Really doing a resize\n"));
     /* winwidget_clear_background(winwid); */
-    winwid->w = (w > scr->width) ? scr->width : w;
-    winwid->h = (h > scr->height) ? scr->height : h;
+    if (opt.screen_clip) {
+      winwid->w = (w > scr->width) ? scr->width : w;
+      winwid->h = (h > scr->height) ? scr->height : h;
+    }
     XResizeWindow(disp, winwid->win, winwid->w, winwid->h);
     winwid->had_resize = 1;
     XFlush(disp);

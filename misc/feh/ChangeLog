@@ -1,3 +1,11 @@
+Sun Oct 20 22:45:01 2002 EDT, Paul Duncan <pabs@pablotron.org>
+
+  * added requested screen-clip option (allows you to disable window size
+    clipping based on screen geometry; ie, you can make pathologically large
+    windows, assuming you have the images to do so)
+  * disabled xinerama geometry check when using feh to set the background.
+  * cleaned up spelling and capitalization in menus
+
 Sun Oct 20 20:12:23 2002 EDT, Paul Duncan <pabs@pablotron.org>
 
   * src/support.c: xinerama bugfix from Jon Bernard <jbernard@roanoke.edu>

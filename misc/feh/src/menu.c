@@ -1072,7 +1072,7 @@ feh_menu_init_main(void)
     mi->func_gen_sub = feh_menu_func_gen_jump;
 #endif
 
-    feh_menu_add_entry(menu_main, "Sort Filelist", NULL, "SORT", NULL, NULL,
+    feh_menu_add_entry(menu_main, "Sort List", NULL, "SORT", NULL, NULL,
                        NULL);
     mi =
       feh_menu_add_entry(menu_main, "Image Info", NULL, "INFO", NULL, NULL,
@@ -1097,14 +1097,14 @@ feh_menu_init_main(void)
   m = feh_menu_new();
   m->name = estrdup("FILE");
   feh_menu_add_entry(m, "Reset", NULL, NULL, feh_menu_cb_reset, NULL, NULL);
-  feh_menu_add_entry(m, "Resize win", NULL, NULL, feh_menu_cb_fit, NULL,
+  feh_menu_add_entry(m, "Resize Window", NULL, NULL, feh_menu_cb_fit, NULL,
                      NULL);
   feh_menu_add_entry(m, "Reload", NULL, NULL, feh_menu_cb_reload, NULL, NULL);
   feh_menu_add_entry(m, "Save Image", NULL, NULL, feh_menu_cb_save_image,
                      NULL, NULL);
-  feh_menu_add_entry(m, "Save Filelist", NULL, NULL,
+  feh_menu_add_entry(m, "Save List", NULL, NULL,
                      feh_menu_cb_save_filelist, NULL, NULL);
-  feh_menu_add_entry(m, "Edit In Place", NULL, "EDIT", NULL, NULL, NULL);
+  feh_menu_add_entry(m, "Edit in Place", NULL, "EDIT", NULL, NULL, NULL);
   feh_menu_add_entry(m, "Background", NULL, "BACKGROUND", NULL, NULL, NULL);
   feh_menu_add_entry(m, NULL, NULL, NULL, NULL, NULL, NULL);
   feh_menu_add_entry(m, "Hide", NULL, NULL, feh_menu_cb_remove, NULL, NULL);
@@ -1143,12 +1143,12 @@ feh_menu_init_common()
   m = feh_menu_new();
   m->name = estrdup("SORT");
 
-  feh_menu_add_entry(m, "By filename", NULL, NULL, feh_menu_cb_sort_filename,
+  feh_menu_add_entry(m, "By File Name", NULL, NULL, feh_menu_cb_sort_filename,
                      NULL, NULL);
-  feh_menu_add_entry(m, "By image name", NULL, NULL,
+  feh_menu_add_entry(m, "By Image Name", NULL, NULL,
                      feh_menu_cb_sort_imagename, NULL, NULL);
   if (opt.preload || (opt.sort > SORT_FILENAME))
-    feh_menu_add_entry(m, "By file size", NULL, NULL,
+    feh_menu_add_entry(m, "By File Size", NULL, NULL,
                        feh_menu_cb_sort_filesize, NULL, NULL);
   feh_menu_add_entry(m, "Randomize", NULL, NULL, feh_menu_cb_sort_randomize,
                      NULL, NULL);
@@ -1172,12 +1172,12 @@ feh_menu_init_common()
 
   num_desks = feh_wm_get_num_desks();
   if (num_desks > 1) {
-    feh_menu_add_entry(menu_bg, "Set tiled", NULL, "TILED", NULL, NULL, NULL);
-    feh_menu_add_entry(menu_bg, "Set seamless", NULL, "SEAMLESS", NULL, NULL,
+    feh_menu_add_entry(menu_bg, "Set Tiled", NULL, "TILED", NULL, NULL, NULL);
+    feh_menu_add_entry(menu_bg, "Set Seamless", NULL, "SEAMLESS", NULL, NULL,
                        NULL);
-    feh_menu_add_entry(menu_bg, "Set scaled", NULL, "SCALED", NULL, NULL,
+    feh_menu_add_entry(menu_bg, "Set Scaled", NULL, "SCALED", NULL, NULL,
                        NULL);
-    feh_menu_add_entry(menu_bg, "Set centered", NULL, "CENTERED", NULL, NULL,
+    feh_menu_add_entry(menu_bg, "Set Centered", NULL, "CENTERED", NULL, NULL,
                        NULL);
 
     m = feh_menu_new();
@@ -1234,24 +1234,24 @@ feh_menu_init_common()
     }
   } else {
     if (opt.slideshow || opt.multiwindow) {
-      feh_menu_add_entry(menu_bg, "Set tiled", NULL, NULL,
+      feh_menu_add_entry(menu_bg, "Set Tiled", NULL, NULL,
                          feh_menu_cb_background_set_tiled, NULL, NULL);
-      feh_menu_add_entry(menu_bg, "Set seamless", NULL, NULL,
+      feh_menu_add_entry(menu_bg, "Set Seamless", NULL, NULL,
                          feh_menu_cb_background_set_seamless, NULL, NULL);
-      feh_menu_add_entry(menu_bg, "Set scaled", NULL, NULL,
+      feh_menu_add_entry(menu_bg, "Set Scaled", NULL, NULL,
                          feh_menu_cb_background_set_scaled, NULL, NULL);
-      feh_menu_add_entry(menu_bg, "Set centered", NULL, NULL,
+      feh_menu_add_entry(menu_bg, "Set Centered", NULL, NULL,
                          feh_menu_cb_background_set_centered, NULL, NULL);
     } else {
-      feh_menu_add_entry(menu_bg, "Set tiled", NULL, NULL,
+      feh_menu_add_entry(menu_bg, "Set Tiled", NULL, NULL,
                          feh_menu_cb_background_set_tiled_no_file, NULL,
                          NULL);
-      feh_menu_add_entry(menu_bg, "Set seamless", NULL, NULL,
+      feh_menu_add_entry(menu_bg, "Set Seamless", NULL, NULL,
                          feh_menu_cb_background_set_seamless, NULL, NULL);
-      feh_menu_add_entry(menu_bg, "Set scaled", NULL, NULL,
+      feh_menu_add_entry(menu_bg, "Set Scaled", NULL, NULL,
                          feh_menu_cb_background_set_scaled_no_file, NULL,
                          NULL);
-      feh_menu_add_entry(menu_bg, "Set centered", NULL, NULL,
+      feh_menu_add_entry(menu_bg, "Set Centered", NULL, NULL,
                          feh_menu_cb_background_set_centered_no_file, NULL,
                          NULL);
     }
@@ -1295,14 +1295,14 @@ feh_menu_init_single_win(void)
   m = feh_menu_new();
   m->name = estrdup("SINGLEWIN_FILE");
   feh_menu_add_entry(m, "Reset", NULL, NULL, feh_menu_cb_reset, NULL, NULL);
-  feh_menu_add_entry(m, "Resize win", NULL, NULL, feh_menu_cb_fit, NULL,
+  feh_menu_add_entry(m, "Resize Window", NULL, NULL, feh_menu_cb_fit, NULL,
                      NULL);
   feh_menu_add_entry(m, "Reload", NULL, NULL, feh_menu_cb_reload, NULL, NULL);
   feh_menu_add_entry(m, "Save Image", NULL, NULL, feh_menu_cb_save_image,
                      NULL, NULL);
-  feh_menu_add_entry(m, "Save Filelist", NULL, NULL,
+  feh_menu_add_entry(m, "Save List", NULL, NULL,
                      feh_menu_cb_save_filelist, NULL, NULL);
-  feh_menu_add_entry(m, "Edit In Place", NULL, "EDIT", NULL, NULL, NULL);
+  feh_menu_add_entry(m, "Edit in Place", NULL, "EDIT", NULL, NULL, NULL);
   feh_menu_add_entry(m, "Background", NULL, "BACKGROUND", NULL, NULL, NULL);
   if (opt.multiwindow || opt.slideshow) {
     feh_menu_add_entry(m, NULL, NULL, NULL, NULL, NULL, NULL);
@@ -1347,11 +1347,11 @@ feh_menu_init_thumbnail_win(void)
   m = feh_menu_new();
   m->name = estrdup("THUMBWIN_FILE");
   feh_menu_add_entry(m, "Reset", NULL, NULL, feh_menu_cb_reset, NULL, NULL);
-  feh_menu_add_entry(m, "Resize win", NULL, NULL, feh_menu_cb_fit, NULL,
+  feh_menu_add_entry(m, "Resize Window", NULL, NULL, feh_menu_cb_fit, NULL,
                      NULL);
   feh_menu_add_entry(m, "Save Image", NULL, NULL, feh_menu_cb_save_image,
                      NULL, NULL);
-  feh_menu_add_entry(m, "Save Filelist", NULL, NULL,
+  feh_menu_add_entry(m, "Save List", NULL, NULL,
                      feh_menu_cb_save_filelist, NULL, NULL);
   feh_menu_add_entry(m, "Background", NULL, "BACKGROUND", NULL, NULL, NULL);
   feh_menu_add_entry(menu_thumbnail_win, NULL, NULL, NULL, NULL, NULL, NULL);
@@ -1387,14 +1387,14 @@ feh_menu_init_thumbnail_viewer(void)
   m = feh_menu_new();
   m->name = estrdup("THUMBVIEW_FILE");
   feh_menu_add_entry(m, "Reset", NULL, NULL, feh_menu_cb_reset, NULL, NULL);
-  feh_menu_add_entry(m, "Resize win", NULL, NULL, feh_menu_cb_fit, NULL,
+  feh_menu_add_entry(m, "Resize Window", NULL, NULL, feh_menu_cb_fit, NULL,
                      NULL);
   feh_menu_add_entry(m, "Reload", NULL, NULL, feh_menu_cb_reload, NULL, NULL);
   feh_menu_add_entry(m, "Save Image", NULL, NULL, feh_menu_cb_save_image,
                      NULL, NULL);
-  feh_menu_add_entry(m, "Save Filelist", NULL, NULL,
+  feh_menu_add_entry(m, "Save List", NULL, NULL,
                      feh_menu_cb_save_filelist, NULL, NULL);
-  feh_menu_add_entry(m, "Edit In Place", NULL, "EDIT", NULL, NULL, NULL);
+  feh_menu_add_entry(m, "Edit in Place", NULL, "EDIT", NULL, NULL, NULL);
   feh_menu_add_entry(m, "Background", NULL, "BACKGROUND", NULL, NULL, NULL);
   feh_menu_add_entry(m, NULL, NULL, NULL, NULL, NULL, NULL);
   feh_menu_add_entry(m, "Hide", NULL, NULL, feh_menu_cb_remove_thumb, NULL,
@@ -1786,7 +1786,7 @@ feh_menu_func_gen_options(feh_menu * m,
   feh_menu_add_toggle_entry(mm, "Auto-Zoom", NULL, NULL,
                             feh_menu_cb_opt_auto_zoom, NULL, NULL,
                             opt.auto_zoom);
-  feh_menu_add_toggle_entry(mm, "Freeze window size", NULL, NULL,
+  feh_menu_add_toggle_entry(mm, "Freeze Window Size", NULL, NULL,
                             feh_menu_cb_opt_freeze_window, NULL, NULL,
                             opt.geom);
   feh_menu_add_toggle_entry(mm, "Fullscreen", NULL, NULL,
@@ -1801,7 +1801,7 @@ feh_menu_func_gen_options(feh_menu * m,
   feh_menu_add_toggle_entry(mm, "Draw Filename", NULL, NULL,
                             feh_menu_cb_opt_draw_filename, NULL, NULL,
                             opt.draw_filename);
-  feh_menu_add_toggle_entry(mm, "Keep HTTP files", NULL, NULL,
+  feh_menu_add_toggle_entry(mm, "Keep HTTP Files", NULL, NULL,
                             feh_menu_cb_opt_keep_http, NULL, NULL,
                             opt.keep_http);
   mm->func_free = feh_menu_func_free_options;

@@ -169,7 +169,9 @@ feh_wm_set_bg(char *fil, Imlib_Image im, int centered, int scaled,
          w = scr->width;
          h = scr->height;
 
-#ifdef HAVE_LIBXINERAMA
+/* disable xinerama check for setting background */
+#if 0
+/* #ifdef HAVE_LIBXINERAMA */
          if (opt.xinerama && xinerama_screens) {
            w = xinerama_screens[xinerama_screen].width;
            h = xinerama_screens[xinerama_screen].height;
@@ -189,7 +191,9 @@ feh_wm_set_bg(char *fil, Imlib_Image im, int centered, int scaled,
          w = scr->width;
          h = scr->height;
 
-#ifdef HAVE_LIBXINERAMA
+/* disable xinerama check for setting background */
+#if 0
+/* #ifdef HAVE_LIBXINERAMA */
          if (opt.xinerama && xinerama_screens) {
            w = xinerama_screens[xinerama_screen].width;
            h = xinerama_screens[xinerama_screen].height;

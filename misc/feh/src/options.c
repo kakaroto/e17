@@ -71,6 +71,7 @@ init_parse_options(int argc, char **argv)
    opt.builtin_http = 0;
 
    opt.xinerama = 0;
+   opt.screen_clip = 1;
 #ifdef HAVE_LIBXINERAMA
    /* if we're using xinerama, then enable it by default */
    opt.xinerama = 1;
@@ -384,6 +385,7 @@ feh_parse_option_array(int argc, char **argv)
       {"menu-style", 1, 0, 204},
       {"zoom", 1, 0, 205},
       {"xinerama", 1, 0, 206},
+      {"screen-clip", 1, 0, 207},
       {0, 0, 0, 0}
    };
    int optch = 0, cmdx = 0, i = 0;
@@ -657,6 +659,8 @@ feh_parse_option_array(int argc, char **argv)
            break;
         case 206:
            opt.xinerama = atoi(optarg);
+        case 207:
+           opt.screen_clip = atoi(optarg);
         default:
            break;
       }
@@ -920,6 +924,10 @@ show_usage(void)
            "                            any mode -- just use the button (default=off).\n"
            "      --xinerama [0|1]      Enable/disable Xinerama support.  Has no effect\n"
            "                            unless you have an Xinerama compiled in.\n"
+           "      --screen-clip [0|1]   Enable/disable window clipping based on screen\n"
+           "                            size.  WARNING: with this option disabled,\n"
+           "                            image windows could become very large, making\n"
+           "                            them unmanageable in certain window managers.\n."
            " FORMAT SPECIFIERS\n"
            "                            %%f image path/filename\n"
            "                            %%n image name\n"

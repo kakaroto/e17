@@ -64,6 +64,7 @@ struct __fehoptions
    unsigned char wget_timestamp;
    unsigned char bgmode;
    unsigned char xinerama;
+   unsigned char screen_clip;
 
    char *output_file;
    char *output_dir;
