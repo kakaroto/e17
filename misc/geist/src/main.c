@@ -41,6 +41,9 @@ gboolean mainwin_destroy_cb(GtkWidget * widget, GdkEvent * event,
 gboolean configure_cb(GtkWidget * widget, GdkEventConfigure * event,
 
                       gpointer user_data);
+gint evbox_buttonpress_cb(GtkWidget * widget, GdkEventButton * event);
+gint evbox_buttonrelease_cb(GtkWidget * widget, GdkEventButton * event);
+gint evbox_mousemove_cb(GtkWidget * widget, GdkEventMotion * event);
 
 int
 main(int argc, char *argv[])
@@ -64,13 +67,10 @@ main(int argc, char *argv[])
    gtk_widget_show(mainwin);
 
 
-   evbox = gtk_event_box_new();
-   gtk_container_add(GTK_CONTAINER(mainwin), evbox);
-   gtk_widget_show(evbox);
 
    scrollwin = gtk_scrolled_window_new(NULL, NULL);
    gtk_widget_show(scrollwin);
-   gtk_container_add(GTK_CONTAINER(evbox), scrollwin);
+   gtk_container_add(GTK_CONTAINER(mainwin), scrollwin);
    gtk_scrolled_window_set_policy(GTK_SCROLLED_WINDOW(scrollwin),
                                   GTK_POLICY_AUTOMATIC, GTK_POLICY_AUTOMATIC);
 
@@ -78,9 +78,19 @@ main(int argc, char *argv[])
    gtk_widget_show(viewport);
    gtk_container_add(GTK_CONTAINER(scrollwin), viewport);
 
+   evbox = gtk_event_box_new();
+   gtk_container_add(GTK_CONTAINER(viewport), evbox);
+   gtk_widget_show(evbox);
+   gtk_signal_connect(GTK_OBJECT(evbox), "button_press_event",
+                      GTK_SIGNAL_FUNC(evbox_buttonpress_cb), NULL);
+   gtk_signal_connect(GTK_OBJECT(evbox), "button_release_event",
+                      GTK_SIGNAL_FUNC(evbox_buttonrelease_cb), NULL);
+   gtk_signal_connect(GTK_OBJECT(evbox), "motion_notify_event",
+                      GTK_SIGNAL_FUNC(evbox_mousemove_cb), NULL);
+
    /* The drawing area itself */
    darea = gtk_drawing_area_new();
-   gtk_container_add(GTK_CONTAINER(viewport), darea);
+   gtk_container_add(GTK_CONTAINER(evbox), darea);
    gtk_signal_connect_after(GTK_OBJECT(darea), "configure_event",
                             GTK_SIGNAL_FUNC(configure_cb), NULL);
    gtk_widget_show(darea);
@@ -116,30 +126,55 @@ main(int argc, char *argv[])
    D_RETURN(3, 0);
 }
 
-gboolean mainwin_delete_cb(GtkWidget * widget, GdkEvent * event,
-                           gpointer user_data)
+gboolean
+mainwin_delete_cb(GtkWidget * widget, GdkEvent * event, gpointer user_data)
 {
    D_ENTER(3);
    gtk_exit(0);
    D_RETURN(3, FALSE);
 }
-
-gboolean mainwin_destroy_cb(GtkWidget * widget, GdkEvent * event,
-                            gpointer user_data)
-{
-   D_ENTER(3);
-   gtk_exit(0);
-   D_RETURN(3, FALSE);
-}
-
 
 gboolean
-configure_cb(GtkWidget * widget, GdkEventConfigure * event,
-             gpointer user_data)
+mainwin_destroy_cb(GtkWidget * widget, GdkEvent * event, gpointer user_data)
+{
+   D_ENTER(3);
+   gtk_exit(0);
+   D_RETURN(3, FALSE);
+}
+
+
+gboolean configure_cb(GtkWidget * widget, GdkEventConfigure * event,
+                      gpointer user_data)
 {
    D_ENTER(3);
 
    geist_document_render_to_gtk_window(doc, darea);
 
    D_RETURN(3, TRUE);
+}
+
+gint evbox_buttonpress_cb(GtkWidget * widget, GdkEventButton * event)
+{
+   D_ENTER(5);
+
+   printf("buttonpress\n");
+
+   D_RETURN(5, 1);
+}
+
+gint
+evbox_buttonrelease_cb(GtkWidget * widget, GdkEventButton * event)
+{
+   D_ENTER(5);
+   printf("buttonrelease\n");
+
+   D_RETURN(5, 1);
+}
+
+gint evbox_mousemove_cb(GtkWidget * widget, GdkEventMotion * event)
+{
+   D_ENTER(5);
+   printf("mousemove\n");
+
+   D_RETURN(5, 1);
 }
