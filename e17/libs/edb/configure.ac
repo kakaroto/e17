@@ -29,8 +29,8 @@ dnl XXX
 dnl Don't override anything if it's already set from the environment.
 AC_SUBST(CFLAGS)
 AC_SUBST(CPPFLAGS)
-AC_SUBST(CXX)
-AC_SUBST(CXXFLAGS)
+dnl AC_SUBST(CXX)
+dnl AC_SUBST(CXXFLAGS)
 AC_SUBST(LDFLAGS)
 case "$host_os" in
 aix4.1*)   CFLAGS=${CFLAGS-"-O3"};;
@@ -50,32 +50,25 @@ sco*)	   CFLAGS="$CFLAGS -b elf"
 esac
 CXXFLAGS=${CXXFLAGS-"$CFLAGS"}
 
-dnl The default compiler is cc (NOT gcc), the default CFLAGS is as specified
-dnl above, NOT what is set by AC_PROG_CC, as it won't set optimization flags.
-dnl We still call AC_PROG_CC so that we get the other side-effects.
-AC_CHECK_PROG(CC, cc, cc)
-AC_CHECK_PROG(CC, gcc, gcc)
-AC_PROG_CC
-
 dnl Optional C++ API..
 dnl
 dnl XXX
 dnl Versions of GCC up to 2.8.0 required -fhandle-exceptions, but it is
 dnl the default in versions 2.8.0 and after.
-AC_MSG_CHECKING(if --enable-cxx option specified)
-AC_ARG_ENABLE(cxx,
-	[  --enable-cxx            Provide C++ interfaces.],
-	[db_cv_cxx="$enable_cxx"], [db_cv_cxx="no"])
-AC_MSG_RESULT($db_cv_cxx)
-if test "$db_cv_cxx" = "yes"; then
-	AC_PROG_CXX
+dnl AC_MSG_CHECKING(if --enable-cxx option specified)
+dnl AC_ARG_ENABLE(cxx,
+dnl	[  --enable-cxx            Provide C++ interfaces.],
+dnl	[db_cv_cxx="$enable_cxx"], [db_cv_cxx="no"])
+dnl AC_MSG_RESULT($db_cv_cxx)
+dnl if test "$db_cv_cxx" = "yes"; then
+dnl	AC_PROG_CXX
 
-	if test "$GXX" = "yes"; then
-		CXXFLAGS="-fhandle-exceptions $CXXFLAGS"
-	fi
+dnl	if test "$GXX" = "yes"; then
+dnl		CXXFLAGS="-fhandle-exceptions $CXXFLAGS"
+dnl	fi
 
-	AC_LIBOBJ="$AC_LIBOBJ \$(COBJS)"
-fi
+dnl	AC_LIBOBJ="$AC_LIBOBJ \$(COBJS)"
+dnl fi
 
 dnl There are additional libraries we need for some compiler/architecture
 dnl combinations.
@@ -87,9 +80,9 @@ AC_ARG_ENABLE(compat185,
 	[  --enable-compat185      Include DB 1.85 compatibility API.],
 	[db_cv_compat185="$enable_compat185"], [db_cv_compat185="no"])
 AC_MSG_RESULT($db_cv_compat185)
-if test "$db_cv_compat185" = "yes"; then
-	AC_LIBOBJ="db185.o $AC_LIBOBJ"
-fi
+dnl if test "$db_cv_compat185" = "yes"; then
+dnl	    AC_LIBOBJ="db185.o $AC_LIBOBJ"
+dnl fi
 
 dnl Optional utilities.
 AC_SUBST(build_additional)
@@ -163,7 +156,7 @@ AC_CHECK_FUNCS(getuid pread pstat_getdynamic sysconf)
 
 dnl A/UX has a broken getopt(3).
 case "$host_os" in
-aux*)	AC_LIBOBJ="getopt.o $AC_LIBOBJ";;
+dnl    aux*)    AC_LIBOBJ = "getopt.o $AC_LIBOBJ" ;;
 esac
 
 dnl Checks for system functions for which we don't have replacements.
@@ -453,7 +446,8 @@ uts4/cc)
 	AC_DEFINE(HAVE_ASSEM_UTS4_CC)
 	mutex_align="sizeof(int)"
 	spin_line1="typedef int tsl_t;"
-	AC_LIBOBJ="$AC_LIBOBJ uts4.cc.o";;
+dnl	AC_LIBOBJ="$AC_LIBOBJ uts4.cc.o"
+    ;;
 x86/gcc)
 	AC_DEFINE(HAVE_ASSEM_X86_GCC)
 	mutex_align="1"
@@ -649,7 +643,8 @@ AC_MSG_RESULT($gtk_ok)
 
 AC_CHECK_LIB(ncurses, putwin,
   [AC_CHECK_HEADER(ncurses.h, ncurses_ok=yes, ncurses_ok=no)],
-  ncurses_ok=no, -lncurses)
+  ncurses_ok=no,
+  -lncurses)
   
 AM_CONDITIONAL(EDB_VT_ED, test "$ncurses_ok" = yes)
 AM_CONDITIONAL(EDB_GTK_ED, test "$gtk_ok" = yes)
