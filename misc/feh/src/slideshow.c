@@ -27,17 +27,15 @@ init_slideshow_mode (void)
   int success = 0;
   char *s = NULL;
   feh_file file = NULL, last = NULL;
-  int remove_last = 0;
 
   D (("In init_slideshow_mode\n"));
 
   for (file = filelist; file; file = file->next)
     {
-      if (remove_last && last)
+      if (last)
 	{
 	  filelist = filelist_remove_file (filelist, last);
 	  last = NULL;
-	  remove_last = 0;
 	}
       current_file = file;
       s = slideshow_create_name (file->filename);
@@ -58,7 +56,6 @@ init_slideshow_mode (void)
       else
 	{
 	  free (s);
-	  remove_last = 1;
 	  last = file;
 	}
     }
@@ -120,7 +117,6 @@ slideshow_change_image (winwidget winwid, int change)
 {
   int success = 0;
   feh_file last = NULL;
-  int remove_last = 0;
   int i = 0, file_num = 0;
 
   D (("In slideshow_change_image\n"));
@@ -172,11 +168,10 @@ slideshow_change_image (winwidget winwid, int change)
 	  else
 	    current_file = filelist_last (current_file);
 	}
-      if (remove_last && last)
+      if (last)
 	{
 	  filelist = filelist_remove_file (filelist, last);
 	  last = NULL;
-	  remove_last = 0;
 	}
       if (opt.progressive)
 	{
@@ -210,10 +205,7 @@ slideshow_change_image (winwidget winwid, int change)
 	  break;
 	}
       else
-	{
-	  remove_last = 1;
 	  last = current_file;
-	}
     }
   if (!success)
     {
