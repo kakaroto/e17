@@ -24,6 +24,6 @@ _econf_timestamp(void)
 	 */
 	
 	
-	return htonl(time);
+	return htonl(time(NULL));
 
 }
