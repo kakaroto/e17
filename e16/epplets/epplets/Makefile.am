@@ -7,7 +7,7 @@ E-Cpu.epplet E-Biff.epplet E-Power.epplet @TEST_PROGS@ @MIXER_PROGS@ \
 E-MemWatch.epplet E-Disk.epplet E-Areas.epplet \
 E-NetFlame.epplet E-Sys.epplet E-ScreenShoot.epplet E-Slides.epplet \
 E-Xss.epplet E-Mountbox.epplet E-Exec.epplet E-SD.epplet \
-E-ScreenSave.epplet E-NetGraph.epplet E-MoonClock.epplet
+E-ScreenSave.epplet E-NetGraph.epplet E-MoonClock.epplet E-UrlWatch.epplet
 
 EXTRA_PROGRAMS = EppletTest.epplet EppletConfigTest.epplet E-Mixer.epplet Emix.epplet
 
@@ -115,6 +115,12 @@ E_ScreenSave_epplet_SOURCES = \
 E-ScreenSave.c E-ScreenSave.h cloak.c utils.c utils.h cloak.h
 E_ScreenSave_epplet_DEPENDENCIES = $(top_srcdir)/api/libepplet.la
 E_ScreenSave_epplet_LDFLAGS = -rpath $(libdir):$(pkglibdir)
+
+E_UrlWatch_epplet_SOURCES = \
+E-UrlWatch.c E-UrlWatch.h cloak.c utils.c utils.h cloak.h
+E_UrlWatch_epplet_DEPENDENCIES = $(top_srcdir)/api/libepplet.la
+E_UrlWatch_epplet_LDFLAGS = -rpath $(libdir):$(pkglibdir) $(X_LIBS)
+E_UrlWatch_epplet_LDADD = $(top_builddir)/api/libepplet.la -L$(libdir) -L$(prefix)/lib $(LIBS) $(X_LIBS)
 
 E_Areas_epplet_SOURCES = E-Areas.c
 E_Areas_epplet_DEPENDENCIES = $(top_srcdir)/api/libepplet.la
