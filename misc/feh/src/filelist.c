@@ -577,3 +577,20 @@ feh_absolute_path(char *path)
    D(4, ("Converted path to %s\n", ret));
    D_RETURN(4, ret);
 }
+
+void feh_save_filelist()
+{
+   char *tmpname;
+
+   D_ENTER(4);
+
+      tmpname =
+         feh_unique_filename("", "filelist");
+
+   if(!opt.quiet)
+      printf("saving filelist to filename '%s'\n", tmpname);
+
+   feh_write_filelist(filelist, tmpname);
+   free(tmpname);
+   D_RETURN_(4);
+}

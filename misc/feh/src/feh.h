@@ -118,6 +118,7 @@ void feh_reload_image(winwidget w, int resize);
 void feh_filelist_image_remove(winwidget winwid, char do_delete);
 char *feh_strip_hostname(char *url);
 struct hostent *feh_gethostbyname(const char *name);
+void slideshow_save_image(winwidget win);
 
 
 

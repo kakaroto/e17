@@ -71,6 +71,7 @@ int feh_write_filelist(feh_list * list, char *filename);
 feh_list *feh_read_filelist(char *filename);
 char *feh_absolute_path(char *path);
 feh_list *feh_file_remove_from_list(feh_list * list, feh_list * l);
+void feh_save_filelist();
 
 int feh_cmp_name(void *file1, void *file2);
 int feh_cmp_filename(void *file1, void *file2);

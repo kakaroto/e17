@@ -37,5 +37,6 @@ void *_emalloc(size_t n);
 void *_erealloc(void *ptr, size_t n);
 char *estrjoin(const char *separator, ...);
 char *stroflen(char, int);
+char *feh_unique_filename(char *path, char *basename);
 
 #endif

@@ -490,3 +490,20 @@ feh_filelist_image_remove(winwidget winwid, char do_delete)
       winwidget_destroy(winwid);
    }
 }
+
+void slideshow_save_image(winwidget win)
+{
+   char *tmpname;
+
+   D_ENTER(4);
+
+      tmpname =
+         feh_unique_filename("", FEH_FILE(win->file->data)->name);
+
+   if(!opt.quiet)
+      printf("saving image to filename '%s'\n", tmpname);
+
+   feh_imlib_save_image(win->im, tmpname);
+   free(tmpname);
+   D_RETURN_(4);
+}

@@ -240,40 +240,40 @@ feh_http_load_image(char *url)
    char *tmpname;
    char *tmpname_timestamper = NULL;
    char *basename;
-   char num[10];
    char cppid[10];
    static long int i = 1;
    char *newurl = NULL;
    char randnum[20];
    int rnum;
-   struct stat st;
    pid_t ppid;
+   char *path = NULL;
 
    D_ENTER(4);
-   /* Massive paranoia ;) */
-   if (i > 999998)
-      i = 1;
 
-   ppid = getpid();
-   snprintf(cppid, sizeof(cppid), "%06ld", ppid);
-
-   /* make sure file doesn't exist */
-   do
+   if(opt.keep_http)
    {
-      snprintf(num, sizeof(num), "%06ld", i++);
-      basename = strrchr(url, '/') + 1;
-      tmpname =
-         estrjoin("", (opt.keep_http && opt.output_dir) ? opt.output_dir : "",
-                  (opt.keep_http
-                   && opt.output_dir) ? "/" : "",
-                  opt.keep_http ? "feh_" : "/tmp/feh_", cppid, "_", num, "_",
-                  basename, NULL);
+      if(opt.output_dir)
+         path = opt.output_dir;
+      else
+         path = "";
    }
-   while (stat(tmpname, &st) == 0);
+   else
+      path = "/tmp/";
 
+   basename = strrchr(url, '/') + 1;
+   tmpname =
+         feh_unique_filename(path, basename);
+   printf("using %s\n", tmpname);
+   
    if (opt.wget_timestamp)
+   {
+      char cppid[10];
+      pid_t ppid;
+      ppid = getpid();
+      snprintf(cppid, sizeof(cppid), "%06ld", ppid);
       tmpname_timestamper =
          estrjoin("", "/tmp/feh_", cppid, "_", basename, NULL);
+   }
 
    if (opt.wget_timestamp)
    {

@@ -163,3 +163,36 @@ stroflen(char c, int l)
    buf[i] = '\0';
    return buf;
 }
+
+/* free the result please */
+char *feh_unique_filename(char *path, char *basename)
+{
+   char *tmp;
+   char *tmpname;
+   char *tmpname_timestamper = NULL;
+   char num[10];
+   char cppid[10];
+   static long int i = 1;
+   int rnum;
+   struct stat st;
+   pid_t ppid;
+
+   D_ENTER(4);
+   /* Massive paranoia ;) */
+   if (i > 999998)
+      i = 1;
+
+   ppid = getpid();
+   snprintf(cppid, sizeof(cppid), "%06ld", ppid);
+
+   /* make sure file doesn't exist */
+   do
+   {
+      snprintf(num, sizeof(num), "%06ld", i++);
+      tmpname =
+         estrjoin("", path, "feh_", cppid, "_", num, "_",
+                  basename, NULL);
+   }
+   while (stat(tmpname, &st) == 0);
+   D_RETURN(4, tmpname);
+}
