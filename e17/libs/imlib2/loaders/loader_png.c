@@ -202,6 +202,8 @@ save (ImlibImage *im,
    int                 x, y, j;
    png_bytep           row_ptr, data = NULL;
    png_color_8         sig_bit;
+   int                 pl = 0;
+   char                pper = 0;
    
    f = fopen(im->file, "wb");
    if (!f)
@@ -273,9 +275,16 @@ save (ImlibImage *im,
 	if (progress)
 	  {
 	     char per;
+	     int l;
 	     
 	     per = (char)((100 * y) / im->h);
-	     progress(im, per, 0, y, im->w, 1);
+	     if ((per - pper) >= progress_granularity)
+	       {
+		  l = y - pl;
+		  progress(im, per, 0, (y - l), im->w, l);
+		  pper = per;
+		  pl = y;
+	       }
 	  }
 	ptr += im->w;
      }

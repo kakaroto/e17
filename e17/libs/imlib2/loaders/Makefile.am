@@ -21,3 +21,7 @@ png_la_LIBADD	     = -lpng -lz -lX11 -lXext
 jpeg_la_SOURCES	     = loader_jpeg.c
 jpeg_la_LDFLAGS	     = -no-undefined -module -avoid-version
 jpeg_la_LIBADD	     = -ljpeg
+
+pnm_la_SOURCES	     = loader_pnm.c
+pnm_la_LDFLAGS	     = -no-undefined -module -avoid-version
+pnm_la_LIBADD	     =

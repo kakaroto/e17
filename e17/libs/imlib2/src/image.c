@@ -29,7 +29,7 @@ __imlib_AttachTag(ImlibImage *im, char *key, int val, void *data,
       return;   
 
    /* if a tag of that name alreayd exists - remove it and free it */
-   if (t = __imlib_RemoveTag(im, key))
+   if ((t = __imlib_RemoveTag(im, key)))
       __imlib_FreeTag(im, t);
    /* allocate the struct */
    t = malloc(sizeof(ImlibImageTag));

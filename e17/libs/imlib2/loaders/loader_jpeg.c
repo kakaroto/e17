@@ -210,6 +210,9 @@ save (ImlibImage *im,
    JSAMPROW           *jbuf;
    int                 y = 0, quality = 75;
    ImlibImageTag      *tag;
+   int                 i, j, pl = 0;
+   char                pper = 0;
+	
 
    /* no image data? abort */
    if (!im->data)
@@ -262,8 +265,6 @@ save (ImlibImage *im,
    /* go one scanline at a time... and save */
    while (cinfo.next_scanline < cinfo.image_height)
      {
-	int i, j;
-	
 	/* convcert scaline from ARGB to RGB packed */
 	for (j = 0, i = 0; i < im->w; i++)
 	  {
@@ -279,9 +280,16 @@ save (ImlibImage *im,
 	if (progress)
 	  {
 	     char per;
+	     int l;
 	     
 	     per = (char)((100 * y) / im->h);
-	     progress(im, per, 0, y, im->w, 1);
+	     if ((per - pper) >= progress_granularity)
+	       {
+		  l = y - pl;
+		  progress(im, per, 0, (y - l), im->w, l);
+		  pper = per;
+		  pl = y;
+	       }
 	  }
      }
    /* finish off */
