@@ -18,8 +18,4 @@ void
 __imlib_ScaleAARGB(DATA32 **ypoints, int *xpoints, DATA32 *dest,
 	   int *xapoints, int *yapoints, char xup, char yup,
 	   int dxx, int dyy, int dx, int dy, int dw, int dh, int dow, int sow);
-void
-__imlib_Scale_mmx_AARGBA(DATA32 **ypoints, int *xpoints, DATA32 *dest,
-	   int *xapoints, int *yapoints, char xup, char yup,
-	   int dxx, int dyy, int dx, int dy, int dw, int dh, int dow, int sow);
 #endif
