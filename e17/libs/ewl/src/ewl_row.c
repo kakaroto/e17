@@ -41,8 +41,7 @@ int ewl_row_init(Ewl_Row *row)
 	ewl_container_show_notify(EWL_CONTAINER(row), ewl_row_child_show_cb);
 	ewl_container_resize_notify(EWL_CONTAINER(row), ewl_row_resize_cb);
 
-	ewl_object_set_fill_policy(EWL_OBJECT(row), EWL_FLAG_FILL_HFILL |
-			EWL_FLAG_FILL_HSHRINK);
+	ewl_object_set_fill_policy(EWL_OBJECT(row), EWL_FLAG_FILL_HFILL);
 
 	ewl_callback_append(EWL_WIDGET(row), EWL_CALLBACK_CONFIGURE,
 			ewl_row_configure_cb, NULL);

@@ -263,6 +263,7 @@ void ewl_image_realize_cb(Ewl_Widget * w, void *ev_data, void *user_data)
 	if (w->fx_clip_box)
 		evas_object_clip_set(i->image, w->fx_clip_box);
 	evas_object_image_size_get(i->image, &i->ow, &i->oh);
+	evas_object_pass_events_set(i->image, TRUE);
 	evas_object_show(i->image);
 
 	if (!i->ow)

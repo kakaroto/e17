@@ -4,7 +4,7 @@ MAINTAINERCLEANFILES = Makefile.in
 CFLAGS			=	-g -W -Wall -Wno-implicit
 INCLUDES		=	-I$(top_srcdir)/src @edje_cflags@ @ecore_cflags@ @evas_cflags@
 
-bin_PROGRAMS			=	ewl_test
+bin_PROGRAMS			=	ewl_test ewl_embed_test
 
 ewl_test_DEPENDENCIES		=	$(top_builddir)/src/libewl.la
 ewl_test_SOURCES		=	ewl_test.h \
@@ -32,3 +32,9 @@ ewl_test_SOURCES		=	ewl_test.h \
 
 # ewl_test_LDFLAGS		=	
 ewl_test_LDADD			=	$(top_builddir)/src/libewl.la @edje_libs@ @ecore_libs@ @evas_libs@
+
+ewl_embed_test_DEPENDENCIES		=	$(top_builddir)/src/libewl.la
+ewl_embed_test_SOURCES		=	ewl_embed_test.c
+
+# ewl_embed_test_LDFLAGS		=	
+ewl_embed_test_LDADD			=	$(top_builddir)/src/libewl.la @edje_libs@ @ecore_libs@ @evas_libs@

@@ -829,6 +829,7 @@ void ewl_widget_set_clipped(Ewl_Widget *w, unsigned int val)
 			DRETURN(DLEVEL_STABLE);
 
 		w->fx_clip_box = evas_object_rectangle_add(emb->evas);
+		evas_object_pass_events_set(w->fx_clip_box, TRUE);
 		ewl_widget_configure(w);
 	}
 	else {
@@ -1003,8 +1004,10 @@ void ewl_widget_realize_cb(Ewl_Widget * w, void *ev_data, void *user_data)
 	 * Create the fx clip box where special fx can be drawn to affect the
 	 * entire contents of the widget
 	 */
-	if (!ewl_object_get_flags(EWL_OBJECT(w), EWL_FLAG_VISIBLE_NOCLIP))
+	if (!ewl_object_get_flags(EWL_OBJECT(w), EWL_FLAG_VISIBLE_NOCLIP)) {
 		w->fx_clip_box = evas_object_rectangle_add(emb->evas);
+		evas_object_pass_events_set(w->fx_clip_box, TRUE);
+	}
 
 	if (w->fx_clip_box)
 		evas_object_layer_set(w->fx_clip_box,

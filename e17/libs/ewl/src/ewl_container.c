@@ -905,6 +905,7 @@ void ewl_container_realize_cb(Ewl_Widget * w, void *ev_data, void *user_data)
 	if (c->clip_box) {
 		evas_object_move(c->clip_box, CURRENT_X(w), CURRENT_Y(w));
 		evas_object_resize(c->clip_box, CURRENT_W(w), CURRENT_H(w));
+		evas_object_pass_events_set(c->clip_box, TRUE);
 	}
 
 	if (w->fx_clip_box) {
