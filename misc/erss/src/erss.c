@@ -23,7 +23,6 @@ int total_connects = 0;
 
 int erss_connect (void *data)
 {
-
 	if (waiting_for_reply) {
 		fprintf (stderr, "%s warning: client has not received all information ", 
 				PACKAGE);
@@ -65,7 +64,6 @@ int erss_connect (void *data)
 	total_connects++;
 	last_time = strdup (time_format ());
 	set_time (NULL);
-	
 
 	return TRUE;
 }
@@ -188,7 +186,6 @@ int handler_server_add (void *data, int type, void *event)
 	/*
 	 * We want to be connected before sending the request.
 	 */
-	
 	if (total_connects == 1)
 		printf ("%s info: sending HTTP request ...\n", PACKAGE);
 

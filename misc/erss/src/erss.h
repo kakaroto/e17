@@ -25,6 +25,8 @@
 #include <errno.h>
 #include <time.h>
 
+#include <assert.h>
+
 #include "config.h"
 
 extern Evas *evas;

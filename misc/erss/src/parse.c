@@ -150,13 +150,7 @@ void parse_data (char *buf)
 
 	if (get_end_story (buf))
 	{
-		/*
-		if (item->description)
-			printf ("[%s]\n", item->description);
-		*/
-		
 		ewd_list_append (list, item);
-
 		return;
 	}
 
@@ -179,12 +173,7 @@ void parse_data (char *buf)
 		snprintf (text, i, " %s %s", cfg->prefix, c);
 		
 		item->obj = edje_object_add (evas);
-		edje_object_file_set (item->obj, 
-				cfg->theme, "erss_item");
-		
-		if (text)
-			edje_object_part_text_set (item->obj, "article", text);
-		
+		edje_object_file_set (item->obj, cfg->theme, "erss_item");
 		evas_object_show (item->obj);
 		
 		evas_object_event_callback_add (item->obj,
@@ -193,10 +182,11 @@ void parse_data (char *buf)
 				EVAS_CALLBACK_MOUSE_OUT, cb_mouse_out, NULL);
 		
 		e_container_element_append(cont, item->obj);
-		
+		edje_object_part_text_set (item->obj, "article", text);
+
+		free (text); 
 		free (c);
-		free (text);
-		
+
 		return; 
 	}
 	
@@ -272,8 +262,7 @@ int parse_rc_file ()
 	memset(rc, 0, sizeof(Rc_Config));
 	
 	fp = fopen (file, "r");
-
-
+	
 	while (fp && (line = get_next_line (fp)) != NULL)
 	{
 		if ((c = get_element (&line, "config")) != NULL)
@@ -337,7 +326,7 @@ int parse_rc_file ()
 	if (!rc->enc_from)
 		rc->enc_from = strdup("utf8");
 	if (!rc->enc_to)
-		rc->enc_from = strdup("iso-8859-1");
+		rc->enc_to = strdup("iso-8859-1");
 	
 	/* 
 	 * If there is no rc file return false for us to know
