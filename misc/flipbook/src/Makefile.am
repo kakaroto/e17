@@ -10,6 +10,7 @@ flipbook_SOURCES = \
 	support.c support.h \
 	interface.c interface.h \
 	callbacks.c callbacks.h \
+	hooks.c hooks.h \
 	menus.c menus.h
 
 flipbook_LDADD = @GTK_LIBS@
