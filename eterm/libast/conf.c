@@ -756,7 +756,6 @@ conf_find_file(const char *file, const char *dir, const char *pathlist) {
 FILE *
 open_config_file(char *name)
 {
-
   FILE *fp;
   int ver;
   char buff[256], test[30], *begin_ptr, *end_ptr;
@@ -784,15 +783,103 @@ open_config_file(char *name)
   return (fp);
 }
 
-char *
-conf_parse(char *conf_name, const char *dir, const char *path) {
-
-  FILE *fp;
-  char *name = NULL, *outfile, *p = ".";
-  char buff[CONFIG_BUFF], orig_dir[PATH_MAX];
+#define CONF_PARSE_RET()  do {if (!fp) {file_pop(); ctx_end();} return;} while (0)
+void
+conf_parse_line(FILE *fp, char *buff)
+{
   register unsigned long i = 0;
-  unsigned char id = 0;
+  unsigned char id;
   void *state = NULL;
+
+  ASSERT(buff != NULL);
+
+  if (!(*buff) || *buff == '\n' || *buff == '#' || *buff == '<') {
+    CONF_PARSE_RET();
+  }
+  if (fp == NULL) {
+    file_push(NULL, "<argv>", NULL, 0, 0);
+    ctx_begin(1);
+    buff = get_pword(2, buff);
+    if (!buff) {
+      CONF_PARSE_RET();
+    }
+  }
+  id = ctx_peek_id();
+  chomp(buff);
+  D_CONF(("Parsing line #%lu of file %s\n", file_peek_line(), file_peek_path()));
+  switch (*buff) {
+    case '%':
+      if (!BEG_STRCASECMP(get_pword(1, buff + 1), "include ")) {
+        char *path;
+        FILE *fp;
+
+        shell_expand(buff);
+        path = get_word(2, buff + 1);
+        if ((fp = open_config_file(path)) == NULL) {
+          print_error("Parsing file %s, line %lu:  Unable to locate %%included config file %s (%s), continuing\n", file_peek_path(), file_peek_line(),
+                      path, strerror(errno));
+        } else {
+          file_push(fp, path, NULL, 1, 0);
+        }
+      } else if (!BEG_STRCASECMP(get_pword(1, buff + 1), "preproc ")) {
+        char cmd[PATH_MAX], fname[PATH_MAX], *outfile;
+        int fd;
+        FILE *fp;
+
+        if (file_peek_preproc()) {
+          CONF_PARSE_RET();
+        }
+        strcpy(fname, "Eterm-preproc-");
+        fd = libast_temp_file(fname, PATH_MAX);
+        outfile = STRDUP(fname);
+        snprintf(cmd, PATH_MAX, "%s < %s > %s", get_pword(2, buff), file_peek_path(), fname);
+        system(cmd);
+        fp = fdopen(fd, "rt");
+        if (fp != NULL) {
+          fclose(file_peek_fp());
+          file_poke_fp(fp);
+          file_poke_preproc(1);
+          file_poke_outfile(outfile);
+        }
+      } else {
+        if (file_peek_skip()) {
+          CONF_PARSE_RET();
+        }
+        shell_expand(buff);
+      }
+      break;
+    case 'b':
+      if (file_peek_skip()) {
+        CONF_PARSE_RET();
+      }
+      if (!BEG_STRCASECMP(buff, "begin ")) {
+        ctx_begin(2);
+        break;
+      }
+      /* Intentional pass-through */
+    case 'e':
+      if (!BEG_STRCASECMP(buff, "end ") || !strcasecmp(buff, "end")) {
+        ctx_end();
+        break;
+      }
+      /* Intentional pass-through */
+    default:
+      if (file_peek_skip()) {
+        CONF_PARSE_RET();
+      }
+      shell_expand(buff);
+      ctx_poke_state((*ctx_id_to_func(id))(buff, ctx_peek_state()));
+  }
+  CONF_PARSE_RET();
+}
+#undef CONF_PARSE_RET
+
+char *
+conf_parse(char *conf_name, const char *dir, const char *path)
+{
+  FILE *fp;
+  char *name = NULL, *p = ".";
+  char buff[CONFIG_BUFF], orig_dir[PATH_MAX];
 
   REQUIRE_RVAL(conf_name != NULL, 0);
 
@@ -824,98 +911,7 @@ conf_parse(char *conf_name, const char *dir, const char *path) {
 	for (; fgets(buff, CONFIG_BUFF, file_peek_fp()) && !strrchr(buff, '\n'););
 	continue;
       }
-      if (!(*buff) || *buff == '\n') {
-	continue;
-      }
-      chomp(buff);
-      switch (*buff) {
-	case '#':
-	case '<':
-	  break;
-	case '%':
-	  D_CONF(("read_config():  Parsing line #%lu of file %s\n", file_peek_line(), file_peek_path()));
-	  if (!BEG_STRCASECMP(get_pword(1, buff + 1), "include ")) {
-            char *path;
-            FILE *fp;
-
-	    shell_expand(buff);
-	    path = get_word(2, buff + 1);
-	    if ((fp = open_config_file(path)) == NULL) {
-	      print_error("Error in file %s, line %lu:  Unable to locate %%included config file %s (%s), continuing\n", file_peek_path(), file_peek_line(),
-                          path, strerror(errno));
-	    } else {
-              file_push(fp, path, NULL, 1, 0);
-            }
-	  } else if (!BEG_STRCASECMP(get_pword(1, buff + 1), "preproc ")) {
-	    char cmd[PATH_MAX], fname[PATH_MAX];
-            int fd;
-	    FILE *fp;
-
-	    if (file_peek_preproc()) {
-	      continue;
-	    }
-            strcpy(fname, "Eterm-preproc-");
-            fd = libast_temp_file(fname, PATH_MAX);
-            outfile = STRDUP(fname);
-	    snprintf(cmd, PATH_MAX, "%s < %s > %s", get_pword(2, buff), file_peek_path(), fname);
-	    system(cmd);
-	    fp = fdopen(fd, "rt");
-	    if (fp != NULL) {
-	      fclose(file_peek_fp());
-	      file_poke_fp(fp);
-	      file_poke_preproc(1);
-	      file_poke_outfile(outfile);
-	    }
-	  } else {
-            D_CONF(("read_config():  Parsing line #%lu of file %s\n", file_peek_line(), file_peek_path()));
-            if (file_peek_skip()) {
-              continue;
-            }
-            shell_expand(buff);
-	  }
-	  break;
-	case 'b':
-	  D_CONF(("read_config():  Parsing line #%lu of file %s\n", file_peek_line(), file_peek_path()));
-	  if (file_peek_skip()) {
-	    continue;
-          }
-	  if (!BEG_STRCASECMP(buff, "begin ")) {
-	    name = get_pword(2, buff);
-	    ctx_name_to_id(id, name, i);
-            ctx_push(id);
-            *buff = CONF_BEGIN_CHAR;
-            state = (*ctx_id_to_func(id))(buff, ctx_peek_last_state());
-            ctx_poke_state(state);
-            break;
-          }
-          /* Intentional pass-through */
-	case 'e':
-          if (*buff != 'b') {
-            D_CONF(("read_config():  Parsing line #%lu of file %s\n", file_peek_line(), file_peek_path()));
-          }
-	  if (!BEG_STRCASECMP(buff, "end ") || !strcasecmp(buff, "end")) {
-	    if (ctx_get_depth()) {
-              *buff = CONF_END_CHAR;
-              state = (*ctx_id_to_func(id))(buff, ctx_peek_state());
-              ctx_poke_state(NULL);
-	      ctx_pop();
-              id = ctx_peek_id();
-              ctx_poke_state(state);
-	      file_poke_skip(0);
-	    }
-	    break;
-	  }
-          /* Intentional pass-through */
-	default:
-          if (*buff != 'b' && *buff != 'e') {
-            D_CONF(("read_config():  Parsing line #%lu of file %s\n", file_peek_line(), file_peek_path()));
-          }
-	  if (file_peek_skip()) {
-	    continue;
-          }
-          shell_expand(buff);
-          ctx_poke_state((*ctx_id_to_func(id))(buff, ctx_peek_state()));
-      }
+      conf_parse_line(fp, buff);
     }
     fclose(file_peek_fp());
     if (file_peek_preproc()) {

@@ -358,7 +358,9 @@
 #endif
 
 #define CONF_BEGIN_CHAR                 ((char) 1)
+#define CONF_BEGIN_STRING               "\001"
 #define CONF_END_CHAR                   ((char) 2)
+#define CONF_END_STRING                 "\002"
 
 #define BOOL_OPT_ISTRUE(s)  (!strcasecmp((s), true_vals[0]) || !strcasecmp((s), true_vals[1]) \
                              || !strcasecmp((s), true_vals[2]) || !strcasecmp((s), true_vals[3]))
@@ -373,7 +375,10 @@
 					   break; \
 					 } \
 			               } \
-                                       if ((i) > ctx_idx) (the_id) = 0; \
+                                       if ((i) > ctx_idx) { \
+                                         print_error("Parsing file %s, line %lu:  No such context \"%s\"\n", file_peek_path(), file_peek_line(), (n)); \
+                                         (the_id) = 0; \
+                                       } \
                                      } while (0)
 #define ctx_id_to_name(id)         (context[(id)].name)
 #define ctx_id_to_func(id)         (context[(id)].handler)
@@ -388,6 +393,25 @@
 #define ctx_peek_last_state()      (ctx_state[(ctx_state_idx?ctx_state_idx-1:0)].state)
 #define ctx_poke_state(q)          ((ctx_state[ctx_state_idx].state) = (q))
 #define ctx_get_depth()            (ctx_state_idx)
+#define ctx_begin(idx)             do { \
+                                     char *name; \
+                                     name = get_word(idx, buff); \
+                                     ctx_name_to_id(id, name, i); \
+                                     ctx_push(id); \
+                                     state = (*ctx_id_to_func(id))(CONF_BEGIN_STRING, ctx_peek_last_state()); \
+                                     ctx_poke_state(state); \
+                                     FREE(name); \
+                                   } while (0)
+#define ctx_end()                  do { \
+                                     if (ctx_get_depth()) { \
+                                       state = (*ctx_id_to_func(id))(CONF_END_STRING, ctx_peek_state()); \
+                                       ctx_poke_state(NULL); \
+                                       ctx_pop(); \
+                                       id = ctx_peek_id(); \
+                                       ctx_poke_state(state); \
+                                       file_poke_skip(0); \
+                                     } \
+                                   } while (0)
 
 /* The file state stack */
 #define FILE_SKIP_TO_END           (0x01)
@@ -546,6 +570,7 @@ extern void conf_free_subsystem(void);
 extern char *shell_expand(char *);
 extern char *conf_find_file(const char *file, const char *dir, const char *pathlist);
 extern FILE *open_config_file(char *name);
+extern void conf_parse_line(FILE *fp, char *buff);
 extern char *conf_parse(char *conf_name, const char *dir, const char *path);
 
 #endif /* _LIBAST_H_ */
