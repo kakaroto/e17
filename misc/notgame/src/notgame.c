@@ -30,14 +30,24 @@ static const char cvs_ident[] = "$Id$";
 #include "debug.h"
 #include "conf.h"
 #include "notgame.h"
+#include "parse.h"
 #include "play.h"
 #include "pregame.h"
 
 void
 ng_init(void) {
 
-  /* Load the config file containing the player groups and the choice groups */
+  char path[PATH_MAX];
+
+  /* Initialize the config subsystem and register our context parsers */
   conf_init_subsystem();
+  conf_register_context("player_group", parse_player_group);
+  conf_register_context("dest_group", parse_dest_group);
+
+  /* Load the config file containing the player groups and the choice groups */
+  strcpy(path, NONULL(getenv("HOME")));
+  strcat(path, ":" PKGDATADIR);
+  conf_parse("notgame.cfg", path);
 
   /* Create the pre-game window */
   pregame_init();
@@ -89,6 +99,7 @@ print_error(const char *msg, ...) {
     va_start(args, msg);
     fprintf(stderr, PACKAGE ":  Error:  ");
     vfprintf(stderr, msg, args);
+    fprintf(stderr, "\n");
     va_end(args);
     fflush(stderr);
   }
@@ -103,6 +114,7 @@ print_warning(const char *msg, ...) {
     va_start(args, msg);
     fprintf(stderr, PACKAGE ":  Warning:  ");
     vfprintf(stderr, msg, args);
+    fprintf(stderr, "\n");
     va_end(args);
     fflush(stderr);
   }

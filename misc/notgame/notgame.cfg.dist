@@ -1,0 +1,34 @@
+<notgame-0.1>
+#
+# This is just a sample.  Change it to suit your needs, then put it in
+# your home directory.  Call it "notgame.cfg" of course. :-)
+
+begin player_group
+  name "VA People"
+  player Chris human
+  player horms human
+  player mandrake human
+  player Michael human
+  player raster human
+  player San human
+end
+
+begin dest_group
+  name "Fast Food"
+  dest "Arby's"
+  dest "Burger King"
+  dest "McDonalds"
+  dest "Subway"
+  dest "Wendy's"
+end
+
+begin dest_group
+  name "Sit Down"
+  dest "Denny's"
+  dest "Gumba's"
+  dest "Hobee's"
+  dest "Java Street Cafe"
+  dest "Kal's BBQ"
+  dest "Mandarin"
+  dest "Sneha"
+end

@@ -21,19 +21,26 @@ static const char cvs_ident[] = "$Id$";
 #include <fcntl.h>
 #include <sys/time.h>
 #include <sys/types.h>
+#include <sys/stat.h>
 #include <ctype.h>
 #include <unistd.h>
-#include <signal.h>
 #include <errno.h>
-#include <gtk/gtk.h>
-#include <gdk_imlib.h>
 
 #include "debug.h"
 #include "conf.h"
-#include "notgame.h"
-#include "play.h"
-#include "pregame.h"
 #include "strings.h"
+
+/*
+ * This module is intended to be a drop-in configuration subsystem.  It requires
+ * very little from the external program.  It requires PACKAGE and VERSION to have
+ * valid string values at compile-time, and it requires calling conf_init_subsystem
+ * before you use any other part of it.  That's pretty much it.  After that, all
+ * you have to do is register a parser function for each context you want, and then
+ * call conf_parse() with the config file name and an optional search path.  The
+ * module does the rest.  Do note that, if used in a setuid program, you are
+ * responsible for replacing system() with a secure version.  See Eterm for a good
+ * solid sample system() replacement as well as example context parsers.
+ */
 
 static char *builtin_random(char *);
 static char *builtin_version(char *);
@@ -77,6 +84,10 @@ conf_init_subsystem(void) {
   builtins = (eterm_func_t *) malloc(sizeof(eterm_func_t) * builtin_cnt);
   MEMSET(builtins, 0, sizeof(eterm_func_t) * builtin_cnt);
 
+  /* Register the omni-present builtin functions */
+  conf_register_builtin("appname", builtin_appname);
+  conf_register_builtin("version", builtin_version);
+  conf_register_builtin("random", builtin_random);
 }
 
 /* Register a new config file context */
@@ -112,13 +123,13 @@ conf_register_fstate(FILE *fp, char *path, char *outfile, unsigned long line, un
 unsigned char
 conf_register_builtin(char *name, eterm_func_ptr_t ptr) {
 
+  builtins[builtin_idx].name = strdup(name);
+  builtins[builtin_idx].ptr = ptr;
   if (++builtin_idx == builtin_cnt) {
     builtin_cnt *= 2;
     builtins = (eterm_func_t *) realloc(builtins, sizeof(eterm_func_t) * builtin_cnt);
   }
-  builtins[builtin_idx].name = strdup(name);
-  builtins[builtin_idx].ptr = ptr;
-  return (builtin_idx);
+  return (builtin_idx - 1);
 }
 
 /* Register a new config file context */
@@ -134,7 +145,7 @@ conf_register_context_state(unsigned char ctx_id) {
   return (ctx_state_idx);
 }
 
-/* Builtin functions */
+/************ Builtin functions ************/
 static char *
 builtin_random(char *param) {
 
@@ -155,6 +166,7 @@ builtin_version(char *param) {return (strdup(VERSION));}
 static char *
 builtin_appname(char *param) {return (strdup(PACKAGE "-" VERSION));}
 
+/************ Parser ************/
 /* chomp() removes leading and trailing whitespace/quotes from a string */
 char *
 chomp(char *s)
@@ -172,8 +184,8 @@ chomp(char *s)
   return (s);
 }
 
-/* shell_expand() takes care of shell variable expansion, quote conventions,
-   calling of built-in functions, etc.                                -- mej */
+/* shell_expand() takes care of shell variable expansion,
+   quote conventions, calling of built-in functions, etc. */
 char *
 shell_expand(char *s)
 {
@@ -422,6 +434,65 @@ shell_expand(char *s)
   return (s);
 }
 
+char *
+conf_find_file(const char *file, const char *pathlist) {
+
+  static char name[PATH_MAX];
+  const char *path;
+  char *p;
+  short maxpathlen;
+  unsigned short len;
+  struct stat fst;
+
+  REQUIRE_RVAL(file != NULL, NULL);
+  REQUIRE_RVAL(pathlist != NULL, NULL);
+
+  getcwd(name, PATH_MAX);
+  D(("conf_find_file(\"%s\", \"%s\") called from directory \"%s\".\n", file, pathlist, name));
+
+  strcpy(name, file);
+  len = strlen(name);
+  D(("conf_find_file():  Checking for file \"%s\"\n", name));
+  if ((!access(name, R_OK)) && (!stat(name, &fst)) && (!S_ISDIR(fst.st_mode))) {
+    return ((char *) name);
+  }
+
+  /* maxpathlen is the longest possible path we can stuff into name[].  The - 2 saves room for
+     an additional / and the trailing null. */
+  if ((maxpathlen = sizeof(name) - len - 2) <= 0) {
+    return ((char *) NULL);
+  }
+
+  for (path = pathlist; path != NULL && *path != '\0'; path = p) {
+    short n;
+
+    /* Calculate the length of the next directory in the path */
+    if ((p = strchr(path, ':')) != NULL) {
+      n = p++ - path;
+    } else {
+      n = strlen(path);
+    }
+
+    /* Don't try if it's too long */
+    if (n > 0 && n <= maxpathlen) {
+      /* Compose the /path/file combo */
+      strncpy(name, path, n);
+      if (name[n - 1] != '/') {
+	name[n++] = '/';
+      }
+      name[n] = '\0';
+      strcat(name, file);
+
+      D(("conf_find_file():  Checking for file \"%s\"\n", name));
+      if ((!access(name, R_OK)) && (!stat(name, &fst)) && (!S_ISDIR(fst.st_mode))) {
+        return ((char *) name);
+      }
+    }
+  }
+  D(("conf_find_file():  File \"%s\" not found in path.\n", file));
+  return ((char *) NULL);
+}
+
 FILE *
 open_config_file(char *name)
 {
@@ -451,15 +522,30 @@ open_config_file(char *name)
 }
 
 void
-read_config(char *conf_name)
-{
+conf_parse(char *conf_name, const char *path) {
 
   FILE *fp;
-  char *name, *outfile;
-  char buff[CONFIG_BUFF];
+  char *name, *outfile, *p;
+  char buff[CONFIG_BUFF], orig_dir[PATH_MAX];
   register unsigned long i = 0;
   unsigned char id = 0;
 
+  REQUIRE(conf_name != NULL);
+
+  *orig_dir = 0;
+  if (path) {
+    if ((name = conf_find_file(conf_name, path)) != NULL) {
+      if ((p = strrchr(name, '/')) != NULL) {
+        getcwd(orig_dir, PATH_MAX);
+        *p = 0;
+        chdir(name);
+        *p = '/';
+      }
+    } else {
+      print_error("Unable to find/open config file %s in path \"%s\".  Continuing with defaults.", conf_name, path);
+      return;
+    }
+  }
   if ((fp = open_config_file(conf_name)) == NULL) {
     print_error("Unable to find/open config file %s.  Continuing with defaults.", conf_name);
     return;
@@ -554,6 +640,9 @@ read_config(char *conf_name)
       remove(file_peek_outfile());
     }
     file_pop();
+  }
+  if (*orig_dir) {
+    chdir(orig_dir);
   }
 }
 

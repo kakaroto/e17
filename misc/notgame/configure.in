@@ -86,6 +86,24 @@ AC_CHECK_FUNCS(strerror)
 CFLAGS="`imlib-config --cflags-gdk` $CFLAGS"
 LDFLAGS="`imlib-config --libs-gdk`"
 
+dnl# Did they want debugging?
+AC_MSG_CHECKING(for debugging level)
+AC_ARG_WITH(debugging, [  --with-debugging[=num]  enable debugging output, num is an optional level],
+              if test "$withval" = "yes"; then
+                  withval=1
+              else
+                  :
+              fi
+              if test "$withval" != "no"; then 
+                  echo "$withval"
+                  AC_DEFINE_UNQUOTED(DEBUG, $withval)
+              else
+                  echo "no debugging"
+                  AC_DEFINE_UNQUOTED(DEBUG, 0)
+              fi, echo "no debugging"
+                  AC_DEFINE_UNQUOTED(DEBUG, 0)
+)
+
 CPPFLAGS="$CPPFLAGS"
 AC_SUBST(CC)
 AC_SUBST(CFLAGS)

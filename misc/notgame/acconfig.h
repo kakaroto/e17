@@ -273,6 +273,9 @@
 /* Package data directory */
 #undef PKGDATADIR
 
+/* Do they want debugging? */
+#undef DEBUG
+
 
 /* Leave that blank line there!!  Autoheader needs it.
    If you're adding to this file, keep in mind:

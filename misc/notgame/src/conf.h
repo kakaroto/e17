@@ -15,6 +15,12 @@
 
 /************ Macros and Definitions ************/
 #define CONFIG_BUFF 20480
+#if defined(PATH_MAX) && (PATH_MAX < 255)
+#  undef PATH_MAX
+#endif
+#ifndef PATH_MAX
+#  define PATH_MAX 255
+#endif
 
 /* The context table */
 #define ctx_name_to_id(the_id, n, i) do { \
@@ -101,6 +107,6 @@ extern unsigned char conf_register_context_state(unsigned char ctx_id);
 extern char *chomp(char *s);
 extern char *shell_expand(char *s);
 extern FILE *open_config_file(char *name);
-extern void read_config(char *conf_name);
+extern void conf_parse(char *conf_name, const char *path);
 
 #endif	/* _CONF_H_ */

@@ -325,7 +325,7 @@ button_cb(GtkWidget *w, gpointer item) {
   } else if (((int) item) == 3) {
     /* Add Destination */
   } else {
-    print_warning("button_cb():  Invalid button handle 0x%08x\n", (int) item);
+    print_warning("button_cb():  Invalid button handle 0x%08x", (int) item);
   }
 }
 
@@ -337,7 +337,7 @@ gamemenu_cb(gpointer item, GtkWidget *w) {
   } else if (((int) item) == 2) {
     /* Preferences */
   } else {
-    print_warning("gamemenu_cb():  Invalid button handle 0x%08x\n", (int) item);
+    print_warning("gamemenu_cb():  Invalid button handle 0x%08x", (int) item);
   }
 }
 

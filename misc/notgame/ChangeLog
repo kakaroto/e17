@@ -67,3 +67,10 @@ Thu Sep  2 19:22:21 PDT 1999	Michael Jennings <mej@eterm.org>
 	to do, but at least the thing compiles and runs now. =)
 	
 -------------------------------------------------------------------------------
+Tue Sep  7 19:20:03 PDT 1999	Michael Jennings <mej@eterm.org>
+
+	More work on the config file parser.  I still have to clean up the
+	context switching and the state persistence, but at least it won't
+	crash. :-)
+	
+-------------------------------------------------------------------------------

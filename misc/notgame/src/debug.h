@@ -27,12 +27,12 @@
 #endif
 
 #if defined(__FILE__) && defined(__LINE__)
-# define ASSERT(x)  do {if (!(x)) {printf("ASSERT failed at %s:%d:  %s", __FILE__, __LINE__, #x);}} while (0)
-# define ASSERT_RVAL(x, val)  do {if (!(x)) {printf("ASSERT failed at %s:%d:  %s", __FILE__, __LINE__, #x); return (val);}} while (0)
+# define ASSERT(x)  do {if (!(x)) {print_error("ASSERT failed at %s:%d:  %s", __FILE__, __LINE__, #x);}} while (0)
+# define ASSERT_RVAL(x, val)  do {if (!(x)) {print_error("ASSERT failed at %s:%d:  %s", __FILE__, __LINE__, #x); return (val);}} while (0)
 # define ABORT() clean_exit("Aborting at %s:%d.", __FILE__, __LINE__)
 #else
-# define ASSERT(x)  do {if (!(x)) {printf("ASSERT failed:  %s", #x);}} while (0)
-# define ASSERT_RVAL(x, val)  do {if (!(x)) {printf("ASSERT failed:  %s", #x); return (val);}} while (0)
+# define ASSERT(x)  do {if (!(x)) {print_error("ASSERT failed:  %s", #x);}} while (0)
+# define ASSERT_RVAL(x, val)  do {if (!(x)) {print_error("ASSERT failed:  %s", #x); return (val);}} while (0)
 # define ABORT() clean_exit("Aborting.")
 #endif
 
@@ -43,7 +43,13 @@
 #define REQUIRE(x) do {if (!(x)) {__DEBUG(); printf("REQUIRE failed:  %s\n", #x); return;}} while (0)
 #define REQUIRE_RVAL(x, v) do {if (!(x)) {__DEBUG(); printf("REQUIRE failed:  %s\n", #x); return (v);}} while (0)
 
-#define D(x) do {__DEBUG(); printf x;} while (0)
+#define NONULL(x)  ((x) ? (x) : (""))
+
+#if (DEBUG > 0)
+#  define D(x) do {__DEBUG(); printf x;} while (0)
+#else
+#  define D(x) NOP
+#endif
 
 #if (SIZEOF_LONG == 8)
 # define MEMSET_LONG() l |= l<<32
