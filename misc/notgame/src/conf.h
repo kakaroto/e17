@@ -22,15 +22,18 @@
 #  define PATH_MAX 255
 #endif
 
+#define CONF_BEGIN_CHAR  1
+#define CONF_END_CHAR    2
+
 /* The context table */
 #define ctx_name_to_id(the_id, n, i) do { \
-                                       for ((i)=0; (i) < ctx_idx; (i)++) { \
+                                       for ((i)=0; (i) <= ctx_idx; (i)++) { \
                                          if (!strcasecmp((n), context[(i)].name)) { \
 		                           (the_id) = (i); \
 					   break; \
 					 } \
 			               } \
-                                       if ((i) >= ctx_idx) (the_id) = 0; \
+                                       if ((i) > ctx_idx) (the_id) = 0; \
                                      } while (0)
 #define ctx_id_to_name(id)         (context[(id)].name)
 #define ctx_id_to_func(id)         (context[(id)].handler)
@@ -97,6 +100,8 @@ typedef struct eterm_func_struct {
 } eterm_func_t;
 
 /************ Variables ************/
+extern fstate_t *fstate;
+extern unsigned char fstate_idx;
 
 /************ Function Prototypes ************/
 extern void conf_init_subsystem(void);

@@ -13,6 +13,25 @@ begin player_group
   player San human
 end
 
+begin player_group
+  name "The Den"
+  player horms human
+  player mandrake human
+  player Michael human
+  player raster human
+  player San human
+end
+
+begin player_group
+  name "Lots of Made-Up People"
+  player Fred human
+  player Joe human
+  player Bob human
+  player Shirley human
+  player "Shirley Not" human
+  player Hoss human
+end
+
 begin dest_group
   name "Fast Food"
   dest "Arby's"

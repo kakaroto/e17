@@ -156,7 +156,7 @@ static void
 pregame_player_frame_init(GtkWidget *window, GtkWidget *vbox) {
 
   GtkWidget *player_frame, *player_table, *align, *scroller;
-  GtkWidget *label, *player_groups, *player_clist;
+  GtkWidget *label, *player_groups_box;
   const char *cols[] = { "Player Name", "Player Type" };
 
   /* Add the frame around the player section.  This will contain everything we create in this function */
@@ -181,20 +181,17 @@ pregame_player_frame_init(GtkWidget *window, GtkWidget *vbox) {
   gtk_widget_show(label);
 
   /* The combo box containing the player groups */
-  player_groups = gtk_combo_new();
-  gtk_combo_set_use_arrows_always(GTK_COMBO(player_groups), TRUE);
-  gtk_combo_set_case_sensitive(GTK_COMBO(player_groups), TRUE);
+  player_groups_box = gtk_combo_new();
+  gtk_combo_set_use_arrows_always(GTK_COMBO(player_groups_box), TRUE);
+  gtk_combo_set_case_sensitive(GTK_COMBO(player_groups_box), TRUE);
 
-  /* Player Groups are hardcoded for now.  Change these to whatever names you want, and add/remove
-     names as needed.  To add more entries, simply copy one of the lines below as many times as
-     needed.  Change only the name the appears within the double quotes ("). */
-  player_group_list = g_list_append(player_group_list, "The Den");
-  player_group_list = g_list_append(player_group_list, "The Den Plus One");
-
-  gtk_combo_set_popdown_strings(GTK_COMBO(player_groups), player_group_list);
-  gtk_signal_connect(GTK_OBJECT(GTK_COMBO(player_groups)->entry), "activate", GTK_SIGNAL_FUNC(player_group_add), (gpointer) player_groups);
-  gtk_table_attach_defaults(GTK_TABLE(player_table), GTK_WIDGET(player_groups), 1, 2, 0, 1);
-  gtk_widget_show(player_groups);
+  if (player_group_names) {
+    gtk_combo_set_popdown_strings(GTK_COMBO(player_groups_box), player_group_names);
+  }
+  gtk_signal_connect(GTK_OBJECT(GTK_COMBO(player_groups_box)->entry), "activate", GTK_SIGNAL_FUNC(player_group_add_from_gui), (gpointer) player_groups_box);
+  gtk_signal_connect(GTK_OBJECT(GTK_COMBO(player_groups_box)->list), "selection_changed", GTK_SIGNAL_FUNC(player_group_update_lists_from_gui), (gpointer) player_groups_box);
+  gtk_table_attach_defaults(GTK_TABLE(player_table), GTK_WIDGET(player_groups_box), 1, 2, 0, 1);
+  gtk_widget_show(player_groups_box);
 
   /* The clist for the players in the current group */
   scroller = gtk_scrolled_window_new(NULL, NULL);
@@ -207,23 +204,8 @@ pregame_player_frame_init(GtkWidget *window, GtkWidget *vbox) {
   gtk_clist_set_column_justification(GTK_CLIST(player_clist), 1, GTK_JUSTIFY_LEFT);
   gtk_clist_set_column_justification(GTK_CLIST(player_clist), 2, GTK_JUSTIFY_LEFT);
 
-  /* Player Names are hardcoded for now.  Change these to whatever names you want, and add/remove
-     names as needed.  To add more entries, simply copy one of the lines below as many times as
-     needed.  Change only the name the appears within the double quotes ("). */
-  {
-    char *r1[] = { "Chris", "Human" };
-    char *r2[] = { "horms", "Human" };
-    char *r3[] = { "mandrake", "Human" };
-    char *r4[] = { "Michael", "Human" };
-    char *r5[] = { "raster", "Human" };
-    char *r6[] = { "San", "Human" };
-
-    gtk_clist_append(GTK_CLIST(player_clist), (gchar **) r1);
-    gtk_clist_append(GTK_CLIST(player_clist), (gchar **) r2);
-    gtk_clist_append(GTK_CLIST(player_clist), (gchar **) r3);
-    gtk_clist_append(GTK_CLIST(player_clist), (gchar **) r4);
-    gtk_clist_append(GTK_CLIST(player_clist), (gchar **) r5);
-    gtk_clist_append(GTK_CLIST(player_clist), (gchar **) r6);
+  if (player_groups) {
+    player_group_make_clist(player_clist, player_groups->data);
   }
   gtk_widget_show(player_clist);
   gtk_widget_show(scroller);

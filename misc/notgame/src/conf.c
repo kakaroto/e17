@@ -42,6 +42,9 @@ static const char cvs_ident[] = "$Id$";
  * solid sample system() replacement as well as example context parsers.
  */
 
+fstate_t *fstate;
+unsigned char fstate_idx;
+
 static char *builtin_random(char *);
 static char *builtin_version(char *);
 static char *builtin_appname(char *);
@@ -49,9 +52,8 @@ static void *parse_null(char *, void *);
 
 static ctx_t *context;
 static ctx_state_t *ctx_state;
-static fstate_t *fstate;
 static eterm_func_t *builtins;
-static unsigned char ctx_cnt, ctx_idx, ctx_state_idx, ctx_state_cnt, fstate_cnt, fstate_idx, builtin_cnt, builtin_idx;
+static unsigned char ctx_cnt, ctx_idx, ctx_state_idx, ctx_state_cnt, fstate_cnt, builtin_cnt, builtin_idx;
 
 /* This function must be called before any other conf_*() function.
    Otherwise you will be bitten by dragons.  That's life. */
@@ -100,6 +102,8 @@ conf_register_context(char *name, ctx_handler_t handler) {
   }
   context[ctx_idx].name = strdup(name);
   context[ctx_idx].handler = handler;
+  D(("conf_register_context():  Added context \"%s\" with ID %d and handler 0x%08x\n",
+     context[ctx_idx].name, ctx_idx, context[ctx_idx].handler));
   return (ctx_idx);
 }
 
@@ -612,6 +616,8 @@ conf_parse(char *conf_name, const char *path) {
 	    name = PWord(2, buff);
 	    ctx_name_to_id(id, name, i);
             ctx_push(id);
+            *buff = CONF_BEGIN_CHAR;
+            ctx_poke_state((*ctx_id_to_func(id))(buff, NULL));
             break;
           }
           /* Intentional pass-through */
@@ -619,6 +625,9 @@ conf_parse(char *conf_name, const char *path) {
 	  D(("read_config():  Parsing line #%lu of file %s\n", file_peek_line(), file_peek_path()));
 	  if (!BEG_STRCASECMP(buff, "end ") || !strcasecmp(buff, "end")) {
 	    if (ctx_get_depth()) {
+              *buff = CONF_END_CHAR;
+              (*ctx_id_to_func(id))(buff, ctx_peek_state());
+              ctx_poke_state(NULL);
 	      ctx_pop();
 	      file_poke_skip(0);
 	    }
@@ -648,7 +657,14 @@ conf_parse(char *conf_name, const char *path) {
 
 static void *
 parse_null(char *buff, void *state) {
-  print_error("Parse error in file %s, line %lu:  Not allowed in \"null\" context:  \"%s\"", file_peek_path(), file_peek_line(), buff);
-  return (state);
+
+  if (*buff == CONF_BEGIN_CHAR) {
+    return (NULL);
+  } else if (*buff == CONF_END_CHAR) {
+    return (NULL);
+  } else {
+    print_error("Parse error in file %s, line %lu:  Not allowed in \"null\" context:  \"%s\"", file_peek_path(), file_peek_line(), buff);
+    return (state);
+  }
 }
 
