@@ -151,7 +151,7 @@ int ewl_box_init(Ewl_Box * b, Ewl_Orientation o)
  */
 void ewl_box_orientation_set(Ewl_Box * b, Ewl_Orientation o)
 {
-	Ewl_Widget     *w;
+	Ewl_Widget     *w, *c;
 
 	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR("b", b);
@@ -166,14 +166,17 @@ void ewl_box_orientation_set(Ewl_Box * b, Ewl_Orientation o)
 		DRETURN(DLEVEL_STABLE);
 
 	b->orientation = o;
-	if (b->homogeneous)
-		ewl_box_child_homogeneous_show_cb(EWL_CONTAINER(b),
+
+	/* only try this if we have children */
+	c = ecore_list_goto_first(EWL_CONTAINER(b)->children);
+	if (c) {
+		if (b->homogeneous)
+			ewl_box_child_homogeneous_show_cb(EWL_CONTAINER(b),
 						  ecore_list_goto_first(EWL_CONTAINER(b)->children));
-	else
-		ewl_box_child_show_cb(EWL_CONTAINER(b),
+		else
+			ewl_box_child_show_cb(EWL_CONTAINER(b),
 				      ecore_list_goto_first(EWL_CONTAINER(b)->children));
-
-
+	}
 	ewl_widget_configure(w);
 
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
