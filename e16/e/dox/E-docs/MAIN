@@ -1577,7 +1577,8 @@ Enlightenment comes with several scripts that are executable out of the middle
 mouse button _menu(rootmenu) - these scripts can perform all sorts of
 maintenance on the files that enlightenment creates automatically for you.
 When you select "Maintenance" you should get a menu that looks something like
-the one above-right.<p>
+the one above-right.  You can also rebuild the _KDE_and_GNOME(deskenv) menus
+enlightenment uses from here<p>
 As a warning, when you purge configuration information, the next time you
 restart enlightenment it will take longer to load.  You can monitor
 enlightenment's usage using the query tools provided.  If you change themes a
