@@ -74,6 +74,7 @@ main(int argc, char *argv[])
 
    evbox = gtk_event_box_new();
    gtk_container_add(GTK_CONTAINER(mainwin), evbox);
+   gtk_widget_show(evbox);
 
    /* The drawing area itself */
    darea = gtk_drawing_area_new();

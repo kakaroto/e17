@@ -1,1 +1,8 @@
+Mon Jul 31 16:47:36 2000  Tom Gilbert  <gilbertt@linuxbrit.co.uk>
+
+	* It works! Renders to the gtk window and everything :)
+
+Mon Jul 31 16:47:18 2000  Tom Gilbert  <gilbertt@linuxbrit.co.uk>
+
+	* Initial import. Object hierarchy done.
 
