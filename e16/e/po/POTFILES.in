@@ -20,7 +20,6 @@ src/main.c
 src/memory.c
 src/menus.c
 src/misc.c
-src/modules.c
 src/pager.c
 src/session.c
 src/settings.c
