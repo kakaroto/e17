@@ -11,6 +11,9 @@
 #include <Ecore_Ipc.h>
 #include <Ecore_Job.h>
 #include <limits.h>
+#include <sys/types.h>
+#include <sys/stat.h>
+#include <unistd.h>
 #include "entice.h"
 #include "ipc.h"
 #include "prefs.h"
@@ -130,6 +133,7 @@ entice_pipe_foo(int argc, const char **argv)
    pid_t pid;
    int fd[2];
    char line[PATH_MAX];
+   struct stat status;
 
    if (pipe(fd) < 0)
       exit(1);
@@ -154,7 +158,19 @@ entice_pipe_foo(int argc, const char **argv)
             for (i = 1; i < argc; i++)
             {
                snprintf(line, PATH_MAX, "%s", argv[i]);
-               entice_file_add_job_cb(line, IPC_FILE_APPEND);
+               if (!stat(line, &status))
+               {
+                  if (S_ISDIR(status.st_mode))
+                  {
+                     fprintf(stderr, "Adding Dir %s\n", line);
+                     entice_file_add_dir_job_cb(line);
+                  }
+                  else
+                  {
+                     fprintf(stderr, "Adding File %s\n", line);
+                     entice_file_add_job_cb(line, IPC_FILE_APPEND);
+                  }
+               }
             }
             break;
          }

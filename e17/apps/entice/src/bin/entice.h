@@ -42,6 +42,7 @@ int entice_file_del(const char *file);
 int entice_file_del_from_fs(const char *file);
 int entice_current_image_set(const char *file);
 void entice_file_add_job_cb(void *data, int add_type);
+void entice_file_add_dir_job_cb(void *data);
 
 void entice_thumbs_scroll_next_start(void);
 void entice_thumbs_scroll_prev_start(void);

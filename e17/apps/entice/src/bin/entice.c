@@ -122,6 +122,7 @@ entice_init(Ecore_Evas * ee)
       e_container_spacing_set(e->container, 4);
       e_container_move_button_set(e->container, 2);
       e_container_layout_plugin_set(e->container, "entice");
+      evas_object_color_set(e->container, 255, 255, 255, 255);
 
       if (edje_object_part_exists(e->edje, "EnticeThumbnailArea"))
       {
@@ -398,7 +399,7 @@ entice_file_add_dir_job_cb(void *data)
    struct dirent *dent = NULL;
    char buf[PATH_MAX], *file = NULL;
 
-   if (entice && entice->ee && data)
+   if (data)
    {
       file = (char *) data;
 
