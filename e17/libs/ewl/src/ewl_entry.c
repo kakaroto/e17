@@ -5,6 +5,26 @@ static int ewl_entry_timer();
 /**
  * @param text: the initial text to display in the widget
  * @return Returns a new entry widget on success, NULL on failure.
+ * @brief Allocate and initialize a new multiline input entry widget
+ */
+Ewl_Widget *ewl_entry_multiline_new(char *text)
+{
+	Ewl_Widget *w;
+
+	DENTER_FUNCTION(DLEVEL_STABLE);
+
+	w = ewl_entry_new(text);
+	if (!w)
+		return NULL;
+
+	ewl_entry_multiline_set( EWL_ENTRY(w), TRUE );
+
+	DRETURN_PTR(w, DLEVEL_STABLE);
+}
+
+/**
+ * @param text: the initial text to display in the widget
+ * @return Returns a new entry widget on success, NULL on failure.
  * @brief Allocate and initialize a new entry widget
  */
 Ewl_Widget     *ewl_entry_new(char *text)
@@ -40,6 +60,7 @@ int ewl_entry_init(Ewl_Entry * e, char *text)
 	w = EWL_WIDGET(e);
 
 	e->in_select_mode = FALSE;
+	e->multiline = FALSE;
 
 	if (!ewl_container_init(EWL_CONTAINER(w), "entry"))
 		DRETURN_INT(FALSE, DLEVEL_STABLE);
@@ -78,6 +99,24 @@ int ewl_entry_init(Ewl_Entry * e, char *text)
 	ewl_entry_editable_set(e, TRUE);
 
 	DRETURN_INT(TRUE, DLEVEL_STABLE);
+}
+
+/**
+ * @param e: the entry widget to set multiline
+ * @param m: the value to set multiline to
+ * @return Returns no value.
+ * @brief Set multiline for an entry widget
+ *
+ * Set the multiline flag for $a e to @a m
+ */
+void ewl_entry_multiline_set(Ewl_Entry * e, int m)
+{
+	DENTER_FUNCTION(DLEVEL_STABLE);
+	DCHECK_PARAM_PTR("e", e);
+
+	e->multiline = m;
+
+	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
 
 /**
@@ -291,6 +330,10 @@ void ewl_entry_key_down_cb(Ewl_Widget * w, void *ev_data, void *user_data)
 		ewl_entry_cursor_left_move(e);
 	else if (!strcmp(ev->keyname, "Right"))
 		ewl_entry_cursor_right_move(e);
+	else if (!strcmp(ev->keyname, "Down"))
+		ewl_entry_cursor_down_move(e);
+	else if (!strcmp(ev->keyname, "Up"))
+		ewl_entry_cursor_up_move(e);
 	else if (!strcmp(ev->keyname, "Home"))
 		ewl_entry_cursor_home_move(e);
 	else if (!strcmp(ev->keyname, "End"))
@@ -307,10 +350,14 @@ void ewl_entry_key_down_cb(Ewl_Widget * w, void *ev_data, void *user_data)
 	else if (!strcmp(ev->keyname, "Return") || !strcmp(ev->keyname,
 				"KP_Return") || !strcmp(ev->keyname, "Enter")
 				|| !strcmp(ev->keyname, "KP_Enter")) {
-		evd = ewl_text_text_get(EWL_TEXT(e->text));
-		ewl_callback_call_with_event_data(w, EWL_CALLBACK_VALUE_CHANGED,
-				evd);
-		FREE(evd);
+		if (!e->multiline) {
+			evd = ewl_text_text_get(EWL_TEXT(e->text));
+			ewl_callback_call_with_event_data(w, EWL_CALLBACK_VALUE_CHANGED,
+					evd);
+			FREE(evd);
+		} else {
+			ewl_entry_text_insert(e, "\n");
+		}
 	}
 	else if (ev->keyname && strlen(ev->keyname) == 1) {
 		ewl_entry_text_insert(e, ev->keyname);
@@ -657,6 +704,24 @@ void ewl_entry_cursor_next_word_move(Ewl_Entry * e)
 	ewl_widget_configure(EWL_WIDGET(e));
 
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
+}
+
+/*
+ * Position the cursor at the current position in the next line.
+ */
+void ewl_entry_cursor_down_move(Ewl_Entry * e)
+{
+	if (e->multiline)
+		printf( "ewl_entry_cursor_down_move: %08x\n", (int) e );
+}
+
+/*
+ * Position the cursor at the current position in the previous line.
+ */
+void ewl_entry_cursor_up_move(Ewl_Entry * e)
+{
+	if (e->multiline)
+		printf( "ewl_entry_cursor_up_move: %08x\n", (int) e );
 }
 
 /*

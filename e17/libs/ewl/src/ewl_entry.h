@@ -41,18 +41,23 @@ struct Ewl_Entry
 	Ecore_Timer    *timer; /**< Time until scrolling text on select */
 	double          start_time; /**< Time timer started */
 	int             in_select_mode; /**< Do keyboard cursor movements select? */
+	int             multiline; /**< Do we deal with multiple lines of text? */
 };
 
 Ewl_Widget     *ewl_entry_new(char *text);
+Ewl_Widget     *ewl_entry_multiline_new(char *text);
 int             ewl_entry_init(Ewl_Entry * e, char *text);
 void            ewl_entry_text_set(Ewl_Entry * e, char *t);
 char           *ewl_entry_text_get(Ewl_Entry * e);
 void            ewl_entry_editable_set(Ewl_Entry *e, unsigned int edit);
+void            ewl_entry_multiline_set(Ewl_Entry * e, int m);
 
 void ewl_entry_cursor_left_move(Ewl_Entry * e);
 void ewl_entry_cursor_previous_word_move(Ewl_Entry * e);
 void ewl_entry_cursor_right_move(Ewl_Entry * e);
 void ewl_entry_cursor_next_word_move(Ewl_Entry * e);
+void ewl_entry_cursor_down_move(Ewl_Entry * e);
+void ewl_entry_cursor_up_move(Ewl_Entry * e);
 void ewl_entry_cursor_home_move(Ewl_Entry * e);
 void ewl_entry_cursor_end_move(Ewl_Entry * e);
 void ewl_entry_text_insert(Ewl_Entry * e, char *s);
