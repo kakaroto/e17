@@ -98,8 +98,8 @@ e_thumb_geometry_get (Evas_Object * o, int *w, int *h)
       E_Thumb *e = NULL;
       if ((e = (E_Thumb *) evas_object_smart_data_get (o)))
       {
-	if (w) *w = e->w;
-	if (h) *h = e->h;
+	if (w) *w = e->file.w;
+	if (h) *h = e->file.h;
       }
     }
 }
@@ -121,8 +121,10 @@ e_thumb_evas_object_get(Evas_Object *o)
 		
 		result = evas_object_image_add(evas_object_evas_get(o));
 		evas_object_image_alpha_set(result, 1);
-		evas_object_image_size_set(result, imlib_image_get_width(),
-						    imlib_image_get_height());
+		e->file.w = imlib_image_get_width();
+		e->file.h = imlib_image_get_height();
+		evas_object_image_size_set(result, e->file.w, e->file.h);
+
 		evas_object_image_data_copy_set(result,
 				     imlib_image_get_data_for_reading_only());
 	        imlib_free_image_and_decache ();
