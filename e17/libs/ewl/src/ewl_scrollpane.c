@@ -46,13 +46,15 @@ int ewl_scrollpane_init(Ewl_ScrollPane * s)
 	ewl_object_set_fill_policy(EWL_OBJECT(s), EWL_FLAG_FILL_FILL |
 			EWL_FLAG_FILL_SHRINK);
 
+	s->overlay = ewl_overlay_new();
+	ewl_object_set_fill_policy(EWL_OBJECT(s->overlay), EWL_FLAG_FILL_ALL);
+
 	/*
 	 * Create the container to hold the contents and it's configure
 	 * callback to position it's child.
 	 */
 	s->box = ewl_vbox_new();
-	ewl_object_set_fill_policy(EWL_OBJECT(s->box), EWL_FLAG_FILL_SHRINK |
-			EWL_FLAG_FILL_FILL);
+	ewl_object_set_fill_policy(EWL_OBJECT(s->box), EWL_FLAG_FILL_NONE);
 
 	/*
 	 * Create the scrollbars for the scrollpane.
@@ -63,14 +65,17 @@ int ewl_scrollpane_init(Ewl_ScrollPane * s)
 	/*
 	 * Add the parts to the scrollpane
 	 */
-	ewl_container_append_child(EWL_CONTAINER(s), s->box);
+	ewl_container_append_child(EWL_CONTAINER(s), s->overlay);
+	ewl_container_append_child(EWL_CONTAINER(s->overlay), s->box);
 	ewl_container_append_child(EWL_CONTAINER(s), s->hscrollbar);
 	ewl_container_append_child(EWL_CONTAINER(s), s->vscrollbar);
 
+	ewl_widget_set_internal(s->overlay, TRUE);
 	ewl_widget_set_internal(s->box, TRUE);
 	ewl_widget_set_internal(s->hscrollbar, TRUE);
 	ewl_widget_set_internal(s->vscrollbar, TRUE);
 
+	ewl_widget_show(s->overlay);
 	ewl_widget_show(s->box);
 	ewl_widget_show(s->hscrollbar);
 	ewl_widget_show(s->vscrollbar);
@@ -340,6 +345,9 @@ void ewl_scrollpane_configure_cb(Ewl_Widget * w, void *ev_data, void *user_data)
 	 * Now move the box into position. For the scrollpane to work we move
 	 * the box relative to the scroll value.
 	 */
+	ewl_object_request_geometry(EWL_OBJECT(s->overlay),
+				    CURRENT_X(w), CURRENT_Y(w),
+				    content_w, content_h);
 	ewl_object_request_geometry(EWL_OBJECT(s->box),
 				    CURRENT_X(w) - b_width,
 				    CURRENT_Y(w) - b_height,

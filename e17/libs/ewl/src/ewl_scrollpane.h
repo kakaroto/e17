@@ -35,7 +35,8 @@ struct Ewl_ScrollPane
 {
 	Ewl_Container   container; /**< Inherit from Ewl_Container */
 
-	Ewl_Widget     *box; /**< The area displaying the enclosed widget */
+	Ewl_Widget     *overlay; /**< The area displaying the enclosed widget */
+	Ewl_Widget     *box; /**< The area laying out enclosed widget */
 	Ewl_Widget     *hscrollbar; /**< Horizontal scrollbar */
 	Ewl_Widget     *vscrollbar; /**< Vertical scrollbar */
 };
