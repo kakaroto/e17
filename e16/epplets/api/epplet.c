@@ -2231,10 +2231,10 @@ Epplet_textbox_handle_keyevent(XEvent * ev, Epplet_gadget gadget)
 		       }
 
 		     if (((int)g->to_cursor + g->x_offset) <= 2)
-		       {
-			  printf("bam");
 			  g->x_offset += char_width;
-		       }
+
+		     if(g->cursor_pos == 0)
+			     g->x_offset = 0;
 		  }
 	     }
 	   return;
@@ -2270,7 +2270,7 @@ Epplet_textbox_handle_keyevent(XEvent * ev, Epplet_gadget gadget)
 		   Epplet_textbox_textsize(g, &char_width, &h, s);
 
 		if (((int)g->to_cursor + g->x_offset) >=
-		    (g->w - (2 + CRSR_WDTH)))
+		    (g->w - (3 + CRSR_WDTH)))
 		   g->x_offset -= char_width;
 	     }
 	   return;
@@ -2293,6 +2293,29 @@ Epplet_textbox_handle_keyevent(XEvent * ev, Epplet_gadget gadget)
 	     }
 	   return;
 	   break;
+	}
+     case XK_Home:
+     case XK_KP_Home:
+	{
+		if(g->contents)
+			g->cursor_pos = g->to_cursor = g->x_offset = 0;
+		break;
+	}
+     case XK_End:
+     case XK_KP_End:
+	{
+		int w, h;
+
+		if(g->contents)
+			g->cursor_pos = strlen(g->contents);
+
+		Epplet_textbox_textsize(g, &w, &h, g->contents);
+
+		g->x_offset = 0;
+		if(w > g->w)
+			g->x_offset -= w - g->w;
+
+		g->to_cursor = w;
 	}
      default:
 	break;
