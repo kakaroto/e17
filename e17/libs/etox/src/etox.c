@@ -934,6 +934,9 @@ etox_coord_to_geometry(Evas_Object * obj, Evas_Coord xc, Evas_Coord yc,
 			break;
 	}
 
+	if (!line || !line->bits)
+		return sum;
+
 	/*
 	 * Bring the coordinate into the line if it falls outside, this may
 	 * happen with centered or right alignment.
