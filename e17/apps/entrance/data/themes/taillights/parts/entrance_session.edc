@@ -6,15 +6,88 @@
 		    state, "default" 0.0;
 		    visible, 1;
 		    rel1 {
-			relative, 0.0 0.5;
-			offset, 10 -22;
+			relative, 0.0 0.0;
+			offset, 0 0;
 			to, "bottom_bar";
 		    } rel2 {
-			relative, 0.0 0.5;
-			offset, 50 22;
+			relative, 0.0 1.0;
+			offset, 44 0;
 			to, "bottom_bar";
 		    }
-		    color, 255 255 255 192;
+		    color, 255 255 255 128;
+		}
+		description {
+		    state, "visible" 0.0;
+		    visible, 1;
+		    rel1 {
+			relative, 0.0 0.0;
+			offset, 0 0;
+			to, "bottom_bar";
+		    } rel2 {
+			relative, 0.0 1.0;
+			offset, 44 0;
+			to, "bottom_bar";
+		    }
+		    color, 255 255 255 225;
+		}
+	    }
+	    part {
+		name, "entrance_session_button";
+		type, IMAGE;
+		mouse_events, 1;
+		description {
+		    state, "default" 0.0;
+		    visible, 1;
+		    rel1 {
+			relative, 0.0 0.0;
+			offset, -3 -2;
+			to, "EntranceSession";
+		    } rel2 {
+			relative, 0.0 0.0;
+			offset, 36 39;
+			to, "EntranceSession";
+		    }
+		    image
+		    {
+			normal, "session_button_normal.png";
+		    }
+		    color, 255 255 255 128;
+		}
+		description {
+		    state, "visible" 0.0;
+		    visible, 1;
+		    rel1 {
+			relative, 0.0 0.0;
+			offset, -3 -2;
+			to, "EntranceSession";
+		    } rel2 {
+			relative, 0.0 0.0;
+			offset, 36 39;
+			to, "EntranceSession";
+		    }
+		    image
+		    {
+			normal, "session_button_normal.png";
+		    }
+		    color, 255 255 255 255;
+		}
+		description {
+		    state, "clicked" 0.0;
+		    visible, 1;
+		    rel1 {
+			relative, 0.0 0.0;
+			offset, -5 -4;
+			to, "EntranceSession";
+		    } rel2 {
+			relative, 0.0 0.0;
+			offset, 34 37;
+			to, "EntranceSession";
+		    }
+		    image
+		    {
+			normal, "session_button_pressed.png";
+		    }
+		    color, 255 255 255 255;
 		}
 	    }
 	    part {
@@ -27,7 +100,7 @@
 		    visible, 1;
 		    rel1 {
 			relative, 0.0 0.5;
-			offset, -200 -20;
+			offset, 10 -20;
 			to, "session_clip";
 		    } rel2 {
 			relative, 1.0 0.5;

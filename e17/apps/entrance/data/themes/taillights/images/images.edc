@@ -138,4 +138,6 @@ images {
    image, "e119.png" LOSSY 95;
    image, "e120.png" LOSSY 95;
    image, "metalsphere.png" LOSSY 95;
+   image, "session_button_normal.png" LOSSY 95;
+   image, "session_button_pressed.png" LOSSY 95;
 }

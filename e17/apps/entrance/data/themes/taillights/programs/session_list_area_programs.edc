@@ -15,6 +15,8 @@
 		source, "session_mouse_area";
 		action, STATE_SET "visible" 0.0;
 		target, "session_description";
+		target, "session_clip";
+		target, "entrance_session_button";
 		transition, ACCELERATE 0.5;
 		in, 0.3 0.1;
 	    }
@@ -31,8 +33,10 @@
 		source, "session_mouse_area";
 		action, STATE_SET "default" 0.0;
 		target, "session_description";
+		target, "session_clip";
+		target, "entrance_session_button";
 		transition, DECELERATE 0.5;
-		in, 0.1 0.1;
+		in, 0.2 0.0;
 	    }
 	    program {
 		name, "kill_show_session_description";

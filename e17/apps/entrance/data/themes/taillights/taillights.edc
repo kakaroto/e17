@@ -168,6 +168,11 @@ collections {
   * maintain
   */
 #include "programs/effects_programs.edc"
+ 
+ /**
+  * enable user auto save of the sessions they select 
+  */
+#include "programs/session_save_dialog_programs.edc"
 
 	}
     }
@@ -212,6 +217,7 @@ collections {
  * UserUnSelected
  */
 #include "programs/user_group_programs.edc"
+
 	}
     }
 }
