@@ -1305,9 +1305,17 @@ IB_FindIcon(Iconbox * ib, int px, int py)
 	     xx = x;
 	     yy = y;
 	     if (ib->orientation)
-		xx += (ib->iconsize - w) / 2;
+	       {
+		  if (ib->draw_icon_base)
+		     yy += (ib->iconsize - h) / 2;
+		  xx += (ib->iconsize - w) / 2;
+	       }
 	     else
-		yy += (ib->iconsize - h) / 2;
+	       {
+		  if (ib->draw_icon_base)
+		     xx += (ib->iconsize - w) / 2;
+		  yy += (ib->iconsize - h) / 2;
+	       }
 	     if ((px >= (xx - 1)) && (py >= (yy - 1)) &&
 		 (px < (xx + w + 1)) &&
 		 (py < (yy + h + 1)))

@@ -2,6 +2,7 @@ The 0.16.0 series:
 We still have a few revisions / bugfixes to the 0.16 series to work on (we're taking input via email right now - keep the bug reports coming!)
 New enlightenment man page (dox to pod to man script courtesy Tom Christiansen)
 There will be an 0.16.1 release (hopefully this weekend)
+I think there's a small bug in transulcent move in 24/32bpp on xfree 3.3.x...
 
 The Road to 0.17 (post 0.16.x):
 File Manager Preview Application (you'll hopefully get a chance to see a little bit of a preview of what E's filemanager will look like)

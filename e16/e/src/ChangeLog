@@ -3730,3 +3730,10 @@ Mon Oct 25 23:51:46 PDT 1999
 
 fixed a potential coredump (though I'm not sure how that happened) in
 ArrangeRects()
+
+-------------------------------------------------------------------------------
+
+Mon Oct 25 23:52:42 PDT 1999
+(Raster)
+
+add that to TODO for tomorrow...
