@@ -1,0 +1,54 @@
+	part { name, "ScaleImage";  mouse_events, 1;  
+	description { state, "default" 0.0; min, 25 20; max, 25 20;
+	r1 { to, "PanelBClip"; relative, 0.0 0.0; offset, 25 0; }
+	r2 { to, "PanelBClip"; relative, 0.0 1.0; offset, 0 0; }
+	image { normal, "button_normal.png"; } } 
+
+	description { state, "clicked" 0.0; min, 25 20; max, 25 20;
+	r1 { to, "PanelBClip"; relative, 0.0 0.0; offset, 25 0; }
+	r2 { to, "PanelBClip"; relative, 0.0 1.0; offset, 0 0; }
+	image { normal, "button_clicked.png"; } } }
+
+	part { name, "FitImage";  mouse_events, 1;  
+	description { state, "default" 0.0; min, 25 20; max, 25 20;
+	r1 { to, "ScaleImage"; relative, 1.0 0.0; offset, 28 0; }
+	r2 { to, "ScaleImage"; relative, 1.0 1.0; offset, 0 0; }
+	image { normal, "button_normal.png"; } } 
+
+	description { state, "clicked" 0.0; min, 25 20; max, 25 20;
+	r1 { to, "ScaleImage"; relative, 1.0 0.0; offset, 28 0; }
+	r2 { to, "ScaleImage"; relative, 1.0 1.0; offset, 0 0; }
+	image { normal, "button_clicked.png"; } } }
+
+	part { name, "Fullscreen";  mouse_events, 1;  
+	description { state, "default" 0.0; min, 25 20; max, 25 20;
+	r1 { to, "FitImage"; relative, 1.0 0.0; offset, 28 0; }
+	r2 { to, "FitImage"; relative, 1.0 1.0; offset, 0 0; }
+	image { normal, "button_normal.png"; } } 
+
+	description { state, "clicked" 0.0; min, 25 20; max, 25 20;
+	r1 { to, "FitImage"; relative, 1.0 0.0; offset, 28 0; }
+	r2 { to, "FitImage"; relative, 1.0 1.0; offset, 0 0; }
+	image { normal, "button_clicked.png"; } } }
+
+	part { name, "ZoomOut";  mouse_events, 1;  
+	description { state, "default" 0.0; min, 21 20; max, 21 20;
+	r1 { to, "Fullscreen"; relative, 1.0 0.0; offset, 34 0; }
+	r2 { to, "Fullscreen"; relative, 1.0 1.0; offset, 0 0; }
+	image { normal, "zoom_out_normal.png"; } } 
+
+	description { state, "clicked" 0.0; min, 21 20; max, 21 20;
+	r1 { to, "Fullscreen"; relative, 1.0 0.0; offset, 34 0; }
+	r2 { to, "Fullscreen"; relative, 1.0 1.0; offset, 0 0; }
+	image { normal, "zoom_out_clicked.png"; } } }
+
+	part { name, "ZoomIn";  mouse_events, 1;  
+	description { state, "default" 0.0; min, 21 20; max, 21 20;
+	r1 { to, "ZoomOut"; relative, 1.0 0.0; offset, 20 0; }
+	r2 { to, "ZoomOut"; relative, 1.0 1.0; offset, 0 0; }
+	image { normal, "zoom_in_normal.png"; } } 
+
+	description { state, "clicked" 0.0; min, 21 20; max, 21 20;
+	r1 { to, "ZoomOut"; relative, 1.0 0.0; offset, 20 0; }
+	r2 { to, "ZoomOut"; relative, 1.0 1.0; offset, 0 0; }
+	image { normal, "zoom_in_clicked.png"; } } }
