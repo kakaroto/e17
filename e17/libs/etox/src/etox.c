@@ -345,15 +345,16 @@ void etox_set_text(Evas_Object * obj, char *text)
 		text = strdup("");
 	}
 
-	et->lines = _etox_break_text(et, text);
-	FREE(text);
-
 	/*
 	 * Sum up the length and height of the text in the etox.
 	 */
 	et->h = 0;
-	et->length = 0;
+	et->length = strlen(text);
 	et->tw = 0;
+
+	et->lines = _etox_break_text(et, text);
+	FREE(text);
+
 	for (l = et->lines; l; l = l->next) {
 		line = l->data;
 		/*
@@ -363,7 +364,6 @@ void etox_set_text(Evas_Object * obj, char *text)
 			et->tw = line->w;
 
 		et->h += line->h;
-		et->length += line->length;
 	}
 
 	etox_layout(et);
@@ -385,6 +385,7 @@ char *etox_get_text(Evas_Object * obj)
 	char *ret, *temp;
 	Etox_Line *line;
 	Evas_List *l;
+	int len;
 
 	CHECK_PARAM_POINTER_RETURN("obj", obj, NULL);
 
@@ -396,20 +397,16 @@ char *etox_get_text(Evas_Object * obj)
 	if (!et->lines)
 		return NULL;
 
-	/*
-	 * etox_get_length() includes the \n's at the end of each line
-	 * whereas et->length does not.
-	 */
 	ret = (char *) calloc(et->length + 1, sizeof(char));
-
 	temp = ret;
 
 	/*
 	 * Concatenate the text into the newly allocated buffer.
 	 */
+	len = et->length;
 	for (l = et->lines; l; l = l->next) {
 		line = l->data;
-		etox_line_get_text(line, temp, et->length + 1);
+		etox_line_get_text(line, temp, len);
 
 		/*
 		 * FIXME: Currently, in etox_line_get_text(), line->length
@@ -424,11 +421,14 @@ char *etox_get_text(Evas_Object * obj)
 			if (!(nline->flags & ETOX_LINE_WRAPPED)) {
 				strcat(temp, "\n");
 				temp++;
+				len--;
 			}
 		}
 		temp += line->length;
-	}
+		len -= line->length;
 
+		if (len < 1) break;
+	}
 	return ret;
 }
 
