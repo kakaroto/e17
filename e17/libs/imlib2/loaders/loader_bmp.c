@@ -146,12 +146,14 @@ load(ImlibImage * im, ImlibProgressFunction progress,
            if (headSize == 12)
              {
                 ncols /= 3;
+                if (ncols > 256) ncols = 256;
                 for (i = 0; i < ncols; i++)
                    fread(&rgbQuads[i], 3, 1, f);
              }
            else
              {
                 ncols /= 4;
+                if (ncols > 256) ncols = 256;
                 fread(rgbQuads, 4, ncols, f);
              }
         }
