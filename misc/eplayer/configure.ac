@@ -29,11 +29,13 @@ AC_SUBST(SYSCONF_DIR)
 
 AC_ARG_ENABLE(debug,
 	[  --enable-debug          debug build (default: no)], [
-		AC_DEFINE([DEBUG_LEVEL], [999], [
-			Define to 999 if you want much debugging output
-		])
+		DEBUG_LVL=999
 		CFLAGS=`echo "$CFLAGS -g -Wall" | sed s/" -s"//`
-	])
+	], DEBUG_LVL=1)
+
+AC_DEFINE_UNQUOTED([DEBUG_LEVEL], $DEBUG_LVL, [
+	Define to 999 if you want much debugging output
+])
 
 AC_PATH_GENERIC(ecore, , ,
 	AC_MSG_ERROR(Cannot find ecore: Is ecore-config in path?))
