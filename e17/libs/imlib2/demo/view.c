@@ -31,73 +31,58 @@ progress(Imlib_Image im, char percent, int update_x, int update_y,
 	 int update_w, int update_h)
 {
    /* first time it's called */
+   imlib_context_set_drawable(pm);
+   imlib_context_set_anti_alias(0);
+   imlib_context_set_dither(0);
+   imlib_context_set_blend(0);
    if (image_width == 0)
      {
 	int x, y, onoff;
 	
-	image_width  = imlib_image_get_width(im);
-	image_height = imlib_image_get_height(im);
+	imlib_context_set_image(im);
+	image_width  = imlib_image_get_width();
+	image_height = imlib_image_get_height();
 	if (pm)
 	   XFreePixmap(disp, pm);
 	pm = XCreatePixmap(disp, win, image_width, image_height, depth);
 	if (bg_im)
-	   imlib_free_image_and_decache(bg_im);
+	  {
+	     imlib_context_set_image(bg_im);
+	     imlib_free_image_and_decache();
+	  }
 	bg_im = imlib_create_image(image_width, image_height);
+	imlib_context_set_image(bg_im);
 	for (y = 0; y < image_height; y += 8)
 	  {
 	     onoff = (y / 8) & 0x1;
 	     for (x = 0; x < image_width; x += 8)
 	       {
-		  Imlib_Color col;
-		  
 		  if (onoff)
-		    {
-		       col.red   = 144;
-		       col.green = 144;
-		       col.blue  = 144;
-		       col.alpha = 255;
-		    }
+		     imlib_context_set_color(144, 144, 144, 255);
 		  else
-		    {
-		       col.red   = 100;
-		       col.green = 100;
-		       col.blue  = 100;
-		       col.alpha = 255;
-		    }
-		  imlib_image_fill_rectangle(bg_im, x, y, 8, 8, &col, 
-					     IMLIB_OP_COPY);
+		     imlib_context_set_color(100, 100, 100, 255);
+		  imlib_image_fill_rectangle(x, y, 8, 8);
 		  onoff++;
 		  if (onoff == 2)
 		     onoff = 0;
 	       }
 	  }
-	imlib_render_image_part_on_drawable_at_size(bg_im, 
-					       disp, pm, vis, cm, depth, 
-					       0, 0, 0,
-					       0, 0,
-					       image_width, image_height,
-					       0, 0,
-					       image_width, image_height,
-					       NULL, IMLIB_OP_COPY);
+	imlib_render_image_part_on_drawable_at_size(0, 0, image_width, image_height,
+						    0, 0, image_width, image_height);
 	XSetWindowBackgroundPixmap(disp, win, pm);
 	XResizeWindow(disp, win, image_width, image_height);
 	XMapWindow(disp, win);
 	XSync(disp, False);
      }
-   imlib_blend_image_onto_image(im, bg_im, 0, 1, 0, 
+   imlib_blend_image_onto_image(im, 0, 
 				update_x, update_y,
 				update_w, update_h,
 				update_x, update_y,
-				update_w, update_h,
-				NULL, IMLIB_OP_COPY);   
-   imlib_render_image_part_on_drawable_at_size(bg_im, 
-					       disp, pm, vis, cm, depth, 
-					       0, 1, 0,
-					       update_x, update_y,
+				update_w, update_h);
+   imlib_render_image_part_on_drawable_at_size(update_x, update_y,
 					       update_w, update_h,
 					       update_x, update_y,
-					       update_w, update_h,
-					       NULL, IMLIB_OP_COPY);
+					       update_w, update_h);
    XSetWindowBackgroundPixmap(disp, win, pm);
    XClearArea(disp, win, update_x, update_y, update_w, update_h, False);
    XFlush(disp);
@@ -122,7 +107,12 @@ main (int argc, char **argv)
 			       10, 10, 0, 0, 0);
    XSelectInput(disp, win, ButtonPressMask | ButtonReleaseMask | 
 		ButtonMotionMask | PointerMotionMask);
-   im = imlib_load_image_with_progress_callback(file, progress, 10);
+   imlib_context_set_display(disp);
+   imlib_context_set_visual(vis);
+   imlib_context_set_colormap(cm);
+   imlib_context_set_progress_function(progress);
+   imlib_context_set_progress_granularity(10);
+   im = imlib_load_image(file);
    while (!im)
      {
 	no++;
@@ -130,7 +120,8 @@ main (int argc, char **argv)
 	   exit(0);
 	file = argv[no];
 	image_width = 0;
-	im = imlib_load_image_with_progress_callback(file, progress, 10);
+	im = imlib_load_image(file);
+	imlib_context_set_image(im);
      }
    if (!im)
      {
@@ -143,7 +134,6 @@ main (int argc, char **argv)
 	XEvent ev;
 	static int zoom_mode = 0, zx, zy;
 	static double zoom = 1.0;
-	char   aa = 0, dith = 0;
 	struct timeval tval;
 	fd_set         fdset;
 	double t1;
@@ -163,13 +153,11 @@ main (int argc, char **argv)
 		       zoom_mode = 1;
 		       zx = x;
 		       zy = y;
+		       imlib_context_set_drawable(pm);
+		       imlib_context_set_image(bg_im);
 		       imlib_render_image_part_on_drawable_at_size
-			  (bg_im, 
-			   disp, pm, vis, cm, depth, 
-			   0, 1, 0,
-			   0, 0, image_width, image_height, 
-			   0, 0, image_width, image_height,
-			   NULL, IMLIB_OP_COPY);
+			  (0, 0, image_width, image_height, 
+			   0, 0, image_width, image_height);
 		       XSetWindowBackgroundPixmap(disp, win, pm);
 		       XClearWindow(disp, win);
 		    }
@@ -189,8 +177,9 @@ main (int argc, char **argv)
 		       image_width = 0;
 		       zoom = 1.0;
 		       zoom_mode = 0;
-		       imlib_free_image_and_decache(im);
-		       im = imlib_load_image_with_progress_callback(file, progress, 10);
+		       imlib_context_set_image(im);
+		       imlib_free_image_and_decache();
+		       im = imlib_load_image(file);
 		       while (!im)
 			 {
 			    no++;
@@ -198,8 +187,9 @@ main (int argc, char **argv)
 			       exit(0);
 			    file = argv[no];
 			    image_width = 0;
-			    im = imlib_load_image_with_progress_callback(file, progress, 10);
+			    im = imlib_load_image(file);
 			 }
+		       imlib_context_set_image(im);
 		    }
 		  if (b == 2)
 		    {
@@ -210,8 +200,9 @@ main (int argc, char **argv)
 		       image_width = 0;
 		       zoom = 1.0;
 		       zoom_mode = 0;
-		       imlib_free_image_and_decache(im);
-		       im = imlib_load_image_with_progress_callback(file, progress, 10);
+		       imlib_context_set_image(im);
+		       imlib_free_image_and_decache();
+		       im = imlib_load_image(file);
 		       while (!im)
 			 {
 			    no--;
@@ -219,8 +210,9 @@ main (int argc, char **argv)
 			       no = 1;
 			    file = argv[no];
 			    image_width = 0;
-			    im = imlib_load_image_with_progress_callback(file, progress, 10);
+			    im = imlib_load_image(file);
 			 }
+		       imlib_context_set_image(im);
 		    }
 		  break;
 	       case MotionNotify:
@@ -262,12 +254,12 @@ main (int argc, char **argv)
 			    sw = image_width;
 			    sh = image_height;
 			 }
+		       imlib_context_set_anti_alias(1);
+		       imlib_context_set_dither(1);
+		       imlib_context_set_blend(0);
+		       imlib_context_set_image(bg_im);
 		       imlib_render_image_part_on_drawable_at_size
-			  (bg_im, 
-			   disp, pm, vis, cm, depth, 
-			   aa, dith, 0,
-			   sx, sy, sw, sh, dx, dy, dw, dh,
-			   NULL, IMLIB_OP_COPY);
+			  (sx, sy, sw, sh, dx, dy, dw, dh);			   
 		       XSetWindowBackgroundPixmap(disp, win, pm);
 		       XClearWindow(disp, win);
 		       XFlush(disp);
@@ -322,12 +314,12 @@ main (int argc, char **argv)
 			    sw = image_width;
 			    sh = image_height;
 			 }
+		       imlib_context_set_anti_alias(1);
+		       imlib_context_set_dither(1);
+		       imlib_context_set_blend(0);
+		       imlib_context_set_image(bg_im);
 		       imlib_render_image_part_on_drawable_at_size
-			  (bg_im, 
-			   disp, pm, vis, cm, depth, 
-			   1, 1, 0,
-			   sx, sy, sw, sh, dx, dy, dw, dh,
-			   NULL, IMLIB_OP_COPY);
+			  (sx, sy, sw, sh, dx, dy, dw, dh);
 		       XSetWindowBackgroundPixmap(disp, win, pm);
 		       XClearWindow(disp, win);
 		       XFlush(disp);
