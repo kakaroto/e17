@@ -11,8 +11,9 @@
 
 GtkWidget *EventBox;
 
-GtkWidget *MainWindow, *FileSel, *SaveSel,
-			 *RootMenu, *area;
+GtkWidget *MainWindow, *FileSel, *SaveSel, *area;
+
+GtkWidget *RootMenu, *RSep1, *RQuit;
 
 GtkWidget *FileMenu, *FileItem, *FOpen, *FSave, *FSaveAs,
 			 *FSep1, *FExit;
@@ -46,6 +47,9 @@ int main(int argc, char **argv)
 	FileSel = gtk_file_selection_new("Open Image...");
 	SaveSel = gtk_file_selection_new("Save Image As...");
 	RootMenu = gtk_menu_new();
+	RSep1 = gtk_menu_item_new();
+	gtk_widget_set_sensitive(RSep1, FALSE);
+	RQuit = gtk_menu_item_new_with_label("Exit");
 	area = gtk_drawing_area_new();
 	FileMenu = gtk_menu_new();
 	FileItem = gtk_menu_item_new_with_label("File");
@@ -84,6 +88,8 @@ int main(int argc, char **argv)
 	gtk_menu_append(GTK_MENU(RootMenu), FileItem);
 	gtk_menu_item_set_submenu(GTK_MENU_ITEM(ImageItem), ImageMenu);
 	gtk_menu_append(GTK_MENU(RootMenu), ImageItem);
+	gtk_menu_append(GTK_MENU(RootMenu), RSep1);
+	gtk_menu_append(GTK_MENU(RootMenu), RQuit);
 	
 	gtk_menu_append(GTK_MENU(FileMenu), FOpen);
 	gtk_menu_append(GTK_MENU(FileMenu), FSave);
@@ -112,6 +118,9 @@ int main(int argc, char **argv)
 							 GTK_SIGNAL_FUNC(a_config), NULL);
 	gtk_signal_connect(GTK_OBJECT(area), "expose_event",
 							 GTK_SIGNAL_FUNC(a_expose), NULL);
+	
+	gtk_signal_connect(GTK_OBJECT(RQuit), "activate",
+							 GTK_SIGNAL_FUNC(CloseWindow), NULL);
 
 	gtk_signal_connect(GTK_OBJECT(FOpen), "activate",
 							 GTK_SIGNAL_FUNC(OpenImageFromMenu), NULL);
@@ -173,6 +182,8 @@ int main(int argc, char **argv)
 	
 	/* show the widgets */
 	gtk_widget_show(RootMenu);
+	gtk_widget_show(RSep1);
+	gtk_widget_show(RQuit);
 	gtk_widget_show(EventBox);
 	gtk_widget_show(FileMenu);
 	gtk_widget_show(FileItem);
@@ -265,13 +276,16 @@ void FileOpen(GtkWidget *widget, GtkFileSelection *fs)
 	gtk_widget_hide(area);
 	LoadImage(imagefile);
 	imlib_context_set_image(im);
+	imgw = imlib_image_get_width();
+	imgh = imlib_image_get_height();
 	DrawChecks();
 	Checks(imgw, imgh);
 	imlib_context_set_image(im);
 	imgw = imlib_image_get_width();
 	imgh = imlib_image_get_height();
 	printf("%d - %d\n", imgw, imgh);
-	imlib_render_image_on_drawable_at_size(0, 0, imgw, imgh);
+	/*imlib_render_image_on_drawable_at_size(0, 0, imgw, imgh);*/
+	imlib_blend_image_onto_image(im, 1, 0, 0, imgw, imgh, 0, 0, imgw, imgh);
 	printf("%d - %d\n", imgw, imgh);
 	gtk_widget_set_usize(MainWindow, (gint)imgw, (gint)imgh);
 	gtk_widget_set_usize(EventBox, (gint)imgw, (gint)imgh);
