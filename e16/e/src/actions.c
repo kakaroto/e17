@@ -447,7 +447,10 @@ EventAclass(XEvent * ev, EWin * ewin, ActionClass * a)
 	mouse = 1;
 	break;
      case LeaveNotify:
-	if (ev->xcrossing.detail == NotifyNonlinearVirtual)
+	/* If frame window, quit if pointer is still inside */
+	if (ewin && ev->xcrossing.window == ewin->win &&
+	    (ev->xcrossing.x >= 0 && ev->xcrossing.x < ewin->w &&
+	     ev->xcrossing.y >= 0 && ev->xcrossing.y < ewin->h))
 	   EDBUG_RETURN(0);
 	type = EVENT_MOUSE_LEAVE;
 	button = -1;

@@ -2272,6 +2272,8 @@ FreeBorder(Border * b)
       Efree(b->name);
    if (b->group_border_name)
       Efree(b->group_border_name);
+   if (b->aclass)
+      b->aclass->ref_count--;
 
    EDBUG_RETURN_;
 }
