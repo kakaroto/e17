@@ -61,7 +61,7 @@ int main (int argc, char *argv[])
     menu_file[i] = NULL;
   }
 
-  main_xml = glade_xml_new (PACKAGE_DATA_DIR"/"PACKAGE"/glade/e16menuedit2.glade",
+  main_xml = glade_xml_new (PACKAGE_DATA_DIR"/glade/e16menuedit2.glade",
                             "main_window", NULL);
 
   register_libglade_parent (main_xml, "main_window");
@@ -74,7 +74,7 @@ int main (int argc, char *argv[])
 
 
   gtk_window_set_icon_from_file (GTK_WINDOW (main_window),
-                                 PACKAGE_PIXMAPS_DIR"/e16menuedit2-icon.png",
+                                 SYSTEM_PIXMAPS_DIR"/e16menuedit2-icon.png",
                                  NULL);
 
   treeview_menu = lookup_libglade_widget ("main_window", "treeview_menu");

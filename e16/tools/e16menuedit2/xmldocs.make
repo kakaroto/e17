@@ -41,7 +41,7 @@ docdir = $(datadir)/gnome/help/$(docname)/$(lang)
 # **********  You should not have to edit below this line  **********
 xml_files = $(entities) $(docname).xml
 
-EXTRA_DIST = $(xml_files) $(omffile)
+EXTRA_DIST = $(xml_files) $(omffile) e16menuedit2.html
 CLEANFILES = omf_timestamp
 
 include $(top_srcdir)/omf.make

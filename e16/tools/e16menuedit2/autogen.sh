@@ -4,16 +4,9 @@
 srcdir=`dirname $0`
 test -z "$srcdir" && srcdir=.
 CONFIGURE=configure.in
+XMLTO_LANG="C"
 
 DIE=0
-
-#if [ -n "$GNOME2_DIR" ]; then
-#	ACLOCAL_FLAGS="-I $GNOME2_DIR/share/aclocal $ACLOCAL_FLAGS"
-#	LD_LIBRARY_PATH="$GNOME2_DIR/lib:$LD_LIBRARY_PATH"
-#	PATH="$GNOME2_DIR/bin:$PATH"
-#	export PATH
-#	export LD_LIBRARY_PATH
-#fi
 
 (test -f $srcdir/$CONFIGURE) || {
     echo -n "**Error**: Directory "\`$srcdir\'" does not look like the"
@@ -67,6 +60,13 @@ DIE=0
   NO_AUTOMAKE=yes
 }
 
+(which xmlto) < /dev/null > /dev/null 2>&1 || {
+  echo
+  echo "**Error**: You must have \`xmlto' installed."
+  echo "You can get it from: http://cyberelk.net/tim/xmlto/"
+  DIE=1
+  NO_XMLTO=yes
+}
 
 # if no automake, don't bother testing for aclocal
 test -n "$NO_AUTOMAKE" || (aclocal --version) < /dev/null > /dev/null 2>&1 || {
@@ -120,6 +120,15 @@ do
  #       echo "Running xml-i18n-toolize..."
 #	xml-i18n-toolize --copy --force --automake
 #      fi
+
+      test -n "$NO_XMLTO" || {
+        echo "creating help for lang $XMLTO_LANG"
+        for xlang in $XMLTO_LANG
+        do
+          xmlto -o help/$xlang html-nochunks help/$xlang/e16menuedit2.xml
+        done
+      }
+      
       echo "Running aclocal $aclocalinclude ..."
       aclocal $aclocalinclude
       if grep "^AM_CONFIG_HEADER" $CONFIGURE >/dev/null; then

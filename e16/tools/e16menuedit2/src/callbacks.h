@@ -87,16 +87,15 @@ void on_menu_delete_activate (GtkMenuItem *menuitem,
                               gpointer user_data);
 
 gboolean
-on_treeview_menu_button_press_event  (GtkWidget *widget,
-                                      GdkEventButton *event,
-                                      gpointer user_data);
-				      
-
-					
-
+on_treeview_menu_button_press_event (GtkWidget *widget,
+                                     GdkEventButton *event,
+                                     gpointer user_data);
 
 gboolean
-on_pop_menu1_destroy_event             (GtkWidget       *widget,
-                                        GdkEvent        *event,
-                                        gpointer         user_data);
+on_pop_menu1_destroy_event (GtkWidget *widget,
+                            GdkEvent *event,
+                            gpointer user_data);
+
+void on_menu_contents_activate (GtkMenuItem *menuitem,
+                                gpointer user_data);
 #endif /* _CALLBACKS_H */

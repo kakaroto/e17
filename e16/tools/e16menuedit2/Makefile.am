@@ -14,7 +14,7 @@ e16menuedit2doc_DATA = \
 
 GLADE_FILES = e16menuedit2.glade
 
-e16menuedit2datadir = ${PACKAGE_DATA_DIR}/${PACKAGE}/glade
+e16menuedit2datadir = ${PACKAGE_DATA_DIR}/glade
 e16menuedit2data_DATA = \
 		$(GLADE_FILES)
 

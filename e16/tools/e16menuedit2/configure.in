@@ -1,7 +1,7 @@
 dnl Process this file with autoconf to produce a configure script.
 
 AC_INIT(configure.in)
-AM_INIT_AUTOMAKE(e16menuedit2, cvs-`date +%F`)
+AM_INIT_AUTOMAKE(e16menuedit2, 0.2)
 AM_CONFIG_HEADER(config.h)
 AM_MAINTAINER_MODE
 
@@ -25,8 +25,9 @@ dnl Add the languages which your application supports here.
 ALL_LINGUAS="de en ko tr"
 AM_GLIB_GNU_GETTEXT
 
-AC_PATH_PROG(SCROLLKEEPER,scrollkeeper-config,0)
-AM_CONDITIONAL(SK, "$SCROLLKEEPER" 2&>/dev/null != 0)
+AC_PATH_PROG(SCROLLKEEPER,scrollkeeper-config,no)
+AM_CONDITIONAL(SK, "$SCROLLKEEPER" 2&>/dev/null != no)
+AC_SUBST(SK)
 
 dnl Set PACKAGE_LOCALE_DIR in config.h.
 if test "x${prefix}" = "xNONE"; then
@@ -46,13 +47,14 @@ else
 fi
 
 dnl Set PACKAGE DATA & DOC DIR
-packagedatadir=share
-packagedocdir=doc/${PACKAGE}
+systemdatadir=share
+packagedatadir=share/${PACKAGE}-${VERSION}
+packagedocdir=doc/${PACKAGE}-${VERSION}
 
 dnl Set PACKAGE DIRS in config.h.
-packagepixmapsdir=${packagedatadir}/pixmaps
-packagehelpdir=${packagedatadir}/help
-packagemenudir=${packagedatadir}
+packagepixmapsdir=${systemdatadir}/pixmaps/${PACKAGE}-${VERSION}
+
+systempixmapsdir=${systemdatadir}/pixmaps
 
 dnl Subst PACKAGE_DATA_DIR.
 NO_PREFIX_PACKAGE_DATA_DIR="${packagedatadir}"
@@ -72,24 +74,18 @@ AC_SUBST(NO_PREFIX_PACKAGE_PIXMAPS_DIR)
 PACKAGE_PIXMAPS_DIR="${packageprefix}/${packagepixmapsdir}"
 AC_SUBST(PACKAGE_PIXMAPS_DIR)
 
-dnl Subst PACKAGE_HELP_DIR.
-NO_PREFIX_PACKAGE_HELP_DIR="${packagehelpdir}"
-AC_SUBST(NO_PREFIX_PACKAGE_HELP_DIR)
-PACKAGE_HELP_DIR="${packageprefix}/${packagehelpdir}"
-AC_SUBST(PACKAGE_HELP_DIR)
-
-dnl Subst PACKAGE_MENU_DIR.
-NO_PREFIX_PACKAGE_MENU_DIR="${packagemenudir}"
-AC_SUBST(NO_PREFIX_PACKAGE_MENU_DIR)
-PACKAGE_MENU_DIR="${packageprefix}/${packagemenudir}"
-AC_SUBST(PACKAGE_MENU_DIR)
+dnl Subst SYSTEM_PIXMAPS_DIR.
+NO_PREFIX_SYSTEM_PIXMAPS_DIR="${systempixmapsdir}"
+AC_SUBST(NO_PREFIX_SYSTEM_PIXMAPS_DIR)
+SYSTEM_PIXMAPS_DIR="${packageprefix}/${systempixmapsdir}"
+AC_SUBST(SYSTEM_PIXMAPS_DIR)
 
 AC_DEFINE_UNQUOTED(PACKAGE_DATA_DIR, "${packageprefix}/${packagedatadir}","")
 AC_DEFINE_UNQUOTED(PACKAGE_DOC_DIR, "${packageprefix}/${packagedocdir}","")
 AC_DEFINE_UNQUOTED(PACKAGE_PIXMAPS_DIR, "${packageprefix}/${packagepixmapsdir}","")
-AC_DEFINE_UNQUOTED(PACKAGE_HELP_DIR, "${packageprefix}/${packagehelpdir}","")
-AC_DEFINE_UNQUOTED(PACKAGE_MENU_DIR, "${packageprefix}/${packagemenudir}","")
+AC_DEFINE_UNQUOTED(SYSTEM_PIXMAPS_DIR, "${packageprefix}/${systempixmapsdir}","")
 AC_DEFINE_UNQUOTED(PACKAGE_SOURCE_DIR, "${packagesrcdir}","")
+
 
 AC_OUTPUT([
 Makefile

@@ -157,8 +157,8 @@ void on_menu_info_activate (GtkMenuItem *menuitem,
   GtkWidget *logo_image;
   GladeXML *info_xml;
 
-  info_xml = glade_xml_new (PACKAGE_DATA_DIR"/"PACKAGE"/glade/e16menuedit2.glade",
-                                                "info_window", NULL);
+  info_xml = glade_xml_new (PACKAGE_DATA_DIR"/glade/e16menuedit2.glade",
+                            "info_window", NULL);
   register_libglade_parent (info_xml, "info_window");
   glade_xml_signal_autoconnect (info_xml);
 
@@ -168,7 +168,7 @@ void on_menu_info_activate (GtkMenuItem *menuitem,
 
 
   gtk_image_set_from_file (GTK_IMAGE (logo_image),
-                           PACKAGE_PIXMAPS_DIR"/e16menuedit2-icon.png");
+                           SYSTEM_PIXMAPS_DIR"/e16menuedit2-icon.png");
 
   gtk_widget_show (info_window);
 }
@@ -270,9 +270,9 @@ on_treeview_menu_button_press_event (GtkWidget *widget,
 
 
 gboolean
-on_pop_menu1_destroy_event             (GtkWidget       *widget,
-                                        GdkEvent        *event,
-                                        gpointer         user_data)
+on_pop_menu1_destroy_event (GtkWidget *widget,
+                            GdkEvent *event,
+                            gpointer user_data)
 {
   /*GtkWidget *treeview_menu;
 
@@ -281,4 +281,10 @@ on_pop_menu1_destroy_event             (GtkWidget       *widget,
   //activate_dragndrop (GTK_TREE_VIEW (treeview_menu));
 
   return FALSE;
+}
+
+void on_menu_contents_activate (GtkMenuItem *menuitem,
+                                gpointer user_data)
+{
+
 }

@@ -6,7 +6,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: e16menuedit2\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2004-08-08 18:17+0200\n"
+"POT-Creation-Date: 2004-08-15 17:40+0200\n"
 "PO-Revision-Date: 2004-08-08 11:05 +0900\n"
 "Last-Translator: Michael Kim <lavnrose@e.sarang.net>\n"
 "Language-Team: Korean Translation Team <translation-team-ko@lists."
@@ -15,11 +15,11 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 
-#: src/callbacks.c:48 e16menuedit2.glade.h:13
+#: src/callbacks.c:48 e16menuedit2.glade.h:14
 msgid "Save"
 msgstr "저장"
 
-#: src/callbacks.c:55 src/treeview.c:146 e16menuedit2.glade.h:11
+#: src/callbacks.c:55 src/treeview.c:146 e16menuedit2.glade.h:12
 msgid "New Entry"
 msgstr "새 항목"
 
@@ -27,11 +27,11 @@ msgstr "새 항목"
 msgid "Choose Icon"
 msgstr "아이콘 선택"
 
-#: src/callbacks.c:69 e16menuedit2.glade.h:4
+#: src/callbacks.c:69 e16menuedit2.glade.h:5
 msgid "Delete Entry"
 msgstr "항목 삭제"
 
-#: src/callbacks.c:76 e16menuedit2.glade.h:12
+#: src/callbacks.c:76 e16menuedit2.glade.h:13
 msgid "Quit"
 msgstr "종료"
 
@@ -79,26 +79,30 @@ msgstr ""
 "<span font_desc=\"Gulim 22\">E16 메뉴 편집기 II</span>\n"
 "e16menuedit2 v0.2"
 
-#: e16menuedit2.glade.h:5
+#: e16menuedit2.glade.h:4
+msgid "Contents"
+msgstr ""
+
+#: e16menuedit2.glade.h:6
 msgid "E16 Menu Editor"
 msgstr "E16 메뉴 편집기"
 
-#: e16menuedit2.glade.h:6
+#: e16menuedit2.glade.h:7
 msgid "Edit"
 msgstr "편집"
 
-#: e16menuedit2.glade.h:7
+#: e16menuedit2.glade.h:8
 msgid "File"
 msgstr "화일"
 
-#: e16menuedit2.glade.h:8
+#: e16menuedit2.glade.h:9
 msgid "Help"
 msgstr "도움말"
 
-#: e16menuedit2.glade.h:9
+#: e16menuedit2.glade.h:10
 msgid "Info"
 msgstr "정보"
 
-#: e16menuedit2.glade.h:10
+#: e16menuedit2.glade.h:11
 msgid "Info about E16 Menu Editor"
 msgstr "E16 메뉴 편집기에 대한 정보"
