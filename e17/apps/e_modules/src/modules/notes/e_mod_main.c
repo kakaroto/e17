@@ -16,10 +16,7 @@ static E_Menu *_note_config_menu_new      (Note *n);
 static void    _note_config_menu_del      (Note *n, E_Menu *m);
 static void    _note_face_cb_gmc_change(void *data, E_Gadman_Client *gmc, E_Gadman_Change change);
 
-static void _note_menu_bgcolor_white (void *data, E_Menu *m, E_Menu_Item *mi);
-static void _note_menu_bgcolor_blue (void *data, E_Menu *m, E_Menu_Item *mi);
-static void _note_menu_bgcolor_yellow (void *data, E_Menu *m, E_Menu_Item *mi);
-static void _note_menu_bgcolor_green (void *data, E_Menu *m, E_Menu_Item *mi);
+static void _note_menu_bgcolor_set (void *data, E_Menu *m, E_Menu_Item *mi);
 static void _note_menu_face_add (void *data, E_Menu *m, E_Menu_Item *mi);    
 static void _note_face_trans_set(void *data, E_Menu *m, E_Menu_Item *mi);
 static void _note_face_font_change(void *data, E_Menu *m, E_Menu_Item *mi);
@@ -32,11 +29,12 @@ static void _note_face_focus          (void *data, Evas *e, Evas_Object *obj, vo
 static void _note_face_unfocus        (void *data, Evas *e, Evas_Object *obj, void *event_info);
 static void _note_face_menu_new       (Note_Face *nf);  
 static void _note_face_cb_mouse_down  (void *data, Evas *e, Evas_Object *obj, void *event_info);
+static void _note_face_bgcolor_set    (Note_Face *face, int color);
     
 
 char          *_note_module_dir;
 static int     _note_count;
-
+static E_Config_DD *_notes_config_faceid_edd = NULL;
 
 /* public module routines. all modules must have these */
 void *
@@ -78,7 +76,7 @@ shutdown (E_Module *m)
 	  }
 	_note_shutdown (n);
      }
-   
+
    return 1;
 }
 
@@ -86,10 +84,27 @@ int
 save (E_Module *m)
 {
    Note *n;
+   Evas_List *l;
+   char *face_dom;
    
    n = m->data;
-   e_config_domain_save("module.note", n->conf_edd, n->conf);
+        
+   l = n->faces;
+   while(l) {
+      int pos;
+      Note_Face *face = l->data;
+      pos = esmart_textarea_cursor_pos_get(face->note_object);
+      esmart_textarea_cursor_pos_set(face->note_object, 0);
+      face->conf->text = esmart_textarea_text_get(face->note_object,
+						  esmart_textarea_length_get(face->note_object)
+						  );
+      face_dom = malloc(strlen("module.note.face.") + 4);
+      sprintf(face_dom, "module.note.face.%d", face->conf->id);
+      e_config_domain_save(face_dom, face->conf_edd, face->conf);
+      l = l->next;
+   }
    
+   e_config_domain_save("module.note", n->conf_edd, n->conf);   
    return 1;
 }
 
@@ -122,29 +137,54 @@ _note_init (E_Module *m)
    
    /* Configuration */
    
-   n->conf_edd = E_CONFIG_DD_NEW("Note_Config", Config);
+   n->conf_edd = E_CONFIG_DD_NEW("Note_Config", Note_Config);
+//   _notes_config_faceid_edd = E_CONFIG_DD_NEW("Note_Face_Id",Note_Face_Id);
+//#undef T
+//#undef D
+//#define T Note_Face_Id
+//#define D _notes_config_faceid_edd
+//   E_CONFIG_VAL(D, T, id, INT);
+   
 #undef T
 #undef D
-#define T Config
+#define T Note_Config
 #define D n->conf_edd
    E_CONFIG_VAL(D, T, height, INT);
    E_CONFIG_VAL(D, T, width, INT);
-   E_CONFIG_VAL(D, T, bgcolor, INT);   
+   E_CONFIG_VAL(D, T, bgcolor, INT);
+   E_CONFIG_VAL(D, T, count, INT);   
+//   E_CONFIG_LIST(D, T, face_ids, _notes_config_faceid_edd);
 
+   n->conf = e_config_domain_load("module.note", n->conf_edd);
    if (!n->conf)
      {
-	n->conf = E_NEW (Config, 1);
+	printf("No note faces found!\n");
+	n->conf = E_NEW (Note_Config, 1);
 	n->conf->height = 320;
 	n->conf->width = 200;
 	n->conf->bgcolor = 2;
+	n->conf->count = 0;
+     } 
+   else 
+     {
+	/* lets relaunch our older nodes */	
+	//Evas_List *l = n->conf->face_ids;
+	int i = n->conf->count;
+	printf("Found note faces!\n");
+	while(i)
+	  {
+	     printf("Adding face!\n");
+	     _note_face_add(n);
+	     i--;
+	  }
      }
    E_CONFIG_LIMIT(n->conf->height, 48, 800);
    E_CONFIG_LIMIT(n->conf->width, 48, 800);
    E_CONFIG_LIMIT(n->conf->bgcolor, 0, 10);
+           
+//   if(!_note_face_add(n))
+//     return NULL;	   
    
-   if(!_note_face_add(n))
-     return NULL;
-        
    return n;
 }
 
@@ -211,51 +251,36 @@ _note_config_menu_new (Note *n)
 }
 
 static void
-_note_menu_bgcolor_green (void *data, E_Menu *m, E_Menu_Item *mi)
+_note_menu_bgcolor_set (void *data, E_Menu *m, E_Menu_Item *mi)
 {
-   Note_Face *face;
-   Evas_Object *bg;
-      
+   Note_Face *face;   
    face = data;
-   bg = evas_object_rectangle_add(face->evas);
-   evas_object_color_set(bg, 187, 243, 168, 100);
-   esmart_textarea_bg_set(face->note_object, bg);
+   _note_face_bgcolor_set(face, e_menu_item_num_get(mi));
 }
 
 static void
-_note_menu_bgcolor_yellow (void *data, E_Menu *m, E_Menu_Item *mi)
-{
-   Note_Face *face;
+_note_face_bgcolor_set(Note_Face *face, int color)
+{    
    Evas_Object *bg;
-      
-   face = data;
-   bg = evas_object_rectangle_add(face->evas);
-   evas_object_color_set(bg, 245, 248, 27, 100);
+   
+   bg = evas_object_rectangle_add(face->evas);   
+   switch(color)
+     {
+      case 0:
+	evas_object_color_set(bg, 255, 255, 255, 100);
+	break;
+      case 1:
+	evas_object_color_set(bg, 149, 207, 226, 100);	
+	break;
+      case 2:
+	evas_object_color_set(bg, 187, 243, 100, 100);	
+	break;
+      case 3:
+	evas_object_color_set(bg, 245, 248, 27, 100);	
+	break;
+     }
    esmart_textarea_bg_set(face->note_object, bg);
-}
-
-static void
-_note_menu_bgcolor_white (void *data, E_Menu *m, E_Menu_Item *mi)
-{
-   Note_Face *face;
-   Evas_Object *bg;
-      
-   face = data;
-   bg = evas_object_rectangle_add(face->evas);
-   evas_object_color_set(bg, 255, 255, 255, 100);
-   esmart_textarea_bg_set(face->note_object, bg);
-}
-
-static void
-_note_menu_bgcolor_blue (void *data, E_Menu *m, E_Menu_Item *mi)
-{
-   Note_Face *face;
-   Evas_Object *bg;
-      
-   face = data;
-   bg = evas_object_rectangle_add(face->evas);
-   evas_object_color_set(bg, 149, 207, 226, 100);
-   esmart_textarea_bg_set(face->note_object, bg);   
+   face->conf->bgcolor = color;
 }
 
 static void
@@ -271,7 +296,7 @@ _note_face_font_change(void *data, E_Menu *m, E_Menu_Item *mi)
    pos = esmart_textarea_cursor_pos_get(face->note_object);
    esmart_textarea_cursor_pos_set(face->note_object, 0);
    format = esmart_textarea_format_get(face->note_object);
-     
+        
    switch(e_menu_item_num_get(mi))
      {
       case 0:
@@ -323,6 +348,7 @@ _note_menu_face_add (void *data, E_Menu *m, E_Menu_Item *mi)
    Note *n;
 
    n = (Note *)data;
+   n->conf->count++;
    _note_face_add(n);
 }
 
@@ -387,28 +413,28 @@ _note_face_menu_new(Note_Face *face)
    e_menu_item_radio_set(mi, 1);
    e_menu_item_radio_group_set(mi, 2);
    if (face->conf->bgcolor == BGCOLOR_WHITE) e_menu_item_toggle_set (mi, 1);
-   e_menu_item_callback_set (mi, _note_menu_bgcolor_white, face);
-   
-   mi = e_menu_item_new (mnbg);
-   e_menu_item_label_set (mi, "Yellow Bg");
-   e_menu_item_radio_set(mi, 1);
-   e_menu_item_radio_group_set(mi, 2);
-   if (face->conf->bgcolor == BGCOLOR_YELLOW) e_menu_item_toggle_set (mi, 1);
-   e_menu_item_callback_set (mi, _note_menu_bgcolor_yellow, face);
-   
+   e_menu_item_callback_set (mi, _note_menu_bgcolor_set, face);
+      
    mi = e_menu_item_new (mnbg);
    e_menu_item_label_set (mi, "Blue Bg");
    e_menu_item_radio_set(mi, 1);
    e_menu_item_radio_group_set(mi, 2);
    if (face->conf->bgcolor == BGCOLOR_BLUE) e_menu_item_toggle_set (mi, 1);
-   e_menu_item_callback_set (mi, _note_menu_bgcolor_blue, face);
+   e_menu_item_callback_set (mi, _note_menu_bgcolor_set, face);
    
    mi = e_menu_item_new(mnbg);
    e_menu_item_label_set(mi, "Green Bg");
    e_menu_item_radio_set(mi, 1);
    e_menu_item_radio_group_set(mi, 2);
    if (face->conf->bgcolor == BGCOLOR_GREEN) e_menu_item_toggle_set (mi, 1);
-   e_menu_item_callback_set (mi, _note_menu_bgcolor_blue, face);
+   e_menu_item_callback_set (mi, _note_menu_bgcolor_set, face);
+   
+   mi = e_menu_item_new (mnbg);
+   e_menu_item_label_set (mi, "Yellow Bg");
+   e_menu_item_radio_set(mi, 1);
+   e_menu_item_radio_group_set(mi, 2);
+   if (face->conf->bgcolor == BGCOLOR_YELLOW) e_menu_item_toggle_set (mi, 1);
+   e_menu_item_callback_set (mi, _note_menu_bgcolor_set, face);   
    
    mi = e_menu_item_new(mn);
    e_menu_item_label_set(mi, "Backgrounds");
@@ -468,7 +494,8 @@ _note_face_menu_new(Note_Face *face)
    
    mi = e_menu_item_new(mn);
    e_menu_item_label_set(mi, "Delete Note");
-   e_menu_item_callback_set(mi, _note_face_menu_del, face);   
+   // removed because of segv
+   //e_menu_item_callback_set(mi, _note_face_menu_del, face);   
 }
 
 static int
@@ -476,6 +503,7 @@ _note_face_init (Note_Face *face)
 {
    Evas_Object *o;
    Evas_Coord   ww, hh;
+   char       *face_dom;
    int         size;
    int         note_width, note_height;
    
@@ -490,11 +518,7 @@ _note_face_init (Note_Face *face)
    evas_object_pass_events_set(o, 1);
    evas_object_layer_set (o, 1);
    esmart_textarea_focus_set(o, 0);
-   evas_object_show (o);
-   
-   o = evas_object_rectangle_add(face->evas);
-   evas_object_color_set(o, 245, 248, 27, 100);
-   esmart_textarea_bg_set(face->note_object, o);   
+   evas_object_show (o);   
    
    o = evas_object_rectangle_add(face->evas);
    face->event_object = o;
@@ -513,7 +537,7 @@ _note_face_init (Note_Face *face)
    
    
    face->gmc =  e_gadman_client_new(face->con->gadman);
-   e_gadman_client_domain_set(face->gmc, "module.note", _note_count++);
+   e_gadman_client_domain_set(face->gmc, "module.note.face", _note_count++);
    e_gadman_client_policy_set(face->gmc,
 			      E_GADMAN_POLICY_ANYWHERE |
 			      E_GADMAN_POLICY_HMOVE |
@@ -530,31 +554,43 @@ _note_face_init (Note_Face *face)
    
    evas_event_thaw(face->con->bg_evas);
    
-   face->conf_edd = E_CONFIG_DD_NEW("Note_Face_Config", Config);
+   face->conf_edd = E_CONFIG_DD_NEW("Note_Face_Config", Note_Face_Config);
 
    
 #undef T
 #undef D
-#define T Config
+#define T Note_Face_Config
 #define D face->conf_edd
    E_CONFIG_VAL(D, T, height, INT);
    E_CONFIG_VAL(D, T, width, INT);
    E_CONFIG_VAL(D, T, bgcolor, INT);
    E_CONFIG_VAL(D, T, trans, INT);
+   E_CONFIG_VAL(D, T, text, STR);
+
    
+   face_dom = malloc(strlen("module.note.face.") + 4);
+   sprintf(face_dom, "module.note.face.%d", _note_count);
+   face->conf = e_config_domain_load(face_dom, face->conf_edd);   
    if (!face->conf)
      {
-	face->conf = E_NEW (Config, 1);
+	face->conf = E_NEW (Note_Face_Config, 1);
 	face->conf->height = 320;
 	face->conf->width = 200;
 	face->conf->bgcolor = BGCOLOR_YELLOW;
 	face->conf->trans = TRANS_50;
+	face->conf->id = _note_count;
      }
+   else 
+     {
+	esmart_textarea_text_insert(face->note_object, face->conf->text);
+     }
+   
    E_CONFIG_LIMIT(face->conf->height, 48, 800);
    E_CONFIG_LIMIT(face->conf->width, 48, 800);
    E_CONFIG_LIMIT(face->conf->bgcolor, 0, 10);
    E_CONFIG_LIMIT(face->conf->trans, 0, 5);
-   
+
+   _note_face_bgcolor_set(face, face->conf->bgcolor);
    _note_face_menu_new(face);   
    
    return 1;
@@ -594,20 +630,39 @@ _note_face_cb_gmc_change(void *data, E_Gadman_Client *gmc, E_Gadman_Change chang
 static void
 _note_face_menu_del(void *data, E_Menu *m, E_Menu_Item *mi)
 {
-   Note_Face *face = data;
+   Note_Face *face = data;     
+   Evas_List *l;
+   char *face_dom;
+
+   l = face->note->faces;
+   while(l) {
+      Note_Face *f = l->data;
+      if(f->conf->id == face->conf->id) {
+	 face->note->faces = evas_list_remove(face->note->faces, l->data);
+	 //face_dom = malloc(strlen("module.note.face.") + 4);
+	 //sprintf(face_dom, "module.note.face.%d", face->conf->id);	 
+	 //e_config_domain_save(face_dom, face->conf_edd, face->conf);	 
+	 printf("removing from config list\n");
+	 break;
+      }
+      l = l->next;
+   }      
+
+   face->note->conf->count--;
    _note_face_free(face);     
+
 }
 
 static void
-_note_face_free(Note_Face *nf)
-{
-   e_gadman_client_save(nf->gmc);
-   e_object_del(E_OBJECT(nf->gmc));
+_note_face_free(Note_Face *face)
+{   
+   //e_gadman_client_save(face->gmc);
+   e_object_del(E_OBJECT(face->gmc));
    
-   evas_object_del (nf->note_object);
-   evas_object_del (nf->event_object);   
+   evas_object_del (face->note_object);
+   evas_object_del (face->event_object);   
    _note_count--;
-   free (nf);
+   free (face);
 }
 
 /* this is NOT used */

@@ -1,10 +1,10 @@
 #ifndef E_MOD_MAIN_H
 #define E_MOD_MAIN_H
 
-#define BGCOLOR_WHITE  1
-#define BGCOLOR_BLUE   2
-#define BGCOLOR_GREEN  3
-#define BGCOLOR_YELLOW 4
+#define BGCOLOR_WHITE  0
+#define BGCOLOR_BLUE   1
+#define BGCOLOR_GREEN  2
+#define BGCOLOR_YELLOW 3
 
 #define TRANS_0    0
 #define TRANS_25   1
@@ -14,14 +14,35 @@
 
 typedef struct _Note Note;
 typedef struct _Note_Face Note_Face;
-typedef struct _Config Config;
+typedef struct _Note_Config Note_Config;
+typedef struct _Note_Face_Config Note_Face_Config;
 
-struct _Config
+struct _Note_Face_Id
+{
+   int         id;
+};
+
+typedef struct _Note_Face_Id Note_Face_Id;
+
+struct _Note_Config
 {
    Evas_Coord  height;
    Evas_Coord  width;
    int         bgcolor;   
    int         trans;
+   int         count;
+//   Evas_List  *face_ids;
+   
+};
+
+struct _Note_Face_Config
+{
+   Evas_Coord  height;
+   Evas_Coord  width;
+   int         bgcolor;   
+   int         trans;
+   char       *text;
+   int         id;
 };
 
 
@@ -32,7 +53,7 @@ struct _Note
    Evas_List  *faces;
    
    E_Config_DD *conf_edd;
-   Config      *conf;
+   Note_Config *conf;
 };
 
 struct _Note_Face
@@ -50,7 +71,7 @@ struct _Note_Face
    E_Menu          *menu_trans;
    E_Menu          *menu_font;   
    E_Config_DD     *conf_edd;
-   Config          *conf;   
+   Note_Face_Config *conf;
 };
 
 EAPI void *init     (E_Module *m);
