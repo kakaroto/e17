@@ -668,9 +668,8 @@ e_db_dump_key_list(char *file, int *num_ret)
 }
 
 char              **
-e_db_match_keys(char *file, char *pattern, int *num_ret)
+e_db_match_keys(E_DB_File *edb, char *pattern, int *num_ret)
 {
-   E_DB_File          *edb;
    _E_DB_File         *edbf;
    datum               key;
    char              **list = NULL;
@@ -680,7 +679,6 @@ e_db_match_keys(char *file, char *pattern, int *num_ret)
    *num_ret = 0;
    buf_count = 0;
    
-   edb = e_db_open_read(file);
    edbf = edb;
    if (edbf)
      {

@@ -221,7 +221,7 @@ char              **e_db_dump_key_list(char *file, int *num_ret);
 
 /**
  * e_db_match_keys - returns list of keys matching a pattern
- * @file:    name of an Edb database file
+ * @db: Edb database handle
  * @pattern: key pattern to match
  * @num_ret: result pointer that returns the number of keys in the database
  *
@@ -229,7 +229,7 @@ char              **e_db_dump_key_list(char *file, int *num_ret);
  * that match the given pattern. The pattern is a shell wildcard pattern.
  * You must free the list and the strings in the list when done.
  */
-char              **e_db_match_keys(char *file, char *pattern, int *num_ret);
+char              **e_db_match_keys(E_DB_File *db, char *pattern, int *num_ret);
 
 /* Convenience macros to make setting and getting values form a db easy */ 
 #define E_DB_INT_SET(edb, key, val) \
