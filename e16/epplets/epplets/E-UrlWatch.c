@@ -346,16 +346,18 @@ cb_out (void *data, Window w)
 static char *
 get_url_from_paste_buffer (void)
 {
-  char *url;
+  static char *url;
   Display *thedisplay;
   int len = 0;
 
   thedisplay = Epplet_get_display ();
 
+  if (url)
+    free (url);
+
   url = _Strdup (XFetchBuffer (thedisplay, &len, 0));
 
   return url;
-  /* Reminder! Tom: You'll need to free this! */
 }
 
 static char *
@@ -368,56 +370,63 @@ get_url_from_file_list (char *file, int position)
   position = 0;
 }
 
-static int
-validate_url (char **url)
+static char *
+validate_url (char *url)
 {
   char *p;
+  char *ret = NULL;
+  static char *orig_ret = NULL;
+
+  if (orig_ret)
+    free (orig_ret);
+
+  ret = orig_ret = _Strdup (url);
 
   /* First, try searching for http://, in case there is a lot of text,
    * with an embedded url somewhere inside... */
-  p = strstr (*url, "http://");
+  p = strstr (ret, "http://");
   if (p != NULL)
-    *url = p;
+    ret = p;
   else
     {
       /* Ok. No "http://", maybe a "www." ? */
-      p = strstr (*url, "http://");
+      p = strstr (ret, "http://");
       if (p != NULL)
-	*url = p;
+	ret = p;
     }
 
   /* Kill at end of line */
-  p = strchr (*url, '\n');
+  p = strchr (ret, '\n');
   if (p != NULL)
     *p = '\0';
 
   /* Skip first spaces */
-  p = *url;
+  p = ret;
   while (*p == ' ')
     p++;
-  *url = p;
+  ret = p;
 
   /* Kill at next space */
-  p = strchr (*url, ' ');
+  p = strchr (ret, ' ');
   if (p != NULL)
     *p = '\0';
 
   /* If just www.blah, add the http:// */
-  if (**url == 'w' && *(*url + 1) == 'w' && *(*url + 2) == 'w')
+  if (*ret == 'w' && *(ret + 1) == 'w' && *(ret + 2) == 'w')
     {
-      char *temp = _Strjoin (NULL, "http://", *url, NULL);
-      free (*url);
-      *url = _Strdup (temp);
+      char *temp = _Strjoin (NULL, "http://", ret, NULL);
+      free (orig_ret);
+      ret = _Strdup (temp);
       free (temp);
     }
 
   /* Now some checks */
-  if (strlen (*url) < 1)
+  if (strlen (ret) < 1)
     return 0;
-  if (**url == '-')
+  if (*ret == '-')
     return 0;
 
-  return 1;
+  return ret;
 }
 
 static void
@@ -510,33 +519,34 @@ static void
 handle_url (char *url, char *type)
 {
   char *sys;
+  char *validurl;
 
   if (url == NULL)
     return;
 
 /*  printf ("url -->%s<--\n", url); */
 
-  if (!validate_url (&url))
+  if ((validurl = validate_url (url)) == NULL)
     return;
 
-  display_string (url);
+  display_string (validurl);
 
 /*  printf ("valid url -->%s<--\n", url); */
   if (!strcmp (type, "www"))
     {
-      sys = _Strjoin (" ", opt.www_command, url, "&", NULL);
+      sys = _Strjoin (" ", opt.www_command, validurl, "&", NULL);
     }
   else if (!strcmp (type, "ftp"))
     {
-      sys = _Strjoin (" ", opt.ftp_command, url, "&", NULL);
+      sys = _Strjoin (" ", opt.ftp_command, validurl, "&", NULL);
     }
   else if (!strcmp (type, "get"))
     {
-      sys = _Strjoin (" ", opt.get_command, url, "&", NULL);
+      sys = _Strjoin (" ", opt.get_command, validurl, "&", NULL);
     }
   else
     {
-      sys = _Strjoin (" ", opt.www_command, url, "&", NULL);
+      sys = _Strjoin (" ", opt.www_command, validurl, "&", NULL);
     }
 
 /*  printf ("sys -->%s<--\n", sys); */
@@ -546,7 +556,7 @@ handle_url (char *url, char *type)
   free (sys);
 
   if (opt.save_urls)
-    save_url (url);
+    save_url (validurl);
 }
 
 /* Amongst all the fluff, this is the bit that does the actual work. */
@@ -558,8 +568,6 @@ cb_shoot (void *data)
   url = get_url_from_paste_buffer ();
 
   handle_url (url, data);
-
-  free (url);
 
   return;
 }

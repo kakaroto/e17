@@ -861,3 +861,11 @@ $EROOT/epplet_data/<epplet name>/.  Also note that, if you're going to use the
 same old aircut3.ttf and bg.png in your help section, add your epplet's name
 to NEED_BG and NEED_FONT in epplets/Makefile.am.  Do NOT commit duplicates of
 those two files.
+
+-------------------------------------------------------------------------------
+
+Thu Nov 25 20:48:51 GMT 1999
+(gilbertt)
+
+Oops. Fixed a naughty segfault with my shoddy string handling routines.
+
