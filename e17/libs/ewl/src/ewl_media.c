@@ -1,6 +1,8 @@
 #include <Ewl.h>
 
 static void ewl_media_size_update(Ewl_Media *m);
+static void ewl_media_update_timer_cb(void *data, Evas_Object *obj, void
+							    *event_info);
 
 /**
  * @param media: the media to be played or NULL
@@ -324,6 +326,8 @@ void ewl_media_configure_cb(Ewl_Widget * w, void *ev_data, void *user_data)
 		evas_object_move(m->video, CURRENT_X(w), CURRENT_Y(w));
 		evas_object_resize(m->video, CURRENT_W(w), CURRENT_H(w));
 		evas_object_layer_set(m->video, ewl_widget_get_layer_sum(w));
+		evas_object_smart_callback_add(m->video, "frame_decode", 
+					 ewl_media_update_timer_cb, m);
 	}
 
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
@@ -336,4 +340,12 @@ static void ewl_media_size_update(Ewl_Media *m)
 	if (width && height)
 		ewl_object_set_preferred_size(EWL_OBJECT(m), width, height);
 }
+
+static void ewl_media_update_timer_cb(void *data, Evas_Object *obj, void *event_info)
+{
+	Ewl_Widget *m = (Ewl_Widget *)data;
+	ewl_callback_call(m,  EWL_CALLBACK_VALUE_CHANGED);
+}
+
+
 

@@ -2,6 +2,7 @@
 
 static Ewl_Widget *video;
 static Ewl_Widget *fd_win;
+static Ewl_Widget *seeker;
 
 typedef struct {
     char *name;
@@ -50,6 +51,36 @@ void rew_cb(Ewl_Widget *w, void *event, void *data ) {
     double p = ewl_media_position_get(EWL_MEDIA(video));
     ewl_media_position_set(EWL_MEDIA(video), p - 10.0);
     
+    return;
+    w = NULL;
+    event = NULL;
+    data = NULL;
+}
+
+void video_realize_cb(Ewl_Widget *w, void *event, void *data) {
+    double len = ewl_media_length_get(EWL_MEDIA(video));
+    ewl_seeker_set_range(EWL_SEEKER(seeker), len);
+
+    return;
+    w = NULL;
+    event = NULL;
+    data = NULL;
+}
+
+void video_change_cb(Ewl_Widget *w, void *event, void *data) {
+    double val = ewl_media_position_get(EWL_MEDIA(video));
+    ewl_seeker_set_value(EWL_SEEKER(seeker), val);
+
+    return;
+    w = NULL;
+    event = NULL;
+    data = NULL;
+}
+
+void seeker_move_cb(Ewl_Widget *w, void *event, void *data) {
+    double val = ewl_seeker_get_value(EWL_SEEKER(seeker));
+    ewl_media_position_set(EWL_MEDIA(video), val);
+
     return;
     w = NULL;
     event = NULL;
@@ -139,16 +170,21 @@ int main(int argc, char ** argv) {
     ewl_callback_append(win, EWL_CALLBACK_DELETE_WINDOW, del_cb, NULL);
     ewl_callback_append(win, EWL_CALLBACK_KEY_UP, key_up_cb, NULL);
     ewl_object_request_size(EWL_OBJECT(win), 320, 280);
+    ewl_object_set_fill_policy(EWL_OBJECT(win), EWL_FLAG_FILL_ALL);
     ewl_widget_show(win);
 
     /* box to contain everything */
     b = ewl_vbox_new();
     ewl_container_append_child(EWL_CONTAINER(win), b);
+    ewl_object_set_fill_policy(EWL_OBJECT(b), EWL_FLAG_FILL_ALL);
     ewl_widget_show(b);
 
     /* the video */
     video = ewl_media_new(file);
     ewl_container_append_child(EWL_CONTAINER(b), video);
+    ewl_object_set_fill_policy(EWL_OBJECT(video), EWL_FLAG_FILL_ALL);
+    ewl_callback_append(video, EWL_CALLBACK_REALIZE, video_realize_cb, NULL);
+    ewl_callback_append(video, EWL_CALLBACK_VALUE_CHANGED, video_change_cb, NULL);
     ewl_widget_show(video);
 
     /* box to contain contols and scrollers */
@@ -182,6 +218,20 @@ int main(int argc, char ** argv) {
 	    ewl_widget_show(o);
 	}
     }
+
+    b = ewl_hbox_new();
+    ewl_container_append_child(EWL_CONTAINER(controls), b);
+    ewl_widget_show(b);
+
+    seeker = ewl_seeker_new(EWL_ORIENTATION_HORIZONTAL);
+    ewl_container_append_child(EWL_CONTAINER(b), seeker);
+    ewl_object_set_fill_policy(EWL_OBJECT(seeker), 
+	    EWL_FLAG_FILL_VSHRINK | EWL_FLAG_FILL_HFILL);
+    ewl_seeker_set_value(EWL_SEEKER(seeker), 0.0);
+    ewl_seeker_set_range(EWL_SEEKER(seeker), 0.0);
+    ewl_seeker_set_step(EWL_SEEKER(seeker), 1.0);
+    ewl_callback_append(seeker, EWL_CALLBACK_VALUE_CHANGED, seeker_move_cb, NULL);
+    ewl_widget_show(seeker);
 
     ewl_main();
     return 0;
