@@ -59,7 +59,8 @@ main(int argc, char **argv)
 
   main_win = ewl_window_new();
   ewl_window_set_title(EWL_WINDOW(main_win), "Examine Configuration Client");
-  ewl_object_set_minimum_size(EWL_OBJECT(main_win), 200, 100);
+  //ewl_object_set_minimum_size(EWL_OBJECT(main_win), 200, 100);
+  ewl_object_set_fill_policy((Ewl_Object *) main_win, EWL_FLAG_FILL_FILL);
   ewl_callback_append(main_win, EWL_CALLBACK_DELETE_WINDOW,
                       __destroy_main_window, NULL);
 
@@ -69,7 +70,6 @@ reconnect:
     E(0, "examine: %sconnect to %s failed: %d\n", (cc > 1) ? "re" : "",
       pipe_name, ret);
   else {
-//    ewl_widget_show(main_win);
     render_ewl();
     ewl_widget_show(main_win);
     ewl_main();
@@ -157,70 +157,57 @@ void
 draw_tree(void)
 {
   examine_prop   *prop_item;
-  Ewl_Widget     *row, *cell[2], *label, *input;
+  Ewl_Widget     *entries[2];
 
   ewl_container_reset(EWL_CONTAINER(tree_box));
   prop_item = examine_client_list_props();
   while (prop_item) {
-
-    row = ewl_grid_new(3, 1);
-    cell[0] = ewl_cell_new();
-    cell[1] = ewl_cell_new();
-    label = ewl_text_new(prop_item->key);
+    entries[0] = ewl_text_new(prop_item->key);
 
     if (prop_item->type == PT_STR) {
-      input = ewl_entry_new(prop_item->value.ptr);
-      ewl_callback_append(EWL_ENTRY(input)->text, EWL_CALLBACK_VALUE_CHANGED,
+      entries[1] = ewl_entry_new(prop_item->value.ptr);
+      ewl_callback_append(EWL_ENTRY(entries[1])->text, EWL_CALLBACK_VALUE_CHANGED,
                           cb_set_str, prop_item);
     } else if (prop_item->type == PT_INT) {
-      input = ewl_spinner_new();
+      entries[1] = ewl_spinner_new();
 
-      ewl_spinner_set_digits(EWL_SPINNER(input), 0);
-      ewl_spinner_set_step(EWL_SPINNER(input), 1);
-      ewl_spinner_set_value(EWL_SPINNER(input), prop_item->value.val);
+      ewl_spinner_set_digits(EWL_SPINNER(entries[1]), 0);
+      ewl_spinner_set_step(EWL_SPINNER(entries[1]), 1);
+      ewl_spinner_set_value(EWL_SPINNER(entries[1]), prop_item->value.val);
       if (prop_item->bound & BOUND_BOUND) {
-        ewl_spinner_set_min_val(EWL_SPINNER(input), prop_item->min);
-        ewl_spinner_set_max_val(EWL_SPINNER(input), prop_item->max);
+        ewl_spinner_set_min_val(EWL_SPINNER(entries[1]), prop_item->min);
+        ewl_spinner_set_max_val(EWL_SPINNER(entries[1]), prop_item->max);
       }
       if (prop_item->bound & BOUND_STEPPED)
-        ewl_spinner_set_step(EWL_SPINNER(input), prop_item->step);
-      ewl_callback_append(input, EWL_CALLBACK_VALUE_CHANGED, cb_set_int,
+        ewl_spinner_set_step(EWL_SPINNER(entries[1]), prop_item->step);
+      ewl_callback_append(entries[1], EWL_CALLBACK_VALUE_CHANGED, cb_set_int,
                           prop_item);
     } else if (prop_item->type == PT_FLT) {
-      input = ewl_spinner_new();
+      entries[1] = ewl_spinner_new();
 
 /*          ewl_spinner_set_digits(EWL_SPINNER(input), 0);
             ewl_spinner_set_step(EWL_SPINNER(input), 1);*/
-      ewl_spinner_set_value(EWL_SPINNER(input), prop_item->value.fval);
+      ewl_spinner_set_value(EWL_SPINNER(entries[1]), prop_item->value.fval);
       if (prop_item->bound & BOUND_BOUND) {
-        ewl_spinner_set_min_val(EWL_SPINNER(input), prop_item->fmin);
-        ewl_spinner_set_max_val(EWL_SPINNER(input), prop_item->fmax);
+        ewl_spinner_set_min_val(EWL_SPINNER(entries[1]), prop_item->fmin);
+        ewl_spinner_set_max_val(EWL_SPINNER(entries[1]), prop_item->fmax);
       }
       if (prop_item->bound & BOUND_STEPPED)
-        ewl_spinner_set_step(EWL_SPINNER(input), prop_item->fstep);
-      ewl_callback_append(input, EWL_CALLBACK_VALUE_CHANGED, cb_set_float,
+        ewl_spinner_set_step(EWL_SPINNER(entries[1]), prop_item->fstep);
+      ewl_callback_append(entries[1], EWL_CALLBACK_VALUE_CHANGED, cb_set_float,
                           prop_item);
     } else if (prop_item->type == PT_RGB) {
-      input = ewl_entry_new(prop_item->value.ptr);
-      ewl_callback_append(EWL_ENTRY(input)->text, EWL_CALLBACK_VALUE_CHANGED,
+      entries[1] = ewl_entry_new(prop_item->value.ptr);
+      ewl_callback_append(EWL_ENTRY(entries[1])->text, EWL_CALLBACK_VALUE_CHANGED,
                           cb_set_str, prop_item);
     } else
-      input = ewl_text_new("unknown");
+      entries[1] = ewl_text_new("unknown");
 
-
-    ewl_container_append_child(EWL_CONTAINER(cell[0]), label);
-    ewl_container_append_child(EWL_CONTAINER(cell[1]), input);
-    ewl_grid_add(EWL_GRID(row), cell[0], 1, 1, 1, 1);
-    ewl_grid_add(EWL_GRID(row), cell[1], 2, 3, 1, 1);
-
-    ewl_widget_show(cell[0]);
-    ewl_widget_show(cell[1]);
-    ewl_widget_show(label);
-    ewl_widget_show(input);
-
-    ewl_container_append_child(EWL_CONTAINER(tree_box), row);
-    ewl_object_set_minimum_h(EWL_OBJECT(row), 22);
-    ewl_widget_show(row);
+    ewl_widget_show(entries[0]);
+    ewl_widget_show(entries[1]);
+    /* padding to fix ewl layout issue ##### FIXME */
+    ewl_object_set_padding(EWL_OBJECT(entries[1]), 0, 11, 0, 0);
+    ewl_tree_add_row(EWL_TREE(tree_box), 0, entries);
 
     prop_item = prop_item->next;
   }
@@ -232,36 +219,21 @@ render_ewl(void)
 {
   Ewl_Widget     *main_box, *row, *cell[2], *text[2];
   Ewl_Widget     *save, *revert, *quit;
+  char           *headers[2];
 
   main_box = ewl_vbox_new();
   ewl_container_append_child(EWL_CONTAINER(main_win), main_box);
   ewl_object_set_padding(EWL_OBJECT(main_box), 2, 2, 2, 2);
   ewl_widget_show(main_box);
 
-
-  row = ewl_grid_new(3, 1);
-  cell[0] = ewl_cell_new();
-  cell[1] = ewl_cell_new();
-  text[0] = ewl_text_new("Property");
-  text[1] = ewl_text_new("Value");
-
-  ewl_container_append_child(EWL_CONTAINER(cell[0]), text[0]);
-  ewl_container_append_child(EWL_CONTAINER(cell[1]), text[1]);
-  ewl_grid_add(EWL_GRID(row), cell[0], 1, 1, 1, 1);
-  ewl_grid_add(EWL_GRID(row), cell[1], 2, 3, 1, 1);
-
-  ewl_widget_show(cell[0]);
-  ewl_widget_show(cell[1]);
-  ewl_widget_show(text[0]);
-  ewl_widget_show(text[1]);
-
-  ewl_container_append_child(EWL_CONTAINER(main_box), row);
-  ewl_widget_show(row);
-
-  tree_box = ewl_vbox_new();
+  tree_box = ewl_tree_new(2);
   ewl_container_append_child(EWL_CONTAINER(main_box), tree_box);
-  ewl_object_set_padding(EWL_OBJECT(tree_box), 2, 2, 2, 2);
   ewl_widget_show(tree_box);
+  headers[0] = strdup("Setting");
+  headers[1] = strdup("Value");
+  ewl_tree_set_headers((Ewl_Tree *) tree_box, headers);
+  free(headers[0]);
+  free(headers[1]);
 
   draw_tree();
 
