@@ -4579,3 +4579,10 @@ Thu Apr  6 01:39:50 CEST 2000
 
 Removed memory leaks from the dialog displaying a list of remembered
 windows, and fixed so E does not crash if you press escape in it.
+
+-------------------------------------------------------------------------------
+
+Wed Apr  5 16:55:39 PDT 2000
+(Mandrake)
+
+a little bit of fixing to the xinerama menu code

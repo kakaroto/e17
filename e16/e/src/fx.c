@@ -27,15 +27,15 @@
 #endif
 
 typedef struct _fxhandler
-  {
-     char               *name;
-     void                (*init_func) (char *name);
-     void                (*desk_func) (void);
-     void                (*quit_func) (void);
-     void                (*pause_func) (void);
-     char                in_use;
-     char                paused;
-  }
+{
+   char               *name;
+   void                (*init_func) (char *name);
+   void                (*desk_func) (void);
+   void                (*quit_func) (void);
+   void                (*pause_func) (void);
+   char                in_use;
+   char                paused;
+}
 FXHandler;
 
 void                FX_Ripple_Init(char *name);
@@ -56,8 +56,7 @@ void                FX_ImageSpinner_Quit(void);
 void                FX_ImageSpinner_Pause(void);
 
 static int          num_fx_handlers = 4;
-static FXHandler    fx_handlers[] =
-{
+static FXHandler    fx_handlers[] = {
    {"ripples",
     FX_Ripple_Init, FX_Ripple_Desk, FX_Ripple_Quit, FX_Ripple_Pause,
     0, 0},
@@ -256,12 +255,12 @@ FX_ripple_timeout(int val, void *data)
 		     _("\n"
 		       "You have just started the Ripples Effect.\n"
 		       "\n"
-		 "If you look closely on your desktop background, and if it\n"
-	     "doesn't have a solid colour (i.e. has a background texture or\n"
-		"image), you will see a pool of water at the bottom of your\n"
-		 "screen that reflects everything above it and \"ripples\".\n"
+		       "If you look closely on your desktop background, and if it\n"
+		       "doesn't have a solid colour (i.e. has a background texture or\n"
+		       "image), you will see a pool of water at the bottom of your\n"
+		       "screen that reflects everything above it and \"ripples\".\n"
 		       "\n"
-	    "To disable this effect just select this option again to toggle\n"
+		       "To disable this effect just select this option again to toggle\n"
 		       "it off.\n"));
 	before = 1;
      }
@@ -359,11 +358,11 @@ static PixImg      *fx_raindrops_draw = NULL;
 void                FX_raindrops_timeout(int val, void *data);
 
 typedef struct _drop_context
-  {
-     int                 x, y;
-     int                 count;
-     PixImg             *buf;
-  }
+{
+   int                 x, y;
+   int                 count;
+   PixImg             *buf;
+}
 DropContext;
 
 static DropContext  fx_raindrops[4];
@@ -387,17 +386,17 @@ FX_raindrops_timeout(int val, void *data)
 	  {
 	     DIALOG_OK(_("Unable to display raindrops"),
 		       _("\n"
-		      "Enlightenment is unable to display raindrops on this\n"
-		    "display because Shared memory is not available on this\n"
+			 "Enlightenment is unable to display raindrops on this\n"
+			 "display because Shared memory is not available on this\n"
 			 "X-Server.\n"
 			 "\n"
-		    "This may be due to Enlightenment being a remote client\n"
-		   "running over the network, a MIT-SHM incapable X-server,\n"
+			 "This may be due to Enlightenment being a remote client\n"
+			 "running over the network, a MIT-SHM incapable X-server,\n"
 			 "having run out of SHM ID's on the system or Shared\n"
 			 "Memory support being turned off in Imlib\n"
 			 "\n"
-		     "You may correct this by either running `imlib_config'\n"
-		     "or copying the system imrc (/usr/etc/imrc) to ~/.imrc\n"
+			 "You may correct this by either running `imlib_config'\n"
+			 "or copying the system imrc (/usr/etc/imrc) to ~/.imrc\n"
 			 "and editing it, enabling shared memory.\n" "\n"));
 	     return;
 	  }
@@ -405,16 +404,16 @@ FX_raindrops_timeout(int val, void *data)
 	  {
 	     DIALOG_OK(_("Unable to display raindrops"),
 		       _("\n"
-		      "Enlightenment is unable to display raindrops on this\n"
-		  "display because shared pixmaps are not available on this\n"
+			 "Enlightenment is unable to display raindrops on this\n"
+			 "display because shared pixmaps are not available on this\n"
 			 "X-Server.\n"
 			 "\n"
-		   "This may be due to either the X-Server not implementing\n"
-		       "shared pixmaps, or shared pixmaps being disabled in\n"
+			 "This may be due to either the X-Server not implementing\n"
+			 "shared pixmaps, or shared pixmaps being disabled in\n"
 			 "Imlib's configuration.\n"
 			 "\n"
-		     "You may correct this by either running `imlib_config'\n"
-		     "or copying the system imrc (/usr/etc/imrc) to ~/.imrc\n"
+			 "You may correct this by either running `imlib_config'\n"
+			 "or copying the system imrc (/usr/etc/imrc) to ~/.imrc\n"
 			 "and editing it, enabling shared pixmaps.\n" "\n"));
 	     return;
 	  }
@@ -423,12 +422,12 @@ FX_raindrops_timeout(int val, void *data)
 		     _("\n"
 		       "You have just started the Raindrops Effect.\n"
 		       "\n"
-		 "If you look closely on your desktop background, and if it\n"
-	     "doesn't have a solid colour (i.e. has a background texture or\n"
-		 "image), you will see \"raindrops\" hit the background and\n"
-	      "make little splashes. This Effect can be VERY CPU intensive.\n"
+		       "If you look closely on your desktop background, and if it\n"
+		       "doesn't have a solid colour (i.e. has a background texture or\n"
+		       "image), you will see \"raindrops\" hit the background and\n"
+		       "make little splashes. This Effect can be VERY CPU intensive.\n"
 		       "\n"
-	    "To disable this effect just select this option again to toggle\n"
+		       "To disable this effect just select this option again to toggle\n"
 		       "it off.\n"));
 	before = 1;
 	if (first)
@@ -514,7 +513,7 @@ FX_raindrops_timeout(int val, void *data)
 				     fx_raindrops[j].y + fx_raindrop_size))
 				||
 				((fx_raindrops
-				[i].x + fx_raindrop_size >= fx_raindrops[j].x)
+				  [i].x + fx_raindrop_size >= fx_raindrops[j].x)
 				 && (fx_raindrops[i].x + fx_raindrop_size <
 				     fx_raindrops[j].x + fx_raindrop_size)
 				 && (fx_raindrops[i].y >= fx_raindrops[j].y)
@@ -529,7 +528,7 @@ FX_raindrops_timeout(int val, void *data)
 					fx_raindrops[j].y + fx_raindrop_size))
 				||
 				((fx_raindrops
-				[i].x + fx_raindrop_size >= fx_raindrops[j].x)
+				  [i].x + fx_raindrop_size >= fx_raindrops[j].x)
 				 && (fx_raindrops[i].x + fx_raindrop_size <
 				     fx_raindrops[j].x + fx_raindrop_size)
 				 && (fx_raindrops[i].y + fx_raindrop_size >=
@@ -718,12 +717,12 @@ FX_Wave_timeout(int val, void *data)
 		     _("\n"
 		       "You have just started the Waves Effect.\n"
 		       "\n"
-		 "If you look closely on your desktop background, and if it\n"
-	     "doesn't have a solid colour (i.e. has a background texture or\n"
-		"image), you will see a pool of water at the bottom of your\n"
-		   "screen that reflects everything above it and \"waves\".\n"
+		       "If you look closely on your desktop background, and if it\n"
+		       "doesn't have a solid colour (i.e. has a background texture or\n"
+		       "image), you will see a pool of water at the bottom of your\n"
+		       "screen that reflects everything above it and \"waves\".\n"
 		       "\n"
-	    "To disable this effect just select this option again to toggle\n"
+		       "To disable this effect just select this option again to toggle\n"
 		       "it off.\n"));
 	before = 1;
      }
@@ -884,7 +883,7 @@ FX_imagespinner_timeout(int val, void *data)
 		     _("\n"
 		       "You have just started the imagespinners Effect.\n"
 		       "\n"
-	    "To disable this effect just select this option again to toggle\n"
+		       "To disable this effect just select this option again to toggle\n"
 		       "it off.\n"));
 	before = 1;
      }

@@ -1523,9 +1523,9 @@ HandleComms(XEvent * ev)
 	     Button             *b;
 
 	     while (
-		      (b =
-		       RemoveItem("_DESKTOP_DRAG_CONTROL", 0, LIST_FINDBY_NAME,
-				  LIST_TYPE_BUTTON)))
+		    (b =
+		     RemoveItem("_DESKTOP_DRAG_CONTROL", 0, LIST_FINDBY_NAME,
+				LIST_TYPE_BUTTON)))
 		DestroyButton(b);
 	     InitDesktopControls();
 	     ShowDesktopControls();
@@ -1835,7 +1835,7 @@ HandleComms(XEvent * ev)
 			    "MWM_MINIMIZE:           %5i\n"
 			    "MWM_MAXIMIZE:           %5i\n"
 			    "APP_STATE:              %5i\n", ewin->client.win,
-			  ewin->win, ewin->x, ewin->y, ewin->w, ewin->h, none,
+			    ewin->win, ewin->x, ewin->y, ewin->w, ewin->h, none,
 			    0, 0, 0, 0, ewin->desktop, ewin->num_groups,
 			    ewin->docked, ewin->sticky, ewin->visible,
 			    ewin->iconified, ewin->shaded, ewin->active,
@@ -1929,7 +1929,7 @@ HandleComms(XEvent * ev)
      {
 	char                buf[FILEPATH_LEN_MAX], *ret = NULL, none[] =
 
-	"-NONE-";
+	   "-NONE-";
 	EWin              **lst;
 	int                 i, num;
 

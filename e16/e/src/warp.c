@@ -146,8 +146,8 @@ WarpFocus(int delta)
 							      !mode.warpsticky)
 		      && (!ewin->ibox) && !(ewin->iconified
 					    && !mode.warpiconified)
-		  /*&& (ewin->client.mwm_decor_title) &&
-		   * (ewin->client.mwm_decor_border) */
+		      /*&& (ewin->client.mwm_decor_title) &&
+		       * (ewin->client.mwm_decor_border) */
 		     )
 		     AddItem(ewin, "", 0, LIST_TYPE_WARP_RING);
 	       }

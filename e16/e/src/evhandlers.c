@@ -43,11 +43,11 @@
 
 static ToolTip     *ttip = NULL;
 struct _mdata
-  {
-     Menu               *m;
-     MenuItem           *mi;
-     EWin               *ewin;
-  };
+{
+   Menu               *m;
+   MenuItem           *mi;
+   EWin               *ewin;
+};
 
 static void         ToolTipTimeout(int val, void *data);
 static void         SubmenuShowTimeout(int val, void *dat);
@@ -72,12 +72,10 @@ ToolTipTimeout(int val, void *data)
    /* In the case of multiple screens, check to make sure
     * the root window is still where the mouse is... */
    if (False == XQueryPointer(disp, root.win, &rt, &ch, &x, &y, &dum,
-			      &dum, &mask))
-      EDBUG_RETURN_;
+			      &dum, &mask)) EDBUG_RETURN_;
    /* dont pop up tooltip is mouse button down */
    if (mask & (Button1Mask | Button2Mask | Button3Mask |
-	       Button4Mask | Button5Mask))
-      EDBUG_RETURN_;
+	       Button4Mask | Button5Mask)) EDBUG_RETURN_;
    win = WindowAtXY(x, y);
    ac = FindActionClass(win);
    if (!ac)
@@ -480,7 +478,7 @@ HandleMotion(XEvent * ev)
 		     if ((ndx != dx) &&
 			 (((gwins[i]->x == 0) &&
 			   (!(IN_RANGE
-			    (gwins[i]->reqx, gwins[i]->x, screen_snap_dist))))
+			      (gwins[i]->reqx, gwins[i]->x, screen_snap_dist))))
 			  || ((gwins[i]->x == (root.w - gwins[i]->w))
 			      &&
 			      (!(IN_RANGE
@@ -495,7 +493,7 @@ HandleMotion(XEvent * ev)
 								   [i]->reqx,
 								   gwins[i]->x,
 								   mode.
-							 edge_snap_dist)))))))
+								   edge_snap_dist)))))))
 		       {
 			  jumpx = 1;
 			  ndx = gwins[i]->reqx - gwins[i]->x + dx;
@@ -504,7 +502,7 @@ HandleMotion(XEvent * ev)
 		     if ((ndy != dy) &&
 			 (((gwins[i]->y == 0) &&
 			   (!(IN_RANGE
-			    (gwins[i]->reqy, gwins[i]->y, screen_snap_dist))))
+			      (gwins[i]->reqy, gwins[i]->y, screen_snap_dist))))
 			  || ((gwins[i]->y == (root.h - gwins[i]->h))
 			      &&
 			      (!(IN_RANGE
@@ -519,7 +517,7 @@ HandleMotion(XEvent * ev)
 								   [i]->reqy,
 								   gwins[i]->y,
 								   mode.
-							 edge_snap_dist)))))))
+								   edge_snap_dist)))))))
 		       {
 			  jumpy = 1;
 			  ndy = gwins[i]->reqy - gwins[i]->y + dy;
@@ -746,8 +744,8 @@ HandleMotion(XEvent * ev)
 	     if (y < 0)
 		y = -y;
 	     if ((x > mode.button_move_resistance) ||
-		 (y > mode.button_move_resistance))
-		mode.button_move_pending = 0;
+		 (y > mode.button_move_resistance)) mode.button_move_pending =
+		   0;
 	  }
 	if (!mode.button_move_pending)
 	  {
@@ -802,12 +800,12 @@ HandleMotion(XEvent * ev)
 			 {
 			    if (mode.y >= screens[i].y_org)
 			      {
-				 if (mode.y <= (screens[i].height +
-						screens[i].y_org))
+				 if (mode.y <=
+				     (screens[i].height + screens[i].y_org))
 				   {
 				      if (mode.x >
-					((screens[i].x_org + screens[i].width)
-					 - (menu_scroll_dist + 1)))
+					  ((screens[i].x_org + screens[i].width)
+					   - (menu_scroll_dist + 1)))
 					{
 					   xdist =
 					      -(menu_scroll_dist +
@@ -820,23 +818,29 @@ HandleMotion(XEvent * ev)
 						screens[i].x_org))
 					{
 					   xdist =
-					      menu_scroll_dist +
-					      screens[i].x_org - mode.x;
+					      menu_scroll_dist - (mode.x -
+								  screens[i].
+								  x_org);
 					}
 				      if (mode.y >
-					  (root.h - (menu_scroll_dist + 1)))
+					  ((screens
+					    [i].y_org + screens[i].height) -
+					   (menu_scroll_dist + 1)))
 					{
 					   ydist =
 					      -(menu_scroll_dist +
 						(mode.y -
 						 (screens[i].y_org +
-						  screens[i].height)));
+						  screens[i].width)));
 					}
-				      else if (mode.y < menu_scroll_dist)
+				      else if (mode.y <
+					       (menu_scroll_dist +
+						screens[i].y_org))
 					{
 					   ydist =
-					      menu_scroll_dist +
-					      screens[i].y_org - (mode.y);
+					      menu_scroll_dist - (mode.y -
+								  screens[i].
+								  y_org);
 					}
 				   }
 			      }
@@ -873,9 +877,15 @@ HandleMotion(XEvent * ev)
 	 * leave it first, before he can scroll menus again ...
 	 */
 	if ((xdist != 0) || (ydist != 0) || mode.doingslide)
-	   menu_scroll_dist = -10;	/* -10 has no meaning, only makes sure that the if's */
-	else			/* above can't be fulfilled ... */
-	   menu_scroll_dist = 13;
+	  {
+	     menu_scroll_dist = -10;
+	     /* -10 has no meaning, only makes sure that the if's */
+	     /* above can't be fulfilled ... */
+	  }
+	else
+	  {
+	     menu_scroll_dist = 13;
+	  }
 
 	if (mode.cur_menu_depth > 0)
 	  {
@@ -902,8 +912,9 @@ HandleMotion(XEvent * ev)
 			      {
 				 if (mode.y >= screens[i].y_org)
 				   {
-				      if (mode.y <= (screens[i].height +
-						     screens[i].y_org))
+				      if (mode.y <=
+					  (screens[i].height +
+					   screens[i].y_org))
 					{
 					   x1 =
 					      screens[i].x_org +
@@ -1060,11 +1071,13 @@ HandleMotion(XEvent * ev)
 #endif
 	     /* only if any active menus are partially off screen then scroll */
 	     if (
-		   (((xdist > 0) && (x1 < x_org))
-		    || ((xdist < 0) && (x2 >= (x_org + my_width))))
-		   || (((ydist > 0) && (y1 < y_org))
-		       || ((ydist < 0) && (y2 >= (y_org + my_height)))))
+		 (((xdist > 0) && (x1 < x_org))
+		  || ((xdist < 0) && (x2 >= (x_org + my_width))))
+		 || (((ydist > 0) && (y1 < y_org))
+		     || ((ydist < 0) && (y2 >= (y_org + my_height)))))
 	       {
+		  char                doit = 0;
+
 		  /* If we would scroll too far, limit scrolling to 2/3s of screen */
 		  if (ydist < -my_width)
 		     ydist = -my_width * SCROLL_RATIO;
@@ -1078,22 +1091,56 @@ HandleMotion(XEvent * ev)
 
 		  for (i = 0; i < mode.cur_menu_depth; i++)
 		    {
-		       menus[i] = NULL;
 		       if (mode.cur_menu[i])
 			 {
 			    ewin = FindEwinByMenu(mode.cur_menu[i]);
 			    if (ewin)
 			      {
-				 menus[i] = ewin;
-				 fx[i] = ewin->x;
-				 fy[i] = ewin->y;
-				 tx[i] = ewin->x + xdist;
-				 ty[i] = ewin->y + ydist;
+				 char                ok = 0;
+
+				 if (ewin->x >= x_org)
+				   {
+				      if (ewin->x <= (x_org + my_width))
+					{
+					   if (ewin->y >= y_org)
+					     {
+						if (ewin->y <=
+						    (my_height + y_org))
+						  {
+						     ok = 1;
+						  }
+					     }
+					}
+				   }
+				 if (!ok)
+				   {
+				      doit = 1;
+				   }
 			      }
 			 }
 		    }
-		  SlideEwinsTo(menus, fx, fy, tx, ty, mode.cur_menu_depth,
-			       mode.shadespeed);
+
+		  if (doit)
+		    {
+		       for (i = 0; i < mode.cur_menu_depth; i++)
+			 {
+			    menus[i] = NULL;
+			    if (mode.cur_menu[i])
+			      {
+				 ewin = FindEwinByMenu(mode.cur_menu[i]);
+				 if (ewin)
+				   {
+				      menus[i] = ewin;
+				      fx[i] = ewin->x;
+				      fy[i] = ewin->y;
+				      tx[i] = ewin->x + xdist;
+				      ty[i] = ewin->y + ydist;
+				   }
+			      }
+			 }
+		       SlideEwinsTo(menus, fx, fy, tx, ty, mode.cur_menu_depth,
+				    mode.shadespeed);
+		    }
 	       }
 	  }
 	if (((xdist != 0) || (ydist != 0)) && (mode.warpmenus))
@@ -1858,9 +1905,9 @@ HandleMouseDown(XEvent * ev)
       DoIn("TOOLTIP_TIMEOUT", mode.tiptime, ToolTipTimeout, 0, NULL);
 
    if (
-	 (((float)(ev->xbutton.time - last_time) / 1000) <
-	  mode_double_click_time)
-	 && ((int)(ev->xbutton.button) == (int)(last_button)))
+       (((float)(ev->xbutton.time - last_time) / 1000) <
+	mode_double_click_time)
+       && ((int)(ev->xbutton.button) == (int)(last_button)))
       double_click = 1;
    last_time = ev->xbutton.time;
    last_button = ev->xbutton.button;
@@ -2617,15 +2664,15 @@ HandleMouseUp(XEvent * ev)
 			   ((ew->desktop == desks.current) || (ew->sticky)))
 			 {
 			    if (
-				  (ev->xbutton.x_root >=
-				   (ew->x + ew->border->border.left))
-				  && (ev->xbutton.x_root <
-				   (ew->x + ew->w - ew->border->border.right))
-				  && (ev->xbutton.y_root >=
-				      (ew->y + ew->border->border.top))
-				  && (ev->xbutton.y_root <
-				      (ew->y + ew->h -
-				       ew->border->border.bottom)))
+				(ev->xbutton.x_root >=
+				 (ew->x + ew->border->border.left))
+				&& (ev->xbutton.x_root <
+				    (ew->x + ew->w - ew->border->border.right))
+				&& (ev->xbutton.y_root >=
+				    (ew->y + ew->border->border.top))
+				&& (ev->xbutton.y_root <
+				    (ew->y + ew->h -
+				     ew->border->border.bottom)))
 			      {
 				 ewin = ew;
 				 i = desks.desk[desks.current].num;
@@ -2750,7 +2797,7 @@ HandleMouseUp(XEvent * ev)
 		  else
 		    {
 		       int                 ndesk, nx, ny, base_x = 0, base_y =
-		       0,                  ax, ay;
+			  0, ax, ay;
 
 		       ndesk = desks.current;
 		       nx = (int)ev->xbutton.x_root -

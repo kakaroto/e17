@@ -174,7 +174,7 @@ main(int argc, char **argv)
 	     }
 	   else if ((!strcmp("-v", argv[j])) ||
 		    (!strcmp("-version", argv[j])) ||
-		  (!strcmp("--version", argv[j])) || (!strcmp("-v", argv[j])))
+		    (!strcmp("--version", argv[j])) || (!strcmp("-v", argv[j])))
 	     {
 		printf(_
 		       ("Enlightenment Version: %s\nLast updated on: %s\n"),

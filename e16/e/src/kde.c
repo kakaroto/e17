@@ -88,12 +88,12 @@ static Atom         KDE_WIN_TITLE = 0;
 
 /* the modules I have to communicate to */
 typedef struct KModuleList
-  {
+{
 
-     Window              win;
-     struct KModuleList *next;
+   Window              win;
+   struct KModuleList *next;
 
-  }
+}
 KModuleList;
 
 static KModuleList *KModules = NULL;

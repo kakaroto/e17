@@ -29,8 +29,7 @@
 char                throw_move_events_away = 0;
 void                DeskAccountTimeout(int val, void *data);
 
-HandleStruct        HArray[] =
-{
+HandleStruct        HArray[] = {
    {DefaultFunc},
    {DefaultFunc},
    {HKeyPress},
@@ -347,8 +346,7 @@ WaitEvent()
 /*  XEvent              ev; */
    fd_set              fdset;
    struct timeval      tval;
-   static struct timeval tval_last =
-   {0, 0};
+   static struct timeval tval_last = { 0, 0 };
    double              time1, time2;
    Qentry             *qe;
    int                 count, pcount;

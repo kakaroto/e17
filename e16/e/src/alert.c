@@ -42,7 +42,7 @@ int                 debug_level;
 char               *call_stack[1024];
 
 void
-Alert(char *fmt,...)
+Alert(char *fmt, ...)
 {
    char                text[10240];
    va_list             ap;
