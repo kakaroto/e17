@@ -1,0 +1,17 @@
+Makefile
+Makefile.in
+stamp-h.in
+stamp-h
+config.status
+libtool
+config.cache
+config.h
+config.log
+configure
+aclocal.m4
+ltmain.sh
+config.sub
+config.guess
+config.h.in
+libltdl
+
