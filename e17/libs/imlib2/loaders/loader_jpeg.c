@@ -336,6 +336,7 @@ save(ImlibImage * im, ImlibProgressFunction progress,
             if (!progress(im, per, 0, (y - l), im->w, l))
             {
                jpeg_finish_compress(&cinfo);
+	       jpeg_destroy_compress(&cinfo);
                free(buf);
                fclose(f);
                return 2;

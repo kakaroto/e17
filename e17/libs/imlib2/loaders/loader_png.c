@@ -304,7 +304,8 @@ save(ImlibImage * im, ImlibProgressFunction progress,
    if (setjmp(png_ptr->jmpbuf))
    {
       fclose(f);
-      png_destroy_write_struct(&png_ptr, (png_infopp) NULL);
+      png_destroy_write_struct(&png_ptr, (png_infopp) &info_ptr);
+      png_destroy_info_struct(png_ptr, (png_infopp) &info_ptr);
       return 0;
    }
    png_init_io(png_ptr, f);
@@ -387,7 +388,8 @@ save(ImlibImage * im, ImlibProgressFunction progress,
                if (data)
                   free(data);
                png_write_end(png_ptr, info_ptr);
-               png_destroy_write_struct(&png_ptr, (png_infopp) NULL);
+               png_destroy_write_struct(&png_ptr, (png_infopp) &info_ptr);
+	       png_destroy_info_struct(png_ptr, (png_infopp) &info_ptr);
                fclose(f);
                return 2;
             }
@@ -400,8 +402,9 @@ save(ImlibImage * im, ImlibProgressFunction progress,
    if (data)
       free(data);
    png_write_end(png_ptr, info_ptr);
-   png_destroy_write_struct(&png_ptr, (png_infopp) NULL);
-
+   png_destroy_write_struct(&png_ptr, (png_infopp) &info_ptr);
+   png_destroy_info_struct(png_ptr, (png_infopp) &info_ptr);
+   
    fclose(f);
    return 1;
 }
