@@ -1,3 +1,9 @@
+Sun Feb 03 19:28:19 GMT 2002  Tom Gilbert <tom@linuxbrit.co.uk>
+
+  * Erp. s/wprintf/weprintf - I didn't notice the typo because wprintf is a
+    wide character printf. Luckily someone compiled feh on PPC and noticed the
+    bug.
+
 Wed Jan 30 13:54:29 GMT 2002  Tom Gilbert <tom@linuxbrit.co.uk>
 
   * New menu colour/style - "feh -Tblack src/testimages"
