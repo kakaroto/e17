@@ -120,6 +120,32 @@ gboolean duplicateImage( gpointer user_data )
     return 0;
 }
 
+gboolean loadPregeneratedRawData( gpointer user_data )
+{
+    GtkgEvasImage* m_gimage = 0;
+    
+    m_gimage = gevasimage_new();
+    gevasobj_set_gevas( m_gimage, gevas);
+    GtkgEvasObj* go = GTK_GEVASOBJ( m_gimage );
+    
+    int w = 120;
+    int h = 80;
+    int sz = w*h*4;
+    
+    guint32* data = (guint32*)malloc( sz );
+    int fd = open( "/tmp/rawdata", 0 );
+    int bytesRead = read( fd, data, sz );
+    printf("read %ld bytes of sz:%ld\n", bytesRead, sz );
+    
+    
+    Evas_Object *eo = gevasobj_get_evasobj( GTK_OBJECT( m_gimage ));
+    gevasimage_load_from_rgba32data( m_gimage, data, w, h );
+    gevasobj_move( go, 0, 0 );
+    gevasobj_set_layer( go, 1 );
+    gevasobj_show( go );
+}
+
+
 int main(int argc, char *argv[])
 {
     GtkWidget* win1;
@@ -127,7 +153,8 @@ int main(int argc, char *argv[])
     gtk_init(&argc, &argv);
 
     win1 = createAndShowWindow();
-    g_timeout_add( 2000, duplicateImage, &win1 );
+//    g_timeout_add( 2000, duplicateImage, &win1 );
+    g_timeout_add( 2000, loadPregeneratedRawData, &win1 );
     gtk_main();
     return 0;
 }

@@ -13,6 +13,12 @@ drawer_open_socks.png \
 raptor.png \
 raptor2.jpg \
 cd.png \
+cell1.png \
+cell2.png \
+cell3.png \
+cell4.png \
+cell5.png \
+cell6.png \
 bg.png \
 e_logo.png
 
@@ -22,7 +28,7 @@ andover.ttf
 EXTRA_DIST = $(PIXMAPS) $(FONTS)
 pkgdata_DATA = $(PIXMAPS) $(FONTS)
 
-TESTS = testgevas gwinmaptest imagesize rawimage
+TESTS = testgevas gwinmaptest imagesize rawimage gevasanim
 bin_PROGRAMS = $(TESTS)
 
 testgevas_SOURCES = testgevas.c
@@ -36,5 +42,8 @@ imagesize_LDADD = @evas_libs@ ../src/libgevas.la -lm @GTK_LIBS@ @edb_libs@
 
 rawimage_SOURCES = rawimage.c
 rawimage_LDADD = @evas_libs@ ../src/libgevas.la -lm @GTK_LIBS@ @edb_libs@
+
+gevasanim_SOURCES = gevasanim.c
+gevasanim_LDADD = @evas_libs@ ../src/libgevas.la -lm @GTK_LIBS@ @edb_libs@
 
 
