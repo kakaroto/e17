@@ -7,6 +7,8 @@ int
 main(int argc, char *argv[])
 {
     Epsilon *e = NULL;	
+
+    epsilon_init();
     while(--argc)
     {
 	if((e = epsilon_new((const char*)argv[argc])))
