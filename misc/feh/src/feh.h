@@ -55,7 +55,6 @@
 
 #include "debug.h"
 
-#define PROGRESS_GRANULARITY 10
 #define SLIDESHOW_RELOAD_MAX 4096
 
 #ifndef __GNUC__

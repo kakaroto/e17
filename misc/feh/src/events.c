@@ -359,81 +359,86 @@ feh_event_handle_MotionNotify(XEvent * ev)
 
          if (winwid->zoom < 0.001)
             winwid->zoom = 0.001;
+
+         /* calculate change in zoom and move im_x and im_y respectively to
+            enable zooming to the clicked spot... */
+         /* TODO */
+         
+
          winwidget_render_image(winwid, 0, 0);
       }
-      else printf("ZOOM - Implement me bitchass!\n");
-   }
-   else if (opt.mode == MODE_PAN)
-   {
-      int x, xx, y, yy, orig_x, orig_y;
-
-      while (XCheckTypedWindowEvent
-             (disp, ev->xmotion.window, MotionNotify, ev));
-      winwid = winwidget_get_from_window(ev->xmotion.window);
-      if (winwid)
+      else if (opt.mode == MODE_PAN)
       {
-         orig_x = winwid->im_x;
-         orig_y = winwid->im_y;
+         int x, xx, y, yy, orig_x, orig_y;
 
-         x = ev->xmotion.x - winwid->click_offset_x;
-         y = ev->xmotion.y - winwid->click_offset_y;
-
-         xx = winwid->w - (winwid->im_w * winwid->zoom);
-         yy = winwid->h - (winwid->im_h * winwid->zoom);
-
-         /* stick to left/right hand side */
-         if ((x < 10) && (x > -10))
-            winwid->im_x = 0;
-         else if (xx && ((x < xx + 10) && (x > xx - 10)))
-            winwid->im_x = xx;
-         else
-            winwid->im_x = x;
-
-         /* stick to top/bottom */
-         if ((y < 10) && (y > -10))
-            winwid->im_y = 0;
-         else if (yy && ((y < yy + 10) && (y > yy - 10)))
-            winwid->im_y = yy;
-         else
-            winwid->im_y = y;
-
-         if (winwid->im_x > winwid->w)
-            winwid->im_x = winwid->w;
-         if (winwid->im_y > winwid->h)
-            winwid->im_y = winwid->h;
-
-         if ((winwid->im_x != orig_x) || (winwid->im_y != orig_y))
-            winwidget_render_image(winwid, 0, 0);
-      }
-   }
-   else
-   {
-      while (XCheckTypedWindowEvent
-             (disp, ev->xmotion.window, MotionNotify, ev));
-      winwid = winwidget_get_from_window(ev->xmotion.window);
-      if (winwid != NULL)
-      {
-         if (winwid->type == WIN_TYPE_ABOUT)
+         while (XCheckTypedWindowEvent
+                (disp, ev->xmotion.window, MotionNotify, ev));
+         winwid = winwidget_get_from_window(ev->xmotion.window);
+         if (winwid)
          {
-            Imlib_Image im2, temp;
-            int x, y;
+            orig_x = winwid->im_x;
+            orig_y = winwid->im_y;
 
-            x = ev->xmotion.x - winwid->im_x;
-            y = ev->xmotion.y - winwid->im_y;
-            im2 = feh_imlib_clone_image(winwid->im);
-            imlib_context_set_image(im2);
-            imlib_apply_filter("bump_map_point(x=[],y=[],map=" PREFIX
-                               "/share/feh/images/about.png);", &x, &y);
-            temp = winwid->im;
-            winwid->im = im2;
-            winwidget_render_image(winwid, 0, 1);
-            winwid->im = temp;
-            feh_imlib_free_image_and_decache(im2);
+            x = ev->xmotion.x - winwid->click_offset_x;
+            y = ev->xmotion.y - winwid->click_offset_y;
+
+            xx = winwid->w - (winwid->im_w * winwid->zoom);
+            yy = winwid->h - (winwid->im_h * winwid->zoom);
+
+            /* stick to left/right hand side */
+            if ((x < 10) && (x > -10))
+               winwid->im_x = 0;
+            else if (xx && ((x < xx + 10) && (x > xx - 10)))
+               winwid->im_x = xx;
+            else
+               winwid->im_x = x;
+
+            /* stick to top/bottom */
+            if ((y < 10) && (y > -10))
+               winwid->im_y = 0;
+            else if (yy && ((y < yy + 10) && (y > yy - 10)))
+               winwid->im_y = yy;
+            else
+               winwid->im_y = y;
+
+            if (winwid->im_x > winwid->w)
+               winwid->im_x = winwid->w;
+            if (winwid->im_y > winwid->h)
+               winwid->im_y = winwid->h;
+
+            if ((winwid->im_x != orig_x) || (winwid->im_y != orig_y))
+               winwidget_render_image(winwid, 0, 0);
          }
       }
-   }
+      else
+      {
+         while (XCheckTypedWindowEvent
+                (disp, ev->xmotion.window, MotionNotify, ev));
+         winwid = winwidget_get_from_window(ev->xmotion.window);
+         if (winwid != NULL)
+         {
+            if (winwid->type == WIN_TYPE_ABOUT)
+            {
+               Imlib_Image im2, temp;
+               int x, y;
 
-   D_RETURN_;
+               x = ev->xmotion.x - winwid->im_x;
+               y = ev->xmotion.y - winwid->im_y;
+               im2 = feh_imlib_clone_image(winwid->im);
+               imlib_context_set_image(im2);
+               imlib_apply_filter("bump_map_point(x=[],y=[],map=" PREFIX
+                                  "/share/feh/images/about.png);", &x, &y);
+               temp = winwid->im;
+               winwid->im = im2;
+               winwidget_render_image(winwid, 0, 1);
+               winwid->im = temp;
+               feh_imlib_free_image_and_decache(im2);
+            }
+         }
+      }
+
+      D_RETURN_;
+   }
 }
 
 static void

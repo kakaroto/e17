@@ -59,6 +59,7 @@ struct __fehoptions
    unsigned char unloadables;
    unsigned char reverse;
    unsigned char no_menus;
+   unsigned char progress_gran;
 
    char *output_file;
    char *bg_file;

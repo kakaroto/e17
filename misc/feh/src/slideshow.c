@@ -107,7 +107,7 @@ feh_reload_image(winwidget w)
          callback knows it's got to create a new image... */
       progwin = w;
       imlib_context_set_progress_function(progressive_load_cb);
-      imlib_context_set_progress_granularity(PROGRESS_GRANULARITY);
+      imlib_context_set_progress_granularity(opt.progress_gran);
    }
    if ((feh_load_image(&(w->im), w->file)) != 0)
    {
@@ -219,7 +219,7 @@ slideshow_change_image(winwidget winwid, int change)
             callback knows it's got to create a new image... */
          progwin = winwid;
          imlib_context_set_progress_function(progressive_load_cb);
-         imlib_context_set_progress_granularity(PROGRESS_GRANULARITY);
+         imlib_context_set_progress_granularity(opt.progress_gran);
       }
       winwidget_rename(winwid, slideshow_create_name(current_file->filename));
       if ((feh_load_image(&(winwid->im), current_file)) != 0)

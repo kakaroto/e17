@@ -116,7 +116,7 @@ winwidget_create_from_file(feh_file * file, char *name, char type)
       D(("Progressive loading enabled\n"));
       progwin = ret;
       imlib_context_set_progress_function(progressive_load_cb);
-      imlib_context_set_progress_granularity(PROGRESS_GRANULARITY);
+      imlib_context_set_progress_granularity(opt.progress_gran);
    }
 
    if (winwidget_loadimage(ret, file) == 0)
