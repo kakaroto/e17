@@ -23,72 +23,68 @@
 
 #include "E.h"
 
-char                waitonly;
-Window              root_win;
+static Window       root_win;
+static Window       my_win;
 
-void
-CommsSetup()
+Window
+CommsSetup(void)
 {
    char               *str;
 
    EDBUG(5, "CommsSetup");
 
    str = getenv("ENL_WM_ROOT");
-   root_win = (str) ? strtoul(str, NULL, 0) : root.win;
+   root_win = (str) ? strtoul(str, NULL, 0) : DefaultRootWindow(disp);
 
    my_win = XCreateSimpleWindow(disp, root_win, -100, -100, 5, 5, 0, 0, 0);
 
-   EDBUG_RETURN_;
+   EDBUG_RETURN(my_win);
 }
 
-void
-CommsFindCommsWindow()
+Window
+CommsFindCommsWindow(void)
 {
    unsigned char      *s;
    Atom                a, ar;
    unsigned long       num, after;
    int                 format;
-   Window              rt;
+   Window              rt, comms_win;
    int                 dint;
    unsigned int        duint;
 
    EDBUG(6, "CommsFindCommsWindow");
+
+   comms_win = None;
+
    a = XInternAtom(disp, "ENLIGHTENMENT_COMMS", True);
-   if (a != None)
-     {
-	s = NULL;
-	XGetWindowProperty(disp, root_win, a, 0, 14, False, AnyPropertyType,
-			   &ar, &format, &num, &after, &s);
-	if (s)
-	  {
-	     comms_win = 0;
-	     sscanf((char *)s, "%*s %lx", &comms_win);
-	     XFree(s);
-	  }
-	else
-	   (comms_win = 0);
-	if (comms_win)
-	  {
-	     if (!XGetGeometry(disp, comms_win, &rt, &dint, &dint,
-			       &duint, &duint, &duint, &duint))
-		comms_win = 0;
-	     s = NULL;
-	     if (comms_win)
-	       {
-		  XGetWindowProperty(disp, comms_win, a, 0, 14, False,
-				     AnyPropertyType, &ar, &format, &num,
-				     &after, &s);
-		  if (s)
-		     XFree(s);
-		  else
-		     comms_win = 0;
-	       }
-	  }
-     }
-   if (comms_win)
-      XSelectInput(disp, comms_win,
-		   StructureNotifyMask | SubstructureNotifyMask);
-   EDBUG_RETURN_;
+   if (a == None)
+      EDBUG_RETURN(None);
+
+   s = NULL;
+   XGetWindowProperty(disp, root_win, a, 0, 14, False, AnyPropertyType,
+		      &ar, &format, &num, &after, &s);
+   if (!s)
+      EDBUG_RETURN(None);
+
+   sscanf((char *)s, "%*s %lx", &comms_win);
+   XFree(s);
+   if (comms_win == None)
+      EDBUG_RETURN(None);
+
+   if (!XGetGeometry(disp, comms_win, &rt, &dint, &dint,
+		     &duint, &duint, &duint, &duint))
+      EDBUG_RETURN(None);
+
+   s = NULL;
+   XGetWindowProperty(disp, comms_win, a, 0, 14, False,
+		      AnyPropertyType, &ar, &format, &num, &after, &s);
+   if (!s)
+      EDBUG_RETURN(None);
+   XFree(s);
+
+   XSelectInput(disp, comms_win, StructureNotifyMask | SubstructureNotifyMask);
+
+   EDBUG_RETURN(comms_win);
 }
 
 void
@@ -250,7 +246,7 @@ DeleteClient(Client * c)
    EDBUG_RETURN_;
 }
 
-void
+int
 HandleComms(XEvent * ev)
 {
    Client             *c;
@@ -259,11 +255,9 @@ HandleComms(XEvent * ev)
    EDBUG(4, "HandleComms");
    s = CommsGet(&c, ev);
    if (!s)
-      EDBUG_RETURN_;
+      EDBUG_RETURN(0);
    printf("%s\n", s);
    fflush(stdout);
-   if (waitonly)
-      exit(0);
    Efree(s);
-   EDBUG_RETURN_;
+   EDBUG_RETURN(1);
 }

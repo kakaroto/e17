@@ -35,18 +35,6 @@
 #include <stdarg.h>
 #include <string.h>
 #include <fcntl.h>
-#include <dirent.h>
-#include <signal.h>
-#include <time.h>
-#include <math.h>
-#include <pwd.h>
-#include <sys/stat.h>
-#include <sys/types.h>
-#include <sys/wait.h>
-#include <sys/stat.h>
-#include <sys/resource.h>
-#include <sys/ipc.h>
-#include <sys/shm.h>
 
 #if HAVE_STRDUP
 #define USE_LIBC_STRDUP  1	/* Use libc strdup if present */
@@ -88,22 +76,6 @@ typedef struct _client
 }
 Client;
 
-typedef struct _root
-{
-   Window              win;
-   Visual             *vis;
-   int                 depth;
-   Colormap            cmap;
-   int                 scr;
-   int                 w, h;
-   Window              focuswin;
-}
-Root;
-
-void               *Emalloc(int size);
-void               *Erealloc(void *ptr, int size);
-void                Efree(void *ptr);
-
 void               *FindItem(const char *name, int id, int find_by, int type);
 void                AddItem(void *item, const char *name, int id, int type);
 void               *RemoveItem(char *name, int id, int find_by, int type);
@@ -111,52 +83,25 @@ void              **ListItemType(int *num, int type);
 char              **ListItems(int *num, int type);
 void              **ListItemTypeID(int *num, int type, int id);
 
-void                SetupX(void);
-
-void                CommsSetup(void);
-void                CommsFindCommsWindow(void);
+Window              CommsSetup(void);
+Window              CommsFindCommsWindow(void);
 void                CommsSend(Client * c, const char *s);
 char               *CommsGet(Client ** c, XEvent * ev);
 Client             *MakeClient(Window win);
 void                ListFreeClient(void *ptr);
 void                DeleteClient(Client * c);
-void                HandleComms(XEvent * ev);
+int                 HandleComms(XEvent * ev);
 
-#if defined(__FILE__) && defined(__LINE__)
-#define Efree(x) \
-{ \
-  if (x) \
-    __Efree(x); \
-  else \
-    Alert("%s:%d:  Attempt to free a NULL pointer\n", __FILE__, __LINE__); \
-}
-#define Emalloc(x) \
-__Emalloc(x)
-#define Erealloc(x, y) \
-__Erealloc(x, y)
-#else
-#define Efree(x) \
-{ \
-  if (x) \
-    __Efree(x); \
-  else \
-    Alert("??:??:  Attempt to free a NULL pointer\n"); \
-}
-#define Emalloc(x) \
-__Emalloc(x)
-#define Erealloc(x, y) \
-__Erealloc(x, y)
-#endif
+#define Ecalloc     calloc
+#define Emalloc     malloc
+#define Efree       free
+#define Erealloc    realloc
 
 #if USE_LIBC_STRDUP
 #define Estrdup(s) ((s) ? strdup(s) : NULL)
 #else
 char               *Estrdup(const char *s);
 #endif
-
-void               *__Emalloc(int size);
-void               *__Erealloc(void *ptr, int size);
-void                __Efree(void *ptr);
 
 #define FILEPATH_LEN_MAX 4096
 /* This turns on E's internal stack tracking system for  coarse debugging */
@@ -220,11 +165,5 @@ extern int          debug_level;
 
 void                Alert(const char *fmt, ...);
 
-void                EDisplayMemUse(void);
-
 extern Display     *disp;
 extern List         lists;
-extern Window       comms_win;
-extern Window       my_win;
-extern Root         root;
-extern char        *display_name;

@@ -22,30 +22,74 @@
  */
 
 #include "E.h"
-#include <sys/time.h>
-#include <sys/types.h>
-#include <unistd.h>
 
-extern char         waitonly;
+/* Global vars */
+Display            *disp;
+List                lists;
 
+static char         buf[10240];
 static int          stdin_state;
-void                restore_stdin_state(void);
-void
-restore_stdin_state(void)
+static char        *display_name;
+static Client      *e;
+
+static void
+process_line(char *line)
+{
+   if (line == NULL)
+      exit(0);
+   if (*line == '\0')
+      return;
+
+   CommsSend(e, line);
+   XSync(disp, False);
+}
+
+static void
+stdin_state_setup(void)
+{
+   stdin_state = fcntl(0, F_GETFL, 0);
+   fcntl(0, F_SETFL, O_NONBLOCK);
+}
+
+static void
+stdin_state_restore(void)
 {
    fcntl(0, F_SETFL, stdin_state);
+}
+
+static void
+stdin_read(void)
+{
+   static int          j = 0;
+   int                 k, ret;
+
+   k = 0;
+   while ((ret = read(0, &(buf[j]), 1) > 0))
+     {
+	k = 1;
+	if (buf[j] == '\n')
+	  {
+	     buf[j] = 0;
+	     if (strlen(buf) > 0)
+		process_line(buf);
+	     j = -1;
+	  }
+	j++;
+     }
+   if ((ret < 0) || ((k == 0) && (ret == 0)))
+      exit(0);
 }
 
 int
 main(int argc, char **argv)
 {
    XEvent              ev;
-   Client             *me, *e;
-   char                buf[10240];
-   int                 i, j, k;
+   Client             *me;
+   int                 i;
    fd_set              fd;
-   signed char         ret;
    char               *command;
+   Window              my_win, comms_win;
+   char                waitonly, complete;
 
    waitonly = 0;
    lists.next = NULL;
@@ -76,7 +120,6 @@ main(int argc, char **argv)
 	       }
 	  }
 	else if ((!strcmp(argv[i], "-h")) ||
-		 (!strcmp(argv[i], "--h")) ||
 		 (!strcmp(argv[i], "-help")) || (!strcmp(argv[i], "--help")))
 	  {
 	     printf("%s [ -e \"Command to Send to Enlightenment then exit\"]\n"
@@ -90,15 +133,25 @@ main(int argc, char **argv)
 	  }
      }
 
-   SetupX();
-   CommsSetup();
-   CommsFindCommsWindow();
-   XSelectInput(disp, comms_win, StructureNotifyMask);
-   XSelectInput(disp, root.win, PropertyChangeMask);
+   /* Open a connection to the diplay nominated by the DISPLAY variable */
+   /* Or set with the -display option */
+   disp = XOpenDisplay(display_name);
+   if (!disp)
+     {
+	Alert("Failed to connect to X server\n");
+	exit(1);
+     }
+
+   my_win = CommsSetup();
+   comms_win = CommsFindCommsWindow();
+
    e = MakeClient(comms_win);
    AddItem(e, "E", e->win, LIST_TYPE_CLIENT);
+
+   /* Not sure this is used... */
    me = MakeClient(my_win);
    AddItem(me, "ME", me->win, LIST_TYPE_CLIENT);
+
    CommsSend(e, "set clientname eesh");
    CommsSend(e, "set version 0.1");
    CommsSend(e, "set author The Rasterman");
@@ -110,74 +163,56 @@ main(int argc, char **argv)
 
    if (command)
      {
+	/* Non-interactive */
 	CommsSend(e, command);
+	XSync(disp, False);
 	if (!waitonly)
-	  {
-	     XSync(disp, False);
-	     exit(0);
-	  }
+	   goto done;
+     }
+   else
+     {
+	/* Interactive */
+	stdin_state_setup();
+	atexit(stdin_state_restore);
      }
 
-   XSync(disp, False);
-   j = 0;
-   stdin_state = fcntl(0, F_GETFL, 0);
-   atexit(restore_stdin_state);
-   fcntl(0, F_SETFL, O_NONBLOCK);
    for (;;)
      {
-	if (waitonly)
-	  {
-	     XNextEvent(disp, &ev);
-	     if (ev.type == ClientMessage)
-		HandleComms(&ev);
-	     else if (ev.type == DestroyNotify)
-		exit(0);
-	     XSync(disp, False);
-	  }
-	else
-	  {
-	     FD_ZERO(&fd);
-	     FD_SET(0, &fd);
-	     FD_SET(ConnectionNumber(disp), &fd);
-	     if (select(ConnectionNumber(disp) + 1, &fd, NULL, NULL, NULL) < 0)
-		exit(0);
-	     XSync(disp, False);
+	FD_ZERO(&fd);
+	if (!command)
+	   FD_SET(0, &fd);
+	FD_SET(ConnectionNumber(disp), &fd);
 
-	     if (FD_ISSET(0, &fd))
+	if (select(ConnectionNumber(disp) + 1, &fd, NULL, NULL, NULL) < 0)
+	   break;
+
+	XSync(disp, False);
+
+	if (FD_ISSET(0, &fd))
+	  {
+	     stdin_read();
+	  }
+	else if (FD_ISSET(ConnectionNumber(disp), &fd))
+	  {
+	     while (XPending(disp))
 	       {
-		  k = 0;
-		  while ((ret = read(0, &(buf[j]), 1) > 0))
+		  XNextEvent(disp, &ev);
+		  switch (ev.type)
 		    {
-		       k = 1;
-		       if (buf[j] == '\n')
-			 {
-			    buf[j] = 0;
-			    if (strlen(buf) > 0)
-			      {
-				 CommsSend(e, buf);
-				 XSync(disp, False);
-			      }
-			    j = -1;
-			 }
-		       j++;
+		    case ClientMessage:
+		       complete = HandleComms(&ev);
+		       if (waitonly && complete)
+			  goto done;
+		       break;
+		    case DestroyNotify:
+		       goto done;
 		    }
-		  if ((ret < 0) || ((k == 0) && (ret == 0)))
-		     exit(0);
 	       }
-	     else if (FD_ISSET(ConnectionNumber(disp), &fd))
-	       {
-		  while (XPending(disp))
-		    {
-		       XNextEvent(disp, &ev);
-		       if (ev.type == ClientMessage)
-			  HandleComms(&ev);
-		       else if (ev.type == DestroyNotify)
-			  exit(0);
-		    }
-		  XSync(disp, False);
-	       }
+	     XSync(disp, False);
 	  }
      }
+
+ done:
    return 0;
 }
 
@@ -192,3 +227,20 @@ Alert(const char *fmt, ...)
    va_end(ap);
    EDBUG_RETURN_;
 }
+
+#if !USE_LIBC_STRDUP
+char               *
+Estrdup(const char *s)
+{
+   char               *ss;
+   int                 sz;
+
+   EDBUG(9, "Estrdup");
+   if (!s)
+      EDBUG_RETURN(NULL);
+   sz = strlen(s);
+   ss = Emalloc(sz + 1);
+   strncpy(ss, s, sz + 1);
+   EDBUG_RETURN(ss);
+}
+#endif
