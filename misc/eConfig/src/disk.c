@@ -48,6 +48,7 @@ _econf_get_data_from_disk(char *loc,unsigned long *length)
 	/* This function is internal to eConfig
 	 * it searches all the themepaths to find the correct data.
 	 * it will return it, as well as return the length in *length
+	 * FIXME: this function needs to search for the most recent timestamp
 	 * This function is internal to eConfig.
 	 */
 

@@ -6,7 +6,7 @@ eConfigUpdateCache(void)
 {
 
 	/* this function should force an update of all the cache in memory
-	 * currently it does nothing :)
+	 * FIXME: currently it does nothing :)
 	 * This function is exported by eConfig.
 	 */
 
@@ -51,6 +51,7 @@ eConfigGetCacheFilled(void)
 	 * that eConfig has used in the cache size.  Useful for displaying
 	 * statistics, as well as trimming the size of the cache using
 	 * eConfigSetCacheSize().
+	 * FIXME: this function does nothing useful right now.
 	 * This function is exported by eConfig.
 	 */
 
