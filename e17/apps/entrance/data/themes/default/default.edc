@@ -2002,6 +2002,13 @@ collections {
 		target, "EntranceSessionListMouseArea";
 		transition, LINEAR 0.5;
 	    }
+	    program
+	    {
+		name, "session_default_save_on_change";
+		signal, "SessionSelected";
+		source, "";
+		action, SIGNAL_EMIT "SessionDefaultSet" "";
+	    }
       }
    }
     group
