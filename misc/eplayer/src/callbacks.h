@@ -29,10 +29,16 @@ void cb_playlist_scroll_up(void *udata, Evas_Object *obj,
 void cb_playlist_scroll_down(void *udata, Evas_Object *obj,
                              const char *emission, const char *src);
 
+void cb_playlist_item_play(void *udata, Evas_Object *obj,
+                           const char *emission, const char *src);
+
 void cb_seek_forward(void *udata, Evas_Object *obj,
                      const char *emission, const char *src);
 void cb_seek_backward(void *udata, Evas_Object *obj,
                       const char *emission, const char *src);
+
+void cb_eplayer_quit(void *udata, Evas_Object *obj,
+                     const char *emission, const char *src);
 
 #endif
 

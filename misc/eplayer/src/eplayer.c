@@ -202,6 +202,9 @@ static int load_playlist(void *data) {
 	for (i = 1; player->args[i]; i++)
 		playlist_load_any(player->playlist, player->args[i], i > 1);
 
+	debug(DEBUG_LEVEL_INFO, "Got %i playlist entries\n",
+	      player->playlist->num);
+
 	if (player->playlist->num)
 		track_open(player);
 		

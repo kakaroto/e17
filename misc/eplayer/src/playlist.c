@@ -12,7 +12,7 @@
  *
  * @param pli The PlayListItem to store the comments/info stuff in.
  */
-void playlist_item_get_info(PlayListItem *pli) {
+static void playlist_item_get_info(PlayListItem *pli) {
 	int i;
 	
 	pli->sample_rate = pli->plugin->get_sample_rate();
@@ -205,36 +205,26 @@ static void finish_playlist(PlayList *pl, Evas_List *list, int append) {
  * @return Boolean success or failure.
  */
 int playlist_load_dir(PlayList *pl, const char *path, int append) {
-	PlayListItem *pli = NULL;
-	Evas_List *tmp = NULL;
 	DIR *dir;
 	struct dirent *entry;
+	char buf[PATH_MAX + 1];
 
 	if (!pl || !(dir = opendir(path)))
 		return 0;
 
-	/* ignore "." and ".." */
-	while ((entry = readdir(dir))
-	       && (!strcmp(entry->d_name, ".")
-	       || !strcmp(entry->d_name, "..")));
-
-	if (!entry)
-		return 0;
-	
-	/* real entries: load directories recursively */
-	do {
-		if (is_dir(entry->d_name))
-			playlist_load_dir(pl, entry->d_name, 1);
-		else if ((pli = playlist_item_new(pl->plugins, entry->d_name))) {
-			tmp = evas_list_prepend(tmp, pli);
-			pl->num++;
-		}
-	} while ((entry = readdir(dir)));
+	while ((entry = readdir(dir))) {
+		if (!strcmp(entry->d_name, ".") || !strcmp(entry->d_name, ".."))
+			continue;
+		
+		snprintf(buf, sizeof(buf), "%s/%s", path, entry->d_name);
+		playlist_load_any(pl, buf, 1);
+	};
 
 	closedir(dir);
 
-	finish_playlist(pl, tmp, append);
-	
+	if (!pl->cur_item->data)
+		pl->cur_item = pl->items;
+
 	return 1;
 }
 

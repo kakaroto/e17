@@ -1,5 +1,13 @@
 $Id$
 
+2003-11-17 Tilman Sauerbeck <tilman@code-monkey.de>
+        * src/playlist.c: Fixed playlist_load_dir()
+        * src/interface.c, data/README:
+          Added QUIT signal, thanks to digitalfallout
+        * src/interface.c, src/callbacks.c, data/README:
+          Updated playlist scrolling signals/code, added
+          PLAYLIST_ITEM_PLAY
+
 2003-11-15 Tilman Sauerbeck <tilman@code-monkey.de>
         * src/interface.c: Fixed playlist scrolling
         * src/interface.c, src/callbacks.c, data/README:

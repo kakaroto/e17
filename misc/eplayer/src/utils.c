@@ -25,19 +25,13 @@ Evas_List *dir_get_files(const char *directory) {
 	if (!(dir = opendir(directory)))
 		return NULL;
 
-	/* ignore "." and ".." */
-	while ((entry = readdir(dir))
-	       && (!strcmp(entry->d_name, ".")
-	       || !strcmp(entry->d_name, "..")));
+	while ((entry = readdir(dir))) {
+		if (!strcmp(entry->d_name, ".") || !strcmp(entry->d_name, ".."))
+			continue;
 
-	if (!entry)
-		return NULL;
-	
-	/* real entries */
-	do {
 		if (!is_dir(entry->d_name))
 			list = evas_list_prepend(list, strdup(entry->d_name));
-	} while ((entry = readdir(dir)));
+	}
 
 	closedir(dir);
 

@@ -18,8 +18,7 @@ The "eplayer" Edje emits the following signals:
 	action,     SIGNAL_EMIT "TOGGLE_TIME_DISPLAY_MODE" "time_text";
 	action,     SIGNAL_EMIT "TOGGLE_REPEAT_MODE" "repeat_mode";
 
-	action,     SIGNAL_EMIT "PLAYLIST_SCROLL_UP" "playlist";
-	action,     SIGNAL_EMIT "PLAYLIST_SCROLL_DOWN" "playlist";
+	action,     SIGNAL_EMIT "QUIT" "quit";
 
 It provides the following parts for text display:
 
@@ -35,10 +34,9 @@ The "playlist_item" Edje contains a "title" and a "length" part.
 
 These parts emit the following signals:
 
-	action,     SIGNAL_EMIT "PLAYLIST_SCROLL_UP" "title";
-	action,     SIGNAL_EMIT "PLAYLIST_SCROLL_DOWN" "title";
-	action,     SIGNAL_EMIT "PLAYLIST_SCROLL_UP" "length";
-	action,     SIGNAL_EMIT "PLAYLIST_SCROLL_DOWN" "length";
+	action,     SIGNAL_EMIT "PLAYLIST_SCROLL_UP" "";
+	action,     SIGNAL_EMIT "PLAYLIST_SCROLL_DOWN" "";
+	action,     SIGNAL_EMIT "PLAYLIST_ITEM_PLAY" "";
 
 
 ---------------------------------------------------------

@@ -1,6 +1,7 @@
 #include <config.h>
 #include <Edje.h>
 #include <Esmart/container.h>
+#include <assert.h>
 #include "eplayer.h"
 #include "track.h"
 #include "interface.h"
@@ -161,6 +162,21 @@ void cb_playlist_scroll_down(void *udata, Evas_Object *obj,
 	                   player->gui.playlist_font_size * -3);
 }
 
+void cb_playlist_item_play(void *udata, Evas_Object *obj,
+                           const char *emission, const char *src) {
+	ePlayer *player = udata;
+	PlayListItem *pli = evas_object_data_get(obj, "PlayListItem");
+	Evas_List *item = evas_list_find_list(player->playlist->items, pli);
+
+	assert(item);
+	
+	eplayer_playback_stop(player);
+
+	player->playlist->cur_item = item;
+	eplayer_playback_start(player, 1);
+	paused = 0;
+}
+
 void cb_seek_forward(void *udata, Evas_Object *obj,
                      const char *emission, const char *src) {
 	ePlayer *player = udata;
@@ -196,4 +212,9 @@ void cb_seek_backward(void *udata, Evas_Object *obj,
 	}
 	
 	paused = 0;
+}
+
+void cb_eplayer_quit(void *udata, Evas_Object *obj,
+                     const char *emission, const char *src) {
+	ecore_main_loop_quit();
 }

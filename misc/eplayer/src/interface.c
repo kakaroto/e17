@@ -79,6 +79,10 @@ static int setup_edje(ePlayer *player, Ecore_Evas *ee) {
 
 	/*** Edje Callbacks ***************************/
 	edje_object_signal_callback_add(player->gui.edje,
+	                                "QUIT", "quit",
+	                                cb_eplayer_quit, player);
+	
+	edje_object_signal_callback_add(player->gui.edje,
 	                                "PLAY_PREVIOUS", "previous_button",
 	                                cb_track_prev, player);
 	edje_object_signal_callback_add(player->gui.edje,
@@ -125,12 +129,6 @@ static void setup_playlist(ePlayer *player) {
 	
 	edje_object_part_swallow(player->gui.edje, "playlist",
 	                         player->gui.playlist);
-	edje_object_signal_callback_add(player->gui.edje,
-	                                "PLAYLIST_SCROLL_DOWN", "playlist",
-	                                cb_playlist_scroll_down, player);
-	edje_object_signal_callback_add(player->gui.edje,
-	                                "PLAYLIST_SCROLL_UP", "playlist",
-	                                cb_playlist_scroll_up, player);
 }
 
 void show_playlist_item(PlayListItem *pli, void *data) {
@@ -138,12 +136,6 @@ void show_playlist_item(PlayListItem *pli, void *data) {
 	Evas_Object *o;
 	char len[32];
 	double w = 0, h = 0;
-	int i, j;
-	char *part[] = {"title", "length"};
-	char *signal[] = {"PLAYLIST_SCROLL_UP", "PLAYLIST_SCROLL_DOWN"};
-	void (*cb[])(void *data, Evas_Object *o, const char *emission,
-	                const char *source) = {cb_playlist_scroll_up,
-	                                       cb_playlist_scroll_down};
 
 	/* add the item to the container */
 	o = edje_object_add(player->gui.evas);
@@ -162,6 +154,8 @@ void show_playlist_item(PlayListItem *pli, void *data) {
 	edje_object_size_min_get(o, &w, &h);
 	evas_object_resize(o, w, h);
 	
+	evas_object_data_set(o, "PlayListItem", pli);
+
 	/* store font size, we need it later for scrolling
 	 * FIXME: we're assuming that the objects minimal height
 	 * equals the text size
@@ -169,12 +163,14 @@ void show_playlist_item(PlayListItem *pli, void *data) {
 	player->gui.playlist_font_size = h;
 
 	e_container_element_append(player->gui.playlist, o);
-		
+	
 	/* add playlist item callbacks */
-	for (i = 0; i < 2; i++)
-		for (j = 0; j < 2; j++)
-			edje_object_signal_callback_add(o, signal[i], part[j],
-			                                cb[i], player);
+	edje_object_signal_callback_add(o, "PLAYLIST_SCROLL_UP", "",
+			                        cb_playlist_scroll_up, player);
+	edje_object_signal_callback_add(o, "PLAYLIST_SCROLL_DOWN", "",
+			                        cb_playlist_scroll_down, player);
+	edje_object_signal_callback_add(o, "PLAYLIST_ITEM_PLAY", "",
+			                        cb_playlist_item_play, player);
 }
 
 int refresh_volume(void *udata) {
