@@ -46,20 +46,20 @@ Box_Orientation *info = NULL;
  */
 static Ewd_List *spread = NULL;
 
-void            __ewl_box_setup();
-void            __ewl_box_add(Ewl_Container * c, Ewl_Widget * w);
-void            __ewl_box_child_resize(Ewl_Container * c, Ewl_Widget * w,
+static void     __ewl_box_setup();
+static void     __ewl_box_add(Ewl_Container * c, Ewl_Widget * w);
+static void     __ewl_box_child_resize(Ewl_Container * c, Ewl_Widget * w,
 				       int size, Ewl_Orientation o);
-void            __ewl_box_configure(Ewl_Widget * w, void *ev_data,
+static void     __ewl_box_configure(Ewl_Widget * w, void *ev_data,
 				    void *user_data);
-void            __ewl_box_configure_calc(Ewl_Box * b, int *fill_size,
+static void     __ewl_box_configure_calc(Ewl_Box * b, int *fill_size,
 					 int *align_size);
-void            __ewl_box_configure_fill(Ewl_Box * b, int *fill_size,
+static void     __ewl_box_configure_fill(Ewl_Box * b, int *fill_size,
 					 int *align_size);
-void            __ewl_box_configure_layout(Ewl_Box * b, int *x, int *y,
+static void     __ewl_box_configure_layout(Ewl_Box * b, int *x, int *y,
 					   int *fill, int *align,
 					   int *align_size);
-void            __ewl_box_configure_child(Ewl_Box * b, Ewl_Object * c, int *x,
+static void     __ewl_box_configure_child(Ewl_Box * b, Ewl_Object * c, int *x,
 					  int *y, int *align, int *align_size);
 
 /**
@@ -185,16 +185,19 @@ void ewl_box_set_spacing(Ewl_Box * b, int s)
 
 	w = EWL_WIDGET(b);
 
-	nodes = ewd_list_nodes(EWL_CONTAINER(b)->children) - 1;
+	nodes = ewd_list_nodes(EWL_CONTAINER(b)->children);
 
-	if (b->orientation == EWL_ORIENTATION_HORIZONTAL)
-		ewl_object_set_preferred_w(EWL_OBJECT(w),
-				PREFERRED_W(w) - (nodes * b->spacing) +
-				(nodes * s));
-	else
-		ewl_object_set_preferred_h(EWL_OBJECT(w),
-				PREFERRED_H(w) - (nodes * b->spacing) +
-				(nodes * s));
+	if (nodes) {
+		nodes--;
+		if (b->orientation == EWL_ORIENTATION_HORIZONTAL)
+			ewl_object_set_preferred_w(EWL_OBJECT(w),
+					PREFERRED_W(w) - (nodes * b->spacing) +
+					(nodes * s));
+		else
+			ewl_object_set_preferred_h(EWL_OBJECT(w),
+					PREFERRED_H(w) - (nodes * b->spacing) +
+					(nodes * s));
+	}
 
 	b->spacing = s;
 
@@ -203,7 +206,8 @@ void ewl_box_set_spacing(Ewl_Box * b, int s)
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
 
-void __ewl_box_configure(Ewl_Widget * w, void *ev_data, void *user_data)
+static void
+__ewl_box_configure(Ewl_Widget * w, void *ev_data, void *user_data)
 {
 	Ewl_Box        *b;
 
@@ -226,7 +230,7 @@ void __ewl_box_configure(Ewl_Widget * w, void *ev_data, void *user_data)
 	 * Get the starting values for the dimensions of the box.
 	 */
 	x = CURRENT_X(w);
-	y = CURRENT_Y(EWL_OBJECT(w));
+	y = CURRENT_Y(w);
 	width = CURRENT_W(w);
 	height = CURRENT_H(w);
 
@@ -264,11 +268,6 @@ void __ewl_box_configure(Ewl_Widget * w, void *ev_data, void *user_data)
 	__ewl_box_configure_fill(b, fill_size, align_size);
 
 	/*
-	 * Center items to be laid out as best as possible.
-	 */
-	/* *fill += *fill_size / 2; */
-
-	/*
 	 * Layout the children in their appropriate positions.
 	 */
 	__ewl_box_configure_layout(b, &x, &y, fill, align, align_size);
@@ -279,7 +278,8 @@ void __ewl_box_configure(Ewl_Widget * w, void *ev_data, void *user_data)
 /*
  * Split the children into three lists for layout.
  */
-void __ewl_box_configure_calc(Ewl_Box * b, int *fill_size, int *align_size)
+static void
+__ewl_box_configure_calc(Ewl_Box * b, int *fill_size, int *align_size)
 {
 	Ewl_Object     *child;
 
@@ -333,7 +333,8 @@ void __ewl_box_configure_calc(Ewl_Box * b, int *fill_size, int *align_size)
  * Spread space to any widgets that have fill policy set to fill. This should
  * not be called if @num_fill or *@fill_size are equal to zero.
  */
-void __ewl_box_configure_fill(Ewl_Box * b, int *fill_size, int *align_size)
+static void
+__ewl_box_configure_fill(Ewl_Box * b, int *fill_size, int *align_size)
 {
 	int             space;
 	int             temp, remainder;
@@ -442,7 +443,7 @@ void __ewl_box_configure_fill(Ewl_Box * b, int *fill_size, int *align_size)
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
 
-void
+static void
 __ewl_box_configure_layout(Ewl_Box * b, int *x, int *y, int *fill,
 			   int *align, int *align_size)
 {
@@ -476,7 +477,7 @@ __ewl_box_configure_layout(Ewl_Box * b, int *x, int *y, int *fill,
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
 
-void
+static void
 __ewl_box_configure_child(Ewl_Box * b, Ewl_Object * c, int *x, int *y,
 			  int *align, int *align_size)
 {
@@ -516,11 +517,11 @@ __ewl_box_configure_child(Ewl_Box * b, Ewl_Object * c, int *x, int *y,
 /*
  * When a child gets added to the box update it's size.
  */
-void __ewl_box_add(Ewl_Container * c, Ewl_Widget * w)
+static void
+__ewl_box_add(Ewl_Container * c, Ewl_Widget * w)
 {
-	int osize;
 	int             max_size = 0;
-	int temp;
+	int             osize, temp;
 	Box_Orientation *info;
 
 	DCHECK_PARAM_PTR("c", c);
@@ -559,6 +560,8 @@ void __ewl_box_add(Ewl_Container * c, Ewl_Widget * w)
 		info->pref_align_set(EWL_OBJECT(c), temp);
 	}
 
+	temp = info->pref_fill_ask(EWL_OBJECT(w));
+
 	/*
 	 * Add the size of the new child, and add in the spacing if there's
 	 * any other widgets in the box.
@@ -572,7 +575,7 @@ void __ewl_box_add(Ewl_Container * c, Ewl_Widget * w)
  * Determine the preferred size of the box when a child changes it's preferred
  * size.
  */
-void
+static void
 __ewl_box_child_resize(Ewl_Container * c, Ewl_Widget * w, int size,
 		       Ewl_Orientation o)
 {
@@ -643,24 +646,19 @@ __ewl_box_child_resize(Ewl_Container * c, Ewl_Widget * w, int size,
 		info->pref_align_set(EWL_OBJECT(c), max_size);
 	}
 
-	/*
-	printf("Box %p resized to %d x %d\n", c,
-			ewl_object_get_preferred_w(EWL_OBJECT(c)),
-				ewl_object_get_preferred_h(EWL_OBJECT(c)));
-	*/
-
 	max_size = 0;
 	ewd_list_goto_first(c->children);
 	while ((child = ewd_list_next(c->children)))
-		max_size += ewl_object_get_preferred_h(child);
-	printf("\tChildren heights add to %d\n", max_size);
+		max_size += ewl_object_get_preferred_h(child) + EWL_BOX(c)->spacing;
+	max_size -= EWL_BOX(c)->spacing;
 }
 
 /*
  * Setup some internal variables for effectively laying out the children based
  * on orientation.
  */
-void __ewl_box_setup()
+static void
+__ewl_box_setup()
 {
 	if (!vertical) {
 		vertical = NEW(Box_Orientation, 1);

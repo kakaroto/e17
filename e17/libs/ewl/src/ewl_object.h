@@ -11,11 +11,11 @@ typedef struct _ewl_object Ewl_Object;
 struct _ewl_object {
 	struct {
 		int             x, y;
-		int             w, h;
+		unsigned int    w, h;
 	} current;
 
 	struct {
-		int             w, h;
+		unsigned int    w, h;
 	} preferred, maximum, minimum;
 
 	/*

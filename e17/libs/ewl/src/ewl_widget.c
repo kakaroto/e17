@@ -551,8 +551,6 @@ void __ewl_widget_destroy(Ewl_Widget * w, void *ev_data, void *data)
  */
 void __ewl_widget_show(Ewl_Widget * w, void *ev_data, void *user_data)
 {
-	Ewl_Window     *win;
-
 	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR("w", w);
 
@@ -567,8 +565,6 @@ void __ewl_widget_show(Ewl_Widget * w, void *ev_data, void *user_data)
  */
 void __ewl_widget_hide(Ewl_Widget * w, void *ev_data, void *user_data)
 {
-	Ewl_Window     *win;
-
 	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR("w", w);
 
