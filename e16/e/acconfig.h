@@ -31,3 +31,9 @@
 #undef PACKAGE
 
 #undef HAS_XINERAMA
+
+#undef VERSION
+
+#undef ENABLE_EWMH
+#undef ENABLE_GNOME
+#undef ENABLE_KDE

@@ -9,7 +9,7 @@ SUBDIRS = \
 	po \
 	debian
 
-EXTRA_DIST = config.rpath  \
+EXTRA_DIST = \
 sample-scripts/bouncingball.pl \
 sample-scripts/lcdmover.sh \
 sample-scripts/testroller.pl \
@@ -27,5 +27,3 @@ FAQ \
 INSTALL \
 NEWS \
 README
-
-ACLOCAL_AMFLAGS = -I m4

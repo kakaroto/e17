@@ -1752,3 +1752,11 @@ Mon Feb  4 10:39:42 EST 2002
 
 Applied patch from Boris Buegling <boris@icculus.org> for XFree86 4.2.0.
 
+-------------------------------------------------------------------------------
+
+Sun Mar 23 22:45:31 EST 2003
+(KainX)
+
+Patch from Kim Woelders <kim@woelders.dk> for freedesktop.org WM hints.
+
+-------------------------------------------------------------------------------

@@ -280,8 +280,7 @@ main(int argc, char **argv)
 	  }
 	Efree(lst);
      }
-   /* gnome hints stuff & session initialization here */
-   GNOME_SetHints();
+   HintsInit();
    SessionInit();
    ShowDesktopControls();
    CheckEvent();
@@ -291,8 +290,8 @@ main(int argc, char **argv)
    if (mode.mapslide)
       CreateStartupDisplay(0);
    MapUnmap(1);
-   /* set some more stuff for gnome */
-   GNOME_SetCurrentArea();
+   /* set some more hints */
+   HintsSetDesktopViewport();
    desks.current = 0;
    /* Set up the internal pagers */
    IB_Setup();
@@ -308,11 +307,13 @@ main(int argc, char **argv)
 	XKillClient(disp, init_win_ext);
 	init_win_ext = 0;
      }
-   GNOME_SetClientList();
+   HintsSetClientList();
 
+#if ENABLE_KDE
    /* start up any kde crap we might need to start up */
    if (mode.kde_support)
       KDE_Init();
+#endif
 
    /* sync just to make sure */
    XSync(disp, False);

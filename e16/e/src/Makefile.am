@@ -46,16 +46,15 @@ enlightenment_SOURCES = \
 	focus.c 		\
 	fx.c                    \
 	globals.c		\
-	gnome.c			\
 	grabs.c			\
 	groups.c		\
 	handlers.c		\
+	hints.c			\
 	icccm.c			\
 	iclass.c		\
 	iconify.c		\
 	init.c			\
 	ipc.c			\
-	kde.c			\
 	lists.c			\
 	main.c			\
 	memory.c		\
@@ -90,7 +89,17 @@ enlightenment_SOURCES = \
 	warp.c			\
 	windowmatch.c   	\
 	x.c                     \
-	zoom.c
+	zoom.c			\
+	$(SRCS_EWMH) $(SRCS_GNOME) $(SRCS_KDE)
+if ENABLE_EWMH
+SRCS_EWMH = ewmh.c
+endif
+if ENABLE_GNOME
+SRCS_GNOME = gnome.c            
+endif
+if ENABLE_KDE
+SRCS_KDE = kde.c
+endif
 
 LDADD = \
 	@INTLLIBS@			\

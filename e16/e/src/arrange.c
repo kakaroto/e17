@@ -1025,6 +1025,7 @@ ArrangeEwin(EWin * ewin)
 	newrect.w = ewin->w;
 	newrect.h = ewin->h;
 	newrect.p = ewin->layer;
+#if ENABLE_KDE
 	if (mode.kde_support)
 	  {
 	     ArrangeRects(fixed, j, &newrect, 1, ret, mode.kde_x1, mode.kde_y1,
@@ -1032,9 +1033,12 @@ ArrangeEwin(EWin * ewin)
 	  }
 	else
 	  {
+#endif
 	     ArrangeRects(fixed, j, &newrect, 1, ret, 0, 0, root.w, root.h,
 			  ARRANGE_BY_SIZE, 1);
+#if ENABLE_KDE
 	  }
+#endif
 	for (i = 0; i < j + 1; i++)
 	  {
 	     if (ret[i].data == ewin)

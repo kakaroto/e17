@@ -48,6 +48,7 @@ MaxHeight(EWin * ewin, char *resize_type)
 	       {
 		  y = ewin->y;
 		  h = ewin->h;
+#if ENABLE_KDE
 		  if (mode.kde_support)
 		    {
 		       y1 = mode.kde_y1;
@@ -55,9 +56,12 @@ MaxHeight(EWin * ewin, char *resize_type)
 		    }
 		  else
 		    {
+#endif
 		       y1 = 0;
 		       y2 = root.h;
+#if ENABLE_KDE
 		    }
+#endif
 #ifdef HAS_XINERAMA
 		  if (xinerama_active)
 		    {
@@ -130,6 +134,7 @@ MaxHeight(EWin * ewin, char *resize_type)
 	       {
 		  y = ewin->y;
 		  h = ewin->h;
+#if ENABLE_KDE
 		  if (mode.kde_support)
 		    {
 		       y1 = mode.kde_y1;
@@ -137,9 +142,12 @@ MaxHeight(EWin * ewin, char *resize_type)
 		    }
 		  else
 		    {
+#endif
 		       y1 = 0;
 		       y2 = root.h;
+#if ENABLE_KDE
 		    }
+#endif
 #ifdef HAS_XINERAMA
 		  if (xinerama_active)
 		    {
@@ -247,6 +255,7 @@ MaxWidth(EWin * ewin, char *resize_type)
 	       {
 		  x = ewin->x;
 		  w = ewin->w;
+#if ENABLE_KDE
 		  if (mode.kde_support)
 		    {
 		       x1 = mode.kde_x1;
@@ -254,9 +263,12 @@ MaxWidth(EWin * ewin, char *resize_type)
 		    }
 		  else
 		    {
+#endif
 		       x1 = 0;
 		       x2 = root.w;
+#if ENABLE_KDE
 		    }
+#endif
 #ifdef HAS_XINERAMA
 		  if (xinerama_active)
 		    {
@@ -329,6 +341,7 @@ MaxWidth(EWin * ewin, char *resize_type)
 	       {
 		  x = ewin->x;
 		  w = ewin->w;
+#if ENABLE_KDE
 		  if (mode.kde_support)
 		    {
 		       x1 = mode.kde_x1;
@@ -336,9 +349,12 @@ MaxWidth(EWin * ewin, char *resize_type)
 		    }
 		  else
 		    {
+#endif
 		       x1 = 0;
 		       x2 = root.w;
+#if ENABLE_KDE
 		    }
+#endif
 #ifdef HAS_XINERAMA
 		  if (xinerama_active)
 		    {
@@ -450,6 +466,7 @@ MaxSize(EWin * ewin, char *resize_type)
 		  h = ewin->h;
 		  x = ewin->x;
 		  w = ewin->w;
+#if ENABLE_KDE
 		  if (mode.kde_support)
 		    {
 		       x1 = mode.kde_x1;
@@ -459,11 +476,14 @@ MaxSize(EWin * ewin, char *resize_type)
 		    }
 		  else
 		    {
+#endif
 		       x1 = 0;
 		       x2 = root.w;
 		       y1 = 0;
 		       y2 = root.h;
+#if ENABLE_KDE
 		    }
+#endif
 #ifdef HAS_XINERAMA
 		  if (xinerama_active)
 		    {
@@ -568,6 +588,7 @@ MaxSize(EWin * ewin, char *resize_type)
 		  h = ewin->h;
 		  x = ewin->x;
 		  w = ewin->w;
+#if ENABLE_KDE
 		  if (mode.kde_support)
 		    {
 		       x1 = mode.kde_x1;
@@ -577,11 +598,14 @@ MaxSize(EWin * ewin, char *resize_type)
 		    }
 		  else
 		    {
+#endif
 		       x1 = 0;
 		       x2 = root.w;
 		       y1 = 0;
 		       y2 = root.h;
+#if ENABLE_KDE
 		    }
+#endif
 #ifdef HAS_XINERAMA
 		  if (xinerama_active)
 		    {
@@ -696,8 +720,10 @@ MaxSize(EWin * ewin, char *resize_type)
 	ewin->toggle = 0;
      }
 
+#if ENABLE_KDE
    if (mode.kde_support)
       KDE_UpdateClient(ewin);
+#endif
 
    return;
 }

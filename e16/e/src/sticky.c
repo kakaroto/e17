@@ -30,6 +30,8 @@ MakeWindowUnSticky(EWin * ewin)
    if (!ewin)
       EDBUG_RETURN_;
 
+   ewin->sticky = 2; /* Grrr: we are "unsticking" (hack to get the desktop right) */
+   ewin->desktop = desks.current;
    FloatEwinAt(ewin, ewin->x, ewin->y);
    DrawEwinShape(ewin, 0, ewin->x, ewin->y, ewin->client.w, ewin->client.h, 0);
    MoveEwinToDesktopAt(ewin, desks.current, ewin->x, ewin->y);
@@ -37,14 +39,12 @@ MakeWindowUnSticky(EWin * ewin)
    RaiseEwin(ewin);
    DrawEwin(ewin);
 
-   if (mode.kde_support)
-      KDE_UpdateClient(ewin);
+   HintsSetWindowState(ewin);
 
    ApplySclass(FindItem
 	       ("SOUND_WINDOW_UNSTICK", 0, LIST_FINDBY_NAME, LIST_TYPE_SCLASS));
 
    EDBUG_RETURN_;
-
 }
 
 void
@@ -58,8 +58,7 @@ MakeWindowSticky(EWin * ewin)
    RaiseEwin(ewin);
    DrawEwin(ewin);
 
-   if (mode.kde_support)
-      KDE_UpdateClient(ewin);
+   HintsSetWindowState(ewin);
 
    ApplySclass(FindItem
 	       ("SOUND_WINDOW_STICK", 0, LIST_FINDBY_NAME, LIST_TYPE_SCLASS));

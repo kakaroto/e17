@@ -115,7 +115,7 @@ SetAreaSize(int aw, int ah)
       ah = 1;
    area_w = aw;
    area_h = ah;
-   GNOME_SetAreaCount();
+   HintsSetViewportConfig();
    PagerReArea();
    EDBUG_RETURN_;
 }
@@ -366,7 +366,7 @@ SetCurrentArea(int ax, int ay)
 			       mode.flipp = 0;
 			    lst[i]->area_x = a1;
 			    lst[i]->area_y = a2;
-			    GNOME_SetEwinArea(lst[i]);
+			    HintsSetWindowArea(lst[i]);
 			 }
 		    }
 	       }
@@ -427,7 +427,7 @@ SetCurrentArea(int ax, int ay)
 			       mode.flipp = 0;
 			    lst[i]->area_x = a1;
 			    lst[i]->area_y = a2;
-			    GNOME_SetEwinArea(lst[i]);
+			    HintsSetWindowArea(lst[i]);
 			 }
 		    }
 	       }
@@ -437,8 +437,8 @@ SetCurrentArea(int ax, int ay)
    /* set the current area up in out data structs */
    desks.desk[desks.current].current_area_x = ax;
    desks.desk[desks.current].current_area_y = ay;
-   /* set gnome hints up for it */
-   GNOME_SetCurrentArea();
+   /* set hints up for it */
+   HintsSetDesktopViewport();
    XSync(disp, False);
    /* redraw any windows that were in "move mode" */
    mode.moveresize_pending_ewin = NULL;
@@ -528,7 +528,7 @@ MoveEwinToArea(EWin * ewin, int ax, int ay)
 	    ewin->y + (root.h * (ay - ewin->area_y)));
    ewin->area_x = ax;
    ewin->area_y = ay;
-   GNOME_SetEwinArea(ewin);
+   HintsSetWindowArea(ewin);
    EDBUG_RETURN_;
 }
 
@@ -538,7 +538,7 @@ SetEwinToCurrentArea(EWin * ewin)
    EDBUG(4, "SetEwinToCurrentArea");
    ewin->area_x = desks.desk[ewin->desktop].current_area_x;
    ewin->area_y = desks.desk[ewin->desktop].current_area_y;
-   GNOME_SetEwinArea(ewin);
+   HintsSetWindowArea(ewin);
    EDBUG_RETURN_;
 }
 

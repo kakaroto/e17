@@ -23,25 +23,6 @@
  */
 #include "E.h"
 
-#define WIN_LAYER_DESKTOP                0
-#define WIN_LAYER_BELOW                  2
-#define WIN_LAYER_NORMAL                 4
-#define WIN_LAYER_ONTOP                  6
-#define WIN_LAYER_DOCK                   8
-#define WIN_LAYER_ABOVE_DOCK             10
-#define WIN_LAYER_MENU                   12
-
-#define WIN_STATE_STICKY          (1<<0)	/* everyone knows sticky */
-#define WIN_STATE_RESERVED_BIT1   (1<<1)	/* removed minimize here */
-#define WIN_STATE_MAXIMIZED_VERT  (1<<2)	/* window in maximized V state */
-#define WIN_STATE_MAXIMIZED_HORIZ (1<<3)	/* window in maximized H state */
-#define WIN_STATE_HIDDEN          (1<<4)	/* not on taskbar but window visible */
-#define WIN_STATE_SHADED          (1<<5)	/* shaded (NeXT style) */
-#define WIN_STATE_HID_WORKSPACE   (1<<6)	/* not on current desktop */
-#define WIN_STATE_HID_TRANSIENT   (1<<7)	/* owner of transient is hidden */
-#define WIN_STATE_FIXED_POSITION  (1<<8)	/* window is fixed in position even */
-#define WIN_STATE_ARRANGE_IGNORE  (1<<9)	/* ignore for auto arranging */
-
 static ToolTip     *ttip = NULL;
 struct _mdata
 {
@@ -118,19 +99,19 @@ HandleClientMessage(XEvent * ev)
 {
    EWin               *ewin;
 
-   static Atom         a1 = 0, a2 = 0, a3 = 0, a4 = 0, a5 = 0, a6 = 0;
+   static Atom         a1 = 0, a6 = 0;
+#if DEBUG_EWMH
+   char *name = XGetAtomName(disp, ev->xclient.message_type);
+   printf("HandleClientMessage: ev_type=%s(%d) ev_win=%#x data[0-3]= %08x %08x %08x %08x\n",
+           name, ev->xclient.message_type, ev->xclient.window,
+           ev->xclient.data.l[0], ev->xclient.data.l[1],
+           ev->xclient.data.l[2], ev->xclient.data.l[3]);
+    XFree(name);
+#endif
 
    EDBUG(5, "HandleClientMessage");
    if (!a1)
       a1 = XInternAtom(disp, "ENL_MSG", False);
-   if (!a2)
-      a2 = XInternAtom(disp, "_WIN_AREA", False);
-   if (!a3)
-      a3 = XInternAtom(disp, "_WIN_WORKSPACE", False);
-   if (!a4)
-      a4 = XInternAtom(disp, "_WIN_LAYER", False);
-   if (!a5)
-      a5 = XInternAtom(disp, "_WIN_STATE", False);
    if (!a6)
       a6 = XInternAtom(disp, "WM_CHANGE_STATE", False);
    if (ev->xclient.message_type == a1)
@@ -138,104 +119,31 @@ HandleClientMessage(XEvent * ev)
 	HandleComms(ev);
 	EDBUG_RETURN_;
      }
-   if (ev->xclient.message_type == a2)
-     {
-	SetCurrentArea(ev->xclient.data.l[0], ev->xclient.data.l[1]);
-	EDBUG_RETURN_;
-     }
-   if (ev->xclient.message_type == a3)
-     {
-	GotoDesktop(ev->xclient.data.l[0]);
-	EDBUG_RETURN_;
-     }
-   if (ev->xclient.message_type == a4)
-     {
-	ewin =
-	   FindItem(NULL, ev->xclient.window, LIST_FINDBY_ID, LIST_TYPE_EWIN);
-	if (ewin)
-	  {
-	     ewin->layer = ev->xclient.data.l[0];
-	     XChangeProperty(disp, ewin->win, a4, XA_CARDINAL, 32,
-			     PropModeReplace,
-			     (unsigned char *)(&(ev->xclient.data.l[0])), 1);
-	     RaiseEwin(ewin);
-	  }
-	EDBUG_RETURN_;
-     }
-   if (ev->xclient.message_type == a5)
-     {
-	ewin =
-	   FindItem(NULL, ev->xclient.window, LIST_FINDBY_ID, LIST_TYPE_EWIN);
-	if (!ewin)
-	   EDBUG_RETURN_;
-	if (ev->xclient.data.l[0] & WIN_STATE_FIXED_POSITION)
-	  {
-	     if (ev->xclient.data.l[1] & WIN_STATE_FIXED_POSITION)
-		ewin->fixedpos = 1;
-	     else
-		ewin->fixedpos = 0;
-	  }
-	if (ev->xclient.data.l[0] & WIN_STATE_ARRANGE_IGNORE)
-	  {
-	     if (ev->xclient.data.l[1] & WIN_STATE_ARRANGE_IGNORE)
-		ewin->ignorearrange = 1;
-	     else
-		ewin->ignorearrange = 0;
-	  }
-	if ((ev->xclient.data.l[0] & WIN_STATE_STICKY)
-	    && (!ewin->ignorearrange))
-	  {
-	     if (ev->xclient.data.l[1] & WIN_STATE_STICKY)
-	       {
-		  if (!(ewin->sticky))
-		    {
-		       ewin->sticky = 1;
-		       RaiseEwin(ewin);
-		       DrawEwin(ewin);
-		       ApplySclass(FindItem
-				   ("SOUND_WINDOW_STICK", 0, LIST_FINDBY_NAME,
-				    LIST_TYPE_SCLASS));
-		    }
-	       }
-	     else
-	       {
-		  if (ewin->sticky)
-		    {
-		       ewin->sticky = 0;
-		       RaiseEwin(ewin);
-		       DrawEwin(ewin);
-		       ApplySclass(FindItem
-				   ("SOUND_WINDOW_UNSTICK", 0, LIST_FINDBY_NAME,
-				    LIST_TYPE_SCLASS));
-		    }
-	       }
-	  }
-	if (ev->xclient.data.l[0] & WIN_STATE_SHADED)
-	  {
-	     if (ev->xclient.data.l[1] & WIN_STATE_SHADED)
-		ShadeEwin(ewin);
-	     else
-		UnShadeEwin(ewin);
-	  }
-	GNOME_SetHint(ewin);
-	EDBUG_RETURN_;
-     }
    if (ev->xclient.message_type == a6)
      {
 	ewin =
 	   FindItem(NULL, ev->xclient.window, LIST_FINDBY_ID, LIST_TYPE_EWIN);
-	if ((ewin) && (ev->xclient.data.l[0] == IconicState)
-	    && (!(ewin->iconified)))
+	if (ewin == NULL)
+	   EDBUG_RETURN_;
+	if (ev->xclient.data.l[0] == IconicState)
 	  {
-	     IconifyEwin(ewin);
-	     EDBUG_RETURN_;
+	     if (!(ewin->iconified))
+		IconifyEwin(ewin);
 	  }
+#if 0
+	else if (ev->xclient.data.l[0] == NormalState)
+	  {
+	     if (ewin->iconified)
+		DeIconifyEwin(ewin);
+	  }
+	HintsSetWindowState(ewin);
+#endif
+	EDBUG_RETURN_;
      }
-   if (mode.kde_support)
-      KDE_ProcessClientMessage(&(ev->xclient));
+
+   HintsProcessClientMessage(&(ev->xclient));
 
    EDBUG_RETURN_;
-
 }
 
 void
@@ -300,7 +208,7 @@ HandleFocusWindow(Window win)
 	  {
 	     if (!found_ewin)
 		ICCCM_Cmap(NULL);
-	     if (found_ewin)
+	     else if (!(found_ewin->focusclick))
 		FocusToEWin(found_ewin);
 	     mode.mouse_over_win = found_ewin;
 	  }
@@ -1170,8 +1078,10 @@ HandleDestroy(XEvent * ev)
 
    mode.context_win = win;
 
+#if ENABLE_KDE
    if (mode.kde_support)
       KDE_RemoveModule(win);
+#endif
 
    if (ewin)
      {
@@ -1221,7 +1131,7 @@ HandleDestroy(XEvent * ev)
 	   DockDestroy(ewin);
 	DesktopRemoveEwin(ewin);
 	FreeEwin(ewin);
-	GNOME_SetClientList();
+	HintsSetClientList();
 	EDBUG_RETURN_;
      }
    c = FindItem(NULL, win, LIST_FINDBY_ID, LIST_TYPE_CLIENT);
@@ -1254,13 +1164,9 @@ HandleProperty(XEvent * ev)
 	if (ewin->client.title)
 	   strncpy(title, ewin->client.title, 10240);
 	desktop = ewin->desktop;
-	GNOME_GetHintDesktop(ewin, ev->xproperty.atom);
+	HintsProcessPropertyChange(ewin, ev->xproperty.atom);
 	if ((desktop != ewin->desktop) && (!ewin->sticky))
 	   MoveEwinToDesktop(ewin, ewin->desktop);
-	GNOME_GetHintIcons(ewin, ev->xproperty.atom);
-	GNOME_GetHintAppState(ewin, ev->xproperty.atom);
-	GNOME_GetExpandedSize(ewin, ev->xproperty.atom);
-	GNOME_GetHint(ewin, ev->xproperty.atom);
 	ICCCM_GetTitle(ewin, ev->xproperty.atom);
 	ICCCM_GetHints(ewin, ev->xproperty.atom);
 	ICCCM_GetInfo(ewin, ev->xproperty.atom);
@@ -1268,15 +1174,19 @@ HandleProperty(XEvent * ev)
 	ICCCM_GetGeoms(ewin, ev->xproperty.atom);
 	SessionGetInfo(ewin, ev->xproperty.atom);
 	SyncBorderToEwin(ewin);
+#if ENABLE_KDE
 	if (mode.kde_support)
 	   KDE_ClientChange(win, ev->xproperty.atom);
+#endif
 	if (ewin->client.title)
 	   if (strncmp(title, ewin->client.title, 10240))
 	     {
 		UpdateBorderInfo(ewin);
 		CalcEwinSizes(ewin);
+#if ENABLE_KDE
 		if (mode.kde_support)
 		   KDE_UpdateClient(ewin);
+#endif
 	     }
 	if ((ewin->iconified) && (pm != ewin->client.icon_pmap))
 	  {
@@ -1308,15 +1218,19 @@ HandleProperty(XEvent * ev)
    else if (win == root.win)
      {
 	/* we're in the root window, not in a client */
+#if ENABLE_KDE
 	if (mode.kde_support)
 	  {
 	     KDE_HintChange(ev->xproperty.atom);
 	  }
+#endif
      }
+#if ENABLE_KDE
    else if (mode.kde_support)
      {
 	KDE_ClientChange(win, ev->xproperty.atom);
      }
+#endif
    EDBUG_RETURN_;
 }
 
@@ -1399,7 +1313,7 @@ HandleReparent(XEvent * ev)
 	     if ((mode.slideout) && (ewin == mode.ewin))
 		HideSlideout(mode.slideout, mode.context_win);
 	     FreeEwin(ewin);
-	     GNOME_SetClientList();
+	     HintsSetClientList();
 	  }
      }
    EDBUG_RETURN_;
@@ -1606,7 +1520,7 @@ HandleUnmap(XEvent * ev)
 	     RemoveItem(NULL, ewin->client.win, LIST_FINDBY_ID, LIST_TYPE_EWIN);
 	     DesktopRemoveEwin(ewin);
 	     FreeEwin(ewin);
-	     GNOME_SetClientList();
+	     HintsSetClientList();
 	  }
 	else
 	   HideEwin(ewin);
@@ -1631,7 +1545,8 @@ HandleMapRequest(XEvent * ev)
    else
      {
 	AddToFamily(ev->xmap.window);
-	GNOME_SetClientList();
+	HintsSetClientList();
+#if ENABLE_KDE
 	if (mode.kde_support)
 	  {
 	     EWin               *ewin;
@@ -1639,8 +1554,8 @@ HandleMapRequest(XEvent * ev)
 	     ewin =
 		FindItem(NULL, ev->xmap.window, LIST_FINDBY_ID, LIST_TYPE_EWIN);
 	     KDE_NewWindow(ewin);
-
 	  }
+#endif
      }
    EDBUG_RETURN_;
 }

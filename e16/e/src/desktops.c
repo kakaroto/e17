@@ -183,12 +183,7 @@ ChangeNumberOfDesktops(int quantity)
    if (desks.current >= mode.numdesktops)
       GotoDesktop(mode.numdesktops - 1);
 
-   GNOME_SetDeskCount();
-   GNOME_SetDeskNames();
-
-   if (mode.kde_support)
-      KDE_SetNumDesktops();
-
+   HintsSetDesktopConfig();
 }
 
 void
@@ -1360,7 +1355,7 @@ ConformEwinToDesktop(EWin * ewin)
 			ewin->y);
 	ICCCM_Configure(ewin);
 	StackDesktops();
-	GNOME_SetEwinDesk(ewin);
+	HintsSetWindowDesktop(ewin);
 	EDBUG_RETURN_;
      }
    if (ewin->floating)
@@ -1377,7 +1372,7 @@ ConformEwinToDesktop(EWin * ewin)
 	XRaiseWindow(disp, ewin->win);
 	ShowEdgeWindows();
 	ICCCM_Configure(ewin);
-	GNOME_SetEwinDesk(ewin);
+	HintsSetWindowDesktop(ewin);
 	EDBUG_RETURN_;
      }
    if (ewin->parent != desks.desk[ewin->desktop].win)
@@ -1389,7 +1384,8 @@ ConformEwinToDesktop(EWin * ewin)
 	RaiseEwin(ewin);
 /*      ShowEwin(ewin); */
 	ICCCM_Configure(ewin);
-	GNOME_SetEwinDesk(ewin);
+/*	HintsSetWindowDesktop(ewin); */
+	HintsSetWindowHints(ewin);
 	StackDesktops();
 	SetEwinToCurrentArea(ewin);
      }
@@ -1440,8 +1436,8 @@ MoveStickyWindowsToCurrentDesk(void)
 		  XLowerWindow(disp, ewin->win);
 		  EMoveWindow(disp, ewin->win, ewin->x, ewin->y);
 		  DesktopAddEwinToTop(ewin);
-		  GNOME_SetEwinArea(ewin);
-		  GNOME_SetEwinDesk(ewin);
+		  HintsSetWindowArea(ewin);
+		  HintsSetWindowDesktop(ewin);
 		  last_ewin = ewin;
 	       }
 	  }
@@ -1520,10 +1516,7 @@ GotoDesktop(int num)
    desks.current = num;
    MoveStickyWindowsToCurrentDesk();
 
-   GNOME_SetCurrentDesk();
-
-   if (mode.kde_support)
-      KDE_SetRootArea();
+   HintsSetCurrentDesktop();
 
    if (num > 0)
      {
@@ -1760,7 +1753,7 @@ RaiseDesktop(int num)
    ForceUpdatePagersForDesktop(num);
    UpdatePagerSel();
    HandleDrawQueue();
-   GNOME_SetCurrentDesk();
+   HintsSetCurrentDesktop();
    EMapWindow(disp, desks.desk[num].win);
    XSync(disp, False);
 
@@ -1791,7 +1784,7 @@ LowerDesktop(int num)
    ForceUpdatePagersForDesktop(deskorder[0]);
    UpdatePagerSel();
    HandleDrawQueue();
-   GNOME_SetCurrentDesk();
+   HintsSetCurrentDesktop();
    XSync(disp, False);
 
    EDBUG_RETURN_;
@@ -2012,8 +2005,6 @@ MoveEwinToDesktop(EWin * ewin, int num)
      }
    ForceUpdatePagersForDesktop(pdesk);
    ForceUpdatePagersForDesktop(ewin->desktop);
-   if (mode.kde_support)
-      KDE_UpdateClient(ewin);
    EDBUG_RETURN_;
 }
 

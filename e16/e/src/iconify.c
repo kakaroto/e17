@@ -272,14 +272,14 @@ IconifyEwin(EWin * ewin)
 			       FocusToEWin(NULL);
 			 }
 		    }
-		  GNOME_SetClientList();
+		  HintsSetClientList();
 		  Efree(lst);
 	       }
 	  }
      }
    call_depth--;
 
-   KDE_UpdateClient(ewin);
+   HintsSetWindowState(ewin);
    EDBUG_RETURN_;
 }
 
@@ -347,16 +347,15 @@ DeIconifyEwin(EWin * ewin)
 			    lst[i]->iconified = 0;
 			 }
 		    }
-		  GNOME_SetClientList();
+		  HintsSetClientList();
 		  Efree(lst);
 	       }
 	  }
      }
    call_depth--;
 
-   KDE_UpdateClient(ewin);
+   HintsSetWindowState(ewin);
    EDBUG_RETURN_;
-
 }
 
 void

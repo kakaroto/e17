@@ -1786,6 +1786,7 @@ SettingsTooltips(void)
    ShowDialog(d);
 }
 
+#if ENABLE_KDE
 static char         tmp_kde;
 static void         CB_ConfigureKDE(int val, void *data);
 static void
@@ -1868,6 +1869,7 @@ SettingsKDE(void)
    DialogBindKey(d, "Return", CB_ConfigureKDE, 0, d);
    ShowDialog(d);
 }
+#endif
 
 static char         tmp_dialog_headers;
 static void         CB_ConfigureMiscellaneous(int val, void *data);

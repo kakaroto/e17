@@ -37,6 +37,8 @@
 #include <Imlib.h>
 #include <Fnlib.h>
 
+#define DEBUG_EWMH  0
+
 #define XSync(d, f) \
 {XImage *__xim; \
 __xim = XGetImage(d, root.win, 0, 0, 1, 1, 0xffffffff, ZPixmap); \
@@ -907,6 +909,8 @@ typedef struct _ewin
    char                focusclick;
    char                internal;
    char                neverfocus;
+   char                neverraise;
+   int                 ewmh_flags;
    Menu               *menu;
    Window              shownmenu;
    Dialog             *dialog;
@@ -921,7 +925,9 @@ typedef struct _ewin
    Snapshot           *snap;
    int                 icon_pmap_w, icon_pmap_h;
    Pixmap              icon_pmap, icon_mask;
+#if ENABLE_KDE
    char                kde_hint;
+#endif
    int                 head;
 }
 EWin;
@@ -1271,12 +1277,14 @@ typedef struct _emode
    char                nogroup;
    GroupConfig         group_config;
    char                group_swapmove;
+#if ENABLE_KDE
    Window              kde_dock;
    int                 kde_support;
    int                 kde_x1;
    int                 kde_x2;
    int                 kde_y1;
    int                 kde_y2;
+#endif
    char                clickalways;
    char                keybinds_changed;
    char                firsttime;
@@ -1743,6 +1751,7 @@ typedef struct _drawqueue
 }
 DrawQueue;
 
+#if ENABLE_KDE
 /* some kde hint enums here */
 
 typedef enum
@@ -1765,6 +1774,7 @@ typedef enum
    IconChange
 }
 KMessage;
+#endif
 
 /* only used for remember list dialog callback funcs (SettingsDialog()
  * in in settings.c)... snaps are attached to windows, not a global list */
@@ -2360,6 +2370,7 @@ void                setSimpleHint(Window win, Atom atom, long value);
 long               *getSimpleHint(Window win, Atom atom);
 void                deleteHint(Window win, Atom atom);
 
+#if ENABLE_GNOME
 /* gnome.c functions */
 void                GNOME_GetHintIcons(EWin * ewin, Atom atom_change);
 void                GNOME_SetCurrentDesk(void);
@@ -2383,7 +2394,10 @@ void                GNOME_SetCurrentArea(void);
 void                GNOME_SetAreaCount(void);
 void                GNOME_SetWMNameVer(void);
 void                GNOME_DelHints(EWin * ewin);
+void                GNOME_ProcessClientMessage(XClientMessageEvent * event);
+#endif
 
+#if ENABLE_KDE
 /* kde.c functions */
 void                KDE_ClientMessage(Window win, Atom atom, long data,
 
@@ -2410,6 +2424,44 @@ void                KDE_SetNumDesktops(void);
 void                KDE_NewWindow(EWin * ewin);
 void                KDE_RemoveWindow(EWin * ewin);
 void                KDE_UpdateClient(EWin * ewin);
+#endif
+
+#if ENABLE_EWMH
+/* ewmh.c functions */
+void                EWMH_Init(void);
+void                EWMH_SetDesktopCount(void);
+void                EWMH_SetDesktopNames(void);
+void                EWMH_SetDesktopSize(void);
+void                EWMH_SetCurrentDesktop(void);
+void                EWMH_SetDesktopViewport(void);
+void                EWMH_SetClientList(void);
+void                EWMH_SetActiveWindow(void);
+void                EWMH_SetWindowDesktop(const EWin *ewin);
+void                EWMH_SetWindowState(const EWin *ewin);
+void                EWMH_GetWindowDesktop(EWin *ewin);
+void                EWMH_GetWindowState(EWin *ewin);
+void                EWMH_GetWindowHints(EWin *ewin);
+void                EWMH_DelWindowHints(const EWin *ewin);
+void                EWMH_ProcessClientMessage(XClientMessageEvent * event);
+void                EWMH_ProcessPropertyChange(EWin *ewin, Atom atom_change);
+#endif
+
+/* hints.c functions */
+void                HintsInit(void);
+void                HintsSetDesktopConfig(void);
+void                HintsSetViewportConfig(void);
+void                HintsSetCurrentDesktop(void);
+void                HintsSetDesktopViewport(void);
+void                HintsSetClientList(void);
+void                HintsSetActiveWindow(void);
+void                HintsSetWindowDesktop(EWin *ewin);
+void                HintsSetWindowArea(EWin *ewin);
+void                HintsSetWindowState(EWin *ewin);
+void                HintsSetWindowHints(EWin *ewin);
+void                HintsGetWindowHints(EWin *ewin);
+void                HintsDelWindowHints(EWin *ewin);
+void                HintsProcessPropertyChange(EWin *ewin, Atom atom_change);
+void                HintsProcessClientMessage(XClientMessageEvent *event);
 
 /* sound.c functions */
 Sample             *LoadWav(char *file);

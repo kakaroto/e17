@@ -796,7 +796,10 @@ Config_Control(FILE * ConfigFile)
 	     sscanf(s, "%*s %d %d ", &mode.dockstartx, &mode.dockstarty);
 	     break;
 	  case CONTROL_KDESUPPORT:
+#if ENABLE_KDE
+	     /* Taking out the case causes complaints when starting with old config. */
 	     mode.kde_support = i2;
+#endif
 	     break;
 	  case CONTROL_SHOWROOTTOOLTIP:
 	     mode.showroottooltip = i2;
@@ -3895,7 +3898,9 @@ SaveUserControlConfig(FILE * autosavefile)
 	fprintf(autosavefile, "1364 %i\n", (int)mode.group_config.shade);
 	fprintf(autosavefile, "1365 %i\n", (int)mode.group_config.mirror);
 	fprintf(autosavefile, "1372 %i\n", (int)mode.group_swapmove);
+#if ENABLE_KDE
 	fprintf(autosavefile, "1366 %i\n", (int)mode.kde_support);
+#endif
 	fprintf(autosavefile, "1367 %i\n", (int)mode.clickalways);
 	fprintf(autosavefile, "1368 %i\n", (int)mode.showroottooltip);
 	fprintf(autosavefile, "1369 %i %i %i\n", (int)mode.pager_sel_button,

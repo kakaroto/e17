@@ -1467,6 +1467,7 @@ doCleanup(void *params)
 	       }
 	     Efree(blst);
 	  }
+#if ENABLE_KDE
 	if (mode.kde_support)
 	  {
 	     fixed = Erealloc(fixed, sizeof(RectBox) * (k + 2));
@@ -1514,6 +1515,7 @@ doCleanup(void *params)
 	     k++;
 
 	  }
+#endif
 	ArrangeRects(fixed, k, floating, j, ret, 0, 0, root.w, root.h, method,
 		     0);
 	for (i = 0; i < (j + k); i++)
@@ -1750,7 +1752,6 @@ doStick(void *params)
 		 && ((curr_group && !curr_group->cfg.mirror) || !sticky))
 	   MakeWindowSticky(gwins[i]);
 	params = NULL;
-	GNOME_SetHint(gwins[i]);
 	RememberImportantInfoForEwin(gwins[i]);
      }
    Efree(gwins);
@@ -1792,8 +1793,8 @@ doSkipLists(void *params)
    ewin->skipwinlist = !(skip);
    ewin->skipfocus = !(skip);
    params = NULL;
-   GNOME_SetHint(ewin);
-   GNOME_SetClientList();
+   HintsSetWindowState(ewin);
+   HintsSetClientList();
    RememberImportantInfoForEwin(ewin);
 
    EDBUG_RETURN(0);
@@ -1821,8 +1822,8 @@ doSkipTask(void *params)
 
    ewin->skiptask = !(skiptask);
    params = NULL;
-   GNOME_SetHint(ewin);
-   GNOME_SetClientList();
+   HintsSetWindowState(ewin);
+   HintsSetClientList();
    RememberImportantInfoForEwin(ewin);
 
    EDBUG_RETURN(0);
@@ -1851,7 +1852,7 @@ doSkipFocus(void *params)
    ewin->skipfocus = !(skipfocus);
 
    params = NULL;
-   GNOME_SetHint(ewin);
+   HintsSetWindowState(ewin);
    RememberImportantInfoForEwin(ewin);
    EDBUG_RETURN(0);
 }
@@ -1878,7 +1879,7 @@ doSkipWinList(void *params)
 
    ewin->skipwinlist = !(skipwinlist);
    params = NULL;
-   GNOME_SetHint(ewin);
+   HintsSetWindowState(ewin);
    RememberImportantInfoForEwin(ewin);
    EDBUG_RETURN(0);
 }
@@ -1905,7 +1906,7 @@ doNeverFocus(void *params)
 
    ewin->neverfocus = !(neverfocus);
    params = NULL;
-   GNOME_SetHint(ewin);
+   HintsSetWindowState(ewin);
    RememberImportantInfoForEwin(ewin);
    EDBUG_RETURN(0);
 }
@@ -3112,6 +3113,7 @@ doSetLayer(void *params)
      }
    ewin->layer = l;
    RaiseEwin(ewin);
+   HintsSetWindowState(ewin);
    RememberImportantInfoForEwin(ewin);
    EDBUG_RETURN(0);
 }
@@ -3458,8 +3460,10 @@ doConfigure(void *params)
 	   SettingsAutoRaise();
 	else if (!strcmp(s, "tooltips"))
 	   SettingsTooltips();
+#if ENABLE_KDE
 	else if (!strcmp(s, "kde"))
 	   SettingsKDE();
+#endif
 	else if (!strcmp(s, "audio"))
 	   SettingsAudio();
 	else if (!strcmp(s, "fx"))

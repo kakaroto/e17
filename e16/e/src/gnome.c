@@ -769,3 +769,104 @@ GNOME_SetHints(void)
    GNOME_SetWMCheck();
    EDBUG_RETURN_;
 }
+
+
+void
+GNOME_ProcessClientMessage(XClientMessageEvent * event)
+{
+   static Atom a2 = 0, a3 = 0, a4 = 0, a5 = 0;
+
+   EWin *ewin;
+
+   if (!a2)
+      a2 = XInternAtom(disp, "_WIN_AREA", False);
+   if (!a3)
+      a3 = XInternAtom(disp, "_WIN_WORKSPACE", False);
+   if (!a4)
+      a4 = XInternAtom(disp, "_WIN_LAYER", False);
+   if (!a5)
+      a5 = XInternAtom(disp, "_WIN_STATE", False);
+
+   if (event->message_type == a2)
+     {
+	SetCurrentArea(event->data.l[0], event->data.l[1]);
+	EDBUG_RETURN_;
+     }
+   if (event->message_type == a3)
+     {
+	GotoDesktop(event->data.l[0]);
+	EDBUG_RETURN_;
+     }
+   if (event->message_type == a4)
+     {
+	ewin =
+	   FindItem(NULL, event->window, LIST_FINDBY_ID, LIST_TYPE_EWIN);
+	if (ewin)
+	  {
+	     ewin->layer = event->data.l[0];
+	     XChangeProperty(disp, ewin->win, a4, XA_CARDINAL, 32,
+			     PropModeReplace,
+			     (unsigned char *)(&(event->data.l[0])), 1);
+	     RaiseEwin(ewin);
+	  }
+	EDBUG_RETURN_;
+     }
+   if (event->message_type == a5)
+     {
+	ewin =
+	   FindItem(NULL, event->window, LIST_FINDBY_ID, LIST_TYPE_EWIN);
+	if (!ewin)
+	   EDBUG_RETURN_;
+	if (event->data.l[0] & WIN_STATE_FIXED_POSITION)
+	  {
+	     if (event->data.l[1] & WIN_STATE_FIXED_POSITION)
+		ewin->fixedpos = 1;
+	     else
+		ewin->fixedpos = 0;
+	  }
+	if (event->data.l[0] & WIN_STATE_ARRANGE_IGNORE)
+	  {
+	     if (event->data.l[1] & WIN_STATE_ARRANGE_IGNORE)
+		ewin->ignorearrange = 1;
+	     else
+		ewin->ignorearrange = 0;
+	  }
+	if ((event->data.l[0] & WIN_STATE_STICKY)
+	    && (!ewin->ignorearrange))
+	  {
+	     if (event->data.l[1] & WIN_STATE_STICKY)
+	       {
+		  if (!(ewin->sticky))
+		    {
+		       ewin->sticky = 1;
+		       RaiseEwin(ewin);
+		       DrawEwin(ewin);
+		       ApplySclass(FindItem
+				   ("SOUND_WINDOW_STICK", 0, LIST_FINDBY_NAME,
+				    LIST_TYPE_SCLASS));
+		    }
+	       }
+	     else
+	       {
+		  if (ewin->sticky)
+		    {
+		       ewin->sticky = 0;
+		       RaiseEwin(ewin);
+		       DrawEwin(ewin);
+		       ApplySclass(FindItem
+				   ("SOUND_WINDOW_UNSTICK", 0, LIST_FINDBY_NAME,
+				    LIST_TYPE_SCLASS));
+		    }
+	       }
+	  }
+	if (event->data.l[0] & WIN_STATE_SHADED)
+	  {
+	     if (event->data.l[1] & WIN_STATE_SHADED)
+		ShadeEwin(ewin);
+	     else
+		UnShadeEwin(ewin);
+	  }
+	HintsSetWindowState(ewin);
+	EDBUG_RETURN_;
+     }
+}

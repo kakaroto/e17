@@ -78,7 +78,9 @@ void                IPC_ListClassMembers(char *params, Client * c);
 void                IPC_GeneralInfo(char *params, Client * c);
 void                IPC_Modules(char *params, Client * c);
 void                IPC_DockConfig(char *params, Client * c);
+#if ENABLE_KDE
 void                IPC_KDE(char *params, Client * c);
+#endif
 void                IPC_MemDebug(char *params, Client * c);
 void                IPC_Remember(char *params, Client * c);
 void                IPC_CurrentTheme(char *params, Client * c);
@@ -512,11 +514,13 @@ IPCStruct           IPCArray[] = {
     "  group <groupid> stick <on/off/?>\n"
     "  group <groupid> shade <on/off/?>\n"
     "  group <groupid> mirror <on/off/?>\n"},
+#if ENABLE_KDE
    {
     IPC_KDE,
     "kde",
     "Turns on and off KDE support",
     "use \"kde on\" and \"kde off\" to enable/disable support"},
+#endif
    {
     IPC_MemDebug,
     "dump_mem_debug",
@@ -747,6 +751,7 @@ IPC_Remember(char *params, Client * c)
    return;
 }
 
+#if ENABLE_KDE
 void
 IPC_KDE(char *params, Client * c)
 {
@@ -790,6 +795,7 @@ IPC_KDE(char *params, Client * c)
       CommsSend(c, buf);
    return;
 }
+#endif
 
 void
 IPC_Modules(char *params, Client * c)

@@ -666,6 +666,7 @@ AddToFamily(Window win)
 		  newrect.w = ewin->w;
 		  newrect.h = ewin->h;
 		  newrect.p = ewin->layer;
+#if ENABLE_KDE
 		  if (mode.kde_support)
 		    {
 		       ArrangeRects(fixed, j, &newrect, 1, ret, mode.kde_x1,
@@ -675,9 +676,12 @@ AddToFamily(Window win)
 		    }
 		  else
 		    {
+#endif
 		       ArrangeRects(fixed, j, &newrect, 1, ret, 0, 0, root.w,
 				    root.h, ARRANGE_BY_SIZE, 1);
+#if ENABLE_KDE
 		    }
+#endif
 		  for (i = 0; i < j + 1; i++)
 		    {
 		       if (ret[i].data == ewin)
@@ -1505,12 +1509,13 @@ Adopt(Window win)
    ICCCM_GetInfo(ewin, 0);
    ICCCM_GetColormap(ewin);
    ICCCM_GetShapeInfo(ewin);
-   GNOME_GetHints(ewin, 0);
+/* HintsGetWindowHints(ewin); */
    ICCCM_GetGeoms(ewin, 0);
    SessionGetInfo(ewin, 0);
    MatchEwinToSM(ewin);
    MatchEwinToSnapInfo(ewin);
    ICCCM_GetEInfo(ewin);
+   HintsGetWindowHints(ewin);
    if (!ewin->border)
       SetEwinBorder(ewin);
 
@@ -1690,6 +1695,7 @@ CreateEwin()
    ewin->skipwinlist = 0;
    ewin->skipfocus = 0;
    ewin->neverfocus = 0;
+   ewin->neverraise = 0;
    ewin->focusclick = 0;
    ewin->internal = 0;
    ewin->menu = NULL;
@@ -1708,7 +1714,9 @@ CreateEwin()
    ewin->snap = NULL;
    ewin->icon_pmap = 0;
    ewin->icon_mask = 0;
+#if ENABLE_KDE
    ewin->kde_hint = 0;
+#endif
 
    att.event_mask =
       StructureNotifyMask | ResizeRedirectMask | ButtonPressMask |
@@ -1785,10 +1793,7 @@ FreeEwin(EWin * ewin)
    if (mode.context_ewin == ewin)
       mode.context_ewin = NULL;
 
-   GNOME_DelHints(ewin);
-
-   if (mode.kde_support)
-      KDE_RemoveWindow(ewin);
+   HintsDelWindowHints(ewin);
 
    if (ewin->client.transient)
      {
@@ -2063,7 +2068,7 @@ DetermineEwinArea(EWin * ewin)
        (desks.desk[ewin->desktop].current_area_y * root.h)) / root.h;
    if ((pax != ewin->area_x) || (pay != ewin->area_y))
      {
-	GNOME_SetEwinArea(ewin);
+	HintsSetWindowArea(ewin);
      }
    EDBUG_RETURN_;
 }
@@ -2408,6 +2413,7 @@ RestackEwin(EWin * ewin)
 	PagerEwinOutsideAreaUpdate(ewin);
 	ForceUpdatePagersForDesktop(ewin->desktop);
      }
+   HintsSetClientList();
    EDBUG_RETURN_;
 }
 
@@ -2420,6 +2426,10 @@ RaiseEwin(EWin * ewin)
    call_depth++;
    if (call_depth > 256)
       EDBUG_RETURN_;
+
+   if (ewin->neverraise)
+      EDBUG_RETURN_;
+	
    if (ewin->win)
      {
 	if (ewin->floating)
@@ -2838,7 +2848,7 @@ InstantShadeEwin(EWin * ewin)
      }
    PropagateShapes(ewin->win);
    queue_up = pq;
-   GNOME_SetHint(ewin);
+   HintsSetWindowState(ewin);
    if (mode.mode == MODE_NONE)
      {
 	PagerEwinOutsideAreaUpdate(ewin);
@@ -2922,7 +2932,7 @@ InstantUnShadeEwin(EWin * ewin)
      }
    PropagateShapes(ewin->win);
    queue_up = pq;
-   GNOME_SetHint(ewin);
+   HintsSetWindowState(ewin);
    if (mode.mode == MODE_NONE)
      {
 	PagerEwinOutsideAreaUpdate(ewin);
@@ -3188,7 +3198,7 @@ ShadeEwin(EWin * ewin)
 			 ewin->client.win, ShapeBounding, ShapeSet);
    PropagateShapes(ewin->win);
    queue_up = pq;
-   GNOME_SetHint(ewin);
+   HintsSetWindowState(ewin);
    if (mode.mode == MODE_NONE)
      {
 	PagerEwinOutsideAreaUpdate(ewin);
@@ -3459,7 +3469,7 @@ UnShadeEwin(EWin * ewin)
 			 ewin->client.win, ShapeBounding, ShapeSet);
    PropagateShapes(ewin->win);
    queue_up = pq;
-   GNOME_SetHint(ewin);
+   HintsSetWindowState(ewin);
    if (mode.mode == MODE_NONE)
      {
 	PagerEwinOutsideAreaUpdate(ewin);

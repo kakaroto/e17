@@ -261,8 +261,7 @@ FocusToEWin(EWin * ewin)
      {
 	if (!mode.cur_menu_mode)
 	   mode.context_ewin = ewin;
-	if (mode.kde_support)
-	   KDE_UpdateFocusedWindow();
+	HintsSetActiveWindow();
 	EDBUG_RETURN_;
      }
    /* Never focus a window that's not on the current desktop.  That's just dumb. -- mej */
@@ -282,8 +281,7 @@ FocusToEWin(EWin * ewin)
 	  }
 	if (!mode.cur_menu_mode)
 	   mode.context_ewin = ewin;
-	if (mode.kde_support)
-	   KDE_UpdateFocusedWindow();
+	HintsSetActiveWindow();
 	EDBUG_RETURN_;
      }
    mode.windowdestroy = 0;
@@ -306,8 +304,7 @@ FocusToEWin(EWin * ewin)
 	mode.focuswin = NULL;
 	mode.realfocuswin = NULL;
 	mode.context_ewin = NULL;
-	if (mode.kde_support)
-	   KDE_UpdateFocusedWindow();
+	HintsSetActiveWindow();
 	EDBUG_RETURN_;
      }
    else if (!ewin->menu)
@@ -364,8 +361,7 @@ FocusToEWin(EWin * ewin)
    if (mode.focuswin)
       DoIn("REVERSE_FOCUS_TIMEOUT", 0.5, ReverseTimeout,
 	   mode.focuswin->client.win, NULL);
-   if (mode.kde_support)
-      KDE_UpdateFocusedWindow();
+   HintsSetActiveWindow();
    EDBUG_RETURN_;
 }
 

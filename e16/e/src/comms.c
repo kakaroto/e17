@@ -1546,8 +1546,6 @@ HandleComms(XEvent * ev)
 	     ShowDesktopControls();
 	  }
 	FixFocus();
-	GNOME_SetDeskCount();
-	GNOME_SetDeskNames();
 	GetAreaSize(&ax, &ay);
 	GetCurrentArea(&a, &b);
 	if (a >= ax)
