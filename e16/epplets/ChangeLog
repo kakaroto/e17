@@ -1966,8 +1966,9 @@ Added a timer to E-Mountbox that keeps the display up to date.
 
 -------------------------------------------------------------------------------
 
-Wed Feb 16 09:06:15 PST 2000
-(KainX)
+Sun Feb 27 13:05:15 GMT 2000
+(gilbertt)
 
-Apparently somebody didn't think about what would happen if the textbox were
-empty. :-)
+Epplet-side fix for the "millions of remember requests" bug.
+I'll implement a better fix when I add a new ipc call to e :)
+

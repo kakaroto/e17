@@ -45,6 +45,7 @@ static char        *conf_dir = NULL;
 static char        *epplet_name = NULL;
 static char        *epplet_cfg_file = NULL;
 static int          epplet_instance = 0;
+static int          need_remember = 0;
 
 static int          gad_num = 0;
 static Epplet_gadget *gads = NULL;
@@ -97,9 +98,9 @@ static void         Epplet_unregister_window(Epplet_window win);
 static void         Epplet_window_destroy_children(Epplet_window win);
 static Epplet_window Epplet_window_get_from_Window(Window win);
 static Window       Epplet_internal_create_window(int w, int h,
-
 						  char *title, char vertical,
 						  char decorate);
+static void remember_stuff(void *data);
 
 #define MWM_HINTS_DECORATIONS         (1L << 1)
 typedef struct _mwmhints
@@ -544,6 +545,8 @@ Epplet_Init(char *name,
 
    wmDeleteWindow = XInternAtom(disp, "WM_DELETE_WINDOW", False);
 
+   Epplet_timer (remember_stuff, NULL, 20, "REMEMBER_TIMER");
+   
    sa.sa_handler = Epplet_handle_child;
    sa.sa_flags = SA_RESTART;
    sigemptyset(&sa.sa_mask);
@@ -879,10 +882,21 @@ Epplet_handle_delete_event(Window xwin)
      }
 }
 
+static void remember_stuff(void *data)
+{
+    if(need_remember)                    
+	  Epplet_remember(); 
+    need_remember = 0;
+    Epplet_timer (remember_stuff, NULL, 20, "REMEMBER_TIMER");
+}
+
 void
 Epplet_cleanup(void)
 {
    char                s[1024];
+
+   if(need_remember)
+	 Epplet_remember();
 
    /* remove lock file */
    Esnprintf(s, sizeof(s), "%s/.lock_%i", conf_dir, epplet_instance);
@@ -1593,7 +1607,7 @@ Epplet_prune_events(XEvent * ev, int num)
 	     && (ev->xconfigure.window == mainwin->win))
 	    || ((ev[i].type == PropertyNotify)
 		&& (ev->xproperty.window == mainwin->win)))
-	 Epplet_remember();
+	 need_remember = 1;
 }
 
 void
