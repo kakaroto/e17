@@ -107,6 +107,8 @@ void vorbis_set_current_pos(int pos) {
 }
 
 int plugin_init(InputPlugin *ip) {
+	ip->name = strdup("Vorbis");
+
 	ip->open = vorbis_open;
 	ip->close = ip->shutdown = vorbis_close;
 

@@ -310,66 +310,60 @@ EDJE_CB(switch_group) {
 }
 
 EDJE_CB(update_seeker) {
-  if (!strcmp(emission, "SEEKER_START"))
-  {
-    player->flags.seeker_seeking = 1;
-  }
-  else if (!strcmp(emission, "SEEKER_STOP"))
-  {
-    player->flags.seeker_seeking = 0;
-  }
+	if (!strcmp(emission, "SEEKER_START"))
+		player->flags.seeker_seeking = 1;
+	else if (!strcmp(emission, "SEEKER_STOP"))
+		player->flags.seeker_seeking = 0;
 
-  if (player->flags.seeker_seeking)
-  {
-    PlayListItem *pli = playlist_current_item_get(player->playlist);
-    Evas_Coord x, y, w, h;
-    int ex, ey;
-    double pos;
+	if (!player->flags.seeker_seeking)
+		return;
+	
+	PlayListItem *pli = playlist_current_item_get(player->playlist);
+	Evas_Coord x, y, w, h;
+	int type, ex = 0, ey = 0;
+	double pos;
 
-    if (ecore_event_current_type_get() == ECORE_X_EVENT_MOUSE_MOVE)
-    {
-      Ecore_X_Event_Mouse_Move *event;
+	type = ecore_event_current_type_get();
+
+	if (type == ECORE_X_EVENT_MOUSE_MOVE) {
+		Ecore_X_Event_Mouse_Move *event;
      
-      event = ecore_event_current_event_get();
-      ex = event->x; ey = event->y;
-    }
-    else if (ecore_event_current_type_get() == ECORE_X_EVENT_MOUSE_BUTTON_DOWN)
-    {
-      Ecore_X_Event_Mouse_Button_Down *event;
+		event = ecore_event_current_event_get();
+		ex = event->x;
+		ey = event->y;
+	} else if (type == ECORE_X_EVENT_MOUSE_BUTTON_DOWN) {
+		Ecore_X_Event_Mouse_Button_Down *event;
      
-      event = ecore_event_current_event_get();
-      ex = event->x; ey = event->y;
-    }
+		event = ecore_event_current_event_get();
+		ex = event->x;
+		ey = event->y;
+	}
 
-    edje_object_part_geometry_get(player->gui.edje, "seeker_grabber",
-                                  &x, &y, &w, &h);
+	edje_object_part_geometry_get(player->gui.edje, "seeker_grabber",
+	                              &x, &y, &w, &h);
       
-    pos = ((double)(ex - x)) / ((double)w);
-    if (pos < 0) pos = 0;
-    if (pos > 1) pos = 1;
+	pos = ((double)(ex - x)) / ((double)w);
+	
+	if (pos < 0) pos = 0;
+	if (pos > 1) pos = 1;
 
-    track_position_set(player, (int)(pli->duration * pos));
-  }
+	track_position_set(player, (int)(pli->duration * pos));
 }
 
-int
-_eplayer_seek_timer(void *data)
+int _eplayer_seek_timer(void *data)
 {
-  ePlayer *player = data;
-  PlayListItem *pli = playlist_current_item_get(player->playlist);
-  int new_pos;
+	ePlayer *player = data;
+	PlayListItem *pli = playlist_current_item_get(player->playlist);
+	int new_pos;
 
-  new_pos = pli->current_pos + player->flags.seek_dir;
+	new_pos = pli->current_pos + player->flags.seek_dir;
 
-  if (new_pos <= 0) new_pos = 0;
-  if (new_pos > pli->duration) new_pos = pli->duration;
+	if (new_pos <= 0) new_pos = 0;
+	if (new_pos > pli->duration) new_pos = pli->duration;
 
-  track_position_set(player, new_pos);
+	track_position_set(player, new_pos);
 
-  if (player->flags.seeking)
-    return 1;
-  else
-    return 0;
+	return !!player->flags.seeking;
 }
 
 /* Handle Key Bindings via EVAS Event Callback */

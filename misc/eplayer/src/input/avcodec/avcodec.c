@@ -185,6 +185,8 @@ void avdec_set_current_pos(int pos) {
 }
 
 int plugin_init(InputPlugin *ip) {
+	ip->name = strdup("AVcodec");
+
 	avcodec_init();
 	register_avcodec(&mp3_decoder);
 	av_register_all();

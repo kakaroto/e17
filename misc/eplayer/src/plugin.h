@@ -20,6 +20,7 @@ typedef enum {
 
 typedef struct {
 	void *handle;
+	char *name;
 
 	void (*debug)(DebugLevel level, const char *fmt, ...);
 
@@ -41,6 +42,7 @@ typedef struct {
 
 typedef struct {
 	void *handle;
+	char *name;
 	
 	void (*debug)(DebugLevel level, const char *fmt, ...);
 
@@ -55,7 +57,7 @@ typedef struct {
 	int (*volume_set)(int left, int right);
 } OutputPlugin;
 
-void *plugin_new(const char *name, PluginType type);
+void *plugin_new(const char *file, PluginType type);
 void plugin_free(void *p);
 
 #endif

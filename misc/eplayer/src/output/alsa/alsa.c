@@ -187,6 +187,8 @@ static snd_mixer_t *open_mixer() {
 }
 
 int plugin_init(OutputPlugin *op) {
+	op->name = strdup("ALSA");
+
 	op->configure = alsa_configure;
 	op->play = alsa_play;
 	op->volume_get = alsa_volume_get;

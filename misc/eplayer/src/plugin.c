@@ -1,36 +1,11 @@
 #include <config.h>
 #include <stdlib.h>
-#include <dlfcn.h>
+#include <ltdl.h>
 #include <stdio.h>
 #include <string.h>
 #include <limits.h>
 #include "utils.h"
 #include "plugin.h"
-
-static char *find_plugin(const char *dir, const char *name) {
-	Evas_List *files, *l;
-	char *ret = NULL, tmp[128];
-
-	if (!(files = dir_get_files(dir)))
-		return NULL;
-
-	for (l = files; l; l = l->next) {
-		/* get the plugin name from the filename */
-		sscanf((char *) l->data, "lib%127[^.].so", tmp);
-
-		if (!strcasecmp(name, tmp)) {
-			ret = strdup(l->data);
-			break;
-		}
-	}
-
-	while (files) {
-		free(files->data);
-		files = evas_list_remove(files, files->data);
-	}
-
-	return ret;
-}
 
 /**
  * Creates a new plugin.
@@ -39,52 +14,30 @@ static char *find_plugin(const char *dir, const char *name) {
  * @param type Type of the plugin.
  * @return The newly created plugin.
  */
-void *plugin_new(const char *name, PluginType type) {
+void *plugin_new(const char *file, PluginType type) {
 	InputPlugin *p;
 	int (*init)(void *p), size;
-	char *error, path[PATH_MAX + 1];
-	char *dir, *right_name;
 
-	if (!name || !*name)
+	if (!file || !*file)
 		return NULL;
 
-	if (type == PLUGIN_TYPE_INPUT) {
+	if (type == PLUGIN_TYPE_INPUT)
 		size = sizeof(InputPlugin);
-		dir = PLUGIN_DIR "/input";
-	} else {
+	else
 		size = sizeof(OutputPlugin);
-		dir = PLUGIN_DIR "/output";
-	}
 
 	if (!(p = malloc(size)))
 		return NULL;
 
 	memset(p, 0, size);
 
-	snprintf(path, sizeof(path), "%s/lib%s.so", dir, name);
-	
-	if (!(p->handle = dlopen(path, RTLD_LAZY))) {
-		/* couldn't load plugin, let's try with a
-		 * case-insensitive search
-		 */
-		if (!(right_name = find_plugin(dir, name))) {
-			plugin_free(p);
-			return NULL;
-		}
-
-		snprintf(path, sizeof(path), "%s/%s", dir, right_name);
-		free(right_name);
-
-		if (!(p->handle = dlopen(path, RTLD_LAZY))) {
-			plugin_free(p);
-			return NULL;
-		}
+	if (!(p->handle = lt_dlopenext(file))) {
+		plugin_free(p);
+		return NULL;
 	}
 
 	/* get the address of the init function */
-	init = dlsym(p->handle, "plugin_init");
-
-	if ((error = dlerror())) {
+	if (!(init = lt_dlsym(p->handle, "plugin_init"))) {
 		plugin_free(p);
 		return NULL;
 	}
@@ -114,8 +67,11 @@ void plugin_free(void *plugin) {
 	if (p->shutdown)
 		p->shutdown();
 
+	if (p->name)
+		free(p->name);
+
 	if (p->handle)
-		dlclose(p->handle);
+		lt_dlclose(p->handle);
 
 	free(p);
 }

@@ -1,5 +1,8 @@
 $Id$
 
+2003-01-24 Tilman Sauerbeck <tilman@code-monkey.de>
+        * src/eplayer.c, src/plugin.c: Switched to libltdl
+
 2003-12-28 Tilman Sauerbeck <tilman@code-monkey.de>
         * src/callbacks.c, src/playlist.c, src/interface.c,
           data/README: Added PLAYLIST_ITEM_REMOVE (thanks to atmos).

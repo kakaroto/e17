@@ -4,36 +4,62 @@
 #include <config.h>
 #include <Edje.h>
 #include <Edb.h>
+#include <ltdl.h>
 #include <string.h>
-#include <sys/stat.h>
-#include <dirent.h>
+#include <assert.h>
 #include "eplayer.h"
 #include "interface.h"
 #include "track.h"
 #include "utils.h"
 
-static Evas_List *load_input_plugins() {
-	Evas_List *files, *l, *plugins = NULL;
+static InputPlugin *find_input_plugin (ePlayer *player,
+                                       const char *name) {
 	InputPlugin *ip;
-	char name[128];
+	Evas_List *l;
 
-	if (!(files = dir_get_files(PLUGIN_DIR "/input")))
-		return NULL;
+	assert(player);
+	assert(name);
 
-	for (l = files; l; l = l->next) {
-		/* get the plugin name from the filename */
-		sscanf((char *) l->data, "lib%127[^.].so", name);
-			
-		if ((ip = plugin_new(name, PLUGIN_TYPE_INPUT)))
-			plugins = evas_list_prepend(plugins, ip);
+	for (l = player->input_plugins; l; l = l->next) {
+		ip = l->data;
+
+		if (!strcasecmp(ip->name, name))
+			return ip;
 	}
 
-	while (files) {
-		free(files->data);
-		files = evas_list_remove(files, files->data);
+	return NULL;
+}
+
+static int load_input_plugin (const char *file, lt_ptr udata) {
+	ePlayer *player = udata;
+	InputPlugin *ip;
+
+	if (!(ip = plugin_new(file, PLUGIN_TYPE_INPUT))) {
+		fprintf (stderr, "Cannot load plugin: '%s'\n", file);
+		return 0;
 	}
 
-	return plugins;
+	/* only add this plugin if it hasn't been added yet */
+	if (find_input_plugin(player, ip->name)) {
+		plugin_free(ip);
+		return 0;
+	}
+
+	player->input_plugins = evas_list_append(player->input_plugins, ip);
+
+	return 0;
+}
+
+static int load_input_plugins(ePlayer *player) {
+	char path[PATH_MAX * 2 + 1];
+
+	snprintf(path, sizeof(path), "%s/.e/apps/" PACKAGE "/plugins/input:"
+	         PLUGIN_DIR "/input", getenv("HOME"));
+
+	lt_dlsetsearchpath(path);
+	lt_dlforeachfile(NULL, load_input_plugin, player);
+
+	return (evas_list_count(player->input_plugins) > 0);
 }
 
 static void config_init(Config *cfg) {
@@ -100,6 +126,23 @@ static void eplayer_free(ePlayer *player) {
 	free(player);
 }
 
+static int load_output_plugin(ePlayer *player) {
+	char path[PATH_MAX * 2 + 2], name[64];
+
+	snprintf(path, sizeof(path), "%s/.e/apps/" PACKAGE "/plugins/output:"
+	         PLUGIN_DIR "/output", getenv("HOME"));
+
+	lt_dlsetsearchpath(path);
+
+	if (strncmp(player->cfg.output_plugin, "lib", 3))
+		snprintf(name, sizeof(name), "lib%s",
+		         player->cfg.output_plugin);
+
+	player->output = plugin_new(name, PLUGIN_TYPE_OUTPUT);
+
+	return !!player->output;
+}
+
 static ePlayer *eplayer_new(const char **args) {
 	ePlayer *player;
 	char cfg_file[PATH_MAX + 1];
@@ -127,15 +170,11 @@ static ePlayer *eplayer_new(const char **args) {
 			      "falling back to default settings!\n");
 	}
 
-	player->input_plugins = load_input_plugins();
+	load_input_plugins(player);
 
 	player->playlist = playlist_new(player->input_plugins);
 
-	/* load the output plugin */
-	player->output = plugin_new(player->cfg.output_plugin,
-	                            PLUGIN_TYPE_OUTPUT);
-
-	if (!player->output) {
+	if (!load_output_plugin(player)) {
 		debug(DEBUG_LEVEL_CRITICAL, "Cannot load %s output plugin!\n",
 		      player->cfg.output_plugin);
 
@@ -247,6 +286,8 @@ int main(int argc, const char **argv) {
 		       PACKAGE, VERSION, argv[0]);
 		return 1;
 	}
+
+	lt_dlinit();
 	
 	if (!(player = eplayer_new(argv)))
 		return 1;
@@ -268,6 +309,7 @@ int main(int argc, const char **argv) {
 	eplayer_free(player);
 
 	ui_deinit();
+	lt_dlexit();
 	
 	return 0;
 }

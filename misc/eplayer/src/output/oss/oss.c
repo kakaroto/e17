@@ -5,6 +5,7 @@
 #include <assert.h>
 #include <pthread.h>
 #include <time.h>
+#include <string.h>
 #include <config.h>
 #include "../../plugin.h"
 
@@ -172,6 +173,7 @@ static void open_device () {
 
 int plugin_init(OutputPlugin *p) {
 	op = p;
+	op->name = strdup("OSS");
 
 	op->configure = oss_configure;
 	op->play = oss_play;

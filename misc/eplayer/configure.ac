@@ -52,10 +52,14 @@ AC_PATH_GENERIC(esmart, , ,
 AC_PATH_GENERIC(ewl, , ,
 	AC_MSG_ERROR(Cannot find ewl: Is ewl-config in path?))
 
-dnl Check for libdl
+dnl Check for libltdl
 tmp=$LIBS
-AC_CHECK_HEADERS(dlfcn.h, , AC_MSG_ERROR(Cannot find dlfcn.h))
-AC_CHECK_LIB(dl, dlsym, DL_LIBS="-ldl", AC_MSG_ERROR(Cannot find libdl))
+AC_CHECK_HEADERS(ltdl.h, ,
+	AC_MSG_ERROR(Cannot find ltdl.h))
+
+AC_CHECK_LIB(ltdl, lt_dlsym, DL_LIBS="-lltdl",
+	AC_MSG_ERROR(Cannot find libltdl))
+
 AC_SUBST(DL_LIBS)
 LIBS=$tmp
 

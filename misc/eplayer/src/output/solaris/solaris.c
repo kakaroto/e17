@@ -102,6 +102,8 @@ int solaris_volume_set(int left, int right) {
 }
 
 int plugin_init(OutputPlugin *op) {
+	op->name = strdup("Solaris");
+
 	op->configure = solaris_configure;
 	op->play = solaris_play;
 	op->shutdown = solaris_shutdown;
