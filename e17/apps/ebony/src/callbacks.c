@@ -14,6 +14,8 @@
 extern GtkWidget *colorsel;
 extern GtkWidget *filesel;
 extern GtkWidget *window;
+extern int desk_w;
+extern int desk_h;
 
 int idle = 0;
 int busy = 0;
@@ -217,7 +219,6 @@ on_draw_configure_event                (GtkWidget       *widget,
 {
    if (busy) return FALSE;
    evas_set_output_size(evas, event->width, event->height);
-   evas_set_output_viewport(evas, 0, 0, event->width, event->height);
    DRAW();
    return FALSE;
 }
@@ -692,7 +693,7 @@ on_filesel_ok_clicked                  (GtkButton       *button,
 	     if (background) e_background_free(background);
 	     background = bg;
 	     e_background_realize(background, evas);
-	     e_background_set_size(background, 320, 240);
+	     e_background_set_size(background, desk_w, desk_h);
 	     
 	     set_spin_value("layer_num", 0);
 	     if (bg->layers)

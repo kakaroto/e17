@@ -3,6 +3,9 @@
 Evas evas = NULL;
 E_Background *background = NULL;
 
+extern int desk_w;
+extern int desk_h;
+
 void
 e_update_background(E_Background *bg)
 {
@@ -37,8 +40,10 @@ e_setup_evas(Display *disp, Window win, Visual *vis, Colormap cmap, int w, int h
    evas = evas_new();
    evas_set_output_method(evas, RENDER_METHOD_ALPHA_SOFTWARE);
    evas_set_output(evas, disp, win, vis, cmap);
+   printf("%i %i\n", w, h);
    evas_set_output_size(evas, w, h);
-   evas_set_output_viewport(evas, 0, 0, w, h);
+   printf("%i %i\n", desk_w, desk_h);
+   evas_set_output_viewport(evas, 0, 0, desk_w, desk_h);
    evas_set_font_cache(evas, 512 * 1024 * 1024);
    evas_set_image_cache(evas, 2 * 1024 * 1024);
 

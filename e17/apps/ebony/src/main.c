@@ -19,6 +19,7 @@
 GtkWidget *colorsel;
 GtkWidget *filesel;
 GtkWidget *window;
+int        desk_w = 320, desk_h = 240;
 
 int
 main (int argc, char *argv[])
@@ -45,17 +46,26 @@ main (int argc, char *argv[])
    
   window = create_window ();
      {
-	GtkWidget *w;	
+	GtkWidget *w;
+	int rx, ry, rw, rh, rd;
+	int ww, hh;
+	
+	gdk_window_get_geometry(GDK_ROOT_PARENT(), &rx, &ry, &rw, &rh, &rd);
 	
 	gtk_widget_realize(GTK_WIDGET(window));
 	w = gtk_object_get_data(GTK_OBJECT(window), "draw");
+	ww = 320;
+	hh = (rh * 320) / rw;
+	gtk_widget_set_usize(w, ww, hh);
 	gtk_widget_realize(GTK_WIDGET(w));
+	desk_w = rw;
+	desk_h = rh;
 	e_setup_evas(GDK_WINDOW_XDISPLAY(w->window),
 		     GDK_WINDOW_XWINDOW(w->window),
 		     GDK_VISUAL_XVISUAL(gtk_widget_get_visual(window)),
 		     GDK_COLORMAP_XCOLORMAP(gtk_widget_get_colormap(window)),
 		     w->allocation.width,
-		     w->allocation.height);
+		     w->allocation.height);	
      }
    
      {
@@ -94,11 +104,12 @@ main (int argc, char *argv[])
 	if (background->layers)
 	  display_layer(background->layers->data);
      }
+   
    e_background_realize(background, evas);
-   e_background_set_size(background, 320, 240);
+   e_background_set_size(background, desk_w, desk_h);
    gtk_widget_show (window);
 
-  gtk_main ();
-  return 0;
+   gtk_main ();
+   return 0;
 }
 
