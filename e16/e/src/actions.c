@@ -3016,7 +3016,7 @@ doAbout(void *params)
    }
 
    table = DialogInitItem(d);
-   DialogItemTableSetOptions(table, 1, 0, 0, 0);
+   DialogItemTableSetOptions(table, 2, 0, 0, 0);
 
    di = DialogAddItem(table, DITEM_IMAGE);
    DialogItemSetPadding(di, 2, 2, 2, 2);
