@@ -189,7 +189,9 @@ _key_down_cb(void *data, Evas * e, Evas_Object * o, void *ev)
          if ((!strcmp(evx->keyname, "Control_L"))
              || (!strcmp(evx->keyname, "Control_R"))
              || (!strcmp(evx->keyname, "Shift_R"))
-             || (!strcmp(evx->keyname, "Shift_L")))
+             || (!strcmp(evx->keyname, "Shift_L"))
+             || (!strcmp(evx->keyname, "Alt_R"))
+             || (!strcmp(evx->keyname, "Alt_L")))
          {
             evas_key_modifier_on(e, evx->keyname);
          }
