@@ -250,6 +250,12 @@ progressive_load_cb(Imlib_Image im, char percent, int update_x, int update_y,
       progwin->im_w = feh_imlib_image_get_width(im);
       progwin->im_h = feh_imlib_image_get_height(im);
       winwidget_reset_image(progwin);
+      if(opt.full_screen)
+      {
+         progwin->im_x = (scr->width - progwin->im_w) >> 1;
+         progwin->im_y = (scr->height - progwin->im_h) >> 1;
+      }
+
       /* do we need to create a window for the image? */
       if (!progwin->win)
       {

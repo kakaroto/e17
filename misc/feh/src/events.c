@@ -221,8 +221,16 @@ feh_event_handle_ButtonPress(XEvent * ev)
          winwid->im_click_offset_x = winwid->click_offset_x / winwid->zoom;
          winwid->im_click_offset_y = winwid->click_offset_y / winwid->zoom;
          winwid->zoom = 1.0;
-         winwid->im_x = 0;
-         winwid->im_y = 0;
+         if (opt.full_screen)
+         {
+            winwid->im_x = (scr->width - winwid->im_w) >> 1;
+            winwid->im_y = (scr->height - winwid->im_h) >> 1;
+         }
+         else
+         {
+            winwid->im_x = 0;
+            winwid->im_y = 0;
+         }
          if (winwid->im_click_offset_x < 0)
             winwid->im_click_offset_x = 0;
          if (winwid->im_click_offset_y < 0)
