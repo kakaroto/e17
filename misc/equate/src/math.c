@@ -36,6 +36,15 @@ char
   return buffer;
 }
 
+char
+*math_clear (void)
+{
+  buffer[0] = 0;
+  E (5, "cleared current calculation:\n", NULL);
+  
+  return "0.0";
+}              
+
 char 
 *math_exec (void)
 {

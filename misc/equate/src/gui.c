@@ -14,28 +14,34 @@ typedef struct equate_button
   int height;
   char *text;
   char *cmd;
+  void *callback;
   Ewl_Widget *button;
 } equate_button;
 
+void calc_append (Ewl_Widget * w, void *ev_data, void *user_data);
+void calc_exec (Ewl_Widget * w, void *ev_data, void *user_data);
+void calc_clear (Ewl_Widget * w, void *ev_data, void *user_data);
+
 static equate_button buttons[] = {
-  {2, 1, 1, 1, "/", "/"},
-  {2, 2, 1, 1, "*", "*"},
-  {2, 3, 1, 1, "-", "-"},
-  {2, 4, 1, 1, "+", "+"},
-  {3, 1, 1, 1, "7", "7"},
-  {3, 2, 1, 1, "8", "8"},
-  {3, 3, 1, 1, "9", "9"},
-  {3, 4, 1, 1, "(", "("},
-  {4, 1, 1, 1, "4", "4"},
-  {4, 2, 1, 1, "5", "5"},
-  {4, 3, 1, 1, "6", "6"},
-  {4, 4, 1, 1, ")", ")"},
-  {5, 1, 1, 1, "1", "1"},
-  {5, 2, 1, 1, "2", "2"},
-  {5, 3, 1, 1, "3", "3"},
-  {5, 4, 2, 1, "=", "="},
-  {6, 2, 1, 1, "0", "0"},
-  {6, 3, 1, 1, ".", "."},
+  {2, 1, 1, 1, "/", "/", (void *)calc_append, NULL},
+  {2, 2, 1, 1, "*", "*", (void *)calc_append, NULL},
+  {2, 3, 1, 1, "-", "-", (void *)calc_append, NULL},
+  {2, 4, 1, 1, "+", "+", (void *)calc_append, NULL},
+  {3, 1, 1, 1, "7", "7", (void *)calc_append, NULL},
+  {3, 2, 1, 1, "8", "8", (void *)calc_append, NULL},
+  {3, 3, 1, 1, "9", "9", (void *)calc_append, NULL},
+  {3, 4, 1, 1, "(", "(", (void *)calc_append, NULL},
+  {4, 1, 1, 1, "4", "4", (void *)calc_append, NULL},
+  {4, 2, 1, 1, "5", "5", (void *)calc_append, NULL},
+  {4, 3, 1, 1, "6", "6", (void *)calc_append, NULL},
+  {4, 4, 1, 1, ")", ")", (void *)calc_append, NULL},
+  {5, 1, 1, 1, "1", "1", (void *)calc_append, NULL},
+  {5, 2, 1, 1, "2", "2", (void *)calc_append, NULL},
+  {5, 3, 1, 1, "3", "3", (void *)calc_append, NULL},
+  {5, 4, 2, 1, "=", "=", (void *)calc_exec, NULL},
+  {6, 1, 1, 1, "c", "c", (void *)calc_clear, NULL},
+  {6, 2, 1, 1, "0", "0", (void *)calc_append, NULL},
+  {6, 3, 1, 1, ".", ".", (void *)calc_append, NULL},
 };
 
 void
@@ -55,6 +61,12 @@ void
 calc_exec (Ewl_Widget * w, void *ev_data, void *user_data)
 {
   update_display (math_exec());
+}
+
+void
+calc_clear (Ewl_Widget * w, void *ev_data, void *user_data)
+{
+  update_display (math_clear());
 }
 
 void
@@ -158,11 +170,7 @@ draw_interface (void)
       button[bc] = ewl_button_new (but->text);
       but->button = button[bc];
 
-      if (strcmp ("=", but->cmd))
-	ewl_callback_append (button[bc], EWL_CALLBACK_MOUSE_DOWN, (void *)calc_append,
-			     but->cmd);
-      else
-	ewl_callback_append (button[bc], EWL_CALLBACK_MOUSE_DOWN, (void *)calc_exec,
+	    ewl_callback_append (button[bc], EWL_CALLBACK_MOUSE_DOWN, but->callback,
 			     but->cmd);
 
 
