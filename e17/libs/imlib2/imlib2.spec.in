@@ -42,7 +42,6 @@ Basic set of plugin filters that come with Imlib2
 %package loader_jpeg
 Summary: Imlib2 JPEG loader
 Group: System Environment/Libraries
-Requires: imlib2 = %{PACKAGE_VERSION}
 Requires: libjpeg
 %description loader_jpeg
 JPEG image loader/saver for Imlib2
@@ -50,7 +49,6 @@ JPEG image loader/saver for Imlib2
 %package loader_png
 Summary: Imlib2 PNG loader
 Group: System Environment/Libraries
-Requires: imlib2 = %{PACKAGE_VERSION}
 Requires: libpng
 Requires: zlib
 %description loader_png
@@ -59,7 +57,6 @@ PNG image loader/saver for Imlib2
 %package loader_db
 Summary: Imlib2 DB loader
 Group: System Environment/Libraries
-Requires: imlib2 = %{PACKAGE_VERSION}
 Requires: edb
 %description loader_db
 DB image loader/saver for Imlib2
@@ -67,42 +64,36 @@ DB image loader/saver for Imlib2
 %package loader_argb
 Summary: Imlib2 ARGB loader
 Group: System Environment/Libraries
-Requires: imlib2 = %{PACKAGE_VERSION}
 %description loader_argb
 ARGB image loader/saver for Imlib2
 
 %package loader_bmp
 Summary: Imlib2 BMP loader
 Group: System Environment/Libraries
-Requires: imlib2 = %{PACKAGE_VERSION}
 %description loader_bmp
 BMP image loader/saver for Imlib2
 
 %package loader_gif
 Summary: Imlib2 GIF loader
 Group: System Environment/Libraries
-Requires: imlib2 = %{PACKAGE_VERSION}
 %description loader_gif
 GIF image loader/saver for Imlib2
 
 %package loader_pnm
 Summary: Imlib2 PNM loader
 Group: System Environment/Libraries
-Requires: imlib2 = %{PACKAGE_VERSION}
 %description loader_pnm
 PNM image loader/saver for Imlib2
 
 %package loader_tga
 Summary: Imlib2 TGA loader
 Group: System Environment/Libraries
-Requires: imlib2 = %{PACKAGE_VERSION}
 %description loader_tga
 TGA image loader/saver for Imlib2
 
 %package loader_tiff
 Summary: Imlib2 TIFF loader
 Group: System Environment/Libraries
-Requires: imlib2 = %{PACKAGE_VERSION}
 Requires: libtiff
 %description loader_tiff
 TIFF image loader/saver for Imlib2
@@ -110,7 +101,6 @@ TIFF image loader/saver for Imlib2
 %package loader_xpm
 Summary: Imlib2 XPM loader
 Group: System Environment/Libraries
-Requires: imlib2 = %{PACKAGE_VERSION}
 %description loader_xpm
 XPM image loader/saver for Imlib2
 
