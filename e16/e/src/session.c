@@ -836,6 +836,7 @@ doSMExit(int mode, const char *params)
 
    if (!params)
       SessionSave(1);
+   Real_SaveSnapInfo(0, NULL);
    EHintsSetInfoOnAll();
    EwinsSetFree();
    ModulesSignal(ESIGNAL_EXIT, NULL);

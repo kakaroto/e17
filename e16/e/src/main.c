@@ -361,11 +361,6 @@ EExit(int exitcode)
    if (EventDebug(EDBUG_TYPE_SESSION))
       Eprintf("EExit(%d)\n", exitcode);
 
-#if 0				/* FIXME - Remove? */
-   SessionSave(1);
-#endif
-   Real_SaveSnapInfo(0, NULL);
-
    if (disp)
      {
 	ecore_x_ungrab();
