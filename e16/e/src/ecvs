@@ -45,7 +45,7 @@ if(($ARGV[0] =~ /com/) || ($ARGV[0] =~ /ci/)) {
 	unlink "timestamp.h";
 
 	print "Updating the files you are committing.\n";
-	system("cvs -z3 @ARGV2 2|tee errors");
+	system("cvs -z3 @ARGV2 2>&1 |tee errors");
 
 	open ERRORS, "errors";
 	while(<ERRORS>) {
