@@ -312,7 +312,6 @@ void erss_mouse_click_item (void *data, Evas_Object *o, const char *sig,
 	}
 	
 	snprintf (c, sizeof (c), "%s \"%s\"", rc->browser, item->url);
-	printf ("%s\n", c);
 	ecore_exe_run (c, NULL);
 }
 
