@@ -53,7 +53,8 @@ void       ewl_container_insert(EwlWidget *widget, EwlWidget *child)
 {
 	EwlContainer *container = EWL_CONTAINER(widget);
 	ewl_list_insert(container->children, ewl_list_node_new(child));
-	ewl_event_queue_new("resize", widget);
+	if ewl_widget_is_visible(child)
+		ewl_event_queue_new("resize", widget);
 	return;
 }
 
@@ -61,7 +62,8 @@ void       ewl_container_push(EwlWidget *widget, EwlWidget *child)
 {
 	EwlContainer *container = EWL_CONTAINER(widget);
 	ewl_list_push(container->children, ewl_list_node_new(child));
-	ewl_event_queue_new("resize", widget);
+	if ewl_widget_is_visible(child)
+		ewl_event_queue_new("resize", widget);
 	return;
 }
 
@@ -71,7 +73,8 @@ void       ewl_container_remove(EwlWidget *widget, EwlWidget *child)
 	EwlListNode *node = ewl_list_find_by_value(container->children, child);
 	if (node)	{
 		ewl_list_remove(container->children, node);
-		ewl_event_queue_new("resize", widget);
+		if ewl_widget_is_visible(node)
+			ewl_event_queue_new("resize", widget);
 	}
 	return;
 }
@@ -114,7 +117,9 @@ void       ewl_container_handle_realize(void      *object,
 	UNUSED(event);
 	UNUSED(data);
 
-	if (0&&ewl_list_len(EWL_CONTAINER(object)->children))
+	fprintf(stderr,"ewl_container_handle_realize(): children = %d\n",
+	        ewl_list_len(EWL_CONTAINER(object)->children));
+	if (ewl_list_len(EWL_CONTAINER(object)->children))
 		ewl_container_foreach(widget, ewl_container_handle_realize_cb, NULL);
 	else 
 		fprintf(stderr,"DEBUG: no children to realize.\n");
@@ -157,7 +162,7 @@ void       ewl_container_handle_show(void      *object,
 	UNUSED(object); 
 	UNUSED(event);
 	UNUSED(data);
-	/*ewl_container_foreach(widget, ewl_container_handle_show_cb, NULL);*/
+	ewl_container_foreach(widget, ewl_container_handle_show_cb, NULL);
 	return;
 }
 

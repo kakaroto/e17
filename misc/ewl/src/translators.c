@@ -132,11 +132,11 @@ EwlEvent *cb_ewl_event_buttonpress_translate(EwlEventTranslator *t, XEvent *xev)
 	if (!w)	w = ewl_window_find_by_xwin(xev->xbutton.window);
 	ev = ewl_event_new(t->type,w);
 	i = malloc(sizeof(int)); *i = xev->xbutton.x;
-	ewl_event_set_data(ev, "/event/x", i);
+	ewl_event_set_data(ev, "x", i);
 	i = malloc(sizeof(int)); *i = xev->xbutton.y;
-	ewl_event_set_data(ev, "/event/y", i);
+	ewl_event_set_data(ev, "y", i);
 	i = malloc(sizeof(int)); *i = xev->xbutton.button;
-	ewl_event_set_data(ev, "/event/button", i);
+	ewl_event_set_data(ev, "button", i);
 	
 	return ev;
 }
@@ -150,11 +150,11 @@ EwlEvent *cb_ewl_event_buttonrelease_translate(EwlEventTranslator *t, XEvent *xe
 	if (!w)	w = ewl_window_find_by_xwin(xev->xbutton.window);
 	ev = ewl_event_new(t->type,w);
 	i = malloc(sizeof(int)); *i = xev->xbutton.x;
-	ewl_event_set_data(ev, "/event/x", i);
+	ewl_event_set_data(ev, "x", i);
 	i = malloc(sizeof(int)); *i = xev->xbutton.y;
-	ewl_event_set_data(ev, "/event/y", i);
+	ewl_event_set_data(ev, "y", i);
 	i = malloc(sizeof(int)); *i = xev->xbutton.button;
-	ewl_event_set_data(ev, "/event/button", i);
+	ewl_event_set_data(ev, "button", i);
 	
 	return ev;
 }
@@ -168,9 +168,9 @@ EwlEvent *cb_ewl_event_motion_translate(EwlEventTranslator *t, XEvent *xev)
 	if (!w)	w = ewl_window_find_by_xwin(xev->xmotion.window);
 	ev = ewl_event_new(t->type,w);
 	i = malloc(sizeof(int)); *i = xev->xmotion.x;
-	ewl_event_set_data(ev, "/event/x", i);
+	ewl_event_set_data(ev, "x", i);
 	i = malloc(sizeof(int)); *i = xev->xmotion.y;
-	ewl_event_set_data(ev, "/event/y", i);
+	ewl_event_set_data(ev, "y", i);
 	
 	return ev;
 }
@@ -212,13 +212,13 @@ EwlEvent *cb_ewl_event_expose_translate(EwlEventTranslator *t, XEvent *xev)
 	int       *i = NULL;
 	EwlRect   *rect = ewl_rect_new_with_values(xev->xexpose.x, xev->xexpose.y, xev->xexpose.width, xev->xexpose.height);
 	/*i = malloc(sizeof(int)); *i = xev->xexpose.x;
-	ewl_event_set_data(ev, "/event/x", i);
+	ewl_event_set_data(ev, "x", i);
 	i = malloc(sizeof(int)); *i = xev->xexpose.y;
-	ewl_event_set_data(ev, "/event/y", i);
+	ewl_event_set_data(ev, "y", i);
 	i = malloc(sizeof(int)); *i = xev->xexpose.y;*/
-	ewl_event_set_data(ev, "/expose/rect", rect);
+	ewl_event_set_data(ev, "rect", rect);
 	i = malloc(sizeof(int)); *i = xev->xexpose.count;
-	ewl_event_set_data(ev, "/event/count", i);
+	ewl_event_set_data(ev, "count", i);
 	
 	return ev;
 }
@@ -277,9 +277,9 @@ EwlEvent *cb_ewl_event_configurenotify_translate(EwlEventTranslator *t, XEvent *
 	EwlWidget *w = ewl_window_find_by_xwin(xev->xconfigure.window);
 	EwlEvent  *ev = ewl_event_new(t->type,w);
 	int       *i = malloc(sizeof(int)); *i = xev->xconfigure.width;
-	ewl_event_set_data(ev, "/event/width", i);
+	ewl_event_set_data(ev, "width", i);
 	i = malloc(sizeof(int)); *i = xev->xconfigure.height;
-	ewl_event_set_data(ev, "/event/height", i);
+	ewl_event_set_data(ev, "height", i);
 	return ev;
 }
 

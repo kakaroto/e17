@@ -12,8 +12,8 @@
 typedef struct _EwlWindow EwlWindow;
 
 struct _EwlWindow {
-	EwlWidget widget;
-	Evas      evas;
+	EwlContainer widget;
+	Evas         evas;
 };
 
 /* WINDOW NEW/FREE FUNCTIONS */

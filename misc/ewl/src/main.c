@@ -14,8 +14,8 @@ int main(int argc, char *argv[])
 	UNUSED(btn);
 	ewl_init(&argc, &argv);
 
-	/*ewl_container_insert(win,box);*/
-	/*ewl_widget_show(box);*/
+	ewl_container_insert(win,box);
+	ewl_widget_show(box);
 	ewl_callback_add(win, "mousedown", mousedown_cb, NULL);
 	ewl_hash_dump(EWL_OBJECT(box)->data);
 	ewl_widget_show(win);

@@ -71,9 +71,9 @@ void       ewl_window_handle_configure(void     *object,
 	UNUSED(data);
 
 	fprintf(stderr,"window configure\n");
-	t = ewl_event_get_data(event, "/configure/width");
+	t = ewl_event_get_data(event, "width");
 	if (t) w = *t; else w = 320;
-	t = ewl_event_get_data(event, "/configure/height");
+	t = ewl_event_get_data(event, "height");
 	if (t) h = *t; else h = 240;
 	ewl_set(widget, "/widget/rect", ewl_rect_new_with_values(0,0,w,h));
 
@@ -107,7 +107,7 @@ void       ewl_window_handle_expose(void     *object,
                                     void     *data)
 {
 	EwlWindow *window = EWL_WINDOW(object);
-	EwlRect *expose_rect = ewl_event_get_data(event, "/expose/rect");
+	EwlRect *expose_rect = ewl_event_get_data(event, "rect");
 	UNUSED(data);
 	
 	fprintf(stderr,"window expose {%d,%d,%d,%d}\n", expose_rect->x, expose_rect->y, expose_rect->w, expose_rect->h);
@@ -237,12 +237,12 @@ void       ewl_window_handle_realize(void     *object,
 	evas_set_image_cache(window->evas, ewl_get_image_cache());
 
 	for (i=ewl_iterator_start(ewl_get_font_path_list()); i; i=ewl_iterator_next(i)) {
-		snprintf(buf,1024,"%s/%s/fonts", i->data,
+		snprintf(buf,1024,"%s/%s/fonts", (char*) i->data,
 		         ewl_get_theme());
 		evas_font_add_path(window->evas, buf);
-		snprintf(buf,1024,"%s/%s", i->data, ewl_get_theme());
+		snprintf(buf,1024,"%s/%s", (char*) i->data, ewl_get_theme());
 		evas_font_add_path(window->evas, buf);
-		snprintf(buf,1024,"%s", i->data, ewl_get_theme());
+		snprintf(buf,1024,"%s", (char*) i->data);
 		evas_font_add_path(window->evas, buf);
 	}
 
