@@ -13,13 +13,13 @@
 /**
  * Two Groups : Main and Notes
  * Main Consists of these parts:
- * EnotesContainer : Swallow an esmart container to this edje part, then
+ * EnoteContainer : Swallow an esmart container to this edje part, then
  * append TODO(Notes group) items to it
- * EnotesDate: A text part formatted to user's preferred date format
- * EnotesUser: A text part to hold user's name
+ * EnoteDate: A text part formatted to user's preferred date format
+ * EnoteUser: A text part to hold user's name
  * 
  * Notes Consists of these parts:
- * EnotesContent: A text part for the message
+ * EnoteContent: A text part for the message
  * 
  */
 images {
@@ -190,7 +190,7 @@ collections
 		}
 	    }
 	    part {
-		name, "EnotesContainer";
+		name, "EnoteContainer";
 		type, RECT;
 		mouse_events, 1;
 		description {
@@ -218,11 +218,11 @@ collections
 		    rel1 {
 			relative, 0.0 1.0;
 			offset, 0 5;
-			to, "EnotesContainer";
+			to, "EnoteContainer";
 		    } rel2 {
 			relative, 0.0 1.0;
 			offset, 40 25;
-			to, "EnotesContainer";
+			to, "EnoteContainer";
 		    }
 		    color, 192 192 192 255;
 		    color3, 255 255 255 192;
@@ -236,7 +236,7 @@ collections
 		}
 	    }
 	    part {
-		name, "EnotesDate";
+		name, "EnoteDate";
 		type, TEXT;
 		mouse_events, 0;
 		effect, SOFT_SHADOW;
@@ -274,12 +274,12 @@ collections
 		    rel1 {
 			relative, 0.0 0.5;
 			offset, -40 -12;
-			to_x, "EnotesUser";
+			to_x, "EnoteUser";
 			to_y, "date_description";
 		    } rel2 {
 			relative, 0.0 0.5;
 			offset, -2 12;
-			to_x, "EnotesUser";
+			to_x, "EnoteUser";
 			to_y, "date_description";
 		    }
 		    color, 192 192 192 255;
@@ -294,7 +294,7 @@ collections
 		}
 	    }
 	    part {
-		name, "EnotesUser";
+		name, "EnoteUser";
 		type, TEXT;
 		mouse_events, 0;
 		effect, SOFT_SHADOW;
@@ -305,12 +305,12 @@ collections
 			relative, 1.0 0.5;
 			offset, -50 -12;
 			to_y, "date_description";
-			to_x, "EnotesContainer";
+			to_x, "EnoteContainer";
 		    } rel2 {
 			relative, 1.0 0.5;
 			offset, 0 12;
 			to_y, "date_description";
-			to_x, "EnotesContainer";
+			to_x, "EnoteContainer";
 		    }
 		    color, 192 192 192 255;
 		    color3, 255 255 255 192;
