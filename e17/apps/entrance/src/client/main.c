@@ -362,6 +362,7 @@ user_unselected_cb(void *data, Evas_Object * o, const char *emission,
    if (session && data)
    {
       entrance_session_user_reset(session);
+/*      edje_object_signal_emit(o, "EntranceUserFail", "");*/
    }
 }
 

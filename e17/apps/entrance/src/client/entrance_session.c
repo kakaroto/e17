@@ -200,7 +200,9 @@ entrance_session_user_reset(Entrance_Session * e)
       edje_object_signal_emit(e->edje, "In", "EntranceUserEntry");
       /* FIXME: we shouldn't emit UserAuthFail here, but it gets us back to
          the beginning */
-      edje_object_signal_emit(e->edje, "EntranceUserAuthFail", "");
+      /* Any code that calls user_reset will also need to send the appropriate signal
+         to the edje - we're sending multiple signals and this can cause mayhem. */
+/*      edje_object_signal_emit(e->edje, "EntranceUserFail", ""); */
    }
 }
 
@@ -281,7 +283,7 @@ entrance_session_user_set(Entrance_Session * e, Entrance_User * eu)
          else
          {
             evas_object_del(obj);
-            edje_object_signal_emit(e->edje, "In", "EntrancePassEntry");
+            /* edje_object_signal_emit(e->edje, "In", "EntrancePassEntry"); */
             edje_object_signal_emit(e->edje, "EntranceUserFail", "");
          }
       }
