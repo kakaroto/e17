@@ -1,0 +1,33 @@
+dnl Process this file with autoconf to create configure.
+
+AC_INIT(src/main.c)
+AM_INIT_AUTOMAKE(scrot, 0.1)
+
+AC_PROG_CC
+AM_PROG_CC_STDC
+AC_C_CONST
+
+AC_PROG_INSTALL
+AC_PROG_MAKE_SET
+
+AM_MAINTAINER_MODE
+
+AC_ARG_WITH(imlib2,
+        [  --with-imlib2=DIR       use imlib2 in <DIR>],
+        [CFLAGS="$CFLAGS -I$withval/include"
+        LIBS="-L$withval/lib $LIBS"])
+
+AC_CHECK_LIB(Imlib2, imlib_load_image, , [
+echo "ERROR:  You need libImlib2 to build feh.";
+             AC_MSG_ERROR([Fatal:  libImlib2 not found.])], -lm)
+LIBS="$LIBS -lm"
+
+AC_CHECK_FUNC(getopt_long,,[LIBOBJS="$LIBOBJS getopt.o getopt1.o"])
+AC_SUBST(LIBOBJS)
+
+AC_OUTPUT(Makefile \
+scrot.spec \
+src/Makefile \
+)
+
+echo ""
