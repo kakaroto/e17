@@ -210,14 +210,17 @@ grab_init()
       exit(1);
    }
 
-   memset(&cam_pic, 0, sizeof(struct video_picture));
-   cam_pic.contrast = 65535 * (cam_contrast / 100);
-   cam_pic.brightness = 65535 * (cam_brightness / 100);
-   cam_pic.hue = 65535 * (cam_hue / 100);
-   cam_pic.colour = 65535 * (cam_colour / 100);
-   cam_pic.whiteness = 65535 * (cam_whiteness / 100);
-
+   if(ioctl(grab_fd, VIDIOCGPICT, &cam_pic) < 0)
+      perror("getting pic info");
+   cam_pic.contrast = 65535 * ((float)cam_contrast / 100);
+   cam_pic.brightness = 65535 * ((float)cam_brightness / 100);
+   cam_pic.hue = 65535 * ((float)cam_hue / 100);
+   cam_pic.colour = 65535 * ((float)cam_colour / 100);
+   cam_pic.whiteness = 65535 * ((float)cam_whiteness / 100);
+   if (ioctl(grab_fd, VIDIOCSPICT, &cam_pic) < 0)
+      perror("setting cam pic");
    device_palette = find_palette(grab_fd, &grab_buf);
+
    grab_buf.format = device_palette;
    grab_buf.frame = 0;
    grab_buf.width = grab_width;
@@ -1101,7 +1104,7 @@ main(int argc, char *argv[])
       cam_framerate = 1;
 
    /* print config */
-   fprintf(stderr, "camE v1.1 - (c) 1999, 2000 Gerd Knorr, Tom Gilbert\n");
+   fprintf(stderr, "camE v1.2 - (c) 1999, 2000 Gerd Knorr, Tom Gilbert\n");
    fprintf(stderr,
            "grabber config: size %dx%d, input %d, norm %d, "
            "jpeg quality %d\n", grab_width, grab_height, grab_input,
