@@ -603,10 +603,13 @@ SnapshotEwinGroup(EWin * ewin, char onoff)
    int                 i, num;
 
    if (!ewin->group)
-      return;
-
+     {
+	sn = GetSnapshot(ewin);
+	if (sn)
+	   sn->group = 0;
+	return;
+     }
    gwins = ListWinGroupMembersForEwin(ewin, ACTION_NONE, &num);
-
    for (i = 0; i < num; i++)
      {
 	if (onoff)
@@ -634,13 +637,10 @@ SnapshotEwinGroup(EWin * ewin, char onoff)
 	       {
 		  sn = GetSnapshot(gwins[i]);
 		  if (sn)
-		    {
-		       sn->group = 0;
-		    }
+		     sn->group = 0;
 	       }
 	  }
      }
-
    Efree(gwins);
 }
 

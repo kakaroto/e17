@@ -7,34 +7,7 @@ kainx: translucent and group window moves if move != opaque - fix :)
 kainx: new tooltip stuff doesnt saccoutn for 2x extra in calculating iconbox
 kainx: reduce need for tooltip text to have auto gened tooltips work
 raster: tooltips fro pager names and iconbox names runs off right edge
-raster: E doesnt remember gorups atm - wel it doesnt restore them again :)
 raster: add dnd to iconbox
 raster: icoify animation suport
 raster: changing virtual desktop size screws up pager content draws.
 raster: double "close sound" playing atthe moment - fix.
-raster: sound.cfg classes to add / support in theme..
-SOUND_MENU_SHOW - whenever a menu is popped up.
-SOUND_RESIZE_START - the start of any window resize
-SOUND_RESIZE_STOP - the end of any window resize
-SOUND_MOVE_START - the start of any window move
-SOUND_MOVE_STOP - the end of any window move
-SOUND_RAISE - the sound of any window being raised
-SOUND_LOWER - the sound of any window being lowered
-SOUND_DESKTOP_RAISE - any desktop being raised
-SOUND_DESKTOP_LOWER - any desktop being lowered
-SOUND_SLIDEOUT_SHOW - when any slideout is shown
-SOUND_UNSHADE - when a window is unshaded
-SOUND_SHADE - when a window is shaded
-SOUND_WINDOW_CHANGE_LAYER_DOWN - when a window changes layers down
-SOUND_WINDOW_CHANGE_LAYER_UP - when a window changes layers up
-SOUND_WINDOW_BORDER_CHANGE - when a windows border is changed by the user
-SOUND_INSERT_KEYS - whenever an insert keys action is called
-SOUND_NEW_ICONBOX - when a new iconbox is created
-SOUND_MOVE_AREA_LEFT - you move to the area on the left
-SOUND_MOVE_AREA_RIGHT - you move to the area on the right
-SOUND_MOVE_AREA_UP - you move to the area above
-SOUND_MOVE_AREA_DOWN - you move to the area below
-SOUND_MOVE_RESIST - sound made whenever a window resists movement
-SOUND_FOCUS_SET - when focus is set to another window...
-SOUND_GROUP_SETTINGS_ACTIVE - group dialog alreayd active
-SOUND_SETTINGS_GROUP - new group dialog

@@ -9,8 +9,7 @@ CreateGroup()
    if (!g)
       EDBUG_RETURN(NULL);
 
-   /* randomizing this makes snapshotting groups a good deal easier */
-   g->index = rand();
+   g->index = (int)(GetTime() * 100);
    g->iconify = 1;
    g->kill = 0;
    g->move = 1;
@@ -47,11 +46,13 @@ BreakWindowGroup(EWin * ewin)
 	if (ewin->group)
 	  {
 	     g = ewin->group;
-
 	     if (ewin->group->members)
 	       {
 		  for (i = 0; i < g->num_members; i++)
-		     g->members[i]->group = NULL;
+		    {
+		       g->members[i]->group = NULL;
+		       RememberImportantInfoForEwin(g->members[i]);
+		    }
 	       }
 	     RemoveItem((char *)g, 0, LIST_FINDBY_POINTER, LIST_TYPE_GROUP);
 	     FreeGroup(g);
@@ -62,22 +63,23 @@ BreakWindowGroup(EWin * ewin)
 void
 BuildWindowGroup(EWin ** ewins, int num)
 {
-
+   
    int                 i;
    Group              *g;
-
+   
    g = CreateGroup();
    AddItem(g, NULL, g->index, LIST_TYPE_GROUP);
    current_group = g;
-
+   
    g->members = Emalloc(sizeof(EWin *) * num);
    g->num_members = num;
-
+   
    for (i = 0; i < num; i++)
      {
 	RemoveEwinFromGroup(ewins[i]);
 	g->members[i] = ewins[i];
 	ewins[i]->group = g;
+	RememberImportantInfoForEwin(ewins[i]);
      }
 }
 
@@ -85,16 +87,17 @@ BuildWindowGroup(EWin ** ewins, int num)
 int 
 EwinInGroup(EWin * ewin, Group * g) 
 {
-  int i;
-  if (ewin && g) 
-    {
+   int i;
+   
+   if (ewin && g) 
+     {
 	for (i=0; i < g->num_members; i++) 
 	  {
-		if (g->members[i] == ewin)
-		  return 1;
+	     if (g->members[i] == ewin)
+		return 1;
 	  }
-    }
-  return 0;
+     }
+   return 0;
 }
 
 void
@@ -104,11 +107,12 @@ AddEwinToGroup(EWin * ewin, Group * g)
      {
 	if (!EwinInGroup(ewin, g)) 
 	  {
-		/*RemoveEwinFromGroup(ewin);*/
-		ewin->group = g;
-		g->num_members++;
-		g->members = Erealloc(g->members, sizeof(EWin *) * g->num_members);
-		g->members[g->num_members - 1] = ewin;
+	     /*RemoveEwinFromGroup(ewin);*/
+	     ewin->group = g;
+	     g->num_members++;
+	     g->members = Erealloc(g->members, sizeof(EWin *) * g->num_members);
+	     g->members[g->num_members - 1] = ewin;
+	     RememberImportantInfoForEwin(ewin);
 	  }
      }
 }
@@ -121,8 +125,7 @@ RemoveEwinFromGroup(EWin * ewin)
    if (ewin)
      {
 	if (ewin->group)
-	  {
-
+	  {	     
 	     for (i = 0; i < ewin->group->num_members; i++)
 	       {
 		  if (ewin->group->members[i] == ewin)
@@ -138,6 +141,7 @@ RemoveEwinFromGroup(EWin * ewin)
 			    FreeGroup(ewin->group);
 			 }
 		       ewin->group = NULL;
+		       RememberImportantInfoForEwin(ewin);
 		       return;
 		    }
 	       }

@@ -2162,6 +2162,7 @@ void                SoundExit(void);
 int                 isafter(int p, char *s1, char *s2);
 int                 matchregexp(char *rx, char *s);
 
+double              GetTime(void);
 void                DoIn(char *name, double in_time,
 			 void                (*func) (int val, void *data),
 			 int runtime_val, void *runtime_data);
@@ -2721,6 +2722,7 @@ void                WarpFocus(int delta);
 Group              *CreateGroup(void);
 void                BreakWindowGroup(EWin * ewin);
 void                BuildWindowGroup(EWin ** ewins, int num);
+int                 EwinInGroup(EWin * ewin, Group * g);
 void                AddEwinToGroup(EWin * ewin, Group * g);
 void                RemoveEwinFromGroup(EWin * ewin);
 void                ChooseGroupForEwinDialog(EWin * ewin);

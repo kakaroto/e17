@@ -1024,3 +1024,10 @@ and its shaded when you iconify - de-iconifying leaves the client window
 exposed but the border is still shaded - E seems to be responding to an
 events after de-iconification - mayeb - but what it is - i dunno.
 
+-------------------------------------------------------------------------------
+
+Mon Aug 23 14:06:19 PDT 1999
+(Raster)
+
+fixed group remembering, some other group stuff, iconfication stuff, alertbox 
+stuff - god - almost everything got a fix somewhere... :) 

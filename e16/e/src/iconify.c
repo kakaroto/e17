@@ -33,7 +33,7 @@ IconifyEwin(EWin * ewin)
 	was_shaded = ewin->shaded;
 	if (ib)
 	   UpdateAppIcon(ewin, ib->icon_mode);
-	HideEwin(ewin);
+        HideEwin(ewin);
 	if (was_shaded != ewin->shaded)
 	   InstantShadeEwin(ewin);
 	MakeIcon(ewin);
@@ -72,6 +72,7 @@ void
 DeIconifyEwin(EWin * ewin)
 {
    static int          call_depth = 0;
+   Iconbox *ib;
 
    call_depth++;
    if (call_depth > 256)
@@ -81,6 +82,7 @@ DeIconifyEwin(EWin * ewin)
      }
    if (ewin->iconified)
      {
+	ib = SelectIconboxForEwin(ewin);
 	RemoveMiniIcon(ewin);
 	if (!ewin->sticky)
 	  {
