@@ -7,7 +7,6 @@
 /* Entranced_Spawner_Display *d; */
 static Ecore_Event_Handler *_e_handler = NULL;
 static Ecore_Event_Handler *_d_handler = NULL;
-static Ecore_Event_Handler *_sigusr1_handler = NULL;
 static Ecore_Event_Filter *_e_filter = NULL;
 
 static struct sigaction _entrance_x_sa, _entrance_d_sa;
@@ -269,7 +268,7 @@ Entranced_Exe_Exited(void *data, int type, void *event)
    is_respawning = 1;
    respawn_timer = ecore_timer_add(15.0, Entranced_Respawn_Reset, d);
 
-   if (e->exe == d->e_exe)
+   if (e->exe == d->e_exe && e->pid == ecore_exe_pid_get(d->e_exe))
    {
       /* Session exited or crashed */
       if (e->exited)
@@ -296,7 +295,7 @@ Entranced_Exe_Exited(void *data, int type, void *event)
       }
 
    }
-   else
+   else if (e->pid == d->pid.x)
    {
       /* X terminated for some reason */
       if (e->exited)
@@ -310,6 +309,10 @@ Entranced_Exe_Exited(void *data, int type, void *event)
       if (!Entranced_X_Restart(d))
          exit(1);
 
+   }
+   else 
+   {
+      return 1;
    }
 
    Entranced_Spawn_Entrance(d);
