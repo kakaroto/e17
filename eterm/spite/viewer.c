@@ -31,6 +31,7 @@
 
 GtkWidget *window = NULL, *bigtable, *pagetable, *notebook, *frame, *label, *pagebox, *frametable, *button, *buttonbox;
 GSList *group;
+gchar *clist_txt[1] = {"Images"};
 
 int
 main(int argc, char *argv[])
@@ -113,12 +114,12 @@ main(int argc, char *argv[])
   gtk_signal_connect_after(GTK_OBJECT(col_point_entry), "changed",
 			   GTK_SIGNAL_FUNC(col_entry_changed), "point");
   
-  button = gtk_radio_button_new_with_label (NULL, "video normal");
-  gtk_widget_show(button);
-  gtk_table_attach_defaults(GTK_TABLE (pagetable), button, 0, 1, 5, 6);
-  gtk_toggle_button_set_active (GTK_TOGGLE_BUTTON (button), TRUE);
-  group = gtk_radio_button_group (GTK_RADIO_BUTTON (button));
-  button = gtk_radio_button_new_with_label (gtk_radio_button_group (GTK_RADIO_BUTTON (button)), "video reversed");
+  col_vid_btn = gtk_radio_button_new_with_label (NULL, "video normal");
+  gtk_widget_show(col_vid_btn);
+  gtk_table_attach_defaults(GTK_TABLE (pagetable), col_vid_btn, 0, 1, 5, 6);
+  gtk_toggle_button_set_active (GTK_TOGGLE_BUTTON (col_vid_btn), TRUE);
+  group = gtk_radio_button_group (GTK_RADIO_BUTTON (col_vid_btn));
+  button = gtk_radio_button_new_with_label (gtk_radio_button_group (GTK_RADIO_BUTTON (col_vid_btn)), "video reversed");
   gtk_widget_show(button);
   gtk_table_attach_defaults(GTK_TABLE (pagetable), button, 1, 2, 5, 6);
 
@@ -129,31 +130,31 @@ main(int argc, char *argv[])
   gtk_notebook_append_page(GTK_NOTEBOOK (notebook), frame, label);
   gtk_widget_show(label);
 
-  pagebox=gtk_vbox_new(FALSE,2);
-  gtk_container_add(GTK_CONTAINER(frame), pagebox);
+  pagebox = gtk_vbox_new(FALSE, 2);
+  gtk_container_add(GTK_CONTAINER (frame), pagebox);
   gtk_widget_show(pagebox);
 
-   frame=gtk_frame_new("Geometry");
+   frame = gtk_frame_new("Geometry");
    gtk_widget_show(frame);
    gtk_box_pack_start(GTK_BOX(pagebox), frame, FALSE, FALSE,0);
-   frametable=gtk_table_new(4,2,FALSE);
-   gtk_container_add(GTK_CONTAINER(frame), frametable);
-   label=gtk_label_new("width:");
+   frametable = gtk_table_new(4, 2, FALSE);
+   gtk_container_add(GTK_CONTAINER (frame), frametable);
+   label = gtk_label_new("width:");
    gtk_widget_show(label);
-   gtk_table_attach_defaults(GTK_TABLE(frametable), label, 0,1,0,1);
-   atr_width_entry=gtk_entry_new_with_max_length(25);
-   gtk_signal_connect(GTK_OBJECT(atr_width_entry), "changed",
+   gtk_table_attach_defaults(GTK_TABLE (frametable), label, 0, 1, 0, 1);
+   atr_width_entry = gtk_entry_new_with_max_length(25);
+   gtk_signal_connect(GTK_OBJECT (atr_width_entry), "changed",
 		      GTK_SIGNAL_FUNC(atr_entry_changed), NULL);
-   gtk_table_attach_defaults(GTK_TABLE(frametable), atr_width_entry, 1,2,0,1);
+   gtk_table_attach_defaults(GTK_TABLE (frametable), atr_width_entry, 1, 2, 0, 1);
    gtk_widget_show(atr_width_entry);
     
-   label=gtk_label_new("height:");
+   label = gtk_label_new("height:");
    gtk_widget_show(label);
-   gtk_table_attach_defaults(GTK_TABLE(frametable), label, 0,1,1,2);
-   atr_height_entry=gtk_entry_new_with_max_length(25);
-   gtk_signal_connect(GTK_OBJECT(atr_height_entry), "changed",
+   gtk_table_attach_defaults(GTK_TABLE (frametable), label, 0, 1, 1, 2);
+   atr_height_entry = gtk_entry_new_with_max_length(25);
+   gtk_signal_connect(GTK_OBJECT (atr_height_entry), "changed",
 		      GTK_SIGNAL_FUNC(atr_entry_changed), NULL);
-   gtk_table_attach_defaults(GTK_TABLE(frametable), atr_height_entry, 1,2,1,2);
+   gtk_table_attach_defaults(GTK_TABLE (frametable), atr_height_entry, 1, 2, 1, 2);
    gtk_widget_show(atr_height_entry);
 
    label=gtk_label_new("offset X:");
@@ -224,11 +225,11 @@ main(int argc, char *argv[])
   gtk_table_attach_defaults(GTK_TABLE (frametable), atr_font0_entry, 1, 2, 0, 1);
   gtk_widget_show(atr_font0_entry);
 
-  button = gtk_radio_button_new_with_label (NULL, "default");
-  gtk_widget_show(button);
-  gtk_table_attach_defaults(GTK_TABLE (frametable), button, 2, 3, 0, 1);
-  gtk_toggle_button_set_active (GTK_TOGGLE_BUTTON (button), TRUE);
-  group = gtk_radio_button_group (GTK_RADIO_BUTTON (button));
+  atr_f0_def_btn = gtk_radio_button_new_with_label (NULL, "default");
+  gtk_widget_show(atr_f0_def_btn);
+  gtk_table_attach_defaults(GTK_TABLE (frametable), atr_f0_def_btn, 2, 3, 0, 1);
+  gtk_toggle_button_set_active (GTK_TOGGLE_BUTTON (atr_f0_def_btn), TRUE);
+  group = gtk_radio_button_group (GTK_RADIO_BUTTON (atr_f0_def_btn));
 
   label = gtk_label_new("font 1:");
   gtk_widget_show(label);
@@ -239,9 +240,9 @@ main(int argc, char *argv[])
   gtk_table_attach_defaults(GTK_TABLE (frametable), atr_font1_entry, 1, 2, 1, 2);
   gtk_widget_show(atr_font1_entry);
 
-  button = gtk_radio_button_new_with_label (gtk_radio_button_group (GTK_RADIO_BUTTON (button)), "default");
-  gtk_widget_show(button);
-  gtk_table_attach_defaults(GTK_TABLE (frametable), button, 2, 3, 1, 2);
+  atr_f1_def_btn = gtk_radio_button_new_with_label (gtk_radio_button_group (GTK_RADIO_BUTTON (atr_f0_def_btn)), "default");
+  gtk_widget_show(atr_f1_def_btn);
+  gtk_table_attach_defaults(GTK_TABLE (frametable), atr_f1_def_btn, 2, 3, 1, 2);
 
   label = gtk_label_new("font 2:");
   gtk_widget_show(label);
@@ -252,9 +253,9 @@ main(int argc, char *argv[])
   gtk_table_attach_defaults(GTK_TABLE (frametable), atr_font2_entry, 1, 2, 2, 3);
   gtk_widget_show(atr_font2_entry);
 
-  button = gtk_radio_button_new_with_label (gtk_radio_button_group (GTK_RADIO_BUTTON (button)), "default");
-  gtk_widget_show(button);
-  gtk_table_attach_defaults(GTK_TABLE (frametable), button, 2, 3, 2, 3);
+  atr_f2_def_btn = gtk_radio_button_new_with_label (gtk_radio_button_group (GTK_RADIO_BUTTON (atr_f1_def_btn)), "default");
+  gtk_widget_show(atr_f2_def_btn);
+  gtk_table_attach_defaults(GTK_TABLE (frametable), atr_f2_def_btn, 2, 3, 2, 3);
 
   label = gtk_label_new("font 3:");
   gtk_widget_show(label);
@@ -265,9 +266,9 @@ main(int argc, char *argv[])
   gtk_table_attach_defaults(GTK_TABLE (frametable), atr_font3_entry, 1, 2, 3, 4);
   gtk_widget_show(atr_font3_entry);
 
-  button = gtk_radio_button_new_with_label (gtk_radio_button_group (GTK_RADIO_BUTTON (button)), "default");
-  gtk_widget_show(button);
-  gtk_table_attach_defaults(GTK_TABLE (frametable), button, 2, 3, 3, 4);
+  atr_f3_def_btn = gtk_radio_button_new_with_label (gtk_radio_button_group (GTK_RADIO_BUTTON (atr_f1_def_btn)), "default");
+  gtk_widget_show(atr_f3_def_btn);
+  gtk_table_attach_defaults(GTK_TABLE (frametable), atr_f3_def_btn, 2, 3, 3, 4);
 
   label = gtk_label_new("font 4:");
   gtk_widget_show(label);
@@ -278,9 +279,9 @@ main(int argc, char *argv[])
   gtk_table_attach_defaults(GTK_TABLE (frametable), atr_font4_entry, 1, 2, 4, 5);
   gtk_widget_show(atr_font4_entry);
 
-  button = gtk_radio_button_new_with_label (gtk_radio_button_group (GTK_RADIO_BUTTON (button)), "default");
-  gtk_widget_show(button);
-  gtk_table_attach_defaults(GTK_TABLE (frametable), button, 2, 3, 4, 5);
+  atr_f4_def_btn = gtk_radio_button_new_with_label (gtk_radio_button_group (GTK_RADIO_BUTTON (atr_f1_def_btn)), "default");
+  gtk_widget_show(atr_f4_def_btn);
+  gtk_table_attach_defaults(GTK_TABLE (frametable), atr_f4_def_btn, 2, 3, 4, 5);
 
   label = gtk_label_new("font 5:");
   gtk_widget_show(label);
@@ -291,9 +292,9 @@ main(int argc, char *argv[])
   gtk_table_attach_defaults(GTK_TABLE (frametable), atr_font5_entry, 1, 2, 5, 6);
   gtk_widget_show(atr_font5_entry);
 
-  button = gtk_radio_button_new_with_label (gtk_radio_button_group (GTK_RADIO_BUTTON (button)), "default");
-  gtk_widget_show(button);
-  gtk_table_attach_defaults(GTK_TABLE (frametable), button, 2, 3, 5, 6);
+  atr_f5_def_btn = gtk_radio_button_new_with_label (gtk_radio_button_group (GTK_RADIO_BUTTON (atr_f1_def_btn)), "default");
+  gtk_widget_show(atr_f5_def_btn);
+  gtk_table_attach_defaults(GTK_TABLE (frametable), atr_f5_def_btn, 2, 3, 5, 6);
 
   label = gtk_label_new("font 6:");
   gtk_widget_show(label);
@@ -304,9 +305,9 @@ main(int argc, char *argv[])
   gtk_table_attach_defaults(GTK_TABLE (frametable), atr_font6_entry, 1, 2, 6, 7);
   gtk_widget_show(atr_font6_entry);
 
-  button = gtk_radio_button_new_with_label (gtk_radio_button_group (GTK_RADIO_BUTTON (button)), "default");
-  gtk_widget_show(button);
-  gtk_table_attach_defaults(GTK_TABLE (frametable), button, 2, 3, 6, 7);
+  atr_f6_def_btn = gtk_radio_button_new_with_label (gtk_radio_button_group (GTK_RADIO_BUTTON (atr_f1_def_btn)), "default");
+  gtk_widget_show(atr_f6_def_btn);
+  gtk_table_attach_defaults(GTK_TABLE (frametable), atr_f6_def_btn, 2, 3, 6, 7);
 
   label = gtk_label_new("bold font:");
   gtk_widget_show(label);
@@ -316,10 +317,6 @@ main(int argc, char *argv[])
 			   GTK_SIGNAL_FUNC (atr_entry_changed), NULL);
   gtk_table_attach_defaults(GTK_TABLE (frametable), atr_font_bold_entry, 1, 2, 7, 8);
   gtk_widget_show(atr_font_bold_entry);
-
-  button = gtk_radio_button_new_with_label (gtk_radio_button_group (GTK_RADIO_BUTTON (button)), "default");
-  gtk_widget_show(button);
-  gtk_table_attach_defaults(GTK_TABLE (frametable), button, 2, 3, 7, 8);
 
   /*TOGGLES PAGE*/
   frame = gtk_frame_new(NULL);
@@ -424,10 +421,10 @@ main(int argc, char *argv[])
   label = gtk_label_new("line space:");
   gtk_widget_show(label);
   gtk_table_attach_defaults(GTK_TABLE(pagetable), label, 0, 1, 4, 5);
-  misc_border_width_entry = gtk_entry_new_with_max_length(25);
-  gtk_widget_show(misc_border_width_entry);
-  gtk_table_attach_defaults(GTK_TABLE(pagetable), misc_border_width_entry, 1, 2, 4, 5);
-  gtk_signal_connect_after(GTK_OBJECT(misc_border_width_entry), "changed",
+  misc_line_space_entry = gtk_entry_new_with_max_length(25);
+  gtk_widget_show(misc_line_space_entry);
+  gtk_table_attach_defaults(GTK_TABLE(pagetable), misc_line_space_entry, 1, 2, 4, 5);
+  gtk_signal_connect_after(GTK_OBJECT(misc_line_space_entry), "changed",
 			   GTK_SIGNAL_FUNC(misc_entry_changed), NULL);
 
   label = gtk_label_new("term name:");
@@ -447,6 +444,21 @@ main(int argc, char *argv[])
   gtk_table_attach_defaults(GTK_TABLE(pagetable), misc_exec_entry, 1, 2, 6, 7);
   gtk_signal_connect_after(GTK_OBJECT(misc_exec_entry), "changed",
 			   GTK_SIGNAL_FUNC(misc_entry_changed), NULL);
+
+  /* IMAGES PAGE */
+  frame=gtk_frame_new(NULL);
+  gtk_widget_show(frame);
+  label=gtk_label_new("Images");
+  gtk_notebook_append_page (GTK_NOTEBOOK (notebook), frame, label);
+  gtk_widget_show(label);
+
+  pagebox = gtk_vbox_new(FALSE, 0);
+  gtk_container_add(GTK_CONTAINER (frame), pagebox);
+  gtk_widget_show(pagebox);
+
+  clist = gtk_clist_new_with_titles(1, clist_txt);
+  gtk_widget_show(clist);
+  gtk_box_pack_start(GTK_BOX (pagebox), clist, FALSE, FALSE, 0);
 
 
   /* Buttons to save or cancel, not on a notebook page */   

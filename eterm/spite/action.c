@@ -30,15 +30,10 @@
 extern void
 col_entry_changed(GtkWidget *widget, gpointer data)
 {
-  if (data == "fore")
     color->foreground = gtk_entry_get_text (GTK_ENTRY (col_fore_entry));
-  if (data == "back")
     color->background = gtk_entry_get_text (GTK_ENTRY (col_back_entry));
-  if (data == "curs")
     color->cursor = gtk_entry_get_text (GTK_ENTRY (col_curs_entry));
-  if (data == "curstext")
     color->cursor_text = gtk_entry_get_text (GTK_ENTRY (col_curstext_entry));
-  if (data == "point")
     color->pointer = gtk_entry_get_text (GTK_ENTRY (col_point_entry));
 }
 
@@ -52,7 +47,6 @@ atr_entry_changed(GtkWidget *widget, gpointer data)
   attributes->title = gtk_entry_get_text (GTK_ENTRY (atr_title_entry));
   attributes->name = gtk_entry_get_text (GTK_ENTRY (atr_name_entry));
   attributes->iconname = gtk_entry_get_text (GTK_ENTRY (atr_iconname_entry));
-  /*  attributes->font_default = gtk_entry_get_text (GTK_ENTRY (atr_font_def_entry));*/
   attributes->font0 = gtk_entry_get_text (GTK_ENTRY (atr_font0_entry));
   attributes->font1 = gtk_entry_get_text (GTK_ENTRY (atr_font1_entry));
   attributes->font2 = gtk_entry_get_text (GTK_ENTRY (atr_font2_entry));
@@ -137,6 +131,29 @@ get_toggles(void)
 }
 
 extern void
+get_radio(void)
+{
+  if (GTK_TOGGLE_BUTTON (col_vid_btn)->active)
+    color->video = 1;
+  else
+    color->video = 0;
+  if (GTK_TOGGLE_BUTTON (atr_f0_def_btn)->active)
+    attributes->font_default = 0;
+  else if (GTK_TOGGLE_BUTTON (atr_f1_def_btn)->active)
+    attributes->font_default=1;
+  else if (GTK_TOGGLE_BUTTON (atr_f2_def_btn)->active)
+    attributes->font_default=2;
+  else if (GTK_TOGGLE_BUTTON (atr_f3_def_btn)->active)
+    attributes->font_default=3;
+  else if (GTK_TOGGLE_BUTTON (atr_f4_def_btn)->active)
+    attributes->font_default=4;
+  else if (GTK_TOGGLE_BUTTON (atr_f5_def_btn)->active)
+    attributes->font_default=5;
+  else if (GTK_TOGGLE_BUTTON (atr_f6_def_btn)->active)
+    attributes->font_default=6;
+}
+
+extern void
 button_handler(GtkWidget *widget, gpointer data)
 {
   char *tn;
@@ -159,7 +176,8 @@ save_theme(char *theme_name)
 {
   char *home_dir, *theme_dir, *theme_file;
   FILE *fPtr;
-
+  get_toggles();
+  get_radio();
   home_dir = (char *) malloc(1024);
   home_dir = getenv("HOME");
   theme_dir = (char *) malloc(1024);
@@ -189,6 +207,7 @@ save_theme(char *theme_name)
     fprintf(fPtr, "      title %s\n", attributes->title);
     fprintf(fPtr, "      name %s\n", attributes->name);
     fprintf(fPtr, "      iconname %s\n", attributes->iconname);
+    fprintf(fPtr, "      font default %d\n", attributes->font_default);
     fprintf(fPtr, "      font 0 %s\n", attributes->font0);
     fprintf(fPtr, "      font 1 %s\n", attributes->font1);
     fprintf(fPtr, "      font 2 %s\n", attributes->font2);
@@ -281,6 +300,6 @@ create_dialog(void)
 			  button, TRUE, TRUE, 0);
   gtk_widget_show (button);
 
-  gtk_widget_show (dialog_window);
-  
+  gtk_widget_show (dialog_window);  
 }
+
