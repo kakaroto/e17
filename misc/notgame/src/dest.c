@@ -33,18 +33,31 @@ static const char cvs_ident[] = "$Id$";
 #include "play.h"
 #include "pregame.h"
 
+GList *dest_group_list = NULL;
+
 void
-conf_init_subsystem(void) {
+dest_group_add(GtkWidget *w, gpointer pbox) {
 
+  char *name;
+  GtkWidget *dest_groups;
+  GList *entry;
+
+  dest_groups = (GtkWidget *) pbox;
+  name = gtk_entry_get_text(GTK_ENTRY(GTK_COMBO(dest_groups)->entry));
+  REQUIRE(name != NULL);
+  D(("name == %s (0x%08x)\n", name, name));
+
+  entry = g_list_find_custom(dest_group_list, name, (GCompareFunc) strcasecmp);
+  D(("entry == 0x%08x\n", entry));
+
+  if (!entry) {
+    dest_group_list = g_list_append(dest_group_list, strdup(name));
+    gtk_combo_set_popdown_strings(GTK_COMBO(dest_groups), dest_group_list);
+  }
+  
 }
 
-unsigned char
-conf_read_config(const char *file) {
+void
+dest_list_update(GList *group) {
 
 }
-
-unsigned char
-conf_load(void) {
-
-}
-

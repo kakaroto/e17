@@ -10,17 +10,18 @@
  * this program for license terms.
  */
 
-#ifndef _HELP_H_
-#define _HELP_H_
+#ifndef _DEST_H_
+#define _DEST_H_
 
 /************ Macros and Definitions ************/
 
 /************ Structures ************/
 
 /************ Variables ************/
+extern GList *dest_group_list;
 
 /************ Function Prototypes ************/
-extern void about_box_display(void);
-extern void help_display(void);
+extern void dest_group_add(gpointer pbox, GtkWidget *w);
+extern void dest_list_update(GList *group);
 
-#endif	/* _HELP_H_ */
+#endif	/* _DEST_H_ */

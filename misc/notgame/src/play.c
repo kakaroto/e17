@@ -27,6 +27,7 @@ static const char cvs_ident[] = "$Id$";
 #include <gtk/gtk.h>
 #include <gdk_imlib.h>
 
+#include "debug.h"
 #include "conf.h"
 #include "notgame.h"
 #include "play.h"

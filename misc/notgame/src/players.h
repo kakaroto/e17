@@ -10,17 +10,18 @@
  * this program for license terms.
  */
 
-#ifndef _HELP_H_
-#define _HELP_H_
+#ifndef _PLAYERS_H_
+#define _PLAYERS_H_
 
 /************ Macros and Definitions ************/
 
 /************ Structures ************/
 
 /************ Variables ************/
+extern GList *player_group_list;
 
 /************ Function Prototypes ************/
-extern void about_box_display(void);
-extern void help_display(void);
+extern void player_group_add(gpointer pbox, GtkWidget *w);
+extern void player_list_update(GList *group);
 
-#endif	/* _HELP_H_ */
+#endif	/* _PLAYERS_H_ */
