@@ -4,20 +4,30 @@
 #                                                                             #
 ###############################################################################
 
-This is the Imlib 2 library - a library that does load file loading and saving
-as well as rendering, manipulation etc. It also does ALL of these FAST and
-tries to be highly intelligent about doing it to make writing niaeve programs
-that are still very fast.
+This is the Imlib 2 library - a library that does image file loading and
+saving as well as rendering, manipulation, arbitrary polygon support, etc.
 
-This is an early stage of its release and thus is Imlib2 0.0.4 - there are
-bugs that have to be worked out - primarily ones that might deal with network
-rendering, endianess and the lack of loaders.
+It does ALL of these operations FAST. Imlib2 also tries to be highly
+intelligent about doing them, so writing naive programs can be done
+easily, without sacrificing speed.
 
-The src/ directory contains the Imlib2 source itself
-The loaders/ directory contains some sample loaders and savers (a loader both
-loads and saves a certain format)
-The test/ directory contains a test program you can compiel and run after
-Imlib2 is installed (runt he test program in the test directory)
-The libltdl/ direcotry contains the LGPL licensed source for libtool to enable
-loadable module support on all platforms.
+This is a complete rewrite over the Imlib 1.x series. The architecture is
+more modular, simple, and flexible. See index.html in the doc/ directory
+for more information.
 
+For examples of this library in use, seek:
+
+Eterm            http://www.eterm.org/ (CVS version only, currently)
+feh              http://www.linuxbrit.co.uk/feh.html
+geist            http://www.linuxbrit.co.uk/geist.html
+
+A blurb about each of the directories:
+
+debian/          Debian build files
+demo/            Demo view program
+doc/             Documentation for imlib2, primarily in html
+filters/         Filter shared objects
+libltdl/         Libtool LGPL-licensed loadable module support library source
+loaders/         Imlib2's image loader-savers (jpg, png, etc)
+src/             Imlib2 main source
+test/            Test program(s)
