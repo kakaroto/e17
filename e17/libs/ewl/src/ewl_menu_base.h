@@ -2,7 +2,7 @@
 #define __EWL_MENU_BASE_H__
 
 /**
- * @defgroup Ewl_Menu_Base The Basic Menu Functionality
+ * @defgroup Ewl_Menu_Base Menu_Base: The Basic Menu Functionality
  * @brief Defines the basic menu classes that are extended to an actual menu
  * implementation by inheriting classes such as Ewl_Menu and Ewl_IMenu.
  *

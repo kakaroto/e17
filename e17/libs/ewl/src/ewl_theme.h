@@ -3,7 +3,7 @@
 #define __EWL_THEME_H__
 
 /**
- * @defgroup Ewl_Theme Methods for Accessing and Modifying Theme Data
+ * @defgroup Ewl_Theme Theme: Methods for Accessing and Modifying Theme Data
  * Provides methods for accessing theme data, global theme data or per-widget
  * theme data.
  *

@@ -149,6 +149,11 @@ src/Makefile
 test/Makefile
 tools/Makefile
 tools/ewl_config/Makefile
+data/Makefile
+data/themes/Makefile
+data/themes/default/Makefile
+data/themes/default/bits/Makefile
+data/themes/default/fonts/Makefile
 ])
 AC_CONFIG_COMMANDS([default],[[
 chmod +x ewl-config

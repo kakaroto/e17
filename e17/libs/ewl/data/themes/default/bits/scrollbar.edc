@@ -181,15 +181,13 @@ collections {
 	    mouse_events,  1;
 	    description {
 	       state,    "default" 0.0;
-               min, 10 9;
-               max, 10 9;
 	       rel1 {
 		  relative, 0.0  0.0;
-		  offset,   0    1;
+		  offset,   1    2;
 	       }
 	       rel2 {
 		  relative, 1.0  1.0;
-		  offset,   -1   -1;
+		  offset,   -2   -2;
 	       }
 	       image {
 		  normal, "arrow-up.png";
@@ -392,15 +390,13 @@ collections {
 	    mouse_events,  1;
 	    description {
 	       state,    "default" 0.0;
-               min, 10 9;
-               max, 10 9;
 	       rel1 {
 		  relative, 0.0  0.0;
-		  offset,   0    0;
+		  offset,   1    1;
 	       }
 	       rel2 {
 		  relative, 1.0  1.0;
-		  offset,   -1   -1;
+		  offset,   -2   -2;
 	       }
 	       image {
 		  normal, "arrow-down.png";
@@ -602,15 +598,13 @@ collections {
 	    mouse_events,  1;
 	    description {
 	       state,    "default" 0.0;
-               min, 9 10;
-               max, 9 10;
 	       rel1 {
 		  relative, 0.0  0.0;
-		  offset,   1    0;
+		  offset,   2    1;
 	       }
 	       rel2 {
 		  relative, 1.0  1.0;
-		  offset,   -1   -1;
+		  offset,   -2   -2;
 	       }
 	       image {
 		  normal, "arrow-left.png";
@@ -813,15 +807,13 @@ collections {
 	    mouse_events,  1;
 	    description {
 	       state,    "default" 0.0;
-               min, 9 10;
-               max, 9 10;
 	       rel1 {
 		  relative, 0.0  0.0;
-		  offset,   1    0;
+		  offset,   2    1;
 	       }
 	       rel2 {
 		  relative, 1.0  1.0;
-		  offset,   -1   -1;
+		  offset,   -2   -2;
 	       }
 	       image {
 		  normal, "arrow-right.png";

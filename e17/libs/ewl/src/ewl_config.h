@@ -2,7 +2,7 @@
 #define __EWL_CONFIG_H__
 
 /**
- * @defgroup Ewl_Config Functions for Manipulating Configuration Data
+ * @defgroup Ewl_Config Config: Functions for Manipulating Configuration Data
  *
  * @{
  */

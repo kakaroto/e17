@@ -3,7 +3,7 @@
 #define __EWL_TEXTAREA_H__
 
 /**
- * @defgroup Ewl_TextArea A Multi-Line Text Layout Display
+ * @defgroup Ewl_TextArea TextArea: A Multi-Line Text Layout Display
  * @brief Defines a class for multi-line text layout and formatting.
  *
  * @{

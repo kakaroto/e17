@@ -2,7 +2,7 @@
 #define __EWL_MENU_H__
 
 /**
- * @defgroup Ewl_Menu A Popup Menu
+ * @defgroup Ewl_Menu Menu: A Popup Menu
  * Provides a popup menu for displaying a list of options.
  *
  * @{

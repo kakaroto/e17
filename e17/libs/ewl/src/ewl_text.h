@@ -3,7 +3,7 @@
 #define __EWL_TEXT_H
 
 /**
- * @defgroup Ewl_Text A Single Line Text Display
+ * @defgroup Ewl_Text Text: A Single Line Text Display
  * @brief Defines the Ewl_Text class to provide text display in a single line.
  *
  * @{

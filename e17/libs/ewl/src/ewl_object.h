@@ -2,7 +2,7 @@
 #define __EWL_OBJECT_H__
 
 /**
- * @defgroup Ewl_Object Basic Object Inherited by Ewl_Widget
+ * @defgroup Ewl_Object Object: Basic Object Inherited by Ewl_Widget
  * @brief Defines the Ewl_Object class along with methods and macros related
  * to it.
  *

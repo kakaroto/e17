@@ -2,8 +2,10 @@
 #define __EWL_ENUMS_H__
 
 /**
- * @defgroup Ewl_Enums Various Flags and Enumerations used in EWL
+ * @defgroup Ewl_Enums Enums: Various Flags and Enumerations used in EWL
  * Provides bitmasks, flags, and other enumerations for use by widgets in EWL.
+ *
+ * @{
  */
 
 /**
@@ -202,5 +204,9 @@ enum Ewl_Filedialog_Type
 	EWL_FILEDIALOG_TYPE_OPEN,
 	EWL_FILEDIALOG_TYPE_CLOSE
 };
+
+/**
+ * @}
+ */
 
 #endif				/* __EWL_ENUMS_H__ */

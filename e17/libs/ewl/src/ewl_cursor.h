@@ -2,7 +2,7 @@
 #define __EWL_CURSOR_H__
 
 /**
- * @defgroup Ewl_Cursor A Text Cursor
+ * @defgroup Ewl_Cursor Cursor: A Text Cursor
  * Indicates cursor position in editable text and provides a visual selection
  * highlighting.
  *

@@ -2,7 +2,7 @@
 #define __EWL_SCROLLPANE_H__
 
 /**
- * @defgroup Ewl_ScrollPane A Scrollable Viewing Area
+ * @defgroup Ewl_ScrollPane ScrollPane: A Scrollable Viewing Area
  * Provides a scrollable area for viewing large sets of widgets in a smaller
  * viewable region.
  *

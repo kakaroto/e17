@@ -313,8 +313,22 @@ void __ewl_image_configure(Ewl_Widget * w, void *ev_data, void *user_data)
 
 	emb = ewl_embed_find_by_widget(w);
 
-	ww = CURRENT_W(w) - (INSET_LEFT(w) + INSET_RIGHT(w));
-	hh = CURRENT_H(w) - (INSET_TOP(w) + INSET_BOTTOM(w));
+	ww = CURRENT_W(w);
+	hh = CURRENT_H(w);
+
+	if (i->proportional) {
+		double op, np;
+
+		op = (double)i->ow / (double)i->oh;
+		np = (double)ww / (double)hh;
+
+		if (op < np) {
+			hh *= op;
+		}
+		else {
+			ww *= np;
+		}
+	}
 
 	/*
 	 * Move the image into place based on type.

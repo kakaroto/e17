@@ -2,7 +2,7 @@
 #define _EWL_CELL_H
 
 /**
- * @defgroup Ewl_Cell The Cell Container, Layout for a Single Widget
+ * @defgroup Ewl_Cell Cell: The Cell Container, Layout for a Single Widget
  * Defines a container to layout a single child with all of it's available
  * space.
  *

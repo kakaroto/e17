@@ -2,7 +2,7 @@
 #define __EWL_CONTAINER_H__
 
 /**
- * @defgroup Ewl_Container The Base Class for Widgets Holding Other Widgets
+ * @defgroup Ewl_Container Container: Widgets Holding Other Widgets
  * @brief Define the Ewl_Container class which inherits from Ewl_Widget and adds
  * the ability to nest Ewl_Widget's inside.
  *

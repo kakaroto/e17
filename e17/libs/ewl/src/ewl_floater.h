@@ -3,7 +3,7 @@
 #define __EWL_FLOATER_H__
 
 /**
- * @defgroup Ewl_Floater A Floating Container
+ * @defgroup Ewl_Floater Floater: A Floating Container
  * @brief Defines a widget for layering above other widgets in EWL's drawing
  * area, with the ability to follow the movement of another widget.
  *

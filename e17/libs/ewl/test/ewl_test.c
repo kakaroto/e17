@@ -79,6 +79,7 @@ main(int argc, char **argv)
 		{ "Image", __create_image_test_window },
 		{ "Spinner", __create_spinner_test_window },
 		{ "Textarea", __create_textarea_test_window },
+		{ "Tree", __create_tree_test_window },
 		{ 0, 0 }
 	};
 	void *heap_start, *heap_end;

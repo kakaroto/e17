@@ -148,8 +148,7 @@
  * 	ewl_window_set_title(EWL_WINDOW(main_win), "EWL Simple Image Viewer");
  * 	ewl_callback_append(main_win, EWL_CALLBACK_DELETE_WINDOW,
  *			    __destroy_main_window, NULL);
- * 	ewl_window_set_min_size(EWL_WINDOW(main_win), 100, 100);
- * 	ewl_window_set_auto_size(EWL_WINDOW(main_win), TRUE);
+ * 	ewl_object_set_minimum_size(EWL_OBJECT(main_win), 100, 100);
  * 	ewl_widget_show(main_win);
  * @endcode
  *
@@ -158,8 +157,8 @@
  * easier to add more widgets later.
  *
  * @code
- * 	main_box = *ewl_vbox_new();
- * 	ewl_container_append_child(EWL_CONTAINER(main_win), *main_box);
+ * 	main_box = ewl_vbox_new();
+ * 	ewl_container_append_child(EWL_CONTAINER(main_win), main_box);
  * 	ewl_widget_show(main_box);
  * @endcode
  *
@@ -168,7 +167,7 @@
  * box in the window.
  *
  * @code
- * 	image *= *ewl_image_load(argv[1]);
+ * 	image = ewl_image_new(argv[1]);
  * 	ewl_container_append_child(EWL_CONTAINER(main_box), image);
  * 	ewl_widget_show(image);
  * @endcode

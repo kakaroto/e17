@@ -2,7 +2,7 @@
 #define _EWL_TREE_H
 
 /**
- * @defgroup Ewl_Tree A Widget for List or Tree Layout
+ * @defgroup Ewl_Tree Tree: A Widget for List or Tree Layout
  * @brief Defines a widget for laying out other widgets in a tree or list like
  * manner.
  *

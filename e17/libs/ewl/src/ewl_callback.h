@@ -2,7 +2,7 @@
 #define __EWL_CALLBACK_H__
 
 /**
- * @defgroup Ewl_Callback The Callback Mechanisms
+ * @defgroup Ewl_Callback Callback: The Callback Mechanisms
  * Defines methods for creating and modifying callbacks on widgets
  *
  * @{
