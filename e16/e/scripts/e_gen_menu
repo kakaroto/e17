@@ -70,4 +70,5 @@ fi
 touch $OUT
 
 eesh -e "reload_menus"
+sleep 2
 eesh -e "dialog_ok Menu generation complete."
