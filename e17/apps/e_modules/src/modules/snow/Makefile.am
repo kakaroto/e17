@@ -3,7 +3,12 @@ MAINTAINERCLEANFILES = Makefile.in
 # data files for the module
 filesdir = $(libdir)/e_modules/snow
 files_DATA = \
+tree.png \
+flake-s.png \
+flake-m.png \
+flake-l.png \
 module_icon.png
+
 
 EXTRA_DIST = $(files_DATA)
 

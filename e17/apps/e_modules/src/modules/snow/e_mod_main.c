@@ -1,4 +1,5 @@
 #include "e.h"
+#include "config.h"
 #include "e_mod_main.h"
 
 /* TODO List:
@@ -78,7 +79,7 @@ info(E_Module *m)
    char buf[4096];
    
    m->label = strdup("Snow");
-   snprintf(buf, sizeof(buf), "%s/module_icon.png", e_module_dir_get(m));
+   snprintf(buf, sizeof(buf), PACKAGE_LIB_DIR "/e_modules/snow/module_icon.png");
    m->icon_file = strdup(buf);
    return 1;
 }
@@ -299,7 +300,7 @@ _snow_trees_load(Snow *snow) {
    char buf[4096];
    int tw, th, i;
 
-   snprintf(buf, sizeof(buf), "%s/tree.png", e_module_dir_get(snow->module));
+   snprintf(buf, sizeof(buf), PACKAGE_LIB_DIR "/e_modules/snow/tree.png");
 
    o = evas_object_image_add(snow->canvas);
    evas_object_image_file_set(o, buf, "");
@@ -335,8 +336,7 @@ _snow_flakes_load(char type, Snow *snow) {
    Snow_Flake *flake;
 
    evas_output_viewport_get(snow->canvas, &xx, &yy, &ww, &hh);
-   snprintf(buf, sizeof(buf), "%s/flake-%c.png", e_module_dir_get(snow->module),
-	    type);
+   snprintf(buf, sizeof(buf), PACKAGE_LIB_DIR "/e_modules/snow/flake-%c.png", type);
 
    o = evas_object_image_add(snow->canvas);
    evas_object_image_file_set(o, buf, "");
