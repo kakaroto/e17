@@ -302,6 +302,8 @@ ewl_embed_feed_mouse_down(Ewl_Embed *embed, int b, int clicks, int x, int y,
 
 	widget = ewl_container_get_child_at_recursive(EWL_CONTAINER(embed),
 			x, y);
+	if (!widget)
+		widget = EWL_WIDGET(embed);
 
 	/*
 	 * Save the last selected widget for further reference, do this prior
@@ -430,6 +432,8 @@ ewl_embed_feed_mouse_move(Ewl_Embed *embed, int x, int y, unsigned int mods)
 
 	widget = ewl_container_get_child_at_recursive(EWL_CONTAINER(embed),
 			x, y);
+	if (!widget)
+		widget = EWL_WIDGET(embed);
 
 	ev.modifiers = mods;
 	ev.x = x;
