@@ -1,0 +1,10 @@
+config.*
+Makefile
+Makefile.in
+aclocal.m4
+*.tar.gz
+libtool
+lt*
+stamp*
+
+configure
