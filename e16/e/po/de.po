@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: enlightenment 0.16.6\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2005-02-18 19:46+0100\n"
+"POT-Creation-Date: 2005-03-01 20:35+0100\n"
 "PO-Revision-Date: 2000-03-29 21:12+0200\n"
 "Last-Translator: Matthias Warkus <mawa@iname.com>\n"
 "Language-Team: Enlightenment l10n <e-develop@enlightenment.org>\n"
@@ -20,7 +20,7 @@ msgstr ""
 msgid "ActionClass Error!"
 msgstr "TextClass-Fehler!"
 
-#: src/aclass.c:183 src/backgrounds.c:213 src/borders.c:727 src/buttons.c:168
+#: src/aclass.c:183 src/backgrounds.c:213 src/borders.c:727 src/buttons.c:167
 #: src/cmclass.c:82 src/cursors.c:117 src/iclass.c:236 src/tclass.c:91
 #: src/tooltips.c:131
 #, c-format
@@ -33,9 +33,9 @@ msgstr "%u Referenzen verbleiben\n"
 # src/config.c:2316 src/config.c:2532 src/config.c:2795 src/config.c:2887
 # src/config.c:2964 src/config.c:3065 src/config.c:3387
 #: src/aclass.c:238 src/backgrounds.c:933 src/borders.c:1155
-#: src/borders.c:1279 src/buttons.c:849 src/cmclass.c:199 src/config.c:266
-#: src/cursors.c:156 src/iclass.c:387 src/iconify.c:2772 src/menus.c:1856
-#: src/menus.c:1969 src/slideout.c:408 src/tclass.c:218 src/tooltips.c:165
+#: src/borders.c:1279 src/buttons.c:848 src/cmclass.c:199 src/config.c:266
+#: src/cursors.c:156 src/iclass.c:387 src/iconify.c:2732 src/menus.c:1861
+#: src/menus.c:1974 src/slideout.c:408 src/tclass.c:218 src/tooltips.c:165
 #: src/windowmatch.c:145
 #, c-format
 msgid "CONFIG: ignoring extra data in \"%s\"\n"
@@ -47,8 +47,8 @@ msgstr "KONFIG: ignoriere überflüssige Daten in \"%s\"\n"
 # src/config.c:2322 src/config.c:2540 src/config.c:2801 src/config.c:3071
 # src/config.c:3395
 #: src/aclass.c:246 src/backgrounds.c:941 src/borders.c:1161
-#: src/borders.c:1285 src/buttons.c:857 src/cmclass.c:207 src/config.c:274
-#: src/cursors.c:162 src/iclass.c:392 src/menus.c:1861 src/menus.c:1975
+#: src/borders.c:1285 src/buttons.c:856 src/cmclass.c:207 src/config.c:274
+#: src/cursors.c:162 src/iclass.c:392 src/menus.c:1866 src/menus.c:1980
 #: src/slideout.c:414 src/tclass.c:224 src/tooltips.c:171
 #: src/windowmatch.c:150
 #, c-format
@@ -168,12 +168,12 @@ msgstr ""
 "Datei ist.\n"
 
 # src/actions.c:3282
-#: src/actions.c:260
+#: src/actions.c:263
 #, c-format
 msgid "About Enlightenment %s"
 msgstr "Über Enlightenment %s"
 
-#: src/actions.c:274
+#: src/actions.c:277
 #, c-format
 msgid ""
 "Welcome to the %s version\n"
@@ -201,10 +201,10 @@ msgstr ""
 # src/settings.c:1460 src/settings.c:1522 src/settings.c:1610
 # src/settings.c:2012 src/settings.c:3405 src/settings.c:3750
 # src/settings.c:4048 src/settings.c:4186 src/snaps.c:547 src/sound.c:262
-#: src/actions.c:289 src/backgrounds.c:2337 src/desktops.c:1939
-#: src/desktops.c:2172 src/dialog.c:2058 src/dialog.c:2083 src/fx.c:1058
+#: src/actions.c:292 src/backgrounds.c:2337 src/desktops.c:1953
+#: src/desktops.c:2186 src/dialog.c:2064 src/dialog.c:2089 src/fx.c:1058
 #: src/groups.c:665 src/groups.c:968 src/groups.c:1145 src/handlers.c:207
-#: src/iconify.c:2730 src/mod-trans.c:363 src/pager.c:2159 src/settings.c:329
+#: src/iconify.c:2690 src/mod-trans.c:363 src/pager.c:2168 src/settings.c:329
 #: src/settings.c:697 src/settings.c:889 src/settings.c:987
 #: src/settings.c:1100 src/settings.c:1418 src/settings.c:1561 src/snaps.c:861
 #: src/snaps.c:1061 src/sound.c:281 src/sound.c:486 src/tooltips.c:901
@@ -255,7 +255,7 @@ msgstr "Enlightenment neu starten"
 # src/setup.c:341 src/setup.c:403
 #: src/alert.c:576 src/alert.c:600 src/events.c:95 src/memory.c:211
 #: src/memory.c:286 src/memory.c:304 src/memory.c:379 src/memory.c:394
-#: src/setup.c:307
+#: src/setup.c:308
 msgid "Quit Enlightenment"
 msgstr "Enlightenment verlassen"
 
@@ -416,9 +416,9 @@ msgstr "Nach Bild sortieren"
 # src/settings.c:1461 src/settings.c:1523 src/settings.c:1611
 # src/settings.c:2013 src/settings.c:3406 src/settings.c:3751
 # src/settings.c:4049 src/settings.c:4187 src/snaps.c:548
-#: src/backgrounds.c:2338 src/desktops.c:1940 src/desktops.c:2173
-#: src/fx.c:1059 src/groups.c:969 src/groups.c:1147 src/iconify.c:2731
-#: src/mod-trans.c:364 src/pager.c:2160 src/settings.c:330 src/settings.c:698
+#: src/backgrounds.c:2338 src/desktops.c:1954 src/desktops.c:2187
+#: src/fx.c:1059 src/groups.c:969 src/groups.c:1147 src/iconify.c:2691
+#: src/mod-trans.c:364 src/pager.c:2169 src/settings.c:330 src/settings.c:698
 #: src/settings.c:890 src/settings.c:988 src/settings.c:1101
 #: src/settings.c:1419 src/settings.c:1562 src/snaps.c:862 src/sound.c:487
 #: src/tooltips.c:902
@@ -431,9 +431,9 @@ msgstr "Übernehmen"
 # src/settings.c:1524 src/settings.c:1612 src/settings.c:2014
 # src/settings.c:3407 src/settings.c:3752 src/settings.c:4050
 # src/settings.c:4188
-#: src/backgrounds.c:2339 src/desktops.c:1941 src/desktops.c:2174
+#: src/backgrounds.c:2339 src/desktops.c:1955 src/desktops.c:2188
 #: src/fx.c:1060 src/groups.c:666 src/groups.c:970 src/groups.c:1149
-#: src/iconify.c:2732 src/mod-trans.c:365 src/pager.c:884 src/pager.c:2161
+#: src/iconify.c:2692 src/mod-trans.c:365 src/pager.c:893 src/pager.c:2170
 #: src/settings.c:331 src/settings.c:700 src/settings.c:892 src/settings.c:990
 #: src/settings.c:1103 src/settings.c:1420 src/settings.c:1564 src/snaps.c:863
 #: src/snaps.c:1062 src/sound.c:488 src/tooltips.c:903
@@ -446,7 +446,7 @@ msgid "Border Error!"
 msgstr "Rahmen-Fehler!"
 
 # src/settings.c:2526 src/settings.c:2528
-#: src/buttons.c:168
+#: src/buttons.c:167
 msgid "Button Error!"
 msgstr "Knopf-Fehler!"
 
@@ -702,7 +702,7 @@ msgid "Cursor"
 msgstr "ECursor-Fehler!"
 
 # src/desktops.c:1110
-#: src/desktops.c:107
+#: src/desktops.c:110
 msgid ""
 "Hold down the mouse button and drag\n"
 "the mouse to be able to drag the desktop\n"
@@ -720,7 +720,7 @@ msgstr ""
 "Liste aller laufenden Anwendungen.\n"
 
 # src/desktops.c:1122
-#: src/desktops.c:118
+#: src/desktops.c:121
 msgid ""
 "This is the Root desktop.\n"
 "You cannot drag the root desktop around.\n"
@@ -737,7 +737,7 @@ msgstr ""
 "aller laufenden Anwendungen.\n"
 
 # src/desktops.c:1144
-#: src/desktops.c:138
+#: src/desktops.c:141
 msgid ""
 "Click here to raise this desktop\n"
 "to the top.\n"
@@ -746,7 +746,7 @@ msgstr ""
 "ganz nach oben zu bringen.\n"
 
 # src/desktops.c:1160
-#: src/desktops.c:152
+#: src/desktops.c:155
 msgid ""
 "Click here to lower this desktop\n"
 "to the bottom.\n"
@@ -755,24 +755,24 @@ msgstr ""
 "ganz nach unten zu bringen.\n"
 
 # src/settings.c:830 src/settings.c:889
-#: src/desktops.c:1775 src/desktops.c:1843
+#: src/desktops.c:1789 src/desktops.c:1857
 #, c-format
 msgid "%i Desktops"
 msgstr "%i Desktops"
 
 # src/settings.c:832 src/settings.c:891
-#: src/desktops.c:1777 src/desktops.c:1845
+#: src/desktops.c:1791 src/desktops.c:1859
 #, c-format
 msgid "%i Desktop"
 msgstr "%i Desktop"
 
 # src/settings.c:856
-#: src/desktops.c:1807
+#: src/desktops.c:1821
 msgid "Multiple Desktop Settings"
 msgstr "Mehrfach-Desktop-Einstellungen"
 
 # src/main.c:89
-#: src/desktops.c:1822
+#: src/desktops.c:1836
 msgid ""
 "Enlightenment Multiple Desktop\n"
 "Settings Dialog\n"
@@ -781,50 +781,50 @@ msgstr ""
 "Einstellungsdialog\n"
 
 # src/settings.c:882
-#: src/desktops.c:1836
+#: src/desktops.c:1850
 msgid "Number of virtual desktops:\n"
 msgstr "Anzahl virtueller Desktops:\n"
 
 # src/settings.c:1120
-#: src/desktops.c:1875
+#: src/desktops.c:1889
 #, fuzzy
 msgid "Wrap desktops around"
 msgstr "Virtuelle Desktops zyklisch durchlaufen"
 
 # src/settings.c:1858
-#: src/desktops.c:1889
+#: src/desktops.c:1903
 msgid "Display desktop dragbar"
 msgstr "Desktop-Ziehbalken anzeigen"
 
 # src/settings.c:1867
-#: src/desktops.c:1898
+#: src/desktops.c:1912
 msgid "Drag bar position:"
 msgstr "Position des Ziehbalkens:"
 
 # src/settings.c:1878
-#: src/desktops.c:1904
+#: src/desktops.c:1918
 msgid "Top"
 msgstr "Oben"
 
 # src/settings.c:1885
-#: src/desktops.c:1912
+#: src/desktops.c:1926
 msgid "Bottom"
 msgstr "Unten"
 
 # src/settings.c:218 src/settings.c:250 src/settings.c:282
 # src/settings.c:1896
-#: src/desktops.c:1920 src/pager.c:2068 src/pager.c:2100 src/pager.c:2132
+#: src/desktops.c:1934 src/pager.c:2077 src/pager.c:2109 src/pager.c:2141
 msgid "Left"
 msgstr "Links"
 
 # src/settings.c:234 src/settings.c:266 src/settings.c:298
 # src/settings.c:1903
-#: src/desktops.c:1928 src/pager.c:2084 src/pager.c:2116 src/pager.c:2148
+#: src/desktops.c:1942 src/pager.c:2093 src/pager.c:2125 src/pager.c:2157
 msgid "Right"
 msgstr "Rechts"
 
 # src/settings.c:1007 src/settings.c:1072
-#: src/desktops.c:2024 src/desktops.c:2093
+#: src/desktops.c:2038 src/desktops.c:2107
 #, c-format
 msgid ""
 "%i x %i\n"
@@ -834,7 +834,7 @@ msgstr ""
 "Bildschirme groß"
 
 # src/settings.c:1010 src/settings.c:1075
-#: src/desktops.c:2027 src/desktops.c:2096
+#: src/desktops.c:2041 src/desktops.c:2110
 msgid ""
 "1\n"
 "Screen in size"
@@ -843,12 +843,12 @@ msgstr ""
 "Bildschirm groß"
 
 # src/settings.c:1040
-#: src/desktops.c:2057
+#: src/desktops.c:2071
 msgid "Virtual Desktop Settings"
 msgstr "Einstellungen zu virtuellen Desktops"
 
 # src/settings.c:1040
-#: src/desktops.c:2075
+#: src/desktops.c:2089
 msgid ""
 "Enlightenment Virtual Desktop\n"
 "Settings Dialog\n"
@@ -857,27 +857,27 @@ msgstr ""
 "für virtuelle Desktops\n"
 
 # src/settings.c:1066
-#: src/desktops.c:2087
+#: src/desktops.c:2101
 msgid "Virtual Desktop size:\n"
 msgstr "Virtuelle Desktopgröße:\n"
 
 # src/settings.c:1120
-#: src/desktops.c:2141
+#: src/desktops.c:2155
 msgid "Wrap virtual desktops around"
 msgstr "Virtuelle Desktops zyklisch durchlaufen"
 
 # src/settings.c:1127
-#: src/desktops.c:2148
+#: src/desktops.c:2162
 msgid "Enable edge flip"
 msgstr "Magische Kanten verwenden"
 
 # src/settings.c:1134
-#: src/desktops.c:2155
+#: src/desktops.c:2169
 msgid "Resistance at edge of screen:\n"
 msgstr "Widerstand der Bildschirmkante:\n"
 
 # src/dialog.c:304
-#: src/dialog.c:2083
+#: src/dialog.c:2089
 msgid "Attention !!!"
 msgstr "Achtung!"
 
@@ -1398,54 +1398,60 @@ msgstr ""
 "Werde dies ignorieren und fortfahren...\n"
 
 # src/iconify.c:2420
-#: src/iconify.c:2005
+#: src/iconify.c:1985
 msgid "Iconbox Options"
 msgstr "Iconbox-Optionen"
 
 # src/iconify.c:2426
-#: src/iconify.c:2008
+#: src/iconify.c:1988
 msgid "This Iconbox Settings..."
 msgstr "Einstellungen dieser Iconbox..."
 
 # src/iconify.c:2429
-#: src/iconify.c:2012
+#: src/iconify.c:1992
 msgid "Close Iconbox"
 msgstr "Iconbox schließen"
 
 # src/iconify.c:2432
-#: src/iconify.c:2015
+#: src/iconify.c:1995
 msgid "Create New Iconbox"
 msgstr "Neue Iconbox erzeugen"
 
 # src/pager.c:1295
-#: src/iconify.c:2022
+#: src/iconify.c:2002
 #, fuzzy
 msgid "Systray Options"
 msgstr "Desktopoptionen"
 
 # src/settings.c:1304
-#: src/iconify.c:2025
+#: src/iconify.c:2005
 #, fuzzy
 msgid "Systray Settings..."
 msgstr "Einstellungen zum automatischen Anheben"
 
-#: src/iconify.c:2029
+#: src/iconify.c:2009
 msgid "Close Systray"
 msgstr ""
 
+# src/settings.c:3643
+#: src/iconify.c:2382 src/iconify.c:2581
+#, fuzzy, c-format
+msgid "Icon size: %2d"
+msgstr "Icongröße"
+
 # src/settings.c:3506
-#: src/iconify.c:2468
+#: src/iconify.c:2426
 msgid "Iconbox Settings"
 msgstr "Iconbox-Einstellungen"
 
 # src/settings.c:1304
-#: src/iconify.c:2470
+#: src/iconify.c:2428
 #, fuzzy
 msgid "Systray Settings"
 msgstr "Einstellungen zum automatischen Anheben"
 
 # src/main.c:89
-#: src/iconify.c:2488
+#: src/iconify.c:2446
 msgid ""
 "Enlightenment Iconbox\n"
 "Settings Dialog\n"
@@ -1454,121 +1460,116 @@ msgstr ""
 "Einstellungsdialog\n"
 
 # src/settings.c:3530
-#: src/iconify.c:2499
+#: src/iconify.c:2457
 msgid "Transparent background"
 msgstr "Transparenter Hintergrund"
 
-#: src/iconify.c:2506
+#: src/iconify.c:2464
 msgid "Hide inner border"
 msgstr ""
 
 # src/settings.c:3544
-#: src/iconify.c:2515
+#: src/iconify.c:2473
 msgid "Show icon names"
 msgstr "Iconnamen anzeigen"
 
 # src/settings.c:3551
-#: src/iconify.c:2523
+#: src/iconify.c:2481
 msgid "Draw base image behind Icons"
 msgstr "Hintergrundfliese hinter Icons zeichnen"
 
 # src/settings.c:3558
-#: src/iconify.c:2530
+#: src/iconify.c:2488
 msgid "Hide scrollbar when not needed"
 msgstr "Rollbalken verbergen, wenn nicht benötigt"
 
 # src/settings.c:3565
-#: src/iconify.c:2537
+#: src/iconify.c:2495
 msgid "Automatically resize to fit Icons"
 msgstr "Größe automatisch auf Icons anpassen"
 
 # src/settings.c:3573
-#: src/iconify.c:2548
+#: src/iconify.c:2506
 msgid "Animate when iconifying to this Iconbox"
 msgstr "Beim Verkleinern in diese Iconbox animieren"
 
 # src/settings.c:3583
-#: src/iconify.c:2559
+#: src/iconify.c:2517
 msgid "Alignment of anchoring when automatically resizing:"
 msgstr "Ausrichtung der Verankerung bei automatischer Größenänderung:"
 
 # src/settings.c:3605
-#: src/iconify.c:2583
+#: src/iconify.c:2541
 msgid "Icon image display policy (if one operation fails, try the next):"
 msgstr "Anzeigemethode für Icons (wenn eine Aktion fehlschlägt, die nächste):"
 
 # src/settings.c:3612
-#: src/iconify.c:2590
+#: src/iconify.c:2548
 msgid "Snapshot Windows, Use application icon, Use Enlightenment Icon"
 msgstr "Fensterschnappschüsse, Anwendungsicon, Enlightenments eigenes Icon"
 
 # src/settings.c:3621
-#: src/iconify.c:2599
+#: src/iconify.c:2557
 msgid "Use application icon, Use Enlightenment Icon, Snapshot Window"
 msgstr "Anwendungsicon, Enlightenments eigenes Icon, Fensterschnappschuss"
 
 # src/settings.c:3629
-#: src/iconify.c:2608
+#: src/iconify.c:2566
 msgid "Use Enlightenment Icon, Snapshot Window"
 msgstr "Enlightenments eigenes Icon, Fensterschnappschuss"
 
-# src/settings.c:3643
-#: src/iconify.c:2623
-msgid "Icon size"
-msgstr "Icongröße"
-
 # src/settings.c:3666
-#: src/iconify.c:2646
+#: src/iconify.c:2606
 msgid "Orientation:"
 msgstr "Ausrichtung:"
 
 # src/settings.c:3672
-#: src/iconify.c:2652
+#: src/iconify.c:2612
 msgid "Scrollbar side:"
 msgstr "Seite des Rollbalkens:"
 
 # src/settings.c:3678
-#: src/iconify.c:2658
+#: src/iconify.c:2618
 msgid "Scrollbar arrows:"
 msgstr "Pfeile des Rollbalkens:"
 
 # src/settings.c:3683
-#: src/iconify.c:2663
+#: src/iconify.c:2623
 msgid "Horizontal"
 msgstr "Waagerecht"
 
 # src/settings.c:3690
-#: src/iconify.c:2670
+#: src/iconify.c:2630
 msgid "Left / Top"
 msgstr "Links / Oben"
 
 # src/settings.c:3697
-#: src/iconify.c:2677
+#: src/iconify.c:2637
 msgid "Start"
 msgstr "Anfang"
 
 # src/settings.c:3704
-#: src/iconify.c:2684
+#: src/iconify.c:2644
 msgid "Vertical"
 msgstr "Vertikal"
 
 # src/settings.c:3712
-#: src/iconify.c:2692
+#: src/iconify.c:2652
 msgid "Right / Bottom"
 msgstr "Rechts / Unten"
 
 # src/settings.c:3720
-#: src/iconify.c:2700
+#: src/iconify.c:2660
 msgid "Both ends"
 msgstr "Beide Enden"
 
 # src/settings.c:3730
-#: src/iconify.c:2710
+#: src/iconify.c:2670
 msgid "End"
 msgstr "Ende"
 
 # src/settings.c:3740
-#: src/iconify.c:2720 src/settings.c:318
+#: src/iconify.c:2680 src/settings.c:318
 msgid "None"
 msgstr "-/-"
 
@@ -1577,7 +1578,7 @@ msgid "Message"
 msgstr "Mitteilung"
 
 # src/ipc.c:4890
-#: src/ipc.c:828
+#: src/ipc.c:827
 #, c-format
 msgid ""
 "Enlightenment Version : %s\n"
@@ -1587,13 +1588,13 @@ msgstr ""
 "Code aktuell bis     : %s\n"
 
 # src/ipc.c:4737
-#: src/ipc.c:1600
+#: src/ipc.c:1599
 #, fuzzy
 msgid "Enlightenment IPC Commands Help\n"
 msgstr "Hilfe zu Enlightenment-IPC-Befehlen"
 
 # src/ipc.c:4743
-#: src/ipc.c:1604
+#: src/ipc.c:1603
 #, fuzzy
 msgid ""
 "Use \"help all\" for descriptions of each command\n"
@@ -1605,41 +1606,31 @@ msgstr ""
 "\n"
 
 # src/ipc.c:4741 src/ipc.c:4780
-#: src/ipc.c:1606 src/ipc.c:1626 src/ipc.c:1638
+#: src/ipc.c:1605 src/ipc.c:1625 src/ipc.c:1637
 #, fuzzy
 msgid "Commands currently available:\n"
 msgstr ""
 "\n"
 "Momentan verfügbare Befehle:\n"
 
-#: src/ipc.c:1624
+#: src/ipc.c:1623
 msgid "Use \"help full\" for full descriptions of each command\n"
 msgstr ""
 
 # src/ipc.c:4781
-#: src/ipc.c:1625
+#: src/ipc.c:1624
 #, fuzzy
 msgid "Use \"help <command>\" for an individual description\n"
 msgstr "\"help <befehl>\" gibt eine nähere Beschreibung\n"
 
 # src/ipc.c:4783
-#: src/ipc.c:1627 src/ipc.c:1639
+#: src/ipc.c:1626 src/ipc.c:1638
 #, fuzzy
 msgid "         <command>     : <description>\n"
 msgstr "<befehl> : <beschreibung>\n"
 
-# src/main.c:180
-#: src/main.c:188
-#, c-format
-msgid ""
-"Enlightenment Version: %s\n"
-"Last updated on: %s\n"
-msgstr ""
-"Enlightenment Version %s\n"
-"Zuletzt aktualisiert am: %s\n"
-
 # src/setup.c:633
-#: src/main.c:452
+#: src/main.c:449
 #, c-format
 msgid ""
 "The directory %s is apparently not a directory\n"
@@ -1651,7 +1642,7 @@ msgstr ""
 "Bitte entfernen Sie diese Datei.\n"
 
 # src/setup.c:639
-#: src/main.c:459
+#: src/main.c:456
 #, c-format
 msgid ""
 "Do not have execute access to %s\n"
@@ -1665,7 +1656,7 @@ msgstr ""
 "Verzeichnisses und berichtigen Sie das Problem.\n"
 
 # src/setup.c:647
-#: src/main.c:467
+#: src/main.c:464
 #, c-format
 msgid ""
 "Do not have read access to %s\n"
@@ -1679,7 +1670,7 @@ msgstr ""
 "Verzeichnisses und berichtigen Sie das Problem.\n"
 
 # src/setup.c:655
-#: src/main.c:474
+#: src/main.c:471
 #, c-format
 msgid ""
 "Do not have write access to %s\n"
@@ -1693,7 +1684,7 @@ msgstr ""
 "Verzeichnisses und berichtigen Sie das Problem.\n"
 
 # src/misc.c:61
-#: src/main.c:602
+#: src/main.c:599
 #, c-format
 msgid ""
 "!!!!!!!! ERROR ERROR ERROR ERROR !!!!!!!!\n"
@@ -1723,7 +1714,7 @@ msgstr ""
 "beim Installieren von Enlightenment.\n"
 
 # src/misc.c:77
-#: src/main.c:616
+#: src/main.c:613
 #, fuzzy, c-format
 msgid ""
 "!!!!!!!! ERROR ERROR ERROR ERROR !!!!!!!!\n"
@@ -1917,7 +1908,7 @@ msgstr ""
 "Der Zeigerwert war %x.\n"
 "Der Fehler trat auf in %s, Zeile %d.\n"
 
-#: src/menus.c:2133
+#: src/menus.c:2138
 msgid "Menu"
 msgstr ""
 
@@ -2018,124 +2009,124 @@ msgid "Glass"
 msgstr "Klasse:"
 
 # src/pager.c:1268
-#: src/pager.c:877
+#: src/pager.c:886
 msgid "Window Options"
 msgstr "Fensteroptionen"
 
 # src/pager.c:1274
-#: src/pager.c:880
+#: src/pager.c:889
 msgid "Iconify"
 msgstr "Minimieren"
 
 # src/pager.c:1280
-#: src/pager.c:888
+#: src/pager.c:897
 msgid "Annihilate"
 msgstr "Zerstören"
 
 # src/pager.c:1283
-#: src/pager.c:892
+#: src/pager.c:901
 msgid "Stick / Unstick"
 msgstr "Ankleben / Ablösen"
 
 # src/pager.c:1295
-#: src/pager.c:902
+#: src/pager.c:911
 msgid "Desktop Options"
 msgstr "Desktopoptionen"
 
 # src/pager.c:1301
-#: src/pager.c:904
+#: src/pager.c:913
 msgid "Pager Settings..."
 msgstr "Pager-Einstellungen..."
 
 # src/pager.c:1306
-#: src/pager.c:907
+#: src/pager.c:916
 msgid "Snapshotting On"
 msgstr "Schnappschüsse ein"
 
 # src/pager.c:1311
-#: src/pager.c:910
+#: src/pager.c:919
 msgid "Snapshotting Off"
 msgstr "Schnappschüsse aus"
 
 # src/pager.c:1318
-#: src/pager.c:915
+#: src/pager.c:924
 msgid "High Quality On"
 msgstr "Hohe Qualität ein"
 
 # src/pager.c:1323
-#: src/pager.c:918
+#: src/pager.c:927
 msgid "High Quality Off"
 msgstr "Hohe Qualität aus"
 
 # src/settings.c:87 src/settings.c:192
-#: src/pager.c:1919 src/pager.c:2042
+#: src/pager.c:1928 src/pager.c:2051
 msgid "Pager scanning speed:"
 msgstr "Pager-Abtastgeschwindigkeit:"
 
 # src/settings.c:88 src/settings.c:193
-#: src/pager.c:1920 src/pager.c:2043
+#: src/pager.c:1929 src/pager.c:2052
 msgid "lines per second"
 msgstr "Zeilen pro Sekunde"
 
 # src/settings.c:126
-#: src/pager.c:1956
+#: src/pager.c:1965
 msgid "Pager Settings"
 msgstr "Pager-Einstellungen"
 
 # src/main.c:89
-#: src/pager.c:1971
+#: src/pager.c:1980
 msgid ""
 "Enlightenment Desktop & Area\n"
 "Pager Settings Dialog\n"
 msgstr ""
 
 # src/settings.c:135
-#: src/pager.c:1985
+#: src/pager.c:1994
 msgid "Enable pager display"
 msgstr "Pager anzeigen"
 
 # src/settings.c:144
-#: src/pager.c:1994
+#: src/pager.c:2003
 msgid "Make miniature snapshots of the screen"
 msgstr "Miniatur-Schnappschüsse des Bildschirms machen"
 
 # src/settings.c:154
-#: src/pager.c:2004
+#: src/pager.c:2013
 msgid "Smooth high quality snapshots in snapshot mode"
 msgstr "Weiche, hochwertige Schnappschüsse im Schnappschussmodus"
 
 # src/settings.c:164
-#: src/pager.c:2014
+#: src/pager.c:2023
 msgid "Zoom in on pager windows when mouse is over them"
 msgstr "Auf Pager-Fenster einzoomen, wenn Maus darüber ist"
 
 # src/settings.c:174
-#: src/pager.c:2024
+#: src/pager.c:2033
 msgid "Pop up window title when mouse is over the window"
 msgstr "Fenstertitel anzeigen, wenn Maus über Fenster ist"
 
 # src/settings.c:183
-#: src/pager.c:2033
+#: src/pager.c:2042
 msgid "Continuously scan screen to update pager"
 msgstr "Ständig den Bildschirm abtasten, um Pager zu aktualisieren"
 
 # src/settings.c:212
-#: src/pager.c:2062
+#: src/pager.c:2071
 msgid "Mouse button to select and drag windows:"
 msgstr "Mausknopf zum Auswählen und Ziehen von Fenstern:"
 
 # src/settings.c:226 src/settings.c:258 src/settings.c:290
-#: src/pager.c:2076 src/pager.c:2108 src/pager.c:2140
+#: src/pager.c:2085 src/pager.c:2117 src/pager.c:2149
 msgid "Middle"
 msgstr "Mitte"
 
 # src/settings.c:244
-#: src/pager.c:2094
+#: src/pager.c:2103
 msgid "Mouse button to select desktops:"
 msgstr "Mausknopf zum Auswählen von Desktops:"
 
 # src/settings.c:276
-#: src/pager.c:2126
+#: src/pager.c:2135
 msgid "Mouse button to display pager menu:"
 msgstr "Mausknopf zum Anzeigen des Pager-Menüs:"
 
@@ -2626,7 +2617,7 @@ msgid "Fading Speed:\n"
 msgstr ""
 
 # src/setup.c:222
-#: src/setup.c:130
+#: src/setup.c:129
 msgid ""
 "Enlightenment cannot connect to the display nominated by\n"
 "your shell's DISPLAY environment variable. You may set this\n"
@@ -2652,17 +2643,17 @@ msgstr ""
 "oder startx, bevor Sie weitermachen.\n"
 
 # src/setup.c:402
-#: src/setup.c:306
+#: src/setup.c:307
 msgid "X server version error"
 msgstr "X-Server-Versionsfehler"
 
 # src/setup.c:403
-#: src/setup.c:306
+#: src/setup.c:307
 msgid "Ignore this error"
 msgstr "Ignorieren Sie diesen Fehler"
 
 # src/setup.c:404
-#: src/setup.c:308
+#: src/setup.c:309
 #, c-format
 msgid ""
 "WARNING:\n"
@@ -2909,22 +2900,17 @@ msgid "Theme %s does not contain a %s file\n"
 msgstr "Thema enthält keine Datei sound.cfg\n"
 
 # src/theme.c:293
-#: src/theme.c:335
+#: src/theme.c:342
 msgid "Unknown\n"
 msgstr "Unbekannt\n"
 
-# src/theme.c:316 src/theme.c:328
-#: src/theme.c:348 src/theme.c:355
-msgid "Theme file/directory does not exist\n"
-msgstr "Themendatei/-Verzeichnis existiert nicht\n"
-
 # src/theme.c:354
-#: src/theme.c:373
+#: src/theme.c:384
 msgid "Bad Theme"
 msgstr "Unbrauchbares Thema"
 
 # src/theme.c:348
-#: src/theme.c:374
+#: src/theme.c:385
 #, c-format
 msgid ""
 "The theme:\n"
@@ -2944,7 +2930,7 @@ msgstr ""
 "Das Thema ist aus folgendem Grund nicht brauchbar:\n"
 "%s"
 
-#: src/theme.c:400
+#: src/theme.c:411
 #, c-format
 msgid ""
 "No themes were found in the default theme directory:\n"
@@ -3084,74 +3070,102 @@ msgstr "Gespeicherte Einstellungen..."
 # src/settings.c:1710
 #: config/strings.c:16
 #, fuzzy
+msgid "Misc. FX Settings ..."
+msgstr "Special-FX-Einstellungen"
+
+# src/settings.c:1710
+#: config/strings.c:17
+#, fuzzy
 msgid "Special FX Settings ..."
 msgstr "Special-FX-Einstellungen"
 
 # src/settings.c:3044
-#: config/strings.c:17
+#: config/strings.c:18
 #, fuzzy
 msgid "Desktop Background Settings ..."
 msgstr "Hintergrundeinstellungen"
 
+# src/main.c:89
+#: config/strings.c:19
+#, fuzzy
+msgid "Theme Transparency Settings ..."
+msgstr ""
+"Enlightenment Minihilfen-\n"
+"Einstellungsdialog\n"
+
+# src/settings.c:1403
+#: config/strings.c:20
+#, fuzzy
+msgid "Composite Settings ..."
+msgstr "Minihilfen-Einstellungen"
+
 # src/settings.c:393
-#: config/strings.c:18
+#: config/strings.c:21
 #, fuzzy
 msgid "Miscellaneous Settings ..."
 msgstr "Verschiedene Einstellungen"
 
-#: config/strings.c:19
-msgid "Legacy E-conf tool ..."
-msgstr ""
-
-#: config/strings.c:22
+#: config/strings.c:24
 msgid ""
 "Clicking your mouse on the desktop will perform\n"
 "the following actions"
 msgstr ""
 
-#: config/strings.c:23
+#: config/strings.c:25
 msgid "Display User Menus"
 msgstr ""
 
 # src/main.c:92 src/memory.c:197 src/memory.c:278 src/memory.c:298
 # src/memory.c:379 src/memory.c:396 src/setup.c:295 src/setup.c:329
 # src/setup.c:341 src/setup.c:403
-#: config/strings.c:24 config/strings.c:26
+#: config/strings.c:26 config/strings.c:28
 #, fuzzy
 msgid "Display Enlightenment Menu"
 msgstr "Enlightenment verlassen"
 
 # src/settings.c:1503
-#: config/strings.c:25 config/strings.c:30
+#: config/strings.c:27 config/strings.c:32
 #, fuzzy
 msgid "Display Settings Menu"
 msgstr "KDE-Einstellungen"
 
-#: config/strings.c:27
+#: config/strings.c:29
 msgid "Display Task List Menu"
 msgstr ""
 
 # src/settings.c:1858
-#: config/strings.c:28
+#: config/strings.c:30
 #, fuzzy
 msgid "Display Desktop Menu"
 msgstr "Desktop-Ziehbalken anzeigen"
 
-#: config/strings.c:29
+#: config/strings.c:31
 msgid "Display Group Menu"
 msgstr ""
 
 # src/menus.c:1947
-#: config/strings.c:31
+#: config/strings.c:33
 #, fuzzy
 msgid "Go Back a Desktop"
 msgstr "Zu diesem Desktop gehen"
 
 # src/menus.c:1947
-#: config/strings.c:32
+#: config/strings.c:34
 #, fuzzy
 msgid "Go Forward a Desktop"
 msgstr "Zu diesem Desktop gehen"
+
+# src/main.c:180
+#~ msgid ""
+#~ "Enlightenment Version: %s\n"
+#~ "Last updated on: %s\n"
+#~ msgstr ""
+#~ "Enlightenment Version %s\n"
+#~ "Zuletzt aktualisiert am: %s\n"
+
+# src/theme.c:316 src/theme.c:328
+#~ msgid "Theme file/directory does not exist\n"
+#~ msgstr "Themendatei/-Verzeichnis existiert nicht\n"
 
 # src/settings.c:3537
 #~ msgid "Hide border around inner Iconbox"
