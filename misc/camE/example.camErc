@@ -157,3 +157,10 @@ overlay_y = 5
 # scale = 1
 # scale_width = 640
 # scale_height = 480
+#
+# Flip the image horizontally or vertically.
+# Horizontal flipping is useful for some Philips cams
+# which give a mirrored image when used with the pwc module.
+# flip_horizontal = 1
+# flip_vertical = 1
+

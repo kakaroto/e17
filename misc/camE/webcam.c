@@ -138,6 +138,8 @@ int v_force = 0;
 int bw_percent = 100;
 int delay_correct = 0;
 int reinit_device = 0;
+int flip_horizontal = 0;
+int flip_vertical = 0;
 
 int connections = 0;
 CURL *curl_handle = NULL;
@@ -1379,6 +1381,10 @@ main(int argc,
     pwc_wb_red = i;
   if (-1 != (i = cfg_get_int("grab", "pwc_wb_blue")))
     pwc_wb_blue = i;
+  if (-1 != (i = cfg_get_int("grab", "flip_horizontal")))
+    flip_horizontal = 1;
+  if (-1 != (i = cfg_get_int("grab", "flip_vertical")))
+    flip_vertical = 1;
 
   if (cam_framerate > 60)
     cam_framerate = 60;
@@ -1494,6 +1500,14 @@ main(int argc,
         system(action_post_shot);
         log("post-shot action done\n");
       }
+
+      if (flip_horizontal) {
+        imlib_image_flip_horizontal();
+      }
+      if (flip_vertical) {
+        imlib_image_flip_vertical();
+      }
+      
       if (overlay_im)
         draw_overlay(image);
       add_time_text(image, get_message(), width, height);
