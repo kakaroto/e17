@@ -6,5 +6,6 @@
 </tr>
 <tr>
 <td width="105" valign="top" align="left">@nav@</td>
-<td valign="top" align="center" bgcolor="@:col_content@"><!--<font color="#ffffff">-->
-<br>
+<td valign="top" align="center"><!--<font color="#ffffff">-->
+<table border="0" cellpadding="1" cellspacing="0" bgcolor="@:col_content_border@" width="100%"><tr><td>
+<table border="0" cellpadding="5" cellspacing="0" width="100%"><tr><td valign="top" align="center" bgcolor="@:col_content@">

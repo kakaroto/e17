@@ -4,7 +4,7 @@
 background="img/background.gif"
 text="#FFFFFF"
 link="#d0e0f0"
-vlink="#99aabb"
+vlink="#aabbcc"
 alink="#aa00aa">
 <!--
 topmargin=20
@@ -30,17 +30,18 @@ marginheight=20 -->
 <p><a href="mail.html"><img border=0 src="img/nav_mail.gif" alt="Mail" width=38 height=15></a><br>
 <p><a href="team.html"><img border=0 src="img/nav_team.gif" alt="Team" width=39 height=15></a></p>
 </td>
-<td valign="top" align="center" bgcolor="#7a8a9a"><!--<font color="#ffffff">-->
-<br>
+<td valign="top" align="center"><!--<font color="#ffffff">-->
+<table border="0" cellpadding="1" cellspacing="0" bgcolor="#556677" width="100%"><tr><td>
+<table border="0" cellpadding="5" cellspacing="0" width="100%"><tr><td valign="top" align="center" bgcolor="#7a8a9a">
 <div align=center><img src=img/evas_logo.png width=128 height=128></div>
-<div align=center><font face=arial,helvetica,lucida size=4><b>Evas</b></font></div>
+<div align=center><font face="arial,helvetica,lucida" size=4><b>Evas</b></font></div>
 
-<p><font face=arial,helvetica,lucida size=2>
+<p><font face="arial,helvetica,lucida" size=2>
 Evas is a hardware-accelerated canvas API for X-Windows that can draw
 anti-aliased text, smooth super and sub-sampled images, alpha-blend, as well
 as drop down to using normal X11 primitives such as pixmaps, lines and
 rectangles for speed if your CPU or graphics hardware are too slow.
-<p><font face=arial,helvetica,lucida size=2>
+<p><font face="arial,helvetica,lucida" size=2>
 Evas abstracts any need to know much about what the characteristics of your
 XServer's display are, what depth or what magic visuals etc, it has. The
 most you need to tell Evas is how many colors (at a maximum) to use if the
@@ -53,17 +54,17 @@ black and white only terminal to 16 color VGA to 256 color and all the way
 up through 15, 16, 24 and 32bit color. Here are some screen shots of a demo
 Evas app to show the rendering output in different situations
 
-<p><font face=arial,helvetica,lucida size=2>
+<p><font face="arial,helvetica,lucida" size=2>
 
 <img src=img/evas_colors.png width=128 height=128>
 
-<p><font face=arial,helvetica,lucida size=2>
-<div align=center><font face=arial,helvetica,lucida size=4><b>Colors</b></font></div>
-<p><font face=arial,helvetica,lucida size=2>
+<p><font face="arial,helvetica,lucida" size=2>
+<div align=center><font face="arial,helvetica,lucida" size=4><b>Colors</b></font></div>
+<p><font face="arial,helvetica,lucida" size=2>
 The following screen shots of a demo Evas application were taken in 8 bit
 color (256 colors), with worse color situations down to monochrome
 simulated, using the software rendering engine in Evas.
-<p><font face=arial,helvetica,lucida size=2>
+<p><font face="arial,helvetica,lucida" size=2>
 <a href=evas_depth_eg_8_216.html><img src=img/evas_depth_eg_8_216_thumb.png width=80 height=80 border=1></a>
 <a href=evas_depth_eg_8_128.html><img src=img/evas_depth_eg_8_128_thumb.png width=80 height=80 border=1></a>
 <a href=evas_depth_eg_8_64.html><img src=img/evas_depth_eg_8_64_thumb.png width=80 height=80 border=1></a>
@@ -71,12 +72,12 @@ simulated, using the software rendering engine in Evas.
 <a href=evas_depth_eg_8_16.html><img src=img/evas_depth_eg_8_16_thumb.png width=80 height=80 border=1></a>
 <a href=evas_depth_eg_8_8.html><img src=img/evas_depth_eg_8_8_thumb.png width=80 height=80 border=1></a>
 <a href=evas_depth_eg_8_2.html><img src=img/evas_depth_eg_8_2_thumb.png width=80 height=80 border=1></a>
-<p><font face=arial,helvetica,lucida size=2>
+<p><font face="arial,helvetica,lucida" size=2>
 The next pictures were taken of the same application in 8 bit color
 simulating worse color depths by reducing the allocation maximum, and using the
 X11 rendering engine that uses X11 primitives instead of the CPU (ie
 pixmaps, lines, rectangles, masks etc.).
-<p><font face=arial,helvetica,lucida size=2>
+<p><font face="arial,helvetica,lucida" size=2>
 <a href=evas_depth_eg_8x_216.html><img src=img/evas_depth_eg_8x_216_thumb.png width=80 height=80 border=1></a>
 <a href=evas_depth_eg_8x_128.html><img src=img/evas_depth_eg_8x_128_thumb.png width=80 height=80 border=1></a>
 <a href=evas_depth_eg_8x_64.html><img src=img/evas_depth_eg_8x_64_thumb.png width=80 height=80 border=1></a>
@@ -84,26 +85,26 @@ pixmaps, lines, rectangles, masks etc.).
 <a href=evas_depth_eg_8x_16.html><img src=img/evas_depth_eg_8x_16_thumb.png width=80 height=80 border=1></a>
 <a href=evas_depth_eg_8x_8.html><img src=img/evas_depth_eg_8x_8_thumb.png width=80 height=80 border=1></a>
 <a href=evas_depth_eg_8x_2.html><img src=img/evas_depth_eg_8x_2_thumb.png width=80 height=80 border=1></a>
-<p><font face=arial,helvetica,lucida size=2>
+<p><font face="arial,helvetica,lucida" size=2>
 The following screen shots are of the same Evas demo application in 16 bit
 color, with the shots being software, OpenGL and X11 rendering engines
 respectively.
-<p><font face=arial,helvetica,lucida size=2>
+<p><font face="arial,helvetica,lucida" size=2>
 <a href=evas_depth_eg_16.html><img src=img/evas_depth_eg_16_thumb.png width=80 height=80 border=1></a>
 <a href=evas_depth_eg_16gl.html><img src=img/evas_depth_eg_16gl_thumb.png width=80 height=80 border=1></a>
 <a href=evas_depth_eg_16x.html><img src=img/evas_depth_eg_16x_thumb.png width=80 height=80 border=1></a>
-<p><font face=arial,helvetica,lucida size=2>
+<p><font face="arial,helvetica,lucida" size=2>
 The following screen shots are of the same Evas demo application in 24/32 bit
 color, with the shots being software, OpenGL and X11 rendering engines
 respectively.
-<p><font face=arial,helvetica,lucida size=2>
+<p><font face="arial,helvetica,lucida" size=2>
 <a href=evas_depth_eg_32.html><img src=img/evas_depth_eg_32_thumb.png width=80 height=80 border=1></a>
 <a href=evas_depth_eg_32gl.html><img src=img/evas_depth_eg_32gl_thumb.png width=80 height=80 border=1></a>
 <a href=evas_depth_eg_32x.html><img src=img/evas_depth_eg_32x_thumb.png width=80 height=80 border=1></a>
-<p><font face=arial,helvetica,lucida size=2>
+<p><font face="arial,helvetica,lucida" size=2>
 
 
-<p><font face=arial,helvetica,lucida size=2>
+<p><font face="arial,helvetica,lucida" size=2>
 Evas provides a structured mode graphics API and thus provides a set of
 objects as primitives to work with. As opposed to immediate mode where the 
 program actually draws the data, with structured mode the program describes 
@@ -113,56 +114,56 @@ given. Once this is done manipulating them is very easy since the canvas
 holds all the state of the boject and knows what changed. Here is a list of 
 them.
 
-<p><font face=arial,helvetica,lucida size=2>
+<p><font face="arial,helvetica,lucida" size=2>
 
 <img src=img/evas_canvas.png width=128 height=128>
 
-<p><font face=arial,helvetica,lucida size=2>
-<div align=center><font face=arial,helvetica,lucida size=4><b>Images</b></font></div>
-<p><font face=arial,helvetica,lucida size=2>
+<p><font face="arial,helvetica,lucida" size=2>
+<div align=center><font face="arial,helvetica,lucida" size=4><b>Images</b></font></div>
+<p><font face="arial,helvetica,lucida" size=2>
 One of the most versatile and appealing objects is the image object. You
 simply tell Evas where the image file is located, where to put the image
 what size the object is to be and how to fill the image object with the
 image data, and Evas handles the rest. This makes dealing with images in
 Evas child's play. Here is a quick example of how it would work:
-<p><font face=arial,helvetica,lucida size=2>
-<pre><font face=courier,clean,fixed color=#445566 size=3>
+<p><font face="arial,helvetica,lucida" size=2>
+<pre><font face="courier,clean,fixed" color=#445566 size=3>
 object = evas_add_image_from_file(evas, "flower.png");
 evas_move(evas, object, 10.0, 30.0);
 evas_show(evas, object);
 </font></pre>
-<p><font face=arial,helvetica,lucida size=2>
+<p><font face="arial,helvetica,lucida" size=2>
 And it would look something like this:
-<p><font face=arial,helvetica,lucida size=2>
+<p><font face="arial,helvetica,lucida" size=2>
 <a href=evas_image_eg_0.html><img src=img/evas_image_eg_0_thumb.png width=80 height=80 border=1></a>
-<p><font face=arial,helvetica,lucida size=2>
+<p><font face="arial,helvetica,lucida" size=2>
 By default image objects are the size of the original image (in pixels). If
 we wish to make the object larger and have the image scale up or down in
 size we could do:
-<p><font face=arial,helvetica,lucida size=2>
-<pre><font face=courier,clean,fixed color=#445566 size=3>
+<p><font face="arial,helvetica,lucida" size=2>
+<pre><font face="courier,clean,fixed" color=#445566 size=3>
 evas_resize(evas, object, 320.0, 240.0);
 evas_set_image_fill(evas, object, 0.0, 0.0, 320.0, 240.0);
 </font></pre>
-<p><font face=arial,helvetica,lucida size=2>
+<p><font face="arial,helvetica,lucida" size=2>
 Now our canvas would look like this:
-<p><font face=arial,helvetica,lucida size=2>
+<p><font face="arial,helvetica,lucida" size=2>
 <a href=evas_image_eg_1.html><img src=img/evas_image_eg_1_thumb.png width=80 height=80 border=1></a>
-<p><font face=arial,helvetica,lucida size=2>
+<p><font face="arial,helvetica,lucida" size=2>
 Easy, isn't it? now let's say we want to have a 300x200 unit rectangle filled
 with this image we loaded, but we want it to tile (repeat) starting the tile
 at coordinate 0,0 relative to the to-left corner of the image object area,
 but have the tiled image size be 20x50.
-<p><font face=arial,helvetica,lucida size=2>
-<pre><font face=courier,clean,fixed color=#445566 size=3>
+<p><font face="arial,helvetica,lucida" size=2>
+<pre><font face="courier,clean,fixed" color=#445566 size=3>
 evas_resize(evas, object, 300.0, 200.0);
 evas_set_image_fill(evas, object, 0.0, 0.0, 20.0, 50.0);
 </font></pre>
-<p><font face=arial,helvetica,lucida size=2>
+<p><font face="arial,helvetica,lucida" size=2>
 Our result would be something like this:
-<p><font face=arial,helvetica,lucida size=2>
+<p><font face="arial,helvetica,lucida" size=2>
 <a href=evas_image_eg_2.html><img src=img/evas_image_eg_2_thumb.png width=80 height=80 border=1></a>
-<p><font face=arial,helvetica,lucida size=2>
+<p><font face="arial,helvetica,lucida" size=2>
 You may think "I can do this just as easily with normal X drawing primitives
 and a little extra sugar thrown in" but Evas does a whole lot more for you.
 You never need to know how to render the objects or handle re-rendering
@@ -171,88 +172,88 @@ re-sizing, it optimise's everything to minimize CPU effort with a dynamic set
 of objects. It handles the work to the point where ALL you need to do is
 create, destroy, show, hide, move, resize etc. objects and Evas does the
 rest of the nasty work for you.
-<p><font face=arial,helvetica,lucida size=2>
+<p><font face="arial,helvetica,lucida" size=2>
 As you can see - the program has to know and do very little. There are many
 powerful things you can do, like fade images in and out, re-color them so
 they look tinted, have them rendered only within a certain area of the
 canvas and more.
-<p><font face=arial,helvetica,lucida size=2>
+<p><font face="arial,helvetica,lucida" size=2>
 
 
-<p><font face=arial,helvetica,lucida size=2>
+<p><font face="arial,helvetica,lucida" size=2>
 
 <img src=img/evas_text.png width=128 height=128>
 
-<p><font face=arial,helvetica,lucida size=2>
-<div align=center><font face=arial,helvetica,lucida size=4><b>Text</b></font></div>
-<p><font face=arial,helvetica,lucida size=2>
+<p><font face="arial,helvetica,lucida" size=2>
+<div align=center><font face="arial,helvetica,lucida" size=4><b>Text</b></font></div>
+<p><font face="arial,helvetica,lucida" size=2>
 Text is a very important part of many applications. Evas of course provides
 a nice simple way of getting text into the Evas you have up without much
 fuss or bother AND to boot it will anti-alias it so your edges are smooth
 and not jagged AND allow of the text to be semi-transparent and much more.
-<p><font face=arial,helvetica,lucida size=2>
+<p><font face="arial,helvetica,lucida" size=2>
 Text allows you to display information in your Evas without needing image
 objects with pre-rendered text. But first you have to realize fonts are
 handled a little differently. First there is a font path - this is a list of
 directories where to find font files. Evas supports Truetype fonts only -
 some may think this bad, but there are more Truetype fonts than any other
 format out there, and many are very good quality.
-<p><font face=arial,helvetica,lucida size=2>
+<p><font face="arial,helvetica,lucida" size=2>
 Evas looks at the fonts in a directory by their file name, so a font you
 reference in evas as "myfont", Evas will look in the directories (in the
 order given) for a "myfont.ttf" file. It is case sensitive, but this system
 proves to be nice and simple. Here is a simple example.
-<p><font face=arial,helvetica,lucida size=2>
-<pre><font face=courier,clean,fixed color=#445566 size=3>
+<p><font face="arial,helvetica,lucida" size=2>
+<pre><font face="courier,clean,fixed" color=#445566 size=3>
 object = evas_add_text(evas, "notepad", 18, "Here is a line of text!");
 evas_move(evas, object, 120.0, 50.0);
 evas_set_color(evas, object, 0, 0, 0, 255);
 evas_show(evas, object);
 </font></pre>
-<p><font face=arial,helvetica,lucida size=2>
+<p><font face="arial,helvetica,lucida" size=2>
 This should create a text object with its top-left starting at 120.0, 50.0
 in the Evas, with the notepad font at size 18, with the text "Here is a line
 of text!" and in solid black (Red = 0, Green = 0, Blue = 0, Alpha = 255).
 This is what it would look like:
-<p><font face=arial,helvetica,lucida size=2>
+<p><font face="arial,helvetica,lucida" size=2>
 <a href=evas_text_eg_0.html><img src=img/evas_text_eg_0_thumb.png width=80 height=80 border=1></a>
-<p><font face=arial,helvetica,lucida size=2>
+<p><font face="arial,helvetica,lucida" size=2>
 As you can see - it is really easy to create some text in an Evas canvas,
 and it is just as easy to change its contents with calls such as the following
-<p><font face=arial,helvetica,lucida size=2>
-<pre><font face=courier,clean,fixed color=#445566 size=3>
+<p><font face="arial,helvetica,lucida" size=2>
+<pre><font face="courier,clean,fixed" color=#445566 size=3>
 evas_set_text(evas, object, "Some new text here");
 evas_set_font(evas, object, "arial", 30);
 evas_set_color(evas, object, 255, 0, 0, 255);
 </font></pre>
-<p><font face=arial,helvetica,lucida size=2>
+<p><font face="arial,helvetica,lucida" size=2>
 Just modifying the properties of an object this way directly leads to it
 changing as you would expect. There are enough text query calls too to
 implement almost anything you need using text objects, including text entry
 boxes, word processors, HTML and text formatting engines and much much more.
-<p><font face=arial,helvetica,lucida size=2>
+<p><font face="arial,helvetica,lucida" size=2>
 
 
-<p><font face=arial,helvetica,lucida size=2>
+<p><font face="arial,helvetica,lucida" size=2>
 
 <img src=img/evas_gradient.png width=128 height=128>
 
-<p><font face=arial,helvetica,lucida size=2>
-<div align=center><font face=arial,helvetica,lucida size=4><b>Gradients</b></font></div>
-<p><font face=arial,helvetica,lucida size=2>
+<p><font face="arial,helvetica,lucida" size=2>
+<div align=center><font face="arial,helvetica,lucida" size=4><b>Gradients</b></font></div>
+<p><font face="arial,helvetica,lucida" size=2>
 Another useful primitive that can be used is the Gradient Box primitive.
 Basically this is a rectangular object that is filled with a linear range of
 colors at an arbitrary angle defined as part of the properties of that object.
-<p><font face=arial,helvetica,lucida size=2>
+<p><font face="arial,helvetica,lucida" size=2>
 Gradients are useful for when you want to fill a background or rectangle
 with something other than a solid color, but do not want to go to the
 expense of needing an image for it. They can be used to highlight areas with
 lighting and shadow effects and many other things.
-<p><font face=arial,helvetica,lucida size=2>
+<p><font face="arial,helvetica,lucida" size=2>
 Creating and managing these objects, like almost everything else, is also
 child's play. Take a look at this:
-<p><font face=arial,helvetica,lucida size=2>
-<pre><font face=courier,clean,fixed color=#445566 size=3>
+<p><font face="arial,helvetica,lucida" size=2>
+<pre><font face="courier,clean,fixed" color=#445566 size=3>
 object = evas_add_gradient_box(evas);
 evas_move(evas, object, 150.0, 100.0);
 evas_resize(evas, object, 200.0, 120.0);
@@ -267,11 +268,11 @@ evas_gradient_free(gradient);
 evas_set_angle(evas, object, 290.0);
 evas_show(evas, object);
 </font></pre>
-<p><font face=arial,helvetica,lucida size=2>
+<p><font face="arial,helvetica,lucida" size=2>
 Now the program we are developing looks now something like this:
-<p><font face=arial,helvetica,lucida size=2>
+<p><font face="arial,helvetica,lucida" size=2>
 <a href=evas_grad_eg_0.html><img src=img/evas_grad_eg_0_thumb.png width=80 height=80 border=1></a>
-<p><font face=arial,helvetica,lucida size=2>
+<p><font face="arial,helvetica,lucida" size=2>
 As you see, you create the gradient box object, place it somewhere in your
 Evas and set its size. Now you get to define the list of colors it is to
 use (from start of the gradient to end) and their relative "distance" apart.
@@ -286,43 +287,43 @@ gradient is at in the box (with 0 degrees being the first element of the
 gradient at 12:00 o'clock, going all the way up to 360 degrees in clock-wise
 rotation), and then we show the object. All we need to do now is move and 
 resize it, show it, change the angle etc. and Evas handles it for us.
-<p><font face=arial,helvetica,lucida size=2>
+<p><font face="arial,helvetica,lucida" size=2>
 
-<p><font face=arial,helvetica,lucida size=2>
+<p><font face="arial,helvetica,lucida" size=2>
 This is not where it ends. There are other primitives that Evas supports.
 Polygons, Lines and Rectangles complete this list for now, but future plans
 at a later point may mean Video objects (eg MPEG streams as objects), curved
 objects (ellipses, circles, splines etc.) and more, but for now they are not
 supported.
 
-<p><font face=arial,helvetica,lucida size=2>
+<p><font face="arial,helvetica,lucida" size=2>
 
 <img src=img/evas_primitives.png width=128 height=128>
 
-<p><font face=arial,helvetica,lucida size=2>
-<div align=center><font face=arial,helvetica,lucida size=4><b>Other Primitives</b></font></div>
-<p><font face=arial,helvetica,lucida size=2>
+<p><font face="arial,helvetica,lucida" size=2>
+<div align=center><font face="arial,helvetica,lucida" size=4><b>Other Primitives</b></font></div>
+<p><font face="arial,helvetica,lucida" size=2>
 At your disposal you also have Rectangles, Lines and Polygons too. You can
 use these to fill in backgrounds, simulate circles (with polygons) and much
 more. They are versatile and simple and let you do basic drawing without
 requiring on-disk data to generate it from.
-<p><font face=arial,helvetica,lucida size=2>
-<pre><font face=courier,clean,fixed color=#445566 size=3>
+<p><font face="arial,helvetica,lucida" size=2>
+<pre><font face="courier,clean,fixed" color=#445566 size=3>
 object = evas_add_rectangle(evas);
 evas_move(evas, object, 20.0, 130.0);
 evas_resize(evas, object, 50.0, 70.0);
 evas_set_color(evas, object, 20.0, 50.0, 100.0, 130.0);
 evas_show(evas, object);
 </font></pre>
-<p><font face=arial,helvetica,lucida size=2>
+<p><font face="arial,helvetica,lucida" size=2>
 Here we add a simple rectangle that's blue-ish and partially transparent.
 It's easy to add - no problems. It may seem a fair bit of setup code, but
 now we can just move, resize, show hide etc. the object whenever we want a
 change - Evas does all the rest for us - including layering, obscuring,
 figuring how to re-render it and optimizing the rendering to only render
 what changed and much much much more.
-<p><font face=arial,helvetica,lucida size=2>
-<pre><font face=courier,clean,fixed color=#445566 size=3>
+<p><font face="arial,helvetica,lucida" size=2>
+<pre><font face="courier,clean,fixed" color=#445566 size=3>
 object = evas_add_poly(evas);
 evas_add_point(evas, object, 0.0, 0.0);
 evas_add_point(evas, object, 150.0, 80.0);
@@ -333,115 +334,115 @@ evas_set_color(evas, object, 200.0, 40.0, 0.0, 130.0);
 evas_move(evas, object, 20.0, 220.0);
 evas_show(evas, object);
 </font></pre>
-<p><font face=arial,helvetica,lucida size=2>
+<p><font face="arial,helvetica,lucida" size=2>
 A polygon, reddish/orange, partially transparent with 5 points. We create the
 polygon relative to the top left of its bounding box then just move it where
 we want it later - this makes it easy to just move polygons around without
 having to reset their coordinates. Just like with polygons - Evas handles
 optimizing all the other stuff surrounding these objects for us.
-<p><font face=arial,helvetica,lucida size=2>
-<pre><font face=courier,clean,fixed color=#445566 size=3>
+<p><font face="arial,helvetica,lucida" size=2>
+<pre><font face="courier,clean,fixed" color=#445566 size=3>
 object = evas_add_line(evas);
 evas_set_line_xy(evas, object, 220.0, 240.0, 390.0, 380.0);
 evas_set_color(evas, object, 30.0, 80.0, 80.0, 200.0);
 evas_show(evas, object);
 </font></pre>
-<p><font face=arial,helvetica,lucida size=2>
+<p><font face="arial,helvetica,lucida" size=2>
 And a line. Anti-aliased. Simple. Just change its color and coordinates when
 you want. Evas does the rest.
-<p><font face=arial,helvetica,lucida size=2>
+<p><font face="arial,helvetica,lucida" size=2>
 And now with these primitives added out Evas canvas will look like this:
-<p><font face=arial,helvetica,lucida size=2>
+<p><font face="arial,helvetica,lucida" size=2>
 <a href=evas_primitives_eg_0.html><img src=img/evas_primitives_eg_0_thumb.png width=80 height=80 border=1></a>
-<p><font face=arial,helvetica,lucida size=2>
+<p><font face="arial,helvetica,lucida" size=2>
 
 
-<p><font face=arial,helvetica,lucida size=2>
+<p><font face="arial,helvetica,lucida" size=2>
 There are many other important parts of using Evas to achieve the look and 
 feel you want in your application. It is important you know what else is
 available so you don't do things "incorrectly" and as a result get slower
 performance or bad display quality.
 
-<p><font face=arial,helvetica,lucida size=2>
+<p><font face="arial,helvetica,lucida" size=2>
 
 <img src=img/evas_canvas.png width=128 height=128>
 
-<p><font face=arial,helvetica,lucida size=2>
-<div align=center><font face=arial,helvetica,lucida size=4><b>Tinting and Fading</b></font></div>
-<p><font face=arial,helvetica,lucida size=2>
+<p><font face="arial,helvetica,lucida" size=2>
+<div align=center><font face="arial,helvetica,lucida" size=4><b>Tinting and Fading</b></font></div>
+<p><font face="arial,helvetica,lucida" size=2>
 Doing effects in Evas is almost child's play like everything else. You can
 tint and fade image objects, for example with very little effort. Let's
 start a new Evas with a single image object and a textured background.
-<p><font face=arial,helvetica,lucida size=2>
+<p><font face="arial,helvetica,lucida" size=2>
 <a href=evas_recolor_eg_0.html><img src=img/evas_recolor_eg_0_thumb.png width=80 height=80 border=1></a>
-<p><font face=arial,helvetica,lucida size=2>
+<p><font face="arial,helvetica,lucida" size=2>
 Now lets "tint" this object red. That's easy:
-<p><font face=arial,helvetica,lucida size=2>
-<pre><font face=courier,clean,fixed color=#445566 size=3>
+<p><font face="arial,helvetica,lucida" size=2>
+<pre><font face="courier,clean,fixed" color=#445566 size=3>
 evas_set_color(evas, object, 255, 0, 0, 255);
 </font></pre>
-<p><font face=arial,helvetica,lucida size=2>
+<p><font face="arial,helvetica,lucida" size=2>
 When you set the color of an image, every pixel of that image is multiplied
 by the color value. So pseudo-code wise output.red = (pixel.red * color.red) /
 255, and the same for the green, blue and alpha channels. Here is the result
 of multiplication by RGB 255,0,0,255 :
-<p><font face=arial,helvetica,lucida size=2>
+<p><font face="arial,helvetica,lucida" size=2>
 <a href=evas_recolor_eg_1.html><img src=img/evas_recolor_eg_1_thumb.png width=80 height=80 border=1></a>
-<p><font face=arial,helvetica,lucida size=2>
+<p><font face="arial,helvetica,lucida" size=2>
 Now let's try tinting the cube yellow:
-<p><font face=arial,helvetica,lucida size=2>
-<pre><font face=courier,clean,fixed color=#445566 size=3>
+<p><font face="arial,helvetica,lucida" size=2>
+<pre><font face="courier,clean,fixed" color=#445566 size=3>
 evas_set_color(evas, object, 255, 255, 0, 255);
 </font></pre>
-<p><font face=arial,helvetica,lucida size=2>
+<p><font face="arial,helvetica,lucida" size=2>
 <a href=evas_recolor_eg_2.html><img src=img/evas_recolor_eg_2_thumb.png width=80 height=80 border=1></a>
-<p><font face=arial,helvetica,lucida size=2>
+<p><font face="arial,helvetica,lucida" size=2>
 How about blue?
-<p><font face=arial,helvetica,lucida size=2>
-<pre><font face=courier,clean,fixed color=#445566 size=3>
+<p><font face="arial,helvetica,lucida" size=2>
+<pre><font face="courier,clean,fixed" color=#445566 size=3>
 evas_set_color(evas, object, 0, 0, 255, 255);
 </font></pre>
-<p><font face=arial,helvetica,lucida size=2>
+<p><font face="arial,helvetica,lucida" size=2>
 <a href=evas_recolor_eg_3.html><img src=img/evas_recolor_eg_3_thumb.png width=80 height=80 border=1></a>
-<p><font face=arial,helvetica,lucida size=2>
+<p><font face="arial,helvetica,lucida" size=2>
 Let's try fading the cube half-out:
-<p><font face=arial,helvetica,lucida size=2>
-<pre><font face=courier,clean,fixed color=#445566 size=3>
+<p><font face="arial,helvetica,lucida" size=2>
+<pre><font face="courier,clean,fixed" color=#445566 size=3>
 evas_set_color(evas, object, 255, 255, 255, 128);
 </font></pre>
-<p><font face=arial,helvetica,lucida size=2>
+<p><font face="arial,helvetica,lucida" size=2>
 <a href=evas_recolor_eg_4.html><img src=img/evas_recolor_eg_4_thumb.png width=80 height=80 border=1></a>
-<p><font face=arial,helvetica,lucida size=2>
+<p><font face="arial,helvetica,lucida" size=2>
 Let's try making the cube just plain darker than it normally is:
-<p><font face=arial,helvetica,lucida size=2>
-<pre><font face=courier,clean,fixed color=#445566 size=3>
+<p><font face="arial,helvetica,lucida" size=2>
+<pre><font face="courier,clean,fixed" color=#445566 size=3>
 evas_set_color(evas, object, 128, 128, 128, 255);
 </font></pre>
-<p><font face=arial,helvetica,lucida size=2>
+<p><font face="arial,helvetica,lucida" size=2>
 <a href=evas_recolor_eg_5.html><img src=img/evas_recolor_eg_5_thumb.png width=80 height=80 border=1></a>
-<p><font face=arial,helvetica,lucida size=2>
+<p><font face="arial,helvetica,lucida" size=2>
 Finally let's try fading it out and tinting it dark-red:
-<p><font face=arial,helvetica,lucida size=2>
-<pre><font face=courier,clean,fixed color=#445566 size=3>
+<p><font face="arial,helvetica,lucida" size=2>
+<pre><font face="courier,clean,fixed" color=#445566 size=3>
 evas_set_color(evas, object, 128, 0, 0, 128);
 </font></pre>
-<p><font face=arial,helvetica,lucida size=2>
+<p><font face="arial,helvetica,lucida" size=2>
 <a href=evas_recolor_eg_6.html><img src=img/evas_recolor_eg_6_thumb.png width=80 height=80 border=1></a>
-<p><font face=arial,helvetica,lucida size=2>
+<p><font face="arial,helvetica,lucida" size=2>
 As you can see, fading images out, tinting images is almost no workat all. 
 In addition to being able to scale them, raise and lower them above and below
 other objects, have them alpha blend and more, you have a pretty simple way
 of creating complex effects within an Evas' canvas.
-<p><font face=arial,helvetica,lucida size=2>
+<p><font face="arial,helvetica,lucida" size=2>
 
 
-<p><font face=arial,helvetica,lucida size=2>
+<p><font face="arial,helvetica,lucida" size=2>
 
 <img src=img/evas_canvas.png width=128 height=128>
 
-<p><font face=arial,helvetica,lucida size=2>
-<div align=center><font face=arial,helvetica,lucida size=4><b>Clipping</b></font></div>
-<p><font face=arial,helvetica,lucida size=2>
+<p><font face="arial,helvetica,lucida" size=2>
+<div align=center><font face="arial,helvetica,lucida" size=4><b>Clipping</b></font></div>
+<p><font face="arial,helvetica,lucida" size=2>
 Now lets look at clipping in Evas. Clipping is the process by which you
 "clip off" bits of what you are drawing that lie outside the area you are
 clipping to. For example - you have an image and you clip it to a box that
@@ -455,7 +456,7 @@ back-end renderer limitations, Evas only supports using rectangle objects as
 clip objects for now. Using any other kind of object has undefined results. 
 Clip objects can be used to impliment things such as viewports, windows and 
 much more - you will need to use your imagination to really use them fully.
-<p><font face=arial,helvetica,lucida size=2>
+<p><font face="arial,helvetica,lucida" size=2>
 Also just like a window that may be stained a certain color, Evas can let
 you "Tint" or "Stain" the objects clipped by a clip object. Just like you
 set the color of an object like and Image, and it gets "tinted", the same
@@ -464,16 +465,16 @@ applies to clip objects. If the clip objects color is opaque white (255,
 merely limits the drawing region, but if the clip object has any other color
 its RGBA values are multiplied by the color of the objects it clips - thus
 being able to tint and fade objects that are clipped all in one go.
-<p><font face=arial,helvetica,lucida size=2>
+<p><font face="arial,helvetica,lucida" size=2>
 
 
-<p><font face=arial,helvetica,lucida size=2>
+<p><font face="arial,helvetica,lucida" size=2>
 
 <img src=img/evas_canvas.png width=128 height=128>
 
-<p><font face=arial,helvetica,lucida size=2>
-<div align=center><font face=arial,helvetica,lucida size=4><b>The Viewport and Resizing</b></font></div>
-<p><font face=arial,helvetica,lucida size=2>
+<p><font face="arial,helvetica,lucida" size=2>
+<div align=center><font face="arial,helvetica,lucida" size=4><b>The Viewport and Resizing</b></font></div>
+<p><font face="arial,helvetica,lucida" size=2>
 Evas operates on the concept of a viewport. A viewport is a rectangular
 region of an area that deifnes what part of that area we are looking at. In
 Evas you tell Evas what the location and size of the viewport is. An  Evas
@@ -481,7 +482,7 @@ canvas is almost infinite in size (as large a value as can be fit in a
 double precision number in both X and Y directions), and thus you need to
 tell Evas what limited area of the "world" (or canvas) you are looking at.
 This is the viewport.
-<p><font face=arial,helvetica,lucida size=2>
+<p><font face="arial,helvetica,lucida" size=2>
 Evas also requires you tell it the size of the window it's outputting to.
 This is necessary for some of the back-end renderers, but also is useful for
 being able to zoom and pan across the canvas. If you do not change the
@@ -490,16 +491,16 @@ zoom and and out of your Evas canvas. By changing the viewport location you
 can scroll around your Evas. If the size of your window changes you MUST
 tell Evas the new drawable output size before rendering again - or things will
 not display correctly.
-<p><font face=arial,helvetica,lucida size=2>
+<p><font face="arial,helvetica,lucida" size=2>
 
 
-<p><font face=arial,helvetica,lucida size=2>
+<p><font face="arial,helvetica,lucida" size=2>
 
 <img src=img/evas_canvas.png width=128 height=128>
 
-<p><font face=arial,helvetica,lucida size=2>
-<div align=center><font face=arial,helvetica,lucida size=4><b>Handling Exposes</b></font></div>
-<p><font face=arial,helvetica,lucida size=2>
+<p><font face="arial,helvetica,lucida" size=2>
+<div align=center><font face="arial,helvetica,lucida" size=4><b>Handling Exposes</b></font></div>
+<p><font face="arial,helvetica,lucida" size=2>
 Evas itself doe not hook to your event layer at all. It relies on you
 feeding events into it. One of these, required for consistant output, is
 telling evas when a section of its output has been "exposed" (you get an
@@ -509,16 +510,16 @@ event you simply tell Evas about this event, and that's all you ever have to
 do. This is the only time you should need this function call at all since
 moving objects or changing things in the Evas canvas will internally trigger
 areas to be marked as dirty and be redrawn anyway.
-<p><font face=arial,helvetica,lucida size=2>
+<p><font face="arial,helvetica,lucida" size=2>
 
 
-<p><font face=arial,helvetica,lucida size=2>
+<p><font face="arial,helvetica,lucida" size=2>
 
 <img src=img/evas_canvas.png width=128 height=128>
 
-<p><font face=arial,helvetica,lucida size=2>
-<div align=center><font face=arial,helvetica,lucida size=4><b>How Evas Renders</b></font></div>
-<p><font face=arial,helvetica,lucida size=2>
+<p><font face="arial,helvetica,lucida" size=2>
+<div align=center><font face="arial,helvetica,lucida" size=4><b>How Evas Renders</b></font></div>
+<p><font face="arial,helvetica,lucida" size=2>
 Evas minimizes the amount to render whenever possible. As long as you don't
 force it to do rendering then it doesn't have to (ie uselessly call the
 evas_update_rect() call, or call evas_render() or evas_render_updates() all
@@ -527,58 +528,61 @@ rendering to a bare minimum for you, and still retain display quality and
 rendering speed. Remember to only call Evas's render calls when you program
 goes IDLE - ie no more events to process and no state to change. Doing
 otherwise will impact perfromance badly.
-<p><font face=arial,helvetica,lucida size=2>
+<p><font face="arial,helvetica,lucida" size=2>
 
 
-<p><font face=arial,helvetica,lucida size=2>
+<p><font face="arial,helvetica,lucida" size=2>
 
 <img src=img/evas_canvas.png width=128 height=128>
 
-<p><font face=arial,helvetica,lucida size=2>
-<div align=center><font face=arial,helvetica,lucida size=4><b>The Rendering Engines</b></font></div>
-<p><font face=arial,helvetica,lucida size=2>
+<p><font face="arial,helvetica,lucida" size=2>
+<div align=center><font face="arial,helvetica,lucida" size=4><b>The Rendering Engines</b></font></div>
+<p><font face="arial,helvetica,lucida" size=2>
 Evas provides you with several output targets for an Evas canvas. Once a
 rendering engine is set though, it cannot be changed. You can select how
 Evas is to render to the display target by selecting the render method.
-<p><font face=arial,helvetica,lucida size=2>
+<p><font face="arial,helvetica,lucida" size=2>
 
 
-<p><font face=arial,helvetica,lucida size=2>
+<p><font face="arial,helvetica,lucida" size=2>
 
 <img src=img/evas_canvas.png width=128 height=128>
 
-<p><font face=arial,helvetica,lucida size=2>
-<div align=center><font face=arial,helvetica,lucida size=4><b>Extra Text Calls</b></font></div>
-<p><font face=arial,helvetica,lucida size=2>
+<p><font face="arial,helvetica,lucida" size=2>
+<div align=center><font face="arial,helvetica,lucida" size=4><b>Extra Text Calls</b></font></div>
+<p><font face="arial,helvetica,lucida" size=2>
 Some extraq information on other calls to query text objects, allowing for
 more complex formatting etc.
-<p><font face=arial,helvetica,lucida size=2>
+<p><font face="arial,helvetica,lucida" size=2>
 
 
-<p><font face=arial,helvetica,lucida size=2>
+<p><font face="arial,helvetica,lucida" size=2>
 
 <img src=img/evas_canvas.png width=128 height=128>
 
-<p><font face=arial,helvetica,lucida size=2>
-<div align=center><font face=arial,helvetica,lucida size=4><b>Caveats, Gotcha's etc.</b></font></div>
-<p><font face=arial,helvetica,lucida size=2>
+<p><font face="arial,helvetica,lucida" size=2>
+<div align=center><font face="arial,helvetica,lucida" size=4><b>Caveats, Gotcha's etc.</b></font></div>
+<p><font face="arial,helvetica,lucida" size=2>
 Small rules and gotchas you might not expect in Evas
-<p><font face=arial,helvetica,lucida size=2>
+<p><font face="arial,helvetica,lucida" size=2>
 
 
-<p><font face=arial,helvetica,lucida size=2>
+<p><font face="arial,helvetica,lucida" size=2>
 
 <img src=img/evas_canvas.png width=128 height=128>
 
-<p><font face=arial,helvetica,lucida size=2>
-<div align=center><font face=arial,helvetica,lucida size=4><b>API Reference</b></font></div>
-<p><font face=arial,helvetica,lucida size=2>
+<p><font face="arial,helvetica,lucida" size=2>
+<div align=center><font face="arial,helvetica,lucida" size=4><b>API Reference</b></font></div>
+<p><font face="arial,helvetica,lucida" size=2>
 This section is currently incomplete and will take a while to fill out as
 there are a lot of calls and new ones are being added.
-<p><font face=arial,helvetica,lucida size=2>
+<p><font face="arial,helvetica,lucida" size=2>
 
 
-</td></tr></table></div>
+</td></tr></table>
+</td></tr></table>
+</td></tr></table>
+</div>
 
 </body></html>
 
