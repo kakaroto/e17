@@ -9,9 +9,7 @@ include_HEADERS = libast.h
 
 libast_la_SOURCES = conf.c debug.c file.c mem.c msgs.c strings.c snprintf.c libast.h libast_internal.h
 
-LIBS = -lm
-
-libast_la_LDFLAGS = -version-info 1:2:0
+libast_la_LDFLAGS = -version-info 1:3:0
 
 EXTRA_DIST = README
 

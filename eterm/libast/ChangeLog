@@ -106,3 +106,8 @@ Mon Jul 23 23:25:13 2001                        Michael Jennings (mej)
 
 Damnit.  It was screwing up on blank lines too. >:I
 ----------------------------------------------------------------------
+Sat Sep 22 09:24:41 2001                        Michael Jennings (mej)
+
+Fixed a compilation issue on some systems where libX11 would not be
+linked in with the test program.  This is libast 0.4.
+----------------------------------------------------------------------
