@@ -205,12 +205,23 @@ doMoveResizeEwin(EWin * ewin, int x, int y, int w, int h, int flags)
 	     sw *= Conf.desks.areas_nx;
 	     sh *= Conf.desks.areas_ny;
 	  }
-	dx = EoGetW(ewin) / 4;
-	if (dx > 8)
-	   dx = 8;
-	dy = EoGetH(ewin) / 4;
-	if (dy > 8)
-	   dy = 8;
+
+	if (ewin->shaded)
+	  {
+	     /* Keep shaded windows entirely on-screen */
+	     dx = EoGetW(ewin);
+	     dy = EoGetH(ewin);
+	  }
+	else
+	  {
+	     /* Keep at least 8 pixels on-screen */
+	     dx = EoGetW(ewin) / 4;
+	     if (dx > 8)
+		dx = 8;
+	     dy = EoGetH(ewin) / 4;
+	     if (dy > 8)
+		dy = 8;
+	  }
 
 	if (x < x0 - EoGetW(ewin) + dx)
 	   x = x0 - EoGetW(ewin) + dx;
@@ -716,6 +727,7 @@ EwinShade(EWin * ewin)
 
    switch (ewin->border->shadedir)
      {
+     default:
      case 0:
 	att.win_gravity = EastGravity;
 	XChangeWindowAttributes(disp, ewin->client.win, CWWinGravity, &att);
@@ -751,13 +763,7 @@ EwinShade(EWin * ewin)
 		  k = ETimedLoopNext();
 	       }
 	  }
-	ewin->shaded = 2;
 	EoSetW(ewin, b);
-	EMoveResizeWindow(disp, ewin->win_container, -30, -30, 1, 1);
-	ExMoveResizeWindow(&ewin->o, EoGetX(ewin), EoGetY(ewin),
-			   EoGetW(ewin), EoGetH(ewin));
-	EwinBorderCalcSizes(ewin);
-	ecore_x_sync();
 	break;
      case 1:
 	att.win_gravity = WestGravity;
@@ -797,14 +803,8 @@ EwinShade(EWin * ewin)
 		  k = ETimedLoopNext();
 	       }
 	  }
-	ewin->shaded = 2;
 	EoSetW(ewin, b);
 	EoSetX(ewin, d);
-	EMoveResizeWindow(disp, ewin->win_container, -30, -30, 1, 1);
-	ExMoveResizeWindow(&ewin->o, EoGetX(ewin), EoGetY(ewin),
-			   EoGetW(ewin), EoGetH(ewin));
-	EwinBorderCalcSizes(ewin);
-	ecore_x_sync();
 	break;
      case 2:
 	att.win_gravity = SouthGravity;
@@ -843,13 +843,7 @@ EwinShade(EWin * ewin)
 		  k = ETimedLoopNext();
 	       }
 	  }
-	ewin->shaded = 2;
 	EoSetH(ewin, b);
-	EMoveResizeWindow(disp, ewin->win_container, -30, -30, 1, 1);
-	ExMoveResizeWindow(&ewin->o, EoGetX(ewin), EoGetY(ewin),
-			   EoGetW(ewin), EoGetH(ewin));
-	EwinBorderCalcSizes(ewin);
-	ecore_x_sync();
 	break;
      case 3:
 	att.win_gravity = SouthGravity;
@@ -889,18 +883,16 @@ EwinShade(EWin * ewin)
 		  k = ETimedLoopNext();
 	       }
 	  }
-	ewin->shaded = 2;
 	EoSetH(ewin, b);
 	EoSetY(ewin, d);
-	EMoveResizeWindow(disp, ewin->win_container, -30, -30, 1, 1);
-	ExMoveResizeWindow(&ewin->o, EoGetX(ewin), EoGetY(ewin),
-			   EoGetW(ewin), EoGetH(ewin));
-	EwinBorderCalcSizes(ewin);
-	ecore_x_sync();
-	break;
-     default:
 	break;
      }
+
+   ewin->shaded = 2;
+   EMoveResizeWindow(disp, ewin->win_container, -30, -30, 1, 1);
+   EwinBorderCalcSizes(ewin);
+   MoveEwin(ewin, EoGetX(ewin), EoGetY(ewin));
+   ecore_x_sync();
 
 #if 0
    ecore_x_ungrab();
@@ -946,6 +938,7 @@ EwinUnShade(EWin * ewin)
 
    switch (ewin->border->shadedir)
      {
+     default:
      case 0:
 	att.win_gravity = EastGravity;
 	XChangeWindowAttributes(disp, ewin->client.win, CWWinGravity, &att);
@@ -991,9 +984,6 @@ EwinUnShade(EWin * ewin)
 	       }
 	  }
 	EoSetW(ewin, b);
-	MoveResizeEwin(ewin, EoGetX(ewin), EoGetY(ewin), ewin->client.w,
-		       ewin->client.h);
-	ecore_x_sync();
 	break;
      case 1:
 	att.win_gravity = WestGravity;
@@ -1040,9 +1030,6 @@ EwinUnShade(EWin * ewin)
 	  }
 	EoSetW(ewin, b);
 	EoSetX(ewin, d);
-	MoveResizeEwin(ewin, EoGetX(ewin), EoGetY(ewin), ewin->client.w,
-		       ewin->client.h);
-	ecore_x_sync();
 	break;
      case 2:
 	att.win_gravity = SouthGravity;
@@ -1089,9 +1076,6 @@ EwinUnShade(EWin * ewin)
 	       }
 	  }
 	EoSetH(ewin, b);
-	MoveResizeEwin(ewin, EoGetX(ewin), EoGetY(ewin), ewin->client.w,
-		       ewin->client.h);
-	ecore_x_sync();
 	break;
      case 3:
 	att.win_gravity = SouthGravity;
@@ -1138,13 +1122,12 @@ EwinUnShade(EWin * ewin)
 	  }
 	EoSetH(ewin, b);
 	EoSetY(ewin, d);
-	MoveResizeEwin(ewin, EoGetX(ewin), EoGetY(ewin), ewin->client.w,
-		       ewin->client.h);
-	ecore_x_sync();
-	break;
-     default:
 	break;
      }
+
+   MoveResizeEwin(ewin, EoGetX(ewin), EoGetY(ewin), ewin->client.w,
+		  ewin->client.h);
+   ecore_x_sync();
 
 #if 0
    ecore_x_ungrab();
