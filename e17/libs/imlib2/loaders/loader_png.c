@@ -89,6 +89,8 @@ load (ImlibImage *im,
 		     &bit_depth, &color_type, &interlace_type, NULL, NULL);
 	im->w = (int)w32;
 	im->h = (int)h32;
+	if (color_type == PNG_COLOR_TYPE_PALETTE)
+	   png_set_expand(png_ptr);
 	if (info_ptr->color_type == PNG_COLOR_TYPE_RGB_ALPHA)
 	   hasa = 1;
 	if (info_ptr->color_type == PNG_COLOR_TYPE_GRAY_ALPHA)
