@@ -173,6 +173,7 @@ void
 entrance_session_user_set(Entrance_Session * e, Entrance_User * eu)
 {
    Evas_Object *obj = NULL;
+   const char *file = NULL;
 
    if (e && eu)
    {
@@ -181,7 +182,8 @@ entrance_session_user_set(Entrance_Session * e, Entrance_User * eu)
          edje_object_part_unswallow(e->edje, obj);
          evas_object_del(obj);
       }
-      if ((obj = entrance_user_edje_get(eu, e->edje)))
+      edje_object_file_get(e->edje, &file, NULL);
+      if ((obj = entrance_user_edje_get(eu, e->edje, file)))
       {
          if (!entrance_auth_set_user(e->auth, eu->name))
          {
@@ -496,6 +498,7 @@ entrance_session_user_list_add(Entrance_Session * e)
 {
    char *str = NULL;
    Evas_Coord w, h;
+   const char *file = NULL;
    Entrance_User *key = NULL;
    Evas_List *l = NULL;
    Evas_Object *container = NULL, *edje;
@@ -519,12 +522,13 @@ entrance_session_user_list_add(Entrance_Session * e)
          e_container_fill_policy_set(container, CONTAINER_FILL_POLICY_FILL_X);
          e_container_direction_set(container, 1);
       }
+      edje_object_file_get(e->edje, &file, NULL);
       for (l = e->config->users.keys; l; l = l->next)
       {
          str = (char *) l->data;
          if ((key = evas_hash_find(e->config->users.hash, str)))
          {
-            if ((edje = entrance_user_edje_get(key, e->edje)))
+            if ((edje = entrance_user_edje_get(key, e->edje, file)))
                e_container_element_append(container, edje);
          }
       }
@@ -688,7 +692,7 @@ _entrance_session_user_list_fix(Entrance_Session * e)
    {
       for (l = e->config->users.keys; l; l = l->next)
       {
-         if (!strcmp(e->auth->user, ((Entrance_User *) l->data)->name))
+         if (!strcmp(e->auth->user, (char *) l->data))
          {
             if ((eu = evas_hash_find(e->config->users.hash, e->auth->user)))
             {
@@ -703,8 +707,8 @@ _entrance_session_user_list_fix(Entrance_Session * e)
       snprintf(buf, PATH_MAX, "default.eet");
       if ((eu = entrance_user_new(e->auth->user, buf, e->session)))
       {
-	  e->config->users.hash = evas_hash_add(e->config->users.hash,
-						eu->name, eu);
+         e->config->users.hash =
+            evas_hash_add(e->config->users.hash, eu->name, eu);
          e->config->users.keys =
             evas_list_prepend(e->config->users.keys, eu->name);
          entrance_config_user_list_write(e->config);

@@ -22,6 +22,7 @@ struct _Entrance_User
 Entrance_User *entrance_user_new(char *user, char *icon, char *session);
 void entrance_user_auto_login_set(Entrance_User * e, int allow);
 void entrance_user_free(Entrance_User * e);
-Evas_Object *entrance_user_edje_get(Entrance_User * e, Evas_Object * edje);
+Evas_Object *entrance_user_edje_get(Entrance_User * e, Evas_Object * edje,
+                                    const char *file);
 
 #endif

@@ -82,17 +82,16 @@ entrance_user_free(Entrance_User * e)
  * @return NULL on failure, a valid Evas_Object on success
  */
 Evas_Object *
-entrance_user_edje_get(Entrance_User * e, Evas_Object * edje)
+entrance_user_edje_get(Entrance_User * e, Evas_Object * edje,
+                       const char *file)
 {
    Evas_Object *o = NULL;
    Evas_Object *oo = NULL;
-   const char *file = NULL;
    Evas_Coord w, h;
 
    if (e && edje)
    {
       o = edje_object_add(evas_object_evas_get(edje));
-      edje_object_file_get(edje, &file, NULL);
       if (edje_object_file_set(o, file, "User"))
       {
          evas_object_layer_set(o, 0);
@@ -127,7 +126,7 @@ entrance_user_edje_get(Entrance_User * e, Evas_Object * edje)
       {
          fprintf(stderr, "Failed on: %s(%s)\n", e->name, e->icon);
          evas_object_del(o);
-         evas_object_del(oo);
+         o = NULL;
       }
    }
    return (o);
