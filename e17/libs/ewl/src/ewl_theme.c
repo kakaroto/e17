@@ -7,8 +7,6 @@
 static char     *theme_name = NULL;
 static char     *theme_path = NULL;
 
-static E_DB_File *theme_db = NULL;
-
 static Ecore_List *font_paths = NULL;
 static Ecore_Hash *cached_theme_data = NULL;
 static Ecore_Hash *def_theme_data = NULL;
@@ -64,60 +62,17 @@ int ewl_theme_init(void)
 
 	/*
 	 * Build a path to the theme if it is the users home dir and use it if
-	 * available. First attempts to use the theme.db method, but fails
-	 * over to an eet.
+	 * available. 
 	 */
-	snprintf(theme_db_path, PATH_MAX, "%s/.e/ewl/themes/%s", home,
-			theme_name);
-
-	if (((stat(theme_db_path, &st)) == 0) && S_ISDIR(st.st_mode)) {
-		snprintf(theme_db_path, PATH_MAX,
-				"%s/.e/ewl/themes/%s/theme.db", home,
-				theme_name);
-		theme_db = e_db_open_read(theme_db_path);
-		if (theme_db) {
-			snprintf(theme_db_path, PATH_MAX,
-					"%s/.e/ewl/themes/%s/", home,
-					theme_name);
-			theme_path = strdup(theme_db_path);
-		}
-	}
-
-	if (!theme_path) {
-		snprintf(theme_db_path, PATH_MAX, "%s/.e/ewl/themes/%s.eet",
-				home, theme_name);
-		if (((stat(theme_db_path, &st)) == 0) && S_ISREG(st.st_mode)) {
-			theme_path = strdup(theme_db_path);
-		}
+	snprintf(theme_db_path, PATH_MAX, "%s/.e/ewl/themes/%s.eet",
+			home, theme_name);
+	if (((stat(theme_db_path, &st)) == 0) && S_ISREG(st.st_mode)) {
+		theme_path = strdup(theme_db_path);
 	}
 
 	/*
-	 * No user theme, so we try the system-wide theme. Same failover
-	 * scheme, theme.db first fails over to the eet.
+	 * No user theme, so we try the system-wide theme.
 	 */
-	if (!theme_path) {
-
-		/*
-		 * Theme dir is ok, now get the specified theme's path 
-		 */
-		snprintf(theme_db_path, PATH_MAX, PACKAGE_DATA_DIR
-			 "/themes/%s", theme_name);
-
-		if (((stat(theme_db_path, &st)) == 0) && S_ISDIR(st.st_mode)) {
-			snprintf(theme_db_path, PATH_MAX, PACKAGE_DATA_DIR
-					"/themes/%s/theme.db", theme_name);
-
-			theme_db = e_db_open_read(theme_db_path);
-			if (theme_db) {
-				snprintf(theme_db_path, PATH_MAX,
-						PACKAGE_DATA_DIR "/themes/%s",
-						theme_name);
-				theme_path = strdup(theme_db_path);
-			}
-		}
-
-	}
-
 	if (!theme_path) {
 		snprintf(theme_db_path, PATH_MAX, PACKAGE_DATA_DIR
 				"/themes/%s.eet", theme_name);
@@ -168,11 +123,6 @@ int ewl_theme_init(void)
 void ewl_theme_shutdown()
 {
 	char *data;
-
-	if (theme_db) {
-		e_db_close(theme_db);
-		theme_db = NULL;
-	}
 
 	if (font_paths) {
 		while ((data = ecore_list_remove_first(font_paths)))
@@ -297,16 +247,6 @@ char *ewl_theme_path_get()
 }
 
 /**
- * @brief Returns the open theme db file handle.
- * @return Returns the open theme database on success, NULL for an eet theme.
- */
-E_DB_File *ewl_theme_db_get()
-{
-	DENTER_FUNCTION(DLEVEL_STABLE);
-	DRETURN_PTR(theme_db, DLEVEL_STABLE);
-}
-
-/**
  * @return Returns the font path of widget @a w on success, NULL on failure.
  * @brief retrieve the path of a widgets theme's fonts
  */
@@ -356,7 +296,7 @@ char *ewl_theme_image_get(Ewl_Widget * w, char *k)
 	DCHECK_PARAM_PTR_RET("k", k, NULL);
 
 	data = ewl_theme_data_str_get(w, k);
-	if (!data && !theme_db)
+	if (!data)
 		data = strdup(theme_path);
 
 	if (!data)
@@ -415,10 +355,7 @@ char *ewl_theme_data_str_get(Ewl_Widget * w, char *k)
 			ret = ecore_hash_get(cached_theme_data, temp);
 
 		if (!ret) {
-			if (theme_db)
-				ret = e_db_str_get(theme_db, temp);
-			else
-				ret = edje_file_data_get(theme_path, temp);
+			ret = edje_file_data_get(theme_path, temp);
 
 			if (ret && ewl_config.theme.cache) {
 				if (!cached_theme_data)
@@ -465,16 +402,12 @@ int ewl_theme_data_int_get(Ewl_Widget * w, char *k)
 			ret = (int) (ecore_hash_get(def_theme_data, temp));
 
 		if (!ret) {
-			if (theme_db)
-				e_db_int_get(theme_db, temp, &ret);
-			else {
-				char *val;
+			char *val;
 
-				val = edje_file_data_get(theme_path, temp);
-				if (val) {
-					ret = atoi(val);
-					FREE(val);
-				}
+			val = edje_file_data_get(theme_path, temp);
+			if (val) {
+				ret = atoi(val);
+				FREE(val);
 			}
 		}
 		temp++;
