@@ -31,6 +31,7 @@ esmart_thumb_new (Evas * evas, const char *file)
 {
   char buf[PATH_MAX];
   Evas_Object *result = NULL;
+  Epsilon_Info *ei = NULL;
   if (file)
     {
       Esmart_Thumb *e = NULL;
@@ -67,9 +68,48 @@ esmart_thumb_new (Evas * evas, const char *file)
 		  esmart_thumb_free (result);
 		  result = NULL;
 		}
+	      else if ((ei = epsilon_info_get (e->e)))
+		{
+		  Imlib_Image im = NULL;
+		  if ((im = imlib_load_image (epsilon_thumb_file_get (e->e))))
+		    {
+		      imlib_context_set_image (im);
+		      if (epsilon_info_exif_get (ei))
+			{
+			  switch (epsilon_info_exif_props_as_int_get
+				  (ei, 0x0112))
+			    {
+			    case 3:
+			      imlib_image_orientate (2);
+			    case 6:
+			      imlib_image_orientate (1);
+			    case 8:
+			      imlib_image_orientate (3);
+			    default:
+			      break;
+			    }
+			}
+		      e->tw = imlib_image_get_width ();
+		      e->th = imlib_image_get_height ();
+		      evas_object_image_size_set (e->image, (int) e->tw,
+						  (int) e->th);
+		      evas_object_image_fill_set (e->image, (Evas_Coord) 0,
+						  (Evas_Coord) 0,
+						  (Evas_Coord) e->tw,
+						  (Evas_Coord) e->th);
+		      evas_object_image_data_copy_set (e->image,
+						       imlib_image_get_data
+						       ());
+		      imlib_free_image_and_decache ();
+		    }
+		  else
+		    {
+		      esmart_thumb_free (result);
+		      result = NULL;
+		    }
+		}
 	      else
 		{
-		  e->image = evas_object_image_add (evas);
 		  evas_object_image_file_set (e->image,
 					      epsilon_thumb_file_get (e->e),
 					      NULL);
@@ -80,9 +120,8 @@ esmart_thumb_new (Evas * evas, const char *file)
 		  else
 		    {
 		      esmart_thumb_free (result);
-		      e->image = NULL;
+		      result = NULL;
 		    }
-
 		}
 
 	    }
@@ -189,7 +228,8 @@ esmart_thumb_format_get (Evas_Object * o)
 	{
 	  if (!e->info)
 	    e->info = epsilon_info_get (e->e);
-        if(!e->info) return NULL;
+	  if (!e->info)
+	    return NULL;
 	  return (e->info->mimetype);
 	}
     }
@@ -251,6 +291,7 @@ _e_thumb_add (Evas_Object * o)
   memset (e, 0, sizeof (Esmart_Thumb));
 
   evas_object_smart_data_set (o, e);
+  e->image = evas_object_image_add (evas_object_evas_get (o));
 }
 
 /**
