@@ -2,7 +2,8 @@
 
 int get_pty(Term *term)
 {
-   extern char *ptsname();
+   /* do we need this here? */
+   /* extern char *ptsname(); */
    int fd;
 
    if((fd = getpt()) >= 0)
@@ -106,7 +107,7 @@ int execute_command(Term *term, int argc, const char **argv)
       /* child */
       get_tty(term);
 
-      putenv("TERM=blurt");
+      putenv("TERM=xterm");
       chdir(pw->pw_dir);
 
       args = calloc(3, sizeof(char*));

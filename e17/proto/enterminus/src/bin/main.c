@@ -4,7 +4,7 @@ int main(int argc, char **argv) {
 
    Ecore_Evas  *ee;     /* ecore_evas */
    Evas        *evas;   /* evas       */
-   Evas_Object *ob,*bg; /* background */   
+//   Evas_Object *ob,*bg; /* background */   
    Term        *term;   /* terminal   */
    
    //term_window_init(ee, evas);
@@ -14,7 +14,7 @@ int main(int argc, char **argv) {
    
    term = term_new(evas);
    
-   term_term_bg_set(term, DATADIR"black.png", ee);
+   term_term_bg_set(term, DATADIR"white.png", ee);
 
    execute_command(term, argc, argv);
 
