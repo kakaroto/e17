@@ -792,12 +792,6 @@ yyerror(const char *str)
 	fprintf(stderr, "yyerror: %s\n", str);
 }
 
-int
-yywrap()
-{
-	return 1;
-}
-
 void
 parse_error(void)
 {
