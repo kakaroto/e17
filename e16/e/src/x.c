@@ -721,6 +721,8 @@ WindowAtXY_0(Window base, int bx, int by, int x, int y)
       EDBUG_RETURN(0);
    if (att.class == InputOnly)
       EDBUG_RETURN(0);
+   if (att.map_state != IsViewable)
+      EDBUG_RETURN(0);
    wx = att.x;
    wy = att.y;
    ww = att.width;
