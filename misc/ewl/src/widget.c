@@ -107,6 +107,7 @@ void        ewl_widget_show(EwlWidget *widget)
 	if (ewl_widget_is_realized(widget))	{
 		evas_show(ewl_widget_get_evas(widget),
            ewl_widget_get_background(widget));
+		ewl_widget_set_flag(widget,"mapped", TRUE);
 	} else {
 		ewl_widget_realize(widget);
 	}
@@ -120,6 +121,7 @@ void        ewl_widget_hide(EwlWidget *widget)
 	if (ewl_widget_is_realized(widget))	{
 		evas_hide(ewl_widget_get_evas(widget),
 		          ewl_widget_get_background(widget));
+		ewl_widget_set_flag(widget,"mapped", FALSE);
 	} else {
 	}
 	ewl_event_queue_new("hide", widget);
