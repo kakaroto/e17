@@ -176,42 +176,91 @@ _note_shutdown (Note *n)
 static E_Menu *
 _note_config_menu_new (Note *n)
 {
-   E_Menu      *mn;
+   E_Menu      *mn,*mnbg,*mnt;
    E_Menu_Item *mi;
    
    /* FIXME: hook callbacks to each menu item */
-   mn = e_menu_new ();
+   mn = e_menu_new ();  // main configuration menu
+   mnbg = e_menu_new (); // options submenu
+   mnt = e_menu_new (); // trans submenu   
+  
    
-   mi = e_menu_item_new (mn);
+   n->config_menu_bg = mnbg;
+   n->config_menu = mn;
+   n->config_menu_trans = mnt;
+   
+   
+   mi = e_menu_item_new (mnbg);
    e_menu_item_label_set (mi, "White Bg");
    e_menu_item_radio_set(mi, 1);
    e_menu_item_radio_group_set(mi, 2);
    if (n->conf->bgcolor == BGCOLOR_WHITE) e_menu_item_toggle_set (mi, 1);
-   e_menu_item_callback_set (mi, _note_menu_bgcolor_white, n);   
+   e_menu_item_callback_set (mi, _note_menu_bgcolor_white, n);
    
-   mi = e_menu_item_new (mn);
+   mi = e_menu_item_new (mnbg);
    e_menu_item_label_set (mi, "Yellow Bg");
    e_menu_item_radio_set(mi, 1);
    e_menu_item_radio_group_set(mi, 2);
    if (n->conf->bgcolor == BGCOLOR_YELLOW) e_menu_item_toggle_set (mi, 1);
    e_menu_item_callback_set (mi, _note_menu_bgcolor_yellow, n);
    
-   mi = e_menu_item_new (mn);
+   mi = e_menu_item_new (mnbg);
    e_menu_item_label_set (mi, "Blue Bg");
    e_menu_item_radio_set(mi, 1);
    e_menu_item_radio_group_set(mi, 2);
    if (n->conf->bgcolor == BGCOLOR_BLUE) e_menu_item_toggle_set (mi, 1);
    e_menu_item_callback_set (mi, _note_menu_bgcolor_blue, n);
    
-   mi = e_menu_item_new(mn);
+   mi = e_menu_item_new(mnbg);
    e_menu_item_label_set(mi, "Green Bg");
    e_menu_item_radio_set(mi, 1);
    e_menu_item_radio_group_set(mi, 2);
    if (n->conf->bgcolor == BGCOLOR_GREEN) e_menu_item_toggle_set (mi, 1);
    e_menu_item_callback_set (mi, _note_menu_bgcolor_blue, n);
    
-   n->config_menu = mn;
+   mi = e_menu_item_new(mn);
+   e_menu_item_label_set(mi, "Backgrounds");
+   e_menu_item_submenu_set(mi, n->config_menu_bg);         
    
+   mi = e_menu_item_new (mnt);
+   e_menu_item_label_set (mi, "0%");
+   e_menu_item_radio_set(mi, 1);
+   e_menu_item_radio_group_set(mi, 2);
+   //if (n->conf->bgcolor == BGCOLOR_WHITE) e_menu_item_toggle_set (mi, 1);
+   //e_menu_item_callback_set (mi, _note_menu_bgcolor_white, n);
+   
+   mi = e_menu_item_new (mnt);
+   e_menu_item_label_set (mi, "25%");
+   e_menu_item_radio_set(mi, 1);
+   e_menu_item_radio_group_set(mi, 2);
+   //if (n->conf->bgcolor == BGCOLOR_WHITE) e_menu_item_toggle_set (mi, 1);
+   //e_menu_item_callback_set (mi, _note_menu_bgcolor_white, n);
+   
+   mi = e_menu_item_new (mnt);
+   e_menu_item_label_set (mi, "50%");
+   e_menu_item_radio_set(mi, 1);
+   e_menu_item_radio_group_set(mi, 2);
+   //if (n->conf->bgcolor == BGCOLOR_WHITE) e_menu_item_toggle_set (mi, 1);
+   //e_menu_item_callback_set (mi, _note_menu_bgcolor_white, n);
+   
+   mi = e_menu_item_new (mnt);
+   e_menu_item_label_set (mi, "75%");
+   e_menu_item_radio_set(mi, 1);
+   e_menu_item_radio_group_set(mi, 2);
+   //if (n->conf->bgcolor == BGCOLOR_WHITE) e_menu_item_toggle_set (mi, 1);
+   //e_menu_item_callback_set (mi, _note_menu_bgcolor_white, n);   
+   
+   mi = e_menu_item_new (mnt);
+   e_menu_item_label_set (mi, "100%");
+   e_menu_item_radio_set(mi, 1);
+   e_menu_item_radio_group_set(mi, 2);
+   //if (n->conf->bgcolor == BGCOLOR_WHITE) e_menu_item_toggle_set (mi, 1);
+   //e_menu_item_callback_set (mi, _note_menu_bgcolor_white, n);   
+   
+   mi = e_menu_item_new(mn);
+   e_menu_item_label_set(mi, "Transparency");
+   e_menu_item_submenu_set(mi, n->config_menu_trans);
+      
    return mn;
 }
 

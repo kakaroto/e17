@@ -22,6 +22,8 @@ struct _Config
 struct _Note
 {
    E_Menu     *config_menu;
+   E_Menu     *config_menu_bg;
+   E_Menu     *config_menu_trans;   
    Note_Face  *face;
    
    E_Config_DD *conf_edd;
