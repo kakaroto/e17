@@ -1883,6 +1883,75 @@ the image onto the current drawable instead of the current image.
 This function works just like imlib_render_image_on_drawable_skewed() except
 you cannot skew an image (v_angle_x and v_angle_y are 0).
 </blockquote>
+
+<pre><b><tt><font color="#660000"><font size=+2>void imlib_context_set_cliprect(int x, int y, int w, int h);</font></font></tt></b></pre>
+<blockquote>
+Sets the current clipping rectangle to (x,y w*h). The clipping rectangle
+effects all image drawing functions and prevents the area outside the
+rectangle from being edited. Set w to 0 to disable clipping.
+</blockquote>
+
+<pre><b><tt><font color="#660000"><font size=+2>int imlib_clip_line(int x0, int y0, int x1, int y1, int xmin, int xmax, int ymin, int ymax, int *clip_x0, int *clip_y0, int *clip_x1, int *clip_y1);</font></font></tt></b></pre>
+<blockquote>
+A utility function to return clipped line coordinates.
+</blockquote>
+
+
+<pre><b><tt><font color="#660000"><font size=+2>void imlib_polygon_new(void);</font></font></tt></b></pre>
+<blockquote>
+Returns a new polygon object with no points set.
+</blockquote>
+
+<pre><b><tt><font color="#660000"><font size=+2>void imlib_polygon_free(ImlibPolygon poly);</font></font></tt></b></pre>
+<blockquote>
+Frees a polygon object.
+</blockquote>
+
+<pre><b><tt><font color="#660000"><font size=+2>void imlib_polygon_add_point(ImlibPolygon poly, int x, int y);</font></font></tt></b></pre>
+<blockquote>
+Adds the point (x,y) to a polygon object. The point will be added to the
+end of the polygon's internal point list. The points are drawn in order,
+from the first to the last.
+</blockquote>
+
+<pre><b><tt><font color="#660000"><font size=+2>void imlib_image_draw_polygon(ImlibPolygon poly, unsigned char closed);</font></font></tt></b></pre>
+<blockquote>
+Draws a polygon onto the current context image. Points which have been
+added to the polygon are drawn in sequence, first to last. The final point will be
+joined with the first point if <b>closed</b> is non-zero.
+</blockquote>
+
+<pre><b><tt><font color="#660000"><font size=+2>void imlib_image_fill_polygon(ImlibPolygon poly);</font></font></tt></b></pre>
+<blockquote>
+Fill the area defined by the polygon on the current context image with
+the current context colour.
+</blockquote>
+
+<pre><b><tt><font color="#660000"><font size=+2>void imlib_polygon_get_bounds(ImlibPolygon poly, int *px1, int *py1, int *px2, int *py2);</font></font></tt></b></pre>
+<blockquote>
+Calculate the bounding area of the polygon. (px1, py1) defines the upper
+left corner of the bounding box and (px2, py2) defines it's lower right
+corner.
+</blockquote>
+
+<pre><b><tt><font color="#660000"><font size=+2>unsigned char imlib_polygon_contains_point(ImlibPolygon poly, int x, int y);</font></font></tt></b></pre>
+<blockquote>
+Returns non-zero if the point (x,y) is within the area defined by the
+polygon.
+</blockquote>
+
+<pre><b><tt><font color="#660000"><font size=+2>void imlib_image_draw_ellipse(int xc, int yc, int a, int b);</font></font></tt></b></pre>
+<blockquote>
+Draw an ellipse on the current context image. The ellipse is defined as (x-xc)^2/a^2 + (y-yc)^2/b^2 = 1. This means that the point (<b>xc</b>,<b>yc</b>) marks the center of the ellipse, <b>a</b> defines the horizontal amplitude of the ellipse, and <b>b</b> defines the vertical amplitude.
+</blockquote>
+
+<pre><b><tt><font color="#660000"><font size=+2>void imlib_image_fill_ellipse(int xc, int yc, int a, int b);</font></font></tt></b></pre>
+<blockquote>
+Fills an ellipse on the current context image using the current context colour. The ellipse is defined as (x-xc)^2/a^2 + (y-yc)^2/b^2 = 1. This means that the point (<b>xc</b>,<b>yc</b>) marks the center of the ellipse, <b>a</b> defines the horizontal amplitude of the ellipse, and <b>b</b> defines the vertical amplitude.
+</blockquote>
+
+
+
 <pre><b><tt><font color="#660000"><font size=+2>void imlib_image_filter(void);</font></font></tt></b></pre>
 
 <pre><b><tt><font color="#660000"><font size=+2>Imlib_Filter imlib_create_filter(int initsize);</font></font></tt></b></pre>
@@ -1940,12 +2009,12 @@ you cannot skew an image (v_angle_x and v_angle_y are 0).
 <td><img SRC="blank.gif" height=1 width=1></td>
 </tr>
 
-<tr NOSAVE>
-<td WIDTH="1" NOSAVE><img SRC="blank.gif" height=1 width=1></td>
+<tr>
+<td WIDTH="1"><img SRC="blank.gif" height=1 width=1></td>
 
-<td NOSAVE><img SRC="blank.gif" height=1 width=1></td>
+<td><img SRC="blank.gif" height=1 width=1></td>
 
-<td WIDTH="1" NOSAVE><img SRC="blank.gif" height=1 width=1></td>
+<td WIDTH="1"><img SRC="blank.gif" height=1 width=1></td>
 </tr>
 </table></center>
 
