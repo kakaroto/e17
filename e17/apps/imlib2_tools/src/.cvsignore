@@ -4,3 +4,6 @@ config.h
 stamp-h
 .deps
 stamp-h.in
+imlib2_convert
+imlib2_identify
+*.jpg

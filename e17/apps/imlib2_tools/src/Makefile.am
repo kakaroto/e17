@@ -25,7 +25,7 @@
 
 bin_PROGRAMS = imlib2_convert imlib2_identify
 	          
-imlib2_convert_SOURCES = convert.c
+imlib2_convert_SOURCES = convert.c dither.c
 
 imlib2_identify_SOURCES = identify.c
 

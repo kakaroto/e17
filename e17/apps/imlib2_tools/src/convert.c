@@ -47,6 +47,8 @@
 #include <popt.h>
 #include <math.h>
 
+#include "dither.h"
+
 #define DEFAULT_CACHE_SIZE 80 /* In megabytes */
 
 #define imlib_context_set_colour(_r, _g, _b, _a) \
@@ -58,11 +60,13 @@
 	} \
 	_ptr = NULL;
 
-#define __OP_FLIP        0x0001
-#define __OP_FLOP        0x0002
-#define __OP_FLOP        0x0002
-#define __OP_AVERAGE     0x0004
-#define __OP_NOANTIALIAS 0x0010
+#define __OP_FLIP           0x0001
+#define __OP_FLOP           0x0002
+#define __OP_FLOP           0x0002
+#define __OP_AVERAGE        0x0004
+#define __OP_NOANTIALIAS    0x0010
+#define __OP_MONOCHROME     0x0020
+#define __OP_ORDERED_DITHER 0x0040
 
 typedef struct {
 	const char *blur;
@@ -71,7 +75,7 @@ typedef struct {
 	const char *crop;
 	const char *channel;
 	const char *cache;
-	const char *geometry;
+	const char *scale;
 	const char *gamma;
 	const char *rotate;
 	int nfiles;
@@ -99,12 +103,16 @@ static void usage(int exit_status)
 		"    -channel       Red|Green|Blue|Alpha\n"
 		"                   Matte has the same meaning as Alpha\n"
 		"    -coalesce      (The same as average)\n"
+		"    -[no]dither    Use Floyd Steinberg Dithering instead\n"
+		"                   of ordered dithering (default)\n"
 		"    -flip\n"
 		"    -flop\n"
 		"    -gamma         <gamma>|<red>/<green>/<blue>[/<alpha>]\n"
 		"    -geometry      <width>[x<height>][%%][<|>][!]\n"
 		"    -help\n"
+		"    -monochrome\n"
 		"    -rotate        <angle>[<|>]\n"
+		"    -scale         <width>[x<height>][%%][<|>][!]\n"
 		"\n",
 		DEFAULT_CACHE_SIZE);
 
@@ -154,7 +162,12 @@ static options_t *options(int argc, char **argv)
 		 NULL, 'G'},
 		{"geometry", 'g', POPT_ARG_STRING | POPT_ARGFLAG_ONEDASH,
 		 NULL, 'g'},
+		{"scale", 'g', POPT_ARG_STRING | POPT_ARGFLAG_ONEDASH,
+		 NULL, 'g'},
 		{"help", 'h', POPT_ARGFLAG_ONEDASH, NULL, 'h'},
+		{"monochrome", 'm', POPT_ARGFLAG_ONEDASH, NULL, 'm'},
+		{"dither", 'd', POPT_ARGFLAG_ONEDASH, NULL, 'd'},
+		{"nodither", 'N', POPT_ARGFLAG_ONEDASH, NULL, 'N'},
 		{"rotate", 'r', POPT_ARG_STRING | POPT_ARGFLAG_ONEDASH,
 		 NULL, 'r'},
 		{NULL, 0, 0, NULL, 0}
@@ -172,7 +185,7 @@ static options_t *options(int argc, char **argv)
 	opt->crop = NULL;
 	opt->bin_ops = 0;
 	opt->gamma = NULL;
-	opt->geometry = NULL;
+	opt->scale = NULL;
 	opt->rotate = NULL;
 	opt->src = NULL;
 	opt->dest = NULL;
@@ -220,16 +233,25 @@ static options_t *options(int argc, char **argv)
 			opt->bin_ops |= __OP_FLOP;
 			break;
 		case 'g':
-			opt->geometry = optarg;
+			opt->scale = optarg;
 			break;
 		case 'G':
 			opt->gamma = optarg;
 			break;
+		case 'h':
+			usage(0);
+			break;
 		case 'r':
 			opt->rotate = optarg;
 			break;
-		case 'h':
-			usage(0);
+		case 'm':
+			opt->bin_ops |= __OP_MONOCHROME;
+			break;
+		case 'd':
+			/* Does nothing as this is the default */
+			break;
+		case 'N':
+			opt->bin_ops |= __OP_ORDERED_DITHER;
 			break;
 		default:
 			fprintf(stderr, "Unknown option\n\n");
@@ -418,7 +440,7 @@ static Imlib_Image image_scale(Imlib_Image image, const char *geometry)
 	}
 
 	if(w == 0 || h == 0) {
-		fprintf(stderr, "zero dimension for geometry\n");
+		fprintf(stderr, "zero dimension for scale\n");
 		exit(-1);
 	}
 
@@ -482,7 +504,7 @@ static int calculate_crop(const char *spec, int *w, int *h, int *x, int *y,
 	}
 
 	if (*end == '+' || *end == '-') {
-		flags = 0;
+		*flags = 0;
 		spec = end + 1;
 		l = strtol(spec, &end, 10);
 		if (l < 0 || l > INT_MAX) {
@@ -529,7 +551,7 @@ static int calculate_crop(const char *spec, int *w, int *h, int *x, int *y,
 	}
 
 	if(*w == 0 && *h ==0) {
-		flags = 0;
+		*flags = 0;
 	}
 
 
@@ -1457,6 +1479,23 @@ static Imlib_Image image_channel(Imlib_Image image, const char *channel)
 }
 
 
+static Imlib_Image image_monochrome(Imlib_Image image, 
+		const int monochrome, const int ordered_dither)
+{
+	imlib_context_set_image(image);
+
+	if(!monochrome) {
+		return(image);
+	}
+
+	if(ordered_dither) {
+		return(dither_ordered_image(image, 8));
+	}
+
+	return(dither_floyd_image(image, DITHER_FLOYD_ALTERNATE));
+}
+
+
 int calculate_cache(const char *cache) 
 {
 	char *end;
@@ -1562,8 +1601,8 @@ int main(int argc, char **argv)
 	}
 
 	/* Scale Image */
-	if ((image = image_scale(image, opt->geometry)) == NULL) {
-		fprintf(stderr, "Scaling (geometry) failed\n");
+	if ((image = image_scale(image, opt->scale)) == NULL) {
+		fprintf(stderr, "Scaling failed\n");
 		return (-1);
 	}
 
@@ -1600,6 +1639,14 @@ int main(int argc, char **argv)
 	if (image == NULL) {
 		fprintf(stderr, "Rotation failed\n");
 		return (-1);
+	}
+
+	/* Convert image to monochrome */
+	image = image_monochrome(image, opt->bin_ops&__OP_MONOCHROME, 
+			opt->bin_ops&__OP_ORDERED_DITHER);
+	if(image == NULL) {
+		fprintf(stderr, "Could not convert image to monochrome\n");
+		return(-1);
 	}
 
 	/* save the image */
