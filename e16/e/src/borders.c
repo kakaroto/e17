@@ -484,6 +484,18 @@ HonorIclass(char *s, int id)
    EDBUG_RETURN_;
 }
 
+static void
+BorderIncRefcount(const Border * b)
+{
+   ((Border *) b)->ref_count++;
+}
+
+static void
+BorderDecRefcount(const Border * b)
+{
+   ((Border *) b)->ref_count--;
+}
+
 void
 EwinBorderSelect(EWin * ewin)
 {
@@ -516,10 +528,34 @@ EwinBorderSelect(EWin * ewin)
 }
 
 void
+EwinBorderDetach(EWin * ewin)
+{
+   const Border       *b = ewin->border;
+   int                 i;
+
+   if (!b)
+      return;
+
+   EventCallbackUnregister(EoGetWin(ewin), 0, BorderFrameHandleEvents, ewin);
+   for (i = 0; i < b->num_winparts; i++)
+     {
+	EventCallbackUnregister(ewin->bits[i].win, 0,
+				BorderWinpartHandleEvents, &ewin->bits[i]);
+	if (ewin->bits[i].win)
+	   EDestroyWindow(disp, ewin->bits[i].win);
+     }
+   if (ewin->bits)
+      Efree(ewin->bits);
+   ewin->bits = NULL;
+   BorderDecRefcount(b);
+
+   ewin->border = NULL;
+}
+
+void
 EwinBorderSetTo(EWin * ewin, const Border * b)
 {
    int                 i;
-   int                 px = 0, py = 0;
    char                s[1024];
 
    AwaitIclass        *await;
@@ -536,23 +572,7 @@ EwinBorderSetTo(EWin * ewin, const Border * b)
      }
 
    if (ewin->border)
-     {
-	EventCallbackUnregister(EoGetWin(ewin), 0, BorderFrameHandleEvents,
-				ewin);
-	px = ewin->border->border.left;
-	py = ewin->border->border.top;
-	for (i = 0; i < ewin->border->num_winparts; i++)
-	  {
-	     EventCallbackUnregister(ewin->bits[i].win, 0,
-				     BorderWinpartHandleEvents, &ewin->bits[i]);
-	     if (ewin->bits[i].win)
-		EDestroyWindow(disp, ewin->bits[i].win);
-	  }
-	if (ewin->bits)
-	   Efree(ewin->bits);
-	ewin->bits = NULL;
-	BorderDecRefcount(ewin->border);
-     }
+      EwinBorderDetach(ewin);
 
    ewin->border = b;
    BorderIncRefcount(b);
@@ -811,18 +831,6 @@ BorderWinpartAdd(Border * b, ImageClass * iclass, ActionClass * aclass,
    b->part[n - 1].geom.bottomright.y.absolute = bya;
 
    EDBUG_RETURN_;
-}
-
-void
-BorderIncRefcount(const Border * b)
-{
-   ((Border *) b)->ref_count++;
-}
-
-void
-BorderDecRefcount(const Border * b)
-{
-   ((Border *) b)->ref_count--;
 }
 
 void

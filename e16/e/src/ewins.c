@@ -62,8 +62,6 @@ EwinCreate(Window win, int type)
    EWin               *ewin;
    XSetWindowAttributes att;
 
-   EDBUG(5, "EwinCreate");
-
    ewin = Ecalloc(1, sizeof(EWin));
 
    ewin->type = type;
@@ -148,7 +146,13 @@ EwinCreate(Window win, int type)
 
    ModulesSignal(ESIGNAL_EWIN_CREATE, ewin);
 
-   EDBUG_RETURN(ewin);
+   return ewin;
+}
+
+static void
+EwinCleanup(EWin * ewin)
+{
+   EwinBorderDetach(ewin);
 }
 
 static void
@@ -157,9 +161,8 @@ EwinDestroy(EWin * ewin)
    EWin              **lst;
    int                 i, num;
 
-   EDBUG(5, "FreeEwin");
    if (!ewin)
-      EDBUG_RETURN_;
+      return;
 
    if (EventDebug(EDBUG_TYPE_EWINS))
       Eprintf("EwinDestroy %#lx %s state=%d\n", ewin->client.win,
@@ -169,14 +172,15 @@ EwinDestroy(EWin * ewin)
    ECompMgrWinDel(&ewin->o, True, False);
 
    RemoveItem(NULL, ewin->client.win, LIST_FINDBY_ID, LIST_TYPE_EWIN);
+   EventCallbackUnregister(EoGetWin(ewin), 0, EwinHandleEventsToplevel, ewin);
+   EventCallbackUnregister(ewin->win_container, 0, EwinHandleEventsContainer,
+			   ewin);
    EventCallbackUnregister(ewin->client.win, 0, EwinHandleEventsClient, ewin);
    if (!EwinIsInternal(ewin))
       EUnregisterWindow(ewin->client.win);
 
    EobjListStackDel(&ewin->o);
    EobjListFocusDel(&ewin->o);
-
-   XSelectInput(disp, ewin->client.win, 0);
 
    HintsSetClientList();
 
@@ -194,8 +198,8 @@ EwinDestroy(EWin * ewin)
    if (lst)
       Efree(lst);
 
-   if (ewin->border)
-      BorderDecRefcount(ewin->border);
+   EwinCleanup(ewin);
+
    if (ewin->icccm.wm_name)
       Efree(ewin->icccm.wm_name);
    if (ewin->icccm.wm_res_class)
@@ -230,8 +234,6 @@ EwinDestroy(EWin * ewin)
      }
    GroupsEwinRemove(ewin);
    Efree(ewin);
-
-   EDBUG_RETURN_;
 }
 
 void
@@ -239,8 +241,6 @@ DetermineEwinFloat(EWin * ewin, int dx, int dy)
 {
    char                dofloat = 0;
    int                 desk, x, y, w, h, xd, yd;
-
-   EDBUG(5, "DetermineEwinFloat");
 
    desk = EoGetDesk(ewin);
    x = EoGetX(ewin);
@@ -283,7 +283,6 @@ DetermineEwinFloat(EWin * ewin, int dx, int dy)
 	if (dofloat)
 	   FloatEwinAt(ewin, x + xd, y + yd);
      }
-   EDBUG_RETURN_;
 }
 
 EWin               *
@@ -293,12 +292,10 @@ GetEwinByCurrentPointer(void)
    int                 dum, x, y;
    unsigned int        mr;
 
-   EDBUG(5, "GetEwinByCurrentPointer");
-
    XQueryPointer(disp, DeskGetWin(DesksGetCurrent()), &rt, &ch, &x, &y, &dum,
 		 &dum, &mr);
 
-   EDBUG_RETURN(FindEwinByBase(ch));
+   return FindEwinByBase(ch);
 }
 
 EWin               *
@@ -308,8 +305,6 @@ GetEwinPointerInClient(void)
    int                 dum, px, py, desk;
    EWin               *const *lst, *ewin;
    int                 i, num;
-
-   EDBUG(5, "GetEwinPointerInClient");
 
    desk = DesktopAt(Mode.x, Mode.y);
    XQueryPointer(disp, DeskGetWin(desk), &rt, &ch, &dum, &dum, &px, &py,
@@ -329,17 +324,16 @@ GetEwinPointerInClient(void)
 	h = EoGetH(ewin);
 	if ((px >= x) && (py >= y) && (px < (x + w)) && (py < (y + h)) &&
 	    EwinIsMapped(ewin))
-	   EDBUG_RETURN(ewin);
+	   return ewin;
      }
 
-   EDBUG_RETURN(NULL);
+   return NULL;
 }
 
 EWin               *
 GetFocusEwin(void)
 {
-   EDBUG(4, "GetFocusEwin");
-   EDBUG_RETURN(Mode.focuswin);
+   return Mode.focuswin;
 }
 
 EWin               *
@@ -350,7 +344,7 @@ GetContextEwin(void)
 #if 0
    ewin = Mode.mouse_over_ewin;
    if (ewin && ewin->type != EWIN_TYPE_MENU)
-      EDBUG_RETURN(ewin);
+      return ewin;
 #endif
 
    ewin = Mode.context_ewin;
@@ -388,8 +382,6 @@ EwinDetermineArea(EWin * ewin)
 {
    int                 ax, ay;
 
-   EDBUG(4, "EwinDetermineArea");
-
    DeskGetArea(EoGetDesk(ewin), &ax, &ay);
    ax = (EoGetX(ewin) + (EoGetW(ewin) / 2) + (ax * VRoot.w)) / VRoot.w;
    ay = (EoGetY(ewin) + (EoGetH(ewin) / 2) + (ay * VRoot.h)) / VRoot.h;
@@ -402,14 +394,12 @@ EwinDetermineArea(EWin * ewin)
 	ewin->area_y = ay;
 	HintsSetWindowArea(ewin);
      }
-
-   EDBUG_RETURN_;
 }
 
 /*
  * Derive frame window position from client window and border properties
  */
-void
+static void
 EwinGetPosition(const EWin * ewin, int *px, int *py)
 {
    int                 x, y, bw, frame_lr, frame_tb;
@@ -506,18 +496,16 @@ EwinAdopt(EWin * ewin)
 {
    /* We must reparent after getting original window position */
    EReparentWindow(disp, ewin->client.win, ewin->win_container, 0, 0);
-   XMoveWindow(disp, ewin->client.win, 0, 0);
    ICCCM_Adopt(ewin);
 }
 
 static EWin        *
-Adopt(Window win)
+Adopt(EWin * ewin, Window win)
 {
-   EWin               *ewin;
-
-   EDBUG(4, "Adopt");
-
-   ewin = EwinCreate(win, EWIN_TYPE_NORMAL);
+   if (ewin)
+      EwinCleanup(ewin);
+   else
+      ewin = EwinCreate(win, EWIN_TYPE_NORMAL);
 
    ICCCM_AdoptStart(ewin);
    ICCCM_GetTitle(ewin, 0);
@@ -554,15 +542,13 @@ Adopt(Window win)
       Eprintf("Adopt %#lx %s state=%d\n", ewin->client.win,
 	      EwinGetName(ewin), ewin->state);
 
-   EDBUG_RETURN(ewin);
+   return ewin;
 }
 
 static EWin        *
 AdoptInternal(Window win, Border * border, int type)
 {
    EWin               *ewin;
-
-   EDBUG(4, "AdoptInternal");
 
    ewin = EwinCreate(win, type);
 
@@ -631,55 +617,28 @@ AdoptInternal(Window win, Border * border, int type)
    HintsSetWindowState(ewin);
    HintsSetClientList();
 
-   EDBUG_RETURN(ewin);
+   return ewin;
 }
 
 void
-AddToFamily(Window win)
+AddToFamily(EWin * ewin, Window win)
 {
-   EWin               *ewin, *ewin2;
+   EWin               *ewin2;
    EWin              **lst;
-   int                 i, k, num, speed, fx, fy, x, y, desk;
+   int                 i, k, num, fx, fy, x, y, desk;
    char                doslide, manplace;
 
-   EDBUG(3, "AddToFamily");
-
-   /* find the client window if it's already managed */
-   ewin = FindItem(NULL, win, LIST_FINDBY_ID, LIST_TYPE_EWIN);
-
-   if (ewin)
-     {
-	/* Some clients MapRequest more than once ?!? */
-	Eprintf("AddToFamily: Already managing %#lx\n", ewin->client.win);
-#if 0
-	/* if its iconified - de-iconify */
-	if (ewin->iconified)
-	  {
-#if 0				/* FIXME - When do we need this? */
-	     RemoveMiniIcon(ewin);
-#endif
-	     EoSetDesk(ewin, DesksGetCurrent());
-	     DeskGetCurrentArea(&x, &y);
-	     MoveEwinToArea(ewin, x, y);
-	     RaiseEwin(ewin);
-	     EwinConformToDesktop(ewin);
-	     ShowEwin(ewin);
-	     ICCCM_DeIconify(ewin);
-	     ewin->iconified = 0;
-	  }
-#endif
-	EDBUG_RETURN_;
-     }
-
-   /* grab that server */
    ecore_x_grab();
 
-   speed = Conf.slidespeedmap;
-   doslide = Conf.mapslide && !Mode.wm.startup;
-   manplace = 0;
+   if (!WinExists(win))
+     {
+	Eprintf("Window is gone %#lx\n", win);
+	ecore_x_ungrab();
+	return;
+     }
 
    /* adopt the new baby */
-   ewin = Adopt(win);
+   ewin = Adopt(ewin, win);
 
    /* if it hasn't been planted on a desktop - assign it the current desktop */
    desk = EoGetDesk(ewin);
@@ -691,6 +650,7 @@ AddToFamily(Window win)
 	ewin->props.donthide = 1;
      }
 
+   doslide = Conf.mapslide && !Mode.wm.startup;
    /* if set for borderless then dont slide it in */
    if ((!ewin->client.mwm_decor_title) && (!ewin->client.mwm_decor_border))
       doslide = 0;
@@ -781,11 +741,12 @@ AddToFamily(Window win)
 	ewin->client.already_placed = 1;
 	ShowEwin(ewin);
 	ecore_x_ungrab();
-	EDBUG_RETURN_;
+	return;
      }
 
    ResizeEwin(ewin, ewin->client.w, ewin->client.h);
 
+   manplace = 0;
    if ((!ewin->client.transient) && (Conf.place.manual)
        && (!ewin->client.already_placed) && (!Mode.wm.startup) && (!Mode.place))
      {
@@ -857,7 +818,7 @@ AddToFamily(Window win)
 	ewin->state = EWIN_STATE_MAPPED;
 	EwinIconify(ewin);
 	ewin->state = EWIN_STATE_ICONIC;
-	EDBUG_RETURN_;
+	return;
      }
 
    /* if we should slide it in and are not currently in the middle of a slide */
@@ -891,7 +852,7 @@ AddToFamily(Window win)
 	ecore_x_ungrab();
 	EoSetFloating(ewin, 1);	/* Causes reparenting to root */
 	ActionMoveStart(ewin, 1, 0, 0);
-	EDBUG_RETURN_;
+	return;
      }
    else if ((doslide) && (!Mode.doingslide))
      {
@@ -922,7 +883,7 @@ AddToFamily(Window win)
 	RaiseEwin(ewin);
 	MoveEwin(ewin, fx, fy);
 	ShowEwin(ewin);
-	SlideEwinTo(ewin, fx, fy, x, y, speed);
+	SlideEwinTo(ewin, fx, fy, x, y, Conf.slidespeedmap);
 	MoveEwinToDesktopAt(ewin, desk, x, y);
      }
    else
@@ -936,8 +897,6 @@ AddToFamily(Window win)
    EwinDetermineArea(ewin);
 
    ecore_x_ungrab();
-
-   EDBUG_RETURN_;
 }
 
 EWin               *
@@ -946,8 +905,6 @@ AddInternalToFamily(Window win, const char *bname, int type, void *ptr,
 {
    EWin               *ewin;
    Border             *b;
-
-   EDBUG(3, "AddInternalToFamily");
 
    b = NULL;
    if (bname)
@@ -975,37 +932,42 @@ AddInternalToFamily(Window win, const char *bname, int type, void *ptr,
 
    ecore_x_ungrab();
 
-   EDBUG_RETURN(ewin);
+   return ewin;
 }
 
-void
+static void
 EwinWithdraw(EWin * ewin)
 {
    Window              win;
+   int                 x, y;
 
    if (EventDebug(EDBUG_TYPE_EWINS))
       Eprintf("EwinWithdraw %#lx %s state=%d\n", ewin->client.win,
 	      EwinGetName(ewin), ewin->state);
 
+   ecore_x_grab();
+
    /* Park the client window on the root */
+   x = ewin->client.x;
+   y = ewin->client.y;
    XTranslateCoordinates(disp, ewin->client.win, VRoot.win,
 			 -ewin->border->border.left,
-			 -ewin->border->border.top, &ewin->client.x,
-			 &ewin->client.y, &win);
-   EReparentWindow(disp, ewin->client.win, VRoot.win, ewin->client.x,
-		   ewin->client.y);
-
+			 -ewin->border->border.top, &x, &y, &win);
+   EReparentWindow(disp, ewin->client.win, VRoot.win, x, y);
    ICCCM_Withdraw(ewin);
    HintsDelWindowHints(ewin);
-   EwinDestroy(ewin);
+
+   ecore_x_sync();
+   ecore_x_ungrab();
+
+   if (EwinIsInternal(ewin))
+      EwinDestroy(ewin);
 }
 
 void
 EwinConformToDesktop(EWin * ewin)
 {
    Window              dwin;
-
-   EDBUG(3, "EwinConformToDesktop");
 
    dwin = DeskGetWin(EoGetDesk(ewin));
    if ((ewin->iconified) && (ewin->parent != dwin))
@@ -1047,15 +1009,43 @@ EwinConformToDesktop(EWin * ewin)
 
    EwinDetermineArea(ewin);
    HintsSetWindowDesktop(ewin);
-
-   EDBUG_RETURN_;
 }
 
 void
 EwinReparent(EWin * ewin, Window parent)
 {
    EReparentWindow(disp, ewin->client.win, parent, 0, 0);
-   EwinDestroy(ewin);
+   EDestroyWindow(disp, EoGetWin(ewin));
+}
+
+static void
+EwinEventMapRequest(EWin * ewin, Window win)
+{
+   if (ewin)
+     {
+	if (ewin->state == EWIN_STATE_ICONIC)
+	   EwinDeIconify(ewin);
+	if (ewin->state == EWIN_STATE_WITHDRAWN)
+	   AddToFamily(ewin, win);
+	else
+	   Eprintf("AddToFamily: Already managing %s %#lx\n", "A",
+		   ewin->client.win);
+     }
+   else
+     {
+	/* Check if we are already managing it */
+	ewin = FindItem(NULL, win, LIST_FINDBY_ID, LIST_TYPE_EWIN);
+
+	/* Some clients MapRequest more than once ?!? */
+	if (ewin)
+	  {
+	     Eprintf("AddToFamily: Already managing %s %#lx\n", "B",
+		     ewin->client.win);
+	     ShowEwin(ewin);
+	  }
+	else
+	   AddToFamily(NULL, win);
+     }
 }
 
 static void
@@ -1094,12 +1084,12 @@ EwinEventUnmap(EWin * ewin)
    if (GetZoomEWin() == ewin)
       Zoom(NULL);
 
-   /* Set state to unknown until we can set the correct one */
-   ewin->state = (ewin->iconified) ? EWIN_STATE_ICONIC : EWIN_STATE_WITHDRAWN;
-
    if (EventDebug(EDBUG_TYPE_EWINS))
       Eprintf("EwinEventUnmap %#lx %s state=%d\n", ewin->client.win,
 	      EwinGetName(ewin), ewin->state);
+
+   if (ewin->state == EWIN_STATE_WITHDRAWN)
+      return;
 
    ActionsEnd(ewin);
 
@@ -1120,13 +1110,17 @@ EwinEventUnmap(EWin * ewin)
 	Mode.doingslide = 0;
      }
 
+   HideEwin(ewin);
+
    ModulesSignal(ESIGNAL_EWIN_UNMAP, ewin);
 
    if (ewin->iconified)
      {
-	HideEwin(ewin);
+	ewin->state = EWIN_STATE_ICONIC;
 	return;
      }
+
+   ewin->state = EWIN_STATE_WITHDRAWN;
 
    if (ewin->Close)
       ewin->Close(ewin);
@@ -1234,7 +1228,7 @@ EwinEventConfigureRequest(EWin * ewin, XEvent * ev)
 	xwc.border_width = ev->xconfigurerequest.border_width;
 	xwc.sibling = ev->xconfigurerequest.above;
 	xwc.stack_mode = ev->xconfigurerequest.detail;
-	XConfigureWindow(disp, win, ev->xconfigurerequest.value_mask, &xwc);
+	EConfigureWindow(disp, win, ev->xconfigurerequest.value_mask, &xwc);
      }
 }
 
@@ -1363,10 +1357,9 @@ FloatEwin(EWin * ewin)
    EWin              **lst;
    int                 i, num;
 
-   EDBUG(3, "FloatEwin");
    call_depth++;
    if (call_depth > 256)
-      EDBUG_RETURN_;
+      return;
 
    EoSetFloating(ewin, 1);
    EoSetDesk(ewin, 0);
@@ -1380,7 +1373,6 @@ FloatEwin(EWin * ewin)
       Efree(lst);
 
    call_depth--;
-   EDBUG_RETURN_;
 }
 #endif
 
@@ -1392,10 +1384,9 @@ FloatEwinAt(EWin * ewin, int x, int y)
    EWin              **lst;
    int                 i, num;
 
-   EDBUG(3, "FloatEwinAt");
    call_depth++;
    if (call_depth > 256)
-      EDBUG_RETURN_;
+      return;
 
    if (EoIsFloating(ewin))
       EoSetFloating(ewin, 2);
@@ -1415,7 +1406,6 @@ FloatEwinAt(EWin * ewin, int x, int y)
       Efree(lst);
 
    call_depth--;
-   EDBUG_RETURN_;
 }
 
 /*
@@ -1428,8 +1418,6 @@ RestackEwin(EWin * ewin)
    int                 i, num;
    XWindowChanges      xwc;
    unsigned int        value_mask;
-
-   EDBUG(3, "RestackEwin");
 
    if (EventDebug(EDBUG_TYPE_STACKING))
       Eprintf("RestackEwin %#lx %s\n", ewin->client.win, EwinGetName(ewin));
@@ -1468,7 +1456,7 @@ RestackEwin(EWin * ewin)
    ModulesSignal(ESIGNAL_EWIN_CHANGE, ewin);
 
  done:
-   EDBUG_RETURN_;
+   ;
 }
 
 void
@@ -1478,9 +1466,8 @@ RaiseEwin(EWin * ewin)
    EWin              **lst;
    int                 i, num;
 
-   EDBUG(3, "RaiseEwin");
    if (call_depth > 256)
-      EDBUG_RETURN_;
+      return;
    call_depth++;
 
    if (EventDebug(EDBUG_TYPE_RAISELOWER))
@@ -1518,7 +1505,6 @@ RaiseEwin(EWin * ewin)
 
  done:
    call_depth--;
-   EDBUG_RETURN_;
 }
 
 void
@@ -1528,9 +1514,8 @@ LowerEwin(EWin * ewin)
    EWin              **lst;
    int                 i, num;
 
-   EDBUG(3, "LowerEwin");
    if (call_depth > 256)
-      EDBUG_RETURN_;
+      return;
    call_depth++;
 
    if (EventDebug(EDBUG_TYPE_RAISELOWER))
@@ -1564,16 +1549,13 @@ LowerEwin(EWin * ewin)
 
  done:
    call_depth--;
-   EDBUG_RETURN_;
 }
 
 void
 ShowEwin(EWin * ewin)
 {
-   EDBUG(3, "ShowEwin");
-
    if (ewin->shown)
-      EDBUG_RETURN_;
+      return;
    ewin->shown = 1;
 
    if (ewin->client.win)
@@ -1585,26 +1567,22 @@ ShowEwin(EWin * ewin)
 
    if (EoGetWin(ewin))
       EMapWindow(disp, EoGetWin(ewin));
-
-   EDBUG_RETURN_;
 }
 
 void
 HideEwin(EWin * ewin)
 {
-   EDBUG(3, "HideEwin");
-
    if (!ewin->shown || !EwinIsMapped(ewin))
-      EDBUG_RETURN_;
+      return;
    ewin->shown = 0;
 
    if (GetZoomEWin() == ewin)
       Zoom(NULL);
 
+   EUnmapWindow(disp, ewin->client.win);
+
    if (EoGetWin(ewin))
       EUnmapWindow(disp, EoGetWin(ewin));
-
-   EDBUG_RETURN_;
 }
 
 Window
@@ -1870,13 +1848,17 @@ EwinHandleEventsContainer(XEvent * ev, void *prm)
 {
    EWin               *ewin = (EWin *) prm;
 
+#if 0
+   Eprintf("EwinHandleEventsContainer: type=%2d win=%#lx: %s\n",
+	   ev->type, ewin->client.win, EwinGetName(ewin));
+#endif
    switch (ev->type)
      {
      case ButtonPress:
 	FocusHandleClick(ewin, ev->xany.window);
 	break;
      case MapRequest:
-	EwinDeIconify(ewin);
+	EwinEventMapRequest(ewin, ev->xmaprequest.window);
 	break;
      case ConfigureRequest:
 	EwinEventConfigureRequest(ewin, ev);
@@ -1915,23 +1897,28 @@ EwinHandleEventsClient(XEvent * ev, void *prm)
 	EwinEventVisibility(ewin, ev->xvisibility.state);
 	break;
      case DestroyNotify:
-	if (ev->xdestroywindow.window == ewin->client.win)
-	   EwinEventDestroy(ewin);
+	EwinEventDestroy(ewin);
 	break;
      case UnmapNotify:
-	if (ev->xunmap.window != ewin->client.win)
-	   break;
+#if 0
 	if (ewin->state == EWIN_STATE_NEW)
 	  {
 	     Eprintf("EwinEventUnmap %#lx: Ignoring bogus Unmap event\n",
 		     ewin->client.win);
 	     break;
 	  }
+#endif
 	EwinEventUnmap(ewin);
 	break;
      case MapNotify:
-	if (ev->xmap.window == ewin->client.win)
-	   EwinEventMap(ewin);
+	EwinEventMap(ewin);
+	break;
+     case ReparentNotify:
+	/* Check if window parent hasn't changed already (compress?) */
+	if (WinGetParent(ev->xreparent.window) != ev->xreparent.parent)
+	   break;
+	if (ev->xreparent.parent == VRoot.win)
+	   EwinEventDestroy(ewin);
 	break;
 #if 0
      case ConfigureRequest:
@@ -1975,21 +1962,25 @@ EwinHandleEventsRoot(XEvent * ev, void *prm __UNUSED__)
 	break;
 
      case MapRequest:
-	AddToFamily(ev->xmaprequest.window);
+	EwinEventMapRequest(NULL, ev->xmaprequest.window);
 	break;
      case ConfigureRequest:
 #if 0
 	Eprintf("EwinHandleEventsRoot ConfigureRequest %#lx\n",
 		ev->xconfigurerequest.window);
 #endif
-	EwinEventConfigureRequest(NULL, ev);
+	ewin = FindItem(NULL, ev->xconfigurerequest.window, LIST_FINDBY_ID,
+			LIST_TYPE_EWIN);
+	EwinEventConfigureRequest(ewin, ev);
 	break;
      case ResizeRequest:
 #if 0
 	Eprintf("EwinHandleEventsRoot ResizeRequest %#lx\n",
 		ev->xresizerequest.window);
 #endif
-	EwinEventResizeRequest(NULL, ev);
+	ewin = FindItem(NULL, ev->xresizerequest.window, LIST_FINDBY_ID,
+			LIST_TYPE_EWIN);
+	EwinEventResizeRequest(ewin, ev);
 	break;
      case CirculateRequest:
 #if 0
@@ -2011,6 +2002,8 @@ EwinHandleEventsRoot(XEvent * ev, void *prm __UNUSED__)
 	/* Catch clients destroyed after MapRequest but before being reparented */
 	ewin = FindItem(NULL, ev->xdestroywindow.window, LIST_FINDBY_ID,
 			LIST_TYPE_EWIN);
+	if (!ewin)
+	   ewin = FindEwinByBase(ev->xdestroywindow.window);
 	if (ewin)
 	   EwinEventDestroy(ewin);
 	break;

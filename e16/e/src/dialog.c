@@ -594,10 +594,10 @@ DialogClose(Dialog * d)
    if (!d)
       return;
 
-   EUnmapWindow(disp, d->win);
-
    if (d->exit_func)
       d->exit_func(d, d->exit_val, NULL);
+
+   EUnmapWindow(disp, d->win);
 }
 
 DItem              *

@@ -653,9 +653,10 @@ EReparentWindow(Display * d, Window win, Window parent, int x, int y)
    if (xid)
      {
 #if 0
-	Eprintf("EReparentWindow: %p %#lx: %#lx->%#lx %d,%d %dx%d -> %d,%d\n",
-		xid, xid->win, xid->parent, parent, xid->x, xid->y, xid->w,
-		xid->h, x, y);
+	Eprintf
+	   ("EReparentWindow: %p %#lx: %d %#lx->%#lx %d,%d %dx%d -> %d,%d\n",
+	    xid, xid->win, xid->mapped, xid->parent, parent, xid->x, xid->y,
+	    xid->w, xid->h, x, y);
 #endif
 	if (parent == xid->parent)
 	  {
@@ -996,6 +997,19 @@ WinExists(Window win)
    if (EGetGeometry(disp, win, &w1, &x, &y, &w, &h, &b, &d))
       EDBUG_RETURN(1);
    EDBUG_RETURN(0);
+}
+
+Window
+WinGetParent(Window win)
+{
+   Window              parent, rt;
+   Window             *pch = NULL;
+   unsigned int        nch = 0;
+
+   if (!XQueryTree(disp, win, &rt, &parent, &pch, &nch))
+      return None;
+
+   return parent;
 }
 
 Window

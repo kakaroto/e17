@@ -1270,9 +1270,8 @@ void                BorderWinpartAdd(Border * b, ImageClass * ic,
 				     int txa, int typ, int tya, int borigin,
 				     int bxp, int bxa, int byp, int bya,
 				     char keep_for_shade);
-void                BorderIncRefcount(const Border * b);
-void                BorderDecRefcount(const Border * b);
 void                EwinBorderSelect(EWin * ewin);
+void                EwinBorderDetach(EWin * ewin);
 void                EwinBorderSetTo(EWin * ewin, const Border * b);
 void                EwinBorderDraw(EWin * ewin, int do_shape, int queue_off);
 void                EwinBorderCalcSizes(EWin * ewin);
@@ -1593,7 +1592,6 @@ void                EventShow(const XEvent * ev);
 #define EWIN_CHANGE_DESKTOP     (1<<3)
 #define EWIN_CHANGE_LAYER       (1<<4)
 
-void                EwinGetPosition(const EWin * ewin, int *px, int *py);
 void                EwinRefresh(EWin * ewin);
 void                EwinUpdateAfterMoveResize(EWin * ewin, int resize);
 void                FloatEwin(EWin * ewin);
@@ -1610,11 +1608,10 @@ EWin               *GetContextEwin(void);
 void                SetContextEwin(EWin * ewin);
 void                EwinDetermineArea(EWin * ewin);
 void                EwinPropagateShapes(EWin * ewin);
-void                AddToFamily(Window win);
+void                AddToFamily(EWin * ewin, Window win);
 EWin               *AddInternalToFamily(Window win, const char *bname, int type,
 					void *ptr,
 					void (*init) (EWin * ewin, void *ptr));
-void                EwinWithdraw(EWin * ewin);
 void                EwinConformToDesktop(EWin * ewin);
 void                EwinReparent(EWin * ewin, Window parent);
 void                SyncBorderToEwin(EWin * ewin);
@@ -2275,6 +2272,7 @@ void                GetWinWH(Window win, unsigned int *w, unsigned int *h);
 int                 GetWinDepth(Window win);
 Window              GetWinParent(Window win);
 int                 WinExists(Window win);
+Window              WinGetParent(Window win);
 Window              WindowAtXY_0(Window base, int bx, int by, int x, int y);
 Window              WindowAtXY(int x, int y);
 Bool                PointerAt(int *x, int *y);

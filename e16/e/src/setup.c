@@ -97,7 +97,7 @@ MapUnmap(int start)
 				 if (Mode.wm.exiting)
 				    EMapWindow(disp, wlist[i]);
 				 else
-				    AddToFamily(wlist[i]);
+				    AddToFamily(NULL, wlist[i]);
 			      }
 			 }
 		    }

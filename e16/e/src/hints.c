@@ -430,6 +430,9 @@ EHintsSetMainInfo(void)
    CARD32             *cc;
 
    n_desks = DesksGetNumber();
+   if (n_desks <= 0)
+      return;
+
    cc = Emalloc(2 * n_desks * sizeof(CARD32));
    if (!cc)
       return;

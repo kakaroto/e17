@@ -173,10 +173,6 @@ FindEwinByMenu(Menu * m)
 void
 MenuHide(Menu * m)
 {
-   EWin               *ewin;
-
-   EDBUG(5, "MenuHide");
-
    if (m->win)
       EUnmapWindow(disp, m->win);
 
@@ -184,12 +180,6 @@ MenuHide(Menu * m)
 
    m->stuck = 0;
    m->shown = 0;
-
-   ewin = FindEwinByMenu(m);
-   if (ewin)
-      HideEwin(ewin);
-
-   EDBUG_RETURN_;
 }
 
 static void

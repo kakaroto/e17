@@ -351,14 +351,6 @@ HandleEvent(XEvent * ev)
 	EUnregisterWindow(ev->xdestroywindow.window);
 	break;
 #endif
-
-     case MapRequest:		/* 20 */
-	/* This is to catch badly behaving client window re-mappings */
-	/* Firefox-1.0 unmap/maps during fullscreen toggle without waiting for reparent or state */
-	if (!FindItem
-	    (NULL, ev->xmaprequest.window, LIST_FINDBY_ID, LIST_TYPE_EWIN))
-	   AddToFamily(ev->xmaprequest.window);
-	break;
      }
 
    EDBUG_RETURN_;
@@ -904,8 +896,9 @@ EventShow(const XEvent * ev)
 		ev->xcreatewindow.window);
 	break;
      case ReparentNotify:
-	Eprintf("%#08lx EV-%s ev=%#lx win=%#lx parent=%#lx\n", ser, name, win,
-		ev->xreparent.window, ev->xreparent.parent);
+	Eprintf("%#08lx EV-%s ev=%#lx win=%#lx parent=%#lx %d+%d\n", ser, name,
+		win, ev->xreparent.window, ev->xreparent.parent,
+		ev->xreparent.x, ev->xreparent.y);
 	break;
      case ConfigureNotify:
 	Eprintf
@@ -916,8 +909,8 @@ EventShow(const XEvent * ev)
 	break;
      case ConfigureRequest:
 	Eprintf
-	   ("%#08lx EV-%s: win=%#lx parent=%#lx m=%#lx %d+%d %dx%d bw=%d above=%#lx stk=%d\n",
-	    ser, name, ev->xconfigurerequest.window, win,
+	   ("%#08lx EV-%s: ev=%#lx win=%#lx m=%#lx %d+%d %dx%d bw=%d above=%#lx stk=%d\n",
+	    ser, name, win, ev->xconfigurerequest.window,
 	    ev->xconfigurerequest.value_mask, ev->xconfigurerequest.x,
 	    ev->xconfigurerequest.y, ev->xconfigurerequest.width,
 	    ev->xconfigurerequest.height, ev->xconfigurerequest.border_width,
