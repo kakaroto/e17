@@ -75,8 +75,8 @@ void ewl_radiobutton_init(Ewl_RadioButton * rb, char *label)
 	w = EWL_WIDGET(rb);
 
 	ewl_checkbutton_init(cb, label);
-	ewl_widget_set_appearance(w, "radiobutton");
-	ewl_widget_set_appearance(cb->check, "radio");
+	ewl_widget_appearance_set(w, "radiobutton");
+	ewl_widget_appearance_set(cb->check, "radio");
 	ewl_callback_append(w, EWL_CALLBACK_CLICKED, ewl_radiobutton_clicked_cb,
 			    NULL);
 	ewl_callback_append(w, EWL_CALLBACK_DESTROY, ewl_radiobutton_destroy_cb,

@@ -195,7 +195,7 @@ ewl_tree_add_row(Ewl_Tree *tree, Ewl_Row *prow, Ewl_Widget **children)
 			break;
 		}
 
-		ewl_widget_set_internal(cell, TRUE);
+		ewl_widget_internal_set(cell, TRUE);
 		ewl_container_append_child(EWL_CONTAINER(row), cell);
 		ewl_object_fill_policy_set(EWL_OBJECT(cell),
 				EWL_FLAG_FILL_HFILL |
@@ -552,7 +552,7 @@ void ewl_tree_node_collapse(Ewl_Tree_Node *node)
 
 	node->expanded = EWL_TREE_NODE_COLLAPSED;
 
-	ewl_widget_set_state(EWL_WIDGET(node), "collapsed");
+	ewl_widget_state_set(EWL_WIDGET(node), "collapsed");
 
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
@@ -592,7 +592,7 @@ void ewl_tree_node_expand(Ewl_Tree_Node *node)
 
 	ecore_list_destroy(tmp);
 
-	ewl_widget_set_state(EWL_WIDGET(node), "expanded");
+	ewl_widget_state_set(EWL_WIDGET(node), "expanded");
 
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }

@@ -72,10 +72,10 @@ int ewl_scrollpane_init(Ewl_ScrollPane * s)
 	ewl_container_append_child(EWL_CONTAINER(s), s->hscrollbar);
 	ewl_container_append_child(EWL_CONTAINER(s), s->vscrollbar);
 
-	ewl_widget_set_internal(s->overlay, TRUE);
-	ewl_widget_set_internal(s->box, TRUE);
-	ewl_widget_set_internal(s->hscrollbar, TRUE);
-	ewl_widget_set_internal(s->vscrollbar, TRUE);
+	ewl_widget_internal_set(s->overlay, TRUE);
+	ewl_widget_internal_set(s->box, TRUE);
+	ewl_widget_internal_set(s->hscrollbar, TRUE);
+	ewl_widget_internal_set(s->vscrollbar, TRUE);
 
 	ewl_widget_show(s->overlay);
 	ewl_widget_show(s->box);

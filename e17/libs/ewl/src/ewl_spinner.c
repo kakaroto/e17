@@ -59,14 +59,14 @@ int ewl_spinner_init(Ewl_Spinner * s)
 
 	s->button_increase = ewl_button_new(NULL);
 	ewl_container_append_child(EWL_CONTAINER(s), s->button_increase);
-	ewl_widget_set_appearance(s->button_increase, "button_increment");
+	ewl_widget_appearance_set(s->button_increase, "button_increment");
 	ewl_object_fill_policy_set(EWL_OBJECT(s->button_increase),
 			EWL_FLAG_FILL_NONE);
 	ewl_widget_show(s->button_increase);
 
 	s->button_decrease = ewl_button_new(NULL);
 	ewl_container_append_child(EWL_CONTAINER(s), s->button_decrease);
-	ewl_widget_set_appearance(s->button_decrease, "button_decrement");
+	ewl_widget_appearance_set(s->button_decrease, "button_decrement");
 	ewl_object_fill_policy_set(EWL_OBJECT(s->button_decrease),
 			EWL_FLAG_FILL_NONE);
 	ewl_widget_show(s->button_decrease);

@@ -42,7 +42,7 @@ ewl_dialog_init (Ewl_Dialog *dialog, Ewl_Position pos)
   if (!ewl_window_init(EWL_WINDOW(dialog)))
     DRETURN_INT(FALSE, DLEVEL_STABLE);
   
-  ewl_widget_set_appearance (w, "window");
+  ewl_widget_appearance_set(w, "window");
 
   dialog->position = pos;
   
@@ -280,9 +280,9 @@ ewl_dialog_add_button (Ewl_Dialog *dialog, char *button_text,
   ewl_object_fill_policy_set (EWL_OBJECT (button),
 			      EWL_FLAG_FILL_VFILL || EWL_FLAG_FILL_SHRINK);
 
-  ewl_widget_set_data (button, "RESPONSE_ID", (void *)response_id);
+  ewl_widget_data_set(button, "RESPONSE_ID", (void *)response_id);
 
-  ewl_widget_show (button);
+  ewl_widget_show(button);
   
   DRETURN_PTR(button, DLEVEL_STABLE);
 }
@@ -313,7 +313,7 @@ ewl_dialog_add_button_left (Ewl_Dialog *dialog, char *button_text,
   ewl_object_fill_policy_set (EWL_OBJECT (button),
 			      EWL_FLAG_FILL_VFILL || EWL_FLAG_FILL_SHRINK);
 
-  ewl_widget_set_data (button, "RESPONSE_ID", (void *)response_id);
+  ewl_widget_data_set (button, "RESPONSE_ID", (void *)response_id);
 
   ewl_widget_show (button);
   

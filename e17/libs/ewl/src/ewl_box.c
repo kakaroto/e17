@@ -167,9 +167,9 @@ void ewl_box_set_orientation(Ewl_Box * b, Ewl_Orientation o)
 
 	b->orientation = o;
 	if (o == EWL_ORIENTATION_HORIZONTAL)
-		ewl_widget_set_appearance(w, "hbox");
+		ewl_widget_appearance_set(w, "hbox");
 	else
-		ewl_widget_set_appearance(w, "vbox");
+		ewl_widget_appearance_set(w, "vbox");
 
 	ewl_widget_configure(w);
 

@@ -97,38 +97,38 @@ void            ewl_widget_theme_update(Ewl_Widget * w);
 /*
  * Attach a key/value pair to a widget.
  */
-void            ewl_widget_set_data(Ewl_Widget * w, void *k, void *v);
+void            ewl_widget_data_set(Ewl_Widget * w, void *k, void *v);
 
 /*
  * Remove a key value pair from a widget.
  */
-void            ewl_widget_del_data(Ewl_Widget * w, void *k);
+void            ewl_widget_data_del(Ewl_Widget * w, void *k);
 
 /*
  * Retrieve a key value pair from a widget.
  */
-void           *ewl_widget_get_data(Ewl_Widget * w, void *k);
+void           *ewl_widget_data_get(Ewl_Widget * w, void *k);
 
 /*
  * Change the appearance of a widget based on a state string.
  */
-void            ewl_widget_set_state(Ewl_Widget * w, char *state);
+void            ewl_widget_state_set(Ewl_Widget * w, char *state);
 
 /*
  * Change the appearance string used for determining the correct theme data.
  */
-void            ewl_widget_set_appearance(Ewl_Widget * w, char *appearance);
+void            ewl_widget_appearance_set(Ewl_Widget * w, char *appearance);
 
 /*
  * Retrieve the appearance string of a widget.
  */
-char           *ewl_widget_get_appearance(Ewl_Widget * w);
-unsigned int    ewl_widget_is_type(Ewl_Widget *widget, char *type);
+char           *ewl_widget_appearance_get(Ewl_Widget * w);
+unsigned int    ewl_widget_type_is(Ewl_Widget *widget, char *type);
 
 /*
  * Change the parent of a widget.
  */
-void            ewl_widget_set_parent(Ewl_Widget * w, Ewl_Widget * p);
+void            ewl_widget_parent_set(Ewl_Widget * w, Ewl_Widget * p);
 
 /*
  * Activate a widget.
@@ -146,19 +146,19 @@ void            ewl_widget_disable(Ewl_Widget * w);
 void            ewl_widget_print_tree(Ewl_Widget *w);
 void            ewl_widget_print(Ewl_Widget *w);
 
-int             ewl_widget_get_layer_sum(Ewl_Widget *w);
-void            ewl_widget_set_layer(Ewl_Widget *w, int layer);
-int             ewl_widget_get_layer(Ewl_Widget *w);
+int             ewl_widget_layer_sum_get(Ewl_Widget *w);
+void            ewl_widget_layer_set(Ewl_Widget *w, int layer);
+int             ewl_widget_layer_get(Ewl_Widget *w);
 
-void            ewl_widget_set_internal(Ewl_Widget *w, unsigned int val);
-unsigned int    ewl_widget_is_internal(Ewl_Widget *w);
+void            ewl_widget_internal_set(Ewl_Widget *w, unsigned int val);
+unsigned int    ewl_widget_internal_is(Ewl_Widget *w);
 
-void            ewl_widget_set_clipped(Ewl_Widget *w, unsigned int val);
-unsigned int    ewl_widget_is_clipped(Ewl_Widget *w);
+void            ewl_widget_clipped_set(Ewl_Widget *w, unsigned int val);
+unsigned int    ewl_widget_clipped_is(Ewl_Widget *w);
 
-void            ewl_widget_send_focus(Ewl_Widget *w);
-Ewl_Widget     *ewl_widget_get_focused(void);
-void            ewl_widget_push_tab_order(Ewl_Widget *w);
+void            ewl_widget_focus_send(Ewl_Widget *w);
+Ewl_Widget     *ewl_widget_focused_get(void);
+void            ewl_widget_tab_order_push(Ewl_Widget *w);
 
 /**
  * @def LAYER(w)

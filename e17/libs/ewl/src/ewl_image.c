@@ -278,7 +278,7 @@ void ewl_image_realize_cb(Ewl_Widget * w, void *ev_data, void *user_data)
 			evas_object_image_file_set(i->image, i->path, i->key);
 	}
 
-	evas_object_layer_set(i->image, ewl_widget_get_layer_sum(w));
+	evas_object_layer_set(i->image, ewl_widget_layer_sum_get(w));
 	if (w->fx_clip_box)
 		evas_object_clip_set(i->image, w->fx_clip_box);
 	evas_object_image_size_get(i->image, &i->ow, &i->oh);
@@ -327,7 +327,7 @@ void ewl_image_reparent_cb(Ewl_Widget * w, void *ev_data, void *user_data)
 	if (!i->image)
 		return;
 
-	evas_object_layer_set(i->image, ewl_widget_get_layer_sum(w));
+	evas_object_layer_set(i->image, ewl_widget_layer_sum_get(w));
 }
 
 void ewl_image_configure_cb(Ewl_Widget * w, void *ev_data, void *user_data)

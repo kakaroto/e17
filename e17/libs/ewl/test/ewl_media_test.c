@@ -87,7 +87,8 @@ void video_change_cb(Ewl_Widget *w, void *event, void *data) {
 
 void seeker_move_cb(Ewl_Widget *w, void *event, void *data) {
     double val = ewl_seeker_get_value(EWL_SEEKER(seeker));
-    ewl_media_position_set(EWL_MEDIA(video), val);
+    if (ewl_media_seekable_get(EWL_MEDIA(video)))
+	    ewl_media_position_set(EWL_MEDIA(video), val);
 
     return;
     w = NULL;
@@ -242,7 +243,7 @@ int main(int argc, char ** argv) {
     ewl_seeker_set_value(EWL_SEEKER(seeker), 0.0);
     ewl_seeker_set_range(EWL_SEEKER(seeker), 0.0);
     ewl_seeker_set_step(EWL_SEEKER(seeker), 1.0);
-    ewl_callback_append(seeker, EWL_CALLBACK_VALUE_CHANGED, seeker_move_cb, NULL);
+    ewl_callback_append(seeker, EWL_CALLBACK_VALUE_CHANGED, seeker_move_cb, video);
     ewl_widget_show(seeker);
 
     /* the time text spot */

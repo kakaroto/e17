@@ -117,9 +117,9 @@ void ewl_check_update_check_cb(Ewl_Widget * w, void *ev_data, void *user_data)
 	cb = EWL_CHECK(w);
 
 	if (cb->checked)
-		ewl_widget_set_state(w, "checked");
+		ewl_widget_state_set(w, "checked");
 	else
-		ewl_widget_set_state(w, "default");
+		ewl_widget_state_set(w, "default");
 
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }

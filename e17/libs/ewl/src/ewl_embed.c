@@ -88,7 +88,7 @@ int ewl_embed_init(Ewl_Embed * w)
 	 */
 	if (!ewl_overlay_init(EWL_OVERLAY(w)))
 		DRETURN_INT(FALSE, DLEVEL_STABLE);
-	ewl_widget_set_appearance(EWL_WIDGET(w), "embed");
+	ewl_widget_appearance_set(EWL_WIDGET(w), "embed");
 
 	ewl_object_fill_policy_set(EWL_OBJECT(w), EWL_FLAG_FILL_NONE);
 	ewl_object_toplevel_set(EWL_OBJECT(w), EWL_FLAG_PROPERTY_TOPLEVEL);
@@ -688,7 +688,7 @@ void ewl_embed_next_tab_order(Ewl_Embed *e)
 	}
 
 	if (w)
-		ewl_widget_send_focus(w);
+		ewl_widget_focus_send(w);
 
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
@@ -856,7 +856,7 @@ static void ewl_embed_smart_layer_set_cb(Evas_Object *obj, int l)
 
 	emb = evas_object_smart_data_get(obj);
 	if (emb)
-		ewl_widget_set_layer(EWL_WIDGET(emb), l);
+		ewl_widget_layer_set(EWL_WIDGET(emb), l);
 
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
@@ -872,7 +872,7 @@ static void ewl_embed_smart_layer_adjust_cb(Evas_Object *obj)
 
 	emb = evas_object_smart_data_get(obj);
 	if (emb)
-		ewl_widget_set_layer(EWL_WIDGET(emb), l);
+		ewl_widget_layer_set(EWL_WIDGET(emb), l);
 
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
@@ -888,7 +888,7 @@ ewl_embed_smart_layer_adjust_rel_cb(Evas_Object *obj, Evas_Object *rel)
 	emb = evas_object_smart_data_get(obj);
 	if (emb) {
 		l = evas_object_layer_get(obj);
-		ewl_widget_set_layer(EWL_WIDGET(emb), l);
+		ewl_widget_layer_set(EWL_WIDGET(emb), l);
 	}
 
 	DLEAVE_FUNCTION(DLEVEL_STABLE);

@@ -62,7 +62,7 @@ int ewl_notebook_init(Ewl_Notebook * n)
 	 */
 	n->tab_box = ewl_hbox_new();
 	if (n->tab_box) {
-		ewl_widget_set_internal(n->tab_box, TRUE);
+		ewl_widget_internal_set(n->tab_box, TRUE);
 		ewl_object_fill_policy_set(EWL_OBJECT(n->tab_box),
 					   EWL_FLAG_FILL_NONE);
 		ewl_object_alignment_set(EWL_OBJECT(n->tab_box),
@@ -112,7 +112,7 @@ void ewl_notebook_append_page(Ewl_Notebook * n, Ewl_Widget * t, Ewl_Widget * p)
 
 	ewl_container_append_child(EWL_CONTAINER(n->tab_box), b);
 	ewl_container_append_child(EWL_CONTAINER(w), p);
-	ewl_widget_set_data(p, n, b);
+	ewl_widget_data_set(p, n, b);
 
 	if (!n->visible_page)
 		n->visible_page = p;
@@ -149,7 +149,7 @@ void ewl_notebook_prepend_page(Ewl_Notebook * n, Ewl_Widget * t, Ewl_Widget * p)
 
 	ewl_container_prepend_child(EWL_CONTAINER(n->tab_box), b);
 	ewl_container_prepend_child(EWL_CONTAINER(w), p);
-	ewl_widget_set_data(p, n, b);
+	ewl_widget_data_set(p, n, b);
 
 	if (!n->visible_page)
 		n->visible_page = p;
@@ -189,7 +189,7 @@ ewl_notebook_insert_page(Ewl_Notebook * n, Ewl_Widget * t, Ewl_Widget * p,
 
 	ewl_container_insert_child(EWL_CONTAINER(n->tab_box), b, pos);
 	ewl_container_insert_child(EWL_CONTAINER(w), p, pos);
-	ewl_widget_set_data(p, n, b);
+	ewl_widget_data_set(p, n, b);
 
 	if (!n->visible_page)
 		n->visible_page = p;
@@ -224,7 +224,7 @@ void ewl_notebook_remove_first_page(Ewl_Notebook * n)
 
 	if (page) {
 		ewl_container_remove_child(c, page);
-		tab = ewl_widget_get_data(page, n);
+		tab = ewl_widget_data_get(page, n);
 		if (tab)
 			ewl_widget_destroy(tab);
 		if (page == n->visible_page) {
@@ -269,7 +269,7 @@ void ewl_notebook_remove_last_page(Ewl_Notebook * n)
 
 	if (page) {
 		ewl_container_remove_child(c, page);
-		tab = ewl_widget_get_data(page, n);
+		tab = ewl_widget_data_get(page, n);
 		if (tab)
 			ewl_widget_destroy(tab);
 		if (page == n->visible_page) {
@@ -314,7 +314,7 @@ void ewl_notebook_remove_page(Ewl_Notebook * n, int i)
 
 	if (page) {
 		ewl_container_remove_child(c, page);
-		tab = ewl_widget_get_data(page, n);
+		tab = ewl_widget_data_get(page, n);
 		if (tab)
 			ewl_widget_destroy(tab);
 		if (page == n->visible_page) {
@@ -368,7 +368,7 @@ void ewl_notebook_remove_visible(Ewl_Notebook * n)
 		 * to be freed.
 		 */
 		ewl_container_remove_child(c, page);
-		tab = ewl_widget_get_data(page, n);
+		tab = ewl_widget_data_get(page, n);
 		if (tab)
 			ewl_widget_destroy(tab);
 		ewl_widget_destroy(page);
@@ -505,7 +505,7 @@ void ewl_notebook_set_tabs_position(Ewl_Notebook * n, Ewl_Position p)
 			break;
 	}
 
-	ewl_widget_set_appearance(w, file);
+	ewl_widget_appearance_set(w, file);
 	ewl_widget_configure(w);
 
 	DLEAVE_FUNCTION(DLEVEL_STABLE);

@@ -638,7 +638,7 @@ void ewl_text_reparent_cb(Ewl_Widget * w, void *ev_data, void *user_data)
 
 	ta = EWL_TEXT(w);
 	if (ta->etox)
-		evas_object_layer_set(ta->etox, ewl_widget_get_layer_sum(w));
+		evas_object_layer_set(ta->etox, ewl_widget_layer_sum_get(w));
 
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
@@ -657,7 +657,7 @@ void ewl_text_configure_cb(Ewl_Widget * w, void *ev_data, void *user_data)
 	 */
 	if (ta->etox) {
 		evas_object_move(ta->etox, CURRENT_X(w), CURRENT_Y(w));
-		evas_object_layer_set(ta->etox, ewl_widget_get_layer_sum(w));
+		evas_object_layer_set(ta->etox, ewl_widget_layer_sum_get(w));
 	}
 
 	DLEAVE_FUNCTION(DLEVEL_STABLE);

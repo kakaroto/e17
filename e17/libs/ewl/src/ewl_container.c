@@ -25,7 +25,7 @@ ewl_container_init(Ewl_Container * c, char *appearance)
 	if (!ewl_widget_init(w, "container"))
 		DRETURN_INT(0, DLEVEL_STABLE);
 
-	ewl_widget_set_appearance(w, appearance);
+	ewl_widget_appearance_set(w, appearance);
 	ewl_object_recursive_set(EWL_OBJECT(w), TRUE);
 
 	/*
@@ -175,7 +175,7 @@ void ewl_container_append_child(Ewl_Container * pc, Ewl_Widget * child)
 		evas_object_show(pc->clip_box);
 
 	ecore_list_append(pc->children, child);
-	ewl_widget_set_parent(child, EWL_WIDGET(pc));
+	ewl_widget_parent_set(child, EWL_WIDGET(pc));
 	ewl_container_call_child_add(pc, child);
 
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
@@ -208,7 +208,7 @@ void ewl_container_prepend_child(Ewl_Container * pc, Ewl_Widget * child)
 		evas_object_show(pc->clip_box);
 
 	ecore_list_prepend(pc->children, child);
-	ewl_widget_set_parent(child, EWL_WIDGET(pc));
+	ewl_widget_parent_set(child, EWL_WIDGET(pc));
 	ewl_container_call_child_add(pc, child);
 
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
@@ -245,7 +245,7 @@ ewl_container_insert_child(Ewl_Container * pc, Ewl_Widget * child, int index)
 
 	ecore_list_goto_index(pc->children, index);
 	ecore_list_insert(pc->children, child);
-	ewl_widget_set_parent(child, EWL_WIDGET(pc));
+	ewl_widget_parent_set(child, EWL_WIDGET(pc));
 	ewl_container_call_child_add(pc, child);
 
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
@@ -279,7 +279,7 @@ void ewl_container_remove_child(Ewl_Container * pc, Ewl_Widget * child)
 	 * First remove reference to the parent if necessary.
 	 */
 	if (EWL_CONTAINER(child->parent) == pc)
-		ewl_widget_set_parent(child, NULL);
+		ewl_widget_parent_set(child, NULL);
 
 	if (!pc->children)
 		DRETURN(DLEVEL_STABLE);

@@ -107,9 +107,9 @@ int ewl_button_with_stock_init(Ewl_Button_Stock * b, char *stock_id)
   if (test)
     {
       b->image_object = ewl_image_new(NULL, NULL);
-      ewl_widget_set_appearance (b->image_object, stock_id);
+      ewl_widget_appearance_set(b->image_object, stock_id);
     }
-/*       ewl_widget_set_appearance (b->image_object, stock_id); */
+/*       ewl_widget_appearance_set(b->image_object, stock_id); */
   
   if (b->image_object)
     {

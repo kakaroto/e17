@@ -40,7 +40,7 @@ void ewl_combo_init(Ewl_Combo * combo, char *title)
 	 */
 	ewl_menu_base_init(EWL_MENU_BASE(combo), NULL, title);
 
-	ewl_widget_set_appearance( EWL_WIDGET(combo), "combo" );
+	ewl_widget_appearance_set( EWL_WIDGET(combo), "combo" );
 
 	if( EWL_MENU_ITEM(combo)->icon )
 		ewl_widget_destroy(EWL_MENU_ITEM(combo)->icon);
@@ -54,7 +54,7 @@ void ewl_combo_init(Ewl_Combo * combo, char *title)
 	ewl_container_set_redirect( EWL_CONTAINER(combo), NULL );
 
 	combo->button = ewl_button_new(NULL);
-	ewl_widget_set_appearance(combo->button, "button_decrement");
+	ewl_widget_appearance_set(combo->button, "button_decrement");
 	ewl_object_alignment_set(EWL_OBJECT(combo->button), EWL_FLAG_ALIGN_RIGHT);
 	ewl_container_append_child(EWL_CONTAINER(combo), combo->button);
 	ewl_widget_show(combo->button);
@@ -93,9 +93,9 @@ void ewl_combo_init(Ewl_Combo * combo, char *title)
 	 * Create the popup combo portion of the widget.
 	 */
 	combo->base.popup = ewl_floater_new(EWL_WIDGET(combo));
-	ewl_widget_set_internal(combo->base.popup, TRUE);
-	ewl_widget_set_layer(combo->base.popup, 1000);
-	ewl_widget_set_appearance(EWL_WIDGET(combo->base.popup), "imenu");
+	ewl_widget_internal_set(combo->base.popup, TRUE);
+	ewl_widget_layer_set(combo->base.popup, 1000);
+	ewl_widget_appearance_set(EWL_WIDGET(combo->base.popup), "imenu");
 	ewl_box_set_orientation(EWL_BOX(combo->base.popup),
 				EWL_ORIENTATION_VERTICAL);
 	ewl_object_fill_policy_set(EWL_OBJECT(combo->base.popup),
@@ -159,7 +159,7 @@ void ewl_combo_item_select_cb(Ewl_Widget *w, void *ev_data, void *user_data)
 	ewl_combo_set_selected(combo, item);
 	ewl_widget_hide(menu->popup);
 
-	ewl_widget_set_appearance(combo->button, "button_decrement");
+	ewl_widget_appearance_set(combo->button, "button_decrement");
 	ewl_callback_del(EWL_MENU_BASE(combo)->popbox, EWL_CALLBACK_FOCUS_OUT,
 									 ewl_combo_collapse_cb);
 	ewl_callback_del(combo->button, EWL_CALLBACK_MOUSE_DOWN,
@@ -219,7 +219,7 @@ void ewl_combo_expand_cb(Ewl_Widget * w, void *ev_data, void *user_data)
 	
 	combo = EWL_COMBO(user_data);
 
-	ewl_widget_set_appearance(combo->button, "button_increment");
+	ewl_widget_appearance_set(combo->button, "button_increment");
 
 	ewl_menu_base_expand_cb(EWL_WIDGET(combo), ev_data, NULL);
 
@@ -266,7 +266,7 @@ void ewl_combo_collapse_cb(Ewl_Widget * w, void *ev_data, void *user_data)
 
 	ewl_widget_hide(menu->popup);
 
-	ewl_widget_set_appearance(combo->button, "button_decrement");
+	ewl_widget_appearance_set(combo->button, "button_decrement");
 	ewl_callback_del(EWL_MENU_BASE(combo)->popbox, EWL_CALLBACK_FOCUS_OUT,
 									 ewl_combo_collapse_cb);
 	ewl_callback_del(combo->button, EWL_CALLBACK_MOUSE_DOWN,

@@ -85,7 +85,7 @@ int ewl_selectionbar_init(Ewl_Selectionbar * s, Ewl_Widget * parent)
 /*	ewl_callback_append(s->scroller.top, EWL_CALLBACK_MOUSE_MOVE,
 			ewl_selectionbar_mouse_move_child, s);
 */
-	ewl_widget_set_appearance(s->scroller.top, "/selectionbar/scroller/top");
+	ewl_widget_appearance_set(s->scroller.top, "/selectionbar/scroller/top");
 
 
 	s->scroller.bottom = ewl_vbox_new();
@@ -95,7 +95,7 @@ int ewl_selectionbar_init(Ewl_Selectionbar * s, Ewl_Widget * parent)
 /*	ewl_callback_append(s->scroller.bottom, EWL_CALLBACK_MOUSE_MOVE,
 			ewl_selectionbar_mouse_move_child, s);
 */
-	ewl_widget_set_appearance(s->scroller.bottom, "/selectionbar/scroller/bottom");
+	ewl_widget_appearance_set(s->scroller.bottom, "/selectionbar/scroller/bottom");
 
 
 	ewl_container_add_notify(EWL_CONTAINER(w),

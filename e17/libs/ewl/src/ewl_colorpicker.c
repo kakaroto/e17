@@ -1,5 +1,9 @@
 #include <Ewl.h>
 
+/**
+ * @return Returns NULL on failure, otherwise a newly allocated color picker.
+ * @brief Allocate and initialize a new color picker widget.
+ */
 Ewl_Widget *ewl_colorpicker_new()
 {
 	Ewl_ColorPicker *cp;
@@ -15,6 +19,11 @@ Ewl_Widget *ewl_colorpicker_new()
 	DRETURN_PTR(cp, DLEVEL_STABLE);
 }
 
+/**
+ * @param cp: the color picker to initialize
+ * @return Returns TRUE on success, FALSE on failure.
+ * @brief Initialize a color picker to starting values.
+ */
 int ewl_colorpicker_init(Ewl_ColorPicker *cp)
 {
 	DENTER_FUNCTION(DLEVEL_STABLE);
@@ -23,7 +32,7 @@ int ewl_colorpicker_init(Ewl_ColorPicker *cp)
 	if (!ewl_box_init(EWL_BOX(cp), EWL_ORIENTATION_HORIZONTAL))
 		DRETURN_INT(FALSE, DLEVEL_STABLE);
 
-	ewl_widget_set_appearance(EWL_WIDGET(cp), "colorpicker");
+	ewl_widget_appearance_set(EWL_WIDGET(cp), "colorpicker");
 	ewl_box_set_spacing(EWL_BOX(cp), 20);
 
 	/*
@@ -44,11 +53,11 @@ int ewl_colorpicker_init(Ewl_ColorPicker *cp)
 			      EWL_PICK_MODE_HSV_HUE);
 	ewl_spectrum_dimensions_set(EWL_SPECTRUM(cp->range), 1);
 	ewl_callback_append(cp->range, EWL_CALLBACK_MOUSE_DOWN,
-			    ewl_colorpicker_down_cb, cp);
+			    ewl_colorpicker_range_down_cb, cp);
 	ewl_callback_append(cp->range, EWL_CALLBACK_MOUSE_UP,
-			    ewl_colorpicker_up_cb, cp);
+			    ewl_colorpicker_range_up_cb, cp);
 	ewl_callback_append(cp->range, EWL_CALLBACK_MOUSE_MOVE,
-			    ewl_colorpicker_move_cb, cp);
+			    ewl_colorpicker_range_move_cb, cp);
 	ewl_object_preferred_inner_size_set(EWL_OBJECT(cp->range), 20, 200);
 	ewl_object_fill_policy_set(EWL_OBJECT(cp->range), EWL_FLAG_FILL_VFILL);
 	ewl_container_append_child(EWL_CONTAINER(cp), cp->range);
@@ -57,7 +66,7 @@ int ewl_colorpicker_init(Ewl_ColorPicker *cp)
 	DRETURN_INT(TRUE, DLEVEL_STABLE);
 }
 
-void ewl_colorpicker_move_cb(Ewl_Widget *w, void *ev_data, void *user_data)
+void ewl_colorpicker_range_move_cb(Ewl_Widget *w, void *ev_data, void *user_data)
 {
 	int r, g, b, a;
 	Ewl_ColorPicker *cp = user_data;
@@ -75,7 +84,7 @@ void ewl_colorpicker_move_cb(Ewl_Widget *w, void *ev_data, void *user_data)
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
 
-void ewl_colorpicker_down_cb(Ewl_Widget *w, void *ev_data, void *user_data)
+void ewl_colorpicker_range_down_cb(Ewl_Widget *w, void *ev_data, void *user_data)
 {
 	int r, g, b, a;
 	Ewl_ColorPicker *cp = user_data;
@@ -92,7 +101,7 @@ void ewl_colorpicker_down_cb(Ewl_Widget *w, void *ev_data, void *user_data)
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
 
-void ewl_colorpicker_up_cb(Ewl_Widget *w, void *ev_data, void *user_data)
+void ewl_colorpicker_range_up_cb(Ewl_Widget *w, void *ev_data, void *user_data)
 {
 	Ewl_ColorPicker *cp = user_data;
 

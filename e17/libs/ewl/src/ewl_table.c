@@ -166,7 +166,7 @@ void ewl_table_get_col_row(Ewl_Table * t, Ewl_Cell * cell,
 	while ((child = ecore_list_next(children)) != NULL)
 	{
 		if (child == EWL_WIDGET(cell)) {
-			g_child = (Ewl_Grid_Child *) ewl_widget_get_data(child,
+			g_child = (Ewl_Grid_Child *) ewl_widget_data_get(child,
 					(void *) t->grid);
 
 			if (start_col)
@@ -221,7 +221,7 @@ Ecore_List       *ewl_table_find(Ewl_Table * t, int start_col, int end_col,
 
 	ecore_list_goto_first(children);
 	while ((child = ecore_list_next(children)) != NULL) {
-		gc = (Ewl_Grid_Child *) ewl_widget_get_data(child,
+		gc = (Ewl_Grid_Child *) ewl_widget_data_get(child,
 							    (void *) t->grid);
 
 		if (start_col >= gc->start_col && end_col <= gc->end_col &&
@@ -389,7 +389,7 @@ char           *ewl_table_get_selected(Ewl_Table * t)
 
 	ecore_list_goto_first(children);
 	while ((child = ecore_list_next(children)) != NULL) {
-		gc = (Ewl_Grid_Child *) ewl_widget_get_data(child,
+		gc = (Ewl_Grid_Child *) ewl_widget_data_get(child,
 							    (void *) t->grid);
 
 		if (t->selected.start_c == gc->start_col &&
@@ -421,7 +421,7 @@ void ewl_table_child_select_cb(Ewl_Widget * w, void *ev_data, void *user_data)
 
 	t = EWL_TABLE(user_data);
 
-	gc = (Ewl_Grid_Child *) ewl_widget_get_data(w, (void *) t->grid);
+	gc = (Ewl_Grid_Child *) ewl_widget_data_get(w, (void *) t->grid);
 
 	t->selected.start_r = gc->start_row;
 	t->selected.start_c = gc->start_col;

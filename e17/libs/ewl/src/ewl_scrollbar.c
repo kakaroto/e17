@@ -54,7 +54,7 @@ void ewl_scrollbar_init(Ewl_Scrollbar * s, Ewl_Orientation orientation)
 	 * Create the basic widgets that are contained in the scrollbar.
 	 */
 	s->button_decrement = ewl_button_new(NULL);
-	ewl_widget_set_internal(s->button_decrement, TRUE);
+	ewl_widget_internal_set(s->button_decrement, TRUE);
 	ewl_object_alignment_set(EWL_OBJECT(s->button_decrement),
 			EWL_FLAG_ALIGN_CENTER);
 	ewl_object_fill_policy_set(EWL_OBJECT(s->button_decrement),
@@ -65,7 +65,7 @@ void ewl_scrollbar_init(Ewl_Scrollbar * s, Ewl_Orientation orientation)
 	 * Create the increment button.
 	 */
 	s->button_increment = ewl_button_new(NULL);
-	ewl_widget_set_internal(s->button_increment, TRUE);
+	ewl_widget_internal_set(s->button_increment, TRUE);
 	ewl_object_alignment_set(EWL_OBJECT(s->button_increment),
 			EWL_FLAG_ALIGN_CENTER);
 	ewl_object_fill_policy_set(EWL_OBJECT(s->button_increment),
@@ -76,7 +76,7 @@ void ewl_scrollbar_init(Ewl_Scrollbar * s, Ewl_Orientation orientation)
 	 * Setup the seeker portion
 	 */
 	s->seeker = ewl_seeker_new(orientation);
-	ewl_widget_set_internal(s->seeker, TRUE);
+	ewl_widget_internal_set(s->seeker, TRUE);
 	ewl_widget_show(s->seeker);
 
 	/*
@@ -142,8 +142,8 @@ void ewl_scrollbar_init(Ewl_Scrollbar * s, Ewl_Orientation orientation)
 	/*
 	 * Set the appearance strings for the parts of the scrollbar
 	 */
-	ewl_widget_set_appearance(s->button_decrement, "button_decrement");
-	ewl_widget_set_appearance(s->button_increment, "button_increment");
+	ewl_widget_appearance_set(s->button_decrement, "button_decrement");
+	ewl_widget_appearance_set(s->button_increment, "button_increment");
 
 	/*
 	 * Set the alignment of the buttons to the seeker.
@@ -195,7 +195,7 @@ void ewl_scrollbar_init(Ewl_Scrollbar * s, Ewl_Orientation orientation)
 		 * Set the default value to the beginning of the seeker.
 		 */
 		ewl_seeker_set_value(EWL_SEEKER(s->seeker), 0);
-		ewl_widget_set_appearance(w, "hscrollbar");
+		ewl_widget_appearance_set(w, "hscrollbar");
 		ewl_object_fill_policy_set(EWL_OBJECT(s),
 				EWL_FLAG_FILL_HFILL);
 	}
@@ -239,7 +239,7 @@ void ewl_scrollbar_init(Ewl_Scrollbar * s, Ewl_Orientation orientation)
 		 * Set the default value to the beginning of the seeker.
 		 */
 		ewl_seeker_set_value(EWL_SEEKER(s->seeker), 0);
-		ewl_widget_set_appearance(w, "vscrollbar");
+		ewl_widget_appearance_set(w, "vscrollbar");
 		ewl_object_fill_policy_set(EWL_OBJECT(s),
 				EWL_FLAG_FILL_VFILL);
 	}

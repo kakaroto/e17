@@ -6,10 +6,10 @@ Ewl_Widget *last_key = NULL;
 Ewl_Widget *last_focused = NULL;
 Ewl_Widget *dnd_widget = NULL;
 
-static void ewl_widget_rebuild_appearance(Ewl_Widget *w);
-static void ewl_widget_get_theme_padding(Ewl_Widget *w, int *l, int *r,
+static void ewl_widget_appearance_rebuild(Ewl_Widget *w);
+static void ewl_widget_theme_padding_get(Ewl_Widget *w, int *l, int *r,
 					 int *t, int *b);
-static void ewl_widget_get_theme_insets(Ewl_Widget *w, int *l, int *r,
+static void ewl_widget_theme_insets_get(Ewl_Widget *w, int *l, int *r,
 					int *t, int *b);
 
 /**
@@ -74,7 +74,7 @@ int ewl_widget_init(Ewl_Widget * w, char *appearance)
 			    ewl_widget_mouse_move_cb, NULL);
 
 	w->inheritance = strdup(":widget:");
-	ewl_widget_set_appearance(w, appearance);
+	ewl_widget_appearance_set(w, appearance);
 
 	DRETURN_INT(TRUE, DLEVEL_STABLE);
 }
@@ -320,7 +320,7 @@ void ewl_widget_reparent(Ewl_Widget * w)
  * Assigns a key / value pair with k as the key and v as the value to the
  * specified widget w.
  */
-void ewl_widget_set_data(Ewl_Widget * w, void *k, void *v)
+void ewl_widget_data_set(Ewl_Widget * w, void *k, void *v)
 {
 	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR("w", w);
@@ -343,7 +343,7 @@ void ewl_widget_set_data(Ewl_Widget * w, void *k, void *v)
  *
  * Removes a key / value pair with k as the key from the specified widget w.
  */
-void ewl_widget_del_data(Ewl_Widget * w, void *k)
+void ewl_widget_data_del(Ewl_Widget * w, void *k)
 {
 	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR("w", w);
@@ -364,7 +364,7 @@ void ewl_widget_del_data(Ewl_Widget * w, void *k)
  *
  * Retrieves a key / value pair with k as the key from the specified widget w.
  */
-void           *ewl_widget_get_data(Ewl_Widget * w, void *k)
+void           *ewl_widget_data_get(Ewl_Widget * w, void *k)
 {
 	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR_RET("w", w, NULL);
@@ -385,7 +385,7 @@ void           *ewl_widget_get_data(Ewl_Widget * w, void *k)
  * Changes the key associated with the widgets appearance and calls the theme
  * update callback to initiate the change.
  */
-void ewl_widget_set_appearance(Ewl_Widget * w, char *appearance)
+void ewl_widget_appearance_set(Ewl_Widget * w, char *appearance)
 {
 	int il = 0, al;
 	char *current;
@@ -439,7 +439,7 @@ void ewl_widget_set_appearance(Ewl_Widget * w, char *appearance)
 	 * Regenerate the entire path of widgets in the heirarchy, and
 	 * recreate the visible components of the widget if necessary.
 	 */
-	ewl_widget_rebuild_appearance(w);
+	ewl_widget_appearance_rebuild(w);
 	if (REALIZED(w)) {
 		ewl_widget_unrealize(w);
 		ewl_widget_realize(w);
@@ -454,7 +454,7 @@ void ewl_widget_set_appearance(Ewl_Widget * w, char *appearance)
  * failure.
  * @brief Retrieve the appearance key of the widget
  */
-char           *ewl_widget_get_appearance(Ewl_Widget * w)
+char           *ewl_widget_appearance_get(Ewl_Widget * w)
 {
 	DENTER_FUNCTION(DLEVEL_STABLE);
 
@@ -473,7 +473,7 @@ char           *ewl_widget_get_appearance(Ewl_Widget * w)
  * Changes the appearance of the widget depending on the state string passed by
  * the state parameter.
  */
-void ewl_widget_set_state(Ewl_Widget * w, char *state)
+void ewl_widget_state_set(Ewl_Widget * w, char *state)
 {
 	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR("w", w);
@@ -500,7 +500,7 @@ void ewl_widget_set_state(Ewl_Widget * w, char *state)
  * Changes the parent of the widget w, to the container p. The reparent
  * callback is triggered to notify children of w of the change in parent.
  */
-void ewl_widget_set_parent(Ewl_Widget * w, Ewl_Widget * p)
+void ewl_widget_parent_set(Ewl_Widget * w, Ewl_Widget * p)
 {
 	Ewl_Widget *tmp;
 	Ewl_Container *op;
@@ -617,7 +617,7 @@ void ewl_widget_disable(Ewl_Widget * w)
  * Changes the current layer of @a w relative to it's parent. The default
  * value is 5.
  */
-void ewl_widget_set_layer(Ewl_Widget *w, int layer)
+void ewl_widget_layer_set(Ewl_Widget *w, int layer)
 {
 	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR("w", w);
@@ -644,7 +644,7 @@ void ewl_widget_set_layer(Ewl_Widget *w, int layer)
  * @return Returns a widgets current layer relative to it's parent.
  * @brief Retrieve a widgets layer relative to it's parent.
  */
-int ewl_widget_get_layer(Ewl_Widget *w)
+int ewl_widget_layer_get(Ewl_Widget *w)
 {
 	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR_RET("w", w, 0);
@@ -657,7 +657,7 @@ int ewl_widget_get_layer(Ewl_Widget *w)
  * @return Returns the absolute layer the widget is placed on.
  * @brief Sums the layers of a widgets parents to determine it's absolute layer.
  */
-int ewl_widget_get_layer_sum(Ewl_Widget *w)
+int ewl_widget_layer_sum_get(Ewl_Widget *w)
 {
 	int sum = 0;
 
@@ -687,7 +687,7 @@ int ewl_widget_get_layer_sum(Ewl_Widget *w)
  * The embed versions should only be accessed internally if you understand
  * their ramifications.
  */
-void ewl_widget_push_tab_order(Ewl_Widget *w)
+void ewl_widget_tab_order_push(Ewl_Widget *w)
 {
 	Ewl_Embed *e;
 
@@ -705,7 +705,7 @@ void ewl_widget_push_tab_order(Ewl_Widget *w)
  * @return Returns no value.
  * @brief Prints to stdout the tree of widgets that are parents of a widget.
  */
-void ewl_widget_print_tree(Ewl_Widget *w)
+void ewl_widget_tree_print(Ewl_Widget *w)
 {
 	int i = 0;
 
@@ -749,7 +749,7 @@ void ewl_widget_print(Ewl_Widget *w)
  * functions to access the contents of complex widgets w/o fear of damaging
  * internal layout structure.
  */
-void ewl_widget_set_internal(Ewl_Widget *w, unsigned int val)
+void ewl_widget_internal_set(Ewl_Widget *w, unsigned int val)
 {
 	DENTER_FUNCTION(DLEVEL_STABLE);
 
@@ -770,7 +770,7 @@ void ewl_widget_set_internal(Ewl_Widget *w, unsigned int val)
  * @return Returns TRUE if @a w inherited the type @a t, otherwise FALSE.
  * @brief Determine if the widget @a w has inherited from the type @a t.
  */
-unsigned int ewl_widget_is_type(Ewl_Widget *widget, char *type)
+unsigned int ewl_widget_type_is(Ewl_Widget *widget, char *type)
 {
 	int found = FALSE;
 	char tmp[PATH_MAX];
@@ -791,7 +791,7 @@ unsigned int ewl_widget_is_type(Ewl_Widget *widget, char *type)
  * @return Returns TRUE if the widget is marked internal, otherwise FALSE.
  * @brief Checks the widget for the internal flag.
  */
-unsigned int ewl_widget_is_internal(Ewl_Widget *w)
+unsigned int ewl_widget_internal_is(Ewl_Widget *w)
 {
 	DENTER_FUNCTION(DLEVEL_STABLE);
 
@@ -808,7 +808,7 @@ unsigned int ewl_widget_is_internal(Ewl_Widget *w)
  * @return Returns no value.
  * @brief Marks whether the widget should be clipped at it's boundaries.
  */
-void ewl_widget_set_clipped(Ewl_Widget *w, unsigned int val)
+void ewl_widget_clipped_set(Ewl_Widget *w, unsigned int val)
 {
 	DENTER_FUNCTION(DLEVEL_STABLE);
 
@@ -847,7 +847,7 @@ void ewl_widget_set_clipped(Ewl_Widget *w, unsigned int val)
  * @return Returns TRUE if the widget clips, otherwise FALSE.
  * @brief Checks if a widget clips it's theme object.
  */
-unsigned int ewl_widget_is_clipped(Ewl_Widget *w)
+unsigned int ewl_widget_clipped_is(Ewl_Widget *w)
 {
 	DENTER_FUNCTION(DLEVEL_STABLE);
 
@@ -863,7 +863,7 @@ unsigned int ewl_widget_is_clipped(Ewl_Widget *w)
  * @return Returns no value.
  * @brief Changes the keyboard focus to the widget @a w.
  */
-void ewl_widget_send_focus(Ewl_Widget *w)
+void ewl_widget_focus_send(Ewl_Widget *w)
 {
 	DENTER_FUNCTION(DLEVEL_STABLE);
 
@@ -876,14 +876,14 @@ void ewl_widget_send_focus(Ewl_Widget *w)
  * @return Returns the currnetly focused widget.
  * @brief Retrieve the currently focused widget.
  */
-Ewl_Widget *ewl_widget_get_focused()
+Ewl_Widget *ewl_widget_focused_get()
 {
 	DENTER_FUNCTION(DLEVEL_STABLE);
 
 	DRETURN_PTR(last_key, DLEVEL_STABLE);
 }
 
-static void ewl_widget_rebuild_appearance(Ewl_Widget *w)
+static void ewl_widget_appearance_rebuild(Ewl_Widget *w)
 {
 	char *base;
 	char path[PATH_MAX];
@@ -1013,7 +1013,7 @@ void ewl_widget_realize_cb(Ewl_Widget * w, void *ev_data, void *user_data)
 
 	if (w->fx_clip_box) {
 		int sum;
-		sum = ewl_widget_get_layer_sum(w);
+		sum = ewl_widget_layer_sum_get(w);
 		if (sum > ewl_embed_get_max_layer(emb))
 			ewl_embed_set_max_layer(emb, sum);
 		evas_object_layer_set(w->fx_clip_box, sum);
@@ -1032,8 +1032,8 @@ void ewl_widget_realize_cb(Ewl_Widget * w, void *ev_data, void *user_data)
 	 * will be used to calculate any added at runtime.
 	 */
 	if (w->theme_object) {
-		ewl_widget_get_theme_insets(w, &i_l, &i_r, &i_t, &i_b);
-		ewl_widget_get_theme_padding(w, &p_l, &p_r, &p_t, &p_b);
+		ewl_widget_theme_insets_get(w, &i_l, &i_r, &i_t, &i_b);
+		ewl_widget_theme_padding_get(w, &p_l, &p_r, &p_t, &p_b);
 	}
 
 	ewl_object_insets_get(EWL_OBJECT(w), &l, &r, &t, &b);
@@ -1080,7 +1080,7 @@ void ewl_widget_realize_cb(Ewl_Widget * w, void *ev_data, void *user_data)
 	if (w->theme_object) {
 
 		evas_object_layer_set(w->theme_object,
-				ewl_widget_get_layer_sum(w));
+				ewl_widget_layer_sum_get(w));
 		if (w->fx_clip_box)
 			evas_object_clip_set(w->theme_object, w->fx_clip_box);
 		evas_object_show(w->theme_object);
@@ -1089,11 +1089,11 @@ void ewl_widget_realize_cb(Ewl_Widget * w, void *ev_data, void *user_data)
 		 * Set the insets based on cached information from the
 		 * ebit, this can be overwritten later.
 		 */
-		ewl_widget_get_theme_insets(w, &l, &r, &t, &b);
+		ewl_widget_theme_insets_get(w, &l, &r, &t, &b);
 		ewl_object_insets_set(EWL_OBJECT(w), l + i_l, r + i_r, t + i_t,
 				b + i_b);
 
-		ewl_widget_get_theme_padding(w, &l, &r, &t, &b);
+		ewl_widget_theme_padding_get(w, &l, &r, &t, &b);
 		ewl_object_padding_set(EWL_OBJECT(w), l + p_l, r + p_r, t + p_t,
 				b + p_b);
 
@@ -1223,7 +1223,7 @@ void ewl_widget_reparent_cb(Ewl_Widget * w, void *ev_data, void *user_data)
 
 	pc = EWL_CONTAINER(w->parent);
 
-	ewl_widget_rebuild_appearance(w);
+	ewl_widget_appearance_rebuild(w);
 
 	/*
 	 * If the new parent is on a different evas, we must re-realize it.
@@ -1246,7 +1246,7 @@ void ewl_widget_reparent_cb(Ewl_Widget * w, void *ev_data, void *user_data)
 				evas_object_clip_set(w->fx_clip_box,
 						pc->clip_box);
 
-			layer = ewl_widget_get_layer_sum(EWL_WIDGET(pc)) +
+			layer = ewl_widget_layer_sum_get(EWL_WIDGET(pc)) +
 				LAYER(w);
 			if (w->fx_clip_box)
 				evas_object_layer_set(w->fx_clip_box, layer);
@@ -1267,7 +1267,7 @@ void ewl_widget_enable_cb(Ewl_Widget * w, void *ev_data, void *user_data)
 	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR("w", w);
 
-	ewl_widget_set_state(w, "default");
+	ewl_widget_state_set(w, "default");
 
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
@@ -1277,7 +1277,7 @@ void ewl_widget_disable_cb(Ewl_Widget * w, void *ev_data, void *user_data)
 	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR("w", w);
 
-	ewl_widget_set_state(w, "disabled");
+	ewl_widget_state_set(w, "disabled");
 
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
@@ -1290,9 +1290,9 @@ ewl_widget_focus_in_cb(Ewl_Widget *w, void *ev_data, void *user_data)
 		DRETURN(DLEVEL_STABLE);
 
 	if (ewl_object_state_has(EWL_OBJECT(w), EWL_FLAG_STATE_PRESSED))
-		ewl_widget_set_state(w, "mouse,down,0");
+		ewl_widget_state_set(w, "mouse,down,0");
 	else
-		ewl_widget_set_state(w, "mouse,in");
+		ewl_widget_state_set(w, "mouse,in");
 
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
@@ -1304,7 +1304,7 @@ ewl_widget_focus_out_cb(Ewl_Widget *w, void *ev_data, void *user_data)
 	if (ewl_object_state_has(EWL_OBJECT(w), EWL_FLAG_STATE_DISABLED))
 		DRETURN(DLEVEL_STABLE);
 
-	ewl_widget_set_state(w, "mouse,out");
+	ewl_widget_state_set(w, "mouse,out");
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
 
@@ -1319,7 +1319,7 @@ ewl_widget_mouse_down_cb(Ewl_Widget *w, void *ev_data, void *user_data)
 		DRETURN(DLEVEL_STABLE);
 
 	snprintf(state, 14, "mouse,down,%i", e->button);
-	ewl_widget_set_state(w, state);
+	ewl_widget_state_set(w, state);
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
 
@@ -1334,14 +1334,14 @@ ewl_widget_mouse_up_cb(Ewl_Widget *w, void *ev_data, void *user_data)
 		DRETURN(DLEVEL_STABLE);
 
 	snprintf(state, 14, "mouse,up,%i", e->button);
-	ewl_widget_set_state(w, state);
+	ewl_widget_state_set(w, state);
 
 	if (ewl_object_state_has(EWL_OBJECT(w), EWL_FLAG_STATE_HILITED)) {
-		ewl_widget_set_state(w, "mouse,in");
+		ewl_widget_state_set(w, "mouse,in");
 		ewl_callback_call_with_event_data(w, EWL_CALLBACK_CLICKED,
 						  ev_data);
 	} else
-		ewl_widget_set_state(w, "mouse,out");
+		ewl_widget_state_set(w, "mouse,out");
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
 
@@ -1356,7 +1356,7 @@ ewl_widget_mouse_move_cb(Ewl_Widget *w, void *ev_data, void *user_data)
 }
 
 static void
-ewl_widget_get_theme_padding(Ewl_Widget *w, int *l, int *r, int *t, int *b)
+ewl_widget_theme_padding_get(Ewl_Widget *w, int *l, int *r, int *t, int *b)
 {
 	const char *key;
 
@@ -1389,7 +1389,7 @@ ewl_widget_get_theme_padding(Ewl_Widget *w, int *l, int *r, int *t, int *b)
 }
 
 static void
-ewl_widget_get_theme_insets(Ewl_Widget *w, int *l, int *r, int *t, int *b)
+ewl_widget_theme_insets_get(Ewl_Widget *w, int *l, int *r, int *t, int *b)
 {
 	const char *key;
 

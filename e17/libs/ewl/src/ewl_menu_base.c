@@ -48,7 +48,7 @@ void ewl_menu_base_init(Ewl_Menu_Base * menu, char *image, char *title)
 	 */
 	ewl_container_set_redirect(EWL_CONTAINER(menu),
 				   EWL_CONTAINER(menu->popbox));
-	ewl_widget_set_internal(menu->popbox, TRUE);
+	ewl_widget_internal_set(menu->popbox, TRUE);
 
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
@@ -214,7 +214,7 @@ ewl_menu_item_set_text( Ewl_Menu_Item *item, char *text )
 char *
 ewl_menu_item_get_image( Ewl_Menu_Item *item )
 {
-	if (item->icon && ewl_widget_is_type(item->icon, "image"))
+	if (item->icon && ewl_widget_type_is(item->icon, "image"))
 		DRETURN_PTR(ewl_image_get_file(EWL_IMAGE(item->icon)), DLEVEL_STABLE);
 	DRETURN_PTR(NULL, DLEVEL_STABLE);
 }
@@ -227,7 +227,7 @@ ewl_menu_item_get_image( Ewl_Menu_Item *item )
 void
 ewl_menu_item_set_image( Ewl_Menu_Item *item, char *image )
 {
-	if (item->icon && ewl_widget_is_type(item->icon, "image"))
+	if (item->icon && ewl_widget_type_is(item->icon, "image"))
 		ewl_image_set_file(EWL_IMAGE(item->icon), image, NULL);
 	else {
 		ewl_menu_item_create_image( item, image,
@@ -370,7 +370,7 @@ ewl_menu_base_expand_cb(Ewl_Widget *w, void *ev_data, void *user_data)
 	 * Give all the items in the submenu a reference to this popup.
 	 */
 	while ((child = ecore_list_next(pb->children))) {
-		if (ewl_widget_is_type(child, "menuitem")) {
+		if (ewl_widget_type_is(child, "menuitem")) {
 			item = EWL_MENU_ITEM(child);
 			item->inmenu = menu->popup;
 		}

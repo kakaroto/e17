@@ -194,7 +194,7 @@ ewl_grid_add(Ewl_Grid * g, Ewl_Widget * w,
 	child->end_row = end_row;
 
 	/* store the child info in the child widget */
-	ewl_widget_set_data(w, (void *) g, child);
+	ewl_widget_data_set(w, (void *) g, child);
 	ewl_container_append_child(EWL_CONTAINER(g), w);
 
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
@@ -379,7 +379,7 @@ void ewl_grid_configure_cb(Ewl_Widget * w, void *ev_data, void *user_data)
 
 	ecore_list_goto_first(EWL_CONTAINER(w)->children);
 	while ((child = ecore_list_next(EWL_CONTAINER(w)->children)) != NULL) {
-		c = (Ewl_Grid_Child *) ewl_widget_get_data(child, (void *) g);
+		c = (Ewl_Grid_Child *) ewl_widget_data_get(child, (void *) g);
 
 		/* calculate child widgets width */
 		for (i = c->start_col - 1; i < c->end_col; i++)
@@ -506,7 +506,7 @@ void ewl_grid_child_show_cb(Ewl_Container * p, Ewl_Widget * c)
 
 	g = EWL_GRID(p);
 
-	cdata = ewl_widget_get_data(c, (void *) g);
+	cdata = ewl_widget_data_get(c, (void *) g);
 
 	/*
 	 * If no data exists, we should add some defaults.
@@ -518,7 +518,7 @@ void ewl_grid_child_show_cb(Ewl_Container * p, Ewl_Widget * c)
 		cdata->start_col = cdata->end_col = 1;
 		cdata->start_row = cdata->end_row = 1;
 
-		ewl_widget_set_data(c, g, cdata);
+		ewl_widget_data_set(c, g, cdata);
 	}
 
 	/*
@@ -604,7 +604,7 @@ ewl_grid_child_resize_cb(Ewl_Container * p, Ewl_Widget * child, int size,
 	DENTER_FUNCTION(DLEVEL_STABLE);
 
 	g = EWL_GRID(p);
-	cdata = ewl_widget_get_data(child, (void *) g);
+	cdata = ewl_widget_data_get(child, (void *) g);
 
 	/*
 	 * Setup a couple orientation specific variables.

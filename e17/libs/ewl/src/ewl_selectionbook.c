@@ -89,7 +89,7 @@ ewl_selectionbook_add_page(Ewl_Selectionbook * s, Ewl_Widget * tab,
 	ewl_callback_append(p->tab, EWL_CALLBACK_CLICKED,
 			    ewl_selectionbook_page_switch_cb, s);
 
-	ewl_widget_set_data(tab, (void *) s, (void *) p);
+	ewl_widget_data_set(tab, (void *) s, (void *) p);
 
 	if (!s->current_page) {
 		s->current_page = p;
@@ -289,7 +289,7 @@ ewl_selectionbook_page_switch_cb(Ewl_Widget * w, void *ev_data, void *user_data)
 		//ewl_widget_hide(p->page);
 	}
 
-	s->current_page = (Ewl_SbookPage *) ewl_widget_get_data(w, (void *) s);
+	s->current_page = (Ewl_SbookPage *) ewl_widget_data_get(w, (void *) s);
 
 	p = s->current_page;
 	ewl_callback_del(p->tab, EWL_CALLBACK_CLICKED,

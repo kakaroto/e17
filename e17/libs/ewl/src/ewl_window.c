@@ -299,7 +299,7 @@ int ewl_window_init(Ewl_Window * w)
 	 * Initialize the fields of the inherited container class
 	 */
 	ewl_embed_init(EWL_EMBED(w));
-	ewl_widget_set_appearance(EWL_WIDGET(w), "window");
+	ewl_widget_appearance_set(EWL_WIDGET(w), "window");
 	ewl_object_fill_policy_set(EWL_OBJECT(w), EWL_FLAG_FILL_FILL);
 	w->title = strdup("EWL");
 	w->name = strdup("EWL");

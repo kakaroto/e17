@@ -365,7 +365,7 @@ void ewl_media_configure_cb(Ewl_Widget * w, void *ev_data, void *user_data)
 	if (m->video) {
 		evas_object_move(m->video, CURRENT_X(w), CURRENT_Y(w));
 		evas_object_resize(m->video, CURRENT_W(w), CURRENT_H(w));
-		evas_object_layer_set(m->video, ewl_widget_get_layer_sum(w));
+		evas_object_layer_set(m->video, ewl_widget_layer_sum_get(w));
 		evas_object_smart_callback_add(m->video, "frame_decode", 
 					 ewl_media_update_timer_cb, m);
 	}

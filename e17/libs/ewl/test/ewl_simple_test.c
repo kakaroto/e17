@@ -143,7 +143,7 @@ void close_cb(Ewl_Widget *w, void *ev_data, void *user_data)
 void button_down(Ewl_Widget *w, void *ev_data, void *user_data)
 {
 	Ewl_Widget *logo = user_data;
-	ewl_widget_set_state(logo, "start_tour");
+	ewl_widget_state_set(logo, "start_tour");
 }
 
 void quit_demo(Ewl_Widget *w, void *ev_data, void *user_data)

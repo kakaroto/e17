@@ -39,9 +39,9 @@ int ewl_tooltip_init (Ewl_Tooltip *t, Ewl_Widget *parent)
 	w = EWL_WIDGET (t);
 
 	ewl_box_init(EWL_BOX(w), EWL_ORIENTATION_VERTICAL);
-	ewl_widget_set_appearance (EWL_WIDGET (w), "tooltip");
+	ewl_widget_appearance_set(EWL_WIDGET (w), "tooltip");
 	ewl_object_fill_policy_set(EWL_OBJECT(w), EWL_FLAG_FILL_NONE);
-	ewl_widget_set_layer(w, 2000);
+	ewl_widget_layer_set(w, 2000);
 
 	t->text = ewl_text_new ("test tooltip");
 	ewl_object_alignment_set (EWL_OBJECT(t->text),

@@ -51,9 +51,9 @@ void ewl_menu_init(Ewl_Menu * menu, char *image, char *title)
 	 */
 	menu->base.popup = ewl_window_new();
 	ewl_window_set_borderless(EWL_WINDOW(menu->base.popup));
-	ewl_widget_set_internal(menu->base.popup, TRUE);
-	ewl_widget_set_layer(menu->base.popup, 1000);
-	ewl_widget_set_appearance(EWL_WIDGET(menu->base.popup), "menu");
+	ewl_widget_internal_set(menu->base.popup, TRUE);
+	ewl_widget_layer_set(menu->base.popup, 1000);
+	ewl_widget_appearance_set(EWL_WIDGET(menu->base.popup), "menu");
 	ewl_box_set_orientation(EWL_BOX(menu->base.popup),
 				EWL_ORIENTATION_VERTICAL);
 	ewl_object_fill_policy_set(EWL_OBJECT(menu->base.popup),
@@ -74,7 +74,7 @@ void ewl_menu_configure_cb(Ewl_Widget *w, void *ev_data, void *user_data)
 
 	emb = ewl_embed_find_by_widget(w);
 
-	if (ewl_widget_is_type(EWL_WIDGET(emb), "window"))
+	if (ewl_widget_type_is(EWL_WIDGET(emb), "window"))
 		ewl_window_get_position(EWL_WINDOW(emb), &x, &y);
 	else {
 		x = CURRENT_X(w);

@@ -50,7 +50,7 @@ void ewl_floater_init(Ewl_Floater * f, Ewl_Widget * parent)
 	 */
 	ewl_box_init(EWL_BOX(w), EWL_ORIENTATION_VERTICAL);
 	ewl_object_fill_policy_set(EWL_OBJECT(w), EWL_FLAG_FILL_NORMAL);
-	ewl_widget_set_appearance(w, "floater");
+	ewl_widget_appearance_set(w, "floater");
 	f->follows = parent;
 
 	/*

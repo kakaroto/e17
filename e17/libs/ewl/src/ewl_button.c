@@ -40,7 +40,7 @@ int ewl_button_init(Ewl_Button * b, char *label)
 	if (!ewl_box_init(EWL_BOX(b), EWL_ORIENTATION_HORIZONTAL))
 		DRETURN_INT(FALSE, DLEVEL_STABLE);
 
-	ewl_widget_set_appearance(w, "button");
+	ewl_widget_appearance_set(w, "button");
 
 	/*
 	 * Create and setup the label for the button if it's desired.
