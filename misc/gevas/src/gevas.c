@@ -162,12 +162,13 @@ GtkObject *gevas_object_get_named(GtkgEvas * ev, char *name)
 	return EVASO_TO_GTKO(evas_object_get_named(EVAS(ev), name));
 }
 
-void gevas_add_fontpath(GtkgEvas * ev, gchar * path)
+void gevas_add_fontpath(GtkgEvas * ev, const gchar * path)
 {
-	evas_font_add_path(EVAS(ev), path);
+	printf(" GEVAS add font path: %s\n", path);
+	evas_font_add_path(EVAS(ev), (char*)path);
 }
 
-void gevas_remove_fontpath(GtkgEvas * ev, gchar * path)
+void gevas_remove_fontpath(GtkgEvas * ev, const gchar * path)
 {
 	evas_font_del_path(EVAS(ev), path);
 }
@@ -1149,5 +1150,4 @@ static void gevas_get_arg(GtkObject * object, GtkArg * arg, guint arg_id)
 			break;
 	}
 }
-
 

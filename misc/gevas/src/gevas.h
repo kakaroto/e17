@@ -150,6 +150,13 @@ struct _GtkgEvasClass {
 
 };
 
+/** public **/
+
+
+void gevas_add_fontpath(GtkgEvas * ev, const gchar * path);
+void gevas_remove_fontpath(GtkgEvas * ev, const gchar * path);
+
+
 /** protected **/
 
 	guint gevas_get_type(void);
@@ -167,8 +174,6 @@ struct _GtkgEvasClass {
 									double h);
 	GtkObject *gevas_object_at_position(GtkgEvas * ev, double x, double y);
 	GtkObject *gevas_object_get_named(GtkgEvas * ev, char *name);
-	void gevas_add_fontpath(GtkgEvas * ev, gchar * path);
-	void gevas_remove_fontpath(GtkgEvas * ev, gchar * path);
 
 	Evas gevas_get_evas(GtkgEvas * gevas);
 	GdkEvent *gevas_get_current_event(GtkgEvas * gevas);
