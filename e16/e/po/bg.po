@@ -164,7 +164,7 @@ msgstr ""
 #: src/settings.c:3906 src/settings.c:4262 src/settings.c:4563
 #: src/settings.c:4740 src/settings.c:4958 src/snaps.c:570 src/sound.c:304
 msgid "OK"
-msgstr "ДА"
+msgstr "Да"
 
 #: src/actions.c:2999
 msgid "  Pick the group the window will belong to:  \n"
@@ -263,7 +263,7 @@ msgstr "Игнорирай"
 
 #: src/alert.c:331
 msgid "Restart"
-msgstr "Рестартирай"
+msgstr "Рестартирайте"
 
 #: src/alert.c:333
 msgid "Exit"
@@ -1098,7 +1098,7 @@ msgstr "Друг Администратор на Прозорци вече работи"
 
 #: src/handlers.c:219
 msgid "OK (edit file)"
-msgstr "ДА (редактирай файла)"
+msgstr "Да (редактирай файла)"
 
 #: src/handlers.c:219
 msgid "Cancel (do NOT edit)"
@@ -1131,7 +1131,7 @@ msgstr ""
 "може да го направи сега вместо вас, така че като влезнете пак след\n"
 "като излезнете от сегашния администратор на прозорци, ще имате Enlightenment.\n"
 "\n"
-"Ако искате да направите това, натиснете \"ДА\", или натиснете \"Отказ\"\n"
+"Ако искате да направите това, натиснете \"Да\", или натиснете \"Отказ\"\n"
 "за да се откажете от тази операция и да редактирате ръчно тези файлове.\n"
 "\n"
 "******* ПРЕДУПРЕЖДЕНИЕ!!! *******\n"
@@ -1144,11 +1144,11 @@ msgstr "Сигурни ли сте?"
 
 #: src/handlers.c:231
 msgid "YES (edit file)"
-msgstr "ДА (редактирай файла)"
+msgstr "Да (редактирай файла)"
 
 #: src/handlers.c:232
 msgid "NO (do not edit)"
-msgstr "НЕ (не редактирай)"
+msgstr "Не (не редактирай)"
 
 #: src/handlers.c:233
 msgid ""
@@ -2096,7 +2096,7 @@ msgid ""
 "Name: %s\n"
 "File: %s\n"
 msgstr ""
-"Информация за фон:\n"
+"Информация за фона:\n"
 "Име: %s\n"
 "Файл: %s\n"
 
@@ -2216,7 +2216,7 @@ msgstr "Поддържай мащаба"
 
 #: src/settings.c:3619
 msgid "Blue:\n"
-msgstr "Син:\n"
+msgstr "Синьо:\n"
 
 #: src/settings.c:3633
 msgid "Tile image across background"
@@ -2262,7 +2262,7 @@ msgstr "или по картина"
 
 #: src/settings.c:3884
 msgid "Advanced Settings\n"
-msgstr "Висши настройки\n"
+msgstr "Разширени настройки\n"
 
 #: src/settings.c:4013
 msgid "Iconbox Settings"
