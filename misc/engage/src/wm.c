@@ -213,7 +213,7 @@ od_wm_current_window_by_class_fix(Evas_Hash * hash, const char *key,
                                   void *data, void *fdata)
 {
   if (data == fdata) {
-    hash = evas_hash_del(hash, key, data);
+    clients_current = evas_hash_del(clients_current, key, data);
     return (0);
   }
   return (1);
