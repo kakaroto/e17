@@ -450,8 +450,14 @@ feh_menu_add_entry(feh_menu * m, char *text, Imlib_Image icon, char *submenu,
    mi = (feh_menu_item *) emalloc(sizeof(feh_menu_item));
    mi->state = MENU_ITEM_STATE_NORMAL;
    mi->icon = icon;
-   mi->text = estrdup(text);
-   mi->submenu = estrdup(submenu);
+   if (text)
+     mi->text = estrdup(text);
+   else
+     mi->text = NULL;
+   if (submenu)
+     mi->submenu = estrdup(submenu);
+   else
+     mi->submenu = NULL;
    mi->func = func;
    mi->func_free = func_free;
    mi->data = data;
