@@ -137,6 +137,7 @@ static ePlayer *eplayer_new() {
 	}
 
 	pthread_mutex_init(&player->playback_mutex, NULL);
+	player->playback_stop = 1;
 
 	return player;
 }
@@ -155,6 +156,9 @@ void eplayer_playback_stop(ePlayer *player) {
 		ecore_timer_del(player->time_timer);
 		player->time_timer = NULL;
 	}
+
+	if (player->playback_stop)
+		return;
 
 	pthread_mutex_lock(&player->playback_mutex);
 	player->playback_stop = 1;
