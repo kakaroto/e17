@@ -468,6 +468,7 @@ ICCCM_Withdraw(EWin * ewin)
    c[1] = 0;
    XChangeProperty(disp, ewin->client.win, a, a, 32, PropModeReplace,
 		   (unsigned char *)c, 2);
+   XRemoveFromSaveSet(disp, ewin->client.win);
    EDBUG_RETURN_;
 }
 

@@ -1487,7 +1487,6 @@ HandleUnmap(XEvent * ev)
 				   &ewin->client.y, &win);
 	     EReparentWindow(disp, ewin->client.win, root.win, ewin->client.x,
 			     ewin->client.y);
-	     XRemoveFromSaveSet(disp, ewin->client.win);
 	     ICCCM_Withdraw(ewin);
 	     RemoveItem(NULL, ewin->client.win, LIST_FINDBY_ID, LIST_TYPE_EWIN);
 	     DesktopRemoveEwin(ewin);
