@@ -109,7 +109,7 @@ od_config_init(void)
 }
 
 #ifdef HAVE_EWL
-int        menu_height, menu_width;
+int             menu_height, menu_width;
 
 void
 od_config_menu_move_cb(Ewl_Widget * w, void *ev_data, void *user_data)
@@ -127,7 +127,7 @@ od_config_menu_out_cb(Ewl_Widget * w, void *ev_data, void *user_data)
 void
 od_config_menu_zoom_cb(Ewl_Widget * w, void *ev_data, void *user_data)
 {
-  ecore_config_int_set("engage.options.zoom", options.zoom?0:1);
+  ecore_config_int_set("engage.options.zoom", options.zoom ? 0 : 1);
   od_config_menu_hide();
 }
 
@@ -196,30 +196,30 @@ od_config_menu_hide(void)
 {
   evas_object_move(embed, -1 * CURRENT_W(menu_win), 0);
   ewl_widget_hide(menu);
-  
+
 }
 
 void
 od_config_menu_draw(Evas_Coord x, Evas_Coord y)
 {
-  int xx, yy, menu_off_x, menu_off_y;
-  menu_off_x = 5; menu_off_y = 5;
-  
+  int             xx, yy, menu_off_x, menu_off_y;
+
+  menu_off_x = 5;
+  menu_off_y = 5;
+
   od_config_menu_init();
   if (x - menu_off_x + menu_width > options.width)
     xx = options.width - menu_width;
+  else if (x < menu_off_x)
+    xx = 0;
   else
-    if (x < menu_off_x)
-      xx = 0;
-    else
-      xx = x - menu_off_x;
+    xx = x - menu_off_x;
   if (y - menu_off_y + menu_height > options.height)
     yy = options.height - menu_height;
+  else if (y < menu_off_y)
+    yy = 0;
   else
-    if (y < menu_off_y)
-      yy = 0;
-    else
-      yy = y - menu_off_y;
+    yy = y - menu_off_y;
   evas_object_move(embed, xx, yy);
   ewl_callback_call(menu, EWL_CALLBACK_SELECT);
 }

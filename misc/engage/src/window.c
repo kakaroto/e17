@@ -307,4 +307,3 @@ handle_menu_draw(void *data, Evas * e, Evas_Object * obj, void *event)
     od_config_menu_draw(ev->canvas.x, ev->canvas.y);
 #endif
 }
-
