@@ -93,7 +93,7 @@ static char * ewl_theme_path_find(const char * name)
 	 * available. 
 	 */
 	if (home) {
-		snprintf(theme_tmp_path, PATH_MAX, "%s/.e/ewl/themes/%s.eet",
+		snprintf(theme_tmp_path, PATH_MAX, "%s/.e/ewl/themes/%s.edj",
 			home, name);
 		if (((stat(theme_tmp_path, &st)) == 0) && S_ISREG(st.st_mode)) {
 			theme_found_path = strdup(theme_tmp_path);
@@ -105,7 +105,7 @@ static char * ewl_theme_path_find(const char * name)
 	 */
 	if (!theme_found_path) {
 		snprintf(theme_tmp_path, PATH_MAX, PACKAGE_DATA_DIR
-				"/themes/%s.eet", name);
+				"/themes/%s.edj", name);
 		if (((stat(theme_tmp_path, &st)) == 0) &&
 				S_ISREG(st.st_mode)) {
 			theme_found_path = strdup(theme_tmp_path);
@@ -187,7 +187,7 @@ static void ewl_theme_font_path_init()
 				len = strlen(theme_path);
 				tmp = theme_path + len - 4;
 
-				if (strcmp(tmp, ".eet"))
+				if (strcmp(tmp, ".edj"))
 					snprintf(key, PATH_MAX, "%s/%s",
 							theme_path, font_path);
 				else

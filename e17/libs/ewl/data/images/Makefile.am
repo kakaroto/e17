@@ -2,7 +2,7 @@ MAINTAINERCLEANFILES = Makefile.in
 
 EDCS =  bg.edc
 
-EETS = $(EDCS:%.edc=%.eet)
+EDJS = $(EDCS:%.edc=%.edj)
 
 IMAGES = arrow_up.png e-logo.png lilbottom.png banner-top.png elicit.png \
 	 elicit1.png elicit2.png elicit3.png entrance.png entrance1.png \
@@ -11,15 +11,15 @@ IMAGES = arrow_up.png e-logo.png lilbottom.png banner-top.png elicit.png \
 	 entice.png entice1.png entice2.png entice3.png
 
 themedir = $(pkgdatadir)/images
-theme_DATA = $(IMAGES) $(EETS)
+theme_DATA = $(IMAGES) $(EDJS)
 
 EXTRA_DIST = $(IMAGES) $(EDCS)
 
-CLEANFILES = $(EETS)
+CLEANFILES = $(EDJS)
 
-all: $(EETS)
+all: $(EDJS)
 
-SUFFIXES = .edc .eet
-.edc.eet:
+SUFFIXES = .edc .edj
+.edc.edj:
 #	edje_cc -v -id $(top_builddir)/data/images `basename $<` $@
 	(cd $(top_srcdir)/data/images ; edje_cc -v -id . $(notdir $<) $(top_builddir)/data/images/$(notdir $@))
