@@ -11,5 +11,6 @@
 #include "gfx.h"
 #include "game.h"
 #include "theme.h"
+#include "../../config.h"
 
 #endif

@@ -11,23 +11,23 @@ int menu_h = 20;
 char win_title[255] = "Slets";
 char bg_files[28][255] =
 {
- "./img/sky.png",
+ DATA_DIR "/img/sky.png",
  ""
 };
 char icon_files[10][255] =
 {
- "./img/bomb.png",
- "./img/book.png",
- "./img/spider.png",
- "./img/log.png",
- "./img/cdrom.png",
- "./img/clock.png",
- "./img/dynamite.png",
- "./img/floppy.png",
- "./img/flower.png",
+ DATA_DIR "/img/bomb.png",
+ DATA_DIR "/img/book.png",
+ DATA_DIR "/img/spider.png",
+ DATA_DIR "/img/log.png",
+ DATA_DIR "/img/cdrom.png",
+ DATA_DIR "/img/clock.png",
+ DATA_DIR "/img/dynamite.png",
+ DATA_DIR "/img/floppy.png",
+ DATA_DIR "/img/flower.png",
  ""
 };
-char font_path[512] = "./fnt";
+char font_path[512] = DATA_DIR "/fnt";
 
 GAME_COLOR text_color;
 GAME_COLOR  menu_color;
