@@ -18,8 +18,8 @@ test_basic (void *_data, Evas _e, Evas_Object _o, int _b, int _x, int _y)
   /* Create "Next" button */
   button_next_new_all (evas);
 
-  evas_callback_add (evas, o_txt_next_box, CALLBACK_MOUSE_IN, mouse_in, NULL);
-  evas_callback_add (evas, o_txt_next_box, CALLBACK_MOUSE_OUT, mouse_out, NULL);
+  evas_callback_add (evas, o_txt_next_box, CALLBACK_MOUSE_IN, button_mouse_in, NULL);
+  evas_callback_add (evas, o_txt_next_box, CALLBACK_MOUSE_OUT, button_mouse_out, NULL);
   evas_callback_add (evas, o_txt_next_box, CALLBACK_MOUSE_DOWN,
         test_basic_get, e_msg);
 }
@@ -41,8 +41,8 @@ test_basic_get (void *_data, Evas _e, Evas_Object _o, int _b, int _x, int _y)
   /* Recreate "Next" button */
   button_next_new(_e);
    
-  evas_callback_add (evas, o_txt_next_box, CALLBACK_MOUSE_IN, mouse_in, NULL);
-  evas_callback_add (evas, o_txt_next_box, CALLBACK_MOUSE_OUT, mouse_out, NULL);
+  evas_callback_add (evas, o_txt_next_box, CALLBACK_MOUSE_IN, button_mouse_in, NULL);
+  evas_callback_add (evas, o_txt_next_box, CALLBACK_MOUSE_OUT, button_mouse_out, NULL);
   evas_callback_add (_e, o_txt_next_box, CALLBACK_MOUSE_DOWN,
         test_basic_set, _data);
  
@@ -75,8 +75,8 @@ test_basic_set (void *_data, Evas _e, Evas_Object _o, int _b, int _x, int _y)
   /* Recreate "Next" button */
   button_next_new(_e);
  
-  evas_callback_add (evas, o_txt_next_box, CALLBACK_MOUSE_IN, mouse_in, NULL);
-  evas_callback_add (evas, o_txt_next_box, CALLBACK_MOUSE_OUT, mouse_out, NULL);
+  evas_callback_add (evas, o_txt_next_box, CALLBACK_MOUSE_IN, button_mouse_in, NULL);
+  evas_callback_add (evas, o_txt_next_box, CALLBACK_MOUSE_OUT, button_mouse_out, NULL);
   evas_callback_add (_e, o_txt_next_box, CALLBACK_MOUSE_DOWN,
         test_basic_append, _data);
  
@@ -108,4 +108,10 @@ test_basic_append (void *_data, Evas _e, Evas_Object _o, int _b, int _x, int _y)
 
   /* Change test etox */
   etox_append_text (e_test, string);
+}
+
+void
+test_style (void *_data, Evas _e, Evas_Object _o, int _b, int _x, int _y)
+{
+  printf ("Style button clicked");
 }

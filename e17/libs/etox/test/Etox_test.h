@@ -1,18 +1,13 @@
 #ifndef __ETOX_TEST_H__
 #define __ETOX_TEST_H__
 
-#include <sys/stat.h>
 #include <stdio.h>
 #include <stdlib.h>
 #include <math.h>
 #include <sys/time.h>
-#include <unistd.h>
-#include <string.h>
-#include <dirent.h>
 
 #include <Evas.h>
 #include <Ecore.h>
-#include <Imlib2.h>
 
 #include "src/Etox.h"
 #include "etox-config.h"
@@ -30,23 +25,22 @@
 /* #define RENDER_ENGINE   RENDER_METHOD_BASIC_HARDWARE */
 /* #define RENDER_ENGINE   RENDER_METHOD_3D_HARDWARE */
 
-#include "panel.h"
-#include "tests.h"
+typedef struct _panel_button Panel_Button;
+
+struct _panel_button
+{
+  Evas         evas;
+  Evas_Object  box;
+  Evas_Object  label;
+};
 
 /* globals */
-extern Evas_Object o_bg;
-extern Evas_Object o_logo;
-extern Evas_Object o_panel;
-extern Evas_Object o_showpanel;
-extern Evas_Object o_hidepanel;
-extern Evas_Object o_txt_paneltitle;
-extern Evas_Object o_panel_box1;
-extern Evas_Object o_txt_panel_box1;
 extern Evas_Object o_bg_etox;
 extern Evas_Object clip_msg;
 extern Evas_Object clip_test;
 extern Evas_Object o_next_box;
 extern Evas_Object o_txt_next_box;
+extern Evas_List pbuttons;
 
 extern Etox *e_msg;
 extern Etox *e_test;
@@ -59,11 +53,6 @@ extern int win_h;
 extern int win_x;
 extern int win_y;
 extern Window main_win;
-
-extern int panel_active;
-
-/* handler functions */
-void e_handle_resize(void);
 
 /* general functions */
 double get_time (void);
@@ -80,14 +69,15 @@ void e_mouse_move(Ecore_Event * ev);
 void e_mouse_down(Ecore_Event * ev);
 /* when a mouse button is released in the window call this */
 void e_mouse_up(Ecore_Event * ev);
-/* when the window gets moved or resized */
-void e_window_configure(Ecore_Event * ev);
 /* when the mouse moves over a button */
-void mouse_in (void *_data, Evas _e, Evas_Object _o, int _b, int _x, int _y);
-void mouse_out (void *_data, Evas _e, Evas_Object _o, int _b, int _x, int _y);
+void button_mouse_in (void *_data, Evas _e, Evas_Object _o, int _b, int _x, int _y);
+void button_mouse_out (void *_data, Evas _e, Evas_Object _o, int _b, int _x, int _y);
 
 /* button functions */
 void button_next_new_all(Evas _e);
 void button_next_new(Evas _e);
+
+#include "panel.h"
+#include "tests.h"
 
 #endif /* __ETOX_TEST_H__ */

@@ -1,19 +1,11 @@
 #include "Etox_test.h"
 
 /* globals */
-Evas_Object o_bg;
-Evas_Object o_logo;
-Evas_Object o_panel;
-Evas_Object o_showpanel;
-Evas_Object o_hidepanel;
-Evas_Object o_txt_paneltitle;
-Evas_Object o_bg_etox;
 Evas_Object clip_msg;
 Evas_Object clip_test;
-Evas_Object o_panel_box1;
-Evas_Object o_txt_panel_box1;
 Evas_Object o_next_box;
 Evas_Object o_txt_next_box;
+Evas_List pbuttons;
 
 Evas evas;
 Evas_Render_Method render_method = RENDER_ENGINE;
@@ -25,8 +17,6 @@ Etox *e_test;
 int win_w = W, win_h = H;
 int win_x = 0, win_y = 0;
 Window main_win;
-
-int panel_active = 0;
 
 double
 get_time (void)
@@ -74,13 +64,13 @@ button_next_new(Evas _e)
   evas_show (evas, o_txt_next_box);
 }
 
+/* Events */
 void
 e_idle (void *data)
 {
   evas_render (evas);
 }
 
-/* Events */
 void
 e_window_expose (Ecore_Event * ev)
 {
@@ -126,16 +116,16 @@ e_mouse_up (Ecore_Event * ev)
 }
 
 void
-mouse_in (void *_data, Evas _e, Evas_Object _o, int _b, int _x, int _y)
+button_mouse_in (void *_data, Evas _e, Evas_Object _o, int _b, int _x, int _y)
 {
-  if ((_e = evas) && ((_o == o_txt_panel_box1) || (_o == o_txt_next_box)))
+  if ((_e = evas))
     evas_set_color (_e, _o, 0, 0, 0, 255);
 }
 
 void
-mouse_out (void *_data, Evas _e, Evas_Object _o, int _b, int _x, int _y)
+button_mouse_out (void *_data, Evas _e, Evas_Object _o, int _b, int _x, int _y)
 {
-  if ((_e = evas) && ((_o == o_txt_panel_box1) || (_o == o_txt_next_box)))
+  if ((_e = evas))
     evas_set_color (_e, _o, 0, 0, 0, 160);
 }
 
@@ -143,9 +133,8 @@ void
 setup (void)
 {
   Window win, ewin;
-  int w, h;
-  int i, j;
-  Evas_Object o;
+  Evas_Object o_bg;
+  Evas_Object o_bg_etox;
   char msg[] =
      "            The Etox Test utility consists in a series\n"
      "            of test suites designed to exercise all of\n"
@@ -163,13 +152,13 @@ setup (void)
   ecore_event_filter_handler_add (ECORE_EVENT_MOUSE_UP, e_mouse_up);
   /* handler for when the event queue goes idle */
   ecore_event_filter_idle_handler_add (e_idle, NULL);
-  /* create a 500x400 toplevel window */
+  /* create a toplevel window */
   win = ecore_window_new (0, 0, 0, win_w, win_h);
-  ecore_window_set_min_size (win, 600, 500);
-  ecore_window_set_max_size (win, 600, 500);
+  ecore_window_set_min_size (win, win_w, win_h);
+  ecore_window_set_max_size (win, win_w, win_h);
   main_win = win;
 
-  /* create a 500x400 evas rendering in software - conveience function that */
+  /* create a evas rendering in software - convenience function that */
   /* also creates the window for us in the right colormap & visual */
   evas =
     evas_new_all (ecore_display_get (), win, 0, 0, win_w, win_h,
@@ -193,50 +182,8 @@ setup (void)
   evas_set_layer (evas, o_bg, 0);
   evas_show (evas, o_bg);
 
-  /* Panel background */
-  o_panel = evas_add_image_from_file (evas, IM "panel.png");
-  o_showpanel = evas_add_rectangle (evas);
-  o_hidepanel = evas_add_rectangle (evas);
-  evas_set_color (evas, o_showpanel, 0, 0, 0, 0);
-  evas_set_color (evas, o_hidepanel, 0, 0, 0, 0);
-  evas_get_image_size (evas, o_panel, &w, NULL);
-  if (!panel_active)
-    evas_move (evas, o_panel, -w, 0);
-  evas_resize (evas, o_panel, w, win_h);
-  evas_set_layer (evas, o_panel, 200);
-  evas_resize (evas, o_showpanel, 64, win_h);
-  if (panel_active)
-    evas_set_layer (evas, o_showpanel, 180);
-  else
-    evas_set_layer (evas, o_showpanel, 1000);
-  evas_move (evas, o_hidepanel, 128, 0);
-  evas_resize (evas, o_hidepanel, win_w - 128, win_h);
-  evas_set_layer (evas, o_hidepanel, 1000);
-  evas_move (evas, o_showpanel, 0, 0);
-  evas_show (evas, o_panel);
-  evas_show (evas, o_showpanel);
-  evas_show (evas, o_hidepanel);
-
-  /* Panel title */
-  o_txt_paneltitle = evas_add_text (evas, "sinon", 17, "Etox Test");
-  evas_set_color (evas, o_txt_paneltitle, 255, 255, 255, 255);
-  evas_set_layer (evas, o_txt_paneltitle, 250);
-  evas_show (evas, o_txt_paneltitle);
-
-  /* Panel buttons */
-  panel_button (evas, "Basic");
-
-  e_slide_panel_out (0, NULL);
-
-  /* Callbacks */
-  evas_callback_add (evas, o_showpanel, CALLBACK_MOUSE_IN, show_panel, NULL);
-  evas_callback_add (evas, o_hidepanel, CALLBACK_MOUSE_IN, hide_panel, NULL);
-  evas_callback_add (evas, o_txt_panel_box1, CALLBACK_MOUSE_IN, mouse_in,
-		     NULL);
-  evas_callback_add (evas, o_txt_panel_box1, CALLBACK_MOUSE_OUT, mouse_out,
-		     NULL);
-  evas_callback_add (evas, o_txt_panel_box1, CALLBACK_MOUSE_DOWN, test_basic,
-		     NULL);
+  /* Panel */
+  setup_panel (evas);
 
   /* Setup message etox */
   /* Clip rectangle for bounding where the message text is drawn */
@@ -257,7 +204,6 @@ setup (void)
   etox_set_alpha (e_msg, 255);
   etox_set_layer (e_msg, 1000);
   etox_show (e_msg);
-
 
   /* Setup test etox */
   /* Setup test etox background */
@@ -318,6 +264,7 @@ main (int argc, char **argv)
 
   etox_free (e_msg);
   etox_free (e_test);
+  evas_list_free (pbuttons);
   evas_free (evas);
 
   return 0;
