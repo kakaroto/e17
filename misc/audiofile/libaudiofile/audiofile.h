@@ -27,6 +27,11 @@
 #ifndef AUDIOFILE_H
 #define AUDIOFILE_H
 
+/*
+	AFvirtualfile is the preferred type to use; AF_VirtualFile will go
+	away.
+*/
+typedef struct _AF_VirtualFile AFvirtualfile;
 typedef struct _AF_VirtualFile AF_VirtualFile;
 
 #include <sys/types.h>
@@ -101,10 +106,10 @@ enum
 
 enum
 {
-	AF_SAMPFMT_TWOSCOMP = 401,
-	AF_SAMPFMT_UNSIGNED = 402,
-	AF_SAMPFMT_FLOAT = 403,
-	AF_SAMPFMT_DOUBLE = 404
+	AF_SAMPFMT_TWOSCOMP = 401, /* linear two's complement */
+	AF_SAMPFMT_UNSIGNED = 402, /* unsigned integer */
+	AF_SAMPFMT_FLOAT = 403, /* 32-bit IEEE floating-point */
+	AF_SAMPFMT_DOUBLE = 404 /* 64-bit IEEE double-precision floating-point */
 };
 
 enum
@@ -485,12 +490,10 @@ void afGetSampleFormat (AFfilehandle file, int track, int *sampfmt,
 	int *sampwidth);
 void afGetVirtualSampleFormat (AFfilehandle file, int track, int *sampfmt,
 	int *sampwidth);
-#if 0
 int afSetVirtualSampleFormat (AFfilehandle, int track,
 	int sampleFormat, int sampleWidth);
 void afGetVirtualSampleFormat (AFfilehandle, int track,
 	int *sampleFormat, int *sampleWidth);
-#endif
 
 /* track data: sampling rate */
 void afInitRate (AFfilesetup, int track, double rate);

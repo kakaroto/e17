@@ -1,3 +1,6 @@
+afQuery queries the capabilities of the Audio File Library.
+
+SYNOPSIS
 #include <audiofile.h>
 
 AUpvlist afQuery (int querytype, int arg1, int arg2, int arg3, int arg4);
@@ -5,10 +8,7 @@ long afQueryLong (int querytype, int arg1, int arg2, int arg3, int arg4);
 double afQueryDouble (int querytype, int arg1, int arg2, int arg3, int arg4);
 void *afQueryPointer (int querytype, int arg1, int arg2, int arg3, int arg4);
 
-afQuery can produce the following errors:
-* AF_BAD_QUERYTYPE - the query type is unsupported
-* AF_BAD_QUERY - the arguments to the query are bad
-
+PARAMETERS
 querytype can be one of
 AF_QUERYTYPE_FILEFMT
 AF_QUERYTYPE_INST
@@ -18,3 +18,8 @@ AF_QUERYTYPE_COMPRESSIONPARAM
 AF_QUERYTYPE_MISC
 AF_QUERYTYPE_MARK
 AF_QUERYTYPE_LOOP
+
+ERRORS
+afQuery can produce the following errors:
+* AF_BAD_QUERYTYPE - the query type is unsupported
+* AF_BAD_QUERY - the arguments to the query are bad

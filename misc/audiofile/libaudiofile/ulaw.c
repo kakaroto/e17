@@ -26,7 +26,7 @@
 */
 
 #ifdef HAVE_CONFIG_H
-#  include <config.h>
+#include <config.h>
 #endif
 
 #include <sys/types.h>
@@ -37,9 +37,9 @@
 #include "byteorder.h"
 #include "compression.h"
 
-static AFframecount _af_g711_ulawReadFrames (const AFfilehandle file, int track,
+static AFframecount _af_g711_ulawReadFrames (AFfilehandle file, int track,
 					     void *samples, int frameCount);
-static AFframecount _af_g711_ulawWriteFrames (const AFfilehandle file, int track,
+static AFframecount _af_g711_ulawWriteFrames (AFfilehandle file, int track,
 					      void *samples, const int frameCount);
 
 struct _codec g711_ulaw_codec =
@@ -58,7 +58,7 @@ struct _Compression g711_ulaw_compression =
 	_af_blockReadFrames is used for reading uncompressed sampled sound
 	data from RIFF WAVE or AIFF files.
 */
-static AFframecount _af_g711_ulawReadFrames (const AFfilehandle file, int track,
+static AFframecount _af_g711_ulawReadFrames (AFfilehandle file, int track,
 	void *samples, int frameCount)
 {
 	size_t		done = 0, sampleCount;

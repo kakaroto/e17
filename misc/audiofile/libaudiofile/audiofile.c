@@ -1,6 +1,6 @@
 /*
 	Audio File Library
-	Copyright (C) 1998, Michael Pruett <michael@68k.org>
+	Copyright (C) 1998-1999, Michael Pruett <michael@68k.org>
 
 	This library is free software; you can redistribute it and/or
 	modify it under the terms of the GNU Library General Public
@@ -85,6 +85,42 @@ int afSetVirtualByteOrder (AFfilehandle file, int track, int byteorder)
 	return 0;
 }
 
+int afSetVirtualSampleFormat (AFfilehandle file, int track,
+	int sampleFormat, int sampleWidth)
+{
+	assert(file);
+	assert(track == AF_DEFAULT_TRACK);
+	assert(sampleWidth > 0);
+	assert(sampleWidth <= 32 || sampleWidth == 64);
+
+	if (sampleFormat == AF_SAMPFMT_UNSIGNED ||
+		sampleFormat == AF_SAMPFMT_TWOSCOMP ||
+		sampleFormat == AF_SAMPFMT_FLOAT ||
+		sampleFormat == AF_SAMPFMT_DOUBLE)
+	{
+		file->virtualSampleFormat = sampleFormat;
+		file->virtualSampleWidth = sampleWidth;
+		return 0;
+	}
+
+	return -1;
+}
+
+void afGetVirtualSampleFormat (AFfilehandle file, int track,
+	int *sampleFormat, int *sampleWidth)
+{
+	assert(file);
+	assert(track == AF_DEFAULT_TRACK);
+
+	assert(file->virtualSampleWidth > 0);
+	assert(file->virtualSampleWidth <= 32 || file->virtualSampleWidth == 64);
+
+	if (sampleFormat != NULL)
+		*sampleFormat = file->sampleFormat;
+	if (sampleWidth != NULL)
+		*sampleWidth = file->sampleWidth;
+}
+
 int afGetByteOrder (AFfilehandle file, int track)
 {
 	assert(file);
@@ -132,7 +168,7 @@ void afGetSampleFormat(AFfilehandle file, int track, int *sampfmt, int *sampwidt
 		*sampwidth = file->sampleWidth;
 }
 
-int afReadFrames(const AFfilehandle file, int track, void *samples, const int count)
+int afReadFrames (const AFfilehandle file, int track, void *samples, const int count)
 {
 	assert(file);
 	assert(track == AF_DEFAULT_TRACK);
@@ -143,9 +179,11 @@ int afReadFrames(const AFfilehandle file, int track, void *samples, const int co
 	{
 		AFframecount (*readFrames) (const AFfilehandle, int, void *, const int);
 
+		assert(file->compression);
 		assert(file->compression->codec);
 
 		readFrames = file->compression->codec->readFrames;
+
 		assert(readFrames);
 
 		return (readFrames(file, track, samples, count));
@@ -265,7 +303,7 @@ int afCloseFile (AFfilehandle file)
 	return 0;
 }
 
-static AFfilehandle _afOpenFileWrite2 (AF_VirtualFile *vf, AFfilesetup setup)
+static AFfilehandle _afOpenFileWrite2 (AFvirtualfile *vf, AFfilesetup setup)
 {
 	AFfilehandle	filehandle;
 
@@ -298,6 +336,8 @@ static AFfilehandle _afOpenFileWrite2 (AF_VirtualFile *vf, AFfilesetup setup)
 #else
 	filehandle->virtualByteOrder = AF_BYTEORDER_LITTLEENDIAN;
 #endif
+	filehandle->virtualSampleFormat = filehandle->sampleFormat;
+	filehandle->virtualSampleWidth = filehandle->sampleWidth;
 
 	filehandle->compression = setup->compression;
 
@@ -364,29 +404,13 @@ static AFfilehandle _afOpenFileWrite2 (AF_VirtualFile *vf, AFfilesetup setup)
 	return filehandle;
 }
 
-#if 0
-/* Not used any more */
-static AFfilehandle _afOpenFileWrite (const char *filename, const char *mode,
-	AFfilesetup setup)
-{
-	FILE			*fp;
-
-	fp = fopen(filename, mode);
-	if (fp == NULL)
-		return AF_NULL_FILEHANDLE;
-
-	return _afOpenFileWrite2(af_virtual_file_new_for_file(fp), setup);
-}
-#endif
-
-AFfilehandle
-afOpenVirtualFile(AF_VirtualFile *vfile, const char *mode, AFfilesetup setup)
+AFfilehandle afOpenVirtualFile (AFvirtualfile *vfile, const char *mode, AFfilesetup setup)
 {
 	AFfilehandle	filehandle;
 	char			data[12];
 
-	if(!strcmp(mode, "w"))
-	  return _afOpenFileWrite2 (vfile, setup);
+	if (!strcmp(mode, "w"))
+		return _afOpenFileWrite2 (vfile, setup);
 
 	filehandle = malloc(sizeof (struct _AFfilehandle));
 	if (filehandle == NULL)
@@ -465,7 +489,20 @@ afOpenVirtualFile(AF_VirtualFile *vfile, const char *mode, AFfilesetup setup)
 		_af_parseau(filehandle);
 	}
 	else
+	{
+		/*
+			The only memory allocated is that from the initial malloc.
+			None of the structures referenced within the file handle
+			structure have had memory allocated if none of the parsers
+			recognized the file.
+		*/
+
+		free(filehandle);
 		return AF_NULL_FILEHANDLE;
+	}
+
+	filehandle->virtualSampleFormat = filehandle->sampleFormat;
+	filehandle->virtualSampleWidth = filehandle->sampleWidth;
 
 #ifdef DEBUG
 	_af_printfilehandle(filehandle);
@@ -474,11 +511,25 @@ afOpenVirtualFile(AF_VirtualFile *vfile, const char *mode, AFfilesetup setup)
 	return filehandle;
 }
 
-AFfilehandle afOpenFile(const char *filename, const char *mode, AFfilesetup setup)
+AFfilehandle afOpenFile (const char *filename, const char *mode, AFfilesetup setup)
 {
 	FILE			*fp;
 
 	fp = fopen(filename, mode);
+	if (fp == NULL)
+	{
+		_af_error(AF_BAD_OPEN);
+		return AF_NULL_FILEHANDLE;
+	}
+
+	return afOpenVirtualFile(af_virtual_file_new_for_file(fp), mode, setup);
+}
+
+AFfilehandle afOpenFD (int fd, const char *mode, AFfilesetup setup)
+{
+	FILE	*fp;
+
+	fp = fdopen(fd, mode);
 	if (fp == NULL)
 	{
 		_af_error(AF_BAD_OPEN);

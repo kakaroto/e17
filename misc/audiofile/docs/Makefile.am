@@ -1,10 +1,16 @@
 EXTRA_DIST = \
-	afCloseFile	\
-	afGetFrameSize	\
-	afIntro		\
-	afNewFileSetup	\
-	afOpenFile	\
-	afReadFrames	\
-	afWriteFrames	\
-	sfconvert	\
+	afCloseFile \
+	afGetFrameSize \
+	afGetTrackBytes \
+	afIntro \
+	afNewFileSetup \
+	afOpenFile \
+	afQuery \
+	afReadFrames \
+	afReadMisc \
+	afSeekFrame \
+	afSetErrorHandler \
+	afSetVirtualByteOrder \
+	afWriteFrames \
+	sfconvert \
 	sfinfo

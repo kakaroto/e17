@@ -19,5 +19,5 @@ EXTRA_DIST= \
 m4datadir = $(datadir)/aclocal
 m4data_DATA = audiofile.m4
 
-dist-hook:
+dist-hook: audiofile.spec
 	cp audiofile.spec $(distdir)

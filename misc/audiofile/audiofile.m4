@@ -1,4 +1,4 @@
-# Configure paths for AUDIOFILE
+# Configure paths for the Audio File Library
 # Bertrand Guiheneuf 98-10-21
 # stolen from esd.m4 in esound :
 # Manish Singh    98-9-30
@@ -7,18 +7,17 @@
 # Shamelessly stolen from Owen Taylor
 
 dnl AM_PATH_AUDIOFILE([MINIMUM-VERSION, [ACTION-IF-FOUND [, ACTION-IF-NOT-FOUND]]])
-dnl Test for AUDIOFILE, and define AUDIOFILE_CFLAGS and AUDIOFILE_LIBS
+dnl Test for Audio File Library, and define AUDIOFILE_CFLAGS and AUDIOFILE_LIBS.
 dnl
 AC_DEFUN(AM_PATH_AUDIOFILE,
 [dnl 
-dnl Get the cflags and libraries from the audiofile-config script
+dnl Get compiler flags and libraries from the audiofile-config script.
 dnl
-AC_ARG_WITH(audiofile-prefix,[  --with-audiofile-prefix=PFX   Prefix where AUDIOFILE is installed (optional)],
+AC_ARG_WITH(audiofile-prefix,[  --with-audiofile-prefix=PFX   Prefix where Audio File Library is installed (optional)],
             audiofile_prefix="$withval", audiofile_prefix="")
-AC_ARG_WITH(audiofile-exec-prefix,[  --with-audiofile-exec-prefix=PFX Exec prefix where AUDIOFILE is installed (optional)],
+AC_ARG_WITH(audiofile-exec-prefix,[  --with-audiofile-exec-prefix=PFX Exec prefix where Audio File Library is installed (optional)],
             audiofile_exec_prefix="$withval", audiofile_exec_prefix="")
-AC_ARG_ENABLE(audiofiletest, [  --disable-audiofiletest       Do not try to compile and run a test AUDIOFILE program],
-		    , enable_audiofiletest=yes)
+AC_ARG_ENABLE(audiofiletest, [  --disable-audiofiletest       Do not try to compile and run a test Audio File Library program], , enable_audiofiletest=yes)
 
   if test x$audiofile_exec_prefix != x ; then
      audiofile_args="$audiofile_args --exec-prefix=$audiofile_exec_prefix"
@@ -35,7 +34,7 @@ AC_ARG_ENABLE(audiofiletest, [  --disable-audiofiletest       Do not try to comp
 
   AC_PATH_PROG(AUDIOFILE_CONFIG, audiofile-config, no)
   min_audiofile_version=ifelse([$1], ,0.2.5,$1)
-  AC_MSG_CHECKING(for AUDIOFILE - version >= $min_audiofile_version)
+  AC_MSG_CHECKING(for Audio File Library - version >= $min_audiofile_version)
   no_audiofile=""
   if test "$AUDIOFILE_CONFIG" = "no" ; then
     no_audiofile=yes
@@ -49,13 +48,15 @@ AC_ARG_ENABLE(audiofiletest, [  --disable-audiofiletest       Do not try to comp
     audiofile_micro_version=`$AUDIOFILE_CONFIG $audiofile_config_args --version | \
            sed 's/\([[0-9]]*\).\([[0-9]]*\).\([[0-9]]*\)/\3/'`
     if test "x$enable_audiofiletest" = "xyes" ; then
+      AC_LANG_SAVE
+      AC_LANG_C
       ac_save_CFLAGS="$CFLAGS"
       ac_save_LIBS="$LIBS"
       CFLAGS="$CFLAGS $AUDIOFILE_CFLAGS"
       LIBS="$LIBS $AUDIOFILE_LIBS"
 dnl
-dnl Now check if the installed AUDIOFILE is sufficiently new. (Also sanity
-dnl checks the results of audiofile-config to some extent
+dnl Now check if the installed Audio File Library is sufficiently new. 
+dnl (Also checks the sanity of the results of audiofile-config to some extent.)
 dnl
       rm -f conf.audiofiletest
       AC_TRY_RUN([
@@ -103,7 +104,7 @@ int main ()
   else
     {
       printf("\n*** 'audiofile-config --version' returned %d.%d.%d, but the minimum version\n", $audiofile_major_version, $audiofile_minor_version, $audiofile_micro_version);
-      printf("*** of AUDIOFILE required is %d.%d.%d. If audiofile-config is correct, then it is\n", major, minor, micro);
+      printf("*** of the Audio File Library required is %d.%d.%d. If audiofile-config is correct, then it is\n", major, minor, micro);
       printf("*** best to upgrade to the required version.\n");
       printf("*** If audiofile-config was wrong, set the environment variable AUDIOFILE_CONFIG\n");
       printf("*** to point to the correct copy of audiofile-config, and remove the file\n");
@@ -115,6 +116,7 @@ int main ()
 ],, no_audiofile=yes,[echo $ac_n "cross compiling; assumed OK... $ac_c"])
        CFLAGS="$ac_save_CFLAGS"
        LIBS="$ac_save_LIBS"
+       AC_LANG_RESTORE
      fi
   fi
   if test "x$no_audiofile" = x ; then
@@ -123,36 +125,48 @@ int main ()
   else
      AC_MSG_RESULT(no)
      if test "$AUDIOFILE_CONFIG" = "no" ; then
-       echo "*** The audiofile-config script installed by AUDIOFILE could not be found"
-       echo "*** If AUDIOFILE was installed in PREFIX, make sure PREFIX/bin is in"
-       echo "*** your path, or set the AUDIOFILE_CONFIG environment variable to the"
-       echo "*** full path to audiofile-config."
+       cat <<END
+*** The audiofile-config script installed by the Audio File Library could
+*** not be found.  If the Audio File Library was installed in PREFIX, make
+*** sure PREFIX/bin is in your path, or set the AUDIOFILE_CONFIG
+*** environment variable to the full path to audiofile-config.
+END
      else
        if test -f conf.audiofiletest ; then
         :
        else
-          echo "*** Could not run AUDIOFILE test program, checking why..."
+          echo "*** Could not run Audio File Library test program; checking why..."
+          AC_LANG_SAVE
+          AC_LANG_C
           CFLAGS="$CFLAGS $AUDIOFILE_CFLAGS"
           LIBS="$LIBS $AUDIOFILE_LIBS"
           AC_TRY_LINK([
 #include <stdio.h>
 #include <audiofile.h>
 ],      [ return 0; ],
-        [ echo "*** The test program compiled, but did not run. This usually means"
-          echo "*** that the run-time linker is not finding AUDIOFILE or finding the wrong"
-          echo "*** version of AUDIOFILE. If it is not finding AUDIOFILE, you'll need to set your"
-          echo "*** LD_LIBRARY_PATH environment variable, or edit /etc/ld.so.conf to point"
-          echo "*** to the installed location  Also, make sure you have run ldconfig if that"
-          echo "*** is required on your system"
-	  echo "***"
-          echo "*** If you have an old version installed, it is best to remove it, although"
-          echo "*** you may also be able to get things to work by modifying LD_LIBRARY_PATH"],
-        [ echo "*** The test program failed to compile or link. See the file config.log for the"
-          echo "*** exact error that occured. This usually means AUDIOFILE was incorrectly installed"
-          echo "*** or that you have moved AUDIOFILE since it was installed. In the latter case, you"
-          echo "*** may want to edit the audiofile-config script: $AUDIOFILE_CONFIG" ])
+        [ cat <<END
+*** The test program compiled, but did not run.  This usually means that
+*** the run-time linker is not finding Audio File Library or finding the
+*** wrong version of Audio File Library.
+***
+*** If it is not finding Audio File Library, you'll need to set your
+*** LD_LIBRARY_PATH environment variable, or edit /etc/ld.so.conf to point
+*** to the installed location.  Also, make sure you have run ldconfig if
+*** that is required on your system.
+***
+*** If you have an old version installed, it is best to remove it, although
+*** you may also be able to get things to work by modifying
+*** LD_LIBRARY_PATH.
+END
+        ],
+        [ echo "*** The test program failed to compile or link. See the file config.log"
+          echo "*** for the exact error that occured. This usually means the Audio File"
+          echo "*** Library was incorrectly installed or that you have moved the Audio"
+          echo "*** File Library since it was installed. In the latter case, you may want"
+          echo "*** to edit the audiofile-config script: $AUDIOFILE_CONFIG" ])
           CFLAGS="$ac_save_CFLAGS"
           LIBS="$ac_save_LIBS"
+          AC_LANG_RESTORE
        fi
      fi
      AUDIOFILE_CFLAGS=""

@@ -3,27 +3,30 @@
 %define  rel     %{?CUSTOM_RELEASE} %{!?CUSTOM_RELEASE:%RELEASE}
 %define  prefix  /usr
 
-Summary: Library to handle various audio file formats
+Summary: A library to handle various audio file formats.
 Name: audiofile
 Version: %ver
 Release: %rel
 Copyright: LGPL
 Group: Libraries/Sound
 Source: ftp://ftp.gnome.org/pub/GNOME/sources/audiofile/audiofile-%{PACKAGE_VERSION}.tar.gz
+URL: http://www.68k.org/~michael/audiofile/
 BuildRoot:/var/tmp/audiofile-%{PACKAGE_VERSION}-root
 Docdir: %{prefix}/doc
 Obsoletes: libaudiofile
 
 %description
-Library to handle various audio file formats.
-Used by the esound daemon.
+The Audio File Library provides an elegant API for accessing a variety
+of audio file formats, such as AIFF/AIFF-C, WAVE, and NeXT/Sun
+.snd/.au, in a manner independent of file and data formats.
 
 %package devel
-Summary: Libraries, includes, etc to develop audiofile applications
+Summary: Library, headers, etc. to develop with the Audio File Library.
 Group: Libraries
 
 %description devel
-Libraries, include files, etc you can use to develop audiofile applications.
+Library, header files, etc. for developing applications with the Audio
+File Library.
 
 %prep
 %setup
@@ -62,4 +65,3 @@ rm -rf $RPM_BUILD_ROOT
 %{prefix}/lib/*.a
 %{prefix}/include/*
 %{prefix}/share/aclocal/*
-

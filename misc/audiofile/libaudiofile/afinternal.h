@@ -116,6 +116,7 @@ struct _AFfilehandle
 
 	int 	channelCount;
 	int 	sampleWidth, sampleFormat;
+	int		virtualSampleWidth, virtualSampleFormat;
 	double  sampleRate;
 	off_t   frameCount;
 	off_t   dataStart;

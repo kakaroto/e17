@@ -94,7 +94,7 @@ static const struct _instrument _aiffinstrument =
 static const struct _instrument _otherinstrument =
 {
 	0, 0, 0, 0,
-	{},
+	{ 0 },
 	0, 0
 };
 

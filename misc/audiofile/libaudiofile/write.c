@@ -184,7 +184,7 @@ void afInitRate (AFfilesetup setup, int track, double rate)
 	setup->sampleRate = rate;
 }
 
-int afWriteFrames (const AFfilehandle file, int track, void *samples, const int count)
+int afWriteFrames (AFfilehandle file, int track, void *samples, const int count)
 {
 	assert(file);
 

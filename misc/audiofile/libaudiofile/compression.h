@@ -47,9 +47,9 @@
 
 struct _codec
 {
-	AFframecount (*readFrames) (const AFfilehandle, int track,
+	AFframecount (*readFrames) (const AFfilehandle file, int track,
 		void *samples, const int count);
-	AFframecount (*writeFrames) (const AFfilehandle, int track,
+	AFframecount (*writeFrames) (const AFfilehandle file, int track,
 		void *samples, const int count);
 };
 

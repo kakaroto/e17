@@ -36,7 +36,22 @@
 #include <sys/stat.h>
 #include <fcntl.h>
 #include <linux/soundcard.h>
+
 #include <audiofile.h>
+#include <config.h>
+
+/*
+	If it's not defined already, define the native audio hardware
+	byte order.
+*/
+
+#ifndef AFMT_S16_NE
+#ifdef WORDS_BIGENDIAN /* defined in config.h */
+#define AFMT_S16_NE AFMT_S16_BE
+#else
+#define AFMT_S16_NE AFMT_S16_LE
+#endif /* WORDS_BIGENDIAN */
+#endif /* AFMT_S16_NE */
 
 void setupdsp (int audiofd, int channelCount);
 void usage (void);
@@ -54,7 +69,7 @@ int main (int argc, char **argv)
 
 	file = afOpenFile(argv[1], "r", NULL);
 	frameCount = afGetFrameCount(file, AF_DEFAULT_TRACK);
-	printf("frame count: %d\n", (int)frameCount);
+	printf("frame count: %d\n", (int) frameCount);
 
 	channelCount = afGetChannels(file, AF_DEFAULT_TRACK);
 	afGetSampleFormat(file, AF_DEFAULT_TRACK, &sampleFormat, &sampleWidth);

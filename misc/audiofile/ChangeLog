@@ -1,3 +1,7 @@
+1999-11-20 Michael Pruett <michael@68k.org>
+
+	* libaudiofile/*.c: Cleaning up, added afOpenFD.
+
 1999-08-21  Kjartan Maraas  <kmaraas@online.no>
 
 	* */*c: Even more warning fixes - initialize vars, add 'int' as return
