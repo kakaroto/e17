@@ -926,7 +926,8 @@ __imlib_LoadImage(const char *file,
 {
    ImlibImage  *im;
    ImlibLoader *best_loader;
-   
+   char loader_ret;
+
    /* see if we alreayd have the image cached */
    im = __imlib_FindCachedImage(file);
    /* if we found a cached image and we shoudl always check that it is */
@@ -970,7 +971,7 @@ __imlib_LoadImage(const char *file,
    best_loader = __imlib_FindBestLoaderForFile(file);
    errno = 0;
    if (best_loader)
-      best_loader->load(im, progress, progress_granularity, immediate_load);
+      loader_ret = best_loader->load(im, progress, progress_granularity, immediate_load);
    /* if the caller wants error returns */
    if (er)
      {
@@ -1019,7 +1020,7 @@ __imlib_LoadImage(const char *file,
 	  {
 	     /* if its not the best loader that alreayd failed - try load */
 	     if (l != best_loader)
-		l->load(im, progress, progress_granularity, immediate_load);
+		loader_ret = l->load(im, progress, progress_granularity, immediate_load);
 	     /* if it failed - advance */
 	     if (im->w == 0)
 	       {
@@ -1090,6 +1091,8 @@ __imlib_LoadImage(const char *file,
    /* the load succeeded - make sure the image is referenced then add */
    /* it to our cache if dont_cache isn't set */
    im->references = 1;
+   if (loader_ret == 2)
+     dont_cache = 1;
    if (!dont_cache)
       __imlib_AddImageToCache(im);
    else
