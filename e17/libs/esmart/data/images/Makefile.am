@@ -1,3 +1,7 @@
+FILES = esmart.png
+
 imagesdir = $(pkgdatadir)
-images_DATA = esmart.png
+images_DATA = $(FILES)
+
+EXTRA_DIST = $(FILES)
 
