@@ -6,8 +6,11 @@
 #include <unistd.h>
 #include <math.h>
 
-#define IMGDIR "./img/"
-#define FNTDIR "./fnt"
+#define IMGDIR DATADIR"/etox/img/"
+#define FNTDIR DATADIR"/etox/fnt"
+#define STLDIR DATADIR"/etox/style/"
+
+#define NRECTS 3
 
 double get_time(void);
 
@@ -27,7 +30,7 @@ main(int argc, char **argv)
    int win_w, win_h;
    int i, a, w, h, m;
    Evas e;
-   Evas_Object o[3];
+   Evas_Object o[3], rect[NRECTS], rect_2;
 
    E_Font_Style  *e_font_style;
    Etox_Bit      *e_etox_bit;
@@ -80,36 +83,54 @@ main(int argc, char **argv)
    
    o[1] = evas_add_image_from_file(e, IMGDIR"arrow_up.png");
    evas_move(e, o[1], 500, 10);
+   evas_set_layer(e, o[1], 50);
    evas_show(e, o[1]);
    
    o[2] = evas_add_image_from_file(e, IMGDIR"arrow_down.png");
    evas_move(e, o[2], 500, 400);
+   evas_set_layer(e, o[2], 50);
    evas_show(e, o[2]);
    
-   e_font_style = E_load_font_style("sh_ol.style");
+   e_font_style = E_load_font_style(STLDIR"sh_ol.style");
    
    e_etox = Etox_new("Etox name");
    e_etox->evas = e;
+   e_etox->text = NULL;
+   e_etox->text_len = 0;
    etox_set_font_style(e_etox, e_font_style);
    etox_set_layer(e_etox, 10);
    e_etox->font = strdup("cinema");
    e_etox->font_size = 10;
    e_etox->w=450;
    e_etox->h=1000;
+   etox_clip_rect_new(e_etox, 100, 80, 50, 400);
+   rect[0] = evas_add_rectangle(e);
+   evas_set_color(e, rect[0], 20, 40, 200, 150);
+   evas_resize(e, rect[0], 50, 400);
+   evas_move(e, rect[0], 105, 80);
+   evas_set_layer(e, rect[0], 10);
+   evas_show(e, rect[0]);
+   etox_clip_rect_new(e_etox, 350, 150, 100, 100);
+   rect[1] = evas_add_rectangle(e);
+   evas_set_color(e, rect[1], 20, 200, 40, 150);
+   evas_resize(e, rect[1], 100, 100);
+   evas_move(e, rect[1], 355, 150);
+   evas_set_layer(e, rect[1], 10);
+   evas_show(e, rect[1]);
 
    strcpy(txt,"~color=fg 255 2 2~~color=ol 0 0 0~~color=sh 0 0 0~~valign=bottom~~font=morpheus~~size=20~");
-   strcat(txt,"~align=center~The Gospel of Tux (v1.0)\n\n");
+   strcat(txt,"~align=center~~size=25~~font=cinema~Th~font=morpheus~~size=20~e Gospel of Tux (v1.0)\n\n");
 
    strcat(txt,"~font=notepad~~size=12~~color=fg 255 255 255~~align~In the beginning Turing created the Machine.\n\n");
 
-   strcat(txt,"~align=right~And the Machine was crufty and bodacious, existing in ");
+   strcat(txt,"~align=center~And the Machine was crufty and bodacious, existing in ");
    strcat(txt,"theory only. And von Neumann looked upon the Machine, ");
    strcat(txt,"and saw that it was crufty. He divided the Machine ");
    strcat(txt,"into two Abstractions, the Data and the Code, and yet ");
    strcat(txt,"the two were one Architecture. This is a great ");
    strcat(txt,"Mystery, and the beginning of wisdom.\n\n");
 
-   strcat(txt,"~align~~style=plain.style~And von Neumann spoke unto the Architecture, and ");
+   strcat(txt,"~align~~style="STLDIR"plain.style~And von Neumann spoke unto the Architecture, and ");
    strcat(txt,"blessed it, saying, \"Go forth and replicate, freely ");
    strcat(txt,"exchanging data and code, and bring forth all manner ");
    strcat(txt,"of devices unto the earth.\" And it was so, and it was ");
@@ -149,26 +170,41 @@ main(int argc, char **argv)
    etox_x = 5; etox_y = 0;
    etox_move(e_etox, etox_x, etox_y);
    etox_show(e_etox);
+   
+   rect[2] = evas_add_rectangle(e);
+   evas_set_color(e, rect[2], 200, 250, 40, 70);
+   evas_resize(e, rect[2], 450, 1000);
+   evas_move(e, rect[2], etox_x, etox_y);
+   evas_set_layer(e, rect[2], 10);
+   evas_show(e, rect[2]);
 
    e_etox_2 = Etox_new("Showoff");
    e_etox_2->evas = e;
    etox_set_font_style(e_etox_2, e_font_style);
-   etox_set_layer(e_etox_2, 10);
+   etox_set_layer(e_etox_2, 15);
    e_etox_2->font = strdup("cinema");
    e_etox_2->font_size = 10;
    e_etox_2->w=210;
-   e_etox_2->h=1000;
+   e_etox_2->h=400;
    
    strcpy(txt,"~color=fg 255 255 255~~color=ol 0 0 0~~color=sh 0 0 0~~valign=bottom~~font=notepad~~size=14~Various vertical and horizontal alignments:\n");
    strcat(txt,"~color=fg 255 2 2~~color=ol 0 0 0~~color=sh 0 0 0~~valign=bottom~~font=morpheus~");
-   strcat(txt,"~valign=top~~align=left~~size=25~A ~size=23~A ~size=21~A ~size=19~A ~size=17~A\n");
-   strcat(txt,"~valign=center~~align=center~~size=25~A ~size=23~A ~size=21~A ~size=19~A ~size=17~A\n");
-   strcat(txt,"~valign=bottom~~align=right~~size=25~A ~size=23~A ~size=21~A ~size=19~A ~size=17~A\n");
+   strcat(txt,"~valign=top~~align=left~~size=25~B~size=23~B~size=21~B~size=19~B~size=17~B\n");
+   strcat(txt,"~valign=center~~align=center~~size=25~B~size=23~B~size=21~B~size=19~B~size=17~B\n");
+   strcat(txt,"~valign=bottom~~align=right~~size=25~B~size=23~B~size=21~B~size=19~B~size=17~B\n");
    
    etox_set_text(e_etox_2, txt);
-   etox_move(e_etox_2,400,45);
+   etox_set_layer(e_etox_2, 15);
+   etox_move(e_etox_2,420,75);
    etox_show(e_etox_2);
   
+   rect_2 = evas_add_rectangle(e);
+   evas_set_color(e, rect_2, 200, 50, 25, 70);
+   evas_resize(e, rect_2, 210, 400);
+   evas_move(e, rect_2, 420, 75);
+   evas_set_layer(e, rect_2, 14);
+   evas_show(e, rect_2);
+
    evas_move(e, o[0], 0, 0);
    evas_resize(e, o[0], win_w, win_h);
    evas_set_image_fill(e, o[0], 0, 0, win_w, win_h);
@@ -242,10 +278,30 @@ main(int argc, char **argv)
 		  dy = (shift < fabs(e_etox->y - etox_y)) ? 
 		       -(shift * (fabs(e_etox->y - etox_y)/(e_etox->y - etox_y))) : 
 	               -(e_etox->y - etox_y); 
-		  if (dx)
-		    etox_move(e_etox, e_etox->x+dx, e_etox->y);
+		  if (dx) 
+		    {
+		       double ox, oy, ow, oh;
+		       int j;
+		       etox_move(e_etox, e_etox->x+dx, e_etox->y);
+		       
+		       for (j=0; j<NRECTS; j++)
+			 {
+			    evas_get_geometry(e, rect[j], &ox, &oy, &ow, &oh);
+			    evas_move(e, rect[j], ox+dx, oy+dy);
+			 }
+		    }
 		  if (dy)
-		    etox_move(e_etox, e_etox->x, e_etox->y+dy);
+		    {
+		       double ox, oy, ow, oh;
+		       int j;
+		       etox_move(e_etox, e_etox->x, e_etox->y+dy);
+		       
+		       for (j=0; j<NRECTS; j++)
+			 {
+			    evas_get_geometry(e, rect[j], &ox, &oy, &ow, &oh);
+			    evas_move(e, rect[j], ox+dx, oy+dy);
+			 }
+		    }
 	       }
 	     t1 = get_time();
 	  }

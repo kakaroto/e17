@@ -4,8 +4,8 @@ cinema.ttf \
 grunge.ttf \
 morpheus.ttf \
 notepad.ttf
-evasdir = $(datadir)/evas/fnt
-evas_DATA = \
+etoxdir = $(datadir)/etox/fnt
+etox_DATA = \
 andover.ttf \
 cinema.ttf \
 grunge.ttf \

@@ -57,7 +57,6 @@ typedef struct {
 
 } E_Font_Style;
 
-
 typedef struct {
 
 	char *text;
@@ -111,9 +110,14 @@ extern "C"
 	void etox_refresh(Etox *e);
 	char etox_set_text(Etox *e, char *new_text);
 	char etox_set_layer(Etox *e, int layer);
-	int etox_get_layer(Etox *e);
+	int  etox_get_layer(Etox *e);
+	void etox_set_color(Etox *e, E_Text_Color *cl);
+	void etox_set_color_component(Etox *e, char *arg, E_Color component);
 	Etox_Bit *Etox_Bit_new(void);
 	Etox *Etox_new(char *name);
+	Etox *Etox_new_all(Evas *evas, char *name, double x, double y, double w, double h,
+			   int layer, char *font, char *font_style, int font_size, E_Text_Color *cl,
+			   double padding, int align, int vertical_align);
 	void etox_free(Etox *e);
 	void etox_clean(Etox *e);
 	void etox_move(Etox *e, double x, double y);
