@@ -204,6 +204,7 @@ geist_line_resize(geist_object * obj, int x, int y)
 {
    geist_line *line;
    int start_x, start_y, end_x, end_y;
+
    D_ENTER(5);
 
    line = GEIST_LINE(obj);
@@ -214,7 +215,7 @@ geist_line_resize(geist_object * obj, int x, int y)
    start_y = line->start.y + obj->y;
    end_x = line->end.x + obj->x;
    end_y = line->end.y + obj->y;
-   
+
    switch (obj->resize)
    {
      case RESIZE_RIGHT:
@@ -229,11 +230,82 @@ geist_line_resize(geist_object * obj, int x, int y)
         printf("eeeeek\n");
         break;
    }
+   geist_line_change_from_to(line, start_x, start_y, end_x, end_y);
+   D_RETURN_(3);
+}
 
-   obj->x = MIN(start_x, end_x);
-   obj->y = MIN(start_y, end_y);
-   obj->w = obj->rendered_w = MAX(start_x, end_x) - obj->x;
-   obj->h = obj->rendered_h = MAX(start_y, end_y) - obj->x;
+void
+geist_line_change_from_to(geist_line * line, int start_x, int start_y,
+                          int end_x, int end_y)
+{
+   geist_object *obj;
+
+   D_ENTER(3);
+
+   obj = GEIST_OBJECT(line);
+
+   if (start_x < end_x)
+   {
+      if (start_y < end_y)
+      {
+         /*  a 
+          *   \
+          *    \
+          *     \
+          *      b
+          */
+
+         obj->x = start_x;
+         obj->y = start_y;
+         obj->w = obj->rendered_w = end_x - obj->x;
+         obj->h = obj->rendered_h = end_y - obj->y;
+      }
+      else
+      {
+         /*      b
+          *     /
+          *    /
+          *   /
+          *  a
+          */
+         obj->x = start_x;
+         obj->y = end_y;
+         obj->w = obj->rendered_w = end_x - obj->x;
+         obj->h = obj->rendered_h = start_y - obj->y;
+      }
+   }
+   else
+   {
+      if (start_y < end_y)
+      {
+         /*      a
+          *     /
+          *    /
+          *   /
+          *  b
+          */
+
+         obj->x = end_x;
+         obj->y = start_y;
+         obj->w = obj->rendered_w = start_x - obj->x;
+         obj->h = obj->rendered_h = end_y - obj->y;
+      }
+      else
+      {
+         /*  b
+          *   \
+          *    \
+          *     \
+          *      a
+          */
+
+         obj->x = end_x;
+         obj->y = end_y;
+         obj->w = obj->rendered_w = start_x - obj->x;
+         obj->h = obj->rendered_h = start_y - obj->y;
+      }
+   }
+
    obj->rendered_x = 0;
    obj->rendered_y = 0;
    line->start.x = start_x - obj->x;
@@ -431,8 +503,7 @@ geist_line_render_selected(geist_object * obj, Imlib_Image dest,
    }
 }
 
-Imlib_Updates
-geist_line_get_selection_updates(geist_object * obj)
+Imlib_Updates geist_line_get_selection_updates(geist_object * obj)
 {
    Imlib_Updates up = NULL;
    int clip_x0, clip_y0, clip_x1, clip_y1;

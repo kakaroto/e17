@@ -51,5 +51,7 @@ geist_line_get_resize_box_coords(geist_object * obj, int resize, int *x,
                                  int *y);
 int
 geist_line_check_resize_click(geist_object * obj, int x, int y);
+void geist_line_change_from_to(geist_line * line, int start_x, int start_y,
+                          int end_x, int end_y);
 
 #endif
