@@ -1,2 +1,6 @@
-usr/bin/fam
-usr/share/man
+usr/lib/libedb.so.1.0.2
+usr/lib/libedb.so.1
+usr/lib/libedb.so
+usr/bin/edb_ed
+usr/bin/edb_vt_ed
+usr/bin/edb_gtk_ed

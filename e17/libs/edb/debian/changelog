@@ -1,3 +1,10 @@
+edb (0.1.0-2000112500) unstable; urgency=low
+
+  * A CVS release.
+  * Fixed debian files so they refer to edb instead of fam
+
+ -- Horms <horms@vergenet.net>  Sat, 25 Nov 2000 15:55:00 -0500
+
 edb (0.1.0-2000091001) unstable; urgency=low
 
   * A CVS release.

@@ -7,12 +7,12 @@ Standards-Version: 3.0.1
 Package: libedb-dev
 Architecture: any
 Depends: libedb0 (= ${Source-Version}), libc6-dev
-Description: file attribute monitor development files
+Description: Enlightenment's db convenience wrapper library.
  Library and header files for developing programs that use
- SGI's file attribute monitor.
+ Enlightenment's db convenience wrapper library
 
 Package: libedb0
 Architecture: any
 Depends: ${shlibs:Depends}
-Description: E's db convenience wrapper library
- E's db convenience wrapper library
+Description: Enlightenment's db convenience wrapper library
+ Enlightenment's db convenience wrapper library

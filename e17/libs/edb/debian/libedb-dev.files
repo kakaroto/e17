@@ -1,2 +1,4 @@
-usr/lib/libedb.so
 usr/lib/libedb.la
+usr/lib/libedb.a
+usr/include/Edb.h
+usr/bin/edb-config
