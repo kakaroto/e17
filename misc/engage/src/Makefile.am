@@ -14,6 +14,15 @@ INCLUDES = \
 bin_PROGRAMS = engage
 
 engage_SOURCES = \
+e.h \
+e_apps.h \
+e_file.h \
+e_menu.h \
+e_object.h \
+e_path.h \
+e_user.h \
+engage.h \
+engage_element.h \
 main.c \
 config.c \
 dock.c \
