@@ -176,12 +176,12 @@ r_evas_load(char *img)
 	 evas_callback_add(e_area, e_img, CALLBACK_MOUSE_DOWN, r_cb_m_down, NULL);
 	 evas_callback_add(e_area, e_img, CALLBACK_MOUSE_UP, r_m_up, NULL);
    
-   gtk_widget_set_usize(GTK_WIDGET(area), w, h);
-
-	 if(w < 300)
-		 gtk_widget_set_usize(GTK_WIDGET(window), 300, h+30);
-	 else if(h < 180)
-		 gtk_widget_set_usize(GTK_WIDGET(window), w+30, 180);
+	 if(w < 300 && h > 180)
+		 gtk_widget_set_usize(GTK_WIDGET(window), 300, h+20);
+	 else if(h < 180 && w > 300)
+		 gtk_widget_set_usize(GTK_WIDGET(window), w+20, 180);
+	 else if(w < 300 && h < 180)
+		 gtk_widget_set_usize(GTK_WIDGET(window), 300, 180);
 	 else
 		 gtk_widget_set_usize(GTK_WIDGET(window), w, h);
    
