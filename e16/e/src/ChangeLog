@@ -2159,3 +2159,14 @@ Tue Sep 21 23:17:24 PDT 1999
 (Raster)
 
 only allow one "default group settings" configuration dialog at a time
+
+-------------------------------------------------------------------------------
+
+Wed Sep 22 09:33:27 PDT 1999
+(Raster)
+
+fix the focus fixup - shoudl let focus change as per before AND fix up
+transient focus errors too... i hope.. needs some testing.
+
+added "set focus to logout are you ssure" dialog and make sure it accepts the 
+standard retrun/escape keybindings for "yes/no" like the settings dialogs do.

@@ -1423,7 +1423,7 @@ CreateEwin()
    XChangeWindowAttributes(disp, ewin->win_container,
 			   CWEventMask | CWDontPropagate, &att);
    EMapWindow(disp, ewin->win_container);
-   if (mode.focusmode == FOCUS_CLICK)
+   if ((mode.clickalways) || (mode.focusmode == FOCUS_CLICK))
       XGrabButton(disp, AnyButton, 0, ewin->win_container, False,
 		  ButtonPressMask,
 		  GrabModeSync, GrabModeAsync, None, None);

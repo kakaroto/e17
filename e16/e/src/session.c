@@ -470,6 +470,14 @@ LogoutCB(int val, void *data)
    data = NULL;
 }
 
+static void         CB_SettingsEscape(int val, void *data);
+static void
+CB_SettingsEscape(int val, void *data)
+{
+   DialogClose((Dialog *) data);
+   val = 0;
+}
+
 /* This is the original code from actions.c(doExit). */
 void
 doSMExit(void *params)
@@ -584,6 +592,7 @@ doSMExit(void *params)
 	else if (!strcmp(s, "logout"))
 	  {
 	     Dialog             *d;
+	     EWin               *ewin;
 
 	     AUDIO_PLAY("SOUND_LOGOUT");
 	     d = CreateDialog("LOGOUT_DIALOG");
@@ -597,7 +606,12 @@ doSMExit(void *params)
 		);
 	     DialogAddButton(d, "  Yes, Log Out  ", LogoutCB, 1);
 	     DialogAddButton(d, "  No  ", NULL, 1);
+	     DialogBindKey(d, "Escape", CB_SettingsEscape, 0, d);
+	     DialogBindKey(d, "Return", LogoutCB, 0, d);
 	     ShowDialog(d);
+	     ewin = FindEwinByDialog(d);
+	     if (ewin)
+		FocusToEWin(ewin);
 	     return;
 	  }
      }
@@ -1077,6 +1091,14 @@ SaveSession(int shutdown)
      }
 }
 
+static void         CB_SettingsEscape(int val, void *data);
+static void
+CB_SettingsEscape(int val, void *data)
+{
+   DialogClose((Dialog *) data);
+   val = 0;
+}
+
 /*
  * Normally, the SM will throw away all the session data for a client
  * that breaks its connection unexpectedly. In order to avoid this we 
@@ -1163,6 +1185,7 @@ doSMExit(void *params)
    else if (!strcmp(s, "logout"))
      {
 	Dialog             *d;
+	EWin               *ewin;
 
 	d = CreateDialog("LOGOUT_DIALOG");
 	DialogSetTitle(d, "Are you sure?");
@@ -1175,7 +1198,12 @@ doSMExit(void *params)
 	   );
 	DialogAddButton(d, "  Yes, Log Out  ", LogoutCB, 1);
 	DialogAddButton(d, "  No  ", NULL, 1);
+	DialogBindKey(d, "Escape", CB_SettingsEscape, 1, d);
+	DialogBindKey(d, "Return", LogoutCB, 0, d);
 	ShowDialog(d);
+	ewin = FindEwinByDialog(d);
+	if (ewin)
+	   FocusToEWin(ewin);
 	return;
      }
    else if (!strcmp(s, "restart_wm"))

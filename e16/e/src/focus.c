@@ -14,26 +14,18 @@ FixUpBadFocus(int val, void *data)
    if (mode.focusmode == FOCUS_CLICK)
       return;
    XGetInputFocus(disp, &win, &revert);
-   ewin = GetEwinPointerInClient();
-   if ((!ewin) && (mode.focusmode = FOCUS_POINTER))
-     {
-	ewin = FindItem("", win, LIST_FINDBY_ID, LIST_TYPE_EWIN);
-	if (ewin)
-	  {
-	     XSetInputFocus(disp, root.win, RevertToPointerRoot, CurrentTime);
-	     mode.focuswin = NULL;
-	     mode.realfocuswin = NULL;
-	     mode.context_ewin = NULL;
-	     if (mode.kde_support)
-		KDE_UpdateFocusedWindow();
-	  }
-	return;
-     }
+   ewin = FindItem("", win, LIST_FINDBY_ID, LIST_TYPE_EWIN);
    if (ewin)
      {
 	if (win != ewin->client.win)
 	   XSetInputFocus(disp, ewin->client.win, RevertToPointerRoot, CurrentTime);
+	mode.focuswin = NULL;
+	mode.realfocuswin = NULL;
+	mode.context_ewin = NULL;
+	if (mode.kde_support)
+	   KDE_UpdateFocusedWindow();
      }
+   return;
    val = 0;
    data = NULL;
 }
