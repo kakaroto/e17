@@ -32,14 +32,13 @@ extern Ewl_Config      ewl_config;
 
 int             ewl_config_init(void);
 void            ewl_config_shutdown(void);
-int             ewl_config_set_str(char *config, char *k, char *v);
-int             ewl_config_set_int(char *config, char *k, int v);
-int             ewl_config_set_float(char *config, char *k, float v);
-char           *ewl_config_get_str(char *config, char *k);
-int             ewl_config_get_int(char *config, char *k);
-float           ewl_config_get_float(char *config, char *k);
+int             ewl_config_set_str(const char *k, char *v);
+int             ewl_config_set_int(const char *k, int v);
+int             ewl_config_set_float(const char *k, float v);
+char           *ewl_config_get_str(const char *k);
+int             ewl_config_get_int(const char *k);
+float           ewl_config_get_float(const char *k);
 char *          ewl_config_get_render_method(void);
-void            ewl_config_reread_and_apply(void);
 
 /**
  * @}

@@ -166,12 +166,6 @@ int ewl_init(int *argc, char **argv)
 	ewl_window_list = ecore_list_new();
 	ecore_idle_enterer_add(ewl_idle_render, NULL);
 
-	/*
-	 * Call it once right away, then get it looping every half second
-	 */
-	ewl_reread_config(NULL);
-	config_timer = ecore_timer_add(0.5, ewl_reread_config, NULL);
-
 	DRETURN_INT(_ewl_init_count, DLEVEL_STABLE);
 }
 
@@ -188,7 +182,6 @@ int ewl_shutdown()
 	if (--_ewl_init_count)
 		DRETURN_INT(_ewl_init_count, DLEVEL_STABLE);
 
-	ecore_timer_del(config_timer);
 	ewl_callbacks_shutdown();
 	ewl_theme_shutdown();
 	ewl_config_shutdown();
@@ -382,22 +375,6 @@ static void ewl_init_remove_option(int *argc, char **argv, int i)
 	argv[j] = NULL;
 
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
-}
-
-/**
- * @brief A timer function used to reread the config options
- * @return Returns TRUE to keep the timer going.
- * @param data: dummy variable used for compatibility with ecore's timers
- *
- * Sets up a timer loop for rereading the config data.
- */
-static int ewl_reread_config(void *data)
-{
-	DENTER_FUNCTION(DLEVEL_STABLE);
-
-	ewl_config_reread_and_apply();
-
-	DRETURN_INT(TRUE, DLEVEL_STABLE);
 }
 
 /**

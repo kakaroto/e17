@@ -42,7 +42,7 @@ int ewl_theme_init(void)
 	 * Retrieve the current theme from the users config.
 	 */
 	if (!theme_name) {
-		theme_name = ewl_config_get_str("system", "/theme/name");
+		theme_name = ewl_config_get_str("/ewl/theme/name");
 		if (!theme_name)
 			theme_name = strdup("default");
 	}
