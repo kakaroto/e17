@@ -32,6 +32,9 @@
 
  <!-- evoak -->
  <!ENTITY evoak_hello_eh SYSTEM "xml/evoak/evoak_hello_eh.xml">
+
+ <!-- imlib2 -->
+ <!ENTITY imlib_scale SYSTEM "xml/imlib/imlib_scale.xml">
 ]>
 
 <book>

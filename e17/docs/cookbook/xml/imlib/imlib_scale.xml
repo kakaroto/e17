@@ -1,0 +1,100 @@
+<!--
+#######################################################
+A simple Imlib2 calling recipe
+#######################################################
+-->
+<section>
+<sectioninfo>
+  <author>
+    <firstname>dan</firstname>
+    <surname>sinclair</surname>
+    <email>zero@perplexity.org</email>
+    <othername>dj2</othername>
+  </author>
+  <date>06 July 2004</date>
+</sectioninfo>
+
+<title>Recipe: Image Scaling</title>
+
+<para>
+As more people gain the ability to put images on the Internet it is often
+desired to scale those images to a smaller size to reduce bandwidth. This
+can easily be solved using a simple Imlib2 program.
+</para>
+
+<para>
+This recipe takes the input image name, the new width, new height and the 
+output image name and scales the input image by the given values, 
+saving it back to the output image.
+</para>
+
+<example>
+<title>Image Scaling</title>
+<programlisting>
+#define X_DISPLAY_MISSING
+
+#include &lt;Imlib2.h&gt;
+#include &lt;stdlib.h&gt;
+#include &lt;stdio.h&gt;
+
+int main(int argc, char ** argv) {
+    Imlib_Image in_img, out_img;
+    int w, h;
+
+    if (argc != 5) {
+        fprintf(stderr, "Usage: %s [in_img] [w] [h] [out_img]\n", argv[0]);
+        return 1;
+    }
+
+    in_img = imlib_load_image(argv[1]);
+    if (!in_img) {
+        fprintf(stderr, "Unable to load %s\n", argv[1]);
+        return 1;
+    }
+    imlib_context_set_image(in_img);
+
+    w = atoi(argv[2]);
+    h = atoi(argv[3]);
+    out_img = imlib_create_cropped_scaled_image(0, 0, imlib_image_get_width(),
+                                            imlib_image_get_height(), w, h );
+    if (!out_img) {
+        fprintf(stderr, "Failed to create scaled image\n");
+        return 1;
+    }
+
+    imlib_context_set_image(out_img);
+    imlib_save_image(argv[4]);
+    return 0;
+}
+
+</programlisting>
+</example>
+<para>
+There is minimal argument checking done by this example, just make sure we have the
+correct number of arguments.
+</para>
+
+<para>
+The source image is loaded with a call to <function>imlib_load_image()</function> which 
+will load the image data into memory. If the call fails, NULL will be returned. Once
+we have the image data we need to set the image to be the current context. This lets
+Imlib2 know which image the operations will be preformed upon. This is done by calling
+<function>imlib_context_set_image()</function>. Once the image is set as the current context
+we can proceed with the scale. This is done by calling 
+<function>imlib_create_cropped_scaled_image()</function> which takes as arguments, the
+starting x position, starting y position, the source width, source height, and the
+scaled width and scaled height. The reason we pass in the source information is that
+this function can also crop your image if desired. To crop, just modify the x, y, source width
+and source height as desired. This will result in a new image being produced out_img. If
+the scale fails, NULL will be returned. We then set the out_img to be the current
+context image and issue the save command, <function>imlib_save_image()</function>.
+</para>
+
+<para>
+Although this program is simple, it shows the simplicity of image scaling using the
+Imlib2 API.
+</para>
+
+</section>
+
+
