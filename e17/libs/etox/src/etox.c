@@ -415,12 +415,14 @@ void etox_insert_text(Evas_Object * obj, char *text, int index)
 	 * Now merge the end of the added text with the remainder of the
 	 * existing text.
 	 */
-	ll = evas_list_last(lines);
-	temp = ll->data;
-	lines = evas_list_remove(lines, temp);
-	ll = evas_list_find_list(et->lines, start);
-	end = ll->next->data;
-	etox_line_merge_prepend(temp, end);
+	if (lines) {
+		ll = evas_list_last(lines);
+		temp = ll->data;
+		lines = evas_list_remove(lines, temp);
+		ll = evas_list_find_list(et->lines, start);
+		end = ll->next->data;
+		etox_line_merge_prepend(temp, end);
+	}
 
 	/*
 	 * Now add the remaining lines to the end of the line list.
