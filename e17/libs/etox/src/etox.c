@@ -1119,7 +1119,7 @@ void _etox_wrap_lines(Etox *et)
  */
 void _etox_unwrap_lines(Etox *et)
 {
-  Evas_List l, newlines;
+  Evas_List l, newlines = NULL;
   Etox_Line *line, *prevline;
 
   CHECK_PARAM_POINTER("et", et);
