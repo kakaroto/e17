@@ -2005,6 +2005,8 @@ ECompMgrHandleRootEvent(XEvent * ev, void *prm)
 	eo = EobjListStackFind(ev->xmap.window);
 	if (!eo)
 	   eo = EobjRegister(ev->xmap.window, EOBJ_TYPE_OVERR);
+	else
+	   EobjListStackRaise(eo);	/* FIXME - Use Configure/CirculateNotify */
 	if (eo)
 	   ECompMgrWinMap(eo, ev->xmap.serial, True);
 	break;

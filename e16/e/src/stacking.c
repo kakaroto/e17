@@ -97,12 +97,14 @@ EobjListAdd(EobjList * ewl, EObj * eo, int ontop)
 	if (ontop)
 	  {
 	     ewl->list[ewl->nwins] = eo;
+	     ewl->nwins++;
 	     EobjListRaise(ewl, eo);
 	  }
 	else
 	  {
 	     memmove(ewl->list + 1, ewl->list, ewl->nwins * sizeof(EObj *));
 	     ewl->list[0] = eo;
+	     ewl->nwins++;
 	     EobjListLower(ewl, eo);
 	  }
 
@@ -119,8 +121,8 @@ EobjListAdd(EobjList * ewl, EObj * eo, int ontop)
 	  {
 	     ewl->list[ewl->nwins] = eo;
 	  }
+	ewl->nwins++;
      }
-   ewl->nwins++;
 
    EobjListShow("EobjListAdd", ewl);
 }

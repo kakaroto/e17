@@ -979,6 +979,7 @@ EwinConformToDesktop(EWin * ewin)
      }
    else
      {
+	RaiseEwin(ewin);
 	MoveEwin(ewin, EoGetX(ewin), EoGetY(ewin));
      }
 
@@ -1411,14 +1412,6 @@ RestackEwin(EWin * ewin)
    if (EventDebug(EDBUG_TYPE_STACKING))
       Eprintf("RestackEwin %#lx %s\n", ewin->client.win, EwinGetName(ewin));
 
-#if 0				/* FIXME - remove? */
-   if (EoIsFloating(ewin))
-     {
-	ERaiseWindow(EoGetWin(ewin));
-	goto done;
-     }
-#endif
-
    lst = EwinListGetForDesk(&num, EoGetDesk(ewin));
    if (num < 2)
       goto done;
@@ -1465,14 +1458,6 @@ RaiseEwin(EWin * ewin)
 
    if (EoGetWin(ewin))
      {
-#if 0				/* FIXME - remove? */
-	if (EoIsFloating(ewin))
-	  {
-	     ERaiseWindow(EoGetWin(ewin));
-	     goto done;
-	  }
-#endif
-
 	num = EwinListStackRaise(ewin);
 	if (num == 0)		/* Quit if stacking is unchanged */
 	   goto done;
@@ -1511,11 +1496,7 @@ LowerEwin(EWin * ewin)
       Eprintf("LowerEwin(%d) %#lx %s\n", call_depth, ewin->client.win,
 	      EwinGetName(ewin));
 
-#if 0				/* FIXME - remove? */
-   if ((EoGetWin(ewin)) && (!EoIsFloating(ewin)))
-#else
    if (EoGetWin(ewin))
-#endif
      {
 	num = EwinListStackLower(ewin);
 	if (num == 0)		/* Quit if stacking is unchanged */

@@ -251,7 +251,7 @@ MenuEwinInit(EWin * ewin, void *ptr)
    ewin->client.no_resize_h = ewin->client.no_resize_v = 1;
 
    EoSetSticky(ewin, 1);
-   EoSetLayer(ewin, 30);
+   EoSetLayer(ewin, 3);
    EoSetFloating(ewin, 1);
    EoSetOpacity(ewin, OpacityExt(Conf.menus.opacity));
 }
@@ -989,9 +989,9 @@ MenuShowMasker(Menu * m)
 	Mode_menus.cover_win =
 	   ECreateEventWindow(ewin->parent, 0, 0, VRoot.w, VRoot.h);
 	Mode_menus.win_covered = EoGetWin(ewin);
-	eo = EobjRegister(Mode_menus.cover_win, EOBJ_TYPE_OTHER);
+	eo = EobjRegister(Mode_menus.cover_win, EOBJ_TYPE_OVERR);
 	EobjSetDesk(eo, EoGetDesk(ewin));
-	EobjSetLayer(eo, 20);
+	EobjSetLayer(eo, 2);
 	EobjSetFloating(eo, 1);
 	EobjListStackLower(eo);
 	ESelectInput(Mode_menus.cover_win,

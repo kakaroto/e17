@@ -77,7 +77,7 @@ EobjSetLayer(EObj * eo, int layer)
     * For usual EWin's the internal layer is the "old" E-layer * 10.
     *
     * Internal layers:
-    *   0: Desktop (possibly virtual)
+    *   0: Root
     *   3: Desktop type apps
     *   5: Below buttons
     *  10: Lowest ewins
@@ -88,9 +88,11 @@ EobjSetLayer(EObj * eo, int layer)
     *  75: Above buttons
     *  80: Ontop ewins
     * 100: E-Dialogs
-    * 300: E-Menus
-    * 500: Floating ewins
-    * TBD: Override redirect
+    * 512-: Floating windows
+    * + 0: Virtual desktops
+    * +30: E-Menus
+    * +40: Override redirects
+    * +40: E-Tooltips
     */
 
    switch (eo->type)
@@ -129,8 +131,16 @@ EobjSetFloating(EObj * eo, int floating)
    if (floating == eo->floating)
       return;
 
+   switch (eo->type)
+     {
+     default:
+	break;
+     case EOBJ_TYPE_EWIN:
+	if (floating > 1)
+	   eo->desk = 0;
+	break;
+     }
    eo->floating = floating;
-   eo->desk = 0;
    EobjSetLayer(eo, eo->layer);
 }
 
@@ -202,13 +212,16 @@ EobjRegister(Window win, int type)
    if (!eo)
       return eo;
 
-   /* Just for debug */
+#if 1				/* Just for debug */
    eo->name = ecore_x_icccm_title_get(win);
+#endif
 
    if (EventDebug(EDBUG_TYPE_EWINS))
       Eprintf("EobjRegister: %#lx %s\n", win, eo->name);
 
-   EobjSetLayer(eo, 80);
+   if (type == EOBJ_TYPE_OVERR)
+      EobjSetFloating(eo, 1);
+   EobjSetLayer(eo, 4);
    EobjListStackAdd(eo, 1);
 
    return eo;
