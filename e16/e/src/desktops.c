@@ -1492,12 +1492,15 @@ GotoDesktop(int num)
 			 mode.ewin->y + desks.desk[mode.ewin->desktop].y);
 	  }
      }
+   FocusToEWin(NULL);
    BeginNewDeskFocus();
    CloneDesktop(desks.current);
    ICCCM_Cmap(NULL);
    desks.current = num;
    MoveStickyWindowsToCurrentDesk();
+
    GNOME_SetCurrentDesk();
+
    if (mode.kde_support)
       KDE_SetRootArea();
 
