@@ -319,7 +319,7 @@ ewl_window_floater_add(Ewl_Window *w, Ewl_Floater *f)
 	LAYER(f) = w->float_layer;
 	w->float_layer++;
 
-	ewd_list_append(w->floaters, f);
+	ewd_list_prepend(w->floaters, f);
 
 	ewl_widget_configure(EWL_WIDGET(w));
 
