@@ -9,7 +9,6 @@
 /* TODO List:
  *
  * immediate fixes needed:
- * * work on other edges than the bottom
  * * pick up iconified apps on startup
  * * get running app info similar to iconified apps
  * * zoom and unzoom (eb->zoom from 1.0 to conf->zoom_factor) on timer
@@ -982,12 +981,13 @@ _engage_bar_update_policy(Engage_Bar *eb)
 static void
 _engage_bar_motion_handle(Engage_Bar *eb, Evas_Coord mx, Evas_Coord my)
 {
-   Evas_Coord x, y, w, h;
+   Evas_Coord x, y, w, h, md;
    double relx, rely, left, right, dummy;
    Evas_List *items;
    int bordersize, counter, done_min;
    Engage_Icon *prev;
-
+   E_Gadman_Edge edge;
+              
    evas_object_geometry_get(eb->box_object, &x, &y, &w, &h);
    if (w > 0) relx = (double)(mx - x) / (double)w;
    else relx = 0.0;
@@ -1005,20 +1005,31 @@ _engage_bar_motion_handle(Engage_Bar *eb, Evas_Coord mx, Evas_Coord my)
      }
 
    e_gadman_client_geometry_get(eb->gmc, &x, &y, &w, &h);
+   edge = e_gadman_client_edge_get(eb->gmc);
    
    e_box_freeze(eb->box_object);
    items = eb->icons;
    
    bordersize = eb->engage->iconbordersize - eb->engage->conf->iconsize;
-   counter = x + (eb->engage->iconbordersize / 2) + 1;
+   if (edge == E_GADMAN_EDGE_LEFT || edge == E_GADMAN_EDGE_RIGHT)
+     {
+	md = my;
+	counter = y;
+     }
+   else
+     {
+	md = mx;
+	counter = x;
+     }
+   counter += (eb->engage->iconbordersize / 2) + 1;
    done_min = 0;
    while (items)
      {
 	Engage_Icon *icon;
-	double          distance, new_zoom, relative_x, size;
+	double          distance, new_zoom, relative, size;
 
 	icon = (Engage_Icon *) items->data;
-	distance = (double) (counter - mx) / (eb->engage->iconbordersize);
+	distance = (double) (counter - md) / (eb->engage->iconbordersize);
 
 	if (-0.5 < distance && distance < 0.5)
 	  {
@@ -1029,12 +1040,18 @@ _engage_bar_motion_handle(Engage_Bar *eb, Evas_Coord mx, Evas_Coord my)
 	  }
 	else
 	  evas_object_hide(icon->event_object);
-	zoom_function(distance, &new_zoom, &relative_x, eb);
+	zoom_function(distance, &new_zoom, &relative, eb);
 	size = icon->scale * new_zoom * eb->engage->iconbordersize;
 	evas_object_image_fill_set(icon->icon_object, 0.0, 0.0, size, size);
 	evas_object_resize(icon->bg_object, size, size);
-	evas_object_move(icon->bg_object,
-	      counter - 0.5 * size, y + h - size);
+	if (edge == E_GADMAN_EDGE_LEFT)
+	  evas_object_move(icon->bg_object, x, counter - 0.5 * size);
+	else if (edge == E_GADMAN_EDGE_RIGHT)
+	  evas_object_move(icon->bg_object, x + w - size, counter - 0.5 * size);
+	else if (edge == E_GADMAN_EDGE_TOP)
+	  evas_object_move(icon->bg_object, counter - 0.5 * size, y);
+	else
+	  evas_object_move(icon->bg_object, counter - 0.5 * size, y + h - size);
 
 	prev = icon;
 	items = items->next;
@@ -1047,14 +1064,6 @@ _engage_bar_motion_handle(Engage_Bar *eb, Evas_Coord mx, Evas_Coord my)
 	  }
      }
 
-//   zoom_function((double) (x - mx) / (eb->engage->iconbordersize),
-//       &dummy, &left, eb);
-//   zoom_function((double) ((x + w) - mx) / (eb->engage->iconbordersize),
-//       &dummy, &right, eb);
-   
-/* FIXME move bar to x=mx + left, wide=right - left */
-//   evas_object_resize(eb->bar_object, right - left, h);
-//   evas_object_move(eb->bar_object, mx + left, y);
    e_box_thaw(eb->box_object);
 }
 
@@ -1189,14 +1198,32 @@ _engage_bar_cb_mouse_in(void *data, Evas *e, Evas_Object *obj, void *event_info)
    Evas_Event_Mouse_In *ev;
    Engage_Bar *eb;
    Evas_Coord x, y, w, h;
+   E_Gadman_Edge edge;
 
    ev = event_info;
    eb = data;
 
    eb->zoom = 2.0;
    evas_object_geometry_get(eb->box_object, &x, &y, &w, &h);
-   evas_object_resize(eb->event_object, w , h + h);
-   evas_object_move(eb->event_object, x, y - h);
+   edge = e_gadman_client_edge_get(eb->gmc);
+   if (edge == E_GADMAN_EDGE_LEFT)
+     {
+	evas_object_resize(eb->event_object, w + w, h);
+     }
+   else if (edge == E_GADMAN_EDGE_RIGHT)
+     {
+	evas_object_resize(eb->event_object, w + w, h);
+	evas_object_move(eb->event_object, x - w, y);
+     }
+   else if (edge == E_GADMAN_EDGE_TOP)
+     {
+	evas_object_resize(eb->event_object, w , h + h);
+     }
+   else
+     {
+	evas_object_resize(eb->event_object, w , h + h);
+	evas_object_move(eb->event_object, x, y - h);
+     }
 //   _engage_bar_motion_handle(eb, ev->canvas.x, ev->canvas.y);
 }
 
