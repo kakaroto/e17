@@ -85,48 +85,58 @@ im_type_cb(GtkWidget *widget, gpointer data)
   char *cur_im_widget, *cur_im_state;
 
   cur_im_widget = (char *) malloc(BUFFER_LEN);
-  cur_im_widget = gtk_entry_get_text(GTK_ENTRY (widget));
+  cur_im_widget = gtk_entry_get_text(GTK_ENTRY (GTK_COMBO (images_cbox)->entry));
   cur_im_state = (char *) malloc(BUFFER_LEN);
   cur_im_state = gtk_entry_get_text(GTK_ENTRY (GTK_COMBO (im_states_cbox)->entry));
 
   printf("cur_im_widget = %s\ncur_im_state = %s\n", cur_im_widget, cur_im_state);
 
-  if(strcmp(cur_im_widget, "trough") == 0){
-    if(strcmp(cur_im_state, "normal") == 0)
+  if (strcmp(cur_im_widget, "trough") == 0){
+    if (strcmp(cur_im_state, "normal") == 0){
       gtk_entry_set_text(GTK_ENTRY (im_file_entry), imageclass->image_trough->normal->file);  
-    else{
-      if(strcmp(cur_im_state, "selected") == 0)
+    }
+    else {
+      if (strcmp(cur_im_state, "selected") == 0){
         gtk_entry_set_text(GTK_ENTRY (im_file_entry), imageclass->image_trough->selected->file);
+      }
+      else {
+        gtk_entry_set_text(GTK_ENTRY (im_file_entry), imageclass->image_trough->clicked->file);
+      }
     }
   }
-  if(strcmp(cur_im_widget, "anchor") == 0){
-    if(strcmp(cur_im_state, "normal") == 0)
+  if (strcmp(cur_im_widget, "anchor") == 0){
+    if (strcmp(cur_im_state, "normal") == 0){
       gtk_entry_set_text(GTK_ENTRY (im_file_entry), imageclass->image_anchor->normal->file);
-    else{
-      if(strcmp(cur_im_state, "selected") == 0)
+    }
+    else {
+      if(strcmp(cur_im_state, "selected") == 0) {
         gtk_entry_set_text(GTK_ENTRY (im_file_entry), imageclass->image_anchor->selected->file);
+      }
+      else {
+        gtk_entry_set_text(GTK_ENTRY (im_file_entry), imageclass->image_anchor->clicked->file);
+      }
     }
   }
+  if (strcmp(cur_im_widget, "up arrow") == 0){
+    if (strcmp(cur_im_state, "normal") == 0){
+      gtk_entry_set_text(GTK_ENTRY (im_file_entry), imageclass->image_up_arrow->normal->file);
+    }
+    else {
+      if (strcmp(cur_im_state, "selected") == 0){
+        gtk_entry_set_text(GTK_ENTRY (im_file_entry), imageclass->image_up_arrow->selected->file);
+      }
+      else {
+        gtk_entry_set_text(GTK_ENTRY (im_file_entry), imageclass->image_up_arrow->clicked->file);
+      }
+    }
+  }            
 
 }
 
 extern void
 im_states_cb(GtkWidget *widget, gpointer data)
 {
-/*   char *cur_im_state; */
-  
-/*   cur_im_state = (char *) malloc(BUFFER_LEN); */
-/*   cur_im_state = gtk_entry_get_text(GTK_ENTRY (widget)); */
-  
-  printf("widget is %s\n", (char *) gtk_entry_get_text(GTK_ENTRY (GTK_COMBO (images_cbox)->entry)));
 
-/*   if (strcmp(cur_im_state, "normal") == 0){ */
-/*     gtk_entry_set_text(GTK_ENTRY (im_file_entry), imageclass->image_bg->normal->file); */
-/*   } */
-/*   else if (strcmp(cur_im_state, "selected") == 0){ */
-/*     gtk_entry_set_text(GTK_ENTRY (im_file_entry), imageclass->image_bg->selected->file); */
-/*   } */
-/*   free(cur_im_state); */
 }
 
 extern void
@@ -406,6 +416,16 @@ set_defaults(void)
   strcpy(imageclass->image_anchor->selected->file, "bar_vertical_2.png");
   strcpy(imageclass->image_anchor->selected->geom, ":scale");
   strcpy(imageclass->image_anchor->selected->border, "2 2 2 3");
+  strcpy(imageclass->image_up_arrow->normal->file, "button_arrow_up_1.png");
+  strcpy(imageclass->image_up_arrow->normal->color, "black #666666");
+  strcpy(imageclass->image_up_arrow->normal->geom, ":scale");
+  strcpy(imageclass->image_up_arrow->normal->border, "2 2 2 2");
+  strcpy(imageclass->image_up_arrow->selected->file, "button_arrow_up_2.png");
+  strcpy(imageclass->image_up_arrow->selected->geom, ":scale");
+  strcpy(imageclass->image_up_arrow->selected->border, "2 2 2 2");
+  strcpy(imageclass->image_up_arrow->clicked->file, "button_arrow_up_3.png");
+  strcpy(imageclass->image_up_arrow->clicked->geom, ":scale");
+  strcpy(imageclass->image_up_arrow->clicked->border, "2 2 2 2");
   gtk_entry_set_text(GTK_ENTRY (im_file_entry), imageclass->image_bg->normal->file);
   gtk_toggle_button_set_active (GTK_TOGGLE_BUTTON (im_image_btn), TRUE);
   gtk_toggle_button_set_active (GTK_TOGGLE_BUTTON (im_trans_btn), TRUE);

@@ -102,6 +102,23 @@ create_contexts(void)
   imageclass->image_anchor->clicked->file = (char *) malloc(BUFFER_LEN);
   imageclass->image_anchor->clicked->geom = (char *) malloc(BUFFER_LEN);
   imageclass->image_anchor->clicked->border = (char *) malloc(BUFFER_LEN);
+  imageclass->image_up_arrow = (Image *) malloc(sizeof(Image));
+  imageclass->image_up_arrow->mode = (char *) malloc(BUFFER_LEN);
+  imageclass->image_up_arrow->normal = (State *) malloc(sizeof(State));
+  imageclass->image_up_arrow->normal->color = (char *) malloc(BUFFER_LEN);
+  imageclass->image_up_arrow->normal->file = (char *) malloc(BUFFER_LEN);
+  imageclass->image_up_arrow->normal->geom = (char *) malloc(BUFFER_LEN);
+  imageclass->image_up_arrow->normal->border = (char *) malloc(BUFFER_LEN);
+  imageclass->image_up_arrow->selected = (State *) malloc(sizeof(State));
+  imageclass->image_up_arrow->selected->color = (char *) malloc(BUFFER_LEN);
+  imageclass->image_up_arrow->selected->file = (char *) malloc(BUFFER_LEN);
+  imageclass->image_up_arrow->selected->geom = (char *) malloc(BUFFER_LEN);
+  imageclass->image_up_arrow->selected->border = (char *) malloc(BUFFER_LEN);
+  imageclass->image_up_arrow->clicked = (State *) malloc(sizeof(State));
+  imageclass->image_up_arrow->clicked->color = (char *) malloc(BUFFER_LEN);
+  imageclass->image_up_arrow->clicked->file = (char *) malloc(BUFFER_LEN);
+  imageclass->image_up_arrow->clicked->geom = (char *) malloc(BUFFER_LEN);
+  imageclass->image_up_arrow->clicked->border = (char *) malloc(BUFFER_LEN);
 
   buttonbar = (Buttonbar *)malloc(sizeof(Buttonbar));
   toggles = (Toggles *)malloc(sizeof(Toggles));

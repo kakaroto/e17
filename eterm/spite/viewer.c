@@ -574,7 +574,7 @@ main(int argc, char *argv[])
   gtk_entry_set_editable(GTK_ENTRY (GTK_COMBO (im_states_cbox)->entry), FALSE);
   gtk_table_attach_defaults(GTK_TABLE (frametable), im_states_cbox, 1, 3, 3, 4);
   gtk_signal_connect(GTK_OBJECT (GTK_COMBO (im_states_cbox)->entry), "changed",
-                     GTK_SIGNAL_FUNC (im_states_cb), NULL);
+                     GTK_SIGNAL_FUNC (im_type_cb), NULL);
   gtk_widget_show(im_states_cbox);
 
   label = gtk_label_new("File:");

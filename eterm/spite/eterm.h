@@ -70,8 +70,8 @@ typedef struct {
   Image *image_trough;
   Image *image_anchor;
   Image *image_thumb;
-  Image *image_uparrow;
-  Image *image_downarrow;
+  Image *image_up_arrow;
+  Image *image_down_arrow;
   Image *image_menu;
   Image *image_submenu;
   Image *image_buttonbar;
