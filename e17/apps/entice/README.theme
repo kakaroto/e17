@@ -17,6 +17,10 @@ signals:			source		description
 EnticeThumbPreview		""		Send thumb to the previewer
 EnticeThumbLoad			""		Load this thumbnail as the 
 						current image.
+EnticeThumbLoaded		""		Thumbnail was
+						selected in entice.
+EnticeThumbUnLoaded		""		Thumbnail was
+						de-selected in entice.
 EnticeThumbDelete		""		Delete the thumbnail
 						from entice and off disk
 EnticeThumbRemove		""		Remove the thumbnail

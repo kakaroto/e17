@@ -181,6 +181,7 @@ _entice_thumb_load(void *_data, Evas * _e, Evas_Object * _o, void *_ev)
    Evas_Object *o = NULL;
    Evas_Object *tmp = NULL;
    Evas_Object *new_current = NULL, *new_scroller;
+   Evas_Object *thumb_edje = NULL;
 
    if ((o = (Evas_Object *) _data))
    {
@@ -193,6 +194,10 @@ _entice_thumb_load(void *_data, Evas * _e, Evas_Object * _o, void *_ev)
           && !strcmp(e_thumb_file_get(o),
                      entice_image_file_get(entice->current)))
          return;
+      if((thumb_edje = evas_hash_find(entice->thumb.hash,
+	  entice_image_file_get(entice->current))))
+	  edje_object_signal_emit(thumb_edje, "EnticeThumbUnLoaded",
+	  "");
 
       tmp = e_thumb_evas_object_get(o);
       new_current = entice_image_new(tmp);
@@ -242,6 +247,9 @@ _entice_thumb_load(void *_data, Evas * _e, Evas_Object * _o, void *_ev)
          }
       }
       entice->current = new_current;
+      if((thumb_edje = evas_hash_find(entice->thumb.hash,
+	  entice_image_file_get(entice->current))))
+	  edje_object_signal_emit(thumb_edje, "EnticeThumbLoaded", "");
 
       if (entice->scroller)
          evas_object_del(entice->scroller);

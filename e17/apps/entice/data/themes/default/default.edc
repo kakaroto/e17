@@ -2432,6 +2432,20 @@ collections
 		target, "EnticeButtonSaveImagePulseDown";
 		target, "EnticeButtonSaveImagePulseUp";
 	    }
+	    program
+	    {
+		name, "MouseWheelZoomerInner";
+		signal, "mouse,wheel,0,1";
+		source, "EnticeImage";
+		action, SIGNAL_EMIT "EnticeImageZoomIn" "";
+	    }
+	    program
+	    {
+		name, "MouseWheelZoomerOuter";
+		signal, "mouse,wheel,0,-1";
+		source, "EnticeImage";
+		action, SIGNAL_EMIT "EnticeImageZoomOut" "";
+	    }
 	}
     }
     group
@@ -2441,8 +2455,8 @@ collections
 	{
 	    part
 	    {
-		name, "EnticeThumb"
-		type, IMAGE;
+		name, "ThumbClip"
+		type, RECT;
 		mouse_events, 1;
 		description
 		{
@@ -2458,6 +2472,46 @@ collections
 			relative, 1.0 1.0;
 			offset, 0 0;
 		    }
+		    color, 255 255 255 128;
+		}
+		description
+		{
+		    state, "selected" 0.0;
+		    visible, 1;
+		    rel1
+		    {
+			relative, 0.0 0.0;
+			offset, 0 0;
+		    }
+		    rel2
+		    {
+			relative, 1.0 1.0;
+			offset, 0 0;
+		    }
+		    color, 255 255 255 255;
+		}
+	    }
+	    part
+	    {
+		name, "EnticeThumb"
+		type, IMAGE;
+		mouse_events, 1;
+		clip_to, "ThumbClip";
+		description
+		{
+		    state, "default" 0.0;
+		    visible, 1;
+		    rel1
+		    {
+			relative, 0.0 0.0;
+			offset, 0 0;
+		    }
+		    rel2
+		    {
+			relative, 1.0 1.0;
+			offset, 0 0;
+		    }
+		    color, 255 255 255 128;
 		}
 	    }
 	}
@@ -2485,6 +2539,24 @@ collections
 		signal, "mouse,up,1";
 		source, "EnticeThumb";
 		action, SIGNAL_EMIT "EnticeThumbLoad" "";
+	    }
+	    program
+	    {
+		name, "ThumbSelected";
+		signal, "EnticeThumbLoaded";
+		source, "";
+		action, STATE_SET "selected" 0.0;
+		transition, SINUSOIDAL 0.3;
+		target, "ThumbClip";
+	    }
+	    program
+	    {
+		name, "ThumbUnSelected";
+		signal, "EnticeThumbUnLoaded";
+		source, "";
+		action, STATE_SET "default" 0.0;
+		transition, SINUSOIDAL 0.3;
+		target, "ThumbClip";
 	    }
 	}
     }
