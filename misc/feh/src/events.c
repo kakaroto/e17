@@ -327,6 +327,7 @@ feh_event_handle_ButtonRelease(XEvent * ev)
          D(("Disabling mode\n"));
          opt.mode = MODE_NORMAL;
          winwid->mode = MODE_NORMAL;
+         winwidget_sanitise_offsets(winwid);
          winwidget_render_image(winwid, 0, 1);
       }
    }
@@ -464,8 +465,8 @@ feh_event_handle_MotionNotify(XEvent * ev)
          else
             winwid->zoom += 1.0;
 
-         if (winwid->zoom < 0.001)
-            winwid->zoom = 0.001;
+         if (winwid->zoom < 0.01)
+            winwid->zoom = 0.01;
 
          /* calculate change in zoom and move im_x and im_y respectively to
             enable zooming to the clicked spot... */
@@ -474,7 +475,6 @@ feh_event_handle_MotionNotify(XEvent * ev)
             (winwid->w / 2) - (winwid->im_click_offset_x * winwid->zoom);
          winwid->im_y =
             (winwid->h / 2) - (winwid->im_click_offset_y * winwid->zoom);
-
          
          winwidget_render_image(winwid, 0, 0);
       }

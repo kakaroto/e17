@@ -112,12 +112,12 @@ feh_reload_image(winwidget w, int resize)
 
    /*
    if (opt.progressive)
-      pfunc = progressive_load_cb;
-    */
+       pfunc = progressive_load_cb;
+   */
    
    if ((winwidget_loadimage(w, FEH_FILE(w->file->data), pfunc)) != 0)
    {
-      if (pfunc)
+      if (!pfunc)
       {
          w->mode = MODE_NORMAL;
          if ((w->im_w != feh_imlib_image_get_width(w->im))
