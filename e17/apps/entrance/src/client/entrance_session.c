@@ -96,6 +96,8 @@ entrance_session_free(Entrance_Session * e)
       if (e->session)
          free(e->session);
 
+      closelog();
+
       free(e);
    }
 }
@@ -272,7 +274,7 @@ entrance_session_start_user_session(Entrance_Session * e)
       if (pam_open_session(e->auth->pam.handle, 0) != PAM_SUCCESS)
       {
          syslog(LOG_CRIT, "Unable to open PAM session. Aborting.");
-         ecore_main_loop_quit();
+         return;
       }
    }
 #endif

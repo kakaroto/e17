@@ -58,7 +58,6 @@ get_my_hostname(void)
 static int
 exit_cb(void *data, int ev_type, void *ev)
 {
-   fprintf(stderr, "HELP\n");
    ecore_main_loop_quit();
    return 1;
 }
@@ -71,13 +70,6 @@ static void
 window_del_cb(Ecore_Evas * ee)
 {
    ecore_main_loop_quit();
-#if 0
-   entrance_session_free(session);
-   ecore_evas_shutdown();
-   ecore_x_shutdown();
-   ecore_shutdown();
-#endif
-   exit(0);
 }
 
 /**
@@ -769,14 +761,12 @@ main(int argc, char *argv[])
 
       entrance_session_ecore_evas_set(session, e);
       entrance_session_run(session);
-      fprintf(stderr, "%s", "BING\n");
 
       if (session->authed)
       {
          entrance_session_start_user_session(session);
       }
       entrance_session_free(session);
-      closelog();
       ecore_evas_shutdown();
       ecore_x_shutdown();
       ecore_shutdown();
