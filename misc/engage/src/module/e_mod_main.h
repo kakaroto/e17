@@ -49,6 +49,7 @@ struct _Engage_Bar
    Evas_Object *bar_object;
    Evas_Object *box_object;
    Evas_Object *event_object;
+   Evas_Coord   mouse_out;
    
    Evas_List   *icons;
    
