@@ -28,6 +28,7 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 #include <X11/Xlib.h>
 #include <Imlib2.h>
 #include <stdarg.h>
+#include <string.h>
 
 int feh_imlib_image_get_width(Imlib_Image im);
 int feh_imlib_image_get_height(Imlib_Image im);

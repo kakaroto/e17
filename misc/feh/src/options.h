@@ -62,6 +62,7 @@ struct __fehoptions
    unsigned char no_menus;
    unsigned char progress_gran;
    unsigned char scale_down;
+   unsigned char builtin_http;
 
    char *output_file;
    char *bg_file;

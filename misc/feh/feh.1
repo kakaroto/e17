@@ -153,7 +153,7 @@ For slideshow mode, specifies time delay (seconds, can be a decimal) between aut
 changing slides. Great for presentations.
 .TP 5
 .B -R, --reload NUM
-Use this option to tell 
+Use this option to tell
 .B feh
 to reload an image after NUM seconds. Useful for viewing webcams via http,
 or even on your local machine.
@@ -162,6 +162,10 @@ or even on your local machine.
 When viewing files using http, feh normally deletes the local copies after
 viewing, or, if caching, on exit. This option prevents this so that you
 get to keep the local copies. They will be in /tmp with "feh" in the name.
+.TP 5
+.B -Q, --wget
+Use wget to grab remote files instead of builtin mechanism, useful if you
+need to use a proxy or something.
 .TP 5
 .B -l, --list
 Don't display images. Analyse them and display an 'ls'-style listing.
@@ -188,7 +192,7 @@ causing a delay proportional to the number of images in the list
 .TP 5
 .B -n, --reverse
 Reverse the sort order. Use this to invert the order of the filelist. Eg
-to sort in reverse width order, use 
+to sort in reverse width order, use
 .B -nSwidth
 .TP 5
 .B -A, --action ACTION
@@ -371,9 +375,9 @@ Use FONT to print a title on the index, if no font is specified, a title
 will not be printed
 .SH CONFIG FILE SYNTAX
 The feh config file allows the naming of option groups, or themes.
-If 
+If
 .B $HOME/.fehrc
-exists, or if not, but 
+exists, or if not, but
 .B /etc/fehrc
 exists, feh will look in it for theme name/options pairs. If neither
 $HOME/.fehrc or /etc/fehrc exist, feh will create a default one in ~/.fehrc.
@@ -381,7 +385,7 @@ An example entry would be:
 .br
 .B imagemap -rVq --thumb-width 40 --thumb-height 30
 .br
-You can then use this theme in two ways. Either 
+You can then use this theme in two ways. Either
 .br
 .B feh --theme imagemap *.jpg
 .br
@@ -390,7 +394,7 @@ want it to use. So from the example above:
 .br
 .B ln -s `which feh` ~/bin/imagemap
 .br
-Now I just run 
+Now I just run
 .B imagemap *.jpg
 to use those options. A cooler example is
 .br

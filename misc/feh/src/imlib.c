@@ -23,20 +23,17 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
 */
 
-#ifdef BUILTIN_HTTP
-#include <sys/types.h>
-#include <sys/socket.h>
-#include <netinet/in.h>
-#include <arpa/inet.h>
-#include <netdb.h>
-#endif
-
-
 #include "feh.h"
 #include "feh_list.h"
 #include "filelist.h"
 #include "winwidget.h"
 #include "options.h"
+
+#include <sys/types.h>
+#include <sys/socket.h>
+#include <netinet/in.h>
+#include <arpa/inet.h>
+#include <netdb.h>
 
 Display *disp = NULL;
 Visual *vis = NULL;
@@ -370,22 +367,47 @@ feh_http_load_image(char *url)
    newurl = estrjoin("?", url, randnum, NULL);
    D(3, ("newurl: %s\n", newurl));
 
-#ifdef BUILTIN_HTTP
-
+if(opt.builtin_http)
    {
+      /* state for HTTP header parser */
+#define SAW_NONE    1
+#define SAW_ONE_CM  2
+#define SAW_ONE_CJ  3
+#define SAW_TWO_CM  4
+#define IN_BODY     5
+
+#define OUR_BUF_SIZE 1024
+#define EOL "\015\012"
+
       int sockno = 0;
+      int size;
+      int body = SAW_NONE;
       struct sockaddr_in addr;
       struct hostent *hptr;
       char *hostname;
       char *get_string;
+      char *host_string;
+      char *query_string;
       char *get_url;
+      static char buf[OUR_BUF_SIZE];
+      char ua_string[] = "User-Agent: feh image viewer";
+      char accept_string[] = "Accept: image/*";
+      FILE *fp;
 
-      D(3, ("using builtin http collection\n"));
+      printf("using builtin http collection\n");
+      fp = fopen(tmpname, "w");
+      if (!fp)
+      {
+         weprintf("couldn't write to file %s:", tmpname);
+         free(tmpname);
+         D_RETURN(4, NULL);
+      }
 
       hostname = feh_strip_hostname(newurl);
       if (!hostname)
       {
          weprintf("couldn't work out hostname from %s:", newurl);
+         free(tmpname);
          D_RETURN(4, NULL);
       }
 
@@ -394,6 +416,7 @@ feh_http_load_image(char *url)
       if (!(hptr = feh_gethostbyname(hostname)))
       {
          weprintf("error resolving host %s:", hostname);
+         free(tmpname);
          D_RETURN(4, NULL);
       }
 
@@ -407,31 +430,154 @@ feh_http_load_image(char *url)
       if ((sockno = socket(PF_INET, SOCK_STREAM, 0)) == -1)
       {
          weprintf("error opening socket:");
+         free(tmpname);
          D_RETURN(4, NULL);
       }
       if (connect(sockno, (struct sockaddr *) &addr, sizeof(addr)) == -1)
       {
          weprintf("error connecting socket:");
+         free(tmpname);
          D_RETURN(4, NULL);
       }
 
       get_url = strchr(newurl, '/') + 1;
       get_url = strchr(get_url, '/') + 1;
-      get_url = strchr(get_url, '/') + 1;
+      /* Need initial / here, so no +1 this time. */
+      get_url = strchr(get_url, '/');
 
-      get_string = estrjoin(" ", "GET", get_url, NULL);
-      if ((send(sockno, get_string, strlen(get_string), 0)) == -1)
+      get_string = estrjoin(" ", "GET", get_url, "HTTP/1.0", NULL);
+      host_string = estrjoin(" ", "Host:", hostname, NULL);
+      query_string =
+         estrjoin(EOL, get_string, host_string, accept_string, ua_string, "",
+                  "", NULL);
+      /* At this point query_string looks something like
+         **
+         **    GET /dir/foo.jpg?123456 HTTP/1.0^M^J
+         **    Host: www.example.com^M^J
+         **    Accept: image/ *^M^J
+         **    User-Agent: feh image viewer^M^J
+         **    ^M^J
+         **
+         ** Host: is required by HTTP/1.1 and very important for some sites,
+         ** even with HTTP/1.0
+         **
+         ** -- BEG
+       */
+      if ((send(sockno, query_string, strlen(query_string), 0)) == -1)
       {
          free(get_string);
+         free(host_string);
+         free(query_string);
+         free(tmpname);
          weprintf("error sending over socket:");
          D_RETURN(4, NULL);
       }
       free(get_string);
+      free(host_string);
+      free(query_string);
 
+      while ((size = read(sockno, &buf, OUR_BUF_SIZE)))
+      {
+         if (body == IN_BODY)
+         {
+            fwrite(buf, 1, size, fp);
+         }
+         else
+         {
+            int i;
 
+            for (i = 0; i < size; i++)
+            {
+               /* We are looking for ^M^J^M^J, but will accept
+                  ** ^J^J from broken servers. Stray ^Ms will be
+                  ** ignored.
+                  **
+                  ** TODO:
+                  ** Checking the headers for a
+                  **    Content-Type: image/ *
+                  ** header would help detect problems with results.
+                  ** Maybe look at the response code too? But there is
+                  ** no fundamental reason why a 4xx or 5xx response
+                  ** could not return an image, it is just the 3xx
+                  ** series we need to worry about.
+                  **
+                  ** Also, grabbing the size from the Content-Length
+                  ** header and killing the connection after that
+                  ** many bytes where read would speed up closing the
+                  ** socket.
+                  ** -- BEG
+                */
+
+               switch (body)
+               {
+
+                 case IN_BODY:
+            fwrite(buf + i, 1, size - i, fp);
+                    i = size;
+                    break;
+
+                 case SAW_ONE_CM:
+                    if (buf[i] == '\012')
+                    {
+                       body = SAW_ONE_CJ;
+                    }
+                    else
+                    {
+                       body = SAW_NONE;
+                    }
+                    break;
+
+                 case SAW_ONE_CJ:
+                    if (buf[i] == '\015')
+                    {
+                       body = SAW_TWO_CM;
+                    }
+                    else
+                    {
+                       if (buf[i] == '\012')
+                       {
+                          body = IN_BODY;
+                       }
+                       else
+                       {
+                          body = SAW_NONE;
+                       }
+                    }
+                    break;
+
+                 case SAW_TWO_CM:
+                    if (buf[i] == '\012')
+                    {
+                       body = IN_BODY;
+                    }
+                    else
+                    {
+                       body = SAW_NONE;
+                    }
+                    break;
+
+                 case SAW_NONE:
+                    if (buf[i] == '\015')
+                    {
+                       body = SAW_ONE_CM;
+                    }
+                    else
+                    {
+                       if (buf[i] == '\012')
+                       {
+                          body = SAW_ONE_CJ;
+                       }
+                    }
+                    break;
+
+               }                            /* switch */
+            }                               /* for i */
+         }
+      }                                     /* while read */
+      close(sockno);
+      fclose(fp);
    }
-
-#else
+   else
    {
       int pid;
       int status;
@@ -467,13 +613,11 @@ feh_http_load_image(char *url)
          }
       }
    }
-#endif
 
    free(newurl);
    D_RETURN(4, tmpname);
 }
 
-#ifdef BUILTIN_HTTP
 struct hostent *
 feh_gethostbyname(const char *name)
 {
@@ -488,7 +632,6 @@ feh_gethostbyname(const char *name)
       hp = gethostbyname(name);
    D_RETURN(3, hp);
 }
-#endif
 
 char *
 feh_strip_hostname(char *url)

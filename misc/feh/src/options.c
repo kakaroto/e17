@@ -71,15 +71,17 @@ init_parse_options(int argc, char **argv)
    opt.blur_button = 1;
    opt.no_blur_ctrl_mask = 0;
 
-   D(3,("About to parse env options (if any)\n"));
+   opt.builtin_http = 1;
+
+   D(3, ("About to parse env options (if any)\n"));
    /* Check for and parse any options in FEH_OPTIONS */
    feh_parse_environment_options();
 
-   D(3,("About to parse commandline options\n"));
+   D(3, ("About to parse commandline options\n"));
    /* Parse the cmdline args */
    feh_parse_option_array(argc, argv);
 
-   D(3,("About to check for theme configuration\n"));
+   D(3, ("About to check for theme configuration\n"));
    feh_check_theme_options(argc, argv);
 
    /* If we have a filelist to read, do it now */
@@ -88,11 +90,11 @@ init_parse_options(int argc, char **argv)
       /* joining two reverse-sorted lists in this manner works nicely for us
          here, as files specified on the commandline end up at the *end* of
          the combined filelist, in the specified order. */
-      D(3,("About to load filelist from file\n"));
+      D(3, ("About to load filelist from file\n"));
       filelist = feh_list_cat(filelist, feh_read_filelist(opt.filelistfile));
    }
 
-   D(4,("Options parsed\n"));
+   D(4, ("Options parsed\n"));
 
    if (feh_list_length(filelist) == 0)
       show_mini_usage();
@@ -117,7 +119,7 @@ feh_check_theme_options(int arg, char **argv)
       else
          theme = estrdup(argv[0]);
    }
-   D(3,("Theme name is %s\n", theme));
+   D(3, ("Theme name is %s\n", theme));
 
    feh_load_options_for_theme(theme);
 
@@ -151,7 +153,7 @@ feh_load_options_for_theme(char *theme)
          eprintf("D'oh! Please define HOME in your environment!"
                  "It would really help me out...\n");
       rcpath = estrjoin("/", home, ".fehrc", NULL);
-      D(3,("Trying %s for config\n", rcpath));
+      D(3, ("Trying %s for config\n", rcpath));
       fp = fopen(rcpath, "r");
 
       if (!fp && ((fp = fopen("/etc/fehrc", "r")) == NULL))
@@ -173,10 +175,10 @@ feh_load_options_for_theme(char *theme)
       sscanf(s, "%s %[^\n]\n", (char *) &s1, (char *) &s2);
       if (!(*s1) || (!*s2) || (*s1 == '\n') || (*s1 == '#'))
          continue;
-      D(5,("Got theme/options pair %s/%s\n", s1, s2));
+      D(5, ("Got theme/options pair %s/%s\n", s1, s2));
       if (!strcmp(s1, theme))
       {
-         D(4,("A match. Using options %s\n", s2));
+         D(4, ("A match. Using options %s\n", s2));
          feh_parse_options_from_string(s2);
          break;
       }
@@ -269,7 +271,7 @@ feh_string_normalize(char *str)
    char last = 0;
 
    D_ENTER(4);
-   D(4,("normalizing %s\n", str));
+   D(4, ("normalizing %s\n", str));
    ret[0] = '\0';
 
    for (s = str;; s++)
@@ -291,9 +293,9 @@ feh_string_normalize(char *str)
       ret[i - 1] = '\0';
    else
       ret[i] = '\0';
-   D(4,("normalized to %s\n", ret));
+   D(4, ("normalized to %s\n", ret));
 
-   D_RETURN(4,estrdup(ret));
+   D_RETURN(4, estrdup(ret));
 }
 
 static void
@@ -301,7 +303,7 @@ feh_parse_option_array(int argc, char **argv)
 {
    static char stropts[] =
 
-      "a:A:b:BcC:dD:e:f:Fg:hH:iIklL:mM:nNo:O:pPqrR:sS:tT:uUvVwW:xXy:zZ1:2:3:4:56:78:90:";
+      "a:A:b:BcC:dD:e:f:Fg:hH:iIklL:mM:nNo:O:pPqQrR:sS:tT:uUvVwW:xXy:zZ1:2:3:4:56:78:90:";
    static struct option lopts[] = {
       /* actions */
       {"help", 0, 0, 'h'},                  /* okay */
@@ -331,8 +333,9 @@ feh_parse_option_array(int argc, char **argv)
       {"preload", 0, 0, 'p'},
       {"reverse", 0, 0, 'n'},
       {"thumbnails", 0, 0, 't'},
-      {"menu-ctrl-mask", 0, 0, '5'},     /* okay */
-      {"scale-down", 0, 0, '.'},     /* okay */
+      {"wget", 0, 0, 'Q'},
+      {"menu-ctrl-mask", 0, 0, '5'},        /* okay */
+      {"scale-down", 0, 0, '.'},            /* okay */
       /* options with values */
       {"output", 1, 0, 'o'},                /* okay */
       {"output-only", 1, 0, 'O'},           /* okay */
@@ -352,7 +355,7 @@ feh_parse_option_array(int argc, char **argv)
       {"font", 1, 0, 'e'},
       {"title-font", 1, 0, '@'},
       {"title", 1, 0, '^'},
-	  {"thumb-title", 1, 0, '~'},
+      {"thumb-title", 1, 0, '~'},
       {"bg", 1, 0, 'b'},
       {"fontpath", 1, 0, 'C'},
       {"progress-gran", 1, 0, '('},
@@ -366,7 +369,7 @@ feh_parse_option_array(int argc, char **argv)
       {"blur-button", 1, 0, '8'},
       {"no-blur-ctrl-mask", 0, 0, '9'},
       {"no-pan-ctrl-mask", 0, 0, '$'},
-  	  {"reload-button", 1, 0, '0'},
+      {"reload-button", 1, 0, '0'},
       {"start-at", 1, 0, '|'},
       {"rcfile", 1, 0, '_'},
       {"debug-level", 1, 0, '+'},
@@ -377,9 +380,10 @@ feh_parse_option_array(int argc, char **argv)
    D_ENTER(4);
 
    /* Now to pass some optionarinos */
-   while ((optch = getopt_long_only(argc, argv, stropts, lopts, &cmdx)) != EOF)
+   while ((optch = getopt_long_only(argc, argv, stropts, lopts, &cmdx)) !=
+          EOF)
    {
-      D(5,("Got option, getopt calls it %d, or %c\n", optch, optch));
+      D(5, ("Got option, getopt calls it %d, or %c\n", optch, optch));
       switch (optch)
       {
         case 0:
@@ -416,6 +420,9 @@ feh_parse_option_array(int argc, char **argv)
            break;
         case 'l':
            opt.list = 1;
+           break;
+        case 'Q':
+           opt.builtin_http = 0;
            break;
         case 'L':
            opt.customlist = estrdup(optarg);
@@ -531,9 +538,9 @@ feh_parse_option_array(int argc, char **argv)
         case '^':
            opt.title = estrdup(optarg);
            break;
-	    case '~':
-		   opt.thumb_title = estrdup(optarg);
-		   break;
+        case '~':
+           opt.thumb_title = estrdup(optarg);
+           break;
         case 'b':
            opt.bg = 1;
            opt.bg_file = estrdup(optarg);
@@ -612,8 +619,8 @@ feh_parse_option_array(int argc, char **argv)
            opt.start_list_at = atoi(optarg);
            break;
         case '0':
-		   opt.reload_button = atoi(optarg);
-		   break;
+           opt.reload_button = atoi(optarg);
+           break;
         case 't':
            opt.thumbs = 1;
            opt.index_show_name = 1;
@@ -653,12 +660,13 @@ check_options(void)
       opt.collage = 0;
    }
 
-   if(opt.scale_down && opt.progressive)
+   if (opt.scale_down && opt.progressive)
    {
-      weprintf("currently, --scale-down only works without progressive loading");
+      weprintf
+         ("currently, --scale-down only works without progressive loading");
       opt.progressive = 0;
    }
-   
+
    if (opt.full_screen && opt.multiwindow)
    {
       weprintf
@@ -691,10 +699,10 @@ check_options(void)
 
    if (opt.thumb_title && (!opt.thumbs))
    {
-	  weprintf("Doesn't make sense to set thumbnail title when not in\n"
-			   "thumbnail mode.\n");
-	  free(opt.thumb_title);
-	  opt.thumb_title = NULL;
+      weprintf("Doesn't make sense to set thumbnail title when not in\n"
+               "thumbnail mode.\n");
+      free(opt.thumb_title);
+      opt.thumb_title = NULL;
    }
    D_RETURN_(4);
 }
@@ -782,6 +790,9 @@ show_usage(void)
            "  -R, --reload NUM          Use this option to tell feh to reload an image\n"
            "                            after NUM seconds. Useful for viewing webcams\n"
            "                            via http, or even on your local machine.\n"
+           "  -Q, --wget                Use wget to grab remote files instead of builtin\n"
+           "                            mechanism, useful if you need to use a proxy or\n"
+           "                            something.\n"
            "  -k, --keep-http           When viewing files using http, feh normally\n"
            "                            deletes the local copies after viewing, or,\n"
            "                            if caching, on exit. This option prevents this\n"
@@ -938,8 +949,7 @@ show_usage(void)
            " button 3 activates the context-sensitive menu.  Buttons can be redefined\n"
            " with the -1 through -9 (or --*-button) cmdline flags.  All you people\n"
            " with million button mice can remove the ctrl mask with the --no-*-ctrl-mask\n"
-           " options.\n"
-           "\n" "See 'man feh' for more detailed information\n"
+           " options.\n" "\n" "See 'man feh' for more detailed information\n"
            "\n"
            "This program is free software see the file COPYING for licensing info.\n"
            "Copyright Tom Gilbert (and various contributors) 1999, 2000\n"

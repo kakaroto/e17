@@ -1,3 +1,17 @@
+Mon Dec 11 19:25:10 2000  Tom Gilbert  <gilbertt@linuxbrit.co.uk>
+
+	* Added a super-sweet patch from Benjamin Elijah Griffin
+	<bgriffin@cddb.com> to actually implement the builtin http
+	collection I started ages ago. I screwed with it only slightly,
+	it's a great patch. So now we can grab http images without
+	spawning a subprocess, and I have to say here it seems a little
+	faster too ;-)
+	* Added -Q, --wget option to use wget to grab http data just in
+	case you need to use a proxy, or something else stops the builtin
+	stuff from working...
+	* Misc tidyups etc..
+
+
 Tue Nov 28 00:45:38 2000  Tom Gilbert  <gilbertt@linuxbrit.co.uk>
 
 	* Added support for --slideshow-delay as a float. -D0.25 for
