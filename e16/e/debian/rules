@@ -6,7 +6,8 @@ export DH_COMPAT=2
 configure_options = --enable-fsstd=yes --prefix=/usr --bindir=/usr/X11R6/bin
 programs = enlightenment enlightenment-nosound enlightenment-dox
 docs = enlightenment-docs
-themes = enlightenment-theme-ganymede enlightenment-theme-brushedmetal enlightenment-theme-shinymetal
+themes = enlightenment-theme-ganymede enlightenment-theme-brushedmetal \
+         enlightenment-theme-shinymetal
 
 pwd := $(shell pwd)
 install_dir = $(pwd)/debian/$@
