@@ -82,16 +82,6 @@ do
         fi
       fi
 
-      #if grep "^AM_GNOME_GETTEXT" $CONFIGURE >/dev/null; then
-	#echo "Creating $dr/aclocal.m4 ..."
-	#test -r $dr/aclocal.m4 || touch $dr/aclocal.m4
-	#echo "Running gettextize...  Ignore non-fatal messages."
-	#./setup-gettext
-	#echo "Making $dr/aclocal.m4 writable ..."
-	#test -r $dr/aclocal.m4 && chmod u+w $dr/aclocal.m4
-      #fi
-
-      #intltool
       (grep "^AC_PROG_INTLTOOL" $CONFIGURE >/dev/null) && {
       (intltoolize --version) < /dev/null > /dev/null 2>&1 || {
        echo
@@ -100,28 +90,12 @@ do
        DIE=1
        }
       }
-       
+
       if grep "^AC_PROG_INTLTOOL" $CONFIGURE >/dev/null; then
        echo "Running intltoolize..."
         intltoolize --copy --force --automake
       fi
        
-      (grep "^AM_PROG_LIBTOOL" $CONFIGURE >/dev/null) && {
-        (libtool --version) < /dev/null > /dev/null 2>&1 || {
-          echo
-          echo "**Error**: You must have \`libtool' installed."
-          echo "You can get it from: ftp://ftp.gnu.org/pub/gnu/"
-          DIE=1
-        }
-      }
-
-      if grep "^AM_PROG_LIBTOOL" $CONFIGURE >/dev/null; then
-        if test -z "$NO_LIBTOOLIZE" ; then
-          echo "Running libtoolize..."
-          libtoolize --force --copy
-        fi
-      fi
-
       test -d m4 && aclocalinclude="$aclocalinclude -I m4"
       echo "Running aclocal $aclocalinclude ..."
       aclocal $aclocalinclude

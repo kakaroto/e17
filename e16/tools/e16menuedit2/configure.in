@@ -28,6 +28,7 @@ dnl Checks for Additional stuffs.
 
 dnl Checks for gettext
 AC_PROG_INTLTOOL([0.23])
+
 GETTEXT_PACKAGE=e16menuedit2
 AC_SUBST(GETTEXT_PACKAGE)
 AC_DEFINE_UNQUOTED(GETTEXT_PACKAGE, "$GETTEXT_PACKAGE", [Package name for gettext])
@@ -35,8 +36,8 @@ AC_DEFINE_UNQUOTED(GETTEXT_PACKAGE, "$GETTEXT_PACKAGE", [Package name for gettex
 
 dnl Languages which your application supports
 ALL_LINGUAS="de en"
-AM_GNU_GETTEXT
-AM_GNU_GETTEXT_VERSION(0.10.40)
+AM_GLIB_GNU_GETTEXT
+#AM_GNU_GETTEXT_VERSION(0.10.40)
 #AM_GNU_GETTEXT_VERSION(0.12.1)
 
 dnl Set PACKAGE_LOCALE_DIR in config.h.
