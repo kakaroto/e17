@@ -47,7 +47,7 @@
 %left MINUS PLUS
 %left TIMES DIVIDE
 %left NEG     /* negation--unary minus */
-%token OPEN_PAREN CLOSE_PAREN DOT
+%token OPEN_PAREN CLOSE_PAREN DOT INHERIT
 
 %type <string> STRING 
 %type <val> FLOAT
@@ -448,6 +448,7 @@ desc_preamble: desc_preamble_entry
 
 desc_preamble_entry: state
 	| visible
+	| inherit
 	| align
 	| min
 	| max
@@ -465,6 +466,12 @@ visible: VISIBLE COLON exp SEMICOLON {
                 engrave_parse_state_visible((int)$3);
 	}
 	;
+
+inherit: INHERIT COLON STRING exp SEMICOLON {
+                engrave_parse_state_inherit($3, $4);
+    }
+    ;
+
 
 align: ALIGN COLON exp exp SEMICOLON {
                 switch(section)

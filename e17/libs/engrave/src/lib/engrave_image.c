@@ -23,3 +23,18 @@ engrave_image_new(char *name, Engrave_Image_Type type, double value)
   return image;
 }
 
+/**
+ * engrave_image_dup - duplicate an Engrave_Image
+ * @param from: The Engrave_Image to duplicate
+ *
+ * @return Returns a pointer to the newly allocated Engrave_Image on success
+ * or NULL on failure
+ */
+Engrave_Image *
+engrave_image_dup(Engrave_Image *from)
+{
+    Engrave_Image *to;
+    to = engrave_image_new(from->name, from->type, from->value);
+    return to;
+}
+

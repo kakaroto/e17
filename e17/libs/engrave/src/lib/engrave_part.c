@@ -62,6 +62,20 @@ engrave_part_name_set(Engrave_Part *ep, char *name)
 }
 
 /**
+ * engrave_part_name_get - Get the name of the part
+ * @param ep: The Engrave_Part to retrieve the name from.
+ * 
+ * @return Returns a copy of the part name, this pointer must be freed by
+ * the application, or NULL if no name found.
+ */
+char *
+engrave_part_name_get(Engrave_Part *ep)
+{
+    if (!ep || !ep->name) return NULL;
+    return strdup(ep->name);
+}
+
+/**
  * engrave_part_type_set - set the type of the part
  * @param ep: The Engrave_Part to set the type on.
  * @param type: The Engrave_Part_Type to set on the part
@@ -182,4 +196,40 @@ engrave_part_state_add(Engrave_Part *ep, Engrave_Part_State *eps)
   if (!ep || !eps) return;
   ep->states = evas_list_append(ep->states, eps);
 }
+
+/**
+ * engrave_part_state_by_name_value_find - Find the Engrave_Part State that * matches the given name and value in this part
+ * @param ep: The Engrave_Part to search.
+ * @param name: The name to search for
+ * @param val: The value to search for.
+ * 
+ * @return Returns a pointer to the Engrave_Part_State matching the given
+ * criteria or NULL if not found.
+ */
+Engrave_Part_State *
+engrave_part_state_by_name_value_find(Engrave_Part *ep, 
+                                            char *name, double val)
+{
+  Evas_List *l;
+  if (!ep || !name) return NULL;
+
+  for (l = ep->states; l; l = l->next) {
+    char *state_name;
+    double state_val;
+    Engrave_Part_State *eps;
+    
+    eps = (Engrave_Part_State *)l->data;
+    state_name = engrave_part_state_name_get(eps, &state_val);
+
+    if ((!strcmp(state_name, name)) && (strlen(name) == strlen(state_name))
+        && (state_val == val)) {
+      free(state_name);
+      return eps;
+    }
+    free(state_name);
+  }
+
+  return NULL;
+}
+
 

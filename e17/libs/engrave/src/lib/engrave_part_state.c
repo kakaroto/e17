@@ -76,6 +76,23 @@ engrave_part_state_name_set(Engrave_Part_State *eps, char *name, double value)
 }
 
 /**
+ * engrave_part_state_name_get- Get the name of the state
+ * @param eps: The Engrave_Part_State to retrieve the name from
+ * @param value: If not NULL will return the value param.
+ *
+ * @return Returns a copy of the name of the state this pointer must be
+ * freed by the application, or NULL if no name found.
+ */
+char *
+engrave_part_state_name_get(Engrave_Part_State *eps, double *value)
+{
+  if (!eps || !eps->name) return NULL;
+
+  if (value) *value = eps->value;
+  return strdup(eps->name);
+}
+
+/**
  * engrave_part_state_visible_set - Set the visiblity of the state
  * @param eps: The Engrave_Part_State to set the value too.
  * @param visible: The visibility value to set to the state
@@ -654,6 +671,75 @@ engrave_part_state_text_align_set(Engrave_Part_State *eps, double x, double y)
   if (!eps) return;
   eps->text.align.x = x;
   eps->text.align.y = y;
+}
+
+/**
+ * engrave_part_state_copy - Copy the values from @a from to @ato
+ * @param from: The Engrave_Part_State from which to retrieve the values
+ * @param to: The Engrave_Part_State to place the values into
+ *
+ * @return Returns no value.
+ */
+void
+engrave_part_state_copy(Engrave_Part_State *from, Engrave_Part_State *to)
+{
+  Evas_List *l;
+  char *to_name;
+  double to_val;
+
+  if (!from || !to) return;
+ 
+  /* back these up */
+  to_name = to->name;
+  to_val = to->value;
+
+  /* free all of the possible strings */
+  IF_FREE(to->rel1.to_x);
+  IF_FREE(to->rel1.to_y);
+  IF_FREE(to->rel2.to_x);
+  IF_FREE(to->rel2.to_y);
+  IF_FREE(to->color_class);
+  IF_FREE(to->text.text);
+  IF_FREE(to->text.text_class);
+  IF_FREE(to->text.font);
+
+  /* just dup the memory and restore the 2 unchanging entries */
+  to = memcpy(to, from, sizeof(Engrave_Part_State));
+  to->name = to_name;
+  to->value = to_val;
+
+  /* re-dup these so we don't screw with the originals */
+  if (to->rel1.to_x) to->rel1.to_x = strdup(to->rel1.to_x);
+  if (to->rel1.to_y) to->rel1.to_y = strdup(to->rel1.to_y);
+  if (to->rel2.to_x) to->rel2.to_x = strdup(to->rel2.to_x);
+  if (to->rel2.to_y) to->rel2.to_y = strdup(to->rel2.to_y);
+  if (to->color_class) to->color_class = strdup(to->color_class);
+  if (to->text.text) to->text.text = strdup(to->text.text);
+  if (to->text.text_class) to->text.text_class = strdup(to->text.text_class);
+  if (to->text.font) to->text.font = strdup(to->text.font);
+
+  /* fix up the image normal pointer */
+  if (to->image.normal) {
+    Engrave_Image *ei;
+    
+    ei = engrave_image_dup(to->image.normal);
+    if (ei)
+      to->image.normal = ei;
+    else
+      fprintf(stderr, "Insufficient memory to dup image\n");
+  }
+
+  /* copy the tween list correctly */
+  to->image.tween = NULL;
+  for (l = from->image.tween; l; l = l->next) {
+    Engrave_Image *ei;
+    
+    ei = engrave_image_dup((Engrave_Image *)l->data);
+    if (ei)
+      to->image.tween = evas_list_append(to->image.tween, ei);
+    else
+      fprintf(stderr, "Insufficient memory to dup image\n");
+  }
 }
 
 

@@ -172,6 +172,8 @@ struct _Engrave_Part_State
 Engrave_Part_State * engrave_part_state_new(void);
 void engrave_part_state_name_set(Engrave_Part_State *eps, char *name, 
                                                           double value);
+char *engrave_part_state_name_get(Engrave_Part_State *eps, double *value);
+
 void engrave_part_state_visible_set(Engrave_Part_State *eps, int visible);
 void engrave_part_state_align_set(Engrave_Part_State *eps, int x, int y);
 void engrave_part_state_step_set(Engrave_Part_State *eps, int x, int y);
@@ -229,6 +231,12 @@ void engrave_part_state_text_fit_set(Engrave_Part_State *eps, int x, int y);
 void engrave_part_state_text_min_set(Engrave_Part_State *eps, int x, int y);
 void engrave_part_state_text_align_set(Engrave_Part_State *eps, 
                                                         double x, double y);
+void engrave_part_state_copy(Engrave_Part_State *from, 
+                                          Engrave_Part_State *to);
+
+/**
+ * @}
+ */
 
 #endif
 

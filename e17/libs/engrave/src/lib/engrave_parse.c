@@ -247,6 +247,47 @@ engrave_parse_state_visible(int visible)
 }
 
 void
+engrave_parse_state_inherit(char *name, double val)
+{
+  Engrave_Group *group;
+  Engrave_Part *part;
+  Engrave_Part_State *to;
+  Engrave_Part_State *from;
+  char *state_name;
+
+  group = engrave_file_group_last_get(engrave_file);
+  part = engrave_group_part_last_get(group);
+
+  to = engrave_part_state_last_get(part);
+  state_name = engrave_part_state_name_get(to, NULL);
+
+  /* must have a name set before we can be inherited into */
+  if (!state_name) {
+    char *part_name = engrave_part_name_get(part);
+    fprintf(stderr, "part %s: inherit may only be used after state!\n",
+                                                            part_name);
+    free(part_name);
+    return;
+  }
+
+  /* can't inherit into the default part */
+  if ((strlen(state_name) == 7) && (!strncmp(state_name, "default", 7))) {
+    char *part_name = engrave_part_name_get(part);
+    fprintf(stderr, "part %s: "
+              "inherit may not be used in the default description!\n",
+              part_name);
+    free(part_name);
+    return;
+  }
+
+  from = engrave_part_state_by_name_value_find(part, name, val);
+  if (from)
+    engrave_part_state_copy(from, to);
+  else
+    fprintf(stderr, "Unable to locate description %s %f\n", name, val);
+}
+
+void
 engrave_parse_state_align(double x, double y)
 {
   Engrave_Group *group;
