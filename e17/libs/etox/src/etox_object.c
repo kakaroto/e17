@@ -69,7 +69,7 @@ _etox_object_get_available_size(Etox e, Etox_Object obj)
   if (!e || !obj)
     return 0;
 
-  if (obj->y > e->y)
+  if (obj->y > (e->y + e->w))
     return 0;
 
   obj->w = e->w;
