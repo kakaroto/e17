@@ -1044,6 +1044,12 @@ AclassIpc(const char *params, Client * c __UNUSED__)
 	if (lst)
 	   Efree(lst);
      }
+   else if (!strncmp(cmd, "load", 2))
+     {
+	if (!strcmp(p, "all"))
+	   AclassConfigLoadConfig();
+	AclassConfigLoadUser();
+     }
 }
 
 static void
@@ -1224,7 +1230,8 @@ IpcItem             AclassIpcArray[] = {
     AclassIpc,
     "aclass", "ac",
     "Action class functions",
-    "  aclass list               List action classes\n"}
+    "  aclass list               List action classes\n"
+    "  aclass load [all]         Reload user defined/all action classes\n"}
    ,
    {
     IPC_KeybindingsGet, "get_keybindings", NULL, "List keybindings", NULL}
