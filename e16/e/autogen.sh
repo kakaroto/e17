@@ -49,8 +49,8 @@ echo "Generating configuration files for Enlightenment, please wait...."
 echo "  setup-gettext.sh"
 grep 'AM_GNU_GETTEXT_VERSION' configure.in >/dev/null 2>&1 || sh ./setup-gettext.sh --install
 sh ./setup-gettext.sh
-echo "  aclocal $ACLOCAL_FLAGS"
-aclocal $ACLOCAL_FLAGS
+echo "  aclocal -I m4 $ACLOCAL_FLAGS"
+aclocal -I m4 $ACLOCAL_FLAGS
 echo "  autoheader"
 autoheader
 echo "  automake --add-missing"
