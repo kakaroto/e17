@@ -1,6 +1,6 @@
 #!/bin/sh
 
-DATA_PATH="$HOME/.e/iconbar/"
+DATA_PATH="./"
 TEMPLATE="$DATA_PATH/template.edc"
 
 setup()
@@ -27,7 +27,7 @@ setup
 # usage: icon "name" "icon path" "executable"
 # icon files are called name.app.eet, so name must be unique for each icon
 
-USRIC="/usr/local/share/iconbar/data/images"
+USRIC="/usr/local/share/iconbar/images"
 icon "eterm"     $USRIC"/term-32.png"          "Eterm"
 icon "galeon"    $USRIC"/globe-32.png"         "galeon"
 icon "evolution" $USRIC"/mail-32.png"          "evolution"
