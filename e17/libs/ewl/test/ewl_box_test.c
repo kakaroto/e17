@@ -1,13 +1,17 @@
 #include <Ewl.h>
 
-extern int box_win_realized;
+static Ewl_Widget * box_button = NULL;
+
+void
+__create_box_test_window(Ewl_Widget * w, void * ev_data, void * user_data);
 
 void
 __destroy_box_test_window(Ewl_Widget * w, void * ev_data, void * user_data)
 {
 	ewl_widget_destroy(w);
 
-	box_win_realized = 0;
+	ewl_callback_append(box_button, EWL_CALLBACK_CLICKED,
+			__create_box_test_window, NULL);
 
 	return;
 	ev_data = NULL;
@@ -123,8 +127,9 @@ __create_box_test_window(Ewl_Widget * w, void * ev_data, void * user_data)
 	Ewl_Widget * hbox[3];
 	Ewl_Widget * hbox_button[2][3];
 
-	if (box_win_realized)
-		return;
+	ewl_callback_del_type(w, EWL_CALLBACK_CLICKED);
+
+	box_button = w;
 
 	box_win = ewl_window_new();
 	ewl_callback_append(box_win, EWL_CALLBACK_DELETE_WINDOW,
@@ -268,8 +273,6 @@ __create_box_test_window(Ewl_Widget * w, void * ev_data, void * user_data)
         ewl_callback_append(hbox_button[1][2], EWL_CALLBACK_CLICKED,
                         __toggle_child_fill_policy, NULL);
         ewl_widget_show(hbox_button[1][2]);
-
-	box_win_realized = 1;
 
 	return;
 	w = NULL;

@@ -1,13 +1,16 @@
 #include <Ewl.h>
 
-extern int button_win_realized;
+static Ewl_Widget * button_button = NULL;
+
+void __create_button_test_window(Ewl_Widget * w, void * ev_data, void * user_data);
 
 void
 __destroy_button_test_window(Ewl_Widget * w, void * ev_data, void * user_data)
 {
 	ewl_widget_destroy_recursive(w);
 
-	button_win_realized = 0;
+	ewl_callback_append(button_button, EWL_CALLBACK_CLICKED,
+				__create_button_test_window, NULL);
 
 	return;
 	ev_data = NULL;
@@ -23,10 +26,9 @@ __create_button_test_window(Ewl_Widget * w, void * ev_data, void * user_data)
 	Ewl_Widget * check_button[2];
 	Ewl_Widget * radio_button[2];
 
-	if (button_win_realized)
-		return;
+	button_button = w;
 
-	button_win_realized = 0;
+	ewl_callback_del_type(w, EWL_CALLBACK_CLICKED);
 
 	button_win = ewl_window_new();
 	ewl_window_resize(button_win, 92, 167);

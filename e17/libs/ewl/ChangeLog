@@ -1,3 +1,7 @@
+Tue Aug  21 20:41:10 2001 Christopher Rosendahl <crosendahl@northernwatch.com>
+	* Fixed minor bug in the Ewl_Callbck code.
+	* Cleaned up the test program a bit.
+
 Tue Aug  21 18:46:45 2001 Christopher Rosendahl <crosendahl@northernwatch.com>
 	* Fixed some unwanted behaviour in the Ewl_Box code.
 

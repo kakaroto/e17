@@ -3,10 +3,8 @@
 
 void __close_main_widow(Ewl_Widget * w, void * ev_data, void *user_data);
 
-int box_win_realized = 0;
 void __create_box_test_window(Ewl_Widget * w, void * ev_data, void * user_data);
 
-int button_win_realized = 0;
 void __create_button_test_window(Ewl_Widget * w, void * ev_data, void * user_data);
 
 
