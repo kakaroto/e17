@@ -1,5 +1,6 @@
 <html><head><title>W W W . E N L I G H T E N M E N T . O R G</title></head>
 <body bgcolor=@:col_bg@
+background=@:background@
 text=@:col_fg@
 link=@:col_link@
 vlink=@:col_vlink@

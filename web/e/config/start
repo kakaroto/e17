@@ -1,36 +1,11 @@
-<center>
-<table border=0 cellpadding=0 cellspacing=0>
+<div align="center">
+<table border=0 width=75% cellspacing=0 align=left>
 <tr>
-<td width=1 height=1 bgcolor=@:col_border@><img src=img/blank.gif width=1 height=1></td>
-<td width=1 height=1 bgcolor=@:col_border@><img src=img/blank.gif width=1 height=1></td>
-<td width=1 height=1 bgcolor=@:col_border@><img src=img/blank.gif width=1 height=1></td>
-<td width=1 height=1 bgcolor=@:col_border@><img src=img/blank.gif width=1 height=1></td>
-<td width=1 height=1 bgcolor=@:col_border@><img src=img/blank.gif width=1 height=1></td>
+<td width=137><img border=0 src="img/e-logo-topleft.gif" width=80 height=100 alt="E logo"></td>
+<td colspan=3><img border=0 src="img/e-title.gif" width=472 height=100 alt="Enlightenment"></td>
 </tr>
 <tr>
-<td width=1 height=1 bgcolor=@:col_border@><img src=img/blank.gif width=1 height=1></td>
-<td width=1 height=1 background=img/col_pane.png><table border=0 cellpadding=8 cellspacing=0><tr><td><img src=img/logo_tl.png width=80 height=100></td></tr></table></td>
-<td width=1 height=1 background=img/col_pane.png><img src=img/blank.gif width=1 height=1></td>
-<td width=1 height=1 background=img/col_pane.png>@title@</td>
-<td width=1 height=1 bgcolor=@:col_border@><img src=img/blank.gif width=1 height=1></td>
-</tr>
-<tr>
-<td width=1 height=1 bgcolor=@:col_border@><img src=img/blank.gif width=1 height=1></td>
-<td width=1 height=1 background=img/col_pane.png><img src=img/blank.gif width=1 height=1></td>
-<td width=1 height=1 bgcolor=@:col_border@><img src=img/blank.gif width=1 height=1></td>
-<td width=1 height=1 bgcolor=@:col_border@><img src=img/blank.gif width=1 height=1></td>
-<td width=1 height=1 bgcolor=@:col_border@><img src=img/blank.gif width=1 height=1></td>
-</tr>
-<tr>
-<td width=1 height=1 bgcolor=@:col_border@><img src=img/blank.gif width=1 height=1></td>
-<td width=1 height=1 background=img/col_pane.png valign=top>@nav@</td>
-<td width=1 height=1 bgcolor=@:col_border@><img src=img/blank.gif width=1 height=1></td>
-<td width=@:page_width@ height=1 background=img/col_content.png valign=top align=left>
-<table border=0 cellpadding=0 cellspacing=0><tr>
-<td><img src=img/shadow_tl.png width=20 height=20></td>
-<td background=img/shadow_t.png><img src=img/blank.gif width=480 height=20></td>
-<td><img src=img/shadow_t.png width=20 height=20></td>
-</tr><tr>
-<td background=img/shadow_l.png><img src=img/blank.gif width=20 height=300></td>
-<td valign=top align=left>
-
+<td width=137 bgcolor="#334455" valign=top align=center>@nav@</td>
+<td width=6 background="img/shadow_l.gif">&nbsp;</td>
+<td bgcolor="#445566">&nbsp;</td>
+<td valign=top align=left bgcolor="#445566"><font color="#ffffff">
