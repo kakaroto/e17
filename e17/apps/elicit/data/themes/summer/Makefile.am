@@ -12,7 +12,7 @@ theme_DATA = $(EET)
 all: $(EDC)
 
 .edc.eet:
-	edje_cc -v -id $(top_srcdir)/data/themes/$(THEME)/img -fd $(top_srcdir)/data/themes/$(THEME)/fonts $< $@
+	edje_cc -v -id $(top_srcdir)/data/themes/$(THEME)/img -fd $(top_srcdir)/data/themes/$(THEME) $< $@
 
 preview: $(EET)
 	edje $(EET) 
