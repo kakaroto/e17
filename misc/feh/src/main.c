@@ -42,6 +42,10 @@ main (int argc, char **argv)
     init_multiwindow_mode ();
   else if (opt.list || opt.longlist)
     init_list_mode ();
+  else if (opt.loadables)
+	init_loadables_mode();
+  else if(opt.unloadables)
+	init_unloadables_mode();
   else
     {
       /* Slideshow mode is now the default. 'Cos its spiffy */

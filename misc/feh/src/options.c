@@ -25,7 +25,7 @@ static void check_options (void);
 void
 init_parse_options (int argc, char **argv)
 {
-  static char stropts[] = "a:AbBcdD:f:FhH:iklLmo:O:pPqrR:sS:tTvVwW:xy:z:";
+  static char stropts[] = "a:AbBcdD:f:FhH:iklLmo:O:pPqrR:sS:tTuUvVwW:xy:z:";
   static struct option lopts[] = {
     /* actions and macros */
     {"help", 0, 0, 'h'},
@@ -50,6 +50,8 @@ init_parse_options (int argc, char **argv)
     {"longlist", 0, 0, 'L'},
     {"quiet", 0, 0, 'q'},
     {"preload", 0, 0, 'p'},
+    {"loadables", 0, 0, 'U'},
+    {"unloadables", 0, 0, 'u'},
     /* options with values */
     {"output", 1, 0, 'o'},
     {"output-only", 1, 0, 'O'},
@@ -140,6 +142,12 @@ init_parse_options (int argc, char **argv)
 	  break;
 	case 'F':
 	  opt.full_screen = 1;
+	  break;
+	  case 'U':
+	  opt.loadables=1;
+	  break;
+	  case 'u':
+	  opt.unloadables=1;
 	  break;
 	case 'p':
 	  opt.preload = 1;
@@ -287,6 +295,14 @@ check_options (void)
 		"randomize mode has been unset\n");
       opt.randomize = 0;
     }
+
+  if (opt.loadables && opt.unloadables)
+    {
+      weprintf ("You cant show loadables AND unloadables...\n"
+	      "you might as well use ls ;)\n"
+	      "loadables only will be shown\n");
+      opt.unloadables = 0;
+    }
 }
 
 void
@@ -349,9 +365,13 @@ show_usage (void)
 	   "                            if caching, on exit. This option prevents this\n"
 	   "                            so that you get to keep the local copies.\n"
 	   "                            They will be in /tmp with \"feh\" in the name.\n"
-	   "  -l, --list                Don't display info. Analyse them and display an\n"
+	   "  -l, --list                Don't display images. Analyse them and display an\n"
 	   "                            'ls' style listing. Useful in scripts hunt out\n"
-	   "                            images of a certain size/resolution/type etc\n"
+	   "                            images of a certain size/resolution/type etc.\n"
+	   "  -U, --loadable            Don't display images. Just print out their name\n"
+	   "                            if imlib2 can successfully load them.\n"
+	   "  -u, --unloadable          Don't display images. Just print out their name\n"
+	   "                            if imlib2 can NOT successfully load them.\n"
 	   "  -S, --sort SORT_TYPE      The file list may be sorted according to image\n"
 	   "                            parameters. Allowed sort types are: name,\n"
 	   "                            filename, width, height, pixels, size, format.\n"

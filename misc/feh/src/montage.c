@@ -26,7 +26,7 @@ init_montage_mode (void)
 {
   Imlib_Image *im_main;
   Imlib_Image *im_temp;
-  int i = 0, ww, hh, www, hhh, xxx, yyy;
+  int ww, hh, www, hhh, xxx, yyy;
   int w = 800, h = 600;
   int x = 0, y = 0;
   int bg_w = 0, bg_h = 0;
@@ -174,21 +174,7 @@ init_montage_mode (void)
     {
       D (("   About to load image %s\n", file->filename));
       if (opt.verbose)
-	{
-	  if (i)
-	    {
-	      if (!(i % 50))
-		fprintf (stdout, "\n ");
-	      else if (!(i % 10))
-		fprintf (stdout, " ");
-	    }
-	  else
-	    fprintf (stdout, " ");
-
-	  fprintf (stdout, ".");
-	  fflush (stdout);
-	  i++;
-	}
+	    feh_display_status();
       if (feh_load_image (&im_temp, file) != 0)
 	{
 	  D (("   Successfully loaded %s\n", file->filename));

@@ -187,6 +187,8 @@ typedef struct cmdlineoptions
   unsigned char longlist:1;
   unsigned char quiet:1;
   unsigned char preload:1;
+  unsigned char loadables:1;
+  unsigned char unloadables:1;
 
   char *output_file;
   char *bg_file;
@@ -214,6 +216,8 @@ void init_montage_mode (void);
 void init_index_mode (void);
 void init_slideshow_mode (void);
 void init_list_mode (void);
+void init_loadables_mode (void);
+void init_unloadables_mode (void);
 int feh_load_image (Imlib_Image ** im, feh_file *file);
 void add_file_to_filelist_recursively (char *path, unsigned char level);
 void feh_prepare_filelist (void);
@@ -251,6 +255,8 @@ void add_file_to_rm_filelist (char *file);
 void delete_rm_files (void);
 int feh_load_image_char (Imlib_Image ** im, char *filename);
 void feh_draw_filename (winwidget w);
+void feh_display_status (void);
+void real_loadables_mode(int loadable);
 
 
 feh_file *filelist_addtofront (feh_file *root, feh_file *newfile);
@@ -303,3 +309,4 @@ extern fehtimer first_timer;
 extern feh_file *filelist;
 extern feh_file *current_file;
 extern Screen *scr;
+extern unsigned char reset_output;

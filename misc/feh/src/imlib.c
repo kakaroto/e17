@@ -52,7 +52,9 @@ init_x_and_imlib (void)
   imlib_add_path_to_font_path ("./ttfonts");
 
   /* don't need checks for these */
-  if (!(opt.list  || opt.longlist || opt.montage || opt.index || opt.thumbs))
+  if (!
+      (opt.list || opt.longlist || opt.loadables || opt.unloadables
+       || opt.montage || opt.index || opt.thumbs))
     {
       checks = imlib_create_image (CHECK_SIZE, CHECK_SIZE);
 
@@ -134,6 +136,11 @@ feh_load_image (Imlib_Image ** im, feh_file * file)
 
   if ((err) || (!im))
     {
+      if (opt.verbose && !opt.quiet)
+	{
+	  fprintf (stdout, "\n");
+	  reset_output = 1;
+	}
       /* Check error code */
       switch (err)
 	{
@@ -148,15 +155,12 @@ feh_load_image (Imlib_Image ** im, feh_file * file)
 	  break;
 	case IMLIB_LOAD_ERROR_PERMISSION_DENIED_TO_READ:
 	  if (!opt.quiet)
-	    weprintf
-	      ("%s - You don't have read access to that directory",
-	       file->filename);
+	    weprintf ("%s - No read access to directory", file->filename);
 	  break;
 	case IMLIB_LOAD_ERROR_NO_LOADER_FOR_FILE_FORMAT:
 	  if (!opt.quiet)
 	    weprintf
-	      ("%s - You don't have an Imlib2 loader for that file format",
-	       file->filename);
+	      ("%s - No Imlib2 loader for that file format", file->filename);
 	  break;
 	case IMLIB_LOAD_ERROR_PATH_TOO_LONG:
 	  if (!opt.quiet)
@@ -397,4 +401,39 @@ feh_draw_filename (winwidget w)
 
   XSetWindowBackgroundPixmap (disp, w->win, w->bg_pmap);
   XClearArea (disp, w->win, 0, 0, tw, th, False);
+}
+
+unsigned char reset_output = 0;
+
+void
+feh_display_status (void)
+{
+  static int i = 0;
+  int j = 0;
+  if (i)
+    {
+      if (reset_output)
+	{
+	  /* There's just been an error message. Unfortunate ;) */
+	  for (j = 0; j < (((i % 50) + ((i % 50) / 10)) + 1); j++)
+	    fprintf (stdout, " ");
+	}
+
+      if (!(i % 50))
+	{
+	  char buf[20];
+	  snprintf (buf, sizeof (buf), "  %4d\n ", i);
+	  fprintf (stdout, buf);
+	}
+      else if ((!(i % 10)) && (!reset_output))
+	fprintf (stdout, " ");
+
+      reset_output = 0;
+    }
+  else
+    fprintf (stdout, " ");
+
+  fprintf (stdout, ".");
+  fflush (stdout);
+  i++;
 }

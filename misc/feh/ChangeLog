@@ -1,3 +1,14 @@
+Sat Mar 18 00:37:17 2000  Tom Gilbert  <gilbertt@btinternet.com>
+
+	* Made the -V, --verbose option give cooler output on loading
+	mulitple images. It's pretty flim now.
+
+Sat Mar 18 00:32:42 2000  Tom Gilbert  <gilbertt@btinternet.com>
+
+	* Added -U, --loadables, and -u, --unloadables. They don't show
+	images, just list all the files from the filelist that are
+	loadable or unloadable, respectively.
+
 Fri Mar 17 22:58:14 2000  Tom Gilbert  <gilbertt@btinternet.com>
 
 	* Don't need to create checkerboard for list mode, montage mode,

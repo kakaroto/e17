@@ -380,7 +380,6 @@ feh_file *
 feh_file_info_preload (feh_file * list)
 {
   feh_file *file;
-  int i = 0;
 
   if (opt.verbose)
     fprintf (stdout, "feh - preloading...\n");
@@ -390,21 +389,7 @@ feh_file_info_preload (feh_file * list)
       if (feh_file_info_load (file))
 	list = filelist_remove_file (list, file);
       if (opt.verbose)
-	{
-	  if (i)
-	    {
-	      if (!(i % 50))
-		fprintf (stdout, "\n ");
-	      else if (!(i % 10))
-		fprintf (stdout, " ");
-	    }
-	  else
-	    fprintf (stdout, " ");
-
-	  fprintf (stdout, ".");
-	  fflush (stdout);
-	  i++;
-	}
+	    feh_display_status();
     }
   if (opt.verbose)
     fprintf (stdout, "\n");

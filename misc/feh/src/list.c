@@ -49,3 +49,49 @@ init_list_mode (void)
 
   exit (0);
 }
+
+void
+init_loadables_mode (void)
+{
+  D (("In init_loadables_mode\n"));
+
+  real_loadables_mode (1);
+}
+
+void
+init_unloadables_mode (void)
+{
+  D (("In init_unloadables_mode\n"));
+
+  real_loadables_mode (0);
+}
+
+
+void
+real_loadables_mode (int loadable)
+{
+  feh_file *file;
+
+  opt.quiet = 1;
+
+  for (file = filelist; file; file = file->next)
+    {
+      Imlib_Image *im = NULL;
+
+      if (feh_load_image (&im, file))
+	{
+	  /* loaded ok */
+	  if (loadable)
+	    fprintf (stdout, "%s\n", file->filename);
+	  imlib_context_set_image (im);
+	  imlib_free_image_and_decache ();
+	}
+      else
+	{
+	  /* Oh dear. */
+	  if (!loadable)
+	    fprintf (stdout, "%s\n", file->filename);
+	}
+    }
+  exit (0);
+}
