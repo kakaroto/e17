@@ -98,7 +98,7 @@ p { n, "FullScreenUnClicked"; s, "mouse,up,*"; so, "IconFullScreen";
 	t, "IconFullScreen"; }
 
 //
-
+/*
 p { n, "RotateLeftHilited"; s, "mouse,in"; so, RotateLeft;
 	a, ST "active" x; tr, SINUSOIDAL 1.05;
 	t, RotateLeft; af, "RotateLeftUnHilited"; }
@@ -118,8 +118,6 @@ p { n, "RotateLeftUnClicked"; s, "mouse,up,*"; so, RotateLeft;
 	a, ST "default" x; tr, SINUSOIDAL 0.01; 
 	t, RotateLeft; }
 
-//
-
 p { n, "RotateRightHilited"; s, "mouse,in"; so, RotateRight;
 	a, ST "active" x; tr, SINUSOIDAL 1.05;
 	t, RotateRight; af, "RotateRightUnHilited"; }
@@ -138,3 +136,5 @@ p { n, "RotateRightClicked"; s, "mouse,down,*"; so, RotateRight;
 p { n, "RotateRightUnClicked"; s, "mouse,up,*"; so, RotateRight;
 	a, ST "default" x; tr, SINUSOIDAL 0.01; 
 	t, RotateRight; }
+
+*/
