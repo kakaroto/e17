@@ -19,17 +19,31 @@
  */
 
 
-#define econf_get_integer() \
-eConfigGetData();
+#define econf_get_integer(loc) \
+{\
+	unsigned long *tmp,tmp2;\
+	tmp = (unsigned long *) eConfigGetData(loc,&tmp2); \
+	*tmp = ntohl(*tmp); \
+	return *tmp; \
+}
 
 #define econf_get_string() \
-eConfigGetData();
+{ \
+	unsigned long tmp; \
+	return (char *) eConfigGetData(loc,&tmp); \
+}
 
-#define econf_save_integer() \
-eConfigStoreData();
+#define econf_save_integer(path,loc,data) \
+{\
+	unsigned long tmp; \
+	tmp = htonl(*data); \
+	return eConfigStoreData(loc,&tmp,sizeof(unsigned long),path); \
+}
 
-#define econf_save_string() \
-eConfigStoreData();
+#define econf_save_string(path,loc,string) \
+{ \
+	return eConfigStoreData(loc,string,length(string),path); \
+}
 
 
 int              eConfigAddPath(char *path);
