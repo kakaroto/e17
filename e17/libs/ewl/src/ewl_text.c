@@ -1,6 +1,8 @@
 #include <Ewl.h>
 
 static void ewl_text_ops_apply(Ewl_Text *ta);
+static void ewl_text_op_prune_list(Ewl_Text *ta, int rstart, int rend, 
+				   int bstart, int bend);
 static void ewl_text_op_free(void *data);
 static Ewl_Text_Op *ewl_text_op_relevant_find(Ewl_Text *ta,
 					      Ewl_Text_Op_Type type);
@@ -117,6 +119,8 @@ void ewl_text_text_set(Ewl_Text * ta, char *text)
 	DCHECK_PARAM_PTR("ta", ta);
 
 	op = ewl_text_op_text_set_new(ta, text);
+	ewl_text_op_prune_list(ta, EWL_TEXT_OP_TYPE_TEXT_SET,
+				   EWL_TEXT_OP_TYPE_TEXT_DELETE, -1, -1);
 	ecore_dlist_append(ta->ops, op);
 	if (REALIZED(ta))
 		ewl_text_ops_apply(ta);
@@ -201,6 +205,7 @@ void ewl_text_text_prepend(Ewl_Text * ta, char *text)
 /**
  * @param ta: the text area widget to insert the text
  * @param text: the text to insert in the text area widget @a ta
+ * @param index: the index into the text to start inserting new text
  * @return Returns no value.
  * @brief Append text to a text area widget
  *
@@ -272,6 +277,13 @@ void ewl_text_color_set(Ewl_Text *ta, int r, int g, int b, int a)
 	DCHECK_PARAM_PTR("ta", ta);
 
 	op = ewl_text_op_color_new(ta, r, g, b, a);
+	/*
+	 * Remove all color sets prior to a text addition/set operation.
+	 */
+	ewl_text_op_prune_list(ta, EWL_TEXT_OP_TYPE_COLOR_SET,
+				   EWL_TEXT_OP_TYPE_COLOR_SET,
+				   EWL_TEXT_OP_TYPE_TEXT_SET,
+				   EWL_TEXT_OP_TYPE_TEXT_INSERT);
 	ecore_dlist_append(ta->ops, op);
 	if (REALIZED(ta))
 		ewl_text_ops_apply(ta);
@@ -294,6 +306,10 @@ void ewl_text_font_set(Ewl_Text *ta, char *font, int size)
 	DCHECK_PARAM_PTR("ta", ta);
 
 	op = ewl_text_op_font_new(ta, font, size);
+	ewl_text_op_prune_list(ta, EWL_TEXT_OP_TYPE_FONT_SET,
+				   EWL_TEXT_OP_TYPE_FONT_SET,
+				   EWL_TEXT_OP_TYPE_TEXT_SET,
+				   EWL_TEXT_OP_TYPE_TEXT_INSERT);
 	ecore_dlist_append(ta->ops, op);
 	if (REALIZED(ta))
 		ewl_text_ops_apply(ta);
@@ -302,11 +318,9 @@ void ewl_text_font_set(Ewl_Text *ta, char *font, int size)
 }
 
 /**
- * @param ta: the text widget to change font
- * @param font: the name of the font
- * @param size: the size of the font
- * @brief Changes the currently applied font of the text to specified values
- * @return Returns no value.
+ * @param ta: the text widget to retrieve the current font
+ * @brief Retrieve the name of the currently used font.
+ * @return Returns a copied string containing the name of the current font.
  */
 char *ewl_text_font_get(Ewl_Text *ta)
 {
@@ -340,6 +354,10 @@ void ewl_text_style_set(Ewl_Text *ta, char *style)
 	DCHECK_PARAM_PTR("ta", ta);
 
 	op = ewl_text_op_style_new(ta, style);
+	ewl_text_op_prune_list(ta, EWL_TEXT_OP_TYPE_STYLE_SET,
+				   EWL_TEXT_OP_TYPE_STYLE_SET,
+				   EWL_TEXT_OP_TYPE_TEXT_SET,
+				   EWL_TEXT_OP_TYPE_TEXT_INSERT);
 	ecore_dlist_append(ta->ops, op);
 	if (REALIZED(ta))
 		ewl_text_ops_apply(ta);
@@ -384,6 +402,10 @@ void ewl_text_align_set(Ewl_Text *ta, unsigned int align)
 	DCHECK_PARAM_PTR("ta", ta);
 
 	op = ewl_text_op_align_new(ta, align);
+	ewl_text_op_prune_list(ta, EWL_TEXT_OP_TYPE_ALIGN_SET,
+				   EWL_TEXT_OP_TYPE_ALIGN_SET,
+				   EWL_TEXT_OP_TYPE_TEXT_SET,
+				   EWL_TEXT_OP_TYPE_TEXT_INSERT);
 	ecore_dlist_append(ta->ops, op);
 	if (REALIZED(ta))
 		ewl_text_ops_apply(ta);
@@ -953,4 +975,28 @@ ewl_text_op_text_free(void *op)
 	FREE(opt);
 
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
+}
+
+static void
+ewl_text_op_prune_list(Ewl_Text *ta, int rstart, int rend, int bstart, int bend)
+{
+	Ewl_Text_Op *op;
+
+	ecore_dlist_goto_last(ta->ops);
+	while ((op = ecore_dlist_current(ta->ops))) {
+		/*
+		 * Stop searching the list if we hit these events.
+		 */
+		if (op->type >= bstart && op->type <= bend)
+			break;
+		if (op->type >= rstart && op->type <= rend) {
+			ecore_dlist_remove(ta->ops);
+			if (op->free)
+				op->free(op);
+			else {
+				FREE(op);
+			}
+		}
+		ecore_dlist_previous(ta->ops);
+	}
 }

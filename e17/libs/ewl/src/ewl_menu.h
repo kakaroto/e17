@@ -2,9 +2,9 @@
 #define __EWL_MENU_H__
 
 /**
- * @defgroup Ewl_Imenu Imenu: A Simple Internal Menu
- * Defines a menu used internally. The contents on the menu are not drawn
- * outside of the Evas.
+ * @defgroup Ewl_Menu Menu: A Simple Windowed Menu
+ * Defines a menu used globally. The contents on the menu are drawn outside of
+ * the Evas.
  *
  * @{
  */

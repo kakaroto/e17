@@ -51,7 +51,7 @@ typedef enum
 } Ewl_Text_Overrides;
 
 /**
- * @enum  Ewl_Text_Ops
+ * @enum  Ewl_Text_Op_Type
  * Provides a series of operations that can be performed on the text.
  */
 typedef enum
@@ -65,6 +65,7 @@ typedef enum
 	EWL_TEXT_OP_TYPE_TEXT_PREPEND,
 	EWL_TEXT_OP_TYPE_TEXT_APPEND,
 	EWL_TEXT_OP_TYPE_TEXT_INSERT,
+	EWL_TEXT_OP_TYPE_TEXT_DELETE,
 } Ewl_Text_Op_Type;
 
 typedef struct Ewl_Text_Op Ewl_Text_Op;

@@ -30,6 +30,7 @@ Ewl_Widget     *ewl_image_new(char *i, char *k)
 /**
  * @param i: the image widget to initialize
  * @param path: the path to the image displayed
+ * @param key: the key in the file for the image
  * @return Returns no value.
  * @brief Initialize an image widget to default values and callbacks
  *
@@ -73,6 +74,7 @@ void ewl_image_init(Ewl_Image * i, char *path, char *key)
 /**
  * @param i: the image widget to change the displayed image
  * @param im: the path to the new image to be displayed by @a i
+ * @param key: the key in the file for the image
  * @return Returns no value.
  * @brief Change the image file displayed by an image widget
  *

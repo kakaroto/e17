@@ -282,6 +282,7 @@ void ewl_embed_feed_key_up(Ewl_Embed *embed, char *keyname, unsigned int mods)
 /**
  * @param embed: the embed where the mouse event is to occur
  * @param b: the number of the button pressed
+ * @param clicks: the number of times the button was pressed
  * @param x: the x coordinate of the mouse press
  * @param y: the y coordinate of the mouse press
  * @param mods: the mask of key modifiers currently pressed
@@ -524,8 +525,10 @@ ewl_embed_feed_mouse_out(Ewl_Embed *embed, int x, int y, unsigned int mods)
 
 /**
  * @param embed: the embed where the mouse event is to occur
- * @param x: the x coordinate of the mouse out
- * @param y: the y coordinate of the mouse out
+ * @param x: the x coordinate of the mouse when the wheel event occurred
+ * @param y: the y coordinate of the mouse when wheel event occurred
+ * @param z: the direction the mouse wheel rotated
+ * @param dir: FIXME, not sure what this does, it's always 0
  * @param mods: the mask of key modifiers currently release
  * @return Returns no value.
  * @brief Sends a mouse out event to the last focused widget

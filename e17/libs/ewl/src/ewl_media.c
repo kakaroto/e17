@@ -127,7 +127,7 @@ int ewl_media_length_get(Ewl_Media *m)
  * @param h: hours variable
  * @param min: minutes variable
  * @param s: seconds variable
- * @brief Puts the length of the video into the @h, @m, @s variables
+ * @brief Puts the length of the video into the @a h, @a m, @a s variables
  */
 void ewl_media_length_time_get(Ewl_Media *m, int *h, int *min, double *s)
 {
@@ -197,7 +197,7 @@ double ewl_media_position_get(Ewl_Media *m)
  * @param h: hours variable
  * @param min: minutes variable
  * @param s: seconds variable
- * @brief Puts the position of the video into the @h, @m, @s variables
+ * @brief Puts the position of the video into the @a h, @a m, @a s variables
  */
 void ewl_media_position_time_get(Ewl_Media *m, int *h, int *min, double *s)
 {
@@ -249,6 +249,7 @@ int ewl_media_audio_mute_get(Ewl_Media *m)
 
 /**
  * @param m: the media widget to act upon
+ * @param mute: boolean to indicate if the sound should be muted
  * @return Returns no value
  * @brief Mutes the media widget
  */
