@@ -27,6 +27,7 @@ collections {
 	       state,    "default" 0.0;
 	       border, 3 3 3 3;
 	       min, 6 6 6 6;
+	       color_class, "background";
 	       rel1 {
 		  relative, 0.0  0.0;
 		  offset,   0    0;
@@ -43,6 +44,7 @@ collections {
 	       state,    "over" 0.0;
 	       border, 3 3 3 3;
 	       color_class, "highlight";
+	       color, 200 208 216 128;
 	       rel1 {
 		  relative, 0.0  0.0;
 		  offset,   0    0;
@@ -52,7 +54,7 @@ collections {
 		  offset,   -1   -1;
 	       }
 	       image {
-		  normal, "button-over.png";
+		  normal, "button-up.png";
 	       }
 	    }
 	    description {
