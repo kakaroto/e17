@@ -157,6 +157,12 @@ void ebg_eet_gen(char *filename) {
    char *cmd, *file, *dir, *sed, *eet, *edc, *edj, *edje, *filenoext;
    Imlib_Image *im;
 
+   if (strcmp(filename + strlen(filename) - 4, ".eet") == 0)
+     {
+	e_background_set(filename);
+	return;
+     }
+		   
    i = 0;
 
    file = ebg_file_getfile(filename);
