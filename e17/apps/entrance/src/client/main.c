@@ -2,7 +2,7 @@
  * Corey Donohoe <atmos@atmos.org>
  * filename: main.c
  * Project: Entrance
- * July 11, 2003
+ * July 24, 2003
  * 
  * Themes are edjes(eet files) and work like this:
  * 1. A Parts Collection Must be Present, Titled "main"
@@ -11,13 +11,9 @@
  * -------------------------------------------------------------------------
  * | Key(state1, state2, ... , staten)		| Type         |  Required |
  * -------------------------------------------------------------------------
- * | EntrancePassMessage 			| TEXT	       | Yes       |
+ * | EntrancePassEntry(default) 		| TEXT	       | Yes       |
  * -------------------------------------------------------------------------
- * | EntranceUserMessage 			| TEXT	       | Yes       |
- * -------------------------------------------------------------------------
- * | EntrancePassEntry 			        | TEXT	       | Yes       |
- * -------------------------------------------------------------------------
- * | EntranceUserEntry 				| TEXT	       | Yes       |
+ * | EntranceUserEntry(default) 		| TEXT	       | Yes       |
  * -------------------------------------------------------------------------
  * | EntranceDate(default)		        | TEXT	       | No        |
  * -------------------------------------------------------------------------
@@ -25,37 +21,56 @@
  * -------------------------------------------------------------------------
  * | EntranceHostname(default)		        | TEXT	       | No        |
  * -------------------------------------------------------------------------
- * | EntranceSession (default, foo, bar)        | TEXT	       | No        |
+ * | EntranceSession (default, E, KDE, Gnome)   | TEXT	       | No        |
  * -------------------------------------------------------------------------
  *
- * 3. The following signals need to be defined in programs.
+ * 3. The following signals are emitted by entrance and need to be caught in
+ * programs.
  * -------------------------------------------------------------------------
- * | Signal		     | Type      		               | Req
+ * | Signal		       | Description   		               | Req
  * -------------------------------------------------------------------------
- * | EntranceUserAuthSuccess | SIGNAL_EMIT 			       | Yes
- * |			     |	"EntranceUserAuthSuccessDone" ""       |	
+ * | EntranceUserAuthSuccess   | After successful authentication this  |
+ * |			       | signal is emitted, you can do your own|
+ * |			       | animation here if you want.  You must |
+ * | 			       | emit "EntranceUserAuthSuccessDone" "" | 
+ * |			       | after it though in order for	       |	
+ * |			       | entrance to start your x session      | 
+ * |			       |"EntranceUserAuthSuccessDone" ""       | Yes
  * -------------------------------------------------------------------------
- * | EntranceUserFail	       | 				       | No
+ * | EntranceUserFail	       | When the user is unknown the system   | No
  * -------------------------------------------------------------------------
- * | EntranceUserAuthFail      | 				       | No 
+ * | EntranceUserAuthFail      | When a user fails a login attempted   | No 
  * -------------------------------------------------------------------------
- * | EntranceUserAuth          | Theme Specific        		       | No
+ * | EntranceUserAuth          | When the user is known to the system, | 
+ * |			       | it's time to prompt for their password|
+ * |			       |				       | No
  * -------------------------------------------------------------------------
- * | EntranceInputUserFocusIn  | SIGNAL_EMIT "In" "EntranceUserEntry"  | Yes 
+ *
+ * 4. The following signals can be emitted by your application in order
+ * to change states in entrance
  * -------------------------------------------------------------------------
- * | EntranceInputUserFocusOut | SIGNAL_EMIT "Out" "EntranceUserEntry" | Yes 
+ * | Signal		        | Source			        | Req
  * -------------------------------------------------------------------------
- * | EntranceInputPassFocusIn  | SIGNAL_EMIT "In" "EntrancePassEntry"  | Yes 
+ * | "In"		        | Either EntranceUserEntry or           |
+ * |			        | EntrancePassEntry depending on which  |
+ * |			        | you'd like focus on.		        | No
  * -------------------------------------------------------------------------
- * | EntranceInputPassFocusOut | SIGNAL_EMIT "Out" "EntrancePassEntry" | Yes 
+ * | "Out"		        | Either EntranceUserEntry or           |
+ * |			        | EntrancePassEntry depending on which  |
+ * |			        | you'd like to take focus away from.   | No
  * -------------------------------------------------------------------------
- * | EntranceSystemReboot      | 					| No 
+ * | EntranceSystemReboot       | When the system request being rebooted| 
+ * |				| Source should be ""			| No
  * -------------------------------------------------------------------------
- * | EntranceSystemHalt	       | 					| No 
+ * | EntranceSystemHalt	        | When the system requests being halted | 
+ * |				| Source should be ""			| No
  * -------------------------------------------------------------------------
- * 
+ * | EntranceUserAuthSuccessDone| When the theme has completed its post |
+ * |				| auth animation.			|
+ * |				| Source should be ""			|Yes
+ * -------------------------------------------------------------------------
  */
-#include<time.h>
+#include <time.h>
 #include "entrance.h"
 #include "entrance_session.h"
 #include "EvasTextEntry.h"
@@ -65,7 +80,7 @@
 
 static Entrance_Session session = NULL;
 
-/* Callbacks for shit */
+/* Callbacks for entrance */
 static char *
 get_my_hostname(void)
 {
@@ -519,6 +534,8 @@ main(int argc, char *argv[])
 	 * the desired events 
 	 */
 	evas_object_show(edje);
+	/* set focus to user input */
+	edje_object_signal_emit(edje, "In", "EntranceUserEntry");
 
 #if (X_TESTING == 0)
 	    ecore_evas_fullscreen_set(e, 1);
