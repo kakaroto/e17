@@ -19,3 +19,4 @@ config.guess
 cat-id-tbl.c
 enlightenment.pot
 enlightenment*.tar.gz
+ABOUT-NLS
