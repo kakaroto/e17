@@ -25,7 +25,7 @@
 //#include "events.h"
 //#include <Imlib2.h>
 #include "elogin.h"
-#include "ewl.h"
+#include <ewl/ewl.h>
 
 
 int
