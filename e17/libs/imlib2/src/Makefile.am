@@ -26,7 +26,7 @@ libImlib2_la_SOURCES = scale.c image.c blend.c file.c rgbadraw.c api.c \
 EXTRA_libImlib2_la_SOURCES = rend.c ximage.c rgba.c color.c grab.c draw.c \
 			     context.c color.h context.h draw.h grab.h rend.h \
 			     rgba.h ximage.h $(MMX_SRCS)
-libImlib2_la_LDFLAGS      = -version-info 1:2:0
+libImlib2_la_LDFLAGS      = -version-info 1:3:0
 
 if HAVE_MMX
 libImlib2_la_LIBADD   = $(X_OBJS) @DLLDFLAGS@ $(MMX_OBJS) \
