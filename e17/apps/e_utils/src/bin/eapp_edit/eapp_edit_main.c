@@ -70,7 +70,7 @@ _eapp_edit_save(Ewl_Widget *w, void *ev, void *data) {
   } 
   
   /* if the file does not exist it should do now... */
-  ef = eet_open(file, EET_FILE_MODE_RW);
+  ef = eet_open(file, EET_FILE_MODE_READ_WRITE);
   if (!ef) {
     printf("ERROR: cannot open file %s for READ/WRITE\n \
   (if a new icon you must supply an image)\n", file);
