@@ -129,7 +129,7 @@ spif_array_list_init(spif_array_t self)
     spif_obj_init(SPIF_OBJ(self));
     spif_obj_set_class(SPIF_OBJ(self), SPIF_CLASS(SPIF_LISTCLASS_VAR(array)));
     self->len = 0;
-    self->items = SPIF_NULL_CTYPE(spif_obj_t *);
+    self->items = SPIF_NULL_TYPE_C(spif_obj_t *);
     return TRUE;
 }
 
@@ -149,7 +149,7 @@ spif_array_vector_init(spif_array_t self)
     spif_obj_init(SPIF_OBJ(self));
     spif_obj_set_class(SPIF_OBJ(self), SPIF_CLASS(SPIF_VECTORCLASS_VAR(array)));
     self->len = 0;
-    self->items = SPIF_NULL_CTYPE(spif_obj_t *);
+    self->items = SPIF_NULL_TYPE_C(spif_obj_t *);
     return TRUE;
 }
 
@@ -191,7 +191,7 @@ spif_array_show(spif_array_t self, spif_charptr_t name, spif_str_t buff, size_t 
     }
 
     if (SPIF_ARRAY_ISNULL(self->items)) {
-        spif_str_append_from_ptr(buff, SPIF_NULLSTR_CTYPE(spif_obj_t *));
+        spif_str_append_from_ptr(buff, SPIF_NULLSTR_TYPE_C(spif_obj_t *));
     } else {
         for (i = 0; i < self->len; i++) {
             spif_obj_t o = self->items[i];

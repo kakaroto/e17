@@ -41,10 +41,11 @@
                                                                 ? (SPIF_CAST(charptr) "") \
                                                                 : (SPIF_STR(obj)->s)))
 
-SPIF_DEFINE_OBJ(str) {
+SPIF_DECL_OBJ(str) {
     SPIF_DECL_PARENT_TYPE(obj);
     spif_charptr_t s;
-    size_t mem, len;
+    SPIF_DECL_PROPERTY_C(size_t, size);
+    SPIF_DECL_PROPERTY_C(size_t, len);
 };
 
 extern spif_class_t SPIF_CLASS_VAR(str);
@@ -87,10 +88,8 @@ extern spif_bool_t spif_str_trim(spif_str_t);
 extern spif_bool_t spif_str_splice(spif_str_t, size_t, size_t, spif_str_t);
 extern spif_bool_t spif_str_splice_from_ptr(spif_str_t, size_t, size_t, spif_charptr_t);
 extern spif_bool_t spif_str_reverse(spif_str_t);
-extern size_t spif_str_get_size(spif_str_t);
-extern spif_bool_t spif_str_set_size(spif_str_t, size_t);
-extern size_t spif_str_get_len(spif_str_t);
-extern spif_bool_t spif_str_set_len(spif_str_t, size_t);
+SPIF_DECL_PROPERTY_FUNC_C(str, size_t, size);
+SPIF_DECL_PROPERTY_FUNC_C(str, size_t, len);
 extern spif_str_t spif_str_show(spif_str_t, spif_charptr_t, spif_str_t, size_t);
 extern spif_classname_t spif_str_type(spif_str_t);
 

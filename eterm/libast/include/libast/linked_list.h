@@ -35,12 +35,12 @@
 #define SPIF_LINKED_LIST_ITEM_ISNULL(o)            (SPIF_LINKED_LIST_ITEM(o) == SPIF_NULL_TYPE(linked_list_item))
 #define SPIF_OBJ_IS_LINKED_LIST_ITEM(o)            (SPIF_OBJ_IS_TYPE((o), linked_list_item))
 
-SPIF_DEFINE_OBJ(linked_list_item) {
+SPIF_DECL_OBJ(linked_list_item) {
     spif_obj_t data;
     spif_linked_list_item_t next;
 };
 
-SPIF_DEFINE_OBJ(linked_list) {
+SPIF_DECL_OBJ(linked_list) {
     SPIF_DECL_PARENT_TYPE(obj);
     size_t len;
     spif_linked_list_item_t head;

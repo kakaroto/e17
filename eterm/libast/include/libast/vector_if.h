@@ -65,7 +65,7 @@
 
 typedef spif_obj_t spif_vector_t;
 
-SPIF_DEFINE_OBJ(vectorclass) {
+SPIF_DECL_OBJ(vectorclass) {
     SPIF_DECL_PARENT_TYPE(class);
 
     spif_func_t contains;

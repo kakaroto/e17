@@ -68,7 +68,7 @@
 
 #include <libast/url.h>
 
-SPIF_DEFINE_OBJ(socket) {
+SPIF_DECL_OBJ(socket) {
     SPIF_DECL_PARENT_TYPE(obj);
     spif_sockfd_t fd;
     spif_sockfamily_t fam;

@@ -45,19 +45,19 @@
  * help prevent its direct use.  Obviously the translation is plainly
  * visible, so those sufficiently determined to do it the Wrong Way
  * still can.  This macro is not used directly, but rather as part of
- * the SPIF_DEFINE_OBJ() macro (see below), which is in turn used to
+ * the SPIF_DECL_OBJ() macro (see below), which is in turn used to
  * define object types.
  *
  * @param t The object type as a non-quoted string (e.g., obj).
  * @return  The @c struct keyword followed by the structure name for
  *          the specified object type.
  *
- * @see DOXGRP_OBJ, SPIF_DEFINE_OBJ(), SPIF_DEFINE_TYPE()
+ * @see DOXGRP_OBJ, SPIF_DECL_OBJ(), SPIF_DECL_TYPE()
  */
-#define SPIF_DECL_OBJ_STRUCT(t)          struct spif_ ## t ## _t_struct
+#define SPIF_DECL_OBJ_STRUCT(t)  struct spif_ ## t ## _t_struct
 
 /**
- * Define an object type based on the structure definition immediately
+ * Declare an object type based on the structure definition immediately
  * following.
  *
  * This macro simplifies the creation of a new class by adding the
@@ -71,17 +71,17 @@
  * @param t The object type as a non-quoted string (e.g., obj).
  * @return  An appropriate @c typedef and @c struct introducer.
  *
- * @see DOXGRP_OBJ, SPIF_DEFINE_TYPE(), SPIF_DECL_OBJ_STRUCT()
+ * @see DOXGRP_OBJ, SPIF_DECL_TYPE(), SPIF_DECL_OBJ_STRUCT()
  */
-#define SPIF_DEFINE_OBJ(t)               SPIF_DEFINE_TYPE(t, SPIF_DECL_OBJ_STRUCT(t)); SPIF_DECL_OBJ_STRUCT(t)
+#define SPIF_DECL_OBJ(t)  SPIF_DECL_TYPE(t, SPIF_DECL_OBJ_STRUCT(t)); SPIF_DECL_OBJ_STRUCT(t)
 /**
  * Declare the parent type of an object being defined.
  *
  * This macro is used to declare that a particular object type (e.g.,
  * obj) is the parent type of an object which is being defined via
- * SPIF_DEFINE_OBJ().  The call to this macro should @em immediately
+ * SPIF_DECL_OBJ().  The call to this macro should @em immediately
  * follow the opening brace (which, in turn, immediately follows the
- * call to SPIF_DEFINE_OBJ()).  Declaring the parent type allows for
+ * call to SPIF_DECL_OBJ()).  Declaring the parent type allows for
  * safe typecasting of any object of the current type to its parent
  * type (or any parent type in its "family tree").  At minimum, any
  * true object must at @em least be derived from the @c obj type so
@@ -91,7 +91,7 @@
  *
  * @see DOXGRP_OBJ, SPIF_CONST_TYPE()
  */
-#define SPIF_DECL_PARENT_TYPE(t)         SPIF_CONST_TYPE(t) parent
+#define SPIF_DECL_PARENT_TYPE(t)  SPIF_CONST_TYPE(t) parent
 
 /**
  * Declare the class variable for objects of a given type.
@@ -106,7 +106,117 @@
  *
  * @see DOXGRP_OBJ
  */
-#define SPIF_CLASS_VAR(type)             spif_ ## type ## _class
+#define SPIF_CLASS_VAR(type)  spif_ ## type ## _class
+
+/**
+ * Declare a "property" of an object.
+ *
+ * This macro is used when declaring a class to specify that a
+ * particular class object is a "property."  A "property" is an object
+ * member which has public get/set methods of the same name.
+ *
+ * @param type The type of the property variable.
+ * @param name The name of the property.
+ *
+ * @see DOXGRP_OBJ
+ */
+#define SPIF_DECL_PROPERTY(type, name)  SPIF_TYPE(type) name
+
+/**
+ * Declare a "property" of an object.
+ *
+ * This macro is identical to SPIF_DECL_PROPERTY(), except that a
+ * native C type is used.
+ *
+ * @param type The C type of the property variable.
+ * @param name The name of the property.
+ *
+ * @see DOXGRP_OBJ, SPIF_DECL_PROPERTY()
+ */
+#define SPIF_DECL_PROPERTY_C(type, name)  type name
+
+/**
+ * Declare the get/set methods of a "property" of an object.
+ *
+ * This macro is used to prototype the get/set methods of an object
+ * property.
+ *
+ * @param otype The type of the object.
+ * @param vtype The type of the property variable.
+ * @param name  The name of the property.
+ *
+ * @see DOXGRP_OBJ
+ */
+#define SPIF_DECL_PROPERTY_FUNC(otype, vtype, name)  \
+  extern SPIF_TYPE(vtype) spif_ ## otype ## _get_ ## name (SPIF_TYPE(otype)); \
+  extern SPIF_TYPE(bool) spif_ ## otype ## _set_ ## name (SPIF_TYPE(otype), SPIF_TYPE(vtype))
+
+/**
+ * Declare the get/set methods of a "property" of an object.
+ *
+ * This macro is identical to SPIF_DECL_PROPERTY_FUNC(), except that a
+ * native C type is used.
+ *
+ * @param otype The type of the object.
+ * @param vtype The C type of the property variable.
+ * @param name  The name of the property.
+ *
+ * @see DOXGRP_OBJ, SPIF_DECL_PROPERTY_FUNC()
+ */
+#define SPIF_DECL_PROPERTY_FUNC_C(otype, vtype, name)  \
+  extern vtype spif_ ## otype ## _get_ ## name (SPIF_TYPE(otype)); \
+  extern SPIF_TYPE(bool) spif_ ## otype ## _set_ ## name (SPIF_TYPE(otype), vtype)
+
+/**
+ * Define the get/set methods of a "property" of an object.
+ *
+ * This macro is used to define (i.e., create, i.e. insert the code
+ * for) the get/set methods of an object property.
+ *
+ * @param otype The type of the object.
+ * @param vtype The type of the property variable.
+ * @param name  The name of the property.
+ *
+ * @see DOXGRP_OBJ
+ */
+#define SPIF_DEFINE_PROPERTY_FUNC(otype, vtype, name)  \
+  SPIF_TYPE(vtype) spif_ ## otype ## _get_ ## name (SPIF_TYPE(otype) self) \
+    { return ((SPIF_OBJ_IS_TYPE(self, otype)) ? (self-> ## name) : (SPIF_NULL_TYPE(vtype))); } \
+  SPIF_TYPE(bool) spif_ ## otype ## _set_ ## name (SPIF_TYPE(otype) self, SPIF_TYPE(vtype) new_ ## name) \
+    { \
+        if (!SPIF_OBJ_IS_TYPE(self, otype)) { \
+            return FALSE; \
+        } \
+        if (!SPIF_OBJ_ISNULL(self-> ## name)) { \
+            SPIF_OBJ_DEL(self-> ## name); \
+        } \
+        self-> ## name = new_ ## name; \
+        return TRUE; \
+    }
+
+/**
+ * Define the get/set methods of a "property" of an object.
+ *
+ * This macro is used to define (i.e., create, i.e. insert the code
+ * for) the get/set methods of an object property.
+ *
+ * @param otype The type of the object.
+ * @param vtype The C type of the property variable.
+ * @param name  The name of the property.
+ *
+ * @see DOXGRP_OBJ, SPIF_DEFINE_PROPERTY_FUNC()
+ */
+#define SPIF_DEFINE_PROPERTY_FUNC_C(otype, vtype, name)  \
+  vtype spif_ ## otype ## _get_ ## name (SPIF_TYPE(otype) self) \
+    { return ((SPIF_OBJ_IS_TYPE(self, otype)) ? (self->name) : (SPIF_NULL_TYPE_C(vtype))); } \
+  SPIF_TYPE(bool) spif_ ## otype ## _set_ ## name (SPIF_TYPE(otype) self, vtype new_ ## name) \
+    { \
+        if (!SPIF_OBJ_IS_TYPE(self, otype)) { \
+            return FALSE; \
+        } \
+        self->name = new_ ## name; \
+        return TRUE; \
+    }
 /*@}*/
 
 /*@{*/
@@ -530,7 +640,7 @@
  *
  * This class contains the object class structure.
  */
-SPIF_DEFINE_OBJ(class) {
+SPIF_DECL_OBJ(class) {
     /** Text representation of class name. */
     spif_classname_t classname;
 
@@ -548,8 +658,8 @@ SPIF_DEFINE_OBJ(class) {
 
 /* An obj is the most basic object type.  It contains simply a pointer to
    the class name (a const char * so you can test it with ==). */
-SPIF_DEFINE_OBJ(obj) {
-  spif_class_t cls;
+SPIF_DECL_OBJ(obj) {
+    spif_class_t cls;
 };
 /*@}*/
 

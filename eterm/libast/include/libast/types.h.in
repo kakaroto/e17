@@ -141,7 +141,7 @@
  *
  * @see DOXGRP_TYPES
  */
-#define SPIF_DEFINE_TYPE(t, u)           typedef u SPIF_CONST_TYPE(t); typedef SPIF_CONST_TYPE(t) * SPIF_TYPE(t)
+#define SPIF_DECL_TYPE(t, u)           typedef u SPIF_CONST_TYPE(t); typedef SPIF_CONST_TYPE(t) * SPIF_TYPE(t)
 /*@}*/
 
 /*@{*/
@@ -315,7 +315,7 @@
  *
  * @see DOXGRP_TYPES, SPIF_CAST_C()
  */
-#define SPIF_NULL_CTYPE(type)            (SPIF_CAST_C(type) (NULL))
+#define SPIF_NULL_TYPE_C(type)            (SPIF_CAST_C(type) (NULL))
 
 /**
  * Returns a string representing a NULL value of the specified base
@@ -347,7 +347,7 @@
  *
  * @see DOXGRP_TYPES
  */
-#define SPIF_NULLSTR_CTYPE(type)         "{ ((" #type ") NULL) }"
+#define SPIF_NULLSTR_TYPE_C(type)         "{ ((" #type ") NULL) }"
 /*@}*/
 
 /*@{*/
@@ -591,7 +591,7 @@ typedef const spif_charptr_t spif_classname_t;
  *
  * @see DOXGRP_TYPES
  */
-SPIF_DEFINE_TYPE(sockaddr, struct sockaddr);
+SPIF_DECL_TYPE(sockaddr, struct sockaddr);
 
 /**
  * A socket address for the IPv4 protocol family.
@@ -602,7 +602,7 @@ SPIF_DEFINE_TYPE(sockaddr, struct sockaddr);
  *
  * @see DOXGRP_TYPES
  */
-SPIF_DEFINE_TYPE(ipsockaddr, struct sockaddr_in);
+SPIF_DECL_TYPE(ipsockaddr, struct sockaddr_in);
 
 /**
  * A socket address for the UNIX protocol family.
@@ -613,7 +613,7 @@ SPIF_DEFINE_TYPE(ipsockaddr, struct sockaddr_in);
  *
  * @see DOXGRP_TYPES
  */
-SPIF_DEFINE_TYPE(unixsockaddr, struct sockaddr_un);
+SPIF_DECL_TYPE(unixsockaddr, struct sockaddr_un);
 
 /**
  * An IPv4 address.
@@ -623,7 +623,7 @@ SPIF_DEFINE_TYPE(unixsockaddr, struct sockaddr_un);
  *
  * @see DOXGRP_TYPES
  */
-SPIF_DEFINE_TYPE(ipaddr, struct in_addr);
+SPIF_DECL_TYPE(ipaddr, struct in_addr);
 
 /**
  * Host information.
@@ -633,7 +633,7 @@ SPIF_DEFINE_TYPE(ipaddr, struct in_addr);
  *
  * @see DOXGRP_TYPES
  */
-SPIF_DEFINE_TYPE(hostinfo, struct hostent);
+SPIF_DECL_TYPE(hostinfo, struct hostent);
 
 /**
  * Protocol information.
@@ -643,7 +643,7 @@ SPIF_DEFINE_TYPE(hostinfo, struct hostent);
  *
  * @see DOXGRP_TYPES
  */
-SPIF_DEFINE_TYPE(protoinfo, struct protoent);
+SPIF_DECL_TYPE(protoinfo, struct protoent);
 
 /**
  * Service information.
@@ -653,7 +653,7 @@ SPIF_DEFINE_TYPE(protoinfo, struct protoent);
  *
  * @see DOXGRP_TYPES
  */
-SPIF_DEFINE_TYPE(servinfo, struct servent);
+SPIF_DECL_TYPE(servinfo, struct servent);
 
 /**
  * The file descriptor for a socket.

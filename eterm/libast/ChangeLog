@@ -436,3 +436,10 @@ Thu Oct 30 16:03:29 2003                        Michael Jennings (mej)
 Make SPIF_STR_STR() convenience macro *always* return a string, even
 if the str object is NULL.
 ----------------------------------------------------------------------
+Thu Oct 30 18:12:35 2003                        Michael Jennings (mej)
+
+Added support for object "properties."  A property is a member
+variable with corresponding get/set methods.
+
+I'll probably flesh this out more as I use it more.
+----------------------------------------------------------------------

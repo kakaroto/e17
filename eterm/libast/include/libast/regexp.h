@@ -42,7 +42,7 @@
 #define SPIF_REGEXP_DUP(obj)            SPIF_OBJ_DUP(obj)
 #define SPIF_REGEXP_TYPE(obj)           SPIF_OBJ_TYPE(obj)
 
-SPIF_DEFINE_OBJ(regexp) {
+SPIF_DECL_OBJ(regexp) {
     SPIF_DECL_PARENT_TYPE(str);
     spif_ptr_t data;
     int flags;

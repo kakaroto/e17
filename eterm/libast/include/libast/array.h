@@ -30,7 +30,7 @@
 #define SPIF_ARRAY_ISNULL(o)                 (SPIF_ARRAY(o) == SPIF_NULL_TYPE(array))
 #define SPIF_OBJ_IS_ARRAY(o)                 (SPIF_OBJ_IS_TYPE((o), array))
 
-SPIF_DEFINE_OBJ(array) {
+SPIF_DECL_OBJ(array) {
     SPIF_DECL_PARENT_TYPE(obj);
     size_t len;
     spif_obj_t *items;

@@ -59,7 +59,7 @@
 
 typedef spif_obj_t spif_iterator_t;
 
-SPIF_DEFINE_OBJ(iteratorclass) {
+SPIF_DECL_OBJ(iteratorclass) {
     SPIF_DECL_PARENT_TYPE(class);
 
     spif_func_t has_next;

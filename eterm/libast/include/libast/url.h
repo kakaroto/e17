@@ -44,7 +44,7 @@
 #define SPIF_URL_TYPE(o)                 SPIF_OBJ_TYPE(o)
 
 
-SPIF_DEFINE_OBJ(url) {
+SPIF_DECL_OBJ(url) {
     SPIF_DECL_PARENT_TYPE(str);
     spif_str_t proto;
     spif_str_t user, passwd;

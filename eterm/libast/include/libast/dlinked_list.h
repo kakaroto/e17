@@ -31,12 +31,12 @@
 #define SPIF_DLINKED_LIST_ITEM_ISNULL(o)            (SPIF_DLINKED_LIST_ITEM(o) == SPIF_NULL_TYPE(dlinked_list_item))
 #define SPIF_OBJ_IS_DLINKED_LIST_ITEM(o)            (SPIF_OBJ_IS_TYPE((o), dlinked_list_item))
 
-SPIF_DEFINE_OBJ(dlinked_list_item) {
+SPIF_DECL_OBJ(dlinked_list_item) {
     spif_obj_t data;
     spif_dlinked_list_item_t prev, next;
 };
 
-SPIF_DEFINE_OBJ(dlinked_list) {
+SPIF_DECL_OBJ(dlinked_list) {
     SPIF_DECL_PARENT_TYPE(obj);
     size_t len;
     spif_dlinked_list_item_t head, tail;

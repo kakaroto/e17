@@ -72,7 +72,7 @@
 
 typedef spif_obj_t spif_list_t;
 
-SPIF_DEFINE_OBJ(listclass) {
+SPIF_DECL_OBJ(listclass) {
     SPIF_DECL_PARENT_TYPE(class);
 
     spif_func_t append;
