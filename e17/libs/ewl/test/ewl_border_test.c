@@ -14,8 +14,6 @@ __destroy_border_test_window(Ewl_Widget * w, void *ev_data, void *user_data)
 	ewl_callback_append(border_button, EWL_CALLBACK_CLICKED,
 			    __create_border_test_window, NULL);
 
-	printf("border_test heap_end: %p\n", sbrk(0));
-
 	return;
 	ev_data = NULL;
 	user_data = NULL;
@@ -77,8 +75,6 @@ __create_border_test_window(Ewl_Widget * w, void *ev_data, void *user_data)
 	Ewl_Widget *border_win;
 	Ewl_Widget *border_box;
 	Ewl_Widget *alabel, *avbox, *pvbox, *plabel;
-
-	printf("border_test heap_start: %p\n", sbrk(0));
 
 	ewl_callback_del(w, EWL_CALLBACK_CLICKED, __create_border_test_window);
 

@@ -56,9 +56,6 @@ int ewl_border_init(Ewl_Border * b, char *label)
 	ewl_container_redirect_set(EWL_CONTAINER(b), EWL_CONTAINER(b->body));
 	ewl_widget_appearance_set(EWL_WIDGET(b), "border");
 
-	ewl_callback_append(EWL_WIDGET(b), EWL_CALLBACK_DESTROY,
-						ewl_border_destroy_cb, NULL);
-
 	DRETURN_INT(TRUE, DLEVEL_STABLE);
 }
 
@@ -192,20 +189,5 @@ ewl_border_label_alignment_get(Ewl_Border *b)
 
 	DRETURN_INT(align, DLEVEL_STABLE);
 }
-
-void 
-ewl_border_destroy_cb(Ewl_Widget *w, void *ev_data, void *user_data)
-{
-	Ewl_Border *b;
-
-	b = EWL_BORDER(w);
-
-	if (b->label)
-		ewl_widget_destroy(b->label);
-
-	if (b->body)
-		ewl_widget_destroy(b->body);
-}
-
 
 

@@ -50,11 +50,6 @@ void		ewl_border_label_alignment_set(Ewl_Border *b,
 						unsigned int align);
 unsigned int    ewl_border_label_alignment_get(Ewl_Border *b);
 
-/*
- * Internally used callbacks.
- */
-void            ewl_border_destroy_cb(Ewl_Widget *w, void *ev_data, 
-							void *user_data);
 
 #endif				/* __EWL_BORDER_H__ */
 

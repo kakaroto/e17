@@ -596,30 +596,6 @@ ewl_notebook_destroy_cb(Ewl_Widget *w, void *ev_data, void *user_data)
 
 	n = EWL_NOTEBOOK(w);
 
-	if (n->tab_box) {
-		ewl_widget_destroy(n->tab_box);
-		n->tab_box = NULL;
-	}
-
-	if (n->page_box) {
-		ewl_widget_destroy(n->page_box);
-		n->page_box = NULL;
-	}
-	n->visible_page = NULL;
-
-	ecore_list_goto_index(n->pages, 0);
-	while((p = ecore_list_next(n->pages))) {
-		if (!p) continue;
-
-		p->page = NULL;
-		if (p->tab)
-			ewl_widget_destroy(p->tab);
-
-		if (p->page)
-			ewl_widget_destroy(p->page);
-
-		FREE(p);
-	}
 	ecore_list_destroy(n->pages);
 	n->pages = NULL;	
 }
