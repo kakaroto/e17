@@ -25,7 +25,7 @@ mod_init(void)
   GtkWidget *frame1, *frame2, *frame3; /* frames */
   GtkWidget *btn;
   gchar *titles[1]={"Electric Eyes 2"};
-  gchar *clabels[255][1];
+  gchar *clabels[255][1] = {""};
   int eek;
   
   ModWin = gtk_window_new(GTK_WINDOW_TOPLEVEL);
