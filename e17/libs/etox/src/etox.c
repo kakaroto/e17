@@ -1161,7 +1161,6 @@ static Evas_List *_etox_break_text(Etox * et, char *text)
 
 			*walk = '\t';
 			text = walk + 1;
-			t = *text;
 
 			/*
 			 * Make a bit for the tab character
