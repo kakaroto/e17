@@ -167,6 +167,8 @@ void imlib_render_image_part_on_drawable_at_size(Imlib_Image image, Display *dis
 						 int x, int y, int width, int height,
 						 Imlib_Color_Modifier color_modifier,
 						 Imlib_Operation operation);
+void imlib_free_pixmap_and_mask(Display *display, Pixmap pixmap);
+
 /* rgba space ops */
 void imlib_blend_image_onto_image(Imlib_Image source_image,
 				  Imlib_Image destination_image,

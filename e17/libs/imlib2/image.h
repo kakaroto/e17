@@ -115,6 +115,7 @@ ImlibImagePixmap *__imlib_FindCachedImagePixmap(ImlibImage *im, int w, int h,
 						int sw, int sh, Colormap cm,
 						char aa, char hiq, char dmask,
 						DATABIG modification_count);
+ImlibImagePixmap *__imlib_FindCachedImagePixmapByID(Display *d, Pixmap p);
 void              __imlib_AddImagePixmapToCache(ImlibImagePixmap *ip);
 void              __imlib_RemoveImagePixmapFromCache(ImlibImagePixmap *ip);
 void              __imlib_CleanupImagePixmapCache(void);

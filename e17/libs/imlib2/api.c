@@ -406,6 +406,18 @@ imlib_render_pixmaps_for_whole_image_at_size(Imlib_Image image, Display *display
 }
 
 void 
+imlib_free_pixmap_and_mask(Display *display, Pixmap pixmap)
+{
+   ImlibImagePixmap *ip;
+   
+   ip = __imlib_FindCachedImagePixmapByID(display, pixmap);
+   if (ip)
+      ip->references--;
+   __imlib_CleanupImagePixmapCache();
+}
+
+
+void 
 imlib_render_image_on_drawable(Imlib_Image image, Display *display,
 			       Drawable drawable, Visual *visual,
 			       Colormap colormap, int depth,
