@@ -140,7 +140,10 @@ int sig_exit_cb(void *data, int ev_type, void *ev) {
 </programlisting>
 </example>
 <para>
-The <function>sig_exit_cb</function> just tells ecore to quit the main loop.
+The <function>sig_exit_cb</function> just tells ecore to quit the main loop. This isn't strictly necessary
+because if the only thing being done is calling <function>ecore_main_loop_quit()</function>, Ecore
+will handing this itself if there is not handler setup. But this shows how a handler can be created
+if one is needed for your application.
 </para>
 
 <example>

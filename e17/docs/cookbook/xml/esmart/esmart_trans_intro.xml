@@ -105,7 +105,9 @@ void win_del_cb(Ecore_Evas *ee) {
 </programlisting>
 </example>
 <para>
-The exit and del callbacks are the generic ecore callbacks.
+The exit and del callbacks are the generic ecore callbacks. The exit callback isn't strictly
+necessary, as Ecore will call <function>ecore_main_loop_quit()</function> if no handler is
+registered, but is included to show how its done.
 </para>
 
 <example>

@@ -19,7 +19,7 @@ A simple recipe on using esmart containers
 <para>
 There is usually a desire while designing an apps UI to group common elements together
 and have their layout depend on one another. To this end the Esmart Container
-libary has been created. It has been designed to handle the hard parts of the
+library has been created. It has been designed to handle the hard parts of the
 layout, and in the cases where it does not do what you need, the layout portions of 
 the container are extensible and changeable.
 </para>
@@ -222,7 +222,9 @@ static void win_resize_cb(Ecore_Evas *ee) {
 </example>
 <para>
 Next we setup some generic callbacks to be used by the UI. This will be the exit, destroy
-and resize callbacks. Again, the usual EFL style functions.
+and resize callbacks. Again, the usual EFL style functions. Although the exit callback is not
+strictly necessary as Ecore itself will call <function>ecore_main_loop_quit()</function> if
+no handler is registered for this callback.
 </para>
 
 <example>
@@ -360,7 +362,7 @@ the plugin to use. The default setting is the container named &quot;default&quot
 
 <para>
 Once the directions and alignment are set, the spacing and padding of the container are
-specified. The padding specifes the space around the outside of the container taking four 
+specified. The padding specifies the space around the outside of the container taking four 
 numeric parameters: left, right, top and bottom. The spacing parameter specifies
 the space between elements in the container.
 </para>
@@ -697,7 +699,7 @@ the directory to the font.
 <para>
 After the fonts are defined the main collections are defined. The first collection
 is the main portion of the app itself, the &quot;container_ex&quot; group. This group
-specifes the main window of the app. As such it contains the parts for the background, 
+specifies the main window of the app. As such it contains the parts for the background, 
 the header, and the header text. These parts are all fairly standard with some (minimal)
 alignment done between them.
 </para>
@@ -815,7 +817,7 @@ different signal.
 <para>
 The element group specifies how each element of the container is to be
 displayed. You will notice that the names given here match up to the
-names seached for in the application code itself while creating the elements.
+names searched for in the application code itself while creating the elements.
 </para>
 
 <para>
