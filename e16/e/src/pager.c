@@ -1281,16 +1281,13 @@ static void
 PagerHandleMotion(Pager * p, Window win, int x, int y, int in)
 {
    int                 hx, hy;
-   int                 px, py;
    Window              rw, cw;
    EWin               *ewin = NULL;
 
    if (!mode.show_pagers)
       return;
 
-   XTranslateCoordinates(disp, p->win, root.win, 0, 0, &px, &py, &cw);
-   if (win == p->hi_win)
-      XQueryPointer(disp, p->win, &rw, &cw, &hx, &hy, &x, &y, &hx);
+   XQueryPointer(disp, p->win, &rw, &cw, &hx, &hy, &x, &y, &hx);
 
    if (x >= 0 && x < p->w && y >= 0 && y < p->h)
       ewin = EwinInPagerAt(p, x, y);
@@ -1301,7 +1298,8 @@ PagerHandleMotion(Pager * p, Window win, int x, int y, int in)
      {
 	if (in == PAGER_EVENT_MOUSE_OUT)
 	   PagerShowTt(NULL);
-	PagerShowTt(ewin);
+	else
+	   PagerShowTt(ewin);
 	return;
      }
 
@@ -1313,13 +1311,11 @@ PagerHandleMotion(Pager * p, Window win, int x, int y, int in)
 
    if (in == PAGER_EVENT_MOUSE_OUT)
      {
-	if (win == p->hi_win)
-	   PagerShowTt(NULL);
+	PagerShowTt(NULL);
      }
-
-   if ((in == PAGER_EVENT_MOTION) && ewin != p->hi_ewin)
+   else if ((in == PAGER_EVENT_MOTION) && ewin != p->hi_ewin)
      {
-	int                 wx, wy, ww, wh, ax, ay, cx, cy;
+	int                 wx, wy, ww, wh, ax, ay, cx, cy, px, py;
 
 	PagerHideHi(p);
 	GetAreaSize(&ax, &ay);
@@ -1329,10 +1325,15 @@ PagerHandleMotion(Pager * p, Window win, int x, int y, int in)
 	wy = ((ewin->y + (cy * root.h)) * (p->h / ay)) / root.h;
 	ww = ((ewin->w) * (p->w / ax)) / root.w;
 	wh = ((ewin->h) * (p->h / ay)) / root.h;
+	XTranslateCoordinates(disp, p->win, root.win, 0, 0, &px, &py, &cw);
 	PagerShowHi(p, ewin, px + wx, py + wy, ww, wh);
+	PagerShowTt(ewin);
+     }
+   else if (in == PAGER_EVENT_MOTION)
+     {
+	PagerShowTt(ewin);
      }
 
-   PagerShowTt(ewin);
 }
 
 void
@@ -1541,77 +1542,83 @@ FindPager(Window win)
 
 static int         *gwin_px, *gwin_py;
 
-void
+int
 PagersEventMotion(XEvent * ev)
 {
+   int                 used = 0;
    Pager              *p;
 
-   if (mode.mode == MODE_NONE)
-     {
-	p = FindPager(ev->xmotion.window);
-	if (p)
-	   PagerHandleMotion(p, ev->xmotion.window, ev->xmotion.x,
-			     ev->xmotion.y, PAGER_EVENT_MOTION);
-     }
+   int                 x, y, dx, dy;
+   int                 ax, ay, cx, cy, i, num;
+   EWin              **gwins;
 
-   if ((mode.mode == MODE_PAGER_DRAG_PENDING) || (mode.mode == MODE_PAGER_DRAG))
+   switch (mode.mode)
      {
+     case MODE_NONE:
+	p = FindPager(ev->xmotion.window);
+	if (p == NULL)
+	   break;
+	used = 1;
+	PagerHandleMotion(p, ev->xmotion.window, ev->xmotion.x,
+			  ev->xmotion.y, PAGER_EVENT_MOTION);
+	break;
+
+     case MODE_PAGER_DRAG_PENDING:
+     case MODE_PAGER_DRAG:
 	mode.mode = MODE_PAGER_DRAG;
 	p = mode.context_pager;
-	if (p)
+	if (p == NULL)
+	   break;
+
+	used = 1;
+	cx = desks.desk[p->desktop].current_area_x;
+	cy = desks.desk[p->desktop].current_area_y;
+	GetAreaSize(&ax, &ay);
+	dx = mode.x - mode.px;
+	dy = mode.y - mode.py;
+	if (!FindItem
+	    ((char *)p->hi_ewin, 0, LIST_FINDBY_POINTER, LIST_TYPE_EWIN))
+	   p->hi_ewin = NULL;
+	if ((p->hi_ewin) && (!p->hi_ewin->pager) && (!p->hi_ewin->fixedpos))
 	  {
-	     int                 x, y, dx, dy;
-	     int                 ax, ay, cx, cy, i, num;
-	     EWin              **gwins;
+	     Window              dw;
+	     int                 px, py;
 
-	     cx = desks.desk[p->desktop].current_area_x;
-	     cy = desks.desk[p->desktop].current_area_y;
-	     GetAreaSize(&ax, &ay);
-	     dx = mode.x - mode.px;
-	     dy = mode.y - mode.py;
-	     if (!FindItem
-		 ((char *)p->hi_ewin, 0, LIST_FINDBY_POINTER, LIST_TYPE_EWIN))
-		p->hi_ewin = NULL;
-	     if ((p->hi_ewin) && (!p->hi_ewin->pager)
-		 && (!p->hi_ewin->fixedpos))
-	       {
-		  Window              dw;
-		  int                 px, py;
-
-		  GetWinXY(p->hi_win, &x, &y);
-		  XRaiseWindow(disp, p->hi_win);
-		  x += dx;
-		  y += dy;
-		  EMoveWindow(disp, p->hi_win, x, y);
-		  XTranslateCoordinates(disp, p->win, root.win, 0, 0, &px, &py,
-					&dw);
-		  x -= px + (cx * (p->w / ax));
-		  y -= py + (cy * (p->h / ay));
-		  MoveEwin(p->hi_ewin, (x * root.w * ax) / p->w,
-			   (y * root.h * ay) / p->h);
-	       }
-
-	     gwins =
-		ListWinGroupMembersForEwin(p->hi_ewin, ACTION_MOVE,
-					   mode.nogroup, &num);
-	     for (i = 0; i < num; i++)
-	       {
-		  if ((gwins[i] != p->hi_ewin) && (!gwins[i]->pager)
-		      && (!gwins[i]->fixedpos))
-		    {
-		       GetWinXY(gwins[i]->win, &x, &y);
-		       x += (dx * root.w * ax) / p->w;
-		       y += (dy * root.h * ay) / p->h;
-		       MoveEwin(gwins[i], x, y);
-		    }
-	       }
-	     if (gwins)
-		Efree(gwins);
+	     GetWinXY(p->hi_win, &x, &y);
+	     XRaiseWindow(disp, p->hi_win);
+	     x += dx;
+	     y += dy;
+	     EMoveWindow(disp, p->hi_win, x, y);
+	     XTranslateCoordinates(disp, p->win, root.win, 0, 0, &px, &py, &dw);
+	     x -= px + (cx * (p->w / ax));
+	     y -= py + (cy * (p->h / ay));
+	     MoveEwin(p->hi_ewin, (x * root.w * ax) / p->w,
+		      (y * root.h * ay) / p->h);
 	  }
+
+	gwins =
+	   ListWinGroupMembersForEwin(p->hi_ewin, ACTION_MOVE,
+				      mode.nogroup, &num);
+	for (i = 0; i < num; i++)
+	  {
+	     if ((gwins[i] != p->hi_ewin) && (!gwins[i]->pager)
+		 && (!gwins[i]->fixedpos))
+	       {
+		  GetWinXY(gwins[i]->win, &x, &y);
+		  x += (dx * root.w * ax) / p->w;
+		  y += (dy * root.h * ay) / p->h;
+		  MoveEwin(gwins[i], x, y);
+	       }
+	  }
+	if (gwins)
+	   Efree(gwins);
+	break;
      }
+
+   return used;
 }
 
-void
+int
 PagersEventMouseDown(XEvent * ev)
 {
    int                 i, num;
@@ -1620,7 +1627,7 @@ PagersEventMouseDown(XEvent * ev)
 
    p = FindPager(ev->xbutton.window);
    if (!p)
-      return;
+      return 0;
 
    gwins =
       ListWinGroupMembersForEwin(p->hi_ewin, ACTION_MOVE, mode.nogroup, &num);
@@ -1684,18 +1691,24 @@ PagersEventMouseDown(XEvent * ev)
 	     mode.context_pager = p;
 	  }
      }
+
+   return 1;
 }
 
-void
+int
 PagersEventMouseUp(XEvent * ev)
 {
+   int                 used = 0;
    int                 i, num;
    Pager              *p;
    EWin               *ewin, **gwins;
    int                 pax, pay;
 
    p = FindPager(ev->xbutton.window);
-   if ((p) && ((int)ev->xbutton.button == mode.pager_sel_button))
+   if (p == NULL)
+      goto exit;
+
+   if (((int)ev->xbutton.button == mode.pager_sel_button))
      {
 	PagerAreaAt(p, ev->xbutton.x, ev->xbutton.y, &pax, &pay);
 	GotoDesktop(p->desktop);
@@ -1705,7 +1718,7 @@ PagersEventMouseUp(XEvent * ev)
 	  }
 	SetCurrentArea(pax, pay);
      }
-   else if ((p) && ((int)ev->xbutton.button == mode.pager_win_button))
+   else if (((int)ev->xbutton.button == mode.pager_win_button))
      {
 	if (ev->xbutton.window == p->hi_win)
 	  {
@@ -1893,6 +1906,7 @@ PagersEventMouseUp(XEvent * ev)
 	mode.context_pager = NULL;
      }
 
+ exit:
    /* unallocate the space that was holding the old positions of the */
    /* windows */
    if (gwin_px)
@@ -1902,6 +1916,8 @@ PagersEventMouseUp(XEvent * ev)
 	Efree(gwin_py);
 	gwin_py = NULL;
      }
+
+   return used;
 }
 
 int

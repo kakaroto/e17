@@ -2694,13 +2694,13 @@ Window              DialogItemAreaGetWindow(DItem * di);
 void                DialogItemAreaSetEventFunc(DItem * di,
 					       void (*func) (int val,
 							     void *data));
-void                DialogEventKeyPress(XEvent * ev);
-void                DialogEventMotion(XEvent * ev);
-void                DialogEventExpose(XEvent * ev);
-void                DialogEventMouseDown(XEvent * ev);
-void                DialogEventMouseUp(XEvent * ev, Window click_was_in);
-void                DialogEventMouseIn(XEvent * ev);
-void                DialogEventMouseOut(XEvent * ev);
+int                 DialogEventKeyPress(XEvent * ev);
+int                 DialogEventMotion(XEvent * ev);
+int                 DialogEventExpose(XEvent * ev);
+int                 DialogEventMouseDown(XEvent * ev);
+int                 DialogEventMouseUp(XEvent * ev, Window click_was_in);
+int                 DialogEventMouseIn(XEvent * ev);
+int                 DialogEventMouseOut(XEvent * ev);
 
 /* fx.c exportable functions */
 #define FX_OP_START  1
@@ -2763,9 +2763,9 @@ int                 PagerForDesktop(int desk);
 void                DisablePagersForDesktop(int desk);
 Window              PagerGetWin(Pager * p);
 Window              PagerGetHiWin(Pager * p);
-void                PagersEventMotion(XEvent * ev);
-void                PagersEventMouseDown(XEvent * ev);
-void                PagersEventMouseUp(XEvent * ev);
+int                 PagersEventMotion(XEvent * ev);
+int                 PagersEventMouseDown(XEvent * ev);
+int                 PagersEventMouseUp(XEvent * ev);
 int                 PagersEventMouseIn(XEvent * ev);
 int                 PagersEventMouseOut(XEvent * ev);
 

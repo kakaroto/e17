@@ -2153,26 +2153,27 @@ DialogItem(Dialog * d)
  * Dialog event handlers
  */
 
-void
+int
 DialogEventKeyPress(XEvent * ev)
 {
    Dialog             *d;
+   int                 i;
 
    d = FindDialog(ev->xkey.window);
-   if (d)
-     {
-	int                 i;
+   if (d == NULL)
+      return 0;
 
-	for (i = 0; i < d->num_bindings; i++)
-	  {
-	     if (ev->xkey.keycode == d->keybindings[i].key)
-		(d->keybindings[i].func) (d->keybindings[i].val,
-					  d->keybindings[i].data);
-	  }
+   for (i = 0; i < d->num_bindings; i++)
+     {
+	if (ev->xkey.keycode == d->keybindings[i].key)
+	   (d->keybindings[i].func) (d->keybindings[i].val,
+				     d->keybindings[i].data);
      }
+
+   return 1;
 }
 
-void
+int
 DialogEventMotion(XEvent * ev)
 {
    Dialog             *d;
@@ -2180,307 +2181,331 @@ DialogEventMotion(XEvent * ev)
    int                 dx, dy;
 
    di = FindDialogItem(ev->xmotion.window, &d);
-   if (di)
+   if (d == NULL)
+      return 0;
+
+   if (di == NULL)
+      goto exit;
+
+   if (di->type == DITEM_AREA)
+     {
+	if (di->item.area.event_func)
+	   (di->item.area.event_func) (0, ev);
+     }
+   else if ((di->type == DITEM_SLIDER) && (di->item.slider.in_drag))
+     {
+	if (ev->xmotion.window == di->item.slider.knob_win)
+	  {
+	     dx = mode.x - mode.px;
+	     dy = mode.y - mode.py;
+	     if (di->item.slider.horizontal)
+	       {
+		  di->item.slider.wanted_val += dx;
+		  di->item.slider.val =
+		     di->item.slider.lower +
+		     (((di->item.slider.wanted_val *
+			(di->item.slider.upper -
+			 di->item.slider.lower)) /
+		       (di->item.slider.base_w -
+			di->item.slider.knob_w)) /
+		      di->item.slider.unit) * di->item.slider.unit;
+	       }
+	     else
+	       {
+		  di->item.slider.wanted_val += dy;
+		  di->item.slider.val =
+		     di->item.slider.lower +
+		     ((((di->item.
+			 slider.base_h - di->item.slider.knob_h -
+			 di->item.slider.wanted_val) *
+			(di->item.slider.upper -
+			 di->item.slider.lower)) /
+		       (di->item.slider.base_h -
+			di->item.slider.knob_h)) /
+		      di->item.slider.unit) * di->item.slider.unit;
+	       }
+	     if (di->item.slider.val < di->item.slider.lower)
+		di->item.slider.val = di->item.slider.lower;
+	     if (di->item.slider.val > di->item.slider.upper)
+		di->item.slider.val = di->item.slider.upper;
+	     if (di->item.slider.val_ptr)
+		*di->item.slider.val_ptr = di->item.slider.val;
+	     if (di->func)
+		(di->func) (di->val, di->data);
+	  }
+	DialogDrawItems(d, di, 0, 0, 99999, 99999);
+     }
+
+ exit:
+   return 1;
+}
+
+int
+DialogEventExpose(XEvent * ev)
+{
+   Window              win = ev->xexpose.window;
+   Dialog             *d;
+   int                 bnum;
+   DItem              *di;
+   int                 x, y, w, h;
+
+   d = FindDialogButton(win, &bnum);
+   if (d)
+     {
+	DialogDrawButton(d, bnum);
+	goto exit;
+     }
+
+   d = FindDialog(win);
+   if (d)
+     {
+	DialogDrawArea(d, ev->xexpose.x, ev->xexpose.y,
+		       ev->xexpose.width, ev->xexpose.height);
+	goto exit;
+     }
+
+   di = FindDialogItem(win, &d);
+   if (d == NULL)
+      return 0;
+
+   GetWinXY(win, &x, &y);
+   GetWinWH(win, (unsigned int *)&w, (unsigned int *)&h);
+   DialogDrawArea(d, x, y, w, h);
+   if (di == NULL)
+      goto exit;
+
+   if (di->type == DITEM_AREA)
+     {
+	if (di->func)
+	   (di->func) (di->val, di->data);
+     }
+
+ exit:
+   return 1;
+}
+
+int
+DialogEventMouseDown(XEvent * ev)
+{
+   Window              win = ev->xbutton.window;
+   Dialog             *d;
+   int                 bnum;
+   DItem              *di;
+
+   d = FindDialogButton(win, &bnum);
+   if (d)
+     {
+	DialogActivateButton(win, 2);
+	goto exit;
+     }
+
+   di = FindDialogItem(win, &d);
+   if (d == NULL)
+      return 0;
+
+   if (di == NULL)
+      goto exit;
+
+   if (di->type == DITEM_AREA)
+     {
+	if (di->item.area.event_func)
+	   (di->item.area.event_func) (0, ev);
+     }
+   else if (di->type == DITEM_SLIDER)
+     {
+	if (win == di->item.slider.base_win)
+	  {
+	     if (di->item.slider.horizontal)
+	       {
+		  if (ev->xbutton.x >
+		      (di->item.slider.knob_x + (di->item.slider.knob_w / 2)))
+		     di->item.slider.val += di->item.slider.jump;
+		  else
+		     di->item.slider.val -= di->item.slider.jump;
+	       }
+	     else
+	       {
+		  if (ev->xbutton.y >
+		      (di->item.slider.knob_y + (di->item.slider.knob_h / 2)))
+		     di->item.slider.val -= di->item.slider.jump;
+		  else
+		     di->item.slider.val += di->item.slider.jump;
+	       }
+	     if (di->item.slider.val < di->item.slider.lower)
+		di->item.slider.val = di->item.slider.lower;
+	     if (di->item.slider.val > di->item.slider.upper)
+		di->item.slider.val = di->item.slider.upper;
+	     if (di->item.slider.val_ptr)
+		*di->item.slider.val_ptr = di->item.slider.val;
+	     if (di->func)
+		(di->func) (di->val, di->data);
+	  }
+	else if (win == di->item.slider.knob_win)
+	  {
+	     di->item.slider.in_drag = 1;
+	     if (di->item.slider.horizontal)
+		di->item.slider.wanted_val = di->item.slider.knob_x;
+	     else
+		di->item.slider.wanted_val = di->item.slider.knob_y;
+	  }
+     }
+   di->clicked = 1;
+   DialogDrawItems(d, di, 0, 0, 99999, 99999);
+
+ exit:
+   return 1;
+}
+
+int
+DialogEventMouseUp(XEvent * ev, Window click_was_in)
+{
+   Window              win = ev->xbutton.window;
+   Dialog             *d;
+   int                 bnum;
+   DItem              *di;
+
+   d = FindDialogButton(click_was_in, &bnum);
+   if (d)
+     {
+	DialogActivateButton(click_was_in, 3);
+	goto exit;
+     }
+
+   di = FindDialogItem(click_was_in, &d);
+   if (d == NULL)
+      return 0;
+
+   if (di == NULL)
+      goto exit;
+
+   di->clicked = 0;
+   if (click_was_in)
      {
 	if (di->type == DITEM_AREA)
 	  {
 	     if (di->item.area.event_func)
 		(di->item.area.event_func) (0, ev);
 	  }
-	else if ((di->type == DITEM_SLIDER) && (di->item.slider.in_drag))
+	else if (di->type == DITEM_CHECKBUTTON)
 	  {
-	     if (ev->xmotion.window == di->item.slider.knob_win)
+	     if (di->item.check_button.onoff)
+		di->item.check_button.onoff = 0;
+	     else
+		di->item.check_button.onoff = 1;
+	     if (di->item.check_button.onoff_ptr)
+		*di->item.check_button.onoff_ptr = di->item.check_button.onoff;
+	  }
+	else if (di->type == DITEM_RADIOBUTTON)
+	  {
+	     DItem              *dii;
+
+	     dii = di->item.radio_button.first;
+	     while (dii)
 	       {
-		  dx = mode.x - mode.px;
-		  dy = mode.y - mode.py;
-		  if (di->item.slider.horizontal)
+		  if (dii->item.radio_button.onoff)
 		    {
-		       di->item.slider.wanted_val += dx;
-		       di->item.slider.val =
-			  di->item.slider.lower +
-			  (((di->item.slider.wanted_val *
-			     (di->item.slider.upper -
-			      di->item.slider.lower)) /
-			    (di->item.slider.base_w -
-			     di->item.slider.knob_w)) /
-			   di->item.slider.unit) * di->item.slider.unit;
+		       dii->item.radio_button.onoff = 0;
+		       DialogDrawItems(d, dii, 0, 0, 99999, 99999);
 		    }
-		  else
-		    {
-		       di->item.slider.wanted_val += dy;
-		       di->item.slider.val =
-			  di->item.slider.lower +
-			  ((((di->item.
-			      slider.base_h - di->item.slider.knob_h -
-			      di->item.slider.wanted_val) *
-			     (di->item.slider.upper -
-			      di->item.slider.lower)) /
-			    (di->item.slider.base_h -
-			     di->item.slider.knob_h)) /
-			   di->item.slider.unit) * di->item.slider.unit;
-		    }
-		  if (di->item.slider.val < di->item.slider.lower)
-		     di->item.slider.val = di->item.slider.lower;
-		  if (di->item.slider.val > di->item.slider.upper)
-		     di->item.slider.val = di->item.slider.upper;
-		  if (di->item.slider.val_ptr)
-		     *di->item.slider.val_ptr = di->item.slider.val;
-		  if (di->func)
-		     (di->func) (di->val, di->data);
+		  dii = dii->item.radio_button.next;
 	       }
-	     DialogDrawItems(d, di, 0, 0, 99999, 99999);
+	     di->item.radio_button.onoff = 1;
+	     if (di->item.radio_button.val_ptr)
+		*di->item.radio_button.val_ptr = di->item.radio_button.val;
+	  }
+	else if (di->type == DITEM_SLIDER)
+	  {
+	     if (win == di->item.slider.knob_win)
+		di->item.slider.in_drag = 0;
 	  }
      }
-}
-
-void
-DialogEventExpose(XEvent * ev)
-{
-   Window              win = ev->xexpose.window;
-   Dialog             *d;
-   int                 bnum;
-
-   d = FindDialogButton(win, &bnum);
-   if (d)
-      DialogDrawButton(d, bnum);
-   else
+   DialogDrawItems(d, di, 0, 0, 99999, 99999);
+   if (click_was_in)
      {
-	d = FindDialog(win);
-	if (d)
-	  {
-	     DialogDrawArea(d, ev->xexpose.x, ev->xexpose.y,
-			    ev->xexpose.width, ev->xexpose.height);
-	  }
-	else
-	  {
-	     DItem              *di;
-	     int                 x, y, w, h;
-
-	     di = FindDialogItem(win, &d);
-	     GetWinXY(win, &x, &y);
-	     GetWinWH(win, (unsigned int *)&w, (unsigned int *)&h);
-	     if (d)
-		DialogDrawArea(d, x, y, w, h);
-	     if (di)
-	       {
-		  if (di->type == DITEM_AREA)
-		    {
-		       if (di->func)
-			  (di->func) (di->val, di->data);
-		    }
-	       }
-	  }
+	if (di->func)
+	   (di->func) (di->val, di->data);
      }
+
+ exit:
+   return 1;
 }
 
-void
-DialogEventMouseDown(XEvent * ev)
-{
-   Window              win = ev->xbutton.window;
-   Dialog             *d;
-   int                 bnum;
-
-   d = FindDialogButton(win, &bnum);
-   if (d)
-      DialogActivateButton(win, 2);
-   else
-     {
-	DItem              *di;
-
-	di = FindDialogItem(win, &d);
-	if (di)
-	  {
-	     if (di->type == DITEM_AREA)
-	       {
-		  if (di->item.area.event_func)
-		     (di->item.area.event_func) (0, ev);
-	       }
-	     else if (di->type == DITEM_SLIDER)
-	       {
-		  if (win == di->item.slider.base_win)
-		    {
-		       if (di->item.slider.horizontal)
-			 {
-			    if (ev->xbutton.x >
-				(di->item.slider.knob_x +
-				 (di->item.slider.knob_w / 2)))
-			       di->item.slider.val += di->item.slider.jump;
-			    else
-			       di->item.slider.val -= di->item.slider.jump;
-			 }
-		       else
-			 {
-			    if (ev->xbutton.y >
-				(di->item.slider.knob_y +
-				 (di->item.slider.knob_h / 2)))
-			       di->item.slider.val -= di->item.slider.jump;
-			    else
-			       di->item.slider.val += di->item.slider.jump;
-			 }
-		       if (di->item.slider.val < di->item.slider.lower)
-			  di->item.slider.val = di->item.slider.lower;
-		       if (di->item.slider.val > di->item.slider.upper)
-			  di->item.slider.val = di->item.slider.upper;
-		       if (di->item.slider.val_ptr)
-			  *di->item.slider.val_ptr = di->item.slider.val;
-		       if (di->func)
-			  (di->func) (di->val, di->data);
-		    }
-		  else if (win == di->item.slider.knob_win)
-		    {
-		       di->item.slider.in_drag = 1;
-		       if (di->item.slider.horizontal)
-			  di->item.slider.wanted_val = di->item.slider.knob_x;
-		       else
-			  di->item.slider.wanted_val = di->item.slider.knob_y;
-		    }
-	       }
-	     di->clicked = 1;
-	     DialogDrawItems(d, di, 0, 0, 99999, 99999);
-	  }
-     }
-}
-
-void
-DialogEventMouseUp(XEvent * ev, Window click_was_in)
-{
-   Window              win = ev->xbutton.window;
-   Dialog             *d;
-   int                 bnum;
-
-   d = FindDialogButton(click_was_in, &bnum);
-   if (d)
-      DialogActivateButton(click_was_in, 3);
-   else
-     {
-	DItem              *di;
-
-	di = FindDialogItem(click_was_in, &d);
-	if (di)
-	  {
-	     di->clicked = 0;
-	     if (click_was_in)
-	       {
-		  if (di->type == DITEM_AREA)
-		    {
-		       if (di->item.area.event_func)
-			  (di->item.area.event_func) (0, ev);
-		    }
-		  else if (di->type == DITEM_CHECKBUTTON)
-		    {
-		       if (di->item.check_button.onoff)
-			  di->item.check_button.onoff = 0;
-		       else
-			  di->item.check_button.onoff = 1;
-		       if (di->item.check_button.onoff_ptr)
-			  *di->item.check_button.onoff_ptr =
-			     di->item.check_button.onoff;
-		    }
-		  else if (di->type == DITEM_RADIOBUTTON)
-		    {
-		       DItem              *dii;
-
-		       dii = di->item.radio_button.first;
-		       while (dii)
-			 {
-			    if (dii->item.radio_button.onoff)
-			      {
-				 dii->item.radio_button.onoff = 0;
-				 DialogDrawItems(d, dii, 0, 0, 99999, 99999);
-			      }
-			    dii = dii->item.radio_button.next;
-			 }
-		       di->item.radio_button.onoff = 1;
-		       if (di->item.radio_button.val_ptr)
-			  *di->item.radio_button.val_ptr =
-			     di->item.radio_button.val;
-		    }
-		  else if (di->type == DITEM_SLIDER)
-		    {
-		       if (win == di->item.slider.knob_win)
-			  di->item.slider.in_drag = 0;
-		    }
-	       }
-	     DialogDrawItems(d, di, 0, 0, 99999, 99999);
-	     if (click_was_in)
-	       {
-		  if (di->func)
-		     (di->func) (di->val, di->data);
-	       }
-	  }
-     }
-}
-
-void
+int
 DialogEventMouseIn(XEvent * ev)
 {
    Window              win = ev->xcrossing.window;
    Dialog             *d;
    int                 bnum;
+   DItem              *di;
 
    d = FindDialogButton(win, &bnum);
-
    if (d)
      {
 	DialogActivateButton(win, 0);
+	goto exit;
      }
-   else
-     {
-	DItem              *di;
 
-	di = FindDialogItem(win, &d);
-	if (di)
-	  {
-	     if (di->type == DITEM_AREA)
-	       {
-		  if (di->item.area.event_func)
-		     (di->item.area.event_func) (0, ev);
-	       }
-	     else if (di->type == DITEM_RADIOBUTTON)
-	       {
-		  if (di->item.radio_button.event_func)
-		     (di->item.radio_button.event_func) (di->item.
-							 radio_button.val, ev);
-	       }
-	     di->hilited = 1;
-	     DialogDrawItems(d, di, 0, 0, 99999, 99999);
-	  }
+   di = FindDialogItem(win, &d);
+   if (d == NULL)
+      return 0;
+
+   if (di == NULL)
+      goto exit;
+
+   if (di->type == DITEM_AREA)
+     {
+	if (di->item.area.event_func)
+	   (di->item.area.event_func) (0, ev);
      }
+   else if (di->type == DITEM_RADIOBUTTON)
+     {
+	if (di->item.radio_button.event_func)
+	   (di->item.radio_button.event_func) (di->item.radio_button.val, ev);
+     }
+   di->hilited = 1;
+   DialogDrawItems(d, di, 0, 0, 99999, 99999);
+
+ exit:
+   return 1;
 }
 
-void
+int
 DialogEventMouseOut(XEvent * ev)
 {
    Window              win = ev->xcrossing.window;
    Dialog             *d;
    int                 bnum;
+   DItem              *di;
 
    d = FindDialogButton(win, &bnum);
    if (d)
-      DialogActivateButton(win, 1);
-   else
      {
-	DItem              *di;
-
-	di = FindDialogItem(win, &d);
-	if (di)
-	  {
-	     if (di->type == DITEM_AREA)
-	       {
-		  if (di->item.area.event_func)
-		     (di->item.area.event_func) (0, ev);
-	       }
-	     else if (di->type == DITEM_RADIOBUTTON)
-	       {
-		  if (di->item.radio_button.event_func)
-		     (di->item.radio_button.event_func) (di->item.
-							 radio_button.val,
-							 NULL);
-	       }
-	     di->hilited = 0;
-	     DialogDrawItems(d, di, 0, 0, 99999, 99999);
-	  }
+	DialogActivateButton(win, 1);
+	goto exit;
      }
+
+   di = FindDialogItem(win, &d);
+   if (d == NULL)
+      return 0;
+
+   if (di == NULL)
+      goto exit;
+
+   if (di->type == DITEM_AREA)
+     {
+	if (di->item.area.event_func)
+	   (di->item.area.event_func) (0, ev);
+     }
+   else if (di->type == DITEM_RADIOBUTTON)
+     {
+	if (di->item.radio_button.event_func)
+	   (di->item.radio_button.event_func) (di->item.radio_button.val, NULL);
+     }
+   di->hilited = 0;
+   DialogDrawItems(d, di, 0, 0, 99999, 99999);
+
+ exit:
+   return 1;
 }
 
 /*

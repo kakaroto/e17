@@ -1348,7 +1348,8 @@ HandleExpose(XEvent * ev)
    if (ButtonsEventExpose(ev))
       EDBUG_RETURN_;
 
-   DialogEventExpose(ev);
+   if (DialogEventExpose(ev))
+      EDBUG_RETURN_;
 
    EDBUG_RETURN_;
 }
@@ -1536,7 +1537,8 @@ HandleMouseDown(XEvent * ev)
    if (ButtonsEventMouseDown(ev))
       goto exit;
 
-   DialogEventMouseDown(ev);
+   if (DialogEventMouseDown(ev))
+      goto exit;
 
    ewin = FindEwinByBase(ev->xbutton.window);
    if (ewin)
@@ -1559,7 +1561,8 @@ HandleMouseDown(XEvent * ev)
 	  }
      }
 
-   PagersEventMouseDown(ev);
+   if (PagersEventMouseDown(ev))
+      goto exit;
 
  exit:
    EDBUG_RETURN_;
@@ -1844,7 +1847,8 @@ HandleMouseUp(XEvent * ev)
    if (ButtonsEventMouseUp(ev, wasmovres, wasdrag))
       goto exit;
 
-   DialogEventMouseUp(ev, click_was_in);
+   if (DialogEventMouseUp(ev, click_was_in))
+      goto exit;
 
    ewin = FindEwinByBase(ev->xbutton.window);
    if (ewin)
@@ -1977,7 +1981,7 @@ HandleMouseIn(XEvent * ev)
    mode.context_win = win;
 
    if (PagersEventMouseIn(ev))
-      EDBUG_RETURN_;
+      goto exit;
 
    {
       Menu               *m;
@@ -2063,7 +2067,8 @@ HandleMouseIn(XEvent * ev)
    if (ButtonsEventMouseIn(ev))
       goto exit;
 
-   DialogEventMouseIn(ev);
+   if (DialogEventMouseIn(ev))
+      goto exit;
 
  exit:
    EDBUG_RETURN_;
@@ -2090,7 +2095,7 @@ HandleMouseOut(XEvent * ev)
    mode.context_win = win;
 
    if (PagersEventMouseOut(ev))
-      EDBUG_RETURN_;
+      goto exit;
 
    {
       Menu               *m;
@@ -2148,7 +2153,8 @@ HandleMouseOut(XEvent * ev)
    if (ButtonsEventMouseOut(ev))
       goto exit;
 
-   DialogEventMouseOut(ev);
+   if (DialogEventMouseOut(ev))
+      goto exit;
 
  exit:
    EDBUG_RETURN_;
