@@ -1646,11 +1646,6 @@ void                GotoDesktopByEwin(EWin * ewin);
 void                FloatEwinAboveDesktops(EWin * ewin);
 void                DesktopAccounting(void);
 
-int                 AddEToFile(char *file);
-int                 CreateEFile(char *file);
-void                AddE(void);
-void                CreateStartupDisplay(char start);
-
 /* alert.c */
 void                Alert(char *fmt, ...);
 void                InitStringList(void);
@@ -2338,10 +2333,12 @@ void                ShowGroupMenu(void);
 
 /* misc.c */
 void                BlumFlimFrub(void);
-void                SetEDir(char *d);
-char               *UserEDir(void);
-void                SetCacheDir(char *d);
-char               *UserCacheDir(void);
+const char         *EDirRoot(void);
+const char         *EDirBin(void);
+void                EDirUserSet(const char *d);
+char               *EDirUser(void);
+void                EDirUserCacheSet(const char *d);
+char               *EDirUserCache(void);
 int                 EExit(void *code);
 void                ShowEdgeWindows(void);
 void                HideEdgeWindows(void);
@@ -2436,7 +2433,8 @@ int                 GetSMfd(void);
 void                SessionGetInfo(EWin * ewin, Atom atom_change);
 void                SetSMID(char *smid);
 void                SetSMFile(char *path);
-void                SetSMUserThemePath(char *path);
+void                SetSMProgName(const char *name);
+void                SetSMUserThemePath(const char *path);
 char               *GetSMFile(void);
 char               *GetGenericSMFile(void);
 void                MatchEwinToSM(EWin * ewin);
@@ -2526,6 +2524,10 @@ void                SoundInit(void);
 void                SoundExit(void);
 int                 SoundPlay(const char *name);
 int                 SoundFree(const char *name);
+
+/* startup.c */
+void                AddE(void);
+void                CreateStartupDisplay(char start);
 
 /* sticky.c */
 void                MakeWindowSticky(EWin * ewin);
@@ -2739,8 +2741,6 @@ extern Window       init_win_ext;
 
 #define FILEPATH_LEN_MAX 4096
 extern char         themepath[FILEPATH_LEN_MAX];
-extern char         themename[FILEPATH_LEN_MAX];
-extern char        *command;
 
 #define DRAW_QUEUE_ENABLE 1
 extern char         queue_up;

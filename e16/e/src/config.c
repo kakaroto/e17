@@ -3292,19 +3292,19 @@ OpenConfigFileForReading(char *path, char preprocess)
 		  "-D USER_SHELL=%s " "-D ENLIGHTENMENT_VERSION_015=1 "
 		  "%s %s/cached/cfg/%s.preparsed",
 #ifndef __EMX__
-		  epp_path, ENLIGHTENMENT_ROOT, themepath, ENLIGHTENMENT_ROOT,
-		  ENLIGHTENMENT_VERSION, ENLIGHTENMENT_ROOT, ENLIGHTENMENT_BIN,
+		  epp_path, EDirRoot(), themepath, EDirRoot(),
+		  ENLIGHTENMENT_VERSION, EDirRoot(), EDirBin(),
 #else
 		  epp_path, x11root, ENLIGHTENMENT_ROOT, themepath, x11root,
 		  ENLIGHTENMENT_ROOT, ENLIGHTENMENT_VERSION, x11root,
 		  ENLIGHTENMENT_ROOT, x11root, ENLIGHTENMENT_BIN, x11root,
 #endif
-		  themepath, UserEDir(), UserCacheDir(), root.w, root.h, root.w,
-		  root.h, root.depth, def_user, def_home, def_shell, path,
-		  UserCacheDir(), s);
+		  themepath, EDirUser(), EDirUserCache(), root.w, root.h,
+		  root.w, root.h, root.depth, def_user, def_home, def_shell,
+		  path, EDirUserCache(), s);
 	system(execline);
 	Esnprintf(execline, sizeof(execline), "%s/cached/cfg/%s.preparsed",
-		  UserCacheDir(), s);
+		  EDirUserCache(), s);
 #ifndef __EMX__
 	fpin = fopen(execline, "r");
 #else
@@ -3537,7 +3537,7 @@ FindFile(const char *file)
 
    /* look in ~/.enlightenment first */
 
-   Esnprintf(s, sizeof(s), "%s/%s", UserEDir(), file);
+   Esnprintf(s, sizeof(s), "%s/%s", EDirUser(), file);
    if (findLocalizedFile(s) || isfile(s))
       EDBUG_RETURN(duplicate(s));
 
@@ -3547,12 +3547,7 @@ FindFile(const char *file)
       EDBUG_RETURN(duplicate(s));
 
    /* look in system config dir */
-#ifndef __EMX__
-   Esnprintf(s, sizeof(s), "%s/config/%s", ENLIGHTENMENT_ROOT, file);
-#else
-   Esnprintf(s, sizeof(s), "%s/config/%s", __XOS2RedirRoot(ENLIGHTENMENT_ROOT),
-	     file);
-#endif
+   Esnprintf(s, sizeof(s), "%s/config/%s", EDirRoot(), file);
    if (findLocalizedFile(s) || isfile(s))
       EDBUG_RETURN(duplicate(s));
 
@@ -3587,17 +3582,12 @@ FindNoThemeFile(const char *file)
 #endif
 
    /* look in ~/.enlightenment first */
-   Esnprintf(s, sizeof(s), "%s/%s", UserEDir(), file);
+   Esnprintf(s, sizeof(s), "%s/%s", EDirUser(), file);
    if (findLocalizedFile(s) || isfile(s))
       EDBUG_RETURN(duplicate(s));
 
    /* look in system config dir */
-#ifndef __EMX__
-   Esnprintf(s, sizeof(s), "%s/config/%s", ENLIGHTENMENT_ROOT, file);
-#else
-   Esnprintf(s, sizeof(s), "%s/config/%s", __XOS2RedirRoot(ENLIGHTENMENT_ROOT),
-	     file);
-#endif
+   Esnprintf(s, sizeof(s), "%s/config/%s", EDirRoot(), file);
    if (findLocalizedFile(s) || isfile(s))
       EDBUG_RETURN(duplicate(s));
 
@@ -3635,7 +3625,7 @@ LoadConfigFile(const char *f)
 	i++;
      }
 
-   Esnprintf(s, sizeof(s), "%s/cached/cfg/%s.preparsed", UserCacheDir(), s2);
+   Esnprintf(s, sizeof(s), "%s/cached/cfg/%s.preparsed", EDirUserCache(), s2);
 
    if (strstr(f, "control.cfg"))
       notheme = 1;
@@ -3677,15 +3667,11 @@ LoadEConfig(char *themelocation)
 
    EDBUG(5, "LoadEConfig");
 
-   Esnprintf(s, sizeof(s), "%s/", UserEDir());
+   Esnprintf(s, sizeof(s), "%s/", EDirUser());
 #if USE_FNLIB
    Fnlib_add_dir(pFnlibData, s);
 #endif
-#ifndef __EMX__
-   Esnprintf(s, sizeof(s), "%s/config/", ENLIGHTENMENT_ROOT);
-#else
-   Esnprintf(s, sizeof(s), "%s/config/", __XOS2RedirRoot(ENLIGHTENMENT_ROOT));
-#endif
+   Esnprintf(s, sizeof(s), "%s/config/", EDirRoot());
 #if USE_FNLIB
    Fnlib_add_dir(pFnlibData, s);
 #endif
@@ -3699,7 +3685,7 @@ LoadEConfig(char *themelocation)
 	     fprintf(f, "%s\n", themelocation);
 	     fclose(f);
 	  }
-	Esnprintf(ss, sizeof(ss), "%s/user_theme.cfg", UserEDir());
+	Esnprintf(ss, sizeof(ss), "%s/user_theme.cfg", EDirUser());
 	mv(s, ss);
 	if (!isfile(ss))
 	   Alert(_
@@ -3777,12 +3763,14 @@ LoadEConfig(char *themelocation)
 	{
 	   if (i == 1)
 	      CreateStartupDisplay(1);
+
 	   if ((i > 0) && (!p) && (!init_win_ext))
 	     {
 		p = CreateProgressbar(_("Enlightenment Starting..."), 400, 16);
 		if (p)
 		   ShowProgressbar(p);
 	     }
+
 	   if (!strcmp(config_files[i], "...e_autosave.cfg"))
 	     {
 		is_autosave = 1;
@@ -3799,10 +3787,10 @@ LoadEConfig(char *themelocation)
 	     }
 	   else
 	      LoadConfigFile(config_files[i]);
+
 	   if (p)
-	      SetProgressbar(p,
-			     (i * 100) / (int)(sizeof(config_files) /
-					       sizeof(char *)));
+	      SetProgressbar(p, (i * 100) /
+			     (int)(sizeof(config_files) / sizeof(char *)));
 	}
 
       if (p)

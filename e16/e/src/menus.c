@@ -976,7 +976,7 @@ MenuCreateFromDirectory(char *name, MenuStyle * ms, char *dir)
 	   cc = st.st_ctime;
 	Esnprintf(cs, sizeof(cs),
 		  "%s/cached/img/.%c%c%c%c%c%c%c%c%c%c%c%c%c%c%c%c%c%c",
-		  UserCacheDir(), chmap[(aa >> 0) & 0x3f],
+		  EDirUserCache(), chmap[(aa >> 0) & 0x3f],
 		  chmap[(aa >> 6) & 0x3f], chmap[(aa >> 12) & 0x3f],
 		  chmap[(aa >> 18) & 0x3f], chmap[(aa >> 24) & 0x3f],
 		  chmap[(aa >> 28) & 0x3f], chmap[(bb >> 0) & 0x3f],
@@ -1027,7 +1027,7 @@ MenuCreateFromDirectory(char *name, MenuStyle * ms, char *dir)
 				 int                 justx = 512, justy = 512;
 
 				 Esnprintf(s2, sizeof(s2), "%s/cached/img/%s",
-					   UserCacheDir(), s3);
+					   EDirUserCache(), s3);
 				 imlib_context_set_image(im);
 				 width = imlib_image_get_width();
 				 height = imlib_image_get_height();
@@ -1121,7 +1121,7 @@ MenuCreateFromDirectory(char *name, MenuStyle * ms, char *dir)
 			    ic->name = duplicate("`");
 			    ic->norm.normal = CreateImageState();
 			    Esnprintf(stmp, sizeof(stmp), "%s/cached/img/%s",
-				      UserCacheDir(), s3);
+				      EDirUserCache(), s3);
 			    ic->norm.normal->im_file = duplicate(stmp);
 			    ic->norm.normal->unloadable = 1;
 			    IclassPopulate(ic);
@@ -1255,7 +1255,7 @@ MenuCreateFromDirectory(char *name, MenuStyle * ms, char *dir)
 			    int                 maxw = 48, maxh = 48;
 
 			    Esnprintf(s2, sizeof(s2), "%s/cached/img/%s",
-				      UserCacheDir(), s3);
+				      EDirUserCache(), s3);
 			    imlib_context_set_image(im);
 			    width = imlib_image_get_width();
 			    height = imlib_image_get_height();
@@ -1337,7 +1337,7 @@ MenuCreateFromDirectory(char *name, MenuStyle * ms, char *dir)
 		       ic->name = duplicate("`");
 		       ic->norm.normal = CreateImageState();
 		       Esnprintf(stmp, sizeof(stmp), "%s/cached/img/%s",
-				 UserCacheDir(), s3);
+				 EDirUserCache(), s3);
 		       ic->norm.normal->im_file = duplicate(stmp);
 		       ic->norm.normal->unloadable = 1;
 		       IclassPopulate(ic);

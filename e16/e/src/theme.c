@@ -229,13 +229,9 @@ ListThemes(int *number)
       NULL;
    int                 count = 0;
 
-   Esnprintf(s, sizeof(s), "%s/themes", UserEDir());
+   Esnprintf(s, sizeof(s), "%s/themes", EDirUser());
    def = append_merge_dir(s, &list, &count);
-#ifndef __EMX__
-   Esnprintf(s, sizeof(s), "%s/themes", ENLIGHTENMENT_ROOT);
-#else
-   Esnprintf(s, sizeof(s), "%s/themes", __XOS2RedirRoot(ENLIGHTENMENT_ROOT));
-#endif
+   Esnprintf(s, sizeof(s), "%s/themes", EDirRoot());
    def2 = append_merge_dir(s, &list, &count);
 
    if ((def) && (def2))
@@ -262,7 +258,7 @@ ThemeGetDefault(void)
    char               *def = NULL;
    int                 count;
 
-   Esnprintf(ss, sizeof(ss), "%s/themes/DEFAULT", UserEDir());
+   Esnprintf(ss, sizeof(ss), "%s/themes/DEFAULT", EDirUser());
 #ifndef __EMX__
    count = readlink(ss, s, sizeof(s));
    if ((exists(ss)) && (count > 0))
@@ -272,7 +268,7 @@ ThemeGetDefault(void)
 	   def = duplicate(s);
 	else
 	  {
-	     Esnprintf(ss, sizeof(ss), "%s/themes/%s", UserEDir(), s);
+	     Esnprintf(ss, sizeof(ss), "%s/themes/%s", EDirUser(), s);
 	     def = duplicate(ss);
 	  }
      }
@@ -282,12 +278,7 @@ ThemeGetDefault(void)
 #endif
    if (!def)
      {
-#ifndef __EMX__
-	Esnprintf(ss, sizeof(ss), "%s/themes/DEFAULT", ENLIGHTENMENT_ROOT);
-#else
-	Esnprintf(ss, sizeof(ss), "%s/themes/DEFAULT",
-		  __XOS2RedirRoot(ENLIGHTENMENT_ROOT));
-#endif
+	Esnprintf(ss, sizeof(ss), "%s/themes/DEFAULT", EDirRoot());
 #ifndef __EMX__
 	count = readlink(ss, s, sizeof(s));
 	if ((exists(ss)) && (count > 0))
@@ -297,8 +288,7 @@ ThemeGetDefault(void)
 		def = duplicate(s);
 	     else
 	       {
-		  Esnprintf(ss, sizeof(ss), "%s/themes/%s", ENLIGHTENMENT_ROOT,
-			    s);
+		  Esnprintf(ss, sizeof(ss), "%s/themes/%s", EDirRoot(), s);
 		  def = duplicate(ss);
 	       }
 	  }
@@ -319,7 +309,7 @@ ThemeSetDefault(const char *theme)
  */
    char                ss[FILEPATH_LEN_MAX];
 
-   Esnprintf(ss, sizeof(ss), "%s/themes/DEFAULT", UserEDir());
+   Esnprintf(ss, sizeof(ss), "%s/themes/DEFAULT", EDirUser());
    if (exists(ss))
       rm(ss);
    if (theme)
@@ -360,7 +350,7 @@ ThemeExtract(const char *theme)
 
 	/* make the temp dir */
 	name = fileof(theme);
-	Esnprintf(th, sizeof(th), "%s/themes/%s", UserEDir(), name);
+	Esnprintf(th, sizeof(th), "%s/themes/%s", EDirUser(), name);
 	Efree(name);
 	md(th);
 
@@ -414,17 +404,14 @@ FindTheme(const char *theme)
 
    EDBUG(6, "FindTheme");
 
-   strcpy(themename, theme);
+   if (conf.theme.name)
+      Efree(conf.theme.name);
+   conf.theme.name = duplicate(theme);
    badreason = _("Unknown\n");
 
    if (!theme[0])
      {
-#ifndef __EMX__
-	Esnprintf(s, sizeof(s), "%s/themes/DEFAULT", ENLIGHTENMENT_ROOT);
-#else
-	Esnprintf(s, sizeof(s), "%s/themes/DEFAULT",
-		  __XOS2RedirRoot(ENLIGHTENMENT_ROOT));
-#endif
+	Esnprintf(s, sizeof(s), "%s/themes/DEFAULT", EDirRoot());
 	EDBUG_RETURN(duplicate(s));
      }
 
@@ -436,19 +423,14 @@ FindTheme(const char *theme)
       ret = ThemeExtract(theme);
    if (!ret)
      {
-	Esnprintf(s, sizeof(s), "%s/themes/%s", UserEDir(), theme);
+	Esnprintf(s, sizeof(s), "%s/themes/%s", EDirUser(), theme);
 	if (exists(s))
 	   ret = ThemeExtract(s);
 	else
 	   badreason = _("Theme file/directory does not exist\n");
 	if (!ret)
 	  {
-#ifndef __EMX__
-	     Esnprintf(s, sizeof(s), "%s/themes/%s", ENLIGHTENMENT_ROOT, theme);
-#else
-	     Esnprintf(s, sizeof(s), "%s/themes/%s",
-		       __XOS2RedirRoot(ENLIGHTENMENT_ROOT), theme);
-#endif
+	     Esnprintf(s, sizeof(s), "%s/themes/%s", EDirRoot(), theme);
 	     if (exists(s))
 		ret = ThemeExtract(s);
 	     else

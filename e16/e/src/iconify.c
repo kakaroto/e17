@@ -1020,7 +1020,7 @@ IB_SaveIcondefs(void)
    char                s[1024];
    FILE               *f;
 
-   Esnprintf(s, sizeof(s), "%s/icondefs.cfg", UserEDir());
+   Esnprintf(s, sizeof(s), "%s/icondefs.cfg", EDirUser());
    f = fopen(s, "w");
    if (f)
      {

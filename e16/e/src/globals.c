@@ -53,10 +53,8 @@ Desktops            desks;
 Window              init_win1 = 0;
 Window              init_win2 = 0;
 Window              init_win_ext = 0;
-int                 deskorder[ENLIGHTENMENT_CONF_NUM_DESKTOPS];
 char                themepath[FILEPATH_LEN_MAX];
-char                themename[FILEPATH_LEN_MAX];
-char               *command;
+
 char                queue_up;
 char                no_overwrite = 0;
 char                clickmenu = 0;

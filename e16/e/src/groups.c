@@ -386,7 +386,7 @@ SaveGroups(void)
 	FILE               *f;
 	char                s[1024];
 
-	Esnprintf(s, sizeof(s), "%s/...e_session-XXXXXX.groups.%i", UserEDir(),
+	Esnprintf(s, sizeof(s), "%s/...e_session-XXXXXX.groups.%i", EDirUser(),
 		  root.scr);
 	f = fopen(s, "w");
 	if (f)
@@ -431,7 +431,7 @@ LoadGroups(void)
    FILE               *f;
    char                s[1024];
 
-   Esnprintf(s, sizeof(s), "%s/...e_session-XXXXXX.groups.%i", UserEDir(),
+   Esnprintf(s, sizeof(s), "%s/...e_session-XXXXXX.groups.%i", EDirUser(),
 	     root.scr);
    f = fopen(s, "r");
    if (f)

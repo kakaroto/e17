@@ -99,7 +99,9 @@ main(int argc, char **argv)
       e_machine_name = duplicate(ubuf.nodename);
    if (!e_machine_name)
       e_machine_name = duplicate("localhost");
-   command = duplicate(argv[0]);
+
+   SetSMProgName(argv[0]);
+
    themepath[0] = 0;
    {
       int                 j = 0;
@@ -117,11 +119,11 @@ main(int argc, char **argv)
 	     }
 	   else if ((!strcmp("-econfdir", argv[j])) && (argc - j > 1))
 	     {
-		SetEDir(argv[++j]);
+		EDirUserSet(argv[++j]);
 	     }
 	   else if ((!strcmp("-ecachedir", argv[j])) && (argc - j > 1))
 	     {
-		SetCacheDir(argv[++j]);
+		EDirUserCacheSet(argv[++j]);
 	     }
 	   else if ((!strcmp("-display", argv[j])) && (argc - j > 1))
 	     {

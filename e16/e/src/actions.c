@@ -3218,7 +3218,7 @@ doZoom(EWin * ewin, void *params)
    if (!(CanZoom()))
       EDBUG_RETURN(0);
 
-   Esnprintf(s, sizeof(s), "%s/.zoom_warn", UserEDir());
+   Esnprintf(s, sizeof(s), "%s/.zoom_warn", EDirUser());
    if (!exists(s))
      {
 	FILE               *f;

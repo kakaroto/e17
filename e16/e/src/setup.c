@@ -501,7 +501,7 @@ SetupDirs()
    char                s[1024], ss[1024], *home;
 
    EDBUG(6, "SetupDirs");
-   Esnprintf(s, sizeof(s), "%s", UserEDir());
+   Esnprintf(s, sizeof(s), "%s", EDirUser());
    home = homedir(getuid());
    if (home)
      {
@@ -512,46 +512,46 @@ SetupDirs()
      {
 	if (!isdir(s))
 	  {
-	     Esnprintf(ss, sizeof(ss), "%s.old", UserEDir());
+	     Esnprintf(ss, sizeof(ss), "%s.old", EDirUser());
 	     mv(s, ss);
 	     md(s);
 	  }
 	else
-	   ChkDir(UserEDir());
+	   ChkDir(EDirUser());
      }
    else
       md(s);
-   Esnprintf(s, sizeof(s), "%s/themes", UserEDir());
+   Esnprintf(s, sizeof(s), "%s/themes", EDirUser());
    if (!exists(s))
       md(s);
    else
       ChkDir(s);
-   Esnprintf(s, sizeof(s), "%s/backgrounds", UserEDir());
+   Esnprintf(s, sizeof(s), "%s/backgrounds", EDirUser());
    if (!exists(s))
       md(s);
    else
       ChkDir(s);
-   Esnprintf(s, sizeof(s), "%s/cached", UserCacheDir());
+   Esnprintf(s, sizeof(s), "%s/cached", EDirUserCache());
    if (!exists(s))
       md(s);
    else
       ChkDir(s);
-   Esnprintf(s, sizeof(s), "%s/cached/img", UserCacheDir());
+   Esnprintf(s, sizeof(s), "%s/cached/img", EDirUserCache());
    if (!exists(s))
       md(s);
    else
       ChkDir(s);
-   Esnprintf(s, sizeof(s), "%s/cached/cfg", UserCacheDir());
+   Esnprintf(s, sizeof(s), "%s/cached/cfg", EDirUserCache());
    if (!exists(s))
       md(s);
    else
       ChkDir(s);
-   Esnprintf(s, sizeof(s), "%s/cached/bgsel", UserCacheDir());
+   Esnprintf(s, sizeof(s), "%s/cached/bgsel", EDirUserCache());
    if (!exists(s))
       md(s);
    else
       ChkDir(s);
-   Esnprintf(s, sizeof(s), "%s/cached/pager", UserCacheDir());
+   Esnprintf(s, sizeof(s), "%s/cached/pager", EDirUserCache());
    if (!exists(s))
       md(s);
    else
@@ -567,17 +567,13 @@ SetupEnv()
    if (master_pid != getpid())
       Esetenv("DISPLAY", DisplayString(disp), 1);
    Esetenv("EVERSION", ENLIGHTENMENT_VERSION, 1);
-#ifndef __EMX__
-   Esetenv("EROOT", ENLIGHTENMENT_ROOT, 1);
-#else
-   Esetenv("EROOT", __XOS2RedirRoot(ENLIGHTENMENT_ROOT), 1);
-#endif
-   Esetenv("EBIN", ENLIGHTENMENT_BIN, 1);
+   Esetenv("EROOT", EDirRoot(), 1);
+   Esetenv("EBIN", EDirBin(), 1);
    Esnprintf(s, sizeof(s), "%i", getpid());
    Esetenv("EPID", s, 1);
    Esetenv("ETHEME", themepath, 1);
-   Esetenv("ECONFDIR", UserEDir(), 1);
-   Esetenv("ECACHEDIR", UserCacheDir(), 1);
+   Esetenv("ECONFDIR", EDirUser(), 1);
+   Esetenv("ECACHEDIR", EDirUserCache(), 1);
 
 #ifdef __EMX__
    Esetenv("EMXSHELL", "sh.exe", 1);
@@ -790,7 +786,7 @@ SetupUserInitialization(void)
 
    EDBUG(3, "SetupUserInitialization");
 
-   Esnprintf(file, sizeof(file), "%s/.initialized", UserEDir());
+   Esnprintf(file, sizeof(file), "%s/.initialized", EDirUser());
    if (isfile(file))
      {
 	mode.firsttime = 0;
@@ -806,8 +802,7 @@ SetupUserInitialization(void)
 	fclose(f);
 	if (fork())
 	   EDBUG_RETURN_;
-	Esnprintf(file, sizeof(file), "exec %s/scripts/e_gen_menu",
-		  ENLIGHTENMENT_ROOT);
+	Esnprintf(file, sizeof(file), "exec %s/scripts/e_gen_menu", EDirRoot());
 	execl(usershell(getuid()), usershell(getuid()), "-c", (char *)file,
 	      NULL);
 	exit(0);

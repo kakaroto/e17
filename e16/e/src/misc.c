@@ -50,12 +50,7 @@ BlumFlimFrub(void)
 
    for (i = 0; i < 3; i++)
      {
-#ifndef __EMX__
-	Esnprintf(s, sizeof(s), "%s/%s", ENLIGHTENMENT_BIN, bins[i]);
-#else
-	Esnprintf(s, sizeof(s), "%s/%s", __XOS2RedirRoot(ENLIGHTENMENT_BIN),
-		  bins[i]);
-#endif
+	Esnprintf(s, sizeof(s), "%s/%s", EDirBin(), bins[i]);
 	if (!exists(s))
 	  {
 	     Alert(_
@@ -81,16 +76,11 @@ BlumFlimFrub(void)
 		    "correctly.\n"), s);
 	     EExit(NULL);
 	  }
-	Esnprintf(s, sizeof(s), "%s/dox", ENLIGHTENMENT_BIN);
      }
+
    for (i = 0; i < 3; i++)
      {
-#ifndef __EMX__
-	Esnprintf(s, sizeof(s), "%s/%s", ENLIGHTENMENT_ROOT, docs[i]);
-#else
-	Esnprintf(s, sizeof(s), "%s/%s", __XOS2RedirRoot(ENLIGHTENMENT_ROOT),
-		  docs[i]);
-#endif
+	Esnprintf(s, sizeof(s), "%s/%s", EDirRoot(), docs[i]);
 	if (!exists(s))
 	  {
 	     Alert(_
@@ -106,14 +96,10 @@ BlumFlimFrub(void)
 	     EExit(NULL);
 	  }
      }
+
    for (i = 0; i < 1; i++)
      {
-#ifndef __EMX__
-	Esnprintf(s, sizeof(s), "%s/%s", ENLIGHTENMENT_ROOT, thms[i]);
-#else
-	Esnprintf(s, sizeof(s), "%s/%s", __XOS2RedirRoot(ENLIGHTENMENT_ROOT),
-		  thms[i]);
-#endif
+	Esnprintf(s, sizeof(s), "%s/%s", EDirRoot(), thms[i]);
 	if (!exists(s))
 	  {
 	     Alert(_
@@ -130,14 +116,34 @@ BlumFlimFrub(void)
      }
 }
 
+const char         *
+EDirBin(void)
+{
+#ifndef __EMX__
+   return ENLIGHTENMENT_BIN;
+#else
+   return __XOS2RedirRoot(ENLIGHTENMENT_BIN);
+#endif
+}
+
+const char         *
+EDirRoot(void)
+{
+#ifndef __EMX__
+   return ENLIGHTENMENT_ROOT;
+#else
+   return __XOS2RedirRoot(ENLIGHTENMENT_ROOT);
+#endif
+}
+
 void
-SetEDir(char *d)
+EDirUserSet(const char *d)
 {
    dir = duplicate(d);
 }
 
 char               *
-UserEDir(void)
+EDirUser(void)
 {
    if (dir)
       return dir;
@@ -154,16 +160,16 @@ UserEDir(void)
 }
 
 void
-SetCacheDir(char *d)
+EDirUserCacheSet(const char *d)
 {
    cacheDir = duplicate(d);
 }
 
 char               *
-UserCacheDir(void)
+EDirUserCache(void)
 {
    if (!cacheDir)
-      cacheDir = duplicate(UserEDir());
+      cacheDir = duplicate(EDirUser());
    return cacheDir;
 }
 
