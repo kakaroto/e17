@@ -798,16 +798,17 @@ refresh_name_cb(GtkWidget * widget, gpointer * obj)
 void
 refresh_sizemode_cb(GtkWidget * widget, gpointer * obj)
 {
-	int i;
+   int i;
+
    D_ENTER(3);
    geist_object_dirty(GEIST_OBJECT(obj));
-	
-	for (i=0; i<SIZEMODE_MAX;i++)
-	{
-		if (strcmp (gtk_entry_get_text(GTK_ENTRY(widget)),
-				object_sizemodes[i])==0)
-			GEIST_OBJECT(obj)->sizemode = i;
-	}
+
+   for (i = 0; i < SIZEMODE_MAX; i++)
+   {
+      if (strcmp(gtk_entry_get_text(GTK_ENTRY(widget)), object_sizemodes[i])
+          == 0)
+         GEIST_OBJECT(obj)->sizemode = i;
+   }
    geist_object_update_sizemode(GEIST_OBJECT(obj));
    geist_object_dirty(GEIST_OBJECT(obj));
    geist_document_render_updates(GEIST_OBJECT_DOC(obj));
@@ -818,15 +819,16 @@ refresh_sizemode_cb(GtkWidget * widget, gpointer * obj)
 void
 refresh_alignment_cb(GtkWidget * widget, gpointer * obj)
 {
-	int i;
+   int i;
+
    D_ENTER(3);
    geist_object_dirty(GEIST_OBJECT(obj));
-	for (i=0; i<ALIGN_MAX;i++)
-	{
-		if (strcmp (gtk_entry_get_text(GTK_ENTRY(widget)),
-				object_alignments[i])==0)
-			GEIST_OBJECT(obj)->alignment = i;
-	}
+   for (i = 0; i < ALIGN_MAX; i++)
+   {
+      if (strcmp(gtk_entry_get_text(GTK_ENTRY(widget)), object_alignments[i])
+          == 0)
+         GEIST_OBJECT(obj)->alignment = i;
+   }
    geist_object_update_alignment(GEIST_OBJECT(obj));
    geist_object_dirty(GEIST_OBJECT(obj));
    geist_document_render_updates(GEIST_OBJECT_DOC(obj));
@@ -1133,3 +1135,50 @@ geist_object_get_alignment_string(geist_object * obj)
 
    D_RETURN(3, object_alignments[obj->alignment]);
 }
+
+int
+geist_object_get_alignment_from_string(char *s)
+{
+   int i;
+
+   D_ENTER(3);
+
+   for (i = 0; i < ALIGN_MAX; i++)
+   {
+      if (!strcmp(object_alignments[i], s))
+         D_RETURN(3, i);
+   }
+   D_RETURN(3, 0);
+}
+
+
+int
+geist_object_get_sizemode_from_string(char *s)
+{
+   int i;
+
+   D_ENTER(3);
+
+   for (i = 0; i < SIZEMODE_MAX; i++)
+   {
+      if (!strcmp(object_sizemodes[i], s))
+         D_RETURN(3, i);
+   }
+   D_RETURN(3, 0);
+}
+
+int
+geist_object_get_type_from_string(char *s)
+{
+   int i;
+
+   D_ENTER(3);
+
+   for (i = 0; i < GEIST_TYPE_MAX; i++)
+   {
+      if (!strcmp(object_types[i], s))
+         D_RETURN(3, i);
+   }
+   D_RETURN(3, 0);
+}
+

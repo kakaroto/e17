@@ -146,7 +146,7 @@ geist_text_render(geist_object * obj, Imlib_Image dest)
    geist_imlib_blend_image_onto_image(dest, im->im, 0, 0, 0, sw, sh,
                                       obj->x + obj->rendered_x,
                                       obj->y + obj->rendered_y, sw, sh, 1, 1,
-                                      im->alias);
+                                      obj->alias);
 
    D_RETURN_(5);
 }
@@ -213,7 +213,7 @@ geist_text_render_partial(geist_object * obj, Imlib_Image dest, int x, int y,
       sx, sy, sw, sh, dx, dy, dw, dh));
 
    geist_imlib_blend_image_onto_image(dest, im->im, 0, sx, sy, sw, sh, dx, dy,
-                                      dw, dh, 1, 1, im->alias);
+                                      dw, dh, 1, 1, obj->alias);
 
    D_RETURN_(5);
 }
@@ -326,7 +326,7 @@ geist_text_duplicate(geist_object * obj)
    if (ret)
    {
       ret->state = obj->state;
-      GEIST_IMAGE(ret)->alias = txt->alias;
+      ret->alias = obj->alias;
       ret->name =
          g_strjoin(" ", "Copy of", obj->name ? obj->name : "Untitled object",
                    NULL);

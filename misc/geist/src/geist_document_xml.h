@@ -10,9 +10,7 @@
 
 enum xml_load_err {ERR_NO_FILE, ERR_EMPTY_FILE, ERR_WRONG_TYPE};
 
-geist_document *
-geist_project_load_xml (char *xml, int from_mem, int * err_return);
-int
-geist_project_save_xml (geist_document *doc, char *filename);
+int geist_document_save_xml (geist_document *doc, char *filename);
+geist_document *geist_document_load_xml(char *xml, gint * err_return);
 
 #endif

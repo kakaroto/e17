@@ -19,8 +19,9 @@ geist_list *doc_list = NULL;
 int
 main(int argc, char *argv[])
 {
-   GtkWidget *nbook, *obj_win;
+   GtkWidget *obj_win;
    geist_document *doc;
+   int err;
 
    opt.debug_level = 5;
    D_ENTER(3);
@@ -33,8 +34,9 @@ main(int argc, char *argv[])
 
    obj_win = geist_create_object_list();
 
-   nbook = gtk_object_get_data(GTK_OBJECT(mainwin), "notebook");
-   doc = geist_gtk_new_document_page(nbook, 500, 500, "New document");
+   doc = geist_document_new(500,500);
+   geist_document_rename(doc,"Test Document");
+   geist_gtk_new_document_page(doc);
 
    doc->bg_fill->r = 155;
    doc->bg_fill->g = 216;
@@ -96,7 +98,9 @@ main(int argc, char *argv[])
 
    geist_document_render_full(doc);
 
-   doc = geist_gtk_new_document_page(nbook, 400, 300, "Second document");
+   doc = geist_document_new(400,300);
+   geist_document_rename(doc, "Second document");
+   geist_gtk_new_document_page(doc);
    geist_document_add_object(doc,
                              geist_text_new_with_text(15, 15, "20thcent", 20,
                                                       "Wow! 2 documents? Neato ;-)",

@@ -1,3 +1,9 @@
+Thu Aug 17 00:12:36 2000  Tom Gilbert  <gilbertt@linuxbrit.co.uk>
+
+	* Wheeeee! Geist can load it's own file format now :-)
+	* Just make some changes, do a file/save and then load it
+	back. Yipee!
+
 Wed Aug 16 20:30:52 2000  Tom Gilbert  <gilbertt@linuxbrit.co.uk>
 
 	* Update object list when changing current document.

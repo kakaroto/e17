@@ -11,7 +11,6 @@ struct __geist_image
    geist_object object;
    char *filename;
    Imlib_Image im;
-   int alias;
 };
 
 geist_object *geist_image_new(void);

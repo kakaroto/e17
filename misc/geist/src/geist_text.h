@@ -17,7 +17,6 @@ struct __geist_text
    char *text;
    Imlib_Font fn;
    Imlib_Image im;
-   int alias;
    int r, g, b, a;
 };
 

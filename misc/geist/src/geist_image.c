@@ -2,6 +2,9 @@
 #include "geist_imlib.h"
 #include "geist_image.h"
 
+static gboolean 
+img_load_cancel_cb(GtkWidget * widget, gpointer data);
+
 typedef struct _cb_data cb_data;
 struct _cb_data 
 {
@@ -129,7 +132,7 @@ geist_image_render(geist_object * obj, Imlib_Image dest)
    geist_imlib_blend_image_onto_image(dest, im->im, 0, 0, 0, sw, sh, obj->x,
                                       obj->y, sw, sh, 1,
                                       geist_imlib_image_has_alpha(im->im),
-                                      im->alias);
+                                      obj->alias);
 
    D_RETURN_(5);
 }
@@ -198,7 +201,7 @@ geist_image_render_partial(geist_object * obj, Imlib_Image dest, int x, int y,
    geist_imlib_blend_image_onto_image(dest, im->im, 0, sx, sy, sw, sh, dx, dy,
                                       dw, dh, 1,
                                       geist_imlib_image_has_alpha(im->im),
-                                      im->alias);
+                                      obj->alias);
 
    D_RETURN_(5);
 }
@@ -254,7 +257,7 @@ geist_image_duplicate(geist_object * obj)
    if (ret)
    {
       ret->state = obj->state;
-      GEIST_IMAGE(ret)->alias = img->alias;
+      ret->alias = obj->alias;
       ret->name =
          g_strjoin(" ", "Copy of", obj->name ? obj->name : "Untitled object",
                    NULL);
@@ -280,7 +283,7 @@ geist_image_resize(geist_object * obj, int x, int y)
 
 
 static gboolean
-obj_load_cb(GtkWidget * widget, gpointer data)
+img_load_cb(GtkWidget * widget, gpointer data)
 {
    geist_object *obj = ((cb_data*) data)->obj;
    char *path;
@@ -304,7 +307,7 @@ obj_load_cb(GtkWidget * widget, gpointer data)
 }
 
 static gboolean 
-obj_load_cancel_cb(GtkWidget * widget, gpointer data)
+img_load_cancel_cb(GtkWidget * widget, gpointer data)
 {
    gtk_widget_destroy((GtkWidget *) data);
    return TRUE;
@@ -325,10 +328,10 @@ geist_image_select_file_cb(GtkWidget *widget, gpointer *data)
 				
    gtk_file_selection_show_fileop_buttons(GTK_FILE_SELECTION(file_sel));
    gtk_signal_connect(GTK_OBJECT(GTK_FILE_SELECTION(file_sel)->ok_button),
-                      "clicked", GTK_SIGNAL_FUNC(obj_load_cb),
+                      "clicked", GTK_SIGNAL_FUNC(img_load_cb),
                       (gpointer) sel_cb_data);
    gtk_signal_connect(GTK_OBJECT(GTK_FILE_SELECTION(file_sel)->cancel_button),
-                      "clicked", GTK_SIGNAL_FUNC(obj_load_cancel_cb),
+                      "clicked", GTK_SIGNAL_FUNC(img_load_cancel_cb),
                       (gpointer) file_sel);
    gtk_widget_show(file_sel);
    return TRUE;

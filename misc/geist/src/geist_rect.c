@@ -172,6 +172,7 @@ geist_rect_duplicate(geist_object * obj)
    ret->h = obj->h;
    if (ret)
    {
+      ret->alias = obj->alias;
       ret->state = obj->state;
       ret->name =
          g_strjoin(" ", "Copy of", obj->name ? obj->name : "Untitled object",

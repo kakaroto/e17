@@ -18,7 +18,8 @@ typedef enum __geist_object_type
    GEIST_TYPE_OBJECT,
    GEIST_TYPE_IMAGE,
    GEIST_TYPE_TEXT,
-   GEIST_TYPE_RECT
+   GEIST_TYPE_RECT,
+   GEIST_TYPE_MAX
 }
 geist_object_type;
 
@@ -70,6 +71,7 @@ struct __geist_object
    char *name;
    geist_layer *layer;
    int alpha;
+   int alias;
    /* Object position/size */
    int x;
    int y;
@@ -165,7 +167,9 @@ void geist_object_get_resize_box_coords(geist_object * obj, int resize,
 char *geist_object_get_type_string(geist_object * obj);
 char *geist_object_get_sizemode_string(geist_object * obj);
 char *geist_object_get_alignment_string(geist_object * obj);
-
+int geist_object_get_sizemode_from_string(char *s);
+int geist_object_get_alignment_from_string(char *s);
+int geist_object_get_type_from_string(char *s);
 
 
 #define geist_object_set_state(o, s) (o->state |=  s)
