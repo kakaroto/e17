@@ -5,14 +5,9 @@
 #include "ewl-config.h"
 #endif
 
-#define EWL_GLOBAL_THEMES			PACKAGE_DATA_DIR"/themes"
-#define EWL_USER_THEMES				EWL_USER_DIR"/themes"
-
-/* The path where the theme is located */
 static char theme_path[PATH_LEN];
 
-/* A global table of theme data that has the default settings */
-static Ewd_Hash *def_theme_data;
+static Ewd_Hash *def_theme_data = NULL;
 
 static const char *theme_keys[] = {
 	"/appearance/box/horizontal/base",
@@ -129,7 +124,7 @@ static const char *theme_keys[] = {
 
 /* Initialize the data structures involved with theme handling. This involves
  * finding the specified theme file. */
-void
+int
 ewl_theme_init(void)
 {
 	struct stat st;
@@ -144,17 +139,20 @@ ewl_theme_init(void)
 	/*
 	 * Setup a string with the path to the users theme dir 
 	 */
-	str = ewl_prefs_theme_name_get();
+	str = ewl_config_get_str("/theme/name");
 	if (!str)
-		DERROR("No theme name... unable to proceed.\n");
+		str = strdup("default");
 
 	home = getenv("HOME");
 	if (!home)
+	  {
 		DERROR("Environment variable HOME not defined\n"
 		       "Try export HOME=/home/user in a bash like environemnt or\n"
 		       "setenv HOME=/home/user in a sh like environment.\n");
+		return -1;
+	  }
 
-	snprintf(theme_path, PATH_LEN, "%s/" EWL_USER_THEMES "/%s", home,
+	snprintf(theme_path, PATH_LEN, "%s/.e/ewl/themes/%s", home,
 		 str);
 
 	/*
@@ -167,15 +165,19 @@ ewl_theme_init(void)
 		  /*
 		   * Theme dir is ok, now get the specified theme's path 
 		   */
-		  snprintf(theme_path, PATH_LEN, EWL_GLOBAL_THEMES "/%s",
-			   str);
+		  snprintf(theme_path, PATH_LEN, PACKAGE_DATA_DIR
+		  		"/themes/%s", str);
 		  stat(theme_path, &st);
 
 		  if (!S_ISDIR(st.st_mode))
 			  DERROR("No theme dir =( exiting....");
 	  }
 
+	IF_FREE(str);
+
 	ewl_theme_data_set_defaults();
+
+	return 1;
 }
 
 /* Initialize the widget's theme */

@@ -12,6 +12,7 @@ installed_headers_DATA = \
 	ewl_button.h \
 	ewl_callback.h \
 	ewl_checkbutton.h \
+	ewl_config.h \
 	ewl_container.h \
 	ewl_debug.h \
 	ewl_entry.h \
@@ -23,7 +24,6 @@ installed_headers_DATA = \
 	ewl_macros.h \
 	ewl_misc.h \
 	ewl_object.h \
-	ewl_prefs.h \
 	ewl_radiobutton.h \
 	ewl_seeker.h \
 	ewl_spinner.h \
@@ -38,6 +38,7 @@ libewl_la_SOURCES = \
 	ewl_button.c \
 	ewl_callback.c \
 	ewl_checkbutton.c \
+	ewl_config.c \
 	ewl_container.c \
 	ewl_entry.c \
 	ewl_events.c \
@@ -46,7 +47,6 @@ libewl_la_SOURCES = \
 	ewl_list.c \
 	ewl_misc.c \
 	ewl_object.c \
-	ewl_prefs.c \
 	ewl_radiobutton.c \
 	ewl_seeker.c \
 	ewl_spinner.c \

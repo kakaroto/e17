@@ -17,9 +17,6 @@ ewl_init(int argc, char **argv)
 
 	DENTER_FUNCTION;
 
-	ewl_size_allocated = 0;
-	ewl_size_freed = 0;
-
 	ewl_init_parse_options(argc, argv);
 
 	if (ewl_options.xdisplay)
@@ -35,10 +32,17 @@ ewl_init(int argc, char **argv)
 	e_ev_signal_init();
 	e_ev_x_init();
 
-	ewl_prefs_init();
-	ewl_ev_init();
-	ewl_fx_init();
-	ewl_theme_init();
+	if ((ewl_config_init()) == -1)
+		DERROR("Couldn't init config data.. Exiting....");
+
+	if ((ewl_ev_init()) == -1)
+		DERROR("Couldn't init event data.. Exiting....");
+
+	if ((ewl_fx_init()) == -1)
+		DERROR("Couldn't init fx data.. Exiting....");
+
+	if ((ewl_theme_init()) == -1)
+		DERROR("Couldn't init theme data.. Exiting....");
 
 	e_event_filter_idle_handler_add(ewl_idle_render, NULL);
 

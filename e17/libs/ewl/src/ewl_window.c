@@ -102,8 +102,8 @@ __ewl_window_realize(Ewl_Widget * w, void *event_data, void *user_data)
 			       window->window, 0, 0,
 			       CURRENT_W(w),
 			       CURRENT_H(w),
-			       ewl_prefs_render_method_get
-			       (), 216, 1024 * 1024 * 2,
+			       ewl_config_get_render_method(),
+			       216, 1024 * 1024 * 2,
 			       1024 * 1024 * 5, font_path);
 
 	w->evas_window = evas_get_window(w->evas);

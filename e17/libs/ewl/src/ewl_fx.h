@@ -36,7 +36,7 @@ typedef struct _ewl_fx_timer Ewl_FX_Timer;
 
 #define EWL_FX_TIMER(timer) ((Ewl_FX_Timer *) timer)
 
-void ewl_fx_init();
+int ewl_fx_init(void);
 void ewl_fx_add(Ewl_Widget * widget,
 		Ewl_FX_Type type,
 		void (*func) (Ewl_Widget * widget,

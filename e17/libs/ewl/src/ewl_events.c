@@ -18,7 +18,7 @@ static void ewl_ev_mouse_down(Eevent * _ev);
 static void ewl_ev_mouse_up(Eevent * _ev);
 static void ewl_ev_mouse_move(Eevent * _ev);
 
-void
+int
 ewl_ev_init(void)
 {
 	last_selected = NULL;
@@ -39,6 +39,8 @@ ewl_ev_init(void)
 	e_event_filter_handler_add(EV_MOUSE_DOWN, ewl_ev_mouse_down);
 	e_event_filter_handler_add(EV_MOUSE_UP, ewl_ev_mouse_up);
 	e_event_filter_handler_add(EV_MOUSE_MOVE, ewl_ev_mouse_move);
+
+	return 1;
 }
 
 static void

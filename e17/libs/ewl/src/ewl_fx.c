@@ -1,22 +1,27 @@
 
 #include <Ewl.h>
 
+
 static void ewl_fx_handle_fade_in(int val, void *data);
 static void ewl_fx_handle_fade_out(int val, void *data);
 static void ewl_fx_handle_glow(int val, void *data);
 
-static double fx_max_fps;
-static double fx_timeout;
+static float fx_max_fps;
+static float fx_timeout;
 
-void
+
+int
 ewl_fx_init()
 {
 	DENTER_FUNCTION;
 
-	fx_max_fps = ewl_prefs_get_fx_max_fps();
-	fx_timeout = ewl_prefs_get_fx_timeout();
+	if ((ewl_config_get_float("/fx/max_fps", &fx_max_fps)) == -1)
+		fx_max_fps = 20.0;
 
-	DLEAVE_FUNCTION;
+	if ((ewl_config_get_float("/fx/timout", &fx_timeout)) == -1)
+		fx_timeout = 2.0;
+
+	DRETURN_INT(1);
 }
 
 void

@@ -17,13 +17,6 @@
 #define PATH_LEN 4096
 #endif
 
-#ifndef EWL_USER_DIR
-#define EWL_USER_DIR ".e/ewl"
-#endif
-
-unsigned int ewl_size_allocated;
-unsigned int ewl_size_freed;
-
 #include <ewl_debug.h>
 #include <ewl_macros.h>
 
@@ -41,7 +34,7 @@ unsigned int ewl_size_freed;
 #include <ewl_box.h>
 #include <ewl_table.h>
 
-#include <ewl_prefs.h>
+#include <ewl_config.h>
 #include <ewl_theme.h>
 
 #include <ewl_button.h>
