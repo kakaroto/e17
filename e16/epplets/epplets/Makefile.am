@@ -97,7 +97,8 @@ E-ScreenShoot.ABOUT/E_ScreenShoot_cloak.png
 
 ICONS = \
 E-Load.icon E-Clock.icon E-Net.icon E-Cpu.icon E-Power.icon E-Biff.icon \
-Emix.icon E-NetFlame.icon E-ScreenShoot.icon
+Emix.icon E-NetFlame.icon E-ScreenShoot.icon E-Slides.icon E-Disk.icon \
+E-MemWatch.icon E-Sys.icon E-Time.icon
 
 IMAGES =\
 E-Clock-Image.png E-Power-Bat-0.png E-Power-Bat-10.png E-Power-Bat-20.png \
