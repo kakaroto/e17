@@ -31,6 +31,8 @@
 
 static void display_string (char *string);
 static void handle_url (char *url, char *type);
+static void add_url_to_popup (char *url);
+static int url_in_popup (char *url);
 
 static void
 choose_random_cloak (void *data)
@@ -490,6 +492,8 @@ display_url_from_file (char *url)
       Epplet_gadget_show (btn_file_url);
     }
 
+  if (!url_in_popup (url))
+    add_url_to_popup (url);
 }
 
 static void
@@ -661,16 +665,16 @@ scroll_string (void *data)
 }
 
 static int
-url_in_popup(char *url)
+url_in_popup (char *url)
 {
-    int i;
+  int i;
 
-    for(i=0;i<10;i++)
+  for (i = 0; i < 10; i++)
     {
-	if((urllist[i]) && (!strcmp(urllist[i],url)))
-		return 1;
+      if ((urllist[i]) && (!strcmp (urllist[i], url)))
+	return 1;
     }
-    return 0;
+  return 0;
 }
 
 static void
@@ -681,8 +685,6 @@ display_string (char *string)
   dtext.str = _Strdup (string);
   dtext.len = strlen (string);
   dtext.pos = 0;
-  if((strcmp(string,"E-UrlWatch")) && (strcmp(string,"Welcome to E-UrlWatch ;-)")) && (!url_in_popup(string)))
-	add_url_to_popup (string);
   Epplet_timer (scroll_string, NULL, 0.1, "SCROLL_TIMER");
   Epplet_timer (reset_string, NULL, 20, "RESET_TIMER");
 }
@@ -725,6 +727,9 @@ handle_url (char *url, char *type)
   D (("In handle_url: About to system() -->%s<--\n", sys));
 
   system (sys);
+
+  if (!url_in_popup (validurl))
+    add_url_to_popup (validurl);
 
   free (sys);
 
