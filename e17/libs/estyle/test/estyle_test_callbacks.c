@@ -100,7 +100,7 @@ void mouse_down(void *_data, Estyle * _es, int _b, int _x, int _y)
 	evas_move(evas, cursor, _x, _y);
 
 	if (_b == 2)
-		estyle_callback_add(e, CALLBACK_MOUSE_MOVE, mouse_move,
+		estyle_callback_add(_es, CALLBACK_MOUSE_MOVE, mouse_move,
 				    NULL);
 	if (_b == 3)
 		estyle_callback_del(_es, CALLBACK_MOUSE_MOVE);
