@@ -30,20 +30,30 @@ Visual *
 __imlib_BestVisual(Display *d, int screen, int *depth_return)
 {
    XVisualInfo xvi, *xvir;
-   int         i, num, maxd = 0;
+   int         j, i, num, maxd = 0;
    Visual     *v = NULL;
+   const int   visprefs[] = 
+     {PseudoColor, TrueColor, DirectColor, StaticColor, GrayScale, StaticGray};
    
    xvi.screen = screen;
-   for (xvi.class = TrueColor; xvi.class >= StaticGray; xvi.class--)
+   maxd = 0;
+   for (j = 0; j < 6; j++)
      {
+	xvi.class = visprefs[j];
 	xvir = XGetVisualInfo(d, VisualScreenMask | VisualClassMask, 
 			      &xvi, &num);
 	if (xvir)
 	  {
-	     maxd = 0;
 	     for (i = 0; i < num; i++)
 	       {
-		  if ((xvir[i].depth > maxd) &&
+		  if ((xvir[i].depth == 8) &&
+		      (xvir[i].depth >= maxd) &&
+		      (xvi.class == PseudoColor))
+		    {
+		       maxd = xvir[i].depth;
+		       v = xvir[i].visual;
+		    }
+		  else if ((xvir[i].depth > maxd) &&
 		      (xvir[i].depth <= 24))
 		    {
 		       maxd = xvir[i].depth;
@@ -51,12 +61,6 @@ __imlib_BestVisual(Display *d, int screen, int *depth_return)
 		    }
 	       }
 	     XFree(xvir);
-	  }
-	if (v)
-	  {
-	     if (depth_return)
-		*depth_return = maxd;
-	     return v;
 	  }
      }
    if (depth_return)
