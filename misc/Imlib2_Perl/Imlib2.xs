@@ -108,6 +108,19 @@ render_pixmaps_for_whole_image()
 		PUSHs(sv_2mortal(newSVuv(mask)));
 	}
 
+void
+render_pixmaps_for_whole_image_at_size(x,y)
+	int x
+	int y
+	PPCODE:
+	{
+		Pixmap pixmap,mask;
+		imlib_render_pixmaps_for_whole_image_at_size(&pixmap,&mask,x,y);
+		EXTEND(sp,2);
+		PUSHs(sv_2mortal(newSVuv(pixmap)));
+		PUSHs(sv_2mortal(newSVuv(mask)));
+	}	
+		
 
 void
 free_pixmap_and_mask(pixmap)
