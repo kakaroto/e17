@@ -579,7 +579,6 @@ HButtonPress(XEvent * ev)
    ApplySclass(FindItem("SOUND_BUTTON_CLICK", 0,
 			LIST_FINDBY_NAME, LIST_TYPE_SCLASS));
    HandleMouseDown(ev);
-   EDisplayMemUse();
 #if 0
    {
       int                 x, y, maxh = 0, count = 0, mcount = 0, ww, hh;
