@@ -3,6 +3,33 @@
 <p class="contenttitle">News</p>
 
 @:news_title@
+Fri Apr 30 - <a href="mailto:benr@@NO.SPAMcuddletech.com">benr</a> - SourceForge CVS Changes
+@:news_body@
+
+<p>
+The good folks at SourceForge 
+<a href="http://sourceforge.net/docman/display_doc.php?docid=2352&group_id=1">screwed up CVS due to a 
+DNS upgrade to BIND9</a>.  It's taken them a full 24hours to report it.  So if you've been seeing
+SSH warnings about being spoofed, or messages like the following, your not alone:
+</p>
+
+<pre>
+benr@@nexus6 cvs$ cvs co e16
+technikolor@@cvs.enlightenment.sourceforge.net's password:
+Cannot access /cvsroot/enlightenment/CVSROOT
+No such file or directory
+benr@@nexus6 cvs$
+</pre>
+
+<p>
+Change your CVSROOT from cvs.enlightenment.sourceforge.net to cvs.sourceforge.net and
+things should work fine.
+</p>
+@:news_end@
+
+
+
+@:news_title@
 Fri Apr 2 - <a href="mailto:benr@@NO.SPAMcuddletech.com">benr</a> - Development Updates
 @:news_body@
 
