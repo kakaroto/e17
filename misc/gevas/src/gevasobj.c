@@ -240,6 +240,11 @@ void _gevasobj_get_location(GtkgEvasObj * object, double *x, double *y)
 	double w, h;
 	evas_get_geometry(EVAS(object), EVASO(object), x, y, &w, &h);
 }
+void gevasobj_get_size(GtkgEvasObj * object, double *w, double *h)
+{
+	double x, y;
+	evas_get_geometry(EVAS(object), EVASO(object), &x, &y, w, h);
+}
 
 void _gevasobj_show(GtkgEvasObj * object)
 {

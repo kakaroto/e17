@@ -142,7 +142,8 @@ extern "C" {
 	void gevasobj_get_geometry(GtkgEvasObj * object, double *x, double *y,
 							   double *w, double *h);
 	void gevasobj_get_location(GtkgEvasObj * object, double *x, double *y);
-	void gevasobj_show(GtkgEvasObj * object);
+    void gevasobj_get_size(GtkgEvasObj * object, double *w, double *h);
+        void gevasobj_show(GtkgEvasObj * object);
 	void gevasobj_hide(GtkgEvasObj * object);
 	void gevasobj_get_color(GtkgEvasObj * object, int *r, int *g, int *b,
 							int *a);

@@ -51,6 +51,14 @@ extern "C" {
 		gint dragging;
 		gdouble click_x_offset;	/* when the mouse down occurs store the offset into the Evas_Object */
 		gdouble click_y_offset;	/* so that the move handler can set x/y properly */
+
+        /* When we are dragging we snapshot the visible area of the gevas so that
+         * the users drag operations do not allow objects off the viewable area (optional) */  
+        gint canvas_x;
+        gint canvas_y;
+        gint canvas_w;
+        gint canvas_h;
+        
 	};
 
 	struct _GtkgEvasEvHDragClass {

@@ -8,6 +8,15 @@ Make sure that the idle evas_render() call gets called every time
 the app goes idle.
 
 ------
+
+Start of drag and drop. I will polish it up a little more by adding a 
+edge_trimmer_evh object that makes sure gevasobjs dont move out of the 
+current view.
+
+Other than that there is the need to make evas render a nice icon for 
+the drag instead of the gay default "file" image.
+
+------
 ------
 
 * Playing with adding selections.

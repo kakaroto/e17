@@ -69,6 +69,11 @@ struct _GtkgEvasEvHSelectable
 
 	gint32  border_x;
 	gint32  border_y;
+
+    /* Are we locking the x,y to not allow the user to drag objects off the viewport */
+    /* Primarily used for d&d support, but is optional */
+    gboolean confine; 
+    
 };
 
 #define gevasevh_selectable_gevasobj( a ) ((GTK_GEVASEVH_SELECTABLE(a))->normal)
@@ -87,7 +92,8 @@ void gevasevh_selectable_set_normal_gevasobj(
 	GtkgEvasEvHSelectable* ev, 
 	GtkgEvasObj* nor );
 void gevasevh_selectable_set_selector( GtkgEvasEvHSelectable* evh, GtkObject* evh_selector );
-
+void gevasevh_selectable_set_confine( GtkgEvasEvHSelectable* evh, gboolean c );
+    
 
 
 

@@ -156,6 +156,37 @@ void gevas_selectable_select( GtkgEvasEvHSelectable * ev, gboolean s )
 	}
 }
 
+void gevasevh_selectable_set_confine( GtkgEvasEvHSelectable* evh, gboolean c )
+{
+    evh->confine = c;
+}
+
+
+static void _gevas_selectable_confine(
+    GtkgEvasEvHSelectable * ev,
+    GtkgEvas* gevas,
+    double* x, double* y )
+{
+    if( ev->confine )
+    {
+        gint vx, vy, vw, vh;
+        double objw, objh;
+
+        
+        
+        gevas_get_viewport_area( gevas, &vx, &vy, &vw, &vh );
+        gevasobj_get_size( ev->normal, &objw, &objh );
+
+        if( *x < vx ) *x = vx;
+        if( *y < vy ) *y = vy;
+        if( *x+objw > vw ) *x = vw-objw;
+        if( *y+objh > vh ) *y = vh-objh;
+
+        /* printf("gevas_selectable_move() vx:%d vy:%d vw:%d vh:%d\n",vx,vy,vw,vh); */
+    }
+}
+
+
 /**/
 /* Callback for group_selector.*/
 /**/
@@ -164,11 +195,14 @@ void gevas_selectable_move( GtkgEvasEvHSelectable * ev, gint32 dx, gint32 dy )
 	double x=0, y=0;
 	gint32 bx = ev->border_x;
 	gint32 by = ev->border_y;
-
-	gevasobj_get_location( ev->normal, &x, &y );
+    
+    gevasobj_get_location( ev->normal, &x, &y );
 	x+=dx;	
 	y+=dy;
-/*	printf("gevas_selectable_move() x:%f y:%f dx:%d dy:%d\n",x,y,dx,dy);*/
+
+    _gevas_selectable_confine( ev, ev->normal->gevas, &x, &y );
+    
+//    printf("gevas_selectable_move() x:%f y:%f dx:%d dy:%d\n",x,y,dx,dy);
 	gevasobj_move( ev->normal, x, y );
 	gevasobj_move( ev->selected, x-bx, y-by);
 }

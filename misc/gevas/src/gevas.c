@@ -1092,6 +1092,29 @@ static void gevas_paint(GtkgEvas * ev, GdkRectangle * area)
 }
 
 
+void gevas_get_viewport_area( GtkgEvas* gevas, gint* x, gint* y, gint* w, gint* h )
+{
+    GtkAdjustment* a = 0;
+
+    if( gevas->scrolledwindow )
+    {
+        if( a = gtk_scrolled_window_get_hadjustment( gevas->scrolledwindow ))
+        {
+            *x = a->value;
+            *w = a->page_size;
+        }
+        
+        if( a = gtk_scrolled_window_get_vadjustment( gevas->scrolledwindow ))
+        {
+            *y = a->value;
+            *h = a->page_size;
+        }
+    }
+    
+    
+}
+
+
 gint gevas_view_redraw_cb(gpointer data)
 {
 	GtkgEvas* 	gevas = (GtkgEvas *) data;

@@ -190,6 +190,8 @@ struct _GtkgEvasClass {
 	Evas gevas_get_evas(GtkgEvas * gevas);
 	GdkEvent *gevas_get_current_event(GtkgEvas * gevas);
 
+    void gevas_get_viewport_area( GtkgEvas* gevas, gint* x, gint* y, gint* w, gint* h );
+
 
 #define GEVAS_CHECKED_BG_IMAGE_FILENAME    PACKAGE_DATA_DIR"/checks.png"
 #define GEVAS_MAX_MIDDLEB_SCROLL_PIXELS 150

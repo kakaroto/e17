@@ -580,7 +580,7 @@ void setup_bg(GtkWidget * gevas)
 
 	/** Make this a group_selector **/
 	evh_selector = evh = gevasevh_group_selector_new();
-	gevasevh_group_selector_set_object( (GtkgEvasEvHGroupSelector*)evh, 
+    gevasevh_group_selector_set_object( (GtkgEvasEvHGroupSelector*)evh, 
 		GTK_GEVASOBJ(gevas_image));
 	gevasobj_add_evhandler(GTK_GEVASOBJ(gevas_image), evh);
     setup_dnd(gevas);
@@ -726,6 +726,7 @@ void make_selectable( GtkgEvasObj* object )
 {
 	GtkgEvasObj *ct;
 	GtkObject *evh = gevasevh_selectable_new();
+    gevasevh_selectable_set_confine( evh, 1 );
 
 	gevasobj_add_evhandler(object, evh);
 	gevasevh_selectable_set_normal_gevasobj(GTK_GEVASEVH_SELECTABLE(evh),
@@ -750,6 +751,8 @@ void make_selectable( GtkgEvasObj* object )
 	gevasevh_selectable_set_selected_gevasobj( evh, ct );
 	gevasevh_selectable_set_selector(GTK_GEVASEVH_SELECTABLE(evh),
 									 evh_selector);
+
+    
 }
 
 void make_text(GtkWidget * gevas)
