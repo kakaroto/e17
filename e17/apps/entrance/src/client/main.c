@@ -725,7 +725,7 @@ main(int argc, char *argv[])
       evas_object_name_set(edje, "ui");
       evas_object_layer_set(edje, 0);
       entrance_session_edje_object_set(session, edje);
-	
+
       /* Setup the entries */
       for (i = 0; i < entries_count; i++)
       {
@@ -763,8 +763,7 @@ main(int argc, char *argv[])
          }
       }
       /* See if we have an EntranceTime part, setup a timer to automatically
-       * update the Time
-       */
+         update the Time */
       if (edje_object_part_exists(edje, "EntranceTime"))
       {
          edje_object_signal_callback_add(edje, "Go", "EntranceTime", set_time,
@@ -773,8 +772,7 @@ main(int argc, char *argv[])
          timer = ecore_timer_add(0.5, timer_cb, edje);
       }
       /* See if we have an EntranceDate part, setup a timer if one isn't
-       * already running to automatically update the Date 
-       */
+         already running to automatically update the Date */
       if (edje_object_part_exists(edje, "EntranceDate"))
       {
          edje_object_signal_callback_add(edje, "Go", "EntranceDate", set_date,
@@ -784,23 +782,21 @@ main(int argc, char *argv[])
             timer = ecore_timer_add(0.5, timer_cb, edje);
       }
       /* See if we have an EntranceSession part, set it to the first element
-       * in the config's session list */
+         in the config's session list */
       if (edje_object_part_exists(edje, "EntranceSession"))
       {
          entrance_session_xsession_set(session,
                                        entrance_session_default_xsession_get
                                        (session));
       }
-      /* See if we have an EntranceSessionList part, tell the session to
-       * load the session list if it exists.
-       */
+      /* See if we have an EntranceSessionList part, tell the session to load 
+         the session list if it exists. */
       if (edje_object_part_exists(edje, "EntranceSessionList"))
       {
          entrance_session_list_add(session);
       }
-      /* See if we have an EntranceUserList part, tell the session to
-       * load the user list if it exists.
-       */
+      /* See if we have an EntranceUserList part, tell the session to load
+         the user list if it exists. */
       if (edje_object_part_exists(edje, "EntranceUserList"))
       {
          entrance_session_user_list_add(session);

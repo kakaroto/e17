@@ -278,12 +278,15 @@ entrance_config_user_list_write(Entrance_Config * e)
    snprintf(file, PATH_MAX, "%s/entrance_config.db", PACKAGE_CFG_DIR);
    if (!e->users.remember)
       return;
+/* FIXME: I guess we can't free up old strings like this. */
+#if 0
    if ((db = e_db_open(file)))
    {
       if ((old_keys = e_db_match_keys(db, "/entrance/user/", &count)))
       {
          for (i = 0; i < count; i++)
          {
+            fprintf(stderr, "Nuking %s\n", old_keys[i]);
             e_db_data_del(db, old_keys[i]);
             free(old_keys[i]);
          }
@@ -292,6 +295,7 @@ entrance_config_user_list_write(Entrance_Config * e)
          e_db_flush();
       }
    }
+#endif
    if ((db = e_db_open(file)))
    {
       for (i = 0, l = e->users.keys; l && i < e->users.remember_n;

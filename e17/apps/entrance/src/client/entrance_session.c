@@ -288,12 +288,11 @@ entrance_session_start_user_session(Entrance_Session * e)
          snprintf(buf, PATH_MAX, "%s %s", ENTRANCE_XSESSION, session_key);
    }
    else
-      snprintf(buf, PATH_MAX, "%s", ENTRANCE_XSESSION);	
-    /* Default  session */
-   
+      snprintf(buf, PATH_MAX, "%s", ENTRANCE_XSESSION);
+   /* Default session */
+
    /* If an absolute path was specified for the session, use that path
-    * instead of passing the session name to Xsession 
-    */
+      instead of passing the session name to Xsession */
 
    if (_entrance_test_en)
       snprintf(buf, PATH_MAX, "/usr/X11R6/bin/xterm");
@@ -349,8 +348,7 @@ entrance_session_start_user_session(Entrance_Session * e)
    /* replace this rpcoess with a clean small one that just waits for its */
    /* child to exit.. passed on the cmd-line */
    /* atmos : Could we just free up all of our memory usage at this point
-    * instead of exec'ing this other tiny program ?
-    */
+      instead of exec'ing this other tiny program ? */
    snprintf(buf, sizeof(buf), "%s/entrance_login %i", PACKAGE_BIN_DIR,
             (int) pid);
    execl("/bin/sh", "/bin/sh", "-c", buf, NULL);
@@ -439,6 +437,7 @@ entrance_session_edje_object_set(Entrance_Session * e, Evas_Object * obj)
       e->edje = obj;
    }
 }
+
 /**
  * entrance_session_list_add : fine the "EntranceSessionList" part in the
  * main edje, setup the container to hold the elements, and create session
@@ -615,7 +614,7 @@ _entrance_session_load_session(Entrance_Session * e, const char *key)
       return (NULL);
 
    edje = edje_object_add(evas_object_evas_get(e->edje));
-   if (e->config->theme && e->config->theme[0] == '/')	
+   if (e->config->theme && e->config->theme[0] == '/')
       snprintf(buf, PATH_MAX, "%s", e->config->theme);
    else
       snprintf(buf, PATH_MAX, "%s/themes/%s", PACKAGE_DATA_DIR,
@@ -700,8 +699,10 @@ _entrance_session_user_list_fix(Entrance_Session * e)
          }
       }
       snprintf(buf, PATH_MAX, "default.eet");
-      eu = entrance_user_new(e->auth->user, buf, e->session);
-      e->config->users.keys = evas_list_prepend(e->config->users.keys, eu);
-      entrance_config_user_list_write(e->config);
+      if ((eu = entrance_user_new(e->auth->user, buf, e->session)))
+      {
+         e->config->users.keys = evas_list_prepend(e->config->users.keys, eu);
+         entrance_config_user_list_write(e->config);
+      }
    }
 }

@@ -24,14 +24,14 @@
  */
 struct _Entrance_Session
 {
-   char *session;		/* the current session in context */
+   char *session;               /* the current session in context */
    Ecore_Evas *ee;              /* the ecore_evas */
    Evas_Object *edje;           /* the main theme edje */
    Entrance_Auth *auth;         /* encapsulated auth info */
    Entrance_Config *config;     /* configuration options */
 
-   int authed;			/* whether or not the user has authenticated
-				 * or not */
+   int authed;                  /* whether or not the user has authenticated
+                                   * or not */
 };
 
 typedef struct _Entrance_Session Entrance_Session;
