@@ -51,11 +51,9 @@ for i in aircut3.ttf bg.png ; do
 done
 
 %post
-test -x %{ebin}/e_gen_menu && %{ebin}/e_gen_menu
 /sbin/ldconfig
 
 %postun
-test $1 = 0 -a -x %{ebin}/e_gen_menu && %{ebin}/e_gen_menu
 /sbin/ldconfig
 
 %clean

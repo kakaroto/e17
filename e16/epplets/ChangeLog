@@ -2127,3 +2127,12 @@ yet, but we're getting there. :-)
 
 -------------------------------------------------------------------------------
 
+Sun Apr 30 23:53:37 PDT 2000
+(KainX)
+
+I fixed some bugs in the epplet config load/save routines which were causing
+problems with E-Toolbox.  I also added some stuff, like gadget type checking
+and the ability to check a gadget's type.  And E-Toolbox now has a config
+dialog; it's untested, though, but it might work. :-)
+
+-------------------------------------------------------------------------------

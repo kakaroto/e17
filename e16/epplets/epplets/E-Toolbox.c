@@ -455,6 +455,8 @@ parse_config(char *argv0) {
     buttons[button_cnt].image = strdup(Epplet_query_config_def(buff, ""));
     Esnprintf(buff, sizeof(buff), "button_%lu_label", button_cnt);
     buttons[button_cnt].label = strdup(Epplet_query_config_def(buff, ""));
+    D(("label is %8p \"%s\", image is %8p \"%s\"\n", buttons[button_cnt].label,
+       buttons[button_cnt].label, buttons[button_cnt].image, buttons[button_cnt].image));
 
     Esnprintf(buff, sizeof(buff), "button_%lu_popup", button_cnt);
     tmp = Epplet_query_config(buff);
@@ -484,11 +486,15 @@ save_config(void)
   for (i = 0; i < button_cnt; i++) {
     Esnprintf(buff, sizeof(buff), "button_%lu", i);
     Epplet_modify_config(buff, buttons[i].prog);
+    D(("label is %8p \"%s\", image is %8p \"%s\"\n", buttons[i].label, buttons[i].label,
+       buttons[i].image, buttons[i].image));
     if (*(buttons[i].image)) {
+      D(("Saving image\n"));
       Esnprintf(buff, sizeof(buff), "button_%lu_image", i);
       Epplet_modify_config(buff, buttons[i].image);
     }
     if (*(buttons[i].label)) {
+      D(("Saving label\n"));
       Esnprintf(buff, sizeof(buff), "button_%lu_label", i);
       Epplet_modify_config(buff, buttons[i].label);
     }

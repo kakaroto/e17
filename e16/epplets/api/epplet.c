@@ -5581,6 +5581,7 @@ Epplet_load_config_file(const char *file)
    *s2 = 0;
    for (; fgets(s, sizeof(s), f);)
      {
+        *((int *) s2) = *((int *) s3) = 0;  /* Set first 4 bytes to nil */
 	sscanf(s, "%s %[^\n]\n", (char *)&s2, (char *)&s3);
 	if (!(*s2) || (!*s3) || (*s2 == '\n') || (*s2 == '#'))
 	  {
@@ -5632,7 +5633,7 @@ Epplet_save_config(void)
 	   epplet_name);
    for (i = 0; i < config_dict->num_entries; i++)
      {
-	if (config_dict->entries[i].key)
+	if (config_dict->entries[i].key && *(config_dict->entries[i].value))
 	  {
 	     fprintf(f, "%s %s\n", config_dict->entries[i].key,
 		     config_dict->entries[i].value);
