@@ -1408,7 +1408,24 @@ sloppy and pointer _focus_modes(focus) .
 Enligthenment and IPC
 <font face=aircut3/12 color=#ffffff>
 <p>
-huhuhuhuh he said butter
+Enlightenment has a fairly interesting IPC system that allows external
+applications (such as Eterm) to talk to enlightenment and both ask for
+information and change information.  There is a program that was installed with
+enlightenment called "eesh" that is a simple shell interface to the IPC in
+Enlightenment.  It's even got its own documentation.  You can go into
+eesh and type "help" and it should spit back a list of commands that it
+understands.
+<p>
+Note: there are many commands that will show up in E's IPC that don't
+necessarily work yet, or aren't fully implemented.  you CAN potentially do some
+really bizarre things to your system by using eesh, but for the most part it's
+just another interesting interface to E.  In your distribution package you
+should have received some sample scripts written in perl that interface to E
+through eesh showing how you can externally script E to do more things outside
+E's base functionality.  Expect the IPC to get more flushed out in future
+revisions.
+<br>
+To exit eesh, hit CTRL + D (EOF)
 
 <page columns=1 padding=16 name=editmenus background=Edoc_bg.png linkcolor=#88dddd>
 <font face=rothwell/25 color=#ffffff>
@@ -1445,7 +1462,21 @@ user_apps.menu.  Each of these files is for you to edit as desired.
 Editing Your Keybindings
 <font face=aircut3/12 color=#ffffff>
 <p>
-huhuhuhuh he said butter
+<br>
+<br>
+<br>
+<br>
+
+To set your own keybindings, all you have to do is find the keybindings.cfg
+file that was installed with enlightenment, and make a copy in your
+~/.enlightenment directory.  This file is fairly long, but shouldn't be too
+difficult to edit.  Be careful!  the keybindings in this file will override ALL
+the default keybindings, as long as this file exists, so edit this file with
+extreme caution (unless you know what you're doing)
+<p>
+To reset your keybindings back to the default, simply remove this file from
+your ~/.enlightenment directory.  The next time you restart E it should reload
+the default keybindings into memory.
 
 <page columns=1 padding=16 name=themes background=Edoc_bg.png linkcolor=#88dddd>
 <font face=rothwell/25 color=#ffffff>
