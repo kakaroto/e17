@@ -118,6 +118,15 @@ main(int argc, char **argv)
    {
       fork_and_exit();
    }
+   
+   /* Check to make sure elogin binary is executable */
+   if (access(ELOGIN, X_OK))
+   {
+      fprintf(stderr,
+              "Elogin: Fatal Error: Cannot execute elogin binary. Aborting.\n");
+      exit(1);
+   }
+   
    close(0);
    close(1);
    close(2);
@@ -129,14 +138,6 @@ main(int argc, char **argv)
 
    /* setup a spawner context */
    d = spawner_display_new();
-
-   /* Check to make sure elogin binary is executable */
-   if (access(ELOGIN, X_OK))
-   {
-      fprintf(stderr,
-              "Elogin: Fatal Error: Cannot execute elogin binary. Aborting.");
-      exit(1);
-   }
 
    /* run X */
    spawn_x();
