@@ -68,6 +68,9 @@ void engrave_file_font_foreach(Engrave_File *ef,
                                     void (*func)(Engrave_Font *, void *),
                                     void *data);
 
+Engrave_Data *engrave_file_data_by_key_find(Engrave_File *ef, 
+                                    const char *key);
+
 /**
  * @}
  */

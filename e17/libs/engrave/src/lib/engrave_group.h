@@ -70,6 +70,9 @@ void engrave_group_parts_foreach(Engrave_Group *eg,
 void engrave_group_programs_foreach(Engrave_Group *eg, 
                         void (*func)(Engrave_Program *, void *), void *data);
 
+Engrave_Data *engrave_group_data_by_key_find(Engrave_Group *eg, 
+                                    const char *key);
+
 /**
  * @}
  */

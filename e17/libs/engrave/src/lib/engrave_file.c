@@ -345,4 +345,28 @@ engrave_file_font_foreach(Engrave_File *ef,
   }
 }
 
+/**
+ * engrave_file_data_by_key_find - find the Engrave_Data by key
+ * @param ef: The Engrave_File to search
+ * @param key: They key to search for
+ *
+ * @return Returns the Engrave_Data with the matching key or NULL if no such
+ * data exists.
+ */
+Engrave_Data *
+engrave_file_data_by_key_find(Engrave_File *ef, const char *key)
+{
+    Evas_List *l;
+
+    if (!ef || !key) return NULL;
+    for (l = ef->data; l; l = l->next) {
+        Engrave_Data *ed = l->data;
+        const char *data_key = engrave_data_key_get(ed);
+
+        if (!strcmp(key, data_key) && (strlen(key) == strlen(data_key)))
+            return ed;
+    }
+}
+
+
 

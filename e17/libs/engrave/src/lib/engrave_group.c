@@ -361,4 +361,26 @@ engrave_group_programs_foreach(Engrave_Group *eg,
   }
 }
 
+/**
+ * engrave_group_data_by_key_find - find the Engrave_Data by key
+ * @param eg: The Engrave_Group to search
+ * @param key: They key to search for
+ *
+ * @return Returns the Engrave_Data with the matching key or NULL if no such
+ * data exists.
+ */
+Engrave_Data *
+engrave_group_data_by_key_find(Engrave_Group *eg, const char *key)
+{
+    Evas_List *l;
+
+    if (!eg || !key) return NULL;
+    for (l = eg->data; l; l = l->next) {
+        Engrave_Data *ed = l->data;
+        const char *data_key = engrave_data_key_get(ed);
+
+        if (!strcmp(key, data_key) && (strlen(key) == strlen(data_key)))
+            return ed;
+    }
+}
 
