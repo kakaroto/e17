@@ -12,7 +12,8 @@ elogo.png \
 globe.png \
 mail.png \
 mush.png \
-paper.png
+paper.png \
+laet.jpg
 
 testimagesdir=$(prefix)/share/geist/images
 

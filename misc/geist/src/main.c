@@ -91,45 +91,52 @@ main(int argc, char *argv[])
    imlib_init(darea);
 
 
-   doc = geist_document_new(400, 400);
+   doc = geist_document_new(500, 500);
 
    geist_document_add_layer(doc);
 
    geist_document_add_object(doc,
-                             geist_image_new_from_file(20, 40,
+                             geist_image_new_from_file(0, 0,
+                                                       PREFIX
+                                                       "/share/geist/images/laet.jpg"));
+   geist_document_add_object(doc,
+                             geist_text_new_with_text(0, 405, "20thcent/16",
+                                                      "Some pr0n - I have to."));
+   geist_document_add_object(doc,
+                             geist_image_new_from_file(220, 140,
                                                        PREFIX
                                                        "/share/geist/images/elogo.png"));
 
    geist_document_add_object(doc,
-                             geist_image_new_from_file(5, 5,
+                             geist_image_new_from_file(125, 5,
                                                        PREFIX
                                                        "/share/geist/images/globe.png"));
 
    geist_document_add_object(doc,
-                             geist_image_new_from_file(75, 35,
+                             geist_image_new_from_file(175, 125,
                                                        PREFIX
                                                        "/share/geist/images/bulb.png"));
 
    geist_document_add_object(doc,
-                             geist_image_new_from_file(275, 145,
+                             geist_image_new_from_file(375, 145,
                                                        PREFIX
                                                        "/share/geist/images/bulb.png"));
    geist_document_add_object(doc,
-                             geist_image_new_from_file(355, 70,
+                             geist_image_new_from_file(415, 200,
                                                        PREFIX
                                                        "/share/geist/images/mail.png"));
 
    geist_document_add_object(doc,
-                             geist_image_new_from_file(275, 345,
+                             geist_image_new_from_file(445, 305,
                                                        PREFIX
                                                        "/share/geist/images/mush.png"));
 
    geist_document_add_object(doc,
-                             geist_image_new_from_file(175, 5,
+                             geist_image_new_from_file(315, 405,
                                                        PREFIX
                                                        "/share/geist/images/paper.png"));
    geist_document_add_object(doc,
-                             geist_text_new_with_text(175, 105, "20thcent/16",
+                             geist_text_new_with_text(275, 15, "20thcent/16",
                                                       "So this is geist..."));
 
 
