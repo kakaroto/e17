@@ -84,7 +84,7 @@ __create_entry_test_window(Ewl_Widget * w, void *ev_data, void *user_data)
 	ewl_box_spacing_set(EWL_BOX(entry_box), 10);
 	ewl_widget_show(entry_box);
 
-	entry[0] = ewl_entry_new("Play with me ?");
+	entry[0] = ewl_entry_multiline_new("Play with me ?");
 	ewl_text_color_set(EWL_TEXT(EWL_ENTRY(entry[0])->text),
 			255, 0, 0, 255);
 	ewl_object_padding_set(EWL_OBJECT(entry[0]), 5, 5, 5, 0);

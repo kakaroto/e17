@@ -235,11 +235,11 @@ void ewl_entry_configure_cb(Ewl_Widget * w, void *ev_data, void *user_data)
 
 void ewl_entry_configure_text_cb(Ewl_Widget * w, void *ev_data, void *user_data)
 {
-	Ewl_Entry      *e;
-	int             xx, yy, ww, hh;
-	int             c_spos, c_epos, base, l;
-	int             sx = 0, sy = 0, ex = 0, ey = 0, dx = 0;
-	unsigned int    ew = 0;
+	Ewl_Entry    *e;
+	int           xx, yy, ww, hh;
+	int           c_spos, c_epos, base, l;
+	int           sx = 0, sy = 0, ex = 0, ey = 0, dx = 0;
+	unsigned int  sw = 0, sh = 0, ew = 0, eh = 0;
 
 	DENTER_FUNCTION(DLEVEL_STABLE);
 
@@ -270,10 +270,10 @@ void ewl_entry_configure_text_cb(Ewl_Widget * w, void *ev_data, void *user_data)
 		 * text.
 		 */
 		ewl_text_index_geometry_map(EWL_TEXT(w), --c_spos, &sx, &sy,
-					    NULL, NULL);
+					    &sw, &sh);
 
 		ewl_text_index_geometry_map(EWL_TEXT(w), --c_epos, &ex, &ey,
-					    &ew, NULL);
+					    &ew, &eh);
 		base--;
 	}
 
@@ -283,6 +283,8 @@ void ewl_entry_configure_text_cb(Ewl_Widget * w, void *ev_data, void *user_data)
 	 */
 	if (ew > ww)
 		DRETURN(DLEVEL_STABLE);
+
+	hh = eh;
 
 	/*
 	 * Scroll the text to fit the cursor position.
@@ -300,10 +302,10 @@ void ewl_entry_configure_text_cb(Ewl_Widget * w, void *ev_data, void *user_data)
 	if (dx)
 		ewl_object_geometry_request(EWL_OBJECT(w),
 				ewl_object_current_x_get(EWL_OBJECT(w)) + dx,
-				CURRENT_Y(e), CURRENT_W(e), hh);
+				sy, CURRENT_W(e), hh);
 
 	ew = (ex + ew) - sx;
-	ewl_object_geometry_request(EWL_OBJECT(e->cursor), sx + dx, yy,
+	ewl_object_geometry_request(EWL_OBJECT(e->cursor), sx + dx, sy,
 			ew, hh);
 
 	e->offset -= dx;
@@ -357,6 +359,7 @@ void ewl_entry_key_down_cb(Ewl_Widget * w, void *ev_data, void *user_data)
 			FREE(evd);
 		} else {
 			ewl_entry_text_insert(e, "\n");
+			ewl_entry_cursor_home_move(e);
 		}
 	}
 	else if (ev->keyname && strlen(ev->keyname) == 1) {
@@ -415,11 +418,13 @@ void ewl_entry_mouse_up_cb(Ewl_Widget * w, void *ev_data, void *user_data)
 
 	DENTER_FUNCTION(DLEVEL_STABLE);
 
+	/*
 	if (e->timer) {
 		ecore_timer_del(e->timer);
 		e->timer = NULL;
 		e->start_time = 0.0;
 	}
+	*/
 
 	e->in_select_mode = (ev->modifiers & EWL_KEY_MODIFIER_SHIFT);
 
@@ -639,6 +644,8 @@ void ewl_entry_cursor_previous_word_move(Ewl_Entry * e)
 
 	ewl_widget_configure(EWL_WIDGET(e));
 
+	FREE(s);
+
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
 
@@ -703,6 +710,8 @@ void ewl_entry_cursor_next_word_move(Ewl_Entry * e)
 
 	ewl_widget_configure(EWL_WIDGET(e));
 
+	FREE(s);
+
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
 
@@ -730,12 +739,36 @@ void ewl_entry_cursor_up_move(Ewl_Entry * e)
  */
 void ewl_entry_cursor_home_move(Ewl_Entry * e)
 {
+	int bp = 1;
+
 	DENTER_FUNCTION(DLEVEL_STABLE);
 
+	if (e->multiline) {
+		char *s = ewl_entry_text_get(e);
+		int len;
+
+		len = ewl_text_length_get(EWL_TEXT(e->text));
+		bp = ewl_cursor_base_position_get(EWL_CURSOR(e->cursor));
+
+		if (bp > 1) {
+			while ((--bp > 1) && (s[bp] != '\n'));
+			if (s[bp] == '\n')
+				bp += 2;
+		} else {
+			bp = 1;
+		}
+
+#if 0
+		printf( "ewl_entry_cursor_home\n" );
+		printf( "text is: (0x%02x) %s\n", s[bp-1], &s[bp-1] );
+		printf( "position is: %d\n", bp-1 );
+#endif
+	}
+
 	if (e->in_select_mode)
-		ewl_cursor_select_to(EWL_CURSOR(e->cursor), 1);
+		ewl_cursor_select_to(EWL_CURSOR(e->cursor), bp);
 	else
-		ewl_cursor_base_set(EWL_CURSOR(e->cursor), 1);
+		ewl_cursor_base_set(EWL_CURSOR(e->cursor), bp);
 
 	ewl_widget_configure(EWL_WIDGET(e));
 
