@@ -4440,7 +4440,7 @@ CB_RememberWindowSettings(int val, void *data)
    val = 0;
    if (!data)
       return;
-   rd = (RememberWinList*) rd;
+   rd = (RememberWinList*) data;
    ewin = (EWin *) rd->ewin;
    if (!ewin)
       return;
