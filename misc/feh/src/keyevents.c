@@ -44,36 +44,38 @@ handle_keypress_event (XEvent * ev, Window win)
     {
     case XK_Left:
       if (opt.slideshow)
-        slideshow_change_image (winwid, SLIDE_PREV);
+	slideshow_change_image (winwid, SLIDE_PREV);
       break;
     case XK_Right:
       if (opt.slideshow)
-        slideshow_change_image (winwid, SLIDE_NEXT);
+	slideshow_change_image (winwid, SLIDE_NEXT);
       break;
     case XK_Delete:
       /* I could do with some confirmation here */
       /* How about holding ctrl? */
       if (opt.slideshow)
-        {
-          if (kev->state & ControlMask)
-            {
-              unlink (files[opt.cur_slide]);
-              files[opt.cur_slide] = NULL;
-              actual_file_num--;
-              slideshow_change_image (winwid, SLIDE_NEXT);
-            }
-        }
+	{
+	  if (kev->state & ControlMask)
+	    {
+	      unlink (files[opt.cur_slide]);
+	      files[opt.cur_slide] = NULL;
+	      actual_file_num--;
+	      slideshow_change_image (winwid, SLIDE_NEXT);
+	    }
+	}
       break;
     case XK_Home:
     case XK_KP_Home:
       if (opt.slideshow)
-        slideshow_change_image (winwid, SLIDE_FIRST);
+	slideshow_change_image (winwid, SLIDE_FIRST);
       break;
     case XK_End:
     case XK_KP_End:
       if (opt.slideshow)
-        slideshow_change_image (winwid, SLIDE_LAST);
+	slideshow_change_image (winwid, SLIDE_LAST);
       break;
+    case XK_Escape:
+      reset_modify_mode();
     default:
       break;
     }
@@ -85,21 +87,36 @@ handle_keypress_event (XEvent * ev, Window win)
 
   switch (*kbuf)
     {
+    case 'c':
+      toggle_modify_mode (MODIFY_MODE_CROP);
+      break;
+    case 'b':
+      toggle_modify_mode (MODIFY_MODE_BRIGHTNESS);
+      break;
+    case 'o':
+      toggle_modify_mode (MODIFY_MODE_CONTRAST);
+      break;
+    case 'g':
+      toggle_modify_mode (MODIFY_MODE_GAMMA);
+      break;
     case 'n':
     case 'N':
     case ' ':
       if (opt.slideshow)
-        slideshow_change_image (winwid, SLIDE_NEXT);
+	slideshow_change_image (winwid, SLIDE_NEXT);
       break;
     case 'p':
     case 'P':
     case '\b':
       if (opt.slideshow)
-        slideshow_change_image (winwid, SLIDE_PREV);
+	slideshow_change_image (winwid, SLIDE_PREV);
       break;
     case 'q':
     case 'Q':
       winwidget_destroy_all ();
+      break;
+    case 'r':
+      rectangles_on = !rectangles_on;
       break;
     case '1':
       feh_set_background (winwid, 3);
@@ -137,8 +154,6 @@ handle_keypress_event (XEvent * ev, Window win)
     case '=':
       feh_modify_contrast (winwid, 0.1);
       break;
-    case 'r':
-      rectangles_on= !rectangles_on;
     default:
       break;
     }

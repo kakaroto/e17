@@ -1,3 +1,22 @@
+Mon Jan  3 18:29:46 2000  Tom Gilbert  <gilbertt@tomgilbert.freeserve.co.uk>
+
+	* Okay. feh is now capable of some minor touch-ups. Nothing major,
+	and no image saving yet, but it tests the selection and
+	modification code.
+	* We're not writing a full-blown editor here... The idea is to
+	browse through your images, select one, make minor changes if you
+	want, then set it as your desktop background.
+	* To test, toggle the various modes and use the left mouse button
+	to use 'em.
+	* 'c' - crop image to rectangle
+	* 'o' - increase contrast of rectangle
+	* 'b' - increase brightness of rectangle
+	* 'g' - increase gamma of rectangle
+	* 'Escape' - exit modification mode.
+	* I'll leave the rest of the modification stuff to Andrew ;-) I
+	guess maybe we should have some persistant rectangle selections,
+	but I don't want to go too far.
+
 Sat Jan  1 22:25:49 2000  Tom Gilbert  <gilbertt@tomgilbert.freeserve.co.uk>
 
 	* I prefer LineOnOffDash drawing more for selections :)

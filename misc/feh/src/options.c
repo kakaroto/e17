@@ -55,6 +55,7 @@ init_parse_options (int argc, char **argv)
   opt.font = NULL;
   opt.title_font = NULL;
   opt.progressive = 1;
+  opt.modify_mode=MODIFY_MODE_NONE;
 
   opt.thumb_w = 60;
   opt.thumb_h = 60;

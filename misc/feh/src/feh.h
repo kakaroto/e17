@@ -80,6 +80,11 @@ enum winwidget_type
 enum slide_change
 { SLIDE_NEXT, SLIDE_PREV, SLIDE_FIRST, SLIDE_LAST };
 
+enum modify_mode
+{ MODIFY_MODE_NONE, MODIFY_MODE_CROP, MODIFY_MODE_BRIGHTNESS,
+  MODIFY_MODE_GAMMA, MODIFY_MODE_CONTRAST
+};
+
 enum bg_type
 {
   SCALE, CENTER, FIT, TILE
@@ -132,6 +137,7 @@ typedef struct cmdlineoptions
   unsigned char aspect;
   unsigned char stretch;
   unsigned char progressive;
+  unsigned char modify_mode;
 
   char *output_file;
   char *bg_file;
@@ -178,7 +184,6 @@ void progress (Imlib_Image im, char percent, int update_x, int update_y,
 void winwidget_create_window (winwidget ret, int w, int h);
 void winwidget_rerender_image (winwidget winwid);
 void feh_draw_checks (winwidget win);
-
 
 /* Imlib stuff */
 extern Display *disp;

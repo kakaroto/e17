@@ -20,6 +20,7 @@
 
 #include "feh.h"
 #include "main.h"
+#include "modify.h"
 
 /* Main is here! Main kicks ass. FEAR MAIN :) */
 int
@@ -191,12 +192,51 @@ main_loop (void)
 			  rectangle_drawing_mode = 0;
 			  winwid->rectangle_drawing_mode = 0;
 
+			  x = -9999;
+			  y = -9999;
+
 			  /* Maybe we could just redraw the "dirty"
 			   * area, it would be less expensive */
 			  XClearWindow (disp, winwid->win);
 
-			  x = -9999;
-			  y = -9999;
+			  switch (opt.modify_mode)
+			    {
+			    case MODIFY_MODE_NONE:
+			      break;
+			    case MODIFY_MODE_CROP:
+			      feh_crop_image (winwid, winwid->rec_x,
+					      winwid->rec_y, winwid->rec_w,
+					      winwid->rec_h);
+			      break;
+			    case MODIFY_MODE_BRIGHTNESS:
+			      feh_modify_brightness_to_rectangle (winwid, 0.2,
+								  winwid->
+								  rec_x,
+								  winwid->
+								  rec_y,
+								  winwid->
+								  rec_w,
+								  winwid->
+								  rec_h);
+			      break;
+			    case MODIFY_MODE_GAMMA:
+			      feh_modify_gamma_to_rectangle (winwid, 0.6,
+							     winwid->rec_x,
+							     winwid->rec_y,
+							     winwid->rec_w,
+							     winwid->rec_h);
+			      break;
+			    case MODIFY_MODE_CONTRAST:
+			      feh_modify_contrast_to_rectangle (winwid, 0.4,
+								winwid->rec_x,
+								winwid->rec_y,
+								winwid->rec_w,
+								winwid->
+								rec_h);
+			      break;
+			    default:
+			      break;
+			    }
 			}
 		    }
 		case 2:
@@ -235,12 +275,13 @@ main_loop (void)
 			    XFreeGC (disp, gc);
 			  gcv.function = GXxor;
 			  /* LineSolid, LineDoubleDash, LineOnOffDash */
-			  gcv.line_style=LineOnOffDash;
+			  gcv.line_style = LineOnOffDash;
 			  gcv.foreground =
 			    WhitePixel (disp, DefaultScreen (disp));
 			  gc =
 			    XCreateGC (disp, winwid->win,
-				       GCFunction | GCForeground | GCLineStyle, &gcv);
+				       GCFunction | GCForeground |
+				       GCLineStyle, &gcv);
 			}
 		      else
 			{
