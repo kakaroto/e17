@@ -330,10 +330,9 @@ SetupX()
 	Alert(_("FATAL ERROR:\n"
 		"\n"
 		"Enlightenment is unable to initialise Imlib.\n"
-		<<<<<<< setup.c
-		"\n" "This is unusual. Unable to contiune.\n" "Exiting.\n"));
-	== == == = "\n" "This is unusual. Unable to continue.\n" "Exiting.\n"));
-	>>>>>>>1.35 RESET_ALERT;
+	        "\n"
+	       	"This is unusual. Unable to continue.\n" "Exiting.\n"));
+	RESET_ALERT;
 	EExit((void *)1);
      }
    fd = Fnlib_init(id);
@@ -344,10 +343,9 @@ SetupX()
 	Alert(_("FATAL ERROR:\n"
 		"\n"
 		"Enlightenment is unable to initialise Fnlib.\n"
-		<<<<<<< setup.c
-		"\n" "This is unusual. Unable to contiune.\n" "Exiting.\n"));
-	== == == = "\n" "This is unusual. Unable to continue.\n" "Exiting.\n"));
-	>>>>>>>1.35 RESET_ALERT;
+	        "\n"
+	       	"This is unusual. Unable to continue.\n" "Exiting.\n"));
+	RESET_ALERT;
 	EExit((void *)1);
      }
    root.win = id->x.root;

@@ -254,17 +254,14 @@ FX_ripple_timeout(int val, void *data)
 		     _("\n"
 		       "You have just started the Ripples Effect.\n"
 		       "\n"
-		       <<<<<<< fx.c
 		       "If you look closely on your desktop background, and if it\n"
 		       "doesn't have a solid colour (ie has a background texture or\n"
 		       "image), you will see a pool of water at the bottom of your\n"
 		       "screen that reflects everything above it and \"ripples\".\n"
-		       == == == =
 		       "If you look closely on your desktop background, and if it\n"
 		       "doesn't have a solid colour (i.e. has a background texture or\n"
 		       "image), you will see a pool of water at the bottom of your\n"
 		       "screen that reflects everything above it and \"ripples\".\n"
-		       >>>>>>> 1.10
 		       "\n"
 		       "To disable this effect just select this option again to toggle\n"
 		       "it off.\n"));
@@ -428,17 +425,10 @@ FX_raindrops_timeout(int val, void *data)
 		     _("\n"
 		       "You have just started the Raindrops Effect.\n"
 		       "\n"
-		       <<<<<<< fx.c
 		       "If you look closely on your desktop background, and if it\n"
 		       "doesn't have a solid colour (ie has a background texture or\n"
 		       "image), you will see \"raindrops\" hit the background and\n"
 		       "make little splashes. This Effect can be VERY CPU intensive.\n"
-		       == == == =
-		       "If you look closely on your desktop background, and if it\n"
-		       "doesn't have a solid colour (i.e. has a background texture or\n"
-		       "image), you will see \"raindrops\" hit the background and\n"
-		       "make little splashes. This Effect can be VERY CPU intensive.\n"
-		       >>>>>>> 1.10
 		       "\n"
 		       "To disable this effect just select this option again to toggle\n"
 		       "it off.\n"));
@@ -730,17 +720,10 @@ FX_Wave_timeout(int val, void *data)
 		     _("\n"
 		       "You have just started the Waves Effect.\n"
 		       "\n"
-		       <<<<<<< fx.c
 		       "If you look closely on your desktop background, and if it\n"
 		       "doesn't have a solid color (ie has a background texture or\n"
 		       "image), you will see a pool of water at the bottom of your\n"
 		       "screen that reflects everything above it and \"waves\".\n"
-		       == == == =
-		       "If you look closely on your desktop background, and if it\n"
-		       "doesn't have a solid colour (i.e. has a background texture or\n"
-		       "image), you will see a pool of water at the bottom of your\n"
-		       "screen that reflects everything above it and \"waves\".\n"
-		       >>>>>>> 1.10
 		       "\n"
 		       "To disable this effect just select this option again to toggle\n"
 		       "it off.\n"));
