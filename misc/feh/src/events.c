@@ -83,7 +83,7 @@ feh_event_handle_ButtonPress(XEvent * ev)
       cover */
    if (ev->xbutton.window == menu_cover)
    {
-      feh_menu_hide(menu_root);
+      feh_menu_hide(menu_root, True);
       D_RETURN_(4);
    }
 
@@ -185,7 +185,7 @@ feh_event_handle_ButtonPress(XEvent * ev)
          winwid->im_click_offset_x = winwid->click_offset_x / winwid->zoom;
          winwid->im_click_offset_y = winwid->click_offset_y / winwid->zoom;
          winwid->zoom = 1.0;
-         if (opt.full_screen)
+         if (winwid->full_screen)
          {
             winwid->im_x = (scr->width - winwid->im_w) >> 1;
             winwid->im_y = (scr->height - winwid->im_h) >> 1;
@@ -258,7 +258,7 @@ feh_event_handle_ButtonRelease(XEvent * ev)
       /* if menus are open, close them, and execute action if needed */
 
       if (ev->xbutton.window == menu_cover)
-         feh_menu_hide(menu_root);
+         feh_menu_hide(menu_root, True);
       else if (menu_root)
       {
          feh_menu *m;
@@ -271,10 +271,12 @@ feh_event_handle_ButtonRelease(XEvent * ev)
             /* watch out for this. I put it this way around so the menu
                goes away *before* we perform the action, if we start
                freeing menus on hiding, it will break ;-) */
-            feh_menu_hide(menu_root);
+            feh_menu_hide(menu_root, False);
             feh_main_iteration(0);
             if ((i) && (i->func))
                (i->func) (m, i, i->data);
+            if(m->func_free)
+               m->func_free(m, m->data);
          }
       }
       D_RETURN_(4);
@@ -590,7 +592,7 @@ feh_event_handle_MotionNotify(XEvent * ev)
             winwid->im_w = feh_imlib_image_get_width(temp);
             winwid->im_h = feh_imlib_image_get_height(temp);
             feh_imlib_free_image_and_decache(temp);
-            if (!opt.full_screen && !opt.geom)
+            if (!winwid->full_screen && !opt.geom)
                winwidget_resize(winwid, winwid->im_w, winwid->im_h);
             winwid->has_rotated = 1;
          }

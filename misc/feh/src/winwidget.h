@@ -84,7 +84,7 @@ struct __winwidget
    int im_h;
    double im_angle;
    enum win_type type;
-   unsigned char had_resize;
+   unsigned char had_resize, full_screen;
    Imlib_Image im;
    GC gc;
    Pixmap bg_pmap;
@@ -119,6 +119,9 @@ void winwidget_resize(winwidget winwid, int w, int h);
 void winwidget_setup_pixmaps(winwidget winwid);
 void winwidget_update_title(winwidget ret);
 void winwidget_rerender_all(int resize, int alias);
+void winwidget_destroy_xwin(winwidget winwid);
+int winwidget_count(void);
+
 winwidget winwidget_get_from_window(Window win);
 winwidget winwidget_create_from_file(feh_list * filename, char *name,
 

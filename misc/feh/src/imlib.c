@@ -615,7 +615,7 @@ feh_draw_filename(winwidget w)
 
    if (!fn)
    {
-      if (opt.full_screen)
+      if (w->full_screen)
          fn = feh_imlib_load_font("20thcent/16");
       else
          fn = feh_imlib_load_font("20thcent/10");

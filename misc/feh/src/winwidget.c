@@ -47,6 +47,7 @@ winwidget_allocate(void)
    ret->win = 0;
    ret->w = 0;
    ret->h = 0;
+   ret->full_screen = 0;
    ret->im_w = 0;
    ret->im_h = 0;
    ret->im_angle = 0;
@@ -98,6 +99,8 @@ winwidget_create_from_image(Imlib_Image im, char *name, char type)
    else
       ret->name = estrdup(PACKAGE);
 
+   if(opt.full_screen)
+      ret->full_screen = True;
    winwidget_create_window(ret, ret->w, ret->h);
    winwidget_render_image(ret, 1, 1);
 
@@ -136,6 +139,8 @@ winwidget_create_from_file(feh_list * list, char *name, char type)
       D(3,
         ("image is %dx%d pixels, format %s\n", ret->w, ret->h,
          feh_imlib_image_format(ret->im)));
+   if(opt.full_screen)
+      ret->full_screen = True;
       winwidget_create_window(ret, ret->w, ret->h);
       winwidget_render_image(ret, 1, 1);
    }
@@ -153,7 +158,7 @@ winwidget_create_window(winwidget ret, int w, int h)
 
    D_ENTER(4);
 
-   if (opt.full_screen)
+   if (ret->full_screen)
    {
       w = scr->width;
       h = scr->height;
@@ -173,6 +178,7 @@ winwidget_create_window(winwidget ret, int w, int h)
 
    ret->w = w;
    ret->h = h;
+   ret->visible = False;
 
    attr.backing_store = NotUseful;
    attr.override_redirect = False;
@@ -186,7 +192,7 @@ winwidget_create_window(winwidget ret, int w, int h)
       KeyReleaseMask | ButtonMotionMask | ExposureMask | FocusChangeMask |
       PropertyChangeMask | VisibilityChangeMask;
 
-   if (opt.borderless || opt.full_screen)
+   if (opt.borderless || ret->full_screen)
    {
       prop = XInternAtom(disp, "_MOTIF_WM_HINTS", True);
       if (prop == None)
@@ -227,7 +233,7 @@ winwidget_create_window(winwidget ret, int w, int h)
    XFree(xch);
 
    /* Size hints */
-   if (opt.full_screen)
+   if (ret->full_screen)
    {
       XSizeHints xsz;
 
@@ -264,7 +270,7 @@ winwidget_setup_pixmaps(winwidget winwid)
 {
    D_ENTER(4);
 
-   if (opt.full_screen)
+   if (winwid->full_screen)
    {
       if (!(winwid->bg_pmap))
       {
@@ -310,7 +316,7 @@ winwidget_render_image(winwidget winwid, int resize, int alias)
 
    D_ENTER(4);
 
-   if (!opt.full_screen && resize)
+   if (!winwid->full_screen && resize)
    {
       winwidget_resize(winwid, winwid->im_w, winwid->im_h);
       winwidget_reset_image(winwid);
@@ -324,14 +330,14 @@ winwidget_render_image(winwidget winwid, int resize, int alias)
 
    winwidget_setup_pixmaps(winwid);
 
-   if (!opt.full_screen
+   if (!winwid->full_screen
        && ((feh_imlib_image_has_alpha(winwid->im)) || (opt.geom)
            || (winwid->im_x || winwid->im_y) || (winwid->zoom != 1.0)
            || (winwid->w > winwid->im_w || winwid->h > winwid->im_h)
            || (winwid->has_rotated)))
       feh_draw_checks(winwid);
 
-   if (!opt.full_screen && opt.scale_down
+   if (!winwid->full_screen && opt.scale_down
        && ((winwid->w < winwid->im_w) || (winwid->h < winwid->im_h)))
    {
       D(2, ("scaling down image\n"));
@@ -342,12 +348,12 @@ winwidget_render_image(winwidget winwid, int resize, int alias)
                        winwid->im_h * winwid->zoom);
    }
 
-   if (resize && (opt.full_screen || opt.geom))
+   if (resize && (winwid->full_screen || opt.geom))
    {
       int smaller;              /* Is the image smaller than screen? */
       int max_w, max_h;
 
-      if (opt.full_screen)
+      if (winwid->full_screen)
       {
          max_w = scr->width;
          max_h = scr->height;
@@ -553,7 +559,7 @@ feh_draw_checks(winwidget win)
 }
 
 void
-winwidget_destroy(winwidget winwid)
+winwidget_destroy_xwin(winwidget winwid)
 {
    D_ENTER(4);
    if (winwid->win)
@@ -562,7 +568,18 @@ winwidget_destroy(winwidget winwid)
       XDestroyWindow(disp, winwid->win);
    }
    if (winwid->bg_pmap)
+   {
       XFreePixmap(disp, winwid->bg_pmap);
+      winwid->bg_pmap = None;
+   }
+   D_RETURN_(4);
+}
+
+void
+winwidget_destroy(winwidget winwid)
+{
+   D_ENTER(4);
+   winwidget_destroy_xwin(winwid);
    if (winwid->name)
       free(winwid->name);
    if ((winwid->type == WIN_TYPE_ABOUT) && winwid->file)
@@ -588,7 +605,8 @@ winwidget_destroy_all(void)
    D_RETURN_(4);
 }
 
-void winwidget_rerender_all(int resize, int alias)
+void
+winwidget_rerender_all(int resize, int alias)
 {
    int i;
 
@@ -638,6 +656,13 @@ winwidget_show(winwidget winwid)
       winwid->visible = 1;
    }
    D_RETURN_(4);
+}
+
+int
+winwidget_count(void)
+{
+   D_ENTER(4);
+   D_RETURN(4, window_num);
 }
 
 void
