@@ -315,6 +315,9 @@ TextstateDrawText(TextState * ts, Window win, const char *text, int x, int y,
    int                 textwidth_limit, offset_x, offset_y;
    Pixmap              drawable;
 
+   if (w <= 0 || h <= 0)
+      return;
+
    TextStateLoadFont(ts);
 
    /* Do encoding conversion, if necessary */
