@@ -2247,8 +2247,8 @@ imlib_create_scaled_image_from_drawable(Pixmap mask, int source_x,
    for (x = 0; x < destination_width; x++)
      {
         xx = (source_width * x) / destination_width;
-        XCopyArea(ctx->display, ctx->drawable, p, gc, source_x + xx, 0, 1,
-                  source_height, x, 0);
+        XCopyArea(ctx->display, ctx->drawable, p, gc, source_x + xx, source_y,
+                  1, source_height, x, 0);
         if (m != None)
            XCopyArea(ctx->display, mask, m, mgc, xx, 0, 1, source_height, x,
                      0);
@@ -2256,11 +2256,9 @@ imlib_create_scaled_image_from_drawable(Pixmap mask, int source_x,
    for (x = 0; x < destination_height; x++)
      {
         xx = (source_height * x) / destination_height;
-        XCopyArea(ctx->display, p, p, gc, 0, source_y + xx,
-                  destination_width, 1, 0, x);
+        XCopyArea(ctx->display, p, p, gc, 0, xx, destination_width, 1, 0, x);
         if (m != None)
-           XCopyArea(ctx->display, m, m, mgc, 0, source_y + xx,
-                     destination_width, 1, 0, x);
+           XCopyArea(ctx->display, m, m, mgc, 0, xx, destination_width, 1, 0, x);
      }
    im = __imlib_CreateImage(destination_width, destination_height, NULL);
    im->data = malloc(destination_width * destination_height * sizeof(DATA32));
