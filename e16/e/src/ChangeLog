@@ -1288,3 +1288,12 @@ Sat Sep  4 09:50:18 PDT 1999
 (Raster)
 
 in updating brushed metal - forgot to re-add cionbox base image back...
+
+-------------------------------------------------------------------------------
+
+Sun Sep  5 12:12:15 PDT 1999
+(Raster)
+
+added an iconification animation, added some more bg's to brushed metal,
+changed pager scaning speed to be %03i instead of %i to ensure the label 
+remains the same size :)

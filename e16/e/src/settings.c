@@ -56,7 +56,7 @@ CB_PagerScanSlide(int val, void *data)
 {
    char                s[256];
 
-   Esnprintf(s, sizeof(s), "%s %i %s", "Pager scanning speed:",
+   Esnprintf(s, sizeof(s), "%s %03i %s", "Pager scanning speed:",
 	     tmp_pager_scan_speed, "lines per second");
    DialogItemTextSetText(pager_scan_speed_label, s);
    DialogDrawItems(pager_settings_dialog, pager_scan_speed_label,
@@ -167,7 +167,7 @@ SettingsPager(void)
    DialogItemSetFill(di, 0, 0);
    DialogItemSetColSpan(di, 2);
    DialogItemSetAlign(di, 0, 512);
-   Esnprintf(s, sizeof(s), "%s %i %s", "Pager scanning speed:",
+   Esnprintf(s, sizeof(s), "%s %03i %s", "Pager scanning speed:",
 	     tmp_pager_scan_speed, "lines per second");
    DialogItemTextSetText(di, s);
 

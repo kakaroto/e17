@@ -5,7 +5,6 @@ mark: focus swtiching in multihead between the heads gets confused... :)
 
 FEATURES:
 raster: add dnd to iconbox
-raster: iconify animation suport
 
 FEATURES FOR DR 0.17:
 kainx: reduce need for tooltip text to have auto gened tooltips work

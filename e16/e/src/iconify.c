@@ -2,6 +2,91 @@
 
 static void         IcondefChecker(int val, void *data);
 
+#define IB_ANIM_TIME 0.25
+static void         IB_Animate(char iconify, EWin * from, EWin * to);
+
+static void
+IB_Animate(char iconify, EWin * from, EWin * to)
+{
+   double              t1, t2, t, i, spd, ii;
+   int                 x, y, w, h, fx, fy, fw, fh, dx, dy, dw, dh;
+   GC                  gc;
+   XGCValues           gcv;
+
+   GrabX();
+   spd = 0.01;
+   gcv.subwindow_mode = IncludeInferiors;
+   gcv.function = GXxor;
+   gcv.foreground = WhitePixel(disp, root.scr);
+   if (gcv.foreground == 0)
+      gcv.foreground = BlackPixel(disp, root.scr);
+   gc = XCreateGC(disp, root.win, GCFunction | GCForeground | GCSubwindowMode,
+		  &gcv);
+   t1 = GetTime();
+   if (iconify)
+     {
+	fw = from->w;
+	fh = from->h;
+	fx = from->x + desks.desk[from->desktop].x;
+	fy = from->y + desks.desk[from->desktop].y;
+	dw = 0;
+	dh = 0;
+	dx = to->x + desks.desk[to->desktop].x + (to->w / 2);
+	dy = to->y + desks.desk[to->desktop].y + (to->h / 2);
+	for (i = 0.0; i < 1.0; i += spd)
+	  {
+	     ii = 1.0 - i;
+	     x = (fx * ii) + (dx * i);
+	     y = (fy * ii) + (dy * i);
+	     w = (fw * ii) + (dw * i);
+	     h = (fh * ii) + (dh * i);
+	     XDrawRectangle(disp, root.win, gc, x, y, w, h);
+	     XDrawRectangle(disp, root.win, gc, x + 1, y + 1, w - 2, h - 2);
+	     XDrawRectangle(disp, root.win, gc, x + 2, y + 2, w - 4, h - 4);
+	     XSync(disp, False);
+	     t2 = GetTime();
+	     t = t2 - t1;
+	     t1 = t2;
+	     spd = t / IB_ANIM_TIME;
+	     XDrawRectangle(disp, root.win, gc, x, y, w, h);
+	     XDrawRectangle(disp, root.win, gc, x + 1, y + 1, w - 2, h - 2);
+	     XDrawRectangle(disp, root.win, gc, x + 2, y + 2, w - 4, h - 4);
+	  }
+     }
+   else
+     {
+	fw = from->w;
+	fh = from->h;
+	fx = from->x + desks.desk[from->desktop].x;
+	fy = from->y + desks.desk[from->desktop].y;
+	dw = 0;
+	dh = 0;
+	dx = to->x + desks.desk[to->desktop].x + (to->w / 2);
+	dy = to->y + desks.desk[to->desktop].y + (to->h / 2);
+	for (i = 1.0; i >= 0.0; i -= spd)
+	  {
+	     ii = 1.0 - i;
+	     x = (fx * ii) + (dx * i);
+	     y = (fy * ii) + (dy * i);
+	     w = (fw * ii) + (dw * i);
+	     h = (fh * ii) + (dh * i);
+	     XDrawRectangle(disp, root.win, gc, x, y, w, h);
+	     XDrawRectangle(disp, root.win, gc, x + 1, y + 1, w - 2, h - 2);
+	     XDrawRectangle(disp, root.win, gc, x + 2, y + 2, w - 4, h - 4);
+	     XSync(disp, False);
+	     t2 = GetTime();
+	     t = t2 - t1;
+	     t1 = t2;
+	     spd = t / IB_ANIM_TIME;
+	     XDrawRectangle(disp, root.win, gc, x, y, w, h);
+	     XDrawRectangle(disp, root.win, gc, x + 1, y + 1, w - 2, h - 2);
+	     XDrawRectangle(disp, root.win, gc, x + 2, y + 2, w - 4, h - 4);
+	  }
+     }
+   XFreeGC(disp, gc);
+   UngrabX();
+}
+
 void
 IconifyEwin(EWin * ewin)
 {
@@ -30,6 +115,7 @@ IconifyEwin(EWin * ewin)
 	Iconbox            *ib;
 
 	ib = SelectIconboxForEwin(ewin);
+	IB_Animate(1, ewin, ib->ewin);
 	was_shaded = ewin->shaded;
 	if (ib)
 	   UpdateAppIcon(ewin, ib->icon_mode);
@@ -83,6 +169,7 @@ DeIconifyEwin(EWin * ewin)
    if (ewin->iconified)
      {
 	ib = SelectIconboxForEwin(ewin);
+	IB_Animate(0, ewin, ib->ewin);
 	RemoveMiniIcon(ewin);
 	if (!ewin->sticky)
 	  {
