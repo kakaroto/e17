@@ -320,14 +320,19 @@ void ewl_fileselector_directory_adjust (Ewl_Fileselector *fs, char *path)
 		ptr++;
 		if (!strcmp (ptr, "..")) {
 			ptr--;
-			*ptr = '\0';
-			ptr = strrchr(path, '/');
-			ptr++;
-			*ptr = '\0';
 
-			if (strcmp(path, "/")) {
-				ptr--;
+			if (ptr != path) {
 				*ptr = '\0';
+				ptr = strrchr(path, '/');
+				ptr++;
+				*ptr = '\0';
+
+				if (strcmp(path, "/")) {
+					ptr--;
+					*ptr = '\0';
+				}
+			} else {
+				*++ptr = '\0';
 			}
 		}
 		snprintf (dir, PATH_MAX, "%s", path);
