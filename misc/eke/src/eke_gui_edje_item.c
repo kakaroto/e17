@@ -107,25 +107,22 @@ eke_gui_edje_item_init(Evas_Object *o, const char *label, const char *date,
     {
         if(body) {
             Evas_Object *desc, *container;
-            Etox_Context *ctx;
             Evas_Coord w, h, ew, eh;
+            char fmt[2048];
             Evas *evas;
-           
+            const char *file;
+
             evas = evas_object_evas_get(o);
 
             if ((desc = edje_object_part_swallow_get(data->obj, "body"))) 
                 evas_object_del(desc);
             
-            desc = etox_new(evas);
-            ctx = etox_get_context(desc);
-            etox_context_set_color(ctx, 0, 0, 0, 255);
-            etox_context_set_font(ctx, "Vera", 10);
-            etox_context_set_wrap_marker(ctx, "", NULL);
-            etox_set_context(desc, ctx);
+            desc = evas_object_textblock_add(evas);
+            edje_object_file_get(data->obj, &file, NULL);
+            snprintf(fmt, 2048, "font_source=%s font=fonts/Vera size=10 color=#000000ff", file);
+            evas_object_textblock_format_insert(desc, fmt);
 
-            etox_set_soft_wrap(desc, 1);
-            etox_set_word_wrap(desc, 1);
-            etox_set_text(desc, (char *)body);
+            evas_object_textblock_text_insert(desc, body);
             evas_object_show(desc);
 
             container = esmart_container_new(evas);
@@ -145,7 +142,8 @@ eke_gui_edje_item_init(Evas_Object *o, const char *label, const char *date,
             edje_object_part_swallow(data->obj, "body", container);
 
             /* hide the scrollbar if we have less text then visible space */
-            etox_text_geometry_get(desc, &ew, &eh);
+            evas_object_textblock_format_size_get(desc, &ew, &eh);
+
             if (eh <= h)
                 edje_object_signal_emit(data->obj, "body,scroll,hide", "");
 
@@ -204,7 +202,7 @@ eke_gui_edje_item_feed_container_scroll_cb(void *data, Evas_Object *o,
     Evas_List *list;
 
     if ((container = (Evas_Object*)data)) {
-        Evas_Object *etox;
+        Evas_Object *textblock;
 
         edje_object_part_geometry_get(o, "body", NULL, NULL, &cw, &ch);
 
@@ -212,10 +210,10 @@ eke_gui_edje_item_feed_container_scroll_cb(void *data, Evas_Object *o,
          * esmart_container_elements_length_get(container) so i'm doing this
          * the hard way... */
         list = esmart_container_elements_get(container);
-        etox = evas_list_nth(list, 0);
-        etox_text_geometry_get(etox, NULL, &container_length);
-        edje_object_part_drag_value_get(o, src, &sx, &sy);
+        textblock = evas_list_nth(list, 0);
+        evas_object_textblock_format_size_get(textblock, NULL, &container_length);
 
+        edje_object_part_drag_value_get(o, src, &sx, &sy);
         switch (esmart_container_direction_get(container)) {
             case CONTAINER_DIRECTION_HORIZONTAL:
                 if(container_length > cw) {
@@ -394,7 +392,7 @@ _eke_gui_edje_item_object_resize(Evas_Object *o, Evas_Coord w, Evas_Coord h)
   if((data = evas_object_smart_data_get(o)))
   {
     Evas_List *list;
-    Evas_Object *etox, *container;;
+    Evas_Object *textblock, *container;;
     Evas_Coord eh, ph;
    
     evas_object_resize(data->obj, w, h);
@@ -402,8 +400,8 @@ _eke_gui_edje_item_object_resize(Evas_Object *o, Evas_Coord w, Evas_Coord h)
 
     container = edje_object_part_swallow_get(data->obj, "body");
     list = esmart_container_elements_get(container);
-    etox = evas_list_nth(list, 0);
-    etox_text_geometry_get(etox, NULL, &eh);
+    textblock = evas_list_nth(list, 0);
+    evas_object_textblock_format_size_get(textblock, NULL, &eh);
 
     if (eh > ph)
         edje_object_signal_emit(data->obj, "body,scroll,show", "");

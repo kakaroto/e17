@@ -110,6 +110,7 @@ eke_gui_ewl_feed_change(Eke *eke, Eke_Feed *feed)
     ecore_list_goto_first(feed->items);
     while ((item = ecore_list_next(feed->items)) != NULL) {
         o = ewl_text_new(NULL);
+        ewl_text_wrap_set(EWL_TEXT(o), 1);
         ewl_text_style_set(EWL_TEXT(o), "soft_shadow");
         ewl_text_text_set(EWL_TEXT(o), item->title);
         ewl_container_child_append(EWL_CONTAINER(disp->page), o);
@@ -117,12 +118,14 @@ eke_gui_ewl_feed_change(Eke *eke, Eke_Feed *feed)
 
         if (item->link) {
             o = ewl_text_new(item->link);
+            ewl_text_wrap_set(EWL_TEXT(o), 1);
             ewl_container_child_append(EWL_CONTAINER(disp->page), o);
             ewl_widget_show(o);
         }
 
         if (item->desc) {
             o = ewl_text_new(item->desc);
+            ewl_text_wrap_set(EWL_TEXT(o), 1);
             ewl_container_child_append(EWL_CONTAINER(disp->page), o);
             ewl_widget_show(o);
         }

@@ -10,9 +10,6 @@ AM_PROG_CC_STDC
 AC_HEADER_STDC
 AC_PROG_INSTALL
 
-AC_PATH_GENERIC(etox, , ,
-    AC_MSG_ERROR(Cannot find etox: Is etox-config in your path?))
-
 AC_PATH_GENERIC(edje, , ,
     AC_MSG_ERROR(Cannot find edje: Is edje-config in your path?))
 
@@ -77,7 +74,7 @@ else
         AC_DEFINE_UNQUOTED(BUILD_EDJE_GUI, 0, [Disable Edje GUI])
 fi
 
-AC_CONFIG_FILES([
+AC_OUTPUT([
 Makefile
 m4/Makefile
 src/Makefile
@@ -93,8 +90,6 @@ if test "x$want_edje_gui" = "xno"; then
         echo
     fi
 fi
-
-AC_OUTPUT
 
 echo
 echo "$PACKAGE $VERSION"

@@ -9,7 +9,6 @@ endif
 if BUILD_EDJE_GUI
 EDJECFLAGS = \
 	@EDJE_CFLAGS@ \
-	@ETOX_CFLAGS@ \
 	@ESMART_CFLAGS@
 endif
 
@@ -47,7 +46,6 @@ EWLLDADD = \
 
 EDJELDADD = \
 	@EDJE_LIBS@ \
-	@ETOX_LIBS@ \
 	@ESMART_LIBS@ \
 	-lesmart_container
 

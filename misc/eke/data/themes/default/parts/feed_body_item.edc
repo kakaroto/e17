@@ -353,5 +353,6 @@ part {
     }
 }
 
-SCROLLBAR("feed.body.item.scroll", "body");
+SCROLLBAR("feed.body.item.scroll", "body_deco");
+
 
