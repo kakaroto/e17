@@ -5,26 +5,6 @@
 	rel2 {relative, 0.0 0.0; offset, 50 50;}
 
 part {
-	name, "icon_clip";
-	type, RECT;
-
-	description {
-		state, "default" 0.0;
-		color, 255 255 255 255;
-
-		rel1 {
-			relative, 0.0 0.0;
-			offset, 0 0;
-		}
-
-		rel2 {
-			relative, 1.0 1.0;
-			offset, 0 0;
-		}
-	}
-}
-
-part {
 	name, "icon";
 	type, IMAGE;
 
@@ -33,9 +13,7 @@ part {
 
 		ICON_REL();
 
-		image {
-			normal, "email.png";
-		}
+		image {normal, "email.png";}
 	}
 
 	description {
@@ -43,8 +21,6 @@ part {
 
 		ICON_REL();
 
-		image {
-			normal, "email_new.png";
-		}
+		image {normal, "email_new.png";}
 	}
 }
