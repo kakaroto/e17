@@ -136,7 +136,7 @@ void		etox_get_geometry(Etox e, double *x, double *y,
 void            etox_get_actual_geometry(Etox e, double *x, double *y, 
                                   	 double *w, double *h);
 
-/**  *_at_* is unfinished..  **/
+/* Following function isnt implemented yet. */
 void		etox_get_at(Etox e, int index,
 				double *x, double *y,
 				double *w, double *h);
