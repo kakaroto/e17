@@ -2,20 +2,21 @@
 #include <ewl-config.h>
 
 static Ewl_Widget *image_button;
-Ewl_Widget *image_win;
-Ewl_Widget *image;
-Ewd_DList *images;
-Ewl_Widget *entry_path;
+Ewl_Widget     *image_win;
+Ewl_Widget     *image_box;
+Ewl_Widget     *image;
+Ewd_DList      *images;
+Ewl_Widget     *entry_path;
 
 
-void __create_image_test_window(Ewl_Widget * w, void *ev_data,
-				void *user_data);
+void            __create_image_test_window(Ewl_Widget * w, void *ev_data,
+					   void *user_data);
 
 
 void
 __destroy_image_test_window(Ewl_Widget * w, void *ev_data, void *user_data)
 {
-	char *str;
+	char           *str;
 
 	ewd_dlist_goto_first(images);
 
@@ -24,7 +25,7 @@ __destroy_image_test_window(Ewl_Widget * w, void *ev_data, void *user_data)
 
 	ewd_dlist_destroy(images);
 
-	ewl_widget_destroy_recursive(w);
+	ewl_widget_destroy(w);
 
 	ewl_callback_append(image_button, EWL_CALLBACK_CLICKED,
 			    __create_image_test_window, NULL);
@@ -37,7 +38,7 @@ __destroy_image_test_window(Ewl_Widget * w, void *ev_data, void *user_data)
 int
 __image_exists(char *i)
 {
-	struct stat st;
+	struct stat     st;
 
 	if (!i || !strlen(i))
 		return -1;
@@ -51,7 +52,7 @@ __image_exists(char *i)
 void
 __image_update_window_size(void)
 {
-	int ww, hh;
+	int             ww, hh;
 
 	ewl_object_get_current_size(EWL_OBJECT(image), &ww, &hh);
 
@@ -69,7 +70,7 @@ __image_update_window_size(void)
 void
 __image_goto_prev_cb(Ewl_Widget * w, void *ev_data, void *user_data)
 {
-	char *img = NULL;
+	char           *img = NULL;
 
 	ewd_dlist_previous(images);
 	img = ewd_dlist_current(images);
@@ -93,17 +94,15 @@ __image_goto_prev_cb(Ewl_Widget * w, void *ev_data, void *user_data)
 void
 __image_load_cb(Ewl_Widget * w, void *ev_data, void *user_data)
 {
-	char *img = NULL;
+	char           *img = NULL;
 
 	img = ewl_entry_get_text(entry_path);
 
-	if (img && __image_exists(img))
-	  {
-		  ewd_dlist_append(images, img);
-		  ewd_dlist_goto_last(images);
-		  ewl_image_set_file(EWL_IMAGE(image), img);
-	  }
-	else
+	if (img && __image_exists(img)) {
+		ewd_dlist_append(images, img);
+		ewd_dlist_goto_last(images);
+		ewl_image_set_file(EWL_IMAGE(image), img);
+	} else
 		printf("ERROR: %s does not exist\n", img);
 
 
@@ -120,7 +119,7 @@ __image_load_cb(Ewl_Widget * w, void *ev_data, void *user_data)
 void
 __image_goto_next_cb(Ewl_Widget * w, void *ev_data, void *user_data)
 {
-	char *img = NULL;
+	char           *img = NULL;
 
 	ewd_dlist_next(images);
 	img = ewd_dlist_current(images);
@@ -144,9 +143,10 @@ __image_goto_next_cb(Ewl_Widget * w, void *ev_data, void *user_data)
 void
 __create_image_test_window(Ewl_Widget * w, void *ev_data, void *user_data)
 {
-	Ewl_Widget *button_hbox;
-	Ewl_Widget *button_prev, *button_load, *button_next;
-	char *image_file = NULL;
+	Ewl_Widget     *scrollpane;
+	Ewl_Widget     *button_hbox;
+	Ewl_Widget     *button_prev, *button_load, *button_next;
+	char           *image_file = NULL;
 
 	ewl_callback_del(w, EWL_CALLBACK_CLICKED, __create_image_test_window);
 
@@ -155,12 +155,23 @@ __create_image_test_window(Ewl_Widget * w, void *ev_data, void *user_data)
 	images = ewd_dlist_new();
 
 	image_win = ewl_window_new();
-	ewl_box_set_spacing(EWL_BOX(image_win), 10);
 	ewl_window_resize(image_win, 390, 297);
 	ewl_window_set_min_size(image_win, 390, 297);
 	ewl_callback_append(image_win, EWL_CALLBACK_DELETE_WINDOW,
 			    __destroy_image_test_window, NULL);
 	ewl_widget_show(image_win);
+
+	/*
+	 * Create the main box for holding the widgets
+	 */
+	image_box = ewl_vbox_new();
+	ewl_container_append_child(EWL_CONTAINER(image_win), image_box);
+	ewl_box_set_spacing(EWL_BOX(image_box), 10);
+	ewl_widget_show(image_box);
+
+	scrollpane = ewl_scrollpane_new();
+	ewl_container_append_child(EWL_CONTAINER(image_box), scrollpane);
+	ewl_widget_show(scrollpane);
 
 	if ((__image_exists(PACKAGE_DATA_DIR "/images/e-logo.png")) != -1)
 		image_file = strdup(PACKAGE_DATA_DIR "/images/e-logo.png");
@@ -172,7 +183,7 @@ __create_image_test_window(Ewl_Widget * w, void *ev_data, void *user_data)
 	image = ewl_image_load(image_file);
 	ewl_object_set_padding(EWL_OBJECT(image), 0, 0, 5, 0);
 	ewl_object_set_alignment(EWL_OBJECT(image), EWL_ALIGNMENT_CENTER);
-	ewl_container_append_child(EWL_CONTAINER(image_win), image);
+	ewl_container_append_child(EWL_CONTAINER(scrollpane), image);
 	ewl_widget_show(image);
 
 	if (image_file)
@@ -181,15 +192,14 @@ __create_image_test_window(Ewl_Widget * w, void *ev_data, void *user_data)
 	entry_path = ewl_entry_new();
 	if (image_file)
 		ewl_entry_set_text(entry_path, image_file);
-	ewl_container_append_child(EWL_CONTAINER(image_win), entry_path);
+	ewl_container_append_child(EWL_CONTAINER(image_box), entry_path);
 	ewl_widget_show(entry_path);
 
 	button_hbox = ewl_hbox_new();
 	ewl_box_set_spacing(EWL_BOX(button_hbox), 5);
-	ewl_object_set_alignment(EWL_OBJECT(button_hbox),
-				 EWL_ALIGNMENT_CENTER);
+	ewl_object_set_alignment(EWL_OBJECT(button_hbox), EWL_ALIGNMENT_CENTER);
 	ewl_object_set_custom_size(EWL_OBJECT(button_hbox), 112, 38);
-	ewl_container_append_child(EWL_CONTAINER(image_win), button_hbox);
+	ewl_container_append_child(EWL_CONTAINER(image_box), button_hbox);
 	ewl_widget_show(button_hbox);
 
 	button_prev = ewl_button_new(NULL);
@@ -209,8 +219,7 @@ __create_image_test_window(Ewl_Widget * w, void *ev_data, void *user_data)
 	if ((__image_exists
 	     (PACKAGE_DATA_DIR "/images/button_prev.bits.db")) != -1)
 		image_file =
-			strdup(PACKAGE_DATA_DIR
-			       "/images/button_prev.bits.db");
+			strdup(PACKAGE_DATA_DIR "/images/button_prev.bits.db");
 	else if ((__image_exists("./data/images/button_prev.bits.db")) != -1)
 		image_file = strdup("./data/images/button_prev.bits.db");
 	else if ((__image_exists("../data/images/button_prev.bits.db")) != -1)
@@ -224,8 +233,7 @@ __create_image_test_window(Ewl_Widget * w, void *ev_data, void *user_data)
 	if ((__image_exists
 	     (PACKAGE_DATA_DIR "/images/button_load.bits.db")) != -1)
 		image_file =
-			strdup(PACKAGE_DATA_DIR
-			       "/images/button_load.bits.db");
+			strdup(PACKAGE_DATA_DIR "/images/button_load.bits.db");
 	else if ((__image_exists("./data/images/button_load.bits.db")) != -1)
 		image_file = strdup("./data/images/button_load.bits.db");
 	else if ((__image_exists("../data/images/button_load.bits.db")) != -1)
@@ -239,8 +247,7 @@ __create_image_test_window(Ewl_Widget * w, void *ev_data, void *user_data)
 	if ((__image_exists
 	     (PACKAGE_DATA_DIR "/images/button_next.bits.db")) != -1)
 		image_file =
-			strdup(PACKAGE_DATA_DIR
-			       "/images/button_next.bits.db");
+			strdup(PACKAGE_DATA_DIR "/images/button_next.bits.db");
 	else if ((__image_exists("./data/images/button_next.bits.db")) != -1)
 		image_file = strdup("./data/images/button_next.bits.db");
 	else if ((__image_exists("../data/images/button_next.bits.db")) != -1)

@@ -2,13 +2,13 @@
 
 static Ewl_Widget *table_button = NULL;
 
-void __create_table_test_window(Ewl_Widget * w, void *ev_data,
-				void *user_data);
+void            __create_table_test_window(Ewl_Widget * w, void *ev_data,
+					   void *user_data);
 
 void
 __destroy_table_test_window(Ewl_Widget * w, void *ev_data, void *user_data)
 {
-	ewl_widget_destroy_recursive(w);
+	ewl_widget_destroy(w);
 
 	ewl_callback_append(table_button, EWL_CALLBACK_CLICKED,
 			    __create_table_test_window, NULL);
@@ -21,32 +21,52 @@ __destroy_table_test_window(Ewl_Widget * w, void *ev_data, void *user_data)
 void
 __create_table_test_window(Ewl_Widget * w, void *ev_data, void *user_data)
 {
-	Ewl_Widget *table_win;
-	Ewl_Widget *table;
-	Ewl_Widget *button[77];
+	Ewl_Widget     *table_win;
+	Ewl_Widget     *table_box;
+	Ewl_Widget     *table;
+	Ewl_Widget     *button[77];
+	char           *headers[4];
+	char           *one = "one";
+	char           *two = "two";
+	char           *three = "three";
+	char           *four = "four";
 
 	ewl_callback_del(w, EWL_CALLBACK_CLICKED, __create_table_test_window);
 
 	table_button = w;
 
 	table_win = ewl_window_new();
-	ewl_window_resize(table_win, 555, 100);
-	ewl_window_set_min_size(table_win, 555, 100);
+	ewl_window_resize(table_win, 300, 300);
 	ewl_callback_append(table_win, EWL_CALLBACK_DELETE_WINDOW,
 			    __destroy_table_test_window, NULL);
-	ewl_widget_realize(table_win);
+	ewl_widget_show(table_win);
 
-	table = ewl_table_new_all(FALSE, 4, 5, 10, 0);
-	ewl_container_append_child(EWL_CONTAINER(table_win), table);
-	ewl_widget_realize(table);
+	/*
+	 * Create the main box for holding the widgets
+	 */
+	table_box = ewl_vbox_new();
+	ewl_object_set_fill_policy(EWL_OBJECT(table_box), EWL_FILL_POLICY_FILL);
+	ewl_container_append_child(EWL_CONTAINER(table_win), table_box);
+	ewl_theme_data_set_str(table_box,
+			       "/appearance/box/vertical/base/visible", "no");
+	ewl_widget_show(table_box);
 
-	button[0] = ewl_button_new(NULL);
-	ewl_table_attach(EWL_TABLE(table), button[0], 1, 1, 1, 1);
-	ewl_object_set_custom_size(EWL_OBJECT(button[0]), 100, 20);
-	ewl_object_set_fill_policy(EWL_OBJECT(button[0]),
-				   EWL_FILL_POLICY_NORMAL);
-	ewl_widget_realize(button[0]);
 
+	headers[0] = one;
+	headers[1] = two;
+	headers[2] = three;
+	headers[3] = four;
+
+	table = ewl_table_new(4, 5, headers);
+	ewl_container_append_child(EWL_CONTAINER(table_box), table);
+	ewl_widget_show(table);
+
+
+	button[0] = ewl_button_new("FIRST");
+	ewl_table_add(EWL_TABLE(table), button[0], 3, 4, 2, 3);
+	ewl_widget_show(button[0]);
+
+/*
 	button[1] = ewl_button_new(NULL);
 	ewl_table_attach(EWL_TABLE(table), button[1], 1, 1, 2, 2);
 	ewl_object_set_custom_size(EWL_OBJECT(button[1]), 100, 20);
@@ -59,18 +79,18 @@ __create_table_test_window(Ewl_Widget * w, void *ev_data, void *user_data)
 	ewl_object_set_custom_size(EWL_OBJECT(button[2]), 100, 20);
 	ewl_object_set_fill_policy(EWL_OBJECT(button[2]),
 				   EWL_FILL_POLICY_NORMAL);
-	ewl_widget_realize(button[2]);
+	ewl_widget_show(button[2]);
 
 
 	button[3] = ewl_button_new(NULL);
 	ewl_object_set_custom_height(EWL_OBJECT(button[3]), 20);
 	ewl_table_attach(EWL_TABLE(table), button[3], 2, 2, 1, 1);
-	ewl_widget_realize(button[3]);
+	ewl_widget_show(button[3]);
 
 	button[4] = ewl_button_new(NULL);
 	ewl_object_set_custom_height(EWL_OBJECT(button[4]), 20);
 	ewl_table_attach(EWL_TABLE(table), button[4], 2, 2, 2, 2);
-	ewl_widget_realize(button[4]);
+	ewl_widget_show(button[4]);
 
 	button[5] = ewl_button_new(NULL);
 	ewl_object_set_custom_height(EWL_OBJECT(button[5]), 20);
@@ -115,7 +135,9 @@ __create_table_test_window(Ewl_Widget * w, void *ev_data, void *user_data)
 
 	ewl_table_attach(EWL_TABLE(table), button[11], 4, 4, 5, 5);
 	ewl_widget_realize(button[11]);
+*/
 
+	ewl_widget_configure(table);
 	return;
 	w = NULL;
 	ev_data = NULL;

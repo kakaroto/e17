@@ -12,11 +12,11 @@ ewl_test_SOURCES		=	ewl_test.c \
 					ewl_button_test.c \
 					ewl_entry_test.c \
 					ewl_image_test.c \
+					ewl_fileselector_test.c \
 					ewl_floater_test.c \
+					ewl_imenu_test.c \
 					ewl_notebook_test.c \
-					ewl_scrollbar_test.c \
-					ewl_scrollpane_test.c \
-					ewl_seeker_test.c \
+					ewl_selectionbook_test.c \
 					ewl_spinner_test.c \
 					ewl_table_test.c \
 					ewl_text_test.c \
