@@ -24,7 +24,7 @@ Docdir: %{prefix}/doc
 Imlib2 is an advanced replacement library for libraries like libXpm that
 provides many more features with much greater flexability and speed than
 standard libraries, including font rasterization, rotation, RGBA space
-rendering and blending, and more.
+rendering and blending, dynamic binary filters, scripting, and more.
 
 %package devel
 Summary: Imlib2 headers, static libraries and documentation
@@ -45,6 +45,11 @@ Headers, static libraries and documentation for Imlib2.
 
 %prep
 %setup
+cd demo
+sed <Makefile.am "s@-L/usr/X11R6/lib@-L/usr/X11R6/lib -L../src/.libs@" >Makefile.am1
+mv -f Makefile.am1 Makefile.am
+sed <Makefile.am "s@-lX11 -lXext -lttf -lImlib2@ -lX11 -lXext -lttf -lImlib2 -lm@" >Makefile.am1
+mv -f Makefile.am1 Makefile.am
 
 %build
 ##### Boring normal rpm build method
@@ -93,7 +98,7 @@ fi
 ## added to make the viewer
 cd demo
 make
-mv imlib2_view imlib2-view
+#mv imlib2_view imlib2-view
 ###########################################################################
 
 %install
@@ -101,7 +106,7 @@ rm -rf $RPM_BUILD_ROOT
 make prefix=$RPM_BUILD_ROOT%{prefix} install
 mkdir -p $RPM_BUILD_ROOT%{prefix}/bin
 cd demo
-cp imlib2-view $RPM_BUILD_ROOT%{prefix}/bin
+cp imlib2_view $RPM_BUILD_ROOT%{prefix}/bin
 
 %clean
 rm -rf $RPM_BUILD_ROOT
@@ -115,6 +120,7 @@ rm -rf $RPM_BUILD_ROOT
 %doc README COPYING ChangeLog TODO
 %attr(755,root,root) %{prefix}/lib/lib*.so.*
 %attr(755,root,root) %{prefix}/lib/loaders
+%{prefix}/bin/imlib2_view
 
 %files devel
 %defattr(-,root,root)
@@ -124,8 +130,12 @@ rm -rf $RPM_BUILD_ROOT
 
 #%files demos
 #%defattr(-,root,root)
-#%{prefix}/bin/imlib2-view
 
 %changelog
+* Sat May 20 2000 Lyle Kempler <kempler@utdallas.edu>
+- Fixed problems with requiring imlib2_view
+- Went back to imlib2_view (not imlib2-view)
+
 * Tue Nov 2 1999 Lyle Kempler <kempler@utdallas.edu>
 - Mangled imlib 1.9.8 imlib spec file into imlib2 spec file
+
