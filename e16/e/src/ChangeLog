@@ -4776,3 +4776,11 @@ Thu Apr  3 23:00:16 EST 2003
 
 updated some translations that didn't actually like building properly because
 they were out of sync.
+
+-------------------------------------------------------------------------------
+
+Thu Apr  3 23:25:41 EST 2003
+(Mandrake)
+
+applied patch from Jon Keating <jon@licq.org> to appropriately propogate 
+ButtonPress events...  this is needed for licq, I presume ;)

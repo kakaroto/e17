@@ -1830,9 +1830,15 @@ HandleMouseDown(XEvent * ev)
              if ((win == buttons[i]->win) || (win == buttons[i]->event_win))
                {
                   GrabThePointer(win);
-                  if (buttons[i]->inside_win)
+                  if (buttons[i]->inside_win) {
+					  Window id;
+					  id = ev->xany.window;
+					  ev->xany.window = buttons[i]->inside_win;
                      XSendEvent(disp, buttons[i]->inside_win, False,
                                 ButtonPressMask, ev);
+					 ev->xany.window = id;
+				  }
+
                   mode.button = buttons[i];
                   buttons[i]->state = STATE_CLICKED;
                   DrawButton(buttons[i]);
