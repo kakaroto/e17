@@ -30,7 +30,6 @@ sub load_image
 {
 	my $image = Imlib2::load_image($ARGV[0]);
 	Imlib2::set_context($image);
-	print("image loaded\n");
 	my $w = Imlib2::get_width();
 	my $h = Imlib2::get_height();
 	show_image($image,$w,$h);
@@ -47,10 +46,11 @@ sub show_image
 	$win->signal_connect("destroy", sub { Gtk->exit(0) });
 	$win->{'da'} = new Gtk::DrawingArea();
 	$win->{'da'}->size($w,$h);
+	$win->{'da'}->set_events("button_press_mask");
 	$win->add($win->{'da'});
 	$win->{'da'}->realize();
 	imlib_init($win);
-	
+		
 	my $bgcolor = Gtk::Gdk::Color->parse_color('white');
 	$bgcolor = $win->{'da'}->window->get_colormap()->color_alloc($bgcolor);
 	$win->{'da'}->window->set_background($bgcolor);
@@ -58,15 +58,29 @@ sub show_image
 
 	Imlib2::context_set_drawable($win->{'da'}->window->XWINDOW);
 	$win->{'da'}->signal_connect('expose_event', \&render);	
-
-
+	$win->{'da'}->signal_connect("button_press_event", \&button_press);
+	
+	$win->{'da'}->{'popup'} = new Gtk::Menu();
+	$win->{'da'}->{'popup'}->{'quit'} = new Gtk::MenuItem("Quit ...");
+	$win->{'da'}->{'popup'}->{'quit'}->signal_connect("activate", sub { Gtk->exit(0); });
+	$win->{'da'}->{'popup'}->append($win->{'da'}->{'popup'}->{'quit'});       
+	$win->{'da'}->{'popup'}->show();
+	$win->{'da'}->{'popup'}->{'quit'}->show();
+	
 	show_all $win;
 	return 1;
 }	
 
+sub button_press
+{
+	my ($da, $event) = @_;
+	return if $event->{button} != 3;
+	$da->{'popup'}->popup(undef,undef,$event->{button},$event->{time});
+}
+
 sub render
 {
-	print("expose_event\n");
+
 	Imlib2::render_image_on_drawable(0,0);
 
 }	

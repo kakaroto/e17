@@ -9,3 +9,4 @@ Imlib2::Colormap T_U_LONG
 Imlib2::Display T_UV
 Imlib2::Imlib_Font T_PTROBJ
 Imlib2::Imlib_Color_Modifier T_PTROBJ
+Imlib2::Imlib_Color_Range T_PTROBJ

@@ -470,3 +470,41 @@ fill_ellipse(xc,yc,a,b)
 	CODE:
 	imlib_image_fill_ellipse(xc,yc,a,b);
 	
+void
+context_set_color_range(color_range)
+	Imlib2::Imlib_Color_Range	color_range
+	CODE:
+	imlib_context_set_color_range(color_range);
+	
+Imlib2::Imlib_Color_Range
+get_color_range()
+	CODE:
+	imlib_context_get_color_range();
+	
+Imlib2::Imlib_Color_Range
+create_color_range()
+	CODE:
+	RETVAL = imlib_create_color_range();
+	OUTPUT:
+	RETVAL
+	
+void
+free_color_range()
+	CODE:
+	imlib_free_color_range();
+	
+void
+add_color_to_color_range(distance_away)
+	int distance_away
+	CODE:
+	imlib_add_color_to_color_range(distance_away);
+	
+void
+fill_color_range_rectangle(x,y,width,height,angle)
+	int x
+	int y
+	int width
+	int height
+	double angle
+	CODE:
+	imlib_image_fill_color_range_rectangle(x,y,width,height,angle);

@@ -8,6 +8,6 @@ untar gnome-perl.tar.gz
 cd gnome-perl/Gtk/xs
 cat gtk-perl-patch | patch
 
-then compile Gtk::Perl and you'll ahve the changes and the examples should
+then compile Gtk::Perl and you'll have the changes and the examples should
 work ...
 
