@@ -1,6 +1,11 @@
-* NOTE THAT THE DEMO WILL NOT WORK INLESS IT IS INSTALLED !! *
 
+you should be able to build and install gevas simply by running 
 
+./autogen.sh
+make
+
+and then you can test by running the demo :
+demo/testgevas
 
 The following are some interesting things...
 
