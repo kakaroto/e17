@@ -504,13 +504,16 @@ int main (int argc, char * const argv[])
 				
 	}
 
-	if (parse_rc_file ()) 
+	if (parse_rc_file ()) {
+		printf ("Found the rc file\n");
 		got_rc_file = TRUE;
+	}
 		
 	if(!got_config_file) {
 		
-		if (!got_rc_file) 
+		if (!got_rc_file) {
 			display_default_usage ();
+		}
 		 else 
 			parse_config_file (rc->config);
 

@@ -276,6 +276,9 @@ int parse_rc_file ()
 	
 	fp = fopen (file, "r");
 
+	if (!fp)
+		return FALSE;
+
 	while (fp && (line = get_next_line (fp)) != NULL)
 	{
 		if ((c = get_element (&line, "config")) != NULL)
@@ -408,7 +411,7 @@ void parse_config_file (char *file)
 			if (cfg->clock != 1 && cfg->clock != 0)
 			{
 				fprintf (stderr,
-						"ERROR: Clock option has wrong value - check your config file!\n");
+						"Erss error: Clock option has wrong value - check your config file!\n");
 				exit (-1);
 			}
 			continue;
@@ -421,7 +424,7 @@ void parse_config_file (char *file)
 			if (cfg->num_stories > 10)
 			{
 				fprintf (stderr,
-						 "ERROR: Max stories to show is 10 - check your config file!\n");
+						 "Erss error: Max stories to show is 10 - check your config file!\n");
 				exit (-1);
 			}
 			continue;
@@ -434,7 +437,7 @@ void parse_config_file (char *file)
 			if (cfg->borderless != 1 && cfg->borderless != 0)
 			{
 				fprintf (stderr,
-						 "ERROR: Borderless option has wrong value - check your config file!\n");
+						 "Erss error:: Borderless option has wrong value - check your config file!\n");
 				exit (-1);
 			}
 			continue;
