@@ -704,7 +704,6 @@ e_db_match_keys(E_DB_File *edb, char *pattern, int *num_ret)
 	       }
 	     key = edbm_nextkey(edbf->edbf);
 	  }
-	e_db_close(edb);
      }
    last_edb_call = _e_get_time();
    flush_pending = 1;
