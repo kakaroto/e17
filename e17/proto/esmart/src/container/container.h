@@ -92,6 +92,7 @@ struct _Scroll_Data
   Container *cont;
   double start_time;
   double velocity;
+  double length;
 };
 
 Evas_Object *e_container_new(Evas *evas);

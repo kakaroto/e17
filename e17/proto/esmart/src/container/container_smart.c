@@ -74,7 +74,6 @@ _container_add(Evas_Object *obj)
 
   data->clipper = evas_object_rectangle_add(data->evas);
   evas_object_smart_member_add(obj, data->clipper);
-  //evas_object_color_set(data->clipper, 255, 40, 40, 20);
   evas_object_repeat_events_set(data->clipper, 1);
 
   data->grabber = evas_object_rectangle_add(data->evas);
@@ -214,8 +213,6 @@ _container_move(Evas_Object *obj, double x, double y)
   if((data->x == x) && (data->y == y))
       return;
   
-//  evas_object_move(data->clipper, x+ data->padding.l,
-//                          y + data->padding.t);
   evas_object_move(data->clipper, x, y);
   evas_object_move(data->grabber, x, y);
 
@@ -232,10 +229,12 @@ _container_resize(Evas_Object *obj, double w, double h)
   
   data = evas_object_smart_data_get(obj);
 
-//  evas_object_resize(data->clipper, w - (data->padding.l + data->padding.r),
-//                     h - (data->padding.t + data->padding.b));
+  if (w == data->w && h == data->h) return;
+
   evas_object_resize(data->clipper, w, h);
   evas_object_resize(data->grabber, w, h);
+
+  data->scroll_offset = 0;
 
   data->w = w;
   data->h = h;

@@ -237,13 +237,24 @@ e_container_scroll_start(Evas_Object *container, double velocity)
 {
   Container *cont;
   Scroll_Data *data;
+  double length, size;
 
   cont = _container_fetch(container);
+  length = e_container_elements_length_get(container);
+  size = cont->direction ? cont->h : cont->w;
 
+  /* don't scroll unless the elements exceed the size of the container */
+  if (length <= size)
+  {
+    printf(" length smaller than size\n");
+    return;
+  }
+  printf("continue\n");
   data = calloc(1, sizeof(Scroll_Data));
   data->velocity = velocity;
   data->start_time = ecore_time_get();
   data->cont = cont;
+  data->length = length;
  
   cont->scroll_timer = ecore_timer_add(.02, _container_scroll_timer, data);
 }
@@ -257,7 +268,10 @@ e_container_scroll_stop(Evas_Object *container)
  
   /* FIXME: decelerate on stop? */
   if (cont->scroll_timer)
+  {
     ecore_timer_del(cont->scroll_timer);  
+    cont->scroll_timer = NULL;
+  }
 }
 
 
@@ -710,12 +724,23 @@ int
 _container_scroll_timer(void *data)
 {
   Scroll_Data *sd = data;
-  double dt, dx;
-  
+  double dt, dx, size, pad, max_scroll;
+ 
   dt = ecore_time_get() - sd->start_time;
   dx = 10 * (1 - exp(-dt)); 
 
   sd->cont->scroll_offset += dx * sd->velocity;
+  
+  size = sd->cont->direction ? sd->cont->h : sd->cont->w;
+  pad = sd->cont->direction ? sd->cont->padding.t + sd->cont->padding.b :
+                              sd->cont->padding.l + sd->cont->padding.r;
+  max_scroll = size - sd->length - pad;
+
+  if (sd->cont->scroll_offset < max_scroll)
+    sd->cont->scroll_offset = max_scroll;
+  
+  else if (sd->cont->scroll_offset > 0)
+    sd->cont->scroll_offset = 0;
 
   _container_elements_fix(sd->cont);
   return 1;
