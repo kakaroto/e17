@@ -288,9 +288,11 @@ void etox_line_merge(Etox_Line * line1, Etox_Line * line2)
 		bit = l->data;
 		line1->bits = evas_list_append(line1->bits, bit);
 	}
+
 	/*
-	 * Adjust the height and length of the merged line.
+	 * Adjust the height, width and length of the merged line.
 	 */
+   line1->w += line2->w;
 	if (line2->h > line1->h)
 		line1->h = line2->h;
 	line1->length += line2->length;
