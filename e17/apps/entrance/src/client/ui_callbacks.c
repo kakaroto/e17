@@ -211,7 +211,8 @@ session_list_mouseout_cb(void *_data, Evas * e, Evas_Object * _o,
 void
 entrance_update_time_cb(int val, void *data)
 {
-   Evas_Object *o = (Evas_Object *) data;
+   Entrance_Session	e = (Entrance_Session) data;
+   Evas_Object *o = (val) ? e->time : e->date;
    char buf[PATH_MAX];
    char *str;
    struct tm *current;
@@ -223,9 +224,9 @@ entrance_update_time_cb(int val, void *data)
    /* Fetch and format time/date */
    current = localtime(&_t);
    if (val)
-      strftime(buf, PATH_MAX, "%l:%M:%S %p", current);
+      strftime(buf, PATH_MAX, e->config->time_format, current);
    else
-      strftime(buf, PATH_MAX, "%A %B %e, %Y", current);
+      strftime(buf, PATH_MAX, e->config->date_format, current);
 
    /* Strip off leading space if necessary (for time) */
    str = buf;

@@ -157,6 +157,16 @@ entrance_config_populate(Entrance_Config e, E_DB_File * db)
    free(str);
    e->greeting = strdup(buf);
 
+   /* get the format strings used to display the current date and time */ 
+   if ((str = e_db_str_get(db, "/entrance/date_format")))
+	   e->date_format = str;
+   else
+	   e->date_format = strdup("%A %B %e, %Y");
+
+   if ((str = e_db_str_get(db, "/entrance/time_format")))
+	   e->time_format = str;
+   else
+	   e->time_format = strdup("%l:%M:%S %p");
 }
 
 Entrance_Config
@@ -205,6 +215,10 @@ entrance_config_free(Entrance_Config e)
          free(e->welcome);
       if (e->theme)
          free(e->theme);
+	  if (e->date_format)
+		  free(e->date_format);
+	  if (e->time_format)
+		  free(e->time_format);
 
       free(e);
    }

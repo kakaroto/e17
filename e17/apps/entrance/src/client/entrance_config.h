@@ -25,6 +25,7 @@ struct _Entrance_Config
    int default_index;
    void *default_session;
    char *theme;
+   char *date_format, *time_format;
 };
 
 typedef struct _Entrance_Config *Entrance_Config;

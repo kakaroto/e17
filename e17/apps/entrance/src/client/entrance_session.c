@@ -226,8 +226,7 @@ init_info_section(Entrance_Session e)
    THEME_MOVE(e->date, t->date, e->geom);
    evas_object_layer_set(e->date, 10);
    evas_object_show(e->date);
-   ecore_add_event_timer("date_update", 0.1, entrance_update_time_cb, 0,
-                         e->date);
+   ecore_add_event_timer("date_update", 0.1, entrance_update_time_cb, 0, e);
 
    /* Time */
    e->time = evas_object_text_add(e->evas);
@@ -238,8 +237,7 @@ init_info_section(Entrance_Session e)
    THEME_MOVE(e->time, t->time, e->geom);
    evas_object_layer_set(e->time, 10);
    evas_object_show(e->time);
-   ecore_add_event_timer("time_update", 0.1, entrance_update_time_cb, 1,
-                         e->time);
+   ecore_add_event_timer("time_update", 0.1, entrance_update_time_cb, 1, e);
 }
 
 static void

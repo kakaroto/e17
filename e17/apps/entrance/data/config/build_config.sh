@@ -10,6 +10,8 @@ edb_ed $DB add /entrance/xinerama/screens/h int 1
 edb_ed $DB add /entrance/xinerama/on/w int 1
 edb_ed $DB add /entrance/xinerama/on/h int 1
 edb_ed $DB add /entrance/theme str "BlueCrystal"
+edb_ed $DB add /entrance/date_format str "%A %B %e, %Y"
+edb_ed $DB add /entrance/time_format str "%l:%M:%S %p"
 edb_ed $DB add /entrance/session/0/name str "enlightenment"
 edb_ed $DB add /entrance/session/0/path str ""
 edb_ed $DB add /entrance/session/0/icon str "enlightenment.png"
