@@ -138,10 +138,13 @@ elicit_swatches_load(Elicit *el)
     edje_object_signal_callback_add(sw->obj, "elicit,swatch,name,show", "", elicit_swatch_name_show_cb, sw);
   
     evas_object_color_set(sw->rect, sw->r, sw->g, sw->b, 255);
+    evas_object_pass_events_set(sw->rect, TRUE);
     evas_object_show(sw->rect);
     edje_object_part_swallow(sw->obj, "swatch", sw->rect);
     esmart_container_element_append(el->swatches.cont, sw->obj);
   }
+  el->swatches.length = esmart_container_elements_length_get(el->swatches.cont);
+  e_db_close(db);
 }
 
 void
@@ -188,6 +191,7 @@ elicit_swatch_save_cb(void *data, Evas_Object *o, const char *emission, const ch
   edje_object_signal_callback_add(sw->obj, "elicit,swatch,name,show", "", elicit_swatch_name_show_cb, sw);
   
   evas_object_color_set(sw->rect, sw->r, sw->g, sw->b, 255);
+  evas_object_pass_events_set(sw->rect, TRUE);
   evas_object_show(sw->rect);
   edje_object_part_swallow(sw->obj, "swatch", sw->rect);
   esmart_container_element_append(el->swatches.cont, sw->obj);
@@ -234,6 +238,9 @@ elicit_swatch_del_cb(void *data, Evas_Object *o, const char *emission, const cha
   esmart_container_element_remove(el->swatches.cont, sw->obj);
   elicit_swatch_free(sw);
 
+  el->swatches.length = esmart_container_elements_length_get(el->swatches.cont);
+
+  /* FIXME if end of list is above bottom of cont, scroll to end */
   elicit_swatches_save(el);
 }
 
@@ -257,7 +264,7 @@ elicit_swatch_scroll_cb(void *data, Evas_Object *o, const char *emission, const 
   
   if (!strcmp(emission, "drag"))
   {
-    double l = esmart_container_elements_length_get(el->swatches.cont);
+    double l = el->swatches.length;
     Evas_Coord h;
     double vx, vy;
 
@@ -267,12 +274,20 @@ elicit_swatch_scroll_cb(void *data, Evas_Object *o, const char *emission, const 
       edje_object_part_drag_value_get(el->gui, source, &vx, &vy);
       esmart_container_scroll_offset_set(el->swatches.cont, -vy*(l-h+10));
     }
+    else
+    {
+      edje_object_part_drag_value_set(el->gui, source, .001, .001);
+    }
   }
   else if (!fnmatch("elicit,swatch,scroll,up*", emission, 0))
   {
-    if (!strcmp(emission, "elicit,swatch,scroll,up,start"))
+    if (!strcmp(emission, "elicit,swatch,scroll,up"))
     {
-      el->swatches.length = esmart_container_elements_length_get(el->swatches.cont);
+      esmart_container_scroll(el->swatches.cont, 5);
+      _elicit_swatches_update_scroll_bar(el);
+    }
+    else if (!strcmp(emission, "elicit,swatch,scroll,up,start"))
+    {
       el->swatches.scrolling = 1;
       esmart_container_scroll_start(el->swatches.cont, 1);
     }
@@ -284,9 +299,13 @@ elicit_swatch_scroll_cb(void *data, Evas_Object *o, const char *emission, const 
   }
   else
   {
-    if (!strcmp(emission, "elicit,swatch,scroll,down,start"))
+    if (!strcmp(emission, "elicit,swatch,scroll,down"))
     {
-      el->swatches.length = esmart_container_elements_length_get(el->swatches.cont);
+      esmart_container_scroll(el->swatches.cont, -5);
+      _elicit_swatches_update_scroll_bar(el);
+    }
+    else if (!strcmp(emission, "elicit,swatch,scroll,down,start"))
+    {
       el->swatches.scrolling = 1;
       esmart_container_scroll_start(el->swatches.cont, -1);
     }

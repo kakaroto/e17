@@ -187,16 +187,10 @@ elicit_ui_theme_set(Elicit *el, char *theme, char *group)
   edje_object_signal_callback_add(el->gui, "elicit,shot,save", "*", elicit_shot_save_cb, el);
 
   edje_object_signal_callback_add(el->gui, "drag", "swatch.scroll.bar", elicit_swatch_scroll_cb, el);
-  edje_object_signal_callback_add(el->gui, "elicit,swatch,scroll,up,start", "*", elicit_swatch_scroll_cb, el);
-  edje_object_signal_callback_add(el->gui, "elicit,swatch,scroll,up,stop", "*", elicit_swatch_scroll_cb, el);
-  edje_object_signal_callback_add(el->gui, "elicit,swatch,scroll,down,start", "*", elicit_swatch_scroll_cb, el);
-  edje_object_signal_callback_add(el->gui, "elicit,swatch,scroll,down,stop", "*", elicit_swatch_scroll_cb, el);
+  edje_object_signal_callback_add(el->gui, "elicit,swatch,scroll,*", "*", elicit_swatch_scroll_cb, el);
 
   edje_object_signal_callback_add(el->gui, "drag", "shot.scroll.bar", elicit_shot_scroll_cb, el);
-  edje_object_signal_callback_add(el->gui, "elicit,shot,scroll,up,start", "*", elicit_shot_scroll_cb, el);
-  edje_object_signal_callback_add(el->gui, "elicit,shot,scroll,up,stop", "*", elicit_shot_scroll_cb, el);
-  edje_object_signal_callback_add(el->gui, "elicit,shot,scroll,down,start", "*", elicit_shot_scroll_cb, el);
-  edje_object_signal_callback_add(el->gui, "elicit,shot,scroll,down,stop", "*", elicit_shot_scroll_cb, el);
+  edje_object_signal_callback_add(el->gui, "elicit,shot,scroll,*", "*", elicit_shot_scroll_cb, el);
 
   evas_object_hide(el->gui);
   evas_object_show(el->gui);

@@ -151,14 +151,15 @@ elicit_shots_load(Elicit *el)
     evas_object_image_size_set(sh->shot, iw, ih);
     evas_object_image_data_copy_set(sh->shot, data);
     free(data);
+    evas_object_pass_events_set(sh->shot, TRUE);
     evas_object_show(sh->shot);
     edje_object_part_swallow(sh->obj, "shot", sh->shot);
     esmart_container_element_append(el->shots.cont, sh->obj);
   }
 
+  el->shots.length = esmart_container_elements_length_get(el->shots.cont);
   
   e_db_close(db);
-  e_db_flush();
 }
 
 
@@ -208,6 +209,7 @@ elicit_shot_save_cb(void *data, Evas_Object *o, const char *emission, const char
   evas_object_image_size_get(el->shot, &iw, &ih);
   evas_object_image_size_set(sh->shot, iw, ih);
   evas_object_image_data_copy_set(sh->shot, evas_object_image_data_get(el->shot, TRUE));
+  evas_object_pass_events_set(sh->shot, TRUE);
   evas_object_show(sh->shot);
   edje_object_part_swallow(sh->obj, "shot", sh->shot);
   esmart_container_element_append(el->shots.cont, sh->obj);
@@ -258,7 +260,8 @@ elicit_shot_del_cb(void *data, Evas_Object *o, const char *emission, const char 
 
   esmart_container_element_remove(el->shots.cont, sh->obj);
   elicit_shot_free(sh);
-
+  
+  el->shots.length = esmart_container_elements_length_get(el->shots.cont);
   elicit_shots_save(el);
 }
 
@@ -281,7 +284,7 @@ elicit_shot_scroll_cb(void *data, Evas_Object *o, const char *emission, const ch
 
   if (!strcmp(emission, "drag"))
   {
-    double l = esmart_container_elements_length_get(el->shots.cont);
+    double l = el->shots.length;
     Evas_Coord h;
     double vx, vy;
 
@@ -294,9 +297,13 @@ elicit_shot_scroll_cb(void *data, Evas_Object *o, const char *emission, const ch
   }
   else if (!fnmatch("elicit,shot,scroll,up*", emission, 0))
   {
-    if (!strcmp(emission, "elicit,shot,scroll,up,start"))
+    if (!strcmp(emission, "elicit,shot,scroll,up"))
     {
-      el->shots.length = esmart_container_elements_length_get(el->shots.cont);
+      esmart_container_scroll(el->shots.cont, 5);
+      _elicit_shots_update_scroll_bar(el);
+    }
+    else if (!strcmp(emission, "elicit,shot,scroll,up,start"))
+    {
       el->shots.scrolling = 1;
       esmart_container_scroll_start(el->shots.cont, 1);
     }
@@ -307,9 +314,13 @@ elicit_shot_scroll_cb(void *data, Evas_Object *o, const char *emission, const ch
   }
   else
   {
-    if (!strcmp(emission, "elicit,shot,scroll,down,start"))
+    if (!strcmp(emission, "elicit,shot,scroll,down"))
     {
-      el->shots.length = esmart_container_elements_length_get(el->shots.cont);
+      esmart_container_scroll(el->shots.cont, -5);
+      _elicit_shots_update_scroll_bar(el);
+    }
+    else if (!strcmp(emission, "elicit,shot,scroll,down,start"))
+    {
       el->shots.scrolling = 1;
       esmart_container_scroll_start(el->shots.cont, -1);
     }
