@@ -8,4 +8,4 @@ MAINTAINERCLEANFILES = Makefile.in
 EXTRA_DIST = README cam_bookmarks cam
 
 camdir = $(bindir)
-cam_SCRIPTS = cam
+cam_SCRIPTS = cam gen_cam_menu.sh
