@@ -25,4 +25,5 @@ geist_SOURCES = \
     geist_gtk.c geist_gtk.h \
     imlib.c
 
-geist_LDADD = @GTK_LIBS@ -lxml -lz -lImlib2
+dnl geist_LDADD = @GTK_LIBS@ -lxml -lz -lImlib2
+geist_LDADD = @GTK_LIBS@ -lImlib2
