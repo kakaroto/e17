@@ -115,7 +115,7 @@ $dirfiles[0] = "@files" or die "$0: no files specified\n";
 
 # Guess module name.
 
-$module = $dir[0]; $module =~ s#/\S+\/\S+\//##;
+$module = $dir[0]; $module =~ s#/.*##;
 
 
 # Figure out who is doing the update.
