@@ -277,7 +277,7 @@ int ewl_ev_mouse_down(void *data, int type, void *_ev)
 	 */
 	temp = widget;
 	while (temp) {
-		if (!(ewl_object_has_state(EWL_OBJECT(widget),
+		if (!(ewl_object_has_state(EWL_OBJECT(temp),
 					EWL_FLAG_STATE_DISABLED))) {
 			ewl_object_add_state(EWL_OBJECT(temp),
 					EWL_FLAG_STATE_PRESSED);
