@@ -77,8 +77,9 @@ GtkTreeModel *load_menus_from_disk (void)
   menufile = fopen (buf, "r");
   if (!menufile)
   {
-    g_critical ("hmm. looks like you have some \"issues\" as you don't have\n"
+    g_critical ("hmm. looks like you have some \"issues\" as you don't have "
                 "a %s file.\n", buf);
+    exit(1);
   }
 #ifdef DEBUG
   g_print ("Loading menu: %s\n", buf);

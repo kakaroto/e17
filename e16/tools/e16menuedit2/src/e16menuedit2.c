@@ -66,7 +66,7 @@ int main (int argc, char *argv[])
   compile_regex ();
 
   /* set log level for app exit */
-  g_log_set_always_fatal (G_LOG_LEVEL_ERROR | G_LOG_LEVEL_CRITICAL);
+  g_log_set_always_fatal (G_LOG_LEVEL_ERROR);
 
   parse_options (argc, argv);
 
