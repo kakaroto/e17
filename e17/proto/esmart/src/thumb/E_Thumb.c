@@ -62,12 +62,12 @@ e_thumb_new (Evas * evas, const char *file)
 	  e->file.name = strdup (uri);
 	  snprintf (uri, PATH_MAX, "file://%s", file);
 	  e->uri = strdup (uri);
-	  _e_thumb_hash_name (result); 
-	  if(!e->image) 
-	  {
-	      evas_object_del(result);
+	  _e_thumb_hash_name (result);
+	  if (!e->image)
+	    {
+	      evas_object_del (result);
 	      result = NULL;
-	  }
+	    }
 	}
     }
   return (result);
@@ -88,8 +88,9 @@ e_thumb_file_get (Evas_Object * o)
       if ((e = (E_Thumb *) evas_object_smart_data_get (o)))
 	return (e->file.name);
     }
-    return(NULL);
+  return (NULL);
 }
+
 void
 e_thumb_geometry_get (Evas_Object * o, int *w, int *h)
 {
@@ -97,16 +98,18 @@ e_thumb_geometry_get (Evas_Object * o, int *w, int *h)
     {
       E_Thumb *e = NULL;
       if ((e = (E_Thumb *) evas_object_smart_data_get (o)))
-      {
-	if (w) *w = e->file.w;
-	if (h) *h = e->file.h;
-      }
+	{
+	  if (w)
+	    *w = e->file.w;
+	  if (h)
+	    *h = e->file.h;
+	}
     }
 }
-Evas_Object*
-e_thumb_evas_object_get(Evas_Object *o)
+Evas_Object *
+e_thumb_evas_object_get (Evas_Object * o)
 {
-    Evas_Object *result = NULL;
+  Evas_Object *result = NULL;
   if (o)
     {
       E_Thumb *e = NULL;
@@ -118,21 +121,23 @@ e_thumb_evas_object_get(Evas_Object *o)
 	  if (tmp)
 	    {
 	      imlib_context_set_image (tmp);
-		
-		result = evas_object_image_add(evas_object_evas_get(o));
-		evas_object_image_alpha_set(result, 1);
-		e->file.w = imlib_image_get_width();
-		e->file.h = imlib_image_get_height();
-		evas_object_image_size_set(result, e->file.w, e->file.h);
 
-		evas_object_image_data_copy_set(result,
-				     imlib_image_get_data_for_reading_only());
-	        imlib_free_image_and_decache ();
+	      result = evas_object_image_add (evas_object_evas_get (o));
+	      evas_object_image_alpha_set (result, 1);
+	      e->file.w = imlib_image_get_width ();
+	      e->file.h = imlib_image_get_height ();
+	      evas_object_image_size_set (result, e->file.w, e->file.h);
+
+	      evas_object_image_data_copy_set (result,
+					       imlib_image_get_data_for_reading_only
+					       ());
+	      imlib_free_image_and_decache ();
 	    }
 	}
     }
-    return(result);
+  return (result);
 }
+
 /*==========================================================================
  * Smart Object Functions
  *========================================================================*/
@@ -280,7 +285,7 @@ _e_thumb_move (Evas_Object * o, double x, double y)
 	{
 	  e->x = x;
 	  e->y = y;
-	  evas_object_move(e->image, x, y);
+	  _e_thumb_resize (o, e->w, e->h);
 	}
     }
 }
@@ -294,15 +299,23 @@ _e_thumb_move (Evas_Object * o, double x, double y)
 static void
 _e_thumb_resize (Evas_Object * o, double w, double h)
 {
-  if (o)
+  if (o && (w > 1) && (h > 1))
     {
       E_Thumb *e = NULL;
       if ((e = (E_Thumb *) evas_object_smart_data_get (o)))
 	{
+	  double ww = w, hh = h;
 	  e->w = w;
 	  e->h = h;
-	  evas_object_resize(e->image, w, h);
-	  evas_object_image_fill_set(e->image, 0.0, 0.0, w, h);
+	  if (e->thumb.w > e->thumb.h)
+	    hh *= (double) e->thumb.h / (double) e->thumb.w;
+	  else
+	    ww *= (double) e->thumb.w / (double) e->thumb.h;
+
+	  evas_object_resize (e->image, ww, hh);
+	  evas_object_image_fill_set (e->image, 0.0, 0.0, ww, hh);
+	  evas_object_move (e->image, e->x + ((w - ww) / 2),
+			    e->y + ((h - hh) / 2));
 	}
     }
 }
@@ -319,7 +332,7 @@ _e_thumb_show (Evas_Object * o)
       E_Thumb *e = NULL;
       if ((e = (E_Thumb *) evas_object_smart_data_get (o)))
 	{
-	    evas_object_show(e->image);
+	  evas_object_show (e->image);
 	}
     }
 }
@@ -375,7 +388,7 @@ _e_thumb_clip_set (Evas_Object * o, Evas_Object * clip)
       E_Thumb *e = NULL;
       if ((e = (E_Thumb *) evas_object_smart_data_get (o)))
 	{
-	    evas_object_clip_set(e->image, clip);
+	  evas_object_clip_set (e->image, clip);
 	}
     }
 }
@@ -392,7 +405,7 @@ _e_thumb_clip_unset (Evas_Object * o)
       E_Thumb *e = NULL;
       if ((e = (E_Thumb *) evas_object_smart_data_get (o)))
 	{
-	    evas_object_clip_unset(e->image);
+	  evas_object_clip_unset (e->image);
 	}
     }
 }
@@ -412,7 +425,7 @@ _e_thumb_hash_uri (const char *uri)
   /* use normal as the fallback */
 
   if (!uri)
-    return(NULL);
+    return (NULL);
 
   MD5Init (&ctx);
   MD5Update (&ctx, uri, strlen (uri));
@@ -459,7 +472,12 @@ _e_thumb_hash_name (Evas_Object * o)
 		      evas_object_image_file_set (e->image, e->thumb.name,
 						  NULL);
 		      if (!evas_object_image_load_error_get (e->image))
-			ok = 1;
+			{
+			  ok = 1;
+			  evas_object_image_size_get (e->image,
+						      &e->thumb.w,
+						      &e->thumb.h);
+			}
 		      else
 			{
 			  evas_object_del (e->image);
@@ -470,7 +488,7 @@ _e_thumb_hash_name (Evas_Object * o)
 	    }
 	  if (!ok)
 	    {
-		int ret = 0;
+	      int ret = 0;
 	      e->thumb.w = e->thumb.h = E_THUMBNAIL_SIZE;
 	      _e_thumb_generate (o);
 	      e->image = evas_object_image_add (evas_object_evas_get (o));
@@ -480,7 +498,7 @@ _e_thumb_hash_name (Evas_Object * o)
 		  evas_object_del (e->image);
 		  e->image = NULL;
 		}
-		
+
 	    }
 	}
     }
@@ -501,7 +519,7 @@ _e_thumb_generate (Evas_Object * o)
 	  if (tmp)
 	    {
 	      imlib_context_set_image (tmp);
-	      e->format = strdup(imlib_image_format ());
+	      e->format = strdup (imlib_image_format ());
 	      e->file.w = imlib_image_get_width ();
 	      e->file.h = imlib_image_get_height ();
 
@@ -533,17 +551,17 @@ _e_thumb_generate (Evas_Object * o)
 		  imlib_free_image_and_decache ();
 		  imlib_context_set_image (src);
 		  /*
-		  imlib_context_set_anti_alias (1);
-		  */
+		     imlib_context_set_anti_alias (1);
+		   */
 		  imlib_image_set_has_alpha (1);
 		  imlib_image_set_format ("argb");
-		  if (_e_thumb_write (o, imlib_image_get_data()) == 0)
+		  if (_e_thumb_write (o, imlib_image_get_data ()) == 0)
 		    fprintf (stderr, "Cached %s successfully\n",
 			     e->file.name);
 		  else
 		    fprintf (stderr, "Unable to cache %s\n", e->file.name);
 		}
-		imlib_free_image_and_decache ();
+	      imlib_free_image_and_decache ();
 	    }
 	  else
 	    {
@@ -763,7 +781,6 @@ _e_thumb_write (Evas_Object * o, DATA32 * ptr)
 /*
     ptr=evas_object_image_data_get(e->image,1);
 */
-      fprintf (stderr, "%d,%d\n", e->thumb.w, e->thumb.h);
       for (i = 0; i < e->thumb.h; i++)
 	{
 	  if (has_alpha)
@@ -796,7 +813,7 @@ _e_thumb_write (Evas_Object * o, DATA32 * ptr)
   else
     printf ("e_thumb: Unable to open \"%s\" for writing\n", tmpfile);
 
-  fflush(fp);
+  fflush (fp);
   if (fp)
     fclose (fp);
   if (row_data)
