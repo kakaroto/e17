@@ -134,7 +134,6 @@ __ewl_row_configure(Ewl_Widget * w, void *ev_data, void *user_data)
 	x = CURRENT_X(w);
 
 	ewd_list_goto_first(c->children);
-	ewd_list_goto_first(EWL_CONTAINER(row)->children);
 
 	/*
 	 * This should be the common case, a row bounded by a set of fields,
@@ -143,8 +142,13 @@ __ewl_row_configure(Ewl_Widget * w, void *ev_data, void *user_data)
 	if (row->header) {
 		int i = 0;
 		int width;
+		Ewl_Container *hdr;
+
+		hdr = EWL_CONTAINER(row->header);
+		ewd_list_goto_first(EWL_CONTAINER(hdr)->children);
+
 		while ((child = ewd_list_next(c->children))) {
-			align = ewd_list_next(EWL_CONTAINER(row)->children);
+			align = ewd_list_next(EWL_CONTAINER(hdr)->children);
 			if (align)
 				width = CURRENT_X(align) + CURRENT_W(align) - x;
 			else

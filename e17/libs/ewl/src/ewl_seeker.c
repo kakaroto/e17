@@ -456,6 +456,9 @@ __ewl_seeker_button_mouse_move(Ewl_Widget * w, void *ev_data, void *user_data)
 	if (s->dragstart < 1)
 		DRETURN(DLEVEL_STABLE);
 
+	if (s->step == s->range)
+		DRETURN(DLEVEL_STABLE);
+
 	ev = ev_data;
 
 	mx = ev->x;

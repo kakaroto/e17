@@ -182,6 +182,7 @@ void __ewl_scrollpane_configure(Ewl_Widget * w, void *ev_data, void *user_data)
 	int             vs_width = 0;
 	int             hs_height = 0;
 	int             content_w, content_h;
+	double          step;
 
 	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR("w", w);
@@ -219,24 +220,36 @@ void __ewl_scrollpane_configure(Ewl_Widget * w, void *ev_data, void *user_data)
 	 * minimum size.
 	 */
 	b_width = ewl_object_get_preferred_w(EWL_OBJECT(s->box));
-	if (b_width < 0)
-		b_width = 0;
 	b_height = ewl_object_get_preferred_h(EWL_OBJECT(s->box));
-	if (b_height < 0)
-		b_height = 0;
 
 	/*
 	 * Adjust the scrollbar internal stepping to match the contents.
 	 */
-	ewl_scrollbar_set_step(EWL_SCROLLBAR(s->hscrollbar),
-			(double)content_w / (double)b_width);
-	ewl_scrollbar_set_step(EWL_SCROLLBAR(s->vscrollbar),
-			(double)content_h / (double)b_height);
+	if (content_w < b_width) {
+		step = (double)content_w / (double)b_width;
+		b_width = (int)ewl_scrollbar_get_value(EWL_SCROLLBAR(
+					s->hscrollbar)) *
+			(double)(b_width - content_w);
+	}
+	else {
+		step = 1.0;
+		b_width = 0;
+	}
 
-	b_width = (int)(ewl_scrollbar_get_value(EWL_SCROLLBAR(s->hscrollbar)) *
-					      (double)(b_width - content_w));
-	b_height= (int)(ewl_scrollbar_get_value(EWL_SCROLLBAR(s->vscrollbar)) *
-					      (double)(b_height - content_h));
+	ewl_scrollbar_set_step(EWL_SCROLLBAR(s->hscrollbar), step);
+
+	if (content_h < b_height) {
+		step = (double)content_h / (double)b_height;
+		b_height= (int)(ewl_scrollbar_get_value(EWL_SCROLLBAR(
+						s->vscrollbar)) *
+				(double)(b_height - content_h));
+	}
+	else {
+		step = 1.0;
+		b_height = 0;
+	}
+
+	ewl_scrollbar_set_step(EWL_SCROLLBAR(s->vscrollbar), step);
 
 	/*
 	 * Now move the box into position. For the scrollpane to work we move
