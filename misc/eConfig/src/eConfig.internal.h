@@ -30,16 +30,26 @@
 #include <sys/resource.h>
 
 typedef struct _pathstruct {
-	char *path;
-	struct _pathstruct *next;
+    char *path;
+    struct _pathstruct *next;
 } PathStruct;
+
+typedef struct _econfdata {
+
+    char              *loc;
+    void              *data;
+    int                length;
+	int                refcount;
+    struct _econfdata *next;
+
+} eConfigData;
 
 typedef struct {
 
-	PathStruct *paths;
+    PathStruct   *paths;
+    eConfigData  *data;
 
 } eConfigType;
-
 
 extern eConfigType eConfig; 
 

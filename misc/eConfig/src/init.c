@@ -2,8 +2,12 @@
 #include "eConfig.h"
 
 void eConfigInit(void) {
-/* do some stuff to initialize eConfig if we have to */
+
+	/* This function just initializes a bunch of pointers and such. */
 
 	eConfig.paths = NULL;
+	eConfig.data = NULL;
+
+	return;
 
 }

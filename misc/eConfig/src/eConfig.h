@@ -26,8 +26,8 @@ void   eConfigInit(void);
 
 void  *eConfigGetData(char *loc, int *length);
 void  *eConfigRefreshData(char *loc, int *length);
-void   eConfigUnloadData(char *loc);
-int    eConfigStoreData(char *loc, void *data, int *length, char local);
+int    eConfigUnloadData(char *loc);
+int    eConfigStoreData(char *loc, void *data, int length, char local);
 
 int    eConfigExportData(char *loc,char local);
 
