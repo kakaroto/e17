@@ -1249,3 +1249,36 @@ Removed the int x, and int y properties for Epplet_create_window, as they
 were pretty pointless, and I hate it when windows decide where they should
 go ;)
 
+-------------------------------------------------------------------------------
+
+Fri Dec 03 23:47:45 GMT 1999
+(gilbertt)
+
+Okay. Lots has changed. It was pretty inconsistant to have loads of
+functions returning or requiring a "Window win" paramater, and mine dealing
+with "Epplet_window" parameters. I had to lose one, so I lost the one which
+caused no breakage. Mine :)
+
+I still use Epplet_window internally to encapsulate data on a per-window
+basis. However, all public functions deal with "Window win" again. Now
+things are consistant. The Epplet_window type is now private and hidden.
+
+To do this, I have implemented a little lookup function to relate
+Epplet_windows to Windows, which should be more than adequate for our needs.
+
+You can now declare a delete event handler for your whole epplet, although I
+may change to per-window delete event handlers if people request it.
+
+If you return 1 from the delete event handler, or don't supply one, or
+supply NULL, the window will be destroyed for you, if you return 0, the
+delete event will be ignored. Use this to do things like saying "hrm, those
+two settings cannot coexist" or "that file does not exist" etc.
+
+I'm nearly finished with the window functions now, and will next add
+convenience wrappers such as Epplet_create_window_config(...) to add ok,
+apply and save buttons and setup callbacks for you, and some other stuff
+too.
+
+I'd appreciate it if people would poke around and see what they think, I'm
+new at this Xlib stuf...
+

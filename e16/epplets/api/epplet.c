@@ -7,6 +7,19 @@
 #include <signal.h>
 #include <sys/wait.h>
 
+typedef struct epplet_window
+{
+   Window              win;
+   int                 w;
+   int                 h;
+   char                win_vert;
+   Pixmap              bg_pmap;
+   Pixmap              bg_mask;
+   Pixmap              bg_bg;
+}
+EppWindow;
+typedef EppWindow  *Epplet_window;
+
 static Display     *disp = NULL;
 
 static int          window_num = 0;	/* For window list */
@@ -15,7 +28,9 @@ static Epplet_window *windows = NULL;	/* List of windows to loop though */
 static Epplet_window context_win;	/* Current context win */
 static int          window_stack_pos = 0;	/* For context changes */
 static Epplet_window *window_stack;	/* For context changes */
-static Epplet_window mainwin;	        /* Always the main epplet window */
+static Epplet_window mainwin;	/* Always the main epplet window */
+
+static Atom         wmDeleteWindow;
 
 static ImlibData   *id = NULL;
 static Display     *dd = NULL;
@@ -45,6 +60,7 @@ static void        *enter_data = NULL;
 static void        *leave_data = NULL;
 static void        *focusin_data = NULL;
 static void        *focusout_data = NULL;
+static void        *delete_data = NULL;
 static void        *event_data = NULL;
 static void        *comms_data = NULL;
 static void        *child_data = NULL;
@@ -68,6 +84,7 @@ static void         (*enter_func) (void *data, Window win) = NULL;
 static void         (*leave_func) (void *data, Window win) = NULL;
 static void         (*focusin_func) (void *data, Window win) = NULL;
 static void         (*focusout_func) (void *data, Window win) = NULL;
+static int          (*delete_func) (void *data, Window win) = NULL;
 static void         (*event_func) (void *data, XEvent * ev) = NULL;
 static void         (*comms_func) (void *data, char *s) = NULL;
 static void         (*child_func) (void *data, int pid, int exit_code) = NULL;
@@ -77,6 +94,7 @@ static void         (*child_func) (void *data, int pid, int exit_code) = NULL;
 static void         Epplet_register_window(Epplet_window win);
 static void         Epplet_unregister_window(Epplet_window win);
 static void         Epplet_window_destroy_children(Epplet_window win);
+static Epplet_window Epplet_window_get_from_Window(Window win);
 
 #define MWM_HINTS_DECORATIONS         (1L << 1)
 typedef struct _mwmhints
@@ -244,10 +262,11 @@ Epplet_Init(char *name,
       ExposureMask | FocusChangeMask | PropertyChangeMask |
       VisibilityChangeMask;
    mainwin->win = XCreateWindow(disp, DefaultRootWindow(disp), 0, 0, w, h, 0,
-		       id->x.depth, InputOutput, Imlib_get_visual(id),
-		       CWOverrideRedirect | CWSaveUnder | CWBackingStore |
-		       CWColormap | CWBackPixel | CWBorderPixel |
-		       CWEventMask, &attr);
+				id->x.depth, InputOutput,
+				Imlib_get_visual(id),
+				CWOverrideRedirect | CWSaveUnder |
+				CWBackingStore | CWColormap | CWBackPixel |
+				CWBorderPixel | CWEventMask, &attr);
 
    /* set hints to be borderless */
    mwm.flags = MWM_HINTS_DECORATIONS;
@@ -342,9 +361,11 @@ Epplet_Init(char *name,
 
    Epplet_register_window(mainwin);
 
-   Epplet_window_push_context(mainwin);
+   Epplet_window_push_context(mainwin->win);
 
-   Epplet_background_properties(mainwin->win_vert, mainwin);
+   Epplet_background_properties(mainwin->win_vert, mainwin->win);
+
+   wmDeleteWindow = XInternAtom(disp, "WM_DELETE_WINDOW", False);
 
    sa.sa_handler = Epplet_handle_child;
    sa.sa_flags = SA_RESTART;
@@ -352,7 +373,7 @@ Epplet_Init(char *name,
    sigaction(SIGCHLD, &sa, (struct sigaction *)0);
 }
 
-Epplet_window
+Window
 Epplet_create_window(int w, int h, char *title, char vertical)
 {
    XSetWindowAttributes attr;
@@ -379,8 +400,8 @@ Epplet_create_window(int w, int h, char *title, char vertical)
 
    ret->win = XCreateWindow(disp, DefaultRootWindow(disp), 0, 0, w, h, 0,
 			    id->x.depth, InputOutput, Imlib_get_visual(id),
-			    CWOverrideRedirect | CWSaveUnder | CWBackingStore |
-			    CWColormap | CWBackPixel | CWBorderPixel |
+			    CWOverrideRedirect | CWSaveUnder | CWBackingStore
+			    | CWColormap | CWBackPixel | CWBorderPixel |
 			    CWEventMask, &attr);
 
    XSetTransientForHint(disp, ret->win, mainwin->win);
@@ -437,29 +458,31 @@ Epplet_create_window(int w, int h, char *title, char vertical)
 
    Epplet_register_window(ret);
 
-   Epplet_window_push_context(ret);
+   Epplet_window_push_context(ret->win);
 
-   Epplet_background_properties(ret->win_vert, ret);
+   Epplet_background_properties(ret->win_vert, ret->win);
 
-   return ret;
+   XSetWMProtocols(disp, ret->win, &wmDeleteWindow, 1);
+
+   return ret->win;
 }
 
 void
-Epplet_window_show(Epplet_window win)
+Epplet_window_show(Window win)
 {
    XEvent              ev;
 
-   XMapWindow(disp, win->win);
+   XMapWindow(disp, win);
    /* wait for the window to map */
    XMaskEvent(disp, StructureNotifyMask, &ev);
 }
 
 void
-Epplet_window_hide(Epplet_window win)
+Epplet_window_hide(Window win)
 {
    XEvent              ev;
 
-   XUnmapWindow(disp, win->win);
+   XUnmapWindow(disp, win);
    /* wait for the window to unmap */
    XMaskEvent(disp, StructureNotifyMask, &ev);
 }
@@ -475,9 +498,14 @@ Epplet_window_destroy_children(Epplet_window win)
 }
 
 void
-Epplet_window_destroy(Epplet_window win)
+Epplet_window_destroy(Window newwin)
 {
    XEvent              ev;
+   Epplet_window       win;
+
+   win = Epplet_window_get_from_Window(newwin);
+   if (win == NULL)
+      return;
 
    XDestroyWindow(disp, win->win);
    /* wait for the window to be destroyed */
@@ -528,49 +556,27 @@ Epplet_unregister_window(Epplet_window win)
      }
 }
 
-#if 0
 void
-Epplet_window_push_context(Epplet_window newwin)
+Epplet_window_push_context(Window newwin)
 {
-   if (window_stack_pos >= 10)
-     {
-	exit(1);
-     }
-   window_stack[window_stack_pos] = newwin;
-   window_stack_pos++;
-   context_win = newwin;
-}
+   Epplet_window       win;
 
-Epplet_window
-Epplet_window_pop_context(void)
-{
-   window_stack_pos--;
-   if (window_stack_pos < 1)
-     {
-	return NULL;
-     }
-   context_win = window_stack[window_stack_pos - 1];
-   return window_stack[window_stack_pos];
-}
-#endif
+   win = Epplet_window_get_from_Window(newwin);
+   if (win == NULL)
+      return;
 
-/***************************/
-
-void
-Epplet_window_push_context(Epplet_window newwin)
-{
    if (
        ((window_stack
 	 =
 	 realloc(window_stack,
 		 sizeof(Epplet_window) * (window_stack_pos + 1))) == NULL))
       exit(1);
-   window_stack[window_stack_pos] = newwin;
+   window_stack[window_stack_pos] = win;
    window_stack_pos++;
-   context_win = newwin;
+   context_win = win;
 }
 
-Epplet_window
+Window
 Epplet_window_pop_context(void)
 {
    Epplet_window       ret;
@@ -585,9 +591,9 @@ Epplet_window_pop_context(void)
       exit(1);
    /* Window stack pos == 0 corresponds to the main epplet window */
    if (window_stack_pos < 1)
-      return NULL;
+      return 0;
    context_win = window_stack[window_stack_pos - 1];
-   return ret;
+   return ret->win;
 }
 
 /* Refresh window backgrounds on theme change */
@@ -599,32 +605,40 @@ Epplet_refresh_backgrounds(void)
 
    for (i = 0; i < window_num; i++)
      {
-	Epplet_window_push_context(windows[i]);
-	Epplet_background_properties(windows[i]->win_vert, windows[i]);
+	Epplet_window_push_context(windows[i]->win);
+	Epplet_background_properties(windows[i]->win_vert, windows[i]->win);
 	Epplet_window_pop_context();
      }
 }
-#if 0
-static void
-Epplet_draw_windows(void)
+
+static              Epplet_window
+Epplet_window_get_from_Window(Window win)
 {
+   /* Loop through windows */
    int                 i;
 
-   for (i = 1; i < window_num; i++)
+   for (i = 0; i < window_num; i++)
      {
-	Epplet_draw_window(windows[i]);
+	if (windows[i]->win == win)
+	   return windows[i];
      }
+   return NULL;
 }
 
 static void
-Epplet_draw_window(Epplet_window win)
+Epplet_handle_delete_event(Window xwin)
 {
-   XSetWindowBackgroundPixmap(disp, win->win, win->bg_pmap);
-   XShapeCombineMask(disp, win->win, ShapeBounding, 0, 0, win->bg_mask,
-		     ShapeSet);
-   XClearWindow(disp, win->win);
+   Epplet_window       win;
+
+   win = Epplet_window_get_from_Window(xwin);
+   if (win)
+     {
+	if ((delete_func) && ((*delete_func) (delete_data, win->win)))
+	   Epplet_window_destroy(win->win);
+	else
+	   Epplet_window_destroy(win->win);
+     }
 }
-#endif
 
 void
 Epplet_cleanup(void)
@@ -770,8 +784,8 @@ Epplet_imageclass_paste(char *iclass, char *state, Window ww, int x, int y,
 }
 
 void
-Epplet_imageclass_get_pixmaps(char *iclass, char *state, Pixmap * p, Pixmap * m,
-			      int w, int h)
+Epplet_imageclass_get_pixmaps(char *iclass, char *state, Pixmap * p,
+			      Pixmap * m, int w, int h)
 {
    Pixmap              pp, mm;
    char                s[1024], *msg;
@@ -941,6 +955,14 @@ Epplet_register_focus_out_handler(void (*func)
 }
 
 void
+Epplet_register_delete_event_handler(int (*func)
+				     (void *data, Window win), void *data)
+{
+   delete_data = data;
+   delete_func = func;
+}
+
+void
 Epplet_register_event_handler(void (*func)
 			      (void *data, XEvent * ev), void *data)
 {
@@ -966,15 +988,6 @@ Epplet_handle_event(XEvent * ev)
 {
    Epplet_gadget       g = NULL;
 
-#if 0
-   Atom                wmDeleteWindow;
-
-   wmDeleteWindow = XInternAtom(disp, "WM_DELETE_WINDOW", False);
-   if (ev->xclient.format == 32
-       && ev->xclient.data.l[0] == (signed) wmDeleteWindow)
-      printf("Got a delete event\n");
-#endif
-
    if (event_func)
       (*event_func) (ev, event_data);
    switch (ev->type)
@@ -983,12 +996,18 @@ Epplet_handle_event(XEvent * ev)
 	{
 	   char               *msg;
 
-	   msg = ECommsGet(ev);
-	   if (msg)
+	   if (ev->xclient.format == 32
+	       && ev->xclient.data.l[0] == (signed) wmDeleteWindow)
+	      Epplet_handle_delete_event(ev->xclient.window);
+	   else
 	     {
-		if (comms_func)
-		   (*comms_func) (comms_data, msg);
-		free(msg);
+		msg = ECommsGet(ev);
+		if (msg)
+		  {
+		     if (comms_func)
+			(*comms_func) (comms_data, msg);
+		     free(msg);
+		  }
 	     }
 	}
 	break;
@@ -1327,8 +1346,12 @@ Epplet_prune_events(XEvent * ev, int num)
      }
    /* any reason to remember the window properties? */
    for (i = 0; i < num; i++)
-	if (((ev[i].type == ConfigureNotify) && (ev->xconfigure.window == mainwin->win)) || ((ev[i].type == PropertyNotify) && (ev->xproperty.window == mainwin->win)))
-      Epplet_remember();
+      if (
+	  ((ev[i].type == ConfigureNotify)
+	   && (ev->xconfigure.window == mainwin->win))
+	  || ((ev[i].type == PropertyNotify)
+	      && (ev->xproperty.window == mainwin->win)))
+	 Epplet_remember();
 }
 
 void
@@ -2174,16 +2197,16 @@ Epplet_create_button(char *label, char *image, int x, int y,
      {
 	g->win = XCreateWindow(disp, parent, x, y, g->w, g->h, 0,
 			       id->x.depth, InputOutput, Imlib_get_visual(id),
-			       CWOverrideRedirect | CWSaveUnder | CWBackingStore
-			       | CWColormap | CWBackPixel | CWBorderPixel |
-			       CWEventMask, &attr);
+			       CWOverrideRedirect | CWSaveUnder |
+			       CWBackingStore | CWColormap | CWBackPixel |
+			       CWBorderPixel | CWEventMask, &attr);
 	g->pop = 1;
      }
    else
       g->win = XCreateWindow(disp, context_win->win, x, y, g->w, g->h, 0,
 			     id->x.depth, InputOutput, Imlib_get_visual(id),
-			     CWOverrideRedirect | CWSaveUnder | CWBackingStore |
-			     CWColormap | CWBackPixel | CWBorderPixel |
+			     CWOverrideRedirect | CWSaveUnder | CWBackingStore
+			     | CWColormap | CWBackPixel | CWBorderPixel |
 			     CWEventMask, &attr);
    XSaveContext(disp, g->win, xid_context, (XPointer) g);
    Epplet_add_gad((Epplet_gadget) g);
@@ -2473,8 +2496,8 @@ Epplet_gadget Epplet_create_drawingarea(int x, int y, int w, int h)
       ExposureMask;
    g->win_in = XCreateWindow(disp, g->win, 2, 2, w - 4, h - 4, 0,
 			     id->x.depth, InputOutput, Imlib_get_visual(id),
-			     CWOverrideRedirect | CWSaveUnder | CWBackingStore |
-			     CWColormap | CWBackPixel | CWBorderPixel |
+			     CWOverrideRedirect | CWSaveUnder | CWBackingStore
+			     | CWColormap | CWBackPixel | CWBorderPixel |
 			     CWEventMask, &attr);
    XSetWindowBackgroundPixmap(disp, g->win_in, ParentRelative);
    XMapWindow(disp, g->win_in);
@@ -2549,10 +2572,11 @@ Epplet_create_hslider(int x, int y, int len, int min, int max,
    attr.event_mask = ButtonPressMask | ButtonReleaseMask |
       PointerMotionMask | EnterWindowMask | LeaveWindowMask | ButtonMotionMask;
    g->win_knob = XCreateWindow(disp, context_win->win, x, y, 8, 8, 0,
-			       id->x.depth, InputOutput, Imlib_get_visual(id),
-			       CWOverrideRedirect | CWSaveUnder | CWBackingStore
-			       | CWColormap | CWBackPixel | CWBorderPixel |
-			       CWEventMask, &attr);
+			       id->x.depth, InputOutput,
+			       Imlib_get_visual(id),
+			       CWOverrideRedirect | CWSaveUnder |
+			       CWBackingStore | CWColormap | CWBackPixel |
+			       CWBorderPixel | CWEventMask, &attr);
    XSaveContext(disp, g->win, xid_context, (XPointer) g);
    XSaveContext(disp, g->win_knob, xid_context, (XPointer) g);
    Epplet_add_gad((Epplet_gadget) g);
@@ -2644,10 +2668,11 @@ Epplet_create_vslider(int x, int y, int len, int min, int max,
    attr.event_mask = ButtonPressMask | ButtonReleaseMask |
       PointerMotionMask | EnterWindowMask | LeaveWindowMask | ButtonMotionMask;
    g->win_knob = XCreateWindow(disp, context_win->win, x, y, 8, 8, 0,
-			       id->x.depth, InputOutput, Imlib_get_visual(id),
-			       CWOverrideRedirect | CWSaveUnder | CWBackingStore
-			       | CWColormap | CWBackPixel | CWBorderPixel |
-			       CWEventMask, &attr);
+			       id->x.depth, InputOutput,
+			       Imlib_get_visual(id),
+			       CWOverrideRedirect | CWSaveUnder |
+			       CWBackingStore | CWColormap | CWBackPixel |
+			       CWBorderPixel | CWEventMask, &attr);
    XSaveContext(disp, g->win, xid_context, (XPointer) g);
    XSaveContext(disp, g->win_knob, xid_context, (XPointer) g);
    Epplet_add_gad((Epplet_gadget) g);
@@ -2721,8 +2746,8 @@ Epplet_gadget Epplet_create_hbar(int x, int y, int w, int h, char dir, int *val)
 			  CWEventMask, &attr);
    g->win_in = XCreateWindow(disp, g->win, 2, 2, w - 4, h - 4, 0,
 			     id->x.depth, InputOutput, Imlib_get_visual(id),
-			     CWOverrideRedirect | CWSaveUnder | CWBackingStore |
-			     CWColormap | CWBackPixel | CWBorderPixel |
+			     CWOverrideRedirect | CWSaveUnder | CWBackingStore
+			     | CWColormap | CWBackPixel | CWBorderPixel |
 			     CWEventMask, &attr);
    XMapWindow(disp, g->win_in);
    Epplet_add_gad((Epplet_gadget) g);
@@ -2790,8 +2815,8 @@ Epplet_gadget Epplet_create_vbar(int x, int y, int w, int h, char dir, int *val)
 			  CWEventMask, &attr);
    g->win_in = XCreateWindow(disp, g->win, 2, 2, w - 4, h - 4, 0,
 			     id->x.depth, InputOutput, Imlib_get_visual(id),
-			     CWOverrideRedirect | CWSaveUnder | CWBackingStore |
-			     CWColormap | CWBackPixel | CWBorderPixel |
+			     CWOverrideRedirect | CWSaveUnder | CWBackingStore
+			     | CWColormap | CWBackPixel | CWBorderPixel |
 			     CWEventMask, &attr);
    XMapWindow(disp, g->win_in);
    Epplet_add_gad((Epplet_gadget) g);
@@ -3909,10 +3934,15 @@ Epplet_event(Epplet_gadget gadget, XEvent * ev)
 }
 
 void
-Epplet_background_properties(char vertical, Epplet_window win)
+Epplet_background_properties(char vertical, Window newwin)
 {
    GC                  gc = 0;
    XGCValues           gcv;
+   Epplet_window       win;
+
+   win = Epplet_window_get_from_Window(newwin);
+   if (win == NULL)
+      return;
 
    if (win->bg_pmap)
       XFreePixmap(disp, win->bg_pmap);
@@ -3926,7 +3956,7 @@ Epplet_background_properties(char vertical, Epplet_window win)
 
    if (vertical)
       Epplet_imageclass_get_pixmaps("EPPLET_BACKGROUND_VERTICAL", "normal",
-	      &win->bg_bg, &win->bg_mask, win->w, win->h);
+				    &win->bg_bg, &win->bg_mask, win->w, win->h);
    else
       Epplet_imageclass_get_pixmaps("EPPLET_BACKGROUND_HORIZONTAL", "normal",
 				    &win->bg_bg, &win->bg_mask, win->w, win->h);
@@ -4678,8 +4708,8 @@ Epplet_show_about(char *name)
 {
    char                s[1024];
 
-   Esnprintf(s, sizeof(s), EBIN "/dox " EROOT "/epplet_data/%s/%s.ABOUT", name,
-	     name);
+   Esnprintf(s, sizeof(s), EBIN "/dox " EROOT "/epplet_data/%s/%s.ABOUT",
+	     name, name);
    Epplet_spawn_command(s);
 }
 
@@ -4720,8 +4750,8 @@ Epplet_find_instance(char *name)
      }
 
    /* make sure this epplets config dir exists */
-   Esnprintf(s, sizeof(s), "%s/.enlightenment/epplet_config/%s", getenv("HOME"),
-	     name);
+   Esnprintf(s, sizeof(s), "%s/.enlightenment/epplet_config/%s",
+	     getenv("HOME"), name);
    conf_dir = strdup(s);
    if (stat(s, &st) < 0)
      {
@@ -4888,8 +4918,8 @@ Epplet_save_config(void)
 	char                err[255];
 
 	Esnprintf(err, sizeof(err),
-		  "Unable to write to config file %s -- %s.\n", epplet_cfg_file,
-		  strerror(errno));
+		  "Unable to write to config file %s -- %s.\n",
+		  epplet_cfg_file, strerror(errno));
 	Epplet_dialog_ok(err);
 	return;
      }

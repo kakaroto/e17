@@ -285,19 +285,22 @@ cb_dont_cloak (void *data)
 static void
 cb_in (void *data, Window w)
 {
-  if (cloaked)
+  if (w == Epplet_get_main_window ())
     {
-      Epplet_gadget_hide (da);
-      cloaked = 0;
-      Epplet_gadget_show (btn_close);
-      Epplet_gadget_show (btn_conf);
-      Epplet_gadget_show (btn_help);
-      Epplet_gadget_show (btn_save);
-      Epplet_gadget_show (btn_ctimer);
-      Epplet_gadget_show (btn_stimer);
+      if (cloaked)
+	{
+	  Epplet_gadget_hide (da);
+	  cloaked = 0;
+	  Epplet_gadget_show (btn_close);
+	  Epplet_gadget_show (btn_conf);
+	  Epplet_gadget_show (btn_help);
+	  Epplet_gadget_show (btn_save);
+	  Epplet_gadget_show (btn_ctimer);
+	  Epplet_gadget_show (btn_stimer);
+	}
+      Epplet_remove_timer ("CLOAK_TIMER");
+      Epplet_remove_timer ("DRAW_TIMER");
     }
-  Epplet_remove_timer ("CLOAK_TIMER");
-  Epplet_remove_timer ("DRAW_TIMER");
   return;
   data = NULL;
   w = (Window) 0;
@@ -306,20 +309,15 @@ cb_in (void *data, Window w)
 static void
 cb_out (void *data, Window w)
 {
-  Epplet_remove_timer ("CLOAK_TIMER");
-  if ((!cloaked) && (opt.do_cloak))
-    Epplet_timer (cloak_epplet, NULL, opt.cloak_delay, "CLOAK_TIMER");
+  if (w == Epplet_get_main_window ())
+    {
+      Epplet_remove_timer ("CLOAK_TIMER");
+      if ((!cloaked) && (opt.do_cloak))
+	Epplet_timer (cloak_epplet, NULL, opt.cloak_delay, "CLOAK_TIMER");
+    }
   return;
   data = NULL;
   w = (Window) 0;
-}
-
-static void
-btn_cb (void *data)
-{
-  Epplet_window_destroy ((Epplet_window) data);
-
-  return;
 }
 
 /* Amongst all the fluff, this is the bit that does the actual work. */
@@ -335,11 +333,11 @@ cb_shoot (void *data)
   static int temp = 20;
   static int temp2 = 50;
   static int temp3 = 80;
-  Epplet_window mywin, mywin2, mywin3;
-  Epplet_gadget sld, sld2, sld3, lbl, btn;
+  Window mywin, mywin2, mywin3;
+  Epplet_gadget sld, sld2, sld3, lbl;
   mywin =
     Epplet_create_window (400, 300,
-			  "See! I told you this stuff was easy ;)",1);
+			  "See! I told you this stuff was easy ;)", 1);
   Epplet_window_show (mywin);
   Epplet_gadget_show (lbl =
 		      Epplet_create_label (20, 10,
@@ -354,16 +352,12 @@ cb_shoot (void *data)
   Epplet_gadget_show (sld3 =
 		      Epplet_create_hslider (20, 150, 300, 0, 100, 1, 5,
 					     &temp3, NULL, NULL));
-  Epplet_gadget_show (btn =
-		      Epplet_create_button ("Close window", NULL, 290, 270,
-					    100, 20, NULL, 0, NULL, btn_cb,
-					    mywin));
 
   Epplet_window_pop_context ();
 
   mywin2 =
     Epplet_create_window (400, 300,
-			  "See! I told you this stuff was easy ;)",0);
+			  "See! I told you this stuff was easy ;)", 0);
   Epplet_window_show (mywin2);
   Epplet_gadget_show (lbl =
 		      Epplet_create_label (20, 10,
@@ -378,14 +372,10 @@ cb_shoot (void *data)
   Epplet_gadget_show (sld3 =
 		      Epplet_create_hslider (20, 150, 300, 0, 100, 1, 5,
 					     &temp3, NULL, NULL));
-  Epplet_gadget_show (btn =
-		      Epplet_create_button ("Close window", NULL, 290, 270,
-					    100, 20, NULL, 0, NULL, btn_cb,
-					    mywin2));
 
   mywin3 =
     Epplet_create_window (400, 300,
-			  "See! I told you this stuff was easy ;)",0);
+			  "See! I told you this stuff was easy ;)", 0);
   Epplet_window_show (mywin3);
   Epplet_gadget_show (lbl =
 		      Epplet_create_label (20, 10,
@@ -400,10 +390,6 @@ cb_shoot (void *data)
   Epplet_gadget_show (sld3 =
 		      Epplet_create_hslider (20, 150, 300, 0, 100, 1, 5,
 					     &temp3, NULL, NULL));
-  Epplet_gadget_show (btn =
-		      Epplet_create_button ("Close window", NULL, 290, 270,
-					    100, 20, NULL, 0, NULL, btn_cb,
-					    mywin3));
   Epplet_window_pop_context ();
   Epplet_window_pop_context ();
 
