@@ -130,15 +130,22 @@ EwinListLower(EWinList * ewl, EWin * ewin, int mode)
    if (mode)
      {
 	/* Take the layer into account */
-	for (; j > i; j--)
-	   if (ewin->layer <= ewl->list[j]->layer)
+	for (; j >= 0; j--)
+	   if (i != j && ewin->layer <= ewl->list[j]->layer)
 	      break;
+	if (j < i)
+	   j++;
      }
 
    n = j - i;
    if (n > 0)
      {
 	memmove(ewl->list + i, ewl->list + i + 1, n * sizeof(EWin *));
+	ewl->list[j] = ewin;
+     }
+   else if (n < 0)
+     {
+	memmove(ewl->list + j + 1, ewl->list + j, -n * sizeof(EWin *));
 	ewl->list[j] = ewin;
      }
 
@@ -160,15 +167,22 @@ EwinListRaise(EWinList * ewl, EWin * ewin, int mode)
    if (mode)
      {
 	/* Take the layer into account */
-	for (; j < i; j++)
-	   if (ewin->layer >= ewl->list[j]->layer)
+	for (; j < ewl->nwins; j++)
+	   if (j != i && ewin->layer >= ewl->list[j]->layer)
 	      break;
+	if (j > i)
+	   j--;
      }
 
-   n = i - j;
+   n = j - i;
    if (n > 0)
      {
-	memmove(ewl->list + j + 1, ewl->list + j, n * sizeof(EWin *));
+	memmove(ewl->list + i, ewl->list + i + 1, n * sizeof(EWin *));
+	ewl->list[j] = ewin;
+     }
+   else if (n < 0)
+     {
+	memmove(ewl->list + j + 1, ewl->list + j, -n * sizeof(EWin *));
 	ewl->list[j] = ewin;
      }
 
