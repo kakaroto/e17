@@ -564,6 +564,7 @@ AddToFamily(Window win)
 	MoveEwinToDesktopAt(ewin, ewin->desktop, x, y);
 	UngrabX();
 	IconifyEwin(ewin);
+	ewin->state = EWIN_STATE_ICONIC;
 	EDBUG_RETURN_;
      }
 
@@ -593,7 +594,6 @@ AddToFamily(Window win)
 	MoveEwin(ewin, x, y);
 	RaiseEwin(ewin);
 	ShowEwin(ewin);
-	FocusToEWin(ewin, FOCUS_EWIN_NEW);
 	GrabThePointer(root.win);
 	Mode.have_place_grab = 1;
 	Mode.place = 1;
@@ -646,7 +646,6 @@ AddToFamily(Window win)
    ICCCM_Configure(ewin);
 
    DetermineEwinArea(ewin);
-   FocusToEWin(ewin, FOCUS_EWIN_NEW);
    UngrabX();
 
    EDBUG_RETURN_;
@@ -1223,8 +1222,11 @@ EwinCreate(Window win)
    XSetWindowAttributes att;
 
    EDBUG(5, "EwinCreate");
+
    ewin = Emalloc(sizeof(EWin));
    memset(ewin, 0, sizeof(EWin));
+
+   ewin->state = (Mode.startup) ? EWIN_STATE_STARTUP : EWIN_STATE_NEW;
    ewin->x = -1;
    ewin->y = -1;
    ewin->w = -1;
@@ -1408,10 +1410,16 @@ EwinEventDestroy(EWin * ewin)
 void
 EwinEventMap(EWin * ewin)
 {
+   int                 old_state = ewin->state;
+
    ewin->state = EWIN_STATE_MAPPED;
 
    if (EventDebug(EDBUG_TYPE_EWINS))
       Eprintf("EwinEventMap %#lx state=%d\n", ewin->client.win, ewin->state);
+
+   /* If first time we may want to focus it (unless during startup) */
+   if (old_state == EWIN_STATE_NEW)
+      FocusToEWin(ewin, FOCUS_EWIN_NEW);
 }
 
 void

@@ -286,7 +286,7 @@ FocusToEWin(EWin * ewin, int why)
    if (ewin->menu)
       EDBUG_RETURN_;
 
-   if (do_follow && !Mode.startup)
+   if (do_follow)
       GotoDesktopByEwin(ewin);
 
    if (!EwinIsOnScreen(ewin))

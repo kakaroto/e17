@@ -877,10 +877,11 @@ typedef struct _winclient
 }
 WinClient;
 
-#define EWIN_STATE_UNKNOWN      0
-#define EWIN_STATE_WITHDRAWN    1
-#define EWIN_STATE_ICONIC       2
-#define EWIN_STATE_MAPPED       3
+#define EWIN_STATE_NEW          0	/* New */
+#define EWIN_STATE_STARTUP      1	/* New - during startup */
+#define EWIN_STATE_WITHDRAWN    2
+#define EWIN_STATE_ICONIC       3
+#define EWIN_STATE_MAPPED       4
 
 #define EWIN_TYPE_NORMAL        0x00
 #define EWIN_TYPE_DIALOG        0x01

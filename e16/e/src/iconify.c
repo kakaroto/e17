@@ -286,7 +286,7 @@ DeIconifyEwin(EWin * ewin)
       EDBUG_RETURN_;
    call_depth++;
 
-   if (ewin->state != EWIN_STATE_ICONIC && ewin->state != EWIN_STATE_UNKNOWN)
+   if (ewin->state != EWIN_STATE_ICONIC)
       EDBUG_RETURN_;
 
    RemoveMiniIcon(ewin);
