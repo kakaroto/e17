@@ -141,3 +141,9 @@ Sun Jan  2 01:43:31 PST 2000
 added glib 1.2.6 check
 also upped gtk+ requirement to 1.2.6 (lets keep people current)
 
+---------------------------------------------------------------------------
+
+Sun Jan  2 22:35:59 PST 2000
+(Mandrake)
+
+fixed threads
