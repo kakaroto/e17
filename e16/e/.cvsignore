@@ -1,3 +1,4 @@
+config.h.in
 .icons
 Makefile
 Makefile.in
