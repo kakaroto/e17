@@ -133,11 +133,11 @@ void term_redraw(void *data) {
      
       i2++;
       term->tcanvas->changed_rows[i] = 0;
-      /* display cursor, note: this is still sort of a hack */
-      evas_object_move(term->cursor.shape, 
-		       term->tcanvas->cur_col*term->font.width, 
-		       i*term->font.height);
    }   
+   /* display cursor, note: this is still sort of a hack */      
+   evas_object_move(term->cursor.shape, 
+		       term->tcanvas->cur_col*term->font.width, 
+		       (term->tcanvas->cur_row%term->tcanvas->rows)*term->font.height);
 }
 
 /* Move cursor up n rows*/
@@ -158,6 +158,7 @@ int term_cursor_move_down(Term *term, int n) {
 
 /* Move cursor left n cols */
 int term_cursor_move_left(Term *term, int n) {
+   DPRINT((stderr,"Moving cursor left by %d cols\n",n));
    term->tcanvas->cur_col -= n-1;
    if(term->tcanvas->cur_col < 0)
      term->tcanvas->cur_col = 0;
@@ -174,6 +175,7 @@ int term_cursor_move_right(Term *term, int n) {
 
 /* Move to a certain col */
 int term_cursor_move_col(Term *term, int n) {
+   DPRINT((stderr,"Moving cursor to col %d\n",n));   
    term->tcanvas->cur_col = n-1;
    if(term->tcanvas->cur_col < 0)
      term->tcanvas->cur_col = 0;
@@ -194,6 +196,7 @@ int term_cursor_move_row(Term *term, int n) {
 
 /* Move cursor to [x,y] */
 void term_cursor_goto(Term *term, int x, int y) {
+   DPRINT((stderr,"Moving cursor to [%d,%d]\n",x,y));   
    term->tcanvas->cur_col = x-1;
    term->tcanvas->cur_row = y-1;
    if(term->tcanvas->cur_col < 0)

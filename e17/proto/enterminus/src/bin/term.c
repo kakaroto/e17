@@ -96,7 +96,7 @@ int term_tcanvas_data(void *data) {
 	  case '\r': /* carriage return */
 	    term->tcanvas->cur_col = 0;	    
 	    break;
-	  default:	    
+	  default:
 	    term_tcanvas_glyph_push(term, c);
 	    break;
 	 }
