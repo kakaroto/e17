@@ -39,7 +39,10 @@ static const char cvs_ident[] = "$Id$";
 # define __attribute__(x)
 #endif
 
-#define DATA_DIR   EROOT "/epplet_data/E-Toolbox/"
+#define DATA_DIR      EROOT "/epplet_data/E-Toolbox/"
+#define ACT_EXIT      "<exit>"
+#define ACT_CONFIG    "<config>"
+#define ACT_SHADE     "<shade>"
 
 #if 0
 #  define D(x) do {printf("%10s | %7d:  [debug] ", __FILE__, __LINE__); printf x; fflush(stdout);} while (0)
@@ -594,13 +597,13 @@ button_cb(void *data)
 
   if (b && b->prog) {
     if (*(b->prog) == '<') {
-      if (!strcasecmp(b->prog, "<exit>")) {
+      if (BEGMATCH(b->prog, ACT_EXIT)) {
 	close_cb(NULL);
 	return;
-      } else if (!strcasecmp(b->prog, "<config>")) {
+      } else if (BEGMATCH(b->prog, ACT_CONFIG)) {
 	config_cb(NULL);
 	return;
-      } else if (!strcasecmp(b->prog, "<shade>")) {
+      } else if (BEGMATCH(b->prog, ACT_SHADE)) {
 	shade_cb(NULL);
 	return;
       }
