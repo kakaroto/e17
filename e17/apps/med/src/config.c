@@ -1,23 +1,16 @@
+#include "debug.h"
 #include "config.h"
+#include "file.h"
 #include "util.h"
 
 static char cfg_root[] = "";
-
-#define E_CONF(_key, _var, _args...) \
-{ \
-  if (!strcmp(type, _key)) \
-    { \
-      if ((_var)[0]) return (_var); \
-      sprintf((_var), ## _args); \
-      return (_var); \
-    } \
-}
 
 static char cfg_grabs_db[PATH_MAX] = "";
 static char cfg_settings_db[PATH_MAX] = "";
 static char cfg_actions_db[PATH_MAX] = "";
 static char cfg_borders_db[PATH_MAX] = "";
 static char cfg_apps_menu_db[PATH_MAX] = "";
+static char cfg_match_db[PATH_MAX] = "";
 static char cfg_menus_dir[PATH_MAX] = "";
 static char cfg_entries_dir[PATH_MAX] = "";
 static char cfg_selections_dir[PATH_MAX] = "";
@@ -32,6 +25,8 @@ static char cfg_fonts_dir[PATH_MAX] = "";
 char *
 e_config_get(char *type)
 {
+   D_ENTER;
+
    /* for now use the system defaults and not the user copied settings */
    /* so if i chnage stuff i dont have to rm my personaly settings and */
    /* have e re-install them. yes this is different from e16 - the     */
@@ -47,6 +42,17 @@ e_config_get(char *type)
    /*	  "%sbehavior/default/grabs.db", e_config_user_dir());         */
    /* notice it would use the user config location instead             */
    /* but for now i'm keeping it as is for development "ease"          */
+
+#define E_CONF(_key, _var, _args...) \
+{ \
+  if (!strcmp(type, _key)) \
+    { \
+      if ((_var)[0]) D_RETURN_(_var); \
+      sprintf((_var), ## _args); \
+      D_RETURN_(_var); \
+    } \
+}
+
    E_CONF("grabs", cfg_grabs_db, 
 	  "%s/behavior/grabs.db", e_config_user_dir());
    E_CONF("settings", cfg_settings_db,
@@ -55,18 +61,20 @@ e_config_get(char *type)
 	  "%s/behavior/actions.db", e_config_user_dir());
    E_CONF("apps_menu", cfg_apps_menu_db,
 	  "%s/behavior/apps_menu.db", e_config_user_dir());
+   E_CONF("match", cfg_match_db,
+	  "%s/behavior/match.db", e_config_user_dir());
    E_CONF("borders", cfg_borders_db,
-	  PACKAGE_DATA_DIR"/data/config/appearance/default/borders/");
+	  PACKAGE_DATA_DIR"/data/borders/");
    E_CONF("menus", cfg_menus_dir,
-	  PACKAGE_DATA_DIR"/data/config/appearance/default/menus/");
+	  PACKAGE_DATA_DIR"/data/menus/");
    E_CONF("entries", cfg_entries_dir,
-	  PACKAGE_DATA_DIR"/data/config/appearance/default/entries/");
+	  PACKAGE_DATA_DIR"/data/entries/");
    E_CONF("selections", cfg_selections_dir,
-	  PACKAGE_DATA_DIR"/data/config/appearance/default/selections/");
+	  PACKAGE_DATA_DIR"/data/selections/");
    E_CONF("scrollbars", cfg_scrollbars_dir,
-	  PACKAGE_DATA_DIR"/data/config/appearance/default/scrollbars/");
+	  PACKAGE_DATA_DIR"/data/scrollbars/");
    E_CONF("guides", cfg_guides_dir,
-	  PACKAGE_DATA_DIR"/data/config/appearance/default/guides/");
+	  PACKAGE_DATA_DIR"/data/guides/");
    E_CONF("images", cfg_images_dir,
 	  PACKAGE_DATA_DIR"/data/images/");
    E_CONF("cursors", cfg_cursors_dir,
@@ -75,13 +83,16 @@ e_config_get(char *type)
 	  PACKAGE_DATA_DIR"/data/backgrounds/");
    E_CONF("fonts", cfg_fonts_dir,
 	  PACKAGE_DATA_DIR"/data/fonts/");
-   return "";
+
+   D_RETURN_("");
 }
 
 void
 e_config_init(void)
 {
    char buf[PATH_MAX];
+
+   D_ENTER;
 
 #if 1 /* for now don't do this. i think a cp -r will be needed later anyway */
    if (!e_file_is_dir(e_config_user_dir())) e_file_mkdir(e_config_user_dir());
@@ -108,11 +119,15 @@ e_config_init(void)
 #if 0   
    ts();
 #endif
+
+   D_RETURN;
 }
 
 void
 e_config_set_user_dir(char *dir)
 {
+   D_ENTER;
+
    strcpy(cfg_root, dir);
    /* reset the cached dir paths */
    cfg_grabs_db[0]    = 0;
@@ -120,6 +135,7 @@ e_config_set_user_dir(char *dir)
    cfg_actions_db[0]  = 0;
    cfg_borders_db[0]  = 0;
    cfg_apps_menu_db[0]= 0;
+   cfg_match_db[0]= 0;
    cfg_menus_dir[0]   = 0;
    cfg_entries_dir[0] = 0;
    cfg_selections_dir[0] = 0;
@@ -132,20 +148,70 @@ e_config_set_user_dir(char *dir)
    cfg_fonts_dir[0]   = 0;
    /* init again - if the user hasnt got all the data */
    e_config_init();
+
+   D_RETURN;
 }
 
 char *
 e_config_user_dir(void)
 {
-   if (cfg_user_dir[0]) return cfg_user_dir;
-   if (cfg_root[0]) return cfg_root;
+   D_ENTER;
+
+   if (cfg_user_dir[0]) D_RETURN_(cfg_user_dir);
+   if (cfg_root[0]) D_RETURN_(cfg_root);
 #if 1 /* disabled for now - use system ones only */
-   sprintf(cfg_user_dir, "%s/.e/", e_file_home());
+   sprintf(cfg_user_dir, "%s/.e/", e_util_get_user_home());
 #else   
    sprintf(cfg_user_dir, PACKAGE_DATA_DIR"/data/config/");
 #endif   
-   return cfg_user_dir;
+
+   D_RETURN_(cfg_user_dir);
 }
+
+typedef struct _e_config_file_entry E_Config_File_Entry;
+
+struct _e_config_file_entry
+{
+   char   *name;
+   struct {
+      char   *path;
+      time_t  last_mod;
+   } user, system;
+   Evas_List hash[256];
+};
+
+void
+e_config_add_change_cb(char *file, void (*func) (void *_data), void *data)
+{
+}
+
+void
+e_config_del_change_cb(char *file, void (*func) (void *_data))
+{
+}
+
+int
+e_config_val_int_get(char *file, char *key, int def)
+{
+}
+
+float
+e_config_val_float_get(char *file, char *key, float def)
+{
+}
+
+char *
+e_config_val_str_get(char *file, char *key, char *def)
+{
+}
+
+char *
+e_config_val_key_get(char *file, char *key, char *def)
+{
+}
+
+
+
 
 void
 e_config_type_add_node(E_Config_Base_Type *base, char *prefix, 
@@ -157,6 +223,8 @@ e_config_type_add_node(E_Config_Base_Type *base, char *prefix,
 {
    E_Config_Node *cfg_node;
    
+   D_ENTER;
+
    cfg_node = NEW(E_Config_Node, 1);
    ZERO(cfg_node, E_Config_Node, 1);
    
@@ -171,6 +239,8 @@ e_config_type_add_node(E_Config_Base_Type *base, char *prefix,
 	e_strdup(cfg_node->def_str, def_str);
      }
    base->nodes = evas_list_append(base->nodes, cfg_node);
+
+   D_RETURN;
 }
 
 E_Config_Base_Type *
@@ -178,9 +248,12 @@ e_config_type_new(void)
 {
    E_Config_Base_Type *t;
    
+   D_ENTER;
+
    t = NEW(E_Config_Base_Type, 1);
    ZERO(t, E_Config_Base_Type, 1);
-   return t;
+
+   D_RETURN_(t);
 }
 
 void *
@@ -191,9 +264,14 @@ e_config_load(char *file, char *prefix, E_Config_Base_Type *type)
    Evas_List l;
    char *data;
    
-   if (!e_file_exists(file)) return NULL;
+   D_ENTER;
+
+   if (!e_file_exists(file)) D_RETURN_(NULL);
    db = e_db_open_read(file);
-   if (!db) return NULL;
+
+   if (!db)
+     D_RETURN_(NULL);
+
    data = NEW(char, type->size);
    ZERO(data, char , type->size);
    for (l = type->nodes; l; l = l->next)
@@ -261,8 +339,6 @@ e_config_load(char *file, char *prefix, E_Config_Base_Type *type)
 	     break;
 	   case E_CFG_TYPE_KEY:
 	       {
-		  char *val;
-		  
 		  sprintf(buf, "%s/%s", prefix, node->prefix);
 		  (*((char **)(&(data[node->offset])))) = strdup(buf);
 	       }
@@ -272,7 +348,8 @@ e_config_load(char *file, char *prefix, E_Config_Base_Type *type)
 	  }
      }
    e_db_close(db);
-   return data;
+
+   D_RETURN_(data);
 }
 
 
@@ -299,6 +376,8 @@ void ts(void)
    E_Config_Base_Type *cf_list;
    E_Config_Base_Type *cf_element;
    
+   D_ENTER;
+
    cf_element = e_config_type_new();
    E_CONFIG_NODE(cf_element, "name", E_CFG_TYPE_STR, NULL,   List_Element, name, 0, 0, "DEFAULT_NAME"); 
    E_CONFIG_NODE(cf_element, "size", E_CFG_TYPE_INT, NULL,   List_Element, size, 777, 0, NULL); 
@@ -316,7 +395,7 @@ void ts(void)
 	/* no data file? */
 	if (!cfg_data)
 	  {
-	     printf("no load!\n");
+	     D("no load!\n");
 	  }
 	/* got data */
 	else
@@ -327,15 +406,17 @@ void ts(void)
 	       {
 		  List_Element *cfg_element;
 		  
-		  printf("element\n");
+		  D("element\n");
 		  cfg_element = l->data;
-		  printf("... name %s\n", cfg_element->name);
-		  printf("... size %i\n", cfg_element->size);
-		  printf("... perc %3.3f\n", cfg_element->perc);
+		  D("... name %s\n", cfg_element->name);
+		  D("... size %i\n", cfg_element->size);
+		  D("... perc %3.3f\n", cfg_element->perc);
 	       }
 	  }
 	exit(0);
      }
+
+   D_RETURN;
 }
 
 #endif
