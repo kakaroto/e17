@@ -55,9 +55,9 @@ main(int argc, char **argv)
 	  {
 	     printf("Usage:\n"
 		    "List keys & types: %s database_file.db\n"
-		    "Add / Set value:   %s database_file.db add key [str|int|float] value\n"
-		    "Get value:         %s database_file.db add key [str|int|float]\n"
-		    "Delete value:      %s database_file.db del key\n"
+		    "Add / Set value:   %s database_file.db add [key] [str|int|float] value\n"
+		    "Get value:         %s database_file.db get [key] [str|int|float]\n"
+		    "Delete value:      %s database_file.db del [key]\n"
 		    ,
 		    argv[0], argv[0], argv[0], argv[0]);
 	     exit(1);
