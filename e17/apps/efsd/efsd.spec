@@ -14,7 +14,7 @@ Packager: Christian Kreibich <cK@whoop.org>
 Vendor: The Enlightenment Development Team <e-develop@enlightenment.org>
 Source: ftp://ftp.enlightenment.org/enlightenment/%{name}-%{ver}.tar.gz
 BuildRoot: /var/tmp/%{name}-root
-Requires: edb-devel >= 1.0.2
+Requires: edb >= 1.0.2
 Requires: fam
 
 %description
@@ -59,10 +59,9 @@ rm -rf $RPM_BUILD_ROOT
 %defattr(-,root,root)
 %{prefix}/bin/efsd
 %{prefix}/bin/efsdsh
-%{prefix}/bin/efsd-config
-%{prefix}/lib/libefsd.*
-%{prefix}/share/efsd/magic.db
-%{prefix}/share/efsd/pattern.db
+%{prefix}/lib/libefsd.so.*
+%{prefix}/share/efsd/filetypes.xml
+%{prefix}/share/efsd/filetypes.dtd
 
 %doc AUTHORS
 %doc COPYING
@@ -71,15 +70,17 @@ rm -rf $RPM_BUILD_ROOT
 
 %files devel
 %defattr(-,root,root)
-%{prefix}/bin/efsd
-%{prefix}/bin/efsdsh
 %{prefix}/bin/efsd-config
-%{prefix}/lib/libefsd.*
-%{prefix}/share/efsd/magic.db
-%{prefix}/share/efsd/pattern.db
+%{prefix}/lib/libefsd.so
+%{prefix}/lib/libefsd.*a
 %{prefix}/include/libefsd.h
 %{prefix}/include/efsd.h
+%{prefix}/share/efsd/gdb.scr
 
 %changelog
+* Wed Mar 27 2002 Alastair Tse <altse@cse.unsw.edu.au>
+- Replaced edb-devel dependency
+- magic.db files are out and filetypes.* files are in
+- Moved libefsd.* around
 * Wed May 16 2001 Christian Kreibich <cK@whoop.org>
 - Initial spec file.
