@@ -5,15 +5,12 @@ bin_PROGRAMS = efsd
 # A list of all the files in the current directory which can be regenerated
 MAINTAINERCLEANFILES = Makefile.in Makefile
 
-INCLUDES = @edb_cflags@
-
 DEBUGFLAGS = -DDEBUG -DDEBUG_NEST
 
+INCLUDES = @edb_cflags@ $(DEBUGFLAGS)
+
 if USE_THREADS_FILES
-CPPFLAGS = -D_REENTRANT $(DEBUGFLAGS)
 efsd_threadstuff = efsd_lock.c
-else
-CPPFLAGS = $(DEBUGFLAGS)
 endif
 
 

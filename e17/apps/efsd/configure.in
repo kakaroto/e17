@@ -41,10 +41,16 @@ dnl was given, build without thread support.
 use_threads="yes"
 AC_ARG_ENABLE(threads, [  --enable-threads        enable thread support [default=yes]], use_threads="no")
 
+dnl This needs revisiting
+PTHREAD_CFLAGS=
+PTHREAD_LIB=
 if test "$use_threads" = "yes"; then
    AC_CHECK_HEADER(pthread.h, pthread_header_ok="yes", pthread_header_ok="no")
    if test "$pthread_header_ok" = "yes"; then
-      AC_CHECK_LIB(pthread, main, , pthread_lib_ok="no")
+      AC_CHECK_LIB(pthread, main, PTHREAD_LIB="-lpthread", PTHREAD_LIB="error")
+      if test "$PTHREAD_LIB" = "error"; then
+         AC_CHECK_LIB(c_r, main, PTHREAD_LIB="-pthread", pthread_lib_ok="no")
+      fi
    fi
    if test "$pthread_header_ok" = "no" -o "$pthread_lib_ok" = "no"; then
       cat <<EOF;
@@ -58,11 +64,20 @@ EOF
    else
       AC_DEFINE(USE_THREADS, 1)
       AM_CONDITIONAL(USE_THREADS_FILES, true)
+      if test "$PTHREAD_LIB" = "-pthread"; then
+         PTHREAD_CFLAGS="-D_THREAD_SAFE -D_REENTRANT"
+      else
+         PTHREAD_CFLAGS="-D_REENTRANT"
+      fi
+      CFLAGS="$CFLAGS $PTHREAD_CFLAGS"
+      LIBS="$LIBS $PTHREAD_LIB"
    fi
 else
    AM_CONDITIONAL(USE_THREADS_FILES, false)
 fi
 
+AC_SUBST(PTHREAD_CFLAGS)
+AC_SUBST(PTHREAD_LIB)
 
 dnl Check for edb.
 AC_ARG_WITH(edb,
