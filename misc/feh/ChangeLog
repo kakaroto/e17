@@ -1,3 +1,8 @@
+Mon Aug 13 22:21:44 2001  Tom Gilbert  <gilbertt@linuxbrit.co.uk>
+
+	* Fixed bug when using -g to reduce image proportionally,
+	calculated zoom was incorrect because I am a dick.
+
 Sun Aug 12 18:13:39 2001  Till Adam  <till@adam-lilienthal.de>
 
 	* slide menus to the left and/or up if they are off the screen and the
