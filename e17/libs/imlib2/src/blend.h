@@ -1,7 +1,9 @@
 #ifndef __BLEND
 #define __BLEND 1
 
-#include "../config.h"
+#ifdef HAVE_CONFIG_H
+#  include <config.h>
+#endif
 
 #ifndef WORDS_BIGENDIAN
 
