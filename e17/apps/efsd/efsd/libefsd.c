@@ -164,6 +164,16 @@ efsd_close(EfsdConnection *ec)
 int           
 efsd_next_event(EfsdConnection *ec, EfsdEvent *ev)
 {
+  if (!ec || !ev || ec->fd < 0)
+    return (-1);
+
+  return (efsd_read_event(ec->fd, ev));
+}
+
+
+int           
+efsd_wait_event(EfsdConnection *ec, EfsdEvent *ev)
+{
   fd_set    fdset;
 
   if (!ec || !ev || ec->fd < 0)
@@ -171,8 +181,6 @@ efsd_next_event(EfsdConnection *ec, EfsdEvent *ev)
 
   FD_ZERO(&fdset);
   FD_SET(ec->fd, &fdset);
-
-  /* Wait for next event to happen ... */
   select(ec->fd+1, &fdset, NULL, NULL, NULL);
 
   return (efsd_read_event(ec->fd, ev));

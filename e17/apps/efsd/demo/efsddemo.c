@@ -59,7 +59,7 @@ void read_answers_blocking(EfsdConnection *ec)
 
   printf("RUNNING IN BLOCKING MODE\n");
 
-  while (efsd_next_event(ec, &ee) != -1)
+  while (efsd_wait_event(ec, &ee) != -1)
     handle_efsd_event(&ee);
 }
 
@@ -92,15 +92,8 @@ void read_answers_selecting(EfsdConnection *ec)
 
       if (FD_ISSET(fd, &fdset))
 	{
-	  if (efsd_next_event(ec, &ee) != -1)
+	  while (efsd_next_event(ec, &ee) >= 0)
 	    handle_efsd_event(&ee);
-	  else
-	    /* The following comment is grammatically 100 % correct
-	       thanks to Andrew Shugg <andrew@neep.com.au> :P
-	    */
-
-	    /* We're wimps here and just exit. */
-	    break;
 	}
     }
 }

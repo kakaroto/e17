@@ -56,11 +56,20 @@ void           efsd_close(EfsdConnection *ec);
 */
 int            efsd_get_connection_fd(EfsdConnection *ec);
 
-/* Reads an event the efsd daemon sends, and hangs until one
-   arrives. Returns -1 when called on closed connection, >= 0
-   otherwise
+
+/* If available, reads an event the efsd daemon sent. It does
+   not block. You want to use this if you select() efsd's file
+   descriptor. Returns -1 when called on closed connection,
+   >= 0 otherwise.
 */
 int            efsd_next_event(EfsdConnection *ec, EfsdEvent *ev);
+
+
+/* Blocks until an efsd event arrives, then returns it.
+   Returns -1 when called on closed connection, >= 0
+   otherwise.
+*/
+int            efsd_wait_event(EfsdConnection *ec, EfsdEvent *ev);
 
 
 /* Events may contain allocated data -- clean that up here.
