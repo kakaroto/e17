@@ -1,0 +1,257 @@
+      // center panel
+      part {
+        name, "center";
+        description {
+          state, "default" 0.0;
+          min, 104 113;
+          max, 9999 9999;
+          rel1 {
+            relative, 0.0 0.0;
+            offset, 60 0;
+          }
+          rel2 {
+            relative, 1.0 1.0;
+            offset, -1 -1;
+          }
+          image {
+            normal, "base.png";
+          }
+          border, 7 8 7 8;
+        }
+      }
+
+    //-- shot --//
+      part {
+        name, "shot";
+        description {
+          state, "default" 0.0;
+          min, 0 0;
+          max, 9999 9999;
+          rel1 {
+            to, "shot-border";
+            relative, 0.0 0.0;
+            offset, 1 1;
+          }
+          rel2 {
+            to, "shot-border";
+            relative, 1.0 1.0;
+            offset, -2 -2;
+          }
+        }
+      }
+      part {
+        name, "shot-border";
+        description {
+          state, "default" 0.0;
+          min, 0 0;
+          max, 9999 9999;
+          rel1 {
+            to, "center";
+            relative, 0.0 0.0;
+            offset, 6 13;
+          }
+          rel2 {
+            to, "center";
+            relative, 1.0 1.0;
+            offset, -6 -39;
+          }
+          image {
+            normal, "roundedbox.png";
+          }
+          border, 7 8 7 8;
+        }
+      }
+      
+  //-- swatch --//
+      part {
+        name, "swatch";
+        description {
+          state, "default" 0.0;
+          min, 0 0;
+          max, 9999 9999;
+          rel1 {
+            to, "swatch-border";
+            relative, 0.0 0.0;
+            offset, 1 1;
+          }
+          rel2 {
+            to, "swatch-border";
+            relative, 1.0 1.0;
+            offset, -2 -2;
+          }
+        }
+      }
+      part {
+        name, "swatch-border";
+        description {
+          state, "default" 0.0;
+          min, 22 22;
+          max, 22 22;
+          rel1 {
+            to, "center";
+            relative, 0.0 1.0;
+            offset, 6 -34;
+          }
+          rel2 {
+            to, "center";
+            relative, 0.0 1.0;
+            offset, 28 -12;
+          }
+          image {
+            normal, "roundedbox.png";
+          }
+          border, 7 8 7 8;
+        }
+
+      }
+
+   //--- left panel ---//   
+
+      part {
+        name, "left-panel";
+        description {
+          state, "default" 0.0;
+          min, 0 99;
+          max, 99 9999;
+          rel1 {
+            to, "left-border";
+            relative, 1.0 0.0;
+            offset, 0 0;
+          }
+          rel2 {
+            to, "center";
+            relative, 0.0 1.0;
+            offset, -1 -7;
+          }
+          image {
+            normal, "left-panel.png";
+          }
+          border, 0 0 7 8;
+        }
+      }
+
+      part {
+        name, "left-shadow";
+        clip_to, "left-clip";
+        description {
+          state, "default" 0.0;
+          min, 6 97;
+          max, 6 9999;
+          rel1 {
+            to, "left-panel";
+            relative, 1.0 0.0;
+            offset, -6 0;
+          }
+          rel2 {
+            to, "left-panel";
+            relative, 1.0 1.0;
+            offset, -1 -1;
+          }
+          image {
+            normal, "left-shadow.png";
+          }
+          border, 0 0 7 8;
+        }
+      }
+
+      part {
+        name, "left-border";
+        description {
+          state, "default" 0.0;
+          min, 7 99;
+          max, 7 9999;
+          rel1 {
+            to, "center";
+            relative, 0.0 0.0;
+            offset, -6 7;
+          }
+          rel2 {
+            to, "center";
+            relative, 0.0 1.0;
+            offset, 1 -7;
+          }
+          image {
+            normal, "left-border.png";
+          }
+          border, 0 0 7 8;
+        }
+        description {
+          state, "open" 0.0;
+          min, 7 99;
+          max, 7 9999;
+          rel1 {
+            to, "center";
+            relative, 0.0 0.0;
+            offset, -60 7;
+          }
+          rel2 {
+            to, "center";
+            relative, 0.0 1.0;
+            offset, -53 -7;
+          }
+          image {
+            normal, "left-border.png";
+          }
+          border, 0 0 7 8;
+        }
+      }
+
+      part {
+        name, "left-clip";
+        description {
+          state, "default" 0.0;
+          min, 0 97;
+          max, 9999 9999;
+          rel1 {
+            to, "left-panel";
+            relative, 0.0 0.0;
+            offset, 0 0;
+          }
+          rel2 {
+            to, "left-panel";
+            relative, 1.0 1.0;
+            offset, 0 0;
+          }
+          border, 0 0 0 0;
+        }
+      }
+
+
+      part {
+        name, "left-border-close";
+        description {
+          state, "default" 0.0;
+          visible, 0;
+          min, 0 97;
+          max, 9999 9999;
+          rel1 {
+            to, "left-border";
+            relative, 0.0 0.0;
+            offset, 0 0;
+          }
+          rel2 {
+            to, "left-border";
+            relative, 1.0 1.0;
+            offset, 0 0;
+          }
+          border, 0 0 0 0;
+        }
+        description {
+          state, "open" 0.0;
+          visible, 1;
+          min, 0 97;
+          max, 9999 9999;
+          rel1 {
+            to, "left-border";
+            relative, 0.0 0.0;
+            offset, 0 0;
+          }
+          rel2 {
+            to, "left-border";
+            relative, 1.0 1.0;
+            offset, 0 0;
+          }
+          border, 0 0 0 0;
+        }
+      }
+
