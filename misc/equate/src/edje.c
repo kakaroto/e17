@@ -50,6 +50,10 @@ extern double   equate_eval(void);
 extern void     equate_append(char *str);
 extern const char *equate_string_get(void);
 
+Evas_Object    *equate_edje_root;
+Ecore_Evas     *equate_edje_window;
+int             equate_edje_inited;
+
 /**
  * Interpret all of our different signals, and do things !
  */
@@ -349,15 +353,15 @@ equate_edje_init(Equate * eq)
 
    Evas           *evas = NULL;
    Evas_Object    *o = NULL;
-   Evas_Coord      mw, mh;
-   char            theme[PATH_MAX];
 
    eq->gui.ee = NULL;
    eq->gui.edje = NULL;
 
    ecore_event_handler_add(ECORE_EVENT_SIGNAL_EXIT, exit_cb, NULL);
    if (ecore_evas_init()) {
+      equate_edje_inited = 1;
       eq->gui.ee = ecore_evas_software_x11_new(NULL, 0, 0, 0, 300, 120);
+      equate_edje_window = eq->gui.ee;
       ecore_evas_title_set(eq->gui.ee, "Equate");
       ecore_evas_callback_delete_request_set(eq->gui.ee, win_del_cb);
       ecore_evas_callback_resize_set(eq->gui.ee, win_resize_cb);
@@ -376,35 +380,40 @@ equate_edje_init(Equate * eq)
       edje_init();
       edje_frametime_set(1.0 / 30.0);
 
-      o = edje_object_add(evas);
-      evas_object_move(o, 0, 0);
+      equate_edje_root = edje_object_add(evas);
+      evas_object_move(equate_edje_root, 0, 0);
 
-      if ((strstr(eq->conf.theme, "/")))
-         snprintf(theme, PATH_MAX, eq->conf.theme);
-      else
-         snprintf(theme, PATH_MAX, PACKAGE_DATA_DIR "/themes/%s.eet",
-                  eq->conf.theme);
-
-      if (edje_object_file_set(o, theme, "Main")) {
-         evas_object_name_set(o, "edje");
-         edje_object_size_min_get(o, &mw, &mh);
-         ecore_evas_size_min_set(eq->gui.ee, (int) mw, (int) mh);
-         ecore_evas_resize(eq->gui.ee, (int) mw, (int) mh);
-         evas_object_resize(o, mw, mh);
-
-         edje_object_size_max_get(o, &mw, &mh);
-         ecore_evas_size_max_set(eq->gui.ee, (int) mw, (int) mh);
-
-         edje_callback_define(o);
-         evas_object_show(o);
-      } else {
-         fprintf(stderr, "Unable to open %s for edje theme\n", theme);
-         equate_quit();
-         return;
-      }
+      equate_edje_theme_set(eq->conf.theme);
       ecore_evas_show(eq->gui.ee);
       ecore_main_loop_begin();
    }
+}
+
+int
+equate_edje_theme_set(char *theme) {
+  char         tmp[PATH_MAX];
+  Evas_Coord      mw, mh;
+
+  if (!equate_edje_inited) return;
+  if ((strstr(theme, "/")))
+     snprintf(tmp, PATH_MAX, theme);
+  else
+     snprintf(tmp, PATH_MAX, PACKAGE_DATA_DIR "/themes/%s.eet", theme);
+
+  if(edje_object_file_set(equate_edje_root, tmp, "Main")) {
+     evas_object_name_set(equate_edje_root, "edje");
+     edje_object_size_min_get(equate_edje_root, &mw, &mh);
+     ecore_evas_size_min_set(equate_edje_window, (int) mw, (int) mh);
+     ecore_evas_resize(equate_edje_window, (int) mw, (int) mh);
+     evas_object_resize(equate_edje_root, mw, mh);
+     edje_object_size_max_get(equate_edje_root, &mw, &mh);
+     ecore_evas_size_max_set(equate_edje_window, (int) mw, (int) mh);
+     edje_callback_define(equate_edje_root);
+     evas_object_show(equate_edje_root);
+  } else {
+     fprintf(stderr, "Unable to open %s for edje theme\n", theme);
+     equate_quit();
+  }
 }
 
 void
@@ -412,5 +421,6 @@ equate_edje_quit()
 {
    ecore_main_loop_quit();
    edje_shutdown();
+   equate_edje_inited = 0;
    ecore_evas_shutdown();
 }

@@ -279,18 +279,20 @@ equate_quit_gui()
 void
 equate_update_gui(Equate * equate)
 {
+   int none;
+   none = 0;
    if (calc_mode == equate->conf.mode) {
       if (calc_mode == EDJE)
-         printf("### here we must change theme to %s\n", equate->conf.theme);
+         equate_edje_theme_set(equate->conf.theme);
    } else {
-      if (calc_mode == EDJE)
-         printf("### here we must undraw edje\n");
-      else
+      if (calc_mode != EDJE && equate->conf.mode != EDJE) {
          undraw_ewl();
-      if (equate->conf.mode == EDJE)
-         printf("### here we must draw theme %s\n", equate->conf.theme);
-      else
          draw_ewl(equate->conf.mode);
+      } else {/*
+         equate_quit_gui();
+         equate_init_gui(equate, &none, NULL);*/
+        printf("### switching between EWL and EDJE, hmm\n");
+      }
    }
    calc_mode = equate->conf.mode;
 }
