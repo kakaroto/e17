@@ -24,6 +24,7 @@ static void ewl_text_op_style_free(void *op);
 static Ewl_Text_Op *ewl_text_op_align_new(Ewl_Text *ta, unsigned int align);
 static void ewl_text_op_align_apply(Ewl_Text *ta, Ewl_Text_Op *op);
 
+static Ewl_Text_Op * ewl_text_op_text_set_new(Ewl_Text *ta, char *text);
 static Ewl_Text_Op *ewl_text_op_text_append_new(Ewl_Text *ta, char *text);
 static Ewl_Text_Op *ewl_text_op_text_prepend_new(Ewl_Text *ta, char *text);
 static Ewl_Text_Op *ewl_text_op_text_insert_new(Ewl_Text *ta, char *text,
@@ -36,7 +37,10 @@ static void ewl_text_op_text_free(void *op);
  * @return Returns a pointer to a new text on success, NULL on failure.
  * @brief Allocate a new text area widget
  *
- * Sets the text initially to @a text if not NULL.
+ * Sets the text initially to @a text if not NULL. This initial text will use
+ * the default formatting information from the theme. Pass @a text as NULL and
+ * use ewl_text_text_set after changing the settings to change attributes the
+ * text.
  */
 Ewl_Widget     *ewl_text_new(char *text)
 {
@@ -107,29 +111,15 @@ void ewl_text_init(Ewl_Text * ta, char *text)
  */
 void ewl_text_text_set(Ewl_Text * ta, char *text)
 {
+	Ewl_Text_Op *op;
+
 	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR("ta", ta);
 
-	if (text) {
-		/*
-		 * Keep a copy of the text for quick access and for creating
-		 * the etox when needed.
-		 */
-		ta->text = strdup(text);
-		ta->length = strlen(text);
-	}
-	else {
-		ta->text = NULL;
-		ta->length = 0;
-	}
-
-	/*
-	 * Update the etox and the sizing of the text widget.
-	 */
-	if (ta->etox) {
-		etox_set_text(ta->etox, text);
-		ewl_text_update_size(ta);
-	}
+	op = ewl_text_op_text_set_new(ta, text);
+	ecore_dlist_append(ta->ops, op);
+	if (REALIZED(ta))
+		ewl_text_ops_apply(ta);
 
 	text = (text ? strdup(text) : NULL);
 	ewl_callback_call_with_event_data(EWL_WIDGET(ta),
@@ -178,7 +168,7 @@ void ewl_text_text_prepend(Ewl_Text * ta, char *text)
 	DCHECK_PARAM_PTR("ta", ta);
 
 	op = ewl_text_op_text_prepend_new(ta, text);
-	ecore_dlist_prepend(ta->ops, op);
+	ecore_dlist_append(ta->ops, op);
 	if (REALIZED(ta))
 		ewl_text_ops_apply(ta);
 
@@ -528,7 +518,8 @@ void ewl_text_realize_cb(Ewl_Widget * w, void *ev_data, void *user_data)
 	/*
 	 * Now set the text and display it.
 	 */
-	etox_set_text(ta->etox, ta->text);
+	if (ta->text)
+		etox_set_text(ta->etox, ta->text);
 	evas_object_show(ta->etox);
 
 	ewl_text_ops_apply(ta);
@@ -833,6 +824,26 @@ ewl_text_op_align_apply(Ewl_Text *ta, Ewl_Text_Op *op)
 }
 
 static Ewl_Text_Op *
+ewl_text_op_text_set_new(Ewl_Text *ta, char *text)
+{
+	Ewl_Text_Op *op;
+	Ewl_Text_Op_Text *ops;
+
+	DENTER_FUNCTION(DLEVEL_STABLE);
+
+	op = NEW(Ewl_Text_Op_Text, 1);
+	if (op) {
+		ops = (Ewl_Text_Op_Text *)op;
+		op->type = EWL_TEXT_OP_TYPE_TEXT_SET;
+		op->apply = ewl_text_op_text_apply;
+		op->free = ewl_text_op_text_free;
+		ops->text = strdup(text);
+	}
+
+	DRETURN_PTR(op, DLEVEL_STABLE);
+}
+
+static Ewl_Text_Op *
 ewl_text_op_text_append_new(Ewl_Text *ta, char *text)
 {
 	Ewl_Text_Op *op;
@@ -900,7 +911,9 @@ ewl_text_op_text_apply(Ewl_Text *ta, Ewl_Text_Op *op)
 
 	DENTER_FUNCTION(DLEVEL_STABLE);
 
-	if (op->type == EWL_TEXT_OP_TYPE_TEXT_APPEND)
+	if (op->type == EWL_TEXT_OP_TYPE_TEXT_SET)
+		etox_set_text(ta->etox, opt->text);
+	else if (op->type == EWL_TEXT_OP_TYPE_TEXT_APPEND)
 		etox_append_text(ta->etox, opt->text);
 	else if (op->type == EWL_TEXT_OP_TYPE_TEXT_PREPEND)
 		etox_prepend_text(ta->etox, opt->text);
