@@ -129,6 +129,11 @@ feh_load_options_for_theme(char *theme)
 
    if (opt.rcfile)
    {
+      if ((fp = fopen(opt.rcfile, "r")) == NULL)
+      {
+         weprintf("couldn't load the specified rcfile %s\n", opt.rcfile);
+         D_RETURN_;
+      }
    }
    else
    {
@@ -312,6 +317,7 @@ feh_parse_option_array(int argc, char **argv)
       {"draw_filename", 0, 0, 'd'},
       {"preload", 0, 0, 'p'},
       {"reverse", 0, 0, 'n'},
+      {"no-menu-ctrl-mask", 0, 0, '5'},     /* okay */
       /* options with values */
       {"output", 1, 0, 'o'},                /* okay */
       {"output-only", 1, 0, 'O'},           /* okay */
@@ -338,7 +344,7 @@ feh_parse_option_array(int argc, char **argv)
       {"zoom-button", 1, 0, '2'},
       {"pan-button", 1, 0, '3'},
       {"menu-button", 1, 0, '4'},
-      {"no-menu-ctrl-mask", 0, 0, '5'},
+      {"rcfile", 1, 0, '_'},
       {0, 0, 0, 0}
    };
    int optch = 0, cmdx = 0;
@@ -491,6 +497,9 @@ feh_parse_option_array(int argc, char **argv)
         case 'b':
            opt.bg = 1;
            opt.bg_file = estrdup(optarg);
+           break;
+        case '_':
+           opt.rcfile = estrdup(optarg);
            break;
         case 'A':
            opt.action = estrdup(optarg);
@@ -657,7 +666,9 @@ show_usage(void)
            "                            the first controls informational messages, the\n"
            "                            second only errors.\n"
            "  -t, --theme THEME         Load options from config file with name THEME\n"
-           "                            see man feh for more info\n"
+           "                            see man feh for more info.\n"
+           "      --rcfile FILE         Use FILE to parse themes and options from,\n"
+           "                            instead of the default ~/.fehrc, /etc/fehrc files.\n"
            "  -r, --recursive           Recursively expand any directories in FILE to\n"
            "                            the content of those directories. (Take it easy)\n"
            "  -z, --randomize           When viewing multiple files in a slideshow,\n"

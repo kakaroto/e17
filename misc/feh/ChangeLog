@@ -1,3 +1,8 @@
+Sun Jun 18 00:40:28 2000  Tom Gilbert  <gilbertt@linuxbrit.co.uk>
+
+	* New option, --rcfile FILE. Uses FILE instead of the normal
+	~/.fehrc or /etc/fehrc for parsing configs/themes from.
+
 Sun Jun 18 00:26:06 2000  Tom Gilbert  <gilbertt@linuxbrit.co.uk>
 
 	* Now feh will write a default ~/.fehrc if none is found, but only
