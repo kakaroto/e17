@@ -526,6 +526,11 @@ ICCCM_GetGeoms(EWin * ewin, Atom atom_change)
    if (atom_change && atom_change != E_XA_WM_NORMAL_HINTS)
       EDBUG_RETURN_;
 
+   x = ewin->client.x;
+   y = ewin->client.y;
+   w = ewin->client.w;
+   h = ewin->client.h;
+   bw = ewin->client.bw;
    EGetGeometry(disp, ewin->client.win, &ww, &x, &y, &w, &h, &bw, &dummy);
    ewin->client.x = x;
    ewin->client.y = y;
