@@ -628,3 +628,8 @@ Mon Mar  1 21:22:21 2004                        Michael Jennings (mej)
 
 New SRPM
 ----------------------------------------------------------------------
+Wed Mar  3 12:25:22 2004                        Michael Jennings (mej)
+
+New and improved autogen stuff.  Prefers autoconf 2.13 and automake
+1.4, but it's also been tested with autoconf 2.57 and automake 1.6.3.
+----------------------------------------------------------------------
