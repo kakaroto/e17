@@ -379,8 +379,7 @@ draw_ewl(Mode draw_mode)
                           but->callback, but->cmd);
       ewl_container_append_child(EWL_CONTAINER(cell[bc]), button[bc]);
       ewl_box_set_homogeneous(EWL_BOX(button[bc]), TRUE);
-      ewl_object_set_alignment(EWL_OBJECT
-                               (EWL_BUTTON(button[bc])->label_object),
+      ewl_object_set_alignment((EWL_BUTTON(button[bc])->label_object),
                                EWL_FLAG_ALIGN_CENTER);
       ewl_grid_add(EWL_GRID(table), cell[bc], but->col,
                    but->col + but->height - 1, but->row,
