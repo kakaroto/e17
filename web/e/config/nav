@@ -1,42 +1,42 @@
 <table border="0">
 <tr>
-  <td valign="middle"><a href="main.html"><img border=0 src="img/nav_main.gif" alt="* Main"></a></td>
+  <td valign="middle"><a href="main.html"><img border=0 src="img/nav_main.gif" alt="* "></a></td>
   <td><a href="main.html">Main</a></td>
 </tr>
 <tr>
-  <td valign="middle"><a href="news.html"><img border=0 src="img/nav_news.gif" alt="* News"></a></td>
+  <td valign="middle"><a href="news.html"><img border=0 src="img/nav_news.gif" alt="* "></a></td>
   <td><a href="news.html">News</a></td>
 </tr>
 <tr>
-  <td valign="middle"><a href="docs.html"><img border=0 src="img/nav_docs.gif" alt="* Documentation"></a></td>
+  <td valign="middle"><a href="docs.html"><img border=0 src="img/nav_docs.gif" alt="* "></a></td>
   <td><a href="docs.html">Documentation</a></td>
 </tr>
 <tr>
-  <td valign="middle"><a href="faq.html"><img border=0 src="img/nav_info.gif" alt="* Info + FAQs"></a></td>
+  <td valign="middle"><a href="faq.html"><img border=0 src="img/nav_info.gif" alt="* "></a></td>
   <td><a href="faq.html">FAQs</a></td>
 </tr>
 <tr>
-  <td valign="middle"><a href="shots.html"><img border=0 src="img/nav_shots.gif" alt="* Shots"></a></td>
+  <td valign="middle"><a href="shots.html"><img border=0 src="img/nav_shots.gif" alt="* "></a></td>
   <td><a href="shots.html">Screenshots</a></td>
 </tr>
 <tr>
-  <td valign="middle"><a href="download.html"><img border=0 src="img/nav_download.gif" alt="* Download"></a></td>
+  <td valign="middle"><a href="download.html"><img border=0 src="img/nav_download.gif" alt="* "></a></td>
   <td><a href="download.html">Downloads</a></td>
 </tr>
 <tr>
-  <td valign="middle"><a href="components.html"><img border=0 src="img/nav_goodies.gif" alt="* Components"></a></td>
+  <td valign="middle"><a href="components.html"><img border=0 src="img/nav_goodies.gif" alt="* "></a></td>
   <td><a href="components.html">Components</a></td>
 </tr>
 <tr>
-  <td valign="middle"><a href="source.html"><img border=0 src="img/nav_source.gif" alt="* Source"></a></td>
+  <td valign="middle"><a href="source.html"><img border=0 src="img/nav_source.gif" alt="* "></a></td>
   <td><a href="source.html">Source Code</a></td>
 </tr>
 <tr>
-  <td valign="middle"><a href="mail.html"><img border=0 src="img/nav_mail.gif" alt="* Mail"></a></td>
+  <td valign="middle"><a href="mail.html"><img border=0 src="img/nav_mail.gif" alt="* "></a></td>
   <td><a href="mail.html">Mailing Lists and Links</a></td>
 </tr>
 <tr>
-  <td valign="middle"><a href="team.html"><img border=0 src="img/nav_team.gif" alt="* Team"></a></td>
+  <td valign="middle"><a href="team.html"><img border=0 src="img/nav_team.gif" alt="* "></a></td>
   <td><a href="team.html">Team&nbsp;Members</a></td>
 </tr>
 <tr>
