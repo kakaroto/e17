@@ -18,6 +18,7 @@ keys.c keys.h \
 prefs.c prefs.h \
 signals_image.c signals_image.h \
 signals_thumb.c signals_thumb.h \
+exif.c exif.h \
 main.c
 
 entice_LDADD = \

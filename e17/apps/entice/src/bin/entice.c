@@ -24,6 +24,7 @@
 #include "prefs.h"
 #include "signals_image.h"
 #include "signals_thumb.h"
+#include "exif.h"
 
 static Entice *entice = NULL;
 
@@ -127,6 +128,9 @@ entice_init(Ecore_Evas * ee)
          evas_object_del(o);
          return;
       }
+
+      e->exiftags = entice_exif_edje_init(o);
+
       evas_object_name_set(o, "EnticeEdje");
       evas_object_move(o, 0, 0);
       evas_object_resize(o, (Evas_Coord) w, (Evas_Coord) h);
@@ -292,6 +296,49 @@ entice_current_image_set(const char *file)
    return (0);
 }
 
+Evas_Bool
+entice_exiftags_foreach(Evas_Hash * hash, const char *key, void *data,
+                        void *fdata)
+{
+   int exifintval = 0;
+   char buf[PATH_MAX];
+   const char *exifval = NULL;
+   Entice_Exif *eexif = NULL;
+
+#if 0
+   fprintf(stderr, "%s\n", key);
+#endif
+   if ((eexif = (Entice_Exif *) evas_hash_find(hash, key)))
+   {
+      if ((exifval =
+           esmart_thumb_exif_data_as_string_get((Evas_Object *) fdata,
+                                                eexif->lvl, eexif->tag)))
+      {
+         edje_object_part_text_set(entice->edje, eexif->part, exifval);
+      }
+      else
+         if ((exifintval =
+              esmart_thumb_exif_data_as_int_get((Evas_Object *) fdata,
+                                                eexif->lvl, eexif->tag)) >= 0)
+      {
+         snprintf(buf, PATH_MAX, "%i", exifintval);
+         edje_object_part_text_set(entice->edje, eexif->part, buf);
+
+      }
+      else
+      {
+         edje_object_signal_emit(entice->edje, "entice,exif,data,notfound",
+                                 eexif->part);
+#if 0
+         fprintf(stderr, "ERROR: %s : 0x%04x : 0x%04x\n", eexif->part,
+                 eexif->lvl, eexif->tag);
+#endif
+      }
+
+   }
+   return (TRUE);
+}
+
 /**
  * _entice_thumb_load - callback for loading an entice thumb
  * @_data - The E_Thumb object we're loading from, a param to the cb
@@ -401,7 +448,17 @@ _entice_thumb_load(void *_data, Evas * _e, Evas_Object * _o, void *_ev)
                                       "entice.image.current.filesize", str);
             free(str);
          }
-
+         if (esmart_thumb_exif_get(o))
+         {
+            evas_hash_foreach(entice->exiftags, entice_exiftags_foreach, o);
+            edje_object_signal_emit(entice->edje, "entice,image,exif,present",
+                                    "");
+         }
+         else
+         {
+            edje_object_signal_emit(entice->edje, "entice,image,exif,absent",
+                                    "");
+         }
          snprintf(buf, PATH_MAX, "Entice: %s", esmart_thumb_file_get(o));
          ecore_evas_title_set(entice->ee, buf);
 

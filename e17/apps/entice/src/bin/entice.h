@@ -23,6 +23,7 @@ struct _Entice
       Evas_List *current;       /* Current Image's list item */
    }
    thumb;
+   Evas_Hash *exiftags;         /* entice exif tag -> EnticeExif */
 
    Ecore_Evas *ee;              /* the evas window */
    Evas_Object *edje;           /* Main Edje_Object(theme) */
@@ -32,6 +33,7 @@ struct _Entice
    Evas_Object *container;      /* thumbnail container the edje swallows */
 };
 typedef struct _Entice Entice;
+
 
 void entice_init(Ecore_Evas * ee);
 void entice_free(void);
