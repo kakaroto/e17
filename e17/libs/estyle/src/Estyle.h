@@ -71,7 +71,7 @@ void estyle_unfix_geometry(Estyle *es);
  * Joining and splitting estyles.
  */
 Estyle *estyle_split(Estyle * es, int index);
-void estyle_merge(Estyle * es1, Estyle * es2);
+int estyle_merge(Estyle * es1, Estyle * es2);
 
 #define ESTYLE_HASH_COLOR(r, g, b, a) ((r << 24) | (g << 16) | (b << 8) | a)
 

@@ -118,6 +118,9 @@ void estyle_move(Estyle *es, int x, int y)
 {
 	CHECK_PARAM_POINTER("es", es);
 
+	if (es->x == x && es->y == y)
+		return;
+
 	es->x = x;
 	es->y = y;
 	evas_move(es->evas, es->bit, (double)(x), (double)(y));
@@ -439,15 +442,18 @@ void estyle_set_clip(Estyle *es, Evas_Object clip)
  * @es1: the destination estyle that will contain the final text
  * @es2: the estyle that will be freed, but it's text will be added to @es1
  *
- * Returns no value. Appends the text in @es2 to the text in @es1 and destroys
- * @es2.
+ * Returns TRUE if the bits are able to be merged, otherwise FALSE. Appends the
+ * text in @es2 to the text in @es1 and destroys @es2.
  */
-void estyle_merge(Estyle * es1, Estyle * es2)
+int estyle_merge(Estyle * es1, Estyle * es2)
 {
 	char *new_text, *text1, *text2;
 
-	CHECK_PARAM_POINTER("es1", es1);
-	CHECK_PARAM_POINTER("es2", es2);
+	CHECK_PARAM_POINTER_RETURN("es1", es1, FALSE);
+	CHECK_PARAM_POINTER_RETURN("es2", es2, FALSE);
+
+	if (!BIT_MERGEABLE(es1, es2))
+		return FALSE;
 
 	/*
 	 * These return a pointer to the actual text in the evas object, not a
@@ -470,6 +476,8 @@ void estyle_merge(Estyle * es1, Estyle * es2)
 	FREE(new_text);
 
 	estyle_free(es2);
+
+	return TRUE;
 }
 
 /**
