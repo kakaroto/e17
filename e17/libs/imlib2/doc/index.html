@@ -1177,18 +1177,31 @@ char imlib_copy_drawable_to_image(Pixmap mask,
 				  int destination_y, 
 				  char need_to_grab_x);
 </font></font></tt></b></pre>
-
+<blockquote>
+This routine will grab a section of the current drawable (optionally using
+the pixmap provided as a corresponding mask for that drawable - if mask is 0
+this is not used). It grabs the x, y, width, height rectangle and places it
+at the destination x, y location in the current image. If need_to_grab_x is
+1 it will grab and ungrab the server whilst doing this - you need to do this
+if you have not already grabbed the server.
+</blockquote>
 <pre><b><tt><font color="#660000"><font size=+2>
 Imlib_Image imlib_clone_image(void);
 </font></font></tt></b></pre>
-
+<blockquote>
+This creates an exact duplicate of the current image and returns a valid
+image handle on success, or NULL on failure.
+</blockquote>
 <pre><b><tt><font color="#660000"><font size=+2>
 Imlib_Image imlib_create_cropped_image(int x, 
                                        int y, 
 				       int width, 
 				       int height);
 </font></font></tt></b></pre>
-
+<blockquote>
+This creates a duplicate of a x, y, width, height rectangle in the current
+image and returns a valid image handle on success, or NULL on failure.
+</blockquote>
 <pre><b><tt><font color="#660000"><font size=+2>
 Imlib_Image imlib_create_cropped_scaled_image(int source_x, 
                                               int source_y, 
@@ -1197,11 +1210,17 @@ Imlib_Image imlib_create_cropped_scaled_image(int source_x,
 					      int destination_width, 
 					      int destination_height);
 </font></font></tt></b></pre>
-
+<blockquote>
+This function works the same as imlib_create_cropped_image() but will scale
+the new image to the new destination width and height whilst cropping.
+</blockquote>
 <pre><b><tt><font color="#660000"><font size=+2>
 Imlib_Updates imlib_updates_clone(Imlib_Updates updates);
 </font></font></tt></b></pre>
-
+<blockquote>
+This function creates a duplicate of the updates list passed into the
+function.
+</blockquote>
 <pre><b><tt><font color="#660000"><font size=+2>
 Imlib_Updates imlib_update_append_rect(Imlib_Updates updates, 
                                        int x, 
@@ -1209,27 +1228,45 @@ Imlib_Updates imlib_update_append_rect(Imlib_Updates updates,
 				       int w, 
 				       int h);
 </font></font></tt></b></pre>
-
+<blockquote>
+This function appends an update rectangle to the updates list passed in (if
+the updates is NULL it will create a new updates list) and returns a handle
+to the modified updates list (the handle may be modified so only use the new
+updates handle returned)
+</blockquote>
 <pre><b><tt><font color="#660000"><font size=+2>
 Imlib_Updates imlib_updates_merge(Imlib_Updates updates, 
                                   int w, 
 				  int h);
 </font></font></tt></b></pre>
-
+<blockquote>
+This function takes an updates list, and modifies it by merging overlapped
+rectangles and lots of tiny rectangles into larger rentangles to minimize
+the number of rectangles in the list for optimized redrawing. The new
+updates handle is now valid and the old one passed in is not.
+</blockquote>
 <pre><b><tt><font color="#660000"><font size=+2>
 Imlib_Updates imlib_updates_merge_for_rendering(Imlib_Updates updates, 
                                                 int w, 
 						int h);
 </font></font></tt></b></pre>
-
+<blockquote>
+This works almots exactly as imlib_updates_merge() but is more lenient on
+the spacign between update rectangles - if they are very close it amalgamates
+2 smaller rectangles into 1 larger one.
+</blockquote>
 <pre><b><tt><font color="#660000"><font size=+2>
 void imlib_updates_free(Imlib_Updates updates);
 </font></font></tt></b></pre>
-
+<blockquote>
+This frees an updates list.
+</blockquote>
 <pre><b><tt><font color="#660000"><font size=+2>
 Imlib_Updates imlib_updates_get_next(Imlib_Updates updates);
 </font></font></tt></b></pre>
-
+<blockquote>
+Thsi gets the next update in the updates list relative to the one passed in.
+</blockquote>
 <pre><b><tt><font color="#660000"><font size=+2>
 void imlib_updates_get_coordinates(Imlib_Updates updates, 
                                    int *x_return, 
@@ -1237,7 +1274,9 @@ void imlib_updates_get_coordinates(Imlib_Updates updates,
 				   int *width_return, 
 				   int *height_return);
 </font></font></tt></b></pre>
-
+<blockquote>
+This returns the coordinates of an update.
+</blockquote>
 <pre><b><tt><font color="#660000"><font size=+2>
 void imlib_updates_set_coordinates(Imlib_Updates updates, 
                                    int x, 
@@ -1245,58 +1284,95 @@ void imlib_updates_set_coordinates(Imlib_Updates updates,
 				   int width, 
 				   int height);
 </font></font></tt></b></pre>
-
+<blockquote>
+This modifies the coordinates of an update in an updates list.
+</blockquote>
 <pre><b><tt><font color="#660000"><font size=+2>
 void imlib_render_image_updates_on_drawable(Imlib_Updates updates, 
                                             int x, 
 					    int y);
 </font></font></tt></b></pre>
-
+<blockquote>
+Given an updates list (preferable already merged for rendering) this will
+render the corresponding parts of the image to the current drawable at an
+offset of x, y in the drawable.
+</blockquote>
 <pre><b><tt><font color="#660000"><font size=+2>
 Imlib_Updates imlib_updates_init(void);
 </font></font></tt></b></pre>
-
+<blockquote>
+This initialises an updates list before you add any updates to it or merge
+it for rendering etc.
+</blockquote>
 <pre><b><tt><font color="#660000"><font size=+2>
 Imlib_Updates imlib_updates_append_updates(Imlib_Updates updates, 
                                            Imlib_Updates appended_updates);
 </font></font></tt></b></pre>
-
+<blockquote>
+This appends one updates list (appended_updates) to the updates list
+(updates) and retruens the new list.
+</blockquote>
 <pre><b><tt><font color="#660000"><font size=+2>
 void imlib_image_flip_horizontal(void);
 </font></font></tt></b></pre>
-
+<blockquote>
+This will flip/mirror the current image horizontally.
+</blockquote>
 <pre><b><tt><font color="#660000"><font size=+2>
 void imlib_image_flip_vertical(void);
 </font></font></tt></b></pre>
-
+<blockquote>
+This will flip/mirror the current image vertically.
+</blockquote>
 <pre><b><tt><font color="#660000"><font size=+2>
 void imlib_image_flip_diagonal(void);
 </font></font></tt></b></pre>
-
+<blockquote>
+This will flip/mirror the current image diagonally (good for quick and dirty
+90 degree rotations if used before to after a horizontal or vertical flip).
+</blockquote>
 <pre><b><tt><font color="#660000"><font size=+2>
 void imlib_image_orientate(int orientation);
 </font></font></tt></b></pre>
-
+<blockquote>
+This will performan 90 degree rotations on the current image. Passing in 
+orientation does not rotate, 1 rotates clockwise by 90 degree, 2, 
+rotates clockwise by 180 degrees, 3 rotates clockwise by 270 degrees.
+</blockquote>
 <pre><b><tt><font color="#660000"><font size=+2>
 void imlib_image_blur(int radius);
 </font></font></tt></b></pre>
-
+<blockquote>
+This will blur the current image. A radius of 0 has no effect, 1 and above
+determine the blur matrix radius that determine how much to blur the image.
+</blockquote>
 <pre><b><tt><font color="#660000"><font size=+2>
 void imlib_image_sharpen(int radius);
 </font></font></tt></b></pre>
-
+<blockquote>
+This sharpens the current image. The radius affects how much to sharpen by.
+</blockquote>
 <pre><b><tt><font color="#660000"><font size=+2>
 void imlib_image_tile_horizontal(void);
 </font></font></tt></b></pre>
-
+<blockquote>
+This modifies an image so it will tile seamlessly horizontally if used as a
+tile (ie drawn multiple times horizotnally)
+</blockquote>
 <pre><b><tt><font color="#660000"><font size=+2>
 void imlib_image_tile_vertical(void);
 </font></font></tt></b></pre>
-
+<blockquote>
+This modifies an image so it will tile seamlessly vertically if used as a
+tile (ie drawn multiple times vertically)
+</blockquote>
 <pre><b><tt><font color="#660000"><font size=+2>
 void imlib_image_tile(void);
 </font></font></tt></b></pre>
-
+<blockquote>
+This modifies an image so it will tile seamlessly horizontally and vertically 
+if used as a tile (ie drawn multiple times horizotnally and vertically)
+</blockquote>
 <pre><b><tt><font color="#660000"><font size=+2>
 Imlib_Font imlib_load_font(const char *font_name);
 </font></font></tt></b></pre>

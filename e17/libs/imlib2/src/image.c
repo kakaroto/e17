@@ -897,16 +897,19 @@ __imlib_FindBestLoaderForFileFormat(const char *file, char *format)
       /* change the extension to all lower case as all "types" are listed as */
       /* lower case strings fromt he loader that represent all the possible */
       /* extensions that file format could have */
-      lower = extension;
-      while (*lower)
-      {
-         *lower = tolower(*lower);
-         lower++;
-      }
+      if (extension)
+	{
+	   lower = extension;
+	   while (*lower)
+	     {
+		*lower = tolower(*lower);
+		lower++;
+	     }
+	}
    }
    if (!extension)
       return NULL;
-   /* look thought the loaders one by one to see if one matches that format */
+   /* look through the loaders one by one to see if one matches that format */
    l = loaders;
    while (l)
    {

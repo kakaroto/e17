@@ -13,65 +13,58 @@
 #include "file.h"
 
 static void __imlib_FileFieldWord(char *s, int num, char *wd);
+static char *__imlib_FileRealFile(const char *file);
+
+static char *
+__imlib_FileRealFile(const char *file)
+{
+   char *colon;
+   char *newfile;
+   
+   newfile = strdup(file);
+   if (!newfile) return NULL;
+   colon = strrchr(file, ':');
+   if (!colon) return newfile;
+   *colon = 0;
+   return newfile;
+}
 
 char               *
 __imlib_FileExtension(const char *file)
 {
-   char               *p, *c;
+   char               *p;
+   char               *fl;
    
+   fl = __imlib_FileRealFile(file);
+   if (!fl) return strdup("");
    p = strrchr(file, '.');
-   c = strrchr(file, ':');
-   if (!c)
-     {
-	if (p != NULL)
-	   return strdup(p + 1);
-     }
-   else
-     {
-	if ((p) && (c > p))
-	  {
-	     char *buf;
-	     
-	     buf = malloc(strlen(p));
-	     if (!buf) return NULL;
-	     strcpy(buf, p);
-	     buf[c - p] = 0;
-	     return buf;
-	  }
-	else
-	  {
-	     if (p != NULL)
-		return strdup(p + 1);
-	  }
-     }
-  return strdup("");
+   if (p) 
+      {
+	 char *ret;
+	 
+	 ret = strdup(p + 1);
+	 free(fl);
+	 return ret;
+      }
+   free(fl);
+   return strdup("");
 }
 
 int
 __imlib_FileExists(const char *s)
 {
    struct stat         st;
-   char *p, *buf = NULL;
+   char               *fl;
    
-   if ((!s) || (!*s))
-      return(0);
-   p = strrchr(s, ':');
-   if (p)
+   if ((!s) || (!*s)) return 0;
+   fl = __imlib_FileRealFile(s);
+   if (!fl) return 0;
+   if (stat(fl, &st) < 0)
      {
-	
-	buf = malloc(strlen(s));
-	if (!buf) return 0;
-	strcpy(buf, s);
-	p = strrchr(buf, ':');
-	if (p) *p = 0;
-	s = buf;
-     }
-   if (stat(s, &st) < 0)
-     {
-	if (buf) free(buf);
+	free(fl);
 	return 0;
      }
-   if (buf) free(buf);
+   free(fl);
    return 1;
 }
 
@@ -79,93 +72,63 @@ int
 __imlib_FileIsFile(const char *s)
 {
    struct stat         st;
-   char *p, *buf = NULL;
+   char               *fl;
    
-   if ((!s) || (!*s))
-      return(0);
-   p = strrchr(s, ':');
-   if (p)
+   if ((!s) || (!*s)) return 0;
+   fl = __imlib_FileRealFile(s);
+   if (!fl) return 0;
+   if (stat(fl, &st) < 0)
      {
-	
-	buf = malloc(strlen(s));
-	if (!buf) return 0;
-    strcpy(buf, s);
-	p = strrchr(buf, ':');
-	if (p) *p = 0;
-	s = buf;
-     }
-   if (stat(s, &st) < 0)
-     {
-	if (buf) free(buf);
-	return(0);
+	free(fl);
+	return 0;
      }
    if (S_ISREG(st.st_mode))
-   {
-	if (buf) free(buf);
-	return(1);
-   }
-   if (buf) free(buf);
-   return(0);
+     {
+	free(fl);
+	return 1;
+     }
+   free(fl);
+   return 0;
 }
 
 int
 __imlib_FileIsDir(const char *s)
 {
    struct stat         st;
-   char *p, *buf = NULL;
+   char               *fl;
    
-   if ((!s) || (!*s))
-      return(0);
-   p = strrchr(s, ':');
-   if (p)
+   if ((!s) || (!*s)) return 0;
+   fl = __imlib_FileRealFile(s);
+   if (!fl) return 0;
+   if (stat(fl, &st) < 0)
      {
-	
-	buf = malloc(strlen(s));
-	if (!buf) return 0;
-	strcpy(buf, s);
-	p = strrchr(buf, ':');
-	if (p) *p = 0;
-	s = buf;
-     }
-   if (stat(s, &st) < 0)
-     {
-	if (buf) free(buf);
-	return(0);
+	free(fl);
+	return 0;
      }
    if (S_ISDIR(st.st_mode))
      {
-	if (buf) free(buf);
-	return(1);
+	free(fl);
+	return 1;
      }
-   if (buf) free(buf);
-   return(0);
+   free(fl);
+   return 0;
 }
 
 int
 __imlib_FilePermissions(const char *s)
 {
    struct stat         st;
-   char *p, *buf = NULL;
+   char               *fl;
    
-   if ((!s) || (!*s))
-      return 0;
-   p = strrchr(s, ':');
-   if (p)
+   if ((!s) || (!*s)) return 0;
+   fl = __imlib_FileRealFile(s);
+   if (!fl) return 0;
+   if (stat(fl, &st) < 0)
      {
-	
-	buf = malloc(strlen(s));
-	if (!buf) return 0;
-	strcpy(buf, s);
-	p = strrchr(buf, ':');
-	if (p) *p = 0;
-	s = buf;
-     }
-   if (!stat(s, &st) < 0)
-     {
-	if (buf) free(buf);
+	free(fl);
 	return 0;
      }
-   if (buf) free(buf);
+   free(fl);
    return st.st_mode;
 }
 
@@ -269,38 +232,23 @@ time_t
 __imlib_FileModDate(const char *s)
 {
    struct stat         st;
-   char *p, *buf = NULL;
+   char               *fl;
    
-   if ((!s) || (!*s))
-      return(0);
-   p = strrchr(s, ':');
-   if (p)
+   if ((!s) || (!*s)) return 0;
+   fl = __imlib_FileRealFile(s);
+   if (!fl) return 0;
+   if (stat(fl, &st) < 0)
      {
-	
-	buf = malloc(strlen(s));
-	if (!buf) return 0;
-	strcpy(buf, s);
-	p = strrchr(buf, ':');
-	if (p) *p = 0;
-	s = buf;
-     }
-   if (!stat(s, &st) < 0)
-     {
-	if (buf) free(buf);
-	return(0);
+	free(fl);
+	return 0;
      }
    if (st.st_mtime > st.st_ctime)
      {
-	if (buf) free(buf);
-	return(st.st_mtime);
+	free(fl);
+	return st.st_mtime;
      }
-   else
-     {
-	if (buf) free(buf);
-	return(st.st_ctime);
-     }
-   if (buf) free(buf);
-   return(0);
+   free(fl);
+   return st.st_ctime;
 }
 
 char               *
