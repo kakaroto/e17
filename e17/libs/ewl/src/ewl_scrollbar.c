@@ -79,6 +79,7 @@ void ewl_scrollbar_init(Ewl_Scrollbar * s, Ewl_Orientation orientation)
 	 * Setup the seeker portion
 	 */
 	s->seeker = ewl_seeker_new(orientation);
+	ewl_seeker_set_range(EWL_SEEKER(s->seeker), 1.0);
 	ewl_widget_show(s->seeker);
 
 	/*

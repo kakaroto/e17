@@ -231,10 +231,10 @@ void __ewl_scrollpane_configure(Ewl_Widget * w, void *ev_data, void *user_data)
 	/*
 	 * Adjust the scrollbar internal stepping to match the contents.
 	 */
+	ewl_scrollbar_set_step(EWL_SCROLLBAR(s->hscrollbar),
+			(double)content_w / (double)b_width);
 	ewl_scrollbar_set_step(EWL_SCROLLBAR(s->vscrollbar),
-			b_width / content_w);
-	ewl_scrollbar_set_step(EWL_SCROLLBAR(s->vscrollbar),
-			b_height / content_h);
+			(double)content_h / (double)b_height);
 
 	b_width = (int)(ewl_scrollbar_get_value(EWL_SCROLLBAR(s->hscrollbar)) *
 					      (double)(b_width));
