@@ -436,10 +436,21 @@ reboot_cb(void *data, Evas_Object * o, const char *emission,
 {
    if (session->config->reboot.allow)
    {
-      pid_t ppid = getppid();
+      pid_t pid;
 
-      execl("/bin/sh", "/bin/sh", "-c", "/sbin/shutdown -r now", NULL);
-      kill(ppid, SIGQUIT);
+      switch(pid = fork()) {
+          case 0:
+              if(execl("/bin/sh", "/bin/sh", "-c", "/sbin/shutdown -r now", NULL)) {
+                  syslog(LOG_CRIT, "Reboot failed: Unable to execute /sbin/shutdown");
+                  exit(0);
+              }
+          case -1:
+              syslog(LOG_CRIT, "Reboot failed: could not fork to execute shutdown script");
+              break;
+          default:
+              syslog(LOG_INFO, "The system is being rebooted");
+              exit(EXITCODE);
+      }
    }
 }
 
@@ -457,12 +468,22 @@ static void
 shutdown_cb(void *data, Evas_Object * o, const char *emission,
             const char *source)
 {
+   pid_t pid;
    if (session->config->halt.allow)
    {
-      pid_t ppid = getppid();
-
-      execl("/bin/sh", "/bin/sh", "-c", "/sbin/shutdown -h now", NULL);
-      kill(ppid, SIGQUIT);
+      switch(pid = fork()) {
+          case 0:
+              if(execl("/bin/sh", "/bin/sh", "-c", "/sbin/shutdown -h now", NULL)) {
+                  syslog(LOG_CRIT, "Shutdown failed: Unable to execute /sbin/shutdown");
+                  exit(0);
+              }
+          case -1:
+              syslog(LOG_CRIT, "Shutdown failed: could not fork to execute shutdown script");
+              break;
+          default:
+              syslog(LOG_INFO, "The system is being shut down");
+              exit(EXITCODE);
+      }
    }
 }
 

@@ -24,6 +24,7 @@
 #define X_DISP ":0"             /* only used if DISPLAY variable is NOT set */
 #define ENTRANCE PREFIX "/bin/entrance_wrapper"
 #define PIDFILE "/var/run/entranced.pid"
+#define EXITCODE 42
 
 /* display->status possible values */
 #define NOT_RUNNING 0

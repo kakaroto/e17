@@ -231,9 +231,14 @@ int Entranced_Exe_Exited(void *data, int type, void *event) {
 	
     if (e->exe == d->e_exe) {
         /* Session exited or crashed */
-        if (e->exited)
+        if (e->exited) {
             syslog(LOG_INFO, "The session has ended normally.");
-        else if (e->signalled)
+            if(e->exit_code == EXITCODE) {
+                ecore_main_loop_quit();
+                return 0;
+            }
+            
+        } else if (e->signalled)
             syslog(LOG_INFO, "The session was terminated with signal %d.", e->exit_signal);
 
         kill(d->pid.x, SIGHUP);

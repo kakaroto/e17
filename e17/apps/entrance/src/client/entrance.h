@@ -12,5 +12,6 @@
 #include "entrance_session.h"
 
 #define X_TESTING 0
+#define EXITCODE 42
 
 #endif
