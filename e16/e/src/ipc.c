@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2000-2003 Carsten Haitzler, Geoff Harrison and various contributors
+ * Copyright (C) 2000-2004 Carsten Haitzler, Geoff Harrison and various contributors
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to
@@ -4558,7 +4558,7 @@ IPC_Copyright(char *params, Client * c)
 
    params = NULL;
    Esnprintf(buf, sizeof(buf),
-	     "Copyright (C) 2000-2003 Carsten Haitzler and Geoff Harrison,\n"
+	     "Copyright (C) 2000-2004 Carsten Haitzler and Geoff Harrison,\n"
 	     "with various contributors (Isaac Richards, Sung-Hyun Nam, "
 	     "Kimball Thurston,\n"
 	     "Michael Kellen, Frederic Devernay, Felix Bellaby, "
