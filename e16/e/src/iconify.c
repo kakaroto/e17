@@ -1182,7 +1182,7 @@ SelectIconboxForEwin(EWin * ewin)
 	  }
 	Efree(ib);
      }
-#if 0
+#if 0				/* Do not autocreate iconboxes */
    else
      {
 	/* If there are no iconboxes, create one. */

@@ -237,7 +237,7 @@ EWMH_Init(Window win_wm_check)
    _ATOM_INIT(_NET_WM_STATE_SKIP_TASKBAR);
    _ATOM_INIT(_NET_WM_STATE_SKIP_PAGER);
    _ATOM_INIT(_NET_WM_STATE_HIDDEN);
-#if 0
+#if 0				/* Not implemented */
    _ATOM_INIT(_NET_WM_STATE_FULLSCREEN);
 #endif
    _ATOM_INIT(_NET_WM_STATE_ABOVE);
@@ -667,7 +667,7 @@ EWMH_GetWindowType(EWin * ewin)
 	ewin->skipfocus = 1;
 	ewin->never_use_area = 1;
      }
-#if 0
+#if 0				/* Not used by E (yet?) */
    else if (atom == _NET_WM_WINDOW_TYPE_TOOLBAR)
      {
      }

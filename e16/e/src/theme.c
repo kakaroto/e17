@@ -361,7 +361,7 @@ ThemeCleanup(void)
       return;
 
    /* We don't ever get here because mustdel is never set */
-#if 0
+#if 0				/* Don't do recursive theme removal (risky?) */
    rmrf(themepath);
 #endif
 }

@@ -2379,7 +2379,7 @@ SettingsSpecialFX(void)
    DialogItemSetFill(di, 1, 0);
    DialogItemSetColSpan(di, 4);
    DialogItemTextSetText(di, _("Effects"));
-#if 0
+#if 0				/* Disabled */
    di = DialogAddItem(table, DITEM_CHECKBUTTON);
    DialogItemSetPadding(di, 2, 2, 2, 2);
    DialogItemSetFill(di, 1, 0);

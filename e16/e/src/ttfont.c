@@ -944,7 +944,7 @@ EFont_draw_string(Display * disp, Drawable win, GC gc, int x, int y, char *text,
 /*  XUngrabServer(disp); */
 /*  XFlush(disp); */
 
-#if 0
+#if 0				/* ??? */
    if (xatt.depth == 16)
      {
 	XVisualInfo         xvi, *xvir;

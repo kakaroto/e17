@@ -4567,7 +4567,7 @@ HandleIPC(char *params, Client * c)
    return 0;
 }
 
-#if 0
+#if 0				/* Not implemented */
 /* The External function designed for attaching to a dialog box
  * to return a message back to an external app telling you what
  * button was depressed

@@ -908,8 +908,7 @@ Config_Control(FILE * ConfigFile)
 	     sscanf(s, "%*s %d %d ", &conf.dock.startx, &conf.dock.starty);
 	     break;
 	  case CONTROL_KDESUPPORT:
-#if 0
-	     /* Ignore */
+#if 0				/* Ignore */
 #endif
 	     break;
 	  case CONTROL_SHOWROOTTOOLTIP:

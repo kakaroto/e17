@@ -29,14 +29,6 @@ static void         DetermineEwinArea(EWin * ewin);
 EWin               *Adopt(Window win);
 EWin               *AdoptInternal(Window win, Border * border, int type);
 
-#if 0
-#define DELETE_EWIN_REFERENCE(ew, ew_ref) \
-	({ if (ew_ref == ew) { printf("Stale ewin ref (" #ew_ref ")\n"); ew_ref = NULL; } })
-#else
-#define DELETE_EWIN_REFERENCE(ew, ew_ref) \
-	({ if (ew_ref == ew) { ew_ref = NULL; } })
-#endif
-
 void
 KillEwin(EWin * ewin, int nogroup)
 {
@@ -1215,9 +1207,8 @@ AdoptInternal(Window win, Border * border, int type)
    ewin->type = type;
    switch (type)
      {
-#if 0
      case EWIN_TYPE_DIALOG:
-#endif
+	break;
      case EWIN_TYPE_MENU:
 	ewin->layer = 99;
 	ewin->skiptask = 1;
@@ -1381,8 +1372,8 @@ FreeEwin(EWin * ewin)
    if (ewin->ibox)
       IconboxDestroy(ewin->ibox);
 
-   /* May be an overkill but cannot hurt... */
-   DELETE_EWIN_REFERENCE(ewin, mode.mouse_over_win);
+   if (ewin == mode.mouse_over_win)
+      mode.mouse_over_win = NULL;
 
    HintsDelWindowHints(ewin);
 

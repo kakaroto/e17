@@ -562,7 +562,7 @@ EGetGeometry(Display * d, Window win, Window * root_return, int *x, int *y,
      {
 	ok = XGetGeometry(d, win, root_return, x, y, w, h, bw, depth);
      }
-#if 0
+#if 0				/* Debug */
    if (!ok)
       printf("EGetGeometry win=%#x, error %d\n", (unsigned)win, ok);
 #endif

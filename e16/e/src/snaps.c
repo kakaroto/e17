@@ -509,7 +509,7 @@ SnapshotEwinDialog(EWin * ewin)
    DialogItemCheckButtonSetState(di, tmp_snap_skiplists);
    DialogItemCheckButtonSetPtr(di, &tmp_snap_skiplists);
 
-#if 0
+#if 0				/* Disabled (why?) */
    di = DialogAddItem(table, DITEM_CHECKBUTTON);
    DialogItemSetColSpan(di, 2);
    DialogItemSetPadding(di, 2, 2, 2, 2);

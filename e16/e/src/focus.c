@@ -347,7 +347,7 @@ FocusNewDeskBegin(void)
 
 	     if (ewin->pager)
 	       {
-#if 0
+#if 0				/* ??? */
 		  XSelectInput(disp, ewin->client.win,
 			       PropertyChangeMask | FocusChangeMask |
 			       ResizeRedirectMask | StructureNotifyMask |
@@ -476,9 +476,6 @@ FocusNewDesk(void)
 void
 FocusHandleEnter(XEvent * ev)
 {
-#if 0
-   Window              win = ev->xcrossing.window;
-#endif
    EWin               *ewin;
 
    EDBUG(5, "FocusHandleEnter");
@@ -519,7 +516,7 @@ FocusHandleLeave(XEvent * ev)
       FocusToEWin(NULL, FOCUS_SET);
 }
 
-#if 0
+#if 0				/* Remove old code */
 void
 FocusHandleEnter(XEvent * ev)
 {

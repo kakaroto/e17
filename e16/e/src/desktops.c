@@ -547,7 +547,7 @@ SetBackgroundTo(Window win, Background * dsk, char setbg)
    if (conf.backgrounds.hiquality)
      {
 	imlib_context_set_dither(1);
-#if 0
+#if 0				/* ??? */
 	imlib_context_set_anti_alias(1);
 #endif
      }

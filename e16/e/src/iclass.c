@@ -42,7 +42,7 @@ TransparencyMakeColorModifier(void)
    if (icm == NULL)
       icm = imlib_create_color_modifier();
    imlib_context_set_color_modifier(icm);
-#if 0
+#if 0				/* Useful in this context? */
    imlib_modify_color_modifier_gamma(0.5);
    imlib_modify_color_modifier_brightness(0.5);
    imlib_modify_color_modifier_contrast(0.5);
@@ -464,7 +464,7 @@ ImageStateMakePmapMask(ImageState * is, Drawable win, PmapMask * pmm,
 	     imlib_context_set_blend(0);
 #ifdef ENABLE_THEME_TRANSPARENCY
 	     imlib_context_set_color_modifier(NULL);
-#if 0
+#if 0				/* Do we ever need to free it? */
 	     imlib_free_color_modifier();
 #endif
 #endif

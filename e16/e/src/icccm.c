@@ -78,14 +78,6 @@ ICCCM_ProcessClientMessage(XClientMessageEvent * event)
 	     if (!(ewin->iconified))
 		IconifyEwin(ewin);
 	  }
-#if 0
-	else if (event->data.l[0] == NormalState)
-	  {
-	     if (ewin->iconified)
-		DeIconifyEwin(ewin);
-	  }
-	HintsSetWindowState(ewin);
-#endif
      }
 }
 

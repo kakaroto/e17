@@ -252,7 +252,7 @@ Zoom(EWin * ewin)
 	FocusToEWin(ewin, FOCUS_SET);
 	XWarpPointer(disp, None, ewin->client.win, 0, 0, 0, 0,
 		     ewin->client.w / 2, ewin->client.h / 2);
-#if 0
+#if 0				/* Doesn't work as intended */
 	XGrabPointer(disp, ewin->client.win, True,
 		     ButtonPressMask | ButtonReleaseMask |
 		     PointerMotionMask | ButtonMotionMask |

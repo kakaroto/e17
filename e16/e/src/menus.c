@@ -221,7 +221,7 @@ MenuShow(Menu * m, char noshow)
 	  {
 	     ButtonDrawWithState(mode.button, STATE_NORMAL);
 	  }
-#if 0
+#if 0				/* ??? */
 	RaiseEwin(ewin);
 	ShowEwin(ewin);
 	EDBUG_RETURN_;
@@ -1869,7 +1869,7 @@ MenuCreateFromDesktops(char *name, MenuStyle * ms)
    EDBUG_RETURN(m);
 }
 
-#if 0
+#if 0				/* Not finished */
 Menu               *
 MenuCreateMoveToDesktop(char *name, MenuStyle * ms)
 {
