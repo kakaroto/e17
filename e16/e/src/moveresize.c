@@ -142,7 +142,7 @@ ActionMoveEnd(EWin * ewin)
 				    gwins[i]->shape_y);
 	  }
 
-	EoChangeOpacity(ewin, ewin->props.opacity);
+	EoChangeOpacity(ewin, ewin->ewmh.opacity);
 	RaiseEwin(gwins[i]);
      }
    StackDesktop(EoGetDesk(ewin));	/* Restack to "un-float" */

@@ -184,10 +184,10 @@ HintsSetWindowState(EWin * ewin)
 }
 
 void
-HintsSetWindowOpacity(EWin * ewin, unsigned int opacity)
+HintsSetWindowOpacity(EWin * ewin)
 {
 #if ENABLE_EWMH
-   EWMH_SetWindowOpacity(ewin, opacity);
+   EWMH_SetWindowOpacity(ewin);
 #endif
 }
 

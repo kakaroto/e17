@@ -538,6 +538,7 @@ struct _eobj
 #define EoSetLayer(eo, _l)      EobjSetLayer(&((eo)->o), (_l))
 #if USE_COMPOSITE
 #define EoSetOpacity(eo, _o)    (eo)->o.opacity = (_o)
+#define EoGetOpacity(eo)        ((eo)->o.opacity)
 #define EoChangeOpacity(eo, _o) EobjChangeOpacity(&((eo)->o), _o)
 #define EoSetShadow(eo, _x)     (eo)->o.shadow = (_x)
 #define EoGetShadow(eo)         ((eo)->o.shadow)
@@ -728,7 +729,6 @@ struct _ewin
       unsigned            vroot:1;	/* Virtual root window */
       unsigned            inhibit_iconify:1;
       unsigned            autosave:1;
-      unsigned int        opacity;
    } props;
    struct
    {
@@ -751,6 +751,7 @@ struct _ewin
    {
       char               *wm_name;
       char               *wm_icon_name;
+      unsigned int        opacity;
    } ewmh;
    int                 shape_x, shape_y;
    int                 req_x, req_y;
@@ -1558,6 +1559,7 @@ void                EventShow(const XEvent * ev);
 #define EWIN_CHANGE_ICON_PMAP   (1<<2)
 #define EWIN_CHANGE_DESKTOP     (1<<3)
 #define EWIN_CHANGE_LAYER       (1<<4)
+#define EWIN_CHANGE_OPACITY     (1<<5)
 
 void                EwinRefresh(EWin * ewin);
 void                EwinUpdateAfterMoveResize(EWin * ewin, int resize);
@@ -1589,8 +1591,6 @@ void                EwinRememberPositionSet(EWin * ewin);
 void                EwinRememberPositionGet(EWin * ewin, int *px, int *py);
 
 void                EwinChange(EWin * ewin, unsigned int flag);
-void                EwinChangesStart(EWin * ewin);
-void                EwinChangesProcess(EWin * ewin);
 
 void                EwinsEventsConfigure(int mode);
 void                EwinsSetFree(void);
@@ -1655,8 +1655,8 @@ void                EWMH_SetShowingDesktop(int on);
 void                EWMH_SetWindowName(Window win, const char *name);
 void                EWMH_SetWindowDesktop(const EWin * ewin);
 void                EWMH_SetWindowState(const EWin * ewin);
-void                EWMH_SetWindowBorder(EWin * ewin);
-void                EWMH_SetWindowOpacity(EWin * ewin, unsigned int opacity);
+void                EWMH_SetWindowBorder(const EWin * ewin);
+void                EWMH_SetWindowOpacity(const EWin * ewin);
 void                EWMH_GetWindowHints(EWin * ewin);
 void                EWMH_DelWindowHints(const EWin * ewin);
 void                EWMH_ProcessClientMessage(XClientMessageEvent * event);
@@ -1811,7 +1811,7 @@ void                HintsSetWindowClass(Window win, const char *name,
 void                HintsSetWindowDesktop(EWin * ewin);
 void                HintsSetWindowArea(EWin * ewin);
 void                HintsSetWindowState(EWin * ewin);
-void                HintsSetWindowOpacity(EWin * ewin, unsigned int opacity);
+void                HintsSetWindowOpacity(EWin * ewin);
 void                HintsSetWindowHints(EWin * ewin);
 void                HintsSetWindowBorder(EWin * ewin);
 void                HintsGetWindowHints(EWin * ewin);

@@ -391,7 +391,7 @@ EWMH_SetWindowState(const EWin * ewin)
 }
 
 void
-EWMH_SetWindowBorder(EWin * ewin)
+EWMH_SetWindowBorder(const EWin * ewin)
 {
    int                 val[4];
 
@@ -410,15 +410,10 @@ EWMH_SetWindowBorder(EWin * ewin)
 }
 
 void
-EWMH_SetWindowOpacity(EWin * ewin, unsigned int opacity)
+EWMH_SetWindowOpacity(const EWin * ewin)
 {
-   if (ewin->props.opacity != opacity)
-     {
-	ecore_x_netwm_opacity_set(ewin->client.win, opacity);
-	ewin->props.opacity = opacity;
-     }
-   EoSetOpacity(ewin, opacity);
-   ecore_x_netwm_opacity_set(EoGetWin(ewin), opacity);
+   ecore_x_netwm_opacity_set(ewin->client.win, ewin->ewmh.opacity);
+   ecore_x_netwm_opacity_set(EoGetWin(ewin), ewin->ewmh.opacity);
 }
 
 /*
@@ -465,7 +460,7 @@ EWMH_GetWindowDesktop(EWin * ewin)
 
    num = ecore_x_netwm_desktop_get(ewin->client.win, &desk);
    if (num <= 0)
-      goto done;
+      return;
 
    if (desk == 0xFFFFFFFF)
      {
@@ -479,9 +474,6 @@ EWMH_GetWindowDesktop(EWin * ewin)
 	EoSetSticky(ewin, 0);
      }
    EwinChange(ewin, EWIN_CHANGE_DESKTOP);
-
- done:
-   ;
 }
 
 static void
@@ -494,7 +486,7 @@ EWMH_GetWindowState(EWin * ewin)
 					       ECORE_X_ATOM_NET_WM_STATE,
 					       &p_atoms);
    if (n_atoms <= 0)
-      goto done;
+      return;
 
    /* We must clear/set all according to not present/present */
 /* EoSetSticky(ewin, 0); Do not override if set via _NET_WM_DESKTOP */
@@ -533,9 +525,6 @@ EWMH_GetWindowState(EWin * ewin)
 #endif
      }
    Efree(p_atoms);
-
- done:
-   ;
 }
 
 static void
@@ -548,7 +537,7 @@ EWMH_GetWindowType(EWin * ewin)
 					       ECORE_X_ATOM_NET_WM_WINDOW_TYPE,
 					       &p_atoms);
    if (n_atoms <= 0)
-      goto done;
+      return;
 
    atom = p_atoms[0];
    if (atom == ECORE_X_ATOM_NET_WM_WINDOW_TYPE_DESKTOP)
@@ -599,9 +588,6 @@ EWMH_GetWindowType(EWin * ewin)
      }
 #endif
    Efree(p_atoms);
-
- done:
-   ;
 }
 
 static void
@@ -630,8 +616,15 @@ EWMH_GetWindowOpacity(EWin * ewin)
    if (num <= 0)
       return;
 
-   ewin->props.opacity = opacity;
-   EWMH_SetWindowOpacity(ewin, opacity);
+   if (ewin->ewmh.opacity == opacity)
+      return;
+
+   ewin->ewmh.opacity = opacity;
+
+   /* Set frame window hint for xcompmgr */
+   ecore_x_netwm_opacity_set(EoGetWin(ewin), opacity);
+
+   EwinChange(ewin, EWIN_CHANGE_OPACITY);
 }
 
 static void

@@ -41,6 +41,9 @@
    /* StructureNotifyMask | */ ResizeRedirectMask | \
    PropertyChangeMask | ColormapChangeMask | VisibilityChangeMask)
 
+static void         EwinChangesStart(EWin * ewin);
+static void         EwinChangesProcess(EWin * ewin);
+
 static void         EwinHandleEventsToplevel(XEvent * ev, void *prm);
 static void         EwinHandleEventsContainer(XEvent * ev, void *prm);
 static void         EwinHandleEventsClient(XEvent * ev, void *prm);
@@ -94,6 +97,9 @@ EwinCreate(Window win, int type)
    ewin->client.mwm_func_minimize = 1;
    ewin->client.mwm_func_maximize = 1;
    ewin->client.mwm_func_close = 1;
+
+   ewin->ewmh.opacity = 0xFFFFFFFF;
+
    EoSetWin(ewin, ECreateWindow(VRoot.win, -10, -10, 1, 1, 1));
    ewin->win_container = ECreateWindow(EoGetWin(ewin), 0, 0, 1, 1, 0);
 #if 0				/* ENABLE_GNOME - Not actually used */
@@ -106,7 +112,6 @@ EwinCreate(Window win, int type)
    EobjInit(&ewin->o, EOBJ_TYPE_EWIN, -1, -1, -1, -1);
    EoSetDesk(ewin, DesksGetCurrent());
    EoSetLayer(ewin, 4);
-   ewin->props.opacity = 0xFFFFFFFF;
 
    att.event_mask = EWIN_CONTAINER_EVENT_MASK;
    att.do_not_propagate_mask = ButtonPressMask | ButtonReleaseMask;
@@ -524,6 +529,8 @@ Adopt(EWin * ewin, Window win)
    SnapshotEwinMatch(ewin);	/* Saved settings */
    if (Mode.wm.startup)
       EHintsGetInfo(ewin);	/* E restart hints */
+   EoSetOpacity(ewin, ewin->ewmh.opacity);
+
    ICCCM_MatchSize(ewin);
 
    EwinAdopt(ewin);
@@ -538,6 +545,7 @@ Adopt(EWin * ewin, Window win)
       EwinInstantShade(ewin, 1);
 
    HintsSetWindowState(ewin);
+   HintsSetWindowOpacity(ewin);
    HintsSetClientList();
 
    if (EventDebug(EDBUG_TYPE_EWINS))
@@ -570,6 +578,8 @@ AdoptInternal(Window win, Border * border, int type, void (*init) (EWin *
 
    WindowMatchEwinOps(ewin);	/* Window matches */
    SnapshotEwinMatch(ewin);	/* Saved settings */
+   EoSetOpacity(ewin, ewin->ewmh.opacity);
+
    ICCCM_MatchSize(ewin);
 
    EwinAdopt(ewin);
@@ -584,6 +594,7 @@ AdoptInternal(Window win, Border * border, int type, void (*init) (EWin *
       EwinInstantShade(ewin, 1);
 
    HintsSetWindowState(ewin);
+   HintsSetWindowOpacity(ewin);
    HintsSetClientList();
 
    return ewin;
@@ -1722,6 +1733,12 @@ EwinChangesProcess(EWin * ewin)
    if (EWinChanges.flags & EWIN_CHANGE_ICON_PMAP)
      {
 	ModulesSignal(ESIGNAL_EWIN_CHANGE_ICON, ewin);
+     }
+
+   if (EWinChanges.flags & EWIN_CHANGE_OPACITY)
+     {
+	EoChangeOpacity(ewin, ewin->ewmh.opacity);
+	SnapshotEwinUpdate(ewin, SNAP_USE_OPACITY);
      }
 
    EWinChanges.flags = 0;

@@ -1656,7 +1656,8 @@ EwinOpSetOpacity(EWin * ewin, int opacity)
    unsigned int        op;
 
    op = OpacityExt(opacity);
-   HintsSetWindowOpacity(ewin, op);
+   ewin->ewmh.opacity = op;
+   HintsSetWindowOpacity(ewin);
    EoChangeOpacity(ewin, op);
    SnapshotEwinUpdate(ewin, SNAP_USE_OPACITY);
 }

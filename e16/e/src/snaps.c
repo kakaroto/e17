@@ -353,7 +353,7 @@ SnapEwinGroups(Snapshot * sn, EWin * ewin, char onoff)
 static void
 SnapEwinOpacity(Snapshot * sn, EWin * ewin)
 {
-   sn->opacity = ewin->props.opacity >> 24;
+   sn->opacity = ewin->ewmh.opacity >> 24;
 }
 
 static void
@@ -1461,7 +1461,7 @@ SnapshotEwinMatch(EWin * ewin)
 
 #if USE_COMPOSITE
    if (sn->use_flags & SNAP_USE_OPACITY)
-      ewin->props.opacity = OpacityExt(sn->opacity);
+      ewin->ewmh.opacity = OpacityExt(sn->opacity);
 
    if (sn->use_flags & SNAP_USE_SHADOW)
       EoSetShadow(ewin, sn->shadow);

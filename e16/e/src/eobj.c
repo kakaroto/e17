@@ -261,6 +261,7 @@ EobjGetPixmap(const EObj * eo)
 void
 EobjChangeOpacity(EObj * eo, unsigned int opacity)
 {
+   eo->opacity = opacity;
    ECompMgrWinChangeOpacity(eo, opacity);
 }
 #endif

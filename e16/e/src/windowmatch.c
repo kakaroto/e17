@@ -702,11 +702,11 @@ WindowMatchEwinOpsAction(EWin * ewin, int op, const char *args)
 	ewin->skipfocus = ewin->skiptask = ewin->skipwinlist;
 	break;
 
-#if USE_COMPOSITE
      case EWIN_OP_OPACITY:
-	EoSetOpacity(ewin, OpacityExt(atoi(args)));
+	ewin->ewmh.opacity = OpacityExt(atoi(args));
 	break;
 
+#if USE_COMPOSITE
      case EWIN_OP_SHADOW:
 	WINOP_GET_BOOL(ewin->o.shadow, args);
 	break;
