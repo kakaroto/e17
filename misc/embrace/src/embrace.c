@@ -406,7 +406,7 @@ bool embrace_load_ui (Embrace *e)
 
 	embrace_expand_path ("~/.fonts", path, sizeof (path));
 	evas_font_path_append (e->gui.evas, path);
-	evas_font_path_append (e->gui.evas, "/usr/share/fonts/truetype");
+	evas_font_path_append (e->gui.evas, "/usr/share/fonts");
 	evas_font_path_append (e->gui.evas, "/usr/X11R6/lib/X11/fonts");
 
 	if (!ui_load_dragger (e))
