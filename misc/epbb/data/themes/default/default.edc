@@ -34,41 +34,31 @@ collections {
 		action, DRAG_VAL_SET 0.0 0.5;
 		target, "Status";
 	    }
-	    program {
-		name, "VolumeSwitch";
-		signal, "VOLUME";
-		source, "";
-		action, STATE_SET "default" 0.0;
-		target, "mainimage";
-	    }
-	    program {
-		name, "BrightnessSwitch";
-		signal, "BRIGHTNESS";
-		source, "";
-		action, STATE_SET "brightness" 0.0;
-		target, "mainimage";
-	    }
-	    program {
-		name, "MutedSwitch";
-		signal, "MUTED";
-		source, "";
-		action, STATE_SET "mute" 0.0;
-		target, "mainimage";
-	    }
-	    program {
-		name, "BatteryWarning";
-		signal, "BATTERY_WARNING";
-		source, "";
-		action, STATE_SET "battery" 0.0;
-		target, "mainimage";
-	    }
-	    program {
-		name, "SleepWarning";
-		signal, "SLEEP_WARNING";
-		source, "";
-		action, STATE_SET "sleep" 0.0;
-		target, "mainimage";
-	    }
+#define BASIC_CB(pname, psig, pstate) \
+	    program { name, pname; signal, psig; source, ""; \
+		action, STATE_SET pstate 0.0; target, "mainimage"; } \
+	    program { name, pname"show"; signal, psig; source, ""; \
+		action, SIGNAL_EMIT "window,show" ""; } \
+	    program { name, "hidewin"pname; signal, psig; source, "" ;\
+			after, "hidewin"; } \
+	    program { name, pname"fadein"; signal, psig; source, ""; \
+		action, STATE_SET "visible" 0.0; \
+		transition, DECELERATE 0.5; target, "miclip"; } \
+	    program { name, "fadeout"pname; signal, psig; source, ""; \
+			after, "fadeout"; }
+BASIC_CB("VolumeSwitch", "VOLUME", "default");
+BASIC_CB("BrightnessSwitch", "BRIGHTNESS", "brightness");
+BASIC_CB("MutedSwitch", "MUTED", "mute");
+BASIC_CB("BatteryWarning", "BATTERY_WARNING", "battery");
+BASIC_CB("SleepWarning", "SLEEP_WARNING", "sleep");
+	    program { name, "hidewin"; action, ACTION_STOP; 
+			target, "hidewincb"; after, "hidewincb"; }
+	    program { name, "hidewincb"; 
+		action, SIGNAL_EMIT "window,hide" ""; in, 2.0 0.0; } 
+	    program { name, "fadeout"; action, ACTION_STOP; \
+		    target, "fadeout_cb"; after, "fadeout_cb"; }
+	    program { name, "fadeout_cb"; action, STATE_SET "default" 0.0; 
+		target, "miclip"; transition, ACCELERATE 0.5; in, 1.5 0.0; } 
 	}
     }
 }
