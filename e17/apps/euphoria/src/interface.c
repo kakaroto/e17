@@ -200,7 +200,7 @@ void ui_fill_track_info(Euphoria *e, PlayListItem *pli) {
 }
 
 bool ui_init_edje(Euphoria *e, const char *name) {
-	double edje_w = 0, edje_h = 0;
+	Evas_Coord edje_w = 0, edje_h = 0;
 	const char *invert;
 
 	debug(DEBUG_LEVEL_INFO, "EDJE: Defining Edje \n");
@@ -236,11 +236,11 @@ bool ui_init_edje(Euphoria *e, const char *name) {
 
 	/* set max size */
 	edje_object_size_max_get(e->gui.edje, &edje_w, &edje_h);
-	ecore_evas_size_max_set(e->gui.ee, edje_w, edje_h);
+	ecore_evas_size_max_set(e->gui.ee, (int) edje_w, (int) edje_h);
 
 	/* set min size */
 	edje_object_size_min_get(e->gui.edje, &edje_w, &edje_h);
-	ecore_evas_size_min_set(e->gui.ee, edje_w, edje_h);
+	ecore_evas_size_min_set(e->gui.ee, (int) edje_w, (int) edje_h);
 
 	/* resize to the min size */
 	ecore_evas_resize(e->gui.ee, (int) edje_w, (int) edje_h);
@@ -335,7 +335,7 @@ static void setup_playlist(Euphoria *e) {
 	esmart_container_direction_set(e->gui.playlist, 1);
 	esmart_container_spacing_set(e->gui.playlist, 0);
 	esmart_container_fill_policy_set(e->gui.playlist,
-	                            CONTAINER_FILL_POLICY_FILL_X);
+	                                 CONTAINER_FILL_POLICY_FILL_X);
 
 	edje_object_part_swallow(e->gui.edje, "playlist",
 	                         e->gui.playlist);

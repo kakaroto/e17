@@ -174,7 +174,7 @@ void playlist_item_properties_set(PlayListItem *pli, xmmsc_result_t *r) {
 }
 
 bool playlist_item_show(PlayListItem *pli) {
-	double w = 0, h = 0;
+	Evas_Coord w = 0, h = 0;
 	void *udata;
 
 	assert(pli);
