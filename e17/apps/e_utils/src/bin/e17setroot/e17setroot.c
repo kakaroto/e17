@@ -98,6 +98,8 @@ char *_e_bg_bg_file_getdir(char *path) {
 
    ptr=path;
    c=strrchr(ptr, '/');
+   if (!c)
+     return ".";
    dir = malloc(strlen(path) + 1);
 
    while(ptr != c) {
@@ -120,6 +122,8 @@ char *_e_bg_bg_file_getfile(char *path) {
    i = 0;
    ptr = path;
    c = strrchr(ptr, '/');
+   if (!c)
+     return path;
    file = malloc(strlen(ptr) + 1);
 
    while(ptr != c) {
