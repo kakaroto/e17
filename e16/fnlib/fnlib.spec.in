@@ -1,31 +1,24 @@
-# Note that this is NOT a relocatable package
-%define ver      @VERSION@
-%define rel      1
-%define prefix   /usr
-
 Summary: Color font rendering library for X11R6.
 Name: fnlib
-Version: %ver
-Release: %rel
+Version: @VERSION@
+Release: 2
 Copyright: LGPL
 Group: System Environment/Libraries
-Source: ftp://www.rasterman.com/pub/enlightenment/libs/fnlib/fnlib-%{ver}.tar.gz
-Obsoletes: Fnlib
-BuildRoot: /var/tmp/fnlib-%{ver}-root
-
+Source: ftp://www.rasterman.com/pub/enlightenment/libs/fnlib/fnlib-%{version}.tar.gz
 URL: http://www.rasterman.com/
-Docdir: %{prefix}/doc
 Requires: imlib
+Obsoletes: Fnlib
+BuildRoot: /var/tmp/fnlib-%{version}-root
 
 %description
-Fnlib is a library that provides full, scalable 24-bit color font 
+Fnlib is a library that provides full, scalable 24-bit color font
 rendering abilities for X.
 
 %package devel
 Summary: Headers, static libraries and documentation for Fnlib.
 Group: Development/Libraries
 Requires: fnlib
-Obsoletes: Fnlib
+Obsoletes: Fnlib, Fnlib-devel
 
 %description devel
 Headers, static libraries and documentation for Fnlib.
@@ -34,13 +27,17 @@ Headers, static libraries and documentation for Fnlib.
 %setup
 
 %build
-CFLAGS="$RPM_OPT_FLAGS" ./configure --prefix=%prefix
+CFLAGS="$RPM_OPT_FLAGS"
+export CFLAGS
+%configure --prefix=%{_prefix} --bindir=%{_bindir} --libdir=%{_libdir} \
+    --includedir=%{_includedir} --datadir=%{_datadir} \
+    --sysconfdir=%{_sysconfdir}
 make
 
 %install
 rm -rf $RPM_BUILD_ROOT
 
-make prefix=$RPM_BUILD_ROOT%{prefix} install
+make DESTDIR=$RPM_BUILD_ROOT install
 
 %clean
 rm -rf $RPM_BUILD_ROOT
@@ -51,28 +48,22 @@ rm -rf $RPM_BUILD_ROOT
 
 %files
 %defattr(-, root, root)
-
 %doc README
-
-%config %{prefix}/etc/fnrc
-%{prefix}/lib/lib*.so.*
-%{prefix}/share/fnlib_fonts/*
+%config %{_sysconfdir}/fnrc
+%{_libdir}/lib*.so.*
+%{_datadir}/fnlib_fonts/*
 
 %files devel
 %defattr(-, root, root)
-
 %doc doc/index.html
 %doc doc/fontinfo.README
-
-%{prefix}/lib/lib*.so
-%{prefix}/lib/*a
-%{prefix}/include/*
+%{_libdir}/lib*.so
+%{_libdir}/*a
+%{_includedir}/*
 
 %changelog
-
 * Fri Feb 12 1999 Michael Fulbright <drmike@redhat.com>
 - built against imlib 1.9.3
-
 
 * Thu Jan 21 1999 The Rasterman <raster@redhat.com>
 - added spec file to CVS

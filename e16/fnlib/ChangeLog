@@ -39,3 +39,9 @@ Tue Aug  4 13:42:05 EDT 1998
 snprintf doesn't work under non gcc-derivitive compilers.
 moved to sprintf.  since sprintf is scattered through here
 anyways it'll do for now.
+----------------------------------------------------------------------
+Tue Jul 29 22:37:39 2003                        Michael Jennings (mej)
+
+I'm not sure it's worth it, but hey...  Spec file/build cleanups from
+Matthias Brill <matthias.brill@akamail.com>.
+----------------------------------------------------------------------

@@ -4,8 +4,8 @@ AM_CONFIG_HEADER(config.h)
 
 AM_INIT_AUTOMAKE(fnlib, 0.5)
 
-AM_PROG_LIBTOOL
 AC_PROG_CC
+AM_PROG_LIBTOOL
 
 dnl AM_PATH_GTK(1.0.1,
 dnl    GDK_FNLIB="gdk_fnlib",
