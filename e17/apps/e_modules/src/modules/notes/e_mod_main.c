@@ -406,13 +406,17 @@ _note_face_init (Note_Face *nf)
    evas_object_pass_events_set(o, 1);
    evas_object_layer_set (o, 1);
    esmart_textarea_focus_set(o, 0);
-   evas_object_show (o);   
+   evas_object_show (o);
+   
+   o = evas_object_rectangle_add(nf->evas);
+   evas_object_color_set(o, 245, 248, 27, 100);
+   esmart_textarea_bg_set(nf->note_object, o);   
    
    o = evas_object_rectangle_add(nf->evas);
    nf->event_object = o;
    evas_object_layer_set(o, 2);
    evas_object_repeat_events_set(o, 1);
-   evas_object_color_set(o, 100, 0, 0, 100);
+   evas_object_color_set(o, 0, 0, 0, 0);
    evas_object_event_callback_add(o, EVAS_CALLBACK_MOUSE_IN, 
 				  _note_face_focus, nf);
    evas_object_event_callback_add(o, EVAS_CALLBACK_MOUSE_OUT, 
