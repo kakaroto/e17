@@ -11,6 +11,10 @@ __imlib_BlendRGBAToData(DATA32 *src, int src_w, int src_h, DATA32 *dst,
 			int w, int h, char dalpha, ImlibColorModifier *cm, 
 			ImlibOp op)
 {
+   void (*blender)(DATA32*, int, DATA32*, int, int, int) = NULL;
+   void (*blender_cm)(DATA32*, int, DATA32*, int, int, int, ImlibColorModifier *) = NULL;
+
+
    if (sx < 0)
      {
 	w += sx;
@@ -53,63 +57,50 @@ __imlib_BlendRGBAToData(DATA32 *src, int src_w, int src_h, DATA32 *dst,
 	  {
 	  case OP_COPY:
 	     if (dalpha == 0)
-		__imlib_BlendRGBAToRGBCmod(src + (sy * src_w) + sx, src_w - w, 
-					   dst + (dy * dst_w) + dx, dst_w - w, w, h, cm);
+		blender_cm = __imlib_BlendRGBAToRGBCmod;
 	     else if (dalpha == 1)
-		__imlib_BlendRGBAToRGBACmod(src + (sy * src_w) + sx, src_w - w, 
-					    dst + (dy * dst_w) + dx, dst_w - w, w, h, cm);
+		blender_cm = __imlib_BlendRGBAToRGBACmod;
 	     else if (dalpha == 2)
-		__imlib_CopyRGBAToRGBCmod(src + (sy * src_w) + sx, src_w - w, 
-					  dst + (dy * dst_w) + dx, dst_w - w, w, h, cm);
+		blender_cm = __imlib_CopyRGBAToRGBCmod;
 	     else if (dalpha == 3)
-		__imlib_CopyRGBAToRGBACmod(src + (sy * src_w) + sx, src_w - w, 
-					   dst + (dy * dst_w) + dx, dst_w - w, w, h, cm);
+		blender_cm = __imlib_CopyRGBAToRGBACmod;
 	     break;
 	  case OP_ADD:
 	     if (dalpha == 0)
-		__imlib_AddBlendRGBAToRGBCmod(src + (sy * src_w) + sx, src_w - w, 
-					      dst + (dy * dst_w) + dx, dst_w - w, w, h, cm);
+		blender_cm = __imlib_AddBlendRGBAToRGBCmod;
 	     else if (dalpha == 1)
-		__imlib_AddBlendRGBAToRGBACmod(src + (sy * src_w) + sx, src_w - w, 
-					       dst + (dy * dst_w) + dx, dst_w - w, w, h, cm);
+		blender_cm = __imlib_AddBlendRGBAToRGBACmod;
 	     else if (dalpha == 2)
-		__imlib_AddCopyRGBAToRGBCmod(src + (sy * src_w) + sx, src_w - w, 
-					     dst + (dy * dst_w) + dx, dst_w - w, w, h, cm);
+		blender_cm = __imlib_AddCopyRGBAToRGBCmod;
 	     else if (dalpha == 3)
-		__imlib_AddCopyRGBAToRGBACmod(src + (sy * src_w) + sx, src_w - w, 
-					      dst + (dy * dst_w) + dx, dst_w - w, w, h, cm);
+		blender_cm = __imlib_AddCopyRGBAToRGBACmod;
 	     break;
 	  case OP_SUBTRACT:
 	     if (dalpha == 0)
-		__imlib_SubBlendRGBAToRGBCmod(src + (sy * src_w) + sx, src_w - w, 
-					      dst + (dy * dst_w) + dx, dst_w - w, w, h, cm);
+		blender_cm = __imlib_SubBlendRGBAToRGBCmod;
 	     else if (dalpha == 1)
-		__imlib_SubBlendRGBAToRGBACmod(src + (sy * src_w) + sx, src_w - w, 
-					       dst + (dy * dst_w) + dx, dst_w - w, w, h, cm);
+		blender_cm = __imlib_SubBlendRGBAToRGBACmod;
 	     else if (dalpha == 2)
-		__imlib_SubCopyRGBAToRGBCmod(src + (sy * src_w) + sx, src_w - w, 
-					     dst + (dy * dst_w) + dx, dst_w - w, w, h, cm);
+		blender_cm = __imlib_SubCopyRGBAToRGBCmod;
 	     else if (dalpha == 3)
-		__imlib_SubCopyRGBAToRGBACmod(src + (sy * src_w) + sx, src_w - w, 
-					      dst + (dy * dst_w) + dx, dst_w - w, w, h, cm);
+		blender_cm = __imlib_SubCopyRGBAToRGBACmod;
 	     break;
 	  case OP_RESHADE:
 	     if (dalpha == 0)
-		__imlib_ReBlendRGBAToRGBCmod(src + (sy * src_w) + sx, src_w - w, 
-					     dst + (dy * dst_w) + dx, dst_w - w, w, h, cm);
+		blender_cm = __imlib_ReBlendRGBAToRGBCmod;
 	     else if (dalpha == 1)
-		__imlib_ReBlendRGBAToRGBACmod(src + (sy * src_w) + sx, src_w - w, 
-					      dst + (dy * dst_w) + dx, dst_w - w, w, h, cm);
+		blender_cm = __imlib_ReBlendRGBAToRGBACmod;
 	     else if (dalpha == 2)
-		__imlib_ReCopyRGBAToRGBCmod(src + (sy * src_w) + sx, src_w - w, 
-					    dst + (dy * dst_w) + dx, dst_w - w, w, h, cm);
+		blender_cm = __imlib_ReCopyRGBAToRGBCmod;
 	     else if (dalpha == 3)
-		__imlib_ReCopyRGBAToRGBACmod(src + (sy * src_w) + sx, src_w - w, 
-					     dst + (dy * dst_w) + dx, dst_w - w, w, h, cm);
+		blender_cm = __imlib_ReCopyRGBAToRGBACmod;
 	     break;
 	  default:
 	     break;
 	  }
+	  if (blender_cm)
+	     blender_cm(src + (sy * src_w) + sx, src_w - w, 
+			dst + (dy * dst_w) + dx, dst_w - w, w, h, cm);
      }
    else
      {
@@ -117,63 +108,50 @@ __imlib_BlendRGBAToData(DATA32 *src, int src_w, int src_h, DATA32 *dst,
 	  {
 	  case OP_COPY:
 	     if (dalpha == 0)
-		__imlib_BlendRGBAToRGB(src + (sy * src_w) + sx, src_w - w, 
-				       dst + (dy * dst_w) + dx, dst_w - w, w, h);
+		blender = __imlib_BlendRGBAToRGB;
 	     else if (dalpha == 1)
-		__imlib_BlendRGBAToRGBA(src + (sy * src_w) + sx, src_w - w, 
-					dst + (dy * dst_w) + dx, dst_w - w, w, h);
+		blender = __imlib_BlendRGBAToRGBA;
 	     else if (dalpha == 2)
-		__imlib_CopyRGBAToRGB(src + (sy * src_w) + sx, src_w - w, 
-				      dst + (dy * dst_w) + dx, dst_w - w, w, h);
+		blender = __imlib_CopyRGBAToRGB;
 	     else if (dalpha == 3)
-		__imlib_CopyRGBAToRGBA(src + (sy * src_w) + sx, src_w - w, 
-				       dst + (dy * dst_w) + dx, dst_w - w, w, h);
+		blender = __imlib_CopyRGBAToRGBA;
 	     break;
 	  case OP_ADD:
 	     if (dalpha == 0)
-		__imlib_AddBlendRGBAToRGB(src + (sy * src_w) + sx, src_w - w, 
-					  dst + (dy * dst_w) + dx, dst_w - w, w, h);
+		blender = __imlib_AddBlendRGBAToRGB;
 	     else if (dalpha == 1)
-		__imlib_AddBlendRGBAToRGBA(src + (sy * src_w) + sx, src_w - w, 
-					   dst + (dy * dst_w) + dx, dst_w - w, w, h);
+		blender = __imlib_AddBlendRGBAToRGBA;
 	     else if (dalpha == 2)
-		__imlib_AddCopyRGBAToRGB(src + (sy * src_w) + sx, src_w - w, 
-					 dst + (dy * dst_w) + dx, dst_w - w, w, h);
+		blender = __imlib_AddCopyRGBAToRGB;
 	     else if (dalpha == 3)
-		__imlib_AddCopyRGBAToRGBA(src + (sy * src_w) + sx, src_w - w, 
-					  dst + (dy * dst_w) + dx, dst_w - w, w, h);
+		blender = __imlib_AddCopyRGBAToRGBA;
 	     break;
 	  case OP_SUBTRACT:
 	     if (dalpha == 0)
-		__imlib_SubBlendRGBAToRGB(src + (sy * src_w) + sx, src_w - w, 
-					  dst + (dy * dst_w) + dx, dst_w - w, w, h);
+		blender = __imlib_SubBlendRGBAToRGB;
 	     else if (dalpha == 1)
-		__imlib_SubBlendRGBAToRGBA(src + (sy * src_w) + sx, src_w - w, 
-					   dst + (dy * dst_w) + dx, dst_w - w, w, h);
+		blender = __imlib_SubBlendRGBAToRGBA;
 	     else if (dalpha == 2)
-		__imlib_SubCopyRGBAToRGB(src + (sy * src_w) + sx, src_w - w, 
-					 dst + (dy * dst_w) + dx, dst_w - w, w, h);
+		blender = __imlib_SubCopyRGBAToRGB;
 	     else if (dalpha == 3)
-		__imlib_SubCopyRGBAToRGBA(src + (sy * src_w) + sx, src_w - w, 
-					  dst + (dy * dst_w) + dx, dst_w - w, w, h);
+		blender = __imlib_SubCopyRGBAToRGBA;
 	     break;
 	  case OP_RESHADE:
 	     if (dalpha == 0)
-		__imlib_ReBlendRGBAToRGB(src + (sy * src_w) + sx, src_w - w, 
-					 dst + (dy * dst_w) + dx, dst_w - w, w, h);
+		blender = __imlib_ReBlendRGBAToRGB;
 	     else if (dalpha == 1)
-		__imlib_ReBlendRGBAToRGBA(src + (sy * src_w) + sx, src_w - w, 
-					  dst + (dy * dst_w) + dx, dst_w - w, w, h);
+		blender = __imlib_ReBlendRGBAToRGBA;
 	     else if (dalpha == 2)
-		__imlib_ReCopyRGBAToRGB(src + (sy * src_w) + sx, src_w - w, 
-					dst + (dy * dst_w) + dx, dst_w - w, w, h);
+		blender = __imlib_ReCopyRGBAToRGB;
 	     else if (dalpha == 3)
-		__imlib_ReCopyRGBAToRGBA(src + (sy * src_w) + sx, src_w - w, 
-					 dst + (dy * dst_w) + dx, dst_w - w, w, h);
+		blender = __imlib_ReCopyRGBAToRGBA;
 	     break;
 	  default:
 	     break;
 	  }
+	  if (blender)
+	     blender(src + (sy * src_w) + sx, src_w - w, 
+		     dst + (dy * dst_w) + dx, dst_w - w, w, h);
      }
 }			
 
