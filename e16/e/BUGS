@@ -6,10 +6,6 @@ Known bugs, freature requests, and miscellaneous issues
 Known bugs
 ----------
 
-- Making slightly offscreen windows (x/y < 0) sticky causes them to be
-  moved (x/y += screen.w/h). This may (aot.) cause pagers and iconboxes
-  to go (almost) offscreen when changing the theme.
-
 - Switching desktop changes stacking (sticky windows raised above non-sticky).
 
 - The pager mini-window tooltips are sometimes not unmapped when they should be.
@@ -17,15 +13,29 @@ Known bugs
 - When right clicking a zoomed pager mini-window to get the menu, the
   mini-window and tooltip are not unmapped.
 
-- Menu generation script (e_gen_menu etc.) is not up to current standards.
-
 - Various minor focus issues.
   Exact steps to reproduce are welcome.
+
+- Window placement when low on space could be improved.
+  In particular, we should try harder not to cover the dont-cover windows.
+
+- Enabling the "ripples" (and other) effects cause a dialog to be shown at
+  startup. This becomes somewhat annoying in the long run.
 
 - When zooming (fullscreen) decreases screen resolution, the mouse should be
   confined to the zoomed window.
 ! May be impossible to fix due to limitations in X (vidmode extension, mouse
   grabs).
+
+
+Fixed in E 16.6-pre7
+~~~~~~~~~~~~~~~~~~~~
+
+- Making slightly offscreen windows (x/y < 0) sticky causes them to be
+  moved (x/y += screen.w/h). This may (aot.) cause pagers and iconboxes
+  to go (almost) offscreen when changing the theme.
+
+- Menu generation script (e_gen_menu etc.) is not up to current standards.
 
 
 Fixed in E 16.6-pre6

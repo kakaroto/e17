@@ -2139,3 +2139,10 @@ Wed Sep  3 19:23:14 CEST 2003
 
 Fix making slightly offscreen (x/y < 0) windows sticky.
 This one caused (aot.) pagers and iconboxes to get lost when changing theme.
+
+-------------------------------------------------------------------------------
+
+Sat Sep  6 22:19:34 CEST 2003
+(Kim)
+
+Pre7.
