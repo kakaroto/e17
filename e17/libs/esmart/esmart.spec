@@ -1,34 +1,24 @@
-# this is NOT relocatable, unless you alter the patch!
-%define	name	esmart
-%define	ver	0.9.0
-%define	rel	1
-%define prefix  /usr
-
 Summary: Evas "smart objects"
-Name: %{name}
-Version: %{ver}
-Release: %{rel}
+Name: esmart
+Version: 0.9.0
+Release: 1
 Copyright: BSD
 Group: User Interface/X
-Packager: Azundris <edevel@azundris.com>
+Source: ftp://ftp.enlightenment.org/enlightenment/%{name}-%{version}.tar.gz
+URL: http://www.enlightenment.org/pages/efl.html
+Packager: Michael Jennings <mej@eterm.org>
 Vendor: The Enlightenment Development Team <e-develop@enlightenment.org>
-Source: ftp://ftp.enlightenment.org/enlightenment/%{name}-%{ver}.tar.gz
-BuildRoot: /var/tmp/%{name}-root
 Requires: evas >= 1.0.0
+BuildRoot: %{_tmppath}/%{name}-%{version}-root
 
 %description
-Suri tolar sadam bel Fanganka. Yasdima Araob lom Yasdira sha Jerana. Sorcha
-rafiere Sorcha faan rana. Suri Sorcha sade ki suri Nylara zune ki larom resvis
-Yasdira sha Felta. Duilor wa Llantor sha Gísdí Eyad rafieris tugom Araob. Suri
-tolar daknam Nylara lom Araob sha Felta. Nylara yare lan Alhan. Bilam tolar
-daknam rana wa Yasdira sha Felta lom Araob. Tolar munen lan Fanganka. Bilam
-pacha lan Rhan Loft. »¿Nylara sade tugom Yaori? Yasdima tugom Nylara sha Rhan
-Loft.« Tolar yasdimen Sorcha.
+Esmart contains "smart" pre-built evas objects.  It currently includes
+a thumbnail generator and a horizontal/vertical container.
 
 %package devel
 Summary: Eves "smart objects" headers and development libraries.
 Group: Development/Libraries
-Requires: %{name} = %{ver}
+Requires: %{name} = %{version}
 
 %description devel
 Evas "smart objects" development headers and libraries.
@@ -37,40 +27,41 @@ Evas "smart objects" development headers and libraries.
 %setup -q
 
 %build
-./configure --prefix=%{prefix}
-make
+%{configure} --prefix=%{_prefix}
+%{__make} %{?_smp_mflags} %{?mflags}
 
 %install
-make prefix=$RPM_BUILD_ROOT%{prefix} install
+%{__make} %{?mflags_install} DESTDIR=$RPM_BUILD_ROOT install
+#test -x `which doxygen` && sh gendoc || :
 
 %post
-/sbin/ldconfig
+/sbin/ldconfig || :
 
 %postun
-/sbin/ldconfig
+/sbin/ldconfig || :
 
 %clean
-rm -rf $RPM_BUILD_ROOT
+test "x$RPM_BUILD_ROOT" != "x/" && rm -rf $RPM_BUILD_ROOT
 
 %files
-%defattr(-,root,root)
-%{prefix}/lib/libesmart_*.so.*
-%{prefix}/lib/libesmart_*.la
-%{prefix}/lib/esmart/layout/*.so
-%{prefix}/lib/esmart/layout/*.la
-%{prefix}/bin/esmart_file_dialog_test
-%{prefix}/bin/esmart_test
-%{prefix}/share/esmart/esmart.png
+%defattr(-, root, root)
+%doc AUTHORS COPYING* README
+%{_libdir}/libesmart_*.so.*
+%{_libdir}/libesmart_*.la
+%{_libdir}/esmart/layout/*.so
+%{_libdir}/esmart/layout/*.la
+%{_bindir}/esmart_file_dialog_test
+%{_bindir}/esmart_test
+%{_datadir}/esmart/esmart.png
 
 %files devel
-%defattr(-,root,root)
-%{prefix}/lib/libesmart_*.so
-%{prefix}/lib/libesmart_*.a
-%{prefix}/lib/esmart/layout/*.a
-%{prefix}/include/Esmart/Esmart_*
-%{prefix}/bin/esmart-config
+%defattr(-, root, root)
+#%doc doc/html
+%{_libdir}/libesmart_*.so
+%{_libdir}/libesmart_*.a
+%{_libdir}/esmart/layout/*.a
+%{_includedir}/Esmart/Esmart_*
+%{_bindir}/esmart-config
 %{_libdir}/pkgconfig/esmart.pc
 
 %changelog
-* Sun May 23 2004 Azundris <edevel@azundris.com>
-- Created spec file
