@@ -58,7 +58,7 @@ void            stor_cycle_prev(XmlReadHandle * p);
 NoteStor       *stor_cycle_get_notestor(XmlReadHandle * p);
 
 /* Autosave Functions */
-void            autoload(void);
+int             autoload(void);
 void            autosave(void);
 
 /* Internal Functions */

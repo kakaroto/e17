@@ -25,10 +25,14 @@ int
 main(int argc, char *argv[])
 {
 	char           *spec_conf;
+	int             note_count;
 
 	/* IPC Check */
 	ecore_ipc_init();
 	dml("IPC Initiated Successfully", 1);
+	/* autoload (if on) will increment this if there are notes
+	   if not we may need to create a blank one */
+	note_count = 0;
 
 	/* Read the Usage and Configurations */
 	main_config = mainconfig_new();
@@ -68,18 +72,19 @@ main(int argc, char *argv[])
 
 		dml("Efl Successfully Initiated", 1);
 
+		/* Autoloading */
+		if (main_config->autosave == 1) {
+			note_count = autoload();
+		}
+
 		/* Begin the Control Centre */
 		if (main_config->controlcentre == 1) {
 			setup_cc();
 			dml("Control Centre Setup", 1);
 		} else {
 			dml("No Control Centre - Displaying Notice", 1);
-			new_note();
-		}
-
-		/* Autoloading */
-		if (main_config->autosave == 1) {
-			autoload();
+			if (note_count == 0)
+				new_note();
 		}
 
 		if (main_config->welcome == 1) {

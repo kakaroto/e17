@@ -328,14 +328,16 @@ stor_cycle_get_notestor(XmlReadHandle * p)
 /**
  * @brief: Automatically loads all of the "autosave" notes.
  */
-void
+int
 autoload(void)
 {
 	XmlReadHandle  *r;
 	NoteStor       *p;
+	int             count;
 
 	dml("Autoloading Saved Notes", 1);
 
+	count = 0;
 	r = stor_cycle_begin_autosave();
 	if (r != NULL) {
 		while (r->cur != NULL) {
@@ -344,10 +346,11 @@ autoload(void)
 					     p->content);
 			free_note_stor(p);
 			stor_cycle_next(r);
+			count++;
 		}
 		stor_cycle_end(r);
 	}
-	return;
+	return count;
 }
 
 /**
