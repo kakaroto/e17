@@ -976,3 +976,9 @@ this might cause problems, and I'm thinking about moving these
 beasts to ewl_widget_realize/unrealize()...  Suggestions anyone?
 
 
+-----
+20000905-1231-PDT, pabs
+
+- using new evas configure and expose handlers for EwlWindows -- this
+means EWL is both insanely fast and horribly broken a the same time!
+

@@ -227,14 +227,19 @@ void         ewl_window_init(EwlWindow *win, EwlWindowType type,
 	/*ewl_callback_add(widget,EWL_EVENT_SHOW,_cb_sample_nested,NULL);*/
 	ewl_callback_add(widget, EWL_EVENT_HIDE,
 	                 _cb_ewl_window_event_handler, NULL);
-	ewl_callback_add(widget, EWL_EVENT_EXPOSE,
+	/*ewl_callback_add(widget, EWL_EVENT_EXPOSE,
 	                 _cb_ewl_window_event_handler, NULL);
 	ewl_callback_add(widget, EWL_EVENT_CONFIGURE,
-	                 _cb_ewl_window_event_handler, NULL);
+	                 _cb_ewl_window_event_handler, NULL);*/
 	ewl_callback_add(widget, EWL_EVENT_RESIZE,
 	                 _cb_ewl_window_event_handler, NULL);
 	ewl_callback_add(widget, EWL_EVENT_MOVE,
 	                 _cb_ewl_window_event_handler, NULL);
+
+	ewl_callback_add(widget, EWL_EVENT_EXPOSE,
+	                 ewl_window_handle_realize, NULL);
+	ewl_callback_add(widget, EWL_EVENT_CONFIGURE,
+	                 ewl_window_handle_unrealize, NULL);
 
 	ewl_callback_add(widget, EWL_EVENT_REALIZE,
 	                 ewl_window_handle_realize, NULL);
