@@ -472,7 +472,7 @@ main(int argc, char *argv[])
       return (-1);
    ecore_app_args_set(argc, (const char **) argv);
 #if 1
-   if (!ecore_x_init(buf))
+   if (!ecore_x_init(NULL))
    {
       if ((str = getenv("DISPLAY")))
          syslog(LOG_CRIT,
