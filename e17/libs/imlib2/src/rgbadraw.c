@@ -1,4 +1,5 @@
 #include <X11/Xlib.h>
+#include <math.h>
 #include "common.h"
 #include "colormod.h"
 #include "image.h"
@@ -13,6 +14,8 @@
 (((x) >= (rx)) && ((y) >= (ry)) && ((x) <= ((rx) + (rw))) && ((y) <= ((ry) + (rh))))
 
 #define MAX(a,b) (((a) > (b)) ? (a) : (b))
+
+#define round(a) floor(a+0.5)
 
 void
 __imlib_FlipImageHoriz(ImlibImage * im)
@@ -1552,9 +1555,15 @@ imlib_clip_line(int x0, int y0, int x1, int y1, int xmin, int xmax, int ymin,
 {
    ImlibOutCode outcode0, outcode1, outcode_out;
    unsigned char accept = FALSE, done = FALSE;
+   double dx0, dy0, dx1, dy1;
 
-   outcode0 = __imlib_comp_outcode(x0, y0, xmin, xmax, ymin, ymax);
-   outcode1 = __imlib_comp_outcode(x1, y1, xmin, xmax, ymin, ymax);
+   dx0 = x0;
+   dx1 = x1;
+   dy0 = y0;
+   dy1 = y1;
+
+   outcode0 = __imlib_comp_outcode(dx0, dy0, xmin, xmax, ymin, ymax);
+   outcode1 = __imlib_comp_outcode(dx1, dy1, xmin, xmax, ymin, ymax);
 
    do
    {
@@ -1572,50 +1581,57 @@ imlib_clip_line(int x0, int y0, int x1, int y1, int xmin, int xmax, int ymin,
          outcode_out = outcode0 ? outcode0 : outcode1;
          if (outcode_out & TOP)
          {
-            x = x0 + (x1 - x0) * (ymax - y0) / (y1 - y0);
+            x = dx0 + (dx1 - dx0) * ((double) ymax - dy0) / (dy1 - dy0);
             y = ymax;
          }
          else if (outcode_out & BOTTOM)
          {
-            x = x0 + (x1 - x0) * (ymin - y0) / (y1 - y0);
+            x = dx0 + (dx1 - dx0) * ((double) ymin - dy0) / (dy1 - dy0);
             y = ymin;
          }
          else if (outcode_out & RIGHT)
          {
-            y = y0 + (y1 - y0) * (xmax - x0) / (x1 - x0);
+            y = dy0 + (dy1 - dy0) * ((double) xmax - dx0) / (dx1 - dx0);
             x = xmax;
          }
          else
          {
-            y = y0 + (y1 - y0) * (xmin - x0) / (x1 - x0);
+            y = dy0 + (dy1 - dy0) * ((double) xmin - dx0) / (dx1 - dx0);
             x = xmin;
          }
          if (outcode_out == outcode0)
          {
-            x0 = x;
-            y0 = y;
-            outcode0 = __imlib_comp_outcode(x0, y0, xmin, xmax, ymin, ymax);
+            dx0 = x;
+            dy0 = y;
+            outcode0 = __imlib_comp_outcode(dx0, dy0, xmin, xmax, ymin, ymax);
          }
          else
          {
-            x1 = x;
-            y1 = y;
-            outcode1 = __imlib_comp_outcode(x1, y1, xmin, xmax, ymin, ymax);
+            dx1 = x;
+            dy1 = y;
+            outcode1 = __imlib_comp_outcode(dx1, dy1, xmin, xmax, ymin, ymax);
          }
       }
    }
    while (done == FALSE);
 
-   *clip_x0 = x0;
-   *clip_y0 = y0;
-   *clip_x1 = x1;
-   *clip_y1 = y1;
+   /* round up before converting down to ints */
+   dx0 = round(dx0);
+   dx1 = round(dx1);
+   dy0 = round(dy0);
+   dy1 = round(dy1);
+
+   *clip_x0 = dx0;
+   *clip_y0 = dy0;
+   *clip_x1 = dx1;
+   *clip_y1 = dy1;
 
    return accept;
 }
 
-ImlibOutCode __imlib_comp_outcode(double x, double y, double xmin,
-                                  double xmax, double ymin, double ymax)
+ImlibOutCode
+__imlib_comp_outcode(double x, double y, double xmin, double xmax,
+                     double ymin, double ymax)
 {
    ImlibOutCode code = 0;
 
@@ -1630,8 +1646,7 @@ ImlibOutCode __imlib_comp_outcode(double x, double y, double xmin,
    return code;
 }
 
-ImlibPoly
-__imlib_polygon_new()
+ImlibPoly __imlib_polygon_new()
 {
    ImlibPoly poly;
 
