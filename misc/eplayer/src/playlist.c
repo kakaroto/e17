@@ -111,6 +111,8 @@ void playlist_remove_all(PlayList *pl) {
 		playlist_item_free((PlayListItem *) pl->items->data);
 		pl->items = evas_list_remove(pl->items, pl->items->data);
 	}
+
+	pl->num = pl->duration = 0;
 }
 
 /**
@@ -123,6 +125,9 @@ void playlist_remove_item(PlayList *pl, PlayListItem *pli) {
 	if (!pl || !pli)
 		return;
 	
+	pl->num--;
+	pl->duration -= pli->duration;
+
 	pl->items = evas_list_remove(pl->items, pli);
 	playlist_item_free(pli);
 }
@@ -234,6 +239,7 @@ int playlist_load_file(PlayList *pl, const char *file, int append) {
 		pl->cur_item = pl->items;
 	
 	pl->num++;
+	pl->duration += pli->duration;
 
 	return 1;
 }
@@ -318,6 +324,7 @@ int playlist_load_m3u(PlayList *pl, const char *file, int append) {
 		if ((pli = playlist_item_new(pl->plugins, ptr))) {
 			tmp = evas_list_prepend(tmp, pli);
 			pl->num++;
+			pl->duration += pli->duration;
 		}
 	}
 

@@ -29,6 +29,7 @@ typedef void (*ItemAddCallback) (PlayListItem *pli, void *data);
 
 typedef struct {
 	int num; /* number of entries */
+	int duration;
 	Evas_List *items;
 	Evas_List *cur_item;
 
