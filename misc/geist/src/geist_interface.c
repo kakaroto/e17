@@ -272,7 +272,7 @@ GtkWidget *
 geist_gtk_new_document_page(geist_document * doc)
 {
    GtkWidget *hwid, *vwid, *darea, *viewport;
-   GtkWidget *label, *scrollwin, *evbox;
+   GtkWidget *label, *scrollwin;
    GtkWidget *parent;
 
    D_ENTER(3);
@@ -304,23 +304,24 @@ geist_gtk_new_document_page(geist_document * doc)
    gtk_widget_show(viewport);
    gtk_container_add(GTK_CONTAINER(scrollwin), viewport);
 
-   evbox = gtk_event_box_new();
-   gtk_container_add(GTK_CONTAINER(viewport), evbox);
-   gtk_widget_show(evbox);
-
    darea = gtk_drawing_area_new();
+   gtk_widget_set_events(darea,
+                         GDK_EXPOSURE_MASK | GDK_LEAVE_NOTIFY_MASK |
+                         GDK_BUTTON_PRESS_MASK | GDK_BUTTON_RELEASE_MASK |
+                         GDK_POINTER_MOTION_MASK |
+                         GDK_POINTER_MOTION_HINT_MASK);
+
    gtk_object_set_data(GTK_OBJECT(darea), "doc", doc);
    doc->darea = darea;
 
-   gtk_signal_connect(GTK_OBJECT(evbox), "button_press_event",
+   gtk_signal_connect(GTK_OBJECT(darea), "button_press_event",
                       GTK_SIGNAL_FUNC(evbox_buttonpress_cb), doc);
-   gtk_signal_connect(GTK_OBJECT(evbox), "button_release_event",
+   gtk_signal_connect(GTK_OBJECT(darea), "button_release_event",
                       GTK_SIGNAL_FUNC(evbox_buttonrelease_cb), doc);
-   gtk_signal_connect(GTK_OBJECT(evbox), "motion_notify_event",
+   gtk_signal_connect(GTK_OBJECT(darea), "motion_notify_event",
                       GTK_SIGNAL_FUNC(evbox_mousemove_cb), doc);
 
-   /* The drawing area itself */
-   gtk_container_add(GTK_CONTAINER(evbox), darea);
+   gtk_container_add(GTK_CONTAINER(viewport), darea);
    gtk_signal_connect_after(GTK_OBJECT(darea), "configure_event",
                             GTK_SIGNAL_FUNC(configure_cb), doc);
    gtk_widget_show(darea);
@@ -328,16 +329,8 @@ geist_gtk_new_document_page(geist_document * doc)
    D_RETURN(3, darea);
 }
 
-gboolean mainwin_delete_cb(GtkWidget * widget, GdkEvent * event,
-                           gpointer user_data)
-{
-   D_ENTER(3);
-   gtk_exit(0);
-   D_RETURN(3, FALSE);
-}
-
-gboolean mainwin_destroy_cb(GtkWidget * widget, GdkEvent * event,
-                            gpointer user_data)
+gboolean
+mainwin_delete_cb(GtkWidget * widget, GdkEvent * event, gpointer user_data)
 {
    D_ENTER(3);
    gtk_exit(0);
@@ -345,8 +338,15 @@ gboolean mainwin_destroy_cb(GtkWidget * widget, GdkEvent * event,
 }
 
 gboolean
-configure_cb(GtkWidget * widget, GdkEventConfigure * event,
-             gpointer user_data)
+mainwin_destroy_cb(GtkWidget * widget, GdkEvent * event, gpointer user_data)
+{
+   D_ENTER(3);
+   gtk_exit(0);
+   D_RETURN(3, FALSE);
+}
+
+gboolean configure_cb(GtkWidget * widget, GdkEventConfigure * event,
+                      gpointer user_data)
 {
    geist_document *doc;
 
@@ -359,9 +359,8 @@ configure_cb(GtkWidget * widget, GdkEventConfigure * event,
    D_RETURN(3, TRUE);
 }
 
-gint
-evbox_buttonpress_cb(GtkWidget * widget, GdkEventButton * event,
-                     gpointer user_data)
+gint evbox_buttonpress_cb(GtkWidget * widget, GdkEventButton * event,
+                          gpointer user_data)
 {
    geist_object *obj = NULL;
    geist_document *doc;
@@ -495,8 +494,9 @@ evbox_buttonpress_cb(GtkWidget * widget, GdkEventButton * event,
    D_RETURN(5, 1);
 }
 
-gint evbox_buttonrelease_cb(GtkWidget * widget, GdkEventButton * event,
-                            gpointer user_data)
+gint
+evbox_buttonrelease_cb(GtkWidget * widget, GdkEventButton * event,
+                       gpointer user_data)
 {
    geist_list *list, *l;
    geist_object *obj;
@@ -547,13 +547,15 @@ gint evbox_buttonrelease_cb(GtkWidget * widget, GdkEventButton * event,
    D_RETURN(5, 1);
 }
 
-gint evbox_mousemove_cb(GtkWidget * widget, GdkEventMotion * event,
-                        gpointer user_data)
+gint
+evbox_mousemove_cb(GtkWidget * widget, GdkEventMotion * event,
+                   gpointer user_data)
 {
    geist_list *l, *list;
    geist_object *obj;
-   GdkEventMotion *e;
    geist_document *doc;
+   int x, y;
+   GdkModifierType state;
 
    D_ENTER(5);
 
@@ -561,21 +563,14 @@ gint evbox_mousemove_cb(GtkWidget * widget, GdkEventMotion * event,
    if (!doc)
       D_RETURN(5, 1);
 
-   if (gdk_events_pending())
+   /* use hinted motionnotify to prevent queue backlog */
+   if (event->is_hint)
+      gdk_window_get_pointer(event->window, &x, &y, &state);
+   else
    {
-      while ((e = (GdkEventMotion *) gdk_event_get()) != NULL)
-      {
-         if (e->type == GDK_MOTION_NOTIFY)
-         {
-            D(5, ("skipping event, new one coming\n"));
-            event = e;
-         }
-         else
-         {
-            gdk_event_put((GdkEvent *) e);
-            break;
-         }
-      }
+      x = event->x;
+      y = event->y;
+      state = event->state;
    }
 
    list = gtk_object_get_data(GTK_OBJECT(mainwin), "draglist");
@@ -584,8 +579,8 @@ gint evbox_mousemove_cb(GtkWidget * widget, GdkEventMotion * event,
       for (l = list; l; l = l->next)
       {
          obj = GEIST_OBJECT(l->data);
-         D(5, ("moving object to %f, %f\n", event->x, event->y));
-         geist_object_move(obj, event->x, event->y);
+         D(5, ("moving object to %f, %f\n", x, y));
+         geist_object_move(obj, x, y);
       }
       geist_update_statusbar(doc);
       geist_document_render_updates(doc);
@@ -599,8 +594,7 @@ gint evbox_mousemove_cb(GtkWidget * widget, GdkEventMotion * event,
          {
             obj = GEIST_OBJECT(l->data);
             D(5, ("resizing object\n"));
-            geist_object_resize(obj, event->x + obj->clicked_x,
-                                event->y + obj->clicked_y);
+            geist_object_resize(obj, x + obj->clicked_x, y + obj->clicked_y);
          }
          geist_update_statusbar(doc);
          geist_document_render_updates(doc);
@@ -611,7 +605,8 @@ gint evbox_mousemove_cb(GtkWidget * widget, GdkEventMotion * event,
    D_RETURN(5, 1);
 }
 
-gboolean obj_load_cb(GtkWidget * widget, gpointer data)
+gboolean
+obj_load_cb(GtkWidget * widget, gpointer data)
 {
    geist_object *obj = NULL;
    char *path;
@@ -644,13 +639,15 @@ gboolean obj_load_cb(GtkWidget * widget, gpointer data)
    D_RETURN(3, TRUE);
 }
 
-gboolean obj_load_cancel_cb(GtkWidget * widget, gpointer data)
+gboolean
+obj_load_cancel_cb(GtkWidget * widget, gpointer data)
 {
    gtk_widget_destroy((GtkWidget *) data);
    return TRUE;
 }
 
-gboolean obj_imageadd_cb(GtkWidget * widget, gpointer * data)
+gboolean
+obj_imageadd_cb(GtkWidget * widget, gpointer * data)
 {
    GtkWidget *file_sel = gtk_file_selection_new("Add an Image");
 
@@ -666,7 +663,8 @@ gboolean obj_imageadd_cb(GtkWidget * widget, gpointer * data)
 }
 
 
-gboolean obj_cpy_cb(GtkWidget * widget, gpointer * data)
+gboolean
+obj_cpy_cb(GtkWidget * widget, gpointer * data)
 {
    geist_object *new;
    geist_list *l, *list;
@@ -703,7 +701,8 @@ gboolean obj_cpy_cb(GtkWidget * widget, gpointer * data)
    D_RETURN(3, TRUE);
 }
 
-gboolean obj_del_cb(GtkWidget * widget, gpointer * data)
+gboolean
+obj_del_cb(GtkWidget * widget, gpointer * data)
 {
    geist_object *obj;
    geist_list *l, *list;
@@ -737,8 +736,9 @@ gboolean obj_del_cb(GtkWidget * widget, gpointer * data)
 }
 
 
-gboolean obj_sel_cb(GtkWidget * widget, int row, int column,
-                    GdkEventButton * event, gpointer * data)
+gboolean
+obj_sel_cb(GtkWidget * widget, int row, int column, GdkEventButton * event,
+           gpointer * data)
 {
    GList *selection;
    geist_object *obj;
@@ -762,8 +762,9 @@ gboolean obj_sel_cb(GtkWidget * widget, int row, int column,
    D_RETURN(3, TRUE);
 }
 
-gboolean obj_unsel_cb(GtkWidget * widget, int row, int column,
-                      GdkEventButton * event, gpointer * data)
+gboolean
+obj_unsel_cb(GtkWidget * widget, int row, int column, GdkEventButton * event,
+             gpointer * data)
 {
    GList *selection;
    geist_object *obj;
@@ -786,7 +787,8 @@ gboolean obj_unsel_cb(GtkWidget * widget, int row, int column,
    D_RETURN(3, TRUE);
 }
 
-gboolean obj_addtext_cb(GtkWidget * widget, gpointer * data)
+gboolean
+obj_addtext_cb(GtkWidget * widget, gpointer * data)
 {
 
    int row;
@@ -812,7 +814,8 @@ gboolean obj_addtext_cb(GtkWidget * widget, gpointer * data)
 
 
 
-gboolean obj_addrect_cb(GtkWidget * widget, gpointer * data)
+gboolean
+obj_addrect_cb(GtkWidget * widget, gpointer * data)
 {
 
    int row;
@@ -832,7 +835,8 @@ gboolean obj_addrect_cb(GtkWidget * widget, gpointer * data)
    D_RETURN(3, TRUE);
 }
 
-gboolean menu_cb(GtkWidget * widget, gpointer * data)
+gboolean
+menu_cb(GtkWidget * widget, gpointer * data)
 {
    char *item;
 

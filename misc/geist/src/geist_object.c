@@ -668,23 +668,36 @@ geist_object_update_alignment(geist_object * obj)
         break;
      case ALIGN_HCENTER:
         obj->rendered_x = (obj->w - obj->rendered_w) / 2;
+		
         break;
      case ALIGN_VCENTER:
-        obj->rendered_y = (obj->h - obj->rendered_h) / 2;
+        obj->rendered_y = (obj->h - obj->rendered_h) / 2;		  
         break;
      case ALIGN_LEFT:
+		  obj->rendered_x = 0;
         break;
      case ALIGN_RIGHT:
+		  obj->rendered_x = (obj->w - obj->rendered_w);
         break;
      case ALIGN_TOP:
+		  obj->rendered_y = 0;
         break;
      case ALIGN_BOTTOM:
+		  obj->rendered_y = (obj->h - obj->rendered_h);
         break;
      default:
         printf("implement me!\n");
         break;
    }
-
+	
+	/*move the object up if its box becomes to small*/   
+	if ((obj->y + obj->h) < (obj->y + obj->rendered_y + obj->rendered_h))
+		 obj->rendered_y = (obj->h - obj->rendered_h);
+		  
+	/*move the object left if its box becomes to small*/   
+	if ((obj->x + obj->w) < (obj->x + obj->rendered_x + obj->rendered_w))
+		 obj->rendered_x = (obj->w - obj->rendered_w);
+		  
    D_RETURN_(5);
 }
 
@@ -798,3 +811,11 @@ geist_object_get_type_from_string(char *s)
    }
    D_RETURN(3, 0);
 }
+
+void
+geist_object_debug_print_values(geist_object *obj)
+{
+  printf("values: x%d y%d w%d h%d rx%d ry%d rw%d rh%d\n",
+			obj->x, obj->y, obj->w, obj->h, obj->rendered_x, 
+			obj->rendered_y, obj->rendered_w, obj->rendered_h);
+}	  

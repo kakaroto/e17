@@ -166,6 +166,8 @@ int geist_object_get_alignment_from_string(char *s);
 int geist_object_get_type_from_string(char *s);
 GtkWidget* geist_object_generic_properties(geist_list *list);
 
+void geist_object_debug_print_values(geist_object *obj);
+
 #define geist_object_set_state(o, s) (o->state |=  s)
 #define geist_object_unset_state(o, s) (o->state &= ~(s))
 #define geist_object_get_state(o, s) (o->state & s)
