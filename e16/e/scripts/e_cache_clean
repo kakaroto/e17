@@ -34,33 +34,33 @@ if [ $# -lt 1 ]; then
 fi
 
 if [ $1 = "all" ]; then
-  rm -rf $ECACHEDIR/cached/bgsel/* >& /dev/null
-  rm -rf $ECACHEDIR/cached/bgsel/.* >& /dev/null
-  rm -rf $ECACHEDIR/cached/cfg/* >& /dev/null
-  rm -rf $ECACHEDIR/cached/cfg/.* >& /dev/null
-  rm -rf $ECACHEDIR/cached/pager/* >& /dev/null
-  rm -rf $ECACHEDIR/cached/pager/.* >& /dev/null
+  rm -rf $ECACHEDIR/cached/bgsel/* >/dev/null 2>&1
+  rm -rf $ECACHEDIR/cached/bgsel/.* >/dev/null 2>&1
+  rm -rf $ECACHEDIR/cached/cfg/* >/dev/null 2>&1
+  rm -rf $ECACHEDIR/cached/cfg/.* >/dev/null 2>&1
+  rm -rf $ECACHEDIR/cached/pager/* >/dev/null 2>&1
+  rm -rf $ECACHEDIR/cached/pager/.* >/dev/null 2>&1
   eesh -e "dialog_ok All caches purged."
   exit
 fi
 
 if [ $1 = "pager" ]; then
-  rm -rf $ECACHEDIR/cached/pager/* >& /dev/null
-  rm -rf $ECACHEDIR/cached/pager/.* >& /dev/null
+  rm -rf $ECACHEDIR/cached/pager/* >/dev/null 2>&1
+  rm -rf $ECACHEDIR/cached/pager/.* >/dev/null 2>&1
   eesh -e "dialog_ok Pager background cache purged."
   exit
 fi
 
 if [ $1 = "config" ]; then
-  rm -rf $ECACHEDIR/cached/cfg/* >& /dev/null
-  rm -rf $ECACHEDIR/cached/cfg/.* >& /dev/null
+  rm -rf $ECACHEDIR/cached/cfg/* >/dev/null 2>&1
+  rm -rf $ECACHEDIR/cached/cfg/.* >/dev/null 2>&1
   eesh -e "dialog_ok Config file cache purged."
   exit
 fi
 
 if [ $1 = "bgsel" ]; then
-  rm -rf $ECACHEDIR/cached/bgsel/* >& /dev/null
-  rm -rf $ECACHEDIR/cached/bgsel/.* >& /dev/null
+  rm -rf $ECACHEDIR/cached/bgsel/* >/dev/null 2>&1
+  rm -rf $ECACHEDIR/cached/bgsel/.* >/dev/null 2>&1
   eesh -e "dialog_ok Background selector cache purged."
   exit
 fi

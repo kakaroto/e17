@@ -37,7 +37,7 @@ if [ $1 = "all" ]; then
   VAL=`du -s $ECACHEDIR/cached/pager $ECACHEDIR/cached/bgsel $ECACHEDIR/cached/cfg | awk '{printf("%s ", $1);}'`
   TOT=0
   for I in $VAL; do
-    TOT=$[ $TOT + $I ];
+    let TOT=$(($TOT + $I));
   done
   eesh -e "dialog_ok Your caches are using $TOT Kb of disk space."
   exit
