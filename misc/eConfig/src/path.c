@@ -80,15 +80,18 @@ eConfigRemovePath(char *path)
 	  {
 	     last_path = cur_path;
 	     cur_path = cur_path->next;
-	     if (!strcmp(cur_path->path, path))
-	       {
-		  free(cur_path->path);
-		  last_path->next = cur_path->next;
-		  free(cur_path);
-		  return 1;
-	       }
 	     if (cur_path)
-		cur_path = cur_path->next;
+	       {
+		  if (!strcmp(cur_path->path, path))
+		    {
+		       free(cur_path->path);
+		       last_path->next = cur_path->next;
+		       free(cur_path);
+		       return 1;
+		    }
+		  if (cur_path)
+		     cur_path = cur_path->next;
+	       }
 	  }
      }
    else

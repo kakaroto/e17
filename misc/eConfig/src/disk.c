@@ -15,7 +15,7 @@
 #include "eConfig.internal.h"
 #include "eConfig.h"
 
-unsigned long 
+unsigned long
 _econf_finddatapointerinpath(char *path, char *loc,
 			     unsigned long *position,
 			     unsigned long *timestamp)
@@ -168,7 +168,7 @@ _econf_get_data_from_disk(char *loc, unsigned long *length)
 
 }
 
-unsigned long 
+unsigned long
 _econf_append_data_to_disk_at_path(char *path, unsigned long length, void *data)
 {
    /* This function is pretty simplistic.  it just saves out a bit of *data to
@@ -218,7 +218,7 @@ _econf_append_data_to_disk_at_path(char *path, unsigned long length, void *data)
    return 0;
 }
 
-int 
+int
 _econf_save_data_to_disk_at_position(unsigned long position, char *path,
 				     unsigned long length, void *data)
 {
@@ -266,7 +266,7 @@ _econf_save_data_to_disk_at_position(unsigned long position, char *path,
 
 }
 
-int 
+int
 _econf_new_fat_entry_to_disk(char *loc, unsigned long position,
 			     unsigned long length, char *path)
 {
@@ -317,7 +317,7 @@ _econf_new_fat_entry_to_disk(char *loc, unsigned long position,
 
 }
 
-int 
+int
 _econf_replace_fat_entry_to_disk(char *loc, unsigned long position,
 				 unsigned long length, char *path)
 {
@@ -380,7 +380,7 @@ _econf_replace_fat_entry_to_disk(char *loc, unsigned long position,
    return 0;
 }
 
-int 
+int
 _econf_save_data_to_disk(void *data, char *loc, unsigned long length,
 			 char *path)
 {
@@ -485,7 +485,7 @@ _econf_save_data_to_disk(void *data, char *loc, unsigned long length,
 
 }
 
-int 
+int
 _econf_purge_data_from_disk_at_path(char *loc, char *path)
 {
 
@@ -548,7 +548,7 @@ _econf_purge_data_from_disk_at_path(char *loc, char *path)
 
 }
 
-int 
+int
 _econf_purge_data_from_disk(char *loc)
 {
 
@@ -600,7 +600,7 @@ _econf_purge_data_from_disk(char *loc)
 
 }
 
-int 
+int
 _econf_create_new_data_repository(char *path)
 {
 

@@ -154,7 +154,7 @@ eConfigRefreshData(char *loc, unsigned long *length)
 
 }
 
-int 
+int
 eConfigUnloadData(char *loc)
 {
 
@@ -194,7 +194,7 @@ eConfigUnloadData(char *loc)
 
 }
 
-int 
+int
 eConfigStoreData(char *loc, void *data, unsigned long length, char *path)
 {
 
@@ -239,7 +239,7 @@ eConfigStoreData(char *loc, void *data, unsigned long length, char *path)
 
 }
 
-int 
+int
 eConfigStoreDataToFirstAvailablePath(char *loc, void *data,
 				     unsigned long length)
 {
