@@ -128,7 +128,16 @@ monitor window contents.
 
 ---------------------------------------------------------------------------
 
-Sun Jan  2 02:05:38 PST 2000
+Sun Jan  2 01:05:38 PST 2000
 (Mandrake)
 
 adding threads support
+
+---------------------------------------------------------------------------
+
+Sun Jan  2 01:43:31 PST 2000
+(Mandrake)
+
+added glib 1.2.6 check
+also upped gtk+ requirement to 1.2.6 (lets keep people current)
+
