@@ -1,6 +1,7 @@
 #include <Ewl.h>
 
 static void ewl_spinner_calc_value(Ewl_Spinner *s, double val);
+static int ewl_spinner_timer(void *data);
 
 /**
  * @return Returns a new spinner widget on success, NULL on failure.
@@ -49,6 +50,8 @@ int ewl_spinner_init(Ewl_Spinner * s)
 			    NULL);
 	ewl_callback_append(w, EWL_CALLBACK_CONFIGURE, ewl_spinner_configure_cb,
 			    NULL);
+	ewl_callback_append(w, EWL_CALLBACK_DESTROY, ewl_spinner_destroy_cb,
+			    NULL);
 
 	s->entry = ewl_entry_new("0");
 	ewl_container_append_child(EWL_CONTAINER(s), s->entry);
@@ -80,12 +83,16 @@ int ewl_spinner_init(Ewl_Spinner * s)
 			    ewl_spinner_key_down_cb, NULL);
 	ewl_callback_append(s->entry, EWL_CALLBACK_DESELECT,
 			    ewl_spinner_deselect_cb, NULL);
-	ewl_callback_append(s->button_increase, EWL_CALLBACK_CLICKED,
+	ewl_callback_append(s->button_increase, EWL_CALLBACK_MOUSE_DOWN,
 			    ewl_spinner_increase_value_cb, w);
+	ewl_callback_append(s->button_increase, EWL_CALLBACK_MOUSE_UP,
+			    ewl_spinner_value_stop_cb, w);
 	ewl_callback_append(s->button_increase, EWL_CALLBACK_KEY_DOWN,
 			    ewl_spinner_key_down_cb, NULL);
-	ewl_callback_append(s->button_decrease, EWL_CALLBACK_CLICKED,
+	ewl_callback_append(s->button_decrease, EWL_CALLBACK_MOUSE_DOWN,
 			    ewl_spinner_decrease_value_cb, w);
+	ewl_callback_append(s->button_decrease, EWL_CALLBACK_MOUSE_UP,
+			    ewl_spinner_value_stop_cb, w);
 	ewl_callback_append(s->button_decrease, EWL_CALLBACK_KEY_DOWN,
 			    ewl_spinner_key_down_cb, NULL);
 
@@ -143,6 +150,19 @@ void ewl_spinner_set_digits(Ewl_Spinner * s, int digits)
 }
 
 /**
+ * @param s: the spinner to retrieve minimum value
+ * @brief Retrieves the minimum value for the spinner.
+ * @return Returns the currently set minimum value for the specified spinner.
+ */
+double ewl_spinner_get_min_val(Ewl_Spinner *s)
+{
+	DENTER_FUNCTION(DLEVEL_STABLE);
+	DCHECK_PARAM_PTR_RET("s", s, 0.0);
+
+	DRETURN_FLOAT(s->min_val, DLEVEL_STABLE);
+}
+
+/**
  * @param s: the spinner to change the minimum possible value
  * @param val: the new minimum possible value for @a s
  * @return Returns no value.
@@ -159,6 +179,19 @@ void ewl_spinner_set_min_val(Ewl_Spinner * s, double val)
 	ewl_spinner_calc_value(s, s->value);
 
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
+}
+
+/**
+ * @param s: the spinner to retrieve maximum value
+ * @brief Retrieves the maximum value for the spinner.
+ * @return Returns the currently set maximum value for the specified spinner.
+ */
+double ewl_spinner_get_max_val(Ewl_Spinner *s)
+{
+	DENTER_FUNCTION(DLEVEL_STABLE);
+	DCHECK_PARAM_PTR_RET("s", s, 100.0);
+
+	DRETURN_FLOAT(s->max_val, DLEVEL_STABLE);
 }
 
 /**
@@ -457,6 +490,30 @@ ewl_spinner_increase_value_cb(Ewl_Widget * w, void *ev_data, void *user_data)
 
 	ewl_spinner_calc_value(s, s->value + s->step);
 
+	if (ev_data) {
+		s->direction = 1;
+		s->start_time = ecore_time_get();
+		s->timer = ecore_timer_add(0.02, ewl_spinner_timer, s);
+	}
+
+	DLEAVE_FUNCTION(DLEVEL_STABLE);
+}
+
+void
+ewl_spinner_value_stop_cb(Ewl_Widget * w, void *ev_data, void *user_data)
+{
+	Ewl_Spinner *s = user_data;
+
+	DENTER_FUNCTION(DLEVEL_STABLE);
+
+	if (s->timer) {
+		ecore_timer_del(s->timer);
+
+		s->timer = NULL;
+		s->direction = 0;
+		s->start_time = 0;
+	}
+
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
 
@@ -474,5 +531,62 @@ ewl_spinner_decrease_value_cb(Ewl_Widget * w, void *ev_data, void *user_data)
 
 	ewl_spinner_calc_value(s, s->value - s->step);
 
+	if (ev_data) {
+		s->direction = -1;
+		s->start_time = ecore_time_get();
+		s->timer = ecore_timer_add(0.02, ewl_spinner_timer, s);
+	}
+
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
+}
+
+void ewl_spinner_destroy_cb(Ewl_Widget *w, void *ev_data, void *user_data)
+{
+	Ewl_Spinner *s;
+
+	DENTER_FUNCTION(DLEVEL_STABLE);
+
+	s = EWL_SPINNER(w);
+
+	if (s->timer) {
+		ecore_timer_del(s->timer);
+		s->timer = NULL;
+	}
+
+	DLEAVE_FUNCTION(DLEVEL_STABLE);
+}
+
+static int ewl_spinner_timer(void *data)
+{
+	Ewl_Spinner    *s;
+	double          dt;
+	double          value, range;
+	int             velocity;
+
+	s = EWL_SPINNER(data);
+
+	dt = ecore_time_get() - s->start_time;
+	value = ewl_spinner_get_value(s);
+	range = s->max_val - s->min_val;
+
+	/*
+	 * Check the theme for a velocity setting and bring it within normal
+	 * useable bounds.
+	 */
+	velocity = ewl_theme_data_get_int(EWL_WIDGET(s), "velocity");
+	if (velocity < 1)
+		velocity = 1;
+	else if (velocity > 10)
+		velocity = 10;
+
+	/*
+	 * Move the value of the spinner based on the direction of it's motion
+	 * and the velocity setting.
+	 */
+	value += ((double)(s->direction) * (1 - exp(-dt)) * 
+		 ((double)(velocity) / 100.0)) * range;
+
+	ewl_spinner_set_value(s, value);
+
+	return 1;
 }

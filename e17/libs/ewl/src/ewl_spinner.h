@@ -41,6 +41,9 @@ struct Ewl_Spinner
 	Ewl_Widget     *entry; /**< The Ewl_Entry displaying value */
 	Ewl_Widget     *button_increase; /**< Ewl_Button to add value */
 	Ewl_Widget     *button_decrease; /**< Ewl_Button to subtract value */
+	double          start_time; /**< Time the spinner was pressed */
+	int             direction; /**< Indicate increasing/decreasing value */
+	Ecore_Timer    *timer; /**< Timer for tracking mouse button held down */
 };
 
 Ewl_Widget     *ewl_spinner_new(void);
@@ -48,7 +51,9 @@ int             ewl_spinner_init(Ewl_Spinner * s);
 void            ewl_spinner_set_value(Ewl_Spinner * s, double value);
 double          ewl_spinner_get_value(Ewl_Spinner * s);
 void            ewl_spinner_set_digits(Ewl_Spinner * s, int digits);
+double          ewl_spinner_get_min_val(Ewl_Spinner * s);
 void            ewl_spinner_set_min_val(Ewl_Spinner * s, double val);
+double          ewl_spinner_get_max_val(Ewl_Spinner * s);
 void            ewl_spinner_set_max_val(Ewl_Spinner * s, double val);
 void            ewl_spinner_set_step(Ewl_Spinner * s, double step);
 
@@ -71,6 +76,8 @@ void ewl_spinner_increase_value_cb(Ewl_Widget * widget, void *ev_data,
 				   void *user_data);
 void ewl_spinner_decrease_value_cb(Ewl_Widget * widget, void *ev_data,
 				   void *user_data);
+void ewl_spinner_value_stop_cb(Ewl_Widget * w, void *ev_data, void *user_data);
+void ewl_spinner_destroy_cb(Ewl_Widget *w, void *ev_data, void *user_data);
 
 /**
  * @}
