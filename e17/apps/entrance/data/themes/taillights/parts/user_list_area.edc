@@ -130,7 +130,7 @@
 			to_y, "bottom_bar";
 		    } rel2 {
 			relative, 0.0 0.0;
-			offset, 133 -2;
+			offset, 140 -2;
 			to_y, "bottom_bar";
 		    }
 		    image 

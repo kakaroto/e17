@@ -6,7 +6,7 @@
 		target, "power_button";
 		target, "power_button_description";
 		transition, ACCELERATE 0.5;
-		in, 0.25 0.0;
+		in, 0.15 0.0;
 	    }
 	    program {
 		name, "power_button_fade_out";

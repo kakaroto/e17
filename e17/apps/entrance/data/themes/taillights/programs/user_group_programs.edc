@@ -2,28 +2,21 @@
 	    {
 		name, "user_icon_clicked";
 		signal, "mouse,clicked,1";
-		source, "EntranceUserIcon";
+		source, "base";
 		action, SIGNAL_EMIT "UserSelected" "";
 	    }
 	    program
 	    {
 		name, "user_icon_unclicked";
 		signal, "mouse,clicked,3";
-		source, "EntranceUserIcon";
+		source, "base";
 		action, SIGNAL_EMIT "UserUnSelected" "";
-	    }
-	    program
-	    {
-		name, "user_title_clicked";
-		signal, "mouse,clicked,1";
-		source, "EntranceUserName";
-		action, SIGNAL_EMIT "UserSelected" "";
 	    }
 	    program
 	    {
 		name, "user_title_mouse_in_stop";
 		signal, "mouse,in";
-		source, "EntranceUserName";
+		source, "base";
 		action, ACTION_STOP;
 		target, "user_title_mouse_out";
 	    }
@@ -31,18 +24,18 @@
 	    {
 		name, "user_title_mouse_in_start";
 		signal, "mouse,in";
-		source, "EntranceUserName";
+		source, "base";
 		action, STATE_SET "hilited" 0.0;
 		target, "EntranceUserName";
-		transition, ACCELERATE 0.25;
+		transition, SINUSOIDAL 0.35;
 	    }
 	    program
 	    {
 		name, "user_title_mouse_out";
 		signal, "mouse,out";
-		source, "EntranceUserName";
+		source, "base";
 		action, STATE_SET "default" 0.0;
 		target, "EntranceUserName";
 		transition, DECELERATE 0.25;
-		in, 0.15 0.0;
+		in, 0.35 0.0;
 	    }

@@ -30,7 +30,7 @@
 		target, "session_clip";
 		target, "entrance_session_button";
 		transition, ACCELERATE 0.5;
-		in, 0.3 0.1;
+		in, 0.15 0.0;
 	    }
 	    program {
 		name, "kill_hide_session_description";
@@ -48,7 +48,6 @@
 		target, "session_clip";
 		target, "entrance_session_button";
 		transition, DECELERATE 0.5;
-		in, 0.2 0.0;
 	    }
 	    program {
 		name, "hide_session_menu";

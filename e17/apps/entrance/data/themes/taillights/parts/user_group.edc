@@ -2,7 +2,7 @@
 	    {
 		name, "base_outline";
 		type, RECT;
-		mouse_events, 1;
+		mouse_events, 0;
 		description
 		{
 		    state, "default" 0.0;
@@ -46,9 +46,72 @@
 	    }
 	    part
 	    {
+		name, "base_image";
+		type, IMAGE;
+		mouse_events, 0;
+		description
+		{
+		    state, "default" 0.0;
+		    visible, 1;
+		    rel1
+		    {
+			relative, 0.0 0.0;
+			offset, 1 1;
+			to, "base";
+		    }
+		    rel2
+		    {
+			relative, 1.0 1.0;
+			offset, -1 -2;
+			to, "base";
+		    }
+		    image 
+		    {
+			normal, "menu_bg_small.png";
+		    }
+		    fill {
+			smooth, 0;
+			size {
+			    relative, 0.0 0.0;
+			    offset, 64 64;
+			}
+		    }
+		    color, 255 0 0 64;
+		}
+	    }
+	    part
+	    {
+		name, "base_image_border";
+		type, IMAGE;
+		mouse_events, 0;
+		description
+		{
+		    state, "default" 0.0;
+		    visible, 1;
+		    rel1
+		    {
+			relative, 0.0 0.0;
+			offset, 1 1;
+			to, "base";
+		    }
+		    rel2
+		    {
+			relative, 1.0 1.0;
+			offset, -1 -2;
+			to, "base";
+		    }
+		    image 
+		    {
+			normal, "border-bevel.png";
+		    }
+		    border, 3 3 3 3;
+		}
+	    }
+	    part
+	    {
 		name, "EntranceUserIcon";
 		type, RECT;
-		mouse_events, 1;
+		mouse_events, 0;
 		description
 		{
 		    state, "default" 0.0;
@@ -72,7 +135,7 @@
 	    {
 		name, "EntranceUserName";
 		type, TEXT;
-		mouse_events, 1;
+		mouse_events, 0;
 		effect, OUTLINE_SOFT_SHADOW;
 		description
 		{
