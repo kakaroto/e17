@@ -114,17 +114,13 @@ void
 SetEInfoOnAll()
 {
    int                 i, num;
-   EWin              **lst;
+   EWin               *const *lst;
 
    EDBUG(5, "SetEInfoOnAll");
 
-   lst = (EWin **) ListItemType(&num, LIST_TYPE_EWIN);
-   if ((lst) && (num > 0))
-     {
-	for (i = 0; i < num; i++)
-	   ICCCM_SetEInfo(lst[i]);
-	Efree(lst);
-     }
+   lst = EwinListGet(&num);
+   for (i = 0; i < num; i++)
+      ICCCM_SetEInfo(lst[i]);
    ICCCM_SetMainEInfo();
 
    EDBUG_RETURN_;
@@ -150,7 +146,7 @@ GetEwinPointerInClient(void)
 {
    Window              rt, ch;
    int                 dum, px, py, d;
-   EWin              **lst;
+   EWin               *const *lst;
    int                 i, num;
 
    EDBUG(5, "GetEwinPointerInClient");
@@ -341,7 +337,7 @@ void
 AddToFamily(Window win)
 {
    EWin               *ewin, *ewin2;
-   EWin              **lst;
+   EWin               *const *lst;
    int                 i, k, num, speed, fx, fy, x, y;
    char                doslide, manplace;
    char                pq;
@@ -408,7 +404,7 @@ AddToFamily(Window win)
 
 	     if (!ewin2)
 	       {
-		  lst = (EWin **) ListItemType(&num, LIST_TYPE_EWIN);
+		  lst = EwinListGet(&num);
 		  for (i = 0; i < num; i++)
 		    {
 		       if ((lst[i]->iconified) ||
@@ -418,8 +414,6 @@ AddToFamily(Window win)
 		       ewin2 = lst[i];
 		       break;
 		    }
-		  if (lst)
-		     Efree(lst);
 	       }
 
 	     if (ewin2)
@@ -3235,10 +3229,10 @@ static int
 BordersEvent(XEvent * ev, border_event_func_t * func)
 {
    Window              win = ev->xany.window;
-   EWin              **ewins;
+   EWin               *const *ewins;
    int                 i, j, num, used = 0;
 
-   ewins = (EWin **) ListItemType(&num, LIST_TYPE_EWIN);
+   ewins = EwinListGet(&num);
    for (i = 0; i < num; i++)
      {
 	for (j = 0; j < ewins[i]->border->num_winparts; j++)
@@ -3254,8 +3248,6 @@ BordersEvent(XEvent * ev, border_event_func_t * func)
      }
 
  done:
-   if (ewins)
-      Efree(ewins);
 
    return used;
 }

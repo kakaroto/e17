@@ -2535,8 +2535,10 @@ void                EwinListAdd(EWinList * ewl, EWin * ewin);
 void                EwinListDelete(EWinList * ewl, EWin * ewin);
 int                 EwinListRaise(EWinList * ewl, EWin * ewin, int mode);
 int                 EwinListLower(EWinList * ewl, EWin * ewin, int mode);
-EWin              **EwinListGetForDesktop(int desk, int *num);
-EWin              **EwinListGetStacking(int *num);
+EWin               *const *EwinListGetForDesktop(int desk, int *num);
+EWin               *const *EwinListGetStacking(int *num);
+
+#define EwinListGet EwinListGetStacking
 int                 EwinListStackingRaise(EWin * ewin);
 int                 EwinListStackingLower(EWin * ewin);
 int                 EwinListFocusRaise(EWin * ewin);

@@ -386,7 +386,7 @@ EWMH_SetClientList(void)
      }
 
    /* Stacking order */
-   lst = EwinListGetStacking(&num);
+   lst = (EWin **) EwinListGetStacking(&num);
    /* FIXME: num must be unchanged here! Check! */
    if (num != nwin)
       printf("*** ERROR: %s %d\n", __FILE__, __LINE__);

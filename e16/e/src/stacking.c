@@ -181,14 +181,14 @@ EwinListRaise(EWinList * ewl, EWin * ewin, int mode)
 EWinList            EwinListFocus = { "Focus", 0, 0, NULL };
 EWinList            EwinListStack = { "Stack", 0, 0, NULL };
 
-EWin              **
+EWin               *const *
 EwinListGetStacking(int *num)
 {
    *num = EwinListStack.nwins;
    return EwinListStack.list;
 }
 
-EWin              **
+EWin               *const *
 EwinListGetForDesktop(int desk, int *num)
 {
    static EWin       **lst = NULL;
@@ -200,7 +200,7 @@ EwinListGetForDesktop(int desk, int *num)
    nwins = EwinListStack.nwins;
    if (nalloc < nwins)
      {
-	nalloc = nwins;
+	nalloc += 16;
 	lst = Erealloc(lst, nalloc * sizeof(EWin *));
      }
 

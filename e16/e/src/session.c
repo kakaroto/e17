@@ -207,12 +207,12 @@ GetGenericSMFile(void)
 static void
 SaveWindowStates(void)
 {
-   EWin              **lst, *ewin;
+   EWin               *const *lst, *ewin;
    int                 i, num, x, y;
    FILE               *f;
    char                s[4096], ss[4096];
 
-   lst = (EWin **) ListItemType(&num, LIST_TYPE_EWIN);
+   lst = EwinListGet(&num);
    if (lst)
      {
 	Etmp(s);
@@ -262,7 +262,6 @@ SaveWindowStates(void)
 			"to write to your filing system "
 			"or other similar problems.\n"));
 	  }
-	Efree(lst);
      }
 }
 

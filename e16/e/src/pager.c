@@ -105,11 +105,12 @@ PagerUpdateTimeout(int val, void *data)
    if (p->update_phase >= p->h)
      {
 	int                 i, num;
-	EWin              **lst;
+	EWin               *const *lst;
 
 	lst = EwinListGetForDesktop(p->desktop, &num);
 	for (i = 0; i < num; i++)
 	   PagerEwinUpdateFromPager(p, lst[i]);
+
 	p->update_phase = 0;
      }
    return;
@@ -228,7 +229,7 @@ PagerMoveResize(EWin * ewin, int resize)
    int                 ax, ay, cx, cy;
    char                pq;
    ImageClass         *ic;
-   EWin              **lst;
+   EWin               *const *lst;
    int                 i, num;
 
    if (!Conf.pagers.enable || !p)
@@ -587,7 +588,7 @@ PagerRedraw(Pager * p, char newbg)
    int                 x, y, ax, ay, cx, cy;
    GC                  gc;
    XGCValues           gcv;
-   EWin              **lst;
+   EWin               *const *lst;
    int                 i, num;
 
    if (!Conf.pagers.enable || Mode.mode == MODE_DESKSWITCH)
@@ -756,7 +757,7 @@ void
 PagerForceUpdate(Pager * p)
 {
    int                 ww, hh, xx, yy, ax, ay, cx, cy;
-   EWin              **lst;
+   EWin               *const *lst;
    int                 i, num;
 
    if (!Conf.pagers.enable || Mode.mode == MODE_DESKSWITCH)
@@ -879,7 +880,7 @@ static EWin        *
 EwinInPagerAt(Pager * p, int x, int y)
 {
    int                 wx, wy, ww, wh, ax, ay, cx, cy;
-   EWin              **lst;
+   EWin               *const *lst;
    int                 i, num;
 
    if (!Conf.pagers.enable)
@@ -1486,20 +1487,16 @@ void
 PagerSetHiQ(char onoff)
 {
    Pager             **pl;
-   EWin              **lst;
+   EWin               *const *lst;
    int                 i, num;
 
    HIQ = onoff;
 
-   lst = (EWin **) ListItemType(&num, LIST_TYPE_EWIN);
-   if (lst)
+   lst = EwinListGet(&num);
+   for (i = 0; i < num; i++)
      {
-	for (i = 0; i < num; i++)
-	  {
-	     lst[i]->mini_w = 0;
-	     lst[i]->mini_h = 0;
-	  }
-	Efree(lst);
+	lst[i]->mini_w = 0;
+	lst[i]->mini_h = 0;
      }
 
    pl = (Pager **) ListItemType(&num, LIST_TYPE_PAGER);
@@ -1519,22 +1516,19 @@ void
 PagerSetSnap(char onoff)
 {
    Pager             **pl;
-   EWin              **lst;
+   EWin               *const *lst;
    int                 i, num;
    char                s[256];
 
    Conf.pagers.snap = onoff;
 
-   lst = (EWin **) ListItemType(&num, LIST_TYPE_EWIN);
-   if (lst)
+   lst = EwinListGet(&num);
+   for (i = 0; i < num; i++)
      {
-	for (i = 0; i < num; i++)
-	  {
-	     lst[i]->mini_w = 0;
-	     lst[i]->mini_h = 0;
-	  }
-	Efree(lst);
+	lst[i]->mini_w = 0;
+	lst[i]->mini_h = 0;
      }
+
    pl = (Pager **) ListItemType(&num, LIST_TYPE_PAGER);
    if (pl)
      {

@@ -821,7 +821,7 @@ EWinIsOnViewport(EWin * ewin, int desktop)
 void
 ArrangeEwinXY(EWin * ewin, int *px, int *py)
 {
-   EWin              **lst;
+   EWin               *const *lst;
    Button            **blst;
    int                 i, j, num;
    RectBox            *fixed, *ret, newrect;
@@ -829,7 +829,7 @@ ArrangeEwinXY(EWin * ewin, int *px, int *py)
    fixed = NULL;
    ret = NULL;
 
-   lst = (EWin **) ListItemType(&num, LIST_TYPE_EWIN);
+   lst = EwinListGet(&num);
    if ((lst) && (num > 0))
      {
 	fixed = Emalloc(sizeof(RectBox) * num);
@@ -924,7 +924,6 @@ ArrangeEwinXY(EWin * ewin, int *px, int *py)
 		  break;
 	       }
 	  }
-	Efree(lst);
 	if (ret)
 	   Efree(ret);
 	if (fixed)

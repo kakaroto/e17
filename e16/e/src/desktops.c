@@ -117,7 +117,7 @@ void
 ChangeNumberOfDesktops(int quantity)
 {
    int                 pnum, i, num;
-   EWin              **lst;
+   EWin               *const *lst;
 
    pnum = Conf.desks.num;
    for (i = quantity; i < ENLIGHTENMENT_CONF_NUM_DESKTOPS; i++)
@@ -129,16 +129,13 @@ ChangeNumberOfDesktops(int quantity)
    else if (Conf.desks.num > ENLIGHTENMENT_CONF_NUM_DESKTOPS)
       Conf.desks.num = ENLIGHTENMENT_CONF_NUM_DESKTOPS;
 
-   lst = (EWin **) ListItemType(&num, LIST_TYPE_EWIN);
-   if (lst)
+   lst = EwinListGet(&num);
+   for (i = 0; i < num; i++)
      {
-	for (i = 0; i < num; i++)
-	  {
-	     if (lst[i]->desktop >= Conf.desks.num)
-		MoveEwinToDesktop(lst[i], Conf.desks.num - 1);
-	  }
-	Efree(lst);
+	if (lst[i]->desktop >= Conf.desks.num)
+	   MoveEwinToDesktop(lst[i], Conf.desks.num - 1);
      }
+
    if (Conf.desks.num > pnum)
      {
 	for (i = pnum; i < Conf.desks.num; i++)
@@ -1179,7 +1176,7 @@ DesktopAt(int x, int y)
 static void
 MoveStickyWindowsToCurrentDesk(void)
 {
-   EWin              **lst, *ewin, *last_ewin;
+   EWin               *const *lst, *ewin, *last_ewin;
    int                 i, num;
 
    lst = EwinListGetStacking(&num);
@@ -1322,7 +1319,7 @@ void
 MoveDesktop(int desk, int x, int y)
 {
    int                 i;
-   EWin              **lst;
+   EWin               *const *lst;
    int                 n, v, dx, dy;
 
    EDBUG(3, "MoveDesktop");
@@ -1414,16 +1411,12 @@ MoveDesktop(int desk, int x, int y)
    desks.desk[desk].x = x;
    desks.desk[desk].y = y;
 
-   lst = (EWin **) ListItemType(&n, LIST_TYPE_EWIN);
-   if (lst)
-     {
-	for (i = 0; i < n; i++)
-	   if (lst[i]->desktop == desk)
-	      ICCCM_Configure(lst[i]);
-	Efree(lst);
-     }
-   EDBUG_RETURN_;
+   lst = EwinListGet(&n);
+   for (i = 0; i < n; i++)
+      if (lst[i]->desktop == desk)
+	 ICCCM_Configure(lst[i]);
 
+   EDBUG_RETURN_;
 }
 
 void
@@ -1464,7 +1457,6 @@ RaiseDesktop(int desk)
    XSync(disp, False);
 
    EDBUG_RETURN_;
-
 }
 
 void
@@ -1494,7 +1486,6 @@ LowerDesktop(int desk)
    XSync(disp, False);
 
    EDBUG_RETURN_;
-
 }
 
 void
@@ -1513,7 +1504,6 @@ HideDesktop(int desk)
    EMoveWindow(disp, desks.desk[desk].win, root.w, 0);
 
    EDBUG_RETURN_;
-
 }
 
 void
@@ -1566,7 +1556,7 @@ StackDesktop(int desk)
 {
    Window             *wl, *wl2;
    int                 i, wnum, tot, bnum;
-   EWin              **lst, *ewin;
+   EWin               *const *lst, *ewin;
    Button            **blst;
 
    EDBUG(2, "StackDesktop");

@@ -2584,10 +2584,10 @@ IPC_InternalList(const char *params, Client * c)
 
    if (params)
      {
-	EWin              **lst;
+	EWin               *const *lst;
 	int                 num, i;
 
-	lst = (EWin **) ListItemType(&num, LIST_TYPE_EWIN);
+	lst = EwinListGet(&num);
 	if (!strcmp(params, "pagers"))
 	  {
 	     for (i = 0; i < num; i++)
@@ -2641,9 +2641,6 @@ IPC_InternalList(const char *params, Client * c)
 	     Esnprintf(buf, sizeof(buf),
 		       "Error: unknown internal list specified");
 	  }
-
-	if (lst)
-	   Efree(lst);
      }
    if (buf[0])
       CommsSend(c, buf);
@@ -3469,11 +3466,11 @@ IPC_WinList(const char *params, Client * c)
 {
    char               *ret = NULL;
    char                buf[FILEPATH_LEN_MAX];
-   EWin              **lst, *e;
+   EWin               *const *lst, *e;
    int                 num, i;
    char                none[] = "-NONE-";
 
-   lst = (EWin **) ListItemType(&num, LIST_TYPE_EWIN);
+   lst = EwinListGet(&num);
    if (lst)
      {
 	for (i = 0; i < num; i++)
@@ -3515,9 +3512,6 @@ IPC_WinList(const char *params, Client * c)
      {
 	CommsSend(c, "");
      }
-   if (lst)
-      Efree(lst);
-
 }
 
 static void

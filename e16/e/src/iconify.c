@@ -2255,7 +2255,7 @@ IB_CompleteRedraw(Iconbox * ib)
 void
 IB_Setup(void)
 {
-   EWin              **lst;
+   EWin               *const *lst;
    int                 i, num;
    Iconbox           **ibl;
 
@@ -2267,15 +2267,11 @@ IB_Setup(void)
 	   IconboxShow(ibl[i]);
 	Efree(ibl);
      }
-   lst = (EWin **) ListItemType(&num, LIST_TYPE_EWIN);
-   if (lst)
+   lst = EwinListGet(&num);
+   for (i = 0; i < num; i++)
      {
-	for (i = 0; i < num; i++)
-	  {
-	     if (lst[i]->client.start_iconified)
-		IconifyEwin(lst[i]);
-	  }
-	Efree(lst);
+	if (lst[i]->client.start_iconified)
+	   IconifyEwin(lst[i]);
      }
 }
 

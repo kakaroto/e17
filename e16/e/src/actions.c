@@ -1171,7 +1171,7 @@ FindEwinInList(EWin * ewin, EWin ** gwins, int num)
 static int
 DoRaiseLower(EWin * ewin, const void *params, int nogroup)
 {
-   EWin              **gwins, **lst;
+   EWin              **gwins, *const *lst;
    int                 gnum, j, raise = 0;
    int                 i, num;
 
@@ -1233,11 +1233,10 @@ doCleanup(EWin * edummy, const void *params)
 {
    char               *type;
    int                 method;
-   void              **lst;
    int                 i, j, k, num, speed;
    RectBox            *fixed, *ret, *floating;
    char                doslide;
-   EWin               *ewin;
+   EWin               *const *lst, *ewin;
    Button            **blst;
 
    EDBUG(6, "doCleanup");
@@ -1258,7 +1257,7 @@ doCleanup(EWin * edummy, const void *params)
 	     method = ARRANGE_BY_POSITION;
 	  }
      }
-   lst = ListItemType(&num, LIST_TYPE_EWIN);
+   lst = EwinListGet(&num);
    if (lst)
      {
 	fixed = NULL;
@@ -1268,36 +1267,35 @@ doCleanup(EWin * edummy, const void *params)
 	k = 0;
 	for (i = 0; i < num; i++)
 	  {
-	     if ((((EWin *) lst[i])->desktop == desks.current)
-		 && (!((EWin *) lst[i])->sticky)
-		 && (!((EWin *) lst[i])->floating)
-		 && (!((EWin *) lst[i])->iconified)
-		 && (!((EWin *) lst[i])->ignorearrange)
-		 && (!((EWin *) lst[i])->menu)
-		 && (((EWin *) lst[i])->area_x ==
-		     desks.desk[((EWin *) lst[i])->desktop].current_area_x)
-		 && (((EWin *) lst[i])->area_y ==
-		     desks.desk[((EWin *) lst[i])->desktop].current_area_y))
+	     ewin = lst[i];
+	     if ((ewin->desktop == desks.current)
+		 && (!ewin->sticky)
+		 && (!ewin->floating)
+		 && (!ewin->iconified)
+		 && (!ewin->ignorearrange)
+		 && (!ewin->menu)
+		 && (ewin->area_x ==
+		     desks.desk[ewin->desktop].current_area_x)
+		 && (ewin->area_y == desks.desk[ewin->desktop].current_area_y))
 	       {
 		  floating[j].data = lst[i];
-		  floating[j].x = ((EWin *) lst[i])->x;
-		  floating[j].y = ((EWin *) lst[i])->y;
-		  floating[j].w = ((EWin *) lst[i])->w;
-		  floating[j].p = ((EWin *) lst[i])->layer;
-		  floating[j++].h = ((EWin *) lst[i])->h;
+		  floating[j].x = ewin->x;
+		  floating[j].y = ewin->y;
+		  floating[j].w = ewin->w;
+		  floating[j].p = ewin->layer;
+		  floating[j++].h = ewin->h;
 	       }
-	     else if (((((EWin *) lst[i])->desktop == desks.current)
-		       || (((EWin *) lst[i])->sticky))
-		      && (((EWin *) lst[i])->layer != 4)
-		      && (((EWin *) lst[i])->layer != 0)
-		      && (!((EWin *) lst[i])->menu))
+	     else if (((ewin->desktop == desks.current)
+		       || (ewin->sticky))
+		      && (ewin->layer != 4)
+		      && (ewin->layer != 0) && (!ewin->menu))
 	       {
 		  fixed = Erealloc(fixed, sizeof(RectBox) * (k + 1));
 		  fixed[k].data = lst[i];
-		  fixed[k].x = ((EWin *) lst[i])->x;
-		  fixed[k].y = ((EWin *) lst[i])->y;
-		  fixed[k].w = ((EWin *) lst[i])->w;
-		  fixed[k].h = ((EWin *) lst[i])->h;
+		  fixed[k].x = ewin->x;
+		  fixed[k].y = ewin->y;
+		  fixed[k].w = ewin->w;
+		  fixed[k].h = ewin->h;
 		  if (fixed[k].x < 0)
 		    {
 		       fixed[k].x += fixed[k].w;
@@ -1314,8 +1312,8 @@ doCleanup(EWin * edummy, const void *params)
 		     fixed[k].h = root.h - fixed[k].y;
 		  if ((fixed[k].w > 0) && (fixed[k].h > 0))
 		    {
-		       if (!((EWin *) lst[i])->never_use_area)
-			  fixed[k].p = ((EWin *) lst[i])->layer;
+		       if (!ewin->never_use_area)
+			  fixed[k].p = ewin->layer;
 		       else
 			  fixed[k].p = 99;
 		       k++;
@@ -1398,8 +1396,6 @@ doCleanup(EWin * edummy, const void *params)
 	   Efree(ret);
 	if (floating)
 	   Efree(floating);
-	if (lst)
-	   Efree(lst);
      }
    EDBUG_RETURN(0);
    edummy = NULL;
@@ -2351,7 +2347,7 @@ static int
 doScrollWindows(EWin * edummy, const void *params)
 {
    int                 x, y, num, i;
-   EWin              **lst;
+   EWin               *const *lst;
 
    EDBUG(6, "doScrollWindows");
    if (!params)
@@ -2361,17 +2357,12 @@ doScrollWindows(EWin * edummy, const void *params)
    y = 0;
    sscanf((char *)params, "%i %i", &x, &y);
 
-   lst = (EWin **) ListItemType(&num, LIST_TYPE_EWIN);
-
-   if ((lst) && (num > 0))
+   lst = EwinListGet(&num);
+   for (i = 0; i < num; i++)
      {
-	for (i = 0; i < num; i++)
-	  {
-	     if ((lst[i]->desktop == desks.current) && (!lst[i]->sticky)
-		 && (!lst[i]->floating) && (!lst[i]->fixedpos))
-		MoveEwin(lst[i], lst[i]->x + x, lst[i]->y + y);
-	  }
-	Efree(lst);
+	if ((lst[i]->desktop == desks.current) && (!lst[i]->sticky)
+	    && (!lst[i]->floating) && (!lst[i]->fixedpos))
+	   MoveEwin(lst[i], lst[i]->x + x, lst[i]->y + y);
      }
    EDBUG_RETURN(0);
    edummy = NULL;

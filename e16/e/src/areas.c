@@ -83,7 +83,7 @@ SetNewAreaSize(int ax, int ay)
 {
 
    int                 a, b, i, num;
-   EWin              **lst;
+   EWin               *const *lst;
 
    if (ax <= 0)
       return;
@@ -96,20 +96,16 @@ SetNewAreaSize(int ax, int ay)
 
    SetAreaSize(ax, ay);
 
-   lst = (EWin **) ListItemType(&num, LIST_TYPE_EWIN);
-   if (lst)
+   lst = EwinListGet(&num);
+   for (i = 0; i < num; i++)
      {
-	for (i = 0; i < num; i++)
+	if ((!(lst[i]->sticky)) && (!(lst[i]->fixedpos)))
 	  {
-	     if ((!(lst[i]->sticky)) && (!(lst[i]->fixedpos)))
-	       {
-		  if (lst[i]->area_x >= ax)
-		     MoveEwinToArea(lst[i], ax - 1, lst[i]->area_x);
-		  if (lst[i]->area_y >= ay)
-		     MoveEwinToArea(lst[i], lst[i]->area_x, ay - 1);
-	       }
+	     if (lst[i]->area_x >= ax)
+		MoveEwinToArea(lst[i], ax - 1, lst[i]->area_x);
+	     if (lst[i]->area_y >= ay)
+		MoveEwinToArea(lst[i], lst[i]->area_x, ay - 1);
 	  }
-	Efree(lst);
      }
 
    GetCurrentArea(&a, &b);
@@ -246,7 +242,7 @@ SlideWindowsBy(Window * win, int num, int dx, int dy, int speed)
 void
 SetCurrentArea(int ax, int ay)
 {
-   EWin               *ewin, **lst;
+   EWin               *const *lst, *ewin;
    int                 i, num, a1, a2, x, y, dx, dy;
    ToolTip            *tt;
 
@@ -287,53 +283,91 @@ SetCurrentArea(int ax, int ay)
    desks.desk[desks.current].current_area_y = ay;
 
    /* move all the windows around */
-   lst = (EWin **) ListItemType(&num, LIST_TYPE_EWIN);
-   if (lst)
+   lst = EwinListGet(&num);
+   if (Conf.desks.slidein)
      {
-	if (Conf.desks.slidein)
+	int                 wnum = 0;
+	Window             *wl = NULL;
+
+	/* create the list of windwos to move */
+	for (i = 0; i < num; i++)
 	  {
-	     int                 wnum = 0;
-	     Window             *wl = NULL;
+	     ewin = lst[i];
+	     if (ewin->desktop != desks.current || ewin->sticky ||
+		 ewin->fixedpos || ewin->iconified)
+		continue;
 
-	     /* create the list of windwos to move */
-	     for (i = 0; i < num; i++)
+	     if ((ewin->floating) && (Conf.movemode > 0))
 	       {
-		  ewin = lst[i];
-		  if (ewin->desktop != desks.current || ewin->sticky ||
-		      ewin->fixedpos || ewin->iconified)
-		     continue;
+		  wnum++;
+		  wl = Erealloc(wl, sizeof(Window) * wnum);
+		  wl[wnum - 1] = ewin->win;
+	       }
+	     else if (!ewin->floating)
+	       {
+		  wnum++;
+		  wl = Erealloc(wl, sizeof(Window) * wnum);
+		  wl[wnum - 1] = ewin->win;
+	       }
+	  }
 
-		  if ((ewin->floating) && (Conf.movemode > 0))
+	/* slide them */
+	if (wl)
+	  {
+	     SlideWindowsBy(wl, wnum, -dx, -dy, Conf.desks.slidespeed);
+	     Efree(wl);
+	  }
+
+	/* move the windows to their final positions */
+	for (i = 0; i < num; i++)
+	  {
+	     char                setflip = 0;
+
+	     ewin = lst[i];
+	     if (ewin->desktop != desks.current || ewin->sticky ||
+		 ewin->fixedpos || ewin->floating || ewin->client.transient_for)
+		continue;
+
+	     a1 = ewin->area_x;
+	     a2 = ewin->area_y;
+	     if (!Mode.flipp)
+	       {
+		  setflip = 1;
+		  Mode.flipp = 1;
+	       }
+	     MoveEwin(ewin, ewin->x - dx, ewin->y - dy);
+	     if (setflip)
+		Mode.flipp = 0;
+	     ewin->area_x = a1;
+	     ewin->area_y = a2;
+	     HintsSetWindowArea(ewin);
+	  }
+     }
+   else
+     {
+	/* move all windows across.... */
+	for (i = 0; i < num; i++)
+	  {
+	     ewin = lst[i];
+	     if (ewin->desktop != desks.current || ewin->sticky ||
+		 ewin->fixedpos)
+		continue;
+
+	     /* if we're moving this window and its not opaque move */
+	     /* warp it across without remebering the xy stuff */
+	     /* well work out the xy stuff later when the move finishes */
+	     if (ewin->floating)
+	       {
+		  if (Conf.movemode > 0)
 		    {
-		       wnum++;
-		       wl = Erealloc(wl, sizeof(Window) * wnum);
-		       wl[wnum - 1] = ewin->win;
-		    }
-		  else if (!ewin->floating)
-		    {
-		       wnum++;
-		       wl = Erealloc(wl, sizeof(Window) * wnum);
-		       wl[wnum - 1] = ewin->win;
+		       GetWinXY(ewin->win, &x, &y);
+		       EMoveWindow(disp, ewin->win, x - dx, y - dy);
 		    }
 	       }
-
-	     /* slide them */
-	     if (wl)
-	       {
-		  SlideWindowsBy(wl, wnum, -dx, -dy, Conf.desks.slidespeed);
-		  Efree(wl);
-	       }
-
-	     /* move the windows to their final positions */
-	     for (i = 0; i < num; i++)
+	     /* if we're not moving it... move it across */
+	     else if (!ewin->client.transient_for)
 	       {
 		  char                setflip = 0;
-
-		  ewin = lst[i];
-		  if (ewin->desktop != desks.current || ewin->sticky ||
-		      ewin->fixedpos || ewin->floating ||
-		      ewin->client.transient_for)
-		     continue;
 
 		  a1 = ewin->area_x;
 		  a2 = ewin->area_y;
@@ -350,49 +384,6 @@ SetCurrentArea(int ax, int ay)
 		  HintsSetWindowArea(ewin);
 	       }
 	  }
-	else
-	  {
-	     /* move all windows across.... */
-	     for (i = 0; i < num; i++)
-	       {
-		  ewin = lst[i];
-		  if (ewin->desktop != desks.current || ewin->sticky ||
-		      ewin->fixedpos)
-		     continue;
-
-		  /* if we're moving this window and its not opaque move */
-		  /* warp it across without remebering the xy stuff */
-		  /* well work out the xy stuff later when the move finishes */
-		  if (ewin->floating)
-		    {
-		       if (Conf.movemode > 0)
-			 {
-			    GetWinXY(ewin->win, &x, &y);
-			    EMoveWindow(disp, ewin->win, x - dx, y - dy);
-			 }
-		    }
-		  /* if we're not moving it... move it across */
-		  else if (!ewin->client.transient_for)
-		    {
-		       char                setflip = 0;
-
-		       a1 = ewin->area_x;
-		       a2 = ewin->area_y;
-		       if (!Mode.flipp)
-			 {
-			    setflip = 1;
-			    Mode.flipp = 1;
-			 }
-		       MoveEwin(ewin, ewin->x - dx, ewin->y - dy);
-		       if (setflip)
-			  Mode.flipp = 0;
-		       ewin->area_x = a1;
-		       ewin->area_y = a2;
-		       HintsSetWindowArea(ewin);
-		    }
-	       }
-	  }
-	Efree(lst);
      }
 
    /* set hints up for it */

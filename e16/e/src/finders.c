@@ -25,57 +25,43 @@
 EWin               *
 FindEwinByBase(Window win)
 {
-   EWin              **ewins;
-   EWin               *ewin;
+   EWin               *const *ewins;
    int                 i, num;
 
    EDBUG(6, "FindEwinByBase");
-   ewins = (EWin **) ListItemType(&num, LIST_TYPE_EWIN);
+   ewins = EwinListGet(&num);
    for (i = 0; i < num; i++)
      {
 	if (win == ewins[i]->win)
-	  {
-	     ewin = ewins[i];
-	     Efree(ewins);
-	     EDBUG_RETURN(ewin);
-	  }
+	   return ewins[i];
      }
-   if (ewins)
-      Efree(ewins);
    EDBUG_RETURN(NULL);
 }
 
 EWin               *
 FindEwinByChildren(Window win)
 {
-   EWin               *ewin;
-   EWin              **ewins;
+   EWin               *const *ewins;
    int                 i, j, num;
 
    EDBUG(6, "FindEwinByChildren");
 
-   ewins = (EWin **) ListItemType(&num, LIST_TYPE_EWIN);
+   ewins = EwinListGet(&num);
    for (i = 0; i < num; i++)
      {
 	if ((win == ewins[i]->client.win) || (win == ewins[i]->win_container))
 	  {
-	     ewin = ewins[i];
-	     Efree(ewins);
-	     EDBUG_RETURN(ewin);
+	     return ewins[i];
 	  }
 	else
 	  {
 	     for (j = 0; j < ewins[i]->border->num_winparts; j++)
 		if (win == ewins[i]->bits[j].win)
 		  {
-		     ewin = ewins[i];
-		     Efree(ewins);
-		     EDBUG_RETURN(ewin);
+		     return ewins[i];
 		  }
 	  }
      }
-   if (ewins)
-      Efree(ewins);
    EDBUG_RETURN(NULL);
 }
 
@@ -83,7 +69,7 @@ EWin               *
 FindEwinByPartial(const char *match, int type)
 {
    EWin               *ewin = NULL;
-   EWin              **ewins;
+   EWin               *const *ewins;
    int                 i, num, len;
    char                ewinid[FILEPATH_LEN_MAX];
 
@@ -93,7 +79,7 @@ FindEwinByPartial(const char *match, int type)
    if (len <= 0)
       goto done;
 
-   ewins = (EWin **) ListItemType(&num, LIST_TYPE_EWIN);
+   ewins = EwinListGet(&num);
    if (ewins == NULL)
       goto done;
 
@@ -118,7 +104,6 @@ FindEwinByPartial(const char *match, int type)
 	ewin = ewins[i];
 	break;
      }
-   Efree(ewins);
 
  done:
    EDBUG_RETURN(ewin);
@@ -127,27 +112,21 @@ FindEwinByPartial(const char *match, int type)
 EWin               *
 FindEwinByDecoration(Window win)
 {
-   EWin               *ewin;
-   EWin              **ewins;
+   EWin               *const *ewins;
    int                 i, j, num;
 
    EDBUG(6, "FindEwinByDecoration");
 
-   ewins = (EWin **) ListItemType(&num, LIST_TYPE_EWIN);
+   ewins = EwinListGet(&num);
    for (i = 0; i < num; i++)
      {
 	for (j = 0; j < ewins[i]->border->num_winparts; j++)
 	  {
 	     if (win == ewins[i]->bits[j].win)
-	       {
-		  ewin = ewins[i];
-		  Efree(ewins);
-		  EDBUG_RETURN(ewin);
-	       }
+		return ewins[i];
 	  }
      }
-   if (ewins)
-      Efree(ewins);
+
    EDBUG_RETURN(NULL);
 }
 
@@ -190,24 +169,19 @@ FindActionClass(Window win)
 EWin               *
 FindEwinByMenu(Menu * m)
 {
-   EWin               *ewin = NULL;
-   EWin              **ewins;
+   EWin               *const *ewins;
    int                 i, num;
 
    EDBUG(6, "FindEwinByMenu");
 
-   ewins = (EWin **) ListItemType(&num, LIST_TYPE_EWIN);
+   ewins = EwinListGet(&num);
    for (i = 0; i < num; i++)
      {
-	if (ewins[i]->menu != m)
-	   continue;
-	ewin = ewins[i];
-	break;
+	if (ewins[i]->menu == m)
+	   return ewins[i];
      }
-   if (ewins)
-      Efree(ewins);
 
-   EDBUG_RETURN(ewin);
+   EDBUG_RETURN(NULL);
 }
 
 Group             **
@@ -366,12 +340,12 @@ ListWinGroupMembersForEwin(EWin * ewin, int action, char nogroup, int *num)
 EWin              **
 ListTransientsFor(Window win, int *num)
 {
-   EWin              **ewins, **lst = NULL;
+   EWin               *const *ewins, **lst = NULL;
    int                 i, j, n;
 
    EDBUG(6, "ListTransientsFor");
 
-   ewins = (EWin **) ListItemType(&n, LIST_TYPE_EWIN);
+   ewins = EwinListGet(&n);
    j = 0;
    for (i = 0; i < n; i++)
      {
@@ -382,8 +356,6 @@ ListTransientsFor(Window win, int *num)
 	     lst[j - 1] = ewins[i];
 	  }
      }
-   if (ewins)
-      Efree(ewins);
    *num = j;
    EDBUG_RETURN(lst);
 }
@@ -391,12 +363,12 @@ ListTransientsFor(Window win, int *num)
 EWin              **
 ListGroupMembers(Window win, int *num)
 {
-   EWin              **ewins, **lst = NULL;
+   EWin               *const *ewins, **lst = NULL;
    int                 i, j, n;
 
    EDBUG(6, "ListGroupMembers");
 
-   ewins = (EWin **) ListItemType(&n, LIST_TYPE_EWIN);
+   ewins = EwinListGet(&n);
    j = 0;
    for (i = 0; i < n; i++)
      {
@@ -407,8 +379,6 @@ ListGroupMembers(Window win, int *num)
 	     lst[j - 1] = ewins[i];
 	  }
      }
-   if (ewins)
-      Efree(ewins);
    *num = j;
    EDBUG_RETURN(lst);
 }
@@ -416,40 +386,35 @@ ListGroupMembers(Window win, int *num)
 EWin               *
 FindEwinByDialog(Dialog * d)
 {
-   EWin               *ewin;
-   EWin              **ewins;
+   EWin               *const *ewins;
    int                 i, num;
 
    EDBUG(6, "FindEwinByDialog");
-   ewins = (EWin **) ListItemType(&num, LIST_TYPE_EWIN);
+
+   ewins = EwinListGet(&num);
    for (i = 0; i < num; i++)
      {
 	if (ewins[i]->dialog == d)
-	  {
-	     ewin = ewins[i];
-	     Efree(ewins);
-	     EDBUG_RETURN(ewin);
-	  }
+	   return ewins[i];
      }
-   if (ewins)
-      Efree(ewins);
+
    EDBUG_RETURN(NULL);
 }
 
 int
 FindADialog(void)
 {
-   EWin              **ewins;
+   EWin               *const *ewins;
    int                 i, num, n;
 
    EDBUG(6, "FindADialog");
-   ewins = (EWin **) ListItemType(&num, LIST_TYPE_EWIN);
+
+   ewins = EwinListGet(&num);
    for (i = n = 0; i < num; i++)
      {
 	if (ewins[i]->dialog)
 	   n++;
      }
-   if (ewins)
-      Efree(ewins);
+
    EDBUG_RETURN(n);
 }

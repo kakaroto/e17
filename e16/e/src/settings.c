@@ -4631,7 +4631,7 @@ SettingsRemember()
 {
    Dialog             *d;
    DItem              *table, *di;
-   EWin              **lst, *ewin;
+   EWin               *const *lst, *ewin;
    int                 i, ri, num;
 
    /* init remember window */
@@ -4672,7 +4672,7 @@ SettingsRemember()
 
    /* there's a much more efficient way of doing this, but this will work
     * for now */
-   lst = (EWin **) ListItemType(&num, LIST_TYPE_EWIN);
+   lst = EwinListGet(&num);
    rd_ewin_list = Emalloc(sizeof(RememberWinList *) * (num + 1));
    ri = 0;
    if ((lst) && (num > 0))
@@ -4723,8 +4723,6 @@ SettingsRemember()
 	       }
 	  }
      }
-   if (lst)
-      Efree(lst);
    rd_ewin_list[ri] = 0;
 
    /* finish remember window */

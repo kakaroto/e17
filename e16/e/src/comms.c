@@ -1570,22 +1570,18 @@ HandleComms(XClientMessageEvent * ev)
 	else
 	  {
 	     int                 i, num;
-	     EWin              **lst;
+	     EWin               *const *lst;
 
 	     Conf.desks.num = atoi(w);
 	     if (Conf.desks.num <= 0)
 		Conf.desks.num = 1;
 	     else if (Conf.desks.num > ENLIGHTENMENT_CONF_NUM_DESKTOPS)
 		Conf.desks.num = ENLIGHTENMENT_CONF_NUM_DESKTOPS;
-	     lst = (EWin **) ListItemType(&num, LIST_TYPE_EWIN);
-	     if (lst)
+	     lst = EwinListGet(&num);
+	     for (i = 0; i < num; i++)
 	       {
-		  for (i = 0; i < num; i++)
-		    {
-		       if (lst[i]->desktop >= Conf.desks.num)
-			  MoveEwinToDesktop(lst[i], Conf.desks.num - 1);
-		    }
-		  Efree(lst);
+		  if (lst[i]->desktop >= Conf.desks.num)
+		     MoveEwinToDesktop(lst[i], Conf.desks.num - 1);
 	       }
 	     if (desks.current >= Conf.desks.num)
 		GotoDesktop(Conf.desks.num - 1);
@@ -1819,10 +1815,10 @@ HandleComms(XClientMessageEvent * ev)
      {
 	char                buf[FILEPATH_LEN_MAX], *ret = NULL, none[] =
 	   "-NONE-";
-	EWin              **lst;
+	EWin               *const *lst;
 	int                 i, num;
 
-	lst = (EWin **) ListItemType(&num, LIST_TYPE_EWIN);
+	lst = EwinListGet(&num);
 	for (i = 0; i < num; i++)
 	  {
 	     if (!lst[i]->icccm.wm_name)
@@ -2031,8 +2027,6 @@ HandleComms(XClientMessageEvent * ev)
 	     CommsSend(c, ret);
 	     Efree(ret);
 	  }
-	if (lst)
-	   Efree(lst);
      }
    else
       unknown = 1;

@@ -88,21 +88,17 @@ EWin               *
 FindEwinSpawningMenu(Menu * m)
 {
    EWin               *ewin = NULL;
-   EWin              **ewins;
+   EWin               *const *ewins;
    int                 i, num;
 
    EDBUG(6, "FindEwinSpawningMenu");
 
-   ewins = (EWin **) ListItemType(&num, LIST_TYPE_EWIN);
+   ewins = EwinListGet(&num);
    for (i = 0; i < num; i++)
      {
-	if (ewins[i]->shownmenu != m->win)
-	   continue;
-	ewin = ewins[i];
-	break;
+	if (ewins[i]->shownmenu == m->win)
+	   return ewins[i];
      }
-   if (ewins)
-      Efree(ewins);
 
    EDBUG_RETURN(ewin);
 }
@@ -1762,7 +1758,7 @@ Menu               *
 MenuCreateFromAllEWins(const char *name, MenuStyle * ms)
 {
    Menu               *m;
-   EWin              **lst;
+   EWin               *const *lst;
    int                 i, num;
    char                s[256];
 
@@ -1772,22 +1768,19 @@ MenuCreateFromAllEWins(const char *name, MenuStyle * ms)
    m = MenuCreate(name);
    m->style = ms;
 
-   lst = (EWin **) ListItemType(&num, LIST_TYPE_EWIN);
-   if (lst)
+   lst = EwinListGet(&num);
+   for (i = 0; i < num; i++)
      {
-	for (i = 0; i < num; i++)
+	if ((!lst[i]->menu) && (!lst[i]->pager) && (!lst[i]->skipwinlist)
+	    && (EwinGetTitle(lst[i])) && (!lst[i]->ibox))
 	  {
-	     if ((!lst[i]->menu) && (!lst[i]->pager) && (!lst[i]->skipwinlist)
-		 && (EwinGetTitle(lst[i])) && (!lst[i]->ibox))
-	       {
-		  Esnprintf(s, sizeof(s), "%i", (int)(lst[i]->client.win));
-		  mi = MenuItemCreate(EwinGetTitle(lst[i]), NULL,
-				      ACTION_FOCUS_SET, s, NULL);
-		  MenuAddItem(m, mi);
-	       }
+	     Esnprintf(s, sizeof(s), "%i", (int)(lst[i]->client.win));
+	     mi = MenuItemCreate(EwinGetTitle(lst[i]), NULL,
+				 ACTION_FOCUS_SET, s, NULL);
+	     MenuAddItem(m, mi);
 	  }
-	Efree(lst);
      }
+
    EDBUG_RETURN(m);
 }
 
@@ -1796,7 +1789,7 @@ static Menu        *
 MenuCreateFromDesktopEWins(char *name, MenuStyle * ms, int desk)
 {
    Menu               *m;
-   EWin              **lst;
+   EWin               *const *lst;
    int                 i, num;
    char                s[256];
 
@@ -1806,24 +1799,21 @@ MenuCreateFromDesktopEWins(char *name, MenuStyle * ms, int desk)
    m = MenuCreate(name);
    m->style = ms;
 
-   lst = (EWin **) ListItemType(&num, LIST_TYPE_EWIN);
-   if (lst)
+   lst = EwinListGet(&num);
+   for (i = 0; i < num; i++)
      {
-	for (i = 0; i < num; i++)
+	if (((lst[i]->desktop == desk) || (lst[i]->sticky))
+	    && (!lst[i]->menu) && (!lst[i]->pager)
+	    && (!lst[i]->skipwinlist) && (lst[i]->client.title)
+	    && (!lst[i]->ibox))
 	  {
-	     if (((lst[i]->desktop == desk) || (lst[i]->sticky))
-		 && (!lst[i]->menu) && (!lst[i]->pager)
-		 && (!lst[i]->skipwinlist) && (lst[i]->client.title)
-		 && (!lst[i]->ibox))
-	       {
-		  Esnprintf(s, sizeof(s), "%i", (int)(lst[i]->client.win));
-		  mi = MenuItemCreate(lst[i]->client.title, NULL,
-				      ACTION_FOCUS_SET, s, NULL);
-		  MenuAddItem(m, mi);
-	       }
+	     Esnprintf(s, sizeof(s), "%i", (int)(lst[i]->client.win));
+	     mi = MenuItemCreate(lst[i]->client.title, NULL,
+				 ACTION_FOCUS_SET, s, NULL);
+	     MenuAddItem(m, mi);
 	  }
-	Efree(lst);
      }
+
    EDBUG_RETURN(m);
    desk = 0;
 }
@@ -1833,16 +1823,16 @@ Menu               *
 MenuCreateFromDesktops(const char *name, MenuStyle * ms)
 {
    Menu               *m, *mm;
-   EWin              **lst;
+   EWin               *const *lst;
    int                 j, i, num;
    char                s[256];
-
    MenuItem           *mi;
 
    EDBUG(5, "MenuCreateFromDesktops");
+
    m = MenuCreate(name);
    m->style = ms;
-   lst = (EWin **) ListItemType(&num, LIST_TYPE_EWIN);
+   lst = EwinListGet(&num);
    for (j = 0; j < Conf.desks.num; j++)
      {
 	mm = MenuCreate("__SUBMENUDESK_E");
@@ -1868,8 +1858,7 @@ MenuCreateFromDesktops(const char *name, MenuStyle * ms)
 	mi = MenuItemCreate(s, NULL, 0, NULL, mm);
 	MenuAddItem(m, mi);
      }
-   if (lst)
-      Efree(lst);
+
    EDBUG_RETURN(m);
 }
 

@@ -35,7 +35,7 @@ static void
 MaxSizeHV(EWin * ewin, const char *resize_type, int direction)
 {
    int                 x, y, w, h, x1, x2, y1, y2, type;
-   EWin              **lst, *pe;
+   EWin               *const *lst, *pe;
    int                 i, num;
 
    if (!ewin)
@@ -102,7 +102,7 @@ MaxSizeHV(EWin * ewin, const char *resize_type, int direction)
 	  }
 	else
 	  {
-	     lst = (EWin **) ListItemType(&num, LIST_TYPE_EWIN);
+	     lst = EwinListGet(&num);
 	  }
 
 	if (direction & MAX_VER)
@@ -155,8 +155,6 @@ MaxSizeHV(EWin * ewin, const char *resize_type, int direction)
 			    ewin->border->border.right);
 	  }
 
-	if (lst)
-	   Efree(lst);
 	break;
      }
 
