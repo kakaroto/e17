@@ -1742,7 +1742,7 @@ documentation for more help
 <br>
 Q: How can I disable that annoying desktop tooltip?
 <p>
-A: There is a special config option for it under the _tooltip(tooltip) <br>
+A: There is a special config option for it under the _tooltip(tooltips) <br>
 _settings(settings) menu.
 
 <page columns=1 padding=16 name=faqend background=Edoc_bg.png linkcolor=#88dddd>
