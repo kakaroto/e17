@@ -1925,3 +1925,12 @@ handle icon property change events properly and redraw iconbox if window
 iconfied.
 
 fixed up 2 images in brushed metal theme + add right side pager border
+
+-------------------------------------------------------------------------------
+
+Fri Sep 17 11:29:07 PDT 1999
+(KainX)
+
+Changes to the memory allocation stuff to make it more portable and
+such.  Account for all the different ways they could be called and
+do the rerouting ourselves so we don't depend on the OS.

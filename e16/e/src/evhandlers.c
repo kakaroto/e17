@@ -1024,10 +1024,10 @@ HandleProperty(XEvent * ev)
 	     }
 	if (ewin->iconified)
 	  {
-	     Iconbox **ib;
-	     int       i, j, num;
-	     
-	     ib = (Iconbox **)ListItemType(&num, LIST_TYPE_ICONBOX);
+	     Iconbox           **ib;
+	     int                 i, j, num;
+
+	     ib = (Iconbox **) ListItemType(&num, LIST_TYPE_ICONBOX);
 	     if (ib)
 	       {
 		  for (i = 0; i < num; i++)

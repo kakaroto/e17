@@ -44,6 +44,8 @@ __Emalloc(int size, const char *file, int line)
    void               *p;
 
    EDBUG(9, "Emalloc");
+   if (size <= 0)
+      return NULL;
    p = malloc(size);
    if (!p)
      {
@@ -110,8 +112,14 @@ __Erealloc(void *ptr, int size, const char *file, int line)
 #endif
 
    if (ptr == NULL)
-      return __Emalloc(size, file, line);
-   if ((ptr != NULL) && (size == 0))
+     {
+	if (size > 0)
+	   return __Emalloc(size, file, line);
+	else
+	   return NULL;
+     }
+   /* If we get here, we know ptr != NULL, so don't test for that case -- mej */
+   if (size <= 0)
      {
 	__Efree(ptr, file, line);
 	return NULL;

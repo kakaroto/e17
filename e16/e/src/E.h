@@ -2552,12 +2552,13 @@ void               *__Erealloc(void *ptr, int size, const char *file, int line);
 void                __Efree(void *ptr, const char *file, int line);
 
 #else
+/* We still want our special handling, even if they don't have file/line stuff -- mej */
 #define Efree(x) \
-free(x);
+__Efree(x, "<unknown>", 0)
 #define Emalloc(x) \
-malloc(x)
+__Emalloc(x, "<unknown>", 0)
 #define Erealloc(x, y) \
-realloc(x, y)
+__Erealloc(x, y, "<unknown>", 0)
 #endif
 
 char               *duplicate(char *s);
