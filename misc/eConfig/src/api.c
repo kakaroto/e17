@@ -33,6 +33,7 @@ void *eConfigGetData(char *loc, unsigned long *length) {
 
 	
 
+	eConfigUpdateCache();
 	*length = 0;
 	return NULL;
 
@@ -69,6 +70,7 @@ void *eConfigRefreshData(char *loc, unsigned long *length) {
 		}
 	}
 
+	eConfigUpdateCache();
 	*length = 0;
 	return NULL;
 
@@ -102,6 +104,7 @@ int eConfigUnloadData(char *loc) {
 		}
 	}
 
+	eConfigUpdateCache();
 	return 0;
 
 }

@@ -30,8 +30,10 @@
 #include <sys/resource.h>
 
 typedef struct _pathstruct {
+
     char *path;
     struct _pathstruct *next;
+
 } PathStruct;
 
 typedef struct _econfdata {
@@ -56,6 +58,7 @@ typedef struct {
 
     PathStruct   *paths;
     eConfigData  *data;
+	unsigned long cachesize;
 
 } eConfigType;
 

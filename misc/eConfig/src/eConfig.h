@@ -13,27 +13,28 @@
 /*****************************************************************************/
 
 /*
- * this is the .h file that is exported by eConfig, to be included by your
+ * this is the file that is exported by eConfig, to be included by your
  * application
+ * usage: #include <eConfig.h>
  */
 
-int    eConfigAddPath(char *path);
-int    eConfigRemovePath(char *path);
-char **eConfigPaths(int *num);
+int              eConfigAddPath(char *path);
+int              eConfigRemovePath(char *path);
+char           **eConfigPaths(int *num);
 
 
-void   eConfigInit(void);
+void             eConfigInit(void);
 
-void  *eConfigGetData(char *loc, unsigned long *length);
-void  *eConfigRefreshData(char *loc, unsigned long *length);
-int    eConfigUnloadData(char *loc);
-int    eConfigStoreData(char *loc, void *data, unsigned long length,
+void            *eConfigGetData(char *loc, unsigned long *length);
+void            *eConfigRefreshData(char *loc, unsigned long *length);
+int              eConfigUnloadData(char *loc);
+int              eConfigStoreData(char *loc, void *data, unsigned long length,
                         char local);
 
-int    eConfigExportData(char *loc,char local);
+int              eConfigExportData(char *loc,char local);
 
-int    eConfigSetCacheSize(int newsize);
-int    eConfigGetCacheSize(void);
-int    eConfigGetCacheFilled(void);
-int    eConfigUpdateCache(void);
+void             eConfigSetCacheSize(unsigned long newsize);
+unsigned long    eConfigGetCacheSize(void);
+unsigned long    eConfigGetCacheFilled(void);
+int              eConfigUpdateCache(void);
 

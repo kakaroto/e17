@@ -25,7 +25,6 @@ int eConfigAddPath(char *path) {
 	eConfig.paths->path = malloc(strlen(path)+1);
 	strncpy(eConfig.paths->path,path, strlen(path)+1);
 
-
 	return 1;
 
 }
