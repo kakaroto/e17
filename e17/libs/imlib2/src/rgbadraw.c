@@ -2359,7 +2359,7 @@ __imlib_draw_polygon_filled(ImlibImage * im, ImlibPoly poly, int clip_xmin,
 		       x1 = ss->x - 1;
 		       x2 = s->x + 1;
 		    }
-		  if ((x1 <= clip_xmax) && (x2 >= clip_xmin) && (x1 < x2))
+		  if ((x1 <= clip_xmax) && (x2 > clip_xmin) && (x1 < x2))
 		    {
 		       if (x1 < clip_xmin) x1 = clip_xmin;
 		       if (x2 > (clip_xmax + 1)) x2 = clip_xmax + 1;
