@@ -34,23 +34,24 @@ int depth;
 Window root = 0;
 
 void
-init_x_and_imlib(void)
+init_x_and_imlib(char *dispstr, int screen_num)
 {
-   disp = XOpenDisplay(NULL);
+   disp = XOpenDisplay(dispstr);
    if (!disp)
       eprintf("Can't open X display. It *is* running, yeah?");
-   vis = DefaultVisual(disp, DefaultScreen(disp));
-   depth = DefaultDepth(disp, DefaultScreen(disp));
-   cm = DefaultColormap(disp, DefaultScreen(disp));
-   root = RootWindow(disp, DefaultScreen(disp));
-   scr = ScreenOfDisplay(disp, DefaultScreen(disp));
+   if (screen_num)
+      scr = ScreenOfDisplay(disp, screen_num);
+   else
+      scr = ScreenOfDisplay(disp, DefaultScreen(disp));
+
+   vis = DefaultVisual(disp, XScreenNumberOfScreen(scr));
+   depth = DefaultDepth(disp, XScreenNumberOfScreen(scr));
+   cm = DefaultColormap(disp, XScreenNumberOfScreen(scr));
+   root = RootWindow(disp, XScreenNumberOfScreen(scr));
 
    imlib_context_set_display(disp);
    imlib_context_set_visual(vis);
    imlib_context_set_colormap(cm);
    imlib_context_set_color_modifier(NULL);
    imlib_context_set_operation(IMLIB_OP_COPY);
-
-   /* Initialise random numbers */
-   srand(getpid() * time(NULL) % ((unsigned int) -1));
 }

@@ -62,10 +62,9 @@ typedef void (*sighandler_t) (int);
 
 void show_usage(void);
 void show_version(void);
-void init_x_and_imlib(void);
 void show_mini_usage(void);
+void init_x_and_imlib(char *dispstr, int screen_num);
 char *chop_file_from_full_path(char *str);
-void show_mini_usage(void);
 Imlib_Image scrot_grab_shot(void);
 void scrot_exec_app(Imlib_Image im);
 void scrot_do_delay(void);
@@ -76,6 +75,8 @@ Window scrot_get_client_window(Display * display, Window target);
 Window scrot_find_window_by_property(Display * display, const Window window,
                                      const Atom property);
 char *im_printf(char *str, char *filename, Imlib_Image im);
+Imlib_Image scrot_grab_shot_multi(void);
+Imlib_Image stalk_image_concat(gib_list *images);
 
 /* Imlib stuff */
 extern Display *disp;

@@ -34,6 +34,7 @@ struct __scrotoptions
    int select;
    int quality;
    int border;
+   int multidisp;
 
    char *output_file;
    char *exec;

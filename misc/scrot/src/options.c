@@ -44,7 +44,7 @@ init_parse_options(int argc, char **argv)
 static void
 scrot_parse_option_array(int argc, char **argv)
 {
-   static char stropts[] = "bcd:e:hq:sv+:";
+   static char stropts[] = "bcd:e:hmq:sv+:";
    static struct option lopts[] = {
       /* actions */
       {"help", 0, 0, 'h'},                  /* okay */
@@ -52,6 +52,7 @@ scrot_parse_option_array(int argc, char **argv)
       {"count", 0, 0, 'c'},
       {"select", 0, 0, 's'},
       {"border", 0, 0, 'b'},
+      {"multidisp", 0, 0, 'm'},
       /* toggles */
       {"delay", 1, 0, 'd'},
       {"quality", 1, 0, 'q'},
@@ -82,6 +83,9 @@ scrot_parse_option_array(int argc, char **argv)
            break;
         case 'e':
            opt.exec = estrdup(optarg);
+           break;
+        case 'm':
+           opt.multidisp = 1;
            break;
         case 'q':
            opt.quality = atoi(optarg);
@@ -153,6 +157,8 @@ show_usage(void)
            "                            high size, low compression. Default: 75.\n"
            "                            For lossless compression formats, like png,\n"
            "                            low quality means high compression.\n"
+           "  -m, --multidisp           For multiple heads, grab shot from each\n"
+           "                            and join them together.\n"
            "  -s, --select              interactively choose a window or rectnagle\n"
            "                            with the mouse\n" "\n"
            "  SPECIAL STRINGS\n"

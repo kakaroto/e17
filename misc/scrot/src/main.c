@@ -31,10 +31,11 @@ main(int argc, char **argv)
 {
    Imlib_Image image;
    Imlib_Load_Error err;
+   char *filename;
 
    init_parse_options(argc, argv);
 
-   init_x_and_imlib();
+   init_x_and_imlib(NULL, 0);
 
    if (!opt.output_file)
       opt.output_file = estrdup("%Y-%m-%d-%H%M%S_$wx$h_scrot.png");
@@ -44,7 +45,14 @@ main(int argc, char **argv)
    else
    {
       scrot_do_delay();
-      image = scrot_grab_shot();
+      if (opt.multidisp)
+      {
+         image = scrot_grab_shot_multi();
+      }
+      else
+      {
+         image = scrot_grab_shot();
+      }
    }
 
    if (!image)
@@ -53,9 +61,10 @@ main(int argc, char **argv)
    imlib_context_set_image(image);
    imlib_image_attach_data_value("quality", NULL, opt.quality, NULL);
 
-   gib_imlib_save_image_with_error_return(image, opt.output_file, &err);
+   filename = im_printf(opt.output_file, NULL, image);
+   gib_imlib_save_image_with_error_return(image, filename, &err);
    if (err)
-      eprintf("Saving to file %s failed\n", opt.output_file);
+      eprintf("Saving to file %s failed\n", filename);
    if (opt.exec)
       scrot_exec_app(image);
    gib_imlib_free_image_and_decache(image);
@@ -95,8 +104,9 @@ scrot_grab_shot(void)
    Imlib_Image im;
 
    XBell(disp, 0);
-   im = gib_imlib_create_image_from_drawable(root, 0, 0, 0, scr->width, scr->height, 1);
-
+   im =
+      gib_imlib_create_image_from_drawable(root, 0, 0, 0, scr->width,
+                                           scr->height, 1);
    return im;
 }
 
@@ -404,7 +414,8 @@ im_printf(char *str, char *filename, Imlib_Image im)
               strcat(ret, buf);
               break;
            case 'h':
-              snprintf(buf, sizeof(buf), "%d", gib_imlib_image_get_height(im));
+              snprintf(buf, sizeof(buf), "%d",
+                       gib_imlib_image_get_height(im));
               strcat(ret, buf);
               break;
            case 's':
@@ -424,7 +435,8 @@ im_printf(char *str, char *filename, Imlib_Image im)
               break;
            case 'p':
               snprintf(buf, sizeof(buf), "%d",
-                       gib_imlib_image_get_width(im) * gib_imlib_image_get_height(im));
+                       gib_imlib_image_get_width(im) *
+                       gib_imlib_image_get_height(im));
               strcat(ret, buf);
               break;
            case 't':
@@ -513,4 +525,84 @@ Window scrot_find_window_by_property(Display * display, const Window window,
    if (children != None)
       XFree(children);
    return (child);
+}
+
+Imlib_Image
+scrot_grab_shot_multi(void)
+{
+   int screens;
+   int i;
+   char *dispstr, *subdisp;
+   char newdisp[255];
+   gib_list *images = NULL;
+   Imlib_Image ret = NULL;
+
+   screens = ScreenCount(disp);
+   if (screens < 2)
+      return scrot_grab_shot();
+
+   dispstr = DisplayString(disp);
+
+   subdisp = estrdup(DisplayString(disp));
+
+   for (i = 0; i <screens; i++)
+   {
+      dispstr = strchr(subdisp, ':');
+      if (dispstr)
+      {
+         dispstr = strchr(dispstr, '.');
+         if (NULL != dispstr)
+            *dispstr = '\0';
+      }
+      snprintf(newdisp, sizeof(newdisp), "%s.%d", subdisp, i);
+      init_x_and_imlib(newdisp, i);
+      ret =
+         gib_imlib_create_image_from_drawable(root, 0, 0, 0, scr->width,
+            scr->height, 1);
+      images = gib_list_add_end(images, ret);
+   }
+   free(subdisp);
+
+   ret = stalk_image_concat(images);
+   
+   return ret;
+}
+
+Imlib_Image stalk_image_concat(gib_list *images)
+{
+   int tot_w=0, max_h=0, w, h;
+   int x=0;
+   gib_list *l, *item;
+   Imlib_Image ret, im;
+
+   if(gib_list_length(images) == 0)
+      return NULL;
+
+   l = images;
+   while(l)
+   {
+      im = (Imlib_Image) l->data;
+      h = gib_imlib_image_get_height(im);
+      w = gib_imlib_image_get_width(im);
+      if(h > max_h)
+         max_h = h;
+         tot_w += w;
+      l = l->next;
+   }
+   ret = imlib_create_image(tot_w, max_h);
+   gib_imlib_image_fill_rectangle(ret, 0,0 ,tot_w, max_h, 255,0,0,0);
+   l = images;
+   while(l)
+   {
+      im = (Imlib_Image) l->data;
+      item = l;
+      l = l->next;
+      h = gib_imlib_image_get_height(im);
+      w = gib_imlib_image_get_width(im);
+      gib_imlib_blend_image_onto_image(ret, im, 0, 0, 0, w,h,x,0,w,h,1,0,0);
+      x += w;
+      gib_imlib_free_image_and_decache(im);
+      free(item);
+   }
+   return ret;
 }

@@ -1,3 +1,10 @@
+Mon Dec  4 23:46:03 2000  Tom Gilbert  <gilbertt@linuxbrit.co.uk>
+
+	* Adde -m, --multidisp, which is for multiple heads (not xinerama)
+	grabs shots from each and joins them together.
+	* Fixed doing the string escapes when saving files. My bad.
+
+
 Sun Nov 12 15:16:40 2000  Tom Gilbert  <gilbertt@linuxbrit.co.uk>
 
 	* Now uses giblib. You'll need the very latest giblib from CVS as
