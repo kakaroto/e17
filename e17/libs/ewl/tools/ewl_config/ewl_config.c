@@ -80,7 +80,7 @@ main(int argc, char **argv)
 	memset(&e_conf, 0, sizeof(struct _ewl_config_main));
 	memset(&confirm, 0, sizeof(struct _confirm_win));
 
-	ewl_init(argc, argv);
+	ewl_init(&argc, argv);
 
 	ewl_config_read_configs();
 

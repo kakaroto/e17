@@ -13,6 +13,12 @@ __close_main_window(Ewl_Widget * w, void *ev_data, void *user_data)
 	user_data = NULL;
 }
 
+void
+__realize_main_window(Ewl_Widget * w, void *ev_data, void *user_data)
+{
+	printf("Main window realized with theme_object %p\n", w->theme_object);
+}
+
 int
 main(int argc, char **argv)
 {
@@ -36,7 +42,7 @@ main(int argc, char **argv)
 
 	heap_start = sbrk(0);
 
-	ewl_init(argc, argv);
+	ewl_init(&argc, argv);
 
 	heap_end = sbrk(0);
 	printf("HEAP SIZE:\t%u bytes\n", heap_end - heap_start);
@@ -46,6 +52,8 @@ main(int argc, char **argv)
 			     "The Enlightenment Widget Library");
 	ewl_callback_append(main_win, EWL_CALLBACK_DELETE_WINDOW,
 			    __close_main_window, NULL);
+	ewl_callback_append(main_win, EWL_CALLBACK_REALIZE,
+			    __realize_main_window, NULL);
 	ewl_widget_show(main_win);
 
 	/*

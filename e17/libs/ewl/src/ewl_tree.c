@@ -439,7 +439,7 @@ void ewl_tree_node_collapse(Ewl_Tree_Node *node)
 
 	node->expanded = EWL_TREE_NODE_COLLAPSED;
 
-	ewl_widget_set_state(w, "collapsed");
+	ewl_widget_set_state(EWL_WIDGET(node), "collapsed");
 
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }

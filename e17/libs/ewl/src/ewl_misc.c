@@ -18,7 +18,7 @@ static Ewd_List *free_evas_object_list = NULL;
 
 static Ewd_List *child_add_list= NULL;
 
-static void     __ewl_init_parse_options(int argc, char **argv);
+static void     __ewl_init_parse_options(int *argc, char **argv);
 static void     __ewl_init_remove_option(int *argc, char **argv, int i);
 int             __ewl_ecore_exit(void *data, int type, void *event);
 static int      ewl_reread_config(void *data);
@@ -52,7 +52,7 @@ inline void ewl_print_warning()
  * Sets up necessary internal variables for executing ewl
  * functions. This should be called before any other ewl functions are used.
  */
-void ewl_init(int argc, char **argv)
+void ewl_init(int *argc, char **argv)
 {
 	char           *xdisplay = NULL;
 
@@ -205,17 +205,17 @@ void ewl_main_quit(void)
  * Returns no value. Parses the arguments of the program into sections that
  * ewl knows how to deal with.
  */
-static void __ewl_init_parse_options(int argc, char **argv)
+static void __ewl_init_parse_options(int *argc, char **argv)
 {
 	int i;
 
 	DENTER_FUNCTION(DLEVEL_STABLE);
 
 	i = 0;
-	while (i < argc) {
+	while (i < *argc) {
 		if (!strcmp(argv[i], "--ewl-segv")) {
 			debug_segv = 1;
-			__ewl_init_remove_option(&argc, argv, i);
+			__ewl_init_remove_option(argc, argv, i);
 		}
 		else
 			i++;
