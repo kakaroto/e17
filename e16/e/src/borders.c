@@ -1328,6 +1328,7 @@ CreateEwin()
    XChangeWindowAttributes(disp, ewin->win, CWEventMask | CWDontPropagate,
 			   &att);
    FocusEwinSetGrabs(ewin);
+   GrabButtonGrabs(ewin);
    EDBUG_RETURN(ewin);
 }
 

@@ -113,10 +113,12 @@ GrabButtonGrabs(EWin * ewin)
 		  mask = ButtonPressMask | ButtonReleaseMask;
 		  if (mod == AnyModifier)
 		    {
+#if 0				/* Why? */
 		       if (pager_hi_win)
 			  XGrabButton(disp, button, mod, pager_hi_win,
 				      False, mask, GrabModeSync, GrabModeAsync,
 				      None, None);
+#endif
 		       XGrabButton(disp, button, mod, ewin->win, False, mask,
 				   GrabModeSync, GrabModeAsync, None, None);
 		    }
@@ -126,12 +128,14 @@ GrabButtonGrabs(EWin * ewin)
 
 		       for (i = 0; i < 8; i++)
 			 {
+#if 0				/* Why? */
 			    if (pager_hi_win)
 			       XGrabButton(disp, button,
 					   mod | mask_mod_combos[i],
 					   pager_hi_win, False, mask,
 					   GrabModeSync, GrabModeAsync, None,
 					   None);
+#endif
 			    XGrabButton(disp, button, mod | mask_mod_combos[i],
 					ewin->win, False, mask, GrabModeSync,
 					GrabModeAsync, None, None);

@@ -117,7 +117,9 @@ FocusGetPrevEwin(void)
 void
 FocusEwinSetGrabs(EWin * ewin)
 {
-   if (conf.focus.clickraises || conf.focus.mode == MODE_FOCUS_CLICK)
+   if ((conf.focus.mode != MODE_FOCUS_CLICK &&
+	ewin->active && conf.focus.clickraises) ||
+       (conf.focus.mode == MODE_FOCUS_CLICK && !ewin->active))
      {
 	XGrabButton(disp, AnyButton, AnyModifier, ewin->win_container,
 		    False, ButtonPressMask, GrabModeSync, GrabModeAsync,
@@ -127,7 +129,6 @@ FocusEwinSetGrabs(EWin * ewin)
      {
 	XUngrabButton(disp, AnyButton, AnyModifier, ewin->win_container);
      }
-   GrabButtonGrabs(ewin);
 }
 
 void
@@ -146,6 +147,7 @@ FocusFix(void)
    for (i = 0; i < num; i++)
      {
 	ewin = lst[i];
+	XUngrabButton(disp, AnyButton, AnyModifier, ewin->win_container);
 	FocusEwinSetGrabs(ewin);
      }
    Efree(lst);
@@ -480,8 +482,10 @@ FocusHandleLeave(XEvent * ev)
 {
    Window              win = ev->xcrossing.window;
 
-   /* Leaving root means entering other screen */
-   if (win == root.win)
+   /* Leaving root may mean entering other screen */
+   if (win == root.win &&
+       (ev->xcrossing.mode == NotifyNormal &&
+	ev->xcrossing.detail != NotifyInferior))
       FocusToEWin(NULL, FOCUS_SET);
 }
 
