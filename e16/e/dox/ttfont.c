@@ -22,6 +22,103 @@
  */
 #include "dox.h"
 
+#if USE_IMLIB2
+
+struct _efont
+{
+   Imlib_Font         *face;
+};
+
+static void
+ImlibSetFgColorFromGC(Display * disp, GC gc, Colormap cm)
+{
+   XGCValues           xgcv;
+   XColor              xclr;
+   int                 r, g, b;
+
+   XGetGCValues(disp, gc, GCForeground, &xgcv);
+   xclr.pixel = xgcv.foreground;
+   XQueryColor(disp, cm, &xclr);
+   EGetColor(&xclr, &r, &g, &b);
+   imlib_context_set_color(r, g, b, 255);
+}
+
+void
+EFont_draw_string(Display * disp, Drawable win, GC gc, int x, int y, char *text,
+		  Efont * f, Visual * vis, Colormap cm)
+{
+   Imlib_Image         im;
+   int                 w, h, ascent, descent;
+
+   Efont_extents(f, text, &ascent, &descent, &w, NULL, NULL, NULL, NULL);
+   h = ascent + descent;
+
+   imlib_context_set_drawable(win);
+   im = imlib_create_image_from_drawable(0, x, y - ascent, w, h, 0);
+   imlib_context_set_image(im);
+
+   imlib_context_set_font(f->face);
+   ImlibSetFgColorFromGC(disp, gc, cm);
+   imlib_text_draw(0, 0, text);
+   imlib_render_image_on_drawable(x, y - ascent);
+   imlib_free_image();
+}
+
+void
+Efont_free(Efont * f)
+{
+   if (!f)
+      return;
+
+   imlib_context_set_font(f->face);
+   imlib_free_font();
+
+   Efree(f);
+}
+
+Efont              *
+Efont_load(char *file, int size)
+{
+   char                s[4096];
+   Efont              *f;
+   Imlib_Font         *ff;
+
+   Esnprintf(s, sizeof(s), "%s/%d", file, size);
+   ff = imlib_load_font(s);
+   if (ff == NULL)
+      return NULL;
+
+   f = Emalloc(sizeof(Efont));
+   f->face = ff;
+
+   return f;
+}
+
+void
+Efont_extents(Efont * f, char *text, int *font_ascent_return,
+	      int *font_descent_return, int *width_return,
+	      int *max_ascent_return, int *max_descent_return,
+	      int *lbearing_return, int *rbearing_return)
+{
+   int                 height;
+
+   if (!f)
+      return;
+
+   imlib_context_set_font(f->face);
+   imlib_get_text_size(text, width_return, &height);
+   if (font_ascent_return)
+      *font_ascent_return = imlib_get_font_ascent();
+   if (font_descent_return)
+      *font_descent_return = imlib_get_font_descent();
+   if (max_ascent_return)
+      *max_ascent_return = imlib_get_maximum_font_ascent();
+   if (max_descent_return)
+      *max_descent_return = imlib_get_maximum_font_descent();
+}
+
+#else /* USE_IMLIB1 */
+
 #if TEST_TTFONT
 #undef XSync
 #undef IC_RenderDepth
@@ -641,7 +738,7 @@ handle_x_error(Display * d, XErrorEvent * ev)
 
 void
 EFont_draw_string(Display * disp, Drawable win, GC gc, int x, int y, char *text,
-		  Efont * font, Visual * vis, Colormap cm)
+		  Efont * f, Visual * vis, Colormap cm)
 {
    XImage             *xim;
    XShmSegmentInfo     shminfo;
@@ -657,10 +754,10 @@ EFont_draw_string(Display * disp, Drawable win, GC gc, int x, int y, char *text,
 
    inx = 0;
    iny = 0;
-   rtmp = calc_size(font, &w, &h, text);
+   rtmp = calc_size(f, &w, &h, text);
    rmap = create_font_raster(w, h);
 
-   render_text(rmap, rtmp, font, text, &inx, &iny);
+   render_text(rmap, rtmp, f, text, &inx, &iny);
 
    XGrabServer(disp);
    erh = XSetErrorHandler((XErrorHandler) handle_x_error);
@@ -1073,8 +1170,12 @@ Efont_extents(Efont * f, char *text, int *font_ascent_return,
    if (max_descent_return)
       *max_descent_return = f->max_descent;
 }
+#endif /* USE_IMLIB1 */
 
 #if TEST_TTFONT
+
+#undef XSync
+
 Display            *disp;
 
 int
@@ -1087,7 +1188,13 @@ main(int argc, char **argv)
    int                 i, j;
 
    disp = XOpenDisplay(NULL);
-   XSync(disp, False);
+
+#if USE_IMLIB2
+   imlib_context_set_display(disp);
+   imlib_context_set_visual(DefaultVisual(disp, DefaultScreen(disp)));
+   imlib_context_set_colormap(DefaultColormap(disp, DefaultScreen(disp)));
+#endif
+
    srand(time(NULL));
    win = XCreateSimpleWindow(disp, DefaultRootWindow(disp), 0, 0, 640, 480, 0,
 			     0, 0);

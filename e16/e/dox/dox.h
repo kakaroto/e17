@@ -360,3 +360,5 @@ extern char        *docdir;
 
 #define Emalloc malloc
 #define Efree   free
+
+#define Esnprintf snprintf

@@ -76,7 +76,7 @@ AC_ARG_ENABLE(hints-ewmh,
 AC_ARG_ENABLE(hints-gnome,
   [  --enable-hints-gnome    compile with GNOME(<2.0) hints support [default=no]],, enable_hints_gnome=no)
 AC_ARG_WITH(imlib2,
-  [  --with-imlib2           compile with Imlib2 support [default=no]],, with_imlib2=no)
+  [  --with-imlib2           compile with Imlib2 support [default=yes]],, with_imlib2=yes)
 
 AC_ARG_WITH(fnlib,
   [  --with-fnlib            compile with Fnlib support [default=yes]],, with_fnlib=yes)
@@ -116,16 +116,20 @@ LDFLAGS="$LDFLAGS -L$prefix/lib"
 LDFLAGS="$LDFLAGS -L$x_libraries"
 
 if test "x$with_imlib2" = "xyes"; then
+# Use Imlib2
+
 AC_CHECK_LIB(Imlib2, imlib_create_image, IMLIB_LIBS=-lImlib2, [
 echo "ERROR: Imlib2 support requested but not found (imlib2)."
 AC_MSG_ERROR([Fatal Error: no Imlib2 detected.])], -lm)
 AC_DEFINE(USE_IMLIB2, 1, [Imlib2 support])
 with_fnlib="no"
+
 else
+# Use Imlib1, Fnlib, and FreeType1
+
 AM_PATH_IMLIB(1.9.8, , [
 echo "ERROR: Enlightenment needs a system with Imlib 1.9.8 or higher."
 AC_MSG_ERROR([Fatal Error: no Imlib detected.])])
-fi
 
 if test "x$with_fnlib" = "xyes"; then
 # AC_CHECK_HEADER(Fnlib.h, ,AC_MSG_ERROR([Fatal Error: no Fnlib header detected.]))
@@ -134,6 +138,14 @@ echo "ERROR: Enlightenment needs a system with libFnlib.so (fnlib)."
 AC_MSG_ERROR([Fatal Error: no Fnlib detected.])], $IMLIB_LIBS)
 AC_SUBST(FNLIB_LIBS)
 AC_DEFINE(USE_FNLIB, 1, [Fnlib support])
+fi
+
+AC_CHECK_HEADERS(freetype.h freetype/freetype.h freetype1/freetype/freetype.h,[ break] , )
+AC_CHECK_LIB(ttf, TT_Init_FreeType, TTF_LIBS=-lttf, [
+echo "ERROR: Enlightenment needs a system with libttf.so (freetype)."
+AC_MSG_ERROR([Fatal Error: no FreeType detected.])], -lm)
+AC_SUBST(TTF_LIBS)
+
 fi
 
 if test "x$enable_upgrade" = "xyes"; then
@@ -146,12 +158,6 @@ else
 echo "Automatic Upgrades have been turned off by request at compiletime"
 fi
 AC_SUBST(GHTTP_LIBS)
-
-AC_CHECK_HEADERS(freetype.h freetype/freetype.h freetype1/freetype/freetype.h,[ break] , )
-AC_CHECK_LIB(ttf, TT_Init_FreeType, TTF_LIBS=-lttf, [
-echo "ERROR: Enlightenment needs a system with libttf.so (freetype)."
-AC_MSG_ERROR([Fatal Error: no FreeType detected.])], -lm)
-AC_SUBST(TTF_LIBS)
 
 AC_CHECK_LIB(dl, dlopen, DL_LIBS=-ldl , [
 echo "Warning: Enlightenment requires the dl (dynamic loader) library"

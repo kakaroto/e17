@@ -1657,7 +1657,7 @@ void                Efont_extents(Efont * f, char *text,
 Efont              *Efont_load(char *file, int size);
 void                Efont_free(Efont * f);
 void                EFont_draw_string(Display * disp, Drawable win, GC gc,
-				      int x, int y, char *text, Efont * font,
+				      int x, int y, char *text, Efont * f,
 				      Visual * vis, Colormap cm);
 
 void                ErrAlert(int erno);
