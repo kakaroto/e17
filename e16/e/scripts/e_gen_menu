@@ -43,6 +43,13 @@ $EdirUser = "$ENV{'ECONFDIR'}";
 $EdirRoot = "$ENV{'EROOT'}";
 $EdirBin  = "$ENV{'EBIN'}";
 
+# Localization bits. There may be better ways to do this.
+$Lang = "$ENV{'LANG'}";
+$loc1 = $loc2 = $loc3 = $Lang;
+$loc2 =~ s/[\.\@].*//;
+$loc3 =~ s/_.*//;
+$loc1 = "" if ($loc1 eq $loc2);
+
 $EdirUser = "$ENV{'HOME'}/.enlightenment" unless $EdirUser;
 $EdirRoot = "/usr/share/enlightenment" unless $EdirRoot;
 $EdirBin  = "/usr/bin" unless $EdirBin;
@@ -159,6 +166,7 @@ sub ProcessFile {
 	$N++;
 
 	$Name = $Exec = $Icon = "";
+	$Nam1 = $Nam2 = $Nam3 = "";
 	$Cats = shift;
 	$Type = shift;
 
@@ -166,6 +174,12 @@ sub ProcessFile {
 	while (<FI>) {
 		if (/^Name=(.*)$/) {
 			$Name = $1;
+		} elsif ($loc1 && /^Name\[$loc1\]=(.*)$/) {
+			$Nam1 = $1;
+		} elsif ($loc2 && /^Name\[$loc2\]=(.*)$/) {	
+			$Nam2 = $1;
+		} elsif ($loc3 && /^Name\[$loc3\]=(.*)$/) {	
+			$Nam3 = $1;
 		} elsif (/^Exec=(.*)$/) {
 			$Exec = $1;
 		} elsif (/^Icon=(.*)$/) {
@@ -181,6 +195,13 @@ sub ProcessFile {
 				$Name = "";
 				last;
 			}
+		}
+		if ($Nam1 || $Nam2 || $Nam3) {
+			if    ($Nam1) { $Name = $Nam1; }
+			elsif ($Nam2) { $Name = $Nam2; }
+			else          { $Name = $Nam3; }
+			$Name = `echo "$Name" | iconv -f UTF-8`;
+			chomp($Name);
 		}
 	}
 	close FI;
@@ -227,7 +248,7 @@ sub ProcessDir {
 	local $f;
 
 	@l = grep /\.desktop$/, ReadDir($d);
-        foreach $f (@l) {
+	foreach $f (@l) {
 		$f = "$d/$f";
 		print "- File $f\n" if $dbg ge 2;
 		ProcessFile("$f", "$dx", "$t");
@@ -248,7 +269,7 @@ sub ProcessOldStyle {
 			next;
 		}
 		@d2l = grep !/^\./, ReadDir($d);
-        	foreach $d2 (@d2l) {
+		foreach $d2 (@d2l) {
 			print " Subdir: $d/$d2\n" if $dbg ge 1;
 			next unless -d "$d/$d2";
 			ProcessDir("$d/$d2", "$d2", "$t");
@@ -282,16 +303,16 @@ sub FindIcon {
 		return $i;
 	}
 
-        foreach $d (split(':', $IconDirs)) {
+	foreach $d (split(':', $IconDirs)) {
 		$i = "$d/$f";
 		next unless -f $i;
 		$i = ScaleIcon($i);
 		return $i;
 	}
 
-        foreach $d (split(':', $IconDirsKDE)) {
-        	foreach $t (split(':', $Themes)) {
-        		foreach $u (split(':', "apps:filesystems:actions")) {
+	foreach $d (split(':', $IconDirsKDE)) {
+		foreach $t (split(':', $Themes)) {
+			foreach $u (split(':', "apps:filesystems:actions")) {
 				$i = "$d/$t/16x16/$u/$f";
 				$i = "$i.png" unless ($f =~ /\.png$/);
 				print "Testing $i\n" if $dbg >= 2;
