@@ -1,0 +1,6 @@
+AM_CFLAGS = @ECORE_CFLAGS@ @EVAS_CFLAGS@
+
+bin_PROGRAMS = eeh
+eeh_SOURCES = eeh.c
+
+eeh_LDADD = @ECORE_LIBS@ @EVAS_LIBS@ 

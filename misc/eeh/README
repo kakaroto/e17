@@ -1,0 +1,16 @@
+EEH!: A simple (pure) EFL replacement for FEH.
+----------------------------------------------
+
+EEH is a really simple replacement for FEH.  For years now 
+I've used FEH to quickly browse images, in particular images 
+taken on my digital camera.  My old camera only took images 
+as large as 1600x1200, which is my screen resolution, so viewing was 
+no problem.  However my new cam take massive pics that are 
+beyond 3000 pixels wide.  FEH's resize capabilties are... not so great.
+So, EEH is ment to simply replace feh for this purpose: You wanna see
+a bunch of images and you want them to resize to some fixed size
+thats smaller that your desktop.  Bing, bang, simple.
+
+Future additions will likely include image metadata display 
+(optionally, probly by whacking a keybind to toggle it on and off)
+to view filename, size, and any interesting EXIF data.
