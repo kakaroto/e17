@@ -53,7 +53,9 @@ typedef struct _ewl_container Ewl_Container;
 
 #include <ewl_macros.h>
 #include <ewl_misc.h>
+
 #include <ewl_box.h>
+#include <ewl_table.h>
 
 #include <ewl_prefs.h>
 #include <ewl_theme.h>

@@ -131,6 +131,9 @@ ewl_button_configure(Ewl_Widget * widget, void * func_data)
 	EWL_OBJECT(widget)->current.x = EWL_OBJECT(widget)->request.x;
 	EWL_OBJECT(widget)->current.y = EWL_OBJECT(widget)->request.y;
 
+/*	DPRINT(8, "Button X %i Y %i", EWL_OBJECT(widget)->request.x,
+								  EWL_OBJECT(widget)->request.y);
+*/
 	if (!widget->container.children || !widget->container.children->nodes) {
 		EWL_OBJECT(widget)->request.w = 85;
 		EWL_OBJECT(widget)->request.h = 35;

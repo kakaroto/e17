@@ -16,8 +16,8 @@ ewl_container_append_child(Ewl_Widget * parent, Ewl_Widget * child)
 	CHECK_PARAM_POINTER("parent", parent);
 	CHECK_PARAM_POINTER("child", child);
 
-	child->evas = EWL_WIDGET(parent)->evas;
-	child->evas_window = EWL_WIDGET(parent)->evas_window;
+	child->evas = parent->evas;
+	child->evas_window = parent->evas_window;
 	child->parent = parent;
 
 	EWL_OBJECT(child)->layer = EWL_OBJECT(parent)->layer+1;
@@ -38,8 +38,8 @@ ewl_container_prepend_child(Ewl_Widget * parent, Ewl_Widget * child)
 	CHECK_PARAM_POINTER("parent", parent);
 	CHECK_PARAM_POINTER("child", child);
 
-	child->evas = EWL_WIDGET(parent)->evas;
-	child->evas_window = EWL_WIDGET(parent)->evas_window;
+	child->evas = parent->evas;
+	child->evas_window = parent->evas_window;
 	child->parent = parent;
 
 	EWL_OBJECT(child)->layer = EWL_OBJECT(parent)->layer+1;
@@ -71,8 +71,6 @@ ewl_container_insert_child(Ewl_Widget * parent, Ewl_Widget * child)
 Ewl_Widget *
 ewl_container_get_child_at(Ewl_Widget * widget, int x, int y)
 {
-	Ewl_Widget * child = NULL;
-
 	CHECK_PARAM_POINTER_RETURN("widget", widget, NULL);
 
 	if (!widget->container.children ||
@@ -81,14 +79,33 @@ ewl_container_get_child_at(Ewl_Widget * widget, int x, int y)
 
 	ewd_list_goto_first(widget->container.children);
 
-	while ((child = ewd_list_next(widget->container.children)) != NULL) {
-		if (x >= EWL_OBJECT(child)->current.x &&
-			y >= EWL_OBJECT(child)->current.y &&
+	if (widget->type == Ewl_Widget_Table)
+	 {
+	   Ewl_Table_Child * child = NULL;
+
+	   while ((child = ewd_list_next(widget->container.children)) != NULL)
+	    {
+        if (x >= EWL_OBJECT(child->child)->current.x &&        
+            y >= EWL_OBJECT(child->child)->current.y &&
+            EWL_OBJECT(child->child)->current.x +
+			EWL_OBJECT(child->child)->current.w >= x &&
+            EWL_OBJECT(child->child)->current.y +
+			EWL_OBJECT(child->child)->current.h >= y)
+            return child->child;
+		}
+	 }
+	else
+	 {
+	  Ewl_Widget * child = NULL;
+	  while ((child = ewd_list_next(widget->container.children)) != NULL)
+	   {
+	    if (x >= EWL_OBJECT(child)->current.x &&
+	  		y >= EWL_OBJECT(child)->current.y &&
 			EWL_OBJECT(child)->current.x + EWL_OBJECT(child)->current.w >= x &&
 			EWL_OBJECT(child)->current.y + EWL_OBJECT(child)->current.h >= y)
 			return child;
+	   }
 	}
-
 	return NULL;
 }
 

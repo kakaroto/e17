@@ -12,8 +12,8 @@ static void ewl_entry_key_down(Ewl_Widget * widget, void * func_data);
 static void ewl_entry_key_up(Ewl_Widget * widget, void * func_data);
 static void ewl_entry_mouse_down(Ewl_Widget * widget, void * func_data);
 static void ewl_entry_mouse_up(Ewl_Widget * widget, void * func_data);
-static void ewl_entry_focus_in(Ewl_Widget * widget, void * func_data);
-static void ewl_entry_focus_out(Ewl_Widget * widget, void * func_data);
+static void ewl_entry_select(Ewl_Widget * widget, void * func_data);
+static void ewl_entry_unselect(Ewl_Widget * widget, void * func_data);
 
 static void ewl_entry_delete_to_left(Ewl_Widget * widget);
 static void ewl_entry_delete_to_right(Ewl_Widget * widget);
@@ -66,10 +66,10 @@ ewl_entry_init(Ewl_Widget * widget)
                             ewl_entry_mouse_down, NULL);
     ewl_callback_append(widget, Ewl_Callback_Mouse_Up,
                             ewl_entry_mouse_up, NULL);
-    ewl_callback_append(widget, Ewl_Callback_Focus_In,
-                            ewl_entry_focus_in, NULL);
-    ewl_callback_append(widget, Ewl_Callback_Focus_Out,
-                            ewl_entry_focus_out, NULL);
+    ewl_callback_append(widget, Ewl_Callback_Select,
+                            ewl_entry_select, NULL);
+    ewl_callback_append(widget, Ewl_Callback_Unselect,
+                            ewl_entry_unselect, NULL);
 
 	widget->container.recursive = FALSE;
 
@@ -134,7 +134,6 @@ ewl_entry_show(Ewl_Widget * widget, void * func_data)
 
 	ebits_show(widget->ebits_object);
 	ewl_widget_show(EWL_WIDGET(EWL_ENTRY(widget)->text));
-	ebits_show(EWL_ENTRY(widget)->cursor->ebits_object);
 	evas_show(widget->evas, widget->container.clip_box);
 	ewl_container_set_clip(widget);
 }
@@ -275,15 +274,19 @@ ewl_entry_mouse_up(Ewl_Widget * widget, void * func_data)
 }
 
 static void
-ewl_entry_focus_in(Ewl_Widget * widget, void * func_data)
+ewl_entry_select(Ewl_Widget * widget, void * func_data)
 {
 	CHECK_PARAM_POINTER("widget", widget);
+
+	ebits_show(EWL_ENTRY(widget)->cursor->ebits_object);
 }
 
 static void
-ewl_entry_focus_out(Ewl_Widget * widget, void * func_data)
+ewl_entry_unselect(Ewl_Widget * widget, void * func_data)
 {
 	CHECK_PARAM_POINTER("widget", widget);
+
+	ebits_hide(EWL_ENTRY(widget)->cursor->ebits_object);
 }
 
 static void

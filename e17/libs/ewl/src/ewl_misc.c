@@ -3,7 +3,6 @@
 
 void ewl_idle_render(void * data);
 
-
 extern Ewd_List * ewl_window_list;
 
 void
@@ -50,5 +49,7 @@ ewl_idle_render(void * data)
 void
 ewl_main_quit()
 {
+	ewd_list_goto_first(ewl_window_list);
+
 	exit(-1);
 }

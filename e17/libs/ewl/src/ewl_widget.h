@@ -3,18 +3,25 @@
 #define __EWL_WIDGET_H__
 
 typedef struct _ewl_widget Ewl_Widget;
+typedef enum _ewl_widget_type Ewl_Widget_Type;
 
 #include <ewl_container.h>
 
+enum _ewl_widget_type {
+    Ewl_Widget_Window,
+    Ewl_Widget_Box,
+    Ewl_Widget_Button,
+    Ewl_Widget_Entry,
+    Ewl_Widget_Table
+};
+
 struct _ewl_widget {
-	/* Object geometry etc */
 	Ewl_Object object;
 
-	/* Parent widget */
 	Ewl_Widget * parent;
 
-	/* Container for the widget, a doubly linked list
-	 * with children of the widget */
+	Ewl_Widget_Type type;
+
 	Ewl_Container container;
 
 	/* List of callbacks for this widget */
@@ -22,11 +29,10 @@ struct _ewl_widget {
 
 	Evas evas;
 	Ebits_Object ebits_object;
-
 	Window evas_window;
 };
 
-#define EWL_WIDGET(ptr) ((Ewl_Widget *) ptr)
+#define EWL_WIDGET(widget) ((Ewl_Widget *) widget)
 
 /* Returns a allocated widget structure */
 Ewl_Widget * ewl_widget_new();

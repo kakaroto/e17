@@ -18,6 +18,7 @@ installed_headers_DATA = \
 	ewl_object.h \
 	ewl_prefs.h \
 	ewl_text.h \
+	ewl_table.h \
 	ewl_theme.h \
 	ewl_widget.h \
 	ewl_window.h
@@ -32,6 +33,7 @@ libewl_la_SOURCES = \
 	ewl_misc.c \
 	ewl_object.c \
 	ewl_prefs.c \
+	ewl_table.c \
 	ewl_text.c \
 	ewl_theme.c \
 	ewl_widget.c \

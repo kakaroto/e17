@@ -102,6 +102,13 @@ ewl_ev_mouse_down(Eevent * _ev)
 		widget = ewl_container_get_child_at_recursive(EWL_WIDGET(window),
 								ev->x, ev->y);
 
+		if (widget != last_selected) {
+			if (last_selected)
+				ewl_callback_call(last_selected, Ewl_Callback_Unselect);
+			if (widget)
+				ewl_callback_call(widget, Ewl_Callback_Select);
+		}
+
 		if (widget)
 			ewl_callback_call_with_data(widget, Ewl_Callback_Mouse_Down, ev);
 
@@ -139,8 +146,10 @@ ewl_ev_mouse_move(Eevent * _ev)
 										ev->x, ev->y);
 
 		if (widget != last_focused) {
-			if (widget)
+			if (widget) {
 				ewl_callback_call(widget, Ewl_Callback_Focus_In);
+				DPRINT(5, "Focus In on %p", widget);
+			}
 			if (last_focused)
 				ewl_callback_call(last_focused, Ewl_Callback_Focus_Out);
 		}

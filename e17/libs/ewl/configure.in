@@ -60,7 +60,7 @@ AC_PATH_GENERIC(ecore, 0.0.1, [
 ecore_cflags=`ecore-config --cflags`
 ecore_libs=`ecore-config --libs`
 
-AC_PATH_GENERIC(evas, 0.0.4, [
+AC_PATH_GENERIC(evas, 0.0.5, [
   AC_SUBST(evas_cflags)
   AC_SUBST(evas_libs) ],
   AC_MSG_ERROR(Cannot find evas: Is evas-config in path?))

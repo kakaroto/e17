@@ -31,7 +31,7 @@ main(int argc, char ** argv)
     ewl_widget_show(vbox[2]);
 
     text[0] = ewl_text_new();
-    ewl_container_prepend_child(vbox[0], text[0]);
+    ewl_container_prepend_child(vbox[2], text[0]);
     ewl_widget_show(text[0]);
     ewl_text_set_text(text[0], "Blehe blaha bleho\nBlah blah blah\nBleh bleh blaha!");
 
@@ -95,7 +95,7 @@ main(int argc, char ** argv)
 
 	ewl_main();
 
-	exit(-1);
+	exit(0);
 }
 
 static void

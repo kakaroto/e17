@@ -5,7 +5,7 @@
 #include "../config.h"
 #endif
 
-#define EWL_CONFIG_FILE			"config.db"
+#define EWL_CONFIG_FILE			"config/system.db"
 #define EWL_GLOBAL_CONFIG		PACKAGE_DATA_DIR "/config/system.db"
 
 /* The paths to the config files */

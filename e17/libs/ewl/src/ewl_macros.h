@@ -2,9 +2,12 @@
 #ifndef __EWL_MACROS_H
 #define __EWL_MACROS_H
 
-#define DPRINT(msg, lvl) { \
-	if (lvl) \
-		fprintf(stderr, "%s\n"); \
+#define DPRINT(lvl, format, args...) { \
+	if (lvl) { \
+		fprintf(stderr, " -- "); \
+		fprintf(stderr, format, args); \
+		fprintf(stderr, "\n"); \
+	} \
 }
 
 #define DERROR(format, args...) { \

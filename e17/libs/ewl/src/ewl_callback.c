@@ -71,7 +71,7 @@ ewl_callback_call(Ewl_Widget * widget, Ewl_Callback_Type type)
 	ewd_list_goto_first(widget->callbacks[type]);
 
 	while ((callback = ewd_list_next(widget->callbacks[type])) != NULL) {
-			callback->func(callback->widget, callback->func_data);
+			callback->func(widget, callback->func_data);
 	}
 }
 
@@ -86,6 +86,6 @@ void ewl_callback_call_with_data(Ewl_Widget * widget,
 	ewd_list_goto_first(widget->callbacks[type]);
 
 	while ((callback = ewd_list_next(widget->callbacks[type])) != NULL) {
-		callback->func(callback->widget, func_data);
+		callback->func(widget, func_data);
 	}
 }

@@ -10,6 +10,7 @@ struct _ewl_entry {
 	Ewl_Widget	  * text;
 	char		  * font;
 	int				font_size;
+	Window			paste_win;
 };
 
 typedef struct _ewl_entry Ewl_Entry;
