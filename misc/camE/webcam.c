@@ -93,6 +93,8 @@ char *title_font = "arial/8";
 char *ttf_dir = "/usr/X11R6/lib/X11/fonts/TrueType";
 char *archive_ext = "jpg";
 char *grab_archive = NULL;
+int archive_subdirs = 0;    /* default to archive without    */
+                            /* subdirs                       */
 int archive_shot_every = 1;     /* default to archive every shot */
 char *archive_thumbnails_dir = NULL;
 int archive_thumbnails_create = 0;	/* default is not to create archive thumbnails */
@@ -636,9 +638,12 @@ do_postprocess(char *filename)
 void
 archive_jpeg(Imlib_Image im)
 {
-  char buffer[1028];
-  char thumbnail_buffer[1028];
+  char buffer[PATH_MAX];
+  char thumbnail_buffer[PATH_MAX];
   char date[128];
+  char year[5];
+  char month[3];
+  char day[3];
   time_t t;
   struct tm *tm;
   static int shot_counter = 0;
@@ -650,10 +655,40 @@ archive_jpeg(Imlib_Image im)
       && shot_counter >= archive_shot_every) {
     time(&t);
     tm = localtime(&t);
-    strftime(date, 127, "%Y-%m-%d_%H%M%S", tm);
 
-    snprintf(buffer, sizeof(buffer), "%s/webcam_%s.%s", grab_archive, date,
-             archive_ext);
+    if (archive_subdirs) {
+      strftime(date, 128, "%H%M%S", tm);
+      strftime(year, 5, "%Y", tm);
+      strftime(month, 3, "%m", tm);
+      strftime(day, 3, "%d", tm);
+
+      snprintf(buffer, sizeof(buffer), "%s/%s", grab_archive, year);
+      if (access(buffer, F_OK) == -1) {
+        mkdir(buffer, 0777);
+        log("Create new subdir %s\n", buffer);
+      }
+
+      snprintf(buffer, sizeof(buffer), "%s/%s/%s", grab_archive, year,
+               month);
+      if (access(buffer, F_OK) == -1) {
+        mkdir(buffer, 0777);
+        log("Created new archive subdir %s\n", buffer);
+      }
+
+      snprintf(buffer, sizeof(buffer), "%s/%s/%s/%s", grab_archive, year,
+               month, day);
+      if (access(buffer, F_OK) == -1) {
+        mkdir(buffer, 0777);
+        log("Created new archive subdir %s\n", buffer);
+      }
+
+      snprintf(buffer, sizeof(buffer), "%s/%s/%s/%s/%s.%s", grab_archive,
+               year, month, day, date, archive_ext);
+    } else {
+      strftime(date, 127, "%Y-%m-%d_%H%M%S", tm);
+      snprintf(buffer, sizeof(buffer), "%s/webcam_%s.%s", grab_archive, date,
+              archive_ext);
+    }
     save_image(im, buffer);
     shot_counter = 0;
     /* 
@@ -663,8 +698,33 @@ archive_jpeg(Imlib_Image im)
      */
     if (archive_thumbnails_create && archive_thumbnails_width
         && archive_thumbnails_height) {
-      snprintf(thumbnail_buffer, sizeof(buffer), "%s/webcam_%s.%s",
-               archive_thumbnails_dir, date, archive_ext);
+      if (archive_subdirs) {
+        snprintf(buffer, sizeof(buffer), "%s/%s", archive_thumbnails_dir, year);
+        if (access(buffer, F_OK) == -1) {
+          mkdir(buffer, 0777);
+          log("Create new subdir %s\n", buffer);
+        }
+
+        snprintf(buffer, sizeof(buffer), "%s/%s/%s", archive_thumbnails_dir,
+                 year, month);
+        if (access(buffer, F_OK) == -1) {
+          mkdir(buffer, 0777);
+          log("Created new archive subdir %s\n", buffer);
+        }
+
+        snprintf(buffer, sizeof(buffer), "%s/%s/%s/%s",
+                 archive_thumbnails_dir, year, month, day);
+        if (access(buffer, F_OK) == -1) {
+          mkdir(buffer, 0777);
+          log("Created new archive subdir %s\n", buffer);
+        }
+
+        snprintf(buffer, sizeof(buffer), "%s/%s/%s/%s/%s.%s",
+                 archive_thumbnails_dir, year, month, day, date, archive_ext);
+      } else {
+        snprintf(thumbnail_buffer, sizeof(buffer), "%s/webcam_%s.%s",
+          archive_thumbnails_dir, date, archive_ext);
+      }
       thumbnail_image =
         gib_imlib_create_cropped_scaled_image(im, 0, 0,
                                               gib_imlib_image_get_width(im),
@@ -1308,6 +1368,8 @@ main(int argc,
     scale_height = i;
   if (-1 != (i = cfg_get_int("grab", "archive_shot_every")))
     archive_shot_every = i;
+  if (-1 != (i = cfg_get_int("grab", "archive_subdirs")))
+    archive_subdirs = i;
   if (-1 != (i = cfg_get_int("grab", "archive_thumbnails_create")))
     archive_thumbnails_create = i;
   if (-1 != (i = cfg_get_int("grab", "archive_thumbnails_width")))
