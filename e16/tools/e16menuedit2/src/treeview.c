@@ -97,6 +97,9 @@ void create_tree_model (GtkWidget *treeview_menu)
 
   gtk_tree_view_set_model (GTK_TREE_VIEW (treeview_menu), model);
 
+  gtk_tree_view_expand_to_path (GTK_TREE_VIEW (treeview_menu),
+                                 gtk_tree_path_new_from_string  ("0"));
+
   activate_dragndrop (GTK_TREE_VIEW (treeview_menu));
 
   g_object_unref (model); /* destroy model automatically with view */

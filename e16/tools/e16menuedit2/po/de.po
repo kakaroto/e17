@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: e16menuedit2\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2004-08-06 21:19+0200\n"
+"POT-Creation-Date: 2004-08-08 11:07+0200\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: Andreas Volz <linux@brachttal.net>\n"
 "Language-Team: German <linux@brachttal.net>\n"
@@ -20,13 +20,13 @@ msgstr ""
 msgid "Save"
 msgstr "Speichern"
 
-#: src/callbacks.c:55 src/treeview.c:141 e16menuedit2.glade.h:11
+#: src/callbacks.c:55 src/treeview.c:146 e16menuedit2.glade.h:11
 msgid "New Entry"
 msgstr "Neuer Eintrag"
 
 #: src/callbacks.c:62 e16menuedit2.glade.h:3
 msgid "Choose Icon"
-msgstr "Wähle Icon"
+msgstr "Wähle Symbol"
 
 #: src/callbacks.c:69 e16menuedit2.glade.h:4
 msgid "Delete Entry"
@@ -36,25 +36,41 @@ msgstr "Lösche Eintrag"
 msgid "Quit"
 msgstr "Beenden"
 
+#: src/e16menuedit2.c:96
+msgid "Menu successfully loaded!"
+msgstr "Menü erfolgreich geladen!"
+
 #: src/icon_chooser.c:63
 msgid "Select Icon..."
-msgstr "Wähle Icon..."
+msgstr "Wähle Symbol..."
 
 #: src/icon_chooser.c:99
 msgid "Icon size:"
-msgstr "Icon Größe:"
+msgstr "Symbolgröße:"
 
-#: src/treeview.c:52
+#: src/treeview.c:54
 msgid "Description"
-msgstr ""
+msgstr "Beschreibung"
 
-#: src/treeview.c:59
+#: src/treeview.c:61
 msgid "Icon"
-msgstr ""
+msgstr "Symbol"
 
-#: src/treeview.c:81
+#: src/treeview.c:83
 msgid "Parameters"
-msgstr ""
+msgstr "Parameter"
+
+#: src/treeview.c:200
+msgid "Menu saved!"
+msgstr "Menü gespeichert!"
+
+#: src/treeview.c:219
+msgid "Submenu must have a name! -> menu not saved!"
+msgstr "Untermenü muss einen Namen haben -> Menü nicht gespeichert!"
+
+#: src/treeview.c:223
+msgid "Unknown error occurred while checking menu -> menu not saved!"
+msgstr "Unbekannter Fehler beim kontrollieren des Menüs -> Menü nicht gespeichert!"
 
 #: e16menuedit2.glade.h:1
 msgid ""
@@ -85,4 +101,4 @@ msgstr "Info"
 #: e16menuedit2.glade.h:10
 #, fuzzy
 msgid "Info about E16 Menu Editor"
-msgstr "E16 Menü Editor"
+msgstr "Informationen über E16 Menü Editor"
