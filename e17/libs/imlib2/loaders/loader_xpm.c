@@ -12,7 +12,6 @@
 #include <X11/extensions/XShm.h>
 #include <X11/Xutil.h>
 #include "image.h"
-#include "Imlib2.h"
 
 char load(ImlibImage *im, ImlibProgressFunction progress,char progress_granularity, char immediate_load);
 char save(ImlibImage *im, ImlibProgressFunction progress, char progress_granularity);
