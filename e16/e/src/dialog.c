@@ -1295,13 +1295,18 @@ DialogRealizeItem(Dialog * d, DItem * di)
 	   im = ELoadImage(di->item.image.image);
 	   if (im)
 	     {
+		Pixmap              pmap = 0, mask = 0;
+
 		imlib_context_set_image(im);
 		iw = imlib_image_get_width();
 		ih = imlib_image_get_height();
 		di->win = ECreateWindow(d->win, 0, 0, iw, ih, 0);
 		EMapWindow(disp, di->win);
-		imlib_context_set_drawable(di->win);
-		imlib_render_image_on_drawable(0, 0);
+		imlib_render_pixmaps_for_whole_image(&pmap, &mask);
+		ESetWindowBackgroundPixmap(disp, di->win, pmap);
+		EShapeCombineMask(disp, di->win, ShapeBounding, 0,
+				  0, mask, ShapeSet);
+		IMLIB_FREE_PIXMAP_AND_MASK(pmap, mask);
 		imlib_free_image();
 	     }
 	}
