@@ -1,10 +1,6 @@
 #ifndef __BLEND
 #define __BLEND 1
 
-#ifdef HAVE_CONFIG_H
-#  include <config.h>
-#endif
-
 #ifndef WORDS_BIGENDIAN
 
 #define A_VAL(p) ((DATA8 *)(p))[3]

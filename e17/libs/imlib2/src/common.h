@@ -4,6 +4,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <unistd.h>
+#include <config.h>
 
 #define DATABIG unsigned long long
 #define DATA64  unsigned long long

@@ -2,12 +2,16 @@ dnl Process this file with autoconf to create configure.
 
 AC_INIT(src/Imlib2.h)
 AM_CONFIG_HEADER(config.h)
+AC_CANONICAL_SYSTEM
+if test x$target_cpu = xi686; then
+  AC_DEFINE(DO_MMX_ASM, 1, [Pentium II/III and up detected - enabling ASM])
+fi
 AM_INIT_AUTOMAKE(imlib2, 0.0.3)
 
 pkglibdir='${libdir}'/loaders
 AC_SUBST(pkglibdir)
 
-AC_C_BIGENDIAN
+AC_C_BIGENDIAN	      
 
 AC_LIBLTDL_CONVENIENCE
 AC_CONFIG_SUBDIRS(libltdl)

@@ -1,3 +1,7 @@
+#include <config.h>
+
+#ifdef DO_MMX_ASM
+
 /*
 * AlphaBlending using MMX
 * 
@@ -109,3 +113,4 @@ __imlib_asm_blend_rgba_to_rgb:
   popl      %ebp
 ret
 
+#endif

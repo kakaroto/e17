@@ -76,7 +76,7 @@ static void
 __imlib_BlendRGBAToRGB(DATA32 *src, int src_jump, DATA32 *dst, int dst_jump, 
 		       int w, int h, ImlibColorModifier *cm)
 {
-#if 1
+#ifdef DO_MMX_ASM
    int y;
    
    __imlib_toggle_mmx();
