@@ -3,7 +3,6 @@
 #include <Edb.h>
 #include <Evas.h>
 #define LIBRARY_NAME "EWL"
-#include <Etox.h>
 #include <Ewd.h>
 
 #include <stdio.h>
