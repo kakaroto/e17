@@ -1,6 +1,6 @@
-Cam 0.3 README
+Cam 0.4 README
 ==============
-This document was last updated on 20000819-1605-PDT.
+This document was last updated on 20001111-1000-PST.
 Please see the file COPYING for licensing information.
 
 Description
@@ -16,7 +16,7 @@ enjoy the cam, you should check out the page too!  The initial list of
 cam bookmarks (in the cam_bookmarks file) is a combination of webcams
 scoured from the #E People Page (http://bma.debian.net/~bma/e-irc/),
 my favorite webcams from the Stile Project's cam pages
-(http://www.stileproject.com/), and a additional #e people cams that
+(http://www.stileproject.com/), and additional #e people cams that
 have come online since cam's original release (0.1).
 
 Installation
@@ -30,10 +30,13 @@ Installation
   feh any options before the image by adjusting the $PRE variable, 
   and any options after the image by adjustin the $POST variable.
 
-About the Author
-================
+About the Authors
+=================
 Paul Duncan <pabs@pablotron.org>, pabs on #e
 http://www.pablotron.org/
 
-but the real credit goes to Tom Gilbert for making feh, an awesome image
-viewer. :)
+Richard Lowe <richlowe@btinternet.com>, richlowe on #e
+http://www.richlowe.btinternet.co.uk/
+
+...but the real credit goes to Tom Gilbert for making feh, an awesome
+image viewer. :)

@@ -1,52 +1,85 @@
 #!/usr/bin/perl -w
 
+use strict;
+use Getopt::Long;
+
 #############################################
 ############# CAM RUN-TIME OPTIONS ##########
 #############################################
-$DEBUG = 0;
-$bp =    $ENV{HOME}."/.cam_bookmarks";
-$feh =   "feh";
-$title_format = "%cCAM - %u";
+my $feh   = "feh";
+
 # additional feh cmdline options
-$PRE=    " -q -w -Cwebcam -1 0 -0 1 ";
-$POST=   ""; 
+my $PRE  = " -q -w -Cwebcam -1 0 -0 1 ";
+my $POST = ""; 
 #############################################
 #############################################
 
-# chakc args
+# Options
+my $help        = '';
+my $fullscreen  = '';
+my $list        = '';
+my $verbose     = '';
+my $add         = '';
+my $keep        = '';
+my $deftitle    = '%cCAM - %u';
+my $title       = '';
+my $bp          = $ENV{HOME}."/.cam_bookmarks";
+my $DEBUG       = 0;
+
+# check args
 &print_usage_and_exit unless (@ARGV);
-$key = shift @ARGV;
 
-&print_usage_and_exit if ($key=~/-\?/ or $key=~/-h/ or $key=~/--help/);
 
-if ($key=~/-v/i||$key=~/--verbose/i)	{
-	$PRE.=" -V ";
-	$key = shift @ARGV;
+# Url, Refresh, and bookmarks
+my $url = "";
+my $ref = "";
+my %bms = ();
+
+GetOptions('help|?|h'                    => \$help,
+           'full-screen|f|giblets-mom|g' => \$fullscreen,
+           'list|l'                      => \$list,
+           'verbose|v'                   => \$verbose,
+           'add|a'                       => \$add,
+           'keep-images|k|save-pr0n'    => \$keep,
+           'title|t=s'                   => \$title,
+           'debug|d'                     => \$DEBUG,
+           'bookmarks|b=s'               => \$bp
+           );
+
+my $key = shift @ARGV;
+
+&print_usage_and_exit if ($help);
+
+if ($verbose)	{
+	$PRE .= " -V ";
 }
 
-if ($key=~/-f/i||$key=~/--full-screen/i ||
-    $key=~/-g/i||$key=~/--giblets-mom/i)	{
-	$PRE.=" --full-screen --auto-zoom ";
-	$key = shift @ARGV;
+if ($fullscreen) {
+      $PRE =~ s/-w//;
+	  $PRE .= " --full-screen --auto-zoom ";
 }
 
 # if requested, add a key/url pair to bookmarks file
-if ($key =~ /\-a/ or $key =~ /\-\-add/)	{
-	open BMF, ">>$bp" or die "Couldn't open bookmarks file \"$bp\".";
-	($key,$url,$ref) = @ARGV;
-	print BMF "$key=$ref,$url\n";
+if ($add)	{
+    my $mytitle          = '';
+	($url,$ref,$mytitle) = @ARGV;
+    die "Bad key syntax\n" unless ($key && $url && $ref);
+
+   open(BMF, ">>$bp") or die "Couldn't open bookmarks file \"$bp\": $!\n";
+	print BMF "$key=$ref,$url \"$mytitle\"\n";
 	close BMF;
-	print "Added URL key \"$key\" = $url, $ref.\n" if ($DEBUG);
+	print "Added URL key \"$key\" = $url, $ref.\n"; # its useful to have this even if you arent debugging --richlowe
 	exit 0;
 }
 
-if ($key=~/-k/i||$key=~/--keep-images/i||$key=~/--save-pr0n/i)	{
-	$PRE.=" -k ";
-	$key = shift @ARGV;
+if ($keep)	{
+	$PRE .= " -k ";
 }
 
+
+
 # load bookmarks
-open BMF, "$bp" or die "Couldn't open bookmarks file \"$bp\".";
+open(BMF, "$bp") or die "Couldn't open bookmarks file \"$bp\": $!\n";
 foreach (<BMF>)	{
 	/^(.*?)=(.*)$/;
 	$bms{$1} = $2;
@@ -55,47 +88,51 @@ foreach (<BMF>)	{
 close BMF;
 
 # if requested, dump a list of key/url pair values
-if ($key =~ /-l/ or $key =~ /--list/) {
+if ($list) {
 	foreach (sort keys %bms)	{
-		$t = $bms{$_}; 
-		$t =~ s/^(.*?),(.*)$/$2, $1\n/;
-		chop $t;
-		print "$_ = $t\n";
+		my $t = $bms{$_}; 
+
+   		$t =~ s/^(.+?),(.+?)(^ "(.*)"|)?$/$2/;
+		chomp $t;
+		print "$_ = $t, $1, $3\n";
 	}
 	exit 0;
 }
 
 # main loop
-LOOP: {
+MAIN: {
 	do {
-		$title = "";
 		$url = $bms{$key};
-		unless ($url)	{
-			print "Coudln't find URL key $key.\n";
-			exit(-1); # (should jump to next LOOP, but oh well)
-		}
-		$url =~ s/^(.*?),(.*)$/$2/;
-		$ref = $1;
+        die "Couldn't find URL key \"$key.\"\n" unless($url);
 		
-		if ($title_format)
+   		$url =~ s/^(.+?),(.+?)( ".*")?$/$2/;
+		$ref = $1;
+   
+         unless ($title) {
+           $title = $3;
+         }
+         unless($title) {
+           $title = $deftitle;
+         }
+
+		if ($title)
 		{
-			$title = $title_format;
 			$title =~ s/\%c/$key/g;
 			$title =~ s/\%u/$url/g;
 			$title =~ s/\%r/$ref/g;
 			$title =~ s/\%\%/\%/g;
-			$title = " --title \"$title\" ";
+			$title = " --title $title ";
 		}
 	
-		$cmd = "$feh $PRE $title -R $ref $url $POST";
+		my $cmd = "$feh $PRE $title -R $ref $url $POST";
 		print "$cmd\n" if ($DEBUG);
 		FORK: {
+           my $pid;
 			if ($pid = fork) {
-				# parent
+				# We're a daddy! :)
 			} elsif (defined $pid) {
 				# child
-				exec "$cmd";      # to remove perl interpreter from memory
-				exit(-1);         # just in case the exec fails
+				exec "$cmd" or die "Couldnt exec() $feh: $!\n";
 			} elsif ( $! =~ /No more process/) {
 				sleep 5;
 				redo FORK;
@@ -107,9 +144,12 @@ LOOP: {
 	} while ($key = shift @ARGV);
 }
 
+   
 sub print_usage_and_exit()	{
-	print <<END_USAGE;
-Cam 0.3 by Paul Duncan <pabs\@pablotron.org>
+    print <<END_USAGE;
+Cam 0.3
+by Paul Duncan <pabs\@pablotron.org>, and
+   Richard Lowe <richlowe\@btinternet.com>
 Description:
   A convenient webcam wrapper for feh.
 
@@ -137,5 +177,6 @@ Notes:
 Thanks to gilbertt for feh, an awesome image and webcam viewing program,
 and raster for Imlib2.
 END_USAGE
-	exit(-1);
+    exit(-1);
 }
+
