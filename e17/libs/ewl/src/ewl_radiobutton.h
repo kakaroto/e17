@@ -40,7 +40,7 @@ Ewl_Widget     *ewl_radiobutton_new(char *l);
 void            ewl_radiobutton_init(Ewl_RadioButton * cb, char *label);
 
 /**
- * @def ewl_radiobutton_set_checked(r, c)
+ * @def ewl_radiobutton_checked_set(r, c)
  * Shortcut for setting the checked status on the inherited Ewl_CheckButton
  * fields.
  */

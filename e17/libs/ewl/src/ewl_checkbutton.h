@@ -45,7 +45,7 @@ Ewl_Widget     *ewl_checkbutton_new(char *l);
 void            ewl_checkbutton_init(Ewl_CheckButton * cb, char *label);
 
 /**
- * @def ewl_checkbutton_set_checked(cb, c);
+ * @def ewl_checkbutton_checked_set(cb, c);
  * Shortcut for dereferencing the checkbutton to update the checked state of
  * the Ewl_Check.
  */
