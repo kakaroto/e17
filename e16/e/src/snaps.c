@@ -1404,8 +1404,10 @@ SnapshotEwinMatch(EWin * ewin)
 	ewin->client.x = sn->x;
 	ewin->client.y = sn->y;
 	ewin->client.grav = NorthWestGravity;
+#if 0				/* No, do later in EwinDetermineArea() */
 	ewin->area_x = sn->area_x;
 	ewin->area_y = sn->area_y;
+#endif
 	if (!EoIsSticky(ewin))
 	  {
 	     DeskGetArea(EoGetDesk(ewin), &ax, &ay);

@@ -1574,7 +1574,6 @@ EWin               *GetEwinByCurrentPointer(void);
 EWin               *GetFocusEwin(void);
 EWin               *GetContextEwin(void);
 void                SetContextEwin(EWin * ewin);
-void                EwinDetermineArea(EWin * ewin);
 void                EwinPropagateShapes(EWin * ewin);
 void                AddToFamily(EWin * ewin, Window win);
 EWin               *AddInternalToFamily(Window win, const char *bname, int type,

@@ -548,6 +548,8 @@ Estrlistjoin(char **pstr, int nstr)
    return s;
 }
 
+#define TryGroup(e) (((e)->client.group != None) && ((e)->client.group != (e)->client.win))
+
 void
 ICCCM_GetInfo(EWin * ewin, Atom atom_change)
 {
@@ -559,7 +561,7 @@ ICCCM_GetInfo(EWin * ewin, Atom atom_change)
 	_EFREE(ewin->icccm.wm_res_class);
 
 	if (XGetClassHint(disp, ewin->client.win, &hint) ||
-	    XGetClassHint(disp, ewin->client.group, &hint))
+	    (TryGroup(ewin) && XGetClassHint(disp, ewin->client.group, &hint)))
 	  {
 	     ewin->icccm.wm_res_name = Estrdup(hint.res_name);
 	     ewin->icccm.wm_res_class = Estrdup(hint.res_class);
@@ -576,7 +578,7 @@ ICCCM_GetInfo(EWin * ewin, Atom atom_change)
 	   ecore_x_window_prop_string_list_get(ewin->client.win,
 					       ECORE_X_ATOM_WM_COMMAND,
 					       &(ewin->icccm.wm_command_argc));
-	if (!ewin->icccm.wm_command && ewin->client.win != ewin->client.group)
+	if (!ewin->icccm.wm_command && TryGroup(ewin))
 	   ewin->icccm.wm_command_argv =
 	      ecore_x_window_prop_string_list_get(ewin->client.group,
 						  ECORE_X_ATOM_WM_COMMAND,
@@ -594,7 +596,7 @@ ICCCM_GetInfo(EWin * ewin, Atom atom_change)
 	ewin->icccm.wm_machine =
 	   ecore_x_window_prop_string_get(ewin->client.win,
 					  ECORE_X_ATOM_WM_CLIENT_MACHINE);
-	if (!ewin->icccm.wm_machine && ewin->client.win != ewin->client.group)
+	if (!ewin->icccm.wm_machine && TryGroup(ewin))
 	   ewin->icccm.wm_machine =
 	      ecore_x_window_prop_string_get(ewin->client.group,
 					     ECORE_X_ATOM_WM_CLIENT_MACHINE);
@@ -607,7 +609,7 @@ ICCCM_GetInfo(EWin * ewin, Atom atom_change)
 	ewin->icccm.wm_icon_name =
 	   ecore_x_window_prop_string_get(ewin->client.win,
 					  ECORE_X_ATOM_WM_ICON_NAME);
-	if (!ewin->icccm.wm_icon_name && ewin->client.win != ewin->client.group)
+	if (!ewin->icccm.wm_icon_name && TryGroup(ewin))
 	   ewin->icccm.wm_icon_name =
 	      ecore_x_window_prop_string_get(ewin->client.group,
 					     ECORE_X_ATOM_WM_ICON_NAME);

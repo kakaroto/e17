@@ -380,7 +380,7 @@ SetContextEwin(EWin * ewin)
    Mode.context_ewin = ewin;
 }
 
-void
+static void
 EwinDetermineArea(EWin * ewin)
 {
    int                 ax, ay;
