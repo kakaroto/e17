@@ -734,3 +734,10 @@ Mon Mar  7 15:06:39 2005                        Michael Jennings (mej)
 
 Miscellaneous autoFUCKMEUPTHEASSWITHAPINETREE fixes.
 ----------------------------------------------------------------------
+Mon Mar  7 17:28:00 2005                        Michael Jennings (mej)
+
+Cleaner "make maintainer-clean"
+
+Finally found and fixed that stupid "Config file is designed for a
+newer version of FOO" bullshit warning.
+----------------------------------------------------------------------

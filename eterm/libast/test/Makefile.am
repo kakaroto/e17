@@ -21,3 +21,4 @@ perf: libast-perf
 	$(top_builddir)/test/libast-perf $(PERFOPTS)
 
 .PHONY: test
+MAINTAINERCLEANFILES = Makefile.in

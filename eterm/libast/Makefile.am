@@ -9,6 +9,8 @@ MACROS = libast.m4
 macrodir = $(datadir)/aclocal
 
 EXTRA_DIST = DESIGN README $(MACROS)
+MAINTAINERCLEANFILES = Makefile.in *~ aclocal.m4 config.guess config.sub configure depcomp \
+    install-sh ltconfig ltmain.sh missing mkinstalldirs stamp-h* *.log config.h.in
 
 test: all
 	cd test && $(MAKE) test

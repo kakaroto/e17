@@ -5,3 +5,4 @@ SUBDIRS = $(PACKAGE)
 include_HEADERS = libast.h
 
 EXTRA_DIST = libast_internal.h
+MAINTAINERCLEANFILES = Makefile.in

@@ -827,10 +827,12 @@ spifconf_open_file(spif_charptr_t name)
     /* Check version number against current application version. */
     begin_ptr = SPIF_STR_STR(ver_str) + spif_str_index(ver_str, SPIF_CAST(char) '-') + 1;
     end_ptr = SPIF_STR_STR(ver_str) + spif_str_index(ver_str, SPIF_CAST(char) '>');
+    D_CONF(("Begin pointer is %10p (%s), end pointer is %10p (%s), length is %d, buffer size is %d\n",
+            begin_ptr, begin_ptr, end_ptr, end_ptr, SPIF_CAST_C(int) (end_ptr - begin_ptr), sizeof(buff)));
     if (SPIF_PTR_ISNULL(end_ptr)) {
         spiftool_safe_strncpy(buff, begin_ptr, sizeof(buff));
     } else {
-        testlen = MAX(SPIF_CAST_C(int) sizeof(buff), SPIF_CAST_C(int) (end_ptr - begin_ptr));
+        testlen = MIN(SPIF_CAST_C(int) sizeof(buff), SPIF_CAST_C(int) (end_ptr - begin_ptr + 1));
         spiftool_safe_strncpy(buff, begin_ptr, testlen);
     }
     ver = spiftool_version_compare(buff, libast_program_version);

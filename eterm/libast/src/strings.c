@@ -710,21 +710,24 @@ spiftool_version_compare(spif_charptr_t v1, spif_charptr_t v2)
 {
     spif_char_t buff1[128], buff2[128];
 
+    D_CONF(("Comparing version strings \"%s\" and \"%s\"\n", NONULL(v1), NONULL(v2)));
     SPIF_COMP_CHECK_NULL(v1, v2);
 
     for (; *v1 && *v2; ) {
+        D_CONF((" -> Looking at \"%s\" and \"%s\"\n", v1, v2));
         if (isalpha(*v1) && isalpha(*v2)) {
             spif_charptr_t p1 = buff1, p2 = buff2;
             spif_int8_t ival1 = 6, ival2 = 6;
 
             /* Compare words.  First, copy each word into buffers. */
-            for (; isalpha(*v1); v1++, p1++) *p1 = *v1;
-            for (; isalpha(*v2); v2++, p2++) *p2 = *v2;
+            for (; *v1 && isalpha(*v1); v1++, p1++) *p1 = *v1;
+            for (; *v2 && isalpha(*v2); v2++, p2++) *p2 = *v2;
             *p1 = *p2 = 0;
 
             /* Change the buffered strings to lowercase for easier comparison. */
             spiftool_downcase_str(buff1);
             spiftool_downcase_str(buff2);
+            D_CONF(("     -> Comparing as words \"%s\" vs. \"%s\"\n", buff1, buff2));
 
             /* Some strings require special handling. */
             if (!strcmp(SPIF_CHARPTR_C(buff1), "snap")) {
@@ -751,12 +754,14 @@ spiftool_version_compare(spif_charptr_t v1, spif_charptr_t v2)
             }
             if (ival1 != ival2) {
                 /* If the values are different, compare them. */
+                D_CONF(("     -> %d\n", (int) SPIF_CMP_FROM_INT(ival1 - ival2)));
                 return SPIF_CMP_FROM_INT(ival1 - ival2);
             } else if (ival1 == 6) {
                 int c;
 
                 /* Two arbitrary strings.  Compare them too. */
                 if ((c = strcmp(SPIF_CHARPTR_C(buff1), SPIF_CHARPTR_C(buff2))) != 0) {
+                    D_CONF(("     -> %d\n", (int) SPIF_CMP_FROM_INT(c)));
                     return SPIF_CMP_FROM_INT(c);
                 }
             }
@@ -766,17 +771,19 @@ spiftool_version_compare(spif_charptr_t v1, spif_charptr_t v2)
             spif_cmp_t c;
 
             /* Compare numbers.  First, copy each number into buffers. */
-            for (; isdigit(*v1); v1++, p1++) *p1 = *v1;
-            for (; isdigit(*v2); v2++, p2++) *p2 = *v2;
+            for (; *v1 && isdigit(*v1); v1++, p1++) *p1 = *v1;
+            for (; *v2 && isdigit(*v2); v2++, p2++) *p2 = *v2;
             *p1 = *p2 = 0;
 
             /* Convert the strings into actual integers. */
             ival1 = SPIF_CAST(int32) strtol(SPIF_CHARPTR_C(buff1), (char **) NULL, 10);
             ival2 = SPIF_CAST(int32) strtol(SPIF_CHARPTR_C(buff2), (char **) NULL, 10);
+            D_CONF(("     -> Comparing as integers %d vs. %d\n", SPIF_CAST_C(int) ival1, SPIF_CAST_C(int) ival2));
 
             /* Compare the integers and return if not equal. */
             c = SPIF_CMP_FROM_INT(ival1 - ival2);
             if (!SPIF_CMP_IS_EQUAL(c)) {
+                D_CONF(("     -> %d\n", (int) c));
                 return c;
             }
         } else if (!isalnum(*v1) && !isalnum(*v2)) {
@@ -784,15 +791,19 @@ spiftool_version_compare(spif_charptr_t v1, spif_charptr_t v2)
             spif_cmp_t c;
 
             /* Compare non-alphanumeric strings. */
-            for (; !isalnum(*v1); v1++, p1++) *p1 = *v1;
-            for (; !isalnum(*v2); v2++, p2++) *p2 = *v2;
+            for (; *v1 && !isalnum(*v1); v1++, p1++) *p1 = *v1;
+            for (; *v2 && !isalnum(*v2); v2++, p2++) *p2 = *v2;
             *p1 = *p2 = 0;
 
+            D_CONF(("     -> Comparing as non-alphanumeric strings \"%s\" vs. \"%s\"\n", buff1, buff2));
             c = SPIF_CMP_FROM_INT(strcasecmp(SPIF_CHARPTR_C(buff1), SPIF_CHARPTR_C(buff2)));
             if (!SPIF_CMP_IS_EQUAL(c)) {
+                D_CONF(("     -> %d\n", (int) c));
                 return c;
             }
         } else {
+            D_CONF(("     -> Comparing as alphanumeric strings \"%s\" vs. \"%s\"\n", buff1, buff2));
+            D_CONF(("     -> %d\n", (int) SPIF_CMP_FROM_INT(strcasecmp(SPIF_CHARPTR_C(buff1), SPIF_CHARPTR_C(buff2)))));
             return SPIF_CMP_FROM_INT(strcasecmp(SPIF_CHARPTR_C(buff1), SPIF_CHARPTR_C(buff2)));
         }
     }
@@ -801,18 +812,23 @@ spiftool_version_compare(spif_charptr_t v1, spif_charptr_t v2)
     if (*v1) {
         if (!BEG_STRCASECMP(SPIF_CHARPTR_C(v1), "snap") || !BEG_STRCASECMP(SPIF_CHARPTR_C(v1), "pre")
             || !BEG_STRCASECMP(SPIF_CHARPTR_C(v1), "alpha") || !BEG_STRCASECMP(SPIF_CHARPTR_C(v1), "beta")) {
+            D_CONF(("     -> <\n"));
             return SPIF_CMP_LESS;
         } else {
+            D_CONF(("     -> >\n"));
             return SPIF_CMP_GREATER;
         }
     } else if (*v2) {
         if (!BEG_STRCASECMP(SPIF_CHARPTR_C(v2), "snap") || !BEG_STRCASECMP(SPIF_CHARPTR_C(v2), "pre")
             || !BEG_STRCASECMP(SPIF_CHARPTR_C(v2), "alpha") || !BEG_STRCASECMP(SPIF_CHARPTR_C(v2), "beta")) {
+            D_CONF(("     -> >\n"));
             return SPIF_CMP_GREATER;
         } else {
+            D_CONF(("     -> <\n"));
             return SPIF_CMP_LESS;
         }
     }
+    D_CONF(("     -> ==\n"));
     return SPIF_CMP_EQUAL;
 }
 

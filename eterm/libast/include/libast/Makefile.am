@@ -22,3 +22,4 @@ types.h: types.h.in
 
 sysdefs.h: sysdefs.h.in
 	(cd $(top_srcdir) && ./config.status)
+MAINTAINERCLEANFILES = Makefile.in

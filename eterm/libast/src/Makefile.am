@@ -10,3 +10,4 @@ libast_la_SOURCES =							\
     regexp.c socket.c str.c strings.c snprintf.c tok.c url.c
 
 libast_la_LDFLAGS = -version-info 2:1:0
+MAINTAINERCLEANFILES = Makefile.in
