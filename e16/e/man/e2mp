@@ -2,7 +2,19 @@
 
 print "=pod\n\n\n\n";
 
-print "=head1 NAME\n\n\nEnlightenment\n\n";
+print "=head1 NAME\n\n\nEnlightenment\n\n\n\n";
+
+print "=head1 WARNING\n\n\n";
+
+print "This documentation is automatically generated for you from the\n";
+print "online help documentation.  It is NOT to be considered a full\n";
+print "substitute for this documentation.  It may be accessed by\n";
+print "middle clicking on your desktop and selecting the \"Help\" item.\n";
+print "If you are not currently running enlightenment, you may access\n";
+print "this documentation by running the dox Help Browser\n";
+print "To do this, run ENLIGHTENMENT_BIN/dox ENLIGHTENMENT_ROOT/E-docs\n";
+print "(where BIN and ROOT are the locations of your e binaries and shared\n";
+print "files, respectively)\n\n\n\n\n";
 
 print "=head1 DESCRIPTION\n\n\n";
 
