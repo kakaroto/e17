@@ -120,19 +120,19 @@ void
 ecore_x_window_prop_card32_set(Ecore_X_Window win, Ecore_X_Atom atom,
 			       unsigned int *val, unsigned int num)
 {
-#if SIZEOF_INT == 4
+#if SIZEOF_INT == SIZEOF_LONG
    _ATOM_SET_CARD32(win, atom, val, num);
 #else
-   CARD32             *c32;
+   unsigned long      *pl;
    unsigned int        i;
 
-   c32 = malloc(num * sizeof(CARD32));
-   if (!c32)
+   pl = malloc(num * sizeof(long));
+   if (!pl)
       return;
    for (i = 0; i < num; i++)
-      c32[i] = val[i];
-   _ATOM_SET_CARD32(win, atom, c32, num);
-   free(c32);
+      pl[i] = val[i];
+   _ATOM_SET_CARD32(win, atom, pl, num);
+   free(pl);
 #endif
 }
 
@@ -281,8 +281,22 @@ ecore_x_window_prop_xid_set(Ecore_X_Window win, Ecore_X_Atom atom,
 			    Ecore_X_Atom type, Ecore_X_ID * lst,
 			    unsigned int num)
 {
+#if SIZEOF_INT == SIZEOF_LONG
    XChangeProperty(_ecore_x_disp, win, atom, type, 32, PropModeReplace,
 		   (unsigned char *)lst, num);
+#else
+   unsigned long      *pl;
+   unsigned int        i;
+
+   pl = malloc(num * sizeof(long));
+   if (!pl)
+      return;
+   for (i = 0; i < num; i++)
+      pl[i] = val[i];
+   XChangeProperty(_ecore_x_disp, win, atom, type, 32, PropModeReplace,
+		   (unsigned char *)pl, num);
+   free(pl);
+#endif
 }
 
 /*
@@ -829,8 +843,10 @@ void
 ecore_x_netwm_wm_identify(Ecore_X_Window root, Ecore_X_Window check,
 			  const char *wm_name)
 {
-   _ATOM_SET_WINDOW(root, ECORE_X_ATOM_NET_SUPPORTING_WM_CHECK, &check, 1);
-   _ATOM_SET_WINDOW(check, ECORE_X_ATOM_NET_SUPPORTING_WM_CHECK, &check, 1);
+   ecore_x_window_prop_window_set(root, ECORE_X_ATOM_NET_SUPPORTING_WM_CHECK,
+				  &check, 1);
+   ecore_x_window_prop_window_set(check, ECORE_X_ATOM_NET_SUPPORTING_WM_CHECK,
+				  &check, 1);
    _ATOM_SET_UTF8_STRING(check, ECORE_X_ATOM_NET_WM_NAME, wm_name);
    /* This one isn't mandatory */
    _ATOM_SET_UTF8_STRING(root, ECORE_X_ATOM_NET_WM_NAME, wm_name);
@@ -851,7 +867,8 @@ void
 ecore_x_netwm_desk_roots_set(Ecore_X_Window root, unsigned int n_desks,
 			     Ecore_X_Window * vroots)
 {
-   _ATOM_SET_WINDOW(root, ECORE_X_ATOM_NET_VIRTUAL_ROOTS, vroots, n_desks);
+   ecore_x_window_prop_window_set(root, ECORE_X_ATOM_NET_VIRTUAL_ROOTS, vroots,
+				  n_desks);
 }
 
 void
@@ -941,7 +958,8 @@ void
 ecore_x_netwm_client_list_set(Ecore_X_Window root, unsigned int n_clients,
 			      Ecore_X_Window * p_clients)
 {
-   _ATOM_SET_WINDOW(root, ECORE_X_ATOM_NET_CLIENT_LIST, p_clients, n_clients);
+   ecore_x_window_prop_window_set(root, ECORE_X_ATOM_NET_CLIENT_LIST, p_clients,
+				  n_clients);
 }
 
 /* Stacking order */
@@ -950,14 +968,15 @@ ecore_x_netwm_client_list_stacking_set(Ecore_X_Window root,
 				       unsigned int n_clients,
 				       Ecore_X_Window * p_clients)
 {
-   _ATOM_SET_WINDOW(root, ECORE_X_ATOM_NET_CLIENT_LIST_STACKING, p_clients,
-		    n_clients);
+   ecore_x_window_prop_window_set(root, ECORE_X_ATOM_NET_CLIENT_LIST_STACKING,
+				  p_clients, n_clients);
 }
 
 void
 ecore_x_netwm_client_active_set(Ecore_X_Window root, Ecore_X_Window win)
 {
-   _ATOM_SET_WINDOW(root, ECORE_X_ATOM_NET_ACTIVE_WINDOW, &win, 1);
+   ecore_x_window_prop_window_set(root, ECORE_X_ATOM_NET_ACTIVE_WINDOW, &win,
+				  1);
 }
 
 /*
