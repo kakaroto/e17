@@ -187,7 +187,7 @@ ewl_text_destroy(Ewl_Widget * w, void *ev_data, void *user_data)
 	if (t->tox)
 	  {
 		etox_hide(t->tox);
-/*		etox_set_unclip(t->tox); XXX: Not implemented yet */
+		etox_unset_clip(t->tox);
 		etox_free(t->tox);
 	  }
 
