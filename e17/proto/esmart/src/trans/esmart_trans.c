@@ -71,8 +71,36 @@ _esmart_trans_x11_pixmap_get(Evas *evas, Evas_Object *old,
         imlib_context_set_colormap(DefaultColormap(ecore_x_display_get(),DefaultScreen(ecore_x_display_get())));
         imlib_context_set_drawable(*((Pixmap *)data));
 
-        im=imlib_create_image_from_drawable(0,x,y,w,h,1);
-        imlib_context_set_image(im);
+	if((x>=px)&&(y>=py)&&((x+w)<=(py+((signed int)pw)))&&((y+h)<=(py+((signed int)ph)))) 
+	{
+	    im = imlib_create_image_from_drawable (0, x, y, w, h, 1);
+	    imlib_context_set_image (im);
+	}
+	else /* tiled root pixmap */
+	{
+	    Imlib_Image  dst;
+	    int          sx, sy, dx, dy;
+
+	    im=imlib_create_image_from_drawable(0, px, py, pw, ph, 1);
+	    dst=imlib_create_image(w, h);
+	    imlib_context_set_image(dst);
+	    imlib_image_clear();
+	    imlib_context_set_cliprect(0, 0, w, h);
+
+	    dx = pw;
+	    dy = ph;
+	    dx = (x%dx);
+	    dy = (y%dy);
+       imlib_blend_image_onto_image(im, 1, 0, 0, pw, ph, 0, 0, pw, ph);
+
+	    for (sy = 0; sy < (h + dy);sy+=ph) 
+		   for (sx = 0; sx < (w + dx); sx += pw) 
+           imlib_image_copy_rect(0, 0, pw, ph, sx - dx, sy-dy);
+	    
+       imlib_context_set_image(im);
+	    imlib_free_image();
+	    imlib_context_set_image(dst); 
+	}
         imlib_image_set_format("argb");
         new=evas_object_image_add(evas);
         evas_object_image_alpha_set(new,0);
@@ -88,6 +116,8 @@ _esmart_trans_x11_pixmap_get(Evas *evas, Evas_Object *old,
         evas_object_show(new); }
 #if 1
       else  /* this can happen with e16 */
+         /* It would be nice to somehow make this actually attempt to
+          * get the background pixmap from e16 on alternate desktops. */
         fprintf(stderr,"bg_ebg_trans: got invalid pixmap from root-window, ignoring...\n");
 #endif
     }
