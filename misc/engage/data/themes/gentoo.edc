@@ -272,13 +272,13 @@ collections {
         in, 0.15 0.0;
       }
       program {
-        name, "engage_icon_mouse_down";
+        name, "engage_icon_mouse_down2";
         signal, "mouse,clicked,2";
         source, "background";
         action, SIGNAL_EMIT "engage,window,minimize" "";
       }
       program {
-        name, "engage_icon_mouse_down";
+        name, "engage_icon_mouse_up";
         signal, "mouse,up,1";
         source, "background";
         action, ACTION_STOP;

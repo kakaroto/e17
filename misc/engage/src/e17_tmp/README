@@ -1,0 +1,5 @@
+e17 code snippet was here, but got moved up due to compiler incompatibilities with sibdirs in make.
+the files are:
+     e_apps.c  e_file.c  e_menu.h    e_object.h
+e.h  e_apps.h  e_file.h  e_object.c  e_path.h
+

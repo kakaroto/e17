@@ -9,7 +9,7 @@
 #include <stdlib.h>
 #include <stdio.h>
 
-#include "e17_tmp/e.h"
+#include "e.h"
 
 #define ARROW_SPACE 6
 #define ARROW_SPACE_DOUBLE 12 /* ARROW_SPACE * 2 is less efficient */
