@@ -159,16 +159,16 @@ static bool pop3_check (MailBox *mb)
 	char *host;
 	int port;
 
-	if (mailbox_property_get (mb, "server")) {
-		fprintf (stderr, "[pop3] already connected!\n");
-		return false;
-	}
-
 	host = mailbox_property_get (mb, "host"),
 	port = (int) mailbox_property_get (mb, "port");
 
 	assert (host);
 	assert (port);
+
+	if (mailbox_property_get (mb, "server")) {
+		fprintf (stderr, "[pop3] already connected to '%s'\n", host);
+		return false;
+	}
 
 #ifdef HAVE_OPENSSL
 	if (mailbox_property_get (mb, "ssl"))

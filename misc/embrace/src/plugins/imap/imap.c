@@ -158,16 +158,16 @@ static bool imap_check (MailBox *mb)
 	char *host;
 	int port;
 
-	if (mailbox_property_get (mb, "server")) {
-		fprintf (stderr, "[imap] already connected!\n");
-		return false;
-	}
-
 	host = mailbox_property_get (mb, "host"),
 	port = (int) mailbox_property_get (mb, "port");
 
 	assert (host);
 	assert (port);
+
+	if (mailbox_property_get (mb, "server")) {
+		fprintf (stderr, "[imap] already connected to '%s'\n", host);
+		return false;
+	}
 
 #ifdef HAVE_OPENSSL
 	if ((int) mailbox_property_get (mb, "ssl"))
