@@ -172,9 +172,9 @@ interp_return_key(void *data, const char *str)
             entrance_auth_set_pass(session->auth, str);
             if (!entrance_session_auth_user(session))
             {
+               session->authed = 1;
                edje_object_signal_emit(e->edje.o, "EntranceUserAuthSuccess",
                                        "");
-               session->authed = 1;
             }
             else
             {
