@@ -349,10 +349,10 @@ feh_draw_filename (winwidget w)
   imlib_context_set_direction (IMLIB_TEXT_TO_RIGHT);
   imlib_context_set_color (0, 0, 0, 255);
   imlib_context_set_blend(1);
+  imlib_context_set_drawable (w->bg_pmap);
 
   /* Work out how high the font is */
   imlib_get_text_size (w->file->filename, &tw, &th);
-  printf("Printing %s\n", w->file->filename);
 
   im = imlib_create_image (tw, th);
   if (!im)
@@ -364,9 +364,11 @@ feh_draw_filename (winwidget w)
 
   imlib_text_draw (0, 0, w->file->filename);
 
-  imlib_context_set_drawable (w->win);
   imlib_render_image_on_drawable (0, 0);
 
   imlib_free_image_and_decache ();
   imlib_context_set_image(w->im);
+
+  XSetWindowBackgroundPixmap (disp, w->win, w->bg_pmap);
+  XClearArea (disp, w->win, 0, 0, tw, th, False);
 }

@@ -239,7 +239,7 @@ check_options (void)
       opt.multiwindow = 0;
     }
 
-  if (opt.draw_filename && !opt.full_screen)
+  if ( 0 && opt.draw_filename && !opt.full_screen)
     {
       weprintf
 	("Filename drawing is reserved for full screen mode.");
