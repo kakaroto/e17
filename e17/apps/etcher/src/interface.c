@@ -47,6 +47,7 @@ create_toplevel (void)
   GtkWidget *separator3;
   GtkWidget *undo1;
   GtkWidget *redo1;
+  GtkWidget *etchings1;
   GtkWidget *help1;
   GtkWidget *help1_menu;
   GtkAccelGroup *help1_menu_accels;
@@ -471,6 +472,13 @@ create_toplevel (void)
   gtk_widget_add_accelerator (redo1, "activate", accel_group,
                               GDK_r, GDK_CONTROL_MASK,
                               GTK_ACCEL_VISIBLE);
+
+  etchings1 = gtk_menu_item_new_with_label (_("Etchings"));
+  gtk_widget_ref (etchings1);
+  gtk_object_set_data_full (GTK_OBJECT (toplevel), "etchings1", etchings1,
+                            (GtkDestroyNotify) gtk_widget_unref);
+  gtk_widget_show (etchings1);
+  gtk_container_add (GTK_CONTAINER (menubar1), etchings1);
 
   help1 = gtk_menu_item_new_with_label (_("Help"));
   gtk_widget_ref (help1);
@@ -2264,6 +2272,9 @@ create_toplevel (void)
   gtk_signal_connect (GTK_OBJECT (redo1), "activate",
                       GTK_SIGNAL_FUNC (on_redo1_activate),
                       NULL);
+  gtk_signal_connect (GTK_OBJECT (etchings1), "activate",
+                      GTK_SIGNAL_FUNC (on_etchings1_activate),
+                      NULL);
   gtk_signal_connect (GTK_OBJECT (about1), "activate",
                       GTK_SIGNAL_FUNC (on_about1_activate),
                       NULL);
@@ -2504,6 +2515,9 @@ create_preferences (void)
   GtkWidget *entry1;
   GtkWidget *button2;
   GtkWidget *button1;
+  GtkWidget *frame12;
+  GtkWidget *vbox10;
+  GtkWidget *splash;
   GtkWidget *dialog_action_area2;
   GtkWidget *hbuttonbox3;
   GtkWidget *ok;
@@ -2704,6 +2718,29 @@ create_preferences (void)
                             (GtkDestroyNotify) gtk_widget_unref);
   gtk_widget_show (button1);
   gtk_box_pack_start (GTK_BOX (vbox9), button1, FALSE, FALSE, 0);
+
+  frame12 = gtk_frame_new (_("Miscellaneous"));
+  gtk_widget_ref (frame12);
+  gtk_object_set_data_full (GTK_OBJECT (preferences), "frame12", frame12,
+                            (GtkDestroyNotify) gtk_widget_unref);
+  gtk_widget_show (frame12);
+  gtk_box_pack_start (GTK_BOX (vbox8), frame12, FALSE, TRUE, 0);
+  gtk_container_set_border_width (GTK_CONTAINER (frame12), 4);
+
+  vbox10 = gtk_vbox_new (FALSE, 4);
+  gtk_widget_ref (vbox10);
+  gtk_object_set_data_full (GTK_OBJECT (preferences), "vbox10", vbox10,
+                            (GtkDestroyNotify) gtk_widget_unref);
+  gtk_widget_show (vbox10);
+  gtk_container_add (GTK_CONTAINER (frame12), vbox10);
+  gtk_container_set_border_width (GTK_CONTAINER (vbox10), 5);
+
+  splash = gtk_check_button_new_with_label (_("Show splashscreen"));
+  gtk_widget_ref (splash);
+  gtk_object_set_data_full (GTK_OBJECT (preferences), "splash", splash,
+                            (GtkDestroyNotify) gtk_widget_unref);
+  gtk_widget_show (splash);
+  gtk_box_pack_start (GTK_BOX (vbox10), splash, FALSE, FALSE, 0);
 
   dialog_action_area2 = GTK_DIALOG (preferences)->action_area;
   gtk_object_set_data (GTK_OBJECT (preferences), "dialog_action_area2", dialog_action_area2);

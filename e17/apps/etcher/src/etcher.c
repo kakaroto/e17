@@ -10,69 +10,67 @@
 #include <stdio.h>
 #include <stdlib.h>
 
+#include "globals.h"
 #include "interface.h"
-#include "support.h"
 #include "preferences.h"
 #include "recent.h"
-#include "globals.h"
+#include "support.h"
+#include "workspace.h"
 
-GtkWidget *main_win;
-GdkVisual *gdk_vis = NULL;
+GtkWidget   *main_win;
+GdkVisual   *gdk_vis = NULL;
 GdkColormap *gdk_cmap = NULL;
+char        *load_file;
 
 int
 main (int argc, char *argv[])
 {
-   int i;
-   
-   no_splash = FALSE;
-
-   for (i=1; i<argc; i++)
-     {
-	if (!strcmp(argv[i], "--no-splash"))
-	  {
-	    no_splash = TRUE;
-	  }
-	else if ((!strcmp(argv[i], "--help")) ||
-		 (!strcmp(argv[i], "-help")) ||
-		 (!strcmp(argv[i], "-h")))
-	  {
-	     printf("Usage: %s [--no-splash] [ebits file]\n", argv[0]);
-	     exit(0);
-	  }
-	else 
-	  {
-	     load_file = argv[i];
-	     no_splash = TRUE;
-	  }
-     }
+  int i;
+  
+  pref_enable_splashscreen(TRUE);
+  
+  for (i=1; i<argc; i++)
+    {
+      if (!strcmp(argv[i], "--no-splash"))
+	{
+	  pref_enable_splashscreen(FALSE);
+	}
+      else if ((!strcmp(argv[i], "--help")) ||
+	       (!strcmp(argv[i], "-help")) ||
+	       (!strcmp(argv[i], "-h")))
+	{
+	  printf("Usage: %s [--no-splash] [ebits file]\n", argv[0]);
+	  exit(0);
+	}
+      else 
+	{
+	  pref_add_file(argv[i]);
+	  pref_enable_splashscreen(FALSE);
+	}
+    }
 
 #ifdef ENABLE_NLS
    bindtextdomain (PACKAGE, PACKAGE_LOCALE_DIR);
    textdomain (PACKAGE);
 #endif
 
-   gtk_set_locale ();
+   gtk_set_locale();
    gtk_init (&argc, &argv);
 
-   if (!pref_init())
-     {
-       pref_defaults();
-     }
+   if (!pref_exists())
+     pref_set_defaults();
 
-   view_evas = evas_new();
-   if (render_method == 1)
-     evas_set_output_method(view_evas, RENDER_METHOD_3D_HARDWARE);
-   else if (render_method == 0)
-     evas_set_output_method(view_evas, RENDER_METHOD_ALPHA_SOFTWARE);
+   pref_init();
+
+   workspace_init();
 
    {
      Visual *vis;
      Colormap cmap;
      
-     vis = evas_get_optimal_visual(view_evas, GDK_WINDOW_XDISPLAY(GDK_ROOT_PARENT()));
+     vis = evas_get_optimal_visual(workspace_get_evas(), GDK_WINDOW_XDISPLAY(GDK_ROOT_PARENT()));
      gdk_vis = gdkx_visual_get(XVisualIDFromVisual(vis));
-     cmap = evas_get_optimal_colormap(view_evas, GDK_WINDOW_XDISPLAY(GDK_ROOT_PARENT()));
+     cmap = evas_get_optimal_colormap(workspace_get_evas(), GDK_WINDOW_XDISPLAY(GDK_ROOT_PARENT()));
      gdk_cmap = gdkx_colormap_get(cmap);
      /* workaround for bug in gdk - well oversight in api */
      ((GdkColormapPrivate *)gdk_cmap)->visual = gdk_vis;
