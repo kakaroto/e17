@@ -43,7 +43,11 @@
 
  <abstract>
   <para>
-  This book is a tutorial on the use of the EWL (Enlightened Widget Library).
+  A developers guide to the Enlightened Widget Library (EWL). This book
+  attempts to show how to use the EWL ranging from simply creating a new
+  window to writing a full video player. Along with introducing the EWL the
+  book aims to serve as a complete reference to the library including with
+  code examples for each of the different widgets.
   </para>
  </abstract>
 </bookinfo>
