@@ -57,6 +57,21 @@ efsd_stack_new(void)
 
 
 void       
+efsd_stack_free(EfsdStack *s, EfsdFunc free_func)
+{
+  D_ENTER;
+
+  if (!s)
+    D_RETURN;
+
+  efsd_list_free(s->stack, free_func);
+  FREE(s);
+  
+  D_RETURN;
+}
+
+
+void       
 efsd_stack_push(EfsdStack *s, void *data)
 {
   D_ENTER;

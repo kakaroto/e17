@@ -25,9 +25,12 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 #ifndef efsd_stack_h
 #define efsd_stack_h
 
+#include <efsd_list.h>
+
 typedef struct efsd_stack EfsdStack;
 
 EfsdStack *efsd_stack_new(void);
+void       efsd_stack_free(EfsdStack *s, EfsdFunc free_func);
 void       efsd_stack_push(EfsdStack *s, void *data);
 void      *efsd_stack_pop(EfsdStack *s);
 void      *efsd_stack_top(EfsdStack *s);

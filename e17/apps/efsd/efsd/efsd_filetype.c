@@ -85,8 +85,7 @@ typedef enum efsd_magic_test
   EFSD_MAGIC_TEST_SMALLER   =  2,
   EFSD_MAGIC_TEST_LARGER    =  3,
   EFSD_MAGIC_TEST_AND       =  4,
-  EFSD_MAGIC_TEST_NOTAND    =  5,
-  EFSD_MAGIC_TEST_PATTERN   =  6
+  EFSD_MAGIC_TEST_NOTAND    =  5
 }
 EfsdMagicTest;
 
@@ -391,22 +390,12 @@ filetype_magic_test_to_xml(xmlNodePtr parent_node, EfsdMagic *em)
     case EFSD_MAGIC_TEST_NOTAND:
       xmlSetProp(node, "type", "nand");
       break;
-    case EFSD_MAGIC_TEST_PATTERN:
-      xmlSetProp(node, "type", "pattern");
-      break;
     default:
       D("Not setting test type %i.\n", em->test);
     }
   
-  /* Write magic offset into string, if it is not
-     a filename pattern test.
-  */
-  
-  if (em->type != EFSD_MAGIC_TEST_PATTERN)
-    {
-      snprintf(s, MAXPATHLEN, "%u", em->offset);
-      xmlNewChild(node, NULL, "offset", s);
-    }
+  snprintf(s, MAXPATHLEN, "%u", em->offset);
+  xmlNewChild(node, NULL, "offset", s);
 
   /* Write the magic value itself: */
 
@@ -662,10 +651,6 @@ filetype_sax_callback_start_element(void *user_data, const xmlChar *name,
 		{
 		  node->test = EFSD_MAGIC_TEST_NOTAND;
 		}
-	      else if (!strcmp(attr_val, "pattern"))
-		{
-		  node->test = EFSD_MAGIC_TEST_PATTERN;
-		}
 	      else
 		{
 		  D("parser warning -- unknown test type '%s'\n", attr_val);
@@ -896,6 +881,7 @@ filetype_magic_load_xml(const char *filename, EfsdMagic *magic_root_node,
 {
   xmlSAXHandler         sax;
   EfsdXmlParserContext  ctxt;
+  int                   result;
 
   D_ENTER;
 
@@ -917,9 +903,12 @@ filetype_magic_load_xml(const char *filename, EfsdMagic *magic_root_node,
   ctxt.state_stack = efsd_stack_new();
   ctxt.node_stack = efsd_stack_new();
 
-  D("Launching SAX\n");
+  result = xmlSAXUserParseFile(&sax, &ctxt, filename);
 
-  D_RETURN_(xmlSAXUserParseFile(&sax, &ctxt, filename));
+  efsd_stack_free(ctxt.state_stack, NULL);
+  efsd_stack_free(ctxt.node_stack, NULL);
+
+  D_RETURN_(result);
 }
 
 
@@ -1102,14 +1091,10 @@ filetype_magic_test_perform(EfsdMagic *em, FILE *f)
   if (!em || !f)
     D_RETURN_(NULL);
 
-  /* Seek to the magic value in the file, unless we only check
-     the file name. */
+  /* Seek to the magic value in the file */
 
-  if (em->test != EFSD_MAGIC_TEST_PATTERN)
-    {
-      if (fseek(f, em->offset, SEEK_SET) < 0)
-	D_RETURN_(NULL);
-    }
+  if (fseek(f, em->offset, SEEK_SET) < 0)
+    D_RETURN_(NULL);
 
   /* When no magic value is given, the test automatically passes. */
 
@@ -1311,25 +1296,19 @@ filetype_magic_test_perform(EfsdMagic *em, FILE *f)
 	int   i;
 	char  s[MAXPATHLEN];
 
-	if (em->test == EFSD_MAGIC_TEST_PATTERN)
+	for (i = 0; (i < em->value_len) && (i < MAXPATHLEN); i++)
 	  {
+	    if ((s[i] = (char)fgetc(f)) == EOF)
+	      D_RETURN_(NULL);
 	  }
-	else
+	
+	/* Fixme: add remaining string tests. */
+	
+	if (memcmp(s, em->value, em->value_len) == 0)
 	  {
-	    for (i = 0; (i < em->value_len) && (i < MAXPATHLEN); i++)
-	      {
-		if ((s[i] = (char)fgetc(f)) == EOF)
-		  D_RETURN_(NULL);
-	      }
-	    
-	    /* Fixme: add remaining string tests. */
-	    
-	    if (memcmp(s, em->value, em->value_len) == 0)
-	      {
-		D("String test for '%s', len = %i succeeded.\n", (char*)em->value, em->value_len);
-		D_RETURN_(em->filetype);
-	      }
-	  }	
+	    D("String test for '%s', len = %i succeeded.\n", (char*)em->value, em->value_len);
+	    D_RETURN_(em->filetype);
+	  }
       }
       break;
     default:
