@@ -51,10 +51,14 @@ void        ewl_widget_show_handler(void    *object,
 void        ewl_widget_hide_handler(void    *object,
                                     char    *type,
                                     EwlHash *params);
+void        ewl_widget_resize_handler(void    *object,
+                                      char    *type,
+                                      EwlHash *params);
 
-/* WIDGET SHOW/HIDE FUNCTIONS */
+/* WIDGET SHOW/HIDE/RESIZE FUNCTIONS */
 void        ewl_widget_show(EwlWidget *widget);
 void        ewl_widget_hide(EwlWidget *widget);
+void        ewl_widget_resize(EwlWidget *widget);
 
 /* WIDGET RECT FUNCTIONS */
 EwlRect    *ewl_widget_get_rect(EwlWidget *widget);

@@ -27,6 +27,10 @@ Evas       ewl_window_get_evas(EwlWidget *widget);
 /* WINDOW MISC FUNCTIONS */
 EwlWidget *ewl_window_find_by_evas(Window xwin);
 
+/* WINDOW HANDLERS */
+void       ewl_window_resize_handler(void    *object,
+                                     char    *htype,
+                                     EwlHash *params);
 /* WINDOW EVENT CALLBACKS */
 void       ewl_window_configure_callback(void     *object,
                                        EwlEvent *event,

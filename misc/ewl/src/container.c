@@ -11,7 +11,7 @@ void       ewl_container_init(EwlWidget *widget)
 {
 	EwlContainer *container = EWL_CONTAINER(widget);
 	ewl_widget_init(widget);
-	ewl_set(widget, "/object/type", ewl_string_dup("EwlContainer"));
+	ewl_object_set_type(widget, "EwlContainer");
 	ewl_widget_set_flag(widget, "is_container", TRUE);
 	
 	container->children = ewl_list_new();

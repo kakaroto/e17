@@ -32,6 +32,9 @@ EwlObject *ewl_object_new();
 void       ewl_object_init(EwlObject *object);
 void       ewl_object_free(EwlObject *object);
 
+/* OBJECT TYPE FUNCTIONS */
+void       ewl_object_set_type(void *object, char *type);
+char      *ewl_object_get_type(void *object);
 
 /* OBJECT CALLBACK/EVENT FUNCTIONS */
 void       ewl_callback_add(void        *object,
@@ -42,6 +45,7 @@ void       ewl_callback_push(void        *object,
                              char        *type,
                              EwlCallback  callback,
                              void        *data);
+EwlList   *ewl_callback_find(void *object, char *type);
 void       ewl_object_handle_event(void *object, EwlEvent *event);
 
 

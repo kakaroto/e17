@@ -51,7 +51,7 @@ EwlWidget   *ewl_widget_new()
 void        ewl_widget_init(EwlWidget *widget)
 {
 	ewl_object_init(EWL_OBJECT(widget));
-	ewl_set(widget, "/object/type", ewl_string_dup("EwlWidget"));
+	ewl_object_set_type(widget, "EwlWidget");
 	/*ewl_widget_set_flag(widget, "realized", FALSE);
 	ewl_widget_set_flag(widget, "visible", FALSE);*/
 
@@ -166,6 +166,53 @@ void        ewl_widget_hide_handler(void    *object,
 	return;
 }
 
+void        ewl_widget_resize(EwlWidget *widget)
+{
+	EwlHandler handler = ewl_handler_get(widget, "/widget/resize");
+	EwlHash *params;
+	if (handler)	{
+		params = ewl_hash_new();
+		ewl_hash_set(params, "widget", widget);
+		handler(widget,"/widget/resize", params);
+		ewl_hash_free(params);
+	}
+}
+
+void        ewl_widget_resize_handler(void    *object,
+                                    char    *type,
+                                    EwlHash *params)
+{
+	EwlWidget *widget = EWL_WIDGET(ewl_hash_get(params,"widget"));
+	EwlRect   *rect = ewl_widget_get_rect(widget),
+	          *req  = ewl_widget_get_requested_rect(widget),
+	          *min  = ewl_widget_get_min_rect(widget),
+	          *max  = ewl_widget_get_max_rect(widget);
+
+	UNUSED(object);
+	UNUSED(type);
+
+	if (RECT_COMPARE(rect,req))	{
+		ewl_widget_set_requested_rect(widget,NULL);
+		return;
+	}
+
+	if (ewl_widget_is_realized(widget) && ewl_widget_is_visible(widget)) {
+		ewl_widget_set_rect(widget,req);
+		ewl_widget_set_requested_rect(widget,NULL);
+
+		evas_resize(ewl_widget_get_evas(widget),
+		          ewl_widget_get_background(widget), rect->w, rect->h);
+		if (!ewl_widget_get_flag(widget, "tiled_background")) {
+			evas_set_image_fill(ewl_widget_get_evas(widget),
+			                    ewl_widget_get_background(widget),
+		                        0, 0, rect->w, rect->h);
+		}
+	}
+	
+	ewl_event_queue_new("resize", widget);
+	return;
+}
+
 /* WIDGET RECT/PADDING FUNCTIONS */
 EwlRect    *ewl_widget_get_rect(EwlWidget *widget)
 {
@@ -174,6 +221,7 @@ EwlRect    *ewl_widget_get_rect(EwlWidget *widget)
 
 void        ewl_widget_set_rect(EwlWidget *widget, EwlRect *rect)
 {
+	ewl_rect_free(ewl_widget_get_rect(widget));
 	ewl_set(widget, "/widget/rect", rect);
 	/* FIXME -- add evas stuff here */
 	return;
@@ -187,6 +235,7 @@ EwlRect    *ewl_widget_get_requested_rect(EwlWidget *widget)
 
 void        ewl_widget_set_requested_rect(EwlWidget *widget, EwlRect *rect)
 {
+	ewl_rect_free(ewl_widget_get_requested_rect(widget));
 	ewl_set(widget, "/widget/req_rect", rect);
 	/* FIXME -- add evas stuff here */
 	return;
@@ -200,6 +249,7 @@ EwlRect    *ewl_widget_get_min_rect(EwlWidget *widget)
 
 void        ewl_widget_set_min_rect(EwlWidget *widget, EwlRect *rect)
 {
+	ewl_rect_free(ewl_widget_get_min_rect(widget));
 	ewl_set(widget, "/widget/min_rect", rect);
 	/* FIXME -- add evas stuff here */
 	return;
@@ -213,6 +263,7 @@ EwlRect    *ewl_widget_get_max_rect(EwlWidget *widget)
 
 void        ewl_widget_set_max_rect(EwlWidget *widget, EwlRect *rect)
 {
+	ewl_rect_free(ewl_widget_get_max_rect(widget));
 	ewl_set(widget, "/widget/max_rect", rect);
 	/* FIXME -- add evas stuff here */
 	return;
@@ -302,9 +353,19 @@ void        ewl_widget_set_background(EwlWidget   *widget,
                                       char         tiled)
 {
 	if (ewl_widget_is_realized(widget)&&widget->background)	{
-		evas_del_object(ewl_widget_get_evas(widget), widget->background);
+		evas_del_object(ewl_widget_get_evas(widget),
+		                ewl_widget_get_background(widget));
 	}
 	widget->background = evas_object;
+	if (ewl_widget_is_realized(widget) && 
+	    (ewl_callback_find(widget, "mousedown") ||
+	     ewl_callback_find(widget, "mousemove") ||
+	     ewl_callback_find(widget, "mouseup")) )  {
+		evas_set_pass_events(ewl_widget_get_evas(widget), evas_object, FALSE);
+	} else if (ewl_widget_is_realized(widget)) {
+		evas_set_pass_events(ewl_widget_get_evas(widget), evas_object, TRUE);
+	}
+
 	ewl_widget_set_flag(widget, "tiled_background", tiled);
 	/* FIXME -- add evas config stuff here */
 

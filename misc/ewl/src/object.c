@@ -77,6 +77,21 @@ void       ewl_object_free(EwlObject *object)
 	return;
 }
 
+
+void       ewl_object_set_type(void *object, char *type)
+{
+	char *old_type = ewl_object_get_type(object);
+	if (old_type) free(old_type);
+	ewl_set(object, "/object/type", ewl_string_dup(type));
+	return;
+}
+
+char      *ewl_object_get_type(void *object)
+{
+	return ewl_string_dup(ewl_get(object, "/object/type"));
+}
+
+
 void       ewl_callback_add_handler(void        *object,
                                     char        *handler_type,
                                     EwlHash     *params)
@@ -160,6 +175,11 @@ void       ewl_callback_push(void        *object,
 	}
 }
 
+EwlList   *ewl_callback_find(void *object, char *type)
+{
+	return ewl_hash_get(EWL_OBJECT(object)->event_callbacks, type);
+}
+
 void       ewl_object_handle_event(void *object, EwlEvent *event)
 {
 	EwlList     *list = ewl_hash_get(EWL_OBJECT(object)->event_callbacks,
@@ -173,9 +193,9 @@ void       ewl_object_handle_event(void *object, EwlEvent *event)
 			callback_data->callback(object, event, callback_data->data);
 		}
 	} else {
-		fprintf(stderr,"DEBUG: ewl_object_handle_event(): didn't find "
+		/*fprintf(stderr,"DEBUG: ewl_object_handle_event(): didn't find "
 		        "callback list for type \"%s\".\n",
-		         ewl_event_get_type(event));
+		         ewl_event_get_type(event));*/
 	}
 	ewl_event_free(event);
 	return;

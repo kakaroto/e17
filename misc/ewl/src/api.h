@@ -8,6 +8,7 @@
 #include "widget.h"
 #include "translators.h"
 #include "container.h"
+#include "box.h"
 #include "x.h"
 #include "window.h"
 

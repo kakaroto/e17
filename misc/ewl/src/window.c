@@ -12,14 +12,23 @@ void       ewl_window_init(EwlWidget *widget)
 {
 	EwlWindow *window = EWL_WINDOW(widget);
 	ewl_container_init(widget);
-	ewl_set(widget, "/object/type", ewl_string_dup("EwlWindow"));
+	ewl_object_set_type(widget, "EwlWindow");
 
-	ewl_callback_add(widget, "configure", ewl_window_configure_callback, NULL);
-	ewl_callback_add(widget, "expose", ewl_window_expose_callback, NULL);
-	ewl_callback_push(widget, "realize", ewl_window_realize_callback, NULL);
-	ewl_callback_push(widget, "unrealize", ewl_window_unrealize_callback, NULL);
-	ewl_callback_add(widget, "show", ewl_window_show_callback, NULL);
-	ewl_callback_add(widget, "hide", ewl_window_hide_callback, NULL);
+	ewl_handler_set(widget, "/widget/resize",
+	                ewl_window_resize_handler);
+
+	ewl_callback_add(widget, "configure",
+	                 ewl_window_configure_callback, NULL);
+	ewl_callback_add(widget, "expose",
+	                 ewl_window_expose_callback, NULL);
+	ewl_callback_push(widget, "realize",
+	                  ewl_window_realize_callback, NULL);
+	ewl_callback_push(widget, "unrealize",
+	                  ewl_window_unrealize_callback, NULL);
+	ewl_callback_add(widget, "show",
+	                 ewl_window_show_callback, NULL);
+	ewl_callback_add(widget, "hide",
+	                 ewl_window_hide_callback, NULL);
 
 	window->evas = evas_new();
 	ewl_set(widget, "/window/title", ewl_string_dup("Untitled Window"));
@@ -61,6 +70,26 @@ EwlWidget *ewl_window_find_by_xwin(Window xwin)
 }
 
 
+void       ewl_window_resize_handler_cb(EwlWidget *widget, void *data)
+{
+	EwlWidget *parent = EWL_WIDGET(data);
+	ewl_widget_set_requested_rect(widget, ewl_widget_get_rect(parent));
+	ewl_widget_resize(widget);
+	return;
+}
+
+void       ewl_window_resize_handler(void    *object,
+                                     char    *htype,
+                                     EwlHash *params)
+{
+	UNUSED(htype);
+	UNUSED(params);
+	ewl_container_foreach(EWL_WIDGET(object),
+	                      ewl_window_resize_handler_cb,
+	                      object);
+}
+
+
 void       ewl_window_configure_callback(void     *object,
                                        EwlEvent *event,
                                        void     *data)
@@ -70,7 +99,7 @@ void       ewl_window_configure_callback(void     *object,
 	int i, *t, w, h, *pad;
 	UNUSED(data);
 
-	fprintf(stderr,"window configure\n");
+	/*fprintf(stderr,"window configure\n");*/
 	t = ewl_event_get_data(event, "width");
 	if (t) w = *t; else w = 320;
 	t = ewl_event_get_data(event, "height");
@@ -98,7 +127,7 @@ void       ewl_window_configure_callback(void     *object,
 		                    h - (pad[1]+pad[3]));
 	}
 	ewl_widget_set_layer(widget, 0);
-	ewl_event_queue_new("resize", widget);
+	ewl_widget_resize(widget);
 	return;
 }
 
@@ -110,7 +139,7 @@ void       ewl_window_expose_callback(void     *object,
 	EwlRect *expose_rect = ewl_event_get_data(event, "rect");
 	UNUSED(data);
 	
-	fprintf(stderr,"window expose {%d,%d,%d,%d}\n", expose_rect->x, expose_rect->y, expose_rect->w, expose_rect->h);
+	/*fprintf(stderr,"window expose {%d,%d,%d,%d}\n", expose_rect->x, expose_rect->y, expose_rect->w, expose_rect->h);*/
 	evas_update_rect(window->evas, expose_rect->x, expose_rect->y,
 	                               expose_rect->w, expose_rect->h);
 
@@ -144,7 +173,7 @@ void       ewl_window_realize_callback(void     *object,
 	UNUSED(event);
 	UNUSED(data);
 
-	fprintf(stderr,"window realize %p\n", object);
+	/*fprintf(stderr,"window realize %p\n", object);*/
 
 	if (ewl_widget_is_realized(widget))
 		return;

@@ -19,13 +19,14 @@ void     ewl_rect_set(EwlRect *r, int *x, int *y, int *w, int *h);
 void     ewl_rect_get(EwlRect *r, int *x, int *y, int *w, int *h);
 void     ewl_rect_set_rect(EwlRect *dst, EwlRect *src);
 
+
 void     ewl_rect_dump(EwlRect *r);
 
 
 #define IN_RECT(r,tx,ty) (r&&(((r->x)<=tx)&&((r->y)<=ty)&&(tx<=(r->x)+(r->w))&&(ty<=(r->y)+(r->h))))
 #define IN_RECT_NO_OFFSET(r,tx,ty) (r&&((tx>=0)&&(ty>=0)&&(tx<=(r->w))&&(ty<=(r->h))))
 
-
+#define RECT_COMPARE(a,b) ((a&&b) && (a->x==b->x) && (a->y==b->y) && (a->w==b->w) && (a->h&&b->h))
 
 /* EWL_RRECT */
 enum _EwlRRectEnum	{

@@ -10,13 +10,18 @@ int main(int argc, char *argv[])
 {
 	EwlWidget *win = ewl_window_new("toplevel"),
 	          *box = ewl_hbox_new(FALSE),
+	          *box2 = ewl_vbox_new(FALSE),
 	          *btn;
 	UNUSED(btn);
 	ewl_init(&argc, &argv);
 
-	ewl_container_insert(win,box);
-	ewl_widget_show(box);
 	ewl_callback_add(win, "mousedown", mousedown_cb, NULL);
+
+	ewl_container_insert(win,box);
+	ewl_container_insert(box,box2);
+	ewl_widget_show(box2);
+	ewl_widget_show(box);
+
 	ewl_hash_dump(EWL_OBJECT(box)->data);
 	ewl_widget_show(win);
 	
@@ -27,7 +32,12 @@ int main(int argc, char *argv[])
 
 void  mousedown_cb(void *object, EwlEvent *ev, void *data)
 {
-	Evas_Object obj = evas_add_image_from_file(ewl_widget_get_evas(EWL_WIDGET(object)), "/home/pabs/dl/images/anusmcgee.jpg");
-	evas_show(ewl_widget_get_evas(EWL_WIDGET(object)), obj);
+	int *x = ewl_event_get_data(ev, "x"),
+	    *y = ewl_event_get_data(ev, "y"),
+		*b = ewl_event_get_data(ev, "button");
+	UNUSED(object);
+	UNUSED(data);
+	fprintf(stderr,"mousedown example:  button %d at (%d, %d).\n",
+	        *b, *x, *y);
 	return;
 }
