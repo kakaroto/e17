@@ -35,6 +35,24 @@ install: all
 	install -c -m 644 $(PCF).gz "$(DESTDIR)/$(FONTDIR)/"
 	test -d "$(DESTDIR)/$(ALIASDIR)/" || mkdir -p "$(DESTDIR)/$(ALIASDIR)/"
 	install -c -m 644 $(ALIAS) "$(DESTDIR)/$(ALIASDIR)/"
+	(cd "$(DESTDIR)/$(FONTDIR)" && mkfontdir )
+	@echo ""
+	@echo "If you are running the xfont server you should restart it"
+	@echo "Regardless, you should run \"xset fp rehash\" as the user"
+	@echo "who is running the session."
+	@echo "You can verify that this all worked by running:"
+	@echo "xlsfonts | fgrep nexus"
+
+uninstall:
+	rm -f "$(DESTDIR)/$(FONTDIR)/$(PCF).gz"
+	rm -f "$(DESTDIR)/$(ALIASDIR)/$(ALIAS) "
+	(cd "$(DESTDIR)/$(FONTDIR)" && mkfontdir )
+	@echo ""
+	@echo "If you are running the xfont server you should restart it"
+	@echo "Regardless, you should run \"xset fp rehash\" as the user"
+	@echo "who is running the session."
+	@echo "You can verify that this all worked by running:"
+	@echo "xlsfonts | fgrep nexus"
 
 distclean-1:
 	rm -rf "$(PACKAGE)-$(VERSION)/" "$(PACKAGE)-$(VERSION).tar" \

@@ -1,3 +1,10 @@
+xfonts-nexus (0.0.2-2) unstable; urgency=low
+
+  * Has a proper font name. closes: Bug#97624
+    
+
+ -- Simon Horman <horms@vergenet.net>  Sat, 25 May 2002 18:13:10 +1000
+
 xfonts-nexus (0.0.2-1) unstable; urgency=low
 
   * Updated to Nexus 0.0.2 which should work
