@@ -9,7 +9,15 @@
 
 static Display     *disp = NULL;
 static Window       win = 0;
-static Window       real_win = 0;
+
+static int          window_num = 0;     /* For window list */
+static Epplet_window *windows = NULL;   /* List of windows to loop though */
+
+static Epplet_window context_win;       /* Current context win */
+static int          window_stack_pos;   /* For context changes */
+static Epplet_window window_stack[20];  /* For context changes */
+static Epplet_window mainwin;           /* Always the main epplet window */
+
 static ImlibData   *id = NULL;
 static Display     *dd = NULL;
 static Window       comms_win = 0;
@@ -20,7 +28,6 @@ static XContext     xid_context = 0;
 static int          win_w = 0;
 static int          win_h = 0;
 static Pixmap       bg_pmap = 0;
-static Pixmap       bg_mask = 0;
 static Pixmap       bg_bg = 0;
 static char         win_vert = 0;
 
@@ -70,6 +77,10 @@ static void         (*focusout_func) (void *data, Window win) = NULL;
 static void         (*event_func) (void *data, XEvent * ev) = NULL;
 static void         (*comms_func) (void *data, char *s) = NULL;
 static void         (*child_func) (void *data, int pid, int exit_code) = NULL;
+/* For Keeping a list of windows owned by the epplet, to loop through and
+ * do stuff with. */
+static void         Epplet_register_window(Epplet_window win);
+static void         Epplet_unregister_window(Epplet_window win);
 
 #define MWM_HINTS_DECORATIONS         (1L << 1)
 typedef struct _mwmhints
@@ -142,9 +153,14 @@ static void         Epplet_handle_child(int num);
 static void         Epplet_textbox_handle_keyevent(XEvent * ev,
 
 						   Epplet_gadget g);
+static void         Epplet_refresh_backgrounds(void);
 static void         Epplet_textbox_textsize(Epplet_gadget gadget, int *w,
 					    int *h, char *s);
 static void         Epplet_find_instance(char *name);
+/* Redraw all epplet windows (excluding the main epplet window) */
+static void         Epplet_draw_windows(void);
+/* Redraw window win */
+static void         Epplet_draw_window(Epplet_window win);
 
 ImlibData          *
 Epplet_get_imlib_data(void)
@@ -173,6 +189,7 @@ typedef struct gad_general
 {
    GadType             type;
    char                visible;
+   Epplet_window       parent;
 }
 GadGeneral;
 
@@ -205,6 +222,7 @@ Epplet_Init(char *name,
    unsigned long       val;
    char               *msg;
 
+   mainwin = malloc(sizeof(EppWindow));
    w *= 16;
    h *= 16;
    disp = XOpenDisplay(NULL);
@@ -326,15 +344,26 @@ Epplet_Init(char *name,
      }
    free(msg);
 
-   Epplet_background_properties(win_vert);
+   mainwin->w = w;
+   mainwin->h = h;
+   mainwin->win = win;
+   mainwin->bg_pmap = 0;
+   mainwin->bg_bg = 0;
+   mainwin->bg_mask = 0;
+
+   Epplet_register_window(mainwin);
+
+   Epplet_window_push_context(mainwin);
+
+   Epplet_background_properties(win_vert, mainwin);
+
    sa.sa_handler = Epplet_handle_child;
    sa.sa_flags = SA_RESTART;
    sigemptyset(&sa.sa_mask);
    sigaction(SIGCHLD, &sa, (struct sigaction *)0);
 }
 
-Window
-Epplet_create_window(int w, int h, int x, int y, char *title)
+Epplet_window Epplet_create_window(int w, int h, int x, int y, char *title)
 {
    char                s[1024];
    XSetWindowAttributes attr;
@@ -345,13 +374,11 @@ Epplet_create_window(int w, int h, int x, int y, char *title)
    struct utsname      ubuf;
    MWMHints            mwm;
    char               *msg;
-   Window              ret;
+   Epplet_window       ret;
    static GC           gc = 0;
    XGCValues           gcv;
-   static Pixmap       wbg_pmap = 0;
-   static Pixmap       wbg_mask = 0;
-   static Pixmap       wbg_bg = 0;
 
+   ret = malloc(sizeof(EppWindow));
    attr.backing_store = NotUseful;
    attr.override_redirect = False;
    attr.colormap = Imlib_get_colormap(id);
@@ -364,13 +391,13 @@ Epplet_create_window(int w, int h, int x, int y, char *title)
       ExposureMask | FocusChangeMask | PropertyChangeMask |
       VisibilityChangeMask;
 
-   ret = XCreateWindow(disp, DefaultRootWindow(disp), x, y, w, h, 0,
-		       id->x.depth, InputOutput, Imlib_get_visual(id),
-		       CWOverrideRedirect | CWSaveUnder | CWBackingStore |
-		       CWColormap | CWBackPixel | CWBorderPixel |
-		       CWEventMask, &attr);
+   ret->win = XCreateWindow(disp, DefaultRootWindow(disp), x, y, w, h, 0,
+			    id->x.depth, InputOutput, Imlib_get_visual(id),
+			    CWOverrideRedirect | CWSaveUnder | CWBackingStore |
+			    CWColormap | CWBackPixel | CWBorderPixel |
+			    CWEventMask, &attr);
 
-   XSetTransientForHint(disp, ret, win);
+   XSetTransientForHint(disp, ret->win, win);
 
    /* set hints to be borderless */
    mwm.flags = MWM_HINTS_DECORATIONS;
@@ -379,15 +406,15 @@ Epplet_create_window(int w, int h, int x, int y, char *title)
    mwm.inputMode = 0;
    mwm.status = 0;
    a = XInternAtom(disp, "_MOTIF_WM_HINTS", False);
-   XChangeProperty(disp, ret, a, a, 32, PropModeReplace,
+   XChangeProperty(disp, ret->win, a, a, 32, PropModeReplace,
 		   (unsigned char *)&mwm, sizeof(MWMHints) / 4);
 
    /* set the window title , name , class */
-   XStoreName(disp, ret, title);
+   XStoreName(disp, ret->win, title);
    xch = XAllocClassHint();
    xch->res_name = epplet_name;
    xch->res_class = "Epplet_config";
-   XSetClassHint(disp, ret, xch);
+   XSetClassHint(disp, ret->win, xch);
    XFree(xch);
    /* set the size hints */
    sh.flags = PSize | PMinSize | PMaxSize;
@@ -397,7 +424,7 @@ Epplet_create_window(int w, int h, int x, int y, char *title)
    sh.min_height = h;
    sh.max_width = w;
    sh.max_height = h;
-   XSetWMNormalHints(disp, ret, &sh);
+   XSetWMNormalHints(disp, ret->win, &sh);
 
    /* set the client machine name */
    if (!uname(&ubuf))
@@ -407,10 +434,10 @@ Epplet_create_window(int w, int h, int x, int y, char *title)
 	xtp.format = 8;
 	xtp.value = (unsigned char *)s;
 	xtp.nitems = strlen((char *)(xtp.value));
-	XSetWMClientMachine(disp, ret, &xtp);
+	XSetWMClientMachine(disp, ret->win, &xtp);
      }
    /* set the icons name property */
-   XSetIconName(disp, ret, epplet_name);
+   XSetIconName(disp, ret->win, epplet_name);
 
    ESYNC;
 
@@ -426,75 +453,155 @@ Epplet_create_window(int w, int h, int x, int y, char *title)
      }
    free(msg);
 
-   /* Set bg pixmap */
-   if (wbg_pmap)
-      XFreePixmap(disp, bg_pmap);
-   if (wbg_bg)
-      XFreePixmap(disp, bg_bg);
-   if (wbg_mask)
-      XFreePixmap(disp, bg_mask);
-   wbg_pmap = 0;
-   wbg_mask = 0;
-   wbg_bg = 0;
-   Epplet_imageclass_get_pixmaps("EPPLET_BACKGROUND_HORIZONTAL", "normal",
-				 &wbg_bg, &wbg_mask, w, h);
-   wbg_pmap = XCreatePixmap(disp, ret, w, h, id->x.depth);
-   if (!gc)
-      gc = XCreateGC(disp, wbg_pmap, 0, &gcv);
-   XCopyArea(disp, wbg_bg, wbg_pmap, gc, 0, 0, w, h, 0, 0);
-   XSetWindowBackgroundPixmap(disp, ret, wbg_pmap);
-   XShapeCombineMask(disp, ret, ShapeBounding, 0, 0, wbg_mask, ShapeSet);
-   XClearWindow(disp, ret);
+   ret->h = h;
+   ret->w = w;
+   ret->bg_pmap = 0;
+   ret->bg_mask = 0;
+   ret->bg_bg = 0;
 
-   Epplet_window_switch_context(ret);
+   Epplet_register_window(ret);
+
+   Epplet_window_push_context(ret);
+
+   Epplet_background_properties(win_vert, ret);
+
+#if 0
+   Epplet_imageclass_get_pixmaps("EPPLET_BACKGROUND_HORIZONTAL", "normal",
+				 &ret->bg_bg, &ret->bg_mask, w, h);
+   ret->bg_pmap = XCreatePixmap(disp, ret->win, w, h, id->x.depth);
+   if (!gc)
+      gc = XCreateGC(disp, ret->bg_pmap, 0, &gcv);
+   XCopyArea(disp, ret->bg_bg, ret->bg_pmap, gc, 0, 0, w, h, 0, 0);
+   XSetWindowBackgroundPixmap(disp, ret->win, ret->bg_pmap);
+   XShapeCombineMask(disp, ret->win, ShapeBounding, 0, 0, ret->bg_mask,
+		     ShapeSet);
+   XClearWindow(disp, ret->win);
+#endif
 
    return ret;
 }
 
 void
-Epplet_window_show(Window win)
+Epplet_window_show(Epplet_window win)
 {
    XEvent              ev;
 
-   XMapWindow(disp, win);
+   XMapWindow(disp, win->win);
    /* wait for the window to map */
    XMaskEvent(disp, StructureNotifyMask, &ev);
 }
 
 void
-Epplet_window_hide(Window win)
+Epplet_window_hide(Epplet_window win)
 {
    XEvent              ev;
 
-   XUnmapWindow(disp, win);
+   XUnmapWindow(disp, win->win);
    /* wait for the window to unmap */
    XMaskEvent(disp, StructureNotifyMask, &ev);
 }
 
 void
-Epplet_window_destroy(Window win)
+Epplet_window_destroy(Epplet_window win)
 {
    XEvent              ev;
 
-   XDestroyWindow(disp, win);
+   XDestroyWindow(disp, win->win);
    /* wait for the window to be destroyed */
    XMaskEvent(disp, StructureNotifyMask, &ev);
+   Epplet_unregister_window(win);
 }
 
-void
-Epplet_window_switch_context(Window newwin)
+static void
+Epplet_register_window(Epplet_window win)
 {
-   if (real_win != newwin)
+   window_num++;
+   if (windows)
+      windows = realloc(windows, window_num * sizeof(Epplet_window));
+   else
+      windows = malloc(window_num * sizeof(Epplet_window));
+   windows[window_num - 1] = win;
+}
+
+static void
+Epplet_unregister_window(Epplet_window win)
+{
+   int                 i, j;
+
+   for (i = 0; i < window_num; i++)
      {
-	real_win = win;
-	win = newwin;
+	if (windows[i] == win)
+	  {
+	     for (j = i; j < window_num - 1; j++)
+		windows[j] = windows[j + 1];
+	     window_num--;
+	     if (window_num > 0)
+		windows = realloc(windows, window_num * sizeof(Epplet_window));
+	     else
+	       {
+		  free(windows);
+		  windows = NULL;
+	       }
+	  }
      }
 }
 
 void
-Epplet_window_reset_context(void)
+Epplet_window_push_context(Epplet_window newwin)
 {
-   win = real_win;
+   if (window_stack_pos >= 10)
+     {
+	exit(1);
+     }
+   window_stack[window_stack_pos] = newwin;
+   window_stack_pos++;
+   context_win = newwin;
+}
+
+Epplet_window Epplet_window_pop_context(void)
+{
+   window_stack_pos--;
+   if (window_stack_pos < 1)
+     {
+	exit(1);
+     }
+   context_win = window_stack[window_stack_pos - 1];
+   return window_stack[window_stack_pos];
+}
+
+/* Refresh window backgrounds on theme change */
+static void
+Epplet_refresh_backgrounds(void)
+{
+   /* Loop through windows and refresh them */
+   int                 i;
+
+   for (i = 0; i < window_num; i++)
+     {
+	Epplet_window_push_context(windows[i]);
+	Epplet_background_properties(win_vert, windows[i]);
+	Epplet_window_pop_context();
+     }
+}
+
+static void
+Epplet_draw_windows(void)
+{
+   int                 i;
+
+   for (i = 1; i < window_num; i++)
+     {
+	Epplet_draw_window(windows[i]);
+     }
+}
+
+static void
+Epplet_draw_window(Epplet_window win)
+{
+   XSetWindowBackgroundPixmap(disp, win->win, win->bg_pmap);
+   XShapeCombineMask(disp, win->win, ShapeBounding, 0, 0, win->bg_mask,
+		     ShapeSet);
+   XClearWindow(disp, win->win);
 }
 
 void
@@ -597,7 +704,8 @@ Epplet_unremember(void)
    ESYNC;
 }
 
-Window Epplet_get_main_window(void)
+Window
+Epplet_get_main_window(void)
 {
    return win;
 }
@@ -630,10 +738,10 @@ Epplet_imageclass_paste(char *iclass, char *state, Window ww, int x, int y,
 	sscanf(msg, "%x %x", (unsigned int *)&p, (unsigned int *)&m);
 	free(msg);
 	if (!gc)
-	   gc = XCreateGC(disp, win, 0, &gcv);
+	   gc = XCreateGC(disp, context_win->win, 0, &gcv);
 	XSetClipMask(disp, gc, m);
 	XSetClipOrigin(disp, gc, x, y);
-	XCopyArea(disp, p, win, gc, 0, 0, w, h, x, y);
+	XCopyArea(disp, p, context_win->win, gc, 0, 0, w, h, x, y);
 	Esnprintf(s, sizeof(s), "imageclass %s free_pixmap 0x%x", iclass,
 		  (unsigned int)p);
 	ECommsSend(s);
@@ -650,7 +758,7 @@ Epplet_imageclass_get_pixmaps(char *iclass, char *state, Pixmap * p, Pixmap * m,
    XGCValues           gcv;
 
    Esnprintf(s, sizeof(s), "imageclass %s apply_copy 0x%x %s %i %i", iclass,
-	     (unsigned int)win, state, w, h);
+	     (unsigned int)context_win->win, state, w, h);
    ECommsSend(s);
    msg = ECommsWaitForMessage();
    if (msg)
@@ -658,11 +766,11 @@ Epplet_imageclass_get_pixmaps(char *iclass, char *state, Pixmap * p, Pixmap * m,
 	sscanf(msg, "%x %x", (unsigned int *)&pp, (unsigned int *)&mm);
 	free(msg);
 	if (pp)
-	   *p = XCreatePixmap(disp, win, w, h, id->x.depth);
+	   *p = XCreatePixmap(disp, context_win->win, w, h, id->x.depth);
 	else
 	   *p = 0;
 	if (mm)
-	   *m = XCreatePixmap(disp, win, w, h, 1);
+	   *m = XCreatePixmap(disp, context_win->win, w, h, 1);
 	else
 	   *m = 0;
 	if ((*p) && (!gc))
@@ -1609,6 +1717,7 @@ Epplet_create_textbox(char *image, char *contents, int x, int y,
 
    g = malloc(sizeof(GadTextBox));
    g->general.type = E_TEXTBOX;
+   g->general.parent = context_win;
    g->x = x;
    g->y = y;
    g->contents = Estrdup(contents);
@@ -1634,7 +1743,7 @@ Epplet_create_textbox(char *image, char *contents, int x, int y,
       EnterWindowMask | LeaveWindowMask | ButtonPressMask | ButtonReleaseMask |
       KeyPressMask | KeyReleaseMask;
    g->general.visible = 0;
-   g->win = XCreateWindow(disp, win, x, y, g->w, g->h, 0,
+   g->win = XCreateWindow(disp, context_win->win, x, y, g->w, g->h, 0,
 			  id->x.depth, InputOutput, Imlib_get_visual(id),
 			  CWOverrideRedirect | CWSaveUnder | CWBackingStore |
 			  CWColormap | CWBackPixel | CWBorderPixel |
@@ -2008,6 +2117,7 @@ Epplet_create_button(char *label, char *image, int x, int y,
 
    g = malloc(sizeof(GadButton));
    g->general.type = E_BUTTON;
+   g->general.parent = context_win;
    g->x = x;
    g->y = y;
    g->std = Estrdup(std);
@@ -2191,6 +2301,7 @@ Epplet_create_togglebutton(char *label, char *image, int x,
 
    g = malloc(sizeof(GadToggleButton));
    g->general.type = E_TOGGLEBUTTON;
+   g->general.parent = context_win;
    g->x = x;
    g->y = y;
    g->w = w;
@@ -2213,7 +2324,7 @@ Epplet_create_togglebutton(char *label, char *image, int x,
    attr.event_mask = ButtonPressMask | ButtonReleaseMask |
       EnterWindowMask | LeaveWindowMask;
    g->general.visible = 0;
-   g->win = XCreateWindow(disp, win, x, y, w, h, 0,
+   g->win = XCreateWindow(disp, context_win->win, x, y, w, h, 0,
 			  id->x.depth, InputOutput, Imlib_get_visual(id),
 			  CWOverrideRedirect | CWSaveUnder | CWBackingStore |
 			  CWColormap | CWBackPixel | CWBorderPixel |
@@ -2311,13 +2422,15 @@ typedef struct
 }
 GadDrawingArea;
 
-Epplet_gadget Epplet_create_drawingarea(int x, int y, int w, int h)
+Epplet_gadget
+Epplet_create_drawingarea(int x, int y, int w, int h)
 {
    GadDrawingArea     *g;
    XSetWindowAttributes attr;
 
    g = malloc(sizeof(GadDrawingArea));
    g->general.type = E_DRAWINGAREA;
+   g->general.parent = context_win;
    g->x = x;
    g->y = y;
    g->w = w;
@@ -2330,7 +2443,7 @@ Epplet_gadget Epplet_create_drawingarea(int x, int y, int w, int h)
    attr.save_under = False;
    attr.event_mask = 0;
    g->general.visible = 0;
-   g->win = XCreateWindow(disp, win, x, y, w, h, 0,
+   g->win = XCreateWindow(disp, context_win->win, x, y, w, h, 0,
 			  id->x.depth, InputOutput, Imlib_get_visual(id),
 			  CWOverrideRedirect | CWSaveUnder | CWBackingStore |
 			  CWColormap | CWBackPixel | CWBorderPixel |
@@ -2387,6 +2500,7 @@ Epplet_create_hslider(int x, int y, int len, int min, int max,
       len = 9;
    g = malloc(sizeof(GadHSlider));
    g->general.type = E_HSLIDER;
+   g->general.parent = context_win;
    g->x = x;
    g->y = y;
    g->w = len;
@@ -2408,14 +2522,14 @@ Epplet_create_hslider(int x, int y, int len, int min, int max,
    attr.save_under = False;
    attr.event_mask = ButtonPressMask | ButtonReleaseMask;
    g->general.visible = 0;
-   g->win = XCreateWindow(disp, win, x, y, len, 8, 0,
+   g->win = XCreateWindow(disp, context_win->win, x, y, len, 8, 0,
 			  id->x.depth, InputOutput, Imlib_get_visual(id),
 			  CWOverrideRedirect | CWSaveUnder | CWBackingStore |
 			  CWColormap | CWBackPixel | CWBorderPixel |
 			  CWEventMask, &attr);
    attr.event_mask = ButtonPressMask | ButtonReleaseMask |
       PointerMotionMask | EnterWindowMask | LeaveWindowMask | ButtonMotionMask;
-   g->win_knob = XCreateWindow(disp, win, x, y, 8, 8, 0,
+   g->win_knob = XCreateWindow(disp, context_win->win, x, y, 8, 8, 0,
 			       id->x.depth, InputOutput, Imlib_get_visual(id),
 			       CWOverrideRedirect | CWSaveUnder | CWBackingStore
 			       | CWColormap | CWBackPixel | CWBorderPixel |
@@ -2481,6 +2595,7 @@ Epplet_create_vslider(int x, int y, int len, int min, int max,
       len = 9;
    g = malloc(sizeof(GadVSlider));
    g->general.type = E_VSLIDER;
+   g->general.parent = context_win;
    g->x = x;
    g->y = y;
    g->w = 8;
@@ -2502,14 +2617,14 @@ Epplet_create_vslider(int x, int y, int len, int min, int max,
    attr.save_under = False;
    attr.event_mask = ButtonPressMask | ButtonReleaseMask;
    g->general.visible = 0;
-   g->win = XCreateWindow(disp, win, x, y, 8, len, 0,
+   g->win = XCreateWindow(disp, context_win->win, x, y, 8, len, 0,
 			  id->x.depth, InputOutput, Imlib_get_visual(id),
 			  CWOverrideRedirect | CWSaveUnder | CWBackingStore |
 			  CWColormap | CWBackPixel | CWBorderPixel |
 			  CWEventMask, &attr);
    attr.event_mask = ButtonPressMask | ButtonReleaseMask |
       PointerMotionMask | EnterWindowMask | LeaveWindowMask | ButtonMotionMask;
-   g->win_knob = XCreateWindow(disp, win, x, y, 8, 8, 0,
+   g->win_knob = XCreateWindow(disp, context_win->win, x, y, 8, 8, 0,
 			       id->x.depth, InputOutput, Imlib_get_visual(id),
 			       CWOverrideRedirect | CWSaveUnder | CWBackingStore
 			       | CWColormap | CWBackPixel | CWBorderPixel |
@@ -2558,13 +2673,15 @@ typedef struct
 }
 GadHBar;
 
-Epplet_gadget Epplet_create_hbar(int x, int y, int w, int h, char dir, int *val)
+Epplet_gadget
+Epplet_create_hbar(int x, int y, int w, int h, char dir, int *val)
 {
    GadHBar            *g;
    XSetWindowAttributes attr;
 
    g = malloc(sizeof(GadHBar));
    g->general.type = E_HBAR;
+   g->general.parent = context_win;
    g->x = x;
    g->y = y;
    g->w = w;
@@ -2579,7 +2696,7 @@ Epplet_gadget Epplet_create_hbar(int x, int y, int w, int h, char dir, int *val)
    attr.save_under = False;
    attr.event_mask = 0;
    g->general.visible = 0;
-   g->win = XCreateWindow(disp, win, x, y, w, h, 0,
+   g->win = XCreateWindow(disp, context_win->win, x, y, w, h, 0,
 			  id->x.depth, InputOutput, Imlib_get_visual(id),
 			  CWOverrideRedirect | CWSaveUnder | CWBackingStore |
 			  CWColormap | CWBackPixel | CWBorderPixel |
@@ -2626,13 +2743,15 @@ typedef struct
 }
 GadVBar;
 
-Epplet_gadget Epplet_create_vbar(int x, int y, int w, int h, char dir, int *val)
+Epplet_gadget
+Epplet_create_vbar(int x, int y, int w, int h, char dir, int *val)
 {
    GadHBar            *g;
    XSetWindowAttributes attr;
 
    g = malloc(sizeof(GadVBar));
    g->general.type = E_VBAR;
+   g->general.parent = context_win;
    g->x = x;
    g->y = y;
    g->w = w;
@@ -2647,7 +2766,7 @@ Epplet_gadget Epplet_create_vbar(int x, int y, int w, int h, char dir, int *val)
    attr.save_under = False;
    attr.event_mask = 0;
    g->general.visible = 0;
-   g->win = XCreateWindow(disp, win, x, y, w, h, 0,
+   g->win = XCreateWindow(disp, context_win->win, x, y, w, h, 0,
 			  id->x.depth, InputOutput, Imlib_get_visual(id),
 			  CWOverrideRedirect | CWSaveUnder | CWBackingStore |
 			  CWColormap | CWBackPixel | CWBorderPixel |
@@ -2691,12 +2810,14 @@ typedef struct
 }
 GadImage;
 
-Epplet_gadget Epplet_create_image(int x, int y, int w, int h, char *image)
+Epplet_gadget
+Epplet_create_image(int x, int y, int w, int h, char *image)
 {
    GadImage           *g;
 
    g = malloc(sizeof(GadImage));
    g->general.type = E_IMAGE;
+   g->general.parent = context_win;
    g->general.visible = 0;
    g->x = x;
    g->y = y;
@@ -2719,9 +2840,10 @@ Epplet_draw_image(Epplet_gadget eg, char un_only)
 
    g = (GadImage *) eg;
    if (!gc)
-      gc = XCreateGC(disp, bg_pmap, 0, &gcv);
+      gc = XCreateGC(disp, g->general.parent->bg_pmap, 0, &gcv);
    if ((g->pw > 0) && (g->ph > 0))
-      XCopyArea(disp, bg_bg, bg_pmap, gc, g->x, g->y, g->pw, g->ph, g->x, g->y);
+      XCopyArea(disp, g->general.parent->bg_bg, g->general.parent->bg_pmap, gc,
+		g->x, g->y, g->pw, g->ph, g->x, g->y);
    if (!un_only)
      {
 	im = Imlib_load_image(id, g->image);
@@ -2729,22 +2851,24 @@ Epplet_draw_image(Epplet_gadget eg, char un_only)
 	  {
 	     if ((g->w > 0) && (g->h > 0))
 	       {
-		  Imlib_paste_image(id, im, bg_pmap, g->x, g->y, g->w, g->h);
+		  Imlib_paste_image(id, im, g->general.parent->bg_pmap, g->x,
+				    g->y, g->w, g->h);
 		  g->pw = g->w;
 		  g->ph = g->h;
 	       }
 	     else
 	       {
-		  Imlib_paste_image(id, im, bg_pmap, g->x, g->y,
-				    im->rgb_width, im->rgb_height);
+		  Imlib_paste_image(id, im, g->general.parent->bg_pmap, g->x,
+				    g->y, im->rgb_width, im->rgb_height);
 		  g->pw = im->rgb_width;
 		  g->ph = im->rgb_height;
 	       }
 	     Imlib_destroy_image(id, im);
 	  }
      }
-   XSetWindowBackgroundPixmap(disp, win, bg_pmap);
-   XClearWindow(disp, win);
+   XSetWindowBackgroundPixmap(disp, g->general.parent->win,
+			      g->general.parent->bg_pmap);
+   XClearWindow(disp, g->general.parent->win);
 }
 
 typedef struct
@@ -2756,12 +2880,14 @@ typedef struct
 }
 GadLabel;
 
-Epplet_gadget Epplet_create_label(int x, int y, char *label, char size)
+Epplet_gadget
+Epplet_create_label(int x, int y, char *label, char size)
 {
    GadLabel           *g;
 
    g = malloc(sizeof(GadLabel));
    g->general.type = E_LABEL;
+   g->general.parent = context_win;
    g->general.visible = 0;
    g->x = x;
    g->y = y;
@@ -2791,16 +2917,16 @@ Epplet_draw_label(Epplet_gadget eg, char un_only)
 
    g = (GadLabel *) eg;
    if (!gc)
-      gc = XCreateGC(disp, bg_pmap, 0, &gcv);
+      gc = XCreateGC(disp, g->general.parent->bg_pmap, 0, &gcv);
    if (g->x < 0)
      {
-	x = win_w + g->x - g->w;
+	x = g->general.parent->w + g->x - g->w;
 	if (x < 0)
 	   x = 0;
      }
    else
       x = g->x;
-   XCopyArea(disp, bg_bg, bg_pmap, gc,
+   XCopyArea(disp, g->general.parent->bg_bg, g->general.parent->bg_pmap, gc,
 	     x - 1, g->y - 1, g->w + 2, g->h + 2, x - 1, g->y - 1);
    if (!un_only)
      {
@@ -2811,13 +2937,14 @@ Epplet_draw_label(Epplet_gadget eg, char un_only)
 				       g->label);
 	     if (g->x < 0)
 	       {
-		  x = win_w + g->x - g->w;
+		  x = g->general.parent->w + g->x - g->w;
 		  if (x < 0)
 		     x = 0;
 	       }
 	     else
 		x = g->x;
-	     Epplet_textclass_draw("EPPLET_LABEL", "normal", bg_pmap, x, g->y,
+	     Epplet_textclass_draw("EPPLET_LABEL", "normal",
+				   g->general.parent->bg_pmap, x, g->y,
 				   g->label);
 	  }
 	else if (g->size == 1)
@@ -2826,14 +2953,15 @@ Epplet_draw_label(Epplet_gadget eg, char un_only)
 				       g->label);
 	     if (g->x < 0)
 	       {
-		  x = win_w + g->x - g->w;
+		  x = g->general.parent->w + g->x - g->w;
 		  if (x < 0)
 		     x = 0;
 	       }
 	     else
 		x = g->x;
-	     Epplet_textclass_draw("EPPLET_TEXT_TINY", "normal", bg_pmap, x,
-				   g->y, g->label);
+	     Epplet_textclass_draw("EPPLET_TEXT_TINY", "normal",
+				   g->general.parent->bg_pmap, x, g->y,
+				   g->label);
 	  }
 	else if (g->size == 2)
 	  {
@@ -2841,14 +2969,15 @@ Epplet_draw_label(Epplet_gadget eg, char un_only)
 				       g->label);
 	     if (g->x < 0)
 	       {
-		  x = win_w + g->x - g->w;
+		  x = g->general.parent->w + g->x - g->w;
 		  if (x < 0)
 		     x = 0;
 	       }
 	     else
 		x = g->x;
-	     Epplet_textclass_draw("EPPLET_TEXT_MEDIUM", "normal", bg_pmap, x,
-				   g->y, g->label);
+	     Epplet_textclass_draw("EPPLET_TEXT_MEDIUM", "normal",
+				   g->general.parent->bg_pmap, x, g->y,
+				   g->label);
 	  }
 	else
 	  {
@@ -2856,19 +2985,21 @@ Epplet_draw_label(Epplet_gadget eg, char un_only)
 				       g->label);
 	     if (g->x < 0)
 	       {
-		  x = win_w + g->x - g->w;
+		  x = g->general.parent->w + g->x - g->w;
 		  if (x < 0)
 		     x = 0;
 	       }
 	     else
 		x = g->x;
-	     Epplet_textclass_draw("EPPLET_TEXT_LARGE", "normal", bg_pmap, x,
-				   g->y, g->label);
+	     Epplet_textclass_draw("EPPLET_TEXT_LARGE", "normal",
+				   g->general.parent->bg_pmap, x, g->y,
+				   g->label);
 	  }
 	ESYNC;
      }
-   XSetWindowBackgroundPixmap(disp, win, bg_pmap);
-   XClearWindow(disp, win);
+   XSetWindowBackgroundPixmap(disp, g->general.parent->win,
+			      g->general.parent->bg_pmap);
+   XClearWindow(disp, g->general.parent->win);
 }
 
 typedef struct
@@ -2910,13 +3041,15 @@ struct _gadpopupbutton
    Pixmap              pmap, mask;
 };
 
-Epplet_gadget Epplet_create_popup(void)
+Epplet_gadget
+Epplet_create_popup(void)
 {
    GadPopup           *g;
    XSetWindowAttributes attr;
 
    g = malloc(sizeof(GadPopup));
    g->general.type = E_POPUP;
+   g->general.parent = context_win;
    g->general.visible = 0;
    g->x = 0;
    g->y = 0;
@@ -3166,6 +3299,7 @@ Epplet_create_popupbutton(char *label, char *image, int x,
 
    g = malloc(sizeof(GadPopupButton));
    g->general.type = E_POPUPBUTTON;
+   g->general.parent = context_win;
    g->x = x;
    g->y = y;
    g->std = Estrdup(std);
@@ -3196,7 +3330,7 @@ Epplet_create_popupbutton(char *label, char *image, int x,
    attr.event_mask = ButtonPressMask | ButtonReleaseMask |
       EnterWindowMask | LeaveWindowMask;
    g->general.visible = 0;
-   g->win = XCreateWindow(disp, win, x, y, g->w, g->h, 0,
+   g->win = XCreateWindow(disp, context_win->win, x, y, g->w, g->h, 0,
 			  id->x.depth, InputOutput, Imlib_get_visual(id),
 			  CWOverrideRedirect | CWSaveUnder | CWBackingStore |
 			  CWColormap | CWBackPixel | CWBorderPixel |
@@ -3324,7 +3458,8 @@ Epplet_change_label(Epplet_gadget gadget, char *label)
    Epplet_draw_label(gadget, 0);
 }
 
-Window Epplet_get_drawingarea_window(Epplet_gadget gadget)
+Window
+Epplet_get_drawingarea_window(Epplet_gadget gadget)
 {
    GadDrawingArea     *g;
 
@@ -3758,36 +3893,40 @@ Epplet_event(Epplet_gadget gadget, XEvent * ev)
      default:
 	break;
      }
+   Epplet_draw_windows();
 }
 
 void
-Epplet_background_properties(char vertical)
+Epplet_background_properties(char vertical, Epplet_window win)
 {
    static GC           gc = 0;
    XGCValues           gcv;
 
-   if (bg_pmap)
-      XFreePixmap(disp, bg_pmap);
-   if (bg_bg)
-      XFreePixmap(disp, bg_bg);
-   if (bg_mask)
-      XFreePixmap(disp, bg_mask);
-   bg_pmap = 0;
-   bg_mask = 0;
-   bg_bg = 0;
+   if (win->bg_pmap)
+      XFreePixmap(disp, win->bg_pmap);
+   if (win->bg_bg)
+      XFreePixmap(disp, win->bg_bg);
+   if (win->bg_mask)
+      XFreePixmap(disp, win->bg_mask);
+   win->bg_pmap = 0;
+   win->bg_mask = 0;
+   win->bg_bg = 0;
+
    if (vertical)
       Epplet_imageclass_get_pixmaps("EPPLET_BACKGROUND_VERTICAL", "normal",
-				    &bg_bg, &bg_mask, win_w, win_h);
+				    &win->bg_bg, &win->bg_mask, win->w, win->h);
    else
       Epplet_imageclass_get_pixmaps("EPPLET_BACKGROUND_HORIZONTAL", "normal",
-				    &bg_bg, &bg_mask, win_w, win_h);
-   bg_pmap = XCreatePixmap(disp, win, win_w, win_h, id->x.depth);
+				    &win->bg_bg, &win->bg_mask, win->w, win->h);
+   win->bg_pmap = XCreatePixmap(disp, win->win, win->w, win->h, id->x.depth);
+
    if (!gc)
-      gc = XCreateGC(disp, bg_pmap, 0, &gcv);
-   XCopyArea(disp, bg_bg, bg_pmap, gc, 0, 0, win_w, win_h, 0, 0);
-   XSetWindowBackgroundPixmap(disp, win, bg_pmap);
-   XShapeCombineMask(disp, win, ShapeBounding, 0, 0, bg_mask, ShapeSet);
-   XClearWindow(disp, win);
+      gc = XCreateGC(disp, win->bg_pmap, 0, &gcv);
+   XCopyArea(disp, win->bg_bg, win->bg_pmap, gc, 0, 0, win->w, win->h, 0, 0);
+   XSetWindowBackgroundPixmap(disp, win->win, win->bg_pmap);
+   XShapeCombineMask(disp, win->win, ShapeBounding, 0, 0, win->bg_mask,
+		     ShapeSet);
+   XClearWindow(disp, win->win);
    win_vert = vertical;
 }
 
@@ -4276,7 +4415,8 @@ Epplet_redraw(void)
    int                 i;
    GadGeneral         *gg;
 
-   Epplet_background_properties(win_vert);
+   Epplet_refresh_backgrounds();
+
    for (i = 0; i < gad_num; i++)
      {
 	gg = (GadGeneral *) gads[i];
@@ -4381,7 +4521,8 @@ Epplet_draw_outline(Window win, int x, int y, int w, int h, int r, int g, int b)
 		  (unsigned int)(h - 1));
 }
 
-RGB_buf Epplet_make_rgb_buf(int w, int h)
+RGB_buf
+Epplet_make_rgb_buf(int w, int h)
 {
    RGB_buf             buf;
    unsigned char      *data;

@@ -1069,3 +1069,86 @@ hoping.
 I also added the background setting functionality to E-Slides, but this time
 it was done *right*. :-)  Take a look and see for yourself.  If you look at
 the code, it also demonstrates how to use E IPC to set backgrounds.
+
+-------------------------------------------------------------------------------
+
+Thu Dec 02 23:07:45 GMT 1999
+(gilbertt)
+
+Ok. More config window stuff.
+
+Fun fun. I had to create a new type, Epplet_window to hold some window info,
+and a stack to push and pop contexts for adding gadgets to different new
+windows. This stuff works real well, and I am chuffed with it :)
+
+The extra windows now redraw themselves on exposes, and new gadgets can be
+added to them successfully. W00p.
+
+I had to implement some new stuff, so please check nothing is broke (I am
+not finished, but I don't want to commit code that breaks stuff).
+
+Here are some details on the new stuff :)
+
+---------------
+PUBLIC STUFF
+
+typedef struct epplet_window
+{
+    Window win;
+    int w;
+    int h;
+    Pixmap bg_pmap;
+    Pixmap bg_mask;
+    Pixmap bg_bg;
+}EppWindow;
+typedef EppWindow *Epplet_window;
+
+Epplet_window Epplet_create_window(int w,int h,int x,int y,char *title);
+void Epplet_window_show(Epplet_window win);
+void Epplet_window_hide(Epplet_window win);
+void Epplet_window_destroy(Epplet_window win);
+void Epplet_window_push_context(Epplet_window newwin);
+Epplet_window Epplet_window_pop_context(void);
+---------------
+PRIVATE STUFF
+
+static Epplet_window context_win;       /* Current context win */
+static int          window_stack_pos;   /* For context changes */
+static Epplet_window window_stack[20];  /* For context changes */
+static Epplet_window mainwin;           /* Always the main epplet window */
+
+static int          window_num = 0;     /* For window list */
+static Epplet_window *windows = NULL;   /* List of windows to loop though */
+
+/* For Keeping a list of windows owned by the epplet, to loop through and
+ * do stuff with. */
+static void         Epplet_register_window(Epplet_window win);
+static void         Epplet_unregister_window(Epplet_window win);
+
+/* Redraw all epplet windows (excluding the main epplet window) */
+static void         Epplet_draw_windows(void);
+/* Redraw window win */
+static void         Epplet_draw_window(Epplet_window win);
+
+/* Refresh window backgrounds on theme change */
+static void Epplet_refresh_backgrounds(void);
+
+-------------
+I also added an item to GadGeneral so that I can find what window a gadget
+was created on:
+
+typedef struct gad_general
+{
+   GadType             type;
+   char                visible;
+   Epplet_window       parent;
+}  
+GadGeneral;
+
+-------------
+
+Not to mention the reworking of code which draws or handles windows.
+
+I have more tinkering to do in the event handling, to catch delete_events,
+and to filter out mouseovers etc for separate windows. Tomorrow :)
+

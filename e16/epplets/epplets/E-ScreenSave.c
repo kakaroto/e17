@@ -326,10 +326,11 @@ cb_shoot (void *data)
   static int temp=20;
   static int temp2=50;
   static int temp3=80;
-  Window win;
-  Epplet_gadget sld, sld2, sld3;
+  Epplet_window win;
+  Epplet_gadget sld, sld2, sld3,lbl;
   win = Epplet_create_window (400, 400, 100, 100, "See! I told you this stuff was easy ;)");
   Epplet_window_show (win);
+  Epplet_gadget_show (lbl=Epplet_create_label(50,300,"Hello folks. I think its working :)",0));
   Epplet_gadget_show (sld=Epplet_create_hslider(50,20, 100, 0, 100,
                                       1, 5, &temp,
                                       NULL, NULL));
@@ -340,7 +341,7 @@ cb_shoot (void *data)
                                       1, 5, &temp3,
                                       NULL, NULL));
 
-    Epplet_window_reset_context ();
+  Epplet_window_pop_context ();
   return;
   data = NULL;
 }

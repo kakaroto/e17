@@ -61,6 +61,17 @@ typedef struct _configitem
 }
 ConfigItem;
 
+typedef struct epplet_window 
+{
+    Window win;    
+    int w;
+    int h;
+    Pixmap bg_pmap;
+    Pixmap bg_mask;
+    Pixmap bg_bg;
+}EppWindow;
+typedef EppWindow *Epplet_window;
+
 /****************************************************************************/
 /* Initialization call                                                      */
 /****************************************************************************/
@@ -303,7 +314,7 @@ Epplet_gadget   Epplet_create_vbar(int x, int y, int w, int h, char dir,
 /* get the window id of the windopw to draw in in the drawing area */
 Window          Epplet_get_drawingarea_window(Epplet_gadget gadget);
 /* change the background to either verticla or horizontal for the epplet */
-void            Epplet_background_properties(char vertical);
+void            Epplet_background_properties(char vertical,Epplet_window win);
 /* destroy a gadget */
 void            Epplet_gadget_destroy(Epplet_gadget gadget);
 /* hide a gadget */
@@ -335,12 +346,12 @@ void            Epplet_change_label(Epplet_gadget gadget, char *label);
 
 /* PLEASE DO NOT USE THESE FUNCTIONS YET, THEY ARE NOT STABLE */
 
-Window Epplet_create_window(int w,int h,int x,int y,char *title);
-void Epplet_window_show(Window win);
-void Epplet_window_hide(Window win);
-void Epplet_window_destroy(Window win);
-void Epplet_window_switch_context(Window newwin);
-void Epplet_window_reset_context(void);
+Epplet_window Epplet_create_window(int w,int h,int x,int y,char *title);
+void Epplet_window_show(Epplet_window win);
+void Epplet_window_hide(Epplet_window win);
+void Epplet_window_destroy(Epplet_window win);
+void Epplet_window_push_context(Epplet_window newwin);
+Epplet_window Epplet_window_pop_context(void);
 
 /****************************************************************************/
 /* baisc line, filled rectangle and box outline drawing functions to make   */
