@@ -145,8 +145,592 @@ There is no need to reinvent the wheel all the time.
 @endverbatim
 
 
+@section example1 Example One 
+You'll need to get comfortable with Edje.  This is not an intro to Edje,
+perhaps you'll need to look at examples, or possibly
+http://www.cuddletech.com/edje/ but if you don't get Edje, sorry come
+back later.  That being said, let's get a barebones entrance theme up
+and running.  
 
+@verbatim
+$ cd
+$ mkdir mytheme
+$ cd mytheme
+$ mkdir images
+$ vim cg
+# cg contains the following info
+#!/bin/sh -e
+if [ -f ./mytheme.eet ]; then
+    rm -f mytheme.eet
+fi
+edje_cc -v -id ./image mytheme.edc mytheme.eet
+if [ -f ./mytheme.eet ]; then
+    edje mytheme.eet
+fi
+$ chmod +x cg
+$ vim mytheme.edc # your favorite editor will suffice here
+// This is the contents of your basic theme.
+images { }
+collections {
+    group {
+	name, "Main";
+	parts {
+	    part {
+		name, "bg";
+		type, RECT;
+		mouse_events, 0;
+		description {
+		    state, "default" 0.0;
+		    visible, 1;
+		    rel1 { 
+			relative, 0.0 0.0;
+			offset, 0 0;
+		    } rel2 {
+			relative, 1.0 1.0;
+			offset, 0 0;
+		    }
+		    color, 0 0 0 255;
+		}
+	    }
+	    part {
+		name, "EntranceUserEntry";
+		type, TEXT;
+		mouse_events, 0;
+		description {
+		    state, "default" 0.0;
+		    rel1 { 
+			relative, 0.5 1.0;
+			offset, -100 -71;
+			to, "bg";
+		    } rel2 {
+			relative, 0.5 1.0;
+			offset, 100 -36;
+			to, "bg";
+		    }
+		    color, 255 255 255 255;
+		    text {
+			text, "";
+			font, "Vera";
+			size, 20;
+			fit, 0 0;
+			align, 0.5 0.5;
+		    }
+		}
+	    }
+	    part {
+		name, "EntrancePassEntry";
+		type, TEXT;
+		mouse_events, 0;
+		description {
+		    state, "default" 0.0;
+		    visible, 1;
+		    rel1 { 
+			relative, 0.5 1.0;
+			offset, -100 -35;
+			to, "bg";
+		    } rel2 {
+			relative, 0.5 1.0;
+			offset, 100 -5;
+			to, "bg";
+		    }
+		    color, 255 255 255 255;
+		    text {
+			text, "";
+			font, "Vera";
+			size, 20;
+			fit, 0 0;
+			align, 0.5 0.5;
+		    }
+		}
+	    }
+	}
+	programs {
+	    program {
+		name, "authed";
+		signal, "EntranceUserAuthSuccess";
+		source, "";
+		action, SIGNAL_EMIT "EntranceUserAuthSuccessDone" "";
+	    }
+	}
+    }
+}
+@endverbatim
 
+If everything worked ok, you should get something like <A
+HREF="Example1.jpg">Example1</A>.
+So what's worth taking notice of? 
+<I><B>EntranceUserEntry</B></I> this is where the input goes if the
+system is in a state accepting username input.  You <B>MUST</B> have
+this part in any theme you make, if you don't want to see it don't make
+the part visible.
+<I><B>EntrancePassEntry</B></I> this is where the keyboard input goes if
+the system is in a state accepting the user's password.  Like
+EntranceUserEntry, this has to be present in every theme.
+<I><B>EntranceUserAuthSuccess</B></I> needs to be caught in your edje by
+a program.  The idea behind this is that you can have neat effects after
+the user successfully logs in.  It's the themer's job to let Entrance
+know that it's done and the user's session should start by emitting
+<I><B>EntranceUserAuthSuccessDone</B></I>.
+
+@section example2 Example Two
+You're probably thinking that Example 1 was really lame, and
+contemplating skipping Example Two because it's just too basic, but bare
+with me.  Example Two shows off a few of the built in features that
+themers can take advantage of.  This is where your creativity steps in,
+presenting these builtins in a pleasing manner.  You can see a preview
+of it <A HREF="Example2.jpg">here</A>. Notice it's still not the
+prettiest thing, but it was made without specifying a single image file.
+:)
+
+@verbatim
+$ cd
+$ mkdir mysecondtheme
+$ cd mysecondtheme
+$ mkdir images
+$ vim cg
+# cg contains the following info
+#!/bin/sh -e
+if [ -f ./mysecondtheme.eet ]; then
+    rm -f mysecondtheme.eet
+fi
+edje_cc -v -id ./image mysecondtheme.edc mysecondtheme.eet
+if [ -f ./mysecondtheme.eet ]; then
+    edje mysecondtheme.eet
+fi
+$ chmod +x cg
+$ vim mysecondtheme.edc # your favorite editor will suffice here
+images { }
+collections {
+    group {
+	name, "Main";
+	parts {
+	    part {
+		name, "bg";
+		type, RECT;
+		mouse_events, 0;
+		description {
+		    state, "default" 0.0;
+		    visible, 1;
+		    rel1 { 
+			relative, 0.0 0.0;
+			offset, 0 0;
+		    } rel2 {
+			relative, 1.0 1.0;
+			offset, 0 0;
+		    }
+		    color, 0 0 0 255;
+		}
+	    }
+	    part {
+		name, "BottomBar";
+		type, RECT;
+		mouse_events, 1;
+		description {
+		    state, "default" 0.0;
+		    visible, 1;
+		    rel1 {
+			relative, 0.0 1.0;
+			offset, 0 -50;
+		    } rel2 {
+			relative, 1.0 1.0;
+			offset, 0 0;
+		    }
+		    color, 100 100 100 96;
+		}
+	    }
+	    part {
+		name, "EntranceUserEntry";
+		type, TEXT;
+		mouse_events, 0;
+		description {
+		    state, "default" 0.0;
+		    rel1 { 
+			relative, 0.5 1.0;
+			offset, -100 -71;
+			to, "bg";
+		    } rel2 {
+			relative, 0.5 1.0;
+			offset, 100 -36;
+			to, "bg";
+		    }
+		    color, 255 255 255 255;
+		    text {
+			text, "";
+			font, "Vera";
+			size, 20;
+			fit, 0 0;
+			align, 0.5 0.5;
+		    }
+		}
+	    }
+	    part {
+		name, "EntrancePassEntry";
+		type, TEXT;
+		mouse_events, 0;
+		description {
+		    state, "default" 0.0;
+		    visible, 1;
+		    rel1 { 
+			relative, 0.5 1.0;
+			offset, -100 -35;
+			to, "bg";
+		    } rel2 {
+			relative, 0.5 1.0;
+			offset, 100 -5;
+			to, "bg";
+		    }
+		    color, 255 255 255 255;
+		    text {
+			text, "";
+			font, "Vera";
+			size, 20;
+			fit, 0 0;
+			align, 0.5 0.5;
+		    }
+		}
+	    }
+	    part {
+		name, "EntranceHostname";
+		type, TEXT;
+		mouse_events, 0;
+		description {
+		    state, "default" 0.0;
+		    visible, 1;
+		    rel1 { 
+			relative, 0.5 0.0;
+			offset, -200 -35;
+			to, "EntranceUserEntry";
+		    } rel2 {
+			relative, 0.5 0.0;
+			offset, 200 -5;
+			to, "EntranceUserEntry";
+		    }
+		    color, 255 255 255 255;
+		    text {
+			text, "";
+			font, "Vera";
+			size, 20;
+			fit, 0 0;
+			align, 0.5 0.5;
+		    }
+		}
+	    }
+	    part {
+		name, "EntranceDate";
+		type, TEXT;
+		mouse_events, 0;
+		description {
+		    state, "default" 0.0;
+		    visible, 1;
+		    rel1 { 
+			relative, 1.0 1.0;
+			offset, -300 -25;
+			to, "bg";
+		    } rel2 {
+			relative, 1.0 1.0;
+			offset, -10 -10;
+			to, "bg";
+		    }
+		    color, 255 255 255 255;
+		    text {
+			text, "";
+			font, "Vera";
+			size, 10;
+			fit, 0 0;
+			align, 1.0 0.5;
+		    }
+		}
+	    }
+	    part {
+		name, "EntranceTime";
+		type, TEXT;
+		mouse_events, 0;
+		description {
+		    state, "default" 0.0;
+		    visible, 1;
+		    rel1 { 
+			relative, 1.0 1.0;
+			offset, -300 -40;
+			to, "bg";
+		    } rel2 {
+			relative, 1.0 1.0;
+			offset, -10 -25;
+			to, "bg";
+		    }
+		    color, 255 255 255 255;
+		    text {
+			text, "";
+			font, "Vera";
+			size, 10;
+			fit, 0 0;
+			align, 1.0 0.5;
+		    }
+		}
+	    }
+	    part {
+		name, "EntranceError";
+		type, TEXT;
+		mouse_events, 0;
+#define ERROR(sname, sdescription) \
+description { state, sname 0.0; visible, 1; \
+rel1 { relative, 0.0 1.0; offset, 5 -35; to, "bg"; }  \
+rel2 { relative, 1.0 1.0; offset, -5 -5; to, "bg"; } \
+color, 255 255 255 255; \
+text { text, sdescription; \
+font, "Vera"; size, 20; fit, 0 0; align, 1.0 0.5; } }
+		ERROR("default", "");
+		ERROR("userfail", "Unknown User");
+		ERROR("passfail", "Authentication Failed");
+	    }
+	    part {
+		name, "EntranceSessionList";
+		type, RECT;
+		mouse_events, 1;
+		dragable {
+		    x, 1 1 0;
+		    y, 1 1 0;
+		}
+		description {
+		    state, "default" 0.0;
+		    visible, 1;
+		    rel1 {
+			relative, 1.0 0.5;
+			offset, -205 -180;
+		    } rel2 {
+			relative, 1.0 0.5;
+			offset, -25 180;
+		    }
+		    color, 255 255 255 64;
+		}
+	    }
+	    part {
+		name, "SessionLabel";
+		type, TEXT;
+		mouse_events, 0;
+		effect, SOFT_SHADOW;
+		description {
+		    state, "default" 0.0;
+		    visible, 1;
+		    rel1 { 
+			relative, 0.0 0.0;
+			offset, 0 -30;
+			to, "EntranceSessionList";
+		    } rel2 {
+			relative, 1.0 0.0;
+			offset, 0 -5;
+			to, "EntranceSessionList";
+		    }
+		    color, 255 255 255 255;
+		    color3, 0 0 0 192;
+		    text {
+			text, "Sessions";
+			font, "Vera";
+			size, 10;
+			fit, 0 0;
+			align, 0.5 0.5;
+		    }
+		}
+	    }
+	    part {
+		name, "EntranceUserList";
+		type, RECT;
+		mouse_events, 1;
+		dragable {
+		    x, 1 1 0;
+		    y, 1 1 0;
+		}
+		description {
+		    state, "default" 0.0;
+		    visible, 1;
+		    rel1 {
+			relative, 0.0 0.25;
+			offset, 100 -25;
+		    } rel2 {
+			relative, 0.0 0.25;
+			offset, 210 25;
+		    }
+		    color, 255 255 255 64;
+		}
+	    }
+	    part {
+		name, "UsersLabel";
+		type, TEXT;
+		mouse_events, 0;
+		effect, SOFT_SHADOW;
+		description {
+		    state, "default" 0.0;
+		    visible, 1;
+		    rel1 { 
+			relative, 0.0 0.0;
+			offset, 0 -30;
+			to, "EntranceUserList";
+		    } rel2 {
+			relative, 1.0 0.0;
+			offset, 0 -5;
+			to, "EntranceUserList";
+		    }
+		    color, 255 255 255 255;
+		    color3, 0 0 0 192;
+		    text {
+			text, "Users";
+			font, "Vera";
+			size, 10;
+			fit, 0 0;
+			align, 0.5 0.5;
+		    }
+		}
+	    }
+	    part {
+		name, "EntranceFace";
+		type, RECT;
+		mouse_events, 1;
+		description {
+		    state, "default" 0.0;
+		    visible, 1;
+		    rel1 {
+			relative, 0.0 0.5;
+			offset, 100 -50;
+		    } rel2 {
+			relative, 0.0 0.5;
+			offset, 300 50;
+		    }
+		    color, 100 100 100 0;
+		}
+	    }
+	    part {
+		name, "EntranceSession";
+		type, RECT;
+		mouse_events, 1;
+		description {
+		    state, "default" 0.0;
+		    visible, 1;
+		    rel1 {
+			relative, 0.0 1.0;
+			offset, 0 -45;
+		    } rel2 {
+			relative, 0.0 1.0;
+			offset, 200 -5;
+		    }
+		    color, 100 100 100 0;
+		}
+	    }
+	}
+	programs {
+	    program {
+		name, "authed";
+		signal, "EntranceUserAuthSuccess";
+		source, "";
+		action, SIGNAL_EMIT "EntranceUserAuthSuccessDone" "";
+	    }
+	    program {
+		name, "errorreset";
+		signal, "";
+		source, "";
+		action, STATE_SET "default" 0.0;
+		target, "EntranceError";
+		in, 2.0 0.0;
+	    }
+#define ERROR_PROGRAM(pstate, psignal) \
+program { name, pstate; signal, psignal; source, ""; \
+action, STATE_SET pstate 0.0; target, "EntranceError"; \
+after, "errorreset"; }
+	    ERROR_PROGRAM("userfail", "EntranceUserFail");
+	    ERROR_PROGRAM("passfail", "EntranceUserAuthFail");
+	}
+    }
+    group
+    {
+	name, "Session";
+	parts
+	{
+	    part
+	    {
+		name, "EntranceSessionIcon";
+		type, RECT;
+		mouse_events, 1;
+		description
+		{
+		    state, "default" 0.0;
+		    visible, 1;
+		    rel1
+		    {
+			relative, 0.0 0.0;
+			offset, 2 2;
+		    }
+		    rel2
+		    {
+			relative, 0.0 0.0;
+			offset, 34 34;
+		    }
+		    color, 255 255 255 0;
+		}
+	    }
+	    part
+	    {
+		name, "EntranceSessionTitle";
+		type, TEXT;
+		mouse_events, 1;
+		effect, SOFT_SHADOW;
+		description
+		{
+		    state, "default" 0.0;
+		    visible, 1;
+		    rel1
+		    {
+			relative, 1.0 0.5;
+			offset, 2 -17;
+			to, "EntranceSessionIcon";
+		    }
+		    rel2
+		    {
+			relative, 1.0 0.5;
+			offset, 150 17;
+			to, "EntranceSessionIcon";
+		    }
+		    color, 100 100 100 192;
+		    color3, 255 255 255 255;
+		    text
+		    {
+			text, "Doesn't Matter";
+			font, "Vera";
+			size, 13;
+			align, 0.0 0.5;
+			fit, 0 0;
+		    }
+		}
+	    }
+	}
+	programs
+	{
+	    program
+	    {
+		name, "SessionIconClicked";
+		signal, "mouse,clicked,1";
+		source, "EntranceSessionIcon";
+		action, SIGNAL_EMIT "SessionSelected" "";
+	    }
+	    program
+	    {
+		name, "SessionTitleClicked";
+		signal, "mouse,clicked,1";
+		source, "EntranceSessionTitle";
+		action, SIGNAL_EMIT "SessionSelected" "";
+	    }
+	}
+    }
+}
+@endverbatim
+<B>Oy!</B> That's a lot!  Most notably Example2 has a second Edje group
+defined titled "Session".  Entrance will use this group as a template
+and fill in the different parts with system specific session
+information.  The text provided from the system config goes to
+<B><I>EntranceSessionTitle</I></B>, the icon is swallowed into the
+<B><I>EntranceSessionIcon</I></B>.  You can emit two signals from this
+group, <B><I>SessionSelected</I></B> and
+<I><B>SessionUnSelected</B></I>, Entrance will catch these signals, and
+set/unset the current session based on which session it receives the
+signal from.</P>
+<P>Now lets focus our attention back to the "Main" group.  
 
 @todo Theme edc walkthrough
 
