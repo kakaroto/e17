@@ -113,6 +113,8 @@ collections {
 		source, "";
 		action, SIGNAL_EMIT "EntranceUserAuthSuccessDone" "";
 	    }
+#include "programs/show.edc"
+
 #if DEBUG
 #include "programs/debug_programs.edc"
 #endif

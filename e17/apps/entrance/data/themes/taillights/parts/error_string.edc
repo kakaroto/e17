@@ -43,7 +43,7 @@
 description { state, sname 0.0; visible, 1; \
 rel1 { relative, 1.0 0.5; offset, 5 -15; to, "restart_button_description"; }  \
 rel2 { relative, 1.0 0.5; offset, 350 15; to, "restart_button_description"; } \
-color, 255 128 72 192; color2, 0 0 0 216; \
+color, 255 255 255 192; color2, 0 0 0 216; \
 text { text, sdescription; \
 font, "VeraBd"; size, 14; fit, 0 0; align, 0.0 0.5; } }
 		ERROR("default", "Unknown User");

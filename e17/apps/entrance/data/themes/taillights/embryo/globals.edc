@@ -5,7 +5,7 @@
 	public login_area_align_x;
 	public login_area_shaking_direction;
 
-	public animate_user_list_in_callback(val, Float: pos)
+	public animate_user_list_in(val, Float: pos)
 	{
 	    new buf[100];
 	    new Float:x = sin(3.14 * pos);
@@ -17,13 +17,37 @@
 	    snprintf(buf, 100, "xdrag = %f, ydrag= %f", x, y);
 	    emit(buf, "");
 	}
-	public animate_user_list_out_callback(val, Float: pos)
+	public animate_user_list_out(val, Float: pos)
 	{
 	    new buf[100];
-	    new Float:x = sin(3.14 * pos);
+	    new Float:x = sin(3.14 * pos) / 2;
 	    new Float:y = 0.85 - (pos * 0.85);
 
 	    set_drag(PART:"user_list_border", x, y);
+	    snprintf(buf, 100, "val = %i, pos = %f", val, pos);
+	    emit(buf, "");
+	    snprintf(buf, 100, "xdrag = %f, ydrag= %f", x, y);
+	    emit(buf, "");
+	}
+	public animate_session_list_in(val, Float: pos)
+	{
+	    new buf[100];
+	    new Float:x = 1.0 - (sin(3.14 * pos) / 2);
+	    new Float:y = 1.0 - (pos * 0.5);
+
+	    set_drag(PART:"session_list_border", x, y);
+	    snprintf(buf, 100, "val = %i, pos = %f", val, pos);
+	    emit(buf, "");
+	    snprintf(buf, 100, "xdrag = %f, ydrag= %f", x, y);
+	    emit(buf, "");
+	}
+	public animate_session_list_out(val, Float: pos)
+	{
+	    new buf[100];
+	    new Float:x = 1.0 - (sin(3.14 * pos) / 2);
+	    new Float:y = 1.0 - (pos * 0.5);
+
+	    set_drag(PART:"session_list_border", x, y);
 	    snprintf(buf, 100, "val = %i, pos = %f", val, pos);
 	    emit(buf, "");
 	    snprintf(buf, 100, "xdrag = %f, ydrag= %f", x, y);
@@ -34,7 +58,7 @@
 	    new buf[100];
 	    new Float:x = get_float(login_area_align_x);
 	    new Float:y = 0.5;
-	    
+
 	    if(get_int(login_area_shaking_direction) == 0)
 	    {
 		x += 0.05;

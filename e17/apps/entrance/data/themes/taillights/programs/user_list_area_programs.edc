@@ -1,11 +1,4 @@
 	    program {
-		name, "user_list_show";
-		signal, "show";
-		source, "";
-		action, DRAG_VAL_SET 0.0 0.0;
-		target, "user_list_border";
-	    }
-	    program {
 		name, "show_user_menu";
 		signal, "mouse,clicked,1";
 		source, "session_mouse_area";
@@ -36,18 +29,21 @@
 		signal, "user,list,out";
 		source, "";
 		script {
-		    new i;
-		    i = get_int(user_list_visible);
-		    if(i == 1)
+		    if(get_int(user_list_visible) == 1)
 		    {
 			set_int(user_list_visible, 0);
-			anim(1.0, "animate_user_list_out_callback", 5);
+			anim(1.0, "animate_user_list_out", 5);
+			run_program(PROGRAM:"fade_out_user_list");
+		    }
+		    else
+		    {
+			emit("FOO", "BAR");
 		    }
 		}
 	    }
 	    program {
 		name, "fade_out_user_list";
-		signal, "user,list,out";
+		signal, "";
 		source, "";
 		action, STATE_SET "default" 0.0;
 		target, "user_list_clip";
@@ -60,18 +56,21 @@
 		signal, "user,list,in";
 		source, "";
 		script {
-		    new i;
-		    i = get_int(user_list_visible);
-		    if(i == 0)
+		    if(get_int(user_list_visible) == 0)
 		    {
 			set_int(user_list_visible, 1);
-			anim(1.0, "animate_user_list_in_callback", 5);
+			anim(1.0, "animate_user_list_in", 5);
+			run_program(PROGRAM:"fade_in_user_list");
+		    }
+		    else
+		    {
+			emit("BAR", "QUIT");
 		    }
 		}
 	    }
 	    program {
 		name, "fade_in_user_list";
-		signal, "user,list,in";
+		signal, "";
 		source, "";
 		action, STATE_SET "visible" 0.0;
 		target, "user_list_clip";

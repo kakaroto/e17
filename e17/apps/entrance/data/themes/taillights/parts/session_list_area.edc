@@ -1,4 +1,33 @@
 	    part {
+		name, "session_list_confine";
+		type, RECT;
+		mouse_events, 0;
+		description {
+		    state, "default" 0.0;
+		    visible, 1;
+		    rel1 {
+			relative, 0.0 0.0;
+			offset, 0 0;
+		    } rel2 {
+			relative, 1.0 1.0;
+			offset, 250 0;
+		    }
+		    color, 255 255 255 0;
+		}
+		description {
+		    state, "visible" 0.0;
+		    visible, 1;
+		    rel1 {
+			relative, 0.0 0.0;
+			offset, 0 0;
+		    } rel2 {
+			relative, 1.0 1.0;
+			offset, 0 0;
+		    }
+		    color, 255 255 255 0;
+		}
+	    }
+	    part {
 		name, "session_list_clip";
 		type, RECT;
 		mouse_events, 0;
@@ -18,20 +47,6 @@
 		}
 		description {
 		    state, "visible" 0.0;
-		    visible, 1;
-		    rel1 {
-			relative, 0.0 0.0;
-			offset, -10 -10;
-			to, "session_list_border";
-		    } rel2 {
-			relative, 1.0 1.0;
-			offset, 10 10;
-			to, "session_list_border";
-		    }
-		    color, 255 255 255 128;
-		}
-		description {
-		    state, "visible" 1.0;
 		    visible, 1;
 		    rel1 {
 			relative, 0.0 0.0;
@@ -119,7 +134,7 @@
 		    border, 6 6 6 6;
 		}
 	    }
-#define SESSION_LIST_HEIGHT 232
+#define SESSION_LIST_HEIGHT 500
 	    part {
 		name, "session_list_border";
 		type, IMAGE;
@@ -129,34 +144,19 @@
 		dragable {
 		    x, 1 1 0;
 		    y, 1 1 0;
+		    confine, "session_list_confine";
 		}
 		description {
 		    state, "default" 0.0;
 		    visible, 1;
+		    min, 250 SESSION_LIST_HEIGHT;
+		    max, 250 SESSION_LIST_HEIGHT;
 		    rel1 {
-			relative, 0.0 1.0;
-			offset, -2 1;
-			to, "bg";
+			relative, 0.0 0.0;
+			offset, 0 0;
 		    } rel2 {
-			relative, 0.0 1.0;
-			offset, -1 100;
-			to, "bg";
-		    }
-		    border, 25 80 20 3;
-		    image 
-		    {
-			normal, "menu_border.png";
-		    }
-		}
-		description {
-		    state, "visible" 0.0;
-		    visible, 1;
-		    rel1 {
-			relative, 1.0 0.5;
-			offset, -115 -SESSION_LIST_HEIGHT;
-		    } rel2 {
-			relative, 1.0 0.5;
-			offset, -25 SESSION_LIST_HEIGHT;
+			relative, 0.0 0.0;
+			offset, 100 100;
 		    }
 		    border, 25 80 20 20;
 		    image 
@@ -165,14 +165,16 @@
 		    }
 		}
 		description {
-		    state, "visible" 1.0;
+		    state, "visible" 0.0;
 		    visible, 1;
+		    min, 250 SESSION_LIST_HEIGHT;
+		    max, 250 SESSION_LIST_HEIGHT;
 		    rel1 {
-			relative, 1.0 0.5;
-			offset, -260 -SESSION_LIST_HEIGHT;
+			relative, 0.0 0.0;
+			offset, 0 0;
 		    } rel2 {
-			relative, 1.0 0.5;
-			offset, -30 SESSION_LIST_HEIGHT;
+			relative, 0.0 0.0;
+			offset, 100 100;
 		    }
 		    border, 25 80 20 20;
 		    image 

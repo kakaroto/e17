@@ -488,7 +488,7 @@
 		    color3, 0 0 0 64;
 		    text {
 			text, "";
-			font, "Edje.Luxi";
+			font, "Edje.LuxiItalic";
 			size, 14;
 			fit, 0 0;
 			align, 0.0 0.5;
@@ -517,7 +517,7 @@
 		    color3, 0 0 0 64;
 		    text {
 			text, "";
-			font, "Edje.Luxi";
+			font, "Edje.LuxiItalic";
 			size, 14;
 			fit, 0 0;
 			align, 0.0 0.5;
