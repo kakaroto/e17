@@ -66,29 +66,9 @@ static int options_set_mask(flag_t *mask, flag_t mask_entry, flag_t flag){
  ***********************************************************************/
 
 #define opt_p(opt, value, mask, mask_entry, flag) \
-  if(options_set_mask(&(mask), flag, mask_entry)){ \
+  if(options_set_mask(&(mask), mask_entry, flag)){ \
     if(!((flag)&OPT_NOT_SET) && opt!=NULL){ free(opt); } \
     opt=(value==NULL)?NULL:strdup(value); \
-  }
-
-
-/***********************************************************************
- * opt_i
- * Assign an option that is an int
- * pre: opt: option to assign
- *      value: value to assign to opt
- *      mask:  current option mask
- *      mask_entry: entry of this option in the option mask
- *      flag:  flags as per options.h
- * post: If the mask and options allow as per options_set_mask()
- *       value is assigned to opt. 
- *       The mask may also be altered as per options_set_mask()
- *       Else no change.
- ***********************************************************************/
-
-#define opt_i(opt, value, mask, mask_entry, flag) \
-  if(options_set_mask(&(mask), flag, mask_entry)){ \
-    opt=value; \
   }
 
 
@@ -119,6 +99,43 @@ static int options_set_mask(flag_t *mask, flag_t mask_entry, flag_t flag){
 
 #define opt_ipvs_config_file \
   opt_p(opt.ipvs_config_file,optarg,opt.mask,MASK_IPVS_CONFIG_FILE,f); \
+  break;
+
+
+/***********************************************************************
+ * _opt_rc_file
+ * Assign an option that is a char *
+ * pre: opt: option to assign
+ *      value: value to copy into opt
+ *      mask:  current option mask
+ *      mask_entry: entry of this option in the option mask
+ *      flag:  flags as per options.h
+ * post: If the mask and options allow as per options_set_mask()
+ *       value is copied into opt. Any existing value of opt is freed
+ *       The mask may also be altered as per options_set_mask()
+ *       Else no change.
+ ***********************************************************************/
+
+#define _opt_rc_file(opt, value, mask, mask_entry, flag) \
+  if(*value=='/'){ \
+    opt_p(opt,value,mask,MASK_RC_FILE,flag); \
+  } \
+  else{ \
+    snprintf(buffer, sizeof(buffer), "%s/%s", getenv("HOME"), value); \
+    opt_p(opt,buffer,mask,MASK_RC_FILE,flag); \
+  }
+
+
+/**********************************************************************
+ * opt_rc_file
+ * Set rc_file
+ **********************************************************************/
+
+#define opt_rc_file \
+  if(f&OPT_FILE){ if(f&OPT_ERR){usage(-1);} } \
+  else{ \
+    _opt_rc_file(opt.rc_file,optarg,opt.mask,MASK_RC_FILE,f); \
+  } \
   break;
 
 
@@ -205,7 +222,8 @@ static int options_set_mask(flag_t *mask, flag_t mask_entry, flag_t flag){
 
 int options(int argc, char **argv, flag_t f){
   int c;
-  char * short_options_string="c:hI:i:m:s:T:t:u:";
+  char * short_options_string="c:hI:i:m:r:s:T:t:u:";
+  char buffer[MAX_LINE_LENGTH];
 
   extern options_t opt;
   extern int optind;
@@ -215,7 +233,10 @@ int options(int argc, char **argv, flag_t f){
 
   if(argc==0 || argv==NULL) return(0);
 
+  if(f&OPT_CLEAR_MASK) opt.mask=(flag_t)0;
+
   /* c is used as a dummy variable */
+  c=0;
   if(f&OPT_SET_DEFAULT){
     opt_p(opt.master_host, DEFAULT_MASTER_HOST, c, 0, OPT_NOT_SET);
     opt_p(opt.ipvs_config_file, DEFAULT_IPVS_CONFIG_FILE, c, 0, OPT_NOT_SET);
@@ -236,10 +257,9 @@ int options(int argc, char **argv, flag_t f){
     );
     opt_p(opt.rsh_command, DEFAULT_RSH_COMMAND, c, 0, OPT_NOT_SET);
     opt_p(opt.rcp_command, DEFAULT_RCP_COMMAND, c, 0, OPT_NOT_SET);
+    _opt_rc_file(opt.rc_file, DEFAULT_RC_FILE, c, 0, OPT_NOT_SET);
     opt_p(opt.user, DEFAULT_USER, c, 0, OPT_NOT_SET);
   }
-
-  if(f&OPT_CLEAR_MASK) opt.mask=(flag_t)0;
 
   while (1){
 #ifdef HAVE_GETOPT_LONG
@@ -253,6 +273,7 @@ int options(int argc, char **argv, flag_t f){
       {"transparent_proxy_init_script", 1, 0, 0},
       {"rsh_command",                   1, 0, 0},
       {"rcp_command",                   1, 0, 0},
+      {"rc_file",                       1, 0, 0},
       {"user",                          1, 0, 0},
       {0, 0, 0, 0}
     };
@@ -304,6 +325,9 @@ int options(int argc, char **argv, flag_t f){
         if(!strcmp(long_options[option_index].name, "rcp_command")){
           opt_rcp_command;
         }
+        if(!strcmp(long_options[option_index].name, "rc_file")){
+          opt_rc_file;
+        }
         if(!strcmp(long_options[option_index].name, "user")){
           opt_user;
         }
@@ -317,6 +341,12 @@ int options(int argc, char **argv, flag_t f){
         opt_ipvs_init_script;
       case 'i':
         opt_ipvs_config_file;
+      case 'm':
+        opt_master_host;
+      case 'r':
+        opt_rc_file;
+      case 's':
+        opt_rsh_command;
       case 'T':
         opt_transparent_proxy_config_file;
       case 't':
@@ -382,6 +412,10 @@ void usage(int exit_status){
     "                      The master host to read and store the\n"
     "                      from and to.\n"
     "                      (default \"%s\")\n"
+    "     -r|--rc_file:    The rc file to read lvs-gui configuration options\n"
+    "                      from. Relative to users home directory unless\n"
+    "                      there is a leading /\n"
+    "                      (default \"%s\")\n"
     "     -s|--rsh_command:\n"
     "                      Command to execute to get a remote shell on hosts\n"
     "                      (default \"%s\")\n"
@@ -404,6 +438,9 @@ void usage(int exit_status){
     "         (default \"%s\")\n"
     "     -m: The master host to read and store the from and to\n"
     "         (default \"%s\")\n"
+    "     -r: The rc file to read lvs-gui configuration options from.\n"
+    "         Relative to users home directory unless there is a leading /\n"
+    "         (default \"%s\")\n"
     "     -s: Command to execute to get a remote shell on hosts\n"
     "         (default \"%s\")\n"
     "     -T: Init sctipt for transparent proxy\n"
@@ -420,6 +457,7 @@ void usage(int exit_status){
     DEFAULT_IPVS_INIT_SCRIPT,
     DEFAULT_IPVS_CONFIG_FILE,
     DEFAULT_MASTER_HOST,
+    DEFAULT_RC_FILE,
     DEFAULT_RSH_COMMAND,
     DEFAULT_TRANSPARENT_PROXY_INIT_SCRIPT,
     DEFAULT_TRANSPARENT_PROXY_CONFIG_FILE,
@@ -427,4 +465,52 @@ void usage(int exit_status){
   );
 
   exit(exit_status);
+}
+
+
+/**********************************************************************
+ * options_to_stream
+ * Write options with comments to a stream
+ * pre: stream: open stream to write to
+ * post: options are writen to stream
+ * return: return from the single fprintf used
+ **********************************************************************/
+
+int options_to_stream(FILE *stream){
+  return fprintf(
+    stream,
+    "#Master Host\n"
+    "m %s\n"
+    "\n"
+    "#IPVS Init Script\n"
+    "I %s\n"
+    "\n"
+    "#IPVS Config File\n"
+    "i %s\n"
+    "\n"
+    "#Transparent Proxy Init Script\n"
+    "T %s\n"
+    "\n"
+    "#Transparent Proxy Config File\n"
+    "t %s\n"
+    "\n"
+    "#RSH Command\n"
+    "s %s\n"
+    "\n"
+    "#RCP Command\n"
+    "c %s\n"
+    "\n"
+    "#User\n"
+    "u %s\n"
+    "\n"
+    ,
+    opt.master_host,
+    opt.ipvs_config_file,
+    opt.ipvs_init_script,
+    opt.transparent_proxy_config_file,
+    opt.transparent_proxy_init_script,
+    opt.rsh_command,
+    opt.rcp_command,
+    opt.user
+  );
 }

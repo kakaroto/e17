@@ -27,6 +27,7 @@
 #include <stdlib.h>
 
 #include "options.h"
+#include "config_file.h"
 
 #define CONNECT(ob, sig, func, dat) \
 gtk_signal_connect(GTK_OBJECT(ob), sig, GTK_SIGNAL_FUNC(func), dat);
@@ -74,7 +75,7 @@ void stop_lvs(char *machine);
 void start_transparent_proxy(char *machine);
 void stop_transparent_proxy(char *machine);
 void remote_cp(char *machine1, char *file1, char *machine2, char *file2);
-void save_local_config(void);
+void gui_save_config(void);
 
 /* globals */
 GtkWidget *tcp_list,   *tcp_list2,  *tcp_frame,  *tcp_addr,   *tcp_port, 
@@ -354,7 +355,7 @@ cb_del2(GtkButton *button, gpointer user_data)
 void
 cb_ok(GtkButton *button, gpointer user_data)
 {
-   save_local_config();
+   gui_save_config();
    save_config("ipvs");
    exit(0);
 }
@@ -362,21 +363,21 @@ cb_ok(GtkButton *button, gpointer user_data)
 void
 cb_apply(GtkButton *button, gpointer user_data)
 {
-   save_local_config();
+   gui_save_config();
    save_config("ipvs");
 }
 
 void
 cb_cancel(GtkButton *button, gpointer user_data)
 {
-   save_local_config();
+   gui_save_config();
    exit(0);
 }
 
 void
 cb_reload(GtkButton *button, gpointer user_data)
 {
-   save_local_config();
+   gui_save_config();
    remote_cp(gtk_entry_get_text(GTK_ENTRY(cfg_machine)), 
 	     gtk_entry_get_text(GTK_ENTRY(cfg_file)), 
 	     NULL, "ipvs");
@@ -1235,45 +1236,19 @@ remote_cp(char *machine1, char *file1, char *machine2, char *file2)
    system(s);
 }
 
-/* config... */
 
-void
-save_local_config(void)
-{
-   FILE *f;
-   char s[1024];
-   
-   g_snprintf(s, sizeof(s), "%s/.lvs-gui.rc", getenv("HOME"));
-   f = fopen(s, "w");
-   if (f)
-     {
-	fprintf(f,
-		"%s %s %s\n",
-		gtk_entry_get_text(GTK_ENTRY(cfg_machine)),
-		gtk_entry_get_text(GTK_ENTRY(cfg_file)),
-		gtk_entry_get_text(GTK_ENTRY(cfg_tfile)));		
-	fclose(f);
-     }
+/* Put GTK values into opt struct and write to disk*/
+
+void gui_save_config(void){
+   extern options_t opt;
+
+   opt.master_host=gtk_entry_get_text(GTK_ENTRY(cfg_machine));
+   opt.ipvs_config_file=gtk_entry_get_text(GTK_ENTRY(cfg_file));
+   opt.transparent_proxy_config_file=gtk_entry_get_text(GTK_ENTRY(cfg_tfile));
+
+   config_file_write(opt.rc_file);
 }
 
-int
-load_local_config(void)
-{
-   FILE *f;
-   char s[1024], s1[4096], s2[4096], s3[4096];
-
-   g_snprintf(s, sizeof(s), "%s/.lvs-gui.rc", getenv("HOME"));
-   f = fopen(s, "r");
-   if (f)
-     {
-	fscanf(f, "%4000s %4000s %4000s", s1, s2, s3);
-	gtk_entry_set_text(GTK_ENTRY(cfg_machine), s1);
-	gtk_entry_set_text(GTK_ENTRY(cfg_file), s2);
-	gtk_entry_set_text(GTK_ENTRY(cfg_tfile), s3);	
-	fclose(f);
-     }
-  return(0);
-}
 
 /* main */
 
@@ -1283,18 +1258,19 @@ main(int argc, char **argv)
    extern options_t opt;
 
    options(argc, argv, OPT_FIRST_CALL);
+   config_file_to_opt(opt.rc_file);
+   config_file_write(opt.rc_file);
+
    gtk_init(&argc, &argv);   
    gui();
-   load_local_config();
 
    gtk_entry_set_text(GTK_ENTRY(cfg_machine), opt.master_host);
    gtk_entry_set_text(GTK_ENTRY(cfg_file), opt.ipvs_config_file);
    gtk_entry_set_text(GTK_ENTRY(cfg_tfile), opt.transparent_proxy_config_file);
-   save_local_config();
    remote_cp(gtk_entry_get_text(GTK_ENTRY(cfg_machine)), 
 	     gtk_entry_get_text(GTK_ENTRY(cfg_file)), 
 	     NULL, "ipvs");
    load_config("ipvs");
    gtk_main();
-  return(0);
+   return(0);
 }

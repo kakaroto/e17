@@ -1,6 +1,7 @@
 lvs-gui
 lvs-gui.spec
 ipvs
+transparent_proxy
 .*.swp
 lvs-gui-*.tar.gz
 .dep

@@ -43,6 +43,8 @@
 #define HAVE_GETOPT_LONG
 #endif
 
+#define MAX_LINE_LENGTH 4096
+
 typedef u_int32_t flag_t;
 
 #define DEFAULT_MASTER_HOST                    "localhost"
@@ -54,6 +56,7 @@ typedef u_int32_t flag_t;
   "/etc/rc.d/init.d/transparent_proxy"
 #define DEFAULT_RSH_COMMAND                    "ssh -q"
 #define DEFAULT_RCP_COMMAND                    "scp -q"
+#define DEFAULT_RC_FILE                        ".lvs-gui.rc"
 #define DEFAULT_USER                           "root"
 
 typedef struct {
@@ -64,6 +67,7 @@ typedef struct {
   char            *transparent_proxy_init_script;
   char            *rsh_command;
   char            *rcp_command;
+  char            *rc_file;
   char            *user;
   flag_t          mask;
 } options_t;
@@ -76,7 +80,8 @@ typedef struct {
 #define MASK_TRANSPARENT_PROXY_INIT_SCRIPT (flag_t) 0x00000010
 #define MASK_RSH_COMMAND                   (flag_t) 0x00000020
 #define MASK_RCP_COMMAND                   (flag_t) 0x00000040
-#define MASK_USER                          (flag_t) 0x00000080
+#define MASK_RC_FILE                       (flag_t) 0x00000080
+#define MASK_USER                          (flag_t) 0x00000100
 
 /*Flag values for options()*/
 #define OPT_ERR         (flag_t) 0x1  /*Print error to stderr, enable help*/
@@ -114,5 +119,16 @@ int options(int argc, char **argv, flag_t flag);
  **********************************************************************/
 
 void usage(int exit_status);
+
+
+/**********************************************************************
+ * options_to_stream
+ * Write options with comments to a stream
+ * pre: stream: open stream to write to
+ * post: options are writen to stream
+ * return: return from the single fprintf used
+ **********************************************************************/
+
+int options_to_stream(FILE *stream);
 
 #endif
