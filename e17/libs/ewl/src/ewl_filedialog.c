@@ -15,7 +15,7 @@
  * @return Returns a new filedialog in success, NULL on failure.
  * @brief Create a new filedialog
  */
-Ewl_Widget *ewl_filedialog_new()
+Ewl_Widget *ewl_filedialog_new(Ewl_Filedialog_Type type)
 {
 	Ewl_Filedialog *fd;
 
@@ -25,7 +25,7 @@ Ewl_Widget *ewl_filedialog_new()
 	if (!fd)
 		DRETURN_PTR(NULL, DLEVEL_STABLE);
 
-	ewl_filedialog_init(fd);
+	ewl_filedialog_init(fd, type);
 
 	DRETURN_PTR(EWL_WIDGET(fd), DLEVEL_STABLE);
 }
@@ -36,19 +36,20 @@ Ewl_Widget *ewl_filedialog_new()
  * @return Returns no value.
  * @brief Initialize a new filedialog
  */
-void ewl_filedialog_init(Ewl_Filedialog * fd)
+void ewl_filedialog_init(Ewl_Filedialog * fd, Ewl_Filedialog_Type type)
 {
 	Ewl_Widget *w;
 	Ewl_Widget *button;
+	Ewl_Widget *box;
 
 	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR("fd", fd);
 
 	w = EWL_WIDGET(fd);
 
-	ewl_dialog_init(EWL_DIALOG(w), EWL_POSITION_BOTTOM);
-	ewl_widget_appearance_set(w, "window");
+ 	ewl_box_init(EWL_BOX(fd), EWL_ORIENTATION_VERTICAL);
 	ewl_object_fill_policy_set(EWL_OBJECT(w), EWL_FLAG_FILL_ALL);
+	ewl_widget_appearance_set(w, "filedialog");
 
 	/* the file selector */
 
@@ -56,20 +57,33 @@ void ewl_filedialog_init(Ewl_Filedialog * fd)
 	if (fd->fs) {
 		char *tmp = getenv("HOME");
 		ewl_fileselector_configure_cb(EWL_FILESELECTOR(fd->fs), (tmp ? tmp : "/"));
-		ewl_dialog_widget_add(EWL_DIALOG(fd), fd->fs);
+		ewl_container_child_append(EWL_CONTAINER(fd), fd->fs);
 		ewl_widget_show(fd->fs);
 	}
 
-	/* Buttons */
+	box = ewl_hbox_new();
+	ewl_object_alignment_set(EWL_OBJECT(box), EWL_FLAG_ALIGN_RIGHT);
+	ewl_container_child_append(EWL_CONTAINER(fd), box);
+	ewl_widget_show(box);
 
-	button = ewl_button_stock_with_id_new(EWL_STOCK_OPEN,
-					 EWL_RESPONSE_OPEN);
-	ewl_container_child_append(EWL_CONTAINER(fd), button);
+	/* Buttons */
+	if (type == EWL_FILEDIALOG_TYPE_OPEN) 
+		button = ewl_button_stock_with_id_new(EWL_STOCK_OPEN,
+						EWL_RESPONSE_OPEN);
+	else
+		button = ewl_button_stock_with_id_new(EWL_STOCK_SAVE,
+						EWL_RESPONSE_SAVE);
+                
+	ewl_callback_append(button, EWL_CALLBACK_CLICKED,
+						ewl_filedialog_click_cb, fd);
+	ewl_container_child_append(EWL_CONTAINER(box), button);
 	ewl_widget_show(button);
 
 	button = ewl_button_stock_with_id_new(EWL_STOCK_CANCEL,
 					 EWL_RESPONSE_CANCEL);
-	ewl_container_child_append(EWL_CONTAINER(fd), button);
+	ewl_callback_append(button, EWL_CALLBACK_CLICKED,
+						ewl_filedialog_click_cb, fd);
+	ewl_container_child_append(EWL_CONTAINER(box), button);
 	ewl_widget_show(button);
 
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
@@ -82,7 +96,7 @@ void ewl_filedialog_init(Ewl_Filedialog * fd)
  */
 char *ewl_filedialog_path_get(Ewl_Filedialog * fd)
 {
-	return EWL_FILESELECTOR(fd->fs)->path;
+	return ewl_fileselector_path_get(fd->fs);
 }
 
 /**
@@ -92,7 +106,7 @@ char *ewl_filedialog_path_get(Ewl_Filedialog * fd)
  */
 char *ewl_filedialog_file_get(Ewl_Filedialog * fd)
 {
-	return EWL_FILESELECTOR(fd->fs)->file;
+	return ewl_fileselector_file_get(EWL_FILESELECTOR(fd->fs));
 }
 
 /**
@@ -109,25 +123,13 @@ void ewl_filedialog_path_set(Ewl_Filedialog * fd, char *path)
 /*
  * Internally used callback, override at your own risk.
  */
-void ewl_filedialog_click_cb(Ewl_Widget * w, void *ev_data, Ewl_Filedialog * fd)
+void ewl_filedialog_click_cb(Ewl_Widget * w, void *ev_data, void* data)
 {
-	char *str = NULL;
+	Ewl_Filedialog *fd = EWL_FILEDIALOG(data);
 
-	switch (EWL_BUTTON_STOCK(w)->response_id) {
-	case (EWL_RESPONSE_OK):
-		{
-			str = ewl_fileselector_file_get(EWL_FILESELECTOR(fd->fs));
-			free(str);
-			ewl_widget_destroy(EWL_WIDGET(fd));
-
-			break;
-		}
-	case (EWL_RESPONSE_CANCEL):
-		{
-			ewl_widget_destroy(EWL_WIDGET(fd));
-			break;
-		}
-	}
 	ewl_callback_call_with_event_data(EWL_WIDGET(fd),
-					  EWL_CALLBACK_VALUE_CHANGED, str);
+					  EWL_CALLBACK_VALUE_CHANGED,
+					  &EWL_BUTTON_STOCK(w)->response_id);
 }
+
+

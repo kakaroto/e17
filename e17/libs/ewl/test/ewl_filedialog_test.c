@@ -1,19 +1,14 @@
 #include "ewl_test.h"
 
-static Ewl_Widget *fd_button = NULL;
-
-
 void __start_fd (Ewl_Widget *w, void *ev_data, void *user_data);
 void __destroy_fd_window (Ewl_Widget *w, void *ev, void *data);
+void __create_fd_window_response (Ewl_Widget *w, void *ev, void *data);
 
 void
 __destroy_filedialog_test_window(Ewl_Widget * w, void *ev_data,
 				    void *user_data)
 {
 	ewl_widget_destroy(w);
-
-	ewl_callback_append(fd_button, EWL_CALLBACK_CLICKED,
-			    __create_filedialog_test_window, NULL);
 
 	return;
 	ev_data = NULL;
@@ -24,20 +19,21 @@ void
 __create_filedialog_test_window(Ewl_Widget * w, void *ev_data,
 				   void *user_data)
 {
-	Ewl_Widget *fd = NULL;
+	Ewl_Widget *fd = NULL, *win = NULL;
 
-	ewl_callback_del(w, EWL_CALLBACK_CLICKED,
-			 __create_filedialog_test_window);
-
-	fd_button = w;
-
-	fd = ewl_filedialog_new();
-	ewl_window_title_set (EWL_WINDOW (fd), "File Dialog");
-	ewl_window_name_set (EWL_WINDOW (fd), "EWL Test Application");
-	ewl_window_class_set (EWL_WINDOW (fd), "EFL Test Application");
-	ewl_object_size_request (EWL_OBJECT (fd), 500, 450);
-	ewl_callback_append (fd, EWL_CALLBACK_DELETE_WINDOW,
+	win = ewl_window_new();
+	ewl_window_title_set (EWL_WINDOW (win), "File Dialog Foo");
+	ewl_window_name_set (EWL_WINDOW (win), "EWL Test Application");
+	ewl_window_class_set (EWL_WINDOW (win), "EFL Test Application");
+	ewl_object_size_request (EWL_OBJECT (win), 500, 450);
+	ewl_callback_append (win, EWL_CALLBACK_DELETE_WINDOW,
 			     __destroy_filedialog_test_window, NULL);
+	ewl_widget_show(win);
+
+	fd = ewl_filedialog_new(EWL_FILEDIALOG_TYPE_OPEN);
+	ewl_callback_append (fd, EWL_CALLBACK_VALUE_CHANGED, 
+			    __create_fd_window_response, NULL);
+	ewl_container_child_append(EWL_CONTAINER(win), fd);
 	ewl_widget_show(fd);
 
 	return;
@@ -47,32 +43,27 @@ __create_filedialog_test_window(Ewl_Widget * w, void *ev_data,
 }
 
 void
-__create_fd_window_response (Ewl_Widget *w, int *id, void *data)
+__create_fd_window_response (Ewl_Widget *w, void *ev, void *data)
 {
-  int                response = (int)*id;
+  int *response = (int *)ev;
 
-  switch (response)
+  switch (*response)
     {
-    case EWL_RESPONSE_OK:
+    case EWL_RESPONSE_OPEN:
       {
 	printf("file open from test program: %s\n", 
 	       ewl_filedialog_file_get (EWL_FILEDIALOG (w)));
-
-	ewl_widget_hide(w);
-
 	break;
       }
     case EWL_RESPONSE_CANCEL:
       {
-	ewl_widget_hide(w);
-
-	break;
+	printf("Test program says bugger off.\n");
+        break;
       }
     }
 
   return;
 
   w = NULL;
-  id = NULL;
   data = NULL;
 }

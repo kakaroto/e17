@@ -107,15 +107,21 @@ void fd_win_del_cb(Ewl_Widget *w, void *event, void *data) {
 }
 
 void open_file_cb(Ewl_Widget *w, void *event, void *data) {
+    int *response = (int *)event;
     char *file = NULL;
 
     ewl_widget_hide(fd_win);
-    file = (char *)event;
+
+    switch (*response) {
+        case EWL_RESPONSE_OPEN:
+            file = ewl_filedialog_file_get(EWL_FILEDIALOG(w));
+            break;
+    }
+
     if (file) 
-	ewl_media_media_set(EWL_MEDIA(video), file);
+        ewl_media_media_set(EWL_MEDIA(video), file);
     
     return;
-    w = NULL;
     data = NULL;
 }
 

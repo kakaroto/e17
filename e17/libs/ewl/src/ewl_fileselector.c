@@ -226,6 +226,9 @@ char *ewl_fileselector_path_get(Ewl_Fileselector * fs)
  */
 char *ewl_fileselector_file_get(Ewl_Fileselector * fs)
 {
+    if (!fs->file || !fs->path)
+        return NULL;
+
 	return ewl_fileselector_str_append(fs->path, fs->file);
 }
 
@@ -248,7 +251,13 @@ void ewl_fileselector_path_set(Ewl_Fileselector * fs, char *path)
 static char *ewl_fileselector_str_append(char *s1, char *s2)
 {
 	char *s;
-	int l = strlen(s1) + strlen(s2) + 1;
+	int l;
+ 
+	/* if either the path or the file is null return null */
+	if (!s1 || !s2)
+		return NULL;
+
+	l = strlen(s1) + strlen(s2) + 1;
 
 	s = (char *) malloc(sizeof(char) * l);
 	s = memcpy(s, s1, strlen(s1));
@@ -456,11 +465,11 @@ ewl_fileselector_tooltip_destroy_cb(Ewl_Widget * w, void *ev_data, void *user_da
 
 void ewl_fileselector_select_file_cb(Ewl_Widget * w, void *ev_data, Ewl_Fileselector * fs)
 {
-	char *file;
+	Ewl_Fileselector_Data *d = NULL;
 
-	file = (char *) ewl_widget_data_get(EWL_WIDGET(w), "FILE");
-	fs->file = file;
-	ewl_entry_text_set(EWL_ENTRY(fs->entry_file), file);
+	d = (Ewl_Fileselector_Data *) ewl_widget_data_get(EWL_WIDGET(w), "FILE");
+	fs->file = d->name;
+	ewl_entry_text_set(EWL_ENTRY(fs->entry_file), d->name);
 }
 
 void ewl_fileselector_select_dir_cb(Ewl_Widget * w, void *ev_data, Ewl_Fileselector * fs)
