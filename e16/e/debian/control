@@ -4,17 +4,6 @@ Priority: optional
 Maintainer: Laurence J. Lane <ljlane@debian.org>
 Standards-Version: 3.0.1.0
 
-Package: enlightenment-theme-ganymede
-Architecture: all
-Recommends: enlightenment
-Provides: enlightenment-theme
-Description: cK's Ganymede theme for E
- This is cK's Ganymede theme. It contains pretty much everything that E
- can currently do, including configurable pulldown menses, lots of borders,
- themes for Eterm and gkrellm, and documentation. The dominant colors are
- bright copper and dark blue. Fully up to date with the E-0.16.0 specs.
- The author can be reached at chrisk@engr.uconn.edu.
-
 Package: enlightenment-theme-shinymetal
 Architecture: all
 Recommends: enlightenment

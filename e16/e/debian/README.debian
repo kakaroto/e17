@@ -20,8 +20,8 @@ xlib6, et cetera) and header files. I'm working on source
 dependencies to alleviate the need to manually install all the libs
 and tools.
 
-Visit http://www.debian.org for the latest official Debian binary and
-source code enlightenment packages.
+Visit http://www.debian.org for the latest official Debian binary 
+packages and source code diffs.
 
 Visit http://www.debian.org/~ljlane/ for the latest bug tracking,
 news, and pre/experimental package releases of Enlightenment for
