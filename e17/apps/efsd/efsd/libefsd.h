@@ -44,7 +44,7 @@ typedef struct efsd_options EfsdOptions;
  * efsd_open - Creates and returns an efsd connection. 
  * 
  * Returns pointer to a newly allocated and initialized
- * Efsd connection object. You need this object for all
+ * Efsd connection structure. You need this structure for all
  * other calls in order to identify the connection to
  * libefsd.
  */
@@ -56,7 +56,7 @@ EfsdConnection *efsd_open(void);
  * @ec: The Efsd connection
  *
  * Use this to close an efsd connection.
- * Frees the allocated EfsdConnection object.
+ * Frees the allocated EfsdConnection structure.
  * Returns value < 0 if the the final
  * command could not be sent to Efsd.
  */
@@ -149,7 +149,7 @@ EfsdCmdId      efsd_symlink(EfsdConnection *ec, char *from_file, char *to_file);
 
 /*  Many of the calls below can be passed options along with the command.
  *  Each option is an EfsdOption pointer, see the efsd_op calls below,
- *  which are plugged together into an EfsdOptions object.
+ *  which are plugged together into an EfsdOptions structure.
  *  You can assemble those pointers in one of two ways:
  *
  *  1. Using a convenience wrapper, which gets the number
@@ -174,7 +174,7 @@ EfsdCmdId      efsd_symlink(EfsdConnection *ec, char *from_file, char *to_file);
  * @ec: The Efsd connection
  * @dirname: Directory path. If not an absolute path (starting with '/'), it
  * is interpreted as being relative to the current working directory.
- * @ops: Efsd options object.
+ * @ops: Efsd options structure.
  *
  * When issuing this command, your client will receive %EFSD_FILE_EXISTS
  * events for all files in the directory, or, if for some reason the
@@ -542,34 +542,34 @@ EfsdCmdId      efsd_get_filetype(EfsdConnection *ec, char *filename);
  */
 
 /**
- * efsd_ops - statically assemble an EfsdOptions object.
+ * efsd_ops - statically assemble an EfsdOptions structure.
  * @num_options: The number of options that you create in the call.
  * You have to make this many option constructor calls (efsd_op_XXX())
  * afterwards.
  *
  * This is the solution for passing options to commands when you
  * know at compile time what options you want to pass. Returns
- * a pointer to a ready-made EfsdOptions object. You do NOT need
+ * a pointer to a ready-made EfsdOptions structure. You do NOT need
  * to free it after you've launched the command, it is
  * freed by the time the command routine returns.
  */
 EfsdOptions  *efsd_ops(int num_options, ...);
 
 /**
- * efsd_ops_create - create an empty EfsdOptions object.
+ * efsd_ops_create - create an empty EfsdOptions structure.
  *
  * Use this function when you need to pass a number of options and do not
- * know their number at compile time. Pass the returned EfsdOptions object
+ * know their number at compile time. Pass the returned EfsdOptions structure
  * to subsequent efsd_ops_add() calls, then pass it to the actual command.
  */
 EfsdOptions  *efsd_ops_create(void);
 
 /**
- * efsd_ops_add - adds an option to an EfsdOptions object.
- * @ops: EfsdOptions object, created via efsd_ops_create()
+ * efsd_ops_add - adds an option to an EfsdOptions structure.
+ * @ops: EfsdOptions structure, created via efsd_ops_create()
  * @op: Option to add, created via one of the efsd_op_XXX() calls
  *
- * Add options to an EfsdOptions object using this function.
+ * Add options to an EfsdOptions structure using this function.
  */
 void          efsd_ops_add(EfsdOptions *ops, EfsdOption *op);
 

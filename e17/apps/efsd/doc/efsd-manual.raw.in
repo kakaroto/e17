@@ -305,7 +305,7 @@ if ( (id = efsd_makedir(ec, "foo/bar")) < 0)
         <para>
 	There are two basic ways of receiving events from &efsd; in your client:
 	Using <function>select()</function> to wait on events on file descriptors,
-	or using %lefsd;'s convenience functions which block and wait until events
+	or using &lefsd;'s convenience functions which block and wait until events
 	arrive.
         </para>
 	<section>

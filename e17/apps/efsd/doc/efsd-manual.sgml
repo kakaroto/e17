@@ -305,7 +305,7 @@ if ( (id = efsd_makedir(ec, "foo/bar")) < 0)
         <para>
 	There are two basic ways of receiving events from &efsd; in your client:
 	Using <function>select()</function> to wait on events on file descriptors,
-	or using %lefsd;'s convenience functions which block and wait until events
+	or using &lefsd;'s convenience functions which block and wait until events
 	arrive.
         </para>
 	<section>
@@ -613,7 +613,7 @@ if ( (id = efsd_start_monitor_dir(ec, "/some/dir", ops)) < 0)
    </para><para>
 
    Returns pointer to a newly allocated and initialized
-   Efsd connection object. You need this object for all
+   Efsd connection structure. You need this structure for all
    other calls in order to identify the connection to
    libefsd.
  </para>
@@ -654,7 +654,7 @@ if ( (id = efsd_start_monitor_dir(ec, "/some/dir", ops)) < 0)
  <title>Description</title>
  <para>
    Use this to close an efsd connection.
-   Frees the allocated EfsdConnection object.
+   Frees the allocated EfsdConnection structure.
    Returns value &lt; 0 if the the final
    command could not be sent to Efsd.
  </para>
@@ -982,7 +982,7 @@ if ( (id = efsd_start_monitor_dir(ec, "/some/dir", ops)) < 0)
    <term><parameter>ops</parameter></term>
    <listitem>
     <para>
-      Efsd options object.
+      Efsd options structure.
     </para>
    </listitem>
   </varlistentry>
@@ -2428,7 +2428,7 @@ if ( (id = efsd_start_monitor_dir(ec, "/some/dir", ops)) < 0)
 <refnamediv>
  <refname>efsd_ops</refname>
  <refpurpose>
-      statically assemble an EfsdOptions object.
+      statically assemble an EfsdOptions structure.
  </refpurpose>
 </refnamediv>
 <refsynopsisdiv>
@@ -2467,7 +2467,7 @@ if ( (id = efsd_start_monitor_dir(ec, "/some/dir", ops)) < 0)
  <para>
    This is the solution for passing options to commands when you
    know at compile time what options you want to pass. Returns
-   a pointer to a ready-made EfsdOptions object. You do NOT need
+   a pointer to a ready-made EfsdOptions structure. You do NOT need
    to free it after you've launched the command, it is
    freed by the time the command routine returns.
  </para>
@@ -2481,7 +2481,7 @@ if ( (id = efsd_start_monitor_dir(ec, "/some/dir", ops)) < 0)
 <refnamediv>
  <refname>efsd_ops_create</refname>
  <refpurpose>
-      create an empty EfsdOptions object.
+      create an empty EfsdOptions structure.
  </refpurpose>
 </refnamediv>
 <refsynopsisdiv>
@@ -2509,7 +2509,7 @@ if ( (id = efsd_start_monitor_dir(ec, "/some/dir", ops)) < 0)
    </para><para>
 
    Use this function when you need to pass a number of options and do not
-   know their number at compile time. Pass the returned EfsdOptions object
+   know their number at compile time. Pass the returned EfsdOptions structure
    to subsequent <function>efsd_ops_add</function> calls, then pass it to the actual command.
  </para>
 </refsect1>
@@ -2522,7 +2522,7 @@ if ( (id = efsd_start_monitor_dir(ec, "/some/dir", ops)) < 0)
 <refnamediv>
  <refname>efsd_ops_add</refname>
  <refpurpose>
-      adds an option to an EfsdOptions object.
+      adds an option to an EfsdOptions structure.
  </refpurpose>
 </refnamediv>
 <refsynopsisdiv>
@@ -2540,7 +2540,7 @@ if ( (id = efsd_start_monitor_dir(ec, "/some/dir", ops)) < 0)
    <term><parameter>ops</parameter></term>
    <listitem>
     <para>
-      EfsdOptions object, created via <function>efsd_ops_create</function>
+      EfsdOptions structure, created via <function>efsd_ops_create</function>
     </para>
    </listitem>
   </varlistentry>
@@ -2557,7 +2557,7 @@ if ( (id = efsd_start_monitor_dir(ec, "/some/dir", ops)) < 0)
 <refsect1>
  <title>Description</title>
  <para>
-   Add options to an EfsdOptions object using this function.
+   Add options to an EfsdOptions structure using this function.
  </para>
 </refsect1>
 </refentry>
