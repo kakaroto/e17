@@ -1347,6 +1347,10 @@ again.
 Setting up E to work with KDE and GNOME
 <p>
 <font face=aircut3/12 color=#ffffff>
+NOTE: If you want your left-mouse menu back - you need to run the e_gen_menu 
+script. It will build the menus for you and install them in ~/.enlightenment.
+run this script whenever you add or delete programs from your system - it will
+pick up on all your KDE apps nicely right now.. :)
 
 <page columns=1 padding=16 name=placement background=Edoc_bg.png linkcolor=#88dddd>
 <font face=rothwell/25 color=#ffffff>
