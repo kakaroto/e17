@@ -3042,3 +3042,15 @@ Fix nastiness when there are more than 16 windows on one desk at startup.
 Fix desktop background thumbnail caching.
 Fix some initial desktop setup.
 Fix random killing when closing iconbox.
+
+-------------------------------------------------------------------------------
+
+Sun Aug  8 02:39:33 CEST 2004
+(Kim)
+
+Attempt to do something about the Restart Placement Bug.
+Enable showing some grab info.
+Fix segv in "Advanced Settings" dialog when dialog headers are enabled.
+Enable showing some menu info for debug (+tidy up some menu state stuff).
+Debug for tracking area and desktop changes.
+Debug commands to set/unset pointer grabs.
