@@ -1,1 +1,8 @@
- 
+Mon Mar  4 00:20:20 CST 2002 Corey Donohoe<atmos@atmos.org>
+ * Trashed old interface for a more scalable one 
+ * Use ebony.glade to manipulate the interface
+ * Lots of ebony specific callbacks in gtk_util.c
+ * Background specific stuff, and recent bg stuff is in util.c
+ * Needs a good look through cause I pulled a lot of verbatim code from 
+   the older version
+ * The Really simplified front tab interface needs to be implemented
