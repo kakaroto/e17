@@ -515,8 +515,8 @@ init_thumbnail_mode(void)
       if (opt.display && opt.progressive)
       {
          winwidget_render_image(winwid, 0, 0);
-         if(!feh_main_iteration(0))
-               exit(0);
+         if (!feh_main_iteration(0))
+            exit(0);
       }
    }
    if (opt.verbose)
@@ -624,6 +624,7 @@ feh_thumbnail_new(feh_file * file, int x, int y, int w, int h)
    thumb->w = w;
    thumb->h = h;
    thumb->file = file;
+   thumb->exists = 1;
 
    D_RETURN(thumb);
 }
@@ -641,10 +642,13 @@ feh_thumbnail_get_file_from_coords(int x, int y)
       thumb = FEH_THUMB(l->data);
       if (XY_IN_RECT(x, y, thumb->x, thumb->y, thumb->w, thumb->h))
       {
-         D_RETURN(thumb->file);
+         if (thumb->exists)
+         {
+            D_RETURN(thumb->file);
+         }
       }
    }
-   D(("No matching %d %d", x, y));
+   D(("No matching %d %d\n", x, y));
    D_RETURN(NULL);
 }
 
@@ -661,9 +665,78 @@ feh_thumbnail_get_thumbnail_from_coords(int x, int y)
       thumb = FEH_THUMB(l->data);
       if (XY_IN_RECT(x, y, thumb->x, thumb->y, thumb->w, thumb->h))
       {
-         D_RETURN(thumb);
+         if (thumb->exists)
+         {
+            D_RETURN(thumb);
+         }
       }
    }
-   D(("No matching %d %d", x, y));
+   D(("No matching %d %d\n", x, y));
    D_RETURN(NULL);
+}
+
+feh_thumbnail *
+feh_thumbnail_get_from_file(feh_file * file)
+{
+   feh_list *l;
+   feh_thumbnail *thumb;
+
+   D_ENTER;
+
+   for (l = thumbnails; l; l = l->next)
+   {
+      thumb = FEH_THUMB(l->data);
+      if (thumb->file == file)
+      {
+         if (thumb->exists)
+         {
+            D_RETURN(thumb);
+         }
+      }
+   }
+   D(("No match\n"));
+   D_RETURN(NULL);
+}
+
+
+void
+feh_thumbnail_mark_removed(feh_file * file, int deleted)
+{
+   feh_thumbnail *thumb;
+   winwidget w;
+   Imlib_Font fn;
+
+   D_ENTER;
+
+   thumb = feh_thumbnail_get_from_file(file);
+   if (thumb)
+   {
+      w = winwidget_get_first_window_of_type(WIN_TYPE_THUMBNAIL);
+      if (w)
+      {
+         fn = imlib_load_font("20thcent/20");
+         if (deleted)
+            feh_imlib_image_fill_rectangle(w->im, thumb->x, thumb->y,
+                                           thumb->w, thumb->h, 255, 0, 0,
+                                           150);
+         else
+            feh_imlib_image_fill_rectangle(w->im, thumb->x, thumb->y,
+                                           thumb->w, thumb->h, 0, 0, 255,
+                                           150);
+         if (fn)
+         {
+            int tw, th;
+
+            feh_imlib_get_text_size(fn, "X", &tw, &th, IMLIB_TEXT_TO_RIGHT);
+            feh_imlib_text_draw(w->im, fn, thumb->x + ((thumb->w - tw) / 2),
+                                thumb->y + ((thumb->h - th) / 2), "X",
+                                IMLIB_TEXT_TO_RIGHT, 205, 205, 50, 255);
+         }
+         else
+            weprintf("couldn't load font 20thcent/20");
+         winwidget_render_image(w, 0, 1);
+      }
+      thumb->exists = 0;
+   }
+   D_RETURN_;
 }

@@ -75,8 +75,7 @@ winwidget_allocate(void)
    D_RETURN(ret);
 }
 
-winwidget
-winwidget_create_from_image(Imlib_Image im, char *name, char type)
+winwidget winwidget_create_from_image(Imlib_Image im, char *name, char type)
 {
    winwidget ret = NULL;
 
@@ -103,8 +102,7 @@ winwidget_create_from_image(Imlib_Image im, char *name, char type)
    D_RETURN(ret);
 }
 
-winwidget
-winwidget_create_from_file(feh_list * list, char *name, char type)
+winwidget winwidget_create_from_file(feh_list * list, char *name, char type)
 {
    winwidget ret = NULL;
    feh_file *file = FEH_FILE(list->data);
@@ -124,7 +122,7 @@ winwidget_create_from_file(feh_list * list, char *name, char type)
       ret->name = estrdup(file->filename);
 
    if (opt.progressive)
-      pfunc =  progressive_load_cb;
+      pfunc = progressive_load_cb;
 
    if (winwidget_loadimage(ret, file, pfunc) == 0)
    {
@@ -248,6 +246,7 @@ void
 winwidget_update_title(winwidget ret)
 {
    D_ENTER;
+   D(("winwid->name = %s\n", ret->name));
    if (ret->name)
       XStoreName(disp, ret->win, ret->name);
    else
@@ -300,6 +299,10 @@ winwidget_render_image(winwidget winwid, int resize, int alias)
    int calc_w, calc_h;
 
    D_ENTER;
+
+   if (winwid->file)
+      printf("winwid->file: %p\nwinwid->file->name: %s\n", winwid->file,
+             FEH_FILE(winwid->file)->name);
 
    if (!opt.full_screen && resize)
    {
@@ -410,14 +413,23 @@ winwidget_render_image(winwidget winwid, int resize, int alias)
    sh = dh / winwid->zoom;
 
    D(
-     ("-----------\nRender image:\nsx: %d\nsy: %d\nsw: %d\nsh: %d\ndx: %d\ndy: %d\ndw: %d\ndh: %d\n",
-      sx, sy, sw, sh, dx, dy, dw, dh));
+     ("sx: %d sy: %d sw: %d sh: %d dx: %d dy: %d dw: %d dh: %d\n", sx, sy, sw,
+      sh, dx, dy, dw, dh));
 
    D(("winwidget_render(): winwid->im_angle = %f\n", winwid->im_angle));
    if (winwid->has_rotated)
-      feh_imlib_render_image_part_on_drawable_at_size_with_rotation
-         (winwid->bg_pmap, winwid->im, sx, sy, sw, sh, dx, dy, dw, dh,
-          winwid->im_angle, 1, 1, alias);
+      feh_imlib_render_image_part_on_drawable_at_size_with_rotation(winwid->
+                                                                    bg_pmap,
+                                                                    winwid->
+                                                                    im, sx,
+                                                                    sy, sw,
+                                                                    sh, dx,
+                                                                    dy, dw,
+                                                                    dh,
+                                                                    winwid->
+                                                                    im_angle,
+                                                                    1, 1,
+                                                                    alias);
    else
       feh_imlib_render_image_part_on_drawable_at_size(winwid->bg_pmap,
                                                       winwid->im, sx, sy, sw,
@@ -448,7 +460,8 @@ feh_calc_needed_zoom(double *zoom, int orig_w, int orig_h, int dest_w,
    D_RETURN(ratio);
 }
 
-Pixmap feh_create_checks(void)
+Pixmap
+feh_create_checks(void)
 {
    static Pixmap checks_pmap = None;
    Imlib_Image checks = NULL;
@@ -547,8 +560,21 @@ winwidget_destroy_all(void)
    D_RETURN_;
 }
 
+winwidget
+winwidget_get_first_window_of_type(unsigned int type)
+{
+   int i;
+
+   D_ENTER;
+   for (i = 0; i < window_num; i++)
+      if (windows[i]->type == type)
+         D_RETURN(windows[i]);
+   D_RETURN(NULL);
+}
+
 int
-winwidget_loadimage(winwidget winwid, feh_file * file, Imlib_Progress_Function pfunc)
+winwidget_loadimage(winwidget winwid, feh_file * file,
+                    Imlib_Progress_Function pfunc)
 {
    D_ENTER;
    D(("filename %s\n", file->filename));
@@ -647,8 +673,7 @@ winwidget_unregister(winwidget win)
    D_RETURN_;
 }
 
-winwidget
-winwidget_get_from_window(Window win)
+winwidget winwidget_get_from_window(Window win)
 {
    winwidget ret = NULL;
 
@@ -664,7 +689,7 @@ winwidget_rename(winwidget winwid, char *newname)
    D_ENTER;
    if (winwid->name)
       free(winwid->name);
-   winwid->name = newname;
+   winwid->name = estrdup(newname);
    winwidget_update_title(winwid);
    D_RETURN_;
 }

@@ -25,6 +25,7 @@
 #include "feh.h"
 #include "support.h"
 #include "feh_list.h"
+#include "thumbnail.h"
 #include "winwidget.h"
 #include "filelist.h"
 #include "options.h"
@@ -33,8 +34,11 @@ Window menu_cover = 0;
 feh_menu *menu_root = NULL;
 feh_menu *menu_main = NULL;
 feh_menu *menu_single_win = NULL;
+feh_menu *menu_about_win = NULL;
+feh_menu *menu_thumbnail_viewer = NULL;
 feh_menu *menu_bg = NULL;
 static feh_menu_list *menus = NULL;
+static int common_menus = 0;
 
 static void feh_menu_cb_about(feh_menu * m, feh_menu_item * i, void *data);
 static void feh_menu_cb_close(feh_menu * m, feh_menu_item * i, void *data);
@@ -42,6 +46,8 @@ static void feh_menu_cb_exit(feh_menu * m, feh_menu_item * i, void *data);
 static void feh_menu_cb_reload(feh_menu * m, feh_menu_item * i, void *data);
 static void feh_menu_cb_remove(feh_menu * m, feh_menu_item * i, void *data);
 static void feh_menu_cb_delete(feh_menu * m, feh_menu_item * i, void *data);
+static void feh_menu_cb_remove_thumb(feh_menu * m, feh_menu_item * i, void *data);
+static void feh_menu_cb_delete_thumb(feh_menu * m, feh_menu_item * i, void *data);
 static void feh_menu_cb_background_set_tiled(feh_menu * m, feh_menu_item * i,
 
                                              void *data);
@@ -907,12 +913,15 @@ feh_menu_get_from_window(Window win)
 }
 
 void
-feh_menu_init(void)
+feh_menu_init_main(void)
 {
    feh_menu *m;
    feh_menu_item *mi;
 
    D_ENTER;
+   if (!common_menus)
+      feh_menu_init_common();
+
    menu_main = feh_menu_new();
    menu_main->name = estrdup("MAIN");
 
@@ -957,145 +966,236 @@ feh_menu_init(void)
    }
    feh_menu_add_entry(m, "Background", NULL, "BACKGROUND", NULL, NULL, NULL);
 
-   if (opt.slideshow || opt.multiwindow)
-   {
-      m = feh_menu_new();
-      m->name = estrdup("CONFIRM");
-      feh_menu_add_entry(m, "Confirm", NULL, NULL, feh_menu_cb_delete, NULL,
-                         NULL);
+   D_RETURN_;
+}
 
-      m = feh_menu_new();
-      m->name = estrdup("SORT");
+void
+feh_menu_init_common()
+{
+   int num_desks, i;
+   char buf[30];
+   feh_menu *m;
 
-      feh_menu_add_entry(m, "By filename", NULL, NULL,
-                         feh_menu_cb_sort_filename, NULL, NULL);
-      feh_menu_add_entry(m, "By image name", NULL, NULL,
-                         feh_menu_cb_sort_imagename, NULL, NULL);
-      if (opt.preload || (opt.sort > SORT_FILENAME))
-         feh_menu_add_entry(m, "By file size", NULL, NULL,
-                            feh_menu_cb_sort_filesize, NULL, NULL);
-      feh_menu_add_entry(m, "Randomize", NULL, NULL,
-                         feh_menu_cb_sort_randomize, NULL, NULL);
-   }
+   D_ENTER;
+
+   m = feh_menu_new();
+   m->name = estrdup("SORT");
+
+   feh_menu_add_entry(m, "By filename", NULL, NULL, feh_menu_cb_sort_filename,
+                      NULL, NULL);
+   feh_menu_add_entry(m, "By image name", NULL, NULL,
+                      feh_menu_cb_sort_imagename, NULL, NULL);
+   if (opt.preload || (opt.sort > SORT_FILENAME))
+      feh_menu_add_entry(m, "By file size", NULL, NULL,
+                         feh_menu_cb_sort_filesize, NULL, NULL);
+   feh_menu_add_entry(m, "Randomize", NULL, NULL, feh_menu_cb_sort_randomize,
+                      NULL, NULL);
+
+   m = feh_menu_new();
+   m->name = estrdup("CONFIRM");
+   feh_menu_add_entry(m, "Confirm", NULL, NULL, feh_menu_cb_delete, NULL,
+                      NULL);
 
    menu_bg = feh_menu_new();
    menu_bg->name = estrdup("BACKGROUND");
+
+   num_desks = feh_wm_get_num_desks();
+   if (num_desks > 1)
    {
-      int num_desks, i;
-      char buf[30];
+      feh_menu_add_entry(menu_bg, "Set tiled", NULL, "TILED", NULL, NULL,
+                         NULL);
+      feh_menu_add_entry(menu_bg, "Set seamless", NULL, "SEAMLESS", NULL,
+                         NULL, NULL);
+      feh_menu_add_entry(menu_bg, "Set scaled", NULL, "SCALED", NULL, NULL,
+                         NULL);
+      feh_menu_add_entry(menu_bg, "Set centered", NULL, "CENTERED", NULL,
+                         NULL, NULL);
 
-      num_desks = feh_wm_get_num_desks();
-      if (num_desks > 1)
+      m = feh_menu_new();
+      m->name = estrdup("TILED");
+      for (i = 0; i < num_desks; i++)
       {
-         feh_menu_add_entry(menu_bg, "Set tiled", NULL, "TILED", NULL, NULL,
-                            NULL);
-         feh_menu_add_entry(menu_bg, "Set seamless", NULL, "SEAMLESS", NULL,
-                            NULL, NULL);
-         feh_menu_add_entry(menu_bg, "Set scaled", NULL, "SCALED", NULL, NULL,
-                            NULL);
-         feh_menu_add_entry(menu_bg, "Set centered", NULL, "CENTERED", NULL,
-                            NULL, NULL);
-
-         m = feh_menu_new();
-         m->name = estrdup("TILED");
-         for (i = 0; i < num_desks; i++)
-         {
-            snprintf(buf, sizeof(buf), "Desktop %d", i + 1);
-            if (opt.slideshow || opt.multiwindow)
-               feh_menu_add_entry(m, buf, NULL, NULL,
-                                  feh_menu_cb_background_set_tiled,
-                                  (void *) i, NULL);
-            else
-               feh_menu_add_entry(m, buf, NULL, NULL,
-                                  feh_menu_cb_background_set_tiled_no_file,
-                                  (void *) i, NULL);
-         }
-
-         m = feh_menu_new();
-         m->name = estrdup("SEAMLESS");
-         for (i = 0; i < num_desks; i++)
-         {
-            snprintf(buf, sizeof(buf), "Desktop %d", i + 1);
+         snprintf(buf, sizeof(buf), "Desktop %d", i + 1);
+         if (opt.slideshow || opt.multiwindow)
             feh_menu_add_entry(m, buf, NULL, NULL,
-                               feh_menu_cb_background_set_seamless,
+                               feh_menu_cb_background_set_tiled, (void *) i,
+                               NULL);
+         else
+            feh_menu_add_entry(m, buf, NULL, NULL,
+                               feh_menu_cb_background_set_tiled_no_file,
                                (void *) i, NULL);
-         }
+      }
+
+      m = feh_menu_new();
+      m->name = estrdup("SEAMLESS");
+      for (i = 0; i < num_desks; i++)
+      {
+         snprintf(buf, sizeof(buf), "Desktop %d", i + 1);
+         feh_menu_add_entry(m, buf, NULL, NULL,
+                            feh_menu_cb_background_set_seamless, (void *) i,
+                            NULL);
+      }
 
 
-         m = feh_menu_new();
-         m->name = estrdup("SCALED");
-         for (i = 0; i < num_desks; i++)
-         {
-            snprintf(buf, sizeof(buf), "Desktop %d", i + 1);
+      m = feh_menu_new();
+      m->name = estrdup("SCALED");
+      for (i = 0; i < num_desks; i++)
+      {
+         snprintf(buf, sizeof(buf), "Desktop %d", i + 1);
 
-            if (opt.slideshow || opt.multiwindow)
-               feh_menu_add_entry(m, buf, NULL, NULL,
-                                  feh_menu_cb_background_set_scaled,
-                                  (void *) i, NULL);
-            else
-               feh_menu_add_entry(m, buf, NULL, NULL,
-                                  feh_menu_cb_background_set_scaled_no_file,
-                                  (void *) i, NULL);
-         }
+         if (opt.slideshow || opt.multiwindow)
+            feh_menu_add_entry(m, buf, NULL, NULL,
+                               feh_menu_cb_background_set_scaled, (void *) i,
+                               NULL);
+         else
+            feh_menu_add_entry(m, buf, NULL, NULL,
+                               feh_menu_cb_background_set_scaled_no_file,
+                               (void *) i, NULL);
+      }
 
-         m = feh_menu_new();
-         m->name = estrdup("CENTERED");
-         for (i = 0; i < num_desks; i++)
-         {
-            snprintf(buf, sizeof(buf), "Desktop %d", i + 1);
-            if (opt.slideshow || opt.multiwindow)
-               feh_menu_add_entry(m, buf, NULL, NULL,
-                                  feh_menu_cb_background_set_centered,
-                                  (void *) i, NULL);
-            else
-               feh_menu_add_entry(m, buf, NULL, NULL,
-                                  feh_menu_cb_background_set_centered_no_file,
-                                  (void *) i, NULL);
-         }
+      m = feh_menu_new();
+      m->name = estrdup("CENTERED");
+      for (i = 0; i < num_desks; i++)
+      {
+         snprintf(buf, sizeof(buf), "Desktop %d", i + 1);
+         if (opt.slideshow || opt.multiwindow)
+            feh_menu_add_entry(m, buf, NULL, NULL,
+                               feh_menu_cb_background_set_centered,
+                               (void *) i, NULL);
+         else
+            feh_menu_add_entry(m, buf, NULL, NULL,
+                               feh_menu_cb_background_set_centered_no_file,
+                               (void *) i, NULL);
+      }
+   }
+   else
+   {
+      if (opt.slideshow || opt.multiwindow)
+      {
+         feh_menu_add_entry(menu_bg, "Set tiled", NULL, NULL,
+                            feh_menu_cb_background_set_tiled, NULL, NULL);
+         feh_menu_add_entry(menu_bg, "Set seamless", NULL, NULL,
+                            feh_menu_cb_background_set_seamless, NULL, NULL);
+         feh_menu_add_entry(menu_bg, "Set scaled", NULL, NULL,
+                            feh_menu_cb_background_set_scaled, NULL, NULL);
+         feh_menu_add_entry(menu_bg, "Set centered", NULL, NULL,
+                            feh_menu_cb_background_set_centered, NULL, NULL);
       }
       else
       {
-         if (opt.slideshow || opt.multiwindow)
-         {
-            feh_menu_add_entry(menu_bg, "Set tiled", NULL, NULL,
-                               feh_menu_cb_background_set_tiled, NULL, NULL);
-            feh_menu_add_entry(menu_bg, "Set seamless", NULL, NULL,
-                               feh_menu_cb_background_set_seamless, NULL,
-                               NULL);
-            feh_menu_add_entry(menu_bg, "Set scaled", NULL, NULL,
-                               feh_menu_cb_background_set_scaled, NULL, NULL);
-            feh_menu_add_entry(menu_bg, "Set centered", NULL, NULL,
-                               feh_menu_cb_background_set_centered, NULL,
-                               NULL);
-         }
-         else
-         {
-            feh_menu_add_entry(menu_bg, "Set tiled", NULL, NULL,
-                               feh_menu_cb_background_set_tiled_no_file, NULL,
-                               NULL);
-            feh_menu_add_entry(menu_bg, "Set seamless", NULL, NULL,
-                               feh_menu_cb_background_set_seamless, NULL,
-                               NULL);
-            feh_menu_add_entry(menu_bg, "Set scaled", NULL, NULL,
-                               feh_menu_cb_background_set_scaled_no_file,
-                               NULL, NULL);
-            feh_menu_add_entry(menu_bg, "Set centered", NULL, NULL,
-                               feh_menu_cb_background_set_centered_no_file,
-                               NULL, NULL);
-         }
+         feh_menu_add_entry(menu_bg, "Set tiled", NULL, NULL,
+                            feh_menu_cb_background_set_tiled_no_file, NULL,
+                            NULL);
+         feh_menu_add_entry(menu_bg, "Set seamless", NULL, NULL,
+                            feh_menu_cb_background_set_seamless, NULL, NULL);
+         feh_menu_add_entry(menu_bg, "Set scaled", NULL, NULL,
+                            feh_menu_cb_background_set_scaled_no_file, NULL,
+                            NULL);
+         feh_menu_add_entry(menu_bg, "Set centered", NULL, NULL,
+                            feh_menu_cb_background_set_centered_no_file, NULL,
+                            NULL);
       }
    }
+   common_menus = 1;
 
-   menu_single_win = feh_menu_new();
-   menu_single_win->name = estrdup("CLOSE");
+   D_RETURN_;
+}
 
-   feh_menu_add_entry(menu_single_win, "Background", NULL, "BACKGROUND", NULL,
+void
+feh_menu_init_about_win(void)
+{
+   D_ENTER;
+
+   menu_about_win = feh_menu_new();
+   menu_about_win->name = estrdup("ABOUTWIN");
+
+   feh_menu_add_entry(menu_about_win, "Close", NULL, NULL, feh_menu_cb_close,
+                      NULL, NULL);
+   feh_menu_add_entry(menu_about_win, "Exit", NULL, NULL, feh_menu_cb_exit,
                       NULL, NULL);
 
+   D_RETURN_;
+}
+
+void
+feh_menu_init_single_win(void)
+{
+   feh_menu *m;
+   feh_menu_item *mi;
+
+   D_ENTER;
+   if (!common_menus)
+      feh_menu_init_common();
+
+   menu_single_win = feh_menu_new();
+   menu_single_win->name = estrdup("SINGLEWIN");
+
+   feh_menu_add_entry(menu_single_win, "File", NULL, "SINGLEWIN_FILE", NULL,
+                      NULL, NULL);
+   m = feh_menu_new();
+   m->name = estrdup("SINGLEWIN_FILE");
+   feh_menu_add_entry(m, "Reload", NULL, NULL, feh_menu_cb_reload, NULL,
+                      NULL);
+   feh_menu_add_entry(m, "Remove from filelist", NULL, NULL,
+                      feh_menu_cb_remove, NULL, NULL);
+   feh_menu_add_entry(m, "Delete", NULL, "CONFIRM", NULL, NULL, NULL);
+   feh_menu_add_entry(m, "Background", NULL, "BACKGROUND", NULL, NULL, NULL);
+
+   mi =
+      feh_menu_add_entry(menu_single_win, "Image Info", NULL, "INFO", NULL,
+                         NULL, NULL);
+   mi->func_gen_sub = feh_menu_func_gen_info;
+   feh_menu_add_entry(menu_single_win, NULL, NULL, NULL, NULL, NULL, NULL);
+   feh_menu_add_entry(menu_single_win, "About " PACKAGE, NULL, NULL,
+                      feh_menu_cb_about, NULL, NULL);
    feh_menu_add_entry(menu_single_win, "Close", NULL, NULL, feh_menu_cb_close,
                       NULL, NULL);
    feh_menu_add_entry(menu_single_win, "Exit", NULL, NULL, feh_menu_cb_exit,
                       NULL, NULL);
+
+   D_RETURN_;
+}
+
+void
+feh_menu_init_thumbnail_viewer(void)
+{
+   feh_menu *m;
+   feh_menu_item *mi;
+
+   D_ENTER;
+   if (!common_menus)
+      feh_menu_init_common();
+
+   menu_thumbnail_viewer = feh_menu_new();
+   menu_thumbnail_viewer->name = estrdup("THUMBVIEW");
+
+   feh_menu_add_entry(menu_thumbnail_viewer, "File", NULL, "THUMBVIEW_FILE", NULL,
+                      NULL, NULL);
+   m = feh_menu_new();
+   m->name = estrdup("THUMBVIEW_FILE");
+   feh_menu_add_entry(m, "Reload", NULL, NULL, feh_menu_cb_reload, NULL,
+                      NULL);
+   feh_menu_add_entry(m, "Remove from filelist", NULL, NULL,
+                      feh_menu_cb_remove_thumb, NULL, NULL);
+   feh_menu_add_entry(m, "Delete", NULL, "THUMBVIEW_CONFIRM", NULL, NULL, NULL);
+   feh_menu_add_entry(m, "Background", NULL, "BACKGROUND", NULL, NULL, NULL);
+
+   mi =
+      feh_menu_add_entry(menu_thumbnail_viewer, "Image Info", NULL, "INFO", NULL,
+                         NULL, NULL);
+   mi->func_gen_sub = feh_menu_func_gen_info;
+   feh_menu_add_entry(menu_thumbnail_viewer, NULL, NULL, NULL, NULL, NULL, NULL);
+   feh_menu_add_entry(menu_thumbnail_viewer, "About " PACKAGE, NULL, NULL,
+                      feh_menu_cb_about, NULL, NULL);
+   feh_menu_add_entry(menu_thumbnail_viewer, "Close", NULL, NULL, feh_menu_cb_close,
+                      NULL, NULL);
+   feh_menu_add_entry(menu_thumbnail_viewer, "Exit", NULL, NULL, feh_menu_cb_exit,
+                      NULL, NULL);   
+   
+   m = feh_menu_new();
+   m->name = estrdup("THUMBVIEW_CONFIRM");
+   feh_menu_add_entry(m, "Confirm", NULL, NULL, feh_menu_cb_delete_thumb, NULL,
+                      NULL);
 
    D_RETURN_;
 }
@@ -1206,11 +1306,15 @@ feh_menu_cb_about(feh_menu * m, feh_menu_item * i, void *data)
 
    D_ENTER;
 
-   if (feh_load_image_char(&im, PREFIX "/share/feh/images/about.png", NULL) != 0)
+   if (feh_load_image_char(&im, PREFIX "/share/feh/images/about.png", NULL) !=
+       0)
    {
       winwid =
          winwidget_create_from_image(im, "About " PACKAGE, WIN_TYPE_ABOUT);
-      winwid->file = feh_list_add_front(NULL, feh_file_new(PREFIX "/share/feh/images/about.png"));
+      winwid->file =
+         feh_list_add_front(NULL,
+                            feh_file_new(PREFIX
+                                         "/share/feh/images/about.png"));
       winwidget_show(winwid);
    }
    D_RETURN_;
@@ -1271,6 +1375,29 @@ feh_menu_cb_delete(feh_menu * m, feh_menu_item * i, void *data)
 }
 
 static void
+feh_menu_cb_remove_thumb(feh_menu * m, feh_menu_item * i, void *data)
+{
+   D_ENTER;
+   feh_thumbnail_mark_removed(FEH_FILE(m->fehwin->file->data), 0);
+   feh_filelist_image_remove(m->fehwin, 0);
+   D_RETURN_;
+   i = NULL;
+   data = NULL;
+}
+                                          
+static void
+feh_menu_cb_delete_thumb(feh_menu * m, feh_menu_item * i, void *data)
+{
+   D_ENTER;
+   feh_thumbnail_mark_removed(FEH_FILE(m->fehwin->file->data), 1);
+   feh_filelist_image_remove(m->fehwin, 1);
+   D_RETURN_;
+   i = NULL;
+   data = NULL;
+}
+
+
+static void
 feh_menu_cb_sort_filename(feh_menu * m, feh_menu_item * i, void *data)
 {
    D_ENTER;
@@ -1328,8 +1455,8 @@ feh_menu_func_gen_jump(feh_menu * m, feh_menu_item * i, void *data)
 
    for (l = filelist; l; l = l->next)
    {
-      feh_menu_add_entry(mm, FEH_FILE(l->data)->name, NULL, NULL, feh_menu_cb_jump_to,
-                         l, NULL);
+      feh_menu_add_entry(mm, FEH_FILE(l->data)->name, NULL, NULL,
+                         feh_menu_cb_jump_to, l, NULL);
    }
    D_RETURN(mm);
    m = NULL;
@@ -1397,7 +1524,7 @@ feh_menu_cb_jump_to(feh_menu * m, feh_menu_item * i, void *data)
    feh_list *l;
 
    D_ENTER;
-   l = (feh_list *)data;
+   l = (feh_list *) data;
    if (l->prev)
    {
       current_file = l->prev;

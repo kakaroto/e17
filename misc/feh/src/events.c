@@ -98,14 +98,31 @@ feh_event_handle_ButtonPress(XEvent * ev)
          unsigned int c;
          Window r;
 
-         if (!menu_main)
-            feh_menu_init();
          XQueryPointer(disp, winwid->win, &r, &r, &x, &y, &b, &b, &c);
-         if ((winwid->type == WIN_TYPE_ABOUT)
-             || (winwid->type == WIN_TYPE_SINGLE))
+         if (winwid->type == WIN_TYPE_ABOUT)
+         {
+             if(!menu_about_win)
+               feh_menu_init_about_win();
+            feh_menu_show_at_xy(menu_about_win, winwid, x, y);
+         }
+         else if (winwid->type == WIN_TYPE_SINGLE)
+         {
+            if(!menu_single_win)
+               feh_menu_init_single_win();
             feh_menu_show_at_xy(menu_single_win, winwid, x, y);
+         }
+         else if(winwid->type == WIN_TYPE_THUMBNAIL_VIEWER)
+         {
+            if(!menu_single_win)
+               feh_menu_init_thumbnail_viewer();
+            feh_menu_show_at_xy(menu_thumbnail_viewer, winwid, x, y);
+         }
          else
+         {
+         if (!menu_main)
+            feh_menu_init_main();
             feh_menu_show_at_xy(menu_main, winwid, x, y);
+         }
       }
    }
    else if ((ev->xbutton.button == opt.rotate_button)
@@ -155,12 +172,25 @@ feh_event_handle_ButtonPress(XEvent * ev)
          if (thumbfile)
          {
             thumbwin =
-               winwidget_create_from_file(feh_list_add_front(NULL, thumbfile),
-                                          thumbfile->name, WIN_TYPE_SINGLE);
+               winwidget_get_first_window_of_type(WIN_TYPE_THUMBNAIL_VIEWER);
+            if (!thumbwin)
+            {
+               thumbwin =
+                  winwidget_create_from_file(feh_list_add_front
+                                             (NULL, thumbfile),
+                                             thumbfile->name,
+                                             WIN_TYPE_THUMBNAIL_VIEWER);
                winwidget_show(thumbwin);
+            }
+            else if (FEH_FILE(thumbwin->file->data) != thumbfile)
+            {
+               free(thumbwin->file);
+               thumbwin->file = feh_list_add_front(NULL, thumbfile);
+               winwidget_rename(thumbwin, thumbfile->name);
+               feh_reload_image(thumbwin);
+            }
          }
       }
-
    }
    else if (ev->xbutton.button == opt.pan_button)
    {
@@ -286,7 +316,8 @@ feh_event_handle_ButtonRelease(XEvent * ev)
          winwidget_render_image(winwid, 0, 1);
       }
    }
-   else if (ev->xbutton.button == opt.blur_button)
+   else if ((ev->xbutton.button == opt.blur_button)
+            && ((opt.no_blur_ctrl_mask) || (ev->xbutton.state & ControlMask)))
    {
       D(("Blur Button Release event\n"));
       winwid = winwidget_get_from_window(ev->xbutton.window);

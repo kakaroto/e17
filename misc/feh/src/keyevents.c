@@ -24,6 +24,7 @@
 
 #include "feh.h"
 #include "feh_list.h"
+#include "thumbnail.h"
 #include "filelist.h"
 #include "winwidget.h"
 #include "options.h"
@@ -68,9 +69,17 @@ handle_keypress_event(XEvent * ev, Window win)
         /* Holding ctrl gets you a filesystem deletion and removal from the * 
            filelist. Just DEL gets you filelist removal only. */
         if (kev->state & ControlMask)
+        {
+           if(winwid->type == WIN_TYPE_THUMBNAIL_VIEWER)
+              feh_thumbnail_mark_removed(FEH_FILE(winwid->file->data), 1);
            feh_filelist_image_remove(winwid, 1);
+        }
         else
+        {
+           if(winwid->type == WIN_TYPE_THUMBNAIL_VIEWER)
+              feh_thumbnail_mark_removed(FEH_FILE(winwid->file->data), 0);
            feh_filelist_image_remove(winwid, 0);
+        }
         break;
      case XK_Home:
      case XK_KP_Home:
@@ -90,7 +99,8 @@ handle_keypress_event(XEvent * ev, Window win)
               feh_action_run(FEH_FILE(winwid->file->data));
               slideshow_change_image(winwid, SLIDE_NEXT);
            }
-           else if (opt.multiwindow)
+           else if ((winwid->type = WIN_TYPE_SINGLE)
+                    || (winwid->type = WIN_TYPE_THUMBNAIL_VIEWER))
            {
               feh_action_run(FEH_FILE(winwid->file->data));
               winwidget_destroy(winwid);

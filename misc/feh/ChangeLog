@@ -1,3 +1,13 @@
+Sat Jun 24 00:13:53 2000  Tom Gilbert  <gilbertt@linuxbrit.co.uk>
+
+	* Thumbnails, when clicked, now all open the clicked image in the
+	same window. Much better for browsing.
+	* Menu fixups, more efficient now. Also, better context menus,
+	having the right options for the right window types.
+	* If you open a thumbnail, and then delete it or remove it from
+	the filelist, the thumbnail view will update to show the
+	fact. This is cool :-)
+
 Fri Jun 23 17:15:07 2000  Tom Gilbert  <gilbertt@linuxbrit.co.uk>
 
 	* Depreciated the FEH_OPTIONS envrionment variable in favour of
