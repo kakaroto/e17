@@ -68,6 +68,7 @@
 <a href="http://packages.debian.org/enlightenment">Debian</a><br>
 <a href="/pages/download.html">Other platforms</a><br>
 <a href="/pages/source.html">CVS</a><br>
+<a href="http://themes.freshmeat.net/browse/60/?topic_id=60">Themes [at freshmeat]</a><br>
 </p>
 </td></tr>
 </table>
@@ -150,54 +151,79 @@ Tools:<br>
 <p class="contenttitle">News</p>
 
 <p><table width="100%"><tr><td class="newstitle">
-Thur Mar 28 -  <a href="mailto:benr@NO.SPAMcuddletech.com">benr</a> - DR17 kicks into high gear
+Thur May 2 -  <a href="mailto:term@NO.SPAMtwistedpath.org">benr</a> - And things change some more...
 </td></tr></table><table width="100%"><tr><td class="newsbody">
-I'm very happy to report that progress is happening rapidly and there are very tangible results.
-Long months were spent working on the libraries which formed the foundation of DR17, and it has
-paid off in a very nice windowing environment that is fairly usable.  However, because the focus
-has been on developing these libraries, the Enlightenment "window manager" is still merely a shell
-by which to test, and not a true taste of what will exist when it nears completion.  Though it 
-does look very appealing in screen shots, do not judge it by what it is today because there is a lot
-more to come.
-<br>
-Some of the real magic is happening right now on the components that will form the file management
-aspects of DR17, which will be isolated from the E package directly.  Originally these functions
-were to be built directly into E, however the developers felt it would be wiser to build separate 
-libraries to handle these functions to allow for easier maintenance and expansion, and hence a cleaner
-more distinct back end.  For people who have used DR17 and wondered why they can't do much more than
-copy files between views, this is the work that will interest you.
-<br>
-The development that I just mentioned is currently happening in a separate branch of CVS.
-The reason being that the developers realized that many people are currently
-using and experimenting with DR17 from CVS, and their work is going to break most of the modules
-for a while as they get the core work done, this allows them to work without bothering users. 
-We should all be thankful that they did this, so we can all continue to enjoy DR17 while they work.
-There is currently, as always, no time frame as to when they will be done, and there will naturally
-be some problems, but when the development gets to a point that the developers feel it's ready, they
-will be integrating the code back into the main CVS modules.  Until then it is recommended that 
-anyone developing based on current CVS be aware that any changes they make could be impacted by the
-merge when they are done and to be prepared for any conflicts, should they occur.
+Well, raster's started working on DR17-related stuff again, so look for some
+new code to be checked in by him soon.
+
+<p>Elsewhere, a few <a href="http://www.osdn.com/">OSDN</a> folks finally got
+tired of the sorry state themes.org was in, and moved it. Our part of the new
+themes.org (which is really part of
+<a href="http://freshmeat.net/">freshmeat</a>) can be found
+<a href="http://themes.freshmeat.net/browse/60/?topic_id=60">here</a>. They're
+calling on theme authors to "claim ownership" of their work, and for people to
+help them get the site on track and fully converted over to using the fm][
+codebase. More information on the announcement can be found on
+<a href="http://themes.freshmeat.net/articles/view/439/">freshmeat</a>.</p>
 </td></tr></table>
 
+<p><table width="100%"><tr><td class="newstitle">
+Thur Mar 28 -  <a href="mailto:benr@NO.SPAMcuddletech.com">benr</a> - DR17 kicks into high gear
+</td></tr></table><table width="100%"><tr><td class="newsbody">
+I'm very happy to report that progress is happening rapidly and there are very
+tangible results.  Long months were spent working on the libraries which formed
+the foundation of DR17, and it has paid off in a very nice windowing
+environment that is fairly usable.  However, because the focus has been on
+developing these libraries, the Enlightenment "window manager" is still merely
+a shell by which to test, and not a true taste of what will exist when it nears
+completion.  Though it does look very appealing in screen shots, do not judge
+it by what it is today because there is a lot more to come.
+
+<p>Some of the real magic is happening right now on the components that will
+form the file management aspects of DR17, which will be isolated from the E
+package directly.  Originally these functions were to be built directly into E,
+however the developers felt it would be wiser to build separate libraries to
+handle these functions to allow for easier maintenance and expansion, and hence
+a cleaner more distinct back end.  For people who have used DR17 and wondered
+why they can't do much more than copy files between views, this is the work
+that will interest you.</p>
+
+<p>The development that I just mentioned is currently happening in a separate
+branch of CVS.  The reason being that the developers realized that many people
+are currently using and experimenting with DR17 from CVS, and their work is
+going to break most of the modules for a while as they get the core work done,
+this allows them to work without bothering users.  We should all be thankful
+that they did this, so we can all continue to enjoy DR17 while they work.
+There is currently, as always, no time frame as to when they will be done, and
+there will naturally be some problems, but when the development gets to a point
+that the developers feel it's ready, they will be integrating the code back
+into the main CVS modules.  Until then it is recommended that anyone developing
+based on current CVS be aware that any changes they make could be impacted by
+the merge when they are done and to be prepared for any conflicts, should they
+occur.</p>
+</td></tr></table>
 
 <p><table width="100%"><tr><td class="newstitle">
 Sun Mar 3 - <a href="mailto:benr@NO.SPAMcuddletech.com">benr</a> - Its time to get to work
 </td></tr></table><table width="100%"><tr><td class="newsbody">
-If you are one of the casual watchers of the Enlightenment project and don't watch the mailing lists
-or the CVS commit list you're really missing some magic.  Though it may appear that the project is moving
-along slowly, consider its complexity and scope.  Just look at the <a href="components.html">components list</a>.
+If you are one of the casual watchers of the Enlightenment project and don't
+watch the mailing lists or the CVS commit list you're really missing some
+magic.  Though it may appear that the project is moving along slowly, consider
+its complexity and scope.  Just look at the
+<a href="components.html">components list</a>.
 A lot has been done and a lot more is coming. 
-<br>
-DR17 has progressed to a point now where its time for interested parties to start lending a hand.  
-<a href="etcher.html">Etcher</a> and <a href="ebony.html">Ebony</a> are still under development, but the
-tools are very usable.  It's time to start getting themes ready for Enlightenment and EWL.   This is by 
-no means a suggestion that Enlightenment or EWL are ready for wide use, but if you are one of the people
-who always wanted to get involved in a project but didn't know how you could help, here is your cue.
-You can find a tutorial on Etcher and Ebony on the <a href="docs.html">docs page</a>.  You'll find Etcher
-intimidating at first, but will quickly learn to love it and the possibilities and ease it provides.  Enjoy.
+
+<p>DR17 has progressed to a point now where its time for interested parties to
+start lending a hand.  <a href="etcher.html">Etcher</a> and
+<a href="ebony.html">Ebony</a> are still under development, but the tools are
+very usable.  It's time to start getting themes ready for Enlightenment and
+EWL.  This is by no means a suggestion that Enlightenment or EWL are ready for
+wide use, but if you are one of the people who always wanted to get involved in
+a project but didn't know how you could help, here is your cue.  You can find a
+tutorial on Etcher and Ebony on the <a href="docs.html">docs page</a>.  You'll
+find Etcher intimidating at first, but will quickly learn to love it and the
+possibilities and ease it provides.  Enjoy.</p>
 </td></tr></table>
-
-
 
 <p><table width="100%"><tr><td class="newstitle">
 Sat Jan 19 - <a href="mailto:cK@NO.SPAMwhoop.org">cK</a> - The webpage is back (again :)
