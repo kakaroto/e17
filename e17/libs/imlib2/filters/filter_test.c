@@ -43,11 +43,15 @@ void *exec( char *filter, void *im, pIFunctionParam params )
    {
       Imlib_Color_Modifier cm;
       DATA8 atab[256];
-      int x = 0, y = 0, w = 100, h = 100;
+      int x = 0, y = 0, w = 0, h = 0;
       DATA8 r = 255, b = 255, g = 255, a = 255;
 /*     
       printf( "filter_test.c: tint called\n" );
  */
+      /* Set friendly defaults */
+      imlib_context_set_image( imge );
+      w = imlib_image_get_width();
+      h = imlib_image_get_height();
       
       for( ptr = params; ptr != NULL; ptr = ptr->next )
       {
