@@ -23,3 +23,5 @@ loaderpath.h
 .icons
 bumpmaptest
 imlib2_test
+polytest
+core

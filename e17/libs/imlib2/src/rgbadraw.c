@@ -1632,9 +1632,8 @@ imlib_clip_line(int x0, int y0, int x1, int y1, int xmin, int xmax, int ymin,
    return accept;
 }
 
-ImlibOutCode
-__imlib_comp_outcode(double x, double y, double xmin, double xmax,
-                     double ymin, double ymax)
+ImlibOutCode __imlib_comp_outcode(double x, double y, double xmin,
+                                  double xmax, double ymin, double ymax)
 {
    ImlibOutCode code = 0;
 
@@ -1649,7 +1648,8 @@ __imlib_comp_outcode(double x, double y, double xmin, double xmax,
    return code;
 }
 
-ImlibPoly __imlib_polygon_new()
+ImlibPoly
+__imlib_polygon_new()
 {
    ImlibPoly poly;
 
@@ -1738,7 +1738,7 @@ void
 __imlib_polygon_get_bounds(ImlibPoly poly, int *px1, int *py1, int *px2,
                            int *py2)
 {
-   int x1, y1, x2, y2;
+   int x1 = 0, y1 = 0, x2 = 0, y2 = 0;
    int i;
 
    if (!poly || !poly->points || (poly->pointcount < 2))
@@ -1799,7 +1799,7 @@ __imlib_fill_ellipse(ImlibImage * im, int xc, int yc, int aa, int bb,
    int b2 = bb * bb;
    int y;
    int x, dec;
-   int miny, maxy, iy1;
+   int miny, maxy;
 
    edgeRec *table1, *table2;
 
@@ -1808,8 +1808,8 @@ __imlib_fill_ellipse(ImlibImage * im, int xc, int yc, int aa, int bb,
    memset(table1, 0, sizeof(edgeRec) * (im->h + 1));
    memset(table2, 0, sizeof(edgeRec) * (im->h + 1));
 
-   miny = yc - bb;
-   maxy = yc + bb;
+   miny = yc - bb - 1;
+   maxy = yc + bb + 1;
 
    for (x = 0, y = bb, dec = 2 * b2 + a2 * (1 - 2 * bb); b2 * x <= a2 * y;
         x++)
@@ -1854,7 +1854,7 @@ __imlib_fill_ellipse(ImlibImage * im, int xc, int yc, int aa, int bb,
          spanAA(im, miny, table1, table2, r, g, b, a, op);
          miny++;
       }
-      while (miny <= maxy);
+      while (miny < maxy);
    }
    else
    {
@@ -1864,7 +1864,7 @@ __imlib_fill_ellipse(ImlibImage * im, int xc, int yc, int aa, int bb,
          span(im, miny, &table1[miny], &table2[miny], r, g, b, a, op);
          miny++;
       }
-      while (miny <= maxy);
+      while (miny < maxy);
    }
    free(table1);
    free(table2);
@@ -2012,7 +2012,7 @@ spanAA(ImlibImage * im, int y, edgeRec * pt1, edgeRec * pt2, DATA8 r, DATA8 g,
    double upramp_gradient = 0.0, downramp_gradient = 0.0;
    int upramp_len = 0, downramp_len = 0;
    int upramp_len1 = 0, downramp_len1 = 0;
-   int ux1, ux2, top = 0, bottom = 0;
+   int ux1, top = 0, bottom = 0;
 
    x1 = pt1[y].x;
    x2 = pt2[y].x;
@@ -2022,81 +2022,29 @@ spanAA(ImlibImage * im, int y, edgeRec * pt1, edgeRec * pt2, DATA8 r, DATA8 g,
    /* see if there is a line above this one */
    if ((y > 0) && (pt1[y - 1].x != pt2[y - 1].x))
    {
-      if (pt1[y - 1].x > pt1[y].x)
-      {
-         upramp_len = pt1[y - 1].x - pt1[y].x;
+      upramp_len = (int) pt1[y - 1].x - (int) pt1[y].x;
+      if (upramp_len != 0)
          upramp_gradient = 1.0 / (pt1[y - 1].x - pt1[y].x);
-      }
-      if (pt2[y].x > pt2[y - 1].x)
-      {
-         downramp_len = pt2[y].x - pt2[y - 1].x;
-         downramp_gradient = 1.0 / (pt2[y - 1].x - pt2[y].x);
-      }
+      downramp_len = (int) pt2[y].x - (int) pt2[y - 1].x;
+      if (downramp_len != 0)
+         downramp_gradient = 1.0 / (pt2[y].x - pt2[y - 1].x);
    }
-   else
-   {
-      /* there isn't - this is a special case for the top of a shape */
-      top = 1;
-   }
-
    /* see if there is a line below this one */
-   if ((pt1[y + 1].x != pt2[y + 1].x))
+   else if ((pt1[y + 1].x != pt2[y + 1].x))
    {
-      if (pt1[y + 1].x > pt1[y].x)
-      {
-         upramp_len1 = pt1[y + 1].x - pt1[y].x;
-         if (upramp_gradient != 0.0)
-            upramp_gradient = 1.0 / (pt1[y].x - pt1[y + 1].x);
-      }
-      if (pt2[y].x > pt2[y + 1].x)
-      {
-         downramp_len1 = pt2[y].x - pt2[y + 1].x;
-         if (downramp_gradient != 0.0)
-            downramp_gradient = 1.0 / (pt2[y].x - pt2[y + 1].x);
-      }
-   }
-   else
-   {
-      /* there isn't - this is a special case for the bottom of a shape */
-      bottom = 1;
+      upramp_len = (int) pt1[y].x - (int) pt1[y + 1].x;
+      if (upramp_len != 0 && upramp_gradient == 0.0)
+         upramp_gradient = 1.0 / (pt1[y].x - pt1[y + 1].x);
+      downramp_len = (int) pt2[y].x - (int) pt2[y + 1].x;
+      if (downramp_len != 0 && downramp_gradient == 0.0)
+         downramp_gradient = 1.0 / (pt2[y].x - pt2[y + 1].x);
    }
 
-   upramp_len = MAX(upramp_len, upramp_len1);
-   downramp_len = MAX(downramp_len, downramp_len1);
+   if (upramp_len < 0)
+      upramp_len = 0 - upramp_len;
+   if (downramp_len < 0)
+      downramp_len = 0 - downramp_len;
 
-   if (top && !upramp_len && !downramp_len)
-   {
-      if ((pt1[y + 1].x != pt2[y + 1].x))
-      {
-         if (pt1[y + 1].x < pt1[y].x)
-         {
-            upramp_len = pt1[y].x - pt1[y + 1].x;
-            upramp_gradient = 1.0 / (pt1[y + 1].x - pt1[y].x);
-         }
-         if (pt2[y].x < pt2[y + 1].x)
-         {
-            downramp_len = pt2[y + 1].x - pt2[y].x;
-            downramp_gradient = 1.0 / (pt2[y + 1].x - pt2[y].x);
-         }
-      }
-   }
-
-   if (bottom && !upramp_len && !downramp_len)
-   {
-      if ((pt1[y - 1].x != pt2[y - 1].x))
-      {
-         if (pt1[y - 1].x < pt1[y].x)
-         {
-            upramp_len = pt1[y].x - pt1[y - 1].x;
-            upramp_gradient = 1.0 / (pt1[y - 1].x - pt1[y].x);
-         }
-         if (pt2[y].x < pt2[y - 1].x)
-         {
-            downramp_len = pt2[y - 1].x - pt2[y].x;
-            downramp_gradient = 1.0 / (pt2[y - 1].x - pt2[y].x);
-         }
-      }
-   }
 
    if (upramp_len > 0)
    {
@@ -2104,13 +2052,12 @@ spanAA(ImlibImage * im, int y, edgeRec * pt1, edgeRec * pt2, DATA8 r, DATA8 g,
       if (upramp_gradient >= 1.0 || upramp_gradient <= -1.0)
       {
          /* it's mostly vertical */
-         double aa, x;
+         double aa;
          DATA8 alpha;
 
-         x = pt1[y].x;
-         aa = x - (double) ((int) x);
+         aa = pt1[y].x - (double) ((int) pt1[y].x);
          alpha = (1.0 - aa) * a;
-         p = &(im->data[(im->w * y) + (int) x]);
+         p = &(im->data[(im->w * y) + (int) pt1[y].x]);
          switch (op)
          {
            case OP_RESHADE:
@@ -2129,7 +2076,7 @@ spanAA(ImlibImage * im, int y, edgeRec * pt1, edgeRec * pt2, DATA8 r, DATA8 g,
               break;
          }
          /* the final span start is shifted right */
-         x1 += 2;
+         x1++;
       }
       else
       {
@@ -2143,7 +2090,7 @@ spanAA(ImlibImage * im, int y, edgeRec * pt1, edgeRec * pt2, DATA8 r, DATA8 g,
             da = a / (upramp_len);
          alpha = da;
          /* draw the upramp */
-         for (ux1 = pt1[y].x; ux1 <= (pt1[y].x + upramp_len); ux1++)
+         for (ux1 = pt1[y].x; ux1 < (int) (pt1[y].x + upramp_len); ux1++)
          {
             p = &(im->data[(im->w * y) + ux1]);
             switch (op)
@@ -2169,7 +2116,7 @@ spanAA(ImlibImage * im, int y, edgeRec * pt1, edgeRec * pt2, DATA8 r, DATA8 g,
                alpha += da;
          }
          /* the final span start is shifted */
-         x1 += upramp_len + 1;
+         x1 += upramp_len;
       }
    }
 
@@ -2179,13 +2126,12 @@ spanAA(ImlibImage * im, int y, edgeRec * pt1, edgeRec * pt2, DATA8 r, DATA8 g,
       if (downramp_gradient <= -1.0 || downramp_gradient >= 1.0)
       {
          /* it's mostly vertical */
-         double aa, x;
+         double aa;
          DATA8 alpha;
 
-         x = pt2[y].x;
-         aa = x - (double) ((int) x);
-         alpha = (1.0 - aa) * a;
-         p = &(im->data[(im->w * y) + (int) x]);
+         aa = pt2[y].x - (double) ((int) pt2[y].x);
+         alpha = (aa - 1.0) * a;
+         p = &(im->data[(im->w * y) + (int) pt2[y].x]);
          switch (op)
          {
            case OP_RESHADE:
@@ -2204,7 +2150,7 @@ spanAA(ImlibImage * im, int y, edgeRec * pt1, edgeRec * pt2, DATA8 r, DATA8 g,
               break;
          }
          /* the final span is shorter */
-         x2 -= 2;
+         x2--;
       }
       else
       {
@@ -2217,8 +2163,8 @@ spanAA(ImlibImage * im, int y, edgeRec * pt1, edgeRec * pt2, DATA8 r, DATA8 g,
          else
             da = a / (downramp_len);
          alpha = a;
-         /* draw the downramp (note: we are drawing right to left) */
-         for (ux1 = pt2[y].x - downramp_len; ux1 <= pt2[y].x; ux1++)
+         /* draw the downramp */
+         for (ux1 = pt2[y].x - downramp_len + 1; ux1 <= (int) pt2[y].x; ux1++)
          {
             p = &(im->data[(im->w * y) + ux1]);
             switch (op)
@@ -2244,10 +2190,10 @@ spanAA(ImlibImage * im, int y, edgeRec * pt1, edgeRec * pt2, DATA8 r, DATA8 g,
                alpha -= da;
          }
          /* the final span is shorter */
-         x2 -= downramp_len + 1;
+         x2 -= downramp_len;
       }
    }
-   if (x1 == x2)
+   if (x2 <= x1)
       return;
 
    /* just fill the remaining span */
@@ -2345,9 +2291,8 @@ __imlib_draw_polygon_filled(ImlibImage * im, ImlibPoly poly, int clip_xmin,
    pnt1 = iminy;
    pnt2 = iminy + 1;
    if (pnt2 >= poly->pointcount)
-   {
       pnt2 = 0;
-   }
+
    do
    {
       edge(table1, &poly->points[pnt1], &poly->points[pnt2]);
@@ -2362,9 +2307,8 @@ __imlib_draw_polygon_filled(ImlibImage * im, ImlibPoly poly, int clip_xmin,
    pnt1 = imaxy;
    pnt2 = imaxy + 1;
    if (pnt2 >= poly->pointcount)
-   {
       pnt2 = 0;
-   }
+
    do
    {
       edge(table2, &poly->points[pnt1], &poly->points[pnt2]);
@@ -2393,7 +2337,7 @@ __imlib_draw_polygon_filled(ImlibImage * im, ImlibPoly poly, int clip_xmin,
          spanAA(im, iy1, table1, table2, r, g, b, a, op);
          iy1++;
       }
-      while (iy1 <= iy2);
+      while (iy1 < iy2);
    }
    else
    {
@@ -2402,7 +2346,7 @@ __imlib_draw_polygon_filled(ImlibImage * im, ImlibPoly poly, int clip_xmin,
          span(im, iy1, &table1[iy1], &table2[iy1], r, g, b, a, op);
          iy1++;
       }
-      while (iy1 <= iy2);
+      while (iy1 < iy2);
    }
 
    free(table1);
