@@ -315,6 +315,8 @@ entice_exiftags_foreach(Evas_Hash * hash, const char *key, void *data,
                                                 eexif->lvl, eexif->tag)))
       {
          edje_object_part_text_set(entice->edje, eexif->part, exifval);
+         edje_object_signal_emit(entice->edje, "entice,exif,data,found",
+                                 eexif->part);
       }
       else
          if ((exifintval =
@@ -323,6 +325,8 @@ entice_exiftags_foreach(Evas_Hash * hash, const char *key, void *data,
       {
          snprintf(buf, PATH_MAX, "%i", exifintval);
          edje_object_part_text_set(entice->edje, eexif->part, buf);
+         edje_object_signal_emit(entice->edje, "entice,exif,data,found",
+                                 eexif->part);
 
       }
       else
