@@ -587,8 +587,8 @@ void ewl_configure_queue()
 		if (ewl_object_flags_get(EWL_OBJECT(w),
 					 EWL_FLAG_PROPERTY_TOPLEVEL)) {
 			ewl_object_size_request(EWL_OBJECT(w),
-				ewl_object_current_w_get(EWL_OBJECT(w)),
-				ewl_object_current_h_get(EWL_OBJECT(w)));
+					ewl_object_current_w_get(EWL_OBJECT(w)),
+					ewl_object_current_h_get(EWL_OBJECT(w)));
 		}
 
 		/*
@@ -707,8 +707,8 @@ void ewl_realize_queue()
 		if (ewl_object_flags_get(EWL_OBJECT(w),
 					 EWL_FLAG_PROPERTY_TOPLEVEL)) {
 			ewl_object_size_request(EWL_OBJECT(w),
-				ewl_object_preferred_w_get(EWL_OBJECT(w)),
-				ewl_object_preferred_h_get(EWL_OBJECT(w)));
+				ewl_object_current_w_get(EWL_OBJECT(w)),
+				ewl_object_current_h_get(EWL_OBJECT(w)));
 		}
 
 		/*
