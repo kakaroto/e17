@@ -27,13 +27,10 @@ void                EdgeTimeout(int val, void *data);
 static char        *dir = NULL;
 static char        *cacheDir = NULL;
 
-static const char  *const bins[] = { "dox", "eesh", "epp" };
-static const char  *const docs[] =
-   { "E-docs/MAIN", "E-docs/Edoc_bg.png", "E-docs/E_logo.png" };
+static const char  *const bins[] = { "eesh", "epp" };
 static const char  *const thms[] = { "themes/DEFAULT/epplets/epplets.cfg" };
 
 #define N_BINS (sizeof(bins)/sizeof(char*))
-#define N_DOCS (sizeof(docs)/sizeof(char*))
 #define N_THMS (sizeof(thms)/sizeof(char*))
 
 void
@@ -68,25 +65,6 @@ BlumFlimFrub(void)
 		    "This is a fatal error and Enlightenment will cease to run.\n"
 		    "Please rectify this situation and ensure dox is installed\n"
 		    "correctly.\n"), s);
-	     EExit(NULL);
-	  }
-     }
-
-   for (i = 0; i < N_DOCS; i++)
-     {
-	Esnprintf(s, sizeof(s), "%s/%s", EDirRoot(), docs[i]);
-	if (!exists(s))
-	  {
-	     Alert(_
-		   ("!!!!!!!! ERROR ERROR ERROR ERROR !!!!!!!!\n" "\n"
-		    "Enlightenment's documentation is not present or correctly installed\n"
-		    "\n"
-		    "This is a fatal error and Enlightenment will cease to run.\n"
-		    "Please rectify this situation and ensure it is installed\n"
-		    "correctly.\n" "\n"
-		    "The reason this could be missing is due to badly created\n"
-		    "packages, someone manually deleting those files or perhaps\n"
-		    "an error in installing Enlightenment.\n"));
 	     EExit(NULL);
 	  }
      }

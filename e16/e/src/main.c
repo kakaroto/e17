@@ -27,17 +27,24 @@
 static void
 runDocBrowser(void)
 {
-
    char                file[FILEPATH_LEN_MAX];
+
+   Esnprintf(file, sizeof(file), "%s/dox", EDirBin());
+   if (!canexec(file))
+      return;
+   Esnprintf(file, sizeof(file), "%s/E-docs", EDirRoot());
+   if (!canread(file))
+      return;
 
    if (fork())
       EDBUG_RETURN_;
 
    Esnprintf(file, sizeof(file), "exec %s/dox %s/E-docs",
 	     EDirBin(), EDirRoot());
-   execl(usershell(getuid()), usershell(getuid()), "-c", (char *)file, NULL);
-   exit(0);
 
+   execl(usershell(getuid()), usershell(getuid()), "-c", (char *)file, NULL);
+
+   exit(0);
 }
 
 int
