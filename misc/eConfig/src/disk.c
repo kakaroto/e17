@@ -86,6 +86,9 @@ void * _econf_get_data_from_disk(char *loc,unsigned long *length) {
 int _econf_save_data_to_disk_at_position(unsigned long position,char *path,
 		unsigned long length, void *data) {
 
+	FILE *CONF_TABLE;
+	char confpath[FILEPATH_LEN_MAX];
+
 	if(!position)
 		return 0;
 	if(!path)
@@ -94,6 +97,22 @@ int _econf_save_data_to_disk_at_position(unsigned long position,char *path,
 		return 0;
 	if(!data)
 		return 0;
+
+	sprintf(confpath,"%s/data",path);
+	CONF_TABLE = fopen(confpath,"r+");
+	if(CONF_TABLE) {
+		fseek(CONF_TABLE,position,SEEK_SET);
+		if(fwrite(data,length,1,CONF_TABLE) < length) {
+			/* oh shit, we didn't write enough data.  maybe we need
+			 * to somehow mark all these errors into something useful
+			 */
+			fclose(CONF_TABLE);
+			return 0;
+		}
+		fclose(CONF_TABLE);
+	} else {
+		return 0;
+	}
 
 	return 1;
 
@@ -125,9 +144,12 @@ int _econf_save_data_to_disk(void *data, char *loc, unsigned long length) {
 						/* We failed writing to the disk.  This is probably
 						 * bad.
 						 */
+					} else {
+						/* write successful */
 					}
 				} else {
 					if(_econf_purge_data_from_disk_at_path(loc,paths[i])) {
+						/* purge succeeded */
 					} else {
 						/* We failed purging it somehow, even though we found
 						 * it...  This is probably not a good place to be.
