@@ -16,6 +16,8 @@ _Strdup (char *s)
     return NULL;
   len = strlen (s);
   ss = malloc (len + 1);
+  if (!ss)
+    return NULL;
   memcpy (ss, s, len + 1);
   return ss;
 }
