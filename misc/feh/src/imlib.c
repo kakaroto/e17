@@ -211,19 +211,21 @@ progress (Imlib_Image im, char percent, int update_x, int update_y,
 	winwidget_create_window (progwin, progwin->w, progwin->h);
       else
 	exists = 1;
-      if (progwin->bg_pmap)
-	XFreePixmap (disp, progwin->bg_pmap);
-      progwin->bg_pmap =
-	XCreatePixmap (disp, progwin->win, progwin->im_w, progwin->im_h,
-		       depth);
-      imlib_context_set_drawable (progwin->bg_pmap);
-      feh_draw_checks (progwin);
-      XSetWindowBackgroundPixmap (disp, progwin->win, progwin->bg_pmap);
-      if (exists)
-	XResizeWindow (disp, progwin->win, progwin->w, progwin->h);
-      XClearWindow (disp, progwin->win);
+      if (!opt.full_screen) {
+        if (progwin->bg_pmap)
+          XFreePixmap (disp, progwin->bg_pmap);
+        progwin->bg_pmap =
+          XCreatePixmap (disp, progwin->win, progwin->im_w, progwin->im_h,
+                         depth);
+        imlib_context_set_drawable (progwin->bg_pmap);
+        feh_draw_checks (progwin);
+        XSetWindowBackgroundPixmap (disp, progwin->win, progwin->bg_pmap);
+        if (exists && !opt.full_screen)
+          XResizeWindow (disp, progwin->win, progwin->w, progwin->h);
+        XClearWindow (disp, progwin->win);
+      }
       if (!exists)
-	XMapWindow (disp, progwin->win);
+        XMapWindow (disp, progwin->win);
       XSync (disp, False);
     }
   imlib_context_set_image (im);

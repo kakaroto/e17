@@ -34,31 +34,10 @@ init_parse_options (int argc, char **argv)
   cmdargv = argv;
 
   /* Set default options */
-  opt.multiwindow = 0;
-  opt.montage = 0;
-  opt.index = 0;
-  opt.thumbs = 0;
-  opt.slideshow = 0;
-  opt.recursive = 0;
-  opt.output = 0;
-  opt.output_file = NULL;
-  opt.limit_w = 0;
-  opt.limit_h = 0;
-  opt.verbose = 0;
+  memset(&opt, 0, sizeof(fehoptions));
   opt.display = 1;
-  opt.bg = 0;
-  opt.bg_file = NULL;
   opt.aspect = 1;
-  opt.alpha = 0;
-  opt.alpha_level = 0;
-  opt.stretch = 0;
-  opt.font = NULL;
-  opt.title_font = NULL;
   opt.progressive = 1;
-  opt.slideshow_delay = 0;
-  opt.reload = 0;
-  opt.keep_http = 0;
-  opt.borderless = 0;
 
   opt.thumb_w = 60;
   opt.thumb_h = 60;
@@ -158,6 +137,14 @@ init_parse_options (int argc, char **argv)
 	  opt.alpha = 1;
 	  opt.alpha_level = atoi (argv[++i]);
 	}
+      else if (!strcmp (argv[i], "--randomize"))
+	opt.randomize = 1;
+      else if ((!strcmp (argv[i], "--full-screen")) || (!strcmp (argv[i], "-F")))
+        {
+          opt.full_screen = 1;
+          opt.borderless = 1;
+          opt.multiwindow = 0;
+        }
       else
 	{
 	  /* If recursive is NOT set, but the only argument is a
@@ -169,8 +156,13 @@ init_parse_options (int argc, char **argv)
   if (filelist_length (filelist) == 0)
     show_mini_usage ();
 
-  /* Let's reverse the list. Its back-to-front right now ;) */
-  filelist = filelist_reverse (filelist);
+  if (opt.randomize) {
+    /* Randomize the filename order */
+    filelist = filelist_randomize(filelist);
+  } else {
+    /* Let's reverse the list. Its back-to-front right now ;) */
+    filelist = filelist_reverse (filelist);
+  }
 
   check_options ();
 }

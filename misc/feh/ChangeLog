@@ -1,3 +1,14 @@
+Fri Mar  3 22:44:25 PST 2000  Michael Jennings <mej@eterm.org>
+
+	* Added two new options.  --randomize will take the file list and
+	rearrange it into a random order.  --full-screen or -F will create
+	a screen-sized borderless window (akin to a screensaver) and will
+	center the image within it.  NOTE:  At this point, full screen mode
+	only works if you disable the progressive callback.  I'm waaaay too
+	tired right now to try to make sense out of gilbertt's callback
+	logic. :-)  I'll try to fix it this weekend if he doesn't beat me
+	to it.
+	
 Wed Mar  1 15:13:04 PST 2000  Michael Jennings <mej@eterm.org>
 
 	* Math lib

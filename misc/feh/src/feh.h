@@ -48,6 +48,8 @@
 
 #define CHECK_SIZE 160
 
+#define SWAP(a, b)  ((int)(a) ^= (int)(b) ^= (int)(a) ^= (int)(b))
+
 struct __thumbwidget
 {
   Window win;
@@ -118,6 +120,7 @@ struct __winwidget
   unsigned char visible;
   unsigned char type;
   Imlib_Image *im;
+  GC gc;
   Pixmap bg_pmap;
   char *name;
   feh_file file;
@@ -141,23 +144,25 @@ typedef _winwidget *winwidget;
 
 typedef struct cmdlineoptions
 {
-  unsigned char multiwindow;
-  unsigned char montage;
-  unsigned char index;
-  unsigned char thumbs;
-  unsigned char slideshow;
-  unsigned char recursive;
-  unsigned char output;
-  unsigned char verbose;
-  unsigned char display;
-  unsigned char bg;
-  unsigned char alpha;
-  unsigned char alpha_level;
-  unsigned char aspect;
-  unsigned char stretch;
-  unsigned char progressive;
-  unsigned char keep_http;
-  unsigned char borderless;
+  unsigned char multiwindow:1;
+  unsigned char montage:1;
+  unsigned char index:1;
+  unsigned char thumbs:1;
+  unsigned char slideshow:1;
+  unsigned char recursive:1;
+  unsigned char output:1;
+  unsigned char verbose:1;
+  unsigned char display:1;
+  unsigned char bg:1;
+  unsigned char alpha:1;
+  unsigned char alpha_level:1;
+  unsigned char aspect:1;
+  unsigned char stretch:1;
+  unsigned char progressive:1;
+  unsigned char keep_http:1;
+  unsigned char borderless:1;
+  unsigned char randomize:1;
+  unsigned char full_screen:1;
 
   char *output_file;
   char *bg_file;
@@ -229,6 +234,7 @@ feh_file filelist_first (feh_file file);
 feh_file feh_file_rm_and_free (feh_file list, feh_file file);
 int filelist_num (feh_file list, feh_file file);
 feh_file filelist_reverse (feh_file list);
+feh_file filelist_randomize(feh_file list);
 
 
 /* Imlib stuff */
