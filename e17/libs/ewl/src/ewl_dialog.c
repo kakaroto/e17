@@ -249,7 +249,7 @@ ewl_dialog_set_button (char *button_text,
   ewl_object_set_fill_policy (EWL_OBJECT (button),
 			      EWL_FLAG_FILL_VFILL || EWL_FLAG_FILL_SHRINK);
 
-  ewl_widget_set_data (button, "RESPONSE_ID", (void *)response_id);
+  EWL_BUTTON_STOCK (button)->response_id = response_id;
   
   DRETURN_PTR(button, DLEVEL_STABLE);
 }
