@@ -1,7 +1,4 @@
 
-void
-update_display (char *text);
+void update_display (char *text);
 
-void
-draw_interface (void);
-
+void draw_interface (void);
