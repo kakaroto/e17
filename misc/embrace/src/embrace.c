@@ -475,6 +475,7 @@ static bool ui_load_container (Embrace *e)
 static bool ui_load_trans_obj (Embrace *e)
 {
 	Evas_Object *trans;
+	Ecore_X_Window win;
 	const char *val;
 	int w = 0, h = 0;
 
@@ -488,6 +489,9 @@ static bool ui_load_trans_obj (Embrace *e)
 
 	if (!(trans = esmart_trans_x11_new (e->gui.evas)))
 		return false;
+
+	win = ecore_evas_software_x11_window_get (e->gui.ee);
+	esmart_trans_x11_window_set (trans, win);
 
 	ecore_evas_geometry_get (e->gui.ee, NULL, NULL, &w, &h);
 
