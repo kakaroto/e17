@@ -441,13 +441,16 @@ void          ewl_widget_get_theme(EwlWidget *wid, char *key)
 			
 			sprintf(buf,"%s/background", key);
 			tmp = ewl_theme_find_file(ewl_theme_get_string(buf));
-			if (tmp)
-				ewl_widget_set_background(wid,ewl_imlib_load_image(tmp));
+			if (tmp)	{
+				/*ewl_widget_set_background(wid,ewl_imlib_load_image(tmp));*/
+				ewl_widget_set_background(wid,
+				    evas_add_image_from_file(ewl_widget_get_evas(wid), tmp));
+			}
 
-			sprintf(buf,"%s/num_layers", key); 
+			/*sprintf(buf,"%s/num_layers", key); 
 			gt = ewl_theme_get_int(buf,&t);
 			if (!gt) {
-				/* no layers */
+				/ no layers /
 					if (ewl_debug_is_active())
 						fprintf(stderr,"ewl_widget_get_themer(): "
 						        "No Image Layers to load.\n");
@@ -460,7 +463,7 @@ void          ewl_widget_get_theme(EwlWidget *wid, char *key)
 					ewl_widget_imlayer_insert(wid,
 					                          ewl_theme_get_imlayer(buf));
 				}
-			}
+			}*/
 			free(buf);
 		}
 	}

@@ -60,17 +60,13 @@ void       ewl_widget_init(EwlWidget *w)
 
 	w->event_callbacks = 0;
 	w->render = NULL;
-	w->rendered = NULL;
-	w->evas_object = NULL;
-	w->bg = 0;
+	/*w->rendered = NULL;*/
+	w->bg = NULL;
 
-	/* lOAD DB SHIT HERE */
-	ewl_widget_get_theme(w,"/EwlWidget");
-
-	/*ewl_callback_add(w, EWL_EVENT_REALIZE,
+	ewl_callback_add(w, EWL_EVENT_REALIZE,
 	                   ewl_widget_handle_realize, NULL);
 	ewl_callback_add(w, EWL_EVENT_UNREALIZE,
-	                 ewl_widget_handle_unrealize, NULL);*/
+	                 ewl_widget_handle_unrealize, NULL);
 	/*ewl_callback_add(w, EWL_EVENT_RESIZE,
 	                   _cb_ewl_widget_event_handler, NULL);*/
 	ewl_widget_add(w);
@@ -594,7 +590,7 @@ Evas             ewl_widget_get_evas(EwlWidget *widget)
 		ewl_debug("ewl_widget_get_evas", EWL_NULL_WIDGET_ERROR, "widget");
 	} else {
 		for (w=widget;w->parent;w=w->parent);
-		evas = ewl_window_get_evas(w->parent);
+		evas = ewl_window_get_evas(w);
 	}
 	FUNC_END("ewl_widget_get_evas");
 	return evas;
@@ -735,7 +731,7 @@ void             ewl_widget_set_padding(EwlWidget *w, int *left, int *top,
 }
 
 
-void             ewl_widget_set_background(EwlWidget *w, Imlib_Image im)
+void             ewl_widget_set_background(EwlWidget *w, Evas_Object im)
 {
 	FUNC_BGN("ewl_widget_set_background");
 	if (!w)	{
@@ -744,11 +740,29 @@ void             ewl_widget_set_background(EwlWidget *w, Imlib_Image im)
 		ewl_debug("ewl_widget_set_background", EWL_NULL_ERROR, "im");
 	} else {
 		if (w->bg)
-			ewl_imlib_free_image(w->bg);
+			evas_del_object(ewl_widget_get_evas(w), w->bg);
 		w->bg = im;
+		/* set stuff here */
 	}
 	FUNC_END("ewl_widget_set_background");
 	return;
+}
+
+Evas_Object ewl_widget_get_background(EwlWidget *widget)
+{
+	Evas_Object obj;
+	FUNC_BGN("ewl_widget_get_background");
+	if (!widget)	{
+		ewl_debug("ewl_widget_get_background",
+		          EWL_NULL_WIDGET_ERROR, "widget");
+	} else if (!ewl_widget_get_flag(widget,REALIZED)) {
+		ewl_debug("ewl_widget_get_background",
+		          EWL_GENERIC_ERROR, "Widget is not realized.");
+	} else {
+	 obj = widget->bg;
+	}
+	FUNC_END("ewl_widget_get_background");
+	return obj;
 }
 
 void       ewl_widget_imlayer_insert(EwlWidget *w, EwlImLayer *l)
@@ -898,6 +912,27 @@ void             ewl_widget_imlayer_show(EwlWidget *widget, char *name)
 	}
 	FUNC_END("ewl_widget_imlayer_show");
 	return;
+}
+
+EwlBool          ewl_widget_handle_realize(EwlWidget *widget,
+                                           EwlEvent  *ev,
+                                           EwlData   *data)
+{
+	FUNC_BGN("ewl_widget_handle_unrealize");
+
+	ewl_widget_get_theme(widget,"/EwlWidget");
+
+	FUNC_END("ewl_widget_handle_unrealize");
+	return TRUE;
+}
+
+EwlBool          ewl_widget_handle_unrealize(EwlWidget *widget,
+                                             EwlEvent  *ev,
+                                             EwlData   *data)
+{
+	FUNC_BGN("ewl_widget_handle_unrealize");
+	FUNC_END("ewl_widget_handle_unrealize");
+	return TRUE;
 }
 
 void             ewl_widget_imlayer_hide(EwlWidget *widget, char *name)

@@ -58,25 +58,35 @@ void       ewl_box_init(EwlWidget *b)
 	ewl_widget_set_type(b,t);
 	ewl_widget_set_flag(b, CAN_RESIZE, TRUE);
 
-	/* LOAD DB SHIT HERE */
-	ewl_widget_get_theme(b,"/EwlBox");
-	switch (t)	{
+	ewl_callback_add(b,EWL_EVENT_RESIZE,_cb_ewl_box_event_handler, NULL);
+	ewl_callback_add(b,EWL_EVENT_REALIZE, ewl_box_handle_realize, NULL);
+
+	FUNC_END("ewl_box_init");
+	return;
+}
+
+EwlBool    ewl_box_handle_realize(EwlWidget *widget,
+                                  EwlEvent  *ev,
+                                  EwlData   *data)
+{
+	FUNC_END("ewl_box_handle_resize");
+
+	ewl_widget_get_theme(widget,"/EwlBox");
+	switch (widget->type)	{
 	case EWL_VBOX:
-		ewl_widget_get_theme(b,"/EwlVBox");
+		ewl_widget_get_theme(widget,"/EwlVBox");
 		break;
 	case EWL_HBOX:
-		ewl_widget_get_theme(b,"/EwlHBox");
+		ewl_widget_get_theme(widget,"/EwlHBox");
 		break;
 	case EWL_LBOX:
-		ewl_widget_get_theme(b,"/EwlLBox");
+		ewl_widget_get_theme(widget,"/EwlLBox");
 		break;
 	default:
 		break;
 	}
 
-	ewl_callback_add(b,EWL_EVENT_RESIZE,_cb_ewl_box_event_handler, NULL);
-
-	FUNC_END("ewl_box_init");
+	FUNC_END("ewl_box_handle_resize");
 	return;
 }
 

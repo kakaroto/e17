@@ -62,6 +62,11 @@ void         ewl_container_realize_children(EwlWidget *widget,
 void         ewl_container_unrealize_children(EwlWidget *widget,
                                               EwlData   *data);
 
+
+EwlBool      ewl_container_handle_realize(EwlWidget *widget,
+                                          EwlEvent  *ev,
+                                          EwlData   *data);
+
 /* depcirted -- will be replaced with ewlrect calls soon */
 void         ewl_container_set_child_padding(EwlWidget *c, int *l, int *t,
                                                            int *r, int *b);

@@ -27,5 +27,10 @@ EwlBool    ewl_button_get_flag(EwlWidget *button, EwlFlag flag);
 void       ewl_button_set_flag(EwlWidget *button, EwlFlag flag, EwlBool v);
 void       ewl_button_set_flags(EwlWidget *button, EwlFlag mask);
 
-EwlBool _cb_ewl_button_event_handler(EwlWidget *w, EwlEvent *ev, EwlData *data);
+EwlBool _cb_ewl_button_event_handler(EwlWidget *w,
+                                     EwlEvent *ev,
+                                     EwlData *data);
+EwlBool    ewl_button_handle_realize(EwlWidget *widget,
+                                     EwlEvent  *ev,
+                                     EwlData   *data);
 #endif /* _EWL_BUTTON_H_ */

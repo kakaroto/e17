@@ -91,9 +91,7 @@ struct _EwlWidget	{
 	void          (*render)(EwlWidget *widget, EwlData *data);
 	void          (*realize)(EwlWidget *widget,EwlData *data);
 	Imlib_Image    *rendered;
-	Imlib_Image    *bg;
-
-	Evas_Object     evas_object;
+	Evas_Object    bg;
 };
 
 /* allocation functions */
@@ -108,13 +106,6 @@ void             ewl_widget_set_flags(EwlWidget *widget, EwlFlag flags);
 void             ewl_widget_set_flag(EwlWidget *widget, EwlFlag f, EwlBool v);
 EwlBool          ewl_widget_get_flag(EwlWidget *widget, EwlFlag f);
 
-void             ewl_widget_set_state(EwlWidget *widget, EwlWidgetState state);
-EwlWidgetState   ewl_widget_get_state(EwlWidget *widget);
-
-void             ewl_widget_set_type(EwlWidget *widget, EwlWidgetType state);
-EwlWidgetType    ewl_widget_get_type(EwlWidget *widget);
-char            *ewl_widget_get_type_string(EwlWidget *widget);
-
 EwlBool          ewl_widget_is_realized(EwlWidget *widget);
 EwlBool          ewl_widget_is_visible(EwlWidget *widget);
 EwlBool          ewl_widget_needs_resize(EwlWidget *widget);
@@ -122,6 +113,13 @@ EwlBool          ewl_widget_needs_refresh(EwlWidget *widget);
 EwlBool          ewl_widget_can_resize(EwlWidget *widget);
 void             ewl_widget_set_needs_resize(EwlWidget *widget);
 void             ewl_widget_set_needs_refresh(EwlWidget *widget);
+
+void             ewl_widget_set_state(EwlWidget *widget, EwlWidgetState state);
+EwlWidgetState   ewl_widget_get_state(EwlWidget *widget);
+
+void             ewl_widget_set_type(EwlWidget *widget, EwlWidgetType state);
+EwlWidgetType    ewl_widget_get_type(EwlWidget *widget);
+char            *ewl_widget_get_type_string(EwlWidget *widget);
 
 /* public widget resize functions */
 void             ewl_widget_moveresize(EwlWidget *widget,
@@ -131,16 +129,48 @@ void             ewl_widget_resize(EwlWidget *widget, int w, int h);
 
 EwlRect         *ewl_widget_get_rect(EwlWidget *widget);
 
-/* private widget resize functions */
-void             ewl_widget_set_rect(EwlWidget *widget,
-                                     int *x, int *y, int *w, int *h);
-
 /* public event functions */
 void             ewl_callback_add(EwlWidget *widget, EwlEventType t, 
 	                              char     (*cb)(EwlWidget *widget,
 	                                             EwlEvent  *ev,
 	                                             EwlData *data),
                                   EwlData   *data);
+/* padding funcs */
+int             *ewl_widget_get_padding(EwlWidget *widget);
+void             ewl_widget_set_padding(EwlWidget *widget,
+                                        int *left,  int *top,
+                                        int *right, int *bottom);
+
+/* widget evas routines */
+Evas             ewl_widget_get_evas(EwlWidget *widget);
+void             ewl_widget_set_background(EwlWidget *w,
+                                           Evas_Object im);
+Evas_Object      ewl_widget_get_background(EwlWidget *w);
+
+/* debugging functions */
+void             ewl_widget_dump(EwlWidget *w);
+
+
+
+/**********************************************************************/
+/* PRIVATE -- IF YOU USE ANY OF THESE YOUR APPLICATION WILL BREAK     */
+/**********************************************************************/
+
+EwlBool          ewl_widget_handle_realize(EwlWidget *widget,
+                                           EwlEvent  *ev,
+                                           EwlData   *data);
+EwlBool          ewl_widget_handle_unrealize(EwlWidget *widget,
+                                             EwlEvent  *ev,
+                                             EwlData   *data);
+/* DEPRICATED: public rendering functions */
+void             ewl_widget_render(EwlWidget *widget);
+void             ewl_widget_render_onto_parent(EwlWidget *widget);
+
+
+/* private widget resize functions */
+void             ewl_widget_set_rect(EwlWidget *widget,
+                                     int *x, int *y, int *w, int *h);
+
 /* private event functiosn */
 void             ewl_widget_callback_add(EwlWidget    *widget,
                                          EwlEventType  t, 
@@ -155,23 +185,7 @@ char             cb_ewl_widget_event_handler(EwlWidget *widget,
                                              EwlEvent  *ev,
                                              EwlData   *data);
 
-/* public rendering functions */
-void             ewl_widget_render(EwlWidget *widget);
-void             ewl_widget_render_onto_parent(EwlWidget *widget);
-
-/* padding funcs */
-int             *ewl_widget_get_padding(EwlWidget *widget);
-void             ewl_widget_set_padding(EwlWidget *widget,
-                                        int *left,  int *top,
-                                        int *right, int *bottom);
-
-/* widget evas routines */
-Evas             ewl_widget_get_evas(EwlWidget *widget);
-Evas_Object      ewl_widget_get_evas_object(EwlWidget *widget);
-void             ewl_widget_set_evas_object(EwlWidget *widget);
-
 /* DEPRICATED widget imlayer handling functions */
-void             ewl_widget_set_background(EwlWidget *w, Imlib_Image im);
 void             ewl_widget_imlayer_insert(EwlWidget *w, EwlImLayer *l);
 void             ewl_widget_imlayer_remove(EwlWidget *w, EwlImLayer *l);
 void             ewl_widget_imlayer_push(EwlWidget *w, EwlImLayer *l);
@@ -184,10 +198,6 @@ EwlImLayer      *ewl_widget_get_imlayer_by_name(EwlWidget *widget, char *name);
 void             ewl_widget_imlayer_show(EwlWidget *widget, char *name);
 void             ewl_widget_imlayer_hide(EwlWidget *widget, char *name);
 
-/* debugging functions */
-void             ewl_widget_dump(EwlWidget *w);
-
-/* PRIVATE */
 typedef struct _EwlImLayerForeachData EwlImLayerForeachData;
 struct _EwlImLayerForeachData {
 	EwlBool  (*cb)(EwlImLayer *layer,

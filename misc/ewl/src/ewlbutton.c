@@ -74,14 +74,13 @@ void       ewl_button_init(EwlButton *b, EwlImage *icon, char *label)
 	ewl_button_set_flags(widget,0); /* zero out the flags */
 	b->label = NULL;
 
-	/* initialize defaults from registry/db here */
-	ewl_widget_get_theme(widget, "/EwlButton");
-
 	/* add default event handler -- one generic one cuz it's cleaner */
-	ewl_widget_callback_add(widget, EWL_EVENT_MOUSEDOWN,
-	                        _cb_ewl_button_event_handler, NULL);
-	ewl_widget_callback_add(widget, EWL_EVENT_MOUSEUP,
-	                        _cb_ewl_button_event_handler, NULL);
+	ewl_callback_add(widget, EWL_EVENT_REALIZE,
+	                 ewl_button_handle_realize, NULL);
+	ewl_callback_add(widget, EWL_EVENT_MOUSEDOWN,
+	                 _cb_ewl_button_event_handler, NULL);
+	ewl_callback_add(widget, EWL_EVENT_MOUSEUP,
+                     _cb_ewl_button_event_handler, NULL);
 
 	/* parse user data here */
 	if (icon)	{
@@ -146,4 +145,15 @@ void       ewl_button_set_flags(EwlWidget *button, EwlFlag mask)
 	return;
 }
 
+EwlBool     ewl_button_handle_realize(EwlWidget *widget,
+                                      EwlEvent  *ev,
+                                      EwlData   *data)
+{
+	FUNC_BGN("ewl_button_handle_realize");
 
+	/* initialize defaults from registry/db here */
+	ewl_widget_get_theme(widget, "/EwlButton");
+
+	FUNC_END("ewl_button_handle_realize");
+	return TRUE;
+}

@@ -1037,3 +1037,17 @@ much cleaner that way.
 - cleaned up the src/create_user_preferences.sh script a little bit, and
 added a few comments.
 
+-----
+20000906-1653-PDT, pabs
+
+- changes to ewl_widget_get_theme() to use Evas.
+- made EwlWidget::bg an Evas_Object instead of an Imlib_Image
+- moved all ewl_widget_get_theme() calls to the realize handlers
+- okay BIG CHANGES -- we are officially using realize for widgets
+now.  you CANNOT CALL ewl_widget_get_theme() from the widgettype_init()
+func anymore -- you will get a coredump.  The only thing you do in
+the *_init() handler is sanitize member varialbes, get non-image
+data with the ewl_theme_* functionsi, and connect default callbacks.
+Again, DO NOT CALL ewl_widget_get_theme() from your _init() handlers.
+All of the toher code has changed to reflect this.
+

@@ -32,6 +32,19 @@ void         ewl_container_init(EwlContainer *c)
 	c->resize_children = NULL;
 	for (t=0;  t<4; c->child_padding[t++]=0);
 
+	ewl_callback_add(widget, EWL_EVENT_REALIZE,
+	                 ewl_container_handle_realize, NULL);
+
+	FUNC_END("ewl_container_init");
+	return;
+}
+
+EwlBool      ewl_container_handle_realize(EwlWidget *widget,
+                                          EwlEvent  *ev,
+                                          EwlData   *data)
+{
+	int t = 0;
+	FUNC_BGN("ewl_container_handle_realize");
 	/* LOAD DB SHIT HERRE */
 	ewl_widget_get_theme(widget,"/EwlContainer");
 	if (ewl_theme_get_int("/EwlContainer/child_padding/left",   &t))
@@ -43,9 +56,8 @@ void         ewl_container_init(EwlContainer *c)
 	if (ewl_theme_get_int("/EwlContainer/child_padding/bottom", &t)) 
 		ewl_container_set_child_padding(widget,0,0,0,&t);
 
-
-	FUNC_END("ewl_container_init");
-	return;
+	FUNC_END("ewl_container_handle_realize");
+	return TRUE;
 }
 
 static char _cb_ewl_cont_free(EwlLL *ll, EwlData *d)

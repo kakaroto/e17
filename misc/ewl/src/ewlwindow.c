@@ -66,7 +66,7 @@ EwlBool _cb_ewl_window_event_handler(EwlWidget *widget, EwlEvent *ev,
 			ewl_rect_dump(e_ev->rect);
 			break;
 		}*/
-		ewl_widget_render(widget);
+		/*ewl_widget_render(widget);
 
 		ewl_window_set_render_context(widget);
 		ewl_imlib_render_image_part_on_drawable_at_size(
@@ -80,14 +80,10 @@ EwlBool _cb_ewl_window_event_handler(EwlWidget *widget, EwlEvent *ev,
 		                       e_ev->rect->y,
 		                       e_ev->rect->w,
 		                       e_ev->rect->h,
-		                       /*widget->layout->rect->x,
-		                       widget->layout->rect->y,
-		                       widget->layout->rect->w,
-		                       widget->layout->rect->h,*/
 		                       0.0,
 		                       ewl_render_dithered_get(),
-		                       FALSE,  /* don't blend onto the drawable */
-		                       ewl_render_antialiased_get());
+		                       FALSE, 
+		                       ewl_render_antialiased_get());*/
 
 		XSetWindowBackgroundPixmap(ewl_get_display(), window->xwin, window->pmap);
 		/*XClearWindow(ewl_get_display(), window->xwin);*/
@@ -205,22 +201,13 @@ void         ewl_window_init(EwlWindow *win, EwlWindowType type,
 	ewl_widget_set_flag(widget,CAN_RESIZE, TRUE);
 	win->pmap = 0;
 	win->xwin = 0;
+
 	win->evas = evas_new();
 	evas_set_output_method(win->evas, ewl_get_render_method());
-
-	/* LAOD DB SHIT HERE */
-	ewl_widget_get_theme(widget,"/EwlWindow");
-	ewl_widget_imlayer_foreach(widget,
-	                           _cb_ewl_window_init_show_imlayers,
-	                           NULL);
-	if (ewl_theme_get_int("/EwlWindow/child_padding/left",   &t))
-		ewl_container_set_child_padding(widget,&t,0,0,0);
-	if (ewl_theme_get_int("/EwlWindow/child_padding/top",    &t))
-		ewl_container_set_child_padding(widget,0,&t,0,0);
-	if (ewl_theme_get_int("/EwlWindow/child_padding/right",  &t))
-		ewl_container_set_child_padding(widget,0,0,&t,0);
-	if (ewl_theme_get_int("/EwlWindow/child_padding/bottom", &t)) 
-		ewl_container_set_child_padding(widget,0,0,0,&t);
+	if (!win->evas)	{
+		fprintf(stderr,"WARNING: ewl_window_init(): No Evas was allocated for "
+		        "EwlWindow 0x%08x.\n", (unsigned int) win);
+	}
 
 	/* set up callbacks */
 	ewl_callback_add(widget, EWL_EVENT_REALIZE,
@@ -242,8 +229,6 @@ void         ewl_window_init(EwlWindow *win, EwlWindowType type,
 	                 ewl_window_handle_move, NULL);
 	ewl_callback_add(widget, EWL_EVENT_RESIZE,
 	                 ewl_window_handle_resize, NULL);
-
-	
 
 	/* window properties */
 	win->type	= type;
@@ -556,33 +541,33 @@ EwlBool  ewl_window_handle_configure(EwlWidget *widget,
 		evas_set_output_viewport(window->evas, 0, 0, width, height);
 		evas_set_output_size(window->evas, width, height);
 
-		evas_move(window->evas, widget->evas_object,
+		evas_move(window->evas, widget->bg,
 		          /*x +*/ widget->padding[EWL_PAD_LEFT],
 		          /*y +*/ widget->padding[EWL_PAD_TOP]);
 		fprintf(stderr,"ewl_window_handle_configure(): "
-		        "moving widget->evas_object to %d, %d\n", 
+		        "moving widget->bg to %d, %d\n", 
 		        /*x +*/ widget->padding[EWL_PAD_LEFT],
 		        /*y +*/ widget->padding[EWL_PAD_TOP]);
 		        
-		evas_resize(window->evas, widget->evas_object,
+		evas_resize(window->evas, widget->bg,
 		            width - (widget->padding[EWL_PAD_LEFT] +
 		                     widget->padding[EWL_PAD_RIGHT]),
 		            height - (widget->padding[EWL_PAD_TOP] + 
 		                      widget->padding[EWL_PAD_BOTTOM]));
 		fprintf(stderr,"ewl_window_handle_configure(): "
-		        "resizing widget->evas_object to %d, %d\n", 
+		        "resizing widget->bg to %d, %d\n", 
 		        width - (widget->padding[EWL_PAD_LEFT] +
 		                 widget->padding[EWL_PAD_RIGHT]),
 		        height - (widget->padding[EWL_PAD_TOP] + 
 		                  widget->padding[EWL_PAD_BOTTOM]));
-		evas_set_image_fill(window->evas, widget->evas_object, 
+		evas_set_image_fill(window->evas, widget->bg, 
 		                    /*x +*/ widget->padding[EWL_PAD_LEFT],
 		                    /*y +*/ widget->padding[EWL_PAD_TOP],
 		                    width - (widget->padding[EWL_PAD_LEFT] +
 		                             widget->padding[EWL_PAD_RIGHT]),
 		                    height - (widget->padding[EWL_PAD_TOP] + 
 		                              widget->padding[EWL_PAD_BOTTOM]));
-		/*evas_show(window->evas, widget->evas_object);*/
+		/*evas_show(window->evas, widget->bg);*/
 
 		ewl_widget_set_flag(widget, NEEDS_RESIZE, TRUE);
 		ewl_container_resize_children(widget);
@@ -623,6 +608,7 @@ EwlBool  ewl_window_handle_realize(EwlWidget *widget,
 	XGCValues    gc;
 	Atom         wmhints;
 	char        *temp;
+	int          t;
 	double       x, y, w, h;
 
 	FUNC_BGN("ewl_window_handle_realize");
@@ -632,8 +618,27 @@ EwlBool  ewl_window_handle_realize(EwlWidget *widget,
 	} else {
 		fprintf(stderr, "realizing window 0x%08x\n", (unsigned int)win);
 
-		/*win->evas = evas_new();
-		evas_set_output_method(win->evas, ewl_get_render_method());*/
+		win->evas = evas_new();
+		evas_set_output_method(win->evas, ewl_get_render_method());
+		if (!win->evas)	{
+			fprintf(stderr,"WARNING: No Evas was allocated for "
+			        "EwlWindow 0x%08x.\n", (unsigned int) win);
+		}
+
+		/* LAOD DB SHIT HERE */
+		ewl_widget_get_theme(widget,"/EwlWindow");
+		ewl_widget_imlayer_foreach(widget,
+		                           _cb_ewl_window_init_show_imlayers,
+		                           NULL);
+		if (ewl_theme_get_int("/EwlWindow/child_padding/left",   &t))
+			ewl_container_set_child_padding(widget,&t,0,0,0);
+		if (ewl_theme_get_int("/EwlWindow/child_padding/top",    &t))
+			ewl_container_set_child_padding(widget,0,&t,0,0);
+		if (ewl_theme_get_int("/EwlWindow/child_padding/right",  &t))
+			ewl_container_set_child_padding(widget,0,0,&t,0);
+		if (ewl_theme_get_int("/EwlWindow/child_padding/bottom", &t)) 
+			ewl_container_set_child_padding(widget,0,0,0,&t);
+
 		win->screen = ScreenOfDisplay(ewl_get_display(),
 		                              DefaultScreen(ewl_get_display()));
 		/*win->vis = DefaultVisual(ewl_get_display(),
@@ -741,25 +746,25 @@ EwlBool  ewl_window_handle_realize(EwlWidget *widget,
 		} else {
 			fprintf(stderr,"using file \"%s\".\n", temp);
 			evas_get_viewport(win->evas, &x, &y, &w, &h);
-			widget->evas_object = evas_add_image_from_file(win->evas,temp);
-			/*evas_set_layer(win->evas, widget->evas_object, 1);*/
-			evas_move(win->evas, widget->evas_object,
+			widget->bg = evas_add_image_from_file(win->evas,temp);
+			/*evas_set_layer(win->evas, widget->bg, 1);*/
+			evas_move(win->evas, widget->bg,
 			          /*x +*/ widget->padding[EWL_PAD_LEFT],
 			          /*y +*/ widget->padding[EWL_PAD_TOP]);
-			evas_resize(win->evas, widget->evas_object,
+			evas_resize(win->evas, widget->bg,
 			            w - (widget->padding[EWL_PAD_LEFT] +
 			                 widget->padding[EWL_PAD_RIGHT]),
 			            h - (widget->padding[EWL_PAD_TOP] + 
 			                 widget->padding[EWL_PAD_BOTTOM]));
-			evas_set_image_fill(win->evas, widget->evas_object, 
+			evas_set_image_fill(win->evas, widget->bg, 
 			                    /*x +*/ widget->padding[EWL_PAD_LEFT],
 			                    /*y +*/ widget->padding[EWL_PAD_TOP],
 			                    w - (widget->padding[EWL_PAD_LEFT] +
 			                         widget->padding[EWL_PAD_RIGHT]),
 			                    h - (widget->padding[EWL_PAD_TOP] + 
 			                         widget->padding[EWL_PAD_BOTTOM]));
-			/*evas_set_pass_events(win->evas, widget->evas_object, TRUE);*/
-			evas_show(win->evas, widget->evas_object);
+			/*evas_set_pass_events(win->evas, widget->bg, TRUE);*/
+			evas_show(win->evas, widget->bg);
 			fprintf(stderr,"/EwlWindow/background loaded okay\n");
 		}
 		
