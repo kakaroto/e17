@@ -239,6 +239,7 @@ mixer_timeout_callback (void *data)
 {
   vol = readMixer ();
   Epplet_gadget_data_changed (slider);
+  Epplet_timer (mixer_timeout_callback, NULL, 0.5, "TIMER");
   return;
   data = NULL;
 }
