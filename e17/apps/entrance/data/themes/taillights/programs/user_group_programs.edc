@@ -3,14 +3,14 @@
 		name, "user_icon_clicked";
 		signal, "mouse,clicked,1";
 		source, "base";
-		action, SIGNAL_EMIT "entrance,users,selected" "";
+		action, SIGNAL_EMIT "entrance,user,selected" "";
 	    }
 	    program
 	    {
 		name, "user_icon_unclicked";
 		signal, "mouse,clicked,3";
 		source, "base";
-		action, SIGNAL_EMIT "entrance,users,unselected" "";
+		action, SIGNAL_EMIT "entrance,user,unselected" "";
 	    }
 	    program
 	    {

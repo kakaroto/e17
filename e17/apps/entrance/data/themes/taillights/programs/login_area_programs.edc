@@ -56,16 +56,16 @@
 	program {
 	    name, "UserSelectedFromList";
 	    source, "";
-	    signal, "entrance,users,selected";
+	    signal, "entrance,user,selected";
 	    action, STATE_SET "visible" 0.0;
 	    target, "entrance_face_clip";
 	    target,"entrance_e_logo_clip";
 	    transition, SINUSOIDAL 2.0;
 	}
 	program {
-	    name, "entrance,users,unselected";
+	    name, "UserUnselectedFromList";
 	    source, "";
-	    signal, "entrance,users,unselected";
+	    signal, "entrance,user,unselected";
 	    action, STATE_SET "default" 0.0;
 	    target, "entrance_face_clip";
 	    target, "entrance_e_logo_clip";

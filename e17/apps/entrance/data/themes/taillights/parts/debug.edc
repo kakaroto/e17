@@ -187,7 +187,7 @@
      "entrance,xsession,selected", BUTTON_WIDTH, 48);
      SOUTH_OF("session_selected_button_image", "clipped_user_selected",
      "user_selected_button_image", "user_selected_button_text",
-     "entrance,users,selected", BUTTON_WIDTH, 48);
+     "entrance,user,selected", BUTTON_WIDTH, 48);
      SOUTH_OF("user_selected_button_image", "clipped_user_unselected",
      "user_unselected_button_image", "user_unselected_button_text",
-     "entrance,users,unselected", BUTTON_WIDTH, 48);
+     "entrance,user,unselected", BUTTON_WIDTH, 48);

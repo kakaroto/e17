@@ -249,7 +249,7 @@
 		}
 	    }
 	    part {
-		name, "entrance.users.avatar";
+		name, "entrance.user.avatar";
 		type, RECT;
 		mouse_events, 1;
 		clip_to, "entrance_face_clip";
