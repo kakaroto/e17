@@ -37,6 +37,8 @@ void              _esmart_textarea_format_size_get(Esmart_Text_Area *t, Evas_Coo
 void              _esmart_textarea_native_size_get(Esmart_Text_Area *t, Evas_Coord *w, Evas_Coord *h);
 int               _esmart_textarea_native_lines_get(Esmart_Text_Area *t);
 
+Esmart_Text_Area_Format *_esmart_textarea_format_get(Esmart_Text_Area *t);
+    
 
 /* textarea cursor movement and cursor related functions */
 void              _esmart_textarea_cursor_goto_cursor(Esmart_Text_Area *t);

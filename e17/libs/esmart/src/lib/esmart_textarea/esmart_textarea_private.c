@@ -257,3 +257,48 @@ _esmart_textarea_native_lines_get(Esmart_Text_Area *t)
 {
    return evas_object_textblock_native_lines_get(t->text);
 }
+
+/* this is an experimental function that gets formatting at a current
+ * location and uses the Esmart_Text_Area_Format struct as a placeholder
+ */
+Esmart_Text_Area_Format *
+_esmart_textarea_format_get(Esmart_Text_Area *t)
+{
+   Esmart_Text_Area_Format *format;
+   char *s, *tok;
+   
+   format = malloc(sizeof(Esmart_Text_Area_Format));
+   s = strdup(evas_object_textblock_format_current_get(t->text));
+              
+#define FORMAT_FILL(op) \
+   if(!strcmp(tok,#op)) \
+       { \
+	  if((tok = strtok(NULL," ="))) \
+	    format->op = strdup(tok); \
+       }
+   
+   tok = strtok(s," =");
+   if(!tok) return NULL;
+   do {
+      FORMAT_FILL(font);
+      FORMAT_FILL(size);
+      FORMAT_FILL(color);
+      FORMAT_FILL(underline);
+      FORMAT_FILL(underline_color);
+      FORMAT_FILL(double_underline);
+      FORMAT_FILL(double_underline_color);
+      FORMAT_FILL(outline);
+      FORMAT_FILL(outline_color);
+      FORMAT_FILL(shadow);
+      FORMAT_FILL(shadow_color);
+      FORMAT_FILL(glow);
+      FORMAT_FILL(glow_color);
+      FORMAT_FILL(outer_glow);
+      FORMAT_FILL(outer_glow_color);
+      FORMAT_FILL(backing);
+      FORMAT_FILL(backing_color);
+      FORMAT_FILL(strikethrough);
+      FORMAT_FILL(strikethrough_color);      
+   } while((tok = strtok(NULL," =")));
+   return format;   
+}

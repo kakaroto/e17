@@ -30,6 +30,30 @@ struct _Esmart_Text_Area_Coord {            /* a coord, x, y and char pos */
    int pos;
 };
 
+struct _Esmart_Text_Area_Format {           /* formatting information */
+   char *font;
+   char *size;
+   char *color;
+   char *underline;
+   char *underline_color;
+   char *double_underline;
+   char *double_underline_color;
+   char *outline;
+   char *outline_color;
+   char *shadow;
+   char *shadow_color;
+   char *glow;
+   char *glow_color;
+   char *outer_glow;
+   char *outer_glow_color;
+   char *backing;
+   char *backing_color;
+   char *strikethrough;
+   char *strikethrough_color;      
+};
+
+typedef struct _Esmart_Text_Area_Format Esmart_Text_Area_Format;
+
 typedef struct _Esmart_Text_Area_Coord Esmart_Text_Area_Coord;
 
 struct _Esmart_Text_Area {                  /* our typical text area */   
@@ -89,4 +113,6 @@ void            esmart_textarea_format_size_get(Evas_Object *o, Evas_Coord *w, E
 void            esmart_textarea_native_size_get(Evas_Object *o, Evas_Coord *w, Evas_Coord *h);
 int             esmart_textarea_native_lines_get(Evas_Object *o);
 
+Esmart_Text_Area_Format *esmart_textarea_format_get(Evas_Object *o);
+    
 #endif

@@ -401,3 +401,13 @@ esmart_textarea_native_lines_get(Evas_Object *o)
    t = evas_object_smart_data_get(o);
    return _esmart_textarea_native_lines_get(t);
 }
+
+Esmart_Text_Area_Format *
+esmart_textarea_format_get(Evas_Object *o)
+{
+   Esmart_Text_Area *t;
+   
+   t = evas_object_smart_data_get(o);
+   return _esmart_textarea_format_get(t);
+}
+    

@@ -114,7 +114,7 @@ _esmart_textarea_cb_mouse_down(void *data, Evas *e, Evas_Object *obj,
 	break;
 	
       case 3:
-	t->mouse_modifiers |= ESMART_TEXTAREA_MOUSE_MODIFIER_RIGHT;	
+	t->mouse_modifiers |= ESMART_TEXTAREA_MOUSE_MODIFIER_RIGHT;
 	break;
      }
 }
