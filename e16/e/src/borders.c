@@ -377,12 +377,14 @@ AddToFamily(Window win)
    manplace = 0;
    /* adopt the new baby */
    ewin = Adopt(win);
+
    /* if is an afterstep/windowmaker dock app 0- dock it */
    if (Conf.dockapp_support && ewin->docked)
      {
 	DockIt(ewin);
 	EDBUG_RETURN_;
      }
+
    /* if set for borderless then dont slide it in */
    if ((!ewin->client.mwm_decor_title) && (!ewin->client.mwm_decor_border))
       doslide = 0;
@@ -558,9 +560,6 @@ AddToFamily(Window win)
 	  }
      }
 
-   /* add it to our list of managed clients */
-   AddItem(ewin, "EWIN", ewin->client.win, LIST_TYPE_EWIN);
-
    /* if the window asked to be iconified at the start */
    if (ewin->iconified)
      {
@@ -693,7 +692,6 @@ AddInternalToFamily(Window win, const char *bname, int type, void *ptr,
 	   b = FindItem("DEFAULT", 0, LIST_FINDBY_NAME, LIST_TYPE_BORDER);
      }
    ewin = AdoptInternal(win, b, type);
-   AddItem(ewin, "EWIN", ewin->client.win, LIST_TYPE_EWIN);
 
    if (ewin->desktop < 0)
       ewin->desktop = desks.current;
@@ -1175,13 +1173,15 @@ Adopt(Window win)
    MatchEwinToSnapInfo(ewin);
    ICCCM_GetEInfo(ewin);
 
+   AddItem(ewin, "EWIN", ewin->client.win, LIST_TYPE_EWIN);
+
    if (!ewin->border)
       EwinSetBorderInit(ewin);
+   EwinSetBorderTo(ewin, NULL);
 
    ICCCM_MatchSize(ewin);
    ICCCM_Adopt(ewin);
 
-   EwinSetBorderTo(ewin, NULL);
    UngrabX();
 
    if (ewin->shaded)
@@ -1232,8 +1232,9 @@ AdoptInternal(Window win, Border * border, int type)
    ICCCM_GetInfo(ewin, 0);
    ICCCM_GetShapeInfo(ewin);
    ICCCM_GetGeoms(ewin, 0);
-
    MatchEwinToSnapInfo(ewin);
+
+   AddItem(ewin, "EWIN", ewin->client.win, LIST_TYPE_EWIN);
 
    if (!ewin->border)
       EwinSetBorderInit(ewin);
@@ -1241,6 +1242,7 @@ AdoptInternal(Window win, Border * border, int type)
 
    ICCCM_MatchSize(ewin);
    ICCCM_Adopt(ewin);
+
    UngrabX();
 
    if (ewin->shaded)

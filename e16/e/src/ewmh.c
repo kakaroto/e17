@@ -389,7 +389,9 @@ EWMH_SetClientList(void)
    lst = (EWin **) EwinListGetStacking(&num);
    /* FIXME: num must be unchanged here! Check! */
    if (num != nwin)
-      printf("*** ERROR: %s %d\n", __FILE__, __LINE__);
+      printf("*** ERROR: no=%d nn=%d\n", nwin, num);
+   if (num > nwin)
+      wl = Erealloc(wl, num * sizeof(Window));
    nwin = 0;
    for (i = num - 1; i >= 0; i--)
       wl[nwin++] = lst[i]->client.win;

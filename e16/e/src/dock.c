@@ -53,7 +53,6 @@ DockIt(EWin * ewin)
    ButtonShow(bt);
    ButtonFindEmptySpotFor(bt, "DOCK_APP_BUTTON", Conf.dock.dirmode);
 
-   AddItem(ewin, "EWIN", ewin->client.win, LIST_TYPE_EWIN);
    AddItem(bt, "DOCK_APP_BUTTON", ewin->client.win, LIST_TYPE_BUTTON);
 
    ButtonEmbedWindow(bt, ewin->client.win);
