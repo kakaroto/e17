@@ -15,9 +15,11 @@ export DH_COMPAT=2
 # This has to be exported to make some magic below work.
 export DH_OPTIONS
 
+INSTALL=/usr/bin/install
+
 configure: configure-stamp
 configure-stamp:
-	./autogen.sh --prefix=/usr || ./configure --prefix=/usr	
+	./configure --prefix=/usr
 	touch configure-stamp
 
 
@@ -26,7 +28,7 @@ build-stamp:
 	dh_testdir
 
 
-	$(MAKE)
+	$(MAKE) 
 
 	touch build-stamp
 
@@ -34,61 +36,44 @@ clean:
 	dh_testdir
 	rm -f build-stamp configure-stamp
 
-	# Add here commands to clean up after the build process.
-	-$(MAKE) clean
 	-$(MAKE) distclean
-	-rm -rf $(shell pwd)/debian/imlib2 build-stamp
+	-rm -f configure-stamp build-stamp
 
 	dh_clean
 
 install: DH_OPTIONS=
-install: build
+install: build 
 	dh_testdir
 	dh_testroot
 	dh_clean -k
 	dh_installdirs
 
-	# Add here commands to install the package into debian/tmp.
-	#$(MAKE) prefix=`pwd`/debian/tmp/usr install
+	$(MAKE) install DESTDIR=$(shell pwd)/debian/libimlib2/
+	$(INSTALL) -d debian/libimlib2-dev/usr/share/man/man1
+	$(INSTALL) -d debian/libimlib2-dev/usr/lib/loaders/{filter,image}
+	$(INSTALL) debian/imlib2-config.1 debian/libimlib2-dev/usr/share/man/man1
+	mv debian/libimlib2/usr/include debian/libimlib2-dev/usr
+	mv debian/libimlib2/usr/lib/*.{so,la,a} debian/libimlib2-dev/usr/lib/
+	mv debian/libimlib2/usr/lib/loaders/image/*.{a,la} debian/libimlib2-dev/usr/lib/loaders/image
+	mv debian/libimlib2/usr/lib/loaders/filter/*.{a,la} debian/libimlib2-dev/usr/lib/loaders/filter
+	mv debian/libimlib2/usr/bin debian/libimlib2-dev/usr
 
-	$(MAKE) install DESTDIR=$(shell pwd)/debian/imlib2/
-	rm -rf debian/libimlib2
-	mv debian/imlib2 debian/libimlib2
-	mkdir -p $(shell pwd)/debian/libimlib2-dev/usr/include
-	mv debian/libimlib2/usr/include/Imlib2.h debian/libimlib2-dev/usr/include/
+	$(INSTALL) -d debian/libimlib2-dev/usr/share/doc/libimlib2-dev/html
+	$(INSTALL) -m 644 doc/*.{html,gif} debian/libimlib2-dev/usr/share/doc/libimlib2-dev/html
 
-#	dh_movefiles
+	
 
-# Build architecture-independent files here.
-# Pass -i to all debhelper commands in this target to reduce clutter.
-binary-indep: DH_OPTIONS=-i
-binary-indep: build install
-	# Need this version of debhelper for DH_OPTIONS to work.
-	#dh_testversion 2 2
-	dh_testdir
-	dh_testroot
-	dh_installdocs
-	dh_installexamples
-	dh_installmenu
-	dh_installchangelogs
-	dh_link
-	dh_compress
-	dh_fixperms
-	dh_suidregister
-	dh_installdeb
-	dh_gencontrol
-	dh_md5sums
-	dh_builddeb
+binary-indep:
 
 # Build architecture-dependent files here.
 # Pass -a to all debhelper commands in this target to reduce clutter.
 binary-arch: DH_OPTIONS=-a
 binary-arch: build install
 	# Need this version of debhelper for DH_OPTIONS to work.
-	#dh_testversion 2 2
+	dh_testversion 2 
 	dh_testdir
 	dh_testroot
-	dh_installdocs
+	dh_installdocs AUTHORS README
 	dh_installexamples
 	dh_installchangelogs
 	dh_strip
@@ -102,4 +87,4 @@ binary-arch: build install
 	dh_builddeb
 
 binary: binary-indep binary-arch
-.PHONY: build clean binary-indep binary-arch binary install
+.PHONY: build clean binary-indep binary-arch binary install ${loaders} filter install-base

@@ -2,16 +2,26 @@ Source: imlib2
 Section: libs
 Priority: optional
 Maintainer: Laurence J. Lane <ljlane@debian.org>
-Standards-Version: 3.0.1.1
+Build-Depends: libedba1-dev, libjpeg62-dev, libpng2-dev, libtiff3g-dev, zlib1g-dev, libungif3g-dev | giflib3g-dev | libungif4-dev , xlibs-dev, freetype2-dev, debhelper (>= 2.0)
+Standards-Version: 3.1.1.1
 
 Package: libimlib2
 Architecture: any
+Section: libs
 Depends: ${shlibs:Depends}
-Description: imlib2
- imlib2 is the second incarnation of the rasterman's superb imaging
- library
-
+Description: Powerful image loading and rendering library
+ Imlib2 is an advanced replacement library for libraries like 
+ libXpm that provides many more features with much greater 
+ flexibility and speed than standard libraries, including font 
+ rasterization, rotation, RGBA space rendering and blending, 
+ dynamic binary filters, scripting, and more.
+ .
+ Imlib2 is not a drop-in replacement for Imlib 1.x.
+ 
 Package: libimlib2-dev
-Architecture: all
-Description: imlib2 development files
- C header file for compiling programs with imlib2 support.
+Architecture: any
+Section: devel
+Architecture: any
+Depends: libimlib2 (= ${Source-Version}), libc6-dev, libedba1-dev, libjpeg62-dev, libpng2-dev, libtiff3g-dev, zlib1g-dev, libungif3g-dev | giflib3g-dev | libungif4-dev, xlibs-dev, freetype2-dev
+Description: Imlib2 headers, static libraries and documentation
+ Headers, static libraries and documentation for Imlib2.
