@@ -1090,9 +1090,11 @@ IPC_Background(char *params, Client * c)
 					     LIST_TYPE_BACKGROUND);
 
 		  if (!bg)
-		     bg =
-			CreateDesktopBG(strdup(name), NULL, NULL, 0, 0, 0, 0, 0,
-					0, NULL, 0, 0, 0, 0, 0);
+		    {
+		       bg = CreateDesktopBG(strdup(name), NULL, NULL, 0, 0, 0,
+					    0, 0, 0, NULL, 0, 0, 0, 0, 0);
+		       AddItem(bg, bg->name, 0, LIST_TYPE_BACKGROUND);
+		    }
 
 		  if (!bg)
 		     Esnprintf(buf, sizeof(buf),
@@ -1180,8 +1182,6 @@ IPC_Background(char *params, Client * c)
 				      type);
 			 }
 		    }
-
-		  AddItem(bg, bg->name, 0, LIST_TYPE_BACKGROUND);
 	       }
 	  }
 	else

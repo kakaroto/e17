@@ -4126,3 +4126,10 @@ Thu Dec 23 10:59:57 PST 1999
 (Raster)
 
 use setlocale.... 
+
+-------------------------------------------------------------------------------
+
+Wed Dec 29 14:14:29 PST 1999
+(KainX)
+
+Fixed that weird background setting behavior that E-Slides revealed.
