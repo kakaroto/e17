@@ -517,8 +517,9 @@ delete_entry (GtkWidget * widget, gpointer user_data)
 	{
 	  /* Why does this have to be so painful? */
 	  next = GTK_CTREE_ROW (parent)->children;
-	  while (GTK_CTREE_ROW (next)->sibling)
-	    next = GTK_CTREE_ROW (next)->sibling;
+	  if (next)
+	    while (GTK_CTREE_ROW (next)->sibling)
+	      next = GTK_CTREE_ROW (next)->sibling;
 	}
       if (next)
 	gtk_ctree_select (GTK_CTREE (ctree), next);
@@ -666,7 +667,8 @@ tree_to_gnode (GtkCTree * ctree,
 }
 
 /* Next two functions are co-recursing */
-gint write_menu (GNode * node, gchar * file)
+gint
+write_menu (GNode * node, gchar * file)
 {
   GNode *ptr;
   FILE *fp = NULL;
@@ -706,7 +708,8 @@ gint write_menu (GNode * node, gchar * file)
   return 0;
 }
 
-gint write_menu_entry (GNode * node, FILE * fp)
+gint
+write_menu_entry (GNode * node, FILE * fp)
 {
   struct entry_data *dat;
 
@@ -832,7 +835,8 @@ status_message (gchar * message, gint delay)
   gtk_timeout_add (delay, (GtkFunction) status_clear, statusbar);
 }
 
-gint status_clear (gpointer user_data)
+gint
+status_clear (gpointer user_data)
 {
   gtk_statusbar_pop (GTK_STATUSBAR (statusbar), 1);
   return FALSE;
