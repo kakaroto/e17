@@ -154,30 +154,32 @@ main(int argc, char **argv)
 	     {
 		no_overwrite = 1;
 	     }
-	   else if ((!strcmp("-help", argv[j]))
-		    || (!strcmp("--help", argv[j]))
-		    || (!strcmp("-h", argv[j])) || (!strcmp("-?", argv[j])))
+	   else if ((!strcmp("-h", argv[j])) || (!strcmp("-help", argv[j])) ||
+		    (!strcmp("-?", argv[j])) || (!strcmp("--help", argv[j])))
 	     {
-		printf("enlightenment options:                      \n"
-		       "\t-theme /path/to/theme                     \n"
+		printf("enlightenment options:\n"
+		       "\t-display display_name\n"
+		       "\t-ecachedir /path/to/cached/dir\n"
 		       "\t-econfdir /path/to/.enlightenment/conf/dir\n"
-		       "\t-ecachedir /path/to/cached/dir            \n"
-		       "\t[-smid | -clientId | --sm-client-id] id   \n"
-		       "\t-smfile file                              \n"
-		       "\t-ext_init_win window_id                   \n"
-		       "\t-no_overwrite                             \n"
-		       "\t[-v | -version | --version]               \n"
-		       "\t-display display_name                     \n");
+		       "\t-ext_init_win window_id\n"
+		       "\t-no_overwrite\n"
+		       "\t-smfile file\n"
+		       "\t[-smid | -clientId | --sm-client-id] id\n"
+		       "\t-theme /path/to/theme\n"
+		       "\t[-v | -verbose]\n" "\t[-V | -version | --version]\n");
 		exit(0);
 	     }
-	   else if ((!strcmp("-v", argv[j]))
-		    || (!strcmp("-version", argv[j]))
-		    || (!strcmp("--version", argv[j]))
-		    || (!strcmp("-v", argv[j])))
+	   else if ((!strcmp("-V", argv[j])) ||
+		    (!strcmp("-version", argv[j])) ||
+		    (!strcmp("--version", argv[j])))
 	     {
 		printf(_("Enlightenment Version: %s\nLast updated on: %s\n"),
 		       ENLIGHTENMENT_VERSION, E_CHECKOUT_DATE);
 		exit(0);
+	     }
+	   else if ((!strcmp("-v", argv[j])) || (!strcmp("-verbose", argv[j])))
+	     {
+		Mode.debug++;
 	     }
 	}
 
