@@ -1389,8 +1389,7 @@ typedef struct
 {
   GadGeneral          general;
   int                 x, y, w, h; 
-  int		      char_width, char_height; 
-  int		      cursor_pos, text_offset, viewable_chars;
+  int		      cursor_pos, text_offset;
   char               *image;
   char               *contents;
   char                hilited;
@@ -1426,24 +1425,6 @@ Epplet_create_textbox(char *image, char *contents, int x, int y,
   g->mask = 0;
   g->image = Estrdup(image);
   g->hilited = 0;
-
-      switch (g->size)
-	{
-	case 0:
-	  Epplet_textclass_get_size("EPPLET_BUTTON", &(g->char_width), &(g->char_height), "C");
-	  break;
-	case 1:
-	  Epplet_textclass_get_size("EPPLET_TEXT_TINY", &(g->char_width), &(g->char_height), "C");
-	  break;
-	case 2:
-	  Epplet_textclass_get_size("EPPLET_TEXT_MEDIUM", &(g->char_width), &(g->char_height), "C");
-	  break;
-	case 3:
-	  Epplet_textclass_get_size("EPPLET_LARG", &(g->char_width), &(g->char_height), "C");
-	  break;
-	}
-
-  g->viewable_chars = g->w / g->char_width;
 
   attr.backing_store = NotUseful;
   attr.override_redirect = False;
@@ -1499,23 +1480,13 @@ Epplet_change_textbox(Epplet_gadget eg, char *new_contents)
 	len = strlen(new_contents);
 	g = (GadTextBox *) eg;
 
-	printf("old: %s -> new: %s\n", g->contents, new_contents);
-
 	if(g->contents != NULL)
 		free(g->contents);
 
 	g->contents = Estrdup(new_contents);
 
-	printf("now: %s\n", g->contents);
-
-	/*
-	if(len > g->viewable_chars)
-		g->cursor_pos = g->viewable_chars * g->char_width;
-
-	g->text_offset = len - g->viewable_chars;
-	*/
-  
-	g->cursor_pos = g->text_offset = 0;
+	g->cursor_pos = strlen(new_contents);
+	g->text_offset = 0;
 
 	Epplet_draw_textbox(eg);
 }
@@ -1573,27 +1544,24 @@ Epplet_draw_textbox(Epplet_gadget eg)
 	case 0:
 	  Epplet_textclass_get_size("EPPLET_BUTTON", &w, &h, s);
 	  
-	  if(strlen(s) > g->viewable_chars)
-		  s[g->viewable_chars] = '\0';
-	  
 	  y = (g->h - h) / 2;
 	  Epplet_textclass_draw("EPPLET_BUTTON", state, g->pmap, x, y, s);
 	  break;
 	case 1:
 	  Epplet_textclass_get_size("EPPLET_TEXT_TINY", &w, &h, s);
-	  //s[w-1] = '\0';
+	  
 	  y = (g->h - h) / 2;
 	  Epplet_textclass_draw("EPPLET_TEXT_TINY", state, g->pmap, x, y, s);
 	  break;
 	case 2:
 	  Epplet_textclass_get_size("EPPLET_TEXT_MEDIUM", &w, &h, g->contents);
-	  s[w] = '\0';
+	  
 	  y = (g->h - h) / 2;
 	  Epplet_textclass_draw("EPPLET_TEXT_MEDIUM", state, g->pmap, x, y, s);
 	  break;
 	case 3:
 	  Epplet_textclass_get_size("EPPLET_TEXT_LARGE", &w, &h, g->contents);
-	  s[w] = '\0';
+	  
 	  y = (g->h - h) / 2;
 	  Epplet_textclass_draw("EPPLET_TEXT_LARGE", state, g->pmap, x, y, s);
 	  break;
@@ -1609,7 +1577,7 @@ Epplet_draw_textbox(Epplet_gadget eg)
 static void
 Epplet_textbox_handle_keyevent(XEvent *ev, Epplet_gadget gadget)
 {
-  int                 len;
+  int                 len, char_width, text_width, h;
   static char         kbuf[20];
   KeySym              keysym;
   XKeyEvent          *kev;
@@ -1656,11 +1624,36 @@ Epplet_textbox_handle_keyevent(XEvent *ev, Epplet_gadget gadget)
         }
 
       strcat(g->contents, kbuf);
-      if (g->cursor_pos <= g->w)
-        g->cursor_pos += len;
-      else
-        g->text_offset += len;
+      g->cursor_pos++;
     }
+      
+      switch (g->size)
+	{
+	case 0:
+	  Epplet_textclass_get_size("EPPLET_BUTTON", &char_width, &h, kbuf);
+	  Epplet_textclass_get_size("EPPLET_BUTTON", &text_width, &h, g->contents);
+	  break;
+	case 1:
+	  Epplet_textclass_get_size("EPPLET_TEXT_TINY", &char_width, &h, kbuf);
+	  Epplet_textclass_get_size("EPPLET_TEXT_TINY", &text_width, &h, g->contents);
+	  break;
+	case 2:
+	  Epplet_textclass_get_size("EPPLET_TEXT_MEDIUM", &char_width, &h, kbuf);
+	  Epplet_textclass_get_size("EPPLET_TEXT_MEDIUM", &text_width, &h, g->contents);
+	  break;
+	case 3:
+	  Epplet_textclass_get_size("EPPLET_TEXT_LARGE", &char_width, &h, kbuf);
+	  Epplet_textclass_get_size("EPPLET_TEXT_LARGE", &text_width, &h, g->contents);
+	  break;
+	}
+
+      if( (text_width + char_width) > g->w)
+      {
+        if( (*kbuf == '\b') && g->contents && *(g->contents) )
+		g->text_offset > 0 ? g->text_offset-- : "";
+	else
+	      	g->text_offset++;
+      }
 }
 
 Epplet_gadget 
