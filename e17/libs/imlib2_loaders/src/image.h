@@ -1,7 +1,7 @@
 #ifndef __IMAGE
 # define __IMAGE 1
 
-#include "ltdl.h"		/* for lt_dlhandle definition */
+#include "../libltdl/ltdl.h"		/* for lt_dlhandle definition */
 
 typedef struct _imlibimage              ImlibImage;
 typedef struct _imlibimagepixmap        ImlibImagePixmap;
