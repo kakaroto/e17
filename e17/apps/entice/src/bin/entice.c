@@ -21,6 +21,7 @@
 
 static Entice *entice = NULL;
 
+static void entice_current_free(void);
 
 /**
  * hookup_edje_signals - Add signal callbacks for EnticeImage edje part
@@ -225,27 +226,7 @@ _entice_thumb_load(void *_data, Evas * _e, Evas_Object * _o, void *_ev)
                                entice_image_zoom_get(entice->current));
          if (entice_image_zoom_fit_get(entice->current))
             should_fit = 1;
-         evas_object_del(entice->current);
-         entice->current = NULL;
-
-         /* clean up the old images */
-         swallowed =
-            edje_object_part_swallow_get(entice->preview, "EnticeImage");
-         if (swallowed)
-         {
-            edje_object_part_unswallow(entice->current, swallowed);
-            evas_object_del(swallowed);
-            swallowed = NULL;
-         }
-         swallowed =
-            edje_object_part_swallow_get(entice->current,
-                                         "EnticeImageScroller");
-         if (swallowed)
-         {
-            edje_object_part_unswallow(entice->current, swallowed);
-            evas_object_del(swallowed);
-            swallowed = NULL;
-         }
+	 entice_current_free();
       }
       entice->current = new_current;
       if ((thumb_edje =
@@ -400,6 +381,36 @@ entice_remove_current(void)
    }
 
 }
+static void
+entice_current_free(void)
+{
+   if (entice && entice->edje && entice->current)
+   {
+      Evas_Object *swallowed = NULL;
+
+      if (entice->current)
+         evas_object_del(entice->current);
+      entice->current = evas_object_image_add(ecore_evas_get(entice->ee));
+
+      /* clean up the old images */
+      swallowed = edje_object_part_swallow_get(entice->edje, "EnticeImage");
+      if (swallowed)
+      {
+         edje_object_part_unswallow(entice->edje, swallowed);
+         evas_object_del(swallowed);
+         swallowed = NULL;
+      }
+      swallowed =
+         edje_object_part_swallow_get(entice->edje, "EnticeImageScroller");
+      if (swallowed)
+      {
+         edje_object_part_unswallow(entice->edje, swallowed);
+         evas_object_del(swallowed);
+         swallowed = NULL;
+      }
+   }
+
+}
 
 /**
  * entice_file_remove - remove the file from our image list
@@ -431,6 +442,7 @@ entice_file_remove(const char *file)
          }
          e_container_element_remove(entice->container, o);
          evas_object_del(o);
+         entice_current_free();
          if (evas_list_count(entice->thumb.list) == 0)
             entice->thumb.current = NULL;
       }
