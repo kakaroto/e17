@@ -841,4 +841,10 @@ the screen boundaries. hmm
 
 - expose events only need to refresh the region in question, not the
 entire window.  this is a noticable speed improvement.
+- chnaged the default antialiasing to off.. hope that'sokay
+
+-----
+20000819-1539-PDT, pabs
+
+- added x5rings to AUTHORS file.
 

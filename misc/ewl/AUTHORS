@@ -21,4 +21,12 @@ http://www.linuxbrit.co.uk/
 - feh_imlib2 API (ported to the current EWL Imlib API by pabs).
 - Imlib2 error handling (ported from feh to the EWL Imlib APi by pabs).
 
+Chris Thomas, x5rings
+x5rings@fsck.org
+http://x5rings.fsck.org/
+- extended EwlWindow attributes, realize/unrealize (deferred X
+  resourcea llocation) code.
+- layout debugging.
+- working on elogin (an EWL-based xdm client).
+- prefers rainbow colored sex toys.
 
