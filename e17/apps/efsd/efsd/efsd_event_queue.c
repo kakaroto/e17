@@ -128,7 +128,7 @@ efsd_event_queue_process(EfsdQueue *q, fd_set *fdset)
      from the queue.
   */
 
-  if (!q)
+  if (!q || !fdset)
     D_RETURN_(FALSE);
 
   for (eqi = efsd_queue_it_new(q); efsd_queue_it_valid(eqi); efsd_queue_it_next(eqi))

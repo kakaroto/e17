@@ -768,9 +768,10 @@ main_handle_connections(void)
 	  tv.tv_sec  = 1;
 	  tv.tv_usec = 0;
 	}
-       /* if we timed out - ie 0 fd's available */
-       if (n == 0)
-	 efsd_meta_idle();
+      
+      /* if we timed out - ie 0 fd's available */
+      if (n == 0)
+	efsd_meta_idle();
 
       /* Check if anything is queued to be written
          to the writable fds ... */
