@@ -2592,7 +2592,12 @@ Epplet_change_label(Epplet_gadget gadget, char *label)
    
    g = (GadLabel *)gadget;
    if (g->label)
-      free(g->label);
+     {
+       if (label && !strcmp(g->label, label))
+         return;  /* The labels are identical, so no sense in redrawing */
+       else
+         free(g->label);  /* The labels are different.  Proceed. */
+     }
    g->label = Estrdup(label);
    Epplet_draw_label(gadget, 0);
 }

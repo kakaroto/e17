@@ -27,7 +27,7 @@ timer_cb(void *data) {
 
   FILE *fp;
   char buff[1024];
-  unsigned long total, used, mfree, shared, buffers, cached;
+  unsigned long total, used, buffers, cached;
 
   if ((fp = fopen("/proc/meminfo", "r")) == NULL) {
     D(("Failed to open /proc/meminfo -- %s\n", strerror(errno)));
@@ -35,8 +35,8 @@ timer_cb(void *data) {
   }
   fgets(buff, sizeof(buff), fp);  /* Ignore the first line */
   fgets(buff, sizeof(buff), fp);
-  sscanf(buff, "%*s %lu %lu %lu %lu %lu %lu", 
-	 &total, &used, &mfree, &shared, &buffers, &cached);
+  sscanf(buff, "%*s %lu %lu %*lu %*lu %lu %lu", 
+	 &total, &used, &buffers, &cached);
   used -= (buffers + cached); 
   mem_val = (int) ((((float) used) / total) * 100.0);
   D(("%d = 100 * %lu / %lu\n", (100 * used) / total, used, total));

@@ -110,3 +110,18 @@ Mon Oct 25 23:43:23 PDT 1999
 (KainX)
 
 E-NetFlame was too spiffy for me to not add it. :-)
+
+-------------------------------------------------------------------------------
+
+Tue Oct 26 13:42:53 PDT 1999
+(KainX)
+
+First off, I removed some unneeded variables from E-MemWatch.  I also fixed a
+reporting bug in E-Disk.
+
+But most importantly, I fixed Epplet_change_label() to avoid changing a label
+to the exact same string.  This is the best place to handle this situation,
+because it saves resources (we already have both strings to compare) and, due
+to the nature of epplets, the probability is very high that this function
+would only (or at least primarily) be called from a timer callback.  So it
+simplifies client code this way too.
