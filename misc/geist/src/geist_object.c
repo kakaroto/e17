@@ -770,13 +770,6 @@ geist_object_update_alignment(geist_object * obj)
    if ((obj->x + obj->w) < (obj->x + obj->rendered_x + obj->rendered_w))
       obj->rendered_x = (obj->w - obj->rendered_w);
 
-#if 0
-   /* our rendering engine doesn't support this yet */
-   if (obj->rendered_x < 0)
-      obj->rendered_x = 0;
-   if (obj->rendered_y < 0)
-      obj->rendered_y = 0;
-#endif
    D_RETURN_(5);
 }
 

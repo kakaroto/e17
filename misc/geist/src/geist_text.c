@@ -273,20 +273,10 @@ geist_text_create_image(geist_text * txt)
       weprintf("no font for text.");
       D_RETURN_(3);
    }
-   if (!txt->text)
-   {
-      weprintf("no text in text object.");
-      D_RETURN_(3);
-   }
-   if (strlen(txt->text) == 0)
-   {
-      D(2, ("empty text in text object\n"));
-      D_RETURN_(3);
-   }
-
+   
    geist_text_free_lines(txt);
-
    geist_text_calculate_lines(txt);
+
    if (!txt->lines)
       D_RETURN_(3);
 
