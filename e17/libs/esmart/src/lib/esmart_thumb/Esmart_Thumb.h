@@ -57,9 +57,10 @@ void esmart_thumb_geometry_get (Evas_Object * o, int *w, int *h);
 /**
  * esmart_thumb_evas_object_get - Load the image file to an evas object
  * @o - The smart object we want the geometry of
+ * @orient - 1 to auto orient, 0 to just load as is
  * Returns a valid Evas_Object if imlib2 or evas can load the file
  */
-Evas_Object *esmart_thumb_evas_object_get (Evas_Object * o);
+Evas_Object *esmart_thumb_evas_object_get (Evas_Object * o, int orient);
 
 /**
  * esmart_thumb_format_get - get the format of the image this thumb is for
