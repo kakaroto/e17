@@ -686,14 +686,15 @@ __imlib_BlendRGBAToRGBCmod(DATA32 *src, int src_jump, DATA32 *dst, int dst_jump,
    LOOP_START_2
 
    READ_ALPHA(p1, a);
+   CMOD_APPLY_A(cm, a);
    if (a == 255)
       *p2 = *p1;	  
    else if (a > 0)
      {
-	READ_RGBA(p1,  r,  g,  b, a);
+	READ_RGB (p1,  r,  g,  b);
 	READ_RGB (p2, rr, gg, bb);
 
-	CMOD_APPLY_RGBA(cm, r, g, b, a);
+	CMOD_APPLY_RGB(cm, r, g, b);
 
         BLEND_COLOR(a, nr, r, rr);
         BLEND_COLOR(a, ng, g, gg);
@@ -712,14 +713,15 @@ __imlib_BlendRGBAToRGBACmod(DATA32 *src, int src_jump, DATA32 *dst, int dst_jump
    LOOP_START_3
 
    READ_ALPHA(p1, a);
+   CMOD_APPLY_A(cm, a);
    if (a == 255)
       *p2 = *p1;	  
    else if (a > 0)
      {
-	READ_RGBA(p1,  r,  g,  b,  a);
+	READ_RGB(p1,  r,  g,  b);
 	READ_RGBA(p2, rr, gg, bb, aa);
 
-	CMOD_APPLY_RGBA(cm, r, g, b, a);
+	CMOD_APPLY_RGB(cm, r, g, b);
 
         BLEND_COLOR(a, nr, r, rr);
         BLEND_COLOR(a, ng, g, gg);
@@ -773,12 +775,13 @@ __imlib_AddBlendRGBAToRGBCmod(DATA32 *src, int src_jump, DATA32 *dst, int dst_ju
    LOOP_START_2
 
    READ_ALPHA(p1, a);
+   CMOD_APPLY_A(cm, a);
    if (a > 0)
      {
 	READ_RGB(p1,  r,  g, b );
 	READ_RGB(p2, rr, gg, bb);
 
-	CMOD_APPLY_RGBA(cm, r, g, b, a);
+	CMOD_APPLY_RGB(cm, r, g, b);
 
 	ADD_COLOR_WITH_ALPHA(a, nr, r, rr);
 	ADD_COLOR_WITH_ALPHA(a, ng, g, gg);
@@ -797,12 +800,13 @@ __imlib_AddBlendRGBAToRGBACmod(DATA32 *src, int src_jump, DATA32 *dst, int dst_j
    LOOP_START_3
 
    READ_ALPHA(p1, a);
+   CMOD_APPLY_A(cm, a);
    if (a > 0)
      {
 	READ_RGB (p1,  r,  g, b );
 	READ_RGBA(p2, rr, gg, bb, aa);
 
-	CMOD_APPLY_RGBA(cm, r, g, b, a);
+	CMOD_APPLY_RGB(cm, r, g, b);
 
 	ADD_COLOR_WITH_ALPHA(a, nr, r, rr);
 	ADD_COLOR_WITH_ALPHA(a, ng, g, gg);
@@ -865,12 +869,13 @@ __imlib_SubBlendRGBAToRGBCmod(DATA32 *src, int src_jump, DATA32 *dst, int dst_ju
    LOOP_START_2
 
    READ_ALPHA(p1, a);
+   CMOD_APPLY_A(cm, a);
    if (a > 0)
      {
 	READ_RGB(p1,  r,  g,  b);
 	READ_RGB(p2, rr, gg, bb);
 
-	CMOD_APPLY_RGBA(cm, r, g, b, a);
+	CMOD_APPLY_RGB(cm, r, g, b);
 
 	SUB_COLOR_WITH_ALPHA(a, nr, r, rr);
 	SUB_COLOR_WITH_ALPHA(a, ng, g, gg);
@@ -889,12 +894,13 @@ __imlib_SubBlendRGBAToRGBACmod(DATA32 *src, int src_jump, DATA32 *dst, int dst_j
    LOOP_START_3
 
    READ_ALPHA(p1, a);
+   CMOD_APPLY_A(cm, a);
    if (a > 0)
      {
 	READ_RGB (p1,  r,  g, b );
 	READ_RGBA(p2, rr, gg, bb, aa);
 
-	CMOD_APPLY_RGBA(cm, r, g, b, a);
+	CMOD_APPLY_RGB(cm, r, g, b);
 
 	SUB_COLOR_WITH_ALPHA(a, nr, r, rr);
 	SUB_COLOR_WITH_ALPHA(a, ng, g, gg);
@@ -958,12 +964,13 @@ __imlib_ReBlendRGBAToRGBCmod(DATA32 *src, int src_jump, DATA32 *dst, int dst_jum
    LOOP_START_2
 
    READ_ALPHA(p1, a);
+   CMOD_APPLY_A(cm, a);
    if (a > 0)
      {
 	READ_RGB(p1,  r,  g,  b);
 	READ_RGB(p2, rr, gg, bb);
 
-	CMOD_APPLY_RGBA(cm, r, g, b, a);
+	CMOD_APPLY_RGB(cm, r, g, b);
 
 	RESHADE_COLOR_WITH_ALPHA(a, nr, r, rr);
 	RESHADE_COLOR_WITH_ALPHA(a, ng, g, gg);
@@ -982,12 +989,13 @@ __imlib_ReBlendRGBAToRGBACmod(DATA32 *src, int src_jump, DATA32 *dst, int dst_ju
    LOOP_START_3
 
    READ_ALPHA(p1, a);
+   CMOD_APPLY_A(cm, a);
    if (a > 0)
      {
 	READ_RGB (p1,  r,  g,  b);
 	READ_RGBA(p2, rr, gg, bb, aa);
 
-	CMOD_APPLY_RGBA(cm, r, g, b, a);
+	CMOD_APPLY_RGB(cm, r, g, b);
 
 	RESHADE_COLOR_WITH_ALPHA(a, nr, r, rr);
 	RESHADE_COLOR_WITH_ALPHA(a, ng, g, gg);

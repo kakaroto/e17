@@ -23,6 +23,9 @@ struct _imlib_color_modifier
 (b) = (cm)->blue_mapping[(int)(b)]; \
 (a) = (cm)->alpha_mapping[(int)(a)];
 
+#define CMOD_APPLY_A(cm, a) \
+(a) = (cm)->alpha_mapping[(int)(a)];
+
 ImlibColorModifier * __imlib_CreateCmod(void);
 void                 __imlib_FreeCmod(ImlibColorModifier *cm);
 void                 __imlib_CmodChanged(ImlibColorModifier *cm);
