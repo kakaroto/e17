@@ -13,8 +13,7 @@ fix to e/dox/dox.h for freetype 1.3
 #-style comments in .menu files
 added "Warp pointer after moving menus" option to Special FX Settings
 added "Show sticky windows in focus list" option to Focus Settings
-added winops/remember options/action definitions for:
-      skip focus, skip winlist, skip tasklist.
+added winops/remember options/action definitions for: skip focus, skip winlist, skip tasklist.
 Grouped above options under one winop "Skip Window Lists"
 64-bit fixes.
 Added "include shaded windows in focuslist" option.
