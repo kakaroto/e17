@@ -406,7 +406,7 @@ Ewl_Alignment ewl_notebook_get_tabs_alignment(Ewl_Notebook * n)
 void ewl_notebook_set_tabs_position(Ewl_Notebook * n, Ewl_Position p)
 {
 	Ewl_Widget     *w;
-	char            file[PATH_LEN];
+	char            file[PATH_MAX];
 
 	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR("n", n);
@@ -420,21 +420,21 @@ void ewl_notebook_set_tabs_position(Ewl_Notebook * n, Ewl_Position p)
 
 	switch (n->flags) {
 		case EWL_POSITION_LEFT:
-			snprintf(file, PATH_LEN, "lnotebook");
+			snprintf(file, PATH_MAX, "lnotebook");
 			ewl_box_set_orientation(EWL_BOX(n->tab_box),
 					EWL_ORIENTATION_VERTICAL);
 			ewl_object_set_fill_policy(EWL_OBJECT(n->tab_box),
 					EWL_FILL_POLICY_VFILL);
 			break;
 		case EWL_POSITION_RIGHT:
-			snprintf(file, PATH_LEN, "rnotebook");
+			snprintf(file, PATH_MAX, "rnotebook");
 			ewl_box_set_orientation(EWL_BOX(n->tab_box),
 					EWL_ORIENTATION_VERTICAL);
 			ewl_object_set_fill_policy(EWL_OBJECT(n->tab_box),
 					EWL_FILL_POLICY_VFILL);
 			break;
 		case EWL_POSITION_BOTTOM:
-			snprintf(file, PATH_LEN, "bnotebook");
+			snprintf(file, PATH_MAX, "bnotebook");
 			ewl_box_set_orientation(EWL_BOX(n->tab_box),
 					EWL_ORIENTATION_HORIZONTAL);
 			ewl_object_set_fill_policy(EWL_OBJECT(n->tab_box),
@@ -442,7 +442,7 @@ void ewl_notebook_set_tabs_position(Ewl_Notebook * n, Ewl_Position p)
 			break;
 		case EWL_POSITION_TOP:
 		default:
-			snprintf(file, PATH_LEN, "tnotebook");
+			snprintf(file, PATH_MAX, "tnotebook");
 			ewl_box_set_orientation(EWL_BOX(n->tab_box),
 					EWL_ORIENTATION_HORIZONTAL);
 			ewl_object_set_fill_policy(EWL_OBJECT(n->tab_box),
@@ -608,7 +608,7 @@ __ewl_notebook_add(Ewl_Container *c, Ewl_Widget *w)
 		if (VISIBLE(n->tab_box))
 			ewl_object_set_preferred_w(EWL_OBJECT(c),
 					PREFERRED_W(c) +
-					ewl_object_get_preferred_w(
+					ewl_object_get_minimum_w(
 						EWL_OBJECT(n->tab_box)));
 	}
 	else {
@@ -622,7 +622,7 @@ __ewl_notebook_add(Ewl_Container *c, Ewl_Widget *w)
 		if (VISIBLE(n->tab_box))
 			ewl_object_set_preferred_h(EWL_OBJECT(c),
 					PREFERRED_H(c) +
-					ewl_object_get_preferred_h(
+					ewl_object_get_minimum_h(
 						EWL_OBJECT(n->tab_box)));
 	}
 
@@ -653,7 +653,7 @@ __ewl_notebook_resize(Ewl_Container *c, Ewl_Widget *w, int size,
 		if (VISIBLE(n->tab_box))
 			ewl_object_set_preferred_w(EWL_OBJECT(c),
 					PREFERRED_W(c) +
-					ewl_object_get_preferred_w(
+					ewl_object_get_minimum_w(
 						EWL_OBJECT(n->tab_box)));
 	}
 	else {
@@ -667,7 +667,7 @@ __ewl_notebook_resize(Ewl_Container *c, Ewl_Widget *w, int size,
 		if (VISIBLE(n->tab_box))
 			ewl_object_set_preferred_h(EWL_OBJECT(c),
 					PREFERRED_H(c) +
-					ewl_object_get_preferred_h(
+					ewl_object_get_minimum_h(
 						EWL_OBJECT(n->tab_box)));
 	}
 

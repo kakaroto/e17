@@ -19,6 +19,10 @@ static void __ewl_tree_node_remove(Ewl_Container *c, Ewl_Widget *w);
 static void __ewl_tree_node_resize(Ewl_Container *c, Ewl_Widget *w, int size,
 		Ewl_Orientation o);
 
+
+static void __ewl_tree_row_select(Ewl_Widget *w, void *ev_data,
+				  void *user_data);
+
 /**
  * ewl_tree_new - allocate and initialize a new tree widget
  * @columns: the number of columns to display
@@ -90,6 +94,8 @@ int ewl_tree_init(Ewl_Tree *tree, unsigned short columns)
 		tree->colbounds[i] = &CURRENT_W(button);
 	}
 
+	ewl_callback_append(row, EWL_CALLBACK_SELECT, __ewl_tree_row_select,
+			NULL);
 	ewl_container_append_child(EWL_CONTAINER(tree), row);
 	ewl_widget_show(row);
 
@@ -472,12 +478,12 @@ __ewl_tree_add(Ewl_Container *c, Ewl_Widget *w)
 {
 	int cw;
 
-	cw = ewl_object_get_preferred_w(EWL_OBJECT(w));
+	cw = ewl_object_get_minimum_w(EWL_OBJECT(w));
 	if (cw > PREFERRED_W(c))
 		ewl_object_set_preferred_w(EWL_OBJECT(c), cw);
 
 	ewl_object_set_preferred_h(EWL_OBJECT(c), PREFERRED_H(c) +
-			ewl_object_get_preferred_h(EWL_OBJECT(w)));
+			ewl_object_get_minimum_h(EWL_OBJECT(w)));
 }
 
 static void
@@ -485,7 +491,7 @@ __ewl_tree_child_resize(Ewl_Container *c, Ewl_Widget *w, int size,
 		Ewl_Orientation o)
 {
 	if (o == EWL_ORIENTATION_HORIZONTAL) {
-		if (ewl_object_get_preferred_w(EWL_OBJECT(w)) > PREFERRED_W(c))
+		if (ewl_object_get_minimum_w(EWL_OBJECT(w)) > PREFERRED_W(c))
 			ewl_object_set_preferred_w(EWL_OBJECT(c),
 					PREFERRED_W(c) + size);
 		else
@@ -517,7 +523,7 @@ __ewl_tree_configure(Ewl_Widget *w, void *ev_data, void *user_data)
 	y = CURRENT_Y(w);
 	ewd_list_goto_first(c->children);
 	while ((child = ewd_list_next(c->children))) {
-		h = ewl_object_get_preferred_h(child);
+		h = ewl_object_get_minimum_h(child);
 		ewl_object_request_geometry(child, CURRENT_X(w), y,
 				CURRENT_W(w), h);
 		y += h;
@@ -550,7 +556,7 @@ __ewl_tree_node_configure(Ewl_Widget * w, void *ev_data, void *user_data)
 	 * are lower nodes and rows.
 	 */
 	ewl_object_request_geometry(child, CURRENT_X(w), CURRENT_Y(w),
-			CURRENT_W(w), ewl_object_get_preferred_h(child));
+			CURRENT_W(w), ewl_object_get_minimum_h(child));
 	
 	y = CURRENT_Y(w) + ewl_object_get_current_h(child);
 	width = CURRENT_W(w) - CURRENT_X(w) + CURRENT_X(w);
@@ -560,7 +566,7 @@ __ewl_tree_node_configure(Ewl_Widget * w, void *ev_data, void *user_data)
 	 */
 	while ((child = ewd_list_next(c->children))) {
 		ewl_object_request_geometry(child, CURRENT_X(w), y, width,
-				ewl_object_get_preferred_h(child));
+				ewl_object_get_minimum_h(child));
 		y += ewl_object_get_current_h(child);
 	}
 
@@ -619,12 +625,12 @@ __ewl_tree_node_add(Ewl_Container *c, Ewl_Widget *w)
 	if (node->expanded || w == node->row) {
 		ewl_object_set_preferred_h(EWL_OBJECT(c),
 				PREFERRED_H(c) +
-				ewl_object_get_preferred_h(EWL_OBJECT(w)));
+				ewl_object_get_minimum_h(EWL_OBJECT(w)));
 	}
 
-	width = ewl_object_get_preferred_w(EWL_OBJECT(w));
+	width = ewl_object_get_minimum_w(EWL_OBJECT(w));
 	if (PREFERRED_W(c) < width)
-		ewl_object_set_preferred_w(EWL_OBJECT(c), width);
+		ewl_object_set_minimum_w(EWL_OBJECT(c), width);
 
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
@@ -642,10 +648,10 @@ __ewl_tree_node_remove(Ewl_Container *c, Ewl_Widget *w)
 	if (node->expanded || w == node->row) {
 		ewl_object_set_preferred_h(EWL_OBJECT(c),
 				PREFERRED_H(c) -
-				ewl_object_get_preferred_h(EWL_OBJECT(w)));
+				ewl_object_get_minimum_h(EWL_OBJECT(w)));
 	}
 
-	width = ewl_object_get_preferred_w(EWL_OBJECT(w));
+	width = ewl_object_get_minimum_w(EWL_OBJECT(w));
 	if (PREFERRED_W(c) >= width)
 		ewl_container_prefer_largest(c, EWL_ORIENTATION_HORIZONTAL);
 
@@ -670,6 +676,22 @@ __ewl_tree_node_resize(Ewl_Container *c, Ewl_Widget *w, int size,
 			ewl_object_set_preferred_h(EWL_OBJECT(c),
 					PREFERRED_H(c) + size);
 	}
+
+	DLEAVE_FUNCTION(DLEVEL_STABLE);
+}
+
+static void
+__ewl_tree_row_select(Ewl_Widget *w, void *ev_data, void *user_data)
+{
+	Ewl_Tree *tree;
+	Ewl_Tree_Node *node;
+
+	DENTER_FUNCTION(DLEVEL_STABLE);
+
+	node = EWL_TREE_NODE(w->parent);
+	tree = node->tree;
+
+	tree->selected = w;
 
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }

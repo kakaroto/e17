@@ -388,7 +388,6 @@ int ewl_window_init(Ewl_Window * w)
 	ewl_container_init(EWL_CONTAINER(w), "window",
 			   __ewl_window_child_add, __ewl_window_child_resize,
 			   NULL);
-	ewl_object_set_fill_policy(EWL_OBJECT(w), EWL_FILL_POLICY_NONE);
 
 	w->title = strdup("EWL!");
 
@@ -574,6 +573,9 @@ void __ewl_window_configure(Ewl_Widget * w, void *ev_data, void *user_data)
 	if (!win->window)
 		DRETURN(DLEVEL_STABLE);
 
+	/*
+	 * Adjust the maximum window bounds to match the widget
+	 */
 	ecore_window_set_min_size(win->window,
 			ewl_object_get_minimum_w(EWL_OBJECT(w)),
 		       	ewl_object_get_minimum_h(EWL_OBJECT(w)));
@@ -581,9 +583,27 @@ void __ewl_window_configure(Ewl_Widget * w, void *ev_data, void *user_data)
 			ewl_object_get_maximum_w(EWL_OBJECT(w)),
 			ewl_object_get_maximum_h(EWL_OBJECT(w)));
 
+	/*
+	 * Check the windows current geometry against the widgets values.
+	 */
+	ecore_window_get_geometry(win->window, NULL, NULL, &width, &height);
+
+	if (width != ewl_object_get_current_w(EWL_OBJECT(win)))
+		ewl_object_request_w(EWL_OBJECT(win), width);
+
+	if (height != ewl_object_get_current_h(EWL_OBJECT(win)))
+		ewl_object_request_h(EWL_OBJECT(win), height);
+
+	/*
+	 * Find out how much space the widget accepted.
+	 */
 	width = ewl_object_get_current_w(EWL_OBJECT(w));
 	height = ewl_object_get_current_h(EWL_OBJECT(w));
 
+	/*
+	 * Now give the windows the appropriate size and adjust the evas as
+	 * well.
+	 */
 	ecore_window_resize(win->window, width, height);
 	ecore_window_resize(win->evas_window, width, height);
 	evas_output_size_set(win->evas, width, height);
@@ -653,7 +673,7 @@ void __ewl_window_child_resize(Ewl_Container *c, Ewl_Widget *w,
 			ewl_object_request_y(child, CURRENT_Y(win));
 
 		cs = ewl_object_get_current_x(child) +
-			ewl_object_get_preferred_w(child);
+			ewl_object_get_minimum_w(child);
 
 		/*
 		 * Check the width and x position vs. window width.
@@ -662,7 +682,7 @@ void __ewl_window_child_resize(Ewl_Container *c, Ewl_Widget *w,
 			maxw = cs;
 
 		cs = ewl_object_get_current_y(child) +
-			ewl_object_get_preferred_h(child);
+			ewl_object_get_minimum_h(child);
 
 		/*
 		 * Check the height and y position vs. window height.

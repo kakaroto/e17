@@ -19,12 +19,6 @@ __destroy_box_test_window(Ewl_Widget * w, void *ev_data, void *user_data)
 }
 
 void
-__toggle_child_fill_configure(Ewl_Widget * w, void *ev_data, void *user_data)
-{
-	printf("Configuring Fill child\n");
-}
-
-void
 __toggle_child_fill(Ewl_Widget * w, void *ev_data, void *user_data)
 {
 	Ewl_Fill_Policy f;
@@ -55,7 +49,7 @@ __toggle_child_shrink(Ewl_Widget * w, void *ev_data, void *user_data)
 		ewl_button_set_label(EWL_BUTTON(w),
 				     "Shrink This Box To Fit It's Parent");
 		ewl_object_set_fill_policy(EWL_OBJECT(w),
-					   EWL_FILL_POLICY_SHRINK);
+					   EWL_FILL_POLICY_HSHRINK);
 	} else {
 		ewl_button_set_label(EWL_BUTTON(w),
 				     "Don't shrink this box at all");
@@ -210,8 +204,6 @@ __create_box_test_window(Ewl_Widget * w, void *ev_data, void *user_data)
 	/****************************************************************/
 	vbox[1] = ewl_vbox_new();
 	ewl_container_append_child(EWL_CONTAINER(hbox[0]), vbox[1]);
-	ewl_callback_prepend(vbox[1], EWL_CALLBACK_CONFIGURE,
-			    __toggle_child_fill_configure, NULL);
 	ewl_widget_show(vbox[1]);
 
 	/*
@@ -312,6 +304,8 @@ __create_box_test_window(Ewl_Widget * w, void *ev_data, void *user_data)
 
 	hbox[2] = ewl_hbox_new();
 	ewl_container_append_child(EWL_CONTAINER(box_box), hbox[2]);
+	ewl_object_set_fill_policy(EWL_OBJECT(hbox[2]),
+			EWL_FILL_POLICY_HSHRINK);
 	ewl_widget_show(hbox[2]);
 
 	/*
@@ -320,7 +314,7 @@ __create_box_test_window(Ewl_Widget * w, void *ev_data, void *user_data)
 	hbox_button[1][0] =
 		ewl_button_new("Shrink This Box To Fit It's Parent");
 	ewl_object_set_fill_policy(EWL_OBJECT(hbox_button[1][0]),
-				   EWL_FILL_POLICY_SHRINK);
+				   EWL_FILL_POLICY_HSHRINK);
 	ewl_container_append_child(EWL_CONTAINER(hbox[2]), hbox_button[1][0]);
 	ewl_callback_append(hbox_button[1][0], EWL_CALLBACK_CLICKED,
 			    __toggle_child_shrink, NULL);
@@ -332,7 +326,7 @@ __create_box_test_window(Ewl_Widget * w, void *ev_data, void *user_data)
 	hbox_button[1][1] =
 		ewl_button_new("Shrink This Box To Fit It's Parent");
 	ewl_object_set_fill_policy(EWL_OBJECT(hbox_button[1][1]),
-				   EWL_FILL_POLICY_SHRINK);
+				   EWL_FILL_POLICY_HSHRINK);
 	ewl_container_append_child(EWL_CONTAINER(hbox[2]), hbox_button[1][1]);
 	ewl_callback_append(hbox_button[1][1], EWL_CALLBACK_CLICKED,
 			    __toggle_child_shrink, NULL);

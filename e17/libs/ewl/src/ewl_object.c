@@ -590,10 +590,17 @@ inline void ewl_object_set_minimum_h(Ewl_Object * o, unsigned int h)
  */
 inline unsigned int ewl_object_get_minimum_w(Ewl_Object * o)
 {
+	int val;
+
 	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR_RET("o", o, 0);
 
-	DRETURN_INT(MINIMUM_W(o) + PADDING_HORIZONTAL(o) + INSET_HORIZONTAL(o),
+	if (o->flags & EWL_FILL_POLICY_HSHRINK)
+		val = MINIMUM_W(o);
+	else
+		val = PREFERRED_W(o);
+
+	DRETURN_INT(val + PADDING_HORIZONTAL(o) + INSET_HORIZONTAL(o),
 			DLEVEL_STABLE);
 }
 
@@ -605,10 +612,17 @@ inline unsigned int ewl_object_get_minimum_w(Ewl_Object * o)
  */
 inline unsigned int ewl_object_get_minimum_h(Ewl_Object * o)
 {
+	int val;
+
 	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR_RET("o", o, 0);
 
-	DRETURN_INT(MINIMUM_H(o) + PADDING_VERTICAL(o) + INSET_VERTICAL(o),
+	if (o->flags & EWL_FILL_POLICY_VSHRINK)
+		val = MINIMUM_H(o);
+	else
+		val = PREFERRED_H(o);
+
+	DRETURN_INT(val + PADDING_VERTICAL(o) + INSET_VERTICAL(o),
 			DLEVEL_STABLE);
 }
 
@@ -726,12 +740,18 @@ inline void ewl_object_set_maximum_h(Ewl_Object * o, unsigned int h)
  */
 inline unsigned int ewl_object_get_maximum_w(Ewl_Object * o)
 {
+	int val;
+
 	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR_RET("o", o, 0);
 
-	DRETURN_INT(MAXIMUM_W(o) + PADDING_HORIZONTAL(o) + INSET_HORIZONTAL(o),
+	if (o->flags & EWL_FILL_POLICY_HFILL)
+		val = MAXIMUM_W(o);
+	else
+		val = PREFERRED_W(o);
+
+	DRETURN_INT(val + PADDING_HORIZONTAL(o) + INSET_HORIZONTAL(o),
 			DLEVEL_STABLE);
-		
 }
 
 
@@ -743,10 +763,17 @@ inline unsigned int ewl_object_get_maximum_w(Ewl_Object * o)
  */
 inline unsigned int ewl_object_get_maximum_h(Ewl_Object * o)
 {
+	int val;
+
 	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR_RET("o", o, 0);
 
-	DRETURN_INT(MAXIMUM_H(o) + PADDING_VERTICAL(o) + INSET_VERTICAL(o),
+	if (o->flags & EWL_FILL_POLICY_VFILL)
+		val = MAXIMUM_H(o);
+	else
+		val = PREFERRED_H(o);
+
+	DRETURN_INT(val + PADDING_VERTICAL(o) + INSET_VERTICAL(o),
 			DLEVEL_STABLE);
 }
 

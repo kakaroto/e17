@@ -5,7 +5,8 @@ typedef struct _ewl_menu_item Ewl_Menu_Item;
 
 #define EWL_MENU_ITEM(mi) ((Ewl_Menu_Item *)mi)
 
-struct _ewl_menu_item {
+struct _ewl_menu_item
+{
 	/*
 	 * The grid allows for easy layout of the icon and text.
 	 */
@@ -32,7 +33,8 @@ typedef struct _ewl_menu_base Ewl_Menu_Base;
 
 #define EWL_MENU_BASE(menu) ((Ewl_Menu_Base *) menu)
 
-struct _ewl_menu_base {
+struct _ewl_menu_base
+{
 	/*
 	 * Inherit the item so that we can place menus inside other menus
 	 */

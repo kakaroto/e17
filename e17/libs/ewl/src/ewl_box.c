@@ -19,13 +19,10 @@ typedef struct
 	 * Function pointers for getting the dimension of the widget that we
 	 * care about.
 	 */
-	unsigned int    (*pref_fill_ask) (Ewl_Object * ob);
 	void            (*pref_fill_set) (Ewl_Object * ob, unsigned int size);
 	unsigned int             (*fill_ask) (Ewl_Object * ob);
 	void            (*fill_set) (Ewl_Object * ob, unsigned int size);
 
-	unsigned int    (*pref_align_ask) (Ewl_Object * ob);
-	void            (*pref_align_set) (Ewl_Object * ob, unsigned int size);
 	unsigned int    (*align_ask) (Ewl_Object * ob);
 	void            (*align_set) (Ewl_Object * ob, unsigned int size);
 
@@ -338,6 +335,9 @@ __ewl_box_configure_homogeneous(Ewl_Widget *w, void *ev_data, void *user_data)
 
 	DENTER_FUNCTION(DLEVEL_STABLE);
 
+	if (ewd_list_is_empty(EWL_CONTAINER(w)->children))
+		DRETURN(DLEVEL_STABLE);
+
 	num = 0;
 	ewd_list_goto_first(EWL_CONTAINER(w)->children);
 	while ((child = ewd_list_next(EWL_CONTAINER(w)->children))) {
@@ -396,8 +396,11 @@ static void
 __ewl_box_configure_calc(Ewl_Box * b, int *fill_size, int *align_size)
 {
 	Ewl_Object     *child;
+	unsigned int    initial;
 
 	DENTER_FUNCTION(DLEVEL_STABLE);
+
+	initial = *fill_size / ewd_list_nodes(EWL_CONTAINER(b)->children);
 
 	/*
 	 * Sort the children into lists dependant on their alignment within the
@@ -416,7 +419,7 @@ __ewl_box_configure_calc(Ewl_Box * b, int *fill_size, int *align_size)
 			/*
 			 * Set the initial fill size to the preferred size.
 			 */
-			info->fill_set(child, info->pref_fill_ask(child));
+			info->fill_set(child, initial);
 
 			/*
 			 * Figure out how much extra space is available for
@@ -489,7 +492,7 @@ __ewl_box_configure_fill(Ewl_Box * b, int *fill_size, int *align_size)
 			 * If the child did not accept any of the size, then
 			 * it's at it's max/min and is no longer useful.
 			 */
-			if (temp <= 0)
+			if (!temp || (*fill_size - temp < 0))
 				ewd_list_remove(spread);
 			else {
 				*fill_size -= temp;
@@ -540,7 +543,7 @@ __ewl_box_configure_fill(Ewl_Box * b, int *fill_size, int *align_size)
 			 * otherwise subtract the accepted space from the
 			 * total.
 			 */
-			if (temp <= 0)
+			if (!temp || (*fill_size - temp < 0))
 				ewd_list_remove(spread);
 			else {
 				*fill_size -= remainder;
@@ -632,55 +635,31 @@ __ewl_box_configure_child(Ewl_Box * b, Ewl_Object * c, int *x, int *y,
 static void
 __ewl_box_add(Ewl_Container * c, Ewl_Widget * w)
 {
-	int             max_size = 0;
-	int             osize, temp;
-	Box_Orientation *info;
+	unsigned int             space = 0;
 
-	DCHECK_PARAM_PTR("c", c);
-	DCHECK_PARAM_PTR("w", w);
+	DENTER_FUNCTION(DLEVEL_STABLE);
+
+	if (ewd_list_nodes(c->children) > 1)
+		space = EWL_BOX(c)->spacing;
 
 	/*
 	 * Base the info used on the orientation of the box.
 	 */
 	if (EWL_BOX(c)->orientation == EWL_ORIENTATION_HORIZONTAL) {
-		osize = PREFERRED_W(c);
-		info = horizontal;
+		ewl_object_set_preferred_w(EWL_OBJECT(c), PREFERRED_W(c) +
+				ewl_object_get_minimum_w(EWL_OBJECT(w)) +
+				space);
+		ewl_container_prefer_largest(c, EWL_ORIENTATION_VERTICAL);
 	}
 	else {
-		osize = PREFERRED_H(c);
-		info = vertical;
+		ewl_object_set_preferred_h(EWL_OBJECT(c), PREFERRED_H(c) +
+				ewl_object_get_minimum_h(EWL_OBJECT(w)) +
+				space);
+		ewl_container_prefer_largest(c, EWL_ORIENTATION_HORIZONTAL);
 	}
 
-	/*
-	 * If there already is a max widget, compare size to that one.
-	 */
-	if (EWL_BOX(c)->max_align)
-		max_size =
-		    info->pref_align_ask(EWL_OBJECT(EWL_BOX(c)->max_align));
-	else
-		max_size = info->pref_align_ask(EWL_OBJECT(w));
 
-	temp = info->pref_align_ask(EWL_OBJECT(w));
-
-	/*
-	 * Use a <= here so we don't need as many cases in the previous if
-	 * statement. If this widget is the largest so far, mark it as the
-	 * largest in the box.
-	 */
-	if (max_size <= temp) {
-		EWL_BOX(c)->max_align = w;
-		info->pref_align_set(EWL_OBJECT(c), temp);
-	}
-
-	temp = info->pref_fill_ask(EWL_OBJECT(w));
-
-	/*
-	 * Add the size of the new child, and add in the spacing if there's
-	 * any other widgets in the box.
-	 */
-	info->pref_fill_set(EWL_OBJECT(c), osize + temp +
-			(ewd_list_nodes(c->children) > 1 ?
-			 EWL_BOX(c)->spacing : 0));
+	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
 
 static void
@@ -689,32 +668,28 @@ __ewl_box_remove(Ewl_Container * c, Ewl_Widget * w)
 	int space = 0;
 	Ewl_Box *b = EWL_BOX(c);
 
+	DENTER_FUNCTION(DLEVEL_STABLE);
+
 	if (ewd_list_nodes(c->children) > 1)
 		space = b->spacing;
 
 	if (b->orientation == EWL_ORIENTATION_HORIZONTAL) {
 		ewl_object_set_preferred_w(EWL_OBJECT(c),
 				PREFERRED_W(c) -
-				ewl_object_get_preferred_w(EWL_OBJECT(w)) -
+				ewl_object_get_minimum_w(EWL_OBJECT(w)) -
 				space);
 
-		if (w == b->max_align) {
-			ewl_container_prefer_largest(c,
-					EWL_ORIENTATION_HORIZONTAL);
-			b->max_align = NULL;
-		}
+		ewl_container_prefer_largest(c, EWL_ORIENTATION_VERTICAL);
 	}
 	else {
 		ewl_object_set_preferred_h(EWL_OBJECT(c),
 				PREFERRED_H(c) - 
-				ewl_object_get_preferred_h(EWL_OBJECT(w)) -
+				ewl_object_get_minimum_w(EWL_OBJECT(w)) -
 				space);
-		if (w == b->max_align) {
-			ewl_container_prefer_largest(c,
-					EWL_ORIENTATION_HORIZONTAL);
-			b->max_align = NULL;
-		}
+		ewl_container_prefer_largest(c, EWL_ORIENTATION_HORIZONTAL);
 	}
+
+	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
 
 /*
@@ -725,10 +700,10 @@ static void
 __ewl_box_child_resize(Ewl_Container * c, Ewl_Widget * w, int size,
 		       Ewl_Orientation o)
 {
-	int             max_size = 0;
-	Ewl_Object     *child;
 	int align_size, fill_size;
 	Box_Orientation *info;
+
+	DENTER_FUNCTION(DLEVEL_STABLE);
 
 	/*
 	 * Get the appropriate dimension setting functions based on the
@@ -753,50 +728,12 @@ __ewl_box_child_resize(Ewl_Container * c, Ewl_Widget * w, int size,
 		info->pref_fill_set(EWL_OBJECT(c), fill_size + size);
 
 	/*
-	 * Check if the change is in the alignment direction, and the
-	 * previous largest widget grew larger
-	 */
-	else if ((w == EWL_BOX(c)->max_align) && (size > 0)) {
-
-		/*
-		 * Add the change in size to the current size.
-		 */
-		info->pref_align_set(EWL_OBJECT(c), align_size + size);
-	}
-
-	/*
 	 * Find the new largest widget in the alignment direction
 	 */
-	else {
+	else
+		ewl_container_prefer_largest(c, o);
 
-		ewd_list_goto_first(c->children);
-		while ((child = ewd_list_next(c->children))) {
-			int temp;
-
-			temp = info->pref_align_ask(child);
-
-			/*
-			 * Found a larger widget than the previous largest, so
-			 * store it size as the new max size.
-			 */
-			if (temp > max_size) {
-				EWL_BOX(c)->max_align = EWL_WIDGET(child);
-				max_size = temp;
-			}
-		}
-
-		/*
-		 * Now store the new align max preferred size as the new
-		 * preferred size for this box.
-		 */
-		info->pref_align_set(EWL_OBJECT(c), max_size);
-	}
-
-	max_size = 0;
-	ewd_list_goto_first(c->children);
-	while ((child = ewd_list_next(c->children)))
-		max_size += ewl_object_get_preferred_h(child) + EWL_BOX(c)->spacing;
-	max_size -= EWL_BOX(c)->spacing;
+	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
 
 /*
@@ -833,10 +770,8 @@ __ewl_box_setup()
 		 * children.
 		 */
 		vertical->fill_ask = ewl_object_get_current_h;
-		vertical->pref_fill_ask = ewl_object_get_preferred_h;
 
 		vertical->align_ask = ewl_object_get_current_w;
-		vertical->pref_align_ask = ewl_object_get_preferred_w;
 
 		/*
 		 * These functions allow for setting the dimensions of the
@@ -846,7 +781,6 @@ __ewl_box_setup()
 		vertical->pref_fill_set = ewl_object_set_preferred_h;
 
 		vertical->align_set = ewl_object_request_w;
-		vertical->pref_align_set = ewl_object_set_preferred_w;
 	}
 
 	if (!horizontal) {
@@ -876,10 +810,8 @@ __ewl_box_setup()
 		 * children.
 		 */
 		horizontal->fill_ask = ewl_object_get_current_w;
-		horizontal->pref_fill_ask = ewl_object_get_preferred_w;
 
 		horizontal->align_ask = ewl_object_get_current_h;
-		horizontal->pref_align_ask = ewl_object_get_preferred_h;
 
 		/*
 		 * These functions allow for setting the dimensions of the
@@ -889,6 +821,5 @@ __ewl_box_setup()
 		horizontal->pref_fill_set = ewl_object_set_preferred_w;
 
 		horizontal->align_set = ewl_object_request_h;
-		horizontal->pref_align_set = ewl_object_set_preferred_h;
 	}
 }

@@ -46,7 +46,7 @@ int ewl_fx_init(void)
 	count = ewl_config_get_int("system", "/fx/paths/count");
 
 	if (count) {
-		char            key[PATH_LEN];
+		char            key[PATH_MAX];
 		char           *path;
 		int             i;
 
@@ -54,7 +54,7 @@ int ewl_fx_init(void)
 		 * Loop through and add each path to the modules.
 		 */
 		for (i = 0; i < count; i++) {
-			snprintf(key, PATH_LEN, "/fx/paths/%i", i);
+			snprintf(key, PATH_MAX, "/fx/paths/%i", i);
 
 			path = ewl_config_get_str("system", key);
 
@@ -90,8 +90,8 @@ int ewl_fx_deinit(void)
  */
 void ewl_fx_init_widget(Ewl_Widget * w)
 {
-	char            wname[PATH_LEN];
-	char            key[PATH_LEN];
+	char            wname[PATH_MAX];
+	char            key[PATH_MAX];
 	int             count, i;
 
 	DENTER_FUNCTION(DLEVEL_STABLE);
@@ -134,7 +134,7 @@ void ewl_fx_init_widget(Ewl_Widget * w)
 	/*
 	 * Now determine how many fx to apply to this widget.
 	 */
-	snprintf(key, PATH_LEN, "/user/%s/count", wname);
+	snprintf(key, PATH_MAX, "/user/%s/count", wname);
 	count = ewl_config_get_int("fx", key);
 
 	/*
@@ -156,14 +156,14 @@ void ewl_fx_init_widget(Ewl_Widget * w)
 		/*
 		 * Determine the name of the fx module to load.
 		 */
-		snprintf(key, PATH_LEN, "/user/%s/%i/name", wname, i);
+		snprintf(key, PATH_MAX, "/user/%s/%i/name", wname, i);
 		name = ewl_config_get_str("fx", key);
 
 		/*
 		 * Now determine the number of callbacks for that specific
 		 * effect.
 		 */
-		snprintf(key, PATH_LEN, "/user/%s/%i/callbacks/count", wname,
+		snprintf(key, PATH_MAX, "/user/%s/%i/callbacks/count", wname,
 			 i);
 		cb_count = ewl_config_get_int("fx", key);
 
@@ -175,7 +175,7 @@ void ewl_fx_init_widget(Ewl_Widget * w)
 			/*
 			 * Determine the starting event.
 			 */
-			snprintf(key, PATH_LEN,
+			snprintf(key, PATH_MAX,
 				 "/user/%s/%i/callbacks/%i/cb_start", wname, i,
 				 j);
 			start = ewl_config_get_int("fx", key);
@@ -183,7 +183,7 @@ void ewl_fx_init_widget(Ewl_Widget * w)
 			/*
 			 * Determine the ending event.
 			 */
-			snprintf(key, PATH_LEN,
+			snprintf(key, PATH_MAX,
 				 "/user/%s/%i/callbacks/%i/cb_stop", wname, i,
 				 j);
 			end = ewl_config_get_int("fx", key);
@@ -644,13 +644,13 @@ ewl_fx_timer_add(Ewl_Widget * w, char *name, double timeout, int fps,
 void ewl_fx_timer_del(Ewl_Widget * w, char *name)
 {
 	Ewl_FX_Timer   *timer;
-	char            name2[PATH_LEN];
+	char            name2[PATH_MAX];
 
 	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR("w", w);
 	DCHECK_PARAM_PTR("name", name);
 
-	snprintf(name2, PATH_LEN, "%s%p", name, w);
+	snprintf(name2, PATH_MAX, "%s%p", name, w);
 
 	D(DLEVEL_STABLE, "attempting to remove fx");
 
@@ -1089,8 +1089,8 @@ void
 __ewl_fx_widget_appearance_changed(Ewl_Widget * w, void *ev_data,
 				   void *user_data)
 {
-	char            wname[PATH_LEN];
-	char            key[PATH_LEN];
+	char            wname[PATH_MAX];
+	char            key[PATH_MAX];
 	int             count, i;
 
 	DENTER_FUNCTION(DLEVEL_STABLE);
@@ -1111,7 +1111,7 @@ __ewl_fx_widget_appearance_changed(Ewl_Widget * w, void *ev_data,
 	 * Determine the number of fx that need to be setup for the widgets.
 	 */
 	sscanf(w->appearance, "/%[^/]/", wname);
-	snprintf(key, PATH_LEN, "/user/%s/count", wname);
+	snprintf(key, PATH_MAX, "/user/%s/count", wname);
 	count = ewl_config_get_int("fx", key);
 
 	/*
@@ -1133,13 +1133,13 @@ __ewl_fx_widget_appearance_changed(Ewl_Widget * w, void *ev_data,
 		/*
 		 * Determine the name of the current effect being loaded.
 		 */
-		snprintf(key, PATH_LEN, "/user/%s/%i/name", wname, i);
+		snprintf(key, PATH_MAX, "/user/%s/%i/name", wname, i);
 		name = ewl_config_get_str("fx", key);
 
 		/*
 		 * Determine the number of callbacks for this effect.
 		 */
-		snprintf(key, PATH_LEN, "/user/%s/%i/callbacks/count", wname,
+		snprintf(key, PATH_MAX, "/user/%s/%i/callbacks/count", wname,
 			 i);
 		cb_count = ewl_config_get_int("fx", key);
 
@@ -1151,7 +1151,7 @@ __ewl_fx_widget_appearance_changed(Ewl_Widget * w, void *ev_data,
 			/*
 			 * Determine the event that starts this effect.
 			 */
-			snprintf(key, PATH_LEN,
+			snprintf(key, PATH_MAX,
 				 "/user/%s/%i/callbacks/%i/cb_start", wname, i,
 				 j);
 			start = ewl_config_get_int("fx", key);
@@ -1159,7 +1159,7 @@ __ewl_fx_widget_appearance_changed(Ewl_Widget * w, void *ev_data,
 			/*
 			 * Determine the event that stops this effect.
 			 */
-			snprintf(key, PATH_LEN,
+			snprintf(key, PATH_MAX,
 				 "/user/%s/%i/callbacks/%i/cb_stop", wname, i,
 				 j);
 			end = ewl_config_get_int("fx", key);

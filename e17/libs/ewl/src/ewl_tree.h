@@ -19,6 +19,8 @@ struct _ewl_tree
 	unsigned int **colbases;
 	unsigned int **colbounds;
 	Ewl_Widget *header;
+
+	Ewl_Widget *selected;
 };
 
 typedef struct _ewl_tree_node Ewl_Tree_Node;

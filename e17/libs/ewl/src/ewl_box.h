@@ -20,7 +20,6 @@ struct _ewl_box
 	Ewl_Orientation orientation;
 	unsigned int    spacing;
 
-	Ewl_Widget     *max_align;
 	unsigned int    homogeneous;
 };
 

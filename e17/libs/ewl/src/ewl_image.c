@@ -286,9 +286,9 @@ void __ewl_image_realize(Ewl_Widget * w, void *ev_data, void *user_data)
 	else
 		ewl_object_set_preferred_h(EWL_OBJECT(i), i->oh);
 
-	if (ewl_object_get_preferred_w(EWL_OBJECT(i)))
-		ewl_image_scale_to(i, ewl_object_get_preferred_w(EWL_OBJECT(i)),
-				ewl_object_get_preferred_h(EWL_OBJECT(i)));
+	if (ewl_object_get_minimum_w(EWL_OBJECT(i)))
+		ewl_image_scale_to(i, ewl_object_get_minimum_w(EWL_OBJECT(i)),
+				ewl_object_get_minimum_h(EWL_OBJECT(i)));
 	else
 		ewl_image_scale(i, i->sw, i->sh);
 

@@ -1,12 +1,10 @@
 #include <Ewl.h>
 
-void		__expand_menu_base(Ewl_Widget *w, void *ev_data,
+void		__ewl_menu_base_expand(Ewl_Widget *w, void *ev_data,
 					void *user_data);
-void            __collapse_menu_base(Ewl_Widget * w, void *ev_data,
-					void *user_data);
+void            __ewl_menu_base_collapse(Ewl_Widget * w, void *ev_data,
+					 void *user_data);
 void            __ewl_menu_add(Ewl_Container * parent, Ewl_Widget * child);
-void            __ewl_menu_item_show(Ewl_Widget * w, void *ev_data,
-				     void *user_data);
 void            __item_clicked(Ewl_Widget * w, void *ev_data, void *user_data);
 
 /**
@@ -30,10 +28,10 @@ void ewl_menu_base_init(Ewl_Menu_Base * menu, char *image, char *title)
 	ewl_object_set_fill_policy(EWL_OBJECT(menu), EWL_FILL_POLICY_NONE);
 
 	ewl_callback_append(EWL_WIDGET(menu), EWL_CALLBACK_SELECT,
-			    __expand_menu_base, NULL);
+			    __ewl_menu_base_expand, NULL);
 
 	ewl_callback_append(EWL_WIDGET(menu), EWL_CALLBACK_DESELECT,
-			    __collapse_menu_base, NULL);
+			    __ewl_menu_base_collapse, NULL);
 
 	/*
 	 * The popbox actually holds the children, and is simply added to the
@@ -42,6 +40,7 @@ void ewl_menu_base_init(Ewl_Menu_Base * menu, char *image, char *title)
 	menu->popbox = ewl_vbox_new();
 	ewl_object_set_alignment(EWL_OBJECT(menu->popbox),
 				 EWL_ALIGNMENT_LEFT | EWL_ALIGNMENT_TOP);
+	ewl_widget_show(menu->popbox);
 
 	/*
 	 * The add notifier makes sure newly added children go in the popup
@@ -124,6 +123,8 @@ void ewl_menu_item_init(Ewl_Menu_Item * item, char *image, char *text)
 	if (image) {
 		item->icon = ewl_image_new(image);
 		ewl_object_set_maximum_size(EWL_OBJECT(item->icon), 20, 20);
+		ewl_object_set_alignment(EWL_OBJECT(item->icon),
+				EWL_ALIGNMENT_CENTER);
 		ewl_container_append_child(EWL_CONTAINER(item), item->icon);
 		ewl_widget_show(item->icon);
 	}
@@ -134,15 +135,10 @@ void ewl_menu_item_init(Ewl_Menu_Item * item, char *image, char *text)
 	if (text) {
 		item->text = ewl_text_new(text);
 		ewl_container_append_child(EWL_CONTAINER(item), item->text);
+		ewl_object_set_alignment(EWL_OBJECT(item->text),
+				EWL_ALIGNMENT_LEFT);
 		ewl_widget_show(item->text);
 	}
-
-	/*
-	 * Attach the callback for collapsing the menu when the item is
-	 * clicked.
-	 */
-	ewl_callback_append(EWL_WIDGET(item), EWL_CALLBACK_SHOW,
-			    __ewl_menu_item_show, NULL);
 
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
@@ -163,22 +159,7 @@ void __ewl_menu_add(Ewl_Container * parent, Ewl_Widget * child)
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
 
-void __ewl_menu_item_show(Ewl_Widget * w, void *ev_data, void *user_data)
-{
-	Ewl_Menu_Item  *item;
-
-	DENTER_FUNCTION(DLEVEL_STABLE);
-
-	item = EWL_MENU_ITEM(w);
-
-	if (item->icon)
-		ewl_widget_show(item->icon);
-	ewl_widget_show(item->text);
-
-	DLEAVE_FUNCTION(DLEVEL_STABLE);
-}
-
-void __expand_menu_base(Ewl_Widget *w, void *ev_data, void *user_data)
+void __ewl_menu_base_expand(Ewl_Widget *w, void *ev_data, void *user_data)
 {
 	Ewl_Menu_Base *menu = EWL_MENU_BASE(w);
 
@@ -187,24 +168,21 @@ void __expand_menu_base(Ewl_Widget *w, void *ev_data, void *user_data)
 	if (!menu->popup)
 		DRETURN(DLEVEL_STABLE);
 
-	ewl_widget_show(menu->popup);
-	ewl_widget_realize(menu->popup);
-
 	ewl_container_append_child(EWL_CONTAINER(menu->popup), menu->popbox);
-	ewl_widget_show(menu->popbox);
-	ewl_widget_configure(menu->popup);
+	ewl_widget_show(menu->popup);
 
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
 
-void __collapse_menu_base(Ewl_Widget * w, void *ev_data, void *user_data)
+void __ewl_menu_base_collapse(Ewl_Widget * w, void *ev_data, void *user_data)
 {
-	Ewl_IMenu      *menu;
+	Ewl_Menu_Base      *menu;
 
-	menu = EWL_IMENU(w);
+	DENTER_FUNCTION(DLEVEL_STABLE);
 
-	ewl_widget_hide(menu->popbox);
-	ewl_container_remove_child(EWL_CONTAINER(menu->popup), menu->popbox);
-	ewl_widget_destroy(menu->popup);
-	menu->popup = NULL;
+	menu = EWL_MENU_BASE(w);
+
+	ewl_widget_hide(menu->popup);
+
+	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }

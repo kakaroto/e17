@@ -100,6 +100,8 @@ __create_imenu_test_window(Ewl_Widget * w, void *ev_data, void *user_data)
 	 */
 	imenu2 = ewl_imenu_new(NULL, "Sub menu");
 	ewl_container_append_child(EWL_CONTAINER(imenu1), imenu2);
+	ewl_callback_append(imenu2, EWL_CALLBACK_CONFIGURE,
+			    __imenu_configure, NULL);
 	ewl_widget_show(imenu2);
 
 	item = ewl_menu_item_new(NULL, "button");

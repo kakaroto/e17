@@ -4,7 +4,7 @@
 #include "ewl-config.h"
 #endif
 
-static char     theme_path[PATH_LEN];
+static char     theme_path[PATH_MAX];
 
 static E_DB_File *theme_db = NULL;
 
@@ -21,7 +21,7 @@ int ewl_theme_init(void)
 {
 	struct stat     st;
 	char           *theme_name;
-	char            theme_db_path[PATH_LEN];
+	char            theme_db_path[PATH_MAX];
 	char           *home;
 
 	DENTER_FUNCTION(DLEVEL_STABLE);
@@ -47,10 +47,10 @@ int ewl_theme_init(void)
 		exit(-1);
 	}
 
-	snprintf(theme_path, PATH_LEN, "%s/.e/ewl/themes/%s", home, theme_name);
+	snprintf(theme_path, PATH_MAX, "%s/.e/ewl/themes/%s", home, theme_name);
 
 	if (((stat(theme_path, &st)) == 0) || S_ISDIR(st.st_mode)) {
-		snprintf(theme_db_path, PATH_LEN, "%s/theme.db", theme_path);
+		snprintf(theme_db_path, PATH_MAX, "%s/theme.db", theme_path);
 
 		theme_db = e_db_open_read(theme_db_path);
 	}
@@ -60,12 +60,12 @@ int ewl_theme_init(void)
 		/*
 		 * Theme dir is ok, now get the specified theme's path 
 		 */
-		snprintf(theme_path, PATH_LEN, PACKAGE_DATA_DIR
+		snprintf(theme_path, PATH_MAX, PACKAGE_DATA_DIR
 			 "/themes/%s", theme_name);
 		stat(theme_path, &st);
 
 		if (S_ISDIR(st.st_mode)) {
-			snprintf(theme_db_path, PATH_LEN, "%s/theme.db",
+			snprintf(theme_db_path, PATH_MAX, "%s/theme.db",
 				 theme_path);
 
 			theme_db = e_db_open_read(theme_db_path);
@@ -92,21 +92,21 @@ int ewl_theme_init(void)
 void ewl_theme_init_font_path()
 {
 	char           *font_path;
-	char            key[PATH_LEN];
+	char            key[PATH_MAX];
 
 	/*
 	 * Setup the default font paths
 	 */
 	font_paths = ewd_list_new();
 	if (font_paths) {
-		snprintf(key, PATH_LEN, "/theme/font_path");
+		snprintf(key, PATH_MAX, "/theme/font_path");
 		font_path = ewl_theme_data_get_str(NULL, key);
 
 		if (font_path) {
 			if (*font_path == '/')
 				ewd_list_append(font_paths, font_path);
 			else {
-				snprintf(key, PATH_LEN, "%s/%s", theme_path,
+				snprintf(key, PATH_MAX, "%s/%s", theme_path,
 						font_path);
 				ewd_list_append(font_paths, key);
 			}
@@ -222,9 +222,9 @@ char           *ewl_theme_image_get(Ewl_Widget * w, char *k)
 		DRETURN_PTR(NULL, DLEVEL_STABLE);
 
 	if (*data != '/') {
-		path = NEW(char, PATH_LEN);
+		path = NEW(char, PATH_MAX);
 
-		snprintf(path, PATH_LEN, "%s/%s", theme_path, data);
+		snprintf(path, PATH_MAX, "%s/%s", theme_path, data);
 
 		FREE(data);
 	} else			/* Absolute path given, so return it */

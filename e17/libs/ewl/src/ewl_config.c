@@ -276,7 +276,7 @@ void ewl_config_reread_and_apply(void)
 void __create_user_config(void)
 {
 	char           *home;
-	char            pe[256];
+	char            pe[PATH_MAX];
 
 	DENTER_FUNCTION(DLEVEL_STABLE);
 
@@ -287,11 +287,11 @@ void __create_user_config(void)
 		DRETURN(DLEVEL_STABLE);
 	}
 
-	snprintf(pe, PATH_LEN, "%s/.e", home);
+	snprintf(pe, PATH_MAX, "%s/.e", home);
 	mkdir(pe, 0755);
-	snprintf(pe, PATH_LEN, "%s/.e/ewl", home);
+	snprintf(pe, PATH_MAX, "%s/.e/ewl", home);
 	mkdir(pe, 0755);
-	snprintf(pe, PATH_LEN, "%s/.e/ewl/config", home);
+	snprintf(pe, PATH_MAX, "%s/.e/ewl/config", home);
 	mkdir(pe, 0755);
 
 	ewl_config_set_int("system", "/debug/enable", 0);
@@ -331,7 +331,7 @@ void __create_fx_config(void)
 static int __open_config_db(const char *name)
 {
 	char           *home;
-	char            path[PATH_LEN];
+	char            path[PATH_MAX];
 
 	DENTER_FUNCTION(DLEVEL_STABLE);
 
@@ -342,7 +342,7 @@ static int __open_config_db(const char *name)
 		DRETURN_INT(FALSE, DLEVEL_STABLE);
 	}
 
-	snprintf(path, PATH_LEN, "%s/.e/ewl/config/%s.db", home, name);
+	snprintf(path, PATH_MAX, "%s/.e/ewl/config/%s.db", home, name);
 
 	config_db = e_db_open(path);
 
@@ -369,7 +369,7 @@ static void __close_config_db()
 static int __config_exists(char *name)
 {
 	char           *home;
-	char            path[PATH_LEN];
+	char            path[PATH_MAX];
 	struct stat     st;
 
 	DENTER_FUNCTION(DLEVEL_STABLE);
@@ -381,7 +381,7 @@ static int __config_exists(char *name)
 		DRETURN_INT(FALSE, DLEVEL_STABLE);
 	}
 
-	snprintf(path, PATH_LEN, "%s/.e/ewl/config/%s.db", home, name);
+	snprintf(path, PATH_MAX, "%s/.e/ewl/config/%s.db", home, name);
 
 	stat(path, &st);
 

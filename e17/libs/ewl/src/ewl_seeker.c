@@ -628,14 +628,14 @@ void
 __ewl_seeker_appearance_changed(Ewl_Widget * w, void *ev_data, void *user_data)
 {
 	Ewl_Seeker     *s;
-	char            appearance[PATH_LEN];
+	char            appearance[PATH_MAX];
 
 	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR("w", w);
 
 	s = EWL_SEEKER(w);
 
-	snprintf(appearance, PATH_LEN, "%s/dragbar", w->appearance);
+	snprintf(appearance, PATH_MAX, "%s/dragbar", w->appearance);
 
 	ewl_widget_set_appearance(s->dragbar, appearance);
 

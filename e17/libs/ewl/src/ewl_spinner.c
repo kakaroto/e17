@@ -75,8 +75,7 @@ void ewl_spinner_init(Ewl_Spinner * s)
 	ewl_container_init(EWL_CONTAINER(w), "spinner",
 			__ewl_spinner_child_add, __ewl_spinner_child_resize,
 			NULL);
-	ewl_object_set_fill_policy(EWL_OBJECT(w), EWL_FILL_POLICY_HFILL |
-						  EWL_FILL_POLICY_HSHRINK);
+	ewl_object_set_fill_policy(EWL_OBJECT(w), EWL_FILL_POLICY_HFILL);
 
 	ewl_callback_append(w, EWL_CALLBACK_REALIZE, __ewl_spinner_realize,
 			    NULL);
@@ -225,25 +224,24 @@ __ewl_spinner_child_add(Ewl_Container *c, Ewl_Widget *w)
 
 	if (w == s->entry) {
 		ewl_object_set_preferred_w(EWL_OBJECT(c), PREFERRED_W(c) +
-				ewl_object_get_preferred_w(EWL_OBJECT(w)));
+				ewl_object_get_minimum_w(EWL_OBJECT(w)));
 	}
 	else if (s->button_increase && s->button_decrease) {
 		ewl_object_set_preferred_w(EWL_OBJECT(c), PREFERRED_W(c) +
-				MAX(ewl_object_get_preferred_w(EWL_OBJECT(
+				MAX(ewl_object_get_minimum_w(EWL_OBJECT(
 							s->button_increase)),
-					ewl_object_get_preferred_w(EWL_OBJECT(
+					ewl_object_get_minimum_w(EWL_OBJECT(
 							s->button_decrease))));
 	}
 
 	if (s->entry && s->button_increase && s->button_decrease) {
 		int size;
 
-		size = ewl_object_get_preferred_h(EWL_OBJECT(
-					s->button_increase)) +
-			ewl_object_get_preferred_h(EWL_OBJECT(
+		size = ewl_object_get_minimum_h(EWL_OBJECT(s->button_increase))
+			+ ewl_object_get_minimum_h(EWL_OBJECT(
 						s->button_decrease));
-		ewl_object_set_preferred_h(EWL_OBJECT(c),
-			MAX(ewl_object_get_preferred_h(EWL_OBJECT(s->entry)),
+		ewl_object_set_minimum_h(EWL_OBJECT(c),
+			MAX(ewl_object_get_minimum_h(EWL_OBJECT(s->entry)),
 			size));
 	}
 
@@ -264,19 +262,19 @@ __ewl_spinner_child_resize(Ewl_Container *c, Ewl_Widget *w, int size,
 					PREFERRED_W(c) + size);
 		else if (s->button_increase && s->button_decrease) {
 			ewl_object_set_preferred_w(EWL_OBJECT(c),
-				MAX(ewl_object_get_preferred_w(EWL_OBJECT(
+				MAX(ewl_object_get_minimum_w(EWL_OBJECT(
 							s->button_increase)),
-					ewl_object_get_preferred_w(EWL_OBJECT(
+					ewl_object_get_minimum_w(EWL_OBJECT(
 							s->button_decrease))));
 		}
 	}
 	else if (s->entry && s->button_increase && s->button_decrease) {
-		size = ewl_object_get_preferred_h(EWL_OBJECT(
+		size = ewl_object_get_minimum_h(EWL_OBJECT(
 					s->button_increase)) +
-			ewl_object_get_preferred_h(EWL_OBJECT(
+			ewl_object_get_minimum_h(EWL_OBJECT(
 						s->button_decrease));
 		ewl_object_set_preferred_h(EWL_OBJECT(c),
-			MAX(ewl_object_get_preferred_h(EWL_OBJECT(s->entry)),
+			MAX(ewl_object_get_minimum_h(EWL_OBJECT(s->entry)),
 			size));
 	}
 

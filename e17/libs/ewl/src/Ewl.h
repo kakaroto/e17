@@ -20,8 +20,8 @@ extern          "C" {
 #include <sys/stat.h>
 #include <unistd.h>
 
-#ifndef PATH_LEN
-#define PATH_LEN 4096
+#ifndef PATH_MAX
+#define PATH_MAX 4096
 #endif
 
 #include <ewl_debug.h>
