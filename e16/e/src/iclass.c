@@ -785,11 +785,15 @@ IclassApplyCopy(ImageClass * iclass, Window win, int w, int h, int active,
    GC                  gc;
 
    EDBUG(4, "IclassApplyCopy");
-   if ((!iclass) || (!win) || (w < 1) || (h < 1) || (!pmm))
+
+   if (pmm == NULL)
       EDBUG_RETURN_;
 
-   pmm->pmap = 0;
-   pmm->mask = 0;
+   pmm->type = 0;
+   pmm->pmap = pmm->mask = 0;
+
+   if ((!iclass) || (!win) || (w < 1) || (h < 1))
+      EDBUG_RETURN_;
 
    if (iclass->external)
       EDBUG_RETURN_;
