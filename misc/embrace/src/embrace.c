@@ -40,7 +40,7 @@
 #include "mailbox.h"
 #include "embrace_plugin.h"
 
-static int last_signal;
+static int last_signal = 0;
 
 /**
  * Copies one string to another, but '~' is expanded.
@@ -668,7 +668,9 @@ bool embrace_init (Embrace *e)
 {
 	assert (e);
 
+#ifdef USE_DNOTIFY
 	last_signal = SIGRTMIN;
+#endif
 
 	if (!embrace_load_config (e)) {
 		fprintf (stderr, "Cannot load config!\n");
@@ -729,8 +731,10 @@ void embrace_stop (Embrace *e)
 
 int embrace_signal_get ()
 {
+#ifdef USE_DNOTIFY
 	assert (last_signal >= SIGRTMIN);
 	assert (last_signal < SIGRTMAX);
+#endif
 
 	return ++last_signal;
 }

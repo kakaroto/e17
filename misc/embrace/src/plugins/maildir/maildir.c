@@ -23,6 +23,7 @@
 
 #include <limits.h>
 #include <assert.h>
+#include <sys/types.h>
 #include <dirent.h>
 #include <string.h>
 #include <stdio.h>
