@@ -9,7 +9,6 @@
 static E_DB_File *config_db = NULL;
 
 void            __create_user_config(void);
-void            __create_fx_config(void);
 
 static int      __open_config_db(const char *name);
 static void     __close_config_db(void);
@@ -36,11 +35,6 @@ int ewl_config_init(void)
 		__close_config_db();
 	else
 		__create_user_config();
-
-	if (__config_exists("fx") != -1)
-		__close_config_db();
-	else
-		__create_fx_config();
 
 	DRETURN_INT(TRUE, DLEVEL_STABLE);
 }
@@ -299,33 +293,10 @@ void __create_user_config(void)
 	ewl_config_set_str("system", "/evas/render_method", "software_x11");
 	ewl_config_set_int("system", "/evas/font_cache", 2097152);
 	ewl_config_set_int("system", "/evas/image_cache", 8388608);
-	ewl_config_set_str("system", "/fx/paths/0",
-			   PACKAGE_DATA_DIR "/plugins/fx");
-	ewl_config_set_int("system", "/fx/paths/count", 1);
-	ewl_config_set_int("system", "/fx/fps", 50);
 	ewl_config_set_str("system", "/theme/name", "default");
 	ewl_config_set_int("system", "/theme/cache", 0);
 
 	DRETURN(DLEVEL_STABLE);
-}
-
-void __create_fx_config(void)
-{
-	/* Give buttons fade_in & glow & fade_out effects by default */
-	ewl_config_set_int("fx", "/user/button/count", 2);
-	ewl_config_set_str("fx", "/user/button/0/name", "glow");
-	ewl_config_set_int("fx", "/user/button/0/callbacks/count", 1);
-	ewl_config_set_int("fx", "/user/button/0/callbacks/0/cb_start",
-			   EWL_CALLBACK_FOCUS_IN);
-	ewl_config_set_int("fx", "/user/button/0/callbacks/0/cb_stop",
-			   EWL_CALLBACK_FOCUS_OUT);
-
-	ewl_config_set_str("fx", "/user/button/1/name", "fade_in");
-	ewl_config_set_int("fx", "/user/button/1/callbacks/count", 1);
-	ewl_config_set_int("fx", "/user/button/1/callbacks/0/cb_start",
-			   EWL_CALLBACK_SHOW);
-	ewl_config_set_int("fx", "/user/button/1/callbacks/0/cb_stop",
-			   EWL_CALLBACK_HIDE);
 }
 
 static int __open_config_db(const char *name)

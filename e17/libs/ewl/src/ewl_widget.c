@@ -72,10 +72,6 @@ void ewl_widget_init(Ewl_Widget * w, char *appearance)
 	w->state = EWL_STATE_NORMAL;
 
 	/*
-	ewl_fx_init_widget(w);
-	*/
-
-	/*
 	 * Add the common callbacks that all widgets must perform
 	 */
 	ewl_callback_append(w, EWL_CALLBACK_SHOW, __ewl_widget_show, NULL);
