@@ -160,7 +160,7 @@ void setup(void)
 			NULL);
 	ecore_event_handler_add(ECORE_X_EVENT_MOUSE_IN, ecore_mouse_in, NULL);
 	ecore_event_handler_add(ECORE_X_EVENT_MOUSE_OUT, ecore_mouse_out, NULL);
-	ecore_idler_add(e_idle, NULL);
+	ecore_idle_enterer_add(e_idle, NULL);
 
 #if 0
 	evas = evas_new_all(ecore_display_get(), win, 0, 0, 400, 400,
