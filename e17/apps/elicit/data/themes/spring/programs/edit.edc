@@ -1,0 +1,6 @@
+SLIDER_PROG("red", "color,r");
+SLIDER_PROG("green", "color,g");
+SLIDER_PROG("blue", "color,b");
+SLIDER_PROG("hue", "color,h");
+SLIDER_PROG("sat", "color,s");
+SLIDER_PROG("val", "color,v");

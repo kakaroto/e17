@@ -62,7 +62,7 @@
 
 
 
-#define BUTTON_CLIPPED(NAME, IMG, IMG2, W, H, REL1_TO, REL1_REL, REL1_OFF, REL2_TO, REL2_REL, REL2_OFF, CLIP) \
+#define BUTTON_CLIPPED(NAME, IMG, IMG2, W, H, REL1_TO, REL1_REL, REL1_OFF, REL2_TO, REL2_REL, REL2_OFF, ALIGN, CLIP) \
       part {				\
         name, NAME;			\
         clip_to, CLIP;                  \
@@ -70,6 +70,7 @@
 	  state, "default" 0.0;		\
 	  min, W H;			\
 	  max, W H;			\
+          align, ALIGN;                 \
 	  color, 255 255 255 127;	\
 	  rel1 {			\
 	    to, REL1_TO;		\
@@ -89,6 +90,7 @@
 	  state, "over" 0.0;		\
 	  min, W H;			\
 	  max, W H; 			\
+          align, ALIGN;                 \
 	  color, 255 255 255 255;	\
 	  rel1 {			\
 	    to, REL1_TO;		\
@@ -108,6 +110,7 @@
 	  state, "down" 0.0;		\
 	  min, W H;			\
 	  max, W H; 			\
+          align, ALIGN;                 \
 	  color, 255 255 255 255;	\
 	  rel1 {			\
 	    to, REL1_TO;		\

@@ -6,6 +6,7 @@
 #include "macros/button.inc"
 #include "macros/toggle.inc"
 #include "macros/color.inc"
+#include "macros/slider.inc"
 
 fonts
 {
@@ -31,6 +32,14 @@ images
   image, "minus2.png" LOSSY 98;
   
   image, "rgb-dots.png" LOSSY 98;
+
+  image, "slider-left1.png" LOSSY 98;
+  image, "slider-left2.png" LOSSY 98;
+  image, "slider-right1.png" LOSSY 98;
+  image, "slider-right2.png" LOSSY 98;
+  image, "slider-handle1.png" LOSSY 98;
+  image, "slider-handle2.png" LOSSY 98;
+  image, "slider-bar.png" LOSSY 98;
 }
 
 collections {
@@ -42,30 +51,17 @@ collections {
 #include "parts/insets.edc"
 #include "parts/buttons.edc"
 #include "parts/colors.edc"
+#include "parts/edit.edc"
     }
 
     programs {
 #include "programs/buttons.edc"
 //#include "programs/colors.edc"
 #include "programs/expand.edc"
+#include "programs/edit.edc"
     }
 
   } /* end group elicit */
-
-  group {
-    name, "expanded";
-    min, 131 173;
-    parts {
-#include "parts/main-expanded.edc"
-#include "parts/insets.edc"
-#include "parts/buttons.edc"
-#include "parts/colors.edc"
-    }
-    programs {
-#include "programs/buttons.edc"
-#include "programs/expand.edc"
-    }
-
 
 }
 
