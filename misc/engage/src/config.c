@@ -97,10 +97,10 @@ od_config_init(void)
   ecore_config_int_create_bound("engage.options.mode", OM_BELOW, 0, 1, 1, 'm',
                                 "mode",
                                 "The display mode, 0 = ontop + shaped, 1 = below + transp");
-  ecore_config_boolean_create("engage.options.grab_min_icons", 1, 'g',
+  ecore_config_boolean_create("engage.options.grab_min_icons", 0, 'g',
                               "grab-min",
                               "Capture the icons of minimised applications");
-  ecore_config_boolean_create("engage.options.grab_app_icons", 1, 'G',
+  ecore_config_boolean_create("engage.options.grab_app_icons", 0, 'G',
                                "grab-app",
                                "Capture the icons of all running applications");
   ecore_config_boolean_create("engage.options.auto_hide", 0, 'A', "auto-hide",
