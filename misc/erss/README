@@ -10,6 +10,9 @@ USAGE:
 erss -h 
 erss -c /usr/local/share/erss/config/osnews.cfg
 
+If you want to set some default settings look at the example 
+erssrc file in your data/ dir. Make your changes and 
+put it in ~/.erssrc
 
 NOTE:
 If the slashdot.cfg is not working try HandyAndE's mirror (handyande.cfg).

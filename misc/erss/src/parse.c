@@ -4,6 +4,7 @@
 Ewd_List *list = NULL;
 Article *item = NULL;
 Config *cfg = NULL;
+Rc_Config *rc = NULL;
 
 
 char *get_element (char **buffer, char *type)
@@ -180,7 +181,7 @@ void parse_data (char *buf)
 
 		item->obj = edje_object_add (evas);
 		edje_object_file_set (item->obj, 
-				PACKAGE_DATA_DIR"/default.eet", "erss_item");
+				cfg->theme, "erss_item");
 
 		if (text)
 			edje_object_part_text_set (item->obj, "article", text);
@@ -254,6 +255,50 @@ char *get_next_line (FILE * fp)
 	buf = realloc (buf, strlen (buf) ? strlen (buf) : 1);
 
 	return buf;
+}
+
+int parse_rc_file ()
+{
+	FILE *fp;
+	char *line;
+	char *c;
+	char file[PATH_MAX];
+
+	snprintf (file, PATH_MAX, "%s/.erssrc", getenv ("HOME"));
+	
+	fp = fopen (file, "r");
+	if (!fp) 
+		return FALSE;
+
+	rc = malloc (sizeof (Rc_Config));
+
+	while ((line = get_next_line (fp)) != NULL)
+	{
+		if ((c = get_element (&line, "config")) != NULL)
+		{
+			rc->config = strdup (c);
+			continue;
+		}
+
+		if ((c = get_element (&line, "theme")) != NULL)
+		{
+			rc->theme = strdup (c);
+			continue;
+		}
+		
+	}
+	
+	free (line);
+	fclose (fp);
+
+	if (rc->theme && rc->config) 
+		return TRUE;
+	else {
+		fprintf (stderr, 
+				"Erss error: you are missing something in your rc file!\n\n");
+	}
+	
+	return FALSE;
 }
 
 void parse_config_file (char *file)

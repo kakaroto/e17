@@ -399,8 +399,18 @@ int main (int argc, const char *argv[])
 	int height;
 	int width;
 	int c = 0;
+
+	int got_config_file = FALSE;
+	int got_theme_file = FALSE;
+	int got_rc_file = FALSE;
+	char config_file[PATH_MAX];
+	char theme_file[PATH_MAX];
+
+	struct stat statbuf;
+
+	cfg = NULL;
 	
-	while((c = getopt (argc, argv, "cvhl")) != -1) 
+	while ((c = getopt (argc, argv, "cvhlt")) != -1) 
 	{
 		switch (c) {
 			case 'l':
@@ -413,8 +423,12 @@ int main (int argc, const char *argv[])
 					fprintf (stderr, "Try `%s -h` for more information\n", PACKAGE);
 					exit (-1);
 				} 
-				parse_config_file ((char *) argv[optind]);
-
+				got_config_file = TRUE;
+				snprintf (config_file, PATH_MAX, "%s", (char *) argv[optind]);
+				break;
+			case 't':
+				got_theme_file = TRUE;
+				snprintf (theme_file, PATH_MAX, "%s", (char *) argv[optind]);
 				break;
 			case 'v':
 				printf ("%s %s\n", PACKAGE, VERSION);
@@ -422,27 +436,48 @@ int main (int argc, const char *argv[])
 			case 'h':
 				printf ("Usage: %s [OPTION] ...\n\n", PACKAGE);
 	
-				printf ("  -c CONFIG \t specify a config file\n");
-				printf ("  -l        \t list avaliable config files\n");
+				printf ("  -c CONFIG \t specify a config file (required)\n");
+				printf ("  -l        \t list avaliable config files\n\n");
+				printf ("  -t THEME  \t specify an edje theme file (.eet)\n");
+				printf ("            \t else the default will be used.\n\n");
 				printf ("  -h        \t display this help and exit\n");
 				printf ("  -v        \t display %s version\n\n", PACKAGE);
 				exit (-1);
 			default:
-				fprintf (stderr, "\nUsage: %s [OPTION] ...\n", PACKAGE);
-				fprintf (stderr, "Try `%s -h` for more information\n", PACKAGE);
-				exit (-1);
 				break;
 		}
 				
 	}
 
-	if(optind >= argc) {
-		fprintf (stderr, "Usage: %s [OPTION] ...\n", PACKAGE);
-		fprintf (stderr, "Try `%s -h` for more information\n", PACKAGE);
+	if (parse_rc_file ()) 
+		got_rc_file = TRUE;
+		
+	if(!got_config_file) {
+		if (!got_rc_file) {
+			fprintf (stderr, "Usage: %s [OPTION] ...\n", PACKAGE);
+			fprintf (stderr, "Try `%s -h` for more information\n", PACKAGE);
+			exit (-1);
+		} else {
+			parse_config_file (rc->config);
+		}
+	} else {
+		parse_config_file (config_file);
+	}
+	
+	if (!got_theme_file)
+		if (!got_rc_file) 
+			cfg->theme = strdup (PACKAGE_DATA_DIR"/default.eet");
+		else
+			cfg->theme = strdup (rc->theme);
+	else
+		cfg->theme = strdup (theme_file);
+	
+	stat (cfg->theme, &statbuf);
+	if (!S_ISREG(statbuf.st_mode)) {
+		printf ("Erss error: themefile '%s' does not exist!\n");
 		exit (-1);
 	}
 
-	
 	if (!cfg->hostname) {		
 		fprintf (stderr, "Erss error: No hostname defined!\n");
 		exit (-1);
@@ -555,7 +590,7 @@ int main (int argc, const char *argv[])
 
 	if (cfg->header) {
 		header = edje_object_add (evas);
-		edje_object_file_set (header, PACKAGE_DATA_DIR"/default.eet", "erss");
+		edje_object_file_set (header, cfg->theme, "erss");
 		edje_object_part_text_set (header, "header", cfg->header);
 		evas_object_show (header);
 
@@ -564,7 +599,7 @@ int main (int argc, const char *argv[])
 
 	if (cfg->clock) {
 		tid = edje_object_add (evas);
-		edje_object_file_set (tid, PACKAGE_DATA_DIR"/default.eet", "erss_clock");
+		edje_object_file_set (tid, cfg->theme, "erss_clock");
 		edje_object_part_text_set (tid, "clock", "");
 		evas_object_show (tid);
 

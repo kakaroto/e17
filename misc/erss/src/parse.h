@@ -28,11 +28,21 @@ typedef struct _config {
 	int proxy_port;
 	char *browser;
 	char *prefix;
+
+	char *theme;
+	char *config;
 } Config;
 
+typedef struct _rc_config {
+	char *config;
+	char *theme;
+} Rc_Config;
+
+int parse_rc_file ();
 void parse_data (char *buf);
 void parse_config_file (char *file);
 
 extern int objects_placed;
 extern Config *cfg;
 extern Article *item;
+extern Rc_Config *rc;
