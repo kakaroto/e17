@@ -1938,6 +1938,7 @@ HandleMouseUp(XEvent * ev)
 	clickmenu = 1;
 	justclicked = 1;
      }
+
    if ((m) && (mi->state))
      {
 	mi->state = STATE_HILITED;

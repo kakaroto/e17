@@ -2,7 +2,6 @@ BUGS:
 raster: 	must update dox docs fully
 cK:		keeping the groups file in sync with the existing groups that need to be remembered. I'm sure there are bugs in that.
 cK		hammering on this whole raise/lower/raiselower stuff in groups.
-mandrake:	there are some issues in menu handling code.  investigate around line 1495 in evhandlers.c -- only seems to pop up when menus are created from buttons and you have clickraise and/or clicktofocus turned on.  Shows up in ganymede theme (thanks christian)
 
 FEATURES FOR DR 0.17:
 kainx: 		reduce need for tooltip text to have auto gened tooltips work

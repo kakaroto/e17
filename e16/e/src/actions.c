@@ -524,6 +524,8 @@ spawnMenu(void *params)
 	     mode.context_h = h;
 	  }
      }
+   if (mode.button)
+      clickmenu = 1;
    if (!strcmp(s, "deskmenu"))
      {
 	AUDIO_PLAY("SOUND_MENU_SHOW");

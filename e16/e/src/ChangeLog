@@ -2447,3 +2447,11 @@ Mon Sep 27 13:31:26 PDT 1999
 
 oops, forgot an EDBUG init in those functions
 
+
+-------------------------------------------------------------------------------
+
+Mon Sep 27 23:54:54 PDT 1999
+(Mandrake)
+
+fixed the bug that ganymede would flaunt with spawning menus via buttons
+(using spawnMenu()) with click to raise and/or click to focus enabled.
