@@ -12,6 +12,8 @@
 #define XY_IN_RECT(x, y, rx, ry, rw, rh) \
 (((x) >= (rx)) && ((y) >= (ry)) && ((x) <= ((rx) + (rw))) && ((y) <= ((ry) + (rh))))
 
+#define MAX(a,b) (((a) > (b)) ? (a) : (b))
+
 void
 __imlib_FlipImageHoriz(ImlibImage * im)
 {
@@ -1683,6 +1685,12 @@ __imlib_draw_polygon(ImlibImage * im, ImlibPoly poly, DATA8 r, DATA8 g,
    if (!poly || !poly->points || (poly->pointcount < 2))
       return;
 
+   if (poly->filled)
+   {
+      __imlib_draw_polygon_filled(im, poly, r, g, b, a, op);
+      return;
+   }
+
    for (i = 0; i < poly->pointcount; i++)
    {
       if (i < poly->pointcount - 1)
@@ -1707,6 +1715,14 @@ __imlib_draw_polygon_clipped(ImlibImage * im, ImlibPoly poly, int clip_xmin,
 
    if (!poly || !poly->points || (poly->pointcount < 2))
       return;
+
+   if (poly->filled)
+   {
+      __imlib_draw_polygon_filled_clipped(im, poly, clip_xmin, clip_xmax,
+                                          clip_ymin, clip_ymax, r, g, b, a,
+                                          op);
+      return;
+   }
 
    for (i = 0; i < poly->pointcount; i++)
    {
@@ -1869,7 +1885,8 @@ __imlib_draw_set_point_clipped(ImlibImage * im, int x, int y, int clip_xmin,
    if ((x >= 0 && x < im->w) && (y >= 0 && y <= im->h))
    {
       if (XY_IN_RECT
-          (x, y, clip_xmin, clip_ymin, clip_xmax - clip_xmin, clip_ymax - clip_ymin))
+          (x, y, clip_xmin, clip_ymin, clip_xmax - clip_xmin,
+           clip_ymax - clip_ymin))
       {
          p = &(im->data[(im->w * y) + x]);
          switch (op)
@@ -1891,4 +1908,270 @@ __imlib_draw_set_point_clipped(ImlibImage * im, int x, int y, int clip_xmin,
          }
       }
    }
+}
+
+#define exchange(type, a, b)    \
+{               \
+    type _t_;   \
+    _t_ = a;    \
+    a = b;      \
+    b = _t_;    \
+}
+
+typedef struct
+{
+   int x;
+}
+edgeRec;
+
+static void
+edge(edgeRec * table, ImlibPoint * pt1, ImlibPoint * pt2)
+{
+   long x, dx;
+   int idy, iy1, iy2;
+
+   if (pt2->y < pt1->y)
+   {
+   exchange(ImlibPoint *, pt1, pt2)}
+   iy1 = pt1->y;
+   iy2 = pt2->y;
+   idy = iy2 - iy1;
+   if (idy == 0)
+   {
+      return;
+   }
+   idy = MAX(2, idy - 1);
+   x = pt1->x;
+   dx = (pt2->x - pt1->x) / idy;
+   do
+   {
+      table[iy1].x = x;
+      x += dx;
+      iy1++;
+   }
+   while (iy1 < iy2);
+}
+
+static void
+span(ImlibImage * im, int y, edgeRec * pt1, edgeRec * pt2, DATA8 r, DATA8 g,
+     DATA8 b, DATA8 a, ImlibOp op)
+{
+   int idx, ix1, ix2;
+
+   if (pt2->x < pt1->x)
+   {
+      exchange(edgeRec *, pt1, pt2);
+   }
+   ix1 = pt1->x;
+   ix2 = pt2->x;
+   idx = ix2 - ix1;
+   if (idx == 0)
+   {
+      return;
+   }
+   do
+   {
+      __imlib_draw_set_point(im, ix1, y, r, g, b, a, op);
+      ix1++;
+   }
+   while (ix1 < ix2);
+}
+
+static void
+span_clipped(ImlibImage * im, int y, edgeRec * pt1, edgeRec * pt2,
+             int clip_xmin, int clip_xmax, int clip_ymin, int clip_ymax,
+             DATA8 r, DATA8 g, DATA8 b, DATA8 a, ImlibOp op)
+{
+   int idx, ix1, ix2;
+
+   if (pt2->x < pt1->x)
+   {
+      exchange(edgeRec *, pt1, pt2);
+   }
+   ix1 = pt1->x;
+   ix2 = pt2->x;
+   idx = ix2 - ix1;
+   if (idx == 0)
+   {
+      return;
+   }
+   do
+   {
+      __imlib_draw_set_point_clipped(im, ix1, y, clip_xmin, clip_xmax,
+                                     clip_ymin, clip_ymax, r, g, b, a, op);
+      ix1++;
+   }
+   while (ix1 < ix2);
+}
+
+
+void
+__imlib_draw_polygon_filled(ImlibImage * im, ImlibPoly poly, DATA8 r, DATA8 g,
+                            DATA8 b, DATA8 a, ImlibOp op)
+{
+   long maxy, miny;
+   int iy1, iy2;
+   int imaxy, iminy;
+   int pnt1, pnt2;
+   int i;
+   edgeRec *table1, *table2;
+
+   if (poly->pointcount < 3)
+   {
+      return;
+   }
+
+   table1 = malloc(sizeof(edgeRec) * im->h);
+   table2 = malloc(sizeof(edgeRec) * im->h);
+
+   maxy = miny = poly->points[0].y;
+   imaxy = iminy = 0;
+   for (i = 1; i < poly->pointcount; i++)
+   {
+      if (poly->points[i].y > maxy)
+      {
+         maxy = poly->points[i].y;
+         imaxy = i;
+      }
+      if (poly->points[i].y < miny)
+      {
+         miny = poly->points[i].y;
+         iminy = i;
+      }
+   }
+   iy1 = miny;
+   iy2 = maxy;
+   if (iy1 == iy2)
+   {
+      return;
+   }
+   pnt1 = iminy;
+   pnt2 = iminy + 1;
+   if (pnt2 >= poly->pointcount)
+   {
+      pnt2 = 0;
+   }
+   do
+   {
+      edge(table1, &poly->points[pnt1], &poly->points[pnt2]);
+      pnt1 = pnt2;
+      pnt2 = pnt2 + 1;
+      if (pnt2 >= poly->pointcount)
+      {
+         pnt2 = 0;
+      }
+   }
+   while (pnt1 != imaxy);
+   pnt1 = imaxy;
+   pnt2 = imaxy + 1;
+   if (pnt2 >= poly->pointcount)
+   {
+      pnt2 = 0;
+   }
+   do
+   {
+      edge(table2, &poly->points[pnt1], &poly->points[pnt2]);
+      pnt1 = pnt2;
+      pnt2 = pnt2 + 1;
+      if (pnt2 >= poly->pointcount)
+      {
+         pnt2 = 0;
+      }
+   }
+   while (pnt1 != iminy);
+   do
+   {
+      span(im, iy1, &table1[iy1], &table2[iy1], r, g, b, a, op);
+      iy1++;
+   }
+   while (iy1 < iy2);
+   free(table1);
+   free(table2);
+}
+
+void
+__imlib_draw_polygon_filled_clipped(ImlibImage * im, ImlibPoly poly,
+                                    int clip_xmin, int clip_xmax,
+                                    int clip_ymin, int clip_ymax, DATA8 r,
+                                    DATA8 g, DATA8 b, DATA8 a, ImlibOp op)
+{
+   long maxy, miny;
+   int iy1, iy2;
+   int imaxy, iminy;
+   int pnt1, pnt2;
+   int i;
+   edgeRec *table1, *table2;
+
+   if (poly->pointcount < 3)
+   {
+      return;
+   }
+
+   table1 = malloc(sizeof(edgeRec) * im->h);
+   table2 = malloc(sizeof(edgeRec) * im->h);
+
+   maxy = miny = poly->points[0].y;
+   imaxy = iminy = 0;
+   for (i = 1; i < poly->pointcount; i++)
+   {
+      if (poly->points[i].y > maxy)
+      {
+         maxy = poly->points[i].y;
+         imaxy = i;
+      }
+      if (poly->points[i].y < miny)
+      {
+         miny = poly->points[i].y;
+         iminy = i;
+      }
+   }
+   iy1 = miny;
+   iy2 = maxy;
+   if (iy1 == iy2)
+   {
+      return;
+   }
+   pnt1 = iminy;
+   pnt2 = iminy + 1;
+   if (pnt2 >= poly->pointcount)
+   {
+      pnt2 = 0;
+   }
+   do
+   {
+      edge(table1, &poly->points[pnt1], &poly->points[pnt2]);
+      pnt1 = pnt2;
+      pnt2 = pnt2 + 1;
+      if (pnt2 >= poly->pointcount)
+      {
+         pnt2 = 0;
+      }
+   }
+   while (pnt1 != imaxy);
+   pnt1 = imaxy;
+   pnt2 = imaxy + 1;
+   if (pnt2 >= poly->pointcount)
+   {
+      pnt2 = 0;
+   }
+   do
+   {
+      edge(table2, &poly->points[pnt1], &poly->points[pnt2]);
+      pnt1 = pnt2;
+      pnt2 = pnt2 + 1;
+      if (pnt2 >= poly->pointcount)
+      {
+         pnt2 = 0;
+      }
+   }
+   while (pnt1 != iminy);
+   do
+   {
+      span_clipped(im, iy1, &table1[iy1], &table2[iy1], clip_xmin, clip_xmax,
+                   clip_ymin, clip_ymax, r, g, b, a, op);
+      iy1++;
+   }
+   while (iy1 < iy2);
+   free(table1);
+   free(table2);
 }

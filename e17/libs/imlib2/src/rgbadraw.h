@@ -108,4 +108,12 @@ __imlib_draw_ellipse_clipped(ImlibImage * im, int xc, int yc, int aa, int bb,
                              int clip_xmin, int clip_xmax, int clip_ymin,
                              int clip_ymax, DATA8 r, DATA8 g, DATA8 b,
                              DATA8 a, ImlibOp op);
+void
+__imlib_draw_polygon_filled(ImlibImage * im, ImlibPoly poly, DATA8 r, DATA8 g,
+                     DATA8 b, DATA8 a, ImlibOp op);
+void
+__imlib_draw_polygon_filled_clipped(ImlibImage * im, ImlibPoly poly,
+                                    int clip_xmin, int clip_xmax,
+                                    int clip_ymin, int clip_ymax, DATA8 r,
+                                    DATA8 g, DATA8 b, DATA8 a, ImlibOp op);
 #endif

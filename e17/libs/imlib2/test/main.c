@@ -295,7 +295,7 @@ int main (int argc, char **argv)
    sec1=(int)timev.tv_sec; /* and stores it so we can time outselves */
    usec1=(int)timev.tv_usec; /* we will use this to vary speed of rot */
 
-   poly = imlib_polygon_new(POLY_CLOSED);
+   poly = imlib_polygon_new(POLY_FILLED);
    imlib_polygon_add_point(poly, 400,50);
    imlib_polygon_add_point(poly, 450,100);
    imlib_polygon_add_point(poly, 350,100);
@@ -309,7 +309,7 @@ int main (int argc, char **argv)
    imlib_polygon_add_point(poly3, 400,250);
    imlib_polygon_add_point(poly3, 450,300);
    imlib_polygon_add_point(poly3, 350,300);
-   
+
    if (loop)
      {
 	printf("loop\n");
@@ -848,8 +848,9 @@ int main (int argc, char **argv)
           imlib_context_set_cliprect(0,0,0,0);
           
           /* test polygons */
-          imlib_context_set_color(255, 255, 255, 255);
+          imlib_context_set_color(255, 0, 0, 255);
           imlib_image_draw_polygon(poly);
+          imlib_context_set_color(255, 255, 255, 255);
           imlib_image_draw_polygon(poly2);
           imlib_image_draw_polygon(poly3);
           imlib_image_draw_rectangle(380,260,50,50);
