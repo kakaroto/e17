@@ -59,7 +59,7 @@ IMAGES =\
 E-Clock-Image.png E-Power-Bat-0.png E-Power-Bat-10.png E-Power-Bat-20.png \
 E-Power-Bat-30.png E-Power-Bat-40.png E-Power-Bat-50.png E-Power-Bat-60.png \
 E-Power-Bat-70.png E-Power-Bat-80.png E-Power-Bat-90.png E-Power-Bat-100.png \
-nomail.png newmail.png
+nomail.png newmail.png 7of9.png
 
 EXTRA_DIST = ${ICONS} ${ABOUT_DOCS} ${IMAGES}
 

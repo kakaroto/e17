@@ -13,6 +13,7 @@ extern void Epplet_redraw(void);
 #define POLL_INTERVAL   2.0
 #define NOMAIL_IMAGE    EROOT "/epplet_icons/nomail.png"
 #define NEWMAIL_IMAGE   EROOT "/epplet_icons/newmail.png"
+#define SEVEN_IMAGE     EROOT "/epplet_icons/7of9.png"
 
 #if 0
 #  define D(x) do {printf("%10s | %7d:  [debug] ", __FILE__, __LINE__); printf x; fflush(stdout);} while (0)
@@ -22,12 +23,13 @@ extern void Epplet_redraw(void);
 #define BEGMATCH(a, b)  (!strncasecmp((a), (b), (sizeof(b) - 1)))
 #define NONULL(x)       ((x) ? (x) : (""))
 
-Epplet_gadget close_button, mp_button, help_button, nomail, newmail, label;
+Epplet_gadget close_button, mp_button, help_button, nomail, newmail, seven, label;
 unsigned long new_cnt, total_cnt;
 size_t file_size;
 time_t file_mtime;
 char *folder_path = NULL, *mailprog = MAIL_PROG, *sound = NULL,
-  *nomail_image = NOMAIL_IMAGE, *newmail_image = NEWMAIL_IMAGE;
+  *nomail_image = NOMAIL_IMAGE, *newmail_image = NEWMAIL_IMAGE,
+  *seven_image = SEVEN_IMAGE;
 int mp_pid = 0;
 int beep = 1;
 double interval = POLL_INTERVAL;
@@ -50,8 +52,15 @@ mailcheck_cb(void *data)
   D(("mailcheck_cb() called.\n"));
   if ((mbox_folder_count(folder_path, 0)) != 0) {
     if (new_cnt != 0) {
-      Epplet_gadget_hide(nomail);
-      Epplet_gadget_show(newmail);
+      if (new_cnt == 7 && total_cnt == 9) {
+        Epplet_gadget_hide(nomail);
+        Epplet_gadget_hide(newmail);
+        Epplet_gadget_show(seven);
+      } else {
+        Epplet_gadget_hide(nomail);
+        Epplet_gadget_hide(seven);
+        Epplet_gadget_show(newmail);
+      }
       if (beep) {
         XBell(Epplet_get_display(), 0);
       } else if (sound != NULL) {
@@ -59,12 +68,13 @@ mailcheck_cb(void *data)
       }
     } else {
       Epplet_gadget_hide(newmail);
+      Epplet_gadget_hide(seven);
       Epplet_gadget_show(nomail);
     }
     sprintf(label_text, "%lu / %lu", new_cnt, total_cnt);
     Epplet_change_label(label, label_text);
   }
-  Epplet_timer(mailcheck_cb, NULL, POLL_INTERVAL, "TIMER");
+  Epplet_timer(mailcheck_cb, NULL, interval, "TIMER");
 }
 
 static void
@@ -78,7 +88,7 @@ close_cb(void *data)
 static void
 mailprog_cb(void *data)
 {
-  mp_pid = Epplet_spawn_command(MAIL_PROG);
+  mp_pid = Epplet_spawn_command(mailprog);
 }
 
 static void
@@ -128,6 +138,7 @@ save_conf(void) {
   fprintf(fp, "beep %d\n", beep);
   fprintf(fp, "no mail image %s\n", nomail_image);
   fprintf(fp, "new mail image %s\n", newmail_image);
+  fprintf(fp, "seven image %s\n", seven_image);
   if (sound != NULL) {
     fprintf(fp, "sound %s\n", sound);
   }
@@ -165,6 +176,8 @@ load_conf(void) {
       nomail_image = strdup(buff + sizeof("no mail image ") - 1);
     } else if (BEGMATCH(buff, "new mail image ")) {
       newmail_image = strdup(buff + sizeof("new mail image ") - 1);
+    } else if (BEGMATCH(buff, "seven image ")) {
+      seven_image = strdup(buff + sizeof("seven image ") - 1);
     } else if (BEGMATCH(buff, "sound ")) {
       sound = strdup(buff + sizeof("sound ") - 1);
     } else {
@@ -185,7 +198,7 @@ main(int argc, char **argv)
   prio = getpriority(PRIO_PROCESS, getpid());
   setpriority(PRIO_PROCESS, getpid(), prio + 10);
   atexit(save_conf);
-  Epplet_Init("E-Biff", "0.3", "Enlightenment Mailbox Checker Epplet", 3, 3, argc, argv, 0);
+  Epplet_Init("E-Biff", "0.4", "Enlightenment Mailbox Checker Epplet", 3, 3, argc, argv, 0);
   load_conf();
   if (folder_path == NULL) {
     if ((folder_path = getenv("MAIL")) == NULL) {
@@ -206,8 +219,9 @@ main(int argc, char **argv)
   help_button = Epplet_create_button(NULL, NULL, 18, 2, 0, 0, "HELP", 0, NULL, help_cb, NULL);
   mp_button = Epplet_create_button(NULL, NULL, 34, 2, 0, 0, "CONFIGURE", 0, NULL, mailprog_cb, NULL);
 
-  nomail = Epplet_create_image(2, 3, 44, 30, NOMAIL_IMAGE);
-  newmail = Epplet_create_image(2, 3, 44, 30, NEWMAIL_IMAGE);
+  nomail = Epplet_create_image(2, 3, 44, 30, nomail_image);
+  newmail = Epplet_create_image(2, 3, 44, 30, newmail_image);
+  seven = Epplet_create_image(2, 3, 44, 30, seven_image);
   Epplet_gadget_show(nomail);
 
   label = Epplet_create_label(6, 34, "- / -", 2);

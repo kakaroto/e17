@@ -9,3 +9,12 @@ Mon Oct 18 18:13:35 PDT 1999
 (Mandrake)
 
 fixed another Makefile.am bug
+
+-------------------------------------------------------------------------------
+
+Tue Oct 19 14:21:41 PDT 1999
+(KainX)
+
+Added 7of9 mode to E-Biff just for raster. :-)
+Also fixed some bugs with the config file stuff.  If you're going to parse a
+config file, *honor* it for pete's sake! =P
