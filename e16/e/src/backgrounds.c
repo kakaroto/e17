@@ -402,37 +402,19 @@ BackgroundSetColorMofifier(Background * bg, ColorModifierClass * cm)
 }
 
 static void
-BgFindImageSize(BgPart * bgp, int rw, int rh, int *pw, int *ph, int setbg)
+BgFindImageSize(BgPart * bgp, int rw, int rh, int *pw, int *ph)
 {
    int                 w, h;
 
    if (bgp->xperc > 0)
-     {
-	w = (rw * bgp->xperc) >> 10;
-     }
+      w = (rw * bgp->xperc) >> 10;
    else
-     {
-	if (!setbg)
-	   w = (imlib_image_get_width() * rw) / VRoot.w;
-	else
-	   w = imlib_image_get_width();
-     }
+      w = (imlib_image_get_width() * rw) / VRoot.w;
 
    if (bgp->yperc > 0)
-     {
-	h = (rh * bgp->yperc) >> 10;
-     }
+      h = (rh * bgp->yperc) >> 10;
    else
-     {
-	if (!setbg)
-	  {
-	     h = (imlib_image_get_height() * rh) / VRoot.h;
-	  }
-	else
-	  {
-	     h = imlib_image_get_height();
-	  }
-     }
+      h = (imlib_image_get_height() * rh) / VRoot.h;
 
    if (w <= 0)
       w = 1;
@@ -559,7 +541,7 @@ BackgroundApply(Background * bg, Window win, int setbg)
 	  {
 	     imlib_context_set_image(bg->bg.im);
 
-	     BgFindImageSize(&(bg->bg), rw, rh, &w, &h, setbg);
+	     BgFindImageSize(&(bg->bg), rw, rh, &w, &h);
 	     x = ((rw - w) * bg->bg.xjust) >> 10;
 	     y = ((rh - h) * bg->bg.yjust) >> 10;
 
@@ -607,7 +589,7 @@ BackgroundApply(Background * bg, Window win, int setbg)
 
 	     imlib_context_set_image(bg->top.im);
 
-	     BgFindImageSize(&(bg->top), rw, rh, &ww, &hh, setbg);
+	     BgFindImageSize(&(bg->top), rw, rh, &ww, &hh);
 	     x = ((rw - ww) * bg->top.xjust) >> 10;
 	     y = ((rh - hh) * bg->top.yjust) >> 10;
 
@@ -1023,7 +1005,7 @@ BackgroundsConfigLoad(FILE * fs)
 			       bg = BackgroundCreate(name, &xclr, bg1, i1, i2,
 						     i3, i4, i5, i6, bg2, j1,
 						     j2, j3, j4, j5);
-			    DeskSetBg(atoi(s2), bg, 0);
+			    DeskAssignBg(atoi(s2), bg);
 			 }
 		    }
 	       }
@@ -1035,7 +1017,7 @@ BackgroundsConfigLoad(FILE * fs)
 			   (Conf.backgrounds.user))
 			 {
 			    if (bg)
-			       DeskSetBg(atoi(s2), bg, 0);
+			       DeskAssignBg(atoi(s2), bg);
 			 }
 		    }
 	       }

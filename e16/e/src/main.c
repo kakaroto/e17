@@ -237,9 +237,6 @@ main(int argc, char **argv)
 
    ModulesSignal(ESIGNAL_INIT, NULL);
 
-   /* retreive stuff from last time we were loaded if we're restarting */
-   EHintsGetMainInfo();
-
    /* Load the theme */
    ThemeConfigLoad();
 

@@ -55,10 +55,10 @@ extern EModule      ModWarplist;
 extern EModule      ModWindowMatch;
 
 const EModule      *p_modules[] = {
-   &ModDesktops,
    &ModAclass,
    &ModBackgrounds,
    &ModButtons,
+   &ModDesktops,
 #if USE_COMPOSITE
    &ModCompMgr,
 #endif

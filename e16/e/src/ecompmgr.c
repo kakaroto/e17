@@ -106,9 +106,7 @@
 #define INV_GEOM    (INV_POS | INV_SIZE)
 #define INV_ALL     (INV_POS | INV_SIZE | INV_OPACITY | INV_SHADOW)
 
-typedef struct _ecmwininfo ECmWinInfo;	/* TBD */
-
-struct _ecmwininfo
+typedef struct
 {
    EObj               *next;	/* Paint order */
    EObj               *prev;	/* Paint order */
@@ -141,8 +139,16 @@ struct _ecmwininfo
    unsigned int        opacity;
 
    unsigned long       damage_sequence;	/* sequence when damage was created */
-};
+} ECmWinInfo;
 
+typedef struct
+{
+   Picture             bgpict;	/* The background picture */
+} ECmDeskInfo;
+
+/*
+ * Configuration
+ */
 #if ENABLE_SHADOWS
 #define ECM_SHADOWS_OFF      0
 #define ECM_SHADOWS_SHARP    1	/* use window alpha for shadow; sharp, but precise */
@@ -159,6 +165,9 @@ static struct
    int                 shadow_radius;
 } Conf_compmgr;
 
+/*
+ * State
+ */
 #define ECM_MODE_OFF    0
 #define ECM_MODE_ROOT   1
 #define ECM_MODE_WINDOW 2
@@ -322,29 +331,23 @@ ECompMgrMoveResizeFix(EObj * eo, int x, int y, int w, int h)
 /*
  * Desktops (move to desktops.c?)
  */
-typedef struct
-{
-   Picture             bgpict;	/* The background picture */
-} EcmDeskInfo;
-
-static EcmDeskInfo  desks[32];
 
 static              Picture
-DeskBackgroundPictureGet(int desk)
+DeskBackgroundPictureGet(Desk * d)
 {
+   ECmDeskInfo        *cmdi = d->cmhook;
    Picture             pict;
    Pixmap              pmap;
    Bool                fill;
    XRenderPictFormat  *pictfmt;
    XRenderPictureAttributes pa;
 
-   pict = desks[desk].bgpict;
-   if (pict != None)
-      return pict;
+   if (cmdi->bgpict != None)
+      return cmdi->bgpict;
 
    fill = False;
-   pmap = BackgroundGetPixmap(DeskGetBackground(desk));
-   D1printf("DeskBackgroundPictureGet: Desk %d: using pixmap %#lx\n", desk,
+   pmap = BackgroundGetPixmap(DeskGetBackground(d->num));
+   D1printf("DeskBackgroundPictureGet: Desk %d: using pixmap %#lx\n", d->num,
 	    pmap);
    if (!pmap)
      {
@@ -369,24 +372,25 @@ DeskBackgroundPictureGet(int desk)
    /* New background, all must be repainted */
    ECompMgrDamageAll();
 
-   desks[desk].bgpict = pict;
+   cmdi->bgpict = pict;
 
    return pict;
 }
 
 static void
-DeskBackgroundPictureFree(int desk)
+DeskBackgroundPictureFree(Desk * d)
 {
+   ECmDeskInfo        *cmdi = d->cmhook;
    Picture             pict;
 
-   pict = desks[desk].bgpict;
+   pict = cmdi->bgpict;
    if (pict == None)
       return;
 
-   XClearArea(disp, DeskGetWin(desk), 0, 0, 0, 0, True);
+   XClearArea(disp, EoGetWin(d), 0, 0, 0, 0, True);
    XRenderFreePicture(disp, pict);
 
-   desks[desk].bgpict = None;
+   cmdi->bgpict = None;
 }
 
 /*
@@ -1655,7 +1659,7 @@ ECompMgrRepaint(void)
    pbuf = rootBuffer;
 
    /* Draw desktop background picture */
-   pict = DeskBackgroundPictureGet(0);
+   pict = DeskBackgroundPictureGet(DeskGet(0));
    D1printf("ECompMgrRepaint desk picture=%#lx\n", pict);
    XFixesSetPictureClipRegion(dpy, pbuf, 0, 0, region);
    XRenderComposite(dpy, PictOpSrc, pict, None, pbuf,
@@ -1751,11 +1755,47 @@ ECompMgrRootExpose(void *prm __UNUSED__, XEvent * ev)
 }
 
 static void
+ECompMgrDeskAdd(int desk)
+{
+   Desk               *d = DeskGet(desk);
+
+   if (!d || d->cmhook)
+      return;
+
+   D1printf("ECompMgrDeskAdd: desk=%d\n", desk);
+
+   d->cmhook = Emalloc(sizeof(ECmDeskInfo));
+   if (!d->cmhook)
+      return;
+
+   ((ECmDeskInfo *) d->cmhook)->bgpict = None;
+}
+
+static void
+ECompMgrDeskDel(int desk)
+{
+   Desk               *d = DeskGet(desk);
+
+   if (!d || !d->cmhook)
+      return;
+
+   D1printf("ECompMgrDeskDel: desk=%d\n", desk);
+
+   DeskBackgroundPictureFree(d);
+   Efree(d->cmhook);
+}
+
+static void
 ECompMgrDeskChanged(int desk)
 {
+   Desk               *d = DeskGet(desk);
+
+   if (!d || !d->cmhook)
+      return;
+
    D1printf("ECompMgrDeskChanged: desk=%d\n", desk);
 
-   DeskBackgroundPictureFree(desk);
+   DeskBackgroundPictureFree(d);
 }
 
 #if ENABLE_SHADOWS
@@ -1864,7 +1904,7 @@ ECompMgrStop(void)
       XRenderFreePicture(disp, rootBuffer);
    rootBuffer = None;
 
-   DeskBackgroundPictureFree(0);
+   DeskBackgroundPictureFree(DeskGet(0));
 
    ECompMgrShadowsInit(ECM_SHADOWS_OFF, 0);
 
@@ -2111,6 +2151,13 @@ ECompMgrSighan(int sig, void *prm)
      case ESIGNAL_INIT:
 	ECompMgrInit();
 	ECompMgrStart();
+	break;
+
+     case ESIGNAL_DESK_ADDED:
+	ECompMgrDeskAdd((int)(prm));
+	break;
+     case ESIGNAL_DESK_REMOVED:
+	ECompMgrDeskDel((int)(prm));
 	break;
 
      case ESIGNAL_BACKGROUND_CHANGE:

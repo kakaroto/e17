@@ -549,6 +549,22 @@ struct _eobj
 #define EoGetShadow(eo)         0
 #endif
 
+typedef struct
+{
+   EObj                o;
+   int                 num;
+   char                viewable;
+   char                dirty_stack;
+   Background         *bg;
+   Button             *tag;
+   int                 current_area_x;
+   int                 current_area_y;
+   long                event_mask;
+#if USE_COMPOSITE
+   void               *cmhook;
+#endif
+} Desk;
+
 typedef struct _constraints
 {
    int                 min, max;
@@ -1357,6 +1373,7 @@ Cursor              ECsrGet(int which);
 void                ECsrApply(int which, Window win);
 
 /* desktops.c */
+Desk               *DeskGet(int desk);
 Window              DeskGetWin(int desk);
 int                 DeskGetX(int desk);
 int                 DeskGetY(int desk);
@@ -1377,6 +1394,7 @@ void                SlideWindowTo(Window win, int fx, int fy, int tx, int ty,
 				  int speed);
 void                DeskRefresh(int num);
 void                DesksRefresh(void);
+void                DeskAssignBg(int desk, Background * bg);
 void                DeskSetBg(int desk, Background * bg, int refresh);
 int                 DesktopAt(int x, int y);
 void                DeskGoto(int num);
@@ -1824,8 +1842,8 @@ void                HintsSetRootInfo(Window win, Pixmap pmap, int color);
 
 void                EHintsSetInfo(const EWin * ewin);
 int                 EHintsGetInfo(EWin * ewin);
-void                EHintsSetMainInfo(void);
-void                EHintsGetMainInfo(void);
+void                EHintsSetDeskInfo(void);
+void                EHintsGetDeskInfo(void);
 void                EHintsSetInfoOnAll(void);
 
 /* icccm.c */

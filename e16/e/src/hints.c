@@ -393,7 +393,7 @@ EHintsGetInfo(EWin * ewin)
 }
 
 void
-EHintsSetMainInfo(void)
+EHintsSetDeskInfo(void)
 {
    Atom                a;
    int                 i, ax, ay, n_desks;
@@ -425,7 +425,7 @@ EHintsSetMainInfo(void)
 }
 
 void
-EHintsGetMainInfo(void)
+EHintsGetDeskInfo(void)
 {
    Atom                a;
    unsigned int       *c;
@@ -473,5 +473,5 @@ EHintsSetInfoOnAll(void)
       if (!EwinIsInternal(lst[i]))
 	 EHintsSetInfo(lst[i]);
 
-   EHintsSetMainInfo();
+   EHintsSetDeskInfo();
 }

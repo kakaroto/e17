@@ -29,19 +29,6 @@
    EnterWindowMask | LeaveWindowMask | PointerMotionMask | ButtonMotionMask | \
    SubstructureNotifyMask | SubstructureRedirectMask | PropertyChangeMask)
 
-typedef struct
-{
-   EObj                o;
-   int                 num;
-   char                viewable;
-   char                dirty_stack;
-   Background         *bg;
-   Button             *tag;
-   int                 current_area_x;
-   int                 current_area_y;
-   long                event_mask;
-} Desk;
-
 #define ENLIGHTENMENT_CONF_NUM_DESKTOPS 32
 
 typedef struct _desktops
@@ -50,6 +37,7 @@ typedef struct _desktops
    int                 previous;
    Desk               *desk[ENLIGHTENMENT_CONF_NUM_DESKTOPS];
    int                 order[ENLIGHTENMENT_CONF_NUM_DESKTOPS];
+   Background         *bg[ENLIGHTENMENT_CONF_NUM_DESKTOPS];
 }
 Desktops;
 
@@ -375,8 +363,37 @@ DeskEventsConfigure(Desk * d, int mode)
    ESelectInput(EoGetWin(d), event_mask);
 }
 
+static void
+DeskConfigure(Desk * d)
+{
+   Background        **lst, *bg;
+   int                 num;
+   unsigned int        rnd;
+
+   DeskControlsCreate(d);
+   DeskControlsShow(d);
+
+   bg = desks.bg[d->num];
+   if (bg)
+      bg = FindItem((char *)bg, 0, LIST_FINDBY_POINTER, LIST_TYPE_BACKGROUND);
+   if (!bg)
+     {
+	lst = (Background **) ListItemType(&num, LIST_TYPE_BACKGROUND);
+	if (lst)
+	  {
+	     rnd = rand();
+	     rnd %= num;
+	     bg = lst[rnd];
+	     Efree(lst);
+	  }
+     }
+   DeskSetBg(d->num, bg, 0);
+
+   ModulesSignal(ESIGNAL_DESK_ADDED, (void *)(d->num));
+}
+
 static Desk        *
-DeskCreate(int desk, int add_controls)
+DeskCreate(int desk, int configure)
 {
    Desk               *d;
    Window              win;
@@ -410,50 +427,34 @@ DeskCreate(int desk, int add_controls)
      }
    EventCallbackRegister(win, 0, DesktopHandleEvents, d);
 
-   if (add_controls)
-     {
-	DeskControlsCreate(d);
-	DeskControlsShow(d);
-     }
-
-   {
-      Background        **lst;
-      int                 num;
-      unsigned int        rnd;
-
-      lst = (Background **) ListItemType(&num, LIST_TYPE_BACKGROUND);
-      if (lst)
-	{
-	   rnd = rand();
-	   rnd %= num;
-	   DeskSetBg(desk, lst[rnd], 0);
-	   Efree(lst);
-	}
-   }
-
    HintsSetRootHints(EoGetWin(d));
 
    /* Set the _XROOT... atoms so apps will find them even before the bg is set */
    HintsSetRootInfo(EoGetWin(d), None, 0);
 
+   if (configure)
+      DeskConfigure(d);
+
    return d;
 }
 
 static void
-DeskDestroy(int desk)
+DeskDestroy(Desk * d)
 {
-   Desk               *d;
    Button            **blst;
    int                 num, i;
 
-   d = _DeskGet(desk);
+   if (d->num <= 0)
+      return;
+
+   ModulesSignal(ESIGNAL_DESK_REMOVED, (void *)(d->num));
 
    EventCallbackUnregister(EoGetWin(d), 0, DesktopHandleEvents, d);
 
    blst = (Button **) ListItemTypeID(&num, LIST_TYPE_BUTTON, 1);
    for (i = 0; i < num; i++)
      {
-	if (ButtonGetDesk(blst[i]) == desk)
+	if (ButtonGetDesk(blst[i]) == d->num)
 	   ButtonDestroy(blst[i]);
      }
    if (blst)
@@ -462,7 +463,7 @@ DeskDestroy(int desk)
    blst = (Button **) ListItemTypeID(&num, LIST_TYPE_BUTTON, 2);
    for (i = 0; i < num; i++)
      {
-	if (ButtonGetDesk(blst[i]) == desk)
+	if (ButtonGetDesk(blst[i]) == d->num)
 	   ButtonDestroy(blst[i]);
      }
    if (blst)
@@ -471,13 +472,12 @@ DeskDestroy(int desk)
    if (d->bg)
       BackgroundDecRefcount(d->bg);
 
-   if (desk > 0)
-      EobjListStackDel(&d->o);
+   EobjListStackDel(&d->o);
 
    EDestroyWindow(EoGetWin(d));
 
+   desks.desk[d->num] = NULL;
    Efree(d);
-   desks.desk[desk] = NULL;
 }
 
 static void
@@ -498,6 +498,15 @@ DeskResize(int desk, int w, int h)
    DeskControlsDestroy(d);
    DeskControlsCreate(d);
    DeskControlsShow(d);
+}
+
+Desk               *
+DeskGet(int desk)
+{
+   if (desk < 0 || desk >= Conf.desks.num)
+      return NULL;
+
+   return _DeskGet(desk);
 }
 
 Window
@@ -600,19 +609,6 @@ DesksSetCurrent(int desk)
    desks.current = desk;
 }
 
-static void
-DesksInit(void)
-{
-   int                 i;
-
-   desks.previous = -1;
-
-   for (i = 0; i < Conf.desks.num; i++)
-      DeskCreate(i, 0);
-
-   HintsSetDesktopConfig();
-}
-
 void
 DesksResize(int w, int h)
 {
@@ -636,7 +632,7 @@ DesksEventsConfigure(int mode)
 static void
 ChangeNumberOfDesktops(int quantity)
 {
-   int                 pnum, i, num;
+   int                 i, num;
    EWin               *const *lst;
 
    if (quantity >= ENLIGHTENMENT_CONF_NUM_DESKTOPS)
@@ -645,36 +641,33 @@ ChangeNumberOfDesktops(int quantity)
    if (quantity <= 0 || quantity == Conf.desks.num)
       return;
 
-   pnum = Conf.desks.num;
-
    for (i = quantity; i < Conf.desks.num; i++)
       DeskLower(i);
 
-   Conf.desks.num = quantity;
-
-   if (Conf.desks.num > pnum)
+   if (quantity > Conf.desks.num)
      {
-	for (i = pnum; i < Conf.desks.num; i++)
+	while (Conf.desks.num < quantity)
 	  {
-	     DeskCreate(i, 1);
-	     ModulesSignal(ESIGNAL_DESK_ADDED, (void *)i);
+	     Conf.desks.num++;
+	     DeskCreate(Conf.desks.num - 1, 1);
 	  }
      }
-   else if (Conf.desks.num < pnum)
+   else if (quantity < Conf.desks.num)
      {
 	lst = EwinListGetAll(&num);
 	for (i = 0; i < num; i++)
 	  {
-	     if (EoGetDesk(lst[i]) >= Conf.desks.num)
-		MoveEwinToDesktop(lst[i], Conf.desks.num - 1);
+	     if (EoGetDesk(lst[i]) >= quantity)
+		MoveEwinToDesktop(lst[i], quantity - 1);
 	  }
 
-	for (i = Conf.desks.num; i < pnum; i++)
+	while (Conf.desks.num > quantity)
 	  {
-	     DeskDestroy(i);
-	     ModulesSignal(ESIGNAL_DESK_REMOVED, (void *)i);
+	     DeskDestroy(_DeskGet(Conf.desks.num - 1));
+	     Conf.desks.num--;
 	  }
      }
+
    if (DesksGetCurrent() >= Conf.desks.num)
       DeskGoto(Conf.desks.num - 1);
 
@@ -890,6 +883,15 @@ DesksRefresh(void)
 	if (d->bg)
 	   DeskSetBg(i, d->bg, 1);
      }
+}
+
+void
+DeskAssignBg(int desk, Background * bg)
+{
+   if (desk < 0 || desk >= ENLIGHTENMENT_CONF_NUM_DESKTOPS)
+      return;
+
+   desks.bg[desk] = bg;
 }
 
 void
@@ -1624,6 +1626,37 @@ doDeskray(EWin * edummy, const char *params)
 }
 #endif
 
+static void
+DesksInit(void)
+{
+   int                 i;
+
+   memset(&desks, 0, sizeof(desks));
+
+   desks.previous = -1;
+
+   for (i = 0; i < Conf.desks.num; i++)
+      DeskCreate(i, 0);
+
+   SetAreaSize(Conf.desks.areas_nx, Conf.desks.areas_ny);
+
+   /* Retreive stuff from last time we were loaded if we're restarting */
+   EHintsGetDeskInfo();
+
+   HintsSetDesktopConfig();
+}
+
+static void
+DesksConfigure(void)
+{
+   int                 i;
+
+   for (i = 0; i < Conf.desks.num; i++)
+      DeskConfigure(_DeskGet(i));
+
+   UncoverDesktop(0);
+}
+
 /*
  * Desktops Module
  */
@@ -1638,13 +1671,7 @@ DesktopsSighan(int sig, void *prm __UNUSED__)
 	break;
 
      case ESIGNAL_CONFIGURE:
-	SetAreaSize(Conf.desks.areas_nx, Conf.desks.areas_ny);
-
-	UncoverDesktop(0);
-
-	/* toss down the dragbar and related */
-	DesksControlsCreate();
-	DesksControlsShow();
+	DesksConfigure();
 	break;
 
      case ESIGNAL_START:
