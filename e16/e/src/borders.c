@@ -1272,13 +1272,12 @@ Adopt(Window win)
    ICCCM_GetInfo(ewin, 0);
    ICCCM_GetColormap(ewin);
    ICCCM_GetShapeInfo(ewin);
-/* HintsGetWindowHints(ewin); */
    ICCCM_GetGeoms(ewin, 0);
+   HintsGetWindowHints(ewin);
    SessionGetInfo(ewin, 0);
    MatchEwinToSM(ewin);
    MatchEwinToSnapInfo(ewin);
    ICCCM_GetEInfo(ewin);
-   HintsGetWindowHints(ewin);
    if (!ewin->border)
       SetEwinBorder(ewin);
 
