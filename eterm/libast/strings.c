@@ -78,6 +78,10 @@ left_str(const char *str, unsigned long cnt)
 {
   char *tmpstr;
 
+  REQUIRE_RVAL(str != NULL, NULL);
+  REQUIRE_RVAL(cnt <= strlen(str), NULL);
+  REQUIRE_RVAL(cnt > 0, NULL);
+
   tmpstr = (char *) MALLOC(cnt + 1);
   strncpy(tmpstr, str, cnt);
   tmpstr[cnt] = 0;
@@ -90,6 +94,13 @@ mid_str(const char *str, unsigned long index, unsigned long cnt)
 {
   char *tmpstr;
   const char *pstr = str;
+  size_t len;
+
+  REQUIRE_RVAL(str != NULL, NULL);
+  len = strlen(str);
+  REQUIRE_RVAL(index < len, NULL);
+  REQUIRE_RVAL(cnt <= len, NULL);
+  REQUIRE_RVAL(cnt > 0, NULL);
 
   tmpstr = (char *) MALLOC(cnt + 1);
   pstr += index;
@@ -104,6 +115,10 @@ right_str(const char *str, unsigned long cnt)
 {
   char *tmpstr;
   const char *pstr = str;
+
+  REQUIRE_RVAL(str != NULL, NULL);
+  REQUIRE_RVAL(cnt <= strlen(str), NULL);
+  REQUIRE_RVAL(cnt > 0, NULL);
 
   tmpstr = (char *) MALLOC(cnt + 1);
   pstr += strlen(str);
@@ -155,11 +170,13 @@ regexp_match_r(register const char *str, register const char *pattern, register 
     *rexp = (regex_t *) MALLOC(sizeof(regex_t));
   }
 
-  if ((result = regcomp(*rexp, pattern, REG_EXTENDED)) != 0) {
-    regerror(result, *rexp, errbuf, 256);
-    fprintf(stderr, "Unable to compile regexp %s -- %s.\n", pattern, errbuf);
-    FREE(*rexp);
-    return (FALSE);
+  if (pattern) {
+    if ((result = regcomp(*rexp, pattern, REG_EXTENDED)) != 0) {
+      regerror(result, *rexp, errbuf, 256);
+      fprintf(stderr, "Unable to compile regexp %s -- %s.\n", pattern, errbuf);
+      FREE(*rexp);
+      return (FALSE);
+    }
   }
 
   if (((result = regexec(*rexp, str, (size_t) 0, (regmatch_t *) NULL, 0))

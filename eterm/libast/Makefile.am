@@ -1,6 +1,7 @@
 # $Id$
 
 AUTOMAKE_OPTIONS = foreign
+SUBDIRS = . test
 
 bin_SCRIPTS = libast-config
 lib_LTLIBRARIES = libast.la
@@ -13,3 +14,8 @@ LIBS = -lm
 libast_la_LDFLAGS = -version-info 1:0:0
 
 EXTRA_DIST = README
+
+test: all
+	cd test && $(MAKE) test
+
+.PHONY: test

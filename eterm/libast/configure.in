@@ -200,7 +200,7 @@ basedir=.
 
 AM_CONFIG_HEADER(config.h)
 
-AC_OUTPUT(Makefile libast-config libast.spec)
+AC_OUTPUT(Makefile test/Makefile libast-config libast.spec)
 test -f libast-config && chmod 755 libast-config
 
 echo "

@@ -21,35 +21,14 @@
  * CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 
-static const char cvs_ident[] = "$Id$";
+#ifndef _LIBAST_TEST_H_
+#  define _LIBAST_TEST_H_
 
-#ifdef HAVE_CONFIG_H
-# include <config.h>
+#  define TEST_BEGIN(s)                        do {tnum = 1; printf("Testing " s "...");} while (0)
+#  define TEST_PASS()                          printf("passed (%hu).\n", tnum - 1)
+#  define TEST_FAIL()                          do {printf("failed (%hu).\n", tnum); return 1;} while (0)
+#  define TEST_FAIL_IF(t)                      do {if (t) {TEST_FAIL();} tnum++;} while (0)
+#  define TEST_EXPECT(t)                       do {if (t) {TEST_PASS();} else {TEST_FAIL();}} while (0)
+#  define TEST_PASSED(s)                       printf("All " s " tests passed.\n\n"); return 0;
+
 #endif
-
-#include <libast_internal.h>
-
-int
-libast_temp_file(char *template, size_t len)
-{
-  char buff[256];
-  int fd;
-
-  if (getenv("TMPDIR")) {
-    snprintf(buff, sizeof(buff), "%s/%sXXXXXX", getenv("TMPDIR"), template);
-  } else if (getenv("TMP")) {
-    snprintf(buff, sizeof(buff), "%s/%sXXXXXX", getenv("TMP"), template);
-  } else {
-    snprintf(buff, sizeof(buff), "/tmp/%sXXXXXX", template);
-  }
-  fd = mkstemp(buff);
-  if ((fd < 0) || fchmod(fd, (S_IRUSR | S_IWUSR))) {
-    return (-1);
-  }
-
-  if (len) {
-    strncpy(template, buff, len);
-    template[len - 1] = 0;
-  }
-  return (fd);
-}
