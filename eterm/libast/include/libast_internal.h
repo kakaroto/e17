@@ -35,9 +35,6 @@
 # ifndef _BSD_SOURCE
 #  define _BSD_SOURCE
 # endif
-# ifndef inline
-#  define inline __inline__
-# endif
 #endif
 
 #include "config.h"
@@ -59,8 +56,11 @@
 
 /* Macros for specifying the classname variables for each class type.  Each subclass of
    spif_obj_t must define this variable using these macros. */
-#define SPIF_DECL_CNVAR(type)        "!spif_" #type "_t!"
-#define SPIF_DECL_CLASSNAME(type)    spif_classname_t spif_ ## type ## _classname = SPIF_DECL_CNVAR(type)
+#define SPIF_DECL_CNVALUE(type)      "!spif_" #type "_t!"
+#define SPIF_DECL_CLASSNAME(type)    spif_classname_t spif_ ## type ## _classname = SPIF_DECL_CNVALUE(type)
+
+/* The declaration of an interface class. */
+#define SPIF_DECL_IFCLASS(if, type)  spif_const_ifclass_t spif_ifclass_ ## if ## _ ## type
 
 
 /******************************** MSGS GOOP ***********************************/

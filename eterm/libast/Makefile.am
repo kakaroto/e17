@@ -10,4 +10,7 @@ EXTRA_DIST = README
 test: all
 	cd test && $(MAKE) test
 
+perf: all
+	cd test && $(MAKE) perf
+
 .PHONY: test

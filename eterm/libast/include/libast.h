@@ -35,9 +35,6 @@
 # ifndef _BSD_SOURCE
 #  define _BSD_SOURCE
 # endif
-# ifndef inline
-#  define inline __inline__
-# endif
 #endif
 
 #include <stdio.h>
@@ -72,6 +69,7 @@
 
 #include <libast/types.h>
 #include <libast/obj.h>
+#include <libast/if.h>
 #include <libast/str.h>
 #include <libast/tok.h>
 

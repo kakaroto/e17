@@ -138,3 +138,8 @@ Mon Feb 18 21:54:25 2002                        Michael Jennings (mej)
 
 Mmmmm...reusability. :-)
 ----------------------------------------------------------------------
+Sun Mar  3 01:44:51 2002                        Michael Jennings (mej)
+
+Added precision to the profiling stuff, and threw in the beginnings of
+support for interface classes.
+----------------------------------------------------------------------
