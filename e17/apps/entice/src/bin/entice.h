@@ -66,5 +66,7 @@ void entice_flip_vertical(void);
 void entice_flip_horizontal(void);
 
 void entice_preview_thumb(Evas_Object * o);
+void entice_delete_current(void);
+void entice_remove_current(void);
 
 #endif

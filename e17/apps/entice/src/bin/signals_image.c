@@ -10,6 +10,7 @@ void
 _entice_delete_current(void *data, Evas_Object * o, const char *emission,
                        const char *source)
 {
+   entice_delete_current();
    return;
    data = NULL;
    o = NULL;
@@ -22,6 +23,7 @@ void
 _entice_remove_current(void *data, Evas_Object * o, const char *emission,
                        const char *source)
 {
+   entice_remove_current();
    return;
    data = NULL;
    o = NULL;

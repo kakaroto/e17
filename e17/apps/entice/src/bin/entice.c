@@ -362,12 +362,39 @@ entice_file_add_job_cb(void *data)
    }
 }
 
+void
+entice_delete_current(void)
+{
+   if (entice && entice->current)
+   {
+      int result = 0;
+
+      result = entice_file_delete(entice_image_file_get(entice->current));
+
+      if (!result)
+         edje_object_signal_emit(entice->edje, "EnticeImageNext", "");
+   }
+}
+void
+entice_remove_current(void)
+{
+   if (entice && entice->current)
+   {
+      int result = 0;
+
+      result = entice_file_remove(entice_image_file_get(entice->current));
+      if (!result)
+         edje_object_signal_emit(entice->edje, "EnticeImageNext", "");
+   }
+
+}
+
 /**
- * entice_fil_del - delete the file from our image list
+ * entice_file_remove - remove the file from our image list
  * @file - the filename we want to nuke
  */
 int
-entice_file_del(const char *file)
+entice_file_remove(const char *file)
 {
    int result = 0;
    Evas_Object *o = NULL;
@@ -376,63 +403,52 @@ entice_file_del(const char *file)
    if (file)
    {
       snprintf(buf, PATH_MAX, "%s", file);
-      if ((ptr = realpath(buf, path)))
+      if ((o = evas_hash_find(entice->thumb.hash, buf)))
       {
-         if ((o = evas_hash_find(entice->thumb.hash, path)))
-         {
-            entice->thumb.list = evas_list_remove(entice->thumb.list, o);
-            entice->thumb.hash = evas_hash_del(entice->thumb.hash, path, o);
-            /* FIXME container_vomit(o); */
+         entice->thumb.list = evas_list_remove(entice->thumb.list, o);
+         entice->thumb.hash = evas_hash_del(entice->thumb.hash, buf, o);
+         e_container_element_remove(entice->container, o);
+         evas_object_del(o);
+         /* FIXME container_vomit(o); */
 #if 0
-            e_thumb_free(o);
+         e_thumb_free(o);
 #endif
-         }
-         else
-            result = 1;
       }
       else
-         result = 2;
+         result = 1;
    }
    else
-      result = 3;
+      result = 2;
    return (result);
 }
 
 /**
- * entice_file_del_from_fs - delete the file from our list, and off disk
+ * entice_file_delete - delete the file from our list, and off disk
  * @file - the filename of the image we wanna nuke
  */
 int
-entice_file_del_from_fs(const char *file)
+entice_file_delete(const char *file)
 {
    int result = 0;
    Evas_Object *o = NULL;
-   char buf[PATH_MAX], path[PATH_MAX], *ptr = NULL;
+   char buf[PATH_MAX];
 
    if (file)
    {
       snprintf(buf, PATH_MAX, "%s", file);
-      if ((ptr = realpath(buf, path)))
+      if ((o = evas_hash_find(entice->thumb.hash, buf)))
       {
-         if ((o = evas_hash_find(entice->thumb.hash, path)))
-         {
-            entice->thumb.list = evas_list_remove(entice->thumb.list, o);
-            entice->thumb.hash = evas_hash_del(entice->thumb.hash, path, o);
-            /* FIXME container_vomit(o); */
-#if 0
-            e_thumb_free(o);
-            unlink(path);
-
-#endif
-         }
-         else
-            result = 1;
+         entice->thumb.list = evas_list_remove(entice->thumb.list, o);
+         entice->thumb.hash = evas_hash_del(entice->thumb.hash, buf, o);
+         e_container_element_remove(entice->container, o);
+         evas_object_del(o);
+         unlink(buf);
       }
       else
-         result = 2;
+         result = 1;
    }
    else
-      result = 3;
+      result = 2;
    return (result);
 
 }

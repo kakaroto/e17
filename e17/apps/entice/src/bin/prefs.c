@@ -99,33 +99,39 @@ entice_config_engine_get(void)
 void
 entice_config_geometry_get(int *x, int *y, int *w, int *h)
 {
-    if(econfig)
-    {
-	if(x) *x = econfig->x;
-	if(y) *y = econfig->y;
-	if(w) *w = econfig->w;
-	if(h) *h = econfig->h;
-    }
+   if (econfig)
+   {
+      if (x)
+         *x = econfig->x;
+      if (y)
+         *y = econfig->y;
+      if (w)
+         *w = econfig->w;
+      if (h)
+         *h = econfig->h;
+   }
 }
 void
 entice_config_geometry_set(int x, int y, int w, int h)
 {
-    if(econfig)
-    {
-	char file[PATH_MAX];
-	econfig->x = x;
-	econfig->y = y;
-	econfig->w = w;
-	econfig->h = h;
-	
-	snprintf(file, PATH_MAX, "%s/.entice.db", getenv("HOME"));
-	E_DB_INT_SET(file, "/entice/x", x)
-	E_DB_INT_SET(file, "/entice/y", y)
-	E_DB_INT_SET(file, "/entice/w", w)
-	E_DB_INT_SET(file, "/entice/h", h)
-	e_db_flush();
-    }
+   if (econfig)
+   {
+      char file[PATH_MAX];
+
+      econfig->x = x;
+      econfig->y = y;
+      econfig->w = w;
+      econfig->h = h;
+
+      snprintf(file, PATH_MAX, "%s/.entice.db", getenv("HOME"));
+      E_DB_INT_SET(file, "/entice/x", x);
+      E_DB_INT_SET(file, "/entice/y", y);
+      E_DB_INT_SET(file, "/entice/w", w);
+      E_DB_INT_SET(file, "/entice/h", h);
+      e_db_flush();
+   }
 }
+
 /**
  * entice_config_new - allocate a new 0'd out Entice_Config
  * Returns a valid 0'd out Entice_Config
@@ -228,13 +234,13 @@ entice_config_init(void)
                 (db, "/entice/cache/image", &econfig->cache.image))
                econfig->cache.image = 4;
             if (!e_db_int_get(db, "/entice/x", &econfig->x))
-		econfig->x = 0;
+               econfig->x = 0;
             if (!e_db_int_get(db, "/entice/y", &econfig->y))
-		econfig->y = 0;
+               econfig->y = 0;
             if (!e_db_int_get(db, "/entice/w", &econfig->w))
-		econfig->y = 320;
+               econfig->y = 320;
             if (!e_db_int_get(db, "/entice/h", &econfig->h))
-		econfig->y = 240;
+               econfig->y = 240;
 
             e_db_close(db);
          }

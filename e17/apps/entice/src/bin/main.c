@@ -45,6 +45,7 @@ static void
 win_resize_cb(Ecore_Evas * ee)
 {
    int x, y, w, h;
+
    if (ee)
    {
       ecore_evas_geometry_get(ee, &x, &y, &w, &h);
@@ -61,6 +62,7 @@ static void
 win_move_cb(Ecore_Evas * ee)
 {
    int x, y, w, h;
+
    if (ee)
    {
       ecore_evas_geometry_get(ee, &x, &y, &w, &h);
@@ -76,6 +78,7 @@ static void
 win_del_cb(Ecore_Evas * ee)
 {
    int x, y, w, h;
+
    if (ee)
    {
       ecore_evas_geometry_get(ee, &x, &y, &w, &h);
