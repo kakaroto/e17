@@ -2,9 +2,6 @@
 # CVS Commits List Messages
 # Copyright (C) 2000 Carsten Haitzler, Geoff Harrison and various contributors
 #
-# This code also contains pieces swiped from David Hampton <hampton@cisco.com>
-# and Greg A. Woods <woods@web.net>
-#
 # For questions, concerns, please consult the e-develop mailing list.
 # please see:
 # http://lists.sourceforge.net/mailman/listinfo/enlightenment-devel
@@ -59,6 +56,11 @@ foreach(@filesets) {
 
 $basename = $paths[0];
 $modulename = $paths[1];
+if(($modulename eq "apps") || ($modulename eq "libs")) {
+	if($paths[2]) {
+		$modulename .= "/$paths[2]";
+	}
+}
 
 $modulename = $basename if(!$modulename);
 
