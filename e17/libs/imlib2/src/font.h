@@ -158,6 +158,7 @@ TT_Raster_Map *__imlib_create_font_raster(int width, int height);
 void           __imlib_destroy_font_raster(TT_Raster_Map * rmap);
 void           __imlib_add_font_path(const char *path);
 void           __imlib_del_font_path(const char *path);
+int            __imlib_font_path_exists(const char *path);
 char         **__imlib_list_font_path(int *num_ret);
 ImlibFont     *__imlib_find_cached_font(const char *ttffontname, const char *xfontname, int mode);
 ImlibFont     *__imlib_load_font(const char *fontname);

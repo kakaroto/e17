@@ -2605,8 +2605,8 @@ imlib_add_path_to_font_path(const char *path)
 {
    if (!ctx) ctx = imlib_context_new();
    CHECK_PARAM_POINTER("imlib_add_path_to_font_path", "path", path);
-   __imlib_del_font_path(path);
-   __imlib_add_font_path(path);
+   if (!__imlib_font_path_exists(path))
+     __imlib_add_font_path(path);
 }
 
 void

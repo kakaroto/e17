@@ -194,6 +194,7 @@ __imlib_del_font_path(const char *path)
      {
 	if (!strcmp(path, fpath[i]))
 	  {
+	     if (fpath[i]) free(fpath[i]);
 	     fpath_num--;
 	     for (j = i; j < fpath_num; j++)
 		fpath[j] = fpath[j + 1];
@@ -206,6 +207,18 @@ __imlib_del_font_path(const char *path)
 	       }
 	  }
      }
+}
+
+int
+__imlib_font_path_exists(const char *path)
+{
+   int i;
+   
+   for (i = 0; i < fpath_num; i++)
+     {
+	if (!strcmp(path, fpath[i])) return 1;
+     }
+   return 0;
 }
 
 char **
