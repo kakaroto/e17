@@ -36,25 +36,52 @@
 	      <property name="visible">True</property>
 
 	      <child>
-		<widget class="GtkMenuItem" id="file1">
+		<widget class="GtkMenuItem" id="menu_file">
 		  <property name="visible">True</property>
 		  <property name="label" translatable="yes">File</property>
 		  <property name="use_underline">True</property>
 
 		  <child>
-		    <widget class="GtkMenu" id="file1_menu">
+		    <widget class="GtkMenu" id="menu_file_menu">
 
 		      <child>
-			<widget class="GtkImageMenuItem" id="save1">
+			<widget class="GtkImageMenuItem" id="menu_save">
 			  <property name="visible">True</property>
 			  <property name="label" translatable="yes">Save</property>
 			  <property name="use_underline">True</property>
-			  <signal name="activate" handler="on_save1_activate" object="treeview_menu" last_modification_time="Sat, 29 May 2004 21:36:30 GMT"/>
+			  <signal name="activate" handler="on_menu_save_activate" last_modification_time="Wed, 28 Jul 2004 21:57:23 GMT"/>
 
 			  <child internal-child="image">
-			    <widget class="GtkImage" id="image2">
+			    <widget class="GtkImage" id="image3">
 			      <property name="visible">True</property>
 			      <property name="stock">gtk-save</property>
+			      <property name="icon_size">1</property>
+			      <property name="xalign">0.5</property>
+			      <property name="yalign">0.5</property>
+			      <property name="xpad">0</property>
+			      <property name="ypad">0</property>
+			    </widget>
+			  </child>
+			</widget>
+		      </child>
+
+		      <child>
+			<widget class="GtkSeparatorMenuItem" id="strip1">
+			  <property name="visible">True</property>
+			</widget>
+		      </child>
+
+		      <child>
+			<widget class="GtkImageMenuItem" id="menu_quit">
+			  <property name="visible">True</property>
+			  <property name="label" translatable="yes">Quit</property>
+			  <property name="use_underline">True</property>
+			  <signal name="activate" handler="on_menu_quit_activate" last_modification_time="Wed, 28 Jul 2004 21:57:23 GMT"/>
+
+			  <child internal-child="image">
+			    <widget class="GtkImage" id="image4">
+			      <property name="visible">True</property>
+			      <property name="stock">gtk-quit</property>
 			      <property name="icon_size">1</property>
 			      <property name="xalign">0.5</property>
 			      <property name="yalign">0.5</property>

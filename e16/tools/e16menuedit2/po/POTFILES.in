@@ -12,5 +12,13 @@ src/e16menuedit2.h
 src/file.c
 src/file.h
 src/nls.h
+src/icon_chooser.c
+src/icon_chooser.h
+src/e16menu.c
+src/e16menu.h
+src/treeview.c
+src/treeview.h
+src/toolbar.c
+src/toolbar.h
 e16menuedit2.glade
 

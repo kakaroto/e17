@@ -19,26 +19,36 @@
  * IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN
  * CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  *
- *  File: e16menuedit2.h
+ *  File: treeview.h
  *  Created by: Andreas Volz <linux@brachttal.net>
  *
  */
-
-#ifndef _E16MENUEDIT_H
-#define _E16MENUEDIT_H
+ 
+#ifndef _TREEVIEW_H
+#define _TREEVIEW_H
 
 #include <gtk/gtk.h>
-#include <glade/glade.h>
-#include <stdio.h>
 #ifdef HAVE_CONFIG_H
 #include <config.h>
 #endif
-#include "nls.h"
 
-#define to_utf8(String) g_locale_to_utf8(String,-1,0,0,0)
-#define from_utf8(String) g_locale_from_utf8(String,-1,0,0,0)
+void create_tree_model (GtkWidget *treeview_menu);
+void new_table_row (GtkWidget *treeview_menu);
+void delete_table_row (GtkWidget *treeview_menu);
+void save_table_to_menu (GtkWidget *treeview_menu);
 
-#define APP_HOME ".e16menuedit2"
-#define ICON_DIR "icons"
+enum tree_columns
+{
+  COL_DESCRIPTION,
+  COL_ICON,
+  COL_ICONNAME,
+  COL_PARAMS,
+  TREE_COLUMNS_SIZE
+};
 
-#endif /* _E16MENUEDIT_H */
+enum
+{
+  TARGET_GTK_TREE_MODEL_ROW
+};
+
+#endif /* _TREEVIEW_H */

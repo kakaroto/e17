@@ -10,3 +10,6 @@ ltmain.sh
 m4
 stamp-h1
 e16menuedit2-*.tar.gz
+intltool-*
+mkinstalldirs
+stamp-h*

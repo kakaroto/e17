@@ -78,7 +78,15 @@ module.source.files=\
 	e16menuedit2.h\
 	file.c\
 	file.h\
-	nls.h
+	nls.h\
+	icon_chooser.c\
+	icon_chooser.h\
+	e16menu.c\
+	e16menu.h\
+	treeview.c\
+	treeview.h\
+	toolbar.c\
+	toolbar.h
 
 module.pixmap.name=pixmaps
 module.pixmap.type=

@@ -1,6 +1,14 @@
 #ifndef _FILE_H
 #define _FILE_H
 
+#include <stdio.h>
+#include <stdlib.h>
+#include <unistd.h>
+#include <string.h>
+#include <ctype.h>
+#include <pwd.h>
+#include <sys/types.h>
+#include <glib.h>
 #include <sys/stat.h>
 #include <sys/types.h>
 

@@ -19,26 +19,17 @@
  * IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN
  * CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  *
- *  File: e16menuedit2.h
+ *  File: icon_chooser.h
  *  Created by: Andreas Volz <linux@brachttal.net>
  *
  */
 
-#ifndef _E16MENUEDIT_H
-#define _E16MENUEDIT_H
+#ifndef _ICON_CHOOSER_H
+#define _ICON_CHOOSER_H
 
 #include <gtk/gtk.h>
-#include <glade/glade.h>
-#include <stdio.h>
-#ifdef HAVE_CONFIG_H
-#include <config.h>
-#endif
-#include "nls.h"
 
-#define to_utf8(String) g_locale_to_utf8(String,-1,0,0,0)
-#define from_utf8(String) g_locale_from_utf8(String,-1,0,0,0)
+void open_icon_chooser (GtkWidget *treeview_menu);
+void update_preview_cb (GtkFileChooser *file_chooser, gpointer data);
 
-#define APP_HOME ".e16menuedit2"
-#define ICON_DIR "icons"
-
-#endif /* _E16MENUEDIT_H */
+#endif /* _ICON_CHOOSER_H */

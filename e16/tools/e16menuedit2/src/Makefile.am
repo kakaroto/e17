@@ -20,7 +20,15 @@ e16menuedit2_SOURCES = \
 	e16menuedit2.h\
 	file.c\
 	file.h\
-	nls.h
+	nls.h\
+	icon_chooser.c\
+	icon_chooser.h\
+	e16menu.c\
+	e16menu.h\
+	treeview.c\
+	treeview.h\
+	toolbar.c\
+	toolbar.h
 
 e16menuedit2_LDFLAGS = 
 

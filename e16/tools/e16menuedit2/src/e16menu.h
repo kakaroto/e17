@@ -19,26 +19,27 @@
  * IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN
  * CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  *
- *  File: e16menuedit2.h
+ *  File: e16menu.h
  *  Created by: Andreas Volz <linux@brachttal.net>
  *
  */
-
-#ifndef _E16MENUEDIT_H
-#define _E16MENUEDIT_H
+ 
+#ifndef _E16MENU_H
+#define _E16MENU_H
 
 #include <gtk/gtk.h>
-#include <glade/glade.h>
-#include <stdio.h>
 #ifdef HAVE_CONFIG_H
 #include <config.h>
 #endif
-#include "nls.h"
 
-#define to_utf8(String) g_locale_to_utf8(String,-1,0,0,0)
-#define from_utf8(String) g_locale_from_utf8(String,-1,0,0,0)
+#define MAX_RECURSION 128
 
-#define APP_HOME ".e16menuedit2"
-#define ICON_DIR "icons"
+GtkTreeModel *load_menus_from_disk (void);
+void load_sub_menu_from_disk (char *file_to_load, GtkTreeStore *store,
+                              GtkTreeIter *iter);
+gboolean table_save_func (GtkTreeModel *model, GtkTreePath *path,
+                          GtkTreeIter *iter, gpointer user_data);
 
-#endif /* _E16MENUEDIT_H */
+gchar *menu_file[MAX_RECURSION];
+
+#endif /* _E16MENU_H */
