@@ -376,8 +376,8 @@ efsd_listdir(EfsdConnection *ec, char *dirname,
       op = va_arg(ap, EfsdOption*);
 
       /* sanity check -- pass only options that make sense. */
-      if ((op->type == EFSD_OP_LS_GET_STAT) ||
-	  (op->type == EFSD_OP_LS_GET_FILE) ||
+      if ((op->type == EFSD_OP_LS_GET_STAT)     ||
+	  (op->type == EFSD_OP_LS_GET_FILETYPE) ||
 	  (op->type == EFSD_OP_LS_GET_META))
 	{
 	  ops = realloc(ops, sizeof(EfsdOption) * ++j);
@@ -668,8 +668,8 @@ efsd_start_monitor(EfsdConnection *ec, char *filename, int num_options, ...)
       op = va_arg(ap, EfsdOption*);
 
       /* sanity check -- pass only options that make sense. */
-      if ((op->type == EFSD_OP_LS_GET_STAT) ||
-	  (op->type == EFSD_OP_LS_GET_FILE) ||
+      if ((op->type == EFSD_OP_LS_GET_STAT)     ||
+	  (op->type == EFSD_OP_LS_GET_FILETYPE) ||
 	  (op->type == EFSD_OP_LS_GET_META))
 	{
 	  ops = realloc(ops, sizeof(EfsdOption) * ++j);
@@ -721,7 +721,7 @@ EfsdCmdId
 efsd_get_filetype(EfsdConnection *ec, char *filename)
 {
   D_ENTER;
-  D_RETURN_(file_cmd(ec, EFSD_CMD_GETFILE, filename, 0, NULL));
+  D_RETURN_(file_cmd(ec, EFSD_CMD_GETFILETYPE, filename, 0, NULL));
 }
 
 

@@ -7,7 +7,7 @@ MAINTAINERCLEANFILES = Makefile.in Makefile
 
 all-local: magic.db pattern.db
 
-magic.db: magic.txt
+magic.db: magic.txt magic2db
 	chmod 755 magic2db
 	if test -e magic.db; then \
 	  rm -f magic.db; \

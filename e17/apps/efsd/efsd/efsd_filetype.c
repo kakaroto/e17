@@ -353,7 +353,7 @@ magic_new(char *key, char *params)
       fix_byteorder(em);
       break;
     case EFSD_MAGIC_STRING:
-      em->value = (char*)e_db_bytestr_get(magic_db, key, &em->value_len);
+      em->value = (char*)e_db_data_get(magic_db, key, &em->value_len);
       break;
     default:
     }
@@ -1237,6 +1237,8 @@ efsd_filetype_get(char *filename)
 	    }
 	}
     }
+
+  /* Filetype is not in cache or file has been modified, re-test: */
   
   result = magic_test_fs(filename, st);
   if (result)
@@ -1275,14 +1277,12 @@ efsd_filetype_get(char *filename)
   D(("magic: file pattern check failed.\n"));
   
   result = "document/unknown";
-  if (result)
-    {
-      if (cached_result)
-	filetype_cache_update(cached_result, st->st_mtime, result);
-      else
-	filetype_cache_insert(filename, st->st_mtime, result);
-      D_RETURN_(result);
-    }
+
+  if (cached_result)
+    filetype_cache_update(cached_result, st->st_mtime, result);
+  else
+    filetype_cache_insert(filename, st->st_mtime, result);
+  D_RETURN_(result);
 
   D_RETURN_(result);
 }

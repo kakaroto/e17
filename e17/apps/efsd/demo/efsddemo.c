@@ -289,7 +289,7 @@ void handle_efsd_event(EfsdEvent *ee)
 	      printf("target is %s\n", (char*)ee->efsd_reply_event.data);
 	    }
 	  break;
-	case EFSD_CMD_GETFILE:
+	case EFSD_CMD_GETFILETYPE:
 	  printf("Getfile event %i\n", 
 		 ee->efsd_reply_event.command.efsd_file_cmd.id);
 	  if (ee->efsd_reply_event.status == SUCCESS)

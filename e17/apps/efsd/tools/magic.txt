@@ -16,7 +16,7 @@
 
 # Basic recognition of Digital UNIX core dumps - Mike Bremford <mike@opac.bl.uk>
 #
-0	string		Core\001	object/core-alpha-COFF
+0	string		Core\001	object/core/alpha-COFF
 
 #------------------------------------------------------------------------------
 # amigaos:  file(1) magic for AmigaOS binary formats:
@@ -158,10 +158,10 @@
 # are defined as "short"s; I think all the new formats are
 # character-header formats and thus are strings, not numbers.
 0	short		070707		archive/cpio
-0	short		0143561		archive/cpio byte swapped
-0	string		070707		archive/cpio ascii (pre-SVR4 or odc)
-0	string		070701		archive/cpio ascii (SVR4 no CRC)
-0	string		070702		archive/cpio ascii (SVR4 CRC)
+0	short		0143561		archive/cpio/byte swapped
+0	string		070707		archive/cpio/ascii (pre-SVR4 or odc)
+0	string		070701		archive/cpio/ascii (SVR4 no CRC)
+0	string		070702		archive/cpio/ascii (SVR4 CRC)
 
 # Debian package (needs to go before regular portable archives)
 #
@@ -525,9 +525,9 @@
 # GDBM magic numbers
 #  Will be maintained as part of the GDBM distribution in the future.
 #  <downsj@teeny.org>
-0	belong	0x13579ace	db/GNU dbm 1.x ndbm big endian
-0	lelong	0x13579ace	db/GNU dbm 1.x ndbm little endian
-0	string	GDBM		db/GNU dbm 2.x
+0	belong	0x13579ace	db/GNU dbm/1.x/big endian
+0	lelong	0x13579ace	db/GNU dbm/1.x/little endian
+0	string	GDBM		db/GNU dbm/2.x
 #
 0	belong	0x061561	db/Berkeley DB
 >4	belong	>2		1.86
@@ -535,16 +535,16 @@
 >8	belong	4321		Hash Big Endian
 >8	belong	1234		Hash Little Endian
 #
-0	belong	0x053162	db/Berkeley DB 1.85-1.86 Btree-Big Endian
-0	lelong	0x053162	db/Berkeley DB 1.85-1.86 Btree-Little Endian
+0	belong	0x053162	db/Berkeley DB/1.85/Btree/Big Endian
+0	lelong	0x053162	db/Berkeley DB/1.85/Btree/Little Endian
 #
 12	belong	0x061561	db/Berkeley DB 2.X Hash-Big Endian
 #
 # DB2.X formats from Khimenko Victor <khim@sch57.msk.ru>
 #
-12	lelong	0x061561	db/Berkeley DB 2.X Hash-Little Endian
-12	belong	0x053162	Berkeley DB 2.X Btree-Big Endian
-12	lelong	0x053162	Berkeley DB 2.X Btree-Little Endian
+12	lelong	0x061561	db/Berkeley DB/2.X/Hash/Little Endian
+12	belong	0x053162	db/Berkeley DB/2.X/Btree/Big Endian
+12	lelong	0x053162	db/Berkeley DB/2.X/Btree/Little Endian
 
 #------------------------------------------------------------------------------
 # diff:  file(1) magic for diff(1) output
@@ -580,9 +580,7 @@
 >>16	leshort		3		shared object,
 # Core handling from Peter Tobias <tobias@server.et-inf.fho-emden.de>
 # corrections by Christian 'Dr. Disk' Hechelmann <drdisk@ds9.au.s.shuttle.de>
->>16	leshort		4		core file
->>>(0x38+0xcc) string	>\0		of '%s'
->>>(0x38+0x10) lelong	>0		(signal %d),
+>>16	leshort		4		core
 >>16	leshort		&0xff00		processor-specific,
 >>18	leshort		0		no machine,
 >>18	leshort		1		AT&T WE32100 - invalid byte order,
@@ -647,9 +645,7 @@
 >>16	beshort		1		relocatable,
 >>16	beshort		2		executable,
 >>16	beshort		3		shared object,
->>16	beshort		4		core file,
->>>(0x38+0xcc) string	>\0		of '%s'
->>>(0x38+0x10) belong	>0		(signal %d),
+>>16	beshort		4		core
 >>16	beshort		&0xff00		processor-specific,
 >>18	beshort		0		no machine,
 >>18	beshort		1		AT&T WE32100,
@@ -837,39 +833,39 @@
 #
 0	lelong&0377777777	041400407	
 >20	lelong			<4096
->>3	byte&0xC0		&0x80		binary/FreeBSD-i386-shared library
->>3	byte&0xC0		0x40		binary/FreeBSD-i386-PIC object
->>3	byte&0xC0		0x00		binary/FreeBSD-i386-object
+>>3	byte&0xC0		&0x80		binary/FreeBSD/i386/shared library
+>>3	byte&0xC0		0x40		binary/FreeBSD/i386/PIC object
+>>3	byte&0xC0		0x00		binary/FreeBSD/i386/object
 >20	lelong			>4095
->>3	byte&0x80		0x80		executable/FreeBSD-i386-dynamically linked
->>3	byte&0x80		0x00		executable/FreeBSD-i386
+>>3	byte&0x80		0x80		executable/FreeBSD/i386/dynamically linked
+>>3	byte&0x80		0x00		executable/FreeBSD/i386
 
 0	lelong&0377777777	041400410	
 >20	lelong			<4096
->>3	byte&0xC0		&0x80		binary/FreeBSD-i386-shared library
->>3	byte&0xC0		0x40		binary/FreeBSD-i386-PIC object
->>3	byte&0xC0		0x00		binary/FreeBSD-i386-object
+>>3	byte&0xC0		&0x80		binary/FreeBSD/i386/shared library
+>>3	byte&0xC0		0x40		binary/FreeBSD/i386/PIC object
+>>3	byte&0xC0		0x00		binary/FreeBSD/i386/object
 >20	lelong			>4095
->>3	byte&0x80		0x80		executable/FreeBSD-i386-dynamically linked
->>3	byte&0x80		0x00		executable/FreeBSD-i386
+>>3	byte&0x80		0x80		executable/FreeBSD/i386/dynamically linked
+>>3	byte&0x80		0x00		executable/FreeBSD/i386
 
 0	lelong&0377777777	041400413	
 >20	lelong			<4096
->>3	byte&0xC0		&0x80		binary/FreeBSD-i386-shared library
->>3	byte&0xC0		0x40		binary/FreeBSD-i386-PIC object
->>3	byte&0xC0		0x00		binary/FreeBSD-i386-object
+>>3	byte&0xC0		&0x80		binary/FreeBSD/i386/shared library
+>>3	byte&0xC0		0x40		binary/FreeBSD/i386/PIC object
+>>3	byte&0xC0		0x00		binary/FreeBSD/i386/object
 >20	lelong			>4095
->>3	byte&0x80		0x80		executable/FreeBSD-i386-dynamically linked
->>3	byte&0x80		0x00		executable/FreeBSD-i386-executable
+>>3	byte&0x80		0x80		executable/FreeBSD/i386/dynamically linked
+>>3	byte&0x80		0x00		executable/FreeBSD/i386/executable
 
 0	lelong&0377777777	041400314	
 >20	lelong			<4096
->>3	byte&0xC0		&0x80		binary/FreeBSD-i386-shared library
->>3	byte&0xC0		0x40		binary/FreeBSD-i386-PIC object
->>3	byte&0xC0		0x00		binary/FreeBSD-i386-object
+>>3	byte&0xC0		&0x80		binary/FreeBSD/i386/shared library
+>>3	byte&0xC0		0x40		binary/FreeBSD/i386/PIC object
+>>3	byte&0xC0		0x00		binary/FreeBSD/i386/object
 >20	lelong			>4095
->>3	byte&0x80		0x80		executable/FreeBSD-i386-dynamically linked
->>3	byte&0x80		0x00		executable/FreeBSD-i386-executable
+>>3	byte&0x80		0x80		executable/FreeBSD/i386/dynamically linked
+>>3	byte&0x80		0x00		executable/FreeBSD/i386/executable
 
 #------------------------------------------------------------------------------
 # GIMP Gradient: file(1) magic for the GIMP's gradient data files
@@ -893,14 +889,14 @@
 #       by Spencer Kimball and Peter Mattis
 #       ('Bucky' LaDieu, nega@vt.edu)
 
-20      string          GPAT            document/GIMP pattern data
+20      string          GPAT            document/GIMP/pattern data
 
 #------------------------------------------------------------------------------
 # XCF:  file(1) magic for the brushes used in the GIMP, developed
 #       by Spencer Kimball and Peter Mattis
 #       ('Bucky' LaDieu, nega@vt.edu)
 
-20      string          GIMP            document/GIMP brush data
+20      string          GIMP            document/GIMP/brush data
 
 
 #------------------------------------------------------------------------------
@@ -913,7 +909,7 @@
 # IFF files begin with an 8 byte FORM header, followed by a 4 character
 # FORM type, which is followed by the first chunk in the FORM.
 
-0	string		FORM		IFF data
+0	string		FORM		
 # audio formats
 >8	string		AIFF		audio/aiff
 >8	string		AIFC		audio/aiff-c
@@ -941,11 +937,11 @@
 # at 3, leshort Index is 0 for povray, ppmtotga and xv outputs
 # `xv' recognizes only a subset of the following (RGB with pixelsize = 24)
 # `tgatoppm' recognizes a superset (Index may be anything)
-1	belong&0xfff7ffff	0x01010000	image/targa-map
+1	belong&0xfff7ffff	0x01010000	image/targa/map
 >2	byte&8			8		RLE
-1	belong&0xfff7ffff	0x00020000	image/targa-rgb
+1	belong&0xfff7ffff	0x00020000	image/targa/rgb
 >2	byte&8			8		RLE
-1	belong&0xfff7ffff	0x00030000	image/targa-Mono
+1	belong&0xfff7ffff	0x00030000	image/targa/Mono
 >2	byte&8			8		RLE
 
 # PBMPLUS images
@@ -953,9 +949,9 @@
 0	string		P1		image/PBM
 0	string		P2		image/PGM
 0	string		P3		image/PPM
-0	string		P4		image/PBM raw
-0	string		P5		image/PGM raw
-0	string		P6		image/PPM raw
+0	string		P4		image/PBM/raw
+0	string		P5		image/PGM/raw
+0	string		P6		image/PPM/raw
 
 # NITF is defined by United States MIL-STD-2500A
 0	string	NITF	image/nitf
@@ -966,8 +962,8 @@
 # Tag Image File Format, from Daniel Quinlan (quinlan@yggdrasil.com)
 # The second word of TIFF files is the TIFF version number, 42, which has
 # never changed.  The TIFF specification recommends testing for it.
-0	string		MM\x00\x2a	image/TIFF big-endian
-0	string		II\x2a\x00	image/TIFF little-endian
+0	string		MM\x00\x2a	image/TIFF/big-endian
+0	string		II\x2a\x00	image/TIFF/little-endian
 
 # PNG [Portable Network Graphics, or "PNG's Not GIF"] images
 # (Greg Roelofs, newt@uchicago.edu)
@@ -1079,17 +1075,17 @@
 #
 # Updated by Daniel Quinlan (quinlan@yggdrasil.com)
 #
-0	leshort&0xFFFC	0x9600		document/ispell-little-endian
-0	beshort&0xFFFC	0x9600		document/ispell-big-endian
+0	leshort&0xFFFC	0x9600		document/ispell/little-endian
+0	beshort&0xFFFC	0x9600		document/ispell/big-endian
 
 #------------------------------------------------------------
 # Java ByteCode
 # From Larry Schwimmer (schwim@cs.stanford.edu)
-0	belong		0xcafebabe	binary/java-bytecode
+0	belong		0xcafebabe	binary/java/bytecode
 #------------------------------------------------------------
 # Java serialization
 # From Martin Pool (m.pool@pharos.com.au)
-0	beshort		0xaced		binary/java-serialization
+0	beshort		0xaced		binary/java/serialization
 
 #------------------------------------------------------------------------------
 # linux:  file(1) magic for Linux files
@@ -1104,25 +1100,25 @@
 # >0	leshort		0413		demand-paged executable (ZMAGIC)
 # >0	leshort		0314		demand-paged executable (QMAGIC)
 #
-0	lelong		0x00640107	executable/Linux-i386 impure
+0	lelong		0x00640107	executable/Linux/i386/impure
 >16	lelong		0		 stripped
-0	lelong		0x00640108	executable/Linux-i386 pure
+0	lelong		0x00640108	executable/Linux/i386/pure
 >16	lelong		0		 stripped
-0	lelong		0x0064010b	executable/Linux-i386 demand-paged
+0	lelong		0x0064010b	executable/Linux/i386/demand-paged
 >16	lelong		0		 stripped
-0	lelong		0x006400cc	executable/Linux-i386 demand-paged
+0	lelong		0x006400cc	executable/Linux/i386/demand-paged
 >16	lelong		0		 stripped
 #
-0	string		\007\001\000	binary/object-Linux-i386
+0	string		\007\001\000	binary/Linux/i386/object
 >20	lelong		>0x1020		 DLL library
 # core dump file, from Bill Reynolds <bill@goshawk.lanl.gov>
-216	lelong		0421		binary/core-Linux-i386
+216	lelong		0421		binary/core/Linux/i386
 #
 # LILO boot/chain loaders, from Daniel Quinlan <quinlan@yggdrasil.com>
 # this can be overridden by the DOS executable (COM) entry
-2	string		LILO		binary/Linux-i386 LILO
+2	string		LILO		binary/Linux/i386/LILO
 # Linux swap file, from Daniel Quinlan <quinlan@yggdrasil.com>
-4086	string		SWAP-SPACE	binary/Linux-i386 swap file
+4086	string		SWAP-SPACE	binary/Linux/i386/swap file
 
 # Linux kernel boot images (i386 arch) (Wolfram Kleff)
 514	string		HdrS		executable/Linux kernel
@@ -1147,39 +1143,39 @@
 # various lisp types, from Daniel Quinlan (quinlan@yggdrasil.com)
 0	string	;;			text/Lisp-Scheme
 # Emacs 18 - this is always correct, but not very magical.
-0	string	\012(			binary/emacs-lisp-bytecode
+0	string	\012(			binary/emacs/lisp-bytecode
 # Emacs 19
-0	string	;ELC\023\000\000\000	binary/emacs-lisp-bytecode
+0	string	;ELC\023\000\000\000	binary/emacs/lisp-bytecode
 #
 # Files produced by CLISP Common Lisp From: Bruno Haible <haible@ilog.fr>
 0	string	(SYSTEM::VERSION\040'	binary/clisp-bytecode
 # Files produced by GNU gettext
-0	long	0xDE120495		binary/gettext message catalog
-0	long	0x950412DE		binary/gettext message catalog
+0	long	0xDE120495		binary/gettext/message catalog
+0	long	0x950412DE		binary/gettext/message catalog
 
 #------------------------------------------------------------------------------
 # macintosh description
 #
 # BinHex is the Macintosh ASCII-encoded file format (see also "apple")
 # Daniel Quinlan, quinlan@yggdrasil.com
-11	string	must\ be\ converted\ with\ BinHex	binary/macintosh-BinHex
+11	string	must\ be\ converted\ with\ BinHex	binary/macintosh/BinHex
 
 # Stuffit archives are the de facto standard of compression for Macintosh
 # files obtained from most archives. (franklsm@tuns.ca)
 0	string		SIT!			archive/StuffIt
-0	string		SITD			archive/StuffIt Deluxe
-0	string		Seg			archive/StuffIt Deluxe Segment
+0	string		SITD			archive/StuffIt/Deluxe
+0	string		Seg			archive/StuffIt/Deluxe Segment
 
 # Macintosh Applications and Installation binaries (franklsm@tuns.ca)
 0	string		APPL			executable/macintosh
 
 # Macintosh System files (franklsm@tuns.ca)
-0	string		zsys			binary/Macintosh System File
-0	string		libr			binary/Macintosh Library
-0	string		shlb			binary/Macintosh Shared Library
-65	string		zsys			binary/Macintosh System File
-65	string		libr			binary/Macintosh Library
-65	string		shlb			binary/Macintosh Shared Library
+0	string		zsys			binary/Macintosh/System File
+0	string		libr			binary/Macintosh/Library
+0	string		shlb			binary/Macintosh/Shared Library
+65	string		zsys			binary/Macintosh/System File
+65	string		libr			binary/Macintosh/Library
+65	string		shlb			binary/Macintosh/Shared Library
 
 
 #------------------------------------------------------------------------------
@@ -1263,8 +1259,8 @@
 
 #------------------------------------------------------------------------------
 # octave binary data file(1) magic, from Dirk Eddelbuettel <edd@debian.org>
-0	string		Octave-1-L	binary/Octave little endian
-0	string		Octave-1-B	binary/Octave big endian)
+0	string		Octave-1-L	binary/Octave/little endian
+0	string		Octave-1-B	binary/Octave/big endian
 
 #------------------------------------------------------------------------------
 # os2:  file(1) magic for OS/2 files
@@ -1333,54 +1329,54 @@
 #
 0	beshort		0x87CD	
 #
->6	byte&0x0f	0x00	binary/OS9-6809-non-executable
->6	byte&0x0f	0x01	binary/OS9-6809-machine language
->6	byte&0x0f	0x02	binary/OS9-6809-BASIC I-code
->6	byte&0x0f	0x03	binary/OS9-6809-P-code
->6	byte&0x0f	0x04	binary/OS9-6809-C I-code
->6	byte&0x0f	0x05	binary/OS9-6809-COBOL I-code
->6	byte&0x0f	0x06	binary/OS9-6809-FORTRAN I-code
+>6	byte&0x0f	0x00	binary/OS9-6809/non-executable
+>6	byte&0x0f	0x01	binary/OS9-6809/machine language
+>6	byte&0x0f	0x02	binary/OS9-6809/BASIC I-code
+>6	byte&0x0f	0x03	binary/OS9-6809/P-code
+>6	byte&0x0f	0x04	binary/OS9-6809/C I-code
+>6	byte&0x0f	0x05	binary/OS9-6809/COBOL I-code
+>6	byte&0x0f	0x06	binary/OS9-6809/FORTRAN I-code
 #
 >6	byte&0xf0	0x10	executable/OS9-6809
->6	byte&0xf0	0x20	binary/OS9-6809-subroutine
->6	byte&0xf0	0x30	binary/OS9-6809-multi-module
->6	byte&0xf0	0x40	binary/OS9-6809-data module
+>6	byte&0xf0	0x20	binary/OS9-6809/subroutine
+>6	byte&0xf0	0x30	binary/OS9-6809/multi-module
+>6	byte&0xf0	0x40	binary/OS9-6809/data module
 #
->6	byte&0xf0	0xC0	binary/OS9-6809-system module
->6	byte&0xf0	0xD0	binary/OS9-6809-file manager
->6	byte&0xf0	0xE0	binary/OS9-6809-device driver
->6	byte&0xf0	0xF0	binary/OS9-6809-device descriptor
+>6	byte&0xf0	0xC0	binary/OS9-6809/system module
+>6	byte&0xf0	0xD0	binary/OS9-6809/file manager
+>6	byte&0xf0	0xE0	binary/OS9-6809/device driver
+>6	byte&0xf0	0xF0	binary/OS9-6809/device descriptor
 #
 # OS9/m68k stuff (to be continued)
 #
 0	beshort		0x4AFC	
 #
 # attr
->14	byte&0x80	0x80	binary/OS9-68K-re-entrant
->14	byte&0x40	0x40	binary/OS9-68K-ghost
->14	byte&0x20	0x20	binary/OS9-68K-system-state
+>14	byte&0x80	0x80	binary/OS9-68K/re-entrant
+>14	byte&0x40	0x40	binary/OS9-68K/ghost
+>14	byte&0x20	0x20	binary/OS9-68K/system-state
 #
 # lang:
 #
->13	byte		1	binary/OS9-68K-machine language
->13	byte		2	binary/OS9-68K-BASIC I-code
->13	byte		3	binary/OS9-68K-P-code
->13	byte		4	binary/OS9-68K-C I-code
->13	byte		5	binary/OS9-68K-COBOL I-code
->13	byte		6	binary/OS9-68K-Fortran I-code
+>13	byte		1	binary/OS9-68K/machine language
+>13	byte		2	binary/OS9-68K/BASIC I-code
+>13	byte		3	binary/OS9-68K/P-code
+>13	byte		4	binary/OS9-68K/C I-code
+>13	byte		5	binary/OS9-68K/COBOL I-code
+>13	byte		6	binary/OS9-68K/Fortran I-code
 #
 #
 # type:
 #
 >12	byte		1       executable/OS9-68K
->12	byte		2	binary/OS9-68K-subroutine
->12	byte		3	binary/OS9-68K-multi-module
->12	byte		4	binary/OS9-68K-data module
->12	byte		11	binary/OS9-68K-trap library
->12	byte		12	binary/OS9-68K-system module
->12	byte		13	binary/OS9-68K-file manager
->12	byte		14	binary/OS9-68K-device driver
->12	byte		15	binary/OS9-68K-device descriptor
+>12	byte		2	binary/OS9-68K/subroutine
+>12	byte		3	binary/OS9-68K/multi-module
+>12	byte		4	binary/OS9-68K/data module
+>12	byte		11	binary/OS9-68K/trap library
+>12	byte		12	binary/OS9-68K/system module
+>12	byte		13	binary/OS9-68K/file manager
+>12	byte		14	binary/OS9-68K/device driver
+>12	byte		15	binary/OS9-68K/device descriptor
 
 #------------------------------------------------------------------------------
 # pdf:  file(1) magic for Portable Document Format
@@ -1391,11 +1387,11 @@
 #------------------------------------------------------------------------------
 # pgp:  file(1) magic for Pretty Good Privacy
 #
-0       beshort         0x9900                  docmument/PGP key public ring
-0       beshort         0x9501                  docmument/PGP key security ring
-0       beshort         0x9500                  docmument/PGP key security ring
-0	beshort		0xa600			docmument/PGP encrypted data
-0       string          -----BEGIN\040PGP       docmument/PGP armored data
+0       beshort         0x9900                  docmument/PGP/key public ring
+0       beshort         0x9501                  docmument/PGP/key security ring
+0       beshort         0x9500                  docmument/PGP/key security ring
+0	beshort		0xa600			docmument/PGP/encrypted data
+0       string          -----BEGIN\040PGP       docmument/PGP/armored data
 >15     string          PUBLIC\040KEY\040BLOCK- public key block
 >15     string          MESSAGE-                message
 >15     string          SIGNED\040MESSAGE-      signed message
@@ -1413,7 +1409,7 @@
 
 # DOS EPS Binary File Header
 # From: Ed Sznyter <ews@Black.Market.NET>
-0       belong          0xC5D0D3C6      document/postscript-encapsulated-DOS
+0       belong          0xC5D0D3C6      document/postscript/encapsulated-DOS
 
 # Adobe's PostScript Printer Description (PPD) files
 #       Yves Arrouye <arrouye@marin.fdn.fr>
@@ -1549,25 +1545,25 @@
 # XXX - what is the blank "-" line?
 #
 # kbd file definitions
-0	belong	0407		executable/SGI 68020
-0	belong	0410		executable/SGI 68020
+0	belong	0407		executable/SGI/68020
+0	belong	0410		executable/SGI/68020
 #
-0	beshort	0x0160		executable/SGI MIPSEB COFF
-0	beshort	0x0162		executable/SGI MIPSEL COFF
-0	beshort	0x6001		executable/SGI MIPSEB-LE COFF
-0	beshort	0x6201		executable/SGI MIPSEL-LE COFF
-0	beshort	0x0163		executable/SGI MIPSEB MIPS-II COFF
-0	beshort	0x0166		executable/SGI MIPSEL MIPS-II COFF
-0	beshort	0x6301		executable/SGI MIPSEB-LE MIPS-II COFF
-0	beshort	0x6601		executable/SGI MIPSEL-LE MIPS-II COFF
-0	beshort	0x0140		executable/SGI MIPSEB MIPS-III COFF
-0	beshort	0x0142		executable/SGI MIPSEL MIPS-III COFF
-0	beshort	0x4001		executable/SGI MIPSEB-LE MIPS-III COFF
-0	beshort	0x4201		executable/SGI MIPSEL-LE MIPS-III COFF
-0	belong	0xdeadadb0	binary/core-IRIX
-0	belong	0xdeadad40	binary/core-IRIX 64-bit
-0       belong	0xbabec0bb	binary/core-IRIX N32
-0	string	\x43\x72\x73\x68\x44\x75\x6d\x70	binary/core-IRIX vmcore
+0	beshort	0x0160		executable/SGI/MIPSEB COFF
+0	beshort	0x0162		executable/SGI/MIPSEL COFF
+0	beshort	0x6001		executable/SGI/MIPSEB-LE COFF
+0	beshort	0x6201		executable/SGI/MIPSEL-LE COFF
+0	beshort	0x0163		executable/SGI/MIPSEB MIPS-II COFF
+0	beshort	0x0166		executable/SGI/MIPSEL MIPS-II COFF
+0	beshort	0x6301		executable/SGI/MIPSEB-LE MIPS-II COFF
+0	beshort	0x6601		executable/SGI/MIPSEL-LE MIPS-II COFF
+0	beshort	0x0140		executable/SGI/MIPSEB MIPS-III COFF
+0	beshort	0x0142		executable/SGI/MIPSEL MIPS-III COFF
+0	beshort	0x4001		executable/SGI/MIPSEB-LE MIPS-III COFF
+0	beshort	0x4201		executable/SGI/MIPSEL-LE MIPS-III COFF
+0	belong	0xdeadadb0	binary/core/IRIX
+0	belong	0xdeadad40	binary/core/IRIX/64-bit
+0       belong	0xbabec0bb	binary/core/IRIX/N32
+0	string	\x43\x72\x73\x68\x44\x75\x6d\x70	binary/core/IRIX/vmcore
 
 #------------------------------------------------------------------------------
 # sgml:  file(1) magic for Standard Generalized Markup Language
@@ -1603,7 +1599,7 @@
 #
 # Microsoft Network Monitor capture files.
 #
-0	string		RTSS		binary/capture NetMon
+0	string		RTSS		binary/capture/NetMon
 >6	leshort		0		(Unknown)
 >6	leshort		1		(Ethernet)
 >6	leshort		2		(Token Ring)
@@ -1612,7 +1608,7 @@
 # Network General Sniffer capture files.
 # Sorry, make that "Network Associates Sniffer capture files."
 #
-0	string		TRSNIFF\ data\ \ \ \ \032	binary/capture Sniffer
+0	string		TRSNIFF\ data\ \ \ \ \032	binary/capture/Sniffer
 >33	byte		2		(compressed)
 >32	byte		0		(Token Ring)
 >32	byte		1		(Ethernet)
@@ -1629,14 +1625,14 @@
 # Sorry, make that "Network General Sniffer Basic capture files."
 # Sorry, make that "Network Associates Sniffer Basic capture files."
 #
-0	string		XCP\0		binary/capture NetXRay
+0	string		XCP\0		binary/capture/NetXRay
 
 # "libpcap" capture files.
 # (We call them "tcpdump capture file(s)" for now, as "tcpdump" is
 # the main program that uses that format, but there are other programs
 # that use "libpcap", or that use the same capture file format.)
 #
-0	ubelong		0xa1b2c3d4	binary/capture tcpdump big-endian
+0	ubelong		0xa1b2c3d4	binary/capture/tcpdump/big-endian
 >20	belong		0		(No link-layer encapsulation
 >20	belong		1		(Ethernet
 >20	belong		2		(3Mb Ethernet
@@ -1652,7 +1648,7 @@
 >20	belong		12		(raw IP
 >20	belong		13		(BSD/OS SLIP
 >20	belong		14		(BSD/OS PPP
-0	ulelong		0xa1b2c3d4	binary/capture tcpdump capture file little-endian
+0	ulelong		0xa1b2c3d4	binary/capture/tcpdump/little-endian
 >20	lelong		0		(No link-layer encapsulation
 >20	lelong		1		(Ethernet
 >20	lelong		2		(3Mb Ethernet
@@ -1713,11 +1709,11 @@
 # Core files.  "SPARC 4.x BCP" means "core file from a SunOS 4.x SPARC
 # binary executed in compatibility mode under SunOS 5.x".
 #
-0	belong		0x080456	binary/core SunOS
+0	belong		0x080456	binary/core/SunOS
 
 # Sun snoop (see RFC 1761, which describes the capture file format).
 #
-0	string		snoop		binary/capture Snoop
+0	string		snoop		binary/capture/Snoop
 
 
 #------------------------------------------------------------------------------
@@ -1962,8 +1958,8 @@
 #
 # XXX - "x.out" collides with PDP-11 archives
 #
-0	string		core		object/core-xenix
-0	byte		0x80		object/8086 relocatable Microsoft
+0	string		core		object/core/xenix
+0	byte		0x80		object/8086/relocatable Microsoft
 0	leshort		0x206		executable/a.out Microsoft 
 0	leshort		0x140		executable/x.out Microsoft 8086
 0	lelong		0x206		executable/b.out Microsoft 8086

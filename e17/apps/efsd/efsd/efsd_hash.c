@@ -237,5 +237,4 @@ efsd_hash_string(EfsdHash *h, char *s)
   /* D(("String '%s' hashed to %i\n", ss, hash)); */
 
   D_RETURN_(hash);
-  ss = NULL;
 }

@@ -65,7 +65,7 @@ efsd_option_new_get_filetype(void)
   D_ENTER;
   eo = NEW(EfsdOption);
   memset(eo, 0, sizeof(EfsdOption));
-  eo->type = EFSD_OP_LS_GET_FILE;
+  eo->type = EFSD_OP_LS_GET_FILETYPE;
   D_RETURN_(eo);
 }
 
@@ -109,7 +109,7 @@ efsd_option_cleanup(EfsdOption *eo)
       break;
     case EFSD_OP_LS_GET_STAT:
       break;
-    case EFSD_OP_LS_GET_FILE:
+    case EFSD_OP_LS_GET_FILETYPE:
       break;
     case EFSD_OP_LS_GET_META:
       FREE(eo->efsd_op_ls_getmeta.key);

@@ -61,7 +61,7 @@ efsd_cmd_duplicate(EfsdCommand *ec_src, EfsdCommand *ec_dst)
     case EFSD_CMD_STARTMON:
     case EFSD_CMD_STOPMON:
     case EFSD_CMD_STAT:
-    case EFSD_CMD_GETFILE:
+    case EFSD_CMD_GETFILETYPE:
     case EFSD_CMD_READLINK:
       ec_dst->efsd_file_cmd.file = strdup(ec_src->efsd_file_cmd.file);
       break;
@@ -174,7 +174,7 @@ efsd_cmd_cleanup(EfsdCommand *ec)
     case EFSD_CMD_STARTMON:
     case EFSD_CMD_STOPMON:
     case EFSD_CMD_STAT:
-    case EFSD_CMD_GETFILE:
+    case EFSD_CMD_GETFILETYPE:
     case EFSD_CMD_READLINK:
       FREE(ec->efsd_file_cmd.file);
       break;

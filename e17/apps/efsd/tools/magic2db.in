@@ -51,32 +51,72 @@ my $EFSD_BYTEORDER_SMALL      = 2;
 # Prototypes
 #___________________________________________________________________________
 
+sub e_db_command_add;
+sub e_db_command_add_remaining;
 sub e_db_int_set;
 sub e_db_str_set;
+sub e_db_data_set;
 sub to_dec;
 sub write_magic;
 sub do_it;
 
+{
+  my @command;
+
+  sub e_db_command_add {
+    
+    if (scalar(@command) == 0)
+      {
+	@command = ("@EDB_ED@", $db_file, @_);
+      }
+    else
+      {
+	my $i;
+
+	for ($i = 0; $i < 4; $i++)
+	  {
+	    push (@command, $_[$i]);
+	  }
+      }
+    
+    if (scalar(@command) > 10000)
+      {
+	system(@command) == 0
+	  or die "edb_ed call failed: $?";
+
+	@command = ();
+      }
+  }
+
+  sub e_db_command_add_remaining {
+
+    system(@command) == 0
+      or die "edb_ed call failed: $?";
+    
+    @command = ();
+  }
+}
+
 sub e_db_int_set {
   
-  my $db  = $_[0];
-  my $key = $_[1];
-  my $val = $_[2];
-  my @command = ("@EDB_ED@", $db, "add", $key, "int", $val);
+  my ($key, $val) = @_;
 
-  system(@command) == 0
-    or die "edb_ed call failed: $?";
+  e_db_command_add("add", $key, "int", $val);  
 }
 
 sub e_db_str_set {
 
-  my $db  = $_[0];
-  my $key = $_[1];
-  my $val = $_[2];
-  my @command = ("@EDB_ED@", $db, "add", $key, "str", $val);
+  my ($key, $val) = @_;
 
-  system(@command) == 0
-    or die "edb_ed call failed: $?";
+  e_db_command_add("add", $key, "str", $val);  
+}
+
+
+sub e_db_data_set {
+
+  my ($key, $val) = @_;
+
+  e_db_command_add("add", $key, "data", $val);  
 }
 
 
@@ -116,27 +156,27 @@ sub write_magic {
   if (defined($$magic_ptr{"offset"}))
     {
       $key = $s . "offset";
-      e_db_int_set($db_file, $key, $$magic_ptr{"offset"});
+      e_db_int_set($key, $$magic_ptr{"offset"});
     }
   if (defined($$magic_ptr{"byteorder"}))
     {
       $key = $s . "byteorder";
-      e_db_int_set($db_file, $key, $$magic_ptr{"byteorder"});
+      e_db_int_set($key, $$magic_ptr{"byteorder"});
     }
   if (defined($$magic_ptr{"type"}))
     {
       $key = $s . "type";
-      e_db_int_set($db_file, $key, $$magic_ptr{"type"});
+      e_db_int_set($key, $$magic_ptr{"type"});
     }
   if (defined($$magic_ptr{"mask"}))
     {
       $key = $s . "mask";
-      e_db_int_set($db_file, $key, $$magic_ptr{"mask"});
+      e_db_int_set($key, $$magic_ptr{"mask"});
     }
   if (defined($$magic_ptr{"test"}))
     {
       $key = $s . "test";
-      e_db_int_set($db_file, $key, $$magic_ptr{"test"});
+      e_db_int_set($key, $$magic_ptr{"test"});
     }
   if (defined($$magic_ptr{"value"}))
     {
@@ -144,17 +184,17 @@ sub write_magic {
 
       if ($$magic_ptr{"type"} == $EFSD_MAGIC_STRING)
 	{
-	  e_db_str_set($db_file, $key, $$magic_ptr{"value"});
+	  e_db_data_set($key, $$magic_ptr{"value"});
 	}
       else
 	{
-	  e_db_int_set($db_file, $key, $$magic_ptr{"value"});
+	  e_db_int_set($key, $$magic_ptr{"value"});
 	}
     }
   if (defined($$magic_ptr{"filetype"}))
     {
       $key = $s . "filetype";
-      e_db_str_set($db_file, $key, $$magic_ptr{"filetype"});
+      e_db_str_set($key, $$magic_ptr{"filetype"});
     }
 }
 
@@ -170,6 +210,7 @@ sub do_it {
   my %magic;
   my $dropped_level;
   my $value_prefix = "";
+  my $num_tests = 0;
 
   open (MAGIC, $magic_file)
     or die "Can't open magic file $magic_file: ";
@@ -367,6 +408,7 @@ sub do_it {
 	     $magic{"filetype"} = $item;
 
 	     write_magic(\@indices, $level, \%magic);
+	     $num_tests++;
 	   }
 	 else
 	   {
@@ -374,7 +416,11 @@ sub do_it {
 	     $dropped_level = $level;
 	   } 
 	}
-    }
+     }
+
+  e_db_command_add_remaining();
+
+  print $num_tests . " tests written to db.\n";
 }
 
 
