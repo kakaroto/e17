@@ -1,4 +1,5 @@
 #!/bin/bash
+# this file is deprecated
 
 # This script should be called as "ciabot %{}" from loginfo.
 # Sample loginfo line:
