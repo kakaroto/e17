@@ -205,8 +205,7 @@ void ui_fill_track_info(ePlayer *player) {
 	                          buf);
 
 	/* bitrate */
-	snprintf(buf, sizeof(buf), "%.1f",
-	         (float) pli->bitrate / 1000);
+	snprintf(buf, sizeof(buf), "%i", pli->bitrate / 1000);
 	edje_object_part_text_set(player->gui.edje, "track_bitrate",
 	                          buf);
 }
