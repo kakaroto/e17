@@ -46,4 +46,4 @@ AC_SUBST(edb_cflags)
 AC_SUBST(edb_libs)
 AC_SUBST(gtk_cflags)
 
-AC_OUTPUT([Makefile trivial-sprite/Makefile])
+AC_OUTPUT([Makefile trivial-sprite/Makefile trivial-sprite-edb/Makefile])

@@ -10,6 +10,6 @@ MAINTAINERCLEANFILES = INSTALL Makefile.in aclocal.m4 config.guess \
 		       ltconfig ltmain.sh missing mkinstalldirs \
 		       stamp-h.in
 
-SUBDIRS		     = trivial-sprite
+SUBDIRS		     = trivial-sprite trivial-sprite-edb
 
 EXTRA_DIST = README AUTHORS COPYING TODO acconfig.h INSTALL
