@@ -44,6 +44,3 @@ program {
 				source, "*";
 				action, SIGNAL_EMIT "PLAYLIST_SCROLL_DOWN" "";
 			}
-
-		}
-	}

@@ -451,6 +451,3 @@
 			source,			"stop_button";
 			action, 			SIGNAL_EMIT "STOP" "stop_button";
 	} 
-	
-	}
-

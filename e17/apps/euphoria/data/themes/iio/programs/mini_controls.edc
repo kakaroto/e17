@@ -369,5 +369,3 @@
 			source,     		"_quit";
 			action,     		SIGNAL_EMIT "QUIT" "quit";
 	}
-
-	}

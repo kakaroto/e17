@@ -8,30 +8,28 @@ collections {
 		name,	"euphoria";
 		min,		413 94;
 		max,	413 94;
-      
-#include "collections/base.edc"
-}
 
-	programs {
+#include "collections/base.edc"
+
+		programs {
 
 #include "programs/controls.edc"
 
-}
+		}
+	}
 
 	group {
 		name,	"playlist_item";
 		min,		122 9;
 		max,	122 9;
-	
-#include "collections/playlist.edc"
-}
 
-	programs {
+#include "collections/playlist.edc"
+
+		programs {
 
 #include "programs/playlist.edc"
-} 
-
-collections {
+		}
+	}
 
 	group {
 		name,	"euphoria_small";
@@ -39,11 +37,10 @@ collections {
 		max,	93 187;
 
 #include "collections/switch.edc"
-}
 
-	programs {
+		programs {
 
 #include "programs/mini_controls.edc"
-}
-
+		}
+	}
 }
