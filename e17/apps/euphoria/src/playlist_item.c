@@ -76,6 +76,7 @@ static void set_parts_text(PlayListItem *pli) {
 
 void playlist_item_properties_set(PlayListItem *pli, x_hash_t *p) {
 	assert(pli);
+	assert(p);
 
 	if (pli->properties == p)
 		return;

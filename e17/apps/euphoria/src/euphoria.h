@@ -39,9 +39,6 @@ typedef struct {
 } SeekerFlags;
 
 typedef struct _Euphoria {
-	const char **args;
-	int opt_start;
-
 	PlayList *playlist;
 	xmmsc_connection_t *xmms;
 

@@ -181,9 +181,6 @@ static void handle_args(Euphoria *e, int argc, const char **argv) {
 					(char *)argv[o]);
 		xmmsc_playlist_add(e->xmms, buf);
 	}
-
-	e->args = argv;
-	e->opt_start = optind;
 }
 
 int main(int argc, const char **argv) {

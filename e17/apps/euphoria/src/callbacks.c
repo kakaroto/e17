@@ -598,8 +598,6 @@ XMMS_CB(playlist_remove) {
 }
 
 XMMS_CB(playlist_clear) {
-	PlayListItem *pli;
-
 	playlist_remove_all(e->playlist);
 	/* FIXME: Set the text in the player to the default */
 }
