@@ -1,0 +1,5 @@
+usr/lib/*.so
+usr/lib/*.la
+usr/lib/*.a
+usr/bin/*
+usr/include/giblib/*
