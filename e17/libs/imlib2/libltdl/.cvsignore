@@ -17,3 +17,5 @@ ltdl.h
 acinclude.m4
 aclocal.m4
 config.h.in
+COPYING.LIB
+README
