@@ -33,4 +33,3 @@ edb_ed $DB add /entrance/session/7/value str "xfce"
 edb_ed $DB add /entrance/session/7/key str "XFce"
 edb_ed $DB add /entrance/session/8/value str "failsafe"
 edb_ed $DB add /entrance/session/8/key str "Failsafe"
-sudo cp $DB /usr/local/etc/
