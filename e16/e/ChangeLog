@@ -1686,3 +1686,10 @@ Wed Feb 16 11:32:52 PST 2000
 (Mandrake)
 
 added tr.po
+
+-------------------------------------------------------------------------------
+
+Thu Feb 17 11:02:30 PST 2000
+(Mandrake)
+
+patch from Bob Arendt <rdarendt@cwcom.net> to fix a problem in eesh with tru64

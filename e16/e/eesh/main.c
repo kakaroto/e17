@@ -31,6 +31,11 @@
 
 extern char         waitonly;
 
+static int stdin_state;
+void restore_stdin_state(void) {
+   fcntl(0, F_SETFL, stdin_state);
+}
+
 int
 main(int argc, char **argv)
 {
@@ -113,6 +118,8 @@ main(int argc, char **argv)
 
    XSync(disp, False);
    j = 0;
+   stdin_state = fcntl(0, F_GETFL, 0);
+   atexit( restore_stdin_state );
    fcntl(0, F_SETFL, O_NONBLOCK);
    for (;;)
      {
