@@ -201,7 +201,10 @@ int main(int argc, char **argv)
 	y = 0;
 	pagenum = 0;
 
-	disp = XOpenDisplay(NULL);
+        if((int)(disp = XOpenDisplay(NULL)) < 1) {
+                printf("%s: Cannot open X display.\n",argv[0]);
+                exit(0);
+        }
 
 	/* now we'll set the locale */
 	setlocale(LC_ALL, "");
