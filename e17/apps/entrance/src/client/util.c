@@ -74,17 +74,3 @@ entrance_debug(char *msg)
    if (ENTRANCE_DEBUG)
       printf("%s\n", msg);
 }
-
-void
-entrance_edje_object_resize_intercept_cb(void *data, Evas_Object * o,
-                                         Evas_Coord w, Evas_Coord h)
-{
-   if (o)
-   {
-      if (!strcmp("image", evas_object_type_get(o)))
-      {
-         evas_object_image_fill_set(o, 0.0, 0.0, w, h);
-         evas_object_resize(o, w, h);
-      }
-   }
-}

@@ -688,9 +688,8 @@ main(int argc, char *argv[])
 
    if (ecore_evas_init())
    {
-      /* init edje and set frametime to 60 fps ? */
       edje_init();
-      edje_frametime_set(2.0 / 60.0);
+      edje_frametime_set(1.0 / 30.0);
 
       /* setup our ecore_evas */
       /* testing mode decides entrance window size * * Use rendering engine

@@ -102,7 +102,6 @@ entrance_user_edje_get(Entrance_User * e, Evas_Object * edje,
       entrance_smart_edje_set(result, o);
       if (edje_object_file_set(o, file, "User"))
       {
-         evas_object_layer_set(o, 0);
          evas_object_move(o, -9999, -9999);
          edje_object_size_min_get(o, &w, &h);
          if ((w > 0) && (h > 0))
@@ -112,12 +111,6 @@ entrance_user_edje_get(Entrance_User * e, Evas_Object * edje,
          {
             if ((avatar = _entrance_user_icon_load(edje, e->icon)))
             {
-               if (!strcmp(evas_object_type_get(avatar), "image"))
-               {
-                  edje_object_part_geometry_get(avatar, "EntranceUserIcon",
-                                                NULL, NULL, &w, &h);
-                  evas_object_image_fill_set(avatar, 0.0, 0.0, w, h);
-               }
                entrance_smart_avatar_set(result, avatar);
                edje_object_part_swallow(o, "EntranceUserIcon", avatar);
             }
@@ -174,14 +167,9 @@ _entrance_user_icon_load(Evas_Object * o, char *file)
          result = evas_object_image_add(evas_object_evas_get(o));
          evas_object_image_file_set(result, buf, NULL);
       }
-      evas_object_intercept_resize_callback_add(result,
-                                                entrance_edje_object_resize_intercept_cb,
-                                                NULL);
    }
-   evas_object_pass_events_set(result, 1);
    evas_object_move(result, -999, -999);
    evas_object_resize(result, 48, 48);
-   evas_object_layer_set(result, 0);
    evas_object_show(result);
    return (result);
 }

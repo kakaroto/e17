@@ -10,6 +10,12 @@
 #include <limits.h>
 #include "entrance_smart.h"
 
+/* utility function, keep fill for images */
+static void entrance_edje_object_resize_intercept_cb(void *data,
+                                                     Evas_Object * o,
+                                                     Evas_Coord w,
+                                                     Evas_Coord h);
+
 /* smart object handlers */
 static Evas_Smart *_entrance_smart_object_smart_get();
 static Evas_Object *entrance_smart_object_new(Evas * evas);
@@ -30,6 +36,9 @@ void _entrance_smart_object_color_set(Evas_Object * o, int r, int g, int b,
 void _entrance_smart_object_clip_set(Evas_Object * o, Evas_Object * clip);
 void _entrance_smart_object_clip_unset(Evas_Object * o);
 
+/**
+ *
+ */
 Evas_Object *
 entrance_smart_add(Evas * e)
 {
@@ -47,6 +56,9 @@ entrance_smart_add(Evas * e)
    return (result);
 }
 
+/**
+ *
+ */
 void
 entrance_smart_edje_set(Evas_Object * o, Evas_Object * edje)
 {
@@ -63,6 +75,9 @@ entrance_smart_edje_set(Evas_Object * o, Evas_Object * edje)
    }
 }
 
+/**
+ *
+ */
 void
 entrance_smart_avatar_set(Evas_Object * o, Evas_Object * avatar)
 {
@@ -75,6 +90,13 @@ entrance_smart_avatar_set(Evas_Object * o, Evas_Object * avatar)
          evas_object_clip_set(avatar, data->clip);
          evas_object_show(avatar);
          data->avatar = avatar;
+         if (!strcmp(evas_object_type_get(avatar), "image"))
+         {
+            evas_object_pass_events_set(avatar, 1);
+            evas_object_intercept_resize_callback_add(avatar,
+                                                      entrance_edje_object_resize_intercept_cb,
+                                                      NULL);
+         }
       }
    }
 }
@@ -82,10 +104,6 @@ entrance_smart_avatar_set(Evas_Object * o, Evas_Object * avatar)
 /*==========================================================================
  * Smart Object Code, Go Away
  *========================================================================*/
-
-
-/*** external API ***/
-
 static Evas_Object *
 entrance_smart_object_new(Evas * evas)
 {
@@ -192,7 +210,7 @@ _entrance_smart_object_stack_above(Evas_Object * o, Evas_Object * above)
 
    if ((data = evas_object_smart_data_get(o)))
    {
-      evas_object_stack_above(data->clip, above);
+      evas_object_stack_above(data->edje, above);
    }
 }
 
@@ -203,7 +221,7 @@ _entrance_smart_object_stack_below(Evas_Object * o, Evas_Object * below)
 
    if ((data = evas_object_smart_data_get(o)))
    {
-      evas_object_stack_below(data->clip, below);
+      evas_object_stack_below(data->edje, below);
    }
 }
 
@@ -283,5 +301,19 @@ _entrance_smart_object_clip_unset(Evas_Object * o)
    if ((data = evas_object_smart_data_get(o)))
    {
       evas_object_clip_unset(data->clip);
+   }
+}
+
+static void
+entrance_edje_object_resize_intercept_cb(void *data, Evas_Object * o,
+                                         Evas_Coord w, Evas_Coord h)
+{
+   if (o)
+   {
+      if (!strcmp("image", evas_object_type_get(o)))
+      {
+         evas_object_image_fill_set(o, 0.0, 0.0, w, h);
+         evas_object_resize(o, w, h);
+      }
    }
 }

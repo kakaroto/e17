@@ -75,14 +75,9 @@ entrance_x_session_icon_load(Evas_Object * o, const char *file)
          result = evas_object_image_add(evas_object_evas_get(o));
          evas_object_image_file_set(result, buf, NULL);
       }
-      evas_object_intercept_resize_callback_add(result,
-                                                entrance_edje_object_resize_intercept_cb,
-                                                NULL);
    }
-   evas_object_pass_events_set(result, 1);
    evas_object_move(result, -999, -999);
    evas_object_resize(result, 48, 48);
-   evas_object_layer_set(result, 0);
    evas_object_show(result);
    return (result);
 }
@@ -104,7 +99,6 @@ entrance_x_session_edje_get(Entrance_X_Session * e, Evas_Object * o,
    entrance_smart_edje_set(result, edje);
    if (edje_object_file_set(edje, themefile, "Session") > 0)
    {
-      evas_object_layer_set(edje, 0);
       evas_object_move(edje, -9999, -9999);
       edje_object_size_min_get(edje, &w, &h);
       if ((w > 0) && (h > 0))
