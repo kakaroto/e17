@@ -799,6 +799,7 @@ __imlib_list_fonts(int *num_ret)
    int i, j, d, l = 0;
    char **list = NULL, **dir, *path;
    TT_Error error;
+   char *p;
    
    /* if we dont have a truetype font engine yet - make one */
    if (!have_engine)
@@ -817,6 +818,9 @@ __imlib_list_fonts(int *num_ret)
          {
             path = malloc(strlen(fpath[i]) + strlen(dir[j]) + 2);
             sprintf(path, "%s/%s", fpath[i], dir[j]);
+                /* trim .ttf if it is there */
+                if((p = strrchr(dir[j], '.')))
+                   *p = '\0';
             if(!__imlib_ItemInList(list, l, dir[j]))
             {
 		  if (__imlib_FileIsFile(path))
@@ -831,7 +835,7 @@ __imlib_list_fonts(int *num_ret)
 			    if (list)
 			       list = realloc(list, sizeof(char *) * l);
 			    else
-			       list = malloc(sizeof(char *));
+                   list = malloc(sizeof(char *));
 			    list[l - 1] = strdup(dir[j]);
 			 }
 		       free(dir[j]);
