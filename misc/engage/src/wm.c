@@ -202,8 +202,8 @@ od_wm_get_title(Ecore_X_Window win)
 bool
 od_wm_iconified(Ecore_X_Window window)
 {
-  int             size = 0;;
-  Atom           *atom = NULL;
+  int             size = 0;
+  Atom            *atom = NULL;
 
   if (ecore_x_window_prop_property_get(window, ecore_x_atom_get("WM_STATE"),
                                        ecore_x_atom_get("WM_STATE"), 32,
