@@ -54,8 +54,20 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 #include <efsd_types.h>
 
 
+static void
+errno_check(int line, char *function)
+{
+  if (errno == 0)
+    {
+      D("WARNING -- returning error with errno == 0 in line %i, %s\n",
+	line, function);
+      errno = EINVAL;
+    }
+}
+
+
 static int
-send_reply(EfsdCommand *cmd, EfsdStatus status, int errorcode,
+send_reply(EfsdCommand *cmd, int errorcode,
 	   int data_len, void *data, int client)
 {
   EfsdEvent  ee;
@@ -71,7 +83,6 @@ send_reply(EfsdCommand *cmd, EfsdStatus status, int errorcode,
   memset(&ee, 0, sizeof(EfsdEvent));
   ee.type = EFSD_EVENT_REPLY;
   ee.efsd_reply_event.command = *cmd;
-  ee.efsd_reply_event.status = status;
   ee.efsd_reply_event.errorcode = errorcode;
   ee.efsd_reply_event.data_len = data_len;
 
@@ -124,10 +135,13 @@ efsd_command_remove(EfsdCommand *cmd, int client)
   for (i = 0; i < cmd->efsd_file_cmd.num_files; i++)
     {
       if (efsd_fs_rm(cmd->efsd_file_cmd.files[i], options) < 0)
-	D_RETURN_(send_reply(cmd, FAILURE, errno, 0, NULL, client));
+	{
+	  errno_check(__LINE__, __FUNCTION__);
+	  D_RETURN_(send_reply(cmd, errno, 0, NULL, client));
+	}
     }
 
-  D_RETURN_(send_reply(cmd, SUCCESS, 0, 0, NULL, client));
+  D_RETURN_(send_reply(cmd, 0, 0, NULL, client));
 }
 
 
@@ -154,9 +168,12 @@ efsd_command_move(EfsdCommand *cmd, int client)
   if (efsd_fs_mv(cmd->efsd_file_cmd.num_files,
 		 cmd->efsd_file_cmd.files,
 		 options) < 0)
-    D_RETURN_(send_reply(cmd, FAILURE, errno, 0, NULL, client));
+    {
+      errno_check(__LINE__, __FUNCTION__);
+      D_RETURN_(send_reply(cmd, errno, 0, NULL, client));
+    }
   
-  D_RETURN_(send_reply(cmd, SUCCESS, 0, 0, NULL, client));
+  D_RETURN_(send_reply(cmd, 0, 0, NULL, client));
 }
 
 
@@ -186,9 +203,12 @@ efsd_command_copy(EfsdCommand *cmd, int client)
   if (efsd_fs_cp(cmd->efsd_file_cmd.num_files,
 		 cmd->efsd_file_cmd.files,
 		 options) < 0)
-    D_RETURN_(send_reply(cmd, FAILURE, errno, 0, NULL, client));
+    {
+      errno_check(__LINE__, __FUNCTION__);
+      D_RETURN_(send_reply(cmd, errno, 0, NULL, client));
+    }
   
-  D_RETURN_(send_reply(cmd, SUCCESS, 0, 0, NULL, client));
+  D_RETURN_(send_reply(cmd, 0, 0, NULL, client));
 }
 
 
@@ -199,10 +219,11 @@ efsd_command_symlink(EfsdCommand *cmd, int client)
 
   if (symlink(cmd->efsd_file_cmd.files[0], cmd->efsd_file_cmd.files[1]) < 0)
     {
-      D_RETURN_(send_reply(cmd, FAILURE, errno, 0, NULL, client));
+      errno_check(__LINE__, __FUNCTION__);
+      D_RETURN_(send_reply(cmd, errno, 0, NULL, client));
     }
 
-  D_RETURN_(send_reply(cmd, SUCCESS, 0, 0, NULL, client));
+  D_RETURN_(send_reply(cmd, 0, 0, NULL, client));
 }
 
 
@@ -225,10 +246,11 @@ efsd_command_listdir(EfsdCommand *cmd, int client)
   if (efsd_monitor_start(cmd, client, TRUE, do_sort) != NULL &&
       efsd_monitor_stop(cmd, client, TRUE) >= 0)
     {      
-      D_RETURN_(send_reply(cmd, SUCCESS, 0, 0, NULL, client));
+      D_RETURN_(send_reply(cmd, 0, 0, NULL, client));
     }
 
-  D_RETURN_(send_reply(cmd, FAILURE, errno, 0, NULL, client));
+  errno_check(__LINE__, __FUNCTION__);
+  D_RETURN_(send_reply(cmd, errno, 0, NULL, client));
 }
 
 
@@ -263,9 +285,12 @@ efsd_command_makedir(EfsdCommand *cmd, int client)
   
   /* XXX this does not clean up if we had partial success ... */
   if (!success)
-    D_RETURN_(send_reply(cmd, FAILURE, errno, 0, NULL, client));
+    {
+      errno_check(__LINE__, __FUNCTION__);
+      D_RETURN_(send_reply(cmd, errno, 0, NULL, client));
+    }
 
-  D_RETURN_(send_reply(cmd, SUCCESS, 0, 0, NULL, client));
+  D_RETURN_(send_reply(cmd, 0, 0, NULL, client));
 }
 
 
@@ -276,10 +301,11 @@ efsd_command_chmod(EfsdCommand *cmd, int client)
 
   if (chmod(cmd->efsd_chmod_cmd.file, cmd->efsd_chmod_cmd.mode) < 0)
     {
-      D_RETURN_(send_reply(cmd, FAILURE, errno, 0, NULL, client));
+      errno_check(__LINE__, __FUNCTION__);
+      D_RETURN_(send_reply(cmd, errno, 0, NULL, client));
     }
 
-  D_RETURN_(send_reply(cmd, SUCCESS, 0, 0, NULL, client));
+  D_RETURN_(send_reply(cmd, 0, 0, NULL, client));
 }
 
 
@@ -290,10 +316,11 @@ efsd_command_set_metadata(EfsdCommand *cmd, int client)
   
   if (efsd_meta_set(cmd) < 0)
     {
-      D_RETURN_(send_reply(cmd, FAILURE, errno, 0, NULL, client));
+      errno_check(__LINE__, __FUNCTION__);
+      D_RETURN_(send_reply(cmd, errno, 0, NULL, client));
     }
   
-  D_RETURN_(send_reply(cmd, SUCCESS, 0, 0, NULL, client));
+  D_RETURN_(send_reply(cmd, 0, 0, NULL, client));
 }
 
 
@@ -307,10 +334,11 @@ efsd_command_get_metadata(EfsdCommand *cmd, int client)
   
   if ( (data = efsd_meta_get(cmd, &data_len)) == NULL)
     {
-      D_RETURN_(send_reply(cmd, FAILURE, errno, 0, NULL, client));
+      errno_check(__LINE__, __FUNCTION__);
+      D_RETURN_(send_reply(cmd, errno, 0, NULL, client));
     }
   
-  result = send_reply(cmd, SUCCESS, 0, data_len, data, client);
+  result = send_reply(cmd, 0, data_len, data, client);
   FREE(data);
 
   D_RETURN_(result);
@@ -333,10 +361,13 @@ efsd_command_start_monitor(EfsdCommand *cmd, int client, int dir_mode)
 	}
     }
 
-  if (efsd_monitor_start(cmd, client, dir_mode, do_sort) != NULL)
-    D_RETURN_(send_reply(cmd, SUCCESS, 0, 0, NULL, client));
-  
-  D_RETURN_(send_reply(cmd, FAILURE, EINVAL, 0, NULL, client));
+  if (efsd_monitor_start(cmd, client, dir_mode, do_sort) == NULL)
+    {
+      errno_check(__LINE__, __FUNCTION__);
+      D_RETURN_(send_reply(cmd, errno, 0, NULL, client));
+    }
+
+  D_RETURN_(send_reply(cmd, 0, 0, NULL, client));  
 }
 
 
@@ -345,10 +376,13 @@ efsd_command_stop_monitor(EfsdCommand *cmd, int client, int dir_mode)
 {
   D_ENTER;
 
-  if (efsd_monitor_stop(cmd, client, dir_mode) >= 0)
-    D_RETURN_(send_reply(cmd, SUCCESS, 0, 0, NULL, client));
+  if (efsd_monitor_stop(cmd, client, dir_mode) < 0)
+    {
+      errno_check(__LINE__, __FUNCTION__);
+      D_RETURN_(send_reply(cmd, errno, 0, NULL, client));
+    }
 
-  D_RETURN_(send_reply(cmd, FAILURE, errno, 0, NULL, client));
+  D_RETURN_(send_reply(cmd, 0, 0, NULL, client));
 }
 
 
@@ -365,12 +399,13 @@ efsd_command_stat(EfsdCommand *cmd, int client, char use_lstat)
       if (efsd_lstat(cmd->efsd_file_cmd.files[0], &st))
 	{
 	  D("lstat suceeded, sending struct...\n");
-	  result = send_reply(cmd, SUCCESS, 0, sizeof(struct stat), &st, client);
+	  result = send_reply(cmd, 0, sizeof(struct stat), &st, client);
 	}
       else
 	{
 	  D("lstat failed, sending FAILURE.\n");
-	  result = send_reply(cmd, FAILURE, errno, 0, NULL, client);
+	  errno_check(__LINE__, __FUNCTION__);
+	  result = send_reply(cmd, errno, 0, NULL, client);
 	}
     }
   else
@@ -378,12 +413,13 @@ efsd_command_stat(EfsdCommand *cmd, int client, char use_lstat)
       if (efsd_stat(cmd->efsd_file_cmd.files[0], &st))
 	{
 	  D("stat suceeded, sending struct...\n");
-	  result = send_reply(cmd, SUCCESS, 0, sizeof(struct stat), &st, client);
+	  result = send_reply(cmd, 0, sizeof(struct stat), &st, client);
 	}
       else
 	{
 	  D("stat failed, sending FAILURE.\n");
-	  result = send_reply(cmd, FAILURE, errno, 0, NULL, client);
+	  errno_check(__LINE__, __FUNCTION__);
+	  result = send_reply(cmd, errno, 0, NULL, client);
 	}
     }
 
@@ -400,9 +436,14 @@ efsd_command_readlink(EfsdCommand *cmd, int client)
   D_ENTER;
 
   if ((n = readlink(cmd->efsd_file_cmd.files[0], s, MAXPATHLEN)) >= 0)
-    result = send_reply(cmd, SUCCESS, 0, n, s, client);
+    {
+      result = send_reply(cmd, 0, n, s, client);
+    }
   else
-    result = send_reply(cmd, FAILURE, errno, 0, NULL, client);
+    {
+      errno_check(__LINE__, __FUNCTION__);
+      result = send_reply(cmd, errno, 0, NULL, client);
+    }
 
   D_RETURN_(result);
 }
@@ -419,12 +460,13 @@ efsd_command_get_filetype(EfsdCommand *cmd, int client)
   if (efsd_filetype_get(cmd->efsd_file_cmd.files[0], type, MAXPATHLEN))
     {
       D("FILE lookup succeded: %s\n", type);
-      result = send_reply(cmd, SUCCESS, 0, strlen(type)+1, type, client);
+      result = send_reply(cmd, 0, strlen(type)+1, type, client);
     }
   else
     {
       D("FILE lookup failed -- sending FAILURE.\n");
-      result = send_reply(cmd, FAILURE, errno, 0, NULL, client);
+      errno_check(__LINE__, __FUNCTION__);
+      result = send_reply(cmd, errno, 0, NULL, client);
     }
 
   D_RETURN_(result);

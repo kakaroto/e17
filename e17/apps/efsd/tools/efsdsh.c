@@ -133,7 +133,7 @@ void handle_efsd_event(EfsdEvent *ee)
 	}
       break;
     case EFSD_EVENT_REPLY:
-      if (ee->efsd_reply_event.status != SUCCESS)
+      if (ee->efsd_reply_event.errorcode != 0)
 	{
 	  printf("failed: %s\n", strerror(ee->efsd_reply_event.errorcode));
 	  break;
@@ -190,7 +190,7 @@ void handle_efsd_event(EfsdEvent *ee)
 	  printf("Getmeta event %i\n", 
 		 ee->efsd_reply_event.command.efsd_get_metadata_cmd.id);
 
-	  if (ee->efsd_reply_event.status == SUCCESS)
+	  if (ee->efsd_reply_event.errorcode == 0)
 	    {
 	      switch (efsd_metadata_get_type(ee))
 		{
@@ -284,7 +284,7 @@ void handle_efsd_event(EfsdEvent *ee)
 	case EFSD_CMD_READLINK:
 	  printf("Readlink event %i\n", 
 		 ee->efsd_reply_event.command.efsd_file_cmd.id);
-	  if (ee->efsd_reply_event.status == SUCCESS)
+	  if (ee->efsd_reply_event.errorcode == 0)
 	    {
 	      printf("target is %s\n", (char*)ee->efsd_reply_event.data);
 	    }
@@ -293,7 +293,7 @@ void handle_efsd_event(EfsdEvent *ee)
 	  printf("Gettype event %i on %s\n", 
 		 ee->efsd_reply_event.command.efsd_file_cmd.id,
 		 ee->efsd_reply_event.command.efsd_file_cmd.files[0]);		 
-	  if (ee->efsd_reply_event.status == SUCCESS)
+	  if (ee->efsd_reply_event.errorcode == 0)
 	    {
 	      printf("filetype is %s\n", (char*)ee->efsd_reply_event.data);
 	    }
@@ -746,4 +746,7 @@ main(int argc, char** argv)
   kill(child, SIGKILL);
 
   return 0;
+
+  argc = 0;
+  argv = NULL;
 }

@@ -223,6 +223,7 @@ file_copy(char *src_path, struct stat *src_st, char *dst_path)
       efsd_misc_files_identical(src_path, dst_path) == TRUE)
     {
       D("Files identical, aborting.\n");
+      errno = EEXIST;
       D_RETURN_(-1);
     }
     
@@ -289,6 +290,7 @@ file_copy(char *src_path, struct stat *src_st, char *dst_path)
 	 we cannot copy onto a normal file.
       */
       D("File copy error.\n");
+      errno = EIO;
       D_RETURN_(-1);
     }
 
@@ -313,7 +315,6 @@ file_copy(char *src_path, struct stat *src_st, char *dst_path)
     }
 
   D("File %s finished.\n", src_path);
-
 
   /* Return final status. */
   D_RETURN_(success);
@@ -576,7 +577,6 @@ file_remove(char *path, struct stat *st)
     }
 
   /* It's not a directory either. Report error. */
-
   D_RETURN_(-1);
 }
 
@@ -595,16 +595,21 @@ efsd_fs_cp(int num_files, char **paths, EfsdFsOps ops)
   D_ENTER;
 
   if (!dst_path || dst_path[0] == '\0')
-    D_RETURN_(-1);
+    {
+      errno = EINVAL;
+      D_RETURN_(-1);
+    }
 
   dst_stat_succeeded = orig_dst_stat_succeeded = efsd_stat(dst_path, &dst_st);
   
   /* If we're copying multiple files to a target,
      it has to be a directory. */
   if ((num_files > 2) && orig_dst_stat_succeeded && !S_ISDIR(dst_st.st_mode))
-    D_RETURN_(-1);
+    {
+      errno = EINVAL;
+      D_RETURN_(-1);    
+    }
   
-
   /* Go through all files and copy to target (which
      is the last file in the char** array). */
 
@@ -614,7 +619,10 @@ efsd_fs_cp(int num_files, char **paths, EfsdFsOps ops)
       dst_path = paths[num_files-1]; /* Yes -- need to set this every time. */
 
       if (!src_path || src_path[0] == '\0')
-	D_RETURN_(-1);
+	{
+	  errno = EINVAL;
+	  D_RETURN_(-1);
+	}
       
       if (efsd_misc_file_exists(dst_path) &&
 	  efsd_misc_files_identical(src_path, dst_path) == TRUE)
@@ -712,14 +720,20 @@ efsd_fs_mv(int num_files, char **paths, EfsdFsOps ops)
   D_ENTER;
 
   if (!dst_path || dst_path[0] == '\0')
-    D_RETURN_(-1);
+    {
+      errno = EINVAL;
+      D_RETURN_(-1);
+    }
 
   dst_stat_succeeded = orig_dst_stat_succeeded = efsd_stat(dst_path, &dst_st);
 
   /* If we're moving multiple files to a target,
      it has to be a directory. */
   if ((num_files > 2) && orig_dst_stat_succeeded && !S_ISDIR(dst_st.st_mode))
-    D_RETURN_(-1);
+    {
+      errno = EINVAL;
+      D_RETURN_(-1);
+    }
 
   /* Go through all files and copy to target (which
      is the last file in the char** array). */
@@ -739,7 +753,8 @@ efsd_fs_mv(int num_files, char **paths, EfsdFsOps ops)
 	      
 	      if (ops & EFSD_FS_OP_FORCE)
 		continue;
-	      
+
+	      errno = EEXIST;
 	      D_RETURN_(-1);
 	    }	  
 	}
@@ -855,7 +870,10 @@ efsd_fs_rm(char *path, EfsdFsOps ops)
      recursive, it's an error.
   */
   if (S_ISDIR(st.st_mode) && !(ops & EFSD_FS_OP_RECURSIVE))
-    D_RETURN_(-1);
+    {
+      errno = EINVAL;
+      D_RETURN_(-1);
+    }
 
   /* Otherwise, try to remove and report result. */
 

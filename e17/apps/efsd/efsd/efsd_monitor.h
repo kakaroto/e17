@@ -134,9 +134,9 @@ int              efsd_monitor_stop(EfsdCommand *cmd, int client, int dir_mode);
 EfsdMonitor     *efsd_monitor_start_internal(char *filename, int dir_mode);
 int              efsd_monitor_stop_internal(char *filename, int dir_mode);
 
-/* Returns value >0 when file is already monitored.
+/* Looks up file monitor and returns it, NULL if not found.
  */
-EfsdMonitor     *efsd_monitored(char *filename, int client, int as_dir);
+EfsdMonitor     *efsd_monitored(char *filename, int client, int dir_mode);
 
 /* Check for all monitors if they are requested by CLIENT
    and in that case release those requests.

@@ -88,7 +88,7 @@ static EfsdMonitorKey     *monitor_key_new(char *filename, int dir_mode);
 static void                monitor_key_init(EfsdMonitorKey *emk);
 static void                monitor_key_free(EfsdMonitorKey *emk);
 static int                 monitor_key_cmp(EfsdMonitorKey *k1, EfsdMonitorKey *k2);
-static unsigned int        monitor_key_hash(EfsdMonitorKey *emk);
+static unsigned int        monitor_key_hash(EfsdHash *monitors, EfsdMonitorKey *emk);
 
 
 static EfsdMonitorKey *
@@ -138,11 +138,15 @@ monitor_key_free(EfsdMonitorKey *emk)
 
 
 static unsigned int     
-monitor_key_hash(EfsdMonitorKey *emk)
+monitor_key_hash(EfsdHash *monitors, EfsdMonitorKey *emk)
 {
+  unsigned int hash;
+
   D_ENTER;
 
-  D_RETURN_(efsd_hash_string(monitors, emk->filename));
+  hash = efsd_hash_string(monitors, emk->filename);
+
+  D_RETURN_(hash);
 }
 
 
@@ -152,10 +156,7 @@ monitor_key_cmp(EfsdMonitorKey *k1, EfsdMonitorKey *k2)
   D_ENTER;
 
   if (!k1 || !k2)
-    {
-      D("ONE MONITOR NULL\n");
-      D_RETURN_(1);
-    }
+    D_RETURN_(1);
 
   D("Comparing %s %i -- %s %i\n",
     k1->filename, k1->dir_mode,
@@ -163,6 +164,8 @@ monitor_key_cmp(EfsdMonitorKey *k1, EfsdMonitorKey *k2)
 
   D("Returning %i\n",
     (strcmp(k1->filename, k2->filename) || !(k1->dir_mode == k2->dir_mode)));
+
+  /* Return 0 when filenames and dirmodes match, 1 otherwise: */
 
   D_RETURN_((strcmp(k1->filename, k2->filename) || !(k1->dir_mode == k2->dir_mode)));
 }

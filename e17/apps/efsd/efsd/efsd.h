@@ -34,13 +34,6 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
 typedef int EfsdCmdId;
 
-typedef enum efsd_status
-{
-  SUCCESS,
-  FAILURE
-}
-EfsdStatus;
-
 typedef enum efsd_filechange_type
 {
   EFSD_FILE_CHANGED     = 1,
@@ -224,12 +217,7 @@ typedef struct efsd_reply_event
   /* The original command, without options */
   EfsdCommand         command;   
 
-  /* Status of the command (SUCCESS or FAILURE) */
-  EfsdStatus          status;    
-
-  /* Errorcode if things went wrong (FIXME: this
-     is redundant, remove the status field at some
-     point */
+  /* Errorcode -- if 0, things were successful. */
   int                 errorcode;
 
   /* Length of any returned data and data itself */

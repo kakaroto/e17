@@ -207,7 +207,10 @@ efsd_misc_remove(char *filename)
   D_ENTER;
 
   if (!filename || filename[0] == '\0')
-    D_RETURN_(-1);
+    {
+      errno = EINVAL;
+      D_RETURN_(-1);
+    }
 
   if (remove(filename) == 0)
     {
@@ -241,7 +244,10 @@ efsd_misc_rename(char *file1, char *file2)
 
   if (!file1 || file1[0] == '\0' ||
       !file2 || file2[0] == '\0')
-    D_RETURN_(-1);
+    {
+      errno = EINVAL;
+      D_RETURN_(-1);
+    }
 
   if (rename(file1, file2) == 0)
     {
@@ -269,7 +275,10 @@ efsd_misc_mkdir(char *filename)
   D_ENTER;
 
   if (!filename)
-    D_RETURN_(0);
+    {
+      errno = EINVAL;
+      D_RETURN_(0);
+    }
 
   if (mkdir(filename, mode_755) < 0)
     {

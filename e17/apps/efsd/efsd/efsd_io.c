@@ -417,10 +417,6 @@ read_reply_event(int sockfd, EfsdEvent *ee)
     D_RETURN_(-1);
   count2 = count;
 
-  if ((count = read_int(sockfd, (int*)&(ee->efsd_reply_event.status))) < 0)
-    D_RETURN_(-1);
-  count2 += count;
-
   if ((count = read_int(sockfd, &(ee->efsd_reply_event.errorcode))) < 0)
     D_RETURN_(-1);
   count2 += count;
@@ -649,9 +645,7 @@ fill_reply_event(EfsdIOV *iov, EfsdEvent *ee)
 
   fill_command(iov, &ee->efsd_reply_event.command);
 
-  iov->vec[iov->v].iov_base   = &ee->efsd_reply_event.status;
-  iov->vec[iov->v].iov_len    = sizeof(EfsdStatus);
-  iov->vec[++iov->v].iov_base = &ee->efsd_reply_event.errorcode;
+  iov->vec[iov->v].iov_base = &ee->efsd_reply_event.errorcode;
   iov->vec[iov->v].iov_len    = sizeof(int);
   iov->vec[++iov->v].iov_base = &ee->efsd_reply_event.data_len;
   iov->vec[iov->v].iov_len    = sizeof(int);
