@@ -1,0 +1,120 @@
+	program {
+	    name: "mouse_in_exif_panel_gateway";
+	    signal: "mouse,in";
+	    source: "exif_panel_mouse_area";
+	    script {
+		if(get_int(has_exif_data) == 1) {
+		    emit("panel,mouse,in", "");
+		}
+	    }
+	}
+	program {
+	    name: "mouse_in_exif_panel";
+	    signal: "panel,mouse,in";
+	    source: "";
+	    action: ACTION_STOP;
+	    target: "panel_mouse_out";
+	    target: "mouse_out_exif_panel_after";
+	    target: "mouse_out_exif_panel_after_border";
+	}
+	program {
+	    name: "mouse_in_exif_panel_after";
+	    signal: "panel,mouse,in";
+	    source: "";
+	    action: STATE_SET "visible" 0.0;
+	    target: "exif_panel_clip";
+	    transition: SINUSOIDAL 0.5;
+	    in: 0.5 0.0;
+	}
+	program {
+	    name: "mouse_in_exif_panel_after_border";
+	    signal: "panel,mouse,in";
+	    source: "";
+	    action: STATE_SET "visible" 0.0;
+	    target: "exif_panel_border";
+	    target: "exif_panel_label";
+	    transition: DECELERATE 1.0;
+	    in: 0.5 0.0;
+	    after: "exif_panel_item_list_show";
+	}
+	program {
+	    name: "exif_panel_item_list_show";
+	    signal: "";
+	    source: "";
+	    action: STATE_SET "visible" 0.0;
+	    target: "exif_panel_item_list_clip";
+	    transition: DECELERATE 1.0;
+	}
+	program {
+	    name: "mouse_out_exif_panel";
+	    signal: "mouse,out";
+	    source: "exif_panel_mouse_area";
+	    action: SIGNAL_EMIT "panel,mouse,out" "";
+	}
+	program {
+	    name: "panel_mouse_out";
+	    signal: "panel,mouse,out";
+	    source: "";
+	    action: ACTION_STOP;
+	    target: "mouse_in_exif_panel";
+	    target: "mouse_in_exif_panel_after";
+	    target: "mouse_in_exif_panel_after_border";
+	    target: "exif_panel_item_list_show";
+	    after: "mouse_out_exif_panel_after";
+	}
+	program {
+	    name: "mouse_out_exif_panel_after";
+	    signal: "";
+	    source: "exif_panel_mouse_area";
+	    action: STATE_SET "default" 0.0;
+	    target: "exif_panel_clip";
+	    transition: DECELERATE 1.5;
+	    after: "mouse_out_exif_embryo_var_fix";
+	}
+	program {
+	    name: "mouse_out_exif_panel_after_border";
+	    signal: "mouse,out";
+	    source: "exif_panel_mouse_area";
+	    action: STATE_SET "default" 0.0;
+	    target: "exif_panel_border";
+	    target: "exif_panel_label";
+	    target: "exif_panel_item_list_clip";
+	    transition: DECELERATE 1.0;
+	    in: 0.25 0.0;
+	}
+	program {
+	    name: "mouse_out_exif_embryo_var_fix";
+	    signal: "";
+	    source: "";
+	    script {
+		set_int(has_exif_data, 0);
+	    }
+	}
+	program {
+	    name: "exif_data_present";
+	    signal: "entice,image,exif,present";
+	    source: "";
+	    script {
+		if(get_int(has_exif_data) == 0) {
+		    set_int(has_exif_data, 1);
+		    emit("panel,mouse,in", "");
+		}
+	    }
+	}
+	program {
+	    name: "exif_data_absent";
+	    signal: "entice,image,exif,absent";
+	    source: "";
+	    script {
+		set_int(has_exif_data, 0);
+		emit("panel,mouse,out", "");
+	    }
+	}
+	EXIF_PROGS("camera", camera_toggle)
+	EXIF_PROGS("dated", dated_toggle)
+	EXIF_PROGS("focal_length", focal_length_toggle)
+	EXIF_PROGS("exposure_time", exposure_time_toggle)
+	EXIF_PROGS("iso_speed", iso_speed_toggle)
+	EXIF_PROGS("aperture", aperture_toggle)
+	EXIF_PROGS("white_balance", white_balance_toggle)
+	EXIF_PROGS("flash_on", flash_on_toggle)

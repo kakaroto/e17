@@ -1,0 +1,219 @@
+    part {
+	name: "exif_panel_region";
+	type: RECT;
+	description {
+	    state: "default" 0.0;
+	    rel1 {
+		relative: 1.0 1.0;
+		offset: -280 -310;
+	    } rel2 {
+		relative: 1.0 1.0;
+		offset: -10 -10;
+	    }
+	    color: 255 255 255 0;
+	}
+    }
+    part {
+	name: "exif_panel_clip";
+	type: RECT;
+	description {
+	    state: "default" 0.0;
+	    rel1 {
+		relative: 0.0 0.0;
+		offset: 0 0;
+		to: "exif_panel_region";
+	    } rel2 {
+		relative: 1.0 1.0;
+		offset: 0 0;
+		to: "exif_panel_region";
+	    }
+	    color: 255 255 255 0;
+	}
+	description {
+	    state: "visible" 0.0;
+	    rel1 {
+		relative: 0.0 0.0;
+		offset: 0 0;
+		to: "exif_panel_region";
+	    } rel2 {
+		relative: 1.0 1.0;
+		offset: 0 0;
+		to: "exif_panel_region";
+	    }
+	    color: 255 255 255 255;
+	}
+    }
+    part {
+	name: "exif_panel_label_clip";
+	type: RECT;
+	clip_to: "exif_panel_clip";
+	description {
+	    state: "default" 0.0;
+	    rel1 {
+		relative: 1.0 0.0;
+		offset: -205 0;
+		to: "exif_panel_region";
+	    } rel2 {
+		relative: 1.0 0.0;
+		offset: 0 30;
+		to: "exif_panel_region";
+	    }
+	    color: 255 255 255 255;
+	}
+	description {
+	    state: "visible" 0.0;
+	    rel1 {
+		relative: 1.0 0.0;
+		offset: -205 0;
+		to: "exif_panel_region";
+	    } rel2 {
+		relative: 1.0 0.0;
+		offset: 0 30;
+		to: "exif_panel_region";
+	    }
+	    color: 255 255 255 255;
+	}
+    }
+    part {
+	name: "exif_panel_label";
+	type: IMAGE;
+	clip_to: "exif_panel_label_clip";
+	description {
+	    state: "default" 0.0;
+	    rel1 {
+		relative: 1.0 0.0;
+		offset: -135 60;
+		to: "exif_panel_region";
+	    } rel2 {
+		relative: 1.0 0.0;
+		offset: -10 60;
+		to: "exif_panel_region";
+	    }
+	    image {
+		normal: "border-bevel.png";
+	    }
+	    border: 10 10 10 10;
+	    color: 255 255 255 0;
+	}
+	description {
+	    state: "visible" 0.0;
+	    rel1 {
+		relative: 1.0 0.0;
+		offset: -135 5;
+		to: "exif_panel_region";
+	    } rel2 {
+		relative: 1.0 0.0;
+		offset: -10 69;
+		to: "exif_panel_region";
+	    }
+	    image {
+		normal: "border-bevel.png";
+	    }
+	    border: 13 13 13 13;
+	}
+    }
+    part {
+	name: "exif_panel_label_text";
+	type: TEXT;
+	effect: SOFT_SHADOW;
+	clip_to: "exif_panel_label_clip";
+	description {
+	    state: "default" 0.0;
+	    rel1 {
+		relative: 0.0 0.0;
+		offset: 0 0;
+		to: "exif_panel_label";
+	    } rel2 {
+		relative: 1.0 1.0;
+		offset: 0 0;
+		to: "exif_panel_label";
+	    }
+	    color: 255 255 255 255;
+	    color3: 0 0 0 96;
+	    text {
+		text: "Exif Meta-Info";
+		font: "Edje.Vera";
+		size: 14;
+		align: 0.5 0.15;
+	    }
+	}
+    }
+    part {
+	name: "exif_panel_border";
+	type: IMAGE;
+	clip_to: "exif_panel_clip";
+	description {
+	    state: "default" 0.0;
+	    rel1 {
+		relative: 1.0 0.0;
+		offset: -24 30;
+		to: "exif_panel_region";
+	    } rel2 {
+		relative: 1.0 1.0;
+		offset: 0 0;
+		to: "exif_panel_region";
+	    }
+	    image {
+		normal: "border-bevel.png";
+	    }
+	    border: 2 2 10 10;
+	}
+	description {
+	    state: "visible" 0.0;
+	    rel1 {
+		relative: 0.0 0.0;
+		offset: 0 30;
+		to: "exif_panel_region";
+	    } rel2 {
+		relative: 1.0 1.0;
+		offset: 0 0;
+		to: "exif_panel_region";
+	    }
+	    image {
+		normal: "border-bevel.png";
+	    }
+	    border: 10 10 10 10;
+	}
+    }
+    part {
+	name: "exif_panel_border_bevel";
+	type: IMAGE;
+	clip_to: "exif_panel_clip";
+	description {
+	    state: "default" 0.0;
+	    rel1 {
+		relative: 0.0 0.0;
+		offset: 2 2;
+		to: "exif_panel_border";
+	    } rel2 {
+		relative: 1.0 1.0;
+		offset: -2 -2;
+		to: "exif_panel_border";
+	    }
+	    image {
+		normal: "border-bevel.png";
+	    }
+	    border: 10 10 10 10;
+	}
+    }
+#include "exifpanel_itemlist.edc"
+    part {
+	name: "exif_panel_mouse_area";
+	type: RECT;
+	mouse_events: 1;
+	repeat_events: 1;
+	description {
+	    state: "default" 0.0;
+	    rel1 {
+		relative: 0.0 0.0;
+		offset: -10 -10;
+		to: "exif_panel_region";
+	    } rel2 {
+		relative: 1.0 1.0;
+		offset: 10 10;
+		to: "exif_panel_region";
+	    }
+	    color: 255 0 0 0;
+	}
+    }
+

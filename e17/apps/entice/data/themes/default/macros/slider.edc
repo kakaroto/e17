@@ -77,12 +77,12 @@
 	  color, 192 192 192 128;	\
 	  rel1 {			\
 	    to, NAME".scrollbar";	\
-	    relative, 0.0 0.0;		\
+	    relative, 0.5 0.5;		\
 	    offset, -4 -4;		\
 	  }				\
 	  rel2 {			\
 	    to, NAME".scrollbar";	\
-	    relative, 1.0 1.0;		\
+	    relative, 0.5 0.5;		\
 	    offset, 4 4;		\
 	  }				\
 	  image {			\
@@ -110,25 +110,6 @@
 	  min, 30 12;			\
 	  align, 0.0 0.5;		\
 	  color, 255 255 255 96;	\
-	  rel1 {			\
-	    to, NAME"_scrollbar_trough";\
-	    relative, 0.5 0.5;		\
-	    offset, 0 0;		\
-	  }				\
-	  rel2 {			\
-	    to, NAME"_scrollbar_trough";\
-	    relative, 0.5 0.5;		\
-	    offset, 0 0;		\
-	  }				\
-	  image {			\
-	      normal, "bt_dragable.png"; \
-	  }				\
-	}				\
-	description {			\
-	  state, "down" 0.0;		\
-	  min, 30 12;			\
-	  align, 0.0 0.5;		\
-	  color, 255 255 255 255;	\
 	  rel1 {			\
 	    to, NAME"_scrollbar_trough";\
 	    relative, 0.5 0.5;		\
@@ -184,25 +165,6 @@
 	  min, 12 30;			\
 	  align, 0.0 0.5;		\
 	  color, 255 255 255 96;	\
-	  rel1 {			\
-	    to, NAME"_scrollbar_trough";\
-	    relative, 0.5 0.5;		\
-	    offset, -7 -6;		\
-	  }				\
-	  rel2 {			\
-	    to, NAME"_scrollbar_trough";\
-	    relative, 0.5 0.5;		\
-	    offset, 5 6;		\
-	  }				\
-	  image {			\
-	      normal, "bt_dragable.png"; \
-	  }				\
-	}				\
-	description {			\
-	  state, "down" 0.0;		\
-	  min, 12 30;			\
-	  align, 0.0 0.5;		\
-	  color, 255 255 255 255;	\
 	  rel1 {			\
 	    to, NAME"_scrollbar_trough";\
 	    relative, 0.5 0.5;		\

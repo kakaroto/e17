@@ -1,0 +1,85 @@
+    part {
+	name: "exif_panel_item_list_clip";
+	type: RECT;
+	clip_to: "exif_panel_clip";
+	description {
+	    state: "default" 0.0;
+	    rel1 {
+		relative: 0.0 0.0;
+		offset: 4 0;
+		to: "exif_panel_border_bevel";
+	    } rel2 {
+		relative: 1.0 0.0;
+		offset: -4 2;
+		to: "exif_panel_border_bevel";
+	    }
+	    color: 255 255 255 0;
+	}
+	description {
+	    state: "visible" 0.0;
+	    rel1 {
+		relative: 0.0 0.0;
+		offset: 4 0;
+		to: "exif_panel_border_bevel";
+	    } rel2 {
+		relative: 1.0 1.0;
+		offset: -4 0;
+		to: "exif_panel_border_bevel";
+	    }
+	    color: 255 255 255 255;
+	}
+    }
+    part {
+	name: "exif_panel_item_list_anchor";
+	type: RECT;
+	clip_to: "exif_panel_item_list_clip";
+	description {
+	    state: "default" 0.0;
+	    rel1 {
+		relative: 0.0 0.0;
+		offset: 5 5;
+		to: "exif_panel_border_bevel";
+	    } rel2 {
+		relative: 1.0 0.0;
+		offset: -5 5;
+		to: "exif_panel_border_bevel";
+	    }
+	    color: 255 0 0 0;
+	}
+    }
+    EXIF_ELEMENT("exif_panel_item_list_anchor", \
+		 "camera", "Camera: ", "exif_panel_item_list_clip");
+    EXIF_ELEMENT("camera.box", \
+		 "dated", "Taken On: ", "exif_panel_item_list_clip");
+    EXIF_ELEMENT("dated.box", \
+		 "focal_length", "Focal Length: ", "exif_panel_item_list_clip");
+    EXIF_ELEMENT("focal_length.box", \
+		 "exposure_time", "Exposure Time: ", "exif_panel_item_list_clip");
+    EXIF_ELEMENT("exposure_time.box", \
+		 "iso_speed", "ISO Speed: ", "exif_panel_item_list_clip");
+    EXIF_ELEMENT("iso_speed.box", \
+		 "aperture", "Aperture: ", "exif_panel_item_list_clip");
+    EXIF_ELEMENT("aperture.box", \
+		 "white_balance", "White Balance: ", "exif_panel_item_list_clip");
+    EXIF_ELEMENT("white_balance.box", \
+		 "flash_on", "Flash: ", "exif_panel_item_list_clip");
+
+    part {
+	name: "exif_panel_item_list_blocker";
+	type: RECT;
+	mouse_events: 1;
+	description {
+	    state: "default" 0.0;
+	    rel1 {
+		relative: 0.0 1.0;
+		offset: -10 0;
+		to: "exif_panel_item_list_clip";
+	    } rel2 {
+		relative: 1.0 1.0;
+		offset: 10 0;
+		to_x: "exif_panel_item_list_clip";
+		to_y: "exif_panel_border_bevel";
+	    }
+	    color: 0 0 255 0;
+	}
+    }

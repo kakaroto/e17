@@ -1,7 +1,16 @@
     script {
 	public is_fullscreen;
 	public is_first_image;
-	
+	public has_exif_data;
+        public camera_toggle;
+	public dated_toggle;
+	public focal_length_toggle;
+	public exposure_time_toggle;
+	public iso_speed_toggle;
+	public aperture_toggle;
+	public white_balance_toggle;
+	public flash_on_toggle;
+
 	public preview_place()
 	{
 	    new buf[100];

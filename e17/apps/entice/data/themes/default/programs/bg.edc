@@ -10,8 +10,6 @@
 	name: "edje_resized";
 	signal: "resize";
 	source: "";
-	script {
-	}
     }
     /* just for looks */
     program

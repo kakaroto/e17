@@ -1,0 +1,248 @@
+#define PACK_ITEM_SOUTH(relname, object, width, height, clipto) \
+    part { \
+	name: object".box"; \
+	type: RECT; \
+	mouse_events: 0; \
+	clip_to: clipto; \
+	description { \
+	    state: "default" 0.0 \
+	    color: 255 255 255 0; \
+	    visible: 0; \
+	    rel1 { relative: 0.0 1.0; offset: 0 0; to: relname; } \
+	    rel2 { relative: 0.0 1.0; offset: width 0; to: relname; } \
+	} \
+	description { \
+	    state: "visible" 0.0 \
+	    color: 255 255 255 255; \
+	    visible: 1; \
+	    rel1 { relative: 0.0 1.0; offset: 0 0; to: relname; } \
+	    rel2 { relative: 0.0 1.0; offset: width height; to: relname; } \
+	} \
+    } \
+    part { \
+	name: object".border"; \
+	type: IMAGE; \
+	mouse_events: 0; \
+	clip_to: object".box"; \
+	description { \
+	    state: "default" 0.0 \
+	    visible: 0; \
+	    align: 0.5 0.5; \
+	    rel1 { relative: 0.0 0.0; offset: 0 0; to: object".box"; } \
+	    rel2 { relative: 1.0 1.0; offset: 0 0; to: object".box"; } \
+	    image { normal: "border-bevel.png"; } \
+	    border: 10 12 10 10; \
+	} \
+    } \
+    part { \
+	name: object".pulser.clip"; \
+	type: RECT; \
+	mouse_events: 0; \
+	description { \
+	    state: "default" 0.0 \
+	    visible: 0; \
+	    color: 255 255 255 0; \
+	    rel1 { relative: 0.0 0.0; offset: 0 0; to: object".box"; } \
+	    rel2 { relative: 1.0 1.0; offset: 0 0; to: object".box"; } \
+	} \
+	description { \
+	    state: "visible" 0.0 \
+	    visible: 1; \
+	    color: 255 0 0 128; \
+	    rel1 { relative: 0.0 0.0; offset: 0 0; to: object".box"; } \
+	    rel2 { relative: 1.0 1.0; offset: 0 0; to: object".box"; } \
+	} \
+    } \
+    part { \
+	name: object".pulser"; \
+	type: IMAGE; \
+	mouse_events: 1; \
+	clip_to: object".pulser.clip"; \
+	description { \
+	    state: "default" 0.0 \
+	    visible: 0; \
+	    align: 0.5 0.5; \
+	    rel1 { relative: 0.0 0.0; offset: 0 0; to: object".box"; } \
+	    rel2 { relative: 1.0 1.0; offset: 0 0; to: object".box"; } \
+	    image { normal: "border-bevel.png"; } \
+	    border: 10 12 10 10; \
+	} \
+    }
+
+#define EXIF_PART(id, clipto, label, lfont, lfontsize, vfont, vfontsize) \
+    part { \
+	name: id".label"; \
+	type: TEXT; \
+	effect: SOFT_SHADOW; \
+	mouse_events: 0; \
+	clip_to: id".box"; \
+	description { \
+	    state: "default" 0.0 \
+	    color: 255 255 255 255; \
+	    color3: 0 0 0 96; \
+	    rel1 { relative: 0.0 0.0; offset: 10 0; to: id".box"; } \
+	    rel2 { relative: 1.0 1.0; offset: 0 0; to: id".box"; } \
+	    text { \
+		text: label; \
+		font: lfont; \
+		size: lfontsize; \
+		align: 0.0 0.5; \
+	    } \
+	} \
+    } \
+    part { \
+	name: id".value"; \
+	type: TEXT; \
+	mouse_events: 0; \
+	effect: SOFT_SHADOW; \
+	clip_to: id".box"; \
+	description { \
+	    state: "default" 0.0 \
+	    color: 255 255 255 255; \
+	    color3: 0 0 0 96; \
+	    rel1 { relative: 0.0 0.0; offset: 0 0; to: id".box"; } \
+	    rel2 { relative: 1.0 1.0; offset: -10 0; to: id".box"; } \
+	    text { \
+		text: "0x00"; \
+		font: vfont; \
+		size: vfontsize; \
+		align: 1.0 0.5; \
+	    } \
+	} \
+    }
+#define EXIF_ELEMENT(related_to, element_name, element_label, clipto) \
+    PACK_ITEM_SOUTH(related_to, element_name, 255, 30, clipto) \
+    EXIF_PART(element_name, clipto, element_label, \
+			"Edje.Vera", 14,  "Edje.Vera", 12)
+   
+#define PULSE_UP_TIME 0.25
+#define PULSE_UP_TRANSITION SINUSOIDAL 
+#define PULSE_DOWN_TIME 0.25
+#define PULSE_DOWN_TRANSITION SINUSOIDAL 
+
+#if 0
+#define EXIF_PROGS(pname) \
+    program { \
+	name: pname"pulser_mouse_in"; \
+	signal: "mouse,in"; \
+	source: pname".pulser"; \
+	action: ACTION_STOP; \
+	target: pname".pulse_up_timer"; \
+	target: pname".pulse_down_timer"; \
+	after: pname".pulse_up_timer"; \
+    } \
+    program { \
+	name: pname"pulser_mouse_out"; \
+	signal: "mouse,out"; \
+	source: pname".pulser"; \
+	action: ACTION_STOP; \
+	target: pname".pulse_up_timer"; \
+	target: pname".pulse_down_timer"; \
+	after: pname".pulse_down_signal"; \
+    } \
+    program { \
+	name: pname".pulse_up_signal"; \
+	signal: "exif,"pname",pulse,up"; \
+	source: ""; \
+	action: STATE_SET "visible" 0.0; \
+	target: pname".pulser.clip"; \
+	transition: PULSE_UP_TRANSITION PULSE_UP_TIME; \
+    } \
+    program { \
+	name: pname".pulse_down_signal"; \
+	signal: "exif,"pname",pulse,down"; \
+	source: ""; \
+	action: STATE_SET "default" 0.0; \
+	target: pname".pulser.clip"; \
+	transition: PULSE_DOWN_TRANSITION PULSE_DOWN_TIME; \
+    } \
+    program { \
+	name: pname".pulse_up_timer"; \
+	signal: ""; \
+	source: ""; \
+	action: STATE_SET "visible" 0.0; \
+	target: pname".pulser.clip"; \
+	transition: PULSE_UP_TRANSITION PULSE_UP_TIME; \
+	after: pname".pulse_down_timer"; \
+    } \
+    program { \
+	name: pname".pulse_down_timer"; \
+	signal: ""; \
+	source: ""; \
+	action: STATE_SET "default" 0.0; \
+	target: pname".pulser.clip"; \
+	transition: PULSE_DOWN_TRANSITION PULSE_DOWN_TIME; \
+	after: pname".pulse_up_timer"; \
+    } \
+    program { \
+	name: pname"pulser_mouse_down"; \
+	signal: "mouse,down,*"; \
+	source: pname".pulser"; \
+	action: ACTION_STOP; \
+	target: pname".pulse_up_timer"; \
+	target: pname".pulse_down_timer"; \
+	after: pname".pulse_up_signal"; \
+    } \
+    program { \
+	name: pname"pulser_mouse_up"; \
+	signal: "mouse,up,*"; \
+	source: pname".pulser"; \
+	action: ACTION_STOP; \
+	target: pname".pulse_up_timer"; \
+	target: pname".pulse_down_timer"; \
+	after: pname".pulse_down_timer"; \
+    } \
+    program { \
+	name: pname"exif_data_not_found"; \
+	signal: "entice,exif,data,notfound"; \
+	source: pname".value"; \
+	script { \
+	    emit("entice,debug", pname".value"); \
+	    set_text(PART:pname".value", "Not Found"); \
+	} \
+    } 
+#endif
+#define EXIF_PROGS(pname, edje_id) \
+    program { \
+	name: pname"exif_data_not_found"; \
+	signal: "entice,exif,data,notfound"; \
+	source: pname".value"; \
+	script { \
+	    new buf[256]; \
+	    snprintf(buf, 256, "%i %s", get_int(edje_id), pname".value"); \
+	    emit("entice,debug", buf); \
+	    set_text(PART:pname".value", "Not Found"); \
+	    set_int(edje_id, 0); \
+	    emit("entice,exif,item,hide", pname".value"); \
+	} \
+    } \
+    program { \
+	name: pname"exif_data_found"; \
+	signal: "entice,exif,data,found"; \
+	source: pname".value"; \
+	script { \
+	    new buf[256]; \
+	    snprintf(buf, 256, "%i %s", get_int(edje_id), pname".value"); \
+	    emit("entice,debug", buf); \
+	    if(get_int(edje_id) == 0) { \
+		set_int(edje_id, 1); \
+		emit("entice,exif,item,show", pname".value"); \
+	    } \
+	} \
+    } \
+    program { \
+	name: pname"exif_data_found_anim"; \
+	signal: "entice,exif,item,show"; \
+	source: pname".value"; \
+	action: STATE_SET "visible" 0.0; \
+	transition: SINUSOIDAL 0.5; \
+	target: pname".box"; \
+    } \
+    program { \
+	name: pname"exif_data_notfound_anim"; \
+	signal: "entice,exif,item,hide"; \
+	source: pname".value"; \
+	action: STATE_SET "default" 0.0; \
+	transition: SINUSOIDAL 0.5; \
+	target: pname".box"; \
+    } 
