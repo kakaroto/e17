@@ -12,6 +12,7 @@ EDCS = button-groups.edc button-images.edc button-macro.edc \
        progressbar-groups.edc progressbar-images.edc progressbar.edc \
        radio-groups.edc radio-images.edc radio-programs.edc radio.edc \
        scrollbar-groups.edc scrollbar-images.edc scrollbar.edc \
+       tree-groups.edc tree-images.edc tree-programs.edc \
        window-groups.edc window-images.edc window.edc
 
 EETS = $(EDCS:%.edc=%.eet)
