@@ -17,8 +17,7 @@
 #include <sys/ioctl.h>
 #include <X11/Xlib.h>
 #include <Imlib2.h>
-#include "geist_list.h"
-#include "imlib_wrap.h"
+#include <giblib.h>
 
 #include <asm/types.h>
 #include "videodev.h"
@@ -70,8 +69,8 @@ char *grab_archive = NULL;
 char *grab_blockfile = NULL;
 char *grab_postprocess = NULL;
 char *title_text = NULL;
-font_style *title_style = NULL;
-font_style *text_style = NULL;
+gib_style *title_style = NULL;
+gib_style *text_style = NULL;
 char *title_style_file = NULL;
 char *text_style_file = NULL;
 
@@ -238,13 +237,13 @@ add_time_text(Imlib_Image image, char *message, int width, int height)
       title_fn = imlib_load_font(title_font);
       if (title_fn)
       {
-         imlib_wrap_get_text_size(title_fn, title_line, title_style, &w, &h,
+         gib_imlib_get_text_size(title_fn, title_line, title_style, &w, &h,
                                   IMLIB_TEXT_TO_RIGHT);
          x = width - w - 2;
          y = 2;
-         imlib_wrap_image_fill_rectangle(image, x - 2, y - 1, w + 4, h + 2,
+         gib_imlib_image_fill_rectangle(image, x - 2, y - 1, w + 4, h + 2,
                                          bg_r, bg_g, bg_b, bg_a);
-         imlib_wrap_text_draw(image, title_fn, title_style, x, y, title_line,
+         gib_imlib_text_draw(image, title_fn, title_style, x, y, title_line,
                               IMLIB_TEXT_TO_RIGHT, title_r, title_g, title_b,
                               title_a);
       }
@@ -255,12 +254,12 @@ add_time_text(Imlib_Image image, char *message, int width, int height)
       text_fn = imlib_load_font(text_font);
       if (text_fn)
       {
-         imlib_wrap_get_text_size(text_fn, line, text_style, &w, &h, IMLIB_TEXT_TO_RIGHT);
+         gib_imlib_get_text_size(text_fn, line, text_style, &w, &h, IMLIB_TEXT_TO_RIGHT);
          x = 2;
          y = height - h - 2;
-         imlib_wrap_image_fill_rectangle(image, x - 2, y - 1, w + 4, h + 2,
+         gib_imlib_image_fill_rectangle(image, x - 2, y - 1, w + 4, h + 2,
                                          bg_r, bg_g, bg_b, bg_a);
-         imlib_wrap_text_draw(image, text_fn, text_style, x, y, line,
+         gib_imlib_text_draw(image, text_fn, text_style, x, y, line,
                               IMLIB_TEXT_TO_RIGHT, text_r, text_g, text_b,
                               text_a);
       }
@@ -330,7 +329,7 @@ archive_jpeg(Imlib_Image im)
                   grab_archive, date, num++);
       }
       while (stat(buffer, &st) == 0);
-      imlib_wrap_save_image(im, buffer);
+      gib_imlib_save_image(im, buffer);
    }
 }
 
@@ -488,9 +487,9 @@ main(int argc, char *argv[])
    imlib_add_path_to_font_path(".");
    imlib_context_set_operation(IMLIB_OP_COPY);
    if(title_style_file)
-      title_style = font_style_new_from_ascii(title_style_file);
+      title_style = gib_style_new_from_ascii(title_style_file);
    if(text_style_file)
-      text_style = font_style_new_from_ascii(text_style_file);
+      text_style = gib_style_new_from_ascii(text_style_file);
 
    if (ftp_do)
    {
@@ -532,7 +531,7 @@ main(int argc, char *argv[])
             system(action_post_shot);
          }
          add_time_text(image, get_message(), width, height);
-         imlib_wrap_save_image(image, temp_file);
+         gib_imlib_save_image(image, temp_file);
          do_postprocess(temp_file);
          archive_jpeg(image);
          if (ftp_do)
@@ -556,7 +555,7 @@ main(int argc, char *argv[])
             log("running post upload action");
             system(action_post_upload);
          }
-         imlib_wrap_free_image_and_decache(image);
+         gib_imlib_free_image_and_decache(image);
          log("sleeping");
       }
       if (grab_delay > 0)

@@ -7,7 +7,7 @@ bindir=$(ROOT)${exec_prefix}/bin
 mandir=$(ROOT)${prefix}/man
 
 CC=gcc
-CFLAGS=-O3 -Wall -I$(srcdir)/.. -I.. -D_GNU_SOURCE -I/usr/local/include -I/usr/X11R6/include
+CFLAGS=-O3 -Wall -I$(srcdir)/.. -I.. -D_GNU_SOURCE `giblib-config --cflags`
 
 INSTALL=/usr/bin/install -c
 INSTALL_PROGRAM=${INSTALL}
@@ -16,14 +16,14 @@ INSTALL_DIR=mkdir -p
 
 PROGS=camE
 
-OBJS=webcam.o ftp.o parseconfig.o imlib_wrap.o geist_list.o
+OBJS=webcam.o ftp.o parseconfig.o
 
 ##########################################################################
 
 all build: $(PROGS)
 
 camE: $(OBJS)
-	$(CC) $(CFLAGS) -o $@ $(OBJS) -L/usr/local/lib -lImlib2 -lttf -lm -ldl -lXext -lXext -L/usr/X11R6/lib
+	$(CC) $(CFLAGS) -o $@ $(OBJS) `giblib-config --libs`
 
 install: all
 	$(INSTALL_DIR) $(bindir)
