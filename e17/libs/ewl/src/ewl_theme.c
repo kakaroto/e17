@@ -140,6 +140,29 @@ int ewl_theme_init(void)
 	DRETURN_INT(TRUE, DLEVEL_STABLE);
 }
 
+void ewl_theme_shutdown()
+{
+	char *data;
+
+	if (theme_db) {
+		e_db_close(theme_db);
+		theme_db = NULL;
+	}
+
+	if (font_paths) {
+		while ((data = ewd_list_remove_first(font_paths)))
+			free(data);
+		
+		ewd_list_destroy(font_paths);
+		font_paths = NULL;
+	}
+
+	if (def_theme_data) {
+		ewd_hash_destroy(def_theme_data);
+		def_theme_data = NULL;
+	}
+}
+
 /*
  * Initializes the font path based on the theme. Also called by ewl_init, and
  * is not recommended to be called separately.
@@ -164,9 +187,10 @@ static void ewl_theme_init_font_path()
 				snprintf(key, PATH_MAX, "%s/%s", theme_path,
 						font_path);
 				ewd_list_append(font_paths, strdup(key));
+
+				FREE(font_path);
 			}
 
-			FREE(font_path);
 		}
 	}
 }

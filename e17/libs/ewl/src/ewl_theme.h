@@ -11,6 +11,7 @@
  */
 
 int             ewl_theme_init(void);
+void            ewl_theme_shutdown(void);
 int             ewl_theme_init_widget(Ewl_Widget * w);
 void            ewl_theme_deinit_widget(Ewl_Widget * w);
 char           *ewl_theme_path(void);
