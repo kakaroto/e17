@@ -2,7 +2,6 @@
 
 INCLUDES = \
 -I../lib \
--I/usr/local/include \
 -I$(top_srcdir)/src/lib \
 @my_includes@
 
