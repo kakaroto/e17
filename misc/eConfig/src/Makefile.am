@@ -7,7 +7,6 @@ libeConfig_la_SOURCES = \
     cache.c             \
     disk.c              \
     init.c              \
-	load.c      	    \
     eConfig.internal.h  \
 	path.c
 

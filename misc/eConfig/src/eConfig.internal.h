@@ -29,6 +29,8 @@
 #include <sys/stat.h>
 #include <sys/resource.h>
 
+#define FILEPATH_LEN_MAX 4096
+
 typedef struct _pathstruct {
 
     char *path;
@@ -48,7 +50,7 @@ typedef struct _econfdata {
 
 typedef struct _econffat {
 
-	char           *loc;
+	char            loc[FILEPATH_LEN_MAX];
 	unsigned long   position;
 	unsigned long   length;
 
@@ -64,4 +66,4 @@ typedef struct {
 
 extern eConfigType eConfig; 
 
-void eConfigLoadConfigSegment(void);
+int _econf_finddatapointerinpath(char *path,char *loc,unsigned long *length);
