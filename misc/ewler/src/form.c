@@ -23,7 +23,7 @@ Ewl_Widget *widget_container = NULL;
 
 static struct {
 	int active;
-	int x, y;
+	int ox, oy;
 } dragging;
 
 static void
@@ -82,12 +82,14 @@ __mouse_down_widget( Ewl_Widget *w, void *ev_data, void *user_data )
 		widget_container = w;
 	} else if( !widget_selected ) {
 		/* check for shift down */
-		form_selected_clear( form );
+		if( ev->modifiers != EWL_KEY_MODIFIER_SHIFT &&
+				ev->modifiers != EWL_KEY_MODIFIER_CTRL )
+			form_selected_clear( form );
 
 		form_selected_append( form, w );
 
-		dragging.x = ev->x - CURRENT_X(w);
-		dragging.y = ev->y - CURRENT_Y(w);
+		dragging.ox = ev->x;
+		dragging.oy = ev->y;
 		dragging.active = 1;
 
 		widget_selected = 1;
@@ -104,21 +106,23 @@ __mouse_move_widget( Ewl_Widget *w, void *ev_data, void *user_data )
 	Ewler_Form *form = EWLER_FORM(user_data);
 	Ewl_Event_Mouse_Move *ev = ev_data;
 	Ewl_Widget *c_s;
+	int dx, dy;
+
+	dx = ev->x - dragging.ox;
+	dy = ev->y - dragging.oy;
 
 	if( dragging.active ) {
 		ecore_list_goto_first( form->selected );
 
 		while( (c_s = ecore_list_next(form->selected)) ) {
-#if 0
 			ewl_object_request_position(EWL_OBJECT(c_s),
-																	ev->x - dragging.x - 8,
-																	ev->y - dragging.y - 8);
-#endif
-			ewl_object_request_position(EWL_OBJECT(c_s),
-																	ev->x - dragging.x,
-																	ev->y - dragging.y);
+																	CURRENT_X(c_s) + dx,
+																	CURRENT_Y(c_s) + dy);
 		}
 	}
+
+	dragging.ox = ev->x;
+	dragging.oy = ev->y;
 }
 		
 static void
@@ -127,22 +131,20 @@ __mouse_up_widget( Ewl_Widget *w, void *ev_data, void *user_data )
 	Ewler_Form *form = user_data;
 	Ewl_Event_Mouse_Up *ev = ev_data;
 	Ewl_Widget *c_s;
+	int dx, dy;
+
+	dx = ev->x - dragging.ox;
+	dy = ev->y - dragging.oy;
 
 	if( dragging.active ) {
 		ecore_list_goto_first( form->selected );
 
 		while( (c_s = ecore_list_next( form->selected )) ) {
-#if 0
 			ewl_object_request_position(EWL_OBJECT(c_s),
-																	ev->x - dragging.x - 8,
-																	ev->y - dragging.y - 8);
-#endif
-			ewl_object_request_position(EWL_OBJECT(c_s),
-																	ev->x - dragging.x,
-																	ev->y - dragging.y);
+																	CURRENT_X(c_s) - dx,
+																	CURRENT_Y(c_s) - dy);
 			widget_changed(ewler_selected_get(EWLER_SELECTED(c_s)));
 		}
-		dragging.x = dragging.y = 0;
 		dragging.active = 0;
 	}
 }
@@ -257,10 +259,14 @@ form_set_widget_selected( void )
 }
 
 void
+form_clear_widget_selected( void )
+{
+	widget_selected = 0;
+}
+
+void
 form_set_widget_dragging( Ewl_Widget *w, Ewl_Event_Mouse_Down *ev )
 {
-	dragging.x = ev->x - CURRENT_X(w);
-	dragging.y = ev->y - CURRENT_Y(w);
 	dragging.active = 1;
 
 	widget_selected = 1;

@@ -85,7 +85,8 @@ write_widget( void *value )
 	xmlTextWriterStartElement( writer, "widget" );
 	xmlTextWriterWriteAttribute( writer, "type", widget_get_type( w ) );
 
-	ecore_list_for_each( info, __write_element );
+	if( info )
+		ecore_list_for_each( info, __write_element );
 
 	if( widget_is_type( w, "Ewl_Container" ) )
 		ecore_list_for_each( EWL_CONTAINER(w)->children, write_widget );

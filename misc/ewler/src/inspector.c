@@ -191,7 +191,6 @@ __populate_tree( void *val )
 
 	row = ewl_tree_add_row( EWL_TREE(inspector_tree), EWL_ROW(prow), row_elems );
 	ewl_callback_del_type( row->parent, EWL_CALLBACK_CLICKED );
-	ewl_tree_set_row_expand( EWL_ROW(row), EWL_TREE_NODE_EXPANDED );
 	ewl_widget_show( row );
 
 	switch( data->type->w.w_type ) {

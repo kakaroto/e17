@@ -1,5 +1,7 @@
 ## Process this file with automake to produce Makefile.in
 
+SUBDIRS = ewl_uic
+
 INCLUDES = @ewl_cflags@ @xml2_cflags@
 
 bin_PROGRAMS = ewler
