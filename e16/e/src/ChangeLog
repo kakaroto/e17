@@ -1780,3 +1780,10 @@ Tue Sep 14 18:55:40 PDT 1999
 
 and double check that ewins didnt go missing whilst we were dragging them
 in the pager
+
+-------------------------------------------------------------------------------
+
+Wed Sep 15 09:34:16 PDT 1999
+(Raster)
+
+fixe over sealous ewin existance catching.. 
