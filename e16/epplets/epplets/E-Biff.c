@@ -59,6 +59,7 @@ char *folder_path = NULL, *mailprog = MAIL_PROG, *sound = NULL,
   *seven_image = SEVEN_IMAGE;
 int mp_pid = 0;
 int beep = 1, cfg_beep;
+int show_total = 1, cfg_total;
 double interval = 2.0;
 
 static void mailcheck_cb(void *data);
@@ -75,11 +76,20 @@ static void config_cb(void *data);
 static void process_conf(void);
 extern int mbox_folder_count(char *, int);
 
+void display_label(void)
+{
+  char label_text[64];
+  
+  if (show_total)
+    Esnprintf(label_text, sizeof(label_text), "%lu / %lu", new_cnt, total_cnt);
+  else
+    Esnprintf(label_text, sizeof(label_text), "%lu", new_cnt);
+  Epplet_change_label(label, label_text);
+}
+
 static void
 mailcheck_cb(void *data)
 {
-  char label_text[64];
-
   D(("mailcheck_cb() called.\n"));
   if ((mbox_folder_count(folder_path, 0)) != 0) {
     if (new_cnt != 0) {
@@ -102,8 +112,7 @@ mailcheck_cb(void *data)
       Epplet_gadget_hide(seven);
       Epplet_gadget_show(nomail);
     }
-    Esnprintf(label_text, sizeof(label_text), "%lu / %lu", new_cnt, total_cnt);
-    Epplet_change_label(label, label_text);
+    display_label();
   }
   Epplet_timer(mailcheck_cb, NULL, interval, "TIMER");
   return;
@@ -219,6 +228,18 @@ apply_config(void)
     sprintf(buff, "%d", beep);
     Epplet_modify_config("beep", buff);
   }
+
+  if (show_total != cfg_total) {
+    show_total = cfg_total;
+    sprintf(buff, "%d", show_total);
+    Epplet_modify_config("show_total", buff);
+    if (show_total)
+      Epplet_gadget_move(label, 6, 34);
+    else
+      Epplet_gadget_move(label, -6, 34);
+    display_label();
+  }
+
 }
 
 static void
@@ -258,7 +279,7 @@ config_cb(void *data)
     return;
   }
 
-  config_win = Epplet_create_window_config(300, 370, "E-Biff Configuration", ok_cb, NULL, apply_cb, NULL, cancel_cb, NULL);
+  config_win = Epplet_create_window_config(300, 386, "E-Biff Configuration", ok_cb, NULL, apply_cb, NULL, cancel_cb, NULL);
 
   Epplet_gadget_show(Epplet_create_label(4, 4, "Mailbox path:", 2));
   Epplet_gadget_show(cfg_tb_mbox = Epplet_create_textbox(NULL, folder_path, 4, 18, 292, 20, 2, NULL, NULL));
@@ -286,6 +307,10 @@ config_cb(void *data)
   Epplet_gadget_show(Epplet_create_togglebutton(NULL, NULL, 4, 326, 12, 12, &cfg_beep, NULL, NULL));
   Epplet_gadget_show(Epplet_create_label(20, 326, "Beep when new mail arrives?", 2));
 
+  cfg_total = show_total;
+  Epplet_gadget_show(Epplet_create_togglebutton(NULL, NULL, 4, 346, 12, 12, &cfg_total, NULL, NULL));
+  Epplet_gadget_show(Epplet_create_label(20, 346, "Show total number of messages?", 2));
+
   Epplet_window_show(config_win);
   Epplet_window_pop_context();
 
@@ -306,6 +331,8 @@ process_conf(void) {
   interval = (double) atof(s);
   s = Epplet_query_config_def("beep", "1");
   beep = (!strcasecmp(s, "1"));
+  s = Epplet_query_config_def("show_total", "1");
+  show_total = (!strcasecmp(s, "1"));
   s = Epplet_query_config_def("no_mail_image", NOMAIL_IMAGE);
   nomail_image = s;
   s = Epplet_query_config_def("new_mail_image", NEWMAIL_IMAGE);
@@ -359,7 +386,12 @@ main(int argc, char **argv)
   seven = Epplet_create_image(2, 3, 44, 30, seven_image);
   Epplet_gadget_show(nomail);
 
-  label = Epplet_create_label(6, 34, "- / -", 2);
+  if (show_total)
+    label = Epplet_create_label(6, 34, "- / -", 2);
+  else {
+    label = Epplet_create_label(6, 34, "-", 2);
+    Epplet_gadget_move(label, -4, 34);
+  }
   Epplet_gadget_show(label);
   Epplet_show();
 
