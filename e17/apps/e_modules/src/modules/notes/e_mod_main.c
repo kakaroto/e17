@@ -20,7 +20,7 @@ static void _note_menu_bgcolor_white (void *data, E_Menu *m, E_Menu_Item *mi);
 static void _note_menu_bgcolor_blue (void *data, E_Menu *m, E_Menu_Item *mi);
 static void _note_menu_bgcolor_yellow (void *data, E_Menu *m, E_Menu_Item *mi);
 static void _note_menu_bgcolor_green (void *data, E_Menu *m, E_Menu_Item *mi);
-    
+static void _note_menu_face_add (void *data, E_Menu *m, E_Menu_Item *mi);    
     
 
 static int  _note_face_init           (Note_Face *nf);
@@ -282,7 +282,7 @@ _note_config_menu_new (Note *n)
 
    mi = e_menu_item_new(mn);
    e_menu_item_label_set(mi, "Add Note");
-   e_menu_item_callback_set (mi, _note_face_add, n);   
+   e_menu_item_callback_set (mi, _note_menu_face_add, n);   
    
    return mn;
 }
@@ -335,7 +335,14 @@ _note_menu_bgcolor_blue (void *data, E_Menu *m, E_Menu_Item *mi)
 //   esmart_textarea_bg_set(n->face->note_object, bg);
 }
 
+static void
+_note_menu_face_add (void *data, E_Menu *m, E_Menu_Item *mi)
+{
+   Note *n;
 
+   n = (Note *)data;
+   _note_face_add(n);
+}
 
 static void
 _note_config_menu_del (Note *n, E_Menu *m)
