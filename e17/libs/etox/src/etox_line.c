@@ -374,8 +374,7 @@ int
 etox_line_wrap(Etox *et, Etox_Line *line)
 {
 	Evas_List *ll;
-	Etox_Line *newline;
-	Estyle *bit = NULL, *split = NULL, *marker;
+	Estyle *bit = NULL, *marker;
 	int x, w, y, h;
 	int index = -1;
 
@@ -406,15 +405,10 @@ etox_line_wrap(Etox *et, Etox_Line *line)
 			index++;
 		FREE(tmp);
 
-		etox_line_remove(line, bit);
+		etox_line_split(line, bit, index);
+		ll = evas_list_find_list(et->lines, line);
+		ll = ll->next;
 
-		/* split the edge bit */
-		split = estyle_split(bit, index);
-		etox_line_append(line, bit);
-	}
-
-	/* if split successful, set up the new bit */
-	if (split) {
 		/* create a marker bit. */
 		marker = estyle_new(et->evas, et->context->marker.text,
 				et->context->marker.style);
@@ -422,13 +416,35 @@ etox_line_wrap(Etox *et, Etox_Line *line)
 				et->context->marker.g, et->context->marker.b,
 				et->context->marker.a);
 		estyle_set_clip(marker, et->clip);
-		estyle_set_font(bit, et->context->font, et->context->font_size);
+		estyle_set_font(marker, et->context->font,
+				et->context->font_size);
 		estyle_show(marker);
+		etox_line_prepend(ll->data, marker);
+	}
+	else
+		index = 0;
 
-		/* create a new line, with the marker and the split bits */
+	return index;
+}
+
+void
+etox_line_split(Etox_Line *line, Estyle *bit, int index)
+{
+	Evas_List *ll;
+	Etox_Line *newline;
+	Estyle *split = NULL;
+
+	etox_line_remove(line, bit);
+
+	/* split the edge bit */
+	split = estyle_split(bit, index);
+	etox_line_append(line, bit);
+
+	/* if split successful, set up the new bit */
+	if (split) {
+
 		newline = etox_line_new(line->flags | ETOX_LINE_WRAPPED);
-		newline->et = et;
-		etox_line_append(newline, marker);
+		newline->et = line->et;
 		etox_line_append(newline, split);
 
 		ll = evas_list_find_list(line->bits, bit);
@@ -441,12 +457,9 @@ etox_line_wrap(Etox *et, Etox_Line *line)
 		}
 
 		/* add the newline after the current one */
-		et->lines = evas_list_append_relative(et->lines, newline, line);
+		line->et->lines = evas_list_append_relative(line->et->lines,
+				newline, line);
 	}
-	else
-		index = 0;
-
-	return index;
 }
 
 void

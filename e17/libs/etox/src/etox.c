@@ -338,8 +338,70 @@ void etox_prepend_text(Etox * et, char *text)
  */
 void etox_insert_text(Etox * et, char *text, int index)
 {
+	Estyle *bit;
+	Evas_List *lines, *ll;
+	Etox_Line *start, *end, *temp;
+
 	CHECK_PARAM_POINTER("et", et);
 	CHECK_PARAM_POINTER("text", text);
+
+	if (!index) {
+		etox_prepend_text(et, text);
+		return;
+	}
+	else if (index >= et->length) {
+		etox_append_text(et, text);
+		return;
+	}
+
+	/*
+	 * Break the incoming text into lines, and merge the first line of the
+	 * new text with the last line of the old text.
+	 */
+	lines = _etox_break_text(et, text);
+	if (!lines)
+		return;
+
+	start = etox_index_to_line(et, &index);
+	bit = etox_line_index_to_bit(start, &index);
+	etox_line_split(start, bit, index);
+
+	/*
+	 * Setup the merger betweeen the beginning of the existing text and the
+	 * beginning of the added text.
+	 */
+	temp = lines->data;
+	lines = evas_list_remove(lines, temp);
+	etox_line_merge_append(start, temp);
+
+	/*
+	 * Now merge the end of the added text with the remainder of the
+	 * existing text.
+	 */
+	ll = evas_list_last(lines);
+	temp = ll->data;
+	lines = evas_list_remove(lines, temp);
+	ll = evas_list_find_list(et->lines, start);
+	end = ll->next->data;
+	etox_line_merge_prepend(temp, end);
+
+	/*
+	 * Now add the remaining lines to the end of the line list.
+	 */
+	while (lines) {
+		end = lines->data;
+
+		if (end->w > et->tw)
+			et->tw = end->w;
+
+		et->h += end->h;
+		et->length += end->length;
+		et->lines = evas_list_append_relative(et->lines, end, start);
+		lines = evas_list_remove(lines, end);
+		start = end;
+	}
+
+	etox_layout(et);
 	if (et->lines && et->visible)
 		evas_object_show(et->clip);
 }

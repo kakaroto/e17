@@ -9,6 +9,7 @@ Evas_List *basic_tests()
 	l = evas_list_append(l, test_basic_set);
 	l = evas_list_append(l, test_basic_append);
 	l = evas_list_append(l, test_basic_prepend);
+	l = evas_list_append(l, test_basic_insert);
 
 	return l;
 }
@@ -113,6 +114,28 @@ void test_basic_prepend()
 
 	/* Change test etox */
 	etox_prepend_text(e_test, string);
+
+	return;
+}
+
+void test_basic_insert()
+{
+	char msg[] =
+	    "Text can be appended to the text already existent\n"
+	    "in the etox.\n"
+	    "\n"
+	    "The second paragraph shown below was appended\n"
+	    "at the end of the etox through etox_append_text.\n";
+
+	char string[] =
+	    "The Tao that is seen\n"
+	    "Is not the true Tao\n" "Until you bring fresh toner.\n" "\n";
+
+	/* Change message */
+	etox_set_text(e_msg, msg);
+
+	/* Change test etox */
+	etox_insert_text(e_test, string, 20);
 
 	return;
 }
