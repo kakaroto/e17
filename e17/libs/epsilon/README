@@ -1,0 +1,53 @@
+############################################################################
+Epsilon:
+This is a small, display independent, and quick thumbnailing library.
+The lib itself conforms to the standard put forth by freedesktop.org
+You can find out more information about it at
+http://triq.net/~jens/thumbnail-spec/index.html.  It seemed better to
+break it out into a component that only depended on what was absolutely
+necessary.  Upon showing raster the wonders of freedesktop.org
+thumbnailing, he proclaimed that it was far to slow, this prompted him
+to write epeg.  Epeg offers very noticeable speed increases to this
+standard, but is only available if the input image is a jpeg file.  If
+the file is anything other than jpg, the traditional freedesktop.org png
+thumbnailing will occur.  To show the speed increase epeg offers,
+Epsilon builds with and without epeg.
+
+############################################################################
+
+Some Tests I ran here came out looking like the following:
+90M	~/Images/ - Mixed png, xcf, gif, and jpg
+just libpng and imlib
+   First Pass:  36.15s real    33.30s user     0.96s system
+   Second Pass:  0.06s real     0.04s user     0.00s system
+   Thumbnails generated - 5.1M of space
+epeg enabled
+   First Pass:  14.67s real    14.13s user     0.47s system
+   Second Pass:  0.06s real     0.01s user     0.01s system
+   Thumbnails generated - 2.0M of space
+
+253M    ~/Pictures/SomebodysWedding/ - High res digital photos
+just libpng and imlib2
+  First Pass: 147.66s real   139.01s user     5.26s system
+  Second Pass:  0.07s real     0.03s user     0.01s system
+  Thumbnails generated - 16MB
+epeg enabled
+   First Pass: 18.78s real    15.93s user     1.01s system
+   Second Pass:  0.08s real     0.01s user     0.05s system
+   Thumbnails generated - 2.0MB
+
+############################################################################
+
+Build Instructions:
+1. You need epeg(optional) from cvs, imlib2 and libpng
+2. To compile and test epsilon it's your standard 
+    $ ./autogen.sh
+    $ make
+    $ sudo make install
+    $ epsilon ~/Images/*
+    ... Info about Images
+    $
+
+############################################################################
+comments or input are welcome
+atmos at atmos dot org
