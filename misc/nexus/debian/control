@@ -8,6 +8,9 @@ Standards-Version: 3.6.1
 Package: xfonts-nexus
 Architecture: all
 Depends: xbase-clients
+Provides: xfont-nexus
+Conflicts: xfont-nexus
+Replaces: xfont-nexus
 Description: Nexus font for X
  A sans-serif, fixed with font with iso8859 encoding.
  Only available as 10 point with medium weight.

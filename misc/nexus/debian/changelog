@@ -1,3 +1,11 @@
+xfonts-nexus (0.0.2-9) unstable; urgency=low
+
+  * Add Replaces, Conflicts and Provides xfont-nexus as per
+    section 7.5.2 of the policy manual.
+    (closes: Bug#270892)
+
+ -- Simon Horman <horms@debian.org>  Fri, 10 Sep 2004 11:03:14 +0900
+
 xfonts-nexus (0.0.2-8) unstable; urgency=low
 
   * Re-releasing 0.0.2-7.1 as the maintainer. Thanks Andreas.
