@@ -25,10 +25,10 @@
 %token REL1 REL2 RELATIVE REPEAT_EVENTS SCRIPT SIGNAL SIZE
 %token SMOOTH SOURCE STATE STEP TARGET TEXT TEXT_CLASS TO
 %token TO_X TO_Y TRANSITION TWEEN TYPE VISIBLE X Y
-%token OPEN_BRACE CLOSE_BRACE
+%token OPEN_BRACE CLOSE_BRACE RAW COMP LOSSY
 %token COLON QUOTE SEMICOLON
 
-%type <string> STRING
+%type <string> STRING lossless_type lossy_type
 %type <val> FLOAT
 
 %%
@@ -49,8 +49,27 @@ collections:  COLLECTIONS OPEN_BRACE group CLOSE_BRACE
 	;
 fonts:  FONTS OPEN_BRACE statement CLOSE_BRACE
 	;
-images:  IMAGES OPEN_BRACE statement CLOSE_BRACE
+images:  IMAGES OPEN_BRACE image_statement CLOSE_BRACE
 	;
+
+image_statement: image
+	| image image_statement
+	;
+
+image: IMAGE COLON QUOTE STRING QUOTE lossless_type SEMICOLON {
+		printf("got image '%s' of type %s\n", $4, $6);
+	}
+	| IMAGE COLON QUOTE STRING QUOTE lossy_type FLOAT SEMICOLON {
+		printf("got image '%s' of type %s (%f)\n", $4, $6, $7);
+	}
+	;
+
+lossy_type: LOSSY { $$ = strdup("lossy"); }
+
+lossless_type: RAW { $$ = strdup("raw"); }
+	| COMP { $$ = strdup("comp"); }
+	;
+
 data:  DATA OPEN_BRACE data_statement CLOSE_BRACE 
 	;
 

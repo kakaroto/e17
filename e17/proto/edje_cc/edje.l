@@ -58,6 +58,7 @@ color				{ KEYWORD_RETURN(COLOR); }
 color2				{ KEYWORD_RETURN(COLOR2); }
 color3				{ KEYWORD_RETURN(COLOR3); }
 color_class			{ KEYWORD_RETURN(COLOR_CLASS); }
+COMP				{ KEYWORD_RETURN(COMP); }
 confine				{ KEYWORD_RETURN(CONFINE); }
 data				{ KEYWORD_RETURN(DATA); }
 description			{ KEYWORD_RETURN(DESCRIPTION); }
@@ -72,6 +73,7 @@ image				{ KEYWORD_RETURN(IMAGE); }
 images				{ KEYWORD_RETURN(IMAGES); }
 in					{ KEYWORD_RETURN(IN); }
 item				{ KEYWORD_RETURN(ITEM); }
+LOSSY				{ KEYWORD_RETURN(LOSSY); }
 max					{ KEYWORD_RETURN(MAX); }
 min					{ KEYWORD_RETURN(MIN); }
 mouse_events		{ KEYWORD_RETURN(MOUSE_EVENTS); }
@@ -83,6 +85,7 @@ part				{ KEYWORD_RETURN(PART); }
 parts				{ KEYWORD_RETURN(PARTS); }
 program				{ KEYWORD_RETURN(PROGRAM); }
 programs			{ KEYWORD_RETURN(PROGRAMS); }
+RAW					{ KEYWORD_RETURN(RAW); }
 rel1				{ KEYWORD_RETURN(REL1); }
 rel2				{ KEYWORD_RETURN(REL2); }
 relative			{ KEYWORD_RETURN(RELATIVE); }
