@@ -9,6 +9,8 @@
 Ewl_Widget     *menu, *menu_win;
 Evas_Object    *embed;
 int             init;
+
+void            od_config_menu_hide(void);
 #endif
 
 OD_Options      options;
@@ -92,7 +94,7 @@ od_config_init(int argc, char **argv)
   options.size = ecore_config_int_get("engage.options.size");
   options.spacing = ecore_config_int_get("engage.options.spacing");
   options.zoom = ecore_config_int_get("engage.options.zoom");
-  ecore_config_listen("zoom", "options.zoom", zoom_listener, 0, NULL);
+  ecore_config_listen("zoom", "engage.options.zoom", zoom_listener, 0, NULL);
   options.zoomfactor = ecore_config_float_get("engage.options.zoom_factor");
   options.arrow_size = ecore_config_int_get("engage.options.arrow_size");
   options.dock_zoom_duration =
@@ -118,20 +120,20 @@ od_config_menu_move_cb(Ewl_Widget * w, void *ev_data, void *user_data)
 void
 od_config_menu_out_cb(Ewl_Widget * w, void *ev_data, void *user_data)
 {
-  ewl_widget_hide(EWL_MENU_BASE(menu)->popup);
+  od_config_menu_hide();
 }
 
 void
 od_config_menu_zoom_cb(Ewl_Widget * w, void *ev_data, void *user_data)
 {
-  ecore_config_int_set("options.zoom", options.zoom?0:1);
-  ewl_widget_hide(EWL_MENU_BASE(menu)->popup);
+  ecore_config_int_set("engage.options.zoom", options.zoom?0:1);
+  od_config_menu_hide();
 }
 
 void
 od_config_menu_quit_cb(Ewl_Widget * w, void *ev_data, void *user_data)
 {
-  ewl_widget_hide(EWL_MENU_BASE(menu)->popup);
+  od_config_menu_hide();
   ecore_main_loop_quit();
 }
 
@@ -151,7 +153,9 @@ od_config_menu_init(void)
     ewl_embed_set_evas(EWL_EMBED(menu_win), evas,
                        ecore_evas_software_x11_window_get(ee));
   evas_object_layer_set(embed, 999);
-  evas_object_resize(embed, 100, 40);
+
+  /* FIXME: this should not be needed */
+  evas_object_resize(embed, 100, 50);
   evas_object_show(embed);
   ewl_widget_show(menu_win);
 
@@ -173,10 +177,22 @@ od_config_menu_init(void)
   ewl_callback_append(item, EWL_CALLBACK_SELECT, od_config_menu_zoom_cb, NULL);
   ewl_widget_show(item);
 
+  item = ewl_menu_separator_new();
+  ewl_container_append_child(EWL_CONTAINER(menu), item);
+  ewl_widget_show(item);
+
   item = ewl_menu_item_new(NULL, "Quit");
   ewl_container_append_child(EWL_CONTAINER(menu), item);
   ewl_callback_append(item, EWL_CALLBACK_SELECT, od_config_menu_quit_cb, NULL);
   ewl_widget_show(item);
+}
+
+void
+od_config_menu_hide(void)
+{
+  evas_object_move(embed, -1 * CURRENT_W(menu_win), 0);
+  ewl_widget_hide(menu);
+  
 }
 
 void
