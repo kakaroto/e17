@@ -83,7 +83,6 @@ eConfigRemovePath(char *path)
 	     cur_path = cur_path->next;
 	     if (!strcmp(cur_path->path, path))
 	       {
-		  printf("freeing somebody\n");
 		  free(cur_path->path);
 		  last_path->next = cur_path->next;
 		  free(cur_path);

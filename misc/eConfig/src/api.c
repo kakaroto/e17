@@ -101,7 +101,7 @@ eConfigRefreshData(char *loc, unsigned long *length)
 
 }
 
-int 
+int
 eConfigUnloadData(char *loc)
 {
 
@@ -141,7 +141,7 @@ eConfigUnloadData(char *loc)
 
 }
 
-int 
+int
 eConfigStoreData(char *loc, void *data, unsigned long length, char *path)
 {
 
@@ -154,13 +154,10 @@ eConfigStoreData(char *loc, void *data, unsigned long length, char *path)
 
    if (!loc)
       return 0;
-   printf("we have a loc\n");
    if (!data)
       return 0;
-   printf("we have a data\n");
    if (!path)
       return 0;
-   printf("we have a path\n");
 
    if (_econf_create_new_data_repository(path) < 0)
      {
@@ -189,7 +186,7 @@ eConfigStoreData(char *loc, void *data, unsigned long length, char *path)
 
 }
 
-int 
+int
 eConfigStoreDataToFirstAvailablePath(char *loc, void *data,
 				     unsigned long length)
 {

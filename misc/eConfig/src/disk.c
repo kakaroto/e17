@@ -409,6 +409,7 @@ _econf_save_data_to_disk(void *data, char *loc, unsigned long length,
 	  }
 	else
 	  {
+	     /* we need to add ourselves now */
 	     return 1;
 	  }
      }
@@ -550,10 +551,8 @@ _econf_create_new_data_repository(char *path)
 
    if (!path)
      {
-	printf("no path for creation!\n");
 	return -1;
      }
-
    retval = 0;
    if (stat(path, &st) < 0)
      {
@@ -561,7 +560,6 @@ _econf_create_new_data_repository(char *path)
 	if (mkdir(path, S_IRWXU) < 0)
 	  {
 	     /* we couldn't make the directory -  return an error */
-	     printf("no create directory batman!");
 	     return -4;
 	  }
 	stat(path, &st);
@@ -577,11 +575,9 @@ _econf_create_new_data_repository(char *path)
 		  /* The directory is a regular file.  this is not a good thing.
 		   * return a -2 error
 		   */
-		  printf("directory is file\n");
 		  return -2;
 	       }
 	     /* some other oddity here happened, return "unknown issue" error */
-	     printf("strange shit\n");
 	     return -3;
 	  }
 	retval++;
@@ -599,7 +595,6 @@ _econf_create_new_data_repository(char *path)
 	if (!FATTABLE)
 	  {
 	     /* we couldn't write to that file.  return an error */
-	     printf("couldn't write to fat table\n");
 	     return -6;
 	  }
 	fclose(FATTABLE);
@@ -611,7 +606,6 @@ _econf_create_new_data_repository(char *path)
 	  {
 	     /* we're not a regular file, so there are probably some issues
 	      * here - returning an error */
-	     printf("odd things.  number 1 -5\n");
 	     return -5;
 	  }
 	retval++;
@@ -627,7 +621,6 @@ _econf_create_new_data_repository(char *path)
 	if (!CONFTABLE)
 	  {
 	     /* we couldn't write to that file.  return an error */
-	     printf("couldn't write to data table\n");
 	     return -7;
 	  }
 	fclose(CONFTABLE);
@@ -639,13 +632,11 @@ _econf_create_new_data_repository(char *path)
 	  {
 	     /* we're not a regular file, so there are probably some issues
 	      * here - returning an error */
-	     printf("odd things.  -5\n");
 	     return -5;
 	  }
 	retval++;
      }
 
-   printf("I think we should have been okay\n");
    return retval;
 
 }
