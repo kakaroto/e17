@@ -1193,3 +1193,19 @@ efsd_reply_id(EfsdEvent *ee)
 
   D_RETURN_(-1);
 }
+
+
+void          *
+efsd_reply_data(EfsdEvent *ee)
+{
+  D_ENTER;
+
+  if (!ee)
+    D_RETURN_(NULL);
+  
+  if (ee->type != EFSD_EVENT_REPLY)
+    D_RETURN_(NULL);
+
+  D_RETURN_(ee->efsd_reply_event.data);
+}
+
