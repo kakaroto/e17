@@ -349,6 +349,7 @@ int
 epsilon_generate (Epsilon * e)
 {
   int iw, ih;
+  int tw = THUMBNAIL_SIZE, th = THUMBNAIL_SIZE;
   char outfile[PATH_MAX];
 #ifdef HAVE_EPEG_H
   Epeg_Image *im;
@@ -368,23 +369,24 @@ epsilon_generate (Epsilon * e)
 		getenv ("HOME"), e->hash);
       epeg_thumbnail_comments_get (im, &info);
       epeg_size_get (im, &iw, &ih);
-      if (iw > ih)
-	{
-	  epeg_decode_size_set (im, THUMBNAIL_SIZE,
-				THUMBNAIL_SIZE * ((double) ih / (double) iw));
-	}
-      else
-	{
-	  epeg_decode_size_set (im,
-				THUMBNAIL_SIZE * ((double) iw / (double) ih),
-				THUMBNAIL_SIZE);
-	}
+	if (iw > ih)
+	  {
+          th = THUMBNAIL_SIZE * ((double) ih / (double) iw);
+	  }
+	else
+	  {
+          tw = THUMBNAIL_SIZE * ((double) iw / (double) ih);
+	  }
+	  epeg_decode_size_set (im, tw, th);
       epeg_quality_set (im, 100);
       epeg_thumbnail_comments_enable (im, 1);
       epeg_file_output_set (im, outfile);
-      epeg_encode (im);
+      if(!epeg_encode (im)) 
+      {
+        epeg_close (im);
+        return (EPSILON_OK);
+      }
       epeg_close (im);
-      return (EPSILON_OK);
     }
 #endif
   {
@@ -394,7 +396,6 @@ epsilon_generate (Epsilon * e)
     struct stat filestatus;
     Imlib_Image tmp = NULL;
     Imlib_Image src = NULL;
-    int tw = THUMBNAIL_SIZE, th = THUMBNAIL_SIZE;
 
     if (stat (e->src, &filestatus) != 0)
       return (EPSILON_FAIL);
