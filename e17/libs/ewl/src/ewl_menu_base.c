@@ -98,6 +98,7 @@ int ewl_menu_item_init(Ewl_Menu_Item * item, char *image, char *text)
 	if (!ewl_box_init(EWL_BOX(item), EWL_ORIENTATION_HORIZONTAL))
 		DRETURN_INT(FALSE, DLEVEL_STABLE);
 	ewl_widget_appearance_set(EWL_WIDGET(item), "menuitem");
+	ewl_widget_inherit(EWL_WIDGET(item), "menuitem");
 
 	ewl_object_fill_policy_set(EWL_OBJECT(item), EWL_FLAG_FILL_HFILL);
 
