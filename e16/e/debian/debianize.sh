@@ -12,15 +12,15 @@
 
 set -e
 
-mv autogen.sh autogen.sh.old
-sed '/srcdir\/configure/ d' autogen.sh.old > autogen.sh
+test -f autogen.sh && mv autogen.sh autogen.sh.old && \
+sed '/srcdir\/configure/ d' autogen.sh.old > autogen.sh && \
 chmod +x autogen.sh
 
-mv src/themes/Makefile.am src/themes/Makefile.am.old
-sed '/^install-data-local:$/,/^$/ d' src/themes/Makefile.am.old > src/themes/Makefile.am
+mv src/themes/Makefile src/themes/Makefile
+sed '/^install-data-local:$/,/^$/ d' src/themes/Makefile.old > src/themes/Makefile
 
-mv src/Makefile.am src/Makefile.am.old
-sed '/^install-data-local:$/,$ d' src/Makefile.am.old > src/Makefile.am
+mv src/Makefile src/Makefile.old
+sed '/^install-data-local:$/,$ d' src/Makefile.old > src/Makefile
 
 grep -q 'DEBIAN_MENU' 'src/themes/configs/menus.cfg' ||  \
 mv "src/themes/configs/menus.cfg" "src/themes/configs/menus.cfg.old" &&  \
@@ -265,15 +265,15 @@ cat > "debian/debianize-stub.sh" <<- "END"
 
 set -e
 
-mv autogen.sh autogen.sh.old
-sed '/srcdir\/configure/ d' autogen.sh.old > autogen.sh
+test -f autogen.sh && mv autogen.sh autogen.sh.old && \
+sed '/srcdir\/configure/ d' autogen.sh.old > autogen.sh && \
 chmod +x autogen.sh
 
-mv src/themes/Makefile.am src/themes/Makefile.am.old
-sed '/^install-data-local:$/,/^$/ d' src/themes/Makefile.am.old > src/themes/Makefile.am
+mv src/themes/Makefile src/themes/Makefile.old
+sed '/^install-data-local:$/,/^$/ d' src/themes/Makefile.old > src/themes/Makefile
 
-mv src/Makefile.am src/Makefile.am.old
-sed '/^install-data-local:$/,$ d' src/Makefile.am.old > src/Makefile.am
+mv src/Makefile src/Makefile.old
+sed '/^install-data-local:$/,$ d' src/Makefile.old > src/Makefile
 
 grep -q 'DEBIAN_MENU' 'src/themes/configs/menus.cfg' ||  \
 mv "src/themes/configs/menus.cfg" "src/themes/configs/menus.cfg.old" &&  \

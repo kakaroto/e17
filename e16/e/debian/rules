@@ -24,11 +24,9 @@ build-stamp:
 	touch $@
 
 configure-stamp:
-	$(SHELL) debian/debianize.sh
 	test -x autogen.sh && ./autogen.sh
 	./configure $(configure_options)
-	-mv src/themes/Makefile.am.old src/themes/Makefile.am
-	-mv src/Makefile.am.old src/Makefile.am
+	$(SHELL) debian/debianize.sh
 	mv econfig.h econfig.h.old; sed -n '/LIBESD/ d; w econfig.h' econfig.h.old
 	touch $@
 
