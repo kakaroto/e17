@@ -7,19 +7,11 @@ Equate          equate;
 void
 print_usage(void)
 {
-   printf("Equate - a calculator for Enlightenment\n");
-   printf("Version 0.0.4 (Dec 8 2003)\n");
-   printf("(c)2003 by HandyAndE.\n");
-   printf("Usage: equate [options]\n\n");
-   printf("Supported Options:\n");
-   printf("  -h, --help              Print this help text\n");
-   printf("  -e, --exec        <str> Execute an equation and exit\n");
+   printf(" -e, --exec\t <str> Execute an equation and exit\n");
    printf("Display modes:\n");
-   printf("  -b, --basic             Use Equate in basic mode (default)\n");
-   printf("  -s, --scientific        Use Equate in scientific mode\n");
-   printf
-      ("  -t, --theme       [str] Use themed (edje) mode and load specified theme\n");
-   ecore_config_exit();
+   printf(" -b, --basic\t       Use Equate in basic mode (default)\n");
+   printf(" -s, --scientific      Use Equate in scientific mode\n");
+   ecore_config_shutdown();
    exit(0);
 }
 
@@ -33,7 +25,7 @@ exec(char *exe)
 
    equate_append(exe);
    printf("%.10g\n", equate_eval());
-   ecore_config_exit();
+   ecore_config_shutdown();
    exit(0);
 }
 
@@ -48,7 +40,7 @@ equate_quit(void)
 {
    equate_quit_gui();
    ecore_config_save();
-   ecore_config_exit();
+   ecore_config_shutdown();
    exit(0);
 }
 
@@ -77,50 +69,64 @@ gui_listener(const char *key, const Ecore_Config_Type type, const int tag,
 int
 main(int argc, char *argv[], char *env[])
 {
-   int             nextarg = 1;
-   char           *arg, *tmp;
+   int             nextarg = 1, parse_ret, found;
+   char           *arg;
 
    equate.conf.mode = DEFAULT;
 
    ecore_config_init("equate");
+   ecore_config_app_describe("Equate - a calculator for Enlightenment\n\
+Version 0.0.4 (Dec 8 2003)\n\
+(c)2003 by HandyAndE.\n\
+Usage: equate [options]");
+
    /* this controls our defaults */
    ecore_config_default_int_bound("/settings/mode", BASIC, 0, 3, 1);
+   ecore_config_describe("/settings/mode",
+                         "The mode to start in, 1=basic, 2=sci, 3=edje");
+   ecore_config_set_short_opt("/settings/mode", 'm');
+   ecore_config_set_long_opt("/settings/mode", "mode");
+
    ecore_config_default_theme("/settings/theme", "equate");
+   ecore_config_describe("/settings/theme",
+                         "The name of the edje theme to use in mode 3");
+   ecore_config_set_short_opt("/settings/theme", 't');
+   ecore_config_set_long_opt("/settings/theme", "theme");
 
    /* load and read our settings */
    ecore_config_load();
+
+   if ((parse_ret = ecore_config_args_parse(argc, argv))
+       == ECORE_CONFIG_PARSE_EXIT) {
+// don't do this, as we have hooks to put in
+//     ecore_config_shutdown();
+//     exit(0);
+      found = 0;
+      while (nextarg < argc) {
+         arg = argv[nextarg];
+         if (!strcmp(arg, "--scientific") || !strcmp(arg, "-s")) {
+            ecore_config_set_int("/settings/mode", SCI);
+            found = 1;
+         } else if (!strcmp(arg, "--basic") || !strcmp(arg, "-b")) {
+            ecore_config_set_int("/settings/mode", BASIC);
+            found = 1;
+         } else if (!strcmp(arg, "--exec") || !strcmp(arg, "-e"))
+            exec(argv[++nextarg]);
+         nextarg++;
+      }
+
+      if (!found) {
+         // we were probably told to quit due to an unrecognised option
+         ecore_config_shutdown();
+         exit(0);
+      }
+   }
+   if (parse_ret == ECORE_CONFIG_PARSE_HELP) {
+      print_usage();
+   }
+
    equate.conf.mode = ecore_config_get_int("/settings/mode");
    equate.conf.theme = ecore_config_get_theme("/settings/theme");
-
-   while (nextarg < argc) {
-      arg = argv[nextarg];
-      if (!strcmp(arg, "--scientific") || !strcmp(arg, "-s")) {
-         equate.conf.mode = SCI;
-         ecore_config_set_int("/settings/mode", SCI);
-      } else if (!strcmp(arg, "--basic") || !strcmp(arg, "-b")) {
-         equate.conf.mode = BASIC;
-         ecore_config_set_int("/settings/mode", BASIC);
-      } else if (!strcmp(arg, "--theme") || !strcmp(arg, "-t")) {
-         equate.conf.mode = EDJE;
-         ecore_config_set_int("/settings/mode", EDJE);
-         tmp = argv[++nextarg];
-         if (tmp) {
-            equate.conf.theme = tmp;
-            ecore_config_set_theme("/settings/theme", equate.conf.theme);
-         }
-      } else if (!strcmp(arg, "--exec") || !strcmp(arg, "-e"))
-         exec(argv[++nextarg]);
-
-
-
-      else if (!strcmp(arg, "--help") || !strcmp(arg, "-h"))
-         print_usage();
-      else {
-         printf("Unrecognised option \"%s\"\n\n", arg);
-         print_usage();
-      }
-      nextarg++;
-   }
 
    ecore_config_listen("gui_mode", "/settings/mode", gui_listener, 0, NULL);
    ecore_config_listen("gui_theme", "/settings/theme", gui_listener, 1, NULL);
