@@ -199,6 +199,7 @@ spif_str_init_from_fd(spif_str_t self, int fd)
 spif_bool_t
 spif_str_done(spif_str_t self)
 {
+    REQUIRE_RVAL(!SPIF_STR_ISNULL(self), FALSE);
     if (self->mem) {
         FREE(self->s);
         self->len = 0;
@@ -213,6 +214,7 @@ spif_str_dup(spif_str_t orig)
 {
     spif_str_t self;
 
+    REQUIRE_RVAL(!SPIF_STR_ISNULL(orig), FALSE);
     self = SPIF_ALLOC(str);
     memcpy(self, orig, SPIF_SIZEOF_TYPE(str));
     self->s = SPIF_CAST(charptr) STRDUP(SPIF_CONST_CAST_C(char *) SPIF_STR_STR(orig));

@@ -207,3 +207,7 @@ Tue Apr 30 22:17:27 2002                        Michael Jennings (mej)
 I really should be more careful when creating test cases.  This
 should fix the parsing of boolean options with values.
 ----------------------------------------------------------------------
+Wed May  1 23:21:23 2002                        Michael Jennings (mej)
+
+Fleshed out the URL class.
+----------------------------------------------------------------------

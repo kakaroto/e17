@@ -187,30 +187,27 @@ is_boolean_value(char *val_ptr)
     return ((BOOL_OPT_ISTRUE(val_ptr) || BOOL_OPT_ISFALSE(val_ptr)) ? (TRUE) : (FALSE));
 }
 
-#if 0
-/* For future use, maybe... */
-static char *
-get_valid_option(char *opt)
+static spif_bool_t
+is_valid_option(char *opt)
 {
-    REQUIRE_RVAL(opt != NULL, NULL);
+    REQUIRE_RVAL(opt != NULL, FALSE);
 
     if (*opt != '-') {
-        return NULL;
+        return FALSE;
     }
     opt++;
     if (*opt == '-') {
         opt++;
         if (find_long_option(opt) >= 0) {
-            return (opt);
+            return TRUE;
         }
     } else {
         if (find_short_option(*opt) >= 0) {
-            return (opt);
+            return TRUE;
         }
     }
-    return NULL;
+    return FALSE;
 }
-#endif
 
 static spif_bool_t
 handle_boolean(spif_int32_t n, char *val_ptr, unsigned char islong)
@@ -346,8 +343,10 @@ spifopt_parse(int argc, char *argv[])
         }
 
         /* Boolean options may or may not have a value... */
-        if (val_ptr && SPIFOPT_OPT_IS_BOOLEAN(j)) {
-            if (!is_boolean_value(val_ptr)) {
+        if (val_ptr) {
+            if (SPIFOPT_OPT_IS_BOOLEAN(j) && !is_boolean_value(val_ptr)) {
+                val_ptr = NULL;
+            } else if (SPIFOPT_OPT_IS_ABSTRACT(j) && is_valid_option(val_ptr)) {
                 val_ptr = NULL;
             }
         }

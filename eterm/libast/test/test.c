@@ -40,6 +40,7 @@ int test_options(void);
 int test_obj(void);
 int test_str(void);
 int test_tok(void);
+int test_url(void);
 int test_list(void);
 
 int
@@ -681,6 +682,69 @@ test_tok(void)
 }
 
 int
+test_url(void)
+{
+    spif_url_t testurl, testurl2, testurl3, testurl4;
+    spif_charptr_t tmp1 = "http://www.kainx.org/journal/?view=20020104";
+    spif_charptr_t tmp2 = "mailto:foo@bar.com?Subject=Eat Me";
+    spif_charptr_t tmp3 = "/path/to/some/file.jpg";
+    spif_charptr_t tmp4 = "pop3://dummy:moo@pop.nowhere.com:110";
+
+    TEST_BEGIN("spif_url_new_from_ptr() function");
+    testurl = spif_url_new_from_ptr(tmp1);
+    TEST_FAIL_IF(!SPIF_CMP_IS_EQUAL(spif_str_cmp_with_ptr(SPIF_STR(testurl), tmp1)));
+    testurl2 = spif_url_new_from_ptr(tmp2);
+    TEST_FAIL_IF(!SPIF_CMP_IS_EQUAL(spif_str_cmp_with_ptr(SPIF_STR(testurl2), tmp2)));
+    testurl3 = spif_url_new_from_ptr(tmp3);
+    TEST_FAIL_IF(!SPIF_CMP_IS_EQUAL(spif_str_cmp_with_ptr(SPIF_STR(testurl3), tmp3)));
+    testurl4 = spif_url_new_from_ptr(tmp4);
+    TEST_FAIL_IF(!SPIF_CMP_IS_EQUAL(spif_str_cmp_with_ptr(SPIF_STR(testurl4), tmp4)));
+    TEST_PASS();
+
+    TEST_BEGIN("spif_url_parse() function");
+    TEST_FAIL_IF(!SPIF_CMP_IS_EQUAL(spif_str_cmp_with_ptr(spif_url_get_proto(testurl), "http")));
+    TEST_FAIL_IF(!SPIF_STR_ISNULL(spif_url_get_user(testurl)));
+    TEST_FAIL_IF(!SPIF_STR_ISNULL(spif_url_get_passwd(testurl)));
+    TEST_FAIL_IF(!SPIF_CMP_IS_EQUAL(spif_str_cmp_with_ptr(spif_url_get_host(testurl), "www.kainx.org")));
+    TEST_FAIL_IF(!SPIF_STR_ISNULL(spif_url_get_port(testurl)));
+    TEST_FAIL_IF(!SPIF_CMP_IS_EQUAL(spif_str_cmp_with_ptr(spif_url_get_path(testurl), "/journal/")));
+    TEST_FAIL_IF(!SPIF_CMP_IS_EQUAL(spif_str_cmp_with_ptr(spif_url_get_query(testurl), "view=20020104")));
+    spif_url_del(testurl);
+
+    TEST_FAIL_IF(!SPIF_CMP_IS_EQUAL(spif_str_cmp_with_ptr(spif_url_get_proto(testurl2), "mailto")));
+    TEST_FAIL_IF(!SPIF_CMP_IS_EQUAL(spif_str_cmp_with_ptr(spif_url_get_user(testurl2), "foo")));
+    TEST_FAIL_IF(!SPIF_STR_ISNULL(spif_url_get_passwd(testurl2)));
+    TEST_FAIL_IF(!SPIF_CMP_IS_EQUAL(spif_str_cmp_with_ptr(spif_url_get_host(testurl2), "bar.com")));
+    TEST_FAIL_IF(!SPIF_STR_ISNULL(spif_url_get_port(testurl2)));
+    TEST_FAIL_IF(!SPIF_STR_ISNULL(spif_url_get_path(testurl2)));
+    TEST_FAIL_IF(!SPIF_CMP_IS_EQUAL(spif_str_cmp_with_ptr(spif_url_get_query(testurl2), "Subject=Eat Me")));
+    spif_url_del(testurl2);
+
+    TEST_FAIL_IF(!SPIF_STR_ISNULL(spif_url_get_proto(testurl3)));
+    TEST_FAIL_IF(!SPIF_STR_ISNULL(spif_url_get_user(testurl3)));
+    TEST_FAIL_IF(!SPIF_STR_ISNULL(spif_url_get_passwd(testurl3)));
+    TEST_FAIL_IF(!SPIF_STR_ISNULL(spif_url_get_host(testurl3)));
+    TEST_FAIL_IF(!SPIF_STR_ISNULL(spif_url_get_port(testurl3)));
+    TEST_FAIL_IF(!SPIF_CMP_IS_EQUAL(spif_str_cmp_with_ptr(spif_url_get_path(testurl3), tmp3)));
+    TEST_FAIL_IF(!SPIF_STR_ISNULL(spif_url_get_query(testurl3)));
+    spif_url_del(testurl3);
+
+    TEST_FAIL_IF(!SPIF_CMP_IS_EQUAL(spif_str_cmp_with_ptr(spif_url_get_proto(testurl4), "pop3")));
+    TEST_FAIL_IF(!SPIF_CMP_IS_EQUAL(spif_str_cmp_with_ptr(spif_url_get_user(testurl4), "dummy")));
+    TEST_FAIL_IF(!SPIF_CMP_IS_EQUAL(spif_str_cmp_with_ptr(spif_url_get_passwd(testurl4), "moo")));
+    TEST_FAIL_IF(!SPIF_CMP_IS_EQUAL(spif_str_cmp_with_ptr(spif_url_get_host(testurl4), "pop.nowhere.com")));
+    TEST_FAIL_IF(!SPIF_CMP_IS_EQUAL(spif_str_cmp_with_ptr(spif_url_get_port(testurl4), "110")));
+    TEST_FAIL_IF(!SPIF_STR_ISNULL(spif_url_get_path(testurl4)));
+    TEST_FAIL_IF(!SPIF_STR_ISNULL(spif_url_get_query(testurl4)));
+    spif_url_del(testurl4);
+
+    TEST_PASS();
+
+    TEST_PASSED("spif_url_t");
+    return 0;
+}
+
+int
 test_list(void)
 {
     unsigned short i;
@@ -897,6 +961,9 @@ main(int argc, char *argv[])
         return ret;
     }
     if ((ret = test_tok()) != 0) {
+        return ret;
+    }
+    if ((ret = test_url()) != 0) {
         return ret;
     }
     if ((ret = test_list()) != 0) {

@@ -142,7 +142,7 @@ right_str(const char *str, unsigned long cnt)
 
 /* Returns TRUE if str matches regular expression pattern, FALSE otherwise */
 #if defined(HAVE_REGEX_H)
-unsigned char
+spif_bool_t
 regexp_match(register const char *str, register const char *pattern)
 {
     static regex_t *rexp = NULL;
@@ -163,16 +163,16 @@ regexp_match(register const char *str, register const char *pattern)
         }
     }
 
-    if (((result = regexec(rexp, str, (size_t) 0, (regmatch_t *) NULL, 0))
-         != 0) && (result != REG_NOMATCH)) {
+    if (((result = regexec(rexp, str, (size_t) 0, (regmatch_t *) NULL, 0)) != 0)
+        && (result != REG_NOMATCH)) {
         regerror(result, rexp, errbuf, 256);
         print_error("Error testing input string %s -- %s.\n", str, errbuf);
         return (FALSE);
     }
-    return (!result);
+    return ((result == REG_NOMATCH) ? (FALSE) : (TRUE));
 }
 
-unsigned char
+spif_bool_t
 regexp_match_r(register const char *str, register const char *pattern, register regex_t **rexp)
 {
     register int result;
@@ -198,7 +198,7 @@ regexp_match_r(register const char *str, register const char *pattern, register 
         print_error("Error testing input string %s -- %s.\n", str, errbuf);
         return (FALSE);
     }
-    return (!result);
+    return ((result == REG_NOMATCH) ? (FALSE) : (TRUE));
 }
 #endif
 

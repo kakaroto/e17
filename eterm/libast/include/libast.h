@@ -531,8 +531,7 @@ extern const char *true_vals[], *false_vals[];
 #define SPIFOPT_OPT_IS_ABSTRACT(n)        (SPIFOPT_OPT_FLAGS(n) & SPIFOPT_FLAG_ABSTRACT)
 #define SPIFOPT_OPT_IS_PREPARSE(n)        (SPIFOPT_OPT_FLAGS(n) & SPIFOPT_FLAG_PREPARSE)
 #define SPIFOPT_OPT_IS_DEPRECATED(n)      (SPIFOPT_OPT_FLAGS(n) & SPIFOPT_FLAG_DEPRECATED)
-#define SPIFOPT_OPT_NEEDS_VALUE(n)        (SPIFOPT_OPT_FLAGS(n) & (SPIFOPT_FLAG_STRING | SPIFOPT_FLAG_INTEGER \
-                                                                   | SPIFOPT_FLAG_ARGLIST | SPIFOPT_FLAG_ABSTRACT))
+#define SPIFOPT_OPT_NEEDS_VALUE(n)        (SPIFOPT_OPT_FLAGS(n) & (SPIFOPT_FLAG_STRING | SPIFOPT_FLAG_INTEGER | SPIFOPT_FLAG_ARGLIST))
 
 #define SPIFOPT_OPT_SHORT(n)              (SPIFOPT_OPTLIST(n).short_opt)
 #define SPIFOPT_OPT_LONG(n)               (SPIFOPT_OPTLIST(n).long_opt)
@@ -627,8 +626,8 @@ extern char *left_str(const char *, unsigned long);
 extern char *mid_str(const char *, unsigned long, unsigned long);
 extern char *right_str(const char *, unsigned long);
 #if defined(HAVE_REGEX_H)
-extern unsigned char regexp_match(const char *, const char *);
-extern unsigned char regexp_match_r(const char *str, const char *pattern, regex_t **rexp);
+extern spif_bool_t regexp_match(const char *, const char *);
+extern spif_bool_t regexp_match_r(const char *str, const char *pattern, regex_t **rexp);
 #endif
 extern char **split(const char *, const char *);
 extern char **split_regexp(const char *, const char *);
