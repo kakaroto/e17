@@ -2990,3 +2990,10 @@ Mon Oct  4 12:56:07 PDT 1999
 (Raster)
 
 patch to stop possible endless loops in ipc for menu reloading
+
+-------------------------------------------------------------------------------
+
+Mon Oct  4 13:16:37 PDT 1999
+(KainX)
+
+Removed extraneous files from ShinyMetal per ljlane's request.
