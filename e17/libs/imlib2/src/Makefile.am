@@ -22,7 +22,7 @@ libImlib2_la_SOURCES = rend.c ximage.c scale.c rgba.c image.c color.c grab.c \
 libImlib2_la_LIBADD   = @DLLDFLAGS@ $(top_builddir)/libltdl/libltdlc.la \
                        -lX11 -lXext -lttf $(LDFLAGS)
 libImlib2_la_DEPENDENCIES = $(top_builddir)/config.h
-libImlib2_la_LDFLAGS      = -version-info 0:2:0
+libImlib2_la_LDFLAGS      = -version-info 0:3:0
 
 SYS_LOADERS_PATH = @pkglibdir@
 image.lo: loaderpath.h

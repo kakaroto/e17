@@ -77,6 +77,10 @@ typedef void (*Imlib_Progress_Function)(Imlib_Image im, char percent,
 					int update_w, int update_h);
 typedef void (*Imlib_Data_Destructor_Function)(Imlib_Image im, void *data);
 
+#ifdef __cplusplus
+extern "C" {
+#endif
+      
 void imlib_context_set_display(Display *display);
 void imlib_context_set_visual(Visual *visual);
 void imlib_context_set_colormap(Colormap colormap);
@@ -221,5 +225,9 @@ void imlib_save_image_with_error_return(char *filename, Imlib_Load_Error *error_
 /* FIXME: */
 /* need to add arbitary rotation routines */
 /* need to add polygon fill code */
+
+#ifdef __cplusplus
+}
+#endif
 
 #endif
