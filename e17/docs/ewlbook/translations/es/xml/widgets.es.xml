@@ -380,21 +380,21 @@ un poco de relleno al widget con <function>ewl_object_padding_set()</function>.
   <title>callback de cambio de valor para Ewl_Entry</title>
   <programlisting role="C">
 void entry_cb(Ewl_Widget *w, void *event, void *data) {
-    char *s = ewl_entry_get_text(EWL_ENTRY(w));
+    char *s = ewl_entry_text_get(EWL_ENTRY(w));
     printf("%s\n", s);
 
-    ewl_entry_set_text(EWL_ENTRY(w), "New Text");
+    ewl_entry_text_set(EWL_ENTRY(w), "New Text");
 }
   </programlisting>
  </example>
 Este callback captura el valor actual del widget entrada con la llamada a 
-<function>ewl_entry_get_text()</function> y entonces resetea el texto al valor "New Text" 
-llamando a <function>ewl_entry_set_text()</function>.
+<function>ewl_entry_text_get()</function> y entonces resetea el texto al valor "New Text" 
+llamando a <function>ewl_entry_text_set()</function>.
 </para>
 
 <para>
 El objeto <literal>Ewl_Entry</literal> te permite configurarsi el texto es o no editable con una llamada a 
-<function>void ewl_entry_set_editable(Ewl_Entry *, unsigned int edit)</function>
+<function>void ewl_entry_editable_set(Ewl_Entry *, unsigned int edit)</function>
 donde <literal>edit</literal> es 0 para ineditable y 1 para editable.
 </para>
 </sect1>

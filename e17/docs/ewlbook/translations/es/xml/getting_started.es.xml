@@ -239,7 +239,7 @@ void text_update_cb(Ewl_Widget *w, void *event, void *data) {
     Ewl_Widget *label = NULL;
     char buf[BUFSIZ];
 
-    s = ewl_entry_get_text(EWL_ENTRY(w));
+    s = ewl_entry_text_get(EWL_ENTRY(w));
     label = (Ewl_Widget *)data;
 
     snprintf(buf, BUFSIZ, "Hello %s", s);
@@ -337,7 +337,7 @@ void text_update_cb(Ewl_Widget *w, void *event, void *data) {
     Ewl_Widget *label = NULL;
     char buf[BUFSIZ];
 
-    s = ewl_entry_get_text(EWL_ENTRY(w));
+    s = ewl_entry_text_get(EWL_ENTRY(w));
     label = (Ewl_Widget *)data;
 
     snprintf(buf, BUFSIZ, "Hello %s", s);
@@ -354,7 +354,7 @@ todos los otros callbacks de EWL que estaremos registrando.
 </para>
 
 <para>
-El texto que ha sido introducido es recuperado con una llamada a<function>ewl_entry_get_text()</function> 
+El texto que ha sido introducido es recuperado con una llamada a<function>ewl_entry_text_get()</function> 
 pasando el widget de entrada desde el cual queremos recuperar el texto. Esto retornarña un puntero a 
 la cadena de texto, es responsabilidad de la aplicación liberar este puntero.
 </para>
