@@ -2,9 +2,9 @@
 
 bin_PROGRAMS = notgame
 
-notgame_SOURCES = conf.c dest.c help.c notgame.c play.c players.c pregame.c
+notgame_SOURCES = conf.c dest.c help.c notgame.c play.c players.c pregame.c strings.c
 
 INCLUDES = -I. -I../include -I.. -I$(includedir) -I$(prefix)/include
 LDADD = -L$(libdir) -L$(prefix)/lib
 
-EXTRA_DIST = conf.h debug.h dest.h help.h notgame.h play.h players.h pregame.h
+EXTRA_DIST = conf.h debug.h dest.h help.h notgame.h play.h players.h pregame.h strings.h

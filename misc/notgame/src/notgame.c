@@ -38,7 +38,6 @@ ng_init(void) {
 
   /* Load the config file containing the player groups and the choice groups */
   conf_init_subsystem();
-  conf_load();
 
   /* Create the pre-game window */
   pregame_init();
