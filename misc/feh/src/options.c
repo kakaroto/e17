@@ -260,7 +260,7 @@ show_usage (void)
 	   " n, N, <SPACE>, <RIGHT>     Goto next slide\n"
 	   " <HOME>                     Goto first slide\n"
 	   " <END>                      Goto last slide\n"
-	   " <DELETE>                   Delete the file currently being viewed\n"
+	   " <CTRL+DELETE>              Delete the file currently being viewed\n"
 	   " q, Q                       Quit the slideshow\n"
 	   "\n"
 	   " MOUSE ACTIONS\n"
