@@ -42,4 +42,22 @@ void            ewl_notebook_set_tabs_visible(Ewl_Notebook * n, int show);
 void            ewl_notebook_set_visible_page(Ewl_Notebook *n, int t);
 int             ewl_notebook_get_visible_page(Ewl_Notebook *n);
 
+/*
+ * Internally used callbacks, override at your own risk.
+ */
+void            ewl_notebook_configure_top_cb(Ewl_Widget * w, void *ev_data,
+					      void *user_data);
+void            ewl_notebook_configure_bottom_cb(Ewl_Widget * w, void *ev_data,
+					         void *user_data);
+void            ewl_notebook_configure_left_cb(Ewl_Widget * w, void *ev_data,
+					       void *user_data);
+void            ewl_notebook_configure_right_cb(Ewl_Widget * w, void *ev_data,
+					        void *user_data);
+void            ewl_notebook_add_cb(Ewl_Container *c, Ewl_Widget *w);
+void            ewl_notebook_resize_cb(Ewl_Container *c, Ewl_Widget *w,
+				       int size, Ewl_Orientation o);
+
+
+void            ewl_notebook_tab_cb(Ewl_Widget *widget, void *ev_data, void *user_data); 
+
 #endif				/* __EWL_NOTEBOOK_H__ */

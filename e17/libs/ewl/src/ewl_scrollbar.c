@@ -2,12 +2,12 @@
 #include <Ewl.h>
 
 
-void            __ewl_scrollbar_scroll_start(Ewl_Widget * w, void *ev_data,
+void        ewl_scrollbar_scroll_start_cb(Ewl_Widget * w, void *ev_data,
 					  void *user_data);
-void            __ewl_scrollbar_scroll_stop(Ewl_Widget * w, void *ev_data,
-					  void *user_data);
+void        ewl_scrollbar_scroll_stop_cb(Ewl_Widget * w, void *ev_data,
+					 void *user_data);
 
-int             __ewl_scrollbar_timer(void *data);
+static int  ewl_scrollbar_timer(void *data);
 
 
 /**
@@ -84,30 +84,30 @@ void ewl_scrollbar_init(Ewl_Scrollbar * s, Ewl_Orientation orientation)
 	if (orientation == EWL_ORIENTATION_HORIZONTAL) {
 		ewl_callback_append(s->button_increment,
 				EWL_CALLBACK_MOUSE_DOWN,
-				__ewl_scrollbar_scroll_start, s);
+				ewl_scrollbar_scroll_start_cb, s);
 		ewl_callback_append(s->button_increment,
 				EWL_CALLBACK_MOUSE_UP,
-				__ewl_scrollbar_scroll_stop, s);
+				ewl_scrollbar_scroll_stop_cb, s);
 		ewl_callback_append(s->button_decrement,
 				EWL_CALLBACK_MOUSE_DOWN,
-				__ewl_scrollbar_scroll_start, s);
+				ewl_scrollbar_scroll_start_cb, s);
 		ewl_callback_append(s->button_decrement,
 				EWL_CALLBACK_MOUSE_UP,
-				__ewl_scrollbar_scroll_stop, s);
+				ewl_scrollbar_scroll_stop_cb, s);
 	}
 	else {
 		ewl_callback_append(s->button_increment,
 				EWL_CALLBACK_MOUSE_DOWN,
-				__ewl_scrollbar_scroll_start, s);
+				ewl_scrollbar_scroll_start_cb, s);
 		ewl_callback_append(s->button_increment,
 				EWL_CALLBACK_MOUSE_UP,
-				__ewl_scrollbar_scroll_stop, s);
+				ewl_scrollbar_scroll_stop_cb, s);
 		ewl_callback_append(s->button_decrement,
 				EWL_CALLBACK_MOUSE_DOWN,
-				__ewl_scrollbar_scroll_start, s);
+				ewl_scrollbar_scroll_start_cb, s);
 		ewl_callback_append(s->button_decrement,
 				EWL_CALLBACK_MOUSE_UP,
-				__ewl_scrollbar_scroll_stop, s);
+				ewl_scrollbar_scroll_stop_cb, s);
 	}
 
 	/*
@@ -361,7 +361,7 @@ Ewl_ScrollBar_Flags ewl_scrollbar_get_flag(Ewl_Scrollbar * s)
  * Decrement the value of the scrollbar's seeker portion
  */
 void
-__ewl_scrollbar_scroll_start(Ewl_Widget * w, void *ev_data, void *user_data)
+ewl_scrollbar_scroll_start_cb(Ewl_Widget * w, void *ev_data, void *user_data)
 {
 	Ewl_Scrollbar  *s;
 	Ewl_Orientation o;
@@ -384,13 +384,13 @@ __ewl_scrollbar_scroll_start(Ewl_Widget * w, void *ev_data, void *user_data)
 		s->direction = -s->direction;
 
 	s->start_time = ecore_time_get();
-	s->timer = ecore_timer_add(0.02, __ewl_scrollbar_timer, s);
+	s->timer = ecore_timer_add(0.02, ewl_scrollbar_timer, s);
 
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
 
 void
-__ewl_scrollbar_scroll_stop(Ewl_Widget * w, void *ev_data, void *user_data)
+ewl_scrollbar_scroll_stop_cb(Ewl_Widget * w, void *ev_data, void *user_data)
 {
 	Ewl_Scrollbar *s;
 
@@ -407,7 +407,7 @@ __ewl_scrollbar_scroll_stop(Ewl_Widget * w, void *ev_data, void *user_data)
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
 
-int __ewl_scrollbar_timer(void *data)
+static int ewl_scrollbar_timer(void *data)
 {
 	Ewl_Scrollbar  *s;
 	double          dt;

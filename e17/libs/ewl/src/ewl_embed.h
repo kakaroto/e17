@@ -49,6 +49,17 @@ void            ewl_embed_font_path_add(char *path);
 Ewl_Embed      *ewl_embed_find_by_evas_window(Ecore_X_Window win);
 Ewl_Embed      *ewl_embed_find_by_widget(Ewl_Widget * w);
 
+/*
+ * Internally used callbacks, override at your own risk.
+ */
+void ewl_embed_unrealize_cb(Ewl_Widget *w, void *ev_data, void *user_data);
+void ewl_embed_configure_cb(Ewl_Widget *w, void *ev_data, void *user_data);
+void ewl_embed_destroy_cb(Ewl_Widget *w, void *ev_data, void *user_data);
+
+void ewl_embed_child_add_cb(Ewl_Container * emb, Ewl_Widget * child);
+void ewl_embed_child_resize_cb(Ewl_Container *c, Ewl_Widget *w, int size,
+			       Ewl_Orientation o);
+
 /**
  * @}
  */

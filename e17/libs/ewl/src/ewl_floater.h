@@ -45,6 +45,14 @@ Ewl_Widget     *ewl_floater_new(Ewl_Widget * parent);
 void            ewl_floater_set_position(Ewl_Floater * parent, int x, int y);
 void            ewl_floater_init(Ewl_Floater * f, Ewl_Widget * parent);
 
+/*
+ * Internally used callbacks, override at your own risk.
+ */
+void ewl_floater_parent_configure_cb(Ewl_Widget * w, void *ev_data,
+				     void *user_data);
+void ewl_floater_reparent_cb(Ewl_Widget * parent, void *ev_data,
+			     void *user_data);
+
 /**
  * @}
  */

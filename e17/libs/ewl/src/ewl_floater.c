@@ -1,18 +1,6 @@
 #include <Ewl.h>
 #include "ewl_floater.h"
 
-/*
- * Local callbacks used for acting based on events to parent widgets.
- */
-void            __ewl_floater_parent_configure(Ewl_Widget * w, void *ev_data,
-					       void *user_data);
-
-/*
- * Local callbacks for events that occur to the floaters.
- */
-void            __ewl_floater_reparent(Ewl_Widget * parent, void *ev_data,
-				       void *user_data);
-
 /**
  * @param parent: the parent widget to follow if desired
  * @return Returns NULL on failure, or the new floater widget on success.
@@ -71,25 +59,7 @@ void ewl_floater_init(Ewl_Floater * f, Ewl_Widget * parent)
 	 * widget it follows, if they are not the same.
 	 */
 	ewl_callback_append(EWL_WIDGET(f->follows), EWL_CALLBACK_CONFIGURE,
-			    __ewl_floater_parent_configure, w);
-
-
-	/*
-	 * FIXME: Setup the basic callbacks for special events. 
-	 */
-	/*
-	ewl_callback_insert_after(w, EWL_CALLBACK_REPARENT,
-				  __ewl_floater_reparent, window,
-				  __ewl_widget_reparent, NULL);
-	*/
-
-
-	/* 
-	 * FIXME: add the floater to the window 
-	 */
-	/*
-	ewl_container_append_child(EWL_CONTAINER(window), w);
-	*/
+			    ewl_floater_parent_configure_cb, w);
 
 	f->x = CURRENT_X(EWL_OBJECT(parent));
 	f->y = CURRENT_Y(EWL_OBJECT(parent));
@@ -148,7 +118,7 @@ void ewl_floater_set_relative(Ewl_Floater * f, Ewl_Widget * w)
 	 * followed widget.
 	 */
 	ewl_callback_del(f->follows, EWL_CALLBACK_CONFIGURE,
-			 __ewl_floater_parent_configure);
+			 ewl_floater_parent_configure_cb);
 
 	/*
 	 * Set the widget that the floater follows.
@@ -164,7 +134,7 @@ void ewl_floater_set_relative(Ewl_Floater * f, Ewl_Widget * w)
  * Use this to ensure the floater gets configured when the parent/window is.
  */
 void
-__ewl_floater_parent_configure(Ewl_Widget * w, void *ev_data, void *user_data)
+ewl_floater_parent_configure_cb(Ewl_Widget * w, void *ev_data, void *user_data)
 {
 	int             align, x, y;
 	Ewl_Floater    *f;

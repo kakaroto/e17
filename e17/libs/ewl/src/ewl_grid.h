@@ -1,9 +1,10 @@
 #ifndef __EWL_GRID_H__
 #define __EWL_GRID_H__
 
-typedef struct _ewl_grid_info Ewl_Grid_Info;
+typedef struct Ewl_Grid_Info Ewl_Grid_Info;
 
-struct _ewl_grid_info {
+struct Ewl_Grid_Info
+{
 	int             override;
 	int             size;
 	Ewl_Widget     *max;
@@ -61,5 +62,17 @@ void            ewl_grid_get_col_w(Ewl_Grid * g, int col, int *width);
 void            ewl_grid_get_row_h(Ewl_Grid * g, int row, int *height);
 
 void            ewl_grid_reset(Ewl_Grid * g, int rows, int cols);
+
+/*
+ * Internally used callbacks, override at your own risk.
+ */
+void ewl_grid_realize_cb(Ewl_Widget * w, void *ev_data,
+			 void *user_data);
+void ewl_grid_configure_cb(Ewl_Widget * w, void *ev_data,
+			   void *user_data);
+void ewl_grid_resize_cb(Ewl_Grid * g);
+void ewl_grid_add_cb(Ewl_Container * p, Ewl_Widget * c);
+void ewl_grid_auto_resize_cb(Ewl_Container * p, Ewl_Widget * child,
+			     int size, Ewl_Orientation o);
 
 #endif				/* __EWL_GRID_H__ */

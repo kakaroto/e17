@@ -85,6 +85,18 @@ void            ewl_menu_separator_init(Ewl_Menu_Separator *sep);
 void            ewl_menu_base_init(Ewl_Menu_Base * menu, char *image,
 				   char *title);
 
+/*
+ * Internally used callbacks, override at your own risk.
+ */
+void ewl_menu_base_expand_cb(Ewl_Widget *w, void *ev_data, void *user_data);
+void ewl_menu_base_collapse_cb(Ewl_Widget * w, void *ev_data, void *user_data);
+void ewl_menu_base_destroy_cb(Ewl_Widget * w, void *ev_data, void *user_data);
+
+void ewl_menu_add_cb(Ewl_Container * parent, Ewl_Widget * child);
+void ewl_menu_item_add_cb(Ewl_Container *parent, Ewl_Widget *child);
+void ewl_menu_item_resize_cb(Ewl_Container *parent, Ewl_Widget *child,
+			     int size, Ewl_Orientation o);
+
 /**
  * @}
  */

@@ -1,20 +1,7 @@
 
 #include <Ewl.h>
 
-void            __ewl_image_realize(Ewl_Widget * w, void *ev_data,
-				    void *user_data);
-void            __ewl_image_unrealize(Ewl_Widget * w, void *ev_data,
-				      void *user_data);
-void            __ewl_image_configure(Ewl_Widget * w, void *ev_data,
-				      void *user_data);
-void            __ewl_image_mouse_down(Ewl_Widget * w, void *ev_data,
-				       void *user_data);
-void            __ewl_image_mouse_up(Ewl_Widget * w, void *ev_data,
-				     void *user_data);
-void            __ewl_image_mouse_move(Ewl_Widget * w, void *ev_data,
-				       void *user_data);
-
-Ewl_Image_Type  __ewl_image_get_type(const char *i);
+static Ewl_Image_Type  ewl_image_get_type(const char *i);
 
 /**
  * @param i: the path to the image to be displayed by the image widget
@@ -58,16 +45,17 @@ void ewl_image_init(Ewl_Image * i, char *path)
 	/*
 	 * Append necessary callbacks.
 	 */
-	ewl_callback_append(w, EWL_CALLBACK_REALIZE, __ewl_image_realize, NULL);
-	ewl_callback_append(w, EWL_CALLBACK_UNREALIZE, __ewl_image_unrealize,
+	ewl_callback_append(w, EWL_CALLBACK_REALIZE, ewl_image_realize_cb,
 			    NULL);
-	ewl_callback_append(w, EWL_CALLBACK_CONFIGURE,
-			    __ewl_image_configure, NULL);
-	ewl_callback_append(w, EWL_CALLBACK_MOUSE_DOWN,
-			    __ewl_image_mouse_down, NULL);
-	ewl_callback_append(w, EWL_CALLBACK_MOUSE_UP, __ewl_image_mouse_up,
+	ewl_callback_append(w, EWL_CALLBACK_UNREALIZE, ewl_image_unrealize_cb,
 			    NULL);
-	ewl_callback_append(w, EWL_CALLBACK_MOUSE_MOVE, __ewl_image_mouse_move,
+	ewl_callback_append(w, EWL_CALLBACK_CONFIGURE, ewl_image_configure_cb,
+			    NULL);
+	ewl_callback_append(w, EWL_CALLBACK_MOUSE_DOWN, ewl_image_mouse_down_cb,
+			    NULL);
+	ewl_callback_append(w, EWL_CALLBACK_MOUSE_UP, ewl_image_mouse_up_cb,
+			    NULL);
+	ewl_callback_append(w, EWL_CALLBACK_MOUSE_MOVE, ewl_image_mouse_move_cb,
 			    NULL);
 
 	i->sw = 1.0;
@@ -106,7 +94,7 @@ void ewl_image_set_file(Ewl_Image * i, char *im)
 	 */
 	old_type = i->type;
 	if (im) {
-		i->type = __ewl_image_get_type(im);
+		i->type = ewl_image_get_type(im);
 		i->path = strdup(im);
 	}
 	else
@@ -133,7 +121,7 @@ void ewl_image_set_file(Ewl_Image * i, char *im)
 		/*
 		 * Now draw the new image
 		 */
-		__ewl_image_realize(w, NULL, NULL);
+		ewl_image_realize_cb(w, NULL, NULL);
 	}
 
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
@@ -236,7 +224,7 @@ ewl_image_scale_to(Ewl_Image *i, int w, int h)
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
 
-void __ewl_image_realize(Ewl_Widget * w, void *ev_data, void *user_data)
+void ewl_image_realize_cb(Ewl_Widget * w, void *ev_data, void *user_data)
 {
 	Ewl_Image      *i;
 	Ewl_Embed      *emb;
@@ -291,7 +279,7 @@ void __ewl_image_realize(Ewl_Widget * w, void *ev_data, void *user_data)
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
 
-void __ewl_image_unrealize(Ewl_Widget * w, void *ev_data, void *user_data)
+void ewl_image_unrealize_cb(Ewl_Widget * w, void *ev_data, void *user_data)
 {
 	Ewl_Image *i;
 
@@ -307,7 +295,7 @@ void __ewl_image_unrealize(Ewl_Widget * w, void *ev_data, void *user_data)
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
 
-void __ewl_image_reparent(Ewl_Widget * w, void *ev_data, void *user_data)
+void ewl_image_reparent_cb(Ewl_Widget * w, void *ev_data, void *user_data)
 {
 	Ewl_Image      *i;
 
@@ -318,7 +306,7 @@ void __ewl_image_reparent(Ewl_Widget * w, void *ev_data, void *user_data)
 	evas_object_layer_set(i->image, ewl_widget_get_layer_sum(w));
 }
 
-void __ewl_image_configure(Ewl_Widget * w, void *ev_data, void *user_data)
+void ewl_image_configure_cb(Ewl_Widget * w, void *ev_data, void *user_data)
 {
 	Ewl_Image      *i;
 	Ewl_Embed      *emb;
@@ -366,7 +354,7 @@ void __ewl_image_configure(Ewl_Widget * w, void *ev_data, void *user_data)
 /*
  * Determine the type of the file based on the filename.
  */
-Ewl_Image_Type __ewl_image_get_type(const char *i)
+static Ewl_Image_Type ewl_image_get_type(const char *i)
 {
 	int             l;
 
@@ -382,7 +370,7 @@ Ewl_Image_Type __ewl_image_get_type(const char *i)
 }
 
 
-void __ewl_image_mouse_down(Ewl_Widget * w, void *ev_data, void *user_data)
+void ewl_image_mouse_down_cb(Ewl_Widget * w, void *ev_data, void *user_data)
 {
 	Ewl_Image      *i;
 	Ewl_Embed      *emb;
@@ -401,7 +389,7 @@ void __ewl_image_mouse_down(Ewl_Widget * w, void *ev_data, void *user_data)
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
 
-void __ewl_image_mouse_up(Ewl_Widget * w, void *ev_data, void *user_data)
+void ewl_image_mouse_up_cb(Ewl_Widget * w, void *ev_data, void *user_data)
 {
 	Ewl_Image      *i;
 	Ewl_Embed      *emb;
@@ -420,7 +408,7 @@ void __ewl_image_mouse_up(Ewl_Widget * w, void *ev_data, void *user_data)
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
 
-void __ewl_image_mouse_move(Ewl_Widget * w, void *ev_data, void *user_data)
+void ewl_image_mouse_move_cb(Ewl_Widget * w, void *ev_data, void *user_data)
 {
 	Ewl_Image      *i;
 	Ewl_Embed      *emb;

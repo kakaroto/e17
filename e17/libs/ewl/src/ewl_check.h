@@ -40,4 +40,12 @@ void            ewl_check_init(Ewl_Check * c);
 int             ewl_check_is_checked(Ewl_Check * c);
 void            ewl_check_set_checked(Ewl_Check * c, int checked);
 
+/*
+ * Internally used callbacks.
+ */
+void            ewl_check_clicked_cb(Ewl_Widget * w, void *ev_data,
+				    void *user_data);
+void            ewl_check_update_check_cb(Ewl_Widget * w, void *ev_data,
+					  void *user_data);
+
 #endif

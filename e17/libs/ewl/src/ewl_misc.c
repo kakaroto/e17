@@ -19,9 +19,9 @@ static Ewd_List *free_evas_object_list = NULL;
 
 static Ewd_List *child_add_list= NULL;
 
-static void     __ewl_init_parse_options(int *argc, char **argv);
-static void     __ewl_init_remove_option(int *argc, char **argv, int i);
-int             __ewl_ecore_exit(void *data, int type, void *event);
+static void     ewl_init_parse_options(int *argc, char **argv);
+static void     ewl_init_remove_option(int *argc, char **argv, int i);
+int             ewl_ecore_exit(void *data, int type, void *event);
 static int      ewl_reread_config(void *data);
 
 /**
@@ -66,7 +66,7 @@ void ewl_init(int *argc, char **argv)
 	free_evas_object_list = ewd_list_new();
 	child_add_list = ewd_list_new();
 
-	__ewl_init_parse_options(argc, argv);
+	ewl_init_parse_options(argc, argv);
 
 	ecore_init();
 	edje_init();
@@ -211,14 +211,14 @@ void ewl_main_quit(void)
 }
 
 /*
- * __ewl_init_parse_options - parse the options passed to ewl_init
+ * ewl_init_parse_options - parse the options passed to ewl_init
  * @argc: the argc passed to the main function
  * @argv: the argv passed to the main function
  *
  * Returns no value. Parses the arguments of the program into sections that
  * ewl knows how to deal with.
  */
-static void __ewl_init_parse_options(int *argc, char **argv)
+static void ewl_init_parse_options(int *argc, char **argv)
 {
 	int i;
 
@@ -228,7 +228,7 @@ static void __ewl_init_parse_options(int *argc, char **argv)
 	while (i < *argc) {
 		if (!strcmp(argv[i], "--ewl-segv")) {
 			debug_segv = 1;
-			__ewl_init_remove_option(argc, argv, i);
+			ewl_init_remove_option(argc, argv, i);
 		}
 		else
 			i++;
@@ -237,7 +237,7 @@ static void __ewl_init_parse_options(int *argc, char **argv)
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
 
-static void __ewl_init_remove_option(int *argc, char **argv, int i)
+static void ewl_init_remove_option(int *argc, char **argv, int i)
 {
 	int j;
 
@@ -639,7 +639,7 @@ void ewl_garbage_collect()
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
 
-int __ewl_ecore_exit(void *data, int type, void *event)
+int ewl_ecore_exit(void *data, int type, void *event)
 {
 	ewl_main_quit();
 

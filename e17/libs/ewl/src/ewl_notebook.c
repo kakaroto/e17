@@ -1,22 +1,5 @@
 #include <Ewl.h>
 
-
-void            __ewl_notebook_init(Ewl_Notebook * n);
-void            __ewl_notebook_configure_top(Ewl_Widget * w, void *ev_data,
-					     void *user_data);
-void            __ewl_notebook_configure_bottom(Ewl_Widget * w, void *ev_data,
-					        void *user_data);
-void            __ewl_notebook_configure_left(Ewl_Widget * w, void *ev_data,
-					      void *user_data);
-void            __ewl_notebook_configure_right(Ewl_Widget * w, void *ev_data,
-					       void *user_data);
-void            __ewl_notebook_add(Ewl_Container *c, Ewl_Widget *w);
-void            __ewl_notebook_resize(Ewl_Container *c, Ewl_Widget *w, int size,
-					Ewl_Orientation o);
-
-
-void __ewl_notebook_tabcb(Ewl_Widget *widget, void *ev_data, void *user_data); 
-
 /**
  * ewl_notebook_new - create a new notebook
  * 
@@ -56,8 +39,8 @@ void ewl_notebook_init(Ewl_Notebook * n)
 	 * Initialize the container portion of the notebook and set the fill
 	 * policy to fill the area available.
 	 */
-	ewl_container_init(EWL_CONTAINER(w), "tnotebook", __ewl_notebook_add,
-			__ewl_notebook_resize, __ewl_notebook_add);
+	ewl_container_init(EWL_CONTAINER(w), "tnotebook", ewl_notebook_add_cb,
+			ewl_notebook_resize_cb, ewl_notebook_add_cb);
 
 	ewl_object_set_fill_policy(EWL_OBJECT(w), EWL_FLAG_FILL_FILL);
 
@@ -81,7 +64,7 @@ void ewl_notebook_init(Ewl_Notebook * n)
 	 * Attach the necessary callbacks for the notebook
 	 */
 	ewl_callback_append(w, EWL_CALLBACK_CONFIGURE,
-			    __ewl_notebook_configure_top, NULL);
+			    ewl_notebook_configure_top_cb, NULL);
 
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
@@ -109,7 +92,7 @@ void ewl_notebook_append_page(Ewl_Notebook * n, Ewl_Widget * t, Ewl_Widget * p)
 	b = ewl_button_new(NULL);
 	if (t)
 		ewl_container_append_child(EWL_CONTAINER(b), t);
-	ewl_callback_append(b, EWL_CALLBACK_CLICKED, __ewl_notebook_tabcb, p);
+	ewl_callback_append(b, EWL_CALLBACK_CLICKED, ewl_notebook_tab_cb, p);
 	ewl_widget_show(b);
 
 	ewl_container_append_child(EWL_CONTAINER(n->tab_box), b);
@@ -144,7 +127,7 @@ void ewl_notebook_prepend_page(Ewl_Notebook * n, Ewl_Widget * t, Ewl_Widget * p)
 	b = ewl_button_new(NULL);
 	if (t)
 		ewl_container_append_child(EWL_CONTAINER(b), t);
-	ewl_callback_append(b, EWL_CALLBACK_CLICKED, __ewl_notebook_tabcb, p);
+	ewl_callback_append(b, EWL_CALLBACK_CLICKED, ewl_notebook_tab_cb, p);
 	ewl_widget_show(b);
 
 	ewl_container_prepend_child(EWL_CONTAINER(n->tab_box), b);
@@ -182,7 +165,7 @@ ewl_notebook_insert_page(Ewl_Notebook * n, Ewl_Widget * t, Ewl_Widget * p,
 	b = ewl_button_new(NULL);
 	if (t)
 		ewl_container_append_child(EWL_CONTAINER(b), t);
-	ewl_callback_append(b, EWL_CALLBACK_CLICKED, __ewl_notebook_tabcb, p);
+	ewl_callback_append(b, EWL_CALLBACK_CLICKED, ewl_notebook_tab_cb, p);
 	ewl_widget_show(b);
 
 	ewl_container_insert_child(EWL_CONTAINER(n->tab_box), b, pos);
@@ -452,20 +435,20 @@ void ewl_notebook_set_tabs_position(Ewl_Notebook * n, Ewl_Position p)
 	switch (n->flags & EWL_POSITION_MASK) {
 		case EWL_POSITION_LEFT:
 			ewl_callback_del(w, EWL_CALLBACK_CONFIGURE,
-					 __ewl_notebook_configure_left);
+					 ewl_notebook_configure_left_cb);
 			break;
 		case EWL_POSITION_RIGHT:
 			ewl_callback_del(w, EWL_CALLBACK_CONFIGURE,
-					 __ewl_notebook_configure_right);
+					 ewl_notebook_configure_right_cb);
 			break;
 		case EWL_POSITION_BOTTOM:
 			ewl_callback_del(w, EWL_CALLBACK_CONFIGURE,
-					 __ewl_notebook_configure_bottom);
+					 ewl_notebook_configure_bottom_cb);
 			break;
 		case EWL_POSITION_TOP:
 		default:
 			ewl_callback_del(w, EWL_CALLBACK_CONFIGURE,
-					 __ewl_notebook_configure_bottom);
+					 ewl_notebook_configure_bottom_cb);
 			break;
 	}
 
@@ -477,7 +460,7 @@ void ewl_notebook_set_tabs_position(Ewl_Notebook * n, Ewl_Position p)
 			ewl_box_set_orientation(EWL_BOX(n->tab_box),
 					EWL_ORIENTATION_VERTICAL);
 			ewl_callback_append(w, EWL_CALLBACK_CONFIGURE,
-					    __ewl_notebook_configure_left,
+					    ewl_notebook_configure_left_cb,
 					    NULL);
 			break;
 		case EWL_POSITION_RIGHT:
@@ -485,7 +468,7 @@ void ewl_notebook_set_tabs_position(Ewl_Notebook * n, Ewl_Position p)
 			ewl_box_set_orientation(EWL_BOX(n->tab_box),
 					EWL_ORIENTATION_VERTICAL);
 			ewl_callback_append(w, EWL_CALLBACK_CONFIGURE,
-					    __ewl_notebook_configure_right,
+					    ewl_notebook_configure_right_cb,
 					    NULL);
 			break;
 		case EWL_POSITION_BOTTOM:
@@ -493,7 +476,7 @@ void ewl_notebook_set_tabs_position(Ewl_Notebook * n, Ewl_Position p)
 			ewl_box_set_orientation(EWL_BOX(n->tab_box),
 					EWL_ORIENTATION_HORIZONTAL);
 			ewl_callback_append(w, EWL_CALLBACK_CONFIGURE,
-					    __ewl_notebook_configure_bottom,
+					    ewl_notebook_configure_bottom_cb,
 					    NULL);
 			break;
 		case EWL_POSITION_TOP:
@@ -502,7 +485,7 @@ void ewl_notebook_set_tabs_position(Ewl_Notebook * n, Ewl_Position p)
 			ewl_box_set_orientation(EWL_BOX(n->tab_box),
 					EWL_ORIENTATION_HORIZONTAL);
 			ewl_callback_append(w, EWL_CALLBACK_CONFIGURE,
-					    __ewl_notebook_configure_top,
+					    ewl_notebook_configure_top_cb,
 					    NULL);
 			break;
 	}
@@ -628,7 +611,7 @@ int ewl_notebook_get_visible_page(Ewl_Notebook *n)
 }
 
 void
-__ewl_notebook_configure_top(Ewl_Widget * w, void *ev_data, void *user_data)
+ewl_notebook_configure_top_cb(Ewl_Widget * w, void *ev_data, void *user_data)
 {
 	Ewl_Notebook   *n;
 	int x, y;
@@ -658,7 +641,7 @@ __ewl_notebook_configure_top(Ewl_Widget * w, void *ev_data, void *user_data)
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
 
-void __ewl_notebook_tabcb(Ewl_Widget *widget, void *ev_data, void *user_data)
+void ewl_notebook_tab_cb(Ewl_Widget *widget, void *ev_data, void *user_data)
 {
 	Ewl_Widget *page;
 	Ewl_Notebook *nb;
@@ -678,7 +661,7 @@ void __ewl_notebook_tabcb(Ewl_Widget *widget, void *ev_data, void *user_data)
 }
 
 void
-__ewl_notebook_configure_bottom(Ewl_Widget * w, void *ev_data, void *user_data)
+ewl_notebook_configure_bottom_cb(Ewl_Widget * w, void *ev_data, void *user_data)
 {
 	Ewl_Notebook   *n;
 	int x, y;
@@ -713,7 +696,7 @@ __ewl_notebook_configure_bottom(Ewl_Widget * w, void *ev_data, void *user_data)
 }
 
 void
-__ewl_notebook_configure_left(Ewl_Widget * w, void *ev_data, void *user_data)
+ewl_notebook_configure_left_cb(Ewl_Widget * w, void *ev_data, void *user_data)
 {
 	Ewl_Notebook   *n;
 	int x, y;
@@ -742,7 +725,7 @@ __ewl_notebook_configure_left(Ewl_Widget * w, void *ev_data, void *user_data)
 }
 
 void
-__ewl_notebook_configure_right(Ewl_Widget * w, void *ev_data, void *user_data)
+ewl_notebook_configure_right_cb(Ewl_Widget * w, void *ev_data, void *user_data)
 {
 	Ewl_Notebook   *n;
 	int x, y;
@@ -772,7 +755,7 @@ __ewl_notebook_configure_right(Ewl_Widget * w, void *ev_data, void *user_data)
 }
 
 void
-__ewl_notebook_add(Ewl_Container *c, Ewl_Widget *w)
+ewl_notebook_add_cb(Ewl_Container *c, Ewl_Widget *w)
 {
 	Ewl_Notebook *n;
 
@@ -816,7 +799,7 @@ __ewl_notebook_add(Ewl_Container *c, Ewl_Widget *w)
 }
 
 void
-__ewl_notebook_resize(Ewl_Container *c, Ewl_Widget *w, int size,
+ewl_notebook_resize_cb(Ewl_Container *c, Ewl_Widget *w, int size,
 		Ewl_Orientation o)
 {
 	Ewl_Notebook *n;

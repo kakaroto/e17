@@ -1,17 +1,6 @@
 
 #include <Ewl.h>
 
-void            __ewl_table_configure(Ewl_Widget * w, void *ev_data,
-				      void *user_data);
-void            __ewl_table_show(Ewl_Widget * w, void *ev_data,
-				 void *user_data);
-void            __ewl_table_child_configure(Ewl_Widget * w, void *ev_data,
-					    void *user_data);
-void            __ewl_table_child_show(Ewl_Widget * w, void *ev_data,
-				       void *user_data);
-void            __ewl_table_child_select(Ewl_Widget * w, void *ev_data,
-					 void *user_data);
-
 
 /**
  * ewl_table_new - create a new table
@@ -66,6 +55,7 @@ void ewl_table_init(Ewl_Table * t, int cols, int rows, char **col_headers)
 	 */
 	t->grid = (Ewl_Grid *) ewl_grid_new(cols, rows);
 	ewl_container_append_child(EWL_CONTAINER(t), EWL_WIDGET(t->grid));
+	ewl_widget_show(EWL_WIDGET(t->grid));
 
 	/*
 	 * Add the column headers to the grid
@@ -96,9 +86,7 @@ void ewl_table_init(Ewl_Table * t, int cols, int rows, char **col_headers)
 	 * Append callbacks
 	 */
 	ewl_callback_append(EWL_WIDGET(t), EWL_CALLBACK_CONFIGURE,
-			    __ewl_table_configure, NULL);
-	ewl_callback_append(EWL_WIDGET(t), EWL_CALLBACK_REALIZE,
-			    __ewl_table_show, NULL);
+			    ewl_table_configure_cb, NULL);
 
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
@@ -129,7 +117,7 @@ ewl_table_add(Ewl_Table * table, Ewl_Cell * cell,
 		     start_col, end_col, start_row, end_row);
 
 	ewl_callback_prepend(EWL_WIDGET(cell), EWL_CALLBACK_MOUSE_UP,
-			     __ewl_table_child_select, table);
+			     ewl_table_child_select_cb, table);
 
 	ewl_widget_show(EWL_WIDGET(cell));
 
@@ -428,7 +416,7 @@ char           *ewl_table_get_selected(Ewl_Table * t)
 }
 
 
-void __ewl_table_child_select(Ewl_Widget * w, void *ev_data, void *user_data)
+void ewl_table_child_select_cb(Ewl_Widget * w, void *ev_data, void *user_data)
 {
 	Ewl_Table      *t;
 	Ewl_Grid_Child *gc;
@@ -452,27 +440,7 @@ void __ewl_table_child_select(Ewl_Widget * w, void *ev_data, void *user_data)
 
 
 
-void __ewl_table_show(Ewl_Widget * w, void *ev_data, void *user_data)
-{
-
-	/*---------------------------------
-	 * DEVELOPER NOTE:
-	 * This thing does all it's supposed to do.
-	 *
-	 * Maybe it's not needed even ??
-	 *---------------------------------*/
-
-
-	DENTER_FUNCTION(DLEVEL_STABLE);
-
-	ewl_widget_show(EWL_WIDGET(EWL_TABLE(w)->grid));
-	ewl_widget_configure(EWL_WIDGET(EWL_TABLE(w)->grid));
-	ewl_widget_configure(w);
-
-	DENTER_FUNCTION(DLEVEL_STABLE);
-}
-
-void __ewl_table_configure(Ewl_Widget * w, void *ev_data, void *user_data)
+void ewl_table_configure_cb(Ewl_Widget * w, void *ev_data, void *user_data)
 {
 
 	/*---------------------------------

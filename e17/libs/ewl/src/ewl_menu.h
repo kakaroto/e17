@@ -35,10 +35,15 @@ struct Ewl_Menu
 	Ewl_Menu_Base base; /**< Inherit from Ewl_Menu_Base */
 };
 
-Ewl_Widget     *ewl_menu_new(char *image, char *title);
-void            ewl_menu_init(Ewl_Menu * menu, char *image, char *title);
+Ewl_Widget *ewl_menu_new(char *image, char *title);
+void        ewl_menu_init(Ewl_Menu * menu, char *image, char *title);
 
-void            ewl_menu_set_title_expandable(Ewl_Menu * m);
+/*
+ * Internally used callbacks, override at your own risk.
+ */
+void ewl_menu_expand_cb(Ewl_Widget * w, void *ev_data, void *user_data);
+void ewl_menu_item_clicked_cb(Ewl_Widget * w, void *ev_data, void *user_data);
+void ewl_menu_realize_cb(Ewl_Widget * w, void *ev_data, void *user_data);
 
 /**
  * @}

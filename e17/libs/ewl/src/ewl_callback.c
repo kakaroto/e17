@@ -1,12 +1,12 @@
 #include <Ewl.h>
 
-static unsigned int __ewl_callback_hash(void *key);
-static int      __ewl_callback_compare(void *key1, void *key2);
-static Ewl_Callback *__ewl_callback_register(Ewl_Callback * cb);
-static void     __ewl_callback_unregister(Ewl_Callback * cb);
+static unsigned int  ewl_callback_hash(void *key);
+static int           ewl_callback_compare(void *key1, void *key2);
+static Ewl_Callback *ewl_callback_register(Ewl_Callback * cb);
+static void          ewl_callback_unregister(Ewl_Callback * cb);
 
-static int      callback_id = 0;
-static Ewd_Hash *cb_registration = NULL;
+static int           callback_id = 0;
+static Ewd_Hash     *cb_registration = NULL;
 
 /**
  * @return Returns no value.
@@ -24,8 +24,8 @@ static Ewd_Hash *cb_registration = NULL;
  */
 void ewl_callbacks_init()
 {
-	cb_registration = ewd_hash_new(__ewl_callback_hash,
-				       __ewl_callback_compare);
+	cb_registration = ewd_hash_new(ewl_callback_hash,
+				       ewl_callback_compare);
 }
 
 /**
@@ -41,7 +41,7 @@ void ewl_callbacks_deinit()
 }
 
 /*
- * __ewl_callback_register - register a callback to check for duplicates
+ * ewl_callback_register - register a callback to check for duplicates
  * @cb: the callback to register
  *
  * Returns a pointer to the callback that should be used instead of the passed
@@ -49,7 +49,7 @@ void ewl_callbacks_deinit()
  * but this can not be counted on. The callback @cb will be freed if this is
  * not the case.
  */
-static Ewl_Callback *__ewl_callback_register(Ewl_Callback * cb)
+static Ewl_Callback *ewl_callback_register(Ewl_Callback * cb)
 {
 	Ewl_Callback   *found;
 
@@ -71,13 +71,13 @@ static Ewl_Callback *__ewl_callback_register(Ewl_Callback * cb)
 }
 
 /*
- * __ewl_callback_unregister - unreference a callback and free if appropriate
+ * ewl_callback_unregister - unreference a callback and free if appropriate
  * @cb: the callback to unregister
  *
  * Returns no value. Checks to see if @cb has nay remaining references, if not
  * it is removed from the registration system and freed.
  */
-static void __ewl_callback_unregister(Ewl_Callback * cb)
+static void ewl_callback_unregister(Ewl_Callback * cb)
 {
 	DENTER_FUNCTION(DLEVEL_STABLE);
 
@@ -122,7 +122,7 @@ ewl_callback_append(Ewl_Widget * w, Ewl_Callback_Type t,
 	cb->func = f;
 	cb->user_data = user_data;
 
-	cb = __ewl_callback_register(cb);
+	cb = ewl_callback_register(cb);
 
 	list = EWL_CALLBACK_LIST_POINTER(w, t);
 
@@ -165,7 +165,7 @@ ewl_callback_prepend(Ewl_Widget * w, Ewl_Callback_Type t,
 	cb->func = f;
 	cb->user_data = user_data;
 
-	cb = __ewl_callback_register(cb);
+	cb = ewl_callback_register(cb);
 
 	list = EWL_CALLBACK_LIST_POINTER(w, t);
 
@@ -213,7 +213,7 @@ ewl_callback_insert_after(Ewl_Widget * w, Ewl_Callback_Type t,
 	cb->func = f;
 	cb->user_data = user_data;
 
-	cb = __ewl_callback_register(cb);
+	cb = ewl_callback_register(cb);
 
 	list = EWL_CALLBACK_LIST_POINTER(w, t);
 
@@ -344,7 +344,7 @@ void ewl_callback_del_type(Ewl_Widget * w, Ewl_Callback_Type t)
 		DRETURN(DLEVEL_STABLE);
 
 	while ((rm = ewd_list_remove_first(list)))
-		__ewl_callback_unregister(rm);
+		ewl_callback_unregister(rm);
 
 	ewd_list_destroy(list);
 	EWL_CALLBACK_LIST_ASSIGN(w, t, NULL);
@@ -378,7 +378,7 @@ void ewl_callback_del_cb_id(Ewl_Widget * w, Ewl_Callback_Type t, int cb_id)
 	while ((cb = ewd_list_next(list))) {
 		if (cb->id == cb_id) {
 			ewd_list_remove(list);
-			__ewl_callback_unregister(cb);
+			ewl_callback_unregister(cb);
 			break;
 		}
 	}
@@ -439,7 +439,7 @@ ewl_callback_del(Ewl_Widget * w, Ewl_Callback_Type t, Ewl_Callback_Function f)
 	while ((cb = ewd_list_current(list)) != NULL) {
 		if (cb->func == f) {
 			ewd_list_remove(list);
-			__ewl_callback_unregister(cb);
+			ewl_callback_unregister(cb);
 			break;
 		}
 
@@ -452,7 +452,7 @@ ewl_callback_del(Ewl_Widget * w, Ewl_Callback_Type t, Ewl_Callback_Function f)
 /*
  * Hashes the value of a callback based on it's type, function, and user data.
  */
-static unsigned int __ewl_callback_hash(void *key)
+static unsigned int ewl_callback_hash(void *key)
 {
 	Ewl_Callback   *cb = EWL_CALLBACK(key);
 
@@ -468,7 +468,7 @@ static unsigned int __ewl_callback_hash(void *key)
  * Simple comparison of callbacks, always returns -1 unless there is an exact
  * match, in which case it returns 0.
  */
-static int __ewl_callback_compare(void *key1, void *key2)
+static int ewl_callback_compare(void *key1, void *key2)
 {
 	Ewl_Callback   *cb1 = EWL_CALLBACK(key1);
 	Ewl_Callback   *cb2 = EWL_CALLBACK(key2);

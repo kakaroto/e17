@@ -1,14 +1,6 @@
 #include <Ewl.h>
 
-void            __ewl_textarea_realize(Ewl_Widget * w, void *ev_data,
-				       void *user_data);
-void            __ewl_textarea_unrealize(Ewl_Widget * w, void *ev_data,
-				       void *user_data);
-void            __ewl_textarea_reparent(Ewl_Widget * w, void *ev_data,
-				        void *user_data);
-void            __ewl_textarea_configure(Ewl_Widget * w, void *ev_data,
-					 void *user_data);
-void            __ewl_textarea_update_size(Ewl_TextArea * ta);
+static void ewl_textarea_update_size(Ewl_TextArea * ta);
 
 /**
  * @param text: the initial text of the textarea
@@ -51,14 +43,14 @@ void ewl_textarea_init(Ewl_TextArea * ta, char *text)
 
 	ewl_widget_init(EWL_WIDGET(w), "textarea");
 
-	ewl_callback_append(w, EWL_CALLBACK_REALIZE, __ewl_textarea_realize,
+	ewl_callback_append(w, EWL_CALLBACK_REALIZE, ewl_textarea_realize_cb,
 			    NULL);
-	ewl_callback_append(w, EWL_CALLBACK_UNREALIZE, __ewl_textarea_unrealize,
+	ewl_callback_append(w, EWL_CALLBACK_UNREALIZE,
+			    ewl_textarea_unrealize_cb, NULL);
+	ewl_callback_append(w, EWL_CALLBACK_REPARENT, ewl_textarea_reparent_cb,
 			    NULL);
-	ewl_callback_append(w, EWL_CALLBACK_REPARENT, __ewl_textarea_reparent,
-			    NULL);
-	ewl_callback_append(w, EWL_CALLBACK_CONFIGURE, __ewl_textarea_configure,
-			    NULL);
+	ewl_callback_append(w, EWL_CALLBACK_CONFIGURE,
+			    ewl_textarea_configure_cb, NULL);
 
 	if (text)
 		ewl_textarea_set_text(ta, text);
@@ -93,7 +85,7 @@ void ewl_textarea_set_text(Ewl_TextArea * ta, char *text)
 	if (ta->etox) {
 
 		etox_set_text(ta->etox, text);
-		__ewl_textarea_update_size(ta);
+		ewl_textarea_update_size(ta);
 	}
 
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
@@ -155,7 +147,7 @@ Etox_Context   *ewl_textarea_get_context(Ewl_TextArea * ta)
 	DRETURN_PTR(ta->etox_context, DLEVEL_STABLE);
 }
 
-void __ewl_textarea_realize(Ewl_Widget * w, void *ev_data, void *user_data)
+void ewl_textarea_realize_cb(Ewl_Widget * w, void *ev_data, void *user_data)
 {
 	int             r, g, b, a;
 	char           *style;
@@ -228,12 +220,12 @@ void __ewl_textarea_realize(Ewl_Widget * w, void *ev_data, void *user_data)
 	/*
 	 * Update the size of the textarea
 	 */
-	__ewl_textarea_update_size(ta);
+	ewl_textarea_update_size(ta);
 
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
 
-void __ewl_textarea_unrealize(Ewl_Widget * w, void *ev_data, void *user_data)
+void ewl_textarea_unrealize_cb(Ewl_Widget * w, void *ev_data, void *user_data)
 {
 	Ewl_TextArea   *ta;
 
@@ -250,7 +242,7 @@ void __ewl_textarea_unrealize(Ewl_Widget * w, void *ev_data, void *user_data)
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
 
-void __ewl_textarea_reparent(Ewl_Widget * w, void *ev_data, void *user_data)
+void ewl_textarea_reparent_cb(Ewl_Widget * w, void *ev_data, void *user_data)
 {
 	Ewl_TextArea *ta;
 
@@ -263,7 +255,7 @@ void __ewl_textarea_reparent(Ewl_Widget * w, void *ev_data, void *user_data)
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
 
-void __ewl_textarea_configure(Ewl_Widget * w, void *ev_data, void *user_data)
+void ewl_textarea_configure_cb(Ewl_Widget * w, void *ev_data, void *user_data)
 {
 	Ewl_TextArea   *ta;
 
@@ -286,7 +278,7 @@ void __ewl_textarea_configure(Ewl_Widget * w, void *ev_data, void *user_data)
 /*
  * Set the size of the text area to the size of the etox.
  */
-void __ewl_textarea_update_size(Ewl_TextArea * ta)
+static void ewl_textarea_update_size(Ewl_TextArea * ta)
 {
 	Evas_Coord x, y, width, height;
 

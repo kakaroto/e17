@@ -76,4 +76,18 @@ int             ewl_seeker_get_autohide(Ewl_Seeker *s);
 void            ewl_seeker_decrease(Ewl_Seeker * s);
 void            ewl_seeker_increase(Ewl_Seeker * s);
 
+/*
+ * Internally used callbacks, override at your own risk.
+ */
+void            ewl_seeker_configure_cb(Ewl_Widget * w, void *ev_data,
+				        void *user_data);
+void            ewl_seeker_button_mouse_down_cb(Ewl_Widget * w, void *ev_data,
+						void *user_data);
+void            ewl_seeker_button_mouse_up_cb(Ewl_Widget * w, void *ev_data,
+					      void *user_data);
+void            ewl_seeker_button_mouse_move_cb(Ewl_Widget * w, void *ev_data,
+						void *user_data);
+void            ewl_seeker_mouse_down_cb(Ewl_Widget * w, void *ev_data,
+					 void *user_data);
+
 #endif				/* __EWL_SEEKER_H__ */

@@ -49,6 +49,7 @@ typedef enum
 } EWL_TEXT_OVERRIDES;
 
 Ewl_Widget     *ewl_text_new(char *text);
+void            ewl_text_init(Ewl_Text * t, char *text);
 
 void            ewl_text_set_text(Ewl_Text * t, char *text);
 char           *ewl_text_get_text(Ewl_Text * t);
@@ -70,6 +71,14 @@ int             ewl_text_get_letter_geometry_at(Ewl_Text * t, int x, int y,
 						int *th);
 void            ewl_text_set_alignment(Ewl_Text * t, unsigned int a);
 int             ewl_text_get_index_at(Ewl_Text * t, int x, int y);
+
+/*
+ * Internally used callbacks, override at your own risk.
+ */
+void ewl_text_realize_cb(Ewl_Widget * w, void *ev_data, void *user_data);
+void ewl_text_unrealize_cb(Ewl_Widget * w, void *ev_data, void *user_data);
+void ewl_text_configure_cb(Ewl_Widget * w, void *ev_data, void *user_data);
+void ewl_text_reparent_cb(Ewl_Widget * w, void *ev_data, void *user_data);
 
 /**
  * @}

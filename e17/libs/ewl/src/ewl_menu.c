@@ -1,21 +1,6 @@
 
 #include <Ewl.h>
 
-void            __expand_menu(Ewl_Widget * w, void *ev_data, void *user_data);
-
-void            __item_clicked(Ewl_Widget * w, void *ev_data, void *user_data);
-
-void            __ewl_menu_realize(Ewl_Widget * w, void *ev_data,
-				   void *user_data);
-
-
-void            __expand_menu_animator(int val, void *ev_data);
-void            __collapse_menu_animator(int val, void *ev_data);
-void            __expand_menu_and_title_animator(int val, void *ev_data);
-void            __collapse_menu_and_title_animator(int val, void *ev_data);
-
-void            __ewl_menu_start(Ewl_Widget * w);
-
 /**
  * @param image: the image icon to use for this menu
  * @param title: the text to place in the menu
@@ -62,13 +47,13 @@ void ewl_menu_init(Ewl_Menu * menu, char *image, char *title)
 	 * The realize needs to create the pop-up.
 	 */
 	ewl_callback_prepend(EWL_WIDGET(menu), EWL_CALLBACK_SELECT,
-			    __expand_menu, NULL);
+			    ewl_menu_expand_cb, NULL);
 
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
 
 
-void __expand_menu(Ewl_Widget * w, void *ev_data, void *user_data)
+void ewl_menu_expand_cb(Ewl_Widget * w, void *ev_data, void *user_data)
 {
 	int             x = 0, y = 0;
 	Ewl_Menu       *menu;

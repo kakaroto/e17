@@ -2,10 +2,11 @@
 #ifndef __EWL_TABLE_H__
 #define __EWL_TABLE_H__
 
-typedef struct _ewl_table Ewl_Table;
+typedef struct Ewl_Table Ewl_Table;
 
 #define EWL_TABLE(table) ((Ewl_Table *)table)
-struct _ewl_table {
+struct Ewl_Table
+{
 	Ewl_Container   container;
 
 	Ewl_Grid       *grid;
@@ -50,5 +51,19 @@ Ewd_List       *ewl_table_find(Ewl_Table * table,
 
 
 char           *ewl_table_get_selected(Ewl_Table * table);
+
+/*
+ * Internally used callbacks, override at your own risk.
+ */
+void ewl_table_configure_cb(Ewl_Widget * w, void *ev_data,
+			    void *user_data);
+void ewl_table_show_cb(Ewl_Widget * w, void *ev_data,
+		       void *user_data);
+void ewl_table_child_configure_cb(Ewl_Widget * w, void *ev_data,
+				  void *user_data);
+void ewl_table_child_show_cb(Ewl_Widget * w, void *ev_data,
+			     void *user_data);
+void ewl_table_child_select_cb(Ewl_Widget * w, void *ev_data,
+			       void *user_data);
 
 #endif				/* __EWL_TABLE_H__ */

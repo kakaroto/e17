@@ -8,12 +8,11 @@
 
 static E_DB_File *config_db = NULL;
 
-void            __ewl_config_db_create(void);
-
-static int      __ewl_config_db_open(const char *name);
-static int      __ewl_config_db_stat(char *name);
-static void     __ewl_config_db_close(void);
-static int      __ewl_config_db_exists(char *name);
+static void     ewl_config_db_create(void);
+static int      ewl_config_db_open(const char *name);
+static int      ewl_config_db_stat(char *name);
+static void     ewl_config_db_close(void);
+static int      ewl_config_db_exists(char *name);
 
 extern Ewd_List *ewl_embed_list;
 
@@ -31,12 +30,12 @@ int ewl_config_init(void)
 
 	memset(&ewl_config, 0, sizeof(Ewl_Config));
 
-	if (__ewl_config_db_exists("system") != -1)
-		__ewl_config_db_close();
+	if (ewl_config_db_exists("system") != -1)
+		ewl_config_db_close();
 	else
-		__ewl_config_db_create();
+		ewl_config_db_create();
 
-	if (__ewl_config_db_exists("system") == -1)
+	if (ewl_config_db_exists("system") == -1)
 		DRETURN_INT(FALSE, DLEVEL_STABLE);
 
 	DRETURN_INT(TRUE, DLEVEL_STABLE);
@@ -56,12 +55,12 @@ int ewl_config_set_str(char *config, char *k, char *v)
 {
 	DENTER_FUNCTION(DLEVEL_STABLE);
 
-	if (!__ewl_config_db_open(config))
+	if (!ewl_config_db_open(config))
 		DRETURN_INT(FALSE, DLEVEL_STABLE);
 
 	e_db_str_set(config_db, k, v);
 
-	__ewl_config_db_close();
+	ewl_config_db_close();
 
 	DRETURN_INT(TRUE, DLEVEL_STABLE);
 }
@@ -82,12 +81,12 @@ int ewl_config_set_int(char *config, char *k, int v)
 {
 	DENTER_FUNCTION(DLEVEL_STABLE);
 
-	if (!__ewl_config_db_open(config))
+	if (!ewl_config_db_open(config))
 		DRETURN_INT(FALSE, DLEVEL_STABLE);
 
 	e_db_int_set(config_db, k, v);
 
-	__ewl_config_db_close();
+	ewl_config_db_close();
 
 	DRETURN_INT(TRUE, DLEVEL_STABLE);
 }
@@ -107,12 +106,12 @@ int ewl_config_set_float(char *config, char *k, float v)
 {
 	DENTER_FUNCTION(DLEVEL_STABLE);
 
-	if (!__ewl_config_db_open(config))
+	if (!ewl_config_db_open(config))
 		DRETURN_INT(FALSE, DLEVEL_STABLE);
 
 	e_db_float_set(config_db, k, v);
 
-	__ewl_config_db_close();
+	ewl_config_db_close();
 
 	DRETURN_INT(TRUE, DLEVEL_STABLE);
 }
@@ -130,10 +129,10 @@ char           *ewl_config_get_str(char *config, char *k)
 
 	DENTER_FUNCTION(DLEVEL_STABLE);
 
-	if (__ewl_config_db_open(config)) {
+	if (ewl_config_db_open(config)) {
 		ret = e_db_str_get(config_db, k);
 
-		__ewl_config_db_close();
+		ewl_config_db_close();
 	}
 
 	DRETURN_PTR(ret, DLEVEL_STABLE);
@@ -153,10 +152,10 @@ int ewl_config_get_int(char *config, char *k)
 
 	DENTER_FUNCTION(DLEVEL_STABLE);
 
-	if (__ewl_config_db_open(config)) {
+	if (ewl_config_db_open(config)) {
 		ret = e_db_int_get(config_db, k, &v);
 
-		__ewl_config_db_close();
+		ewl_config_db_close();
 	}
 
 	if (!ret)
@@ -178,10 +177,10 @@ float ewl_config_get_float(char *config, char *k)
 
 	DENTER_FUNCTION(DLEVEL_STABLE);
 
-	if (__ewl_config_db_open(config)) {
+	if (ewl_config_db_open(config)) {
 		ret = e_db_float_get(config_db, k, &v);
 
-		__ewl_config_db_close();
+		ewl_config_db_close();
 	}
 
 	if (!ret)
@@ -219,7 +218,7 @@ void ewl_config_reread_and_apply(void)
 
 	DENTER_FUNCTION(DLEVEL_STABLE);
 
-	mt = __ewl_config_db_stat("system");
+	mt = ewl_config_db_stat("system");
 	if (mt == ewl_config.mtime)
 		DRETURN(DLEVEL_STABLE);
 
@@ -358,7 +357,7 @@ void ewl_config_reread_and_apply(void)
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
 
-void __ewl_config_db_create(void)
+static void ewl_config_db_create(void)
 {
 	char           *home;
 	char            pe[PATH_MAX];
@@ -390,7 +389,7 @@ void __ewl_config_db_create(void)
 	DRETURN(DLEVEL_STABLE);
 }
 
-static int __ewl_config_db_open(const char *name)
+static int ewl_config_db_open(const char *name)
 {
 	char           *home;
 	char            path[PATH_MAX];
@@ -414,7 +413,7 @@ static int __ewl_config_db_open(const char *name)
 	DRETURN_INT(FALSE, DLEVEL_STABLE);
 }
 
-static int __ewl_config_db_stat(char *name)
+static int ewl_config_db_stat(char *name)
 {
 	char           *home;
 	char            path[PATH_MAX];
@@ -436,7 +435,7 @@ static int __ewl_config_db_stat(char *name)
 	DRETURN_INT(st.st_mtime, DLEVEL_STABLE);
 }
 
-static void __ewl_config_db_close()
+static void ewl_config_db_close()
 {
 	DENTER_FUNCTION(DLEVEL_STABLE);
 
@@ -450,7 +449,7 @@ static void __ewl_config_db_close()
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
 
-static int __ewl_config_db_exists(char *name)
+static int ewl_config_db_exists(char *name)
 {
 	char           *home;
 	char            path[PATH_MAX];

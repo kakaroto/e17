@@ -12,7 +12,7 @@ static Ewd_List *font_paths = NULL;
 static Ewd_Hash *cached_theme_data = NULL;
 static Ewd_Hash *def_theme_data = NULL;
 
-void          __ewl_theme_init_font_path(void);
+static void ewl_theme_init_font_path(void);
 
 /**
  * @return Returns TRUE on success, FALSE on failure.
@@ -82,7 +82,7 @@ int ewl_theme_init(void)
 		}
 	}
 
-	__ewl_theme_init_font_path();
+	ewl_theme_init_font_path();
 
 	IF_FREE(theme_name);
 
@@ -93,7 +93,7 @@ int ewl_theme_init(void)
  * Initializes the font path based on the theme. Also called by ewl_init, and
  * is not recommended to be called separately.
  */
-void __ewl_theme_init_font_path()
+static void ewl_theme_init_font_path()
 {
 	char           *font_path;
 	char            key[PATH_MAX];

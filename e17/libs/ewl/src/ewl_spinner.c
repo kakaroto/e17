@@ -1,38 +1,7 @@
 
 #include <Ewl.h>
 
-static void     __ewl_spinner_child_add(Ewl_Container *c, Ewl_Widget *w);
-static void     __ewl_spinner_child_resize(Ewl_Container *c, Ewl_Widget *w,
-					   int size, Ewl_Orientation o);
-static void     __ewl_spinner_realize(Ewl_Widget * widget, void *ev_data,
-				      void *user_data);
-static void     __ewl_spinner_configure(Ewl_Widget * widget, void *ev_data,
-					void *user_data);
-static void     __ewl_spinner_key_down(Ewl_Widget * widget, void *ev_data,
-				       void *user_data);
-static void     __ewl_spinner_deselect(Ewl_Widget * w, void *ev_data,
-				       void *user_data);
-
-static void     __ewl_spinner_set_value(Ewl_Widget * widget, double value);
-static double   __ewl_spinner_get_value(Ewl_Widget * widget);
-static void     __ewl_spinner_set_digits(Ewl_Widget * widget, int digits);
-static void     __ewl_spinner_set_min_val(Ewl_Widget * widget, double val);
-static void     __ewl_spinner_set_max_val(Ewl_Widget * widget, double val);
-static void     __ewl_spinner_increase_value(Ewl_Widget * widget,
-					     void *ev_data, void *user_data);
-static void     __ewl_spinner_decrease_value(Ewl_Widget * widget,
-					     void *ev_data, void *user_data);
-
-static void     __ewl_entry_key_down(Ewl_Widget * w, void *ev_data,
-				     void *user_data);
-static void     __ewl_entry_move_cursor_to_left(Ewl_Widget * w);
-static void     __ewl_entry_move_cursor_to_right(Ewl_Widget * w);
-static void     __ewl_entry_move_cursor_to_home(Ewl_Widget * w);
-static void     __ewl_entry_move_cursor_to_end(Ewl_Widget * w);
-static void     __ewl_entry_insert_text(Ewl_Widget * w, char *s);
-static void     __ewl_entry_delete_to_left(Ewl_Widget * w);
-static void     __ewl_entry_delete_to_right(Ewl_Widget * w);
-
+static void ewl_spinner_calc_value(Ewl_Spinner *s, double val);
 
 /**
  * @return Returns a new spinner widget on success, NULL on failure.
@@ -68,13 +37,13 @@ void ewl_spinner_init(Ewl_Spinner * s)
 	w = EWL_WIDGET(s);
 
 	ewl_container_init(EWL_CONTAINER(w), "spinner",
-			__ewl_spinner_child_add, __ewl_spinner_child_resize,
+			ewl_spinner_child_add_cb, ewl_spinner_child_resize_cb,
 			NULL);
 	ewl_object_set_fill_policy(EWL_OBJECT(w), EWL_FLAG_FILL_HFILL);
 
-	ewl_callback_append(w, EWL_CALLBACK_REALIZE, __ewl_spinner_realize,
+	ewl_callback_append(w, EWL_CALLBACK_REALIZE, ewl_spinner_realize_cb,
 			    NULL);
-	ewl_callback_append(w, EWL_CALLBACK_CONFIGURE, __ewl_spinner_configure,
+	ewl_callback_append(w, EWL_CALLBACK_CONFIGURE, ewl_spinner_configure_cb,
 			    NULL);
 
 	s->entry = ewl_entry_new("0");
@@ -101,19 +70,20 @@ void ewl_spinner_init(Ewl_Spinner * s)
 	s->step = 0.1;
 	s->digits = 2;
 
-	ewl_callback_del(s->entry, EWL_CALLBACK_KEY_DOWN, __ewl_entry_key_down);
+	ewl_callback_del(s->entry, EWL_CALLBACK_KEY_DOWN,
+			 ewl_entry_key_down_cb);
 	ewl_callback_append(s->entry, EWL_CALLBACK_KEY_DOWN,
-			    __ewl_spinner_key_down, NULL);
+			    ewl_spinner_key_down_cb, NULL);
 	ewl_callback_append(s->entry, EWL_CALLBACK_DESELECT,
-			    __ewl_spinner_deselect, NULL);
+			    ewl_spinner_deselect_cb, NULL);
 	ewl_callback_append(s->button_increase, EWL_CALLBACK_CLICKED,
-			    __ewl_spinner_increase_value, w);
+			    ewl_spinner_increase_value_cb, w);
 	ewl_callback_append(s->button_increase, EWL_CALLBACK_KEY_DOWN,
-			    __ewl_spinner_key_down, NULL);
+			    ewl_spinner_key_down_cb, NULL);
 	ewl_callback_append(s->button_decrease, EWL_CALLBACK_CLICKED,
-			    __ewl_spinner_decrease_value, w);
+			    ewl_spinner_decrease_value_cb, w);
 	ewl_callback_append(s->button_decrease, EWL_CALLBACK_KEY_DOWN,
-			    __ewl_spinner_key_down, NULL);
+			    ewl_spinner_key_down_cb, NULL);
 }
 
 /**
@@ -129,21 +99,22 @@ void ewl_spinner_set_value(Ewl_Spinner * s, double value)
 	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR("s", s);
 
-	__ewl_spinner_set_value(EWL_WIDGET(s), value);
+	ewl_spinner_calc_value(s, value);
 
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
 
 /**
  * @param s: the spinner widget to retrieve the value
- * @return Returns the current value in @a s on success, -1.0 on failure.
+ * @return Returns the current value in @a s on success, 0.0 on failure.
  * @brief Get the current value of a spinner widget
  */
 double ewl_spinner_get_value(Ewl_Spinner * s)
 {
-	DCHECK_PARAM_PTR_RET("s", s, -1.00);
+	DENTER_FUNCTION(DLEVEL_STABLE);
+	DCHECK_PARAM_PTR_RET("s", s, 0.00);
 
-	return __ewl_spinner_get_value(EWL_WIDGET(s));
+	DRETURN_FLOAT(s->value, DLEVEL_STABLE);
 }
 
 /**
@@ -156,9 +127,13 @@ double ewl_spinner_get_value(Ewl_Spinner * s)
  */
 void ewl_spinner_set_digits(Ewl_Spinner * s, int digits)
 {
+	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR("s", s);
 
-	__ewl_spinner_set_digits(EWL_WIDGET(s), digits);
+	s->digits = digits;
+	ewl_spinner_calc_value(s, s->value);
+
+	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
 
 /**
@@ -171,9 +146,13 @@ void ewl_spinner_set_digits(Ewl_Spinner * s, int digits)
  */
 void ewl_spinner_set_min_val(Ewl_Spinner * s, double val)
 {
+	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR("s", s);
 
-	__ewl_spinner_set_min_val(EWL_WIDGET(s), val);
+	s->min_val = val;
+	ewl_spinner_calc_value(s, s->value);
+
+	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
 
 /**
@@ -186,9 +165,13 @@ void ewl_spinner_set_min_val(Ewl_Spinner * s, double val)
  */
 void ewl_spinner_set_max_val(Ewl_Spinner * s, double val)
 {
+	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR("s", s);
 
-	__ewl_spinner_set_max_val(EWL_WIDGET(s), val);
+	s->max_val = val;
+	ewl_spinner_calc_value(s, s->value);
+
+	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
 
 /**
@@ -214,8 +197,8 @@ void ewl_spinner_set_step(Ewl_Spinner * s, double step)
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
 
-static void
-__ewl_spinner_child_add(Ewl_Container *c, Ewl_Widget *w)
+void
+ewl_spinner_child_add_cb(Ewl_Container *c, Ewl_Widget *w)
 {
 	Ewl_Spinner *s = EWL_SPINNER(c);
 
@@ -246,9 +229,9 @@ __ewl_spinner_child_add(Ewl_Container *c, Ewl_Widget *w)
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
 
-static void
-__ewl_spinner_child_resize(Ewl_Container *c, Ewl_Widget *w, int size,
-		Ewl_Orientation o)
+void
+ewl_spinner_child_resize_cb(Ewl_Container *c, Ewl_Widget *w, int size,
+			    Ewl_Orientation o)
 {
 	Ewl_Spinner *s = EWL_SPINNER(c);
 
@@ -279,8 +262,8 @@ __ewl_spinner_child_resize(Ewl_Container *c, Ewl_Widget *w, int size,
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
 
-static void
-__ewl_spinner_realize(Ewl_Widget * w, void *ev_data, void *user_data)
+void
+ewl_spinner_realize_cb(Ewl_Widget * w, void *ev_data, void *user_data)
 {
 	Ewl_Spinner    *s;
 
@@ -289,13 +272,13 @@ __ewl_spinner_realize(Ewl_Widget * w, void *ev_data, void *user_data)
 
 	s = EWL_SPINNER(w);
 
-	__ewl_spinner_set_value(w, s->value);
+	ewl_spinner_calc_value(s, s->value);
 
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
 
-static void
-__ewl_spinner_configure(Ewl_Widget * w, void *ev_data, void *user_data)
+void
+ewl_spinner_configure_cb(Ewl_Widget * w, void *ev_data, void *user_data)
 {
 	int             size;
 	Ewl_Spinner    *s;
@@ -358,35 +341,37 @@ __ewl_spinner_configure(Ewl_Widget * w, void *ev_data, void *user_data)
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
 
-static void
-__ewl_spinner_key_down(Ewl_Widget * w, void *ev_data, void *user_data)
+void
+ewl_spinner_key_down_cb(Ewl_Widget * w, void *ev_data, void *user_data)
 {
-	Ewl_Spinner    *s;
+	Ewl_Entry              *e;
+	Ewl_Spinner            *s;
 	Ecore_X_Event_Key_Down *ev;
 
 	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR("w", w);
 
+	e = EWL_ENTRY(w);
 	s = EWL_SPINNER(w->parent);
 
 	ev = ev_data;
 
 	if (!strcmp(ev->keyname, "Up"))
-		__ewl_spinner_increase_value(w, NULL, NULL);
+		ewl_spinner_increase_value_cb(w, NULL, NULL);
 	else if (!strcmp(ev->keyname, "Down"))
-		__ewl_spinner_decrease_value(w, NULL, NULL);
+		ewl_spinner_decrease_value_cb(w, NULL, NULL);
 	else if (!strcmp(ev->keyname, "Left"))
-		__ewl_entry_move_cursor_to_left(w);
+		ewl_entry_move_cursor_to_left(e);
 	else if (!strcmp(ev->keyname, "Right"))
-		__ewl_entry_move_cursor_to_right(w);
+		ewl_entry_move_cursor_to_right(e);
 	else if (!strcmp(ev->keyname, "Home"))
-		__ewl_entry_move_cursor_to_home(w);
+		ewl_entry_move_cursor_to_home(e);
 	else if (!strcmp(ev->keyname, "End"))
-		__ewl_entry_move_cursor_to_end(w);
+		ewl_entry_move_cursor_to_end(e);
 	else if (!strcmp(ev->keyname, "BackSpace"))
-		__ewl_entry_delete_to_left(w);
+		ewl_entry_delete_to_left(e);
 	else if (!strcmp(ev->keyname, "Delete"))
-		__ewl_entry_delete_to_right(w);
+		ewl_entry_delete_to_right(e);
 	else if (ev->key_compose && (ev->key_compose[0] == '0' ||
 				 ev->key_compose[0] == '1' ||
 				 ev->key_compose[0] == '2' ||
@@ -399,13 +384,13 @@ __ewl_spinner_key_down(Ewl_Widget * w, void *ev_data, void *user_data)
 				 ev->key_compose[0] == '9' ||
 				 ev->key_compose[0] == '.' ||
 				 ev->key_compose[0] == '-'))
-		__ewl_entry_insert_text(s->entry, ev->key_compose);
+		ewl_entry_insert_text(e, ev->key_compose);
 
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
 
-static void
-__ewl_spinner_deselect(Ewl_Widget * w, void *ev_data, void *user_data)
+void
+ewl_spinner_deselect_cb(Ewl_Widget * w, void *ev_data, void *user_data)
 {
 	Ewl_Spinner    *s;
 	char           *str;
@@ -421,7 +406,7 @@ __ewl_spinner_deselect(Ewl_Widget * w, void *ev_data, void *user_data)
 	if (str && strlen(str)) {
 		val = atof(str);
 
-		__ewl_spinner_set_value(EWL_WIDGET(s), (double) (val));
+		ewl_spinner_calc_value(s, (double) (val));
 	} else if (str)
 		FREE(str);
 
@@ -429,17 +414,14 @@ __ewl_spinner_deselect(Ewl_Widget * w, void *ev_data, void *user_data)
 }
 
 static void
-__ewl_spinner_set_value(Ewl_Widget * w, double value)
+ewl_spinner_calc_value(Ewl_Spinner * s, double value)
 {
-	Ewl_Spinner    *s;
 	char            format[64];
 	char            str[64];
 	double          oval;
 
 	DENTER_FUNCTION(DLEVEL_STABLE);
-	DCHECK_PARAM_PTR("w", w);
-
-	s = EWL_SPINNER(w);
+	DCHECK_PARAM_PTR("s", s);
 
 	oval = s->value;
 
@@ -456,77 +438,13 @@ __ewl_spinner_set_value(Ewl_Widget * w, double value)
 	ewl_entry_set_text(EWL_ENTRY(s->entry), str);
 
 	if (oval != s->value)
-		ewl_callback_call(w, EWL_CALLBACK_VALUE_CHANGED);
+		ewl_callback_call(EWL_WIDGET(s), EWL_CALLBACK_VALUE_CHANGED);
 
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
 
-static double
-__ewl_spinner_get_value(Ewl_Widget * w)
-{
-	Ewl_Spinner    *s;
-
-	DENTER_FUNCTION(DLEVEL_STABLE);
-	DCHECK_PARAM_PTR_RET("w", w, -1.0);
-
-	s = EWL_SPINNER(w);
-
-	return s->value;
-}
-
-static void
-__ewl_spinner_set_digits(Ewl_Widget * w, int digits)
-{
-	Ewl_Spinner    *s;
-
-	DENTER_FUNCTION(DLEVEL_STABLE);
-	DCHECK_PARAM_PTR("w", w);
-
-	s = EWL_SPINNER(w);
-
-	s->digits = digits;
-
-	__ewl_spinner_set_value(w, s->value);
-
-	DLEAVE_FUNCTION(DLEVEL_STABLE);
-}
-
-static void
-__ewl_spinner_set_min_val(Ewl_Widget * w, double val)
-{
-	Ewl_Spinner    *s;
-
-	DENTER_FUNCTION(DLEVEL_STABLE);
-	DCHECK_PARAM_PTR("w", w);
-
-	s = EWL_SPINNER(w);
-
-	s->min_val = val;
-
-	__ewl_spinner_set_value(w, s->value);
-
-	DLEAVE_FUNCTION(DLEVEL_STABLE);
-}
-
-static void
-__ewl_spinner_set_max_val(Ewl_Widget * w, double val)
-{
-	Ewl_Spinner    *s;
-
-	DENTER_FUNCTION(DLEVEL_STABLE);
-	DCHECK_PARAM_PTR("w", w);
-
-	s = EWL_SPINNER(w);
-
-	s->max_val = val;
-
-	__ewl_spinner_set_value(w, s->value);
-
-	DLEAVE_FUNCTION(DLEVEL_STABLE);
-}
-
-static void
-__ewl_spinner_increase_value(Ewl_Widget * w, void *ev_data, void *user_data)
+void
+ewl_spinner_increase_value_cb(Ewl_Widget * w, void *ev_data, void *user_data)
 {
 	Ewl_Spinner    *s;
 
@@ -535,15 +453,15 @@ __ewl_spinner_increase_value(Ewl_Widget * w, void *ev_data, void *user_data)
 
 	s = EWL_SPINNER(w->parent);
 
-	__ewl_spinner_deselect(w, NULL, NULL);
+	ewl_spinner_deselect_cb(w, NULL, NULL);
 
-	__ewl_spinner_set_value(w->parent, s->value + s->step);
+	ewl_spinner_calc_value(s, s->value + s->step);
 
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
 
-static void
-__ewl_spinner_decrease_value(Ewl_Widget * w, void *ev_data, void *user_data)
+void
+ewl_spinner_decrease_value_cb(Ewl_Widget * w, void *ev_data, void *user_data)
 {
 	Ewl_Spinner    *s;
 
@@ -552,9 +470,9 @@ __ewl_spinner_decrease_value(Ewl_Widget * w, void *ev_data, void *user_data)
 
 	s = EWL_SPINNER(w->parent);
 
-	__ewl_spinner_deselect(w, NULL, NULL);
+	ewl_spinner_deselect_cb(w, NULL, NULL);
 
-	__ewl_spinner_set_value(w->parent, s->value - s->step);
+	ewl_spinner_calc_value(s, s->value - s->step);
 
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }

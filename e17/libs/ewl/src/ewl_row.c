@@ -1,15 +1,5 @@
 #include <Ewl.h>
 
-static void __ewl_row_configure(Ewl_Widget * w, void *ev_data, void *user_data);
-static void __ewl_row_header_configure(Ewl_Widget * w, void *ev_data,
-		void *user_data);
-static void __ewl_row_header_destroy(Ewl_Widget * w, void *ev_data,
-		void *user_data);
-
-static void __ewl_row_add(Ewl_Container *c, Ewl_Widget *w);
-static void __ewl_row_resize(Ewl_Container *c, Ewl_Widget *w, int size,
-		Ewl_Orientation o);
-
 /**
  * ewl_row_new - allocate and initialize a new row
  *
@@ -46,13 +36,13 @@ int ewl_row_init(Ewl_Row *row)
 
 	DCHECK_PARAM_PTR_RET("row", row, FALSE);
 
-	ewl_container_init(EWL_CONTAINER(row), "row", __ewl_row_add,
-			__ewl_row_resize, NULL);
+	ewl_container_init(EWL_CONTAINER(row), "row", ewl_row_add_cb,
+			ewl_row_resize_cb, NULL);
 	ewl_object_set_fill_policy(EWL_OBJECT(row), EWL_FLAG_FILL_HFILL |
 			EWL_FLAG_FILL_HSHRINK);
 
 	ewl_callback_append(EWL_WIDGET(row), EWL_CALLBACK_CONFIGURE,
-			__ewl_row_configure, NULL);
+			ewl_row_configure_cb, NULL);
 
 	DRETURN_INT(TRUE, DLEVEL_STABLE);
 }
@@ -79,13 +69,13 @@ ewl_row_set_header(Ewl_Row *row, Ewl_Row *header)
 	if (row->header)
 		ewl_callback_del(EWL_WIDGET(row->header),
 				EWL_CALLBACK_CONFIGURE,
-				__ewl_row_header_configure);
+				ewl_row_header_configure_cb);
 
 	if (header) {
 		ewl_callback_append(EWL_WIDGET(header), EWL_CALLBACK_CONFIGURE,
-				__ewl_row_header_configure, row);
+				ewl_row_header_configure_cb, row);
 		ewl_callback_append(EWL_WIDGET(header), EWL_CALLBACK_DESTROY,
-				__ewl_row_header_destroy, row);
+				ewl_row_header_destroy_cb, row);
 	}
 	row->header = header;
 
@@ -116,8 +106,8 @@ ewl_row_get_column(Ewl_Row *row, short n)
 	DRETURN_PTR(found, DLEVEL_STABLE);
 }
 
-static void
-__ewl_row_configure(Ewl_Widget * w, void *ev_data, void *user_data)
+void
+ewl_row_configure_cb(Ewl_Widget * w, void *ev_data, void *user_data)
 {
 	Ewl_Row *row;
 	Ewl_Container *c;
@@ -203,8 +193,8 @@ __ewl_row_configure(Ewl_Widget * w, void *ev_data, void *user_data)
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
 
-static void
-__ewl_row_header_configure(Ewl_Widget * w, void *ev_data, void *user_data)
+void
+ewl_row_header_configure_cb(Ewl_Widget * w, void *ev_data, void *user_data)
 {
 	Ewl_Widget *row;
 
@@ -212,8 +202,8 @@ __ewl_row_header_configure(Ewl_Widget * w, void *ev_data, void *user_data)
 	ewl_widget_configure(row);
 }
 
-static void
-__ewl_row_header_destroy(Ewl_Widget * w, void *ev_data, void *user_data)
+void
+ewl_row_header_destroy_cb(Ewl_Widget * w, void *ev_data, void *user_data)
 {
 	Ewl_Row *row;
 
@@ -222,8 +212,8 @@ __ewl_row_header_destroy(Ewl_Widget * w, void *ev_data, void *user_data)
 	ewl_row_set_header(row, NULL);
 }
 
-static void
-__ewl_row_add(Ewl_Container *c, Ewl_Widget *w)
+void
+ewl_row_add_cb(Ewl_Container *c, Ewl_Widget *w)
 {
 	Ewl_Row *row;
 
@@ -234,8 +224,8 @@ __ewl_row_add(Ewl_Container *c, Ewl_Widget *w)
 			ewl_object_get_preferred_w(EWL_OBJECT(w)));
 }
 
-static void
-__ewl_row_resize(Ewl_Container *c, Ewl_Widget *w, int size, Ewl_Orientation o)
+void
+ewl_row_resize_cb(Ewl_Container *c, Ewl_Widget *w, int size, Ewl_Orientation o)
 {
 	Ewl_Row *row;
 

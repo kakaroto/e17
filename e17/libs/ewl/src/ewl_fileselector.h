@@ -47,5 +47,15 @@ void            ewl_fileselector_init(Ewl_Fileselector * fs,
 
 char           *ewl_fileselector_get_current(Ewl_Fileselector * fs);
 
+/*
+ * Internally used callbacks, override at your own risk.
+ */
+void ewl_fileselector_realize_cb(Ewl_Widget * w, void *ev_data,
+				 void *user_data);
+void ewl_fileselector_configure_cb(Ewl_Widget * w, void *ev_data,
+				   void *user_data);
+void ewl_fileselector_directory_clicked(Ewl_Widget * w, void *ev_data,
+					void *user_data);
+
 
 #endif				/* __EWL_FILESELECTOR_H__ */

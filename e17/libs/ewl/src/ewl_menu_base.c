@@ -1,17 +1,5 @@
 #include <Ewl.h>
 
-static void	__ewl_menu_base_expand(Ewl_Widget *w, void *ev_data,
-					void *user_data);
-static void     __ewl_menu_base_collapse(Ewl_Widget * w, void *ev_data,
-					 void *user_data);
-static void     __ewl_menu_base_destroy(Ewl_Widget * w, void *ev_data,
-					 void *user_data);
-
-static void     __ewl_menu_add(Ewl_Container * parent, Ewl_Widget * child);
-static void     __ewl_menu_item_add(Ewl_Container *parent, Ewl_Widget *child);
-static void     __ewl_menu_item_resize(Ewl_Container *parent, Ewl_Widget *child,
-		int size, Ewl_Orientation o);
-
 /**
  * @param menu: the menu item to initialize
  * @param image: the icon for the menu item
@@ -34,13 +22,13 @@ void ewl_menu_base_init(Ewl_Menu_Base * menu, char *image, char *title)
 	ewl_menu_item_init(EWL_MENU_ITEM(menu), image, title);
 
 	ewl_callback_append(EWL_WIDGET(menu), EWL_CALLBACK_SELECT,
-			    __ewl_menu_base_expand, NULL);
+			    ewl_menu_base_expand_cb, NULL);
 
 	ewl_callback_append(EWL_WIDGET(menu), EWL_CALLBACK_DESELECT,
-			    __ewl_menu_base_collapse, NULL);
+			    ewl_menu_base_collapse_cb, NULL);
 
 	ewl_callback_append(EWL_WIDGET(menu), EWL_CALLBACK_DESTROY,
-			    __ewl_menu_base_destroy, NULL);
+			    ewl_menu_base_destroy_cb, NULL);
 
 	/*
 	 * The popbox actually holds the children, and is simply added to the
@@ -55,7 +43,7 @@ void ewl_menu_base_init(Ewl_Menu_Base * menu, char *image, char *title)
 	 * The add notifier makes sure newly added children go in the popup
 	 * menu.
 	 */
-	ewl_container_add_notify(EWL_CONTAINER(menu), __ewl_menu_add);
+	ewl_container_add_notify(EWL_CONTAINER(menu), ewl_menu_add_cb);
 
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
@@ -77,7 +65,7 @@ Ewl_Widget     *ewl_menu_item_new(char *image, char *text)
 		DRETURN_PTR(NULL, DLEVEL_STABLE);
 
 	ewl_menu_item_init(item, image, text);
-	ewl_container_add_notify(EWL_CONTAINER(item), __ewl_menu_add);
+	ewl_container_add_notify(EWL_CONTAINER(item), ewl_menu_add_cb);
 
 	DRETURN_PTR(EWL_WIDGET(item), DLEVEL_STABLE);
 }
@@ -103,8 +91,8 @@ void ewl_menu_item_init(Ewl_Menu_Item * item, char *image, char *text)
 	 * and the recursive setting. This will cause clicks to stop at this
 	 * level.
 	 */
-	ewl_container_init(EWL_CONTAINER(item), "menuitem", __ewl_menu_item_add,
-			   __ewl_menu_item_resize, NULL);
+	ewl_container_init(EWL_CONTAINER(item), "menuitem",
+			ewl_menu_item_add_cb, ewl_menu_item_resize_cb, NULL);
 	ewl_object_set_fill_policy(EWL_OBJECT(item), EWL_FLAG_FILL_HFILL);
 
 	ewl_container_intercept_callback(EWL_CONTAINER(item),
@@ -203,7 +191,7 @@ void ewl_menu_separator_init(Ewl_Menu_Separator *sep)
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
 
-static void __ewl_menu_item_add(Ewl_Container *parent, Ewl_Widget *child)
+void ewl_menu_item_add_cb(Ewl_Container *parent, Ewl_Widget *child)
 {
 	DENTER_FUNCTION(DLEVEL_STABLE);
 
@@ -214,8 +202,8 @@ static void __ewl_menu_item_add(Ewl_Container *parent, Ewl_Widget *child)
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
 
-static void
-__ewl_menu_item_resize(Ewl_Container *parent, Ewl_Widget *child, int size,
+void
+ewl_menu_item_resize_cb(Ewl_Container *parent, Ewl_Widget *child, int size,
 		Ewl_Orientation o)
 {
 	DENTER_FUNCTION(DLEVEL_STABLE);
@@ -229,7 +217,7 @@ __ewl_menu_item_resize(Ewl_Container *parent, Ewl_Widget *child, int size,
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
 
-static void __ewl_menu_add(Ewl_Container * parent, Ewl_Widget * child)
+void ewl_menu_add_cb(Ewl_Container * parent, Ewl_Widget * child)
 {
 	Ewl_IMenu      *menu;
 	Ewl_Menu_Item  *item;
@@ -246,15 +234,15 @@ static void __ewl_menu_add(Ewl_Container * parent, Ewl_Widget * child)
 		ewl_container_append_child(EWL_CONTAINER(menu->base.popbox),
 				child);
 	else
-		__ewl_menu_item_add(parent, child);
+		ewl_menu_item_add_cb(parent, child);
 
 	EWL_MENU_ITEM(child)->submenu = TRUE;
 
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
 
-static void
-__ewl_menu_base_expand(Ewl_Widget *w, void *ev_data, void *user_data)
+void
+ewl_menu_base_expand_cb(Ewl_Widget *w, void *ev_data, void *user_data)
 {
 	Ewl_Menu_Base *menu = EWL_MENU_BASE(w);
 
@@ -269,8 +257,8 @@ __ewl_menu_base_expand(Ewl_Widget *w, void *ev_data, void *user_data)
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
 
-static void
-__ewl_menu_base_collapse(Ewl_Widget * w, void *ev_data, void *user_data)
+void
+ewl_menu_base_collapse_cb(Ewl_Widget * w, void *ev_data, void *user_data)
 {
 	Ewl_Menu_Base      *menu;
 
@@ -283,8 +271,8 @@ __ewl_menu_base_collapse(Ewl_Widget * w, void *ev_data, void *user_data)
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
 
-static void
-__ewl_menu_base_destroy(Ewl_Widget * w, void *ev_data, void *user_data)
+void
+ewl_menu_base_destroy_cb(Ewl_Widget * w, void *ev_data, void *user_data)
 {
 	Ewl_Menu_Base      *menu;
 

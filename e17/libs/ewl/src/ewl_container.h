@@ -93,6 +93,18 @@ void            ewl_container_prefer_largest(Ewl_Container *c,
 void            ewl_container_call_child_add(Ewl_Container *c, Ewl_Widget *w);
 void            ewl_container_call_child_remove(Ewl_Container *c, Ewl_Widget *w);
 
+/*
+ * Internally used callbacks, override at your own risk.
+ */
+void            ewl_container_realize_cb(Ewl_Widget * w, void *ev_data,
+					 void *user_data);
+void            ewl_container_configure_cb(Ewl_Widget * w, void *ev_data,
+					   void *user_data);
+void            ewl_container_reparent_cb(Ewl_Widget * w, void *ev_data,
+					  void *user_data);
+void            ewl_container_unrealize_cb(Ewl_Widget *w, void *ev_data,
+					   void *user_data);
+
 /**
  * @}
  */

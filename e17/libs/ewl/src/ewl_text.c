@@ -2,16 +2,6 @@
 #include <Ewl.h>
 #include <Estyle.h>
 
-void            ewl_text_init(Ewl_Text * t, char *text);
-void            __ewl_text_realize(Ewl_Widget * w, void *ev_data,
-				   void *user_data);
-void            __ewl_text_unrealize(Ewl_Widget * w, void *ev_data,
-				   void *user_data);
-void            __ewl_text_configure(Ewl_Widget * w, void *ev_data,
-				     void *user_data);
-void            __ewl_text_reparent(Ewl_Widget * w, void *ev_data,
-				    void *user_data);
-
 /**
  * @param text: the text to display
  * @return Returns a pointer a new text widget on success, NULL on failure.
@@ -61,12 +51,12 @@ ewl_text_init(Ewl_Text * t, char *text)
 	/*
 	 * Set up appropriate callbacks for specific events
 	 */
-	ewl_callback_append(w, EWL_CALLBACK_REALIZE, __ewl_text_realize, NULL);
-	ewl_callback_prepend(w, EWL_CALLBACK_UNREALIZE, __ewl_text_unrealize,
+	ewl_callback_append(w, EWL_CALLBACK_REALIZE, ewl_text_realize_cb, NULL);
+	ewl_callback_prepend(w, EWL_CALLBACK_UNREALIZE, ewl_text_unrealize_cb,
 			NULL);
-	ewl_callback_append(w, EWL_CALLBACK_CONFIGURE, __ewl_text_configure,
+	ewl_callback_append(w, EWL_CALLBACK_CONFIGURE, ewl_text_configure_cb,
 			    NULL);
-	ewl_callback_append(w, EWL_CALLBACK_REPARENT, __ewl_text_reparent,
+	ewl_callback_append(w, EWL_CALLBACK_REPARENT, ewl_text_reparent_cb,
 			    NULL);
 
 	t->r = 255;
@@ -565,7 +555,7 @@ ewl_text_get_index_at(Ewl_Text * t, int x, int y)
 }
 
 void
-__ewl_text_realize(Ewl_Widget * w, void *ev_data, void *user_data)
+ewl_text_realize_cb(Ewl_Widget * w, void *ev_data, void *user_data)
 {
 	Ewl_Text       *t;
 	Ewl_Embed      *emb;
@@ -637,7 +627,7 @@ __ewl_text_realize(Ewl_Widget * w, void *ev_data, void *user_data)
 }
 
 void
-__ewl_text_unrealize(Ewl_Widget * w, void *ev_data, void *user_data)
+ewl_text_unrealize_cb(Ewl_Widget * w, void *ev_data, void *user_data)
 {
 	Ewl_Text       *t;
 
@@ -658,7 +648,7 @@ __ewl_text_unrealize(Ewl_Widget * w, void *ev_data, void *user_data)
 }
 
 void
-__ewl_text_configure(Ewl_Widget * w, void *ev_data, void *user_data)
+ewl_text_configure_cb(Ewl_Widget * w, void *ev_data, void *user_data)
 {
 	Ewl_Text       *t;
 
@@ -674,7 +664,7 @@ __ewl_text_configure(Ewl_Widget * w, void *ev_data, void *user_data)
 }
 
 void
-__ewl_text_reparent(Ewl_Widget * w, void *ev_data, void *user_data)
+ewl_text_reparent_cb(Ewl_Widget * w, void *ev_data, void *user_data)
 {
 	Ewl_Text       *t;
 

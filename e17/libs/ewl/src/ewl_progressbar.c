@@ -1,10 +1,6 @@
 #include <Ewl.h>
 
-void __ewl_progressbar_configure(Ewl_Widget * w, void *ev_data, void *user_data);
-void __ewl_progressbar_child_add (Ewl_Container *c, Ewl_Widget *w);
-void __ewl_progressbar_child_resize(Ewl_Container *c, Ewl_Widget *w, int size, Ewl_Orientation o);
-void __ewl_progressbar_child_handle (Ewl_Container *c, Ewl_Widget *w);
-
+static void ewl_progressbar_child_handle(Ewl_Container *c, Ewl_Widget *w);
 
 /**
  * @return Returns NULL on failure, or a pointer to the new progressbar on success.
@@ -40,8 +36,8 @@ void ewl_progressbar_init(Ewl_Progressbar * p)
 	w = EWL_WIDGET(p);
 
 	ewl_container_init(EWL_CONTAINER(w), "progressbar",
-			__ewl_progressbar_child_add, 
-			__ewl_progressbar_child_resize, 
+			ewl_progressbar_child_add_cb, 
+			ewl_progressbar_child_resize_cb, 
 			NULL);
 
 	p->bar = NEW(Ewl_Widget, 1);
@@ -63,7 +59,7 @@ void ewl_progressbar_init(Ewl_Progressbar * p)
 	p->auto_label = TRUE;
 	
 	ewl_callback_append(w, EWL_CALLBACK_CONFIGURE, 
-			__ewl_progressbar_configure, NULL);
+			ewl_progressbar_configure_cb, NULL);
 
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
@@ -234,7 +230,8 @@ void ewl_progressbar_label_show (Ewl_Progressbar * p) {
  * coords and position as well as move the bar to the correct size and
  * position.
  */
-void __ewl_progressbar_configure(Ewl_Widget * w, void *ev_data, void *user_data)
+void
+ewl_progressbar_configure_cb(Ewl_Widget * w, void *ev_data, void *user_data)
 {
 	Ewl_Progressbar *p;
 	int             dx, dy;
@@ -259,7 +256,7 @@ void __ewl_progressbar_configure(Ewl_Widget * w, void *ev_data, void *user_data)
 }
 
 
-void __ewl_progressbar_child_handle (Ewl_Container *c, Ewl_Widget *w)
+static void ewl_progressbar_child_handle(Ewl_Container *c, Ewl_Widget *w)
 {
 	Ewl_Progressbar *p;
 	double value;
@@ -282,21 +279,22 @@ void __ewl_progressbar_child_handle (Ewl_Container *c, Ewl_Widget *w)
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
 
-void __ewl_progressbar_child_add (Ewl_Container *c, Ewl_Widget *w)
+void ewl_progressbar_child_add_cb(Ewl_Container *c, Ewl_Widget *w)
 {
 	DENTER_FUNCTION(DLEVEL_STABLE);
 
-	__ewl_progressbar_child_handle (c, w);
+	ewl_progressbar_child_handle(c, w);
 	
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
 
-void __ewl_progressbar_child_resize(Ewl_Container *c, Ewl_Widget *w, 
-		int size, Ewl_Orientation o)
+void
+ewl_progressbar_child_resize_cb(Ewl_Container *c, Ewl_Widget *w, int size,
+				Ewl_Orientation o)
 {
 	DENTER_FUNCTION(DLEVEL_STABLE);
 
-	__ewl_progressbar_child_handle (c, w);
+	ewl_progressbar_child_handle(c, w);
 
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }

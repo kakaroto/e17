@@ -1,12 +1,5 @@
 #include <Ewl.h>
 
-static void __ewl_cell_configure(Ewl_Widget * w, void *ev_data,
-		void *user_data);
-
-static void __ewl_cell_add(Ewl_Container *c, Ewl_Widget *w);
-static void __ewl_cell_child_resize(Ewl_Container *c, Ewl_Widget *w, int size,
-		Ewl_Orientation o);
-
 /**
  * @return Returns a newly allocated cell on success, NULL on failure.
  * @brief Allocate and initialize a new cell
@@ -42,17 +35,17 @@ int ewl_cell_init(Ewl_Cell *cell)
 
 	DCHECK_PARAM_PTR_RET("cell", cell, FALSE);
 
-	ewl_container_init(EWL_CONTAINER(cell), "cell", __ewl_cell_add,
-			__ewl_cell_child_resize, NULL);
+	ewl_container_init(EWL_CONTAINER(cell), "cell", ewl_cell_add_cb,
+			ewl_cell_child_resize_cb, NULL);
 
 	ewl_callback_append(EWL_WIDGET(cell), EWL_CALLBACK_CONFIGURE,
-			__ewl_cell_configure, NULL);
+			ewl_cell_configure_cb, NULL);
 
 	DRETURN_INT(TRUE, DLEVEL_STABLE);
 }
 
-static void
-__ewl_cell_configure(Ewl_Widget * w, void *ev_data, void *user_data)
+void
+ewl_cell_configure_cb(Ewl_Widget * w, void *ev_data, void *user_data)
 {
 	Ewl_Cell *cell;
 	Ewl_Container *c;
@@ -72,8 +65,8 @@ __ewl_cell_configure(Ewl_Widget * w, void *ev_data, void *user_data)
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
 
-static void
-__ewl_cell_add(Ewl_Container *c, Ewl_Widget *w)
+void
+ewl_cell_add_cb(Ewl_Container *c, Ewl_Widget *w)
 {
 	Ewl_Widget *child;
 
@@ -96,8 +89,8 @@ __ewl_cell_add(Ewl_Container *c, Ewl_Widget *w)
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
 
-static void
-__ewl_cell_child_resize(Ewl_Container *c, Ewl_Widget *w, int size,
+void
+ewl_cell_child_resize_cb(Ewl_Container *c, Ewl_Widget *w, int size,
 		Ewl_Orientation o)
 {
 	DENTER_FUNCTION(DLEVEL_STABLE);

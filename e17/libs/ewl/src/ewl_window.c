@@ -14,17 +14,17 @@
 
 Ewd_List *ewl_window_list = NULL;
 
-void            __ewl_window_realize(Ewl_Widget * w, void *ev_data,
+void            ewl_window_realize_cb(Ewl_Widget * w, void *ev_data,
 				     void *user_data);
-void            __ewl_window_unrealize(Ewl_Widget * w, void *ev_data,
+void            ewl_window_unrealize_cb(Ewl_Widget * w, void *ev_data,
 				     void *user_data);
-void            __ewl_window_show(Ewl_Widget * w, void *ev_data,
+void            ewl_window_show_cb(Ewl_Widget * w, void *ev_data,
 				  void *user_data);
-void            __ewl_window_hide(Ewl_Widget * w, void *ev_data,
+void            ewl_window_hide_cb(Ewl_Widget * w, void *ev_data,
 				  void *user_data);
-void            __ewl_window_destroy(Ewl_Widget * w, void *ev_data,
+void            ewl_window_destroy_cb(Ewl_Widget * w, void *ev_data,
 				     void *user_data);
-void            __ewl_window_configure(Ewl_Widget * w, void *ev_data,
+void            ewl_window_configure_cb(Ewl_Widget * w, void *ev_data,
 				       void *user_data);
 
 /**
@@ -197,21 +197,21 @@ int ewl_window_init(Ewl_Window * w)
 	w->title = strdup("EWL!");
 
 	ewl_callback_prepend(EWL_WIDGET(w), EWL_CALLBACK_REALIZE,
-			     __ewl_window_realize, NULL);
+			     ewl_window_realize_cb, NULL);
 	ewl_callback_prepend(EWL_WIDGET(w), EWL_CALLBACK_UNREALIZE,
-			     __ewl_window_unrealize, NULL);
+			     ewl_window_unrealize_cb, NULL);
 	ewl_callback_append(EWL_WIDGET(w), EWL_CALLBACK_SHOW,
-			    __ewl_window_show, NULL);
+			    ewl_window_show_cb, NULL);
 	ewl_callback_append(EWL_WIDGET(w), EWL_CALLBACK_HIDE,
-			    __ewl_window_hide, NULL);
+			    ewl_window_hide_cb, NULL);
 	ewl_callback_prepend(EWL_WIDGET(w), EWL_CALLBACK_DESTROY,
-			     __ewl_window_destroy, NULL);
+			     ewl_window_destroy_cb, NULL);
 	/*
 	 * Override the default configure callbacks since the window
 	 * has special needs for placement.
 	 */
 	ewl_callback_prepend(EWL_WIDGET(w), EWL_CALLBACK_CONFIGURE,
-			     __ewl_window_configure, NULL);
+			     ewl_window_configure_cb, NULL);
 
 	LAYER(w) = -1000;
 	ewd_list_append(ewl_window_list, w);
@@ -221,7 +221,7 @@ int ewl_window_init(Ewl_Window * w)
 	DRETURN_INT(TRUE, DLEVEL_STABLE);
 }
 
-void __ewl_window_realize(Ewl_Widget * w, void *ev_data, void *user_data)
+void ewl_window_realize_cb(Ewl_Widget * w, void *ev_data, void *user_data)
 {
 	Ewl_Object       *o;
 	Evas             *evas;
@@ -326,7 +326,7 @@ void __ewl_window_realize(Ewl_Widget * w, void *ev_data, void *user_data)
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
 
-void __ewl_window_unrealize(Ewl_Widget * w, void *ev_data, void *user_data)
+void ewl_window_unrealize_cb(Ewl_Widget * w, void *ev_data, void *user_data)
 {
 	Ewl_Object     *o;
 	Ewl_Embed      *embed;
@@ -345,7 +345,7 @@ void __ewl_window_unrealize(Ewl_Widget * w, void *ev_data, void *user_data)
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
 
-void __ewl_window_show(Ewl_Widget * w, void *ev_data, void *user_data)
+void ewl_window_show_cb(Ewl_Widget * w, void *ev_data, void *user_data)
 {
 	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR("w", w);
@@ -362,7 +362,7 @@ void __ewl_window_show(Ewl_Widget * w, void *ev_data, void *user_data)
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
 
-void __ewl_window_hide(Ewl_Widget * widget, void *ev_data, void *user_data)
+void ewl_window_hide_cb(Ewl_Widget * widget, void *ev_data, void *user_data)
 {
 	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR("widget", widget);
@@ -373,7 +373,7 @@ void __ewl_window_hide(Ewl_Widget * widget, void *ev_data, void *user_data)
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
 
-void __ewl_window_destroy(Ewl_Widget * w, void *ev_data, void *user_data)
+void ewl_window_destroy_cb(Ewl_Widget * w, void *ev_data, void *user_data)
 {
 	Ewl_Window     *win;
 
@@ -395,7 +395,7 @@ void __ewl_window_destroy(Ewl_Widget * w, void *ev_data, void *user_data)
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
 
-void __ewl_window_configure(Ewl_Widget * w, void *ev_data, void *user_data)
+void ewl_window_configure_cb(Ewl_Widget * w, void *ev_data, void *user_data)
 {
 	Ewl_Window     *win;
 	int             width, height;

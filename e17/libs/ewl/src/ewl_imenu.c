@@ -1,11 +1,6 @@
 
 #include <Ewl.h>
 
-void            __ewl_imenu_expand(Ewl_Widget * w, void *ev_data,
-		void *user_data);
-void            __ewl_imenu_floater_destroy(Ewl_Widget * w, void *ev_data,
-		void *user_data);
-
 /**
  * @param image: the image icon to use for this menu
  * @param title: the text to place in the menu
@@ -47,13 +42,13 @@ void ewl_imenu_init(Ewl_IMenu * menu, char *image, char *title)
 	ewl_menu_base_init(EWL_MENU_BASE(menu), image, title);
 
 	ewl_callback_prepend(EWL_WIDGET(menu), EWL_CALLBACK_SELECT,
-			    __ewl_imenu_expand, NULL);
+			    ewl_imenu_expand_cb, NULL);
 
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
 
 
-void __ewl_imenu_expand(Ewl_Widget * w, void *ev_data, void *user_data)
+void ewl_imenu_expand_cb(Ewl_Widget * w, void *ev_data, void *user_data)
 {
 	Ewl_IMenu      *menu;
 	Ewl_Embed      *emb;
@@ -69,7 +64,7 @@ void __ewl_imenu_expand(Ewl_Widget * w, void *ev_data, void *user_data)
 	 */
 	menu->base.popup = ewl_floater_new(EWL_WIDGET(menu));
 	ewl_callback_append(menu->base.popup, EWL_CALLBACK_DESTROY,
-			__ewl_imenu_floater_destroy, menu);
+			ewl_imenu_floater_destroy_cb, menu);
 	ewl_widget_set_appearance(EWL_WIDGET(menu->base.popup), "imenu");
 	ewl_box_set_orientation(EWL_BOX(menu->base.popup),
 			EWL_ORIENTATION_VERTICAL);
@@ -94,12 +89,12 @@ void __ewl_imenu_expand(Ewl_Widget * w, void *ev_data, void *user_data)
 					     CURRENT_W(menu));
 	}
 
-	ewl_callback_del(w, EWL_CALLBACK_SELECT, __ewl_imenu_expand);
+	ewl_callback_del(w, EWL_CALLBACK_SELECT, ewl_imenu_expand_cb);
 
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
 
-void __ewl_imenu_floater_destroy(Ewl_Widget * w, void *ev_data, void *user_data)
+void ewl_imenu_floater_destroy_cb(Ewl_Widget * w, void *ev_data, void *user_data)
 {
 	Ewl_IMenu *menu = user_data;
 

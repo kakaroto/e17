@@ -1,20 +1,6 @@
 #include <Ewl.h>
 
 
-
-void            __ewl_radiobutton_clicked(Ewl_Widget * w, void *ev_data,
-					  void *user_data);
-void            __ewl_radiobutton_destroy(Ewl_Widget * w, void *ev_data,
-					  void *user_data);
-
-/*
-void            __ewl_checkbutton_clicked(Ewl_Widget * w, void *ev_data,
-					  void *user_data);
-					  */
-void            __ewl_checkbutton_mouse_down(Ewl_Widget * w, void *ev_data,
-					     void *user_data);
-
-
 /**
  * @param label: the label to associate with the radio button
  * @return Returns a pointer to new radio button on success, NULL on failure.
@@ -96,18 +82,15 @@ void ewl_radiobutton_init(Ewl_RadioButton * rb, char *label)
 	ewl_checkbutton_init(cb, label);
 	ewl_widget_set_appearance(w, "radiobutton");
 	ewl_widget_set_appearance(cb->check, "radio");
-/*
-	ewl_callback_del(w, EWL_CALLBACK_CLICKED, __ewl_checkbutton_clicked);
-	*/
-	ewl_callback_append(w, EWL_CALLBACK_CLICKED,
-			    __ewl_radiobutton_clicked, NULL);
-	ewl_callback_append(w, EWL_CALLBACK_DESTROY,
-			    __ewl_radiobutton_destroy, NULL);
+	ewl_callback_append(w, EWL_CALLBACK_CLICKED, ewl_radiobutton_clicked_cb,
+			    NULL);
+	ewl_callback_append(w, EWL_CALLBACK_DESTROY, ewl_radiobutton_destroy_cb,
+			    NULL);
 
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
 
-void __ewl_radiobutton_clicked(Ewl_Widget * w, void *ev_data, void *user_data)
+void ewl_radiobutton_clicked_cb(Ewl_Widget * w, void *ev_data, void *user_data)
 {
 	Ewl_CheckButton *cb;
 	Ewl_RadioButton *rb;
@@ -138,7 +121,7 @@ void __ewl_radiobutton_clicked(Ewl_Widget * w, void *ev_data, void *user_data)
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
 
-void __ewl_radiobutton_destroy(Ewl_Widget * w, void *ev_data, void *user_data)
+void ewl_radiobutton_destroy_cb(Ewl_Widget * w, void *ev_data, void *user_data)
 {
 	Ewl_RadioButton *rb;
 

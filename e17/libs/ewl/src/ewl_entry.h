@@ -46,6 +46,32 @@ void            ewl_entry_set_text(Ewl_Entry * e, char *t);
 char           *ewl_entry_get_text(Ewl_Entry * e);
 void            ewl_entry_set_editable(Ewl_Entry *e, unsigned int edit);
 
+void ewl_entry_move_cursor_to_left(Ewl_Entry * e);
+void ewl_entry_move_cursor_to_right(Ewl_Entry * e);
+void ewl_entry_move_cursor_to_home(Ewl_Entry * e);
+void ewl_entry_move_cursor_to_end(Ewl_Entry * e);
+void ewl_entry_insert_text(Ewl_Entry * e, char *s);
+void ewl_entry_delete_to_left(Ewl_Entry * e);
+void ewl_entry_delete_to_right(Ewl_Entry * e);
+
+/*
+ * Internally used callbacks, override at your own risk.
+ */
+void ewl_entry_configure_cb(Ewl_Widget * w, void *ev_data, void *user_data);
+void ewl_entry_configure_text_cb(Ewl_Widget * w, void *ev_data,
+				 void *user_data);
+void ewl_entry_key_down_cb(Ewl_Widget * w, void *ev_data, void *user_data);
+void ewl_entry_mouse_down_cb(Ewl_Widget * w, void *ev_data, void *user_data);
+void ewl_entry_mouse_move_cb(Ewl_Widget * w, void *ev_data, void *user_data);
+void ewl_entry_select_cb(Ewl_Widget * w, void *ev_data, void *user_data);
+void ewl_entry_deselect_cb(Ewl_Widget * w, void *ev_data, void *user_data);
+
+void ewl_entry_update_selected_region_cb(Ewl_Widget * w, void *user_data,
+					 void *ev_data);
+void ewl_entry_child_add_cb(Ewl_Container * c, Ewl_Widget * w);
+void ewl_entry_child_resize_cb(Ewl_Container * entry, Ewl_Widget * text,
+			       int size, Ewl_Orientation o);
+
 /**
  * @}
  */

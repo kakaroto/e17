@@ -1,16 +1,7 @@
 #include <Ewl.h>
 
-/*
- * Callback for drawing the spectrum to the image data.
- */
-void            __ewl_spectrum_configure(Ewl_Widget * w,
-						     void *ev_data,
-						     void *user_data);
-
-void            _hsv_to_rgb(float hue, float saturation, float value, int *_r,
-			    int *_g, int *_b);
-
-void            __draw_spectrum(Ewl_Spectrum * sp);
+static void  ewl_spectrum_hsv_to_rgb(float hue, float saturation, float value,
+				     int *r, int *g, int *b);
 
 /**
  *
@@ -43,7 +34,7 @@ void ewl_spectrum_init(Ewl_Spectrum * sp)
 
 	ewl_image_init(EWL_IMAGE(w), NULL);
 	ewl_callback_append(w, EWL_CALLBACK_CONFIGURE,
-			    __ewl_spectrum_configure, NULL);
+			    ewl_spectrum_configure_cb, NULL);
 
 	sp->mode = PICK_MODE_HSV_HUE;
 	sp->dimensions = 2;
@@ -125,9 +116,12 @@ ewl_spectrum_hsv_set(Ewl_Spectrum * sp, float h,
 	DRETURN(DLEVEL_STABLE);
 }
 
+/*
+ * Callback for drawing the spectrum to the image data.
+ */
 void
-__ewl_spectrum_configure(Ewl_Widget * w, void *ev_data,
-				   void *user_data)
+ewl_spectrum_configure_cb(Ewl_Widget * w, void *ev_data,
+			  void *user_data)
 {
 	Evas_Object    *o;
 	int             red, green, blue;
@@ -137,7 +131,7 @@ __ewl_spectrum_configure(Ewl_Widget * w, void *ev_data,
 	int             pw, ph;
 	int             i, j;
 	int            *data = NULL;
-	Ewl_Spectrum *sp;
+	Ewl_Spectrum   *sp;
 
 	DENTER_FUNCTION(DLEVEL_STABLE);
 
@@ -191,20 +185,23 @@ __ewl_spectrum_configure(Ewl_Widget * w, void *ev_data,
 					h = hue;
 					s = 1 - (float) i / (float) pw;
 					v = 1 - (float) j / (float) ph;
-					_hsv_to_rgb(h, s, v, &r, &g, &b);
+					ewl_spectrum_hsv_to_rgb(h, s, v,
+								&r, &g, &b);
 				} else if (pick_mode ==
 					   PICK_MODE_HSV_SATURATION) {
 					h = (float) i / (float) pw *360;
 
 					s = sat;
 					v = 1 - (float) j / (float) ph;
-					_hsv_to_rgb(h, s, v, &r, &g, &b);
+					ewl_spectrum_hsv_to_rgb(h, s, v,
+								&r, &g, &b);
 				} else if (pick_mode == PICK_MODE_HSV_VALUE) {
 					h = (float) i / (float) pw *360;
 
 					s = 1 - (float) j / (float) ph;
 					v = val;
-					_hsv_to_rgb(h, s, v, &r, &g, &b);
+					ewl_spectrum_hsv_to_rgb(h, s, v,
+								&r, &g, &b);
 				}
 				//printf("r: %d\n", r);
 
@@ -249,17 +246,17 @@ __ewl_spectrum_configure(Ewl_Widget * w, void *ev_data,
 				h = 360 * (float) j / (float) ph;
 				s = 1.0;
 				v = 1.0;
-				_hsv_to_rgb(h, s, v, &r, &g, &b);
+				ewl_spectrum_hsv_to_rgb(h, s, v, &r, &g, &b);
 			} else if (pick_mode == PICK_MODE_HSV_SATURATION) {
 				h = hue;
 				s = 1 - (float) j / (float) ph;
 				v = val;
-				_hsv_to_rgb(h, s, v, &r, &g, &b);
+				ewl_spectrum_hsv_to_rgb(h, s, v, &r, &g, &b);
 			} else if (pick_mode == PICK_MODE_HSV_VALUE) {
 				h = hue;
 				s = sat;
 				v = 1 - (float) j / (float) ph;
-				_hsv_to_rgb(h, s, v, &r, &g, &b);
+				ewl_spectrum_hsv_to_rgb(h, s, v, &r, &g, &b);
 			}
 
 			for (i = 0; i < pw; i++) {
@@ -276,7 +273,8 @@ __ewl_spectrum_configure(Ewl_Widget * w, void *ev_data,
 }
 
 void
-_hsv_to_rgb(float hue, float saturation, float value, int *_r, int *_g, int *_b)
+ewl_spectrum_hsv_to_rgb(float hue, float saturation, float value,
+			int *_r, int *_g, int *_b)
 {
 	int             i, p, q, t, h;
 	float           vs, vsf;

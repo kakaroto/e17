@@ -38,6 +38,14 @@ struct Ewl_IMenu
 Ewl_Widget     *ewl_imenu_new(char *image, char *title);
 void            ewl_imenu_init(Ewl_IMenu * menu, char *image, char *title);
 
+/*
+ * Internally used callbacks, override at your own risk.
+ */
+void            ewl_imenu_expand_cb(Ewl_Widget * w, void *ev_data,
+				    void *user_data);
+void            ewl_imenu_floater_destroy_cb(Ewl_Widget * w, void *ev_data,
+					     void *user_data);
+
 /**
  * @}
  */

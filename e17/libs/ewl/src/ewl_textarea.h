@@ -45,6 +45,14 @@ void            ewl_textarea_set_context(Ewl_TextArea * ta,
 					 Etox_Context * context);
 Etox_Context   *ewl_textarea_get_context(Ewl_TextArea * ta);
 
+/*
+ * Internally used callbacks, override at your own risk.
+ */
+void ewl_textarea_realize_cb(Ewl_Widget * w, void *ev_data, void *user_data);
+void ewl_textarea_unrealize_cb(Ewl_Widget * w, void *ev_data, void *user_data);
+void ewl_textarea_reparent_cb(Ewl_Widget * w, void *ev_data, void *user_data);
+void ewl_textarea_configure_cb(Ewl_Widget * w, void *ev_data, void *user_data);
+
 /**
  * @}
  */

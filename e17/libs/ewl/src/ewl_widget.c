@@ -7,41 +7,10 @@ extern Ewl_Widget *last_key;
 extern Ewl_Widget *last_focused;
 extern Ewl_Widget *dnd_widget;
 
-static void     __ewl_widget_show(Ewl_Widget * w, void *ev_data,
-				  void *user_data);
-static void     __ewl_widget_hide(Ewl_Widget * w, void *ev_data,
-				  void *user_data);
-static void     __ewl_widget_realize(Ewl_Widget * w, void *ev_data,
-				     void *user_data);
-static void     __ewl_widget_unrealize(Ewl_Widget * w, void *ev_data,
-				     void *user_data);
-static void     __ewl_widget_configure(Ewl_Widget * w, void *ev_data,
-				       void *user_data);
-static void     __ewl_widget_destroy(Ewl_Widget * w, void *ev_data,
-				     void *user_data);
-static void     __ewl_widget_reparent(Ewl_Widget * w, void *ev_data,
-				      void *user_data);
-static void     __ewl_widget_enable(Ewl_Widget * w, void *ev_data,
-				    void *user_data);
-static void     __ewl_widget_disable(Ewl_Widget * w, void *ev_data,
-				     void *user_data);
-static void     __ewl_widget_focus_in(Ewl_Widget * w, void *ev_data,
-				     void *user_data);
-static void     __ewl_widget_focus_out(Ewl_Widget * w, void *ev_data,
-				     void *user_data);
-static void     __ewl_widget_mouse_down(Ewl_Widget * w, void *ev_data,
-				     void *user_data);
-static void     __ewl_widget_mouse_up(Ewl_Widget * w, void *ev_data,
-				     void *user_data);
-void            __ewl_widget_child_destroy(Ewl_Widget * w, void *ev_data,
-						void *user_data);
-static void     __ewl_widget_mouse_move(Ewl_Widget * w, void *ev_data,
-				     void *user_data);
-
-void __ewl_widget_get_theme_padding(Ewl_Widget *w, int *l, int *r, int *t,
-		int *b);
-void __ewl_widget_get_theme_insets(Ewl_Widget *w, int *l, int *r, int *t,
-		int *b);
+static void ewl_widget_get_theme_padding(Ewl_Widget *w, int *l, int *r,
+					 int *t, int *b);
+static void ewl_widget_get_theme_insets(Ewl_Widget *w, int *l, int *r,
+					int *t, int *b);
 
 /**
  * @param w: the widget to initialize
@@ -77,32 +46,32 @@ void ewl_widget_init(Ewl_Widget * w, char *appearance)
 	/*
 	 * Add the common callbacks that all widgets must perform
 	 */
-	ewl_callback_append(w, EWL_CALLBACK_SHOW, __ewl_widget_show, NULL);
-	ewl_callback_append(w, EWL_CALLBACK_HIDE, __ewl_widget_hide, NULL);
-	ewl_callback_append(w, EWL_CALLBACK_REALIZE, __ewl_widget_realize,
+	ewl_callback_append(w, EWL_CALLBACK_SHOW, ewl_widget_show_cb, NULL);
+	ewl_callback_append(w, EWL_CALLBACK_HIDE, ewl_widget_hide_cb, NULL);
+	ewl_callback_append(w, EWL_CALLBACK_REALIZE, ewl_widget_realize_cb,
 			    NULL);
-	ewl_callback_append(w, EWL_CALLBACK_UNREALIZE, __ewl_widget_unrealize,
+	ewl_callback_append(w, EWL_CALLBACK_UNREALIZE, ewl_widget_unrealize_cb,
 			    NULL);
-	ewl_callback_append(w, EWL_CALLBACK_CONFIGURE, __ewl_widget_configure,
+	ewl_callback_append(w, EWL_CALLBACK_CONFIGURE, ewl_widget_configure_cb,
 			    NULL);
-	ewl_callback_append(w, EWL_CALLBACK_DESTROY, __ewl_widget_destroy,
+	ewl_callback_append(w, EWL_CALLBACK_DESTROY, ewl_widget_destroy_cb,
 			    NULL);
-	ewl_callback_append(w, EWL_CALLBACK_REPARENT, __ewl_widget_reparent,
+	ewl_callback_append(w, EWL_CALLBACK_REPARENT, ewl_widget_reparent_cb,
 			    NULL);
-	ewl_callback_append(w, EWL_CALLBACK_WIDGET_ENABLE, __ewl_widget_enable,
+	ewl_callback_append(w, EWL_CALLBACK_WIDGET_ENABLE, ewl_widget_enable_cb,
 			    NULL);
 	ewl_callback_append(w, EWL_CALLBACK_WIDGET_DISABLE,
-			__ewl_widget_disable, NULL);
-	ewl_callback_append(w, EWL_CALLBACK_FOCUS_IN, __ewl_widget_focus_in,
+			ewl_widget_disable_cb, NULL);
+	ewl_callback_append(w, EWL_CALLBACK_FOCUS_IN, ewl_widget_focus_in_cb,
 			    NULL);
-	ewl_callback_append(w, EWL_CALLBACK_FOCUS_OUT, __ewl_widget_focus_out,
+	ewl_callback_append(w, EWL_CALLBACK_FOCUS_OUT, ewl_widget_focus_out_cb,
 			    NULL);
-	ewl_callback_append(w, EWL_CALLBACK_MOUSE_DOWN, __ewl_widget_mouse_down,
+	ewl_callback_append(w, EWL_CALLBACK_MOUSE_DOWN,
+			    ewl_widget_mouse_down_cb, NULL);
+	ewl_callback_append(w, EWL_CALLBACK_MOUSE_UP, ewl_widget_mouse_up_cb,
 			    NULL);
-	ewl_callback_append(w, EWL_CALLBACK_MOUSE_UP, __ewl_widget_mouse_up,
-			    NULL);
-	ewl_callback_append(w, EWL_CALLBACK_MOUSE_MOVE, __ewl_widget_mouse_move,
-			    NULL);
+	ewl_callback_append(w, EWL_CALLBACK_MOUSE_MOVE,
+			    ewl_widget_mouse_move_cb, NULL);
 
 	ewl_widget_set_appearance(w, appearance);
 
@@ -532,7 +501,7 @@ void ewl_widget_set_parent(Ewl_Widget * w, Ewl_Widget * p)
 		ewl_container_remove_child(op, w);
 		if (!p)
 			ewl_callback_del(w, EWL_CALLBACK_DESTROY,
-				 __ewl_widget_child_destroy);
+				 ewl_widget_child_destroy_cb);
 	}
 
 	/*
@@ -542,7 +511,7 @@ void ewl_widget_set_parent(Ewl_Widget * w, Ewl_Widget * p)
 	if (p) {
 		if (!op)
 			ewl_callback_prepend(w, EWL_CALLBACK_DESTROY,
-					__ewl_widget_child_destroy, NULL);
+					ewl_widget_child_destroy_cb, NULL);
 		if (REALIZED(w) && VISIBLE(w)) {
 			ewl_callback_call(w, EWL_CALLBACK_REPARENT);
 			ewl_container_call_child_add(EWL_CONTAINER(p), w);
@@ -741,7 +710,7 @@ void ewl_widget_print(Ewl_Widget *w)
  * they are destroyed. This should ALWAYS be the the last callback
  * in the chain.
  */
-void __ewl_widget_destroy(Ewl_Widget * w, void *ev_data, void *data)
+void ewl_widget_destroy_cb(Ewl_Widget * w, void *ev_data, void *data)
 {
 	Ewl_Embed      *emb;
 	Ewd_List       *destroy_cbs;
@@ -787,7 +756,7 @@ void __ewl_widget_destroy(Ewl_Widget * w, void *ev_data, void *data)
 /*
  * Every widget must show it's fx_clip_box to be seen
  */
-void __ewl_widget_show(Ewl_Widget * w, void *ev_data, void *user_data)
+void ewl_widget_show_cb(Ewl_Widget * w, void *ev_data, void *user_data)
 {
 	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR("w", w);
@@ -801,7 +770,7 @@ void __ewl_widget_show(Ewl_Widget * w, void *ev_data, void *user_data)
 /*
  * Every widget must hide it's fx_clip_box in order to hide
  */
-void __ewl_widget_hide(Ewl_Widget * w, void *ev_data, void *user_data)
+void ewl_widget_hide_cb(Ewl_Widget * w, void *ev_data, void *user_data)
 {
 	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR("w", w);
@@ -815,7 +784,7 @@ void __ewl_widget_hide(Ewl_Widget * w, void *ev_data, void *user_data)
 /*
  * Perform the basic operations necessary for realizing a widget
  */
-void __ewl_widget_realize(Ewl_Widget * w, void *ev_data, void *user_data)
+void ewl_widget_realize_cb(Ewl_Widget * w, void *ev_data, void *user_data)
 {
 	int             len;
 	int             l = 0, r = 0, t = 0, b = 0;
@@ -853,8 +822,8 @@ void __ewl_widget_realize(Ewl_Widget * w, void *ev_data, void *user_data)
 	 * will be used to calculate any added at runtime.
 	 */
 	if (w->theme_object) {
-		__ewl_widget_get_theme_insets(w, &i_l, &i_r, &i_t, &i_b);
-		__ewl_widget_get_theme_padding(w, &p_l, &p_r, &p_t, &p_b);
+		ewl_widget_get_theme_insets(w, &i_l, &i_r, &i_t, &i_b);
+		ewl_widget_get_theme_padding(w, &p_l, &p_r, &p_t, &p_b);
 	}
 
 	ewl_object_get_insets(EWL_OBJECT(w), &l, &r, &t, &b);
@@ -923,11 +892,11 @@ void __ewl_widget_realize(Ewl_Widget * w, void *ev_data, void *user_data)
 		 * Set the insets based on cached information from the
 		 * ebit, this can be overwritten later.
 		 */
-		__ewl_widget_get_theme_insets(w, &l, &r, &t, &b);
+		ewl_widget_get_theme_insets(w, &l, &r, &t, &b);
 		ewl_object_set_insets(EWL_OBJECT(w), l + i_l, r + i_r, t + i_t,
 				b + i_b);
 
-		__ewl_widget_get_theme_padding(w, &l, &r, &t, &b);
+		ewl_widget_get_theme_padding(w, &l, &r, &t, &b);
 		ewl_object_set_padding(EWL_OBJECT(w), l + p_l, r + p_r, t + p_t,
 				b + p_b);
 
@@ -972,7 +941,7 @@ void __ewl_widget_realize(Ewl_Widget * w, void *ev_data, void *user_data)
 /*
  * Perform the basic operations necessary for unrealizing a widget
  */
-void __ewl_widget_unrealize(Ewl_Widget * w, void *ev_data, void *user_data)
+void ewl_widget_unrealize_cb(Ewl_Widget * w, void *ev_data, void *user_data)
 {
 	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR("w", w);
@@ -998,7 +967,7 @@ void __ewl_widget_unrealize(Ewl_Widget * w, void *ev_data, void *user_data)
 /*
  * Perform the basic operations necessary for configuring a widget
  */
-void __ewl_widget_configure(Ewl_Widget * w, void *ev_data, void *user_data)
+void ewl_widget_configure_cb(Ewl_Widget * w, void *ev_data, void *user_data)
 {
 	Ewl_Embed      *emb;
 
@@ -1037,7 +1006,7 @@ void __ewl_widget_configure(Ewl_Widget * w, void *ev_data, void *user_data)
 /*
  * Perform the basic operations necessary for reparenting a widget
  */
-void __ewl_widget_reparent(Ewl_Widget * w, void *ev_data, void *user_data)
+void ewl_widget_reparent_cb(Ewl_Widget * w, void *ev_data, void *user_data)
 {
 	int             layer;
 	Evas           *oevas;
@@ -1083,7 +1052,7 @@ void __ewl_widget_reparent(Ewl_Widget * w, void *ev_data, void *user_data)
 }
 
 
-void __ewl_widget_enable(Ewl_Widget * w, void *ev_data, void *user_data)
+void ewl_widget_enable_cb(Ewl_Widget * w, void *ev_data, void *user_data)
 {
 	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR("w", w);
@@ -1093,7 +1062,7 @@ void __ewl_widget_enable(Ewl_Widget * w, void *ev_data, void *user_data)
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
 
-void __ewl_widget_disable(Ewl_Widget * w, void *ev_data, void *user_data)
+void ewl_widget_disable_cb(Ewl_Widget * w, void *ev_data, void *user_data)
 {
 	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR("w", w);
@@ -1103,8 +1072,8 @@ void __ewl_widget_disable(Ewl_Widget * w, void *ev_data, void *user_data)
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
 
-static void
-__ewl_widget_focus_in(Ewl_Widget *w, void *ev_data, void *user_data)
+void
+ewl_widget_focus_in_cb(Ewl_Widget *w, void *ev_data, void *user_data)
 {
 	if (ewl_object_has_state(EWL_OBJECT(w), EWL_FLAG_STATE_DISABLED))
 		DRETURN(DLEVEL_STABLE);
@@ -1115,8 +1084,8 @@ __ewl_widget_focus_in(Ewl_Widget *w, void *ev_data, void *user_data)
 		ewl_widget_set_state(w, "hilited");
 }
 
-static void
-__ewl_widget_focus_out(Ewl_Widget *w, void *ev_data, void *user_data)
+void
+ewl_widget_focus_out_cb(Ewl_Widget *w, void *ev_data, void *user_data)
 {
 	if (ewl_object_has_state(EWL_OBJECT(w), EWL_FLAG_STATE_DISABLED))
 		DRETURN(DLEVEL_STABLE);
@@ -1124,8 +1093,8 @@ __ewl_widget_focus_out(Ewl_Widget *w, void *ev_data, void *user_data)
 	ewl_widget_set_state(w, "normal");
 }
 
-static void
-__ewl_widget_mouse_down(Ewl_Widget *w, void *ev_data, void *user_data)
+void
+ewl_widget_mouse_down_cb(Ewl_Widget *w, void *ev_data, void *user_data)
 {
 	if (ewl_object_has_state(EWL_OBJECT(w), EWL_FLAG_STATE_DISABLED))
 		DRETURN(DLEVEL_STABLE);
@@ -1133,8 +1102,8 @@ __ewl_widget_mouse_down(Ewl_Widget *w, void *ev_data, void *user_data)
 	ewl_widget_set_state(w, "clicked");
 }
 
-static void
-__ewl_widget_mouse_up(Ewl_Widget *w, void *ev_data, void *user_data)
+void
+ewl_widget_mouse_up_cb(Ewl_Widget *w, void *ev_data, void *user_data)
 {
 	if (ewl_object_has_state(EWL_OBJECT(w), EWL_FLAG_STATE_DISABLED))
 		DRETURN(DLEVEL_STABLE);
@@ -1146,16 +1115,16 @@ __ewl_widget_mouse_up(Ewl_Widget *w, void *ev_data, void *user_data)
 		ewl_widget_set_state(w, "normal");
 }
 
-static void
-__ewl_widget_mouse_move(Ewl_Widget *w, void *ev_data, void *user_data)
+void
+ewl_widget_mouse_move_cb(Ewl_Widget *w, void *ev_data, void *user_data)
 {
 	if (w->theme_object) {
 		edje_object_signal_emit(w->theme_object, "mouse,move", "EWL");
 	}
 }
 
-void
-__ewl_widget_get_theme_padding(Ewl_Widget *w, int *l, int *r, int *t, int *b)
+static void
+ewl_widget_get_theme_padding(Ewl_Widget *w, int *l, int *r, int *t, int *b)
 {
 	const char *key;
 
@@ -1187,8 +1156,8 @@ __ewl_widget_get_theme_padding(Ewl_Widget *w, int *l, int *r, int *t, int *b)
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
 
-void
-__ewl_widget_get_theme_insets(Ewl_Widget *w, int *l, int *r, int *t, int *b)
+static void
+ewl_widget_get_theme_insets(Ewl_Widget *w, int *l, int *r, int *t, int *b)
 {
 	const char *key;
 
@@ -1221,7 +1190,7 @@ __ewl_widget_get_theme_insets(Ewl_Widget *w, int *l, int *r, int *t, int *b)
 }
 
 void
-__ewl_widget_child_destroy(Ewl_Widget * w, void *ev_data, void *user_data)
+ewl_widget_child_destroy_cb(Ewl_Widget * w, void *ev_data, void *user_data)
 {
 	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR("w", w);

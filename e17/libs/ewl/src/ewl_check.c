@@ -2,13 +2,6 @@
 #include <Ewl.h>
 
 
-void            ewl_check_init(Ewl_Check * cb);
-
-void            __ewl_check_clicked(Ewl_Widget * w, void *ev_data,
-				    void *user_data);
-void            __ewl_check_update_check(Ewl_Widget * w, void *ev_data,
-					 void *user_data);
-
 
 /**
  * @return Returns the newly allocated check on success, NULL on failure.
@@ -48,7 +41,7 @@ void ewl_check_set_checked(Ewl_Check * cb, int c)
 	else
 		cb->checked = 0;
 
-	__ewl_check_update_check(EWL_WIDGET(cb), NULL, NULL);
+	ewl_check_update_check_cb(EWL_WIDGET(cb), NULL, NULL);
 
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
@@ -86,14 +79,15 @@ void ewl_check_init(Ewl_Check * cb)
 	ewl_object_set_fill_policy(EWL_OBJECT(w), EWL_FLAG_FILL_NONE);
 	ewl_object_set_preferred_size(EWL_OBJECT(w), 20, 20);
 
-	ewl_callback_append(w, EWL_CALLBACK_CLICKED, __ewl_check_clicked, NULL);
-	ewl_callback_append(w, EWL_CALLBACK_FOCUS_OUT, __ewl_check_update_check,
-			NULL);
+	ewl_callback_append(w, EWL_CALLBACK_CLICKED, ewl_check_clicked_cb,
+			    NULL);
+	ewl_callback_append(w, EWL_CALLBACK_FOCUS_OUT,
+			    ewl_check_update_check_cb, NULL);
 
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
 
-void __ewl_check_clicked(Ewl_Widget * w, void *ev_data, void *user_data)
+void ewl_check_clicked_cb(Ewl_Widget * w, void *ev_data, void *user_data)
 {
 	Ewl_Check      *cb;
 	int             oc;
@@ -106,14 +100,14 @@ void __ewl_check_clicked(Ewl_Widget * w, void *ev_data, void *user_data)
 
 	cb->checked ^= 1;
 
-	__ewl_check_update_check(w, NULL, NULL);
+	ewl_check_update_check_cb(w, NULL, NULL);
 
 	ewl_callback_call(w, EWL_CALLBACK_VALUE_CHANGED);
 
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
 
-void __ewl_check_update_check(Ewl_Widget * w, void *ev_data, void *user_data)
+void ewl_check_update_check_cb(Ewl_Widget * w, void *ev_data, void *user_data)
 {
 	Ewl_Check      *cb;
 

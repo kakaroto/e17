@@ -2,13 +2,10 @@
 #include <Ewl.h>
 
 
-void            __save_dialog_init(Ewl_Filedialog * fd,
-				   Ewl_Callback_Function cb);
-void            __open_dialog_init(Ewl_Filedialog * fd,
-				   Ewl_Callback_Function cb);
-
-void            __destroy_dialog(Ewl_Widget * w, void *ev_data,
-				 void *user_data);
+static void ewl_filedialog_save_init(Ewl_Filedialog * fd,
+				     Ewl_Callback_Function cb);
+static void ewl_filedialog_open_init(Ewl_Filedialog * fd,
+				     Ewl_Callback_Function cb);
 
 
 typedef struct _open_dialog Open_Dialog;
@@ -78,16 +75,17 @@ ewl_filedialog_init(Ewl_Filedialog * fd, Ewl_Widget * follows,
 	fd->type = type;
 
 	if (type == EWL_FILEDIALOG_TYPE_OPEN)
-		__open_dialog_init(fd, cb);
+		ewl_filedialog_open_init(fd, cb);
 	else
-		__save_dialog_init(fd, cb);
+		ewl_filedialog_save_init(fd, cb);
 
 
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
 
 
-void __open_dialog_init(Ewl_Filedialog * fd, Ewl_Callback_Function cb)
+static void
+ewl_filedialog_open_init(Ewl_Filedialog * fd, Ewl_Callback_Function cb)
 {
 	Open_Dialog    *od;
 	Ewl_Widget     *separator;
@@ -121,7 +119,7 @@ void __open_dialog_init(Ewl_Filedialog * fd, Ewl_Callback_Function cb)
 				   EWL_FLAG_FILL_SHRINK);
 	ewl_callback_append(od->open, EWL_CALLBACK_CLICKED, cb, fd->selector);
 	ewl_callback_append(od->open, EWL_CALLBACK_CLICKED,
-			    __destroy_dialog, NULL);
+			    ewl_filedialog_destroy_cb, NULL);
 	ewl_container_append_child(EWL_CONTAINER(od->box), od->open);
 	ewl_widget_show(od->open);
 
@@ -130,7 +128,7 @@ void __open_dialog_init(Ewl_Filedialog * fd, Ewl_Callback_Function cb)
 	ewl_object_set_fill_policy(EWL_OBJECT(od->cancel),
 				   EWL_FLAG_FILL_SHRINK);
 	ewl_callback_append(od->cancel, EWL_CALLBACK_CLICKED,
-			    __destroy_dialog, NULL);
+			    ewl_filedialog_destroy_cb, NULL);
 	ewl_container_append_child(EWL_CONTAINER(od->box), od->cancel);
 	ewl_widget_show(od->cancel);
 
@@ -145,7 +143,8 @@ void __open_dialog_init(Ewl_Filedialog * fd, Ewl_Callback_Function cb)
 }
 
 
-void __save_dialog_init(Ewl_Filedialog * fd, Ewl_Callback_Function cb)
+static void
+ewl_filedialog_save_init(Ewl_Filedialog * fd, Ewl_Callback_Function cb)
 {
 	Save_Dialog    *sd;
 
@@ -165,9 +164,7 @@ void __save_dialog_init(Ewl_Filedialog * fd, Ewl_Callback_Function cb)
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
 
-
-
-void __destroy_dialog(Ewl_Widget * w, void *ev_data, void *user_data)
+void ewl_filedialog_destroy_cb(Ewl_Widget * w, void *ev_data, void *user_data)
 {
 	Ewl_Widget     *fd;
 

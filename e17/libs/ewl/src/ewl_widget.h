@@ -150,6 +150,40 @@ int             ewl_widget_get_layer(Ewl_Widget *w);
  */
 #define LAYER(w) EWL_WIDGET(w)->layer
 
+/*
+ * Internally used callbacks, override at your own risk.
+ */
+void ewl_widget_show_cb(Ewl_Widget * w, void *ev_data,
+			void *user_data);
+void ewl_widget_hide_cb(Ewl_Widget * w, void *ev_data,
+			void *user_data);
+void ewl_widget_realize_cb(Ewl_Widget * w, void *ev_data,
+			   void *user_data);
+void ewl_widget_unrealize_cb(Ewl_Widget * w, void *ev_data,
+			     void *user_data);
+void ewl_widget_configure_cb(Ewl_Widget * w, void *ev_data,
+			     void *user_data);
+void ewl_widget_destroy_cb(Ewl_Widget * w, void *ev_data,
+			   void *user_data);
+void ewl_widget_reparent_cb(Ewl_Widget * w, void *ev_data,
+			 void *user_data);
+void ewl_widget_enable_cb(Ewl_Widget * w, void *ev_data,
+			     void *user_data);
+void ewl_widget_disable_cb(Ewl_Widget * w, void *ev_data,
+		           void *user_data);
+void ewl_widget_focus_in_cb(Ewl_Widget * w, void *ev_data,
+			    void *user_data);
+void ewl_widget_focus_out_cb(Ewl_Widget * w, void *ev_data,
+			     void *user_data);
+void ewl_widget_mouse_down_cb(Ewl_Widget * w, void *ev_data,
+			      void *user_data);
+void ewl_widget_mouse_up_cb(Ewl_Widget * w, void *ev_data,
+			    void *user_data);
+void ewl_widget_child_destroy_cb(Ewl_Widget * w, void *ev_data,
+				 void *user_data);
+void ewl_widget_mouse_move_cb(Ewl_Widget * w, void *ev_data,
+			      void *user_data);
+
 /**
  * @}
  */

@@ -43,23 +43,16 @@ Box_Orientation *info = NULL;
  */
 static Ewd_List *spread = NULL;
 
-static void     __ewl_box_setup();
-static void     __ewl_box_add(Ewl_Container * c, Ewl_Widget * w);
-static void     __ewl_box_remove(Ewl_Container * c, Ewl_Widget * w);
-static void     __ewl_box_child_resize(Ewl_Container * c, Ewl_Widget * w,
-				       int size, Ewl_Orientation o);
-static void     __ewl_box_configure(Ewl_Widget * w, void *ev_data,
-				    void *user_data);
-static void      __ewl_box_configure_homogeneous(Ewl_Widget *w, void *ev_data,
-					void *user_data);
-static void     __ewl_box_configure_calc(Ewl_Box * b, int *fill_size,
+static void     ewl_box_setup();
+
+static void     ewl_box_configure_calc(Ewl_Box * b, int *fill_size,
 					 int *align_size);
-static void     __ewl_box_configure_fill(Ewl_Box * b, int *fill_size,
+static void     ewl_box_configure_fill(Ewl_Box * b, int *fill_size,
 					 int *align_size);
-static void     __ewl_box_configure_layout(Ewl_Box * b, int *x, int *y,
+static void     ewl_box_configure_layout(Ewl_Box * b, int *x, int *y,
 					   int *fill, int *align,
 					   int *align_size);
-static void     __ewl_box_configure_child(Ewl_Box * b, Ewl_Object * c, int *x,
+static void     ewl_box_configure_child(Ewl_Box * b, Ewl_Object * c, int *x,
 					  int *y, int *align, int *align_size);
 
 /**
@@ -113,13 +106,13 @@ int ewl_box_init(Ewl_Box * b, Ewl_Orientation o)
 	 * Initialize the container portion of the box
 	 */
 	if (o == EWL_ORIENTATION_HORIZONTAL)
-		ewl_container_init(EWL_CONTAINER(b), "hbox", __ewl_box_add,
-				__ewl_box_child_resize, __ewl_box_remove);
+		ewl_container_init(EWL_CONTAINER(b), "hbox", ewl_box_add_cb,
+				ewl_box_child_resize_cb, ewl_box_remove_cb);
 	else
-		ewl_container_init(EWL_CONTAINER(b), "vbox", __ewl_box_add,
-				__ewl_box_child_resize, __ewl_box_remove);
+		ewl_container_init(EWL_CONTAINER(b), "vbox", ewl_box_add_cb,
+				ewl_box_child_resize_cb, ewl_box_remove_cb);
 
-	ewl_callback_prepend(w, EWL_CALLBACK_CONFIGURE, __ewl_box_configure,
+	ewl_callback_prepend(w, EWL_CALLBACK_CONFIGURE, ewl_box_configure_cb,
 			NULL);
 
 	/*
@@ -127,7 +120,7 @@ int ewl_box_init(Ewl_Box * b, Ewl_Orientation o)
 	 * them.
 	 */
 	if (!vertical)
-		__ewl_box_setup();
+		ewl_box_setup();
 
 	/*
 	 * Set the box's appropriate orientation, set to a garbage value so
@@ -165,12 +158,10 @@ void ewl_box_set_orientation(Ewl_Box * b, Ewl_Orientation o)
 		DRETURN(DLEVEL_STABLE);
 
 	b->orientation = o;
-	/*
 	if (o == EWL_ORIENTATION_HORIZONTAL)
 		ewl_widget_set_appearance(w, "hbox");
 	else
 		ewl_widget_set_appearance(w, "vbox");
-	 */
 
 	ewl_widget_configure(w);
 
@@ -209,15 +200,15 @@ void ewl_box_set_homogeneous(Ewl_Box *b, int h)
 
 	if (h) {
 		ewl_callback_del(EWL_WIDGET(b), EWL_CALLBACK_CONFIGURE,
-				__ewl_box_configure);
+				ewl_box_configure_cb);
 		ewl_callback_append(EWL_WIDGET(b), EWL_CALLBACK_CONFIGURE,
-				__ewl_box_configure_homogeneous, NULL);
+				ewl_box_configure_homogeneous_cb, NULL);
 	}
 	else {
 		ewl_callback_del(EWL_WIDGET(b), EWL_CALLBACK_CONFIGURE,
-				__ewl_box_configure_homogeneous);
+				ewl_box_configure_homogeneous_cb);
 		ewl_callback_append(EWL_WIDGET(b), EWL_CALLBACK_CONFIGURE,
-				__ewl_box_configure, NULL);
+				ewl_box_configure_cb, NULL);
 	}
 
 	b->homogeneous = h;
@@ -265,8 +256,8 @@ void ewl_box_set_spacing(Ewl_Box * b, int s)
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
 
-static void
-__ewl_box_configure(Ewl_Widget * w, void *ev_data, void *user_data)
+void
+ewl_box_configure_cb(Ewl_Widget * w, void *ev_data, void *user_data)
 {
 	Ewl_Box        *b;
 
@@ -321,23 +312,23 @@ __ewl_box_configure(Ewl_Widget * w, void *ev_data, void *user_data)
 	/*
 	 * Split the children up for configuration based on alignment.
 	 */
-	__ewl_box_configure_calc(b, fill_size, align_size);
+	ewl_box_configure_calc(b, fill_size, align_size);
 
 	/*
 	 * Spread the fill space if necessary.
 	 */
-	__ewl_box_configure_fill(b, fill_size, align_size);
+	ewl_box_configure_fill(b, fill_size, align_size);
 
 	/*
 	 * Layout the children in their appropriate positions.
 	 */
-	__ewl_box_configure_layout(b, &x, &y, fill, align, align_size);
+	ewl_box_configure_layout(b, &x, &y, fill, align, align_size);
 
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
 
-static void
-__ewl_box_configure_homogeneous(Ewl_Widget *w, void *ev_data, void *user_data)
+void
+ewl_box_configure_homogeneous_cb(Ewl_Widget *w, void *ev_data, void *user_data)
 {
 	int             i, num;
 	int             x, y;
@@ -408,7 +399,7 @@ __ewl_box_configure_homogeneous(Ewl_Widget *w, void *ev_data, void *user_data)
  * Split the children into three lists for layout.
  */
 static void
-__ewl_box_configure_calc(Ewl_Box * b, int *fill_size, int *align_size)
+ewl_box_configure_calc(Ewl_Box * b, int *fill_size, int *align_size)
 {
 	Ewl_Object     *child;
 	int    initial;
@@ -466,7 +457,7 @@ __ewl_box_configure_calc(Ewl_Box * b, int *fill_size, int *align_size)
  * not be called if @num_fill or *@fill_size are equal to zero.
  */
 static void
-__ewl_box_configure_fill(Ewl_Box * b, int *fill_size, int *align_size)
+ewl_box_configure_fill(Ewl_Box * b, int *fill_size, int *align_size)
 {
 	int             space;
 	int             temp, remainder;
@@ -576,7 +567,7 @@ __ewl_box_configure_fill(Ewl_Box * b, int *fill_size, int *align_size)
 }
 
 static void
-__ewl_box_configure_layout(Ewl_Box * b, int *x, int *y, int *fill,
+ewl_box_configure_layout(Ewl_Box * b, int *x, int *y, int *fill,
 			   int *align, int *align_size)
 {
 	Ewl_Object     *child;
@@ -594,7 +585,7 @@ __ewl_box_configure_layout(Ewl_Box * b, int *x, int *y, int *fill,
 			/*
 			 * Position this child based on the determined values.
 			 */
-			__ewl_box_configure_child(b, child, x, y, align,
+			ewl_box_configure_child(b, child, x, y, align,
 						  align_size);
 
 			/*
@@ -608,7 +599,7 @@ __ewl_box_configure_layout(Ewl_Box * b, int *x, int *y, int *fill,
 }
 
 static void
-__ewl_box_configure_child(Ewl_Box * b, Ewl_Object * c, int *x, int *y,
+ewl_box_configure_child(Ewl_Box * b, Ewl_Object * c, int *x, int *y,
 			  int *align, int *align_size)
 {
 	DENTER_FUNCTION(DLEVEL_STABLE);
@@ -647,8 +638,8 @@ __ewl_box_configure_child(Ewl_Box * b, Ewl_Object * c, int *x, int *y,
 /*
  * When a child gets added to the box update it's size.
  */
-static void
-__ewl_box_add(Ewl_Container * c, Ewl_Widget * w)
+void
+ewl_box_add_cb(Ewl_Container * c, Ewl_Widget * w)
 {
 	int             space = 0;
 
@@ -677,8 +668,8 @@ __ewl_box_add(Ewl_Container * c, Ewl_Widget * w)
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
 
-static void
-__ewl_box_remove(Ewl_Container * c, Ewl_Widget * w)
+void
+ewl_box_remove_cb(Ewl_Container * c, Ewl_Widget * w)
 {
 	int space = 0;
 	Ewl_Box *b = EWL_BOX(c);
@@ -711,8 +702,8 @@ __ewl_box_remove(Ewl_Container * c, Ewl_Widget * w)
  * Determine the preferred size of the box when a child changes it's preferred
  * size.
  */
-static void
-__ewl_box_child_resize(Ewl_Container * c, Ewl_Widget * w, int size,
+void
+ewl_box_child_resize_cb(Ewl_Container * c, Ewl_Widget * w, int size,
 		       Ewl_Orientation o)
 {
 	int align_size, fill_size;
@@ -759,7 +750,7 @@ __ewl_box_child_resize(Ewl_Container * c, Ewl_Widget * w, int size,
  * on orientation.
  */
 static void
-__ewl_box_setup()
+ewl_box_setup()
 {
 	if (!vertical) {
 		vertical = NEW(Box_Orientation, 1);

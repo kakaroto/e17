@@ -1,11 +1,6 @@
 
 #include <Ewl.h>
 
-void            __ewl_checkbutton_clicked(Ewl_Widget * w, void *ev_data,
-					  void *user_data);
-void            __ewl_check_clicked(Ewl_Widget * w, void *ev_data,
-				    void *user_data);
-
 /**
  * @param label: the label to display with the checkbutton, NULL for no label
  * @return Returns the newly allocated checkbutton on success, NULL on failure.
@@ -50,7 +45,7 @@ void ewl_checkbutton_init(Ewl_CheckButton * cb, char *label)
 
 	ewl_object_set_fill_policy(EWL_OBJECT(w), EWL_FLAG_FILL_NONE);
 	ewl_callback_append(w, EWL_CALLBACK_CLICKED,
-			    __ewl_checkbutton_clicked, NULL);
+			    ewl_checkbutton_clicked_cb, NULL);
 
 	cb->label_position = EWL_POSITION_RIGHT;
 
@@ -58,7 +53,7 @@ void ewl_checkbutton_init(Ewl_CheckButton * cb, char *label)
 	 * Add the check box first.
 	 */
 	cb->check = ewl_check_new();
-	ewl_callback_del(cb->check, EWL_CALLBACK_CLICKED, __ewl_check_clicked);
+	ewl_callback_del(cb->check, EWL_CALLBACK_CLICKED, ewl_check_clicked_cb);
 	ewl_container_prepend_child(EWL_CONTAINER(cb), cb->check);
 	ewl_widget_show(cb->check);
 
@@ -111,7 +106,7 @@ void ewl_checkbutton_set_label_position(Ewl_Widget * w, Ewl_Position p)
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
 
-void __ewl_checkbutton_clicked(Ewl_Widget * w, void *ev_data, void *user_data)
+void ewl_checkbutton_clicked_cb(Ewl_Widget * w, void *ev_data, void *user_data)
 {
 	Ewl_CheckButton *cb;
 

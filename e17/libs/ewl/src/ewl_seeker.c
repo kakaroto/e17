@@ -1,16 +1,5 @@
 #include <Ewl.h>
 
-void            __ewl_seeker_configure(Ewl_Widget * w, void *ev_data,
-				       void *user_data);
-void            __ewl_seeker_button_mouse_down(Ewl_Widget * w, void *ev_data,
-						void *user_data);
-void            __ewl_seeker_button_mouse_up(Ewl_Widget * w, void *ev_data,
-					      void *user_data);
-void            __ewl_seeker_button_mouse_move(Ewl_Widget * w, void *ev_data,
-						void *user_data);
-void            __ewl_seeker_mouse_down(Ewl_Widget * w, void *ev_data,
-					void *user_data);
-
 
 /**
  * @param o: the orientation for the new seeker
@@ -89,21 +78,21 @@ void ewl_seeker_init(Ewl_Seeker * s, Ewl_Orientation orientation)
 	/*
 	 * Add necessary configuration callbacks
 	 */
-	ewl_callback_append(w, EWL_CALLBACK_CONFIGURE, __ewl_seeker_configure,
+	ewl_callback_append(w, EWL_CALLBACK_CONFIGURE, ewl_seeker_configure_cb,
 			    NULL);
-	ewl_callback_append(w, EWL_CALLBACK_MOUSE_DOWN, __ewl_seeker_mouse_down,
-			    NULL);
+	ewl_callback_append(w, EWL_CALLBACK_MOUSE_DOWN,
+			    ewl_seeker_mouse_down_cb, NULL);
 	ewl_callback_append(w, EWL_CALLBACK_MOUSE_MOVE,
-			    __ewl_seeker_button_mouse_move, NULL);
+			    ewl_seeker_button_mouse_move_cb, NULL);
 
 	/*
 	 * Append a callback for catching mouse movements on the button and
 	 * add the button to the seeker
 	 */
 	ewl_callback_append(s->button, EWL_CALLBACK_MOUSE_DOWN,
-			    __ewl_seeker_button_mouse_down, NULL);
+			    ewl_seeker_button_mouse_down_cb, NULL);
 	ewl_callback_append(s->button, EWL_CALLBACK_MOUSE_UP,
-			    __ewl_seeker_button_mouse_up, NULL);
+			    ewl_seeker_button_mouse_up_cb, NULL);
 
 	/*
 	 * We want to catch mouse movement events from the button.
@@ -340,7 +329,7 @@ void ewl_seeker_decrease(Ewl_Seeker * s)
  * coords and position as well as move the button to the correct size and
  * position.
  */
-void __ewl_seeker_configure(Ewl_Widget * w, void *ev_data, void *user_data)
+void ewl_seeker_configure_cb(Ewl_Widget * w, void *ev_data, void *user_data)
 {
 	Ewl_Seeker     *s;
 	double          s1, s2;
@@ -387,7 +376,7 @@ void __ewl_seeker_configure(Ewl_Widget * w, void *ev_data, void *user_data)
 
 
 void
-__ewl_seeker_button_mouse_down(Ewl_Widget * w, void *ev_data, void *user_data)
+ewl_seeker_button_mouse_down_cb(Ewl_Widget * w, void *ev_data, void *user_data)
 {
 	Ecore_X_Event_Mouse_Button_Down *ev;
 	Ewl_Seeker     *s;
@@ -413,7 +402,7 @@ __ewl_seeker_button_mouse_down(Ewl_Widget * w, void *ev_data, void *user_data)
 
 
 void
-__ewl_seeker_button_mouse_up(Ewl_Widget * w, void *ev_data, void *user_data)
+ewl_seeker_button_mouse_up_cb(Ewl_Widget * w, void *ev_data, void *user_data)
 {
 	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR("w", w);
@@ -428,7 +417,7 @@ __ewl_seeker_button_mouse_up(Ewl_Widget * w, void *ev_data, void *user_data)
  * Move the cursor to the correct position
  */
 void
-__ewl_seeker_button_mouse_move(Ewl_Widget * w, void *ev_data, void *user_data)
+ewl_seeker_button_mouse_move_cb(Ewl_Widget * w, void *ev_data, void *user_data)
 {
 	Ecore_X_Event_Mouse_Move *ev;
 	Ewl_Seeker *s;
@@ -507,7 +496,7 @@ __ewl_seeker_button_mouse_move(Ewl_Widget * w, void *ev_data, void *user_data)
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
 
-void __ewl_seeker_mouse_down(Ewl_Widget * w, void *ev_data, void *user_data)
+void ewl_seeker_mouse_down_cb(Ewl_Widget * w, void *ev_data, void *user_data)
 {
 	Ewl_Seeker     *s;
 	Ecore_X_Event_Mouse_Button_Down *ev;

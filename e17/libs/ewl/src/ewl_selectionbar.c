@@ -1,28 +1,8 @@
 
 #include <Ewl.h>
 
-void            __ewl_selectionbar_realize(Ewl_Widget * w, void *ev_data,
-					   void *user_data);
-void            __ewl_selectionbar_show(Ewl_Widget * w, void *ev_data,
-					void *user_data);
-void            __ewl_selectionbar_configure(Ewl_Widget * w, void *ev_data,
-					     void *user_data);
-void            __ewl_selectionbar_parent_configure(Ewl_Widget * w,
-						    void *ev_data,
-						    void *user_data);
-void            __focus_in(Ewl_Widget * w, void *ev_data, void *user_data);
-void            __focus_out(Ewl_Widget * w, void *ev_data, void *user_data);
-
-void            __children_animator(Ewl_Widget * w, void *ev_data,
-				    void *user_data);
-
-void            __mouse_move_over_children(Ewl_Widget * w, void *user_data,
-					   void *ev_data);
-
-void            __child_add(Ewl_Container * parent, Ewl_Widget * child);
-
-int             __open_bar_cb(void *ev_data);
-int             __close_bar_cb(void *ev_data);
+static int ewl_selectionbar_open_bar_timer(void *ev_data);
+static int ewl_selectionbar_close_bar_timer(void *ev_data);
 
 Ecore_Timer    *open_timer;
 Ecore_Timer    *close_timer;
@@ -71,10 +51,10 @@ void ewl_selectionbar_init(Ewl_Selectionbar * s, Ewl_Widget * parent)
 
 	ewl_floater_init(EWL_FLOATER(s), parent);
 	ewl_callback_append(w, EWL_CALLBACK_CONFIGURE,
-			    __ewl_selectionbar_configure, NULL);
+			    ewl_selectionbar_configure_cb, NULL);
 	ewl_callback_append(w, EWL_CALLBACK_REALIZE,
-			    __ewl_selectionbar_realize, NULL);
-	ewl_callback_append(w, EWL_CALLBACK_SHOW, __ewl_selectionbar_show,
+			    ewl_selectionbar_realize_cb, NULL);
+	ewl_callback_append(w, EWL_CALLBACK_SHOW, ewl_selectionbar_show_cb,
 			    NULL);
 
 	s->bar = NEW(Ewl_Container, 1);
@@ -87,14 +67,14 @@ void ewl_selectionbar_init(Ewl_Selectionbar * s, Ewl_Widget * parent)
 				   EWL_FLAG_FILL_HSHRINK);
 	ewl_container_append_child(EWL_CONTAINER(w), EWL_WIDGET(s->bar));
 	ewl_callback_append(EWL_WIDGET(s->bar), EWL_CALLBACK_FOCUS_OUT,
-			    __focus_out, w);
+			    ewl_selectionbar_focus_out_cb, w);
 	ewl_callback_append(EWL_WIDGET(s->bar), EWL_CALLBACK_FOCUS_IN,
-			    __focus_in, w);
+			    ewl_selectionbar_focus_in_cb, w);
 
 
 	embed = ewl_embed_find_by_widget(parent);
 	ewl_callback_append(EWL_WIDGET(embed), EWL_CALLBACK_CONFIGURE,
-			    __ewl_selectionbar_parent_configure, w);
+			    ewl_selectionbar_parent_configure_cb, w);
 
 
 	s->scroller.top = ewl_vbox_new();
@@ -102,7 +82,7 @@ void ewl_selectionbar_init(Ewl_Selectionbar * s, Ewl_Widget * parent)
 	ewl_container_append_child(s->bar, s->scroller.top);
 
 /*	ewl_callback_append(s->scroller.top, EWL_CALLBACK_MOUSE_MOVE,
-			__mouse_move_over_children, s);
+			ewl_selectionbar_mouse_move_child, s);
 */
 	ewl_widget_set_appearance(s->scroller.top, "/selectionbar/scroller/top");
 
@@ -112,12 +92,13 @@ void ewl_selectionbar_init(Ewl_Selectionbar * s, Ewl_Widget * parent)
 	ewl_container_append_child(s->bar, s->scroller.bottom);
 
 /*	ewl_callback_append(s->scroller.bottom, EWL_CALLBACK_MOUSE_MOVE,
-			__mouse_move_over_children, s);
+			ewl_selectionbar_mouse_move_child, s);
 */
 	ewl_widget_set_appearance(s->scroller.bottom, "/selectionbar/scroller/bottom");
 
 
-	ewl_container_add_notify(EWL_CONTAINER(w), __child_add);
+	ewl_container_add_notify(EWL_CONTAINER(w),
+				 ewl_selectionbar_child_add_cb);
 
 	s->OPEN = 1;
 	s->mouse_x = 0;
@@ -126,17 +107,17 @@ void ewl_selectionbar_init(Ewl_Selectionbar * s, Ewl_Widget * parent)
 }
 
 
-void __child_add(Ewl_Container * parent, Ewl_Widget * child)
+void ewl_selectionbar_child_add_cb(Ewl_Container * parent, Ewl_Widget * child)
 {
 	ewl_container_append_child(EWL_SELECTIONBAR(parent)->bar, child);
 	ewl_container_remove_child(parent, child);
 
 	ewl_callback_append(child, EWL_CALLBACK_MOUSE_MOVE,
-			    __mouse_move_over_children, parent);
+			    ewl_selectionbar_mouse_move_child_cb, parent);
 
 }
 
-void __ewl_selectionbar_realize(Ewl_Widget * w, void *ev_data, void *user_data)
+void ewl_selectionbar_realize_cb(Ewl_Widget * w, void *ev_data, void *user_data)
 {
 	Ewl_Selectionbar *s;
 
@@ -164,18 +145,18 @@ void __ewl_selectionbar_realize(Ewl_Widget * w, void *ev_data, void *user_data)
 }
 
 
-void __ewl_selectionbar_show(Ewl_Widget * w, void *ev_data, void *user_data)
+void ewl_selectionbar_show_cb(Ewl_Widget * w, void *ev_data, void *user_data)
 {
 	Ewl_Selectionbar *s;
 
 	s = EWL_SELECTIONBAR(w);
 
-	ecore_timer_add(0.01, __close_bar_cb, s->bar);
+	ecore_timer_add(0.01, ewl_selectionbar_close_bar_timer, s->bar);
 }
 
 
 void
-__ewl_selectionbar_configure(Ewl_Widget * w, void *ev_data, void *user_data)
+ewl_selectionbar_configure_cb(Ewl_Widget * w, void *ev_data, void *user_data)
 {
 	Ewl_Selectionbar *s;
 	Ewd_List       *children;
@@ -213,8 +194,8 @@ __ewl_selectionbar_configure(Ewl_Widget * w, void *ev_data, void *user_data)
 
 
 void
-__ewl_selectionbar_parent_configure(Ewl_Widget * w, void *ev_data,
-				    void *user_data)
+ewl_selectionbar_parent_configure_cb(Ewl_Widget * w, void *ev_data,
+				     void *user_data)
 {
 	Ewl_Selectionbar *s;
 	Ewl_Object     *o;
@@ -233,13 +214,14 @@ __ewl_selectionbar_parent_configure(Ewl_Widget * w, void *ev_data,
 
 	if (CURRENT_H(EWL_OBJECT(s->bar)) < 5)
 		ewl_object_request_size(o, s->w, 5);
-	__focus_out(EWL_WIDGET(s->bar), NULL, s);
+	ewl_selectionbar_focus_out_cb(EWL_WIDGET(s->bar), NULL, s);
 
 
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
 
-void __focus_in(Ewl_Widget * w, void *ev_data, void *user_data)
+void
+ewl_selectionbar_focus_in_cb(Ewl_Widget * w, void *ev_data, void *user_data)
 {
 	Ewl_Selectionbar *s;
 	Ewl_Object     *o;
@@ -261,7 +243,7 @@ void __focus_in(Ewl_Widget * w, void *ev_data, void *user_data)
 		return;
 
 
-	ecore_timer_add(0.01, __open_bar_cb, w);
+	ecore_timer_add(0.01, ewl_selectionbar_open_bar_timer, w);
 
 	ewl_widget_show(s->scroller.top);
 	ewl_widget_show(s->scroller.bottom);
@@ -288,14 +270,15 @@ void __focus_in(Ewl_Widget * w, void *ev_data, void *user_data)
 	s->OPEN = 1;
 
 /*	ewl_callback_append(w, EWL_CALLBACK_MOUSE_MOVE,
-			__children_animator, s);
+			ewl_selectionbar_children_animator, s);
 
 */
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
 
 
-void __focus_out(Ewl_Widget * w, void *ev_data, void *user_data)
+void
+ewl_selectionbar_focus_out_cb(Ewl_Widget * w, void *ev_data, void *user_data)
 {
 	Ewl_Selectionbar *s;
 	Ewd_List       *children;
@@ -338,7 +321,8 @@ void __focus_out(Ewl_Widget * w, void *ev_data, void *user_data)
 		return;
 
 
-	ewl_callback_del(w, EWL_CALLBACK_MOUSE_MOVE, __children_animator);
+	ewl_callback_del(w, EWL_CALLBACK_MOUSE_MOVE,
+			 ewl_selectionbar_children_animator_cb);
 
 	ewl_widget_hide(s->scroller.top);
 	ewl_widget_hide(s->scroller.bottom);
@@ -352,14 +336,14 @@ void __focus_out(Ewl_Widget * w, void *ev_data, void *user_data)
 
 	s->OPEN = 0;
 
-	ecore_timer_add(0.01, __close_bar_cb, w);
+	ecore_timer_add(0.01, ewl_selectionbar_close_bar_timer, w);
 
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
 
 
 
-int __open_bar_cb(void *ev_data)
+int ewl_selectionbar_open_bar_timer(void *ev_data)
 {
 	Ewl_Widget     *w;
 	Ewl_Object     *o;
@@ -383,18 +367,18 @@ int __open_bar_cb(void *ev_data)
 		ewl_widget_configure(EWL_WIDGET(s));
 	} else {
 		ewl_callback_append(w, EWL_CALLBACK_MOUSE_MOVE,
-				    __children_animator, s);
+				    ewl_selectionbar_children_animator_cb, s);
 		ewl_callback_append(s->scroller.top, EWL_CALLBACK_MOUSE_MOVE,
-				    __mouse_move_over_children, s);
+				    ewl_selectionbar_mouse_move_child_cb, s);
 		ewl_callback_append(s->scroller.bottom, EWL_CALLBACK_MOUSE_MOVE,
-				    __mouse_move_over_children, s);
+				    ewl_selectionbar_mouse_move_child_cb, s);
 	}
 
 	DRETURN_INT(retval, DLEVEL_STABLE);
 }
 
 
-int __close_bar_cb(void *ev_data)
+int ewl_selectionbar_close_bar_timer(void *ev_data)
 {
 	Ewl_Widget     *w;
 	Ewl_Object     *o;
@@ -425,16 +409,20 @@ int __close_bar_cb(void *ev_data)
 }
 
 
-void __mouse_move_over_children(Ewl_Widget * w, void *ev_data, void *user_data)
+void
+ewl_selectionbar_mouse_move_child_cb(Ewl_Widget * w, void *ev_data,
+				  void *user_data)
 {
 	Ewl_Selectionbar *s;
 
 	s = EWL_SELECTIONBAR(user_data);
 
-	__children_animator(EWL_WIDGET(s->bar), ev_data, s);
+	ewl_selectionbar_children_animator_cb(EWL_WIDGET(s->bar), ev_data, s);
 }
 
-void __children_animator(Ewl_Widget * w, void *ev_data, void *user_data)
+void
+ewl_selectionbar_children_animator_cb(Ewl_Widget * w, void *ev_data,
+				      void *user_data)
 {
 
 	Ewl_Widget     *child;

@@ -40,4 +40,10 @@ void            ewl_spectrum_rgb_set(Ewl_Spectrum * sp,
 void            ewl_spectrum_hsv_set(Ewl_Spectrum * sp,
 						 float h, float s, float v);
 
+/*
+ * Internally used callbacks, override at your own risk.
+ */
+void         ewl_spectrum_configure_cb(Ewl_Widget * w, void *ev_data,
+				       void *user_data);
+
 #endif

@@ -1,15 +1,6 @@
 
 #include <Ewl.h>
 
-void            __ewl_container_realize(Ewl_Widget * w, void *ev_data,
-					void *user_data);
-void            __ewl_container_configure(Ewl_Widget * w, void *ev_data,
-					  void *user_data);
-void            __ewl_container_reparent(Ewl_Widget * w, void *ev_data,
-					 void *user_data);
-void            __ewl_container_unrealize(Ewl_Widget *w, void *ev_data,
-					  void *user_data);
-
 /**
  * @param c: the container to initialize
  * @param appearance: the appearance key for this container
@@ -52,13 +43,13 @@ ewl_container_init(Ewl_Container * c, char *appearance, Ewl_Child_Add add,
 	 * children with necessary window and evas information.
 	 */
 	ewl_callback_append(w, EWL_CALLBACK_CONFIGURE,
-			    __ewl_container_configure, NULL);
+			    ewl_container_configure_cb, NULL);
 	ewl_callback_append(w, EWL_CALLBACK_REALIZE,
-			    __ewl_container_realize, NULL);
+			    ewl_container_realize_cb, NULL);
 	ewl_callback_append(w, EWL_CALLBACK_UNREALIZE,
-			    __ewl_container_unrealize, NULL);
+			    ewl_container_unrealize_cb, NULL);
 	ewl_callback_append(w, EWL_CALLBACK_REPARENT,
-			    __ewl_container_reparent, NULL);
+			    ewl_container_reparent_cb, NULL);
 
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
@@ -497,7 +488,8 @@ void
 ewl_container_prefer_largest(Ewl_Container *c, Ewl_Orientation o)
 {
 	Ewl_Object *child;
-	int curr_size, max_size = 0;
+	int max_size = 0;
+	int curr_size = 0;
 	int (*get_size)(Ewl_Object *object);
 	void (*set_size)(Ewl_Object *object, int size);
 
@@ -516,12 +508,49 @@ ewl_container_prefer_largest(Ewl_Container *c, Ewl_Orientation o)
 
 	ewd_list_goto_first(c->children);
 	while ((child = ewd_list_next(c->children))) {
-		curr_size = get_size(child);
-		if (VISIBLE(child) && curr_size > max_size)
-			max_size = curr_size;
+		if (VISIBLE(child)) {
+			curr_size = get_size(child);
+			if (curr_size > max_size)
+				max_size = curr_size;
+		}
 	}
 
 	set_size(EWL_OBJECT(c), max_size);
+
+	DLEAVE_FUNCTION(DLEVEL_STABLE);
+}
+
+/**
+ * @param c: the container to use the child size sum in a specified direction
+ * @param o: the orientation direction of the sum to use
+ */
+void ewl_container_prefer_sum(Ewl_Container *c, Ewl_Orientation o)
+{
+	Ewl_Object *child;
+	int curr_size = 0;
+	int (*get_size)(Ewl_Object *object);
+	void (*set_size)(Ewl_Object *object, int size);
+
+	DENTER_FUNCTION(DLEVEL_STABLE);
+
+	DCHECK_PARAM_PTR("c", c);
+
+	if (o == EWL_ORIENTATION_HORIZONTAL) {
+		get_size = ewl_object_get_preferred_w;
+		set_size = ewl_object_set_preferred_w;
+	}
+	else {
+		get_size = ewl_object_get_preferred_h;
+		set_size = ewl_object_set_preferred_h;
+	}
+
+	ewd_list_goto_first(c->children);
+	while ((child = ewd_list_next(c->children))) {
+		if (VISIBLE(child))
+			curr_size += get_size(child);
+	}
+
+	set_size(EWL_OBJECT(c), curr_size);
 
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
@@ -588,7 +617,7 @@ void ewl_container_destroy(Ewl_Container * c)
  * When reparenting a container, it's children need the updated information
  * about the container, such as the evas.
  */
-void __ewl_container_reparent(Ewl_Widget * w, void *ev_data, void *user_data)
+void ewl_container_reparent_cb(Ewl_Widget * w, void *ev_data, void *user_data)
 {
 	Ewl_Widget     *child;
 
@@ -618,7 +647,7 @@ void __ewl_container_reparent(Ewl_Widget * w, void *ev_data, void *user_data)
  * creating and showing a clip box, as well as clipping the clip box to parent
  * clip boxes.
  */
-void __ewl_container_realize(Ewl_Widget * w, void *ev_data, void *user_data)
+void ewl_container_realize_cb(Ewl_Widget * w, void *ev_data, void *user_data)
 {
 	int             i = 0;
 	Ewl_Embed      *emb;
@@ -670,7 +699,7 @@ void __ewl_container_realize(Ewl_Widget * w, void *ev_data, void *user_data)
 }
 
 void
-__ewl_container_configure(Ewl_Widget * w, void *ev_data, void *user_data)
+ewl_container_configure_cb(Ewl_Widget * w, void *ev_data, void *user_data)
 {
 	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR("w", w);
@@ -693,7 +722,7 @@ __ewl_container_configure(Ewl_Widget * w, void *ev_data, void *user_data)
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
 
-void __ewl_container_unrealize(Ewl_Widget *w, void *ev_data, void *user_data)
+void ewl_container_unrealize_cb(Ewl_Widget *w, void *ev_data, void *user_data)
 {
 	Ewl_Container *c;
 

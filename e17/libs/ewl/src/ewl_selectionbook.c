@@ -3,17 +3,6 @@
 #include "ewl_selectionbook.h"
 
 
-void            __ewl_selectionbook_configure(Ewl_Widget * w, void *ev_data,
-					      void *user_data);
-void            __ewl_selectionbook_realize(Ewl_Widget * w, void *ev_data,
-					    void *user_data);
-void            __ewl_selectionbook_destroy(Ewl_Widget * w, void *ev_data,
-					    void *user_data);
-
-
-void            __ewl_selectionbook_page_switch(Ewl_Widget * w, void *ev_data,
-						void *user_data);
-
 /**
  * ewl_selectionbook_new - create a new selectionbook
  * @window: the window the book will be added to
@@ -60,11 +49,11 @@ void ewl_selectionbook_init(Ewl_Selectionbook * s)
 	ewl_object_set_fill_policy(EWL_OBJECT(w), EWL_FLAG_FILL_FILL);
 
 	ewl_callback_append(w, EWL_CALLBACK_CONFIGURE,
-			    __ewl_selectionbook_configure, NULL);
+			    ewl_selectionbook_configure_cb, NULL);
 	ewl_callback_append(w, EWL_CALLBACK_REALIZE,
-			    __ewl_selectionbook_realize, NULL);
+			    ewl_selectionbook_realize_cb, NULL);
 	ewl_callback_append(w, EWL_CALLBACK_DESTROY,
-			    __ewl_selectionbook_destroy, NULL);
+			    ewl_selectionbook_destroy_cb, NULL);
 
 
 	s->tab_bar = ewl_selectionbar_new(w);
@@ -98,14 +87,14 @@ ewl_selectionbook_add_page(Ewl_Selectionbook * s, Ewl_Widget * tab,
 	p->page = page;
 
 	ewl_callback_append(p->tab, EWL_CALLBACK_CLICKED,
-			    __ewl_selectionbook_page_switch, s);
+			    ewl_selectionbook_page_switch_cb, s);
 
 	ewl_widget_set_data(tab, (void *) s, (void *) p);
 
 	if (!s->current_page) {
 		s->current_page = p;
 		ewl_callback_del(p->tab, EWL_CALLBACK_CLICKED,
-				 __ewl_selectionbook_page_switch);
+				 ewl_selectionbook_page_switch_cb);
 		ewl_container_append_child(EWL_CONTAINER(s), page);
 		ewl_widget_show(page);
 	}
@@ -212,7 +201,8 @@ void ewl_selectionbook_rem_current_page(Ewl_Selectionbook * s, int destroy)
 }
 
 
-void __ewl_selectionbook_realize(Ewl_Widget * w, void *ev_data, void *user_data)
+void
+ewl_selectionbook_realize_cb(Ewl_Widget * w, void *ev_data, void *user_data)
 {
 	Ewl_Selectionbook *s;
 
@@ -228,7 +218,7 @@ void __ewl_selectionbook_realize(Ewl_Widget * w, void *ev_data, void *user_data)
 }
 
 void
-__ewl_selectionbook_configure(Ewl_Widget * w, void *ev_data, void *user_data)
+ewl_selectionbook_configure_cb(Ewl_Widget * w, void *ev_data, void *user_data)
 {
 	Ewl_Selectionbook *s;
 
@@ -253,7 +243,8 @@ __ewl_selectionbook_configure(Ewl_Widget * w, void *ev_data, void *user_data)
 }
 
 
-void __ewl_selectionbook_destroy(Ewl_Widget * w, void *ev_data, void *user_data)
+void
+ewl_selectionbook_destroy_cb(Ewl_Widget * w, void *ev_data, void *user_data)
 {
 	Ewl_Selectionbook *s;
 	Ewl_SbookPage  *p;
@@ -279,7 +270,7 @@ void __ewl_selectionbook_destroy(Ewl_Widget * w, void *ev_data, void *user_data)
 
 
 void
-__ewl_selectionbook_page_switch(Ewl_Widget * w, void *ev_data, void *user_data)
+ewl_selectionbook_page_switch_cb(Ewl_Widget * w, void *ev_data, void *user_data)
 {
 	Ewl_Selectionbook *s;
 	Ewl_SbookPage  *p;
@@ -292,7 +283,7 @@ __ewl_selectionbook_page_switch(Ewl_Widget * w, void *ev_data, void *user_data)
 	if (s->current_page) {
 		ewl_callback_append(p->tab,
 				    EWL_CALLBACK_CLICKED,
-				    __ewl_selectionbook_page_switch, s);
+				    ewl_selectionbook_page_switch_cb, s);
 		ewl_widget_hide(p->page);
 		ewl_container_remove_child(EWL_CONTAINER(s), p->page);
 		//ewl_widget_hide(p->page);
@@ -302,7 +293,7 @@ __ewl_selectionbook_page_switch(Ewl_Widget * w, void *ev_data, void *user_data)
 
 	p = s->current_page;
 	ewl_callback_del(p->tab, EWL_CALLBACK_CLICKED,
-			 __ewl_selectionbook_page_switch);
+			 ewl_selectionbook_page_switch_cb);
 	ewl_container_append_child(EWL_CONTAINER(s), p->page);
 	ewl_widget_show(p->page);
 

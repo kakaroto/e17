@@ -6,7 +6,8 @@
 typedef struct _ewl_sbook_page Ewl_SbookPage;
 
 #define EWL_SBOOKPAGE(sbook_page) ((Ewl_SbookPage *) sbook_page)
-struct _ewl_sbook_page {
+struct _ewl_sbook_page
+{
 	Ewl_Widget     *tab;
 	Ewl_Widget     *page;
 };
@@ -14,7 +15,8 @@ struct _ewl_sbook_page {
 typedef struct _ewl_selectionbook Ewl_Selectionbook;
 
 #define EWL_SELECTIONBOOK(sbook) ((Ewl_Selectionbook *) sbook)
-struct _ewl_selectionbook {
+struct _ewl_selectionbook
+{
 	Ewl_Box         box;
 
 	Ewl_Widget     *tab_bar;	/* selectionbar */
@@ -35,6 +37,18 @@ void            ewl_selectionbook_rem_page(Ewl_Selectionbook * s, int num,
 					   int destroy);
 void            ewl_selectionbook_rem_current_page(Ewl_Selectionbook * s,
 						   int destroy);
+
+/*
+ * Internally used callbacks, override at your own risk.
+ */
+void            ewl_selectionbook_configure_cb(Ewl_Widget * w, void *ev_data,
+					       void *user_data);
+void            ewl_selectionbook_realize_cb(Ewl_Widget * w, void *ev_data,
+					     void *user_data);
+void            ewl_selectionbook_destroy_cb(Ewl_Widget * w, void *ev_data,
+					     void *user_data);
+void            ewl_selectionbook_page_switch_cb(Ewl_Widget * w, void *ev_data,
+						 void *user_data);
 
 
 #endif				/* EWL_SELECTIONBOOK_H__ */

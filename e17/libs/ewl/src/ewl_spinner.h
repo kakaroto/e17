@@ -52,6 +52,26 @@ void            ewl_spinner_set_min_val(Ewl_Spinner * s, double val);
 void            ewl_spinner_set_max_val(Ewl_Spinner * s, double val);
 void            ewl_spinner_set_step(Ewl_Spinner * s, double step);
 
+/*
+ * Internally used callbacks, override at your own risk.
+ */
+void ewl_spinner_child_add_cb(Ewl_Container *c, Ewl_Widget *w);
+void ewl_spinner_child_resize_cb(Ewl_Container *c, Ewl_Widget *w,
+				 int size, Ewl_Orientation o);
+void ewl_spinner_realize_cb(Ewl_Widget * widget, void *ev_data,
+			    void *user_data);
+void ewl_spinner_configure_cb(Ewl_Widget * widget, void *ev_data,
+			      void *user_data);
+void ewl_spinner_key_down_cb(Ewl_Widget * widget, void *ev_data,
+			     void *user_data);
+void ewl_spinner_deselect_cb(Ewl_Widget * w, void *ev_data,
+			     void *user_data);
+
+void ewl_spinner_increase_value_cb(Ewl_Widget * widget, void *ev_data,
+				   void *user_data);
+void ewl_spinner_decrease_value_cb(Ewl_Widget * widget, void *ev_data,
+				   void *user_data);
+
 /**
  * @}
  */
