@@ -14,7 +14,6 @@ static void cb_help(void *data);
 static void
 cb_timer(void *data)
 {
-   char                tm[64];
    struct tm           tim;
    struct tm          *tim2;
    time_t              t2;
@@ -25,8 +24,9 @@ cb_timer(void *data)
    if (tim2)
      {
 	memcpy(&tim, tim2, sizeof(struct tm));
-	strftime(tm, 63, "%l %M %S", &tim);
-	sscanf(tm, "%i %i %i", &h, &m, &s);
+	h = tim.tm_hour;
+	m = tim.tm_min;
+	s = tim.tm_sec;
 	hours = (double)h + ((double)m / 60) + ((double)s / 3600);
 	minutes = (double)m + ((double)s / 60);
 	seconds = (double)s;
