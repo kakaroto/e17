@@ -43,10 +43,10 @@ rm -fr %{buildroot}
 /usr/share/locale/ko/LC_MESSAGES/e16menuedit2.mo
 /usr/share/locale/tr/LC_MESSAGES/e16menuedit2.mo
 /usr/share/pixmaps/e16menuedit2-icon.png
-/usr/share/gnome/help/e16menuedit2-0.0.1*
-/usr/share/omf/e16menuedit2-0.0.1/e16menuedit2-C.omf
-/usr/share/e16menuedit2-0.0.1/glade/e16menuedit2.glade
-/usr/share/e16menuedit2-0.0.1*
+/usr/share/gnome/help/e16menuedit2-0.0.2*
+/usr/share/omf/e16menuedit2-0.0.2/e16menuedit2-C.omf
+/usr/share/e16menuedit2-0.0.2/glade/e16menuedit2.glade
+/usr/share/e16menuedit2-0.0.2*
 %doc AUTHORS
 %doc COPYING
 %doc README

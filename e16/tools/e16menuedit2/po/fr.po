@@ -38,11 +38,11 @@ msgstr "Quitter"
 
 #: src/callbacks.c:310
 msgid "No help file found!"
-msgstr ""
+msgstr "Fichier d'aide introuvable !"
 
 #: src/callbacks.c:314
 msgid "No help application found"
-msgstr ""
+msgstr "Application d'aide introuvable !"
 
 #: src/e16menuedit2.c:110
 msgid "Menu successfully loaded!"
