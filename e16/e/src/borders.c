@@ -1641,7 +1641,6 @@ EwinSetBorderByName(EWin * ewin, const char *name, int apply)
 void
 EwinUpdateAfterMoveResize(EWin * ewin, int resize)
 {
-   printf("EwinUpdateAfterMoveResize: %4d\n", resize);
    if (ewin->dialog)
       DialogMove(ewin->dialog);
    else if (ewin->menu)
@@ -1859,8 +1858,6 @@ doMoveResizeEwin(EWin * ewin, int x, int y, int w, int h, int flags)
       EDBUG_RETURN_;
    call_depth++;
 
-   printf("doMoveResizeEwin: %4d %4d %d %4d %4d %s\n", x, y, w, h, flags,
-	  ewin->client.name);
    if (flags & MR_FLAGS_MOVE)
      {
 	dx = x - ewin->x;
