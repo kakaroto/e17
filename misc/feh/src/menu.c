@@ -371,7 +371,7 @@ feh_menu_entry_get_size(feh_menu * m, feh_menu_item * i, int *w, int *h)
 
    if (i->text)
    {
-      fn = imlib_load_font(FEH_MENU_FONT);
+      fn = imlib_load_font(opt.menu_font);
       if (fn)
       {
          imlib_context_set_font(fn);
@@ -500,7 +500,7 @@ feh_menu_draw_item(feh_menu * m, feh_menu_item * i, Imlib_Image im, int ox,
    if (i->text)
    {
       D(("text item\n"));
-      fn = imlib_load_font(FEH_MENU_FONT);
+      fn = imlib_load_font(opt.menu_font);
       if (fn)
       {
          if (MENU_ITEM_IS_SELECTED(i))
@@ -529,6 +529,8 @@ feh_menu_draw_item(feh_menu * m, feh_menu_item * i, Imlib_Image im, int ox,
                          i->y - oy + FEH_MENUITEM_PAD_TOP, i->text);
          imlib_free_font();
       }
+      else
+         weprintf("couldn't load font %s\n", opt.menu_font);
       if (i->icon)
       {
          Imlib_Image im2;

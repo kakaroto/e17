@@ -49,6 +49,7 @@ init_parse_options(int argc, char **argv)
    opt.slideshow_delay = -1;
    opt.thumb_w = 60;
    opt.thumb_h = 60;
+   opt.menu_font = estrdup ("20thcent/12");
 
    D(("About to parse env options (if any)\n"));
    /* Check for and parse any options in FEH_OPTIONS */
@@ -218,7 +219,7 @@ feh_parse_option_array(int argc, char **argv)
 {
    static char stropts[] =
 
-      "a:A:b:BcdD:e:f:Fg:hH:iIklLmno:O:pPqrR:sS:t:T:uUvVwW:xXy:zZ";
+      "a:A:b:BcC:dD:e:f:Fg:hH:iIklLmM:no:O:pPqrR:sS:t:T:uUvVwW:xXy:zZ";
    static struct option lopts[] = {
       /* actions */
       {"help", 0, 0, 'h'},                  /* okay */
@@ -258,13 +259,14 @@ feh_parse_option_array(int argc, char **argv)
       {"sort", 1, 0, 'S'},                  /* okay */
       {"theme", 1, 0, 't'},                 /* okay */
       {"filelist", 1, 0, 'f'},              /* okay */
+      {"menu-font", 1, 0, 'M'},              
       {"thumb-width", 1, 0, 'y'},
       {"thumb-height", 1, 0, 'g'},
       {"slideshow-delay", 1, 0, 'D'},
       {"font", 1, 0, 'e'},
       {"title-font", 1, 0, 'T'},
       {"bg", 1, 0, 'b'},
-      {"fontpath", 1, 0, '='},
+      {"fontpath", 1, 0, 'C'},
       {0, 0, 0, 0}
    };
    int optch = 0, cmdx = 0;
@@ -308,6 +310,10 @@ feh_parse_option_array(int argc, char **argv)
            break;
         case 'L':
            opt.longlist = 1;
+           break;
+        case 'M':
+           free(opt.menu_font);
+           opt.menu_font = estrdup(optarg);
            break;
         case 'n':
            opt.reverse = 1;
@@ -397,7 +403,7 @@ feh_parse_option_array(int argc, char **argv)
         case 't':
            theme = estrdup(optarg);
            break;
-        case '=':
+        case 'C':
            opt.fontpath = estrdup(optarg);
            break;
         case 'e':
@@ -635,6 +641,8 @@ show_usage(void)
            "                            OPTIONS\n"
            "  -I, --fullindex           Same as index mode, but below each thumbnail you\n"
            "                            get image name, size and dimensions\n"
+           "      --fontpath PATH       Specify an extra directory to look in for fonts\n"
+           "  -M, --menu-font FONT      Use FONT for the font in menus.\n"
            " MONTAGE MODE OPTIONS\n"
            "  -X, --ignore-aspect       By default, the montage thumbnails will retain\n"
            "                            their aspect ratios, while fitting in --thumb-width\n"
@@ -671,7 +679,6 @@ show_usage(void)
            "  -e FONT                   Use FONT to print the information under each\n"
            "                            thumbnail. FONT should be defined in the form\n"
            "                            fontname/size(points). eg -f myfont/12\n"
-           "     --fontpath PATH        Specify an extra directory to look in for fonts\n"
            "  -T,--title-font FONT      Use FONT to print a title on the index, if no\n"
            "                            font is specified, a title will not be printed\n"
            " SLIDESHOW KEYS\n"
@@ -681,6 +688,8 @@ show_usage(void)
            " n, N, <SPACE>, <RIGHT>     Goto next slide\n"
            " <HOME>                     Goto first slide\n"
            " <END>                      Goto last slide\n"
+           " +, =                       Increase reload delay\n"
+           " -, _                       Decrease reload delay\n"
            " <DELETE>                   Remove the currently viewed file from the filelist\n"
            " <CTRL+DELETE>              Delete the currently viewed file and remove it\n"
            "                            from the filelist\n"

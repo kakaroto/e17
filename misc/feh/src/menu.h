@@ -45,8 +45,6 @@ typedef struct _feh_menu_list feh_menu_list;
 (!((((x2) + (w2)) <= (x1)) || ((x2) >= ((x1) + (w1)))))
 
 
-#define FEH_MENU_FONT "20thcent/12"
-
 #define FEH_MENU_PAD_LEFT 2
 #define FEH_MENU_PAD_RIGHT 2
 #define FEH_MENU_PAD_TOP 2

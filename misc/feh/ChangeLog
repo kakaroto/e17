@@ -1,8 +1,14 @@
+Sat May 13 18:04:58 2000  Tom Gilbert  <gilbertt@btinternet.com>
+
+	* Use realpath() to cleanup paths before sticking them in a
+	filelist. Added --menu-font, -M so that you can use whatever font
+	you like for menus.
+
 Sat May 13 00:11:06 2000  Tom Gilbert  <gilbertt@btinternet.com>
 
 	* Menus. They need some work, but are mostly good.
 	* I owe many thanks to raster here, 'cos I pinched some functions
-    from efm to save time :-)
+        from efm to save time :-)
 	* Added --auto-zoom. Currently only works with --no-progressive, I
 	need to fix that soonish...
 

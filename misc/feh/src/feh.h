@@ -185,6 +185,7 @@ typedef struct cmdlineoptions
    char *action;
    char *fontpath;
    char *filelistfile;
+   char *menu_font;
 
    int thumb_w;
    int thumb_h;

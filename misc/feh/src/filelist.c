@@ -360,22 +360,22 @@ add_file_to_filelist_recursively(char *origpath, unsigned char level)
       }
       else if (opt.filelistfile && (path[0] != '/'))
       {
-         char cwd[4096];
-         char *temp;
+         char cwd[PATH_MAX];
+         char fullpath[PATH_MAX];
+         char temp[PATH_MAX];
 
          /* This path is not relative. We're gonna convert it, so that a
             filelist file can be saved anywhere and feh will still find the
             images */
          D(("Need to convert filename %s to an absolute form\n", path));
+         /* I SHOULD be able to just use a simple realpath() here, but dumb
+          * old Solaris's realpath doesn't return an absolute path if the path
+          * you give it is relative. Linux and BSD get this right... */
          getcwd(cwd, sizeof(cwd));
-         if (path[0] == '.' && path[1] == '/')
-            temp = estrjoin("/", cwd, path + 2, NULL);
-         else if (path[0] == '.' && path[1] == '\0')
-            temp = estrdup(cwd);
-         else
-            temp = estrjoin("/", cwd, path, NULL);
+         snprintf(temp, sizeof(temp), "%s/%s", cwd, path);
+         realpath(temp, fullpath);
          free(path);
-         path = temp;
+         path = estrdup(fullpath);
          D(("Converted path to %s\n", path));
       }
    }

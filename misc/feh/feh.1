@@ -215,9 +215,8 @@ INDEX MODE OPTIONS
 Same as Index mode, but you also get image size and dimensions printed
 below each thumbnail.
 .TP 5
-.B -B, --booth
-Combines some options suitable for a nice booth display mode. A fullscreen
-slideshow with a slide change every 20 seconds...
+.B -M, --menu-font FONT
+Use FONT for the font in menus.
 .SH MONTAGE MODE OPTIONS
 .TP 5
 .B -X, --ignore-aspect
@@ -329,6 +328,12 @@ Goto first slide
 .TP 5
 .B <END>
 Goto last slide
+.TP 5
+.B +, =
+Increase reload delay
+.TP 5
+.B -, _
+Decrease reload delay
 .TP 5
 .B <DELETE>
 Remove the currently viewed file from the filelist

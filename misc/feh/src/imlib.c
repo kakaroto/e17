@@ -54,7 +54,10 @@ init_x_and_imlib(void)
    /* Set up the font stuff */
    imlib_add_path_to_font_path(".");
    if (opt.fontpath)
+   {
+      D(("adding fontpath %s\n", opt.fontpath));
       imlib_add_path_to_font_path(opt.fontpath);
+   }
    imlib_add_path_to_font_path(PREFIX "/share/feh/fonts");
    imlib_add_path_to_font_path("./ttfonts");
 
