@@ -364,9 +364,11 @@ static void gevas_init(GtkgEvas * ev)
 	ev->size_request_y = 100;
 	ev->render_method = RENDER_METHOD_ALPHA_SOFTWARE;
 	ev->middleb_scrolls = 0;
+	ev->middleb_scrolls_pgate_event = 0;
 	ev->middleb_scrolls_yplane = 0;
 	ev->middleb_scrolls_xplane = 0;
 	ev->gevasobjs = g_hash_table_new(NULL, NULL);
+	ev->gevasobjlist = NULL;
 }
 
 GtkWidget *gevas_new(void)
@@ -556,7 +558,14 @@ static gint gevas_event(GtkWidget * widget, GdkEvent * event)
 					ev->scrolling = 1;
 					ev->scrolling_x = x;
 					ev->scrolling_y = y;
-				} else {
+
+					if( ev->middleb_scrolls_pgate_event )
+					{
+						evas_event_button_down(ev->evas, x, y, b);
+					}
+				}
+				else 
+				{
 					evas_event_button_down(ev->evas, x, y, b);
 				}
 			}
@@ -574,7 +583,13 @@ static gint gevas_event(GtkWidget * widget, GdkEvent * event)
 
 				if (ev->middleb_scrolls && b == 2) {
 					ev->scrolling = 0;
-				} else {
+					if( ev->middleb_scrolls_pgate_event )
+					{
+						evas_event_button_up(ev->evas, x, y, b);
+					}
+				}
+				else 
+				{
 					evas_event_button_up(ev->evas, x, y, b);
 				}
 			}
@@ -893,6 +908,8 @@ void gevas_queue_redraw(GtkgEvas * gevas)
 	gevas->current_idle = gtk_idle_add(gevas_view_redraw_cb, gevas);
 }
 
+
+
 Evas gevas_get_evas(GtkgEvas * gevas)
 {
 	return gevas->evas;
@@ -903,6 +920,11 @@ GdkEvent *gevas_get_current_event(GtkgEvas * gevas)
 	return gevas->current_event;
 }
 
+void 
+gevas_set_middleb_scrolls_pgate_event( GtkgEvas* gevas, gboolean v )
+{
+	gevas->middleb_scrolls_pgate_event = v;
+}
 
 void
 gevas_set_middleb_scrolls(GtkgEvas * gevas,
@@ -920,34 +942,41 @@ gevas_set_middleb_scrolls(GtkgEvas * gevas,
 }
 
 
-typedef gboolean(*gevas_GtkSignal_BOOL__POINTER_POINTER_INT_INT_INT) (GtkObject
-																	  * object,
-																	  gpointer
-																	  arg1,
-																	  gpointer
-																	  arg2,
-																	  gint arg3,
-																	  gint arg4,
-																	  gint arg5,
-																	  gpointer
-																	  user_data);
-void gevas_gtk_marshal_BOOL__POINTER_POINTER_INT_INT_INT(GtkObject * object,
-														 GtkSignalFunc func,
-														 gpointer func_data,
-														 GtkArg * args)
+typedef gboolean (*gevas_GtkSignal_BOOL__POINTER_POINTER_INT_INT_INT) (GtkObject *
+							     object,
+							     gpointer arg1,
+							     gpointer arg2,
+							     gint arg3,
+							     gint arg4,
+							     gint arg5,
+							     gpointer
+							     user_data);
+void
+gevas_gtk_marshal_BOOL__POINTER_POINTER_INT_INT_INT (GtkObject * object,
+				GtkSignalFunc func, gpointer func_data, GtkArg * args)
 {
-	gevas_GtkSignal_BOOL__POINTER_POINTER_INT_INT_INT rfunc;
-	gboolean *return_val;
-	return_val = GTK_RETLOC_BOOL(args[5]);
-	rfunc = (gevas_GtkSignal_BOOL__POINTER_POINTER_INT_INT_INT) func;
-	*return_val = (*rfunc) (object,
-							GTK_VALUE_POINTER(args[0]),
-							GTK_VALUE_POINTER(args[1]),
-							GTK_VALUE_INT(args[2]),
-							GTK_VALUE_INT(args[3]),
-							GTK_VALUE_INT(args[4]), func_data);
+  gevas_GtkSignal_BOOL__POINTER_POINTER_INT_INT_INT rfunc;
+  gboolean *return_val;
+  return_val = GTK_RETLOC_BOOL (args[5]);
+  rfunc = (gevas_GtkSignal_BOOL__POINTER_POINTER_INT_INT_INT) func;
+  *return_val = (*rfunc) (object,
+			  GTK_VALUE_POINTER (args[0]),
+			  GTK_VALUE_POINTER (args[1]),
+			  GTK_VALUE_INT (args[2]),
+			  GTK_VALUE_INT (args[3]), 
+			  GTK_VALUE_INT (args[4]), func_data);
 }
 
+
+void gevas_get_drawable_size( GtkgEvas *object, int* w, int *h ) {
+  GtkgEvas* ev;
+
+  g_return_if_fail(object != NULL);
+  g_return_if_fail(GTK_IS_GEVAS(object));
+
+  ev = GTK_GEVAS(object);
+  evas_get_drawable_size( ev->evas, &w, &h );
+}
 
 static void gevas_set_arg(GtkObject * object, GtkArg * arg, guint arg_id)
 {

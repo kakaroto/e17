@@ -112,13 +112,21 @@ extern "C" {
 		GdkEvent *current_event;	// so that evas callbacks can get the gdk event.
 
 	/** Handles the middle button gimp style scroll option */
-		gboolean middleb_scrolls;	// Is middle buttons scroll feature enabled 
-		GtkAdjustment *middleb_scrolls_xplane;	// The adjustment to update for xplane scroll
-		GtkAdjustment *middleb_scrolls_yplane;	// The adjustment to update for yplane scroll
-		gboolean scrolling;		// Is the middle button down now?
-		gint scrolling_x;		// keep the last x ord so dx can be made
-		gint scrolling_y;		// keep the last y ord so dy can be made
-
+	/*
+	 * Note that as the default middleb_scrolls_pgate_event==0 so middle clicks 
+	 * that cause the window to scroll will not be propergated to evas.
+	 * If, for example, you wish to attach something to a middle double click,
+	 * you will want to set middleb_scrolls_pgate_event==1 so that middle button
+	 * clicks are propergated through evas.
+	 */
+	gboolean middleb_scrolls;			// Is middle buttons scroll feature enabled 
+	gboolean middleb_scrolls_pgate_event;// should the gdk event to propergated still?
+	GtkAdjustment* middleb_scrolls_xplane;// The adjustment to update for xplane scroll
+	GtkAdjustment* middleb_scrolls_yplane;// The adjustment to update for yplane scroll
+	gboolean scrolling;					// Is the middle button down now?
+	gint scrolling_x;					// keep the last x ord so dx can be made
+	gint scrolling_y;					// keep the last y ord so dy can be made
+	
 	/** Keeping track of all the GtkgEvasObj* items added to us **/
 		GHashTable *gevasobjs;	// (lookup Evas_Object -> GtkgEvasObj*)
 		GSList *gevasobjlist;	// simple collection of each GtkgEvas in a list.
@@ -130,30 +138,16 @@ extern "C" {
 		GtkWidgetClass parent_class;
 
   /** protected **/
-		void (*_register_gevasobj) (GtkgEvas * thisp, GtkObject * gobj);
-
-  /** public **/
-		GtkObject *(*get_object_under_mouse) (GtkgEvas * ev);
-		GtkObject *(*object_in_rect) (GtkgEvas * ev, double x, double y,
-									  double w, double h);
-		GtkObject *(*object_at_position) (GtkgEvas * ev, double x, double y);
-		GtkObject *(*object_get_named) (GtkgEvas * ev, char *name);
-
-	};
-
 
 	guint gevas_get_type(void);
 	GtkWidget *gevas_new(void);
 
-
-/** public access **/
-
 	void gevas_queue_redraw(GtkgEvas * gevas);
 
 	GdkEvent *gevas_get_current_event(GtkgEvas * gevas);
-
 	void gevas_set_middleb_scrolls(GtkgEvas * gevas, gboolean v,
-								   GtkAdjustment * ah, GtkAdjustment * av);
+		   GtkAdjustment * ah, GtkAdjustment * av);
+	void gevas_set_middleb_scrolls_pgate_event( GtkgEvas* gevas, gboolean v ); 
 
 	GtkObject *gevas_get_object_under_mouse(GtkgEvas * ev);
 	GtkObject *gevas_object_in_rect(GtkgEvas * ev, double x, double y, double w,
@@ -186,6 +180,7 @@ extern "C" {
 								 gint * delta);
 	void _register_gevasobj(GtkgEvas * thisp, GtkObject * gobj);
 
+void gevas_get_drawable_size( GtkgEvas *object, int* w, int *h );
 
 
 	void gevas_gtk_marshal_BOOL__POINTER_POINTER_INT_INT_INT(GtkObject * object,
