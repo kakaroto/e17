@@ -26,8 +26,8 @@ od_config_init()
 
   options.tt_txt_color = 0x00000000;
   options.tt_shd_color = 0x7f000000;
-  options.bg_fore = 0x00000000;
-  options.bg_back = 0x00000000;
+  options.bg_fore = 0x7f000000;
+  options.bg_back = 0x7fffffff;
   ecore_config_default_string("engage.options.tt_fa", "Vera");
   ecore_config_default_int("engage.options.tt_fs", 8);
   ecore_config_default_float("engage.options.icon_appear_duration", 0.1);
