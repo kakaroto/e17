@@ -1,0 +1,9 @@
+o Make default values sane so not everything has to be filled out
+o Accept a theme name as an argument, load up that theme file, parse it, and stick it in as default values
+o Go through and add all the options not in the default theme
+o Make test button work (launch an Eterm with the current setup)
+o Learn C
+o Instead of entry boxes for the colors, use color pickers (duh)
+o Create non-sucky font picker widget that will see fonts that don't have full name strings in them
+o Add image bits, first as entry boxen and then with previews of each component
+o Add DnD for ----^
