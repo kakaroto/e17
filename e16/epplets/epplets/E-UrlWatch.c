@@ -643,24 +643,33 @@ handle_url (char *url, char *type)
 
   D (("In handle_url: url -->%s<--\n", url));
 
-  /* This should be close enough :) */
-  len = strlen (opt.www_command) + strlen (url);
-  sys = malloc (len);
 
   if (!strcmp (type, "www"))
     {
+      /* This should be close enough :) */
+      len = strlen (opt.www_command) + strlen (url) + 2;
+      sys = malloc (len);
       Esnprintf (sys, len, opt.www_command, url);
     }
   else if (!strcmp (type, "ftp"))
     {
+      /* This should be close enough :) */
+      len = strlen (opt.ftp_command) + strlen (url) + 2;
+      sys = malloc (len);
       Esnprintf (sys, len, opt.ftp_command, url);
     }
   else if (!strcmp (type, "get"))
     {
+      /* This should be close enough :) */
+      len = strlen (opt.get_command) + strlen (url) + 2;
+      sys = malloc (len);
       Esnprintf (sys, len, opt.get_command, url);
     }
   else
     {
+      /* This should be close enough :) */
+      len = strlen (opt.www_command) + strlen (url) + 2;
+      sys = malloc (len);
       Esnprintf (sys, len, opt.www_command, url);
     }
 

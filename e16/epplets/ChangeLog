@@ -1789,3 +1789,11 @@ option --disable-auto-respawn to prevent epplets remembering to restart
 *I have not tested this* because I refuse to run gnome-session on this box,
 but I see no reason why it shouldn't be ok.
 
+-------------------------------------------------------------------------------
+
+Wed Jan  12 21:37:20 GMT 2000
+(gilbertt)
+
+Oops. Fixed a long standing bug in E-Urlwatch. Noone uses the ftp or get
+buttons obviously ;)
+
