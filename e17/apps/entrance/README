@@ -27,7 +27,7 @@ Then, type:
 > make
 > su -c 'make install'
 
-You will need to copy the file data/pam.d/entrance to /etc/pam.d for 
+You will need to copy the file config/pam.d/entrance to /etc/pam.d for 
 PAM authentication to work successfully.
 
 Usage
