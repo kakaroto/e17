@@ -13,6 +13,7 @@
 #include "entrance.h"
 #include "entrance_session.h"
 #include "entrance_x_session.h"
+#include "entrance_ipc.h"
 #include "EvasTextEntry.h"
 
 #define WINW 800
@@ -579,6 +580,9 @@ main(int argc, char *argv[])
    if (!ecore_init())
       return (-1);
    ecore_app_args_set(argc, (const char **) argv);
+
+   if (!entrance_ipc_init(argc, (const char **) argv))
+      return (-1);
 
    /* Parse command-line options */
    while (1)

@@ -7,6 +7,7 @@
 #include <unistd.h>
 #include "entrance_user.h"
 #include "entrance_x_session.h"
+#include "entrance_ipc.h"
 
 /**
 @file entrance_session.c
@@ -340,6 +341,7 @@ entrance_session_start_user_session(Entrance_Session * e)
    _entrance_session_user_list_fix(e);
    /* clear users's password out of memory */
    entrance_auth_clear_pass(e->auth);
+   entrance_ipc_shutdown();
    /* this bypasses a race condition where entrance loses its x connection */
    /* before the wm gets it and x goes and resets itself */
    sleep(10);

@@ -11,6 +11,7 @@ entrance_SOURCES = \
 	entrance_config.c entrance_config.h \
 	entrance_user.c entrance_user.h \
 	entrance_x_session.c entrance_x_session.h \
+	entrance_ipc.c entrance_ipc.h \
 	EvasTextEntry.c EvasTextEntry.h \
 	util.c util.h \
 	main.c 
