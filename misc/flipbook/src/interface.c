@@ -31,6 +31,7 @@
 #include <sys/stat.h>
 #include <unistd.h>
 #include <string.h>
+#include <stdio.h>
 
 #include <gdk/gdkkeysyms.h>
 #include <gtk/gtk.h>
@@ -39,6 +40,7 @@
 #include "interface.h"
 #include "support.h"
 #include "menus.h"
+#include "hooks.h"
 
 
 GtkWidget *
@@ -241,11 +243,21 @@ GtkWidget *
 	gtk_box_pack_start(GTK_BOX(hbox2), text1, TRUE, TRUE, 0);
 	gtk_tooltips_set_tip(tooltips, text1, "Current Movie Information", NULL);
 	gtk_widget_realize(text1);
+	{
+		char my_string[255];
+		sprintf(my_string,"\n Framerate: %s\n Drawrate : %s\n Missed   : %s\n",
+				get_current_framerate(),get_current_drawrate(),
+				get_current_missed());
+		gtk_text_insert(GTK_TEXT(text1),NULL,NULL,NULL,my_string,
+				strlen(my_string));
+	}
+	/*
 	gtk_text_insert(GTK_TEXT(text1), NULL, NULL, NULL,
 					"\n Framerate: ###.## frames/sec\n Drawrate : "
 					"###.## MB/sec "
 					"(###.## Mpixel/sec)\n Missed   : #### frames "
 					"of #### (## %)",115);
+					*/
 
 	pixmap1 = create_pixmap(VA_Flipbook, "valogo.xpm");
 	gtk_widget_ref(pixmap1);

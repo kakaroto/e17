@@ -24,3 +24,9 @@
  */
 
 
+char *get_current_framerate(void);
+void set_current_framerate(char *new_framerate);
+char *get_current_drawrate(void);
+void set_current_drawrate(char *new_drawrate);
+char *get_current_missed(void);
+void set_current_missed(char *new_missed);

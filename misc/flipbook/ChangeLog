@@ -117,3 +117,11 @@ Sat Jan  1 18:53:02 PST 2000
 
 Added in some callbacks for important stuff.  Going to add a sample player, as
 well as saving data constructs shortly
+
+---------------------------------------------------------------------------
+
+Sat Jan  1 22:45:31 PST 2000
+(Mandrake)
+
+now we have an initialize function, as well as some functions to set the main
+monitor window contents.

@@ -9,6 +9,7 @@ flipbook_SOURCES = \
 	main.c \
 	support.c support.h \
 	interface.c interface.h \
+	init.c init.h \
 	callbacks.c callbacks.h \
 	hooks.c hooks.h \
 	menus.c menus.h

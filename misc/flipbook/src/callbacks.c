@@ -190,7 +190,6 @@ void on_movie_info_close(GtkWidget *widget, gpointer user_data) {
 
 }
 
-
 void on_movie_info(GtkWidget *widget, gpointer user_data) {
 
 	if(user_data) {

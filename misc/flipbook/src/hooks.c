@@ -36,8 +36,60 @@
 #include <gdk/gdkkeysyms.h>
 #include <gtk/gtk.h>
 
-#include "callbacks.h"
-#include "interface.h"
-#include "support.h"
+#include <stdlib.h>
 
+#include "hooks.h"
+
+char *flipbook_framerate;
+char *flipbook_drawrate;
+char *flipbook_missed;
+
+
+char *
+get_current_framerate(void) {
+
+	return flipbook_framerate;
+
+}
+
+void
+set_current_framerate(char *new_framerate) {
+
+	free(flipbook_framerate);
+	flipbook_framerate = malloc(strlen(new_framerate)+1);
+	strcpy(flipbook_framerate,new_framerate);
+
+}
+
+char *
+get_current_drawrate(void) {
+
+	return flipbook_drawrate;
+
+}
+
+void
+set_current_drawrate(char *new_drawrate) {
+
+	free(flipbook_drawrate);
+	flipbook_drawrate = malloc(strlen(new_drawrate)+1);
+	strcpy(flipbook_drawrate,new_drawrate);
+
+}
+
+char *
+get_current_missed(void) {
+
+	return flipbook_missed;
+
+}
+
+void
+set_current_missed(char *new_missed) {
+
+	free(flipbook_missed);
+	flipbook_missed = malloc(strlen(new_missed)+1);
+	strcpy(flipbook_missed,new_missed);
+
+}
 

@@ -23,42 +23,28 @@
  * CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 
+
 #ifdef HAVE_CONFIG_H
 #include <config.h>
 #endif
 
+#include <sys/types.h>
+#include <sys/stat.h>
+#include <unistd.h>
+#include <string.h>
+
+#include <gdk/gdkkeysyms.h>
 #include <gtk/gtk.h>
 
-#include "callbacks.h"
-#include "interface.h"
+#include <stdlib.h>
+
+#include "hooks.h"
 #include "init.h"
-#include "support.h"
 
-extern GtkTooltips *tooltips;
-extern GtkAccelGroup *accel_group;
+void initialize_player(void) {
 
-int main(int argc, char *argv[])
-{
-	GtkWidget *VA_Flipbook;
+	set_current_framerate("###.## frames/sec");
+	set_current_drawrate("###.## MB/sec (###.## Mpixel/sec)");
+	set_current_missed("#### frames of #### (## %)");
 
-	gtk_set_locale();
-	gtk_init(&argc, &argv);
-
-	initialize_player();
-
-	tooltips = gtk_tooltips_new();
-	accel_group = gtk_accel_group_new();
-
-	add_pixmap_directory(PACKAGE_DATA_DIR "/pixmaps");
-	add_pixmap_directory(PACKAGE_SOURCE_DIR "/pixmaps");
-
-	VA_Flipbook = create_VA_Flipbook();
-	gtk_widget_show(VA_Flipbook);
-	gtk_signal_connect (GTK_OBJECT (VA_Flipbook), "destroy",
-			GTK_SIGNAL_FUNC (on_exit_application), NULL);
-	gtk_signal_connect (GTK_OBJECT (VA_Flipbook), "delete_event",
-			GTK_SIGNAL_FUNC (on_exit_application), NULL);
-
-	gtk_main();
-	return 0;
 }
