@@ -2457,7 +2457,7 @@ Config_ImageClass(FILE * ConfigFile)
    ImageClass         *ic = 0;
    ImageState         *ICToRead = 0;
    ColorModifierClass *cm = 0;
-   int                 fields;;
+   int                 fields;
    int                 l, r, t, b;
 
    while (GetLine(s, sizeof(s), ConfigFile))
