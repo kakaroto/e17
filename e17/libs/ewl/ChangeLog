@@ -1,3 +1,10 @@
+Fri Sep  28 17:28:42 2001 Christopher Rosendahl <crosendahl@northernwatch.com>
+	* Forgot to configure the entry when deleting to left & right, fixed.
+	* Now it's only possible to entry numbers in a Ewl_Spinner,
+	  and when you change em, the value updates when you deselect the
+	  spinner.
+	* Spiffed up the Ewl_CheckButton & Ewl_RadioButton graphics.
+
 Fri Sep  28 08:51:10 2001 Christopher Rosendahl <crosendahl@northernwatch.com>
 	* Created a ewl_config application under tools/ewl_config, which you
 	  can setup ewl in a easy way with.

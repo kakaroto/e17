@@ -436,7 +436,6 @@ __ewl_entry_move_cursor_to_left(Ewl_Widget * w)
 		--pos;
 
 	ewl_cursor_set_position(e->cursor, pos);
-
 	ewl_widget_configure(w);
 
 	DLEAVE_FUNCTION;
@@ -466,7 +465,6 @@ __ewl_entry_move_cursor_to_right(Ewl_Widget * w)
 		++pos;
 
 	ewl_cursor_set_position(e->cursor, pos);
-
 	ewl_widget_configure(w);
 
 	DLEAVE_FUNCTION;
@@ -483,7 +481,6 @@ __ewl_entry_move_cursor_to_home(Ewl_Widget * w)
 	e = EWL_ENTRY(w);
 
 	ewl_cursor_set_position(e->cursor, 1);
-
 	ewl_widget_configure(w);
 
 	DLEAVE_FUNCTION;
@@ -509,7 +506,6 @@ __ewl_entry_move_cursor_to_end(Ewl_Widget * w)
 	  }
 
 	ewl_cursor_set_position(e->cursor, ++l);
-
 	ewl_widget_configure(w);
 
 	DLEAVE_FUNCTION;
@@ -547,6 +543,7 @@ __ewl_entry_insert_text(Ewl_Widget * w, char *s)
 
 	p += l;
 	ewl_cursor_set_position(e->cursor, p);
+	ewl_widget_configure(w);
 
 	DLEAVE_FUNCTION;
 }
@@ -581,6 +578,7 @@ __ewl_entry_delete_to_left(Ewl_Widget * w)
 	FREE(s2);
 
 	ewl_cursor_set_position(e->cursor, p);
+	ewl_widget_configure(w);
 
 	DLEAVE_FUNCTION;
 }
@@ -611,6 +609,7 @@ __ewl_entry_delete_to_right(Ewl_Widget * w)
 	FREE(s);
 
 	ewl_cursor_set_position(e->cursor, p);
+	ewl_widget_configure(w);
 
 	DLEAVE_FUNCTION;
 }
