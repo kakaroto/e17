@@ -19,11 +19,13 @@
 #include <X11/Xlib.h>
 #include <Imlib2.h>
 #include <giblib.h>
+#include <curl/types.h>
+#include <curl/curl.h>
+#include <curl/easy.h>
 
 #include <asm/types.h>
 #include "videodev.h"
 
-#include "ftp.h"
 #include "parseconfig.h"
 
 void log(char *entry);
@@ -34,6 +36,7 @@ char *ftp_pass = "xxxxxx";
 char *ftp_dir = "public_html/images";
 char *ftp_file = "webcam.jpeg";
 char *ftp_tmp = "uploading.jpeg";
+int ftp_debug=0;
 char *temp_file = "/tmp/webcam.jpg";
 int ftp_passive = 1;
 int ftp_do = 1;
@@ -64,6 +67,7 @@ int bg_g = 0;
 int bg_b = 0;
 int bg_a = 150;
 int close_dev = 0;
+int ftp_timeout = 30;
 char *title_font = "arial/8";
 char *ttf_dir = "/usr/X11R6/lib/X11/fonts/TrueType";
 char *grab_archive = NULL;
@@ -319,11 +323,11 @@ archive_jpeg(Imlib_Image im)
       time(&t);
       tm = localtime(&t);
       strftime(date, 127, "%Y-%m-%d_%H%M%S", tm);
-      
+
       do
       {
-         snprintf(buffer, sizeof(buffer), "%s/webcam_%s.jpg",
-                  grab_archive, date);
+         snprintf(buffer, sizeof(buffer), "%s/webcam_%s.jpg", grab_archive,
+                  date);
       }
       while (stat(buffer, &st) == 0);
       gib_imlib_save_image(im, buffer);
@@ -365,6 +369,77 @@ draw_overlay(Imlib_Image image)
    gib_imlib_blend_image_onto_image(image, overlay_im, 0, 0, 0, w, h,
                                     overlay_x, overlay_y, w, h, 0,
                                     gib_imlib_image_has_alpha(overlay_im), 0);
+}
+
+/* upload local to tmp then MV to remote */
+void
+ftp_upload1(char *local, char *remote, char *tmp)
+{
+   char buf[2096];
+   FILE *infile;
+   CURLcode ret;
+   CURL *curl_handle;
+   struct stat st;
+   struct curl_slist *post_commands = NULL;
+   char *passwd_string, *url_string;
+
+   infile = fopen(local, "r");
+
+   if (!infile)
+   {
+      fprintf(stderr, "camE: Couldn't open temp file to upload it\n");
+      perror("ftp_upload(): ");
+      return;
+   }
+   fstat(fileno(infile), &st);
+
+/* snprintf(buf, sizeof(buf), "cwd %s", ftp_dir);
+   post_commands = curl_slist_append(post_commands, buf); */
+   snprintf(buf, sizeof(buf), "rnfr %s", tmp);
+   post_commands = curl_slist_append(post_commands, buf);
+   snprintf(buf, sizeof(buf), "rnto %s", remote);
+   post_commands = curl_slist_append(post_commands, buf);
+
+   /* init the curl session */
+   curl_handle = curl_easy_init();
+
+   curl_easy_setopt(curl_handle, CURLOPT_INFILE, infile);
+   curl_easy_setopt(curl_handle, CURLOPT_INFILESIZE, st.st_size);
+
+   passwd_string = gib_strjoin(":", ftp_user, ftp_pass, NULL);
+   curl_easy_setopt(curl_handle, CURLOPT_USERPWD, passwd_string);
+
+   /* set URL to save to */
+   url_string = gib_strjoin("/", "ftp:/", ftp_host, ftp_dir, tmp, NULL);
+   curl_easy_setopt(curl_handle, CURLOPT_URL, url_string);
+
+   /* no progress meter please */
+   curl_easy_setopt(curl_handle, CURLOPT_NOPROGRESS, 1);
+
+   /* shut up completely */
+   if(ftp_debug)
+      curl_easy_setopt(curl_handle, CURLOPT_VERBOSE, 1);
+   else
+      curl_easy_setopt(curl_handle, CURLOPT_MUTE, 1);
+
+   curl_easy_setopt(curl_handle, CURLOPT_POSTQUOTE, post_commands);
+
+   curl_easy_setopt(curl_handle, CURLOPT_UPLOAD, 1);
+
+   /* get it! */
+   ret = curl_easy_perform(curl_handle);
+   /* TODO check error */
+   if (ret)
+   {
+      fprintf(stderr, "\ncamE: error sending via ftp, error %d\n", ret);
+   }
+
+   /* cleanup curl stuff */
+   curl_easy_cleanup(curl_handle);
+   curl_slist_free_all(post_commands);
+   free(url_string);
+   free(passwd_string);
+   fclose(infile);
 }
 
 int
@@ -409,6 +484,8 @@ main(int argc, char *argv[])
       ftp_debug = i;
    if (-1 != (i = cfg_get_int("ftp", "do")))
       ftp_do = i;
+   if (-1 != (i = cfg_get_int("ftp", "timeout")))
+      ftp_timeout = i;
 
    if (NULL != (val = cfg_get_str("scp", "target")))
       scp_target = val;
@@ -524,23 +601,11 @@ main(int argc, char *argv[])
    if (!text_fn)
       fprintf(stderr, "can't load font %s\n", text_font);
 
-   if (ftp_do)
-   {
-      log("connecting to ftp");
-      ftp_init(ftp_passive);
-      ftp_connect(ftp_host, ftp_user, ftp_pass, ftp_dir);
-   }
-
    /* go! */
    for (;;)
    {
       if (grab_blockfile && (stat(grab_blockfile, &st) == -1))
       {
-         if (ftp_do && !ftp_connected)
-         {
-            log("reconnecting ftp");
-            ftp_connect(ftp_host, ftp_user, ftp_pass, ftp_dir);
-         }
          if (action_pre_shot)
          {
             log("running pre-shot action");
@@ -572,7 +637,7 @@ main(int argc, char *argv[])
          if (ftp_do)
          {
             log("*** uploading via ftp");
-            ftp_upload(temp_file, ftp_file, ftp_tmp);
+            ftp_upload1(temp_file, ftp_file, ftp_tmp);
          }
          else if (scp_target)
          {
