@@ -70,6 +70,7 @@ Atom                _NET_DESKTOP_GEOMETRY;
 Atom                _NET_DESKTOP_NAMES;
 Atom                _NET_CURRENT_DESKTOP;
 Atom                _NET_DESKTOP_VIEWPORT;
+Atom                _NET_VIRTUAL_ROOTS;
 
 Atom                _NET_ACTIVE_WINDOW;
 Atom                _NET_CLIENT_LIST;
@@ -215,6 +216,7 @@ EWMH_Init(void)
    _ATOM_INIT(_NET_DESKTOP_NAMES);
    _ATOM_INIT(_NET_CURRENT_DESKTOP);
    _ATOM_INIT(_NET_DESKTOP_VIEWPORT);
+   _ATOM_INIT(_NET_VIRTUAL_ROOTS);
 
    _ATOM_INIT(_NET_ACTIVE_WINDOW);
    _ATOM_INIT(_NET_CLIENT_LIST);
@@ -276,11 +278,21 @@ EWMH_Init(void)
 void
 EWMH_SetDesktopCount(void)
 {
+   int                 i;
    CARD32              val;
+   Window              wl[ENLIGHTENMENT_CONF_NUM_DESKTOPS];
 
    EDBUG(6, "EWMH_SetDesktopCount");
+
    val = mode.numdesktops;
    _ATOM_SET_CARD32(_NET_NUMBER_OF_DESKTOPS, root.win, &val, 1);
+
+   for (i = 0; i < mode.numdesktops; i++)
+     {
+	wl[i] = desks.desk[i].win;
+     }
+   _ATOM_SET_WINDOW(_NET_VIRTUAL_ROOTS, root.win, &wl, mode.numdesktops);
+
    EDBUG_RETURN_;
 }
 
