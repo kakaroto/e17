@@ -5,8 +5,8 @@
 #include <config.h>
 #include <assert.h>
 #include "eplayer.h"
-#include <Esmart/container.h>
-#include <Esmart/dragable.h>
+#include <Esmart/Esmart_Container.h>
+#include <Esmart/Esmart_Draggies.h>
 #include <Edje.h>
 #include <Ewl.h>
 #include "callbacks.h"
@@ -319,15 +319,15 @@ static void setup_playlist(ePlayer *player) {
 	if (!edje_object_part_exists(player->gui.edje, "playlist"))
 		return;
 
-	player->gui.playlist = e_container_new(player->gui.evas);
+	player->gui.playlist = esmart_container_new(player->gui.evas);
 	assert(player->gui.playlist);
 
 	evas_object_name_set(player->gui.playlist, "PlayList");
 	evas_object_data_set(player->gui.playlist, "ePlayer", player);
 
-	e_container_direction_set(player->gui.playlist, 1);
-	e_container_spacing_set(player->gui.playlist, 0);
-	e_container_fill_policy_set(player->gui.playlist,
+	esmart_container_direction_set(player->gui.playlist, 1);
+	esmart_container_spacing_set(player->gui.playlist, 0);
+	esmart_container_fill_policy_set(player->gui.playlist,
 	                            CONTAINER_FILL_POLICY_FILL_X);
 	
 	edje_object_part_swallow(player->gui.edje, "playlist",

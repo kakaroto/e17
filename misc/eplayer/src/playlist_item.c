@@ -4,7 +4,7 @@
 
 #include <config.h>
 #include <Edje.h>
-#include <Esmart/container.h>
+#include <Esmart/Esmart_Container.h>
 #include <stdio.h>
 #include <assert.h>
 #include "callbacks.h"
@@ -41,7 +41,7 @@ void playlist_item_free(PlayListItem *pli) {
 	pthread_mutex_destroy(&pli->pos_mutex);
 
 	if (pli->container)
-		e_container_element_remove(pli->container, pli->edje);
+		esmart_container_element_remove(pli->container, pli->edje);
 	
 	if (pli->edje)
 		evas_object_del(pli->edje);
@@ -129,7 +129,7 @@ bool playlist_item_show(PlayListItem *pli) {
 	edje_object_signal_callback_add(pli->edje, "PLAYLIST_ITEM_REMOVE", "",
 	                                (EdjeCb) cb_playlist_item_remove, udata);
 
-	e_container_element_append(pli->container, pli->edje);
+	esmart_container_element_append(pli->container, pli->edje);
 
 	return true;
 }
