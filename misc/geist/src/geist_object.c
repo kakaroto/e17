@@ -225,7 +225,7 @@ geist_object_select(geist_object * obj)
    D(4, ("setting object state SELECTED\n"));
    geist_object_set_state(obj, SELECTED);
    geist_object_raise(obj);
-   geist_object_dirty(obj);
+   geist_object_dirty_selection(obj);
 
    D_RETURN_(5);
 }
@@ -237,7 +237,7 @@ geist_object_unselect(geist_object * obj)
 
    D(4, ("unsetting object state SELECTED\n"));
    geist_object_unset_state(obj, SELECTED);
-   geist_object_dirty(obj);
+   geist_object_dirty_selection(obj);
 
    D_RETURN_(5);
 }
