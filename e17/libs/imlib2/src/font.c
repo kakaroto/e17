@@ -796,6 +796,7 @@ __imlib_list_fonts(int *num_ret)
 			       list = malloc(sizeof(char *));
 			    list[l - 1] = strdup(dir[j]);
 			 }
+		       free(dir[j]);
 		    }
 	       }
 	     free(dir);
