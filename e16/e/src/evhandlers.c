@@ -1061,6 +1061,15 @@ HandleProperty(XEvent * ev)
 	     KDE_HintChange(ev->xproperty.atom);
 	  }
      }
+   else
+     {
+	/* could be a KDE hint change */
+	if (mode.kde_support)
+	  {
+	     KDE_ClientChange(win, ev->xproperty.atom);
+	  }
+
+     }
    EDBUG_RETURN_;
 }
 

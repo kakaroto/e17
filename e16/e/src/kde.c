@@ -31,6 +31,8 @@ static Atom         KDE_ACTIVATE_WINDOW = 0;
 static Atom         KDE_DO_NOT_MANAGE = 0;
 static Atom         KDE_DOCKWINDOW = 0;
 static Atom         KDE_RUNNING = 0;
+static Atom         KDE_MAXIMIZE_WINDOW = 0;
+static Atom         KDE_STICKY_WINDOW = 0;
 
 static Atom         KDE_CURRENT_DESKTOP = 0;
 static Atom         KDE_NUMBER_OF_DESKTOPS = 0;
@@ -75,7 +77,7 @@ KModuleList;
 
 static KModuleList *KModules = NULL;
 
-void
+void 
 KDE_ClientMessage(Window win, Atom atom, long data, Time timestamp)
 {
 
@@ -98,7 +100,7 @@ KDE_ClientMessage(Window win, Atom atom, long data, Time timestamp)
 
 }
 
-void
+void 
 KDE_ClientTextMessage(Window win, Atom atom, char *data)
 {
 
@@ -120,7 +122,7 @@ KDE_ClientTextMessage(Window win, Atom atom, char *data)
 
 }
 
-void
+void 
 KDE_SendMessagesToModules(Atom atom, long data)
 {
 
@@ -139,7 +141,7 @@ KDE_SendMessagesToModules(Atom atom, long data)
 
 }
 
-void
+void 
 KDE_UpdateFocusedWindow(void)
 {
 
@@ -153,7 +155,7 @@ KDE_UpdateFocusedWindow(void)
      {
 	if (ewin)
 	  {
-	     if (ewin->win ==
+	     if (ewin->client.win ==
 		 (Window) * (getSimpleHint(root.win, KDE_ACTIVE_WINDOW)))
 		EDBUG_RETURN_;
 	  }
@@ -166,7 +168,8 @@ KDE_UpdateFocusedWindow(void)
    if (ewin)
      {
 	XChangeProperty(disp, root.win, KDE_ACTIVE_WINDOW, KDE_ACTIVE_WINDOW,
-			32, PropModeReplace, (unsigned char *)&(ewin->win), 1);
+			32, PropModeReplace, (unsigned char *)
+			&(ewin->client.win), 1);
      }
    else
      {
@@ -176,7 +179,7 @@ KDE_UpdateFocusedWindow(void)
 
    if (ewin)
      {
-	KDE_SendMessagesToModules(KDE_MODULE_WIN_ACTIVATE, ewin->win);
+	KDE_SendMessagesToModules(KDE_MODULE_WIN_ACTIVATE, ewin->client.win);
      }
    else
      {
@@ -187,7 +190,7 @@ KDE_UpdateFocusedWindow(void)
 
 }
 
-void
+void 
 KDE_NewWindow(EWin * ewin)
 {
 
@@ -196,18 +199,18 @@ KDE_NewWindow(EWin * ewin)
    if (!ewin)
       EDBUG_RETURN_;
 
-   if (!getSimpleHint(ewin->win, KDE_WIN_TITLE))
+   if (!getSimpleHint(ewin->client.win, KDE_WIN_TITLE))
      {
 	if (!(ewin->internal))
 	  {
-	     XChangeProperty(disp, ewin->win, KDE_WIN_TITLE,
+	     XChangeProperty(disp, ewin->client.win, KDE_WIN_TITLE,
 			     XA_STRING, 8, PropModeReplace,
 			     (unsigned char *)ewin->client.title,
 			     strlen(ewin->client.title) + 1);
 	     if (!ewin->kde_hint)
 	       {
 		  ewin->kde_hint = 1;
-		  KDE_SendMessagesToModules(KDE_MODULE_WIN_ADD, ewin->win);
+		  KDE_SendMessagesToModules(KDE_MODULE_WIN_ADD, ewin->client.win);
 	       }
 	  }
      }
@@ -215,7 +218,7 @@ KDE_NewWindow(EWin * ewin)
 
 }
 
-void
+void 
 KDE_RemoveWindow(EWin * ewin)
 {
 
@@ -224,11 +227,11 @@ KDE_RemoveWindow(EWin * ewin)
    if (!ewin)
       EDBUG_RETURN_;
 
-   if (getSimpleHint(ewin->win, KDE_WIN_TITLE))
-      deleteHint(ewin->win, KDE_WIN_TITLE);
+   if (getSimpleHint(ewin->client.win, KDE_WIN_TITLE))
+      deleteHint(ewin->client.win, KDE_WIN_TITLE);
 
    if (!(ewin->internal))
-      KDE_SendMessagesToModules(KDE_MODULE_WIN_REMOVE, ewin->win);
+      KDE_SendMessagesToModules(KDE_MODULE_WIN_REMOVE, ewin->client.win);
 
    ewin->kde_hint = 0;
 
@@ -236,7 +239,7 @@ KDE_RemoveWindow(EWin * ewin)
 
 }
 
-void
+void 
 KDE_AddModule(Window win)
 {
 
@@ -295,13 +298,13 @@ KDE_AddModule(Window win)
 		{
 		   if (!(lst[i]->internal))
 		     {
-			XChangeProperty(disp, lst[i]->win, KDE_WIN_TITLE,
+			XChangeProperty(disp, lst[i]->client.win, KDE_WIN_TITLE,
 					XA_STRING, 8, PropModeReplace,
 					(unsigned char *)lst[i]->client.title,
 					strlen(lst[i]->client.title) + 1);
 
-			KDE_ClientMessage(win, KDE_MODULE_WIN_ADD, lst[i]->win,
-					  CurrentTime);
+			KDE_ClientMessage(win, KDE_MODULE_WIN_ADD,
+					  lst[i]->client.win, CurrentTime);
 			lst[i]->kde_hint = 1;
 		     }
 		}
@@ -313,7 +316,7 @@ KDE_AddModule(Window win)
       if (mode.focuswin)
 	{
 	   KDE_ClientMessage(ptr->win, KDE_MODULE_WIN_ACTIVATE,
-			     mode.focuswin->win, CurrentTime);
+			     mode.focuswin->client.win, CurrentTime);
 	}
       /* identify the window manager */
       KDE_ClientTextMessage(ptr->win, KDE_COMMAND, "wm:enlightenment");
@@ -327,7 +330,7 @@ KDE_AddModule(Window win)
 
 }
 
-void
+void 
 KDE_RemoveModule(Window win)
 {
 
@@ -382,7 +385,7 @@ KDE_RemoveModule(Window win)
 
 }
 
-void
+void 
 KDE_Init(void)
 {
    /*
@@ -421,8 +424,11 @@ KDE_Init(void)
 
 	KDE_ACTIVE_WINDOW = XInternAtom(disp, "KWM_ACTIVE_WINDOW", False);
 
-	KDE_ACTIVATE_WINDOW = XInternAtom(disp, "KWM_ACTIVATE_WINDOW",
-					  False);
+	KDE_ACTIVATE_WINDOW = XInternAtom(disp, "KWM_ACTIVATE_WINDOW", False);
+
+	KDE_MAXIMIZE_WINDOW = XInternAtom(disp, "KWM_MAXIMIZE_WINDOW", False);
+
+	KDE_STICKY_WINDOW = XInternAtom(disp, "KWM_KEEP_ON_TOP", False);
 
 	KDE_DO_NOT_MANAGE = XInternAtom(disp, "KWM_DO_NOT_MANAGE", False);
 
@@ -500,7 +506,7 @@ KDE_Init(void)
 
 }
 
-void
+void 
 KDE_Shutdown(void)
 {
 
@@ -564,7 +570,7 @@ KDE_Shutdown(void)
 
 }
 
-void
+void 
 KDE_ClientInit(Window win)
 {
 
@@ -597,20 +603,20 @@ KDE_ClientInit(Window win)
 
 }
 
-void
-KDE_ClientChange(Window win, XPropertyEvent * event)
+void 
+KDE_ClientChange(Window win, Atom a)
 {
 
    EWin               *ewin;
 
    EDBUG(6, "KDE_ClientChange");
 
-   ewin = FindEwinByBase(win);
+   ewin = FindItem(NULL, win, LIST_FINDBY_ID, LIST_TYPE_EWIN);
 
    if (!ewin)
       EDBUG_RETURN_;
 
-   if (event->atom == KDE_WIN_STICKY)
+   if (a == KDE_WIN_STICKY)
      {
 	if (getSimpleHint(win, KDE_WIN_STICKY))
 	  {
@@ -621,9 +627,9 @@ KDE_ClientChange(Window win, XPropertyEvent * event)
 	     MakeWindowUnSticky(ewin);
 	  }
      }
-   else if (event->atom == KDE_WIN_MAXIMIZED)
+   else if (a == KDE_WIN_MAXIMIZED)
      {
-	if (getSimpleHint(ewin->win, KDE_WIN_MAXIMIZED))
+	if (getSimpleHint(ewin->client.win, KDE_WIN_MAXIMIZED))
 	  {
 	     ewin->toggle = 0;
 	     MaxSize(ewin, "conservative");
@@ -634,9 +640,9 @@ KDE_ClientChange(Window win, XPropertyEvent * event)
 	     MaxSize(ewin, "conservative");
 	  }
      }
-   else if (event->atom == KDE_WIN_ICONIFIED)
+   else if (a == KDE_WIN_ICONIFIED)
      {
-	if (getSimpleHint(ewin->win, KDE_WIN_ICONIFIED))
+	if (getSimpleHint(ewin->client.win, KDE_WIN_ICONIFIED))
 	  {
 	     if (!ewin->iconified)
 	       {
@@ -651,11 +657,11 @@ KDE_ClientChange(Window win, XPropertyEvent * event)
 	       }
 	  }
      }
-   else if (event->atom == KDE_WIN_DECORATION)
+   else if (a == KDE_WIN_DECORATION)
      {
 	KDE_GetDecorationHint(win, getSimpleHint(win, KDE_WIN_DECORATION));
      }
-   else if (event->atom == KDE_WIN_DESKTOP)
+   else if (a == KDE_WIN_DESKTOP)
      {
 	if (getSimpleHint(win, KDE_WIN_DESKTOP))
 	  {
@@ -674,7 +680,7 @@ KDE_ClientChange(Window win, XPropertyEvent * event)
 
 }
 
-void
+void 
 KDE_GetDecorationHint(Window win, long *dechints)
 {
 
@@ -683,7 +689,7 @@ KDE_GetDecorationHint(Window win, long *dechints)
 
    EDBUG(6, "KDE_GetDecorationHint");
 
-   ewin = FindEwinByBase(win);
+   ewin = FindItem(NULL, win, LIST_FINDBY_ID, LIST_TYPE_EWIN);
 
    if (!ewin)
       EDBUG_RETURN_;
@@ -744,7 +750,7 @@ KDE_GetDecorationHint(Window win, long *dechints)
 
 }
 
-void
+void 
 KDE_CheckClientHints(Window win)
 {
 
@@ -758,7 +764,7 @@ KDE_CheckClientHints(Window win)
      {
 	EWin               *ewin;
 
-	ewin = FindEwinByBase(win);
+	ewin = FindItem(NULL, win, LIST_FINDBY_ID, LIST_TYPE_EWIN);
 	if (!ewin)
 	   EDBUG_RETURN_;
 	ewin->desktop = *(getSimpleHint(win, KDE_WIN_DESKTOP)) - 1;
@@ -767,7 +773,7 @@ KDE_CheckClientHints(Window win)
 
 }
 
-int
+int 
 KDE_WindowCommand(EWin * ewin, char *cmd)
 {
 
@@ -823,7 +829,7 @@ KDE_WindowCommand(EWin * ewin, char *cmd)
 
 }
 
-void
+void 
 KDE_Command(char *cmd, XClientMessageEvent * event)
 {
 
@@ -902,12 +908,15 @@ KDE_Command(char *cmd, XClientMessageEvent * event)
 
 }
 
-void
+void 
 KDE_ProcessClientMessage(XClientMessageEvent * event)
 {
 
+   EWin               *ewin;
+
    EDBUG(6, "KDE_ProcessClientMessage");
 
+   ewin = FindItem(NULL, event->data.l[0], LIST_FINDBY_ID, LIST_TYPE_EWIN);
    if (event->message_type == KDE_COMMAND && event->format == 8)
      {
 	char                s[24];
@@ -917,14 +926,21 @@ KDE_ProcessClientMessage(XClientMessageEvent * event)
      }
    else if (event->message_type == KDE_ACTIVATE_WINDOW)
      {
-	FocusToEWin(FindEwinByBase(event->data.l[0]));
+	FocusToEWin(ewin);
+     }
+   else if (event->message_type == KDE_MAXIMIZE_WINDOW)
+     {
+	/* DIALOG_OK("kde stuff","I should maximize a window"); */
+	MaxSize(ewin, "conservative");
+     }
+   else if (event->message_type == KDE_STICKY_WINDOW)
+     {
+	/*      DIALOG_OK("kde stuff","I should have stuck a window"); */
      }
    else if (event->message_type == KDE_DO_NOT_MANAGE)
      {
-	EWin               *ewin;
 	Border             *b;
 
-	ewin = FindEwinByBase(event->data.l[0]);
 	b = (Border *) FindItem("BORDERLESS", 0, LIST_FINDBY_NAME,
 				LIST_TYPE_BORDER);
 
@@ -956,7 +972,7 @@ KDE_ProcessClientMessage(XClientMessageEvent * event)
 
 }
 
-void
+void 
 KDE_ModuleAssert(Window win)
 {
 
@@ -970,7 +986,7 @@ KDE_ModuleAssert(Window win)
 
 }
 
-void
+void 
 KDE_PrepModuleEvent(Window win, KMessage msg)
 {
 
@@ -1019,7 +1035,7 @@ KDE_PrepModuleEvent(Window win, KMessage msg)
 
 }
 
-void
+void 
 KDE_SetRootArea(void)
 {
 
@@ -1037,7 +1053,7 @@ KDE_SetRootArea(void)
 
 }
 
-void
+void 
 KDE_SetNumDesktops(void)
 {
 
@@ -1073,7 +1089,7 @@ KDE_SetNumDesktops(void)
    EDBUG_RETURN_;
 }
 
-void
+void 
 KDE_HintChange(Atom a)
 {
 
@@ -1097,7 +1113,7 @@ KDE_HintChange(Atom a)
 
 }
 
-void
+void 
 KDE_UpdateTitle(EWin * ewin)
 {
 
@@ -1106,12 +1122,12 @@ KDE_UpdateTitle(EWin * ewin)
    if (!ewin)
       EDBUG_RETURN_;
 
-   XChangeProperty(disp, ewin->win, KDE_WIN_TITLE,
+   XChangeProperty(disp, ewin->client.win, KDE_WIN_TITLE,
 		   XA_STRING, 8, PropModeReplace,
 		   (unsigned char *)ewin->client.title,
 		   strlen(ewin->client.title) + 1);
    if (!(ewin->internal))
-      KDE_SendMessagesToModules(KDE_MODULE_WIN_CHANGE, ewin->win);
+      KDE_SendMessagesToModules(KDE_MODULE_WIN_CHANGE, ewin->client.win);
 
    EDBUG_RETURN_;
 

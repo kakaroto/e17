@@ -2054,3 +2054,11 @@ added important TODO item for kde support :
 
 mandrake:   um, don't use close from the kpanel menu right yet.  that's a bad idea.  in fact, I wouldn't use ANY of the kpanel windowops things yet.  (nasty)
 
+
+-------------------------------------------------------------------------------
+
+Mon Sep 20 15:20:56 PDT 1999
+(Mandrake)
+
+more kde fixes.  more to come, still.  this fixes using client.win instead of
+base win for most everything.

@@ -2242,7 +2242,7 @@ void                KDE_RemoveModule(Window win);
 void                KDE_Init(void);
 void                KDE_Shutdown(void);
 void                KDE_ClientInit(Window win);
-void                KDE_ClientChange(Window win, XPropertyEvent * event);
+void                KDE_ClientChange(Window win, Atom a);
 void                KDE_GetDecorationHint(Window win, long *dechints);
 int                 KDE_WindowCommand(EWin * ewin, char *cmd);
 void                KDE_Command(char *cmd, XClientMessageEvent * event);
