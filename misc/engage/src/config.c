@@ -114,7 +114,7 @@ od_config_init(void)
   ecore_config_boolean_create("engage.options.auto_hide", 0, 'A', "auto-hide",
                               "Auto hide the engage bar");
 
-  ecore_config_int_create("engage.options.size", 40, 's', "size",
+  ecore_config_int_create("engage.options.size", 37, 's', "size",
                           "Size of icons in default state");
   ecore_config_int_create("engage.options.spacing", 4, 'S', "spacing",
                           "Space in pixels between each icon");
