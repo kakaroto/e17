@@ -26,11 +26,7 @@ Known bugs
 TODO for E 16.7
 ~~~~~~~~~~~~~~~
 
-- Get the focus right.
-
-- Fix pixmap leak(s).
-
-- Dialogs and menus are not drawn properly when transparency is enabled.
+- Menus are not drawn properly when transparency is enabled.
 
 - Borders need redrawing when moved and transparency is enabled.
 
