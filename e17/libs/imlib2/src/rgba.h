@@ -1,6 +1,11 @@
 #ifndef __RGBA
 #define __RGBA 1
 
+#define DM_BS1 (8 + 3)
+#define DM_BS2 (8)
+#define DM_X (8)
+#define DM_Y (8)
+
 void    __imlib_RGBASetupContext(Context *ct);
 void    __imlib_RGBA_init(void *rd, void *gd, void *bd, int depth, 
 			  DATA8 palette_type);

@@ -157,9 +157,9 @@ __imlib_NewContext(Display *d, Visual *v, Colormap c, int depth)
    if (depth <= 8)
      {
 	ct->palette = __imlib_AllocColorTable(d, c, &(ct->palette_type), v);
-	ct->r_dither = malloc(sizeof(DATA8) * 8 * 8 * 256);
-	ct->g_dither = malloc(sizeof(DATA8) * 8 * 8 * 256);
-	ct->b_dither = malloc(sizeof(DATA8) * 8 * 8 * 256);
+	ct->r_dither = malloc(sizeof(DATA8) * DM_X * DM_Y * 256);
+	ct->g_dither = malloc(sizeof(DATA8) * DM_X * DM_Y * 256);
+	ct->b_dither = malloc(sizeof(DATA8) * DM_X * DM_Y * 256);
 	__imlib_RGBA_init((void *)ct->r_dither, (void *)ct->g_dither, 
 			  (void *)ct->b_dither, depth, ct->palette_type);
      }
