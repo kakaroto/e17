@@ -2,7 +2,7 @@
 
 Summary: Enlightened Thumbnail Generator
 Name: epsilon
-Version: 0.0.2
+Version: 0.3.0
 Release: 1.%(date '+%Y%m%d')
 Copyright: BSD
 Group: User Interface/X
