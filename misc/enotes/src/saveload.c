@@ -41,6 +41,7 @@ void
 setup_saveload_win(void)
 {
 	char           *headers[1];
+	Ecore_Timer    *revtim;
 
 	/* Setup the Window */
 	saveload->win =
@@ -114,6 +115,9 @@ setup_saveload_win(void)
 	ecore_evas_callback_delete_request_set(saveload->win,
 					       ecore_saveload_close);
 	ecore_evas_callback_destroy_set(saveload->win, ecore_saveload_close);
+
+	/* Sync Timers */
+	revtim=ecore_timer_add (SYNC_DELAY, &timer_saveload_revert, saveload->tree);
 
 	/* EWL Callbacks */
 	ewl_callback_append(saveload->refreshbtn, EWL_CALLBACK_CLICKED,
@@ -197,12 +201,22 @@ ecore_saveload_close(Ecore_Evas * ee)
 	return;
 }
 
+int*
+timer_saveload_revert (void * p) {
+	ewl_saveload_revert (NULL, NULL, (Ewl_Widget*)p);
+	return (1);
+}
+
 void
 ewl_saveload_revert(Ewl_Widget * widget, void *ev_data, Ewl_Widget * p)
 {
 	dml("Refreshing the Saveload List", 2);
+
+	/* FIXME: Find a more efficient way of doing this. */
+	
 	ewl_container_reset((Ewl_Container *) p);
 	fill_saveload_tree();
+
 	return;
 }
 

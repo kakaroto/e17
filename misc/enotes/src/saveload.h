@@ -39,6 +39,7 @@
 #define LOAD_H 350
 
 #define MAX_TITLE 500
+#define SYNC_DELAY 0.01
 
 typedef struct {
 	Ecore_Evas     *win;
@@ -90,6 +91,7 @@ void            ewl_saveload_load(Ewl_Widget * o, void *ev_data, void *null);
 void            ewl_saveload_save(Ewl_Widget * o, void *ev_data, void *null);
 void            ewl_saveload_listitem_click(Ewl_Widget * o, void *ev_data,
 					    void *null);
+int *timer_saveload_revert (void *p);
 
 
 /** LOAD **/
