@@ -311,27 +311,12 @@ Fatal Error: No EDB Headers AND Library detected.
 	     All other loaders are optional])
 fi
 
-if test "$jpeg_ok" = yes; then
-  JPEG_LA=loader_jpeg.c
-fi
-if test "$png_ok" = yes; then
-  PNG_LA=loader_png.c
-fi
-if test "$edb_ok" = yes; then
-  EDB_LA=loader_db.c
-fi
-if test "$tiff_ok" = yes; then
-  TIFF_LA=loader_tiff.c
-fi
-if test "$gif_ok" = yes; then
-  GIF_LA=loader_gif.c
-fi
+AM_CONDITIONAL(JPEG_LOADER, test "$jpeg_ok" = yes)
+AM_CONDITIONAL(PNG_LOADER, test "$png_ok" = yes)
+AM_CONDITIONAL(EDB_LOADER, test "$edb_ok" = yes)
+AM_CONDITIONAL(TIFF_LOADER, test "$tiff_ok" = yes)
+AM_CONDITIONAL(GIF_LOADER, test "$gif_ok" = yes)
 
-AC_SUBST(JPEG_LA)
-AC_SUBST(PNG_LA)
-AC_SUBST(EDB_LA)
-AC_SUBST(TIFF_LA)
-AC_SUBST(GIF_LA)
 AC_SUBST(JPEGLIBS)
 AC_SUBST(PNGLIBS)
 AC_SUBST(EDBLIBS)

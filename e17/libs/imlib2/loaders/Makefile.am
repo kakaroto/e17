@@ -12,27 +12,60 @@ INCLUDES	     = -I/usr/X11R6/include -I$(top_srcdir)/libltdl \
 		       -I$(top_srcdir)/loaders
 
 pkgdir		     = $(libdir)/loaders/image
-pkg_LTLIBRARIES	     = jpeg.la png.la db.la gif.la tiff.la pnm.la argb.la bmp.la xpm.la tga.la #xcf.la
 
-jpeg_la_SOURCES	     = @JPEG_LA@
+if JPEG_LOADER
+JPEG_L              = jpeg.la
+endif
+if PNG_LOADER
+PNG_L               = png.la
+endif
+if EDB_LOADER
+EDB_L               = db.la
+endif
+if TIFF_LOADER
+TIFF_L              = tiff.la
+endif
+if GIF_LOADER
+GIF_L               = gif.la
+endif
+
+pkg_LTLIBRARIES	     = \
+$(JPEG_L) \
+$(PNG_L) \
+$(EDB_L) \
+$(TIFF_L) \
+$(GIF_L) \
+pnm.la argb.la bmp.la xpm.la tga.la #xcf.la
+
+if JPEG_LOADER
+jpeg_la_SOURCES	     = loader_jpeg.c
 jpeg_la_LDFLAGS	     = -no-undefined -module -avoid-version
 jpeg_la_LIBADD	     = @JPEGLIBS@
+endif
 
-png_la_SOURCES	     = @PNG_LA@
+if PNG_LOADER
+png_la_SOURCES	     = loader_png.c
 png_la_LDFLAGS	     = -no-undefined -module -avoid-version
 png_la_LIBADD	     = @PNGLIBS@
+endif
 
-db_la_SOURCES        = @EDB_LA@
+if EDB_LOADER
+db_la_SOURCES        = loader_db.c
 db_la_LDFLAGS	     = -no-undefined -module -avoid-version
 db_la_LIBADD	     = @EDBLIBS@ -lz
+endif
 
-tiff_la_SOURCES	     = @TIFF_LA@
+if TIFF_LOADER
+tiff_la_SOURCES	     = loader_tiff.c
 tiff_la_LDFLAGS	     = -no-undefined -module -avoid-version
 tiff_la_LIBADD	     = @TIFFLIBS@
+endif
 
-gif_la_SOURCES	     = @GIF_LA@
+if GIF_LOADER
+gif_la_SOURCES	     = loader_gif.c
 gif_la_LDFLAGS	     = -no-undefined -module -avoid-version
 gif_la_LIBADD	     = @GIFLIBS@
+endif
 
 pnm_la_SOURCES	     = loader_pnm.c
 pnm_la_LDFLAGS	     = -no-undefined -module -avoid-version
