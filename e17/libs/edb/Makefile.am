@@ -19,7 +19,7 @@ SUBDIRS		     = src test tools
 
 bin_SCRIPTS = edb-config
 
-EXTRA_DIST = README AUTHORS COPYING COPYING-PLAIN edb.spec edb.spec.in \
+EXTRA_DIST = AUTHORS COPYING COPYING-PLAIN edb.spec edb.spec.in \
              README.in README \
 	     edb.pc.in \
 	     edb.spec.in edb.spec \
