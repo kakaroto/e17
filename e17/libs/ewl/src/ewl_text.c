@@ -143,6 +143,7 @@ void ewl_text_text_append(Ewl_Text * ta, char *text)
 
 	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR("ta", ta);
+	DCHECK_PARAM_PTR("text", text);
 
 	op = ewl_text_op_text_append_new(ta, text);
 	ecore_dlist_append(ta->ops, op);
@@ -166,6 +167,7 @@ void ewl_text_text_prepend(Ewl_Text * ta, char *text)
 
 	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR("ta", ta);
+	DCHECK_PARAM_PTR("text", text);
 
 	op = ewl_text_op_text_prepend_new(ta, text);
 	ecore_dlist_append(ta->ops, op);
@@ -189,6 +191,7 @@ void ewl_text_text_insert(Ewl_Text * ta, char *text, int index)
 
 	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR("ta", ta);
+	DCHECK_PARAM_PTR("text", text);
 
 	op = ewl_text_op_text_insert_new(ta, text, index);
 	ecore_dlist_prepend(ta->ops, op);
@@ -837,7 +840,7 @@ ewl_text_op_text_set_new(Ewl_Text *ta, char *text)
 		op->type = EWL_TEXT_OP_TYPE_TEXT_SET;
 		op->apply = ewl_text_op_text_apply;
 		op->free = ewl_text_op_text_free;
-		ops->text = strdup(text);
+		ops->text = text ? strdup(text) : NULL;
 	}
 
 	DRETURN_PTR(op, DLEVEL_STABLE);
