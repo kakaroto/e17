@@ -4,13 +4,11 @@ Summary: Enlightenment Epplets
 Name: epplets
 Version: 0.8
 Release: 0.1
-Copyright: BSD
+License: BSD
 Group: User Interface/X
-URL: http://www.enlightenment.org
-Packager: Michael Jennings <mej@eterm.org>
-Vendor: The Enlightenment Development Team <e-develop@enlightenment.org>
-Source: ftp://ftp.enlightenment.org/enlightenment/epplets/%{name}-%{version}.tar.gz
-BuildRoot: /var/tmp/%{name}-%{version}
+URL: http://www.enlightenment.org/
+Source0: http://prdownloads.sourceforge.net/enlightenment/%{name}-%{version}.tar.gz
+BuildRoot: %{_tmppath}/%{name}-%{version}-%{release}-root
 Requires: enlightenment >= 0.16.0
 
 %description
@@ -59,3 +57,12 @@ rm -rf $RPM_BUILD_ROOT
 %{_bindir}/*
 %{_datadir}/enlightenment/epplet_icons/*
 %{_datadir}/enlightenment/epplet_data/*
+
+%changelog
+
+* Mon May 10 2004 Stuart Children <stuart@terminus.co.uk> - 0.8-0.1
+- Tidy ups.
+- Fix download url.
+- Use License rather than Copyright.
+- Remove Packager to avoid people creating mis-attributed packages.
+

@@ -1,19 +1,13 @@
-%define name	edox-data
-%define version 0.16.7
-%define release 0.02
-
 Summary:	Documentation for the Enlightenment window manager.
-Name:		%{name}
-Version:	%{version}
-Release:	%{release}
-Copyright:	BSD
+Name:		edox-data
+Version:	0.16.7
+Release:	0.02
+License:	BSD
 Group:		User Interface/Desktops
-Source:		%{name}-%{version}.tar.gz
+Source0:	http://prdownloads.sourceforge.net/enlightenment/%{name}-%{version}.tar.gz
 Prefix:		%{_prefix}
-Docdir:		%{_docdir}
 BuildArch:	noarch
-BuildRoot:	/tmp/build-%{name}-%{version}-root
-Packager:	Michael Jennings <mej@eterm.org>
+BuildRoot:	%{_tmppath}/%{name}-%{version}-%{release}-root
 URL:		http://www.enlightenment.org/
 
 Requires: enlightenment >= 0.16.7
@@ -22,8 +16,6 @@ Requires: enlightenment >= 0.16.7
 These are the DOX data files.
 DOX is a very very very simple document viewer for help docs for Enlightenment.
 This is part of the Enlightenment distribution.
-
-%changelog
 
 %prep
 %setup
@@ -49,3 +41,12 @@ rm -rf $RPM_BUILD_ROOT
 %defattr(-, root, root)
 %doc AUTHORS COPYING INSTALL README
 %{_datadir}/enlightenment/*
+
+%changelog
+
+* Mon May 10 2004 Stuart Children <stuart@terminus.co.uk> - 0.16.7-0.02
+- Tidy ups.
+- Fix download url.
+- Use License rather than Copyright.
+- Remove Packager to avoid people creating mis-attributed packages.
+

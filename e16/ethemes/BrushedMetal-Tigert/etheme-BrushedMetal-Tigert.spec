@@ -1,19 +1,13 @@
-%define name	etheme-BrushedMetal-Tigert
-%define version 0.16
-%define release 0.01
-
-Summary:	Enlightenment theme: %{name}
-Name:		%{name}
-Version:	%{version}
-Release:	%{release}
-Copyright:	BSD
+Summary:	Enlightenment theme: BrushedMetal-Tigert
+Name:		etheme-BrushedMetal-Tigert
+Version:	0.16
+Release:	0.01
+License:	BSD
 Group:		User Interface/Desktops
-Source:		%{name}-%{version}.tar.gz
+Source0:	http://prdownloads.sourceforge.net/enlightenment/%{name}-%{version}.tar.gz
 Prefix:		%{_prefix}
-Docdir:		%{_docdir}
 BuildArch:	noarch
-BuildRoot:	/tmp/build-%{name}-%{version}-root
-Packager:	Michael Jennings <mej@eterm.org>
+BuildRoot:	%{_tmppath}/%{name}-%{version}-%{release}-root
 URL:		http://www.enlightenment.org/
 
 Requires: enlightenment >= 0.16.7
@@ -21,8 +15,6 @@ Requires: enlightenment >= 0.16.7
 %description
 The BrushedMetal-Tigert theme for Enlightenment.
 This is part of the Enlightenment distribution.
-
-%changelog
 
 %prep
 %setup
@@ -48,3 +40,12 @@ rm -rf $RPM_BUILD_ROOT
 %defattr(-, root, root)
 %doc AUTHORS COPYING INSTALL README
 %{_datadir}/enlightenment/*
+
+%changelog
+
+* Mon May 10 2004 Stuart Children <stuart@terminus.co.uk> - 0.16-0.01
+- Tidy ups.
+- Fix download url.
+- Use License rather than Copyright.
+- Remove Packager to avoid people creating mis-attributed packages.
+

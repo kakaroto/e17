@@ -1,18 +1,12 @@
-%define name	enlightenment
-%define version 0.16.7
-%define release 0.60
-
 Summary:	The Enlightenment window manager.
-Name:		%{name}
-Version:	%{version}
-Release:	%{release}
-Copyright:	BSD
+Name:		enlightenment
+Version:	0.16.7
+Release:	0.60
+License:	BSD
 Group:		User Interface/Desktops
-Source:		ftp://ftp.enlightenment.org/pub/enlightenment/enlightenment-%{version}.tar.gz
+Source0:	http://prdownloads.sourceforge.net/enlightenment/%{name}-%{version}.tar.gz
 Prefix:		%{_prefix}
-Docdir:		%{_docdir}
-BuildRoot:	/tmp/e-%{version}-root
-Packager:	Michael Jennings <mej@eterm.org>
+BuildRoot:	%{_tmppath}/%{name}-%{version}-%{release}-root
 URL:		http://www.enlightenment.org/
 
 Requires: imlib2
@@ -30,8 +24,6 @@ in design and instead of dictating a policy, allows the user to
 define their own policy, down to every last detail.
 
 This package will install the Enlightenment window manager.
-
-%changelog
 
 %prep
 %setup
@@ -62,3 +54,12 @@ rm -rf $RPM_BUILD_ROOT
 %{_datadir}/locale/*/LC_MESSAGES/enlightenment.mo
 %{_bindir}/*
 %{_mandir}/man1/*
+
+%changelog
+
+* Mon May 10 2004 Stuart Children <stuart@terminus.co.uk> - 0.16.7-0.59
+- Tidy ups.
+- Fix download url.
+- Use License rather than Copyright.
+- Remove Packager to avoid people creating mis-attributed packages.
+
