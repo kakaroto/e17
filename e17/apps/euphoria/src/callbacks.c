@@ -462,11 +462,15 @@ static void cb_file_dialog_value_changed(Ewl_Widget *w, void *ev_data,
 
 /* File Dialog to add files, thanx to EWL */
 EDJE_CB(playlist_add) {
-    Ewl_Widget *fd_win = NULL;
-    Ewl_Widget *fd = NULL;
-    Ewl_Widget *vbox = NULL;
-
-    if (_fd_win) {
+    if(e->gui.file_dialog.ee) {
+	if(!ecore_evas_visibility_get(e->gui.file_dialog.ee))
+	    ecore_evas_show(e->gui.file_dialog.ee);
+    }
+    else {
+	Ewl_Widget *fd_win = NULL;
+	Ewl_Widget *fd = NULL;
+	Ewl_Widget *vbox = NULL;
+	if (_fd_win) {
 		ewl_widget_show(_fd_win);
 		return;
 	}
@@ -498,7 +502,8 @@ EDJE_CB(playlist_add) {
 	ewl_widget_show(fd);
 
 	_fd_win = fd_win;
-    ewl_widget_show(_fd_win);
+	ewl_widget_show(_fd_win);
+    }
 }
 
 EDJE_CB(playlist_del) {

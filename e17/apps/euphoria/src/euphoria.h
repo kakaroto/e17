@@ -31,6 +31,10 @@ typedef struct {
 	Ecore_Evas *ee;
 	Evas_Object *edje;
 	Evas_Object *playlist; /* playlist container */
+	struct {
+	    Ecore_Evas *ee;
+	    Evas_Object *fd;
+	} file_dialog;
 } Gui;
 
 typedef struct {

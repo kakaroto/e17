@@ -7,6 +7,8 @@
 #include <assert.h>
 #include <Esmart/Esmart_Container.h>
 #include <Esmart/Esmart_Draggies.h>
+#include <Esmart/Esmart_File_Dialog.h>
+#include <Esmart/Esmart_Trans.h>
 #include <Edje.h>
 #include <Ewl.h>
 #include "euphoria.h"
@@ -22,10 +24,15 @@ typedef struct {
 
 static void setup_playlist(Euphoria *e);
 static void register_callbacks(Euphoria *e);
+static bool ui_init_esmart_file_dialog(Euphoria *e);
 
 static int app_signal_exit(void *data, int type, void *event) {
-	ecore_main_loop_quit();
-	return 1;
+    Evas_Object *o = NULL;
+    if((o = (Evas_Object*)data))
+    {
+	edje_object_signal_emit(o, "QUIT", "");
+    }
+    return 1;
 }
 
 static void cb_ee_pre_render(Ecore_Evas *ee) {
@@ -37,19 +44,32 @@ static void cb_ee_post_render(Ecore_Evas *ee) {
 }
 
 /**
+ * @param ee
+ */
+static void cb_ee_del(Ecore_Evas *ee) {
+    ecore_evas_hide(ee);
+}
+/**
  * Resizes the Edje to the size of our Ecore Evas
  *
  * @param ee
  */
 static void cb_ee_resize(Ecore_Evas *ee) {
 	Evas *evas = ecore_evas_get(ee);
-	Evas_Object *edje = evas_object_name_find(evas, "main_edje");
-	Evas_Object *dragger = evas_object_name_find(evas, "dragger");
-	int w = 0, h = 0;
+	Evas_Object *o = NULL;
+	int x = 0, y = 0, w = 0, h = 0;
 
-	ecore_evas_geometry_get(ee, NULL, NULL, &w, &h);
-	evas_object_resize(edje, (Evas_Coord) w, (Evas_Coord) h);
-	evas_object_resize(dragger, (Evas_Coord) w, (Evas_Coord) h);
+	ecore_evas_geometry_get(ee, &x, &y, &w, &h);
+	if((o = evas_object_name_find(evas, "main_edje")))
+	    evas_object_resize(o, (Evas_Coord) w, (Evas_Coord) h);
+	if((o = evas_object_name_find(evas, "dragger")))
+	    evas_object_resize(o, (Evas_Coord) w, (Evas_Coord) h);
+	if((o = evas_object_name_find(evas, "trans")))
+	{
+	    evas_object_resize(o, (Evas_Coord) w, (Evas_Coord) h);
+	    esmart_trans_x11_freshen(o, (Evas_Coord)x, (Evas_Coord)y,
+					(Evas_Coord)w, (Evas_Coord)h);
+	}
 }
 
 static void cb_dragger_mouse_up(void *data, Evas *evas, Evas_Object *o,
@@ -88,8 +108,6 @@ bool ui_init(Euphoria *e) {
 	edje_init();
 	ewl_init(&zero, NULL);
 
-	ecore_event_handler_add(ECORE_EVENT_SIGNAL_EXIT, app_signal_exit,
-	                        NULL);
 
 #ifdef HAVE_ECORE_EVAS_GL
 	if (!strcasecmp(e->cfg.evas_engine, "gl")) {
@@ -150,6 +168,10 @@ bool ui_init(Euphoria *e) {
 	e->playlist = playlist_new(e->gui.evas, e->cfg.theme, e->xmms);
 	assert(e->playlist);
 
+	if(ui_init_esmart_file_dialog(e))
+	{
+	    fprintf(stderr, "Success\n");
+	}
 	return true;
 }
 
@@ -210,6 +232,8 @@ bool ui_init_edje(Euphoria *e, const char *name) {
 		return false;
 	}
 
+	ecore_event_handler_add(ECORE_EVENT_SIGNAL_EXIT, app_signal_exit,
+	                        e->gui.edje);
 	evas_object_name_set(e->gui.edje, "main_edje");
 
 	if (!edje_object_file_set(e->gui.edje,
@@ -389,4 +413,168 @@ void ui_zero_track_info(Euphoria *e) {
 	edje_object_part_text_set(e->gui.edje, "track_samplerate", "---");
 	edje_object_part_text_set(e->gui.edje, "track_bitrate", "---");
 	edje_object_part_text_set(e->gui.edje, "time_text", "0:00");
+}
+static void file_dialog_cb(void *data, Evas_Object *efd, int type)
+{
+    char buf[PATH_MAX];
+    Euphoria *e = NULL;
+    Evas_List *l = NULL;
+    Ecore_Evas *ee = NULL;
+    const char *directory = NULL;
+    
+    if((e = (Euphoria*)data))
+    {
+	switch(type)
+	{
+	    case FILE_CANCEL:
+		ecore_evas_hide(e->gui.file_dialog.ee);
+		break;
+	    case DIR_CHANGED:
+		ecore_evas_title_set(e->gui.file_dialog.ee,
+			    esmart_file_dialog_current_directory_get(efd));
+		break;
+	    case FILE_OK:
+		if((directory = esmart_file_dialog_current_directory_get(efd)))
+		{
+		    l = esmart_file_dialog_selections_get(efd); 
+		    for( ; l; l = l->next)
+		    {
+			snprintf(buf, PATH_MAX, "file://%s/%s", directory, (char*)l->data);
+		    xmmsc_result_unref(xmmsc_playlist_add(e->xmms, buf));
+		    }
+		}
+		break;
+	    default:
+		break;
+	}
+    }
+}
+bool ui_init_esmart_file_dialog(Euphoria *e)
+{
+    int zero = 0;
+    char buf[PATH_MAX];
+    Ecore_Evas *ee = NULL;
+    Evas_Object *o = NULL;
+    Evas_Object *efd = NULL;
+    Evas_Object *edje = NULL;
+    Evas_Object *trans = NULL;
+    Evas_Object *dragger = NULL;
+    Evas_Coord w = 320, h = 240;
+    const char *window_type = NULL;
+
+	debug(DEBUG_LEVEL_INFO, "Starting File Dialog Setup\n");
+
+#ifdef HAVE_ECORE_EVAS_GL
+	if (!strcasecmp(e->cfg.evas_engine, "gl")) {
+		debug(DEBUG_LEVEL_INFO, "Starting EVAS GL X11\n");
+		ee = ecore_evas_gl_x11_new(NULL, 0, 0, 0, 0, 0);
+	} else
+#endif
+
+#ifdef HAVE_ECORE_EVAS_FB
+	if (!strcasecmp(e->cfg.evas_engine, "fb")) {
+		debug(DEBUG_LEVEL_INFO, "Starting EVAS FB\n");
+		ee = ecore_evas_fb_new(NULL, 0, 0, 0);
+	} else
+#endif
+
+	{
+		debug(DEBUG_LEVEL_INFO, "Starting EVAS X11\n");
+		ee = ecore_evas_software_x11_new(NULL, 0, 0, 0, 0, 0);
+	}
+
+	if (!ee) {
+		debug(DEBUG_LEVEL_CRITICAL,
+		      "Cannot create Ecore Evas (using %s engine)\n",
+		      e->cfg.evas_engine);
+
+		return false;
+	}
+
+	ecore_evas_title_set(ee, "Select a file");
+	ecore_evas_name_class_set(ee, "euphoria", "Euphoria Files");
+	ecore_evas_resize(ee, 320, 240);
+#if 0
+	ecore_evas_borderless_set(ee, 1);
+	ecore_evas_shaped_set(ee, 1);
+#endif
+
+	ecore_evas_callback_pre_render_set(ee, cb_ee_pre_render);
+	ecore_evas_callback_post_render_set(ee, cb_ee_post_render);
+	ecore_evas_callback_resize_set(ee, cb_ee_resize);
+	ecore_evas_callback_delete_request_set(ee, cb_ee_del);
+	e->gui.file_dialog.ee = ee;
+
+	debug(DEBUG_LEVEL_INFO, "EDJE: Defining Edje \n");
+        fprintf(stderr, "Trying %s\n", find_theme(e->cfg.theme));
+	if((efd = esmart_file_dialog_new(ecore_evas_get(ee), find_theme(e->cfg.theme))) == NULL)
+	{
+	    fprintf(stderr, "Trying %s\n", DATA_DIR"/themes/fd.eet");
+	    if((efd = esmart_file_dialog_new(ecore_evas_get(ee), DATA_DIR"/themes/fd.eet")) == NULL)
+	    {
+		debug(DEBUG_LEVEL_CRITICAL, "Cannot load fd theme '%s'!\n",
+		      e->cfg.theme);
+		ecore_evas_free(ee);
+		e->gui.file_dialog.ee = NULL;
+		return false;
+
+	    }
+	}
+	evas_object_name_set(efd, "main_edje");
+	evas_object_move(efd, 0, 0);
+	evas_object_layer_set(efd, 2);
+	evas_object_resize(efd, 320, 240);
+	esmart_file_dialog_callback_add(efd, file_dialog_cb, e);
+	evas_object_show(efd);
+
+	fprintf(stderr, "Getting the edje\n");
+	o = esmart_file_dialog_edje_get(efd);
+	if((window_type = edje_object_data_get(o, "e,fd,window,type")))
+	{
+	    if(!strcmp(window_type, "shaped"))
+	    {
+		ecore_evas_shaped_set(ee, 1);
+		ecore_evas_borderless_set(ee, 1);
+	    }
+	    else if(!strcmp(window_type, "borderless"))
+	    {
+		ecore_evas_borderless_set(ee, 1);
+	    }
+	    else if(!strcmp(window_type, "trans"))
+	    {
+		ecore_evas_borderless_set(ee, 1);
+		trans = esmart_trans_x11_new(ecore_evas_get(ee));
+		esmart_trans_x11_window_set(trans, 
+				ecore_evas_software_x11_window_get(ee));
+		evas_object_name_set(trans, "trans");
+		evas_object_move(trans, 0, 0);
+		evas_object_layer_set(trans, 0);
+		evas_object_show(trans);
+	    }
+	}
+	dragger = esmart_draggies_new(ee);
+	esmart_draggies_button_set(dragger, 1);
+	evas_object_name_set(dragger, "dragger");
+	evas_object_move(dragger, 0, 0);
+	evas_object_layer_set(dragger, -5);
+	evas_object_show(dragger);
+	
+	/* set max size */
+	edje_object_size_max_get(o, &w, &h);
+	fprintf(stderr, "%d %d is the size\n", w, h);
+	if((w > 0) && (h > 0))
+	{
+	    if (w > INT_MAX)
+		w = INT_MAX;
+	    if(h > INT_MAX)
+		h = INT_MAX;
+	    ecore_evas_size_max_set(ee, (int) w, (int) h);
+	}
+
+	/* set min size */
+	edje_object_size_min_get(o, &w, &h);
+	ecore_evas_size_min_set(ee, (int) w, (int) h);
+	evas_object_resize(efd, w, h);
+	ecore_evas_resize(ee, (int)w, (int)h);
+	return true;
 }
