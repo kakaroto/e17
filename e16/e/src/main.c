@@ -60,6 +60,11 @@ main(int argc, char **argv)
     * proceeds into the primary event loop at the end.
     */
 
+   /* Init state variable struct */
+   memset(&mode, 0, sizeof(EMode));
+   mode.mode = MODE_NONE;
+   mode.startup = 1;
+
    single_screen_mode = 0;
 /*  unsetenv("LD_PRELOAD"); */
 
@@ -73,11 +78,10 @@ main(int argc, char **argv)
 
 #ifdef DEBUG
    call_level = 0;
-   debug_level = 0;
+#endif
    str = getenv("EDBUG");
    if (str)
-      debug_level = atoi(str);
-#endif
+      mode.debug = atoi(str);
    str = getenv("EDBUG_FLAGS");
    if (str)
       EventDebugInit(str);

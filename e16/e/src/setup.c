@@ -346,11 +346,6 @@ SetupX()
 	 XFreeModifiermap(mod);
    }
 
-   /* Init state variable struct */
-   memset(&mode, 0, sizeof(EMode));
-   mode.mode = MODE_NONE;
-   mode.startup = 1;
-
    /* Now we're going to set a bunch of default settings in E - in case we
     * don't ever get to load a config file for some odd reason. */
    memset(&conf, 0, sizeof(EConf));

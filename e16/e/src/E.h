@@ -238,7 +238,6 @@ if (__xim) XDestroyImage(__xim);}
 
 #ifdef DEBUG
 extern int          call_level;
-extern int          debug_level;
 extern char        *call_stack[1024];
 
 #endif
@@ -1262,6 +1261,7 @@ EConf;
 /* State parameters */
 typedef struct
 {
+   int                 debug;
    int                 mode;
    char                place;
    char                flipp;
