@@ -42,11 +42,11 @@ while test $# -gt 0; do
       if test @includedir@ != /usr/include ; then
         includes=-I@includedir@
       fi
-      echo $includes @db_cflags@
+      echo $includes
       ;;
     --libs)
       libdirs=-L@libdir@
-      echo $libdirs -ledb @db_ldflags@ @LDFLAGS@
+      echo $libdirs -ledb @LDFLAGS@
       ;;
     *)
       echo "${usage}" 1>&2
