@@ -51,3 +51,18 @@ begin dest_group
   dest "Mandarin"
   dest "Sneha"
 end
+
+begin player_group
+  name Robots
+  player AI1 AI
+  player AI2 ai
+  player AI3 computer
+  player AI4 Computer
+end player_group
+
+begin player_group
+  name Mixed
+  player Michael nerd
+  player HAL computer
+end player_group
+

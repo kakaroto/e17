@@ -14,6 +14,7 @@
 #define _PLAY_H_
 
 /************ Macros and Definitions ************/
+#define COMP_DELAY 500
 
 /************ Structures ************/
 

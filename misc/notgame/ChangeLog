@@ -99,3 +99,11 @@ Thu Sep 16 16:56:20 PDT 1999	Michael Jennings <mej@eterm.org>
 	--with-debugging when running configure or autogen.sh).
 	
 -------------------------------------------------------------------------------
+Thu Sep 16 18:31:52 PDT 1999	Michael Jennings <mej@eterm.org>
+
+	The "Current Player" label works now.  So do computer players.  (If
+	you specify a player as "AI" or "computer" in the config file, the
+	program will eliminate a restaurant at random each time that player's
+	turn comes up.)
+	
+-------------------------------------------------------------------------------

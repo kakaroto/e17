@@ -38,15 +38,74 @@ static const char cvs_ident[] = "$Id$";
 
 static gint close_cb(void);
 static gint click_cb(GtkWidget *button, gpointer data);
+static void error_dialog(const char *msg);
 
 static GtkWidget **dest_buttons, *game_win = NULL, *label, *current_player, *quit_button, *quit_label;
 static unsigned char dest_cnt, dest_total;
+static GList *player_current;
+static player_t *player;
+static player_group_t *player_group;
+
+static void
+error_dialog(const char *msg) {
+
+  char message[255];
+  GtkWidget *align, *big_vbox;
+
+  game_win = gtk_window_new(GTK_WINDOW_TOPLEVEL);
+  gtk_window_set_title(GTK_WINDOW(game_win), "Can't Play! =(");
+  gtk_window_set_transient_for(GTK_WINDOW(game_win), GTK_WINDOW(pregame_win));
+  gtk_window_set_position(GTK_WINDOW(game_win), GTK_WIN_POS_MOUSE);
+  gtk_signal_connect(GTK_OBJECT(game_win), "destroy", GTK_SIGNAL_FUNC(close_cb), NULL);
+  gtk_signal_connect(GTK_OBJECT(game_win), "delete_event", GTK_SIGNAL_FUNC(close_cb), NULL);
+  gtk_container_set_border_width(GTK_CONTAINER(game_win), 5);
+
+  /* This is the vbox into which all window elements are packed */
+  big_vbox = gtk_vbox_new(FALSE, 0);
+  gtk_container_add(GTK_CONTAINER(game_win), big_vbox);
+
+  sprintf(message, "Error:  %s", msg);
+  label = gtk_label_new(message);
+  gtk_misc_set_alignment(GTK_MISC(label), 1.0, 0.5);
+  gtk_box_pack_start(GTK_BOX(big_vbox), label, TRUE, FALSE, 20);
+  gtk_widget_show(label);
+
+  quit_button = gtk_button_new_with_label("Oops!");
+  align = gtk_alignment_new(0.5, 0.5, 0.1, 0.0);
+  gtk_container_add(GTK_CONTAINER(align), quit_button);
+  gtk_widget_show(quit_button);
+  gtk_box_pack_start(GTK_BOX(big_vbox), align, TRUE, FALSE, 0);
+  gtk_widget_show(align);
+  gtk_signal_connect(GTK_OBJECT(quit_button), "clicked", GTK_SIGNAL_FUNC(close_cb), NULL);
+
+  gtk_widget_show(big_vbox);
+  gtk_widget_show(game_win);
+
+}
+
+static int
+computer_player(void) {
+
+  static unsigned char first_time = 1;
+  unsigned char i;
+
+  if (first_time) {
+    srand(time(NULL) + getpid());
+    first_time = 0;
+  }
+  do {
+    i = (unsigned char) (((float) dest_total) * rand() / (RAND_MAX + 1.0));
+  } while (!GTK_WIDGET_SENSITIVE(dest_buttons[i]));
+  sleep(1);
+  click_cb(dest_buttons[i], NULL);
+  return (0);
+}
 
 void
 play_game(void) {
 
-  unsigned short i, rows, cols, r, c;
-  GtkWidget *big_vbox, *hbox, *dest_frame, *dest_table, *game_frame, *game_table, *align;
+  unsigned short rows, cols, r, c;
+  GtkWidget *big_vbox, *dest_frame, *dest_table, *game_frame, *game_table, *align;
   GList *dest_current;
   dest_group_t *dest_group;
 
@@ -54,6 +113,17 @@ play_game(void) {
   if (game_win != NULL) {
     return;
   }
+
+  if ((player_group = player_group_get_current()) == NULL) {
+    error_dialog("No player groups created");
+    return;
+  }
+  if ((player_current = player_group->members) == NULL) {
+    error_dialog("No players in group");
+    return;
+  }
+  player = ((player_t *) (player_current->data));
+
   game_win = gtk_window_new(GTK_WINDOW_TOPLEVEL);
   gtk_window_set_title(GTK_WINDOW(game_win), "Game in Progress");
   gtk_window_set_transient_for(GTK_WINDOW(game_win), GTK_WINDOW(pregame_win));
@@ -73,8 +143,14 @@ play_game(void) {
   gtk_frame_set_shadow_type(GTK_FRAME(dest_frame), GTK_SHADOW_ETCHED_IN);
   gtk_box_pack_start(GTK_BOX(big_vbox), dest_frame, TRUE, FALSE, 0);
 
-  dest_group = dest_group_get_current();
-  dest_current = dest_group->members;
+  if ((dest_group = dest_group_get_current()) == NULL) {
+    error_dialog("No destination groups created");
+    return;
+  }
+  if ((dest_current = dest_group->members) == NULL) {
+    error_dialog("No destinations in group");
+    return;
+  }
   dest_total = (unsigned char) g_list_length(dest_current);
   rows = (unsigned short) (sqrt(dest_total));
   cols = rows + (((rows * rows) < dest_total) ? 1 : 0);
@@ -124,7 +200,7 @@ play_game(void) {
   gtk_misc_set_alignment(GTK_MISC(label), 1.0, 0.5);
   gtk_table_attach_defaults(GTK_TABLE(game_table), GTK_WIDGET(label), 0, 1, 0, 1);
   gtk_widget_show(label);
-  current_player = gtk_label_new("Moo");
+  current_player = gtk_label_new(player->name);
   gtk_misc_set_alignment(GTK_MISC(current_player), 0.0, 0.5);
   gtk_table_attach_defaults(GTK_TABLE(game_table), GTK_WIDGET(current_player), 1, 2, 0, 1);
   gtk_widget_show(current_player);
@@ -146,6 +222,9 @@ play_game(void) {
   gtk_widget_show(big_vbox);
   gtk_widget_show(game_win);
 
+  if (!strcasecmp(player->type, "ai") || !strcasecmp(player->type, "computer")) {
+    gtk_timeout_add(COMP_DELAY, computer_player, NULL);
+  }
 }
 
 static gint
@@ -176,6 +255,15 @@ click_cb(GtkWidget *button, gpointer data) {
           gtk_label_set_text(GTK_LABEL(quit_label), "Close");
           break;
         }
+      }
+    } else {
+      if ((player_current = g_list_next(player_current)) == NULL) {
+        player_current = player_group->members;
+      }
+      player = ((player_t *) (player_current->data));
+      gtk_label_set_text(GTK_LABEL(current_player), player->name);
+      if (!strcasecmp(player->type, "ai") || !strcasecmp(player->type, "computer")) {
+        gtk_timeout_add(COMP_DELAY, computer_player, NULL);
       }
     }
   }
