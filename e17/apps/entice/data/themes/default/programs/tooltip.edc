@@ -6,15 +6,6 @@
 		transition, DECELERATE 1.0; 
 		target, "EnticeToolTipClip"; 
 		in, 1.25 0.0; 
-		after: "ToolTipHideEmbryo";
-	    } 
-	    program { 
-		name, "ToolTipHideEmbryo"; 
-		signal, ""; 
-		source, ""; 
-		script {
-		    set_int(tooltips_visible, 0);
-		}
 	    } 
 #define TOOLTIP_CB(pname, pstate, ptext) \
 	    program { name, "ToolTipKillCBS"pname; \
