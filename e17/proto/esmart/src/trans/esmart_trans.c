@@ -79,7 +79,7 @@ _esmart_trans_x11_object_find(Evas_Object *o)
 static Evas_Object *
 _esmart_trans_x11_pixmap_get(Evas *evas, Evas_Object *old, int x, int y, int w, int h)
 {
-   int                  root_list_num, ret, current_desk;
+   int                  root_list_num, num_desks = 0, ret, current_desk;
    unsigned char        *data;
    Evas_Object          *new = NULL;
    Ecore_X_Pixmap       p;
@@ -113,7 +113,7 @@ _esmart_trans_x11_pixmap_get(Evas *evas, Evas_Object *old, int x, int y, int w, 
                                            x_cardinal,
                                            32, &data, &ret))
       {
-         root_list_num = *((int *) data);
+         num_desks = *((int *) data);
          free(data);
       }
       
@@ -124,7 +124,7 @@ _esmart_trans_x11_pixmap_get(Evas *evas, Evas_Object *old, int x, int y, int w, 
             free(root_list);
          root_list = (Ecore_X_Window *) data;
 
-         if (current_desk < root_list_num)
+         if (current_desk < num_desks)
             root = root_list[current_desk];
          
       }
