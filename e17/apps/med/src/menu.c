@@ -5,6 +5,7 @@
 #include "evaswin.h"
 #include "extras.h"
 #include "evaswin.h"
+#include "util.h"
 
 static Evas_List open_menus = NULL;
 static Evas_List menus = NULL;
