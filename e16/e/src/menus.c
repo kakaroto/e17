@@ -1011,6 +1011,7 @@ CreateMenuFromDirectory(char *name, MenuStyle * ms, char *dir)
 #else
 	list = ls(dir, &num);
 	aa = (int)num;
+	freestrlist(list, num);
 #endif
 	bb = (int)st.st_dev;
 	cc = 0;
@@ -1255,784 +1256,805 @@ CreateMenuFromDirectory(char *name, MenuStyle * ms, char *dir)
 		  char                s2[4096], s3[512];
 		  int                 aa, bb, cc;
 
+#ifndef __EMX__
 		  aa = (int)st.st_ino;
-		  bb = (int)st.st_dev;
-		  cc = 0;
-		  if (st.st_mtime > st.st_ctime)
-		     cc = st.st_mtime;
-		  else
-		     cc = st.st_ctime;
-		  Esnprintf(s3, sizeof(s3),
-			    ".%c%c%c%c%c%c%c%c%c%c%c%c%c%c%c%c%c%c",
-			    chmap[(aa >> 0) & 0x3f],
-			    chmap[(aa >> 6) & 0x3f],
-			    chmap[(aa >> 12) & 0x3f],
-			    chmap[(aa >> 18) & 0x3f],
-			    chmap[(aa >> 24) & 0x3f],
-			    chmap[(aa >> 28) & 0x3f],
-			    chmap[(bb >> 0) & 0x3f],
-			    chmap[(bb >> 6) & 0x3f],
-			    chmap[(bb >> 12) & 0x3f],
-			    chmap[(bb >> 18) & 0x3f],
-			    chmap[(bb >> 24) & 0x3f],
-			    chmap[(bb >> 28) & 0x3f],
-			    chmap[(cc >> 0) & 0x3f],
-			    chmap[(cc >> 6) & 0x3f],
-			    chmap[(cc >> 12) & 0x3f],
-			    chmap[(cc >> 18) & 0x3f],
-			    chmap[(cc >> 24) & 0x3f],
-			    chmap[(cc >> 28) & 0x3f]);
-		  bg = (Background *) FindItem(s3, 0, LIST_FINDBY_NAME, LIST_TYPE_BACKGROUND);
-		  if (!bg)
-		    {
-		       ImlibImage         *im;
+#else
+		  aa = (int (st.st_nlink
+#endif
 
-		       im = Imlib_load_image(id, ss);
-		       if (im)
-			 {
-			    ImlibImage         *im2;
-			    ImlibColor          icl;
-			    char                tile = 1, keep_asp = 0;
-			    int                 width, height, scalex = 0,
-			                        scaley = 0;
-			    int                 scr_asp, im_asp, w2, h2;
-			    int                 maxw = 48, maxh = 48;
+			     bb = (int)st.st_dev;
+			     cc = 0;
+			     if (st.st_mtime > st.st_ctime)
+			     cc = st.st_mtime;
+			     else
+			     cc = st.st_ctime;
+			     Esnprintf(s3, sizeof(s3),
+				       ".%c%c%c%c%c%c%c%c%c%c%c%c%c%c%c%c%c%c",
+				       chmap[(aa >> 0) & 0x3f],
+				       chmap[(aa >> 6) & 0x3f],
+				       chmap[(aa >> 12) & 0x3f],
+				       chmap[(aa >> 18) & 0x3f],
+				       chmap[(aa >> 24) & 0x3f],
+				       chmap[(aa >> 28) & 0x3f],
+				       chmap[(bb >> 0) & 0x3f],
+				       chmap[(bb >> 6) & 0x3f],
+				       chmap[(bb >> 12) & 0x3f],
+				       chmap[(bb >> 18) & 0x3f],
+				       chmap[(bb >> 24) & 0x3f],
+				       chmap[(bb >> 28) & 0x3f],
+				       chmap[(cc >> 0) & 0x3f],
+				       chmap[(cc >> 6) & 0x3f],
+				       chmap[(cc >> 12) & 0x3f],
+				       chmap[(cc >> 18) & 0x3f],
+				       chmap[(cc >> 24) & 0x3f],
+				       chmap[(cc >> 28) & 0x3f]);
+			     bg = (Background *) FindItem(s3, 0, LIST_FINDBY_NAME, LIST_TYPE_BACKGROUND);
+			     if (!bg)
+			     {
+			     ImlibImage * im;
 
-			    Esnprintf(s2, sizeof(s2), "%s/cached/img/%s", UserEDir(), s3);
-			    width = im->rgb_width;
-			    height = im->rgb_height;
-			    h2 = maxh;
-			    w2 = (im->rgb_width * h2) / im->rgb_height;
-			    if (w2 > maxw)
-			      {
-				 w2 = maxw;
-				 h2 = (im->rgb_height * w2) / im->rgb_width;
-			      }
-			    im2 = Imlib_clone_scaled_image(id, im, w2, h2);
-			    Imlib_save_image_to_ppm(id, im2, s2);
-			    Imlib_changed_image(id, im2);
-			    Imlib_changed_image(id, im);
-			    Imlib_kill_image(id, im2);
-			    Imlib_kill_image(id, im);
-			    scr_asp = (root.w << 16) / root.h;
-			    im_asp = (width << 16) / height;
-			    if (width == height)
-			      {
-				 scalex = 0;
-				 scaley = 0;
-				 tile = 1;
-				 keep_asp = 0;
-			      }
-			    else if ((!(IN_RANGE(scr_asp, im_asp, 16000))) &&
-				     ((width < 480) && (height < 360)))
-			      {
-				 scalex = 0;
-				 scaley = 0;
-				 tile = 1;
-				 keep_asp = 0;
-			      }
-			    else if (IN_RANGE(scr_asp, im_asp, 16000))
-			      {
-				 scalex = 1024;
-				 scaley = 1024;
-				 tile = 0;
-				 keep_asp = 0;
-			      }
-			    else if (im_asp > scr_asp)
-			      {
-				 scalex = 1024;
-				 scaley = 0;
-				 tile = 0;
-				 keep_asp = 1;
-			      }
-			    else
-			      {
-				 scalex = 0;
-				 scaley = 1024;
-				 tile = 0;
-				 keep_asp = 1;
-			      }
-			    icl.r = 0;
-			    icl.g = 0;
-			    icl.b = 0;
-			    bg = CreateDesktopBG(s3, &icl, ss, tile, keep_asp,
-						 512, 512, scalex, scaley,
-						 NULL, 0, 0, 0, 0, 0);
-			    AddItem(bg, bg->name, 0, LIST_TYPE_BACKGROUND);
-			 }
-		       else
-			  ok = 0;
-		    }
-		  if (ok)
-		    {
-		       ImageClass         *ic = NULL;
-		       char                stmp[4096];
+			     im = Imlib_load_image(id, ss);
+			     if (im)
+			     {
+			     ImlibImage * im2;
+			     ImlibColor icl;
+			     char tile = 1, keep_asp = 0;
+			     int width, height, scalex = 0,
+			     scaley = 0;
+			     int scr_asp, im_asp, w2, h2;
+			     int maxw = 48, maxh = 48;
 
-		       ic = CreateIclass();
-		       ic->name = duplicate("`");
-		       ic->norm.normal = CreateImageState();
-		       Esnprintf(stmp, sizeof(stmp), "cached/img/%s", s3);
-		       ic->norm.normal->im_file = duplicate(stmp);
-		       ic->norm.normal->unloadable = 1;
-		       IclassPopulate(ic);
-		       AddItem(ic, ic->name, 0, LIST_TYPE_ICLASS);
-		       mi = CreateMenuItem(NULL, ic, ACTION_BACKGROUND_SET, s3, NULL);
-		       AddItemToMenu(m, mi);
-		    }
-		  if (f)
-		     fprintf(f, "BG %s %s\n", list[i], s3);
-	       }
-	  }
-     }
-   if (f)
-      fclose(f);
-   if (p)
-      FreeProgressbar(p);
-   if (list)
-      freestrlist(list, num);
-   EDBUG_RETURN(m);
-}
+			     Esnprintf(s2, sizeof(s2), "%s/cached/img/%s", UserEDir(), s3);
+			     width = im->rgb_width;
+			     height = im->rgb_height;
+			     h2 = maxh;
+			     w2 = (im->rgb_width * h2) / im->rgb_height;
+			     if (w2 > maxw)
+			     {
+			     w2 = maxw;
+			     h2 = (im->rgb_height * w2) / im->rgb_width;
+			     }
+			     im2 = Imlib_clone_scaled_image(id, im, w2, h2);
+			     Imlib_save_image_to_ppm(id, im2, s2);
+			     Imlib_changed_image(id, im2);
+			     Imlib_changed_image(id, im);
+			     Imlib_kill_image(id, im2);
+			     Imlib_kill_image(id, im);
+			     scr_asp = (root.w << 16) / root.h;
+			     im_asp = (width << 16) / height;
+			     if (width == height)
+			     {
+			     scalex = 0;
+			     scaley = 0;
+			     tile = 1;
+			     keep_asp = 0;
+			     }
+			     else
+			     if ((!(IN_RANGE(scr_asp, im_asp, 16000))) &&
+				 ((width < 480) && (height < 360)))
+			     {
+			     scalex = 0;
+			     scaley = 0;
+			     tile = 1;
+			     keep_asp = 0;
+			     }
+			     else
+			     if (IN_RANGE(scr_asp, im_asp, 16000))
+			     {
+			     scalex = 1024;
+			     scaley = 1024;
+			     tile = 0;
+			     keep_asp = 0;
+			     }
+			     else
+			     if (im_asp > scr_asp)
+			     {
+			     scalex = 1024;
+			     scaley = 0;
+			     tile = 0;
+			     keep_asp = 1;
+			     }
+			     else
+			     {
+			     scalex = 0;
+			     scaley = 1024;
+			     tile = 0;
+			     keep_asp = 1;
+			     }
+			     icl.r = 0;
+			     icl.g = 0;
+			     icl.b = 0;
+			     bg = CreateDesktopBG(s3, &icl, ss, tile, keep_asp,
+						  512, 512, scalex, scaley,
+						  NULL, 0, 0, 0, 0, 0);
+			     AddItem(bg, bg->name, 0, LIST_TYPE_BACKGROUND);
+			     }
+			     else
+			     ok = 0;
+			     }
+			     if (ok)
+			     {
+			     ImageClass * ic = NULL;
+			     char stmp[4096];
 
-Menu               *
-CreateMenuFromFlatFile(char *name, MenuStyle * ms, char *file, Menu * parent)
-{
-   Menu               *m;
-   char                s[4096], *ff = NULL;
-   static int          calls = 0;
+			     ic = CreateIclass();
+			     ic->name = duplicate("`");
+			     ic->norm.normal = CreateImageState();
+			   Esnprintf(stmp, sizeof(stmp), "cached/img/%s", s3);
+			     ic->norm.normal->im_file = duplicate(stmp);
+			     ic->norm.normal->unloadable = 1;
+			     IclassPopulate(ic);
+			     AddItem(ic, ic->name, 0, LIST_TYPE_ICLASS);
+			     mi = CreateMenuItem(NULL, ic, ACTION_BACKGROUND_SET, s3, NULL);
+			     AddItemToMenu(m, mi);
+			     }
+			     if (f)
+			     fprintf(f, "BG %s %s\n", list[i], s3);
+			     }
+			     }
+			     }
+			     if (f)
+			     fclose(f);
+			     if (p)
+			     FreeProgressbar(p);
+			     if (list)
+			     freestrlist(list, num);
+			     EDBUG_RETURN(m);
+			     }
 
-   EDBUG(5, "CreateMenuFromFlatFile");
-   calls++;
-   if (calls > 255)
-     {
-	calls--;
-	EDBUG_RETURN(NULL);
-     }
-   ff = FindFile(file);
-   if (!ff)
-      EDBUG_RETURN(NULL);
-   if (canread(ff))
-     {
-	m = CreateMenu();
-	m->name = duplicate(name);
-	m->style = ms;
-	m->last_change = moddate(ff);
-	if (parent)
-	   FillFlatFileMenu(m, m->style, m->name, ff, parent);
-	else
-	   FillFlatFileMenu(m, m->style, m->name, ff, m);
-	m->data = ff;
-	m->ref_menu = parent;
-	Esnprintf(s, sizeof(s), "__.%s", m->name);
-	DoIn(s, 2.0, FileMenuUpdate, 0, m);
-	calls--;
-	EDBUG_RETURN(m);
-     }
-   Efree(ff);
-   calls--;
-   EDBUG_RETURN(NULL);
-}
+			     Menu *
+ CreateMenuFromFlatFile(char *name, MenuStyle * ms, char *file, Menu * parent)
+			     {
+			     Menu * m;
+			     char s[4096], *ff = NULL;
+			     static int calls = 0;
 
-static void
-FillFlatFileMenu(Menu * m, MenuStyle * ms, char *name, char *file, Menu * parent)
-{
-   FILE               *f;
-   char                first = 1;
-   char                s[4096];
+			     EDBUG(5, "CreateMenuFromFlatFile");
+			     calls++;
+			     if (calls > 255)
+			     {
+			     calls--;
+			     EDBUG_RETURN(NULL);
+			     }
+			     ff = FindFile(file);
+			     if (!ff)
+			     EDBUG_RETURN(NULL);
+			     if (canread(ff))
+			     {
+			     m = CreateMenu();
+			     m->name = duplicate(name);
+			     m->style = ms;
+			     m->last_change = moddate(ff);
+			     if (parent)
+			   FillFlatFileMenu(m, m->style, m->name, ff, parent);
+			     else
+			     FillFlatFileMenu(m, m->style, m->name, ff, m);
+			     m->data = ff;
+			     m->ref_menu = parent;
+			     Esnprintf(s, sizeof(s), "__.%s", m->name);
+			     DoIn(s, 2.0, FileMenuUpdate, 0, m);
+			     calls--;
+			     EDBUG_RETURN(m);
+			     }
+			     Efree(ff);
+			     calls--;
+			     EDBUG_RETURN(NULL);
+			     }
+
+			     static void
+			     FillFlatFileMenu    (Menu * m, MenuStyle * ms, char *name, char *file, Menu * parent)
+			     {
+			     FILE * f;
+			     char first = 1;
+			     char s[4096];
 
 #ifndef __EMX__
-   f = fopen(file, "r");
+			     f = fopen(file, "r");
 #else
-   f = fopen(file, "rt");
+			     f = fopen(file, "rt");
 #endif
-   while (fgets(s, 4096, f))
-     {
-	s[strlen(s) - 1] = 0;
-	if (first)
-	  {
-	     char               *wd;
+			     while (fgets(s, 4096, f))
+			     {
+			     s[strlen(s) - 1] = 0;
+			     if (first)
+			     {
+			     char *wd;
 
-	     wd = field(s, 0);
-	     if (wd)
-	       {
-		  AddTitleToMenu(m, wd);
-		  Efree(wd);
-	       }
-	     first = 0;
-	  }
-	else
-	  {
-	     char               *txt = NULL, *icon = NULL, *act = NULL;
-	     char               *params = NULL, *tmp = NULL, wd[4096];
-	     MenuItem           *mi;
-	     ImageClass         *icc = NULL;
-	     Menu               *mm;
-	     int                 count = 0;
+			     wd = field(s, 0);
+			     if (wd)
+			     {
+			     AddTitleToMenu(m, wd);
+			     Efree(wd);
+			     }
+			     first = 0;
+			     }
+			     else
+			     {
+			     char *txt = NULL, *icon = NULL, *act = NULL;
+			     char *params = NULL, *tmp = NULL, wd[4096];
 
-	     txt = field(s, 0);
-	     icon = field(s, 1);
-	     act = field(s, 2);
-	     params = field(s, 3);
-	     tmp = NULL;
-	     if (icon)
-	       {
-		  Esnprintf(wd, sizeof(wd), "__FM.%s", icon);
-		  icc = FindItem(wd, 0, LIST_FINDBY_NAME, LIST_TYPE_ICLASS);
-		  if (!icc)
-		    {
-		       icc = CreateIclass();
-		       icc->name = duplicate(wd);
-		       icc->norm.normal = CreateImageState();
-		       icc->norm.normal->im_file = icon;
-		       IclassPopulate(icc);
-		       AddItem(icc, icc->name, 0, LIST_TYPE_ICLASS);
-		    }
-		  else
-		    {
-		       Efree(icon);
-		    }
-	       }
-	     if ((act) && (!strcmp(act, "exec")) && (params))
-	       {
-		  word(params, 1, wd);
-		  tmp = pathtoexec(wd);
-		  if (tmp)
-		    {
-		       Efree(tmp);
+			     MenuItem * mi;
+			     ImageClass * icc = NULL;
+			     Menu * mm;
+			     int count = 0;
 
-		       mi = CreateMenuItem(txt, icc, ACTION_EXEC, params, NULL);
-		       AddItemToMenu(m, mi);
-		       if (txt)
-			  Efree(txt);
-		       if (params)
-			  Efree(params);
-		    }
-	       }
-	     else if ((act) && (!strcmp(act, "menu")) && (params))
-	       {
-		  Esnprintf(wd, sizeof(wd), "__FM.%s.%i", name, count);
-		  count++;
-		  mm = CreateMenuFromFlatFile(wd, ms, params, parent);
-		  if (mm)
-		    {
-		       mm->parent = m;
-		       AddItem(mm, mm->name, mm->win, LIST_TYPE_MENU);
-		       mi = CreateMenuItem(txt, icc, 0, NULL, mm);
-		       AddItemToMenu(m, mi);
-		    }
-		  if (txt)
-		     Efree(txt);
-	       }
-	     else
-	       {
-		  mi = CreateMenuItem(txt, icc, 0, NULL, NULL);
-		  AddItemToMenu(m, mi);
-		  if (txt)
-		     Efree(txt);
-		  if (params)
-		     Efree(params);
-	       }
-	     if (act)
-		Efree(act);
-	  }
-     }
-   fclose(f);
-}
+			     txt = field(s, 0);
+			     icon = field(s, 1);
+			     act = field(s, 2);
+			     params = field(s, 3);
+			     tmp = NULL;
+			     if (icon)
+			     {
+			     Esnprintf(wd, sizeof(wd), "__FM.%s", icon);
+		    icc = FindItem(wd, 0, LIST_FINDBY_NAME, LIST_TYPE_ICLASS);
+			     if (!icc)
+			     {
+			     icc = CreateIclass();
+			     icc->name = duplicate(wd);
+			     icc->norm.normal = CreateImageState();
+			     icc->norm.normal->im_file = icon;
+			     IclassPopulate(icc);
+			     AddItem(icc, icc->name, 0, LIST_TYPE_ICLASS);
+			     }
+			     else
+			     {
+			     Efree(icon);
+			     }
+			     }
+			     if ((act) && (!strcmp(act, "exec")) && (params))
+			     {
+			     word(params, 1, wd);
+			     tmp = pathtoexec(wd);
+			     if (tmp)
+			     {
+			     Efree(tmp);
 
-static void
-FileMenuUpdate(int val, void *data)
-{
-   Menu               *m, *mm;
-   time_t              lastmod = 0;
-   char                s[4096];
+		     mi = CreateMenuItem(txt, icc, ACTION_EXEC, params, NULL);
+			     AddItemToMenu(m, mi);
+			     if (txt)
+			     Efree(txt);
+			     if (params)
+			     Efree(params);
+			     }
+			     }
+			     else
+			     if ((act) && (!strcmp(act, "menu")) && (params))
+			     {
+			 Esnprintf(wd, sizeof(wd), "__FM.%s.%i", name, count);
+			     count++;
+			  mm = CreateMenuFromFlatFile(wd, ms, params, parent);
+			     if (mm)
+			     {
+			     mm->parent = m;
+			     AddItem(mm, mm->name, mm->win, LIST_TYPE_MENU);
+			     mi = CreateMenuItem(txt, icc, 0, NULL, mm);
+			     AddItemToMenu(m, mi);
+			     }
+			     if (txt)
+			     Efree(txt);
+			     }
+			     else
+			     {
+			     mi = CreateMenuItem(txt, icc, 0, NULL, NULL);
+			     AddItemToMenu(m, mi);
+			     if (txt)
+			     Efree(txt);
+			     if (params)
+			     Efree(params);
+			     }
+			     if (act)
+			     Efree(act);
+			     }
+			     }
+			     fclose(f);
+			     }
 
-   m = (Menu *) data;
-   if (!m)
-      return;
-   if (!FindItem((char *)m, m->win, LIST_FINDBY_POINTER, LIST_TYPE_MENU))
-      return;
+			     static void
+			     FileMenuUpdate      (int val, void *data)
+			     {
+			     Menu * m, *mm;
+			     time_t lastmod = 0;
+			     char s[4096];
+
+			     m = (Menu *) data;
+			     if (!m)
+			     return;
+	if (!FindItem((char *)m, m->win, LIST_FINDBY_POINTER, LIST_TYPE_MENU))
+			     return;
    /* if the menu is up dont update */
-   if (((mode.cur_menu_mode) || (clickmenu)) && (mode.cur_menu_depth > 0))
-     {
-	Esnprintf(s, sizeof(s), "__.%s", m->name);
-	DoIn(s, 2.0, FileMenuUpdate, 0, m);
-	return;
-     }
-   mm = m;
-   if (m->ref_menu)
-      mm = m->ref_menu;
-   if (!exists(m->data))
-     {
-	HideMenu(m);
-	EmptyMenu(m);
-	return;
-     }
-   if (m->data)
-      lastmod = moddate(m->data);
-   if (lastmod > m->last_change)
-     {
-	m->last_change = lastmod;
-	if (m == mm)
-	  {
-	     Esnprintf(s, sizeof(s), "__.%s", m->name);
-	     DoIn(s, 2.0, FileMenuUpdate, 0, m);
-	  }
-	EmptyMenu(mm);
-	FillFlatFileMenu(mm, mm->style, mm->name, mm->data, mm);
-	RepackMenu(mm);
-	return;
-     }
-   Esnprintf(s, sizeof(s), "__.%s", m->name);
-   DoIn(s, 2.0, FileMenuUpdate, 0, m);
-   val = 0;
-}
+       if (((mode.cur_menu_mode) || (clickmenu)) && (mode.cur_menu_depth > 0))
+			     {
+			     Esnprintf(s, sizeof(s), "__.%s", m->name);
+			     DoIn(s, 2.0, FileMenuUpdate, 0, m);
+			     return;
+			     }
+			     mm = m;
+			     if (m->ref_menu)
+			     mm = m->ref_menu;
+			     if (!exists(m->data))
+			     {
+			     HideMenu(m);
+			     EmptyMenu(m);
+			     return;
+			     }
+			     if (m->data)
+			     lastmod = moddate(m->data);
+			     if (lastmod > m->last_change)
+			     {
+			     m->last_change = lastmod;
+			     if (m == mm)
+			     {
+			     Esnprintf(s, sizeof(s), "__.%s", m->name);
+			     DoIn(s, 2.0, FileMenuUpdate, 0, m);
+			     }
+			     EmptyMenu(mm);
+		      FillFlatFileMenu(mm, mm->style, mm->name, mm->data, mm);
+			     RepackMenu(mm);
+			     return;
+			     }
+			     Esnprintf(s, sizeof(s), "__.%s", m->name);
+			     DoIn(s, 2.0, FileMenuUpdate, 0, m);
+			     val = 0;
+			     }
 
-Menu               *
-CreateMenuFromGnome(char *name, MenuStyle * ms, char *dir)
-{
-   Menu               *m, *mm;
-   int                 i, num;
-   char              **list, s[4096], ss[4096];
-   MenuItem           *mi;
-   FILE               *f;
-   char               *lang, name_buf[20];
+			     Menu *
+		    CreateMenuFromGnome(char *name, MenuStyle * ms, char *dir)
+			     {
+			     Menu * m, *mm;
+			     int i, num;
+			     char **list, s[4096], ss[4096];
 
-   EDBUG(5, "CreateMenuFromGnome");
+			     MenuItem * mi;
+			     FILE * f;
+			     char *lang, name_buf[20];
 
-   if ((lang = getenv("LANG")) != NULL)
-      Esnprintf(name_buf, sizeof(name_buf), "Name[%s]=", lang);
-   else
-      name_buf[0] = '\0';
+			     EDBUG(5, "CreateMenuFromGnome");
 
-   m = CreateMenu();
-   m->name = duplicate(name);
-   m->style = ms;
-   list = ls(dir, &num);
-   for (i = 0; i < num; i++)
-     {
-	if ((strcmp(list[i], ".")) && (strcmp(list[i], "..")))
-	  {
-	     Esnprintf(ss, sizeof(ss), "%s/%s", dir, list[i]);
-	     if (isdir(ss))
-	       {
-		  Esnprintf(s, sizeof(s), "%s/%s:%s", dir, list[i], name);
-		  mm = CreateMenuFromGnome(s, ms, ss);
-		  mm->parent = m;
-		  AddItem(mm, mm->name, mm->win, LIST_TYPE_MENU);
-		  name = list[i];
-		  if (name_buf[0])
-		    {
-		       Esnprintf(s, sizeof(s), "%s/.directory", ss);
-		       if ((f = fopen(s, "r")) != NULL)
-			 {
-			    while (fgets(s, sizeof(s), f))
-			      {
-				 if (!strncmp(s, name_buf, strlen(name_buf)))
-				   {
-				      if (s[strlen(s) - 1] == '\n')
-					 s[strlen(s) - 1] = 0;
-				      name = &(s[strlen(name_buf)]);
-				      break;
-				   }
-			      }
-			    fclose(f);
-			 }
-		    }
-		  mi = CreateMenuItem(name, NULL, 0, NULL, mm);
-		  AddItemToMenu(m, mi);
-	       }
-	     else
-	       {
+			     if ((lang = getenv("LANG")) != NULL)
+		     Esnprintf(name_buf, sizeof(name_buf), "Name[%s]=", lang);
+			     else
+			     name_buf[0] = '\0';
+
+			     m = CreateMenu();
+			     m->name = duplicate(name);
+			     m->style = ms;
+			     list = ls(dir, &num);
+			     for (i = 0; i < num; i++)
+			     {
+			if ((strcmp(list[i], ".")) && (strcmp(list[i], "..")))
+			     {
+			     Esnprintf(ss, sizeof(ss), "%s/%s", dir, list[i]);
+			     if (isdir(ss))
+			     {
+		      Esnprintf(s, sizeof(s), "%s/%s:%s", dir, list[i], name);
+			     mm = CreateMenuFromGnome(s, ms, ss);
+			     mm->parent = m;
+			     AddItem(mm, mm->name, mm->win, LIST_TYPE_MENU);
+			     name = list[i];
+			     if (name_buf[0])
+			     {
+			     Esnprintf(s, sizeof(s), "%s/.directory", ss);
+			     if ((f = fopen(s, "r")) != NULL)
+			     {
+			     while (fgets(s, sizeof(s), f))
+			     {
+			     if (!strncmp(s, name_buf, strlen(name_buf)))
+			     {
+			     if (s[strlen(s) - 1] == '\n')
+			     s[strlen(s) - 1] = 0;
+			     name = &(s[strlen(name_buf)]);
+			     break;
+			     }
+			     }
+			     fclose(f);
+			     }
+			     }
+			     mi = CreateMenuItem(name, NULL, 0, NULL, mm);
+			     AddItemToMenu(m, mi);
+			     }
+			     else
+			     {
 #ifndef __EMX__
-		  f = fopen(ss, "r");
+			     f = fopen(ss, "r");
 #else
-		  f = fopen(ss, "rt");
+			     f = fopen(ss, "rt");
 #endif
-		  if (f)
-		    {
-		       char               *iname = NULL, *exec = NULL, *texec = NULL,
-		                          *tmp;
-		       char               *en_name = NULL;
+			     if (f)
+			     {
+			     char *iname = NULL, *exec = NULL, *texec = NULL,
+			     *tmp;
+			     char *en_name = NULL;
 
-		       while (fgets(s, sizeof(s), f))
-			 {
-			    if (s[strlen(s) - 1] == '\n')
-			       s[strlen(s) - 1] = 0;
-			    if (!strncmp(s, "Name=", strlen("Name=")))
-			       en_name = duplicate(&(s[strlen("Name=")]));
-			    else if (name_buf[0] &&
-				     !strncmp(s, name_buf, strlen(name_buf)))
-			       iname = duplicate(&(s[strlen(name_buf)]));
-			    else if (!strncmp(s, "TryExec=", strlen("TryExec=")))
-			       texec = duplicate(&(s[strlen("TryExec=")]));
-			    else if (!strncmp(s, "Exec=", strlen("Exec=")))
-			       exec = duplicate(&(s[strlen("Exec=")]));
-			 }
-		       if (iname)
-			 {
-			    if (en_name)
-			       Efree(en_name);
-			 }
-		       else
-			 {
-			    if (en_name)
-			       iname = en_name;
-			 }
-		       fclose(f);
-		       if ((iname) && (exec))
-			 {
-			    tmp = NULL;
-			    if (texec)
-			       tmp = pathtoexec(texec);
-			    if ((tmp) || (!texec))
-			      {
-				 if (tmp)
-				    Efree(tmp);
+			     while (fgets(s, sizeof(s), f))
+			     {
+			     if (s[strlen(s) - 1] == '\n')
+			     s[strlen(s) - 1] = 0;
+			     if (!strncmp(s, "Name=", strlen("Name=")))
+			     en_name = duplicate(&(s[strlen("Name=")]));
+			     else
+			     if (name_buf[0] &&
+				 !strncmp(s, name_buf, strlen(name_buf)))
+			     iname = duplicate(&(s[strlen(name_buf)]));
+			     else
+			     if (!strncmp(s, "TryExec=", strlen("TryExec=")))
+			     texec = duplicate(&(s[strlen("TryExec=")]));
+			     else
+			     if (!strncmp(s, "Exec=", strlen("Exec=")))
+			     exec = duplicate(&(s[strlen("Exec=")]));
+			     }
+			     if (iname)
+			     {
+			     if (en_name)
+			     Efree(en_name);
+			     }
+			     else
+			     {
+			     if (en_name)
+			     iname = en_name;
+			     }
+			     fclose(f);
+			     if ((iname) && (exec))
+			     {
+			     tmp = NULL;
+			     if (texec)
+			     tmp = pathtoexec(texec);
+			     if ((tmp) || (!texec))
+			     {
+			     if (tmp)
+			     Efree(tmp);
 
-				 mi = CreateMenuItem(iname, NULL, ACTION_EXEC, exec, NULL);
-				 AddItemToMenu(m, mi);
-			      }
-			 }
-		       if (iname)
-			  Efree(iname);
-		       if (exec)
-			  Efree(exec);
-		       if (texec)
-			  Efree(texec);
-		    }
-	       }
-	  }
-     }
-   if (list)
-      freestrlist(list, num);
-   EDBUG_RETURN(m);
-}
+		     mi = CreateMenuItem(iname, NULL, ACTION_EXEC, exec, NULL);
+			     AddItemToMenu(m, mi);
+			     }
+			     }
+			     if (iname)
+			     Efree(iname);
+			     if (exec)
+			     Efree(exec);
+			     if (texec)
+			     Efree(texec);
+			     }
+			     }
+			     }
+			     }
+			     if (list)
+			     freestrlist(list, num);
+			     EDBUG_RETURN(m);
+			     }
 
-Menu               *
-CreateMenuFromThemes(char *name, MenuStyle * ms)
-{
-   Menu               *m;
-   char              **lst;
-   int                 i, num;
-   char                ss[4096], *s;
-   MenuItem           *mi;
+			     Menu *
+			     CreateMenuFromThemes(char *name, MenuStyle * ms)
+			     {
+			     Menu * m;
+			     char **lst;
+			     int i, num;
+			     char ss[4096], *s;
 
-   EDBUG(5, "CreateMenuFromThemes");
+			     MenuItem * mi;
 
-   m = CreateMenu();
-   m->name = duplicate(name);
-   m->style = ms;
-   lst = ListThemes(&num);
-   if (lst)
-     {
-	for (i = 0; i < num; i++)
-	  {
-	     s = fullfileof(lst[i]);
-	     Esnprintf(ss, sizeof(ss), "restart_theme %s", s);
-	     Efree(s);
-	     s = fileof(lst[i]);
-	     mi = CreateMenuItem(s, NULL, ACTION_EXIT, ss, NULL);
-	     AddItemToMenu(m, mi);
-	     Efree(s);
-	  }
-	freestrlist(lst, i);
-     }
-   EDBUG_RETURN(m);
-}
+			     EDBUG(5, "CreateMenuFromThemes");
 
-int
-BorderNameCompare(Border * b1, Border * b2)
-{
-   if (b1 && b2)
-      return strcmp(b1->name, b2->name);
+			     m = CreateMenu();
+			     m->name = duplicate(name);
+			     m->style = ms;
+			     lst = ListThemes(&num);
+			     if (lst)
+			     {
+			     for (i = 0; i < num; i++)
+			     {
+			     s = fullfileof(lst[i]);
+			     Esnprintf(ss, sizeof(ss), "restart_theme %s", s);
+			     Efree(s);
+			     s = fileof(lst[i]);
+			  mi = CreateMenuItem(s, NULL, ACTION_EXIT, ss, NULL);
+			     AddItemToMenu(m, mi);
+			     Efree(s);
+			     }
+			     freestrlist(lst, i);
+			     }
+			     EDBUG_RETURN(m);
+			     }
 
-   return 0;
-}
+			     int
+			     BorderNameCompare   (Border * b1, Border * b2)
+			     {
+			     if (b1 && b2)
+			     return strcmp(b1->name, b2->name);
 
-Menu               *
-CreateMenuFromBorders(char *name, MenuStyle * ms)
-{
-   Menu               *m;
-   Border            **lst;
-   int                 i, num;
-   MenuItem           *mi;
+			     return 0;
+			     }
 
-   EDBUG(5, "CreateMenuFromBorders");
+			     Menu *
+			     CreateMenuFromBorders(char *name, MenuStyle * ms)
+			     {
+			     Menu * m;
+			     Border ** lst;
+			     int i, num;
 
-   m = CreateMenu();
-   m->name = duplicate(name);
-   m->style = ms;
-   lst = (Border **) ListItemType(&num, LIST_TYPE_BORDER);
-   if (lst)
-      Quicksort((void **)lst, 0, num - 1,
-		(int (*)(void *, void *))&BorderNameCompare);
-   for (i = 0; i < num; i++)
-     {
-	/* if its not internal (ie doesnt start with _ ) */
-	if (lst[i]->name[0] != '_')
-	  {
-	     mi = CreateMenuItem(lst[i]->name, NULL, ACTION_SET_WINDOW_BORDER, lst[i]->name, NULL);
-	     AddItemToMenu(m, mi);
-	  }
-     }
-   if (lst)
-      Efree(lst);
-   EDBUG_RETURN(m);
-}
+			     MenuItem * mi;
 
-Menu               *
-CreateMenuFromAllEWins(char *name, MenuStyle * ms)
-{
-   Menu               *m;
-   EWin              **lst;
-   int                 i, num;
-   char                s[256];
-   MenuItem           *mi;
+			     EDBUG(5, "CreateMenuFromBorders");
 
-   EDBUG(5, "CreateMenuFromEWins");
-   m = CreateMenu();
-   m->name = duplicate(name);
-   m->style = ms;
+			     m = CreateMenu();
+			     m->name = duplicate(name);
+			     m->style = ms;
+		       lst = (Border **) ListItemType(&num, LIST_TYPE_BORDER);
+			     if (lst)
+			     Quicksort((void **)lst, 0, num - 1,
+				 (int (*)(void *, void *))&BorderNameCompare);
+			     for (i = 0; i < num; i++)
+			     {
+      /* if its not internal (ie doesnt start with _ ) */
+			     if (lst[i]->name[0] != '_')
+			     {
+			     mi = CreateMenuItem(lst[i]->name, NULL, ACTION_SET_WINDOW_BORDER, lst[i]->name, NULL);
+			     AddItemToMenu(m, mi);
+			     }
+			     }
+			     if (lst)
+			     Efree(lst);
+			     EDBUG_RETURN(m);
+			     }
 
-   lst = (EWin **) ListItemType(&num, LIST_TYPE_EWIN);
-   if (lst)
-     {
-	for (i = 0; i < num; i++)
-	  {
-	     if ((!lst[i]->menu) && (!lst[i]->pager) && (!lst[i]->skipwinlist) && (lst[i]->client.title) && (!lst[i]->ibox))
-	       {
-		  Esnprintf(s, sizeof(s), "%i", (int)(lst[i]->client.win));
-		  mi = CreateMenuItem(lst[i]->client.title, NULL, ACTION_FOCUS_SET, s, NULL);
-		  AddItemToMenu(m, mi);
-	       }
-	  }
-	Efree(lst);
-     }
-   EDBUG_RETURN(m);
-}
+			     Menu *
+			     CreateMenuFromAllEWins(char *name, MenuStyle * ms)
+			     {
+			     Menu * m;
+			     EWin ** lst;
+			     int i, num;
+			     char s[256];
 
-Menu               *
-CreateMenuFromDesktopEWins(char *name, MenuStyle * ms, int desk)
-{
-   Menu               *m;
-   EWin              **lst;
-   int                 i, num;
-   char                s[256];
-   MenuItem           *mi;
+			     MenuItem * mi;
 
-   EDBUG(5, "CreateMenuFromEWins");
-   m = CreateMenu();
-   m->name = duplicate(name);
-   m->style = ms;
+			     EDBUG(5, "CreateMenuFromEWins");
+			     m = CreateMenu();
+			     m->name = duplicate(name);
+			     m->style = ms;
 
-   lst = (EWin **) ListItemType(&num, LIST_TYPE_EWIN);
-   if (lst)
-     {
-	for (i = 0; i < num; i++)
-	  {
-	     if (((lst[i]->desktop == desk) || (lst[i]->sticky)) &&
-		 (!lst[i]->menu) && (!lst[i]->pager) && (!lst[i]->skipwinlist) && (lst[i]->client.title) && (!lst[i]->ibox))
-	       {
-		  Esnprintf(s, sizeof(s), "%i", (int)(lst[i]->client.win));
-		  mi = CreateMenuItem(lst[i]->client.title, NULL, ACTION_FOCUS_SET, s, NULL);
-		  AddItemToMenu(m, mi);
-	       }
-	  }
-	Efree(lst);
-     }
-   EDBUG_RETURN(m);
-   desk = 0;
-}
+			   lst = (EWin **) ListItemType(&num, LIST_TYPE_EWIN);
+			     if (lst)
+			     {
+			     for (i = 0; i < num; i++)
+			     {
+			     if ((!lst[i]->menu) && (!lst[i]->pager) && (!lst[i]->skipwinlist) && (lst[i]->client.title) && (!lst[i]->ibox))
+			     {
+		     Esnprintf(s, sizeof(s), "%i", (int)(lst[i]->client.win));
+			     mi = CreateMenuItem(lst[i]->client.title, NULL, ACTION_FOCUS_SET, s, NULL);
+			     AddItemToMenu(m, mi);
+			     }
+			     }
+			     Efree(lst);
+			     }
+			     EDBUG_RETURN(m);
+			     }
 
-Menu               *
-CreateMenuFromDesktops(char *name, MenuStyle * ms)
-{
-   Menu               *m, *mm;
-   EWin              **lst;
-   int                 j, i, num;
-   char                s[256];
-   MenuItem           *mi;
+			     Menu *
+	      CreateMenuFromDesktopEWins(char *name, MenuStyle * ms, int desk)
+			     {
+			     Menu * m;
+			     EWin ** lst;
+			     int i, num;
+			     char s[256];
 
-   EDBUG(5, "CreateMenuFromEWins");
-   m = CreateMenu();
-   m->name = duplicate(name);
-   m->style = ms;
-   lst = (EWin **) ListItemType(&num, LIST_TYPE_EWIN);
-   for (j = 0; j < mode.numdesktops; j++)
-     {
-	mm = CreateMenu();
-	mm->name = duplicate("__SUBMENUDESK_E");
-	mm->style = ms;
-	Esnprintf(s, sizeof(s), "%i", j);
-	mi = CreateMenuItem("Go to this Desktop", NULL, ACTION_GOTO_DESK, s, NULL);
-	AddItemToMenu(mm, mi);
-	for (i = 0; i < num; i++)
-	  {
-	     if (((lst[i]->desktop == j) || (lst[i]->sticky)) &&
-		 (!lst[i]->menu) && (!lst[i]->pager) && (!lst[i]->skipwinlist) && (lst[i]->client.title) && (!lst[i]->ibox))
-	       {
-		  Esnprintf(s, sizeof(s), "%i", (int)(lst[i]->client.win));
-		  mi = CreateMenuItem(lst[i]->client.title, NULL, ACTION_FOCUS_SET, s, NULL);
-		  AddItemToMenu(mm, mi);
-	       }
-	  }
-	mm->parent = m;
-	Esnprintf(s, sizeof(s), "Desktop %i", j);
-	mi = CreateMenuItem(s, NULL, 0, NULL, mm);
-	AddItemToMenu(m, mi);
-     }
-   if (lst)
-      Efree(lst);
-   EDBUG_RETURN(m);
-}
+			     MenuItem * mi;
 
-void
-ShowMenuMasker(Menu * m)
-{
-   EWin               *ewin;
+			     EDBUG(5, "CreateMenuFromEWins");
+			     m = CreateMenu();
+			     m->name = duplicate(name);
+			     m->style = ms;
 
-   ewin = FindEwinByMenu(m);
-   if ((ewin) && (!mode.menu_cover_win))
-     {
-	Window              parent;
-	Window              wl[2];
+			   lst = (EWin **) ListItemType(&num, LIST_TYPE_EWIN);
+			     if (lst)
+			     {
+			     for (i = 0; i < num; i++)
+			     {
+			if (((lst[i]->desktop == desk) || (lst[i]->sticky)) &&
+			    (!lst[i]->menu) && (!lst[i]->pager) && (!lst[i]->skipwinlist) && (lst[i]->client.title) && (!lst[i]->ibox))
+			     {
+		     Esnprintf(s, sizeof(s), "%i", (int)(lst[i]->client.win));
+			     mi = CreateMenuItem(lst[i]->client.title, NULL, ACTION_FOCUS_SET, s, NULL);
+			     AddItemToMenu(m, mi);
+			     }
+			     }
+			     Efree(lst);
+			     }
+			     EDBUG_RETURN(m);
+			     desk = 0;
+			     }
 
-	parent = desks.desk[ewin->desktop].win;
-	mode.menu_cover_win = ECreateEventWindow(parent, 0, 0, root.w, root.h);
-	wl[0] = ewin->win;
-	wl[1] = mode.menu_cover_win;
-	XSelectInput(disp, mode.menu_cover_win, ButtonPressMask |
-		     ButtonReleaseMask | EnterWindowMask | LeaveWindowMask);
-	XRestackWindows(disp, wl, 2);
-	EMapWindow(disp, mode.menu_cover_win);
-     }
-}
+			     Menu *
+			     CreateMenuFromDesktops(char *name, MenuStyle * ms)
+			     {
+			     Menu * m, *mm;
+			     EWin ** lst;
+			     int j, i, num;
+			     char s[256];
 
-void
-HideMenuMasker(void)
-{
-   if (mode.menu_cover_win)
-      EDestroyWindow(disp, mode.menu_cover_win);
-   mode.menu_cover_win = 0;
-}
+			     MenuItem * mi;
 
-Menu               *
-CreateMenuFromGroups(char *name, MenuStyle * ms)
-{
-   Menu               *m, *mm;
-   Group             **lst;
-   int                 i, j, num;
-   char                s[256];
-   MenuItem           *mi;
+			     EDBUG(5, "CreateMenuFromEWins");
+			     m = CreateMenu();
+			     m->name = duplicate(name);
+			     m->style = ms;
+			   lst = (EWin **) ListItemType(&num, LIST_TYPE_EWIN);
+			     for (j = 0; j < mode.numdesktops; j++)
+			     {
+			     mm = CreateMenu();
+			     mm->name = duplicate("__SUBMENUDESK_E");
+			     mm->style = ms;
+			     Esnprintf(s, sizeof(s), "%i", j);
+			     mi = CreateMenuItem("Go to this Desktop", NULL, ACTION_GOTO_DESK, s, NULL);
+			     AddItemToMenu(mm, mi);
+			     for (i = 0; i < num; i++)
+			     {
+			   if (((lst[i]->desktop == j) || (lst[i]->sticky)) &&
+			       (!lst[i]->menu) && (!lst[i]->pager) && (!lst[i]->skipwinlist) && (lst[i]->client.title) && (!lst[i]->ibox))
+			     {
+		     Esnprintf(s, sizeof(s), "%i", (int)(lst[i]->client.win));
+			     mi = CreateMenuItem(lst[i]->client.title, NULL, ACTION_FOCUS_SET, s, NULL);
+			     AddItemToMenu(mm, mi);
+			     }
+			     }
+			     mm->parent = m;
+			     Esnprintf(s, sizeof(s), "Desktop %i", j);
+			     mi = CreateMenuItem(s, NULL, 0, NULL, mm);
+			     AddItemToMenu(m, mi);
+			     }
+			     if (lst)
+			     Efree(lst);
+			     EDBUG_RETURN(m);
+			     }
 
-   EDBUG(5, "CreateMenuFromEWins");
-   m = CreateMenu();
-   m->name = duplicate(name);
-   m->style = ms;
-   lst = (Group **) ListItemType(&num, LIST_TYPE_GROUP);
-   if (lst)
-     {
-	for (i = 0; i < num; i++)
-	  {
-	     mm = CreateMenu();
-	     mm->name = duplicate("__SUBMENUGROUP_E");
-	     mm->style = ms;
-	     Esnprintf(s, sizeof(s), "%i", lst[i]->members[0]->client.win);
-	     mi = CreateMenuItem("Show/Hide this group", NULL, ACTION_SHOW_HIDE_GROUP, s, NULL);
-	     AddItemToMenu(mm, mi);
-	     mi = CreateMenuItem("Iconify this group", NULL, ACTION_ICONIFY, s, NULL);
-	     AddItemToMenu(mm, mi);
+			     void
+			     ShowMenuMasker      (Menu * m)
+			     {
+			     EWin * ewin;
 
-	     for (j = 0; j < lst[i]->num_members; j++)
-	       {
-		  Esnprintf(s, sizeof(s), "%i", lst[i]->members[j]->client.win);
-		  mi = CreateMenuItem(lst[i]->members[j]->client.title, NULL, ACTION_FOCUS_SET, s, NULL);
-		  AddItemToMenu(mm, mi);
-	       }
-	     mm->parent = m;
-	     Esnprintf(s, sizeof(s), "Group %i", i);
-	     mi = CreateMenuItem(s, NULL, 0, NULL, mm);
-	     AddItemToMenu(m, mi);
-	  }
-	Efree(lst);
-     }
-   EDBUG_RETURN(m);
-}
+			     ewin = FindEwinByMenu(m);
+			     if ((ewin) && (!mode.menu_cover_win))
+			     {
+			     Window parent;
+			     Window wl[2];
 
-Menu               *
-RefreshGroupMenu(Menu * m)
-{
-   char                was = 0;
-   int                 lx = 0, ly = 0;
-   EWin               *ewin;
+			     parent = desks.desk[ewin->desktop].win;
+       mode.menu_cover_win = ECreateEventWindow(parent, 0, 0, root.w, root.h);
+			     wl[0] = ewin->win;
+			     wl[1] = mode.menu_cover_win;
+		     XSelectInput(disp, mode.menu_cover_win, ButtonPressMask |
+		       ButtonReleaseMask | EnterWindowMask | LeaveWindowMask);
+			     XRestackWindows(disp, wl, 2);
+			     EMapWindow(disp, mode.menu_cover_win);
+			     }
+			     }
 
-   EDBUG(5, "RefreshGroupMenu");
-   if (m)
-     {
-	ewin = FindEwinByMenu(m);
-	if ((m->win) && (ewin))
-	  {
-	     lx = ewin->x;
-	     ly = ewin->y;
-	     was = 1;
-	  }
-	DestroyMenu(m);
-     }
-   m = NULL;
-   if (!group_menu_style)
-     {
-	EDBUG_RETURN(NULL);
-     }
-   m = CreateMenuFromGroups("MENU", group_menu_style);
-   if ((was) && (m))
-     {
-	ShowMenu(m, 1);
-	ewin = FindEwinByMenu(m);
-	if (ewin)
-	  {
-	     MoveEwin(ewin, lx, ly);
-	     ShowEwin(ewin);
-	  }
-	mode.cur_menu[0] = m;
-	mode.cur_menu_depth = 1;
-	ShowMenuMasker(m);
-     }
-   EDBUG_RETURN(m);
-}
+			     void
+			     HideMenuMasker      (void)
+			     {
+			     if (mode.menu_cover_win)
+			     EDestroyWindow(disp, mode.menu_cover_win);
+			     mode.menu_cover_win = 0;
+			     }
 
-void
-ShowGroupMenu(void)
-{
-   static MenuStyle   *ms = NULL;
-   static Menu        *m = NULL;
+			     Menu *
+			     CreateMenuFromGroups(char *name, MenuStyle * ms)
+			     {
+			     Menu * m, *mm;
+			     Group ** lst;
+			     int i, j, num;
+			     char s[256];
 
-   EDBUG(5, "ShowGroupMenu");
-   XUngrabPointer(disp, CurrentTime);
-   if (!group_menu_style)
-     {
-	ms = FindItem("GROUP_MENU", 0, LIST_FINDBY_NAME, LIST_TYPE_MENU_STYLE);
-	if (!ms)
-	   ms = FindItem("DEFAULT", 0, LIST_FINDBY_NAME, LIST_TYPE_MENU_STYLE);
-	if (!ms)
-	   EDBUG_RETURN_;
-     }
-   group_menu_style = ms;
-   mode.cur_menu_mode = 1;
-   m = NULL;
-   m = RefreshGroupMenu(group_menu);
-   group_menu = m;
-   if (m)
-     {
-	if (!FindEwinByMenu(m))
-	   ShowMenu(m, 0);
-	mode.cur_menu[0] = m;
-	mode.cur_menu_depth = 1;
-	ShowMenuMasker(m);
-     }
-   else
-     {
-	mode.cur_menu[0] = NULL;
-	mode.cur_menu_depth = 0;
-	HideMenuMasker();
-     }
-   EDBUG_RETURN_;
-}
+			     MenuItem * mi;
+
+			     EDBUG(5, "CreateMenuFromEWins");
+			     m = CreateMenu();
+			     m->name = duplicate(name);
+			     m->style = ms;
+			 lst = (Group **) ListItemType(&num, LIST_TYPE_GROUP);
+			     if (lst)
+			     {
+			     for (i = 0; i < num; i++)
+			     {
+			     mm = CreateMenu();
+			     mm->name = duplicate("__SUBMENUGROUP_E");
+			     mm->style = ms;
+		Esnprintf(s, sizeof(s), "%i", lst[i]->members[0]->client.win);
+			     mi = CreateMenuItem("Show/Hide this group", NULL, ACTION_SHOW_HIDE_GROUP, s, NULL);
+			     AddItemToMenu(mm, mi);
+			     mi = CreateMenuItem("Iconify this group", NULL, ACTION_ICONIFY, s, NULL);
+			     AddItemToMenu(mm, mi);
+
+			     for (j = 0; j < lst[i]->num_members; j++)
+			     {
+		Esnprintf(s, sizeof(s), "%i", lst[i]->members[j]->client.win);
+			     mi = CreateMenuItem(lst[i]->members[j]->client.title, NULL, ACTION_FOCUS_SET, s, NULL);
+			     AddItemToMenu(mm, mi);
+			     }
+			     mm->parent = m;
+			     Esnprintf(s, sizeof(s), "Group %i", i);
+			     mi = CreateMenuItem(s, NULL, 0, NULL, mm);
+			     AddItemToMenu(m, mi);
+			     }
+			     Efree(lst);
+			     }
+			     EDBUG_RETURN(m);
+			     }
+
+			     Menu *
+			     RefreshGroupMenu(Menu * m)
+			     {
+			     char was = 0;
+			     int lx = 0, ly = 0;
+
+			     EWin * ewin;
+
+			     EDBUG(5, "RefreshGroupMenu");
+			     if (m)
+			     {
+			     ewin = FindEwinByMenu(m);
+			     if ((m->win) && (ewin))
+			     {
+			     lx = ewin->x;
+			     ly = ewin->y;
+			     was = 1;
+			     }
+			     DestroyMenu(m);
+			     }
+			     m = NULL;
+			     if (!group_menu_style)
+			     {
+			     EDBUG_RETURN(NULL);
+			     }
+			   m = CreateMenuFromGroups("MENU", group_menu_style);
+			     if ((was) && (m))
+			     {
+			     ShowMenu(m, 1);
+			     ewin = FindEwinByMenu(m);
+			     if (ewin)
+			     {
+			     MoveEwin(ewin, lx, ly);
+			     ShowEwin(ewin);
+			     }
+			     mode.cur_menu[0] = m;
+			     mode.cur_menu_depth = 1;
+			     ShowMenuMasker(m);
+			     }
+			     EDBUG_RETURN(m);
+			     }
+
+			     void
+			     ShowGroupMenu       (void)
+			     {
+			     static MenuStyle * ms = NULL;
+			     static Menu * m = NULL;
+
+			     EDBUG(5, "ShowGroupMenu");
+			     XUngrabPointer(disp, CurrentTime);
+			     if (!group_menu_style)
+			     {
+       ms = FindItem("GROUP_MENU", 0, LIST_FINDBY_NAME, LIST_TYPE_MENU_STYLE);
+			     if (!ms)
+	  ms = FindItem("DEFAULT", 0, LIST_FINDBY_NAME, LIST_TYPE_MENU_STYLE);
+			     if (!ms)
+			     EDBUG_RETURN_;
+			     }
+			     group_menu_style = ms;
+			     mode.cur_menu_mode = 1;
+			     m = NULL;
+			     m = RefreshGroupMenu(group_menu);
+			     group_menu = m;
+			     if (m)
+			     {
+			     if (!FindEwinByMenu(m))
+			     ShowMenu(m, 0);
+			     mode.cur_menu[0] = m;
+			     mode.cur_menu_depth = 1;
+			     ShowMenuMasker(m);
+			     }
+			     else
+			     {
+			     mode.cur_menu[0] = NULL;
+			     mode.cur_menu_depth = 0;
+			     HideMenuMasker();
+			     }
+			     EDBUG_RETURN_;
+			     }
