@@ -31,6 +31,7 @@ struct _imlib_ttf_hash
    int                  type;
    int                  size;
    ImlibTTFHashElm    **hash;
+   int                  mem_use;
 };
 #endif
 

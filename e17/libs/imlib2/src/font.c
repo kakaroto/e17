@@ -670,6 +670,8 @@ __imlib_create_ttf_font_hash_table(const char *ttfontname, int type, int argsize
    else
      h->size = argsize;
    h->hash = (ImlibTTFHashElm **)malloc( sizeof(ImlibTTFHashElm *) * h->size);
+   h->mem_use += sizeof(ImlibTTFHashElm *) * h->size;
+   
    for (i=0; i<h->size; i++)
      h->hash[i] = NULL;
 
@@ -677,9 +679,11 @@ __imlib_create_ttf_font_hash_table(const char *ttfontname, int type, int argsize
      h->hash[i] = (ImlibTTFHashElm *)malloc(sizeof(ImlibTTFHashElm));
      h->hash[i]->glyph = (TT_Glyph *)malloc(sizeof(TT_Glyph));
      memset(h->hash[i]->glyph, 0, sizeof(TT_Glyph));
-     
+      
      h->hash[i]->glyph_raster = NULL;
    }
+   h->mem_use += sizeof(ImlibTTFHashElm) * h->size; 
+   h->mem_use += sizeof(TT_Glyph) * h->size; 
    return h;
 }
 
@@ -1155,13 +1159,16 @@ __imlib_render_str(ImlibImage *im, ImlibFont *f, int drx, int dry, const char *t
 #ifdef TTF_FONT_CACHE
 		  TT_Get_Glyph_Pixmap(*(fn->glyph_hash->hash[j]->glyph), rtmp, -xmin, -ymin);
 		  fn->glyph_hash->hash[j]->glyph_raster = rtmp;
+		  fn->glyph_hash->mem_use += 
+		     (((xmax - xmin) / 64) + 1) *
+		     (((ymax - ymin) / 64) + 1);
 #else
 		  TT_Get_Glyph_Pixmap(fn->glyphs[j], rtmp, -xmin, -ymin);
 		  fn->glyphs_cached_right[j] = rtmp;
-#endif
 		  fn->mem_use += 
 		     (((xmax - xmin) / 64) + 1) *
 		     (((ymax - ymin) / 64) + 1);
+#endif
 	       }
 	     if (rtmp)
 	       {
@@ -1913,6 +1920,9 @@ __imlib_get_cached_font_size(void)
 {
    ImlibFont *f;
    int num = 0;
+#ifdef  TTF_FONT_CACHE
+   ImlibTTFHash *ch;
+#endif
    
 #ifdef  XMB_FONT_CACHE
    ImlibXmbHash *h;
@@ -1926,7 +1936,18 @@ __imlib_get_cached_font_size(void)
      }
    /* printf("xfd font cache size=%d\n", num); */
 #endif
+   
+#ifdef  TTF_FONT_CACHE
 
+   ch = ttfhashes;
+   while(h)
+     {
+        if (ch->references == 0)
+	   num += ch->mem_use;
+	ch = ch->next;
+     }
+#endif
+   
    f = fonts;
    while(f)
      {
@@ -2183,7 +2204,7 @@ __imlib_free_ttf_font_hash(ImlibTTFHash *h)
 	  {	
 	    if ((h->hash) && (h->hash[i]) && (h->hash[i]->glyph_raster))
 	      __imlib_destroy_font_raster(h->hash[i]->glyph_raster);
-	    if ((h->hash) && TT_VALID(*(h->hash[i]->glyph)))
+	    if ((h->hash) && (h->hash[i]) && TT_VALID(*(h->hash[i]->glyph)))
 	      TT_Done_Glyph(*(h->hash[i]->glyph));
 	    free(h->hash[i]);
 	  }
