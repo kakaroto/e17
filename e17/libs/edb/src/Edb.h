@@ -25,13 +25,13 @@ void                e_db_flush(void);
 int                 e_db_runtime_flush(void);
 
 /* higher level functions.............................. */
-/* put an integer into the db (handle endianess flip too */
+/* put an integer into the db (handle endianess flip too) */
 void                e_db_int_set(E_DB_File * db, char *key, int val);
-/* get the integer value form the bd - handle endianess too */
+/* get the integer value form the bd - handle endianess too - return 1 if ok */
 int                 e_db_int_get(E_DB_File * db, char *key, int *val);
 /* set a float in the db - handle endianess */
 void                e_db_float_set(E_DB_File * db, char *key, float val);
-/* get the float from the db - handle endianess */
+/* get the float from the db - handle endianess - return 1 if ok, 0 if not */
 int                 e_db_float_get(E_DB_File * db, char *key, float *val);
 /* set a string in the db */
 void                e_db_str_set(E_DB_File * db, char *key, char *str);
