@@ -22,6 +22,9 @@ typedef struct _Engrave_File Engrave_File;
  */
 struct _Engrave_File
 {
+  char *font_dir;    /**< The font directory */
+  char *im_dir;      /**< The image directory */
+
   Evas_List *images; /**< The list of images in the file */
   Evas_List *fonts;  /**< The list of fonts in the file  */
   Evas_List *data;   /**< The list of data items in the file */
@@ -30,6 +33,12 @@ struct _Engrave_File
 
 Engrave_File *engrave_file_new(void);
 void engrave_file_free(Engrave_File *ef);
+
+void engrave_file_image_dir_set(Engrave_File *ef, const char *dir);
+void engrave_file_font_dir_set(Engrave_File *ef, const char *dir);
+
+const char *engrave_file_image_dir_get(Engrave_File *ef);
+const char *engrave_file_font_dir_get(Engrave_File *ef);
 
 void engrave_file_font_add(Engrave_File *e, Engrave_Font *ef);
 void engrave_file_image_add(Engrave_File *ef, Engrave_Image *ei);

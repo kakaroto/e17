@@ -56,7 +56,7 @@ engrave_load_edc(const char *file, const char *imdir, const char *fontdir)
   }
 
   engrave_filename = strdup(file);
-  enf = engrave_parse(file);
+  enf = engrave_parse(file, imdir, fontdir);
   FREE(engrave_filename);
   unlink(tmpf);
 

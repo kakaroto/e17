@@ -27,6 +27,9 @@ engrave_file_free(Engrave_File *ef)
   Evas_List *l;
   if (!ef) return;
 
+  IF_FREE(ef->im_dir);
+  IF_FREE(ef->font_dir);
+
   for (l = ef->images; l; l = l->next) {
     Engrave_Image *ei = l->data;
     ef->images = evas_list_remove(ef->images, ei);
@@ -56,6 +59,60 @@ engrave_file_free(Engrave_File *ef)
   ef->groups = evas_list_free(ef->groups);
 
   FREE(ef);
+}
+
+/**
+ * engrave_file_image_dir_set - set the image directory for the file
+ * @param ef: The Engrave_File to set the image dir into
+ * @param dir: The directory to set
+ *
+ * @return Returns no value.
+ */
+void
+engrave_file_image_dir_set(Engrave_File *ef, const char *dir)
+{
+  if (!ef || !dir) return;
+  IF_FREE(ef->im_dir);
+  ef->im_dir = strdup(dir);
+}
+
+/**
+ * engrave_file_font_dir_set - set the font dir for the file
+ * @param ef: The Engrave_File to set the font dir on
+ * @param dir: The directory to set the font dir too
+ *
+ * @return Returns no value.
+ */
+void
+engrave_file_font_dir_set(Engrave_File *ef, const char *dir)
+{
+  if (!ef || !dir) return;
+  IF_FREE(ef->font_dir);
+  ef->font_dir = strdup(dir);
+}
+
+/**
+ * engrave_file_image_dir_get - get the image directory
+ * @param ef: The Engrave_File to get the directory from
+ *
+ * @return Returns the current image directory or NULL on failure
+ */
+const char *
+engrave_file_image_dir_get(Engrave_File *ef)
+{
+  return (ef ? ef->im_dir : NULL);
+}
+
+/**
+ * engrave_file_font_dir_get - get the font directory
+ * @param ef: The Engrave_File to get the directory from
+ * 
+ * @return Returns the current font directory
+ */
+const char *
+engrave_file_font_dir_get(Engrave_File *ef)
+{
+  return (ef ? ef->font_dir : NULL);
 }
 
 /**

@@ -4,9 +4,11 @@ static Engrave_File *engrave_file = 0;
 extern FILE *yyin;
 
 Engrave_File *
-engrave_parse(char *file)
+engrave_parse(const char *file, const char *imdir, const char *fontdir)
 {
   engrave_file = engrave_file_new();
+  engrave_file_image_dir_set(engrave_file, imdir);
+  engrave_file_font_dir_set(engrave_file, fontdir);
 
   yyin = fopen(file, "r");
   yyparse();
@@ -53,10 +55,7 @@ engrave_parse_group_data(char *key, char *value)
   Engrave_Group *group;
   Engrave_Data *data;
  
-  /* XXX why is this put inboth file and group data? */
   data = engrave_data_new(key, value);
-//  engrave_file_data_add(engrave_file, data);
-
   group = engrave_file_group_last_get(engrave_file);
   engrave_group_data_add(group, data);
 }

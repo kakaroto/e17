@@ -3,7 +3,8 @@
 
 #include "Engrave.h"
 
-Engrave_File * engrave_parse(const char *file);
+Engrave_File * engrave_parse(const char *file, const char *imdir, 
+                                                const char *fontdir);
 
 #endif
 

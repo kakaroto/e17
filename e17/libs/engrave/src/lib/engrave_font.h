@@ -23,7 +23,7 @@ typedef struct _Engrave_Font Engrave_Font;
 struct _Engrave_Font
 {
   char *name; /**< The font alias */
-  char *path; /**< The font path */
+  char *path; /**< The font relative path */
 };
 
 Engrave_Font *engrave_font_new(const char *path, const char *name);

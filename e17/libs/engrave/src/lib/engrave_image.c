@@ -36,7 +36,6 @@ engrave_image_free(Engrave_Image *ei)
   if (!ei) return;
 
   IF_FREE(ei->name);
-  IF_FREE(ei->path);
   FREE(ei);
 }
 
@@ -65,18 +64,6 @@ const char *
 engrave_image_name_get(Engrave_Image *ei)
 {
   return (ei ? ei->name : NULL);
-}
-
-/**
- * engrave_image_path_get - get the image path
- * @param ei: The Engrave_Image to get the path from
- * 
- * @return Returns the path of the image or NULL on failure.
- */
-const char *
-engrave_image_path_get(Engrave_Image *ei)
-{
-  return (ei ? ei->path : NULL);
 }
 
 /**
