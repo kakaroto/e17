@@ -49,8 +49,11 @@ This packages contains the core API libs and headers for building epplets.
 if [ -z $EROOT ]; then EROOT=%{deroot}; export EROOT; fi
 if [ -z $EBIN ]; then EBIN=%{debin}; export EBIN; fi
 
-CFLAGS="$RPM_OPT_FLAGS" \
-./configure --prefix=%{prefix}
+if [ -z $GNOME_FRIENDLY ]; then
+CFLAGS="$RPM_OPT_FLAGS" ./configure --prefix=%{prefix}
+else
+CFLAGS="$RPM_OPT_FLAGS" ./configure --prefix=%{prefix} --disable-autorespawn
+fi
 
 make
 
