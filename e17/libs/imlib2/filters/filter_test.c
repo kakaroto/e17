@@ -49,19 +49,16 @@ void *exec( char *filter, void *im, pIFunctionParam params )
       printf( "filter_test.c: tint called\n" );
  */
       
-#define ASSIGN_DATA8_VALUE( var, v ) if( strcmp( ptr->key, var ) == 0 ) v = (DATA8)atoi( (char *)ptr->data )
-#define ASSIGN_VALUE( var, v )       if( strcmp( ptr->key, var ) == 0 ) v = atoi( (char *)ptr->data )
-      
       for( ptr = params; ptr != NULL; ptr = ptr->next )
       {
-	 ASSIGN_DATA8_VALUE( "red", r );
-	 ASSIGN_DATA8_VALUE( "blue", b );
-	 ASSIGN_DATA8_VALUE( "green", g );
-	 ASSIGN_VALUE( "x", x );
-	 ASSIGN_VALUE( "y", y );
-	 ASSIGN_VALUE( "w", w );
-	 ASSIGN_VALUE( "h", h );
-	 ASSIGN_DATA8_VALUE( "alpha", a );
+	 ASSIGN_DATA8( "red", r );
+	 ASSIGN_DATA8( "blue", b );
+	 ASSIGN_DATA8( "green", g );
+	 ASSIGN_INT( "x", x );
+	 ASSIGN_INT( "y", y );
+	 ASSIGN_INT( "w", w );
+	 ASSIGN_INT( "h", h );
+	 ASSIGN_DATA8( "alpha", a );
       }
 /*
       printf( "Using values red=%d,blue=%d,green=%d,x=%d,y=%d,height=%d,width=%d,alpha=%d\n", r,b,g,x,y,w,h,a );

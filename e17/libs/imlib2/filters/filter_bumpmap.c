@@ -15,33 +15,14 @@
 #include "colormod.h"
 #include "blend.h"
 
-#define ASSIGN_IMAGE(k, v) \
-	if (!strcmp((k), par->key)) {				\
-		if (par->type == VAR_PTR) {			\
-			(v) = ((Imlib_Image)par->data);		\
-		} else if (par->type == VAR_CHAR) {		\
-			if (!free_map)				\
-				(v) = imlib_load_image(par->data); \
-			free_map = 1;				\
-		}						\
-	}
-
-#define ASSIGN_INT(k, v) \
-	if (!strcmp((k), par->key)) {				\
-		if (par->type == VAR_PTR) {			\
-			(v) = (*(int *)par->data);		\
-		} else if (par->type == VAR_CHAR) {		\
-			(v) = strtol(par->data, 0, 0);		\
-		}						\
-	}
-
 #define PI (4 * atan(1))
 
 static Imlib_Image
 bump_map(Imlib_Image im, pIFunctionParam par)
 {
 	Imlib_Image map = im;
-	double an = 0, el = 30, d = 0x200;
+        pIFunctionParam ptr;
+ 	double an = 0, el = 30, d = 0x200;
 	double red = 0x200, green = 0x200, blue = 0x200;
 	double ambient = 0;
 
@@ -51,7 +32,7 @@ bump_map(Imlib_Image im, pIFunctionParam par)
 	double z, z_2, x2, y2;
 	int w, h, i, j, w2, h2, wh2, mx, my;
 
-	for (; par; par = par->next) {
+	for (ptr = par; ptr; ptr = ptr->next) {
 		ASSIGN_IMAGE("map",       map);
 		ASSIGN_INT  ("angle",     an);
 		ASSIGN_INT  ("elevation", el);
@@ -146,6 +127,7 @@ static Imlib_Image
 bump_map_point(Imlib_Image im, pIFunctionParam par)
 {
 	Imlib_Image map = im;
+        pIFunctionParam ptr;
 	double x = 0, y = 0, z = 30, d = 0x200;
 	double red = 0x200, green = 0x200, blue = 0x200;
 	double ambient = 0;
@@ -156,7 +138,7 @@ bump_map_point(Imlib_Image im, pIFunctionParam par)
 	double z_2, x2, y2;
 	int w, h, i, j, w2, h2, wh2, mx, my;
 
-	for (; par; par = par->next) {
+	for (ptr = par; ptr; ptr = ptr->next) {
 		ASSIGN_IMAGE("map",     map);
 		ASSIGN_INT  ("x",       x);
 		ASSIGN_INT  ("y",       y);

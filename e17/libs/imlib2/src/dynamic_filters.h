@@ -23,7 +23,6 @@ struct _imlib_external_filter
    pImlibExternalFilter next;
 };
 
-
 void                 __imlib_dynamic_filters_init();
 void                 __imlib_dynamic_filters_deinit();
 pImlibExternalFilter __imlib_get_dynamic_filter( char *name );
