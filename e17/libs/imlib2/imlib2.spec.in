@@ -117,7 +117,7 @@ rm -rf $RPM_BUILD_ROOT
 
 %files
 %defattr(-,root,root)
-%doc README COPYING ChangeLog TODO
+%doc README COPYING ChangeLog TODO doc/*
 %attr(755,root,root) %{prefix}/lib/lib*.so.*
 %attr(755,root,root) %{prefix}/lib/loaders
 %{prefix}/bin/*

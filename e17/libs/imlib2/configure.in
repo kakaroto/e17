@@ -143,6 +143,201 @@ fi
 AC_CHECK_LIB(dl, dlopen, dlopen_libs=-ldl, [
 ], -ldl)
 
+EXTRA_LIBS="-L/usr/local/lib -L/usr/X11R6/lib"
+
+# Test for libjpeg
+AC_CHECK_LIB(jpeg, jpeg_destroy_decompress,
+  jpeg_ok=yes,
+  jpeg_ok=no
+  AC_MSG_WARN(*** Native JPEG support will not be built (JPEG library not found) ***), $EXTAR_LIBS)
+if test "$jpeg_ok" = yes; then
+  AC_MSG_CHECKING([for jpeglib.h])
+  AC_TRY_CPP(
+  [#include <stdio.h>
+   #undef PACKAGE
+   #undef VERSION
+   #include <jpeglib.h>],
+  jpeg_ok=yes,
+  jpeg_ok=no)
+  AC_MSG_RESULT($jpeg_ok)
+  if test "$jpeg_ok" = yes; then
+    JPEGLIBS="-ljpeg"
+  else
+    AC_MSG_WARN(*** Native JPEG support will not be built (JPEG header file not found) ***)
+  fi
+fi
+
+# Test for libpng
+AC_CHECK_LIB(png, png_read_info,
+  png_ok=yes,
+  png_ok=no
+  AC_MSG_WARN(*** Native PNG support will not be built (PNG library not found) ***), $EXTRA_LIBS -lz -lm)
+if test "$png_ok" = yes; then
+  AC_MSG_CHECKING([for png.h])
+  AC_TRY_CPP(
+  [#include <stdio.h>
+   #undef PACKAGE
+   #undef VERSION
+   #include <png.h>],
+  png_ok=yes,
+  png_ok=no)
+  AC_MSG_RESULT($png_ok)
+  if test "$png_ok" = yes; then
+    PNGLIBS="-lpng -lz -lm"
+  else
+    AC_MSG_WARN(*** Native PNG support will not be built (PNG header file not found) ***)
+  fi
+fi
+
+# Test for libedb
+AC_CHECK_LIB(edb, e_db_open,
+  edb_ok=yes,
+  edb_ok=no
+  AC_MSG_WARN(*** Native EDB support will not be built (EDB library not found) ***), $EXTRA_LIBS -lz)
+if test "$edb_ok" = yes; then
+  AC_MSG_CHECKING([for Edb.h])
+  AC_TRY_CPP(
+  [#include <stdio.h>
+   #undef PACKAGE
+   #undef VERSION
+   #include <Edb.h>],
+  edb_ok=yes,
+  edb_ok=no)
+  AC_MSG_RESULT($edb_ok)
+  if test "$edb_ok" = yes; then
+    PNGLIBS="-ledb"
+  else
+    AC_MSG_WARN(*** Native EDB support will not be built (EDB header file not found) ***)
+  fi
+fi
+
+# Test for libtiff
+AC_CHECK_LIB(tiff, TIFFReadScanline,
+  tiff_libs="-ltiff"
+  tiff_ok=yes,
+AC_CHECK_LIB(tiff, TIFFWriteScanline,
+  tiff_libs="-ltiff -ljpeg -lz -lm"
+  tiff_ok=yes,
+AC_CHECK_LIB(tiff34, TIFFFlushData,
+  tiff_libs="-ltiff -ljpeg -lz -lm"
+  tiff_ok=yes,
+  tiff_ok=no
+  AC_MSG_WARN(*** Native TIFF support will not be built (TIFF library not found) ***), 
+  $EXTRA_LIBS -ljpeg -lz -lm),
+  $EXTRA_LIBS -ljpeg -lz -lm),
+  $EXTRA_LIBS)
+if test "$tiff_ok" = yes; then
+  AC_MSG_CHECKING([for tiffio.h])
+  AC_TRY_CPP(
+  [#include <stdio.h>
+   #undef PACKAGE
+   #undef VERSION
+   #include <tiffio.h>],
+  tiff_ok=yes,
+  tiff_ok=no)
+  AC_MSG_RESULT($tiff_ok)
+  if test "$tiff_ok" = yes; then
+    TIFFLIBS=$tiff_libs
+  else
+    AC_MSG_WARN(*** Native TIFF support will not be built (TIFF header file not found) ***)
+  fi
+fi
+
+# Test for libungif
+AC_CHECK_LIB(ungif, DGifOpenFileName,
+  gif_libs="-lungif"
+  gif_ok=yes,
+  gif_ok=no
+  $EXTRA_LIBS)
+if test "$gif_ok" = yes; then
+  AC_MSG_CHECKING([for gif_lib.h])
+  AC_TRY_CPP(
+  [#include <stdio.h>
+   #undef PACKAGE
+   #undef VERSION
+   #include <gif_lib.h>],
+  gif_ok=yes,
+  gif_ok=no)
+  AC_MSG_RESULT($gif_ok)
+  if test "$gif_ok" = yes; then
+    GIFLIBS=$gif_libs
+  fi
+fi
+
+# Test for libgif
+if test "$gif_ok" = no; then
+  AC_CHECK_LIB(gif, DGifOpenFileName,
+    gif_libs="-lgif"
+    gif_ok=yes,
+    gif_ok=no
+    AC_MSG_WARN(*** Native GIF support will not be built (GIF library not found) ***), $EXTRA_LIBS)
+  if test "$gif_ok" = yes; then
+    AC_MSG_CHECKING([for gif_lib.h])
+    AC_TRY_CPP(
+    [#include <stdio.h>
+     #undef PACKAGE
+     #undef VERSION
+     #include <gif_lib.h>],
+    gif_ok=yes,
+    gif_ok=no)
+    AC_MSG_RESULT($gif_ok)
+    if test "$gif_ok" = yes; then
+      GIFLIBS=$gif_libs
+    else
+      AC_MSG_WARN(*** Native GIF support will not be built (GIF header file not found) ***)
+    fi
+  fi
+fi
+
+if test "$jpeg_ok" = no; then
+AC_MSG_ERROR([
+Fatal Error: No JPEG Headers AND Library detected.
+             This is a minimum requirement
+	     (at least a JPEG, PNG and DB loader need to be built)
+	     All other loaders are optional])
+fi
+if test "$png_ok" = no; then
+AC_MSG_ERROR([
+Fatal Error: No PNG Headers AND Library detected.
+             This is a minimum requirement
+	     (at least a JPEG, PNG and DB loader need to be built)
+	     All other loaders are optional])
+fi
+if test "$edb_ok" = no; then
+AC_MSG_ERROR([
+Fatal Error: No EDB Headers AND Library detected.
+             This is a minimum requirement
+	     (at least a JPEG, PNG and DB loader need to be built)
+	     All other loaders are optional])
+fi
+
+if test "$jpeg_ok" = yes; then
+  JPEG_LA=loader_jpeg.c
+fi
+if test "$png_ok" = yes; then
+  PNG_LA=loader_png.c
+fi
+if test "$edb_ok" = yes; then
+  EDB_LA=loader_db.c
+fi
+if test "$tiff_ok" = yes; then
+  TIFF_LA=loader_tiff.c
+fi
+if test "$gif_ok" = yes; then
+  GIF_LA=loader_gif.c
+fi
+
+AC_SUBST(JPEG_LA)
+AC_SUBST(PNG_LA)
+AC_SUBST(EDB_LA)
+AC_SUBST(TIFF_LA)
+AC_SUBST(GIF_LA)
+AC_SUBST(JPEGLIBS)
+AC_SUBST(PNGLIBS)
+AC_SUBST(EDBLIBS)
+AC_SUBST(TIFFLIBS)
+AC_SUBST(GIFLIBS)
+
 AC_SUBST(x_cflags)
 AC_SUBST(x_includes)
 AC_SUBST(x_ldflags)
