@@ -18,7 +18,11 @@
  * USA
  */
 
-void eprintf (char *fmt, ...);
+#ifndef __GNUC__
+# define __attribute__(x)
+#endif
+
+void eprintf (char *fmt, ...) __attribute__ ((noreturn));
 void weprintf (char *fmt, ...);
 char *estrdup (char *s);
 void *emalloc (size_t n);

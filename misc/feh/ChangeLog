@@ -1,3 +1,10 @@
+Mon Apr 24 03:53:16 2000  Tom Gilbert  <gilbertt@btinternet.com>
+
+	* Added --fontpath, to allow an extra directory to be specified in
+	which to look for fonts. You can add this to /etc/fehrc or
+	~/.fehrc to make it permanent. Something like:
+	feh --fontpath /usr/share/ttfonts
+
 Sat Apr 22 01:48:46 2000  Tom Gilbert  <gilbertt@btinternet.com>
 
 	* A slideshow delay of zero is now permitted. It means "go as fast

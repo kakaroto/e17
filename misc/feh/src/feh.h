@@ -51,6 +51,10 @@
 
 #define SWAP(a, b)  ((int)(a) ^= (int)(b) ^= (int)(a) ^= (int)(b))
 
+#ifndef __GNUC__
+# define __attribute__(x)
+#endif              
+
 struct __thumbwidget
 {
   Window win;
@@ -201,6 +205,7 @@ typedef struct cmdlineoptions
   char *font;
   char *title_font;
   char *action;
+  char *fontpath;
 
   int thumb_w;
   int thumb_h;

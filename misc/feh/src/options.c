@@ -239,6 +239,7 @@ feh_parse_option_array (int argc, char **argv)
     {"alpha", 1, 0, 'a'},
     {"sort", 1, 0, 'S'},
     {"config", 1, 0, 'C'},
+    {"fontpath", 1, 0, '='},
     {0, 0, 0, 0}
   };
   int optch = 0, cmdx = 0;
@@ -371,7 +372,10 @@ feh_parse_option_array (int argc, char **argv)
 	  break;
 	case 'C':
 	  theme = estrdup (optarg);
-	  break;
+          break;
+        case '=':
+          opt.fontpath = estrdup (optarg);
+          break;
 	case 'f':
 	  opt.font = estrdup (optarg);
 	  break;
@@ -617,6 +621,7 @@ show_usage (void)
 	   "  -f FONT                   Use FONT to print the information under each\n"
 	   "                            thumbnail. FONT should be defined in the form\n"
 	   "                            fontname/size(points). eg -f myfont/12\n"
+           "     --fontpath PATH        Specify an extra directory to look in for fonts\n"
 	   "  -T,--title-font FONT      Use FONT to print a title on the index, if no\n"
 	   "                            font is specified, a title will not be printed\n"
 	   " SLIDESHOW KEYS\n"
