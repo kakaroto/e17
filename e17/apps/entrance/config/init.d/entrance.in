@@ -9,7 +9,7 @@
 # /etc/init.d/entrance
 #
 ### BEGIN INIT INFO
-# Provides:          xdm
+# Provides:          entrance
 # Required-Start:    $remote_fs
 # X-UnitedLinux-Should-Start: ypbind hwscan $syslog gpm
 # Required-Stop:
