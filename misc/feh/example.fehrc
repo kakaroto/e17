@@ -33,7 +33,7 @@ webcam -wkR30
 
 # Create an index of the current directory. This version uses . as the
 # current dir, so you don't even need any commandline arguments.
-mkindex -iO index.jpg .
+mkindex -iVO index.jpg .
 
 # Show a presentation
 present -F -Sname
