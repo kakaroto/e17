@@ -6,7 +6,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: enlightenment 0.16.5\n"
-"POT-Creation-Date: 2003-05-30 21:54+0200\n"
+"POT-Creation-Date: 2003-05-31 09:44+0200\n"
 "PO-Revision-Date: 2000-03-29 21:12+0200\n"
 "Last-Translator: Matthias Warkus <mawa@iname.com>\n"
 "Language-Team: Enlightenment l10n <e-develop@enlightenment.org>\n"
@@ -1474,20 +1474,20 @@ msgstr ""
 
 # src/main.c:89
 #. Set up all the text bits that belong on the GSOD
-#: src/main.c:89
+#: src/main.c:88
 msgid "Enlightenment Message Dialog"
 msgstr "Enlightenment-Meldungsfenster"
 
 # src/main.c:90 src/memory.c:196 src/memory.c:277 src/memory.c:297
 # src/memory.c:378
-#: src/main.c:90 src/memory.c:194 src/memory.c:272 src/memory.c:291
+#: src/main.c:89 src/memory.c:194 src/memory.c:272 src/memory.c:291
 #: src/memory.c:368
 msgid "Ignore this"
 msgstr "Dies ignorieren"
 
 # src/main.c:91 src/memory.c:197 src/memory.c:277 src/memory.c:298
 # src/memory.c:378 src/memory.c:396
-#: src/main.c:91 src/memory.c:195 src/memory.c:272 src/memory.c:292
+#: src/main.c:90 src/memory.c:195 src/memory.c:272 src/memory.c:292
 #: src/memory.c:368 src/memory.c:385
 msgid "Restart Enlightenment"
 msgstr "Enlightenment neu starten"
@@ -1495,14 +1495,14 @@ msgstr "Enlightenment neu starten"
 # src/main.c:92 src/memory.c:197 src/memory.c:278 src/memory.c:298
 # src/memory.c:379 src/memory.c:396 src/setup.c:295 src/setup.c:329
 # src/setup.c:341 src/setup.c:403
-#: src/main.c:92 src/memory.c:195 src/memory.c:273 src/memory.c:292
+#: src/main.c:91 src/memory.c:195 src/memory.c:273 src/memory.c:292
 #: src/memory.c:369 src/memory.c:386 src/setup.c:293 src/setup.c:326
 #: src/setup.c:338 src/setup.c:387
 msgid "Quit Enlightenment"
 msgstr "Enlightenment verlassen"
 
 # src/main.c:180
-#: src/main.c:181
+#: src/main.c:179
 #, c-format
 msgid ""
 "Enlightenment Version: %s\n"

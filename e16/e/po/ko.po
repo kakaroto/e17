@@ -5,7 +5,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: enlightenment 0.16.5\n"
-"POT-Creation-Date: 2003-05-30 21:54+0200\n"
+"POT-Creation-Date: 2003-05-31 09:44+0200\n"
 "PO-Revision-Date: 2000-04-10 16:10:30+0900\n"
 "Last-Translator: Sung-Hyun Nam <namsh@kldp.org>\n"
 "Language-Team: Korean <ko@li.org>\n"
@@ -1277,27 +1277,27 @@ msgstr ""
 "현재의 코드       : %s\n"
 
 #. Set up all the text bits that belong on the GSOD
-#: src/main.c:89
+#: src/main.c:88
 msgid "Enlightenment Message Dialog"
 msgstr "인라이튼먼트 메시지 대화상자"
 
-#: src/main.c:90 src/memory.c:194 src/memory.c:272 src/memory.c:291
+#: src/main.c:89 src/memory.c:194 src/memory.c:272 src/memory.c:291
 #: src/memory.c:368
 msgid "Ignore this"
 msgstr "무시"
 
-#: src/main.c:91 src/memory.c:195 src/memory.c:272 src/memory.c:292
+#: src/main.c:90 src/memory.c:195 src/memory.c:272 src/memory.c:292
 #: src/memory.c:368 src/memory.c:385
 msgid "Restart Enlightenment"
 msgstr "인라이튼먼트 재시작"
 
-#: src/main.c:92 src/memory.c:195 src/memory.c:273 src/memory.c:292
+#: src/main.c:91 src/memory.c:195 src/memory.c:273 src/memory.c:292
 #: src/memory.c:369 src/memory.c:386 src/setup.c:293 src/setup.c:326
 #: src/setup.c:338 src/setup.c:387
 msgid "Quit Enlightenment"
 msgstr "인라이튼먼트 종료"
 
-#: src/main.c:181
+#: src/main.c:179
 #, c-format
 msgid ""
 "Enlightenment Version: %s\n"

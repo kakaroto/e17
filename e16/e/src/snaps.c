@@ -942,7 +942,7 @@ SpawnSnappedCmds(void)
 	for (i = 0; i < num; i++)
 	  {
 	     sn = lst[i];
-	     if ((sn->use_cmd) && (sn->cmd))
+	     if ((sn->use_cmd) && (sn->cmd) && !sn->used)
 		execApplication(sn->cmd);
 	  }
 	Efree(lst);

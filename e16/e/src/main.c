@@ -43,7 +43,6 @@ runDocBrowser(void)
 int
 main(int argc, char **argv)
 {
-   char                restarting = 0;
    int                 i, num;
    Button            **blst;
    Background         *bg;
@@ -150,7 +149,6 @@ main(int argc, char **argv)
 	     }
 	   else if ((!strcmp("-ext_init_win", argv[j])) && (argc - j > 1))
 	     {
-		restarting = 1;
 		init_win_ext = atoi(argv[++j]);
 	     }
 	   else if (!strcmp("-no_overwrite", argv[j]))
@@ -389,12 +387,10 @@ main(int argc, char **argv)
    SetupUserInitialization();
    if (mode.firsttime)
       runDocBrowser();
-   if (!restarting)
-     {
-	mode.startup = 1;
-	SpawnSnappedCmds();
-	mode.startup = 0;
-     }
+
+   mode.startup = 1;
+   SpawnSnappedCmds();
+   mode.startup = 0;
 
    BadThemeDialog();
    /* The primary event loop */

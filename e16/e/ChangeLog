@@ -1896,3 +1896,10 @@ Fri May 30 22:36:17 CEST 2003
 
 Reduce hint noise due to button ops.
 Attempt to fix fullscreen mode with XFree86-4.3.
+
+-------------------------------------------------------------------------------
+
+Sat May 31 10:25:49 CEST 2003
+(Kim)
+
+An attempt to avoid the multiplying epplets.
