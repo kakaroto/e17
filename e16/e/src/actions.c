@@ -3043,7 +3043,7 @@ doAbout(void *params)
 			 "This code last updated on:\n"
 			 E_CHECKOUT_DATE "\n"
 			 "\n"
-			 "Good luck. I hope you enjoy the software.\n"
+			 "Good luck. We hope you enjoy the software.\n"
 			 "\n"
 			 "The Rasterman - raster@rasterman.com\n"
 			 "Mandrake - mandrake@mandrake.net\n");
