@@ -32,6 +32,7 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 #include <sys/types.h>
 #include <sys/stat.h>
 #include <unistd.h>
+#include <errno.h>
 #include <Edb.h>
 
 #include <efsd.h>
@@ -48,7 +49,6 @@ static int             meta_db_get_file(char *filename, char *dbfile, int len);
 static int             meta_db_set_data(EfsdSetMetadataCmd *esmc, char *dbfile);
 static void           *meta_db_get_data(EfsdGetMetadataCmd *egmc,
 					char *dbfile, int *data_len);
-static void            meta_get_full_key(char *filename, char* key, char *full, int len);
 
 
 static unsigned int   
@@ -60,7 +60,7 @@ meta_hash_filename(char *filename)
 
   D_ENTER;
 
-  snprintf(str, MAXPATHLEN, "%s:%i", filename, geteuid());
+  snprintf(str, MAXPATHLEN, "%i:%s", geteuid(), filename);
   s = str;
 
   for (hash = 0; *s != '\0'; s++)
@@ -146,15 +146,28 @@ meta_db_get_file(char *filename, char *dbfile, int len)
     }
 
   *(file-1) = '/';
-  h = meta_hash_filename(filename);
+  
+  /* Okay -- we use different metadata file names
+     depending on whether we're in the global directory
+     in the user's home or locally out in the filesystem.
+     When we're global, we use the full path and filename.
+     When we're local, we just use the file name, without
+     the path.
+
+     By doing this we can rename an entire directory
+     branch without having to adjust all the metadata
+     file names in the subtree.
+  */
 
   if (use_home_dir)
     {
+      h = meta_hash_filename(file);
       snprintf(dbfile, len, "%s/efsd_meta_%u.db",
 	       efsd_misc_get_user_dir(), h);
     }
   else
     {
+      h = meta_hash_filename(filename);
       snprintf(dbfile, len, "%s/efsd_meta_%u.db",
 	       s, h);
     }  
@@ -166,12 +179,10 @@ meta_db_get_file(char *filename, char *dbfile, int len)
 static int   
 meta_db_set_data(EfsdSetMetadataCmd *esmc, char *dbfile)
 {
-  char       key[MAXPATHLEN];
   E_DB_File *db;
 
   D_ENTER;
 
-  meta_get_full_key(esmc->file, esmc->key, key, MAXPATHLEN);
   efsd_lock_get_write_access(meta_lock);
 
   if ( (db = e_db_open(dbfile)) == NULL)
@@ -184,17 +195,17 @@ meta_db_set_data(EfsdSetMetadataCmd *esmc, char *dbfile)
     {
     case EFSD_INT:
       D(("Setting metadata key '%s' to int value %i\n",
-	 key, *((int*)esmc->data)));
-      e_db_int_set(db, key, *((int*)esmc->data));
+	 esmc->key, *((int*)esmc->data)));
+      e_db_int_set(db, esmc->key, *((int*)esmc->data));
       break;
     case EFSD_FLOAT:
-      e_db_float_set(db, key, *((float*)esmc->data));
+      e_db_float_set(db, esmc->key, *((float*)esmc->data));
       break;
     case EFSD_STRING:
-      e_db_str_set(db, key, esmc->data);
+      e_db_str_set(db, esmc->key, esmc->data);
       break;
     case EFSD_RAW:
-      e_db_data_set(db, key, esmc->data, esmc->data_len);
+      e_db_data_set(db, esmc->key, esmc->data, esmc->data_len);
       break;
     default:
       D(("Unknown data type!\n"));
@@ -216,21 +227,20 @@ static void *
 meta_db_get_data(EfsdGetMetadataCmd *egmc,
 		 char *dbfile, int *data_len)
 {
-  void        *result;
-  char         key[MAXPATHLEN];
+  void        *result = NULL;
   int          success = FALSE;
   E_DB_File   *db;
 
   D_ENTER;
-
-  meta_get_full_key(egmc->file, egmc->key, key, MAXPATHLEN);
+  D(("Getting metadata %s from %s\n",
+     egmc->key, dbfile));
 
   efsd_lock_get_read_access(meta_lock);
 
   if ( (db = e_db_open_read(dbfile)) == NULL)
     {
       efsd_lock_release_read_access(meta_lock);
-      D_RETURN_(0);
+      D_RETURN_(NULL);
     }
 
   switch (egmc->datatype)
@@ -240,7 +250,7 @@ meta_db_get_data(EfsdGetMetadataCmd *egmc,
 	result = NEW(int);
 	*data_len = sizeof(int);
 
-	success = e_db_int_get(db, key, (int*)result);
+	success = e_db_int_get(db, egmc->key, (int*)result);
       }
       break;
     case EFSD_FLOAT:
@@ -248,50 +258,45 @@ meta_db_get_data(EfsdGetMetadataCmd *egmc,
 	result = NEW(float);
 	*data_len = sizeof(float);
 
-	success = e_db_float_get(db, key, (float*)result);
+	success = e_db_float_get(db, egmc->key, (float*)result);
       }
       break;
     case EFSD_STRING:
       {
-	result = e_db_str_get(db, key);
-	*data_len = strlen(result) + 1;
+	result = e_db_str_get(db, egmc->key);
 
 	if (result)
-	  success = TRUE;
+	  {
+	    *data_len = strlen(result) + 1;
+	    success = TRUE;
+	  }
 	else
 	  success = FALSE;
       }
       break;
     case EFSD_RAW:
       {
-	result = e_db_data_get(db, key, data_len);
+	result = e_db_data_get(db, egmc->key, data_len);
+	
+	if (result)
+	  success = TRUE;
+	else
+	  success = FALSE;
       }
       break;
     default:
       D(("Unknown data type!\n"));
-      e_db_close(db);
-      efsd_lock_release_read_access(meta_lock);
-      D_RETURN_(0);
+      success = FALSE;
     }
 
   e_db_close(db);
+  e_db_flush();
   efsd_lock_release_read_access(meta_lock);
 
   if (!success)
     D_RETURN_(NULL);
 
   D_RETURN_(result);
-}
-
-
-static void
-meta_get_full_key(char *filename, char *key, char *full, int len)
-{
-  D_ENTER;
-  
-  snprintf(full, len, "%s:%s", filename, key);
-
-  D_RETURN;
 }
 
 
@@ -353,5 +358,18 @@ efsd_meta_get(EfsdCommand *ec, int *data_len)
   meta_db_get_file(egmc->file, dbfile, MAXPATHLEN);
 
   D_RETURN_(meta_db_get_data(egmc, dbfile, data_len));
+}
+
+
+int         
+efsd_meta_get_meta_file(char *filename, char *metafile, int len)
+{
+  int result;
+
+  D_ENTER;
+
+  result = meta_db_get_file(filename, metafile, len);
+
+  D_RETURN_(result);
 }
 

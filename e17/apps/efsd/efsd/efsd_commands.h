@@ -22,24 +22,24 @@ IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN
 CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
 */
-#ifndef efsd_fileops_h
-#define efsd_fileops_h
+#ifndef efsd_commands_h
+#define efsd_commands_h
 
 #include <efsd.h>
 
-int  efsd_file_remove(EfsdCommand *cmd, int client);
-int  efsd_file_move(EfsdCommand *cmd, int client);
-int  efsd_file_copy(EfsdCommand *cmd, int client);
-int  efsd_file_symlink(EfsdCommand *cmd, int client);
-int  efsd_file_listdir(EfsdCommand *cmd, int client);
-int  efsd_file_makedir(EfsdCommand *cmd, int client);
-int  efsd_file_chmod(EfsdCommand *cmd, int client);
-int  efsd_file_set_metadata(EfsdCommand *cmd, int client);
-int  efsd_file_get_metadata(EfsdCommand *cmd, int client);
-int  efsd_file_start_monitor(EfsdCommand *cmd, int client);
-int  efsd_file_stop_monitor(EfsdCommand *cmd, int client);
-int  efsd_file_stat(EfsdCommand *cmd, int client, char use_lstat);
-int  efsd_file_readlink(EfsdCommand *cmd, int client);
-int  efsd_file_getfiletype(EfsdCommand *cmd, int client);
+int  efsd_command_remove(EfsdCommand *cmd, int client);
+int  efsd_command_move(EfsdCommand *cmd, int client);
+int  efsd_command_copy(EfsdCommand *cmd, int client);
+int  efsd_command_symlink(EfsdCommand *cmd, int client);
+int  efsd_command_listdir(EfsdCommand *cmd, int client);
+int  efsd_command_makedir(EfsdCommand *cmd, int client);
+int  efsd_command_chmod(EfsdCommand *cmd, int client);
+int  efsd_command_set_metadata(EfsdCommand *cmd, int client);
+int  efsd_command_get_metadata(EfsdCommand *cmd, int client);
+int  efsd_command_start_monitor(EfsdCommand *cmd, int client);
+int  efsd_command_stop_monitor(EfsdCommand *cmd, int client);
+int  efsd_command_stat(EfsdCommand *cmd, int client, char use_lstat);
+int  efsd_command_readlink(EfsdCommand *cmd, int client);
+int  efsd_command_getfiletype(EfsdCommand *cmd, int client);
 
 #endif

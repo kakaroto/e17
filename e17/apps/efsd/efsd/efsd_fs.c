@@ -38,14 +38,23 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 #include <efsd_macros.h>
 #include <efsd_debug.h>
 #include <efsd_misc.h>
+#include <efsd_meta.h>
 #include <efsd_fs.h>
 #include <efsd_statcache.h>
 
+/* Real data-copying routine, handling holes etc. Returns outcome
+   upon return: 0 when successful, -1 when not.
+*/
 static int data_copy(char *src_path, struct stat *src_st, char *dst_path);
+
 static int file_copy(char *src_path, struct stat *src_st, char *dst_path);
+
 static int dir_copy(char *src_path, struct stat *src_st, char *dst_path);
+
 static int file_move(char *src_path, struct stat *src_st, char *dst_path);
+
 static int dir_move(char *src_path, char *dst_path);
+
 static int file_remove(char *path, struct stat *st);
 
 
@@ -201,6 +210,11 @@ data_copy(char *src_path, struct stat *src_st, char *dst_path)
 static int 
 file_copy(char *src_path, struct stat *src_st, char *dst_path)
 {
+  char src_meta[MAXPATHLEN];
+  char dst_meta[MAXPATHLEN];
+  int  success = 0;
+  struct stat src_meta_st;
+
   D_ENTER;
 
   D(("Copying file %s to %s\n", src_path, dst_path));
@@ -217,31 +231,89 @@ file_copy(char *src_path, struct stat *src_st, char *dst_path)
       char realfile[MAXPATHLEN];
 
       if (readlink(src_path, realfile, MAXPATHLEN) < 0)
-	D_RETURN_(-1);
+	{
+	  perror("Readlink error");
+	  success = -1;
+	}
       
-      if (symlink(realfile, dst_path) == 0)
-	D_RETURN_(0);
+      if (realfile[0] != '/')
+	{
+	  char realcopy[MAXPATHLEN];
+	  char *lastslash;
+
+	  strncpy(realcopy, realfile, MAXPATHLEN);
+	  strncpy(realfile, src_path, MAXPATHLEN);
+	  lastslash = strrchr(realfile, '/');
+
+	  if (!lastslash)
+	    {
+	      D(("Huh? Src file %s is supposed to be a full path...\n",
+		 src_path));	      
+	      exit(-1);
+	    }
+
+	  strncpy(lastslash+1, realcopy, MAXPATHLEN - (lastslash - realfile));
+	}
+
+      if (symlink(realfile, dst_path) < 0)
+	{
+	  D(("Error symlinking from %s to %s\n",
+	     realfile, dst_path));
+	  perror("Symlink error");
+	  success = -1;
+	}
+
+      D(("Created symlink from %s to %s.\n",
+	 realfile, dst_path));
     }
   else if (S_ISFIFO(src_st->st_mode))
     {
       if (mkfifo(dst_path, src_st->st_mode) == 0)
-	D_RETURN_(0);
+	success = -1;
     }
   else if (S_ISCHR(src_st->st_mode) ||
 	   S_ISBLK(src_st->st_mode) ||
 	   S_ISSOCK(src_st->st_mode))
     {
       if (mknod(dst_path, src_st->st_mode, src_st->st_dev) == 0)
-	D_RETURN_(0);
+	success = -1;
     }
   else
-    D_RETURN_(data_copy(src_path, src_st, dst_path));
+    {
+      success = data_copy(src_path, src_st, dst_path);
+    }
   
-  /* Whatever we have here as src (e.g a directory),
-     we cannot copy onto a normal file.
-  */
+  if (success == -1)
+    {
+      /* Whatever we have here as src (e.g a directory),
+	 we cannot copy onto a normal file.
+      */
+      D(("File copy error.\n"));
+      D_RETURN_(-1);
+    }
+
+  D(("File copied -- handling metadata.\n"));
   
-  D_RETURN_(-1);
+  if ((efsd_meta_get_meta_file(src_path, src_meta, MAXPATHLEN)) &&
+      (efsd_meta_get_meta_file(dst_path, dst_meta, MAXPATHLEN)))
+    {
+      if (!efsd_stat(src_meta, &src_meta_st))
+	{
+	  /* Could not stat source file metadata -- that's fine,
+	     maybe the file doesn't have any metadata. Simply
+	     return with previous success state.
+	  */
+	  D_RETURN_(success);
+	}
+
+      D(("Copying metadata file %s to %s\n", src_meta, dst_meta));
+
+      /* Otherwise, copy metadata file ... */
+      success = data_copy(src_meta, &src_meta_st, dst_meta);
+    }
+
+  /* Return final status. */
+  D_RETURN_(success);
 }
 
 
@@ -314,17 +386,25 @@ dir_copy(char *src_path, struct stat *src_st, char *dst_path)
 static int 
 file_move(char *src_path, struct stat *src_st, char *dst_path)
 {
+  int  success = 0;
+
   D_ENTER;
 
   D(("Moving file %s to %s\n", src_path, dst_path));
 
+  /* Metadata is handled both in efsd_misc_rename()
+     and file_copy().
+  */
+
+  /* Try simple rename ... */
   if (efsd_misc_rename(src_path, dst_path) != 0)
     {
       D(("Rename failed -- copying, then removing.\n"));
       if (file_copy(src_path, src_st, dst_path) >= 0)
-	D_RETURN_(efsd_misc_remove(src_path));
-
-      D_RETURN_(-1);
+	{
+	  success = efsd_misc_remove(src_path);
+	  D_RETURN_(success);
+	}
     }
   
   D_RETURN_(0);
@@ -521,6 +601,7 @@ efsd_fs_cp(char *src_path, char *dst_path, EfsdFsOps ops)
       if (ops & EFSD_FS_OP_FORCE)
 	D_RETURN_(0);
       
+      errno = EEXIST;
       D_RETURN_(-1);
     }
 
@@ -560,6 +641,7 @@ efsd_fs_cp(char *src_path, char *dst_path, EfsdFsOps ops)
       if ((ops & EFSD_FS_OP_FORCE) == 0)
 	{
 	  D(("Dest exists and no force used -- aborting.\n"));
+	  errno = EEXIST;
 	  D_RETURN_(-1);
 	}
       
@@ -661,6 +743,7 @@ efsd_fs_mv(char *src_path, char *dst_path, EfsdFsOps ops)
       if ((ops & EFSD_FS_OP_FORCE) == 0)
 	{
 	  D(("Dest exists and no force used -- aborting.\n"));
+	  errno = EEXIST;
 	  D_RETURN_(-1);
 	}
 

@@ -31,5 +31,6 @@ void        efsd_meta_init(void);
 void        efsd_meta_cleanup(void);
 int         efsd_meta_set(EfsdCommand *ec);
 void       *efsd_meta_get(EfsdCommand *ec, int *data_len);
+int         efsd_meta_get_meta_file(char *filename, char *metafile, int len);
 
 #endif

@@ -19,10 +19,10 @@ include_HEADERS = \
 	libefsd.h
 
 efsd_SOURCES = 					\
+	efsd_commands.h efsd_commands.c 	\
 	efsd_debug.h efsd_debug.c		\
 	efsd_fam.h efsd_fam.c 			\
 	efsd_fam_r.c efsd_fam_r.h 		\
-	efsd_fileops.h efsd_fileops.c 		\
 	efsd_filetype.h efsd_filetype.c 	\
 	efsd_fs.h efsd_fs.c 			\
 	efsd_globals.h 				\

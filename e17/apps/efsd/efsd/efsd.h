@@ -228,14 +228,26 @@ EfsdFileChangeEvent;
 */
 typedef struct efsd_reply_event
 {
-  EfsdEventType       type;
-  EfsdCommand         command;
-  EfsdStatus          status;
+  /* Type of the event */
+  EfsdEventType       type;      
+
+  /* The original command, without options */
+  EfsdCommand         command;   
+
+  /* Status of the command (SUCCESS or FAILURE) */
+  EfsdStatus          status;    
+
+  /* Errorcode if things went wrong (FIXME: this
+     is redundant, remove the status field at some
+     point */
   int                 errorcode;
+
+  /* Length of any returned data and data itself */
   int                 data_len;
   void               *data;
 }
 EfsdReplyEvent;
+
 
 /* General event structure */
 typedef union efsd_event

@@ -48,7 +48,7 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 #include <efsd_io.h>
 #include <efsd_fam_r.h>
 #include <efsd_fam.h>
-#include <efsd_fileops.h>
+#include <efsd_commands.h>
 #include <efsd_filetype.h>
 #include <efsd_list.h>
 #include <efsd_lock.h>
@@ -206,63 +206,63 @@ main_handle_client_command(void *data)
     {
     case EFSD_CMD_REMOVE:
       D(("Handling REMOVE\n"));
-      efsd_file_remove(command, client);
+      efsd_command_remove(command, client);
       break;
     case EFSD_CMD_MOVE:
       D(("Handling MOVE\n"));
-      efsd_file_move(command, client);
+      efsd_command_move(command, client);
       break;
     case EFSD_CMD_COPY:
       D(("Handling COPY\n"));
-      efsd_file_copy(command, client);
+      efsd_command_copy(command, client);
       break;
     case EFSD_CMD_SYMLINK:
       D(("Handling SYMLINK\n"));
-      efsd_file_symlink(command, client);
+      efsd_command_symlink(command, client);
       break;
     case EFSD_CMD_LISTDIR:
       D(("Handling LISTDIR\n"));
-      efsd_file_listdir(command, client);
+      efsd_command_listdir(command, client);
       break;
     case EFSD_CMD_MAKEDIR:
       D(("Handling MAKEDIR\n"));
-      efsd_file_makedir(command, client);
+      efsd_command_makedir(command, client);
       break;
     case EFSD_CMD_CHMOD:
       D(("Handling CHMOD\n"));
-      efsd_file_chmod(command, client);
+      efsd_command_chmod(command, client);
       break;
     case EFSD_CMD_SETMETA:
       D(("Handling SETMETA\n"));
-      efsd_file_set_metadata(command, client);
+      efsd_command_set_metadata(command, client);
       break;
     case EFSD_CMD_GETMETA:
       D(("Handling GETMETA\n"));
-      efsd_file_get_metadata(command, client);
+      efsd_command_get_metadata(command, client);
       break;
     case EFSD_CMD_STARTMON:
       D(("Handling STARTMON\n"));
-      efsd_file_start_monitor(command, client);
+      efsd_command_start_monitor(command, client);
       break;
     case EFSD_CMD_STOPMON:
       D(("Handling STOPMON\n"));
-      efsd_file_stop_monitor(command, client);
+      efsd_command_stop_monitor(command, client);
       break;
     case EFSD_CMD_STAT:
       D(("Handling STAT on %s\n", command->efsd_file_cmd.file));
-      efsd_file_stat(command, client, FALSE);
+      efsd_command_stat(command, client, FALSE);
       break;
     case EFSD_CMD_LSTAT:
       D(("Handling LSTAT on %s\n", command->efsd_file_cmd.file));
-      efsd_file_stat(command, client, TRUE);
+      efsd_command_stat(command, client, TRUE);
       break;
     case EFSD_CMD_READLINK:
       D(("Handling READLINK\n"));
-      efsd_file_readlink(command, client);
+      efsd_command_readlink(command, client);
       break;
     case EFSD_CMD_GETFILETYPE:
       D(("Handling GETFILETYPE\n"));
-      efsd_file_getfiletype(command, client);
+      efsd_command_getfiletype(command, client);
       break;
     case EFSD_CMD_CLOSE:
       D(("Handling CLOSE\n"));
@@ -433,7 +433,9 @@ main_handle_fam_events(void)
 				}
 			    }
 			  
-			  if (famev.code == FAMExists)
+			  if ((famev.code == FAMExists) ||
+			      (famev.code == FAMChanged) ||
+			      (famev.code == FAMCreated))
 			    {
 			      if (famev.filename[0] != '/')
 				{

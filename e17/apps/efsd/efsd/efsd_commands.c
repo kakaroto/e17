@@ -40,7 +40,7 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
 #include <efsd_debug.h>
 #include <efsd_fam.h>
-#include <efsd_fileops.h>
+#include <efsd_commands.h>
 #include <efsd_fs.h>
 #include <efsd_globals.h>
 #include <efsd_io.h>
@@ -94,7 +94,7 @@ send_reply(EfsdCommand *cmd, EfsdStatus status, int errorcode,
 
 
 int 
-efsd_file_remove(EfsdCommand *cmd, int client)
+efsd_command_remove(EfsdCommand *cmd, int client)
 {
   int i, options = 0;
 
@@ -124,7 +124,7 @@ efsd_file_remove(EfsdCommand *cmd, int client)
 
 
 int 
-efsd_file_move(EfsdCommand *cmd, int client)
+efsd_command_move(EfsdCommand *cmd, int client)
 {
   int i, options = 0;
 
@@ -156,7 +156,7 @@ efsd_file_move(EfsdCommand *cmd, int client)
 
 
 int 
-efsd_file_copy(EfsdCommand *cmd, int client)
+efsd_command_copy(EfsdCommand *cmd, int client)
 {
   int i, options = 0;
 
@@ -188,7 +188,7 @@ efsd_file_copy(EfsdCommand *cmd, int client)
 
 
 int 
-efsd_file_symlink(EfsdCommand *cmd, int client)
+efsd_command_symlink(EfsdCommand *cmd, int client)
 {
   D_ENTER;
 
@@ -202,7 +202,7 @@ efsd_file_symlink(EfsdCommand *cmd, int client)
 
 
 int 
-efsd_file_listdir(EfsdCommand *cmd, int client)
+efsd_command_listdir(EfsdCommand *cmd, int client)
 {
   D_ENTER;
 
@@ -220,7 +220,7 @@ efsd_file_listdir(EfsdCommand *cmd, int client)
 
 
 int 
-efsd_file_makedir(EfsdCommand *cmd, int client)
+efsd_command_makedir(EfsdCommand *cmd, int client)
 {
   char **path_dirs;
   int    num_dirs, cur_dir, i;
@@ -257,7 +257,7 @@ efsd_file_makedir(EfsdCommand *cmd, int client)
 
 
 int 
-efsd_file_chmod(EfsdCommand *cmd, int client)
+efsd_command_chmod(EfsdCommand *cmd, int client)
 {
   D_ENTER;
 
@@ -271,7 +271,7 @@ efsd_file_chmod(EfsdCommand *cmd, int client)
 
 
 int 
-efsd_file_set_metadata(EfsdCommand *cmd, int client)
+efsd_command_set_metadata(EfsdCommand *cmd, int client)
 {
   D_ENTER;
   
@@ -285,7 +285,7 @@ efsd_file_set_metadata(EfsdCommand *cmd, int client)
 
 
 int 
-efsd_file_get_metadata(EfsdCommand *cmd, int client)
+efsd_command_get_metadata(EfsdCommand *cmd, int client)
 {
   void *data;
   int   data_len, result;
@@ -305,7 +305,7 @@ efsd_file_get_metadata(EfsdCommand *cmd, int client)
 
 
 int 
-efsd_file_start_monitor(EfsdCommand *cmd, int client)
+efsd_command_start_monitor(EfsdCommand *cmd, int client)
 {
   D_ENTER;
 
@@ -318,7 +318,7 @@ efsd_file_start_monitor(EfsdCommand *cmd, int client)
 
 
 int 
-efsd_file_stop_monitor(EfsdCommand *cmd, int client)
+efsd_command_stop_monitor(EfsdCommand *cmd, int client)
 {
   D_ENTER;
 
@@ -330,7 +330,7 @@ efsd_file_stop_monitor(EfsdCommand *cmd, int client)
 
 
 int 
-efsd_file_stat(EfsdCommand *cmd, int client, char use_lstat)
+efsd_command_stat(EfsdCommand *cmd, int client, char use_lstat)
 {
   struct stat    st;
   int            result;
@@ -369,7 +369,7 @@ efsd_file_stat(EfsdCommand *cmd, int client, char use_lstat)
 
 
 int  
-efsd_file_readlink(EfsdCommand *cmd, int client)
+efsd_command_readlink(EfsdCommand *cmd, int client)
 {
   char           s[MAXPATHLEN];
   int            result, n;
@@ -386,7 +386,7 @@ efsd_file_readlink(EfsdCommand *cmd, int client)
 
 
 int  
-efsd_file_getfiletype(EfsdCommand *cmd, int client)
+efsd_command_getfiletype(EfsdCommand *cmd, int client)
 {
   char  type[MAXPATHLEN];
   int   result;
