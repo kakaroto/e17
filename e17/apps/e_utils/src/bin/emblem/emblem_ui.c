@@ -31,7 +31,10 @@
 #define SCREEN_H 1200
 
 static int emblem_load_bgs(Emblem *em);
-static Evas_Object *emblem_evas_object_get(Emblem *em, const char *fname);
+static Evas_Object *emblem_evas_object_get(Emblem *em, const char *fname,
+                                                Evas_Coord w, Evas_Coord h);
+static int emblem_ui_e_bg_get(void *data, int type, void *ev);
+static void emblem_current_bg_set(Emblem *em, char *file);
 
 static void emblem_ui_init_job_cb(void *data);
 static void emblem_ui_resize_cb(Ecore_Evas *ee);
@@ -69,10 +72,10 @@ int
 emblem_ui_init(Emblem *em)
 {
     Ecore_Evas *ee;
-    Evas *evas;
     Evas_Object *o;
+    Evas_Coord w, h;
+    Evas *evas;
     double l;
-    Evas_Coord w;
 
     ee = ecore_evas_software_x11_new(em->display, 0, 0, 0, WIDTH, HEIGHT);
     ecore_evas_title_set(ee, PACKAGE);
@@ -105,6 +108,11 @@ emblem_ui_init(Emblem *em)
     edje_object_part_swallow(em->gui.edje, "menu_bar", o);
     evas_object_show(o);
     em->gui.menu = o;
+    em->gui.current = NULL;
+
+    ecore_event_handler_add(E_RESPONSE_BACKGROUND_GET, 
+                                emblem_ui_e_bg_get, em);
+    e_background_get();
 
     ecore_job_add(emblem_ui_init_job_cb, em);
 
@@ -121,17 +129,26 @@ emblem_ui_resize_cb(Ecore_Evas *ee)
 {
     Emblem *em;
     Evas_Coord w, h;
+    Evas_Object *o;
     double l;
     const char *state;
+    char *file;
 
     em = ecore_evas_data_get(ee, "emblem");
 
     ecore_evas_geometry_get(ee, NULL, NULL, &w, &h);
     evas_object_resize(em->gui.edje, w, h);
 
-    edje_object_part_geometry_get(em->gui.edje, "current", NULL, NULL, &w, &h);
-    evas_object_resize(em->gui.current, w, h);
+    edje_object_part_geometry_get(em->gui.edje, "current", 
+                                            NULL, NULL, &w, &h);
+
+    evas_object_image_size_set(em->gui.current, w, h);
     evas_object_image_fill_set(em->gui.current, 0, 0, w, h);
+
+    o = evas_object_data_get(em->gui.current, "screen_buffer");
+    evas_object_resize(o, w, h);
+    evas_object_image_fill_set(o, 0, 0, w, h);
+    evas_object_resize(em->gui.current, w, h);
 
     edje_object_part_geometry_get(em->gui.edje, "menu_bar", NULL, NULL, &w, NULL);
     l = esmart_container_elements_length_get(em->gui.menu);
@@ -210,10 +227,6 @@ emblem_load_bgs(Emblem *em)
     dir = opendir(path);
     if (!dir) return 0;
 
-    /* get these from the system */
-    w = SCREEN_W;
-    h = SCREEN_H;
-
     while ((entry = readdir(dir)))
     {
         Evas_Object *o;
@@ -225,53 +238,39 @@ emblem_load_bgs(Emblem *em)
         snprintf(path, PATH_MAX, "%s/.e/e/backgrounds/%s", 
                                 getenv("HOME"), entry->d_name);
 
-        o = emblem_evas_object_get(em, path);
-        if (em->gui.current == NULL)
-        {
-            em->gui.current = o;
-
-            edje_object_part_geometry_get(em->gui.edje, "current", NULL, NULL, &w, &h);
-
-            edje_object_part_swallow(em->gui.edje, "current", o);
-
-            ev = evas_object_data_get(o, "ev");
-            evas_object_event_callback_add(ev, EVAS_CALLBACK_MOUSE_DOWN,
-                                                emblem_current_sel_cb, em);
-            continue;
-        }
+        o = emblem_evas_object_get(em, path, THUMB_W, THUMB_H);
         edje_object_part_geometry_get(em->gui.edje, "menu_bar", NULL, NULL, NULL, &h);
         evas_object_resize(o, 64, 48);
+        
+        evas_object_event_callback_add(o, EVAS_CALLBACK_MOUSE_DOWN,
+                                        emblem_menu_sel_cb, em);
 
-        ev = evas_object_data_get(o, "ev");
-        evas_object_event_callback_add(ev, EVAS_CALLBACK_MOUSE_DOWN,
-                                            emblem_menu_sel_cb, em);
         esmart_container_element_append(em->gui.menu, o);
     }
     return 1;
 }
 
 static Evas_Object *
-emblem_evas_object_get(Emblem *em, const char *fname)
-
+emblem_evas_object_get(Emblem *em, const char *fname,
+                            Evas_Coord w, Evas_Coord h)
 {
     Evas_Object *o, *o2, *ob, *ev;
     Ecore_Evas *ee2;
     Evas *evas2;
 
-    ob = o2 = ecore_evas_object_image_new(em->gui.ee);
-    ee2 = evas_object_data_get(o2, "Ecore_Evas");
-    evas2 = ecore_evas_get(ee2);
-    evas_object_image_size_set(o2, THUMB_W, THUMB_H); /* thumb res */
-    evas_object_image_fill_set(o2, 0, 0, THUMB_W, THUMB_H);
-    evas_object_show(o2);
+    ob = ecore_evas_object_image_new(em->gui.ee);
+    ee2 = evas_object_data_get(ob, "Ecore_Evas");
+    evas_object_image_size_set(ob, w, h);
+    evas_object_image_fill_set(ob, 0, 0, w, h);
+    evas_object_show(ob);
 
     o2 = ecore_evas_object_image_new(ee2);
     ee2 = evas_object_data_get(o2, "Ecore_Evas");
     evas2 = ecore_evas_get(ee2);
-    evas_object_image_size_set(o2, SCREEN_W, SCREEN_H); /* screen res */
+    evas_object_image_size_set(o2, SCREEN_W, SCREEN_H);
     evas_object_move(o2, 0, 0);
-    evas_object_resize(o2, THUMB_W, THUMB_H);
-    evas_object_image_fill_set(o2, 0, 0, THUMB_W, THUMB_H);
+    evas_object_resize(o2, w, h);
+    evas_object_image_fill_set(o2, 0, 0, w, h);
     evas_object_show(o2);
 
     o = edje_object_add(evas2);
@@ -286,56 +285,58 @@ emblem_evas_object_get(Emblem *em, const char *fname)
     }
     evas_object_show(o);
 
-    ev = evas_object_rectangle_add(em->gui.evas);
-    evas_object_color_set(ev, 0, 0, 0, 0);
-    evas_object_show(ev);
-
-    evas_object_data_set(ob, "ev", ev);
+    evas_object_data_set(ob, "screen_buffer", o2);
     evas_object_data_set(ob, "file", strdup(fname));
-    evas_object_data_set(ev, "edje", ob);
-
-    evas_object_intercept_move_callback_add(ob, 
-                                emblem_intercept_move_cb, NULL);
-    evas_object_intercept_resize_callback_add(ob, 
-                                emblem_intercept_resize_cb, NULL);
-    evas_object_intercept_raise_callback_add(ob, 
-                                emblem_intercept_raise_cb, NULL);
-    evas_object_intercept_lower_callback_add(ob, 
-                                emblem_intercept_lower_cb, NULL);
-    evas_object_intercept_layer_set_callback_add(ob, 
-                                emblem_intercept_layer_set_cb, NULL);
-    evas_object_intercept_stack_above_callback_add(ob, 
-                                emblem_intercept_stack_above_cb, NULL);
-    evas_object_intercept_stack_below_callback_add(ob, 
-                                emblem_intercept_stack_below_cb, NULL);
-    evas_object_intercept_show_callback_add(ob, emblem_intercept_show_cb, NULL);
-    evas_object_intercept_hide_callback_add(ob, emblem_intercept_hide_cb, NULL);
 
     return ob;
 }
 
 static void
-emblem_current_sel_cb(void *data, Evas *evas, Evas_Object *obj, void *ev)
+emblem_current_bg_set(Emblem *em, char *file) 
+{
+    Evas_Coord w, h;
+
+    if (em->gui.current)
+    {
+        edje_object_part_unswallow(em->gui.edje, em->gui.current);
+        evas_object_hide(em->gui.current);
+        evas_object_del(em->gui.current);
+    }
+
+    edje_object_part_geometry_get(em->gui.edje, "current", 
+                                            NULL, NULL, &w, &h);
+
+    em->gui.current = emblem_evas_object_get(em, file, w, h);
+    evas_object_resize(em->gui.current, w, h);
+    edje_object_part_swallow(em->gui.edje, "current", em->gui.current);
+
+    evas_object_event_callback_add(em->gui.current, EVAS_CALLBACK_MOUSE_DOWN,
+                                                emblem_current_sel_cb, NULL);
+
+    evas_object_data_set(em->gui.current, "file", file);
+}
+
+static int
+emblem_ui_e_bg_get(void *data, int type, void *ev)
 {
     Emblem *em;
-    char *name; 
-    Evas_Event_Mouse_Down *e;
-    Evas_Coord x, y, w, h;
-    Evas_Object *o;
+    E_Response_Background_Get *e;
 
     e = ev;
     em = data;
+    emblem_current_bg_set(em, e->data);
 
-    /* make sure the click was actually inside the current. When we change
-     * the callbacks in the menu_sel_cb this cb will be called. so we need
-     * to verify they actually selected the item to be set as the bg)
-     */
-    edje_object_part_geometry_get(em->gui.edje, "current", &x, &y, &w, &h);
-    if ((e->canvas.x < x) || (e->canvas.y < y) 
-            || (e->canvas.x > (x + w)) || (e->canvas.y > (y + h)))
-        return;
+    return 1;
+    data = NULL;
+    type = 0;
+}
 
-    name = evas_object_data_get(em->gui.current, "file");
+static void
+emblem_current_sel_cb(void *data, Evas *evas, Evas_Object *obj, void *ev)
+{
+    char *name; 
+
+    name = evas_object_data_get(obj, "file");
     e_background_set(name);
 
     return;
@@ -347,40 +348,11 @@ static void
 emblem_menu_sel_cb(void *data, Evas *evas, Evas_Object *obj, void *ev)
 {
     Emblem *em;
-    char *name, *cur_name;
-    Evas_Coord w, h;
-    Evas_Object *o, *cur_ev, *sel_obj;
+    char *name;
 
     em = data;
-
-    cur_ev = evas_object_data_get(em->gui.current, "ev");
-    sel_obj = evas_object_data_get(obj, "edje");
-
-    evas_object_event_callback_del(cur_ev, EVAS_CALLBACK_MOUSE_DOWN,
-                                            emblem_current_sel_cb);
-    evas_object_event_callback_del(obj, EVAS_CALLBACK_MOUSE_DOWN,
-                                            emblem_menu_sel_cb);
-
-    edje_object_part_unswallow(em->gui.edje, em->gui.current);
-    esmart_container_element_remove(em->gui.menu, sel_obj);
-
-    o = em->gui.current;
-    em->gui.current = sel_obj;
-
-    edje_object_part_geometry_get(em->gui.edje, "current", NULL, NULL, &w, &h);
-    evas_object_resize(em->gui.current, w, h);
-    evas_object_image_fill_set(em->gui.current, 0, 0, w, h);
-
-    evas_object_event_callback_add(obj, EVAS_CALLBACK_MOUSE_DOWN,
-                                            emblem_current_sel_cb, em);
-    edje_object_part_swallow(em->gui.edje, "current", em->gui.current);
-
-    edje_object_part_geometry_get(em->gui.edje, "menu_bar", NULL, NULL, NULL, &h);
-    evas_object_resize(o, 64, 48);
-    evas_object_event_callback_add(cur_ev, EVAS_CALLBACK_MOUSE_DOWN,
-                                            emblem_menu_sel_cb, em);
-
-    esmart_container_element_append(em->gui.menu, o);
+    name = evas_object_data_get(obj, "file");
+    emblem_current_bg_set(em, name);
 
     return;
     data = NULL;
@@ -449,104 +421,6 @@ emblem_right_scroll_up_cb(void *data, Evas_Object *obj,
     obj = NULL;
     em = NULL;
     src = NULL;
-}
-
-static void
-emblem_intercept_show_cb(void *data, Evas_Object *obj)
-{
-    Evas_Object *ev;
-
-    ev = evas_object_data_get(obj, "ev");
-    evas_object_show(ev);
-    evas_object_show(obj);
-}
-
-static void
-emblem_intercept_hide_cb(void *data, Evas_Object *obj)
-{
-    Evas_Object *ev;
-
-    ev = evas_object_data_get(obj, "ev");
-    evas_object_hide(ev);
-    evas_object_hide(obj);
-}
-
-static void
-emblem_intercept_move_cb(void *data, Evas_Object *obj,
-        Evas_Coord x, Evas_Coord y)
-{
-    Evas_Object *ev;
-
-    ev = evas_object_data_get(obj, "ev");
-    evas_object_move(ev, x, y);
-    evas_object_move(obj, x, y);
-}
-
-static void
-emblem_intercept_resize_cb(void *data, Evas_Object *obj,
-        Evas_Coord w, Evas_Coord h)
-{
-    Evas_Object *ev;
-
-    ev = evas_object_data_get(obj, "ev");
-    evas_object_resize(ev, w, h);
-    evas_object_resize(obj, w, h);
-    evas_object_image_fill_set(obj, 0, 0, w, h);
-}
-
-static void
-emblem_intercept_raise_cb(void *data, Evas_Object *obj)
-{
-    Evas_Object *ev;
-
-    ev = evas_object_data_get(obj, "ev");
-    evas_object_raise(obj);
-    evas_object_raise(ev);
-}
-
-static void
-emblem_intercept_lower_cb(void *data, Evas_Object *obj)
-{
-    Evas_Object *ev;
-
-
-    ev = evas_object_data_get(obj, "ev");
-    evas_object_lower(obj);
-    evas_object_lower(ev);
-}
-
-static void
-emblem_intercept_stack_above_cb(void *data, Evas_Object *obj,
-        Evas_Object *above)
-{
-    Evas_Object *ev;
-
-
-    ev = evas_object_data_get(obj, "ev");
-    evas_object_stack_above(obj, above);
-    evas_object_stack_above(ev, obj);
-}
-
-static void
-emblem_intercept_stack_below_cb(void *data, Evas_Object *obj,
-        Evas_Object *below)
-{
-    Evas_Object *ev;
-
-
-    ev = evas_object_data_get(obj, "ev");
-    evas_object_stack_below(obj, below);
-    evas_object_stack_below(ev, below);
-}
-
-static void
-emblem_intercept_layer_set_cb(void *data, Evas_Object *obj, int l)
-{
-    Evas_Object *ev;
-
-    ev = evas_object_data_get(obj, "ev");
-    evas_object_layer_set(obj, l);
-    evas_object_layer_set(ev, l);
 }
 
 
