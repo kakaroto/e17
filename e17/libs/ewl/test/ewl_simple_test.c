@@ -22,7 +22,7 @@ void test_cb(Ewl_Widget *w, void *ev_data, void *user_data)
 void button_down(Ewl_Widget *w, void *ev_data, void *user_data)
 {
 	Ewl_Widget *logo = user_data;
-	ewl_widget_set_state(logo, "logo_start");
+	ewl_widget_set_state(logo, "start_tour");
 	transition = ecore_timer_add(TRANS_TIME, trigger_tour, NULL);
 }
 
@@ -60,14 +60,12 @@ int main(int argc, char **argv)
 	ewl_container_append_child(EWL_CONTAINER(win), vbox);
 	ewl_widget_show(vbox);
 
-	snprintf(tmp, PATH_MAX, "%s/demo/eets/e_logo.eet", getenv("HOME"));
-
 	logo = NEW(Ewl_Widget, 1);
 	ewl_widget_init(logo, "demo_logo");
 	ewl_callback_append(logo, EWL_CALLBACK_REALIZE, test_cb, "realize logo");
 	ewl_callback_append(logo, EWL_CALLBACK_CONFIGURE, test_cb, "configure logo");
 	ewl_theme_data_set_str(logo, "/demo_logo/file", tmp);
-	ewl_theme_data_set_str(logo, "/demo_logo/group", "test");
+	ewl_theme_data_set_str(logo, "/demo_logo/group", "tour");
 	ewl_object_set_preferred_size(EWL_OBJECT(logo), 100, 100);
 	ewl_object_set_fill_policy(EWL_OBJECT(logo), EWL_FLAG_FILL_NONE);
 	ewl_object_set_alignment(EWL_OBJECT(logo), EWL_FLAG_ALIGN_CENTER);
@@ -99,13 +97,13 @@ int main(int argc, char **argv)
 	button = ewl_button_new("Take the tour!");
 	ewl_container_append_child(EWL_CONTAINER(hbox), button);
 	ewl_object_set_fill_policy(EWL_OBJECT(button), EWL_FLAG_FILL_NONE);
-	ewl_callback_append(button, EWL_CALLBACK_MOUSE_DOWN, button_down, logo);
+	ewl_callback_append(button, EWL_CALLBACK_CLICKED, button_down, logo);
 	ewl_widget_show(button);
 
 	button = ewl_button_new("Quit");
 	ewl_container_append_child(EWL_CONTAINER(hbox), button);
 	ewl_object_set_fill_policy(EWL_OBJECT(button), EWL_FLAG_FILL_NONE);
-	ewl_callback_append(button, EWL_CALLBACK_MOUSE_DOWN, quit_demo, NULL);
+	ewl_callback_append(button, EWL_CALLBACK_CLICKED, quit_demo, NULL);
 	ewl_widget_show(button);
 
 	ewl_widget_configure(win);
