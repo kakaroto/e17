@@ -154,13 +154,12 @@ browser_sel(GtkWidget *clist, gint row, gint column,
   gtk_clist_get_text(GTK_CLIST(clist), row, 0, &cimg);
   
   if(cimg){
-		cimg = g_strdup(cimg);
+	   cimg = g_strdup(cimg);
 		GetFileStats(cimg);
 		LoadImage(cimg);
+	   imlib_context_set_image(im);
 		DrawImage(im, 0, 0);
-		prev_draw(im, area2->allocation.width, area2->allocation.height);
-		imlib_context_set_image(im);
-	}
+  }
 	if(im){
 		if(imlib_image_has_alpha())
 			sprintf(alp, "YES");
@@ -177,6 +176,7 @@ browser_sel(GtkWidget *clist, gint row, gint column,
 						alp);
 		gtk_label_set_text(GTK_LABEL(infol), lblt);
 		prev_draw(im, area2->allocation.width, area2->allocation.height);
+	   prev_draw(im, area2->allocation.width, area2->allocation.height);
   }
 }
 
