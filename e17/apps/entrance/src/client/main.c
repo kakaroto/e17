@@ -296,6 +296,13 @@ done_cb(void *data, Evas_Object * o, const char *emission, const char *source)
    if (!session->authed)
       syslog(LOG_CRIT,
              "Theme attempted to launch session without finishing authentication. Please fix your theme.");
+   else
+   {
+      /* 
+       * Request cookie here and call ecore_main_loop_quit, after we
+       * receive the cookie back from server
+       */
+   }
    ecore_main_loop_quit();
 }
 
@@ -850,7 +857,10 @@ main(int argc, char *argv[])
       if (session->authed)
          entrance_session_start_user_session(session);
       else
+      {
+         entrance_ipc_shutdown();
          ecore_evas_shutdown();
+      }
       entrance_session_free(session);
       edje_shutdown();
       ecore_x_shutdown();
