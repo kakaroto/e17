@@ -66,6 +66,7 @@ main(int argc, char **argv)
 	Ewl_Widget     *main_box;
 	Ewl_Widget     *main_tree;
 	Ewl_Widget     *main_area;
+        Ewl_Widget     *separator;
         Ewl_Widget     *tooltip;
 	Ewl_Widget     *prow[BUTTONS];
 	static test_set       tests[] = {
@@ -206,6 +207,10 @@ main(int argc, char **argv)
 				     EWL_FLAG_FILL_HSHRINK |
 				     EWL_FLAG_FILL_VFILL);
 	ewl_widget_show(main_tree);
+
+	separator = ewl_vseparator_new();
+	ewl_container_child_append(EWL_CONTAINER(main_box), separator);
+	ewl_widget_show(separator);
 
 	main_area = ewl_scrollpane_new();
 	ewl_widget_show(main_area);
