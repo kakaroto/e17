@@ -804,12 +804,18 @@ on_layer_type_toggled(GtkToggleButton * togglebutton, gpointer user_data)
 
    w = gtk_object_get_data(GTK_OBJECT(win_ref), "type_image");
    ww = gtk_object_get_data(GTK_OBJECT(win_ref), "type_color");
+
+   if ((bl) && (bl->obj))
+      evas_object_del(bl->obj);
    if ((w == GTK_WIDGET(togglebutton)))
    {
       if (gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(togglebutton)))
       {
          if (bl)
+         {
             bl->type = E_BACKGROUND_TYPE_IMAGE;
+            bl->obj = evas_object_image_add(bg->evas);
+         }
          advanced_widgets_show_for_image();
       }
    }
@@ -818,7 +824,10 @@ on_layer_type_toggled(GtkToggleButton * togglebutton, gpointer user_data)
       if (gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(togglebutton)))
       {
          if (bl)
+         {
             bl->type = E_BACKGROUND_TYPE_SOLID;
+            bl->obj = evas_object_rectangle_add(bg->evas);
+         }
          advanced_widgets_show_for_color();
       }
    }
@@ -827,7 +836,10 @@ on_layer_type_toggled(GtkToggleButton * togglebutton, gpointer user_data)
       if (gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(togglebutton)))
       {
          if (bl)
+         {
             bl->type = E_BACKGROUND_TYPE_GRADIENT;
+            bl->obj = evas_object_gradient_add(bg->evas);
+         }
          advanced_widgets_show_for_gradient();
       }
    }
@@ -837,17 +849,12 @@ on_layer_type_toggled(GtkToggleButton * togglebutton, gpointer user_data)
 void
 on_gradient_angle_changed(GtkEditable * editable, gpointer user_data)
 {
-   char *type;
-
    if (!bl)
       return;
 
    bl->gradient.angle = get_spin_value("gradient_angle");
-   if ((type = evas_object_type_get(bl->obj)) && (!strcmp(type, "gradient")))
-   {
-      evas_object_gradient_angle_set(bl->obj, bl->gradient.angle);
-      update_background(bg);
-   }
+   evas_object_gradient_angle_set(bl->obj, bl->gradient.angle);
+   update_background(bg);
    return;
 
 }
