@@ -32,7 +32,7 @@ int depth;
 Window root = 0;
 
 void
-imlib_init(GtkWidget *area)
+imlib_init(GtkWidget * area)
 {
    D_ENTER(4);
 
@@ -52,11 +52,10 @@ imlib_init(GtkWidget *area)
 
    imlib_add_path_to_font_path(".");
    imlib_add_path_to_font_path("./ttfonts");
-   imlib_add_path_to_font_path(PREFIX"share/"PACKAGE"/ttfonts");
-   
+   imlib_add_path_to_font_path(PREFIX "/share/geist/fonts");
+
    /* Initialise random numbers */
    srand(getpid() * time(NULL) % ((unsigned int) -1));
 
    D_RETURN_(4);
 }
-

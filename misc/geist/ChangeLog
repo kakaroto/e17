@@ -1,3 +1,8 @@
+Sat Aug  5 01:04:41 2000  Tom Gilbert  <gilbertt@linuxbrit.co.uk>
+
+	* Fixed make install to work. But now YOU HAVE TO RUN MAKE INSTALL
+	FOR GEIST TO WORK! I hope you all read that ;-)
+
 Sat Aug  5 00:55:52 2000  Tom Gilbert  <gilbertt@linuxbrit.co.uk>
 
 	* Oh sod it. I made it fuzzy over the neighbouring 9 pixels. Will

@@ -471,7 +471,7 @@ geist_imlib_image_part_is_transparent(Imlib_Image im, int x, int y)
    }
    ave = ave / num;
 
-   printf("average value %d\n", ave);
+  D(5,("average value %d\n", ave));
 
 /* TODO Make this fuzziness an OPTION */
    if (ave < 5)

@@ -97,30 +97,37 @@ main(int argc, char *argv[])
 
    geist_document_add_object(doc,
                              geist_image_new_from_file(20, 40,
-                                                       "testimages/elogo.png"));
+                                                       PREFIX
+                                                       "/share/geist/images/elogo.png"));
 
    geist_document_add_object(doc,
                              geist_image_new_from_file(5, 5,
-                                                       "testimages/globe.png"));
+                                                       PREFIX
+                                                       "/share/geist/images/globe.png"));
 
    geist_document_add_object(doc,
                              geist_image_new_from_file(75, 35,
-                                                       "testimages/bulb.png"));
+                                                       PREFIX
+                                                       "/share/geist/images/bulb.png"));
 
    geist_document_add_object(doc,
                              geist_image_new_from_file(275, 145,
-                                                       "testimages/bulb.png"));
+                                                       PREFIX
+                                                       "/share/geist/images/bulb.png"));
    geist_document_add_object(doc,
                              geist_image_new_from_file(355, 70,
-                                                       "testimages/mail.png"));
+                                                       PREFIX
+                                                       "/share/geist/images/mail.png"));
 
    geist_document_add_object(doc,
                              geist_image_new_from_file(275, 345,
-                                                       "testimages/mush.png"));
+                                                       PREFIX
+                                                       "/share/geist/images/mush.png"));
 
    geist_document_add_object(doc,
                              geist_image_new_from_file(175, 5,
-                                                       "testimages/paper.png"));
+                                                       PREFIX
+                                                       "/share/geist/images/paper.png"));
    geist_document_add_object(doc,
                              geist_text_new_with_text(175, 105, "20thcent/16",
                                                       "So this is geist..."));
@@ -265,7 +272,7 @@ evbox_mousemove_cb(GtkWidget * widget, GdkEventMotion * event)
 
    if (gdk_events_pending())
    {
-      if ((e = (GdkEventMotion *)gdk_event_get()) != NULL)
+      if ((e = (GdkEventMotion *) gdk_event_get()) != NULL)
       {
          if (e->type == GDK_MOTION_NOTIFY)
          {
@@ -273,7 +280,7 @@ evbox_mousemove_cb(GtkWidget * widget, GdkEventMotion * event)
             event = e;
          }
          else
-            gdk_event_put((GdkEvent *)e);
+            gdk_event_put((GdkEvent *) e);
       }
    }
 
