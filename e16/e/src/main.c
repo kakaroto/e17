@@ -250,6 +250,7 @@ main(int argc, char **argv)
    /* now we're going to load the configuration/theme */
    LoadEConfig(themepath);
    SetAreaSize(conf.areas.nx, conf.areas.ny);
+   TransparencySet(conf.theme.transparency);
 
    desks.desk[0].viewable = 1;
    RefreshDesktop(0);

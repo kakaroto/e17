@@ -811,7 +811,7 @@ Config_Control(FILE * ConfigFile)
 	     conf.backgrounds.user = i2;
 	     break;
 	  case CONTROL_THEME_TRANSPARENCY:
-	     conf.theme_transparency = i2;
+	     conf.theme.transparency = i2;
 	     break;
 	  case CONTROL_DOCKSTARTPOS:
 	     sscanf(s, "%*s %d %d ", &conf.dock.startx, &conf.dock.starty);
@@ -2404,7 +2404,7 @@ Config_ImageClass(FILE * ConfigFile)
 	     ICToRead->pixmapfillstyle = atoi(s2);
 	     break;
 	  case ICLASS_TRANSPARENT:
-	     ICToRead->transparent = atoi(s2);
+	     ICToRead->transparent = strtoul(s2, NULL, 0);
 	     break;
 	  case CONFIG_INHERIT:
 	     {
@@ -3919,7 +3919,7 @@ SaveUserControlConfig(FILE * autosavefile)
 	fprintf(autosavefile, "1368 %i\n", (int)conf.tooltips.showroottooltip);
 	fprintf(autosavefile, "1369 %i %i %i\n", (int)conf.pagers.sel_button,
 		(int)conf.pagers.win_button, (int)conf.pagers.menu_button);
-	fprintf(autosavefile, "1373 %i\n", (int)conf.theme_transparency);
+	fprintf(autosavefile, "1373 %i\n", (int)conf.theme.transparency);
 #ifdef  HAS_XINERAMA
 	fprintf(autosavefile, "2013 %i\n", (int)conf.extra_head);
 #endif

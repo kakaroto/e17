@@ -53,6 +53,9 @@
 
 #define IC_RenderDepth() DefaultDepth(disp, root.scr)
 
+#define ENABLE_TRANSPARENCY 1
+#define ENABLE_THEME_TRANSPARENCY 1
+
 #else
 
 #include <Imlib.h>
@@ -1207,6 +1210,11 @@ typedef struct
    } snap;
    struct
    {
+      char               *name;
+      int                 transparency;
+   } theme;
+   struct
+   {
       char                enable;
       char                showroottooltip;
       float               delay;
@@ -1244,7 +1252,6 @@ typedef struct
    int                 edge_flip_resistance;
    GroupConfig         group_config;
    char                group_swapmove;
-   int                 theme_transparency;
 
    /* Not used */
    char                primaryicondir;
@@ -2216,6 +2223,7 @@ void                ICCCM_SetMainEInfo(void);
 void                ICCCM_GetMainEInfo(void);
 
 /* iclass.c */
+void                TransparencySet(int transparency);
 ImageClass         *CreateIclass(void);
 void                FreeImageClass(ImageClass * i);
 ImageState         *CreateImageState(void);

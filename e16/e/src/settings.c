@@ -30,7 +30,6 @@ typedef struct _remwinlist
 }
 RememberWinList;
 
-static void         CB_SettingsEscape(int val, void *data);
 static void
 CB_SettingsEscape(int val, void *data)
 {
@@ -52,7 +51,6 @@ static int          tmp_pager_menu_button;
 static DItem       *pager_scan_speed_label = NULL;
 static Dialog      *pager_settings_dialog = NULL;
 
-static void         CB_ConfigurePager(int val, void *data);
 static void
 CB_ConfigurePager(int val, void *data)
 {
@@ -86,7 +84,6 @@ CB_ConfigurePager(int val, void *data)
    data = NULL;
 }
 
-static void         CB_PagerScanSlide(int val, void *data);
 static void
 CB_PagerScanSlide(int val, void *data)
 {
@@ -361,7 +358,6 @@ static char         tmp_warpfocused;
 #endif
 static char         tmp_clickalways;
 
-static void         CB_ConfigureFocus(int val, void *data);
 static void
 CB_ConfigureFocus(int val, void *data)
 {
@@ -632,7 +628,6 @@ int                 je_prevx, je_prevy;
 int                 je_prevmode = -1;
 */
 
-static void         CB_ConfigureMoveResize(int val, void *data);
 static void
 CB_ConfigureMoveResize(int val, void *data)
 {
@@ -1022,7 +1017,6 @@ static DItem       *tmp_desk_text;
 static Dialog      *tmp_desk_dialog;
 static char         tmp_desktop_wraparound;
 
-static void         CB_ConfigureDesktops(int val, void *data);
 static void
 CB_ConfigureDesktops(int val, void *data)
 {
@@ -1035,7 +1029,6 @@ CB_ConfigureDesktops(int val, void *data)
    data = NULL;
 }
 
-static void         CB_DesktopDisplayRedraw(int val, void *data);
 static void
 CB_DesktopDisplayRedraw(int val, void *data)
 {
@@ -1224,7 +1217,6 @@ static DItem       *tmp_area_text;
 static Dialog      *tmp_area_dialog;
 static char         tmp_area_wraparound;
 
-static void         CB_ConfigureAreas(int val, void *data);
 static void
 CB_ConfigureAreas(int val, void *data)
 {
@@ -1246,7 +1238,6 @@ CB_ConfigureAreas(int val, void *data)
    data = NULL;
 }
 
-static void         CB_AreaDisplayRedraw(int val, void *data);
 static void
 CB_AreaDisplayRedraw(int val, void *data)
 {
@@ -1461,7 +1452,6 @@ static char         tmp_manual_placement_mouse_pointer;
 static char         tmp_extra_head;
 #endif
 
-static void         CB_ConfigurePlacement(int val, void *data);
 static void
 CB_ConfigurePlacement(int val, void *data)
 {
@@ -1603,7 +1593,6 @@ SettingsIcons(void)
 static char         tmp_autoraise;
 static int          tmp_autoraisetime;
 
-static void         CB_ConfigureAutoraise(int val, void *data);
 static void
 CB_ConfigureAutoraise(int val, void *data)
 {
@@ -1702,7 +1691,6 @@ static char         tmp_tooltips;
 static int          tmp_tooltiptime;
 static char         tmp_roottip;
 
-static void         CB_ConfigureTooltips(int val, void *data);
 static void
 CB_ConfigureTooltips(int val, void *data)
 {
@@ -1807,7 +1795,6 @@ SettingsTooltips(void)
 }
 
 static char         tmp_dialog_headers;
-static void         CB_ConfigureMiscellaneous(int val, void *data);
 static void
 CB_ConfigureMiscellaneous(int val, void *data)
 {
@@ -1888,7 +1875,6 @@ SettingsMiscellaneous(void)
 
 static char         tmp_audio;
 
-static void         CB_ConfigureAudio(int val, void *data);
 static void
 CB_ConfigureAudio(int val, void *data)
 {
@@ -1996,7 +1982,6 @@ static char         tmp_effect_raindrops;
 static char         tmp_effect_ripples;
 static char         tmp_effect_waves;
 
-static void         CB_ConfigureFX(int val, void *data);
 static void
 CB_ConfigureFX(int val, void *data)
 {
@@ -2455,10 +2440,10 @@ static int          tmp_bg_yperc;
 static char         tmp_hiq;
 static char         tmp_userbg;
 static int          tmp_bg_timeout;
+static int          tmp_theme_transparency;
 
 static void         BG_RedrawView(char nuke_old);
 
-static void         CB_ConfigureBG(int val, void *data);
 static void
 CB_ConfigureBG(int val, void *data)
 {
@@ -2469,6 +2454,9 @@ CB_ConfigureBG(int val, void *data)
 	conf.backgrounds.timeout = tmp_bg_timeout;
 	conf.backgrounds.hiquality = tmp_hiq;
 	conf.backgrounds.user = tmp_userbg;
+#ifdef ENABLE_THEME_TRANSPARENCY
+	TransparencySet(tmp_theme_transparency);
+#endif
 	ESetColor(&(tmp_bg->bg_solid), tmp_bg_r, tmp_bg_g, tmp_bg_b);
 	tmp_bg->bg_tile = tmp_bg_tile;
 	tmp_bg->bg.keep_aspect = tmp_bg_keep_aspect;
@@ -2534,7 +2522,6 @@ CB_ConfigureBG(int val, void *data)
    data = NULL;
 }
 
-static void         CB_DesktopMiniDisplayRedraw(int val, void *data);
 static void
 CB_DesktopMiniDisplayRedraw(int val, void *data)
 {
@@ -2657,7 +2644,6 @@ BG_DoDialog(void)
    CB_DesktopMiniDisplayRedraw(0, bg_mini_disp);
 }
 
-static void         CB_ConfigureNewBG(int val, void *data);
 static void
 CB_ConfigureNewBG(int val, void *data)
 {
@@ -2691,7 +2677,6 @@ CB_ConfigureNewBG(int val, void *data)
    data = NULL;
 }
 
-static void         CB_ConfigureRemBG(int val, void *data);
 static void
 CB_ConfigureRemBG(int val, void *data)
 {
@@ -2742,7 +2727,6 @@ CB_ConfigureRemBG(int val, void *data)
    data = NULL;
 }
 
-static void         CB_ConfigureDelBG(int val, void *data);
 static void
 CB_ConfigureDelBG(int val, void *data)
 {
@@ -2817,7 +2801,6 @@ CB_ConfigureDelBG(int val, void *data)
    data = NULL;
 }
 
-static void         CB_ConfigureFrontBG(int val, void *data);
 static void
 CB_ConfigureFrontBG(int val, void *data)
 {
@@ -2954,7 +2937,6 @@ BG_RedrawView(char nuke_old)
    XClearWindow(disp, win);
 }
 
-static void         CB_BGAreaSlide(int val, void *data);
 static void
 CB_BGAreaSlide(int val, void *data)
 {
@@ -2963,7 +2945,6 @@ CB_BGAreaSlide(int val, void *data)
    data = NULL;
 }
 
-static void         CB_BGScan(int val, void *data);
 static void
 CB_BGScan(int val, void *data)
 {
@@ -2983,7 +2964,6 @@ CB_BGScan(int val, void *data)
    data = NULL;
 }
 
-static void         CB_BGAreaEvent(int val, void *data);
 static void
 CB_BGAreaEvent(int val, void *data)
 {
@@ -3030,7 +3010,6 @@ CB_BGAreaEvent(int val, void *data)
    val = 0;
 }
 
-static void         CB_DesktopTimeout(int val, void *data);
 static void
 CB_DesktopTimeout(int val, void *data)
 {
@@ -3086,7 +3065,6 @@ BGSettingsGoTo(Background * bg)
      }
 }
 
-static void         CB_BGPrev(int val, void *data);
 static void
 CB_BGPrev(int val, void *data)
 {
@@ -3115,7 +3093,6 @@ CB_BGPrev(int val, void *data)
    data = NULL;
 }
 
-static void         CB_BGNext(int val, void *data);
 static void
 CB_BGNext(int val, void *data)
 {
@@ -3144,7 +3121,6 @@ CB_BGNext(int val, void *data)
    data = NULL;
 }
 
-static int          BG_SortFileCompare(Background * bg1, Background * bg2);
 static int
 BG_SortFileCompare(Background * bg1, Background * bg2)
 {
@@ -3158,7 +3134,6 @@ BG_SortFileCompare(Background * bg1, Background * bg2)
    return 0;
 }
 
-static void         CB_BGSortFile(int val, void *data);
 static void
 CB_BGSortFile(int val, void *data)
 {
@@ -3189,7 +3164,6 @@ CB_BGSortFile(int val, void *data)
    data = NULL;
 }
 
-static void         CB_BGSortAttrib(int val, void *data);
 static void
 CB_BGSortAttrib(int val, void *data)
 {
@@ -3234,7 +3208,6 @@ CB_BGSortAttrib(int val, void *data)
    data = NULL;
 }
 
-static void         CB_BGSortContent(int val, void *data);
 static void
 CB_BGSortContent(int val, void *data)
 {
@@ -3261,6 +3234,21 @@ CB_BGSortContent(int val, void *data)
    val = 0;
    data = NULL;
 }
+
+#ifdef ENABLE_THEME_TRANSPARENCY
+static void
+CB_ThemeTransparency(int val, void *data)
+{
+   DItem              *di;
+   char                s[256];
+
+   di = (DItem *) data;
+   Esnprintf(s, sizeof(s), _("Theme transparency: %2d"),
+	     tmp_theme_transparency);
+   DialogItemTextSetText(di, s);
+   DialogDrawItems(bg_sel_dialog, di, 0, 0, 99999, 99999);
+}
+#endif
 
 void
 SettingsBackground(Background * bg)
@@ -3308,6 +3296,7 @@ SettingsBackground(Background * bg)
    tmp_hiq = conf.backgrounds.hiquality;
    tmp_userbg = conf.backgrounds.user;
    tmp_bg_timeout = conf.backgrounds.timeout;
+   tmp_theme_transparency = conf.theme.transparency;
 
    d = bg_sel_dialog = DialogCreate("CONFIGURE_BG");
    DialogSetTitle(d, _("Desktop Background Settings"));
@@ -3678,6 +3667,36 @@ SettingsBackground(Background * bg)
    DialogSetExitFunction(d, CB_ConfigureBG, 2, d);
    DialogBindKey(d, "Escape", CB_SettingsEscape, 0, d);
    DialogBindKey(d, "Return", CB_ConfigureBG, 0, d);
+
+#ifdef ENABLE_THEME_TRANSPARENCY
+   di = DialogAddItem(table, DITEM_SEPARATOR);
+   DialogItemSetColSpan(di, 3);
+   DialogItemSetPadding(di, 2, 2, 2, 2);
+   DialogItemSetFill(di, 1, 0);
+   DialogItemSeparatorSetOrientation(di, 0);
+
+   di = label = DialogAddItem(table, DITEM_TEXT);
+   DialogItemSetColSpan(di, 3);
+   DialogItemSetPadding(di, 2, 2, 2, 2);
+   DialogItemSetFill(di, 1, 0);
+   DialogItemSetAlign(di, 512, 512);
+   Esnprintf(s, sizeof(s), _("Theme transparency: %2d"),
+	     tmp_theme_transparency);
+   DialogItemTextSetText(di, s);
+
+   di = DialogAddItem(table, DITEM_SLIDER);
+   DialogItemSetColSpan(di, 3);
+   DialogItemSliderSetMinLength(di, 10);
+   DialogItemSetPadding(di, 2, 2, 2, 2);
+   DialogItemSetFill(di, 1, 0);
+   DialogItemSliderSetBounds(di, 0, 255);
+   DialogItemSliderSetUnits(di, 1);
+   DialogItemSliderSetJump(di, 16);
+   DialogItemSliderSetVal(di, tmp_theme_transparency);
+   DialogItemSliderSetValPtr(di, &tmp_theme_transparency);
+   DialogItemSetCallback(di, CB_ThemeTransparency, 0, (void *)label);
+#endif /* ENABLE_THEME_TRANSPARENCY */
+
    ShowDialog(d);
 
    CB_DesktopMiniDisplayRedraw(1, area);
@@ -3707,7 +3726,6 @@ static char         tmp_ib_cover_hide;
 static int          tmp_ib_autoresize_anchor;
 static char         tmp_ib_animate;
 
-static void         CB_ConfigureIconbox(int val, void *data);
 static void
 CB_ConfigureIconbox(int val, void *data)
 {
@@ -4053,7 +4071,6 @@ static DItem       *di_stick;
 static DItem       *di_shade;
 static DItem       *di_mirror;
 
-static void         CB_ConfigureGroupEscape(int val, void *data);
 static void
 CB_ConfigureGroupEscape(int val, void *data)
 {
@@ -4067,7 +4084,6 @@ CB_ConfigureGroupEscape(int val, void *data)
    val = 0;
 }
 
-static void         CB_ConfigureGroup(int val, void *data);
 static void
 CB_ConfigureGroup(int val, void *data)
 {
@@ -4347,7 +4363,6 @@ SettingsGroups(EWin * ewin)
 
 static GroupConfig  tmp_group_cfg;
 static char         tmp_group_swap;
-static void         CB_ConfigureDefaultGroupSettings(int val, void *data);
 static void
 CB_ConfigureDefaultGroupSettings(int val, void *data)
 {

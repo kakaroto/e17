@@ -22,7 +22,57 @@
  */
 #include "E.h"
 
-#define ENABLE_TRANSPARENCY USE_IMLIB2
+#ifdef ENABLE_THEME_TRANSPARENCY
+
+static Imlib_Color_Modifier *icm = NULL;
+static DATA8        gray[256];
+static DATA8        alpha[256];
+
+static void
+TransparencyMakeColorModifier(void)
+{
+   int                 i;
+
+   for (i = 0; i < 256; i++)
+     {
+	gray[i] = i;
+	alpha[i] = 255 - conf.theme.transparency;
+     }
+
+   if (icm == NULL)
+      icm = imlib_create_color_modifier();
+   imlib_context_set_color_modifier(icm);
+#if 0
+   imlib_modify_color_modifier_gamma(0.5);
+   imlib_modify_color_modifier_brightness(0.5);
+   imlib_modify_color_modifier_contrast(0.5);
+#endif
+   imlib_set_color_modifier_tables(gray, gray, gray, alpha);
+   imlib_context_set_color_modifier(NULL);
+}
+
+void
+TransparencySet(int transparency)
+{
+   if (transparency < 0)
+      transparency = 0;
+   else if (transparency > 255)
+      transparency = 255;
+
+   conf.theme.transparency = transparency;
+
+   /* Generate the color modifier tables */
+   TransparencyMakeColorModifier();
+}
+
+#else
+
+void
+TransparencySet(int transparency)
+{
+}
+
+#endif /* ENABLE_THEME_TRANSPARENCY */
 
 ImageClass         *
 CreateIclass()
@@ -540,7 +590,7 @@ ImageStateMakePmapMask(ImageState * is, Drawable win, PmapMask * pmm,
    PmapMask            pmml;
    Pixmap              mask = 0;
 
-#if ENABLE_TRANSPARENCY
+#ifdef ENABLE_TRANSPARENCY
    Pixmap              pmap = 0;
    Imlib_Image        *ii = NULL;
 
@@ -568,9 +618,10 @@ ImageStateMakePmapMask(ImageState * is, Drawable win, PmapMask * pmm,
    pmm->type = 1;
    pmm->pmap = pmm->mask = 0;
 
-#if ENABLE_TRANSPARENCY
-   if (is->transparent && is->pixmapfillstyle == FILL_STRETCH &&
-       imlib_image_has_alpha())
+#ifdef ENABLE_TRANSPARENCY
+   if (conf.theme.transparency ||
+       (is->transparent && is->pixmapfillstyle == FILL_STRETCH &&
+	imlib_image_has_alpha()))
      {
 	Window              cr;
 	Pixmap              bg;
@@ -591,20 +642,29 @@ ImageStateMakePmapMask(ImageState * is, Drawable win, PmapMask * pmm,
 
    if (is->pixmapfillstyle == FILL_STRETCH)
      {
-#if ENABLE_TRANSPARENCY
+#ifdef ENABLE_TRANSPARENCY
 	if (ii)
 	  {
 	     imlib_context_set_blend(1);
+#ifdef ENABLE_THEME_TRANSPARENCY
+	     imlib_context_set_color_modifier(icm);
+#endif
 	     imlib_context_set_operation(IMLIB_OP_COPY);
 	     imlib_blend_image_onto_image(is->im, 0, 0, 0, ww, hh, 0, 0, w, h);
 	     imlib_context_set_blend(0);
+#ifdef ENABLE_THEME_TRANSPARENCY
+	     imlib_context_set_color_modifier(NULL);
+#if 0
+	     imlib_free_color_modifier();
+#endif
+#endif
 	  }
 #endif
 	pmm->type = 1;
 	imlib_render_pixmaps_for_whole_image_at_size(&pmm->pmap, &pmm->mask,
 						     w, h);
 	mask = pmm->mask;
-#if ENABLE_TRANSPARENCY
+#ifdef ENABLE_TRANSPARENCY
 	if (ii && make_mask && (is->transparent & 0x04) == 0)
 	  {
 	     /* Make the scaled clip mask to be used (is this really the way?) */
@@ -713,7 +773,7 @@ ImageStateMakePmapMask(ImageState * is, Drawable win, PmapMask * pmm,
 	  }
      }
 
-#if ENABLE_TRANSPARENCY
+#ifdef ENABLE_TRANSPARENCY
    if (pmap)
       imlib_free_pixmap_and_mask(pmap);
    if (ii)

@@ -644,7 +644,7 @@ SetBackgroundTo(Window win, Background * dsk, char setbg)
 	     /* Put image 1:1 onto the current root window */
 	     dpmap = pmap;
 	  }
-	else if (hasbg && !hasfg && dsk->bg_tile && !conf.theme_transparency)
+	else if (hasbg && !hasfg && dsk->bg_tile && !conf.theme.transparency)
 	  {
 	     /* BG only, tiled */
 	     dpmap = ECreatePixmap(disp, win, w, h, depth);
