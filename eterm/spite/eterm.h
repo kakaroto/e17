@@ -1,5 +1,5 @@
 /*
- *      SPITE v0.2 (C) 2000 Michael Lea (mazeone@widgetworks.com)
+ *      SPITE v0.2 (C) 2000 Michael Lea (mazeone@dcaa.net)
  *
  *              SPITE Provides Independent Theming for Eterm.
  *

@@ -1,5 +1,5 @@
 /*
- *      SPITE v0.2 (C) 2000 Michael Lea (mazeone@widgetworks.com)
+ *      SPITE v0.2 (C) 2000 Michael Lea (mazeone@dcaa.net)
  *
  *              SPITE Provides Independent Theming for Eterm.
  *
@@ -452,13 +452,91 @@ main(int argc, char *argv[])
   gtk_notebook_append_page (GTK_NOTEBOOK (notebook), frame, label);
   gtk_widget_show(label);
 
-  pagebox = gtk_vbox_new(FALSE, 0);
-  gtk_container_add(GTK_CONTAINER (frame), pagebox);
-  gtk_widget_show(pagebox);
+  pagetable = gtk_table_new(7, 5, FALSE);
+  gtk_container_add(GTK_CONTAINER(frame), pagetable);
+  gtk_widget_show(pagetable);
 
-  clist = gtk_clist_new_with_titles(1, clist_txt);
-  gtk_widget_show(clist);
-  gtk_box_pack_start(GTK_BOX (pagebox), clist, FALSE, FALSE, 0);
+  label = gtk_label_new("Widget:");
+  gtk_widget_show(label);
+  gtk_table_attach_defaults(GTK_TABLE(pagetable), label, 0, 1, 0, 1);
+
+  images = g_list_append(images, "background");
+  images = g_list_append(images, "trough");
+  images = g_list_append(images, "anchor");
+  images = g_list_append(images, "thumb");
+  images = g_list_append(images, "up arrow");
+  images = g_list_append(images, "down arrow");
+  images = g_list_append(images, "menu");
+  images = g_list_append(images, "submenu");
+  images = g_list_append(images, "button bar");
+  images = g_list_append(images, "button");
+  
+  images_cbox = gtk_combo_new();
+  gtk_combo_set_popdown_strings (GTK_COMBO (images_cbox), images);
+  gtk_entry_set_text (GTK_ENTRY (GTK_COMBO(images_cbox)->entry), "background");
+  gtk_entry_set_editable(GTK_ENTRY (GTK_COMBO (images_cbox)->entry), FALSE);
+  gtk_table_attach_defaults(GTK_TABLE(pagetable), images_cbox, 1, 5, 0, 1);
+  gtk_widget_show(images_cbox);
+
+  label = gtk_label_new("Widget state");
+  gtk_widget_show(label);
+  gtk_table_attach_defaults(GTK_TABLE (pagetable), label, 0, 1, 1, 2);
+
+  im_states = g_list_append(im_states, "normal");
+  im_states = g_list_append(im_states, "selected");
+  im_states = g_list_append(im_states, "clicked");
+  im_states_cbox = gtk_combo_new();
+  gtk_combo_set_popdown_strings (GTK_COMBO (im_states_cbox), im_states);
+  gtk_entry_set_text (GTK_ENTRY(GTK_COMBO(im_states_cbox)->entry), "normal");
+  gtk_entry_set_editable(GTK_ENTRY (GTK_COMBO (im_states_cbox)->entry), FALSE);
+  gtk_table_attach_defaults(GTK_TABLE (pagetable), im_states_cbox, 1, 3, 1, 2);
+  gtk_widget_show(im_states_cbox);
+
+  label = gtk_label_new("File:");
+  gtk_widget_show(label);
+  gtk_table_attach_defaults(GTK_TABLE (pagetable), label, 0, 1, 2, 3);
+
+  im_file_entry = gtk_entry_new_with_max_length(25);
+  gtk_widget_show(im_file_entry);
+  gtk_table_attach_defaults(GTK_TABLE (pagetable), im_file_entry, 1, 3, 2, 3);
+
+  label = gtk_label_new("mode:");
+  gtk_widget_show(label);
+  gtk_table_attach_defaults(GTK_TABLE (pagetable), label, 0, 1, 3, 4);
+
+  im_modes = g_list_append(im_modes, "image");
+  im_modes = g_list_append(im_modes, "trans");
+  im_modes = g_list_append(im_modes, "viewport");
+  im_modes = g_list_append(im_modes, "auto");
+  im_modes_cbox = gtk_combo_new();
+  gtk_combo_set_popdown_strings (GTK_COMBO (im_modes_cbox), im_modes);
+  gtk_entry_set_text (GTK_ENTRY(GTK_COMBO(im_modes_cbox)->entry), "image");
+  gtk_entry_set_editable(GTK_ENTRY (GTK_COMBO (im_modes_cbox)->entry), FALSE);
+  gtk_table_attach_defaults(GTK_TABLE (pagetable), im_modes_cbox, 1, 2, 3, 4);
+  gtk_widget_show(im_modes_cbox);
+
+  frame = gtk_frame_new("allowed");
+  gtk_widget_show(frame);
+  gtk_table_attach_defaults(GTK_TABLE (pagetable), frame, 2, 3, 3, 4);
+  frametable = gtk_table_new(1, 3, FALSE);
+  gtk_container_add(GTK_CONTAINER (frame), frametable);
+  gtk_widget_show(frametable);
+  
+  im_image_btn = gtk_check_button_new_with_label("image");
+  gtk_widget_show(im_image_btn);
+  gtk_table_attach_defaults(GTK_TABLE (frametable), im_image_btn, 0, 1, 0, 1);
+  
+  im_trans_btn = gtk_check_button_new_with_label("trans");
+  gtk_widget_show(im_trans_btn);
+  gtk_table_attach_defaults(GTK_TABLE (frametable), im_trans_btn, 0, 1, 1, 2);
+  
+  im_viewport_btn = gtk_check_button_new_with_label("viewport");
+  gtk_widget_show(im_viewport_btn);
+  gtk_table_attach_defaults(GTK_TABLE (frametable), im_viewport_btn, 0, 1, 2, 3);
+  
+  im_auto_btn = gtk_check_button_new_with_label("auto");
+  gtk_widget_show(im_auto_btn);
+  gtk_table_attach_defaults(GTK_TABLE (frametable), im_auto_btn, 0, 1, 3, 4);
 
 
   /* Buttons to save or cancel, not on a notebook page */   
