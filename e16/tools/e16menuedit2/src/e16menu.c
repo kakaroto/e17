@@ -248,7 +248,7 @@ gboolean table_save_func (GtkTreeModel *model, GtkTreePath *path,
   has_child = gtk_tree_model_iter_has_child (model, iter);
   depth = gtk_tree_path_get_depth (path) - 1;
 
-#define WRITE_FILE /* undef this for debugging */
+#define WRITE_FILE /* undef this for debugging without writing menus */
 #ifdef WRITE_FILE
   if (depth + 1 >= MAX_RECURSION)
   {

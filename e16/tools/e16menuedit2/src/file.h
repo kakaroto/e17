@@ -41,6 +41,7 @@
 #include <sys/stat.h>
 #include <sys/types.h>
 #include <locale.h>
+#include "e16menuedit2.h"
 
 char *field (char *s, int field);
 void fword (char *s, int num, char *wd);

@@ -345,6 +345,9 @@ int run_help (char *help_app, char *help_dir, char *help_file)
 
   params = g_strdup_printf ("%s/%s/%s", help_dir,
                             locale, help_file);
+#ifdef DEBUG
+  DEBUG_OUTPUT printf ("%s\n", params);
+#endif /* DEBUG */  
   help_missing = stat (params, &buf);
 
   /* locale fallback 1 */
@@ -354,6 +357,9 @@ int run_help (char *help_app, char *help_dir, char *help_file)
     g_free (params);
     params = g_strdup_printf ("%s/%s/%s", help_dir,
                               locale_fallback, help_file);
+    #ifdef DEBUG
+    DEBUG_OUTPUT printf ("Try help fallback1: %s\n", params);
+    #endif /* DEBUG */  
     help_missing = stat (params, &buf);
 
     /* locale fallback 2 */
@@ -366,6 +372,9 @@ int run_help (char *help_app, char *help_dir, char *help_file)
       g_free (params);
       params = g_strdup_printf ("%s/%s/%s", help_dir,
                                 locale_fallback, help_file);
+      #ifdef DEBUG
+      DEBUG_OUTPUT printf ("Try help fallback2: %s\n", params);
+      #endif /* DEBUG */  
       help_missing = stat (params, &buf);
 
       /* locale fallback 3 */
@@ -378,6 +387,9 @@ int run_help (char *help_app, char *help_dir, char *help_file)
         g_free (params);
         params = g_strdup_printf ("%s/%s/%s", help_dir,
                                   locale_fallback, help_file);
+	#ifdef DEBUG
+        DEBUG_OUTPUT printf ("Try help fallback4: %s\n", params);
+        #endif /* DEBUG */  
         help_missing = stat (params, &buf);
       }
     }
@@ -393,6 +405,10 @@ int run_help (char *help_app, char *help_dir, char *help_file)
     argv_child[0] = help_app;
     argv_child[1] = params;
     argv_child[2] = NULL;
+  
+    #ifdef DEBUG
+    DEBUG_OUTPUT printf ("Try exec help: %s %s\n", help_app, params);
+    #endif /* DEBUG */
 
     spawn = g_spawn_async (NULL, argv_child, NULL,
                            G_SPAWN_SEARCH_PATH, NULL,

@@ -44,5 +44,7 @@
 void print_statusbar (const gchar *format, ...);
 gboolean browser_func (GtkTreeModel *model, GtkTreePath *path,
                        GtkTreeIter *iter, gpointer user_data);
-		       
+
+#define DEBUG_OUTPUT printf ("(%s, %d): ", __FILE__, __LINE__);
+
 #endif /* _E16MENUEDIT_H */

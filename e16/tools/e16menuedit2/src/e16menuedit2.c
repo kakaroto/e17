@@ -144,6 +144,16 @@ void print_statusbar (const gchar *format, ...)
                       str);
 }
 
+void dbg_printf (const gchar *format, ...)
+{
+  va_list ap;
+
+  va_start (ap, format);
+
+  printf ("(%s, %d): ", __FILE__, __LINE__);
+  g_vprintf(format, ap);
+}
+
 gboolean browser_func (GtkTreeModel *model, GtkTreePath *path,
                        GtkTreeIter *iter, gpointer user_data)
 {
