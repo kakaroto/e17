@@ -1,11 +1,9 @@
 #!/bin/sh
 # Run this to generate all the initial makefiles, etc.
 
-srcdir=`dirname $0`
-test -z "$srcdir" && srcdir=.
+PKG_NAME="enlightenment"
 
-THEDIR="`pwd`"
-cd "$srcdir"
+srcdir=`dirname $0`
 DIE=0
 
 (autoconf --version) < /dev/null > /dev/null 2>&1 || {
@@ -60,14 +58,13 @@ automake --add-missing
 echo "  autoconf"
 autoconf
 
-cd "$THEDIR"
 
-cd "$THEDIR/man"
+#conf_flags="--enable-maintainer-mode --enable-compile-warnings"
 
-cat ../dox/E-docs/MAIN | ./e2mp > enlightenment.pod
-pod2man --center="Enlightenment Man Pages" --release="Enlightenment 0.16.7" ./enlightenment.pod > enlightenment.1
-
-
-cd "$THEDIR"
-
-$srcdir/configure "$@" && echo && echo "Now type 'make' to compile Enlightenment."
+if test x$NOCONFIGURE = x; then
+  echo Running $srcdir/configure $conf_flags "$@" ...
+  $srcdir/configure $conf_flags "$@" \
+  && echo Now type \`make\' to compile $PKG_NAME
+else
+  echo Skipping configure process.
+fi
