@@ -2380,24 +2380,29 @@ DoShade(EWin * ewin, const void *params, int nogroup)
 {
    EWin              **gwins = NULL;
    Group              *curr_group = NULL;
-   int                 i, num;
-   char                shaded;
+   int                 i, num, shade;
 
    EDBUG(6, "doShade");
 
    gwins = ListWinGroupMembersForEwin(ewin, ACTION_SHADE, nogroup, &num);
-   shaded = ewin->shaded;
+   if (!params)
+      shade = !ewin->shaded;
+   else if (!strcmp(params, "on"))
+      shade = 1;
+   else if (!strcmp(params, "off"))
+      shade = 0;
+
    for (i = 0; i < num; i++)
      {
 	curr_group = EwinsInGroup(ewin, gwins[i]);
 	if (gwins[i]->shaded
-	    && ((curr_group && !curr_group->cfg.mirror) || shaded))
+	    && ((curr_group && !curr_group->cfg.mirror) || !shade))
 	  {
 	     SoundPlay("SOUND_UNSHADE");
 	     EwinUnShade(gwins[i]);
 	  }
 	else if (!gwins[i]->shaded
-		 && ((curr_group && !curr_group->cfg.mirror) || !shaded))
+		 && ((curr_group && !curr_group->cfg.mirror) || shade))
 	  {
 	     SoundPlay("SOUND_SHADE");
 	     EwinShade(gwins[i]);
@@ -2406,7 +2411,6 @@ DoShade(EWin * ewin, const void *params, int nogroup)
      }
    Efree(gwins);
    EDBUG_RETURN(0);
-   params = NULL;
 }
 
 static int
