@@ -13,6 +13,10 @@ INCLUDES             = -I$(includedir) \
 
 noinst_LTLIBRARIES = libepsilon_exiftags.la
 libepsilon_exiftags_la_SOURCES = \
+exif.h \
+exifint.h \
+jpeg.h \
+makers.h \
 canon.c \
 casio.c \
 exif.c \
