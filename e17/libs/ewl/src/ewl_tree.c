@@ -104,7 +104,7 @@ int ewl_tree_init(Ewl_Tree *tree, unsigned short columns)
  *
  * Stores the widgets in @a headers to header row of @a tree.
  */
-void ewl_tree_set_headers(Ewl_Tree *tree, char **headers)
+void ewl_tree_headers_set(Ewl_Tree *tree, char **headers)
 {
 	unsigned short i;
 	Ewl_Widget *button;
@@ -143,7 +143,7 @@ void ewl_tree_set_headers(Ewl_Tree *tree, char **headers)
  * NULL, this creates an empty cell.
  */
 Ewl_Widget *
-ewl_tree_add_row(Ewl_Tree *tree, Ewl_Row *prow, Ewl_Widget **children)
+ewl_tree_row_add(Ewl_Tree *tree, Ewl_Row *prow, Ewl_Widget **children)
 {
 	int i;
 	Ewl_Widget *w;
@@ -232,7 +232,7 @@ ewl_tree_add_row(Ewl_Tree *tree, Ewl_Row *prow, Ewl_Widget **children)
  *
  * @return Returns a pointer to a new row on success, NULL on failure.
  */
-Ewl_Widget *ewl_tree_add_text_row(Ewl_Tree *tree, Ewl_Row *prow, char **text)
+Ewl_Widget *ewl_tree_text_row_add(Ewl_Tree *tree, Ewl_Row *prow, char **text)
 {
 	int i;
 	Ewl_Widget **texts;
@@ -254,7 +254,7 @@ Ewl_Widget *ewl_tree_add_text_row(Ewl_Tree *tree, Ewl_Row *prow, char **text)
 		ewl_widget_show(texts[i]);
 	}
 
-	row = ewl_tree_add_row(tree, prow, texts);
+	row = ewl_tree_row_add(tree, prow, texts);
 
 	FREE(texts);
 
@@ -269,7 +269,7 @@ Ewl_Widget *ewl_tree_add_text_row(Ewl_Tree *tree, Ewl_Row *prow, char **text)
  *
  * @return Returns a pointer to a new row on success, NULL on failure.
  */
-Ewl_Widget *ewl_tree_add_entry_row(Ewl_Tree *tree, Ewl_Row *prow, char **text)
+Ewl_Widget *ewl_tree_entry_row_add(Ewl_Tree *tree, Ewl_Row *prow, char **text)
 {
 	int i;
 	Ewl_Widget **entries;
@@ -291,7 +291,7 @@ Ewl_Widget *ewl_tree_add_entry_row(Ewl_Tree *tree, Ewl_Row *prow, char **text)
 		ewl_widget_show(entries[i]);
 	}
 
-	row = ewl_tree_add_row(tree, prow, entries);
+	row = ewl_tree_row_add(tree, prow, entries);
 
 	FREE(entries);
 
@@ -308,7 +308,7 @@ Ewl_Widget *ewl_tree_add_entry_row(Ewl_Tree *tree, Ewl_Row *prow, char **text)
  * widgets in the row will not be destroyed, so they can be accessed at a
  * later time.
  */
-void ewl_tree_remove_row(Ewl_Tree *tree, Ewl_Row *row)
+void ewl_tree_row_remove(Ewl_Tree *tree, Ewl_Row *row)
 {
 	Ewl_Widget *w;
 	Ewl_Container *c;
@@ -342,7 +342,7 @@ void ewl_tree_remove_row(Ewl_Tree *tree, Ewl_Row *row)
  * widgets in the row will be destroyed, so they should not be accessed at a
  * later time.
  */
-void ewl_tree_destroy_row(Ewl_Tree *tree, Ewl_Row *row)
+void ewl_tree_row_destroy(Ewl_Tree *tree, Ewl_Row *row)
 {
 	Ewl_Tree_Node *node;
 
@@ -371,7 +371,7 @@ void ewl_tree_destroy_row(Ewl_Tree *tree, Ewl_Row *row)
  * need finer grain control over where columns are added or removed, see
  * ewl_tree_add_column and ewl_tree_del_column.
  */
-void ewl_tree_set_columns(Ewl_Tree *tree, unsigned short columns)
+void ewl_tree_columns_set(Ewl_Tree *tree, unsigned short columns)
 {
 	DENTER_FUNCTION(DLEVEL_STABLE);
 
@@ -390,7 +390,7 @@ void ewl_tree_set_columns(Ewl_Tree *tree, unsigned short columns)
  * Changes the expanded state of @a row to @a expanded, which
  * should be TRUE or FALSE.
  */
-void ewl_tree_set_row_expand(Ewl_Row *row, Ewl_Tree_Node_Flags expanded)
+void ewl_tree_row_expand_set(Ewl_Row *row, Ewl_Tree_Node_Flags expanded)
 {
 	Ewl_Tree_Node *node;
 

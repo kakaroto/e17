@@ -76,17 +76,17 @@ void ewl_tree_node_expand(Ewl_Tree_Node *tree);
 Ewl_Widget *ewl_tree_new(unsigned short columns);
 int ewl_tree_init(Ewl_Tree *tree, unsigned short columns);
 
-void ewl_tree_set_headers(Ewl_Tree *tree, char **headers);
-void ewl_tree_set_columns(Ewl_Tree *tree, unsigned short columns);
+void ewl_tree_headers_set(Ewl_Tree *tree, char **headers);
+void ewl_tree_columns_set(Ewl_Tree *tree, unsigned short columns);
 
-Ewl_Widget *ewl_tree_add_row(Ewl_Tree *tree, Ewl_Row *prow,
+Ewl_Widget *ewl_tree_row_add(Ewl_Tree *tree, Ewl_Row *prow,
 			     Ewl_Widget **children);
-Ewl_Widget *ewl_tree_add_text_row(Ewl_Tree *tree, Ewl_Row *prow, char **text);
-Ewl_Widget *ewl_tree_add_entry_row(Ewl_Tree *tree, Ewl_Row *prow, char **text);
+Ewl_Widget *ewl_tree_text_row_add(Ewl_Tree *tree, Ewl_Row *prow, char **text);
+Ewl_Widget *ewl_tree_entry_row_add(Ewl_Tree *tree, Ewl_Row *prow, char **text);
 
-void ewl_tree_destroy_row(Ewl_Tree *tree, Ewl_Row *row);
-void ewl_tree_set_row_expand(Ewl_Row *row, Ewl_Tree_Node_Flags expanded);
-Ewl_Row *ewl_tree_find_row(Ewl_Tree *tree, int row);
+void ewl_tree_row_destroy(Ewl_Tree *tree, Ewl_Row *row);
+void ewl_tree_row_expand_set(Ewl_Row *row, Ewl_Tree_Node_Flags expanded);
+Ewl_Row *ewl_tree_row_find(Ewl_Tree *tree, int row);
 
 /*
  * Internally used callbacks, override at your own risk.

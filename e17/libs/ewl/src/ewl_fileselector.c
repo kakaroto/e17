@@ -101,13 +101,13 @@ void ewl_fileselector_init(Ewl_Fileselector * fs)
 				                  EWL_FLAG_FILL_FILL);
 
 	fs->dirs = ewl_tree_new (1);
-	ewl_tree_set_headers (EWL_TREE (fs->dirs), head_dirs);
+	ewl_tree_headers_set (EWL_TREE (fs->dirs), head_dirs);
 	ewl_container_append_child(EWL_CONTAINER(w), fs->dirs);
 	ewl_object_padding_set(EWL_OBJECT(fs->dirs), 2, 2, 2, 2);
 	ewl_widget_show (fs->dirs);
 
 	fs->files = ewl_tree_new (1);
-	ewl_tree_set_headers (EWL_TREE (fs->files), head_files);
+	ewl_tree_headers_set (EWL_TREE (fs->files), head_files);
 	ewl_container_append_child(EWL_CONTAINER(w), fs->files);
 	ewl_object_padding_set(EWL_OBJECT(fs->files), 2, 2, 2, 2);
 	ewl_widget_show (fs->files);
@@ -231,7 +231,7 @@ void ewl_fileselector_set_directory(Ewl_Fileselector * fs, char *path)
 			ewl_callback_append(items[0], EWL_CALLBACK_CLICKED,
 					    ewl_fileselector_directory_clicked_single_cb,
 					    fs);
-			row = ewl_tree_add_row (EWL_TREE (fs->dirs), NULL,
+			row = ewl_tree_row_add (EWL_TREE (fs->dirs), NULL,
 						items);
 			ewl_callback_append(items[0],
 					    EWL_CALLBACK_DOUBLE_CLICKED,
@@ -246,7 +246,7 @@ void ewl_fileselector_set_directory(Ewl_Fileselector * fs, char *path)
 			ewl_callback_append(items[0], EWL_CALLBACK_CLICKED,
 					    ewl_fileselector_file_clicked_cb,
 					    fs);
-			row = ewl_tree_add_row (EWL_TREE (fs->files), NULL, items);
+			row = ewl_tree_row_add (EWL_TREE (fs->files), NULL, items);
 		}
 
 		if (!row)

@@ -145,7 +145,7 @@ main(int argc, char **argv)
 	ewl_widget_show(main_box);
 
 	main_tree = ewl_tree_new(1);
-	ewl_tree_set_headers (EWL_TREE (main_tree), header);
+	ewl_tree_headers_set (EWL_TREE (main_tree), header);
 	ewl_container_append_child(EWL_CONTAINER(main_box), main_tree);
 	ewl_object_fill_policy_set (EWL_OBJECT (main_tree),
 				     EWL_FLAG_FILL_HSHRINK |
@@ -172,7 +172,7 @@ main(int argc, char **argv)
 		 * Add the row to the tree, and setup it's alignment and
 		 * fill.
 		 */
-		prow[i] = ewl_tree_add_text_row( EWL_TREE (main_tree), NULL,
+		prow[i] = ewl_tree_text_row_add( EWL_TREE (main_tree), NULL,
 						 &(tests[i].name));
 		ewl_callback_append (EWL_WIDGET (prow[i]), 
 				     EWL_CALLBACK_CLICKED,

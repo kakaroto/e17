@@ -55,7 +55,7 @@ __create_tree_test_window(Ewl_Widget * w, void *ev_data,
 
 	tree = ewl_tree_new(COLS);
 	ewl_container_append_child(EWL_CONTAINER(tree_win), tree);
-	ewl_tree_set_headers(EWL_TREE(tree), headers);
+	ewl_tree_headers_set(EWL_TREE(tree), headers);
 	ewl_widget_show(tree);
 
 	memset(entries, 0, COLS * sizeof(char *));
@@ -72,10 +72,10 @@ __create_tree_test_window(Ewl_Widget * w, void *ev_data,
 		}
 
 		if (row % NEST == 0)
-			prow = ewl_tree_add_text_row(EWL_TREE(tree), NULL,
+			prow = ewl_tree_text_row_add(EWL_TREE(tree), NULL,
 					entries);
 		else
-			prow = ewl_tree_add_text_row(EWL_TREE(tree),
+			prow = ewl_tree_text_row_add(EWL_TREE(tree),
 					EWL_ROW(prow), entries);
 
 		/*
@@ -84,7 +84,7 @@ __create_tree_test_window(Ewl_Widget * w, void *ev_data,
 		ewl_widget_show(prow);
 		*/
 
-		/* ewl_tree_set_row_expanded(EWL_ROW(prow), TRUE); */
+		/* ewl_tree_row_expanded_set(EWL_ROW(prow), TRUE); */
 
 		for (col = 0; col < COLS; col++) {
 			IF_FREE(entries[col]);

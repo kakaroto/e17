@@ -66,7 +66,7 @@ int main(int argc, char ** argv) {
 	    tree = ewl_tree_new(3);
 	    ewl_container_append_child(EWL_CONTAINER(hbox), tree);
 		ewl_object_padding_set(EWL_OBJECT(tree), 2, 0, 0, 0);
-		ewl_tree_set_headers(EWL_TREE(tree), headers);
+		ewl_tree_headers_set(EWL_TREE(tree), headers);
 	    ewl_widget_show(tree);
 	}
 
@@ -255,7 +255,7 @@ void open_file_cb(Ewl_Widget *w, void *event, void *data) {
 				widgets[2] = ewl_text_new(val);
 				ewl_widget_show(widgets[2]);
 
-				ewl_tree_add_row(EWL_TREE(tree), NULL, widgets);
+				ewl_tree_row_add(EWL_TREE(tree), NULL, widgets);
 				free(key_list[i]);
 			}
 		}
@@ -374,7 +374,7 @@ void add_cb(Ewl_Widget *w, void *event, void *data) {
 	widgets[2] = ewl_text_new(val);
 	ewl_widget_show(widgets[2]);
 
-	ewl_tree_add_row(EWL_TREE(tree), NULL, widgets);
+	ewl_tree_row_add(EWL_TREE(tree), NULL, widgets);
 
 	return;
 	w = NULL;
