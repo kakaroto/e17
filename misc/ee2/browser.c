@@ -158,7 +158,7 @@ browser_sel(GtkWidget *clist, gint row, gint column,
 		imlib_context_set_image(im);
 		sprintf(lblt, "Resolution:  %dx%d\n"
 				  "File Size:  %d bytes\n"
-				  "Last Modification:  %s\n"
+				  "Last Modification:  %s"
 				  "Has Alpha:  ",
 				  imlib_image_get_width(),
 				  imlib_image_get_height(),
