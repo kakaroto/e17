@@ -47,6 +47,7 @@ struct _etox_style_style {
  */
 Etox_Style_Style *_etox_style_style_instance(char *name);
 void _etox_style_style_release(Etox_Style_Style * style, Evas *ev);
+void _etox_style_style_info_collect();
 
 /*
  * Style display modifiers.

@@ -16,6 +16,7 @@ extern "C"
  * Constructor/destructor
  */
 Evas_Object *etox_style_new(Evas *evas, char *text, char *style);
+void etox_style_gc_collect();
 
 /*
  * Content and appearance manipulators

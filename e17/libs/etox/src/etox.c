@@ -125,6 +125,14 @@ static void etox_free(Evas_Object * obj)
 }
 
 /**
+ * etox_gc_collect - free memory used by cached objects 
+ */
+void etox_gc_collect()
+{
+	etox_style_gc_collect();
+}
+
+/**
  * etox_show - display the etox
  * @et: the etox to be displayed
  *

@@ -4,6 +4,7 @@
 #define SET_REL_COLOR(a, b) ((a + b) > 255 ? 255 : ((a + b) < 0 ? 0 : a + b))
 
 static Ecore_Hash *styles = NULL;
+static Evas_List *gc = NULL;
 static int style_path = 0;
 
 static void __etox_style_style_read(Etox_Style_Style_Info * info);
@@ -566,7 +567,11 @@ Etox_Style_Style_Info *_etox_style_style_info_reference(char *name)
 		 */
 		found->name = ecore_string_instance(name);
 		__etox_style_style_info_load(found);
-		ecore_hash_set(styles, name, found);
+		ecore_hash_set(styles, strdup(name), found);
+	}
+	else {
+		if (evas_list_find(gc, found))
+			gc = evas_list_remove(gc, found);
 	}
 
 	found->references++;
@@ -582,12 +587,21 @@ void _etox_style_style_info_dereference(Etox_Style_Style_Info *info)
 {
 	info->references--;
 
+	if (info->references < 1 && !evas_list_find(gc, info))
+		gc = evas_list_append(gc, info);
+}
+
+void _etox_style_style_info_collect()
+{
 	/*
 	 * If there are no more references to the style, then we can remove
 	 * the info from the hash table and free up some memory.
 	 */
-	if (info->references < 1) {
+	while (gc) {
+		Etox_Style_Style_Info *info;
 
+		info = gc->data;
+		gc = evas_list_remove(gc, info);
 		ecore_hash_remove(styles, info->name);
 		if (info->layers)
 			_etox_style_heap_destroy(info->layers);

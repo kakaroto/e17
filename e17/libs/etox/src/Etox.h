@@ -107,6 +107,7 @@ extern "C" {
 Evas_Object *etox_new(Evas *evas);
 Evas_Object *etox_new_all(Evas *evas, Evas_Coord x, Evas_Coord y, Evas_Coord w,
 			  Evas_Coord h, int alpha, Etox_Alignment align);
+void etox_gc_collect();
 
 /*
  * Context management functions

@@ -118,6 +118,16 @@ void etox_style_free(Evas_Object *obj)
 }
 
 /**
+ * etox_style_gc_collect - run through and free up cached styles
+ *
+ * Returns no value.
+ */
+void etox_style_gc_collect()
+{
+	_etox_style_style_info_collect();
+}
+
+/**
  * etox_style_show - display an etox_style or any changes made to a etox_style
  * @etox_style: the etox_style that needs display updates
  *
