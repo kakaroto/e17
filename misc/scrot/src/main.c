@@ -42,7 +42,7 @@ main(int argc, char **argv)
    init_x_and_imlib();
 
    if (!opt.output_file)
-      show_mini_usage();
+      opt.output_file = estrdup("%Y-%m-%d-%H%M%S_&wx&h_scrot.png");
 
    if (opt.select)
       image = scrot_sel_and_grab_image();
@@ -56,6 +56,7 @@ main(int argc, char **argv)
       eprintf("no image grabbed");
 
    imlib_context_set_image(image);
+   opt.output_file= im_printf(opt.output_file, NULL, image);
    tmp = strrchr(opt.output_file, '.');
    if (tmp)
       imlib_image_set_format(tmp + 1);
@@ -65,7 +66,8 @@ main(int argc, char **argv)
    if (err)
       eprintf("Saving to file %s failed\n", opt.output_file);
    if (opt.exec)
-      scrot_exec_app();
+      scrot_exec_app(image);
+   imlib_free_image_and_decache();
 
    D_RETURN(4, 0);
 }
@@ -97,8 +99,7 @@ scrot_do_delay(void)
    }
 }
 
-Imlib_Image
-scrot_grab_shot(void)
+Imlib_Image scrot_grab_shot(void)
 {
    Imlib_Image im;
 
@@ -111,16 +112,20 @@ scrot_grab_shot(void)
 }
 
 void
-scrot_exec_app(void)
+scrot_exec_app(Imlib_Image im)
 {
+   char *execstr;
+
    D_ENTER(3);
 
-   execlp(opt.exec, opt.exec, opt.output_file, NULL);
-   eprintf("exec of %s failed:", opt.exec);
+   execstr = im_printf(opt.exec, opt.output_file, im);
+   system(execstr);
+   exit(0);
    D_RETURN_(3);
 }
 
-Imlib_Image scrot_sel_and_grab_image(void)
+Imlib_Image
+scrot_sel_and_grab_image(void)
 {
    Imlib_Image im = NULL;
    static int xfd = 0;
@@ -292,8 +297,7 @@ Imlib_Image scrot_sel_and_grab_image(void)
    return im;
 }
 
-Window
-scrot_get_window(Display * display, Window window, int x, int y)
+Window scrot_get_window(Display * display, Window window, int x, int y)
 {
    Window source_window, target_window;
 
@@ -320,4 +324,106 @@ scrot_get_window(Display * display, Window window, int x, int y)
    if (target_window == None)
       target_window = window;
    return (target_window);
+}
+
+
+char *
+im_printf(char *str, char *filename, Imlib_Image im)
+{
+   char *c;
+   char buf[20];
+   char ret[4096];
+   char strf[4096];
+   char *tmp;
+   struct stat st;
+   time_t t;
+   struct tm *tm;
+
+   D_ENTER(4);
+
+   ret[0] = '\0';
+   imlib_context_set_image(im);
+
+   time(&t);
+   tm = localtime(&t);
+   strftime(strf, 4095, str, tm);
+
+   for (c = strf; *c != '\0'; c++)
+   {
+      if (*c == '&')
+      {
+         c++;
+         switch (*c)
+         {
+           case 'f':
+              if (filename)
+                 strcat(ret, filename);
+              break;
+           case 'n':
+              if (filename)
+              {
+                 tmp = strrchr(filename, '/');
+                 if (tmp)
+                    strcat(ret, tmp + 1);
+                 else
+                    strcat(ret, filename);
+              }
+              break;
+           case 'w':
+              snprintf(buf, sizeof(buf), "%d", imlib_image_get_width());
+              strcat(ret, buf);
+              break;
+           case 'h':
+              snprintf(buf, sizeof(buf), "%d", imlib_image_get_height());
+              strcat(ret, buf);
+              break;
+           case 's':
+              if (filename)
+              {
+                 if (!stat(filename, &st))
+                 {
+                    int size;
+
+                    size = st.st_size;
+                    snprintf(buf, sizeof(buf), "%d", size);
+                    strcat(ret, buf);
+                 }
+                 else
+                    strcat(ret, "[err]");
+              }
+              break;
+           case 'p':
+              snprintf(buf, sizeof(buf), "%d",
+                       imlib_image_get_width() * imlib_image_get_height());
+              strcat(ret, buf);
+              break;
+           case 't':
+              strcat(ret, imlib_image_format());
+              break;
+           case '&':
+              strcat(ret, "&");
+              break;
+           default:
+              strncat(ret, c, 1);
+              break;
+         }
+      }
+      else if (*c == '\\')
+      {
+         c++;
+         switch (*c)
+         {
+           case 'n':
+              if (filename)
+                 strcat(ret, "\n");
+              break;
+           default:
+              strncat(ret, c, 1);
+              break;
+         }
+      }
+      else
+         strncat(ret, c, 1);
+   }
+   D_RETURN(4, estrdup(ret));
 }

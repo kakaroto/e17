@@ -1,3 +1,34 @@
+Mon Oct 30 18:54:05 2000  Tom Gilbert  <gilbertt@linuxbrit.co.uk>
+
+	* I can't be arsed to type all this again, so here's the new
+	manpage entrys:
+	* If [file] is not specified, a date-stamped file will be
+	dropped in the current directory.
+	* SPECIAL STRINGS
+	Both the --exec and filename parameters  can  take  format
+        specifiers  that  are  expanded by scrot when encountered.
+        There are two types of format specifier.  Characters  pre-
+        ceded  by  a  '%' are interpretted by strftime(2). See man
+        strftime for examples.  These options may be used to refer
+        to  the current date and time.  The second kind are inter-
+        nal to scrot and are prefixed by '&' The following  speci-
+        fiers are recognised:
+        &f image path/filename (ignored when used in the filename)
+        &n image name (ignored when used in the filename)
+        &s image size (bytes) (ignored when used in the filename)
+        &p image pixel size
+        &w image width
+        &h image height
+        &t image format
+        && prints a literal '&'
+        \n prints a newline (ignored when used in the filename)
+        EXAMPLE
+        scrot '%Y-%m-%d_&wx&h.png' -e 'mv &f ~/shots/'
+        This  would  create   a   file   called   something   like
+        2000-10-30_2560x1024.png  and move it to your shots direc-
+        tory.
+	
+
 Sun Oct 29 01:02:16 2000  Tom Gilbert  <gilbertt@linuxbrit.co.uk>
 
 	* Added -q, --quality for setting compression quality.

@@ -67,11 +67,12 @@ void show_mini_usage(void);
 char *chop_file_from_full_path(char *str);
 void show_mini_usage(void);
 Imlib_Image scrot_grab_shot(void);
-void scrot_exec_app(void);
+void scrot_exec_app(Imlib_Image im);
 void scrot_do_delay(void);
 Imlib_Image scrot_sel_and_grab_image(void);
 void scrot_sel_area(int *x, int *y, int *w, int *h);
 Window scrot_get_window(Display *display,Window window,int x,int y);
+char *im_printf(char *str, char *filename, Imlib_Image im);
 
 /* Imlib stuff */
 extern Display *disp;
