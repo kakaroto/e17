@@ -158,6 +158,11 @@ winwidget_create_window(winwidget ret, int w, int h)
       w = scr->width;
       h = scr->height;
    }
+   else if(opt.geom)
+   {
+      w = opt.geom_w;
+      h = opt.geom_h;
+   }
    else
    {
       if (w > scr->width)
@@ -338,12 +343,23 @@ winwidget_render_image(winwidget winwid, int resize, int alias)
                        winwid->im_h * winwid->zoom);
    }
 
-   if (resize && opt.full_screen)
+   if (resize && (opt.full_screen || opt.geom))
    {
       int smaller;              /* Is the image smaller than screen? */
+      int max_w, max_h;
+      if(opt.full_screen)
+      {
+         max_w = scr->width;
+         max_h = scr->height;
+      }
+      else if(opt.geom)
+      {
+         max_w = opt.geom_w;
+         max_h = opt.geom_h;
+      }
 
-      D(4, ("Calculating for fullscreen render\n"));
-      smaller = ((winwid->im_w < scr->width) && (winwid->im_h < scr->height));
+      D(4, ("Calculating for fullscreen/fixed geom render\n"));
+      smaller = ((winwid->im_w < max_w) && (winwid->im_h < max_h));
 
       if (!smaller || opt.auto_zoom)
       {
@@ -353,28 +369,28 @@ winwidget_render_image(winwidget winwid, int resize, int alias)
             smaller but wants expanding to fill it */
          ratio =
             feh_calc_needed_zoom(&(winwid->zoom), winwid->im_w, winwid->im_h,
-                                 scr->width, scr->height);
+                                 max_w, max_h);
          if (ratio > 1.0)
          {
             /* height is the factor */
             winwid->im_x = 0;
             winwid->im_y =
-               ((int) (scr->height - (winwid->im_h * winwid->zoom))) >> 1;
+               ((int) (max_h - (winwid->im_h * winwid->zoom))) >> 1;
          }
          else
          {
             /* width is the factor */
             winwid->im_x =
-               ((int) (scr->width - (winwid->im_w * winwid->zoom))) >> 1;
+               ((int) (max_w - (winwid->im_w * winwid->zoom))) >> 1;
             winwid->im_y = 0;
          }
       }
       else
       {
-         /* Just center the image in the fullscreen window */
+         /* Just center the image in the window */
          winwid->zoom = 1.0;
-         winwid->im_x = (scr->width - winwid->im_w) >> 1;
-         winwid->im_y = (scr->height - winwid->im_h) >> 1;
+         winwid->im_x = (max_w - winwid->im_w) >> 1;
+         winwid->im_y = (max_h - winwid->im_h) >> 1;
       }
    }
 
@@ -605,13 +621,19 @@ void
 winwidget_resize(winwidget winwid, int w, int h)
 {
    D_ENTER(4);
+   if(opt.geom)
+   {
+      winwidget_clear_background(winwid);
+      winwid->had_resize = 1;
+      return;
+   }
    if (winwid && ((winwid->w != w) || (winwid->h != h)))
    {
       D(4, ("Really doing a resize\n"));
       /* winwidget_clear_background(winwid); */
       XResizeWindow(disp, winwid->win, w, h);
-      winwid->w = (winwid->im_w > scr->width) ? scr->width : w;
-      winwid->h = (winwid->im_h > scr->height) ? scr->height : h;
+      winwid->w = (w > scr->width) ? scr->width : w;
+      winwid->h = (h > scr->height) ? scr->height : h;
       winwid->had_resize = 1;
    }
    else

@@ -1,3 +1,9 @@
+Sat Aug 11 23:20:09 2001  Tom Gilbert  <gilbertt@linuxbrit.co.uk>
+
+	* Added -g, --geometry setting to fix feh's geometry. Stops
+	repeated resizing when browsing lots of pics. Please test this for
+	me as I want to get 1.0 out soon :)p
+
 Sat Aug 11 01:41:21 2001  Tom Gilbert  <gilbertt@linuxbrit.co.uk>
 
 	* Add image and filelist saving to context menus.

@@ -346,9 +346,10 @@ feh_parse_option_array(int argc, char **argv)
       {"theme", 1, 0, 'T'},                 /* okay */
       {"filelist", 1, 0, 'f'},              /* okay */
       {"customlist", 1, 0, 'L'},            /* okay */
+      {"geometry", 1, 0, 'g'},              /* okay */
       {"menu-font", 1, 0, 'M'},
       {"thumb-width", 1, 0, 'y'},
-      {"thumb-height", 1, 0, 'g'},
+      {"thumb-height", 1, 0, 'E'},
       {"slideshow-delay", 1, 0, 'D'},
       {"font", 1, 0, 'e'},
       {"title-font", 1, 0, '@'},
@@ -373,7 +374,7 @@ feh_parse_option_array(int argc, char **argv)
       {"output-dir", 1, 0, 'j'},
       {0, 0, 0, 0}
    };
-   int optch = 0, cmdx = 0;
+   int optch = 0, cmdx = 0, i = 0;
 
    D_ENTER(4);
 
@@ -437,6 +438,11 @@ feh_parse_option_array(int argc, char **argv)
            break;
         case 'n':
            opt.reverse = 1;
+           break;
+        case 'g':
+           XParseGeometry(optarg, &i, &i, &opt.geom_w, &opt.geom_h);
+           if((opt.geom_w > 1) && (opt.geom_h > 1))
+              opt.geom = 1;
            break;
         case 'N':
            opt.no_menus = 1;
@@ -556,7 +562,7 @@ feh_parse_option_array(int argc, char **argv)
         case 'y':
            opt.thumb_w = atoi(optarg);
            break;
-        case 'g':
+        case 'E':
            opt.thumb_h = atoi(optarg);
            break;
         case ')':
@@ -736,6 +742,8 @@ show_usage(void)
            "                            the content of those directories. (Take it easy)\n"
            "  -z, --randomize           When viewing multiple files in a slideshow,\n"
            "                            randomise the file list before displaying\n"
+           "  -g, --geometry STRING     Limit (and don't change) the window size. Takes\n"
+           "                            an X-style geometry string like 640x480.\n"
            "  -f, --filelist FILE       This option is similar to the playlists used by\n"
            "                            music software. If FILE exists, it will be read\n"
            "                            for a list of files to load, in the order they\n"
@@ -890,7 +898,7 @@ show_usage(void)
            "                            the thumbnail size. (Aspect ratio will be maintained\n"
            "                            unless --ignore-aspect is specified)\n"
            "  -y, --thumb-width NUM     Set thumbnail width in pixels\n"
-           "  -g, --thumb-height NUM    Set thumbnail height in pixels\n"
+           "  -E, --thumb-height NUM    Set thumbnail height in pixels\n"
            "                            Thumbnails default to 20x20 pixels\n"
            "  -W, --limit-width NUM     Limit the width of the montage in pixels\n"
            "  -H, --limit-height NUM    Limit the height of the montage in pixels\n"

@@ -127,6 +127,10 @@ performed if you specify one of these sort modes.
 .B -F, --full-screen
 Make the window fullscreen
 .TP 5
+.B -g, --geometry STRING
+Limit (and don't change) the window size. Takes
+an X-style geometry string like 640x480.
+.TP 5
 .B -Z, --auto-zoom
 Zoom picture to screen size in fullscreen (affected by --stretch and
 --ignore-aspect).
@@ -323,7 +327,7 @@ specified)
 .B -y, --thumb-width NUM
 Set thumbnail width in pixels
 .TP 5
-.B -g, --thumb-height NUM
+.B -E, --thumb-height NUM
 Set thumbnail height in pixels
 Thumbnails default to 20x20 pixels
 .TP 5

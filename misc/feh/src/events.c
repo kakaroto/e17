@@ -239,6 +239,11 @@ feh_event_handle_ButtonPress(XEvent * ev)
             winwid->im_x = (scr->width - winwid->im_w) >> 1;
             winwid->im_y = (scr->height - winwid->im_h) >> 1;
          }
+         else if(opt.geom)
+         {
+            winwid->im_x = (opt.geom_w - winwid->im_w) >> 1;
+            winwid->im_y = (opt.geom_h - winwid->im_h) >> 1;
+         }
          else
          {
             winwid->im_x = 0;
@@ -530,7 +535,7 @@ feh_event_handle_MotionNotify(XEvent * ev)
             winwid->im_w = feh_imlib_image_get_width(temp);
             winwid->im_h = feh_imlib_image_get_height(temp);
             feh_imlib_free_image_and_decache(temp);
-            if (!opt.full_screen)
+            if (!opt.full_screen && !opt.geom)
                winwidget_resize(winwid, winwid->im_w, winwid->im_h);
             winwid->has_rotated = 1;
          }

@@ -90,6 +90,7 @@ struct __fehoptions
    unsigned char no_rotate_ctrl_mask;
    unsigned char no_blur_ctrl_mask;
    unsigned char no_pan_ctrl_mask;
+   unsigned char geom;
 
    int thumb_w;
    int thumb_h;
@@ -98,6 +99,8 @@ struct __fehoptions
    int reload;
    int sort;
    int debug_level;
+   int geom_w;
+   int geom_h;
    unsigned char adjust_reload;
    unsigned int start_list_at;
    
