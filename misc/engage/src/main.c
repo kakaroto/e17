@@ -20,6 +20,7 @@ main(int argc, char **argv)
 //      ecore_event_handler_add(ECORE_EVENT_SIGNAL_EXIT, callback_exit, NULL);
   ecore_evas_init();
   edje_init();
+  edje_frametime_set(1.0 / 30.0);
 
   od_window_init();
   od_dock_init();
