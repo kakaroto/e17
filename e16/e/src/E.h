@@ -2331,28 +2331,8 @@ void                RedrawIconbox(Iconbox * ib);
 void                IconboxHandleEvent(XEvent * ev);
 void                UpdateAppIcon(EWin * ewin, int imode);
 void                IconboxResize(Iconbox * ib, int w, int h);
-void                IB_FixPos(Iconbox * ib);
-void                IB_DrawScroll(Iconbox * ib);
-EWin               *IB_FindIcon(Iconbox * ib, int px, int py);
-void                IB_CalcMax(Iconbox * ib);
-void                IB_Scroll(Iconbox * ib, int dir);
-void                IB_ShowMenu(Iconbox * ib, int x, int y);
 void                IB_CompleteRedraw(Iconbox * ib);
-void                IB_SnapEWin(EWin * ewin);
-void                IB_GetAppIcon(EWin * ewin);
-void                IB_PasteDefaultBase(Drawable d, int x, int y, int w, int h);
-void                IB_PasteDefaultBaseMask(Drawable d, int x, int y, int w,
-					    int h);
-void                IB_GetEIcon(EWin * ewin);
-void                IB_AddIcondef(char *title, char *name, char *class,
-				  char *file);
-void                IB_RemoveIcondef(Icondef * idef);
-Icondef            *IB_MatchIcondef(char *title, char *name, char *class);
-Icondef           **IB_ListIcondef(int *num);
 void                IB_Setup(void);
-void                IB_LoadIcondefs(void);
-void                IB_ReLoadIcondefs(void);
-void                IB_SaveIcondefs(void);
 Iconbox           **ListAllIconboxes(int *num);
 Iconbox            *SelectIconboxForEwin(EWin * ewin);
 
