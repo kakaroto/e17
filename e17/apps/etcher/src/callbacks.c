@@ -30,7 +30,8 @@ Evas view_evas = NULL;
 gint render_method = 0;
 gint zoom_method = 0;
 guint current_idle = 0;
-gboolean no_splash;
+gboolean no_splash = FALSE;
+char *load_file = NULL;
 
 static int new_evas = 1;
 static int new_fade = 0;
@@ -1763,11 +1764,63 @@ on_view_expose_event                   (GtkWidget       *widget,
 	  }
 	else
 	  {
-	    if (!o_handle1) view_create_handles(NULL);
-	    QUEUE_DRAW;
+	     if (!o_handle1) view_create_handles(NULL);
+	     if (load_file)
+	       {
+		  bits = ebits_load(load_file);
+		  
+		  if (bits)
+		    {
+		       Evas_List l;
+		       GtkWidget *w;
+		       
+		       selected_state = NULL;
+		       w = gtk_object_get_data(GTK_OBJECT(main_win), "images");
+		       gtk_clist_clear(GTK_CLIST(w));
+		       update_visible_selection();
+		       
+		       if (bits) 
+			 {
+			    ebits_add_to_evas(bits, view_evas);
+			    ebits_set_layer(bits, 5);
+			    ebits_move(bits, backing_x, backing_y);
+			    ebits_resize(bits, backing_w, backing_h);
+			    ebits_show(bits);
+			    for (l = bits->bits; l; l = l->next)
+			      {
+				 Ebits_Object_Bit_State state;
+				 
+				 state = l->data;
+				 evas_callback_add(view_evas, state->object, CALLBACK_MOUSE_DOWN, handle_bit_mouse_down, state);
+				 evas_callback_add(view_evas, state->object, CALLBACK_MOUSE_UP, handle_bit_mouse_up, state);
+				 evas_callback_add(view_evas, state->object, CALLBACK_MOUSE_MOVE, handle_bit_mouse_move, state);
+			      }
+			    w = gtk_object_get_data(GTK_OBJECT(main_win), "images");
+			    gtk_clist_freeze(GTK_CLIST(w));
+			    gtk_clist_clear(GTK_CLIST(w));
+			    for (l = bits->bits; l; l = l->next)
+			      {
+				 Ebits_Object_Bit_State state2;
+				 gchar *text;
+				 gint row;
+				 
+				 state2 = l->data;
+				 text = state2->description->name;
+				 if (!text) text = "";
+				 row = gtk_clist_append(GTK_CLIST(w), &text);
+			      }
+			    gtk_clist_thaw(GTK_CLIST(w));
+			    update_widget_from_selection();
+			    w = gtk_object_get_data(GTK_OBJECT(main_win), "file");
+			    gtk_entry_set_text(GTK_ENTRY(w), load_file);
+			 }
+		       E_DB_STR_SET(etcher_config, "/paths/bit", load_file);
+		       e_db_flush();
+		    }
+	       }
+	     
 	  }
-
-	{
+	  {
 	  GdkPixmap *src, *mask;
 	  GdkColor fg, bg;
 	  GdkGC *gc;

@@ -7,6 +7,7 @@
 
 #include <Evas.h>
 #include <Edb.h>
+#include <stdio.h>
 #include <stdlib.h>
 
 #include "interface.h"
@@ -18,7 +19,7 @@ extern Evas view_evas;
 extern gint render_method;
 extern gint zoom_method;
 extern gboolean no_splash;
-
+extern char *load_file;
 GdkVisual *gdk_vis = NULL;
 GdkColormap *gdk_cmap = NULL;
 
@@ -31,10 +32,20 @@ main (int argc, char *argv[])
 
    for (i=1; i<argc; i++)
      {
-       if (!strcmp(argv[i], "--no-splash"))
-	 {
-	   no_splash = TRUE;
-	 }
+	if (!strcmp(argv[i], "--no-splash")) no_splash = TRUE;
+	else if ((!strcmp(argv[i], "--help")) ||
+		 (!strcmp(argv[i], "-help")) ||
+		 (!strcmp(argv[i], "-h")))
+	  {
+	     printf("Usage: %s [--no-splash] [ebits_file_to_edit.db]\n",
+		    argv[0]);
+	     exit(0);
+	  }
+	else 
+	  {
+	     load_file = argv[i];
+	     no_splash = TRUE;
+	  }
      }
 
 #ifdef ENABLE_NLS
