@@ -255,7 +255,7 @@ void ewl_window_move(Ewl_Window * win, int x, int y)
 		DRETURN(DLEVEL_STABLE);
 #ifdef HAVE_EVAS_ENGINE_SOFTWARE_X11_H
 	if (strstr(win->render, "x11"))
-		ecore_x_window_move((Ecore_X_Window)win->window, x, y);
+		ecore_x_window_prop_xy_set((Ecore_X_Window)win->window, x, y);
 #endif
 
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
