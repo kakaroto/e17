@@ -1,9 +1,6 @@
 /*
  * (c) 1998-2000 Gerd Knorr
- *
- *    capture a image, compress as jpeg and upload to the webserver
- *    q
- *    using ftp the ftp utility
+ * (c) 2000-2004 Tom Gilbert
  *
  */
 
@@ -39,7 +36,7 @@
 #include "parseconfig.h"
 #include "pwc-ioctl.h"
 
-#define VERSION "1.7"
+#define VERSION "1.8"
 
 void camlog(char *fmt,
          ...);
@@ -1584,6 +1581,11 @@ main(int argc,
         gib_imlib_free_image_and_decache(image);
         image = tmp_image;
         imlib_context_set_image(image);
+
+	/* Set new values for width and height, else the image's 
+	   text might not show up in the correct position. */
+	width = crop_width;
+	height = crop_height;
       }
 
       camlog("** shot taken\n");
