@@ -3048,6 +3048,45 @@ UnShadeEwin(EWin * ewin)
 }
 
 void
+EwinSetFullscreen(EWin * ewin, int on)
+{
+   int                 x, y, w, h;
+
+   if (ewin->st.fullscreen == on)
+      return;
+
+   if (on)
+     {
+	ewin->lx = ewin->x;
+	ewin->ly = ewin->y;
+	ewin->lw = ewin->client.w;
+	ewin->lh = ewin->client.h;
+	ewin->ll = ewin->layer;
+	ScreenGetGeometry(ewin->x, ewin->y, &x, &y, &w, &h);
+	x -= ewin->border->border.left;
+	y -= ewin->border->border.top;
+#if 0
+	ewin->layer = 10;
+#endif
+	ewin->fixedpos = 1;
+	ewin->st.fullscreen = 1;
+     }
+   else
+     {
+	x = ewin->lx;
+	y = ewin->ly;
+	w = ewin->lw;
+	h = ewin->lh;
+	ewin->layer = ewin->ll;
+	ewin->fixedpos = 0;	/* Yeah - well */
+	ewin->st.fullscreen = 0;
+     }
+   RaiseEwin(ewin);
+   MoveResizeEwin(ewin, x, y, w, h);
+   HintsSetWindowState(ewin);
+}
+
+void
 EwinSetArea(EWin * ewin, int ax, int ay)
 {
    if (ax == ewin->area_x && ay == ewin->area_y)

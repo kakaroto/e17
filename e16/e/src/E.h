@@ -506,8 +506,9 @@ int                 Esnprintf(va_alist);
 #define ACTION_NEVERFOCUS             101
 #define ACTION_SKIPLISTS              102
 #define ACTION_SWAPMOVE               103
+#define ACTION_FULLSCREEN             104
 /* false number excluding the above list */
-#define ACTION_NUMBEROF               104
+#define ACTION_NUMBEROF               105
 
 #define MODE_NONE                 0
 #define MODE_MOVE_PENDING         1
@@ -896,7 +897,7 @@ struct _ewin
    int                 x, y, w, h;
    int                 shape_x, shape_y;
    int                 req_x, req_y;
-   int                 lx, ly, lw, lh;
+   int                 lx, ly, lw, lh, ll;
    char                type;
    char                state;
    char                internal;
@@ -936,7 +937,6 @@ struct _ewin
    char                focusclick;
    char                neverfocus;
    char                no_actions;
-   int                 ewmh_flags;
    Menu               *menu;
    Window              shownmenu;
    Dialog             *dialog;
@@ -952,6 +952,12 @@ struct _ewin
    PmapMask            icon_pmm;
    int                 icon_w, icon_h;
    int                 head;
+   struct
+   {
+      unsigned            maximized_horz:1;
+      unsigned            maximized_vert:1;
+      unsigned            fullscreen:1;
+   } st;
    struct
    {
       char               *wm_name;
@@ -1320,6 +1326,7 @@ typedef struct
    int                 last_button;
    Time                last_time;
    char                queue_up;
+   char                edge_flip_inhibit;
 }
 EMode;
 
@@ -1723,6 +1730,7 @@ void                InstantShadeEwin(EWin * ewin, int force);
 void                InstantUnShadeEwin(EWin * ewin);
 void                ShadeEwin(EWin * ewin);
 void                UnShadeEwin(EWin * ewin);
+void                EwinSetFullscreen(EWin * ewin, int on);
 void                EwinSetBorder(EWin * ewin, Border * b, int apply);
 void                EwinSetBorderByName(EWin * ewin, const char *name,
 					int apply);

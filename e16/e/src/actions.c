@@ -926,6 +926,26 @@ doSwapMove(EWin * ewin, const void *params)
    return ActionMoveStart(ewin, params, 0, 0);
 }
 
+static int
+doFullscreen(EWin * ewin, const void *params)
+{
+   int                 on;
+
+   on = 0;
+   if (!params)
+      on = !ewin->st.fullscreen;
+   else if (!strcmp(params, "on"))
+      on = 1;
+   EwinSetFullscreen(ewin, on);
+
+   /* Inhibit edge flip while in fullscreen mode */
+   /* FIXME: Breaks when multiple windows enter/leave fullscreen state */
+   Mode.edge_flip_inhibit = on;
+   ShowEdgeWindows();
+
+   return 0;
+}
+
 #if 0				/* Not used */
 static int
 doMoveConstrainedNoGroup(EWin * ewin, const void *params)
@@ -3430,5 +3450,6 @@ static ActionFunction ActionFunctions[ACTION_NUMBEROF] = {
    {1, 0, 0, 0, doSkipWinList},	/* ACTION_SKIPWINLIST */
    {1, 0, 0, 0, doNeverFocus},	/* ACTION_NEVERFOCUS */
    {1, 0, 0, 0, doSkipLists},	/* ACTION_SKIPLISTS */
-   {1, 0, 0, 1, doSwapMove}	/* ACTION_SWAPMOVE */
+   {1, 0, 0, 1, doSwapMove},	/* ACTION_SWAPMOVE */
+   {1, 0, 0, 0, doFullscreen}	/* ACTION_FULLSCREEN */
 };

@@ -127,10 +127,6 @@ Atom                _NET_WM_STATE_BELOW;
 #define _NET_WM_STATE_ADD       1
 #define _NET_WM_STATE_TOGGLE    2
 
-/* EWMH flags (somewhat messy) */
-#define NET_WM_FLAG_MAXIMIZED_VERT  0x01
-#define NET_WM_FLAG_MAXIMIZED_HORZ  0x02
-
 /*
  * Set/clear Atom in list
  */
@@ -219,9 +215,7 @@ EWMH_Init(Window win_wm_check)
    _ATOM_INIT(_NET_WM_STATE_SKIP_TASKBAR);
    _ATOM_INIT(_NET_WM_STATE_SKIP_PAGER);
    _ATOM_INIT(_NET_WM_STATE_HIDDEN);
-#if 0				/* Not implemented */
    _ATOM_INIT(_NET_WM_STATE_FULLSCREEN);
-#endif
    _ATOM_INIT(_NET_WM_STATE_ABOVE);
    _ATOM_INIT(_NET_WM_STATE_BELOW);
 
@@ -489,9 +483,11 @@ EWMH_SetWindowState(const EWin * ewin)
    atom_list_set(atom_list, len, &atom_count, _NET_WM_STATE_HIDDEN,
 		 ewin->iconified || ewin->shaded);
    atom_list_set(atom_list, len, &atom_count, _NET_WM_STATE_MAXIMIZED_VERT,
-		 ewin->ewmh_flags & NET_WM_FLAG_MAXIMIZED_VERT);
+		 ewin->st.maximized_vert);
    atom_list_set(atom_list, len, &atom_count, _NET_WM_STATE_MAXIMIZED_HORZ,
-		 ewin->ewmh_flags & NET_WM_FLAG_MAXIMIZED_HORZ);
+		 ewin->st.maximized_horz);
+   atom_list_set(atom_list, len, &atom_count, _NET_WM_STATE_FULLSCREEN,
+		 ewin->st.fullscreen);
    atom_list_set(atom_list, len, &atom_count, _NET_WM_STATE_SKIP_PAGER,
 		 ewin->skip_ext_pager);
    atom_list_set(atom_list, len, &atom_count, _NET_WM_STATE_ABOVE,
@@ -590,8 +586,6 @@ EWMH_GetWindowState(EWin * ewin)
 
    EDBUG(6, "EWMH_GetWindowState");
 
-   ewin->ewmh_flags = 0;
-
    n_atoms = 0;
    p_atoms = AtomGet(ewin->client.win, _NET_WM_STATE, XA_ATOM, &n_atoms);
    n_atoms /= sizeof(Atom);	/* Silly */
@@ -601,7 +595,8 @@ EWMH_GetWindowState(EWin * ewin)
    /* We must clear/set all according to not present/present */
    ewin->sticky = ewin->shaded = 0;
    ewin->skiptask = ewin->skip_ext_pager = 0;
-   ewin->ewmh_flags = 0;
+   ewin->st.maximized_horz = ewin->st.maximized_vert = 0;
+   ewin->st.fullscreen = 0;
 /* ewin->layer = No ... TBD */
 
    for (i = 0; i < n_atoms; i++)
@@ -618,9 +613,11 @@ EWMH_GetWindowState(EWin * ewin)
 	else if (atom == _NET_WM_STATE_HIDDEN)
 	   ;			/* ewin->iconified = 1; No - WM_STATE does this */
 	else if (atom == _NET_WM_STATE_MAXIMIZED_VERT)
-	   ewin->ewmh_flags |= NET_WM_FLAG_MAXIMIZED_VERT;
+	   ewin->st.maximized_vert = 1;
 	else if (atom == _NET_WM_STATE_MAXIMIZED_HORZ)
-	   ewin->ewmh_flags |= NET_WM_FLAG_MAXIMIZED_HORZ;
+	   ewin->st.maximized_horz = 1;
+	else if (atom == _NET_WM_STATE_FULLSCREEN)
+	   ewin->st.fullscreen = 1;
 	else if (atom == _NET_WM_STATE_ABOVE)
 	   ewin->layer = 6;
 	else if (atom == _NET_WM_STATE_BELOW)
@@ -852,51 +849,49 @@ EWMH_ProcessClientMessage(XClientMessageEvent * event)
 		 atom == _NET_WM_STATE_MAXIMIZED_HORZ)
 	  {
 	     void                (*func) (EWin *, const char *);
-	     int                 maskbits;
+	     int                 maxh, maxv;
 
+	     maxh = ewin->st.maximized_horz;
+	     maxv = ewin->st.maximized_vert;
 	     if (atom2 == _NET_WM_STATE_MAXIMIZED_VERT || atom2 == _NET_WM_STATE_MAXIMIZED_HORZ)	/* (ok - ok) */
 	       {
 		  func = MaxSize;
-		  maskbits = NET_WM_FLAG_MAXIMIZED_VERT |
-		     NET_WM_FLAG_MAXIMIZED_HORZ;
+		  maxh = do_set(maxh, action);
+		  maxv = do_set(maxv, action);
 	       }
 	     else if (atom == _NET_WM_STATE_MAXIMIZED_VERT)
 	       {
 		  func = MaxHeight;
-		  maskbits = NET_WM_FLAG_MAXIMIZED_VERT;
+		  maxv = do_set(maxv, action);
 	       }
 	     else
 	       {
 		  func = MaxWidth;
-		  maskbits = NET_WM_FLAG_MAXIMIZED_HORZ;
+		  maxh = do_set(maxh, action);
 	       }
 
-	     if (ewin->ewmh_flags & maskbits)
-	       {
-		  if (action != _NET_WM_STATE_ADD)
-		    {
-		       ewin->ewmh_flags &= ~maskbits;
-		       ewin->toggle = 1;
-		    }
-	       }
+	     if ((ewin->st.maximized_horz == maxh) &&
+		 (ewin->st.maximized_vert == maxv))
+		goto done;
+
+	     if ((ewin->st.maximized_horz && !maxh) ||
+		 (ewin->st.maximized_vert && !maxv))
+		ewin->toggle = 1;
 	     else
-	       {
-		  if (action != _NET_WM_STATE_REMOVE)
-		    {
-		       ewin->ewmh_flags |= maskbits;
-		       ewin->toggle = 0;
-		    }
-	       }
+		ewin->toggle = 0;
+
 	     func(ewin, "available");
 	     RememberImportantInfoForEwin(ewin);
 	     EWMH_SetWindowState(ewin);
-	     ewin->toggle = 0;
 	  }
-#if 0				/* Not yet implemented */
 	else if (atom == _NET_WM_STATE_FULLSCREEN)
 	  {
+	     action = do_set(ewin->st.fullscreen, action);
+	     if (ewin->st.fullscreen == action)
+		goto done;
+
+	     ActionsCall(ACTION_FULLSCREEN, ewin, (action) ? "on" : "off");
 	  }
-#endif
 	else if (atom == _NET_WM_STATE_ABOVE)
 	  {
 	     action = do_set(ewin->layer >= 6, action);

@@ -31,7 +31,7 @@ EdgeTimeout(int val, void *data)
 {
    int                 ax, ay, aw, ah, dx, dy, dax, day;
 
-   if (Mode.cur_menu_mode > 0)
+   if (Mode.edge_flip_inhibit || (Mode.cur_menu_mode > 0))
       return;
    if (!Conf.edge_flip_resistance)
       return;
@@ -93,11 +93,12 @@ ShowEdgeWindows(void)
 {
    int                 ax, ay, cx, cy;
 
-   if (Conf.edge_flip_resistance <= 0)
+   if (Mode.edge_flip_inhibit || (Conf.edge_flip_resistance <= 0))
      {
 	HideEdgeWindows();
 	return;
      }
+
    if (!w1)
      {
 	w1 = ECreateEventWindow(VRoot.win, 0, 0, 1, VRoot.h);

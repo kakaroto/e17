@@ -48,6 +48,8 @@ MaxSizeHV(EWin * ewin, const char *resize_type, int direction)
 	ewin->ly = ewin->y;
 	ewin->lw = ewin->client.w;
 	ewin->lh = ewin->client.h;
+	ewin->st.maximized_horz = 0;
+	ewin->st.maximized_vert = 0;
 	ewin->toggle = 0;
 	goto done;
      }
@@ -128,6 +130,8 @@ MaxSizeHV(EWin * ewin, const char *resize_type, int direction)
 	     y = y1;
 	     h = y2 - y1 - (ewin->border->border.top +
 			    ewin->border->border.bottom);
+
+	     ewin->st.maximized_vert = 1;
 	  }
 
 	if (direction & MAX_HOR)
@@ -153,6 +157,8 @@ MaxSizeHV(EWin * ewin, const char *resize_type, int direction)
 	     x = x1;
 	     w = x2 - x1 - (ewin->border->border.left +
 			    ewin->border->border.right);
+
+	     ewin->st.maximized_horz = 1;
 	  }
 
 	break;
