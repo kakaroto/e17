@@ -5,6 +5,13 @@ if [ "$USER" = "root" ]; then
   exit
 fi
 
+echo
+echo 
+echo "NOTE:"
+echo "you will need libtool 1.3 or higher for this to work"
+echo
+echo
+
 srcdir=`dirname $0`
 test -z "$srcdir" && srcdir=.
 
