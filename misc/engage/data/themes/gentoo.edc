@@ -118,8 +118,14 @@ collections {
 	    name, "engage_icon_mouse_down";
 	    signal, "mouse,down,1";
 	    source, "background";
-	    action, SIGNAL_EMIT "engage,app,raise" "";
-	    in, 0.35 0.0;
+	    action, SIGNAL_EMIT "engage,window,raise" "";
+	    in, 0.15 0.0;
+	}
+	program {
+	    name, "engage_icon_mouse_down";
+	    signal, "mouse,clicked,3";
+	    source, "background";
+	    action, SIGNAL_EMIT "engage,window,minimize" "";
 	}
 	program {
 	    name, "engage_icon_mouse_down";
