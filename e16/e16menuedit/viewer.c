@@ -317,6 +317,7 @@ create_main_window(void)
 	gtk_clist_set_column_title(GTK_CLIST(ctree), 2, "Params");
 	gtk_clist_column_titles_show(GTK_CLIST(ctree));
 	gtk_container_add(GTK_CONTAINER(scrollybit),ctree);
+	gtk_clist_set_reorderable(GTK_CLIST(ctree),TRUE);
 	gtk_signal_connect(GTK_OBJECT(ctree), "tree-select-row",
 			GTK_SIGNAL_FUNC(selection_made), NULL);
 
