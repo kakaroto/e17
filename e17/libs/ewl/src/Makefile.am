@@ -41,6 +41,7 @@ EWLHEADERS = \
 	ewl_notebook.h \
 	ewl_object.h \
 	ewl_overlay.h \
+	ewl_paned.h \
 	ewl_password.h \
 	ewl_progressbar.h \
 	ewl_radiobutton.h \
@@ -98,6 +99,7 @@ EWLSOURCES= \
 	ewl_notebook.c \
 	ewl_object.c \
 	ewl_overlay.c \
+	ewl_paned.c \
 	ewl_password.c \
 	ewl_progressbar.c \
 	ewl_radiobutton.c \

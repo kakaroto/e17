@@ -42,6 +42,8 @@ data {
     item, "/entry/text/font_size" "10";
     item, "/entry/text/style" "none";
     item, "/filedialog/group" "filedialog";
+    item, "/grabber_vertical/group" "vgrabber";
+    item, "/grabber_horizontal/group" "hgrabber";
     item, "/hscrollbar/button_decrement/group" "hscroll-left";
     item, "/hscrollbar/button_increment/group" "hscroll-right";
     item, "/hscrollbar/velocity" "5";
@@ -55,6 +57,8 @@ data {
     item, "/notebook/tab_button/label/font" "vio";
     item, "/notebook/tab_button/label/font_size" "12";
     item, "/notebook/tab_button/label/style" "none";
+    item, "/paned/first/group" "pane";
+    item, "/paned/second/group" "pane";
     item, "/progressbar/group" "progressbar";
     item, "/progressbar/text/font_size" "8";
     item, "/radio/group" "radio";
@@ -94,6 +98,7 @@ collections {
 #include "zero/bits/filedialog-groups.edc"
 #include "zero/bits/menu-groups.edc"
 #include "zero/bits/misc-groups.edc"
+#include "zero/bits/paned-groups.edc"
 #include "zero/bits/progressbar-groups.edc"
 #include "zero/bits/radio-groups.edc"
 #include "zero/bits/scrollbar-groups.edc"

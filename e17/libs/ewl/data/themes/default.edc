@@ -44,6 +44,8 @@ data {
 	item, "/entry/text/font" "Vera";
 	item, "/entry/text/style" "none";
 	item, "/filedialog/group" "filedialog";
+	item, "/grabber_vertical/group" "vgrabber";
+	item, "/grabber_horizontal/group" "hgrabber";
 	item, "/hscrollbar/button_decrement/group" "hscroll-left";
 	item, "/hscrollbar/button_increment/group" "hscroll-right";
 	item, "/hseeker/group" "htrough";
@@ -53,6 +55,8 @@ data {
 	item, "/menuitem/group" "menuitem";
 	item, "/notebook/tab_button/label/font" "Vera";
 	item, "/notebook/tab_button/label/style" "none";
+	item, "/paned/first/group" "pane";
+	item, "/paned/second/group" "pane";
 	item, "/progressbar/group" "progressbar";
 	item, "/radio/group" "radio";
 	item, "/scrollpane/group" "trough";
@@ -97,6 +101,7 @@ collections {
 #include "default/bits/filedialog-groups.edc"
 #include "default/bits/menu-groups.edc"
 #include "default/bits/misc-groups.edc"
+#include "default/bits/paned-groups.edc"
 #include "default/bits/progressbar-groups.edc"
 #include "default/bits/radio-groups.edc"
 #include "default/bits/scrollbar-groups.edc"

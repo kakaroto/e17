@@ -354,6 +354,7 @@ extern"C" {
 @ewl_media_include@
 #include <ewl_notebook.h>
 #include <ewl_progressbar.h>
+#include <ewl_paned.h>
 #include <ewl_scrollpane.h>
 #include <ewl_selectionbar.h>
 #include <ewl_selectionbook.h>
