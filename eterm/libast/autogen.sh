@@ -34,9 +34,13 @@ if test "$DIE" -eq 1; then
         exit 1
 fi
 
+if test ! -f "`aclocal --print-ac-dir`/libast.m4"; then
+    ACLOCAL_FLAGS="-I . $ACLOCAL_FLAGS"
+fi
+
 (set -x && libtoolize -c -f)
-(set -x && aclocal -I . $ACLOCAL_FLAGS)
 (set -x && autoheader)
+(set -x && aclocal $ACLOCAL_FLAGS)
 (set -x && automake -a -c)
 (set -x && autoconf)
 

@@ -566,3 +566,11 @@ Anybody care to comment on the validity of my performance tests?  All
 use a dictionary instead of random "words?"  That's kinda what I'm
 thinking....
 ----------------------------------------------------------------------
+Thu Jan 22 22:35:43 2004                        Michael Jennings (mej)
+
+Fixed the Imlib2 linking problem pointed out by Mike Frysinger
+<vapier@gentoo.org>.
+
+Applied kwo's libast-config.patch.  Note that this patch breaks the
+libast compile.  I'll have to fix it tomorrow.
+----------------------------------------------------------------------

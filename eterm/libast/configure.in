@@ -2,12 +2,13 @@ dnl# $Id$
 
 AC_INIT(configure.in)
 AM_INIT_AUTOMAKE(libast, 0.6)
-AC_DEFINE_UNQUOTED(LIBAST_VERSION, "$VERSION")
+AC_DEFINE_UNQUOTED(LIBAST_VERSION, "$VERSION", [Version])
+AM_CONFIG_HEADER(config.h include/libast/sysdefs.h)
 
 dnl# Set some basic variables
 AUTHORS="Michael Jennings (mej@eterm.org)"
 AC_SUBST(AUTHORS)
-AC_DEFINE_UNQUOTED(AUTHORS, "$AUTHORS")
+AC_DEFINE_UNQUOTED(AUTHORS, "$AUTHORS", [Authors])
 
 AC_PROG_CC
 
@@ -38,7 +39,6 @@ AC_SUBST(LDFLAGS)
 AC_SUBST(LIBS)
 
 basedir=.
-AM_CONFIG_HEADER(config.h include/libast/sysdefs.h)
 AC_OUTPUT(${srcdir}/include/libast/types.h Makefile include/Makefile \
           include/libast/Makefile src/Makefile test/Makefile \
           libast-config)
