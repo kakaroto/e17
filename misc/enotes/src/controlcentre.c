@@ -227,6 +227,11 @@ set_cc_pos()
 	XmlWriteHandle *p;
 	int             x, y, width, height;
 
+	if (controlcentre == NULL) {
+		free(locfn);
+		return;
+	}
+
 	ecore_evas_geometry_get(controlcentre->win, &x, &y, &width, &height);
 
 	snprintf(locfn, PATH_MAX, DEF_CC_CONFIG_LOC, getenv("HOME"));
@@ -324,8 +329,8 @@ cc_minimize(void *data)
 {
 	/* FIXME: The line below should be removed when
 	 *          * ecore_evas is fixed. */
-        ecore_evas_iconified_set((Ecore_Evas*)data,0);
-		
+	ecore_evas_iconified_set((Ecore_Evas *) data, 0);
+
 	ecore_evas_iconified_set((Ecore_Evas *) data, 1);
 	return;
 }

@@ -139,6 +139,8 @@ ipc_svr_data_recv(void *data, int type, void *event)
 					new_note_with_values(0, 0, 325, 0,
 							     "An IPC command was recieved which\nwants to open the control centre, but the\ncontrol centre is already open!");
 				}
+			} else if (p->cmd == DEFNOTE) {
+				new_note();
 			}
 		}
 	}
@@ -204,6 +206,8 @@ parse_message(char *msg)
 	/* Set the command */
 	if (!strcmp(one, "NOTE")) {
 		p->cmd = NOTE;
+	} else if (!strcmp(one, "DEFNOTE")) {
+		p->cmd = DEFNOTE;
 	} else if (!strcmp(one, "CLOSE")) {
 		p->cmd = CLOSE;
 	} else if (!strcmp(one, "CONTROLCENTREOPEN")) {

@@ -74,8 +74,7 @@ main(int argc, char *argv[])
 			dml("Control Centre Setup", 1);
 		} else {
 			dml("No Control Centre - Displaying Notice", 1);
-			msgbox("E-Notes is Running",
-			       "Since the Control Centre is turned off,\nthis message is being displayed to say:\n\nE-Notes is running.");
+			new_note();
 		}
 
 		/* Autoloading */
@@ -97,9 +96,8 @@ main(int argc, char *argv[])
 		set_cc_pos();
 
 		/* Autosaving */
-		if (main_config->autosave == 1) {
+		if (main_config->autosave == 1)
 			autosave();
-		}
 
 		/* Shutdown the E-Libs */
 		edje_shutdown();
@@ -107,6 +105,9 @@ main(int argc, char *argv[])
 		ecore_x_shutdown();
 		ecore_shutdown();
 		dml("Efl Shutdown", 1);
+	} else {
+		/* Open a note */
+		send_to_server("DEFNOTE");
 	}
 
 	/* End IPC */

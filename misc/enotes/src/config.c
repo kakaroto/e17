@@ -170,8 +170,7 @@ check_local_configuration(void)
 	snprintf(homedir_e_notes, PATH_MAX, "%s/.e/notes", getenv("HOME"));
 	snprintf(homedir_e_notes_config, PATH_MAX,
 		 "%s/.e/notes/config.xml", getenv("HOME"));
-	snprintf(global_config, PATH_MAX,
-		 "%s/config.xml", PACKAGE_DATA_DIR);
+	snprintf(global_config, PATH_MAX, "%s/config.xml", PACKAGE_DATA_DIR);
 
 	mkdir(homedir_e, 0700);
 	mkdir(homedir_e_notes, 0700);

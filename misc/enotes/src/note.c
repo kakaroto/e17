@@ -108,6 +108,11 @@ remove_note(Evas_List * note)
 				     p->saveload_row);
 	}
 
+	/*  Check if it was the last note  */
+	if (evas_list_next(note) == NULL && evas_list_prev(note) == NULL &&
+	    controlcentre == NULL)
+		ecore_main_loop_quit();
+
 	return;
 }
 
@@ -257,47 +262,77 @@ setup_note(Evas_List ** note, int x, int y, int width, int height,
 	p->pane = ewl_scrollpane_new();
 	ewl_container_child_append((Ewl_Container *) p->emb, p->pane);
 
-	if(edje_object_data_get(p->edje,EDJE_INFO_SCROLLBARS)!=NULL){
-		ewl_theme_data_str_set(p->pane,"/vscrollbar/button_increment/file",edjefn);
-		ewl_theme_data_str_set(p->pane,"/vscrollbar/button_decrement/file",edjefn);
-		ewl_theme_data_str_set(p->pane,"/vscrollbar/vseeker/file",edjefn);
-		ewl_theme_data_str_set(p->pane,"/vscrollbar/vseeker/button/file",edjefn);
-		ewl_theme_data_str_set(p->pane,"/hscrollbar/button_increment/file",edjefn);
-		ewl_theme_data_str_set(p->pane,"/hscrollbar/button_decrement/file",edjefn);
-		ewl_theme_data_str_set(p->pane,"/hscrollbar/hseeker/file",edjefn);
-		ewl_theme_data_str_set(p->pane,"/hscrollbar/hseeker/button/file",edjefn);
+	if (edje_object_data_get(p->edje, EDJE_INFO_SCROLLBARS) != NULL) {
+		ewl_theme_data_str_set(p->pane,
+				       "/vscrollbar/button_increment/file",
+				       edjefn);
+		ewl_theme_data_str_set(p->pane,
+				       "/vscrollbar/button_decrement/file",
+				       edjefn);
+		ewl_theme_data_str_set(p->pane, "/vscrollbar/vseeker/file",
+				       edjefn);
+		ewl_theme_data_str_set(p->pane,
+				       "/vscrollbar/vseeker/button/file",
+				       edjefn);
+		ewl_theme_data_str_set(p->pane,
+				       "/hscrollbar/button_increment/file",
+				       edjefn);
+		ewl_theme_data_str_set(p->pane,
+				       "/hscrollbar/button_decrement/file",
+				       edjefn);
+		ewl_theme_data_str_set(p->pane, "/hscrollbar/hseeker/file",
+				       edjefn);
+		ewl_theme_data_str_set(p->pane,
+				       "/hscrollbar/hseeker/button/file",
+				       edjefn);
 
-		ewl_theme_data_str_set(p->pane,"/vscrollbar/button_increment/group",EDJE_VSCROLLBAR_BTN_INCR);
-		ewl_theme_data_str_set(p->pane,"/vscrollbar/button_decrement/group",EDJE_VSCROLLBAR_BTN_DECR);
-		ewl_theme_data_str_set(p->pane,"/vscrollbar/vseeker/group",EDJE_VSCROLLBAR_SEEKER);
-		ewl_theme_data_str_set(p->pane,"/vscrollbar/vseeker/button/group",EDJE_SCROLLBAR_BUTTON);
-		ewl_theme_data_str_set(p->pane,"/hscrollbar/button_increment/group",EDJE_HSCROLLBAR_BTN_INCR);
-		ewl_theme_data_str_set(p->pane,"/hscrollbar/button_decrement/group",EDJE_HSCROLLBAR_BTN_DECR);
-		ewl_theme_data_str_set(p->pane,"/hscrollbar/hseeker/group",EDJE_HSCROLLBAR_SEEKER);
-		ewl_theme_data_str_set(p->pane,"/hscrollbar/hseeker/button/group",EDJE_SCROLLBAR_BUTTON);
+		ewl_theme_data_str_set(p->pane,
+				       "/vscrollbar/button_increment/group",
+				       EDJE_VSCROLLBAR_BTN_INCR);
+		ewl_theme_data_str_set(p->pane,
+				       "/vscrollbar/button_decrement/group",
+				       EDJE_VSCROLLBAR_BTN_DECR);
+		ewl_theme_data_str_set(p->pane, "/vscrollbar/vseeker/group",
+				       EDJE_VSCROLLBAR_SEEKER);
+		ewl_theme_data_str_set(p->pane,
+				       "/vscrollbar/vseeker/button/group",
+				       EDJE_SCROLLBAR_BUTTON);
+		ewl_theme_data_str_set(p->pane,
+				       "/hscrollbar/button_increment/group",
+				       EDJE_HSCROLLBAR_BTN_INCR);
+		ewl_theme_data_str_set(p->pane,
+				       "/hscrollbar/button_decrement/group",
+				       EDJE_HSCROLLBAR_BTN_DECR);
+		ewl_theme_data_str_set(p->pane, "/hscrollbar/hseeker/group",
+				       EDJE_HSCROLLBAR_SEEKER);
+		ewl_theme_data_str_set(p->pane,
+				       "/hscrollbar/hseeker/button/group",
+				       EDJE_SCROLLBAR_BUTTON);
 
 	}
-	
+
 	ewl_widget_show(p->pane);
 
 	p->content = ewl_entry_multiline_new("");
 	ewl_container_child_append((Ewl_Container *) p->pane, p->content);
+	ewl_entry_multiline_set((Ewl_Entry *) p->content, 1);
 
-	ewl_theme_data_str_set(p->content,"/entry/group","none");
+	ewl_theme_data_str_set(p->content, "/entry/group", "none");
 
-	prop=(char*)edje_object_data_get(p->edje,EDJE_INFO_FONTNAME);
-	if(prop!=NULL)
-		ewl_theme_data_str_set(p->content,"/entry/text/font",prop);
+	prop = (char *) edje_object_data_get(p->edje, EDJE_INFO_FONTNAME);
+	if (prop != NULL)
+		ewl_theme_data_str_set(p->content, "/entry/text/font", prop);
 
-	prop=(char*)edje_object_data_get(p->edje,EDJE_INFO_FONTSTYLE);
-	if(prop!=NULL)
-		ewl_theme_data_str_set(p->content,"/entry/text/style",prop);
-	
-	prop=(char*)edje_object_data_get(p->edje,EDJE_INFO_FONTSIZE);
-	if(prop!=NULL)
-		ewl_theme_data_int_set(p->content,"/entry/text/font_size",atoi(prop));
+	prop = (char *) edje_object_data_get(p->edje, EDJE_INFO_FONTSTYLE);
+	if (prop != NULL)
+		ewl_theme_data_str_set(p->content, "/entry/text/style", prop);
 
-	ewl_entry_text_set ((Ewl_Entry*)p->content,fcontent);
+	prop = (char *) edje_object_data_get(p->edje, EDJE_INFO_FONTSIZE);
+	if (prop != NULL)
+		ewl_theme_data_int_set(p->content, "/entry/text/font_size",
+				       atoi(prop));
+
+	ewl_entry_text_set((Ewl_Entry *) p->content, fcontent);
 	ewl_widget_show(p->content);
 
 	ewl_callback_append(p->emb, EWL_CALLBACK_CONFIGURE, note_move_embed,
@@ -425,8 +460,8 @@ note_edje_minimise(Evas_List * note, Evas_Object * o,
 
 	/* FIXME: The line below should be removed when
 	 * ecore_evas is fixed. */
-	ecore_evas_iconified_set(p->win,0);
-	
+	ecore_evas_iconified_set(p->win, 0);
+
 	ecore_evas_iconified_set(p->win, 1);
 
 	return;
@@ -499,8 +534,8 @@ timer_val_compare(void *data)
 		p->txt_title = get_title_by_note_struct(p);
 	}
 
-	update_enote_title (p->edje,p->txt_title);
-	
+	update_enote_title(p->edje, p->txt_title);
+
 	return (1);
 }
 

@@ -31,6 +31,7 @@
 
 typedef enum {			/* More to come. :-) */
 	NOTE,
+	DEFNOTE,
 	CLOSE,
 	CONTROLCENTREOPEN,
 	CONTROLCENTRECLOSE

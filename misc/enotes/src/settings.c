@@ -116,6 +116,7 @@ fill_tree(void)
 		setup_settings_opt_int(settings->tree,
 				       "Control Centre [0=No 1=Yes]:",
 				       main_config->controlcentre);
+
 	settings->debug =
 		setup_settings_opt_int(settings->tree, "Debugging Level [0-2]:",
 				       main_config->debug);
@@ -288,6 +289,7 @@ save_settings(void)
 	xml_write_append_entry(p, "controlcentre",
 			       ewl_entry_text_get((Ewl_Entry *) settings->
 						  cc.entry));
+
 	xml_write_append_entry(p, "debug",
 			       ewl_entry_text_get((Ewl_Entry *) settings->debug.
 						  entry));

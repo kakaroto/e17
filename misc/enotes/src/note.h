@@ -22,6 +22,7 @@
 
 #include "debug.h"
 #include "config.h"
+#include "controlcentre.h"
 #include "saveload.h"
 #include "ipc.h"
 #include "../config.h"
