@@ -206,6 +206,7 @@ feh_event_handle_ButtonRelease(XEvent * ev)
            D(("Disabling Pan/Zoom mode\n"));
            opt.mode = MODE_NORMAL;
            winwid->mode = MODE_NORMAL;
+           winwidget_render_image(winwid, 0, 1);
         }
         break;
      case 3:

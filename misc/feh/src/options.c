@@ -401,6 +401,7 @@ feh_parse_option_array(int argc, char **argv)
            break;
         case 'Z':
            opt.auto_zoom = 1;
+           opt.progressive = 0;
            break;
         case 'U':
            opt.loadables = 1;
@@ -634,8 +635,8 @@ show_usage(void)
            "                            flick through.\n"
            "  -F, --full-screen         Make the window fullscreen\n"
            "  -Z, --auto-zoom           Zoom picture to screen size in fullscreen mode,\n"
-           "                            is affected by the options --stretch,\n"
-           "                            --ignore-aspect and currently only works with -P\n"
+           "                            is affected by the option --stretch and currently\n"
+           "                            disables progressive loading.\n"
            "  -w, --multiwindow         Disable slideshow mode. With this setting,\n"
            "                            instead of opening multiple files in slideshow\n"
            "                            mode, multiple windows will be opened.\n"

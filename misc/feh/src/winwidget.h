@@ -119,6 +119,7 @@ void winwidget_destroy(winwidget winwid);
 void winwidget_create_window(winwidget ret, int w, int h);
 void winwidget_clear_background(winwidget w);
 Pixmap feh_create_checks(void);
+double feh_calc_needed_zoom(int *zoom, int orig_w, int orig_h, int dest_w, int dest_h);
 
 extern int window_num;          /* For window list */
 extern winwidget *windows;      /* List of windows to loop though */

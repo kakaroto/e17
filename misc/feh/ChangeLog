@@ -1,3 +1,8 @@
+Fri Jun  9 21:31:01 2000  Tom Gilbert  <gilbertt@linuxbrit.co.uk>
+
+	* Fix fullscreen mode to work with new image placement code. Make
+	it work with --auto-zoom and --stretch too.
+
 Fri Jun  9 19:48:05 2000  Tom Gilbert  <gilbertt@linuxbrit.co.uk>
 
 	* Edge resistance when panning. Much better.
