@@ -6,8 +6,8 @@
 #include <unistd.h>
 #include <math.h>
 
-#define IMGDIR DATADIR"/img/"
-#define FNTDIR DATADIR"/fnt"
+#define IMGDIR "./img/"
+#define FNTDIR "./fnt"
 
 double get_time(void);
 
