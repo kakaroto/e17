@@ -459,12 +459,14 @@ feh_display_status(char stat)
 }
 
 void
-feh_set_bg(char *fil, int scaled, int desktop, int set)
+feh_set_bg(char *fil, Imlib_Image im, int scaled, int desktop, int set)
 {
-   FILE *eesh;
+   FILE *eesh = NULL;
    char buf[1024];
    char bgname[20];
    int num = (int) rand();
+   char bgfil[4096];
+   struct stat st;
 
    D_ENTER;
    D(("Set Background\n"));
@@ -474,32 +476,60 @@ feh_set_bg(char *fil, int scaled, int desktop, int set)
    sprintf(buf, "%s/eesh",
            getenv("EBIN") ? getenv("EBIN") : PREFIX "/enlightenment/bin");
 
-   eesh = popen(buf, "w");
-   if (eesh == NULL)
+   if (fil == NULL)
    {
-      weprintf("Where is that eesh thing then\n");
-      D_RETURN_;
+      snprintf(bgfil, sizeof(bgfil), "%s/.%s", getenv("HOME"), bgname);
+      feh_imlib_save_image(im, bgname);
+      fil = bgfil;
    }
-   fprintf(eesh, "background %s bg.file  %s\n", bgname, fil);
 
-   if (scaled)
+   if ((stat(buf, &st)) != -1)
    {
-      fprintf(eesh, "background %s bg.xjust 512\n", bgname);
-      fprintf(eesh, "background %s bg.yjust 512\n", bgname);
-      fprintf(eesh, "background %s bg.xperc 1024\n", bgname);
-      fprintf(eesh, "background %s bg.xperc 1024\n", bgname);
+      eesh = popen(buf, "w");
+      fprintf(eesh, "background %s bg.file  %s\n", bgname, fil);
+
+      if (scaled)
+      {
+         fprintf(eesh, "background %s bg.xjust 512\n", bgname);
+         fprintf(eesh, "background %s bg.yjust 512\n", bgname);
+         fprintf(eesh, "background %s bg.xperc 1024\n", bgname);
+         fprintf(eesh, "background %s bg.xperc 1024\n", bgname);
+      }
+      else
+      {
+         fprintf(eesh, "background %s bg.tile 1\n", bgname);
+      }
+
+      if (set)
+      {
+         fprintf(eesh, "use_bg %s %d\n", bgname, desktop);
+         fflush(eesh);
+      }
+
+      pclose(eesh);
+
    }
    else
    {
-      fprintf(eesh, "background %s bg.tile 1\n", bgname);
-   }
+      Pixmap tmppmap;
 
-   if (set)
-   {
-      fprintf(eesh, "use_bg %s %d\n", bgname, desktop);
-      fflush(eesh);
+      /* only a debug message to say were not using eesh this time */
+      /*eprintf("Where is that eesh thing then\n"); */
+      printf("No eesh, falling back to XSetRootWindowPixmap\n");
+      tmppmap = XCreatePixmap(disp, root, scr->width, scr->height, depth);
+      if (scaled)
+      {
+         feh_imlib_render_image_on_drawable_at_size(tmppmap, im, 0, 0,
+                                                    scr->width, scr->height,
+                                                    1, 0, 1);
+         XSetWindowBackgroundPixmap(disp, root, tmppmap);
+      }
+      else
+      {
+         feh_imlib_render_image_on_drawable(tmppmap, im, 0, 0, 1, 0, 0);
+         XSetWindowBackgroundPixmap(disp, root, tmppmap);
+      }
+      XFreePixmap(disp, tmppmap);
    }
-
-   pclose(eesh);
    D_RETURN_;
 }
