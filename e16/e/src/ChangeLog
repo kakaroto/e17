@@ -2498,3 +2498,10 @@ Wed Sep 29 17:43:41 PDT 1999
 (Raster)
 
 no debugging printf...
+
+-------------------------------------------------------------------------------
+
+Wed Sep 29 17:52:48 PDT 1999
+(Raster)
+
+and fix that event mask...

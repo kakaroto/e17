@@ -1429,7 +1429,7 @@ CreateEwin()
 		  GrabModeSync, GrabModeAsync, None, None);
    att.event_mask =
       StructureNotifyMask | PointerMotionMask |
-      ButtonPressMask | ButtonReleaseMask;
+      ButtonPressMask | ButtonReleaseMask | EnterWindowMask | LeaveWindowMask;
    att.do_not_propagate_mask = ButtonPressMask | ButtonReleaseMask;
    XChangeWindowAttributes(disp, ewin->win,
 			   CWEventMask | CWDontPropagate, &att);
