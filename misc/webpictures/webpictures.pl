@@ -11,6 +11,7 @@ $pixmap = 0;
 $path = "";
 $do_not_edit = 0;
 
+$lastfile = 0;
 
 %descriptions = ();
 %orientations = ();
@@ -37,37 +38,102 @@ sub exit_application {
 
 }
 
+sub file_selection_ok {
+	my($widget,$fs) = @_;
+
+	$lastfile = $fs->get_filename;
+	print "Setting lastfile to $lastfile\n";
+
+	destroy $fs_window;
+
+	if($filemode == 1) {
+		save_data(0,"$lastfile");
+	} elsif ($filemode == 2) {
+		print("should be loading data\n");
+		load_data($lastfile);
+	}
+
+}
+
 sub set_last_file {
 
 # This should open a filename prompt dialog.
+
+	$fs_window = new Gtk::FileSelection "Please Select a File";
+
+	$fs_window->ok_button->signal_connect("clicked", \&file_selection_ok,
+			$fs_window);
+	$fs_window->cancel_button->signal_connect("clicked", sub { destroy
+			$fs_window});
+	$fs_window->set_modal(1);
+	$fs_window->show;
+
+}
+
+sub load_data {
+
+	my $filename = shift;
+
+	return if(!$filename);
+	return if(!(-f $filename));
+	%orientations = ();
+	%descriptions = ();
+	$clist->clear;
+	$num_list_items=0;
+
+	my $curfile = "";
+	open INFILE, "<$filename";
+
+	while(<INFILE>) {
+		if(/^file:/) {
+			chomp;
+			$curfile = substr $_,6;
+			$descriptions{$curfile} = "";
+			$num_list_items++;
+			$clist->append($curfile);
+		} elsif(/^prefix:/) {
+			chomp;
+			$path = substr($_,8);
+		} elsif(/^orient:/) {
+			chomp;
+			$orientations{$curfile} = substr($_,8);
+		} else {
+			chomp;
+			$descriptions{$curfile} .= $_;
+		}
+	}
+	close INFILE;
 
 }
 
 sub save_data {
 
 	my $filename = shift;
+	my $filename = shift;
 
-	$filename = "bubba";
 	if(!$filename) {
-		set_last_file if(!$lastfile);
+		if(!$lastfile) {
+			$filemode = 1;
+			set_last_file;
+			return;
+		}
 		$filename = $lastfile;
 	}
 
 	open OUTFILE,">$filename";
 
+	print OUTFILE "prefix: $path\n";
 	my $i=0;
 	while($i < $num_list_items) {
 		my $current = $clist->get_text($i,0);
-		print OUTFILE "file: $path/$current\n";
+		print OUTFILE "file: $current\n";
 		if($orientations{$current}) {
 			print OUTFILE "orient: $orientations{$current}\n";
 		} else {
 			print OUTFILE "orient: Left->Right\n";
 		}
 		if($descriptions{$current}) {
-			print OUTFILE "desc:\n$descriptions{$current}\n";
-		} else {
-			print OUTFILE "desc:\n\n";
+			print OUTFILE "$descriptions{$current}\n";
 		}
 
 		$i++;
@@ -77,10 +143,17 @@ sub save_data {
 
 }
 
+sub load_file {
+
+	$filemode = 2;
+	set_last_file;
+
+}
+
 sub save_data_as {
 
+	$file_mode = 1;
 	set_last_file;
-	save_data;
 
 }
 
@@ -164,7 +237,7 @@ $vbox->pack_start($menubar,0,1,0);
 
 $menu = new Gtk::Menu;
 $menu->append(create_menuitem("New"));
-$menu->append(create_menuitem("Open"));
+$menu->append(create_menuitem("Open", \&load_file));
 $menu->append(create_menuitem("Save",\&save_data));
 $menu->append(create_menuitem("Save As"));
 $menu->append(create_menuitem("Exit",\&exit_application));
@@ -249,6 +322,7 @@ $table->attach($scrolled_win,0,2,1,2, [-expand, -fill],[-expand, -fill],0,0);
 $textbox = new Gtk::Text;
 $textbox->show;
 $textbox->set_editable(1);
+$textbox->set_word_wrap(1);
 $textbox->signal_connect('changed',\&update_text);
 $scrolled_win->add($textbox);
 
@@ -273,7 +347,7 @@ if($ARGV[0]) {
 	foreach(`ls -1 $ARGV[0]`) {
 		chomp;
 #check if its a file to begin with and then if its an image.
-		if (/(bmp|gif|jpg|jpeg|png)$/i) {
+		if (/(bmp|gif|jpg|jpeg|png|tif|tiff)$/i) {
 			if(-f $path . "/" . $_) {
 				$clist->append($_);
 				$num_list_items++;
