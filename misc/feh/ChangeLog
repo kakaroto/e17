@@ -1,3 +1,12 @@
+Thu Feb 17 22:05:40 2000  Tom Gilbert  <gilbertt@tomgilbert.freeserve.co.uk>
+
+	* More file-list fixes.
+
+Thu Feb 17 21:55:53 2000  Tom Gilbert  <gilbertt@tomgilbert.freeserve.co.uk>
+
+	* Note to self: if you prepend everything to a list, the resultant
+	list will be in reverse. You'll be needing to fix that =)
+
 Thu Feb 17 21:35:15 2000  Tom Gilbert  <gilbertt@tomgilbert.freeserve.co.uk>
 
 	* Thank goodness for that :) I totally reworked the file handling

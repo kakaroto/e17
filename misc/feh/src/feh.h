@@ -92,7 +92,6 @@ struct __feh_file
 {
   char *filename;
   char *name;
-  char *path;
   feh_file next;
   feh_file prev;
 };
@@ -192,7 +191,6 @@ void init_index_mode (void);
 void init_slideshow_mode (void);
 int feh_load_image (Imlib_Image ** im, feh_file file);
 void add_file_to_filelist_recursively (char *path, unsigned char enough);
-void add_file_to_filelist (char *file);
 void show_mini_usage (void);
 void slideshow_change_image (winwidget winwid, int change);
 char *slideshow_create_name (char *filename);
@@ -237,7 +235,7 @@ feh_file filelist_last (feh_file file);
 feh_file filelist_first (feh_file file);
 void feh_file_rm_and_free (feh_file file);
 int filelist_num (feh_file list, feh_file file);
-
+feh_file filelist_reverse (feh_file list);
 
 
 /* Imlib stuff */

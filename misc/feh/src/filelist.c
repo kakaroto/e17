@@ -20,28 +20,24 @@
 
 #include "feh.h"
 
-static int rm_file_num;
-static char **rm_files;
-
 feh_file filelist = NULL;
 feh_file current_file = NULL;
 
-feh_file filelist_newitem (char *filename)
+static feh_file rm_filelist = NULL;
+
+feh_file
+filelist_newitem (char *filename)
 {
   feh_file newfile;
   char *s;
 
-  D(("In filelist_newitem\n"));
+  D (("In filelist_newitem\n"));
 
   newfile = (feh_file) emalloc (sizeof (_feh_file));
   newfile->filename = estrdup (filename);
   s = strrchr (filename, '/');
   if (s)
     newfile->name = estrdup (s + 1);
-  newfile->path = estrdup (filename);
-  s = strrchr (newfile->path, '/');
-  if (s)
-    *s = '\0';
   newfile->next = NULL;
   newfile->prev = NULL;
   return newfile;
@@ -50,34 +46,33 @@ feh_file filelist_newitem (char *filename)
 void
 feh_file_free (feh_file file)
 {
-    D(("In feh_file_free\n"));
+  D (("In feh_file_free\n"));
   if (!file)
     return;
   if (file->filename)
     free (file->filename);
   if (file->name)
     free (file->name);
-  if (file->path)
-    free (file->path);
   free (file);
 }
 
 void
 feh_file_rm_and_free (feh_file file)
 {
-    D(("In feh_file_rm_and_free\n"));
-    unlink(file->filename);
-    feh_file_free(file);
+  D (("In feh_file_rm_and_free\n"));
+  unlink (file->filename);
+  feh_file_free (file);
 }
 
 
-feh_file filelist_addtofront (feh_file root, feh_file newfile)
+feh_file
+filelist_addtofront (feh_file root, feh_file newfile)
 {
-    D(("In filelist_addtofront\n"));
+  D (("In filelist_addtofront\n"));
   newfile->next = root;
   newfile->prev = NULL;
-  if(root)
-	root->prev=newfile;
+  if (root)
+    root->prev = newfile;
   return newfile;
 }
 
@@ -85,21 +80,20 @@ int
 filelist_length (feh_file file)
 {
   int length;
-D(("In filelist_length\n"));
+  D (("In filelist_length\n"));
   length = 0;
   while (file)
     {
       length++;
       file = file->next;
     }
-  D(("   length is %d\n", length));
+  D (("   length is %d\n", length));
   return length;
 }
 
-feh_file
-filelist_last (feh_file file)
+feh_file filelist_last (feh_file file)
 {
-    D(("In filelist_last\n"));
+  D (("In filelist_last\n"));
   if (file)
     {
       while (file->next)
@@ -108,10 +102,9 @@ filelist_last (feh_file file)
   return file;
 }
 
-feh_file
-filelist_first (feh_file file)
+feh_file filelist_first (feh_file file)
 {
-    D(("In filelist_first\n"));
+  D (("In filelist_first\n"));
   if (file)
     {
       while (file->prev)
@@ -120,17 +113,35 @@ filelist_first (feh_file file)
   return file;
 }
 
-int filelist_num (feh_file list, feh_file file)
+feh_file
+filelist_reverse (feh_file list)
 {
-    int i;
+  feh_file last;
 
-    D(("In filelist_num\n"));
+  last = NULL;
+  while (list)
+    {
+      last = list;
+      list = last->next;
+      last->next = last->prev;
+      last->prev = list;
+    }
+
+  return last;
+}
+
+int
+filelist_num (feh_file list, feh_file file)
+{
+  int i;
+
+  D (("In filelist_num\n"));
 
   i = 0;
   while (list)
     {
       if (list == file)
-        return i;
+	return i;
       i++;
       list = list->next;
     }
@@ -140,20 +151,12 @@ int filelist_num (feh_file list, feh_file file)
 void
 filelist_remove_file (feh_file file)
 {
-    D(("In filelist_remove_file\n"));
+  D (("In filelist_remove_file\n"));
   if (file->prev)
     file->prev->next = file->next;
   if (file->next)
     file->next->prev = file->prev;
   feh_file_free (file);
-}
-
-void
-add_file_to_filelist (char *file)
-{
-  D (("In add_file_to_filelist\n"));
-
-  filelist = filelist_addtofront (filelist, filelist_newitem (file));
 }
 
 /* Recursive */
@@ -176,7 +179,7 @@ add_file_to_filelist_recursively (char *path, unsigned char enough)
       /* Its a url */
       D (("A url was requested\n"));
       D (("Adding url %s to filelist\n", path));
-      add_file_to_filelist (path);
+      filelist = filelist_addtofront (filelist, filelist_newitem (path));
       return;
     }
 
@@ -226,7 +229,7 @@ add_file_to_filelist_recursively (char *path, unsigned char enough)
   else if (S_ISREG (st.st_mode))
     {
       D (("Adding regular file %s to filelist\n", path));
-      add_file_to_filelist (path);
+      filelist = filelist_addtofront (filelist, filelist_newitem (path));
     }
   else
     {
@@ -239,24 +242,19 @@ void
 add_file_to_rm_filelist (char *file)
 {
   D (("In add_file_to_rm_filelist\n"));
-  rm_file_num++;
-  if (rm_files)
-    rm_files = erealloc (rm_files, rm_file_num * sizeof (char *));
-  else
-    rm_files = emalloc (rm_file_num * sizeof (char *));
-  rm_files[rm_file_num - 1] = estrdup (file);
+
+  rm_filelist = filelist_addtofront (rm_filelist, filelist_newitem (file));
 }
 
 void
 delete_rm_files (void)
 {
-  int i;
+    feh_file file;
   D (("In delete_rm_files\n"));
   if (opt.keep_http)
     return;
-  for (i = 0; i < rm_file_num; i++)
+  for (file = rm_filelist; file; file = file->next)
     {
-      if (rm_files[i])
-	unlink (rm_files[i]);
+	unlink (file->filename);
     }
 }

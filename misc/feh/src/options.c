@@ -57,8 +57,8 @@ init_parse_options (int argc, char **argv)
   opt.progressive = 1;
   opt.modify_mode = MODIFY_MODE_NONE;
   opt.slideshow_delay = 0;
-  opt.reload=0;
-  opt.keep_http=0;
+  opt.reload = 0;
+  opt.keep_http = 0;
 
   opt.thumb_w = 60;
   opt.thumb_h = 60;
@@ -76,9 +76,10 @@ init_parse_options (int argc, char **argv)
       else if ((!strcmp (argv[i], "--thumbs")) || (!strcmp (argv[i], "-t")))
 	opt.thumbs = 1;
       else if ((!strcmp (argv[i], "--verbose")) || (!strcmp (argv[i], "-V")))
-	    opt.verbose = 1;
-      else if ((!strcmp (argv[i], "--keep-http")) || (!strcmp (argv[i], "-k")))
-            opt.keep_http = 1;
+	opt.verbose = 1;
+      else if ((!strcmp (argv[i], "--keep-http"))
+	       || (!strcmp (argv[i], "-k")))
+	opt.keep_http = 1;
       else if ((!strcmp (argv[i], "--stretch")) || (!strcmp (argv[i], "-s")))
 	opt.stretch = 1;
       else if ((!strcmp (argv[i], "--noprogressive"))
@@ -144,12 +145,12 @@ init_parse_options (int argc, char **argv)
 	  opt.slideshow_delay = atoi (argv[++i]);
 	}
       else
-        if (
-            ((!strcmp (argv[i], "--reload"))
-             || (!strcmp (argv[i], "-R"))) && (argc - i > 1))
-        {
-          opt.reload = atoi (argv[++i]);
-        }
+	if (
+	    ((!strcmp (argv[i], "--reload"))
+	     || (!strcmp (argv[i], "-R"))) && (argc - i > 1))
+	{
+	  opt.reload = atoi (argv[++i]);
+	}
       else if ((!strcmp (argv[i], "--alpha")) && (argc - i > 1))
 	{
 	  opt.alpha = 1;
@@ -163,8 +164,11 @@ init_parse_options (int argc, char **argv)
 	  add_file_to_filelist_recursively (argv[i], 0);
 	}
     }
-  if (filelist_length(filelist) == 0)
+  if (filelist_length (filelist) == 0)
     show_mini_usage ();
+
+  /* Let's reverse the list. Its back-to-front right now ;) */
+  filelist = filelist_reverse (filelist);
 
   check_options ();
 }
