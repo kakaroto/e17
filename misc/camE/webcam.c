@@ -858,7 +858,7 @@ main(int argc, char *argv[])
                snprintf(buf, sizeof(buf), "scp -BCq %s %s:%s/%s", temp_file,
                         scp_target, ftp_dir, ftp_tmp);
                system(buf);
-               snprintf (buf, sizeof(buf), "ssh -nq %s 'mv %s/%s %s/%s'",
+               snprintf (buf, sizeof(buf), "ssh -n -q %s 'mv %s/%s %s/%s'",
                              scp_target, ftp_dir, ftp_tmp, ftp_dir, ftp_file);
                system(buf);
                log("shot uploaded\n");
