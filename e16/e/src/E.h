@@ -2717,12 +2717,11 @@ void                AddEwinToGroup(EWin * ewin, Group * g);
 void                RemoveEwinFromGroup(EWin * ewin);
 
 EWin               *GetZoomEWin(void);
-void                ReZoom(EWin *ewin);
+void                ReZoom(EWin * ewin);
 char                InZoom(void);
 char                CanZoom(void);
 void                ZoomInit(void);
-void                Zoom(EWin *ewin);
-
+void                Zoom(EWin * ewin);
 
 extern pid_t        master_pid;
 extern int          master_screen;

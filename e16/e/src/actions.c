@@ -3542,15 +3542,15 @@ doZoom(void *params)
 
    if (!(CanZoom()))
       EDBUG_RETURN(0);
-   
+
    ewin = GetFocusEwin();
-   
+
    if (!ewin)
       EDBUG_RETURN(0);
    if (InZoom())
-     Zoom(NULL);
+      Zoom(NULL);
    else
-     Zoom(ewin);     
+      Zoom(ewin);
    EDBUG_RETURN(0);
    params = NULL;
 }

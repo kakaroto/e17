@@ -1,26 +1,25 @@
- #include "E.h"
+#include "E.h"
 
 #ifdef WITH_ZOOM
 #include <X11/extensions/xf86vmode.h>
 
-static int                   std_vid_modes_num = 0;
-static int                   std_vid_mode_cur= 0;
+static int          std_vid_modes_num = 0;
+static int          std_vid_mode_cur = 0;
 static XF86VidModeModeInfo **std_vid_modes = NULL;
 
-static Window zoom_mask_1 = 0;
-static Window zoom_mask_2 = 0;
-static EWin *zoom_last_ewin = NULL;
-static int   zoom_last_x, zoom_last_y;
-static char  zoom_can = 0;
+static Window       zoom_mask_1 = 0;
+static Window       zoom_mask_2 = 0;
+static EWin        *zoom_last_ewin = NULL;
+static int          zoom_last_x, zoom_last_y;
+static char         zoom_can = 0;
 
-static void FillStdVidModes(void);
+static void         FillStdVidModes(void);
 static XF86VidModeModeInfo *FindMode(int w, int h);
-static int GetModeJumpCount(XF86VidModeModeInfo *new);
-static char SwitchRes(char inout, int x, int y, int w, int h);
-static char XHasDGA(void);
+static int          GetModeJumpCount(XF86VidModeModeInfo * new);
+static char         SwitchRes(char inout, int x, int y, int w, int h);
+static char         XHasDGA(void);
 
-
-static void 
+static void
 FillStdVidModes(void)
 {
    XF86VidModeGetAllModeLines(disp, root.scr,
@@ -30,13 +29,13 @@ FillStdVidModes(void)
 static XF86VidModeModeInfo *
 FindMode(int w, int h)
 {
-   XF86VidModeModeInfo *chosen= NULL;
-   int i, closest = 0x7fffffff;
-   
+   XF86VidModeModeInfo *chosen = NULL;
+   int                 i, closest = 0x7fffffff;
+
    for (i = 0; i < std_vid_modes_num; i++)
      {
-	int close = 0x7fffffff;
-	
+	int                 close = 0x7fffffff;
+
 	if ((std_vid_modes[i]->hdisplay >= w) &&
 	    (std_vid_modes[i]->vdisplay >= h))
 	   close = ((std_vid_modes[i]->hdisplay - w) +
@@ -51,10 +50,10 @@ FindMode(int w, int h)
 }
 
 static int
-GetModeJumpCount(XF86VidModeModeInfo *new)
+GetModeJumpCount(XF86VidModeModeInfo * new)
 {
-   int i, next;
-   
+   int                 i, next;
+
    next = 0;
    for (i = 0; i < std_vid_modes_num; i++)
      {
@@ -70,8 +69,8 @@ SwitchRes(char inout, int x, int y, int w, int h)
 {
    XF86VidModeModeInfo *mode;
    XF86VidModeModeLine curmode;
-   int dotclock, jump, i;
-   
+   int                 dotclock, jump, i;
+
    if (inout)
      {
 	if (!XF86VidModeGetModeLine(disp, root.scr,
@@ -107,24 +106,22 @@ SwitchRes(char inout, int x, int y, int w, int h)
 static char
 XHasDGA(void)
 {
-   int ev_base, er_base;
-   
+   int                 ev_base, er_base;
+
    if (XF86VidModeQueryExtension(disp, &ev_base, &er_base))
       return 1;
    else
       return 0;
 }
 
-
-
-EWin *
+EWin               *
 GetZoomEWin(void)
 {
    return zoom_last_ewin;
 }
 
 void
-ReZoom(EWin *ewin)
+ReZoom(EWin * ewin)
 {
    if (InZoom())
      {
@@ -158,7 +155,7 @@ ZoomInit(void)
 }
 
 void
-Zoom(EWin *ewin)
+Zoom(EWin * ewin)
 {
    if (!CanZoom())
       return;
@@ -183,19 +180,19 @@ Zoom(EWin *ewin)
 	zoom_last_x = ewin->x;
 	zoom_last_y = ewin->y;
 	RaiseEwin(ewin);
-	MoveEwin(ewin, - ewin->border->border.left, 
-		 - ewin->border->border.top);
+	MoveEwin(ewin, -ewin->border->border.left,
+		 -ewin->border->border.top);
 	ICCCM_Configure(ewin);
-/*	XGrabPointer(disp, ewin->client.win, False, 0,
-		     ButtonPressMask | ButtonReleaseMask |
-		     PointerMotionMask | ButtonMotionMask |
-		     EnterWindowMask | LeaveWindowMask,
-		     GrabModeAsync, GrabModeAsync, None, 
-		     ewin->client.win, None, 
-		     CurrentTime);*/
-	zoom_mask_1 = ECreateWindow(root.win, ewin->client.w, 0, 
+/*      XGrabPointer(disp, ewin->client.win, False, 0,
+ * ButtonPressMask | ButtonReleaseMask |
+ * PointerMotionMask | ButtonMotionMask |
+ * EnterWindowMask | LeaveWindowMask,
+ * GrabModeAsync, GrabModeAsync, None, 
+ * ewin->client.win, None, 
+ * CurrentTime); */
+	zoom_mask_1 = ECreateWindow(root.win, ewin->client.w, 0,
 				    root.w, root.h, 0);
-	zoom_mask_2 = ECreateWindow(root.win, 0, ewin->client.h, 
+	zoom_mask_2 = ECreateWindow(root.win, 0, ewin->client.h,
 				    root.w, root.h, 0);
 	XSetWindowBackgroundPixmap(disp, zoom_mask_1, None);
 	XSetWindowBackgroundPixmap(disp, zoom_mask_2, None);
@@ -209,14 +206,14 @@ Zoom(EWin *ewin)
      }
 }
 #else
-EWin *
+EWin               *
 GetZoomEWin(void)
 {
    return NULL;
 }
 
 void
-ReZoom(EWin *ewin)
+ReZoom(EWin * ewin)
 {
 }
 
@@ -238,7 +235,7 @@ ZoomInit(void)
 }
 
 void
-Zoom(EWin *ewin)
+Zoom(EWin * ewin)
 {
 }
 #endif
