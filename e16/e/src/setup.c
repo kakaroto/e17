@@ -241,7 +241,6 @@ SetupX(const char *dstr)
 				  CWBackingStore | CWColormap | CWBackPixel |
 				  CWBorderPixel, &attr);
 	ERegisterWindow(VRoot.win);
-	EMapWindow(VRoot.win);
 
 	xtp.encoding = XA_STRING;
 	xtp.format = 8;
@@ -253,6 +252,8 @@ SetupX(const char *dstr)
 	xch->res_class = (char *)"Enlightenment";
 	XSetClassHint(disp, VRoot.win, xch);
 	XFree(xch);
+
+	EMapWindow(VRoot.win);
 
 	/* Enable eesh and edox to pix up the virtual root */
 	Esnprintf(buf, sizeof(buf), "%#lx", VRoot.win);
