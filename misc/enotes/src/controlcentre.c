@@ -1,12 +1,22 @@
+
 /**************************************************/
+
 /**               E  -  N O T E S                **/
+
 /**                                              **/
+
 /**  The contents of this file are released to   **/
+
 /**  the public under the General Public Licence **/
+
 /**  Version 2.                                  **/
+
 /**                                              **/
+
 /**  By  Thomas Fletcher (www.fletch.vze.com)    **/
+
 /**                                              **/
+
 /**************************************************/
 
 

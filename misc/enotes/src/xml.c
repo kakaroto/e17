@@ -1,13 +1,14 @@
-/**************************************************/
-/**               E  -  N O T E S                **/
-/**                                              **/
-/**  The contents of this file are released to   **/
-/**  the public under the General Public Licence **/
-/**  Version 2.                                  **/
-/**                                              **/
-/**  By  Thomas Fletcher (www.fletch.vze.com)    **/
-/**                                              **/
-/**************************************************/
+
+/**************************************************
+ **               E  -  N O T E S                **
+ **                                              **
+ **  The contents of this file are released to   **
+ **  the public under the General Public Licence **
+ **  Version 2.                                  **
+ **                                              **
+ **  By  Thomas Fletcher (www.fletch.vze.com)    **
+ **                                              **
+ **************************************************/
 
 
 #include "xml.h"
@@ -29,23 +30,29 @@ XmlReadHandle  *
 xml_read(char *fn)
 {
 	XmlReadHandle  *p = malloc(sizeof(XmlReadHandle));
+	char           *unabletoopen = malloc(PATH_MAX);
+	char           *unabletoparse = malloc(PATH_MAX);
+
+	snprintf(unabletoopen, PATH_MAX, "Unable to open \"%s\"", fn);
+	snprintf(unabletoparse, PATH_MAX, "Unable to parse \"%s\"", fn);
 
 	p->doc = xmlParseFile(fn);
 	if (p->doc == NULL) {
-		fprintf(stderr, "E-Notes: Unable to open, \"%s\".\n", fn);
+		dml(unabletoopen, 1);
 		free(p);
 		p = NULL;
 	} else {
 		p->cur = xmlDocGetRootElement(p->doc);
 		if (p->cur == NULL) {
-			fprintf(stderr,
-				"E-Notes: Failed to parse file. \"%s\".\n", fn);
+			dml(unabletoparse, 1);
 			free(p);
 			p = NULL;
 		}
 		p->cur = p->cur->xmlChildrenNode;
 	}
 
+	free(unabletoopen);
+	free(unabletoparse);
 	return (p);
 }
 
@@ -90,10 +97,13 @@ XmlWriteHandle *
 xml_write(char *fn)
 {
 	XmlWriteHandle *p = malloc(sizeof(XmlWriteHandle));
+	char           *unabletoopen = malloc(PATH_MAX);
+
+	snprintf(unabletoopen, PATH_MAX, "Unable to open (begin) \"%s\"", fn);
 
 	p->doc = xmlNewDoc(NULL);
 	if (p->doc == NULL) {
-		fprintf(stderr, "E-Notes: Unable to open, \"%s\".\n", fn);
+		dml(unabletoopen, 1);
 		free(p);
 		p = NULL;
 	} else {
@@ -104,6 +114,8 @@ xml_write(char *fn)
 						   NULL);
 		xmlTextWriterStartElement(p->writer, BAD_CAST "enotes");
 	}
+
+	free(unabletoopen);
 	return (p);
 }
 

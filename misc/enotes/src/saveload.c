@@ -1,13 +1,14 @@
-/**************************************************/
-/**               E  -  N O T E S                **/
-/**                                              **/
-/**  The contents of this file are released to   **/
-/**  the public under the General Public Licence **/
-/**  Version 2.                                  **/
-/**                                              **/
-/**  By  Thomas Fletcher (www.fletch.vze.com)    **/
-/**                                              **/
-/**************************************************/
+
+/**************************************************
+ **               E  -  N O T E S                **
+ **                                              **
+ **  The contents of this file are released to   **
+ **  the public under the General Public Licence **
+ **  Version 2.                                  **
+ **                                              **
+ **  By  Thomas Fletcher (www.fletch.vze.com)    **
+ **                                              **
+ **************************************************/
 
 
 #include "saveload.h"
@@ -148,8 +149,11 @@ fill_saveload_tree(void)
 		setup_saveload_opt(saveload->tree,
 				   (char *) get_title_by_note(p));
 		while ((p = (Evas_List *) get_cycle_next_note(p)) != NULL) {
-			setup_saveload_opt(saveload->tree,
-					   (char *) get_title_by_note(p));
+			if (strcmp(get_title_by_note(p), "")) {
+				setup_saveload_opt(saveload->tree,
+						   (char *)
+						   get_title_by_note(p));
+			}
 		}
 	}
 	return;
