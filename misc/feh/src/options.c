@@ -939,7 +939,7 @@ show_usage(void)
            " INDEX MODE OPTIONS\n"
            "  -e FONT                   Use FONT to print the information under each\n"
            "                            thumbnail. FONT should be defined in the form\n"
-           "                            fontname/size(points). eg -f myfont/12\n"
+           "                            fontname/size(points). eg -e myfont/12\n"
            "  -t,--title-font FONT      Use FONT to print a title on the index, if no\n"
            "                            font is specified, a title will not be printed\n"
            " SLIDESHOW KEYS\n"
