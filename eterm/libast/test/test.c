@@ -992,6 +992,7 @@ test_socket(void)
 {
     spif_socket_t s1, s2;
     spif_url_t url1, url2;
+    spif_str_t data;
     spif_charptr_t tmp1 = "http://www.kainx.org/";
     spif_charptr_t tmp2 = "unix:/tmp/.X11-unix/X0";
     spif_bool_t b;
@@ -1014,6 +1015,20 @@ test_socket(void)
     TEST_FAIL_IF(b == FALSE);
     b = spif_socket_open(s2);
     TEST_FAIL_IF(b == FALSE);
+    TEST_PASS();
+
+    TEST_BEGIN("spif_socket_send() function");
+    data = spif_str_new_from_ptr("GET / HTTP/1.0\015\012Host: www.kainx.org\015\012\015\012");
+    b = spif_socket_send(s1, data);
+    TEST_FAIL_IF(b == FALSE);
+    spif_str_del(data);
+    TEST_PASS();
+
+    TEST_BEGIN("spif_socket_recv() function");
+    data = spif_socket_recv(s1);
+    /*SPIF_SHOW(data, stdout);*/
+    TEST_FAIL_IF(SPIF_STR_ISNULL(data));
+    spif_str_del(data);
     TEST_PASS();
 
     TEST_BEGIN("spif_socket_del() function");

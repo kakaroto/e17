@@ -78,7 +78,6 @@ SPIF_DEFINE_OBJ(socket) {
     spif_sockaddr_len_t len;
     spif_uint32_t flags;
     spif_url_t src_url, dest_url;
-    spif_str_t input, output;
 };
 
 extern spif_class_t SPIF_CLASS_VAR(socket);
@@ -93,6 +92,7 @@ extern spif_cmp_t spif_socket_comp(spif_socket_t, spif_socket_t);
 extern spif_socket_t spif_socket_dup(spif_socket_t);
 extern spif_classname_t spif_socket_type(spif_socket_t);
 extern spif_bool_t spif_socket_open(spif_socket_t);
+extern spif_bool_t spif_socket_close(spif_socket_t);
 extern spif_bool_t spif_socket_check_io(spif_socket_t);
 extern spif_bool_t spif_socket_send(spif_socket_t, spif_str_t);
 extern spif_str_t spif_socket_recv(spif_socket_t);

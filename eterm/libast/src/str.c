@@ -505,14 +505,18 @@ spif_str_show(spif_str_t self, spif_charptr_t name, spif_str_t buff, size_t inde
     }
 
     memset(tmp, ' ', indent);
-    snprintf(tmp + indent, sizeof(tmp) - indent, "(spif_str_t) %s:  %8p { \"%s\", len %lu, size %lu }\n",
-             name, self, self->s, (unsigned long) self->len, (unsigned long) self->mem);
-
+    snprintf(tmp + indent, sizeof(tmp) - indent, "(spif_str_t) %s:  %8p { \"", name, self);
     if (SPIF_STR_ISNULL(buff)) {
         buff = spif_str_new_from_ptr(tmp);
     } else {
         spif_str_append_from_ptr(buff, tmp);
     }
+
+    spif_str_append(buff, self);
+
+    snprintf(tmp, sizeof(tmp), "\", len %lu, size %lu }\n", (unsigned long) self->len,
+             (unsigned long) self->mem);
+    spif_str_append_from_ptr(buff, tmp);
     return buff;
 }
 

@@ -91,8 +91,6 @@ spif_socket_init(spif_socket_t self)
     self->flags = 0;
     self->src_url = SPIF_NULL_TYPE(url);
     self->dest_url = SPIF_NULL_TYPE(url);
-    self->input = SPIF_NULL_TYPE(str);
-    self->output = SPIF_NULL_TYPE(str);
     return TRUE;
 }
 
@@ -118,8 +116,6 @@ spif_socket_init_from_urls(spif_socket_t self, spif_url_t surl, spif_url_t durl)
     } else {
         self->dest_url = SPIF_NULL_TYPE(url);
     }
-    self->input = SPIF_NULL_TYPE(str);
-    self->output = SPIF_NULL_TYPE(str);
     return TRUE;
 }
 
@@ -127,10 +123,7 @@ spif_bool_t
 spif_socket_done(spif_socket_t self)
 {
     if (self->fd >= 0) {
-        if ((close(self->fd)) < 0) {
-            print_error("Unable to close socket %d -- %s\n", self->fd, strerror(errno));
-        }
-        self->fd = -1;
+        spif_socket_close(self);
     }
     self->fam = AF_INET;
     self->type = SOCK_STREAM;
@@ -148,14 +141,6 @@ spif_socket_done(spif_socket_t self)
     if (!SPIF_URL_ISNULL(self->dest_url)) {
         spif_url_del(self->dest_url);
         self->dest_url = SPIF_NULL_TYPE(url);
-    }
-    if (!SPIF_STR_ISNULL(self->input)) {
-        spif_str_del(self->input);
-        self->input = SPIF_NULL_TYPE(str);
-    }
-    if (!SPIF_STR_ISNULL(self->output)) {
-        spif_str_del(self->output);
-        self->output = SPIF_NULL_TYPE(str);
     }
     return TRUE;
 }
@@ -203,8 +188,6 @@ spif_socket_show(spif_socket_t self, spif_charptr_t name, spif_str_t buff, size_
 
     spif_url_show(self->src_url, "src_url", buff, indent);
     spif_url_show(self->dest_url, "dest_url", buff, indent);
-    spif_str_show(self->input, "input", buff, indent);
-    spif_str_show(self->output, "output", buff, indent);
 
     indent -= 2;
     snprintf(tmp + indent, sizeof(tmp) - indent, "}\n");
@@ -243,8 +226,6 @@ spif_socket_dup(spif_socket_t self)
     if (!SPIF_URL_ISNULL(self->dest_url)) {
         tmp->dest_url = spif_url_dup(self->dest_url);
     }
-    tmp->input = SPIF_NULL_TYPE(str);
-    tmp->output = SPIF_NULL_TYPE(str);
     return tmp;
 }
 
@@ -337,6 +318,24 @@ spif_socket_open(spif_socket_t self)
 }
 
 spif_bool_t
+spif_socket_close(spif_socket_t self)
+{
+    int ret;
+
+    REQUIRE_RVAL(self->fd >= 0, FALSE);
+    do {
+        ret = close(self->fd);
+    } while ((ret < 0) && (errno == EINTR));
+    if (ret < 0) {
+        print_error("Unable to close socket %d -- %s\n", self->fd, strerror(errno));
+        self->fd = -1;
+        return FALSE;
+    }
+    self->fd = -1;
+    return TRUE;
+}
+
+spif_bool_t
 spif_socket_check_io(spif_socket_t self)
 {
     static struct timeval tv = { 0, 0 };
@@ -393,34 +392,33 @@ spif_socket_send(spif_socket_t self, spif_str_t data)
     if (num_written < 0) {
         D_OBJ(("Unable to write to socket %d -- %s\n", self->fd, strerror(errno)));
         switch (errno) {
-        case EFBIG:
-            {
-                spif_bool_t b;
-                spif_str_t tmp_buf;
-                char *s;
-                long left;
+            case EFBIG:
+                {
+                    spif_bool_t b;
+                    spif_str_t tmp_buf;
+                    char *s;
+                    long left;
 
-                for (left = len, s = SPIF_STR_STR(data); left > 0; s += 1024, left -= 1024) {
-                    tmp_buf = spif_str_new_from_buff(s, 1024);
-                    b = spif_socket_send(self, tmp_buf);
-                    if (b == FALSE) {
-                        spif_str_del(tmp_buf);
-                        return b;
+                    for (left = len, s = SPIF_STR_STR(data); left > 0; s += 1024, left -= 1024) {
+                        tmp_buf = spif_str_new_from_buff(s, 1024);
+                        b = spif_socket_send(self, tmp_buf);
+                        if (b == FALSE) {
+                            spif_str_del(tmp_buf);
+                            return b;
+                        }
                     }
                 }
-            }
-            break;
-        case EIO:
-        case EPIPE:
-            close(self->fd);
-            /* Drop */
-        case EBADF:
-        case EINVAL:
-        default:
-            self->fd = -1;
-            return FALSE;
-            break;
-
+                break;
+            case EIO:
+            case EPIPE:
+                close(self->fd);
+                /* Drop */
+            case EBADF:
+            case EINVAL:
+            default:
+                self->fd = -1;
+                return FALSE;
+                break;
         }
     }
     return TRUE;
@@ -429,7 +427,10 @@ spif_socket_send(spif_socket_t self, spif_str_t data)
 spif_str_t
 spif_socket_recv(spif_socket_t self)
 {
+    spif_str_t new_str;
 
+    new_str = spif_str_new_from_fd(self->fd);
+    return new_str;
 }
 
 spif_bool_t

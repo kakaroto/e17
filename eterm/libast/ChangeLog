@@ -260,3 +260,11 @@ Fri Jul 26 16:52:40 2002                        Michael Jennings (mej)
 More socket work.  Also, permit muting of error/warning messages by
 supplying a NULL value for the program name.
 ----------------------------------------------------------------------
+Tue Jul 30 17:34:38 2002                        Michael Jennings (mej)
+
+Send/receive on the socket works now.  Also cleaned up the show method
+for strings to eliminate the 4K length limit.
+
+The current socket test will actually download the HTML for my home
+page.  Uncomment the SPIF_SHOW() call in test_socket() to see it work.
+----------------------------------------------------------------------
