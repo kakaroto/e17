@@ -2515,3 +2515,14 @@ Improve on menu transparency. Avoid some unnecessary redraws.
 Show a bit more debug info for ConfigureRequest events.
 Skip transparency stuff for offscreen windows.
 Don't always set move mode for windows with transients or in group to opaque.
+
+-------------------------------------------------------------------------------
+
+Thu Mar 11 18:14:36 CET 2004
+(Kim)
+
+Attempt to fix the make install problem with recent gettext/auto* versions.
+Shuffled around some startup/debug stuff.
+Experimental RandR support configuration and code fragments.
+Bypass some obscure command preprocessing stuff (echo).
+Change some ALERT macro stuff to function calls.
