@@ -73,7 +73,7 @@ Panel_Button *panel_button(Evas *_e, char *_label, Evas_List *tests)
 	evas_object_text_font_set(o, "andover", 24);
 	evas_object_text_text_set(o, _label);
 	evas_object_color_set(o, 0, 0, 0, 160);
-	evas_object_layer_set(o, 250);
+	evas_object_layer_set(o, 251);
 	evas_object_move(o, 15, y + 5);
 	evas_object_show(o);
 	pbutton->label = o;

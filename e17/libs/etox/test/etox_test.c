@@ -9,6 +9,7 @@ Evas_Object *o_prev_box;
 Evas_Object *o_txt_prev_box;
 Evas_List *pbuttons;
 
+Ecore_Evas *ee;
 Evas *evas;
 int render_method = 0;
 
@@ -19,7 +20,6 @@ Evas_List *current_test = NULL;
 
 int win_w = W, win_h = H;
 int win_x = 0, win_y = 0;
-Window main_win;
 
 double get_time(void)
 {
@@ -28,30 +28,6 @@ double get_time(void)
 	gettimeofday(&timev, NULL);
 	return (double) timev.tv_sec +
 	    (((double) timev.tv_usec) / 1000000);
-}
-
-/* Events */
-int e_idle(void *data)
-{
-	evas_render(evas);
-
-	return 1;
-	data = NULL;
-}
-
-int e_window_expose(void *data, int type, void * ev)
-{
-	Ecore_X_Event_Window_Damage *e;
-	Evas_Engine_Info_Software_X11 *info;
-
-	e = (Ecore_X_Event_Window_Damage *) ev;
-	info = (Evas_Engine_Info_Software_X11 *)evas_engine_info_get(evas);
-	if (e->win != info->info.drawable)
-		return 1;
-	evas_damage_rectangle_add(evas, e->x, e->y, e->w, e->h);
-	return 1;
-	data = NULL;
-	type = 0;
 }
 
 int e_mouse_move(void *data, int type, void * ev)
@@ -238,7 +214,6 @@ prev_test(void *_data, Evas *_e, Evas_Object *_o,
 void setup(void)
 {
 	double width, height;
-	Window win, ewin;
 	Evas_Object *o_bg;
 	Evas_Object *o_bg_etox;
 	char msg[] =
@@ -250,70 +225,6 @@ void setup(void)
 	    "rectangle below.\n"
 	    "To start a test suite, select it from the\n"
 	    "navigation panel on the left.\n";
-
-	/* setup callbacks for events */
-	ecore_event_handler_add(ECORE_X_EVENT_WINDOW_DAMAGE, e_window_expose,
-			NULL);
-	ecore_event_handler_add(ECORE_X_EVENT_MOUSE_MOVE, e_mouse_move, NULL);
-	ecore_event_handler_add(ECORE_X_EVENT_MOUSE_BUTTON_DOWN, e_mouse_down,
-			NULL);
-	ecore_event_handler_add(ECORE_X_EVENT_MOUSE_BUTTON_UP, e_mouse_up,
-			NULL);
-
-	/* handler for when the event queue goes idle */
-	ecore_idler_add(e_idle, NULL);
-
-	/* create a toplevel window */
-	win = ecore_x_window_new(0, 0, 0, win_w, win_h);
-	ecore_x_window_prop_title_set(win, "Etox Test");
-	ecore_x_window_prop_min_size_set(win, win_w, win_h);
-	ecore_x_window_prop_max_size_set(win, win_w, win_h);
-	main_win = win;
-
-	/* create a evas rendering in software - convenience function that */
-	/* also creates the window for us in the right colormap & visual */
-	evas = evas_new();
-	evas_output_method_set(evas, evas_render_method_lookup("software_x11"));
-	evas_output_size_set(evas, win_w, win_h);
-	evas_output_viewport_set(evas, 0, 0, win_w, win_h);
-	{
-		Display *disp;
-		Evas_Engine_Info_Software_X11 *info;
-
-		disp = ecore_x_display_get();
-
-		info = (Evas_Engine_Info_Software_X11 *)evas_engine_info_get(evas);
-		info->info.display = disp;
-		info->info.visual = DefaultVisual(disp, DefaultScreen(disp));
-		info->info.colormap = DefaultColormap(disp, DefaultScreen(disp));
-
-		ewin = ecore_x_window_new(win, 0, 0, win_w, win_h);
-
-		info->info.drawable = ewin;
-		info->info.depth = DefaultDepth(disp, DefaultScreen(disp));
-
-		evas_engine_info_set(evas, (Evas_Engine_Info *)info);
-	}
-
-	evas_image_cache_set(evas, MAX_IMAGE_CACHE);
-	evas_font_cache_set(evas, MAX_FONT_CACHE);
-	evas_font_path_append(evas, FONT_DIRECTORY);
-
-	/* get the window ID for the evas created for us */
-
-	/* show the evas window */
-	ecore_x_window_show(ewin);
-
-	/* set the events this window accepts */
-	/* FIXME: What function is this now in ecore2?
-	ecore_window_set_events(ewin, ECORE_X_EVENT_MASK_WINDOW_DAMAGE |
-				ECORE_X_EVENT_MASK_MOUSE_DOWN |
-				ECORE_X_EVENT_MASK_MOUSE_UP |
-				ECORE_X_EVENT_MASK_MOUSE_MOVE);
-				*/
-
-	/* show the toplevel */
-	ecore_x_window_show(win);
 
 	/* Create interface */
 
@@ -441,21 +352,30 @@ void setup(void)
 			  prev_test, NULL);
 }
 
-int main(int argc, char **argv)
+int main(int argc, const char **argv)
 {
 	ecore_init();
+	ecore_app_args_set(argc, argv);
 
-	/* init X */
-	if (!ecore_x_init(NULL)) {
-		if (getenv("DISPLAY")) {
-			printf("Cannot initialize default display:\n");
-			printf("DISPLAY=%s\n", getenv("DISPLAY"));
-		} else {
-			printf("No DISPLAY variable set!\n");
-		}
-		printf("Exit.\n");
-		exit(-1);
-	}
+	if (!ecore_evas_init())
+		return -1;
+
+	ee = ecore_evas_software_x11_new(NULL, 0, 0, 0, win_w, win_h);
+	if (!ee)
+		return 1;
+
+	ecore_evas_title_set(ee, "Etox Selection Test");
+	ecore_evas_show(ee);
+
+	/* setup callbacks for events */
+	ecore_event_handler_add(ECORE_X_EVENT_MOUSE_MOVE, e_mouse_move, NULL);
+	ecore_event_handler_add(ECORE_X_EVENT_MOUSE_BUTTON_DOWN, e_mouse_down,
+			NULL);
+	ecore_event_handler_add(ECORE_X_EVENT_MOUSE_BUTTON_UP, e_mouse_up,
+			NULL);
+
+	evas = ecore_evas_get(ee);
+	evas_font_path_append(evas, FONT_DIRECTORY);
 
 	/* program does its data setup here */
 	setup();

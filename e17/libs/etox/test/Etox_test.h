@@ -10,6 +10,7 @@
 #include <Evas_Engine_Software_X11.h>
 #include <Ecore.h>
 #include <Ecore_X.h>
+#include <Ecore_Evas.h>
 
 #include "src/Etox.h"
 #include "etox-config.h"
