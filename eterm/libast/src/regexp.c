@@ -148,7 +148,7 @@ spif_regexp_show(spif_regexp_t self, spif_charptr_t name, spif_str_t buff, size_
     char tmp[4096];
 
     if (SPIF_REGEXP_ISNULL(self)) {
-        SPIF_OBJ_SHOW_NULL(regexp, name, buff, indent);
+        SPIF_OBJ_SHOW_NULL(regexp, name, buff, indent, tmp);
         return buff;
     }
 

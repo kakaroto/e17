@@ -155,7 +155,7 @@ spif_socket_show(spif_socket_t self, spif_charptr_t name, spif_str_t buff, size_
     char tmp[4096];
 
     if (SPIF_SOCKET_ISNULL(self)) {
-        SPIF_OBJ_SHOW_NULL(socket, name, buff, indent);
+        SPIF_OBJ_SHOW_NULL(socket, name, buff, indent, tmp);
         return buff;
     }
         
