@@ -18,3 +18,4 @@ missing
 mkinstalldirs
 install-sh
 *.spec
+*.tar.gz
