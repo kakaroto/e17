@@ -1197,13 +1197,19 @@ _engage_bar_motion_handle(Engage_Bar *eb, Evas_Coord mx, Evas_Coord my)
    if (edge == E_GADMAN_EDGE_LEFT || edge == E_GADMAN_EDGE_RIGHT)
      {
 	md = my;
-	md2 = mx;
+	if (edge == E_GADMAN_EDGE_LEFT)
+	  md2 = mx;
+	else
+	  md2 = x + w - mx;
 	counter = y;
      }
    else
      {
 	md = mx;
-	md2 = my;
+	if (edge == E_GADMAN_EDGE_TOP)
+	  md2 = my;
+	else
+	  md2 = y + h - my;
 	counter = x;
      }
    app_size = eb->engage->iconbordersize / 1.5;
