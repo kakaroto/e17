@@ -25,12 +25,12 @@
 
 /* Global vars */
 Display            *disp;
-List                lists;
 
 static char         buf[10240];
 static int          stdin_state;
 static char        *display_name;
 static Client      *e;
+static Window       my_win, comms_win;
 
 static void
 process_line(char *line)
@@ -87,19 +87,23 @@ main(int argc, char **argv)
    Client             *me;
    int                 i;
    fd_set              fd;
-   char               *command;
-   Window              my_win, comms_win;
-   char                waitonly, complete;
+   char               *command, *s;
+   char                mode;
+   int                 len, l;
 
-   waitonly = 0;
-   lists.next = NULL;
+   mode = 0;
    display_name = NULL;
    command = NULL;
 
-   for (i = 0; i < argc; i++)
+   for (i = 1; i < argc; i++)
      {
+	s = argv[i];
+	if (*s != '-')
+	   break;
+
 	if (!strcmp(argv[i], "-e"))
 	  {
+	     mode = -1;
 	     if (i != (argc - 1))
 	       {
 		  command = argv[++i];
@@ -107,7 +111,7 @@ main(int argc, char **argv)
 	  }
 	else if (!strcmp(argv[i], "-ewait"))
 	  {
-	     waitonly = 1;
+	     mode = 1;
 	     if (i != (argc - 1))
 		command = argv[++i];
 	  }
@@ -122,13 +126,15 @@ main(int argc, char **argv)
 	else if ((!strcmp(argv[i], "-h")) ||
 		 (!strcmp(argv[i], "-help")) || (!strcmp(argv[i], "--help")))
 	  {
-	     printf("%s [ -e \"Command to Send to Enlightenment then exit\"]\n"
-		    "     [ -ewait \"Command to Send to E then wait for a reply then exit\"]\n",
-		    argv[0]);
-	     printf("Use \"%s\" by itself to enter the \"interactive mode\"\n"
-		    "Ctrl-D will exit interactive mode (EOF)\n"
-		    "use \"help\" from inside interactive mode for further "
-		    "assistance\n", argv[0]);
+	     printf
+		("eesh sends commands to E\n\n"
+		 "Examples:\n"
+		 "  eesh Command to Send to E then wait for a reply then exit\n"
+		 "  eesh -ewait \"Command to Send to E then wait for a reply then exit\"\n"
+		 "  eesh -e \"Command to Send to Enlightenment then exit\"\n\n");
+	     printf("Use eesh by itself to enter the \"interactive mode\"\n"
+		    "  Ctrl-D will exit interactive mode\n"
+		    "  Use \"help\" from inside interactive mode for further assistance\n");
 	     exit(0);
 	  }
      }
@@ -145,28 +151,41 @@ main(int argc, char **argv)
    my_win = CommsSetup();
    comms_win = CommsFindCommsWindow();
 
-   e = MakeClient(comms_win);
-   AddItem(e, "E", e->win, LIST_TYPE_CLIENT);
-
-   /* Not sure this is used... */
-   me = MakeClient(my_win);
-   AddItem(me, "ME", me->win, LIST_TYPE_CLIENT);
+   e = ClientCreate(comms_win);
+   me = ClientCreate(my_win);
 
    CommsSend(e, "set clientname eesh");
    CommsSend(e, "set version 0.1");
+#if 0				/* Speed it up */
    CommsSend(e, "set author The Rasterman");
    CommsSend(e, "set email raster@rasterman.com");
    CommsSend(e, "set web http://www.enlightenment.org");
-/*  CommsSend(e, "set address NONE"); */
+/* CommsSend(e, "set address NONE"); */
    CommsSend(e, "set info Enlightenment IPC Shell - talk to E direct");
-/*  CommsSend(e, "set pixmap 0"); */
+/* CommsSend(e, "set pixmap 0"); */
+#endif
+
+   if (command == NULL && i < argc)
+     {
+	mode = 1;
+	len = 0;
+	for (; i < argc; i++)
+	  {
+	     l = strlen(argv[i]);
+	     command = Erealloc(command, len + l + 2);
+	     if (len)
+		command[len++] = ' ';
+	     strcpy(command + len, argv[i]);
+	     len += l;
+	  }
+     }
 
    if (command)
      {
 	/* Non-interactive */
 	CommsSend(e, command);
 	XSync(disp, False);
-	if (!waitonly)
+	if (mode <= 0)
 	   goto done;
      }
    else
@@ -200,8 +219,13 @@ main(int argc, char **argv)
 		  switch (ev.type)
 		    {
 		    case ClientMessage:
-		       complete = HandleComms(&ev);
-		       if (waitonly && complete)
+		       s = CommsGet(me, &ev);
+		       if (!s)
+			  break;
+		       printf("%s\n", s);
+		       fflush(stdout);
+		       Efree(s);
+		       if (mode)
 			  goto done;
 		       break;
 		    case DestroyNotify:
@@ -213,6 +237,9 @@ main(int argc, char **argv)
      }
 
  done:
+   ClientDestroy(e);
+   ClientDestroy(me);
+
    return 0;
 }
 
@@ -221,11 +248,9 @@ Alert(const char *fmt, ...)
 {
    va_list             ap;
 
-   EDBUG(7, "Alert");
    va_start(ap, fmt);
    vfprintf(stderr, fmt, ap);
    va_end(ap);
-   EDBUG_RETURN_;
 }
 
 #if !USE_LIBC_STRDUP
@@ -235,12 +260,12 @@ Estrdup(const char *s)
    char               *ss;
    int                 sz;
 
-   EDBUG(9, "Estrdup");
    if (!s)
-      EDBUG_RETURN(NULL);
+      return NULL;
    sz = strlen(s);
    ss = Emalloc(sz + 1);
    strncpy(ss, s, sz + 1);
-   EDBUG_RETURN(ss);
+
+   return ss;
 }
 #endif

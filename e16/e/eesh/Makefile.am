@@ -1,7 +1,7 @@
 
 bin_PROGRAMS = eesh
 
-eesh_SOURCES = E.h comms.c lists.c main.c
+eesh_SOURCES = E.h comms.c main.c
 
 LDADD = $(X_LIBS) -lX11
 

@@ -40,57 +40,21 @@
 #define USE_LIBC_STRDUP  1	/* Use libc strdup if present */
 #endif
 
-#define LIST_FINDBY_NAME        0
-#define LIST_FINDBY_ID          1
-#define LIST_FINDBY_BOTH        2
-#define LIST_FINDBY_NONE        3
-
-#define LIST_TYPE_COUNT         18
-#define LIST_TYPE_ANY            0
-#define LIST_TYPE_CLIENT         1
-
-typedef struct _list
-{
-   int                 type;
-   char               *name;
-   int                 id;
-   void               *item;
-
-   struct _list       *next;
-}
-List;
-
 typedef struct _client
 {
-   char               *name;
    Window              win;
    char               *msg;
-   char               *clientname;
-   char               *version;
-   char               *author;
-   char               *email;
-   char               *web;
-   char               *address;
-   char               *info;
-   Pixmap              pmap;
 }
 Client;
-
-void               *FindItem(const char *name, int id, int find_by, int type);
-void                AddItem(void *item, const char *name, int id, int type);
-void               *RemoveItem(char *name, int id, int find_by, int type);
-void              **ListItemType(int *num, int type);
-char              **ListItems(int *num, int type);
-void              **ListItemTypeID(int *num, int type, int id);
 
 Window              CommsSetup(void);
 Window              CommsFindCommsWindow(void);
 void                CommsSend(Client * c, const char *s);
-char               *CommsGet(Client ** c, XEvent * ev);
-Client             *MakeClient(Window win);
-void                ListFreeClient(void *ptr);
-void                DeleteClient(Client * c);
-int                 HandleComms(XEvent * ev);
+char               *CommsGet(Client * c, XEvent * ev);
+Client             *ClientCreate(Window win);
+void                ClientDestroy(Client * c);
+
+void                Alert(const char *fmt, ...);
 
 #define Ecalloc     calloc
 #define Emalloc     malloc
@@ -103,25 +67,4 @@ int                 HandleComms(XEvent * ev);
 char               *Estrdup(const char *s);
 #endif
 
-#define FILEPATH_LEN_MAX 4096
-/* This turns on E's internal stack tracking system for  coarse debugging */
-/* and being able to trace E for profiling/optimisation purposes (which */
-/* believe it or not I'm actually doing) */
-
-/* #define DEBUG 1 */
-
-#define EDBUG(l,x)  \
-;
-#define EDBUG_RETURN(x)  \
-{ \
-  return (x); \
-}
-#define EDBUG_RETURN_  \
-{ \
-  return; \
-}
-
-void                Alert(const char *fmt, ...);
-
 extern Display     *disp;
-extern List         lists;
