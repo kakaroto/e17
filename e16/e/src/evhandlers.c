@@ -1115,13 +1115,16 @@ HandleDestroy(XEvent * ev)
    EDBUG_RETURN_;
 }
 
+#define DO_PROCESS_PROPERTY_CHANGE_EVENTS 0
 void
 HandleProperty(XEvent * ev)
 {
+#if DO_PROCESS_PROPERTY_CHANGE_EVENTS
    Window              win;
    EWin               *ewin;
    char                title[10240];
    int                 desktop;
+#endif
 
    if (debug_flags & EDBUG_PROPERTY_CHANGE)
      {
@@ -1133,6 +1136,7 @@ HandleProperty(XEvent * ev)
 	XFree(name);
      }
 
+#if DO_PROCESS_PROPERTY_CHANGE_EVENTS
    EDBUG(5, "HandleProperty");
 
    win = ev->xproperty.window;
@@ -1214,6 +1218,7 @@ HandleProperty(XEvent * ev)
      }
 #endif
    EDBUG_RETURN_;
+#endif
 }
 
 void
