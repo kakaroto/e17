@@ -1,5 +1,9 @@
 $Id$
 
+2004-04-18 Tilman Sauerbeck <tilman -at- code-monkey.de>
+        * src/plugins/imap/imap.c: Ported the recent fixes for POP3
+          to the IMAP plugin
+
 2004-04-17 Tilman Sauerbeck <tilman -at- code-monkey.de>
         * src/plugins/pop3/pop3.c: Don't connect twice to the same
           server.

@@ -92,10 +92,6 @@ static int on_server_data (void *udata, int type, void *event)
 	mailbox_property_set (mb, "state", (void *) ++state);
 
 	switch (state) {
-		case STATE_DISCONNECTED:
-		case STATE_CONNECTED:
-			assert (false);
-			break;
 		case STATE_SERVER_READY:
 			len = snprintf (outbuf, sizeof (outbuf), "USER %s\r\n",
 		                (char *) mailbox_property_get (mb, "user"));
@@ -121,6 +117,8 @@ static int on_server_data (void *udata, int type, void *event)
 			}
 
 			break;
+		default:
+			assert (false);
 	}
 
 	return 0;
@@ -269,7 +267,7 @@ static bool pop3_load_config (MailBox *mb, E_DB_File *edb,
 		fprintf (stderr, "[pop3] 'user' not specified!\n");
 		return false;
 	}
-	
+
 	mailbox_property_set (mb, "user", str);
 
 	/* read password */
@@ -279,7 +277,7 @@ static bool pop3_load_config (MailBox *mb, E_DB_File *edb,
 		fprintf (stderr, "[pop3] 'pass' not specified!\n");
 		return false;
 	}
-	
+
 	mailbox_property_set (mb, "pass", str);
 
 	return true;

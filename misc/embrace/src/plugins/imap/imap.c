@@ -29,6 +29,14 @@
 
 #include <embrace_plugin.h>
 
+typedef enum {
+	STATE_DISCONNECTED,
+	STATE_CONNECTED,
+	STATE_SERVER_READY,
+	STATE_LOGGED_IN,
+	STATE_STATUS_OK
+} State;
+
 #define MAX_INTERVAL 300
 
 static EmbracePlugin *plugin = NULL;
@@ -37,8 +45,6 @@ static int on_server_add (void *udata, int type, void *event)
 {
 	Ecore_Con_Event_Server_Add *ev = event;
 	MailBox *mb;
-	char buf[256];
-	int len;
 
 	mb = ecore_con_server_data_get (ev->server);
 	assert (mb);
@@ -46,12 +52,7 @@ static int on_server_add (void *udata, int type, void *event)
 	if (mailbox_plugin_get (mb) != plugin)
 		return 1;
 
-	/* now login to the server */
-	len = snprintf (buf, sizeof (buf), "A001 LOGIN %s %s\r\n",
-	                (char *) mailbox_property_get (mb, "user"),
-	                (char *) mailbox_property_get (mb, "pass"));
-
-	ecore_con_server_send (ev->server, buf, len);
+	mailbox_property_set (mb, "state", (void *) STATE_CONNECTED);
 
 	return 0;
 }
@@ -60,8 +61,9 @@ static int on_server_data (void *udata, int type, void *event)
 {
 	Ecore_Con_Event_Server_Data *ev = event;
 	MailBox *mb;
-	char realbuf[1024], *buf = realbuf;
-	int num = 0, new = 0, len;
+	State state;
+	char inbuf[1024], outbuf[256];
+	int total = 0, unseen = 0, len;
 
 	mb = ecore_con_server_data_get (ev->server);
 	assert (mb);
@@ -70,33 +72,80 @@ static int on_server_data (void *udata, int type, void *event)
 		return 1;
 
 	/* take the data and make a NUL-terminated string out of it */
-	len = sizeof (realbuf) - 1;
-	len = MIN(len, ev->size);
+	len = sizeof (inbuf) - 1;
+	len = MIN (len, ev->size);
 
-	memcpy (buf, ev->data, len);
-	buf[len] = 0;
+	memcpy (inbuf, ev->data, len);
+	inbuf[len] = 0;
+	embrace_strstrip (inbuf);
 
-	/* STATUS the correct directory on successful login */
-	if (!strncmp(buf, "A001 OK LOGIN", 13)) {
-		len = snprintf (buf, sizeof (realbuf),
-		                "A002 STATUS %s (MESSAGES UNSEEN)\r\n",
-		                (char *) mailbox_property_get (mb, "path"));
-		ecore_con_server_send (ev->server, buf, len);
+	state = (State) mailbox_property_get (mb, "state");
 
+	if (!strncmp (inbuf, "* NO", 4)) {
+		fprintf (stderr, "[imap] failure: %s\n", &inbuf[5]);
 		return 0;
+	} else if (!strncmp (inbuf, "* BAD", 5)) {
+		fprintf (stderr, "[imap] bad command: %s\n", &inbuf[6]);
+ 		return 0;
+ 	}
+
+	mailbox_property_set (mb, "state", (void *) ++state);
+
+	switch (state) {
+		case STATE_SERVER_READY:
+			len = snprintf (outbuf, sizeof (outbuf),
+			                "A001 LOGIN %s %s\r\n",
+			                (char *) mailbox_property_get (mb, "user"),
+			                (char *) mailbox_property_get (mb, "pass"));
+			ecore_con_server_send (ev->server, outbuf, len);
+			break;
+		case STATE_LOGGED_IN:
+			len = snprintf (outbuf, sizeof (outbuf),
+			                "A002 STATUS %s (MESSAGES UNSEEN)\r\n",
+			                (char *) mailbox_property_get (mb, "path"));
+			ecore_con_server_send (ev->server, outbuf, len);
+			break;
+		case STATE_STATUS_OK:
+			if (sscanf (inbuf, "* STATUS %*s (MESSAGES %i UNSEEN %i)",
+			            &total, &unseen) == 2) {
+				mailbox_unseen_set (mb, unseen);
+				mailbox_total_set (mb, total);
+
+				ecore_con_server_send (ev->server, "A003 LOGOUT", 11);
+				ecore_con_server_del (ev->server);
+			}
+
+			break;
+		default:
+			assert (false);
 	}
 
-	/* check for STATUS response, fetch numbers */
-	while (*buf != '\0' && *buf != '(')
-		buf++;
+	return 0;
+}
 
-	if (sscanf (buf, "(MESSAGES %i UNSEEN %i)", &num, &new) == 2) {
-		mailbox_total_set (mb, num);
-		mailbox_unseen_set (mb, new);
+static int on_server_del (void *udata, int type, void *event)
+{
+	Ecore_Con_Event_Server_Del *ev = event;
+	MailBox *mb;
+	char *host;
 
-		ecore_con_server_send (ev->server, "A003 LOGOUT", 11);
-		ecore_con_server_del (ev->server);
+	mb = ecore_con_server_data_get (ev->server);
+	assert (mb);
+
+	if (mailbox_plugin_get (mb) != plugin)
+		return 1;
+
+	host = (char *) mailbox_property_get (mb, "host");
+
+	if (mailbox_property_get (mb, "state") == STATE_DISCONNECTED)
+		fprintf (stderr, "[imap] cannot connect to '%s'\n", host);
+	else {
+		mailbox_property_set (mb, "state", STATE_DISCONNECTED);
+		fprintf (stderr, "[imap] lost connection to '%s'\n", host);
 	}
+
+	ecore_con_server_del (ev->server);
+	mailbox_property_set (mb, "server", NULL);
 
 	return 0;
 }
@@ -104,8 +153,14 @@ static int on_server_data (void *udata, int type, void *event)
 static bool imap_check (MailBox *mb)
 {
 	Ecore_Con_Type type = ECORE_CON_REMOTE_SYSTEM;
+	Ecore_Con_Server *server;
 	char *host;
 	int port;
+
+	if (mailbox_property_get (mb, "server")) {
+		fprintf (stderr, "[imap] already connected!\n");
+		return false;
+	}
 
 	host = mailbox_property_get (mb, "host"),
 	port = (int) mailbox_property_get (mb, "port");
@@ -118,7 +173,10 @@ static bool imap_check (MailBox *mb)
 		type |= ECORE_CON_USE_SSL;
 #endif
 
-	ecore_con_server_connect (type, host, port, mb);
+	server = ecore_con_server_connect (type, host, port, mb);
+
+	mailbox_property_set (mb, "state", STATE_DISCONNECTED);
+	mailbox_property_set (mb, "server", server);
 
 	return true;
 }
@@ -209,7 +267,7 @@ static bool imap_load_config (MailBox *mb, E_DB_File *edb,
 		fprintf (stderr, "[imap] 'user' not specified!\n");
 		return false;
 	}
-	
+
 	mailbox_property_set (mb, "user", str);
 
 	/* read password */
@@ -219,17 +277,17 @@ static bool imap_load_config (MailBox *mb, E_DB_File *edb,
 		fprintf (stderr, "[imap] 'user' not specified!\n");
 		return false;
 	}
-	
+
 	mailbox_property_set (mb, "pass", str);
-	
+
 	/* read mailbox path */
 	snprintf (key, sizeof (key), "%s/path", root);
-	
+
 	if (!(str = e_db_str_get (edb, key))) {
 		fprintf (stderr, "[imap] 'path' not specified!\n");
 		return false;
 	}
-	
+
 	mailbox_property_set (mb, "path", str);
 
 	return true;
@@ -258,6 +316,8 @@ bool embrace_plugin_init (EmbracePlugin *ep)
 	                         on_server_add, NULL);
 	ecore_event_handler_add (ECORE_CON_EVENT_SERVER_DATA,
 	                         on_server_data, NULL);
+	ecore_event_handler_add (ECORE_CON_EVENT_SERVER_DEL,
+	                         on_server_del, NULL);
 
 	return true;
 }
