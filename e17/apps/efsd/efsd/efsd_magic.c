@@ -720,10 +720,13 @@ magic_test_fs(char *filename)
   if (stat(filename, &st) < 0)
     D_RETURN_(NULL);
 
+#ifdef __EMX__
+   sprintf(s, "%s", "hpfs");
+#else
   if (statfs(filename, &stfs) < 0)
     D_RETURN_(NULL);
-  
-  switch (stfs.f_type)
+
+    switch (stfs.f_type)
     {
     case AFFS_SUPER_MAGIC:
       sprintf(s, "%s", "affs");
@@ -788,6 +791,7 @@ magic_test_fs(char *filename)
     default:
       sprintf(s, "%s", "unknown-fs");
     }
+#endif
 
   ptr = s + strlen(s);
     
@@ -803,10 +807,12 @@ magic_test_fs(char *filename)
     {
       sprintf(ptr, "%s", "/chardev");
     }
+#ifndef __EMX__
   else if (S_ISBLK(st.st_mode))
     {
       sprintf(ptr, "%s", "/block");
     }
+#endif
   else if (S_ISFIFO(st.st_mode))
     {
       sprintf(ptr, "%s", "/fifo");

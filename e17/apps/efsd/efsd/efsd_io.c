@@ -38,6 +38,11 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 #include <signal.h>
 #include <errno.h>
 
+#ifdef __EMX__
+#include <sys/select.h>
+#include <strings.h>
+#endif 
+
 #include <efsd_debug.h>
 #include <efsd_misc.h>
 #include <efsd_io.h>
@@ -120,7 +125,11 @@ read_data(int sockfd, void *dest, int size)
   msg.msg_iov = iov;
   msg.msg_iovlen = 1;
 
+#ifndef __EMX__
   if ((n = recvmsg(sockfd, &msg, MSG_WAITALL)) < 0)
+#else
+  if ((n = recvmsg(_getsockhandle(sockfd), &msg, MSG_WAITALL)) < 0)
+#endif
     {
       perror("Error");
       D_RETURN_(-1);
@@ -206,8 +215,11 @@ write_data(int sockfd, struct msghdr *msg)
       D(("Write timed out.\n"));
       D_RETURN_(-1);
     }
-
+#ifndef __EMX__
   if ((n = sendmsg(sockfd, msg, 0)) < 0)
+#else
+  if ((n = sendmsg(_getsockhandle(sockfd), msg, 0)) < 0)
+#endif
     {
       perror("error");      
     }

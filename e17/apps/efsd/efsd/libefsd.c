@@ -35,6 +35,7 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
 #ifdef __EMX__
 #include <strings.h>  /* eeek... OS/2 has bzero(...) there */
+#include <sys/select.h>
 #define getcwd _getcwd2
 #endif
 
@@ -143,7 +144,7 @@ twofile_cmd(EfsdConnection *ec, EfsdCommandType type, char *file1, char *file2)
 
   D_ENTER;
 
-  if (!ec || !file1 || file1[0] == '\0' || file2 || file2[0] == '\0')
+  if (!ec || !file1 || file1[0] == '\0' || !file2 || file2[0] == '\0')
     D_RETURN_(-1);
 
   cmd.type = type;

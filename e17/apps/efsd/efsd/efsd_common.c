@@ -81,10 +81,12 @@ efsd_get_socket_file(void)
 
   if (s[0] != '\0')
     D_RETURN_(s);
-
+#ifndef __EMX__
   snprintf(s, sizeof(s), "%s/efsd_socket", efsd_get_efsd_dir());
+#else
+  snprintf(s, sizeof(s), "\\socket\\%s/efsd_socket", efsd_get_efsd_dir());
+#endif
   s[sizeof(s)-1] = '\0';
-
   D_RETURN_(s);
 }
 

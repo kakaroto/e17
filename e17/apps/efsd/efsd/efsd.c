@@ -41,6 +41,7 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
 #ifdef __EMX__
 #include <strings.h>
+#include <sys/select.h>
 #endif
 
 #include <efsd.h>
@@ -458,13 +459,13 @@ static void
 efsd_initialize(void)
 {
   D_ENTER;
-
+#ifndef __EMX__
   if (geteuid() == 0)
     {
       fprintf(stderr, "Efsd is not meant to be run by root -- at least not yet :)\n");
       exit(-1);
     }
-  
+#endif  
    /* lots of paranoia - clean up dead socket on exit no matter what */
    /* only case it doesnt work: SIGKILL (kill -9) */
   signal(SIGABRT,   efsd_cleanup_signal_callback);
@@ -477,20 +478,21 @@ efsd_initialize(void)
   signal(SIGHUP,    efsd_cleanup_signal_callback);
   signal(SIGILL,    efsd_cleanup_signal_callback);
   signal(SIGINT,    efsd_cleanup_signal_callback);
-  signal(SIGIO,     efsd_cleanup_signal_callback);
-  signal(SIGIOT,    efsd_cleanup_signal_callback);
   signal(SIGQUIT,   efsd_cleanup_signal_callback);
   signal(SIGSEGV,   efsd_cleanup_signal_callback);
-  signal(SIGSTKFLT, efsd_cleanup_signal_callback);
   signal(SIGSYS,    efsd_cleanup_signal_callback);
   signal(SIGTERM,   efsd_cleanup_signal_callback);
   signal(SIGTRAP,   efsd_cleanup_signal_callback);
   signal(SIGUSR1,   efsd_cleanup_signal_callback);
   signal(SIGUSR2,   efsd_cleanup_signal_callback);
+#ifndef __EMX__
+  signal(SIGIO,     efsd_cleanup_signal_callback);
+  signal(SIGIOT,    efsd_cleanup_signal_callback);
+  signal(SIGSTKFLT, efsd_cleanup_signal_callback);
   signal(SIGVTALRM, efsd_cleanup_signal_callback);
   signal(SIGXCPU,   efsd_cleanup_signal_callback);
   signal(SIGXFSZ,   efsd_cleanup_signal_callback);
-
+#endif
   signal(SIGPIPE, SIG_IGN);
   atexit(efsd_remove_socket_file);
 

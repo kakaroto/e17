@@ -35,7 +35,6 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 #ifdef __EMX__
 #include <stdlib.h>
 #include <malloc.h>
-#define mkdir _mkdir2
 #endif
 
 #include <efsd_debug.h>
