@@ -358,37 +358,42 @@ ewl_config_read_config(Ewl_Config * conf)
 
 	/* Evas stuff */
 	conf->evas.render_method = ewl_config_get_str("/evas/render_method");
-
 	if (!conf->evas.render_method)
 		conf->evas.render_method = strdup("software");
 
-	if (!ewl_config_get_int("/evas/font_cache", &conf->evas.font_cache))
+	conf->evas.font_cache = ewl_config_get_int("/evas/font_cache");
+	if (!conf->evas.font_cache)
 		conf->evas.font_cache = 1024 * 1024 * 2;
 
-	if (!ewl_config_get_int("/evas/image_cache", &conf->evas.image_cache))
+	conf->evas.image_cache = ewl_config_get_int("/evas/image_cache");
+	if (!conf->evas.image_cache)
 		conf->evas.image_cache = 1024 * 1024 * 8;
 
 	/* Debug stuff */
-	if (!ewl_config_get_int("/debug/enable", &conf->debug.enable))
+	conf->debug.enable = ewl_config_get_int("/debug/enable");
+	if (!conf->debug.enable)
 		conf->debug.enable = 0;
 
-	if (!ewl_config_get_int("/debug/level", &conf->debug.level))
+	conf->debug.level = ewl_config_get_int("/debug/level");
+	if (!conf->debug.level)
 		conf->debug.level = 0;
 
 	/* FX stuff */
-	if (!ewl_config_get_float("/fx/max_fps", &conf->fx.max_fps))
+	conf->fx.max_fps = ewl_config_get_float("/fx/max_fps");
+	if (!conf->fx.max_fps)
 		conf->fx.max_fps = 25.0;
 
-	if (!ewl_config_get_float("/fx/timeout", &conf->fx.timeout))
+	conf->fx.timeout = ewl_config_get_float("/fx/timeout");
+	if (!conf->fx.timeout)
 		conf->fx.timeout = 2.0;
 
 	/* Theme stuff */
 	conf->theme.name = ewl_config_get_str("/theme/name");
-
 	if (!conf->theme.name)
 		conf->theme.name = strdup("default");
 
-	if (!ewl_config_get_int("/theme/cache", &conf->theme.cache))
+	conf->theme.cache = ewl_config_get_int("/theme/cache");
+	if (!conf->theme.cache)
 		conf->theme.cache = 1;
 
 	return 1;
