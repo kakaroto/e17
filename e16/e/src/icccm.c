@@ -1,4 +1,3 @@
-
 /*
  * Copyright (C) 2000 Carsten Haitzler, Geoff Harrison and various contributors
  *
@@ -255,6 +254,7 @@ ICCCM_Iconify(EWin * ewin)
 		   32, PropModeReplace, (unsigned char *)c, 2);
    ewin->iconified = 3;
    AddItem(ewin, "ICON", ewin->client.win, LIST_TYPE_ICONIFIEDS);
+   EUnmapWindow(disp, ewin->client.win);
    EDBUG_RETURN_;
 }
 
@@ -270,6 +270,7 @@ ICCCM_DeIconify(EWin * ewin)
    XChangeProperty(disp, ewin->client.win, E_XA_WM_STATE, E_XA_WM_STATE,
 		   32, PropModeReplace, (unsigned char *)c, 2);
    RemoveItem("ICON", ewin->client.win, LIST_FINDBY_BOTH, LIST_TYPE_ICONIFIEDS);
+   EMapWindow(disp, ewin->client.win);
    EDBUG_RETURN_;
 }
 
