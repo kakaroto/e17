@@ -3107,3 +3107,16 @@ Tue Aug 31 19:25:59 CEST 2004
 Bosnian translation from Kemal Sanjta <gomez@lugzdk.ba>.
 Korean translation updates from Michael Kim <lavnrose@e.sarang.net>.
 Improve dockapp handling.
+
+-------------------------------------------------------------------------------
+
+Thu Sep  9 19:56:20 CEST 2004
+(Kim)
+
+--- 0.16.7.2 0.03 ---
+Improve KDE menu generation. Patch by obennett <obennett@hartford.edu>.
+Fix segv in debug command. Pointed out by Vadik Mironov <vadikmironoff@mtu-net.ru>.
+Remove unused files.
+Remove leftover debug stuff. Pointed out by Vadik Mironov <vadikmironoff@mtu-net.ru>.
+Fix potential problems in multihead startup.
+Eliminate getword().
