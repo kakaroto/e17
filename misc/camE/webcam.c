@@ -170,12 +170,21 @@ try_palette(int fd, int pal, int depth)
 int
 find_palette(int fd, struct video_mmap *vid)
 {
-   if (try_palette(fd, VIDEO_PALETTE_YUV420P, 16))
-      return VIDEO_PALETTE_YUV420P;
-   if (try_palette(fd, VIDEO_PALETTE_YUV420, 16))
-      return VIDEO_PALETTE_YUV420;
    if (try_palette(fd, VIDEO_PALETTE_RGB24, 24))
+   {
+      printf("negotiated palette RGB24\n");
       return VIDEO_PALETTE_RGB24;
+   }
+   if (try_palette(fd, VIDEO_PALETTE_YUV420P, 16))
+   {
+      printf("negotiated palette YUV420P\n");
+      return VIDEO_PALETTE_YUV420P; 
+   }
+   if (try_palette(fd, VIDEO_PALETTE_YUV420, 16))
+   {
+      printf("negotiated palette YUV420\n");
+      return VIDEO_PALETTE_YUV420;
+   }
    fprintf(stderr,
            "No supported palette found, please report your device to the author\n");
    exit(2);
@@ -233,9 +242,6 @@ grab_init()
          vwin.flags &= ~PWC_FPS_FRMASK;
          vwin.flags |= (cam_framerate << PWC_FPS_SHIFT);
       }
-
-      /* Turning on snapshot mode */
-      vwin.flags |= PWC_FPS_SNAPSHOT;
 
       ioctl(grab_fd, VIDIOCSWIN, &vwin);
       if (ioctl(grab_fd, VIDIOCPWCSAGC, &gain) < 0)
