@@ -77,7 +77,7 @@ void ewl_text_init(Ewl_Text * ta, char *text)
 	w = EWL_WIDGET(ta);
 
 	ewl_widget_init(EWL_WIDGET(w), "text");
-	ewl_object_set_fill_policy(EWL_OBJECT(w), EWL_FLAG_FILL_NONE);
+	ewl_object_fill_policy_set(EWL_OBJECT(w), EWL_FLAG_FILL_NONE);
 
 	ewl_callback_append(w, EWL_CALLBACK_REALIZE, ewl_text_realize_cb,
 			    NULL);
@@ -683,7 +683,7 @@ static void ewl_text_update_size(Ewl_Text * ta)
 	 * Set the preferred size to the size of the etox and request that
 	 * size for the widget.
 	 */
-	ewl_object_set_preferred_size(EWL_OBJECT(ta), (int)(width),
+	ewl_object_preferred_inner_size_set(EWL_OBJECT(ta), (int)(width),
 				      (int)(height));
 }
 

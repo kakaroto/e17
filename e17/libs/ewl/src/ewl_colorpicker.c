@@ -32,7 +32,7 @@ int ewl_colorpicker_init(Ewl_ColorPicker *cp)
 	 */
 	cp->spectrum = ewl_spectrum_new();
 	ewl_spectrum_mode_set(EWL_SPECTRUM(cp->spectrum), EWL_PICK_MODE_RGB);
-	ewl_object_set_preferred_size(EWL_OBJECT(cp->spectrum), 200, 200);
+	ewl_object_preferred_inner_size_set(EWL_OBJECT(cp->spectrum), 200, 200);
 	ewl_container_append_child(EWL_CONTAINER(cp), cp->spectrum);
 	ewl_widget_show(cp->spectrum);
 
@@ -49,8 +49,8 @@ int ewl_colorpicker_init(Ewl_ColorPicker *cp)
 			    ewl_colorpicker_up_cb, cp);
 	ewl_callback_append(cp->range, EWL_CALLBACK_MOUSE_MOVE,
 			    ewl_colorpicker_move_cb, cp);
-	ewl_object_set_preferred_size(EWL_OBJECT(cp->range), 20, 200);
-	ewl_object_set_fill_policy(EWL_OBJECT(cp->range), EWL_FLAG_FILL_VFILL);
+	ewl_object_preferred_inner_size_set(EWL_OBJECT(cp->range), 20, 200);
+	ewl_object_fill_policy_set(EWL_OBJECT(cp->range), EWL_FLAG_FILL_VFILL);
 	ewl_container_append_child(EWL_CONTAINER(cp), cp->range);
 	ewl_widget_show(cp->range);
 

@@ -9,7 +9,7 @@ void print_cb(Ewl_Widget *w, void *ev_data, void *user_data)
 
 void move_embed_contents_cb(Ewl_Widget *w, void *ev_data, void *user_data)
 {
-	ewl_object_request_geometry(EWL_OBJECT(user_data), CURRENT_X(w),
+	ewl_object_geometry_request(EWL_OBJECT(user_data), CURRENT_X(w),
 				    CURRENT_Y(w), CURRENT_W(w), CURRENT_H(w));
 }
 

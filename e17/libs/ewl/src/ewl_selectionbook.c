@@ -46,7 +46,7 @@ void ewl_selectionbook_init(Ewl_Selectionbook * s)
 	 * Initialize the inherited box fields
 	 */
 	ewl_box_init(EWL_BOX(w), EWL_ORIENTATION_VERTICAL);
-	ewl_object_set_fill_policy(EWL_OBJECT(w), EWL_FLAG_FILL_FILL);
+	ewl_object_fill_policy_set(EWL_OBJECT(w), EWL_FLAG_FILL_FILL);
 
 	ewl_callback_append(w, EWL_CALLBACK_CONFIGURE,
 			    ewl_selectionbook_configure_cb, NULL);
@@ -229,7 +229,7 @@ ewl_selectionbook_configure_cb(Ewl_Widget * w, void *ev_data, void *user_data)
 	printf("in selectionbook configure %p\n", w);
 
 	if (s->current_page) {
-		ewl_object_request_geometry(EWL_OBJECT(s->current_page->page),
+		ewl_object_geometry_request(EWL_OBJECT(s->current_page->page),
 					    CURRENT_X(EWL_OBJECT(s)),
 					    CURRENT_Y(EWL_OBJECT(s)),
 					    CURRENT_W(EWL_OBJECT(s)),

@@ -147,13 +147,13 @@ main(int argc, char **argv)
 	main_tree = ewl_tree_new(1);
 	ewl_tree_set_headers (EWL_TREE (main_tree), header);
 	ewl_container_append_child(EWL_CONTAINER(main_box), main_tree);
-	ewl_object_set_fill_policy (EWL_OBJECT (main_tree),
+	ewl_object_fill_policy_set (EWL_OBJECT (main_tree),
 				     EWL_FLAG_FILL_HSHRINK |
 				     EWL_FLAG_FILL_VFILL);
 	ewl_widget_show(main_tree);
 
 	main_area = ewl_scrollpane_new();
-/* 	ewl_object_set_fill_policy (EWL_OBJECT (main_area), */
+/* 	ewl_object_fill_policy_set (EWL_OBJECT (main_area), */
 /* 				     EWL_FLAG_FILL_SHRINK || EWL_FLAG_FILL_FILL); */
 	ewl_widget_show(main_area);
 	ewl_container_append_child(EWL_CONTAINER(main_box), main_area);

@@ -42,7 +42,7 @@ int ewl_border_init(Ewl_Border * b, char *label)
 	ewl_container_resize_notify(EWL_CONTAINER(w), 
 				    (Ewl_Child_Resize)ewl_border_child_size_cb);
 
-	ewl_object_set_fill_policy(EWL_OBJECT(w), EWL_FLAG_FILL_FILL);
+	ewl_object_fill_policy_set(EWL_OBJECT(w), EWL_FLAG_FILL_FILL);
 
 	b->label = ewl_text_new(label);
 	ewl_container_append_child(EWL_CONTAINER(b), b->label);
@@ -111,7 +111,7 @@ void ewl_border_configure_cb(Ewl_Widget * w, void *ev_data, void *user_data)
 	b = EWL_BORDER(w);
 	ewl_object_place(EWL_OBJECT(b->label), CURRENT_X(w),
 				    CURRENT_Y(w), CURRENT_W(b), CURRENT_H(b));
-	hh = ewl_object_get_current_h(EWL_OBJECT(w));
+	hh = ewl_object_current_h_get(EWL_OBJECT(w));
 	yy = CURRENT_Y(w) + hh;
 	hh = CURRENT_H(w) - hh;
 

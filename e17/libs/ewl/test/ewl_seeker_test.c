@@ -40,20 +40,20 @@ __create_seeker_test_window(Ewl_Widget * w, void *ev_data, void *user_data)
 	ewl_window_set_title(EWL_WINDOW(seeker_win), "Seeker Test");
 	ewl_window_set_name(EWL_WINDOW(seeker_win), "EWL Test Application");
 	ewl_window_set_class(EWL_WINDOW(seeker_win), "EFL Test Application");
-	ewl_object_set_minimum_size(EWL_OBJECT(seeker_win), 300, 300);
+	ewl_object_minimum_size_set(EWL_OBJECT(seeker_win), 300, 300);
 	ewl_callback_append(seeker_win, EWL_CALLBACK_DELETE_WINDOW,
 			    __destroy_seeker_test_window, NULL);
 	ewl_widget_show(seeker_win);
 
 	hseeker = ewl_hseeker_new();
-	ewl_object_request_position(EWL_OBJECT(hseeker), 30, 0);
+	ewl_object_position_request(EWL_OBJECT(hseeker), 30, 0);
 	ewl_callback_append(hseeker, EWL_CALLBACK_VALUE_CHANGED, __print_value,
 			NULL);
 	ewl_container_append_child(EWL_CONTAINER(seeker_win), hseeker);
 	ewl_widget_show(hseeker);
 
 	vseeker = ewl_vseeker_new();
-	ewl_object_request_position(EWL_OBJECT(vseeker), 0, 30);
+	ewl_object_position_request(EWL_OBJECT(vseeker), 0, 30);
 	ewl_callback_append(vseeker, EWL_CALLBACK_VALUE_CHANGED, __print_value,
 			NULL);
 	ewl_container_append_child(EWL_CONTAINER(seeker_win), vseeker);

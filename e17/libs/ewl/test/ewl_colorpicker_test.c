@@ -34,7 +34,6 @@ __create_colorpicker_test_window(Ewl_Widget * w, void *ev_data, void *user_data)
 	Ewl_Widget     *colorpicker_win;
 	Ewl_Widget     *colorpicker_box;
 	Ewl_Widget     *colorpicker1;
-	Ewl_Widget     *item;
 
 
 	ewl_callback_del(w, EWL_CALLBACK_CLICKED,
@@ -54,7 +53,7 @@ __create_colorpicker_test_window(Ewl_Widget * w, void *ev_data, void *user_data)
 	 * Create the main box for holding the widgets
 	 */
 	colorpicker_box = ewl_vbox_new();
-	ewl_object_set_fill_policy(EWL_OBJECT(colorpicker_box),
+	ewl_object_fill_policy_set(EWL_OBJECT(colorpicker_box),
 				   EWL_FLAG_FILL_FILL);
 	ewl_container_append_child(EWL_CONTAINER(colorpicker_win),
 				   colorpicker_box);

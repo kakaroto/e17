@@ -76,8 +76,8 @@ void ewl_check_init(Ewl_Check * cb)
 	w = EWL_WIDGET(cb);
 
 	ewl_widget_init(w, "check");
-	ewl_object_set_fill_policy(EWL_OBJECT(w), EWL_FLAG_FILL_NONE);
-	ewl_object_set_preferred_size(EWL_OBJECT(w), 20, 20);
+	ewl_object_fill_policy_set(EWL_OBJECT(w), EWL_FLAG_FILL_NONE);
+	ewl_object_preferred_inner_size_set(EWL_OBJECT(w), 20, 20);
 
 	ewl_callback_append(w, EWL_CALLBACK_CLICKED, ewl_check_clicked_cb,
 			    NULL);

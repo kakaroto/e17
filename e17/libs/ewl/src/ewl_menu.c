@@ -56,9 +56,9 @@ void ewl_menu_init(Ewl_Menu * menu, char *image, char *title)
 	ewl_widget_set_appearance(EWL_WIDGET(menu->base.popup), "menu");
 	ewl_box_set_orientation(EWL_BOX(menu->base.popup),
 				EWL_ORIENTATION_VERTICAL);
-	ewl_object_set_fill_policy(EWL_OBJECT(menu->base.popup),
+	ewl_object_fill_policy_set(EWL_OBJECT(menu->base.popup),
 				   EWL_FLAG_FILL_NONE);
-	ewl_object_set_alignment(EWL_OBJECT(menu->base.popup),
+	ewl_object_alignment_set(EWL_OBJECT(menu->base.popup),
 				 EWL_FLAG_ALIGN_LEFT | EWL_FLAG_ALIGN_TOP);
 
 	DLEAVE_FUNCTION(DLEVEL_STABLE);

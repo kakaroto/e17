@@ -113,9 +113,9 @@ int ewl_button_with_stock_init(Ewl_Button_Stock * b, char *stock_id)
   
   if (b->image_object)
     {
-      ewl_object_set_fill_policy(EWL_OBJECT(b->image_object),
+      ewl_object_fill_policy_set(EWL_OBJECT(b->image_object),
 				 EWL_FLAG_FILL_NONE);
-      ewl_object_set_alignment(EWL_OBJECT(b->image_object),
+      ewl_object_alignment_set(EWL_OBJECT(b->image_object),
 			       EWL_FLAG_ALIGN_LEFT);
       ewl_container_prepend_child(EWL_CONTAINER(b), b->image_object);
       ewl_widget_show(b->image_object);
@@ -123,7 +123,7 @@ int ewl_button_with_stock_init(Ewl_Button_Stock * b, char *stock_id)
   
   /* Tweak the default alignment of the label */
   if (EWL_BUTTON(b)->label_object) {
-    ewl_object_set_alignment(EWL_OBJECT(EWL_BUTTON(b)->label_object),
+    ewl_object_alignment_set(EWL_OBJECT(EWL_BUTTON(b)->label_object),
 			     EWL_FLAG_ALIGN_CENTER);
   }
   

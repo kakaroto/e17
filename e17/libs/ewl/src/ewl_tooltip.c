@@ -40,11 +40,11 @@ int ewl_tooltip_init (Ewl_Tooltip *t, Ewl_Widget *parent)
 
 	ewl_box_init(EWL_BOX(w), EWL_ORIENTATION_VERTICAL);
 	ewl_widget_set_appearance (EWL_WIDGET (w), "tooltip");
-	ewl_object_set_fill_policy(EWL_OBJECT(w), EWL_FLAG_FILL_NONE);
+	ewl_object_fill_policy_set(EWL_OBJECT(w), EWL_FLAG_FILL_NONE);
 	ewl_widget_set_layer(w, 2000);
 
 	t->text = ewl_text_new ("test tooltip");
-	ewl_object_set_alignment (EWL_OBJECT(t->text),
+	ewl_object_alignment_set (EWL_OBJECT(t->text),
 			EWL_FLAG_ALIGN_TOP | EWL_FLAG_ALIGN_LEFT);
 	ewl_container_append_child (EWL_CONTAINER(w), t->text);
 
@@ -110,7 +110,7 @@ int ewl_tooltip_focus_timer (void *data)
 	if (t->hide)
 		return FALSE;
 
-	ewl_object_request_position (EWL_OBJECT(t), t->x + EWL_TOOLTIP_OFFSET,
+	ewl_object_position_request (EWL_OBJECT(t), t->x + EWL_TOOLTIP_OFFSET,
 						    t->y + EWL_TOOLTIP_OFFSET);
 	ewl_widget_show (EWL_WIDGET (t));
 

@@ -64,7 +64,7 @@ int ewl_selectionbar_init(Ewl_Selectionbar * s, Ewl_Widget * parent)
 	if (!ewl_container_init(EWL_CONTAINER(s->bar), "selectionbar"))
 		DRETURN_INT(FALSE, DLEVEL_STABLE);
 
-	ewl_object_set_fill_policy(EWL_OBJECT(s->bar), EWL_FLAG_FILL_HFILL |
+	ewl_object_fill_policy_set(EWL_OBJECT(s->bar), EWL_FLAG_FILL_HFILL |
 				   EWL_FLAG_FILL_HSHRINK);
 	ewl_container_append_child(EWL_CONTAINER(w), EWL_WIDGET(s->bar));
 	ewl_callback_append(EWL_WIDGET(s->bar), EWL_CALLBACK_FOCUS_OUT,
@@ -79,7 +79,7 @@ int ewl_selectionbar_init(Ewl_Selectionbar * s, Ewl_Widget * parent)
 
 
 	s->scroller.top = ewl_vbox_new();
-	ewl_object_request_size(EWL_OBJECT(s->scroller.top), 30, 10);
+	ewl_object_size_request(EWL_OBJECT(s->scroller.top), 30, 10);
 	ewl_container_append_child(s->bar, s->scroller.top);
 
 /*	ewl_callback_append(s->scroller.top, EWL_CALLBACK_MOUSE_MOVE,
@@ -89,7 +89,7 @@ int ewl_selectionbar_init(Ewl_Selectionbar * s, Ewl_Widget * parent)
 
 
 	s->scroller.bottom = ewl_vbox_new();
-	ewl_object_request_size(EWL_OBJECT(s->scroller.bottom), 30, 10);
+	ewl_object_size_request(EWL_OBJECT(s->scroller.bottom), 30, 10);
 	ewl_container_append_child(s->bar, s->scroller.bottom);
 
 /*	ewl_callback_append(s->scroller.bottom, EWL_CALLBACK_MOUSE_MOVE,
@@ -132,10 +132,10 @@ void ewl_selectionbar_realize_cb(Ewl_Widget * w, void *ev_data, void *user_data)
 	if (!s->h)
 		s->h = 80;
 
-	ewl_object_request_size(EWL_OBJECT(w), s->w, s->h);
-	ewl_object_request_size(EWL_OBJECT(s->bar), s->w, s->h);
+	ewl_object_size_request(EWL_OBJECT(w), s->w, s->h);
+	ewl_object_size_request(EWL_OBJECT(s->bar), s->w, s->h);
 
-	ewl_object_set_maximum_h(EWL_OBJECT(s->bar), s->h);
+	ewl_object_maximum_h_set(EWL_OBJECT(s->bar), s->h);
 
 	ewl_widget_show(EWL_WIDGET(EWL_SELECTIONBAR(w)->scroller.top));
 	ewl_widget_show(EWL_WIDGET(EWL_SELECTIONBAR(w)->scroller.bottom));
@@ -173,7 +173,7 @@ ewl_selectionbar_configure_cb(Ewl_Widget * w, void *ev_data, void *user_data)
 		s->w = CURRENT_W(EWL_OBJECT(EWL_FLOATER(s)->follows));
 
 	if (CURRENT_H(EWL_OBJECT(s)) < 5)
-		ewl_object_request_h(EWL_OBJECT(s), 5);
+		ewl_object_h_request(EWL_OBJECT(s), 5);
 
 
 	ewl_widget_configure(EWL_WIDGET(s->bar));
@@ -210,11 +210,11 @@ ewl_selectionbar_parent_configure_cb(Ewl_Widget * w, void *ev_data,
 	printf("bar height: %d\n", CURRENT_H(EWL_OBJECT(s->bar)));
 
 
-	ewl_object_request_size(o, s->w, CURRENT_H(EWL_OBJECT(s->bar)));
+	ewl_object_size_request(o, s->w, CURRENT_H(EWL_OBJECT(s->bar)));
 
 
 	if (CURRENT_H(EWL_OBJECT(s->bar)) < 5)
-		ewl_object_request_size(o, s->w, 5);
+		ewl_object_size_request(o, s->w, 5);
 	ewl_selectionbar_focus_out_cb(EWL_WIDGET(s->bar), NULL, s);
 
 
@@ -254,9 +254,9 @@ ewl_selectionbar_focus_in_cb(Ewl_Widget * w, void *ev_data, void *user_data)
 		if (child != EWL_WIDGET(s->scroller.top) &&
 		    child != EWL_WIDGET(s->scroller.bottom)) {
 
-			ewl_object_request_size(EWL_OBJECT(child), 60, 40);
+			ewl_object_size_request(EWL_OBJECT(child), 60, 40);
 
-			ewl_object_request_position(EWL_OBJECT(child),
+			ewl_object_position_request(EWL_OBJECT(child),
 						    CURRENT_X(o) + cum_width,
 						    CURRENT_Y(o) +
 						    ((CURRENT_H(o) -
@@ -361,8 +361,8 @@ int ewl_selectionbar_open_bar_timer(void *ev_data)
 	so = EWL_OBJECT(s);
 
 	if (CURRENT_H(o) < s->h) {
-		ewl_object_request_size(o, s->w, CURRENT_H(o) + s->h / 10);
-		ewl_object_request_size(so, CURRENT_W(o), CURRENT_H(o));
+		ewl_object_size_request(o, s->w, CURRENT_H(o) + s->h / 10);
+		ewl_object_size_request(so, CURRENT_W(o), CURRENT_H(o));
 
 		retval = TRUE;
 
@@ -397,15 +397,15 @@ int ewl_selectionbar_close_bar_timer(void *ev_data)
 	so = EWL_OBJECT(s);
 
 	if (CURRENT_H(o) > 10) {
-		ewl_object_request_size(o, s->w,
+		ewl_object_size_request(o, s->w,
 					CURRENT_H(o) - (s->h / 10) + 5);
-		ewl_object_request_size(so, s->w,
+		ewl_object_size_request(so, s->w,
 					CURRENT_H(o) - (s->h / 10) + 5);
 
 		retval = TRUE;
 	} else {
-		ewl_object_request_size(o, s->w, 5);
-		ewl_object_request_size(so, s->w, 5);
+		ewl_object_size_request(o, s->w, 5);
+		ewl_object_size_request(so, s->w, 5);
 	}
 
 	DRETURN_INT(retval, DLEVEL_STABLE);
@@ -449,10 +449,10 @@ ewl_selectionbar_children_animator_cb(Ewl_Widget * w, void *ev_data,
 		old_x = s->mouse_x;
 	s->mouse_x = x;
 
-	ewl_object_request_position(EWL_OBJECT(s->scroller.top), x - 15,
+	ewl_object_position_request(EWL_OBJECT(s->scroller.top), x - 15,
 				    CURRENT_Y(o) + 5);
 
-	ewl_object_request_position(EWL_OBJECT(s->scroller.bottom),
+	ewl_object_position_request(EWL_OBJECT(s->scroller.bottom),
 				    x - 15, CURRENT_Y(o) + CURRENT_H(o) - 15);
 
 
@@ -463,14 +463,14 @@ ewl_selectionbar_children_animator_cb(Ewl_Widget * w, void *ev_data,
 
 			if (CURRENT_W(EWL_OBJECT(child)) < 2 ||
 			    CURRENT_H(EWL_OBJECT(child)) < 2) {
-				ewl_object_request_size(EWL_OBJECT(child),
-						ewl_object_preferred_w_sum_get
+				ewl_object_size_request(EWL_OBJECT(child),
+						ewl_object_preferred_w_get
 							(EWL_OBJECT(child)),
-						ewl_object_preferred_h_sum_get
+						ewl_object_preferred_h_get
 							(EWL_OBJECT(child)));
 			}
 
-			ewl_object_request_position(EWL_OBJECT(child),
+			ewl_object_position_request(EWL_OBJECT(child),
 						    CURRENT_X(child) +
 						    (old_x - x),
 						    CURRENT_Y(o) +

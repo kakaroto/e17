@@ -51,7 +51,7 @@ int ewl_table_init(Ewl_Table * t, int cols, int rows, char **col_headers)
 	 */
 	if (!ewl_container_init(EWL_CONTAINER(t), "table"))
 		DRETURN_INT(FALSE, DLEVEL_STABLE);
-	ewl_object_set_fill_policy(EWL_OBJECT(t), EWL_FLAG_FILL_FILL);
+	ewl_object_fill_policy_set(EWL_OBJECT(t), EWL_FLAG_FILL_FILL);
 
 	/*
 	 * Create a new grid
@@ -70,7 +70,7 @@ int ewl_table_init(Ewl_Table * t, int cols, int rows, char **col_headers)
 			button = ewl_button_new(col_headers[i - 1]);
 			ewl_widget_disable(button);
 			ewl_container_append_child(EWL_CONTAINER(cell), button);
-			ewl_object_set_fill_policy(EWL_OBJECT(cell),
+			ewl_object_fill_policy_set(EWL_OBJECT(cell),
 						EWL_FLAG_FILL_VSHRINK | EWL_FLAG_FILL_HFILL);
 			ewl_grid_add(t->grid, EWL_WIDGET(cell), i, i, 1, 1);
 			ewl_widget_show(EWL_WIDGET(button));
@@ -455,7 +455,7 @@ void ewl_table_configure_cb(Ewl_Widget * w, void *ev_data, void *user_data)
 	o = EWL_OBJECT(w);
 
 
-	ewl_object_request_geometry(EWL_OBJECT(table->grid),
+	ewl_object_geometry_request(EWL_OBJECT(table->grid),
 				    CURRENT_X(o), CURRENT_Y(o),
 				    CURRENT_W(o) - INSET_LEFT(o) +
 				    INSET_RIGHT(o),

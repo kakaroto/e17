@@ -29,7 +29,7 @@ void __create_tooltip_test_window(Ewl_Widget * w, void *ev_data, void *user_data
 	ewl_window_set_title(EWL_WINDOW(tooltip_win), "Tooltip Test");
 	ewl_window_set_name(EWL_WINDOW(tooltip_win), "EWL Test Application");
 	ewl_window_set_class(EWL_WINDOW(tooltip_win), "EFL Test Application");
-	ewl_object_request_size(EWL_OBJECT(tooltip_win), 200, 100);
+	ewl_object_size_request(EWL_OBJECT(tooltip_win), 200, 100);
 	ewl_callback_append(tooltip_win, EWL_CALLBACK_DELETE_WINDOW,
 			__destroy_tooltip_test_window, NULL);
 	ewl_widget_show(tooltip_win);
@@ -41,7 +41,7 @@ void __create_tooltip_test_window(Ewl_Widget * w, void *ev_data, void *user_data
 
 	button = ewl_button_new ("Hoover on this button");
 	ewl_container_append_child(EWL_CONTAINER (tooltip_vbox), button);
-	ewl_object_set_fill_policy(EWL_OBJECT(button), EWL_FLAG_FILL_SHRINK);
+	ewl_object_fill_policy_set(EWL_OBJECT(button), EWL_FLAG_FILL_SHRINK);
 	ewl_widget_show (button);
 
 	tooltip = ewl_tooltip_new (button);

@@ -141,7 +141,7 @@ void __create_progressbar_test_window(Ewl_Widget * w, void *ev_data, void *user_
 	ewl_window_set_title(EWL_WINDOW(progressbar_win), "Progressbar Test");
 	ewl_window_set_name(EWL_WINDOW(progressbar_win), "EWL Test Application");
 	ewl_window_set_class(EWL_WINDOW(progressbar_win), "EFL Test Application");
-	ewl_object_request_size(EWL_OBJECT(progressbar_win), 300, 20);
+	ewl_object_size_request(EWL_OBJECT(progressbar_win), 300, 20);
 	ewl_callback_append(progressbar_win, EWL_CALLBACK_DELETE_WINDOW,
 			__destroy_progressbar_test_window, NULL);
 	ewl_widget_show(progressbar_win);
@@ -199,14 +199,14 @@ void __create_progressbar_test_window(Ewl_Widget * w, void *ev_data, void *user_
 	ewl_callback_prepend(button, EWL_CALLBACK_CLICKED, 
 			__rerun_progressbars, NULL);
 		
-	ewl_object_set_fill_policy(EWL_OBJECT(button), EWL_FLAG_FILL_SHRINK);
+	ewl_object_fill_policy_set(EWL_OBJECT(button), EWL_FLAG_FILL_SHRINK);
 	ewl_widget_show (button);
 
 	button = ewl_button_new ("Set a random range from 0-500");
 	ewl_container_append_child(EWL_CONTAINER(progressbar_box), button);
 	ewl_callback_prepend(button, EWL_CALLBACK_CLICKED,
 			__set_new_range, NULL);
-	ewl_object_set_fill_policy(EWL_OBJECT(button), EWL_FLAG_FILL_SHRINK);
+	ewl_object_fill_policy_set(EWL_OBJECT(button), EWL_FLAG_FILL_SHRINK);
 	ewl_widget_show (button);
 
 	return;

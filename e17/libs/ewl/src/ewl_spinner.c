@@ -44,7 +44,7 @@ int ewl_spinner_init(Ewl_Spinner * s)
 	ewl_container_resize_notify(EWL_CONTAINER(w),
 				    ewl_spinner_child_resize_cb);
 
-	ewl_object_set_fill_policy(EWL_OBJECT(w), EWL_FLAG_FILL_HFILL);
+	ewl_object_fill_policy_set(EWL_OBJECT(w), EWL_FLAG_FILL_HFILL);
 
 	ewl_callback_append(w, EWL_CALLBACK_REALIZE, ewl_spinner_realize_cb,
 			    NULL);
@@ -60,14 +60,14 @@ int ewl_spinner_init(Ewl_Spinner * s)
 	s->button_increase = ewl_button_new(NULL);
 	ewl_container_append_child(EWL_CONTAINER(s), s->button_increase);
 	ewl_widget_set_appearance(s->button_increase, "button_increment");
-	ewl_object_set_fill_policy(EWL_OBJECT(s->button_increase),
+	ewl_object_fill_policy_set(EWL_OBJECT(s->button_increase),
 			EWL_FLAG_FILL_NONE);
 	ewl_widget_show(s->button_increase);
 
 	s->button_decrease = ewl_button_new(NULL);
 	ewl_container_append_child(EWL_CONTAINER(s), s->button_decrease);
 	ewl_widget_set_appearance(s->button_decrease, "button_decrement");
-	ewl_object_set_fill_policy(EWL_OBJECT(s->button_decrease),
+	ewl_object_fill_policy_set(EWL_OBJECT(s->button_decrease),
 			EWL_FLAG_FILL_NONE);
 	ewl_widget_show(s->button_decrease);
 
@@ -244,24 +244,24 @@ ewl_spinner_child_show_cb(Ewl_Container *c, Ewl_Widget *w)
 	DENTER_FUNCTION(DLEVEL_STABLE);
 
 	if (w == s->entry) {
-		ewl_object_set_preferred_w(EWL_OBJECT(c), PREFERRED_W(c) +
-				ewl_object_preferred_w_sum_get(EWL_OBJECT(w)));
+		ewl_object_preferred_inner_w_set(EWL_OBJECT(c), PREFERRED_W(c) +
+				ewl_object_preferred_w_get(EWL_OBJECT(w)));
 	}
 	else if (s->button_increase && s->button_decrease) {
-		ewl_object_set_preferred_w(EWL_OBJECT(c), PREFERRED_W(c) +
-				MAX(ewl_object_preferred_w_sum_get(EWL_OBJECT(
+		ewl_object_preferred_inner_w_set(EWL_OBJECT(c), PREFERRED_W(c) +
+				MAX(ewl_object_preferred_w_get(EWL_OBJECT(
 							s->button_increase)),
-					ewl_object_preferred_h_sum_get(EWL_OBJECT(
+					ewl_object_preferred_h_get(EWL_OBJECT(
 							s->button_decrease))));
 	}
 
 	if (s->entry && s->button_increase && s->button_decrease) {
 		int size;
 
-		size = ewl_object_preferred_w_sum_get(EWL_OBJECT(s->button_increase))
-			+ ewl_object_preferred_h_sum_get(EWL_OBJECT(s->button_decrease));
-		ewl_object_set_minimum_h(EWL_OBJECT(c),
-			MAX(ewl_object_preferred_h_sum_get(EWL_OBJECT(s->entry)),
+		size = ewl_object_preferred_w_get(EWL_OBJECT(s->button_increase))
+			+ ewl_object_preferred_h_get(EWL_OBJECT(s->button_decrease));
+		ewl_object_minimum_h_set(EWL_OBJECT(c),
+			MAX(ewl_object_preferred_h_get(EWL_OBJECT(s->entry)),
 			size));
 	}
 
@@ -278,23 +278,23 @@ ewl_spinner_child_resize_cb(Ewl_Container *c, Ewl_Widget *w, int size,
 
 	if (o == EWL_ORIENTATION_HORIZONTAL) {
 		if (w == s->entry)
-			ewl_object_set_preferred_w(EWL_OBJECT(c),
+			ewl_object_preferred_inner_w_set(EWL_OBJECT(c),
 					PREFERRED_W(c) + size);
 		else if (s->button_increase && s->button_decrease) {
-			ewl_object_set_preferred_w(EWL_OBJECT(c),
-				MAX(ewl_object_preferred_w_sum_get(EWL_OBJECT(
+			ewl_object_preferred_inner_w_set(EWL_OBJECT(c),
+				MAX(ewl_object_preferred_w_get(EWL_OBJECT(
 							s->button_increase)),
-					ewl_object_preferred_w_sum_get(EWL_OBJECT(
+					ewl_object_preferred_w_get(EWL_OBJECT(
 							s->button_decrease))));
 		}
 	}
 	else if (s->entry && s->button_increase && s->button_decrease) {
-		size = ewl_object_preferred_h_sum_get(EWL_OBJECT(
+		size = ewl_object_preferred_h_get(EWL_OBJECT(
 					s->button_increase)) +
-			ewl_object_preferred_h_sum_get(EWL_OBJECT(
+			ewl_object_preferred_h_get(EWL_OBJECT(
 						s->button_decrease));
-		ewl_object_set_preferred_h(EWL_OBJECT(c),
-			MAX(ewl_object_preferred_h_sum_get(EWL_OBJECT(s->entry)),
+		ewl_object_preferred_inner_h_set(EWL_OBJECT(c),
+			MAX(ewl_object_preferred_h_get(EWL_OBJECT(s->entry)),
 			size));
 	}
 
@@ -331,50 +331,50 @@ ewl_spinner_configure_cb(Ewl_Widget * w, void *ev_data, void *user_data)
 	 * Place the entry box, request it's height so we can use it later for
 	 * determining available space for the buttons.
 	 */
-	ewl_object_request_position(EWL_OBJECT(s->entry), CURRENT_X(w),
+	ewl_object_position_request(EWL_OBJECT(s->entry), CURRENT_X(w),
 			CURRENT_Y(w));
-	ewl_object_request_h(EWL_OBJECT(s->entry), CURRENT_H(w));
-	size = ewl_object_get_current_h(EWL_OBJECT(s->entry));
+	ewl_object_h_request(EWL_OBJECT(s->entry), CURRENT_H(w));
+	size = ewl_object_current_h_get(EWL_OBJECT(s->entry));
 
 	/*
 	 * Vertically position the increase button.
 	 */
-	ewl_object_request_y(EWL_OBJECT(s->button_increase), CURRENT_Y(w));
-	ewl_object_request_h(EWL_OBJECT(s->button_increase), size / 2);
+	ewl_object_y_request(EWL_OBJECT(s->button_increase), CURRENT_Y(w));
+	ewl_object_h_request(EWL_OBJECT(s->button_increase), size / 2);
 
 	/*
 	 * Vertically position the decrease button.
 	 */
-	ewl_object_request_y(EWL_OBJECT(s->button_decrease), CURRENT_Y(w) +
-		ewl_object_get_current_h(EWL_OBJECT(s->button_increase)) +
+	ewl_object_y_request(EWL_OBJECT(s->button_decrease), CURRENT_Y(w) +
+		ewl_object_current_h_get(EWL_OBJECT(s->button_increase)) +
 		(size % 2));
-	ewl_object_request_h(EWL_OBJECT(s->button_decrease), size / 2);
+	ewl_object_h_request(EWL_OBJECT(s->button_decrease), size / 2);
 
 	/*
 	 * The buttons don't fill. So rely on the theme to set a maximum size.
 	 */
-	ewl_object_request_w(EWL_OBJECT(s->button_increase), CURRENT_W(w));
-	ewl_object_request_w(EWL_OBJECT(s->button_decrease), CURRENT_W(w));
+	ewl_object_w_request(EWL_OBJECT(s->button_increase), CURRENT_W(w));
+	ewl_object_w_request(EWL_OBJECT(s->button_decrease), CURRENT_W(w));
 
 	/*
 	 * Use the max of the two resulting button sizes to determine the area
 	 * available for layout of each component.
 	 */
-	size = MAX(ewl_object_get_current_w(EWL_OBJECT(s->button_increase)),
-		ewl_object_get_current_w(EWL_OBJECT(s->button_decrease)));
+	size = MAX(ewl_object_current_w_get(EWL_OBJECT(s->button_increase)),
+		ewl_object_current_w_get(EWL_OBJECT(s->button_decrease)));
 
-	ewl_object_request_w(EWL_OBJECT(s->entry), CURRENT_W(w) - size);
+	ewl_object_w_request(EWL_OBJECT(s->entry), CURRENT_W(w) - size);
 
-	ewl_object_request_x(EWL_OBJECT(s->button_increase),
+	ewl_object_x_request(EWL_OBJECT(s->button_increase),
 			CURRENT_X(w) +
-			ewl_object_get_current_w(EWL_OBJECT(s->entry)) +
-			(size - ewl_object_get_current_w(EWL_OBJECT(s->button_increase)))
+			ewl_object_current_w_get(EWL_OBJECT(s->entry)) +
+			(size - ewl_object_current_w_get(EWL_OBJECT(s->button_increase)))
 			/ 2);
 
-	ewl_object_request_x(EWL_OBJECT(s->button_decrease),
+	ewl_object_x_request(EWL_OBJECT(s->button_decrease),
 			CURRENT_X(w) +
-			ewl_object_get_current_w(EWL_OBJECT(s->entry)) +
-			(size - ewl_object_get_current_w(EWL_OBJECT(s->button_decrease)))
+			ewl_object_current_w_get(EWL_OBJECT(s->entry)) +
+			(size - ewl_object_current_w_get(EWL_OBJECT(s->button_decrease)))
 			/ 2);
 
 	DLEAVE_FUNCTION(DLEVEL_STABLE);

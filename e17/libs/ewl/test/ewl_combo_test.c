@@ -65,7 +65,7 @@ __create_combo_test_window(Ewl_Widget * w, void *ev_data, void *user_data)
 	 * Create the main box for holding the widgets
 	 */
 	combo_box = ewl_vbox_new();
-	ewl_object_set_fill_policy(EWL_OBJECT(combo_box), EWL_FLAG_FILL_FILL);
+	ewl_object_fill_policy_set(EWL_OBJECT(combo_box), EWL_FLAG_FILL_FILL);
 	ewl_container_append_child(EWL_CONTAINER(combo_win), combo_box);
 	ewl_widget_show(combo_box);
 

@@ -391,7 +391,7 @@ void ewl_configure_request(Ewl_Widget * w)
 	DENTER_FUNCTION(DLEVEL_TESTING);
 	DCHECK_PARAM_PTR("w", w);
 
-	if (ewl_object_has_queued(EWL_OBJECT(w), EWL_FLAG_QUEUED_DSCHEDULED))
+	if (ewl_object_queued_has(EWL_OBJECT(w), EWL_FLAG_QUEUED_DSCHEDULED))
 		DRETURN(DLEVEL_STABLE);
 
 	emb = ewl_embed_find_by_widget(w);
@@ -408,7 +408,7 @@ void ewl_configure_request(Ewl_Widget * w)
 		int width, height;
 		Ewl_Widget *p = w->parent;
 
-		ewl_object_get_current_geometry(EWL_OBJECT(w), &x, &y, &width,
+		ewl_object_current_geometry_get(EWL_OBJECT(w), &x, &y, &width,
 				&height);
 
 		if ((x + width) < CURRENT_X(p))
@@ -436,7 +436,7 @@ void ewl_configure_request(Ewl_Widget * w)
 			obscured = 1;
 
 		if (obscured) {
-			ewl_object_add_visible(EWL_OBJECT(w),
+			ewl_object_visible_add(EWL_OBJECT(w),
 					EWL_FLAG_VISIBLE_OBSCURED);
 			if (w->fx_clip_box)
 				evas_object_hide(w->fx_clip_box);
@@ -448,7 +448,7 @@ void ewl_configure_request(Ewl_Widget * w)
 			*/
 		}
 		else {
-			ewl_object_remove_visible(EWL_OBJECT(w),
+			ewl_object_visible_remove(EWL_OBJECT(w),
 					EWL_FLAG_VISIBLE_OBSCURED);
 			if (w->fx_clip_box)
 				evas_object_show(w->fx_clip_box);
@@ -465,13 +465,13 @@ void ewl_configure_request(Ewl_Widget * w)
 	 * Check this first, and remove an obscured widget from the configure
 	 * list, if it's already scheduled.
 	 */
-	if (ewl_object_has_visible(EWL_OBJECT(w), EWL_FLAG_VISIBLE_OBSCURED)) {
-		if (ewl_object_has_queued(EWL_OBJECT(w),
+	if (ewl_object_visible_has(EWL_OBJECT(w), EWL_FLAG_VISIBLE_OBSCURED)) {
+		if (ewl_object_queued_has(EWL_OBJECT(w),
 					EWL_FLAG_QUEUED_CSCHEDULED)) {
 			ecore_list_goto_first(configure_list);
 			while ((search = ecore_list_current(configure_list))) {
 				if (search == w) {
-					ewl_object_remove_queued(EWL_OBJECT(w),
+					ewl_object_queued_remove(EWL_OBJECT(w),
 						EWL_FLAG_QUEUED_CSCHEDULED);
 					ecore_list_remove(configure_list);
 					break;
@@ -486,7 +486,7 @@ void ewl_configure_request(Ewl_Widget * w)
 	/*
 	 * Easy case, we know this is on the list already.
 	 */
-	if (ewl_object_has_queued(EWL_OBJECT(w), EWL_FLAG_QUEUED_CSCHEDULED))
+	if (ewl_object_queued_has(EWL_OBJECT(w), EWL_FLAG_QUEUED_CSCHEDULED))
 		DRETURN(DLEVEL_TESTING);
 
 	/*
@@ -494,7 +494,7 @@ void ewl_configure_request(Ewl_Widget * w)
 	 * configuration. This is the easiest way to test if we can avoid
 	 * adding this widget to the configuration list.
 	 */
-	if (ewl_object_has_queued(EWL_OBJECT(emb),
+	if (ewl_object_queued_has(EWL_OBJECT(emb),
 			EWL_FLAG_QUEUED_CSCHEDULED))
 		DRETURN(DLEVEL_TESTING);
 
@@ -503,7 +503,7 @@ void ewl_configure_request(Ewl_Widget * w)
 	 */
 	search = w;
 	while ((search = search->parent)) {
-		if (ewl_object_has_queued(EWL_OBJECT(search),
+		if (ewl_object_queued_has(EWL_OBJECT(search),
 					EWL_FLAG_QUEUED_CSCHEDULED))
 			DRETURN(DLEVEL_TESTING);
 	}
@@ -512,7 +512,7 @@ void ewl_configure_request(Ewl_Widget * w)
 	 * No parent of this widget is queued so add it to the queue. All
 	 * children widgets should have been removed by this point.
 	 */
-	ewl_object_add_queued(EWL_OBJECT(w), EWL_FLAG_QUEUED_CSCHEDULED);
+	ewl_object_queued_add(EWL_OBJECT(w), EWL_FLAG_QUEUED_CSCHEDULED);
 	ecore_list_append(configure_list, w);
 
 	/*
@@ -528,7 +528,7 @@ void ewl_configure_request(Ewl_Widget * w)
 		parent = search;
 		while ((parent = parent->parent)) {
 			if (parent == w) {
-				ewl_object_remove_queued(EWL_OBJECT(search),
+				ewl_object_queued_remove(EWL_OBJECT(search),
 						EWL_FLAG_QUEUED_CSCHEDULED);
 				ecore_list_remove(configure_list);
 				break;
@@ -557,18 +557,18 @@ void ewl_configure_queue()
 	 * Configure any widgets that need it.
 	 */
 	while ((w = ecore_list_remove_first(configure_list))) {
-		if (ewl_object_get_flags(EWL_OBJECT(w),
+		if (ewl_object_flags_get(EWL_OBJECT(w),
 					 EWL_FLAG_PROPERTY_TOPLEVEL)) {
-			ewl_object_request_size(EWL_OBJECT(w),
-				ewl_object_get_current_w(EWL_OBJECT(w)),
-				ewl_object_get_current_h(EWL_OBJECT(w)));
+			ewl_object_size_request(EWL_OBJECT(w),
+				ewl_object_current_w_get(EWL_OBJECT(w)),
+				ewl_object_current_h_get(EWL_OBJECT(w)));
 		}
 
 		/*
 		 * Remove the flag that the widget is scheduled for
 		 * configuration.
 		 */
-		ewl_object_remove_queued(EWL_OBJECT(w),
+		ewl_object_queued_remove(EWL_OBJECT(w),
 				EWL_FLAG_QUEUED_CSCHEDULED);
 
 		ewl_callback_call(w, EWL_CALLBACK_CONFIGURE);
@@ -605,15 +605,15 @@ void ewl_realize_request(Ewl_Widget *w)
 {
 	DENTER_FUNCTION(DLEVEL_STABLE);
 
-	if (ewl_object_has_queued(EWL_OBJECT(w), EWL_FLAG_QUEUED_RSCHEDULED))
+	if (ewl_object_queued_has(EWL_OBJECT(w), EWL_FLAG_QUEUED_RSCHEDULED))
 		DRETURN(DLEVEL_STABLE);
 
-	if (!ewl_object_get_flags(EWL_OBJECT(w), EWL_FLAG_PROPERTY_TOPLEVEL)) {
+	if (!ewl_object_flags_get(EWL_OBJECT(w), EWL_FLAG_PROPERTY_TOPLEVEL)) {
 		if (!w->parent || !REALIZED(w->parent))
 			DRETURN(DLEVEL_STABLE);
 	}
 
-	ewl_object_add_queued(EWL_OBJECT(w), EWL_FLAG_QUEUED_RSCHEDULED);
+	ewl_object_queued_add(EWL_OBJECT(w), EWL_FLAG_QUEUED_RSCHEDULED);
 	ecore_list_append(realize_list, w);
 
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
@@ -651,7 +651,7 @@ void ewl_realize_queue()
 		 */
 		if (VISIBLE(w))
 			ewl_widget_show(w);
-		ewl_object_remove_queued(EWL_OBJECT(w),
+		ewl_object_queued_remove(EWL_OBJECT(w),
 					 EWL_FLAG_QUEUED_RSCHEDULED);
 	}
 
@@ -706,13 +706,13 @@ void ewl_destroy_request(Ewl_Widget *w)
 {
 	DENTER_FUNCTION(DLEVEL_STABLE);
 
-	if (ewl_object_has_queued(EWL_OBJECT(w), EWL_FLAG_QUEUED_DSCHEDULED))
+	if (ewl_object_queued_has(EWL_OBJECT(w), EWL_FLAG_QUEUED_DSCHEDULED))
 		DRETURN(DLEVEL_STABLE);
 
-	if (ewl_object_has_queued(EWL_OBJECT(w), EWL_FLAG_QUEUED_CSCHEDULED))
+	if (ewl_object_queued_has(EWL_OBJECT(w), EWL_FLAG_QUEUED_CSCHEDULED))
 		ewl_configure_cancel_request(w);
 
-	ewl_object_add_queued(EWL_OBJECT(w), EWL_FLAG_QUEUED_DSCHEDULED);
+	ewl_object_queued_add(EWL_OBJECT(w), EWL_FLAG_QUEUED_DSCHEDULED);
 
 	/*
 	 * Must prepend to ensure children are freed before parents.
@@ -722,7 +722,7 @@ void ewl_destroy_request(Ewl_Widget *w)
 	/*
 	 * Schedule child widgets for destruction.
 	 */
-	if (ewl_object_get_recursive(EWL_OBJECT(w)))
+	if (ewl_object_recursive_get(EWL_OBJECT(w)))
 		ewl_container_destroy(EWL_CONTAINER(w));
 
 	DLEAVE_FUNCTION(DLEVEL_STABLE);

@@ -300,7 +300,7 @@ int ewl_window_init(Ewl_Window * w)
 	 */
 	ewl_embed_init(EWL_EMBED(w));
 	ewl_widget_set_appearance(EWL_WIDGET(w), "window");
-	ewl_object_set_fill_policy(EWL_OBJECT(w), EWL_FLAG_FILL_FILL);
+	ewl_object_fill_policy_set(EWL_OBJECT(w), EWL_FLAG_FILL_FILL);
 	w->title = strdup("EWL");
 	w->name = strdup("EWL");
 	w->classname  = strdup("EWL");
@@ -383,8 +383,8 @@ void ewl_window_realize_cb(Ewl_Widget * w, void *ev_data, void *user_data)
 						  EWL_ENGINE_GL_X11))) {
 		window->window = (void *)ecore_x_window_new(0, window->x,
 						window->y,
-						ewl_object_get_current_w(o),
-						ewl_object_get_current_h(o));
+						ewl_object_current_w_get(o),
+						ewl_object_current_h_get(o));
 
 		ecore_x_window_prop_name_class_set((Ecore_X_Window)window->window, window->name,
 					   window->classname);
@@ -434,7 +434,7 @@ void ewl_window_realize_cb(Ewl_Widget * w, void *ev_data, void *user_data)
 		fbinfo->info.refresh = 0;
 		fbinfo->info.rotation = 0;
 		evas_engine_info_set(evas, (Evas_Engine_Info *)fbinfo);
-		ewl_object_request_geometry(EWL_OBJECT(w), 0, 0, 240, 320);
+		ewl_object_geometry_request(EWL_OBJECT(w), 0, 0, 240, 320);
 	}
 	else
 #endif
@@ -465,12 +465,12 @@ void ewl_window_realize_cb(Ewl_Widget * w, void *ev_data, void *user_data)
 
 	evas_engine_info_set(evas, info);
 
-	evas_output_size_set(evas, ewl_object_get_current_w(o),
-			ewl_object_get_current_h(o));
-	evas_output_viewport_set(evas, ewl_object_get_current_x(o),
-			ewl_object_get_current_y(o),
-			ewl_object_get_current_w(o),
-			ewl_object_get_current_h(o));
+	evas_output_size_set(evas, ewl_object_current_w_get(o),
+			ewl_object_current_h_get(o));
+	evas_output_viewport_set(evas, ewl_object_current_x_get(o),
+			ewl_object_current_y_get(o),
+			ewl_object_current_w_get(o),
+			ewl_object_current_h_get(o));
 
 	ewl_embed_set_evas(embed, evas, window->window);
 	window->render = strdup(render);
@@ -590,19 +590,19 @@ void ewl_window_configure_cb(Ewl_Widget * w, void *ev_data, void *user_data)
 #ifdef HAVE_EVAS_ENGINE_SOFTWARE_X11_H
 	if (strstr(win->render, "x11")) {
 		ecore_x_window_prop_min_size_set((Ecore_X_Window)win->window,
-				ewl_object_get_minimum_w(EWL_OBJECT(w)),
-				ewl_object_get_minimum_h(EWL_OBJECT(w)));
+				ewl_object_minimum_w_get(EWL_OBJECT(w)),
+				ewl_object_minimum_h_get(EWL_OBJECT(w)));
 		ecore_x_window_prop_max_size_set((Ecore_X_Window)win->window,
-				ewl_object_get_maximum_w(EWL_OBJECT(w)),
-				ewl_object_get_maximum_h(EWL_OBJECT(w)));
+				ewl_object_maximum_w_get(EWL_OBJECT(w)),
+				ewl_object_maximum_h_get(EWL_OBJECT(w)));
 	}
 #endif
 
 	/*
 	 * Find out how much space the widget accepted.
 	 */
-	width = ewl_object_get_current_w(EWL_OBJECT(w));
-	height = ewl_object_get_current_h(EWL_OBJECT(w));
+	width = ewl_object_current_w_get(EWL_OBJECT(w));
+	height = ewl_object_current_h_get(EWL_OBJECT(w));
 
 	/*
 	 * Now give the windows the appropriate size and adjust the evas as
@@ -629,8 +629,8 @@ void ewl_window_configure_cb(Ewl_Widget * w, void *ev_data, void *user_data)
 	}
 	evas_output_size_set(EWL_EMBED(win)->evas, width, height);
 	evas_output_viewport_set(EWL_EMBED(win)->evas,
-				 ewl_object_get_current_x(EWL_OBJECT(w)),
-				 ewl_object_get_current_y(EWL_OBJECT(w)),
+				 ewl_object_current_x_get(EWL_OBJECT(w)),
+				 ewl_object_current_y_get(EWL_OBJECT(w)),
 				 width, height);
 
 	/*

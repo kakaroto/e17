@@ -92,161 +92,163 @@ struct Ewl_Object
 };
 
 int             ewl_object_init(Ewl_Object * o);
-void            ewl_object_get_current_geometry(Ewl_Object * o, int *x, int *y,
+void            ewl_object_current_geometry_get(Ewl_Object * o, int *x, int *y,
 						int *w, int *h);
 
-void            ewl_object_get_current_size(Ewl_Object * o, int *w, int *h);
-int             ewl_object_get_current_x(Ewl_Object * o);
-int             ewl_object_get_current_y(Ewl_Object * o);
-int             ewl_object_get_current_w(Ewl_Object * o);
-int             ewl_object_get_current_h(Ewl_Object * o);
+void            ewl_object_current_size_get(Ewl_Object * o, int *w, int *h);
+int             ewl_object_current_x_get(Ewl_Object * o);
+int             ewl_object_current_y_get(Ewl_Object * o);
+int             ewl_object_current_w_get(Ewl_Object * o);
+int             ewl_object_current_h_get(Ewl_Object * o);
 
-void            ewl_object_set_preferred_size(Ewl_Object * o, int w, int h);
-void            ewl_object_preferred_size_sum_get(Ewl_Object * o, int *w, int *h);
-void            ewl_object_get_preferred_size(Ewl_Object * o, int *w, int *h);
-void            ewl_object_set_preferred_w(Ewl_Object * o, int w);
-int             ewl_object_preferred_w_sum_get(Ewl_Object * o);
-int             ewl_object_get_preferred_w(Ewl_Object * o);
-void            ewl_object_set_preferred_h(Ewl_Object * o, int h);
-int             ewl_object_preferred_h_sum_get(Ewl_Object * o);
-int             ewl_object_get_preferred_h(Ewl_Object * o);
+void            ewl_object_preferred_inner_size_set(Ewl_Object * o, int w, int h);
+void            ewl_object_preferred_inner_size_get(Ewl_Object * o, int *w, int *h);
+void            ewl_object_preferred_size_get(Ewl_Object * o, int *w, int *h);
 
-void            ewl_object_request_geometry(Ewl_Object * o, int x, int y,
+void            ewl_object_preferred_inner_w_set(Ewl_Object * o, int w);
+int             ewl_object_preferred_w_get(Ewl_Object * o);
+int             ewl_object_preferred_inner_w_get(Ewl_Object * o);
+
+void            ewl_object_preferred_inner_h_set(Ewl_Object * o, int h);
+int             ewl_object_preferred_inner_h_get(Ewl_Object * o);
+int             ewl_object_preferred_h_get(Ewl_Object * o);
+
+void            ewl_object_geometry_request(Ewl_Object * o, int x, int y,
 					    int w, int h);
-void            ewl_object_request_size(Ewl_Object * o, int w, int h);
-void            ewl_object_request_position(Ewl_Object * o, int x, int y);
-inline void     ewl_object_request_x(Ewl_Object * o, int x);
-inline void     ewl_object_request_y(Ewl_Object * o, int y);
-void            ewl_object_request_w(Ewl_Object * o, int w);
-void            ewl_object_request_h(Ewl_Object * o, int h);
+void            ewl_object_size_request(Ewl_Object * o, int w, int h);
+void            ewl_object_position_request(Ewl_Object * o, int x, int y);
+inline void     ewl_object_x_request(Ewl_Object * o, int x);
+inline void     ewl_object_y_request(Ewl_Object * o, int y);
+void            ewl_object_w_request(Ewl_Object * o, int w);
+void            ewl_object_h_request(Ewl_Object * o, int h);
 
-void            ewl_object_set_minimum_size(Ewl_Object * o, int w, int h);
-inline void     ewl_object_set_minimum_w(Ewl_Object * o, int w);
-inline void     ewl_object_set_minimum_h(Ewl_Object * o, int h);
+void            ewl_object_minimum_size_set(Ewl_Object * o, int w, int h);
+inline void     ewl_object_minimum_w_set(Ewl_Object * o, int w);
+inline void     ewl_object_minimum_h_set(Ewl_Object * o, int h);
 
-void            ewl_object_get_minimum_size(Ewl_Object * o, int *w, int *h);
-inline int      ewl_object_get_minimum_w(Ewl_Object * o);
-inline int      ewl_object_get_minimum_h(Ewl_Object * o);
+void            ewl_object_minimum_size_get(Ewl_Object * o, int *w, int *h);
+inline int      ewl_object_minimum_w_get(Ewl_Object * o);
+inline int      ewl_object_minimum_h_get(Ewl_Object * o);
 
-void            ewl_object_set_maximum_size(Ewl_Object * o, int w, int h);
-inline void     ewl_object_set_maximum_w(Ewl_Object * o, int w);
-inline void     ewl_object_set_maximum_h(Ewl_Object * o, int h);
+void            ewl_object_maximum_size_set(Ewl_Object * o, int w, int h);
+inline void     ewl_object_maximum_w_set(Ewl_Object * o, int w);
+inline void     ewl_object_maximum_h_set(Ewl_Object * o, int h);
 
-void            ewl_object_get_maximum_size(Ewl_Object * o, int *w, int *h);
-inline int	ewl_object_get_maximum_w(Ewl_Object * o);
-inline int	ewl_object_get_maximum_h(Ewl_Object * o);
+void            ewl_object_maximum_size_get(Ewl_Object * o, int *w, int *h);
+inline int	ewl_object_maximum_w_get(Ewl_Object * o);
+inline int	ewl_object_maximum_h_get(Ewl_Object * o);
 
-unsigned int		ewl_object_get_alignment(Ewl_Object * o);
-inline void     ewl_object_set_alignment(Ewl_Object * o, unsigned int align);
+unsigned int    ewl_object_alignment_get(Ewl_Object * o);
+inline void     ewl_object_alignment_set(Ewl_Object * o, unsigned int align);
 void            ewl_object_place(Ewl_Object *o, int x, int y, int w, int h);
 
-unsigned int		ewl_object_get_fill_policy(Ewl_Object * o);
-inline void     ewl_object_set_fill_policy(Ewl_Object * o, unsigned int fill);
+unsigned int    ewl_object_fill_policy_get(Ewl_Object * o);
+inline void     ewl_object_fill_policy_set(Ewl_Object * o, unsigned int fill);
 
 /*
  * Padding setting and retrieval functions.
  */
-void            ewl_object_set_padding(Ewl_Object * o, int l, int r, int t,
+void            ewl_object_padding_set(Ewl_Object * o, int l, int r, int t,
 				       int b);
-void            ewl_object_get_padding(Ewl_Object * o, int *l, int *r, int *t,
+void            ewl_object_padding_get(Ewl_Object * o, int *l, int *r, int *t,
 				       int *b);
-int             ewl_object_top_padding(Ewl_Object * o);
-int             ewl_object_bottom_padding(Ewl_Object * o);
-int             ewl_object_left_padding(Ewl_Object * o);
-int             ewl_object_right_padding(Ewl_Object * o);
+int             ewl_object_padding_top_get(Ewl_Object * o);
+int             ewl_object_padding_bottom_get(Ewl_Object * o);
+int             ewl_object_padding_left_get(Ewl_Object * o);
+int             ewl_object_padding_right_get(Ewl_Object * o);
 
 /*
  * Inset setting and retrieval functions.
  */
-void            ewl_object_set_insets(Ewl_Object * o, int l, int r, int t,
+void            ewl_object_insets_set(Ewl_Object * o, int l, int r, int t,
 				      int b);
-void            ewl_object_get_insets(Ewl_Object * o, int *l, int *r, int *t,
+void            ewl_object_insets_get(Ewl_Object * o, int *l, int *r, int *t,
 				      int *b);
-int             ewl_object_top_insets(Ewl_Object * o);
-int             ewl_object_bottom_insets(Ewl_Object * o);
-int             ewl_object_left_insets(Ewl_Object * o);
-int             ewl_object_right_insets(Ewl_Object * o);
+int             ewl_object_insets_top_get(Ewl_Object * o);
+int             ewl_object_insets_bottom_get(Ewl_Object * o);
+int             ewl_object_insets_left_get(Ewl_Object * o);
+int             ewl_object_insets_right_get(Ewl_Object * o);
 
-void            ewl_object_add_flags(Ewl_Object *o, unsigned int flags,
+void            ewl_object_flags_add(Ewl_Object *o, unsigned int flags,
 				     unsigned int mask);
-void            ewl_object_remove_flags(Ewl_Object *o, unsigned int flags,
+void            ewl_object_flags_remove(Ewl_Object *o, unsigned int flags,
 					unsigned int mask);
-unsigned int    ewl_object_has_flags(Ewl_Object *o, unsigned int flags,
+unsigned int    ewl_object_flags_has(Ewl_Object *o, unsigned int flags,
 				     unsigned int mask);
-unsigned int    ewl_object_get_flags(Ewl_Object *o, unsigned int mask);
+unsigned int    ewl_object_flags_get(Ewl_Object *o, unsigned int mask);
 
 /**
- * @def ewl_object_set_recursive(o)
+ * @def ewl_object_recursive_set(o)
  * @param o: the object to change the recursive flag
  * @param val: a boolean indicating the value of the recursive flag
  * @return Returns no value.
  * @brief Changes the recursive flag value to match @a val.
  */
-#define ewl_object_set_recursive(o, val) \
-	(val ? ewl_object_add_flags(o, EWL_FLAG_PROPERTY_RECURSIVE, \
+#define ewl_object_recursive_set(o, val) \
+	(val ? ewl_object_flags_add(o, EWL_FLAG_PROPERTY_RECURSIVE, \
 				    EWL_FLAGS_PROPERTY_MASK) : \
-	 ewl_object_remove_flags(o, EWL_FLAG_PROPERTY_RECURSIVE, \
+	 ewl_object_flags_remove(o, EWL_FLAG_PROPERTY_RECURSIVE, \
 				    EWL_FLAGS_PROPERTY_MASK));
 
 /**
- * @def ewl_object_get_recursive(o)
+ * @def ewl_object_recursive_get(o)
  * @param o: the parameter to retrieve the current value of recursive flag
  * @return Returns the current setting of the recursive flag for @a o.
  * @brief Retrieves the current setting of the recursive flag for @a o.
  */
-#define ewl_object_get_recursive(o) \
-	(ewl_object_get_flags(o, EWL_FLAGS_PROPERTY_MASK) & \
+#define ewl_object_recursive_get(o) \
+	(ewl_object_flags_get(o, EWL_FLAGS_PROPERTY_MASK) & \
 	 EWL_FLAG_PROPERTY_RECURSIVE)
 
 /**
- * @def ewl_object_set_toplevel(o, val)
+ * @def ewl_object_toplevel_set(o, val)
  * @param o: the object to change the top level flag
  * @param val: a boolean indicating the value of the top level flag
  * @return Returns no value.
  * @brief Changes the top level flag value to match @a val.
  */
-#define ewl_object_set_toplevel(o, val) \
-	(val ? ewl_object_add_flags(o, EWL_FLAG_PROPERTY_TOPLEVEL, \
+#define ewl_object_toplevel_set(o, val) \
+	(val ? ewl_object_flags_add(o, EWL_FLAG_PROPERTY_TOPLEVEL, \
 				    EWL_FLAGS_PROPERTY_MASK) : \
-	 ewl_object_remove_flags(o, EWL_FLAG_PROPERTY_RECURSIVE, \
+	 ewl_object_flags_remove(o, EWL_FLAG_PROPERTY_RECURSIVE, \
 				    EWL_FLAGS_PROPERTY_MASK));
 
 /**
- * @def ewl_object_get_toplevel(o)
+ * @def ewl_object_toplevel_get(o)
  * @param o: the parameter to retrieve the current value of top level flag
  * @return Returns the current setting of the top level flag for @a o.
  * @brief Retrieves the current setting of the top level flag for @a o.
  */
-#define ewl_object_get_toplevel(o) \
-	(ewl_object_get_flags(o, EWL_FLAGS_PROPERTY_MASK) & \
+#define ewl_object_toplevel_get(o) \
+	(ewl_object_flags_get(o, EWL_FLAGS_PROPERTY_MASK) & \
 	 EWL_FLAG_PROPERTY_TOPLEVEL)
 
-#define ewl_object_add_state(o, state) \
-	ewl_object_add_flags(o, state, EWL_FLAGS_STATE_MASK)
-#define ewl_object_remove_state(o, state) \
-	ewl_object_remove_flags(o, state, EWL_FLAGS_STATE_MASK)
-#define ewl_object_has_state(o, state) \
-	ewl_object_has_flags(o, state, EWL_FLAGS_STATE_MASK)
-#define ewl_object_get_state(o, state) \
-	ewl_object_get_flags(o, state, EWL_FLAGS_STATE_MASK)
+#define ewl_object_state_add(o, state) \
+	ewl_object_flags_add(o, state, EWL_FLAGS_STATE_MASK)
+#define ewl_object_state_remove(o, state) \
+	ewl_object_flags_remove(o, state, EWL_FLAGS_STATE_MASK)
+#define ewl_object_state_has(o, state) \
+	ewl_object_flags_has(o, state, EWL_FLAGS_STATE_MASK)
+#define ewl_object_state_get(o, state) \
+	ewl_object_flags_get(o, state, EWL_FLAGS_STATE_MASK)
 
-#define ewl_object_add_queued(o, queued) \
-	ewl_object_add_flags(o, queued, EWL_FLAGS_QUEUED_MASK)
-#define ewl_object_remove_queued(o, queued) \
-	ewl_object_remove_flags(o, queued, EWL_FLAGS_QUEUED_MASK)
-#define ewl_object_has_queued(o, queued) \
-	ewl_object_has_flags(o, queued, EWL_FLAGS_QUEUED_MASK)
-#define ewl_object_get_queued(o, queued) \
-	ewl_object_get_flags(o, queued, EWL_FLAGS_QUEUED_MASK)
+#define ewl_object_queued_add(o, queued) \
+	ewl_object_flags_add(o, queued, EWL_FLAGS_QUEUED_MASK)
+#define ewl_object_queued_remove(o, queued) \
+	ewl_object_flags_remove(o, queued, EWL_FLAGS_QUEUED_MASK)
+#define ewl_object_queued_has(o, queued) \
+	ewl_object_flags_has(o, queued, EWL_FLAGS_QUEUED_MASK)
+#define ewl_object_queued_get(o, queued) \
+	ewl_object_flags_get(o, queued, EWL_FLAGS_QUEUED_MASK)
 
-#define ewl_object_add_visible(o, visible) \
-	ewl_object_add_flags(o, visible, EWL_FLAGS_VISIBLE_MASK)
-#define ewl_object_remove_visible(o, visible) \
-	ewl_object_remove_flags(o, visible, EWL_FLAGS_VISIBLE_MASK)
-#define ewl_object_has_visible(o, visible) \
-	ewl_object_has_flags(o, visible, EWL_FLAGS_VISIBLE_MASK)
-#define ewl_object_get_visible(o, visible) \
-	ewl_object_get_flags(o, visible, EWL_FLAGS_VISIBLE_MASK)
+#define ewl_object_visible_add(o, visible) \
+	ewl_object_flags_add(o, visible, EWL_FLAGS_VISIBLE_MASK)
+#define ewl_object_visible_remove(o, visible) \
+	ewl_object_flags_remove(o, visible, EWL_FLAGS_VISIBLE_MASK)
+#define ewl_object_visible_has(o, visible) \
+	ewl_object_flags_has(o, visible, EWL_FLAGS_VISIBLE_MASK)
+#define ewl_object_visible_get(o, visible) \
+	ewl_object_flags_get(o, visible, EWL_FLAGS_VISIBLE_MASK)
 
 #define PADDING_TOP(o) EWL_OBJECT(o)->pad.t
 #define PADDING_BOTTOM(o) EWL_OBJECT(o)->pad.b
@@ -278,21 +280,21 @@ unsigned int    ewl_object_get_flags(Ewl_Object *o, unsigned int mask);
 #define MINIMUM_W(o) EWL_OBJECT(o)->minimum.w
 #define MINIMUM_H(o) EWL_OBJECT(o)->minimum.h
 
-#define ewl_object_set_custom_size(o, w, h) \
-	ewl_object_set_minimum_size(o, w, h); \
-	ewl_object_set_maximum_size(o, w, h); \
-	ewl_object_set_fill_policy(o, EWL_FLAG_FILL_NONE);
+#define ewl_object_custom_size_set(o, w, h) \
+	ewl_object_minimum_size_set(o, w, h); \
+	ewl_object_maximum_size_set(o, w, h); \
+	ewl_object_fill_policy_set(o, EWL_FLAG_FILL_NONE);
 
-#define ewl_object_set_custom_w(o, w) \
-	ewl_object_set_maximum_w(o, w); \
-	ewl_object_set_minimum_w(o, w); \
-	ewl_object_set_fill_policy(o, ewl_object_get_fill_policy(o) & \
+#define ewl_object_custom_w_set(o, w) \
+	ewl_object_maximum_w_set(o, w); \
+	ewl_object_minimum_w_set(o, w); \
+	ewl_object_fill_policy_set(o, ewl_object_get_fill_policy(o) & \
 			~(EWL_FLAG_FILL_HFILL | EWL_FLAG_FILL_HSHRINK));
 
-#define ewl_object_set_custom_h(o, h) \
-	ewl_object_set_maximum_h(o, h); \
-	ewl_object_set_minimum_h(o, h); \
-	ewl_object_set_fill_policy(o, ewl_object_get_fill_policy(o) & \
+#define ewl_object_custom_h_set(o, h) \
+	ewl_object_maximum_h_set(o, h); \
+	ewl_object_minimum_h_set(o, h); \
+	ewl_object_fill_policy_set(o, ewl_object_get_fill_policy(o) & \
 			~(EWL_FLAG_FILL_VFILL | EWL_FLAG_FILL_VSHRINK));
 
 /**

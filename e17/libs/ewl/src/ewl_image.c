@@ -197,8 +197,8 @@ ewl_image_scale(Ewl_Image *i, double wp, double hp)
 	i->sw = wp;
 	i->sh = hp;
 
-	ewl_object_set_preferred_w(EWL_OBJECT(i), wp * i->ow);
-	ewl_object_set_preferred_h(EWL_OBJECT(i), hp * i->oh);
+	ewl_object_preferred_inner_w_set(EWL_OBJECT(i), wp * i->ow);
+	ewl_object_preferred_inner_h_set(EWL_OBJECT(i), hp * i->oh);
 
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
@@ -241,7 +241,7 @@ ewl_image_scale_to(Ewl_Image *i, int w, int h)
 
 	i->sw = 1.0;
 	i->sh = 1.0;
-	ewl_object_set_preferred_size(EWL_OBJECT(i), w, h);
+	ewl_object_preferred_inner_size_set(EWL_OBJECT(i), w, h);
 
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
@@ -288,15 +288,15 @@ void ewl_image_realize_cb(Ewl_Widget * w, void *ev_data, void *user_data)
 	if (!i->ow)
 		i->ow = 256;
 	else
-		ewl_object_set_preferred_w(EWL_OBJECT(i), i->ow);
+		ewl_object_preferred_inner_w_set(EWL_OBJECT(i), i->ow);
 	if (!i->oh)
 		i->oh = 256;
 	else
-		ewl_object_set_preferred_h(EWL_OBJECT(i), i->oh);
+		ewl_object_preferred_inner_h_set(EWL_OBJECT(i), i->oh);
 
-	if (ewl_object_preferred_w_sum_get(EWL_OBJECT(i)))
-		ewl_image_scale_to(i, ewl_object_preferred_w_sum_get(EWL_OBJECT(i)),
-				ewl_object_preferred_h_sum_get(EWL_OBJECT(i)));
+	if (ewl_object_preferred_w_get(EWL_OBJECT(i)))
+		ewl_image_scale_to(i, ewl_object_preferred_w_get(EWL_OBJECT(i)),
+				ewl_object_preferred_h_get(EWL_OBJECT(i)));
 	else
 		ewl_image_scale(i, i->sw, i->sh);
 

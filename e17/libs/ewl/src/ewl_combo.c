@@ -55,12 +55,12 @@ void ewl_combo_init(Ewl_Combo * combo, char *title)
 
 	combo->button = ewl_button_new(NULL);
 	ewl_widget_set_appearance(combo->button, "button_decrement");
-	ewl_object_set_alignment(EWL_OBJECT(combo->button), EWL_FLAG_ALIGN_RIGHT);
+	ewl_object_alignment_set(EWL_OBJECT(combo->button), EWL_FLAG_ALIGN_RIGHT);
 	ewl_container_append_child(EWL_CONTAINER(combo), combo->button);
 	ewl_widget_show(combo->button);
 
 	combo->selected = ewl_entry_new(title);
-	ewl_object_set_alignment(EWL_OBJECT(combo->selected), EWL_FLAG_ALIGN_CENTER);
+	ewl_object_alignment_set(EWL_OBJECT(combo->selected), EWL_FLAG_ALIGN_CENTER);
 	ewl_container_append_child(EWL_CONTAINER(combo), combo->selected);
 	ewl_widget_show(combo->selected);
 
@@ -98,9 +98,9 @@ void ewl_combo_init(Ewl_Combo * combo, char *title)
 	ewl_widget_set_appearance(EWL_WIDGET(combo->base.popup), "imenu");
 	ewl_box_set_orientation(EWL_BOX(combo->base.popup),
 				EWL_ORIENTATION_VERTICAL);
-	ewl_object_set_fill_policy(EWL_OBJECT(combo->base.popup),
+	ewl_object_fill_policy_set(EWL_OBJECT(combo->base.popup),
 				   EWL_FLAG_FILL_HFILL);
-	ewl_object_set_alignment(EWL_OBJECT(combo->base.popup),
+	ewl_object_alignment_set(EWL_OBJECT(combo->base.popup),
 				 EWL_FLAG_ALIGN_LEFT | EWL_FLAG_ALIGN_TOP);
 
 	DLEAVE_FUNCTION(DLEVEL_STABLE);

@@ -38,22 +38,22 @@ __create_filedialog_test_window(Ewl_Widget * w, void *ev_data,
 	ewl_window_set_title(EWL_WINDOW(fd_win), "File Dialog Test");
 	ewl_window_set_name(EWL_WINDOW(fd_win), "EWL Test Application");
 	ewl_window_set_class(EWL_WINDOW(fd_win), "EFL Test Application");
-	ewl_object_request_size(EWL_OBJECT(fd_win), 500, 400);
-	ewl_object_set_fill_policy(EWL_OBJECT(fd_win), EWL_FLAG_FILL_FILL |
+	ewl_object_size_request(EWL_OBJECT(fd_win), 500, 400);
+	ewl_object_fill_policy_set(EWL_OBJECT(fd_win), EWL_FLAG_FILL_FILL |
 			EWL_FLAG_FILL_SHRINK);
 	ewl_callback_append(fd_win, EWL_CALLBACK_DELETE_WINDOW,
 			    __destroy_filedialog_test_window, NULL);
 	ewl_widget_show(fd_win);
 
 	vbox = ewl_vbox_new ();
-	ewl_object_set_fill_policy(EWL_OBJECT(vbox), EWL_FLAG_FILL_FILL |
+	ewl_object_fill_policy_set(EWL_OBJECT(vbox), EWL_FLAG_FILL_FILL |
 				EWL_FLAG_FILL_SHRINK);
 	ewl_container_append_child(EWL_CONTAINER(fd_win), vbox);
 	ewl_widget_show (vbox);
 
 	button = ewl_button_new("Start filedialog");
-	ewl_object_set_fill_policy(EWL_OBJECT(button), EWL_FLAG_FILL_NONE);
-	ewl_object_set_alignment(EWL_OBJECT(button), EWL_FLAG_ALIGN_LEFT);
+	ewl_object_fill_policy_set(EWL_OBJECT(button), EWL_FLAG_FILL_NONE);
+	ewl_object_alignment_set(EWL_OBJECT(button), EWL_FLAG_ALIGN_LEFT);
 	ewl_container_append_child(EWL_CONTAINER(vbox), button);
 	ewl_widget_show(button);
 	ewl_callback_append(button, EWL_CALLBACK_CLICKED, __start_fd, NULL);
@@ -94,7 +94,7 @@ void __start_fd (Ewl_Widget *w, void *ev_data, void *user_data)
 		home_button = ewl_button_new("Home");
 		ewl_callback_append(home_button, EWL_CALLBACK_CLICKED,
 				    goto_home, fd);
-		ewl_object_set_fill_policy(EWL_OBJECT(home_button),
+		ewl_object_fill_policy_set(EWL_OBJECT(home_button),
 					   EWL_FLAG_FILL_HFILL);
 		ewl_container_append_child(EWL_CONTAINER(fd), home_button);
 		ewl_widget_show(home_button);

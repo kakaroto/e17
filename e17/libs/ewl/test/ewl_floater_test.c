@@ -44,7 +44,7 @@ __create_floater_test_window(Ewl_Widget * w, void *ev_data, void *user_data)
 
 	radio_button[0] = ewl_radiobutton_new("With Label");
 	ewl_container_append_child(EWL_CONTAINER(floater_box), radio_button[0]);
-	ewl_object_set_alignment(EWL_OBJECT(radio_button[0]),
+	ewl_object_alignment_set(EWL_OBJECT(radio_button[0]),
 				 EWL_FLAG_ALIGN_LEFT);
 	ewl_widget_show(radio_button[0]);
 
@@ -52,7 +52,7 @@ __create_floater_test_window(Ewl_Widget * w, void *ev_data, void *user_data)
 	ewl_radiobutton_set_chain(EWL_RADIOBUTTON(radio_button[1]), 
 				  EWL_RADIOBUTTON(radio_button[0]));
 	ewl_container_append_child(EWL_CONTAINER(floater_box), radio_button[1]);
-	ewl_object_set_alignment(EWL_OBJECT(radio_button[1]),
+	ewl_object_alignment_set(EWL_OBJECT(radio_button[1]),
 				 EWL_FLAG_ALIGN_LEFT);
 	ewl_widget_show(radio_button[1]);
 
@@ -63,31 +63,31 @@ __create_floater_test_window(Ewl_Widget * w, void *ev_data, void *user_data)
 
 	button[0] = ewl_button_new("With Label");
 	ewl_container_append_child(EWL_CONTAINER(floater), button[0]);
-	ewl_object_set_alignment(EWL_OBJECT(button[0]), EWL_FLAG_ALIGN_LEFT);
-	ewl_object_set_custom_size(EWL_OBJECT(button[0]), 100, 17);
+	ewl_object_alignment_set(EWL_OBJECT(button[0]), EWL_FLAG_ALIGN_LEFT);
+	ewl_object_custom_size_set(EWL_OBJECT(button[0]), 100, 17);
 	ewl_widget_show(button[0]);
 
 	button[1] = ewl_button_new(NULL);
 	ewl_container_append_child(EWL_CONTAINER(floater), button[1]);
-	ewl_object_set_alignment(EWL_OBJECT(button[1]), EWL_FLAG_ALIGN_LEFT);
-	ewl_object_set_custom_size(EWL_OBJECT(button[1]), 100, 17);
+	ewl_object_alignment_set(EWL_OBJECT(button[1]), EWL_FLAG_ALIGN_LEFT);
+	ewl_object_custom_size_set(EWL_OBJECT(button[1]), 100, 17);
 	ewl_widget_show(button[1]);
 
 	separator = ewl_hseparator_new();
 	ewl_container_append_child(EWL_CONTAINER(floater), separator);
 	ewl_widget_show(separator);
 
-	ewl_object_set_padding(EWL_OBJECT(separator), 2, 2, 5, 5);
+	ewl_object_padding_set(EWL_OBJECT(separator), 2, 2, 5, 5);
 
 	check_button[0] = ewl_checkbutton_new("With Label");
 	ewl_container_append_child(EWL_CONTAINER(floater), check_button[0]);
-	ewl_object_set_alignment(EWL_OBJECT(check_button[0]),
+	ewl_object_alignment_set(EWL_OBJECT(check_button[0]),
 				 EWL_FLAG_ALIGN_LEFT);
 	ewl_widget_show(check_button[0]);
 
 	check_button[1] = ewl_checkbutton_new(NULL);
 	ewl_container_append_child(EWL_CONTAINER(floater), check_button[1]);
-	ewl_object_set_alignment(EWL_OBJECT(check_button[1]),
+	ewl_object_alignment_set(EWL_OBJECT(check_button[1]),
 				 EWL_FLAG_ALIGN_LEFT);
 	ewl_widget_show(check_button[1]);
 

@@ -88,12 +88,12 @@ void __notebook_create_main_page(Ewl_Widget * notebook)
 	ewl_widget_show(main_vbox);
 
 	text = ewl_text_new("Main");
-	ewl_object_set_alignment(EWL_OBJECT(text), EWL_FLAG_ALIGN_CENTER);
+	ewl_object_alignment_set(EWL_OBJECT(text), EWL_FLAG_ALIGN_CENTER);
 	ewl_container_append_child(EWL_CONTAINER(main_vbox), text);
 	ewl_widget_show(text);
 
 	avbox = ewl_vbox_new();
-	ewl_object_set_alignment(EWL_OBJECT(avbox), EWL_FLAG_ALIGN_CENTER);
+	ewl_object_alignment_set(EWL_OBJECT(avbox), EWL_FLAG_ALIGN_CENTER);
 	ewl_container_append_child(EWL_CONTAINER(main_vbox), avbox);
 	ewl_widget_show(avbox);
 
@@ -142,7 +142,7 @@ void __notebook_create_main_page(Ewl_Widget * notebook)
 	ewl_widget_show(button_abottom);
 
 	pvbox = ewl_vbox_new();
-	ewl_object_set_alignment(EWL_OBJECT(pvbox), EWL_FLAG_ALIGN_CENTER);
+	ewl_object_alignment_set(EWL_OBJECT(pvbox), EWL_FLAG_ALIGN_CENTER);
 	ewl_container_append_child(EWL_CONTAINER(main_vbox), pvbox);
 	ewl_widget_show(pvbox);
 
@@ -206,14 +206,14 @@ __notebook_generate_page(Ewl_Widget * notebook)
 	ewl_widget_show(main_vbox);
 
 	text = ewl_text_new(label);
-	ewl_object_set_alignment(EWL_OBJECT(text), EWL_FLAG_ALIGN_CENTER);
+	ewl_object_alignment_set(EWL_OBJECT(text), EWL_FLAG_ALIGN_CENTER);
 	ewl_container_append_child(EWL_CONTAINER(main_vbox), text);
 	ewl_widget_show(text);
 
 	hbox = ewl_hbox_new();
 	ewl_box_set_spacing(EWL_BOX(hbox), 5);
-	ewl_object_set_padding(EWL_OBJECT(hbox), 0, 0, 20, 0);
-	ewl_object_set_alignment(EWL_OBJECT(hbox), EWL_FLAG_ALIGN_CENTER);
+	ewl_object_padding_set(EWL_OBJECT(hbox), 0, 0, 20, 0);
+	ewl_object_alignment_set(EWL_OBJECT(hbox), EWL_FLAG_ALIGN_CENTER);
 	ewl_container_append_child(EWL_CONTAINER(main_vbox), hbox);
 	ewl_widget_show(hbox);
 
@@ -230,7 +230,7 @@ __notebook_generate_page(Ewl_Widget * notebook)
 	ewl_widget_show(button[1]);
 
 	button[2] = ewl_button_new("Remove This Page");
-	ewl_object_set_alignment(EWL_OBJECT(button[2]), EWL_FLAG_ALIGN_CENTER);
+	ewl_object_alignment_set(EWL_OBJECT(button[2]), EWL_FLAG_ALIGN_CENTER);
 	ewl_container_append_child(EWL_CONTAINER(main_vbox), button[2]);
 	ewl_callback_append(button[2], EWL_CALLBACK_CLICKED,
 			    __notebook_remove_visible_page, notebook);

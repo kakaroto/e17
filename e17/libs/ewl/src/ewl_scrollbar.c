@@ -55,9 +55,9 @@ void ewl_scrollbar_init(Ewl_Scrollbar * s, Ewl_Orientation orientation)
 	 */
 	s->button_decrement = ewl_button_new(NULL);
 	ewl_widget_set_internal(s->button_decrement, TRUE);
-	ewl_object_set_alignment(EWL_OBJECT(s->button_decrement),
+	ewl_object_alignment_set(EWL_OBJECT(s->button_decrement),
 			EWL_FLAG_ALIGN_CENTER);
-	ewl_object_set_fill_policy(EWL_OBJECT(s->button_decrement),
+	ewl_object_fill_policy_set(EWL_OBJECT(s->button_decrement),
 				   EWL_FLAG_FILL_NONE);
 	ewl_widget_show(s->button_decrement);
 
@@ -66,9 +66,9 @@ void ewl_scrollbar_init(Ewl_Scrollbar * s, Ewl_Orientation orientation)
 	 */
 	s->button_increment = ewl_button_new(NULL);
 	ewl_widget_set_internal(s->button_increment, TRUE);
-	ewl_object_set_alignment(EWL_OBJECT(s->button_increment),
+	ewl_object_alignment_set(EWL_OBJECT(s->button_increment),
 			EWL_FLAG_ALIGN_CENTER);
-	ewl_object_set_fill_policy(EWL_OBJECT(s->button_increment),
+	ewl_object_fill_policy_set(EWL_OBJECT(s->button_increment),
 				   EWL_FLAG_FILL_NONE);
 	ewl_widget_show(s->button_increment);
 
@@ -115,9 +115,9 @@ void ewl_scrollbar_init(Ewl_Scrollbar * s, Ewl_Orientation orientation)
 	/*
 	 * Set the default alignment for the buttons.
 	 */
-	ewl_object_set_alignment(EWL_OBJECT(s->button_decrement),
+	ewl_object_alignment_set(EWL_OBJECT(s->button_decrement),
 				 EWL_FLAG_ALIGN_CENTER);
-	ewl_object_set_alignment(EWL_OBJECT(s->button_increment),
+	ewl_object_alignment_set(EWL_OBJECT(s->button_increment),
 				 EWL_FLAG_ALIGN_CENTER);
 
 	/*
@@ -196,7 +196,7 @@ void ewl_scrollbar_init(Ewl_Scrollbar * s, Ewl_Orientation orientation)
 		 */
 		ewl_seeker_set_value(EWL_SEEKER(s->seeker), 0);
 		ewl_widget_set_appearance(w, "hscrollbar");
-		ewl_object_set_fill_policy(EWL_OBJECT(s),
+		ewl_object_fill_policy_set(EWL_OBJECT(s),
 				EWL_FLAG_FILL_HFILL);
 	}
 	else {
@@ -240,7 +240,7 @@ void ewl_scrollbar_init(Ewl_Scrollbar * s, Ewl_Orientation orientation)
 		 */
 		ewl_seeker_set_value(EWL_SEEKER(s->seeker), 0);
 		ewl_widget_set_appearance(w, "vscrollbar");
-		ewl_object_set_fill_policy(EWL_OBJECT(s),
+		ewl_object_fill_policy_set(EWL_OBJECT(s),
 				EWL_FLAG_FILL_VFILL);
 	}
 

@@ -225,13 +225,13 @@ void ewl_grid_set_col_w(Ewl_Grid * g, int col, int width)
 	}
 
 	g->col_size[col - 1].override = 1;
-	ewl_object_request_size(EWL_OBJECT(g),
-				ewl_object_get_current_w(EWL_OBJECT(g)) +
+	ewl_object_size_request(EWL_OBJECT(g),
+				ewl_object_current_w_get(EWL_OBJECT(g)) +
 				(width - g->col_size[col - 1].size),
-				ewl_object_get_current_h(EWL_OBJECT(g)));
+				ewl_object_current_h_get(EWL_OBJECT(g)));
 
 	g->col_size[col - 1].size = width -	/* this will be reverted in resize */
-	    ((ewl_object_get_current_w(EWL_OBJECT(g)) - g->grid_w) / g->cols);
+	    ((ewl_object_current_w_get(EWL_OBJECT(g)) - g->grid_w) / g->cols);
 
 
 	ewl_widget_configure(EWL_WIDGET(g));
@@ -281,13 +281,13 @@ void ewl_grid_set_row_h(Ewl_Grid * g, int row, int height)
 	}
 
 	g->row_size[row - 1].override = 1;
-	ewl_object_request_size(EWL_OBJECT(g),
-				ewl_object_get_current_w(EWL_OBJECT(g)),
-				ewl_object_get_current_h(EWL_OBJECT(g)) +
+	ewl_object_size_request(EWL_OBJECT(g),
+				ewl_object_current_w_get(EWL_OBJECT(g)),
+				ewl_object_current_h_get(EWL_OBJECT(g)) +
 				(height - g->row_size[row - 1].size));
 
 	g->row_size[row - 1].size = height -	/* this will be reverted in resize */
-	    ((ewl_object_get_current_h(EWL_OBJECT(g)) - g->grid_h) / g->rows);
+	    ((ewl_object_current_h_get(EWL_OBJECT(g)) - g->grid_h) / g->rows);
 
 
 	ewl_widget_configure(EWL_WIDGET(g));
@@ -398,7 +398,7 @@ void ewl_grid_configure_cb(Ewl_Widget * w, void *ev_data, void *user_data)
 			c_y += g->row_size[i].size;
 
 
-		ewl_object_request_geometry(EWL_OBJECT(child), c_x, c_y, c_w,
+		ewl_object_geometry_request(EWL_OBJECT(child), c_x, c_y, c_w,
 					    c_h);
 		ewl_widget_configure(child);
 
@@ -425,13 +425,13 @@ static void ewl_grid_resize(Ewl_Grid * g)
 
 
 	/* store the total size of the grid widget */
-	if (ewl_object_get_current_w(EWL_OBJECT(g)) != g->grid_w) {
-		new_w = ewl_object_get_current_w(EWL_OBJECT(g));
+	if (ewl_object_current_w_get(EWL_OBJECT(g)) != g->grid_w) {
+		new_w = ewl_object_current_w_get(EWL_OBJECT(g));
 		w_flag = 1;
 	}
 
-	if (ewl_object_get_current_h(EWL_OBJECT(g)) != g->grid_h) {
-		new_h = ewl_object_get_current_h(EWL_OBJECT(g));
+	if (ewl_object_current_h_get(EWL_OBJECT(g)) != g->grid_h) {
+		new_h = ewl_object_current_h_get(EWL_OBJECT(g));
 		h_flag = 1;
 	}
 
@@ -534,7 +534,7 @@ void ewl_grid_child_show_cb(Ewl_Container * p, Ewl_Widget * c)
 		 * Calculate the amount of space the widget would need in this
 		 * column.
 		 */
-		temp = ewl_object_preferred_w_sum_get(EWL_OBJECT(c)) /
+		temp = ewl_object_preferred_w_get(EWL_OBJECT(c)) /
 		    (cdata->end_col - cdata->start_col + 1);
 
 		/*
@@ -566,7 +566,7 @@ void ewl_grid_child_show_cb(Ewl_Container * p, Ewl_Widget * c)
 		 * Calculate the amount of space the widget would need in this
 		 * row.
 		 */
-		temp = ewl_object_preferred_h_sum_get(EWL_OBJECT(c)) /
+		temp = ewl_object_preferred_h_get(EWL_OBJECT(c)) /
 		    (cdata->end_row - cdata->start_row + 1);
 
 		/*
@@ -613,12 +613,12 @@ ewl_grid_child_resize_cb(Ewl_Container * p, Ewl_Widget * child, int size,
 		info = g->col_size;
 		start_off = cdata->start_col;
 		end_off = cdata->end_col;
-		widget_size = ewl_object_preferred_w_sum_get;
+		widget_size = ewl_object_preferred_w_get;
 	} else {
 		info = g->row_size;
 		start_off = cdata->start_row;
 		end_off = cdata->end_row;
-		widget_size = ewl_object_preferred_h_sum_get;
+		widget_size = ewl_object_preferred_h_get;
 	}
 
 	/*
@@ -680,10 +680,10 @@ ewl_grid_child_resize_cb(Ewl_Container * p, Ewl_Widget * child, int size,
 	 * Now resize the grid appropriately.
 	 */
 	if (o == EWL_ORIENTATION_HORIZONTAL)
-		ewl_object_request_w(EWL_OBJECT(g), CURRENT_W(g) -
+		ewl_object_w_request(EWL_OBJECT(g), CURRENT_W(g) -
 				     (INSET_LEFT(g) + INSET_RIGHT(g)) + used);
 	else
-		ewl_object_request_h(EWL_OBJECT(g), CURRENT_H(g) -
+		ewl_object_h_request(EWL_OBJECT(g), CURRENT_H(g) -
 				     (INSET_TOP(g) + INSET_BOTTOM(g)) + used);
 
 	DLEAVE_FUNCTION(DLEVEL_STABLE);

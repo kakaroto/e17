@@ -52,7 +52,7 @@ void ewl_progressbar_init(Ewl_Progressbar * p)
 	ewl_widget_show(p->bar);
 
 	p->label = ewl_text_new(NULL);
-	ewl_object_set_alignment(EWL_OBJECT(p->label),
+	ewl_object_alignment_set(EWL_OBJECT(p->label),
 			EWL_FLAG_ALIGN_CENTER);
 	ewl_container_append_child(EWL_CONTAINER(p), p->label);
 	ewl_widget_show(p->label);
@@ -250,7 +250,7 @@ ewl_progressbar_configure_cb(Ewl_Widget * w, void *ev_data, void *user_data)
 	dw = CURRENT_W(p);
 	dh = CURRENT_H(p);
 
-	ewl_object_request_geometry (EWL_OBJECT(p->bar), dx, dy, 
+	ewl_object_geometry_request(EWL_OBJECT(p->bar), dx, dy, 
 			dw * (p->value / p->range), dh);
 
 	ewl_object_place (EWL_OBJECT(p->label), dx, dy, dw, dh);
@@ -273,8 +273,8 @@ static void ewl_progressbar_child_handle(Ewl_Container *c, Ewl_Widget *w)
 	if (value < 0.01)
 		value = 0.01;
 
-	ewl_object_set_preferred_w (EWL_OBJECT(p),
-			ewl_object_preferred_w_sum_get (EWL_OBJECT(p->bar)) / value);
+	ewl_object_preferred_inner_w_set (EWL_OBJECT(p),
+			ewl_object_preferred_w_get (EWL_OBJECT(p->bar)) / value);
 
 	ewl_container_prefer_largest (EWL_CONTAINER (c),
 			EWL_ORIENTATION_VERTICAL);

@@ -90,8 +90,8 @@ int ewl_embed_init(Ewl_Embed * w)
 		DRETURN_INT(FALSE, DLEVEL_STABLE);
 	ewl_widget_set_appearance(EWL_WIDGET(w), "embed");
 
-	ewl_object_set_fill_policy(EWL_OBJECT(w), EWL_FLAG_FILL_NONE);
-	ewl_object_set_toplevel(EWL_OBJECT(w), EWL_FLAG_PROPERTY_TOPLEVEL);
+	ewl_object_fill_policy_set(EWL_OBJECT(w), EWL_FLAG_FILL_NONE);
+	ewl_object_toplevel_set(EWL_OBJECT(w), EWL_FLAG_PROPERTY_TOPLEVEL);
 
 	ewl_callback_append(EWL_WIDGET(w), EWL_CALLBACK_REALIZE,
 			     ewl_embed_realize_cb, NULL);
@@ -228,7 +228,7 @@ ewl_embed_feed_key_down(Ewl_Embed *embed, char *keyname, unsigned int mods)
 	 */
 	temp = last_key;
 	while (temp) {
-		if (!(ewl_object_has_state(EWL_OBJECT(temp),
+		if (!(ewl_object_state_has(EWL_OBJECT(temp),
 					EWL_FLAG_STATE_DISABLED)))
 			ewl_callback_call_with_event_data(temp,
 					EWL_CALLBACK_KEY_DOWN, &ev);
@@ -266,7 +266,7 @@ void ewl_embed_feed_key_up(Ewl_Embed *embed, char *keyname, unsigned int mods)
 	 */
 	temp = last_key;
 	while (temp) {
-		if (!(ewl_object_has_state(EWL_OBJECT(temp),
+		if (!(ewl_object_state_has(EWL_OBJECT(temp),
 					EWL_FLAG_STATE_DISABLED)))
 			ewl_callback_call_with_event_data(temp,
 					EWL_CALLBACK_KEY_UP, &ev);
@@ -328,9 +328,9 @@ ewl_embed_feed_mouse_down(Ewl_Embed *embed, int b, int clicks, int x, int y,
 	 */
 	temp = widget;
 	while (temp) {
-		if (!(ewl_object_has_state(EWL_OBJECT(temp),
+		if (!(ewl_object_state_has(EWL_OBJECT(temp),
 					EWL_FLAG_STATE_DISABLED))) {
-			ewl_object_add_state(EWL_OBJECT(temp),
+			ewl_object_state_add(EWL_OBJECT(temp),
 					EWL_FLAG_STATE_PRESSED);
 			ewl_callback_call_with_event_data(temp,
 					EWL_CALLBACK_MOUSE_DOWN, &ev);
@@ -351,14 +351,14 @@ ewl_embed_feed_mouse_down(Ewl_Embed *embed, int b, int clicks, int x, int y,
 	 */
 	if (widget != deselect) {
 		if (deselect) {
-			ewl_object_remove_state(EWL_OBJECT(deselect),
+			ewl_object_state_remove(EWL_OBJECT(deselect),
 					EWL_FLAG_STATE_SELECTED);
 			ewl_callback_call(deselect, EWL_CALLBACK_DESELECT);
 		}
 
-		if (widget && !(ewl_object_has_state(EWL_OBJECT(widget),
+		if (widget && !(ewl_object_state_has(EWL_OBJECT(widget),
 					EWL_FLAG_STATE_DISABLED))) {
-			ewl_object_add_state(EWL_OBJECT(widget),
+			ewl_object_state_add(EWL_OBJECT(widget),
 					EWL_FLAG_STATE_SELECTED);
 			ewl_callback_call(widget, EWL_CALLBACK_SELECT);
 		}
@@ -398,9 +398,9 @@ ewl_embed_feed_mouse_up(Ewl_Embed *embed, int b, int x, int y,
 	 */
 	temp = last_selected;
 	while (temp) {
-		if (!(ewl_object_has_state(EWL_OBJECT(temp),
+		if (!(ewl_object_state_has(EWL_OBJECT(temp),
 				EWL_FLAG_STATE_DISABLED))) {
-			ewl_object_remove_state(EWL_OBJECT(temp),
+			ewl_object_state_remove(EWL_OBJECT(temp),
 					EWL_FLAG_STATE_PRESSED);
 			ewl_callback_call_with_event_data(temp,
 					EWL_CALLBACK_MOUSE_UP, &ev);
@@ -446,7 +446,7 @@ ewl_embed_feed_mouse_move(Ewl_Embed *embed, int x, int y, unsigned int mods)
 	 */
 	while (last_focused && (widget != last_focused) &&
 			!ewl_container_parent_of(last_focused, widget)) {
-		ewl_object_remove_state(EWL_OBJECT(last_focused),
+		ewl_object_state_remove(EWL_OBJECT(last_focused),
 				EWL_FLAG_STATE_HILITED);
 		ewl_callback_call(last_focused, EWL_CALLBACK_FOCUS_OUT);
 		last_focused = last_focused->parent;
@@ -459,15 +459,15 @@ ewl_embed_feed_mouse_move(Ewl_Embed *embed, int x, int y, unsigned int mods)
 	last_focused = widget;
 	while (last_focused) {
 
-		if (!(ewl_object_has_state(EWL_OBJECT(last_focused),
+		if (!(ewl_object_state_has(EWL_OBJECT(last_focused),
 					EWL_FLAG_STATE_DISABLED))) {
 
 			/*
 			 * First mouse move event in a widget marks it focused.
 			 */
-			if (!(ewl_object_has_state(EWL_OBJECT(last_focused),
+			if (!(ewl_object_state_has(EWL_OBJECT(last_focused),
 						EWL_FLAG_STATE_HILITED))) {
-				ewl_object_add_state(EWL_OBJECT(last_focused),
+				ewl_object_state_add(EWL_OBJECT(last_focused),
 						EWL_FLAG_STATE_HILITED);
 				ewl_callback_call_with_event_data(last_focused,
 						EWL_CALLBACK_FOCUS_IN, &ev);
@@ -481,12 +481,12 @@ ewl_embed_feed_mouse_move(Ewl_Embed *embed, int x, int y, unsigned int mods)
 
 	last_focused = widget;
 
-	if (dnd_widget && ewl_object_has_state(EWL_OBJECT(dnd_widget),
+	if (dnd_widget && ewl_object_state_has(EWL_OBJECT(dnd_widget),
 				EWL_FLAG_STATE_DND))
 		ewl_callback_call_with_event_data(dnd_widget,
 						  EWL_CALLBACK_MOUSE_MOVE, &ev);
 
-	if (last_selected && ewl_object_has_state(EWL_OBJECT(last_selected),
+	if (last_selected && ewl_object_state_has(EWL_OBJECT(last_selected),
 				EWL_FLAG_STATE_PRESSED))
 		ewl_callback_call_with_event_data(last_selected,
 						  EWL_CALLBACK_MOUSE_MOVE, &ev);
@@ -623,7 +623,7 @@ Ewl_Embed     *ewl_embed_find_by_widget(Ewl_Widget * w)
 	while (w->parent)
 		w = w->parent;
 
-	if (!ewl_object_get_toplevel(EWL_OBJECT(w)))
+	if (!ewl_object_toplevel_get(EWL_OBJECT(w)))
 		w = NULL;
 
 	DRETURN_PTR(EWL_EMBED(w), DLEVEL_STABLE);
@@ -903,7 +903,7 @@ ewl_embed_smart_move_cb(Evas_Object *obj, Evas_Coord x, Evas_Coord y)
 
 	emb = evas_object_smart_data_get(obj);
 	if (emb)
-		ewl_object_request_position(EWL_OBJECT(emb), (int)(x),
+		ewl_object_position_request(EWL_OBJECT(emb), (int)(x),
 					    (int)(y));
 
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
@@ -918,7 +918,7 @@ ewl_embed_smart_resize_cb(Evas_Object *obj, Evas_Coord w, Evas_Coord h)
 
 	emb = evas_object_smart_data_get(obj);
 	if (emb)
-		ewl_object_request_size(EWL_OBJECT(emb), (int)(w), (int)(h));
+		ewl_object_size_request(EWL_OBJECT(emb), (int)(w), (int)(h));
 
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }

@@ -53,7 +53,7 @@ __spinner_window_configure(Ewl_Widget * w, void *ev_data, void *user_data)
 	int             xx, yy, ww, hh;
 
 	ewl_window_get_position(EWL_WINDOW(tmp_win), &xx, &yy);
-	ewl_object_get_current_size(EWL_OBJECT(tmp_win), &ww, &hh);
+	ewl_object_current_size_get(EWL_OBJECT(tmp_win), &ww, &hh);
 
 	ewl_callback_del(spinner[0], EWL_CALLBACK_VALUE_CHANGED,
 			 __spinner_value_changed);
@@ -123,16 +123,16 @@ __create_spinner_test_window(Ewl_Widget * w, void *ev_data, void *user_data)
 	/*
 	 * Grab the current coordinates of the window we will manipulate.
 	 */
-	ewl_object_get_current_geometry(EWL_OBJECT(tmp_win), &xx, &yy, &ww,
+	ewl_object_current_geometry_get(EWL_OBJECT(tmp_win), &xx, &yy, &ww,
 					&hh);
-	ewl_object_get_minimum_size(EWL_OBJECT(tmp_win), &mw, &mh);
+	ewl_object_minimum_size_get(EWL_OBJECT(tmp_win), &mw, &mh);
 
 	spinner_row = ewl_row_new();
 	ewl_container_append_child(EWL_CONTAINER(spinner_box), spinner_row);
 	ewl_widget_show(spinner_row);
 
 	text[0] = ewl_text_new("X");
-	ewl_object_set_alignment(EWL_OBJECT(text[0]), EWL_FLAG_ALIGN_CENTER);
+	ewl_object_alignment_set(EWL_OBJECT(text[0]), EWL_FLAG_ALIGN_CENTER);
 	ewl_container_append_child(EWL_CONTAINER(spinner_row), text[0]);
 	ewl_widget_show(text[0]);
 
@@ -156,7 +156,7 @@ __create_spinner_test_window(Ewl_Widget * w, void *ev_data, void *user_data)
 	ewl_widget_show(spinner_row);
 
 	text[1] = ewl_text_new("Y");
-	ewl_object_set_alignment(EWL_OBJECT(text[1]), EWL_FLAG_ALIGN_CENTER);
+	ewl_object_alignment_set(EWL_OBJECT(text[1]), EWL_FLAG_ALIGN_CENTER);
 	ewl_container_append_child(EWL_CONTAINER(spinner_row), text[1]);
 	ewl_widget_show(text[1]);
 
@@ -180,7 +180,7 @@ __create_spinner_test_window(Ewl_Widget * w, void *ev_data, void *user_data)
 	ewl_widget_show(spinner_row);
 
 	text[2] = ewl_text_new("W");
-	ewl_object_set_alignment(EWL_OBJECT(text[2]), EWL_FLAG_ALIGN_CENTER);
+	ewl_object_alignment_set(EWL_OBJECT(text[2]), EWL_FLAG_ALIGN_CENTER);
 	ewl_container_append_child(EWL_CONTAINER(spinner_row), text[2]);
 	ewl_widget_show(text[2]);
 
@@ -204,7 +204,7 @@ __create_spinner_test_window(Ewl_Widget * w, void *ev_data, void *user_data)
 	ewl_widget_show(spinner_row);
 
 	text[3] = ewl_text_new("H");
-	ewl_object_set_alignment(EWL_OBJECT(text[3]), EWL_FLAG_ALIGN_CENTER);
+	ewl_object_alignment_set(EWL_OBJECT(text[3]), EWL_FLAG_ALIGN_CENTER);
 	ewl_container_append_child(EWL_CONTAINER(spinner_row), text[3]);
 	ewl_widget_show(text[3]);
 

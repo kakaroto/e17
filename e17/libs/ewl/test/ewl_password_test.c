@@ -77,21 +77,21 @@ __create_password_test_window(Ewl_Widget * w, void *ev_data, void *user_data)
 	ewl_widget_show(password_box);
 
 	password[0] = ewl_password_new("Play with me ?");
-	ewl_object_set_padding(EWL_OBJECT(password[0]), 5, 5, 5, 0);
+	ewl_object_padding_set(EWL_OBJECT(password[0]), 5, 5, 5, 0);
 	ewl_container_append_child(EWL_CONTAINER(password_box), password[0]);
 	ewl_callback_append(password[0], EWL_CALLBACK_VALUE_CHANGED,
 			    __fetch_password_text, NULL);
 	ewl_widget_show(password[0]);
 
 	password[1] = ewl_password_new("E W L ! ! !");
-	ewl_object_set_padding(EWL_OBJECT(password[1]), 5, 5, 0, 0);
+	ewl_object_padding_set(EWL_OBJECT(password[1]), 5, 5, 0, 0);
 	ewl_container_append_child(EWL_CONTAINER(password_box), password[1]);
 	ewl_callback_append(password[1], EWL_CALLBACK_VALUE_CHANGED,
 			    __fetch_password_text, NULL);
 	ewl_widget_show(password[1]);
 
 	button_hbox = ewl_hbox_new();
-	ewl_object_set_alignment(EWL_OBJECT(button_hbox), EWL_FLAG_ALIGN_CENTER);
+	ewl_object_alignment_set(EWL_OBJECT(button_hbox), EWL_FLAG_ALIGN_CENTER);
 	ewl_container_append_child(EWL_CONTAINER(password_box), button_hbox);
 	ewl_box_set_spacing(EWL_BOX(button_hbox), 5);
 	ewl_widget_show(button_hbox);

@@ -48,14 +48,14 @@ int ewl_seeker_init(Ewl_Seeker * s, Ewl_Orientation orientation)
 		if (!ewl_container_init(EWL_CONTAINER(w), "hseeker"))
 			DRETURN_INT(FALSE, DLEVEL_STABLE);
 
-		ewl_object_set_fill_policy(EWL_OBJECT(w), EWL_FLAG_FILL_HFILL |
+		ewl_object_fill_policy_set(EWL_OBJECT(w), EWL_FLAG_FILL_HFILL |
 				EWL_FLAG_FILL_HSHRINK);
 	}
 	else {
 		if (!ewl_container_init(EWL_CONTAINER(w), "vseeker"))
 			DRETURN_INT(FALSE, DLEVEL_STABLE);
 
-		ewl_object_set_fill_policy(EWL_OBJECT(w),
+		ewl_object_fill_policy_set(EWL_OBJECT(w),
 				EWL_FLAG_FILL_VFILL |
 				EWL_FLAG_FILL_VSHRINK);
 	}
@@ -408,7 +408,7 @@ void ewl_seeker_configure_cb(Ewl_Widget * w, void *ev_data, void *user_data)
 		dx += (CURRENT_W(s) - dw) * s2;
 	}
 
-	ewl_object_request_geometry(EWL_OBJECT(s->button), dx, dy, dw, dh);
+	ewl_object_geometry_request(EWL_OBJECT(s->button), dx, dy, dw, dh);
 
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
@@ -429,7 +429,7 @@ ewl_seeker_button_mouse_down_cb(Ewl_Widget * w, void *ev_data, void *user_data)
 
 	s = EWL_SEEKER(w->parent);
 
-	ewl_object_get_current_geometry(EWL_OBJECT(w), &xx, &yy, &ww, &hh);
+	ewl_object_current_geometry_get(EWL_OBJECT(w), &xx, &yy, &ww, &hh);
 
 	if (s->orientation == EWL_ORIENTATION_HORIZONTAL)
 		s->dragstart = ev->x - xx;
@@ -475,7 +475,7 @@ ewl_seeker_button_mouse_move_cb(Ewl_Widget * w, void *ev_data, void *user_data)
 	/*
 	 * If the button is not pressed we don't care about mouse movements.
 	 */
-	if (!ewl_object_has_state(EWL_OBJECT(s->button),
+	if (!ewl_object_state_has(EWL_OBJECT(s->button),
 					EWL_FLAG_STATE_PRESSED))
 		DRETURN(DLEVEL_STABLE);
 
@@ -494,14 +494,14 @@ ewl_seeker_button_mouse_move_cb(Ewl_Widget * w, void *ev_data, void *user_data)
 		dc = CURRENT_X(s);
 		dg = CURRENT_W(s);
 
-		adjust = ewl_object_get_current_w(EWL_OBJECT(s->button));
+		adjust = ewl_object_current_w_get(EWL_OBJECT(s->button));
 	}
 	else {
 		m = ev->y;
 		dc = CURRENT_Y(s);
 		dg = CURRENT_H(s);
 
-		adjust = ewl_object_get_current_h(EWL_OBJECT(s->button));
+		adjust = ewl_object_current_h_get(EWL_OBJECT(s->button));
 	}
 
 	dg -= adjust;
@@ -541,7 +541,7 @@ void ewl_seeker_mouse_down_cb(Ewl_Widget * w, void *ev_data, void *user_data)
 
 	s = EWL_SEEKER(w);
 
-	ewl_object_get_current_geometry(EWL_OBJECT(s->button),
+	ewl_object_current_geometry_get(EWL_OBJECT(s->button),
 					&xx, &yy, &ww, &hh);
 
 	value = s->value;
@@ -584,15 +584,15 @@ void ewl_seeker_child_show_cb(Ewl_Container *p, Ewl_Widget *w)
 
 	s = EWL_SEEKER(p);
 
-	pw = ewl_object_preferred_w_sum_get(EWL_OBJECT(w));
-	ph = ewl_object_preferred_h_sum_get(EWL_OBJECT(w));
+	pw = ewl_object_preferred_w_get(EWL_OBJECT(w));
+	ph = ewl_object_preferred_h_get(EWL_OBJECT(w));
 
 	if (s->orientation == EWL_ORIENTATION_HORIZONTAL)
 		pw *= s->range / s->step;
 	else
 		ph *= s->range / s->step;
 
-	ewl_object_set_preferred_size(EWL_OBJECT(p), pw, ph);
+	ewl_object_preferred_inner_size_set(EWL_OBJECT(p), pw, ph);
 
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }

@@ -26,7 +26,7 @@ ewl_container_init(Ewl_Container * c, char *appearance)
 		DRETURN_INT(0, DLEVEL_STABLE);
 
 	ewl_widget_set_appearance(w, appearance);
-	ewl_object_set_recursive(EWL_OBJECT(w), TRUE);
+	ewl_object_recursive_set(EWL_OBJECT(w), TRUE);
 
 	/*
 	 * Initialize the fields specific to the container class.
@@ -327,7 +327,7 @@ void ewl_container_resize_child(Ewl_Widget * w, int size, Ewl_Orientation o)
 
 	DCHECK_PARAM_PTR("w", w);
 
-	if (!size || ewl_object_has_queued(EWL_OBJECT(w),
+	if (!size || ewl_object_queued_has(EWL_OBJECT(w),
 				EWL_FLAG_QUEUED_RSCHEDULED) || !REALIZED(w))
 		DRETURN(DLEVEL_STABLE);
 
@@ -503,7 +503,7 @@ void ewl_container_reset(Ewl_Container * c)
 	 */
 	ecore_list_goto_first(c->children);
 	while ((w = ecore_list_current(c->children))) {
-		if (!ewl_object_has_flags(EWL_OBJECT(w),
+		if (!ewl_object_flags_has(EWL_OBJECT(w),
 					EWL_FLAG_PROPERTY_INTERNAL,
 					EWL_FLAGS_PROPERTY_MASK)) {
 			ecore_list_remove(c->children);
@@ -663,12 +663,12 @@ ewl_container_prefer_largest(Ewl_Container *c, Ewl_Orientation o)
 	DCHECK_PARAM_PTR("c", c);
 
 	if (o == EWL_ORIENTATION_HORIZONTAL) {
-		get_size = ewl_object_preferred_w_sum_get;
-		set_size = ewl_object_set_preferred_w;
+		get_size = ewl_object_preferred_w_get;
+		set_size = ewl_object_preferred_inner_w_set;
 	}
 	else {
-		get_size = ewl_object_preferred_h_sum_get;
-		set_size = ewl_object_set_preferred_h;
+		get_size = ewl_object_preferred_h_get;
+		set_size = ewl_object_preferred_inner_h_set;
 	}
 
 	ecore_list_goto_first(c->children);
@@ -701,12 +701,12 @@ void ewl_container_prefer_sum(Ewl_Container *c, Ewl_Orientation o)
 	DCHECK_PARAM_PTR("c", c);
 
 	if (o == EWL_ORIENTATION_HORIZONTAL) {
-		get_size = ewl_object_preferred_w_sum_get;
-		set_size = ewl_object_set_preferred_w;
+		get_size = ewl_object_preferred_w_get;
+		set_size = ewl_object_preferred_inner_w_set;
 	}
 	else {
-		get_size = ewl_object_preferred_h_sum_get;
-		set_size = ewl_object_set_preferred_h;
+		get_size = ewl_object_preferred_h_get;
+		set_size = ewl_object_preferred_inner_h_set;
 	}
 
 	ecore_list_goto_first(c->children);

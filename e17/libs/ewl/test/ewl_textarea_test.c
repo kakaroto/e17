@@ -57,8 +57,8 @@ __create_textarea_test_window(Ewl_Widget * w, void *ev_data, void *user_data)
 	ewl_window_set_title(EWL_WINDOW(textarea_win), "Textarea Test");
 	ewl_window_set_name(EWL_WINDOW(textarea_win), "EWL Test Application");
 	ewl_window_set_class(EWL_WINDOW(textarea_win), "EFL Test Application");
-	ewl_object_set_fill_policy(EWL_OBJECT(textarea_win), EWL_FLAG_FILL_ALL);
-	ewl_object_request_size(EWL_OBJECT(textarea_win), 200, 150);
+	ewl_object_fill_policy_set(EWL_OBJECT(textarea_win), EWL_FLAG_FILL_ALL);
+	ewl_object_size_request(EWL_OBJECT(textarea_win), 200, 150);
 	ewl_callback_append(textarea_win, EWL_CALLBACK_DELETE_WINDOW,
 			    __destroy_textarea_test_window, NULL);
 	ewl_widget_show(textarea_win);

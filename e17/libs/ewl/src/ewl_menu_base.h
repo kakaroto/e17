@@ -85,7 +85,7 @@ char           *ewl_menu_item_get_image(Ewl_Menu_Item * item);
 void            ewl_menu_item_set_image(Ewl_Menu_Item * item, char *image);
 
 
-Ewl_Menu_Separator *ewl_menu_separator_new(void);
+Ewl_Widget     *ewl_menu_separator_new(void);
 void            ewl_menu_separator_init(Ewl_Menu_Separator *sep);
 
 void            ewl_menu_base_init(Ewl_Menu_Base * menu, char *image,

@@ -41,7 +41,7 @@ int ewl_row_init(Ewl_Row *row)
 	ewl_container_show_notify(EWL_CONTAINER(row), ewl_row_child_show_cb);
 	ewl_container_resize_notify(EWL_CONTAINER(row), ewl_row_resize_cb);
 
-	ewl_object_set_fill_policy(EWL_OBJECT(row), EWL_FLAG_FILL_HFILL);
+	ewl_object_fill_policy_set(EWL_OBJECT(row), EWL_FLAG_FILL_HFILL);
 
 	ewl_callback_append(EWL_WIDGET(row), EWL_CALLBACK_CONFIGURE,
 			ewl_row_configure_cb, NULL);
@@ -87,7 +87,7 @@ ewl_row_set_header(Ewl_Row *row, Ewl_Row *header)
 		ewl_callback_append(EWL_WIDGET(header), EWL_CALLBACK_DESTROY,
 				ewl_row_header_destroy_cb, row);
 
-		ewl_object_set_fill_policy(EWL_OBJECT(row),
+		ewl_object_fill_policy_set(EWL_OBJECT(row),
 					   EWL_FLAG_FILL_HFILL);
 
 		ewl_widget_configure(EWL_WIDGET(header));
@@ -183,22 +183,22 @@ ewl_row_configure_cb(Ewl_Widget * w, void *ev_data, void *user_data)
 			 * Attempt to divvy up remaining space equally among
 			 * remaining children.
 			 */
-			portion = MAX(ewl_object_preferred_w_sum_get(child),
+			portion = MAX(ewl_object_preferred_w_get(child),
 					remains / nodes);
-			ewl_object_request_position(child, x, CURRENT_Y(w));
-			ewl_object_request_w(child, portion);
+			ewl_object_position_request(child, x, CURRENT_Y(w));
+			ewl_object_w_request(child, portion);
 
-			ewl_object_request_h(child, CURRENT_H(w));
-			x = ewl_object_get_current_x(child) +
-				ewl_object_get_current_w(child);
+			ewl_object_h_request(child, CURRENT_H(w));
+			x = ewl_object_current_x_get(child) +
+				ewl_object_current_w_get(child);
 
 			remains -= CURRENT_W(child);
 			nodes--;
 		}
 
 		if (remains > 0 && (child = ecore_list_goto_last(c->children)))
-			ewl_object_request_w(child,
-					ewl_object_get_current_w(child) +
+			ewl_object_w_request(child,
+					ewl_object_current_w_get(child) +
 					remains);
 	}
 
@@ -217,7 +217,7 @@ ewl_row_header_configure_cb(Ewl_Widget * w, void *ev_data, void *user_data)
 	Ewl_Row *row;
 
 	row = EWL_ROW(user_data);
-	ewl_object_set_preferred_w(EWL_OBJECT(w), CURRENT_W(row->header));
+	ewl_object_preferred_inner_w_set(EWL_OBJECT(w), CURRENT_W(row->header));
 	ewl_widget_configure(EWL_WIDGET(row));
 }
 
@@ -239,8 +239,8 @@ ewl_row_child_show_cb(Ewl_Container *c, Ewl_Widget *w)
 	row = EWL_ROW(c);
 
 	ewl_container_prefer_largest(c, EWL_ORIENTATION_VERTICAL);
-	ewl_object_set_preferred_w(EWL_OBJECT(c), PREFERRED_W(c) +
-			ewl_object_preferred_w_sum_get(EWL_OBJECT(w)));
+	ewl_object_preferred_inner_w_set(EWL_OBJECT(c), PREFERRED_W(c) +
+			ewl_object_preferred_w_get(EWL_OBJECT(w)));
 }
 
 void
@@ -254,7 +254,7 @@ ewl_row_resize_cb(Ewl_Container *c, Ewl_Widget *w, int size, Ewl_Orientation o)
 	if (o == EWL_ORIENTATION_VERTICAL)
 		ewl_container_prefer_largest(c, EWL_ORIENTATION_VERTICAL);
 	else
-		ewl_object_set_preferred_w(EWL_OBJECT(c),
+		ewl_object_preferred_inner_w_set(EWL_OBJECT(c),
 				PREFERRED_W(c) + size);
 
 	DLEAVE_FUNCTION(DLEVEL_STABLE);

@@ -124,7 +124,7 @@ ewl_dialog_init (Ewl_Dialog *dialog, Ewl_Position pos)
 	    break;
 	  }
 	}
-      ewl_object_set_fill_policy (EWL_OBJECT (dialog->separator), 
+      ewl_object_fill_policy_set(EWL_OBJECT (dialog->separator), 
 				  EWL_FLAG_FILL_SHRINK);
       ewl_widget_show(dialog->separator);
     }
@@ -137,7 +137,7 @@ ewl_dialog_init (Ewl_Dialog *dialog, Ewl_Position pos)
 	  {
 	    ewl_container_prepend_child (EWL_CONTAINER (box), 
 					dialog->action_area);
-	    ewl_object_set_fill_policy (EWL_OBJECT (dialog->action_area), 
+	    ewl_object_fill_policy_set (EWL_OBJECT (dialog->action_area), 
 					EWL_FLAG_FILL_VFILL);
 	    break;
 	  }
@@ -145,7 +145,7 @@ ewl_dialog_init (Ewl_Dialog *dialog, Ewl_Position pos)
 	  {
 	    ewl_container_prepend_child (EWL_CONTAINER (box), 
 					dialog->action_area);
-	    ewl_object_set_fill_policy (EWL_OBJECT (dialog->action_area), 
+	    ewl_object_fill_policy_set (EWL_OBJECT (dialog->action_area), 
 					EWL_FLAG_FILL_HFILL);
 	    break;
 	  }
@@ -153,7 +153,7 @@ ewl_dialog_init (Ewl_Dialog *dialog, Ewl_Position pos)
 	  {
 	    ewl_container_append_child (EWL_CONTAINER (box), 
 					 dialog->action_area);
-	    ewl_object_set_fill_policy (EWL_OBJECT (dialog->action_area), 
+	    ewl_object_fill_policy_set (EWL_OBJECT (dialog->action_area), 
 					EWL_FLAG_FILL_VFILL);
 	    break;
 	  }
@@ -161,7 +161,7 @@ ewl_dialog_init (Ewl_Dialog *dialog, Ewl_Position pos)
 	  {
 	    ewl_container_append_child (EWL_CONTAINER (box), 
 					dialog->action_area);
-	    ewl_object_set_fill_policy (EWL_OBJECT (dialog->action_area), 
+	    ewl_object_fill_policy_set (EWL_OBJECT (dialog->action_area), 
 					EWL_FLAG_FILL_HFILL);
 	    break;
 	  }
@@ -173,7 +173,7 @@ ewl_dialog_init (Ewl_Dialog *dialog, Ewl_Position pos)
       spacer = ewl_spacer_new();
       ewl_container_append_child(EWL_CONTAINER(dialog->action_area),
 				 spacer);
-      ewl_object_set_fill_policy (EWL_OBJECT (spacer), EWL_FLAG_FILL_FILL);
+      ewl_object_fill_policy_set (EWL_OBJECT (spacer), EWL_FLAG_FILL_FILL);
       ewl_widget_show (spacer);
 
       ewl_container_set_redirect (EWL_CONTAINER (dialog), 
@@ -245,8 +245,8 @@ ewl_dialog_set_button (char *button_text,
   DENTER_FUNCTION(DLEVEL_STABLE);
 
   button = ewl_button_with_stock_new (button_text);
-  ewl_object_set_padding (EWL_OBJECT (button), 0, 3, 3, 3);
-  ewl_object_set_fill_policy (EWL_OBJECT (button),
+  ewl_object_padding_set(EWL_OBJECT (button), 0, 3, 3, 3);
+  ewl_object_fill_policy_set(EWL_OBJECT (button),
 			      EWL_FLAG_FILL_VFILL || EWL_FLAG_FILL_SHRINK);
 
   EWL_BUTTON_STOCK (button)->response_id = response_id;
@@ -274,10 +274,10 @@ ewl_dialog_add_button (Ewl_Dialog *dialog, char *button_text,
     return NULL;
 
   button = ewl_button_with_stock_new (button_text);
-  ewl_object_set_padding (EWL_OBJECT (button), 0, 3, 3, 3);
+  ewl_object_padding_set (EWL_OBJECT (button), 0, 3, 3, 3);
   ewl_container_append_child (EWL_CONTAINER (dialog->action_area),
 			      button);
-  ewl_object_set_fill_policy (EWL_OBJECT (button),
+  ewl_object_fill_policy_set (EWL_OBJECT (button),
 			      EWL_FLAG_FILL_VFILL || EWL_FLAG_FILL_SHRINK);
 
   ewl_widget_set_data (button, "RESPONSE_ID", (void *)response_id);
@@ -307,10 +307,10 @@ ewl_dialog_add_button_left (Ewl_Dialog *dialog, char *button_text,
     return NULL;
 
   button = ewl_button_with_stock_new (button_text);
-  ewl_object_set_padding (EWL_OBJECT (button), 0, 3, 3, 3);
+  ewl_object_padding_set (EWL_OBJECT (button), 0, 3, 3, 3);
   ewl_container_prepend_child (EWL_CONTAINER (dialog->action_area),
 			       button);
-  ewl_object_set_fill_policy (EWL_OBJECT (button),
+  ewl_object_fill_policy_set (EWL_OBJECT (button),
 			      EWL_FLAG_FILL_VFILL || EWL_FLAG_FILL_SHRINK);
 
   ewl_widget_set_data (button, "RESPONSE_ID", (void *)response_id);
@@ -372,7 +372,7 @@ ewl_dialog_set_has_separator (Ewl_Dialog *dialog,
       dialog->separator = ewl_hseparator_new();
       ewl_container_insert_child(EWL_CONTAINER(dialog->vbox),
 				 dialog->separator, n);
-      ewl_object_set_fill_policy (EWL_OBJECT (dialog->separator), 
+      ewl_object_fill_policy_set (EWL_OBJECT (dialog->separator), 
 				  EWL_FLAG_FILL_SHRINK);
       ewl_widget_show(dialog->separator);
       

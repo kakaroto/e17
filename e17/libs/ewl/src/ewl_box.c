@@ -256,11 +256,11 @@ void ewl_box_set_spacing(Ewl_Box * b, int s)
 	if (nodes) {
 		nodes--;
 		if (b->orientation == EWL_ORIENTATION_HORIZONTAL)
-			ewl_object_set_preferred_w(EWL_OBJECT(w),
+			ewl_object_preferred_inner_w_set(EWL_OBJECT(w),
 					PREFERRED_W(w) - (nodes * b->spacing) +
 					(nodes * s));
 		else
-			ewl_object_set_preferred_h(EWL_OBJECT(w),
+			ewl_object_preferred_inner_h_set(EWL_OBJECT(w),
 					PREFERRED_H(w) - (nodes * b->spacing) +
 					(nodes * s));
 	}
@@ -460,7 +460,7 @@ ewl_box_configure_calc(Ewl_Box * b, int *fill_size, int *align_size)
 			 * If it has a fill policy for a direction we're
 			 * concerned with, add it to the fill list.
 			 */
-			if (ewl_object_get_fill_policy(child) & info->f_policy)
+			if (ewl_object_fill_policy_get(child) & info->f_policy)
 				ecore_list_append(spread, child);
 		}
 	}
@@ -625,17 +625,17 @@ ewl_box_configure_child(Ewl_Box * b, Ewl_Object * c, int *x, int *y,
 	 * orientation. The first one is the simplest as it it a
 	 * direct use of the current coordinates.
 	 */
-	if (ewl_object_get_alignment(c) & info->a1_align) {
-		ewl_object_request_position(c, *x, *y);
+	if (ewl_object_alignment_get(c) & info->a1_align) {
+		ewl_object_position_request(c, *x, *y);
 	}
 
 	/*
 	 * The second one is aligned against the furthest edge, so
 	 * there is some calculation to be made.
 	 */
-	else if (ewl_object_get_alignment(c) & info->a3_align) {
+	else if (ewl_object_alignment_get(c) & info->a3_align) {
 		*align += *align_size - info->align_ask(c);
-		ewl_object_request_position(c, *x, *y);
+		ewl_object_position_request(c, *x, *y);
 		*align -= *align_size - info->align_ask(c);
 	}
 
@@ -644,7 +644,7 @@ ewl_box_configure_child(Ewl_Box * b, Ewl_Object * c, int *x, int *y,
 	 */
 	else {
 		*align += (*align_size - info->align_ask(c)) / 2;
-		ewl_object_request_position(c, *x, *y);
+		ewl_object_position_request(c, *x, *y);
 		*align -= (*align_size - info->align_ask(c)) / 2;
 	}
 
@@ -679,14 +679,14 @@ ewl_box_child_show_cb(Ewl_Container * c, Ewl_Widget * w)
 	 */
 	if (EWL_BOX(c)->orientation == EWL_ORIENTATION_HORIZONTAL) {
 		size = PREFERRED_W(c) +
-			ewl_object_preferred_w_sum_get(EWL_OBJECT(w)) + space;
-		ewl_object_set_preferred_w(EWL_OBJECT(c), size);
+			ewl_object_preferred_w_get(EWL_OBJECT(w)) + space;
+		ewl_object_preferred_inner_w_set(EWL_OBJECT(c), size);
 		ewl_container_prefer_largest(c, EWL_ORIENTATION_VERTICAL);
 	}
 	else {
 		size = PREFERRED_H(c) +
-			ewl_object_preferred_h_sum_get(EWL_OBJECT(w)) + space;
-		ewl_object_set_preferred_h(EWL_OBJECT(c), size);
+			ewl_object_preferred_h_get(EWL_OBJECT(w)) + space;
+		ewl_object_preferred_inner_h_set(EWL_OBJECT(c), size);
 		ewl_container_prefer_largest(c, EWL_ORIENTATION_HORIZONTAL);
 	}
 
@@ -709,11 +709,11 @@ ewl_box_child_homogeneous_show_cb(Ewl_Container * c, Ewl_Widget * w)
 	ewl_container_prefer_largest(c, EWL_ORIENTATION_VERTICAL);
 	if (EWL_BOX(c)->orientation == EWL_ORIENTATION_HORIZONTAL) {
 		size = (PREFERRED_W(c) + space) * numc - space;
-		ewl_object_set_preferred_w(EWL_OBJECT(c), size);
+		ewl_object_preferred_inner_w_set(EWL_OBJECT(c), size);
 	}
 	else {
 		size = (PREFERRED_H(c) + space) * numc - space;
-		ewl_object_set_preferred_h(EWL_OBJECT(c), size);
+		ewl_object_preferred_inner_h_set(EWL_OBJECT(c), size);
 	}
 
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
@@ -731,17 +731,17 @@ ewl_box_child_hide_cb(Ewl_Container * c, Ewl_Widget * w)
 		space = b->spacing;
 
 	if (b->orientation == EWL_ORIENTATION_HORIZONTAL) {
-		ewl_object_set_preferred_w(EWL_OBJECT(c),
+		ewl_object_preferred_inner_w_set(EWL_OBJECT(c),
 				PREFERRED_W(c) -
-				ewl_object_preferred_w_sum_get(EWL_OBJECT(w)) -
+				ewl_object_preferred_w_get(EWL_OBJECT(w)) -
 				space);
 
 		ewl_container_prefer_largest(c, EWL_ORIENTATION_VERTICAL);
 	}
 	else {
-		ewl_object_set_preferred_h(EWL_OBJECT(c),
+		ewl_object_preferred_inner_h_set(EWL_OBJECT(c),
 				PREFERRED_H(c) - 
-				ewl_object_preferred_h_sum_get(EWL_OBJECT(w)) -
+				ewl_object_preferred_h_get(EWL_OBJECT(w)) -
 				space);
 		ewl_container_prefer_largest(c, EWL_ORIENTATION_HORIZONTAL);
 	}
@@ -829,18 +829,18 @@ ewl_box_setup()
 		 * These functions allow for asking the dimensions of the
 		 * children.
 		 */
-		vertical->fill_ask = ewl_object_get_current_h;
+		vertical->fill_ask = ewl_object_current_h_get;
 
-		vertical->align_ask = ewl_object_get_current_w;
+		vertical->align_ask = ewl_object_current_w_get;
 
 		/*
 		 * These functions allow for setting the dimensions of the
 		 * children.
 		 */
-		vertical->fill_set = ewl_object_request_h;
-		vertical->pref_fill_set = ewl_object_set_preferred_h;
+		vertical->fill_set = ewl_object_h_request;
+		vertical->pref_fill_set = ewl_object_preferred_inner_h_set;
 
-		vertical->align_set = ewl_object_request_w;
+		vertical->align_set = ewl_object_w_request;
 	}
 
 	if (!horizontal) {
@@ -870,17 +870,17 @@ ewl_box_setup()
 		 * These functions allow for asking the dimensions of the
 		 * children.
 		 */
-		horizontal->fill_ask = ewl_object_get_current_w;
+		horizontal->fill_ask = ewl_object_current_w_get;
 
-		horizontal->align_ask = ewl_object_get_current_h;
+		horizontal->align_ask = ewl_object_current_h_get;
 
 		/*
 		 * These functions allow for setting the dimensions of the
 		 * children.
 		 */
-		horizontal->fill_set = ewl_object_request_w;
-		horizontal->pref_fill_set = ewl_object_set_preferred_w;
+		horizontal->fill_set = ewl_object_w_request;
+		horizontal->pref_fill_set = ewl_object_preferred_inner_w_set;
 
-		horizontal->align_set = ewl_object_request_h;
+		horizontal->align_set = ewl_object_h_request;
 	}
 }

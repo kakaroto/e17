@@ -378,7 +378,7 @@ static void ewl_media_size_update(Ewl_Media *m)
 	int width, height;
 	emotion_object_size_get(m->video, &width, &height);
 	if (width && height)
-		ewl_object_set_preferred_size(EWL_OBJECT(m), width, height);
+		ewl_object_preferred_inner_size_set(EWL_OBJECT(m), width, height);
 }
 
 static void ewl_media_update_timer_cb(void *data, Evas_Object *obj, void *event_info)

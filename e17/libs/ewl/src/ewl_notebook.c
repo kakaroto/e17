@@ -49,7 +49,7 @@ int ewl_notebook_init(Ewl_Notebook * n)
 	ewl_container_hide_notify(EWL_CONTAINER(w),
 				  ewl_notebook_child_show_cb);
 
-	ewl_object_set_fill_policy(EWL_OBJECT(w), EWL_FLAG_FILL_FILL);
+	ewl_object_fill_policy_set(EWL_OBJECT(w), EWL_FLAG_FILL_FILL);
 
 	/*
 	 * Set the default position of the tabs.
@@ -63,9 +63,9 @@ int ewl_notebook_init(Ewl_Notebook * n)
 	n->tab_box = ewl_hbox_new();
 	if (n->tab_box) {
 		ewl_widget_set_internal(n->tab_box, TRUE);
-		ewl_object_set_fill_policy(EWL_OBJECT(n->tab_box),
+		ewl_object_fill_policy_set(EWL_OBJECT(n->tab_box),
 					   EWL_FLAG_FILL_NONE);
-		ewl_object_set_alignment(EWL_OBJECT(n->tab_box),
+		ewl_object_alignment_set(EWL_OBJECT(n->tab_box),
 					 EWL_FLAG_ALIGN_LEFT |
 					 EWL_FLAG_ALIGN_TOP);
 		ewl_container_append_child(EWL_CONTAINER(n), n->tab_box);
@@ -400,7 +400,7 @@ void ewl_notebook_set_tabs_alignment(Ewl_Notebook * n, unsigned int a)
 
 	w = EWL_WIDGET(n);
 
-	ewl_object_set_alignment(EWL_OBJECT(n->tab_box), a);
+	ewl_object_alignment_set(EWL_OBJECT(n->tab_box), a);
 
 	ewl_widget_configure(w);
 
@@ -422,7 +422,7 @@ unsigned int ewl_notebook_get_tabs_alignment(Ewl_Notebook * n)
 
 	w = EWL_WIDGET(n);
 
-	DRETURN_INT(ewl_object_get_alignment(EWL_OBJECT(n->tab_box)),
+	DRETURN_INT(ewl_object_alignment_get(EWL_OBJECT(n->tab_box)),
 		    DLEVEL_TESTING);
 }
 
@@ -583,7 +583,7 @@ void ewl_notebook_set_visible_page(Ewl_Notebook *n, int t)
 	ecore_list_goto_first(c->children);
 	while ((child = ecore_list_next(c->children))) {
 		if (child != n->tab_box &&
-				ewl_object_get_flags(EWL_OBJECT(child),
+				ewl_object_flags_get(EWL_OBJECT(child),
 						EWL_FLAG_QUEUED_DSCHEDULED)) {
 			if (i == t)
 				break;
@@ -662,8 +662,8 @@ ewl_notebook_configure_top_cb(Ewl_Widget * w, void *ev_data, void *user_data)
 	width = CURRENT_W(n);
 	height = CURRENT_H(n) / 2;
 
-	ewl_object_request_size(EWL_OBJECT(n->tab_box), width, height);
-	height = ewl_object_get_current_h(EWL_OBJECT(n->tab_box));
+	ewl_object_size_request(EWL_OBJECT(n->tab_box), width, height);
+	height = ewl_object_current_h_get(EWL_OBJECT(n->tab_box));
 
 	ewl_object_place(EWL_OBJECT(n->tab_box), CURRENT_X(w), CURRENT_Y(w),
 			 width, height);
@@ -672,7 +672,7 @@ ewl_notebook_configure_top_cb(Ewl_Widget * w, void *ev_data, void *user_data)
 	height = CURRENT_H(w) - height;
 
 	if (n->visible_page)
-		ewl_object_request_geometry(EWL_OBJECT(n->visible_page),
+		ewl_object_geometry_request(EWL_OBJECT(n->visible_page),
 				x, y, width, height);
 
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
@@ -693,8 +693,8 @@ ewl_notebook_configure_bottom_cb(Ewl_Widget * w, void *ev_data, void *user_data)
 	width = CURRENT_W(n);
 	height = CURRENT_H(n) / 2;
 
-	ewl_object_request_size(EWL_OBJECT(n->tab_box), width, height);
-	height = ewl_object_get_current_h(EWL_OBJECT(n->tab_box));
+	ewl_object_size_request(EWL_OBJECT(n->tab_box), width, height);
+	height = ewl_object_current_h_get(EWL_OBJECT(n->tab_box));
 
 	x = CURRENT_X(w);
 	y = CURRENT_Y(w) + height;
@@ -707,7 +707,7 @@ ewl_notebook_configure_bottom_cb(Ewl_Widget * w, void *ev_data, void *user_data)
 	height = CURRENT_H(w) - height;
 
 	if (n->visible_page)
-		ewl_object_request_geometry(EWL_OBJECT(n->visible_page),
+		ewl_object_geometry_request(EWL_OBJECT(n->visible_page),
 				x, y, width, height);
 
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
@@ -728,8 +728,8 @@ ewl_notebook_configure_left_cb(Ewl_Widget * w, void *ev_data, void *user_data)
 	width = CURRENT_W(n) / 2;
 	height = CURRENT_H(n);
 
-	ewl_object_request_size(EWL_OBJECT(n->tab_box), width, height);
-	width = ewl_object_get_current_w(EWL_OBJECT(n->tab_box));
+	ewl_object_size_request(EWL_OBJECT(n->tab_box), width, height);
+	width = ewl_object_current_w_get(EWL_OBJECT(n->tab_box));
 
 	ewl_object_place(EWL_OBJECT(n->tab_box), CURRENT_X(w), CURRENT_Y(w),
 			 width, height);
@@ -738,7 +738,7 @@ ewl_notebook_configure_left_cb(Ewl_Widget * w, void *ev_data, void *user_data)
 	width = CURRENT_W(w) - width;
 
 	if (n->visible_page)
-		ewl_object_request_geometry(EWL_OBJECT(n->visible_page),
+		ewl_object_geometry_request(EWL_OBJECT(n->visible_page),
 				x, y, width, height);
 }
 
@@ -757,8 +757,8 @@ ewl_notebook_configure_right_cb(Ewl_Widget * w, void *ev_data, void *user_data)
 	width = CURRENT_W(n) / 2;
 	height = CURRENT_H(n);
 
-	ewl_object_request_size(EWL_OBJECT(n->tab_box), width, height);
-	width = ewl_object_get_current_w(EWL_OBJECT(n->tab_box));
+	ewl_object_size_request(EWL_OBJECT(n->tab_box), width, height);
+	width = ewl_object_current_w_get(EWL_OBJECT(n->tab_box));
 
 	ewl_object_place(EWL_OBJECT(n->tab_box),
 			 CURRENT_X(w) + CURRENT_W(w) - width, CURRENT_Y(w),
@@ -768,7 +768,7 @@ ewl_notebook_configure_right_cb(Ewl_Widget * w, void *ev_data, void *user_data)
 	width = CURRENT_W(w) - width;
 
 	if (n->visible_page)
-		ewl_object_request_geometry(EWL_OBJECT(n->visible_page),
+		ewl_object_geometry_request(EWL_OBJECT(n->visible_page),
 				x, y, width, height);
 }
 
@@ -793,9 +793,9 @@ ewl_notebook_child_show_cb(Ewl_Container *c, Ewl_Widget *w)
 		}
 
 		if (VISIBLE(n->tab_box))
-			ewl_object_set_preferred_w(EWL_OBJECT(c),
+			ewl_object_preferred_inner_w_set(EWL_OBJECT(c),
 					PREFERRED_W(c) +
-					ewl_object_preferred_w_sum_get(
+					ewl_object_preferred_w_get(
 						EWL_OBJECT(n->tab_box)));
 	}
 	else {
@@ -807,9 +807,9 @@ ewl_notebook_child_show_cb(Ewl_Container *c, Ewl_Widget *w)
 		}
 
 		if (VISIBLE(n->tab_box))
-			ewl_object_set_preferred_h(EWL_OBJECT(c),
+			ewl_object_preferred_inner_h_set(EWL_OBJECT(c),
 					PREFERRED_H(c) +
-					ewl_object_preferred_w_sum_get(
+					ewl_object_preferred_w_get(
 						EWL_OBJECT(n->tab_box)));
 	}
 
@@ -838,9 +838,9 @@ ewl_notebook_child_resize_cb(Ewl_Container *c, Ewl_Widget *w, int size,
 		}
 
 		if (VISIBLE(n->tab_box))
-			ewl_object_set_preferred_w(EWL_OBJECT(c),
+			ewl_object_preferred_inner_w_set(EWL_OBJECT(c),
 					PREFERRED_W(c) +
-					ewl_object_preferred_w_sum_get(
+					ewl_object_preferred_w_get(
 						EWL_OBJECT(n->tab_box)));
 	}
 	else {
@@ -852,9 +852,9 @@ ewl_notebook_child_resize_cb(Ewl_Container *c, Ewl_Widget *w, int size,
 		}
 
 		if (VISIBLE(n->tab_box))
-			ewl_object_set_preferred_h(EWL_OBJECT(c),
+			ewl_object_preferred_inner_h_set(EWL_OBJECT(c),
 					PREFERRED_H(c) +
-					ewl_object_preferred_w_sum_get(
+					ewl_object_preferred_w_get(
 						EWL_OBJECT(n->tab_box)));
 	}
 

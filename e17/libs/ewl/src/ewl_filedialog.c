@@ -45,7 +45,7 @@ ewl_filedialog_init(Ewl_Filedialog * fd, Ewl_Filedialog_Type type)
 	 * attributes.
 	 */
 	ewl_box_init(EWL_BOX(w), EWL_ORIENTATION_VERTICAL);
-	ewl_object_set_fill_policy(EWL_OBJECT(w), EWL_FLAG_FILL_SHRINK |
+	ewl_object_fill_policy_set(EWL_OBJECT(w), EWL_FLAG_FILL_SHRINK |
 						  EWL_FLAG_FILL_FILL);
 	ewl_widget_set_appearance (EWL_WIDGET (w), "filedialog");
 	fd->type = type;
@@ -55,7 +55,7 @@ ewl_filedialog_init(Ewl_Filedialog * fd, Ewl_Filedialog_Type type)
 	 */
 	vbox = ewl_vbox_new ();
 	ewl_widget_set_internal(vbox, TRUE);
-	ewl_object_set_fill_policy(EWL_OBJECT(vbox), EWL_FLAG_FILL_SHRINK |
+	ewl_object_fill_policy_set(EWL_OBJECT(vbox), EWL_FLAG_FILL_SHRINK |
 						     EWL_FLAG_FILL_FILL);
 	ewl_container_append_child(EWL_CONTAINER(fd), vbox);
 	ewl_widget_show (vbox);
@@ -63,7 +63,7 @@ ewl_filedialog_init(Ewl_Filedialog * fd, Ewl_Filedialog_Type type)
 	fd->path_label = ewl_text_new ("");
 	ewl_widget_set_internal(fd->path_label, TRUE);
 	ewl_container_append_child(EWL_CONTAINER(vbox), fd->path_label);
-	ewl_object_set_padding(EWL_OBJECT(fd->path_label), 2, 2, 2, 2);
+	ewl_object_padding_set(EWL_OBJECT(fd->path_label), 2, 2, 2, 2);
 	ewl_widget_show (fd->path_label);
 
 	hbox = ewl_hbox_new();
@@ -76,15 +76,17 @@ ewl_filedialog_init(Ewl_Filedialog * fd, Ewl_Filedialog_Type type)
 	 * This box will be redirected to, to allow users to pack additional
 	 * buttons and widgets inside the filedialog.
 	 */
+	/*
 	fd->decor_box = ewl_vbox_new();
 	ewl_widget_set_internal(fd->decor_box, TRUE);
-	ewl_object_set_fill_policy(EWL_OBJECT(fd->decor_box),
+	ewl_object_fill_policy_set(EWL_OBJECT(fd->decor_box),
 			EWL_FLAG_FILL_VFILL);
 	ewl_box_set_spacing(EWL_BOX(fd->decor_box), 4);
 	ewl_object_set_padding(EWL_OBJECT(fd->decor_box), 10, 10, 10, 10);
-	ewl_object_set_alignment(EWL_OBJECT(fd->decor_box), EWL_FLAG_ALIGN_RIGHT);
+	ewl_object_alignment_set(EWL_OBJECT(fd->decor_box), EWL_FLAG_ALIGN_RIGHT);
 	ewl_container_append_child(EWL_CONTAINER(hbox), fd->decor_box);
 	ewl_widget_show(fd->decor_box);
+	*/
 
 	/*
 	 * Display the lists of directories and files.
@@ -103,11 +105,11 @@ ewl_filedialog_init(Ewl_Filedialog * fd, Ewl_Filedialog_Type type)
 	 */
 	fd->button_box = ewl_hbox_new();
 	ewl_widget_set_internal(fd->button_box, TRUE);
-	ewl_object_set_fill_policy(EWL_OBJECT(fd->button_box),
+	ewl_object_fill_policy_set(EWL_OBJECT(fd->button_box),
 			EWL_FLAG_FILL_HFILL | EWL_FLAG_FILL_HSHRINK);
 	ewl_box_set_spacing(EWL_BOX(fd->button_box), 4);
-	ewl_object_set_padding(EWL_OBJECT(fd->button_box), 10, 10, 10, 10);
-	ewl_object_set_alignment(EWL_OBJECT(fd->button_box), EWL_FLAG_ALIGN_RIGHT);
+	ewl_object_padding_set(EWL_OBJECT(fd->button_box), 10, 10, 10, 10);
+	ewl_object_alignment_set(EWL_OBJECT(fd->button_box), EWL_FLAG_ALIGN_RIGHT);
 	ewl_container_append_child(EWL_CONTAINER(vbox), fd->button_box);
 	ewl_widget_show(fd->button_box);
 
@@ -124,7 +126,7 @@ ewl_filedialog_init(Ewl_Filedialog * fd, Ewl_Filedialog_Type type)
 	else
 		fd->ok = ewl_button_new("Save");
 	ewl_widget_set_internal(fd->ok, TRUE);
-	ewl_object_set_fill_policy(EWL_OBJECT(fd->ok), EWL_FLAG_FILL_NONE);
+	ewl_object_fill_policy_set(EWL_OBJECT(fd->ok), EWL_FLAG_FILL_NONE);
 	ewl_callback_append(fd->ok, EWL_CALLBACK_CLICKED, ewl_filedialog_ok_cb,
 			    fd);
 	ewl_container_append_child(EWL_CONTAINER(fd->button_box), fd->ok);
@@ -132,7 +134,7 @@ ewl_filedialog_init(Ewl_Filedialog * fd, Ewl_Filedialog_Type type)
 
 	fd->cancel = ewl_button_new("Cancel");
 	ewl_widget_set_internal(fd->cancel, TRUE);
-	ewl_object_set_fill_policy(EWL_OBJECT(fd->cancel), EWL_FLAG_FILL_NONE);
+	ewl_object_fill_policy_set(EWL_OBJECT(fd->cancel), EWL_FLAG_FILL_NONE);
 	ewl_callback_append(fd->cancel, EWL_CALLBACK_CLICKED,
 				    ewl_filedialog_cancel_cb, fd);
 	ewl_container_append_child(EWL_CONTAINER(fd->button_box), fd->cancel);
@@ -142,8 +144,10 @@ ewl_filedialog_init(Ewl_Filedialog * fd, Ewl_Filedialog_Type type)
 	 * Redirect incoming widgets to the decoration box to allow for
 	 * special purpose widgets along the left side.
 	 */
+	/*
 	ewl_container_set_redirect(EWL_CONTAINER(fd),
 				   EWL_CONTAINER(fd->decor_box));
+				   */
 
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }

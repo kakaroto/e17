@@ -97,19 +97,19 @@ void ewl_fileselector_init(Ewl_Fileselector * fs)
 	ewl_box_init(EWL_BOX(w), EWL_ORIENTATION_HORIZONTAL);
 	ewl_widget_set_appearance(w, "fileselector");
 	ewl_box_set_homogeneous(EWL_BOX(w), TRUE);
-	ewl_object_set_fill_policy(EWL_OBJECT(w), EWL_FLAG_FILL_SHRINK |
+	ewl_object_fill_policy_set(EWL_OBJECT(w), EWL_FLAG_FILL_SHRINK |
 				                  EWL_FLAG_FILL_FILL);
 
 	fs->dirs = ewl_tree_new (1);
 	ewl_tree_set_headers (EWL_TREE (fs->dirs), head_dirs);
 	ewl_container_append_child(EWL_CONTAINER(w), fs->dirs);
-	ewl_object_set_padding(EWL_OBJECT(fs->dirs), 2, 2, 2, 2);
+	ewl_object_padding_set(EWL_OBJECT(fs->dirs), 2, 2, 2, 2);
 	ewl_widget_show (fs->dirs);
 
 	fs->files = ewl_tree_new (1);
 	ewl_tree_set_headers (EWL_TREE (fs->files), head_files);
 	ewl_container_append_child(EWL_CONTAINER(w), fs->files);
-	ewl_object_set_padding(EWL_OBJECT(fs->files), 2, 2, 2, 2);
+	ewl_object_padding_set(EWL_OBJECT(fs->files), 2, 2, 2, 2);
 	ewl_widget_show (fs->files);
 
 	ewl_callback_append(w, EWL_CALLBACK_REALIZE,
@@ -223,7 +223,7 @@ void ewl_fileselector_set_directory(Ewl_Fileselector * fs, char *path)
 			continue;
 		
 		items[0] = ewl_text_new (dentries[num]->d_name);
-		ewl_object_set_fill_policy(EWL_OBJECT(items[0]),
+		ewl_object_fill_policy_set(EWL_OBJECT(items[0]),
 					   EWL_FLAG_FILL_HFILL);
 		ewl_widget_show (items[0]);
 		

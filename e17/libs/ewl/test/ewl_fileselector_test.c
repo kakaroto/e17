@@ -39,7 +39,7 @@ __create_fileselector_test_window(Ewl_Widget * w, void *ev_data,
 	ewl_widget_show(fs_win);
 
 	fs = ewl_fileselector_new(__file_clicked);
-	ewl_object_set_fill_policy(EWL_OBJECT(fs), EWL_FLAG_FILL_FILL);
+	ewl_object_fill_policy_set(EWL_OBJECT(fs), EWL_FLAG_FILL_FILL);
 	ewl_container_append_child(EWL_CONTAINER(fs_win), fs);
 	ewl_widget_show(fs);
 

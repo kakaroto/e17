@@ -38,7 +38,7 @@ void ewl_menu_base_init(Ewl_Menu_Base * menu, char *image, char *title)
 	 * popup part of the menu when the menu is expanded.
 	 */
 	menu->popbox = ewl_vbox_new();
-	ewl_object_set_alignment(EWL_OBJECT(menu->popbox),
+	ewl_object_alignment_set(EWL_OBJECT(menu->popbox),
 				 EWL_FLAG_ALIGN_LEFT | EWL_FLAG_ALIGN_TOP);
 	ewl_widget_show(menu->popbox);
 
@@ -100,7 +100,7 @@ int ewl_menu_item_init(Ewl_Menu_Item * item, char *image, char *text)
 				  ewl_menu_item_child_show_cb);
 	ewl_container_resize_notify(EWL_CONTAINER(item),
 				  ewl_menu_item_child_resize_cb);
-	ewl_object_set_fill_policy(EWL_OBJECT(item), EWL_FLAG_FILL_HFILL);
+	ewl_object_fill_policy_set(EWL_OBJECT(item), EWL_FLAG_FILL_HFILL);
 
 	ewl_callback_append(EWL_WIDGET(item), EWL_CALLBACK_CONFIGURE,
 			    ewl_menu_item_configure_cb, NULL);
@@ -133,7 +133,7 @@ int ewl_menu_item_init(Ewl_Menu_Item * item, char *image, char *text)
 
 	if (item->text) {
 		ewl_container_append_child(EWL_CONTAINER(item), item->text);
-		ewl_object_set_alignment(EWL_OBJECT(item->text),
+		ewl_object_alignment_set(EWL_OBJECT(item->text),
 				EWL_FLAG_ALIGN_LEFT);
 		ewl_widget_show(item->text);
 	}
@@ -171,8 +171,8 @@ static int ewl_menu_item_create_image( Ewl_Menu_Item *item,
 	 * setup. We don't always want to create one, in the case that a
 	 * separator is going to be packed in here instead.
 	 */
-	ewl_object_set_alignment(EWL_OBJECT(item->icon), EWL_FLAG_ALIGN_CENTER);
-	ewl_object_set_maximum_size(EWL_OBJECT(item->icon), 20, 20);
+	ewl_object_alignment_set(EWL_OBJECT(item->icon), EWL_FLAG_ALIGN_CENTER);
+	ewl_object_maximum_size_set(EWL_OBJECT(item->icon), 20, 20);
 	ewl_container_prepend_child(EWL_CONTAINER(item), item->icon);
 	ewl_widget_show(item->icon);
 
@@ -239,7 +239,7 @@ ewl_menu_item_set_image( Ewl_Menu_Item *item, char *image )
  * @return Returns a new menu item separator on success, NULL on failure.
  * @brief Create a separator menu item
  */
-Ewl_Menu_Separator *ewl_menu_separator_new()
+Ewl_Widget *ewl_menu_separator_new()
 {
 	Ewl_Menu_Separator *sep;
 
@@ -251,7 +251,7 @@ Ewl_Menu_Separator *ewl_menu_separator_new()
 
 	ewl_menu_separator_init(sep);
 
-	DRETURN_PTR(sep, DLEVEL_STABLE);
+	DRETURN_PTR(EWL_WIDGET(sep), DLEVEL_STABLE);
 }
 
 /**
@@ -297,7 +297,7 @@ ewl_menu_item_configure_cb(Ewl_Widget *w, void *ev_data, void *user_data)
 	while ((child = ecore_list_next(c->children))) {
 		int width;
 
-		width = ewl_object_preferred_w_sum_get(EWL_OBJECT(child));
+		width = ewl_object_preferred_w_get(EWL_OBJECT(child));
 		ewl_object_place(EWL_OBJECT(child), x, CURRENT_Y(w), width,
 				 CURRENT_H(w));
 		x += width;
@@ -311,8 +311,8 @@ void ewl_menu_item_child_show_cb(Ewl_Container *parent, Ewl_Widget *child)
 	DENTER_FUNCTION(DLEVEL_STABLE);
 
 	ewl_container_prefer_largest(parent, EWL_ORIENTATION_VERTICAL);
-	ewl_object_set_preferred_w(EWL_OBJECT(parent), PREFERRED_W(parent) +
-			ewl_object_preferred_w_sum_get(EWL_OBJECT(child)));
+	ewl_object_preferred_inner_w_set(EWL_OBJECT(parent), PREFERRED_W(parent) +
+			ewl_object_preferred_w_get(EWL_OBJECT(child)));
 
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
@@ -326,7 +326,7 @@ ewl_menu_item_child_resize_cb(Ewl_Container *parent, Ewl_Widget *child,
 	if (o == EWL_ORIENTATION_VERTICAL)
 		ewl_container_prefer_largest(parent, o);
 	else
-		ewl_object_set_preferred_w(EWL_OBJECT(parent),
+		ewl_object_preferred_inner_w_set(EWL_OBJECT(parent),
 				PREFERRED_W(parent) + size);
 
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
@@ -358,7 +358,7 @@ ewl_menu_base_expand_cb(Ewl_Widget *w, void *ev_data, void *user_data)
 					    ewl_menu_base_popup_hide_cb,
 					    item->inmenu);
 		}
-		ewl_object_set_minimum_w(EWL_OBJECT(menu->popup),
+		ewl_object_minimum_w_set(EWL_OBJECT(menu->popup),
 					 CURRENT_W(menu));
 	}
 

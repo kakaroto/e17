@@ -48,7 +48,7 @@ int ewl_entry_init(Ewl_Entry * e, char *text)
 	ewl_container_resize_notify(EWL_CONTAINER(w),
 				    ewl_entry_child_resize_cb);
 
-	ewl_object_set_fill_policy(EWL_OBJECT(w), EWL_FLAG_FILL_HSHRINK |
+	ewl_object_fill_policy_set(EWL_OBJECT(w), EWL_FLAG_FILL_HSHRINK |
 			EWL_FLAG_FILL_HFILL);
 	ewl_container_intercept_callback(EWL_CONTAINER(w), EWL_CALLBACK_SELECT);
 	ewl_container_intercept_callback(EWL_CONTAINER(w),
@@ -188,7 +188,7 @@ void ewl_entry_configure_cb(Ewl_Widget * w, void *ev_data, void *user_data)
 	/*
 	 * First position the text to a known base position.
 	 */
-	ewl_object_request_geometry(EWL_OBJECT(e->text), xx - e->offset, yy,
+	ewl_object_geometry_request(EWL_OBJECT(e->text), xx - e->offset, yy,
 			ww, hh);
 
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
@@ -221,8 +221,8 @@ void ewl_entry_configure_text_cb(Ewl_Widget * w, void *ev_data, void *user_data)
 	base = ewl_cursor_get_base_position(EWL_CURSOR(e->cursor));
 
 	if (c_spos > l) {
-		ex = sx = ewl_object_get_current_x(EWL_OBJECT(w)) +
-			ewl_object_get_current_w(EWL_OBJECT(w));
+		ex = sx = ewl_object_current_x_get(EWL_OBJECT(w)) +
+			ewl_object_current_w_get(EWL_OBJECT(w));
 		ew = 5;
 	} else {
 
@@ -259,12 +259,12 @@ void ewl_entry_configure_text_cb(Ewl_Widget * w, void *ev_data, void *user_data)
 		e->offset = 0;
 
 	if (dx)
-		ewl_object_request_geometry(EWL_OBJECT(w),
-				ewl_object_get_current_x(EWL_OBJECT(w)) + dx,
+		ewl_object_geometry_request(EWL_OBJECT(w),
+				ewl_object_current_x_get(EWL_OBJECT(w)) + dx,
 				CURRENT_Y(e), CURRENT_W(e), hh);
 
 	ew = (ex + ew) - sx;
-	ewl_object_request_geometry(EWL_OBJECT(e->cursor), sx + dx, yy,
+	ewl_object_geometry_request(EWL_OBJECT(e->cursor), sx + dx, yy,
 			ew, hh);
 
 	e->offset -= dx;
@@ -397,7 +397,7 @@ void ewl_entry_mouse_move_cb(Ewl_Widget * w, void *ev_data, void *user_data)
 	/*
 	 * Check for the button pressed state, otherwise, do nothing.
 	 */
-	if (!(ewl_object_has_state(EWL_OBJECT(e), EWL_FLAG_STATE_PRESSED)) || 
+	if (!(ewl_object_state_has(EWL_OBJECT(e), EWL_FLAG_STATE_PRESSED)) || 
 	    !(e->in_select_mode))
 		DRETURN(DLEVEL_STABLE);
 
@@ -790,9 +790,9 @@ ewl_entry_child_show_cb(Ewl_Container * c, Ewl_Widget * w)
 	e = EWL_ENTRY(c);
 
 	if (e->text == w) {
-		ewl_object_set_preferred_size(EWL_OBJECT(c),
-			   ewl_object_preferred_w_sum_get(EWL_OBJECT(w)),
-			   ewl_object_preferred_h_sum_get(EWL_OBJECT(w)));
+		ewl_object_preferred_inner_size_set(EWL_OBJECT(c),
+			   ewl_object_preferred_w_get(EWL_OBJECT(w)),
+			   ewl_object_preferred_h_get(EWL_OBJECT(w)));
 	}
 
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
@@ -812,11 +812,11 @@ ewl_entry_child_resize_cb(Ewl_Container * entry, Ewl_Widget * w, int size,
 		DRETURN(DLEVEL_STABLE);
 
 	if (o == EWL_ORIENTATION_HORIZONTAL)
-		ewl_object_set_preferred_w(EWL_OBJECT(entry),
-			   ewl_object_preferred_w_sum_get(text));
+		ewl_object_preferred_inner_w_set(EWL_OBJECT(entry),
+			   ewl_object_preferred_w_get(text));
 	else
-		ewl_object_set_preferred_h(EWL_OBJECT(entry),
-			   ewl_object_preferred_h_sum_get(text));
+		ewl_object_preferred_inner_h_set(EWL_OBJECT(entry),
+			   ewl_object_preferred_h_get(text));
 
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
@@ -872,7 +872,7 @@ static int ewl_entry_timer(void *data)
 	value = (double)(direction) * 10.0 * (1 - exp(-dt)) *
 		 ((double)(velocity) / 100.0);
 
-	e->offset = value * ewl_object_get_current_w(EWL_OBJECT(e->text));
+	e->offset = value * ewl_object_current_w_get(EWL_OBJECT(e->text));
 
 	return 1;
 }

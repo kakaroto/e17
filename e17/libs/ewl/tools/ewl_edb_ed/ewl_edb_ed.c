@@ -40,7 +40,7 @@ int main(int argc, char ** argv) {
     ewl_window_set_title(EWL_WINDOW(win), "EWL EDB ed");
     ewl_window_set_class(EWL_WINDOW(win), "EWL_EDB_ed");
     ewl_window_set_name(EWL_WINDOW(win), "EWL_EDB_ed");
-    ewl_object_request_size(EWL_OBJECT(win), 400, 300);
+    ewl_object_size_request(EWL_OBJECT(win), 400, 300);
     ewl_widget_show(win);
 
     box = ewl_vbox_new();
@@ -50,7 +50,7 @@ int main(int argc, char ** argv) {
 	/* box to hold menu */
     menu_box = ewl_hbox_new();
     ewl_container_append_child(EWL_CONTAINER(box), menu_box);
-    ewl_object_set_fill_policy(EWL_OBJECT(menu_box),
+    ewl_object_fill_policy_set(EWL_OBJECT(menu_box),
             EWL_FLAG_FILL_VSHRINK | EWL_FLAG_FILL_HFILL);
     ewl_widget_show(menu_box);
 
@@ -65,7 +65,7 @@ int main(int argc, char ** argv) {
 		};
 	    tree = ewl_tree_new(3);
 	    ewl_container_append_child(EWL_CONTAINER(hbox), tree);
-		ewl_object_set_padding(EWL_OBJECT(tree), 2, 0, 0, 0);
+		ewl_object_padding_set(EWL_OBJECT(tree), 2, 0, 0, 0);
 		ewl_tree_set_headers(EWL_TREE(tree), headers);
 	    ewl_widget_show(tree);
 	}
@@ -77,7 +77,7 @@ int main(int argc, char ** argv) {
     /* create the combo box */
     combo = ewl_combo_new("data type");
     ewl_container_append_child(EWL_CONTAINER(box2), combo);
-	ewl_object_set_padding(EWL_OBJECT(combo), 5, 0, 0, 0);
+	ewl_object_padding_set(EWL_OBJECT(combo), 5, 0, 0, 0);
     ewl_widget_show(combo);
 
     {	
@@ -105,7 +105,7 @@ int main(int argc, char ** argv) {
     /* value entry box */
     val_box = ewl_entry_new("");
     ewl_container_append_child(EWL_CONTAINER(box2), val_box);
-	ewl_object_set_alignment(EWL_OBJECT(val_box), EWL_FLAG_ALIGN_CENTER);
+	ewl_object_alignment_set(EWL_OBJECT(val_box), EWL_FLAG_ALIGN_CENTER);
     ewl_widget_show(val_box);
 
 	/* add/delete buttons on right */
@@ -117,15 +117,15 @@ int main(int argc, char ** argv) {
 		o = ewl_button_new("add");
 		ewl_container_append_child(EWL_CONTAINER(add_del_box), o);
 		ewl_callback_append(o, EWL_CALLBACK_CLICKED, add_cb, NULL);
-		ewl_object_set_fill_policy(EWL_OBJECT(o), EWL_FLAG_FILL_SHRINK);
-		ewl_object_set_padding(EWL_OBJECT(o), 5, 5, 2, 2);
+		ewl_object_fill_policy_set(EWL_OBJECT(o), EWL_FLAG_FILL_SHRINK);
+		ewl_object_padding_set(EWL_OBJECT(o), 5, 5, 2, 2);
 		ewl_widget_show(o);
 
 		o = ewl_button_new("delete");
 		ewl_container_append_child(EWL_CONTAINER(add_del_box), o);
 		ewl_callback_append(o, EWL_CALLBACK_CLICKED, delete_cb, NULL);
-		ewl_object_set_fill_policy(EWL_OBJECT(o), EWL_FLAG_FILL_SHRINK);
-		ewl_object_set_padding(EWL_OBJECT(o), 0, 5, 2, 2);
+		ewl_object_fill_policy_set(EWL_OBJECT(o), EWL_FLAG_FILL_SHRINK);
+		ewl_object_padding_set(EWL_OBJECT(o), 0, 5, 2, 2);
 		ewl_widget_show(o);
 	}
 
@@ -135,8 +135,8 @@ int main(int argc, char ** argv) {
 
         file = ewl_imenu_new(NULL, "file");
         ewl_container_append_child(EWL_CONTAINER(menu_box), file);
-        ewl_object_set_fill_policy(EWL_OBJECT(file), EWL_FLAG_FILL_SHRINK);
-        ewl_object_set_padding(EWL_OBJECT(file), 2, 2, 2, 0);
+        ewl_object_fill_policy_set(EWL_OBJECT(file), EWL_FLAG_FILL_SHRINK);
+        ewl_object_padding_set(EWL_OBJECT(file), 2, 2, 2, 0);
         ewl_widget_show(file);
 
         o = ewl_menu_item_new(NULL, "open");
@@ -167,23 +167,23 @@ int main(int argc, char ** argv) {
 	/* save /quit buttons on bottom */
 	box2 = ewl_hbox_new();
 	ewl_container_append_child(EWL_CONTAINER(box), box2);
-	ewl_object_set_fill_policy(EWL_OBJECT(box2), 
+	ewl_object_fill_policy_set(EWL_OBJECT(box2), 
 						EWL_FLAG_FILL_VSHRINK | EWL_FLAG_FILL_HFILL);
-	ewl_object_set_alignment(EWL_OBJECT(box2), EWL_FLAG_ALIGN_RIGHT);
+	ewl_object_alignment_set(EWL_OBJECT(box2), EWL_FLAG_ALIGN_RIGHT);
 	ewl_widget_show(box2);
 
 	o = ewl_button_with_stock_new(EWL_STOCK_SAVE);
 	ewl_container_append_child(EWL_CONTAINER(box2), o);
 	ewl_callback_append(o, EWL_CALLBACK_CLICKED, save_cb, NULL);
-	ewl_object_set_fill_policy(EWL_OBJECT(o), EWL_FLAG_FILL_SHRINK);
-	ewl_object_set_padding(EWL_OBJECT(o), 5, 5, 2, 2);
+	ewl_object_fill_policy_set(EWL_OBJECT(o), EWL_FLAG_FILL_SHRINK);
+	ewl_object_padding_set(EWL_OBJECT(o), 5, 5, 2, 2);
 	ewl_widget_show(o);
 
 	o = ewl_button_with_stock_new(EWL_STOCK_QUIT);
 	ewl_container_append_child(EWL_CONTAINER(box2), o);
 	ewl_callback_append(o, EWL_CALLBACK_CLICKED, win_del_cb, NULL);
-	ewl_object_set_fill_policy(EWL_OBJECT(o), EWL_FLAG_FILL_SHRINK);
-	ewl_object_set_padding(EWL_OBJECT(o), 0, 5, 2, 2);
+	ewl_object_fill_policy_set(EWL_OBJECT(o), EWL_FLAG_FILL_SHRINK);
+	ewl_object_padding_set(EWL_OBJECT(o), 0, 5, 2, 2);
 	ewl_widget_show(o);
 
 	if (argc > 1)

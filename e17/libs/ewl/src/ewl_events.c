@@ -192,7 +192,7 @@ int ewl_ev_x_window_configure(void *data, int type, void *e)
 	 */
 	if (CURRENT_W(window) != ev->w || CURRENT_H(window) != ev->h) {
 		window->flags |= EWL_WINDOW_USER_CONFIGURE;
-		ewl_object_request_geometry(EWL_OBJECT(window), 0, 0, ev->w,
+		ewl_object_geometry_request(EWL_OBJECT(window), 0, 0, ev->w,
 					    ev->h);
 	}
 
@@ -565,6 +565,10 @@ int ewl_ev_fb_mouse_down(void *data, int type, void *e)
 	if (ev->triple_click)
 		clicks = 3;
 
+	/* Feed a mouse move, since they don't occur prior to mouse down on a
+	 * touchscreen */
+	ewl_embed_feed_mouse_move(embed, ev->x, ev->y, key_modifiers);
+
 	ewl_embed_feed_mouse_down(embed, ev->button, clicks, ev->x, ev->y,
 				  key_modifiers);
 
@@ -594,6 +598,7 @@ int ewl_ev_fb_mouse_up(void *data, int type, void *e)
 	if (!embed)
 		DRETURN_INT(TRUE, DLEVEL_STABLE);
 
+	ewl_embed_feed_mouse_move(embed, ev->x, ev->y, key_modifiers);
 	ewl_embed_feed_mouse_up(embed, ev->button, ev->x, ev->y, key_modifiers);
 
 	DRETURN_INT(TRUE, DLEVEL_STABLE);
