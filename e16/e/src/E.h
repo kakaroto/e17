@@ -26,6 +26,8 @@
 #define _GNU_SOURCE
 #include "config.h"
 
+#define USE_EXT_INIT_WIN 1
+
 #if HAVE_STRDUP
 #define USE_LIBC_STRDUP  1	/* Use libc strdup if present */
 #endif
@@ -44,10 +46,15 @@
 #include <X11/Xlocale.h>
 #include <X11/extensions/shape.h>
 #include <X11/extensions/XShm.h>
+
 #ifdef HAS_XRANDR
 #ifdef HAVE_X11_EXTENSIONS_XRANDR_H
 #define USE_XRANDR 1
 #endif
+#endif
+
+#ifdef HAS_COMPOSITE
+#define USE_COMPOSITE 1
 #endif
 
 #include <Imlib2.h>
@@ -63,11 +70,6 @@
 #define ICLASS_ATTR_GLASS       0x02	/* Glass transparency */
 #define ICLASS_ATTR_NO_CLIP     0x04	/* Don't apply clip mask */
 #define ICLASS_ATTR_USE_CM      0x08	/* Use colormodifier */
-
-#define XSync(d, f) \
-{XImage *__xim; \
-__xim = XGetImage(d, VRoot.win, 0, 0, 1, 1, 0xffffffff, ZPixmap); \
-if (__xim) XDestroyImage(__xim);}
 
 #ifdef HAS_XINERAMA
 #include <X11/extensions/Xinerama.h>
@@ -124,10 +126,10 @@ if (__xim) XDestroyImage(__xim);}
 #endif
 
 #define FILEPATH_LEN_MAX 4096
-/* This turns on E's internal stack tracking system for  coarse debugging */
+
+/* This turns on E's internal stack tracking system for coarse debugging */
 /* and being able to trace E for profiling/optimisation purposes (which */
 /* believe it or not I'm actually doing) */
-
 /* #define DEBUG 1 */
 
 #ifdef DEBUG
@@ -250,7 +252,7 @@ int                 Esnprintf(va_alist);
 #define LIST_TYPE_ECURSOR       23
 #define LIST_TYPE_SNAPSHOT      24
 #define LIST_TYPE_DIALOG        25
-#define LIST_TYPE_CLONE         26
+#define LIST_TYPE_FONT          26
 #define LIST_TYPE_PAGER         27
 #define LIST_TYPE_ICONBOX       28
 #define LIST_TYPE_WARP_RING     29
@@ -306,114 +308,6 @@ int                 Esnprintf(va_alist);
 #define ICON_UP                 2
 #define ICON_DOWN               3
 
-#define ACTION_NONE                   0
-#define ACTION_EXEC                   1
-#define ACTION_ALERT                  2
-#define ACTION_MOVE	              3
-#define ACTION_RESIZE                 4
-#define ACTION_RAISE                  5
-#define ACTION_LOWER                  6
-#define ACTION_EXIT                   7
-#define ACTION_CLEANUP                8
-#define ACTION_SHOW_MENU              9
-#define ACTION_HIDE_MENU              10
-#define ACTION_RESIZE_H               11
-#define ACTION_RESIZE_V               12
-#define ACTION_KILL                   13
-#define ACTION_KILL_NASTY             14
-#define ACTION_DESKTOP_NEXT           15
-#define ACTION_DESKTOP_PREV           16
-#define ACTION_DESKTOP_RAISE          17
-#define ACTION_DESKTOP_LOWER          18
-#define ACTION_DESKTOP_DRAG           19
-#define ACTION_STICK                  20
-#define ACTION_DESKTOP_INPLACE        21
-#define ACTION_DRAG_BUTTON            22
-#define ACTION_FOCUSMODE_SET          23
-#define ACTION_MOVEMODE_SET           24
-#define ACTION_RESIZEMODE_SET         25
-#define ACTION_SLIDEMODE_SET          26
-#define ACTION_CLEANUPSILDE_SET       27
-#define ACTION_MAPSLIDE_SET           28
-#define ACTION_SOUND_SET              29
-#define ACTION_BUTTONMOVE_RESIST_SET  30
-#define ACTION_DESKTOPBG_TIMEOUT_SET  31
-#define ACTION_MAPSLIDE_SPEED_SET     32
-#define ACTION_CLEANUPSLIDE_SPEED_SET 33
-#define ACTION_DRAGDIR_SET            34
-#define ACTION_DRAGBAR_ORDER_SET      35
-#define ACTION_DRAGBAR_WIDTH_SET      36
-#define ACTION_DRAGBAR_LENGTH_SET     37
-#define ACTION_DESKSLIDE_SET          38
-#define ACTION_DESKSLIDE_SPEED_SET    39
-#define ACTION_HIQUALITYBG_SET        40
-#define ACTION_PLAYSOUNDCLASS         41
-#define ACTION_GOTO_DESK              42
-#define ACTION_DESKRAY                43
-#define ACTION_AUTOSAVE_SET           44
-#define ACTION_HIDESHOW_BUTTON        45
-#define ACTION_ICONIFY                46
-#define ACTION_SLIDEOUT               47
-#define ACTION_SCROLL_WINDOWS         48
-#define ACTION_SHADE                  49
-#define ACTION_MAX_HEIGHT             50
-#define ACTION_MAX_WIDTH              51
-#define ACTION_MAX_SIZE               52
-#define ACTION_SEND_TO_NEXT_DESK      53
-#define ACTION_SEND_TO_PREV_DESK      54
-#define ACTION_SNAPSHOT               55
-#define ACTION_SCROLL_CONTAINER       56
-#define ACTION_TOOLTIP_SET            57
-#define ACTION_FOCUS_NEXT             58
-#define ACTION_FOCUS_PREV             59
-#define ACTION_FOCUS_SET              60
-#define ACTION_BACKGROUND_SET         61
-#define ACTION_AREA_SET               62
-#define ACTION_MOVE_BY                63
-#define ACTION_TOGGLE_FIXED           64
-#define ACTION_SET_LAYER              65
-#define ACTION_WARP_POINTER           66
-#define ACTION_MOVE_WINDOW_TO_AREA    67
-#define ACTION_MOVE_WINDOW_BY_AREA    68
-#define ACTION_SET_WINDOW_BORDER      69
-#define ACTION_LINEAR_AREA_SET        70
-#define ACTION_LINEAR_MOVE_BY         71
-#define ACTION_ABOUT                  72
-#define ACTION_FX                     73
-#define ACTION_MOVE_WINDOW_TO_LINEAR_AREA 74
-#define ACTION_MOVE_WINDOW_BY_LINEAR_AREA 75
-#define ACTION_SET_PAGER_HIQ          76
-#define ACTION_SET_PAGER_SNAP         77
-#define ACTION_CONFIG                 78
-#define ACTION_MOVE_CONSTRAINED	      79
-#define ACTION_INSERT_KEYS	      80
-#define ACTION_START_GROUP            81
-#define ACTION_ADD_TO_GROUP           82
-#define ACTION_REMOVE_FROM_GROUP      83
-#define ACTION_BREAK_GROUP            84
-#define ACTION_SHOW_HIDE_GROUP        85
-#define ACTION_CREATE_ICONBOX	      86
-#define ACTION_RAISE_LOWER	      87
-#define ACTION_ZOOM       	      88
-#define ACTION_SET_WINDOW_BORDER_NG   89
-#define ACTION_ICONIFY_NG             90
-#define ACTION_KILL_NG                91
-#define ACTION_MOVE_NG                92
-#define ACTION_RAISE_NG               93
-#define ACTION_LOWER_NG               94
-#define ACTION_STICK_NG               95
-#define ACTION_SHADE_NG               96
-#define ACTION_RAISE_LOWER_NG         97
-#define ACTION_SKIPFOCUS              98
-#define ACTION_SKIPTASK               99
-#define ACTION_SKIPWINLIST            100
-#define ACTION_NEVERFOCUS             101
-#define ACTION_SKIPLISTS              102
-#define ACTION_SWAPMOVE               103
-#define ACTION_FULLSCREEN             104
-/* false number excluding the above list */
-#define ACTION_NUMBEROF               105
-
 #define MODE_NONE                 0
 #define MODE_MOVE_PENDING         1
 #define MODE_MOVE                 2
@@ -448,6 +342,18 @@ int                 Esnprintf(va_alist);
 #define GROUP_FEATURE_SHADE   64
 #define GROUP_FEATURE_MIRROR  128
 
+/* For window group listing */
+#define GROUP_ACTION_ANY                     0
+#define GROUP_ACTION_MOVE                    1
+#define GROUP_ACTION_RAISE                   2
+#define GROUP_ACTION_LOWER                   3
+#define GROUP_ACTION_KILL                    4
+#define GROUP_ACTION_STICK                   5
+#define GROUP_ACTION_ICONIFY                 6
+#define GROUP_ACTION_SHADE                   7
+#define GROUP_ACTION_SET_WINDOW_BORDER       8
+#define GROUP_ACTION_RAISE_LOWER             9
+
 #define SET_OFF    0
 #define SET_ON     1
 #define SET_TOGGLE 2
@@ -465,17 +371,13 @@ int                 Esnprintf(va_alist);
 #define ST_WARPLIST	10
 #define ST_BUTTON	11
 
-/* ISO encodings */
-#define ENCOING_ISO_8859_1 0
-#define ENCOING_ISO_8859_2 1
-#define ENCOING_ISO_8859_3 2
-#define ENCOING_ISO_8859_4 3
-
 /*
  * Types
  */
 
+typedef struct _eobj EObj;
 typedef struct _ewin EWin;
+typedef struct _edesk Desk;
 typedef struct _menu Menu;
 typedef struct _menuitem MenuItem;
 typedef struct _menustyle MenuStyle;
@@ -483,15 +385,15 @@ typedef struct _dialog Dialog;
 typedef struct _ditem DItem;
 typedef struct _pager Pager;
 typedef struct _snapshot Snapshot;
-typedef struct _iconbox Iconbox;
 typedef struct _group Group;
 typedef struct _button Button;
 typedef struct _slideout Slideout;
-typedef struct _soundclass SoundClass;
 typedef struct _background Background;
 typedef struct _ecursor ECursor;
-
 typedef struct _efont Efont;
+typedef struct _textclass TextClass;
+typedef struct _action Action;
+typedef struct _actionclass ActionClass;
 
 typedef struct
 {
@@ -500,23 +402,6 @@ typedef struct
    Pixmap              mask;
 }
 PmapMask;
-
-typedef struct _icondef
-{
-   char               *title_match;
-   char               *name_match;
-   char               *class_match;
-   char               *icon_file;
-}
-Icondef;
-
-typedef struct _actiontype
-{
-   void               *params;
-   struct _actiontype *Next;
-   int                 Type;
-}
-ActionType;
 
 typedef struct _list
 {
@@ -528,21 +413,17 @@ typedef struct _list
 }
 List;
 
-typedef struct _client
+typedef struct _client Client;
+
+typedef struct
 {
-   char               *name;
-   Window              win;
-   char               *msg;
-   char               *clientname;
-   char               *version;
-   char               *author;
-   char               *email;
-   char               *web;
-   char               *address;
-   char               *info;
-   Pixmap              pmap;
+   void                (*func) (const char *line, Client * c);
+   const char         *name;
+   const char         *nick;
+   const char         *help_text;
+   const char         *extended_help_text;
 }
-Client;
+IpcItem;
 
 typedef struct
 {
@@ -646,7 +527,7 @@ typedef struct _textstate
 }
 TextState;
 
-typedef struct _textclass
+struct _textclass
 {
    char               *name;
    struct
@@ -659,33 +540,62 @@ typedef struct _textclass
    norm               , active, sticky, sticky_active;
    int                 justification;
    unsigned int        ref_count;
-}
-TextClass;
+};
 
-typedef struct _action
+struct _eobj
 {
-   char                event;
-   char                anymodifier;
-   int                 modifiers;
-   char                anybutton;
-   int                 button;
-   char                anykey;
-   KeyCode             key;
-   char               *key_str;
-   char               *tooltipstring;
-   ActionType         *action;
-}
-Action;
+   Window              win;	/* The top level window */
+   short               type;	/* Ewin, button, other, ... */
+   short               ilayer;	/* Internal stacking layer */
+   short               layer;	/* Stacking layer */
+   short               desk;	/* Belongs on desk */
+   int                 x, y;
+   int                 w, h;
+   char                sticky;
+   char                floating;
+#if USE_COMPOSITE
+   char                shadow;	/* Enable shadows */
+   unsigned int        opacity;
+   void               *cmhook;
+#endif
+   char               *name;	/* Debug only */
+};
 
-typedef struct _actionclass
-{
-   char               *name;
-   int                 num;
-   Action            **list;
-   char               *tooltipstring;
-   unsigned int        ref_count;
-}
-ActionClass;
+#define EOBJ_TYPE_EWIN      0
+#define EOBJ_TYPE_BUTTON    1
+#define EOBJ_TYPE_OVERR     2
+#define EOBJ_TYPE_OTHER     3
+
+#define EoGetWin(eo)            ((eo)->o.win)
+#define EoGetType(eo)           ((eo)->o.type)
+#define EoGetX(eo)              ((eo)->o.x)
+#define EoGetY(eo)              ((eo)->o.y)
+#define EoGetW(eo)              ((eo)->o.w)
+#define EoGetH(eo)              ((eo)->o.h)
+#define EoIsSticky(eo)          ((eo)->o.sticky)
+#define EoIsFloating(eo)        ((eo)->o.floating)
+#define EoGetDesk(eo)           EobjGetDesk(&((eo)->o))
+#define EoGetLayer(eo)          ((eo)->o.layer)
+#define EoGetPixmap(eo)         EobjGetPixmap(&((eo)->o))
+
+#define EoSetWin(eo, _x)        (eo)->o.win = (_x)
+#define EoSetX(eo, _x)          (eo)->o.x = (_x)
+#define EoSetY(eo, _y)          (eo)->o.y = (_y)
+#define EoSetW(eo, _w)          (eo)->o.w = (_w)
+#define EoSetH(eo, _h)          (eo)->o.h = (_h)
+#define EoSetSticky(eo, _x)     (eo)->o.sticky = ((_x)?1:0)
+#define EoSetFloating(eo, _f)   EobjSetFloating(&((eo)->o), (_f))
+#define EoSetDesk(eo, _d)       EobjSetDesk(&((eo)->o), (_d))
+#define EoSetLayer(eo, _l)      EobjSetLayer(&((eo)->o), (_l))
+#if USE_COMPOSITE
+#define EoSetOpacity(eo, _o)    (eo)->o.opacity = (_o)
+#define EoChangeOpacity(eo, _o) EobjChangeOpacity(&((eo)->o), _o)
+#define EoDisableShadows(eo)    (eo)->o.shadow = 0
+#else
+#define EoSetOpacity(eo, _o)
+#define EoChangeOpacity(eo, _o)
+#define EoDisableShadows(eo)
+#endif
 
 typedef struct _constraints
 {
@@ -741,6 +651,7 @@ Border;
 
 typedef struct _ewinbit
 {
+   EWin               *ewin;	/* Belongs to */
    Window              win;
    int                 x, y, w, h;
    int                 cx, cy, cw, ch;
@@ -806,39 +717,34 @@ WinClient;
 #define EWIN_TYPE_PAGER         0x08
 
 #define EwinIsMapped(ewin) (ewin->state >= EWIN_STATE_MAPPED)
+#define EwinIsInternal(ewin) (ewin->type != EWIN_TYPE_NORMAL)
 
 struct _ewin
 {
-   Window              win;
-   int                 x, y, w, h;
+   EObj                o;
    int                 shape_x, shape_y;
    int                 req_x, req_y;
    int                 lx, ly, lw, lh, ll;
    char                type;
    char                state;
-   char                internal;
    char                toggle;
    Window              win_container;
    WinClient           client;
-   Border             *border;
-   Border             *normal_border;
-   Border             *previous_border;
+   const Border       *border;
+   const Border       *normal_border;
+   const Border       *previous_border;
    EWinBit            *bits;
    int                 flags;
-   int                 desktop;
    Group             **groups;
    int                 num_groups;
    char                visibility;
    char                docked;
-   char                sticky;
    char                shown;
    char                iconified;
    char                shaded;
    char                active;
-   int                 layer;
    char                never_use_area;
    Window              parent;
-   char                floating;
    char                shapedone;
    char                fixedpos;
    char                ignorearrange;
@@ -849,11 +755,7 @@ struct _ewin
    char                focusclick;
    char                neverfocus;
    char                no_actions;
-   Menu               *menu;
-   Window              shownmenu;
-   Dialog             *dialog;
-   Pager              *pager;
-   Iconbox            *ibox;
+   void               *data;	/* Data hook for internal windows */
    int                 area_x;
    int                 area_y;
    char               *session_id;
@@ -861,8 +763,8 @@ struct _ewin
    PmapMask            mini_pmm;
    int                 mini_w, mini_h;
    Snapshot           *snap;
-   PmapMask            icon_pmm;
-   int                 icon_w, icon_h;
+   Imlib_Image        *icon_image;
+   int                 icon_type;
    int                 head;
    struct
    {
@@ -872,6 +774,8 @@ struct _ewin
    {
       unsigned            donthide:1;	/* Don't hide on show desktop */
       unsigned            vroot:1;	/* Virtual root window */
+      unsigned            inhibit_iconify:1;
+      unsigned            autosave:1;
       unsigned int        opacity;
    } props;
    struct
@@ -905,12 +809,12 @@ typedef struct _groupconfig
 {
    char                iconify;
    char                kill;
+   char                mirror;
    char                move;
    char                raise;
    char                set_border;
-   char                stick;
    char                shade;
-   char                mirror;
+   char                stick;
 }
 GroupConfig;
 
@@ -921,109 +825,6 @@ struct _group
    int                 num_members;
    GroupConfig         cfg;
 };
-
-typedef struct _awaiticlass
-{
-   Window              client_win;
-   int                 ewin_bit;
-   ImageClass         *iclass;
-}
-AwaitIclass;
-
-#ifdef DECLARE_STRUCT_BUTTON
-typedef struct _bgeometry
-{
-   Constraints         width, height;
-   int                 xorigin, yorigin;
-   int                 xabs, xrel;
-   int                 yabs, yrel;
-   int                 xsizerel, xsizeabs;
-   int                 ysizerel, ysizeabs;
-   char                size_from_image;
-}
-BGeometry;
-
-struct _button
-{
-   char               *name;
-   BGeometry           geom;
-   ImageClass         *iclass;
-   ActionClass        *aclass;
-   TextClass          *tclass;
-   char               *label;
-   signed char         ontop;
-   int                 flags;
-   char                sticky;
-   int                 desktop;
-   char                visible;
-   char                internal;
-   char                default_show;
-   char                used;
-
-   Window              win;
-   int                 x, y, w, h;
-   int                 cx, cy, cw, ch;
-   int                 state;
-   char                expose;
-   Window              inside_win;
-   Window              event_win;
-   char                destroy_inside_win;
-   char                left;
-   unsigned int        ref_count;
-};
-#endif /* DECLARE_STRUCT_BUTTON */
-
-#ifdef DECLARE_STRUCT_BACKGROUND
-typedef struct
-{
-   char               *file;
-   char               *real_file;
-   Imlib_Image        *im;
-   char                keep_aspect;
-   int                 xjust, yjust;
-   int                 xperc, yperc;
-}
-BgPart;
-
-struct _background
-{
-   char               *name;
-   Pixmap              pmap;
-   time_t              last_viewed;
-   XColor              bg_solid;
-   char                bg_tile;
-   BgPart              bg;
-   BgPart              top;
-   ColorModifierClass *cmclass;
-   char                keepim;
-   unsigned int        ref_count;
-};
-#endif /* DECLARE_STRUCT_BACKGROUND */
-
-typedef struct _desk
-{
-   char                viewable;
-   Window              win;
-   int                 x, y;
-   Background         *bg;
-   Button             *tag;
-   int                 current_area_x;
-   int                 current_area_y;
-}
-Desk;
-
-#define ENLIGHTENMENT_CONF_NUM_DESKTOPS 32
-/* the cast is so -1 will == UINT_MAX */
-#define DESKTOPS_WRAP_NUM(x) \
- (((unsigned int) (x)) % Conf.desks.num)
-
-typedef struct _desktops
-{
-   int                 current;
-   Desk                desk[ENLIGHTENMENT_CONF_NUM_DESKTOPS];
-   int                 order[ENLIGHTENMENT_CONF_NUM_DESKTOPS];
-}
-Desktops;
 
 typedef struct _windowmatch
 {
@@ -1056,7 +857,7 @@ typedef struct
    struct
    {
       char                enable;
-      float               delay;
+      int                 delay;	/* milliseconds */
    } autoraise;
    struct
    {
@@ -1081,7 +882,8 @@ typedef struct
    } dialogs;
    struct
    {
-      char                dirmode;
+      char                enable;	/* wmdockapp only */
+      int                 dirmode;
       int                 startx;
       int                 starty;
    } dock;
@@ -1099,12 +901,30 @@ typedef struct
    } focus;
    struct
    {
+      GroupConfig         dflt;
+      char                swapmove;
+   } groups;
+   struct
+   {
       char                set_xroot_info_on_root_window;
    } hints;
    struct
    {
-      KeySym              left, right, up, down, escape, ret;
-   } menukeys;
+      char                slide;
+      char                onscreen;
+      char                warp;
+      struct
+      {
+	 KeySym              left, right, up, down, escape, ret;
+      } key;
+   } menus;
+   struct
+   {
+      int                 mode_move;
+      int                 mode_resize;
+      int                 mode_info;
+      int                 opacity;
+   } movres;
    struct
    {
       char                enable;
@@ -1132,28 +952,17 @@ typedef struct
    } snap;
    struct
    {
+      char                firsttime;
+      char                animate;
+   } startup;
+   struct
+   {
       char               *name;
-      int                 transparency;
    } theme;
-   struct
-   {
-      char                enable;
-      char                showroottooltip;
-      float               delay;
-   } tooltips;
-   struct
-   {
-      char                enable;
-      char                warpsticky;
-      char                warpshaded;
-      char                warpiconified;
-      char                warpfocused;
-      char                raise_on_select;
-      char                warp_on_select;
-   } warplist;
 #ifdef ENABLE_THEME_TRANSPARENCY
    struct
    {
+      int                 alpha;
       int                 border;
       int                 widget;
       int                 iconbox;
@@ -1164,12 +973,19 @@ typedef struct
       int                 hilight;
       int                 pager;
       int                 warplist;
-   } st_trans;
+   } trans;
 #endif
+   struct
+   {
+      char                enable;
+      char                showsticky;
+      char                showshaded;
+      char                showiconified;
+      char                warpfocused;
+      char                raise_on_select;
+      char                warp_on_select;
+   } warplist;
    int                 deskmode;
-   int                 movemode;
-   int                 resizemode;
-   int                 geominfomode;
    int                 slidemode;
    char                cleanupslide;
    char                mapslide;
@@ -1177,25 +993,18 @@ typedef struct
    int                 slidespeedcleanup;
    char                animate_shading;
    int                 shadespeed;
-   char                sound;
    int                 button_move_resistance;
    char                autosave;
    char                memory_paranoia;
-   char                dockapp_support;	/* wmdockapp only */
    char                save_under;
-   char                menuslide;
-   char                menusonscreen;
-   char                warpmenus;
    int                 edge_flip_resistance;
-   GroupConfig         group_config;
-   char                group_swapmove;
 
    /* Not used */
-   char                primaryicondir;
 #ifdef HAS_XINERAMA
    char                extra_head;	/* Not used */
 #endif
 #if 0				/* Not used */
+   char                primaryicondir;
    TextClass          *icon_textclass;
    int                 icon_mode;
 #endif
@@ -1209,8 +1018,16 @@ typedef struct
 {
    struct
    {
+      char               *name;
       int                 screens;
+#ifdef HAS_XINERAMA
+      char                xinerama_active;
+#endif
    } display;
+   struct
+   {
+      Group              *current;
+   } groups;
    struct
    {
       char                pointer_grab_active;
@@ -1218,25 +1035,10 @@ typedef struct
    } grabs;
    struct
    {
-      int                 current_depth;
-      Menu               *list[256];
-      char                clicked;
-      Window              cover_win;
-      Window              win_covered;
-   } menus;
-   struct
-   {
-      char                master;	/* We are the master E */
-      char                single;	/* No slaves */
-      char                window;	/* Running in virtual root window */
-      pid_t               master_pid;
-      int                 master_screen;
-      char                startup;
-      char                xselect;
-      char                exiting;
-      char                save_ok;
-      char                coredump;
-   } wm;
+      unsigned int        numlock;
+      unsigned int        scrollock;
+      unsigned int        mod_combos[8];
+   } masks;
    struct
    {
       char                check;	/* Avoid losing windows offscreen */
@@ -1248,19 +1050,40 @@ typedef struct
       char                utf8_int;	/* Use UTF-8 internally */
       char                utf8_loc;	/* Locale is UTF-8 */
    } text;
+   struct
+   {
+      char               *path;
+   } theme;
+   struct
+   {
+      char               *exec_name;	/* argv[0] */
+      char                master;	/* We are the master E */
+      char                single;	/* No slaves */
+      char                window;	/* Running in virtual root window */
+      pid_t               master_pid;
+      int                 master_screen;
+      char                startup;
+      char                restart;
+      char                xselect;
+      char                exiting;
+      char                save_ok;
+      char                coredump;
+      int                 child_count;
+      pid_t              *children;
+      char               *machine_name;
+   } wm;
    int                 debug;
    int                 mode;
    char                place;
    char                flipp;
-   Button             *button;
    int                 resize_detail;
    int                 win_x, win_y, win_w, win_h;
    int                 start_x, start_y;
    char                have_place_grab;
    char                action_inhibit;
-   char                justclicked;
    EWin               *focuswin;
    EWin               *mouse_over_ewin;
+   EWin               *context_ewin;
    int                 px, py, x, y;
    char                doingslide;
    int                 server_grabbed;
@@ -1275,38 +1098,16 @@ typedef struct
    char                constrained;
    char                nogroup;
    char                keybinds_changed;
-   char                firsttime;
    Window              button_proxy_win;
    const XEvent       *current_event;
-   Window              last_bpress;
-   int                 last_button;
    Time                last_time;
+   Window              last_bpress;
+   unsigned int        last_button;
+   unsigned int        last_keycode;
+   char                double_click;
    char                queue_up;
 }
 EMode;
-
-typedef struct _handlestruct
-{
-   void                (*func) (XEvent * ev);
-}
-HandleStruct;
-
-typedef struct _tooltip
-{
-   char               *name;
-
-   ImageClass         *iclass;
-   ImageClass         *s_iclass[4];
-   TextClass          *tclass;
-   int                 dist;
-   Window              win;
-   Window              iwin;
-   Window              s_win[4];
-   char                visible;
-   ImageClass         *tooltippic;
-   unsigned int        ref_count;
-}
-ToolTip;
 
 typedef struct _qentry
 {
@@ -1319,79 +1120,6 @@ typedef struct _qentry
    char                just_added;
 }
 Qentry;
-
-#ifdef DECLARE_STRUCT_MENU
-struct _menustyle
-{
-   char               *name;
-   TextClass          *tclass;
-   ImageClass         *bg_iclass;
-   ImageClass         *item_iclass;
-   ImageClass         *sub_iclass;
-   char                use_item_bg;
-   char                iconpos;
-   int                 maxx;
-   int                 maxy;
-   char               *border_name;
-   unsigned int        ref_count;
-};
-
-struct _menuitem
-{
-   ImageClass         *icon_iclass;
-   char               *text;
-   short               act_id;
-   void               *params;
-   Menu               *child;
-   char                state;
-   PmapMask            pmm[3];
-   Window              win;
-   Window              icon_win;
-   short               icon_w;
-   short               icon_h;
-   short               text_w;
-   short               text_h;
-   short               text_x;
-   short               text_y;
-};
-
-struct _menu
-{
-   char               *name;
-   char               *title;
-   MenuStyle          *style;
-   int                 num;
-   MenuItem          **items;
-   Window              win;
-   PmapMask            pmm;
-   char                shown;
-   char                stuck;
-   char                internal;	/* Don't destroy when reloading */
-   char                redraw;
-   Menu               *parent;
-   MenuItem           *sel_item;
-   time_t              last_change;
-   void               *data;
-   Menu               *ref_menu;
-   unsigned int        ref_count;
-};
-#endif /* DECLARE_STRUCT_MENU */
-
-typedef struct _progressbar
-{
-   char               *name;
-   int                 value;
-   int                 x;
-   int                 y;
-   int                 w;
-   int                 h;
-   Window              win;
-   Window              n_win;
-   Window              p_win;
-   ImageClass         *ic, *inc, *ipc;
-   TextClass          *tc, *tnc;
-}
-Progressbar;
 
 struct _snapshot
 {
@@ -1440,75 +1168,9 @@ struct _snapshot
 #define DITEM_SLIDER       8
 #define DITEM_AREA         9
 
-typedef struct _PixImg
-{
-   XImage             *xim;
-   XShmSegmentInfo    *shminfo;
-   Pixmap              pmap;
-   GC                  gc;
-}
-PixImg;
-
-#ifdef DECLARE_STRUCT_ICONBOX
-struct _iconbox
-{
-   /* user settings */
-   char               *name;
-   char                orientation;
-   char                animate;
-   char                scrollbar_side;
-   char                arrow_side;
-   char                shownames;
-   char                nobg;
-   int                 iconsize;
-   int                 icon_mode;
-
-   char                auto_resize;
-   char                draw_icon_base;
-   char                scrollbar_hide;
-   char                cover_hide;
-   int                 auto_resize_anchor;
-
-   /* internally set stuff */
-   int                 w, h;
-   int                 pos;
-   int                 max, max_min;
-   char                force_update;
-   char                arrow1_hilited;
-   char                arrow1_clicked;
-   char                arrow2_hilited;
-   char                arrow2_clicked;
-   char                icon_clicked;
-   char                scrollbar_hilited;
-   char                scrollbar_clicked;
-   char                scrollbox_clicked;
-
-   Pixmap              pmap;
-
-   Window              win;
-   Window              cover_win;
-   Window              icon_win;
-   Window              scroll_win;
-   Window              arrow1_win;
-   Window              arrow2_win;
-   Window              scrollbar_win;
-   Window              scrollbarknob_win;
-   EWin               *ewin;
-
-   int                 num_icons;
-   EWin              **icons;
-
-   /* these are theme-settable parameters */
-   int                 scroll_thickness;
-   int                 arrow_thickness;
-   int                 bar_thickness;
-   int                 knob_length;
-
-};
-#endif /* DECLARE_STRUCT_ICONBOX */
-
 typedef struct _drawqueue
 {
+   void                (*func) (struct _drawqueue *);
    Window              win;
    ImageClass         *iclass;
    int                 w, h, active, sticky, state, expose;
@@ -1537,28 +1199,42 @@ RectBox;
  * Function prototypes
  */
 
-/* actions.c */
-void                RefreshScreen(void);
-void                GrabButtonGrabs(EWin * ewin);
-void                UnGrabButtonGrabs(EWin * ewin);
-ActionClass        *CreateAclass(const char *name);
-Action             *CreateAction(char event, char anymod, int mod, int anybut,
-				 int but, char anykey, char *key,
-				 char *tooltipstring);
-void                RemoveActionClass(ActionClass * ActionToRemove);
-void                AddToAction(Action * act, int id, void *params);
-void                AddAction(ActionClass * a, Action * act);
+/* aclass.c */
+int                 AclassConfigLoad(FILE * fs);
+ActionClass        *ActionclassCreate(const char *name, int global);
+void                ActionclassDestroy(ActionClass * ac);
+Action             *ActionCreate(char event, char anymod, int mod, int anybut,
+				 int but, char anykey, const char *key,
+				 const char *tooltipstring);
+void                ActionAddTo(Action * aa, const char *params);
+void                ActionclassAddAction(ActionClass * ac, Action * aa);
+void                ActionclassSetTooltipString(ActionClass * ac,
+						const char *tts);
+void                ActionclassIncRefcount(ActionClass * ac);
+void                ActionclassDecRefcount(ActionClass * ac);
+const char         *ActionclassGetName(ActionClass * ac);
+const char         *ActionclassGetTooltipString(ActionClass * ac);
+int                 ActionclassGetActionCount(ActionClass * ac);
+Action             *ActionclassGetAction(ActionClass * ac, int ix);
+const char         *ActionGetTooltipString(Action * aa);
+int                 ActionGetAnybutton(Action * aa);
+int                 ActionGetEvent(Action * aa);
+int                 ActionGetButton(Action * aa);
+int                 ActionGetModifiers(Action * aa);
 int                 EventAclass(XEvent * ev, EWin * ewin, ActionClass * a);
 
-int                 ActionsCall(unsigned int type, EWin * ewin,
-				const void *params);
+void                GrabButtonGrabs(EWin * ewin);
+void                UnGrabButtonGrabs(EWin * ewin);
+
+/* actions.c */
 int                 ActionsSuspend(void);
 int                 ActionsResume(void);
 void                ActionsHandleMotion(void);
 int                 ActionsEnd(EWin * ewin);
+void                About(void);
 
-int                 execApplication(const void *params);
-int                 doDragButtonEnd(const void *params);
+int                 execApplication(const char *params);
+int                 doDragButtonEnd(const char *params);
 
 /* alert.c */
 void                AlertInit(void);
@@ -1566,25 +1242,12 @@ void                Alert(const char *fmt, ...);
 void                AlertX(const char *title, const char *ignore,
 			   const char *restart, const char *quit,
 			   const char *fmt, ...);
-void                InitStringList(void);
-void                AssignIgnoreFunction(int (*func) (const void *),
-					 const void *params);
-void                AssignRestartFunction(int (*func) (const void *),
-					  const void *params);
-void                AssignExitFunction(int (*func) (const void *),
-				       const void *params);
-void                AssignTitleText(const char *text);
-void                AssignIgnoreText(const char *text);
-void                AssignRestartText(const char *text);
-void                AssignExitText(const char *text);
 
 /* areas.c */
 void                AreaFix(int *ax, int *ay);
 void                SetNewAreaSize(int ax, int ay);
-void                GetCurrentArea(int *ax, int *ay);
 void                SetAreaSize(int aw, int ah);
 void                GetAreaSize(int *aw, int *ah);
-void                InitCurrentArea(int ax, int ay);
 void                SetCurrentArea(int ax, int ay);
 void                MoveCurrentAreaBy(int ax, int ay);
 void                SetCurrentLinearArea(int a);
@@ -1613,131 +1276,65 @@ void                ArrangeEwin(EWin * ewin);
 void                ArrangeEwinCentered(EWin * ewin, int focus);
 void                ArrangeEwinXY(EWin * ewin, int *px, int *py);
 void                ArrangeEwinCenteredXY(EWin * ewin, int *px, int *py);
+void                ArrangeEwins(const char *params);
 
 /* atoms.c */
 void               *AtomGet(Window win, Atom to_get, Atom type, int *size);
-void                setSimpleHint(Window win, Atom atom, long value);
-long               *getSimpleHint(Window win, Atom atom);
-void                deleteHint(Window win, Atom atom);
+void                EPropWindowSet(Window win, Atom a, Window propwin);
+Window              EPropWindowGet(Window win, Atom a);
 
 /* backgrounds.c */
+int                 BackgroundsConfigLoad(FILE * fs);
+int                 BackgroundsConfigSave(FILE * fs);
 char               *BackgroundGetUniqueString(Background * bg);
 void                BackgroundPixmapFree(Background * bg);
 void                BackgroundImagesFree(Background * bg, int free_pmap);
-void                BackgroundImagesKeep(Background * bg, int onoff);
-void                BackgroundImagesRemove(Background * bg);
-int                 BackgroundDestroy(Background * bg);
-void                BackgroundDelete(Background * bg);
-Background         *BackgroundCreate(const char *name, XColor * solid,
-				     const char *bg, char tile,
-				     char keep_aspect, int xjust, int yjust,
-				     int xperc, int yperc, const char *top,
-				     char tkeep_aspect, int txjust, int tyjust,
-				     int txperc, int typerc);
 void                BackgroundDestroyByName(const char *name);
 void                BackgroundApply(Background * bg, Window win, int setbg);
 void                BackgroundIncRefcount(Background * bg);
 void                BackgroundDecRefcount(Background * bg);
 void                BackgroundTouch(Background * bg);
 const char         *BackgroundGetName(const Background * bg);
-const char         *BackgroundGetBgFile(const Background * bg);
-Pixmap              BackgroundGetPixmap(const Background * bg);
 int                 BackgroundGetColor(const Background * bg);
-void                BackgroundsAccounting(void);
-void                BackgroundsInit(void);
+Pixmap              BackgroundGetPixmap(const Background * bg);
+Background         *BrackgroundCreateFromImage(const char *bgid,
+					       const char *file, char *thumb,
+					       int thlen);
 
 /* borders.c */
-#define EWIN_CHANGE_NAME        (1<<0)
-#define EWIN_CHANGE_ICON_NAME   (1<<1)
-#define EWIN_CHANGE_ICON_PMAP   (1<<2)
-#define EWIN_CHANGE_DESKTOP     (1<<3)
-#define EWIN_CHANGE_LAYER       (1<<4)
-
-void                EwinGetPosition(const EWin * ewin, int *px, int *py);
-void                EwinRefresh(EWin * ewin);
-void                EwinUpdateAfterMoveResize(EWin * ewin, int resize);
-void                EwinFixPosition(EWin * ewin);
-void                ResizeEwin(EWin * ewin, int w, int h);
-void                MoveEwin(EWin * ewin, int x, int y);
-void                MoveResizeEwin(EWin * ewin, int x, int y, int w, int h);
-void                FloatEwin(EWin * ewin);
-void                FloatEwinAt(EWin * ewin, int x, int y);
-void                RaiseEwin(EWin * ewin);
-void                LowerEwin(EWin * ewin);
-void                ShowEwin(EWin * ewin);
-void                HideEwin(EWin * ewin);
-void                FreeBorder(Border * b);
-Border             *CreateBorder(const char *name);
-void                AddBorderPart(Border * b, ImageClass * iclass,
-				  ActionClass * aclass, TextClass * tclass,
-				  ECursor * ec, char ontop, int flags,
-				  char isregion, int wmin, int wmax, int hmin,
-				  int hmax, int torigin, int txp, int txa,
-				  int typ, int tya, int borigin, int bxp,
-				  int bxa, int byp, int bya,
-				  char keep_for_shade);
-void                EwinStick(EWin * ewin);
-void                EwinUnStick(EWin * ewin);
-void                EwinInstantShade(EWin * ewin, int force);
-void                EwinInstantUnShade(EWin * ewin);
-void                EwinShade(EWin * ewin);
-void                EwinUnShade(EWin * ewin);
-void                EwinSetFullscreen(EWin * ewin, int on);
-void                EwinSetBorder(EWin * ewin, Border * b, int apply);
-void                EwinSetBorderByName(EWin * ewin, const char *name,
-					int apply);
-void                DetermineEwinFloat(EWin * ewin, int dx, int dy);
-EWin               *GetEwinPointerInClient(void);
-EWin               *GetEwinByCurrentPointer(void);
-EWin               *GetFocusEwin(void);
-EWin               *GetContextEwin(void);
-void                SlideEwinTo(EWin * ewin, int fx, int fy, int tx, int ty,
-				int speed);
-void                SlideEwinsTo(EWin ** ewin, int *fx, int *fy, int *tx,
-				 int *ty, int num_wins, int speed);
-void                EwinDetermineArea(EWin * ewin);
-void                AddToFamily(Window win);
-EWin               *AddInternalToFamily(Window win, const char *bname, int type,
-					void *ptr,
-					void (*init) (EWin * ewin, void *ptr));
-void                HonorIclass(char *s, int id);
-void                EwinWithdraw(EWin * ewin);
-void                EwinReparent(EWin * ewin, Window parent);
-void                SyncBorderToEwin(EWin * ewin);
-void                BorderWinpartChange(EWin * ewin, int i, int force);
+Border             *BorderCreate(const char *name);
+void                BorderDestroy(Border * b);
+int                 BorderConfigLoad(FILE * fs);
+void                BorderWinpartAdd(Border * b, ImageClass * ic,
+				     ActionClass * aclass, TextClass * tclass,
+				     ECursor * ec, char ontop, int flags,
+				     char isregion, int wmin, int wmax,
+				     int hmin, int hmax, int torigin, int txp,
+				     int txa, int typ, int tya, int borigin,
+				     int bxp, int bxa, int byp, int bya,
+				     char keep_for_shade);
+void                BorderIncRefcount(const Border * b);
+void                BorderDecRefcount(const Border * b);
+void                EwinBorderSelect(EWin * ewin);
+void                EwinBorderSetTo(EWin * ewin, const Border * b);
+void                EwinBorderDraw(EWin * ewin, int do_shape, int queue_off);
+void                EwinBorderCalcSizes(EWin * ewin);
+void                EwinBorderMinShadeSize(EWin * ewin, int *mw, int *mh);
 void                EwinBorderUpdateInfo(EWin * ewin);
 void                EwinBorderUpdateState(EWin * ewin);
-void                EwinEventDestroy(EWin * ewin);
-void                EwinEventMap(EWin * ewin);
-void                EwinEventVisibility(EWin * ewin, int on);
-void                EwinEventUnmap(EWin * ewin);
-void                MoveEwinToArea(EWin * ewin, int ax, int ay);
-int                 EwinGetDesk(const EWin * ewin);
-const char         *EwinGetTitle(const EWin * ewin);
-const char         *EwinGetIconName(const EWin * ewin);
-int                 EwinIsOnScreen(EWin * ewin);
+void                EwinBorderEventsConfigure(EWin * ewin, int mode);
+void                EwinSetBorder(EWin * ewin, const Border * b, int apply);
+void                EwinSetBorderByName(EWin * ewin, const char *name,
+					int apply);
+void                BorderWinpartChange(EWin * ewin, int i, int force);
 int                 BorderWinpartIndex(EWin * ewin, Window win);
-
-void                EwinRememberPositionSet(EWin * ewin);
-void                EwinRememberPositionGet(EWin * ewin, int *px, int *py);
-void                EwinPropagateShapes(EWin * ewin);
-void                EwinChange(EWin * ewin, unsigned int flag);
-void                EwinChangesStart(EWin * ewin);
-void                EwinChangesProcess(EWin * ewin);
-
-void                EwinsEventsConfigure(int mode);
-void                EwinsSetFree(void);
-void                EwinsShowDesktop(int on);
-
-int                 BordersEventExpose(XEvent * ev);
-int                 BordersEventMouseDown(XEvent * ev);
-int                 BordersEventMouseUp(XEvent * ev);
-int                 BordersEventMouseIn(XEvent * ev);
-int                 BordersEventMouseOut(XEvent * ev);
-int                 BordersEventMouseOut2(XEvent * ev);
+void                HonorIclass(char *s, int id);
+void                BordersSetupFallback(void);
 
 /* buttons.c */
-Button             *ButtonCreate(const char *name, ImageClass * iclass,
+int                 ButtonsConfigLoad(FILE * fs);
+int                 ButtonsConfigSave(FILE * fs);
+Button             *ButtonCreate(const char *name, int id, ImageClass * ic,
 				 ActionClass * aclass, TextClass * tclass,
 				 char *label, char ontop, int flags, int minw,
 				 int maxw, int minh, int maxh, int xo, int yo,
@@ -1755,21 +1352,25 @@ void                ButtonMoveToCoord(Button * b, int x, int y);
 void                ButtonMoveRelative(Button * b, int dx, int dy);
 void                ButtonIncRefcount(Button * b);
 void                ButtonDecRefcount(Button * b);
-const char         *ButtonGetName(Button * b);
-int                 ButtonGetRefcount(Button * b);
-int                 ButtonGetDesktop(Button * b);
-void                ButtonGetGeometry(Button * b, int *x, int *y,
+void                ButtonSetSwallowed(Button * b);
+const char         *ButtonGetName(const Button * b);
+int                 ButtonGetRefcount(const Button * b);
+int                 ButtonGetDesktop(const Button * b);
+void                ButtonGetGeometry(const Button * b, int *x, int *y,
 				      unsigned int *w, unsigned int *h);
-int                 ButtonGetInfo(Button * b, RectBox * r, int desk);
-ActionClass        *ButtonGetAClass(Button * b);
-int                 ButtonIsFixed(Button * b);
+int                 ButtonGetInfo(const Button * b, RectBox * r, int desk);
+ActionClass        *ButtonGetAClass(const Button * b);
+Window              ButtonGetWindow(const Button * b);
+int                 ButtonGetWidth(const Button * b);
+int                 ButtonGetHeight(const Button * b);
+int                 ButtonIsFixed(const Button * b);
+int                 ButtonIsInternal(const Button * b);
+int                 ButtonIsAbove(const Button * b, int desk);
+int                 ButtonIsNormal(const Button * b, int desk);
+int                 ButtonIsBelow(const Button * b, int desk);
+int                 ButtonDoShowDefault(const Button * b);
 int                 ButtonEmbedWindow(Button * ButtonToUse,
 				      Window WindowToEmbed);
-int                 ButtonsEventExpose(XEvent * ev);
-int                 ButtonsEventMouseDown(XEvent * ev);
-int                 ButtonsEventMouseUp(XEvent * ev);
-int                 ButtonsEventMouseIn(XEvent * ev);
-int                 ButtonsEventMouseOut(XEvent * ev);
 
 /* cmclass.c */
 void                CreateCurve(ModCurve * c);
@@ -1785,24 +1386,29 @@ void                ModifyCMClass(char *name, int rnum, unsigned char *rpx,
 				  unsigned char *gpx, unsigned char *gpy,
 				  int bnum, unsigned char *bpx,
 				  unsigned char *bpy);
+int                 ColorModifierConfigLoad(FILE * fs);
 
 /* comms.c */
-void                CommsSetup(void);
-void                CommsFindCommsWindow(void);
+void                CommsInit(void);
 void                CommsSend(Client * c, const char *s);
+void                CommsFlush(Client * c);
 void                CommsSendToMasterWM(const char *s);
 void                CommsBroadcast(const char *s);
 void                CommsBroadcastToSlaveWMs(const char *s);
-Client             *MakeClient(Window win);
-void                ListFreeClient(void *ptr);
-void                DeleteClient(Client * c);
-void                HandleComms(XClientMessageEvent * ev);
 
 /* config.c */
-char               *FindFile(const char *file);
-int                 LoadConfigFile(const char *file);
-int                 LoadEConfig(char *themelocation);
-void                SaveUserControlConfig(FILE * autosavefile);
+int                 ConfigSkipIfExists(FILE * fs, const char *name, int type);
+char               *GetLine(char *s, int size, FILE * f);
+void                ConfigAlertLoad(const char *txt);
+char               *FindFile(const char *file, const char *themepath);
+char               *ThemeFileFind(const char *file);
+char               *ConfigFileFind(const char *name, const char *themepath,
+				   int pp);
+int                 ConfigFileLoad(const char *name, const char *themepath,
+				   int (*parse) (FILE * fs));
+int                 ThemeConfigLoad(void);
+void                SaveUserControlConfig(const char *file);
+void                RecoverUserConfig(void);
 
 /* coords.c */
 void                CoordsShow(EWin * ewin);
@@ -1816,19 +1422,31 @@ void                CoordsHide(void);
 #define ECSR_ACT_MOVE       4
 #define ECSR_ACT_RESIZE     5
 #define ECSR_COUNT          6
-void                ECursorsInit(void);
-ECursor            *ECursorCreate(const char *name, const char *image,
-				  int native_id, XColor * fg, XColor * bg);
+
 void                ECursorApply(ECursor * ec, Window win);
-void                ECursorDestroy(ECursor * ec);
 void                ECursorIncRefcount(ECursor * ec);
 void                ECursorDecRefcount(ECursor * ec);
-int                 ECursorGetRefcount(ECursor * ec);
-const char         *ECursorGetName(ECursor * ec);
 Cursor              ECsrGet(int which);
 void                ECsrApply(int which, Window win);
 
 /* desktops.c */
+Window              DeskGetWin(int desk);
+int                 DeskGetX(int desk);
+int                 DeskGetY(int desk);
+Background         *DeskGetBackground(int desk);
+void                DeskGetArea(int desk, int *ax, int *ay);
+void                DeskSetArea(int desk, int ax, int ay);
+int                 DeskIsViewable(int desk);
+void                DeskSetViewable(int desk, int on);
+void                DeskGetCurrentArea(int *ax, int *ay);
+Window              DeskGetCurrentRoot(void);
+void                DeskSetCurrentArea(int ax, int ay);
+int                 DesksGetNumber(void);
+int                 DesksGetTotal(void);
+int                 DesksGetCurrent(void);
+void                DesksSetCurrent(int desk);
+
+void                DesktopsInit(void);
 void                ChangeNumberOfDesktops(int quantity);
 void                ShowDesktopControls(void);
 void                ShowDesktopTabs(void);
@@ -1841,10 +1459,8 @@ void                SlideWindowTo(Window win, int fx, int fy, int tx, int ty,
 void                RefreshCurrentDesktop(void);
 void                RefreshDesktop(int num);
 void                DesktopsRefresh(void);
-void                InitDesktopBgs(void);
 void                InitDesktopControls(void);
 void                DesktopSetBg(int desk, Background * bg, int refresh);
-void                ConformEwinToDesktop(EWin * ewin);
 int                 DesktopAt(int x, int y);
 void                GotoDesktop(int num);
 void                MoveDesktop(int num, int x, int y);
@@ -1855,54 +1471,55 @@ void                ShowDesktop(int num);
 void                StackDesktops(void);
 void                StackDesktop(int num);
 void                UncoverDesktop(int num);
-void                MoveEwinToDesktop(EWin * ewin, int num);
 void                DesktopAddEwinToBottom(EWin * ewin);
 void                DesktopAddEwinToTop(EWin * ewin);
-void                MoveEwinToDesktopAt(EWin * ewin, int num, int x, int y);
 void                GotoDesktopByEwin(EWin * ewin);
 void                FloatEwinAboveDesktops(EWin * ewin);
 void                DesktopsEventsConfigure(int mode);
+void                DeskDragStart(int desk);
+void                DeskDragMotion(void);
 
 /* dialog.c */
+typedef void        (DialogCallbackFunc) (Dialog * d, int val, void *data);
+typedef void        (DialogItemCallbackFunc) (int val, void *data);
+
 Dialog             *DialogCreate(const char *name);
 void                DialogDestroy(Dialog * d);
 void                DialogBindKey(Dialog * d, const char *key,
-				  void (*func) (int val, void *data), int val,
-				  void *data);
+				  DialogCallbackFunc * func, int val);
 void                DialogSetText(Dialog * d, const char *text);
 void                DialogSetTitle(Dialog * d, const char *title);
-void                DialogSetExitFunction(Dialog * d,
-					  void (*func) (int val, void *data),
-					  int val, void *data);
+void                DialogSetExitFunction(Dialog * d, DialogCallbackFunc * func,
+					  int val);
+void                DialogSetData(Dialog * d, void *data);
+void               *DialogGetData(Dialog * d);
+
 void                DialogRedraw(Dialog * d);
 void                ShowDialog(Dialog * d);
 void                DialogClose(Dialog * d);
 
 void                DialogAddButton(Dialog * d, const char *text,
-				    void (*func) (int val, void *data),
-				    char doclose);
+				    DialogCallbackFunc * func, char doclose);
 DItem              *DialogInitItem(Dialog * d);
 DItem              *DialogAddItem(DItem * dii, int type);
 DItem              *DialogItem(Dialog * d);
-void                DialogItemSetCallback(DItem * di,
-					  void (*func) (int val, void *data),
-					  int val, char *data);
-void                DialogItemSetClass(DItem * di, ImageClass * iclass,
+void                DialogItemSetCallback(DItem * di, DialogCallbackFunc * func,
+					  int val, void *data);
+void                DialogItemSetClass(DItem * di, ImageClass * ic,
 				       TextClass * tclass);
 void                DialogItemSetPadding(DItem * di, int left, int right,
 					 int top, int bottom);
 void                DialogItemSetFill(DItem * di, char fill_h, char fill_v);
 void                DialogItemSetAlign(DItem * di, int align_h, int align_v);
-void                DialogItemCallCallback(DItem * di);
+void                DialogItemCallCallback(Dialog * d, DItem * di);
 void                DialogDrawItems(Dialog * d, DItem * di, int x, int y, int w,
 				    int h);
 void                DialogItemButtonSetText(DItem * di, const char *text);
 void                DialogItemCheckButtonSetText(DItem * di, const char *text);
 void                DialogItemTextSetText(DItem * di, const char *text);
 void                DialogItemRadioButtonSetEventFunc(DItem * di,
-						      void (*func) (int val,
-								    void
-								    *data));
+						      DialogItemCallbackFunc *
+						      func);
 void                DialogItemCheckButtonSetState(DItem * di, char onoff);
 void                DialogItemCheckButtonSetPtr(DItem * di, char *onoff_ptr);
 void                DialogItemTableSetOptions(DItem * di, int num_columns,
@@ -1935,23 +1552,17 @@ void                DialogItemAreaSetSize(DItem * di, int w, int h);
 void                DialogItemAreaGetSize(DItem * di, int *w, int *h);
 Window              DialogItemAreaGetWindow(DItem * di);
 void                DialogItemAreaSetEventFunc(DItem * di,
-					       void (*func) (int val,
-							     void *data));
+					       DialogItemCallbackFunc * func);
+
+void                DialogCallbackClose(Dialog * d, int val, void *data);
 
 void                DialogOK(const char *title, const char *fmt, ...);
 void                DialogOKstr(const char *title, const char *txt);
-void                DialogRestart(int val, void *data);
-void                DialogQuit(int val, void *data);
 void                DialogAlert(const char *fmt, ...);
 void                DialogAlertOK(const char *fmt, ...);
 
-int                 DialogEventKeyPress(XEvent * ev);
-int                 DialogEventMotion(XEvent * ev);
-int                 DialogEventExpose(XEvent * ev);
-int                 DialogEventMouseDown(XEvent * ev);
-int                 DialogEventMouseUp(XEvent * ev);
-int                 DialogEventMouseIn(XEvent * ev);
-int                 DialogEventMouseOut(XEvent * ev);
+EWin               *FindEwinByDialog(Dialog * d);
+int                 FindADialog(void);
 
 /* dock.c */
 void                DockIt(EWin * ewin);
@@ -1960,15 +1571,6 @@ void                DockDestroy(EWin * ewin);
 /* draw.c */
 void                HandleDrawQueue(void);
 char                IsPropagateEwinOnQueue(EWin * ewin);
-void                EFillPixmap(Window win, Pixmap pmap, int x, int y, int w,
-				int h);
-void                EPastePixmap(Window win, Pixmap pmap, int x, int y, int w,
-				 int h);
-void                EBlendRemoveShape(EWin * ewin, Pixmap pmap, int x, int y);
-PixImg             *ECreatePixImg(Window win, int w, int h);
-void                EDestroyPixImg(PixImg * pi);
-void                EBlendPixImg(EWin * ewin, PixImg * s1, PixImg * s2,
-				 PixImg * dst, int x, int y, int w, int h);
 
 void                ScaleLine(Pixmap dest, Window src, int dx, int dy, int sw,
 			      int pw, int sy, int sh);
@@ -1980,26 +1582,56 @@ void                DrawEwinShape(EWin * ewin, int md, int x, int y, int w,
 				  int h, char firstlast);
 void                PropagateShapes(Window win);
 
+/* econfig.c */
+void                ConfigurationLoad(void);
+void                ConfigurationSave(void);
+void                ConfigurationSet(const char *params);
+void                ConfigurationShow(const char *params);
+
 /* edge.c */
 void                EdgeWindowsShow(void);
 void                EdgeWindowsHide(void);
-void                EdgeHandleEnter(XEvent * ev);
-void                EdgeHandleLeave(XEvent * ev);
-void                EdgeHandleMotion(XEvent * ev);
+
+/* eobj.c */
+void                EobjInit(EObj * eo, int type, int x, int y, int w, int h);
+
+#if USE_COMPOSITE
+EObj               *EobjCreate(Window win);
+void                EobjDestroy(EObj * eo);
+EObj               *EobjRegister(Window win);
+void                EobjUnregister(Window win);
+Pixmap              EobjGetPixmap(const EObj * eo);
+void                EobjChangeOpacity(EObj * eo, unsigned int opacity);
+#endif
+const char         *EobjGetName(const EObj * eo);
+int                 EobjGetDesk(const EObj * eo);
+int                 EobjSetDesk(EObj * eo, int desk);
+void                EobjSetLayer(EObj * eo, int layer);
+void                EobjSetFloating(EObj * eo, int floating);
 
 /* events.c */
+/* Re-mapped X-events */
+#define EX_EVENT_SHAPE_NOTIFY            64
+#define EX_EVENT_SCREEN_CHANGE_NOTIFY    65
+#define EX_EVENT_DAMAGE_NOTIFY           66
+
 #define ENABLE_DEBUG_EVENTS 1
 #if ENABLE_DEBUG_EVENTS
-#define EDBUG_TYPE_EWINS     	128
-#define EDBUG_TYPE_FOCUS	129
-#define EDBUG_TYPE_COMPRESSION	130
-#define EDBUG_TYPE_STACKING	131
-#define EDBUG_TYPE_RAISELOWER	132
-#define EDBUG_TYPE_MOVERESIZE	133
-#define EDBUG_TYPE_SESSION   	134
-#define EDBUG_TYPE_SNAPS     	135
-#define EDBUG_TYPE_DESKS     	136
-#define EDBUG_TYPE_GRABS     	137
+#define EDBUG_TYPE_EWINS        128
+#define EDBUG_TYPE_FOCUS        129
+#define EDBUG_TYPE_COMPRESSION  130
+#define EDBUG_TYPE_STACKING     131
+#define EDBUG_TYPE_RAISELOWER   132
+#define EDBUG_TYPE_MOVERESIZE   133
+#define EDBUG_TYPE_SESSION      134
+#define EDBUG_TYPE_SNAPS        135
+#define EDBUG_TYPE_DESKS        136
+#define EDBUG_TYPE_GRABS        137
+#define EDBUG_TYPE_DISPATCH     138
+#define EDBUG_TYPE_MODULES      139
+#define EDBUG_TYPE_CONFIG       140
+#define EDBUG_TYPE_IPC          141
+#define EDBUG_TYPE_EVENTS       142
 int                 EventDebug(unsigned int type);
 #else
 #define             EventDebug(type) 0
@@ -2010,35 +1642,100 @@ void                WaitEvent(void);
 void                EventDebugInit(const char *s);
 void                EventShow(const XEvent * ev);
 
-/* evhandlers.c */
-void                HandleKeyPress(XEvent * ev);
-void                HandleMouseDown(XEvent * ev);
-void                HandleMouseUp(XEvent * ev);
-void                HandleMotion(XEvent * ev);
-void                HandleMouseIn(XEvent * ev);
-void                HandleMouseOut(XEvent * ev);
-void                HandleFocusIn(XEvent * ev);
-void                HandleFocusOut(XEvent * ev);
-void                HandleExpose(XEvent * ev);
-void                HandleVisibilityNotify(XEvent * ev);
-void                HandleDestroy(XEvent * ev);
-void                HandleUnmap(XEvent * ev);
-void                HandleMap(XEvent * ev);
-void                HandleMapRequest(XEvent * ev);
-void                HandleReparent(XEvent * ev);
-void                HandleConfigureNotify(XEvent * ev);
-void                HandleConfigureRequest(XEvent * ev);
-void                HandleResizeRequest(XEvent * ev);
-void                HandleCirculateRequest(XEvent * ev);
-void                HandleProperty(XEvent * ev);
-void                HandleClientMessage(XEvent * ev);
-void                HandleChildShapeChange(XEvent * ev);
-void                HandleScreenChange(XEvent * ev);
+/* ewins.c */
+#define EWIN_CHANGE_NAME        (1<<0)
+#define EWIN_CHANGE_ICON_NAME   (1<<1)
+#define EWIN_CHANGE_ICON_PMAP   (1<<2)
+#define EWIN_CHANGE_DESKTOP     (1<<3)
+#define EWIN_CHANGE_LAYER       (1<<4)
+
+void                EwinGetPosition(const EWin * ewin, int *px, int *py);
+void                EwinRefresh(EWin * ewin);
+void                EwinUpdateAfterMoveResize(EWin * ewin, int resize);
+void                FloatEwin(EWin * ewin);
+void                FloatEwinAt(EWin * ewin, int x, int y);
+void                RaiseEwin(EWin * ewin);
+void                LowerEwin(EWin * ewin);
+void                ShowEwin(EWin * ewin);
+void                HideEwin(EWin * ewin);
+void                DetermineEwinFloat(EWin * ewin, int dx, int dy);
+EWin               *GetEwinPointerInClient(void);
+EWin               *GetEwinByCurrentPointer(void);
+EWin               *GetFocusEwin(void);
+EWin               *GetContextEwin(void);
+void                SetContextEwin(EWin * ewin);
+void                EwinDetermineArea(EWin * ewin);
+void                EwinPropagateShapes(EWin * ewin);
+void                AddToFamily(Window win);
+EWin               *AddInternalToFamily(Window win, const char *bname, int type,
+					void *ptr,
+					void (*init) (EWin * ewin, void *ptr));
+void                EwinWithdraw(EWin * ewin);
+void                EwinConformToDesktop(EWin * ewin);
+void                EwinReparent(EWin * ewin, Window parent);
+void                SyncBorderToEwin(EWin * ewin);
+Window              EwinGetClientWin(const EWin * ewin);
+const char         *EwinGetTitle(const EWin * ewin);
+const char         *EwinGetIconName(const EWin * ewin);
+int                 EwinIsOnScreen(EWin * ewin);
+void                EwinRememberPositionSet(EWin * ewin);
+void                EwinRememberPositionGet(EWin * ewin, int *px, int *py);
+
+void                EwinChange(EWin * ewin, unsigned int flag);
+void                EwinChangesStart(EWin * ewin);
+void                EwinChangesProcess(EWin * ewin);
+
+void                EwinsEventsConfigure(int mode);
+void                EwinsSetFree(void);
+void                EwinsShowDesktop(int on);
+
+/* ewin-ops.c */
+void                SlideEwinTo(EWin * ewin, int fx, int fy, int tx, int ty,
+				int speed);
+void                SlideEwinsTo(EWin ** ewin, int *fx, int *fy, int *tx,
+				 int *ty, int num_wins, int speed);
+void                EwinFixPosition(EWin * ewin);
+void                MoveEwin(EWin * ewin, int x, int y);
+void                ResizeEwin(EWin * ewin, int w, int h);
+void                MoveResizeEwin(EWin * ewin, int x, int y, int w, int h);
+void                EwinIconify(EWin * ewin);
+void                EwinDeIconify(EWin * ewin);
+void                EwinStick(EWin * ewin);
+void                EwinUnStick(EWin * ewin);
+void                EwinInstantShade(EWin * ewin, int force);
+void                EwinInstantUnShade(EWin * ewin);
+void                EwinShade(EWin * ewin);
+void                EwinUnShade(EWin * ewin);
+void                EwinSetFullscreen(EWin * ewin, int on);
+void                MoveEwinToArea(EWin * ewin, int ax, int ay);
+void                MoveEwinToDesktop(EWin * ewin, int num);
+void                MoveEwinToDesktopAt(EWin * ewin, int num, int x, int y);
+
+unsigned int        OpacityExt(int op);
+void                EwinOpClose(EWin * ewin);
+void                EwinOpKill(EWin * ewin);
+void                EwinOpRaise(EWin * ewin);
+void                EwinOpLower(EWin * ewin);
+void                EwinOpRaiseLower(EWin * ewin);
+void                EwinOpStick(EWin * ewin, int on);
+void                EwinOpSkipLists(EWin * ewin, int skip);
+void                EwinOpSkipTask(EWin * ewin, int skip);
+void                EwinOpSkipFocus(EWin * ewin, int skip);
+void                EwinOpSkipWinlist(EWin * ewin, int skip);
+void                EwinOpNeverFocus(EWin * ewin, int on);
+void                EwinOpIconify(EWin * ewin, int on);
+void                EwinOpShade(EWin * ewin, int on);
+void                EwinOpSetLayer(EWin * ewin, int layer);
+void                EwinOpSetBorder(EWin * ewin, const char *name);
+void                EwinOpSetOpacity(EWin * ewin, int opacity);
+void                EwinOpMoveToDesk(EWin * ewin, int desk);
+void                EwinOpMoveToArea(EWin * ewin, int x, int y);
 
 #if ENABLE_EWMH
 /* ewmh.c */
 void                EWMH_Init(Window win_wm_check);
 void                EWMH_SetDesktopCount(void);
+void                EWMH_SetDesktopRoots(void);
 void                EWMH_SetDesktopNames(void);
 void                EWMH_SetDesktopSize(void);
 void                EWMH_SetCurrentDesktop(void);
@@ -2061,6 +1758,10 @@ void                EWMH_DelWindowHints(const EWin * ewin);
 void                EWMH_ProcessClientMessage(XClientMessageEvent * event);
 void                EWMH_ProcessPropertyChange(EWin * ewin, Atom atom_change);
 #endif
+
+/* extinitwin.c */
+Window              ExtInitWinCreate(void);
+void                ExtInitWinCheck(void);
 
 /* file.c */
 void                Etmp(char *s);
@@ -2117,12 +1818,6 @@ EWin              **ListWinGroupMembersForEwin(EWin * ewin, int action,
 EWin              **EwinListTransients(EWin * ewin, int *num, int group);
 EWin              **EwinListTransientFor(EWin * ewin, int *num);
 EWin              **ListGroupMembers(Window win, int *num);
-EWin               *FindEwinByDialog(Dialog * d);
-Dialog             *FindDialogButton(Window win, int *bnum);
-Dialog             *FindDialog(Window win);
-int                 FindADialog(void);
-Pager              *FindPager(Window win);
-DItem              *FindDialogItem(Window win, Dialog ** dret);
 
 /* focus.c */
 #define FOCUS_SET         0
@@ -2142,21 +1837,16 @@ void                FocusGetPrevEwin(void);
 void                FocusEwinSetGrabs(EWin * ewin);
 void                FocusFix(void);
 void                FocusToEWin(EWin * ewin, int why);
-void                FocusHandleEnter(XEvent * ev);
-void                FocusHandleLeave(XEvent * ev);
-void                FocusHandleClick(Window win);
+void                FocusHandleEnter(EWin * ewin, XEvent * ev);
+void                FocusHandleLeave(EWin * ewin, XEvent * ev);
+void                FocusHandleClick(EWin * ewin, Window win);
 void                FocusNewDeskBegin(void);
 void                FocusNewDesk(void);
 
-/* fx.c */
-#define FX_OP_START  1
-#define FX_OP_STOP   2
-#define FX_OP_TOGGLE 3
-void                FX_Op(const char *name, int fx_op);
-void                FX_DeskChange(void);
-void                FX_Pause(void);
-char              **FX_Active(int *num);
-int                 FX_IsOn(const char *effect);
+/* fonts.c */
+int                 FontConfigLoad(FILE * fs);
+void                FontConfigUnload(void);
+const char         *FontLookup(const char *name);
 
 #if ENABLE_GNOME
 /* gnome.c */
@@ -2184,8 +1874,6 @@ void                GNOME_ProcessClientMessage(XClientMessageEvent * event);
 #endif
 
 /* grabs.c */
-void                GrabActionKey(Action * a);
-void                UnGrabActionKey(Action * a);
 void                GrabButtonsSet(Window win, unsigned int csr);
 int                 GrabPointerSet(Window win, unsigned int csr, int confine);
 void                GrabPointerRelease(void);
@@ -2196,12 +1884,10 @@ void                GrabButtonRelease(unsigned int button,
 				      unsigned int modifiers, Window win);
 
 /* groups.c */
-void                CopyGroupConfig(GroupConfig * src, GroupConfig * dest);
 void                BreakWindowGroup(EWin * ewin, Group * g);
 void                BuildWindowGroup(EWin ** ewins, int num);
 int                 EwinInGroup(EWin * ewin, Group * g);
 Group              *EwinsInGroup(EWin * ewin1, EWin * ewin2);
-char              **GetWinGroupMemberNames(Group ** groups, int num);
 void                AddEwinToGroup(EWin * ewin, Group * g);
 void                RemoveEwinFromGroup(EWin * ewin, Group * g);
 void                GroupsEwinRemove(EWin * ewin);
@@ -2209,7 +1895,6 @@ void                ShowHideWinGroups(EWin * ewin, Group * g, char onoff);
 void                ChooseGroupDialog(EWin * ewin, char *message,
 				      char group_select, int action);
 void                SaveGroups(void);
-void                LoadGroups(void);
 
 /* handlers.c */
 void                SignalsSetup(void);
@@ -2268,56 +1953,33 @@ int                 ICCCM_GetEInfo(EWin * ewin);
 void                ICCCM_SetMainEInfo(void);
 void                ICCCM_GetMainEInfo(void);
 void                ICCCM_SetEInfoOnAll(void);
+char               *e16_icccm_name_get(Window win);
 
 /* iclass.c */
+int                 ImageclassConfigLoad(FILE * fs);
 void                TransparencySet(int transparency);
-ImageClass         *CreateIclass(void);
-void                FreeImageClass(ImageClass * i);
-ImageState         *CreateImageState(void);
-void                ImageStatePopulate(ImageState * is);
-void                ImageStateRealize(ImageState * is);
-ImageState         *IclassGetImageState(ImageClass * iclass, int state,
-					int active, int sticky);
-void                IclassPopulate(ImageClass * iclass);
-int                 IclassIsTransparent(ImageClass * iclass);
-void                IclassApply(ImageClass * iclass, Window win, int w, int h,
-				int active, int sticky, int state, char expose,
-				int image_type);
-void                IclassApplyCopy(ImageClass * iclass, Window win, int w,
-				    int h, int active, int sticky, int state,
-				    PmapMask * pmm, int make_mask,
-				    int image_type);
+int                 TransparencyEnabled(void);
+ImageState         *ImageclassGetImageState(ImageClass * ic, int state,
+					    int active, int sticky);
+ImageClass         *ImageclassCreateSimple(const char *name, const char *image);
+ImageClass         *ImageclassFind(const char *name, int fallback);
+int                 ImageclassIsTransparent(ImageClass * ic);
+Imlib_Image        *ImageclassGetImage(ImageClass * ic, int active, int sticky,
+				       int state);
+void                ImageclassApply(ImageClass * ic, Window win, int w, int h,
+				    int active, int sticky, int state,
+				    char expose, int image_type);
+void                ImageclassApplyCopy(ImageClass * ic, Window win, int w,
+					int h, int active, int sticky,
+					int state, PmapMask * pmm,
+					int make_mask, int image_type);
 void                FreePmapMask(PmapMask * pmm);
 
-/* iconify.c */
-void                IconifyEwin(EWin * ewin);
-void                DeIconifyEwin(EWin * ewin);
-void                MakeIcon(EWin * ewin);
-void                RemoveMiniIcon(EWin * ewin);
-Iconbox            *IconboxCreate(char *name);
-void                IconboxDestroy(Iconbox * ib);
-Window              IconboxGetWin(Iconbox * ib);
-void                IconboxShow(Iconbox * ib);
-void                IconboxHide(Iconbox * ib);
-void                IconboxIconifyEwin(Iconbox * ib, EWin * ewin);
-void                IconboxAddEwin(Iconbox * ib, EWin * ewin);
-void                IconboxDelEwin(Iconbox * ib, EWin * ewin);
-void                IconboxUpdateEwinIcon(Iconbox * ib, EWin * ewin,
-					  int icon_mode);
-void                IconboxesUpdateEwinIcon(EWin * ewin, int icon_mode);
-void                IconboxesHandleEvent(XEvent * ev);
-void                UpdateAppIcon(EWin * ewin, int imode);
-void                IB_CompleteRedraw(Iconbox * ib);
-void                IB_Setup(void);
-Iconbox           **ListAllIconboxes(int *num);
-Iconbox            *SelectIconboxForEwin(EWin * ewin);
-
-/* init.c */
-void                SetupFallbackClasses(void);
-
 /* ipc.c */
+void __PRINTF__     IpcPrintf(const char *fmt, ...);
 int                 HandleIPC(const char *params, Client * c);
 void                ButtonIPC(int val, void *data);
+int                 EFunc(const char *params);
 
 /* lang.c */
 void                LangInit(void);
@@ -2340,37 +2002,51 @@ void                MoveItemToListTop(void *item, int type);
 void                ListChangeItemID(int type, void *ptr, int id);
 void                MoveItemToListBottom(void *item, int type);
 
+/* main.c */
+void                EExit(int exitcode);
+const char         *EDirRoot(void);
+const char         *EDirBin(void);
+const char         *EDirUser(void);
+const char         *EDirUserCache(void);
+void                EDirMake(const char *base, const char *name);
+const char         *EGetSavePrefix(void);
+const char         *EGetSavePrefixCommon(void);
+
 /* memory.c */
 void                EDisplayMemUse(void);
 
 /* menus.c */
-void                MenusInit(void);
-void                MenusHide(void);
-int                 MenusActive(void);
-MenuStyle          *MenuStyleCreate(void);
-Menu               *MenuCreate(const char *name);
+MenuStyle          *MenuStyleCreate(const char *name);
+int                 MenuStyleConfigLoad(FILE * fs);
+
+Menu               *MenuCreate(const char *name, const char *title,
+			       Menu * parent, MenuStyle * ms);
 void                MenuDestroy(Menu * m);
-MenuItem           *MenuItemCreate(const char *text, ImageClass * iclass,
-				   int action_id, const char *action_params,
-				   Menu * child);
-void                MenuAddItem(Menu * menu, MenuItem * item);
-void                MenuAddName(Menu * menu, const char *name);
-void                MenuAddTitle(Menu * menu, const char *title);
-void                MenuAddStyle(Menu * menu, const char *style);
+void                MenuHide(Menu * m);
+void                MenuEmpty(Menu * m);
+void                MenuRepack(Menu * m);
 void                MenuRealize(Menu * m);
-Menu               *MenuCreateFromDirectory(const char *name, MenuStyle * ms,
-					    const char *dir);
-Menu               *MenuCreateFromFlatFile(const char *name, MenuStyle * ms,
-					   const char *file, Menu * parent);
-Menu               *MenuCreateFromGnome(const char *name, MenuStyle * ms,
-					const char *dir);
-Menu               *MenuCreateFromAllEWins(const char *name, MenuStyle * ms);
-Menu               *MenuCreateFromDesktopEWins(const char *name, MenuStyle * ms,
-					       int desk);
-Menu               *MenuCreateFromDesktops(const char *name, MenuStyle * ms);
-Menu               *MenuCreateFromThemes(const char *name, MenuStyle * ms);
-Menu               *MenuCreateFromBorders(const char *name, MenuStyle * ms);
-Window              MenuWindow(Menu * menu);
+MenuItem           *MenuItemCreate(const char *text, ImageClass * ic,
+				   const char *action_params, Menu * child);
+void                MenuSetName(Menu * m, const char *name);
+void                MenuSetStyle(Menu * m, MenuStyle * ms);
+void                MenuSetTitle(Menu * m, const char *title);
+void                MenuSetData(Menu * m, char *data);
+void                MenuSetTimestamp(Menu * m, time_t t);
+const char         *MenuGetName(const Menu * m);
+Window              MenuGetWindow(const Menu * m);
+const char         *MenuGetData(const Menu * m);
+time_t              MenuGetTimestamp(const Menu * m);
+int                 MenuIsNotEmpty(const Menu * m);
+void                MenuAddItem(Menu * m, MenuItem * mi);
+void                ShowInternalMenu(Menu ** pm, MenuStyle ** pms,
+				     const char *style,
+				     Menu * (mcf) (const char *name,
+						   MenuStyle * ms));
+
+int                 MenusActive(void);
+void                MenusHide(void);
+void                MenusShowNamed(const char *name);
 void                MenusDestroyLoaded(void);
 void                MenusHideByWindow(Window win);
 int                 MenusEventKeyPress(XEvent * ev);
@@ -2379,20 +2055,21 @@ int                 MenusEventMouseUp(XEvent * ev);
 int                 MenusEventMouseIn(XEvent * ev);
 int                 MenusEventMouseOut(XEvent * ev);
 
-void                ShowNamedMenu(const char *name);
-void                ShowTaskMenu(void);
-void                ShowAllTaskMenu(void);
-void                ShowDeskMenu(void);
-void                ShowGroupMenu(void);
+/* menus-misc.c */
+Menu               *MenuCreateFromDirectory(const char *name, Menu * parent,
+					    MenuStyle * ms, const char *dir);
+Menu               *MenuCreateFromFlatFile(const char *name, Menu * parent,
+					   MenuStyle * ms, const char *file);
+Menu               *MenuCreateFromGnome(const char *name, Menu * parent,
+					MenuStyle * ms, const char *dir);
+Menu               *MenuCreateFromAllEWins(const char *name, MenuStyle * ms);
+Menu               *MenuCreateFromDesktopEWins(const char *name, MenuStyle * ms,
+					       int desk);
+Menu               *MenuCreateFromDesktops(const char *name, MenuStyle * ms);
+Menu               *MenuCreateFromThemes(const char *name, MenuStyle * ms);
+Menu               *MenuCreateFromBorders(const char *name, MenuStyle * ms);
 
 /* misc.c */
-void                BlumFlimFrub(void);
-const char         *EDirRoot(void);
-const char         *EDirBin(void);
-void                EDirUserSet(const char *d);
-char               *EDirUser(void);
-void                EDirUserCacheSet(const char *d);
-char               *EDirUserCache(void);
 void                Quicksort(void **a, int l, int r,
 			      int (*CompareFunc) (void *d1, void *d2));
 void                ETimedLoopInit(int k1, int k2, int speed);
@@ -2400,13 +2077,13 @@ int                 ETimedLoopNext(void);
 void __PRINTF__     Eprintf(const char *fmt, ...);
 
 /* moveresize.c */
-int                 ActionMoveStart(EWin * ewin, const void *params,
-				    char constrained, int nogroup);
+int                 ActionMoveStart(EWin * ewin, int grab, char constrained,
+				    int nogroup);
 int                 ActionMoveEnd(EWin * ewin);
 int                 ActionMoveSuspend(void);
 int                 ActionMoveResume(void);
 void                ActionMoveHandleMotion(void);
-int                 ActionResizeStart(EWin * ewin, const void *params, int hv);
+int                 ActionResizeStart(EWin * ewin, int grab, int hv);
 int                 ActionResizeEnd(EWin * ewin);
 void                ActionResizeHandleMotion(void);
 
@@ -2414,46 +2091,16 @@ void                ActionResizeHandleMotion(void);
 void                MWM_GetHints(EWin * ewin, Atom atom_change);
 void                MWM_SetInfo(void);
 
-/* pager.c */
-Pager              *PagerCreate(void);
-void                PagerDestroy(Pager * p);
-void                PagerShow(Pager * p);
-void                PagerHide(Pager * p);
-Pager             **PagersForDesktop(int d, int *num);
-void                RedrawPagersForDesktop(int d, char newbg);
-void                ForceUpdatePagersForDesktop(int d);
-void                PagerRedraw(Pager * p, char newbg);
-void                PagerForceUpdate(Pager * p);
-void                PagerReArea(void);
-void                PagerEwinOutsideAreaUpdate(EWin * ewin);
-void                UpdatePagerSel(void);
-void                EnableAllPagers(void);
-void                DisableAllPagers(void);
-void                PagerHideHi(Pager * p);
-void                PagerSetHiQ(char onoff);
-void                PagerSetSnap(char onoff);
-void                PagerHideAllHi(void);
-void                NewPagerForDesktop(int desk);
-void                EnableSinglePagerForDesktop(int desk);
-int                 PagerForDesktop(int desk);
-void                DisablePagersForDesktop(int desk);
-Window              PagerGetWin(Pager * p);
-Window              PagerGetHiWin(Pager * p);
-void                PagerEventUnmap(Pager * p);
-int                 PagersEventMotion(XEvent * ev);
-int                 PagersEventMouseDown(XEvent * ev);
-int                 PagersEventMouseUp(XEvent * ev);
-int                 PagersEventMouseIn(XEvent * ev);
-int                 PagersEventMouseOut(XEvent * ev);
-
 /* progress.c */
-Progressbar        *CreateProgressbar(char *name, int width, int height);
-void                SetProgressbar(Progressbar * p, int progress);
-void                ShowProgressbar(Progressbar * p);
-void                HideProgressbar(Progressbar * p);
-void                FreeProgressbar(Progressbar * p);
-Window             *ListProgressWindows(int *num);
-void                RaiseProgressbars(void);
+typedef struct _progressbar Progressbar;
+
+Progressbar        *ProgressbarCreate(char *name, int width, int height);
+void                ProgressbarDestroy(Progressbar * p);
+void                ProgressbarSet(Progressbar * p, int progress);
+void                ProgressbarShow(Progressbar * p);
+void                ProgressbarHide(Progressbar * p);
+Window             *ProgressbarsListWindows(int *num);
+void                ProgressbarsRaise(void);
 
 /* regex.c */
 int                 matchregexp(const char *rx, const char *s);
@@ -2477,45 +2124,25 @@ void                ProcessICEMSGS(void);
 int                 GetSMfd(void);
 void                SessionGetInfo(EWin * ewin, Atom atom_change);
 void                SetSMID(const char *smid);
-void                SetSMFile(const char *path);
-void                SetSMProgName(const char *name);
-void                SetSMUserThemePath(const char *path);
-char               *GetSMFile(void);
-char               *GetGenericSMFile(void);
 void                MatchEwinToSM(EWin * ewin);
-void                SaveSession(int shutdown);
 void                autosave(void);
-int                 EExit(int exitcode);
 
 /* settings.c */
-void                SettingsPager(void);
 void                SettingsFocus(void);
 void                SettingsMoveResize(void);
 void                SettingsDesktops(void);
 void                SettingsArea(void);
 void                SettingsPlacement(void);
-void                SettingsIcons(void);
 void                SettingsAutoRaise(void);
-void                SettingsTooltips(void);
-void                SettingsAudio(void);
 void                SettingsSpecialFX(void);
-void                SettingsBackground(Background * bg);
-void                SettingsSelectiveTransparency(void);
-void                SettingsIconbox(char *name);
-void                SettingsGroups(EWin * ewin);
-void                SettingsDefaultGroupControl(void);
 void                RemoveRememberedWindow(EWin * ewin);
 void                SettingsRemember(void);
 void                SettingsMiscellaneous(void);
-void                BGSettingsGoTo(Background * bg);
+void                SettingsComposite(void);
 
 /* setup.c */
 void                MapUnmap(int start);
-void                SetupX(void);
-void                SetupDirs(void);
-void                SetupEnv(void);
-Window              MakeExtInitWin(void);
-void                SetupUserInitialization(void);
+void                SetupX(const char *dstr);
 
 /* size.c */
 void                MaxSize(EWin * ewin, const char *resize_type);
@@ -2523,18 +2150,11 @@ void                MaxWidth(EWin * ewin, const char *resize_type);
 void                MaxHeight(EWin * ewin, const char *resize_type);
 
 /* slideouts.c */
-void                SlideWindowSizeTo(Window win, int fx, int fy, int tx,
-				      int ty, int fw, int fh, int tw, int th,
-				      int speed);
-Slideout           *SlideoutCreate(char *name, char dir);
+int                 SlideoutsConfigLoad(FILE * fs);
 void                SlideoutShow(Slideout * s, EWin * ewin, Window win);
 void                SlideoutHide(Slideout * s);
-void                SlideoutAddButton(Slideout * s, Button * b);
-void                SlideoutRemoveButton(Slideout * s, Button * b);
-const char         *SlideoutGetName(Slideout * s);
-EWin               *SlideoutsGetContextEwin(void);
+
 void                SlideoutsHide(void);
-void                SlideoutsHideIfContextWin(Window win);
 
 /* snaps.c */
 void                SnapshotEwinDialog(EWin * ewin);
@@ -2562,52 +2182,45 @@ void                UnmatchEwinToSnapInfo(EWin * ewin);
 void                RememberImportantInfoForEwin(EWin * ewin);
 
 /* sound.c */
-SoundClass         *SclassCreate(const char *name, const char *file);
-const char         *SclassGetName(SoundClass * sclass);
-void                SoundInit(void);
-void                SoundExit(void);
-int                 SoundPlay(const char *name);
-int                 SoundFree(const char *name);
+void                SoundPlay(const char *name);
 
 /* stacking.c */
-typedef struct _ewinlist EWinList;
-extern EWinList     EwinListFocus;
-extern EWinList     EwinListStack;
-int                 EwinListGetIndex(EWinList * ewl, EWin * ewin);
-void                EwinListAdd(EWinList * ewl, EWin * ewin, int ontop);
-void                EwinListDelete(EWinList * ewl, EWin * ewin);
-int                 EwinListRaise(EWinList * ewl, EWin * ewin, int mode);
-int                 EwinListLower(EWinList * ewl, EWin * ewin, int mode);
-EWin               *const *EwinListGet(EWinList * ewl, int *num);
-EWin               *const *EwinListGetForDesktop(int desk, int *num);
+void                EobjListStackAdd(EObj * eo, int ontop);
+void                EobjListFocusAdd(EObj * eo, int ontop);
+void                EobjListStackDel(EObj * eo);
+void                EobjListFocusDel(EObj * eo);
+int                 EobjListStackRaise(EObj * eo);
+int                 EobjListFocusRaise(EObj * eo);
+int                 EobjListStackLower(EObj * eo);
+int                 EobjListFocusLower(EObj * eo);
+EObj               *EobjListStackFind(Window win);
+EObj               *const *EobjListStackGet(int *num);
+EObj               *const *EobjListStackGetForDesk(int *num, int desk);
+EWin               *const *EwinListStackGet(int *num);
+EWin               *const *EwinListFocusGet(int *num);
+EWin               *const *EwinListGetForDesk(int *num, int desk);
+EWin               *EwinListStackGetTop(void);
 
-#define EwinListGetFocus(pnum) EwinListGet(&EwinListFocus, pnum)
-#define EwinListGetStacking(pnum) EwinListGet(&EwinListStack, pnum)
-#define EwinListGetAll EwinListGetStacking
-int                 EwinListStackingRaise(EWin * ewin);
-int                 EwinListStackingLower(EWin * ewin);
-int                 EwinListFocusRaise(EWin * ewin);
+#define EwinListGetAll EwinListStackGet
+#define EwinListStackRaise(ewin) EobjListStackRaise(&(ewin->o))
+#define EwinListStackLower(ewin) EobjListStackLower(&(ewin->o))
+#define EwinListFocusRaise(ewin) EobjListFocusRaise(&(ewin->o))
+#define EwinListFocusLower(ewin) EobjListFocusLower(&(ewin->o))
 
 /* startup.c */
-void                AddE(void);
 void                CreateStartupDisplay(char start);
 
 /* tclass.c */
-TextClass          *CreateTclass(void);
-void                FreeTextState(TextState * ts);
-void                DeleteTclass(TextClass * t);
-TextState          *CreateTextState(void);
-void                TclassPopulate(TextClass * tclass);
-void                TclassApply(ImageClass * iclass, Window win, int w, int h,
-				int active, int sticky, int state, char expose,
-				TextClass * tclass, const char *text);
+int                 TextclassConfigLoad(FILE * fs);
+TextClass          *TextclassFind(const char *name, int fallback);
+void                TextclassApply(ImageClass * ic, Window win, int w,
+				   int h, int active, int sticky, int state,
+				   char expose, TextClass * tclass,
+				   const char *text);
 
 /* text.c */
-#define ExTextExtents XmbTextExtents
-#define ExDrawString XmbDrawString
 TextState          *TextGetState(TextClass * tclass, int active, int sticky,
 				 int state);
-void                TextStateLoadFont(TextState * ts);
 void                TextSize(TextClass * tclass, int active, int sticky,
 			     int state, const char *text, int *width,
 			     int *height, int fsize);
@@ -2616,12 +2229,8 @@ void                TextDraw(TextClass * tclass, Window win, int active,
 			     int y, int w, int h, int fsize, int justification);
 
 /* theme.c */
-char               *ThemeGetDefault(void);
-void                ThemeSetDefault(const char *theme);
-void                ThemeCleanup(void);
-void                ThemeBadDialog(void);
-char               *ThemeFind(const char *theme);
-char              **ListThemes(int *number);
+void                ThemePathFind(void);
+char              **ThemesList(int *num);
 
 /* timers.c */
 double              GetTime(void);
@@ -2633,15 +2242,15 @@ void                HandleTimerEvent(void);
 void                RemoveTimerEvent(const char *name);
 
 /* tooltips.c */
-ToolTip            *CreateToolTip(const char *name, ImageClass * ic0,
-				  ImageClass * ic1, ImageClass * ic2,
-				  ImageClass * ic3, ImageClass * ic4,
-				  TextClass * tclass, int dist,
-				  ImageClass * tooltippic);
-void                ShowToolTip(ToolTip * tt, const char *text,
+typedef struct _tooltip ToolTip;
+
+int                 TooltipConfigLoad(FILE * fs);
+void                TooltipShow(ToolTip * tt, const char *text,
 				ActionClass * ac, int x, int y);
-void                HideToolTip(ToolTip * tt);
-void                FreeToolTip(ToolTip * tt);
+void                TooltipHide(ToolTip * tt);
+
+void                TooltipsHandleEvent(void);
+void                TooltipsHide(void);
 
 /* ttfont.c */
 void                Efont_extents(Efont * f, const char *text,
@@ -2657,13 +2266,10 @@ void                EFont_draw_string(Display * disp, Drawable win, GC gc,
 				      Visual * vis, Colormap cm);
 
 /* warp.c */
-int                 WarpFocusHandleEvent(XEvent * event);
 void                WarpFocus(int delta);
-void                WarpFocusFinish(void);
 
 /* windowmatch.c */
-WindowMatch        *CreateWindowMatch(const char *name);
-char                TestWindowMatch(EWin * ewin, WindowMatch * b);
+int                 WindowMatchConfigLoad(FILE * fs);
 Border             *MatchEwinBorder(EWin * ewin, WindowMatch * b);
 ImageClass         *MatchEwinIcon(EWin * ewin, WindowMatch * b);
 int                 MatchEwinDesktop(EWin * ewin, WindowMatch * b);
@@ -2671,10 +2277,14 @@ void               *MatchEwinByFunction(EWin * ewin,
 					void *(*FunctionToTest) (EWin *,
 								 WindowMatch
 								 *));
-void                RemoveWindowMatch(WindowMatch * wm);
 
 /* x.c */
-#if INCLUDE_NEW_EVENT_DISPATCHER
+Display            *EDisplayOpen(const char *dstr);
+void                EDisplayClose(void);
+void                EDisplayDisconnect(void);
+
+void                ERegisterWindow(Window win);
+void                EUnregisterWindow(Window win);
 typedef void        (EventCallbackFunc) (XEvent * ev, void *prm);
 void                EventCallbackRegister(Window win, int type,
 					  EventCallbackFunc * func, void *prm);
@@ -2682,19 +2292,15 @@ void                EventCallbackUnregister(Window win, int type,
 					    EventCallbackFunc * func,
 					    void *prm);
 void                EventCallbacksProcess(XEvent * ev);
-#endif /* INCLUDE_NEW_EVENT_DISPATCHER */
-Pixmap              ECreatePixmap(Display * display, Drawable d,
-				  unsigned int width, unsigned int height,
-				  unsigned depth);
-void                EFreePixmap(Display * display, Pixmap pixmap);
+
 Window              ECreateWindow(Window parent, int x, int y, int w, int h,
 				  int saveunder);
+void                EWindowSync(Window win);
 void                EMoveWindow(Display * d, Window win, int x, int y);
 void                EResizeWindow(Display * d, Window win, int w, int h);
 void                EMoveResizeWindow(Display * d, Window win, int x, int y,
 				      int w, int h);
 void                EDestroyWindow(Display * d, Window win);
-void                EForgetWindow(Display * d, Window win);
 void                EMapWindow(Display * d, Window win);
 void                EUnmapWindow(Display * d, Window win);
 void                EShapeCombineMask(Display * d, Window win, int dest, int x,
@@ -2726,10 +2332,9 @@ Window              ECreateEventWindow(Window parent, int x, int y, int w,
 				       int h);
 Window              ECreateFocusWindow(Window parent, int x, int y, int w,
 				       int h);
+Pixmap              EWindowGetShapePixmap(Window win);
 void                ESetColor(XColor * pxc, int r, int g, int b);
-void                EGetColor(XColor * pxc, int *pr, int *pg, int *pb);
-void                GrabX(void);
-void                UngrabX(void);
+void                EGetColor(const XColor * pxc, int *pr, int *pg, int *pb);
 void                GetWinXY(Window win, int *x, int *y);
 void                GetWinWH(Window win, unsigned int *w, unsigned int *h);
 int                 GetWinDepth(Window win);
@@ -2738,10 +2343,7 @@ int                 WinExists(Window win);
 Window              WindowAtXY_0(Window base, int bx, int by, int x, int y);
 Window              WindowAtXY(int x, int y);
 void                PointerAt(int *x, int *y);
-void                PastePixmap(Display * d, Drawable w, Pixmap p, Mask m,
-				int x, int y);
-void                PasteMask(Display * d, Drawable w, Pixmap p, int x, int y,
-			      int wd, int ht);
+void                EDrawableDumpImage(Drawable draw, const char *txt);
 
 /* zoom.c */
 EWin               *GetZoomEWin(void);
@@ -2787,6 +2389,9 @@ __Erealloc(x, y, "<unknown>", 0)
 
 #endif
 
+#define _EFREE(p) do { if (p) { Efree(p); p = NULL; } } while (0)
+#define _EFDUP(p, s) do { if (p) Efree(p); p = Estrdup(s); } while (0)
+
 #if USE_LIBC_STRDUP
 #define Estrdup(s) ((s) ? strdup(s) : NULL)
 #else
@@ -2802,6 +2407,7 @@ char               *Estrndup(const char *s, int n);
 #else
 int                 Esetenv(const char *name, const char *value, int overwrite);
 #endif
+char               *Estrdupcat2(char *ss, const char *s1, const char *s2);
 
 /*
  * Global vars
@@ -2814,24 +2420,11 @@ extern RealRoot     RRoot;
 extern VirtRoot     VRoot;
 extern EConf        Conf;
 extern EMode        Mode;
-extern Desktops     desks;
 extern Window       init_win1;
 extern Window       init_win2;
 extern Window       init_win_ext;
 
 #define FILEPATH_LEN_MAX 4096
-extern char         themepath[FILEPATH_LEN_MAX];
 
-extern char         no_overwrite;
-extern int          child_count;
-extern pid_t       *e_children;
-extern int          numlock_mask;
-extern int          scrollock_mask;
-extern int          mask_mod_combos[8];
-extern Group       *current_group;
-extern const char  *dstr;
-extern char        *e_machine_name;
-
-#ifdef HAS_XINERAMA
-extern char         xinerama_active;
-#endif
+#include "emodule.h"
+#include "ecore-e16.h"

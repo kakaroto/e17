@@ -35,13 +35,13 @@ CoordsShow(EWin * ewin)
    int                 md;
    int                 x, y, w, h;
 
-   if (!Conf.geominfomode)
+   if (!Conf.movres.mode_info)
       return;
    if (ewin == NULL)
       return;
 
-   tc = FindItem("COORDS", 0, LIST_FINDBY_NAME, LIST_TYPE_TCLASS);
-   ic = FindItem("COORDS", 0, LIST_FINDBY_NAME, LIST_TYPE_ICLASS);
+   tc = TextclassFind("COORDS", 1);
+   ic = ImageclassFind("COORDS", 1);
    if ((!ic) || (!tc))
       return;
 
@@ -60,23 +60,23 @@ CoordsShow(EWin * ewin)
    if (ewin)
      {
 	if (Mode.mode == MODE_MOVE)
-	   md = Conf.movemode;
+	   md = Conf.movres.mode_move;
 	else
-	   md = Conf.resizemode;
+	   md = Conf.movres.mode_resize;
 
 	if ((md == 0) || ((cw < ewin->client.w) && (ch < ewin->client.h)))
 	  {
-	     if (Conf.geominfomode == 1)
+	     if (Conf.movres.mode_info == 1)
 	       {
 		  switch (md)
 		    {
 		    case 0:
 		    case 1:
 		    case 2:
-		       cx = x + ((ewin->w - cw) / 2) +
-			  desks.desk[ewin->desktop].x;
-		       cy = y + ((ewin->h - ch) / 2) +
-			  desks.desk[ewin->desktop].y;
+		       cx = x + ((EoGetW(ewin) - cw) / 2) +
+			  DeskGetX(EoGetDesk(ewin));
+		       cy = y + ((EoGetH(ewin) - ch) / 2) +
+			  DeskGetY(EoGetDesk(ewin));
 		       break;
 		    }
 	       }
@@ -95,8 +95,8 @@ CoordsShow(EWin * ewin)
 
    pq = Mode.queue_up;
    Mode.queue_up = 0;
-   IclassApply(ic, c_win, cw, ch, 1, 0, STATE_NORMAL, 0, ST_UNKNWN);
-   TclassApply(ic, c_win, cw, ch, 0, 0, STATE_NORMAL, 0, tc, s);
+   ImageclassApply(ic, c_win, cw, ch, 1, 0, STATE_NORMAL, 0, ST_UNKNWN);
+   TextclassApply(ic, c_win, cw, ch, 0, 0, STATE_NORMAL, 0, tc, s);
    Mode.queue_up = pq;
    XFlush(disp);
 }

@@ -22,6 +22,9 @@
  */
 #include "E.h"
 
+#define ExTextExtents XmbTextExtents
+#define ExDrawString XmbDrawString
+
 static void         ShowAlert(char *text);
 
 static int          (*IgnoreFunction) (const void *) = NULL;
@@ -37,144 +40,6 @@ static char        *ExitText = NULL;
 static char        *TitleText = NULL;
 
 XFontSet            xfs = NULL;
-
-void
-AlertInit(void)
-{
-   /* Set up all the text bits that belong on the GSOD */
-   AssignTitleText(_("Enlightenment Message Dialog"));
-   AssignIgnoreText(_("Ignore this"));
-   AssignRestartText(_("Restart Enlightenment"));
-   AssignExitText(_("Quit Enlightenment"));
-
-   /* We'll set up what the buttons do now, too */
-   AssignRestartFunction(SessionExit, "restart");
-   AssignExitFunction(SessionExit, NULL);
-}
-
-void
-AlertX(const char *title, const char *ignore,
-       const char *restart, const char *quit, const char *fmt, ...)
-{
-   char                text[10240];
-   va_list             ap;
-
-   EDBUG(7, "AlertX");
-
-   AssignTitleText(title);
-   AssignIgnoreText(ignore);
-   AssignRestartText(restart);
-   AssignExitText(quit);
-
-   va_start(ap, fmt);
-   Evsnprintf(text, 10240, fmt, ap);
-   va_end(ap);
-   SoundPlay("SOUND_ALERT");
-   ShowAlert(text);
-
-   AssignTitleText(_("Enlightenment Message Dialog"));
-   AssignIgnoreText(_("Ignore this"));
-   AssignRestartText(_("Restart Enlightenment"));
-   AssignExitText(_("Quit Enlightenment"));
-
-   EDBUG_RETURN_;
-}
-
-void
-Alert(const char *fmt, ...)
-{
-   char                text[10240];
-   va_list             ap;
-
-   EDBUG(7, "Alert");
-
-   va_start(ap, fmt);
-   Evsnprintf(text, 10240, fmt, ap);
-   va_end(ap);
-   SoundPlay("SOUND_ALERT");
-   ShowAlert(text);
-
-   EDBUG_RETURN_;
-}
-
-void
-AssignTitleText(const char *text)
-{
-   EDBUG(7, "AssignTitleText");
-
-   if (TitleText)
-      Efree(TitleText);
-   TitleText = Estrdup(text);
-
-   EDBUG_RETURN_;
-}
-
-void
-AssignIgnoreText(const char *text)
-{
-   EDBUG(7, "AssignIgnoreText");
-
-   if (IgnoreText)
-      Efree(IgnoreText);
-   IgnoreText = Emalloc(strlen(text) + 6);
-   sprintf(IgnoreText, "(F1) %s", text);
-
-   EDBUG_RETURN_;
-}
-
-void
-AssignRestartText(const char *text)
-{
-   EDBUG(7, "AssignRestartText");
-
-   if (RestartText)
-      Efree(RestartText);
-   RestartText = Emalloc(strlen(text) + 6);
-   sprintf(RestartText, "(F2) %s", text);
-
-   EDBUG_RETURN_;
-}
-
-void
-AssignExitText(const char *text)
-{
-   EDBUG(7, "AssignExitText");
-
-   if (ExitText)
-      Efree(ExitText);
-   ExitText = Emalloc(strlen(text) + 6);
-   sprintf(ExitText, "(F3) %s", text);
-
-   EDBUG_RETURN_;
-}
-
-void
-AssignIgnoreFunction(int (*FunctionToAssign) (const void *), const void *params)
-{
-   EDBUG(7, "AssignIgnoreFunction");
-   IgnoreFunction = FunctionToAssign;
-   IgnoreParams = params;
-   EDBUG_RETURN_;
-}
-
-void
-AssignRestartFunction(int (*FunctionToAssign) (const void *),
-		      const void *params)
-{
-   EDBUG(7, "AssignRestartFunction");
-   RestartFunction = FunctionToAssign;
-   RestartParams = params;
-   EDBUG_RETURN_;
-}
-
-void
-AssignExitFunction(int (*FunctionToAssign) (const void *), const void *params)
-{
-   EDBUG(7, "AssignExitFunction");
-   ExitFunction = FunctionToAssign;
-   ExitParams = params;
-   EDBUG_RETURN_;
-}
 
 #define DRAW_BOX_OUT(mdd, mgc, mwin, mx, my, mw, mh) \
         AlertDrawBox(mdd, mgc, mwin, mx, my, mw, mh, \
@@ -651,6 +516,170 @@ ShowAlert(char *text)
    if (cnum > 0)
       XFreeColors(dd, cmap, cols, cnum, 0);
    XCloseDisplay(dd);
+
+   EDBUG_RETURN_;
+}
+
+static void
+AssignTitleText(const char *text)
+{
+   EDBUG(7, "AssignTitleText");
+
+   if (TitleText)
+      Efree(TitleText);
+   TitleText = Estrdup(text);
+
+   EDBUG_RETURN_;
+}
+
+static void
+AssignIgnoreText(const char *text)
+{
+   EDBUG(7, "AssignIgnoreText");
+
+   if (IgnoreText)
+      Efree(IgnoreText);
+
+   if (text)
+     {
+	IgnoreText = Emalloc(strlen(text) + 6);
+	sprintf(IgnoreText, "(F1) %s", text);
+     }
+   else
+     {
+	IgnoreText = NULL;
+     }
+
+   EDBUG_RETURN_;
+}
+
+static void
+AssignRestartText(const char *text)
+{
+   EDBUG(7, "AssignRestartText");
+
+   if (RestartText)
+      Efree(RestartText);
+
+   if (text)
+     {
+	RestartText = Emalloc(strlen(text) + 6);
+	sprintf(RestartText, "(F2) %s", text);
+     }
+   else
+     {
+	RestartText = NULL;
+     }
+
+   EDBUG_RETURN_;
+}
+
+static void
+AssignExitText(const char *text)
+{
+   EDBUG(7, "AssignExitText");
+
+   if (ExitText)
+      Efree(ExitText);
+
+   if (text)
+     {
+	ExitText = Emalloc(strlen(text) + 6);
+	sprintf(ExitText, "(F3) %s", text);
+     }
+   else
+     {
+	ExitText = NULL;
+     }
+
+   EDBUG_RETURN_;
+}
+
+#if 0
+static void
+AssignIgnoreFunction(int (*FunctionToAssign) (const void *), const void *params)
+{
+   EDBUG(7, "AssignIgnoreFunction");
+   IgnoreFunction = FunctionToAssign;
+   IgnoreParams = params;
+   EDBUG_RETURN_;
+}
+#endif
+
+static void
+AssignRestartFunction(int (*FunctionToAssign) (const void *),
+		      const void *params)
+{
+   EDBUG(7, "AssignRestartFunction");
+   RestartFunction = FunctionToAssign;
+   RestartParams = params;
+   EDBUG_RETURN_;
+}
+
+static void
+AssignExitFunction(int (*FunctionToAssign) (const void *), const void *params)
+{
+   EDBUG(7, "AssignExitFunction");
+   ExitFunction = FunctionToAssign;
+   ExitParams = params;
+   EDBUG_RETURN_;
+}
+
+void
+AlertInit(void)
+{
+   /* Set up all the text bits that belong on the GSOD */
+   AssignTitleText(_("Enlightenment Message Dialog"));
+   AssignIgnoreText(_("Ignore this"));
+   AssignRestartText(_("Restart Enlightenment"));
+   AssignExitText(_("Quit Enlightenment"));
+
+   /* We'll set up what the buttons do now, too */
+   AssignRestartFunction(SessionExit, "restart");
+   AssignExitFunction(SessionExit, NULL);
+}
+
+void
+AlertX(const char *title, const char *ignore,
+       const char *restart, const char *quit, const char *fmt, ...)
+{
+   char                text[10240];
+   va_list             ap;
+
+   EDBUG(7, "AlertX");
+
+   AssignTitleText(title);
+   AssignIgnoreText(ignore);
+   AssignRestartText(restart);
+   AssignExitText(quit);
+
+   va_start(ap, fmt);
+   Evsnprintf(text, 10240, fmt, ap);
+   va_end(ap);
+   SoundPlay("SOUND_ALERT");
+   ShowAlert(text);
+
+   AssignTitleText(_("Enlightenment Message Dialog"));
+   AssignIgnoreText(_("Ignore this"));
+   AssignRestartText(_("Restart Enlightenment"));
+   AssignExitText(_("Quit Enlightenment"));
+
+   EDBUG_RETURN_;
+}
+
+void
+Alert(const char *fmt, ...)
+{
+   char                text[10240];
+   va_list             ap;
+
+   EDBUG(7, "Alert");
+
+   va_start(ap, fmt);
+   Evsnprintf(text, 10240, fmt, ap);
+   va_end(ap);
+   SoundPlay("SOUND_ALERT");
+   ShowAlert(text);
 
    EDBUG_RETURN_;
 }

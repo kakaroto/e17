@@ -8,10 +8,10 @@ backup-cursors.cfg \
 backup-imageclasses.cfg \
 backup-textclasses.cfg \
 backup-tooltips.cfg \
+bindings.cfg \
 definitions \
 control.cfg \
 icondefs.cfg \
-keybindings.cfg \
 menus.cfg
 
 configdatadir = $(ENLIGHTENMENT_ROOT)/config

@@ -22,6 +22,9 @@
  */
 #include "E.h"
 
+#define ExTextExtents XmbTextExtents
+#define ExDrawString XmbDrawString
+
 static void         TextDrawRotTo(Window win, Drawable * drawable, int x, int y,
 				  int w, int h, TextState * ts);
 
@@ -135,7 +138,7 @@ TextGetLines(const char *text, int *count)
    EDBUG_RETURN(list);
 }
 
-void
+static void
 TextStateLoadFont(TextState * ts)
 {
    EDBUG(5, "TextStateLoadFont");
@@ -162,7 +165,7 @@ TextStateLoadFont(TextState * ts)
 	   word(s2, 1, w);
 	   Esnprintf(s, sizeof(s), "ttfonts/%s.ttf", w);
 	   word(s2, 2, w);
-	   ss = FindFile(s);
+	   ss = ThemeFileFind(s);
 	   if (ss)
 	     {
 		ts->efont = Efont_load(ss, atoi(w));
@@ -318,7 +321,6 @@ TextDraw(TextClass * tclass, Window win, int active, int sticky, int state,
    int                 i, num_lines;
    TextState          *ts;
    int                 xx, yy;
-   XGCValues           gcv;
    static GC           gc = 0;
    int                 textwidth_limit, offset_x, offset_y;
    Pixmap              drawable;
@@ -342,7 +344,7 @@ TextDraw(TextClass * tclass, Window win, int active, int sticky, int state,
       EDBUG_RETURN_;
 
    if (!gc)
-      gc = XCreateGC(disp, win, 0, &gcv);
+      gc = ecore_x_gc_new(win);
 
    if (ts->style.orientation == FONT_TO_RIGHT ||
        ts->style.orientation == FONT_TO_LEFT)
@@ -396,8 +398,8 @@ TextDraw(TextClass * tclass, Window win, int active, int sticky, int state,
 
 	     if (ts->style.orientation != FONT_TO_RIGHT)
 		drawable =
-		   ECreatePixmap(disp, VRoot.win, wid + 2, ascent + descent + 2,
-				 GetWinDepth(win));
+		   ecore_x_pixmap_new(VRoot.win, wid + 2, ascent + descent + 2,
+				      GetWinDepth(win));
 	     else
 		drawable = win;
 	     TextDrawRotTo(win, &drawable, xx - 1, yy - 1 - ascent, wid + 2,
@@ -442,7 +444,7 @@ TextDraw(TextClass * tclass, Window win, int active, int sticky, int state,
 	     TextDrawRotBack(win, drawable, xx - 1, yy - 1 - ascent, wid + 2,
 			     ascent + descent + 2, ts);
 	     if (drawable != win)
-		EFreePixmap(disp, drawable);
+		ecore_x_pixmap_del(drawable);
 	     yy += ascent + descent;
 	  }
      }
@@ -538,8 +540,8 @@ TextDraw(TextClass * tclass, Window win, int active, int sticky, int state,
 
 	     if (ts->style.orientation != FONT_TO_RIGHT)
 		drawable =
-		   ECreatePixmap(disp, VRoot.win, ret2.width + 2,
-				 ret2.height + 2, GetWinDepth(win));
+		   ecore_x_pixmap_new(VRoot.win, ret2.width + 2,
+				      ret2.height + 2, GetWinDepth(win));
 	     else
 		drawable = win;
 	     TextDrawRotTo(win, &drawable, xx - 1,
@@ -585,7 +587,7 @@ TextDraw(TextClass * tclass, Window win, int active, int sticky, int state,
 			     yy - (ts->xfontset_ascent) - 1, ret2.width + 2,
 			     ret2.height + 2, ts);
 	     if (drawable != win)
-		EFreePixmap(disp, drawable);
+		ecore_x_pixmap_del(drawable);
 	     yy += ret2.height;
 	  }
      }
@@ -634,8 +636,8 @@ TextDraw(TextClass * tclass, Window win, int active, int sticky, int state,
 
 	     if (ts->style.orientation != FONT_TO_RIGHT)
 		drawable =
-		   ECreatePixmap(disp, VRoot.win, wid + 2, ascent + descent + 2,
-				 GetWinDepth(win));
+		   ecore_x_pixmap_new(VRoot.win, wid + 2, ascent + descent + 2,
+				      GetWinDepth(win));
 	     else
 		drawable = win;
 	     TextDrawRotTo(win, &drawable, xx - 1, yy - ascent - 1, wid + 2,
@@ -679,7 +681,7 @@ TextDraw(TextClass * tclass, Window win, int active, int sticky, int state,
 	     TextDrawRotBack(win, drawable, xx - 1, yy - 1 - ascent, wid + 2,
 			     ascent + descent + 2, ts);
 	     if (drawable != win)
-		EFreePixmap(disp, drawable);
+		ecore_x_pixmap_del(drawable);
 	     yy += ts->xfont->ascent + ts->xfont->descent;
 	  }
      }
@@ -730,8 +732,8 @@ TextDraw(TextClass * tclass, Window win, int active, int sticky, int state,
 
 	     if (ts->style.orientation != FONT_TO_RIGHT)
 		drawable =
-		   ECreatePixmap(disp, VRoot.win, wid + 2, ascent + descent + 2,
-				 GetWinDepth(win));
+		   ecore_x_pixmap_new(VRoot.win, wid + 2, ascent + descent + 2,
+				      GetWinDepth(win));
 	     else
 		drawable = win;
 	     TextDrawRotTo(win, &drawable, xx - 1, yy - ascent - 1, wid + 2,
@@ -775,7 +777,7 @@ TextDraw(TextClass * tclass, Window win, int active, int sticky, int state,
 	     TextDrawRotBack(win, drawable, xx - 1, yy - 1 - ascent, wid + 2,
 			     ascent + descent + 2, ts);
 	     if (drawable != win)
-		EFreePixmap(disp, drawable);
+		ecore_x_pixmap_del(drawable);
 	     yy += ts->xfont->ascent + ts->xfont->descent;
 	  }
      }
@@ -796,7 +798,7 @@ TextDrawRotTo(Window win, Drawable * drawable, int x, int y, int w, int h,
    switch (ts->style.orientation)
      {
      case FONT_TO_UP:
-	XSync(disp, False);	/* Workaround for crash seen with Absolute E (Imlib2?) */
+	ecore_x_sync();		/* Workaround for crash seen with Absolute E (Imlib2?) */
 	imlib_context_set_drawable(win);
 	ii = imlib_create_image_from_drawable(0, y, x, h, w, 0);
 	imlib_context_set_image(ii);
@@ -807,7 +809,7 @@ TextDrawRotTo(Window win, Drawable * drawable, int x, int y, int w, int h,
      case FONT_TO_DOWN:
 	EGetGeometry(disp, win, &rr, &win_x, &win_y, &win_w, &win_h,
 		     &win_b, &win_d);
-	XSync(disp, False);	/* Workaround for crash seen with Absolute E (Imlib2?) */
+	ecore_x_sync();		/* Workaround for crash seen with Absolute E (Imlib2?) */
 	imlib_context_set_drawable(win);
 	ii = imlib_create_image_from_drawable(0, win_w - y - h, x, h, w, 0);
 	imlib_context_set_image(ii);
@@ -816,7 +818,7 @@ TextDrawRotTo(Window win, Drawable * drawable, int x, int y, int w, int h,
 	imlib_render_image_on_drawable_at_size(0, 0, w, h);
 	break;
      case FONT_TO_LEFT:	/* Holy carumba! That's for yoga addicts, maybe .... */
-	XSync(disp, False);	/* Workaround for crash seen with Absolute E (Imlib2?) */
+	ecore_x_sync();		/* Workaround for crash seen with Absolute E (Imlib2?) */
 	imlib_context_set_drawable(win);
 	ii = imlib_create_image_from_drawable(0, x, y, w, h, 0);
 	imlib_context_set_image(ii);

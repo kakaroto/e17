@@ -21,13 +21,14 @@
  * CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 #include "E.h"
+#include "conf.h"
 
-WindowMatch        *
-CreateWindowMatch(const char *name)
+static WindowMatch *
+WindowMatchCreate(const char *name)
 {
    WindowMatch        *b;
 
-   EDBUG(5, "CreateWindowMatch");
+   EDBUG(5, "WindowMatchCreate");
    b = Emalloc(sizeof(WindowMatch));
    if (!b)
       EDBUG_RETURN(NULL);
@@ -50,8 +51,146 @@ CreateWindowMatch(const char *name)
    EDBUG_RETURN(b);
 }
 
-char
-TestWindowMatch(EWin * ewin, WindowMatch * b)
+#if 0
+static void
+WindowMatchDestroy(WindowMatch * wm)
+{
+   EDBUG(4, "RemoveWindowMatch");
+
+   if (!wm)
+      EDBUG_RETURN_;
+
+   while (RemoveItemByPtr(wm, LIST_TYPE_WINDOWMATCH));
+
+   if (wm->icon)
+      wm->icon->ref_count--;
+   if (wm->border)
+      wm->border->ref_count--;
+   if (wm->name)
+      Efree(wm->name);
+   if (wm->win_title)
+      Efree(wm->win_title);
+   if (wm->win_name)
+      Efree(wm->win_name);
+   if (wm->win_class)
+      Efree(wm->win_class);
+
+   EDBUG_RETURN_;
+}
+#endif
+
+int
+WindowMatchConfigLoad(FILE * fs)
+{
+   int                 err = 0;
+   WindowMatch        *bm = 0;
+   char                s[FILEPATH_LEN_MAX];
+   char                s2[FILEPATH_LEN_MAX];
+   int                 i1;
+   int                 fields;
+
+   while (GetLine(s, sizeof(s), fs))
+     {
+	s2[0] = 0;
+	i1 = CONFIG_INVALID;
+	fields = sscanf(s, "%i %4000s", &i1, s2);
+
+	if (fields < 1)
+	   i1 = CONFIG_INVALID;
+	else if (i1 == CONFIG_CLOSE)
+	  {
+	     if (fields != 1)
+		Alert(_("CONFIG: ignoring extra data in \"%s\"\n"), s);
+	  }
+	else if (i1 != CONFIG_INVALID)
+	  {
+	     if (fields != 2)
+	       {
+		  Alert(_("CONFIG: missing required data in \"%s\"\n"), s);
+	       }
+	  }
+	switch (i1)
+	  {
+	  case CONFIG_CLOSE:
+	     AddItem(bm, bm->name, 0, LIST_TYPE_WINDOWMATCH);
+	     goto done;
+	  case CONFIG_CLASSNAME:
+	     bm = WindowMatchCreate(s2);
+	     break;
+	  case CONFIG_BORDER:
+	  case WINDOWMATCH_USEBORDER:
+	     bm->border = FindItem(s2, 0, LIST_FINDBY_NAME, LIST_TYPE_BORDER);
+	     if (bm->border)
+		bm->border->ref_count++;
+	     break;
+	  case WINDOWMATCH_MATCHNAME:
+	     bm->win_name = Estrdup(atword(s, 2));
+	     break;
+	  case WINDOWMATCH_MATCHCLASS:
+	     bm->win_class = Estrdup(atword(s, 2));
+	     break;
+	  case WINDOWMATCH_MATCHTITLE:
+	     bm->win_title = Estrdup(atword(s, 2));
+	     break;
+	  case WINDOWMATCH_DESKTOP:
+	  case CONFIG_DESKTOP:
+	     bm->desk = atoi(s2);
+	     break;
+	  case WINDOWMATCH_ICON:
+	  case CONFIG_ICONBOX:
+	     bm->icon = ImageclassFind(s2, 0);
+	     if (bm->icon)
+		bm->icon->ref_count++;
+	     break;
+	  case WINDOWMATCH_WIDTH:
+	     {
+		char                s3[FILEPATH_LEN_MAX];
+
+		sscanf(s, "%*s %4000s %4000s", s2, s3);
+		bm->width.min = atoi(s2);
+		bm->width.max = atoi(s3);
+	     }
+	     break;
+	  case WINDOWMATCH_HEIGHT:
+	     {
+		char                s3[FILEPATH_LEN_MAX];
+
+		sscanf(s, "%*s %4000s %4000s", s2, s3);
+		bm->height.min = atoi(s2);
+		bm->height.max = atoi(s3);
+	     }
+	     break;
+	  case WINDOWMATCH_TRANSIENT:
+	     bm->transient = atoi(s2);
+	     break;
+	  case WINDOWMATCH_NO_RESIZE_H:
+	     bm->no_resize_h = atoi(s2);
+	     break;
+	  case WINDOWMATCH_NO_RESIZE_V:
+	     bm->no_resize_v = atoi(s2);
+	     break;
+	  case WINDOWMATCH_SHAPED:
+	     bm->shaped = atoi(s2);
+	     break;
+	  case WINDOWMATCH_MAKESTICKY:
+	     bm->make_sticky = atoi(s2);
+	     break;
+	  default:
+	     Alert(_("Warning: unable to determine what to do with\n"
+		     "the following text in the middle of current "
+		     "WindowMatch definition:\n"
+		     "%s\nWill ignore and continue...\n"), s);
+	     break;
+	  }
+     }
+   err = -1;
+
+ done:
+   return err;
+}
+
+static int
+WindowMatchTest(EWin * ewin, WindowMatch * b)
 {
 
    EDBUG(5, "MatchEwinBorder");
@@ -94,10 +233,10 @@ MatchEwinBorder(EWin * ewin, WindowMatch * b)
 {
    EDBUG(4, "MatchEwinBorder");
 
-   if (TestWindowMatch(ewin, b))
+   if (WindowMatchTest(ewin, b))
      {
 	if (b->make_sticky)
-	   ewin->sticky = 1;
+	   EoSetSticky(ewin, 1);
 
 	EDBUG_RETURN(b->border);
      }
@@ -111,10 +250,10 @@ ImageClass         *
 MatchEwinIcon(EWin * ewin, WindowMatch * b)
 {
    EDBUG(4, "MatchEwinIcon");
-   if (TestWindowMatch(ewin, b))
+   if (WindowMatchTest(ewin, b))
      {
 	if (b->make_sticky)
-	   ewin->sticky = 1;
+	   EoSetSticky(ewin, 1);
 
 	EDBUG_RETURN(b->icon);
      }
@@ -128,10 +267,10 @@ int
 MatchEwinDesktop(EWin * ewin, WindowMatch * b)
 {
    EDBUG(4, "MatchEwinDesktop");
-   if (TestWindowMatch(ewin, b))
+   if (WindowMatchTest(ewin, b))
      {
 	if (b->make_sticky)
-	   ewin->sticky = 1;
+	   EoSetSticky(ewin, 1);
 
 	EDBUG_RETURN(b->desk);
      }
@@ -166,33 +305,4 @@ MatchEwinByFunction(EWin * ewin,
      }
 
    EDBUG_RETURN(retval);
-
-}
-
-void
-RemoveWindowMatch(WindowMatch * wm)
-{
-
-   EDBUG(4, "RemoveWindowMatch");
-
-   if (!wm)
-      EDBUG_RETURN_;
-
-   while (RemoveItemByPtr(wm, LIST_TYPE_WINDOWMATCH));
-
-   if (wm->icon)
-      wm->icon->ref_count--;
-   if (wm->border)
-      wm->border->ref_count--;
-   if (wm->name)
-      Efree(wm->name);
-   if (wm->win_title)
-      Efree(wm->win_title);
-   if (wm->win_name)
-      Efree(wm->win_name);
-   if (wm->win_class)
-      Efree(wm->win_class);
-
-   EDBUG_RETURN_;
-
 }

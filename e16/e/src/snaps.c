@@ -217,14 +217,6 @@ ClearSnapshot(Snapshot * sn)
 }
 #endif
 
-static void         CB_ApplySnapEscape(int val, void *data);
-static void
-CB_ApplySnapEscape(int val, void *data)
-{
-   DialogClose((Dialog *) data);
-   val = 0;
-}
-
 static Window       tmp_snap_client;
 static char         tmp_snap_border;
 static char         tmp_snap_desktop;
@@ -239,9 +231,8 @@ static char         tmp_snap_group;
 static char         tmp_snap_skiplists;
 static char         tmp_snap_neverfocus;
 
-static void         CB_ApplySnap(int val, void *data);
 static void
-CB_ApplySnap(int val, void *data)
+CB_ApplySnap(Dialog * d __UNUSED__, int val, void *data __UNUSED__)
 {
    SaveSnapInfo();
    if (val < 2)
@@ -288,7 +279,6 @@ CB_ApplySnap(int val, void *data)
 	     SaveSnapInfo();
 	  }
      }
-   data = NULL;
 }
 
 void
@@ -549,7 +539,7 @@ SnapshotEwinDialog(EWin * ewin)
 
 	if (ewin->icccm.wm_machine)
 	  {
-	     if (strcmp(ewin->icccm.wm_machine, e_machine_name))
+	     if (strcmp(ewin->icccm.wm_machine, Mode.wm.machine_name))
 		ok = 0;
 	  }
 	if (ok)
@@ -595,9 +585,9 @@ SnapshotEwinDialog(EWin * ewin)
    DialogAddButton(d, _("OK"), CB_ApplySnap, 1);
    DialogAddButton(d, _("Apply"), CB_ApplySnap, 0);
    DialogAddButton(d, _("Close"), CB_ApplySnap, 1);
-   DialogSetExitFunction(d, CB_ApplySnap, 2, d);
-   DialogBindKey(d, "Escape", CB_ApplySnapEscape, 0, d);
-   DialogBindKey(d, "Return", CB_ApplySnap, 0, d);
+   DialogSetExitFunction(d, CB_ApplySnap, 2);
+   DialogBindKey(d, "Escape", DialogCallbackClose, 0);
+   DialogBindKey(d, "Return", CB_ApplySnap, 0);
 
    ShowDialog(d);
 }
@@ -629,7 +619,7 @@ SnapshotEwinDesktop(EWin * ewin)
    if (!sn)
       return;
    sn->use_desktop = 1;
-   sn->desktop = ewin->desktop;
+   sn->desktop = EoGetDesk(ewin);
 }
 
 void
@@ -649,21 +639,21 @@ void
 SnapshotEwinLocation(EWin * ewin)
 {
    Snapshot           *sn;
+   int                 ax, ay;
 
    sn = GetSnapshot(ewin);
    if (!sn)
       return;
    sn->use_xy = 1;
-   sn->x = ewin->x;
-   sn->y = ewin->y;
+   sn->x = EoGetX(ewin);
+   sn->y = EoGetY(ewin);
    sn->area_x = ewin->area_x;
    sn->area_y = ewin->area_y;
-   if (!ewin->sticky)
+   if (!EoIsSticky(ewin))
      {
-	sn->x +=
-	   ((desks.desk[ewin->desktop].current_area_x - sn->area_x) * VRoot.w);
-	sn->y +=
-	   ((desks.desk[ewin->desktop].current_area_y - sn->area_y) * VRoot.h);
+	DeskGetArea(EoGetDesk(ewin), &ax, &ay);
+	sn->x += ((ax - sn->area_x) * VRoot.w);
+	sn->y += ((ay - sn->area_y) * VRoot.h);
      }
 }
 
@@ -676,7 +666,7 @@ SnapshotEwinLayer(EWin * ewin)
    if (!sn)
       return;
    sn->use_layer = 1;
-   sn->layer = ewin->layer;
+   sn->layer = EoGetLayer(ewin);
 }
 
 void
@@ -688,7 +678,7 @@ SnapshotEwinSticky(EWin * ewin)
    if (!sn)
       return;
    sn->use_sticky = 1;
-   sn->sticky = ewin->sticky;
+   sn->sticky = EoIsSticky(ewin);
 }
 
 void
@@ -755,7 +745,7 @@ SnapshotEwinCmd(EWin * ewin)
 
    if (ewin->icccm.wm_machine)
      {
-	if (strcmp(ewin->icccm.wm_machine, e_machine_name))
+	if (strcmp(ewin->icccm.wm_machine, Mode.wm.machine_name))
 	   ok = 0;
      }
    if (ok)
@@ -789,7 +779,8 @@ SnapshotEwinGroups(EWin * ewin, char onoff)
 	return;
      }
 
-   gwins = ListWinGroupMembersForEwin(ewin, ACTION_NONE, Mode.nogroup, &num);
+   gwins =
+      ListWinGroupMembersForEwin(ewin, GROUP_ACTION_ANY, Mode.nogroup, &num);
    for (i = 0; i < num; i++)
      {
 	if (onoff)
@@ -964,8 +955,8 @@ Real_SaveSnapInfo(int dumval __UNUSED__, void *dumdat __UNUSED__)
 
    fclose(f);
 
-   Esnprintf(buf, sizeof(buf), "%s.snapshots.%i", GetGenericSMFile(),
-	     VRoot.scr);
+   Esnprintf(buf, sizeof(buf), "%s.snapshots", EGetSavePrefix());
+
    if (EventDebug(EDBUG_TYPE_SESSION))
       Eprintf("Real_SaveSnapInfo: %s\n", buf);
    E_mv(s, buf);
@@ -1004,10 +995,7 @@ LoadSnapInfo(void)
    FILE               *f;
    int                 res_w, res_h;
 
-   Esnprintf(buf, sizeof(buf), "%s.snapshots.%i", GetSMFile(), VRoot.scr);
-   if (!exists(buf))
-      Esnprintf(buf, sizeof(buf), "%s.snapshots.%i", GetGenericSMFile(),
-		VRoot.scr);
+   Esnprintf(buf, sizeof(buf), "%s.snapshots", EGetSavePrefix());
    f = fopen(buf, "r");
    if (!f)
       return;
@@ -1169,7 +1157,7 @@ void
 MatchEwinToSnapInfo(EWin * ewin)
 {
    Snapshot           *sn;
-   int                 i;
+   int                 i, ax, ay;
 
    sn = FindSnapshot(ewin);
    if (!sn)
@@ -1180,12 +1168,10 @@ MatchEwinToSnapInfo(EWin * ewin)
    ListChangeItemID(LIST_TYPE_SNAPSHOT, ewin->snap, 1);
 
    if (sn->use_sticky)
-      ewin->sticky = sn->sticky;
+      EoSetSticky(ewin, sn->sticky);
 
-   if (sn->use_desktop && !ewin->sticky)
-      ewin->desktop = DESKTOPS_WRAP_NUM(sn->desktop);
-   else
-      ewin->desktop = desks.current;
+   if (sn->use_desktop)
+      EoSetDesk(ewin, sn->desktop);
 
    if (sn->use_wh)
      {
@@ -1201,21 +1187,18 @@ MatchEwinToSnapInfo(EWin * ewin)
 	ewin->client.grav = NorthWestGravity;
 	ewin->area_x = sn->area_x;
 	ewin->area_y = sn->area_y;
-	if (!ewin->sticky)
+	if (!EoIsSticky(ewin))
 	  {
-	     ewin->client.x +=
-		((sn->area_x - desks.desk[ewin->desktop].current_area_x) *
-		 VRoot.w);
-	     ewin->client.y +=
-		((sn->area_y - desks.desk[ewin->desktop].current_area_y) *
-		 VRoot.h);
+	     DeskGetArea(EoGetDesk(ewin), &ax, &ay);
+	     ewin->client.x += ((sn->area_x - ax) * VRoot.w);
+	     ewin->client.y += ((sn->area_y - ay) * VRoot.h);
 	  }
 	EMoveResizeWindow(disp, ewin->client.win, ewin->client.x,
 			  ewin->client.y, ewin->client.w, ewin->client.h);
      }
 
    if (sn->use_layer)
-      ewin->layer = sn->layer;
+      EoSetLayer(ewin, sn->layer);
 
    if (sn->use_skiplists)
      {
@@ -1283,22 +1266,22 @@ UnmatchEwinToSnapInfo(EWin * ewin)
 void
 RememberImportantInfoForEwin(EWin * ewin)
 {
-   if ((ewin->pager) || (ewin->ibox))
-     {
-	if (EventDebug(EDBUG_TYPE_SNAPS))
-	   Eprintf("RememberImportantInfoForEwin  %#lx %s\n",
-		   ewin->client.win, EwinGetTitle(ewin));
+   if (!ewin->props.autosave)
+      return;
 
-	SnapshotEwinBorder(ewin);
-	SnapshotEwinDesktop(ewin);
-	SnapshotEwinSize(ewin);
-	SnapshotEwinLocation(ewin);
-	SnapshotEwinLayer(ewin);
-	SnapshotEwinSticky(ewin);
-	SnapshotEwinShade(ewin);
-	SnapshotEwinGroups(ewin, ewin->num_groups);
-	SnapshotEwinSkipLists(ewin);
-	SnapshotEwinNeverFocus(ewin);
-	SaveSnapInfo();
-     }
+   if (EventDebug(EDBUG_TYPE_SNAPS))
+      Eprintf("RememberImportantInfoForEwin  %#lx %s\n",
+	      ewin->client.win, EwinGetTitle(ewin));
+
+   SnapshotEwinBorder(ewin);
+   SnapshotEwinDesktop(ewin);
+   SnapshotEwinSize(ewin);
+   SnapshotEwinLocation(ewin);
+   SnapshotEwinLayer(ewin);
+   SnapshotEwinSticky(ewin);
+   SnapshotEwinShade(ewin);
+   SnapshotEwinGroups(ewin, ewin->num_groups);
+   SnapshotEwinSkipLists(ewin);
+   SnapshotEwinNeverFocus(ewin);
+   SaveSnapInfo();
 }

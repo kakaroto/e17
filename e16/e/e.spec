@@ -1,6 +1,6 @@
 Summary:	The Enlightenment window manager.
-Name:		enlightenment
-Version:	0.16.7.3
+Name:		e16
+Version:	0.16.8
 Release:	0.01
 License:	BSD
 Group:		User Interface/Desktops
@@ -33,9 +33,9 @@ CFLAGS="${RPM_OPT_FLAGS}"
 ENLIGHTENMENT_RELEASE=%{release}
 export CFLAGS ENLIGHTENMENT_RELEASE
 if [ ! -f configure ]; then
-  ./autogen.sh --prefix=%{_prefix} --bindir=%{_bindir} --datadir=%{_datadir} --mandir=%{_mandir} --enable-fsstd --enable-upgrade=no --enable-hints-gnome
+  ./autogen.sh --prefix=%{_prefix} --bindir=%{_bindir} --datadir=%{_datadir} --mandir=%{_mandir} --enable-fsstd --enable-hints-gnome --enable-xrandr
 else
-  %{configure} --prefix=%{_prefix} --bindir=%{_bindir} --datadir=%{_datadir} --mandir=%{_mandir} --enable-fsstd --enable-upgrade=no --enable-hints-gnome
+  %{configure} --prefix=%{_prefix} --bindir=%{_bindir} --datadir=%{_datadir} --mandir=%{_mandir} --enable-fsstd --enable-hints-gnome --enable-xrandr
 fi
 make
 
@@ -50,8 +50,8 @@ rm -rf $RPM_BUILD_ROOT
 %files
 %defattr(-, root, root)
 %doc AUTHORS COPYING ChangeLog INSTALL README FAQ
-%{_datadir}/enlightenment/*
-%{_datadir}/locale/*/LC_MESSAGES/enlightenment.mo
+%{_datadir}/e16/*
+%{_datadir}/locale/*/LC_MESSAGES/e16.mo
 %{_bindir}/*
 %{_mandir}/man1/*
 %{_sysconfdir}/X11/dm/Sessions/*

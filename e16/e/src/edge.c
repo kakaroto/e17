@@ -42,7 +42,7 @@ EdgeTimeout(int val, void *data)
       return;
 
    throw_move_events_away = 1;
-   GetCurrentArea(&ax, &ay);
+   DeskGetCurrentArea(&ax, &ay);
    GetAreaSize(&aw, &ah);
    dx = 0;
    dy = 0;
@@ -94,6 +94,45 @@ EdgeTimeout(int val, void *data)
    data = NULL;
 }
 
+static void
+EdgeHandleEvents(XEvent * ev, void *prm)
+{
+   static int          lastdir = -1;
+   int                 dir;
+
+   dir = (int)prm;
+   if (dir < 0 || dir > 3)	/* Should not be possible */
+      return;
+
+   switch (ev->type)
+     {
+     case EnterNotify:
+	DoIn("EDGE_TIMEOUT", ((double)Conf.edge_flip_resistance) / 100.0,
+	     EdgeTimeout, dir, NULL);
+	break;
+
+     case LeaveNotify:
+	RemoveTimerEvent("EDGE_TIMEOUT");
+	break;
+
+     case MotionNotify:
+	if (Mode.mode != MODE_MOVE_PENDING && Mode.mode != MODE_MOVE)
+	   break;
+
+	if ((lastdir != dir) && (Conf.edge_flip_resistance))
+	  {
+	     if (dir < 0)
+		RemoveTimerEvent("EDGE_TIMEOUT");
+	     else
+		DoIn("EDGE_TIMEOUT",
+		     ((double)Conf.edge_flip_resistance) / 100.0, EdgeTimeout,
+		     dir, NULL);
+	     lastdir = dir;
+	  }
+	break;
+     }
+}
+
 void
 EdgeWindowsShow(void)
 {
@@ -123,8 +162,12 @@ EdgeWindowsShow(void)
 	XSelectInput(disp, w4,
 		     EnterWindowMask | LeaveWindowMask | PointerMotionMask |
 		     ButtonPressMask | ButtonReleaseMask);
+	EventCallbackRegister(w1, 0, EdgeHandleEvents, (void *)0);
+	EventCallbackRegister(w2, 0, EdgeHandleEvents, (void *)1);
+	EventCallbackRegister(w3, 0, EdgeHandleEvents, (void *)2);
+	EventCallbackRegister(w4, 0, EdgeHandleEvents, (void *)3);
      }
-   GetCurrentArea(&cx, &cy);
+   DeskGetCurrentArea(&cx, &cy);
    GetAreaSize(&ax, &ay);
 
    if (cx == 0 && !Conf.areas.wraparound)
@@ -154,74 +197,5 @@ EdgeWindowsHide(void)
 	EUnmapWindow(disp, w2);
 	EUnmapWindow(disp, w3);
 	EUnmapWindow(disp, w4);
-     }
-}
-
-static int
-IsEdgeWin(Window win)
-{
-   if (!w1)
-      return -1;
-   if (win == w1)
-      return 0;
-   else if (win == w2)
-      return 1;
-   else if (win == w3)
-      return 2;
-   else if (win == w4)
-      return 3;
-   return -1;
-}
-
-void
-EdgeHandleEnter(XEvent * ev)
-{
-   int                 dir;
-
-   dir = IsEdgeWin(ev->xcrossing.window);
-   if (dir < 0)
-      return;
-   DoIn("EDGE_TIMEOUT", ((double)Conf.edge_flip_resistance) / 100.0,
-	EdgeTimeout, dir, NULL);
-}
-
-void
-EdgeHandleLeave(XEvent * ev)
-{
-   int                 dir;
-
-   dir = IsEdgeWin(ev->xcrossing.window);
-   if (dir < 0)
-      return;
-   RemoveTimerEvent("EDGE_TIMEOUT");
-}
-
-void
-EdgeHandleMotion(XEvent * ev)
-{
-   static int          lastdir = -1;
-   int                 dir;
-
-   if (Mode.mode != MODE_MOVE_PENDING && Mode.mode != MODE_MOVE)
-      return;
-
-   dir = -1;
-   if (ev->xmotion.x_root == 0)
-      dir = 0;
-   else if (ev->xmotion.x_root == (VRoot.w - 1))
-      dir = 1;
-   else if (ev->xmotion.y_root == 0)
-      dir = 2;
-   else if (ev->xmotion.y_root == (VRoot.h - 1))
-      dir = 3;
-
-   if ((lastdir != dir) && (Conf.edge_flip_resistance))
-     {
-	if (dir < 0)
-	   RemoveTimerEvent("EDGE_TIMEOUT");
-	else
-	   DoIn("EDGE_TIMEOUT", ((double)Conf.edge_flip_resistance) / 100.0,
-		EdgeTimeout, dir, NULL);
-	lastdir = dir;
      }
 }

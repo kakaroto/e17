@@ -63,7 +63,7 @@ typedef struct
 {
    Window              area_win;
    int                 w, h;
-   void                (*event_func) (int val, void *data);
+   DialogItemCallbackFunc *event_func;
 } DItemArea;
 
 typedef struct
@@ -115,13 +115,13 @@ typedef struct
    int                *val_ptr;
    DItem              *next;
    DItem              *first;
-   void                (*event_func) (int val, void *data);
+   DialogItemCallbackFunc *event_func;
 } DItemRadioButton;
 
 struct _ditem
 {
    int                 type;
-   void                (*func) (int val, void *data);
+   DialogCallbackFunc *func;
    int                 val;
    void               *data;
    ImageClass         *iclass;
@@ -153,10 +153,11 @@ struct _ditem
    item;
 };
 
-typedef struct _dbutton
+typedef struct
 {
+   Dialog             *parent;
    char               *text;
-   void                (*func) (int val, void *data);
+   DialogCallbackFunc *func;
    Window              win;
    int                 x, y, w, h;
    char                hilited;
@@ -164,17 +165,14 @@ typedef struct _dbutton
    char                close;
    TextClass          *tclass;
    ImageClass         *iclass;
-}
-DButton;
+} DButton;
 
-typedef struct _Dkeybind
+typedef struct
 {
    KeyCode             key;
    int                 val;
-   void               *data;
-   void                (*func) (int val, void *data);
-}
-DKeyBind;
+   DialogCallbackFunc *func;
+} DKeyBind;
 
 struct _dialog
 {
@@ -188,102 +186,23 @@ struct _dialog
    ImageClass         *iclass;
    int                 w, h;
    DItem              *item;
-   void                (*exit_func) (int val, void *data);
+   DialogCallbackFunc *exit_func;
    int                 exit_val;
-   void               *exit_data;
    int                 num_bindings;
    DKeyBind           *keybindings;
+   void               *data;
 };
+
+static Dialog      *FindDialog(Window win);
+
+static void         DialogHandleEvents(XEvent * ev, void *prm);
+static void         DButtonHandleEvents(XEvent * ev, void *prm);
 
 static void         MoveTableBy(Dialog * d, DItem * di, int dx, int dy);
 static void         DialogItemsRealize(Dialog * d);
 
-static ImageClass  *d_ic_default = NULL;
-static TextClass   *d_tc_default = NULL;
-
-static void         DialogRealizeTClassDefault(void);
-static void         DialogRealizeIClassDefault(void);
-
-static void
-DialogRealizeTClassDefault(void)
-{
-   if (!d_tc_default)
-     {
-	d_tc_default = CreateTclass();
-	d_tc_default->norm.normal = CreateTextState();
-	d_tc_default->norm.normal->fontname =
-	   Estrdup("-*-helvetica-medium-r-*-*-12-*-*-*-*-*-*-*");
-	ESetColor(&(d_tc_default->norm.normal->fg_col), 0, 0, 0);
-     }
-}
-
-static void
-DialogRealizeIClassDefault(void)
-{
-   if (!d_ic_default)
-     {
-	d_ic_default = CreateIclass();
-	d_ic_default->name = NULL;
-
-	d_ic_default->norm.normal = CreateImageState();
-	ESetColor(&(d_ic_default->norm.normal->hihi), 255, 255, 255);
-	ESetColor(&(d_ic_default->norm.normal->hi), 220, 220, 220);
-	ESetColor(&(d_ic_default->norm.normal->bg), 160, 160, 160);
-	ESetColor(&(d_ic_default->norm.normal->lo), 100, 100, 100);
-	ESetColor(&(d_ic_default->norm.normal->lolo), 0, 0, 0);
-	d_ic_default->norm.normal->bevelstyle = BEVEL_NEXT;
-
-	d_ic_default->norm.hilited = CreateImageState();
-	ESetColor(&(d_ic_default->norm.hilited->hihi), 255, 255, 255);
-	ESetColor(&(d_ic_default->norm.hilited->hi), 240, 240, 240);
-	ESetColor(&(d_ic_default->norm.hilited->bg), 200, 200, 200);
-	ESetColor(&(d_ic_default->norm.hilited->lo), 160, 160, 160);
-	ESetColor(&(d_ic_default->norm.hilited->lolo), 0, 0, 0);
-	d_ic_default->norm.hilited->bevelstyle = BEVEL_NEXT;
-
-	d_ic_default->norm.clicked = CreateImageState();
-	ESetColor(&(d_ic_default->norm.clicked->hihi), 0, 0, 0);
-	ESetColor(&(d_ic_default->norm.clicked->hi), 100, 100, 100);
-	ESetColor(&(d_ic_default->norm.clicked->bg), 160, 160, 160);
-	ESetColor(&(d_ic_default->norm.clicked->lo), 220, 220, 220);
-	ESetColor(&(d_ic_default->norm.clicked->lolo), 255, 255, 255);
-	d_ic_default->norm.clicked->bevelstyle = BEVEL_NEXT;
-
-	d_ic_default->active.normal = CreateImageState();
-	ESetColor(&(d_ic_default->active.normal->hihi), 0, 0, 0);
-	ESetColor(&(d_ic_default->active.normal->hi), 100, 100, 100);
-	ESetColor(&(d_ic_default->active.normal->bg), 160, 160, 160);
-	ESetColor(&(d_ic_default->active.normal->lo), 220, 220, 220);
-	ESetColor(&(d_ic_default->active.normal->lolo), 255, 255, 255);
-	d_ic_default->active.normal->bevelstyle = BEVEL_NEXT;
-
-	d_ic_default->active.hilited = CreateImageState();
-	ESetColor(&(d_ic_default->active.hilited->hihi), 0, 0, 0);
-	ESetColor(&(d_ic_default->active.hilited->hi), 100, 100, 100);
-	ESetColor(&(d_ic_default->active.hilited->bg), 160, 160, 160);
-	ESetColor(&(d_ic_default->active.hilited->lo), 220, 220, 220);
-	ESetColor(&(d_ic_default->active.hilited->lolo), 255, 255, 255);
-	d_ic_default->active.hilited->bevelstyle = BEVEL_NEXT;
-
-	d_ic_default->active.clicked = CreateImageState();
-	ESetColor(&(d_ic_default->active.clicked->hihi), 0, 0, 0);
-	ESetColor(&(d_ic_default->active.clicked->hi), 100, 100, 100);
-	ESetColor(&(d_ic_default->active.clicked->bg), 160, 160, 160);
-	ESetColor(&(d_ic_default->active.clicked->lo), 220, 220, 220);
-	ESetColor(&(d_ic_default->active.clicked->lolo), 255, 255, 255);
-	d_ic_default->active.clicked->bevelstyle = BEVEL_NEXT;
-
-	d_ic_default->padding.left = 8;
-	d_ic_default->padding.right = 8;
-	d_ic_default->padding.top = 8;
-	d_ic_default->padding.bottom = 8;
-     }
-   IclassPopulate(d_ic_default);
-}
-
 void
-DialogBindKey(Dialog * d, const char *key, void (*func) (int val, void *data),
-	      int val, void *data)
+DialogBindKey(Dialog * d, const char *key, DialogCallbackFunc * func, int val)
 {
    d->num_bindings++;
    if (!d->keybindings)
@@ -292,7 +211,6 @@ DialogBindKey(Dialog * d, const char *key, void (*func) (int val, void *data),
       d->keybindings =
 	 Erealloc(d->keybindings, sizeof(DKeyBind) * d->num_bindings);
    d->keybindings[d->num_bindings - 1].val = val;
-   d->keybindings[d->num_bindings - 1].data = data;
    d->keybindings[d->num_bindings - 1].func = func;
    d->keybindings[d->num_bindings - 1].key =
       XKeysymToKeycode(disp, XStringToKeysym(key));
@@ -311,29 +229,20 @@ DialogCreate(const char *name)
    d->win = 0;
    d->button = NULL;
    d->win = ECreateWindow(VRoot.win, -20, -20, 2, 2, 0);
+   EventCallbackRegister(d->win, 0, DialogHandleEvents, d);
 
    d->item = NULL;
    d->exit_func = NULL;
    d->exit_val = 0;
-   d->exit_data = NULL;
 
-   d->tclass = FindItem("DIALOG", 0, LIST_FINDBY_NAME, LIST_TYPE_TCLASS);
-   if (!d->tclass)
-     {
-	DialogRealizeTClassDefault();
-	d->tclass = d_tc_default;
-     }
+   d->tclass = TextclassFind("DIALOG", 1);
    if (d->tclass)
       d->tclass->ref_count++;
 
-   d->iclass = FindItem("DIALOG", 0, LIST_FINDBY_NAME, LIST_TYPE_ICLASS);
-   if (!d->iclass)
-     {
-	DialogRealizeIClassDefault();
-	d->iclass = d_ic_default;
-     }
+   d->iclass = ImageclassFind("DIALOG", 1);
    if (d->iclass)
       d->iclass->ref_count++;
+
    d->num_bindings = 0;
    d->keybindings = NULL;
 
@@ -403,28 +312,42 @@ DialogSetTitle(Dialog * d, const char *title)
 }
 
 void
-DialogSetExitFunction(Dialog * d, void (*func) (int val, void *data), int val,
-		      void *data)
+DialogSetExitFunction(Dialog * d, DialogCallbackFunc * func, int val)
 {
    d->exit_func = func;
    d->exit_val = val;
-   d->exit_data = data;
 }
 
 void
-DialogAddButton(Dialog * d, const char *text,
-		void (*func) (int val, void *data), char doclose)
+DialogSetData(Dialog * d, void *data)
+{
+   d->data = data;
+}
+
+void               *
+DialogGetData(Dialog * d)
+{
+   return d->data;
+}
+
+void
+DialogAddButton(Dialog * d, const char *text, DialogCallbackFunc * func,
+		char doclose)
 {
    DButton            *db;
    int                 w, h;
 
    db = Emalloc(sizeof(DButton));
+
    d->num_buttons++;
    d->button = Erealloc(d->button, d->num_buttons * (sizeof(DButton *)));
    d->button[d->num_buttons - 1] = db;
+
+   db->parent = d;
    db->text = Estrdup(text);
    db->func = func;
    db->win = ECreateWindow(d->win, -20, -20, 2, 2, 0);
+   EventCallbackRegister(db->win, 0, DButtonHandleEvents, db);
    EMapWindow(disp, db->win);
    db->x = -1;
    db->y = -1;
@@ -434,23 +357,11 @@ DialogAddButton(Dialog * d, const char *text,
    db->clicked = 0;
    db->close = doclose;
 
-   db->tclass =
-      FindItem("DIALOG_BUTTON", 0, LIST_FINDBY_NAME, LIST_TYPE_TCLASS);
-   if (!db->tclass)
-     {
-	DialogRealizeTClassDefault();
-	db->tclass = d_tc_default;
-     }
+   db->tclass = TextclassFind("DIALOG_BUTTON", 1);
    if (db->tclass)
       db->tclass->ref_count++;
 
-   db->iclass =
-      FindItem("DIALOG_BUTTON", 0, LIST_FINDBY_NAME, LIST_TYPE_ICLASS);
-   if (!db->iclass)
-     {
-	DialogRealizeTClassDefault();
-	db->iclass = d_ic_default;
-     }
+   db->iclass = ImageclassFind("DIALOG_BUTTON", 1);
    if (db->iclass)
       db->iclass->ref_count++;
 
@@ -463,57 +374,28 @@ DialogAddButton(Dialog * d, const char *text,
 }
 
 static void
-DialogDrawButton(Dialog * d, int bnum)
+DialogDrawButton(Dialog * d __UNUSED__, DButton * db)
 {
    int                 state;
 
    state = STATE_NORMAL;
-   if ((d->button[bnum]->hilited) && (d->button[bnum]->clicked))
+   if ((db->hilited) && (db->clicked))
      {
 	state = STATE_CLICKED;
      }
-   else if ((d->button[bnum]->hilited) && (!d->button[bnum]->clicked))
+   else if ((db->hilited) && (!db->clicked))
      {
 	state = STATE_HILITED;
      }
-   else if (!(d->button[bnum]->hilited) && (d->button[bnum]->clicked))
+   else if (!(db->hilited) && (db->clicked))
      {
 	state = STATE_CLICKED;
      }
-   IclassApply(d->button[bnum]->iclass, d->button[bnum]->win,
-	       d->button[bnum]->w, d->button[bnum]->h, 0, 0, state, 0,
-	       ST_WIDGET);
-   TclassApply(d->button[bnum]->iclass, d->button[bnum]->win,
-	       d->button[bnum]->w, d->button[bnum]->h, 0, 0, state, 1,
-	       d->button[bnum]->tclass, d->button[bnum]->text);
-}
 
-static void
-DialogActivateButton(Window win, int inclick)
-{
-   Dialog             *d;
-   int                 bnum;
-   char                doact = 0;
-
-   d = FindDialogButton(win, &bnum);
-   if (!d)
-      return;
-   if ((d->button[bnum]->hilited) && (d->button[bnum]->clicked)
-       && (inclick == 3))
-      doact = 1;
-   if (inclick == 0)
-      d->button[bnum]->hilited = 1;
-   if (inclick == 1)
-      d->button[bnum]->hilited = 0;
-   if (inclick == 2)
-      d->button[bnum]->clicked = 1;
-   if (inclick == 3)
-      d->button[bnum]->clicked = 0;
-   DialogDrawButton(d, bnum);
-   if ((doact) && (d->button[bnum]->func))
-      (d->button[bnum]->func) (bnum, d);
-   if ((doact) && (d->button[bnum]->close))
-      DialogClose(d);
+   ImageclassApply(db->iclass, db->win, db->w, db->h, 0, 0, state, 0,
+		   ST_WIDGET);
+   TextclassApply(db->iclass, db->win, db->w, db->h, 0, 0, state, 1, db->tclass,
+		  db->text);
 }
 
 static void
@@ -524,8 +406,8 @@ DialogDraw(Dialog * d)
 
    if (d->text)
      {
-	TclassApply(d->iclass, d->win, d->w, d->h, 0, 0, STATE_NORMAL, 1,
-		    d->tclass, d->text);
+	TextclassApply(d->iclass, d->win, d->w, d->h, 0, 0, STATE_NORMAL, 1,
+		       d->tclass, d->text);
      }
    else if (d->item)
      {
@@ -541,8 +423,8 @@ DialogDrawArea(Dialog * d, int x, int y, int w, int h)
 
    if (d->text)
      {
-	TclassApply(d->iclass, d->win, d->w, d->h, 0, 0, STATE_NORMAL, 1,
-		    d->tclass, d->text);
+	TextclassApply(d->iclass, d->win, d->w, d->h, 0, 0, STATE_NORMAL, 1,
+		       d->tclass, d->text);
      }
    else if (d->item)
      {
@@ -558,26 +440,25 @@ DialogRedraw(Dialog * d)
    if ((!d->tclass) || (!d->iclass))
       return;
 
-   IclassApply(d->iclass, d->win, d->w, d->h, 0, 0, STATE_NORMAL, 0, ST_DIALOG);
+   ImageclassApply(d->iclass, d->win, d->w, d->h, 0, 0, STATE_NORMAL, 0,
+		   ST_DIALOG);
 
    for (i = 0; i < d->num_buttons; i++)
-      DialogDrawButton(d, i);
+      DialogDrawButton(d, d->button[i]);
 
    DialogDraw(d);
 }
 
 static void
-DialogEwinMoveResize(EWin * ewin, int resize)
+DialogEwinMoveResize(EWin * ewin, int resize __UNUSED__)
 {
-   Dialog             *d = ewin->dialog;
+   Dialog             *d = ewin->data;
 
    if (!d)
       return;
 
-   if (Conf.theme.transparency || IclassIsTransparent(d->iclass))
+   if (TransparencyEnabled() || ImageclassIsTransparent(d->iclass))
       DialogRedraw(d);
-   return;
-   resize = 0;
 }
 
 static void
@@ -589,14 +470,14 @@ DialogEwinRefresh(EWin * ewin)
 static void
 DialogEwinClose(EWin * ewin)
 {
-   DialogClose(ewin->dialog);
-   ewin->dialog = NULL;
+   DialogClose(ewin->data);
+   ewin->data = NULL;
 }
 
 static void
 DialogEwinInit(EWin * ewin, void *ptr)
 {
-   ewin->dialog = (Dialog *) ptr;
+   ewin->data = ptr;
    ewin->MoveResize = DialogEwinMoveResize;
    ewin->Refresh = DialogEwinRefresh;
    ewin->Close = DialogEwinClose;
@@ -619,8 +500,8 @@ ShowDialog(Dialog * d)
    ewin = FindEwinByDialog(d);
    if (ewin)
      {
-	if (ewin->desktop != desks.current)
-	   MoveEwinToDesktopAt(ewin, desks.current, ewin->x, ewin->y);
+	if (EoGetDesk(ewin) != DesksGetCurrent())
+	   MoveEwinToDesktop(ewin, DesksGetCurrent());
 	RaiseEwin(ewin);
 	ShowEwin(ewin);
 	return;
@@ -702,7 +583,7 @@ ShowDialog(Dialog * d)
    if (!FindDialog(d->win))
       AddItem(d, d->name, d->win, LIST_TYPE_DIALOG);
 
-   XSync(disp, False);
+   ecore_x_sync();
    DialogRedraw(d);
    Mode.queue_up = pq;
 }
@@ -713,9 +594,11 @@ DialogClose(Dialog * d)
    if (!d)
       return;
 
-   EDestroyWindow(disp, d->win);
+   EUnmapWindow(disp, d->win);
+
    if (d->exit_func)
-      (d->exit_func) (d->exit_val, d->exit_data);
+      d->exit_func(d, d->exit_val, NULL);
+
    RemoveItem(NULL, d->win, LIST_FINDBY_ID, LIST_TYPE_DIALOG);
 }
 
@@ -900,8 +783,8 @@ DialogAddItem(DItem * dii, int type)
 }
 
 void
-DialogItemSetCallback(DItem * di, void (*func) (int val, void *data), int val,
-		      char *data)
+DialogItemSetCallback(DItem * di, DialogCallbackFunc * func, int val,
+		      void *data)
 {
    di->func = func;
    di->val = val;
@@ -960,10 +843,10 @@ DialogItemSetColSpan(DItem * di, int col_span)
 }
 
 void
-DialogItemCallCallback(DItem * di)
+DialogItemCallCallback(Dialog * d, DItem * di)
 {
    if (di->func)
-      di->func(di->val, di->data);
+      di->func(d, di->val, di->data);
 }
 
 static void
@@ -971,6 +854,7 @@ DialogRealizeItem(Dialog * d, DItem * di)
 {
    const char         *def = NULL;
    int                 iw = 0, ih = 0;
+   int                 register_win_callback;
 
    if (di->type == DITEM_BUTTON)
      {
@@ -1008,23 +892,12 @@ DialogRealizeItem(Dialog * d, DItem * di)
    if (def)
      {
 	if (!di->tclass)
-	   di->tclass = FindItem(def, 0, LIST_FINDBY_NAME, LIST_TYPE_TCLASS);
+	   di->tclass = TextclassFind(def, 1);
 	if (!di->iclass)
-	   di->iclass = FindItem(def, 0, LIST_FINDBY_NAME, LIST_TYPE_ICLASS);
-     }
-   if (!di->tclass)
-     {
-	DialogRealizeTClassDefault();
-	di->tclass = d_tc_default;
+	   di->iclass = ImageclassFind(def, 1);
      }
    if (di->tclass)
       di->tclass->ref_count++;
-
-   if (!di->iclass)
-     {
-	DialogRealizeIClassDefault();
-	di->iclass = d_ic_default;
-     }
    if (di->iclass)
       di->iclass->ref_count++;
 
@@ -1035,6 +908,8 @@ DialogRealizeItem(Dialog * d, DItem * di)
 	for (i = 0; i < di->item.table.num_items; i++)
 	   DialogRealizeItem(d, di->item.table.items[i]);
      }
+
+   register_win_callback = 1;
    switch (di->type)
      {
      case DITEM_SLIDER:
@@ -1053,28 +928,26 @@ DialogRealizeItem(Dialog * d, DItem * di)
 	XSelectInput(disp, di->item.slider.base_win,
 		     EnterWindowMask | LeaveWindowMask | ButtonPressMask |
 		     ButtonReleaseMask);
+	EventCallbackRegister(di->item.slider.base_win, 0, DialogHandleEvents,
+			      d);
 	XSelectInput(disp, di->item.slider.knob_win,
 		     ButtonPressMask | ButtonReleaseMask | PointerMotionMask);
+	EventCallbackRegister(di->item.slider.knob_win, 0, DialogHandleEvents,
+			      d);
 	if (!di->item.slider.ic_base)
 	  {
 	     if (di->item.slider.horizontal)
 	       {
 		  di->item.slider.ic_base =
-		     FindItem("DIALOG_WIDGET_SLIDER_BASE_HORIZONTAL", 0,
-			      LIST_FINDBY_NAME, LIST_TYPE_ICLASS);
+		     ImageclassFind("DIALOG_WIDGET_SLIDER_BASE_HORIZONTAL", 1);
 	       }
 	     else
 	       {
 		  di->item.slider.ic_base =
-		     FindItem("DIALOG_WIDGET_SLIDER_BASE_VERTICAL", 0,
-			      LIST_FINDBY_NAME, LIST_TYPE_ICLASS);
+		     ImageclassFind("DIALOG_WIDGET_SLIDER_BASE_VERTICAL", 1);
 	       }
 	  }
-	if (!di->item.slider.ic_base)
-	  {
-	     DialogRealizeIClassDefault();
-	     di->item.slider.ic_base = d_ic_default;
-	  }
+
 	if (di->item.slider.ic_base->norm.normal->im_file)
 	  {
 	     Imlib_Image        *im;
@@ -1096,20 +969,13 @@ DialogRealizeItem(Dialog * d, DItem * di)
 	     if (di->item.slider.horizontal)
 	       {
 		  di->item.slider.ic_knob =
-		     FindItem("DIALOG_WIDGET_SLIDER_KNOB_HORIZONTAL", 0,
-			      LIST_FINDBY_NAME, LIST_TYPE_ICLASS);
+		     ImageclassFind("DIALOG_WIDGET_SLIDER_KNOB_HORIZONTAL", 1);
 	       }
 	     else
 	       {
 		  di->item.slider.ic_knob =
-		     FindItem("DIALOG_WIDGET_SLIDER_KNOB_VERTICAL", 0,
-			      LIST_FINDBY_NAME, LIST_TYPE_ICLASS);
+		     ImageclassFind("DIALOG_WIDGET_SLIDER_KNOB_VERTICAL", 1);
 	       }
-	  }
-	if (!di->item.slider.ic_knob)
-	  {
-	     DialogRealizeIClassDefault();
-	     di->item.slider.ic_knob = d_ic_default;
 	  }
 	if (di->item.slider.ic_knob)
 	   di->item.slider.ic_knob->ref_count++;
@@ -1132,14 +998,13 @@ DialogRealizeItem(Dialog * d, DItem * di)
 	     if (di->item.slider.horizontal)
 	       {
 		  di->item.slider.ic_border =
-		     FindItem("DIALOG_WIDGET_SLIDER_BORDER_HORIZONTAL", 0,
-			      LIST_FINDBY_NAME, LIST_TYPE_ICLASS);
+		     ImageclassFind("DIALOG_WIDGET_SLIDER_BORDER_HORIZONTAL",
+				    0);
 	       }
 	     else
 	       {
 		  di->item.slider.ic_border =
-		     FindItem("DIALOG_WIDGET_SLIDER_BORDER_VERTICAL", 0,
-			      LIST_FINDBY_NAME, LIST_TYPE_ICLASS);
+		     ImageclassFind("DIALOG_WIDGET_SLIDER_BORDER_VERTICAL", 0);
 	       }
 	  }
 	if (di->item.slider.ic_border)
@@ -1206,6 +1071,7 @@ DialogRealizeItem(Dialog * d, DItem * di)
 	XSelectInput(disp, di->item.area.area_win,
 		     EnterWindowMask | LeaveWindowMask | ButtonPressMask |
 		     ButtonReleaseMask | ExposureMask | PointerMotionMask);
+	EventCallbackRegister(di->item.area.area_win, 0, DialogHandleEvents, d);
 	di->w = iw;
 	di->h = ih;
 	break;
@@ -1259,6 +1125,7 @@ DialogRealizeItem(Dialog * d, DItem * di)
 		ih = imlib_image_get_height();
 		di->win = ECreateWindow(d->win, 0, 0, iw, ih, 0);
 		EMapWindow(disp, di->win);
+		register_win_callback = 0;
 		imlib_render_pixmaps_for_whole_image(&pmap, &mask);
 		ESetWindowBackgroundPixmap(disp, di->win, pmap);
 		EShapeCombineMask(disp, di->win, ShapeBounding, 0,
@@ -1275,6 +1142,7 @@ DialogRealizeItem(Dialog * d, DItem * di)
 	ih = di->iclass->padding.top + di->iclass->padding.bottom;
 	di->win = ECreateWindow(d->win, -20, -20, 2, 2, 0);
 	EMapWindow(disp, di->win);
+	register_win_callback = 0;
 	di->w = iw;
 	di->h = ih;
 	break;
@@ -1544,6 +1412,9 @@ DialogRealizeItem(Dialog * d, DItem * di)
 	di->h = 0;
 	break;
      }
+
+   if (di->win && register_win_callback)
+      EventCallbackRegister(di->win, 0, DialogHandleEvents, d);
 }
 
 static void
@@ -1627,6 +1498,7 @@ DialogDrawItems(Dialog * d, DItem * di, int x, int y, int w, int h)
 	AddItem(dq, "DRAW", 0, LIST_TYPE_DRAW);
 	EDBUG_RETURN_;
      }
+
    if (di->type == DITEM_TABLE)
      {
 	int                 i;
@@ -1638,6 +1510,7 @@ DialogDrawItems(Dialog * d, DItem * di, int x, int y, int w, int h)
 	  }
 	return;
      }
+
    if (INTERSECTS(x, y, w, h, di->x, di->y, di->w, di->h))
      {
 	switch (di->type)
@@ -1675,15 +1548,16 @@ DialogDrawItems(Dialog * d, DItem * di, int x, int y, int w, int h)
 				  di->item.slider.knob_w,
 				  di->item.slider.knob_h);
 	     if (di->item.slider.base_win)
-		IclassApply(di->item.slider.ic_base, di->item.slider.base_win,
-			    di->item.slider.base_w, di->item.slider.base_h, 0,
-			    0, STATE_NORMAL, 0, ST_WIDGET);
+		ImageclassApply(di->item.slider.ic_base,
+				di->item.slider.base_win,
+				di->item.slider.base_w, di->item.slider.base_h,
+				0, 0, STATE_NORMAL, 0, ST_WIDGET);
 	     if (di->item.slider.border_win)
-		IclassApply(di->item.slider.ic_border,
-			    di->item.slider.border_win,
-			    di->item.slider.border_w,
-			    di->item.slider.border_h, 0, 0, STATE_NORMAL, 0,
-			    ST_WIDGET);
+		ImageclassApply(di->item.slider.ic_border,
+				di->item.slider.border_win,
+				di->item.slider.border_w,
+				di->item.slider.border_h, 0, 0, STATE_NORMAL, 0,
+				ST_WIDGET);
 	     state = STATE_NORMAL;
 	     if ((di->hilited) && (di->clicked))
 		state = STATE_CLICKED;
@@ -1692,9 +1566,10 @@ DialogDrawItems(Dialog * d, DItem * di, int x, int y, int w, int h)
 	     else if (!(di->hilited) && (di->clicked))
 		state = STATE_CLICKED;
 	     if (di->item.slider.knob_win)
-		IclassApply(di->item.slider.ic_knob, di->item.slider.knob_win,
-			    di->item.slider.knob_w, di->item.slider.knob_h, 0,
-			    0, state, 0, ST_WIDGET);
+		ImageclassApply(di->item.slider.ic_knob,
+				di->item.slider.knob_win,
+				di->item.slider.knob_w, di->item.slider.knob_h,
+				0, 0, state, 0, ST_WIDGET);
 	     break;
 	  case DITEM_BUTTON:
 	     state = STATE_NORMAL;
@@ -1704,14 +1579,14 @@ DialogDrawItems(Dialog * d, DItem * di, int x, int y, int w, int h)
 		state = STATE_HILITED;
 	     else if (!(di->hilited) && (di->clicked))
 		state = STATE_CLICKED;
-	     IclassApply(di->iclass, di->win, di->w, di->h, 0, 0, state, 0,
-			 ST_WIDGET);
-	     TclassApply(di->iclass, di->win, di->w, di->h, 0, 0, state, 1,
-			 di->tclass, di->item.button.text);
+	     ImageclassApply(di->iclass, di->win, di->w, di->h, 0, 0, state, 0,
+			     ST_WIDGET);
+	     TextclassApply(di->iclass, di->win, di->w, di->h, 0, 0, state, 1,
+			    di->tclass, di->item.button.text);
 	     break;
 	  case DITEM_AREA:
-	     IclassApply(di->iclass, di->win, di->w, di->h, 0, 0,
-			 STATE_NORMAL, 0, ST_DIALOG);
+	     ImageclassApply(di->iclass, di->win, di->w, di->h, 0, 0,
+			     STATE_NORMAL, 0, ST_DIALOG);
 	     break;
 	  case DITEM_CHECKBUTTON:
 	     state = STATE_NORMAL;
@@ -1722,15 +1597,15 @@ DialogDrawItems(Dialog * d, DItem * di, int x, int y, int w, int h)
 	     else if (!(di->hilited) && (di->clicked))
 		state = STATE_CLICKED;
 	     if (di->item.check_button.onoff)
-		IclassApply(di->iclass, di->item.check_button.check_win,
-			    di->item.check_button.check_orig_w,
-			    di->item.check_button.check_orig_h, 1, 0, state, 0,
-			    ST_WIDGET);
+		ImageclassApply(di->iclass, di->item.check_button.check_win,
+				di->item.check_button.check_orig_w,
+				di->item.check_button.check_orig_h, 1, 0, state,
+				0, ST_WIDGET);
 	     else
-		IclassApply(di->iclass, di->item.check_button.check_win,
-			    di->item.check_button.check_orig_w,
-			    di->item.check_button.check_orig_h, 0, 0, state, 0,
-			    ST_WIDGET);
+		ImageclassApply(di->iclass, di->item.check_button.check_win,
+				di->item.check_button.check_orig_w,
+				di->item.check_button.check_orig_h, 0, 0, state,
+				0, ST_WIDGET);
 	     XClearArea(disp, d->win, di->x, di->y, di->w, di->h, False);
 	     TextDraw(di->tclass, d->win, 0, 0, STATE_NORMAL,
 		      di->item.check_button.text,
@@ -1750,11 +1625,11 @@ DialogDrawItems(Dialog * d, DItem * di, int x, int y, int w, int h)
 	     break;
 	  case DITEM_SEPARATOR:
 	     if (di->item.separator.horizontal)
-		IclassApply(di->iclass, di->win, di->w, di->h, 0, 0,
-			    STATE_NORMAL, 0, ST_WIDGET);
+		ImageclassApply(di->iclass, di->win, di->w, di->h, 0, 0,
+				STATE_NORMAL, 0, ST_WIDGET);
 	     else
-		IclassApply(di->iclass, di->win, di->w, di->h, 0, 0,
-			    STATE_CLICKED, 0, ST_WIDGET);
+		ImageclassApply(di->iclass, di->win, di->w, di->h, 0, 0,
+				STATE_CLICKED, 0, ST_WIDGET);
 	     break;
 	  case DITEM_RADIOBUTTON:
 	     state = STATE_NORMAL;
@@ -1765,15 +1640,15 @@ DialogDrawItems(Dialog * d, DItem * di, int x, int y, int w, int h)
 	     else if (!(di->hilited) && (di->clicked))
 		state = STATE_CLICKED;
 	     if (di->item.radio_button.onoff)
-		IclassApply(di->iclass, di->item.radio_button.radio_win,
-			    di->item.radio_button.radio_orig_w,
-			    di->item.radio_button.radio_orig_h, 1, 0, state, 0,
-			    ST_WIDGET);
+		ImageclassApply(di->iclass, di->item.radio_button.radio_win,
+				di->item.radio_button.radio_orig_w,
+				di->item.radio_button.radio_orig_h, 1, 0, state,
+				0, ST_WIDGET);
 	     else
-		IclassApply(di->iclass, di->item.radio_button.radio_win,
-			    di->item.radio_button.radio_orig_w,
-			    di->item.radio_button.radio_orig_w, 0, 0, state, 0,
-			    ST_WIDGET);
+		ImageclassApply(di->iclass, di->item.radio_button.radio_win,
+				di->item.radio_button.radio_orig_w,
+				di->item.radio_button.radio_orig_w, 0, 0, state,
+				0, ST_WIDGET);
 	     XClearArea(disp, d->win, di->x, di->y, di->w, di->h, False);
 	     TextDraw(di->tclass, d->win, 0, 0, STATE_NORMAL,
 		      di->item.radio_button.text,
@@ -1830,8 +1705,7 @@ DialogItemTextSetText(DItem * di, const char *text)
 }
 
 void
-DialogItemRadioButtonSetEventFunc(DItem * di,
-				  void (*func) (int val, void *data))
+DialogItemRadioButtonSetEventFunc(DItem * di, DialogItemCallbackFunc * func)
 {
    di->item.radio_button.event_func = func;
 }
@@ -2006,7 +1880,7 @@ DialogItemAreaGetSize(DItem * di, int *w, int *h)
 }
 
 void
-DialogItemAreaSetEventFunc(DItem * di, void (*func) (int val, void *data))
+DialogItemAreaSetEventFunc(DItem * di, DialogItemCallbackFunc * func)
 {
    di->item.area.event_func = func;
 }
@@ -2101,6 +1975,13 @@ DialogItem(Dialog * d)
    return d->item;
 }
 
+/* Convenience callback to close dialog */
+void
+DialogCallbackClose(Dialog * d, int val __UNUSED__, void *data __UNUSED__)
+{
+   DialogClose(d);
+}
+
 /*
  * Predefined dialogs
  */
@@ -2132,22 +2013,6 @@ DialogOKstr(const char *title, const char *txt)
 }
 
 void
-DialogRestart(int val, void *data)
-{
-   SessionExit("restart");
-   val = 0;
-   data = NULL;
-}
-
-void
-DialogQuit(int val, void *data)
-{
-   SessionExit("error");
-   val = 0;
-   data = NULL;
-}
-
-void
 DialogAlert(const char *fmt, ...)
 {
    char                text[10240];
@@ -2175,47 +2040,45 @@ DialogAlertOK(const char *fmt, ...)
  * Dialog event handlers
  */
 
-int
-DialogEventKeyPress(XEvent * ev)
+static void
+DialogEventKeyPress(Dialog * d, XEvent * ev)
 {
-   Dialog             *d;
    int                 i;
-
-   d = FindDialog(ev->xkey.window);
-   if (d == NULL)
-      return 0;
 
    for (i = 0; i < d->num_bindings; i++)
      {
 	if (ev->xkey.keycode == d->keybindings[i].key)
-	   (d->keybindings[i].func) (d->keybindings[i].val,
-				     d->keybindings[i].data);
+	   (d->keybindings[i].func) (d, d->keybindings[i].val, NULL);
      }
-
-   return 1;
 }
 
-int
-DialogEventMotion(XEvent * ev)
+static DItem       *
+DialogFindDItem(Dialog * d, Window win)
 {
-   Dialog             *d;
+   return (d->item) ? DialogItemFindWindow(d->item, win) : NULL;
+}
+
+static void
+DialogEventMotion(Dialog * d, XEvent * ev)
+{
+   Window              win = ev->xmotion.window;
    DItem              *di;
    int                 dx, dy;
 
-   di = FindDialogItem(ev->xmotion.window, &d);
-   if (d == NULL)
-      return 0;
+   di = DialogFindDItem(d, win);
+   if (!di)
+      return;
 
-   if (di == NULL)
-      goto done;
-
-   if (di->type == DITEM_AREA)
+   switch (di->type)
      {
+     case DITEM_AREA:
 	if (di->item.area.event_func)
-	   (di->item.area.event_func) (0, ev);
-     }
-   else if ((di->type == DITEM_SLIDER) && (di->item.slider.in_drag))
-     {
+	   di->item.area.event_func(0, ev);
+	break;
+
+     case DITEM_SLIDER:
+	if (!di->item.slider.in_drag)
+	   break;
 	if (ev->xmotion.window == di->item.slider.knob_win)
 	  {
 	     dx = Mode.x - Mode.px;
@@ -2253,89 +2116,54 @@ DialogEventMotion(XEvent * ev)
 	     if (di->item.slider.val_ptr)
 		*di->item.slider.val_ptr = di->item.slider.val;
 	     if (di->func)
-		(di->func) (di->val, di->data);
+		(di->func) (d, di->val, di->data);
 	  }
-	DialogDrawItems(d, di, 0, 0, 99999, 99999);
-     }
 
- done:
-   return 1;
+	DialogDrawItems(d, di, 0, 0, 99999, 99999);
+	break;
+     }
 }
 
-int
-DialogEventExpose(XEvent * ev)
+static void
+DialogEventExpose(Dialog * d, XEvent * ev)
 {
    Window              win = ev->xexpose.window;
-   Dialog             *d;
-   int                 bnum;
    DItem              *di;
-   int                 x, y, w, h;
 
-   d = FindDialog(win);
-   if (d)
+   DialogDrawArea(d, ev->xexpose.x, ev->xexpose.y,
+		  ev->xexpose.width, ev->xexpose.height);
+
+   di = DialogFindDItem(d, win);
+   if (!di)
+      return;
+
+   switch (di->type)
      {
-	DialogDrawArea(d, ev->xexpose.x, ev->xexpose.y,
-		       ev->xexpose.width, ev->xexpose.height);
-	goto done;
-     }
-
-   d = FindDialogButton(win, &bnum);
-   if (d)
-     {
-	DialogDrawButton(d, bnum);
-	goto done;
-     }
-
-   di = FindDialogItem(win, &d);
-   if (d == NULL)
-      return 0;
-
-   GetWinXY(win, &x, &y);
-   GetWinWH(win, (unsigned int *)&w, (unsigned int *)&h);
-   DialogDrawArea(d, x, y, w, h);
-
-   if (di == NULL)
-      goto done;
-
-   if (di->type == DITEM_AREA)
-     {
+     case DITEM_AREA:
 	if (di->func)
-	   (di->func) (di->val, di->data);
+	   di->func(d, di->val, di->data);
+	break;
      }
-
- done:
-   return 1;
 }
 
-int
-DialogEventMouseDown(XEvent * ev)
+static void
+DialogEventMouseDown(Dialog * d, XEvent * ev)
 {
    Window              win = ev->xbutton.window;
-   Dialog             *d;
-   int                 bnum;
    DItem              *di;
 
-   d = FindDialogButton(win, &bnum);
-   if (d)
+   di = DialogFindDItem(d, win);
+   if (!di)
+      return;
+
+   switch (di->type)
      {
-	DialogActivateButton(win, 2);
-	goto done;
-     }
-
-   di = FindDialogItem(win, &d);
-   if (d == NULL)
-      return 0;
-
-   if (di == NULL)
-      goto done;
-
-   if (di->type == DITEM_AREA)
-     {
+     case DITEM_AREA:
 	if (di->item.area.event_func)
-	   (di->item.area.event_func) (0, ev);
-     }
-   else if (di->type == DITEM_SLIDER)
-     {
+	   di->item.area.event_func(0, ev);
+	break;
+
+     case DITEM_SLIDER:
 	if (win == di->item.slider.base_win)
 	  {
 	     if (di->item.slider.horizontal)
@@ -2361,7 +2189,7 @@ DialogEventMouseDown(XEvent * ev)
 	     if (di->item.slider.val_ptr)
 		*di->item.slider.val_ptr = di->item.slider.val;
 	     if (di->func)
-		(di->func) (di->val, di->data);
+		(di->func) (d, di->val, di->data);
 	  }
 	else if (win == di->item.slider.knob_win)
 	  {
@@ -2371,225 +2199,237 @@ DialogEventMouseDown(XEvent * ev)
 	     else
 		di->item.slider.wanted_val = di->item.slider.knob_y;
 	  }
+	break;
      }
-   di->clicked = 1;
-   DialogDrawItems(d, di, 0, 0, 99999, 99999);
 
- done:
-   return 1;
+   di->clicked = 1;
+
+   DialogDrawItems(d, di, 0, 0, 99999, 99999);
 }
 
-int
-DialogEventMouseUp(XEvent * ev)
+static void
+DialogEventMouseUp(Dialog * d, XEvent * ev)
 {
-   Window              win = Mode.context_win;
-   Dialog             *d;
-   int                 bnum;
-   DItem              *di;
+   Window              win = ev->xbutton.window;
+   DItem              *di, *dii;
 
-   d = FindDialogButton(win, &bnum);
-   if (d)
-     {
-	DialogActivateButton(win, 3);
-	goto done;
-     }
+   if (win != Mode.last_bpress)
+      return;
 
-   di = FindDialogItem(win, &d);
-   if (d == NULL)
-      return 0;
-
-   if (di == NULL)
-      goto done;
+   di = DialogFindDItem(d, win);
+   if (!di)
+      return;
 
    di->clicked = 0;
-   if (win)
-     {
-	if (di->type == DITEM_AREA)
-	  {
-	     if (di->item.area.event_func)
-		(di->item.area.event_func) (0, ev);
-	  }
-	else if (di->type == DITEM_CHECKBUTTON)
-	  {
-	     if (di->item.check_button.onoff)
-		di->item.check_button.onoff = 0;
-	     else
-		di->item.check_button.onoff = 1;
-	     if (di->item.check_button.onoff_ptr)
-		*di->item.check_button.onoff_ptr = di->item.check_button.onoff;
-	  }
-	else if (di->type == DITEM_RADIOBUTTON)
-	  {
-	     DItem              *dii;
 
-	     dii = di->item.radio_button.first;
-	     while (dii)
+   switch (di->type)
+     {
+     case DITEM_AREA:
+	if (di->item.area.event_func)
+	   di->item.area.event_func(0, ev);
+	break;
+
+     case DITEM_CHECKBUTTON:
+	if (di->item.check_button.onoff)
+	   di->item.check_button.onoff = 0;
+	else
+	   di->item.check_button.onoff = 1;
+	if (di->item.check_button.onoff_ptr)
+	   *di->item.check_button.onoff_ptr = di->item.check_button.onoff;
+	break;
+
+     case DITEM_RADIOBUTTON:
+	dii = di->item.radio_button.first;
+	while (dii)
+	  {
+	     if (dii->item.radio_button.onoff)
 	       {
-		  if (dii->item.radio_button.onoff)
-		    {
-		       dii->item.radio_button.onoff = 0;
-		       DialogDrawItems(d, dii, 0, 0, 99999, 99999);
-		    }
-		  dii = dii->item.radio_button.next;
+		  dii->item.radio_button.onoff = 0;
+		  DialogDrawItems(d, dii, 0, 0, 99999, 99999);
 	       }
-	     di->item.radio_button.onoff = 1;
-	     if (di->item.radio_button.val_ptr)
-		*di->item.radio_button.val_ptr = di->item.radio_button.val;
+	     dii = dii->item.radio_button.next;
 	  }
-	else if (di->type == DITEM_SLIDER)
-	  {
-	     if (win == di->item.slider.knob_win)
-		di->item.slider.in_drag = 0;
-	  }
-     }
-   DialogDrawItems(d, di, 0, 0, 99999, 99999);
-   if (win)
-     {
-	if (di->func)
-	   (di->func) (di->val, di->data);
+	di->item.radio_button.onoff = 1;
+	if (di->item.radio_button.val_ptr)
+	   *di->item.radio_button.val_ptr = di->item.radio_button.val;
+	break;
+     case DITEM_SLIDER:
+	if (win == di->item.slider.knob_win)
+	   di->item.slider.in_drag = 0;
+	break;
      }
 
- done:
-   return 1;
+   DialogDrawItems(d, di, 0, 0, 99999, 99999);
+
+   if (di->func)
+      di->func(d, di->val, di->data);
 }
 
-int
-DialogEventMouseIn(XEvent * ev)
+static void
+DialogEventMouseIn(Dialog * d, XEvent * ev)
 {
    Window              win = ev->xcrossing.window;
-   Dialog             *d;
-   int                 bnum;
    DItem              *di;
 
-   d = FindDialogButton(win, &bnum);
-   if (d)
+   di = DialogFindDItem(d, win);
+   if (!di)
+      return;
+
+   switch (di->type)
      {
-	DialogActivateButton(win, 0);
-	goto done;
-     }
-
-   di = FindDialogItem(win, &d);
-   if (d == NULL)
-      return 0;
-
-   if (di == NULL)
-      goto done;
-
-   if (di->type == DITEM_AREA)
-     {
+     case DITEM_AREA:
 	if (di->item.area.event_func)
-	   (di->item.area.event_func) (0, ev);
-     }
-   else if (di->type == DITEM_RADIOBUTTON)
-     {
+	   di->item.area.event_func(0, ev);
+	break;
+
+     case DITEM_RADIOBUTTON:
 	if (di->item.radio_button.event_func)
-	   (di->item.radio_button.event_func) (di->item.radio_button.val, ev);
+	   di->item.radio_button.event_func(di->item.radio_button.val, ev);
+	break;
      }
+
    di->hilited = 1;
-   DialogDrawItems(d, di, 0, 0, 99999, 99999);
 
- done:
-   return 1;
+   DialogDrawItems(d, di, 0, 0, 99999, 99999);
 }
 
-int
-DialogEventMouseOut(XEvent * ev)
+static void
+DialogEventMouseOut(Dialog * d, XEvent * ev)
 {
    Window              win = ev->xcrossing.window;
-   Dialog             *d;
-   int                 bnum;
    DItem              *di;
 
-   d = FindDialogButton(win, &bnum);
-   if (d)
+   di = DialogFindDItem(d, win);
+   if (!di)
+      return;
+
+   switch (di->type)
      {
-	DialogActivateButton(win, 1);
-	goto done;
-     }
-
-   di = FindDialogItem(win, &d);
-   if (d == NULL)
-      return 0;
-
-   if (di == NULL)
-      goto done;
-
-   if (di->type == DITEM_AREA)
-     {
+     case DITEM_AREA:
 	if (di->item.area.event_func)
-	   (di->item.area.event_func) (0, ev);
-     }
-   else if (di->type == DITEM_RADIOBUTTON)
-     {
-	if (di->item.radio_button.event_func)
-	   (di->item.radio_button.event_func) (di->item.radio_button.val, NULL);
-     }
-   di->hilited = 0;
-   DialogDrawItems(d, di, 0, 0, 99999, 99999);
+	   di->item.area.event_func(0, ev);
+	break;
 
- done:
-   return 1;
+     case DITEM_RADIOBUTTON:
+	if (di->item.radio_button.event_func)
+	   di->item.radio_button.event_func(di->item.radio_button.val, NULL);
+	break;
+     }
+
+   di->hilited = 0;
+
+   DialogDrawItems(d, di, 0, 0, 99999, 99999);
+}
+
+static void
+DialogHandleEvents(XEvent * ev, void *prm)
+{
+   Dialog             *d = (Dialog *) prm;
+
+   switch (ev->type)
+     {
+     case KeyPress:
+	DialogEventKeyPress(d, ev);
+	break;
+     case ButtonPress:
+	DialogEventMouseDown(d, ev);
+	break;
+     case ButtonRelease:
+	DialogEventMouseUp(d, ev);
+	break;
+     case MotionNotify:
+	DialogEventMotion(d, ev);
+	break;
+     case EnterNotify:
+	DialogEventMouseIn(d, ev);
+	break;
+     case LeaveNotify:
+	DialogEventMouseOut(d, ev);
+	break;
+     case Expose:
+	DialogEventExpose(d, ev);
+	break;
+     }
+}
+
+#if 0				/* TBD */
+static void
+DItemHandleEvents(XEvent * ev, void *prm)
+{
+   DItem              *di = (Dialog *) prm;
+   Window              win = ev->xany.window;
+
+   switch (ev->type)
+     {
+     case ButtonPress:
+	break;
+     case ButtonRelease:
+	break;
+     case EnterNotify:
+	break;
+     case LeaveNotify:
+	break;
+     case Expose:
+	break;
+     }
+}
+#endif
+
+static void
+DButtonHandleEvents(XEvent * ev, void *prm)
+{
+   DButton            *db = (DButton *) prm;
+   Dialog             *d;
+   int                 doact = 0;
+
+   d = db->parent;
+
+   switch (ev->type)
+     {
+     case ButtonPress:
+	db->clicked = 1;
+	break;
+     case ButtonRelease:
+	if (db->hilited && db->clicked)
+	   doact = 1;
+	db->clicked = 0;
+	break;
+     case EnterNotify:
+	db->hilited = 1;
+	break;
+     case LeaveNotify:
+	db->hilited = 0;
+	break;
+     case Expose:
+	break;
+     default:
+	return;
+     }
+
+   DialogDrawButton(d, db);
+
+   if (doact)
+     {
+	if (db->func)
+	  {
+	     int                 i;
+
+	     for (i = 0; i < d->num_buttons; i++)
+		if (d->button[i] == db)
+		   break;
+	     db->func(d, i, NULL);
+	  }
+
+	if (db->close)
+	   DialogClose(d);
+     }
 }
 
 /*
  * Finders
  */
 
-Dialog             *
-FindDialogButton(Window win, int *bnum)
-{
-   Dialog            **ds, *d = NULL;
-   int                 i, j, num, b = 0;
-
-   EDBUG(6, "FindDialogButton");
-
-   ds = (Dialog **) ListItemType(&num, LIST_TYPE_DIALOG);
-   for (i = 0; i < num; i++)
-     {
-	for (j = 0; j < ds[i]->num_buttons; j++)
-	  {
-	     if (win != ds[i]->button[j]->win)
-		continue;
-	     d = ds[i];
-	     b = j;
-	     goto done;
-	  }
-     }
- done:
-   if (ds)
-      Efree(ds);
-   *bnum = b;
-   EDBUG_RETURN(d);
-}
-
-DItem              *
-FindDialogItem(Window win, Dialog ** dret)
-{
-   Dialog            **ds, *d = NULL;
-   DItem              *di = NULL;
-   int                 i, num;
-
-   EDBUG(6, "FindDialogButton");
-
-   ds = (Dialog **) ListItemType(&num, LIST_TYPE_DIALOG);
-   for (i = 0; i < num; i++)
-     {
-	if (!ds[i]->item)
-	   continue;
-
-	di = DialogItemFindWindow(ds[i]->item, win);
-	if (di == NULL)
-	   continue;
-	d = ds[i];
-	break;
-     }
-   if (ds)
-      Efree(ds);
-   *dret = d;
-   EDBUG_RETURN(di);
-}
-
-Dialog             *
+static Dialog      *
 FindDialog(Window win)
 {
    Dialog            **ds, *d = NULL;
@@ -2608,3 +2448,69 @@ FindDialog(Window win)
       Efree(ds);
    EDBUG_RETURN(d);
 }
+
+EWin               *
+FindEwinByDialog(Dialog * d)
+{
+   EWin               *const *ewins;
+   int                 i, num;
+
+   EDBUG(6, "FindEwinByDialog");
+
+   ewins = EwinListGetAll(&num);
+   for (i = 0; i < num; i++)
+     {
+	if ((Dialog *) (ewins[i]->data) == d)
+	   return ewins[i];
+     }
+
+   EDBUG_RETURN(NULL);
+}
+
+int
+FindADialog(void)
+{
+   EWin               *const *ewins;
+   int                 i, num, n;
+
+   EDBUG(6, "FindADialog");
+
+   ewins = EwinListGetAll(&num);
+   for (i = n = 0; i < num; i++)
+     {
+	if (ewins[i]->type == EWIN_TYPE_DIALOG)
+	   n++;
+     }
+
+   EDBUG_RETURN(n);
+}
+
+#if 0				/* Unused */
+static int
+doAlert(EWin * edummy __UNUSED__, const char *params)
+{
+   char               *pp;
+   int                 i;
+
+   pp = Estrdup(params);
+   if (!pp)
+      EDBUG_RETURN(1);
+   if (strlen(pp) <= 0)
+      EDBUG_RETURN(1);
+
+   i = 1;
+   while (pp[i])
+     {
+	if ((pp[i - 1] == '\\') && (params[i] == 'n'))
+	  {
+	     pp[i - 1] = ' ';
+	     pp[i] = '\n';
+	  }
+	i++;
+     }
+   DialogAlertOK(pp);
+   Efree(pp);
+
+   return 0;
+}
+#endif

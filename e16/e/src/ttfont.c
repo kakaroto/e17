@@ -120,8 +120,6 @@ Efont_extents(Efont * f, const char *text, int *font_ascent_return,
 
 #if TEST_TTFONT
 
-#undef XSync
-
 Display            *disp;
 
 int
@@ -143,7 +141,7 @@ main(int argc, char **argv)
    win = XCreateSimpleWindow(disp, DefaultRootWindow(disp), 0, 0, 640, 480, 0,
 			     0, 0);
    XMapWindow(disp, win);
-   XSync(disp, False);
+   ecore_x_sync();
 
    gcv.subwindow_mode = IncludeInferiors;
    gc = XCreateGC(disp, win, GCSubwindowMode, &gcv);
@@ -165,16 +163,18 @@ main(int argc, char **argv)
    return 0;
 }
 
+#ifndef USE_ECORE_X
 void
-GrabX()
+ecore_x_grab(void)
 {
    XGrabServer(disp);
 }
 
 void
-UngrabX()
+ecore_x_ungrab(void)
 {
    XUngrabServer(disp);
    XFlush(disp);
 }
+#endif
 #endif

@@ -23,96 +23,6 @@
 #include "E.h"
 #include <sys/time.h>
 
-static char        *userDir = NULL;
-static char        *cacheDir = NULL;
-
-static const char  *const bins[] = { "eesh", "epp" };
-
-#define N_BINS (sizeof(bins)/sizeof(char*))
-
-void
-BlumFlimFrub(void)
-{
-   unsigned int        i;
-   char                s[1024];
-
-   for (i = 0; i < N_BINS; i++)
-     {
-	Esnprintf(s, sizeof(s), "%s/%s", EDirBin(), bins[i]);
-	if (!exists(s))
-	  {
-	     Alert(_("!!!!!!!! ERROR ERROR ERROR ERROR !!!!!!!!\n" "\n"
-		     "Enlightenment's utility executable cannot be found at:\n"
-		     "\n" "%s\n"
-		     "This is a fatal error and Enlightenment will cease to run.\n"
-		     "Please rectify this situation and ensure it is installed\n"
-		     "correctly.\n" "\n"
-		     "The reason this could be missing is due to badly created\n"
-		     "packages, someone manually deleting that program or perhaps\n"
-		     "an error in installing Enlightenment.\n"), s);
-	     EExit(0);
-	  }
-	if (!canexec(s))
-	  {
-	     Alert(_("!!!!!!!! ERROR ERROR ERROR ERROR !!!!!!!!\n" "\n"
-		     "Enlightenment's utility executable is not able to be executed:\n"
-		     "\n" "%s\n"
-		     "This is a fatal error and Enlightenment will cease to run.\n"
-		     "Please rectify this situation and ensure it is installed\n"
-		     "correctly.\n"), s);
-	     EExit(0);
-	  }
-     }
-}
-
-const char         *
-EDirBin(void)
-{
-   return ENLIGHTENMENT_BIN;
-}
-
-const char         *
-EDirRoot(void)
-{
-   return ENLIGHTENMENT_ROOT;
-}
-
-void
-EDirUserSet(const char *d)
-{
-   userDir = Estrdup(d);
-}
-
-char               *
-EDirUser(void)
-{
-   char               *home, buf[4096];
-
-   if (userDir)
-      return userDir;
-
-   home = homedir(getuid());
-   Esnprintf(buf, sizeof(buf), "%s/.enlightenment", home);
-   Efree(home);
-   userDir = Estrdup(buf);
-
-   return userDir;
-}
-
-void
-EDirUserCacheSet(const char *d)
-{
-   cacheDir = Estrdup(d);
-}
-
-char               *
-EDirUserCache(void)
-{
-   if (!cacheDir)
-      cacheDir = Estrdup(EDirUser());
-   return cacheDir;
-}
-
 /* This is a general quicksort algorithm, using median-of-three strategy.
  * 
  * Parameters:
@@ -228,6 +138,9 @@ ETimedLoopNext(void)
 #endif
    etl_k = etl_k1 + tm * etl_fac;
 
+   ecore_x_sync();
+   CheckEvent();
+
    return etl_k;
 }
 
@@ -238,8 +151,10 @@ void
 Eprintf(const char *fmt, ...)
 {
    va_list             args;
+   struct timeval      tv;
 
-   fprintf(stdout, "[%d] ", getpid());
+   gettimeofday(&tv, NULL);
+   fprintf(stdout, "[%d] %4ld.%06ld: ", getpid(), tv.tv_sec, tv.tv_usec);
    va_start(args, fmt);
    vfprintf(stdout, fmt, args);
    va_end(args);

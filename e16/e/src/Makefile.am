@@ -1,21 +1,28 @@
 SUBDIRS =
 
-EXTRA_DIST = ewmh.c gnome.c snprintf.c
+EXTRA_DIST = ewmh.c gnome.c ecompmgr.c ecompmgr.h snprintf.c
 
-bin_PROGRAMS = enlightenment
+bin_PROGRAMS = e16
 
 if ENABLE_EWMH
 SRCS_EWMH = ewmh.c
 endif
 if ENABLE_GNOME
-SRCS_GNOME = gnome.c            
+SRCS_GNOME = gnome.c
 endif
 if USE_ESNPRINTF
-SRCS_SNPRINTF = snprintf.c            
+SRCS_SNPRINTF = snprintf.c
 endif
-enlightenment_SOURCES = \
+if HAS_COMPOSITE
+SRCS_ECOMPMGR = ecompmgr.c ecompmgr.h
+endif
+e16_SOURCES = \
 	E.h			\
-	timestamp.h             \
+	econfig.h		\
+	ecore-e16.h		\
+	emodule.h		\
+	timestamp.h		\
+	aclass.c		\
 	actions.c		\
 	alert.c			\
 	areas.c                 \
@@ -34,14 +41,20 @@ enlightenment_SOURCES = \
 	dialog.c	        \
 	dock.c			\
 	draw.c			\
+	econfig.c		\
+	ecore-e16.c		\
 	edge.c			\
+	emodule.c		\
+	eobj.c		\
 	events.c		\
-	evhandlers.c		\
+	ewins.c			\
+	ewin-ops.c		\
+	extinitwin.c		\
 	file.c		        \
 	finders.c		\
 	focus.c 		\
+	fonts.c 		\
 	fx.c                    \
-	globals.c		\
 	grabs.c			\
 	groups.c		\
 	handlers.c		\
@@ -49,14 +62,16 @@ enlightenment_SOURCES = \
 	icccm.c			\
 	iclass.c		\
 	iconify.c		\
-	init.c			\
 	ipc.c			\
 	lang.c			\
 	lists.c			\
 	main.c			\
 	memory.c		\
 	menus.c			\
+	menus-misc.c		\
 	misc.c			\
+	mod-misc.c		\
+	mod-trans.c		\
 	moveresize.c		\
 	mwm.c			\
 	pager.c                 \
@@ -83,16 +98,17 @@ enlightenment_SOURCES = \
 	x.c                     \
 	zoom.c			\
 	$(SRCS_EWMH) $(SRCS_GNOME) \
+	$(SRCS_ECOMPMGR)	\
 	$(SRCS_SNPRINTF)
 
 
 LDADD = \
 	@LIBINTL@		\
+	@ecore_libs@		\
 	$(FNLIB_LIBS) 		\
 	$(TTF_LIBS) 		\
 	$(ESD_LIBS) 		\
 	$(IMLIB_LIBS) 		\
-	$(DL_LIBS)		\
 	$(X_PRE_LIBS) 		\
 	$(X_LIBS) 		\
 	$(X_EXTRA_LIBS) 	\
@@ -100,7 +116,7 @@ LDADD = \
 	$(E_X_LIBS) 		\
 	-lX11 -lm
 
-INCLUDES = -I$(top_builddir) -I$(top_srcdir)/intl $(ESD_CFLAGS) $(IMLIB_CFLAGS) $(X_CFLAGS)
+INCLUDES = -I$(top_builddir) -I$(top_srcdir)/intl @ecore_cflags@ $(ESD_CFLAGS) $(IMLIB_CFLAGS) $(X_CFLAGS)
 
 install-data-local:
 	$(top_srcdir)/mkinstalldirs $(DESTDIR)$(ENLIGHTENMENT_ROOT)/themes

@@ -39,14 +39,14 @@ GroupCreate(void)
    g->index = (int)((GetTime() - (floor(t / 1000) * 1000)) * 10000);
    /* g->index = (int)(GetTime() * 100); */
 
-   g->cfg.iconify = Conf.group_config.iconify;
-   g->cfg.kill = Conf.group_config.kill;
-   g->cfg.move = Conf.group_config.move;
-   g->cfg.raise = Conf.group_config.raise;
-   g->cfg.set_border = Conf.group_config.set_border;
-   g->cfg.stick = Conf.group_config.stick;
-   g->cfg.shade = Conf.group_config.shade;
-   g->cfg.mirror = Conf.group_config.mirror;
+   g->cfg.iconify = Conf.groups.dflt.iconify;
+   g->cfg.kill = Conf.groups.dflt.kill;
+   g->cfg.move = Conf.groups.dflt.move;
+   g->cfg.raise = Conf.groups.dflt.raise;
+   g->cfg.set_border = Conf.groups.dflt.set_border;
+   g->cfg.stick = Conf.groups.dflt.stick;
+   g->cfg.shade = Conf.groups.dflt.shade;
+   g->cfg.mirror = Conf.groups.dflt.mirror;
    g->num_members = 0;
    g->members = NULL;
 
@@ -59,14 +59,14 @@ GroupDestroy(Group * g)
    if (!g)
       return;
 
-   if (g == current_group)
-      current_group = NULL;
+   if (g == Mode.groups.current)
+      Mode.groups.current = NULL;
    if (g->members)
       Efree(g->members);
    Efree(g);
 }
 
-void
+static void
 CopyGroupConfig(GroupConfig * src, GroupConfig * dest)
 {
    if (!(src && dest))
@@ -107,7 +107,7 @@ BuildWindowGroup(EWin ** ewins, int num)
    int                 i;
    Group              *g;
 
-   current_group = g = GroupCreate();
+   Mode.groups.current = g = GroupCreate();
    AddItem(g, NULL, g->index, LIST_TYPE_GROUP);
 
    for (i = 0; i < num; i++)
@@ -254,7 +254,7 @@ GroupsEwinRemove(EWin * ewin)
       RemoveEwinFromGroup(ewin, ewin->groups[0]);
 }
 
-char              **
+static char       **
 GetWinGroupMemberNames(Group ** groups, int num)
 {
    int                 i, j;
@@ -281,8 +281,8 @@ ShowHideWinGroups(EWin * ewin, Group * g, char onoff)
 {
    EWin              **gwins;
    int                 i, num;
-   Border             *b = NULL;
-   Border             *previous_border;
+   const Border       *b = NULL;
+   const Border       *previous_border;
 
    if (g)
      {
@@ -291,7 +291,7 @@ ShowHideWinGroups(EWin * ewin, Group * g, char onoff)
      }
    else
      {
-	gwins = ListWinGroupMembersForEwin(ewin, ACTION_NONE, 0, &num);
+	gwins = ListWinGroupMembersForEwin(ewin, GROUP_ACTION_ANY, 0, &num);
      }
 
    previous_border = ewin->previous_border;
@@ -311,15 +311,11 @@ ShowHideWinGroups(EWin * ewin, Group * g, char onoff)
 					  0, LIST_FINDBY_NAME,
 					  LIST_TYPE_BORDER);
 		  if (b)
-		    {
-		       gwins[i]->previous_border = gwins[i]->border;
-		       b->ref_count++;
-		    }
+		     gwins[i]->previous_border = gwins[i]->border;
 	       }
 	     else if ((previous_border) && (gwins[i]->previous_border))
 	       {
 		  b = gwins[i]->previous_border;
-		  gwins[i]->border->ref_count--;
 		  gwins[i]->previous_border = NULL;
 	       }
 	     break;
@@ -333,17 +329,13 @@ ShowHideWinGroups(EWin * ewin, Group * g, char onoff)
 					  0, LIST_FINDBY_NAME,
 					  LIST_TYPE_BORDER);
 		  if (b)
-		    {
-		       gwins[i]->previous_border = gwins[i]->border;
-		       b->ref_count++;
-		    }
+		     gwins[i]->previous_border = gwins[i]->border;
 	       }
 	     break;
 	  case SET_OFF:
 	     if (gwins[i]->previous_border)
 	       {
 		  b = gwins[i]->previous_border;
-		  gwins[i]->border->ref_count--;
 		  gwins[i]->previous_border = NULL;
 	       }
 	     break;
@@ -365,136 +357,134 @@ ShowHideWinGroups(EWin * ewin, Group * g, char onoff)
 void
 SaveGroups(void)
 {
-   Group             **groups = NULL;
+   Group             **groups;
    int                 i, num_groups;
-
-   groups = (Group **) ListItemType(&num_groups, LIST_TYPE_GROUP);
-   if (groups)
-     {
-	FILE               *f;
-	char                s[1024];
-
-	Esnprintf(s, sizeof(s), "%s/...e_session-XXXXXX.groups.%i", EDirUser(),
-		  VRoot.scr);
-	f = fopen(s, "w");
-	if (f)
-	  {
-	     for (i = 0; i < num_groups; i++)
-	       {
-		  if (groups[i]->members)
-		    {
-		       /* Only if the group should be remembered, write info */
-		       if (groups[i]->members[0]->snap)
-			 {
-			    if (groups[i]->members[0]->snap->num_groups)
-			      {
-				 fprintf(f, "NEW: %i\n", groups[i]->index);
-				 fprintf(f, "ICONIFY: %i\n",
-					 groups[i]->cfg.iconify);
-				 fprintf(f, "KILL: %i\n", groups[i]->cfg.kill);
-				 fprintf(f, "MOVE: %i\n", groups[i]->cfg.move);
-				 fprintf(f, "RAISE: %i\n",
-					 groups[i]->cfg.raise);
-				 fprintf(f, "SET_BORDER: %i\n",
-					 groups[i]->cfg.set_border);
-				 fprintf(f, "STICK: %i\n",
-					 groups[i]->cfg.stick);
-				 fprintf(f, "SHADE: %i\n",
-					 groups[i]->cfg.shade);
-				 fprintf(f, "MIRROR: %i\n",
-					 groups[i]->cfg.mirror);
-			      }
-			 }
-		    }
-	       }
-	     fclose(f);
-	  }
-	Efree(groups);
-     }
-}
-
-void
-LoadGroups(void)
-{
    FILE               *f;
    char                s[1024];
 
-   Esnprintf(s, sizeof(s), "%s/...e_session-XXXXXX.groups.%i", EDirUser(),
-	     VRoot.scr);
-   f = fopen(s, "r");
-   if (f)
+   groups = (Group **) ListItemType(&num_groups, LIST_TYPE_GROUP);
+   if (!groups)
+      return;
+
+   Esnprintf(s, sizeof(s), "%s.groups", EGetSavePrefix());
+   f = fopen(s, "w");
+   if (!f)
+      goto done;
+
+   for (i = 0; i < num_groups; i++)
      {
-	Group              *g = NULL;
+	if (!groups[i]->members)
+	   continue;
 
-	while (fgets(s, sizeof(s), f))
+	/* Only if the group should be remembered, write info */
+	if (!groups[i]->members[0]->snap)
+	   continue;
+
+	if (!groups[i]->members[0]->snap->num_groups)
+	   continue;
+
+	fprintf(f, "NEW: %i\n", groups[i]->index);
+	fprintf(f, "ICONIFY: %i\n", groups[i]->cfg.iconify);
+	fprintf(f, "KILL: %i\n", groups[i]->cfg.kill);
+	fprintf(f, "MOVE: %i\n", groups[i]->cfg.move);
+	fprintf(f, "RAISE: %i\n", groups[i]->cfg.raise);
+	fprintf(f, "SET_BORDER: %i\n", groups[i]->cfg.set_border);
+	fprintf(f, "STICK: %i\n", groups[i]->cfg.stick);
+	fprintf(f, "SHADE: %i\n", groups[i]->cfg.shade);
+	fprintf(f, "MIRROR: %i\n", groups[i]->cfg.mirror);
+     }
+   fclose(f);
+
+ done:
+   if (groups)
+      Efree(groups);
+}
+
+static void
+GroupsLoad(void)
+{
+   FILE               *f;
+   char                s[1024];
+   Group              *g = NULL;
+
+   Esnprintf(s, sizeof(s), "%s.groups", EGetSavePrefix());
+   f = fopen(s, "r");
+   if (!f)
+      return;
+
+   while (fgets(s, sizeof(s), f))
+     {
+	char                ss[1024];
+
+	if (strlen(s) > 0)
+	   s[strlen(s) - 1] = 0;
+	word(s, 1, ss);
+
+	if (!strcmp(ss, "NEW:"))
 	  {
-	     char                ss[1024];
-
-	     if (strlen(s) > 0)
-		s[strlen(s) - 1] = 0;
-	     word(s, 1, ss);
-	     if (!strcmp(ss, "NEW:"))
-	       {
-		  g = GroupCreate();
-		  if (g)
-		    {
-		       word(s, 2, ss);
-		       g->index = atoi(ss);
-		       AddItem(g, NULL, g->index, LIST_TYPE_GROUP);
-		    }
-	       }
-	     else if (!strcmp(ss, "ICONIFY:"))
+	     g = GroupCreate();
+	     if (g)
 	       {
 		  word(s, 2, ss);
-		  if (g)
-		     g->cfg.iconify = (char)atoi(ss);
-	       }
-	     else if (!strcmp(ss, "KILL:"))
-	       {
-		  word(s, 2, ss);
-		  if (g)
-		     g->cfg.kill = (char)atoi(ss);
-	       }
-	     else if (!strcmp(ss, "MOVE:"))
-	       {
-		  word(s, 2, ss);
-		  if (g)
-		     g->cfg.move = (char)atoi(ss);
-	       }
-	     else if (!strcmp(ss, "RAISE:"))
-	       {
-		  word(s, 2, ss);
-		  if (g)
-		     g->cfg.raise = (char)atoi(ss);
-	       }
-	     else if (!strcmp(ss, "SET_BORDER:"))
-	       {
-		  word(s, 2, ss);
-		  if (g)
-		     g->cfg.set_border = (char)atoi(ss);
-	       }
-	     else if (!strcmp(ss, "STICK:"))
-	       {
-		  word(s, 2, ss);
-		  if (g)
-		     g->cfg.stick = (char)atoi(ss);
-	       }
-	     else if (!strcmp(ss, "SHADE:"))
-	       {
-		  word(s, 2, ss);
-		  if (g)
-		     g->cfg.shade = (char)atoi(ss);
-	       }
-	     else if (!strcmp(ss, "MIRROR:"))
-	       {
-		  word(s, 2, ss);
-		  if (g)
-		     g->cfg.mirror = (char)atoi(ss);
+		  g->index = atoi(ss);
+		  AddItem(g, NULL, g->index, LIST_TYPE_GROUP);
 	       }
 	  }
-	fclose(f);
+	else if (!strcmp(ss, "ICONIFY:"))
+	  {
+	     word(s, 2, ss);
+	     if (g)
+		g->cfg.iconify = (char)atoi(ss);
+	  }
+	else if (!strcmp(ss, "KILL:"))
+	  {
+	     word(s, 2, ss);
+	     if (g)
+		g->cfg.kill = (char)atoi(ss);
+	  }
+	else if (!strcmp(ss, "MOVE:"))
+	  {
+	     word(s, 2, ss);
+	     if (g)
+		g->cfg.move = (char)atoi(ss);
+	  }
+	else if (!strcmp(ss, "RAISE:"))
+	  {
+	     word(s, 2, ss);
+	     if (g)
+		g->cfg.raise = (char)atoi(ss);
+	  }
+	else if (!strcmp(ss, "SET_BORDER:"))
+	  {
+	     word(s, 2, ss);
+	     if (g)
+		g->cfg.set_border = (char)atoi(ss);
+	  }
+	else if (!strcmp(ss, "STICK:"))
+	  {
+	     word(s, 2, ss);
+	     if (g)
+		g->cfg.stick = (char)atoi(ss);
+	  }
+	else if (!strcmp(ss, "SHADE:"))
+	  {
+	     word(s, 2, ss);
+	     if (g)
+		g->cfg.shade = (char)atoi(ss);
+	  }
+	else if (!strcmp(ss, "MIRROR:"))
+	  {
+	     word(s, 2, ss);
+	     if (g)
+		g->cfg.mirror = (char)atoi(ss);
+	  }
      }
+   fclose(f);
 }
+
+#define GROUP_OP_ADD	1
+#define GROUP_OP_DEL	2
+#define GROUP_OP_BREAK	3
 
 static int          tmp_group_index;
 static int          tmp_index;
@@ -502,22 +492,19 @@ static EWin        *tmp_ewin;
 static Group      **tmp_groups;
 static int          tmp_action;
 
-static void         ChooseGroupEscape(int val, void *data);
 static void
-ChooseGroupEscape(int val, void *data)
+ChooseGroupEscape(Dialog * d, int val __UNUSED__, void *data __UNUSED__)
 {
    if (tmp_groups)
      {
 	ShowHideWinGroups(tmp_ewin, tmp_groups[tmp_index], SET_OFF);
 	Efree(tmp_groups);
      }
-   DialogClose((Dialog *) data);
-   val = 0;
+   DialogClose(d);
 }
 
-static void         ChooseGroup(int val, void *data);
 static void
-ChooseGroup(int val, void *data)
+ChooseGroup(Dialog * d __UNUSED__, int val, void *data __UNUSED__)
 {
    if (((val == 0) || (val == 2)) && tmp_groups)
      {
@@ -529,13 +516,13 @@ ChooseGroup(int val, void *data)
 	  {
 	     switch (tmp_action)
 	       {
-	       case ACTION_ADD_TO_GROUP:
+	       case GROUP_OP_ADD:
 		  AddEwinToGroup(tmp_ewin, tmp_groups[tmp_group_index]);
 		  break;
-	       case ACTION_REMOVE_FROM_GROUP:
+	       case GROUP_OP_DEL:
 		  RemoveEwinFromGroup(tmp_ewin, tmp_groups[tmp_group_index]);
 		  break;
-	       case ACTION_BREAK_GROUP:
+	       case GROUP_OP_BREAK:
 		  BreakWindowGroup(tmp_ewin, tmp_groups[tmp_group_index]);
 		  break;
 	       default:
@@ -548,16 +535,14 @@ ChooseGroup(int val, void *data)
 	Efree(tmp_groups);
 	tmp_groups = NULL;
      }
-   data = NULL;
 }
 
 static void
-GroupCallback(int val, void *data)
+GroupCallback(Dialog * d __UNUSED__, int val, void *data __UNUSED__)
 {
    ShowHideWinGroups(tmp_ewin, tmp_groups[tmp_index], SET_OFF);
    ShowHideWinGroups(tmp_ewin, tmp_groups[val], SET_ON);
    tmp_index = val;
-   data = NULL;
 }
 
 void
@@ -578,7 +563,7 @@ ChooseGroupDialog(EWin * ewin, char *message, char group_select, int action)
    tmp_groups = ListWinGroups(ewin, group_select, &num_groups);
 
    if ((num_groups == 0)
-       && (action == ACTION_BREAK_GROUP || action == ACTION_REMOVE_FROM_GROUP))
+       && (action == GROUP_OP_BREAK || action == GROUP_OP_DEL))
      {
 	DialogOK(_("Window Group Error"),
 		 _
@@ -661,7 +646,7 @@ ChooseGroupDialog(EWin * ewin, char *message, char group_select, int action)
 	DialogItemSetColSpan(di, 2);
 	DialogItemSetPadding(di, 2, 2, 2, 2);
 	DialogItemSetFill(di, 1, 0);
-	DialogItemSetCallback(di, &GroupCallback, i, (void *)d);
+	DialogItemSetCallback(di, GroupCallback, i, NULL);
 	DialogItemRadioButtonSetText(di, group_member_strings[i]);
 	DialogItemRadioButtonSetFirst(di, radio);
 	DialogItemRadioButtonGroupSetVal(di, i);
@@ -676,9 +661,9 @@ ChooseGroupDialog(EWin * ewin, char *message, char group_select, int action)
 
    DialogAddButton(d, _("OK"), ChooseGroup, 1);
    DialogAddButton(d, _("Close"), ChooseGroup, 1);
-   DialogSetExitFunction(d, ChooseGroup, 2, d);
-   DialogBindKey(d, "Escape", ChooseGroupEscape, 0, d);
-   DialogBindKey(d, "Return", ChooseGroup, 0, d);
+   DialogSetExitFunction(d, ChooseGroup, 2);
+   DialogBindKey(d, "Escape", ChooseGroupEscape, 0);
+   DialogBindKey(d, "Return", ChooseGroup, 0);
 
    for (i = 0; i < num_groups; i++)
       Efree(group_member_strings[i]);
@@ -686,3 +671,950 @@ ChooseGroupDialog(EWin * ewin, char *message, char group_select, int action)
 
    ShowDialog(d);
 }
+
+static GroupConfig *tmp_cfgs = NULL;
+static int          tmp_current_group;
+static int          tmp_index;
+static GroupConfig  tmp_cfg;
+static EWin        *tmp_ewin;
+static Group      **tmp_groups;
+
+static DItem       *di_border;
+static DItem       *di_iconify;
+static DItem       *di_kill;
+static DItem       *di_move;
+static DItem       *di_raise;
+static DItem       *di_stick;
+static DItem       *di_shade;
+static DItem       *di_mirror;
+
+static void
+CB_ConfigureGroupEscape(Dialog * d, int val __UNUSED__, void *data __UNUSED__)
+{
+   if (tmp_cfgs)
+     {
+	ShowHideWinGroups(tmp_ewin, tmp_groups[tmp_current_group], SET_OFF);
+	Efree(tmp_cfgs);
+	tmp_cfgs = NULL;
+     }
+   DialogClose(d);
+}
+
+static void
+CB_ConfigureGroup(Dialog * d __UNUSED__, int val, void *data __UNUSED__)
+{
+   int                 i;
+
+   if (val < 2)
+     {
+	for (i = 0; i < tmp_ewin->num_groups; i++)
+	   CopyGroupConfig(&(tmp_cfgs[i]), &(tmp_ewin->groups[i]->cfg));
+     }
+   if (((val == 0) || (val == 2)) && tmp_cfgs)
+     {
+	ShowHideWinGroups(tmp_ewin, tmp_groups[tmp_current_group], SET_OFF);
+	Efree(tmp_cfgs);
+	tmp_cfgs = NULL;
+     }
+   autosave();
+}
+
+static void
+GroupSelectCallback(Dialog * d, int val, void *data __UNUSED__)
+{
+   DialogItemCheckButtonSetState(di_border, tmp_cfgs[val].set_border);
+   DialogItemCheckButtonSetState(di_kill, tmp_cfgs[val].kill);
+   DialogItemCheckButtonSetState(di_move, tmp_cfgs[val].move);
+   DialogItemCheckButtonSetState(di_raise, tmp_cfgs[val].raise);
+   DialogItemCheckButtonSetState(di_iconify, tmp_cfgs[val].iconify);
+   DialogItemCheckButtonSetState(di_stick, tmp_cfgs[val].stick);
+   DialogItemCheckButtonSetState(di_shade, tmp_cfgs[val].shade);
+   DialogItemCheckButtonSetState(di_mirror, tmp_cfgs[val].mirror);
+   DialogRedraw(d);
+   ShowHideWinGroups(tmp_ewin, tmp_groups[tmp_current_group], SET_OFF);
+   ShowHideWinGroups(tmp_ewin, tmp_groups[val], SET_ON);
+   tmp_current_group = val;
+}
+
+static void
+GroupFeatureChangeCallback(Dialog * d __UNUSED__, int val, void *data)
+{
+   switch (val)
+     {
+     case GROUP_FEATURE_BORDER:
+	tmp_cfgs[tmp_current_group].set_border = *((char *)data);
+	break;
+     case GROUP_FEATURE_KILL:
+	tmp_cfgs[tmp_current_group].kill = *((char *)data);
+	break;
+     case GROUP_FEATURE_MOVE:
+	tmp_cfgs[tmp_current_group].move = *((char *)data);
+	break;
+     case GROUP_FEATURE_RAISE:
+	tmp_cfgs[tmp_current_group].raise = *((char *)data);
+	break;
+     case GROUP_FEATURE_ICONIFY:
+	tmp_cfgs[tmp_current_group].iconify = *((char *)data);
+	break;
+     case GROUP_FEATURE_STICK:
+	tmp_cfgs[tmp_current_group].stick = *((char *)data);
+	break;
+     case GROUP_FEATURE_SHADE:
+	tmp_cfgs[tmp_current_group].shade = *((char *)data);
+	break;
+     case GROUP_FEATURE_MIRROR:
+	tmp_cfgs[tmp_current_group].mirror = *((char *)data);
+	break;
+     default:
+	break;
+     }
+}
+
+static void
+SettingsGroups(EWin * ewin)
+{
+   Dialog             *d;
+   DItem              *table, *radio, *di;
+   int                 i;
+   char              **group_member_strings;
+
+   if (!ewin)
+      return;
+   if (ewin->num_groups == 0)
+     {
+	DialogOK(_("Window Group Error"),
+		 _
+		 ("\n  This window currently does not belong to any groups.  \n\n"));
+	return;
+     }
+   if ((d = FindItem("CONFIGURE_GROUP", 0, LIST_FINDBY_NAME, LIST_TYPE_DIALOG)))
+     {
+	SoundPlay("GROUP_SETTINGS_ACTIVE");
+	ShowDialog(d);
+	return;
+     }
+   SoundPlay("SOUND_SETTINGS_GROUP");
+
+   tmp_ewin = ewin;
+   tmp_groups = ewin->groups;
+   tmp_cfgs = (GroupConfig *) Emalloc(ewin->num_groups * sizeof(GroupConfig));
+   tmp_current_group = 0;
+   group_member_strings =
+      GetWinGroupMemberNames(ewin->groups, ewin->num_groups);
+   ShowHideWinGroups(ewin, ewin->groups[0], SET_ON);
+
+   for (i = 0; i < ewin->num_groups; i++)
+      CopyGroupConfig(&(ewin->groups[i]->cfg), &(tmp_cfgs[i]));
+
+   d = DialogCreate("CONFIGURE_GROUP");
+   DialogSetTitle(d, _("Window Group Settings"));
+
+   table = DialogInitItem(d);
+   DialogItemTableSetOptions(table, 2, 0, 0, 0);
+
+   if (Conf.dialogs.headers)
+     {
+	di = DialogAddItem(table, DITEM_IMAGE);
+	DialogItemSetPadding(di, 2, 2, 2, 2);
+	DialogItemImageSetFile(di, "pix/group.png");
+
+	di = DialogAddItem(table, DITEM_TEXT);
+	DialogItemSetPadding(di, 2, 2, 2, 2);
+	DialogItemSetFill(di, 1, 0);
+	DialogItemTextSetText(di,
+			      _("Enlightenment Window Group\n"
+				"Settings Dialog\n"));
+
+	di = DialogAddItem(table, DITEM_SEPARATOR);
+	DialogItemSetColSpan(di, 2);
+	DialogItemSetPadding(di, 2, 2, 2, 2);
+	DialogItemSetFill(di, 1, 0);
+	DialogItemSeparatorSetOrientation(di, 0);
+     }
+
+   di = DialogAddItem(table, DITEM_TEXT);
+   DialogItemSetColSpan(di, 2);
+   DialogItemSetPadding(di, 2, 2, 2, 2);
+   DialogItemSetFill(di, 1, 0);
+   DialogItemSetAlign(di, 0, 512);
+   DialogItemTextSetText(di, _("   Pick the group to configure:   "));
+
+   radio = di = DialogAddItem(table, DITEM_RADIOBUTTON);
+   DialogItemSetPadding(di, 2, 2, 2, 2);
+   DialogItemSetFill(di, 1, 0);
+   DialogItemSetColSpan(di, 2);
+   DialogItemSetCallback(di, &GroupSelectCallback, 0, (void *)d);
+   DialogItemRadioButtonSetText(di, group_member_strings[0]);
+   DialogItemRadioButtonSetFirst(di, radio);
+   DialogItemRadioButtonGroupSetVal(di, 0);
+
+   for (i = 1; i < ewin->num_groups; i++)
+     {
+	di = DialogAddItem(table, DITEM_RADIOBUTTON);
+	DialogItemSetColSpan(di, 2);
+	DialogItemSetPadding(di, 2, 2, 2, 2);
+	DialogItemSetFill(di, 1, 0);
+	DialogItemSetCallback(di, &GroupSelectCallback, i, (void *)d);
+	DialogItemRadioButtonSetText(di, group_member_strings[i]);
+	DialogItemRadioButtonSetFirst(di, radio);
+	DialogItemRadioButtonGroupSetVal(di, i);
+     }
+   DialogItemRadioButtonGroupSetValPtr(radio, &tmp_index);
+
+   di = DialogAddItem(table, DITEM_SEPARATOR);
+   DialogItemSetColSpan(di, 2);
+   DialogItemSetPadding(di, 2, 2, 2, 2);
+   DialogItemSetFill(di, 1, 0);
+   DialogItemSeparatorSetOrientation(di, 0);
+
+   di = DialogAddItem(table, DITEM_TEXT);
+   DialogItemSetColSpan(di, 2);
+   DialogItemSetPadding(di, 2, 2, 2, 2);
+   DialogItemSetFill(di, 1, 0);
+   DialogItemSetAlign(di, 0, 512);
+   DialogItemTextSetText(di,
+			 _("  The following actions are  \n"
+			   "  applied to all group members:  "));
+
+   di_border = di = DialogAddItem(table, DITEM_CHECKBUTTON);
+   DialogItemSetPadding(di, 2, 2, 2, 2);
+   DialogItemSetFill(di, 1, 0);
+   DialogItemSetColSpan(di, 2);
+   DialogItemSetCallback(di, &GroupFeatureChangeCallback, GROUP_FEATURE_BORDER,
+			 &(tmp_cfg.set_border));
+   DialogItemCheckButtonSetText(di, _("Changing Border Style"));
+   DialogItemCheckButtonSetState(di, tmp_cfgs[0].set_border);
+   DialogItemCheckButtonSetPtr(di, &(tmp_cfg.set_border));
+
+   di_iconify = di = DialogAddItem(table, DITEM_CHECKBUTTON);
+   DialogItemSetPadding(di, 2, 2, 2, 2);
+   DialogItemSetFill(di, 1, 0);
+   DialogItemSetColSpan(di, 2);
+   DialogItemSetCallback(di, &GroupFeatureChangeCallback,
+			 GROUP_FEATURE_ICONIFY, &(tmp_cfg.iconify));
+   DialogItemCheckButtonSetText(di, _("Iconifying"));
+   DialogItemCheckButtonSetState(di, tmp_cfgs[0].iconify);
+   DialogItemCheckButtonSetPtr(di, &(tmp_cfg.iconify));
+
+   di_kill = di = DialogAddItem(table, DITEM_CHECKBUTTON);
+   DialogItemSetPadding(di, 2, 2, 2, 2);
+   DialogItemSetFill(di, 1, 0);
+   DialogItemSetColSpan(di, 2);
+   DialogItemSetCallback(di, &GroupFeatureChangeCallback, GROUP_FEATURE_KILL,
+			 &(tmp_cfg.kill));
+   DialogItemCheckButtonSetText(di, _("Killing"));
+   DialogItemCheckButtonSetState(di, tmp_cfgs[0].kill);
+   DialogItemCheckButtonSetPtr(di, &(tmp_cfg.kill));
+
+   di_move = di = DialogAddItem(table, DITEM_CHECKBUTTON);
+   DialogItemSetPadding(di, 2, 2, 2, 2);
+   DialogItemSetFill(di, 1, 0);
+   DialogItemSetColSpan(di, 2);
+   DialogItemSetCallback(di, &GroupFeatureChangeCallback, GROUP_FEATURE_MOVE,
+			 &(tmp_cfg.move));
+   DialogItemCheckButtonSetText(di, _("Moving"));
+   DialogItemCheckButtonSetState(di, tmp_cfgs[0].move);
+   DialogItemCheckButtonSetPtr(di, &(tmp_cfg.move));
+
+   di_raise = di = DialogAddItem(table, DITEM_CHECKBUTTON);
+   DialogItemSetPadding(di, 2, 2, 2, 2);
+   DialogItemSetFill(di, 1, 0);
+   DialogItemSetColSpan(di, 2);
+   DialogItemSetCallback(di, &GroupFeatureChangeCallback, GROUP_FEATURE_RAISE,
+			 &(tmp_cfg.raise));
+   DialogItemCheckButtonSetText(di, _("Raising/Lowering"));
+   DialogItemCheckButtonSetState(di, tmp_cfgs[0].raise);
+   DialogItemCheckButtonSetPtr(di, &(tmp_cfg.raise));
+
+   di_stick = di = DialogAddItem(table, DITEM_CHECKBUTTON);
+   DialogItemSetPadding(di, 2, 2, 2, 2);
+   DialogItemSetFill(di, 1, 0);
+   DialogItemSetColSpan(di, 2);
+   DialogItemSetCallback(di, &GroupFeatureChangeCallback, GROUP_FEATURE_STICK,
+			 &(tmp_cfg.stick));
+   DialogItemCheckButtonSetText(di, _("Sticking"));
+   DialogItemCheckButtonSetState(di, tmp_cfgs[0].stick);
+   DialogItemCheckButtonSetPtr(di, &(tmp_cfg.stick));
+
+   di_shade = di = DialogAddItem(table, DITEM_CHECKBUTTON);
+   DialogItemSetPadding(di, 2, 2, 2, 2);
+   DialogItemSetFill(di, 1, 0);
+   DialogItemSetColSpan(di, 2);
+   DialogItemSetCallback(di, &GroupFeatureChangeCallback, GROUP_FEATURE_SHADE,
+			 &(tmp_cfg.shade));
+   DialogItemCheckButtonSetText(di, _("Shading"));
+   DialogItemCheckButtonSetState(di, tmp_cfgs[0].shade);
+   DialogItemCheckButtonSetPtr(di, &(tmp_cfg.shade));
+
+   di_mirror = di = DialogAddItem(table, DITEM_CHECKBUTTON);
+   DialogItemSetPadding(di, 2, 2, 2, 2);
+   DialogItemSetFill(di, 1, 0);
+   DialogItemSetColSpan(di, 2);
+   DialogItemSetCallback(di, &GroupFeatureChangeCallback, GROUP_FEATURE_MIRROR,
+			 &(tmp_cfg.mirror));
+   DialogItemCheckButtonSetText(di, _("Mirror Shade/Iconify/Stick"));
+   DialogItemCheckButtonSetState(di, tmp_cfgs[0].mirror);
+   DialogItemCheckButtonSetPtr(di, &(tmp_cfg.mirror));
+
+   di = DialogAddItem(table, DITEM_SEPARATOR);
+   DialogItemSetColSpan(di, 2);
+   DialogItemSetPadding(di, 2, 2, 2, 2);
+   DialogItemSetFill(di, 1, 0);
+   DialogItemSeparatorSetOrientation(di, 0);
+
+   DialogAddButton(d, _("OK"), CB_ConfigureGroup, 1);
+   DialogAddButton(d, _("Apply"), CB_ConfigureGroup, 0);
+   DialogAddButton(d, _("Close"), CB_ConfigureGroup, 1);
+   DialogSetExitFunction(d, CB_ConfigureGroup, 2);
+   DialogBindKey(d, "Escape", CB_ConfigureGroupEscape, 0);
+   DialogBindKey(d, "Return", CB_ConfigureGroup, 0);
+
+   for (i = 0; i < ewin->num_groups; i++)
+      Efree(group_member_strings[i]);
+   Efree(group_member_strings);
+
+   ShowDialog(d);
+}
+
+static GroupConfig  tmp_group_cfg;
+static char         tmp_group_swap;
+static void
+CB_ConfigureDefaultGroupSettings(Dialog * d __UNUSED__, int val,
+				 void *data __UNUSED__)
+{
+   if (val < 2)
+     {
+	CopyGroupConfig(&tmp_group_cfg, &(Conf.groups.dflt));
+	Conf.groups.swapmove = tmp_group_swap;
+     }
+   autosave();
+}
+
+static void
+SettingsDefaultGroupControl(void)
+{
+   Dialog             *d;
+   DItem              *table, *di;
+
+   if ((d =
+	FindItem("CONFIGURE_DEFAULT_GROUP_CONTROL", 0, LIST_FINDBY_NAME,
+		 LIST_TYPE_DIALOG)))
+     {
+	SoundPlay("SOUND_SETTINGS_ACTIVE");
+	ShowDialog(d);
+	return;
+     }
+   SoundPlay("SOUND_SETTINGS_GROUP");
+
+   CopyGroupConfig(&(Conf.groups.dflt), &tmp_group_cfg);
+   tmp_group_swap = Conf.groups.swapmove;
+
+   d = DialogCreate("CONFIGURE_DEFAULT_GROUP_CONTROL");
+   DialogSetTitle(d, _("Default Group Control Settings"));
+
+   table = DialogInitItem(d);
+   DialogItemTableSetOptions(table, 2, 0, 0, 0);
+
+   if (Conf.dialogs.headers)
+     {
+	di = DialogAddItem(table, DITEM_IMAGE);
+	DialogItemSetPadding(di, 2, 2, 2, 2);
+	DialogItemImageSetFile(di, "pix/group.png");
+
+	di = DialogAddItem(table, DITEM_TEXT);
+	DialogItemSetPadding(di, 2, 2, 2, 2);
+	DialogItemSetFill(di, 1, 0);
+	DialogItemTextSetText(di,
+			      _("Enlightenment Default\n"
+				"Group Control Settings Dialog\n"));
+
+	di = DialogAddItem(table, DITEM_SEPARATOR);
+	DialogItemSetColSpan(di, 2);
+	DialogItemSetPadding(di, 2, 2, 2, 2);
+	DialogItemSetFill(di, 1, 0);
+	DialogItemSeparatorSetOrientation(di, 0);
+     }
+
+   di = DialogAddItem(table, DITEM_TEXT);
+   DialogItemSetColSpan(di, 2);
+   DialogItemSetPadding(di, 2, 2, 2, 2);
+   DialogItemSetFill(di, 1, 0);
+   DialogItemSetAlign(di, 0, 512);
+   DialogItemTextSetText(di, _(" Per-group settings: "));
+
+   di = DialogAddItem(table, DITEM_SEPARATOR);
+   DialogItemSetColSpan(di, 2);
+   DialogItemSetPadding(di, 2, 2, 2, 2);
+   DialogItemSetFill(di, 1, 0);
+   DialogItemSeparatorSetOrientation(di, 0);
+
+   di = DialogAddItem(table, DITEM_CHECKBUTTON);
+   DialogItemSetPadding(di, 2, 2, 2, 2);
+   DialogItemSetFill(di, 1, 0);
+   DialogItemSetColSpan(di, 2);
+   DialogItemCheckButtonSetText(di, _("Changing Border Style"));
+   DialogItemCheckButtonSetState(di, tmp_group_cfg.set_border);
+   DialogItemCheckButtonSetPtr(di, &(tmp_group_cfg.set_border));
+
+   di = DialogAddItem(table, DITEM_CHECKBUTTON);
+   DialogItemSetPadding(di, 2, 2, 2, 2);
+   DialogItemSetFill(di, 1, 0);
+   DialogItemSetColSpan(di, 2);
+   DialogItemCheckButtonSetText(di, _("Iconifying"));
+   DialogItemCheckButtonSetState(di, tmp_group_cfg.iconify);
+   DialogItemCheckButtonSetPtr(di, &(tmp_group_cfg.iconify));
+
+   di = DialogAddItem(table, DITEM_CHECKBUTTON);
+   DialogItemSetPadding(di, 2, 2, 2, 2);
+   DialogItemSetFill(di, 1, 0);
+   DialogItemSetColSpan(di, 2);
+   DialogItemCheckButtonSetText(di, _("Killing"));
+   DialogItemCheckButtonSetState(di, tmp_group_cfg.kill);
+   DialogItemCheckButtonSetPtr(di, &(tmp_group_cfg.kill));
+
+   di = DialogAddItem(table, DITEM_CHECKBUTTON);
+   DialogItemSetPadding(di, 2, 2, 2, 2);
+   DialogItemSetFill(di, 1, 0);
+   DialogItemSetColSpan(di, 2);
+   DialogItemCheckButtonSetText(di, _("Moving"));
+   DialogItemCheckButtonSetState(di, tmp_group_cfg.move);
+   DialogItemCheckButtonSetPtr(di, &(tmp_group_cfg.move));
+
+   di = DialogAddItem(table, DITEM_CHECKBUTTON);
+   DialogItemSetPadding(di, 2, 2, 2, 2);
+   DialogItemSetFill(di, 1, 0);
+   DialogItemSetColSpan(di, 2);
+   DialogItemCheckButtonSetText(di, _("Raising/Lowering"));
+   DialogItemCheckButtonSetState(di, tmp_group_cfg.raise);
+   DialogItemCheckButtonSetPtr(di, &(tmp_group_cfg.raise));
+
+   di = DialogAddItem(table, DITEM_CHECKBUTTON);
+   DialogItemSetPadding(di, 2, 2, 2, 2);
+   DialogItemSetFill(di, 1, 0);
+   DialogItemSetColSpan(di, 2);
+   DialogItemCheckButtonSetText(di, _("Sticking"));
+   DialogItemCheckButtonSetState(di, tmp_group_cfg.stick);
+   DialogItemCheckButtonSetPtr(di, &(tmp_group_cfg.stick));
+
+   di = DialogAddItem(table, DITEM_CHECKBUTTON);
+   DialogItemSetPadding(di, 2, 2, 2, 2);
+   DialogItemSetFill(di, 1, 0);
+   DialogItemSetColSpan(di, 2);
+   DialogItemCheckButtonSetText(di, _("Shading"));
+   DialogItemCheckButtonSetState(di, tmp_group_cfg.shade);
+   DialogItemCheckButtonSetPtr(di, &(tmp_group_cfg.shade));
+
+   di = DialogAddItem(table, DITEM_CHECKBUTTON);
+   DialogItemSetPadding(di, 2, 2, 2, 2);
+   DialogItemSetFill(di, 1, 0);
+   DialogItemSetColSpan(di, 2);
+   DialogItemCheckButtonSetText(di, _("Mirror Shade/Iconify/Stick"));
+   DialogItemCheckButtonSetState(di, tmp_group_cfg.mirror);
+   DialogItemCheckButtonSetPtr(di, &(tmp_group_cfg.mirror));
+
+   di = DialogAddItem(table, DITEM_SEPARATOR);
+   DialogItemSetColSpan(di, 2);
+   DialogItemSetPadding(di, 2, 2, 2, 2);
+   DialogItemSetFill(di, 1, 0);
+   DialogItemSeparatorSetOrientation(di, 0);
+
+   di = DialogAddItem(table, DITEM_TEXT);
+   DialogItemSetColSpan(di, 2);
+   DialogItemSetPadding(di, 2, 2, 2, 2);
+   DialogItemSetFill(di, 1, 0);
+   DialogItemSetAlign(di, 0, 512);
+   DialogItemTextSetText(di, _(" Global settings: "));
+
+   di = DialogAddItem(table, DITEM_CHECKBUTTON);
+   DialogItemSetPadding(di, 2, 2, 2, 2);
+   DialogItemSetFill(di, 1, 0);
+   DialogItemSetColSpan(di, 2);
+   DialogItemCheckButtonSetText(di, _("Swap Window Locations"));
+   DialogItemCheckButtonSetState(di, tmp_group_swap);
+   DialogItemCheckButtonSetPtr(di, &(tmp_group_swap));
+
+   di = DialogAddItem(table, DITEM_SEPARATOR);
+   DialogItemSetColSpan(di, 2);
+   DialogItemSetPadding(di, 2, 2, 2, 2);
+   DialogItemSetFill(di, 1, 0);
+   DialogItemSeparatorSetOrientation(di, 0);
+
+   DialogAddButton(d, _("OK"), CB_ConfigureDefaultGroupSettings, 1);
+   DialogAddButton(d, _("Apply"), CB_ConfigureDefaultGroupSettings, 0);
+   DialogAddButton(d, _("Close"), CB_ConfigureDefaultGroupSettings, 1);
+   DialogSetExitFunction(d, CB_ConfigureDefaultGroupSettings, 2);
+   DialogBindKey(d, "Escape", DialogCallbackClose, 0);
+   DialogBindKey(d, "Return", CB_ConfigureDefaultGroupSettings, 0);
+   ShowDialog(d);
+}
+
+/*
+ * Groups module
+ */
+
+static void
+GroupsConfigure(const char *params)
+{
+   char                s[128];
+   const char         *p;
+   int                 l;
+   EWin               *ewin;
+
+   p = params;
+   l = 0;
+   s[0] = '\0';
+   sscanf(p, "%100s %n", s, &l);
+   p += l;
+
+   if (!strcmp(s, "group"))
+     {
+	ewin = GetFocusEwin();
+	if (ewin)
+	   SettingsGroups(ewin);
+     }
+   else if (!s[0] || !strcmp(s, "group_defaults"))
+     {
+	SettingsDefaultGroupControl();
+     }
+   else if (!strcmp(s, "group_membership"))
+     {
+	ewin = GetFocusEwin();
+	if (ewin)
+	   ChooseGroupDialog(ewin,
+			     _
+			     ("  Pick the group the window will belong to:  \n"),
+			     GROUP_SELECT_ALL_EXCEPT_EWIN, GROUP_OP_ADD);
+     }
+}
+
+static void
+GroupsSighan(int sig, void *prm __UNUSED__)
+{
+   switch (sig)
+     {
+     case ESIGNAL_INIT:
+	GroupsLoad();
+	break;
+     }
+}
+
+#if 0				/* FIXME - Obsolete? */
+static int
+doShowHideGroup(EWin * ewin, const char *params __UNUSED__)
+{
+   ShowHideWinGroups(ewin, NULL, SET_TOGGLE);
+   return 0;
+}
+
+static int
+doStartGroup(EWin * ewin, const char *params __UNUSED__)
+{
+   BuildWindowGroup(&ewin, 1);
+   SaveGroups();
+   return 0;
+}
+
+static int
+doAddToGroup(EWin * ewin, const char *params __UNUSED__)
+{
+   if (!Mode.groups.current)
+     {
+	ChooseGroupDialog(ewin,
+			  _("\n  There's no current group at the moment.  \n"
+			    "  The current group is the last one you created,  \n"
+			    "  and it exists until you create a new one or break  \n"
+			    "  the latest one.  \n\n"
+			    "  Pick another group that the window will belong to here:  \n\n"),
+			  GROUP_SELECT_ALL_EXCEPT_EWIN, GROUP_OP_ADD);
+	return 0;
+     }
+   else
+      AddEwinToGroup(ewin, Mode.groups.current);
+   SaveGroups();
+   return 0;
+}
+
+static int
+doRemoveFromGroup(EWin * ewin, const char *params __UNUSED__)
+{
+   ChooseGroupDialog(ewin,
+		     _("   Select the group to remove the window from.  "),
+		     GROUP_SELECT_EWIN_ONLY, GROUP_OP_DEL);
+
+   SaveGroups();
+   return 0;
+}
+
+static int
+doBreakGroup(EWin * ewin, const char *params __UNUSED__)
+{
+   ChooseGroupDialog(ewin, _("  Select the group to break  "),
+		     GROUP_SELECT_EWIN_ONLY, GROUP_OP_BREAK);
+   SaveGroups();
+   return 0;
+}
+#endif
+
+static void
+IPC_GroupInfo(const char *params, Client * c __UNUSED__)
+{
+   char                buf[FILEPATH_LEN_MAX];
+   Group             **groups = NULL;
+   int                 num_groups, i, j;
+
+   buf[0] = 0;
+
+   if (params)
+     {
+	Group              *group;
+	char                groupid[FILEPATH_LEN_MAX];
+	int                 gix;
+
+	groupid[0] = 0;
+	word(params, 1, groupid);
+	sscanf(groupid, "%d", &gix);
+
+	group = FindItem(NULL, gix, LIST_FINDBY_ID, LIST_TYPE_GROUP);
+
+	if (!group)
+	  {
+	     IpcPrintf("Error: no such group: %d", gix);
+	     return;
+	  }
+
+	groups = (Group **) Emalloc(sizeof(Group **));
+	if (!groups)
+	   return;
+
+	groups[0] = group;
+	num_groups = 1;
+     }
+   else
+     {
+	groups = (Group **) ListItemType(&num_groups, LIST_TYPE_GROUP);
+
+	IpcPrintf("Number of groups: %d\n", num_groups);
+     }
+
+   for (i = 0; i < num_groups; i++)
+     {
+	for (j = 0; j < groups[i]->num_members; j++)
+	   IpcPrintf("%d: %s\n", groups[i]->index,
+		     groups[i]->members[j]->icccm.wm_name);
+
+	IpcPrintf("        index: %d\n" "  num_members: %d\n"
+		  "      iconify: %d\n" "         kill: %d\n"
+		  "         move: %d\n" "        raise: %d\n"
+		  "   set_border: %d\n" "        stick: %d\n"
+		  "        shade: %d\n" "       mirror: %d\n",
+		  groups[i]->index, groups[i]->num_members,
+		  groups[i]->cfg.iconify, groups[i]->cfg.kill,
+		  groups[i]->cfg.move, groups[i]->cfg.raise,
+		  groups[i]->cfg.set_border, groups[i]->cfg.stick,
+		  groups[i]->cfg.shade, groups[i]->cfg.mirror);
+     }
+
+   if (groups)
+      Efree(groups);
+}
+
+static void
+IPC_GroupOps(const char *params, Client * c __UNUSED__)
+{
+   Group              *group = Mode.groups.current;
+   char                groupid[FILEPATH_LEN_MAX];
+   int                 gix;
+   char                windowid[FILEPATH_LEN_MAX];
+   char                operation[FILEPATH_LEN_MAX];
+   char                param1[FILEPATH_LEN_MAX];
+   unsigned int        win;
+   EWin               *ewin;
+
+   if (!params)
+     {
+	IpcPrintf("Error: no window specified");
+	return;
+     }
+
+   windowid[0] = 0;
+   operation[0] = 0;
+   param1[0] = 0;
+   word(params, 1, windowid);
+   sscanf(windowid, "%x", &win);
+   word(params, 2, operation);
+
+   if (!operation[0])
+     {
+	IpcPrintf("Error: no operation specified");
+	return;
+     }
+
+   if (!strcmp(windowid, "*"))
+      ewin = GetContextEwin();
+   else
+      ewin = FindEwinByChildren(win);
+   if (!ewin)
+     {
+	IpcPrintf("Error: no such window: %8x", win);
+	return;
+     }
+
+   if (!strcmp(operation, "start"))
+     {
+	BuildWindowGroup(&ewin, 1);
+	IpcPrintf("start %8x", win);
+     }
+   else if (!strcmp(operation, "add"))
+     {
+	groupid[0] = 0;
+	word(params, 3, groupid);
+
+	if (groupid[0])
+	  {
+	     sscanf(groupid, "%d", &gix);
+	     group = FindItem(NULL, gix, LIST_FINDBY_ID, LIST_TYPE_GROUP);
+	  }
+	AddEwinToGroup(ewin, group);
+	IpcPrintf("add %8x", win);
+     }
+   else if (!strcmp(operation, "del"))
+     {
+	groupid[0] = 0;
+	word(params, 3, groupid);
+
+	if (groupid[0])
+	  {
+	     sscanf(groupid, "%d", &gix);
+	     group = FindItem(NULL, gix, LIST_FINDBY_ID, LIST_TYPE_GROUP);
+	  }
+	RemoveEwinFromGroup(ewin, group);
+	IpcPrintf("del %8x", win);
+     }
+   else if (!strcmp(operation, "break"))
+     {
+	groupid[0] = 0;
+	word(params, 3, groupid);
+
+	if (groupid[0])
+	  {
+	     sscanf(groupid, "%d", &gix);
+	     group = FindItem(NULL, gix, LIST_FINDBY_ID, LIST_TYPE_GROUP);
+	  }
+	BreakWindowGroup(ewin, group);
+	IpcPrintf("break %8x", win);
+     }
+   else if (!strcmp(operation, "showhide"))
+     {
+	ShowHideWinGroups(ewin, NULL, SET_TOGGLE);
+	IpcPrintf("showhide %8x", win);
+     }
+   else
+     {
+	IpcPrintf("Error: no such operation: %s", operation);
+	return;
+     }
+   SaveGroups();
+}
+
+static void
+IPC_Group(const char *params, Client * c __UNUSED__)
+{
+   char                groupid[FILEPATH_LEN_MAX];
+   char                operation[FILEPATH_LEN_MAX];
+   char                param1[FILEPATH_LEN_MAX];
+   int                 gix;
+   Group              *group;
+   int                 onoff = -1;
+
+   if (!params)
+     {
+	IpcPrintf("Error: no group specified");
+	return;
+     }
+
+   groupid[0] = 0;
+   operation[0] = 0;
+   param1[0] = 0;
+   word(params, 1, groupid);
+   sscanf(groupid, "%d", &gix);
+   word(params, 2, operation);
+
+   if (!operation[0])
+     {
+	IpcPrintf("Error: no operation specified");
+	return;
+     }
+
+   group = FindItem(NULL, gix, LIST_FINDBY_ID, LIST_TYPE_GROUP);
+
+   if (!group)
+     {
+	IpcPrintf("Error: no such group: %d", gix);
+	return;
+     }
+
+   word(params, 3, param1);
+   if (param1[0])
+     {
+	IpcPrintf("Error: no mode specified");
+	return;
+     }
+
+   if (!strcmp(param1, "on"))
+      onoff = 1;
+   else if (!strcmp(param1, "off"))
+      onoff = 0;
+
+   if (onoff == -1 && strcmp(param1, "?"))
+     {
+	IpcPrintf("Error: unknown mode specified");
+     }
+   else if (!strcmp(operation, "num_members"))
+     {
+	IpcPrintf("num_members: %d", group->num_members);
+	onoff = -1;
+     }
+   else if (!strcmp(operation, "iconify"))
+     {
+	if (onoff >= 0)
+	   group->cfg.iconify = onoff;
+	else
+	   onoff = group->cfg.iconify;
+     }
+   else if (!strcmp(operation, "kill"))
+     {
+	if (onoff >= 0)
+	   group->cfg.kill = onoff;
+	else
+	   onoff = group->cfg.kill;
+     }
+   else if (!strcmp(operation, "move"))
+     {
+	if (onoff >= 0)
+	   group->cfg.move = onoff;
+	else
+	   onoff = group->cfg.move;
+     }
+   else if (!strcmp(operation, "raise"))
+     {
+	if (onoff >= 0)
+	   group->cfg.raise = onoff;
+	else
+	   onoff = group->cfg.raise;
+     }
+   else if (!strcmp(operation, "set_border"))
+     {
+	if (onoff >= 0)
+	   group->cfg.set_border = onoff;
+	else
+	   onoff = group->cfg.set_border;
+     }
+   else if (!strcmp(operation, "stick"))
+     {
+	if (onoff >= 0)
+	   group->cfg.stick = onoff;
+	else
+	   onoff = group->cfg.stick;
+     }
+   else if (!strcmp(operation, "shade"))
+     {
+	if (onoff >= 0)
+	   group->cfg.shade = onoff;
+	else
+	   onoff = group->cfg.shade;
+     }
+   else if (!strcmp(operation, "mirror"))
+     {
+	if (onoff >= 0)
+	   group->cfg.mirror = onoff;
+	else
+	   onoff = group->cfg.mirror;
+     }
+   else
+     {
+	IpcPrintf("Error: no such operation: %s", operation);
+	onoff = -1;
+     }
+
+   if (onoff == 1)
+      IpcPrintf("%s: on", operation);
+   else if (onoff == 0)
+      IpcPrintf("%s: off", operation);
+}
+
+static void
+GroupsIpc(const char *params, Client * c __UNUSED__)
+{
+   const char         *p;
+   char                cmd[128], prm[128];
+   int                 len;
+
+   cmd[0] = prm[0] = '\0';
+   p = params;
+   if (p)
+     {
+	len = 0;
+	sscanf(p, "%100s %100s %n", cmd, prm, &len);
+	p += len;
+     }
+
+   if (!p || cmd[0] == '?')
+     {
+	/* Show groups */
+     }
+   else if (!strncmp(cmd, "cfg", 2))
+     {
+	GroupsConfigure(prm);
+     }
+}
+
+IpcItem             GroupsIpcArray[] = {
+   {
+    GroupsIpc,
+    "groups", "grp",
+    "Configure window groups",
+    "  groups cfg           Configure groups\n"}
+   ,
+   {
+    IPC_GroupInfo,
+    "group_info", "gl",
+    "Retrieve some info on groups",
+    "use \"group_info [group_index]\"\n"}
+   ,
+   {
+    IPC_GroupOps,
+    "group_op", "gop",
+    "Group operations",
+    "use \"group_op <windowid> <property> [<value>]\" to perform "
+    "group operations on a window.\n" "Available group_op commands are:\n"
+    "  group_op <windowid> start\n"
+    "  group_op <windowid> add [<group_index>]\n"
+    "  group_op <windowid> remove [<group_index>]\n"
+    "  group_op <windowid> break [<group_index>]\n"
+    "  group_op <windowid> showhide\n"}
+   ,
+   {
+    IPC_Group,
+    "group", "gc",
+    "Group commands",
+    "use \"group <groupid> <property> <value>\" to set group properties.\n"
+    "Available group commands are:\n"
+    "  group <groupid> num_members <on/off/?>\n"
+    "  group <groupid> iconify <on/off/?>\n"
+    "  group <groupid> kill <on/off/?>\n" "  group <groupid> move <on/off/?>\n"
+    "  group <groupid> raise <on/off/?>\n"
+    "  group <groupid> set_border <on/off/?>\n"
+    "  group <groupid> stick <on/off/?>\n"
+    "  group <groupid> shade <on/off/?>\n"
+    "  group <groupid> mirror <on/off/?>\n"}
+   ,
+};
+#define N_IPC_FUNCS (sizeof(GroupsIpcArray)/sizeof(IpcItem))
+
+EModule             ModGroups = {
+   "groups", "grp",
+   GroupsSighan,
+   {N_IPC_FUNCS, GroupsIpcArray}
+   ,
+   {0, NULL}
+};

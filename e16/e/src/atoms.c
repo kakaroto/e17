@@ -78,58 +78,34 @@ AtomGet(Window win, Atom to_get, Atom type, int *size)
 }
 
 void
-setSimpleHint(Window win, Atom atom, long value)
+EPropWindowSet(Window win, Atom a, Window propwin)
 {
+   CARD32              val;
 
-   EDBUG(5, "setSimpleHint");
-
-   XChangeProperty(disp, win, atom, atom, 32, PropModeReplace,
-		   (unsigned char *)&value, 1);
-
-   EDBUG_RETURN_;
-
+   val = propwin;
+   XChangeProperty(disp, win, a, XA_WINDOW, 32, PropModeReplace,
+		   (unsigned char *)&val, 1);
 }
 
-long               *
-getSimpleHint(Window win, Atom atom)
+Window
+EPropWindowGet(Window win, Atom a)
 {
+   Window              propwin;
+   Atom                aa;
+   int                 format_ret;
+   unsigned long       bytes_after, num_ret;
+   unsigned char      *puc;
 
-   unsigned char      *data = NULL;
-   Atom                type_ret;
-   int                 fmt_ret;
-   unsigned long       nitems_ret;
-   unsigned long       bytes_after_ret;
+   puc = NULL;
+   XGetWindowProperty(disp, win, a, 0, 0x7fffffff, True,
+		      XA_WINDOW, &aa, &format_ret, &num_ret,
+		      &bytes_after, &puc);
 
-   EDBUG(5, "getSimpleHint");
+   if (!puc)
+      return None;
 
-   if (!atom)
-      EDBUG_RETURN(NULL);
+   propwin = *((Window *) puc);
+   XFree(puc);
 
-   if (XGetWindowProperty
-       (disp, win, atom, 0, 1, False, atom, &type_ret, &fmt_ret, &nitems_ret,
-	&bytes_after_ret, &data) != Success || !data)
-     {
-	if (data)
-	   XFree(data);
-	EDBUG_RETURN(NULL);
-     }
-   if (atom != AnyPropertyType && atom != type_ret)
-     {
-	XFree(data);
-	EDBUG_RETURN(NULL);
-     }
-   EDBUG_RETURN((long *)data);
-
-}
-
-void
-deleteHint(Window win, Atom atom)
-{
-
-   EDBUG(5, "deleteHint");
-
-   XDeleteProperty(disp, win, atom);
-
-   EDBUG_RETURN_;
-
+   return propwin;
 }

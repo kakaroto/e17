@@ -1,6 +1,6 @@
 
 THEME = winter
-THEME_FILES = winter.etheme winter.etheme.ko
+THEME_FILES = winter.etheme
 
 ethemedir = $(datadir)/themes
 

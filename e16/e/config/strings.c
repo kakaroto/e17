@@ -1,6 +1,7 @@
 #define _(x) x
 
 char *s[] = {
+/* The settings menu */
 _("Focus Settings ..."),
 _("Move & Resize Settings ..."),
 _("Pager Settings ..."),
@@ -16,4 +17,17 @@ _("Special FX Settings ..."),
 _("Desktop Background Settings ..."),
 _("Miscellaneous Settings ..."),
 _("Legacy E-conf tool ..."),
+
+/* bindings.cfg */
+_("Clicking your mouse on the desktop will perform\nthe following actions"),
+_("Display User Menus"),
+_("Display Enlightenment Menu"),
+_("Display Settings Menu"),
+_("Display Enlightenment Menu"),
+_("Display Task List Menu"),
+_("Display Desktop Menu"),
+_("Display Group Menu"),
+_("Display Settings Menu"),
+_("Go Back a Desktop"),
+_("Go Forward a Desktop"),
 };

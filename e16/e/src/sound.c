@@ -1,5 +1,6 @@
 /*
  * Copyright (C) 2000-2004 Carsten Haitzler, Geoff Harrison and various contributors
+ * Copyright (C) 2004 Kim Woelders
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to
@@ -45,18 +46,24 @@ typedef struct
    int                 id;
 } Sample;
 
-struct _soundclass
+typedef struct
 {
    char               *name;
    char               *file;
    Sample             *sample;
    unsigned int        ref_count;
-};
+} SoundClass;
+
+static struct
+{
+   char                enable;
+   char               *theme;
+} Conf_sound;
 
 static int          sound_fd = -1;
 
 static Sample      *
-LoadWav(char *file)
+LoadWav(const char *file)
 {
 #ifdef HAVE_LIBESD
    AFfilehandle        in_file;
@@ -70,7 +77,7 @@ LoadWav(char *file)
 
    EDBUG(5, "LoadWav");
 #ifdef HAVE_LIBESD
-   find = FindFile(file);
+   find = FindFile(file, Mode.theme.path);
    if (!find)
      {
 	DialogOK(_("Error finding sound file"),
@@ -80,12 +87,14 @@ LoadWav(char *file)
 		   "may wish to check your configuration settings.\n"), file);
 	EDBUG_RETURN(NULL);
      }
+
    in_file = afOpenFile(find, "r", NULL);
    if (!in_file)
      {
 	Efree(find);
 	EDBUG_RETURN(NULL);
      }
+
    s = Emalloc(sizeof(Sample));
    if (!s)
      {
@@ -142,30 +151,24 @@ SamplePlay(Sample * s)
 
    EDBUG(5, "SamplePlay");
 #ifdef HAVE_LIBESD
-   if ((sound_fd < 0) || (!Conf.sound) || (!s))
+   if ((sound_fd < 0) || (!Conf_sound.enable) || (!s))
       EDBUG_RETURN_;
-   if (!s->id)
+
+   if (!s->id && s->data)
      {
-	if (sound_fd >= 0)
+	size = s->samples;
+	s->id = esd_sample_getid(sound_fd, s->file);
+	if (s->id < 0)
 	  {
-	     if (s->data)
-	       {
-		  size = s->samples;
-		  s->id = esd_sample_getid(sound_fd, s->file);
-		  if (s->id < 0)
-		    {
-		       s->id =
-			  esd_sample_cache(sound_fd, s->format, s->rate, size,
-					   s->file);
-		       write(sound_fd, s->data, size);
-		       confirm = esd_confirm_sample_cache(sound_fd);
-		       if (confirm != s->id)
-			  s->id = 0;
-		    }
-		  Efree(s->data);
-		  s->data = NULL;
-	       }
+	     s->id =
+		esd_sample_cache(sound_fd, s->format, s->rate, size, s->file);
+	     write(sound_fd, s->data, size);
+	     confirm = esd_confirm_sample_cache(sound_fd);
+	     if (confirm != s->id)
+		s->id = 0;
 	  }
+	Efree(s->data);
+	s->data = NULL;
      }
    if (s->id > 0)
       esd_sample_play(sound_fd, s->id);
@@ -198,7 +201,7 @@ DestroySample(Sample * s)
    EDBUG_RETURN_;
 }
 
-SoundClass         *
+static SoundClass  *
 SclassCreate(const char *name, const char *file)
 {
    SoundClass         *sclass;
@@ -212,32 +215,6 @@ SclassCreate(const char *name, const char *file)
    sclass->sample = NULL;
    AddItem(sclass, sclass->name, 0, LIST_TYPE_SCLASS);
    EDBUG_RETURN(sclass);
-}
-
-static void
-SclassApply(SoundClass * sclass)
-{
-#ifdef HAVE_LIBESD
-   char               *f;
-#endif
-
-   EDBUG(4, "SclassApply");
-   if (!sclass)
-      EDBUG_RETURN_;
-#ifdef HAVE_LIBESD
-   if ((!sclass->sample) && (Conf.sound))
-     {
-	f = FindFile(sclass->file);
-	if (f)
-	  {
-	     sclass->sample = LoadWav(f);
-	     Efree(f);
-	  }
-     }
-   if ((Conf.sound) && (sclass->sample))
-      SamplePlay(sclass->sample);
-#endif
-   EDBUG_RETURN_;
 }
 
 static void
@@ -257,23 +234,42 @@ SclassDestroy(SoundClass * sclass)
    EDBUG_RETURN_;
 }
 
-const char         *
+static void
+SclassApply(SoundClass * sclass)
+{
+   EDBUG(4, "SclassApply");
+   if (!sclass || !Conf_sound.enable)
+      EDBUG_RETURN_;
+#ifdef HAVE_LIBESD
+   if (!sclass->sample)
+      sclass->sample = LoadWav(sclass->file);
+   if (sclass->sample)
+      SamplePlay(sclass->sample);
+   else
+      SclassDestroy(sclass);
+#endif
+   EDBUG_RETURN_;
+}
+
+static const char  *
 SclassGetName(SoundClass * sclass)
 {
    return sclass->name;
 }
 
-int
+void
 SoundPlay(const char *name)
 {
    SoundClass         *sclass;
 
+   if (!Conf_sound.enable)
+      return;
+
    sclass = FindItem(name, 0, LIST_FINDBY_NAME, LIST_TYPE_SCLASS);
    SclassApply(sclass);
-   return sclass != NULL;
 }
 
-int
+static int
 SoundFree(const char *name)
 {
    SoundClass         *sclass;
@@ -283,7 +279,7 @@ SoundFree(const char *name)
    return sclass != NULL;
 }
 
-void
+static void
 SoundInit(void)
 {
 #ifdef HAVE_LIBESD
@@ -292,10 +288,12 @@ SoundInit(void)
 
    EDBUG(5, "SoundInit");
 #ifdef HAVE_LIBESD
-   if (!Conf.sound)
+   if (!Conf_sound.enable)
       EDBUG_RETURN_;
+
    if (sound_fd != -1)
       EDBUG_RETURN_;
+
    fd = esd_open_sound(NULL);
    if (fd >= 0)
       sound_fd = fd;
@@ -305,36 +303,307 @@ SoundInit(void)
 	       _("Audio was enabled for Enlightenment but there was an error\n"
 		 "communicating with the audio server (Esound). Audio will\n"
 		 "now be disabled.\n"));
-	Conf.sound = 0;
+	Conf_sound.enable = 0;
      }
 #else
-   Conf.sound = 0;
+   Conf_sound = 0;
 #endif
    EDBUG_RETURN_;
 }
 
-void
+static void
 SoundExit(void)
 {
    SoundClass        **lst;
    int                 num, i;
 
    EDBUG(6, "SoundExit");
-   if (sound_fd >= 0)
+
+   if (sound_fd < 0)
+      EDBUG_RETURN_;
+
+   lst = (SoundClass **) ListItemType(&num, LIST_TYPE_SCLASS);
+   for (i = 0; i < num; i++)
      {
-	lst = (SoundClass **) ListItemType(&num, LIST_TYPE_SCLASS);
-	if (lst)
-	  {
-	     for (i = 0; i < num; i++)
-	       {
-		  if (lst[i]->sample)
-		     DestroySample(lst[i]->sample);
-		  lst[i]->sample = NULL;
-	       }
-	     Efree(lst);
-	  }
-	close(sound_fd);
-	sound_fd = -1;
+	if (lst[i]->sample)
+	   DestroySample(lst[i]->sample);
+	lst[i]->sample = NULL;
      }
+   if (lst)
+      Efree(lst);
+
+   close(sound_fd);
+   sound_fd = -1;
+
    EDBUG_RETURN_;
 }
+
+/*
+ * Configuration load/save
+ */
+#include "conf.h"
+
+static int
+SoundConfigLoad(void)
+{
+   int                 err = 0;
+   SoundClass         *sc;
+   char                s[FILEPATH_LEN_MAX];
+   char                s1[FILEPATH_LEN_MAX];
+   char                s2[FILEPATH_LEN_MAX];
+   int                 i1, ret;
+   FILE               *fs;
+   char               *file;
+
+   file = ConfigFileFind("sound.cfg", Mode.theme.path, 1);
+   if (!file)
+      goto done;
+   fs = fopen(file, "r");
+   Efree(file);
+   if (!fs)
+      goto done;
+
+   while (GetLine(s, sizeof(s), fs))
+     {
+	i1 = -1;
+	ret = sscanf(s, "%d", &i1);
+	if (ret == 1)
+	  {
+	     switch (i1)
+	       {
+	       case CONFIG_VERSION:
+	       case CONFIG_OPEN:
+		  break;
+	       case CONFIG_CLOSE:
+		  goto done;
+	       }
+	  }
+	else
+	  {
+	     s1[0] = s2[0] = '\0';
+	     ret = sscanf(s, "%4000s %4000s", s1, s2);
+	     if (ret != 2)
+	       {
+		  Eprintf("Ignoring line: %s\n", s);
+		  break;
+	       }
+	     sc = SclassCreate(s1, s2);
+	  }
+     }
+   if (err)
+      ConfigAlertLoad(_("Sound"));
+
+ done:
+   return err;
+}
+
+/*
+ * Sound module
+ */
+
+static void
+SoundSighan(int sig, void *prm __UNUSED__)
+{
+   switch (sig)
+     {
+     case ESIGNAL_INIT:
+	SoundInit();
+	break;
+     case ESIGNAL_CONFIGURE:
+	SoundConfigLoad();
+	break;
+     case ESIGNAL_START:
+	if (!Conf_sound.enable)
+	   break;
+	SoundPlay("SOUND_STARTUP");
+	SoundFree("SOUND_STARTUP");
+	break;
+     case ESIGNAL_EXIT:
+/*      if (Mode.wm.master) */
+	SoundExit();
+	break;
+     }
+}
+
+/*
+ * Configuration dialog
+ */
+
+static char         tmp_audio;
+
+static void
+CB_ConfigureAudio(Dialog * d __UNUSED__, int val, void *data __UNUSED__)
+{
+   if (val < 2)
+     {
+	Conf_sound.enable = tmp_audio;
+	if (Conf_sound.enable)
+	   SoundInit();
+	else
+	   SoundExit();
+     }
+   autosave();
+}
+
+static void
+SettingsAudio(void)
+{
+   Dialog             *d;
+   DItem              *table, *di;
+
+   if ((d = FindItem("CONFIGURE_AUDIO", 0, LIST_FINDBY_NAME, LIST_TYPE_DIALOG)))
+     {
+	SoundPlay("SOUND_SETTINGS_ACTIVE");
+	ShowDialog(d);
+	return;
+     }
+   SoundPlay("SOUND_SETTINGS_AUDIO");
+
+   tmp_audio = Conf_sound.enable;
+
+   d = DialogCreate("CONFIGURE_AUDIO");
+   DialogSetTitle(d, _("Audio Settings"));
+
+   table = DialogInitItem(d);
+   DialogItemTableSetOptions(table, 2, 0, 0, 0);
+
+   if (Conf.dialogs.headers)
+     {
+	di = DialogAddItem(table, DITEM_IMAGE);
+	DialogItemSetPadding(di, 2, 2, 2, 2);
+	DialogItemImageSetFile(di, "pix/sound.png");
+
+	di = DialogAddItem(table, DITEM_TEXT);
+	DialogItemSetPadding(di, 2, 2, 2, 2);
+	DialogItemSetFill(di, 1, 0);
+	DialogItemTextSetText(di,
+			      _("Enlightenment Audio\n" "Settings Dialog\n"));
+
+	di = DialogAddItem(table, DITEM_SEPARATOR);
+	DialogItemSetColSpan(di, 2);
+	DialogItemSetPadding(di, 2, 2, 2, 2);
+	DialogItemSetFill(di, 1, 0);
+	DialogItemSeparatorSetOrientation(di, 0);
+     }
+#ifdef HAVE_LIBESD
+   di = DialogAddItem(table, DITEM_CHECKBUTTON);
+   DialogItemSetPadding(di, 2, 2, 2, 2);
+   DialogItemSetFill(di, 1, 0);
+   DialogItemSetColSpan(di, 2);
+   DialogItemCheckButtonSetText(di, _("Enable sounds"));
+   DialogItemCheckButtonSetState(di, tmp_audio);
+   DialogItemCheckButtonSetPtr(di, &tmp_audio);
+#else
+   di = DialogAddItem(table, DITEM_TEXT);
+   DialogItemSetPadding(di, 2, 2, 2, 2);
+   DialogItemSetColSpan(di, 2);
+   DialogItemSetFill(di, 1, 0);
+   DialogItemTextSetText(di,
+			 _("Audio not available since EsounD was not\n"
+			   "present at the time of compilation."));
+#endif
+
+   di = DialogAddItem(table, DITEM_SEPARATOR);
+   DialogItemSetColSpan(di, 2);
+   DialogItemSetPadding(di, 2, 2, 2, 2);
+   DialogItemSetFill(di, 1, 0);
+   DialogItemSeparatorSetOrientation(di, 0);
+
+   DialogAddButton(d, _("OK"), CB_ConfigureAudio, 1);
+   DialogAddButton(d, _("Apply"), CB_ConfigureAudio, 0);
+   DialogAddButton(d, _("Close"), CB_ConfigureAudio, 1);
+   DialogSetExitFunction(d, CB_ConfigureAudio, 2);
+   DialogBindKey(d, "Escape", DialogCallbackClose, 0);
+   DialogBindKey(d, "Return", CB_ConfigureAudio, 0);
+   ShowDialog(d);
+}
+
+/*
+ * IPC functions
+ */
+
+static void
+SoundIpc(const char *params, Client * c __UNUSED__)
+{
+   const char         *p;
+   char                cmd[128], prm[4096];
+   int                 i, len, num;
+
+   cmd[0] = prm[0] = '\0';
+   p = params;
+   if (p)
+     {
+	len = 0;
+	sscanf(p, "%100s %4000s %n", cmd, prm, &len);
+	p += len;
+     }
+
+   if (!strncmp(cmd, "cfg", 3))
+     {
+	SettingsAudio();
+     }
+   else if (!strncmp(cmd, "del", 3))
+     {
+	SoundFree(prm);
+     }
+   else if (!strncmp(cmd, "list", 2))
+     {
+	SoundClass        **lst;
+
+	lst = (SoundClass **) ListItemType(&num, LIST_TYPE_SCLASS);
+	for (i = 0; i < num; i++)
+	  {
+	     IpcPrintf("%s\n", SclassGetName(lst[i]));
+	  }
+	if (lst)
+	   Efree(lst);
+     }
+   else if (!strncmp(cmd, "new", 3))
+     {
+	SclassCreate(prm, p);
+     }
+   else if (!strncmp(cmd, "off", 2))
+     {
+	Conf_sound.enable = 0;
+	SoundExit();
+     }
+   else if (!strncmp(cmd, "on", 2))
+     {
+	Conf_sound.enable = 1;
+	SoundInit();
+     }
+   else if (!strncmp(cmd, "play", 2))
+     {
+	SoundPlay(prm);
+     }
+}
+
+IpcItem             SoundIpcArray[] = {
+   {
+    SoundIpc,
+    "sound", "snd",
+    "Sound functions",
+    "  sound add <classname> <filename> Create soundclass\n"
+    "  sound del <classname>            Delete soundclass\n"
+    "  sound list                       Show all sounds\n"
+    "  sound off                        Disable sounds\n"
+    "  sound on                         Enable sounds\n"
+    "  sound play <classname>           Play sounds\n"}
+};
+#define N_IPC_FUNCS (sizeof(SoundIpcArray)/sizeof(IpcItem))
+
+static const CfgItem SoundCfgItems[] = {
+   CFG_ITEM_BOOL(Conf_sound, enable, 0),
+   CFG_ITEM_STR(Conf_sound, theme),
+};
+#define N_CFG_ITEMS (sizeof(SoundCfgItems)/sizeof(CfgItem))
+
+/*
+ * Module descriptor
+ */
+EModule             ModSound = {
+   "sound", "audio",
+   SoundSighan,
+   {N_IPC_FUNCS, SoundIpcArray},
+   {N_CFG_ITEMS, SoundCfgItems}
+};

@@ -35,8 +35,8 @@
  *  currently selected instead of just the title of the currently
  *  selected one.
  */
-
 #include "E.h"
+#include <X11/keysym.h>
 
 typedef struct
 {
@@ -45,8 +45,7 @@ typedef struct
    char               *txt;
 } WarplistItem;
 
-static void         WarpFocusShowTitle(EWin * ewin);
-static void         WarpFocusHideTitle(void);
+static void         WarpFocusHandleEvent(XEvent * ev, void *prm);
 
 static int          warpFocusIndex = 0;
 static char         warpFocusTitleShowing = 0;
@@ -54,136 +53,6 @@ static Window       warpFocusTitleWindow = 0;
 static unsigned int warpFocusKey = 0;
 static int          warplist_num = 0;
 static WarplistItem *warplist;
-
-int
-WarpFocusHandleEvent(XEvent * ev)
-{
-   EDBUG(5, "WarpFocusHandleEvent");
-
-   if (!Conf.warplist.enable)
-      EDBUG_RETURN(0);
-
-   if (ev->type != KeyPress && ev->type != KeyRelease)
-      EDBUG_RETURN(0);
-
-#if 0				/* Debug */
-   Eprintf("WarpFocusHandleEvent win=%#x key=%#x(%#x) %d\n",
-	   (unsigned)ev->xkey.window, ev->xkey.keycode,
-	   warpFocusKey, warpFocusTitleShowing);
-#endif
-   if (warpFocusTitleShowing)
-     {
-	if (ev->xkey.keycode != warpFocusKey)
-	   WarpFocusFinish();
-     }
-   else
-     {
-	warpFocusKey = ev->xkey.keycode;
-     }
-
-   EDBUG_RETURN(0);
-}
-
-void
-WarpFocus(int delta)
-{
-   EWin               *const *lst0;
-   EWin              **lst, *ewin;
-   int                 i, num0, num;
-
-   EDBUG(5, "WarpFocus");
-
-   if (!Conf.warplist.enable)
-      EDBUG_RETURN_;
-
-   lst = (EWin **) ListItemType(&num, LIST_TYPE_WARP_RING);
-   if (!lst)
-     {
-	lst0 = EwinListGetFocus(&num0);
-	num = 0;
-	lst = NULL;
-	for (i = num0 - 1; i >= 0; --i)
-	  {
-	     ewin = lst0[i];
-	     if (		/* Either visible or iconified */
-		   ((EwinIsOnScreen(ewin)) || (ewin->iconified))
-		   /* Exclude windows that explicitely say so */
-		   && (!ewin->skipfocus)
-		   /* Keep shaded windows if conf say so */
-		   && ((!ewin->shaded) || (Conf.warplist.warpshaded))
-		   /* Keep sticky windows if conf say so */
-		   && ((!ewin->sticky) || (Conf.warplist.warpsticky))
-		   /* Keep iconified windows if conf say so */
-		   && ((!ewin->iconified) || (Conf.warplist.warpiconified))
-		   /*&& (ewin->client.mwm_decor_title) &&
-		    * (ewin->client.mwm_decor_border) */
-		)
-		AddItem(ewin, "", 0, LIST_TYPE_WARP_RING);
-	  }
-	MoveItemToListBottom(GetFocusEwin(), LIST_TYPE_WARP_RING);
-	lst = (EWin **) ListItemType(&num, LIST_TYPE_WARP_RING);
-	warpFocusIndex = num - 1;
-     }
-
-   if (lst)
-     {
-	warpFocusIndex = (warpFocusIndex + num + delta) % num;
-	ewin = lst[warpFocusIndex];
-	if (!FindItem((char *)ewin, 0, LIST_FINDBY_POINTER, LIST_TYPE_EWIN))
-	   ewin = NULL;
-	if (ewin)
-	  {
-	     if (Conf.focus.raise_on_next)
-		RaiseEwin(ewin);
-	     if (Conf.focus.warp_on_next)
-		if (ewin != Mode.mouse_over_ewin && !ewin->iconified)
-		   XWarpPointer(disp, None, ewin->win, 0, 0, 0, 0,
-				ewin->w / 2, ewin->h / 2);
-	     if (Conf.warplist.warpfocused)
-		FocusToEWin(ewin, FOCUS_SET);
-	     WarpFocusShowTitle(ewin);
-	  }
-	Efree(lst);
-     }
-
-   EDBUG_RETURN_;
-}
-
-void
-WarpFocusFinish(void)
-{
-   EWin              **lst, *ewin;
-   int                 num;
-
-   EDBUG(5, "WarpFocusFinish");
-
-   lst = (EWin **) ListItemType(&num, LIST_TYPE_WARP_RING);
-   if (lst)
-     {
-	ewin = lst[warpFocusIndex];
-
-	WarpFocusHideTitle();
-	if (!FindItem((char *)ewin, 0, LIST_FINDBY_POINTER, LIST_TYPE_EWIN))
-	   ewin = NULL;
-	if (ewin)
-	  {
-	     if (Conf.warplist.warpiconified && ewin->iconified)
-		DeIconifyEwin(ewin);
-	     if (Conf.warplist.raise_on_select)
-		RaiseEwin(ewin);
-	     if (Conf.warplist.warp_on_select)
-		if (ewin != Mode.mouse_over_ewin)
-		   XWarpPointer(disp, None, ewin->win, 0, 0, 0, 0,
-				ewin->w / 2, ewin->h / 2);
-	     FocusToEWin(ewin, FOCUS_SET);
-	  }
-	Efree(lst);
-
-	while (RemoveItem("", 0, LIST_FINDBY_NONE, LIST_TYPE_WARP_RING));
-     }
-
-   EDBUG_RETURN_;
-}
 
 static void
 WarpFocusShowTitle(EWin * ewin)
@@ -195,17 +64,23 @@ WarpFocusShowTitle(EWin * ewin)
    static int          mw, mh;
    char                s[1024];
 
-   tc = FindItem("WARPFOCUS", 0, LIST_FINDBY_NAME, LIST_TYPE_TCLASS);
+   tc = TextclassFind("WARPFOCUS", 0);
    if (!tc)
-      tc = FindItem("COORDS", 0, LIST_FINDBY_NAME, LIST_TYPE_TCLASS);
-   ic = FindItem("WARPFOCUS", 0, LIST_FINDBY_NAME, LIST_TYPE_ICLASS);
+      tc = TextclassFind("COORDS", 1);
+
+   ic = ImageclassFind("WARPFOCUS", 0);
    if (!ic)
-      ic = FindItem("COORDS", 0, LIST_FINDBY_NAME, LIST_TYPE_ICLASS);
+      ic = ImageclassFind("COORDS", 1);
+
    if ((!ic) || (!tc))
       return;
 
    if (!warpFocusTitleWindow)
-      warpFocusTitleWindow = ECreateWindow(VRoot.win, 0, 0, 1, 1, 1);
+     {
+	warpFocusTitleWindow = ECreateWindow(VRoot.win, 0, 0, 1, 1, 1);
+	EventCallbackRegister(warpFocusTitleWindow, 0, WarpFocusHandleEvent,
+			      NULL);
+     }
 
    pq = Mode.queue_up;
    Mode.queue_up = 0;
@@ -254,11 +129,11 @@ WarpFocusShowTitle(EWin * ewin)
 	  {
 	     EMoveResizeWindow(disp, warplist[i].win, 0, (h * i), mw, mh);
 	     if (ewin == warplist[i].ewin)
-		IclassApply(ic, warplist[i].win, mw, mh, 0, 0, STATE_CLICKED,
-			    0, ST_WARPLIST);
+		ImageclassApply(ic, warplist[i].win, mw, mh, 0, 0,
+				STATE_CLICKED, 0, ST_WARPLIST);
 	     else
-		IclassApply(ic, warplist[i].win, mw, mh, 0, 0, STATE_NORMAL,
-			    0, ST_WARPLIST);
+		ImageclassApply(ic, warplist[i].win, mw, mh, 0, 0, STATE_NORMAL,
+				0, ST_WARPLIST);
 	  }
 	PropagateShapes(warpFocusTitleWindow);
 	EMapWindow(disp, warpFocusTitleWindow);
@@ -282,10 +157,10 @@ WarpFocusShowTitle(EWin * ewin)
 
 	     state = (ewin == warplist[i].ewin) ? STATE_CLICKED : STATE_NORMAL;
 
-	     IclassApply(ic, warplist[i].win, mw, mh, 0, 0, state, 0,
-			 ST_WARPLIST);
-	     TclassApply(ic, warplist[i].win, mw, mh, 0, 0, state, 0, tc,
-			 warplist[i].txt);
+	     ImageclassApply(ic, warplist[i].win, mw, mh, 0, 0, state, 0,
+			     ST_WARPLIST);
+	     TextclassApply(ic, warplist[i].win, mw, mh, 0, 0, state, 0, tc,
+			    warplist[i].txt);
 	  }
      }
 
@@ -316,3 +191,165 @@ WarpFocusHideTitle(void)
    warplist_num = 0;
    warpFocusTitleShowing = 0;
 }
+
+void
+WarpFocus(int delta)
+{
+   EWin               *const *lst0;
+   EWin              **lst, *ewin;
+   int                 i, num0, num;
+
+   EDBUG(5, "WarpFocus");
+
+   /* Remember invoking keycode (ugly hack) */
+   if (!warpFocusTitleShowing)
+      warpFocusKey = Mode.last_keycode;
+
+   lst = (EWin **) ListItemType(&num, LIST_TYPE_WARP_RING);
+   if (!lst)
+     {
+	lst0 = EwinListFocusGet(&num0);
+	num = 0;
+	lst = NULL;
+	for (i = num0 - 1; i >= 0; --i)
+	  {
+	     ewin = lst0[i];
+	     if (		/* Either visible or iconified */
+		   ((EwinIsOnScreen(ewin)) || (ewin->iconified)) &&
+		   /* Exclude windows that explicitely say so */
+		   (!ewin->skipfocus) &&
+		   /* Keep shaded windows if conf say so */
+		   ((!ewin->shaded) || (Conf.warplist.showshaded)) &&
+		   /* Keep sticky windows if conf say so */
+		   ((!EoIsSticky(ewin)) || (Conf.warplist.showsticky)) &&
+		   /* Keep iconified windows if conf say so */
+		   ((!ewin->iconified) || (Conf.warplist.showiconified)))
+		AddItem(ewin, "", 0, LIST_TYPE_WARP_RING);
+	  }
+	MoveItemToListBottom(GetFocusEwin(), LIST_TYPE_WARP_RING);
+	lst = (EWin **) ListItemType(&num, LIST_TYPE_WARP_RING);
+	warpFocusIndex = num - 1;
+     }
+
+   if (lst)
+     {
+	warpFocusIndex = (warpFocusIndex + num + delta) % num;
+	ewin = lst[warpFocusIndex];
+	if (!FindItem((char *)ewin, 0, LIST_FINDBY_POINTER, LIST_TYPE_EWIN))
+	   ewin = NULL;
+	if (ewin)
+	  {
+	     if (Conf.focus.raise_on_next)
+		RaiseEwin(ewin);
+	     if (Conf.focus.warp_on_next)
+		if (ewin != Mode.mouse_over_ewin && !ewin->iconified)
+		   XWarpPointer(disp, None, EoGetWin(ewin), 0, 0, 0, 0,
+				EoGetW(ewin) / 2, EoGetH(ewin) / 2);
+	     if (Conf.warplist.warpfocused)
+		FocusToEWin(ewin, FOCUS_SET);
+	     WarpFocusShowTitle(ewin);
+	  }
+	Efree(lst);
+     }
+
+   EDBUG_RETURN_;
+}
+
+static void
+WarpFocusFinish(void)
+{
+   EWin              **lst, *ewin;
+   int                 num;
+
+   EDBUG(5, "WarpFocusFinish");
+
+   lst = (EWin **) ListItemType(&num, LIST_TYPE_WARP_RING);
+   if (!lst)
+      goto done;
+
+   ewin = lst[warpFocusIndex];
+
+   WarpFocusHideTitle();
+   if (!FindItem((char *)ewin, 0, LIST_FINDBY_POINTER, LIST_TYPE_EWIN))
+      ewin = NULL;
+   if (ewin)
+     {
+	if (Conf.warplist.showiconified && ewin->iconified)
+	   EwinDeIconify(ewin);
+	if (Conf.warplist.raise_on_select)
+	   RaiseEwin(ewin);
+	if (Conf.warplist.warp_on_select)
+	   if (ewin != Mode.mouse_over_ewin)
+	      XWarpPointer(disp, None, EoGetWin(ewin), 0, 0, 0, 0,
+			   EoGetW(ewin) / 2, EoGetH(ewin) / 2);
+	FocusToEWin(ewin, FOCUS_SET);
+     }
+   Efree(lst);
+
+   while (RemoveItem("", 0, LIST_FINDBY_NONE, LIST_TYPE_WARP_RING));
+
+ done:
+   EDBUG_RETURN_;
+}
+
+static void
+WarpFocusHandleEvent(XEvent * ev, void *prm __UNUSED__)
+{
+   EDBUG(5, "WarpFocusHandleEvent");
+
+   switch (ev->type)
+     {
+#if 0				/* Not necessary when sampling keycode in events.c */
+     case KeyPress:
+	if (warpFocusTitleShowing && ev->xany.window == VRoot.win)
+	   warpFocusKey = ev->xkey.keycode;
+	break;
+#endif
+     case KeyRelease:
+	if (warpFocusTitleShowing && ev->xkey.keycode != warpFocusKey)
+	   WarpFocusFinish();
+	break;
+     }
+}
+
+static void
+WarplistInit(void)
+{
+#if 0				/* Not necessary when sampling keycode in events.c */
+   /* Ugly hack to get the invoking key press */
+   EventCallbackRegister(VRoot.win, 0, WarpFocusHandleEvent, NULL);
+#endif
+}
+
+/*
+ * Warplist module
+ */
+
+static void
+WarplistSighan(int sig, void *prm __UNUSED__)
+{
+   switch (sig)
+     {
+     case ESIGNAL_INIT:
+	WarplistInit();
+	break;
+     }
+}
+
+static const CfgItem WarplistCfgItems[] = {
+   CFG_ITEM_BOOL(Conf.warplist, enable, 1),
+   CFG_ITEM_BOOL(Conf.warplist, showsticky, 1),
+   CFG_ITEM_BOOL(Conf.warplist, showshaded, 1),
+   CFG_ITEM_BOOL(Conf.warplist, showiconified, 0),
+   CFG_ITEM_BOOL(Conf.warplist, warpfocused, 1),
+   CFG_ITEM_BOOL(Conf.warplist, raise_on_select, 1),
+   CFG_ITEM_BOOL(Conf.warplist, warp_on_select, 0),
+};
+#define N_CFG_ITEMS (sizeof(WarplistCfgItems)/sizeof(CfgItem))
+
+EModule             ModWarplist = {
+   "warplist", "warp",
+   WarplistSighan,
+   {0, NULL},
+   {N_CFG_ITEMS, WarplistCfgItems}
+};

@@ -67,7 +67,7 @@ FocusEwinSelect(void)
 	   break;
 	/* If pointer not in window -  fall thru and select other */
      case MODE_FOCUS_CLICK:
-	lst = EwinListGetFocus(&num);
+	lst = EwinListFocusGet(&num);
 	for (i = 0; i < num; i++)
 	  {
 	     if (!FocusEwinValid(lst[i], 1) || lst[i]->skipfocus)
@@ -101,7 +101,7 @@ ReverseTimeout(int val, void *data __UNUSED__)
 
    ewin = FindItem("", val, LIST_FINDBY_ID, LIST_TYPE_EWIN);
    if (ewin)
-      EwinListRaise(&EwinListFocus, ewin, 0);
+      EwinListFocusRaise(ewin);
 }
 
 void
@@ -111,7 +111,7 @@ FocusGetNextEwin(void)
    EWin               *ewin;
    int                 i, num;
 
-   lst = EwinListGetFocus(&num);
+   lst = EwinListFocusGet(&num);
    if (num <= 1)
       return;
 
@@ -135,7 +135,7 @@ FocusGetPrevEwin(void)
    EWin               *ewin;
    int                 i, num;
 
-   lst = EwinListGetFocus(&num);
+   lst = EwinListFocusGet(&num);
    if (num <= 1)
       return;
 
@@ -156,7 +156,8 @@ void
 FocusEwinSetGrabs(EWin * ewin)
 {
    if ((Conf.focus.mode != MODE_FOCUS_CLICK &&
-	ewin->active && Conf.focus.clickraises) ||
+	ewin->active && Conf.focus.clickraises &&
+	ewin != EwinListStackGetTop()) ||
        (Conf.focus.mode == MODE_FOCUS_CLICK && !ewin->active))
      {
 	GrabButtonSet(AnyButton, AnyModifier, ewin->win_container,
@@ -246,7 +247,7 @@ FocusToEWin(EWin * ewin, int why)
      case FOCUS_DESK_ENTER:
 	ewin = FocusEwinSelect();
 	if (!ewin)
-	   EDBUG_RETURN_;
+	   goto done;
 	break;
 
      case FOCUS_NONE:
@@ -266,7 +267,7 @@ FocusToEWin(EWin * ewin, int why)
 
      case FOCUS_EWIN_NEW:
 	/* Don't chase around after the windows at startup */
-	if (Mode.wm.startup)
+	if (Mode.wm.startup || Mode.doingslide)
 	   EDBUG_RETURN_;
 
 	if (Conf.focus.all_new_windows_get_focus)
@@ -319,15 +320,16 @@ FocusToEWin(EWin * ewin, int why)
 	RemoveTimerEvent("AUTORAISE_TIMEOUT");
 
 	if (Conf.focus.mode != MODE_FOCUS_CLICK)
-	   DoIn("AUTORAISE_TIMEOUT", Conf.autoraise.delay, AutoraiseTimeout,
-		ewin->client.win, NULL);
+	   DoIn("AUTORAISE_TIMEOUT", 0.001 * Conf.autoraise.delay,
+		AutoraiseTimeout, ewin->client.win, NULL);
      }
 
    if (do_raise)
       RaiseEwin(ewin);
 
    if (do_warp && ewin != Mode.mouse_over_ewin)
-      XWarpPointer(disp, None, ewin->win, 0, 0, 0, 0, ewin->w / 2, ewin->h / 2);
+      XWarpPointer(disp, None, EoGetWin(ewin), 0, 0, 0, 0, EoGetW(ewin) / 2,
+		   EoGetH(ewin) / 2);
 
    RemoveTimerEvent("REVERSE_FOCUS_TIMEOUT");
    switch (why)
@@ -340,7 +342,7 @@ FocusToEWin(EWin * ewin, int why)
      case FOCUS_DESK_ENTER:
 	break;
      case FOCUS_NEXT:
-	EwinListRaise(&EwinListFocus, ewin, 0);
+	EwinListFocusRaise(ewin);
 	break;
      }
 
@@ -354,7 +356,8 @@ FocusToEWin(EWin * ewin, int why)
    /* Set new focus window (if any) highlighting */
    if (Mode.focuswin)
       FocusEwinSetActive(Mode.focuswin, 1);
-   ICCCM_Focus(ewin);
+   if (why != FOCUS_DESK_LEAVE)
+      ICCCM_Focus(ewin);
 
    EDBUG_RETURN_;
 }
@@ -369,8 +372,8 @@ FocusNewDeskBegin(void)
 
    /* we are about to flip desktops or areas - disable enter and leave events
     * temporarily */
-   EwinsEventsConfigure(1);
-   DesktopsEventsConfigure(1);
+   EwinsEventsConfigure(0);
+   DesktopsEventsConfigure(0);
 }
 
 void
@@ -384,8 +387,8 @@ FocusNewDesk(void)
       return;
 
    /* we flipped - re-enable enter and leave events */
-   EwinsEventsConfigure(0);
-   DesktopsEventsConfigure(0);
+   EwinsEventsConfigure(1);
+   DesktopsEventsConfigure(1);
 
    /* Set the mouse-over window */
    ewin = GetEwinByCurrentPointer();
@@ -401,23 +404,24 @@ FocusNewDesk(void)
  */
 
 void
-FocusHandleEnter(XEvent * ev)
+FocusHandleEnter(EWin * ewin, XEvent * ev)
 {
    Window              win = ev->xcrossing.window;
-   EWin               *ewin;
 
-   EDBUG(5, "FocusHandleEnter");
+   Mode.mouse_over_ewin = ewin;
 
-   /* Entering root may mean entering this screen */
-   if (win == VRoot.win &&
-       (ev->xcrossing.mode == NotifyNormal &&
-	ev->xcrossing.detail != NotifyInferior))
+   if (!ewin)
      {
-	FocusToEWin(NULL, FOCUS_DESK_ENTER);
-	goto done;
+	/* Entering root may mean entering this screen */
+	if (win == VRoot.win &&
+	    (ev->xcrossing.mode == NotifyNormal &&
+	     ev->xcrossing.detail != NotifyInferior))
+	  {
+	     FocusToEWin(NULL, FOCUS_DESK_ENTER);
+	     return;
+	  }
      }
 
-   ewin = GetEwinByCurrentPointer();
    Mode.mouse_over_ewin = ewin;
 
    switch (Conf.focus.mode)
@@ -436,13 +440,10 @@ FocusHandleEnter(XEvent * ev)
 	FocusToEWin(ewin, FOCUS_ENTER);
 	break;
      }
-
- done:
-   EDBUG_RETURN_;
 }
 
 void
-FocusHandleLeave(XEvent * ev)
+FocusHandleLeave(EWin * ewin __UNUSED__, XEvent * ev)
 {
    Window              win = ev->xcrossing.window;
 
@@ -450,12 +451,13 @@ FocusHandleLeave(XEvent * ev)
    if (win == VRoot.win &&
        (ev->xcrossing.mode == NotifyNormal &&
 	ev->xcrossing.detail != NotifyInferior))
-      FocusToEWin(NULL, FOCUS_SET);
+      FocusToEWin(NULL, FOCUS_DESK_LEAVE);
 }
 
 void
-FocusHandleClick(Window win)
+FocusHandleClick(EWin * ewin, Window win)
 {
+#if 0
    EWin               *ewin;
 
    ewin = FindEwinByChildren(win);
@@ -463,20 +465,24 @@ FocusHandleClick(Window win)
       ewin = FindEwinByBase(win);
    if (!ewin)
       return;
+#endif
 
    if ((Conf.focus.clickraises) || (Conf.focus.mode == MODE_FOCUS_CLICK))
      {
 	RaiseEwin(ewin);
 	FocusToEWin(ewin, FOCUS_CLICK);
 
+	/* Remove grabs if on top of stacking list */
+	FocusEwinSetGrabs(ewin);
+
 	/* allow click to pass thorugh */
 	if (EventDebug(EDBUG_TYPE_GRABS))
 	   Eprintf("FocusHandleClick %#lx %#lx\n", win, ewin->win_container);
 	if (win == ewin->win_container)
 	  {
-	     XSync(disp, False);
+	     ecore_x_sync();
 	     XAllowEvents(disp, ReplayPointer, CurrentTime);
-	     XSync(disp, False);
+	     ecore_x_sync();
 	  }
      }
    else if (ewin->focusclick)
@@ -484,3 +490,139 @@ FocusHandleClick(Window win)
 	FocusToEWin(ewin, FOCUS_CLICK);
      }
 }
+
+static void
+FocusIpc(const char *params, Client * c __UNUSED__)
+{
+   const char         *p;
+   char                cmd[128], prm[4096];
+   int                 len;
+
+   cmd[0] = prm[0] = '\0';
+   p = params;
+   if (p)
+     {
+	len = 0;
+	sscanf(p, "%100s %4000s %n", cmd, prm, &len);
+	p += len;
+     }
+
+   if (!p || cmd[0] == '?')
+     {
+	EWin               *ewin;
+
+	ewin = GetFocusEwin();
+	if (ewin)
+	   IpcPrintf("Focused: %#lx\n", ewin->client.win);
+	else
+	   IpcPrintf("Focused: none\n");
+     }
+   else if (!strcmp(cmd, "cfg"))
+     {
+	SettingsFocus();
+     }
+   else if (!strncmp(cmd, "mode", 2))
+     {
+	int                 mode = Conf.focus.mode;
+
+	if (!strcmp(prm, "click"))
+	  {
+	     mode = MODE_FOCUS_CLICK;
+	     Mode.grabs.pointer_grab_active = 1;
+	  }
+	else if (!strcmp(prm, "clicknograb"))
+	  {
+	     mode = MODE_FOCUS_CLICK;
+	     Mode.grabs.pointer_grab_active = 0;
+	  }
+	else if (!strcmp(prm, "pointer"))
+	  {
+	     mode = MODE_FOCUS_POINTER;
+	  }
+	else if (!strcmp(prm, "sloppy"))
+	  {
+	     mode = MODE_FOCUS_SLOPPY;
+	  }
+	else if (!strcmp(prm, "?"))
+	  {
+	     if (Conf.focus.mode == MODE_FOCUS_CLICK)
+	       {
+		  if (Mode.grabs.pointer_grab_active)
+		     p = "click";
+		  else
+		     p = "clicknograb";
+	       }
+	     else if (Conf.focus.mode == MODE_FOCUS_SLOPPY)
+		p = "sloppy";
+	     else if (Conf.focus.mode == MODE_FOCUS_POINTER)
+		p = "pointer";
+	     else
+		p = "unknown";
+	     IpcPrintf("Focus Mode: %s\n", p);
+	  }
+	else
+	  {
+	     IpcPrintf("Error: unknown focus type\n");
+	  }
+	if (Conf.focus.mode != mode)
+	  {
+	     Conf.focus.mode = mode;
+	     FocusFix();
+	     autosave();
+	  }
+     }
+   else if (!strncmp(cmd, "next", 2))
+     {
+	if (Conf.warplist.enable)
+	   WarpFocus(1);
+	else
+	   FocusGetNextEwin();
+     }
+   else if (!strncmp(cmd, "prev", 2))
+     {
+	FocusGetPrevEwin();
+     }
+}
+
+IpcItem             FocusIpcArray[] = {
+   {
+    FocusIpc,
+    "focus", "sf",
+    "Focus functions",
+    "  focus ?                     Show focus info\n"
+    "  focus mode                  Set focus mode. Modes:\n"
+    "    click:       The traditional click-to-focus mode.\n"
+    "    clicknograb: A similar focus mode, but without the grabbing of the click\n"
+    "      (you cannot click anywhere in a window to focus it)\n"
+    "    pointer:     The focus will follow the mouse pointer\n"
+    "    sloppy:      The focus follows the mouse, but when over the desktop background\n"
+    "                 the last window does not lose the focus\n"}
+   ,
+};
+#define N_IPC_FUNCS (sizeof(FocusIpcArray)/sizeof(IpcItem))
+
+static const CfgItem FocusCfgItems[] = {
+   CFG_ITEM_INT(Conf.focus, mode, MODE_FOCUS_SLOPPY),
+   CFG_ITEM_BOOL(Conf.focus, clickraises, 0),
+   CFG_ITEM_BOOL(Conf.focus, transientsfollowleader, 1),
+   CFG_ITEM_BOOL(Conf.focus, switchfortransientmap, 1),
+   CFG_ITEM_BOOL(Conf.focus, all_new_windows_get_focus, 0),
+   CFG_ITEM_BOOL(Conf.focus, new_transients_get_focus, 0),
+   CFG_ITEM_BOOL(Conf.focus, new_transients_get_focus_if_group_focused, 1),
+   CFG_ITEM_BOOL(Conf.focus, raise_on_next, 1),
+   CFG_ITEM_BOOL(Conf.focus, warp_on_next, 0),
+
+   CFG_ITEM_BOOL(Conf, autoraise.enable, 0),
+   CFG_ITEM_INT(Conf, autoraise.delay, 500),
+};
+#define N_CFG_ITEMS (sizeof(FocusCfgItems)/sizeof(CfgItem))
+
+/*
+ * Module descriptor
+ */
+EModule             ModFocus = {
+   "focus", NULL,
+   NULL,
+   {N_IPC_FUNCS, FocusIpcArray},
+   {N_CFG_ITEMS, FocusCfgItems}
+};

@@ -1,5 +1,6 @@
+
 /*
- * Copyright (C) 2000-2004 Carsten Haitzler, Geoff Harrison and various contributors
+ * Copyright (C) 2003-2004 Kim Woelders
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to
@@ -20,38 +21,41 @@
  * IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN
  * CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
-#include "E.h"
+#ifndef _ECONFIG_H_
+#define _ECONFIG_H_
 
-const char          e_wm_name[] = "Enlightenment";
-const char          e_wm_version[] =
-#ifdef ENLIGHTENMENT_RELEASE
-   "enlightenment-" ENLIGHTENMENT_VERSION "-" ENLIGHTENMENT_RELEASE;
-#else
-   "enlightenment-" ENLIGHTENMENT_VERSION;
-#endif
-Display            *disp;
-List               *lists;
-RealRoot            RRoot;
-VirtRoot            VRoot;
-EConf               Conf;
-EMode               Mode;
-Desktops            desks;
-Window              init_win1 = 0;
-Window              init_win2 = 0;
-Window              init_win_ext = 0;
-char                themepath[FILEPATH_LEN_MAX];
+typedef struct
+{
+   const char         *name;
+   void               *ptr;
+   char                type;
+   long                dflt;
+} CfgItem;
 
-char                no_overwrite = 0;
-int                 child_count = 0;
-pid_t              *e_children = NULL;
-int                 numlock_mask = 0;
-int                 scrollock_mask = 0;
-int                 mask_mod_combos[8];
-Group              *current_group;
-const char         *dstr = NULL;
-char               *e_machine_name = NULL;
+typedef enum
+{
+   ITEM_TYPE_BOOL,
+   ITEM_TYPE_INT,
+   ITEM_TYPE_FLOAT,
+   ITEM_TYPE_STRING
+} cfg_item_type_e;
 
-#ifdef DEBUG
-int                 call_level = 0;
-char               *call_stack[1024];
-#endif
+#define CFG_ITEM_BOOL(conf, name, dflt)  { #name, &conf.name, ITEM_TYPE_BOOL, dflt }
+#define CFG_ITEM_INT(conf, name, dflt)   { #name, &conf.name, ITEM_TYPE_INT, dflt }
+#define CFG_ITEM_STR(conf, name)         { #name, &conf.name, ITEM_TYPE_STRING, 0 }
+
+/* Change to this? */
+#define CFR_ITEM_BOOL(conf, name, dflt)  { #name, &conf, ITEM_TYPE_BOOL, dflt }
+
+const CfgItem      *CfgItemFind(const CfgItem * pcl, int ncl, const char *name);
+void                CfgItemToString(const CfgItem * ci, char *buf, int len);
+
+int                 CfgItemListNamedItemSet(const CfgItem * pcl, int ncl,
+					    const char *item,
+					    const char *value);
+
+int                 CfgItemListNamedItemToString(const CfgItem * pcl, int ncl,
+						 const char *item, char *buf,
+						 int len);
+
+#endif /* _ECONFIG_H_ */

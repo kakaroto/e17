@@ -23,12 +23,18 @@
 #include "E.h"
 #include <math.h>
 
+/* FIXME - Needs cleaning up */
+
 /* Someone may do this right one day, but for now - kill'em */
 #define ENABLE_FX_INFO 0
 
 #ifndef M_PI_2
 #define M_PI_2 (3.141592654 / 2)
 #endif
+
+#define FX_OP_START  1
+#define FX_OP_STOP   2
+#define FX_OP_TOGGLE 3
 
 typedef struct _fxhandler
 {
@@ -37,203 +43,10 @@ typedef struct _fxhandler
    void                (*desk_func) (void);
    void                (*quit_func) (void);
    void                (*pause_func) (void);
-   char                in_use;
+   char                enabled;
    char                paused;
 }
 FXHandler;
-
-void                FX_Ripple_Init(const char *name);
-void                FX_Ripple_Desk(void);
-void                FX_Ripple_Quit(void);
-void                FX_Ripple_Pause(void);
-void                FX_Raindrops_Init(const char *name);
-void                FX_Raindrops_Desk(void);
-void                FX_Raindrops_Quit(void);
-void                FX_Raindrops_Pause(void);
-void                FX_Waves_Init(const char *name);
-void                FX_Waves_Desk(void);
-void                FX_Waves_Quit(void);
-void                FX_Waves_Pause(void);
-
-#if 0				/* FIXME - Or remove */
-void                FX_ImageSpinner_Init(const char *name);
-void                FX_ImageSpinner_Desk(void);
-void                FX_ImageSpinner_Quit(void);
-void                FX_ImageSpinner_Pause(void);
-#endif
-
-static FXHandler    fx_handlers[] = {
-   {"ripples",
-    FX_Ripple_Init, FX_Ripple_Desk, FX_Ripple_Quit, FX_Ripple_Pause,
-    0, 0},
-   {"raindrops",
-    FX_Raindrops_Init, FX_Raindrops_Desk, FX_Raindrops_Quit,
-    FX_Raindrops_Pause,
-    0, 0},
-   {"waves",
-    FX_Waves_Init, FX_Waves_Desk, FX_Waves_Quit, FX_Waves_Pause,
-    0, 0},
-#if 0				/* FIXME - Or remove */
-   {"imagespinner",
-    FX_ImageSpinner_Init, FX_ImageSpinner_Desk, FX_ImageSpinner_Quit,
-    FX_ImageSpinner_Pause,
-    0, 0}
-#endif
-};
-#define N_FX_HANDLERS (sizeof(fx_handlers)/sizeof(FXHandler))
-
-/****************************** Effect handlers *****************************/
-
-static FXHandler   *
-FX_Find(const char *name)
-{
-   unsigned int        i;
-
-   for (i = 0; i < N_FX_HANDLERS; i++)
-      if (!strcmp(fx_handlers[i].name, name))
-	 return &fx_handlers[i];
-
-   return NULL;
-}
-
-void
-FX_Op(const char *name, int fx_op)
-{
-   FXHandler          *fxh;
-
-   fxh = FX_Find(name);
-   if (fxh == NULL)
-      return;
-
-   switch (fx_op)
-     {
-     case FX_OP_START:
-	if (fxh->in_use)
-	   break;
-      do_start:
-	if (fxh->init_func)
-	   fxh->init_func(name);
-	fxh->in_use = 1;
-	break;
-
-     case FX_OP_STOP:
-	if (!fxh->in_use)
-	   break;
-      do_stop:
-	if (fxh->quit_func)
-	   fxh->quit_func();
-	fxh->in_use = 0;
-	break;
-
-     case FX_OP_TOGGLE:
-	if (fxh->in_use)
-	   goto do_stop;
-	else
-	   goto do_start;
-	break;
-     }
-}
-
-#if 0
-
-/*
- e  Doesn't look like this is ever used, commented out for now
- * --Mandrake
- */
-static void
-FX_Activate(char *effect)
-{
-   unsigned int        i;
-
-   for (i = 0; i < N_FX_HANDLERS; i++)
-     {
-	if (!strcmp(fx_handlers[i].name, effect))
-	  {
-	     if (!fx_handlers[i].in_use)
-	       {
-		  fx_handlers[i].in_use = 1;
-		  fx_handlers[i].init_func(effect);
-	       }
-	  }
-     }
-   return;
-}
-#endif
-
-void
-FX_DeskChange(void)
-{
-   unsigned int        i;
-
-   for (i = 0; i < N_FX_HANDLERS; i++)
-     {
-	if (fx_handlers[i].in_use)
-	  {
-	     if (fx_handlers[i].desk_func)
-		fx_handlers[i].desk_func();
-	  }
-     }
-}
-
-void
-FX_Pause(void)
-{
-   unsigned int        i;
-
-   for (i = 0; i < N_FX_HANDLERS; i++)
-     {
-	if (fx_handlers[i].in_use)
-	  {
-	     if (fx_handlers[i].paused)
-	       {
-		  if (fx_handlers[i].pause_func)
-		     fx_handlers[i].pause_func();
-		  fx_handlers[i].paused = 1;
-	       }
-	     else
-	       {
-		  if (fx_handlers[i].pause_func)
-		     fx_handlers[i].pause_func();
-		  fx_handlers[i].paused = 0;
-	       }
-	  }
-     }
-}
-
-char              **
-FX_Active(int *num)
-{
-   unsigned int        i;
-   char              **list = NULL;
-
-   *num = 0;
-   for (i = 0; i < N_FX_HANDLERS; i++)
-     {
-	if (fx_handlers[i].in_use)
-	  {
-	     (*num)++;
-	     list = Erealloc(list, sizeof(char *) * (*num));
-
-	     list[(*num) - 1] = Estrdup(fx_handlers[i].name);
-	  }
-     }
-   return list;
-}
-
-int
-FX_IsOn(const char *effect)
-{
-   unsigned int        i;
-
-   for (i = 0; i < N_FX_HANDLERS; i++)
-     {
-	if (!strcmp(fx_handlers[i].name, effect))
-	  {
-	     return fx_handlers[i].in_use;
-	  }
-     }
-   return 0;
-}
 
 /****************************** RIPPLES *************************************/
 
@@ -273,11 +86,11 @@ FX_ripple_timeout(int val, void *data)
      {
 	XGCValues           gcv;
 
-	fx_ripple_win = desks.desk[desks.current].win;
+	fx_ripple_win = DeskGetCurrentRoot();
 
 	fx_ripple_above =
-	   ECreatePixmap(disp, fx_ripple_win, VRoot.w, fx_ripple_waterh * 2,
-			 GetWinDepth(fx_ripple_win));
+	   ecore_x_pixmap_new(fx_ripple_win, VRoot.w, fx_ripple_waterh * 2,
+			      GetWinDepth(fx_ripple_win));
 	if (gc)
 	   XFreeGC(disp, gc);
 	if (gc1)
@@ -325,7 +138,7 @@ FX_ripple_timeout(int val, void *data)
    data = NULL;
 }
 
-void
+static void
 FX_Ripple_Init(const char *name)
 {
    fx_ripple_count = 0;
@@ -334,15 +147,15 @@ FX_Ripple_Init(const char *name)
    name = NULL;
 }
 
-void
+static void
 FX_Ripple_Desk(void)
 {
-   EFreePixmap(disp, fx_ripple_above);
+   ecore_x_pixmap_del(fx_ripple_above);
    fx_ripple_count = 0;
    fx_ripple_above = 0;
 }
 
-void
+static void
 FX_Ripple_Quit(void)
 {
    RemoveTimerEvent("FX_RIPPLE_TIMEOUT");
@@ -350,7 +163,7 @@ FX_Ripple_Quit(void)
 	      fx_ripple_waterh, False);
 }
 
-void
+static void
 FX_Ripple_Pause(void)
 {
    static char         paused = 0;
@@ -367,6 +180,7 @@ FX_Ripple_Pause(void)
      }
 }
 
+#ifdef E_FX_RAINDROPS		/* FIXME - Requires eliminating use of PixImg */
 /****************************************************************************/
 
 /****************************** RAIN DROPS **********************************/
@@ -446,7 +260,7 @@ FX_raindrops_timeout(int val, void *data)
 		    }
 	       }
 	  }
-	fx_raindrops_win = desks.desk[desks.current].win;
+	fx_raindrops_win = desks.desk[DesksGetCurrent()].win;
 	if (gc)
 	   XFreeGC(disp, gc);
 	if (gc1)
@@ -597,7 +411,7 @@ FX_raindrops_timeout(int val, void *data)
 	XShmPutImage(disp, fx_raindrops_win, gc1, fx_raindrops_draw->xim, 0, 0,
 		     fx_raindrops[i].x, fx_raindrops[i].y, fx_raindrop_size,
 		     fx_raindrop_size, False);
-	XSync(disp, False);
+	ecore_x_sync();
      }
    DoIn("FX_RAINDROPS_TIMEOUT", (0.066 /*/ (float)fx_raindrops_number */ ),
 	FX_raindrops_timeout, 0, NULL);
@@ -606,7 +420,7 @@ FX_raindrops_timeout(int val, void *data)
    data = NULL;
 }
 
-void
+static void
 FX_Raindrops_Init(const char *name)
 {
    int                 i;
@@ -623,13 +437,13 @@ FX_Raindrops_Init(const char *name)
    name = NULL;
 }
 
-void
+static void
 FX_Raindrops_Desk(void)
 {
    fx_raindrops_win = 0;
 }
 
-void
+static void
 FX_Raindrops_Quit(void)
 {
    int                 i;
@@ -649,7 +463,7 @@ FX_Raindrops_Quit(void)
    fx_raindrops_win = 0;
 }
 
-void
+static void
 FX_Raindrops_Pause(void)
 {
    static char         paused = 0;
@@ -665,6 +479,7 @@ FX_Raindrops_Pause(void)
 	paused = 0;
      }
 }
+#endif /* E_FX_RAINDROPS */
 
 /****************************************************************************/
 
@@ -716,11 +531,11 @@ FX_Wave_timeout(int val, void *data)
      {
 	XGCValues           gcv;
 
-	fx_wave_win = desks.desk[desks.current].win;
+	fx_wave_win = DeskGetCurrentRoot();
 
 	fx_wave_above =
-	   XCreatePixmap(disp, fx_wave_win, VRoot.w, FX_WAVE_WATERH * 2,
-			 GetWinDepth(fx_wave_win));
+	   ecore_x_pixmap_new(fx_wave_win, VRoot.w, FX_WAVE_WATERH * 2,
+			      GetWinDepth(fx_wave_win));
 	if (gc)
 	   XFreeGC(disp, gc);
 	if (gc1)
@@ -819,24 +634,22 @@ FX_Wave_timeout(int val, void *data)
    data = NULL;
 }
 
-void
-FX_Waves_Init(const char *name)
+static void
+FX_Waves_Init(const char *name __UNUSED__)
 {
    fx_wave_count = 0;
    DoIn("FX_WAVE_TIMEOUT", 0.066, FX_Wave_timeout, 0, NULL);
-   return;
-   name = NULL;
 }
 
-void
+static void
 FX_Waves_Desk(void)
 {
-   XFreePixmap(disp, fx_wave_above);
+   ecore_x_pixmap_del(fx_wave_above);
    fx_wave_count = 0;
    fx_wave_above = 0;
 }
 
-void
+static void
 FX_Waves_Quit(void)
 {
    RemoveTimerEvent("FX_WAVE_TIMEOUT");
@@ -844,7 +657,7 @@ FX_Waves_Quit(void)
 	      FX_WAVE_WATERH, False);
 }
 
-void
+static void
 FX_Waves_Pause(void)
 {
    static char         paused = 0;
@@ -863,7 +676,6 @@ FX_Waves_Pause(void)
 
 /****************************************************************************/
 
-#if 0				/* FIXME - Or remove */
 /****************************** IMAGESPINNER ********************************/
 
 static Window       fx_imagespinner_win = 0;
@@ -893,10 +705,11 @@ FX_imagespinner_timeout(int val, void *data)
 
    if (!fx_imagespinner_win)
      {
-	fx_imagespinner_win = desks.desk[desks.current].win;
+	fx_imagespinner_win = DeskGetCurrentRoot();
 	FX_imagespinner_info();
      }
 
+#if 0				/* Don't use getword */
 /* do stuff here */
    string = getword(fx_imagespinner_params, fx_imagespinner_count);
    if (!string)
@@ -904,6 +717,7 @@ FX_imagespinner_timeout(int val, void *data)
 	fx_imagespinner_count = 3;
 	string = getword(fx_imagespinner_params, fx_imagespinner_count);
      }
+#endif
 
    fx_imagespinner_count++;
    if (string)
@@ -934,7 +748,7 @@ FX_imagespinner_timeout(int val, void *data)
    data = NULL;
 }
 
-void
+static void
 FX_ImageSpinner_Init(const char *name)
 {
    fx_imagespinner_count = 3;
@@ -942,13 +756,13 @@ FX_ImageSpinner_Init(const char *name)
    fx_imagespinner_params = Estrdup(name);
 }
 
-void
+static void
 FX_ImageSpinner_Desk(void)
 {
-   fx_imagespinner_win = desks.desk[desks.current].win;
+   fx_imagespinner_win = DeskGetCurrentRoot();
 }
 
-void
+static void
 FX_ImageSpinner_Quit(void)
 {
    RemoveTimerEvent("FX_IMAGESPINNER_TIMEOUT");
@@ -959,7 +773,7 @@ FX_ImageSpinner_Quit(void)
    fx_imagespinner_win = 0;
 }
 
-void
+static void
 FX_ImageSpinner_Pause(void)
 {
    static char         paused = 0;
@@ -977,4 +791,345 @@ FX_ImageSpinner_Pause(void)
 }
 
 /****************************************************************************/
+
+static FXHandler    fx_handlers[] = {
+   {"ripples",
+    FX_Ripple_Init, FX_Ripple_Desk, FX_Ripple_Quit, FX_Ripple_Pause,
+    0, 0},
+   {"waves",
+    FX_Waves_Init, FX_Waves_Desk, FX_Waves_Quit, FX_Waves_Pause,
+    0, 0},
+#ifdef E_FX_RAINDROPS		/* FIXME */
+   {"raindrops",
+    FX_Raindrops_Init, FX_Raindrops_Desk, FX_Raindrops_Quit,
+    FX_Raindrops_Pause,
+    0, 0},
 #endif
+   {"imagespinner",
+    FX_ImageSpinner_Init, FX_ImageSpinner_Desk, FX_ImageSpinner_Quit,
+    FX_ImageSpinner_Pause,
+    0, 0}
+};
+#define N_FX_HANDLERS (sizeof(fx_handlers)/sizeof(FXHandler))
+
+/****************************** Effect handlers *****************************/
+
+static FXHandler   *
+FX_Find(const char *name)
+{
+   unsigned int        i;
+
+   for (i = 0; i < N_FX_HANDLERS; i++)
+      if (!strcmp(fx_handlers[i].name, name))
+	 return &fx_handlers[i];
+
+   return NULL;
+}
+
+static void
+FX_Op(const char *name, int fx_op)
+{
+   FXHandler          *fxh;
+
+   fxh = FX_Find(name);
+   if (fxh == NULL)
+      return;
+
+   switch (fx_op)
+     {
+     case FX_OP_START:
+	if (fxh->enabled)
+	   break;
+      do_start:
+	if (fxh->init_func)
+	   fxh->init_func(name);
+	fxh->enabled = 1;
+	break;
+
+     case FX_OP_STOP:
+	if (!fxh->enabled)
+	   break;
+      do_stop:
+	if (fxh->quit_func)
+	   fxh->quit_func();
+	fxh->enabled = 0;
+	break;
+
+     case FX_OP_TOGGLE:
+	if (fxh->enabled)
+	   goto do_stop;
+	else
+	   goto do_start;
+	break;
+     }
+}
+
+static void
+FX_DeskChange(void)
+{
+   unsigned int        i;
+
+   for (i = 0; i < N_FX_HANDLERS; i++)
+     {
+	if (fx_handlers[i].enabled)
+	  {
+	     if (fx_handlers[i].desk_func)
+		fx_handlers[i].desk_func();
+	  }
+     }
+}
+
+static void
+FX_Pause(void)
+{
+   unsigned int        i;
+
+   for (i = 0; i < N_FX_HANDLERS; i++)
+     {
+	if (fx_handlers[i].enabled)
+	  {
+	     if (fx_handlers[i].paused)
+	       {
+		  if (fx_handlers[i].pause_func)
+		     fx_handlers[i].pause_func();
+		  fx_handlers[i].paused = 1;
+	       }
+	     else
+	       {
+		  if (fx_handlers[i].pause_func)
+		     fx_handlers[i].pause_func();
+		  fx_handlers[i].paused = 0;
+	       }
+	  }
+     }
+}
+
+static void
+FX_StartAll(void)
+{
+   unsigned int        i;
+   FXHandler          *fxh;
+
+   for (i = 0; i < N_FX_HANDLERS; i++)
+     {
+	fxh = &fx_handlers[i];
+	if (fxh->enabled && fxh->init_func)
+	   fxh->init_func(fxh->name);
+     }
+}
+
+static int
+FX_IsOn(const char *effect)
+{
+   unsigned int        i;
+
+   for (i = 0; i < N_FX_HANDLERS; i++)
+     {
+	if (!strcmp(fx_handlers[i].name, effect))
+	  {
+	     return fx_handlers[i].enabled;
+	  }
+     }
+   return 0;
+}
+
+/****************************************************************************/
+
+/*
+ * Fx Module
+ */
+
+static void
+FxSighan(int sig, void *prm __UNUSED__)
+{
+   switch (sig)
+     {
+     case ESIGNAL_START:
+	FX_StartAll();
+	break;
+     case ESIGNAL_AREA_SWITCH_START:
+     case ESIGNAL_DESK_SWITCH_START:
+	break;
+     case ESIGNAL_AREA_SWITCH_DONE:
+     case ESIGNAL_DESK_SWITCH_DONE:
+	FX_DeskChange();
+	break;
+     case ESIGNAL_MOVE_START:
+     case ESIGNAL_MOVE_DONE:
+     case ESIGNAL_RESIZE_START:
+     case ESIGNAL_RESIZE_DONE:
+	FX_Pause();
+	break;
+     }
+}
+
+static char         tmp_effect_raindrops;
+static char         tmp_effect_ripples;
+static char         tmp_effect_waves;
+
+static void
+CB_ConfigureFX(Dialog * d __UNUSED__, int val, void *data __UNUSED__)
+{
+   if (val < 2)
+     {
+	FX_Op("raindrops", tmp_effect_raindrops ? FX_OP_START : FX_OP_STOP);
+	FX_Op("ripples", tmp_effect_ripples ? FX_OP_START : FX_OP_STOP);
+	FX_Op("waves", tmp_effect_waves ? FX_OP_START : FX_OP_STOP);
+     }
+   autosave();
+}
+
+static void
+FxSettings(void)
+{
+   Dialog             *d;
+   DItem              *table, *di;
+
+   if ((d =
+	FindItem("CONFIGURE_EFFECTS", 0, LIST_FINDBY_NAME, LIST_TYPE_DIALOG)))
+     {
+	SoundPlay("SOUND_SETTINGS_ACTIVE");
+	ShowDialog(d);
+	return;
+     }
+   SoundPlay("SOUND_SETTINGS_FX");
+
+   tmp_effect_raindrops = FX_IsOn("raindrops");
+   tmp_effect_ripples = FX_IsOn("ripples");
+   tmp_effect_waves = FX_IsOn("waves");
+
+   d = DialogCreate("CONFIGURE_EFFECTS");
+   DialogSetTitle(d, _("Miscellaneous Effects Settings"));
+
+   table = DialogInitItem(d);
+   DialogItemTableSetOptions(table, 1, 0, 0, 0);
+
+   if (Conf.dialogs.headers)
+     {
+	di = DialogAddItem(table, DITEM_IMAGE);
+	DialogItemSetPadding(di, 2, 2, 2, 2);
+	DialogItemImageSetFile(di, "pix/fx.png");
+
+	di = DialogAddItem(table, DITEM_TEXT);
+	DialogItemSetPadding(di, 2, 2, 2, 2);
+	DialogItemSetFill(di, 1, 0);
+	DialogItemTextSetText(di,
+			      _("Enlightenment Miscellaneous Effects\n"
+				"Settings Dialog\n"));
+
+	di = DialogAddItem(table, DITEM_SEPARATOR);
+	DialogItemSetPadding(di, 2, 2, 2, 2);
+	DialogItemSetFill(di, 1, 0);
+	DialogItemSeparatorSetOrientation(di, 0);
+     }
+
+   /* Effects */
+   di = DialogAddItem(table, DITEM_TEXT);
+   DialogItemSetPadding(di, 2, 2, 2, 2);
+   DialogItemSetFill(di, 1, 0);
+   DialogItemTextSetText(di, _("Effects"));
+#if 0				/* Disabled */
+   di = DialogAddItem(table, DITEM_CHECKBUTTON);
+   DialogItemSetPadding(di, 2, 2, 2, 2);
+   DialogItemSetFill(di, 1, 0);
+   DialogItemCheckButtonSetText(di, _("Enable Effect: Raindrops"));
+   DialogItemCheckButtonSetState(di, tmp_effect_raindrops);
+   DialogItemCheckButtonSetPtr(di, &tmp_effect_raindrops);
+#endif
+   di = DialogAddItem(table, DITEM_CHECKBUTTON);
+   DialogItemSetPadding(di, 2, 2, 2, 2);
+   DialogItemSetFill(di, 1, 0);
+   DialogItemCheckButtonSetText(di, _("Ripples"));
+   DialogItemCheckButtonSetState(di, tmp_effect_ripples);
+   DialogItemCheckButtonSetPtr(di, &tmp_effect_ripples);
+
+   di = DialogAddItem(table, DITEM_CHECKBUTTON);
+   DialogItemSetPadding(di, 2, 2, 2, 2);
+   DialogItemSetFill(di, 1, 0);
+   DialogItemCheckButtonSetText(di, _("Waves"));
+   DialogItemCheckButtonSetState(di, tmp_effect_waves);
+   DialogItemCheckButtonSetPtr(di, &tmp_effect_waves);
+
+   di = DialogAddItem(table, DITEM_SEPARATOR);
+   DialogItemSetPadding(di, 2, 2, 2, 2);
+   DialogItemSetFill(di, 1, 0);
+   DialogItemSeparatorSetOrientation(di, 0);
+
+   DialogAddButton(d, _("OK"), CB_ConfigureFX, 1);
+   DialogAddButton(d, _("Apply"), CB_ConfigureFX, 0);
+   DialogAddButton(d, _("Close"), CB_ConfigureFX, 1);
+   DialogSetExitFunction(d, CB_ConfigureFX, 2);
+   DialogBindKey(d, "Escape", DialogCallbackClose, 0);
+   DialogBindKey(d, "Return", CB_ConfigureFX, 0);
+
+   ShowDialog(d);
+}
+
+static void
+FxIpc(const char *params, Client * c __UNUSED__)
+{
+   char                word1[FILEPATH_LEN_MAX];
+   char                word2[FILEPATH_LEN_MAX];
+
+   if (!params)
+      return;
+
+   word1[0] = '\0';
+   word2[0] = '\0';
+
+   word(params, 1, word1);
+
+   if (!strcmp(word1, "raindrops") || !strcmp(word1, "ripples") ||
+       !strcmp(word1, "waves"))
+     {
+	word(params, 2, word2);
+	if (!strcmp(word2, ""))
+	   FX_Op(word1, FX_OP_TOGGLE);
+	else if (!strcmp(word2, "on"))
+	   FX_Op(word1, FX_OP_START);
+	else if (!strcmp(word2, "off"))
+	   FX_Op(word1, FX_OP_STOP);
+	else if (!strcmp(word2, "?"))
+	   IpcPrintf("%s: %s", word1, FX_IsOn(word1) ? "on" : "off");
+	else
+	   IpcPrintf("Error: unknown mode specified");
+     }
+   else if (!strncmp(word1, "cfg", 2))
+     {
+	FxSettings();
+     }
+}
+
+IpcItem             FxIpcArray[] = {
+   {
+    FxIpc,
+    "fx", "fx",
+    "Toggle various effects on/off",
+    "  fx cfg               Configure effects\n"
+    "  fx <effect> <mode>   Set the mode of a particular effect\n"
+    "  fx <effect> ?\"      Get the current mode\n"
+    "the following effects are available\n"
+    " ripples <on/off> (ripples that act as a water effect on the screen)\n"
+    " waves <on/off> (waves that act as a water effect on the screen)\n"}
+   ,
+};
+#define N_IPC_FUNCS (sizeof(FxIpcArray)/sizeof(IpcItem))
+
+static const CfgItem FxCfgItems[] = {
+   CFR_ITEM_BOOL(fx_handlers[0].enabled, ripples.enabled, 0),
+   CFR_ITEM_BOOL(fx_handlers[1].enabled, waves.enabled, 0),
+#ifdef E_FX_RAINDROPS		/* FIXME */
+   CFR_ITEM_BOOL(fx_handlers[2].enabled, raindrops.enabled, 0),
+#endif
+};
+#define N_CFG_ITEMS (sizeof(FxCfgItems)/sizeof(CfgItem))
+
+/*
+ * Module descriptor
+ */
+EModule             ModEffects = {
+   "effects", "efx",
+   FxSighan,
+   {N_IPC_FUNCS, FxIpcArray},
+   {N_CFG_ITEMS, FxCfgItems}
+};

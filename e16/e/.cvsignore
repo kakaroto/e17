@@ -12,13 +12,9 @@ config.sub
 configure
 stamp-h
 stamp-h.in
-ltconfig
-ltmain.sh
-enlightenment.pot
-enlightenment*.tar.gz
+e16*.tar.gz
 ABOUT-NLS
 m4
 autom4te*.cache
-CommitLog
 stamp-h1
 mkinstalldirs

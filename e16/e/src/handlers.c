@@ -57,7 +57,7 @@ SignalHandler(int sig)
 
      case SIGILL:
 	if (disp)
-	   UngrabX();
+	   ecore_x_ungrab();
 	DialogAlert(_
 		    ("Enlightenment performed an Illegal Instruction.\n" "\n"
 		     "This most likely is due to you having installed an run a\n"
@@ -71,7 +71,7 @@ SignalHandler(int sig)
 
      case SIGFPE:
 	if (disp)
-	   UngrabX();
+	   ecore_x_ungrab();
 	DialogAlert(_
 		    ("Enlightenment caused a Floating Point Exception.\n" "\n"
 		     "This means that Enlightenment or support library routines it calls\n"
@@ -90,7 +90,7 @@ SignalHandler(int sig)
 	   abort();
 	loop_count++;
 	if (disp)
-	   UngrabX();
+	   ecore_x_ungrab();
 	DialogAlert(_
 		    ("Enlightenment caused Segment Violation (Segfault)\n" "\n"
 		     "This means that Enlightenment or support library routines it calls\n"
@@ -106,7 +106,7 @@ SignalHandler(int sig)
 
      case SIGBUS:
 	if (disp)
-	   UngrabX();
+	   ecore_x_ungrab();
 	DialogAlert(_
 		    ("Enlightenment caused Bus Error.\n" "\n"
 		     "It is suggested you check your hardware and OS installation.\n"
@@ -205,7 +205,7 @@ SignalsRestore(void)
 }
 
 void
-EHandleXError(Display * d, XErrorEvent * ev)
+EHandleXError(Display * d __UNUSED__, XErrorEvent * ev)
 {
 /*  char                buf[64]; */
 
@@ -213,34 +213,22 @@ EHandleXError(Display * d, XErrorEvent * ev)
    if ((ev->request_code == X_ChangeWindowAttributes)
        && (ev->error_code == BadAccess))
      {
-	if ((!no_overwrite) && (Mode.wm.xselect))
+	if (Mode.wm.xselect)
 	  {
 	     AlertX(_("Another Window Manager is already running"),
-		    _("OK (edit file)"), "", _("Cancel (do NOT edit)"),
+		    _("OK"), NULL, NULL,
 		    _("Another Window Manager is already running.\n" "\n"
 		      "You will have to quit your current Window Manager first before\n"
-		      "you can successfully run Enlightenment.\n" "\n"
-		      "If you haven't edited your user start-up files, Enlightenment\n"
-		      "can do that now for you, so when you log in again after\n"
-		      "quitting your current window manager, you will have\n"
-		      "Enlightenment running.\n" "\n"
-		      "If you want to do this, click OK, otherwise hit cancel\n"
-		      "to abort this operation and edit the files by hand.\n"
-		      "\n" "WARNING WARNING WARNING WARNING!\n" "\n"
-		      "It is possible that this MAY not properly edit your files.\n"));
-	     AlertX(_("Are you sure?"), _("YES (edit file)"), "",
-		    _("NO (do not edit)"),
-		    _("Are you absolutely sure you want to have Enlightenment\n"
-		      "edit your start-up files for you?\n" "\n"
-		      "If your start-up files are highly customised this may not\n"
-		      "work.\n" "\n" "Are you ABSOLUTELY sure?\n"));
-	     AddE();
+		      "you can successfully run Enlightenment.\n"));
 	     EExit(1);
 	  }
      }
-/*  XGetErrorText (disp, ev->error_code, buf, 63);
- * fprintf(stderr, "Whee %i: %s : %i\n", time(NULL), buf, ev->request_code); */
-   d = NULL;
+
+#if 0
+   XGetErrorText(disp, ev->error_code, buf, 63);
+   fprintf(stderr, "Whee %i: %s : %i\n", time(NULL), buf, ev->request_code);
+#endif
+
    EDBUG_RETURN_;
 }
 

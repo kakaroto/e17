@@ -20,12 +20,10 @@
  * IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN
  * CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
-#define INCLUDE_NEW_EVENT_DISPATCHER 0
 #include "E.h"
 #include <X11/Xutil.h>
 #include <X11/Xresource.h>
 
-#if INCLUDE_NEW_EVENT_DISPATCHER
 typedef struct
 {
    EventCallbackFunc  *func;
@@ -37,17 +35,17 @@ typedef struct
    int                 num;
    EventCallbackItem  *lst;
 } EventCallbackList;
-#endif /* INCLUDE_NEW_EVENT_DISPATCHER */
 
 typedef struct _exid
 {
-#if INCLUDE_NEW_EVENT_DISPATCHER
    EventCallbackList   cbl;
-#endif				/* INCLUDE_NEW_EVENT_DISPATCHER */
    Window              parent;
    Window              win;
    int                 x, y, w, h;
    char                mapped;
+   char                in_use;
+   char                do_del;
+   char                attached;
    int                 num_rect;
    int                 ord;
    XRectangle         *rects;
@@ -59,7 +57,7 @@ typedef struct _exid
 static XContext     xid_context = 0;
 
 static EXID        *
-NewXID(void)
+EXidCreate(void)
 {
    EXID               *xid;
 
@@ -69,22 +67,59 @@ NewXID(void)
 }
 
 static void
-AddXID(EXID * xid)
+EXidDestroy(EXID * xid)
+{
+   if (xid->rects)
+      XFree(xid->rects);
+#if 0
+   Eprintf("EXidDestroy: %p %#lx\n", xid, xid->win);
+#endif
+   if (xid->cbl.lst)
+      Efree(xid->cbl.lst);
+   Efree(xid);
+}
+
+static void
+EXidAdd(EXID * xid)
 {
    if (!xid_context)
       xid_context = XUniqueContext();
+
    XSaveContext(disp, xid->win, xid_context, (XPointer) xid);
    AddItem(xid, "", xid->win, LIST_TYPE_XID);
 }
 
+static void
+EXidDelete(Window win)
+{
+   EXID               *xid;
+
+   if (xid_context == 0)
+      xid_context = XUniqueContext();
+
+   xid = RemoveItem("", win, LIST_FINDBY_ID, LIST_TYPE_XID);
+   if (!xid)
+      return;
+
+#if 0
+   Eprintf("EXidDelete: %p %#lx\n", xid, xid->win);
+#endif
+   XDeleteContext(disp, win, xid_context);
+   if (xid->in_use)
+      xid->do_del = 1;
+   else
+      EXidDestroy(xid);
+}
+
 static EXID        *
-FindXID(Window win)
+EXidFind(Window win)
 {
    EXID               *xid;
    XPointer            xp;
 
    if (xid_context == 0)
       xid_context = XUniqueContext();
+
    xp = NULL;
    if (XFindContext(disp, win, xid_context, &xp) == XCNOENT)
       xp = NULL;
@@ -92,42 +127,27 @@ FindXID(Window win)
    return xid;
 }
 
-static void
-DelXID(Window win)
+static EXID        *
+EXidSet(Window win, Window parent, int x, int y, int w, int h, int depth)
 {
    EXID               *xid;
 
-   if (xid_context == 0)
-      xid_context = XUniqueContext();
-   xid = RemoveItem("", win, LIST_FINDBY_ID, LIST_TYPE_XID);
-   if (xid)
-     {
-	XDeleteContext(disp, win, xid_context);
-	if (xid->rects)
-	   XFree(xid->rects);
-	Efree(xid);
-     }
-}
-
-static void
-SetXID(Window win, Window parent, int x, int y, int w, int h, int depth)
-{
-   EXID               *xid;
-
-   xid = NewXID();
+   xid = EXidCreate();
    xid->parent = parent;
    xid->win = win;
    xid->x = x;
    xid->y = y;
    xid->w = w;
    xid->h = h;
-   xid->depth = VRoot.depth;
-   AddXID(xid);
-   return;
-   depth = 0;
+   xid->depth = depth;
+#if 0
+   Eprintf("EXidSet: %#lx\n", xid->win);
+#endif
+   EXidAdd(xid);
+
+   return xid;
 }
 
-#if INCLUDE_NEW_EVENT_DISPATCHER
 void
 EventCallbackRegister(Window win, int type __UNUSED__, EventCallbackFunc * func,
 		      void *prm)
@@ -135,9 +155,18 @@ EventCallbackRegister(Window win, int type __UNUSED__, EventCallbackFunc * func,
    EXID               *xid;
    EventCallbackItem  *eci;
 
-   xid = FindXID(win);
-   if (xid == NULL)
-      return;
+   xid = EXidFind(win);
+   if (!xid)
+      ERegisterWindow(win);
+   xid = EXidFind(win);
+#if 0
+   Eprintf("EventCallbackRegister: %p %#lx\n", xid, win);
+#endif
+   if (!xid)
+     {
+	Eprintf("EventCallbackRegister win=%#lx ???\n", win);
+	return;
+     }
 
    xid->cbl.num++;
    xid->cbl.lst =
@@ -147,6 +176,7 @@ EventCallbackRegister(Window win, int type __UNUSED__, EventCallbackFunc * func,
    eci->prm = prm;
 }
 
+/* Not used/tested */
 void
 EventCallbackUnregister(Window win, int type __UNUSED__,
 			EventCallbackFunc * func, void *prm)
@@ -156,7 +186,10 @@ EventCallbackUnregister(Window win, int type __UNUSED__,
    EventCallbackItem  *eci;
    int                 i;
 
-   xid = FindXID(win);
+   xid = EXidFind(win);
+#if 0
+   Eprintf("EventCallbackUnregister: %p %#lx\n", xid, win);
+#endif
    if (xid == NULL)
       return;
 
@@ -165,7 +198,19 @@ EventCallbackUnregister(Window win, int type __UNUSED__,
    for (i = 0; i < ecl->num; i++, eci++)
       if (eci->func == func && eci->prm == prm)
 	{
-	   /* Well - remove it */
+	   ecl->num--;
+	   if (ecl->num)
+	     {
+		for (; i < ecl->num; i++, eci++)
+		   *eci = *(eci + 1);
+		xid->cbl.lst =
+		   Erealloc(xid->cbl.lst, ecl->num * sizeof(EventCallbackItem));
+	     }
+	   else
+	     {
+		Efree(xid->cbl.lst);
+		xid->cbl.lst = NULL;
+	     }
 	   return;
 	}
 }
@@ -178,36 +223,26 @@ EventCallbacksProcess(XEvent * ev)
    EventCallbackItem  *eci;
    int                 i;
 
-   xid = FindXID(ev->xany.window);
+   xid = EXidFind(ev->xany.window);
    if (xid == NULL)
       return;
 
+   xid->in_use = 1;
    ecl = &xid->cbl;
    eci = ecl->lst;
    for (i = 0; i < ecl->num; i++, eci++)
      {
-	if (EventDebug(200))
+	if (EventDebug(EDBUG_TYPE_DISPATCH))
 	   Eprintf("EventDispatch: type=%d win=%#lx func=%p prm=%p\n",
 		   ev->type, ev->xany.window, eci->func, eci->prm);
 	eci->func(ev, eci->prm);
+	if (xid->do_del)
+	  {
+	     EXidDestroy(xid);
+	     return;
+	  }
      }
-}
-#endif /* INCLUDE_NEW_EVENT_DISPATCHER */
-
-Pixmap
-ECreatePixmap(Display * display, Drawable d, unsigned int width,
-	      unsigned int height, unsigned depth)
-{
-   Pixmap              pm;
-
-   pm = XCreatePixmap(display, d, width, height, depth);
-   return pm;
-}
-
-void
-EFreePixmap(Display * display, Pixmap pixmap)
-{
-   XFreePixmap(display, pixmap);
+   xid->in_use = 0;
 }
 
 Window
@@ -229,73 +264,81 @@ ECreateWindow(Window parent, int x, int y, int w, int h, int saveunder)
       attr.save_under = True;
    else
       attr.save_under = False;
-   win =
-      XCreateWindow(disp, parent, x, y, w, h, 0, VRoot.depth, InputOutput,
-		    VRoot.vis,
-		    CWOverrideRedirect | CWSaveUnder | CWBackingStore |
-		    CWColormap | CWBackPixmap | CWBorderPixel, &attr);
-   SetXID(win, parent, x, y, w, h, VRoot.depth);
+   win = XCreateWindow(disp, parent, x, y, w, h, 0, VRoot.depth, InputOutput,
+		       VRoot.vis,
+		       CWOverrideRedirect | CWSaveUnder | CWBackingStore |
+		       CWColormap | CWBackPixmap | CWBorderPixel, &attr);
+   EXidSet(win, parent, x, y, w, h, VRoot.depth);
 
    EDBUG_RETURN(win);
 }
 
 void
-EMoveWindow(Display * d, Window win, int x, int y)
+EMoveWindow(Display * d __UNUSED__, Window win, int x, int y)
 {
    EXID               *xid;
 
-   xid = FindXID(win);
+   xid = EXidFind(win);
    if (xid)
      {
+#if 0
+	Eprintf("EMoveWindow: %p %#lx: %d,%d %dx%d -> %d,%d\n",
+		xid, xid->win, xid->x, xid->y, xid->w, xid->h, x, y);
+#endif
 	if ((x != xid->x) || (y != xid->y))
 	  {
 	     xid->x = x;
 	     xid->y = y;
-	     XMoveWindow(d, win, x, y);
+	     ecore_x_window_move(win, x, y);
 	  }
      }
    else
-      XMoveWindow(d, win, x, y);
+      ecore_x_window_move(win, x, y);
 }
 
 void
-EResizeWindow(Display * d, Window win, int w, int h)
+EResizeWindow(Display * d __UNUSED__, Window win, int w, int h)
 {
    EXID               *xid;
 
-   xid = FindXID(win);
+   xid = EXidFind(win);
    if (xid)
      {
 	if ((w != xid->w) || (h != xid->h))
 	  {
 	     xid->w = w;
 	     xid->h = h;
-	     XResizeWindow(d, win, w, h);
+	     ecore_x_window_resize(win, w, h);
 	  }
      }
    else
-      XResizeWindow(d, win, w, h);
+      ecore_x_window_resize(win, w, h);
 }
 
 void
-EMoveResizeWindow(Display * d, Window win, int x, int y, int w, int h)
+EMoveResizeWindow(Display * d __UNUSED__, Window win, int x, int y, int w,
+		  int h)
 {
    EXID               *xid;
 
-   xid = FindXID(win);
+   xid = EXidFind(win);
    if (xid)
      {
+#if 0
+	Eprintf("EMoveResizeWindow: %p %#lx: %d,%d %dx%d -> %d,%d %dx%d\n",
+		xid, xid->win, xid->x, xid->y, xid->w, xid->h, x, y, w, h);
+#endif
 	if ((w != xid->w) || (h != xid->h) || (x != xid->x) || (y != xid->y))
 	  {
 	     xid->x = x;
 	     xid->y = y;
 	     xid->w = w;
 	     xid->h = h;
-	     XMoveResizeWindow(d, win, x, y, w, h);
+	     ecore_x_window_move_resize(win, x, y, w, h);
 	  }
      }
    else
-      XMoveResizeWindow(d, win, x, y, w, h);
+      ecore_x_window_move_resize(win, x, y, w, h);
 }
 
 void
@@ -303,15 +346,17 @@ EDestroyWindow(Display * d, Window win)
 {
    EXID               *xid;
 
+#if 0				/* FIXME */
    SlideoutsHideIfContextWin(win);
+#endif
 
-   xid = FindXID(win);
+   xid = EXidFind(win);
    if (xid)
      {
 	EXID              **lst;
 	int                 i, num;
 
-	DelXID(win);
+	EXidDelete(win);
 	XDestroyWindow(d, win);
 	lst = (EXID **) ListItemType(&num, LIST_TYPE_XID);
 	if (lst)
@@ -329,11 +374,53 @@ EDestroyWindow(Display * d, Window win)
 }
 
 void
-EForgetWindow(Display * d, Window win)
+EWindowSync(Window win)
 {
-   DelXID(win);
-   return;
-   d = NULL;
+   EXID               *xid;
+   Window              rr;
+   int                 x, y;
+   unsigned int        w, h, bw, depth;
+
+   xid = EXidFind(win);
+   if (!xid)
+      return;
+
+   XGetGeometry(disp, win, &rr, &x, &y, &w, &h, &bw, &depth);
+#if 0
+   Eprintf("EWindowSync: %p %#lx: %d,%d %dx%d -> %d,%d %dx%d\n",
+	   xid, xid->win, xid->x, xid->y, xid->w, xid->h, x, y, w, h);
+#endif
+   xid->x = x;
+   xid->y = y;
+   xid->w = w;
+   xid->h = h;
+   xid->depth = depth;
+}
+
+void
+ERegisterWindow(Window win)
+{
+   EXID               *xid;
+   Window              rr;
+   int                 x, y;
+   unsigned int        w, h, bw, depth;
+
+   xid = EXidFind(win);
+   if (xid)
+      return;
+
+   XGetGeometry(disp, win, &rr, &x, &y, &w, &h, &bw, &depth);
+#if 0
+   Eprintf("ERegisterWindow %#lx %d+%d %dx%d\n", win, x, y, w, h);
+#endif
+   xid = EXidSet(win, None, x, y, w, h, depth);
+   xid->attached = 1;
+}
+
+void
+EUnregisterWindow(Window win)
+{
+   EXidDelete(win);
 }
 
 void
@@ -341,7 +428,7 @@ EMapWindow(Display * d, Window win)
 {
    EXID               *xid;
 
-   xid = FindXID(win);
+   xid = EXidFind(win);
    if (xid)
      {
 	if (!xid->mapped)
@@ -359,7 +446,7 @@ EUnmapWindow(Display * d, Window win)
 {
    EXID               *xid;
 
-   xid = FindXID(win);
+   xid = EXidFind(win);
    if (xid)
      {
 	if (xid->mapped)
@@ -378,7 +465,7 @@ EShapeCombineMask(Display * d, Window win, int dest, int x, int y, Pixmap pmap,
 {
    EXID               *xid;
 
-   xid = FindXID(win);
+   xid = EXidFind(win);
    if (xid)
      {
 	char                wasshaped = 0;
@@ -430,16 +517,13 @@ EShapeCombineMaskTiled(Display * d, Window win, int dest, int x, int y,
    gcv.tile = pmap;
    gcv.ts_x_origin = 0;
    gcv.ts_y_origin = 0;
-   tm = ECreatePixmap(disp, win, w, h, 1);
-   gc = XCreateGC(disp, tm, GCFillStyle | GCTile |
+   tm = ecore_x_pixmap_new(win, w, h, 1);
+   gc = XCreateGC(d, tm, GCFillStyle | GCTile |
 		  GCTileStipXOrigin | GCTileStipYOrigin, &gcv);
-   XFillRectangle(disp, tm, gc, 0, 0, w, h);
-   XFreeGC(disp, gc);
-   EShapeCombineMask(disp, win, dest, x, y, tm, op);
-   EFreePixmap(disp, tm);
-
-   return;
-   d = NULL;
+   XFillRectangle(d, tm, gc, 0, 0, w, h);
+   XFreeGC(d, gc);
+   EShapeCombineMask(d, win, dest, x, y, tm, op);
+   ecore_x_pixmap_del(tm);
 }
 
 void
@@ -448,7 +532,7 @@ EShapeCombineRectangles(Display * d, Window win, int dest, int x, int y,
 {
    EXID               *xid;
 
-   xid = FindXID(win);
+   xid = EXidFind(win);
    if (xid)
      {
 	if (n_rects == 1)
@@ -495,7 +579,7 @@ EShapeCombineShape(Display * d, Window win, int dest, int x, int y,
 {
    EXID               *xid;
 
-   xid = FindXID(win);
+   xid = EXidFind(win);
    if (xid)
      {
 	xid->num_rect = 0;
@@ -528,8 +612,8 @@ EShapeGetRectangles(Display * d, Window win, int dest, int *rn, int *ord)
 {
    EXID               *xid;
 
-   xid = FindXID(win);
-   if (xid)
+   xid = EXidFind(win);
+   if (xid && !xid->attached)
      {
 	XRectangle         *r;
 
@@ -565,16 +649,21 @@ EReparentWindow(Display * d, Window win, Window parent, int x, int y)
 {
    EXID               *xid;
 
-   xid = FindXID(win);
+   xid = EXidFind(win);
    if (xid)
      {
+#if 0
+	Eprintf("EReparentWindow: %p %#lx: %#lx->%#lx %d,%d %dx%d -> %d,%d\n",
+		xid, xid->win, xid->parent, parent, xid->x, xid->y, xid->w,
+		xid->h, x, y);
+#endif
 	if (parent == xid->parent)
 	  {
 	     if ((x != xid->x) || (y != xid->y))
 	       {
 		  xid->x = x;
 		  xid->y = y;
-		  XMoveWindow(d, win, x, y);
+		  ecore_x_window_move(win, x, y);
 	       }
 	  }
 	else
@@ -594,7 +683,7 @@ EMapRaised(Display * d, Window win)
 {
    EXID               *xid;
 
-   xid = FindXID(win);
+   xid = EXidFind(win);
    if (xid)
      {
 	if (xid->mapped)
@@ -617,7 +706,7 @@ EGetGeometry(Display * d, Window win, Window * root_return, int *x, int *y,
    int                 ok;
    EXID               *xid;
 
-   xid = FindXID(win);
+   xid = EXidFind(win);
    if (xid)
      {
 	if (x)
@@ -653,7 +742,7 @@ EConfigureWindow(Display * d, Window win, unsigned int mask,
 {
    EXID               *xid;
 
-   xid = FindXID(win);
+   xid = EXidFind(win);
    if (xid)
      {
 	char                doit = 0;
@@ -692,7 +781,7 @@ ESetWindowBackgroundPixmap(Display * d, Window win, Pixmap pmap)
 {
    EXID               *xid;
 
-   xid = FindXID(win);
+   xid = EXidFind(win);
    if (xid)
      {
 	xid->bgpmap = pmap;
@@ -707,7 +796,7 @@ ESetWindowBackground(Display * d, Window win, int col)
 {
    EXID               *xid;
 
-   xid = FindXID(win);
+   xid = EXidFind(win);
    if (xid)
      {
 	if (xid->bgpmap)
@@ -734,12 +823,9 @@ ECreateEventWindow(Window parent, int x, int y, int w, int h)
 
    EDBUG(6, "ECreateEventWindow");
    attr.override_redirect = False;
-   win =
-      XCreateWindow(disp, parent, x, y, w, h, 0, 0, InputOnly, VRoot.vis,
-		    CWOverrideRedirect, &attr);
-#if 0				/* Not yet */
-   SetXID(win, parent, x, y, w, h, VRoot.depth);
-#endif
+   win = XCreateWindow(disp, parent, x, y, w, h, 0, 0, InputOnly, VRoot.vis,
+		       CWOverrideRedirect, &attr);
+   EXidSet(win, parent, x, y, w, h, VRoot.depth);
 
    EDBUG_RETURN(win);
 }
@@ -764,11 +850,11 @@ ECreateFocusWindow(Window parent, int x, int y, int w, int h)
    attr.save_under = False;
    attr.event_mask = KeyPressMask | FocusChangeMask;
 
-   win =
-      XCreateWindow(disp, parent, x, y, w, h, 0, 0, InputOnly, CopyFromParent,
-		    CWOverrideRedirect | CWSaveUnder | CWBackingStore |
-		    CWColormap | CWBackPixel | CWBorderPixel | CWEventMask,
-		    &attr);
+   win = XCreateWindow(disp, parent, x, y, w, h, 0, 0, InputOnly,
+		       CopyFromParent,
+		       CWOverrideRedirect | CWSaveUnder | CWBackingStore |
+		       CWColormap | CWBackPixel | CWBorderPixel | CWEventMask,
+		       &attr);
 
    XSetWindowBackground(disp, win, 0);
    XMapWindow(disp, win);
@@ -786,27 +872,58 @@ ESetColor(XColor * pxc, int r, int g, int b)
 }
 
 void
-EGetColor(XColor * pxc, int *pr, int *pg, int *pb)
+EGetColor(const XColor * pxc, int *pr, int *pg, int *pb)
 {
    *pr = pxc->red >> 8;
    *pg = pxc->green >> 8;
    *pb = pxc->blue >> 8;
 }
 
-void
-GrabX()
+/* Build mask from window shape rects */
+/* Snatched from imlib_create_scaled_image_from_drawable() */
+Pixmap
+EWindowGetShapePixmap(Window win)
 {
-   EDBUG(6, "GrabX");
+   Pixmap              mask;
+   GC                  gc;
+   XRectangle         *rect;
+   int                 i, w, h;
+   int                 rect_num, rect_ord;
+
+   GetWinWH(win, &w, &h);
+   mask = ecore_x_pixmap_new(win, w, h, 1);
+
+   gc = XCreateGC(disp, mask, 0, NULL);
+   XSetForeground(disp, gc, 0);
+
+   rect = XShapeGetRectangles(disp, win, ShapeBounding, &rect_num, &rect_ord);
+   XFillRectangle(disp, mask, gc, 0, 0, w, h);
+   if (rect)
+     {
+	XSetForeground(disp, gc, 1);
+	for (i = 0; i < rect_num; i++)
+	   XFillRectangle(disp, mask, gc, rect[i].x, rect[i].y,
+			  rect[i].width, rect[i].height);
+	XFree(rect);
+     }
+
+   XFreeGC(disp, gc);
+
+   return mask;
+}
+
+#ifndef USE_ECORE_X
+void
+ecore_x_grab(void)
+{
    if (Mode.server_grabbed <= 0)
       XGrabServer(disp);
    Mode.server_grabbed++;
-   EDBUG_RETURN_;
 }
 
 void
-UngrabX()
+ecore_x_ungrab(void)
 {
-   EDBUG(6, "UngrabX");
    if (Mode.server_grabbed == 1)
      {
 	XUngrabServer(disp);
@@ -815,8 +932,8 @@ UngrabX()
    Mode.server_grabbed--;
    if (Mode.server_grabbed < 0)
       Mode.server_grabbed = 0;
-   EDBUG_RETURN_;
 }
+#endif
 
 void
 GetWinXY(Window win, int *x, int *y)
@@ -836,7 +953,7 @@ GetWinParent(Window win)
 
    EDBUG(7, "GetWinParent");
 
-   xid = FindXID(win);
+   xid = EXidFind(win);
    if (xid)
       return xid->parent;
 
@@ -938,10 +1055,10 @@ WindowAtXY(int x, int y)
    int                 i;
 
    EDBUG(7, "WindowAtXY");
-   GrabX();
+   ecore_x_grab();
    if (!XQueryTree(disp, VRoot.win, &root_win, &parent_win, &list, &num))
      {
-	UngrabX();
+	ecore_x_ungrab();
 	EDBUG_RETURN(VRoot.win);
      }
    if (list)
@@ -959,13 +1076,13 @@ WindowAtXY(int x, int y)
 		continue;
 
 	     XFree(list);
-	     UngrabX();
+	     ecore_x_ungrab();
 	     EDBUG_RETURN(child);
 	  }
 	while (--i > 0);
 	XFree(list);
      }
-   UngrabX();
+   ecore_x_ungrab();
    EDBUG_RETURN(VRoot.win);
 }
 
@@ -979,40 +1096,75 @@ PointerAt(int *x, int *y)
    XQueryPointer(disp, VRoot.win, &dw, &dw, &dd, &dd, x, y, &mm);
 }
 
-void
-PastePixmap(Display * d, Drawable w, Pixmap p, Mask m, int x, int y)
+Display            *
+EDisplayOpen(const char *dstr)
 {
-   static GC           gc = 0;
-   XGCValues           gcv;
-   int                 ww, hh;
+   Display            *dpy;
 
-   if (!gc)
-      gc = XCreateGC(d, w, 0, &gcv);
-   GetWinWH(p, (unsigned int *)&ww, (unsigned int *)&hh);
-   XSetClipMask(disp, gc, m);
-   XSetClipOrigin(disp, gc, x, y);
-   XCopyArea(disp, p, w, gc, 0, 0, ww, hh, x, y);
+   if (!dstr)
+      dstr = getenv("DISPLAY");
+   if (!dstr)
+      dstr = ":0";
+
+#ifdef USE_ECORE_X
+   ecore_x_init(dstr);
+   dpy = ecore_x_display_get();
+#else
+   dpy = XOpenDisplay(dstr);
+#endif
+
+   return dpy;
 }
 
 void
-PasteMask(Display * d, Drawable w, Pixmap p, int x, int y, int wd, int ht)
+EDisplayClose(void)
 {
-   GC                  gc;
-   XGCValues           gcv;
-   int                 ww, hh;
+   if (!disp)
+      return;
+#ifdef USE_ECORE_X
+   ecore_x_shutdown();
+#else
+   XCloseDisplay(disp);
+#endif
+   XSetErrorHandler((XErrorHandler) NULL);
+   XSetIOErrorHandler((XIOErrorHandler) NULL);
+   disp = NULL;
+}
 
-   gc = XCreateGC(d, w, 0, &gcv);
-   if (p)
-     {
-	GetWinWH(p, (unsigned int *)&ww, (unsigned int *)&hh);
-	XSetClipMask(disp, gc, p);
-	XSetClipOrigin(disp, gc, x, y);
-	XCopyArea(disp, p, w, gc, 0, 0, ww, hh, x, y);
-     }
-   else
-     {
-	XSetForeground(disp, gc, 1);
-	XFillRectangle(disp, w, gc, x, y, wd, ht);
-     }
-   XFreeGC(disp, gc);
+void
+EDisplayDisconnect(void)
+{
+   if (!disp)
+      return;
+#ifdef USE_ECORE_X
+   ecore_x_disconnect();
+#else
+   close(ConnectionNumber(disp));
+#endif
+   XSetErrorHandler((XErrorHandler) NULL);
+   XSetIOErrorHandler((XIOErrorHandler) NULL);
+
+   disp = NULL;
+}
+
+void
+EDrawableDumpImage(Drawable draw, const char *txt)
+{
+   static int          seqn = 0;
+   char                buf[1024];
+   Imlib_Image        *im;
+   int                 w, h;
+
+   w = h = 0;
+   GetWinWH(draw, &w, &h);
+   if (w <= 0 || h <= 0)
+      return;
+   imlib_context_set_drawable(draw);
+   im = imlib_create_image_from_drawable(None, 0, 0, w, h, 1);
+   imlib_context_set_image(im);
+   imlib_image_set_format("png");
+   sprintf(buf, "%s-%#lx-%d", txt, draw, seqn++);
+   Eprintf("EDrawableDumpImage: %s\n", buf);
+   imlib_save_image(buf);
+   imlib_free_image_and_decache();
 }

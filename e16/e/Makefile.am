@@ -10,3 +10,6 @@ configure configure.in config.h.in \
 ABOUT-NLS AUTHORS COMPLIANCE COPYING ChangeLog FAQ INSTALL NEWS README
 
 ACLOCAL_AMFLAGS = -I m4
+
+changelog:
+	cvs2cl --gmt --no-hide-branch-additions --separate-header --no-indent	

@@ -78,7 +78,7 @@ MWM_GetHints(EWin * ewin, Atom atom_change)
 
    EDBUG(6, "MWM_GetHints");
 
-   if (ewin->internal)
+   if (EwinIsInternal(ewin))
       EDBUG_RETURN_;
 
    if (!_MOTIF_WM_HINTS)

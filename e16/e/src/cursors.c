@@ -22,6 +22,7 @@
  */
 #include "E.h"
 #include "X11/cursorfont.h"
+#include "conf.h"
 
 struct _ecursor
 {
@@ -37,7 +38,7 @@ struct _ecursor
 #endif
 };
 
-ECursor            *
+static ECursor     *
 ECursorCreate(const char *name, const char *image, int native_id, XColor * fg,
 	      XColor * bg)
 {
@@ -53,7 +54,7 @@ ECursorCreate(const char *name, const char *image, int native_id, XColor * fg,
 
    if (image)
      {
-	img = FindFile(image);
+	img = FindFile(image, Mode.theme.path);
 	if (!img)
 	   return NULL;
 
@@ -67,8 +68,8 @@ ECursorCreate(const char *name, const char *image, int native_id, XColor * fg,
 	XQueryBestCursor(disp, VRoot.win, w, h, &ww, &hh);
 	if ((w > ww) || (h > hh))
 	  {
-	     EFreePixmap(disp, pmap);
-	     EFreePixmap(disp, mask);
+	     ecore_x_pixmap_del(pmap);
+	     ecore_x_pixmap_del(mask);
 	     Efree(img);
 	     return NULL;
 	  }
@@ -78,8 +79,8 @@ ECursorCreate(const char *name, const char *image, int native_id, XColor * fg,
 
 	curs = 0;
 	curs = XCreatePixmapCursor(disp, pmap, mask, fg, bg, xh, yh);
-	EFreePixmap(disp, pmap);
-	EFreePixmap(disp, mask);
+	ecore_x_pixmap_del(pmap);
+	ecore_x_pixmap_del(mask);
 	Efree(img);
      }
    else
@@ -103,6 +104,118 @@ ECursorCreate(const char *name, const char *image, int native_id, XColor * fg,
    AddItem(ec, ec->name, 0, LIST_TYPE_ECURSOR);
 
    return ec;
+}
+
+static void
+ECursorDestroy(ECursor * ec)
+{
+   if (!ec)
+      return;
+
+   if (ec->ref_count > 0)
+     {
+	DialogOK(_("ECursor Error!"), _("%u references remain\n"),
+		 ec->ref_count);
+	return;
+     }
+
+   while (RemoveItemByPtr(ec, LIST_TYPE_ECURSOR));
+
+   if (ec->name)
+      Efree(ec->name);
+   if (ec->file)
+      Efree(ec->file);
+   Efree(ec);
+}
+
+static int
+ECursorConfigLoad(FILE * fs)
+{
+   int                 err = 0;
+   XColor              xclr, xclr2;
+   char                s[FILEPATH_LEN_MAX];
+   char                s2[FILEPATH_LEN_MAX];
+   int                 i1, i2, r, g, b;
+   char               *file = NULL, *name = NULL;
+   int                 native_id = -1;
+   int                 fields;
+
+   while (GetLine(s, sizeof(s), fs))
+     {
+	s2[0] = 0;
+	i1 = CONFIG_INVALID;
+	fields = sscanf(s, "%i %4000s", &i1, s2);
+
+	if (fields < 1)
+	  {
+	     i1 = CONFIG_INVALID;
+	  }
+	else if (i1 == CONFIG_CLOSE)
+	  {
+	     if (fields != 1)
+		Alert(_("CONFIG: ignoring extra data in \"%s\"\n"), s);
+	  }
+	else if (i1 != CONFIG_INVALID)
+	  {
+	     if (fields != 2)
+	       {
+		  Alert(_("CONFIG: missing required data in \"%s\"\n"), s);
+		  continue;
+	       }
+	  }
+
+	switch (i1)
+	  {
+	  case CONFIG_CURSOR:
+	     err = -1;
+	     i2 = atoi(s2);
+	     if (i2 != CONFIG_OPEN)
+		goto done;
+	     ESetColor(&xclr, 0, 0, 0);
+	     ESetColor(&xclr2, 255, 255, 255);
+	     _EFREE(file);
+	     _EFREE(name);
+	     native_id = -1;
+	     break;
+	  case CONFIG_CLOSE:
+	     ECursorCreate(name, file, native_id, &xclr, &xclr2);
+	     err = 0;
+	     break;
+
+	  case CONFIG_CLASSNAME:
+	     if (ConfigSkipIfExists(fs, s2, LIST_TYPE_ECURSOR))
+		goto done;
+	     _EFDUP(name, s2);
+	     break;
+	  case CURS_BG_RGB:
+	     EGetColor(&xclr, &r, &g, &b);
+	     sscanf(s, "%4000s %d %d %d", s2, &r, &g, &b);
+	     ESetColor(&xclr, r, g, b);
+	     break;
+	  case CURS_FG_RGB:
+	     EGetColor(&xclr2, &r, &g, &b);
+	     sscanf(s, "%4000s %d %d %d", s2, &r, &g, &b);
+	     ESetColor(&xclr2, r, g, b);
+	     break;
+	  case XBM_FILE:
+	     _EFDUP(file, s2);
+	     break;
+	  case NATIVE_ID:
+	     sscanf(s, "%4000s %d", s2, &native_id);
+	     break;
+	  default:
+	     break;
+	  }
+     }
+
+ done:
+   if (err)
+      ConfigAlertLoad(_("Cursor"));
+
+   _EFREE(name);
+   _EFREE(file);
+
+   return err;
 }
 
 void
@@ -132,28 +245,6 @@ ECursorGetByName(const char *name, unsigned int fallback)
 }
 
 void
-ECursorDestroy(ECursor * ec)
-{
-   if (!ec)
-      return;
-
-   if (ec->ref_count > 0)
-     {
-	DialogOK(_("ECursor Error!"), _("%u references remain\n"),
-		 ec->ref_count);
-	return;
-     }
-
-   while (RemoveItemByPtr(ec, LIST_TYPE_ECURSOR));
-
-   if (ec->name)
-      Efree(ec->name);
-   if (ec->file)
-      Efree(ec->file);
-   Efree(ec);
-}
-
-void
 ECursorIncRefcount(ECursor * ec)
 {
    if (ec)
@@ -167,17 +258,19 @@ ECursorDecRefcount(ECursor * ec)
       ec->ref_count--;
 }
 
-const char         *
+static const char  *
 ECursorGetName(ECursor * ec)
 {
    return (ec) ? ec->name : 0;
 }
 
-int
+#if 0				/* Not used */
+static int
 ECursorGetRefcount(ECursor * ec)
 {
    return (ec) ? ec->ref_count : 0;
 }
+#endif
 
 static Cursor       ECsrs[ECSR_COUNT];
 
@@ -196,8 +289,8 @@ ECsrApply(int which, Window win)
 /*
  * Set up some basic cursors
  */
-void
-ECursorsInit(void)
+static void
+CursorsInit(void)
 {
    ECsrs[ECSR_NONE] = None;
    ECsrs[ECSR_ROOT] = ECursorGetByName("DEFAULT", XC_left_ptr);
@@ -206,3 +299,83 @@ ECursorsInit(void)
    ECsrs[ECSR_ACT_MOVE] = ECursorGetByName("GRAB_MOVE", XC_fleur);
    ECsrs[ECSR_ACT_RESIZE] = ECursorGetByName("GRAB_RESIZE", XC_sizing);
 }
+
+/*
+ * Cursor module
+ */
+
+static void
+CursorSighan(int sig, void *prm __UNUSED__)
+{
+   switch (sig)
+     {
+     case ESIGNAL_INIT:
+	ConfigFileLoad("cursors.cfg", Mode.theme.path, ECursorConfigLoad);
+	CursorsInit();
+	break;
+     }
+}
+
+static void
+CursorsIpc(const char *params, Client * c __UNUSED__)
+{
+   const char         *p;
+   char                cmd[128], prm[4096];
+   int                 i, len, num;
+   ECursor            *ec;
+
+   cmd[0] = prm[0] = '\0';
+   p = params;
+   if (p)
+     {
+	len = 0;
+	sscanf(p, "%100s %4000s %n", cmd, prm, &len);
+	p += len;
+     }
+
+   if (!strncmp(cmd, "add", 3))
+     {
+	/* TBD */
+	IpcPrintf("Not implemented\n");
+     }
+   else if (!strncmp(cmd, "del", 3))
+     {
+	ec = FindItem(prm, 0, LIST_FINDBY_NAME, LIST_TYPE_ECURSOR);
+	if (ec)
+	   ECursorDestroy(ec);
+     }
+   else if (!strncmp(cmd, "list", 2))
+     {
+	ECursor           **lst;
+
+	lst = (ECursor **) ListItemType(&num, LIST_TYPE_ECURSOR);
+	for (i = 0; i < num; i++)
+	  {
+	     IpcPrintf("%s\n", ECursorGetName(lst[i]));
+	  }
+	if (lst)
+	   Efree(lst);
+     }
+}
+
+IpcItem             CursorIpcArray[] = {
+   {
+    CursorsIpc,
+    "cursor", "csr",
+    "Cursor functions",
+    "  cursor add <classname> ...        Create cursor\n"
+    "  cursor del <classname>            Delete cursor\n"
+    "  cursor list                       Show all cursors\n"}
+};
+#define N_IPC_FUNCS (sizeof(CursorIpcArray)/sizeof(IpcItem))
+
+/*
+ * Module descriptor
+ */
+EModule             ModCursors = {
+   "cursor", "csr",
+   CursorSighan,
+   {N_IPC_FUNCS, CursorIpcArray}
+   ,
+   {0, NULL}
+};

@@ -298,3 +298,56 @@ have enlightenment relaunch them as the preferred launch method.  To do this,
 once you have launched them by hand, alt-rightclick on them, select "Remember"
 and then choose "Restart Application on Login".
 
+
+About 0.16.8
+============
+
+Changes:
+- "enlightenment" has been renamed to "e16".
+- The default user configuration directory is "~/.e16".
+- The data install path is "<somepath>/e16", e.g. "/usr/share/e16".
+Thus, an e16.8 installation should not clash with any other versions.
+- Various configuration file formats have changed and should be easier
+  to read and modify, if needed.
+- The configuration is stored per display and per screen.  E.g. for
+  DISPLAY=:1.0 the main configuration file is "~/.e16/e_config--1.0.cfg".
+- Actions(used by menus, keybindings, etc.) and IPC functions(eesh) have
+  been merged.
+- Many IPC(eesh) commands have been changed, possibly breaking compatibility
+  with a few epplets.
+
+New features:
+- Built-in composite manager.
+- An iconbox can be configured to act as System Tray
+  (middle mouse->Desktop->Create Systray).
+
+Notes:
+
+imlib2 >= 1.1.2 is required.
+
+All settings can be shown and set using eesh.
+To get a full list of settings:
+$ eesh show
+To set some parameter:
+$ eesh set <parameter> <value>
+Some settings will not be effective until E is restarted.
+
+To get a list of other eesh commands:
+$ eesh help full
+
+The composite manager only works on the root window (desktop 0) for now.
+If window resize/shading is ugly try:
+$ eesh set compmgr.resize_fix_enable 1
+
+0.16.8 should still be compatible with any e16 theme. However, user installed
+themes will have to be moved/linked to ~/.e16/themes/ or <datadir>/e16/themes/.
+
+e16keyedit will work, but the "Action" field is no longer used. In stead, the
+action (IPC command) must be specified in the "Parameters" field.
+If used to change the keybindings, the modified settings will be stored in
+~/.e16/e_config.bindings.
+It should also be fairly straightforward to modify the key- and buttonbindings
+by editing /usr/share/e16/config/bindings.cfg.
+
+e16menuedit will no longer work. e16menuedit2 will.
+

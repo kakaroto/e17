@@ -52,9 +52,12 @@ $loc2 =~ s/[\.\@].*//;
 $loc3 =~ s/_.*//;
 $loc1 = "" if ($loc1 eq $loc2);
 
-$EdirUser = "$ENV{'HOME'}/.enlightenment" unless $EdirUser;
+$EdirUser = "$ENV{'HOME'}/.e16" unless $EdirUser;
 $EdirRoot = "/usr/share/enlightenment" unless $EdirRoot;
 $EdirBin  = "/usr/bin" unless $EdirBin;
+
+$EdirIcons = "$EdirUser/icons";
+$EdirMenus = "$EdirUser/menus";
 
 $dbg      = "$ENV{'E_MENUGEN_DBG'}";
 
@@ -94,11 +97,11 @@ $DoConvert = `which convert`;
 
 @MainMenu = (
 	"t:User Menus",
-	"m:User Application list:user_apps.menu",
-	"m:GNOME:menus_GNOME/index.menu",
-	"m:KDE:menus_KDE/index.menu",
-	"m:Other:menus_Other/index.menu",
-	"m:Enlightenment Epplets:epplets.menu",
+	"m:User Application list:menus/user_apps.menu",
+	"m:GNOME:menus/menus_GNOME/index.menu",
+	"m:KDE:menus/menus_KDE/index.menu",
+	"m:Other:menus/menus_Other/index.menu",
+	"m:Enlightenment Epplets:menus/epplets.menu",
 	"x:Restart Enlightenment:eesh -e 'restart'",
 	"x:Log Out:eesh -e 'exit'"
 );
@@ -167,7 +170,7 @@ sub MakeMenu {
 	local $f = shift;
 	local $m = shift;
 
-	$f = "$EdirUser/$f";
+	$f = "$EdirMenus/$f";
 	return if (-f "$f");
 	open(FD, ">$f");
 	foreach $e (@$m) {
@@ -318,7 +321,7 @@ sub ScaleIcon {
 
 	$g =~ s/^.*\///;
 	$g =~ s/\..*$//;
-	$g = "$EdirUser/icons/$g.png";
+	$g = "$EdirIcons/$g.png";
 	system("convert -geometry 18x18 $f $g");
 
 	return $g;
@@ -360,7 +363,7 @@ sub FindIcon {
 sub MakeEppsMenu {
 	local $f = shift;
 	@el = grep /\.epplet$/, ReadDir($EdirBin);
-	open(FD, ">$EdirUser/$f");
+	open(FD, ">$EdirMenus/$f");
 	print FD "\"Enlightenment Epplets\"\n";
 	foreach $e (@el) {
 		$e =~ s/\.epplet$//;
@@ -377,7 +380,7 @@ sub MakeAppsMenu {
 	local %menus;
 	local $c, $k, $dir;
 
-	$dir = "$EdirUser/menus_$type";
+	$dir = "$EdirMenus/menus_$type";
 	print "Generating Menu: $type in $dir\n" if $dbg ge 1;
 	MkDir($dir);
 
@@ -424,7 +427,7 @@ sub ReadDir {
 # Close all windows named "Message" (we assume they are E dialogs)
 sub CloseMessageWindows {
 	open(WL, "eesh -ewait window_list |");
-	while (<WL>) { if (/\s*(\w+) : Message$/) {
+	while (<WL>) { if (/\s*(\w+) : Message /) {
 		system("eesh -e \"win_op $1 close\""); }
 	}
 	close(WL);
@@ -455,9 +458,9 @@ foreach $d (split(':', $AppDirs)) {
 	ProcessDir($d);
 }
 
-# Make config root dir and scaled icon dir
-MkDir("$EdirUser");
-MkDir("$EdirUser/icons");
+# Make menu dir and scaled icon dir
+MkDir("$EdirMenus");
+MkDir("$EdirIcons");
 
 # Make the menus
 MakeMenu("file.menu", \@MainMenu);
@@ -468,5 +471,5 @@ MakeAppsMenu("KDE");
 MakeAppsMenu("Other");
 
 CloseMessageWindows();
-system("eesh -e 'reload_menus'");
+system("eesh -e 'menus reload'");
 system("eesh -e 'dialog_ok Menu generation complete.'");

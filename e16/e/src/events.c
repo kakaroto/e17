@@ -23,8 +23,14 @@
 #include "E.h"
 #include <errno.h>
 #include <sys/time.h>
-#ifdef USE_XRANDR
+#if USE_XRANDR
 #include <X11/extensions/Xrandr.h>
+#endif
+#if USE_COMPOSITE
+#include <X11/extensions/Xcomposite.h>
+#include <X11/extensions/Xdamage.h>
+#include <X11/extensions/Xfixes.h>
+#include <X11/extensions/Xrender.h>
 #endif
 
 #if ENABLE_DEBUG_EVENTS
@@ -34,12 +40,42 @@ static const char  *EventName(unsigned int type);
 static int          event_base_shape = 0;
 static int          error_base_shape = 0;
 
-#ifdef USE_XRANDR
+#if USE_XRANDR
 static int          event_base_randr = 0;
 static int          error_base_randr = 0;
 #endif
 
+#if USE_COMPOSITE
+static int          event_base_comp = 0;
+static int          error_base_comp = 0;
+static int          event_base_damage = 0;
+static int          error_base_damage = 0;
+static int          event_base_fixes = 0;
+static int          error_base_fixes = 0;
+static int          event_base_render = 0;
+static int          error_base_render = 0;
+#endif
+
 char                throw_move_events_away = 0;
+
+static int          evq_num = 0;
+static XEvent      *evq_ptr = NULL;
+
+static int          evq_num2 = 0;
+static int          evq_cur2 = 0;
+static XEvent      *evq_ptr2 = NULL;
+
+#define DOUBLE_CLICK_TIME 250	/* Milliseconds */
+
+static void
+EventsExtensionShowInfo(const char *name, int major, int minor,
+			int event_base, int error_base)
+{
+   if (Mode.debug)
+      Eprintf("Found extension %-8s version %d.%d -"
+	      " Event/error base = %d/%d\n", name,
+	      major, minor, event_base, error_base);
+}
 
 void
 EventsInit(void)
@@ -50,10 +86,8 @@ EventsInit(void)
    if (XShapeQueryExtension(disp, &event_base_shape, &error_base_shape))
      {
 	XShapeQueryVersion(disp, &major, &minor);
-	if (Mode.debug)
-	   Eprintf("Found extension Shape version %d.%d\n"
-		   " Event/error base = %d/%d\n",
-		   major, minor, event_base_shape, error_base_shape);
+	EventsExtensionShowInfo("Shape", major, minor,
+				event_base_shape, error_base_shape);
      }
    else
      {
@@ -67,19 +101,64 @@ EventsInit(void)
 	EExit(1);
      }
 
-#ifdef USE_XRANDR
+#if USE_XRANDR
    if (XRRQueryExtension(disp, &event_base_randr, &error_base_randr))
      {
 	XRRQueryVersion(disp, &major, &minor);
-	if (Mode.debug)
-	   Eprintf("Found extension RandR version %d.%d\n"
-		   " Event/error base = %d/%d\n",
-		   major, minor, event_base_randr, error_base_randr);
+	EventsExtensionShowInfo("RandR", major, minor,
+				event_base_randr, error_base_randr);
 
 	/* Listen for RandR events */
 	XRRSelectInput(disp, VRoot.win, RRScreenChangeNotifyMask);
      }
 #endif
+
+#if USE_COMPOSITE
+   if (XCompositeQueryExtension(disp, &event_base_comp, &error_base_comp))
+     {
+	XCompositeQueryVersion(disp, &major, &minor);
+	EventsExtensionShowInfo("Composite", major, minor,
+				event_base_comp, error_base_comp);
+     }
+
+   if (XDamageQueryExtension(disp, &event_base_damage, &error_base_damage))
+     {
+	XDamageQueryVersion(disp, &major, &minor);
+	EventsExtensionShowInfo("Damage", major, minor,
+				event_base_damage, error_base_damage);
+     }
+
+   if (XFixesQueryExtension(disp, &event_base_fixes, &error_base_fixes))
+     {
+	XFixesQueryVersion(disp, &major, &minor);
+	EventsExtensionShowInfo("Fixes", major, minor,
+				event_base_fixes, error_base_fixes);
+     }
+
+   if (XRenderQueryExtension(disp, &event_base_render, &error_base_render))
+     {
+	XRenderQueryVersion(disp, &major, &minor);
+	EventsExtensionShowInfo("Render", major, minor,
+				event_base_render, error_base_render);
+     }
+#endif
+}
+
+static void
+ModeGetXY(Window rwin, int rx, int ry)
+{
+   Window              child;
+
+   if (Mode.wm.window)
+     {
+	XTranslateCoordinates(disp, rwin, VRoot.win,
+			      rx, ry, &Mode.x, &Mode.y, &child);
+     }
+   else
+     {
+	Mode.x = rx;
+	Mode.y = ry;
+     }
 }
 
 static void
@@ -87,6 +166,7 @@ HandleEvent(XEvent * ev)
 {
    void              **lst;
    int                 i, num;
+   Slideout           *pslideout = NULL;
 
    EDBUG(7, "HandleEvent");
 
@@ -99,25 +179,50 @@ HandleEvent(XEvent * ev)
    switch (ev->type)
      {
      case KeyPress:
+	Mode.last_keycode = ev->xkey.keycode;
      case KeyRelease:
      case ButtonPress:
      case ButtonRelease:
+	goto do_stuff;
      case EnterNotify:
+	Mode.context_win = ev->xany.window;
+	if (ev->xcrossing.mode == NotifyGrab &&
+	    ev->xcrossing.detail == NotifyInferior)
+	  {
+	     Mode.grabs.pointer_grab_window = ev->xany.window;
+	     if (!Mode.grabs.pointer_grab_active)
+		Mode.grabs.pointer_grab_active = 2;
+	  }
+	goto do_stuff;
      case LeaveNotify:
+	if (ev->xcrossing.mode == NotifyGrab &&
+	    ev->xcrossing.detail == NotifyInferior)
+	  {
+	     Mode.grabs.pointer_grab_window = None;
+	     Mode.grabs.pointer_grab_active = 0;
+	  }
+	goto do_stuff;
+
+      do_stuff:
+	TooltipsHandleEvent();	/* TBD */
+
+#if 0				/* FIXME - Why? */
 	if (((ev->type == KeyPress) || (ev->type == KeyRelease))
 	    && (ev->xkey.root != VRoot.win))
 	  {
 	     XSetInputFocus(disp, ev->xkey.root, RevertToPointerRoot,
 			    CurrentTime);
-	     XSync(disp, False);
+	     ecore_x_sync();
 	     ev->xkey.time = CurrentTime;
 	     XSendEvent(disp, ev->xkey.root, False, 0, ev);
 	  }
 	else
+#endif
 	  {
+#if 0				/* FIXME - TBD */
 	     if (ev->type == KeyPress)
 		PagerHideAllHi();
-	     WarpFocusHandleEvent(ev);
+#endif
 	     lst = ListItemType(&num, LIST_TYPE_ACLASS_GLOBAL);
 	     if (lst)
 	       {
@@ -132,121 +237,131 @@ HandleEvent(XEvent * ev)
    switch (ev->type)
      {
      case KeyPress:		/*  2 */
-	HandleKeyPress(ev);
-	break;
      case KeyRelease:		/*  3 */
 	break;
      case ButtonPress:		/*  4 */
 	SoundPlay("SOUND_BUTTON_CLICK");
-	HandleMouseDown(ev);
+
+	Mode.double_click =
+	   (((ev->xbutton.time - Mode.last_time) < DOUBLE_CLICK_TIME) &&
+	    (ev->xbutton.button == Mode.last_button));
+
+	Mode.last_bpress = ev->xbutton.window;
+	Mode.last_time = ev->xbutton.time;
+	Mode.last_button = ev->xbutton.button;
+
+	if (Mode.double_click)
+	   ev->xbutton.time = 0;
+	ModeGetXY(ev->xbutton.root, ev->xbutton.x_root, ev->xbutton.y_root);
 	break;
      case ButtonRelease:	/*  5 */
 	SoundPlay("SOUND_BUTTON_RAISE");
-	HandleMouseUp(ev);
+
+	ModeGetXY(ev->xbutton.root, ev->xbutton.x_root, ev->xbutton.y_root);
+
+#if 0				/* FIXME - TBD */
+	/* DON'T handle clicks whilst moving/resizing things */
+	if ((Mode.mode != MODE_NONE) &&
+	    (!((Mode.place) &&
+	       (Mode.mode == MODE_MOVE_PENDING || Mode.mode == MODE_MOVE))))
+	  {
+	     if ((int)Mode.last_button != (int)ev->xbutton.button)
+		EDBUG_RETURN_;
+	  }
+#endif
+
+	pslideout = Mode.slideout;
+
+	ActionsEnd(NULL);
 	break;
      case MotionNotify:	/*  6 */
-	HandleMotion(ev);
+	TooltipsHandleEvent();	/* TBD */
+
+	Mode.px = Mode.x;
+	Mode.py = Mode.y;
+	ModeGetXY(ev->xmotion.root, ev->xmotion.x_root, ev->xmotion.y_root);
+
+	DesksSetCurrent(DesktopAt(Mode.x, Mode.y));
+#if 0				/* FIXME - TBD */
+	if ((!(ev->xmotion.state
+	       & (Button1Mask | Button2Mask | Button3Mask | Button4Mask |
+		  Button5Mask)) && (!Mode.place)))
+	  {
+	     if (ActionsEnd(NULL))
+		EDBUG_RETURN_;
+	  }
+#endif
+	ActionsHandleMotion();
 	break;
      case EnterNotify:		/*  7 */
-	HandleMouseIn(ev);
 	break;
      case LeaveNotify:		/*  8 */
-	HandleMouseOut(ev);
-	break;
-     case FocusIn:		/*  9 */
-	HandleFocusIn(ev);
-	break;
-     case FocusOut:		/* 10 */
-	HandleFocusOut(ev);
-	break;
-     case KeymapNotify:	/* 11 */
-	break;
-     case Expose:		/* 12 */
-	HandleExpose(ev);
-	break;
-     case GraphicsExpose:	/* 13 */
-	break;
-     case NoExpose:		/* 14 */
-	break;
-     case VisibilityNotify:	/* 15 */
-	HandleVisibilityNotify(ev);
-	break;
-     case CreateNotify:	/* 16 */
-	break;
-     case DestroyNotify:	/* 17 */
-	HandleDestroy(ev);
-	break;
-     case UnmapNotify:		/* 18 */
-	HandleUnmap(ev);
-	break;
-     case MapNotify:		/* 19 */
-	HandleMap(ev);
 	break;
      case MapRequest:		/* 20 */
-	HandleMapRequest(ev);
 	break;
      case ReparentNotify:	/* 21 */
-	HandleReparent(ev);
 	break;
      case ConfigureNotify:	/* 22 */
-	HandleConfigureNotify(ev);
+	if (ev->xconfigure.window == VRoot.win)
+	   DialogOK("Wheee! (ConfigureNotify)",
+		    "Screen size changed to\n%dx%d pixels",
+		    ev->xconfigure.width, ev->xconfigure.height);
 	break;
      case ConfigureRequest:	/* 23 */
-	HandleConfigureRequest(ev);
-	break;
-     case GravityNotify:	/* 24 */
 	break;
      case ResizeRequest:	/* 25 */
-	HandleResizeRequest(ev);
-	break;
-     case CirculateNotify:	/* 26 */
 	break;
      case CirculateRequest:	/* 27 */
-	HandleCirculateRequest(ev);
 	break;
      case PropertyNotify:	/* 28 */
-	HandleProperty(ev);
-	break;
-     case SelectionClear:	/* 29 */
-	break;
-     case SelectionRequest:	/* 30 */
-	break;
-     case SelectionNotify:	/* 31 */
-	break;
-     case ColormapNotify:	/* 32 */
 	break;
      case ClientMessage:	/* 33 */
-	HandleClientMessage(ev);
+	HintsProcessClientMessage(&(ev->xclient));
 	break;
-     case MappingNotify:	/* 34 */
+#if USE_XRANDR
+     case EX_EVENT_SCREEN_CHANGE_NOTIFY:
+	{
+	   XRRScreenChangeNotifyEvent *rrev = (XRRScreenChangeNotifyEvent *) ev;
+
+	   DialogOK("Wheee! (RRScreenChangeNotify)",
+		    "Screen size changed to\n%dx%d pixels (%dx%d millimeters)",
+		    rrev->width, rrev->height, rrev->mwidth, rrev->mheight);
+	}
 	break;
-     default:
-	if (ev->type == event_base_shape + ShapeNotify)
-	   HandleChildShapeChange(ev);
-#ifdef USE_XRANDR
-	else if (ev->type == event_base_randr + RRScreenChangeNotify)
-	   HandleScreenChange(ev);
 #endif
+     }
+
+   /* The new event dispatcher */
+   EventCallbacksProcess(ev);
+
+   /* Post-event stuff TBD */
+   switch (ev->type)
+     {
+     case ButtonRelease:	/*  5 */
+	/* This shouldn't be here */
+	GrabPointerRelease();
+
+	if ((Mode.slideout) && (pslideout))
+	   SlideoutHide(Mode.slideout);
+
+	Mode.last_bpress = 0;
+	Mode.action_inhibit = 0;
+	break;
+
+#if 1				/* Do this here? */
+     case DestroyNotify:
+	EUnregisterWindow(ev->xdestroywindow.window);
+	break;
+#endif
+
+     case MapRequest:		/* 20 */
+	/* This is to catch badly behaving client window re-mappings */
+	if (!FindItem
+	    (NULL, ev->xmaprequest.window, LIST_FINDBY_ID, LIST_TYPE_EWIN))
+	   AddToFamily(ev->xmaprequest.window);
 	break;
      }
 
-   /* Should not be "global" */
-   IconboxesHandleEvent(ev);
-
-   EDBUG_RETURN_;
-}
-
-void
-CheckEvent(void)
-{
-   XEvent              ev;
-
-   EDBUG(7, "CheckEvent");
-   while (XPending(disp))
-     {
-	XNextEvent(disp, &ev);
-	HandleEvent(&ev);
-     }
    EDBUG_RETURN_;
 }
 
@@ -260,8 +375,9 @@ EventsCompress(XEvent * evq, int count)
    /* Debug - should be taken out */
    if (EventDebug(EDBUG_TYPE_COMPRESSION))
       for (i = 0; i < count; i++)
-	 Eprintf("EventsCompress-1 %3d %s w=%#lx\n", i,
-		 EventName(evq[i].type), evq[i].xany.window);
+	 if (evq[i].type)
+	    Eprintf("EventsCompress-1 %3d %s w=%#lx\n", i,
+		    EventName(evq[i].type), evq[i].xany.window);
 
    /* Loop through event list, starting with latest */
    for (i = count - 1; i > 0; i--)
@@ -357,19 +473,20 @@ EventsCompress(XEvent * evq, int count)
    /* Debug - should be taken out */
    if (EventDebug(EDBUG_TYPE_COMPRESSION))
       for (i = 0; i < count; i++)
-	 Eprintf("EventsCompress-1 %3d %s w=%#lx\n", i,
-		 EventName(evq[i].type), evq[i].xany.window);
+	 if (evq[i].type)
+	    Eprintf("EventsCompress-2 %3d %s w=%#lx\n", i,
+		    EventName(evq[i].type), evq[i].xany.window);
 }
 
 static int
-EventsProcess(XEvent ** evq_ptr, int *evq_siz)
+EventsFetch(XEvent ** evq_p, int *evq_n)
 {
    int                 i, n, count;
-   XEvent             *evq = *evq_ptr;
-   int                 qsz = *evq_siz;
+   XEvent             *evq = *evq_p, *ev;
+   int                 qsz = *evq_n;
 
    /* Fetch the entire event queue */
-   for (i = count = 0; (n = XPending(disp)) > 0;)
+   for (i = count = qsz; (n = XPending(disp)) > 0;)
      {
 	count += n;
 	if (count > qsz)
@@ -377,22 +494,119 @@ EventsProcess(XEvent ** evq_ptr, int *evq_siz)
 	     qsz = count;
 	     evq = Erealloc(evq, sizeof(XEvent) * qsz);
 	  }
-	for (; i < count; i++)
-	   XNextEvent(disp, evq + i);
+	ev = evq + i;
+	for (; i < count; i++, ev++)
+	  {
+	     XNextEvent(disp, ev);
+
+	     /* Map some event types to E internals */
+	     if (ev->type == event_base_shape + ShapeNotify)
+		ev->type = EX_EVENT_SHAPE_NOTIFY;
+#if USE_XRANDR
+	     else if (ev->type == event_base_randr + RRScreenChangeNotify)
+		ev->type = EX_EVENT_SCREEN_CHANGE_NOTIFY;
+#endif
+#if USE_COMPOSITE
+	     else if (ev->type == event_base_damage + XDamageNotify)
+		ev->type = EX_EVENT_DAMAGE_NOTIFY;
+#endif
+	  }
      }
 
    EventsCompress(evq, count);
 
-   for (i = 0; i < count; i++)
-     {
-	if (evq[i].type)
-	   HandleEvent(evq + i);
-     }
-
-   *evq_ptr = evq;
-   *evq_siz = qsz;
+   *evq_p = evq;
+   *evq_n = qsz;
 
    return count;
+}
+
+static int
+EventsProcess(XEvent ** evq_p, int *evq_n)
+{
+   int                 i;
+   XEvent             *evq;
+   int                 qsz;
+
+   /* Fetch the entire event queue */
+   EventsFetch(evq_p, evq_n);
+   evq = *evq_p;
+   qsz = *evq_n;
+
+ again:
+   if (EventDebug(EDBUG_TYPE_EVENTS))
+      Eprintf("EventsProcess-B %d\n", qsz);
+
+   for (i = 0; i < qsz; i++)
+     {
+	if (evq[i].type == 0)
+	   continue;
+
+	if (EventDebug(EDBUG_TYPE_EVENTS))
+	   Eprintf("EventsProcess %d type=%d\n", i, evq[i].type);
+
+	HandleEvent(evq + i);
+	evq[i].type = 0;
+     }
+
+   if (evq_num2)
+     {
+	/* Process leftovers */
+	Efree(evq_ptr);
+	evq = evq_ptr = evq_ptr2;
+	qsz = evq_num = evq_num2;
+	evq_ptr2 = 0;
+	evq_num2 = evq_cur2 = 0;
+	goto again;
+     }
+
+   if (EventDebug(EDBUG_TYPE_EVENTS))
+      Eprintf("EventsProcess-E %d\n", qsz);
+
+   return qsz;
+}
+
+void
+CheckEvent(void)
+{
+   int                 i;
+   XEvent             *evq;
+   int                 qsz;
+
+   /* Fetch the entire event queue */
+   EventsFetch(&evq_ptr2, &evq_num2);
+   evq = evq_ptr2;
+   qsz = evq_num2;
+
+   if (EventDebug(EDBUG_TYPE_EVENTS))
+      Eprintf("CheckEvent-B %d/%d\n", evq_cur2, evq_num2);
+
+   for (i = evq_cur2; i < qsz; i++)
+     {
+	evq_cur2 = i;
+	switch (evq[i].type)
+	  {
+	  case CreateNotify:
+	  case DestroyNotify:
+	  case ReparentNotify:
+	  case UnmapNotify:
+	  case MapNotify:
+	  case ConfigureNotify:
+	  case Expose:
+	  case EX_EVENT_DAMAGE_NOTIFY:
+	     if (EventDebug(EDBUG_TYPE_EVENTS))
+		Eprintf("CheckEvent %d type=%d\n", i, evq[i].type);
+
+	     HandleEvent(evq + i);
+	     evq[i].type = 0;
+	     break;
+	  }
+     }
+
+   if (EventDebug(EDBUG_TYPE_EVENTS))
+      Eprintf("CheckEvent-E\n");
+
+   ModulesSignal(ESIGNAL_IDLE, NULL);
 }
 
 #ifdef DEBUG
@@ -427,12 +641,11 @@ WaitEvent(void)
    int                 count, pcount;
    int                 fdsize;
    int                 xfd, smfd;
-   static int          evq_num = 0;
-   static XEvent      *evq = NULL;
 
    DBUG_STACKSTART;
 
    EDBUG(7, "WaitEvent");
+
    smfd = GetSMfd();
    xfd = ConnectionNumber(disp);
    fdsize = MAX(xfd, smfd) + 1;
@@ -440,11 +653,13 @@ WaitEvent(void)
    /* if we've never set the time we were last here before */
    if ((tval_last.tv_sec == 0) && (tval_last.tv_usec == 0))
       gettimeofday(&tval_last, NULL);
+
    /* time1 = time we last entered this routine */
    time1 = ((double)tval_last.tv_sec) + (((double)tval_last.tv_usec) / 1000000);
    gettimeofday(&tval, NULL);
    tval_last.tv_sec = tval.tv_sec;
    tval_last.tv_usec = tval.tv_usec;
+
    /* time2 = current time */
    time2 = ((double)tval.tv_sec) + (((double)tval.tv_usec) / 1000000);
    time2 -= time1;
@@ -452,7 +667,8 @@ WaitEvent(void)
       time2 = 0.0;
    /* time2 = time spent since we last were here */
 
-   count = EventsProcess(&evq, &evq_num);
+   evq_num = 0;
+   count = EventsProcess(&evq_ptr, &evq_num);
 
    DBUG_STACKCHECK;
 
@@ -462,21 +678,24 @@ WaitEvent(void)
 
    DBUG_STACKCHECK;
 
-   count = EventsProcess(&evq, &evq_num);
+   evq_num = 0;
+   count = EventsProcess(&evq_ptr, &evq_num);
 
    if (count > 0)
       XFlush(disp);
 
    if (pcount > count)
       count = pcount;
-   if ((evq) && ((evq_num - count) > 64))
+   if ((evq_ptr) && ((evq_num - count) > 64))
      {
 	evq_num = 0;
-	Efree(evq);
-	evq = NULL;
+	Efree(evq_ptr);
+	evq_ptr = NULL;
      }
 
    DBUG_STACKCHECK;
+
+   ModulesSignal(ESIGNAL_IDLE, NULL);
 
    FD_ZERO(&fdset);
    FD_SET(xfd, &fdset);
@@ -504,10 +723,10 @@ WaitEvent(void)
      }
    else
       count = select(fdsize, &fdset, NULL, NULL, NULL);
+
    if (count < 0)
-     {
-	EDBUG_RETURN_;
-     }
+      EDBUG_RETURN_;
+
    if ((smfd >= 0) && (count > 0) && (FD_ISSET(smfd, &fdset)))
       ProcessICEMSGS();
 
@@ -584,10 +803,23 @@ static const char  *const TxtEventNames[] = {
 static const char  *
 EventName(unsigned int type)
 {
+   static char         buf[16];
+
    if (type < N_EVENT_NAMES)
       return TxtEventNames[type];
 
-   return "Unknown";
+   switch (type)
+     {
+     case EX_EVENT_SHAPE_NOTIFY:
+	return "ShapeNotify";
+     case EX_EVENT_SCREEN_CHANGE_NOTIFY:
+	return "ScreenChangeNotify";
+     case EX_EVENT_DAMAGE_NOTIFY:
+	return "DamageNotify";
+     }
+
+   sprintf(buf, "%d", type);
+   return buf;
 }
 
 static const char  *const TxtEventNotifyModeNames[] = {
@@ -623,6 +855,7 @@ EventNotifyDetailName(unsigned int detail)
 void
 EventShow(const XEvent * ev)
 {
+   unsigned long       ser = ev->xany.serial;
    Window              win = ev->xany.window;
    const char         *name = EventName(ev->type);
    char               *txt;
@@ -634,20 +867,20 @@ EventShow(const XEvent * ev)
 	goto case_common;
      case ButtonPress:
      case ButtonRelease:
-	Eprintf("EV-%s win=%#lx state=%#x button=%#x\n", name, win,
+	Eprintf("%#08lx EV-%s win=%#lx state=%#x button=%#x\n", ser, name, win,
 		ev->xbutton.state, ev->xbutton.button);
 	break;
      case MotionNotify:
 	goto case_common;
      case EnterNotify:
      case LeaveNotify:
-	Eprintf("EV-%s win=%#lx m=%s d=%s\n", name, win,
+	Eprintf("%#08lx EV-%s win=%#lx m=%s d=%s\n", ser, name, win,
 		EventNotifyModeName(ev->xcrossing.mode),
 		EventNotifyDetailName(ev->xcrossing.detail));
 	break;
      case FocusIn:
      case FocusOut:
-	Eprintf("EV-%s win=%#lx m=%s d=%s\n", name, win,
+	Eprintf("%#08lx EV-%s win=%#lx m=%s d=%s\n", ser, name, win,
 		EventNotifyModeName(ev->xfocus.mode),
 		EventNotifyDetailName(ev->xfocus.detail));
 	break;
@@ -655,33 +888,37 @@ EventShow(const XEvent * ev)
      case Expose:
      case GraphicsExpose:
      case NoExpose:
-	goto case_common;
+	Eprintf("%#08lx EV-%s: win=%#lx %d+%d %dx%d\n", ser, name, win,
+		ev->xexpose.x, ev->xexpose.y,
+		ev->xexpose.width, ev->xexpose.height);
+	break;
      case VisibilityNotify:
-	Eprintf("EV-%s win=%#lx state=%d\n", name, win, ev->xvisibility.state);
+	Eprintf("%#08lx EV-%s win=%#lx state=%d\n", ser, name, win,
+		ev->xvisibility.state);
 	break;
      case CreateNotify:
      case DestroyNotify:
      case UnmapNotify:
      case MapNotify:
      case MapRequest:
-	Eprintf("EV-%s ev=%#lx win=%#lx\n", name, win,
+	Eprintf("%#08lx EV-%s ev=%#lx win=%#lx\n", ser, name, win,
 		ev->xcreatewindow.window);
 	break;
      case ReparentNotify:
-	Eprintf("EV-%s ev=%#lx win=%#lx parent=%#lx\n", name, win,
+	Eprintf("%#08lx EV-%s ev=%#lx win=%#lx parent=%#lx\n", ser, name, win,
 		ev->xreparent.window, ev->xreparent.parent);
 	break;
      case ConfigureNotify:
-	Eprintf("EV-%s: win=%#lx event=%#lx %d+%d %dx%d bw=%d above=%#lx\n",
-		name, ev->xconfigure.window, win,
-		ev->xconfigure.x, ev->xconfigure.y,
-		ev->xconfigure.width, ev->xconfigure.height,
-		ev->xconfigure.border_width, ev->xconfigure.above);
+	Eprintf
+	   ("%#08lx EV-%s: ev=%#lx, win=%#lx %d+%d %dx%d bw=%d above=%#lx\n",
+	    ser, name, win, ev->xconfigure.window, ev->xconfigure.x,
+	    ev->xconfigure.y, ev->xconfigure.width, ev->xconfigure.height,
+	    ev->xconfigure.border_width, ev->xconfigure.above);
 	break;
      case ConfigureRequest:
 	Eprintf
-	   ("EV-%s: win=%#lx parent=%#lx m=%#lx %d+%d %dx%d bw=%d above=%#lx stk=%d\n",
-	    name, ev->xconfigurerequest.window, win,
+	   ("%#08lx EV-%s: win=%#lx parent=%#lx m=%#lx %d+%d %dx%d bw=%d above=%#lx stk=%d\n",
+	    ser, name, ev->xconfigurerequest.window, win,
 	    ev->xconfigurerequest.value_mask, ev->xconfigurerequest.x,
 	    ev->xconfigurerequest.y, ev->xconfigurerequest.width,
 	    ev->xconfigurerequest.height, ev->xconfigurerequest.border_width,
@@ -690,16 +927,17 @@ EventShow(const XEvent * ev)
      case GravityNotify:
 	goto case_common;
      case ResizeRequest:
-	Eprintf("EV-%s: win=%#lx %dx%d\n",
-		name, win, ev->xresizerequest.width, ev->xresizerequest.height);
+	Eprintf("%#08lx EV-%s: win=%#lx %dx%d\n",
+		ser, name, win, ev->xresizerequest.width,
+		ev->xresizerequest.height);
 	break;
      case CirculateNotify:
      case CirculateRequest:
 	goto case_common;
      case PropertyNotify:
 	txt = XGetAtomName(disp, ev->xproperty.atom);
-	Eprintf("EV-%s: win=%#lx Atom=%s(%ld)\n",
-		name, win, txt, ev->xproperty.atom);
+	Eprintf("%#08lx EV-%s: win=%#lx Atom=%s(%ld)\n",
+		ser, name, win, txt, ev->xproperty.atom);
 	XFree(txt);
 	break;
      case SelectionClear:
@@ -710,25 +948,34 @@ EventShow(const XEvent * ev)
      case ClientMessage:
 	txt = XGetAtomName(disp, ev->xclient.message_type);
 	Eprintf
-	   ("EV-%s win=%#lx ev_type=%s(%ld) data[0-3]= %08lx %08lx %08lx %08lx\n",
-	    name, win, txt, ev->xclient.message_type, ev->xclient.data.l[0],
-	    ev->xclient.data.l[1], ev->xclient.data.l[2],
+	   ("%#08lx EV-%s win=%#lx ev_type=%s(%ld) data[0-3]= %08lx %08lx %08lx %08lx\n",
+	    ser, name, win, txt, ev->xclient.message_type,
+	    ev->xclient.data.l[0], ev->xclient.data.l[1], ev->xclient.data.l[2],
 	    ev->xclient.data.l[3]);
 	XFree(txt);
 	break;
      case MappingNotify:
       case_common:
-	Eprintf("EV-%s win=%#lx\n", name, win);
+	Eprintf("%#08lx EV-%s win=%#lx\n", ser, name, win);
 	break;
-     default:
-	if (ev->type == event_base_shape + ShapeNotify)
-	   Eprintf("EV-ShapeNotify win=%#lx\n", win);
-#ifdef USE_XRANDR
-	else if (ev->type == event_base_randr + RRScreenChangeNotify)
-	   Eprintf("EV-RRScreenChangeNotify win=%#lx\n", win);
+     case EX_EVENT_SHAPE_NOTIFY:
+	Eprintf("%#08lx EV-%s win=%#lx\n", ser, name, win);
+	break;
+#if USE_XRANDR
+     case EX_EVENT_SCREEN_CHANGE_NOTIFY:
+	Eprintf("%#08lx EV-%s win=%#lx\n", ser, name, win);
+	break;
 #endif
-	else
-	   Eprintf("EV-??? Type=%d win=%#lx\n", ev->type, win);
+#if USE_COMPOSITE
+#define de ((XDamageNotifyEvent *)ev)
+     case EX_EVENT_DAMAGE_NOTIFY:
+	Eprintf("%#08lx EV-%s win=%#lx %d+%d %dx%d\n", ser, name, win,
+		de->area.x, de->area.y, de->area.width, de->area.height);
+	break;
+#undef de
+#endif
+     default:
+	Eprintf("%#08lx EV-%s win=%#lx\n", ser, name, win);
 	break;
      }
 }

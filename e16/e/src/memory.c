@@ -206,7 +206,7 @@ __Emalloc(int size, const char *file, int line)
    if (!p)
      {
 	if (disp)
-	   UngrabX();
+	   ecore_x_ungrab();
 	AlertX(_("Cannot allocate enough memory"), _("Ignore this"),
 	       _("Restart Enlightenment"), _("Quit Enlightenment"),
 	       _("WARNING!!!!!!\n" "\n"
@@ -281,7 +281,7 @@ __Erealloc(void *ptr, int size, const char *file, int line)
    if (bad)
      {
 	if (disp)
-	   UngrabX();
+	   ecore_x_ungrab();
 	AlertX(_("Error in reallocating memory that hasn't been allocated"),
 	       _("Ignore this"), _("Restart Enlightenment"),
 	       _("Quit Enlightenment"),
@@ -300,7 +300,7 @@ __Erealloc(void *ptr, int size, const char *file, int line)
    if ((!p) && (size != 0))
      {
 	if (disp)
-	   UngrabX();
+	   ecore_x_ungrab();
 	AlertX(_("Cannot allocate enough memory"), _("Ignore this"),
 	       _("Restart Enlightenment"), _("Quit Enlightenment"),
 	       _("WARNING!!!!!!\n" "\n"
@@ -375,7 +375,7 @@ __Efree(void *ptr, const char *file, int line)
    if (bad)
      {
 	if (disp)
-	   UngrabX();
+	   ecore_x_ungrab();
 	AlertX(_("Error in freeing memory that hasn't been allocated"),
 	       _("Ignore this"), _("Restart Enlightenment"),
 	       _("Quit Enlightenment"),
@@ -390,7 +390,7 @@ __Efree(void *ptr, const char *file, int line)
    if (!ptr)
      {
 	if (disp)
-	   UngrabX();
+	   ecore_x_ungrab();
 	AlertX(_("Error in attempting to free NULL pointer"),
 	       _("Ignore this (safe)"), _("Restart Enlightenment"),
 	       _("Quit Enlightenment"),
@@ -441,6 +441,29 @@ Estrndup(const char *s, int n)
    EDBUG_RETURN(ss);
 }
 #endif
+
+char               *
+Estrdupcat2(char *ss, const char *s1, const char *s2)
+{
+   char               *s;
+   int                 len, l1, l2;
+
+   if (!ss)
+      return Estrdup(s2);
+
+   len = (ss) ? strlen(ss) : 0;
+   l1 = (s1) ? strlen(s1) : 0;
+   l2 = (s2) ? strlen(s2) : 0;
+
+   s = Erealloc(ss, len + l1 + l2 + 1);
+   if (l1)
+      memcpy(s + len, s1, l1);
+   if (l2)
+      memcpy(s + len + l1, s2, l2);
+   s[len + l1 + l2] = '\0';
+
+   return s;
+}
 
 #if !USE_LIBC_SETENV
 int

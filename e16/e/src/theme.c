@@ -40,7 +40,6 @@ static const char  *const theme_files[] = {
 #endif
    "init.cfg",
 #if ENABLE_THEME_SANITY_CHECKING
-   "keybindings.cfg",
    "menus.cfg",
    "menustyles.cfg",
    "slideouts.cfg",
@@ -159,7 +158,7 @@ append_merge_dir(char *dir, char ***list, int *count)
 }
 
 char              **
-ListThemes(int *number)
+ThemesList(int *number)
 {
    char                s[FILEPATH_LEN_MAX], **list = NULL;
    char               *def = NULL, *def2 = NULL;
@@ -212,7 +211,7 @@ ThemeGetPath(const char *path)
    return NULL;
 }
 
-char               *
+static char        *
 ThemeGetDefault(void)
 {
    static const char  *const dts[] = {
@@ -240,7 +239,7 @@ ThemeGetDefault(void)
 
    /* Then, try out all installed themes */
    path = NULL;
-   lst = ListThemes(&num);
+   lst = ThemesList(&num);
    for (i = 0; i < num; i++)
      {
 	path = ThemeCheckPath(lst[i]);
@@ -255,19 +254,16 @@ ThemeGetDefault(void)
    return NULL;
 }
 
-void
-ThemeSetDefault(const char *theme)
+static void
+ThemeCleanup(void)
 {
-/* os2 has no symlink,
- * but it doesn't matter since we have ~/.enlightenment/user_theme.cfg
- */
-   char                ss[FILEPATH_LEN_MAX];
+   if (!mustdel)
+      return;
 
-   Esnprintf(ss, sizeof(ss), "%s/themes/DEFAULT", EDirUser());
-   if (exists(ss))
-      E_rm(ss);
-   if (theme)
-      symlink(theme, ss);
+   /* We don't ever get here because mustdel is never set */
+#if 0				/* Don't do recursive theme removal (risky?) */
+   rmrf(themepath);
+#endif
 }
 
 static char        *
@@ -337,19 +333,7 @@ ThemeExtract(const char *theme)
    EDBUG_RETURN(NULL);
 }
 
-void
-ThemeCleanup(void)
-{
-   if (!mustdel)
-      return;
-
-   /* We don't ever get here because mustdel is never set */
-#if 0				/* Don't do recursive theme removal (risky?) */
-   rmrf(themepath);
-#endif
-}
-
-char               *
+static char        *
 ThemeFind(const char *theme)
 {
    char                s[FILEPATH_LEN_MAX];
@@ -357,12 +341,9 @@ ThemeFind(const char *theme)
 
    EDBUG(6, "ThemeFind");
 
-   if (Conf.theme.name)
-      Efree(Conf.theme.name);
-   Conf.theme.name = Estrdup(theme);
    badreason = _("Unknown\n");
 
-   if (!theme[0])
+   if (!theme || !theme[0])
       EDBUG_RETURN(ThemeGetDefault());
 
    if (isabspath(theme))
@@ -391,6 +372,7 @@ ThemeFind(const char *theme)
    EDBUG_RETURN(ret);
 }
 
+#if 0
 void
 ThemeBadDialog(void)
 {
@@ -404,3 +386,120 @@ ThemeBadDialog(void)
 	      "\n" "The reason this theme is bad is:\n" "%s"),
 	    badtheme, badreason);
 }
+#endif
+
+/*
+ * Theme module
+ */
+
+void
+ThemePathFind(void)
+{
+   char               *theme;
+
+   /*
+    * Conf.theme.name is read from the configuration.
+    * Mode.theme.path may be assigned on the command line.
+    */
+   theme = (Mode.theme.path) ? Mode.theme.path : Conf.theme.name;
+   theme = ThemeFind(theme);
+
+   if (!theme)
+     {
+	Alert(_("No themes were found in the default theme directory:\n"
+		" %s/themes/\n"
+		"or in the user theme directory:\n"
+		" %s/themes/\n"
+		"Proceeding from here is mostly pointless.\n"),
+	      EDirRoot(), EDirUser());
+     }
+
+   if (Conf.theme.name)
+      Efree(Conf.theme.name);
+   Conf.theme.name = fullfileof(theme);
+
+   Mode.theme.path = Estrdup(theme);
+}
+
+static void
+ThemesSighan(int sig, void *prm __UNUSED__)
+{
+   switch (sig)
+     {
+     case ESIGNAL_CONFIGURE:
+	break;
+     case ESIGNAL_EXIT:
+	ThemeCleanup();
+	break;
+     }
+}
+
+static void
+ThemesIpc(const char *params, Client * c __UNUSED__)
+{
+   const char         *p;
+   char                cmd[128], prm[128];
+   int                 len;
+
+   cmd[0] = prm[0] = '\0';
+   p = params;
+   if (p)
+     {
+	len = 0;
+	sscanf(p, "%100s %100s %n", cmd, prm, &len);
+	p += len;
+     }
+
+   if (!p || cmd[0] == '?')
+     {
+	IpcPrintf("Name: %s\n", Conf.theme.name);
+	IpcPrintf("Path: %s\n", Mode.theme.path);
+	IpcPrintf("User: %s\n", ThemeGetDefault());
+     }
+   else if (!strncmp(cmd, "list", 2))
+     {
+	char              **lst;
+	int                 i, num;
+
+	lst = ThemesList(&num);
+	for (i = 0; i < num; i++)
+	   IpcPrintf("%s\n", lst[i]);
+	if (lst)
+	   freestrlist(lst, num);
+     }
+   else if (!strcmp(cmd, "use"))
+     {
+	char                s[FILEPATH_LEN_MAX];
+
+	Esnprintf(s, sizeof(s), "restart_theme %s", prm);
+	/* FIXME - ThemeCheckIfValid(s) */
+	SessionExit(s);
+     }
+}
+
+IpcItem             ThemeIpcArray[] = {
+   {
+    ThemesIpc,
+    "themes", "th",
+    "Theme commands",
+    "  theme             Show current theme\n"
+    "  theme list        Show all themes\n"
+    "  theme use <name>  Switch to theme <name>\n"}
+   ,
+};
+#define N_IPC_FUNCS (sizeof(ThemeIpcArray)/sizeof(IpcItem))
+
+static const CfgItem ThemeCfgItems[] = {
+   CFG_ITEM_STR(Conf.theme, name),
+};
+#define N_CFG_ITEMS (sizeof(ThemeCfgItems)/sizeof(CfgItem))
+
+/*
+ * Module descriptor
+ */
+EModule             ModTheme = {
+   "theme", "th",
+   ThemesSighan,
+   {N_IPC_FUNCS, ThemeIpcArray},
+   {N_CFG_ITEMS, ThemeCfgItems}
+};

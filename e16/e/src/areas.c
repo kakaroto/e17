@@ -98,7 +98,7 @@ SetNewAreaSize(int ax, int ay)
    lst = EwinListGetAll(&num);
    for (i = 0; i < num; i++)
      {
-	if (!(lst[i]->sticky))
+	if (!EoIsSticky(lst[i]))
 	  {
 	     if (lst[i]->area_x >= ax)
 		MoveEwinToArea(lst[i], ax - 1, lst[i]->area_x);
@@ -107,23 +107,14 @@ SetNewAreaSize(int ax, int ay)
 	  }
      }
 
-   GetCurrentArea(&a, &b);
+   DeskGetCurrentArea(&a, &b);
    if (a >= ax)
      {
 	SetCurrentArea(ax - 1, b);
-	GetCurrentArea(&a, &b);
+	DeskGetCurrentArea(&a, &b);
      }
    if (b >= ay)
       SetCurrentArea(a, ay - 1);
-}
-
-void
-GetCurrentArea(int *ax, int *ay)
-{
-   EDBUG(4, "GetCurrentArea");
-   *ax = desks.desk[desks.current].current_area_x;
-   *ay = desks.desk[desks.current].current_area_y;
-   EDBUG_RETURN_;
 }
 
 void
@@ -137,7 +128,7 @@ SetAreaSize(int aw, int ah)
    Conf.areas.nx = area_w = aw;
    Conf.areas.ny = area_h = ah;
    HintsSetViewportConfig();
-   PagerReArea();
+   ModulesSignal(ESIGNAL_AREA_CONFIGURED, NULL);
    EDBUG_RETURN_;
 }
 
@@ -147,16 +138,6 @@ GetAreaSize(int *aw, int *ah)
    EDBUG(4, "GetAreaSize");
    *aw = area_w;
    *ah = area_h;
-   EDBUG_RETURN_;
-}
-
-void
-InitCurrentArea(int ax, int ay)
-{
-   EDBUG(4, "InitCurrentArea");
-   AreaFix(&ax, &ay);
-   desks.desk[desks.current].current_area_x = ax;
-   desks.desk[desks.current].current_area_y = ay;
    EDBUG_RETURN_;
 }
 
@@ -172,8 +153,11 @@ SetCurrentLinearArea(int a)
 int
 GetCurrentLinearArea(void)
 {
-   return AreaXYToLinear(desks.desk[desks.current].current_area_x,
-			 desks.desk[desks.current].current_area_y);
+   int                 ax, ay;
+
+   DeskGetCurrentArea(&ax, &ay);
+
+   return AreaXYToLinear(ax, ay);
 }
 
 void
@@ -209,7 +193,7 @@ SlideWindowsBy(Window * win, int num, int dx, int dy, int speed)
 	     y = ((xy[i].y * (1024 - k)) + ((xy[i].y + dy) * k)) >> 10;
 	     EMoveWindow(disp, win[i], x, y);
 	  }
-	XSync(disp, False);
+	ecore_x_sync();
 
 	k = ETimedLoopNext();
      }
@@ -227,8 +211,7 @@ void
 SetCurrentArea(int ax, int ay)
 {
    EWin               *const *lst, *ewin;
-   int                 i, num, dx, dy;
-   ToolTip            *tt;
+   int                 i, num, dx, dy, pax, pay;
 
    EDBUG(4, "SetCurrentArea");
 
@@ -237,18 +220,18 @@ SetCurrentArea(int ax, int ay)
       EDBUG_RETURN_;
 
    AreaFix(&ax, &ay);
-   if ((ax == desks.desk[desks.current].current_area_x)
-       && (ay == desks.desk[desks.current].current_area_y))
+   DeskGetCurrentArea(&pax, &pay);
+
+   if (ax == pax && ay == pay)
       EDBUG_RETURN_;
 
    if (EventDebug(EDBUG_TYPE_DESKS))
       Eprintf("SetCurrentArea %d,%d\n", ax, ay);
 
-   tt = FindItem("DEFAULT", 0, LIST_FINDBY_NAME, LIST_TYPE_TOOLTIP);
-   HideToolTip(tt);
+   ModulesSignal(ESIGNAL_AREA_SWITCH_START, NULL);
 
-   dx = VRoot.w * (ax - desks.desk[desks.current].current_area_x);
-   dy = VRoot.h * (ay - desks.desk[desks.current].current_area_y);
+   dx = VRoot.w * (ax - pax);
+   dy = VRoot.h * (ay - pay);
 
    if (dx < 0)
       SoundPlay("SOUND_MOVE_AREA_LEFT");
@@ -260,15 +243,13 @@ SetCurrentArea(int ax, int ay)
       SoundPlay("SOUND_MOVE_AREA_DOWN");
 
    ActionsSuspend();
-   MenusHide();
 
    /* remove lots of event masks from windows.. we dont want to bother */
    /* handling events as a result of our playing wiht windows */
    FocusNewDeskBegin();
 
    /* set the current area up in out data structs */
-   desks.desk[desks.current].current_area_x = ax;
-   desks.desk[desks.current].current_area_y = ay;
+   DeskSetCurrentArea(ax, ay);
 
    /* move all the windows around */
    lst = EwinListGetAll(&num);
@@ -281,16 +262,16 @@ SetCurrentArea(int ax, int ay)
 	for (i = 0; i < num; i++)
 	  {
 	     ewin = lst[i];
-	     if (ewin->sticky || ewin->iconified)
+	     if (EoIsSticky(ewin) || ewin->iconified)
 		continue;
-	     if (ewin->desktop != desks.current && !ewin->floating)
+	     if (EoGetDesk(ewin) != DesksGetCurrent() && !EoIsFloating(ewin))
 		continue;
 
-	     if (!(ewin->floating && Conf.movemode == 0))
+	     if (!(EoIsFloating(ewin) && Conf.movres.mode_move == 0))
 	       {
 		  wnum++;
 		  wl = Erealloc(wl, sizeof(Window) * wnum);
-		  wl[wnum - 1] = ewin->win;
+		  wl[wnum - 1] = EoGetWin(ewin);
 	       }
 	  }
 
@@ -306,48 +287,41 @@ SetCurrentArea(int ax, int ay)
    for (i = 0; i < num; i++)
      {
 	ewin = lst[i];
-	if (ewin->sticky)
+	if (EoIsSticky(ewin))
 	   continue;
 	if (ewin->client.transient > 0)
 	   continue;
-	if (ewin->desktop != desks.current && !ewin->floating)
+	if (EoGetDesk(ewin) != DesksGetCurrent() && !EoIsFloating(ewin))
 	   continue;
 
-	if (!(ewin->floating && Conf.movemode == 0))
-	   MoveEwin(ewin, ewin->x - dx, ewin->y - dy);
+	if (!(EoIsFloating(ewin) && Conf.movres.mode_move == 0))
+	   MoveEwin(ewin, EoGetX(ewin) - dx, EoGetY(ewin) - dy);
      }
 
    /* set hints up for it */
    HintsSetDesktopViewport();
-   XSync(disp, False);
+   ecore_x_sync();
 
    ActionsResume();
 
    /* re-focus on a new ewin on that new desktop area */
    FocusNewDesk();
 
-   /* tell the FX api abotu the change */
-   FX_DeskChange();
+   ModulesSignal(ESIGNAL_AREA_SWITCH_DONE, NULL);
 
    /* update which "edge flip resistance" detector windows are visible */
    EdgeWindowsShow();
-
-   /* update our pager */
-   UpdatePagerSel();
-   RedrawPagersForDesktop(desks.current, 3);
-   ForceUpdatePagersForDesktop(desks.current);
 
    EDBUG_RETURN_;
 }
 
 void
-MoveCurrentAreaBy(int ax, int ay)
+MoveCurrentAreaBy(int dx, int dy)
 {
-   EDBUG(4, "MoveCurrentAreaBy");
+   int                 ax, ay;
 
-   SetCurrentArea(desks.desk[desks.current].current_area_x + ax,
-		  desks.desk[desks.current].current_area_y + ay);
-   EDBUG_RETURN_;
+   DeskGetCurrentArea(&ax, &ay);
+   SetCurrentArea(ax + dx, ay + dy);
 }
 
 void

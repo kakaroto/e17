@@ -23,141 +23,8 @@
 #include "E.h"
 #include <time.h>
 
-static int
-AddEToFile(char *file)
-{
-   FILE               *f1, *f2;
-   char                tmp[2048], s[2048];
-   char               *s1, *s2;
-   char                hase = 0;
-   char                foundwm = 0;
-   const char         *wms[] = {
-      "wmaker", "afterstep", "fvwm", "fvwm2", "twm", "mwm", "vtwm", "ctwm",
-      "gwm",
-      "mlvwm", "kwm", "olwm", "wm2", "wmx", "olvwm", "9wm", "blackbox", "awm",
-      "uwm",
-      "amiwm", "dtwm", "4dwm", "scwm", "fvwm95", "fvwm95-2", "tvtwm",
-      "bowman",
-      "qwm", "icewm", "qvwm", "gnome-session", "xsm", "startkde"
-   };
-   int                 wmnum = 33;
-   int                 i;
-
-   EDBUG(8, "AddEToFile");
-   if (!exists(file))
-      EDBUG_RETURN(0);
-
-   Esnprintf(tmp, 2048, "%s/estrt_%i",
-	     (getenv("TMPDIR") == NULL) ? "/tmp" : getenv("TMPDIR"),
-	     (unsigned)time(NULL));
-   f1 = fopen(file, "r");
-   if (!f1)
-      EDBUG_RETURN(0);
-   f2 = fopen(tmp, "w");
-   if (!f2)
-     {
-	fclose(f1);
-	EDBUG_RETURN(0);
-     }
-   while (fgets(s, 2048, f1))
-     {
-	s1 = strstr(s, "enlightenment");
-	if (s1)
-	  {
-	     s2 = strstr(s, "#");
-	     if (((!s2) || (s1 < s2)) && (!foundwm))
-		hase = 1;
-	  }
-	for (i = 0; i < wmnum; i++)
-	  {
-	     s1 = strstr(s, wms[i]);
-	     if (s1)
-	       {
-		  s2 = strstr(s, "#");
-		  if ((!s2) || (s1 < s2))
-		    {
-		       fprintf(f2, "#%s", s);
-		       fprintf(f2,
-			       "\n# Enlightenment inserted Execution string here\n");
-		       fprintf(f2, "exec %s/enlightenment\n\n", EDirBin());
-		       foundwm = 1;
-		       i = wmnum + 1;
-		    }
-	       }
-	  }
-	if (i <= wmnum)
-	   fprintf(f2, "%s", s);
-     }
-   fclose(f1);
-   fclose(f2);
-   if (!foundwm)
-     {
-	f1 = fopen(file, "r");
-	if (!f1)
-	   EDBUG_RETURN(0);
-	f2 = fopen(tmp, "w");
-	if (!f2)
-	  {
-	     fclose(f1);
-	     EDBUG_RETURN(0);
-	  }
-	fprintf(f2, "\n# Enlightenment inserted Execution string here\n");
-	fprintf(f2, "exec %s/enlightenment\n\n", EDirBin());
-	while (fgets(s, 2048, f1))
-	   fprintf(f2, "%s", s);
-	fclose(f1);
-	fclose(f2);
-     }
-   if (!hase)
-      E_cp(tmp, file);
-   E_rm(tmp);
-   EDBUG_RETURN(1);
-}
-
-static int
-CreateEFile(char *file)
-{
-   FILE               *f;
-
-   EDBUG(8, "CreateEFile");
-   f = fopen(file, "w");
-   if (!f)
-      EDBUG_RETURN(0);
-   fprintf(f, "# Enlightenment inserted Execution string here\n");
-   fprintf(f, "exec %s/enlightenment\n", EDirBin());
-   fclose(f);
-   EDBUG_RETURN(1);
-}
-
-void
-AddE()
-{
-   char               *h;
-   char                s[1024];
-   int                 val;
-
-   EDBUG(6, "AddE");
-   val = 0;
-   h = homedir(getuid());
-   Esnprintf(s, 1024, "%s/.xsession", h);
-   val |= AddEToFile(s);
-   Esnprintf(s, 1024, "%s/.xinitrc", h);
-   val |= AddEToFile(s);
-   Esnprintf(s, 1024, "%s/.Xclients", h);
-   val |= AddEToFile(s);
-   if (!val)
-     {
-	Esnprintf(s, 1024, "%s/.xsession", h);
-	CreateEFile(s);
-	Esnprintf(s, 1024, "%s/.xinitrc", h);
-	CreateEFile(s);
-	Esnprintf(s, 1024, "%s/.Xclients", h);
-	CreateEFile(s);
-     }
-   if (h)
-      Efree(h);
-   EDBUG_RETURN_;
-}
+Window              init_win1 = 0;
+Window              init_win2 = 0;
 
 void
 CreateStartupDisplay(char start)
@@ -168,21 +35,19 @@ CreateStartupDisplay(char start)
    static ImageClass  *ic = NULL;
    char                pq;
 
-   EDBUG(6, "CreateStartupDisplay");
-   if (init_win_ext)
-      EDBUG_RETURN_;
+   if (!Conf.startup.animate)
+      return;
+
    if (start)
      {
-	bg_sideways =
-	   (Background *) FindItem("STARTUP_BACKGROUND_SIDEWAYS", 0,
-				   LIST_FINDBY_NAME, LIST_TYPE_BACKGROUND);
-	ic = (ImageClass *) FindItem("STARTUP_BAR", 0, LIST_FINDBY_NAME,
-				     LIST_TYPE_ICLASS);
+	bg_sideways = FindItem("STARTUP_BACKGROUND_SIDEWAYS", 0,
+			       LIST_FINDBY_NAME, LIST_TYPE_BACKGROUND);
+	ic = ImageclassFind("STARTUP_BAR", 0);
 	if (!ic)
-	   ic = (ImageClass *) FindItem("DESKTOP_DRAGBUTTON_HORIZ", 0,
-					LIST_FINDBY_NAME, LIST_TYPE_ICLASS);
-	bg = (Background *) FindItem("STARTUP_BACKGROUND", 0, LIST_FINDBY_NAME,
-				     LIST_TYPE_BACKGROUND);
+	   ic = ImageclassFind("DESKTOP_DRAGBUTTON_HORIZ", 0);
+	bg =
+	   FindItem("STARTUP_BACKGROUND", 0, LIST_FINDBY_NAME,
+		    LIST_TYPE_BACKGROUND);
 	if ((!ic) || (!bg))
 	   EDBUG_RETURN_;
 
@@ -218,10 +83,10 @@ CreateStartupDisplay(char start)
 
 	pq = Mode.queue_up;
 	Mode.queue_up = 0;
-	IclassApply(ic, b1, VRoot.w, Conf.desks.dragbar_width, 0, 0, 0, 0,
-		    ST_UNKNWN);
-	IclassApply(ic, b2, VRoot.w, Conf.desks.dragbar_width, 0, 0, 0, 0,
-		    ST_UNKNWN);
+	ImageclassApply(ic, b1, VRoot.w, Conf.desks.dragbar_width, 0, 0, 0, 0,
+			ST_UNKNWN);
+	ImageclassApply(ic, b2, VRoot.w, Conf.desks.dragbar_width, 0, 0, 0, 0,
+			ST_UNKNWN);
 	Mode.queue_up = pq;
 	BackgroundApply(bg, win1, 1);
 	BackgroundApply(bg, win2, 1);
@@ -262,7 +127,7 @@ CreateStartupDisplay(char start)
 
 	     EMoveWindow(disp, w1, x + xOffset, -y - yOffset);
 	     EMoveWindow(disp, w2, -x - xOffset, y + yOffset);
-	     XSync(disp, False);
+	     ecore_x_sync();
 
 	     k = ETimedLoopNext();
 	  }
@@ -271,6 +136,9 @@ CreateStartupDisplay(char start)
 	EDestroyWindow(disp, w2);
 	init_win1 = 0;
 	init_win2 = 0;
+
+	BackgroundDestroyByName("STARTUP_BACKGROUND_SIDEWAYS");
+	BackgroundDestroyByName("STARTUP_BACKGROUND");
      }
    EDBUG_RETURN_;
 }

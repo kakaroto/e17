@@ -6,7 +6,7 @@ stamp-*
 *.gmo
 POTFILES
 cat-id-tbl.c
-enlightenment.pot
+e16.pot
 Rules-quot
 boldquot.sed
 en@boldquot.header

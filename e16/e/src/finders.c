@@ -32,7 +32,7 @@ FindEwinByBase(Window win)
    ewins = EwinListGetAll(&num);
    for (i = 0; i < num; i++)
      {
-	if (win == ewins[i]->win)
+	if (win == EoGetWin(ewins[i]))
 	   return ewins[i];
      }
    EDBUG_RETURN(NULL);
@@ -72,6 +72,7 @@ FindEwinByPartial(const char *match, int type)
    EWin               *const *ewins;
    int                 i, num, len;
    char                ewinid[FILEPATH_LEN_MAX];
+   const char         *name;
 
    EDBUG(6, "FindEwinByPartial");
 
@@ -95,7 +96,10 @@ FindEwinByPartial(const char *match, int type)
 	else if (type == '=')
 	  {
 	     /* Match name (substring) */
-	     if (!strstr(ewins[i]->icccm.wm_name, match))
+	     name = ewins[i]->icccm.wm_name;
+	     if (!name)
+		continue;
+	     if (!strstr(name, match))
 		continue;
 	  }
 	else
@@ -155,30 +159,12 @@ FindActionClass(Window win)
      {
 	ActionClass        *ac;
 
-	if (win == desks.desk[i].win)
+	if (win == DeskGetWin(i))
 	  {
 	     ac = FindItem("DESKBINDINGS", 0, LIST_FINDBY_NAME,
 			   LIST_TYPE_ACLASS);
 	     EDBUG_RETURN(ac);
 	  }
-     }
-
-   EDBUG_RETURN(NULL);
-}
-
-EWin               *
-FindEwinByMenu(Menu * m)
-{
-   EWin               *const *ewins;
-   int                 i, num;
-
-   EDBUG(6, "FindEwinByMenu");
-
-   ewins = EwinListGetAll(&num);
-   for (i = 0; i < num; i++)
-     {
-	if (ewins[i]->menu == m)
-	   return ewins[i];
      }
 
    EDBUG_RETURN(NULL);
@@ -259,33 +245,33 @@ ListWinGroupMembersForEwin(EWin * ewin, int action, char nogroup, int *num)
 
 	     switch (action)
 	       {
-	       case ACTION_SET_WINDOW_BORDER:
+	       case GROUP_ACTION_SET_WINDOW_BORDER:
 		  if (!ewin->groups[i]->cfg.set_border)
 		     daddy_says_no_no = 1;
 		  break;
-	       case ACTION_ICONIFY:
+	       case GROUP_ACTION_ICONIFY:
 		  if (!ewin->groups[i]->cfg.iconify)
 		     daddy_says_no_no = 1;
 		  break;
-	       case ACTION_MOVE:
+	       case GROUP_ACTION_MOVE:
 		  if (!ewin->groups[i]->cfg.move)
 		     daddy_says_no_no = 1;
 		  break;
-	       case ACTION_RAISE:
-	       case ACTION_LOWER:
-	       case ACTION_RAISE_LOWER:
+	       case GROUP_ACTION_RAISE:
+	       case GROUP_ACTION_LOWER:
+	       case GROUP_ACTION_RAISE_LOWER:
 		  if (!ewin->groups[i]->cfg.raise)
 		     daddy_says_no_no = 1;
 		  break;
-	       case ACTION_STICK:
+	       case GROUP_ACTION_STICK:
 		  if (!ewin->groups[i]->cfg.stick)
 		     daddy_says_no_no = 1;
 		  break;
-	       case ACTION_SHADE:
+	       case GROUP_ACTION_SHADE:
 		  if (!ewin->groups[i]->cfg.shade)
 		     daddy_says_no_no = 1;
 		  break;
-	       case ACTION_KILL:
+	       case GROUP_ACTION_KILL:
 		  if (!ewin->groups[i]->cfg.kill)
 		     daddy_says_no_no = 1;
 		  break;
@@ -303,8 +289,8 @@ ListWinGroupMembersForEwin(EWin * ewin, int action, char nogroup, int *num)
 		  for (k = 0; k < ewin->groups[i]->num_members; k++)
 		    {
 		       /* To get consistent behaviour, limit groups to a single desktop for now: */
-		       if (ewin->groups[i]->members[k]->desktop ==
-			   ewin->desktop)
+		       if (EoGetDesk(ewin->groups[i]->members[k]) ==
+			   EoGetDesk(ewin))
 			 {
 			    inlist = 0;
 			    for (j = 0; j < (*num); j++)
@@ -460,39 +446,3 @@ ListGroupMembers(Window win, int *num)
    EDBUG_RETURN(lst);
 }
 #endif
-
-EWin               *
-FindEwinByDialog(Dialog * d)
-{
-   EWin               *const *ewins;
-   int                 i, num;
-
-   EDBUG(6, "FindEwinByDialog");
-
-   ewins = EwinListGetAll(&num);
-   for (i = 0; i < num; i++)
-     {
-	if (ewins[i]->dialog == d)
-	   return ewins[i];
-     }
-
-   EDBUG_RETURN(NULL);
-}
-
-int
-FindADialog(void)
-{
-   EWin               *const *ewins;
-   int                 i, num, n;
-
-   EDBUG(6, "FindADialog");
-
-   ewins = EwinListGetAll(&num);
-   for (i = n = 0; i < num; i++)
-     {
-	if (ewins[i]->dialog)
-	   n++;
-     }
-
-   EDBUG_RETURN(n);
-}

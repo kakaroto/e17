@@ -44,8 +44,8 @@ MaxSizeHV(EWin * ewin, const char *resize_type, int direction)
    if (ewin->toggle)
      {
 	MoveResizeEwin(ewin, ewin->lx, ewin->ly, ewin->lw, ewin->lh);
-	ewin->lx = ewin->x;
-	ewin->ly = ewin->y;
+	ewin->lx = EoGetX(ewin);
+	ewin->ly = EoGetY(ewin);
 	ewin->lw = ewin->client.w;
 	ewin->lh = ewin->client.h;
 	ewin->st.maximized_horz = 0;
@@ -67,8 +67,8 @@ MaxSizeHV(EWin * ewin, const char *resize_type, int direction)
       type = MAX_XINERAMA;
 
    /* Default is no change */
-   y = ewin->y;
-   x = ewin->x;
+   y = EoGetY(ewin);
+   x = EoGetX(ewin);
    h = ewin->client.h;
    w = ewin->client.w;
 
@@ -92,7 +92,7 @@ MaxSizeHV(EWin * ewin, const char *resize_type, int direction)
      case MAX_ABSOLUTE:
      case MAX_AVAILABLE:
      case MAX_CONSERVATIVE:
-	ScreenGetAvailableArea(ewin->x, ewin->y, &x1, &y1, &x2, &y2);
+	ScreenGetAvailableArea(EoGetX(ewin), EoGetY(ewin), &x1, &y1, &x2, &y2);
 	x2 += x1;
 	y2 += y1;
 
@@ -113,19 +113,18 @@ MaxSizeHV(EWin * ewin, const char *resize_type, int direction)
 	       {
 		  pe = lst[i];
 		  if (pe == ewin ||
-		      pe->iconified ||
-		      pe->floating ||
-		      pe->ignorearrange ||
-		      (ewin->desktop != pe->desktop && !pe->sticky) ||
+		      pe->iconified || EoIsFloating(pe) || pe->ignorearrange ||
+		      (EoGetDesk(ewin) != EoGetDesk(pe) && !EoIsSticky(pe)) ||
 		      (pe->type & (EWIN_TYPE_DIALOG | EWIN_TYPE_MENU)) ||
 		      (type == MAX_AVAILABLE && !pe->never_use_area) ||
-		      !SPANS_COMMON(x, w, pe->x, pe->w))
+		      !SPANS_COMMON(x, w, EoGetX(pe), EoGetW(pe)))
 		     continue;
 
-		  if (((pe->y + pe->h) <= y) && ((pe->y + pe->h) >= y1))
-		     y1 = pe->y + pe->h;
-		  else if (((y + h) <= pe->y) && (y2 >= pe->y))
-		     y2 = pe->y;
+		  if (((EoGetY(pe) + EoGetH(pe)) <= y)
+		      && ((EoGetY(pe) + EoGetH(pe)) >= y1))
+		     y1 = EoGetY(pe) + EoGetH(pe);
+		  else if (((y + h) <= EoGetY(pe)) && (y2 >= EoGetY(pe)))
+		     y2 = EoGetY(pe);
 	       }
 	     y = y1;
 	     h = y2 - y1 - (ewin->border->border.top +
@@ -140,19 +139,18 @@ MaxSizeHV(EWin * ewin, const char *resize_type, int direction)
 	       {
 		  pe = lst[i];
 		  if (pe == ewin ||
-		      pe->iconified ||
-		      pe->floating ||
-		      pe->ignorearrange ||
-		      (ewin->desktop != pe->desktop && !pe->sticky) ||
+		      pe->iconified || EoIsFloating(pe) || pe->ignorearrange ||
+		      (EoGetDesk(ewin) != EoGetDesk(pe) && !EoIsSticky(pe)) ||
 		      (pe->type & (EWIN_TYPE_DIALOG | EWIN_TYPE_MENU)) ||
 		      (type == MAX_AVAILABLE && !pe->never_use_area) ||
-		      !SPANS_COMMON(y, h, pe->y, pe->h))
+		      !SPANS_COMMON(y, h, EoGetY(pe), EoGetH(pe)))
 		     continue;
 
-		  if (((pe->x + pe->w) <= x) && ((pe->x + pe->w) >= x1))
-		     x1 = pe->x + pe->w;
-		  else if (((x + w) <= pe->x) && (x2 >= pe->x))
-		     x2 = pe->x;
+		  if (((EoGetX(pe) + EoGetW(pe)) <= x)
+		      && ((EoGetX(pe) + EoGetW(pe)) >= x1))
+		     x1 = EoGetX(pe) + EoGetW(pe);
+		  else if (((x + w) <= EoGetX(pe)) && (x2 >= EoGetX(pe)))
+		     x2 = EoGetX(pe);
 	       }
 	     x = x1;
 	     w = x2 - x1 - (ewin->border->border.left +
@@ -164,8 +162,8 @@ MaxSizeHV(EWin * ewin, const char *resize_type, int direction)
 	break;
      }
 
-   ewin->lx = ewin->x;
-   ewin->ly = ewin->y;
+   ewin->lx = EoGetX(ewin);
+   ewin->ly = EoGetY(ewin);
    ewin->lw = ewin->client.w;
    ewin->lh = ewin->client.h;
    MoveResizeEwin(ewin, x, y, w, h);

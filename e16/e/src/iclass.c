@@ -21,6 +21,13 @@
  * CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 #include "E.h"
+#include "conf.h"
+
+int
+TransparencyEnabled(void)
+{
+   return Conf.trans.alpha;
+}
 
 #ifdef ENABLE_THEME_TRANSPARENCY
 
@@ -36,7 +43,7 @@ TransparencyMakeColorModifier(void)
    for (i = 0; i < 256; i++)
      {
 	gray[i] = i;
-	alpha[i] = 255 - Conf.theme.transparency;
+	alpha[i] = 255 - Conf.trans.alpha;
      }
 
    if (icm == NULL)
@@ -61,8 +68,8 @@ TransparencySet(int transparency)
    else if (transparency > 255)
       transparency = 255;
 
-   changed = Conf.theme.transparency != transparency;
-   Conf.theme.transparency = transparency;
+   changed = Conf.trans.alpha != transparency;
+   Conf.trans.alpha = transparency;
 
    /* Generate the color modifier tables */
    TransparencyMakeColorModifier();
@@ -80,35 +87,33 @@ TransparencySet(int transparency __UNUSED__)
 
 #endif /* ENABLE_THEME_TRANSPARENCY */
 
-ImageClass         *
-CreateIclass()
+static ImageState  *
+ImagestateCreate(void)
 {
-   ImageClass         *i;
+   ImageState         *is;
 
-   EDBUG(5, "CreateIclass");
+   EDBUG(6, "ImagestateCreate");
 
-   i = Emalloc(sizeof(ImageClass));
-   if (!i)
+   is = Emalloc(sizeof(ImageState));
+   if (!is)
       EDBUG_RETURN(NULL);
 
-   i->name = NULL;
-   i->external = 0;
-   i->norm.normal = i->norm.hilited = i->norm.clicked = i->norm.disabled = NULL;
-   i->active.normal = i->active.hilited = i->active.clicked =
-      i->active.disabled = NULL;
-   i->sticky.normal = i->sticky.hilited = i->sticky.clicked =
-      i->sticky.disabled = NULL;
-   i->sticky_active.normal = i->sticky_active.hilited =
-      i->sticky_active.clicked = i->sticky_active.disabled = NULL;
-   i->padding.left = 0;
-   i->padding.right = 0;
-   i->padding.top = 0;
-   i->padding.bottom = 0;
-   i->colmod = NULL;
-   i->ref_count = 0;
+   is->im_file = NULL;
+   is->real_file = NULL;
+   is->unloadable = 0;
+   is->transparent = 0;
+   is->im = NULL;
+   is->border = NULL;
+   is->pixmapfillstyle = FILL_STRETCH;
+   ESetColor(&(is->bg), 160, 160, 160);
+   ESetColor(&(is->hi), 200, 200, 200);
+   ESetColor(&(is->lo), 120, 120, 120);
+   ESetColor(&(is->hihi), 255, 255, 255);
+   ESetColor(&(is->lolo), 64, 64, 64);
+   is->bevelstyle = BEVEL_NONE;
+   is->colmod = NULL;
 
-   EDBUG_RETURN(i);
-
+   EDBUG_RETURN(is);
 }
 
 static void
@@ -139,7 +144,6 @@ FreeImageState(ImageState * i)
 static void
 FreeImageStateArray(ImageStateArray * isa)
 {
-
    EDBUG(6, "FreeImageStateArray");
 
    FreeImageState(isa->normal);
@@ -152,13 +156,94 @@ FreeImageStateArray(ImageStateArray * isa)
    Efree(isa->disabled);
 
    EDBUG_RETURN_;
-
 }
 
-void
-FreeImageClass(ImageClass * i)
+static void
+ImagestatePopulate(ImageState * is)
 {
+   EDBUG(6, "ImagestatePopulate");
 
+   if (!is)
+      EDBUG_RETURN_;
+
+   EAllocColor(&is->bg);
+   EAllocColor(&is->hi);
+   EAllocColor(&is->lo);
+   EAllocColor(&is->hihi);
+   EAllocColor(&is->lolo);
+
+   EDBUG_RETURN_;
+}
+
+static void
+ImagestateRealize(ImageState * is)
+{
+   if (is == NULL || is->im_file == NULL)
+      return;
+
+   /* has bg pixmap */
+   if (is->im)
+      return;
+
+   /* not loaded, load and setup */
+   if (!is->real_file)
+      is->real_file = ThemeFileFind(is->im_file);
+
+   is->im = ELoadImage(is->real_file);
+   imlib_context_set_image(is->im);
+   if (is->im == NULL)
+      Eprintf
+	 ("ImagestateRealize: Hmmm... is->im is NULL (im_file=%s real_file=%s\n",
+	  is->im_file, is->real_file);
+
+   if (is->border)
+      imlib_image_set_border(is->border);
+
+#if 0				/* To be implemented? */
+   if (is->colmod)
+     {
+	Imlib_set_image_red_curve(pImlib_Context, is->im, is->colmod->red.map);
+	Imlib_set_image_green_curve(pImlib_Context, is->im,
+				    is->colmod->green.map);
+	Imlib_set_image_blue_curve(pImlib_Context, is->im,
+				   is->colmod->blue.map);
+     }
+#endif
+}
+
+static ImageClass  *
+ImageclassCreate(const char *name)
+{
+   ImageClass         *i;
+
+   EDBUG(5, "ImageclassCreate");
+
+   i = Emalloc(sizeof(ImageClass));
+   if (!i)
+      EDBUG_RETURN(NULL);
+
+   i->name = Estrdup(name);
+   i->external = 0;
+   i->norm.normal = i->norm.hilited = i->norm.clicked = i->norm.disabled = NULL;
+   i->active.normal = i->active.hilited = i->active.clicked =
+      i->active.disabled = NULL;
+   i->sticky.normal = i->sticky.hilited = i->sticky.clicked =
+      i->sticky.disabled = NULL;
+   i->sticky_active.normal = i->sticky_active.hilited =
+      i->sticky_active.clicked = i->sticky_active.disabled = NULL;
+   i->padding.left = 0;
+   i->padding.right = 0;
+   i->padding.top = 0;
+   i->padding.bottom = 0;
+   i->colmod = NULL;
+   i->ref_count = 0;
+
+   EDBUG_RETURN(i);
+}
+
+static void
+ImageclassDestroy(ImageClass * i)
+{
    EDBUG(5, "FreeImageClass");
 
    if (!i)
@@ -166,7 +251,7 @@ FreeImageClass(ImageClass * i)
 
    if (i->ref_count > 0)
      {
-	DialogOK(_("ImageClass Error!"), _("%u references remain\n"),
+	DialogOK(_("Imageclass Error!"), _("%u references remain\n"),
 		 i->ref_count);
 	EDBUG_RETURN_;
      }
@@ -184,79 +269,48 @@ FreeImageClass(ImageClass * i)
       i->colmod->ref_count--;
 
    EDBUG_RETURN_;
-
 }
 
-ImageState         *
-CreateImageState()
+ImageClass         *
+ImageclassFind(const char *name, int fallback)
 {
-   ImageState         *is;
+   ImageClass         *ic;
 
-   EDBUG(6, "CreateImageState");
+   if (name)
+     {
+	ic = FindItem(name, 0, LIST_FINDBY_NAME, LIST_TYPE_ICLASS);
+	if (ic || !fallback)
+	   return ic;
+     }
 
-   is = Emalloc(sizeof(ImageState));
-   if (!is)
-      EDBUG_RETURN(NULL);
+   ic = FindItem("__FALLBACK_ICLASS", 0, LIST_FINDBY_NAME, LIST_TYPE_ICLASS);
 
-   is->im_file = NULL;
-   is->real_file = NULL;
-   is->unloadable = 0;
-   is->transparent = 0;
-   is->im = NULL;
-   is->border = NULL;
-   is->pixmapfillstyle = FILL_STRETCH;
-   ESetColor(&(is->bg), 160, 160, 160);
-   ESetColor(&(is->hi), 200, 200, 200);
-   ESetColor(&(is->lo), 120, 120, 120);
-   ESetColor(&(is->hihi), 255, 255, 255);
-   ESetColor(&(is->lolo), 64, 64, 64);
-   is->bevelstyle = BEVEL_NONE;
-   is->colmod = NULL;
-
-   EDBUG_RETURN(is);
-
-}
-
-void
-ImageStatePopulate(ImageState * is)
-{
-   EDBUG(6, "ImageStatePopulate");
-
-   if (!is)
-      EDBUG_RETURN_;
-
-   EAllocColor(&is->bg);
-   EAllocColor(&is->hi);
-   EAllocColor(&is->lo);
-   EAllocColor(&is->hihi);
-   EAllocColor(&is->lolo);
-
-   EDBUG_RETURN_;
+   return ic;
 }
 
 #define ISTATE_SET_STATE(which, fallback) \
-   if (iclass->which) ImageStatePopulate(iclass->which); \
-   else iclass->which = iclass->fallback;
+   if (ic->which) ImagestatePopulate(ic->which); \
+   else ic->which = ic->fallback;
 
 #define ISTATE_SET_CM(which, fallback) \
-   if (!iclass->which->colmod) { \
-      iclass->which->colmod = fallback; \
+   if (!ic->which->colmod) { \
+      ic->which->colmod = fallback; \
       if (fallback) fallback->ref_count++; \
      }
 
-void
-IclassPopulate(ImageClass * iclass)
+static void
+ImageclassPopulate(ImageClass * ic)
 {
    ColorModifierClass *cm;
 
-   EDBUG(6, "IclassPopulate");
-   if ((!iclass) || (iclass->external))
+   EDBUG(6, "ImageclassPopulate");
+   if ((!ic) || (ic->external))
       EDBUG_RETURN_;
 
-   if (!iclass->norm.normal)
+   if (!ic->norm.normal)
       EDBUG_RETURN_;
 
-   ImageStatePopulate(iclass->norm.normal);
+   ImagestatePopulate(ic->norm.normal);
    ISTATE_SET_STATE(norm.hilited, norm.normal);
    ISTATE_SET_STATE(norm.clicked, norm.normal);
    ISTATE_SET_STATE(norm.disabled, norm.normal);
@@ -276,20 +330,20 @@ IclassPopulate(ImageClass * iclass)
    ISTATE_SET_STATE(sticky_active.clicked, sticky_active.normal);
    ISTATE_SET_STATE(sticky_active.disabled, sticky_active.normal);
 
-   if (!iclass->colmod)
+   if (!ic->colmod)
      {
 	cm = (ColorModifierClass *) FindItem("ICLASS", 0, LIST_FINDBY_NAME,
 					     LIST_TYPE_COLORMODIFIER);
 	if (!cm)
 	   cm = (ColorModifierClass *) FindItem("DEFAULT", 0, LIST_FINDBY_NAME,
 						LIST_TYPE_COLORMODIFIER);
-	iclass->colmod = cm;
+	ic->colmod = cm;
      }
 
    cm = (ColorModifierClass *) FindItem("NORMAL", 0, LIST_FINDBY_NAME,
 					LIST_TYPE_COLORMODIFIER);
    if (!cm)
-      cm = iclass->colmod;
+      cm = ic->colmod;
 
    ISTATE_SET_CM(norm.normal, cm);
    ISTATE_SET_CM(norm.hilited, cm);
@@ -299,7 +353,7 @@ IclassPopulate(ImageClass * iclass)
    cm = (ColorModifierClass *) FindItem("ACTIVE", 0, LIST_FINDBY_NAME,
 					LIST_TYPE_COLORMODIFIER);
    if (!cm)
-      cm = iclass->colmod;
+      cm = ic->colmod;
 
    ISTATE_SET_CM(active.normal, cm);
    ISTATE_SET_CM(active.hilited, cm);
@@ -309,7 +363,7 @@ IclassPopulate(ImageClass * iclass)
    cm = (ColorModifierClass *) FindItem("STICKY", 0, LIST_FINDBY_NAME,
 					LIST_TYPE_COLORMODIFIER);
    if (!cm)
-      cm = iclass->colmod;
+      cm = ic->colmod;
 
    ISTATE_SET_CM(sticky.normal, cm);
    ISTATE_SET_CM(sticky.hilited, cm);
@@ -319,7 +373,7 @@ IclassPopulate(ImageClass * iclass)
    cm = (ColorModifierClass *) FindItem("STICKY_ACTIVE", 0, LIST_FINDBY_NAME,
 					LIST_TYPE_COLORMODIFIER);
    if (!cm)
-      cm = iclass->colmod;
+      cm = ic->colmod;
 
    ISTATE_SET_CM(sticky_active.normal, cm);
    ISTATE_SET_CM(sticky_active.hilited, cm);
@@ -330,13 +384,231 @@ IclassPopulate(ImageClass * iclass)
 }
 
 int
-IclassIsTransparent(ImageClass * ic)
+ImageclassConfigLoad(FILE * fs)
+{
+   int                 err = 0;
+   char                s[FILEPATH_LEN_MAX];
+   char                s2[FILEPATH_LEN_MAX];
+   int                 i1;
+   ImageClass         *ic = 0;
+   ImageState         *ICToRead = 0;
+   ColorModifierClass *cm = 0;
+   int                 fields;
+   int                 l, r, t, b;
+
+   while (GetLine(s, sizeof(s), fs))
+     {
+	s2[0] = 0;
+	i1 = CONFIG_INVALID;
+	fields = sscanf(s, "%i %4000s", &i1, s2);
+
+	if (fields < 1)
+	   i1 = CONFIG_INVALID;
+	else if (i1 == CONFIG_CLOSE)
+	  {
+	     if (fields != 1)
+		Alert(_("CONFIG: ignoring extra data in \"%s\"\n"), s);
+	  }
+	else if (i1 != CONFIG_INVALID)
+	  {
+	     if (fields != 2)
+		Alert(_("CONFIG: missing required data in \"%s\"\n"), s);
+	  }
+
+	switch (i1)
+	  {
+	  case CONFIG_CLOSE:
+	     ImageclassPopulate(ic);
+	     AddItem(ic, ic->name, 0, LIST_TYPE_ICLASS);
+	     goto done;
+	  case ICLASS_LRTB:
+	     {
+		ICToRead->border = Emalloc(sizeof(Imlib_Border));
+
+		l = r = t = b = 0;
+		sscanf(s, "%*s %i %i %i %i", &l, &r, &t, &b);
+		ICToRead->border->left = l;
+		ICToRead->border->right = r;
+		ICToRead->border->top = t;
+		ICToRead->border->bottom = b;
+		/* Hmmm... imlib2 works better with this */
+		ICToRead->border->right++;
+		ICToRead->border->bottom++;
+	     }
+	     break;
+	  case ICLASS_FILLRULE:
+	     ICToRead->pixmapfillstyle = atoi(s2);
+	     break;
+	  case ICLASS_TRANSPARENT:
+	     ICToRead->transparent = strtoul(s2, NULL, 0);
+	     break;
+	  case CONFIG_INHERIT:
+	     {
+		ImageClass         *ICToInherit;
+
+		ICToInherit = ImageclassFind(s2, 0);
+		ic->norm = ICToInherit->norm;
+		ic->active = ICToInherit->active;
+		ic->sticky = ICToInherit->sticky;
+		ic->sticky_active = ICToInherit->sticky_active;
+		ic->padding = ICToInherit->padding;
+		ic->colmod = ICToInherit->colmod;
+		ic->external = ICToInherit->external;
+	     }
+	     break;
+	  case CONFIG_COLORMOD:
+	  case ICLASS_COLORMOD:
+	     cm = FindItem(s2, 0, LIST_FINDBY_NAME, LIST_TYPE_COLORMODIFIER);
+	     if (cm)
+	       {
+		  if (ICToRead)
+		    {
+		       ICToRead->colmod = cm;
+		    }
+		  else
+		    {
+		       ic->colmod = cm;
+		    }
+		  cm->ref_count++;
+	       }
+	     break;
+	  case ICLASS_PADDING:
+	     {
+		l = r = t = b = 0;
+		sscanf(s, "%*s %i %i %i %i", &l, &r, &t, &b);
+		ic->padding.left = l;
+		ic->padding.right = r;
+		ic->padding.top = t;
+		ic->padding.bottom = b;
+	     }
+	     break;
+	  case CONFIG_CLASSNAME:
+	  case ICLASS_NAME:
+	     if (ConfigSkipIfExists(fs, s2, LIST_TYPE_ICLASS))
+		goto done;
+	     ic = ImageclassCreate(s2);
+	     break;
+	  case CONFIG_DESKTOP:
+	     /* don't ask... --mandrake */
+	  case ICLASS_NORMAL:
+	     ic->norm.normal = ImagestateCreate();
+	     ic->norm.normal->im_file = Estrdup(s2);
+	     ICToRead = ic->norm.normal;
+	     break;
+	  case ICLASS_CLICKED:
+	     ic->norm.clicked = ImagestateCreate();
+	     ic->norm.clicked->im_file = Estrdup(s2);
+	     ICToRead = ic->norm.clicked;
+	     break;
+	  case ICLASS_HILITED:
+	     ic->norm.hilited = ImagestateCreate();
+	     ic->norm.hilited->im_file = Estrdup(s2);
+	     ICToRead = ic->norm.hilited;
+	     break;
+	  case ICLASS_DISABLED:
+	     ic->norm.disabled = ImagestateCreate();
+	     ic->norm.disabled->im_file = Estrdup(s2);
+	     ICToRead = ic->norm.disabled;
+	     break;
+	  case ICLASS_STICKY_NORMAL:
+	     ic->sticky.normal = ImagestateCreate();
+	     ic->sticky.normal->im_file = Estrdup(s2);
+	     ICToRead = ic->sticky.normal;
+	     break;
+	  case ICLASS_STICKY_CLICKED:
+	     ic->sticky.clicked = ImagestateCreate();
+	     ic->sticky.clicked->im_file = Estrdup(s2);
+	     ICToRead = ic->sticky.clicked;
+	     break;
+	  case ICLASS_STICKY_HILITED:
+	     ic->sticky.hilited = ImagestateCreate();
+	     ic->sticky.hilited->im_file = Estrdup(s2);
+	     ICToRead = ic->sticky.hilited;
+	     break;
+	  case ICLASS_STICKY_DISABLED:
+	     ic->sticky.disabled = ImagestateCreate();
+	     ic->sticky.disabled->im_file = Estrdup(s2);
+	     ICToRead = ic->sticky.disabled;
+	     break;
+	  case ICLASS_ACTIVE_NORMAL:
+	     ic->active.normal = ImagestateCreate();
+	     ic->active.normal->im_file = Estrdup(s2);
+	     ICToRead = ic->active.normal;
+	     break;
+	  case ICLASS_ACTIVE_CLICKED:
+	     ic->active.clicked = ImagestateCreate();
+	     ic->active.clicked->im_file = Estrdup(s2);
+	     ICToRead = ic->active.clicked;
+	     break;
+	  case ICLASS_ACTIVE_HILITED:
+	     ic->active.hilited = ImagestateCreate();
+	     ic->active.hilited->im_file = Estrdup(s2);
+	     ICToRead = ic->active.hilited;
+	     break;
+	  case ICLASS_ACTIVE_DISABLED:
+	     ic->active.disabled = ImagestateCreate();
+	     ic->active.disabled->im_file = Estrdup(s2);
+	     ICToRead = ic->active.disabled;
+	     break;
+	  case ICLASS_STICKY_ACTIVE_NORMAL:
+	     ic->sticky_active.normal = ImagestateCreate();
+	     ic->sticky_active.normal->im_file = Estrdup(s2);
+	     ICToRead = ic->sticky_active.normal;
+	     break;
+	  case ICLASS_STICKY_ACTIVE_CLICKED:
+	     ic->sticky_active.clicked = ImagestateCreate();
+	     ic->sticky_active.clicked->im_file = Estrdup(s2);
+	     ICToRead = ic->sticky_active.clicked;
+	     break;
+	  case ICLASS_STICKY_ACTIVE_HILITED:
+	     ic->sticky_active.hilited = ImagestateCreate();
+	     ic->sticky_active.hilited->im_file = Estrdup(s2);
+	     ICToRead = ic->sticky_active.hilited;
+	     break;
+	  case ICLASS_STICKY_ACTIVE_DISABLED:
+	     ic->sticky_active.disabled = ImagestateCreate();
+	     ic->sticky_active.disabled->im_file = Estrdup(s2);
+	     ICToRead = ic->sticky_active.disabled;
+	     break;
+	  default:
+	     Alert(_("Warning: unable to determine what to do with\n"
+		     "the following text in the middle of current "
+		     "ImageClass definition:\n"
+		     "%s\nWill ignore and continue...\n"), s);
+	     break;
+	  }
+     }
+   err = -1;
+
+ done:
+   return err;
+}
+
+ImageClass         *
+ImageclassCreateSimple(const char *name, const char *image)
+{
+   ImageClass         *ic;
+
+   ic = ImageclassCreate(name);
+   ic->norm.normal = ImagestateCreate();
+   ic->norm.normal->im_file = Estrdup(image);
+   ic->norm.normal->unloadable = 1;
+   ImageclassPopulate(ic);
+   AddItem(ic, ic->name, 0, LIST_TYPE_ICLASS);
+
+   ImagestateRealize(ic->norm.normal);
+
+   return ic;
+}
+
+int
+ImageclassIsTransparent(ImageClass * ic)
 {
    return ic && ic->norm.normal && ic->norm.normal->transparent;
 }
 
 static ImageState  *
-IclassGetImageState1(ImageStateArray * pisa, int state)
+ImageclassGetImageState1(ImageStateArray * pisa, int state)
 {
    ImageState         *is;
 
@@ -363,30 +635,54 @@ IclassGetImageState1(ImageStateArray * pisa, int state)
 }
 
 ImageState         *
-IclassGetImageState(ImageClass * iclass, int state, int active, int sticky)
+ImageclassGetImageState(ImageClass * ic, int state, int active, int sticky)
 {
    ImageState         *is;
 
    if (active)
      {
 	if (sticky)
-	   is = IclassGetImageState1(&iclass->sticky_active, state);
+	   is = ImageclassGetImageState1(&ic->sticky_active, state);
 	else
-	   is = IclassGetImageState1(&iclass->active, state);
+	   is = ImageclassGetImageState1(&ic->active, state);
      }
    else
      {
 	if (sticky)
-	   is = IclassGetImageState1(&iclass->sticky, state);
+	   is = ImageclassGetImageState1(&ic->sticky, state);
 	else
-	   is = IclassGetImageState1(&iclass->norm, state);
+	   is = ImageclassGetImageState1(&ic->norm, state);
      }
 
    return is;
 }
 
+Imlib_Image        *
+ImageclassGetImage(ImageClass * ic, int active, int sticky, int state)
+{
+   Imlib_Image        *im;
+   ImageState         *is;
+
+   if (!ic || ic->external)
+      return NULL;
+
+   is = ImageclassGetImageState(ic, state, active, sticky);
+   if (!is)
+      return NULL;
+
+   if (is->im == NULL && is->im_file)
+      ImagestateRealize(is);
+
+   im = is->im;
+   if (!im)
+      return NULL;
+   is->im = NULL;
+
+   return im;
+}
+
 static void
-ImageStateMakePmapMask(ImageState * is, Drawable win, PmapMask * pmm,
+ImagestateMakePmapMask(ImageState * is, Drawable win, PmapMask * pmm,
 		       int make_mask, int w, int h, int image_type)
 {
    int                 apply, trans;
@@ -398,7 +694,7 @@ ImageStateMakePmapMask(ImageState * is, Drawable win, PmapMask * pmm,
    int                 flags;
 
    flags = ICLASS_ATTR_OPAQUE;
-   if (Conf.theme.transparency > 0)
+   if (Conf.trans.alpha > 0)
      {
 	switch (image_type)
 	  {
@@ -408,34 +704,34 @@ ImageStateMakePmapMask(ImageState * is, Drawable win, PmapMask * pmm,
 	     flags = ICLASS_ATTR_OPAQUE;
 	     break;
 	  case ST_BORDER:
-	     flags = Conf.st_trans.border;
+	     flags = Conf.trans.border;
 	     break;
 	  case ST_WIDGET:
-	     flags = Conf.st_trans.widget;
+	     flags = Conf.trans.widget;
 	     break;
 	  case ST_ICONBOX:
-	     flags = Conf.st_trans.iconbox;
+	     flags = Conf.trans.iconbox;
 	     break;
 	  case ST_MENU:
-	     flags = Conf.st_trans.menu;
+	     flags = Conf.trans.menu;
 	     break;
 	  case ST_MENU_ITEM:
-	     flags = Conf.st_trans.menu_item;
+	     flags = Conf.trans.menu_item;
 	     break;
 	  case ST_TOOLTIP:
-	     flags = Conf.st_trans.tooltip;
+	     flags = Conf.trans.tooltip;
 	     break;
 	  case ST_DIALOG:
-	     flags = Conf.st_trans.dialog;
+	     flags = Conf.trans.dialog;
 	     break;
 	  case ST_HILIGHT:
-	     flags = Conf.st_trans.hilight;
+	     flags = Conf.trans.hilight;
 	     break;
 	  case ST_PAGER:
-	     flags = Conf.st_trans.pager;
+	     flags = Conf.trans.pager;
 	     break;
 	  case ST_WARPLIST:
-	     flags = Conf.st_trans.warplist;
+	     flags = Conf.trans.warplist;
 	     break;
 	  }
      }
@@ -450,8 +746,10 @@ ImageStateMakePmapMask(ImageState * is, Drawable win, PmapMask * pmm,
    imlib_context_set_drawable(win);
    imlib_context_set_image(is->im);
 
+#if 1				/* Remove ??? */
    if (is->border)
       imlib_image_set_border(is->border);
+#endif
 
    ww = imlib_image_get_width();
    hh = imlib_image_get_height();
@@ -478,11 +776,11 @@ ImageStateMakePmapMask(ImageState * is, Drawable win, PmapMask * pmm,
 	int                 xx, yy;
 
 	XTranslateCoordinates(disp, win, VRoot.win, 0, 0, &xx, &yy, &cr);
-/*	Eprintf("ImageStateMakePmapMask %#lx %d %d %d %d\n", win, xx, yy, w, h); */
+/*	Eprintf("ImagestateMakePmapMask %#lx %d %d %d %d\n", win, xx, yy, w, h); */
 	if (xx < VRoot.w && yy < VRoot.h && xx + w >= 0 && yy + h >= 0)
 	  {
 	     /* Create the background base image */
-	     bg = BackgroundGetPixmap(desks.desk[desks.current].bg);
+	     bg = BackgroundGetPixmap(DeskGetBackground(DesksGetCurrent()));
 	     if ((flags & ICLASS_ATTR_GLASS) || (bg == None))
 		bg = VRoot.win;
 	     imlib_context_set_drawable(bg);
@@ -493,7 +791,7 @@ ImageStateMakePmapMask(ImageState * is, Drawable win, PmapMask * pmm,
      }
    else
      {
-/*	Eprintf("ImageStateMakePmapMask %#lx %d %d\n", win, w, h); */
+/*	Eprintf("ImagestateMakePmapMask %#lx %d %d\n", win, w, h); */
      }
 #else
    trans = 0;
@@ -532,7 +830,6 @@ ImageStateMakePmapMask(ImageState * is, Drawable win, PmapMask * pmm,
 	  {
 	     Pixmap              pmap = 0, mask = 0;
 	     GC                  gc;
-	     XGCValues           gcv;
 
 	     imlib_context_set_image(is->im);
 	     if (imlib_image_has_alpha())
@@ -546,9 +843,9 @@ ImageStateMakePmapMask(ImageState * is, Drawable win, PmapMask * pmm,
 		  /* And now some uglyness to make a single "Imlib2 pixmap/mask" thing */
 
 		  /* Replace the pmap with the previously blended one */
-		  gc = XCreateGC(disp, pmm->pmap, 0, &gcv);
+		  gc = ecore_x_gc_new(pmm->pmap);
 		  XCopyArea(disp, pmm->pmap, pmap, gc, 0, 0, w, h, 0, 0);
-		  XFreeGC(disp, gc);
+		  ecore_x_gc_del(gc);
 
 		  /* Free the old pixmap without associated mask */
 		  imlib_free_pixmap_and_mask(pmm->pmap);
@@ -636,7 +933,7 @@ ImageStateMakePmapMask(ImageState * is, Drawable win, PmapMask * pmm,
 	     GC                  gc;
 	     XGCValues           gcv;
 
-	     tp = ECreatePixmap(disp, win, w, h, VRoot.depth);
+	     tp = ecore_x_pixmap_new(win, w, h, VRoot.depth);
 	     gcv.fill_style = FillTiled;
 	     gcv.tile = pmm->pmap;
 	     gcv.ts_x_origin = 0;
@@ -647,7 +944,7 @@ ImageStateMakePmapMask(ImageState * is, Drawable win, PmapMask * pmm,
 	     XFreeGC(disp, gc);
 	     if (pmm->mask)
 	       {
-		  tm = ECreatePixmap(disp, win, w, h, 1);
+		  tm = ecore_x_pixmap_new(win, w, h, 1);
 		  gcv.fill_style = FillTiled;
 		  gcv.tile = pmm->mask;
 		  gcv.ts_x_origin = 0;
@@ -677,7 +974,7 @@ ImageStateMakePmapMask(ImageState * is, Drawable win, PmapMask * pmm,
 }
 
 static void
-ImageStateDrawBevel(ImageState * is, Drawable win, GC gc, int w, int h)
+ImagestateDrawBevel(ImageState * is, Drawable win, GC gc, int w, int h)
 {
    switch (is->bevelstyle)
      {
@@ -760,7 +1057,7 @@ ImageStateDrawBevel(ImageState * is, Drawable win, GC gc, int w, int h)
 	XSetForeground(disp, gc, is->lolo.pixel);
 	XDrawLine(disp, win, gc, w - 2, h - 1, w - 1, h - 1);
 	XDrawLine(disp, win, gc, w - 1, h - 2, w - 1, h - 1);
-	XSync(disp, False);
+	ecore_x_sync();
 	break;
      case BEVEL_THICKPOINT:
 	XSetForeground(disp, gc, is->hi.pixel);
@@ -772,14 +1069,14 @@ ImageStateDrawBevel(ImageState * is, Drawable win, GC gc, int w, int h)
 }
 
 void
-IclassApply(ImageClass * iclass, Window win, int w, int h, int active,
-	    int sticky, int state, char expose, int image_type)
+ImageclassApply(ImageClass * ic, Window win, int w, int h, int active,
+		int sticky, int state, char expose, int image_type)
 {
    ImageState         *is;
 
-   EDBUG(4, "IclassApply");
+   EDBUG(4, "ImageclassApply");
 
-   if ((!iclass) || (!win))
+   if ((!ic) || (!win))
       EDBUG_RETURN_;
 
    if (w < 0)
@@ -787,13 +1084,14 @@ IclassApply(ImageClass * iclass, Window win, int w, int h, int active,
    if ((w < 0) || (h < 0))
       EDBUG_RETURN_;
 
+#if 0				/* Try not using the draw queue here. */
    if (Mode.queue_up)
      {
 	DrawQueue          *dq;
 
 	dq = Emalloc(sizeof(DrawQueue));
 	dq->win = win;
-	dq->iclass = iclass;
+	dq->iclass = ic;
 	if (dq->iclass)
 	   dq->iclass->ref_count++;
 	dq->w = w;
@@ -815,22 +1113,23 @@ IclassApply(ImageClass * iclass, Window win, int w, int h, int active,
 	AddItem(dq, "DRAW", dq->win, LIST_TYPE_DRAW);
 	EDBUG_RETURN_;
      }
+#endif
 
-   if (iclass->external)
+   if (ic->external)
       EDBUG_RETURN_;
 
-   is = IclassGetImageState(iclass, state, active, sticky);
+   is = ImageclassGetImageState(ic, state, active, sticky);
    if (!is)
       EDBUG_RETURN_;
 
    if (!expose)
      {
 	if (is->im == NULL && is->im_file)
-	   ImageStateRealize(is);
+	   ImagestateRealize(is);
 
 	if (is->im)
 	  {
-	     ImageStateMakePmapMask(is, win, NULL, 1, w, h, image_type);
+	     ImagestateMakePmapMask(is, win, NULL, 1, w, h, image_type);
 
 	     if ((is->unloadable) || (Conf.memory_paranoia))
 	       {
@@ -848,27 +1147,25 @@ IclassApply(ImageClass * iclass, Window win, int w, int h, int active,
 
    if (is->bevelstyle != BEVEL_NONE)
      {
-	XGCValues           gcv;
 	GC                  gc;
 
-	gc = XCreateGC(disp, win, 0, &gcv);
-	ImageStateDrawBevel(is, win, gc, w, h);
-	XFreeGC(disp, gc);
+	gc = ecore_x_gc_new(win);
+	ImagestateDrawBevel(is, win, gc, w, h);
+	ecore_x_gc_del(gc);
      }
 
    EDBUG_RETURN_;
 }
 
 void
-IclassApplyCopy(ImageClass * iclass, Window win, int w, int h, int active,
-		int sticky, int state, PmapMask * pmm, int make_mask,
-		int image_type)
+ImageclassApplyCopy(ImageClass * ic, Window win, int w, int h, int active,
+		    int sticky, int state, PmapMask * pmm, int make_mask,
+		    int image_type)
 {
    ImageState         *is;
-   XGCValues           gcv;
    GC                  gc;
 
-   EDBUG(4, "IclassApplyCopy");
+   EDBUG(4, "ImageclassApplyCopy");
 
    if (pmm == NULL)
       EDBUG_RETURN_;
@@ -876,22 +1173,22 @@ IclassApplyCopy(ImageClass * iclass, Window win, int w, int h, int active,
    pmm->type = 0;
    pmm->pmap = pmm->mask = 0;
 
-   if ((!iclass) || (!win) || (w < 1) || (h < 1))
+   if ((!ic) || (!win) || (w < 1) || (h < 1))
       EDBUG_RETURN_;
 
-   if (iclass->external)
+   if (ic->external)
       EDBUG_RETURN_;
 
-   is = IclassGetImageState(iclass, state, active, sticky);
+   is = ImageclassGetImageState(ic, state, active, sticky);
    if (!is)
       EDBUG_RETURN_;
 
    if (is->im == NULL && is->im_file)
-      ImageStateRealize(is);
+      ImagestateRealize(is);
 
    if (is->im)
      {
-	ImageStateMakePmapMask(is, win, pmm, make_mask, w, h, image_type);
+	ImagestateMakePmapMask(is, win, pmm, make_mask, w, h, image_type);
 
 	if ((is->unloadable) || (Conf.memory_paranoia))
 	  {
@@ -909,58 +1206,22 @@ IclassApplyCopy(ImageClass * iclass, Window win, int w, int h, int active,
 	Pixmap              pmap;
 
 	if (pmm->pmap)
-	   Eprintf("IclassApplyCopy: Hmm... pmm->pmap already set\n");
+	   Eprintf("ImageclassApplyCopy: Hmm... pmm->pmap already set\n");
 
-	pmap = ECreatePixmap(disp, win, w, h, VRoot.depth);
+	pmap = ecore_x_pixmap_new(win, w, h, VRoot.depth);
 	pmm->type = 0;
 	pmm->pmap = pmap;
 	pmm->mask = 0;
 
-	gc = XCreateGC(disp, pmap, 0, &gcv);
+	gc = ecore_x_gc_new(pmap);
 	/* bg color */
 	XSetForeground(disp, gc, is->bg.pixel);
 	XFillRectangle(disp, pmap, gc, 0, 0, w, h);
-	ImageStateDrawBevel(is, pmap, gc, w, h);
-	XFreeGC(disp, gc);
+	ImagestateDrawBevel(is, pmap, gc, w, h);
+	ecore_x_gc_del(gc);
      }
 
    EDBUG_RETURN_;
-}
-
-void
-ImageStateRealize(ImageState * is)
-{
-   if (is == NULL || is->im_file == NULL)
-      return;
-
-   /* has bg pixmap */
-   if (is->im)
-      return;
-
-   /* not loaded, load and setup */
-   if (!is->real_file)
-      is->real_file = FindFile(is->im_file);
-
-   is->im = ELoadImage(is->real_file);
-   imlib_context_set_image(is->im);
-   if (is->im == NULL)
-      Eprintf
-	 ("ImageStateRealize: Hmmm... is->im is NULL (im_file=%s real_file=%s\n",
-	  is->im_file, is->real_file);
-
-   if (is->border)
-      imlib_image_set_border(is->border);
-
-#if 0				/* To be implemented? */
-   if (is->colmod)
-     {
-	Imlib_set_image_red_curve(pImlib_Context, is->im, is->colmod->red.map);
-	Imlib_set_image_green_curve(pImlib_Context, is->im,
-				    is->colmod->green.map);
-	Imlib_set_image_blue_curve(pImlib_Context, is->im,
-				   is->colmod->blue.map);
-     }
-#endif
 }
 
 /*
@@ -972,7 +1233,7 @@ FreePmapMask(PmapMask * pmm)
    if (pmm->pmap)
      {
 	if (pmm->type == 0)
-	   EFreePixmap(disp, pmm->pmap);
+	   ecore_x_pixmap_del(pmm->pmap);
 	else
 	   imlib_free_pixmap_and_mask(pmm->pmap);
 	pmm->pmap = 0;
@@ -981,7 +1242,282 @@ FreePmapMask(PmapMask * pmm)
    if (pmm->mask)
      {
 	if (pmm->type == 0)
-	   EFreePixmap(disp, pmm->mask);
+	   ecore_x_pixmap_del(pmm->mask);
 	pmm->mask = 0;
      }
 }
+
+static void
+ImageclassSetupFallback(void)
+{
+   ImageClass         *ic;
+
+   /* create a fallback imageclass in case no imageclass can be found */
+   ic = ImageclassCreate("__FALLBACK_ICLASS");
+
+   ic->norm.normal = ImagestateCreate();
+   ESetColor(&(ic->norm.normal->hihi), 255, 255, 255);
+   ESetColor(&(ic->norm.normal->hi), 255, 255, 255);
+   ESetColor(&(ic->norm.normal->bg), 160, 160, 160);
+   ESetColor(&(ic->norm.normal->lo), 0, 0, 0);
+   ESetColor(&(ic->norm.normal->lolo), 0, 0, 0);
+   ic->norm.normal->bevelstyle = BEVEL_AMIGA;
+
+   ic->norm.hilited = ImagestateCreate();
+   ESetColor(&(ic->norm.hilited->hihi), 255, 255, 255);
+   ESetColor(&(ic->norm.hilited->hi), 255, 255, 255);
+   ESetColor(&(ic->norm.hilited->bg), 192, 192, 192);
+   ESetColor(&(ic->norm.hilited->lo), 0, 0, 0);
+   ESetColor(&(ic->norm.hilited->lolo), 0, 0, 0);
+   ic->norm.hilited->bevelstyle = BEVEL_AMIGA;
+
+   ic->norm.clicked = ImagestateCreate();
+   ESetColor(&(ic->norm.clicked->hihi), 0, 0, 0);
+   ESetColor(&(ic->norm.clicked->hi), 0, 0, 0);
+   ESetColor(&(ic->norm.clicked->bg), 192, 192, 192);
+   ESetColor(&(ic->norm.clicked->lo), 255, 255, 255);
+   ESetColor(&(ic->norm.clicked->lolo), 255, 255, 255);
+   ic->norm.clicked->bevelstyle = BEVEL_AMIGA;
+
+   ic->active.normal = ImagestateCreate();
+   ESetColor(&(ic->active.normal->hihi), 255, 255, 255);
+   ESetColor(&(ic->active.normal->hi), 255, 255, 255);
+   ESetColor(&(ic->active.normal->bg), 180, 140, 160);
+   ESetColor(&(ic->active.normal->lo), 0, 0, 0);
+   ESetColor(&(ic->active.normal->lolo), 0, 0, 0);
+   ic->active.normal->bevelstyle = BEVEL_AMIGA;
+
+   ic->active.hilited = ImagestateCreate();
+   ESetColor(&(ic->active.hilited->hihi), 255, 255, 255);
+   ESetColor(&(ic->active.hilited->hi), 255, 255, 255);
+   ESetColor(&(ic->active.hilited->bg), 230, 190, 210);
+   ESetColor(&(ic->active.hilited->lo), 0, 0, 0);
+   ESetColor(&(ic->active.hilited->lolo), 0, 0, 0);
+   ic->active.hilited->bevelstyle = BEVEL_AMIGA;
+
+   ic->active.clicked = ImagestateCreate();
+   ESetColor(&(ic->active.clicked->hihi), 0, 0, 0);
+   ESetColor(&(ic->active.clicked->hi), 0, 0, 0);
+   ESetColor(&(ic->active.clicked->bg), 230, 190, 210);
+   ESetColor(&(ic->active.clicked->lo), 255, 255, 255);
+   ESetColor(&(ic->active.clicked->lolo), 255, 255, 255);
+   ic->active.clicked->bevelstyle = BEVEL_AMIGA;
+
+   ic->padding.left = 8;
+   ic->padding.right = 8;
+   ic->padding.top = 8;
+   ic->padding.bottom = 8;
+
+   ImageclassPopulate(ic);
+   AddItem(ic, ic->name, 0, LIST_TYPE_ICLASS);
+}
+
+/*
+ * Imageclass Module
+ */
+
+static void
+ImageclassSighan(int sig, void *prm __UNUSED__)
+{
+   switch (sig)
+     {
+     case ESIGNAL_INIT:
+	ImageclassSetupFallback();
+	break;
+     }
+}
+
+static void
+ImageclassIpc(const char *params, Client * c __UNUSED__)
+{
+   char                param1[FILEPATH_LEN_MAX];
+   char                param2[FILEPATH_LEN_MAX];
+   char                param3[FILEPATH_LEN_MAX];
+   char                pq;
+   ImageClass         *ic;
+
+   if (!params)
+     {
+	IpcPrintf("Please specify...\n");
+	return;
+     }
+
+   param1[0] = 0;
+   param2[0] = 0;
+   param3[0] = 0;
+
+   word(params, 1, param1);
+   word(params, 2, param2);
+
+   if (!strcmp(param2, "create"))
+     {
+     }
+   else if (!strcmp(param2, "delete"))
+     {
+	ic = ImageclassFind(param1, 0);
+	if (ic)
+	   ImageclassDestroy(ic);
+     }
+   else if (!strcmp(param2, "modify"))
+     {
+     }
+   else if (!strcmp(param2, "free_pixmap"))
+     {
+	Pixmap              p;
+
+	word(params, 3, param3);
+	p = (Pixmap) strtol(param3, (char **)NULL, 0);
+	imlib_free_pixmap_and_mask(p);
+     }
+   else if (!strcmp(param2, "get_padding"))
+     {
+	ic = ImageclassFind(param1, 0);
+	if (ic)
+	   IpcPrintf("%i %i %i %i\n",
+		     ic->padding.left, ic->padding.right,
+		     ic->padding.top, ic->padding.bottom);
+	else
+	   IpcPrintf("Error: Imageclass does not exist\n");
+     }
+   else if (!strcmp(param2, "get_image_size"))
+     {
+	ic = ImageclassFind(param1, 0);
+	if (ic)
+	  {
+	     Imlib_Image        *im = NULL;
+
+	     if (ic->norm.normal->im_file)
+	       {
+		  if (!ic->norm.normal->real_file)
+		     ic->norm.normal->real_file =
+			ThemeFileFind(ic->norm.normal->im_file);
+		  if (ic->norm.normal->real_file)
+		     im = imlib_load_image(ic->norm.normal->real_file);
+		  if (im)
+		    {
+		       imlib_context_set_image(im);
+		       IpcPrintf("%i %i\n", imlib_image_get_width(),
+				 imlib_image_get_height());
+		       imlib_free_image();
+		    }
+		  else
+		     IpcPrintf("Error: Image does not exist\n");
+	       }
+	     else
+		IpcPrintf("Error: Image does not exist\n");
+	  }
+	else
+	   IpcPrintf("Error: Imageclass does not exist\n");
+     }
+   else if (!strcmp(param2, "apply"))
+     {
+	ic = ImageclassFind(param1, 0);
+	if (ic)
+	  {
+	     Window              win;
+	     char                state[20];
+	     const char         *winptr, *hptr;
+	     int                 st, w = -1, h = -1;
+
+	     winptr = atword(params, 3);
+	     word(params, 4, state);
+	     win = (Window) strtol(winptr, (char **)NULL, 0);
+	     if (!strcmp(state, "hilited"))
+		st = STATE_HILITED;
+	     else if (!strcmp(state, "clicked"))
+		st = STATE_CLICKED;
+	     else if (!strcmp(state, "disabled"))
+		st = STATE_DISABLED;
+	     else
+		st = STATE_NORMAL;
+	     if ((hptr = atword(params, 6)))
+	       {
+		  w = (int)strtol(atword(params, 5), (char **)NULL, 0);
+		  h = (int)strtol(hptr, (char **)NULL, 0);
+	       }
+	     pq = Mode.queue_up;
+	     Mode.queue_up = 0;
+	     ImageclassApply(ic, win, w, h, 0, 0, st, 0, ST_UNKNWN);
+	     Mode.queue_up = pq;
+	  }
+     }
+   else if (!strcmp(param2, "apply_copy"))
+     {
+	ic = ImageclassFind(param1, 0);
+	if (ic)
+	  {
+	     Window              win;
+	     char                state[20];
+	     const char         *winptr, *hptr;
+	     int                 st, w = -1, h = -1;
+
+	     winptr = atword(params, 3);
+	     word(params, 4, state);
+	     win = (Window) strtol(winptr, (char **)NULL, 0);
+	     if (!strcmp(state, "hilited"))
+		st = STATE_HILITED;
+	     else if (!strcmp(state, "clicked"))
+		st = STATE_CLICKED;
+	     else if (!strcmp(state, "disabled"))
+		st = STATE_DISABLED;
+	     else
+		st = STATE_NORMAL;
+	     if (!(hptr = atword(params, 6)))
+		IpcPrintf("Error:  missing width and/or height\n");
+	     else
+	       {
+		  PmapMask            pmm;
+
+		  w = (int)strtol(atword(params, 5), (char **)NULL, 0);
+		  h = (int)strtol(hptr, (char **)NULL, 0);
+		  pq = Mode.queue_up;
+		  Mode.queue_up = 0;
+		  ImageclassApplyCopy(ic, win, w, h, 0, 0, st,
+				      &pmm, 1, ST_UNKNWN);
+		  Mode.queue_up = pq;
+		  IpcPrintf("0x%08x 0x%08x\n",
+			    (unsigned)pmm.pmap, (unsigned)pmm.mask);
+/*			    FreePmapMask(&pmm);		??? */
+	       }
+	  }
+     }
+   else if (!strcmp(param2, "ref_count"))
+     {
+	ic = ImageclassFind(param1, 0);
+	if (ic)
+	   IpcPrintf("%u references remain\n", ic->ref_count);
+     }
+   else if (!strcmp(param2, "query"))
+     {
+	ic = ImageclassFind(param1, 0);
+	if (ic)
+	   IpcPrintf("ImageClass %s found\n", ic->name);
+	else
+	   IpcPrintf("ImageClass %s not found\n", param1);
+     }
+   else
+     {
+	IpcPrintf("Error: unknown operation specified\n");
+     }
+}
+
+IpcItem             ImageclassIpcArray[] = {
+   {
+    ImageclassIpc,
+    "imageclass", NULL,
+    "Create/delete/modify/apply an ImageClass",
+    "This doesn't do anything yet\n"}
+   ,
+};
+#define N_IPC_FUNCS (sizeof(ImageclassIpcArray)/sizeof(IpcItem))
+
+/*
+ * Module descriptor
+ */
+EModule             ModImageclass = {
+   "imageclass", "ic",
+   ImageclassSighan,
+   {N_IPC_FUNCS, ImageclassIpcArray}
+   ,
+   {0, NULL}
+};

@@ -90,6 +90,7 @@ HintsSetDesktopConfig(void)
 #endif
 #if ENABLE_EWMH
    EWMH_SetDesktopCount();
+   EWMH_SetDesktopRoots();
    EWMH_SetDesktopNames();
    EWMH_SetWorkArea();
 #endif
@@ -189,7 +190,7 @@ HintsSetWindowDesktop(EWin * ewin)
    GNOME_SetEwinDesk(ewin);
 #endif
 #if ENABLE_EWMH
-   if (!ewin->menu)
+   if (ewin->type != EWIN_TYPE_MENU)
       EWMH_SetWindowDesktop(ewin);
 #endif
    EDBUG_RETURN_;
@@ -214,7 +215,7 @@ HintsSetWindowState(EWin * ewin)
    GNOME_SetHint(ewin);
 #endif
 #if ENABLE_EWMH
-   if (!ewin->menu)
+   if (ewin->type != EWIN_TYPE_MENU)
       EWMH_SetWindowState(ewin);
 #endif
    EDBUG_RETURN_;
@@ -336,9 +337,7 @@ HintsProcessClientMessage(XClientMessageEvent * event)
    if (name == NULL)
       EDBUG_RETURN_;
 
-   if (!memcmp(name, "ENL_", 4))
-      HandleComms(event);
-   else if (!memcmp(name, "WM_", 3))
+   if (!memcmp(name, "WM_", 3))
       ICCCM_ProcessClientMessage(event);
 #if ENABLE_EWMH
    else if (!memcmp(name, "_NET_", 5))

@@ -39,13 +39,13 @@ HandleDrawQueue()
      {
      case MODE_MOVE_PENDING:
      case MODE_MOVE:
-	if (Conf.movemode > 0)
+	if (Conf.movres.mode_move > 0)
 	   EDBUG_RETURN_;
 	break;
      case MODE_RESIZE:
      case MODE_RESIZE_H:
      case MODE_RESIZE_V:
-	if (Conf.resizemode > 0)
+	if (Conf.movres.mode_resize > 0)
 	   EDBUG_RETURN_;
 	break;
      }
@@ -209,17 +209,18 @@ HandleDrawQueue()
 	       {
 /*            printf("T %x\n", dq->win); */
 		  if (WinExists(dq->win))
-		     TclassApply(dq->iclass, dq->win, dq->w, dq->h, dq->active,
-				 dq->sticky, dq->state, dq->expose, dq->tclass,
-				 dq->text);
+		     TextclassApply(dq->iclass, dq->win, dq->w, dq->h,
+				    dq->active, dq->sticky, dq->state,
+				    dq->expose, dq->tclass, dq->text);
 		  Efree(dq->text);
 	       }
 	     else if (dq->iclass)
 	       {
 /*            printf("I %x\n", dq->win); */
 		  if (WinExists(dq->win))
-		     IclassApply(dq->iclass, dq->win, dq->w, dq->h, dq->active,
-				 dq->sticky, dq->state, 0, dq->image_type);
+		     ImageclassApply(dq->iclass, dq->win, dq->w, dq->h,
+				     dq->active, dq->sticky, dq->state, 0,
+				     dq->image_type);
 	       }
 	     else if (dq->pager)
 	       {
@@ -227,7 +228,7 @@ HandleDrawQueue()
 		  if (FindItem
 		      ((char *)(dq->pager), 0, LIST_FINDBY_POINTER,
 		       LIST_TYPE_PAGER))
-		     PagerForceUpdate(dq->pager);
+		     dq->func(dq);
 	       }
 	     else if (dq->d)
 	       {
@@ -243,7 +244,7 @@ HandleDrawQueue()
 		  if (FindItem
 		      ((char *)(dq->redraw_pager), 0, LIST_FINDBY_POINTER,
 		       LIST_TYPE_PAGER))
-		     PagerRedraw(dq->redraw_pager, dq->newbg);
+		     dq->func(dq);
 	       }
 	     if (dq->iclass)
 		dq->iclass->ref_count--;
@@ -263,12 +264,12 @@ IsPropagateEwinOnQueue(EWin * ewin)
 {
    EDBUG(6, "IsPropagateOnQueue");
 
-   if (FindItem(NULL, ewin->win, LIST_FINDBY_ID, LIST_TYPE_DRAW))
+   if (FindItem(NULL, EoGetWin(ewin), LIST_FINDBY_ID, LIST_TYPE_DRAW))
       EDBUG_RETURN(1);
    EDBUG_RETURN(0);
 }
 
-void
+static void
 EFillPixmap(Window win, Pixmap pmap, int x, int y, int w, int h)
 {
    XGCValues           gcv;
@@ -280,7 +281,7 @@ EFillPixmap(Window win, Pixmap pmap, int x, int y, int w, int h)
    XFreeGC(disp, gc);
 }
 
-void
+static void
 EPastePixmap(Window win, Pixmap pmap, int x, int y, int w, int h)
 {
    XGCValues           gcv;
@@ -292,7 +293,16 @@ EPastePixmap(Window win, Pixmap pmap, int x, int y, int w, int h)
    XFreeGC(disp, gc);
 }
 
-PixImg             *
+typedef struct _PixImg
+{
+   XImage             *xim;
+   XShmSegmentInfo    *shminfo;
+   Pixmap              pmap;
+   GC                  gc;
+}
+PixImg;
+
+static PixImg      *
 ECreatePixImg(Window win, int w, int h)
 {
    XGCValues           gcv;
@@ -341,7 +351,7 @@ ECreatePixImg(Window win, int w, int h)
 			    if (pi->gc)
 			       return pi;
 
-			    XFreePixmap(disp, pi->pmap);
+			    ecore_x_pixmap_del(pi->pmap);
 			 }
 		       XShmDetach(disp, pi->shminfo);
 		       shmdt(pi->shminfo->shmaddr);
@@ -356,23 +366,23 @@ ECreatePixImg(Window win, int w, int h)
    return NULL;
 }
 
-void
+static void
 EDestroyPixImg(PixImg * pi)
 {
    if (!pi)
       return;
-   XSync(disp, False);
+   ecore_x_sync();
    XShmDetach(disp, pi->shminfo);
    shmdt(pi->shminfo->shmaddr);
    shmctl(pi->shminfo->shmid, IPC_RMID, 0);
    XDestroyImage(pi->xim);
    Efree(pi->shminfo);
-   XFreePixmap(disp, pi->pmap);
+   ecore_x_pixmap_del(pi->pmap);
    XFreeGC(disp, pi->gc);
    Efree(pi);
 }
 
-void
+static void
 EBlendRemoveShape(EWin * ewin, Pixmap pmap, int x, int y)
 {
    XGCValues           gcv;
@@ -391,7 +401,7 @@ EBlendRemoveShape(EWin * ewin, Pixmap pmap, int x, int y)
 	if (gcm)
 	   XFreeGC(disp, gcm);
 	if (mask)
-	   EFreePixmap(disp, mask);
+	   ecore_x_pixmap_del(mask);
 	mask = 0;
 	gc = 0;
 	gcm = 0;
@@ -399,17 +409,19 @@ EBlendRemoveShape(EWin * ewin, Pixmap pmap, int x, int y)
 	return;
      }
 
-   w = ewin->w;
-   h = ewin->h;
+   w = EoGetW(ewin);
+   h = EoGetH(ewin);
    if (!rl)
      {
-	rl = EShapeGetRectangles(disp, ewin->win, ShapeBounding, &rn, &ord);
+	rl =
+	   EShapeGetRectangles(disp, EoGetWin(ewin), ShapeBounding, &rn, &ord);
 	if (rn < 1)
 	   return;
 	else if (rn == 1)
 	  {
-	     if ((rl[0].x == 0) && (rl[0].y == 0) && (rl[0].width == ewin->w)
-		 && (rl[0].height == ewin->h))
+	     if ((rl[0].x == 0) && (rl[0].y == 0)
+		 && (rl[0].width == EoGetW(ewin))
+		 && (rl[0].height == EoGetH(ewin)))
 	       {
 		  if (rl)
 		     XFree(rl);
@@ -419,7 +431,7 @@ EBlendRemoveShape(EWin * ewin, Pixmap pmap, int x, int y)
 	  }
      }
    if (!mask)
-      mask = ECreatePixmap(disp, VRoot.win, w, h, 1);
+      mask = ecore_x_pixmap_new(VRoot.win, w, h, 1);
    if (!gcm)
       gcm = XCreateGC(disp, mask, 0, &gcv);
    if (!gc)
@@ -438,7 +450,7 @@ EBlendRemoveShape(EWin * ewin, Pixmap pmap, int x, int y)
    XCopyArea(disp, pmap, VRoot.win, gc, x, y, w, h, x, y);
 }
 
-void
+static void
 EBlendPixImg(EWin * ewin, PixImg * s1, PixImg * s2, PixImg * dst, int x, int y,
 	     int w, int h)
 {
@@ -466,7 +478,8 @@ EBlendPixImg(EWin * ewin, PixImg * s1, PixImg * s2, PixImg * dst, int x, int y,
      }
    if (!rl)
      {
-	rl = EShapeGetRectangles(disp, ewin->win, ShapeBounding, &rn, &ord);
+	rl =
+	   EShapeGetRectangles(disp, EoGetWin(ewin), ShapeBounding, &rn, &ord);
 	if (rl)
 	   XSetClipRectangles(disp, gc, x, y, rl, rn, ord);
 	if (!rl)
@@ -496,7 +509,7 @@ EBlendPixImg(EWin * ewin, PixImg * s1, PixImg * s2, PixImg * dst, int x, int y,
      }
    if ((w <= 0) || (h <= 0))
       return;
-   XSync(disp, False);
+   ecore_x_sync();
    if (dst)
      {
 	switch (dst->xim->bits_per_pixel)
@@ -886,7 +899,7 @@ ScaleLine(Pixmap dest, Window src, int dx, int dy, int sw, int pw, int sy,
 		  XCopyArea(disp, src, p_grab2->pmap, gc, 0,
 			    sy + (sh / 2), sw, 1, 0, 0);
 	       }
-	     XSync(disp, False);
+	     ecore_x_sync();
 	     goto wheee;
 
 	   boo1:
@@ -1016,7 +1029,7 @@ ScaleLine(Pixmap dest, Window src, int dx, int dy, int sw, int pw, int sy,
    if (p_buf)
      {
 	XShmPutImage(disp, dest, gc, p_buf->xim, 0, 0, dx, dy, pw, 1, False);
-	XSync(disp, False);
+	ecore_x_sync();
 	if (p_grab)
 	   EDestroyPixImg(p_grab);
 	if (p_grab2)
@@ -1090,7 +1103,7 @@ ScaleRect(Pixmap dest, Window src, int sx, int sy, int dx, int dy, int sw,
 				 1, 0, y);
 		    }
 	       }
-	     XSync(disp, False);
+	     ecore_x_sync();
 	  }
 	else
 	  {
@@ -1105,7 +1118,7 @@ ScaleRect(Pixmap dest, Window src, int sx, int sy, int dx, int dy, int sw,
 	  {
 	     Pixmap              pmap;
 
-	     pmap = ECreatePixmap(disp, src, sw, dh * 2, VRoot.depth);
+	     pmap = ecore_x_pixmap_new(src, sw, dh * 2, VRoot.depth);
 	     for (y = 0; y < (dh * 2); y++)
 	       {
 		  y2 = (sh * y) / (dh * 2);
@@ -1114,7 +1127,7 @@ ScaleRect(Pixmap dest, Window src, int sx, int sy, int dx, int dy, int sw,
 
 	     px_grab =
 		XGetImage(disp, pmap, 0, 0, sw, dh * 2, 0xffffffff, ZPixmap);
-	     EFreePixmap(disp, pmap);
+	     ecore_x_pixmap_del(pmap);
 	     if (!px_grab)
 		return;
 	  }
@@ -1122,7 +1135,7 @@ ScaleRect(Pixmap dest, Window src, int sx, int sy, int dx, int dy, int sw,
 	  {
 	     Pixmap              pmap;
 
-	     pmap = ECreatePixmap(disp, src, sw, dh, VRoot.depth);
+	     pmap = ecore_x_pixmap_new(src, sw, dh, VRoot.depth);
 	     for (y = 0; y < dh; y++)
 	       {
 		  y2 = (sh * y) / dh;
@@ -1130,7 +1143,7 @@ ScaleRect(Pixmap dest, Window src, int sx, int sy, int dx, int dy, int sw,
 	       }
 
 	     px_grab = XGetImage(disp, pmap, 0, 0, sw, dh, 0xffffffff, ZPixmap);
-	     EFreePixmap(disp, pmap);
+	     ecore_x_pixmap_del(pmap);
 	     if (!px_grab)
 		return;
 	  }
@@ -1261,7 +1274,7 @@ ScaleRect(Pixmap dest, Window src, int sx, int sy, int dx, int dy, int sw,
    if (p_buf)
      {
 	XShmPutImage(disp, dest, gc2, p_buf->xim, 0, 0, dx, dy, dw, dh, False);
-	XSync(disp, False);
+	ecore_x_sync();
 	if (p_grab)
 	   EDestroyPixImg(p_grab);
 	if (p_buf)
@@ -1365,8 +1378,10 @@ DrawEwinShape(EWin * ewin, int md, int x, int y, int w, int h, char firstlast)
 				      gray3_height);
 	x1 = ewin->shape_x;
 	y1 = ewin->shape_y;
-	w1 = ewin->w - (ewin->border->border.left + ewin->border->border.right);
-	h1 = ewin->h - (ewin->border->border.top + ewin->border->border.bottom);
+	w1 = EoGetW(ewin) - (ewin->border->border.left +
+			     ewin->border->border.right);
+	h1 = EoGetH(ewin) - (ewin->border->border.top +
+			     ewin->border->border.bottom);
 	ewin->shape_x = x;
 	ewin->shape_y = y;
 	if ((w != ewin->client.w) || (h != ewin->client.h))
@@ -1374,15 +1389,15 @@ DrawEwinShape(EWin * ewin, int md, int x, int y, int w, int h, char firstlast)
 	     ewin->client.w = w;
 	     ewin->client.h = h;
 	     ICCCM_MatchSize(ewin);
-	     ewin->w =
-		ewin->client.w + ewin->border->border.left +
-		ewin->border->border.right;
-	     ewin->h =
-		ewin->client.h + ewin->border->border.top +
-		ewin->border->border.bottom;
+	     EoSetW(ewin, ewin->client.w + ewin->border->border.left +
+		    ewin->border->border.right);
+	     EoSetH(ewin, ewin->client.h + ewin->border->border.top +
+		    ewin->border->border.bottom);
 	  }
-	w = ewin->w - (ewin->border->border.left + ewin->border->border.right);
-	h = ewin->h - (ewin->border->border.top + ewin->border->border.bottom);
+	w = EoGetW(ewin) - (ewin->border->border.left +
+			    ewin->border->border.right);
+	h = EoGetH(ewin) - (ewin->border->border.top +
+			    ewin->border->border.bottom);
 	if (!gc)
 	  {
 	     gcv.function = GXxor;
@@ -1588,24 +1603,26 @@ DrawEwinShape(EWin * ewin, int md, int x, int y, int w, int h, char firstlast)
 		  root_pi = NULL;
 		  draw_pi = NULL;
 		  root_pi = ECreatePixImg(VRoot.win, VRoot.w, VRoot.h);
-		  ewin_pi = ECreatePixImg(VRoot.win, ewin->w, ewin->h);
-		  draw_pi = ECreatePixImg(VRoot.win, ewin->w, ewin->h);
+		  ewin_pi =
+		     ECreatePixImg(VRoot.win, EoGetW(ewin), EoGetH(ewin));
+		  draw_pi =
+		     ECreatePixImg(VRoot.win, EoGetW(ewin), EoGetH(ewin));
 		  if ((!root_pi) || (!ewin_pi) || (!draw_pi))
 		    {
-		       Conf.movemode = 0;
-		       UngrabX();
-		       DrawEwinShape(ewin, Conf.movemode, x, y, w, h,
+		       Conf.movres.mode_move = 0;
+		       ecore_x_ungrab();
+		       DrawEwinShape(ewin, Conf.movres.mode_move, x, y, w, h,
 				     firstlast);
 		       goto done;
 		    }
-		  EFillPixmap(VRoot.win, root_pi->pmap, x1, y1, ewin->w,
-			      ewin->h);
+		  EFillPixmap(VRoot.win, root_pi->pmap, x1, y1, EoGetW(ewin),
+			      EoGetH(ewin));
 		  gc2 = XCreateGC(disp, root_pi->pmap, 0, &gcv2);
 		  XCopyArea(disp, root_pi->pmap, ewin_pi->pmap, gc2, x1, y1,
-			    ewin->w, ewin->h, 0, 0);
+			    EoGetW(ewin), EoGetH(ewin), 0, 0);
 		  XFreeGC(disp, gc2);
-		  EBlendPixImg(ewin, root_pi, ewin_pi, draw_pi, x, y, ewin->w,
-			       ewin->h);
+		  EBlendPixImg(ewin, root_pi, ewin_pi, draw_pi, x, y,
+			       EoGetW(ewin), EoGetH(ewin));
 	       }
 	     else if (firstlast == 1)
 	       {
@@ -1622,8 +1639,8 @@ DrawEwinShape(EWin * ewin, int md, int x, int y, int w, int h, char firstlast)
 		     ady = -dy;
 		  else
 		     ady = dy;
-		  wt = ewin->w;
-		  ht = ewin->h;
+		  wt = EoGetW(ewin);
+		  ht = EoGetH(ewin);
 		  if ((adx <= wt) && (ady <= ht))
 		    {
 		       if (dx < 0)
@@ -1642,7 +1659,7 @@ DrawEwinShape(EWin * ewin, int md, int x, int y, int w, int h, char firstlast)
 		  if ((adx <= wt) && (ady <= ht))
 		    {
 		       EBlendPixImg(ewin, root_pi, ewin_pi, draw_pi, x, y,
-				    ewin->w, ewin->h);
+				    EoGetW(ewin), EoGetH(ewin));
 		       if (dx > 0)
 			  EPastePixmap(VRoot.win, root_pi->pmap, x1, y1, dx,
 				       ht);
@@ -1660,14 +1677,14 @@ DrawEwinShape(EWin * ewin, int md, int x, int y, int w, int h, char firstlast)
 		    {
 		       EPastePixmap(VRoot.win, root_pi->pmap, x1, y1, wt, ht);
 		       EBlendPixImg(ewin, root_pi, ewin_pi, draw_pi, x, y,
-				    ewin->w, ewin->h);
+				    EoGetW(ewin), EoGetH(ewin));
 		    }
 		  EBlendRemoveShape(ewin, root_pi->pmap, x, y);
 	       }
 	     else if (firstlast == 2)
 	       {
-		  EPastePixmap(VRoot.win, root_pi->pmap, x1, y1, ewin->w,
-			       ewin->h);
+		  EPastePixmap(VRoot.win, root_pi->pmap, x1, y1, EoGetW(ewin),
+			       EoGetH(ewin));
 		  if (ewin_pi)
 		     EDestroyPixImg(ewin_pi);
 		  if (root_pi)
@@ -1682,8 +1699,8 @@ DrawEwinShape(EWin * ewin, int md, int x, int y, int w, int h, char firstlast)
 	       }
 	     else if (firstlast == 3)
 	       {
-		  EPastePixmap(VRoot.win, root_pi->pmap, x, y, ewin->w,
-			       ewin->h);
+		  EPastePixmap(VRoot.win, root_pi->pmap, x, y, EoGetW(ewin),
+			       EoGetH(ewin));
 		  if (root_pi)
 		     EDestroyPixImg(root_pi);
 		  root_pi->pmap = 0;
@@ -1692,12 +1709,12 @@ DrawEwinShape(EWin * ewin, int md, int x, int y, int w, int h, char firstlast)
 	       {
 		  int                 wt, ht;
 
-		  wt = ewin->w;
-		  ht = ewin->h;
+		  wt = EoGetW(ewin);
+		  ht = EoGetH(ewin);
 		  root_pi = ECreatePixImg(VRoot.win, VRoot.w, VRoot.h);
 		  EFillPixmap(VRoot.win, root_pi->pmap, x, y, wt, ht);
-		  EBlendPixImg(ewin, root_pi, ewin_pi, draw_pi, x, y, ewin->w,
-			       ewin->h);
+		  EBlendPixImg(ewin, root_pi, ewin_pi, draw_pi, x, y,
+			       EoGetW(ewin), EoGetH(ewin));
 	       }
 	     else if (firstlast == 5)
 	       {
@@ -1712,7 +1729,7 @@ DrawEwinShape(EWin * ewin, int md, int x, int y, int w, int h, char firstlast)
 	  {
 	     /* If we're moving a group, don't do this,
 	      * otherwise we have a lot of garbage onscreen */
-	     if (!ewin->floating || !ewin->groups
+	     if (!EoIsFloating(ewin) || !ewin->groups
 		 || (ewin->groups && !check_move))
 	       {
 		  if (ewin->shaded)
@@ -1758,7 +1775,7 @@ ELoadImage(char *file)
 	EDBUG_RETURN(im);
      }
 
-   f = FindFile(file);
+   f = ThemeFileFind(file);
    if (f)
      {
 	im = imlib_load_image(f);

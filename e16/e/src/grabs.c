@@ -22,58 +22,6 @@
  */
 #include "E.h"
 
-void
-GrabActionKey(Action * a)
-{
-   int                 mod;
-
-   EDBUG(4, "GrabActionKey");
-   if (!a->key)
-      EDBUG_RETURN_;
-   mod = a->modifiers;
-   if (a->anymodifier)
-     {
-	mod = AnyModifier;
-	XGrabKey(disp, a->key, mod, VRoot.win, False, GrabModeAsync,
-		 GrabModeAsync);
-     }
-   else
-     {
-	int                 i;
-
-	/* grab the key even if locks are on or not */
-	for (i = 0; i < 8; i++)
-	   XGrabKey(disp, a->key, mod | mask_mod_combos[i], VRoot.win, False,
-		    GrabModeAsync, GrabModeAsync);
-     }
-   EDBUG_RETURN_;
-}
-
-void
-UnGrabActionKey(Action * a)
-{
-   int                 mod;
-
-   EDBUG(4, "UnGrabActionKey");
-   if (!a->key)
-      EDBUG_RETURN_;
-   mod = a->modifiers;
-   if (a->anymodifier)
-     {
-	mod = AnyModifier;
-	XUngrabKey(disp, a->key, mod, VRoot.win);
-     }
-   else
-     {
-	int                 i;
-
-	/* ungrab the key even if locks are on or not */
-	for (i = 0; i < 8; i++)
-	   XUngrabKey(disp, a->key, mod | mask_mod_combos[i], VRoot.win);
-     }
-   EDBUG_RETURN_;
-}
-
 #if 0				/* Unused */
 void
 GrabButtonsSet(Window win, unsigned int csr)
@@ -95,7 +43,7 @@ GrabPointerSet(Window win, unsigned int csr, int confine)
    int                 ret = -1;
    Window              confine_to = (confine) ? win : None;
 
-   ret = XGrabPointer(disp, win, True,
+   ret = XGrabPointer(disp, win, False,
 		      ButtonPressMask | ButtonReleaseMask | PointerMotionMask |
 		      ButtonMotionMask | EnterWindowMask | LeaveWindowMask,
 		      GrabModeAsync, GrabModeAsync, confine_to, ECsrGet(csr),

@@ -1,4 +1,3 @@
-
 /*
  * Copyright (C) 2000-2004 Carsten Haitzler, Geoff Harrison and various contributors
  *
@@ -23,11 +22,26 @@
  */
 #include "E.h"
 
+struct _progressbar
+{
+   char               *name;
+   int                 value;
+   int                 x;
+   int                 y;
+   int                 w;
+   int                 h;
+   Window              win;
+   Window              n_win;
+   Window              p_win;
+   ImageClass         *ic, *inc, *ipc;
+   TextClass          *tc, *tnc;
+};
+
 static int          pnum = 0;
 static Progressbar **plist = NULL;
 
 Progressbar        *
-CreateProgressbar(char *name, int width, int height)
+ProgressbarCreate(char *name, int width, int height)
 {
    Progressbar        *p;
 
@@ -49,24 +63,23 @@ CreateProgressbar(char *name, int width, int height)
    p->p_win = ECreateWindow(VRoot.win, p->x, p->y + p->h, 1, p->h, 1);
    /* FIXME: need to use other image and textclasses */
 
-   p->ic = FindItem("PROGRESS_BAR", 0, LIST_FINDBY_NAME, LIST_TYPE_ICLASS);
+   p->ic = ImageclassFind("PROGRESS_BAR", 1);
    if (p->ic)
       p->ic->ref_count++;
 
-   p->inc = FindItem("PROGRESS_BAR", 0, LIST_FINDBY_NAME, LIST_TYPE_ICLASS);
+   p->inc = ImageclassFind("PROGRESS_BAR", 1);
    if (p->inc)
       p->inc->ref_count++;
 
-   p->ipc = FindItem("PROGRESS_BAR", 0, LIST_FINDBY_NAME, LIST_TYPE_ICLASS);
+   p->ipc = ImageclassFind("PROGRESS_BAR", 1);
    if (p->ipc)
       p->ipc->ref_count++;
 
-   p->tc = FindItem("PROGRESS_TEXT", 0, LIST_FINDBY_NAME, LIST_TYPE_TCLASS);
+   p->tc = TextclassFind("PROGRESS_TEXT", 1);
    if (p->tc)
       p->tc->ref_count++;
 
-   p->tnc =
-      FindItem("PROGRESS_TEXT_NUMBER", 0, LIST_FINDBY_NAME, LIST_TYPE_TCLASS);
+   p->tnc = TextclassFind("PROGRESS_TEXT_NUMBER", 1);
    if (p->tnc)
       p->tnc->ref_count++;
 
@@ -76,80 +89,11 @@ CreateProgressbar(char *name, int width, int height)
 }
 
 void
-SetProgressbar(Progressbar * p, int progress)
-{
-   int                 w;
-   char                s[64], pq;
-
-   EDBUG(5, "SetProgressbar");
-
-   if (progress == p->value)
-      EDBUG_RETURN_;
-
-   p->value = progress;
-   w = (p->value * p->w) / 100;
-   if (w < 1)
-      w = 1;
-   if (w > p->w)
-      w = p->w;
-   Esnprintf(s, sizeof(s), "%i%%", p->value);
-   pq = Mode.queue_up;
-   Mode.queue_up = 0;
-   TclassApply(p->inc, p->n_win, p->h * 5, p->h, 0, 0, STATE_CLICKED, 0,
-	       p->tnc, s);
-   IclassApply(p->inc, p->p_win, w, p->h, 1, 0, STATE_NORMAL, 0, ST_UNKNWN);
-   EResizeWindow(disp, p->p_win, w, p->h);
-   Mode.queue_up = pq;
-   XFlush(disp);
-
-   EDBUG_RETURN_;
-}
-
-void
-ShowProgressbar(Progressbar * p)
-{
-   int                 w;
-   char                pq;
-
-   EDBUG(5, "ShowProgressbar");
-   w = (p->value * p->w) / 100;
-   if (w < 1)
-      w = 1;
-   if (w > p->w)
-      w = p->w;
-   pq = Mode.queue_up;
-   Mode.queue_up = 0;
-   IclassApply(p->ic, p->win, p->w - (p->h * 5), p->h, 0, 0, STATE_NORMAL, 0,
-	       ST_UNKNWN);
-   IclassApply(p->inc, p->n_win, (p->h * 5), p->h, 0, 0, STATE_CLICKED, 0,
-	       ST_UNKNWN);
-   IclassApply(p->ipc, p->p_win, w, p->h, 1, 0, STATE_NORMAL, 0, ST_UNKNWN);
-   EMapRaised(disp, p->win);
-   EMapRaised(disp, p->n_win);
-   EMapRaised(disp, p->p_win);
-   XSync(disp, False);
-   TclassApply(p->ic, p->win, p->w - (p->h * 5), p->h, 0, 0, STATE_NORMAL, 0,
-	       p->tc, p->name);
-   Mode.queue_up = pq;
-   EDBUG_RETURN_;
-}
-
-void
-HideProgressbar(Progressbar * p)
-{
-   EDBUG(5, "HideProgressbar");
-   EUnmapWindow(disp, p->win);
-   EUnmapWindow(disp, p->n_win);
-   EUnmapWindow(disp, p->p_win);
-   EDBUG_RETURN_;
-}
-
-void
-FreeProgressbar(Progressbar * p)
+ProgressbarDestroy(Progressbar * p)
 {
    int                 i, j;
 
-   EDBUG(5, "FreeProgressbar");
+   EDBUG(5, "ProgressbarDestroy");
 
    if (p->name)
       Efree(p->name);
@@ -210,8 +154,77 @@ FreeProgressbar(Progressbar * p)
    EDBUG_RETURN_;
 }
 
+void
+ProgressbarSet(Progressbar * p, int progress)
+{
+   int                 w;
+   char                s[64], pq;
+
+   EDBUG(5, "SetProgressbar");
+
+   if (progress == p->value)
+      EDBUG_RETURN_;
+
+   p->value = progress;
+   w = (p->value * p->w) / 100;
+   if (w < 1)
+      w = 1;
+   if (w > p->w)
+      w = p->w;
+   Esnprintf(s, sizeof(s), "%i%%", p->value);
+   pq = Mode.queue_up;
+   Mode.queue_up = 0;
+   TextclassApply(p->inc, p->n_win, p->h * 5, p->h, 0, 0, STATE_CLICKED, 0,
+		  p->tnc, s);
+   ImageclassApply(p->inc, p->p_win, w, p->h, 1, 0, STATE_NORMAL, 0, ST_UNKNWN);
+   EResizeWindow(disp, p->p_win, w, p->h);
+   Mode.queue_up = pq;
+   XFlush(disp);
+
+   EDBUG_RETURN_;
+}
+
+void
+ProgressbarShow(Progressbar * p)
+{
+   int                 w;
+   char                pq;
+
+   EDBUG(5, "ShowProgressbar");
+   w = (p->value * p->w) / 100;
+   if (w < 1)
+      w = 1;
+   if (w > p->w)
+      w = p->w;
+   pq = Mode.queue_up;
+   Mode.queue_up = 0;
+   ImageclassApply(p->ic, p->win, p->w - (p->h * 5), p->h, 0, 0, STATE_NORMAL,
+		   0, ST_UNKNWN);
+   ImageclassApply(p->inc, p->n_win, (p->h * 5), p->h, 0, 0, STATE_CLICKED, 0,
+		   ST_UNKNWN);
+   ImageclassApply(p->ipc, p->p_win, w, p->h, 1, 0, STATE_NORMAL, 0, ST_UNKNWN);
+   EMapRaised(disp, p->win);
+   EMapRaised(disp, p->n_win);
+   EMapRaised(disp, p->p_win);
+   ecore_x_sync();
+   TextclassApply(p->ic, p->win, p->w - (p->h * 5), p->h, 0, 0, STATE_NORMAL, 0,
+		  p->tc, p->name);
+   Mode.queue_up = pq;
+   EDBUG_RETURN_;
+}
+
+void
+ProgressbarHide(Progressbar * p)
+{
+   EDBUG(5, "HideProgressbar");
+   EUnmapWindow(disp, p->win);
+   EUnmapWindow(disp, p->n_win);
+   EUnmapWindow(disp, p->p_win);
+   EDBUG_RETURN_;
+}
+
 Window             *
-ListProgressWindows(int *num)
+ProgressbarsListWindows(int *num)
 {
    int                 i, j;
    Window             *wl;
@@ -234,7 +247,7 @@ ListProgressWindows(int *num)
 }
 
 void
-RaiseProgressbars(void)
+ProgressbarsRaise(void)
 {
    int                 i;
 

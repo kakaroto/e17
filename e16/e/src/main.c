@@ -25,36 +25,45 @@
 #include <sys/utsname.h>
 #include <signal.h>
 #include <time.h>
+#if USE_COMPOSITE
+#include "ecompmgr.h"
+#endif
 
-static void
-runDocBrowser(void)
-{
-   char                file[FILEPATH_LEN_MAX];
+const char          e_wm_name[] = "Enlightenment";
+const char          e_wm_version[] =
+#ifdef ENLIGHTENMENT_RELEASE
+   "enlightenment-" ENLIGHTENMENT_VERSION "-" ENLIGHTENMENT_RELEASE;
+#else
+   "enlightenment-" ENLIGHTENMENT_VERSION;
+#endif
+Display            *disp;
+List               *lists;
+RealRoot            RRoot;
+VirtRoot            VRoot;
+EConf               Conf;
+EMode               Mode;
 
-   Esnprintf(file, sizeof(file), "%s/edox", EDirBin());
-   if (!canexec(file))
-      return;
-   Esnprintf(file, sizeof(file), "%s/E-docs", EDirRoot());
-   if (!canread(file))
-      return;
+#ifdef DEBUG
+int                 call_level = 0;
+char               *call_stack[1024];
+#endif
 
-   if (fork())
-      EDBUG_RETURN_;
+#ifdef USE_EXT_INIT_WIN
+Window              init_win_ext = None;
+#endif
 
-   Esnprintf(file, sizeof(file), "exec %s/edox %s/E-docs",
-	     EDirBin(), EDirRoot());
-
-   execl(usershell(getuid()), usershell(getuid()), "-c", (char *)file, NULL);
-
-   exit(0);
-}
+static void         ESetSavePrefix(const char *path);
+static void         ECheckEprog(const char *name);
+static void         EDirUserSet(const char *dir);
+static void         EDirUserCacheSet(const char *dir);
+static void         EDirsSetup(void);
 
 int
 main(int argc, char **argv)
 {
    int                 i;
    struct utsname      ubuf;
-   char               *str;
+   char               *str, *dstr;
 
    /* This function runs all the setup for startup, and then 
     * proceeds into the primary event loop at the end.
@@ -63,6 +72,7 @@ main(int argc, char **argv)
    /* Init state variable struct */
    memset(&Mode, 0, sizeof(EMode));
    Mode.mode = MODE_NONE;
+   Mode.wm.exec_name = argv[0];
    Mode.wm.startup = 1;
    Mode.move.check = 1;
 
@@ -76,7 +86,14 @@ main(int argc, char **argv)
    if (str)
       Mode.wm.coredump = 1;
 
-   EDBUG(1, "main");
+#if 0				/* No! */
+   str = getenv("ECONFDIR");
+   if (str)
+      EDirUserSet(str);
+   str = getenv("ECACHEDIR");
+   if (str)
+      EDirUserCacheSet(str);
+#endif
 
    /* go head and set up the internal data lists that enlightenment
     * uses for finding everything
@@ -86,208 +103,159 @@ main(int argc, char **argv)
    srand(time(NULL));
 
    if (!uname(&ubuf))
-      e_machine_name = Estrdup(ubuf.nodename);
-   if (!e_machine_name)
-      e_machine_name = Estrdup("localhost");
+      Mode.wm.machine_name = Estrdup(ubuf.nodename);
+   if (!Mode.wm.machine_name)
+      Mode.wm.machine_name = Estrdup("localhost");
 
    /* Initialise internationalisation */
    LangInit();
 
-   SetSMProgName(argv[0]);
+   /* Now we're going to interpret any of the commandline parameters
+    * that are passed to it -- Well, at least the ones that we
+    * understand.
+    */
 
-   themepath[0] = 0;
-   {
-      int                 j = 0;
+   Mode.theme.path = NULL;
+   dstr = NULL;
 
-      /* Now we're going to interpret any of the commandline parameters
-       * that are passed to it -- Well, at least the ones that we
-       * understand.
-       */
-
-      for (j = 1; j < argc; j++)
-	{
-	   if ((!strcmp("-theme", argv[j])) && (argc - j > 1))
-	     {
-		Esnprintf(themepath, sizeof(themepath), "%s", argv[++j]);
-	     }
-	   else if ((!strcmp("-econfdir", argv[j])) && (argc - j > 1))
-	     {
-		EDirUserSet(argv[++j]);
-	     }
-	   else if ((!strcmp("-ecachedir", argv[j])) && (argc - j > 1))
-	     {
-		EDirUserCacheSet(argv[++j]);
-	     }
-	   else if ((!strcmp("-display", argv[j])) && (argc - j > 1))
-	     {
-		dstr = argv[++j];
-	     }
-	   else if (!strcmp("-single", argv[j]))
-	     {
-		Mode.wm.single = 1;
-	     }
-	   else if ((!strcmp("-smid", argv[j])) && (argc - j > 1))
-	     {
-		SetSMID(argv[++j]);
-	     }
-	   else if ((!strcmp("-clientId", argv[j])) && (argc - j > 1))
-	     {
-		SetSMID(argv[++j]);
-	     }
-	   else if ((!strcmp("--sm-client-id", argv[j])) && (argc - j > 1))
-	     {
-		SetSMID(argv[++j]);
-	     }
-	   else if ((!strcmp("-smfile", argv[j])) && (argc - j > 1))
-	     {
-		SetSMFile(argv[++j]);
-	     }
-	   else if ((!strcmp("-ext_init_win", argv[j])) && (argc - j > 1))
-	     {
-		init_win_ext = atoi(argv[++j]);
-	     }
-	   else if (!strcmp("-no_overwrite", argv[j]))
-	     {
-		no_overwrite = 1;
-	     }
-	   else if ((!strcmp("-window", argv[j])) && (argc - j > 1))
-	     {
-		sscanf(argv[++j], "%dx%d", &VRoot.w, &VRoot.h);
-		Mode.wm.window = 1;
-		Mode.wm.single = 1;
-	     }
-	   else if ((!strcmp("-h", argv[j])) || (!strcmp("-help", argv[j])) ||
-		    (!strcmp("-?", argv[j])) || (!strcmp("--help", argv[j])))
-	     {
-		printf("enlightenment options:\n"
-		       "\t-display display_name\n"
-		       "\t-ecachedir /path/to/cached/dir\n"
-		       "\t-econfdir /path/to/.enlightenment/conf/dir\n"
-		       "\t-ext_init_win window_id\n"
-		       "\t-no_overwrite\n"
-		       "\t-smfile file\n"
-		       "\t[-smid | -clientId | --sm-client-id] id\n"
-		       "\t-theme /path/to/theme\n"
-		       "\t[-v | -verbose]\n" "\t[-V | -version | --version]\n");
-		exit(0);
-	     }
-	   else if ((!strcmp("-V", argv[j])) ||
-		    (!strcmp("-version", argv[j])) ||
-		    (!strcmp("--version", argv[j])))
-	     {
-		printf(_("Enlightenment Version: %s\nLast updated on: %s\n"),
-		       ENLIGHTENMENT_VERSION, E_CHECKOUT_DATE);
-		exit(0);
-	     }
-	   else if ((!strcmp("-v", argv[j])) || (!strcmp("-verbose", argv[j])))
-	     {
-		Mode.debug++;
-	     }
-	}
-
-      /* Set a default location for the "previous session" data when
-       * we do not actually have a previous session. */
-      SetSMFile(NULL);
-   }
-
-   if (themepath[0] == 0)
+   for (i = 1; i < argc; i++)
      {
-	FILE               *f;
-	char                s[FILEPATH_LEN_MAX];
-	char               *file;
-
-	file = FindFile("user_theme.cfg");
-	if (file)
+	if ((!strcmp("-t", argv[i]) ||
+	     !strcmp("-theme", argv[i])) && (argc - i > 1))
 	  {
-	     s[0] = 0;
-	     f = fopen(file, "r");
-	     if (f)
-	       {
-		  if (fscanf(f, "%4000s", s) < 1)
-		     s[0] = 0;
-		  fclose(f);
-		  if (s[0])
-		     Esnprintf(themepath, sizeof(themepath), "%s", s);
-	       }
-	     Efree(file);
+	     i++;
+	     Mode.theme.path = Estrdup(argv[i]);
 	  }
-
-	if (themepath[0] == 0)
+	else if ((!strcmp("-econfdir", argv[i])) && (argc - i > 1))
 	  {
-	     char               *def;
-
-	     def = ThemeGetDefault();
-	     if (def)
-	       {
-		  Esnprintf(themepath, sizeof(themepath), "%s", def);
-		  Efree(def);
-	       }
+	     EDirUserSet(argv[++i]);
 	  }
+	else if ((!strcmp("-ecachedir", argv[i])) && (argc - i > 1))
+	  {
+	     EDirUserCacheSet(argv[++i]);
+	  }
+	else if ((!strcmp("-display", argv[i])) && (argc - i > 1))
+	  {
+	     dstr = argv[++i];
+	  }
+	else if (!strcmp("-f", argv[i]))
+	  {
+	     Mode.wm.restart = 1;
+	  }
+	else if (!strcmp("-s", argv[i]) || !strcmp("-single", argv[i]))
+	  {
+	     Mode.wm.single = 1;
+	  }
+	else if ((!strcmp("-smid", argv[i]) ||
+		  !strcmp("-clientId", argv[i]) ||
+		  !strcmp("--sm-client-id", argv[i])) && (argc - i > 1))
+	  {
+	     SetSMID(argv[++i]);
+	  }
+	else if ((!strcmp("-smfile", argv[i])) && (argc - i > 1))
+	  {
+	     ESetSavePrefix(argv[++i]);
+	  }
+#ifdef USE_EXT_INIT_WIN
+	else if ((!strcmp("-ext_init_win", argv[i])) && (argc - i > 1))
+	  {
+	     init_win_ext = atoi(argv[++i]);
+	     Mode.wm.restart = 1;
+	  }
+#endif
+	else if ((!strcmp("-w", argv[i]) || !strcmp("-window", argv[i])) &&
+		 (argc - i > 1))
+	  {
+	     sscanf(argv[++i], "%dx%d", &VRoot.w, &VRoot.h);
+	     Mode.wm.window = 1;
+	     Mode.wm.single = 1;
+	  }
+	else if ((!strcmp("-h", argv[i])) || (!strcmp("-help", argv[i])) ||
+		 (!strcmp("-?", argv[i])) || (!strcmp("--help", argv[i])))
+	  {
+	     printf("enlightenment options:\n"
+		    "\t-display display_name\n"
+		    "\t-ecachedir /path/to/cached/dir\n"
+		    "\t-econfdir /path/to/config/dir\n"
+		    "\t-ext_init_win window_id\n"
+		    "\t-smfile file\n"
+		    "\t[-smid | -clientId | --sm-client-id] id\n"
+		    "\t-theme /path/to/theme\n"
+		    "\t[-v | -verbose]\n" "\t[-V | -version | --version]\n");
+	     exit(0);
+	  }
+	else if ((!strcmp("-V", argv[i])) ||
+		 (!strcmp("-version", argv[i])) ||
+		 (!strcmp("--version", argv[i])))
+	  {
+	     printf(_("Enlightenment Version: %s\nLast updated on: %s\n"),
+		    ENLIGHTENMENT_VERSION, E_CHECKOUT_DATE);
+	     exit(0);
+	  }
+	else if ((!strcmp("-v", argv[i])) || (!strcmp("-verbose", argv[i])))
+	  {
+	     Mode.debug++;
+	  }
+#if USE_COMPOSITE
+	else if ((!strcmp("-C", argv[i])))
+	  {
+	     ECompMgrParseArgs(argv[++i]);
+	  }
+#endif
      }
-   SetSMUserThemePath(themepath);
 
    /* run most of the setup */
    AlertInit();			/* Set up all the text bits that belong on the GSOD */
    SignalsSetup();
-   SetupX();			/* This is where the we fork per screen */
-   BlumFlimFrub();
-   ZoomInit();
-   SetupDirs();
-   InitDesktopBgs();
-   CommsSetup();
-   CommsFindCommsWindow();
-   LoadGroups();
+   SetupX(dstr);		/* This is where the we fork per screen */
+   /* X is now running, and we have forked per screen */
+
+   ECheckEprog("epp");
+   ECheckEprog("eesh");
+   EDirsSetup();
+
+   /* Set default save file prefix if not already set */
+   ESetSavePrefix(NULL);
+
+   /* So far nothing should rely on a selected settings or theme. */
+   ConfigurationLoad();		/* Load settings */
+
+   /* The theme path must now be available for config file loading. */
+   ThemePathFind();
+
+   /* Set the Environment variables */
+   Esetenv("EVERSION", ENLIGHTENMENT_VERSION, 1);
+   Esetenv("EROOT", EDirRoot(), 1);
+   Esetenv("EBIN", EDirBin(), 1);
+   Esetenv("ETHEME", Mode.theme.path, 1);
+   Esetenv("ECONFDIR", EDirUser(), 1);
+   Esetenv("ECACHEDIR", EDirUserCache(), 1);
+
+   /* Unmap the clients */
+   MapUnmap(0);
+
+   ModulesSignal(ESIGNAL_INIT, NULL);
+
+   /* Move elsewhere... */
+   HintsInit();
+   CommsInit();
+   SessionInit();
    LoadSnapInfo();
 
-   GrabX();
-   MapUnmap(0);
-   UngrabX();
+   /* Load the theme */
+   ThemeConfigLoad();
 
-   /* make all of our fallback classes */
-   SetupFallbackClasses();
+   /* Do initial configuration */
+   ModulesSignal(ESIGNAL_CONFIGURE, NULL);
 
-   desks.desk[0].viewable = 0;
-   /* now we're going to load the configuration/theme */
-   LoadEConfig(themepath);
-   SetAreaSize(Conf.areas.nx, Conf.areas.ny);
-   TransparencySet(Conf.theme.transparency);
+   /* Set root window cursor */
+   ECsrApply(ECSR_ROOT, VRoot.win);
 
-   desks.desk[0].viewable = 1;
-   RefreshDesktop(0);
-   if (Conf.sound)
-     {
-	SoundPlay("SOUND_STARTUP");
-	SoundFree("SOUND_STARTUP");
-     }
-
-   /* toss down the dragbar and related */
-   InitDesktopControls();
-
-   /* then draw all the buttons that belong on the desktop */
-   ShowDesktopButtons();
-
-   HintsInit();
-   SessionInit();
-   ShowDesktopControls();
+#if 0
    CheckEvent();
+#endif
 
-   SetupEnv();
-
-   if (Conf.mapslide)
-      CreateStartupDisplay(0);
-
-   /* Set up the iconboxes and pagers */
-   IB_Setup();
-   if (Conf.pagers.enable)
-     {
-	Conf.pagers.enable = 0;
-	Mode.queue_up = 0;
-	EnableAllPagers();
-	Mode.queue_up = DRAW_QUEUE_ENABLE;
-     }
-
-   MapUnmap(1);
-
+#ifdef USE_EXT_INIT_WIN
    /* Kill the E process owning the "init window" */
    if (Mode.wm.master && init_win_ext)
      {
@@ -296,85 +264,316 @@ main(int argc, char **argv)
 	XKillClient(disp, init_win_ext);
 	init_win_ext = 0;
      }
-
-   /* sync just to make sure */
-   XSync(disp, False);
-   Mode.queue_up = DRAW_QUEUE_ENABLE;
-
-   /* of course, we have to set the cursors */
-   ECursorsInit();
-   ECsrApply(ECSR_ROOT, VRoot.win);
-
-   Mode.wm.save_ok = 1;
-   /* ok - paranoia - save current settings to disk */
-   if (VRoot.scr == 0)
-      autosave();
-
-   /* let's make sure we set this up and go to our desk anyways */
-   GotoDesktop(desks.current);
-#if 0				/* Why? */
-   if (desks.current < (Conf.desks.num - 1))
-     {
-	char                ps = 0;
-
-	if (!Conf.mapslide)
-	  {
-	     ps = Conf.desks.slidein;
-	     Conf.desks.slidein = 0;
-	  }
-	GotoDesktop(desks.current + 1);
-	GotoDesktop(desks.current - 1);
-	if (!Conf.mapslide)
-	   Conf.desks.slidein = ps;
-     }
-   else if (desks.current > 0)
-     {
-	char                ps = 0;
-
-	if (!Conf.mapslide)
-	  {
-	     ps = Conf.desks.slidein;
-	     Conf.desks.slidein = 0;
-	  }
-	GotoDesktop(desks.current - 1);
-	GotoDesktop(desks.current + 1);
-	if (!Conf.mapslide)
-	   Conf.desks.slidein = ps;
-     }
 #endif
-   XSync(disp, False);
 
-   /* if we didn't have an external window piped to us, we'll do some stuff */
-   if (!Conf.mapslide)
+   /* Map the clients */
+   MapUnmap(1);
+
+   if (!Mode.wm.restart)
       CreateStartupDisplay(0);
 
-   BackgroundDestroyByName("STARTUP_BACKGROUND_SIDEWAYS");
-   BackgroundDestroyByName("STARTUP_BACKGROUND");
+   /* sync just to make sure */
+   ecore_x_sync();
+   Mode.queue_up = DRAW_QUEUE_ENABLE;
+
+   /* let's make sure we set this up and go to our desk anyways */
+   GotoDesktop(DesksGetCurrent());
+   ecore_x_sync();
 
 #ifdef SIGCONT
-   for (i = 0; i < child_count; i++)
-      kill(e_children[i], SIGCONT);
+   for (i = 0; i < Mode.wm.child_count; i++)
+      kill(Mode.wm.children[i], SIGCONT);
 #endif
 
-   SetupUserInitialization();
-   if (Mode.firsttime)
-      runDocBrowser();
+   ModulesSignal(ESIGNAL_START, NULL);
 
    SpawnSnappedCmds();
+
+   Conf.startup.firsttime = 0;
+   Mode.wm.save_ok = 1;
    Mode.wm.startup = 0;
-
-   ThemeBadDialog();
-
-   BackgroundsInit();		/* Start the background accounting */
-
-   /* Update pagers */
-   for (i = 0; i < Conf.desks.num; i++)
-      RedrawPagersForDesktop(i, 0);
+   autosave();
 
    /* The primary event loop */
    for (;;)
       WaitEvent();
 
    /* Of course, we should NEVER get to this point */
-   EDBUG_RETURN(0);
+
+   return 1;
+}
+
+void
+EExit(int exitcode)
+{
+   int                 i;
+
+   if (EventDebug(EDBUG_TYPE_SESSION))
+      Eprintf("EExit(%d)\n", exitcode);
+
+   SessionSave(1);
+
+   if (disp)
+     {
+	ecore_x_ungrab();
+	GrabPointerRelease();
+	XAllowEvents(disp, AsyncBoth, CurrentTime);
+
+	/* XSetInputFocus(disp, None, RevertToParent, CurrentTime); */
+	/* I think this is a better way to release the grabs: (felix) */
+	XSetInputFocus(disp, PointerRoot, RevertToPointerRoot, CurrentTime);
+	XSelectInput(disp, VRoot.win, 0);
+	EDisplayClose();
+     }
+
+   SignalsRestore();
+
+   if (Mode.wm.master)
+     {
+	for (i = 0; i < Mode.wm.child_count; i++)
+	   kill(Mode.wm.children[i], SIGINT);
+     }
+   else
+     {
+	exitcode = 0;
+     }
+
+   Real_SaveSnapInfo(0, NULL);
+   ModulesSignal(ESIGNAL_EXIT, NULL);
+
+   exit(exitcode);
+}
+
+static char        *userDir = NULL;
+static char        *cacheDir = NULL;
+
+const char         *
+EDirBin(void)
+{
+   return ENLIGHTENMENT_BIN;
+}
+
+const char         *
+EDirRoot(void)
+{
+   return ENLIGHTENMENT_ROOT;
+}
+
+static void
+EDirUserSet(const char *dir)
+{
+   if (userDir)
+      Efree(userDir);
+   userDir = Estrdup(dir);
+}
+
+static void
+EDirUserCacheSet(const char *dir)
+{
+   if (cacheDir)
+      Efree(cacheDir);
+   cacheDir = Estrdup(dir);
+}
+
+const char         *
+EDirUser(void)
+{
+   char               *home, buf[4096];
+
+   if (userDir)
+      return userDir;
+
+   home = homedir(getuid());
+   Esnprintf(buf, sizeof(buf), "%s/.e16", home);
+   Efree(home);
+   userDir = Estrdup(buf);
+
+   return userDir;
+}
+
+const char         *
+EDirUserCache(void)
+{
+   if (!cacheDir)
+      cacheDir = Estrdup(EDirUser());
+   return cacheDir;
+}
+
+static void
+EDirCheck(const char *dir)
+{
+   if (!isdir(dir))
+     {
+	Alert(_("The directory %s is apparently not a directory\n"
+		"This is a fatal condition.\n" "Please remove this file\n"),
+	      dir);
+	EExit(1);
+     }
+   if (!canexec(dir))
+     {
+	Alert(_("Do not have execute access to %s\n"
+		"This is a fatal condition.\n"
+		"Please check the ownership and permissions of this\n"
+		"directory and take steps to rectify this.\n"), dir);
+	EExit(1);
+     }
+   if (!canread(dir))
+     {
+	Alert(_("Do not have read access to %s\n" "This is a fatal condition.\n"
+		"Please check the ownership and permissions of this\n"
+		"directory and take steps to rectify this.\n"), dir);
+	EExit(1);
+     }
+   if (!canwrite(dir))
+     {
+	Alert(_("Do not have write access to %s\n"
+		"This is a fatal condition.\n"
+		"Please check the ownership and permissions of this\n"
+		"directory and take steps to rectify this.\n"), dir);
+	EExit(1);
+     }
+}
+
+void
+EDirMake(const char *base, const char *name)
+{
+   char                s[1024];
+
+   Esnprintf(s, sizeof(s), "%s/%s", base, name);
+   if (!exists(s))
+      E_md(s);
+   else
+      EDirCheck(s);
+}
+
+static void
+EDirsSetup(void)
+{
+   char                s[1024], ss[1024], *home;
+
+   home = homedir(getuid());
+   if (home)
+     {
+	EDirCheck(home);
+	Efree(home);
+     }
+
+   Esnprintf(s, sizeof(s), "%s", EDirUser());
+   if (exists(s))
+     {
+	if (!isdir(s))
+	  {
+	     Esnprintf(ss, sizeof(ss), "%s.old", EDirUser());
+	     E_mv(s, ss);
+	     E_md(s);
+	  }
+	else
+	   EDirCheck(s);
+     }
+   else
+      E_md(s);
+
+   EDirMake(EDirUser(), "themes");
+   EDirMake(EDirUser(), "backgrounds");
+   EDirMake(EDirUser(), "menus");
+
+   EDirMake(EDirUserCache(), "cached");
+   EDirMake(EDirUserCache(), "cached/cfg");
+}
+
+/*
+ * The user control config is called "~/.e16/e_config-$DISPLAY"
+ * The client data appends ".clients" onto this filename and the snapshot data
+ * appends ".snapshots".
+ */
+static char        *
+default_save_prefix(void)
+{
+   static char        *def_prefix = NULL;
+   char               *s, buf[1024];
+
+   if (def_prefix)
+      return def_prefix;
+
+   if (Mode.wm.window)
+      Esnprintf(buf, sizeof(buf), "%s/e_config-window", EDirUser());
+   else
+      Esnprintf(buf, sizeof(buf), "%s/e_config-%s", EDirUser(),
+		Mode.display.name);
+   def_prefix = Estrdup(buf);
+
+   for (s = def_prefix; (s = strchr(s, ':')); *s = '-');
+
+   return def_prefix;
+}
+
+static char        *save_prefix = NULL;
+
+static void
+ESetSavePrefix(const char *path)
+{
+   if (save_prefix && path == NULL)
+      return;
+
+   if (save_prefix)
+      Efree(save_prefix);
+
+   if (!path)
+      save_prefix = Estrdup(default_save_prefix());
+   else
+      save_prefix = Estrdup(path);
+}
+
+const char         *
+EGetSavePrefix(void)
+{
+   return save_prefix;
+}
+
+const char         *
+EGetSavePrefixCommon(void)
+{
+   static char        *pfx = NULL;
+   char                buf[1024];
+
+   if (pfx)
+      return pfx;
+
+   Esnprintf(buf, sizeof(buf), "%s/e_config", EDirUser());
+   pfx = Estrdup(buf);
+
+   return pfx;
+}
+
+static void
+ECheckEprog(const char *name)
+{
+   char                s[1024];
+
+   Esnprintf(s, sizeof(s), "%s/%s", EDirBin(), name);
+
+   if (!exists(s))
+     {
+	Alert(_("!!!!!!!! ERROR ERROR ERROR ERROR !!!!!!!!\n" "\n"
+		"Enlightenment's utility executable cannot be found at:\n"
+		"\n" "%s\n"
+		"This is a fatal error and Enlightenment will cease to run.\n"
+		"Please rectify this situation and ensure it is installed\n"
+		"correctly.\n" "\n"
+		"The reason this could be missing is due to badly created\n"
+		"packages, someone manually deleting that program or perhaps\n"
+		"an error in installing Enlightenment.\n"), s);
+	EExit(0);
+     }
+
+   if (!canexec(s))
+     {
+	Alert(_("!!!!!!!! ERROR ERROR ERROR ERROR !!!!!!!!\n" "\n"
+		"Enlightenment's utility executable is not able to be executed:\n"
+		"\n" "%s\n"
+		"This is a fatal error and Enlightenment will cease to run.\n"
+		"Please rectify this situation and ensure it is installed\n"
+		"correctly.\n"), s);
+	EExit(0);
+     }
 }

@@ -29,8 +29,8 @@ DockappFindEmptySpotFor(EWin * eapp)
    int                 num, i, j, x, y, w, h, done;
    int                 step_right, step_down;
 
-   x = eapp->x;
-   y = eapp->y;
+   x = EoGetX(eapp);
+   y = EoGetY(eapp);
    w = eapp->client.w;
    h = eapp->client.h;
    if (!eapp->client.already_placed)
@@ -38,14 +38,14 @@ DockappFindEmptySpotFor(EWin * eapp)
 	x = Conf.dock.startx;
 	if (x < 0)
 	   x = 0;
-	else if (x > VRoot.w - eapp->w)
-	   x = VRoot.w - eapp->w;
+	else if (x > VRoot.w - EoGetW(eapp))
+	   x = VRoot.w - EoGetW(eapp);
 
 	y = Conf.dock.starty;
 	if (y < 0)
 	   y = 0;
-	else if (y > VRoot.h - eapp->h)
-	   y = VRoot.h - eapp->h;
+	else if (y > VRoot.h - EoGetH(eapp))
+	   y = VRoot.h - EoGetH(eapp);
      }
 
    step_right = Conf.dock.startx < VRoot.w;
@@ -61,9 +61,10 @@ DockappFindEmptySpotFor(EWin * eapp)
 	   if (ewin == eapp || !ewin->docked)
 	      continue;
 
-	   if ((x + w) <= ewin->x || x >= (ewin->x + ewin->w))
+	   if ((x + w) <= EoGetX(ewin) || x >= (EoGetX(ewin) + EoGetW(ewin)))
 	      done = 1;
-	   else if ((y + h) <= ewin->y || y > (ewin->y + ewin->h))
+	   else if ((y + h) <= EoGetY(ewin)
+		    || y > (EoGetY(ewin) + EoGetH(ewin)))
 	      done = 1;
 	   else
 	      done = 0;
@@ -73,7 +74,7 @@ DockappFindEmptySpotFor(EWin * eapp)
 		switch (Conf.dock.dirmode)
 		  {
 		  case DOCK_RIGHT:
-		     x = ewin->x + ewin->w;
+		     x = EoGetX(ewin) + EoGetW(ewin);
 		     if (x + w >= VRoot.w)
 		       {
 			  x = Conf.dock.startx;
@@ -81,7 +82,7 @@ DockappFindEmptySpotFor(EWin * eapp)
 		       }
 		     break;
 		  case DOCK_LEFT:
-		     x = ewin->x - w;
+		     x = EoGetX(ewin) - w;
 		     if (x < 0)
 		       {
 			  x = Conf.dock.startx - w;
@@ -89,7 +90,7 @@ DockappFindEmptySpotFor(EWin * eapp)
 		       }
 		     break;
 		  case DOCK_DOWN:
-		     y = ewin->y + ewin->h;
+		     y = EoGetY(ewin) + EoGetH(ewin);
 		     if (y + h >= VRoot.h)
 		       {
 			  y = Conf.dock.starty;
@@ -97,7 +98,7 @@ DockappFindEmptySpotFor(EWin * eapp)
 		       }
 		     break;
 		  case DOCK_UP:
-		     y = ewin->y - h;
+		     y = EoGetY(ewin) - h;
 		     if (y < 0)
 		       {
 			  y = VRoot.h - h;
@@ -116,8 +117,8 @@ DockappFindEmptySpotFor(EWin * eapp)
 	y = VRoot.h - h / 2;
      }
 
-   eapp->x = x;
-   eapp->y = y;
+   EoSetX(eapp, x);
+   EoSetY(eapp, y);
 }
 
 void
@@ -129,7 +130,7 @@ DockIt(EWin * ewin)
    Esnprintf(id, sizeof(id), "%i", (unsigned)ewin->client.win);
    ic = FindItem("DEFAULT_DOCK_BUTTON", 0, LIST_FINDBY_NAME, LIST_TYPE_ICLASS);
 
-   UngrabX();
+   ecore_x_ungrab();
 
    DockappFindEmptySpotFor(ewin);
    ewin->client.already_placed = 1;
@@ -137,6 +138,6 @@ DockIt(EWin * ewin)
    if (ewin->client.icon_win)
       EMapWindow(disp, ewin->client.icon_win);
 
-   IclassApply(ic, ewin->win, ewin->client.w, ewin->client.h,
-	       0, 0, STATE_NORMAL, 0, ST_BUTTON);
+   ImageclassApply(ic, EoGetWin(ewin), ewin->client.w, ewin->client.h,
+		   0, 0, STATE_NORMAL, 0, ST_BUTTON);
 }

@@ -21,89 +21,28 @@
  * CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 #include "E.h"
+#include "conf.h"
 
-TextClass          *
-CreateTclass(void)
+static char        *
+TextstateFontLookup(const char *name)
 {
-   TextClass          *t;
+   const char         *font;
 
-   EDBUG(5, "CreateTclass");
-
-   t = Ecalloc(1, sizeof(TextClass));
-   if (!t)
-      EDBUG_RETURN(NULL);
-
-   t->justification = 512;
-
-   EDBUG_RETURN(t);
-}
-
-void
-FreeTextState(TextState * ts)
-{
-   if (ts->fontname)
-      Efree(ts->fontname);
-   if (ts->xfont)
-      XFreeFont(disp, ts->xfont);
-   if (ts->efont)
-      Efont_free(ts->efont);
-   Efree(ts);
-}
-
-void
-DeleteTclass(TextClass * t)
-{
-
-   if (t->ref_count > 0)
+   if (*name == '*')
      {
-	DialogOK(_("TextClass Error!"), _("%u references remain\n"),
-		 t->ref_count);
-	EDBUG_RETURN_;
+	font = FontLookup(name + 1);
+	if (font)
+	   name = font;
      }
-   if (t->name)
-      Efree(t->name);
-   if (t->norm.normal)
-      FreeTextState(t->norm.normal);
-   if (t->norm.hilited)
-      FreeTextState(t->norm.hilited);
-   if (t->norm.clicked)
-      FreeTextState(t->norm.clicked);
-   if (t->norm.disabled)
-      FreeTextState(t->norm.disabled);
-   if (t->active.normal)
-      FreeTextState(t->active.normal);
-   if (t->active.hilited)
-      FreeTextState(t->active.hilited);
-   if (t->active.clicked)
-      FreeTextState(t->active.clicked);
-   if (t->active.disabled)
-      FreeTextState(t->active.disabled);
-   if (t->sticky.normal)
-      FreeTextState(t->sticky.normal);
-   if (t->sticky.hilited)
-      FreeTextState(t->sticky.hilited);
-   if (t->sticky.clicked)
-      FreeTextState(t->sticky.clicked);
-   if (t->sticky.disabled)
-      FreeTextState(t->sticky.disabled);
-   if (t->sticky_active.normal)
-      FreeTextState(t->sticky_active.normal);
-   if (t->sticky_active.hilited)
-      FreeTextState(t->sticky_active.hilited);
-   if (t->sticky_active.clicked)
-      FreeTextState(t->sticky_active.clicked);
-   if (t->sticky_active.disabled)
-      FreeTextState(t->sticky_active.disabled);
-   Efree(t);
+   return Estrdup(name);
 }
 
-TextState          *
-CreateTextState()
+static TextState   *
+TextstateCreate(void)
 {
-
    TextState          *ts;
 
-   EDBUG(6, "CreateTextState");
+   EDBUG(6, "TextstateCreate");
 
    ts = Ecalloc(1, sizeof(TextState));
    if (!ts)
@@ -117,14 +56,88 @@ CreateTextState()
    ts->xfontset = 0;
 
    EDBUG_RETURN(ts);
-
 }
 
-void
-TclassPopulate(TextClass * tclass)
+static void
+TextStateDestroy(TextState * ts)
+{
+   if (ts->fontname)
+      Efree(ts->fontname);
+   if (ts->xfont)
+      XFreeFont(disp, ts->xfont);
+   if (ts->efont)
+      Efont_free(ts->efont);
+   Efree(ts);
+}
+
+static TextClass   *
+TextclassCreate(const char *name)
+{
+   TextClass          *tc;
+
+   EDBUG(5, "TextclassCreate");
+
+   tc = Ecalloc(1, sizeof(TextClass));
+   if (!tc)
+      EDBUG_RETURN(NULL);
+
+   tc->name = Estrdup(name);
+   tc->justification = 512;
+
+   EDBUG_RETURN(tc);
+}
+
+static void
+TextclassDestroy(TextClass * tc)
+{
+   if (tc->ref_count > 0)
+     {
+	DialogOK(_("Textclass Error!"), _("%u references remain\n"),
+		 tc->ref_count);
+	EDBUG_RETURN_;
+     }
+   if (tc->name)
+      Efree(tc->name);
+   if (tc->norm.normal)
+      TextStateDestroy(tc->norm.normal);
+   if (tc->norm.hilited)
+      TextStateDestroy(tc->norm.hilited);
+   if (tc->norm.clicked)
+      TextStateDestroy(tc->norm.clicked);
+   if (tc->norm.disabled)
+      TextStateDestroy(tc->norm.disabled);
+   if (tc->active.normal)
+      TextStateDestroy(tc->active.normal);
+   if (tc->active.hilited)
+      TextStateDestroy(tc->active.hilited);
+   if (tc->active.clicked)
+      TextStateDestroy(tc->active.clicked);
+   if (tc->active.disabled)
+      TextStateDestroy(tc->active.disabled);
+   if (tc->sticky.normal)
+      TextStateDestroy(tc->sticky.normal);
+   if (tc->sticky.hilited)
+      TextStateDestroy(tc->sticky.hilited);
+   if (tc->sticky.clicked)
+      TextStateDestroy(tc->sticky.clicked);
+   if (tc->sticky.disabled)
+      TextStateDestroy(tc->sticky.disabled);
+   if (tc->sticky_active.normal)
+      TextStateDestroy(tc->sticky_active.normal);
+   if (tc->sticky_active.hilited)
+      TextStateDestroy(tc->sticky_active.hilited);
+   if (tc->sticky_active.clicked)
+      TextStateDestroy(tc->sticky_active.clicked);
+   if (tc->sticky_active.disabled)
+      TextStateDestroy(tc->sticky_active.disabled);
+   Efree(tc);
+}
+
+static void
+TextclassPopulate(TextClass * tclass)
 {
 
-   EDBUG(6, "TclassPopulate");
+   EDBUG(6, "TextclassPopulate");
 
    if (!tclass)
       EDBUG_RETURN_;
@@ -167,20 +180,275 @@ TclassPopulate(TextClass * tclass)
       tclass->sticky_active.disabled = tclass->sticky_active.normal;
 
    EDBUG_RETURN_;
+}
 
+TextClass          *
+TextclassFind(const char *name, int fallback)
+{
+   TextClass          *tc;
+
+   if (name)
+     {
+	tc = FindItem(name, 0, LIST_FINDBY_NAME, LIST_TYPE_TCLASS);
+	if (tc || !fallback)
+	   return tc;
+     }
+
+   tc = FindItem("__FALLBACK_TCLASS", 0, LIST_FINDBY_NAME, LIST_TYPE_TCLASS);
+
+   return tc;
+}
+
+int
+TextclassConfigLoad(FILE * fs)
+{
+   int                 err = 0;
+   char                s[FILEPATH_LEN_MAX];
+   char                s2[FILEPATH_LEN_MAX];
+   int                 i1, r, g, b;
+   TextClass          *tc = NULL;
+   TextState          *ts = NULL;
+   int                 fields;
+
+   while (GetLine(s, sizeof(s), fs))
+     {
+	s2[0] = 0;
+	i1 = CONFIG_INVALID;
+	fields = sscanf(s, "%i %4000[^=]", &i1, s2);
+
+	if (fields < 1)
+	  {
+	     i1 = CONFIG_INVALID;
+	  }
+	else if (i1 == CONFIG_CLOSE)
+	  {
+	     if (fields != 1)
+		Alert(_("CONFIG: ignoring extra data in \"%s\"\n"), s);
+	  }
+	else if (i1 != CONFIG_INVALID)
+	  {
+	     if (fields != 2)
+	       {
+		  Alert(_("CONFIG: missing required data in \"%s\"\n"), s);
+		  i1 = CONFIG_INVALID;
+	       }
+	  }
+	switch (i1)
+	  {
+	  case CONFIG_CLOSE:
+	     if (tc)
+	       {
+		  TextclassPopulate(tc);
+		  AddItem(tc, tc->name, 0, LIST_TYPE_TCLASS);
+	       }
+	     goto done;
+	  case CONFIG_CLASSNAME:
+	     if (ConfigSkipIfExists(fs, s2, LIST_TYPE_TCLASS))
+		goto done;
+	     tc = TextclassCreate(s2);
+	     break;
+	  case TEXT_ORIENTATION:
+	     if (ts)
+		ts->style.orientation = atoi(s2);
+	     break;
+	  case TEXT_JUSTIFICATION:
+	     if (tc)
+		tc->justification = atoi(s2);
+	     break;
+	  case CONFIG_DESKTOP:
+	  case ICLASS_NORMAL:
+	     if (tc)
+		tc->norm.normal = ts = TextstateCreate();
+	     if (ts)
+	       {
+		  ts->fontname = TextstateFontLookup(s2);
+		  ts->style.mode = MODE_VERBATIM;
+	       }
+	     break;
+	  case ICLASS_CLICKED:
+	     if (tc)
+		tc->norm.clicked = ts = TextstateCreate();
+	     if (ts)
+	       {
+		  ts->fontname = TextstateFontLookup(s2);
+		  ts->style.mode = MODE_VERBATIM;
+	       }
+	     break;
+	  case ICLASS_HILITED:
+	     if (tc)
+		tc->norm.hilited = ts = TextstateCreate();
+	     if (ts)
+	       {
+		  ts->fontname = TextstateFontLookup(s2);
+		  ts->style.mode = MODE_VERBATIM;
+	       }
+	     break;
+	  case ICLASS_DISABLED:
+	     if (tc)
+		tc->norm.disabled = ts = TextstateCreate();
+	     if (ts)
+	       {
+		  ts->fontname = TextstateFontLookup(s2);
+		  ts->style.mode = MODE_VERBATIM;
+	       }
+	     break;
+	  case ICLASS_STICKY_NORMAL:
+	     if (tc)
+		tc->sticky.normal = ts = TextstateCreate();
+	     if (ts)
+	       {
+		  ts->fontname = TextstateFontLookup(s2);
+		  ts->style.mode = MODE_VERBATIM;
+	       }
+	     break;
+	  case ICLASS_STICKY_CLICKED:
+	     if (tc)
+		tc->sticky.clicked = ts = TextstateCreate();
+	     if (ts)
+	       {
+		  ts->fontname = TextstateFontLookup(s2);
+		  ts->style.mode = MODE_VERBATIM;
+	       }
+	     break;
+	  case ICLASS_STICKY_HILITED:
+	     if (tc)
+		tc->sticky.hilited = ts = TextstateCreate();
+	     if (ts)
+	       {
+		  ts->fontname = TextstateFontLookup(s2);
+		  ts->style.mode = MODE_VERBATIM;
+	       }
+	     break;
+	  case ICLASS_STICKY_DISABLED:
+	     if (tc)
+		tc->sticky.disabled = ts = TextstateCreate();
+	     if (ts)
+	       {
+		  ts->fontname = TextstateFontLookup(s2);
+		  ts->style.mode = MODE_VERBATIM;
+	       }
+	     break;
+	  case ICLASS_ACTIVE_NORMAL:
+	     if (tc)
+		tc->active.normal = ts = TextstateCreate();
+	     if (ts)
+	       {
+		  ts->fontname = TextstateFontLookup(s2);
+		  ts->style.mode = MODE_VERBATIM;
+	       }
+	     break;
+	  case ICLASS_ACTIVE_CLICKED:
+	     if (tc)
+		tc->active.clicked = ts = TextstateCreate();
+	     if (ts)
+	       {
+		  ts->fontname = TextstateFontLookup(s2);
+		  ts->style.mode = MODE_VERBATIM;
+	       }
+	     break;
+	  case ICLASS_ACTIVE_HILITED:
+	     if (tc)
+		tc->active.hilited = ts = TextstateCreate();
+	     if (ts)
+	       {
+		  ts->fontname = TextstateFontLookup(s2);
+		  ts->style.mode = MODE_VERBATIM;
+	       }
+	     break;
+	  case ICLASS_ACTIVE_DISABLED:
+	     if (tc)
+		tc->active.disabled = ts = TextstateCreate();
+	     if (ts)
+	       {
+		  ts->fontname = TextstateFontLookup(s2);
+		  ts->style.mode = MODE_VERBATIM;
+	       }
+	     break;
+	  case ICLASS_STICKY_ACTIVE_NORMAL:
+	     if (tc)
+		tc->sticky_active.normal = ts = TextstateCreate();
+	     if (ts)
+	       {
+		  ts->fontname = TextstateFontLookup(s2);
+		  ts->style.mode = MODE_VERBATIM;
+	       }
+	     break;
+	  case ICLASS_STICKY_ACTIVE_CLICKED:
+	     if (tc)
+		tc->sticky_active.clicked = ts = TextstateCreate();
+	     if (ts)
+	       {
+		  ts->fontname = TextstateFontLookup(s2);
+		  ts->style.mode = MODE_VERBATIM;
+	       }
+	     break;
+	  case ICLASS_STICKY_ACTIVE_HILITED:
+	     if (tc)
+		tc->sticky_active.hilited = ts = TextstateCreate();
+	     if (ts)
+	       {
+		  ts->fontname = TextstateFontLookup(s2);
+		  ts->style.mode = MODE_VERBATIM;
+	       }
+	     break;
+	  case ICLASS_STICKY_ACTIVE_DISABLED:
+	     if (tc)
+		tc->sticky_active.disabled = ts = TextstateCreate();
+	     if (ts)
+	       {
+		  ts->fontname = TextstateFontLookup(s2);
+		  ts->style.mode = MODE_VERBATIM;
+	       }
+	     break;
+	  case TEXT_MODE:
+	     if (ts)
+		ts->style.mode = atoi(s2);
+	     break;
+	  case TEXT_EFFECT:
+	     if (ts)
+		ts->effect = atoi(s2);
+	     break;
+	  case TEXT_FG_COL:
+	     if (ts)
+	       {
+		  r = g = b = 0;
+		  sscanf(s, "%*s %i %i %i", &r, &g, &b);
+		  ESetColor(&ts->fg_col, r, g, b);
+	       }
+	     break;
+	  case TEXT_BG_COL:
+	     if (ts)
+	       {
+		  r = g = b = 0;
+		  sscanf(s, "%*s %i %i %i", &r, &g, &b);
+		  ESetColor(&ts->bg_col, r, g, b);
+	       }
+	     break;
+	  default:
+	     Alert(_("Warning: unable to determine what to do with\n"
+		     "the following text in the middle of current Text"
+		     " definition:\n" "%s\nWill ignore and continue...\n"), s);
+	  }
+
+     }
+   err = -1;
+
+ done:
+   return err;
 }
 
 void
-TclassApply(ImageClass * iclass, Window win, int w, int h, int active,
-	    int sticky, int state, char expose, TextClass * tclass,
-	    const char *text)
+TextclassApply(ImageClass * iclass, Window win, int w, int h, int active,
+	       int sticky, int state, char expose __UNUSED__,
+	       TextClass * tclass, const char *text)
 {
 
-   EDBUG(4, "TclassApply");
+   EDBUG(4, "TextclassApply");
 
    if ((!iclass) || (!tclass) || (!text) || (!win) || (w < 1) || (h < 1))
       EDBUG_RETURN_;
 
+#if 0				/* Try not using the draw queue here. */
    if (Mode.queue_up)
      {
 	DrawQueue          *dq;
@@ -214,6 +482,8 @@ TclassApply(ImageClass * iclass, Window win, int w, int h, int active,
 	AddItem(dq, "DRAW", dq->win, LIST_TYPE_DRAW);
 	EDBUG_RETURN_;
      }
+#endif
+
    XClearWindow(disp, win);
 
    TextDraw(tclass, win, active, sticky, state, text, iclass->padding.left,
@@ -224,5 +494,157 @@ TclassApply(ImageClass * iclass, Window win, int w, int h, int active,
 	    tclass->justification);
 
    EDBUG_RETURN_;
-
 }
+
+/*
+ * Textclass Module
+ */
+
+static void
+TextclassSighan(int sig, void *prm __UNUSED__)
+{
+   TextClass          *tc;
+
+   switch (sig)
+     {
+     case ESIGNAL_INIT:
+	/* create a fallback textclass in case no textclass is found */
+	tc = TextclassCreate("__FALLBACK_TCLASS");
+	tc->norm.normal = TextstateCreate();
+	tc->norm.normal->fontname =
+	   Estrdup("-*-helvetica-medium-r-*-*-12-*-*-*-*-*-*-*");
+	ESetColor(&(tc->norm.normal->fg_col), 0, 0, 0);
+	AddItem(tc, tc->name, 0, LIST_TYPE_TCLASS);
+	break;
+     }
+}
+
+static void
+TextclassIpc(const char *params, Client * c __UNUSED__)
+{
+   char                pq;
+   char                param1[FILEPATH_LEN_MAX];
+   char                param2[FILEPATH_LEN_MAX];
+   char                param3[FILEPATH_LEN_MAX];
+   TextClass          *tc;
+
+   if (!params)
+     {
+	IpcPrintf("Please specify...\n");
+	return;
+     }
+
+   param1[0] = 0;
+   param2[0] = 0;
+   param3[0] = 0;
+
+   word(params, 1, param1);
+   word(params, 2, param2);
+
+   if (!param1[0])
+     {
+	IpcPrintf("TextClass not specified\n");
+	return;
+     }
+
+   tc = TextclassFind(param1, 0);
+   if (!tc)
+     {
+	IpcPrintf("TextClass not found: %s\n", param1);
+	return;
+     }
+
+   if (!strcmp(param2, "create"))
+     {
+     }
+   else if (!strcmp(param2, "delete"))
+     {
+	if (tc)
+	   TextclassDestroy(tc);
+     }
+   else if (!strcmp(param2, "modify"))
+     {
+     }
+   else if (!strcmp(param2, "apply"))
+     {
+	if (tc)
+	  {
+	     int                 state;
+	     int                 x, y;
+	     const char         *txt;
+	     Window              win;
+
+	     word(params, 3, param3);
+	     win = (Window) strtol(param3, (char **)NULL, 0);
+	     word(params, 4, param3);
+	     x = atoi(param3);
+	     word(params, 5, param3);
+	     y = atoi(param3);
+	     word(params, 6, param3);
+	     state = STATE_NORMAL;
+	     if (!strcmp(param3, "normal"))
+		state = STATE_NORMAL;
+	     else if (!strcmp(param3, "hilited"))
+		state = STATE_HILITED;
+	     else if (!strcmp(param3, "clicked"))
+		state = STATE_CLICKED;
+	     else if (!strcmp(param3, "disabled"))
+		state = STATE_DISABLED;
+	     txt = atword(params, 7);
+	     pq = Mode.queue_up;
+	     Mode.queue_up = 0;
+	     if (txt)
+		TextDraw(tc, win, 0, 0, state, txt, x, y, 99999, 99999, 17, 0);
+	     Mode.queue_up = pq;
+	  }
+     }
+   else if (!strcmp(param2, "query_size"))
+     {
+	if (tc)
+	  {
+	     int                 w, h;
+	     const char         *txt;
+
+	     w = h = 0;
+	     txt = atword(params, 3);
+	     if (txt)
+		TextSize(tc, 0, 0, STATE_NORMAL, txt, &w, &h, 17);
+	     IpcPrintf("%i %i\n", w, h);
+	  }
+     }
+   else if (!strcmp(param2, "query"))
+     {
+	if (tc)
+	   IpcPrintf("TextClass %s found\n", tc->name);
+     }
+   else if (!strcmp(param2, "ref_count"))
+     {
+	if (tc)
+	   IpcPrintf("%u references remain.\n", tc->ref_count);
+     }
+   else
+     {
+	IpcPrintf("Error: Unknown operation specified\n");
+     }
+}
+
+IpcItem             TextclassIpcArray[] = {
+   {
+    TextclassIpc,
+    "textclass", NULL,
+    "Create/Delete/Modify/apply a TextClass",
+    "This doesn't do anything yet\n"}
+   ,
+};
+#define N_IPC_FUNCS (sizeof(TextclassIpcArray)/sizeof(IpcItem))
+
+/*
+ * Module descriptor
+ */
+EModule             ModTextclass = {
+   "textclass", "tc",
+   TextclassSighan,
+   {N_IPC_FUNCS, TextclassIpcArray}
+   ,
+   {0, NULL}
+};

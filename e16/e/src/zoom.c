@@ -206,7 +206,6 @@ Zoom(EWin * ewin)
 	     ewin = zoom_last_ewin;
 /*           XUngrabPointer(disp, CurrentTime); */
 	     MoveEwin(ewin, zoom_last_x, zoom_last_y);
-	     ICCCM_Configure(ewin);
 	     if (zoom_mask_1)
 		EDestroyWindow(disp, zoom_mask_1);
 	     if (zoom_mask_2)
@@ -218,7 +217,7 @@ Zoom(EWin * ewin)
 	     SwitchRes(0, 0, 0, 0, 0);
 	     XWarpPointer(disp, None, ewin->client.win, 0, 0, 0, 0,
 			  ewin->client.w / 2, ewin->client.h / 2);
-	     XSync(disp, False);
+	     ecore_x_sync();
 	     zoom_last_ewin = NULL;
 	  }
 	return;
@@ -230,8 +229,8 @@ Zoom(EWin * ewin)
 	int                 x1, y1, x2, y2;
 
 	zoom_last_ewin = ewin;
-	zoom_last_x = ewin->x;
-	zoom_last_y = ewin->y;
+	zoom_last_x = EoGetX(ewin);
+	zoom_last_y = EoGetY(ewin);
 	x1 = (mode->hdisplay - ewin->client.w) / 2;
 	if (x1 < 0)
 	   x1 = 0;
@@ -247,7 +246,6 @@ Zoom(EWin * ewin)
 	RaiseEwin(ewin);
 	MoveEwin(ewin, -ewin->border->border.left + x1,
 		 -ewin->border->border.top + y1);
-	ICCCM_Configure(ewin);
 	FocusToEWin(ewin, FOCUS_SET);
 	XWarpPointer(disp, None, ewin->client.win, 0, 0, 0, 0,
 		     ewin->client.w / 2, ewin->client.h / 2);
@@ -263,7 +261,7 @@ Zoom(EWin * ewin)
 	zoom_mask_2 = ZoomMask(0, 0, mode->hdisplay, y1);
 	zoom_mask_3 = ZoomMask(x1 + ewin->client.w, 0, x2, mode->vdisplay);
 	zoom_mask_4 = ZoomMask(0, y1 + ewin->client.h, mode->hdisplay, y2);
-	XSync(disp, False);
+	ecore_x_sync();
      }
 }
 

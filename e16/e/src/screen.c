@@ -24,7 +24,6 @@
 #include "E.h"
 
 #ifdef HAS_XINERAMA
-char                xinerama_active = 0;
 static XineramaScreenInfo *screens = NULL;
 static int          num_screens = 0;
 #endif
@@ -35,9 +34,9 @@ ScreenInit(void)
    if (Mode.wm.window)
       return;
 #ifdef HAS_XINERAMA
-   xinerama_active = XineramaIsActive(disp);
+   Mode.display.xinerama_active = XineramaIsActive(disp);
    Conf.extra_head = 0;
-   if (xinerama_active)
+   if (Mode.display.xinerama_active)
       screens = XineramaQueryScreens(disp, &num_screens);
 #endif
 }
@@ -55,7 +54,7 @@ ScreenGetGeometry(int xi, int yi, int *px, int *py, int *pw, int *ph)
    h = VRoot.h;
 
 #ifdef HAS_XINERAMA
-   if (xinerama_active)
+   if (Mode.display.xinerama_active)
      {
 	int                 i;
 
