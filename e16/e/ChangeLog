@@ -2785,3 +2785,15 @@ Clear blocked signals at startup and exit.
 Set EDBUG_COREDUMP to get core dump in stead of GSOD.
 No longer use the DEFAULT theme link.
 Put the usual root menus on Ctrl-Shift-F1,2,3.
+
+-------------------------------------------------------------------------------
+
+Sun May  9 23:20:52 CEST 2004
+(Kim)
+
+Fix problem with multiple iconboxes (and probably other iconbox problems).
+Move some DEFS into config.h
+Fix floating window stacking after area/desk switch.
+Put Winops menu on Alt-Ctrl-w.
+Do keybord menu navigation without pointer warping.
+Do menu sliding more cleanly.

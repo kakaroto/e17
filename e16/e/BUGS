@@ -28,10 +28,6 @@ TODO for E 16.7
 - Various segv's.
   Please provide directions to reproduce.
 
-- Multiple Iconboxes don't work.
-
-- Dragging from one virtual desk to another (via edge flip) is broken.
-
 - Border parts are rendered too often/with incorrect transparent background.
 
 ? eesh/libedit ?
@@ -39,6 +35,10 @@ TODO for E 16.7
 
 Fixed in CVS
 ~~~~~~~~~~~~
+
+- Dragging from one virtual desk to another (via edge flip) is broken.
+
+- Multiple Iconboxes don't work, possibly other iconbox problems.
 
 - Automatic menu regeneration when theme transparency is off is broken.
 
