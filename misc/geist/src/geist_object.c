@@ -73,7 +73,8 @@ geist_object_free(geist_object * obj)
    D_RETURN_(5);
 }
 
-geist_object_type geist_object_get_type(geist_object * obj)
+geist_object_type
+geist_object_get_type(geist_object * obj)
 {
    return obj->type;
 }
@@ -209,7 +210,8 @@ geist_object_add_to_object_list(geist_object * obj)
    D_RETURN_(3);
 }
 
-Imlib_Image geist_object_get_rendered_image(geist_object * obj)
+Imlib_Image
+geist_object_get_rendered_image(geist_object * obj)
 {
    D_ENTER(5);
 
@@ -217,7 +219,8 @@ Imlib_Image geist_object_get_rendered_image(geist_object * obj)
 }
 
 
-Imlib_Image geist_object_int_get_rendered_image(geist_object * obj)
+Imlib_Image
+geist_object_int_get_rendered_image(geist_object * obj)
 {
    D_ENTER(5);
 
@@ -336,7 +339,8 @@ geist_object_int_render_selected(geist_object * obj, Imlib_Image dest,
    D_RETURN_(5);
 }
 
-Imlib_Updates geist_object_int_get_selection_updates(geist_object * obj)
+Imlib_Updates
+geist_object_int_get_selection_updates(geist_object * obj)
 {
    Imlib_Updates up = NULL;
 
@@ -426,7 +430,54 @@ geist_object_check_resize_click(geist_object * obj, int x, int y)
    D_RETURN(5, RESIZE_NONE);
 }
 
-Imlib_Updates geist_object_get_selection_updates(geist_object * obj)
+void
+geist_object_get_resize_box_coords(geist_object * obj, int resize, int *x,
+                                   int *y)
+{
+   D_ENTER(3);
+
+   switch (resize)
+   {
+     case RESIZE_RIGHT:
+        *x = obj->x - HALF_SEL_WIDTH + obj->w;
+        *y = obj->y - HALF_SEL_HEIGHT + (obj->h / 2);
+        break;
+     case RESIZE_LEFT:
+        *x = obj->x - HALF_SEL_WIDTH;
+        *y = obj->y - HALF_SEL_HEIGHT + (obj->h / 2);
+        break;
+     case RESIZE_BOTTOM:
+        *x = obj->x - HALF_SEL_WIDTH + (obj->w / 2);
+        *y = obj->y - HALF_SEL_HEIGHT + obj->h;
+        break;
+     case RESIZE_TOP:
+        *x = obj->x - HALF_SEL_WIDTH + (obj->w / 2);
+        *y = obj->y - HALF_SEL_HEIGHT;
+        break;
+     case RESIZE_TOPRIGHT:
+        *x = obj->x - HALF_SEL_WIDTH + obj->w;
+        *y = obj->y - HALF_SEL_HEIGHT;
+        break;
+     case RESIZE_BOTTOMRIGHT:
+        *x = obj->x - HALF_SEL_WIDTH + obj->w;
+        *y = obj->y - HALF_SEL_HEIGHT + obj->h;
+        break;
+     case RESIZE_BOTTOMLEFT:
+        *x = obj->x - HALF_SEL_WIDTH;
+        *y = obj->y - HALF_SEL_HEIGHT + obj->h;
+        break;
+     case RESIZE_TOPLEFT:
+        *x = obj->x - HALF_SEL_WIDTH;
+        *y = obj->y - HALF_SEL_HEIGHT;
+        break;
+     default:
+        break;
+   }
+   D_RETURN_(3);
+}
+
+Imlib_Updates
+geist_object_get_selection_updates(geist_object * obj)
 {
    D_ENTER(3);
 
@@ -767,7 +818,8 @@ delete_event_cb(GtkWidget * widget, GdkEvent * event, gpointer * data)
    return TRUE;
 }
 
-gboolean props_ok_cb(GtkWidget * widget, gpointer * data)
+gboolean
+props_ok_cb(GtkWidget * widget, gpointer * data)
 {
    gtk_widget_destroy((GtkWidget *) GEIST_OBJECT(data)->props_window);
    GEIST_OBJECT(data)->props_window = NULL;

@@ -140,9 +140,12 @@ void geist_object_display_props(geist_object * obj);
 void geist_object_dirty_selection(geist_object * obj);
 void geist_object_dirty(geist_object * obj);
 
-void geist_object_show_properties(geist_object *obj);
-void geist_object_update_sizemode(geist_object *obj);
-void geist_object_update_alignment(geist_object *obj);
+void geist_object_show_properties(geist_object * obj);
+void geist_object_update_sizemode(geist_object * obj);
+void geist_object_update_alignment(geist_object * obj);
+void geist_object_get_resize_box_coords(geist_object * obj, int resize,
+
+                                        int *x, int *y);
 
 
 

@@ -16,7 +16,7 @@ geist_document_new(int w, int h)
 
    d->im = imlib_create_image(w, h);
    d->pmap = XCreatePixmap(disp, root, w, h, depth);
-   d->bg_fill = geist_fill_new_coloured(255,255,255,255);
+   d->bg_fill = geist_fill_new_coloured(255, 255, 255, 255);
 
    D_RETURN(3, d);
 }
@@ -53,7 +53,8 @@ geist_document_render(geist_document * document)
    geist_imlib_image_fill_rectangle(document->im, 0, 0, document->w,
                                     document->h, 255, 255, 255, 255);
 
-   geist_fill_render(document->bg_fill, document->im, 0, 0, document->w, document->h);
+   geist_fill_render(document->bg_fill, document->im, 0, 0, document->w,
+                     document->h);
 
    for (l = document->layers; l; l = l->next)
       geist_layer_render((geist_layer *) l->data, document->im);
@@ -297,6 +298,23 @@ geist_document_remove_object(geist_document * d, geist_object * obj)
    D_ENTER(3);
    geist_object_dirty(obj);
    geist_layer_remove_object(obj->layer, obj);
+
+   D_RETURN_(3);
+}
+
+void
+geist_document_dirty_selection(geist_document * doc)
+{
+   geist_list *l, *list;
+
+   D_ENTER(3);
+
+   list = geist_document_get_selected_list(doc);
+
+   for (l = list; l; l = l->next)
+      geist_object_dirty_selection(GEIST_OBJECT(l->data));
+
+   geist_list_free(list);
 
    D_RETURN_(3);
 }

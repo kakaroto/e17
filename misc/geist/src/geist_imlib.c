@@ -302,7 +302,8 @@ geist_imlib_get_text_size(Imlib_Font fn, char *text, int *w, int *h,
    imlib_get_text_size(text, w, h);
 }
 
-Imlib_Image geist_imlib_clone_image(Imlib_Image im)
+Imlib_Image
+geist_imlib_clone_image(Imlib_Image im)
 {
    imlib_context_set_image(im);
    return imlib_clone_image();
@@ -354,10 +355,10 @@ geist_imlib_blend_image_onto_image_with_rotation(Imlib_Image dest_image,
    dh = 0;
 }
 
-Imlib_Image geist_imlib_create_cropped_scaled_image(Imlib_Image im, int sx,
-                                                    int sy, int sw, int sh,
-                                                    int dw, int dh,
-                                                    char alias)
+Imlib_Image
+geist_imlib_create_cropped_scaled_image(Imlib_Image im, int sx, int sy,
+                                        int sw, int sh, int dw, int dh,
+                                        char alias)
 {
    imlib_context_set_image(im);
    imlib_context_set_anti_alias(alias);
@@ -410,7 +411,8 @@ geist_imlib_image_draw_line(Imlib_Image im, int x1, int y1, int x2, int y2,
    imlib_image_draw_line(x1, y1, x2, y2, make_updates);
 }
 
-Imlib_Image geist_imlib_create_rotated_image(Imlib_Image im, double angle)
+Imlib_Image
+geist_imlib_create_rotated_image(Imlib_Image im, double angle)
 {
    imlib_context_set_image(im);
    return (imlib_create_rotated_image(angle));
@@ -437,13 +439,13 @@ geist_imlib_image_sharpen(Imlib_Image im, int radius)
    imlib_image_sharpen(radius);
 }
 
-DATA8
-geist_imlib_image_part_is_transparent(Imlib_Image im, int x, int y)
+DATA8 geist_imlib_image_part_is_transparent(Imlib_Image im, int x, int y)
 {
    Imlib_Color c;
    int num = 0;
    int ave = 0;
    int w, h;
+   int leftmost, rightmost, topmost, bottommost, i, j;
 
    imlib_context_set_image(im);
    w = imlib_image_get_width();
@@ -452,52 +454,33 @@ geist_imlib_image_part_is_transparent(Imlib_Image im, int x, int y)
    if ((x > w) || (y > h))
       return 1;
 
-   imlib_image_query_pixel(x - 1, y, &c);
-   ave += c.alpha;
-   num++;
 
-   if (x > 0)
-   {
-      imlib_image_query_pixel(x - 1, y, &c);
-      ave += c.alpha;
-      num++;
-   }
-   if (y > 0)
-   {
-      imlib_image_query_pixel(x, y - 1, &c);
-      ave += c.alpha;
-      num++;
-   }
-   if ((x > 0) && (y > 0))
-   {
-      imlib_image_query_pixel(x - 1, y - 1, &c);
-      ave += c.alpha;
-      num++;
-   }
-   if (x < w)
-   {
-      imlib_image_query_pixel(x + 1, y, &c);
-      ave += c.alpha;
-      num++;
-   }
-   if (y < h)
-   {
-      imlib_image_query_pixel(x, y + 1, &c);
-      ave += c.alpha;
-      num++;
-   }
-   if ((x < w) && (y < h))
-   {
-      imlib_image_query_pixel(x + 1, y + 1, &c);
-      ave += c.alpha;
-      num++;
-   }
+   leftmost = x - 1;
+   if (leftmost < 0)
+      leftmost = 0;
+   rightmost = x + 1;
+   if (rightmost > w)
+      rightmost = w;
+   topmost = y - 1;
+   if (topmost < 0)
+      topmost = 0;
+   bottommost = y + 1;
+   if (bottommost > h)
+      bottommost = h;
+
+   for (i = leftmost; i < rightmost + 1; i++)
+      for (j = topmost; j < bottommost + 1; j++)
+      {
+         imlib_image_query_pixel(i, j, &c);
+         ave += c.alpha;
+         num++;
+      }
+
    ave = ave / num;
 
 /* TODO Make this fuzziness an OPTION */
-   if (ave < 5)
-      return 1;
-   else
+   if (ave)
       return 0;
 
+   return 1;
 }
