@@ -81,7 +81,7 @@ retina_img_drawchecks()
 	int w, h;
 	
 	retina_bg = evas_object_image_add(retina_evas);
-	evas_object_image_file_set(retina_bg, PREFIX "images/checks.png", NULL);
+	evas_object_image_file_set(retina_bg, PACKAGE_DATA_DIR "/images/checks.png", NULL);
 	evas_object_move(retina_bg, 0, 0);
 	evas_object_image_size_get(retina_bg, &w, &h);
 	evas_object_image_fill_set(retina_bg, 0, 0, w, h);

@@ -38,7 +38,7 @@ retina_gui_create()
 
 	/* help image */
 	retina_help_img = evas_object_image_add(retina_evas);
-	evas_object_image_file_set(retina_help_img, PREFIX "images/retina_help.png", NULL);
+	evas_object_image_file_set(retina_help_img, PACKAGE_DATA_DIR "/images/retina_help.png", NULL);
 	evas_object_image_size_get(retina_help_img, &w, &h);
 	evas_object_image_fill_set(retina_help_img, 0, 0, w, h);
 	evas_object_resize(retina_help_img, w, h);

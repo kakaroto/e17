@@ -11,7 +11,7 @@
 
 #include <Imlib2.h>
 
-#define PREFIX "/usr/local/share/retina/"
+#include "../config.h"
 
 /* global variables */
 Ecore_Evas *retina_win;

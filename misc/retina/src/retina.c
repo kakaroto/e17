@@ -31,7 +31,7 @@ main(int argc, char **argv)
 		cur_sel = 0;
 		retina_img_load(retina_image_list[0]);
 	} else {
-		retina_img_load(PREFIX"images/retina.png");
+		retina_img_load(PACKAGE_DATA_DIR "/images/retina.png");
 	}
 
 	/* everything should be done, attach callbacks */
