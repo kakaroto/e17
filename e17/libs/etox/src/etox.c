@@ -1211,15 +1211,16 @@ static Evas_List *_etox_break_text(Etox * et, char *text)
  */
 void etox_layout(Etox * et)
 {
-#ifdef DEBUG
-	printf("\netox_layout() - called\n");
-	printf("etox_layout() - etox size is w=%d, h=%d\n", et->w, et->h);
-#endif
 	int y;
 	Etox_Line *line;
 	Evas_List *l;
 
 	CHECK_PARAM_POINTER("et", et);
+
+#ifdef DEBUG
+	printf("\netox_layout() - called\n");
+	printf("etox_layout() - etox size is w=%d, h=%d\n", et->w, et->h);
+#endif
 
 	if (!(et->flags & ETOX_SOFT_WRAP))
 		et->w = 0;

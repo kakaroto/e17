@@ -426,7 +426,7 @@ void etox_line_get_text(Etox_Line * line, char *buf, int len)
 			strncat(buf, temp, (len - pos));
 			pos = len;
 		}
-		free(temp);
+		FREE(temp);
 	}
 	line->length = sum;
 #ifdef DEBUG
@@ -447,14 +447,16 @@ etox_line_wrap(Etox *et, Etox_Line *line)
 	etox_line_print_bits(line);
 #endif
 
+   Evas_Object *split_bit = NULL;
    ok= 1;
-   for (ll = line->bits; ll; ll = ll->next)
+   for (ll = line->bits; ll && ok; ll = ll->next)
      {
-	char *tmp;
 	bit = ll->data;
+	char *tmp;
 	
 	tmp = etox_style_get_text(bit);
 	evas_object_geometry_get(bit, &x, &y, &w, &h);
+
 	/* if we are down to 1 character... or 1 char +space - abort */
 	if (
 	    (strlen(tmp) <= 1) ||
@@ -462,40 +464,109 @@ etox_line_wrap(Etox *et, Etox_Line *line)
 	    ) {
 	     if (w > et->w) {
 		  ok = 0;
+#ifdef DEBUG
+		  printf("etox_line_wrap() - WARNING: Could not wrap line - etox too small!!\n");
+#endif
 	       }
 	  }
 	FREE(tmp);
+
+        /* Find the bit that is on the border (right edje of the etox) */
+	if (x + w > et->x + et->w) {
+           split_bit = bit;
+           break;
+        }
      }
+
    if (!ok) {
-	return -1;
-     }
-	/* iterate through the bits to find the one on the border */
-	ll = line->bits;
-	while (ll) {
-		bit = ll->data;
+      return -1;
+   }
 
-		evas_object_geometry_get(bit, &x, &y, &w, &h);
-		if (x + w > et->x + et->w)
-			break;
-
-		ll = ll->next;
-	}
+   if (!split_bit) {
+#ifdef DEBUG
+      printf("etox_line_wrap() - WARNING: Could not find the bit to split. Line "
+             "width is probably wrong.\n");
+#endif
+      return -1;
+   }
 
 	/* get the index of the character on the edge */
+	bit = split_bit;
 	if (bit)
 		index = etox_style_text_at_position(bit, et->x + et->w, y + (h / 2),
 				NULL, NULL, NULL, NULL);
+	if (index == -1) {
+#ifdef DEBUG
+	   printf("etox_line_wrap() - WARNING: Could not find the character within the "
+	          "bit to split on. bit geometry is probably wrong?.\n");
+#endif
+	   return -1;
+	}
 
-	/* Adjust the index to find the actual character we want to wrap. */
-	if (index > 0 || (index == 0 && bit != line->bits->data)) {
+	/* Adjust the index to find the actual character we want to wrap. Invalid
+         * wrap locations:
+         *  - index 0 of the first bit
+         *  - index 0 of the second bit if this is a wrapped line
+         */
+	if (index > 0 ||
+            (!(bit == line->bits->data) &&
+             !(line->flags & ETOX_LINE_WRAPPED && bit == line->bits->next->data))) {
 		char *tmp;
 
 		tmp = etox_style_get_text(bit);
 
-		/* Back up to some whitespace when necessary */
+		/* If word wrap is on, back up to some whitespace */
 		if (et->flags & ETOX_BREAK_WORDS) {
-			while (index > 0 && !isspace(tmp[index]))
-				index--;
+                        Evas_Object *original_bit = bit;
+                        int space_index = index;
+                        int done = 0;
+                        int found_space = 0;
+
+                        /* Back up until we find the proper word wrap index/bit */
+			while (!done) {
+
+                           /* If this is a space, we're done! */
+                           if (isspace(tmp[space_index])) {
+                              found_space = 1;
+                              done = 1;
+                           }
+
+                           /* If this is the beginning of the bit and it is not the
+                            * first bit, back up into the previous bit */
+                           else if (space_index == 0 && bit != line->bits->data) {
+                              ll = ll->prev;
+                              bit = ll->data;
+                              FREE(tmp);
+                              tmp = etox_style_get_text(bit);
+                              space_index = strlen(tmp) - 1;
+                              if (space_index < 0) space_index = 0;
+                           }
+
+                           /* If we're at the beginning of the line - give up! */
+                           else if (space_index == 0) {
+                              done = 1;
+                              /* Point to the original bit */
+                              bit = original_bit;
+                              FREE(tmp);
+                              tmp = etox_style_get_text(bit);
+#ifdef DEBUG
+                              printf("etox_line_wrap() - WARNING: Could not word wrap line - "
+			             "reverting to soft wrap.\n");
+#endif
+                           }
+
+                           /* If this is not the beginning of the bit, back up */
+                           else if (space_index > 0) {
+                              space_index--;
+                           }
+
+			}
+
+			/* If a space was found, then use it, otherwise revert to
+ 			   simple soft wrap and wrap at the character on the edge */
+			if (found_space) {
+			   index = space_index;
+			}
 		}
 
 		/* don't start a new line with a space */
@@ -505,11 +576,18 @@ etox_line_wrap(Etox *et, Etox_Line *line)
 		FREE(tmp);
 	}
 
-	/* Wrap if we've found a reasonable position */
-	if (index > 0 || (index == 0 && bit != line->bits->data)) {
+	/* Wrap if we've found a reasonable position. Invalid wrap locations:
+	 *  - index 0 of the first bit
+	 *  - index 0 of the second bit if this is a wrapped line
+	 */
+	if (index > 0 ||
+	    (!(bit == line->bits->data) &&
+	     !(line->flags & ETOX_LINE_WRAPPED && bit == line->bits->next->data))) {
 #ifdef DEBUG
+		char *tmp = etox_style_get_text(bit);
 		printf("etox_line_wrap() - going to split line at index %d of bit:"
-		       "(%s)\n", index, etox_style_get_text(bit));
+		       "(%s)\n", index, tmp);
+		FREE(tmp);
 #endif
 		etox_line_split(line, bit, index);
 		ll = evas_list_find_list(et->lines, line);
@@ -536,6 +614,9 @@ etox_line_wrap(Etox *et, Etox_Line *line)
 	else
 		index = -1;
 
+#ifdef DEBUG
+		printf("etox_line_wrap() - done\n");
+#endif
 	return index;
 }
 
@@ -561,6 +642,15 @@ etox_line_split(Etox_Line *line, Evas_Object *bit, int index)
 	 */
 	if (index > 0) {
 		if (index < etox_style_length(bit)) {
+			/*
+ 			 * FIXME: There appears to be a problem here where the widths
+			 * of the split bits do not add up to the width of the original
+			 * bit! It is noticeable when the first split bit ends with 
+			 * a space. Is it counted in the middle of a bit, but not at
+			 * the end? This causes a problem where the width of a line
+			 * does not match the sum of its bits and then etox_line_wrap
+			 * tries to wrap a line that does not have a bit on the edge.
+			 */
 			split = etox_split_bit(line, bit, index);
 		}
 		ll = ll->next;
@@ -748,16 +838,24 @@ etox_line_index_to_geometry(Etox_Line *line, int index, Evas_Coord *x,
 void
 etox_line_apply_context(Etox_Line *line, Etox_Context *context, Evas_Object *start, Evas_Object *end)
 {
+#ifdef DEBUG
+  printf("etox_line_apply_context() - called\n");
+fflush(stdout);
+#endif
   Evas_List *l, *ls = NULL, *le = NULL;
 
   ls = evas_list_find_list(line->bits, start);
   le = evas_list_find_list(line->bits, end);
+#ifdef DEBUG
+  printf("etox_line_apply_context() - found start and end bits\n");
+fflush(stdout);
+#endif
   
   /* make sure start and end exist and are in line->bits */
   if ( !ls )
     ls = line->bits;
   if ( !le ) 
-    le = evas_list_last(line->bits); 
+    le = evas_list_last(line->bits);
 
   for (l = ls; l; l = l->next)
   {
@@ -767,6 +865,10 @@ etox_line_apply_context(Etox_Line *line, Etox_Context *context, Evas_Object *sta
 
     if (!l->prev && line->flags & ETOX_LINE_WRAPPED)
     {
+#ifdef DEBUG
+  printf("etox_line_apply_context() - first bit of line. skipping obstacles...\n");
+fflush(stdout);
+#endif
       /* go past any obstacles */
       while (etox_style_fixed(bit))
       {
@@ -777,6 +879,10 @@ etox_line_apply_context(Etox_Line *line, Etox_Context *context, Evas_Object *sta
         l = l->next;
         bit = l->data;
       }
+#ifdef DEBUG
+  printf("etox_line_apply_context() - applying context to marker bit\n");
+fflush(stdout);
+#endif
       etox_style_set_text(bit, context->marker.text);
       etox_style_set_style(bit, context->marker.style);
       evas_object_color_set(bit, context->marker.r, context->marker.g,
@@ -784,6 +890,10 @@ etox_line_apply_context(Etox_Line *line, Etox_Context *context, Evas_Object *sta
     }
     else
     {
+#ifdef DEBUG
+  printf("etox_line_apply_context() - applying context to bit\n");
+fflush(stdout);
+#endif
       etox_style_set_style(bit, context->style);
       evas_object_color_set(bit, context->r, context->g, context->b,
                             context->a);
@@ -792,6 +902,10 @@ etox_line_apply_context(Etox_Line *line, Etox_Context *context, Evas_Object *sta
     if (l == le)
       break;
   }
+#ifdef DEBUG
+  printf("etox_line_apply_context() - done\n");
+fflush(stdout);
+#endif
 }
 
 void
