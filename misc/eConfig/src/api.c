@@ -15,6 +15,16 @@
 #include "eConfig.internal.h"
 #include "eConfig.h"
 
+char              **
+eConfigGetKeys(char *stringtomatch, unsigned long *numberofmatches)
+{
+   stringtomatch = NULL;
+   numberofmatches = NULL;
+
+   return NULL;
+
+}
+
 void               *
 eConfigGetData(char *loc, unsigned long *length)
 {

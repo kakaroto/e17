@@ -60,11 +60,14 @@ char              **eConfigPaths(int *num);
 
 void                eConfigInit(void);
 
+char              **eConfigGetKeys(char *stringtomatch,
+				   unsigned long *numberofmatches);
+
 void               *eConfigGetData(char *loc, unsigned long *length);
 void               *eConfigRefreshData(char *loc, unsigned long *length);
 int                 eConfigUnloadData(char *loc);
 int                 eConfigStoreData(char *loc, void *data,
-	   	unsigned long length, char *path);
+				     unsigned long length, char *path);
 int                 eConfigStoreDataToFirstAvailablePath(char *loc, void *data,
 							 unsigned long length);
 
