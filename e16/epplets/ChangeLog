@@ -2147,3 +2147,12 @@ works quite well for the most part.  You can even resize it through the GUI.
 
 -------------------------------------------------------------------------------
 
+Wed May  3 18:12:11 PDT 2000
+(KainX)
+
+I think the config dialog works now.  I was able to add and delete buttons at
+will.  So have at it.  Build some cool toolbars and send me your configs and
+icons.  I'll put the good ones in CVS as examples.
+
+-------------------------------------------------------------------------------
+

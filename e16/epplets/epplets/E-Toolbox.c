@@ -158,6 +158,28 @@ create_gadget(int n)
 }
 
 static void
+delete_gadget(int n)
+{
+  if (n >= button_cnt) {
+    return;
+  }
+  if (buttons[n].prog) {
+    free(buttons[n].prog);
+  }
+  if (buttons[n].label) {
+    free(buttons[n].label);
+  }
+  if (buttons[n].image) {
+    free(buttons[n].image);
+  }
+  if (buttons[n].gad && buttons[n].popup == -1) {
+    Epplet_gadget_destroy(buttons[n].gad);
+  }
+  memset(&(buttons[n]), 0, sizeof(toolbutton_t));
+  buttons[n].popup = -1;
+}
+
+static void
 close_cb(void *data)
 {
   Epplet_unremember();
@@ -224,120 +246,57 @@ apply_config(int ok)
   }
 
   for (i = 0, j = 0; i < (button_cnt + 3); i++) {
-    int move = 0, recreate = 0, lc = 0, ic = 0;
-
+    delete_gadget(i);
     s = Epplet_textbox_contents(cfg_gads[i].cfg_tb_prog);
     if (!(*s)) {
       continue;
     }
-    if (i >= button_cnt) {
-      /* New button */
-      buttons[i].prog = strdup("");
-      buttons[i].label = strdup("");
-      buttons[i].image = strdup("");
-      buttons[i].popup = -1;
-    }
-    if (strcmp(buttons[i].prog, s)) {
-      free(buttons[i].prog);
-      buttons[i].prog = strdup(s);
-    }
+    buttons[i].prog = strdup(s);
+
     s = Epplet_textbox_contents(cfg_gads[i].cfg_tb_label);
-    if (!(*s)) {
-      if (buttons[i].label) {
-	free(buttons[i].label);
-	buttons[i].label = strdup("");;
-      }
-    } else if (strcmp(buttons[i].label, s)) {
-      free(buttons[i].label);
-      buttons[i].label = strdup(s);
-    }
+    buttons[i].label = strdup(s ? s : "");
     s = Epplet_textbox_contents(cfg_gads[i].cfg_tb_image);
-    if (!(*s)) {
-      if (buttons[i].image) {
-	free(buttons[i].image);
-	buttons[i].image = strdup("");;
-      }
-    } else if (strcmp(buttons[i].image, s)) {
-      free(buttons[i].image);
-      buttons[i].image = strdup(s);
-    }
+    buttons[i].image = strdup(s ? s : "");
 
     s = Epplet_textbox_contents(cfg_gads[i].cfg_tb_x);
     if (*s) {
       n = strtoul(s, (char **) NULL, 10);
       buttons[i].x = n;
-      move = 1;
     }
     s = Epplet_textbox_contents(cfg_gads[i].cfg_tb_y);
     if (*s) {
       n = strtoul(s, (char **) NULL, 10);
       buttons[i].y = n;
-      move = 1;
     }
     s = Epplet_textbox_contents(cfg_gads[i].cfg_tb_w);
     if (*s) {
       n = strtoul(s, (char **) NULL, 10);
       buttons[i].w = n;
-      recreate = 1;
     }
     s = Epplet_textbox_contents(cfg_gads[i].cfg_tb_h);
     if (*s) {
       n = strtoul(s, (char **) NULL, 10);
       buttons[i].h = n;
-      recreate = 1;
     }
 
     s = Epplet_textbox_contents(cfg_gads[i].cfg_tb_popup);
     if (*s) {
       n = strtoul(s, (char **) NULL, 10);
-      if ((n < button_cnt) && (Epplet_gadget_get_type(buttons[n].gad) == E_POPUP)) {
-	buttons[i].popup = n;
-        recreate = 1;
-      }
-    }
-
-    /* Only change stuff if we're not about to restart. */
-    if (new_w == w && new_h == h) {
-      if (buttons[i].gad == NULL) {
-        create_gadget(i);
-      } else if (recreate) {
-        Epplet_gadget_destroy(buttons[i].gad);
-        create_gadget(i);
-        if (Epplet_gadget_get_type(buttons[i].gad) == E_POPUP) {
-          unsigned long k;
-
-          for (k = 0; k < button_cnt; k++) {
-            if (buttons[k].popup == (unsigned short) i) {
-              Epplet_gadget_destroy(buttons[k].gad);
-              create_gadget(k);
-            }
-          }
-        }
-      } else if (move || lc || ic) {
-        Epplet_gadget_hide(buttons[i].gad);
-        if (move) {
-          Epplet_gadget_move(buttons[i].gad, buttons[i].x, buttons[i].y);
-        }
-        if (lc) {
-          Epplet_change_button_label(buttons[i].gad, buttons[i].label);
-        }
-        if (ic) {
-          Epplet_change_button_image(buttons[i].gad, buttons[i].image);
-        }
-        Epplet_gadget_show(buttons[i].gad);
-      }
+      buttons[i].popup = n;
     }
 
     if (j != i) {
       buttons[j] = buttons[i];
     }
-
     j++;
   }
   button_cnt = j;
 
   if (new_w != w || new_h != h) {
     resize(new_w, new_h, !ok);
+  }
+  for (i = 0; i < button_cnt; i++) {
+    create_gadget(i);
   }
 }
 
@@ -628,18 +587,12 @@ save_config(void)
   for (i = 0; i < button_cnt; i++) {
     Esnprintf(buff, sizeof(buff), "button_%lu", i);
     Epplet_modify_config(buff, buttons[i].prog);
-    D(("label is %8p \"%s\", image is %8p \"%s\"\n", buttons[i].label, buttons[i].label,
-       buttons[i].image, buttons[i].image));
-    if (*(buttons[i].image)) {
-      D(("Saving image\n"));
-      Esnprintf(buff, sizeof(buff), "button_%lu_image", i);
-      Epplet_modify_config(buff, buttons[i].image);
-    }
-    if (*(buttons[i].label)) {
-      D(("Saving label\n"));
-      Esnprintf(buff, sizeof(buff), "button_%lu_label", i);
-      Epplet_modify_config(buff, buttons[i].label);
-    }
+
+    Esnprintf(buff, sizeof(buff), "button_%lu_image", i);
+    Epplet_modify_config(buff, buttons[i].image);
+
+    Esnprintf(buff, sizeof(buff), "button_%lu_label", i);
+    Epplet_modify_config(buff, buttons[i].label);
 
     if (buttons[i].popup != -1) {
       Esnprintf(buff, sizeof(buff), "button_%lu_popup", i);
