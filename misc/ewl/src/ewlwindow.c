@@ -56,11 +56,11 @@ EwlBool _cb_ewl_window_event_handler(EwlWidget *widget, EwlEvent *ev,
 		XUnmapWindow(ewl_get_display(), window->xwin);
 		break;
 	case EWL_EVENT_EXPOSE:
-		if (e_ev->count)	{
+		/*if (e_ev->count)	{
 			fprintf(stderr,"expose: count = %d, rect = ", e_ev->count);
 			ewl_rect_dump(e_ev->rect);
 			break;
-		}
+		}*/
 		ewl_widget_render(widget);
 
 		ewl_window_set_render_context(widget);

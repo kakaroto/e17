@@ -39,7 +39,7 @@ EwlWidget *ewl_box_new(EwlType type, EwlBool homogeneous)
 	FUNC_BGN("ewl_box_new");
 	if (!b)	{
 		ewl_debug("ewl_box_new", EWL_NULL_WIDGET_ERROR, "b");
-	} else if (type<EWL_HBOX||type>EWL_LBOX)	{
+	} else if (type!=EWL_HBOX&&type!=EWL_VBOX&&type!=EWL_LBOX)	{
 		ewl_debug("ewl_box_new", EWL_OUT_OF_BOUNDS_ERROR, "type");
 	} else {
 		ewl_widget_set_type((EwlWidget*)b, type);

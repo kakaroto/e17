@@ -18,26 +18,28 @@ int main(int argc, char *argv[])
 	ewl_option_add("t", "test", "This is a test option.",cb_test_option);
 
 	/* initialize ewl */
-	ewl_debug_enable();
+	/*ewl_debug_enable();*/
 	ewl_init(&argc, &argv);
 	ewl_set_application_name("ewltest");
 
-	/* configure widgets  and connect callbacks */
+	/* initialize widgets  */
 	win = ewl_window_new_with_values(EWL_WINDOW_TOPLEVEL, "EWL Text",
 									320, 240);
+	box = ewl_hbox_new(FALSE);
+	btn = ewl_button_new_with_label("Test Button");
+
+	/* connect callbacks, adjust widgtes */
+	ewl_callback_add(win, EWL_EVENT_MOUSEDOWN, cb_mouse, NULL);
+	ewl_callback_add(btn, EWL_EVENT_MOUSEDOWN, cb_mouse, NULL);
+	ewl_callback_add(btn, EWL_EVENT_MOUSEUP, cb_mouse, NULL);
+	ewl_callback_add(btn, EWL_EVENT_MOUSEUP, cb_resize, NULL);
+
 	ewl_window_move(win,800,600);
 	ewl_window_resize(win,640,480);
 	ewl_window_set_class_hints(win,"blah", "blah");
 	ewl_window_set_decoration_hint(win, TRUE);
 
-	ewl_callback_add(win, EWL_EVENT_MOUSEDOWN, cb_mouse, NULL);
-
 	/* pack widget(s) into container */
-	box = ewl_hbox_new(FALSE);
-	btn = ewl_button_new_with_label("Test Button");
-	ewl_callback_add(btn, EWL_EVENT_MOUSEDOWN, cb_mouse, NULL);
-	ewl_callback_add(btn, EWL_EVENT_MOUSEUP, cb_mouse, NULL);
-	ewl_callback_add(btn, EWL_EVENT_MOUSEUP, cb_resize, NULL);
 	ewl_box_pack_end(box,btn);
 	ewl_widget_show(btn);
 
