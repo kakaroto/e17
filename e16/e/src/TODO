@@ -1,7 +1,7 @@
 BUGS:
 raster: 	must update dox docs fully
 cK:		keeping the groups file in sync with the existing groups that need to be remembered. I'm sure there are bugs in that.
-mandrake:   kde support and desktops other than 0 cause things to segfault.  Needs fixing.  BIG bug.  if you turn "kde off" in your eesh it will fix that, or if you want kde support only use desktop 0 for now.  'nuff said.
+mandrake:   kpanel doesn't update window titles in the taskbar.  needs fixing
 
 FEATURES:
 raster: 	add dnd to iconbox

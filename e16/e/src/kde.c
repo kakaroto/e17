@@ -148,6 +148,22 @@ KDE_UpdateFocusedWindow(void)
    EDBUG(6, "KDE_UpdateWindows");
 
    ewin = GetFocusEwin();
+
+   if (getSimpleHint(root.win, KDE_ACTIVE_WINDOW))
+     {
+	if (ewin)
+	  {
+	     if (ewin->win ==
+		 (Window) * (getSimpleHint(root.win, KDE_ACTIVE_WINDOW)))
+		EDBUG_RETURN_;
+	  }
+	else
+	  {
+	     if (0 == *(getSimpleHint(root.win, KDE_ACTIVE_WINDOW)))
+		EDBUG_RETURN_;
+	  }
+     }
+
    if (ewin)
      {
 	XChangeProperty(disp, root.win, KDE_ACTIVE_WINDOW, KDE_ACTIVE_WINDOW,
@@ -958,6 +974,10 @@ KDE_SetRootArea(void)
 
    EDBUG(6, "KDE_SetRootArea");
 
+   if (getSimpleHint(root.win, KDE_CURRENT_DESKTOP))
+      if (*(getSimpleHint(root.win, KDE_CURRENT_DESKTOP)) == desks.current + 1)
+	 EDBUG_RETURN_;
+
    setSimpleHint(root.win, KDE_CURRENT_DESKTOP, desks.current + 1);
 
    KDE_SendMessagesToModules(KDE_MODULE_DESKTOP_CHANGE, desks.current + 1);
@@ -975,10 +995,15 @@ KDE_SetNumDesktops(void)
 
    EDBUG(6, "KDE_SetRootArea");
 
-   setSimpleHint(root.win, KDE_NUMBER_OF_DESKTOPS, mode.numdesktops);
+   if (!(getSimpleHint(root.win, KDE_NUMBER_OF_DESKTOPS)) ||
+       !(*(getSimpleHint(root.win, KDE_NUMBER_OF_DESKTOPS)) ==
+	 mode.numdesktops))
+     {
+	setSimpleHint(root.win, KDE_NUMBER_OF_DESKTOPS, mode.numdesktops);
+	KDE_SendMessagesToModules(KDE_MODULE_DESKTOP_NUMBER_CHANGE,
+				  mode.numdesktops);
+     }
 
-   KDE_SendMessagesToModules(KDE_MODULE_DESKTOP_NUMBER_CHANGE,
-			     mode.numdesktops);
    for (i = 0; i < mode.numdesktops; i++)
      {
 
