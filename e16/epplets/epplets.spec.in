@@ -1,28 +1,22 @@
 %define	name	@PACKAGE@
-%define	version	@VERSION@
-%define	release	1
-%define	serial	2
-%define	prefix	/usr
+%define	ver	@VERSION@
+%define	rel	1
+%define	prefix	@prefix@
+%define	eroot	@EROOT@
+%define	ebin	@EBIN@
 
-%define deroot   @EROOT@                                                         
-%define debin    @EBIN@                                                          
-
-Summary:	Enlightenment Epplets
-Name:		%{name}
-Version:	%{version}
-Release:	%{release}
-Serial:		%{serial}
-Prefix:		%{prefix}
-Copyright:	BSD
-Group:		User Interface/X
-URL:		http://www.enlightenment.org
-Vendor:		The Enlightenment Development Team <e-develop@enlightenment.org>
-Source:		ftp://ftp.enlightenment.org/enlightenment/epplets/%{name}-%{version}.tar.gz
-BuildRoot:	/var/tmp/%{name}-%{version}
-
-Conflicts:	Epplets
-Requires:	enlightenment >= 0.16.0
-Obsoletes:	epplets-base
+Summary: Enlightenment Epplets
+Name: %{name}
+Version: %{ver}
+Release: %{rel}
+Copyright: BSD
+Group: User Interface/X
+URL: http://www.enlightenment.org
+Packager: Michael Jennings <mej@eterm.org>
+Vendor: The Enlightenment Development Team <e-develop@enlightenment.org>
+Source: ftp://ftp.enlightenment.org/enlightenment/epplets/%{name}-%{ver}.tar.gz
+BuildRoot: /var/tmp/%{name}-%{ver}
+Requires: enlightenment >= 0.16.0
 
 %description
 Epplets are small, handy Enlightenment applets, similar to "dockapps"
@@ -35,9 +29,6 @@ slideshow, a URL grabber, and more.
 %setup -q
 
 %build
-if [ -z $EROOT ]; then EROOT=%{deroot}; export EROOT; fi
-if [ -z $EBIN ]; then EBIN=%{debin}; export EBIN; fi
-
 if [ -z $GNOME_FRIENDLY ]; then
 CFLAGS="$RPM_OPT_FLAGS" ./configure --prefix=%{prefix}
 else
@@ -47,49 +38,22 @@ fi
 make
 
 %install
-[ -d $RPM_BUILD_ROOT ] && rm -rf $RPM_BUILD_ROOT;
-mkdir -p $RPM_BUILD_ROOT
-
-if [ -z $EROOT ]; then EROOT=%{deroot}; export EROOT; fi
-if [ -z $EBIN ]; then EBIN=%{debin}; export EBIN; fi
-
 make DESTDIR=$RPM_BUILD_ROOT install
 
-# Make all the aircut3.ttf and bg.png files symlinks to 1 of each.
-(
-	for i in `find $RPM_BUILD_ROOT$EROOT/epplet_data -name aircut3.ttf`; do
-		ln -fs ../../aircut3.ttf $i;
-	done
-	install -m 644 epplets/E-Cpu.ABOUT/aircut3.ttf $RPM_BUILD_ROOT$EROOT/epplet_data
-	for i in `find $RPM_BUILD_ROOT$EROOT/epplet_data -name bg.png`; do
-		ln -fs ../../bg.png $i;
-	done
-	install -m 644 epplets/E-Cpu.ABOUT/bg.png $RPM_BUILD_ROOT$EROOT/epplet_data
-)
+%post
+/sbin/ldconfig
 
-## Build File List
-if [ -e epplets-files ]; then rm epplets-files; fi
-
-echo '%defattr(-,root,root)'	     > epplets-files
-echo '%doc ChangeLog'		    >> epplets-files
-echo "$EBIN/*"			    >> epplets-files
-echo "%dir $EROOT/epplet_data"	    >> epplets-files
-echo "$EROOT/epplet_data/*"	    >> epplets-files
-echo "%dir $EROOT/epplet_icons"	    >> epplets-files
-echo "$EROOT/epplet_icons/*"	    >> epplets-files
-
-echo "%{prefix}/lib/libepplet.so.*" >> epplets-files
-echo "%{prefix}/include/epplet.h"   >> epplets-files
-echo "%{prefix}/lib/libepplet.a"    >> epplets-files
-echo "%{prefix}/lib/libepplet.so"   >> epplets-files
-
-%post	-p /sbin/ldconfig
-%postun	-p /sbin/ldconfig
+%postun
+/sbin/ldconfig
 
 %clean
-[ -d $RPM_BUILD_ROOT ] && rm -rf $RPM_BUILD_ROOT;
+rm -rf $RPM_BUILD_ROOT
 
-%files	-f epplets-files
-
-%changelog
-
+%files
+%defattr(-,root,root)
+%doc ChangeLog
+%{prefix}/include/*
+%{prefix}/lib/*
+%{ebin}/*
+%{eroot}/epplet_icons/*
+%{eroot}/epplet_data/*
