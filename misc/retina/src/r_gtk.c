@@ -30,15 +30,30 @@ r_gtk_init()
 		GTK_SIGNAL_FUNC(r_evas_expose_event), NULL);
 	gtk_signal_connect(GTK_OBJECT(area), "button_press_event",
 		GTK_SIGNAL_FUNC(r_gtk_area_b_press), NULL);
+	gtk_signal_connect(GTK_OBJECT(area), "button_release_event",
+		GTK_SIGNAL_FUNC(r_gtk_area_b_release), NULL);
 }
 
-void
-r_gtk_area_b_press(GtkWidget *area, GdkEventButton *event)
+gboolean
+r_gtk_area_b_press(GtkWidget *area, GdkEventButton *event, gpointer data)
 {
 	extern Evas e_area;
 	extern mouse_button;
 
 	mouse_button = event->button;
 	
-	evas_event_button_down(e_area, event->x, event->y, event->button);
+   printf("mouse down %f %f %i\n", event->x, event->y, event->button);
+	evas_event_button_down(e_area, (int)event->x, (int)event->y, (int)event->button);
+}
+
+gboolean
+r_gtk_area_b_release(GtkWidget *area, GdkEventButton *event, gpointer data)
+{
+	extern Evas e_area;
+	extern mouse_button;
+
+	mouse_button = event->button;
+	
+   printf("mouse up %f %f %i\n", event->x, event->y, event->button);
+	evas_event_button_up(e_area, (int)event->x, (int)event->y, (int)event->button);
 }

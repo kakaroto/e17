@@ -24,7 +24,8 @@ current_idle = gtk_idle_add(view_redraw, NULL);
 
 /* Function Prototypes */
 void r_gtk_init(void);
-void r_gtk_area_b_press(GtkWidget *area, GdkEventButton *event);
+gboolean r_gtk_area_b_press(GtkWidget *area, GdkEventButton *event, gpointer data);
+gboolean r_gtk_area_b_release(GtkWidget *area, GdkEventButton *event, gpointer data);
 
 void r_evas_init(void);
 void r_evas_config_event(GtkWidget *area, GdkEventConfigure *event);

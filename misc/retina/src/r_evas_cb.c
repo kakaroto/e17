@@ -32,6 +32,7 @@ r_cb_init()
 static void
 r_cb_m_down(void *_data, Evas _e, Evas_Object _o, int _b, int _x, int _y)
 {
+   printf("bg clicked\n");
 	switch(mouse_button){
 		case 1: break;
 		case 2: break;
@@ -39,13 +40,11 @@ r_cb_m_down(void *_data, Evas _e, Evas_Object _o, int _b, int _x, int _y)
 			switch(tb_status){
 				case 0:
 					evas_show(e_area, e_btn1);
-					evas_update_rect(e_area, 0, 0, 77, 23);
 					QUEUE_DRAW;
 					tb_status = 1;
 					break;
 				case 1:
 					evas_hide(e_area, e_btn1);
-					evas_update_rect(e_area, 0, 0, 77, 23);
 					QUEUE_DRAW
 					tb_status = 0;
 					break;
