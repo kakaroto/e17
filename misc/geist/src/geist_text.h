@@ -15,6 +15,7 @@ enum text_justification {
    JUST_LEFT,
    JUST_RIGHT,
    JUST_CENTER,
+   JUST_BLOCK,
    JUST_MAX
 };
 

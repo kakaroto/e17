@@ -29,6 +29,7 @@ char *text_justifications[] = {
    "Left",
    "Right",
    "Center",
+   "Block",
    "XXXXX"
 };
 
@@ -230,8 +231,11 @@ geist_text_update_image(geist_text * txt, unsigned char resize)
       if (obj->h < obj->rendered_h)
          obj->h = obj->rendered_h;
    }
-   obj->rendered_x = 0;
-   obj->rendered_y = 0;
+
+    obj->rendered_x = 0;
+    obj->rendered_y = 0;
+    
+   
    geist_object_dirty(obj);
    D_RETURN_(3);
 }
@@ -257,8 +261,8 @@ geist_text_create_image(geist_text * txt)
    DATA8 atab[256];
    Imlib_Image im;
    geist_object *obj;
-   geist_list *l;
-   char *p;
+   geist_list *l, *ll, *words;
+   char *p, *pp;
    int w = 0, h = 0, ww, hh;
    int x = 0, y = 0;
 
@@ -319,19 +323,67 @@ geist_text_create_image(geist_text * txt)
       switch (txt->justification)
       {
         case JUST_LEFT:
-           x = 0;
+	   x = 0;
+	   geist_imlib_text_draw(im, txt->fn, x, y, p, IMLIB_TEXT_TO_RIGHT,
+				 txt->r, txt->g, txt->b, txt->a);
            break;
         case JUST_CENTER:
-           x = (w - ww) / 2;
+	   x = (w - ww) / 2;
+	   geist_imlib_text_draw(im, txt->fn, x, y, p, IMLIB_TEXT_TO_RIGHT,
+				 txt->r, txt->g, txt->b, txt->a);
            break;
         case JUST_RIGHT:
-           x = w - ww;
-           break;
+	   x = w - ww;
+           geist_imlib_text_draw(im, txt->fn, x, y, p, IMLIB_TEXT_TO_RIGHT,
+				 txt->r, txt->g, txt->b, txt->a);
+
+	   break;
+	case JUST_BLOCK:
+	   words = geist_string_split(p, " ");
+	   if(words)
+	   {
+	      int wordcnt, word_spacing, line_w;
+	      int t_width, m_width, space_width, offset = 0;
+	      
+	      wordcnt = geist_list_length(words);
+	      geist_imlib_get_text_size(txt->fn, p, &line_w, NULL, 
+		    IMLIB_TEXT_TO_RIGHT);
+	      geist_imlib_get_text_size(txt->fn, "M M", &t_width, NULL, 
+		     IMLIB_TEXT_TO_RIGHT);
+	      geist_imlib_get_text_size(txt->fn, "M", &m_width, NULL, 
+		    IMLIB_TEXT_TO_RIGHT);
+	      space_width = t_width - (2 * m_width);
+
+	      if (wordcnt>1)
+		   word_spacing = (obj->w - line_w) / (wordcnt -1) ;
+	      else
+		   word_spacing = (obj->w - line_w);
+	      
+
+	      ll = words;
+	      while(ll)
+	      {
+		 pp = (char*) ll->data;
+
+         D(1, ("got word %s\n", pp));
+		 if (strcmp(pp, " "))
+		 {
+		    int wordw;
+		    geist_imlib_text_draw(im, txt->fn, x + offset, y, pp, 
+			  IMLIB_TEXT_TO_RIGHT, txt->r, txt->g, txt->b, txt->a);
+		    geist_imlib_get_text_size(txt->fn, pp, &wordw, NULL, 
+					      IMLIB_TEXT_TO_RIGHT);
+		    offset += (wordw + space_width + word_spacing);
+		 }
+		 ll = ll->next;
+	      }
+	      geist_list_free_and_data(words);
+	   }
+	   break;
+
         default:
            break;
       }
-      geist_imlib_text_draw(im, txt->fn, x, y, p, IMLIB_TEXT_TO_RIGHT, txt->r,
-                            txt->g, txt->b, txt->a);
       y += hh + TEXT_LINE_SPACING;
       l = l->next;
    }
