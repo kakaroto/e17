@@ -3332,3 +3332,11 @@ Sat Oct  9 15:07:18 PDT 1999
 (Raster)
 
 re-install default cmap whne mensu pop up
+
+-------------------------------------------------------------------------------
+
+Sat Oct  9 15:17:29 PDT 1999
+(Raster)
+
+add speculative hack to "pause" the pager for a bit if it thinks its getting 
+called too much

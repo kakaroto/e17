@@ -429,14 +429,29 @@ PagerUpdateTimeout(int val, void *data)
 {
    Pager              *p;
    char                s[4096];
+   static double       last_time = 0.0;
+   double              cur_time, in;
+   static int          calls = 0;
    int                 y, y2, phase, ax, ay, cx, cy, ww, hh, xx, yy;
    static int          offsets[8] =
    {0, 4, 2, 6, 1, 5, 3, 7};
 
    p = (Pager *) data;
    Esnprintf(s, sizeof(s), "__.%x", p->win);
+   /* prevent runaway pager timeouts - dont knwo how it happens - but hack */
+   /* around to stop it */
+   cur_time = GetTime();
+   if ((cur_time - last_time) < 0.05)
+      calls++;
+   last_time = cur_time;
+   in = 1 / ((double)mode.pager_scanspeed);
+   if (calls > 50)
+     {
+	calls = 0;
+	in = 0.25;
+     }
    if (mode.pager_scanspeed > 0)
-      DoIn(s, 1 / ((double)mode.pager_scanspeed), PagerUpdateTimeout, 0, p);
+      DoIn(s, in, PagerUpdateTimeout, 0, p);
    if (!SNAP)
       return;
    if (!p->visible)
