@@ -1887,8 +1887,17 @@ ECompMgrConfigGet(cfg_composite * cfg)
 void
 ECompMgrConfigSet(const cfg_composite * cfg)
 {
+   Conf_compmgr.mode = ECM_MODE_OFF;
    if (Conf_compmgr.mode == ECM_MODE_OFF)
-      return;
+     {
+	if (cfg->enable)
+	   DialogOK("Enable Composite Error",
+		    _("Cannot enable Composite Manager.\n"
+		      "Use xdpyinfo to check that\n"
+		      "Composite, Damage, Fixes, and Render\n"
+		      "extensions are loaded."));
+	return;
+     }
 
    if (cfg->enable != Conf_compmgr.enable)
      {
