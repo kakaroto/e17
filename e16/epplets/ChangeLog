@@ -261,3 +261,12 @@ Thu Nov  4 18:39:32 PST 1999
 (KainX)
 
 Several new features for E-Slides and some new icons.
+
+-------------------------------------------------------------------------------
+
+Fri Nov  5 10:44:18 PST 1999
+(KainX)
+
+The zoom button works now.  It executes an arbitrary command and replaces an
+occurance of %s in the string with the current image filename.  The default
+is "ee %s".

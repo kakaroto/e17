@@ -16,15 +16,16 @@
 #define NONULL(x)       ((x) ? (x) : (""))
 
 #define PREV_PIC()      do {if (idx == 1) idx = image_cnt - 1; else if (idx == 0) idx = image_cnt - 2; else idx -= 2;} while (0)
+#define CUR_PIC()       ((idx == 0) ? (image_cnt - 1) : (idx - 1))
 #define NEXT_PIC()      ((void) 0)
 #define INC_PIC()       do {idx++; if (idx == image_cnt) idx = 0;} while (0)
 
 Epplet_gadget close_button, play_button, pause_button, prev_button, next_button, zoom_button, picture;
-ImlibImage *im = NULL;
 unsigned long idx = 0, image_cnt = 0;
 double delay = 5.0;
-char **filenames = NULL, *path;
+char **filenames = NULL, *path, *zoom_cmd;
 unsigned char paused = 0;
+Window zoom_win = None;
 
 static char **dirscan(char *dir, unsigned long *num);
 static void change_image(void *data);
@@ -106,6 +107,8 @@ dirscan(char *dir, unsigned long *num)
 static void
 change_image(void *data) {
 
+  ImlibImage *im = NULL;
+
   /* Test-load each image to make sure it's a valid image file. */
   for (; ((filenames[idx] == NULL) || ((im = Imlib_load_image(Epplet_get_imlib_data(), filenames[idx])) == NULL)); idx++) {
     /* It isn't, so NULL out its name. */
@@ -136,6 +139,10 @@ close_cb(void *data) {
 static void
 zoom_cb(void *data) {
 
+  char buff[1024];
+
+  sprintf(buff, zoom_cmd, filenames[CUR_PIC()]);
+  Epplet_spawn_command(buff);
   return;
   data = NULL;
 }
@@ -224,6 +231,7 @@ parse_config(void) {
   } else {
     Epplet_add_config("delay", "5.0");
   }
+  zoom_cmd = Epplet_query_config_def("zoom_prog", "ee %s");
 }
 
 int
