@@ -106,10 +106,20 @@ _container_layout_plugin_free(Container_Layout_Plugin *p)
   if (!p) return;
 
   if (p->shutdown)
+  {
+    printf("shutdown\n");
     p->shutdown();
-
+    printf("ok\n");
+  }
+  
   if (p->handle)
-    lt_dlclose(p->handle);
+  {
+    int error = lt_dlclose(p->handle);
+    if (error)
+    {
+      fprintf("ERROR: lt_dlclose (%s)\n", lt_dlerror());  
+    }
+  }
 
   free(p);
 
@@ -130,7 +140,6 @@ e_container_layout_plugin_set(Evas_Object *container, const char *plugin)
 
   if (cont->plugin)
   {
-    lt_dlclose(cont->plugin->handle);
     _container_layout_plugin_free(cont->plugin);
     cont->plugin = NULL;
   }

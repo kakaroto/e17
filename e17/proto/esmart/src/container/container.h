@@ -109,7 +109,7 @@ Evas_Object *e_container_new(Evas *evas);
 struct _Container_Layout_Plugin{
   void *handle;
 
-  void (*shutdown)();
+  void (*shutdown)(void);
   
   void (*layout)(Container *cont);
   
