@@ -135,11 +135,12 @@ _eapp_edit_write(Eet_File *ef, char *key, char *lang, Ewl_Widget *source,
     int checkbox) {
   char buf[4096];
   char *ret;
+  char ret_char;
   int size_ret;
   int delete = 0;
 
   if (checkbox) {
-    ret[0] = ewl_checkbutton_is_checked(EWL_CHECKBUTTON(source));
+    ret_char = ewl_checkbutton_is_checked(EWL_CHECKBUTTON(source));
     size_ret = 1;
   } else {
     ret = ewl_entry_text_get(EWL_ENTRY(source));
@@ -154,8 +155,12 @@ _eapp_edit_write(Eet_File *ef, char *key, char *lang, Ewl_Widget *source,
     snprintf(buf, sizeof(buf), "%s", key);
   if (delete)
     eet_delete(ef, buf);
-  else
-    eet_write(ef, buf, ret, size_ret, 0);
+  else {
+    if (checkbox)
+      eet_write(ef, buf, &ret_char, 1, 0);
+    else
+      eet_write(ef, buf, ret, size_ret, 0);
+  }
 }
 
 void
@@ -290,6 +295,7 @@ main(int argc, char **argv) {
   icon = ewl_image_new(file, "icon");
   ewl_widget_show(icon);
   ewl_container_child_append(EWL_CONTAINER(cell), icon);
+  ewl_object_fill_policy_set(EWL_OBJECT(cell), EWL_FLAG_FILL_ALL);
   ewl_widget_show(cell);
   ewl_grid_add(EWL_GRID(grid), cell, 1, 1, 1, 2);
 
@@ -319,5 +325,6 @@ main(int argc, char **argv) {
 static void
 _eapp_edit_help(void) {
   printf("USAGE:\n"
-      "enlightenment_ewl_eapp file.eapp\n");
+      "enlightenment_ewl_eapp file.eapp\n\n"
+      "if file.eapp does not exist a new icon file will be created\n");
 }
