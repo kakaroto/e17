@@ -12,11 +12,16 @@ use Gtk::Keysyms;
 init Gtk;
 
 $last_row = -1;
+$prefs{hide_complete_todo} = 1;
+$prefs{show_details} = 0;
+
 sub exit_application {
 
 	open TODOLIST, ">$ENV{HOME}/.contacts/todo";
 	foreach(@todolist) {
 		my %item = %$_;
+		chomp $item{startdate};
+		chomp $item{enddate};
 		print TODOLIST
 			"$item{text}::$item{startdate}::$item{enddate}::$item{priority}\n";
 	}
@@ -39,13 +44,93 @@ sub selected_contact {
 
 }
 
+sub toggle_show_details {
+
+}
+
+sub toggle_show_completed {
+	if($prefs{hide_complete_todo}) {
+		$prefs{hide_complete_todo} = 0;
+		foreach(@todolist) {
+			my %item = %$_;
+			$item{checkbox}->show();
+		}
+	} else {
+		$prefs{hide_complete_todo} = 1;
+		foreach(@todolist) {
+			my %item = %$_;
+			if($item{enddate} ne "") {
+				$item{checkbox}->hide();
+			} else {
+				$item{checkbox}->show();
+			}
+		}
+	}
+
+}
+
 sub add_new_todo {
 
 	$todo{text}->set_text("");
-	$todo{datestart}->set_text(`date`);
+	$todo{startdate}->set_text(`date`);
 	$todo{priority}->set_text("3");
 	$notebook->set_page(5);
 	$todo{text}->grab_focus();
+
+}
+
+sub toggle_todo_item {
+	my($widget, $item) = @_;
+
+	if($$item{enddate} ne "") {
+		$$item{enddate} = "";
+	} else {
+		$$item{enddate} = `date`;
+		if($prefs{hide_complete_todo}) {
+			$$item{checkbox}->hide();
+		}
+	}
+
+}
+
+sub toggle_show_details {
+	if(!$prefs{show_details}) {
+		$prefs{show_details} = 1;
+		foreach(@todolist) {
+			my $item = $_;
+			$$item{checkbox}->destroy;
+			$$item{checkbox} = new Gtk::CheckButton;
+		   	my $label = new Gtk::Label "$$item{text}\nstarted: $$item{startdate}\nended:$$item{enddate}\nPriority: $$item{priority}";
+			$label->show();
+			$$item{checkbox}->add($label);
+			$label->set_alignment(0,0);
+			$todo{vbox}->pack_start($$item{checkbox},0,0,3);
+			if($prefs{hide_complete_todo}) {
+				if($$item{enddate} ne "") {
+					$$item{checkbox}->hide();
+					$$item{checkbox}->set_active(1);
+				} else {
+					$$item{checkbox}->show();
+				}
+			}
+		}
+	} else {
+		$prefs{show_details} = 0;
+		foreach(@todolist) {
+			my $item = $_;
+			$$item{checkbox}->destroy;
+			$$item{checkbox} = new Gtk::CheckButton "$$item{text}";
+			$todo{vbox}->pack_start($$item{checkbox},0,0,3);
+			if($prefs{hide_complete_todo}) {
+				if($$item{enddate} ne "") {
+					$$item{checkbox}->hide();
+					$$item{checkbox}->set_active(1);
+				} else {
+					$$item{checkbox}->show();
+				}
+			}
+		}
+	}
 
 }
 
@@ -53,12 +138,17 @@ sub add_new_todo_item {
 
 	my %item;
 	$item{text} = $todo{text}->get_text();
-	$item{datestart} = $todo{datestart}->get_text();
-	$item{dateend} = $todo{dateend}->get_text();
+	$item{startdate} = $todo{startdate}->get_text();
+	$item{enddate} = $todo{enddate}->get_text();
 	$item{priority} = $todo{priority}->get_text();
 	$item{checkbox} = new Gtk::CheckButton "$item{text}";
 	$todo{vbox}->pack_start($item{checkbox},0,0,3);
-	$item{checkbox}->show();
+	if(($item{enddate} ne "") && $prefs{hide_complete_todo}) {
+		$item{checkbox}->set_active(1);
+	} else {
+		$item{checkbox}->show();
+	}
+	$item{checkbox}->signal_connect('toggled',\&toggle_todo_item, \%item);
 	push @todolist,\%item;
 
 	$notebook->set_page(2);
@@ -155,10 +245,23 @@ sub create_todo_page {
 		chomp;
 		($todoitem{text},$todoitem{startdate},$todoitem{enddate},$todoitem{priority})
 			= split /\:\:/;
-		$todoitem{checkbox} = new Gtk::CheckButton $todoitem{text};
+		if($prefs{show_details}) {
+			$todoitem{checkbox} = new Gtk::CheckButton;
+		   	my $label = new Gtk::Label "$todoitem{text}\nstarted: $todoitem{startdate}\nended:$todoitem{enddate}\nPriority: $todoitem{priority}";
+			$label->show();
+			$todoitem{checkbox}->add($label);
+			$label->set_alignment(0,0);
+		} else {
+			$todoitem{checkbox} = new Gtk::CheckButton $todoitem{text};
+		}
 		$vbox->pack_start($todoitem{checkbox},0,0,3);
 		$todoitem{checkbox}->can_focus(0);
-		$todoitem{checkbox}->show();
+		if(($todoitem{enddate} ne "") && $prefs{hide_complete_todo}) {
+			$todoitem{checkbox}->set_active(1);
+		} else {
+			$todoitem{checkbox}->show();
+		}
+		$todoitem{checkbox}->signal_connect('toggled',\&toggle_todo_item,\%todoitem);
 
 		push @todolist, \%todoitem;
 
@@ -179,10 +282,12 @@ sub create_todo_page {
 	$button = new Gtk::ToggleButton "Details";
 	$hbox->pack_start($button,1,1,0);
 	$button->show();
+	$button->signal_connect('clicked', \&toggle_show_details);
 
-	$button = new Gtk::ToggleButton "View Expired";
+	$button = new Gtk::ToggleButton "View Completed";
 	$hbox->pack_start($button,1,1,0);
 	$button->show();
+	$button->signal_connect('clicked', \&toggle_show_completed);
 
 	$page->show();
 	return $page;
@@ -253,18 +358,18 @@ sub create_new_todo_page {
 	$table->attach($label,0,1,1,2,[-fill],0,0,0);
 	$label->show();
 
-	$todo{datestart} = new Gtk::Entry;
-	$table->attach($todo{datestart},1,2,1,2,[-expand,-fill],[-fill],0,0);
-	$todo{datestart}->show();
+	$todo{startdate} = new Gtk::Entry;
+	$table->attach($todo{startdate},1,2,1,2,[-expand,-fill],[-fill],0,0);
+	$todo{startdate}->show();
 
 	$label = new Gtk::Label " Date Completed: ";
 	$label->set_alignment(1,1);
 	$table->attach($label,0,1,2,3,[-fill],0,0,0);
 	$label->show();
 
-	$todo{dateend} = new Gtk::Entry;
-	$table->attach($todo{dateend},1,2,2,3,[-expand,-fill],[-fill],0,0);
-	$todo{dateend}->show();
+	$todo{enddate} = new Gtk::Entry;
+	$table->attach($todo{enddate},1,2,2,3,[-expand,-fill],[-fill],0,0);
+	$todo{enddate}->show();
 
 	$label = new Gtk::Label " Priority: ";
 	$label->set_alignment(1,1);
