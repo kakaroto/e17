@@ -761,12 +761,42 @@ int
 execApplication(void *params)
 {
    char                exe[FILEPATH_LEN_MAX];
+   char                s[FILEPATH_LEN_MAX], *ss;
+   int                 i, l;
+   FILE               *f;
 
    EDBUG(6, "execApplication");
    if (!params)
       EDBUG_RETURN(0);
-   sscanf((char *)params, "%4000s", exe);
-   runApp(exe, (char *)params);
+   ss = params;
+   l = strlen(ss);
+   exe[0] = 0;
+   strcat(exe, "echo \"");
+   for (i = 0; i < l; i++)
+     {
+	if (ss[i] == '"')
+	   strcat(exe, "\\\"");
+	else
+	  {
+	     char                ch[2];
+
+	     ch[0] = ss[i];
+	     ch[1] = 0;
+	     strcat(exe, ch);
+	  }
+     }
+   strcat(exe, "\"");
+   f = popen(exe, "r");
+   if (f)
+     {
+	fread(s, 1, FILEPATH_LEN_MAX, f);
+	s[FILEPATH_LEN_MAX - 1] = 0;
+	l = strlen(s);
+	s[l - 1] = 0;
+	sscanf(s, "%4000s", exe);
+	pclose(f);
+	runApp(exe, s);
+     }
    EDBUG_RETURN(0);
 }
 

@@ -924,8 +924,8 @@ pathtoexec(char *file)
 	if (canexec(s))
 	   EDBUG_RETURN(s);
 	Efree(s);
-	EDBUG_RETURN(NULL);
 #endif
+	EDBUG_RETURN(NULL);
      }
    p = getenv("PATH");
    if (!p)

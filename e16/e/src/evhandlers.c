@@ -2517,7 +2517,7 @@ SubmenuShowTimeout(int val, void *dat)
 {
    int                 mx, my;
    unsigned int        mw, mh;
-   EWin               *ewin2;
+   EWin               *ewin2, *ewin;
    struct _mdata      *data;
 
    data = (struct _mdata *)dat;
@@ -2542,6 +2542,43 @@ SubmenuShowTimeout(int val, void *dat)
 	   UnShadeEwin(ewin2);
 	if (mode.cur_menu[mode.cur_menu_depth - 1] != data->mi->child)
 	   mode.cur_menu[mode.cur_menu_depth++] = data->mi->child;
+	if (mode.menusonscreen)
+	  {
+	     EWin               *menus[256];
+	     int                 fx[256];
+	     int                 fy[256];
+	     int                 tx[256];
+	     int                 ty[256];
+	     int                 i;
+	     int                 xdist = 0, ydist = 0;
+
+	     if (ewin2->x + ewin2->w > root.w)
+		xdist = root.w - (ewin2->x + ewin2->w);
+	     if (ewin2->y + ewin2->h > root.h)
+		ydist = root.h - (ewin2->y + ewin2->h);
+	     if ((xdist != 0) || (ydist != 0))
+	       {
+		  for (i = 0; i < mode.cur_menu_depth; i++)
+		    {
+		       menus[i] = NULL;
+		       if (mode.cur_menu[i])
+			 {
+			    ewin = FindEwinByMenu(mode.cur_menu[i]);
+			    if (ewin)
+			      {
+				 menus[i] = ewin;
+				 fx[i] = ewin->x;
+				 fy[i] = ewin->y;
+				 tx[i] = ewin->x + xdist;
+				 ty[i] = ewin->y + ydist;
+			      }
+			 }
+		    }
+		  SlideEwinsTo(menus, fx, fy, tx, ty,
+			       mode.cur_menu_depth, mode.shadespeed);
+		  XWarpPointer(disp, None, None, 0, 0, 0, 0, xdist, ydist);
+	       }
+	  }
      }
    val = 0;
 }

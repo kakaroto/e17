@@ -3980,3 +3980,11 @@ that is uniconified when the iconbox is closed.
 In any case, there were strange things going on with
 mode.focuswin, because FocusToEWin(NULL) returns immediately
 in clickmode ... hope the whole thing is history now.
+
+-------------------------------------------------------------------------------
+
+Fri Nov 19 18:58:56 PST 1999
+(Raster)
+
+fix variable expansion for file execcing...
+fix mensu to be onscreen including submenus when u have menus onsreen selected.
