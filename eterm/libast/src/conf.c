@@ -502,7 +502,7 @@ spifconf_shell_expand(char *s)
         switch (*pbuff) {
           case '~':
               D_CONF(("Tilde detected.\n"));
-              if (!in_single && !in_double) {
+              if (!in_single && !in_double && getenv("HOME")) {
                   strncpy(newbuff + j, getenv("HOME"), max - j);
                   cnt1 = strlen(getenv("HOME")) - 1;
                   cnt2 = max - j - 1;

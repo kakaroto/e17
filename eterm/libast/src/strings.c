@@ -680,13 +680,7 @@ spiftool_version_compare(const char *v1, const char *v2)
 {
     char buff1[128], buff2[128];
 
-    if (SPIF_PTR_ISNULL(v1) && SPIF_PTR_ISNULL(v2)) {
-        return SPIF_CMP_EQUAL;
-    } else if (SPIF_PTR_ISNULL(v1)) {
-        return SPIF_CMP_LESS;
-    } else if (SPIF_PTR_ISNULL(v2)) {
-        return SPIF_CMP_GREATER;
-    }
+    SPIF_COMP_CHECK_NULL(v1, v2);
 
     for (; *v1 && *v2; ) {
         if (isalpha(*v1) && isalpha(*v2)) {

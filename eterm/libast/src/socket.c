@@ -749,7 +749,7 @@ spif_url_get_unixaddr(spif_url_t self)
     addr = SPIF_ALLOC(unixsockaddr);
     addr->sun_family = AF_UNIX;
     addr->sun_path[0] = 0;
-    strncat(addr->sun_path, SPIF_STR_STR(spif_url_get_path(self)), sizeof(addr->sun_path));
+    strncat(addr->sun_path, SPIF_STR_STR(spif_url_get_path(self)), sizeof(addr->sun_path) - 1);
     return addr;
 }
 

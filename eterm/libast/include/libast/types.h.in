@@ -841,6 +841,29 @@ typedef enum {
  */
 #define SPIF_CMP_IS_GREATER(cmp)  ((cmp) == SPIF_CMP_GREATER)
 
+/**
+ * Convenience macro for comparing possibly NULL values.
+ *
+ * This macro exists because I got tired of typing the same thing over
+ * and over again to handle comparisons of two pointers, either of
+ * which may be NULL.
+ *
+ * @param p1  The first pointer.
+ * @param p2  The second pointer.
+ * @return    
+ *
+ * @see @link DOXGRP_STRINGS String Utility Routines @endlink, SPIF_PTR_ISNULL()
+ */
+#define SPIF_COMP_CHECK_NULL(p1, p2) do { \
+                                         if (SPIF_PTR_ISNULL((p1)) && SPIF_PTR_ISNULL((p2))) { \
+                                             return SPIF_CMP_EQUAL; \
+                                         } else if (SPIF_PTR_ISNULL((p1))) { \
+                                             return SPIF_CMP_LESS; \
+                                         } else if (SPIF_PTR_ISNULL((p2))) { \
+                                             return SPIF_CMP_GREATER; \
+                                         } \
+                                     } while (0)
+
 #undef false
 #undef False
 #undef FALSE
