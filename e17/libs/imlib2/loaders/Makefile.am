@@ -19,9 +19,6 @@ endif
 if PNG_LOADER
 PNG_L               = png.la
 endif
-if EDB_LOADER
-EDB_L               = db.la
-endif
 if TIFF_LOADER
 TIFF_L              = tiff.la
 endif
@@ -32,7 +29,6 @@ endif
 pkg_LTLIBRARIES	     = \
 $(JPEG_L) \
 $(PNG_L) \
-$(EDB_L) \
 $(TIFF_L) \
 $(GIF_L) \
 pnm.la argb.la bmp.la xpm.la tga.la #xcf.la
@@ -44,10 +40,6 @@ jpeg_la_LIBADD	     = @JPEGLIBS@ -L$(top_builddir)/src/.libs -lImlib2
 png_la_SOURCES	     = loader_png.c
 png_la_LDFLAGS	     = -no-undefined -module -avoid-version
 png_la_LIBADD	     = @PNGLIBS@ -L$(top_builddir)/src/.libs -lImlib2
-
-db_la_SOURCES        = loader_db.c
-db_la_LDFLAGS	     = -no-undefined -module -avoid-version
-db_la_LIBADD	     = @EDBLIBS@ -lz -L$(top_builddir)/src/.libs -lImlib2
 
 tiff_la_SOURCES	     = loader_tiff.c
 tiff_la_LDFLAGS	     = -no-undefined -module -avoid-version

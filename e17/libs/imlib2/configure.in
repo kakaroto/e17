@@ -6,17 +6,6 @@ AM_INIT_AUTOMAKE(imlib2, 1.0.4)
 
 AM_CONFIG_HEADER(config.h)
 
-AC_ARG_WITH(edb,
-    [  --with-edb=DIR          use edb rooted at <DIR>],
-    if test "$withval" = "yes"; then
-        :
-    elif test "$withval" = "no"; then
-        edb_ok=no
-    else
-        CPPFLAGS="$CPPFLAGS -I$withval/include"
-        LIBS="-L$withval/lib $LIBS"
-    fi)
-
 AC_ARG_WITH(freetype,
         [  --with-freetype=DIR     use freetype rooted at <DIR>],
         [CPPFLAGS="$CPPFLAGS -I$withval/include"
@@ -214,32 +203,6 @@ if test "$png_ok" = yes; then
   fi
 fi
 
-# Test for libedb
-if test "x$edb_ok" != "xno"; then
-  AC_CHECK_LIB(edb, e_db_open,
-    edb_ok=yes,
-    edb_ok=no
-    AC_MSG_WARN(*** Native EDB support will not be built (EDB library not found) ***), $EXTRA_LIBS -lz)
-else
-  AC_MSG_WARN(*** Native EDB support will not be built (deactivated by user) ***)
-fi
-if test "$edb_ok" = yes; then
-  AC_MSG_CHECKING([for Edb.h])
-  AC_TRY_CPP(
-  [#include <stdio.h>
-   #undef PACKAGE
-   #undef VERSION
-   #include <Edb.h>],
-  edb_ok=yes,
-  edb_ok=no)
-  AC_MSG_RESULT($edb_ok)
-  if test "$edb_ok" = yes; then
-    EDBLIBS="-ledb"
-  else
-    AC_MSG_WARN(*** Native EDB support will not be built (EDB header file not found) ***)
-  fi
-fi
-
 # Test for libtiff
 AC_CHECK_LIB(tiff, TIFFReadScanline,
   tiff_libs="-ltiff"
@@ -321,13 +284,11 @@ fi
 
 AM_CONDITIONAL(JPEG_LOADER, test "$jpeg_ok" = yes)
 AM_CONDITIONAL(PNG_LOADER, test "$png_ok" = yes)
-AM_CONDITIONAL(EDB_LOADER, test "$edb_ok" = yes)
 AM_CONDITIONAL(TIFF_LOADER, test "$tiff_ok" = yes)
 AM_CONDITIONAL(GIF_LOADER, test "$gif_ok" = yes)
 
 AC_SUBST(JPEGLIBS)
 AC_SUBST(PNGLIBS)
-AC_SUBST(EDBLIBS)
 AC_SUBST(TIFFLIBS)
 AC_SUBST(GIFLIBS)
 
