@@ -37,6 +37,11 @@
 #include <Imlib.h>
 #include <Fnlib.h>
 
+#define XSync(d, f) \
+{XImage *__xim; \
+__xim = XGetImage(d, root.win, 0, 0, 1, 1, 0xffffffff, ZPixmap); \
+if (__xim) XDestroyImage(__xim);}
+
 #ifdef HAS_XINERAMA
 #include <X11/extensions/Xinerama.h>
 #endif
