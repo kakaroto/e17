@@ -278,12 +278,6 @@ void ewl_embed_configure_cb(Ewl_Widget *w, void *ev_data, void *user_data)
 
 	o = EWL_OBJECT(w);
 
-	printf("EWL Embedded Object configured at (%d, %d) and %d x %d\n",
-			ewl_object_get_current_x(EWL_OBJECT(w)),
-			ewl_object_get_current_y(EWL_OBJECT(w)),
-			ewl_object_get_current_w(EWL_OBJECT(w)),
-			ewl_object_get_current_h(EWL_OBJECT(w)));
-
 	/*
 	 * Configure each of the child widgets.
 	 */

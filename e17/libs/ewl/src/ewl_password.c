@@ -109,7 +109,8 @@ char           *ewl_password_get_text(Ewl_Password * e)
 
 	w = EWL_WIDGET(e);
 
-	DRETURN_PTR(strdup(e->real_text), DLEVEL_STABLE);
+	DRETURN_PTR((e->real_text ? strdup(e->real_text) : NULL),
+			DLEVEL_STABLE);
 }
 
 /**
@@ -149,22 +150,26 @@ void ewl_password_insert_text(Ewl_Password * e, char *s)
 	DCHECK_PARAM_PTR("e", e);
 
 	s2 = ewl_password_get_text(e);
-	l = strlen(s);
-	l2 = strlen(s2);
+	if (s)
+		l = strlen(s);
+	if (s2)
+		l2 = strlen(s2);
 
 	s3 = NEW(char, l + l2 + 1);
 	if (!s3) {
-		FREE(s2);
+		IF_FREE(s2);
 		DRETURN(DLEVEL_STABLE);
 	}
 
 	s3[0] = 0;
-	strcat(s3, s2);
-	strcat(s3, s);
+	if (s2)
+		strcat(s3, s2);
+	if (s)
+		strcat(s3, s);
 
 	ewl_password_set_text(e, s3);
 
-	FREE(s2);
+	IF_FREE(s2);
 	FREE(s3);
 
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
