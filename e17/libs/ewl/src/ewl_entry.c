@@ -406,6 +406,9 @@ void ewl_entry_mouse_move_cb(Ewl_Widget * w, void *ev_data, void *user_data)
 		*/
 	}
 
+	if (ewl_cursor_get_start_position(EWL_CURSOR(e->cursor)) != index)
+		index--;
+
 	index++;
 
 	ewl_cursor_select_to(EWL_CURSOR(e->cursor), index);
