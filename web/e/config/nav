@@ -42,7 +42,9 @@
 <li><a class="navelement" href="etox.html">Etox</a>
 <li><a class="navelement" href="edje.html">Edje</a>
 <li><a class="navelement" href="ewl.html">EWL</a>
+<!-- 
 <li><a class="navelement" href="efsd.html">Efsd</a>
+-->
 </ul>
 
 <ul class="navsection"><p class="navtitle">DR17</p>
