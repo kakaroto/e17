@@ -19,6 +19,8 @@ struct ImLib_JPEG_error_mgr
 typedef struct ImLib_JPEG_error_mgr *emptr;
 
 void _JPEGFatalErrorHandler(j_common_ptr cinfo);
+void _JPEGErrorHandler(j_common_ptr cinfo);
+void _JPEGErrorHandler2(j_common_ptr cinfo, int msg_level);
 char load (ImlibImage *im,
 	   void (*progress)(ImlibImage *im, char percent,
 			    int update_x, int update_y,
@@ -42,6 +44,29 @@ _JPEGFatalErrorHandler(j_common_ptr cinfo)
    return;
 }
 
+void
+_JPEGErrorHandler(j_common_ptr cinfo)
+{
+   emptr               errmgr;
+   
+   errmgr = (emptr) cinfo->err;
+/*   cinfo->err->output_message(cinfo);*/
+   siglongjmp(errmgr->setjmp_buffer, 1);
+   return;
+}
+
+void
+_JPEGErrorHandler2(j_common_ptr cinfo, int msg_level)
+{
+   emptr               errmgr;
+   
+   errmgr = (emptr) cinfo->err;
+/*   cinfo->err->output_message(cinfo);*/
+   siglongjmp(errmgr->setjmp_buffer, 1);
+   return;
+   msg_level = 0;
+}
+
 char 
 load (ImlibImage *im,
       void (*progress)(ImlibImage *im, char percent, 
@@ -59,8 +84,10 @@ load (ImlibImage *im,
    f = fopen(im->file, "rb");
    if (!f)
       return 0;
-   cinfo.err = jpeg_std_error(&(jerr.pub));
    jerr.pub.error_exit = _JPEGFatalErrorHandler;
+   jerr.pub.emit_message = _JPEGErrorHandler2;
+   jerr.pub.output_message = _JPEGErrorHandler;
+   cinfo.err = jpeg_std_error(&(jerr.pub));
    if (sigsetjmp(jerr.setjmp_buffer, 1))
      {
 	jpeg_destroy_decompress(&cinfo);
@@ -230,8 +257,10 @@ save (ImlibImage *im,
 	return 0;
      }
    /* set up error handling */
-   cinfo.err = jpeg_std_error(&(jerr.pub));
    jerr.pub.error_exit = _JPEGFatalErrorHandler;
+   jerr.pub.emit_message = _JPEGErrorHandler2;
+   jerr.pub.output_message = _JPEGErrorHandler;
+   cinfo.err = jpeg_std_error(&(jerr.pub));
    if (sigsetjmp(jerr.setjmp_buffer, 1))
      {
 	jpeg_destroy_compress(&cinfo);

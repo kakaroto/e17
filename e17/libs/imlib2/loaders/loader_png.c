@@ -36,7 +36,7 @@ load (ImlibImage *im,
 {
    png_uint_32         w32, h32;
    int                 w, h;
-   char                hasa = 0;
+   char                hasa = 0, hasg = 0;
    FILE               *f;
    png_structp         png_ptr = NULL;
    png_infop           info_ptr = NULL;
@@ -91,8 +91,8 @@ load (ImlibImage *im,
 	im->h = (int)h32;
 	if (info_ptr->color_type == PNG_COLOR_TYPE_RGB_ALPHA)
 	   hasa = 1;
-	else
-	   hasa = 0;
+	if (info_ptr->color_type == PNG_COLOR_TYPE_GRAY)
+	   hasg = 1;
 	if (hasa)
 	   SET_FLAG(im->flags, F_HAS_ALPHA);
 	else
@@ -151,12 +151,21 @@ load (ImlibImage *im,
 	     fclose(f);
 	     return 0;
 	  }
-	for (i = 0; i < h; i++)
-	   lines[i] = ((unsigned char *)(im->data)) + (i * w * sizeof(DATA32));
-	if (progress)
+	if (hasg)
 	  {
+	     DATA8 *line;
 	     int y, count, prevy, pass, number_passes, per, nrows = 1;
-
+	     
+	     line = malloc(w * 2);
+	     if (!line)
+	       {
+		  free(lines);
+		  im->data = NULL;
+		  png_read_end(png_ptr, info_ptr);
+		  png_destroy_read_struct(&png_ptr, &info_ptr, (png_infopp)NULL);
+		  fclose(f);
+		  return 0;
+	       }
 	     count = 0;
 	     number_passes = png_set_interlace_handling(png_ptr);
 	     for (pass = 0; pass < number_passes; pass++)
@@ -165,21 +174,68 @@ load (ImlibImage *im,
 		  per = 0;
 		  for (y = 0; y < h; y += nrows)
 		    {
-		       png_read_rows(png_ptr, &lines[y], NULL, nrows);
-
-		       per = (((pass * h) + y) * 100) /  (h * number_passes);
-		       if ((per - count) >=  progress_granularity)
+		       DATA32 *ptr;
+		       
+		       lines[0] = line;
+		       png_read_rows(png_ptr, &lines[0], NULL, nrows);
+		       ptr = ((unsigned char *)(im->data)) + (y * w * sizeof(DATA32));
+		       for (i = 0; i < w; i++)
 			 {
-			    count = per;
-			    progress(im, per, 0, prevy, w, y - prevy + 1);
-			    prevy = y + 1;
-			 }		       
+			    ptr[0] = 
+			       (line[i << 1] << 16) |
+			       (line[i << 1] << 8) |
+			       (line[i << 1]) |
+			       (line[(i << 1) + 1] << 24);
+			    ptr++;
+			 }
+		       if (progress)
+			 {
+			    per = (((pass * h) + y) * 100) /  (h * number_passes);
+			    if ((per - count) >=  progress_granularity)
+			      {
+				 count = per;
+				 progress(im, per, 0, prevy, w, y - prevy + 1);
+				 prevy = y + 1;
+			      }
+			 }
 		    }
-		  progress(im, per, 0, prevy, w, y - prevy + 1);
+		  if (progress)
+		     progress(im, per, 0, prevy, w, y - prevy + 1);
 	       }
+	     free(line);
 	  }
-	else	   
-	   png_read_image(png_ptr, lines);
+	else
+	  {
+	     for (i = 0; i < h; i++)
+		lines[i] = ((unsigned char *)(im->data)) + (i * w * sizeof(DATA32));
+	     if (progress)
+	       {
+		  int y, count, prevy, pass, number_passes, per, nrows = 1;
+		  
+		  count = 0;
+		  number_passes = png_set_interlace_handling(png_ptr);
+		  for (pass = 0; pass < number_passes; pass++)
+		    {
+		       prevy = 0;
+		       per = 0;
+		       for (y = 0; y < h; y += nrows)
+			 {
+			    png_read_rows(png_ptr, &lines[y], NULL, nrows);
+			    
+			    per = (((pass * h) + y) * 100) /  (h * number_passes);
+			    if ((per - count) >=  progress_granularity)
+			      {
+				 count = per;
+				 progress(im, per, 0, prevy, w, y - prevy + 1);
+				 prevy = y + 1;
+			      }		       
+			 }
+		       progress(im, per, 0, prevy, w, y - prevy + 1);
+		    }
+	       }
+	     else	   
+		png_read_image(png_ptr, lines);
+	  }
 	free(lines);	
 	png_read_end(png_ptr, info_ptr);
      }
