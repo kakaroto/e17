@@ -395,7 +395,7 @@ void ewl_widget_appearance_set(Ewl_Widget * w, char *appearance)
 	DCHECK_PARAM_PTR("appearance", appearance);
 
 	/* make sure we have something to do */
-	if (!strcmp(appearance, w->appearance))
+	if (w->appearance && !strcmp(appearance, w->appearance))
 		DLEAVE_FUNCTION(DLEVEL_STABLE);
 
 	IF_FREE(w->appearance);

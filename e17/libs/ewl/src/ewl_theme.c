@@ -369,7 +369,7 @@ char *ewl_theme_data_str_get(Ewl_Widget * w, char *k)
 		}
 		temp++;
 		temp = strchr(temp, '/');
-		if (!temp && w->parent) {
+		if (!temp && w && w->parent) {
 			temp = key;
 			w = w->parent;
 		}
@@ -420,7 +420,7 @@ int ewl_theme_data_int_get(Ewl_Widget * w, char *k)
 		snprintf(key, PATH_MAX, "%s", k);
 
 	for (temp = key; temp && !ret; temp = strchr(temp, '/')) {
-		if (w->theme)
+		if (w && w->theme)
 			ret = (int) (ecore_hash_get(w->theme, temp));
 		else
 			ret = (int) (ecore_hash_get(def_theme_data, temp));
@@ -436,8 +436,6 @@ int ewl_theme_data_int_get(Ewl_Widget * w, char *k)
 		}
 		temp++;
 	}
-
-
 	DRETURN_INT(ret, DLEVEL_STABLE);
 }
 
