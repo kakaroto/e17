@@ -1,6 +1,6 @@
 SUBDIRS = fonts config
 
-EDCS =  default.edc white.edc
+EDCS =  default.edc white.edc darkgray.edc
 
 EETS = $(EDCS:%.edc=%.eet)
 
