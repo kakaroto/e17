@@ -81,10 +81,10 @@ r_gtk_keypress(GtkWidget *area, GdkEventKey *event)
 {
 	switch(event->keyval){
 		case GDK_Down:
-			r_browser_move_down();
+			r_browser_move_down(1);
 			return 1;
 		case GDK_Up:
-			r_browser_move_up();
+			r_browser_move_up(1);
 			return 1;
 	}
 	return 0;

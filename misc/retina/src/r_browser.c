@@ -20,6 +20,7 @@ extern int br_status;
 extern int t_y, b_y;
 extern int cur_sel;
 extern int img_c;
+extern int list_end;
 extern pid_t scanner_pid;
 extern guint current_idle;
 
@@ -46,19 +47,19 @@ r_browser_init()
 	/* setup scrollbar images */
 	e_scr_t = evas_add_image_from_file(e_area, "../img/scrollbar_t.png");
 	evas_set_image_border(e_area, e_scr_t, 3, 3, 3, 3);
-	evas_set_layer(e_area, e_scr_t, 3);
+	evas_set_layer(e_area, e_scr_t, 1000);
 	
 	e_scr_s = evas_add_image_from_file(e_area, "../img/scrollbar_s.png");
 	evas_set_image_border(e_area, e_scr_s, 3, 3, 3, 3);
-	evas_set_layer(e_area, e_scr_s, 3);
+	evas_set_layer(e_area, e_scr_s, 1000);
 
 	e_scr_b1 = evas_add_image_from_file(e_area, "../img/scrollbar_btn_up.png");
-	evas_set_layer(e_area, e_scr_b1, 3);
-	evas_resize(e_area, e_scr_b1, 14, 14);
+	evas_set_layer(e_area, e_scr_b1, 1000);
+	evas_resize(e_area, e_scr_b1, 11, 11);
 
 	e_scr_b2 = evas_add_image_from_file(e_area, "../img/scrollbar_btn_down.png");
-	evas_set_layer(e_area, e_scr_b2, 3);
-	evas_resize(e_area, e_scr_b2, 14, 14);
+	evas_set_layer(e_area, e_scr_b2, 1000);
+	evas_resize(e_area, e_scr_b2, 11, 11);
 
 	e_t_shd = evas_add_image_from_file(e_area, "../img/selector.png");
 	evas_set_image_border(e_area, e_t_shd, 3, 3, 3, 3);
@@ -75,19 +76,19 @@ r_scrollbar_render()
 	w = window->allocation.width;
 	h = window->allocation.height;
 
-	evas_set_image_fill(e_area, e_scr_t, 0, 0, 20, h);
-	evas_resize(e_area, e_scr_t, 20, h);
-	evas_move(e_area, e_scr_t, w-20, 0);
+	evas_set_image_fill(e_area, e_scr_t, 0, 0, 13, h);
+	evas_resize(e_area, e_scr_t, 13, h);
+	evas_move(e_area, e_scr_t, w-13, 0);
 
-	evas_set_image_fill(e_area, e_scr_s, 0, 0, 14, h-34);
-	evas_resize(e_area, e_scr_s, 14, h-34);
-	evas_move(e_area, e_scr_s, w-17, 3);
+	evas_set_image_fill(e_area, e_scr_s, 0, 0, 11, 40);
+	evas_resize(e_area, e_scr_s, 11, 40);
+	evas_move(e_area, e_scr_s, w-12, 1);
 
-	evas_move(e_area, e_scr_b1, w-17, h-31);
-	evas_move(e_area, e_scr_b2, w-17, h-17);
+	evas_move(e_area, e_scr_b1, w-12, h-23);
+	evas_move(e_area, e_scr_b2, w-12, h-12);
 
-	evas_set_image_fill(e_area, e_t_shd, 0, 0, w-27, 38);
-	evas_resize(e_area, e_t_shd, w-27, 38);
+	evas_set_image_fill(e_area, e_t_shd, 0, 0, w-19, 38);
+	evas_resize(e_area, e_t_shd, w-19, 38);
 }
 
 void
@@ -147,68 +148,81 @@ r_gen_thumb(char *file)
 }
 
 void
-r_draw_thumb()
+r_draw_thumb(char *file)
 {
 	char t[255];
 	int i, w, h;
-	
-	for(i = 0; i <= img_c-1; i++){
-		sprintf(t, "%s/.retina.db:/image/%s", getenv("HOME"), r_images[i]);
-		e_t_img[i] = evas_add_image_from_file(e_area, t);
-		evas_get_image_size(e_area, e_t_img[i], &w, &h);
-		evas_resize(e_area, e_t_img[i], w, h);
-		evas_move(e_area, e_t_img[i], 10, t_y);
-		evas_set_layer(e_area, e_t_img[i], 100);
+
+		sprintf(t, "%s/.retina.db:/image/%s", getenv("HOME"), file);
+		
+		e_t_img[img_c] = evas_add_image_from_file(e_area, t);
+		evas_get_image_size(e_area, e_t_img[img_c], &w, &h);
+		evas_resize(e_area, e_t_img[img_c], w, h);
+		evas_move(e_area, e_t_img[img_c], 10, t_y);
+		evas_set_layer(e_area, e_t_img[img_c], 100);
 		//evas_show(e_area, e_t_img[i]);
 
-		e_t_txt2[i] = evas_add_text(e_area, "arial", 8, r_images[i]);
-		evas_set_layer(e_area, e_t_txt2[i], 100);
-    evas_set_color(e_area, e_t_txt2[i], 0, 0, 0, 255);
-    evas_move(e_area, e_t_txt2[i], 50+1, t_y+10+1);
+		e_t_txt2[img_c] = evas_add_text(e_area, "nationff", 11, file);
+		evas_set_layer(e_area, e_t_txt2[img_c], 100);
+    evas_set_color(e_area, e_t_txt2[img_c], 0, 0, 0, 255);
+    evas_move(e_area, e_t_txt2[img_c], 50+1, t_y+10+1);
     //evas_show(e_area, e_t_txt2[i]);
 
-		e_t_txt[i] = evas_add_text(e_area, "arial", 8, r_images[i]);
-    evas_set_layer(e_area, e_t_txt[i], 100);
-    evas_set_color(e_area, e_t_txt[i], 255, 255, 255, 255);
-    evas_move(e_area, e_t_txt[i], 50, t_y+10);
+		e_t_txt[img_c] = evas_add_text(e_area, "nationff", 11, file);
+    evas_set_layer(e_area, e_t_txt[img_c], 100);
+    evas_set_color(e_area, e_t_txt[img_c], 255, 255, 255, 255);
+    evas_move(e_area, e_t_txt[img_c], 50, t_y+10);
 		//evas_show(e_area, e_t_txt[i]);
+
+		printf("br: %d\n", img_c);
 										
 		t_y += 45;
-	}
+
 	QUEUE_DRAW;
 }
 
+/* in the browser move functions, int n is the number of 
+ *  * places you want to move the selector
+ */
+
 void
-r_browser_move_down()
+r_browser_move_down(int n)
 {
 	if((b_y+(43*2)) <= t_y){
-		b_y += 45;
-		cur_sel++;
+		b_y += n*45;
+		cur_sel += n;
 		
 		r_evas_load(r_images[cur_sel]);
 
 		evas_set_color(e_area, e_t_txt[cur_sel], 255, 200, 0, 255);
 		if(cur_sel > 0){
-			evas_set_color(e_area, e_t_txt[cur_sel-1], 255, 255, 255, 255);
+			evas_set_color(e_area, e_t_txt[cur_sel-n], 255, 255, 255, 255);
 		}
-		evas_move(e_area, e_t_shd, 3, b_y);
+
+		if(n > 1) evas_move(e_area, e_t_shd, 3, b_y);
 	}
+
+	r_browser_scroll(0);
+	
 	QUEUE_DRAW;
 }
 
 void
-r_browser_move_up()
+r_browser_move_up(int n)
 {
 	if(b_y >= 40){
-		b_y -= 45;
-		cur_sel--;
+		b_y -= n*45;
+		cur_sel -= n;
 
 		r_evas_load(r_images[cur_sel]);
 		
 		evas_set_color(e_area, e_t_txt[cur_sel], 255, 200, 0, 255);
-		evas_set_color(e_area, e_t_txt[cur_sel+1], 255, 255, 255, 255);
-		evas_move(e_area, e_t_shd, 3, b_y);
+		evas_set_color(e_area, e_t_txt[cur_sel+n], 255, 255, 255, 255);
+		if(n > 1) evas_move(e_area, e_t_shd, 3, b_y);
 	}
+
+	r_browser_scroll(1);
+	
 	QUEUE_DRAW;
 }
 
@@ -236,4 +250,72 @@ r_browser_hide()
 	  evas_hide(e_area, e_t_txt[i]);
 	}
 	QUEUE_DRAW;
+}
+
+void
+r_browser_scroll(int u)
+{
+	switch(u){
+		case 0:
+			/* scroll down by one object in the list */
+			if(list_end == -1) list_end = 0;
+			if(list_end != 1)
+				r_browser_scroll_down();
+				
+			QUEUE_DRAW;
+			break;
+
+		case 1:
+			/* scroll up by one object in the list */
+			if(list_end == 1) list_end = 0;
+			if(list_end != -1)
+				r_browser_scroll_up();
+			
+			QUEUE_DRAW;
+			break;
+	}
+}
+
+void
+r_browser_scroll_down()
+{
+	double yy;
+	int y, i;
+
+	for(i = 0; i <= img_c-1; i++){
+		evas_get_geometry(e_area, e_t_img[i], NULL, &yy, NULL, NULL);
+		y = (int)yy;
+		evas_move(e_area, e_t_img[i], 10, y-45);
+
+		evas_get_geometry(e_area, e_t_txt2[i], NULL, &yy, NULL, NULL);
+		y = (int)yy;
+		evas_move(e_area, e_t_txt2[i], 51, y-45);
+
+		evas_get_geometry(e_area, e_t_txt[i], NULL, &yy, NULL, NULL);
+		y = (int)yy;
+		evas_move(e_area, e_t_txt[i], 50, y-45);
+	}
+	if(cur_sel == img_c-1) list_end = 1;
+}
+
+void
+r_browser_scroll_up()
+{
+	double yy;
+	int y, i;
+
+	for(i = 0; i <= img_c-1; i++){
+		evas_get_geometry(e_area, e_t_img[i], NULL, &yy, NULL, NULL);
+		y = (int)yy;
+		evas_move(e_area, e_t_img[i], 10, y+45);
+
+		evas_get_geometry(e_area, e_t_txt2[i], NULL, &yy, NULL, NULL);
+		y = (int)yy;
+		evas_move(e_area, e_t_txt2[i], 51, y+45);
+
+		evas_get_geometry(e_area, e_t_txt[i], NULL, &yy, NULL, NULL);
+		y = (int)yy;
+		evas_move(e_area, e_t_txt[i], 50, y+45);
+	}
+	if(cur_sel == 0) list_end = -1;
 }

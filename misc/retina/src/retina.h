@@ -51,12 +51,13 @@ void r_scrollbar_render(void);
 void r_scrollbar_init(void);
 void r_browser_add(char *img);
 void r_gen_thumb(char *file);
-void r_draw_thumb(void);
+void r_draw_thumb(char *file);
 void r_add_text(char *txt, int x, int y);
-void r_browser_move_down(void);
-void r_browser_move_up(void);
 void r_browser_hide(void);
 void r_browser_show(void);
+void r_browser_scroll(int u);
+void r_browser_scroll_down(void);
+void r_browser_scroll_up(void);
 
 void r_error(char *msg);
 
@@ -70,6 +71,8 @@ void r_b2_click(void *_data, Evas _e, Evas_Object _o, int _b, int _x, int _y);
 void r_b3_click(void *_data, Evas _e, Evas_Object _o, int _b, int _x, int _y);
 void r_b4_click(void *_data, Evas _e, Evas_Object _o, int _b, int _x, int _y);
 void r_b5_click(void *_data, Evas _e, Evas_Object _o, int _b, int _x, int _y);
+void r_sb1_click(void *_data, Evas _e, Evas_Object _o, int _b, int _x, int _y);
+void r_sb2_click(void *_data, Evas _e, Evas_Object _o, int _b, int _x, int _y);
 void r_m_up(void *_data, Evas _e, Evas_Object _o, int _b, int _x, int _y);
 
 void r_db_init(void);

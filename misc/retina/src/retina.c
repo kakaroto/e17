@@ -38,6 +38,7 @@ int tb_status = 0, br_status = 0;
 int mouse_button;
 int t_y = 40, b_y = 37;
 int img_c = 0, cur_sel;
+int list_end = 0;
 pid_t scanner_pid = 0;
 
 int
@@ -56,10 +57,10 @@ main(int argc, char **argv)
    if(argc > 1){
 		 for(i = 1; i < argc; i++){
 			 r_gen_thumb(argv[i]);
+			 r_draw_thumb(argv[i]);
 			 r_images[i -1] = strdup(argv[i]);
 			 img_c++;
 		 }
-		 r_draw_thumb();
 		 evas_set_color(e_area, e_t_txt[cur_sel], 255, 200, 0, 255);
 		 r_evas_load(argv[1]);
    } else {

@@ -35,7 +35,7 @@ r_evas_create()
    /* Initialize the Evas */
    
    e_area = evas_new();
-   evas_set_image_cache(e_area, 8 * 1024 * 1024);
+   evas_set_image_cache(e_area, 8 * 8192 * 8192);
    evas_set_output_method(e_area, RENDER_METHOD_ALPHA_SOFTWARE);
    vis = evas_get_optimal_visual(e_area, GDK_WINDOW_XDISPLAY(GDK_ROOT_PARENT()));
    cmap = evas_get_optimal_colormap(e_area, GDK_WINDOW_XDISPLAY(GDK_ROOT_PARENT()));
@@ -126,7 +126,7 @@ void
 r_evas_toolbar_init()
 {
    /* Create the toolbar, but do not display */
-	 e_bs = evas_add_image_from_file(e_area, "../img/toolbar_shadow.png");
+	 e_bs = evas_add_image_from_file(e_area, "../img/toolbar_bg.png");
    e_btn1 = evas_add_image_from_file(e_area, "../img/button_open.png");
 	 e_btn2 = evas_add_image_from_file(e_area, "../img/button_save.png");
 	 e_btn3 = evas_add_image_from_file(e_area, "../img/button_browse.png");
@@ -134,13 +134,13 @@ r_evas_toolbar_init()
 	 e_btn5 = evas_add_image_from_file(e_area, "../img/button_close.png");
 	 
 	 evas_move(e_area, e_bs, 3, 3);
-   evas_move(e_area, e_btn1, 3, 3);
-	 evas_move(e_area, e_btn2, 24, 3);
-	 evas_move(e_area, e_btn3, 45, 3);
-	 evas_move(e_area, e_btn4, 66, 3);
-	 evas_move(e_area, e_btn5, 87, 3);
+   evas_move(e_area, e_btn1, 14, 4);
+	 evas_move(e_area, e_btn2, 31, 4);
+	 evas_move(e_area, e_btn3, 47, 4);
+	 evas_move(e_area, e_btn4, 64, 4);
+	 evas_move(e_area, e_btn5, 78, 4);
 	 
-	 evas_resize(e_area, e_bs, 115, 30);
+	 evas_resize(e_area, e_bs, 113, 28);
    evas_resize(e_area, e_btn1, 21, 21);
 	 evas_resize(e_area, e_btn2, 21, 21);
 	 evas_resize(e_area, e_btn3, 21, 21);
@@ -149,12 +149,12 @@ r_evas_toolbar_init()
    
 	 evas_set_layer(e_area, e_checks, 0);
    evas_set_layer(e_area, e_img, 1);
-	 evas_set_layer(e_area, e_bs, 3);
-   evas_set_layer(e_area, e_btn1, 3);
-	 evas_set_layer(e_area, e_btn2, 3);
-	 evas_set_layer(e_area, e_btn3, 3);
-	 evas_set_layer(e_area, e_btn4, 3);
-	 evas_set_layer(e_area, e_btn5, 3);
+	 evas_set_layer(e_area, e_bs, 1000);
+   evas_set_layer(e_area, e_btn1, 1000);
+	 evas_set_layer(e_area, e_btn2, 1000);
+	 evas_set_layer(e_area, e_btn3, 1000);
+	 evas_set_layer(e_area, e_btn4, 1000);
+	 evas_set_layer(e_area, e_btn5, 1000);
 }
 
 int

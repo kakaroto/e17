@@ -30,6 +30,10 @@ r_cb_init()
 	evas_callback_add(e_area, e_btn3, CALLBACK_MOUSE_DOWN, r_b3_click, NULL);
 	evas_callback_add(e_area, e_btn4, CALLBACK_MOUSE_DOWN, r_b4_click, NULL);
 	evas_callback_add(e_area, e_btn5, CALLBACK_MOUSE_DOWN, r_b5_click, NULL);
+
+	/* scrollbar */
+	evas_callback_add(e_area, e_scr_b1, CALLBACK_MOUSE_DOWN, r_sb1_click, NULL);
+	evas_callback_add(e_area, e_scr_b2, CALLBACK_MOUSE_DOWN, r_sb2_click, NULL);
 }
 
 void
@@ -116,4 +120,16 @@ void
 r_b5_click(void *_data, Evas _e, Evas_Object _o, int _b, int _x, int _y)
 {
 	gtk_main_quit();
+}
+
+void
+r_sb1_click(void *_data, Evas _e, Evas_Object _o, int _b, int _x, int _y)
+{
+	r_browser_move_up(1);
+}
+
+void
+r_sb2_click(void *_data, Evas _e, Evas_Object _o, int _b, int _x, int _y)
+{
+	r_browser_move_down(1);
 }
