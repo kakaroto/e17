@@ -658,7 +658,6 @@ PagerRedraw(Pager * p, char newbg)
 		       char                s[4096];
 		       char               *uniq;
 		       Imlib_Image        *im;
-		       Pixmap              mask;
 
 		       uniq =
 			  BackgroundGetUniqueString(desks.desk[p->desktop].bg);
