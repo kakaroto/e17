@@ -414,6 +414,8 @@ static void
 od_icon_edje_cb(void *data, Evas_Object *obj, const char *emission, const
 char *source)
 {
+  pid_t pid;
+  Evas_List *l = NULL;
   OD_Icon        *icon = NULL;
   
   if((icon = (OD_Icon *) data))
@@ -423,6 +425,15 @@ char *source)
 	switch(icon->type)
 	{
 	    case application_link:
+		for(l = clients; l; l = l->next)
+		{
+		    OD_Window *win = (OD_Window*)l->data;
+		    if(win->applnk == icon)
+		    {
+			od_wm_activate_window(win->id);
+			break;
+		    }
+		}
 		break;
 	    case docked_icon:
 		break;
@@ -433,22 +444,24 @@ char *source)
     }
     else if (!strcmp(emission, "engage,app,open"))
     {
-#if 0
-      if(icon->data.applnk.command)
-      {
-	switch(fork())
+	switch(icon->type)
 	{
-	  case 0:
-	    execl("/bin/sh", "sh", "-c", icon->data.applnk.command, NULL);
-	    break;
-	  case -1:
-	    fprintf(stderr, "Unable to fork properly\n");
-	    break;
-	  default:
-	    break;
+	    case application_link:
+		if((pid = fork()) < 0)
+		    return;
+		else if(pid == 0)	/* child */
+		{
+		 execl("/bin/sh", "sh", "-c", icon->data.applnk.command, NULL);
+		}
+		else /* parent */
+		{
+		}
+		break;
+	    case docked_icon:
+		break;
+	    case minimised_window:
+		break;
 	}
-      }
-#endif
     }
     else if (!strcmp(emission, "engage,app,close"))
     {
