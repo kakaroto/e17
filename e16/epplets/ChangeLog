@@ -1538,3 +1538,20 @@ Fri Dec 10 21:04:38 EST 1999
 
 Make textbox scroll better...
 
+-------------------------------------------------------------------------------
+
+Sat Dec 11 13:00:12 GMT 1999
+(gilbertt)
+
+Commands to view urls in E-UrlWatch are now of the format:
+command %s
+Where %s is substituted with the url.
+Eg. The default is now:
+gnome-moz-remote --newwin "%s" &
+But things like
+netscape -remote openURL(%s)
+will now work.
+
+That's a really bad habit of mine :( Thanks to Matthew Crites
+<mcrites@primenet.com> for pointing it out.
+

@@ -77,16 +77,17 @@ load_config (void)
     free (opt.www_command);
   opt.www_command =
     _Strdup (Epplet_query_config_def
-	     ("WWW_COMMAND", "gnome-moz-remote --newwin"));
+	     ("WWW_COMMAND", "gnome-moz-remote --newwin \"%s\" &"));
   if (opt.ftp_command)
     free (opt.ftp_command);
   opt.ftp_command =
     _Strdup (Epplet_query_config_def
-	     ("FTP_COMMAND", "gnome-moz-remote --newwin"));
+	     ("FTP_COMMAND", "gnome-moz-remote --newwin \"%s\" &"));
   if (opt.get_command)
     free (opt.get_command);
   opt.get_command =
-    _Strdup (Epplet_query_config_def ("GET_COMMAND", "Eterm -O -e wget"));
+    _Strdup (Epplet_query_config_def
+	     ("GET_COMMAND", "Eterm -O -e wget \"%s\" &"));
   if (opt.url_save_file)
     free (opt.url_save_file);
   Esnprintf (buf, sizeof (buf), "%s/.Urls", home);
@@ -128,23 +129,24 @@ apply_config (void)
 {
   if (opt.new_url_command)
     free (opt.new_url_command);
-  opt.new_url_command = _Strdup (Epplet_textbox_contents (txt_new_url_command));
-   if (opt.url_save_file)
+  opt.new_url_command =
+    _Strdup (Epplet_textbox_contents (txt_new_url_command));
+  if (opt.url_save_file)
     free (opt.url_save_file);
-   opt.url_save_file = _Strdup (Epplet_textbox_contents (txt_url_save_file));
- if (opt.url_file)
+  opt.url_save_file = _Strdup (Epplet_textbox_contents (txt_url_save_file));
+  if (opt.url_file)
     free (opt.url_file);
   opt.url_file = _Strdup (Epplet_textbox_contents (txt_url_file));
- if (opt.www_command)
+  if (opt.www_command)
     free (opt.www_command);
   opt.www_command = _Strdup (Epplet_textbox_contents (txt_www_command));
- if (opt.ftp_command)
+  if (opt.ftp_command)
     free (opt.ftp_command);
   opt.ftp_command = _Strdup (Epplet_textbox_contents (txt_ftp_command));
- if (opt.get_command)
+  if (opt.get_command)
     free (opt.get_command);
   opt.get_command = _Strdup (Epplet_textbox_contents (txt_get_command));
-  if(opt.check_url_file)
+  if (opt.check_url_file)
     Epplet_timer (check_url_file, NULL, 1, "URLCHECK_TIMER");
 
   return;
@@ -183,7 +185,8 @@ cancel_cb (void *data)
 static void
 cb_config (void *data)
 {
-  Epplet_gadget lbl, btn_check_file, btn_save, btn_do_new_url_command,btn_always_show_file_urls;
+  Epplet_gadget lbl, btn_check_file, btn_save, btn_do_new_url_command,
+    btn_always_show_file_urls;
 
   if (confwin)
     return;
@@ -194,69 +197,79 @@ cb_config (void *data)
 
   confwin =
     Epplet_create_window_config (440, 360, "E-UrlWatch Config", ok_cb,
-                                 &confwin, apply_cb, &confwin, cancel_cb,
-                                 &confwin);
+				 &confwin, apply_cb, &confwin, cancel_cb,
+				 &confwin);
 
   Epplet_gadget_show (lbl = Epplet_create_label (10, 10, "WWW Command:", 2));
   Epplet_gadget_show (txt_www_command =
-                      Epplet_create_textbox (NULL, opt.www_command, 10, 25,
-                                             420, 20, 2, NULL, NULL));
+		      Epplet_create_textbox (NULL, opt.www_command, 10, 25,
+					     420, 20, 2, NULL, NULL));
 
   Epplet_gadget_show (lbl = Epplet_create_label (10, 50, "FTP Command:", 2));
   Epplet_gadget_show (txt_ftp_command =
-                      Epplet_create_textbox (NULL, opt.ftp_command, 10, 65,
-			  420, 20, 2, NULL, NULL));
-  
+		      Epplet_create_textbox (NULL, opt.ftp_command, 10, 65,
+					     420, 20, 2, NULL, NULL));
+
   Epplet_gadget_show (lbl = Epplet_create_label (10, 90, "GET Command:", 2));
   Epplet_gadget_show (txt_get_command =
-                      Epplet_create_textbox (NULL, opt.get_command, 10, 105,
-                                             420, 20, 2, NULL, NULL));
+		      Epplet_create_textbox (NULL, opt.get_command, 10, 105,
+					     420, 20, 2, NULL, NULL));
 
-  Epplet_draw_line(confwin,130,0,130,440,0,0,0);
+  Epplet_draw_line (confwin, 130, 0, 130, 440, 0, 0, 0);
 
-  
+
   Epplet_gadget_show (btn_save =
-                      Epplet_create_togglebutton (NULL, NULL, 10, 135, 12, 12,
-                                                  &opt.save_urls, NULL,
-                                                  NULL));
+		      Epplet_create_togglebutton (NULL, NULL, 10, 135, 12, 12,
+						  &opt.save_urls, NULL,
+						  NULL));
   Epplet_gadget_show (lbl =
-                      Epplet_create_label (30, 135,
-                                           "Save all urls handled?", 2));
-  Epplet_gadget_show (lbl = Epplet_create_label (10, 150, "File to save urls in:", 2));
+		      Epplet_create_label (30, 135,
+					   "Save all urls handled?", 2));
+  Epplet_gadget_show (lbl =
+		      Epplet_create_label (10, 150, "File to save urls in:",
+					   2));
   Epplet_gadget_show (txt_url_save_file =
-                      Epplet_create_textbox (NULL, opt.url_save_file, 10, 165,
-			  420, 20, 2, NULL, NULL));
+		      Epplet_create_textbox (NULL, opt.url_save_file, 10, 165,
+					     420, 20, 2, NULL, NULL));
 
-  
+
   Epplet_gadget_show (btn_check_file =
-                      Epplet_create_togglebutton (NULL, NULL, 10, 195, 12, 12,
-                                                  &opt.check_url_file, NULL, NULL));
+		      Epplet_create_togglebutton (NULL, NULL, 10, 195, 12, 12,
+						  &opt.check_url_file, NULL,
+						  NULL));
   Epplet_gadget_show (lbl =
-                      Epplet_create_label (30, 195,
-                                           "Watch a file for new urls? (Eg. Third Eye Url Catcher)", 2));
-  Epplet_gadget_show (lbl = Epplet_create_label (20, 210, "File to watch:", 2));
+		      Epplet_create_label (30, 195,
+					   "Watch a file for new urls? (Eg. Third Eye Url Catcher)",
+					   2));
+  Epplet_gadget_show (lbl =
+		      Epplet_create_label (20, 210, "File to watch:", 2));
   Epplet_gadget_show (txt_url_file =
-                      Epplet_create_textbox (NULL, opt.url_file, 10, 225,
-                          420, 20, 2, NULL, NULL));
+		      Epplet_create_textbox (NULL, opt.url_file, 10, 225, 420,
+					     20, 2, NULL, NULL));
 
 
   Epplet_gadget_show (btn_do_new_url_command =
-                      Epplet_create_togglebutton (NULL, NULL, 10, 255, 12, 12,
-                                                  &opt.do_new_url_command, NULL, NULL));
+		      Epplet_create_togglebutton (NULL, NULL, 10, 255, 12, 12,
+						  &opt.do_new_url_command,
+						  NULL, NULL));
   Epplet_gadget_show (lbl =
-                      Epplet_create_label (30, 255,
-                                           "Run command when a new url is detected?", 2));
-  Epplet_gadget_show (lbl = Epplet_create_label (10, 270, "Command to run:", 2));
+		      Epplet_create_label (30, 255,
+					   "Run command when a new url is detected?",
+					   2));
+  Epplet_gadget_show (lbl =
+		      Epplet_create_label (10, 270, "Command to run:", 2));
   Epplet_gadget_show (txt_new_url_command =
-                      Epplet_create_textbox (NULL, opt.new_url_command, 10, 285,
-			  420, 20, 2, NULL, NULL));
+		      Epplet_create_textbox (NULL, opt.new_url_command, 10,
+					     285, 420, 20, 2, NULL, NULL));
 
   Epplet_gadget_show (btn_always_show_file_urls =
-                      Epplet_create_togglebutton (NULL, NULL, 10, 315, 12, 12,
-                                                  &opt.always_show_file_urls, NULL, NULL));
+		      Epplet_create_togglebutton (NULL, NULL, 10, 315, 12, 12,
+						  &opt.always_show_file_urls,
+						  NULL, NULL));
   Epplet_gadget_show (lbl =
-                      Epplet_create_label (30, 315,
-                                           "Automatically launch every new url in watched file?", 2));
+		      Epplet_create_label (30, 315,
+					   "Automatically launch every new url in watched file?",
+					   2));
 
   Epplet_window_show (confwin);
 
@@ -622,28 +635,33 @@ display_string (char *string)
 static void
 handle_url (char *url, char *type)
 {
-  char *sys;
+  char *sys = NULL;
+  int len = 0;
 
   if (url == NULL)
     return;
 
   D (("In handle_url: url -->%s<--\n", url));
 
+  /* This should be close enough :) */
+  len = strlen (opt.www_command) + strlen (url);
+  sys = malloc (len);
+
   if (!strcmp (type, "www"))
     {
-      sys = _Strjoin (NULL, opt.www_command, " \"", url, "\" &", NULL);
+      Esnprintf (sys, len, opt.www_command, url);
     }
   else if (!strcmp (type, "ftp"))
     {
-      sys = _Strjoin (NULL, opt.ftp_command, " \"", url, "\" &", NULL);
+      Esnprintf (sys, len, opt.ftp_command, url);
     }
   else if (!strcmp (type, "get"))
     {
-      sys = _Strjoin (NULL, opt.get_command, " \"", url, "\" &", NULL);
+      Esnprintf (sys, len, opt.get_command, url);
     }
   else
     {
-      sys = _Strjoin (NULL, opt.www_command, " \"", url, "\" &", NULL);
+      Esnprintf (sys, len, opt.www_command, url);
     }
 
   D (("In handle_url: About to system() -->%s<--\n", sys));
@@ -719,11 +737,10 @@ create_epplet_layout (void)
   btn_file_url = Epplet_create_text_button ("New!",
 					    30, 2, 34, 12,
 					    cb_btn_file_url, NULL);
-    Epplet_gadget_show (btn_conf =
-                      Epplet_create_std_button ("CONFIGURE",
-                                            82, 2,  
-                                            cb_config, NULL));
-url_p = Epplet_create_popup ();
+  Epplet_gadget_show (btn_conf =
+		      Epplet_create_std_button ("CONFIGURE",
+						82, 2, cb_config, NULL));
+  url_p = Epplet_create_popup ();
   Epplet_add_popup_entry (url_p, "Url List is currently empty", NULL, NULL,
 			  NULL);
   Epplet_gadget_show (btn_urllist =
