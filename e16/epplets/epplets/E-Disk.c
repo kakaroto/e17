@@ -53,7 +53,7 @@ timer_cb(void *data) {
 
   FILE *fp;
   char buff[1024];
-  unsigned long a, b, c, d;
+  unsigned long a, b, c, d, e;
   unsigned long in_blks, out_blks;
   static unsigned long last_in = 0, last_out = 0, in_delta = 0, out_delta = 0;
 
@@ -61,12 +61,28 @@ timer_cb(void *data) {
     D(("Failed to open /proc/stat -- %s\n", strerror(errno)));
     return;
   }
-  do {
-    fgets(buff, sizeof(buff), fp);
-  } while (!BEGMATCH(buff, "disk_rblk"));
+  for (; fgets(buff, sizeof(buff), fp);) {
+    if (BEGMATCH(buff, "disk_rblk")) {
+      sscanf(buff, "%*s %lu %lu %lu %lu", &a, &b, &c, &d);
+      in_blks = a + b + c + d - last_in;
+      fgets(buff, sizeof(buff), fp);
+      sscanf(buff, "%*s %lu %lu %lu %lu", &a, &b, &c, &d);
+      out_blks = a + b + c + d - last_out;
+    } else if (BEGMATCH(buff, "disk_io")) {
+      char *pbuff = buff + 9;
 
-  sscanf(buff, "%*s %lu %lu %lu %lu", &a, &b, &c, &d);
-  in_blks = a + b + c + d - last_in;
+      for (in_blks = out_blks = 0; *pbuff == '('; pbuff = strchr(pbuff, ' ') + 1) {
+        pbuff = strchr(++pbuff, '(');
+        sscanf(++pbuff, "%lu,%lu,%lu,%lu,%lu", &a, &b, &c, &d, &e);
+        in_blks += c;
+        out_blks += e;
+      }
+      in_blks -= last_in;
+      out_blks -= last_out;
+    }
+  }
+  fclose(fp);
+
   if (last_in) {
     /* We must have some history data to do anything. */
     if (in_blks > max_in) {
@@ -84,9 +100,6 @@ timer_cb(void *data) {
   }
   last_in += in_blks;
 
-  fgets(buff, sizeof(buff), fp);
-  sscanf(buff, "%*s %lu %lu %lu %lu", &a, &b, &c, &d);
-  out_blks = a + b + c + d - last_out;
   if (last_out) {
     /* We must have some history data to do anything. */
     if (out_blks > max_out) {
@@ -104,7 +117,6 @@ timer_cb(void *data) {
   }
   last_out += out_blks;
 
-  fclose(fp);
   Esync();
   Epplet_timer(timer_cb, NULL, 0.5, "TIMER");
   return;
