@@ -314,3 +314,7 @@ Mon Aug 19 21:02:56 2002                        Michael Jennings (mej)
 
 Added a macro to permit client apps a simple way to detect libast.
 ----------------------------------------------------------------------
+Wed Sep 25 00:01:29 2002                        Michael Jennings (mej)
+
+Patch from Kirby Kuehl <kkuehl@cisco.com> for compilation on FreeBSD.
+----------------------------------------------------------------------

@@ -43,7 +43,6 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <time.h>
-#include <sys/types.h>
 #include <sys/stat.h>
 #include <unistd.h>
 #include <ctype.h>
@@ -62,10 +61,11 @@
 #endif
 
 #include <netdb.h>
+#include <sys/types.h>
 #include <sys/socket.h>
+#include <netinet/in.h>
 #include <sys/un.h>
 #include <arpa/inet.h>
-#include <netinet/ip.h>
 #include <netinet/tcp.h>
 #include <netinet/udp.h>
 
