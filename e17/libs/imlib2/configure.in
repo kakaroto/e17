@@ -2,7 +2,7 @@ dnl Process this file with autoconf to create configure.
 
 AC_INIT(src/Imlib2.h)
 AM_CONFIG_HEADER(config.h)
-AM_INIT_AUTOMAKE(imlib, 2.0)
+AM_INIT_AUTOMAKE(imlib2, 0.0.1)
 
 pkglibdir='${libdir}'/loaders
 AC_SUBST(pkglibdir)
