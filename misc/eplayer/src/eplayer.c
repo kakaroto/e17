@@ -1,6 +1,10 @@
 /* Eplayer OggVorbis Player - Phase 3 - Started 5/6/03 */
 /* Edje Overhaul startnig phase 4 - Started 7/30/03 */
 
+/*
+ * $Id$
+ */
+
 #include <config.h>
 #include <Edje.h>
 #include <Edb.h>

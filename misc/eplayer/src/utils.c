@@ -1,3 +1,7 @@
+/*
+ * $Id$
+ */
+
 #include <config.h>
 #include <Evas.h>
 #include <string.h>

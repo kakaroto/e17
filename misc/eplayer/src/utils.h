@@ -1,6 +1,10 @@
 #ifndef __UTILS_H
 #define __UTILS_H
 
+/*
+ * $Id$
+ */
+
 typedef enum {
 	DEBUG_LEVEL_CRITICAL,
 	DEBUG_LEVEL_WARNING,

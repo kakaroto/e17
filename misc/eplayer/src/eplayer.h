@@ -1,6 +1,10 @@
 #ifndef __EPLAYER_H
 #define __EPLAYER_H
 
+/*
+ * $Id$
+ */
+
 #include <Ecore.h>
 #include <Ecore_Evas.h>
 #include <Ecore_Fb.h>

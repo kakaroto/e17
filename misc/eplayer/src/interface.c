@@ -1,3 +1,7 @@
+/*
+ * $Id$
+ */
+
 #include <config.h>
 #include <assert.h>
 #include "eplayer.h"

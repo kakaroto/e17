@@ -1,6 +1,10 @@
 #ifndef __TRACK_H
 #define __TRACK_H
 
+/*
+ * $Id$
+ */
+
 #include "eplayer.h"
 
 void track_play_chunk(void *udata);

@@ -1,6 +1,10 @@
 #ifndef __INTERFACE_H
 #define __INTERFACE_H
 
+/*
+ * $Id$
+ */
+
 #include "eplayer.h"
 
 bool ui_init(ePlayer *player);

@@ -1,3 +1,7 @@
+/*
+ * $Id$
+ */
+
 #include <config.h>
 #include <Edje.h>
 #include <Esmart/container.h>
