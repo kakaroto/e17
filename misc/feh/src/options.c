@@ -891,12 +891,16 @@ show_usage(void)
            " MOUSE ACTIONS\n"
            " When viewing an image, mouse button 1 moves to the next image (slideshow\n"
            " mode only), button 2 zooms (click and drag left->right to zoom in, right->\n"
-           " left to zoom out, click once to restore 1x zoom), and mouse button 3 shows\n"
-           " menus. If --no-menus is specified, button 2 closes all open windows and\n"
-           " closes the application\n" "\n"
+           " left to zoom out, click once to restore 1x zoom), and mouse button 3 pans.\n"
+           " Ctrl+button 1 blurs or sharpens the image (drag left to blur and right to\n"
+           " sharpen).  Ctrl+button 2 rotates the image around the center point.  Ctrl+\n"
+           " button 3 activates the context-sensitive menu.  Buttons can be redefined\n"
+           " with the -1 through -9 (or --*-button) cmdline flags.  All you bastards\n"
+           " with million button mice can remove the ctrl mask with the --no-*-ctrl-mask\n"
+           " options.\n" "\n"
            "See 'man feh' for more detailed information\n" "\n"
-           "This program is free software see the man page for licensing info.\n"
-           "Copyright Tom Gilbert, 1999, 2000\n"
+           "This program is free software see the file COPYING for licensing info.\n"
+           "Copyright Tom Gilbert (and various contributors) 1999, 2000\n"
            "Email bugs to <gilbertt@linuxbrit.co.uk>\n");
    exit(0);
 }

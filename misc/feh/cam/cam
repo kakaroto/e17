@@ -1,12 +1,17 @@
 #!/usr/bin/perl -w
 
+#############################################
+############# CAM RUN-TIME OPTIONS ##########
+#############################################
 $DEBUG = 0;
 $bp =    $ENV{HOME}."/.cam_bookmarks";
 $feh =   "feh";
 $title = "%cCAM";
 # additional feh cmdline options
-$PRE=    "";
+$PRE=    " -Cwebcam ";
 $POST=   ""; 
+#############################################
+#############################################
 
 # chakc args
 &print_usage_and_exit unless (@ARGV);
@@ -16,6 +21,12 @@ $key = shift @ARGV;
 
 if ($key=~/-v/i||$key=~/--verbose/i)	{
 	$PRE.=" -V ";
+	$key = shift @ARGV;
+}
+
+if ($key=~/-f/i||$key=~/--full-screen/i ||
+    $key=~/-g/i||$key=~/--giblets-mom/i)	{
+	$PRE.=" --full-screen --auto-zoom ";
 	$key = shift @ARGV;
 }
 
@@ -61,7 +72,7 @@ if ($title)
 {
 	$title =~ s/\%c/$key/g;
 	$title =~ s/\%\%/\%/g;
-	$PRE = "--title \"$title\"" . $PRE;
+	$PRE = " --title \"$title\" " . $PRE;
 }
 
 $cmd = "$feh $PRE -R $ref $url $POST";
@@ -70,7 +81,7 @@ exec "$cmd";					# to remove perl interpreter from memory
 
 sub print_usage_and_exit()	{
 	print <<END_USAGE;
-Cam 0.1 by Paul Duncan <duncanpa\@engr.orst.edu>
+Cam 0.2 by Paul Duncan <pabs\@pablotron.org>
 Description:
   A convenient webcam wrapper for feh.
 
@@ -85,6 +96,8 @@ Usage:
     refresh : refresh, in seconds (ex 120)
   cam <-l|--list>
     List each url key in the bookmarks file (\"$bp\").
+  cam [-f|--full-screen] options
+    Start feh in full-screen mode (aka -g and --giblets-mom \"viewing\" mode).
   cam [-v|--verbose] options
     Start feh in verbose mode (feh -V).
   cam <-h|-?|--help>

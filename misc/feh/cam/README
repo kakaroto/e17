@@ -1,7 +1,7 @@
-Cam 0.1 README
+Cam 0.2 README
 ==============
-
-This document was last updated on 20000617-1132-PST.
+This document was last updated on 20000624-1053-PDT.
+Please see the file COPYING for licensing information.
 
 Description
 ===========
@@ -22,14 +22,17 @@ Installation
 ============
 - Copy the "cam" script to a location in your PATH (ex /usr/bin,
   /usr/local/bin, or $HOME/bin), and make sure hte execute bit on the
-  script is set.
+  script is set (type "chmod a+x $HOME/.cam_bookmarks").
 - Copy the "cam_bookmarks" file to $HOME/.cam_bookmarks and make sure
   cam can see it by typing "cam --list".
+- Optionally, modify the options inside the cam script.  You can pass
+  feh any options before the image by adjusting the $PRE variable, 
+  and any options after the image by adjustin the $POST variable.
 
 About the Author
 ================
-Paul Duncan <duncanpa@engr.orst.edu>, pabs on #e
-http://www.pablotrn.org/
+Paul Duncan <pabs@pablotron.org>, pabs on #e
+http://www.pablotron.org/
 
 but the real credit goes to Tom Gilbert for making feh, an awesome image
-viewer. :)  (plus I only spent about 15 minutes writing this, :P)
+viewer. :)
