@@ -292,10 +292,10 @@ file_copy(char *src_path, struct stat *src_st, char *dst_path)
       D_RETURN_(-1);
     }
 
-  D("File copied -- handling metadata.\n");
+  D("File %s copied -- handling metadata.\n", src_path);
   
-  if ((efsd_meta_get_meta_file(src_path, src_meta, MAXPATHLEN)) &&
-      (efsd_meta_get_meta_file(dst_path, dst_meta, MAXPATHLEN)))
+  if ((efsd_meta_get_meta_file(src_path, src_meta, MAXPATHLEN, FALSE)) &&
+      (efsd_meta_get_meta_file(dst_path, dst_meta, MAXPATHLEN, TRUE)))
     {
       if (!efsd_stat(src_meta, &src_meta_st))
 	{
@@ -311,6 +311,9 @@ file_copy(char *src_path, struct stat *src_st, char *dst_path)
       /* Otherwise, copy metadata file ... */
       success = data_copy(src_meta, &src_meta_st, dst_meta);
     }
+
+  D("File %s finished.\n", src_path);
+
 
   /* Return final status. */
   D_RETURN_(success);
@@ -399,9 +402,10 @@ file_move(char *src_path, struct stat *src_st, char *dst_path)
   /* Try simple rename ... */
   if (efsd_misc_rename(src_path, dst_path) != 0)
     {
-      D("Rename failed -- copying, then removing.\n");
+      D("Rename failed -- copying %s to %s, then removing.\n", src_path, dst_path);
       if (file_copy(src_path, src_st, dst_path) >= 0)
 	{
+	  D("Removing source %s\n", src_path);
 	  success = efsd_misc_remove(src_path);
 	  D_RETURN_(success);
 	}
@@ -465,33 +469,31 @@ dir_move(char *src_path, char *dst_path)
       snprintf(dst_ptr, MAXPATHLEN - dst_len, "%s", de_ptr->d_name);
 
       if (!efsd_lstat(src, &src_st))
-	{
-	  closedir(dir);
-	  D_RETURN_(-1);
-	}
-
-      if (file_move(src, &src_st, dst) == 0)
+	goto error_exit;
+      
+      if (efsd_misc_rename(src, dst) >= 0)
 	continue;
-
+      
       if (S_ISDIR(src_st.st_mode))
 	{
 	  if (dir_move(src, dst) < 0)
-	    {
-	      closedir(dir);
-	      D_RETURN_(-1);
-	    }
+	    goto error_exit;
 	}
+      else if (file_move(src, &src_st, dst) == 0)
+	continue;
       else
-	{
-	  closedir(dir);
-	  D_RETURN_(-1);
-	}
+	goto error_exit;
     }
 
   /* Close dir. It's empty now, so also remove it. */
 
   closedir(dir);
   D_RETURN_(efsd_misc_remove(src_path));
+
+ error_exit:
+
+  closedir(dir);
+  D_RETURN_(-1);  
 }
 
 

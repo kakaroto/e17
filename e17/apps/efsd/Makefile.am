@@ -1,6 +1,6 @@
 ## Process this file with automake to produce Makefile.in
 
-SUBDIRS = efsd tools
+SUBDIRS = efsd tools doc
 
 MAINTAINERCLEANFILES = Makefile.in aclocal.m4 config.guess \
                        config.h.in config.sub configure install-sh \
@@ -10,3 +10,6 @@ MAINTAINERCLEANFILES = Makefile.in aclocal.m4 config.guess \
 bin_SCRIPTS = efsd-config
 
 EXTRA_DIST = README AUTHORS COPYING
+
+manual:
+	$(MAKE) -C $(top_srcdir)/doc manual

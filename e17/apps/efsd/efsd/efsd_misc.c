@@ -222,11 +222,13 @@ efsd_misc_remove(char *filename)
 	 care about the result (maybe
 	 no metadata existed etc).
       */
-      if (efsd_meta_get_meta_file(filename, meta_file, MAXPATHLEN))
+      if (efsd_meta_get_meta_file(filename, meta_file, MAXPATHLEN, FALSE))
 	remove(meta_file);
       
       D_RETURN_(0);
     }
+
+  D("Removing %s failed.\n", filename);
   
   D_RETURN_(-1);
 }
@@ -250,8 +252,8 @@ efsd_misc_rename(char *file1, char *file2)
       efsd_stat_change_filename(file1, file2);
 
       /* ... and metadata. */
-      if ((efsd_meta_get_meta_file(file1, meta_file1, MAXPATHLEN)) &&
-	  (efsd_meta_get_meta_file(file2, meta_file2, MAXPATHLEN)))
+      if ((efsd_meta_get_meta_file(file1, meta_file1, MAXPATHLEN, FALSE)) &&
+	  (efsd_meta_get_meta_file(file2, meta_file2, MAXPATHLEN, TRUE)))
 	rename(meta_file1, meta_file2);
 
       D_RETURN_(0);

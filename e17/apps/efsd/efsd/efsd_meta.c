@@ -45,7 +45,7 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 static EfsdLock       *meta_lock;
 
 static unsigned int    meta_hash_filename(char *filename);
-static int             meta_db_get_file(char *filename, char *dbfile, int len);
+static int             meta_db_get_file(char *filename, char *dbfile, int len, int create);
 static int             meta_db_set_data(EfsdSetMetadataCmd *esmc, char *dbfile);
 static void           *meta_db_get_data(EfsdGetMetadataCmd *egmc,
 					char *dbfile, int *data_len);
@@ -71,7 +71,7 @@ meta_hash_filename(char *filename)
 
 
 static int
-meta_db_get_file(char *filename, char *dbfile, int len)
+meta_db_get_file(char *filename, char *dbfile, int len, int create)
 {
   char           s[MAXPATHLEN];
   char          *path, *file;
@@ -120,6 +120,12 @@ meta_db_get_file(char *filename, char *dbfile, int len)
     }
   else
     {
+      if (!create)
+	{
+	  *(file-1) = '/';
+	  D_RETURN_(FALSE);
+	}
+
       if (efsd_misc_file_writeable(path) &&
 	  efsd_misc_file_execable(path))
 	{
@@ -336,7 +342,7 @@ efsd_meta_set(EfsdCommand *ec)
 
   esmc = &(ec->efsd_set_metadata_cmd);
   efsd_misc_remove_trailing_slashes(esmc->file);
-  meta_db_get_file(esmc->file, dbfile, MAXPATHLEN);
+  meta_db_get_file(esmc->file, dbfile, MAXPATHLEN, TRUE /* create */);
 
   D_RETURN_(meta_db_set_data(esmc, dbfile));
 }
@@ -355,20 +361,22 @@ efsd_meta_get(EfsdCommand *ec, int *data_len)
 
   egmc = &(ec->efsd_get_metadata_cmd);
   efsd_misc_remove_trailing_slashes(egmc->file);
-  meta_db_get_file(egmc->file, dbfile, MAXPATHLEN);
+
+  if (meta_db_get_file(egmc->file, dbfile, MAXPATHLEN, FALSE) == FALSE)
+    D_RETURN_(NULL);
 
   D_RETURN_(meta_db_get_data(egmc, dbfile, data_len));
 }
 
 
 int         
-efsd_meta_get_meta_file(char *filename, char *metafile, int len)
+efsd_meta_get_meta_file(char *filename, char *metafile, int len, int create)
 {
   int result;
 
   D_ENTER;
 
-  result = meta_db_get_file(filename, metafile, len);
+  result = meta_db_get_file(filename, metafile, len, create);
 
   D_RETURN_(result);
 }

@@ -354,67 +354,64 @@ monitor_remove_client(EfsdCommand *com, int client)
 
   m = efsd_monitored(filename);
 
-  if (m)
+  if (!m)
+    D_RETURN_(-1);
+
+  if (client == EFSD_CLIENT_INTERNAL)
+    m->internal_use_count--;
+  else
+    m->client_use_count--;
+
+  D("Decrementing usecount for file %s on monitor %s, now (%i/%i).\n",
+    filename, m->filename, m->internal_use_count, m->client_use_count);
+
+  if (m->internal_use_count == 0 && m->client_use_count == 0)
     {
-      if (client == EFSD_CLIENT_INTERNAL)
-	m->internal_use_count--;
-      else
-	m->client_use_count--;
-
-      D("Decrementing usecount for file %s on monitor %s, now (%i/%i).\n",
-	 filename, m->filename, m->internal_use_count, m->client_use_count);
-
-
-      if (m->internal_use_count == 0 && m->client_use_count == 0)
+      D("Use count is (%i/%i) -- stopping monitoring of %s.\n",
+	m->internal_use_count, m->client_use_count, filename);
+      
+      FAMCancelMonitor_r(&famcon, m->fam_req);
+      
+      /* Actual cleanup happens when FAMAcknowledge is seen ... */
+    }
+  else
+    {
+      EfsdMonitorRequest    *emr;
+      EfsdList              *l2;
+      
+      /* Use count not zero -- remove given client
+	 from list of monitoring clients. */
+      for (l2 = efsd_list_head(m->clients); l2; l2 = efsd_list_next(l2))
 	{
-	  D("Use count is (%i/%i) -- stopping monitoring of %s.\n",
-	     m->internal_use_count, m->client_use_count, filename);
+	  emr = (EfsdMonitorRequest*)efsd_list_data(l2);
+
+	  if (emr->client != client)
+	    continue;
 	  
-	  FAMCancelMonitor_r(&famcon, m->fam_req);
-	  
-	  /* Actual cleanup happens when FAMAcknowledge is seen ... */
-	}
-      else
-	{
-	  EfsdMonitorRequest    *emr;
-	  EfsdList              *l2;
-	  
-	  /* Use count not zero -- remove given client
-	     from list of monitoring clients. */
-	  for (l2 = efsd_list_head(m->clients); l2; l2 = efsd_list_next(l2))
+	  if (client == EFSD_CLIENT_INTERNAL)
 	    {
-	      emr = (EfsdMonitorRequest*)efsd_list_data(l2);
-	      
-	      if (emr->client == client)
+	      if (m->internal_use_count == 0)
 		{
-		  if (client == EFSD_CLIENT_INTERNAL)
-		    {
-		      if (m->internal_use_count == 0)
-			{
-			  D("Use count on %s is (%i/%i) -- removing internal.\n",
-			     m->filename, m->internal_use_count, m->client_use_count);
-			  m->clients = efsd_list_remove(m->clients, l2,
-							(EfsdFunc)monitor_request_free);
-			}
-		    }
-		  else
-		    {
-		      D("Use count on %s is (%i/%i) -- removing client %i.\n",
-			 m->filename, m->internal_use_count, m->client_use_count, client);
-		      m->clients = efsd_list_remove(m->clients, l2,
-						    (EfsdFunc)monitor_request_free);
-		    }
-
-		  l2 = NULL;
-		  break;
+		  D("Use count on %s is (%i/%i) -- removing internal.\n",
+		    m->filename, m->internal_use_count, m->client_use_count);
+		  m->clients = efsd_list_remove(m->clients, l2,
+						(EfsdFunc)monitor_request_free);
 		}
 	    }
+	  else
+	    {
+	      D("Use count on %s is (%i/%i) -- removing client %i.\n",
+		m->filename, m->internal_use_count, m->client_use_count, client);
+	      m->clients = efsd_list_remove(m->clients, l2,
+					    (EfsdFunc)monitor_request_free);
+	    }
+	  
+	  l2 = NULL;
+	  break;
 	}
-
-      D_RETURN_(0);
     }
-  
-  D_RETURN_(-1);
+
+  D_RETURN_(0);
 }
 
 /*
@@ -645,34 +642,34 @@ efsd_monitor_cleanup_client(int client)
 	  c = efsd_list_next(c);
 	}
 
-      if (c)
+      if (!c)
+	continue;
+
+      if (client == EFSD_CLIENT_INTERNAL)
+	m->internal_use_count--;
+      else
+	m->client_use_count--;
+      
+      if (m->client_use_count == 0 && m->internal_use_count == 0)
 	{
-	  if (client == EFSD_CLIENT_INTERNAL)
-	    m->internal_use_count--;
-	  else
-	    m->client_use_count--;
-	  
-	  if (m->client_use_count == 0 && m->internal_use_count == 0)
+	  /* Use count dropped to zero -- stop monitoring. */
+	  D("Stopping monitoring %s.\n", m->filename);
+	  FAMCancelMonitor_r(&famcon, m->fam_req);
+	}
+      else
+	{
+	  if ((client == EFSD_CLIENT_INTERNAL && m->internal_use_count > 0) ||
+	      (client != EFSD_CLIENT_INTERNAL && m->client_use_count > 0))
 	    {
-	      /* Use count dropped to zero -- stop monitoring. */
-	      D("Stopping monitoring %s.\n", m->filename);
-	      FAMCancelMonitor_r(&famcon, m->fam_req);
-	    }
-	  else
-	    {
-	      if ((client == EFSD_CLIENT_INTERNAL && m->internal_use_count > 0) ||
-		  (client != EFSD_CLIENT_INTERNAL && m->client_use_count > 0))
+	      if (!efsd_list_prev(c) && !efsd_list_next(c))
 		{
-		  if (!efsd_list_prev(c) && !efsd_list_next(c))
-		    {
-		      /* This cannot happen -- use count is not zero! */
-		      fprintf(stderr, "FAM connection handling error -- ouch.\n");
-		      exit(-1);
-		    }
-	      
-		  /* Use count not zero, but remove client from list of users */
-		  m->clients = efsd_list_remove(m->clients, c, (EfsdFunc)monitor_request_free);
+		  /* This cannot happen -- use count is not zero! */
+		  fprintf(stderr, "FAM connection handling error -- ouch.\n");
+		  exit(-1);
 		}
+	      
+	      /* Use count not zero, but remove client from list of users */
+	      m->clients = efsd_list_remove(m->clients, c, (EfsdFunc)monitor_request_free);
 	    }
 	}
     }

@@ -253,8 +253,10 @@ set_metadata_internal(EfsdConnection *ec, char *key, char *filename,
 /* Efsd API starts here --------------------------------------------- */
 
 
-EfsdConnection *
-efsd_open(void)
+/** 
+ * efsd_open - Creates and returns an efsd connection. 
+ **/ 
+EfsdConnection * efsd_open(void)
 {
   struct sockaddr_un    cli_sun;
   EfsdConnection       *ec;
@@ -289,8 +291,11 @@ efsd_open(void)
 }
 
 
-int            
-efsd_get_connection_fd(EfsdConnection *ec)
+/**
+ * efsd_get_connection_fd - Returns file descriptor of an Efsd connection.
+ * @ec: The Efsd connection
+ */
+int efsd_get_connection_fd(EfsdConnection *ec)
 {
   D_ENTER;
 
@@ -301,8 +306,16 @@ efsd_get_connection_fd(EfsdConnection *ec)
 }
 
 
-int
-efsd_close(EfsdConnection *ec)
+/** 
+ * efsd_close - Closes a connection to Efsd.
+ * @ec: The Efsd connection
+ *
+ * Use this to close an efsd connection.
+ * Frees the allocated EfsdConnection.
+ * Returns value < 0 if the the final
+ * command could not be sent to Efsd.
+ */
+int efsd_close(EfsdConnection *ec)
 {
   EfsdCommand cmd;
 
