@@ -677,7 +677,6 @@ AddToFamily(Window win)
 
    /* if it hasn't been planted on a desktop - assign it the current desktop */
    desk = EoGetDesk(ewin);
-   EoSetDesk(ewin, 0);
 
    /* if is an afterstep/windowmaker dock app - dock it */
    if (Conf.dock.enable && ewin->docked)
@@ -839,6 +838,9 @@ AddToFamily(Window win)
 	     ArrangeEwinXY(ewin, &x, &y);
 	  }
      }
+
+   /* Force reparent if not on desk 0 */
+   EoSetDesk(ewin, 0);
 
    /* if the window asked to be iconified at the start */
    if (ewin->client.start_iconified)
