@@ -1,0 +1,15 @@
+<chapter id="ch-Themes">
+<title>Temas EWL</title>
+
+<para>
+EWL usa la librería Edje para manejar todos sus requerimientos de theming. Los temas pueden estar definidos
+el el archivo de configuración o en la línea de comandos usando la opción <literal>--ewl-theme</literal>.
+</para>
+  	 
+<para>
+El uso de Edje para theming proporciona a EWL una gran flexibilidad y provee al diseñador 
+de temas con un gran poder para personalizar el aspecto de EWL.
+</para>
+
+</chapter>
+

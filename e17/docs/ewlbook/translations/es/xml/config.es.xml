@@ -1,0 +1,107 @@
+<chapter id="ch-Config">
+<title>Configuración</title>
+
+<sect1>
+<title>Configuración EWL</title>
+<para>
+EWL usa el sistema Ecore_Config para manejar todos sus datos de configuración. Esto hace fácil el cambio de 
+valores mediante las herramientas existentes para trabajar con Ecore_Config.
+</para>
+
+<para>
+Las siguientes son las claves usadas por EWL con una descripción breve.
+<variablelist termlength="25" spacing="compact">
+ <varlistentry>
+  <term>/ewl/debug/enable</term>
+  <listitem><para>Habilita el modo de depuración</para></listitem>
+ </varlistentry>
+
+ <varlistentry>
+  <term>/ewl/debug/level</term>
+  <listitem><para>Selecciona el nivel de depuración [0 - 10]</para></listitem>
+ </varlistentry>
+
+ <varlistentry>
+  <term>/ewl/evas/render_method</term>
+  <listitem>
+   <para>
+    Selecciona el método que Evas usará para renderizar. Este puede ser uno de:		
+ 	 <itemizedlist mark="bullet" spacing="compact">
+	  <listitem><para>software_x11</para></listitem>
+	  <listitem><para>gl_x11</para></listitem>
+	  <listitem><para>fb</para></listitem>
+	 </itemizedlist>
+	 para X11 software, X11 OpenGL y Framebuffer respectivamente.
+   </para>
+  </listitem>
+ </varlistentry>
+
+ <varlistentry>
+  <term>/ewl/evas/font_cache</term>
+  <listitem><para>El tamaño de la caché de fuentes de Evas</para></listitem>
+ </varlistentry>
+
+ <varlistentry>
+  <term>/ewl/evas/image_cache</term>
+  <listitem><para>El tamaño de la caché de imagenes de Evas</para></listitem>
+ </varlistentry>
+
+ <varlistentry>
+  <term>/ewl/theme/name</term>
+  <listitem><para>El nombre del tema EWL a usar ( menos la porción .eet )</para></listitem>
+ </varlistentry>
+
+ <varlistentry>
+  <term>/ewl/theme/cache</term>
+  <listitem><para>Un booleano para indicar si los valores del tema deberían ser cacheados por EWL</para></listitem>
+ </varlistentry>
+
+ <varlistentry>
+  <term>/ewl/theme/color_classes/override</term>
+  <listitem><para>Sustituye las clases de color por defecto</para></listitem>
+ </varlistentry>
+
+ <varlistentry>
+  <term>/ewl/theme/color_classes/count</term>
+  <listitem><para>El número de clases de color que son sustituídas</para></listitem>
+ </varlistentry>
+
+ <varlistentry>
+  <term>/ewl/theme/color_class/[n]/name</term>
+  <listitem><para>El nombre de la clase de color número [n]</para></listitem>
+ </varlistentry>
+
+ <varlistentry>
+  <term>/ewl/theme/color_class/[n][rgba]</term>
+  <listitem><para>Una clave para cada uno de los valores de color r, g, b, a </para></listitem>
+ </varlistentry>
+</variablelist>
+</para>
+</sect1>
+
+<sect1>
+<title>Configuración de la aplicación</title>
+<para>
+La mejor manera para una aplicación de manejar su configuración específica es usar también Ecore_Config.
+Hacerlo es simple y ya maneja cosas como valores por defecto y callbacks para cambios de datos.
+</para>
+
+<para>
+Como medida de precaución probablemente deberías hacer una llamada a <function>ecore_init()</function> en 
+tu código antes de usar las funciones Ecore_Config. Esto garantizará que Ecore no será apagado antes de 
+que hayas terminado de usarlo ( Necesitarás hacer una llamada a <function>ecore_shutdown()</function> 
+cuando hayas terminado ).
+</para>
+
+<para>
+Antes de empezar a usar Ecore_Config debes hacer una llamada a <function>int ecore_config_init(char *)</function> 
+donde el parámetro es el nombre bajo el cual quieras que tu configuración aparezca en Ecore_Config. Este 
+es también el nombre que sería usado con <command>examine</command> para cambiar tus datos de configuración.
+Cuando hayas terminado de usar Ecore_Config deberías llamar a <function>int ecore_config_shutdown(void)</function> 
+para cerrar el sistema Ecore_Config.
+</para>
+
+</sect1>
+
+</chapter>
+

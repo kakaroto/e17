@@ -1,0 +1,51 @@
+<bookinfo>
+ <title>El libro de EWL</title>
+ <authorgroup>
+  <author>
+   <firstname>dan</firstname>
+   <surname>sinclair</surname>
+   <othername>'dj2'</othername>
+  </author>
+ </authorgroup>
+
+ <revhistory>
+  <revision>
+   <authorinitials>dj2</authorinitials>
+   <revnumber>0.1</revnumber>
+   <date>July 07, 2004</date>
+   <revremark>Documento inicial</revremark>
+  </revision>
+
+  <revision>
+   <authorinitials>dj2</authorinitials>
+   <revnumber>0.2</revnumber>
+   <date>July 10, 2004</date>
+   <revremark>Hacer salir algo de la información sobre widgets</revremark>
+  </revision>
+
+  <revision>
+   <authorinitials>dj2</authorinitials>
+   <revnumber>0.3</revnumber>
+   <date>July 15, 2004</date>
+   <revremark>Añade más widgets, añade cosas sobre la jerarquía</revremark>
+  </revision>
+ </revhistory>
+
+<legalnotice>
+  	   <para>
+  	   Este trabajo está licenciado bajo la licencia Creative Commons NonCommercial-ShareAlike.
+  	   Para ver una copia de esta licencia, visita
+  	   <ulink url="http://creativecommons.org/licenses/nc-sa/1.0/">
+  	   http://creativecommons.org/licenses/nc-sa/1.0/</ulink> o envía una carta a
+  	   Creative Commons, 559 Nathan Abbott Way, Stanford, California 94305, USA.
+  	   </para>
+ </legalnotice>
+ 
+ <abstract>
+  <para> 
+  Este libro es un tutorial sobre el uso de EWL ( Enlightened Widget Library ).
+  </para>
+ </abstract>
+</bookinfo>
+
+

@@ -1,0 +1,28 @@
+<chapter id="ch-WidgetPacking">
+<title>Empaquetado de widgets</title>
+
+<para>
+Conforme escribas una aplicación EWL necesitarás empezar colocando los widgets en las distintas cajas. Para 
+hacerlo, necesitarás algo de información sobre como EWL empaqueta los widgets.
+</para>
+<para>
+Hay dos orientaciones principales para contenedores en EWL, vertical u horizontal.
+Las diferentes orientaciones pueden ser vistas fácilmente en <xref linkend="sec-EwlBox" />.
+</para>
+<para>
+En EWL, cada widget tiene una cantidad de relleno alrededor del widget y un inset vinculado al widget. Esto se ve abajo en 
+<xref linkend="fig-padding_inset_diagram" />.
+  <figure id="fig-padding_inset_diagram">
+    <title>El relleno y los Insets</title>
+    <inlinemediaobject>
+  	  <imageobject>
+  	    <imagedata fileref="img/padding_insets.png" format="png" />
+  	  </imageobject>
+  	  <textobject>
+  	     <phrase>Diagrama del relleno e insets en EWL</phrase>
+  	  </textobject>
+  	 </inlinemediaobject>
+  </figure>
+</para>
+</chapter>
+

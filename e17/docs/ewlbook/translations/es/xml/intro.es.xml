@@ -1,0 +1,37 @@
+<chapter id="ch-Intro">
+<title>Introducción</title>
+
+<para>
+La EWL (Enlightened Widget Library) es una librería de creación de interfaces de 
+usuario basada en las EFL (Enlightenment Foundation Libraries).
+</para>
+
+<para>
+El autor principal de EWL es:
+</para>
+<itemizedlist spacing="compact">
+ <listitem><simpara>Nathan 'RbdPngn' Ingersoll</simpara></listitem>
+</itemizedlist>
+
+<para>
+EWL funciona de manera similar a otras librerías de widgets, dado que está basada en un 
+sistema de callback. Conforme los elementos son creados y añadidos al interfaz, los 
+callbacks deseados son registrados, estas funciones serán activadas cuando el evento 
+especificado ocurra.
+</para>
+
+<para>
+Este tutorial es un intento de familiarizar al usuario con los diferentes aspectos del sistema EWL.
+El tutorial probablemente nunca documentará todos los aspectos de EWL conforme el sistema continue 
+creciendo. Una buena comprensión de la programación en C es asumida durante el tutorial.
+</para>
+
+<para>
+Si tienes cualquier problema con este tutorial, o el uso de EWL en general, cualquier feedback es 
+grandemente appreciado puesto que ayudará a mejorar el tutorial o la propia EWL. Por favor mira 
+la sección <link linkend="ch-Contributing">Contribuyendo</link> para más información.
+</para>
+
+</chapter>
+
+

@@ -1,0 +1,31 @@
+<?xml version='1.0' encoding="UTF-8"?>
+<!DOCTYPE book PUBLIC "-//OASIS//DTD DocBook XML V4.3CR1//EN"
+        "file:///usr/share/sgml/docbook/xml-dtd-4.3CR1/docbookx.dtd" [
+
+ <!-- This is the main book info -->
+ <!ENTITY bookinfo SYSTEM "xml/bookinfo.es.xml">
+ <!ENTITY intro SYSTEM "xml/intro.es.xml">
+ <!ENTITY getting_started SYSTEM "xml/getting_started.es.xml">
+ <!ENTITY object_hierarchy SYSTEM "xml/object_hierarchy.es.xml">
+ <!ENTITY widget_packing SYSTEM "xml/widget_packing.es.xml">
+ <!ENTITY config SYSTEM "xml/config.es.xml">
+ <!ENTITY themes SYSTEM "xml/themes.es.xml">
+ <!ENTITY widgets SYSTEM "xml/widgets.es.xml">
+ <!ENTITY contributing SYSTEM "xml/contributing.es.xml">
+ <!ENTITY apx_ewl_media_ex SYSTEM "xml/appendix-ewl_media_example.es.xml">
+]>
+
+<book>
+ &bookinfo;
+ &intro;
+ &getting_started;
+ &object_hierarchy;
+ &widget_packing;
+ &config;
+ &themes;
+ &widgets;
+ &contributing;
+ &apx_ewl_media_ex;
+</book>
+
+

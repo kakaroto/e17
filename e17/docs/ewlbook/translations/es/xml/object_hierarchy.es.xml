@@ -1,0 +1,84 @@
+<chapter id="ch-OjbectHierarchy">
+<title>Jerarquía de objectos</title>
+
+<sect1 id="sec-ObjHierIntro">
+<title>Introducción</title>
+<para>
+Los widgets EWL forman una jerarquía. El widget base del que todo deriva es el <literal>Ewl_Object</literal>. 
+<literal>Ewl_Object</literal> provee toda la funcionalidad base para cada widget incluyendo el dimensionado, 
+alineación, políticas de relleno, relleno y otras. Este es el principal bloque constructivo de la EWL. Una 
+aplicación que use EWL nunca necesitará obtener un <literal>Ewl_Object</literal>.
+</para>
+
+<para>
+Justo sobre el <literal>Ewl_Object</literal> está el <literal>Ewl_Widget</literal>. De nuevo, todos los 
+widgets heredan de <literal>Ewl_Object</literal>. Este objecto provee la funcionalidad base para que un 
+widget ineractúe con el usuario. Como con <literal>Ewl_Object</literal> una aplicación nunca necesitará 
+obtener un <literal>Ewl_Widget</literal>.
+</para>
+
+<para>
+Con el <literal>Ewl_Widget</literal> en su lugar podemos empezar a construir la jerarquía de objetos que 
+forman la EWL. La jerarquía es similar a la mostrada en la figura <link linkend="fig-obj_hierarchy">EWL Object Hierarcy</link> 
+más abajo.
+</para>
+
+<para>
+ <figure id="fig-obj_hierarchy">
+  <title>La jerarquía de objetos EWL</title>
+  <inlinemediaobject>
+   <imageobject>
+    <imagedata fileref="img/obj_hierarchy.png" format="png" />
+   </imageobject>
+   <textobject>
+    <phrase>La jerarquía de objetos EWL</phrase>
+   </textobject>
+  </inlinemediaobject>
+ </figure>
+</para>
+
+<para>
+El objeto <literal>Ewl_Container</literal> es construido sobre el objeto <literal>Ewl_Widget</literal> 
+y provee la funcionalidad para widgets que tienen que contener otros widgets. Esto incluye cualquier cosa 
+desde la ventana principal, a cajas, a paneles de desplazamiento.
+</para>
+</sect1>
+
+<sect1 id="sec-ObjHierCasting">
+<title>Casteado de objectos</title>
+<para>
+Conforme progreses en la EWL notarás que hay un montón de casting entre los diferentes tipos. Para hacer 
+esto más fácil, cada cast a un tipo particular tiene una macro EWL_TYPE() definida. Así por ejemplo hay 
+definidas EWL_OBJECT(o) y EWL_WIDGET(o) para hacer la vida más fácil.
+</para>
+
+<para>
+Estas macros siempre deberían ser usadas cuando se convierta entre widgets EWL para saber que se está 
+haciendo lo correcto.
+</para>
+</sect1>
+
+<sect1 id="sec-ObjHierNewWidget">
+<title>Añadiendo nuevos widgets</title>
+<para>
+Para añadir widgets nuevos en EWL necesitas crear una nueva struct que tenga el tipo apropiado de subclase 
+como primer elemento. Este objeto de subclase no debe ser un puntero.
+</para>
+
+<example>
+ <title>Creando widgets EWL</title>
+ <programlisting>
+struct Ewl_Foo {
+    Ewl_Container container;
+    int bar;
+}
+ </programlisting>
+</example>
+<para>
+Esto creará un nuevo widget Ewl_Foo que hereda de <literal>Ewl_Container</literal> así que deberías ser capaz 
+de empaquetar otros widgets en este nuevo tipo de widget.
+</para>
+</sect1>
+
+</chapter>
+

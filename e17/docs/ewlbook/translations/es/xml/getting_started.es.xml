@@ -1,0 +1,628 @@
+<chapter id="ch-GettingStarted">
+<title>Empezando</title>
+
+<sect1 id="sec-Installation">
+<title>Instalando EWL</title>
+
+<para>
+Antes de usar EWL necesitas tener las librerías instaladas en tu equipo. EWL puede ser obtenido 
+del CVS en Enlightenment y instrucciones de como esto se hace se pueden encontrar en: 
+<literal><ulink url="http://www.enlightenment.org/pages/source.html"> 
+http://www.enlightenment.org/pages/source.html </ulink></literal> junto con detalladas instrucciones 
+de instalación.
+</para>
+
+<para>
+Necesitarás instalar un montón de dependencias antes de ser capaz de instalar EWL, esto es porque 
+depende de que tantas de las EFL librerías EFL estén presentes en el sistema.
+</para>
+
+<para>
+Una vez que tengas las otras librer�as EFL instaladas, instalar EWL es tan simple como:
+<screen>
+    ./configure;
+    make;
+    sudo make install;
+</screen>
+</para>
+</sect1>
+
+<sect1 id="sec-CreateWindow">
+<title>Creando una ventana simple</title>
+<para>
+El primer paso en crear una aplicación EWL es obtener la ventana principal para mostrarla 
+en la pantalla.
+</para>
+
+<programlisting role="C">
+#include &lt;Ewl.h&gt;
+
+void destroy_cb(Ewl_Widget *w, void *event, void *data) {
+    ewl_widget_destroy(w);
+    ewl_main_quit();
+}
+
+int main(int argc, char ** argv) {
+    Ewl_Widget *win = NULL;
+
+    if (!ewl_init(&amp;argc, argv)) {
+        printf("Unable to init ewl\n");
+        return 1;
+    }
+
+    win = ewl_window_new();
+    ewl_windowt_title_set(EWL_WINDOW(win), "EWL Window");
+    ewl_window_name_set(EWL_WINDOW(win), "EWL_WINDOW");
+    ewl_window_class_set(EWL_WINDOW(win), "EWLWindow");
+    ewl_object_size_request(EWL_OBJECT(win), 200, 100);
+    ewl_callback_append(win, EWL_CALLBACK_DELETE_WINDOW, destroy_cb, NULL);
+    ewl_widget_show(win);
+
+    ewl_main();
+    return 0;
+}
+</programlisting>
+
+<para>Este programa puede ser compilado con un simple:
+<screen>
+zero@oberon [create_window] -&gt; gcc -o create_window main.c \
+ `ewl-config --cflags --libs`
+</screen>
+
+Y cuando ise ejecuta debería producir algo similar a:
+</para>
+
+<para>
+ <inlinemediaobject>
+  <imageobject>
+   <imagedata fileref="img/create_window.png" format="png" />
+  </imageobject>
+  <textobject>
+   <phrase>Ejemplo de ventana EWL vacía</phrase>
+  </textobject>
+ </inlinemediaobject>
+</para>
+
+<para>
+Ahora que sabemos lo que estamos haciendo, veamos el código con un poco mas de detalle.
+</para>
+
+<programlisting role="C">
+#include &lt;Ewl.h&gt;
+</programlisting>
+
+<para>
+Todas las aplicaciones EWL empezarán con el include &lt;Ewl.h&gt;. Esto introducirá todos los otros 
+archivos de cabecera que EWL requiera para funcionar.
+</para>
+
+<programlisting role="C">
+void destroy_cb(Ewl_Widget *w, void *event, void *data) {
+    ewl_widget_destroy(w);
+    ewl_main_quit();
+}
+</programlisting>
+<para>
+<function>destroy_cb</function> ser� usada por EWL cuando el gestor de ventanas requiera que la 
+aplicaci�n termine. Los callbacks serán descritos mas tarde en la sección 
+<link linkend="sec-Callbacks">Callbacks</link> section.
+</para>
+
+<para>
+<function>ewl_widget_destroy()</function> es usado para señalar a EWL que ya no necesitamos el 
+objeto dado, en este caso la ventana, y para que EWL limpie los recurson usados por ese widget.
+</para>
+  
+<para>
+Finalmente, llamamos a <function>ewl_main_quit()</function> que causa que EWL salga de su ciclo 
+principal de proceso y vuelva de la función <function>ewl_main()</function>. 
+</para>
+
+<programlisting role="C">
+int main(int argc, char ** argv) {
+    Ewl_Widget *win = NULL;
+
+    if (!ewl_init(&amp;argc, argv)) {
+        printf("Unable to init ewl\n");
+        return 1;
+    }
+</programlisting>
+<para>
+Antes de que podamos usar EWL debemos iniciar la librería.Esto se hace mediante la llamada a 
+<function>ewl_init()</function>. Pasamos los parámetros argc y argv desde main a EWL dado que 
+hay unas cuantas opciones específicas para EWL entre los argumentos.
+</para>
+
+<para>Estos argumentos incluyen:</para>
+<itemizedlist mark="bullet" spacing="compact">
+ <title>Opciones de linea de comandos EWL</title>
+ <listitem><para>--ewl-theme &lt;name&gt;</para></listitem>
+ <listitem><para>--ewl-segv</para></listitem>
+ <listitem><para>--ewl-software-x11</para></listitem>
+ <listitem><para>--ewl-gl-x11</para></listitem>
+ <listitem><para>--ewl-fb</para></listitem>
+</itemizedlist>
+<para>
+El parámetro &lt;name&gt; para la opción --ewl-theme es el nombre del tema que deseas usar. Este puede 
+estar localizado en uno de los directorios del sistema, o en el directorio local.
+</para>
+
+<para>
+Si EWL fué capaz de inicializarse con éxito la llamada a <function>ewl_init()</function>
+devolverá un valor &gt; 0. Si no hubo éxito no tiene realmente sentido continuar dado que 
+EWL no funcionará correctamente.
+</para>
+
+<programlisting role="C">
+    win = ewl_window_new();
+    ewl_window_title_set(EWL_WINDOW(win), "EWL Window");
+    ewl_window_name_set(EWL_WINDOW(win), "EWL_WINDOW");
+    ewl_window_class_set(EWL_WINDOW(win), "EWLWindow");
+    ewl_object_size_request(EWL_OBJECT(win), 200, 100);
+    ewl_callback_append(win, EWL_CALLBACK_DELETE_WINDOW, destroy_cb, NULL);
+    ewl_widget_show(win);
+</programlisting>
+<para>
+Aquí es donde la ventana es creada. Una llamada a <function>ewl_window_new()</function>
+crea la nueva ventana vacia. Entonces tomamos esa ventana y empezamos a añadir datos. 
+Empezamos por colocar el título con <function>ewl_window_title_set()</function>, que colocará 
+la cadena que el gestor de ventanas mostrará en la parte superior de la ventana. Las siguientes 
+dos llamadas, <function>ewl_window_name_set()</function> y <function>ewl_window_class_set()</function>, 
+inician datos que serán usados por el gestor de ventanas para gestionar mejor tu aplicación.
+</para>
+
+<para>
+Procedemos entonces a iniciar el tamaño base de la ventana con una llamada a 
+<function>ewl_object_size_request()</function>. Los parámetros segundo y tercero ( 200 , 100 )
+especifican la anchura y altura con las que queremos crear la ventana. Notarás que esta 
+llamada es casteada a <literal>EWL_OBJECT()</literal>. Esto es a causa de la jerarquía de 
+widgets que EWL provee ( descrita más a fondo en el capítulo <link linkend="ch-OjbectHierarchy">
+Object Hierarchy</link> ). Un ewl_window es un ewl_object así que podemos usar las operaciones 
+de ewl_object en una ewl_window.
+</para>
+
+<para>
+Entonces procedemos a añadir el callback delete a la ventana mediante una llamada a 
+<function>ewl_callback_append</function>. El segundo parámetro de la cual es el tipo de 
+señal que queremos recibir, el tercero es la función a la que llamar y finalmente el cuarto 
+son cualesquiera datos de usuario que hayan de ser enviados al callback.
+</para>
+
+<para>
+Una vez la ventana está iniciada y lista para empezar, una simple llamada a 
+<function>ewl_widget_show()</function> hará que EWL muestre la ventana.
+</para>
+
+<programlisting role="C">
+    ewl_main();
+    return 0;
+}
+</programlisting>
+<para>
+La llamada a <function>ewl_main()</function> le dir� a EWL que empiece su ciclo de proceso principal 
+esperando por señales. <function>ewl_main()</function> se encargará del apagado de EWL cuando se salga 
+del ciclo de proceso principal.
+</para>
+
+<para>
+Eso es todo. Aunque es probablemente una de las aplicaciones EWL más simples que pueden producirse, 
+será usada como la base para muchos de los otros ejemplos presentados en este tutorial, y muchas 
+aplicaciones EWL que son producidas.
+</para>
+</sect1>
+
+<sect1 id="sec-HelloWorld">
+<title>Hola mundo</title>
+<para>
+Cuando tienes una ventana en la pantalla es hora de hacer algo más divertido con ella. Siguiendo la 
+gran tradición , algo con Hola.
+</para>
+
+<para>
+Solo voy a explicar porciones del programa que no hayan sido vistas ya. Si hay algo que no entiendes 
+por favor busca en la sección anterior y debería estar explicado allí
+I am only going to explain the portions of the program which have not already been 
+seen. If there is something you do not understand please reference the previous section
+and it should be explained there.</para>
+
+<programlisting role="C">
+#include &lt;stdio.h&gt;
+#include &lt;Ewl.h&gt;
+
+void destroy_cb(Ewl_Widget *w, void *event, void *data) {
+    ewl_widget_destroy(w);
+    ewl_main_quit();
+}
+
+void text_update_cb(Ewl_Widget *w, void *event, void *data) {
+    char *s = NULL;
+    Ewl_Widget *label = NULL;
+    char buf[BUFSIZ];
+
+    s = ewl_entry_get_text(EWL_ENTRY(w));
+    label = (Ewl_Widget *)data;
+
+    snprintf(buf, BUFSIZ, "Hello %s", s);
+    ewl_text_text_set(EWL_TEXT(label), buf);
+
+    free(s);
+    return;
+}
+
+int main(int argc, char ** argv) {
+    Ewl_Widget *win = NULL;
+    Ewl_Widget *box = NULL;
+    Ewl_Widget *label = NULL;
+    Ewl_Widget *o = NULL;
+
+    /* init the library */
+    if (!ewl_init(&amp;argc, argv)) {
+        printf("Unable to initialize EWL\n");
+        return 1;
+    }
+
+    /* create the window */
+    win = ewl_window_new();
+    ewl_window_title_set(EWL_WINDOW(win), "Hello world");
+    ewl_window_class_set(EWL_WINDOW(win), "hello");
+    ewl_window_name_set(EWL_WINDOW(win), "hello");
+    ewl_object_size_request(EWL_OBJECT(win), 200, 50);
+    ewl_callback_append(win, EWL_CALLBACK_DELETE_WINDOW, destroy_cb, NULL);
+    ewl_widget_show(win);
+
+    /* create the container */
+    box = ewl_vbox_new();
+    ewl_container_child_append(EWL_CONTAINER(win), box);
+    ewl_object_fill_policy_set(EWL_OBJECT(box), EWL_FLAG_FILL_ALL);
+    ewl_widget_show(box);
+
+    /* create text label */
+    label = ewl_text_new(NULL);
+    ewl_container_child_append(EWL_CONTAINER(box), label);
+    ewl_object_alignment_set(EWL_OBJECT(label), EWL_FLAG_ALIGN_CENTER);
+    ewl_text_style_set(EWL_TEXT(label), "soft_shadow");
+    ewl_text_color_set(EWL_TEXT(label), 255, 0, 0, 255);
+    ewl_text_text_set(EWL_TEXT(label), "hello");
+    ewl_widget_show(label);
+
+    /* create the entry */
+    o = ewl_entry_new("");
+    ewl_container_child_append(EWL_CONTAINER(box), o);
+    ewl_object_alignment_set(EWL_OBJECT(o), EWL_FLAG_ALIGN_CENTER);
+    ewl_object_padding_set(EWL_OBJECT(o), 5, 5, 5, 0);
+    ewl_text_color_set(EWL_TEXT(EWL_ENTRY(o)->text), 0, 0, 0, 255);
+    ewl_callback_append(o, EWL_CALLBACK_VALUE_CHANGED, text_update_cb, label);
+    ewl_widget_show(o);
+
+    ewl_main();
+    return 0;
+}
+</programlisting>
+<para>
+Si compilas y corres esta aplicación de la misma manera que el primer ejemplo deberías ver algo 
+similar a la siguiente ventana.
+</para>
+
+<para>
+ <inlinemediaobject>
+  <imageobject>
+   <imagedata fileref="img/hello_world.png" format="png" />
+  </imageobject>
+  <textobject>
+   <phrase>Aplicación simple Hola Mundo</phrase>
+  </textobject>
+ </inlinemediaobject>
+</para>
+
+<para>
+Esto es un poco mas largo que la simple creación de una ventana, pero tambien incluye mas 
+funcionalidad. Si corres este programa deberías ver una ventana simple con un poco de texto 
+diciendo "Hello" en la parte superior y un área de texto. Teclear en el área de texto y pulsar 
+"Enter" mostrará "Hello" más lo que hayas tecleado.
+</para>
+
+<para>
+A la cadena "Hola" se le ha aplicado un poco de estilización. Ouedes ver que al texto se le ha 
+aplicado un simple cambio de color y es mostrado con una sombra.
+</para>
+
+<para>
+Ahora que sabes lo que hace, vamos a hechar un vistazo a los nuevos pedazos de código que introduce 
+este ejemplo.
+</para>
+
+<programlisting>
+void text_update_cb(Ewl_Widget *w, void *event, void *data) {
+    char *s = NULL;
+    Ewl_Widget *label = NULL;
+    char buf[BUFSIZ];
+
+    s = ewl_entry_get_text(EWL_ENTRY(w));
+    label = (Ewl_Widget *)data;
+
+    snprintf(buf, BUFSIZ, "Hello %s", s);
+    ewl_text_text_set(EWL_TEXT(label), buf);
+
+    free(s);
+    return;
+}
+</programlisting>
+<para>
+<function>text_update_cb()</function> es el callback que vamos a registrar para cuando el usuario 
+ha presionado "Enter" en el campo de texto. Tiene la misma firma que el callback de destroy, y 
+todos los otros callbacks de EWL que estaremos registrando.
+</para>
+
+<para>
+El texto que ha sido introducido es recuperado con una llamada a<function>ewl_entry_get_text()</function> 
+pasando el widget de entrada desde el cual queremos recuperar el texto. Esto retornarña un puntero a 
+la cadena de texto, es responsabilidad de la aplicación liberar este puntero.
+</para>
+
+<para>
+Entonces casteamos el parámetro <literal>data</literal> a <literal>Ewl_Widget</literal>. Esto es porque, 
+como verás en el callback register, estamos añadiendo un widget a este callback como parámetro de datos.
+</para>
+
+<para>
+Entonces podemos tomar este nuevo texto y reemplazar los contenidos de la etiqueta de texto actual 
+llamando a <function>ewl_text_text_set()</function> pasándole el objeto de texto y el texto a ser mostrado.
+</para>
+
+<programlisting role="C">
+    box = ewl_vbox_new();
+    ewl_container_append_child(EWL_CONTAINER(win), box);
+    ewl_object_fill_policy_set(EWL_OBJECT(box), EWL_FLAG_FILL_ALL);
+    ewl_widget_show(box);
+</programlisting>
+<para>
+Aunque podríamos añadir cualquier widget a la ventana principal de la aplicación, es un poco mas 
+limpio añadirlos a una caja que se añade a la ventana principal. La caja es creada con una llamada 
+a <function>ewl_vbox_new()</function> creando una disposición de caja vertical. Podríamos haber usado 
+<function>ewl_hbox_new()</function> si quisieramos una caja horizontal en vez de una vertical. En 
+cuanto la caja es creada la añadimos a la ventana llamando a <function>ewl_container_child_append()</function>. 
+Esto coloca el widget dado como siguiente elemento en el contenedor. Los contenedores son empaquetados desde 
+arriba hacia abajo, o de izquierda a derecha, así que el orden en que los elementos son insertados 
+en el contenedor afecta su apariencia en la pantalla. Finalmente, antes de enseñar el widget, 
+seleccionamos una política de relleno con <function>ewl_object_fill_policy_set()</function>. La 
+política de relleno cambia la manera en que el objeto rellena su espacio disponible.
+</para>
+<para>
+Las políticas de relleno posibles son:
+</para>
+<itemizedlist mark="bullet" spacing="compact">
+ <title>EWL Fill Flags</title>
+ <listitem><para>EWL_FLAG_FILL_NONE</para></listitem>
+ <listitem><para>EWL_FLAG_FILL_HSHRINK</para></listitem>
+ <listitem><para>EWL_FLAG_FILL_VSHRINK</para></listitem>
+ <listitem><para>EWL_FLAG_FILL_SHRINK</para></listitem>
+ <listitem><para>EWL_FLAG_FILL_HFILL</para></listitem>
+ <listitem><para>EWL_FLAG_FILL_VFILL</para></listitem>
+ <listitem><para>EWL_FLAG_FILL_FILL</para></listitem>
+ <listitem><para>EWL_FLAG_FILL_ALL</para></listitem>
+</itemizedlist>
+<para>
+Todas las cuales deberían tener un significado obvio, con las excepciones de 
+<literal>EWL_FLAG_FILL_SHRINK</literal>, <literal>EWL_FLAG_FILL_FILL</literal>
+y <literal>EWL_FLAG_FILL_ALL</literal>. La opción SHRINK es el or lógico de 
+las dos opciones HSHRINK y VSHRINK . La opción FILL es el or lógico de las dos 
+opciones HFILL y VFILL. Finalmente la opción ALL es el or lógico de las dos opciones 
+SHRINK y FILL.
+</para>
+
+<programlisting role="C">
+    label = ewl_text_new(NULL);
+    ewl_container_child_append(EWL_CONTAINER(box), label);
+    ewl_object_alignment_set(EWL_OBJECT(label), EWL_FLAG_ALIGN_CENTER);
+    ewl_text_style_set(EWL_TEXT(label), "soft_shadow");
+    ewl_text_color_set(EWL_TEXT(label), 255, 0, 0, 255);
+    ewl_text_text_set(EWL_TEXT(label), "Hello");
+    ewl_widget_show(label);
+</programlisting>
+<para>
+Ahora que tenemos nusetra caja contenedor iniciada, creamosel elemento de texto que va a 
+funcionar como nuestra etiqueta. La etiqueta es creada con una llamada a
+<function>ewl_text_new()</function>. En este caso, pasamos NULL como valor porque especificaremos 
+nuestro texto después de añadir algún estilizado al objeto. También puedes pasar una cadena 
+de texto a <function>ewl_text_new()</function> si es necesario. Recuerda que el estilizado de texto 
+ocurre para el texto que es añadido <emphasis>después</emphasis> de que se añada el estilizado.
+</para>
+
+<para>
+Cuando el widget es creado lo añadimos a la caja con <function>ewl_container_child_append()</function>. 
+Después seleccionamos la alineación del objeto de texto por medio de <function>ewl_object_alignment_set()</function>. 
+Esto especifica como se alinearán los contenidos dentro del propio widget.
+</para>
+
+<para>
+La función de alineación aceptará uno de:
+</para>
+<itemizedlist mark="bullet" spacing="compact">
+ <title>Opciones de alineación EWL</title>
+ <listitem><para>EWL_FLAG_FILL_CENTER</para></listitem>
+ <listitem><para>EWL_FLAG_FILL_LEFT</para></listitem>
+ <listitem><para>EWL_FLAG_FILL_RIGHT</para></listitem>
+ <listitem><para>EWL_FLAG_FILL_TOP</para></listitem>
+ <listitem><para>EWL_FLAG_FILL_BOTTOM</para></listitem>
+</itemizedlist>
+
+<para>
+Una vez todas las opciones de widget han sido especificadas, añadimos algunas propiedades de formato de 
+texto al widget. La primera,  <function>ewl_text_style_set()</function>, coloca el estilo del objeto 
+de texto. Los estilos cambian la apariencia del texto aplicando algún tipo de filtro, en este caso, 
+creando una apariencia de "sombra suave" para el widget. Seleccionamos entonces el color del texto rojo 
+llamando a <function>ewl_text_color_set()</function>. Hay cuatro parámetros para la función de color, 
+siendo estos rojo, verde, azul, y alpha.
+</para>
+
+<programlisting role="C">
+    o = ewl_entry_new("");
+    ewl_container_append_child(EWL_CONTAINER(box), o);
+    ewl_object_alignment_set(EWL_OBJECT(o), EWL_FLAG_ALIGN_CENTER);
+    ewl_object_padding_set(EWL_OBJECT(o), 5, 5, 5, 0);
+    ewl_text_color_set(EWL_TEXT(EWL_ENTRY(o)->text), 0, 0, 0, 255);
+    ewl_callback_append(o, EWL_CALLBACK_VALUE_CHANGED, text_update_cb, label);
+    ewl_widget_show(o);
+</programlisting>
+<para>
+El widget final que crearemos es una caja de entrada de texto. Esto es hecho con una llamada a 
+<function>ewl_entry_new()</function>. En este caso estamos dando &quot;&quot; como valor, pero 
+podíamos dar una cadena inicial para mostrar en la entrada de texto. Hacemos un conjunto semejante de 
+inicializaciones a la caja de entrada, seleccionando la alineación y seleccionando el color del texto 
+negro. La llamada a <function>ewl_object_padding_set()</function> selecciona la cantidad de padding 
+alrededor del widget. Los cuatro parámetros son izquierda, derecha, arriba y abajo.
+</para>
+
+<para>
+Con eso deberías tener una comprensión básica de las funciones EWL y como varios widgets son creados y 
+configurados.
+</para>
+</sect1>
+
+<sect1 id="sec-Callbacks">
+<title>Callbacks</title>
+<para>
+La EWL funciona mediante el uso de callbacks. Una gran cantidad del trabajo interno de la propia 
+librería también trabaja con callbacks.
+</para>
+
+<para>
+Un callback es una función que será llamada cuando ocurra un evento específico. Estos eventos pueden 
+ser cualquier cosa desde el usuario pulsando un botón hasta la ventana siendo destruída por el gestor 
+de ventanas.
+</para>
+
+<para>
+Para los eventos de los cuales la aplicación requiere una notificación se registra un callback a 
+través de la EWL. Esto es hecho con <function>ewl_callback_append()</function>. Esta función toma 
+cuatro parámetros: el objeto al que añadir el callback, el callback deseado, la función de callback, 
+y los datos de usuario.
+</para>
+
+<para>
+Algunos de los callbacks posibles incluyen:
+</para>
+<variablelist termlength="35" spacing="compact">
+ <title>Callbacks EWL posibles</title>
+ <varlistentry>
+  <term>EWL_CALLBACK_DESTROY</term>
+  <listitem>
+   <para>El widget es liberado</para>
+  </listitem>
+ </varlistentry>
+ <varlistentry>
+  <term>EWL_CALLBACK_DELETE_WINDOW</term>
+  <listitem>
+   <para>La ventana está siendo cerrada.</para>
+  </listitem>
+ </varlistentry>
+ <varlistentry>
+  <term>EWL_CALLBACK_KEY_DOWN</term>
+  <listitem>
+   <para>Una tecla fué presionada.</para>
+  </listitem>
+ </varlistentry>
+ <varlistentry>
+  <term>EWL_CALLBACK_KEY_UP</term>
+  <listitem>
+   <para>Una tecla fué soltada.</para>
+  </listitem>
+ </varlistentry>
+ <varlistentry>
+  <term>EWL_CALLBACK_MOUSE_DOWN</term>
+  <listitem>
+   <para>El botón del ratón fué presionado.</para>
+  </listitem>
+ </varlistentry>
+ <varlistentry>
+  <term>EWL_CALLBACK_MOUSE_UP</term>
+  <listitem>
+   <para>El botón del ratón fue soltado.</para>
+  </listitem>
+ </varlistentry>
+ <varlistentry>
+  <term>EWL_CALLBACK_MOUSE_MOVE</term>
+  <listitem>
+   <para>El ratón fué movido.</para>
+  </listitem>
+ </varlistentry>
+ <varlistentry>
+  <term>EWL_CALLBACK_MOUSE_WHEEL</term>
+  <listitem>
+   <para>La rueda del ratón se desplazó</para>
+  </listitem>
+ </varlistentry>
+ <varlistentry>
+  <term>EWL_CALLBACK_FOCUS_IN</term>
+  <listitem>
+   <para>El ratón fué posicionado sobre el widget.</para>
+  </listitem>
+ </varlistentry>
+ <varlistentry>
+  <term>EWL_CALLBACK_FOCUS_OUT</term>
+  <listitem>
+   <para>El ratón se movió fuera del widget.</para>
+  </listitem>
+ </varlistentry>
+ <varlistentry>
+  <term>EWL_CALLBACK_SELECT</term>
+  <listitem>
+   <para>El widget fué seleccionado mediante el ratón o el teclado.</para>
+  </listitem>
+ </varlistentry>
+ <varlistentry>
+  <term>EWL_CALLBACK_DESELECT</term>
+  <listitem>
+   <para>El widget fué deselecionado por el ratón o el teclado.</para>
+  </listitem>
+ </varlistentry>
+ <varlistentry>
+  <term>EWL_CALLBACK_CLICKED</term>
+  <listitem>
+   <para>El ratón fué presionado y soltado en un widget.</para>
+  </listitem>
+ </varlistentry>
+ <varlistentry>
+  <term>EWL_CALLBACK_DOUBLE_CLICKED</term>
+  <listitem>
+   <para>El ratón fué clickado dos veces rápidamente.</para>
+  </listitem>
+ </varlistentry>
+ <varlistentry>
+  <term>EWL_CALLBACK_HILITED</term>
+  <listitem>
+   <para>El ratón está sobre el widget.</para>
+  </listitem>
+ </varlistentry>
+ <varlistentry>
+  <term>EWL_CALLBACK_VALUE_CHANGED</term>
+  <listitem>
+   <para>El valor en el widget cambió.</para>
+  </listitem>
+ </varlistentry>
+</variablelist>
+
+<para>
+La función callback tiene una firma como <literal>void fcn(Ewl_Widget *, void *, void *)</literal>. 
+El primer parámetro es el widget que activó este callback. El segundo parámetro son los datos del evento 
+y el tercer parámetro son los datos de usuario añadidos. 
+</para>
+
+<para>
+Los datos de evento son un tipo que se refiere al propio callback. Así, por ejemplo, cuando 
+el callback para <literal>EWL_CALLBACK_MOUSE_WHEEL</literal> es llamado los datos de evento tendrán 
+una estructura de tipo <literal>Ewl_Event_Mouse_Wheel</literal> y esta estructura contiene información 
+adicional sobre el evento. En el caso de la rueda, los modificadores de teclado, la posición del ratón 
+y la dirección del desplazamiento.
+</para>
+
+<para>
+El último parámetro para la función son los datos de usuario. Esto te permite añadir cualesquiera 
+dsatos que quieras pasar al callback cuando sea ejecutado. Estos datos serán provistos al callback 
+como su tercer parámetro.
+</para>
+</sect1>
+ 
+</chapter>
+
+
