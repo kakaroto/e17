@@ -137,7 +137,7 @@
 	<vupdate_policy>GTK_UPDATE_CONTINUOUS</vupdate_policy>
 	<child>
 	  <shrink>False</shrink>
-	  <resize>False</resize>
+	  <resize>True</resize>
 	</child>
 
 	<widget>
@@ -209,8 +209,8 @@
 	<homogeneous>False</homogeneous>
 	<spacing>0</spacing>
 	<child>
-	  <shrink>True</shrink>
-	  <resize>True</resize>
+	  <shrink>False</shrink>
+	  <resize>False</resize>
 	</child>
 
 	<widget>
@@ -516,7 +516,7 @@ by this generic tool.</label>
       <child_ipad_y>0</child_ipad_y>
       <child>
 	<padding>0</padding>
-	<expand>True</expand>
+	<expand>False</expand>
 	<fill>True</fill>
       </child>
 
