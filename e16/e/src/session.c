@@ -523,12 +523,12 @@ set_save_props(SmcConn smc_conn, int master_flag)
    SmProp             *props[7];
 
    programProp.name = (char *)SmProgram;
-   programProp.type = (char *)SmLISTofARRAY8;
+   programProp.type = (char *)SmARRAY8;
    programProp.num_vals = 1;
    programProp.vals = &programVal;
 
    userIDProp.name = (char *)SmUserID;
-   userIDProp.type = (char *)SmLISTofARRAY8;
+   userIDProp.type = (char *)SmARRAY8;
    userIDProp.num_vals = 1;
    userIDProp.vals = &userIDVal;
 
