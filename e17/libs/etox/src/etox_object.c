@@ -190,8 +190,7 @@ _etox_object_bit_get_char_geometry_at(Etox e,
                                       double *char_w, double *char_h)
 {
   Evas_Object ev_obj;
-  Etox_Object_String obj_str;
-  double my_x, my_y, my_w, my_h;
+  Etox_Object_String obj_str = NULL;
 
   /* FIXME: this func needs rethinking.. */
 
@@ -256,8 +255,7 @@ _etox_object_bit_get_char_geometry_at_position(Etox e,
                                                double *char_h)
 {
   Evas_Object ev_obj = NULL;
-  Etox_Object_String obj_str;
-  double my_x, my_y, my_w, my_h;
+  Etox_Object_String obj_str = NULL;
   int index = -2;
 
   /* FIXME: this func needs rethinking.. */

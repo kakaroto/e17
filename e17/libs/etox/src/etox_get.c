@@ -239,7 +239,7 @@ etox_get_actual_text_string_lenght(Etox e)
     if (obj->bits && !ewd_list_is_empty(obj->bits))
       {
         ewd_list_goto_first(obj->bits);
-        while ((obj_bit = (Etox_Object) ewd_list_next(obj->bits)))
+        while ((obj_bit = (Etox_Object_Bit) ewd_list_next(obj->bits)))
           if (obj_bit->type == ETOX_OBJECT_BIT_TYPE_STRING)
             {
               obj_str = (Etox_Object_String) obj_bit->body;
@@ -272,7 +272,7 @@ etox_get_actual_text_string(Etox e)
     if (obj->bits && !ewd_list_is_empty(obj->bits))
       {
         ewd_list_goto_first(obj->bits);
-        while ((obj_bit = (Etox_Object) ewd_list_next(obj->bits)))
+        while ((obj_bit = (Etox_Object_Bit) ewd_list_next(obj->bits)))
           if (obj_bit->type == ETOX_OBJECT_BIT_TYPE_STRING)
             {
               obj_str = (Etox_Object_String) obj_bit->body;
@@ -302,9 +302,9 @@ etox_get_geometry(Etox e, double *x, double *y, double *w, double *h)
 void            
 etox_get_actual_geometry(Etox e, double *x, double *y, double *w, double *h)
 {
-  Etox_Object obj, first_obj, last_obj;
+  Etox_Object obj, first_obj = NULL, last_obj = NULL;
   Etox_Object_Bit obj_bit;
-  double left_x, right_x, my_y = 0.0;
+  double left_x = 0.0, right_x = 0.0, my_y = 0.0;
   int first_check = 1;
 
   if (!e || !e->etox_objects.list || ewd_list_is_empty(e->etox_objects.list))
@@ -397,7 +397,7 @@ etox_get_char_geometry_at(Etox e, int index,
     if (obj->bits && !ewd_list_is_empty(obj->bits))
       {
         ewd_list_goto_first(obj->bits);
-        while ((obj_bit = (Etox_Object) ewd_list_next(obj->bits)))
+        while ((obj_bit = (Etox_Object_Bit) ewd_list_next(obj->bits)))
           if (obj_bit->type == ETOX_OBJECT_BIT_TYPE_STRING)
             {
               obj_str = (Etox_Object_String) obj_bit->body;
@@ -444,7 +444,7 @@ etox_get_char_geometry_at_position(Etox e, double x, double y,
     if (obj->bits && !ewd_list_is_empty(obj->bits))
       {
         ewd_list_goto_first(obj->bits);
-        while ((obj_bit = (Etox_Object) ewd_list_next(obj->bits)))
+        while ((obj_bit = (Etox_Object_Bit) ewd_list_next(obj->bits)))
           if (obj_bit->type == ETOX_OBJECT_BIT_TYPE_STRING)
             {
               if ((obj_bit->x <= x) && ((obj_bit->x + obj_bit->w) >= x) &&
