@@ -30,8 +30,9 @@ EWLHEADERS = \
 	ewl_grid.h \
 	ewl_image.h \
 	ewl_imenu.h \
-	ewl_menu.h \
 	ewl_macros.h \
+   ewl_media.h \
+	ewl_menu.h \
 	ewl_menu_base.h \
 	ewl_misc.h \
 	ewl_notebook.h \
