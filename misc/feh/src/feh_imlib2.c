@@ -360,10 +360,10 @@ feh_imlib_load_font(char *name)
 {
    Imlib_Font fn;
 
-   if (fn = imlib_load_font(name))
+   if ((fn = imlib_load_font(name)))
       return fn;
    weprintf("couldn't load font %s, attempting to fall back to fixed.", name);
-   if (fn = imlib_load_font("fixed"))
+   if ((fn = imlib_load_font("fixed")))
       return fn;
    weprintf("failed to even load fixed! Attempting to find any font.");
    return imlib_load_font("*");
