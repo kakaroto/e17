@@ -133,13 +133,17 @@ DockIt(EWin * ewin)
    if (Conf.dock.sticky)
       EoSetSticky(ewin, 1);
 
-   ecore_x_ungrab();
-
    DockappFindEmptySpotFor(ewin);
    ewin->client.already_placed = 1;
 
    if (ewin->client.icon_win)
-      EMapWindow(disp, ewin->client.icon_win);
+     {
+	XSetWindowBorderWidth(disp, ewin->client.icon_win, 0);
+	XMoveWindow(disp, ewin->client.icon_win, 0, 0);
+	XMapWindow(disp, ewin->client.icon_win);
+     }
+
+   ecore_x_ungrab();
 
    ImageclassApply(ic, EoGetWin(ewin), ewin->client.w, ewin->client.h,
 		   0, 0, STATE_NORMAL, 0, ST_BUTTON);
