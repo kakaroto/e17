@@ -12,11 +12,9 @@
 #define YAP                       (yapoints[dyy + y])
 
 /* forcibly diable asm for scaling - comment out to enable */
-/*
 #ifdef DO_MMX_ASM
 #undef DO_MMX_ASM
 #endif
-*/
 
 DATA32 **
 __imlib_CalcYPoints(DATA32 *src, int sw, int sh, int dh, int b1, int b2)
