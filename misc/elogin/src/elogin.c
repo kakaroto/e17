@@ -29,8 +29,11 @@ elogin_draw_window()
 	int			l = 15,  t = 15,
 				r = 304, b = 203;
 	/* Window */
-	win = ewl_window_new_with_values("eLogin", 500, 350, "elogin", "elogin");
-	elogin_set_window_hints((EwlWindow*) win);
+	win = ewl_window_new_with_values(EWL_WINDOW_TOPLEVEL, "eLogin", 500, 350);
+	ewl_window_set_property_location(win, 800, 600);
+	ewl_window_set_property_class_hint(win, "elogin", "elogin");
+	ewl_window_set_property_decor_hint(win, FALSE);
+
 	trans_img = ewl_image_new_with_values("trans", "images/bg.png", "1", "1", "false");
 	
 	/* Big box */
@@ -74,6 +77,7 @@ elogin_draw_window()
 	ewl_window_pack(win, box1);
 	ewl_widget_show(box1);
 	ewl_widget_show(win);
+//	elogin_set_window_location(win);
 }
 
 
@@ -82,35 +86,16 @@ elogin_set_window_hints (EwlWindow *win)
 {
 	Atom		WM_HINTS;
 	EwlState	*s = ewl_state_get();
-//	XSizeHints	*xsh;
-	int			x, y;
-
-	x = (DisplayWidth(s->disp, DefaultScreen(s->disp)) - (500)) / 2;
-	y = (DisplayHeight(s->disp, DefaultScreen(s->disp)) - (350)) / 2;
 
 	WM_HINTS = XInternAtom(s->disp, "_MOTIF_WM_HINTS", True);
     if ( WM_HINTS != None ) { 
 		MWMHints decorhints = { MWM_HINTS_DECORATIONS, 0, 0, 0, 0 };
-		MWMHints sizehints = { MWM_HINTS_FUNCTIONS, 2, 0, 0, 0 };
 
         XChangeProperty(s->disp, win->xwin, WM_HINTS, WM_HINTS, 32,
 		    PropModeReplace, (unsigned char *)&decorhints,
 			sizeof(MWMHints)/4);
 		
-/*        XChangeProperty(s->disp, win->xwin, WM_HINTS, WM_HINTS, 32,
-		    PropModeReplace, (unsigned char *)&sizehints,
-			sizeof(MWMHints)/4);
-*/
 	}
-
-
-//	XMoveWindow(s->disp, win->xwin, x, y);
-//	xsh = XAllocSizeHints();
-//	xsh->min_aspect = (0, 0);
-//	xsh->max_aspect.x = x;
-//	xsh->max_aspect.y = y;
-//	XSetWMSizeHints(s->disp, win->xwin, xsh, WM_HINTS);
-//	XFree(xsh);
 }
 
 /*
@@ -119,8 +104,10 @@ elogin_set_window_location (EwlWindow *win)
 {
 	EwlState	*s = ewl_state_get();
 
-	int x = (DisplayWidth(s->disp, DefaultScreen(s->disp)) - (500)) / 2;
-	int y = (DisplayHeight(s->disp, DefaultScreen(s->disp)) - (350)) / 2;
+	int x = (DisplayWidth(s->disp, DefaultScreen(s->disp)) - 500) / 2;
+	int y = (DisplayHeight(s->disp, DefaultScreen(s->disp)) - 350) / 2;
+
+	ewl_window_set_render_location(win, x, y);
 }
 */
 
