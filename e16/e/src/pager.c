@@ -1734,7 +1734,7 @@ PagersEventMouseDown(XEvent * ev)
 	     EMoveResizeWindow(disp, p->hi_win, px + wx, py + wy, ww, wh);
 	     ESetWindowBackgroundPixmap(disp, p->hi_win, ewin->mini_pmm.pmap);
 	     EMapRaised(disp, p->hi_win);
-	     GrabThePointer(p->hi_win, None);
+	     GrabPointerSet(p->hi_win, None, 0);
 	     p->hi_visible = 1;
 	     p->hi_ewin = ewin;
 	     p->hi_win_w = ww;
@@ -1879,7 +1879,7 @@ PagersEventMouseUp(XEvent * ev)
 	  }
 
 	mode_context_pager = NULL;
-	UnGrabTheButtons();
+	GrabPointerRelease();
      }
 
  done:

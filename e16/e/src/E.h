@@ -2176,10 +2176,14 @@ void                GNOME_ProcessClientMessage(XClientMessageEvent * event);
 /* grabs.c */
 void                GrabActionKey(Action * a);
 void                UnGrabActionKey(Action * a);
-void                GrabTheButtons(Window win);
-int                 GrabThePointer(Window win, int csr);
-int                 GrabConfineThePointer(Window win, int csr);
-void                UnGrabTheButtons(void);
+void                GrabButtonsSet(Window win, unsigned int csr);
+int                 GrabPointerSet(Window win, unsigned int csr, int confine);
+void                GrabPointerRelease(void);
+void                GrabButtonSet(unsigned int button, unsigned int modifiers,
+				  Window window, unsigned int event_mask,
+				  unsigned int csr, int confine);
+void                GrabButtonRelease(unsigned int button,
+				      unsigned int modifiers, Window win);
 
 /* groups.c */
 void                CopyGroupConfig(GroupConfig * src, GroupConfig * dest);

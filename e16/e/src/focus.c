@@ -159,9 +159,8 @@ FocusEwinSetGrabs(EWin * ewin)
 	ewin->active && Conf.focus.clickraises) ||
        (Conf.focus.mode == MODE_FOCUS_CLICK && !ewin->active))
      {
-	XGrabButton(disp, AnyButton, AnyModifier, ewin->win_container,
-		    False, ButtonPressMask, GrabModeSync, GrabModeAsync,
-		    ewin->win_container, ECsrGet(ECSR_PGRAB));
+	GrabButtonSet(AnyButton, AnyModifier, ewin->win_container,
+		      ButtonPressMask, ECSR_PGRAB, 1);
 #if 0
 	Eprintf("FocusEwinSetGrabs: %#lx grab %s\n", ewin->client.win,
 		EwinGetTitle(ewin));
@@ -169,7 +168,7 @@ FocusEwinSetGrabs(EWin * ewin)
      }
    else
      {
-	XUngrabButton(disp, AnyButton, AnyModifier, ewin->win_container);
+	GrabButtonRelease(AnyButton, AnyModifier, ewin->win_container);
 #if 0
 	Eprintf("FocusEwinSetGrabs: %#lx ungrab %s\n", ewin->client.win,
 		EwinGetTitle(ewin));
@@ -198,7 +197,7 @@ FocusFix(void)
    for (i = 0; i < num; i++)
      {
 	ewin = lst[i];
-	XUngrabButton(disp, AnyButton, AnyModifier, ewin->win_container);
+	GrabButtonRelease(AnyButton, AnyModifier, ewin->win_container);
 	FocusEwinSetGrabs(ewin);
      }
 

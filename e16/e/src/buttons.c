@@ -607,7 +607,7 @@ ButtonsEventMouseDown(XEvent * ev)
 	if ((win != buttons[i]->win) && (win != buttons[i]->event_win))
 	   continue;
 
-	GrabThePointer(win, ECSR_GRAB);
+	GrabPointerSet(win, ECSR_GRAB, 0);
 	if (buttons[i]->inside_win)
 	  {
 	     Window              id = ev->xany.window;	/* ??? */

@@ -4448,13 +4448,13 @@ IPC_Debug(const char *params, Client * c __UNUSED__)
 	  }
 	else if (!strncmp(param, "unset", 2))
 	  {
-	     UnGrabTheButtons();
+	     GrabPointerRelease();
 	     IpcPrintf("Ungrab\n");
 	  }
 	else
 	  {
 	     sscanf(param, "%li", &win);
-	     GrabConfineThePointer(win, ECSR_ACT_RESIZE);
+	     GrabPointerSet(win, ECSR_ACT_RESIZE, 1);
 	     IpcPrintf("Grab %#lx\n", win);
 	  }
      }

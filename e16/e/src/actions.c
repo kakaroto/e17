@@ -79,7 +79,6 @@ GrabButtonGrabs(EWin * ewin)
    ActionClass        *ac;
    int                 j;
    Action             *a;
-   Window              pager_hi_win;
    unsigned int        mod, button, mask;
 
    ac = (ActionClass *) FindItem("BUTTONBINDINGS", 0, LIST_FINDBY_NAME,
@@ -88,7 +87,6 @@ GrabButtonGrabs(EWin * ewin)
    if (!ac)
       return;
 
-   pager_hi_win = PagerGetHiWin(ewin->pager);
    ac->ref_count++;
    for (j = 0; j < ac->num; j++)
      {
@@ -114,15 +112,7 @@ GrabButtonGrabs(EWin * ewin)
 
 	if (mod == AnyModifier)
 	  {
-#if 0				/* Why? */
-	     if (pager_hi_win)
-		XGrabButton(disp, button, mod, pager_hi_win,
-			    False, mask, GrabModeSync, GrabModeAsync,
-			    None, None);
-#endif
-	     XGrabButton(disp, button, mod, ewin->win, False, mask,
-			 GrabModeSync, GrabModeAsync,
-			 ewin->win, ECsrGet(ECSR_PGRAB));
+	     GrabButtonSet(button, mod, ewin->win, mask, ECSR_PGRAB, 1);
 	  }
 	else
 	  {
@@ -130,17 +120,8 @@ GrabButtonGrabs(EWin * ewin)
 
 	     for (i = 0; i < 8; i++)
 	       {
-#if 0				/* Why? */
-		  if (pager_hi_win)
-		     XGrabButton(disp, button,
-				 mod | mask_mod_combos[i],
-				 pager_hi_win, False, mask,
-				 GrabModeSync, GrabModeAsync, None, None);
-#endif
-		  XGrabButton(disp, button, mod | mask_mod_combos[i],
-			      ewin->win, False, mask,
-			      GrabModeSync, GrabModeAsync,
-			      ewin->win, ECsrGet(ECSR_PGRAB));
+		  GrabButtonSet(button, mod | mask_mod_combos[i], ewin->win,
+				mask, ECSR_PGRAB, 1);
 	       }
 	  }
      }
@@ -152,7 +133,6 @@ UnGrabButtonGrabs(EWin * ewin)
    ActionClass        *ac;
    int                 j;
    Action             *a;
-   Window              pager_hi_win;
    unsigned int        mod, button;
 
    ac = (ActionClass *) FindItem("BUTTONBINDINGS", 0, LIST_FINDBY_NAME,
@@ -161,7 +141,6 @@ UnGrabButtonGrabs(EWin * ewin)
    if (!ac)
       return;
 
-   pager_hi_win = PagerGetHiWin(ewin->pager);
    ac->ref_count--;
    for (j = 0; j < ac->num; j++)
      {
@@ -185,9 +164,7 @@ UnGrabButtonGrabs(EWin * ewin)
 
 	if (mod == AnyModifier)
 	  {
-	     if (pager_hi_win)
-		XUngrabButton(disp, button, mod, pager_hi_win);
-	     XUngrabButton(disp, button, mod, ewin->win);
+	     GrabButtonRelease(button, mod, ewin->win);
 	  }
 	else
 	  {
@@ -195,11 +172,8 @@ UnGrabButtonGrabs(EWin * ewin)
 
 	     for (i = 0; i < 8; i++)
 	       {
-		  if (pager_hi_win)
-		     XUngrabButton(disp, button,
-				   mod | mask_mod_combos[i], pager_hi_win);
-		  XUngrabButton(disp, button,
-				mod | mask_mod_combos[i], ewin->win);
+		  GrabButtonRelease(button, mod | mask_mod_combos[i],
+				    ewin->win);
 	       }
 	  }
      }
@@ -1718,7 +1692,7 @@ doDragButtonStart(EWin * edummy, const void *params)
 	EDBUG_RETURN(0);
      }
 
-   GrabThePointer(VRoot.win, ECSR_GRAB);
+   GrabPointerSet(VRoot.win, ECSR_GRAB, 0);
    Mode.mode = MODE_BUTTONDRAG;
    Mode.button_move_pending = 1;
    Mode.start_x = Mode.x;
@@ -1743,7 +1717,7 @@ doDragButtonEnd(const void *params)
       EDBUG_RETURN(0);
 
    Mode.mode = MODE_NONE;
-   UnGrabTheButtons();
+   GrabPointerRelease();
    if (!Mode.button_move_pending)
      {
 	d = DesktopAt(Mode.x, Mode.y);

@@ -1249,7 +1249,8 @@ EExit(int exitcode)
    if (disp)
      {
 	UngrabX();
-	UnGrabTheButtons();
+	GrabPointerRelease();
+	XAllowEvents(disp, AsyncBoth, CurrentTime);
 
 	/* This mechanism is only needed when the SM is unavailable: */
 	ICCCM_SetEInfoOnAll();

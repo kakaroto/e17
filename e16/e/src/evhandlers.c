@@ -239,7 +239,7 @@ HandleMouseDown(XEvent * ev)
 				      LIST_TYPE_ACLASS);
 	if (ac)
 	  {
-	     GrabThePointer(ewin->win, ECSR_GRAB);
+	     GrabPointerSet(ewin->win, ECSR_GRAB, 0);
 	     if (EventAclass(ev, ewin, ac))
 	       {
 		  goto done;
@@ -273,7 +273,7 @@ HandleMouseUp(XEvent * ev)
      }
 
    TooltipsHandleEvent();
-   UnGrabTheButtons();
+   GrabPointerRelease();
 
    ModeGetXY(ev->xbutton.root, ev->xbutton.x_root, ev->xbutton.y_root);
 

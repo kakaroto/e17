@@ -75,64 +75,66 @@ UnGrabActionKey(Action * a)
 }
 
 void
-GrabTheButtons(Window win)
+GrabButtonsSet(Window win, unsigned int csr)
 {
-   EDBUG(4, "GrabTheButtons");
    if (Mode.grabs.pointer_grab_active)
-      EDBUG_RETURN_;
+      return;
+
    XGrabPointer(disp, win, True, ButtonPressMask | ButtonReleaseMask,
-		GrabModeAsync, GrabModeAsync, None, None, CurrentTime);
+		GrabModeAsync, GrabModeAsync, None, ECsrGet(csr), CurrentTime);
+
    Mode.grabs.pointer_grab_window = win;
    Mode.grabs.pointer_grab_active = 1;
-   EDBUG_RETURN_;
 }
 
 int
-GrabThePointer(Window win, int csr)
+GrabPointerSet(Window win, unsigned int csr, int confine)
 {
    int                 ret;
+   Window              confine_to = (confine) ? win : None;
 
-   EDBUG(4, "GrabThePointer");
    if (Mode.grabs.pointer_grab_active)
-      EDBUG_RETURN(1);
-   ret =
-      XGrabPointer(disp, win, True,
-		   ButtonPressMask | ButtonReleaseMask | PointerMotionMask |
-		   ButtonMotionMask | EnterWindowMask | LeaveWindowMask,
-		   GrabModeAsync, GrabModeAsync, None, ECsrGet(csr),
-		   CurrentTime);
+      return 1;
+
+   ret = XGrabPointer(disp, win, True,
+		      ButtonPressMask | ButtonReleaseMask | PointerMotionMask |
+		      ButtonMotionMask | EnterWindowMask | LeaveWindowMask,
+		      GrabModeAsync, GrabModeAsync, confine_to, ECsrGet(csr),
+		      CurrentTime);
+
    Mode.grabs.pointer_grab_window = win;
    Mode.grabs.pointer_grab_active = 1;
-   EDBUG_RETURN(ret);
-}
 
-int
-GrabConfineThePointer(Window win, int csr)
-{
-   int                 ret;
-
-   EDBUG(4, "GrabThePointer");
-   if (Mode.grabs.pointer_grab_active)
-      EDBUG_RETURN(1);
-   ret =
-      XGrabPointer(disp, win, True,
-		   ButtonPressMask | ButtonReleaseMask | PointerMotionMask |
-		   ButtonMotionMask | EnterWindowMask | LeaveWindowMask,
-		   GrabModeAsync, GrabModeAsync, win, ECsrGet(csr),
-		   CurrentTime);
-   Mode.grabs.pointer_grab_window = win;
-   Mode.grabs.pointer_grab_active = 1;
-   EDBUG_RETURN(ret);
+   return ret;
 }
 
 void
-UnGrabTheButtons()
+GrabPointerRelease(void)
 {
-   EDBUG(4, "UnGrabTheButtons");
    if (!Mode.grabs.pointer_grab_active)
-      EDBUG_RETURN_;
+      return;
+
    XUngrabPointer(disp, CurrentTime);
+
    Mode.grabs.pointer_grab_active = 0;
    Mode.grabs.pointer_grab_window = None;
-   EDBUG_RETURN_;
+}
+
+void
+GrabButtonSet(unsigned int button, unsigned int modifiers, Window win,
+	      unsigned int event_mask, unsigned int csr, int confine)
+{
+   Bool                owner_events = False;
+   int                 pointer_mode = GrabModeSync;
+   int                 keyboard_mode = GrabModeAsync;
+   Window              confine_to = (confine) ? win : None;
+
+   XGrabButton(disp, button, modifiers, win, owner_events, event_mask,
+	       pointer_mode, keyboard_mode, confine_to, ECsrGet(csr));
+}
+
+void
+GrabButtonRelease(unsigned int button, unsigned int modifiers, Window win)
+{
+   XUngrabButton(disp, button, modifiers, win);
 }

@@ -51,8 +51,8 @@ ActionMoveStart(EWin * ewin, const void *params, char constrained, int nogroup)
      }
 
    SoundPlay("SOUND_MOVE_START");
-   UnGrabTheButtons();
-   GrabConfineThePointer(VRoot.win, ECSR_ACT_MOVE);
+   GrabPointerRelease();
+   GrabPointerSet(VRoot.win, ECSR_ACT_MOVE, 1);
 
    Mode.mode = MODE_MOVE_PENDING;
    Mode.constrained = constrained;
@@ -94,7 +94,7 @@ ActionMoveEnd(EWin * ewin)
    int                 d, wasresize = 0, num, i;
 
    EDBUG(6, "doMoveEnd");
-   UnGrabTheButtons();
+   GrabPointerRelease();
 
    if (ewin && ewin != mode_moveresize_ewin)
       return 0;
@@ -275,8 +275,8 @@ ActionResizeStart(EWin * ewin, const void *params, int hv)
    Mode.queue_up = 0;
 
    SoundPlay("SOUND_RESIZE_START");
-   UnGrabTheButtons();
-   GrabConfineThePointer(VRoot.win, ECSR_ACT_RESIZE);
+   GrabPointerRelease();
+   GrabPointerSet(VRoot.win, ECSR_ACT_RESIZE, 1);
 
    switch (hv)
      {
@@ -360,7 +360,7 @@ ActionResizeEnd(EWin * ewin)
    int                 i;
 
    EDBUG(0, "doResizeEnd");
-   UnGrabTheButtons();
+   GrabPointerRelease();
 
    if (ewin && ewin != mode_moveresize_ewin)
       return 0;
