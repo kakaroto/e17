@@ -1,2 +1,11 @@
 Makefile
 Makefile.in
+files
+libedb1.postinst.debhelper
+libedb1.postrm.debhelper
+libedb1.substvars
+edb-tools.substvars
+tmp
+libedb1
+libedb1-dev
+edb-tools

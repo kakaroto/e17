@@ -2,23 +2,55 @@
 # Sample debian/rules that uses debhelper.
 # GNU copyright 1997 to 1999 by Joey Hess.
 
-export DH_COMPAT=2
+# Uncomment this to turn on verbose mode.
+#export DH_VERBOSE=1
 
-cfg:=--prefix=/usr
-INSTALL=/usr/bin/install
-package=libedb1
+# This is the debhelper compatibility version to use.
+export DH_COMPAT=3
 
-build: build-stamp
-build-stamp:
+# These are used for cross-compiling and for saving the configure script
+# from having to guess our platform (since we know it already)
+DEB_HOST_GNU_TYPE   ?= $(shell dpkg-architecture -qDEB_HOST_GNU_TYPE)
+DEB_BUILD_GNU_TYPE  ?= $(shell dpkg-architecture -qDEB_BUILD_GNU_TYPE)
+
+cfg:=--prefix=/usr --build=$(DEB_BUILD_GNU_TYPE) --host=$(DEB_HOST_GNU_TYPE)
+
+
+ifneq (,$(findstring debug,$(DEB_BUILD_OPTIONS)))
+	CFLAGS += -g
+endif
+ifeq (,$(findstring nostrip,$(DEB_BUILD_OPTIONS)))
+	INSTALL_PROGRAM += -s
+endif
+
+version=`ls src/.libs/lib*.so.* | \
+ awk '{if (match($$0,/[0-9]+\.[0-9]+\.[0-9]+$$/)) print substr($$0,RSTART)}'`
+major=`ls src/.libs/lib*.so.* | \
+ awk '{if (match($$0,/\.so\.[0-9]+$$/)) print substr($$0,RSTART+4)}'`
+
+
+configure: configure-stamp
+configure-stamp:
 	dh_testdir
 	test -x autogen.sh && ./autogen.sh $(cfg) || ./configure $(cfg)
+	touch configure-stamp
+
+
+build: build-stamp
+build-stamp: configure-stamp 
+	dh_testdir
+
 	$(MAKE)
+
 	touch build-stamp
+
 clean:
 	dh_testdir
 	dh_testroot
-	rm -f build-stamp
+	rm -f build-stamp configure-stamp
+
 	-$(MAKE) distclean
+
 	dh_clean
 
 install: build
@@ -26,23 +58,22 @@ install: build
 	dh_testroot
 	dh_clean -k
 	dh_installdirs
-	
-	$(MAKE) install DESTDIR=$(CURDIR)/debian/$(package)
-	
-	$(INSTALL) -d debian/$(package)-dev/usr/lib \
-		      debian/$(package)-dev/usr/bin
-	mv debian/$(package)/usr/include debian/$(package)-dev/usr/
-	mv debian/$(package)/usr/lib/*.a debian/$(package)/usr/lib/*.la \
-	   debian/$(package)/usr/lib/*.so debian/$(package)-dev/usr/lib
-	mv debian/$(package)/usr/bin/edb-config debian/$(package)-dev/usr/bin
+
+	$(MAKE) install DESTDIR=$(CURDIR)/debian/tmp
+
 
 binary-indep: build install
 
 binary-arch: build install
 	dh_testdir
 	dh_testroot
+	dh_movefiles
+
 	dh_installdocs AUTHORS README
-	dh_installchangelogs
+	dh_undocumented edb_ed.1
+	dh_undocumented -pedb-tools edb_gtk_ed.1 edb_vt_ed.1
+	dh_installchangelogs 
+	dh_link
 	dh_strip
 	dh_compress
 	dh_fixperms
@@ -54,4 +85,4 @@ binary-arch: build install
 	dh_builddeb
 
 binary: binary-indep binary-arch
-.PHONY: build clean binary-indep binary-arch binary install
+.PHONY: build clean binary-indep binary-arch binary install configure

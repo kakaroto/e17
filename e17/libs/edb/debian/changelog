@@ -1,5 +1,6 @@
-libedb (1.0.3-0cvs2001103001) unstable; urgency=low
+libedb (1.0.4-0cvs20021004) unstable; urgency=low
 
-  * a CVS release
-  
- -- Laurence J. Lane <ljlane@debian.org>  Tue, 30 Oct 2001 13:15:01 +0000
+  * Initial Release.
+
+ -- Sytse Wielinga <s.b.wielinga@student.utwente.nl>  Fri,  4 Oct 2002 16:46:33 +0200
+

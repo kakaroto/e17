@@ -1,8 +1,9 @@
 Source: libedb
 Section: libs
 Priority: optional
-Maintainer: Laurence J. Lane <ljlane@debian.org>
-Standards-Version: 3.2.1.0
+Build-Depends: debhelper (>>3.0.0), libgtk1.2-dev, libncurses5-dev
+Maintainer: Sytse Wielinga <s.b.wielinga@student.utwente.nl>
+Standards-Version: 3.5.7.0
 
 Package: libedb1
 Section: libs
@@ -10,6 +11,7 @@ Architecture: any
 Conflicts: libedb0, libedba1
 Replaces: libedb0, libedba1
 Provides: libedb0, libedba1
+Suggests: edb-tools (= ${Source-Version})
 Depends: ${shlibs:Depends}
 Description: Enlightenment's db convenience wrapper library
  Enlightenment's db convenience wrapper library
@@ -25,3 +27,11 @@ Description: Enlightenment's db convenience wrapper library.
  Library and header files for developing programs that use
  Enlightenment's db convenience wrapper library
 
+Package: edb-tools
+Architecture: any
+Section: utils
+Depends: ${shlibs:Depends}
+Description: Tools for editing edb files.
+ Tools for editing files used by Enlightenment's db convenience wrapper
+ library. This package contains edb_gtk_ed and edb_vt_ed, for gtk-based and
+ curses-based editing; a command line editor is provided by libedb1.
