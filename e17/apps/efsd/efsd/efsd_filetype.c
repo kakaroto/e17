@@ -824,18 +824,22 @@ magic_test_fs(char *filename, struct stat *st)
     {
       if (S_ISLNK(st->st_mode))
 	{
-	  char *lastslash = strrchr(filename, '/');
+	  char *lastslash;
+
+	  lastslash = strrchr(filename, '/');
 
 	  if (lastslash)
 	    {
-	      *lastslash = '\0';
+	      char old = *(lastslash+1);
+
+	      *(lastslash+1) = '\0';
 	      if (statfs(filename, &stfs) < 0)
 		{
-		  *lastslash = '/';
+		  *(lastslash+1) = old;
 		  D_RETURN_(NULL);
 		}
 
-	      *lastslash = '/';
+	      *(lastslash+1) = old;
 	      broken_link = TRUE;
 	    }
 	}
@@ -1258,6 +1262,8 @@ efsd_filetype_get(char *filename)
   EfsdFiletypeCacheItem *cached_result = NULL;
 
   D_ENTER;
+
+  efsd_misc_remove_trailing_slashes(filename);
 
   /* Okay -- if filetype is in cache, check file
      modification time to see if regeneration of
