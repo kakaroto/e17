@@ -622,6 +622,7 @@ IPC_Remember(char *params, Client * c)
 		     SnapshotEwinGroups(ewin, 1);
 		  else if (!strcmp((char *)params, "dialog"))
 		     SnapshotEwinDialog(ewin);
+		  SaveSnapInfo();
 	       }
 	  }
      }
