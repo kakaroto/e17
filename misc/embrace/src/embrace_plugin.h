@@ -31,7 +31,7 @@ typedef struct {
 	char name[64];
 
 	bool (*check) (MailBox *mb);
-	bool (*load_config) (MailBox *mb, E_DB_File *edb, char *root);
+	bool (*load_config) (MailBox *mb, E_DB_File *edb, const char *root);
 
 	bool (*add_mailbox) (MailBox *mb);
 	bool (*remove_mailbox) (MailBox *mb);

@@ -93,6 +93,7 @@ static int on_server_data (void *udata, int type, void *event)
 
 static bool pop3_check (MailBox *mb)
 {
+	Ecore_Con_Type type = ECORE_CON_REMOTE_SYSTEM;
 	char *host;
 	int port;
 
@@ -102,8 +103,12 @@ static bool pop3_check (MailBox *mb)
 	assert (host);
 	assert (port);
 
-	ecore_con_server_connect (ECORE_CON_REMOTE_SYSTEM,
-	                          host, port, mb);
+#ifdef HAVE_OPENSSL
+	if ((int) mailbox_property_get (mb, "ssl"))
+		type |= ECORE_CON_USE_SSL;
+#endif
+
+	ecore_con_server_connect (type, host, port, mb);
 
 	return true;
 }
@@ -148,14 +153,25 @@ static bool pop3_remove_mailbox (MailBox *mb)
 	return true;
 }
 
-static bool pop3_load_config (MailBox *mb, E_DB_File *edb, char *root)
+static bool pop3_load_config (MailBox *mb, E_DB_File *edb,
+                              const char *root)
 {
 	char key[32], *str;
-	int val;
+	int val, use_ssl = 0;
 
 	assert (mb);
 	assert (edb);
 	assert (root);
+
+#ifdef HAVE_OPENSSL
+	/* check whether OpenSSL should be used */
+	snprintf (key, sizeof (key), "%s/ssl", root);
+
+	if (!e_db_int_get (edb, key, &use_ssl))
+		use_ssl = 0;
+
+	mailbox_property_set (mb, "ssl", (int *) use_ssl);
+#endif
 
 	/* read server */
 	snprintf (key, sizeof (key), "%s/host", root);
@@ -169,7 +185,7 @@ static bool pop3_load_config (MailBox *mb, E_DB_File *edb, char *root)
 	snprintf (key, sizeof (key), "%s/port", root);
 
 	if (!e_db_int_get (edb, key, &val))
-		val = 110;
+		val = use_ssl ? 995 : 110;
 
 	mailbox_property_set (mb, "port", (int *) val);
 

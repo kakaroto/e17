@@ -147,7 +147,8 @@ static bool mbox_remove_mailbox (MailBox *mb)
 	return true;
 }
 
-static bool mbox_load_config (MailBox *mb, E_DB_File *edb, char *root)
+static bool mbox_load_config (MailBox *mb, E_DB_File *edb,
+                              const char *root)
 {
 	char key[32], *str, *path;
 

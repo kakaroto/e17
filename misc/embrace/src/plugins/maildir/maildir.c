@@ -250,7 +250,7 @@ static void maildir_shutdown ()
 #endif
 
 static bool maildir_load_config (MailBox *mb, E_DB_File *edb,
-                                 char *root)
+                                 const char *root)
 {
 	char key[256], *str, *path[2], expanded[PATH_MAX + 1];
 	char *prop[2] = {"path_cur", "path_new"};
