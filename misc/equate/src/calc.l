@@ -15,20 +15,28 @@ ID       [a-z][a-z0-9]*
 {DIGIT}+    {
             printf( "An integer: %s (%d)\n", yytext,
                     atoi( yytext ) );
-            yylval= atoi( yytext );
+            yylval.val= atoi( yytext );
             return NUM;
             }
 
 {DIGIT}+"."{DIGIT}*        {
             printf( "A float: %s (%g)\n", yytext,
                     atof( yytext ) );
-            yylval= atof( yytext );
+            yylval.val= atof( yytext );
             return NUM;
             }
 
-{ID}        printf( "An identifier: %s\n", yytext );
+{ID}        {
+            symrec *s;
+            printf( "An identifier: %s\n", yytext );
+            s = getsym (yytext);
+            if (s == 0)
+                    s = putsym (yytext, VAR);
+            yylval.tptr = s;
+            return s->type;
+            }
 
-"+"|"-"|"*"|"/"|"^" {printf( "An operator: %s\n", yytext );
+"+"|"-"|"*"|"/"|"^"|"=" {printf( "An operator: %s\n", yytext );
             return (char) yytext[0];}
 
 "("         return OBRAK;

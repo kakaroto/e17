@@ -4,23 +4,32 @@
 #define YYBISON 1  /* Identify Bison output.  */
 
 # define	NUM	257
-# define	OBRAK	258
-# define	CBRAK	259
-# define	NEG	260
+# define	VAR	258
+# define	FNCT	259
+# define	OBRAK	260
+# define	CBRAK	261
+# define	NEG	262
 
 #line 1 "calc.y"
 
-#define YYSTYPE double
+#include <math.h>  /* For math functions, cos(), sin(), etc. */
+#include "calc.h"  /* Contains definition of `symrec'        */
+
 #define YYERROR_VERBOSE
-#include <math.h>
 
 void
 yyerror (const char *s);
 
-YYSTYPE _result;
+double _result;
 
+
+#line 13 "calc.y"
 #ifndef YYSTYPE
-# define YYSTYPE int
+typedef union {
+double     val;  /* For returning numbers.                   */
+symrec  *tptr;   /* For returning symbol-table pointers      */
+} yystype;
+# define YYSTYPE yystype
 # define YYSTYPE_IS_TRIVIAL 1
 #endif
 #ifndef YYDEBUG
@@ -29,12 +38,12 @@ YYSTYPE _result;
 
 
 
-#define	YYFINAL		20
+#define	YYFINAL		27
 #define	YYFLAG		-32768
-#define	YYNTBASE	12
+#define	YYNTBASE	15
 
 /* YYTRANSLATE(YYLEX) -- Bison token number corresponding to YYLEX. */
-#define YYTRANSLATE(x) ((unsigned)(x) <= 260 ? yytranslate[x] : 14)
+#define YYTRANSLATE(x) ((unsigned)(x) <= 262 ? yytranslate[x] : 17)
 
 /* YYTRANSLATE[YYLEX] -- Bison token number corresponding to YYLEX. */
 static const char yytranslate[] =
@@ -43,12 +52,12 @@ static const char yytranslate[] =
        2,     2,     2,     2,     2,     2,     2,     2,     2,     2,
        2,     2,     2,     2,     2,     2,     2,     2,     2,     2,
        2,     2,     2,     2,     2,     2,     2,     2,     2,     2,
-       2,     2,     8,     7,     2,     6,     2,     9,     2,     2,
+       2,     2,    11,    10,     2,     9,     2,    12,     2,     2,
+       2,     2,     2,     2,     2,     2,     2,     2,     2,     2,
+       2,     8,     2,     2,     2,     2,     2,     2,     2,     2,
        2,     2,     2,     2,     2,     2,     2,     2,     2,     2,
        2,     2,     2,     2,     2,     2,     2,     2,     2,     2,
-       2,     2,     2,     2,     2,     2,     2,     2,     2,     2,
-       2,     2,     2,     2,     2,     2,     2,     2,     2,     2,
-       2,     2,     2,     2,    11,     2,     2,     2,     2,     2,
+       2,     2,     2,     2,    14,     2,     2,     2,     2,     2,
        2,     2,     2,     2,     2,     2,     2,     2,     2,     2,
        2,     2,     2,     2,     2,     2,     2,     2,     2,     2,
        2,     2,     2,     2,     2,     2,     2,     2,     2,     2,
@@ -65,21 +74,22 @@ static const char yytranslate[] =
        2,     2,     2,     2,     2,     2,     2,     2,     2,     2,
        2,     2,     2,     2,     2,     2,     2,     2,     2,     2,
        2,     2,     2,     2,     2,     2,     1,     3,     4,     5,
-      10
+       6,     7,    13
 };
 
 #if YYDEBUG
 static const short yyprhs[] =
 {
-       0,     0,     1,     3,     5,     9,    13,    17,    21,    24,
-      28
+       0,     0,     1,     3,     5,     7,    11,    16,    20,    24,
+      28,    32,    35,    39
 };
 static const short yyrhs[] =
 {
-      -1,    13,     0,     3,     0,    13,     7,    13,     0,    13,
-       6,    13,     0,    13,     8,    13,     0,    13,     9,    13,
-       0,     6,    13,     0,    13,    11,    13,     0,     4,    13,
-       5,     0
+      -1,    16,     0,     3,     0,     4,     0,     4,     8,    16,
+       0,     5,     6,    16,     7,     0,    16,    10,    16,     0,
+      16,     9,    16,     0,    16,    11,    16,     0,    16,    12,
+      16,     0,     9,    16,     0,    16,    14,    16,     0,     6,
+      16,     7,     0
 };
 
 #endif
@@ -88,8 +98,8 @@ static const short yyrhs[] =
 /* YYRLINE[YYN] -- source line where rule number YYN was defined. */
 static const short yyrline[] =
 {
-       0,    24,    25,    28,    29,    30,    31,    32,    33,    34,
-      35
+       0,    35,    36,    39,    40,    41,    42,    43,    44,    45,
+      46,    47,    48,    49
 };
 #endif
 
@@ -99,23 +109,23 @@ static const short yyrline[] =
 /* YYTNAME[TOKEN_NUM] -- String name of the token TOKEN_NUM. */
 static const char *const yytname[] =
 {
-  "$", "error", "$undefined.", "NUM", "OBRAK", "CBRAK", "'-'", "'+'", "'*'", 
-  "'/'", "NEG", "'^'", "input", "exp", 0
+  "$", "error", "$undefined.", "NUM", "VAR", "FNCT", "OBRAK", "CBRAK", 
+  "'='", "'-'", "'+'", "'*'", "'/'", "NEG", "'^'", "input", "exp", 0
 };
 #endif
 
 /* YYR1[YYN] -- Symbol number of symbol that rule YYN derives. */
 static const short yyr1[] =
 {
-       0,    12,    12,    13,    13,    13,    13,    13,    13,    13,
-      13
+       0,    15,    15,    16,    16,    16,    16,    16,    16,    16,
+      16,    16,    16,    16
 };
 
 /* YYR2[YYN] -- Number of symbols composing right hand side of rule YYN. */
 static const short yyr2[] =
 {
-       0,     0,     1,     1,     3,     3,     3,     3,     2,     3,
-       3
+       0,     0,     1,     1,     1,     3,     4,     3,     3,     3,
+       3,     2,     3,     3
 };
 
 /* YYDEFACT[S] -- default rule to reduce with in state S when YYTABLE
@@ -123,46 +133,48 @@ static const short yyr2[] =
    error. */
 static const short yydefact[] =
 {
-       1,     3,     0,     0,     2,     0,     8,     0,     0,     0,
-       0,     0,    10,     5,     4,     6,     7,     9,     0,     0,
-       0
+       1,     3,     4,     0,     0,     0,     2,     0,     0,     0,
+      11,     0,     0,     0,     0,     0,     5,     0,    13,     8,
+       7,     9,    10,    12,     6,     0,     0,     0
 };
 
 static const short yydefgoto[] =
 {
-      18,     4
+      25,     6
 };
 
 static const short yypact[] =
 {
-      20,-32768,    20,    20,    11,     5,    -9,    20,    20,    20,
-      20,    20,-32768,    19,    19,    -9,    -9,    -9,     3,     4,
-  -32768
+      23,-32768,    -6,    -1,    23,    23,    24,    23,    23,     5,
+      -8,    23,    23,    23,    23,    23,    24,    11,-32768,    28,
+      28,    -8,    -8,    -8,-32768,    13,    30,-32768
 };
 
 static const short yypgoto[] =
 {
-  -32768,    -2
+  -32768,    -4
 };
 
 
-#define	YYLAST		30
+#define	YYLAST		42
 
 
 static const short yytable[] =
 {
-       5,     6,    11,    19,    20,    13,    14,    15,    16,    17,
-      12,     7,     8,     9,    10,     0,    11,     7,     8,     9,
-      10,     0,    11,     1,     2,     0,     3,     9,    10,     0,
-      11
+       9,    10,     7,    16,    17,     8,    15,    19,    20,    21,
+      22,    23,    18,    26,    11,    12,    13,    14,    24,    15,
+      11,    12,    13,    14,     0,    15,     1,     2,     3,     4,
+      27,     0,     5,    11,    12,    13,    14,     0,    15,    13,
+      14,     0,    15
 };
 
 static const short yycheck[] =
 {
-       2,     3,    11,     0,     0,     7,     8,     9,    10,    11,
-       5,     6,     7,     8,     9,    -1,    11,     6,     7,     8,
-       9,    -1,    11,     3,     4,    -1,     6,     8,     9,    -1,
-      11
+       4,     5,     8,     7,     8,     6,    14,    11,    12,    13,
+      14,    15,     7,     0,     9,    10,    11,    12,     7,    14,
+       9,    10,    11,    12,    -1,    14,     3,     4,     5,     6,
+       0,    -1,     9,     9,    10,    11,    12,    -1,    14,    11,
+      12,    -1,    14
 };
 /* -*-C-*-  Note some compilers choke on comments on `#line' lines.  */
 #line 3 "/usr/share/bison/bison.simple"
@@ -872,40 +884,52 @@ yyreduce:
   switch (yyn) {
 
 case 2:
-#line 25 "calc.y"
-{ printf ("result:\t%.10g\n", yyvsp[0]); _result = yyvsp[0];;
+#line 36 "calc.y"
+{ printf ("result:\t%.10g\n", yyvsp[0].val); _result = yyvsp[0].val;;
     break;}
 case 3:
-#line 28 "calc.y"
-{ yyval = yyvsp[0];         ;
+#line 39 "calc.y"
+{ yyval.val = yyvsp[0].val;                         ;
     break;}
 case 4:
-#line 29 "calc.y"
-{ yyval = yyvsp[-2] + yyvsp[0];    ;
+#line 40 "calc.y"
+{ yyval.val = yyvsp[0].tptr->value.var;              ;
     break;}
 case 5:
-#line 30 "calc.y"
-{ yyval = yyvsp[-2] - yyvsp[0];    ;
+#line 41 "calc.y"
+{ yyval.val = yyvsp[0].val; yyvsp[-2].tptr->value.var = yyvsp[0].val;     ;
     break;}
 case 6:
-#line 31 "calc.y"
-{ yyval = yyvsp[-2] * yyvsp[0];    ;
+#line 42 "calc.y"
+{ yyval.val = (*(yyvsp[-3].tptr->value.fnctptr))(yyvsp[-1].val); ;
     break;}
 case 7:
-#line 32 "calc.y"
-{ yyval = yyvsp[-2] / yyvsp[0];    ;
+#line 43 "calc.y"
+{ yyval.val = yyvsp[-2].val + yyvsp[0].val;                    ;
     break;}
 case 8:
-#line 33 "calc.y"
-{ yyval = -yyvsp[0];        ;
+#line 44 "calc.y"
+{ yyval.val = yyvsp[-2].val - yyvsp[0].val;                    ;
     break;}
 case 9:
-#line 34 "calc.y"
-{ yyval = pow (yyvsp[-2], yyvsp[0]); ;
+#line 45 "calc.y"
+{ yyval.val = yyvsp[-2].val * yyvsp[0].val;                    ;
     break;}
 case 10:
-#line 35 "calc.y"
-{ yyval = yyvsp[-1];         ;
+#line 46 "calc.y"
+{ yyval.val = yyvsp[-2].val / yyvsp[0].val;                    ;
+    break;}
+case 11:
+#line 47 "calc.y"
+{ yyval.val = -yyvsp[0].val;                        ;
+    break;}
+case 12:
+#line 48 "calc.y"
+{ yyval.val = pow (yyvsp[-2].val, yyvsp[0].val);               ;
+    break;}
+case 13:
+#line 49 "calc.y"
+{ yyval.val = yyvsp[-1].val;                         ;
     break;}
 }
 
@@ -1140,7 +1164,7 @@ yyreturn:
 #endif
   return yyresult;
 }
-#line 37 "calc.y"
+#line 52 "calc.y"
 
 
 
@@ -1153,21 +1177,66 @@ yyerror (const char *s)  /* Called by yyparse on error */
   printf ("%s\n", s);
 }
 
-YYSTYPE yyresult (void)
+double yyresult (void)
 {
   return _result;
 }
 
-/*
-int
-main ( argc, argv )
+struct init
 {
-  char *str = "(4*5)";
+  char *fname;
+  double (*fnct)(double);
+};
 
-  yy_scan_string(str);
-  yyparse();
+struct init arith_fncts[] =
+{
+  "sin",  sin,
+  "cos",  cos,
+  "atan", atan,
+  "ln",   log,
+  "exp",  exp,
+  "sqrt", sqrt,
+  0, 0
+};
 
+/* The symbol table: a chain of `struct symrec'.  */
+symrec *sym_table = (symrec *) 0;
+
+/* Put arithmetic functions in table. */
+void
+init_table (void)
+{
+  int i;
+  symrec *ptr;
+  for (i = 0; arith_fncts[i].fname != 0; i++)
+    {
+      ptr = putsym (arith_fncts[i].fname, FNCT);
+      ptr->value.fnctptr = arith_fncts[i].fnct;
+    }
+}
+
+symrec *
+putsym (const char *sym_name, int sym_type)
+{
+  symrec *ptr;
+  ptr = (symrec *) malloc (sizeof (symrec));
+  ptr->name = (char *) malloc (strlen (sym_name) + 1);
+  strcpy (ptr->name,sym_name);
+  ptr->type = sym_type;
+  ptr->value.var = 0; /* set value to 0 even if fctn.  */
+  ptr->next = (struct symrec *)sym_table;
+  sym_table = ptr;
+  return ptr;
+}
+
+symrec *
+getsym (const char *sym_name)
+{
+  symrec *ptr;
+  for (ptr = sym_table; ptr != (symrec *) 0;
+       ptr = (symrec *)ptr->next)
+    if (strcmp (ptr->name,sym_name) == 0)
+      return ptr;
   return 0;
 }
-*/
 

@@ -49,6 +49,7 @@ main(int argc, char *argv[], char *env[])
      return 0;
    }
 
+   init_table ();
    if (exec) {
       yy_scan_string(exec);
       yyparse();
