@@ -203,7 +203,7 @@ window_leave(Ecore_Evas *ee)
 	    last = ecore_time_get();
 
             /* tell the icons too */
-	    for (l = e_container_elements_get(ib->cont); l; l = l->next)
+	    for (l = esmart_container_elements_get(ib->cont); l; l = l->next)
 	    {
 	        Evas_Object *obj = l->data;
 	        edje_object_signal_emit(obj, "window,leave", "");	
@@ -230,7 +230,7 @@ window_enter(Ecore_Evas *ee)
 	    last = ecore_time_get();
 
             /* tell the icons too */
-	    for (l = e_container_elements_get(ib->cont); l; l = l->next)
+	    for (l = esmart_container_elements_get(ib->cont); l; l = l->next)
 	    {
 	        Evas_Object *obj = l->data;
 	        edje_object_signal_emit(obj, "window,enter", "");	
