@@ -252,13 +252,13 @@ elicit_theme_find(const char *name)
   struct stat st;
 
   snprintf(eet, sizeof(eet),
-           "%s/.e/apps/"PACKAGE"/""themes/%s.eet",
+           "%s/.e/apps/"PACKAGE"/""themes/%s.edj",
            getenv("HOME"), name);
            
   if (!stat(eet, &st))
     return eet;
 
-  snprintf(eet, sizeof(eet), DATADIR"/themes/%s.eet", name);
+  snprintf(eet, sizeof(eet), DATADIR"/themes/%s.edj", name);
   return stat(eet, &st) ? NULL : eet;
 }
 

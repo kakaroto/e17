@@ -1,7 +1,7 @@
 THEME = winter
 EDC = $(THEME).edc
-EET = $(EDC:%.edc=%.eet)
-SUFFIXES = .edc .eet
+EET = $(EDC:%.edc=%.edj)
+SUFFIXES = .edc .edj
 
 CLEANFILES = $(EET)
 EXTRA_DIST = $(EDC)
@@ -11,7 +11,7 @@ theme_DATA = $(EET)
 
 all: $(EDC)
 
-.edc.eet:
+.edc.edj:
 	edje_cc -v -id $(top_srcdir)/data/themes/$(THEME)/img -fd $(top_srcdir)/data/themes/$(THEME)/fonts $< $@
 
 preview: $(EET)

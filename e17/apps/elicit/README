@@ -11,7 +11,7 @@ sudo make install
 
 to run, just type: elicit
 
-To change themes, edit ~/.e/apps/elicit/config.db (using edb_gtk_ed) and change the /settings/theme key to the basename of the theme (e.g. if the theme is named "spring.eet", change the value to "spring"). Elicit will look in /install_prefix/share/elicit/themes/ and ~/.e/apps/elicit/themes.
+To change themes, edit ~/.e/apps/elicit/config.db (using edb_gtk_ed) and change the /settings/theme key to the basename of the theme (e.g. if the theme is named "spring.edj", change the value to "spring"). Elicit will look in /install_prefix/share/elicit/themes/ and ~/.e/apps/elicit/themes.
 
 Currently only two themes are included: winter (the default) and spring.
 

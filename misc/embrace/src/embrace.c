@@ -302,13 +302,13 @@ static char *find_theme (const char *name)
 	assert (name);
 
 	snprintf (eet, sizeof (eet),
-			 "%s/.e/apps/" PACKAGE "/themes/%s.eet",
+			 "%s/.e/apps/" PACKAGE "/themes/%s.edj",
 			 getenv ("HOME"), name);
 
 	if (!stat (eet, &st))
 		return eet;
 
-	snprintf (eet, sizeof (eet), DATA_DIR "/themes/%s.eet", name);
+	snprintf (eet, sizeof (eet), DATA_DIR "/themes/%s.edj", name);
 
 	return stat(eet, &st) ? NULL : eet;
 }

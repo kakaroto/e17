@@ -4,7 +4,7 @@ SUBDIRS = fonts images parts programs
 
 THEME = default
 EDC = $(THEME).edc embrace.edc mailbox.edc
-EET = $(THEME).eet
+EET = $(THEME).edj
 
 CLEANFILES = $(EET)
 EXTRA_DIST = $(EDC)

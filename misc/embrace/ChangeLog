@@ -1,5 +1,9 @@
 $Id$
 
+2005-03-22 Tilman Sauerbeck (tilman at code-monkey de)
+        * src/embrace.c, data/themes/default/Makefile.am:
+          The default extension for Edje files is 'edj' now
+
 2005-02-06 Tilman Sauerbeck (tilman at code-monkey de)
         * data/themes/default/embrace.edc,
           data/themes/default/parts/mailbox_background.edc,

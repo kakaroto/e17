@@ -170,7 +170,7 @@ elicit_themes_list()
       {
         char *theme = strdup(ent->d_name);
         char *suff = theme + strlen(theme) - 4;
-        if (!strcmp(suff, ".eet"))
+        if (!strcmp(suff, ".edj"))
         {
           *suff = '\0';
           themes = evas_list_append(themes, theme);
