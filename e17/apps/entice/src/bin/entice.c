@@ -974,8 +974,9 @@ entice_save_image(void)
    {
       edje_freeze();
       if (entice_image_save(entice->current))
-         fprintf(stderr, "Saving was successul\n");
-      /* FIXME: Emit a EnticeSaveOk or something signal */
+         edje_object_signal_emit(entice->edje, "entice,image,save,ok", "");
+      else
+         edje_object_signal_emit(entice->edje, "entice,image,save,fail", "");
       edje_thaw();
    }
 }

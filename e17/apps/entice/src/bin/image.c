@@ -311,10 +311,10 @@ entice_image_save(Evas_Object * o)
             snprintf(tmpfile, PATH_MAX, "%s.%d", im->filename, getpid());
             imlib_save_image_with_error_return(tmpfile, &err);
             evas_image_cache_flush(evas_object_evas_get(im->obj));
-            unlink(im->filename);
             switch (err)
             {
               case 0:
+                 unlink(im->filename);
                  if (!rename(tmpfile, im->filename))
                     result = 1;
                  break;
