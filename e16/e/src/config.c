@@ -54,161 +54,6 @@ IsWhitespace(const char *s)
    return 1;
 }
 
-#if 0				/* Remove if happy with the new code */
-static char        *
-GetLine(char *s, int size, FILE * f)
-{
-
-   /* This function will get a single line from the file */
-
-   char               *ret, *ss, inquote;
-   int                 i, j, k;
-   static int          line_stack_size = 0;
-   static char       **line_stack = NULL;
-
-   s[0] = 0;
-   if (line_stack_size > 0)
-     {
-	strncpy(s, line_stack[0], size);
-	Efree(line_stack[0]);
-	for (i = 0; i < line_stack_size - 1; i++)
-	   line_stack[i] = line_stack[i + 1];
-	line_stack_size--;
-	if (line_stack_size > 0)
-	  {
-	     line_stack =
-		Erealloc(line_stack, line_stack_size * sizeof(char *));
-	  }
-	else
-	  {
-	     Efree(line_stack);
-	     line_stack = NULL;
-	  }
-	return s;
-     }
-   ret = fgets(s, size, f);
-
-   if (strlen(s) > 0)
-      s[strlen(s) - 1] = 0;
-
-   while (IsWhitespace(s))
-     {
-	s[0] = 0;
-	ret = fgets(s, size, f);
-	if (!ret)
-	   return NULL;
-	if (strlen(s) > 0)
-	   s[strlen(s) - 1] = 0;
-     }
-
-   i = 0;
-   inquote = 0;
-   while (s[i])
-     {
-	if (!inquote)
-	  {
-	     if (s[i] == '"')
-	       {
-		  j = i;
-		  while (s[j])
-		    {
-		       s[j] = s[j + 1];
-		       j++;
-		    }
-		  inquote = 1;
-		  i--;
-	       }
-	  }
-	else
-	  {
-	     if (s[i] == '"')
-	       {
-		  j = i + 1;
-		  while (s[j])
-		    {
-		       if (s[j] == ';')
-			  break;
-		       if ((s[j] == '"') && (j == (i + 1)))
-			  break;
-		       if (!isspace(s[j]))
-			 {
-			    j--;
-			    break;
-			 }
-		       j++;
-		    }
-		  k = j - i;
-		  j = i;
-		  while (s[j])
-		    {
-		       s[j] = s[j + k];
-		       j++;
-		    }
-		  inquote = 0;
-		  i--;
-	       }
-	  }
-	i++;
-     }
-
-   j = strlen(s);
-   if (j > 0)
-     {
-	if (strchr(s, ';'))
-	  {
-	     s[j] = ';';
-	     s[j + 1] = 0;
-	  }
-     }
-   i = 0;
-   ss = s;
-   while (s[i])
-     {
-	if (s[i] == ';')
-	  {
-	     j = (&(s[i]) - ss);
-	     if (j > 0)
-	       {
-		  line_stack_size++;
-		  if (!line_stack)
-		     line_stack = Emalloc(line_stack_size * sizeof(char *));
-
-		  else
-		     line_stack =
-			Erealloc(line_stack, line_stack_size * sizeof(char *));
-
-		  line_stack[line_stack_size - 1] = Emalloc(j + 1);
-		  strncpy(line_stack[line_stack_size - 1], ss, j);
-		  line_stack[line_stack_size - 1][j] = 0;
-		  ss = &(s[i + 1]);
-	       }
-	  }
-	i++;
-     }
-
-   if (line_stack_size > 0)
-     {
-	strncpy(s, line_stack[0], size);
-	Efree(line_stack[0]);
-	for (i = 0; i < line_stack_size - 1; i++)
-	   line_stack[i] = line_stack[i + 1];
-	line_stack_size--;
-	if (line_stack_size > 0)
-	  {
-	     line_stack =
-		Erealloc(line_stack, line_stack_size * sizeof(char *));
-
-	  }
-	else
-	  {
-	     Efree(line_stack);
-	     line_stack = NULL;
-	  }
-	return s;
-     }
-   return ret;
-}
-#else
 #define LINE_BUFFER_SIZE 1024
 /*
  * This function will get a single line from the file
@@ -307,7 +152,6 @@ GetLine(char *s, int size, FILE * f)
    bufptr = si;
    return s;
 }
-#endif
 
 static void
 SkipTillEnd(FILE * ConfigFile)
@@ -1581,6 +1425,10 @@ Config_Border(FILE * ConfigFile)
 		  break;
 	       case BORDER_CHANGES_SHAPE:
 		  b->changes_shape = atoi(s2);
+		  break;
+	       case CONFIG_ACTIONCLASS:
+		  b->aclass =
+		     FindItem(s2, 0, LIST_FINDBY_NAME, LIST_TYPE_ACLASS);
 		  break;
 	       default:
 		  break;

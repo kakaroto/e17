@@ -2283,21 +2283,12 @@ CreateBorder(const char *name)
 
    EDBUG(5, "CreateBorder");
 
-   b = Emalloc(sizeof(Border));
+   b = Ecalloc(1, sizeof(Border));
    if (!b)
       EDBUG_RETURN(NULL);
 
    b->name = Estrdup(name);
-   b->group_border_name = NULL;
-   b->border.left = 0;
-   b->border.right = 0;
-   b->border.top = 0;
-   b->border.bottom = 0;
-   b->num_winparts = 0;
-   b->part = NULL;
-   b->changes_shape = 0;
    b->shadedir = 2;
-   b->ref_count = 0;
 
    EDBUG_RETURN(b);
 }
@@ -2927,9 +2918,9 @@ EwinUnShade(EWin * ewin)
      case 0:
 	att.win_gravity = EastGravity;
 	XChangeWindowAttributes(disp, ewin->client.win, CWWinGravity, &att);
-	a = ewin->border->border.left;
-	b = ewin->client.w + ewin->border->border.left +
-	   ewin->border->border.right;
+	a = ewin->border->border.left + ewin->border->border.right;
+	b = ewin->client.w + a;
+	a++;
 	ewin->shaded = 0;
 	EMoveResizeWindow(disp, ewin->win_container,
 			  ewin->border->border.left, ewin->border->border.top,
@@ -2973,12 +2964,11 @@ EwinUnShade(EWin * ewin)
      case 1:
 	att.win_gravity = WestGravity;
 	XChangeWindowAttributes(disp, ewin->client.win, CWWinGravity, &att);
-	a = ewin->border->border.right;
-	b = ewin->client.w + ewin->border->border.left +
-	   ewin->border->border.right;
+	a = ewin->border->border.left + ewin->border->border.right;
+	b = ewin->client.w + a;
 	c = ewin->x;
-	d = ewin->x + ewin->w - (ewin->border->border.right + ewin->client.w +
-				 ewin->border->border.left);
+	d = ewin->x + ewin->w - (ewin->client.w + a);
+	a++;
 	ewin->shaded = 0;
 	EMoveResizeWindow(disp, ewin->win_container,
 			  ewin->border->border.left, ewin->border->border.top,
@@ -3021,9 +3011,9 @@ EwinUnShade(EWin * ewin)
      case 2:
 	att.win_gravity = SouthGravity;
 	XChangeWindowAttributes(disp, ewin->client.win, CWWinGravity, &att);
-	a = ewin->border->border.top;
-	b = ewin->client.h + ewin->border->border.top +
-	   ewin->border->border.bottom;
+	a = ewin->border->border.top + ewin->border->border.bottom;
+	b = ewin->client.h + a;
+	a++;
 	ewin->shaded = 0;
 	EMoveResizeWindow(disp, ewin->win_container,
 			  ewin->border->border.left, ewin->border->border.top,
@@ -3067,12 +3057,11 @@ EwinUnShade(EWin * ewin)
      case 3:
 	att.win_gravity = SouthGravity;
 	XChangeWindowAttributes(disp, ewin->client.win, CWWinGravity, &att);
-	a = ewin->border->border.bottom;
-	b = ewin->client.h + ewin->border->border.top +
-	   ewin->border->border.bottom;
+	a = ewin->border->border.top + ewin->border->border.bottom;
+	b = ewin->client.h + a;
 	c = ewin->y;
-	d = ewin->y + ewin->h - (ewin->border->border.bottom +
-				 ewin->client.h + ewin->border->border.top);
+	d = ewin->y + ewin->h - (ewin->client.h + a);
+	a++;
 	ewin->shaded = 0;
 	EMoveResizeWindow(disp, ewin->win_container,
 			  ewin->border->border.left, ewin->border->border.top,
@@ -3593,18 +3582,25 @@ static int
 BordersEvent(XEvent * ev, border_event_func_t * func)
 {
    Window              win = ev->xany.window;
-   EWin               *const *ewins;
+   EWin               *const *ewins, *ewin;
    int                 i, j, num, used = 0;
 
    ewins = EwinListGetAll(&num);
    for (i = 0; i < num; i++)
      {
-	for (j = 0; j < ewins[i]->border->num_winparts; j++)
+	ewin = ewins[i];
+	if (win == ewin->win)
 	  {
-	     if (win == ewins[i]->bits[j].win)
+	     if (ewin->border->aclass)
+		EventAclass(ev, ewin, ewin->border->aclass);
+	     used = 0;
+	     goto done;
+	  }
+	for (j = 0; j < ewin->border->num_winparts; j++)
+	  {
+	     if (win == ewin->bits[j].win)
 	       {
-		  func(ev, ewins[i], j);
-
+		  func(ev, ewin, j);
 		  used = 1;
 		  goto done;
 	       }

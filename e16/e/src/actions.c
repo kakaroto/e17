@@ -447,6 +447,8 @@ EventAclass(XEvent * ev, EWin * ewin, ActionClass * a)
 	mouse = 1;
 	break;
      case LeaveNotify:
+	if (ev->xcrossing.detail == NotifyNonlinearVirtual)
+	   EDBUG_RETURN(0);
 	type = EVENT_MOUSE_LEAVE;
 	button = -1;
 	modifiers = ev->xcrossing.state & mask;

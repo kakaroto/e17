@@ -735,6 +735,7 @@ typedef struct _border
    char                changes_shape;
    char                shadedir;
    unsigned int        ref_count;
+   ActionClass        *aclass;
 }
 Border;
 
