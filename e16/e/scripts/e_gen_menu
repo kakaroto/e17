@@ -1,0 +1,67 @@
+#!/bin/sh
+##############################################################################
+# generates a file.menu format for Enlightenment out of a KDE menu heirachy  #
+# Copyright 1999 The Rasterman                                               #
+##############################################################################
+
+export PATH=$PATH:"/usr/local/enlightenment/bin:/usr/enlightenment/bin:/opt/enlightenment/bin:/usr/local/bin"
+
+OUT_DIR=$HOME"/.enlightenment"
+OUT=$OUT_DIR"/file.menu"
+
+e_gen_kde_menu menus_kde $OUT_DIR kde.menu
+# generate gnome menu here
+# e_gen_gnome_menu menus_gnome $OUT_DIR gnome.menu
+
+# if the out dir doesnt exist - make it 
+if [ ! -d "$OUT_DIR" ]; then
+  mkdir $OUT_DIR
+fi
+
+# find eesh
+EESH=`which eesh`
+# generate file menu if it doesn't exist
+if [ ! -f "$OUT" ]; then
+  echo \"User Menus\" > $OUT
+  echo \"User Application list\" NULL menu \"user_apps.menu\" >> $OUT
+  echo \"KDE\" NULL menu \"kde.menu\" >> $OUT
+  echo \"GNOME\" NULL menu \"gnome.menu\" >> $OUT
+  # if we have eesh available
+  if [ -n "$EESH" ]; then
+    echo \"Restart Enlightenment\" NULL exec \"$EESH -e \'restart\ q'\" >> $OUT
+    echo \"Log Out\" NULL exec \"$EESH -e \'exit\'\" >> $OUT
+  fi
+fi
+
+# generate a stub user_apps menu if it doesnt exist
+OUT=$OUT_DIR"/user_apps.menu"
+if [ ! -f "$OUT" ]; then
+  echo \"User Application List\" > $OUT
+  echo \"Eterm\" NULL exec \"Eterm\" >> $OUT
+  echo \"XTerm\" NULL exec \"xterm\" >> $OUT
+  echo \"RXVT\" NULL exec \"rxvt\" >> $OUT
+  echo \"KTerm\" NULL exec \"kterm\" >> $OUT
+  echo \"Gnome Terminal\" NULL exec \"gnome-terminal\" >> $OUT
+  echo \"Netscape\" NULL exec \"netscape\" >> $OUT
+  echo \"TkRat\" NULL exec \"tkrat\" >> $OUT
+  echo \"Netscape Mail\" NULL exec \"netscape -mail -no-about-splash\" >> $OUT
+  echo \"Balsa\" NULL exec \"balsa\" >> $OUT
+  echo \"Exmh\" NULL exec \"exmh\" >> $OUT
+  echo \"Electric Eyes\" NULL exec \"ee\" >> $OUT
+  echo \"The GIMP\" NULL exec \"gimp\" >> $OUT
+  echo \"XV\" NULL exec \"xv\" >> $OUT
+  echo \"GQView\" NULL exec \"gqview\" >> $OUT
+  echo \"XMag\" NULL exec \"xmag\" >> $OUT
+  echo \"XawTV\" NULL exec \"xawtv\" >> $OUT
+  echo \"Imlib Settings\" NULL exec \"imlib_config\" >> $OUT
+  echo \"X-Chat\" NULL exec \"xchat\" >> $OUT
+  echo \"XMan\" NULL exec \"xman\" >> $OUT
+  echo \"TkMan\" NULL exec \"tkman\" >> $OUT
+  echo \"GnomeICU\" NULL exec \"gnomeicu -a\" >> $OUT
+  echo \"eMusic\" NULL exec \"emusic\" >> $OUT
+  echo \"X11Amp\" NULL exec \"x11amp\" >> $OUT
+  echo \"XMMS\" NULL exec \"xmms\" >> $OUT
+  echo \"FreeAMp\" NULL exec \"freeamp\" >> $OUT
+  echo \"Civilization\" NULL exec \"civctp\" >> $OUT
+  echo \"Myth 2\" NULL exec \"myth2\" >> $OUT
+fi

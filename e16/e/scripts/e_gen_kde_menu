@@ -1,0 +1,201 @@
+#!/bin/sh
+##############################################################################
+# generates a file.menu format for Enlightenment out of a KDE menu heirachy  #
+# Copyright 1999 The Rasterman                                               #
+##############################################################################
+
+# if we dont have enough arguments
+if [ $# -lt 3 ]; then
+  echo "usage:"
+  echo "    "$0" base_name output_dir output_file.menu [kde_applnk_base_dir]"
+  exit
+fi
+# setup variables
+BASE=$1
+ODIR=$2
+OUT=$3
+
+# hunt around and see where all the kde graphics have gone
+IDIR=/usr/share/icons
+if [ ! -r $IDIR"/mini/kcontrol.xpm" ]; then
+  IDIR=/usr/local/share/icons
+fi
+if [ ! -r $IDIR"/mini/kcontrol.xpm" ]; then
+  IDIR=/opt/kde/icons
+fi
+if [ ! -r $IDIR"/mini/kcontrol.xpm" ]; then
+  IDIR=/usr/local/kde/icons
+fi
+if [ ! -r $IDIR"/mini/kcontrol.xpm" ]; then
+  IDIR=/usr/kde/icons
+fi
+if [ ! -r $IDIR"/mini/kcontrol.xpm" ]; then
+  IDIR=/usr/share/kde/icons
+fi
+# mini icons  are in the icons dir
+MIDIR=$IDIR"/mini"
+
+# hunt around and see where all the kde applnk stuff is
+if [ $# -eq 4 ]; then
+  DIR=$4
+else
+  DIR=/usr/share/applnk
+  if [ ! -r $DIR"/KControl.kdelnk" ]; then
+    DIR=/usr/local/share/applnk
+  fi
+  if [ ! -r $DIR"/KControl.kdelnk" ]; then
+    DIR=/opt/kde/applnk
+  fi
+  if [ ! -r $DIR"/KControl.kdelnk" ]; then
+    DIR=/usr/local/kde/applnk
+  fi
+  if [ ! -r $DIR"/KControl.kdelnk" ]; then
+    DIR=/usr/kde/applnk
+  fi
+  if [ ! -r $DIR"/KControl.kdelnk" ]; then
+    DIR=/usr/share/kde/applnk
+  fi
+fi
+
+# if the applnk dir doesn't exist in the end then exit
+if [ ! -d "$DIR" ]; then
+  exit
+fi
+# if the destination dir doesnt exist - create it
+if [ ! -d "$ODIR" ]; then
+  mkdir $ODIR
+fi
+
+# function to check its a KDE kdelnk file 
+is_kdelnk() {
+  VAL=`grep "\[KDE Desktop Entry\]" $1`
+  if [ -n "$VAL" ]; then
+    VAL=`grep '^Name=' $1 | head -1`
+    if [ -n "$VAL" ]; then
+      NAME=`echo $VAL | awk -F= '{printf("%s", $2);}'`
+      echo -n $NAME
+      return 0
+    fi
+  fi
+  return 1
+}
+
+# function to get the sortorder list -if there is one
+get_sortorder() {
+  VAL=`grep '^SortOrder=' $1 | head -1`
+  if [ -n "$VAL" ]; then
+    VAL2=`echo $VAL | awk -F= '{printf("%s", $2);}' | sed "s/,/ /g"`
+    echo -n $VAL2
+    return 0
+  fi
+  return 1
+}
+
+get_icon() {
+  VAL=`grep '^Icon=' $1 | head -1`
+  if [ -n "$VAL" ]; then
+    VAL2=`echo $VAL | awk -F= '{printf("%s", $2);}'`
+    echo -n $VAL2
+    return 0
+  fi
+  return 1
+}
+
+get_miniicon() {
+  VAL=`grep '^MiniIcon=' $1 | head -1`
+  if [ -n "$VAL" ]; then
+    VAL2=`echo $VAL | awk -F= '{printf("%s", $2);}'`
+    echo -n $VAL2
+    return 0
+  else
+    get_icon $1
+    return 0
+  fi
+  return 1
+}
+
+get_exec() {
+  VAL=`grep '^Exec=' $1 | head -1`
+  if [ -n "$VAL" ]; then
+    VAL2=`echo $VAL | awk -F= '{printf("%s", $2);}'`
+    VAL2=`echo $VAL2 | sed "s:\%c:$2:g"`
+    VAL2=`echo $VAL2 | sed "s:\%m:$3:g"`
+    VAL2=`echo $VAL2 | sed "s:\%i:$4:g"`
+    VAL2=`echo $VAL2 | sed "s:\":\':g"`
+    VAL2=`echo $VAL2 | sed "s:\%u:NONE:g"`
+    VAL2=`echo $VAL2 | sed "s:\%k:NONE:g"`
+    VAL2=`echo $VAL2 | sed "s:\%f:blank:g"`
+    VAL2=`echo $VAL2 | sed "s:\%n:NONE:g"`
+    VAL2=`echo $VAL2 | sed "s:\%d:$HOME:g"`
+    echo -n $VAL2
+    return 0
+  fi
+  return 1
+}
+
+E_TITLE="$DIR Menu"
+
+ORDER=""
+# if a .directory file exists - read it
+F=$DIR"/.directory"
+if [ -f $F ]; then
+  NAME=`is_kdelnk $F`
+  if [ -n "$NAME" ]; then
+    E_TITLE=$NAME
+  fi
+  ORDER=`get_sortorder $F`
+fi
+
+# if there is no order - build one
+if [ -z "$ORDER" ]; then
+  ORDER=`/bin/ls -F $DIR | grep "/$" | sed "s:/::g"`
+fi
+
+# print the menu title
+echo \"$E_TITLE\" > $OUT
+
+# for every subdir in the dir list or order - print it
+for F in $ORDER; do
+  FF=$DIR"/"$F
+  if [ -d "$FF" ]; then
+    NAME=`echo $F | sed "s/_/ /g"`
+    FFF=$FF"/.directory"
+    if [ -f "$FFF" ]; then
+      ICON=`get_icon "$FFF"`
+    else
+      ICON=""
+    fi
+    if [ -n "$ICON" ]; then
+      ICON=\"$MIDIR"/"$ICON\"
+    else
+      ICON=NULL
+    fi
+    FFF=$ODIR"/"$BASE
+    if [ ! -d "$FFF" ]; then
+      mkdir $FFF
+    fi
+    MFILE=$FFF"/"$F.menu
+    $0 $BASE"/"$F $ODIR $MFILE $DIR"/"$F
+    echo \"$NAME\" $ICON menu \"$MFILE\" >> $OUT
+  fi
+done
+
+# for all normal files...
+FILES=`/bin/ls -F $DIR | grep -v "/$"`
+for F in $FILES; do 
+  FF=$DIR"/"$F
+  if [ -f "$FF" ]; then
+    NAME=`is_kdelnk $FF`
+    if [ -n "$NAME" ]; then
+      ICON=`get_miniicon "$FF"`
+      BICON=`get_icon $FF`
+      if [ -n "$ICON" ]; then
+	ICON=\"$MIDIR"/"$ICON\"
+      else
+	ICON=NULL
+      fi
+      EXE=`get_exec $FF $NAME $ICON $BICON`
+      echo \"$NAME\" $ICON exec \"$EXE\" >> $OUT
+    fi
+  fi
+done
