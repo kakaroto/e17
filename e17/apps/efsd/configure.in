@@ -1,0 +1,87 @@
+dnl Process this file with autoconf to produce a configure script.
+
+AC_INIT(configure.in)
+AM_INIT_AUTOMAKE(efsd, 1.0)
+AM_CONFIG_HEADER(config.h)
+
+AC_ISC_POSIX
+AC_PROG_CC
+AM_PROG_CC_STDC
+AC_HEADER_STDC
+AM_PROG_LIBTOOL
+
+dnl Check for fam.
+FAM_HEADER_OK="yes"
+FAM_LIB_OK="yes"
+AC_CHECK_HEADER(fam.h, , FAM_HEADER_OK="no")
+AC_CHECK_LIB(fam, main, , FAM_LIB_OK="no")
+if test "$FAM_HEADER_OK" = "no" -o "$FAM_LIB_OK" = "no"; then cat <<EOF;
+
+------------------------------------------------------
+ERROR: Could not find a complete installation of FAM,
+the File Alteration Monitor, on your system.
+
+You can download FAM at:
+http://oss.sgi.com/projects/fam
+------------------------------------------------------
+EOF
+exit 1;
+fi;
+
+dnl Check for glib.
+AC_CHECK_PROG(GLIB_OK, glib-config, "yes", "no")
+if test "$GLIB_OK" = "no"; then cat <<EOF;
+
+------------------------------------------------------
+ERROR: Could not find a complete installation of glib.
+
+You can download glib at:
+*** FIXME ***
+------------------------------------------------------
+EOF
+exit 1;
+fi;
+GLIB_LIBS=`glib-config --libs`
+GLIB_CFLAGS=`glib-config --cflags`
+AC_SUBST(GLIB_LIBS)
+AC_SUBST(GLIB_CFLAGS)
+
+
+dnl Set PACKAGE_LOCALE_DIR in config.h.
+if test "x${prefix}" = "xNONE"; then
+  AC_DEFINE_UNQUOTED(PACKAGE_LOCALE_DIR, "${ac_default_prefix}/${DATADIRNAME}/locale")
+else
+  AC_DEFINE_UNQUOTED(PACKAGE_LOCALE_DIR, "${prefix}/${DATADIRNAME}/locale")
+fi
+
+dnl Set PACKAGE_DATA_DIR in config.h.
+if test "x${datadir}" = 'x${prefix}/share'; then
+  if test "x${prefix}" = "xNONE"; then
+    AC_DEFINE_UNQUOTED(PACKAGE_DATA_DIR, "${ac_default_prefix}/share/${PACKAGE}")
+  else
+    AC_DEFINE_UNQUOTED(PACKAGE_DATA_DIR, "${prefix}/share/${PACKAGE}")
+  fi
+else
+  AC_DEFINE_UNQUOTED(PACKAGE_DATA_DIR, "${datadir}/${PACKAGE}")
+fi
+
+dnl Set PACKAGE_SOURCE_DIR in config.h.
+packagesrcdir=`cd $srcdir && pwd`
+AC_DEFINE_UNQUOTED(PACKAGE_SOURCE_DIR, "${packagesrcdir}")
+
+dnl Use -Wall if we have gcc.
+changequote(,)dnl
+if test "x$GCC" = "xyes"; then
+  case " $CFLAGS " in
+  *[\ \	]-Wall[\ \	]*) ;;
+  *) CFLAGS="$CFLAGS -Wall" ;;
+  esac
+fi
+changequote([,])dnl
+
+AC_OUTPUT([
+Makefile
+efsd/Makefile
+demo/Makefile
+])
+
