@@ -669,6 +669,7 @@ show_usage(void)
            "                            %%w image width\n"
            "                            %%h image height\n"
            "                            %%t image format\n"
+           "                            \\n newline\n"
            "                            Eg. feh -A \"mv %%f ~/images/%%n\" *\n"
            " MONTAGE MODE OPTIONS\n"
            "  -X, --ignore-aspect       By default, the montage thumbnails will retain\n"

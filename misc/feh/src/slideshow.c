@@ -232,7 +232,7 @@ slideshow_change_image(winwidget winwid, int change)
             imlib_context_set_image(winwid->im);
             winwid->im_w = imlib_image_get_width();
             winwid->im_h = imlib_image_get_height();
-            winwidget_render_image(winwid,0);
+            winwidget_render_image(winwid, 0);
          }
          if (opt.draw_filename)
             feh_draw_filename(winwid);
@@ -285,7 +285,7 @@ feh_action_run(winwidget w)
 }
 
 char *
-feh_printf(char *str, feh_file *file)
+feh_printf(char *str, feh_file * file)
 {
    char *c;
    char buf[20];
@@ -336,6 +336,19 @@ feh_printf(char *str, feh_file *file)
               if (!file->info)
                  feh_file_info_load(file, NULL);
               strcat(ret, file->info->format);
+              break;
+           default:
+              strncat(ret, c, 1);
+              break;
+         }
+      }
+      else if (*c == '\\')
+      {
+         c++;
+         switch (*c)
+         {
+           case 'n':
+              strcat(ret, "\n");
               break;
            default:
               strncat(ret, c, 1);
