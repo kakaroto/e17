@@ -1,13 +1,13 @@
-DB = default.eet
+EET = Nebulous.eet
 SCRIPT = build_theme.sh
 
-CLEANFILES = $(DB)
+CLEANFILES = $(EET)
 EXTRA_DIST = $(SCRIPT)
 
 defaultdir = $(pkgdatadir)/themes
-default_DATA = $(DB)
+default_DATA = $(EET)
 
-all: $(DB)
+all: $(EET)
 
-$(DB): $(SCRIPT)
+$(EET): $(SCRIPT)
 		sh $<
