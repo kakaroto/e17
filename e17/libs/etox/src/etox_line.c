@@ -441,6 +441,7 @@ etox_line_wrap(Etox *et, Etox_Line *line)
 	Evas_Object *bit = NULL, *marker, *split_bit = NULL;
 	Evas_Coord x, w, y, h;
 	int index = -1, ok = 0;
+	char *tmp;
 
 #ifdef DEBUG
 	printf("etox_line_wrap() - trying to wrap line:\n");
@@ -451,7 +452,6 @@ etox_line_wrap(Etox *et, Etox_Line *line)
    for (ll = line->bits; ll && ok; ll = ll->next)
      {
 	bit = ll->data;
-	char *tmp;
 	
 	tmp = etox_style_get_text(bit);
 	evas_object_geometry_get(bit, &x, &y, &w, &h);
