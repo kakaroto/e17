@@ -115,6 +115,7 @@ exp_eb_cb_server_add(void *data, int type, void *ev)
   e = ev;
   exp = ecore_con_server_data_get(e->server);
   exp->server.server = e->server;
+
   ecore_con_server_send(e->server, exp->server.cookie, strlen(exp->server.cookie));
 
   return 1;
@@ -233,7 +234,7 @@ static int
 exp_eb_cookie_get(Exp *exp)
 {
   char cookie_file[PATH_MAX];
-  unsigned char cookie[8];
+  unsigned char cookie[9];
   FILE *cfile = NULL;
   unsigned int i;
 
@@ -243,8 +244,9 @@ exp_eb_cookie_get(Exp *exp)
   if (!cfile) return 0;
 
   exp->server.port = (fgetc(cfile) << 8) + fgetc(cfile);
-  for (i = 0; i < sizeof(cookie); i++)
+  for (i = 0; i < 8; i++)
     cookie[i] = (unsigned char)fgetc(cfile);
+  cookie[8] = '\0';
   fclose(cfile);
 
   exp->server.cookie = strdup(cookie);
@@ -260,7 +262,6 @@ exp_eb_command_handle(Exp *exp, char **cmds)
   if (!strcmp(cmds[0], "cookie_accepted"))
   {
     exp_eb_cmd_list_services(exp);
-
   }
   else if (!strcmp(cmds[0], "cookie_rejected"))
   {
@@ -417,9 +418,9 @@ exp_eb_command_handle(Exp *exp, char **cmds)
     ev->title = strdup(cmds[2]);
     ev->msg = strdup(cmds[3]);
 
-    /*        ecore_event_add(Exp_EB_EVENT_DIALOG, ev,
-              exp_eb_cb_event_dialog_free, NULL);
-              */
+    ecore_event_add(Exp_EB_EVENT_DIALOG, ev,
+        exp_eb_cb_event_dialog_free, NULL);
+              
     /* FIXME FAKE IT FOR NOW */
     exp_eb_cmd_dialog_yesno_resolve(exp, ev->tag, 0);
 

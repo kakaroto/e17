@@ -47,8 +47,15 @@ main (int argc, char **argv)
 
   exp_fake_buddies(exp);
 
+  if (!exp_eb_connect(exp, "oberon"))
+  {
+    printf("Unable to connect to Everybody\n");
+    /* XXX may want to exit here in the future ... */
+  }
+
   ecore_main_loop_begin();
 
+  exp_eb_shutdown();
   edje_shutdown();
   ecore_evas_shutdown();
   ecore_shutdown();
