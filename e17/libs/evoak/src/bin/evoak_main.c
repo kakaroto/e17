@@ -743,7 +743,7 @@ edje_signal_cb(void *data, Evas_Object *o, const char *emission, const char *sou
 	
 	p.callback_id = 0;
 	p.emission = (char *)emission;
-	p,source = (char *)source;
+	p.source = (char *)source;
 	d = _evoak_proto[EVOAK_PR_OBJECT_EDJE_SIGNAL].enc(&p, &s);
 	if (d)
 	  {

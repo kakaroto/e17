@@ -109,7 +109,7 @@ timer(void *data)
    ev = data;
    if (sync_wait)
      {
-//	printf("server too slow!\n");
+	printf("server too slow!\n");
 	return 1;
      }
    t = ecore_time_get() - start_t;
@@ -202,6 +202,7 @@ cb_sync_reply(void *data, int type, void *event)
    Evoak_Event_Sync_Reply *ev;
    
    ev = event;
+   printf("GOT sync\n");
    sync_wait--;
    return 1;
 }
