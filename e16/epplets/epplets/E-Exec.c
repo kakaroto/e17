@@ -20,8 +20,9 @@ cb_close(void *data)
 static void
 run_contents(void *data)
 {
-	Epplet_reset_textbox(textbox);
-   Epplet_spawn_command(Epplet_textbox_contents(textbox));
+	char *command = Epplet_textbox_contents(textbox);
+   Epplet_spawn_command(command);
+   Epplet_reset_textbox(textbox);
    return;
    data = NULL;
 }
@@ -37,6 +38,9 @@ main(int argc, char *argv[])
 
    button = Epplet_create_button(NULL, NULL, 2, 2,
 				 12, 12, "CLOSE", 0, NULL, cb_close, NULL);
+
+   Epplet_gadget_show(Epplet_create_button("E-Exec", NULL, 16, 2,
+			   62, 12, NULL, 0, NULL, run_contents, NULL));
 
    textbox =
       Epplet_create_textbox(NULL, NULL, 2, 15, 76, 16, 1, run_contents, NULL);
