@@ -113,14 +113,6 @@ MenuHide(Menu * m)
    if (m->win)
       EUnmapWindow(disp, m->win);
 
-   ewin = FindEwinSpawningMenu(m);
-   if (ewin)
-      ewin->shownmenu = 0;
-
-   ewin = FindEwinByMenu(m);
-   if (ewin)
-      HideEwin(ewin);
-
    if (m->sel_item)
      {
 	m->sel_item->state = STATE_NORMAL;
@@ -131,7 +123,16 @@ MenuHide(Menu * m)
    m->stuck = 0;
    m->shown = 0;
 
-   EwinWithdraw(ewin);
+   ewin = FindEwinSpawningMenu(m);
+   if (ewin)
+      ewin->shownmenu = 0;
+
+   ewin = FindEwinByMenu(m);
+   if (ewin)
+     {
+	HideEwin(ewin);
+	EwinWithdraw(ewin);
+     }
 
    EDBUG_RETURN_;
 }
