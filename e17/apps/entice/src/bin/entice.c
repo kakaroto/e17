@@ -481,7 +481,6 @@ entice_file_add(const char *file)
          }
          else
 	 {
-	     fprintf(stderr, "FUDGE YO\n");
             result = 1;
 	 }
       }
