@@ -16,7 +16,6 @@ struct _Iconbar_Prefs {
     Evas_List *fonts;
     Evas_List *icons;
     int x, y, w, h;
-    int shaped;
     int transparent;
     int raise;
     int borderless;
@@ -71,8 +70,6 @@ iconbar_config_init(void)
 		ibprefs->withdrawn = 0;
 	    if(!e_db_int_get(db, "/iconbar/sticky", &ibprefs->sticky))
 		ibprefs->sticky = 1;
-	    if(!e_db_int_get(db, "/iconbar/shaped", &ibprefs->shaped))
-		ibprefs->shaped = 1;
 	    if(!e_db_int_get(db, "/iconbar/borderless", &ibprefs->borderless))
 		ibprefs->borderless = 1;
 	    if(!e_db_int_get(db, "/iconbar/x", &ibprefs->x))
@@ -126,8 +123,6 @@ iconbar_config_free(void)
 	    e_db_int_set(db, "/iconbar/sticky", ecore_evas_sticky_get(ee));
 	    e_db_int_set(db, "/iconbar/withdrawn", 
 					ecore_evas_withdrawn_get(ee));
-	    e_db_int_set(db, "/iconbar/shaped", 
-					ecore_evas_shaped_get(ee));
 	    e_db_int_set(db, "/iconbar/borderless", 
 					ecore_evas_borderless_get(ee));
 	    e_db_int_set(db, "/iconbar/x", ibprefs->x);
@@ -238,17 +233,6 @@ iconbar_config_borderless_set(int on)
     }
 }
 void
-iconbar_config_shaped_set(int on)
-{
-    if(ibprefs && ibprefs->ee)
-    {
-	ibprefs->shaped = ecore_evas_shaped_get(ibprefs->ee);
-	if(ibprefs->shaped != on)
-	    ecore_evas_shaped_set(ibprefs->ee, on);
-	ibprefs->shaped = on;
-    }
-}
-void
 iconbar_config_raise_lower_set(int raise)
 {
     if(ibprefs && ibprefs->ee)
@@ -333,13 +317,6 @@ iconbar_config_raise_lower_get(void)
 {
     if(ibprefs)
 	return(ibprefs->raise);
-    return(0);
-}
-int
-iconbar_config_shaped_get(void)
-{
-    if(ibprefs)
-	return(ibprefs->shaped);
     return(0);
 }
 int
@@ -429,7 +406,6 @@ iconbar_config_generate_original_db(char *file)
 
 	e_db_int_set(db, "/iconbar/raise", 0);
 	e_db_int_set(db, "/iconbar/withdrawn", 0);
-	e_db_int_set(db, "/iconbar/shaped", 1);
 	e_db_int_set(db, "/iconbar/borderless", 1);
 
 	e_db_int_set(db, "/iconbar/x", 0);

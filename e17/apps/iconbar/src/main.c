@@ -22,10 +22,12 @@ main(int argc, char **argv)
 {
   int x, y, w, h;
   char buf[2048];
+  Ecore_X_Window win;
   Evas_List *l = NULL;
   Evas_Object *o = NULL;
+  Evas_Object *trans = NULL;
   Ecore_Evas *ee = NULL;
-  Ecore_X_Window win;
+  const char *str = NULL;
   Evas_Coord edjew = 0, edjeh = 0;
   Evas_Object *iconbar = NULL;
 
@@ -56,7 +58,6 @@ main(int argc, char **argv)
   ecore_evas_name_class_set(ee, "Iconbar", "Rephorm");
   ecore_evas_title_set(ee, "Iconbar");
   ecore_evas_borderless_set(ee, iconbar_config_borderless_get());
-  ecore_evas_shaped_set(ee, iconbar_config_shaped_get());
   ecore_evas_withdrawn_set(ee, iconbar_config_withdrawn_get());
   ecore_evas_sticky_set(ee, iconbar_config_sticky_get());
   ecore_evas_avoid_damage_set(ee, 1);
@@ -64,22 +65,6 @@ main(int argc, char **argv)
   //ecore_x_window_prop_layer_set(win, 1);
 
   iconbar_config_ecore_evas_set(ee);
-#ifdef HAVE_TRANS_BG
-  {
-    if(!iconbar_config_shaped_get())
-    {
-	ecore_evas_geometry_get(ee, &x, &y, &w, &h);
-	o = esmart_trans_x11_new(ecore_evas_get(ee));
-	evas_object_layer_set(o, 0);
-	evas_object_move(o, 0, 0);
-	evas_object_resize(o, w, h);
-	evas_object_name_set(o, "trans");
-    
-	esmart_trans_x11_freshen(o, x, y, w, h);
-	evas_object_show(o);
-    }
-  }
-#endif
 
   for(l = iconbar_config_font_path_get(); l; l = l->next)
   {
@@ -120,6 +105,37 @@ main(int argc, char **argv)
 	    edje_object_signal_emit(o, "window,borderless,on", "");
 	else
 	    edje_object_signal_emit(o, "window,borderless,off", "");
+	if((str = edje_object_data_get(o, "iconbar,window")))
+	{
+	    fprintf(stderr, "iconbar,window is %s\n", str);
+#ifdef HAVE_TRANS_BG
+	    if(!strcmp(str, "trans"))
+	    {
+		ecore_evas_geometry_get(ee, &x, &y, &w, &h);
+		trans = esmart_trans_x11_new(ecore_evas_get(ee));
+		evas_object_layer_set(trans, 0);
+		evas_object_move(trans, 0, 0);
+		evas_object_resize(trans, w, h);
+		evas_object_name_set(trans, "trans");
+    
+		esmart_trans_x11_freshen(trans, x, y, w, h);
+		evas_object_show(trans);
+	    }
+#else 
+	    if(!strcmp(str, "trans"))
+	    {
+		fprintf(stderr,"iconbar compiled without trans support\n");
+	    }
+#endif
+	    if(!strcmp(str, "shaped"))
+	    {
+		ecore_evas_shaped_set(ee, 1);
+	    }
+	}
+	else
+	{
+		ecore_evas_shaped_set(ee, 1);
+	}
     }
   }
 
