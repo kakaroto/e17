@@ -129,6 +129,10 @@ feh_reload_image(winwidget w, int resize)
    /* if the image has changed in dimensions - we gotta resize */
    if ((feh_load_image(&tmp, FEH_FILE(w->file->data))) == 0) {
      weprintf("Couldn't reload image. Is it still there?");
+     winwidget_rename(w, title);
+     free(title);
+     free(new_title);
+     D_RETURN_(4);
    }
 
    if ((gib_imlib_image_get_width(w->im) != gib_imlib_image_get_width(tmp)) || (gib_imlib_image_get_height(w->im) != gib_imlib_image_get_height(tmp))) {
