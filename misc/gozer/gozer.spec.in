@@ -42,7 +42,6 @@ make
 
 %install
 make prefix=$RPM_BUILD_ROOT%{prefix} install
-cp -r contrib $RPM_BUILD_ROOT%{prefix}/share/gozer/
 
 #%post
 
@@ -56,7 +55,7 @@ rm -rf $RPM_BUILD_ROOT
 %defattr(-,root,root)
 %{prefix}/share/gozer/*
 %{prefix}/bin/gozer
-%{prefix}/man/man1/gozer.1
+%{prefix}/man/man1/*
 
 %changelog
 * Sun Nov 12 2000 Term <term@kempler.net>

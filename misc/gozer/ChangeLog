@@ -1,3 +1,10 @@
+Sat Jan 27 00:42:19 2001  Tom Gilbert  <gilbertt@linuxbrit.co.uk>
+
+	* Renamed to gozer.
+	* spec file was broken, had to remove "contrib" installing line as
+	there was no way it would work. Left that out for now. Think I
+	fixed the manpage install problem too. Dunno.
+
 Fri Nov 10 14:37:16 2000  Tom Gilbert  <gilbertt@linuxbrit.co.uk>
 
 	* ~/.gomrc is now always read first if available. This sets
