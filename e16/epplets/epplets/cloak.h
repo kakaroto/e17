@@ -20,3 +20,4 @@ void draw_colorwarp (void);
 void draw_ball(void);
 void draw_atoms(void);
 void draw_text(void);
+void draw_sine(void);
