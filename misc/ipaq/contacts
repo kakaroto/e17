@@ -285,14 +285,52 @@ sub create_contacts_page {
 sub create_calendar_page {
 
 	my $page = new Gtk::VBox(0,0);
+	$page->set_border_width(5);
 	
-	my $scrolled_window = new Gtk::ScrolledWindow(undef,undef);
-
 	$str = `cal`;
-	chomp($str);
-	my $label = new Gtk::Label $str;
-	$page->pack_start($label,1,1,0);
+	my ($monthyear,$daysofweek,@lines) = split /\n/, $str;
+	my ($blank,$month, $year) = split /\s+/,$monthyear;
+	print "month: $month\nyear: $year\n";
+
+	my $label = new Gtk::Label "$month, $year";
+	$page->pack_start($label,0,1,0);
 	$label->show();
+
+	my $alignment = new Gtk::Alignment(0.5,0.5);
+	my $table = new Gtk::Table(7,4,1);
+	$page->pack_start($alignment,1,1,0);
+	$alignment->add($table);
+	$alignment->show();
+	$table->show();
+
+	my $element = 0;
+	foreach("Su","Mo","Tu","We","Th","Fr","Sa") {
+		$label = new Gtk::Label "$_";
+		$table->attach($label,$element,$element+1,0,1,[-fill],[-fill],2,2);
+		$label->show();
+		$element++;
+	}
+
+	$row = 1;
+	foreach $line (@lines) {
+		print "$line\n";
+		$element = 0;
+		@elements = unpack "a3a3a3a3a3a3a3", $line;
+		foreach(@elements) {
+			if($_ > 0) {
+				$_ =~ s/\s+//g;
+				my $button = new Gtk::Button " $_ ";
+				$table->attach($button,$element,$element+1,$row,$row+1,[-expand,-fill],[-expand,-fill],2,2);
+				$button->show();
+			} else {
+				my $label = new Gtk::Label "$_";
+				$table->attach($label,$element,$element+1,$row,$row+1,[-expand,-fill],[-expand,-fill],2,2);
+				$label->show();
+			}
+			$element++;
+		}
+		$row++;
+	}
 
 	$page->show();
 	return $page;
