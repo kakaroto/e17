@@ -121,7 +121,15 @@ void ewl_text_text_set(Ewl_Text * ta, char *text)
 	if (REALIZED(ta))
 		ewl_text_ops_apply(ta);
 
-	text = (text ? strdup(text) : NULL);
+	IF_FREE(ta->text);
+	if (text) {
+		ta->text = strdup(text);
+		text = strdup(text);
+		ta->length = strlen(text);
+	}
+	else
+		ta->length = 0;
+
 	ewl_callback_call_with_event_data(EWL_WIDGET(ta),
 					  EWL_CALLBACK_VALUE_CHANGED, text);
 	IF_FREE(text);
@@ -139,11 +147,24 @@ void ewl_text_text_set(Ewl_Text * ta, char *text)
  */
 void ewl_text_text_append(Ewl_Text * ta, char *text)
 {
+	int len = 0;
 	Ewl_Text_Op *op;
 
 	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR("ta", ta);
 	DCHECK_PARAM_PTR("text", text);
+
+	if (ta->text) {
+		len = strlen(ta->text) + strlen(text);
+		ta->text = realloc(ta->text, sizeof(char) * (len + 1));
+		strcat(ta->text, text);
+	}
+	else {
+		ta->text = strdup(text);
+		len = strlen(text);
+	}
+
+	ta->length = len;
 
 	op = ewl_text_op_text_append_new(ta, text);
 	ecore_dlist_append(ta->ops, op);
