@@ -163,6 +163,8 @@ ecore_x_window_prop_card32_get(Ecore_X_Window win, Ecore_X_Atom atom,
    return num;
 }
 
+#endif /* USE_ECORE_X */
+
 /*
  * Set simple string list property
  */
@@ -220,6 +222,8 @@ ecore_x_window_prop_string_list_get(Ecore_X_Window win, Ecore_X_Atom atom,
    *pnum = items;
    return pstr;
 }
+
+#ifndef USE_ECORE_X
 
 /*
  * Set simple string property
