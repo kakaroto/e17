@@ -36,6 +36,7 @@ struct _Entice_Image
    char *filename;              /* we need to keep track of this */
    char *format;                /* we need to keep track of this too */
    int x, y, w, h, iw, ih;      /* geometry */
+   Evas_Coord dx, dy;
    Evas_Object *obj;            /* the image object */
    Evas_Object *clip;           /* clip to this area when we swallow */
 };
@@ -70,6 +71,5 @@ int entice_image_flip(Evas_Object * o, int direction);
 int entice_image_save(Evas_Object * o);
 void entice_image_file_set(Evas_Object * o, const char *filename);
 void entice_image_format_set(Evas_Object * o, const char *format);
-void entice_image_edje_set(Evas_Object * o, Evas_Object * edje);
 
 #endif

@@ -187,7 +187,7 @@ _entice_thumb_load(void *_data, Evas * _e, Evas_Object * _o, void *_ev)
    if ((o = (Evas_Object *) _data))
    {
       int iw, ih;
-      double w, h;
+      Evas_Coord w, h;
       int should_fit = 0;
       char buf[PATH_MAX];
 
@@ -200,7 +200,7 @@ _entice_thumb_load(void *_data, Evas * _e, Evas_Object * _o, void *_ev)
               evas_hash_find(entice->thumb.hash,
                              entice_image_file_get(entice->current))))
          edje_object_signal_emit(thumb_edje, "EnticeThumbUnLoaded", "");
-      
+
       edje_object_signal_emit(entice->edje, "EnticeImageDisplayPrep", "");
 
       tmp = e_thumb_evas_object_get(o);
@@ -255,7 +255,6 @@ _entice_thumb_load(void *_data, Evas * _e, Evas_Object * _o, void *_ev)
       edje_object_part_swallow(entice->edje, "EnticeImage", new_current);
       edje_object_part_swallow(entice->edje, "EnticeImageScroller",
                                new_scroller);
-      entice_image_edje_set(new_current, entice->edje);
 
       if (should_fit)
          entice_image_zoom_fit(new_current);
