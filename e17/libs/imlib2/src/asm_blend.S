@@ -56,7 +56,7 @@
 	.type __imlib_mmx_reshade_copy_rgba_to_rgb,@function
 .global __imlib_mmx_reshade_copy_rgba_to_rgba
 	.type __imlib_mmx_reshade_copy_rgba_to_rgba,@function
-
+	
 .bss
 .text
 .align 8
@@ -72,7 +72,6 @@ m10001000: .byte   0,   0,   0,   1,   0,   0,   0,   1
 m000V0V0V: .byte 127,   0, 127,   0, 127,   0,   0,   0
 mI0000000: .byte   0,   0,   0,   0,   0,   0,   0,  64
 m0VVV0VVV: .byte 127, 127, 127,   0, 127, 127, 127,   0
-
 
 /*\ MMX register use:
 |*| %mm1 = Source value
@@ -179,6 +178,67 @@ __imlib_mmx_blend_rgba_to_rgb:
 	LEAVE
 
 
+__imlib_mmx_copy_rgba_to_rgb:
+	ENTER
+
+	movq m0XXX0XXX, %mm5
+	movq mX000X000, %mm6
+
+	decl %edx
+	js .end_copy_rgb
+	decl %ebx
+	js .end_copy_rgb
+.for_loop_y_copy_rgb:
+	/*\ Load width \*/
+	movl %ebx, %ecx
+
+	/*\ Check for oddness \*/
+	sarl $1, %ecx
+	jc .for_loop_x_copy_rgb
+
+	/*\ Load source and destination \*/
+	movd (%esi, %ecx, 8), %mm1
+	movd (%edi, %ecx, 8), %mm2
+
+	/*\ Clear alpha channel of source, get alpha of destination \*/
+	pand %mm5, %mm1
+	pand %mm6, %mm2
+
+	/*\ d = d | s, and save \*/
+	por %mm1, %mm2
+	movd %mm2, (%edi, %ecx, 8)
+        decl %ecx
+        js .skip_x_copy_rgb
+
+.for_loop_x_copy_rgb:
+	/*\ Load source and destination \*/
+	movq (%esi, %ecx, 8), %mm1
+	movq (%edi, %ecx, 8), %mm2
+
+	/*\ Clear alpha channel of source \*/
+	pand %mm5, %mm1
+	pand %mm6, %mm2
+
+	/*\ d = d | s, and save \*/
+	por %mm1, %mm2
+	movq %mm2, (%edi, %ecx, 8)
+	
+	decl %ecx
+	jns .for_loop_x_copy_rgb
+.skip_x_copy_rgb:
+
+	/*\ Add row widths \*/
+	movl sw, %ecx
+	leal (%esi, %ecx, 4), %esi
+	movl dw, %ecx
+	leal (%edi, %ecx, 4), %edi
+	decl %edx
+	jns .for_loop_y_copy_rgb
+
+.end_copy_rgb:
+	LEAVE
+
+
 __imlib_mmx_blend_rgba_to_rgba:
 	ENTER
 
@@ -245,66 +305,6 @@ __imlib_mmx_blend_rgba_to_rgba:
 	LEAVE
 
 
-__imlib_mmx_copy_rgba_to_rgb:
-	ENTER
-
-	movq m0XXX0XXX, %mm5
-	movq mX000X000, %mm6
-
-	decl %edx
-	js .end_copy_rgb
-	decl %ebx
-	js .end_copy_rgb
-.for_loop_y_copy_rgb:
-	/*\ Load width \*/
-	movl %ebx, %ecx
-
-	/*\ Check for oddness \*/
-	sarl $1, %ecx
-	jc .for_loop_x_copy_rgb
-
-	/*\ Load source and destination \*/
-	movd (%esi, %ecx, 8), %mm1
-	movd (%edi, %ecx, 8), %mm2
-
-	/*\ Clear alpha channel of source, get alpha of destination \*/
-	pand %mm5, %mm1
-	pand %mm6, %mm2
-
-	/*\ d = d | s, and save \*/
-	por %mm1, %mm2
-	movd %mm2, (%edi, %ecx, 8)
-	jz .skip_x_copy_rgb
-
-.for_loop_x_copy_rgb:
-	/*\ Load source and destination \*/
-	movq (%esi, %ecx, 8), %mm1
-	movq (%edi, %ecx, 8), %mm2
-
-	/*\ Clear alpha channel of source \*/
-	pand %mm5, %mm1
-	pand %mm6, %mm2
-
-	/*\ d = d | s, and save \*/
-	por %mm1, %mm2
-	movq %mm2, (%edi, %ecx, 8)
-	
-	decl %ecx
-	jns .for_loop_x_copy_rgb
-.skip_x_copy_rgb:
-
-	/*\ Add row widths \*/
-	movl sw, %ecx
-	leal (%esi, %ecx, 4), %esi
-	movl dw, %ecx
-	leal (%edi, %ecx, 4), %edi
-	decl %edx
-	jns .for_loop_y_copy_rgb
-
-.end_copy_rgb:
-	LEAVE
-
-
 __imlib_mmx_copy_rgba_to_rgba:
 	ENTER
 
@@ -324,6 +324,7 @@ __imlib_mmx_copy_rgba_to_rgba:
 	movd (%esi, %ecx, 8), %mm1
 	movd %mm1, (%edi, %ecx, 8)
 
+        decl %ecx
 	jz .skip_x_copy_rgba
 
 .for_loop_x_copy_rgba:
@@ -369,6 +370,7 @@ __imlib_mmx_copy_rgb_to_rgba:
 	por %mm5, %mm1
 	movd %mm1, (%edi, %ecx, 8)
 
+        decl %ecx
 	jz .skip_x_copy_rgb_rgba
 
 .for_loop_x_copy_rgb_rgba:
@@ -535,6 +537,7 @@ __imlib_mmx_add_copy_rgba_to_rgb:
 	/*\ d = d + s, unsigned saturation, and save \*/
 	paddusb %mm1, %mm2
 	movd %mm2, (%edi, %ecx, 8)
+        decl %ecx
 	jz .skip_x_add_copy_rgb
 
 .for_loop_x_add_copy_rgb:
@@ -587,6 +590,7 @@ __imlib_mmx_add_copy_rgba_to_rgba:
 	/*\ d = d + s, unsigned saturation, and save \*/
 	paddusb %mm1, %mm2
 	movd %mm2, (%edi, %ecx, 8)
+        decl %ecx
 	jz .skip_x_add_copy_rgba
 
 .for_loop_x_add_copy_rgba:
@@ -756,6 +760,7 @@ __imlib_mmx_subtract_copy_rgba_to_rgb:
 	/*\ d = d - s, unsigned saturation, and save \*/
 	psubusb %mm1, %mm2
 	movd %mm2, (%edi, %ecx, 8)
+        decl %ecx
 	jz .skip_x_subtract_copy_rgb
 
 .for_loop_x_subtract_copy_rgb:
@@ -816,6 +821,7 @@ __imlib_mmx_subtract_copy_rgba_to_rgba:
 	/*\ Negate result alphas \*/
 	pxor %mm5, %mm2
 	movd %mm2, (%edi, %ecx, 8)
+        decl %ecx
 	jz .skip_x_subtract_copy_rgba
 
 .for_loop_x_subtract_copy_rgba:
@@ -1012,6 +1018,7 @@ __imlib_mmx_reshade_copy_rgba_to_rgb:
 	movd %mm2, (%edi, %ecx, 8)
 
 	/*\ MMX ops don't set flags \*/
+        decl %ecx
 	jz .skip_x_reshade_copy_rgb
 
 .for_loop_x_reshade_copy_rgb:
@@ -1098,6 +1105,7 @@ __imlib_mmx_reshade_copy_rgba_to_rgba:
 	movd %mm2, (%edi, %ecx, 8)
 
 	/*\ MMX ops don't set flags \*/
+        decl %ecx
 	jz .skip_x_reshade_copy_rgba
 
 .for_loop_x_reshade_copy_rgba:

@@ -703,9 +703,7 @@ __imlib_GetBlendFunction(ImlibOp op, char blend, char merge_alpha, char rgb_src,
 		       if (blend)
 			  blender = __imlib_BlendRGBToRGBA;
 		       else
-/* guilty mmx code - bad - wrong - overwrites memeory! */
-/*			  blender = __imlib_mmx_copy_rgba_to_rgba;*/
-			  blender = __imlib_CopyRGBAToRGBA;
+			  blender = __imlib_mmx_copy_rgba_to_rgba;
 		    }
 		  else
 		    {
@@ -717,8 +715,7 @@ __imlib_GetBlendFunction(ImlibOp op, char blend, char merge_alpha, char rgb_src,
 /*			  blender = __imlib_mmx_blend_rgba_to_rgba;*/
 			  blender = __imlib_BlendRGBAToRGBA;
 		       else
-/* possibly evil mmx code */
-/*			  blender = __imlib_mmx_copy_rgba_to_rgba;*/
+			  blender = __imlib_mmx_copy_rgba_to_rgba;
 			  blender = __imlib_CopyRGBAToRGBA;
 		    }
 	       }
@@ -727,9 +724,7 @@ __imlib_GetBlendFunction(ImlibOp op, char blend, char merge_alpha, char rgb_src,
 		  if (blend)
 		     blender = __imlib_mmx_blend_rgba_to_rgb;
 		  else
-/* another possible candidate */
-/*		     blender = __imlib_mmx_copy_rgba_to_rgb;*/
-		     blender = __imlib_CopyRGBAToRGB;
+		     blender = __imlib_mmx_copy_rgba_to_rgb;
 	       }
 	     break;
 	  case OP_ADD:
