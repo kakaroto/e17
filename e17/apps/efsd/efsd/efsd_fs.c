@@ -406,8 +406,8 @@ file_move(char *src_path, struct stat *src_st, char *dst_path)
 	  success = efsd_misc_remove(src_path);
 	  D_RETURN_(success);
 	}
+      D_RETURN_(FALSE);
     }
-  
   D_RETURN_(TRUE);
 }
 
