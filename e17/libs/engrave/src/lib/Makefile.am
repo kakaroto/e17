@@ -13,6 +13,11 @@ INCLUDES	     = \
 @evas_cflags@ \
 @ecore_cflags@ 
 
+CLEANFILES = \
+libengrave_la-engrave.h \
+libengrave_la-engrave.c \
+engrave.c
+
 lib_LTLIBRARIES      = libengrave.la 
 
 include_HEADERS      = Engrave.h 

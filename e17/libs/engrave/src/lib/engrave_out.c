@@ -10,21 +10,21 @@ static void _engrave_output_state(Engrave_Part *part, Engrave_Part_State *state,
 
 static int level = 0;
 
-char *_image_type_string[ETCHER_IMAGE_TYPE_NUM] = {
+char *_image_type_string[ENGRAVE_IMAGE_TYPE_NUM] = {
         "RAW",
         "COMP",
         "LOSSY",
         "USER"
         };
 
-char *_part_type_string[ETCHER_PART_TYPE_NUM] = {
+char *_part_type_string[ENGRAVE_PART_TYPE_NUM] = {
         "IMAGE",
         "TEXT",
         "RECT",
         "SWALLOW"
         };
 
-char *_text_effect_string[ETCHER_TEXT_EFFECT_NUM] = {
+char *_text_effect_string[ENGRAVE_TEXT_EFFECT_NUM] = {
         "NONE",
         "PLAIN",
         "OUTLINE",
@@ -35,7 +35,7 @@ char *_text_effect_string[ETCHER_TEXT_EFFECT_NUM] = {
         "OUTLINE_SOFT_SHADOW"
         };
 
-char *_action_string[ETCHER_ACTION_NUM] = {
+char *_action_string[ENGRAVE_ACTION_NUM] = {
   	"STATE_SET",
   	"ACTION_STOP",
   	"SIGNAL_EMIT",
@@ -45,14 +45,14 @@ char *_action_string[ETCHER_ACTION_NUM] = {
   	"SCRIPT"
         };
 
-char *_transition_string[ETCHER_TRANSITION_NUM] = {
+char *_transition_string[ENGRAVE_TRANSITION_NUM] = {
 	"LINEAR",
 	"SINUSOIDAL",
 	"ACCELERATE",
 	"DECELERATE"
         };
 
-char *_aspect_preference_string[ETCHER_ASPECT_PREFERENCE_NUM] = {
+char *_aspect_preference_string[ENGRAVE_ASPECT_PREFERENCE_NUM] = {
 	"NONE",
 	"VERTICAL",
 	"HORIZONTAL",
@@ -172,7 +172,7 @@ engrave_file_output(Engrave_File *engrave_file, char *path)
     Engrave_Image *image = l->data;
     if (image)
     {
-      if (image->type == ETCHER_IMAGE_TYPE_LOSSY)
+      if (image->type == ENGRAVE_IMAGE_TYPE_LOSSY)
         engrave_out_data(out, "image", "\"%s\" %s %.2f", image->name,
                 _image_type_string[image->type],
                 image->value);
@@ -335,13 +335,13 @@ _engrave_output_program(Engrave_Program *program, FILE *out)
   engrave_out_data(out, "signal", "\"%s\"", program->signal);
   engrave_out_data(out, "source", "\"%s\"", program->source);
 
-  if(program->action == ETCHER_ACTION_STOP)
+  if(program->action == ENGRAVE_ACTION_STOP)
   {
     engrave_out_data(out, "action", "%s", _action_string[program->action]);
   }
-  else if (program->action == ETCHER_ACTION_DRAG_VAL_SET ||
-           program->action == ETCHER_ACTION_DRAG_VAL_STEP ||
-           program->action == ETCHER_ACTION_DRAG_VAL_PAGE)
+  else if (program->action == ENGRAVE_ACTION_DRAG_VAL_SET ||
+           program->action == ENGRAVE_ACTION_DRAG_VAL_STEP ||
+           program->action == ENGRAVE_ACTION_DRAG_VAL_PAGE)
   {
     engrave_out_data(out, "action", "%s %.2f %.2f",
             _action_string[program->action], 
@@ -349,7 +349,7 @@ _engrave_output_program(Engrave_Program *program, FILE *out)
             program->value2
             );
   }
-  else if (program->action == ETCHER_ACTION_STATE_SET)
+  else if (program->action == ENGRAVE_ACTION_STATE_SET)
   {
     engrave_out_data(out, "action", "%s \"%s\" %.2f",
             _action_string[program->action],
@@ -362,7 +362,7 @@ _engrave_output_program(Engrave_Program *program, FILE *out)
             program->duration
             );
   }
-  else if (program->action == ETCHER_ACTION_SIGNAL_EMIT)
+  else if (program->action == ENGRAVE_ACTION_SIGNAL_EMIT)
   {
     engrave_out_data(out, "action", "%s \"%s\" \"%s\"",
             _action_string[program->action],
@@ -370,7 +370,7 @@ _engrave_output_program(Engrave_Program *program, FILE *out)
             program->state2
             );
   }
-  else if(program->action == ETCHER_ACTION_SCRIPT) 
+  else if(program->action == ENGRAVE_ACTION_SCRIPT) 
   {
     if (program->script)
     {
@@ -497,7 +497,7 @@ _engrave_output_state(Engrave_Part *part, Engrave_Part_State *state, FILE *out)
     engrave_out_data(out, "color3", "%d %d %d %d", 
             state->color3.r, state->color3.g, state->color3.b, state->color3.a);
 
-  if (part->type == ETCHER_PART_TYPE_IMAGE && state->image.normal )
+  if (part->type == ENGRAVE_PART_TYPE_IMAGE && state->image.normal )
   {
     engrave_out_start(out, "image");
     engrave_out_data(out, "normal", "\"%s\"", state->image.normal->name);
@@ -508,7 +508,7 @@ _engrave_output_state(Engrave_Part *part, Engrave_Part_State *state, FILE *out)
     }
     engrave_out_end(out);
   }
-  else if (part->type == ETCHER_PART_TYPE_TEXT)
+  else if (part->type == ENGRAVE_PART_TYPE_TEXT)
   {
     engrave_out_start(out, "text");
 

@@ -142,7 +142,7 @@ engrave_parse_part()
   part = (Engrave_Part *)calloc(1, sizeof(Engrave_Part));
   group = evas_list_data(evas_list_last(engrave_file->groups));
 
-  part->type = ETCHER_PART_TYPE_IMAGE;
+  part->type = ENGRAVE_PART_TYPE_IMAGE;
   part->mouse_events = 1;
   part->repeat_events = 0;
 
@@ -934,7 +934,7 @@ engrave_parse_program_script(char *script)
 
   if(program->script) free(program->script);
   program->script = (char *)strdup(script);
-  program->action = ETCHER_ACTION_SCRIPT;
+  program->action = ENGRAVE_ACTION_SCRIPT;
 }
 
 void
