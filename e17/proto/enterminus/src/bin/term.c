@@ -208,7 +208,7 @@ Term *term_init(Evas_Object *o) {
    term->font.height = term_font_get_height(term);
    term->title = NULL;
    evas_font_path_append(term->evas, term->font.path);
-   ecore_timer_add(0.1, term_timers, term);            
+   ecore_timer_add(0.01, term_timers, term);            
    execute_command(term);//, argc, argv);  
    term->cmd_fd.ecore =  ecore_main_fd_handler_add(term->cmd_fd.sys,
 						   ECORE_FD_READ,
