@@ -248,37 +248,54 @@ static void
 _engrave_output_part(Engrave_Part *part, void *data)
 {
   FILE *out = data;
+  char *tmp;
+  int x, step_x, count_x;
+  int y, step_y, count_y;
 
   engrave_out_start(out, "part");
 
-  engrave_out_data(out, "name", "\"%s\"", part->name);
-  engrave_out_data(out, "type", "%s", _part_type_string[part->type]);
+  tmp = engrave_part_name_get(part);
+  engrave_out_data(out, "name", "\"%s\"", tmp);
+  if (tmp) free(tmp);
 
-  if (!part->mouse_events)
-    engrave_out_data(out, "mouse_events", "%d", part->mouse_events);
+  engrave_out_data(out, "type", "%s", 
+        _part_type_string[engrave_part_type_get(part)]);
 
-  if (part->repeat_events)
-    engrave_out_data(out, "repeat_events", "%d", part->repeat_events);
+  if (!engrave_part_mouse_events_get(part))
+    engrave_out_data(out, "mouse_events", "%d",
+                    engrave_part_mouse_events_get(part));
 
-  if (part->effect)
-    engrave_out_data(out, "effect", "%s", _text_effect_string[part->effect]);
+  if (engrave_part_repeat_events_get(part))
+    engrave_out_data(out, "repeat_events", "%d",
+                  engrave_part_repeat_events_get(part));
 
-  if (part->clip_to)
-    engrave_out_data(out, "clip_to", "\"%s\"", part->clip_to);
+  if (engrave_part_effect_get(part) != ENGRAVE_TEXT_EFFECT_NONE)
+    engrave_out_data(out, "effect", "%s", 
+                  _text_effect_string[engrave_part_effect_get(part)]);
 
-  if (part->dragable.x || part->dragable.y)
+  tmp = engrave_part_clip_to_get(part);
+  if (tmp)
   {
-    engrave_out_start(out, "dragable");
-    engrave_out_data(out, "x", "%d %d %d", part->dragable.x,
-                            part->dragable.step.x, part->dragable.count.x);
-    engrave_out_data(out, "y", "%d %d %d", part->dragable.y,
-                            part->dragable.step.y, part->dragable.count.y);
-    if (part->dragable.confine)
-      engrave_out_data(out, "confine", "\"%s\"", part->dragable.confine);
-
-    engrave_out_end(out);
+    engrave_out_data(out, "clip_to", "\"%s\"", tmp);
+    free(tmp);
   }
 
+  engrave_part_dragable_x_get(part, &x, &step_x, &count_x);
+  engrave_part_dragable_y_get(part, &y, &step_y, &count_y);
+  if (x || y)
+  {
+    engrave_out_start(out, "dragable");
+    engrave_out_data(out, "x", "%d %d %d", x, step_x, count_x);
+    engrave_out_data(out, "y", "%d %d %d", y, step_y, count_y);
+
+    tmp = engrave_part_dragable_confine_get(part);
+    if (tmp)
+    {
+      engrave_out_data(out, "confine", "\"%s\"", tmp);
+      free(tmp);
+    }
+    engrave_out_end(out);
+  }
   engrave_part_state_foreach(part, _engrave_output_state, out);
   engrave_out_end(out);
 }

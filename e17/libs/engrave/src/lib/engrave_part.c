@@ -76,6 +76,143 @@ engrave_part_name_get(Engrave_Part *ep)
 }
 
 /**
+ * engrave_part_type_get - Get the type of the part
+ * @param ep: The Engrave_Part to get the type from
+ *
+ * @return Returns the Engrave_Part_Type of the part
+ */
+Engrave_Part_Type
+engrave_part_type_get(Engrave_Part *ep)
+{
+  /* XXX Default to RECT if non set ??? */
+  return (ep ? ep->type : ENGRAVE_PART_TYPE_RECT);
+}
+
+/**
+ * engrave_part_mouse_events_get - Get the mouse events setting
+ * @param ep: The Engrave_Part to get the mouse events from
+ * 
+ * @return Returns the mouse events setting for the part
+ */
+int
+engrave_part_mouse_events_get(Engrave_Part *ep)
+{
+  if (!ep) return 1;
+  return ep->mouse_events;
+}
+
+/**
+ * engrave_part_repeat_events_get - Get the repeat events setting 
+ * @param ep: The Engrave_Part to get the repeat event setting from
+ * 
+ * @return Returns the repeat event setting of the part
+ */
+int
+engrave_part_repeat_events_get(Engrave_Part *ep)
+{
+  if (!ep) return 0;
+  return ep->repeat_events;
+}
+
+/**
+ * engrave_part_effect_get - Get the text effect on the part
+ * @param ep: The Engrave_Part to get the effect from
+ *
+ * @return Returns the Engrave_Text_Effect setting for the part or
+ * ENGRAVE_TEXT_EFFECT_NONE if non set
+ */
+Engrave_Text_Effect
+engrave_part_effect_get(Engrave_Part *ep)
+{
+  if (!ep) return ENGRAVE_TEXT_EFFECT_NONE;
+  return ep->effect;
+}
+
+/**
+ * engrave_part_clip_to_get - Get the clip_to setting of the part
+ * @param ep: The Engrave_Part to get the clip_to from
+ *
+ * @return Returns a pointer to the clip_to string for the part or
+ * NULL on failure. This pointer must be free'd by the user.
+ */
+char *
+engrave_part_clip_to_get(Engrave_Part *ep)
+{
+  if (!ep) return NULL;
+  return (ep->clip_to ? strdup(ep->clip_to) : NULL);
+}
+
+/**
+ * engrave_part_dragable_x_get - Get the dragable info in the x direction
+ * @param ep: The Engrave_Part to get the dragable information from
+ * @param x: Where to place the x value
+ * @param step: Where to place the step value
+ * @param count: Where to place the count value
+ *
+ * @return Returns no value.
+ */
+void
+engrave_part_dragable_x_get(Engrave_Part *ep, int *x, int *step, int *count)
+{
+  int tx, tstep, tcount;
+
+  if (!ep) {
+    tx = 0;
+    tstep = 0;
+    tcount = 0;
+  } else {
+    tx = ep->dragable.x;
+    tstep = ep->dragable.step.x;
+    tcount = ep->dragable.count.x;
+  }
+  if (x) *x = tx;
+  if (step) *step = tstep;
+  if (count) *count = tcount;
+}
+
+/**
+ * engrave_part_dragable_y_get - Get the dragable info in the y direction
+ * @param ep: The Engrave_Part to get the dragable information from
+ * @param y: Where to place the y value
+ * @param step: Where to place the step value
+ * @param count: Where to place the count value
+ *
+ * @return Returns no value.
+ */
+void
+engrave_part_dragable_y_get(Engrave_Part *ep, int *y, int *step, int *count)
+{
+  int ty, tstep, tcount;
+
+  if (!ep) {
+    ty = 0;
+    tstep = 0;
+    tcount = 0;
+  } else {
+    ty = ep->dragable.y;
+    tstep = ep->dragable.step.y;
+    tcount = ep->dragable.count.y;
+  }
+  if (y) *y = ty;
+  if (step) *step = tstep;
+  if (count) *count = tcount;
+}
+
+/**
+ * engrave_part_dragable_confine_get - Get the dragable confine setting
+ * @param ep: The Engrave_Part to get the confine setting from
+ *
+ * @return Returns a pointer to the confine setting or NULL on error.
+ * This pointer must be free'd by the user.
+ */
+char *
+engrave_part_dragable_confine_get(Engrave_Part *ep)
+{
+  if (!ep) return NULL;
+  return (ep->dragable.confine ? strdup(ep->dragable.confine) : NULL);
+}
+
+/**
  * engrave_part_type_set - set the type of the part
  * @param ep: The Engrave_Part to set the type on.
  * @param type: The Engrave_Part_Type to set on the part
