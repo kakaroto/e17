@@ -1,0 +1,126 @@
+#!/usr/bin/perl -w
+
+# This is a little script that will create a window that says
+# "Follow the Bouncing Ball" and then drops it to the bottom of the
+# screen and slowly bounces it around.
+# then when it's done bouncing it gets rid of it.
+
+$progname = $0;
+$progname =~ s,.*/,,;  # use basename only
+$progname =~ s/\.\w*$//; # strip extension, if any
+
+$VERSION = sprintf("%d.%02d", q$Revision$ =~ /(\d+)\.(\d+)/);
+
+use lib qw(/home/amutiso/scripts/pesh/X11);
+
+use X11::Esh;
+use Getopt::Long;
+use POSIX qw(floor);
+use Data::Dumper;
+
+Getopt::Long::Configure(qw(auto_abbrev no_ignore_case no_bundling));
+
+# Global variables
+$verbose = 0;
+$debug = 0;
+
+sub usage {
+    # usage: usage [exitstatus]
+    local ($exitstatus) = ($_[0] || 0);
+
+    print <<"EOT";
+Usage: $progname [-dhvV] on|off|toggle
+    Enlightenment Shell test program. Shade current area windows.
+Options:
+    -d 		enable debug output, (default: off).
+    -h		display this message.
+    -v		enable vebose output, (default: off).
+    -V		display program version and exit.
+EOT
+    exit ($exitstatus);
+}
+
+sub parse_args {
+    # usage: parge_args
+    my($help,$Version) = (undef,undef);
+    
+    GetOptions("debug!", \$debug,
+	       "help!", \$help,
+	       "verbose!", \$verbose,
+	       "Version!", \$Version,
+	       ) || usage(1);
+    usage(0) if $help;
+    (printf("%s: Version: %s\n", $progname, $VERSION),exit 0) if $Version;
+}
+
+# main()
+
+&parse_args;
+
+my $esh = new X11::Esh;
+$esh->debug(1) if $debug;
+
+$esh->send_messages("set clientname $progname", "set version $VERSION");
+
+# get screen dimensions
+my @screeninfo = $esh->general_info("screen_size");
+
+my @oldwins = $esh->internals("i");
+$esh->dialog_ok("Follow the Bouncing Ball");
+
+my $win = undef;
+foreach my $iwin ($esh->internals("i")) {
+  next if grep {$_ == $iwin} @oldwins;
+  $win = $iwin;
+  last;
+}
+
+die "$progname: could not find the dialog window\n" unless defined $win;
+
+printf("%s: bounce window id: 0x%08X\n", $progname, $win) if $verbose;
+
+%wininfo = $esh->window_info($win);
+
+# now for the fun part.  make that baby bounce up and down.
+# we're going to open a big pipe for this one and just shove data
+# to it.
+
+#printf("---XDB: info[%s]\n",Dumper(\%wininfo));
+#printf("---XDB: coords[%dx%d+%d+%d]\n",$wininfo{coords}[0],$wininfo{coords}[1],$wininfo{coords}[2],$wininfo{coords}[3]);
+
+@fallspeeds = (30,25,20,15,10,5,4,3,2);
+my $i = 0;
+my ($originx, $originy, $extentx, $extenty) = @{$wininfo{coords}};
+my $bottom = $screeninfo[1] - $extenty;
+foreach (@fallspeeds) {
+  my $oldoriginy = $originy;
+  my $fallspeed = $fallspeeds[$i];
+
+  while($originy < $bottom) {
+    $originy = (($originy + $fallspeed) < $bottom) ?
+      $originy + $fallspeed : $bottom;
+    $esh->win_op_move($win, $originx, $originy);
+  }
+  
+  $fallspeed = $fallspeeds[$i+1] ? $fallspeeds[$i+1] : 1;
+  
+  while($originy > 
+	($oldoriginy + int($oldoriginy * (1/scalar(@fallspeeds))))) {
+    if(($originy - $fallspeed) > 
+       ($oldoriginy + int($oldoriginy * (1/scalar(@fallspeeds))))) {
+      $originy -= $fallspeed;
+    } else {
+      $originy = $oldoriginy + int($oldoriginy * (1/scalar(@fallspeeds)));
+    }
+    $esh->win_op_move($win, $originx, $originy);
+  }
+  $i++;
+}
+
+sleep(undef,undef,undef, 1.3);
+$esh->win_op_close($win);
+
+printf("%s: done!\n", $progname) if $verbose;
+
+# Done!
+

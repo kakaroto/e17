@@ -1,0 +1,164 @@
+#!/usr/bin/perl -w
+
+$progname = $0;
+$progname =~ s,.*/,,;  # use basename only
+$progname =~ s/\.\w*$//; # strip extension, if any
+
+$VERSION = sprintf("%d.%02d", q$Revision$ =~ /(\d+)\.(\d+)/);
+
+#use lib qw(/home/amutiso/scripts/pesh/X11);
+use blib;
+
+use X11::Esh;
+use Getopt::Long;
+use Data::Dumper;
+use Tie::IxHash;
+
+Getopt::Long::Configure(qw(auto_abbrev no_ignore_case no_bundling));
+
+# Global variables
+$verbose = 0;
+$debug = 0;
+
+sub usage {
+    # usage: usage [exitstatus]
+    local ($exitstatus) = ($_[0] || 0);
+
+    print <<"EOT";
+Usage: $progname [-dhvV] test-window-id
+    Enlightenment Shell Test Program.
+Options:
+    -d 		enable debug output, (default: off).
+    -h		display this message.
+    -v		enable vebose output, (default: off).
+    -V		display program version and exit.
+EOT
+    
+    exit ($exitstatus);
+}
+
+sub parse_args {
+    # usage: parge_args
+    my($help,$Version,$listmode) = (undef,undef,1);
+    
+    GetOptions("debug!", \$debug,
+	       "help!", \$help,
+	       "verbose!", \$verbose,
+	       "Version!", \$Version,
+	       ) || usage(1);
+    usage(0) if $help;
+    usage(1) unless scalar @ARGV;
+    (printf("%s: Version: %s\n", $progname, $VERSION),exit 0) if $Version;
+}
+
+# main()
+
+printf("---XDB: \@INC[%s]\n", join(":",@INC));
+
+&parse_args;
+my $testwin = oct($ARGV[0]);
+
+my $esh = new X11::Esh;
+$esh->debug(1) if $debug;
+
+$esh->send_messages("set clientname $progname",
+		    "set version $VERSION",
+		    "set author ZeroTau",
+		    "set email zerotau\@icequake.com",
+		    "set web http://www.enlightenment.org",
+		    "set info Enlightenment Perl IPC Shell - talk to E direct");
+
+#$esh->request_print("help");
+#printf("Help Message--->%s<---\n", $esh->help);
+$esh->request_print("pager ?");
+print join(", ", split(/\n+/, $esh->version())), "\n";
+my %windows = $esh->windows;
+printf("windows: %s\n",Dumper(\%windows));
+foreach my $winid (keys %windows) {
+  my $title = $windows{$winid};
+  $windows{$winid} = { title => $title,
+		       areas => [$esh->win_op_area($winid)],
+		       desk => $esh->win_op_desk($winid),
+		       };
+}
+#printf("windows: %s\n",Dumper(\%windows));
+
+$esh->win_op_shade($testwin, "toggle");
+select(undef,undef,undef,1.7);
+$esh->win_op_shade($testwin, "toggle");
+#select(undef,undef,undef,1.3);
+#$esh->win_op('d', $testwin, 3);
+#$esh->win_op('ar', $testwin, 1, 0);
+
+printf("SM_File: [%s]\n", $esh->sm_file());
+
+my @themes = $esh->themes;
+printf("Themes:\n");
+{my $x = 1; map {printf("\t%2d. %s\n", $x++, $_);} @themes; printf("\n");}
+printf("Desks: %02d, Areas: %02dx%02d\n", $esh->desks, $esh->areas);
+printf("Current Desktop: %02d, Current Areas: %02dx%02d\n", $esh->goto_desktop, $esh->goto_area);
+
+printf("internal ewindows: %s\n", 
+       join(", ", map {sprintf("0x%08x",$_)} $esh->internal_list("i")));
+
+tie(my %effects, 'Tie::IxHash',
+    audio => $esh->fx_audio,
+    autoraise => $esh->fx_autoraise,
+    deskslide => $esh->fx_deskslide,
+    dragbar => $esh->fx_dragbar,
+    edge_resistance => $esh->fx_edge_resistance,
+#    edge_snap_resistance => $esh->fx_edge_snap_resistance,
+    mapslide => $esh->fx_mapslide,
+    menu_animate => $esh->fx_menu_animate,
+    raindrops => $esh->fx_raindrops,
+    ripples => $esh->fx_ripples,
+    tooltips => $esh->fx_tooltips,
+    window_shade_speed => $esh->fx_window_shade_speed,
+    );
+printf("fx: %s\n",Dumper(\%effects));
+#printf("fx: raindrops toggled %s!\n",
+#       uc($esh->fx_raindrops($effects{raindrops} eq "on" ? "off" : "on")));
+
+#printf("focus: 0x%08x\n", $esh->set_focus);
+$esh->dialog_ok(sprintf("Last window focus:\n\"%s\"->0x%08x\n...", 
+			$windows{sprintf("0x%08x",$esh->set_focus)},
+			$esh->set_focus));
+
+#my %classes = $esh->list_classes;
+#printf("classes: %s\b", Dumper(\%classes));
+
+# advanced_focus
+my %advanced_focus_options = 
+  (
+   focus_list => "off",
+   manual_placement => "off",
+   new_popup_of_owner_focus => "off",
+   new_popup_window_focus => "off",
+   new_window_focus => "off",
+   pointer_after_keyboard_focus_window => "off",
+   pointer_to_keyboard_focus_window => "off",
+   raise_after_keyboard_focus_switch => "off",
+   raise_on_keyboard_focus_switch => "off",
+   switch_to_popup_location => "off",
+   transients_follow_leader => "off",
+  );
+
+for my $option (keys %advanced_focus_options) {
+  $advanced_focus_options{$option} = $esh->advanced_focus($option);
+}
+
+printf("Advanced Focus Options:\n");
+for my $option (keys %advanced_focus_options) {
+  printf("\t%s: %s\n", $option, $advanced_focus_options{$option});
+}
+print "\n";
+
+#my %win_info = $esh->windows_info;
+#printf("window info:\n%s\n",Dumper(\%win_info));
+
+
+# Done!
+
+#
+# Mode: perl-mode
+#
