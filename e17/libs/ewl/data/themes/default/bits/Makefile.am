@@ -14,10 +14,10 @@ EXTRA_DIST = $(EDCS)
 CLEANFILES = $(EETS)
 
 themedir = $(pkgdatadir)/themes/default/bits
-theme_DATA = $(EETS)
+#theme_DATA = $(EETS)
 
-all: $(EETS)
+#all: $(EETS)
 
-SUFFIXES = .edc .eet
-.edc.eet:
-	edje_cc -v -id images $< $@
+#SUFFIXES = .edc .eet
+#.edc.eet:
+#	edje_cc -v -id images $< $@
