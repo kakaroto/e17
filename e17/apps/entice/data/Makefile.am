@@ -1,1 +1,1 @@
-SUBDIRS = themes fonts
+SUBDIRS = themes fonts images
