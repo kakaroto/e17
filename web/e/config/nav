@@ -35,4 +35,7 @@
   <td valign="middle"><a href="team.html"><img border=0 src="img/nav_team.gif" alt="Team"></a></td>
   <td><a href="team.html">Team&nbsp;Members</a></td>
 </tr>
+<tr>
+  <td valign="middle" colspan="2" align="center"><br><br><br><a href="http://sourceforge.net"><img src="img/sflogo.png" width="88" height="31" border="0" alt="SourceForgeLogo"></A></td>
+</tr>
 </table>
