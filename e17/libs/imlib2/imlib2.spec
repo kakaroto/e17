@@ -2,7 +2,7 @@ Summary: Powerful image loading and rendering library
 Name: imlib2
 Version: 1.2.0
 Release: 1.%(date '+%Y%m%d')
-Copyright: BSD
+License: BSD
 Group: System Environment/Libraries
 URL: http://www.rasterman.com/raster/imlib.html
 Source: ftp://ftp.enlightenment.org/pub/enlightenment/e17/libs/%{name}-%{version}.tar.gz
