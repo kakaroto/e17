@@ -129,7 +129,7 @@ efsd_misc_file_execable(char *filename)
   if (!filename)
     D_RETURN_(FALSE);
 
-  if (!efsd_stat(filename, &st))
+  if (!efsd_lstat(filename, &st))
     D_RETURN_(FALSE);
 
   if (st.st_uid == getuid())

@@ -146,7 +146,7 @@
         making sure that an &efsd; instance isn't already running).
       </para>
       <para>
-        &efsd; has only few requirements. Right now they are
+        &efsd; has a few requirements. Right now they are
 
 	<itemizedlist mark="opencircle">
 	  <listitem>
@@ -154,12 +154,27 @@
               FAM, the File Alteration Monitor, available at
               <ulink url="http://oss.sgi.com/projects/fam">SGI's Open Source site</ulink>.
             </para>
+	    <para>
+              FAM is used to implement &efsd;'s file monitoring.
+            </para>
           </listitem>
 	  <listitem>
 	    <para>
               Edb, the Enlightenment Database, based on BerkeleyDB. It's available on
               Enlightenment's SourceForge 
               <ulink url="http://prdownloads.sourceforge.net/enlightenment">download page</ulink>.
+            </para>
+	    <para>
+              Edb is used to implement &efsd;'s file metadata handling.
+            </para>
+          </listitem>
+	  <listitem>
+	    <para>
+	      libxml2, available at
+              <ulink url="http://www.xmlsoft.org">XMLSoft</ulink>.
+            </para>
+	    <para>
+              &efsd; uses libxml2 to store the filetype database.
             </para>
           </listitem>
 	</itemizedlist>
@@ -225,6 +240,17 @@
 	and receiving replies) and provides a convenient API to the clients.
 	The following sections introduce general concepts before the API is
 	explained in detail.
+
+	<note>
+	  <title>This chapter tells you all you'll need to know in order to use
+	    use the &lefsd; API.</title>
+	  <para>
+	    The next chapter gives additional information about the server itself,
+	    but that information is not strictly necessary in order to be able
+	    to use &efsd;, except maybe for the command line options when launching
+	    the server.
+	  </para>
+	</note
       </para>
       <section>
 	<title>Opening a Connection to &efsd;</title>
@@ -324,7 +350,7 @@ if ( (id = efsd_makedir(ec, "foo/bar")) < 0)
 	  </programlisting>
 
 	  <note>
-	    <title>A return value &lt; 0 does not mean that an error occured when processing the command.</title>
+	    <title>A return value &lt; 0 does not mean that an error occurred when processing the command.</title>
 	    <para>
 	      It means that the command didn't get sent to the server in the
 	      first place. Errors during actual execution of the commands are
@@ -431,7 +457,7 @@ if (FD_ISSET(fd, &amp;fdset))
 	    <title>After you finished handling the event, you need to clean up the structure.</title>
             <para>
               Use <link linkend="API-efsd-event-cleanup"><function>efsd_event_cleanup()</function></link>
-	      to release any memory that was read into the <classname>EfsdEvent</classname> structure.
+              to release any memory that was read into the <classname>EfsdEvent</classname> structure.
             </para>
 	  </caution>
 	  </para>
@@ -476,7 +502,7 @@ while (efsd_wait_event(ec, &amp;ee) >= 0)
 	<section id="eventtypes">
 	  <title id="eventtypes.title">Handling Event Types</title>
           <para>
-	There are two kinds of events that you can receive:
+	There are two kinds of reply events that you can receive:
 
 	  <itemizedlist mark="opencircle">
 	    <listitem>
@@ -624,10 +650,6 @@ while (efsd_wait_event(ec, &amp;ee) >= 0)
 	<link linkend="API-efsd-remove"><function>efsd_remove()</function></link>, and
 	<link linkend="API-efsd-op-force"><function>efsd_op_force()</function></link> for
 	<link linkend="API-efsd-move"><function>efsd_move()</function></link>.
-
-         See <link linkend="options" endterm="options.title"></link> for details on how to 
-	 use these options.
-
 	</para>
       </section>
 
@@ -645,7 +667,7 @@ while (efsd_wait_event(ec, &amp;ee) >= 0)
 
 	  <caution>
 	    <title> When you monitor a directory as a file, you get <emphasis>no</emphasis>
-	      monitoring events when a file in the directory changes.</title>
+	      monitoring events when a file in the directory changed.</title>
             <para>
             </para>
 	  </caution>
@@ -707,10 +729,10 @@ while (efsd_wait_event(ec, &amp;ee) >= 0)
 	    </listitem>
 	  </itemizedlist>
 
-	  &lefsd;'s API provides one function for each of these datatypes, those calls are
+	  &lefsd;'s API provides one function for each of these data types, those calls are
 	  <link linkend="API-efsd-set-metadata-int"><function>efsd_set_metadata_int()</function></link>,
 	  <link linkend="API-efsd-set-metadata-float"><function>efsd_set_metadata_float()</function></link>,
-	  <link linkend="API-efsd-set-metadata-str"><function>efsd_set_metadata_str()</function></link> and
+	  <link linkend="API-efsd-set-metadata-str"><function>efsd_set_metadata_sir()</function></link> and
 	  <link linkend="API-efsd-set-metadata-raw"><function>efsd_set_metadata_raw()</function></link>.
 	  Those functions should be self-explanatory. When using <link linkend="API-efsd-set-metadata-raw">
 	  <function>efsd_set_metadata_raw()</function></link>, you need to pass the type of the data
@@ -742,10 +764,6 @@ while (efsd_wait_event(ec, &amp;ee) >= 0)
             </para>
 	  </caution>
 	  </para>
-	  <para>
-          For details about how this feature is implemented, see
-	  <link linkend="efsd-meta" endterm="efsd-meta.title"></link>.									   
-	  </para>
       </section>
 
       <section id="filetypes">
@@ -761,7 +779,7 @@ while (efsd_wait_event(ec, &amp;ee) >= 0)
 	  The well-known UNIX <command>file</command> command uses a smarter approach: it
 	  uses a multi-level approach that examines files, with each level providing less
 	  reliable information in case a previous level failed. Roughly, files are scanned
-	  on the OS level (exmining the result of <function>stat()</function> results) and
+	  on the OS level (examining the result of <function>stat()</function> results) and
 	  searched for typical <emphasis>magic</emphasis> bytestrings in order to reliably
 	  determine the file's type. See the manpage for more details.
         </para>
@@ -1005,8 +1023,7 @@ if ( (id = efsd_start_monitor_dir(ec, "/some/dir", ops)) < 0)
 	generated through the options before receiving the <constant>EFSD_FILE_EXISTS</constant>
         event for the next file, or on any sequence in which those results arrive. The reason
         is that the actions requested by the options take varying amounts of time and
-        &efsd; processes those actions in parallel. See
-        <link linkend="multithreading" endterm="multithreading.title"></link> for details.
+        &efsd; processes those actions in parallel.
 	</para>
       </section>
 
@@ -3297,20 +3314,84 @@ if ( (id = efsd_start_monitor_dir(ec, "/some/dir", ops)) < 0)
 
   <chapter id="efsd">
     <title id="efsd.title">&efsd; - The Server Side</title>
-      <note>
-        <title>This Chapter explains the inner workings of the &efsd; daemon.</title>
-        <para>
-	  It will be of interest primarily to people who want to hack on the code
-          and/or understand how &efsd; works internally. You can easily use &efsd; without
-          reading this chapter.
-       </para>
-      </note
+    <section id="using-efsd-server">
+      <title id="using-efsd-server.title">Using &efsd;</title>
+      <para>
+	To launch the server, simply start the <command>efsd</command> binary. You could
+	  do this in a number of ways, such as from you X Window startup scripts
+	  (such as <filename>.xsession</filename>) or, if you have appropriate permissions,
+	  from the startup scripts in <filename>/etc/init.d</filename> directory
+	  <footnote><para>The actual name of the directory depends on your operating system.</para>
+	  </footnote>.
+      </para>
+      <para>
+	The &efsd; server understands a small number of command-line options to influence
+	its verbosity:
+
+	<table frame="all">
+	  <title>&efsd; Command-line Options</title>
+	  <tgroup cols="2">
+	    <colspec colname="option" colwidth="*">
+	    <colspec colname="effect" colwidth="7*">
+	    <thead>
+	      <row>
+		<entry>Option</entry>
+		<entry>Effect</entry>
+	      </row>
+	    </thead>
+	    <tbody>
+	      <row>
+		<entry><command>-h, --help</command></entry>
+		<entry>Displays help message, then exits.</entry>
+	      </row>
+	      <row>
+		<entry><command>-f, --foreground</command></entry>
+		<entry>Keeps the server from forking into the background, as it normally
+		  does.</entry>
+	      </row>
+	      <row>
+		<entry><command>-c, --careful</command></entry>
+		<entry>If the I/O socket file to communicate with clients exists
+		  already, do not start. Normally the socket file gets overwritten
+		  with a new one when &efsd; starts.</entry>
+	      </row>
+	      <row>
+		<entry><command>-d, --debug</command></entry>
+		<entry>Displays debugging messages along with PID/thread ID. This
+		  is only available when &efsd; was compiled accordingly.</entry>
+	      </row>
+	      <row>
+		<entry><command>-t, --tree</command></entry>
+		<entry>Displays a call tree for debugging purposes. This creates a
+		  <emphasis>LOT</emphasis> of output (quickly filling tens of megabytes),
+		  so use this option with care when redirecting the output into files etc.</entry>
+	      </row>
+	    </tbody>
+	  </tgroup>
+	</table>
+      </para>
+    </section>
     <section>
       <title>Tour of the Source Files</title>
       <para>
          The purpose of this section is to give a quick overview of what's contained
          in the source files (contained in the <function>/efsd</function> subdirectory).
          The following naming scheme is used throughout the code:
+
+	<caution>
+	  <title>When writing new functions, make sure to use the <function>D_ENTER</function>
+	    and <function>D_RETURN</function> macros!</title>
+	  <para>
+	    Those macros make sure that the call tree is displayed correctly. Only in
+	    case of really minor functions or heavily called nested ones should you consider
+	    leaving those macros out. They greatly help in case of debugging when you need
+	    to pinpoint where things are going wrong.
+	  </para>
+	</caution>
+
+      </para>
+      <para>
+	Also, please stick to the following conventions when adding new code:
 
 	<itemizedlist mark="opencircle">
 	  <listitem>
@@ -3329,8 +3410,155 @@ if ( (id = efsd_start_monitor_dir(ec, "/some/dir", ops)) < 0)
 	    </para>
 	  </listitem>
 	</itemizedlist>
+
+	<table frame="all">
+	  <title>Source File Contents</title>
+	  <tgroup cols="2">
+	    <colspec colname="filenames" colwidth="*">
+	    <colspec colname="descr" colwidth="7*">
+	    <thead>
+	      <row>
+		<entry>File</entry>
+		<entry>Contents</entry>
+	      </row>
+	    </thead>
+	    <tbody>
+	      <row>
+		<entry><filename>efsd.h]</filename></entry>
+		<entry>&efsd; data type definitions. This header file gets installed
+		  when <command>make install</command> is run.</entry>
+	      </row>
+	      <row>
+		<entry><filename>efsd_commands.[ch]</filename></entry>
+		<entry>Toplevel calls for efsd commands. Handles error codes
+		  and initiates sending of replies.</entry>
+	      </row>
+	      <row>
+		<entry><filename>efsd_debug.[ch]</filename></entry>
+		<entry>Macros for debugging output and call tree tracing,
+		  including functions to manage call depths in thread-specific
+		  data.</entry>
+	      </row>
+	      <row>
+		<entry><filename>efsd_dynarray.[ch]</filename></entry>
+		<entry>A dynamic array of charachter strings that can
+		  be sorted, inserted into etc.</entry>
+	      </row>
+	      <row>
+		<entry><filename>efsd_fam_r.[ch]</filename></entry>
+		<entry>Reentrant versions of the FAM API, realized by
+		  simple mutex locking around the original calls.</entry>
+	      </row>
+	      <row>
+		<entry><filename>efsd_filetype.[ch]</filename></entry>
+		<entry>Filetype lookup and database management, libxml
+		  interface to database file</entry>
+	      </row>
+	      <row>
+		<entry><filename>efsd_fs.[ch]</filename></entry>
+		<entry>Traditional file system calls are implemented here,
+		  such as <command>cp</command>,<command>rm</command> etc.</entry>
+	      </row>
+	      <row>
+		<entry><filename>efsd_globals.h</filename></entry>
+		<entry>Global variables. Other than command line options,
+		  basically only the most important file descriptors.</entry>
+	      </row>
+	      <row>
+		<entry><filename>efsd_hash.[ch]</filename></entry>
+		<entry>A generic hashtable implementation, using
+		  function pointers for the hash functions and cleanup
+		  functions, also standard hash functions such as for
+		  strings.
+		</entry>
+	      </row>
+	      <row>
+		<entry><filename>efsd_io.[ch]</filename></entry>
+		<entry>Client-server communication. Handles the details
+		  of how to send/receive efsd commands.</entry>
+	      </row>
+	      <row>
+		<entry><filename>efsd_list.[ch]</filename></entry>
+		<entry>A generic list implementation, using function
+		  pointers for cleanup calls and providing various
+		  means to append, prepend, remove or shift entries.</entry>
+	      </row>
+	      <row>
+		<entry><filename>efsd_lock.[ch]</filename></entry>
+		<entry>A single-write/multiple-read lock implementation,
+		  needed in the multithreaded versions.</entry>
+	      </row>
+	      <row>
+		<entry><filename>efsd_macros.h</filename></entry>
+		<entry>Common macro definitions,
+		  <function>malloc</function>/<function>free</function> wrappers,
+		  threadedness/nonthreadedness wrappers.</entry>
+	      </row>
+	      <row>
+		<entry><filename>efsd_main.[ch]</filename></entry>
+		<entry>Main event loops, FAM event handling, client-server
+		  interprocess communication, exit + signal handlers.</entry>
+	      </row>
+	      <row>
+		<entry><filename>efsd_meta.[ch]</filename></entry>
+		<entry>Metadata management module.</entry>
+	      </row>
+	      <row>
+		<entry><filename>efsd_misc.[ch]</filename></entry>
+		<entry>Assembly of all kinds of little helpers that
+		  didn't fit elsewhere.</entry>
+	      </row>
+	      <row>
+		<entry><filename>efsd_monitor.[ch]</filename></entry>
+		<entry>File monitoring, for now basically the FAM
+		  interface. Implements the entire monitor management,
+		  relying on the statcache among other things.</entry>
+	      </row>
+	      <row>
+		<entry><filename>efsd_options.[ch]</filename></entry>
+		<entry>&efsd; command options allocation/cleanup.</entry>
+	      </row>
+	      <row>
+		<entry><filename>efsd_queue.[ch]</filename></entry>
+		<entry>An &efsd; event queue implementation. This needs
+		  to be cleaned up into a generic queue and a specific
+		  event queue implementation at some point.</entry>
+	      </row>
+	      <row>
+		<entry><filename>efsd_stack.[ch]</filename></entry>
+		<entry>A generic stack implementation, based on the list
+		  described above.</entry>
+	      </row>
+	      <row>
+		<entry><filename>efsd_statcache.[ch]</filename></entry>
+		<entry>The stat subsystem. Implements both
+		  <function>stat</function> and <function>lstat</function>
+		  calls, while caching the results relying on file monitoring
+		  to speed things up.</entry>
+	      </row>
+	      <row>
+		<entry><filename>efsd_types.[ch]</filename></entry>
+		<entry>Allocation/Deallocation for the most commonly
+		  used data types.</entry>
+	      </row>
+	      <row>
+		<entry><filename>libefsd.[ch]</filename></entry>
+		<entry>&lefsd; implementation and header file, the header
+		  gets installed when calling <command>make install</command>.</entry>
+	      </row>
+	      <row>
+		<entry><filename>libefsd_misc.[ch]</filename></entry>
+		<entry>Helper functions for &lefsd;.</entry>
+	      </row>
+	    </tbody>
+	  </tgroup>
+	</table>
+	
       </para>
     </section>
+
+<!--
+
     <section id="efsd-ipc">
       <title id="efsd-ipc.title">IPC mechanisms</title>
       <para>
@@ -3371,40 +3599,15 @@ if ( (id = efsd_start_monitor_dir(ec, "/some/dir", ops)) < 0)
       <para>
       </para>
     </section>
-    <section>
-      <title>To Do</title>
-      <para>
-	Well, software is never finished, and this also applies to &efsd;. You can always look at the
-	TODO file in CVS to see what's currently missing. Patches are appreciated, please send them
-	to the author at <email>cK@whoop.org</email>. At the time of this writing, the following things
-	are missing:
 
-	<itemizedlist mark="opencircle">
-	  <listitem>
-	    <para>A thorough testsuite, especially for the cache interaction and the
-	      functions in <filename>efsd_fs.c</filename>, i.e. the file copy/move/remove
-	      code. Ideally this would be an automated set of tests to check if changes
-	      broke anything. Think XP.
-	    </para>
-	  </listitem>
-	  <listitem>
-	    <para>
-	      A great feature would be to not only get the filetypes in a MIME type-ish notation,
-	      but also in fully human-readable form (sort of like the file(1) output). Ideally
-	      this would include internationalization and localization support.
-	    </para>
-	  </listitem>
-	</itemizedlist>
-
-      </para>
-    </section>
+-->
   </chapter>
 
   <chapter id="efsdshell">
     <title>&efsdsh; - An Interactive &efsd; Client</title>
     <para>    	     
       The &efsd; distribution comes with a useful tool for testing and playing with &efsd;
-      -- that's &efsdsh;, the &efsd; shell <footnote><para>"Shell" is a bit of exageration, since &efsdsh;
+      -- that's &efsdsh;, the &efsd; shell <footnote><para>"Shell" is a bit of exaggeration, since &efsdsh;
       provides only a small subset of a real shell's functionality.</para></footnote>. It provides
       a simplified command line prompt, where you can send commands to &efsd; in the usual fashion, i.e.
       a directory copy command is <function>cp -r /some/dir /some/other/dir</function> etc.
@@ -3422,8 +3625,37 @@ if ( (id = efsd_start_monitor_dir(ec, "/some/dir", ops)) < 0)
   </chapter>
   
   <chapter id="summary">
-    <title>Summary</title>
+    <title>Summary, TODO list</title>
     <para>
+      Well, software is never finished, and this also applies to &efsd;. You can always look at the
+      TODO file in CVS to see what's currently missing. Patches are appreciated, please send them
+      to the author at <email>cK@whoop.org</email>. At the time of this writing, the following things
+      are missing:
+      
+      <itemizedlist mark="opencircle">
+	<listitem>
+	  <para>A thorough testsuite, especially for the cache interaction and the
+	    functions in <filename>efsd_fs.c</filename>, i.e. the file copy/move/remove
+	    code. Ideally this would be an automated set of tests to check if changes
+	    broke anything. Think XP.
+	  </para>
+	</listitem>
+	<listitem>
+	  <para>
+	    A great feature would be to not only get the filetypes in a MIME type-ish notation,
+	    but also in fully human-readable form (sort of like the file(1) output). Ideally
+	    this would include internationalization and localization support.
+	  </para>
+	</listitem>
+      </itemizedlist>
+      
+      At the time of this writing (September 2001), &efsd; should be mostly stable. Contributions
+      and patches are welcome, please send them to me at <email>cK@whoop.org</email> directly.
+      I hope you'll enjoy using and programming &efsd;.
+
+    </para>
+    <para>
+      Cheers, -- Christian.
     </para>
   </chapter>
   
