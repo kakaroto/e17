@@ -348,7 +348,6 @@ save (ImlibImage *im, ImlibProgressFunction progress,
      }
 #endif
    ret = buf;
-   printf("set data of size %i key %s in db %s\n", size, key, file);
    e_db_data_set(db, key, ret, size);
    free(buf);
    if (progress)
