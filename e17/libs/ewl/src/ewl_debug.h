@@ -66,30 +66,30 @@ inline void     ewl_print_warning();
 	return num; \
 }
 
-#define D(lvl, fmt, args...) \
+#define D(lvl, fmt) \
 { \
 	if (ewl_config.debug.enable && ewl_config.debug.level >= lvl) \
 	  { \
 		fprintf(stderr, "<--> "); \
-		fprintf(stderr, fmt, ## args); \
+		fprintf(stderr, fmt); \
 		fprintf(stderr, "\n"); \
 	  } \
 }
 
-#define DERROR(fmt, args...) \
+#define DERROR(fmt) \
 { \
 	ewl_print_warning(); \
 	fprintf(stderr, "\tIn function:\n\n" \
 			"\t%s();\n\n", __FUNCTION__); \
-	fprintf(stderr, fmt, ## args); \
+	fprintf(stderr, fmt); \
 }
 
-#define DWARNING(fmt, args...) \
+#define DWARNING(fmt) \
 { \
 	ewl_print_warning(); \
 	fprintf(stderr, "\tIn function:\n\n" \
 			"\t%s();\n\n", __FUNCTION__); \
-	fprintf(stderr, fmt, ## args); \
+	fprintf(stderr, fmt); \
 }
 
 #define DCHECK_PARAM_PTR(str, ptr) \

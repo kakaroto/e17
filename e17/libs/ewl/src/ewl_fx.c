@@ -110,7 +110,7 @@ void ewl_fx_init_widget(Ewl_Widget * w)
 	 */
 	if (!w->appearance) {
 		D(DLEVEL_STABLE,
-		  "Widget %p does not have a appearance string\n", w);
+		  "Widget does not have a appearance string\n");
 		DRETURN(DLEVEL_STABLE);
 	}
 
@@ -141,7 +141,7 @@ void ewl_fx_init_widget(Ewl_Widget * w)
 	 * No fx to apply, so our work is done.
 	 */
 	if (!count) {
-		D(DLEVEL_STABLE, "No effects for widget %s", wname);
+		D(DLEVEL_STABLE, "No effects for widget\n");
 		DRETURN(DLEVEL_STABLE);
 	}
 
@@ -391,7 +391,7 @@ ewl_fx_add(Ewl_Widget * w, char *name, Ewl_Callback_Type cb_start,
 		ewl_callback_prepend(w, EWL_CALLBACK_DESTROY,
 				     __ewl_fx_func_stop, pend);
 
-	D(DLEVEL_STABLE, "Effect %s added to %p properly", name, w);
+	D(DLEVEL_STABLE, "Effect added to widget properly");
 
 	DRETURN_INT(1, DLEVEL_STABLE);
 }
@@ -564,7 +564,7 @@ ewl_fx_timer_add(Ewl_Widget * w, char *name, double timeout, int fps,
 
 	if (!fxp) {
 		D(DLEVEL_STABLE,
-		  "Can't add timer since fx proto %s does not exist.\n", name);
+		  "Can't add timer since fx proto does not exist.\n");
 		DRETURN(DLEVEL_STABLE);
 	}
 
@@ -574,7 +574,7 @@ ewl_fx_timer_add(Ewl_Widget * w, char *name, double timeout, int fps,
 	if (!w->fx || ewd_list_is_empty(w->fx)) {
 		D(DLEVEL_STABLE,
 		  "Trying to add effect to a widget which doesnt"
-		  "want have info about the effect %s\n", name);
+		  "want have info about the effect\n");
 	} else {
 		/*
 		 * Find the specified effect on the fx list.
@@ -652,7 +652,7 @@ void ewl_fx_timer_del(Ewl_Widget * w, char *name)
 
 	snprintf(name2, PATH_LEN, "%s%p", name, w);
 
-	D(DLEVEL_STABLE, "attempting to remove %s", name2);
+	D(DLEVEL_STABLE, "attempting to remove fx");
 
 	/*
 	 * Check to see if the timer is on the table. If not, then we can't
@@ -661,7 +661,7 @@ void ewl_fx_timer_del(Ewl_Widget * w, char *name)
 	timer = ewd_hash_remove(fx_timers, name2);
 	if (!timer) {
 		D(DLEVEL_STABLE,
-		  "Can't remove timer %s since it does not exists\n", name2);
+		  "Can't remove fx timer since it does not exists\n");
 		DRETURN(DLEVEL_STABLE);
 	}
 
@@ -772,7 +772,7 @@ Ewl_FX_Proto   *ewl_fx_plugin_load(char *name)
 	plugin = ewd_plugin_load(fx_group_id, name);
 
 	if (!plugin) {
-		DWARNING("Could not load fx plugin %s.\n", name);
+		DWARNING("Could not load fx plugin.\n");
 		DRETURN_INT(0, DLEVEL_STABLE);
 	}
 
@@ -790,8 +790,8 @@ Ewl_FX_Proto   *ewl_fx_plugin_load(char *name)
 	 * trying to use this effect.
 	 */
 	if (!fxp) {
-		DWARNING("Symbol load() failed to be called in plugin %s\n"
-			 "Please contact the author.\n", name);
+		DWARNING("Symbol load() failed to be called in plugin\n"
+			 "Please contact the author.\n");
 		DRETURN_INT(0, DLEVEL_STABLE);
 	}
 
@@ -1103,7 +1103,7 @@ __ewl_fx_widget_appearance_changed(Ewl_Widget * w, void *ev_data,
 	 * later.
 	 */
 	if (!w->appearance) {
-		DWARNING("Widget %p does not have a appearance string\n", w);
+		DWARNING("Widget does not have a appearance string\n");
 		DRETURN(DLEVEL_STABLE);
 	}
 
@@ -1118,7 +1118,7 @@ __ewl_fx_widget_appearance_changed(Ewl_Widget * w, void *ev_data,
 	 * If no fx for this widget then return.
 	 */
 	if (!count) {
-		D(DLEVEL_STABLE, "No effects for widget %s", wname);
+		D(DLEVEL_STABLE, "No effects for widget");
 		DRETURN(DLEVEL_STABLE);
 	}
 

@@ -72,7 +72,7 @@ int ewl_theme_init(void)
 		}
 
 		if (!theme_db) {
-			DERROR("No theme db %s =( exiting....", theme_db_path);
+			DERROR("No theme db =( exiting....");
 			exit(-1);
 		}
 	}
@@ -231,7 +231,7 @@ char           *ewl_theme_image_get(Ewl_Widget * w, char *k)
 		path = strdup(data);
 
 	if (((stat(path, &st)) == -1) || !S_ISREG(st.st_mode))
-		DWARNING("Couldn't stat %s\n", path);
+		DWARNING("Couldn't stat image\n");
 
 	DRETURN_PTR(path, DLEVEL_STABLE);
 }

@@ -16,6 +16,8 @@ static void     __close_config_db(void);
 
 static int      __config_exists(char *name);
 
+Ewl_Config ewl_config;
+
 extern Ewd_List *ewl_window_list;
 
 /**

@@ -24,7 +24,7 @@ struct _ewl_config {
 	} theme;
 };
 
-Ewl_Config      ewl_config;
+extern Ewl_Config      ewl_config;
 
 int             ewl_config_init(void);
 int             ewl_config_set_str(char *config, char *k, char *v);
