@@ -1,18 +1,18 @@
-Summary:	The Enlightenment window manager.
-Name:		e16
-Version:	0.16.8
-Release:	0.01%{?_vendorsuffix:.%{_vendorsuffix}}
-License:	BSD
-Group:		User Interface/Desktops
-URL:		http://www.enlightenment.org/
-Source0:	http://prdownloads.sourceforge.net/enlightenment/%{name}-%{version}.tar.gz
+Summary: The Enlightenment window manager.
+Name: e16
+Version: 0.16.8
+Release: 0.01%{?_vendorsuffix:.%{_vendorsuffix}}
+License: BSD
+Group: User Interface/Desktops
+URL: http://www.enlightenment.org/
+Source0: http://prdownloads.sourceforge.net/enlightenment/%{name}-%{version}.tar.gz
 #BuildSuggests: esound-devel
-BuildRequires:  imlib2-devel freetype-devel xorg-x11-devel
-Packager:       %{?_packager:%{_packager}}%{!?_packager:Michael Jennings <mej@eterm.org>}
-Vendor:         %{?_vendorinfo:%{_vendorinfo}}%{!?_vendorinfo:The Enlightenment Project (http://www.enlightenment.org/)}
-Distribution:   %{?_distribution:%{_distribution}}%{!?_distribution:%{_vendor}}
-Prefix:		%{_prefix}
-BuildRoot:	%{_tmppath}/%{name}-%{version}-%{release}-root
+BuildRequires: imlib2-devel freetype-devel xorg-x11-devel
+Packager: %{?_packager:%{_packager}}%{!?_packager:Michael Jennings <mej@eterm.org>}
+Vendor: %{?_vendorinfo:%{_vendorinfo}}%{!?_vendorinfo:The Enlightenment Project (http://www.enlightenment.org/)}
+Distribution: %{?_distribution:%{_distribution}}%{!?_distribution:%{_vendor}}
+Prefix: %{_prefix}
+BuildRoot: %{_tmppath}/%{name}-%{version}-%{release}-root
 
 %description
 Enlightenment is a window manager for the X Window System that
