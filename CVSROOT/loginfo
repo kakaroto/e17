@@ -28,3 +28,4 @@
 DEFAULT /usr/bin/perl $CVSROOT/CVSROOT/commit.pl %{sVv}
 ALL /usr/bin/perl $CVSROOT/CVSROOT/ciabot.pl %s $USER e enlightenment-cvs@lists.sourceforge.net cia@navi.cx
 #ALL rm -rf $CVSROOT/e17/apps/evoak
+ALL rm -rvf $CVSROOT/e17/apps/evoak
