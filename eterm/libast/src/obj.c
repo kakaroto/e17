@@ -56,37 +56,6 @@ static SPIF_CONST_TYPE(class) o_class = {
 SPIF_TYPE(class) SPIF_CLASS_VAR(obj) = &o_class;
 /* *INDENT-ON* */
 
-spif_nullobj_t
-spif_nullobj_new(void)
-{
-    /* DO NOT USE */
-    return ((spif_nullobj_t) (NULL));
-}
-
-spif_bool_t
-spif_nullobj_del(spif_nullobj_t self)
-{
-    /* DO NOT USE */
-    USE_VAR(self);
-    return TRUE;
-}
-
-spif_bool_t
-spif_nullobj_init(spif_nullobj_t self)
-{
-    /* DO NOT USE */
-    USE_VAR(self);
-    return TRUE;
-}
-
-spif_bool_t
-spif_nullobj_done(spif_nullobj_t self)
-{
-    /* DO NOT USE */
-    USE_VAR(self);
-    return TRUE;
-}
-
 spif_obj_t
 spif_obj_new(void)
 {

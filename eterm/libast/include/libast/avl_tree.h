@@ -36,7 +36,6 @@
 #define SPIF_OBJ_IS_AVL_TREE_NODE(o)            (SPIF_OBJ_IS_TYPE((o), avl_tree_node))
 
 SPIF_DEFINE_OBJ(avl_tree_node) {
-    SPIF_DECL_PARENT_TYPE(nullobj);
     spif_obj_t data;
     spif_int8_t balance;
     spif_avl_tree_node_t left, right;

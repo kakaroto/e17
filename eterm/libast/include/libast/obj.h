@@ -28,7 +28,7 @@
 /*@{*/
 /**
  * @name Object Definition and Declaration Macros
- * Macros used to help declare and manipulate objects of any type.
+ * ---
  *
  * This set of macros is intended to abstract certain details about
  * the internal workings of objects and greatly simplify their
@@ -112,7 +112,7 @@
 /*@{*/
 /**
  * @name Generic Object/Class Casting Macros
- * Macros used to typecast arbitrary objects to generic types.
+ * ---
  *
  * This set of macros allows objects of any type (i.e., any object
  * descended from the basic "obj" or "class" type) to be treated as
@@ -158,10 +158,6 @@
  */
 #define SPIF_CONST_CLASS(cls)            (SPIF_CONST_CAST(class) (cls))
 
-/* FIXME:  Do we need the nullobj stuff?  I don't think so. */
-/* UNDOCUMENTED */
-#define SPIF_NULLOBJ(obj)                (SPIF_CAST(nullobj) (obj))
-
 /**
  * Cast an arbitrary object to an obj.
  *
@@ -172,18 +168,18 @@
  * typecast such as this, and any function or macro which needs an
  * arbitrary object can be passed any object using this macro.
  *
- * @param obj An object of any valid type.
- * @return    A generic object reference to that object.
+ * @param o An object of any valid type.
+ * @return  A generic object reference to that object.
  *
  * @see DOXGRP_OBJ, SPIF_CAST()
  */
-#define SPIF_OBJ(obj)                    (SPIF_CAST(obj) (obj))
+#define SPIF_OBJ(o)                    (SPIF_CAST(obj) (o))
 /*@}*/
 
 /*@{*/
 /**
  * @name Generic Object Type Safety Macros
- * Macros used to test, determine, and/or verify an object's type.
+ * ---
  *
  * Macros in this group are used to verify the validity of an object
  * instance and its type.
@@ -191,16 +187,82 @@
  * @ingroup DOXGRP_OBJ
  */
 
-/* Check to see if a pointer references an obj. */
+/**
+ * Determine if an arbitrary object is of type "obj."
+ *
+ * This macro returns a boolean value based on whether or not the
+ * object passed to it is of type "obj."  Obviously, this will almost
+ * never been the case, since the actual obj type is too generic to be
+ * useful for anything other than a parent class.  However, each
+ * object type needs to define a macro like this named
+ * SPIF_OBJ_IS_xxx() (where xxx is the object type), so this macro
+ * serves as a template for how those should be written.
+ *
+ * This type-verification class for each object type should always be
+ * defined as this one is -- simply a wrapper around
+ * SPIF_OBJ_IS_TYPE().
+ *
+ * @param o The object to test.
+ * @return  Whether or not the object is of type "obj."
+ *
+ * @see DOXGRP_OBJ, SPIF_OBJ_IS_TYPE()
+ */
 #define SPIF_OBJ_IS_OBJ(o)               (SPIF_OBJ_IS_TYPE(o, obj))
 
-/* Used for testing the NULL-ness of objects. */
+/**
+ * Determine if an object of type "obj" is NULL.
+ *
+ * This macro returns a boolean value based on whether or not the
+ * object passed to it is NULL.  The object is cast to type "obj"
+ * before the comparison, so it should work for any valid object.
+ * This macro will not often be used by user code.  However, each
+ * object type needs to define a macro like this named
+ * SPIF_xxx_ISNULL() (where xxx is the object type), so this macro
+ * serves as a template for how those should be written.
+ *
+ * @param o The object to test.
+ * @return  Whether or not the object is NULL.
+ *
+ * @see DOXGRP_OBJ, SPIF_OBJ(), SPIF_NULL_TYPE()
+ */
 #define SPIF_OBJ_ISNULL(o)               (SPIF_OBJ(o) == SPIF_NULL_TYPE(obj))
 
-/* Check to see if a pointer references an object.  Increasing levels
-   of accuracy at the expense of some speed for the higher debug levels.
-   This is also internal.  It's used by other SPIF_OBJ_IS_*() macros. */
+/**
+ * Determine if an object is of a given type.
+ *
+ * This macro returns a boolean value based on whether or not the
+ * given object, @a o, is of type @a type.  It provides the driving
+ * force behind all SPIF_OBJ_IS_xxx()-style macros.  Unlike the
+ * SPIF_OBJ_CHECK_TYPE() macro, this macro will @em always verify the
+ * object type.  If you need a debugging assertion instead, use
+ * SPIF_OBJ_CHECK_TYPE(), as it will resolve to @c (1) in
+ * non-debugging code.
+ *
+ * @param o    The object to test.
+ * @param type The type to check for.
+ * @return     Whether or not @a o is of type @a type.
+ *
+ * @see DOXGRP_OBJ, SPIF_OBJ_ISNULL(), SPIF_OBJ_CLASS(),
+ *      SPIF_CLASS_VAR(), SPIF_OBJ_CHECK_TYPE()
+ */
 #define SPIF_OBJ_IS_TYPE(o, type)        ((!SPIF_OBJ_ISNULL(o)) && (SPIF_OBJ_CLASS(o) == SPIF_CLASS_VAR(type)))
+
+/**
+ * Provide debugging assertion that an object is of a given type.
+ *
+ * This macro returns a boolean value based on whether or not the
+ * given object, @a o, is of type @a type.  It is intended for
+ * situations where the test only needs to be performed in debugging
+ * code.  If DEBUG is 0, it will resolve to @c (1).  If DEBUG is
+ * between 1 and 4 inclusive, it will simply be a NULL check.  Higher
+ * debug levels will treat it just like SPIF_OBJ_IS_TYPE().
+ *
+ * @param o    The object to test.
+ * @param type The type to check for.
+ * @return     Whether or not @a o is of type @a type.
+ *
+ * @see DOXGRP_OBJ, SPIF_OBJ_ISNULL(), SPIF_OBJ_IS_TYPE()
+ */
 #if DEBUG == 0
 #  define SPIF_OBJ_CHECK_TYPE(o, type)   (1)
 #elif DEBUG <= 4
@@ -213,35 +275,209 @@
 /*@{*/
 /**
  * @name Generic Object Instance Macros
- * Macros used to operate on generic objects.
+ * ---
  *
  * This set of macros manipulates actual object instances in various
- * ways.
+ * ways.  They can be used on any object.
  *
  * @ingroup DOXGRP_OBJ
  */
 
-/* Access the implementation class member of an object. */
+/**
+ * Access the class for a given object.
+ *
+ * Every object has a member variable that references its @link
+ * spif_class_t class @endlink.  There is a single class object for
+ * each individual object type, and all instances of that type
+ * reference the same class object.  If you know the type of an
+ * object, you can use SPIF_CLASS_VAR() to access its class object
+ * (i.e., the class object for that type).  However, this macro can be
+ * used to access the class object of @em any object, regardless of
+ * whether or not you know its type.
+ *
+ * @note This macro returns an object of type spif_class_t, so only
+ * methods common to all objects can be called using this macro.
+ * Other class types should define their own SPIF_xxx_CLASS() macro to
+ * access methods specific to that class.
+ *
+ * @param obj An object of arbitrary/unknown type.
+ * @return    The class object for the given object.
+ *
+ * @see DOXGRP_OBJ, SPIF_CLASS(), SPIF_OBJ(), spif_class_t
+ */
 #define SPIF_OBJ_CLASS(obj)              (SPIF_CLASS(SPIF_OBJ(obj)->cls))
 
-/* Get the classname...very cool. */
+/**
+ * Obtain the string representation of an object's class name.
+ *
+ * This macro will access the classname for an object.  The classname
+ * will be enclosed in exclamation marks ('!') so as to help identify
+ * its origin.  It is most often used as the return value for the
+ * @c type method of a given object type.
+ *
+ * @param obj An object of arbitrary/unknown type.
+ * @return    The class name (as a spif_classname_t) for the given
+ *            object.
+ *
+ * @see DOXGRP_OBJ, SPIF_OBJ_CLASS()
+ */
 #define SPIF_OBJ_CLASSNAME(obj)          (SPIF_CAST(classname) SPIF_OBJ_CLASS(obj))
 
-/* Call a method on an instance of an implementation class */
+/**
+ * Call the named method for a given object.
+ *
+ * The methods which can be called on a given object are defined by
+ * that object's @link spif_class_t class @endlink.  Since all objects
+ * are derived from spif_obj_t, and all classes are derived from
+ * spif_class_t (the class type for "obj"), the methods defined by
+ * spif_class_t can be called on any arbitrary object, regardless of
+ * its actual object/class types.  This macro provides the mechanism
+ * by which this is done.
+ *
+ * @note This macro should not be called directly.  It is used by the
+ * SPIF_OBJ_*() macros and as a template for interface classes.
+ *
+ * @param obj  An object of arbitrary/unknown type.
+ * @param meth The name of the method to call.
+ * @return     A pointer to the specified method for that object.
+ *
+ * @see DOXGRP_OBJ, SPIF_OBJ_CLASS(), spif_class_t
+ */
 #define SPIF_OBJ_CALL_METHOD(obj, meth)  SPIF_OBJ_CLASS(obj)->meth
 
-/* Calls to the basic functions. */
+/**
+ * Create an instance of a generic object.
+ *
+ * This macro allocates and returns an object of type "obj."  Almost
+ * never used, but it's here for demonstration purposes anyway.
+ *
+ * @return An allocated object of type "obj."
+ *
+ * @see DOXGRP_OBJ, spif_obj_new()
+ */
 #define SPIF_OBJ_NEW()                   SPIF_CAST(obj) (SPIF_CLASS(SPIF_CLASS_VAR(obj)))->(noo)()
+
+/**
+ * Initialize an object.
+ *
+ * This macro calls the @c init method of an object in order to
+ * initialize it.
+ *
+ * @param o An already-allocated object.
+ * @return  #TRUE if successful, #FALSE otherwise.
+ *
+ * @see DOXGRP_OBJ, spif_obj_init()
+ */
 #define SPIF_OBJ_INIT(o)                 SPIF_CAST(bool) (SPIF_OBJ_CALL_METHOD((o), init)(o))
+
+/**
+ * Clean up an object.
+ *
+ * This macro calls the @c done method of an object.  This basically
+ * restores it to its original allocated-and-initialized state.
+ *
+ * @param o An object.
+ * @return  #TRUE if successful, #FALSE otherwise.
+ *
+ * @see DOXGRP_OBJ, spif_obj_done()
+ */
 #define SPIF_OBJ_DONE(o)                 SPIF_CAST(bool) (SPIF_OBJ_CALL_METHOD((o), done)(o))
+
+/**
+ * Delete an object.
+ *
+ * This macro calls the @c del method of an object, destroying it and
+ * freeing its memory.
+ *
+ * @param o An object.  It will cease to exist after this call.
+ * @return  #TRUE if successful, #FALSE otherwise.
+ *
+ * @see DOXGRP_OBJ, spif_obj_del()
+ */
 #define SPIF_OBJ_DEL(o)                  SPIF_CAST(bool) (SPIF_OBJ_CALL_METHOD((o), del)(o))
+
+/**
+ * Convert the contents of an object to a string.
+ *
+ * This macro calls the @c show method of an object, returning a
+ * spif_str_t object containing its string representation.
+ *
+ * @param o The object to display.
+ * @param b An existing spif_str_t buffer to use.  If NULL, a new str
+ *          object will be created and returned.
+ * @param i Number of leading spaces to indent.
+ * @return  A str object containing the string representation of @a o.
+ *
+ * @see DOXGRP_OBJ, spif_obj_show(), SPIF_SHOW()
+ */
 #define SPIF_OBJ_SHOW(o, b, i)           SPIF_CAST(str) (SPIF_OBJ_CALL_METHOD((o), show)(o, #o, b, i))
+
+/**
+ * Compare two objects.
+ *
+ * This macro calls the @c comp method of object #1 to compare the two
+ * objects.
+ *
+ * @param o1 Object #1.
+ * @param o2 Object #2.
+ * @return   A spif_cmp_t value containing the comparison result.
+ *
+ * @see DOXGRP_OBJ, spif_obj_comp(), spif_comp_t
+ */
 #define SPIF_OBJ_COMP(o1, o2)            SPIF_CAST(cmp) (SPIF_OBJ_CALL_METHOD((o1),  comp)(o1, o2))
+
+/**
+ * Duplicate an object.
+ *
+ * This macro calls the @c dup method of an object.  A copy of the
+ * object is returned.
+ *
+ * @param o An object.
+ * @return  A duplicate of that object.
+ *
+ * @see DOXGRP_OBJ, spif_obj_dup()
+ */
 #define SPIF_OBJ_DUP(o)                  SPIF_CAST(obj) (SPIF_OBJ_CALL_METHOD((o), dup)(o))
+
+/**
+ * Obtain the type of the object.
+ *
+ * This macro calls the @c type method of an object to obtain its
+ * classname.
+ *
+ * @param o An object.
+ * @return  The classname of that object.
+ *
+ * @see DOXGRP_OBJ, spif_obj_type(), SPIF_OBJ_CLASSNAME()
+ */
 #define SPIF_OBJ_TYPE(o)                 SPIF_CAST(classname) (SPIF_OBJ_CALL_METHOD((o), type)(o))
 /*@}*/
 
-/* Convenience macro */
+
+/*@{*/
+/**
+ * @name Object Display Convenience Macros
+ * ---
+ *
+ * This set of macros simplifies the process of displaying (as a
+ * string) the contents of an object.  They can be used on any object.
+ *
+ * @ingroup DOXGRP_OBJ
+ */
+
+/**
+ * Convenience macro for displaying an object.
+ *
+ * This macro provides an easy way to output the string
+ * representation of an object to a given file descriptor.  The macro
+ * itself handles the creation and deletion of the temporary @c str
+ * object required (hence the "convenience").
+ *
+ * @param o  The object to display.
+ * @param fd The file descriptor to display it on.
+ *
+ * @see DOXGRP_OBJ, spif_obj_show()
+ */
 #define SPIF_SHOW(o, fd)                 do { \
                                            spif_str_t tmp__; \
                                            tmp__ = SPIF_OBJ_SHOW(o, SPIF_NULL_TYPE(str), 0); \
@@ -249,16 +485,33 @@
                                            spif_str_del(tmp__); \
                                          } while (0)
 
-#define SPIF_OBJ_SHOW_NULL(t, n, b, i)   do { \
-                                           memset(tmp, ' ', (i)); \
-                                           snprintf(tmp + (i), sizeof(tmp) - (i), "(spif_" #t "_t) %s:  " \
-                                                     SPIF_NULLSTR_TYPE(t) "\n", NONULL(n)); \
-                                           if (SPIF_STR_ISNULL(b)) { \
-                                             (b) = spif_str_new_from_ptr(tmp); \
-                                           } else { \
-                                             spif_str_append_from_ptr((b), tmp); \
-                                           } \
-                                         } while (0)
+/**
+ * Convenience macro for displaying a NULL value for an object.
+ *
+ * Obviously, one cannot invoke the @c show method of a NULL object.
+ * This macro exists to provide a uniform way for object @c show
+ * methods to easily (and uniformly) display NULL objects.
+ *
+ * @param t   The type of the NULL object.
+ * @param n   The name of the NULL object (variable name).
+ * @param b   A str object to which to assign the result.
+ * @param i   Number of spaces to indent.
+ * @param tmp A char[] buffer of fixed size used for temporary
+ *            storage.
+ *
+ * @see DOXGRP_OBJ, spif_obj_show()
+ */
+#define SPIF_OBJ_SHOW_NULL(t, n, b, i, tmp)  do { \
+                                               memset(tmp, ' ', (i)); \
+                                               snprintf(tmp + (i), sizeof(tmp) - (i), "(spif_" #t "_t) %s:  " \
+                                                        SPIF_NULLSTR_TYPE(t) "\n", NONULL(n)); \
+                                               if (SPIF_STR_ISNULL(b)) { \
+                                                 (b) = spif_str_new_from_ptr(tmp); \
+                                               } else { \
+                                                 spif_str_append_from_ptr((b), tmp); \
+                                               } \
+                                             } while (0)
+/*@}*/
 
 
 /* The type for the classname variables.  I don't see any reason why this
@@ -268,16 +521,11 @@ typedef const char *spif_classname_t;
 /* Generic function pointer. */
 typedef void * (*spif_func_t)();
 
-/* A nullobj contains...well, nothing.  Any class that is really small and/or
-   needs to be very memory-efficient should be derived from this class. */
-SPIF_DEFINE_OBJ(nullobj) {
-};
-
 /* The class contains the function pointers for the generic object functions. */
 SPIF_DEFINE_OBJ(class) {
   spif_classname_t classname;
 
-  spif_func_t noo;  /* FIXME:  Do we really need this? */
+  spif_func_t noo;
   spif_func_t init;
   spif_func_t done;
   spif_func_t del;
@@ -299,10 +547,6 @@ SPIF_DEFINE_OBJ(obj) {
 #include <libast/str.h>
 
 extern spif_class_t SPIF_CLASS_VAR(obj);
-extern spif_nullobj_t spif_nullobj_new(void);
-extern spif_bool_t spif_nullobj_del(spif_nullobj_t);
-extern spif_bool_t spif_nullobj_init(spif_nullobj_t);
-extern spif_bool_t spif_nullobj_done(spif_nullobj_t);
 extern spif_obj_t spif_obj_new(void);
 extern spif_bool_t spif_obj_del(spif_obj_t);
 extern spif_bool_t spif_obj_init(spif_obj_t);

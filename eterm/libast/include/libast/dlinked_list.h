@@ -32,7 +32,6 @@
 #define SPIF_OBJ_IS_DLINKED_LIST_ITEM(o)            (SPIF_OBJ_IS_TYPE((o), dlinked_list_item))
 
 SPIF_DEFINE_OBJ(dlinked_list_item) {
-    SPIF_DECL_PARENT_TYPE(nullobj);
     spif_obj_t data;
     spif_dlinked_list_item_t prev, next;
 };
