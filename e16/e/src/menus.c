@@ -2418,6 +2418,7 @@ MenusEventKeyPress(XEvent * ev)
 	MenusHide();
 	break;
      case XK_Down:
+      check_next:
 	mi = MenuFindNextItem(m, mi, 1);
 	goto check_warp;
      case XK_Up:
@@ -2428,6 +2429,8 @@ MenusEventKeyPress(XEvent * ev)
 	m = m->parent;
 	goto check_menu;
      case XK_Right:
+	if (mi == NULL)
+	   goto check_next;
 	m = mi->child;
 	if (!m || m->num <= 0)
 	   break;
