@@ -24,13 +24,14 @@ EppletTest_epplet_SOURCES = TestEpplet.c
 EppletTest_epplet_DEPENDENCIES = $(top_srcdir)/api/libepplet.la
 EppletTest_epplet_LDFLAGS = -rpath $(libdir):$(pkglibdir)
 
-INCLUDES = -I. -I$(top_srcdir)/api -I$(top_srcdir) -I.. -I$(includedir) -I$(prefix)/include $(X_CFLAGS)
+INCLUDES = -DEBIN=\"$(EBIN)\" -DEROOT=\"$(EROOT)\" -I. -I$(top_srcdir)/api -I$(top_srcdir) -I.. -I$(includedir) -I$(prefix)/include $(X_CFLAGS)
 LDADD = $(top_builddir)/api/libepplet.la -L$(libdir) -L$(prefix)/lib $(LIBS) $(X_LIBS)
 
-EXTRA_DIST = E-Load.icon E-Clock.icon E-Net.icon E-Cpu.icon EppletTest.icon
+EXTRA_DIST = E-Load.icon E-Clock.icon E-Net.icon E-Cpu.icon EppletTest.icon \
+E-Clock-Image.png
 
 install-data-hook:
-	$(mkinstalldirs) $(EROOT)/epplet_icons
-	@for i in $(srcdir)/*.icon ; do \
-	  $(INSTALL_DATA) $$i $(EROOT)/epplet_icons/ ; \
+	$(mkinstalldirs) $(EROOT)/epplet_icons;
+	for i in $(srcdir)/*.icon $(srcdir)/*.png; do \
+	  $(INSTALL_DATA) $$i $(EROOT)/epplet_icons/; \
 	done

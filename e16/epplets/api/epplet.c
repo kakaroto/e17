@@ -3544,3 +3544,9 @@ Epplet_change_button_image(Epplet_gadget gadget, char *image)
    if (gg->visible)
       Epplet_draw_button(gadget);
 }
+
+void 
+Epplet_clear_window(Window ww)
+{
+   XClearWindow(disp, ww);
+}
