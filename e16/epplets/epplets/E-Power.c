@@ -64,6 +64,11 @@ cb_timer_acpi(void *data)
    int charging = 0;
    int battery = 0;
    
+   int design_cap_unknown = 0;
+   int last_full_unknown = 0;
+   int rate_unknown = 0;
+   int level_unknown = 0;
+   
    int hours, minutes;
    
    /* Read some information on first run. */
@@ -86,9 +91,17 @@ cb_timer_acpi(void *data)
 		  
 		  getline(&line, &lsize, f);
 		  getline(&line, &lsize, f);
-		  sscanf(line, "%*[^:]: %i %*s", &design_cap);
+		  sscanf(line, "%*[^:]: %250s %*s", buf);
+		  if (!strcmp(buf, "unknown"))
+		    design_cap_unknown = 1;
+		  else
+		    sscanf(line, "%*[^:]: %i %*s", &design_cap);
 		  getline(&line, &lsize, f);
-		  sscanf(line, "%*[^:]: %i %*s", &last_full);
+		  sscanf(line, "%*[^:]: %250s %*s", buf);
+		  if (!strcmp(buf, "unknown"))
+		    last_full_unknown = 1;
+		  else
+		    sscanf(line, "%*[^:]: %i %*s", &last_full);
 		  fclose(f);
 		  bat_max += design_cap;
 		  bat_filled += last_full;
@@ -111,9 +124,13 @@ cb_timer_acpi(void *data)
 		  getline(&line, &lsize, f);
 		  sscanf(line, "%*[^:]: %250s", charging_state);
 		  getline(&line, &lsize, f);
-		  sscanf(line, "%*[^:]: %i %*s", &rate);
+		  sscanf(line, "%*[^:]: %250s %*s", buf);
+		  if (!strcmp(buf, "unknown")) rate_unknown = 1;
+		  else sscanf(line, "%*[^:]: %i %*s", &rate);
 		  getline(&line, &lsize, f);
-		  sscanf(line, "%*[^:]: %i %*s", &level);
+		  sscanf(line, "%*[^:]: %250s %*s", buf);
+		  if (!strcmp(buf, "unknown")) level_unknown = 1;
+		  else sscanf(line, "%*[^:]: %i %*s", &level);
 		  fclose(f);
 		  if (!strcmp(present, "yes")) battery++;
 		  if (!strcmp(charging_state, "discharging")) discharging++;
@@ -124,7 +141,7 @@ cb_timer_acpi(void *data)
 	  }
 	closedir(dirp);
      }
-
+   
    if (prev_bat_drain < 1) prev_bat_drain = 1;
    if (bat_drain < 1) bat_drain = prev_bat_drain;
    prev_bat_drain = bat_drain;
@@ -147,15 +164,39 @@ cb_timer_acpi(void *data)
    minutes -= (hours * 60);
    
    if (charging)
-     snprintf(current_status, sizeof(current_status), 
-	      "%i%% PWR\n"
-	      "%02i:%02i",
-	      bat_val, hours, minutes);
+     {
+	if (level_unknown)
+	  snprintf(current_status, sizeof(current_status), 
+		   "Level ???\n"
+		   "Bad Driver");
+	else if (rate_unknown)
+	  snprintf(current_status, sizeof(current_status), 
+		   "%i%% PWR\n"
+		   "Time ???",
+		   bat_val);
+	else
+	  snprintf(current_status, sizeof(current_status), 
+		   "%i%% PWR\n"
+		   "%02i:%02i",
+		   bat_val, hours, minutes);
+     }
    else if (discharging)
-     snprintf(current_status, sizeof(current_status), 
-	      "%i%%\n"
-	      "%02i:%02i", 
-	      bat_val, hours, minutes);
+     {
+	if (level_unknown)
+	  snprintf(current_status, sizeof(current_status), 
+		   "Level ???\n"
+		   "Bad Driver");
+	else if (rate_unknown)
+	  snprintf(current_status, sizeof(current_status), 
+		   "%i%%\n"
+		   "Time ???",
+		   bat_val);
+	else
+	  snprintf(current_status, sizeof(current_status), 
+		   "%i%%\n"
+		   "%02i:%02i",
+		   bat_val, hours, minutes);
+     }
    else if (!battery)
      snprintf(current_status, sizeof(current_status), "No Bat");
    else
