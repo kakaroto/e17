@@ -1,6 +1,7 @@
 #include "epplet.h"
 #include <errno.h>
 #include <sys/utsname.h>
+#include <signal.h>
 
 static Display   *disp        = NULL;
 static Window     win         = 0;
@@ -34,6 +35,7 @@ static void *focusin_data = NULL;
 static void *focusout_data = NULL;
 static void *event_data = NULL;
 static void *comms_data = NULL;
+static void *child_data = NULL;
 
 static void (*expose_func) (void *data, Window win, int x, int y, int w, int h) = NULL;
 static void (*moveresize_func) (void *data, Window win, int x, int y, int w, int h) = NULL;
@@ -48,6 +50,7 @@ static void (*focusin_func) (void *data, Window win) = NULL;
 static void (*focusout_func) (void *data, Window win) = NULL;
 static void (*event_func) (void *data, XEvent *ev) = NULL;
 static void (*comms_func) (void *data, char *s) = NULL;
+static void (*child_func) (void *data, int pid, int exit_code) = NULL;
 
 #define MWM_HINTS_DECORATIONS         (1L << 1)
 typedef struct _mwmhints
@@ -105,6 +108,7 @@ static void    Epplet_draw_popup(Epplet_gadget gadget);
 static void    Epplet_draw_popupbutton(Epplet_gadget eg);
 static void    Epplet_popup_arrange_contents(Epplet_gadget gadget);
 static void    Epplet_prune_events(XEvent *ev, int num);
+static void    Epplet_handle_child(int num);
 
 void 
 Epplet_send_ipc(char *s)
@@ -125,6 +129,7 @@ Epplet_Init(char *name,
 	    int w, int h,
 	    int argc, char **argv, char vertical)
 {
+   struct sigaction     sa;
    XEvent               ev;
    char                 s[1024];
    XSetWindowAttributes attr;
@@ -242,6 +247,10 @@ Epplet_Init(char *name,
    ECommsSend(s);
    ESYNC;
    Epplet_background_properties(win_vert);
+   sa.sa_handler = Epplet_handle_child;
+   sa.sa_flags = SA_RESTART;
+   sigemptyset(&sa.sa_mask);
+   sigaction(SIGCHLD, &sa, (struct sigaction *)0);   
 }
 
 void
@@ -3422,9 +3431,29 @@ Epplet_paste_buf(RGB_buf buf, Window win, int x, int y)
 		     buf->im->rgb_width, buf->im->rgb_height);
 }
 
+static void
+Epplet_handle_child(int num)
+{
+   int                 status;
+   pid_t               pid;
+   
+   while ((pid = waitpid(-1, &status, WNOHANG)) > 0)
+     {
+	if (WIFEXITED(status))
+	  {
+	     int code;
+	     
+	     code = WEXITSTATUS(status);
+	     if (child_func)
+		(*child_func) (child_data, pid, code);
+	  }
+     }
+}
+
 void
 Epplet_run_command(char *cmd)
 {
+   system(cmd);
 }
 
 char *
@@ -3433,22 +3462,46 @@ Epplet_read_run_command(char *cmd)
 }
 
 int
-Epplet_spawn_command(chat *command)
+Epplet_spawn_command(char *cmd)
 {
+   pid_t pid;
+   
+   pid = fork();
+   if (pid)
+      return (int)pid;
+   execl("/bin/sh", "/bin/sh", "-c", cmd, NULL);
+   exit(0);
 }
 
 void
 Epplet_pause_spawned_command(int pid)
 {
+   kill((pid_t)pid, SIGSTOP);
 }
 
 void
 Epplet_unpause_spawned_command(int pid)
 {
+   kill((pid_t)pid, SIGCONT);
 }
 
 void
 Epplet_kill_spawned_command(int pid)
 {
+   kill((pid_t)pid, SIGINT);
 }
 
+void
+Epplet_destroy_spawned_command(int pid)
+{
+   kill((pid_t)pid, SIGKILL);
+}
+
+void
+Epplet_register_child_handler(void (*func) 
+			      (void *data, int pid, int exit_code),
+			      void *data)
+{
+   child_data = data;
+   child_func = func;
+}

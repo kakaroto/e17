@@ -291,6 +291,22 @@ unsigned char  *Epplet_get_rgb_pointer(RGB_buf buf);
 /* render & paste the RGB buffer to a window at x, y */
 void            Epplet_paste_buf(RGB_buf buf, Window win, int x, int y);
 
+
+
+
+/* command execution/spawing wrappers to make life easy */
+void            Epplet_run_command(char *cmd)
+char           *Epplet_read_run_command(char *cmd)
+int             Epplet_spawn_command(char *cmd)
+void            Epplet_pause_spawned_command(int pid)
+void            Epplet_unpause_spawned_command(int pid)
+void            Epplet_kill_spawned_command(int pid)
+void            Epplet_destroy_spawned_command(int pid)
+void            Epplet_register_child_handler(void (*func)
+					      (void *data, int pid, int exit_code),
+					      void *data);
+
+
 /****************************************************************************/
 /* Convenience macros to make using the above calls easier                  */
 /****************************************************************************/
