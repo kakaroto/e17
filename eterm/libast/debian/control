@@ -1,0 +1,28 @@
+Source: libast1
+Section: libs
+Priority: optional
+Maintainer: Laurence J. Lane <ljlane@debian.org>
+Build-Depends: libimlib2-dev, xlibs-dev, debhelper (>= 2.0)
+Standards-Version: 3.2.1.1
+
+Package: libast1
+Architecture: any
+Section: libs
+Depends: ${shlibs:Depends}
+Description: the Library of Assorted Spiffy Things
+ LibAST is the Library of Assorted Spiffy Things.  It contains many
+ spiffy things, and it is a library.  Thus, the ever-so-creative name.
+ LibAST has been previously known as libmej, the Eterm helper library
+ which nobody really understood and certainly never used.  My current
+ plan is to gradually remove some of the neat stuff from Eterm that
+ could be made generic (things like the theme parsing engine, the
+ command-line options parser, perhaps the event engine, ...) and place
+ it here in the hopes that others will find them useful.
+
+Package: libast1-dev
+Architecture: any
+Section: devel
+Architecture: any
+Depends: libimlib2-dev, libc6-dev
+Description: libast headers, static libraries and documentation
+ Headers, static libraries and documentation for Imlib2.
