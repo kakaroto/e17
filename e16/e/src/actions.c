@@ -2379,8 +2379,8 @@ doScrollWindows(EWin * edummy, const void *params)
    lst = EwinListGetAll(&num);
    for (i = 0; i < num; i++)
      {
-	if ((lst[i]->desktop == desks.current) && (!lst[i]->sticky)
-	    && (!lst[i]->floating) && (!lst[i]->fixedpos))
+	if ((lst[i]->desktop == desks.current) && (!lst[i]->sticky) &&
+	    (!lst[i]->floating))
 	   MoveEwin(lst[i], lst[i]->x + x, lst[i]->y + y);
      }
    EDBUG_RETURN(0);

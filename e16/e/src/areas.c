@@ -99,7 +99,7 @@ SetNewAreaSize(int ax, int ay)
    lst = EwinListGetAll(&num);
    for (i = 0; i < num; i++)
      {
-	if ((!(lst[i]->sticky)) && (!(lst[i]->fixedpos)))
+	if (!(lst[i]->sticky))
 	  {
 	     if (lst[i]->area_x >= ax)
 		MoveEwinToArea(lst[i], ax - 1, lst[i]->area_x);
@@ -293,7 +293,7 @@ SetCurrentArea(int ax, int ay)
 	for (i = 0; i < num; i++)
 	  {
 	     ewin = lst[i];
-	     if (ewin->sticky || ewin->fixedpos || ewin->iconified)
+	     if (ewin->sticky || ewin->iconified)
 		continue;
 	     if (ewin->desktop != desks.current && !ewin->floating)
 		continue;
@@ -318,7 +318,7 @@ SetCurrentArea(int ax, int ay)
    for (i = 0; i < num; i++)
      {
 	ewin = lst[i];
-	if (ewin->sticky || ewin->fixedpos)
+	if (ewin->sticky)
 	   continue;
 	if (ewin->client.transient_for)
 	   continue;
