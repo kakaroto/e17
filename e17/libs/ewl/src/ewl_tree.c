@@ -151,7 +151,6 @@ ewl_tree_add_row(Ewl_Tree *tree, Ewl_Row *prow, Ewl_Widget **children)
 	DENTER_FUNCTION(DLEVEL_STABLE);
 
 	DCHECK_PARAM_PTR_RET("tree", tree, NULL);
-	DCHECK_PARAM_PTR_RET("children", children, NULL);
 
 	w = EWL_WIDGET(prow);
 
@@ -181,7 +180,7 @@ ewl_tree_add_row(Ewl_Tree *tree, Ewl_Row *prow, Ewl_Widget **children)
 	/*
 	 * Pretty basic here, build up the rows and add the widgets to them.
 	 */
-	for (i = 0; i < tree->ncols; i++) {
+	for (i = 0; i < tree->ncols && children; i++) {
 		Ewl_Widget *cell;
 
 		cell = ewl_cell_new();
@@ -191,14 +190,15 @@ ewl_tree_add_row(Ewl_Tree *tree, Ewl_Row *prow, Ewl_Widget **children)
 			break;
 		}
 
+		ewl_container_append_child(EWL_CONTAINER(row), cell);
 		ewl_object_set_fill_policy(EWL_OBJECT(cell),
-				EWL_FLAG_FILL_HFILL | EWL_FLAG_FILL_HSHRINK);
+				EWL_FLAG_FILL_HFILL |
+				EWL_FLAG_FILL_HSHRINK);
 		ewl_widget_show(cell);
 
 		if (children[i]) {
 			ewl_container_append_child(EWL_CONTAINER(cell),
-					children[i]);
-			ewl_container_append_child(EWL_CONTAINER(row), cell);
+						   children[i]);
 		}
 	}
 
@@ -235,17 +235,17 @@ Ewl_Widget *ewl_tree_add_text_row(Ewl_Tree *tree, Ewl_Row *prow, char **text)
 	DENTER_FUNCTION(DLEVEL_STABLE);
 
 	DCHECK_PARAM_PTR_RET("tree", tree, NULL);
-	DCHECK_PARAM_PTR_RET("text", text, NULL);
 
 	entries = NEW(Ewl_Widget *, tree->ncols);
 	if (!entries)
 		DRETURN_PTR(NULL, DLEVEL_STABLE);
 
 	for (i = 0; i < tree->ncols; i++) {
-		if (text[i]) {
+		if (text)
 			entries[i] = ewl_entry_new(text[i]);
-			ewl_widget_show(entries[i]);
-		}
+		else
+			entries[i] = ewl_entry_new(NULL);
+		ewl_widget_show(entries[i]);
 	}
 
 	row = ewl_tree_add_row(tree, prow, entries);

@@ -1,13 +1,16 @@
 #include <Ewl.h>
 
-void		__ewl_menu_base_expand(Ewl_Widget *w, void *ev_data,
+static void	__ewl_menu_base_expand(Ewl_Widget *w, void *ev_data,
 					void *user_data);
-void            __ewl_menu_base_collapse(Ewl_Widget * w, void *ev_data,
+static void     __ewl_menu_base_collapse(Ewl_Widget * w, void *ev_data,
 					 void *user_data);
-void            __ewl_menu_base_destroy(Ewl_Widget * w, void *ev_data,
+static void     __ewl_menu_base_destroy(Ewl_Widget * w, void *ev_data,
 					 void *user_data);
-void            __ewl_menu_add(Ewl_Container * parent, Ewl_Widget * child);
-void            __item_clicked(Ewl_Widget * w, void *ev_data, void *user_data);
+
+static void     __ewl_menu_add(Ewl_Container * parent, Ewl_Widget * child);
+static void     __ewl_menu_item_add(Ewl_Container *parent, Ewl_Widget *child);
+static void     __ewl_menu_item_resize(Ewl_Container *parent, Ewl_Widget *child,
+		int size, Ewl_Orientation o);
 
 /**
  * @param menu: the menu item to initialize
@@ -74,6 +77,7 @@ Ewl_Widget     *ewl_menu_item_new(char *image, char *text)
 		DRETURN_PTR(NULL, DLEVEL_STABLE);
 
 	ewl_menu_item_init(item, image, text);
+	ewl_container_add_notify(EWL_CONTAINER(item), __ewl_menu_add);
 
 	DRETURN_PTR(EWL_WIDGET(item), DLEVEL_STABLE);
 }
@@ -99,8 +103,8 @@ void ewl_menu_item_init(Ewl_Menu_Item * item, char *image, char *text)
 	 * and the recursive setting. This will cause clicks to stop at this
 	 * level.
 	 */
-	ewl_box_init(EWL_BOX(item), EWL_ORIENTATION_HORIZONTAL);
-	ewl_widget_set_appearance(EWL_WIDGET(item), "menuitem");
+	ewl_container_init(EWL_CONTAINER(item), "menuitem", __ewl_menu_item_add,
+			   __ewl_menu_item_resize, NULL);
 	ewl_object_set_fill_policy(EWL_OBJECT(item), EWL_FLAG_FILL_HFILL);
 
 	ewl_container_intercept_callback(EWL_CONTAINER(item),
@@ -199,23 +203,58 @@ void ewl_menu_separator_init(Ewl_Menu_Separator *sep)
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
 
-void __ewl_menu_add(Ewl_Container * parent, Ewl_Widget * child)
+static void __ewl_menu_item_add(Ewl_Container *parent, Ewl_Widget *child)
+{
+	DENTER_FUNCTION(DLEVEL_STABLE);
+
+	ewl_container_prefer_largest(parent, EWL_ORIENTATION_VERTICAL);
+	ewl_object_set_preferred_w(EWL_OBJECT(parent), PREFERRED_W(parent) +
+			ewl_object_get_preferred_w(EWL_OBJECT(child)));
+
+	DLEAVE_FUNCTION(DLEVEL_STABLE);
+}
+
+static void
+__ewl_menu_item_resize(Ewl_Container *parent, Ewl_Widget *child, int size,
+		Ewl_Orientation o)
+{
+	DENTER_FUNCTION(DLEVEL_STABLE);
+
+	if (o == EWL_ORIENTATION_VERTICAL)
+		ewl_container_prefer_largest(parent, o);
+	else
+		ewl_object_set_preferred_w(EWL_OBJECT(parent),
+				PREFERRED_W(parent) + size);
+
+	DLEAVE_FUNCTION(DLEVEL_STABLE);
+}
+
+static void __ewl_menu_add(Ewl_Container * parent, Ewl_Widget * child)
 {
 	Ewl_IMenu      *menu;
+	Ewl_Menu_Item  *item;
 
 	DENTER_FUNCTION(DLEVEL_STABLE);
+
+	menu = EWL_IMENU(parent);
+	item = EWL_MENU_ITEM(parent);
 
 	/*
 	 * Place the newly added child in the popup menu.
 	 */
-	menu = EWL_IMENU(parent);
-	ewl_container_append_child(EWL_CONTAINER(menu->base.popbox), child);
+	if (child != item->icon && child != item->text)
+		ewl_container_append_child(EWL_CONTAINER(menu->base.popbox),
+				child);
+	else
+		__ewl_menu_item_add(parent, child);
+
 	EWL_MENU_ITEM(child)->submenu = TRUE;
 
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
 
-void __ewl_menu_base_expand(Ewl_Widget *w, void *ev_data, void *user_data)
+static void
+__ewl_menu_base_expand(Ewl_Widget *w, void *ev_data, void *user_data)
 {
 	Ewl_Menu_Base *menu = EWL_MENU_BASE(w);
 
@@ -230,7 +269,8 @@ void __ewl_menu_base_expand(Ewl_Widget *w, void *ev_data, void *user_data)
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
 
-void __ewl_menu_base_collapse(Ewl_Widget * w, void *ev_data, void *user_data)
+static void
+__ewl_menu_base_collapse(Ewl_Widget * w, void *ev_data, void *user_data)
 {
 	Ewl_Menu_Base      *menu;
 
@@ -243,7 +283,8 @@ void __ewl_menu_base_collapse(Ewl_Widget * w, void *ev_data, void *user_data)
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
 
-void __ewl_menu_base_destroy(Ewl_Widget * w, void *ev_data, void *user_data)
+static void
+__ewl_menu_base_destroy(Ewl_Widget * w, void *ev_data, void *user_data)
 {
 	Ewl_Menu_Base      *menu;
 
