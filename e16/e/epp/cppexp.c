@@ -43,7 +43,7 @@
 struct arglist
   {
      struct arglist     *next;
-     unsigned char      *name;
+     unsigned char             *name;
      int                 length;
      int                 argno;
   };
@@ -279,7 +279,7 @@ cpp_lex(pfile)
    register struct token *toktab;
    enum cpp_token      token;
    struct operation    op;
-   unsigned char      *tok_start, *tok_end;
+   unsigned char             *tok_start, *tok_end;
    int                 old_written;
 
  retry:
@@ -317,7 +317,7 @@ cpp_lex(pfile)
      case CPP_COMMENT:
 	goto retry;
      case CPP_NUMBER:
-	return parse_number(pfile, (char *)tok_start, tok_end - tok_start);
+	return parse_number(pfile, tok_start, tok_end - tok_start);
      case CPP_STRING:
 	cpp_error(pfile, "string constants not allowed in #if expressions");
 	op.op = ERROR;
@@ -332,7 +332,7 @@ cpp_lex(pfile)
 	   unsigned            width = MAX_CHAR_TYPE_SIZE;
 	   int                 wide_flag = 0;
 	   int                 max_chars;
-	   unsigned char      *ptr = tok_start;
+	   unsigned char             *ptr = tok_start;
 
 #ifdef MULTIBYTE_CHARS
 	   char                token_buffer[MAX_LONG_TYPE_SIZE / MAX_CHAR_TYPE_SIZE + MB_CUR_MAX];
@@ -1065,7 +1065,7 @@ cpp_parse_expr(pfile)
 	     else
 	       {
 		  new_stack = (struct operation *)xmalloc(new_size);
-		  memcpy((char *)stack, (char *)new_stack, old_size);
+		  bcopy((char *)stack, (char *)new_stack, old_size);
 	       }
 	     stack = new_stack;
 	     top = (struct operation *)((char *)new_stack + old_size);
