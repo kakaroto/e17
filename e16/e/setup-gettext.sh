@@ -171,13 +171,7 @@ if [ $NUMVAR -gt 0 ]; then
 fi
 
 # Okay, run the main stuff
-if [ $GETTEXT_MINOR_VERSION -eq 12 ]; then
-	[ $VERBOSE -eq 1 ] && echo "  autopoint --force"
-	cp configure.in .tmp-configure.in
-	sed -e "s/^AM_GNU_GETTEXT_VERSION(.*)/AM_GNU_GETTEXT_VERSION($GETTEXT_VERSION)/" < .tmp-configure.in > configure.in
-	autopoint --force || abort
-	mv .tmp-configure.in configure.in
-elif [ "$GETTEXT_TOOL" = "autopoint" ]; then
+if [ "$GETTEXT_TOOL" = "autopoint" ]; then
 	backup_m4
 	[ $VERBOSE -eq 1 ] && echo "  autopoint --force"
 	echo n | autopoint --force || abort
