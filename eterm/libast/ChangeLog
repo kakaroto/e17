@@ -1,0 +1,14 @@
+ChangeLog
+=========
+
+This file contains a listing of modifications to libast in CVS on a per-commit
+basis.  Dates are included, as are nicknames/names/initials for the persons
+making the changes.
+	
+
+Thu Nov  9 19:09:48 PST 2000	Michael Jennings <mej@eterm.org>
+
+	Added name- and version-setting functions since we can't just use
+	PACKAGE and VERSION any more.
+
+-------------------------------------------------------------------------------
