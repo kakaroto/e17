@@ -160,7 +160,7 @@ char *strsplit (char *s, char **right, int count)
   if (count < strlen (s))
   {
     if (right)
-       *right = s + count;
+       strcpy (*right, s + count);
 
     s_org[count]='\0';
   }

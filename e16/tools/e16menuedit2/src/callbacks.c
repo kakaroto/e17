@@ -167,14 +167,27 @@ void on_change_icon_button (GtkButton *button, gpointer user_data)
         gint width, height;
         gint width_new, height_new;
         gchar filename_resized[PATH_MAX];
+        gchar *right;
 
         entry_select = gtk_entry_get_text (GTK_ENTRY (GTK_COMBO (
                                              resize_combo)->entry));
 
-        gdk_pixbuf_get_file_info (filename,
-                                  &width,
-                                  &height);
-
+	/* temporary fix for probability broken gdk function */
+        right = g_malloc (3);
+        strsplit (filename, &right, g_utf8_strlen (filename, -1) - 3);
+        if (strcmp (right, "svg"))
+        {
+          gdk_pixbuf_get_file_info (filename,
+                                    &width,
+                                    &height);
+        }
+        else
+        {
+          width = 64;
+          height = 64;
+        }
+	g_free (right);
+      
         if (width <= 0)
           width = 1;
         if (height <= 0)
@@ -398,10 +411,23 @@ void update_preview_cb (GtkFileChooser *file_chooser, gpointer data)
 
   if (filename != NULL)
   {
-    gdk_pixbuf_get_file_info (filename,
-                              &width,
-                              &height);
+    gchar *right;
 
+    /* temporary fix for probability broken gdk function */
+    right = g_malloc (3);
+    strsplit (filename, &right, g_utf8_strlen (filename, -1) - 3);
+
+    if (strcmp (right, "svg"))
+    {
+      gdk_pixbuf_get_file_info (filename, &width, &height);
+    }
+    else
+    {
+      width = ICON_SIZE_AUTO;
+      height = ICON_SIZE_AUTO;
+    }
+    g_free (right);
+  
     if ((width > ICON_SIZE_AUTO) || (height > ICON_SIZE_AUTO))
     {
       width = ICON_SIZE_AUTO;

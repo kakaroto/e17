@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: e16menuedit2\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2004-07-25 21:21+0200\n"
+"POT-Creation-Date: 2004-07-27 14:19+0200\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: Andreas Volz <linux@brachttal.net>\n"
 "Language-Team: German <linux@brachttal.net>\n"
@@ -16,7 +16,7 @@ msgstr ""
 "Content-Type: text/plain; charset=iso-8859-15\n"
 "Content-Transfer-Encoding: 8bit\n"
 
-#: src/callbacks.c:43 src/e16menuedit2.c:56
+#: src/callbacks.c:43 src/e16menuedit2.c:61
 msgid "New Entry"
 msgstr "Neuer Eintrag"
 
@@ -28,18 +28,18 @@ msgstr "Wähle Icon..."
 msgid "Icon size:"
 msgstr "Icon Größe:"
 
-#: src/e16menuedit2.c:76
+#: src/e16menuedit2.c:71
 msgid "Change Icon"
 msgstr "Ändere Icon"
 
-#: src/e16menuedit2.c:86
+#: src/e16menuedit2.c:81
 msgid "Save Menu"
 msgstr "Speicher Menü"
 
-#: src/e16menuedit2.c:95
+#: src/e16menuedit2.c:90
 msgid "Delete Entry or Submenu"
 msgstr "Lösche Eintrag oder Untermenü"
 
-#: src/e16menuedit2.c:104
+#: src/e16menuedit2.c:99
 msgid "Quit Menu Editor"
 msgstr "Menü Editor Beenden"
