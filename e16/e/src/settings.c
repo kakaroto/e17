@@ -2066,9 +2066,8 @@ CB_ConfigureFX(int val, void *data)
 	if ((desks.dragdir != tmp_dragdir)
 	    || ((tmp_dragbar) && (desks.dragbar_width < 1)) || ((!tmp_dragbar)
 								&&
-								(desks.
-								 dragbar_width >
-								 0)))
+								(desks.dragbar_width
+								 > 0)))
 	  {
 	     Button             *b;
 

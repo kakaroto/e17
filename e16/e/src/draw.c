@@ -522,9 +522,7 @@ EBlendPixImg(EWin * ewin, PixImg * s1, PixImg * s2, PixImg * dst, int x, int y,
 				       ((s2->xim->bits_per_pixel) >> 3)) + ((j +
 									     oy)
 									    *
-									    s2->
-									    xim->
-									    bytes_per_line));
+									    s2->xim->bytes_per_line));
 		  ptr3 =
 		     (unsigned int *)(dst->xim->data +
 				      ((ox) *

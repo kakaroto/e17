@@ -100,15 +100,17 @@ DetermineEwinFloat(EWin * ewin, int dx, int dy)
 							  desk[ewin->desktop].
 							  y) !=
 							 ewin->desktop))))))
-	   dofloat = 1;
+	      dofloat = 1;
 	if ((desks.dragdir == 2)
-	    && (((ewin->y + dy < 0) || ((ewin->y + dy + ewin->h <= root.h)
-					&&
-					((DesktopAt
-					  (desks.desk[ewin->desktop].x,
-					   desks.desk[ewin->desktop].y +
-					   ewin->y + dy + ewin->h - 1) !=
-					  ewin->desktop)))))) dofloat = 1;
+	    &&
+	    (((ewin->
+	       y + dy < 0) || ((ewin->y + dy + ewin->h <= root.h)
+			       &&
+			       ((DesktopAt
+				 (desks.desk[ewin->desktop].x,
+				  desks.desk[ewin->desktop].y + ewin->y + dy +
+				  ewin->h - 1) != ewin->desktop))))))
+	   dofloat = 1;
 	if ((desks.dragdir == 3)
 	    && (((ewin->y + dy + ewin->h > root.h) || ((ewin->y + dy >= 0)
 						       &&

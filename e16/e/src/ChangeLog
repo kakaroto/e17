@@ -4727,3 +4727,12 @@ Fri Jul 28 10:42:05 PDT 2000
 
 the beginning of another xinerama feature "place additional windows on extra
 head when current head is full"
+
+-------------------------------------------------------------------------------
+
+Fri Jul 28 12:31:35 PDT 2000
+(Mandrake)
+
+Now with xinerama enabled your alt-tab focus list will appear properly
+centered in the current head.  I think I will add an alt-tab feature to only
+focus on windows in the current head as well (this will be toggle-able)

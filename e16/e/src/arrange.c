@@ -426,12 +426,12 @@ ArrangeRects(RectBox * fixed, int fixed_count, RectBox * floating,
 	       {
 		  a1 =
 		     (spaces[k].x + (spaces[k].w >> 1)) - (floating[i].x +
-							   (floating[i].
-							    w >> 1));
+							   (floating[i].w >>
+							    1));
 		  a2 =
 		     (spaces[k].y + (spaces[k].h >> 1)) - (floating[i].y +
-							   (floating[i].
-							    h >> 1));
+							   (floating[i].h >>
+							    1));
 		  if (a1 >= 0)
 		    {
 		       sorted[num_sorted].x = spaces[k].x;
@@ -725,9 +725,8 @@ SnapEwin(EWin * ewin, int dx, int dy, int *new_dx, int *new_dy)
 				    screens[i].y_org + screens[i].height;
 				 screen_snap_dist =
 				    mode.constrained ? (screens[i].width +
-							screens[i].
-							height) : mode.
-				    screen_snap_dist;
+							screens[i].height) :
+				    mode.screen_snap_dist;
 			      }
 			 }
 		    }
