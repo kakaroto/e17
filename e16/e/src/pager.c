@@ -20,12 +20,31 @@
  * IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN
  * CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
-#define DECLARE_STRUCT_PAGER
 #include "E.h"
 
+struct _pager
+{
+   char               *name;
+   Window              win;
+   Pixmap              pmap;
+   Pixmap              bgpmap;
+   int                 desktop;
+   int                 w, h;
+   int                 dw, dh;
+   char                visible;
+   int                 update_phase;
+   EWin               *ewin;
+   char               *border_name;
+   Window              sel_win;
+   char                hi_visible;
+   Window              hi_win;
+   EWin               *hi_ewin;
+   int                 hi_win_w, hi_win_h;
+};
+
 #define PAGER_EVENT_MOUSE_OUT -1
-#define PAGER_EVENT_MOTION   0
-#define PAGER_EVENT_MOUSE_IN 1
+#define PAGER_EVENT_MOTION     0
+#define PAGER_EVENT_MOUSE_IN   1
 
 static void         PagerUpdateTimeout(int val, void *data);
 static void         PagerEwinUpdateMini(Pager * p, EWin * ewin);

@@ -200,12 +200,6 @@ if (__xim) XDestroyImage(__xim);}
 /* long's on 64bit machines... thus well the CARD32's Im unsing shoudl be.. */
 #define CARD32 long
 
-#if (WITH_TARTY_WARP == 1)
-#define WITH_TARTY_WARP 1
-#else
-#undef WITH_TARTY_WARP
-#endif /* !WITH_TARTY_WARP */
-
 #define RESET_ALERT \
    AssignTitleText(_("Enlightenment Message Dialog")); \
    AssignIgnoreText(_("Ignore this")); \
@@ -248,11 +242,6 @@ if (__xim) XDestroyImage(__xim);}
 #endif
 #endif
 #endif
-
-/* shut warnings up
- * pid_t               wait3(int *status, int options, struct rusage *rusage);
- * int                 setenv(const char *name, const char *value, int overwrite);
- */
 
 #define FILEPATH_LEN_MAX 4096
 /* This turns on E's internal stack tracking system for  coarse debugging */
@@ -363,16 +352,6 @@ int                 Esnprintf(va_alist);
 
 #define SPANS_COMMON(x1, w1, x2, w2) \
    (!((((x2) + (w2)) <= (x1)) || ((x2) >= ((x1) + (w1)))))
-
-#define EERR_NONE               0
-#define EERR_OUT_OF_MEMORY      1
-#define EERR_FILE_NOT_EXIST     2
-#define EERR_PERMISSION_DENIED  3
-#define EERR_FILING_SYSTEM_FULL 4
-
-#ifndef ENLIGHTENMENT_ROOT
-#define ENLIGHTENMENT_ROOT           "/usr/local/enlightenment"
-#endif
 
 #define ENLIGHTENMENT_CONF_NUM_DESKTOPS 32
 /* the cast is so -1 will == UINT_MAX */
@@ -1548,28 +1527,6 @@ struct _iconbox
 
 };
 #endif /* DECLARE_STRUCT_ICONBOX */
-
-#ifdef DECLARE_STRUCT_PAGER
-struct _pager
-{
-   char               *name;
-   Window              win;
-   Pixmap              pmap;
-   Pixmap              bgpmap;
-   int                 desktop;
-   int                 w, h;
-   int                 dw, dh;
-   char                visible;
-   int                 update_phase;
-   EWin               *ewin;
-   char               *border_name;
-   Window              sel_win;
-   char                hi_visible;
-   Window              hi_win;
-   EWin               *hi_ewin;
-   int                 hi_win_w, hi_win_h;
-};
-#endif /* DECLARE_STRUCT_PAGER */
 
 typedef struct _drawqueue
 {

@@ -48,10 +48,6 @@
 #include <sys/ipc.h>
 #include <sys/shm.h>
 
-#ifndef ENLIGHTENMENT_ROOT
-#define ENLIGHTENMENT_ROOT           "/usr/local/enlightenment"
-#endif
-
 #define LIST_FINDBY_NAME        0
 #define LIST_FINDBY_ID          1
 #define LIST_FINDBY_BOTH        2
