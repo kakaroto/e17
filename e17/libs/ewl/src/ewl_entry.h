@@ -38,6 +38,8 @@ struct Ewl_Entry
 
 	int             offset; /**< Starting position of cursor in text */
 	int             editable; /**< Flag to indicate if user can edit text */
+	Ecore_Timer    *timer; /**< Time until scrolling text on select */
+	double          start_time; /**< Time timer started */
 };
 
 Ewl_Widget     *ewl_entry_new(char *text);
@@ -62,6 +64,7 @@ void ewl_entry_configure_text_cb(Ewl_Widget * w, void *ev_data,
 				 void *user_data);
 void ewl_entry_key_down_cb(Ewl_Widget * w, void *ev_data, void *user_data);
 void ewl_entry_mouse_down_cb(Ewl_Widget * w, void *ev_data, void *user_data);
+void ewl_entry_mouse_up_cb(Ewl_Widget * w, void *ev_data, void *user_data);
 void ewl_entry_mouse_move_cb(Ewl_Widget * w, void *ev_data, void *user_data);
 void ewl_entry_select_cb(Ewl_Widget * w, void *ev_data, void *user_data);
 void ewl_entry_deselect_cb(Ewl_Widget * w, void *ev_data, void *user_data);

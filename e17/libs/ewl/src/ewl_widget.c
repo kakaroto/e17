@@ -262,7 +262,7 @@ void ewl_widget_configure(Ewl_Widget * w)
 	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR("w", w);
 
-	if (/* FIXME: !REALIZED(w) | */ !VISIBLE(w))
+	if (!VISIBLE(w))
 		DRETURN(DLEVEL_STABLE);
 
 	ewl_configure_request(w);

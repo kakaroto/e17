@@ -510,6 +510,8 @@ void ewl_configure_request(Ewl_Widget * w)
 	 * Now clean off any children of this widget, they will get added
 	 * later.
 	 */
+	/* FIXME: This is a big source of slow down on long lists of widgets,
+	 * might not be worth it
 	ewd_list_goto_first(configure_list);
 	while ((search = ewd_list_current(configure_list))) {
 		Ewl_Widget *parent;
@@ -526,6 +528,7 @@ void ewl_configure_request(Ewl_Widget * w)
 
 		ewd_list_next(configure_list);
 	}
+	*/
 
 	/*
 	 * FIXME: Remove this once we get things stabilize a bit more.
@@ -597,36 +600,12 @@ void ewl_realize_request(Ewl_Widget *w)
 		DRETURN(DLEVEL_STABLE);
 
 	if (!ewl_object_get_flags(EWL_OBJECT(w), EWL_FLAG_PROPERTY_TOPLEVEL)) {
-		if (w->parent && !REALIZED(w->parent))
+		if (!w->parent || !REALIZED(w->parent))
 			DRETURN(DLEVEL_STABLE);
 	}
 
 	ewl_object_add_queued(EWL_OBJECT(w), EWL_FLAG_QUEUED_RSCHEDULED);
-
 	ewd_list_append(realize_list, w);
-
-	DLEAVE_FUNCTION(DLEVEL_STABLE);
-}
-
-void ewl_child_add_place(Ewl_Widget *w)
-{
-	DENTER_FUNCTION(DLEVEL_STABLE);
-	if (ewl_object_get_flags(EWL_OBJECT(w), EWL_FLAG_PROPERTY_TOPLEVEL))
-		ewd_list_append(child_add_list, w);
-	else {
-		Ewl_Widget *p;
-
-		ewd_list_goto_first(child_add_list);
-		while ((p = ewd_list_current(child_add_list))) {
-			if (ewl_container_parent_of(p, w)) {
-				ewd_list_insert(child_add_list, w);
-				DRETURN(DLEVEL_STABLE);
-			}
-			else
-				ewd_list_next(child_add_list);
-		}
-	}
-	ewd_list_prepend(child_add_list, w);
 
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
@@ -641,7 +620,9 @@ void ewl_realize_queue()
 
 	/*
 	 * First realize any widgets that require it, this looping should
-	 * avoid deep recursion, and works from top to bottom.
+	 * avoid deep recursion, and works from top to bottom since widgets
+	 * can't be placed on this list unless their parent has been realized
+	 * or they are a toplevel widget.
 	 */
 	ewd_list_goto_first(realize_list);
 	while ((w = ewd_list_remove_first(realize_list))) {
@@ -649,10 +630,8 @@ void ewl_realize_queue()
 			ewl_object_remove_queued(EWL_OBJECT(w),
 					EWL_FLAG_QUEUED_RSCHEDULED);
 			ewl_widget_realize(EWL_WIDGET(w));
-
+			ewd_list_prepend(child_add_list, w);
 		}
-
-		ewl_child_add_place(w);
 	}
 
 	/*

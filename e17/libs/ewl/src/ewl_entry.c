@@ -1,5 +1,6 @@
-
 #include <Ewl.h>
+
+static int ewl_entry_timer();
 
 /**
  * @param text: the initial text to display in the widget
@@ -137,6 +138,8 @@ ewl_entry_set_editable(Ewl_Entry *e, unsigned int edit)
 				ewl_entry_key_down_cb, NULL);
 		ewl_callback_append(w, EWL_CALLBACK_MOUSE_DOWN,
 				ewl_entry_mouse_down_cb, NULL);
+		ewl_callback_del(w, EWL_CALLBACK_MOUSE_UP,
+				ewl_entry_mouse_up_cb);
 		ewl_callback_append(w, EWL_CALLBACK_MOUSE_MOVE,
 				ewl_entry_mouse_move_cb, NULL);
 	}
@@ -145,6 +148,8 @@ ewl_entry_set_editable(Ewl_Entry *e, unsigned int edit)
 				ewl_entry_key_down_cb);
 		ewl_callback_del(w, EWL_CALLBACK_MOUSE_DOWN,
 				ewl_entry_mouse_down_cb);
+		ewl_callback_del(w, EWL_CALLBACK_MOUSE_UP,
+				ewl_entry_mouse_up_cb);
 		ewl_callback_del(w, EWL_CALLBACK_MOUSE_MOVE,
 				ewl_entry_mouse_move_cb);
 	}
@@ -338,6 +343,24 @@ void ewl_entry_mouse_down_cb(Ewl_Widget * w, void *ev_data, void *user_data)
 }
 
 /*
+ * Stop the scrolling timer.
+ */
+void ewl_entry_mouse_up_cb(Ewl_Widget * w, void *ev_data, void *user_data)
+{
+	Ewl_Entry *e = EWL_ENTRY(w);
+
+	DENTER_FUNCTION(DLEVEL_STABLE);
+
+	if (e->timer) {
+		ecore_timer_del(e->timer);
+		e->timer = NULL;
+		e->start_time = 0.0;
+	}
+
+	DLEAVE_FUNCTION(DLEVEL_STABLE);
+}
+
+/*
  * Hilight text when the mouse moves when the button is pressed
  */
 void ewl_entry_mouse_move_cb(Ewl_Widget * w, void *ev_data, void *user_data)
@@ -360,12 +383,23 @@ void ewl_entry_mouse_move_cb(Ewl_Widget * w, void *ev_data, void *user_data)
 
 	if (ev->x < CURRENT_X(e->text))
 		index = 0;
-	else if (ev->x > CURRENT_X(e->text) + CURRENT_W(e->text))
+	else if (ev->x > CURRENT_X(e->text) + CURRENT_W(e->text)) {
 		index = ewl_text_get_length(EWL_TEXT(e->text));
+	}
 	else {
 		index = ewl_text_get_index_at(EWL_TEXT(e->text), ev->x,
 				      (CURRENT_Y(e->text) +
 				       (CURRENT_H(e->text) / 2)));
+	}
+
+	/*
+	 * Should begin scrolling in either direction?
+	 */
+	if (ev->x > CURRENT_X(e) || ev->x < CURRENT_X(e)) {
+		/*
+		e->start_time = ecore_time_get();
+		e->timer = ecore_timer_add(0.02, ewl_entry_timer, e);
+		*/
 	}
 
 	index++;
@@ -628,4 +662,60 @@ ewl_entry_child_resize_cb(Ewl_Container * entry, Ewl_Widget * w, int size,
 			   ewl_object_get_preferred_h(text));
 
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
+}
+
+static int ewl_entry_timer(void *data)
+{
+	Ewl_Entry      *e;
+	double          dt;
+	double          value;
+	int             velocity, direction;
+
+	e = EWL_ENTRY(data);
+
+	dt = ecore_time_get() - e->start_time;
+	direction = ewl_cursor_get_base_position(EWL_CURSOR(e->cursor)) -
+			ewl_cursor_get_end_position(EWL_CURSOR(e->cursor));
+
+	if (!direction)
+		direction = ewl_cursor_get_start_position(EWL_CURSOR(e->cursor))
+			- ewl_cursor_get_base_position(EWL_CURSOR(e->cursor));
+
+	if (!direction) {
+		int tmp;
+		direction = CURRENT_X(e->cursor) - CURRENT_X(e);
+		tmp = (CURRENT_X(e) + CURRENT_W(e)) - (CURRENT_X(e->cursor) +
+				CURRENT_W(e->cursor));
+		if (direction < tmp)
+			direction = -1;
+		else
+			direction = 1;
+	}
+	else {
+		if (direction < 0)
+			direction = 1;
+		else
+			direction = -1;
+	}
+
+	/*
+	 * Check the theme for a velocity setting and bring it within normal
+	 * useable bounds.
+	 */
+	velocity = ewl_theme_data_get_int(EWL_WIDGET(e), "velocity");
+	if (velocity < 1)
+		velocity = 1;
+	else if (velocity > 10)
+		velocity = 10;
+
+	/*
+	 * Move the value of the seeker based on the direction of it's motion
+	 * and the velocity setting.
+	 */
+	value = (double)(direction) * 10.0 * (1 - exp(-dt)) *
+		 ((double)(velocity) / 100.0);
+
+	e->offset = value * ewl_object_get_current_w(EWL_OBJECT(e->text));
+
+	return 1;
 }
