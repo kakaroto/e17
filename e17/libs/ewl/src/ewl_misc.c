@@ -394,7 +394,7 @@ void ewl_configure_request(Ewl_Widget * w)
 	if (ewl_object_queued_has(EWL_OBJECT(w), EWL_FLAG_QUEUED_DSCHEDULED))
 		DRETURN(DLEVEL_STABLE);
 
-	emb = ewl_embed_find_by_widget(w);
+	emb = ewl_embed_widget_find(w);
 	if (!emb)
 		DRETURN(DLEVEL_STABLE);
 

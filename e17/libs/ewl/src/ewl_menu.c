@@ -72,7 +72,7 @@ void ewl_menu_configure_cb(Ewl_Widget *w, void *ev_data, void *user_data)
 
 	DENTER_FUNCTION(DLEVEL_STABLE);
 
-	emb = ewl_embed_find_by_widget(w);
+	emb = ewl_embed_widget_find(w);
 
 	if (ewl_widget_type_is(EWL_WIDGET(emb), "window"))
 		ewl_window_position_get(EWL_WINDOW(emb), &x, &y);
@@ -106,7 +106,7 @@ void ewl_menu_expand_cb(Ewl_Widget * w, void *ev_data, void *user_data)
 	menu = EWL_MENU(w);
 
 	if (!REALIZED(menu->base.popup)) {
-		emb = ewl_embed_find_by_widget(w);
+		emb = ewl_embed_widget_find(w);
 		ewl_container_child_append(EWL_CONTAINER(emb),
 					   menu->base.popup); 
 	}

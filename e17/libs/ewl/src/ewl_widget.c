@@ -696,7 +696,7 @@ void ewl_widget_tab_order_push(Ewl_Widget *w)
 	DCHECK_PARAM_PTR("w", w);
 	DENTER_FUNCTION(DLEVEL_STABLE);
 
-	e = ewl_embed_find_by_widget(w);
+	e = ewl_embed_widget_find(w);
 	ewl_embed_tab_order_push(EWL_EMBED(e), w);
 
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
@@ -828,7 +828,7 @@ void ewl_widget_clipped_set(Ewl_Widget *w, unsigned int val)
 	if (val) {
 		Ewl_Embed *emb;
 
-		emb = ewl_embed_find_by_widget(w);
+		emb = ewl_embed_widget_find(w);
 		if (!emb || !emb->evas)
 			DRETURN(DLEVEL_STABLE);
 
@@ -1002,7 +1002,7 @@ void ewl_widget_realize_cb(Ewl_Widget * w, void *ev_data, void *user_data)
 	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR("w", w);
 
-	emb = ewl_embed_find_by_widget(w);
+	emb = ewl_embed_widget_find(w);
 
 	/*
 	 * Create the fx clip box where special fx can be drawn to affect the
@@ -1061,7 +1061,7 @@ void ewl_widget_realize_cb(Ewl_Widget * w, void *ev_data, void *user_data)
 	group = ewl_theme_data_str_get(w, "group");
 
 	if (group) {
-		emb = ewl_embed_find_by_widget(w);
+		emb = ewl_embed_widget_find(w);
 		if (!emb)
 			DRETURN(DLEVEL_STABLE);
 
@@ -1150,7 +1150,7 @@ void ewl_widget_unrealize_cb(Ewl_Widget * w, void *ev_data, void *user_data)
 	/*
 	 * First find it's parent embed so we can destroy the evas objects.
 	 */
-	emb = ewl_embed_find_by_widget(w);
+	emb = ewl_embed_widget_find(w);
 
 	/*
 	 * Destroy the clip box used for fx.
@@ -1181,7 +1181,7 @@ void ewl_widget_configure_cb(Ewl_Widget * w, void *ev_data, void *user_data)
 	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR("w", w);
 
-	emb = ewl_embed_find_by_widget(w);
+	emb = ewl_embed_widget_find(w);
 
 	/*
 	 * Adjust the clip box to display the widget.
@@ -1236,7 +1236,7 @@ void ewl_widget_reparent_cb(Ewl_Widget * w, void *ev_data, void *user_data)
 		else if (w->theme_object)
 			oevas = evas_object_evas_get(w->theme_object);
 
-		emb = ewl_embed_find_by_widget(w);
+		emb = ewl_embed_widget_find(w);
 		if (!emb || oevas != emb->evas)
 			ewl_widget_unrealize(w);
 		else {

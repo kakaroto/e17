@@ -73,7 +73,7 @@ int ewl_selectionbar_init(Ewl_Selectionbar * s, Ewl_Widget * parent)
 			    ewl_selectionbar_focus_in_cb, w);
 
 
-	embed = ewl_embed_find_by_widget(parent);
+	embed = ewl_embed_widget_find(parent);
 	ewl_callback_append(EWL_WIDGET(embed), EWL_CALLBACK_CONFIGURE,
 			    ewl_selectionbar_parent_configure_cb, w);
 
@@ -302,7 +302,7 @@ ewl_selectionbar_focus_out_cb(Ewl_Widget * w, void *ev_data, void *user_data)
 	 * First check that the mouse left the selectionbar and that
 	 * focus didn't just go to one of it's children
 	 */
-	embed = ewl_embed_find_by_widget(w);
+	embed = ewl_embed_widget_find(w);
 
 	/*
 	 * FIXME: This is not in ecore yet.

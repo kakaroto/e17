@@ -173,6 +173,40 @@ ewl_embed_evas_set(Ewl_Embed *emb, Evas *evas, Ewl_Embed_Evas_Window *evas_windo
 	DRETURN_PTR(emb->smart, DLEVEL_STABLE);
 }
 
+/**
+ * @param embed: the embed to inidicate if it takes focus
+ * @param f: boolean to determine if the embed takes focus
+ * @return Returns no value.
+ * @brief Sets the boolean flag in the embed to determine if it takes focus.
+ */
+void ewl_embed_focus_set(Ewl_Embed *embed, int f)
+{
+	DENTER_FUNCTION(DLEVEL_STABLE);
+
+	embed->focus = f;
+	if (embed->ev_clip)
+		evas_object_focus_set(embed->ev_clip, f);
+
+	DLEAVE_FUNCTION(DLEVEL_STABLE);
+}
+
+/**
+ * @param embed: the embed to indicate if it takes focus
+ * @return Returns a boolean indicating if the embed takes focus.
+ * @brief Retrieve the boolean value that indicates if the emebd takes focus.
+ */
+int ewl_embed_focus_get(Ewl_Embed *embed)
+{
+	DENTER_FUNCTION(DLEVEL_STABLE);
+
+	DRETURN_INT(embed->focus, DLEVEL_STABLE);
+}
+
+/**
+ * @param embed: the embed to retrieve maximum layer
+ * @return Returns the layer used for obtaining evas events.
+ * @brief Retrieve the layer being used for receiving evas events.
+ */
 int ewl_embed_max_layer_get(Ewl_Embed *embed)
 {
 	int layer;
@@ -183,6 +217,13 @@ int ewl_embed_max_layer_get(Ewl_Embed *embed)
 	DRETURN_INT(layer, DLEVEL_STABLE);
 }
 
+/**
+ *
+ * @param embed: embed to set the maximum layer
+ * @param layer: the maximum layer used for handling evas events
+ * @return Returns no value.
+ * @brief Sets the layer for the embed to receive events.
+ */
 void ewl_embed_max_layer_set(Ewl_Embed *embed, int layer)
 {
 	if (REALIZED(embed))
@@ -593,7 +634,7 @@ void ewl_embed_font_path_add(char *path)
  * @return Returns the found embed on success, NULL on failure.
  * @brief Find an ewl embed by its evas window
  */
-Ewl_Embed      *ewl_embed_find_by_evas_window(Ewl_Embed_Evas_Window *window)
+Ewl_Embed      *ewl_embed_evas_window_find(Ewl_Embed_Evas_Window *window)
 {
 	Ewl_Embed      *retemb;
 
@@ -615,7 +656,7 @@ Ewl_Embed      *ewl_embed_find_by_evas_window(Ewl_Embed_Evas_Window *window)
  * @return Returns the found embed on success, NULL on failure.
  * @brief Find an ewl embed by a widget inside
  */
-Ewl_Embed     *ewl_embed_find_by_widget(Ewl_Widget * w)
+Ewl_Embed     *ewl_embed_widget_find(Ewl_Widget * w)
 {
 	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR_RET("w", w, NULL);
@@ -737,6 +778,7 @@ void ewl_embed_realize_cb(Ewl_Widget *w, void *ev_data, void *user_data)
 		evas_object_color_set(emb->ev_clip, 0, 0, 0, 0);
 		evas_object_show(emb->ev_clip);
 		evas_object_repeat_events_set(emb->ev_clip, FALSE);
+		evas_object_focus_set(emb->ev_clip, emb->focus);
 
 		/*
 		 * Catch mouse events processed through the evas

@@ -149,7 +149,7 @@ int ewl_ev_x_window_expose(void *data, int type, void * e)
 
 	ev = e;
 
-	embed = ewl_embed_find_by_evas_window((void *)ev->win);
+	embed = ewl_embed_evas_window_find((void *)ev->win);
 	if (!embed)
 		DRETURN_INT(TRUE, DLEVEL_STABLE);
 
@@ -248,7 +248,7 @@ int ewl_ev_x_key_down(void *data, int type, void *e)
 
 	ev = e;
 
-	embed = ewl_embed_find_by_evas_window((void *)ev->win);
+	embed = ewl_embed_evas_window_find((void *)ev->win);
 
 	if (!embed)
 		DRETURN_INT(TRUE, DLEVEL_STABLE);
@@ -291,7 +291,7 @@ int ewl_ev_x_key_up(void *data, int type, void *e)
 
 	ev = e;
 
-	embed = ewl_embed_find_by_evas_window((void *)ev->win);
+	embed = ewl_embed_evas_window_find((void *)ev->win);
 	if (!embed)
 		DRETURN_INT(TRUE, DLEVEL_STABLE);
 
@@ -336,7 +336,7 @@ int ewl_ev_x_mouse_down(void *data, int type, void *e)
 
 	ev = e;
 
-	embed = ewl_embed_find_by_evas_window((void *)ev->win);
+	embed = ewl_embed_evas_window_find((void *)ev->win);
 	if (!embed)
 		DRETURN_INT(TRUE, DLEVEL_STABLE);
 
@@ -371,7 +371,7 @@ int ewl_ev_x_mouse_up(void *data, int type, void *e)
 
 	ev = e;
 
-	embed = ewl_embed_find_by_evas_window((void *)ev->win);
+	embed = ewl_embed_evas_window_find((void *)ev->win);
 	if (!embed)
 		DRETURN_INT(TRUE, DLEVEL_STABLE);
 
@@ -399,7 +399,7 @@ int ewl_ev_x_mouse_move(void *data, int type, void *e)
 
 	ev = e;
 
-	embed = ewl_embed_find_by_evas_window((void *)ev->win);
+	embed = ewl_embed_evas_window_find((void *)ev->win);
 	if (!embed)
 		DRETURN_INT(TRUE, DLEVEL_STABLE);
 
@@ -424,7 +424,7 @@ int ewl_ev_x_mouse_out(void *data, int type, void *e)
 
 	DENTER_FUNCTION(DLEVEL_STABLE);
 
-	embed = ewl_embed_find_by_evas_window((void *)ev->win);
+	embed = ewl_embed_evas_window_find((void *)ev->win);
 	if (!embed)
 		DRETURN_INT(TRUE, DLEVEL_STABLE);
 
@@ -449,7 +449,7 @@ int ewl_ev_x_mouse_wheel(void *data, int type, void *e)
 
 	DENTER_FUNCTION(DLEVEL_STABLE);
 
-	embed = ewl_embed_find_by_evas_window((void *)ev->win);
+	embed = ewl_embed_evas_window_find((void *)ev->win);
 	if (!embed)
 		DRETURN_INT(TRUE, DLEVEL_STABLE);
 

@@ -313,7 +313,7 @@ void ewl_media_realize_cb(Ewl_Widget * w, void *ev_data, void *user_data)
 	/*
 	 * Find the embed so we know which evas to draw onto.
 	 */
-	emb = ewl_embed_find_by_widget(w);
+	emb = ewl_embed_widget_find(w);
 
 	/*
 	 * Create the emotion

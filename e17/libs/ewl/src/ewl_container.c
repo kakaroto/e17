@@ -921,7 +921,7 @@ void ewl_container_realize_cb(Ewl_Widget * w, void *ev_data, void *user_data)
 
 	c = EWL_CONTAINER(w);
 
-	emb = ewl_embed_find_by_widget(w);
+	emb = ewl_embed_widget_find(w);
 
 	/*
 	 * Create the clip box for this container, this keeps children clipped

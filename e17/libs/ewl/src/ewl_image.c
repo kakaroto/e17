@@ -104,7 +104,7 @@ void ewl_image_file_set(Ewl_Image * i, char *im, char *key)
 
 	w = EWL_WIDGET(i);
 
-	emb = ewl_embed_find_by_widget(w);
+	emb = ewl_embed_widget_find(w);
 
 	IF_FREE(i->path);
 	IF_FREE(i->key);
@@ -256,7 +256,7 @@ void ewl_image_realize_cb(Ewl_Widget * w, void *ev_data, void *user_data)
 
 	i = EWL_IMAGE(w);
 
-	emb = ewl_embed_find_by_widget(w);
+	emb = ewl_embed_widget_find(w);
 
 	/*
 	 * Load the image based on the type.
@@ -343,7 +343,7 @@ void ewl_image_configure_cb(Ewl_Widget * w, void *ev_data, void *user_data)
 	if (!i->image)
 		return;
 
-	emb = ewl_embed_find_by_widget(w);
+	emb = ewl_embed_widget_find(w);
 
 	ww = CURRENT_W(w);
 	hh = CURRENT_H(w);
@@ -405,7 +405,7 @@ void ewl_image_mouse_down_cb(Ewl_Widget * w, void *ev_data, void *user_data)
 	DCHECK_PARAM_PTR("w", w);
 
 	i = EWL_IMAGE(w);
-	emb = ewl_embed_find_by_widget(w);
+	emb = ewl_embed_widget_find(w);
 	ev = ev_data;
 
 	if (i->type == EWL_IMAGE_TYPE_EDJE)
@@ -424,7 +424,7 @@ void ewl_image_mouse_up_cb(Ewl_Widget * w, void *ev_data, void *user_data)
 	DCHECK_PARAM_PTR("w", w);
 
 	i = EWL_IMAGE(w);
-	emb = ewl_embed_find_by_widget(w);
+	emb = ewl_embed_widget_find(w);
 	ev = ev_data;
 
 	if (i->type == EWL_IMAGE_TYPE_EDJE)
@@ -443,7 +443,7 @@ void ewl_image_mouse_move_cb(Ewl_Widget * w, void *ev_data, void *user_data)
 	DCHECK_PARAM_PTR("w", w);
 
 	i = EWL_IMAGE(w);
-	emb = ewl_embed_find_by_widget(w);
+	emb = ewl_embed_widget_find(w);
 	ev = ev_data;
 
 	if (i->type == EWL_IMAGE_TYPE_EDJE)

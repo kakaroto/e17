@@ -44,22 +44,27 @@ typedef void *Ewl_Embed_Evas_Window;
  */
 struct Ewl_Embed
 {
-	Ewl_Overlay     overlay; /**< Inherits from the Ewl_Overlay class */
+	Ewl_Overlay     overlay;     /**< Inherits from the Ewl_Overlay class */
 
-	Evas           *evas; /**< Evas where drawing takes place. */
+	Evas           *evas;        /**< Evas where drawing takes place. */
 	void           *evas_window; /**< The window holding the evas. */
 
-	Evas_Object    *smart; /**< Object to manipulate Ewl_Embed from evas */
-	Evas_Object    *ev_clip; /**< Clip box to receive evas events */
-	Ecore_List     *tab_order; /**< Order of widgets to send focus on tab */
+	Evas_Object    *smart;       /**< Manipulate Ewl_Embed from evas */
+	Evas_Object    *ev_clip;     /**< Clip box to receive evas events */
+	Ecore_List     *tab_order;   /**< Order of widgets to send focus */
 
-	int             max_layer; /**< The maximum widget layer used */
+	int             max_layer;   /**< The maximum widget layer used */
+	int             focus;       /**< Indicates if it receives focus */
 };
 
 Ewl_Widget     *ewl_embed_new(void);
 int             ewl_embed_init(Ewl_Embed * win);
 Evas_Object    *ewl_embed_evas_set(Ewl_Embed *emb, Evas *evas,
 				   Ewl_Embed_Evas_Window *evas_window);
+
+void            ewl_embed_focus_set(Ewl_Embed *embed, int f);
+int             ewl_embed_focus_get(Ewl_Embed *embed);
+
 int             ewl_embed_max_layer_get(Ewl_Embed *embed);
 void            ewl_embed_max_layer_set(Ewl_Embed *embed, int layer);
 void            ewl_embed_key_down_feed(Ewl_Embed *embed, char *keyname,
@@ -76,9 +81,11 @@ void            ewl_embed_mouse_out_feed(Ewl_Embed *embed, int x, int y,
 					 unsigned int modifiers);
 void            ewl_embed_mouse_wheel_feed(Ewl_Embed *embed, int x, int y,
 					   int z, int dir, unsigned int mods);
+
 void            ewl_embed_font_path_add(char *path);
-Ewl_Embed      *ewl_embed_find_by_evas_window(Ewl_Embed_Evas_Window *win);
-Ewl_Embed      *ewl_embed_find_by_widget(Ewl_Widget * w);
+Ewl_Embed      *ewl_embed_evas_window_find(Ewl_Embed_Evas_Window *win);
+Ewl_Embed      *ewl_embed_widget_find(Ewl_Widget * w);
+
 void            ewl_embed_tab_order_next(Ewl_Embed *e);
 void            ewl_embed_tab_order_remove(Ewl_Embed *e, Ewl_Widget *w);
 void            ewl_embed_tab_order_push(Ewl_Embed *e, Ewl_Widget *w);

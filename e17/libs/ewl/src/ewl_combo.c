@@ -224,7 +224,7 @@ void ewl_combo_expand_cb(Ewl_Widget * w, void *ev_data, void *user_data)
 	ewl_menu_base_expand_cb(EWL_WIDGET(combo), ev_data, NULL);
 
 	if (!REALIZED(combo->base.popup)) {
-		emb = ewl_embed_find_by_widget(w);
+		emb = ewl_embed_widget_find(w);
 		ewl_container_child_append(EWL_CONTAINER(emb),
 					   combo->base.popup); 
 	}
