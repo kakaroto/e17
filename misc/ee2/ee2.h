@@ -83,4 +83,5 @@ void CloseSaveSel(GtkWidget * widget, gpointer data);
 void SaveImageAs(GtkWidget * widget, GtkFileSelection * fs);
 gint ButtonPressed(GtkWidget * widget, GdkEvent * event, gpointer data);
 gboolean a_config(GtkWidget * widget, GdkEventConfigure * event, gpointer user_data);
+gboolean b_config(GtkWidget * widget, GdkEventConfigure * event, gpointer user_data);
 void browser_sel(GtkWidget *clist, gint row, gint column, GdkEventButton *event, gpointer data);

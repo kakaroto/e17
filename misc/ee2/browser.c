@@ -73,6 +73,8 @@ browser_init(void)
 	
 	area2 = gtk_drawing_area_new();
 	gtk_widget_set_usize(area2, 125, 125);
+	gtk_signal_connect_after(GTK_OBJECT(area2), "configure_event",
+													 GTK_SIGNAL_FUNC(b_config), NULL);
 	gtk_container_add(GTK_CONTAINER(frame1), area2);
 	gtk_widget_show(area2);
 	
@@ -81,9 +83,7 @@ browser_init(void)
 	gtk_frame_set_shadow_type(GTK_FRAME(frame2), GTK_SHADOW_IN);
 	gtk_widget_show(frame2);
 	
-	infol = gtk_label_new("\n"
-												"Waiting...\n"
-												"\n");
+	infol = gtk_label_new("\nWaiting...\n\n");
 	gtk_label_set_justify(GTK_LABEL(infol), GTK_JUSTIFY_LEFT);
 	gtk_container_add(GTK_CONTAINER(frame2), infol);
 	gtk_widget_show(infol);
@@ -205,7 +205,6 @@ browser_sel(GtkWidget *clist, gint row, gint column,
 						alp);
 		gtk_label_set_text(GTK_LABEL(infol), lblt);
 		prev_draw(im, area2->allocation.width, area2->allocation.height);
-	   prev_draw(im, area2->allocation.width, area2->allocation.height);
   }
 }
 
@@ -231,8 +230,6 @@ prev_draw(Imlib_Image *im, int w, int h)
 	if(!im)
 		return;
 	
-	gtk_widget_set_usize(area2, 125, 125);
-	
 	imlib_context_set_image(im);
 	ww = imlib_image_get_width();
 	hh = imlib_image_get_height();
@@ -257,4 +254,11 @@ prev_draw(Imlib_Image *im, int w, int h)
 	XClearWindow(disp_t, win_t);
 	XFreePixmap(disp_t, pm_t);
 	imlib_context_set_drawable(None);
+}
+
+gboolean
+b_config(GtkWidget *widget, GdkEventConfigure *event, gpointer user_data)
+{
+	prev_draw(im, event->width, event->height);
+	return TRUE;
 }
