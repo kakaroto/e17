@@ -357,7 +357,6 @@ KDE_Init(void)
 
 	memset(KDE_DESKTOP_NAME, 0, sizeof(KDE_DESKTOP_NAME));
      }
-
    KDE_SetRootArea();
 
    /* then we're going to set a series of string hints on the root window */

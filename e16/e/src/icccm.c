@@ -751,30 +751,30 @@ ICCCM_GetInfo(EWin * ewin, Atom atom_change)
 		  ewin->client.command = NULL;
 	       }
 	  }
-/*	else if (XGetCommand(disp, ewin->client.group, &cargv, &cargc))
-	  {
-	     if (cargc > 0)
-	       {
-		  size = strlen(cargv[0]) + 1;
-		  s = Emalloc(size);
-		  strcpy(s, cargv[0]);
-		  for (i = 1; i < cargc; i++)
-		    {
-		       size += strlen(cargv[i]) + 1;
-		       s = Erealloc(s, size);
-		       strcat(s, " ");
-		       strcat(s, cargv[i]);
-		    }
-		  XFreeStringList(cargv);
-		  if (ewin->client.command)
-		     Efree(ewin->client.command);
-		  ewin->client.command = s;
-	       }
-	     else
-	       {
-		  ewin->client.command = NULL;
-	       }
-	  }*/
+/*      else if (XGetCommand(disp, ewin->client.group, &cargv, &cargc))
+ * {
+ * if (cargc > 0)
+ * {
+ * size = strlen(cargv[0]) + 1;
+ * s = Emalloc(size);
+ * strcpy(s, cargv[0]);
+ * for (i = 1; i < cargc; i++)
+ * {
+ * size += strlen(cargv[i]) + 1;
+ * s = Erealloc(s, size);
+ * strcat(s, " ");
+ * strcat(s, cargv[i]);
+ * }
+ * XFreeStringList(cargv);
+ * if (ewin->client.command)
+ * Efree(ewin->client.command);
+ * ewin->client.command = s;
+ * }
+ * else
+ * {
+ * ewin->client.command = NULL;
+ * }
+ * } */
 	else
 	   ewin->client.command = NULL;
      }

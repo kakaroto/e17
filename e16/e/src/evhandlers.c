@@ -182,9 +182,15 @@ HandleClientMessage(XEvent * ev)
 	    (!(ewin->iconified)))
 	  {
 	     IconifyEwin(ewin);
+	     EDBUG_RETURN_;
 	  }
      }
+
+   if (mode.kde_support)
+      KDE_ProcessClientMessage(&(ev->xclient));
+
    EDBUG_RETURN_;
+
 }
 
 void

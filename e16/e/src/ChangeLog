@@ -1578,3 +1578,10 @@ Fri Sep 10 14:59:58 PDT 1999
 (Raster)
 
 more ref count to after discovery of the objetc, not before.. :)
+
+-------------------------------------------------------------------------------
+
+Fri Sep 10 15:45:37 PDT 1999
+(Mandrake)
+
+forgot something in one place.  client message processing

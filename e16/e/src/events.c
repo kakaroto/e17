@@ -656,10 +656,10 @@ HFocusOut(XEvent * ev)
    EDBUG(7, "HFocusOut");
    if (ev->xfocus.detail == NotifyNonlinear)
      {
-	Window rt, ch;
-	int d;
-	unsigned int ud;
-	   
+	Window              rt, ch;
+	int                 d;
+	unsigned int        ud;
+
 	XQueryPointer(disp, root.win, &rt, &ch, &d, &d, &d, &d, &ud);
 	if (rt != root.win)
 	   HandleFocusWindowIn(0);
