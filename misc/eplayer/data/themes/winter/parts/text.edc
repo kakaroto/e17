@@ -1,0 +1,141 @@
+      part {
+        name, "artist_name";
+	type, TEXT;
+	mouse_events, 1;
+	description {
+	  state, "default" 0.0;
+	  visible, 1;
+	  color, 0 0 0 200;
+	  rel1 {
+	    to, "screen";
+	    relative, 0 0;
+	    offset, 7 7;
+	  }
+	  rel2 {
+	    to, "screen";
+	    relative, 1 0;
+	    offset, -5 25;
+	  }
+	  text {
+	    text, "artist";
+	    font, "Vera";
+	    size, 10;
+	    min, 0 1;
+	    align, 0 0;
+	  }
+	}
+      } //artist_name part
+
+      part {
+        name, "album_name";
+	type, TEXT;
+	mouse_events, 1;
+	description {
+	  state, "default" 0.0;
+	  visible, 1;
+	  color, 0 0 0 200;
+	  rel1 {
+	    to, "artist_name";
+	    relative, 0 1;
+	    offset, 0 5;
+	  }
+	  rel2 {
+	    to, "artist_name";
+	    relative, 1 0;
+	    offset, 0 25;
+	  }
+	  text {
+	    text, "album";
+	    font, "Vera";
+	    size, 8;
+	    min, 0 1;
+	    align, 0 0;
+	  }
+	}
+      } // album_name part
+
+      part {
+        name, "song_name";
+	type, TEXT;
+	mouse_events, 1;
+	description {
+	  state, "default" 0.0;
+	  visible, 1;
+	  color, 0 0 0 200;
+	  rel1 {
+	    to, "album_name";
+	    relative, 0 1;
+	    offset, 0 5;
+	  }
+	  rel2 {
+	    to, "album_name";
+	    relative, 1 0;
+	    offset, 0 25;
+	  }
+	  text {
+	    text, "song";
+	    font, "Vera";
+	    size, 8;
+	    min, 0 1;
+	    align, 0 0;
+	  }
+	}
+      } //part
+
+      part {
+        name, "time_text";
+	type, TEXT;
+	mouse_events, 1;
+	description {
+	  state, "default" 0.0;
+	  visible, 1;
+	  color, 0 0 0 200;
+	  rel1 {
+	    to_x, "screen";
+	    to_y, "song_name";
+	    relative, 0 1;
+	    offset, 7 5;
+	  }
+	  rel2 {
+	    to, "screen";
+	    relative, 1 1;
+	    offset, -8 -8;
+	  }
+	  text {
+	    text, "00:00";
+	    font, "Vera";
+	    size, 12;
+	    min, 0 1;
+	    align, 1 0;
+	  }
+	}
+      } //time_text part
+
+
+      part {
+        name, "vol_display_text";
+	type, TEXT;
+	mouse_events, 1;
+	description {
+	  state, "default" 0.0;
+	  visible, 1;
+	  color, 0 0 0 200;
+	  rel1 {
+	    to, "volumeBox";
+	    relative, 0 0;
+	    offset, 2 3;
+	  }
+	  rel2 {
+	    to, "volumeBox";
+	    relative, 1 1;
+	    offset, -3 -3;
+	  }
+	  text {
+	    text, "100";
+	    font, "Vera";
+	    size, 8;
+	    min, 0 0;
+	    align, .5 .5;
+	  }
+	}
+      } //part

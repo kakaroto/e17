@@ -1,0 +1,34 @@
+      program {				
+        name, "playlistOpen";			
+	signal, "mouse,up,1";		
+	source, "playlistOpenner";			
+	action, STATE_SET "open" 0.0;	
+        transition, DECELERATE, 0.5;	
+	target, "bottom";
+	target, "playlistOpenner";
+	target, "playlistCloser";
+      }					
+      program {				
+        name, "playlistClose";			
+	signal, "mouse,up,1";		
+	source, "playlistCloser";			
+	action, STATE_SET "default" 0.0;	
+        transition, DECELERATE, 0.5;	
+	target, "bottom";
+	target, "playlistOpenner";
+	target, "playlistCloser";
+      }					
+
+
+	    program {
+	        name, "scroll_up";
+		signal, "mouse,wheel,0,-1";
+		source, "playlistGrabber";
+		action, SIGNAL_EMIT "PLAYLIST_SCROLL_UP" "";
+	    } 
+	    program {
+	        name, "scroll_down";
+		signal, "mouse,wheel,0,1";
+		source, "playlistGrabber";
+		action, SIGNAL_EMIT "PLAYLIST_SCROLL_DOWN" "";
+	    } 

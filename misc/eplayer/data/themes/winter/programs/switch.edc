@@ -1,0 +1,6 @@
+      program {
+        name, "switch";
+        signal, "mouse,down,1,double";
+        source, "main";
+        action, SIGNAL_EMIT "SWITCH_GROUP" "collapsed";
+      }

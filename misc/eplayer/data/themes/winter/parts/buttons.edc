@@ -1,0 +1,156 @@
+      part {
+        name, "controlArea";
+	type, RECT;
+	description {
+	  state, "default" 0.0;
+	  visible, 0;
+	  min, 120 25;
+	  max, 120 25;
+	  rel1 {
+	    to, "main";
+	    relative, 0 1;
+	    offset, 0 -59;
+	  }
+	  rel2 {
+	    to, "main";
+	    relative, 1 1;
+	    offset, -1 -35;
+	  }
+	}
+      } //part
+
+BUTTON("prev", "prev1.png", "prev2.png", 26, 22,
+       "controlArea", 0 0, 5 0, 
+       "controlArea", 0 1, 31 -1)
+BUTTON("rew", "rew1.png", "rew2.png", 17, 22,
+       "controlArea", 0 0, 32 0, 
+       "controlArea", 0 1, 51 -1)
+TOGGLE_BUTTON("play", "play1.png", "play2.png",
+              "pause1.png", "pause2.png", 20, 22,
+              "controlArea", 0 0, 51 0,
+              "controlArea", 0 1, 71 -1)
+BUTTON("ff", "ff1.png", "ff2.png", 17, 22,
+       "controlArea", 0 0, 71 0,
+       "controlArea", 0 1, 88 -1)
+BUTTON("next", "next1.png", "next2.png", 26, 22,
+       "controlArea", 0 0, 89 0,
+       "controlArea", 0 1, 117 -1)
+
+
+BUTTON("pl", "pl1.png", "pl2.png", 17, 17,
+       "main", 1 1, -21 -47, 
+       "main", 1 1, -4 -30)
+
+BUTTON("x", "x1.png", "x2.png", 15, 15,
+       "main", 1 1, -20 -27, 
+       "main", 1 1, -5 -12)
+
+
+      part {
+        name, "playlistButtonArea";
+	type, RECT;
+	description {
+	  state, "default" 0.0;
+	  visible, 0;
+	  min, 61 20;
+	  max, 61 20;
+	  rel1 {
+	    to, "playlistPanel";
+	    relative, 0 1;
+	    offset, 0 -23;
+	  }
+	  rel2 {
+	    to, "playlistPanel";
+	    relative, 1 1;
+	    offset, -1 -4;
+	  }
+	}
+      } //part
+
+BUTTON_CLIPPED("plus", "plus1.png", "plus2.png", 17, 17,
+       "playlistButtonArea", 0 0, 3 2, 
+       "playlistButtonArea", 0 0, 20 19,
+       "playlistClip")
+BUTTON_CLIPPED("minus", "minus1.png", "minus2.png", 19, 10,
+       "playlistButtonArea", 0 0, 21 6,
+       "playlistButtonArea", 0 0, 40 16,
+       "playlistClip")
+BUTTON_CLIPPED("edit", "edit1.png", "edit2.png", 20, 9,
+       "playlistButtonArea", 0 0, 39 6, 
+       "playlistButtonArea", 0 0, 59 15,
+       "playlistClip")
+
+
+
+      part {
+        name, "playlistOpenner";
+	type, RECT;
+	repeat_events, 1;
+	description {
+	  state, "default" 0.0;
+	  visible, 1;
+	  color, 0 0 0 0;
+	  rel1 {
+	    to, "pl";
+	    relative, 0 0;
+	    offset, 0 0;
+	  }
+	  rel2 {
+	    to, "pl";
+	    relative, 1 1;
+	    offset, -1 -1;
+	  }
+	}
+	description {
+	  state, "open" 0.0;
+	  visible, 0;
+	  color, 0 0 0 0;
+	  rel1 {
+	    to, "pl";
+	    relative, 0 0;
+	    offset, 0 0;
+	  }
+	  rel2 {
+	    to, "pl";
+	    relative, 1 1;
+	    offset, -1 -1;
+	  }
+	}
+      } //part
+
+
+      part {
+        name, "playlistCloser";
+	type, RECT;
+	repeat_events, 1;
+	description {
+	  state, "default" 0.0;
+	  visible, 0;
+	  color, 0 0 0 0;
+	  rel1 {
+	    to, "pl";
+	    relative, 0 0;
+	    offset, 0 0;
+	  }
+	  rel2 {
+	    to, "pl";
+	    relative, 1 1;
+	    offset, -1 -1;
+	  }
+	}
+	description {
+	  state, "open" 0.0;
+	  visible, 1;
+	  color, 0 0 0 0;
+	  rel1 {
+	    to, "pl";
+	    relative, 0 0;
+	    offset, 0 0;
+	  }
+	  rel2 {
+	    to, "pl";
+	    relative, 1 1;
+	    offset, -1 -1;
+	  }
+	}
+      } //part

@@ -1,0 +1,18 @@
+      program {
+        name, "seeker-start";
+	signal, "mouse,down,1";
+	source, "seeker_grabber";
+	action, SIGNAL_EMIT "SEEKER_START" "";
+      }
+      program {
+        name, "seeker-update";
+	signal, "mouse,move";
+	source, "seeker_grabber";
+	action, SIGNAL_EMIT "SEEKER_UPDATE" "";
+      }
+      program {
+        name, "seeker-stop";
+	signal, "mouse,up,1";
+	source, "seeker_grabber";
+	action, SIGNAL_EMIT "SEEKER_STOP" "";
+      }

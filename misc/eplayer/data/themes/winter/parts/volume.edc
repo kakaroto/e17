@@ -1,0 +1,30 @@
+      part {
+        name, "volumeBox";
+	description {
+	  min, 27 16;
+	  max, 27 16;
+	  rel1 {
+	    to, "controlArea";
+	    relative, 0 1;
+	    offset, 0 7;
+	  }
+	  rel2 {
+	    to, "controlArea";
+	    relative, 1 1;
+	    offset, -1 23;
+	  }
+	  image {
+	    normal, "volume.png";
+	  }
+	}
+      } //part
+
+BUTTON2("vol-dn", "vol-dn.png", "vol-dn-over.png", "vol-dn-clicked.png",
+        11, 16,
+        "volumeBox", 0 0, -10 0, 
+        "volumeBox", 0 1, 0 -1)
+BUTTON2("vol-up", "vol-up.png", "vol-up-over.png", "vol-up-clicked.png",
+        11, 16,
+        "volumeBox", 1 0, -1 0, 
+        "volumeBox", 1 1, 10 -1)
+

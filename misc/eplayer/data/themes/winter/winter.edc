@@ -1,0 +1,17 @@
+#include "macros/macros.inc"
+#include "macros/toggle.inc"
+
+images {
+#include "images/eplayer.edc"
+#include "images/collapsed.edc"
+}
+
+fonts {
+  font, "Vera.ttf" "Vera";
+}
+
+collections {
+#include "groups/eplayer.edc"
+#include "groups/collapsed.edc"
+#include "groups/playlist_item.edc"    
+} //collections

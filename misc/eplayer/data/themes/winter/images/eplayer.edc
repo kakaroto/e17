@@ -1,0 +1,41 @@
+    image, "main.png" LOSSY 98;
+    image, "screen.png" LOSSY 98;
+    image, "bot.png" LOSSY 98;
+    image, "shad.png" LOSSY 98;
+    image, "panel.png" LOSSY 98;
+    image, "prev1.png" LOSSY 98;
+    image, "prev2.png" LOSSY 98;
+    image, "rew1.png" LOSSY 98;
+    image, "rew2.png" LOSSY 98;
+    image, "play1.png" LOSSY 98;
+    image, "play2.png" LOSSY 98;
+    image, "pause1.png" LOSSY 98;
+    image, "pause2.png" LOSSY 98;
+    image, "ff1.png" LOSSY 98;
+    image, "ff2.png" LOSSY 98;
+    image, "next1.png" LOSSY 98;
+    image, "next2.png" LOSSY 98;
+    image, "pl1.png" LOSSY 98;
+    image, "pl2.png" LOSSY 98;
+    image, "x1.png" LOSSY 98;
+    image, "x2.png" LOSSY 98;
+
+    image, "volume.png" LOSSY 98;
+    image, "vol-dn.png" LOSSY 98;
+    image, "vol-dn-over.png" LOSSY 98;
+    image, "vol-dn-clicked.png" LOSSY 98;
+    image, "vol-up.png" LOSSY 98;
+    image, "vol-up-over.png" LOSSY 98;
+    image, "vol-up-clicked.png" LOSSY 98;
+
+    image, "plus1.png" LOSSY 98;
+    image, "plus2.png" LOSSY 98;
+    image, "minus1.png" LOSSY 98;
+    image, "minus2.png" LOSSY 98;
+    image, "edit1.png" LOSSY 98;
+    image, "edit2.png" LOSSY 98;
+
+    image, "seeker_trough.png" LOSSY 98;
+    image, "seeker_bar.png" LOSSY 98;
+
+    image, "dot.png" LOSSY 98;

@@ -1,0 +1,12 @@
+      program {
+        name, "time_toggle";
+	signal, "mouse,clicked,1";
+        source, "time_text";
+	action, SIGNAL_EMIT "TOGGLE_TIME_DISPLAY_MODE" "time_toggle";
+      }
+      program {
+        name, "repeat_toggle";
+	signal, "mouse,clicked,1";
+	source, "repeat*";
+	action, "SIGNAL_EMIT" "TOGGLE_REPEAT_MODE" "repeat_toggle";
+      }

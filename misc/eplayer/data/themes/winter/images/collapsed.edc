@@ -1,0 +1,19 @@
+  image, "small-main.png" LOSSY 98;
+  image, "small-right.png" LOSSY 98;
+  image, "small-panel.png" LOSSY 98;
+
+  image, "small-seeker-bar.png" LOSSY 98;
+  image, "small-seeker-trough.png" LOSSY 98;
+
+  image, "small-prev1.png" LOSSY 98;
+  image, "small-prev2.png" LOSSY 98;
+  image, "small-rew1.png" LOSSY 98;
+  image, "small-rew2.png" LOSSY 98;
+  image, "small-play1.png" LOSSY 98;
+  image, "small-play2.png" LOSSY 98;
+  image, "small-pause1.png" LOSSY 98;
+  image, "small-pause2.png" LOSSY 98;
+  image, "small-ff1.png" LOSSY 98;
+  image, "small-ff2.png" LOSSY 98;
+  image, "small-next1.png" LOSSY 98;
+  image, "small-next2.png" LOSSY 98;

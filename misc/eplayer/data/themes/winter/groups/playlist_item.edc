@@ -1,0 +1,152 @@
+    group {
+        name, "playlist_item";
+	min, 50, 15;
+	max, 9999, 15;
+	parts {
+            part {
+              name, "bg";
+              type, RECT;
+              mouse_events, 1;
+
+              description {
+                state, "default" 0.0;
+                color, 0 0 0 0;
+              }
+            }
+	    part {
+	        name, "title";
+		type, TEXT;
+		mouse_events, 1;
+		description {
+		    state, "default" 0.0;
+		    color, 0 0 0 128;
+		    rel1 {
+		        relative, 0.0 0.0;
+			offset, 5 0;
+		    }
+		    rel2 {
+		        to_x, "length";
+		        relative, 0.0 1.0;
+			offset, -5 0;
+		    }
+		    text {
+		        text, "title";
+			font, "Vera";
+			size, 10;
+			align, 0.0 0.0;
+		    }
+		}
+		description {
+		    state, "selected" 0.0;
+		    color, 0 0 0 255;
+		    rel1 {
+		        relative, 0.0 0.0;
+			offset, 5 0;
+		    }
+		    rel2 {
+		        to_x, "length";
+		        relative, 0.0 1.0;
+			offset, -5 0;
+		    }
+		    text {
+		        text, "title";
+			font, "Vera";
+			size, 10;
+			align, 0.0 0.0;
+		    }
+		}
+	    } //part
+	    part {
+	        name, "length";
+		type, TEXT;
+		mouse_events, 1;
+		description {
+		    state, "default" 0.0;
+		    color, 0 0 0 128;
+		    rel1 {
+		        relative, 1.0 0.0;
+			offset, -30 0;
+		    }
+		    rel2 {
+		        relative, 1.0 1.0;
+			offset, -5 -1;
+		    }
+		    text {
+		        text, "00:00";
+			font, "Vera";
+			size, 10;
+			min, 1 1;
+			align, 1.0 0.0;
+		    }
+		}
+		description {
+		    state, "selected" 0.0;
+		    color, 0 0 0 255;
+		    rel1 {
+		        relative, 1.0 0.0;
+			offset, -30 0;
+		    }
+		    rel2 {
+		        relative, 1.0 1.0;
+			offset, -5 -1;
+		    }
+		    text {
+		        text, "00:00";
+			font, "Vera";
+			size, 10;
+			min, 1 1;
+			align, 1.0 0.0;
+		    }
+		}
+	    } //part
+	
+	} //parts
+
+	programs {
+	    
+	    program {
+	        name, "selected_mouse";
+		signal, "mouse,clicked,1";
+		source, "*";
+		action, SIGNAL_EMIT "PLAYLIST_ITEM_SELECTED" "";
+	    } 
+	    program {
+	        name, "selected";
+		signal, "PLAYLIST_ITEM_SELECTED";
+		source, "";
+		action, STATE_SET "selected" 0.0;
+		transition, DECELERATE, 0.5;
+		target, "title";
+		target, "length";
+	    } 
+	    program {
+	        name, "unselected";
+		signal, "PLAYLIST_ITEM_UNSELECTED";
+		source, "";
+		action, STATE_SET "default" 0.0;
+		transition, DECELERATE, 0.5;
+		target, "title";
+		target, "length";
+	    } 
+	    program {
+	        name, "play_it";
+		signal, "mouse,down,1,double";
+		source, "*";
+		action, SIGNAL_EMIT "PLAYLIST_ITEM_PLAY" "";
+	    } 
+	    program {
+	        name, "scroll_up";
+		signal, "mouse,wheel,0,-1";
+		source, "*";
+		action, SIGNAL_EMIT "PLAYLIST_SCROLL_UP" "";
+	    } 
+	    program {
+	        name, "scroll_down";
+		signal, "mouse,wheel,0,1";
+		source, "*";
+		action, SIGNAL_EMIT "PLAYLIST_SCROLL_DOWN" "";
+	    } 
+	
+	} //programs
+	
+    } //group
