@@ -297,3 +297,12 @@ Mon Nov  8 14:05:56 PST 1999
 Multiple hacks are now supported in E-Xss.  Just edit your config file and
 list as many hacks as you want.  The key values are "hack_0", "hack_1", etc.,
 on up to however many hacks you want.
+
+-------------------------------------------------------------------------------
+
+Mon Nov  8 20:32:49 PST 1999
+(KainX)
+
+Raised the delay for qix (oops) and redid the date format in E-Time.  It now
+shows the full weekday name and shows the day before the month.  I also added
+a space for improved readability.

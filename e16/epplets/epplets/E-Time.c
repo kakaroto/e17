@@ -19,9 +19,9 @@ timer_cb(void *data)
    if (tim2)
      {
 	memcpy(&tim, tim2, sizeof(struct tm));
-        strftime(tm, 63, "%a", &tim);
+        strftime(tm, 63, "%A", &tim);
 	Epplet_change_label(label1, tm);
-        strftime(tm, 63, "%b %d", &tim);
+        strftime(tm, 63, "%e  %b", &tim);
 	Epplet_change_label(label2, tm);
         strftime(tm, 63, "%H:%M:%S", &tim);
 	Epplet_change_label(label3, tm);
