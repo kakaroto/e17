@@ -667,6 +667,12 @@ __imlib_list_fonts(int *num_ret)
    return list;
 }
 
+void
+__imlib_free_font_list(char *list, int num)
+{
+   __imlib_FileFreeDirList(list, num);
+}
+
 int
 __imlib_get_cached_font_size(void)
 {

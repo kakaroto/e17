@@ -1128,3 +1128,32 @@ imlib_text_get_index_and_location(Imlib_Font *font,
    return -1;
 }
 
+char **
+imlib_list_fonts(int *number_return)
+{
+   return __imlib_list_fonts(number_return);
+}
+
+void 
+imlib_free_font_list(char **font_list, int number)
+{
+   __imlib_free_font_list(font_list, number);
+}
+
+int 
+imlib_get_font_cache_size(void)
+{
+   return __imlib_get_font_cache_size();
+}
+
+void 
+imlib_set_font_cache_size(int bytes)
+{
+   __imlib_set_font_cache_size(bytes);
+}
+
+void 
+imlib_flush_font_cache(void)
+{
+   __imlib_purge_font_cache();
+}

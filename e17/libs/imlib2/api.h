@@ -283,7 +283,12 @@ int  imlib_text_get_index_and_location(Imlib_Font *font,
 				       int *char_x_return, int *char_y_return, 
 				       int *char_width_return, 
 				       int *char_height_return);
-				       
+char **imlib_list_fonts(int *number_return);
+void imlib_free_font_list(char **font_list, int number);
+int imlib_get_font_cache_size(void);
+void imlib_set_font_cache_size(int bytes);
+void imlib_flush_font_cache(void);
+
 #if 0
 void imlib_image_copy_alpha_to_image(Imlib_Image image_source,
 				     Imlib_Image image_destination,
