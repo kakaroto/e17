@@ -29,25 +29,40 @@ static const char cvs_ident[] = "$Id$";
 
 #include <libast_internal.h>
 
-/*spif_classname_t spif_str_classname = "spif_str_t";*/
+/* Declaration for the spif_str_t classname variable. */
 SPIF_DECL_CLASSNAME(str);
 
 spif_str_t
 spif_str_new(void)
 {
+  spif_str_t self;
+
+  self = SPIF_ALLOC(str);
+  spif_str_init(self);
+  return self;
 }
 
 spif_bool_t
 spif_str_del(spif_str_t self)
 {
+  spif_str_done(self);
+  SPIF_DEALLOC(self);
+  return TRUE;
 }
 
 spif_bool_t
 spif_str_init(spif_str_t self)
 {
+  spif_obj_init(SPIF_OBJ(self));
+  spif_obj_set_classname(SPIF_OBJ(self), SPIF_CLASSNAME(str));
+  /* ... */
+  return TRUE;
 }
 
 spif_bool_t
 spif_str_done(spif_str_t self)
 {
+  USE_VAR(self);
+  /* ... */
+  return TRUE;
 }

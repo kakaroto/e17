@@ -35,51 +35,80 @@ SPIF_DECL_CLASSNAME(obj);
 spif_nullobj_t
 spif_nullobj_new(void)
 {
+  /* DO NOT USE */
+  return ((spif_nullobj_t) (NULL));
 }
 
 spif_bool_t
 spif_nullobj_del(spif_nullobj_t self)
 {
+  /* DO NOT USE */
+  USE_VAR(self);
+  return TRUE;
 }
 
 spif_bool_t
 spif_nullobj_init(spif_nullobj_t self)
 {
+  /* DO NOT USE */
+  USE_VAR(self);
+  return TRUE;
 }
 
 spif_bool_t
 spif_nullobj_done(spif_nullobj_t self)
 {
+  /* DO NOT USE */
+  USE_VAR(self);
+  return TRUE;
 }
 
 
 spif_obj_t
 spif_obj_new(void)
 {
+  spif_obj_t self;
+
+  self = SPIF_ALLOC(obj);
+  spif_obj_init(self);
+  return self;
 }
 
 spif_bool_t
 spif_obj_del(spif_obj_t self)
 {
+  spif_obj_done(self);
+  SPIF_DEALLOC(self);
+  return TRUE;
 }
 
 spif_bool_t
 spif_obj_init(spif_obj_t self)
 {
+  spif_obj_set_classname(self, SPIF_CLASSNAME(obj));
+  return TRUE;
 }
 
 spif_bool_t
 spif_obj_done(spif_obj_t self)
 {
+  USE_VAR(self);
+  return TRUE;
 }
 
 spif_classname_t
 spif_obj_get_classname(spif_obj_t self)
 {
+  return ((self) ? (self->classname) : ((spif_classname_t) SPIF_NULL_STR(obj)));
 }
 
 spif_bool_t
-spif_obj_set_classname(spif_classname_t newname)
+spif_obj_set_classname(spif_obj_t self, spif_classname_t newname)
 {
+  if (SPIF_OBJ_ISNULL(self)) {
+    return FALSE;
+  }
+  SPIF_OBJ_CLASSNAME(self) = newname;
+  return TRUE;
 }
 

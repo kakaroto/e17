@@ -37,5 +37,10 @@ struct spif_str_t_struct {
   spif_const_obj_t parent;
 };
 
+extern spif_classname_t spif_str_classname;
+extern spif_str_t spif_str_new(void);
+extern spif_bool_t spif_str_del(spif_str_t);
+extern spif_bool_t spif_str_init(spif_str_t);
+extern spif_bool_t spif_str_done(spif_str_t);
 
 #endif /* _LIBAST_STR_H_ */

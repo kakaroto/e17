@@ -45,6 +45,13 @@
 /* Converts a type (such as "obj") to the name of its classname variable. */
 #define SPIF_CLASSNAME(type)         ((spif_classname_t) (spif_ ## type ## _classname))
 
+/* Used for testing the NULL-ness of objects. */
+#define SPIF_NULL_TYPE(type)         (SPIF_TYPE(type) (NULL))
+#define SPIF_OBJ_ISNULL(o)           (SPIF_OBJ(o) == SPIF_NULL_TYPE(obj))
+
+/* Converts a type (such as "obj") to a string denoting a NULL object of that type. */
+#define SPIF_NULL_STR(type)          ("{ ((spif_" #type "_t) NULL) }")
+
 /* The type for the classname variables.  I don't see any reason why this
    would be anything but a const char *, but you never know.  :-) */
 typedef const char *spif_classname_t;
@@ -79,6 +86,6 @@ extern spif_bool_t spif_obj_del(spif_obj_t);
 extern spif_bool_t spif_obj_init(spif_obj_t);
 extern spif_bool_t spif_obj_done(spif_obj_t);
 extern spif_classname_t spif_obj_get_classname(spif_obj_t);
-extern spif_bool_t spif_obj_set_classname(spif_classname_t);
+extern spif_bool_t spif_obj_set_classname(spif_obj_t, spif_classname_t);
 
 #endif /* _LIBAST_OBJ_H_ */
