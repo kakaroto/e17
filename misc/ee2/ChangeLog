@@ -374,3 +374,11 @@ Ok, setting the brightness levels works now, working on scaling now
 
 -------------------------------------------------------------------------------
 
+Thu May 11 21:16:12 PDT 2000
+(mej)
+
+Fixed some bugs for dphase.  Should fix the problem with Imlib2 errors and a
+possible seg fault.
+
+-------------------------------------------------------------------------------
+

@@ -65,13 +65,6 @@ ee2_init(int argc, char **argv)
   gtk_signal_connect(GTK_OBJECT(GTK_FILE_SELECTION(SaveSel)->ok_button),
 		     "clicked", (GtkSignalFunc) SaveImageAs, SaveSel);
 
-	mod_init();
-  about_init();
-  webcam_init();
-	
-  /* make sure everything is peachy for caching */
-  check_cache();
-
   if (argc == 2) {
     sprintf(currentimage, "%s", argv[1]);
     AddList(argv[1]);
@@ -88,6 +81,13 @@ ee2_init(int argc, char **argv)
     sprintf(currentimage, SPLASHSCREEN);
     LoadImage(currentimage);
   }
+
+  mod_init();
+  about_init();
+  webcam_init();
+	
+  /* make sure everything is peachy for caching */
+  check_cache();
 
   gtk_window_set_default_size(GTK_WINDOW(MainWindow), imlib_image_get_width(), imlib_image_get_height());
 

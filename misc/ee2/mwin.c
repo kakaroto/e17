@@ -53,63 +53,66 @@ mod_init(void)
   ModList = gtk_clist_new_with_titles(1, titles);
   gtk_clist_set_row_height(GTK_CLIST(ModList), 21);
   gtk_widget_show(ModList);
-  gtk_widget_set_usize(ModList, 130, 320);
+  gtk_widget_set_usize(ModList, 130, 267);
   for(eek = 0; eek < 13; eek++){
     gtk_clist_append(GTK_CLIST(ModList), clabels[1]);
   }
   gtk_box_pack_start(GTK_BOX(box2), ModList, TRUE, TRUE, 0);
   /* set pixmaps for each row */
-	gtk_clist_set_text(GTK_CLIST(ModList), 0, 0, "Electric Eyes 2");
   g_pixmap = gdk_pixmap_create_from_xpm_d(GDK_ROOT_PARENT(), &g_bitmap, NULL,
 					  main_mod);
-  gtk_clist_set_pixtext(GTK_CLIST(ModList), 1, 0,
+  gtk_clist_set_pixtext(GTK_CLIST(ModList), 0, 0,
 			"Main", 4, g_pixmap, g_bitmap);
   g_pixmap = gdk_pixmap_create_from_xpm_d(GDK_ROOT_PARENT(), &g_bitmap, NULL,
 					  red_mod);
-  gtk_clist_set_pixtext(GTK_CLIST(ModList), 2, 0,
+  gtk_clist_set_pixtext(GTK_CLIST(ModList), 1, 0,
 			"Red Modifiers", 4, g_pixmap, g_bitmap);
   g_pixmap = gdk_pixmap_create_from_xpm_d(GDK_ROOT_PARENT(), &g_bitmap, NULL,
 					  green_mod);
-  gtk_clist_set_pixtext(GTK_CLIST(ModList), 3, 0,
+  gtk_clist_set_pixtext(GTK_CLIST(ModList), 2, 0,
 			"Green Modifiers", 4, g_pixmap, g_bitmap);
   g_pixmap = gdk_pixmap_create_from_xpm_d(GDK_ROOT_PARENT(), &g_bitmap, NULL,
 					  blue_mod);
-  gtk_clist_set_pixtext(GTK_CLIST(ModList), 4, 0,
+  gtk_clist_set_pixtext(GTK_CLIST(ModList), 3, 0,
 			"Blue Modifiers", 4, g_pixmap, g_bitmap);
   g_pixmap = gdk_pixmap_create_from_xpm_d(GDK_ROOT_PARENT(), &g_bitmap, NULL,
 					  alpha_mod);
-  gtk_clist_set_pixtext(GTK_CLIST(ModList), 5, 0,
+  gtk_clist_set_pixtext(GTK_CLIST(ModList), 4, 0,
 			"Alpha Modifiers", 4, g_pixmap, g_bitmap);
   g_pixmap = gdk_pixmap_create_from_xpm_d(GDK_ROOT_PARENT(), &g_bitmap, NULL,
 					  brite_mod);
-  gtk_clist_set_pixtext(GTK_CLIST(ModList), 6, 0,
+  gtk_clist_set_pixtext(GTK_CLIST(ModList), 5, 0,
 			"Brightness/Contrast", 4, g_pixmap, g_bitmap);
   g_pixmap = gdk_pixmap_create_from_xpm_d(GDK_ROOT_PARENT(), &g_bitmap, NULL,
 					  scale_mod);
-  gtk_clist_set_pixtext(GTK_CLIST(ModList), 7, 0,
+  gtk_clist_set_pixtext(GTK_CLIST(ModList), 6, 0,
 			"Image Scaling", 4, g_pixmap, g_bitmap);
   g_pixmap = gdk_pixmap_create_from_xpm_d(GDK_ROOT_PARENT(), &g_bitmap, NULL,
 					  rotate_mod);
-  gtk_clist_set_pixtext(GTK_CLIST(ModList), 8, 0,
+  gtk_clist_set_pixtext(GTK_CLIST(ModList), 7, 0,
 			"Image Rotation", 4, g_pixmap, g_bitmap);
   g_pixmap = gdk_pixmap_create_from_xpm_d(GDK_ROOT_PARENT(), &g_bitmap, NULL,
 					  fx_mod);
-  gtk_clist_set_pixtext(GTK_CLIST(ModList), 9, 0,
+  gtk_clist_set_pixtext(GTK_CLIST(ModList), 8, 0,
 			"Effects/Filters", 4, g_pixmap, g_bitmap);
   g_pixmap = gdk_pixmap_create_from_xpm_d(GDK_ROOT_PARENT(), &g_bitmap, NULL,
 					  texmap_mod);
-  gtk_clist_set_pixtext(GTK_CLIST(ModList), 10, 0,
+  gtk_clist_set_pixtext(GTK_CLIST(ModList), 9, 0,
 			"Texture Mapping", 4, g_pixmap, g_bitmap);
   g_pixmap = gdk_pixmap_create_from_xpm_d(GDK_ROOT_PARENT(), &g_bitmap, NULL,
 					  sgrab_mod);
-  gtk_clist_set_pixtext(GTK_CLIST(ModList), 11, 0,
+  gtk_clist_set_pixtext(GTK_CLIST(ModList), 10, 0,
 			"Screenshot", 4, g_pixmap, g_bitmap);
   g_pixmap = gdk_pixmap_create_from_xpm_d(GDK_ROOT_PARENT(), &g_bitmap, NULL,
 					  cam_mod);
-  gtk_clist_set_pixtext(GTK_CLIST(ModList), 12, 0,
+  gtk_clist_set_pixtext(GTK_CLIST(ModList), 11, 0,
 			"WebCam Viewer", 4, g_pixmap, g_bitmap);
   gtk_signal_connect(GTK_OBJECT(ModList), "select_row",
 		     GTK_SIGNAL_FUNC(mod_b), NULL);
+
+#if 0
+        /* Mr. McFeely sold dphase some bad crack.
+           But you didn't hear that from me. */
 
 	/* set colors for first row */
 	gcmap = gdk_colormap_get_system();
@@ -124,6 +127,7 @@ mod_init(void)
 
 	gtk_clist_set_background(GTK_CLIST(ModList), 0, &clr1);
 	gtk_clist_set_foreground(GTK_CLIST(ModList), 0, &clr2);
+#endif
 
   frame1 = gtk_frame_new("Image Preview");
   gtk_container_set_border_width(GTK_CONTAINER(frame1), 2);
@@ -196,15 +200,15 @@ mod_init(void)
   gtk_box_pack_start(GTK_BOX(box4), btn, TRUE, TRUE, 0);
   gtk_widget_show(btn);
 
-	/* initialize the other panels now */
-	browser_init();
-	redm_init();
-	grm_init();
-	blm_init();
-	am_init();
-	brite_init();
-	scale_init();
-	fx_init();
+  /* initialize the other panels now */
+  browser_init();
+  redm_init();
+  grm_init();
+  blm_init();
+  am_init();
+  brite_init();
+  scale_init();
+  fx_init();
 }
 
 void
