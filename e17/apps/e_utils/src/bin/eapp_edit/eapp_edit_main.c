@@ -1,6 +1,7 @@
 #include <Eet.h>
 #include <Ewl.h>
 #include <Engrave.h>
+#include <Ecore_X.h>
 
 #include <sys/types.h>
 #include <sys/stat.h>
@@ -12,8 +13,12 @@ static Ewl_Widget *_eapp_edit_read(Eet_File *ef, char *key, char *lang,
 static void _eapp_edit_write(Eet_File *ef, char *key, char *lang,
     Ewl_Widget *source, int checkbox);
 
+static void _eapp_edit_window_configure_cb(Ewl_Widget *w, void *ev_data, void *user_data);
+static void _eapp_edit_drag_start(Ewl_Widget * w, void *ev_data, void *user_data);
+static void _eapp_edit_drag_end(Ewl_Widget * w, void *ev_data, void *user_data);
+
 Ewl_Widget *name, *info, *comments, *exe, *wname, *wclass, *start, *wait;
-Ewl_Widget *icon, *dialog, *dialog_win;
+Ewl_Widget *icon, *dialog, *dialog_win, *main_win;
 
 char *file, *lang, *icon_file;
 char *new_win_class;
@@ -129,6 +134,7 @@ _eapp_edit_read(Eet_File *ef, char *key, char *lang, char *desc,
 
   if (ef)
     free(ret_buf);
+
   return part;
 }
 
@@ -227,7 +233,7 @@ main(int argc, char **argv) {
   Eet_File *ef;
   struct stat st;
 
-  Ewl_Widget *main_win, *main_box, *grid, *cell, *content;
+  Ewl_Widget *main_box, *grid, *cell, *content;
 
   icon_file = NULL;
   dialog_win = NULL;
@@ -261,6 +267,7 @@ main(int argc, char **argv) {
     _eapp_edit_help();
     exit(0);
   }
+  ecore_init();
   eet_init();
   if (stat(file, &st) < 0)
     printf("file %s not found, will create when you save\n", file);
@@ -278,6 +285,7 @@ main(int argc, char **argv) {
   ewl_window_class_set(EWL_WINDOW(main_win), "Eapp Editor");
 
   ewl_callback_append(main_win, EWL_CALLBACK_DELETE_WINDOW, _eapp_edit_quit, NULL);
+  ewl_callback_append(main_win, EWL_CALLBACK_CONFIGURE, _eapp_edit_window_configure_cb, NULL);
   ewl_object_size_request(EWL_OBJECT(main_win), 210, 200);
   ewl_widget_show(main_win);
 
@@ -320,6 +328,9 @@ main(int argc, char **argv) {
   ewl_widget_show(cell);
   ewl_grid_add(EWL_GRID(grid), cell, 1, 1, 1, 2);
 
+  ewl_callback_append(icon, EWL_CALLBACK_MOUSE_DOWN, _eapp_edit_drag_start, NULL);
+  ewl_callback_append(icon, EWL_CALLBACK_MOUSE_UP, _eapp_edit_drag_end, NULL);
+
   grid = ewl_hbox_new();
   ewl_container_child_append(EWL_CONTAINER(main_box), grid);
   ewl_object_fill_policy_set(EWL_OBJECT(grid), EWL_FLAG_FILL_HFILL);
@@ -339,6 +350,7 @@ main(int argc, char **argv) {
 
   ewl_shutdown();
   eet_shutdown();
+  ecore_shutdown();
   /* just return 0 to keep the compiler quiet */
   return 0;
 }
@@ -352,4 +364,26 @@ _eapp_edit_help(void) {
       "  -h --help	View this screen\n"
       "  -l --lang [str]	Set laguage for meta data\n"
       "  -c --win-class [str]	Set the window class to use (used by window managers\n");
+}
+
+static void
+_eapp_edit_window_configure_cb(Ewl_Widget *w, void *ev_data, void *user_data) {
+   ecore_x_dnd_aware_set((Ecore_X_Window) EWL_WINDOW(w)->window, 1);	
+}
+
+static void
+_eapp_edit_drag_start(Ewl_Widget * w, void *ev_data, void *user_data) {
+   char *name;
+
+   if (!file)
+     return;
+   ecore_x_dnd_type_set((Ecore_X_Window) EWL_WINDOW(main_win)->window,
+     "text/uri-list", 1);
+   ecore_x_dnd_begin((Ecore_X_Window) EWL_WINDOW(main_win)->window, file,
+     strlen(file) * sizeof(char));
+}
+
+static void
+_eapp_edit_drag_end(Ewl_Widget * w, void *ev_data, void *user_data) {
+   ecore_x_dnd_drop();
 }
