@@ -19,20 +19,13 @@ Pixmap pm;
 
 /* globals */
 int depth, imgw = 0, imgh = 0, winw = 0, winh = 0;
-int ww = 0, wh = 0;
-int i = 0, xx = 0, yy = 0, c = 1;
+int xx = 0, yy = 0;
 int onoff;
-gint simgw = 0, simgh = 0;
 char currentimage[255];
 char *imagefile = NULL;
 Imlib_Image *bg = NULL;
 Imlib_Image *im = NULL;
 Imlib_Image *bimg = NULL;
-
-/* clist stuff for image browser */
-int col;
-gchar *listdata[255][1];
-gchar *listtext;
 
 void
 ee2_init(int argc, char **argv)
@@ -80,9 +73,10 @@ ee2_init(int argc, char **argv)
     AddList(argv[1]);
     LoadImage(argv[1]);
   } else if (argc > 2) {
-    while (c != argc) {
+    int c;
+
+    for (c = 1; c != argc; c++) {
       AddList(argv[c]);
-      c++;
     }
     LoadImage(argv[1]);
     browser_show();
