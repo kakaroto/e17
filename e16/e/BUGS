@@ -6,9 +6,6 @@ Known bugs, feature requests, and miscellaneous issues
 Known bugs
 ----------
 
-- E may lose control over a window if it is iconified and de-iconified
-  shortly after.
-
 - Custom group member settings are lost when all members are closed.
 
 - Various minor focus issues.
@@ -26,18 +23,16 @@ Known bugs
 TODO for E 16.7
 ~~~~~~~~~~~~~~~
 
-- Don't trash the configuration all the time.
 - Border parts are rendered too often/with incorrect transparent background.
-- Fix problem with iconified windows and restarting.
-
-- Remove e/src/themes (now in e/ethemes).
-- Remove e/dox/E-docs (now in e/edox-data).
 
 ? eesh/libedit ?
 
 
 Fixed in CVS
 ~~~~~~~~~~~~
+
+- E may lose control over a window if it is iconified and de-iconified
+  shortly after.
 
 - Switching desktop changes stacking (sticky windows raised above non-sticky).
 
