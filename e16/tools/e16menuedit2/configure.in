@@ -33,7 +33,7 @@ AC_DEFINE_UNQUOTED(GETTEXT_PACKAGE, "$GETTEXT_PACKAGE", [Package name for gettex
 dnl Languages which your application supports
 ALL_LINGUAS="de"
 AM_GNU_GETTEXT
-nl AM_GNU_GETTEXT_VERSION(0.10.40)
+AM_GNU_GETTEXT_VERSION(0.10.40)
 
 dnl Set PACKAGE_LOCALE_DIR in config.h.
 if test "x${prefix}" = "xNONE"; then
