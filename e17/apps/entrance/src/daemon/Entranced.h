@@ -47,6 +47,7 @@ typedef struct _Entranced_Display
    char        *xprog;          /* the X execution string */
    int         attempts;
    int         status;
+   int         auth_en;         /* Enable XAuth access control */
    pid_t       pid;
    Ecore_List  *auths;
    char        *authfile;

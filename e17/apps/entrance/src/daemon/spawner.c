@@ -78,6 +78,7 @@ Entranced_Display_New(void)
    d->xprog = strdup(X_SERVER);
    d->attempts = 5;
    d->status = NOT_RUNNING;
+   d->auth_en = 1;
    d->auths = ecore_list_new();
    return d;
 }
@@ -127,13 +128,21 @@ Entranced_Start_Server_Once(Entranced_Display * d)
    x_ready = 0;
 
    /* Create server auth cookie */
-   if (!entranced_auth_display_secure(d))
+
+   if(d->auth_en)
    {
-      syslog(LOG_CRIT, "Failed to generate auth cookie for X Server.");
-      return -1;
-   }
+      if (!entranced_auth_display_secure(d))
+      {
+         syslog(LOG_CRIT, "Failed to generate auth cookie for X Server.");
+         return -1;
+      }
    
-   snprintf(x_cmd, PATH_MAX, "%s -auth %s %s", X_SERVER, d->authfile, d->name);
+      snprintf(x_cmd, PATH_MAX, "%s -auth %s %s", X_SERVER, d->authfile, d->name);
+   }
+   else
+   {
+      snprintf(x_cmd, PATH_MAX, "%s %s", X_SERVER, d->name);
+   }
    entranced_debug("Entranced_Start_Server_Once: Executing %s\n", x_cmd);
 
    /* x_exe = ecore_exe_run(d->xprog, d); */
@@ -384,6 +393,7 @@ main(int argc, char **argv)
       {"display", 1, 0, 'd'},
       {"nodaemon", 0, 0, 'n'},
       {"help", 0, 0, 'h'},
+      {"disable-xauth", 0, 0, 'a'},
       {"verbose", 0, 0, 'v'},
       {0, 0, 0, 0}
    };
@@ -412,6 +422,9 @@ main(int argc, char **argv)
            break;
         case 'd':
            d->name = strdup(optarg);
+           break;
+        case 'a':
+           d->auth_en = 0;
            break;
         case 'n':
            nodaemon = 1;

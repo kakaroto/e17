@@ -65,7 +65,7 @@ _entranced_ipc_client_data(void *data, int type, void *event)
       if (_display->client.uid && _display->client.gid 
             && _display->client.homedir)
       {
-         if (entranced_auth_user_add(_display, (const char *)_display->client.homedir))
+         if (!(_display->auth_en) || entranced_auth_user_add(_display, (const char *)_display->client.homedir))
          {
             ecore_ipc_client_send(e->client, E_XAUTH_ACK, 0, 0, 0, 0, NULL, 0);
             entranced_debug("_entranced_ipc_client_data: All tokens received; wrote cookie to user dir %s\n", _display->client.homedir);
