@@ -6,11 +6,11 @@ bin_PROGRAMS = E-Load.epplet E-Clock.epplet E-Time.epplet E-Net.epplet \
 E-Cpu.epplet E-Biff.epplet E-Power.epplet @TEST_PROGS@ @MIXER_PROGS@ @GL_PROGS@ \
 E-MemWatch.epplet E-Disk.epplet E-Areas.epplet E-Magic.epplet E-Toolbox.epplet \
 E-NetFlame.epplet E-Sys.epplet E-ScreenShoot.epplet E-Slides.epplet \
-E-Xss.epplet E-Mountbox.epplet E-Exec.epplet E-SD.epplet @PLAYCD_PROGS@ \
+E-Xss.epplet E-Mountbox.epplet E-Exec.epplet @ESD_PROGS@ @PLAYCD_PROGS@ \
 E-ScreenSave.epplet E-NetGraph.epplet E-MoonClock.epplet E-UrlWatch.epplet
 
 EXTRA_PROGRAMS = EppletTest.epplet EppletConfigTest.epplet E-Mixer.epplet \
-                 Emix.epplet E-PlayCD.epplet E-OpenGL-Demo.epplet
+                 Emix.epplet E-PlayCD.epplet E-OpenGL-Demo.epplet E-SD.epplet
 
 ################ Conditional Builds ################
 E_Mixer_epplet_SOURCES = E-Mixer.c

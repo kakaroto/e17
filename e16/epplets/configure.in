@@ -312,6 +312,9 @@ fi
 AC_CHECK_LIB(cdaudio, cd_advance, PLAYCD_PROGS=E-PlayCD.epplet, PLAYCD_PROGS="")
 AC_SUBST(PLAYCD_PROGS)
 
+AC_CHECK_LIB(esd, esd_open_sound, ESD_PROGS=E-SD.epplet, ESD_PROGS="")
+AC_SUBST(ESD_PROGS)
+
 # Stuff for E-Mountbox
 AC_PATH_PROG(MOUNT, mount)
 AC_PATH_PROG(UMOUNT, umount)
