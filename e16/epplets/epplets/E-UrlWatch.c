@@ -377,6 +377,8 @@ validate_url (char *url)
   char *ret = NULL;
   static char *orig_ret = NULL;
 
+  D(("In validate_url: url -->%s<--\n",url));
+  
   if (orig_ret)
     free (orig_ret);
 
@@ -419,6 +421,8 @@ validate_url (char *url)
       ret = _Strdup (temp);
       free (temp);
     }
+
+  D(("In validate_url: ret -->%s<--\n",ret));
 
   /* Now some checks */
   if (strlen (ret) < 1)
@@ -524,14 +528,15 @@ handle_url (char *url, char *type)
   if (url == NULL)
     return;
 
-/*  printf ("url -->%s<--\n", url); */
+  D(("In handle_url: url -->%s<--\n", url));
 
   if ((validurl = validate_url (url)) == NULL)
     return;
 
   display_string (validurl);
 
-/*  printf ("valid url -->%s<--\n", url); */
+  D (("In handle_url: valid url -->%s<--\n", validurl));  
+
   if (!strcmp (type, "www"))
     {
       sys = _Strjoin (" ", opt.www_command, validurl, "&", NULL);
@@ -549,7 +554,7 @@ handle_url (char *url, char *type)
       sys = _Strjoin (" ", opt.www_command, validurl, "&", NULL);
     }
 
-/*  printf ("sys -->%s<--\n", sys); */
+  D (("In handle_url: About to system() -->%s<--\n", sys));
 
   system (sys);
 
@@ -566,6 +571,8 @@ cb_shoot (void *data)
   char *url;
 
   url = get_url_from_paste_buffer ();
+  
+  D(("In cb_shoot: url -->%s<--\n",url));
 
   handle_url (url, data);
 

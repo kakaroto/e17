@@ -1,3 +1,16 @@
+#if 0
+#define D(a) { \
+    printf("%s +%u : ",__FILE__,__LINE__); \
+            printf a; \
+            fflush(stdout); \
+}
+#else
+#define D(a) { \
+    /* No debug */; \
+}
+#endif
+
+
 Epplet_gadget btn_conf, btn_close, btn_help, btn_ctimer, btn_www, btn_ftp, btn_wget;
 Epplet_gadget btn_col, lbl_url;
 Epplet_gadget p, col_p, ctimer_p, stimer_p;
