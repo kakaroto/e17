@@ -41,7 +41,6 @@ static Atom         E_XA_WM_WINDOW_ROLE = 0;
 static Atom         E_XA_WM_HINTS = 0;
 static Atom         E_XA_WM_CLIENT_LEADER = 0;
 static Atom         E_XA_WM_TRANSIENT_FOR = 0;
-static Atom         E_XA_WM_ICON_SIZE = 0;
 
 void
 ICCCM_Init(void)
@@ -63,7 +62,6 @@ ICCCM_Init(void)
    E_XA_WM_HINTS = XInternAtom(disp, "WM_HINTS", False);
    E_XA_WM_CLIENT_LEADER = XInternAtom(disp, "WM_CLIENT_LEADER", False);
    E_XA_WM_TRANSIENT_FOR = XInternAtom(disp, "WM_TRANSIENT_FOR", False);
-   E_XA_WM_ICON_SIZE = XInternAtom(disp, "WM_ICON_SIZE", False);
 
    if (Mode.wm.window)
      {
@@ -708,13 +706,41 @@ ICCCM_GetGeoms(EWin * ewin, Atom atom_change)
    EDBUG_RETURN_;
 }
 
+static char        *
+WinGetWMCommand(Window win)
+{
+   int                 cargc, i, size;
+   char              **cargv, *s;
+
+   s = NULL;
+
+   if (!XGetCommand(disp, win, &cargv, &cargc))
+      return NULL;
+   if (cargc <= 0)
+      return NULL;
+
+   size = strlen(cargv[0]) + 1;
+   s = Emalloc(size);
+   strcpy(s, cargv[0]);
+   for (i = 1; i < cargc; i++)
+     {
+	size += strlen(cargv[i]) + 1;
+	s = Erealloc(s, size);
+	strcat(s, " ");
+	strcat(s, cargv[i]);
+     }
+   XFreeStringList(cargv);
+
+   return s;
+}
+
 void
 ICCCM_GetInfo(EWin * ewin, Atom atom_change)
 {
    XClassHint          hint;
    XTextProperty       xtp;
-   int                 cargc, i, size;
-   char              **cargv, *s;
+   int                 size;
+   char               *s;
 
    EDBUG(6, "ICCCM_GetInfo");
 
@@ -737,59 +763,10 @@ ICCCM_GetInfo(EWin * ewin, Atom atom_change)
      {
 	FREE_AND_CLEAR(ewin->icccm.wm_command);
 
-	if (XGetCommand(disp, ewin->client.win, &cargv, &cargc))
-	  {
-	     if (cargc > 0)
-	       {
-		  size = strlen(cargv[0]) + 1;
-		  s = Emalloc(size);
-		  strcpy(s, cargv[0]);
-		  for (i = 1; i < cargc; i++)
-		    {
-		       size += strlen(cargv[i]) + 1;
-		       s = Erealloc(s, size);
-		       strcat(s, " ");
-		       strcat(s, cargv[i]);
-		    }
-		  XFreeStringList(cargv);
-		  ewin->icccm.wm_command = s;
-	       }
-	  }
-	else if (XGetCommand(disp, ewin->client.group, &cargv, &cargc))
-	  {
-	     EWin               *const *lst;
-	     int                 lnum, ok = 1;
+	ewin->icccm.wm_command = WinGetWMCommand(ewin->client.win);
 
-	     lst = EwinListGetAll(&lnum);
-	     for (i = 0; i < lnum; i++)
-	       {
-		  if ((lst[i] != ewin)
-		      && (lst[i]->client.group == ewin->client.group))
-		    {
-		       ok = 0;
-		       i = lnum;
-		    }
-	       }
-
-	     if (cargc > 0)
-	       {
-		  if (ok)
-		    {
-		       size = strlen(cargv[0]) + 1;
-		       s = Emalloc(size);
-		       strcpy(s, cargv[0]);
-		       for (i = 1; i < cargc; i++)
-			 {
-			    size += strlen(cargv[i]) + 1;
-			    s = Erealloc(s, size);
-			    strcat(s, " ");
-			    strcat(s, cargv[i]);
-			 }
-		       ewin->icccm.wm_command = s;
-		    }
-		  XFreeStringList(cargv);
-	       }
-	  }
+	if (!ewin->icccm.wm_command && ewin->client.win != ewin->client.group)
+	   ewin->icccm.wm_command = WinGetWMCommand(ewin->client.group);
      }
 
    if (atom_change == 0 || atom_change == E_XA_WM_CLIENT_MACHINE)
@@ -1072,6 +1049,23 @@ ICCCM_SetIconSizes()
    is->height_inc = 1;
    XSetIconSizes(disp, VRoot.win, is, 1);
    XFree(is);
+   EDBUG_RETURN_;
+}
+
+/*
+ * Process received window property change
+ */
+void
+ICCCM_ProcessPropertyChange(EWin * ewin, Atom atom_change)
+{
+   EDBUG(6, "ICCCM_ProcessPropertyChange");
+
+   ICCCM_GetTitle(ewin, atom_change);
+   ICCCM_GetHints(ewin, atom_change);
+   ICCCM_GetInfo(ewin, atom_change);
+   ICCCM_Cmap(ewin);
+   ICCCM_GetGeoms(ewin, atom_change);
+
    EDBUG_RETURN_;
 }
 

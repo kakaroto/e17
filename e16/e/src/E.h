@@ -2350,6 +2350,7 @@ void                ICCCM_GetInfo(EWin * ewin, Atom atom_change);
 void                ICCCM_GetHints(EWin * ewin, Atom atom_change);
 void                ICCCM_GetShapeInfo(EWin * ewin);
 void                ICCCM_SetIconSizes(void);
+void                ICCCM_ProcessPropertyChange(EWin * ewin, Atom atom_change);
 void                ICCCM_SetEInfo(EWin * ewin);
 int                 ICCCM_GetEInfo(EWin * ewin);
 void                ICCCM_SetMainEInfo(void);

@@ -968,11 +968,6 @@ HandleProperty(XEvent * ev)
    EwinChangesStart(ewin);
 
    HintsProcessPropertyChange(ewin, ev->xproperty.atom);
-   ICCCM_GetTitle(ewin, ev->xproperty.atom);
-   ICCCM_GetHints(ewin, ev->xproperty.atom);
-   ICCCM_GetInfo(ewin, ev->xproperty.atom);
-   ICCCM_Cmap(ewin);
-   ICCCM_GetGeoms(ewin, ev->xproperty.atom);
    SessionGetInfo(ewin, ev->xproperty.atom);
    SyncBorderToEwin(ewin);
 
