@@ -670,7 +670,11 @@ RenderPage(Window win, int page_num, int w, int h)
 			 {
 			    link = strlen(s);
 			    for (j = 1; wd[j] != '('; j++)
-			       wd[j - 1] = wd[j];
+			      {
+				if (wd[j] == '_')
+				  wd[j] = ' ';
+				wd[j - 1] = wd[j];
+			      }
 			    wd[j - 1] = 0;
 			    j++;
 			    strcpy(link_link, &(wd[j]));
