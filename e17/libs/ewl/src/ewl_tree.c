@@ -494,8 +494,11 @@ __ewl_tree_child_resize(Ewl_Container *c, Ewl_Widget *w, int size,
 		if (ewl_object_get_minimum_w(EWL_OBJECT(w)) > PREFERRED_W(c))
 			ewl_object_set_preferred_w(EWL_OBJECT(c),
 					PREFERRED_W(c) + size);
+		/* FIXME: Should we only grow this in order to reduce list
+		 * traversal?
 		else
 			ewl_container_prefer_largest(c, o);
+			*/
 	}
 	else {
 		ewl_object_set_preferred_h(EWL_OBJECT(c),

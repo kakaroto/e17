@@ -8,13 +8,14 @@ Package: libewl0
 Section: libs
 Architecture: any
 Depends: ${shlibs:Depends}
-Description: this is ewl
- WTF is wed?  I have NFI.
+Description: The Enlightened Widget Library (EWL)
+ EWL is a widget library based on the libraries provided by the Enlightenment
+ project.
 
 Package: libewl0-dev
 Architecture: any
 Section: devel
 Depends: libewl0 (= ${Source-Version}), libc6-dev
-Description: development files for ewl
- WTF is ewl?  I have NFI.
-
+Description: Development files for EWL
+ EWL is a widget library based on the libraries provided by the Enlightenment
+ project.

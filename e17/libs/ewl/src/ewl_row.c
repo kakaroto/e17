@@ -89,6 +89,24 @@ ewl_row_set_column_bounds(Ewl_Row *row, int n, unsigned int **base,
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
 
+/**
+ * ewl_row_get_column - retrieve the widget at a specified column
+ * @row: the row to retrieve a columns widget from
+ * @n: the column containing the desired widget
+ *
+ * Returns the widget located in column @n in @row on success, NULL on
+ * failure.
+ */
+Ewl_Widget *
+ewl_row_get_column(Ewl_Row *row, short n)
+{
+	DENTER_FUNCTION(DLEVEL_STABLE);
+
+	DCHECK_PARAM_PTR_RET("row", row, NULL);
+
+	DLEAVE_FUNCTION(DLEVEL_STABLE);
+}
+
 static void
 __ewl_row_configure(Ewl_Widget * w, void *ev_data, void *user_data)
 {

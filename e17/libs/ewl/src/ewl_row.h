@@ -18,7 +18,9 @@ struct _ewl_row
 
 Ewl_Widget *ewl_row_new();
 int ewl_row_init(Ewl_Row *row);
+
 void ewl_row_set_column_bounds(Ewl_Row *row, int n, unsigned int **base,
 		unsigned int **bounds);
+Ewl_Widget *ewl_row_get_column(Ewl_Row *row, short n);
 
 #endif

@@ -270,27 +270,27 @@ void __ewl_entry_configure(Ewl_Widget * w, void *ev_data, void *user_data)
  */
 void __ewl_entry_key_down(Ewl_Widget * w, void *ev_data, void *user_data)
 {
-	Ecore_Event_Key_Down *ev;
+	Ecore_X_Event_Key_Down *ev;
 
 	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR("w", w);
 
 	ev = ev_data;
 
-	if (!strcmp(ev->key, "Left"))
+	if (!strcmp(ev->keyname, "Left"))
 		__ewl_entry_move_cursor_to_left(w);
-	else if (!strcmp(ev->key, "Right"))
+	else if (!strcmp(ev->keyname, "Right"))
 		__ewl_entry_move_cursor_to_right(w);
-	else if (!strcmp(ev->key, "Home"))
+	else if (!strcmp(ev->keyname, "Home"))
 		__ewl_entry_move_cursor_to_home(w);
-	else if (!strcmp(ev->key, "End"))
+	else if (!strcmp(ev->keyname, "End"))
 		__ewl_entry_move_cursor_to_end(w);
-	else if (!strcmp(ev->key, "BackSpace"))
+	else if (!strcmp(ev->keyname, "BackSpace"))
 		__ewl_entry_delete_to_left(w);
-	else if (!strcmp(ev->key, "Delete"))
+	else if (!strcmp(ev->keyname, "Delete"))
 		__ewl_entry_delete_to_right(w);
-	else if (ev->compose)
-		__ewl_entry_insert_text(w, ev->compose);
+	else if (ev->key_compose)
+		__ewl_entry_insert_text(w, ev->key_compose);
 
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
@@ -300,7 +300,7 @@ void __ewl_entry_key_down(Ewl_Widget * w, void *ev_data, void *user_data)
  */
 void __ewl_entry_mouse_down(Ewl_Widget * w, void *ev_data, void *user_data)
 {
-	Ecore_Event_Mouse_Down *ev;
+	Ecore_X_Event_Mouse_Button_Down *ev;
 	Ewl_Entry      *e;
 	int             index = 0, len = 0;
 
@@ -337,7 +337,7 @@ void __ewl_entry_mouse_down(Ewl_Widget * w, void *ev_data, void *user_data)
 void __ewl_entry_mouse_move(Ewl_Widget * w, void *ev_data, void *user_data)
 {
 	int             index = 0;
-	Ecore_Event_Mouse_Move *ev;
+	Ecore_X_Event_Mouse_Move *ev;
 	Ewl_Entry      *e;
 
 	DENTER_FUNCTION(DLEVEL_STABLE);
@@ -352,10 +352,6 @@ void __ewl_entry_mouse_move(Ewl_Widget * w, void *ev_data, void *user_data)
 	if (!(w->state & EWL_STATE_PRESSED))
 		DRETURN(DLEVEL_STABLE);
 
-	/*
-	 * FIXME: the correct behavior here is to scroll to the left
-	 * or right when selecting text.
-	 */
 	if (ev->x < CURRENT_X(e->text))
 		index = 0;
 	else if (ev->x > CURRENT_X(e->text) + CURRENT_W(e->text))

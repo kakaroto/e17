@@ -1,7 +1,7 @@
 
 #include <Ewl.h>
 
-void            ewl_idle_render(void *data);
+int             ewl_idle_render(void *data);
 
 char           *xdisplay = NULL;
 extern Ewd_List *ewl_window_list;
@@ -9,7 +9,7 @@ static Ewd_List *configure_list = NULL;
 
 void            __ewl_init_parse_options(int argc, char **argv);
 void            __ewl_parse_option_array(int argc, char **argv);
-static void     ewl_reread_config(int val, void *data);
+static int      ewl_reread_config(void *data);
 
 /**
  * ewl_print_warning - this is used by debugging macros for breakpoints
@@ -41,14 +41,11 @@ void ewl_init(int argc, char **argv)
 	configure_list = ewd_list_new();
 	__ewl_init_parse_options(argc, argv);
 
-	if (!ecore_display_init(xdisplay)) {
+	ecore_init();
+	if (!ecore_x_init(xdisplay)) {
 		fprintf(stderr, "ERRR: Cannot connect to X display!\n");
 		exit(-1);
 	}
-
-	ecore_event_filter_init();
-	ecore_event_signal_init();
-	ecore_event_x_init();
 
 	if (!ewl_config_init()) {
 		DERROR("Couldn not init config data. Exiting....");
@@ -75,7 +72,7 @@ void ewl_init(int argc, char **argv)
 	}
 
 	ewl_window_list = ewd_list_new();
-	ecore_event_filter_idle_handler_add(ewl_idle_render, NULL);
+	ecore_idle_enterer_add(ewl_idle_render, NULL);
 
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
@@ -90,10 +87,14 @@ void ewl_main(void)
 {
 	DENTER_FUNCTION(DLEVEL_STABLE);
 
-	ewl_reread_config(0, NULL);
+	/*
+	 * Call it once right away, then get it looping every half second
+	 */
+	ewl_reread_config(NULL);
+	ecore_timer_add(0.5, ewl_reread_config, NULL);
 
 	ewl_idle_render(NULL);
-	ecore_event_loop();
+	ecore_main_loop_begin();
 
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
@@ -102,9 +103,10 @@ void ewl_main(void)
  * ewl_idle_render - renders updates during idle times of the main loop
  * @data: this is only necessary for registering this function with ecore
  *
- * Returns no value. Renders updates to the evas's during idle event times.
+ * Returns TRUE to continue the timer. Renders updates to the evas's during idle
+ * event times.
  */
-void ewl_idle_render(void *data)
+int ewl_idle_render(void *data)
 {
 	Ewl_Widget     *w;
 	Ewl_Window     *win;
@@ -117,7 +119,7 @@ void ewl_idle_render(void *data)
 	}
 
 	if (ewd_list_is_empty(ewl_window_list))
-		DRETURN(DLEVEL_STABLE);
+		DRETURN_INT(TRUE, DLEVEL_STABLE);
 
 	/*
 	 * Configure any widgets that need it.
@@ -151,7 +153,7 @@ void ewl_idle_render(void *data)
 			evas_render(win->evas);
 	}
 
-	DRETURN(DLEVEL_STABLE);
+	DRETURN_INT(TRUE, DLEVEL_STABLE);
 	data = NULL;
 }
 
@@ -165,7 +167,7 @@ void ewl_main_quit(void)
 {
 	DENTER_FUNCTION(DLEVEL_STABLE);
 
-	ecore_event_loop_quit();
+	ecore_main_loop_quit();
 	ewl_callbacks_deinit();
 	ewd_list_destroy(configure_list);
 
@@ -232,17 +234,18 @@ void __ewl_parse_option_array(int argc, char **argv)
 
 /**
  * ewl_reread_config - a timer function used to reread the config options
- * @val: dummy variable used for compatibility with ecore's timers
  * @data: dummy variable used for compatibility with ecore's timers
  *
- * Returns no value. Sets up a timer loop for rereading the config data.
+ * Returns TRUE to keep the timer going. Sets up a timer loop for rereading the
+ * config data.
  */
-static void ewl_reread_config(int val, void *data)
+static int ewl_reread_config(void *data)
 {
+	DENTER_FUNCTION(DLEVEL_STABLE);
+
 	ewl_config_reread_and_apply();
 
-	ecore_add_event_timer("reread_config_timer", 0.5,
-			      ewl_reread_config, 0, NULL);
+	DRETURN_INT(TRUE, DLEVEL_STABLE);
 }
 
 /**

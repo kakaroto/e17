@@ -28,6 +28,8 @@ struct _ewl_window
 	 * Flag to indicate if the window has a border.
 	 */
 	Ewl_Window_Flags flags;
+
+	int x, y;
 };
 
 #define EWL_WINDOW(widget) ((Ewl_Window *) widget)

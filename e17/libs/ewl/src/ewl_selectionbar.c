@@ -21,12 +21,11 @@ void            __mouse_move_over_children(Ewl_Widget * w, void *user_data,
 
 void            __child_add(Ewl_Container * parent, Ewl_Widget * child);
 
-void            __open_bar_cb(int val, void *ev_data);
-void            __close_bar_cb(int val, void *ev_data);
+int             __open_bar_cb(void *ev_data);
+int             __close_bar_cb(void *ev_data);
 
-
-char            open_string[100];
-char            close_string[100];
+Ecore_Timer    *open_timer;
+Ecore_Timer    *close_timer;
 
 /**
  * ewl_selectionbar_new - create a new selectionbar
@@ -122,13 +121,6 @@ void ewl_selectionbar_init(Ewl_Selectionbar * s, Ewl_Widget * parent)
 
 	ewl_container_add_notify(EWL_CONTAINER(w), __child_add);
 
-
-	sprintf(open_string, "open_%p", w);
-	sprintf(close_string, "close_%p", w);
-
-	printf("open string = %s\n", open_string);
-	printf("close string = %s\n", close_string);
-
 	s->OPEN = 1;
 	s->mouse_x = 0;
 
@@ -180,7 +172,7 @@ void __ewl_selectionbar_show(Ewl_Widget * w, void *ev_data, void *user_data)
 
 	s = EWL_SELECTIONBAR(w);
 
-	ecore_add_event_timer(close_string, 0.01, __close_bar_cb, 1, s->bar);
+	ecore_timer_add(0.01, __close_bar_cb, s->bar);
 }
 
 
@@ -275,7 +267,7 @@ void __focus_in(Ewl_Widget * w, void *ev_data, void *user_data)
 		return;
 
 
-	ecore_add_event_timer(open_string, 0.01, __open_bar_cb, 1, w);
+	ecore_timer_add(0.01, __open_bar_cb, w);
 
 	ewl_widget_show(s->scroller.top);
 	ewl_widget_show(s->scroller.bottom);
@@ -333,7 +325,13 @@ void __focus_out(Ewl_Widget * w, void *ev_data, void *user_data)
 	 * focus didn't just go to one of it's children
 	 */
 	window = ewl_window_find_window_by_widget(w);
-	ecore_pointer_xy(window->evas_window, &mx, &my);
+
+	/*
+	 * FIXME: This is not in ecore yet.
+	 */
+	/* ecore_pointer_xy(window->evas_window, &mx, &my); */
+	mx = 0;
+	my = 0;
 
 	wx = CURRENT_X(o);
 	wy = CURRENT_Y(o);
@@ -360,21 +358,22 @@ void __focus_out(Ewl_Widget * w, void *ev_data, void *user_data)
 
 	s->OPEN = 0;
 
-	ecore_add_event_timer(close_string, 0.01, __close_bar_cb, 1, w);
+	ecore_timer_add(0.01, __close_bar_cb, w);
 
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
 
 
 
-void __open_bar_cb(int val, void *ev_data)
+int __open_bar_cb(void *ev_data)
 {
 	Ewl_Widget     *w;
 	Ewl_Object     *o;
 	Ewl_Object     *so;
 	Ewl_Selectionbar *s;
+	int retval = 0;
 
-	ecore_del_event_timer(close_string);
+	ecore_timer_del(close_timer);
 
 	w = EWL_WIDGET(ev_data);
 	o = EWL_OBJECT(w);
@@ -385,8 +384,7 @@ void __open_bar_cb(int val, void *ev_data)
 		ewl_object_request_size(o, s->w, CURRENT_H(o) + s->h / 10);
 		ewl_object_request_size(so, CURRENT_W(o), CURRENT_H(o));
 
-		ecore_add_event_timer(open_string, 0.01, __open_bar_cb, ++val,
-				      w);
+		retval = TRUE;
 
 		ewl_widget_configure(EWL_WIDGET(s));
 	} else {
@@ -398,18 +396,19 @@ void __open_bar_cb(int val, void *ev_data)
 				    __mouse_move_over_children, s);
 	}
 
-
+	DRETURN_INT(retval, DLEVEL_STABLE);
 }
 
 
-void __close_bar_cb(int val, void *ev_data)
+int __close_bar_cb(void *ev_data)
 {
 	Ewl_Widget     *w;
 	Ewl_Object     *o;
 	Ewl_Object     *so;
 	Ewl_Selectionbar *s;
+	int retval = 0;
 
-	ecore_del_event_timer(open_string);
+	ecore_timer_del(open_timer);
 
 	w = EWL_WIDGET(ev_data);
 	o = EWL_OBJECT(w);
@@ -422,13 +421,13 @@ void __close_bar_cb(int val, void *ev_data)
 		ewl_object_request_size(so, s->w,
 					CURRENT_H(o) - (s->h / 10) + 5);
 
-		ecore_add_event_timer(close_string, 0.01, __close_bar_cb, ++val,
-				      w);
+		retval = TRUE;
 	} else {
 		ewl_object_request_size(o, s->w, 5);
 		ewl_object_request_size(so, s->w, 5);
 	}
 
+	DRETURN_INT(retval, DLEVEL_STABLE);
 }
 
 
@@ -447,7 +446,7 @@ void __children_animator(Ewl_Widget * w, void *ev_data, void *user_data)
 	Ewl_Widget     *child;
 	Ewl_Object     *o;
 	Ewd_List       *children;
-	Ecore_Event_Mouse_Move *ev;
+	Ecore_X_Event_Mouse_Move *ev;
 	Ewl_Selectionbar *s;
 	int             x, old_x;
 
@@ -455,9 +454,6 @@ void __children_animator(Ewl_Widget * w, void *ev_data, void *user_data)
 
 	o = EWL_OBJECT(w);
 	children = EWL_CONTAINER(w)->children;
-
-
-
 
 	ev = ev_data;
 	x = ev->x - CURRENT_X(o);
@@ -468,11 +464,8 @@ void __children_animator(Ewl_Widget * w, void *ev_data, void *user_data)
 		old_x = s->mouse_x;
 	s->mouse_x = x;
 
-
-
 	ewl_object_request_position(EWL_OBJECT(s->scroller.top), x - 15,
 				    CURRENT_Y(o) + 5);
-
 
 	ewl_object_request_position(EWL_OBJECT(s->scroller.bottom),
 				    x - 15, CURRENT_Y(o) + CURRENT_H(o) - 15);
@@ -492,8 +485,6 @@ void __children_animator(Ewl_Widget * w, void *ev_data, void *user_data)
 							(EWL_OBJECT(child)));
 			}
 
-/*			ewl_object_request_size(EWL_OBJECT(child), 60, 40);
-*/
 			ewl_object_request_position(EWL_OBJECT(child),
 						    CURRENT_X(child) +
 						    (old_x - x),

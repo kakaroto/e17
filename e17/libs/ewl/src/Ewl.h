@@ -7,6 +7,7 @@ extern          "C" {
 
 #include <Ebits.h>
 #include <Ecore.h>
+#include <Ecore_X.h>
 #include <Edb.h>
 #include <Evas.h>
 #include <Evas_Engine_Software_X11.h>
@@ -61,7 +62,6 @@ extern          "C" {
 #include <ewl_scrollbar.h>
 #include <ewl_spacer.h>
 #include <ewl_spinner.h>
-#include <ewl_list.h>
 #include <ewl_image.h>
 #include <ewl_spectrum.h>
 #include <ewl_menu_base.h>

@@ -364,44 +364,44 @@ static void
 __ewl_spinner_key_down(Ewl_Widget * w, void *ev_data, void *user_data)
 {
 	Ewl_Spinner    *s;
-	Ecore_Event_Key_Down *ev;
+	Ecore_X_Event_Key_Down *ev;
 
 	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR("w", w);
 
 	s = EWL_SPINNER(w->parent);
 
-	ev = (Ecore_Event_Key_Down *) ev_data;
+	ev = ev_data;
 
-	if (!strcmp(ev->key, "Up"))
+	if (!strcmp(ev->keyname, "Up"))
 		__ewl_spinner_increase_value(w, NULL, NULL);
-	else if (!strcmp(ev->key, "Down"))
+	else if (!strcmp(ev->keyname, "Down"))
 		__ewl_spinner_decrease_value(w, NULL, NULL);
-	else if (!strcmp(ev->key, "Left"))
+	else if (!strcmp(ev->keyname, "Left"))
 		__ewl_entry_move_cursor_to_left(w);
-	else if (!strcmp(ev->key, "Right"))
+	else if (!strcmp(ev->keyname, "Right"))
 		__ewl_entry_move_cursor_to_right(w);
-	else if (!strcmp(ev->key, "Home"))
+	else if (!strcmp(ev->keyname, "Home"))
 		__ewl_entry_move_cursor_to_home(w);
-	else if (!strcmp(ev->key, "End"))
+	else if (!strcmp(ev->keyname, "End"))
 		__ewl_entry_move_cursor_to_end(w);
-	else if (!strcmp(ev->key, "BackSpace"))
+	else if (!strcmp(ev->keyname, "BackSpace"))
 		__ewl_entry_delete_to_left(w);
-	else if (!strcmp(ev->key, "Delete"))
+	else if (!strcmp(ev->keyname, "Delete"))
 		__ewl_entry_delete_to_right(w);
-	else if (ev->compose && (ev->compose[0] == '0' ||
-				 ev->compose[0] == '1' ||
-				 ev->compose[0] == '2' ||
-				 ev->compose[0] == '3' ||
-				 ev->compose[0] == '4' ||
-				 ev->compose[0] == '5' ||
-				 ev->compose[0] == '6' ||
-				 ev->compose[0] == '7' ||
-				 ev->compose[0] == '8' ||
-				 ev->compose[0] == '9' ||
-				 ev->compose[0] == '.' ||
-				 ev->compose[0] == '-'))
-		__ewl_entry_insert_text(s->entry, ev->compose);
+	else if (ev->key_compose && (ev->key_compose[0] == '0' ||
+				 ev->key_compose[0] == '1' ||
+				 ev->key_compose[0] == '2' ||
+				 ev->key_compose[0] == '3' ||
+				 ev->key_compose[0] == '4' ||
+				 ev->key_compose[0] == '5' ||
+				 ev->key_compose[0] == '6' ||
+				 ev->key_compose[0] == '7' ||
+				 ev->key_compose[0] == '8' ||
+				 ev->key_compose[0] == '9' ||
+				 ev->key_compose[0] == '.' ||
+				 ev->key_compose[0] == '-'))
+		__ewl_entry_insert_text(s->entry, ev->key_compose);
 
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }

@@ -370,7 +370,7 @@ void __ewl_image_mouse_down(Ewl_Widget * w, void *ev_data, void *user_data)
 {
 	Ewl_Image      *i;
 	Ewl_Window     *win;
-	Ecore_Event_Mouse_Down *ev;
+	Ecore_X_Event_Mouse_Button_Down *ev;
 
 	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR("w", w);
@@ -389,7 +389,7 @@ void __ewl_image_mouse_up(Ewl_Widget * w, void *ev_data, void *user_data)
 {
 	Ewl_Image      *i;
 	Ewl_Window     *win;
-	Ecore_Event_Mouse_Up *ev;
+	Ecore_X_Event_Mouse_Button_Up *ev;
 
 	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR("w", w);
@@ -408,7 +408,7 @@ void __ewl_image_mouse_move(Ewl_Widget * w, void *ev_data, void *user_data)
 {
 	Ewl_Image      *i;
 	Ewl_Window     *win;
-	Ecore_Event_Mouse_Move *ev;
+	Ecore_X_Event_Mouse_Move *ev;
 
 	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR("w", w);

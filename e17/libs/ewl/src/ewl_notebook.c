@@ -413,9 +413,6 @@ void ewl_notebook_set_tabs_position(Ewl_Notebook * n, Ewl_Position p)
 
 	w = EWL_WIDGET(n);
 
-	/*
-	 * FIXME: Need to clear the position mask first
-	 */
 	n->flags = (n->flags & ~EWL_POSITION_MASK) | p;
 
 	switch (n->flags) {

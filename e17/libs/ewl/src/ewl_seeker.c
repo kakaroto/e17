@@ -377,7 +377,7 @@ void __ewl_seeker_configure(Ewl_Widget * w, void *ev_data, void *user_data)
 void
 __ewl_seeker_dragbar_mouse_down(Ewl_Widget * w, void *ev_data, void *user_data)
 {
-	Ecore_Event_Mouse_Down *ev;
+	Ecore_X_Event_Mouse_Button_Down *ev;
 	Ewl_Seeker     *s;
 	int             xx, yy, ww, hh;
 
@@ -418,7 +418,7 @@ __ewl_seeker_dragbar_mouse_up(Ewl_Widget * w, void *ev_data, void *user_data)
 void
 __ewl_seeker_dragbar_mouse_move(Ewl_Widget * w, void *ev_data, void *user_data)
 {
-	Ecore_Event_Mouse_Move *ev;
+	Ecore_X_Event_Mouse_Move *ev;
 	Ewl_Seeker *s;
 	int mx, my;
 	int dx, dy;
@@ -494,7 +494,7 @@ __ewl_seeker_dragbar_mouse_move(Ewl_Widget * w, void *ev_data, void *user_data)
 void __ewl_seeker_mouse_down(Ewl_Widget * w, void *ev_data, void *user_data)
 {
 	Ewl_Seeker     *s;
-	Ecore_Event_Mouse_Down *ev;
+	Ecore_X_Event_Mouse_Button_Down *ev;
 	double          value;
 	int             xx, yy, ww, hh;
 

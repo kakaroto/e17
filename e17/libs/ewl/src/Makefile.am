@@ -28,7 +28,6 @@ installed_headers_DATA = \
 	ewl_image.h \
 	ewl_imenu.h \
 	ewl_menu.h \
-	ewl_list.h \
 	ewl_macros.h \
 	ewl_menu_base.h \
 	ewl_misc.h \
