@@ -18,9 +18,22 @@ int             debug = 1;
 
 void            render_ewl(void);
 void            print_usage(void);
+Ewl_Widget     *add_tab(char *name);
 
 Ewl_Widget     *main_win;
 Ewl_Widget     *tree_box;
+
+typedef struct examine_panel examine_panel;
+struct examine_panel {
+  char           *name;
+  Ewl_Widget     *container;
+  examine_panel  *next;
+};
+
+Ewl_Widget     *notebook;
+examine_panel  *panels;
+
+char           *examine_separators = ".\\/\0";
 
 /*****************************************************************************/
 
@@ -59,6 +72,9 @@ main(int argc, char **argv)
 
   main_win = ewl_window_new();
   ewl_window_set_title(EWL_WINDOW(main_win), "Examine Configuration Client");
+  ewl_window_set_name(EWL_WINDOW(main_win), "Examine");
+  ewl_window_set_class(EWL_WINDOW(main_win), "examine");
+  ewl_object_request_size(EWL_OBJECT(main_win), 200, 250);
   ewl_object_set_fill_policy((Ewl_Object *) main_win, EWL_FLAG_FILL_FILL);
   ewl_callback_append(main_win, EWL_CALLBACK_DELETE_WINDOW,
                       __destroy_main_window, NULL);
@@ -154,12 +170,59 @@ cb_set_float(Ewl_Widget * w, void *ev_data, void *user_data)
 void
 draw_tree(examine_prop * prop_item)
 {
-  Ewl_Widget     *entries[2];
+  Ewl_Widget     *entries[2], *tree_box, *tmp_row;
+  examine_panel  *panel_ptr;
+  char           *key_tmp;
+  char           *panel_name;
+  char           *sep_tmp;
+  char           *panel_tmp;
+  int             found;
 
-  ewl_container_reset(EWL_CONTAINER(tree_box));
+  panel_ptr = panels;
+  while (panel_ptr) {
+    ewl_container_reset(EWL_CONTAINER(panel_ptr->container));
+    panel_ptr = panel_ptr->next;
+  }
+
+  printf("key is %s\n", prop_item->key);
   while (prop_item) {
-    entries[0] = ewl_text_new(prop_item->key);
+    key_tmp = strdup(prop_item->key);
+    panel_name = key_tmp;
+    sep_tmp = examine_separators;
+    while (*sep_tmp) {
+      if (*key_tmp == *sep_tmp) {
+        panel_name++;
+        break;
+      }
+      sep_tmp++;
+    }
 
+    found = 0;
+    panel_tmp = panel_name;
+    while (*panel_tmp) {
+      sep_tmp = examine_separators;
+      while (*sep_tmp) {
+        if (*panel_tmp == *sep_tmp) {
+          *panel_tmp = '\0';
+          found = 1;
+          break;
+        }
+        sep_tmp++;
+      }
+      if (found)
+        break;
+      panel_tmp++;
+    }
+
+    if (found) {
+      tree_box = add_tab(panel_name);
+      entries[0] = ewl_text_new(panel_tmp + 1);
+    } else {
+      tree_box = add_tab("Misc");
+      entries[0] = ewl_text_new(panel_name);
+    }
+
+    free(key_tmp);
     if (prop_item->type == PT_STR) {
       entries[1] = ewl_entry_new("");
       ewl_callback_append(EWL_ENTRY(entries[1])->text,
@@ -201,13 +264,14 @@ draw_tree(examine_prop * prop_item)
 
     ewl_widget_show(entries[0]);
     ewl_widget_show(entries[1]);
-    /* padding to fix ewl layout issue ##### FIXME */
-    ewl_object_set_padding(EWL_OBJECT(entries[1]), 0, 11, 0, 0);
-    ewl_tree_add_row(EWL_TREE(tree_box), 0, entries);
 
+    tmp_row = ewl_hbox_new();
+    ewl_widget_show(tmp_row);
+    ewl_container_append_child(EWL_CONTAINER(tmp_row), entries[0]);
+    ewl_container_append_child(EWL_CONTAINER(tmp_row), entries[1]);
+    ewl_container_append_child(EWL_CONTAINER(tree_box), tmp_row);
     prop_item = prop_item->next;
   }
-
 }
 
 void
@@ -222,14 +286,11 @@ render_ewl(void)
   ewl_object_set_padding(EWL_OBJECT(main_box), 2, 2, 2, 2);
   ewl_widget_show(main_box);
 
-  tree_box = ewl_tree_new(2);
-  ewl_container_append_child(EWL_CONTAINER(main_box), tree_box);
-  ewl_widget_show(tree_box);
-  headers[0] = strdup("Setting");
-  headers[1] = strdup("Value");
-  ewl_tree_set_headers((Ewl_Tree *) tree_box, headers);
-  free(headers[0]);
-  free(headers[1]);
+  notebook = ewl_notebook_new();
+  ewl_notebook_set_tabs_position(EWL_NOTEBOOK(notebook), EWL_POSITION_TOP);
+  ewl_notebook_set_tabs_alignment(EWL_NOTEBOOK(notebook), EWL_FLAG_ALIGN_LEFT);
+  ewl_container_append_child(EWL_CONTAINER(main_box), notebook);
+  ewl_widget_show(notebook);
 
   examine_client_list_props();
 
@@ -254,3 +315,35 @@ render_ewl(void)
 }
 
 /*****************************************************************************/
+
+Ewl_Widget * add_tab(char *name)
+{
+  Ewl_Widget     *button, *scrollpane, *pane, *headers[2];
+  examine_panel  *new_panel;
+
+  new_panel = panels;
+  while (new_panel) {
+    if (strcmp(new_panel->name, name) == 0)
+      return new_panel->container;
+    new_panel = new_panel->next;
+  }
+
+  button = ewl_text_new(name);
+  ewl_widget_show(button);
+
+//  pane = ewl_scrollpane_new(); FIXME: ewl scrollpane does not allow
+//  additions after realisation
+  pane = ewl_vbox_new();
+  ewl_object_set_alignment(EWL_OBJECT(pane), EWL_FLAG_ALIGN_TOP);
+  ewl_widget_show(pane);
+
+  ewl_notebook_prepend_page(EWL_NOTEBOOK(notebook), button, pane);
+
+  new_panel = malloc(sizeof(examine_panel));
+  new_panel->name = strdup(name);
+  new_panel->container = pane;
+  new_panel->next = panels;
+  panels = new_panel;
+
+  return pane;
+}
