@@ -126,6 +126,10 @@ void ewl_deinit()
 	ewd_list_destroy(free_evas_object_list);
 	ewd_list_destroy(child_add_list);
 
+	edje_shutdown();
+	ecore_x_shutdown();
+	ecore_shutdown();
+
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
 
