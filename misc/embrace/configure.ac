@@ -84,6 +84,12 @@ AC_ARG_WITH(pop3,
 
 AM_CONDITIONAL(BUILD_POP3, test x$build_pop3 = xyes)
 
+AC_ARG_WITH(imap,
+	[  --with-imap             build the imap plugin (default: yes)],
+	[build_imap=$withval], build_imap=yes)
+
+AM_CONDITIONAL(BUILD_IMAP, test x$build_imap = xyes)
+
 AC_PATH_GENERIC(ecore, , ,
 	AC_MSG_ERROR(Cannot find ecore: Is ecore-config in path?))
 
@@ -120,6 +126,7 @@ src/plugins/Makefile
 src/plugins/maildir/Makefile
 src/plugins/mbox/Makefile
 src/plugins/pop3/Makefile
+src/plugins/imap/Makefile
 ])
 
 AC_OUTPUT
@@ -133,6 +140,7 @@ echo
 echo "Maildir...............: $build_maildir"
 echo "mbox..................: $build_mbox"
 echo "POP3..................: $build_pop3"
+echo "IMAP..................: $build_imap"
 echo
 echo
 echo "$PACKAGE $VERSION will be installed in $prefix"

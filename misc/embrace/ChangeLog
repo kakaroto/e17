@@ -1,0 +1,6 @@
+$Id$
+
+2004-03-16 Tilman Sauerbeck <tilman -at- code-monkey.de>
+
+        * configure.ac, src/plugins/imap:
+          Added Justin Rocha's IMAP plugin

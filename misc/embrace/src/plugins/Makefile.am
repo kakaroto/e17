@@ -1,3 +1,3 @@
 ## $Id$
 
-SUBDIRS = maildir mbox pop3
+SUBDIRS = maildir mbox pop3 imap
