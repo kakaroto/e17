@@ -42,8 +42,12 @@ _open_feed(void *data, Evas_Object *obj, const char *em, const char *src)
 {
     if(data) {
         char buf[PATH_MAX];
-        snprintf(buf, PATH_MAX, "firefox -remote %s", (char*)data);
-        printf("%s", buf);
+        char *browser;
+
+        browser = getenv("BROWSER");
+
+        snprintf(buf, PATH_MAX, "%s \"%s\"", 
+                    (browser ? browser : "firefox"), (char*)data);
         ecore_exe_run(buf, NULL);
     }
 
@@ -52,6 +56,7 @@ _open_feed(void *data, Evas_Object *obj, const char *em, const char *src)
     em = NULL;
     src = NULL;
 }
+
 void
 eke_gui_edje_item_size_min_get(Evas_Object *o, Evas_Coord *w, Evas_Coord *h)
 {
@@ -63,9 +68,10 @@ eke_gui_edje_item_size_min_get(Evas_Object *o, Evas_Coord *w, Evas_Coord *h)
   }
         
 }
+
 void
 eke_gui_edje_item_init(Evas_Object *o, const char *label, const char *date,
-const char *link, const char *body)
+                                            const char *link, const char *body)
 {
   Eke_Gui_Edje_Item *data;
   
@@ -120,9 +126,10 @@ const char *link, const char *body)
         } else {
         }
     }
-    edje_object_signal_callback_add(data->obj, "eke,link,open", "",
-                                                            _open_feed,
-                                                            (void*)link);
+
+    if (link)
+        edje_object_signal_callback_add(data->obj, "eke,link,open", "",
+                                                    _open_feed, (void*)link);
   }
 }
 

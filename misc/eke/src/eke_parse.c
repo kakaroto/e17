@@ -362,7 +362,8 @@ eke_parse_rdf_item_parse(Eke_Feed *feed, xmlDoc *doc, xmlNode *node)
             IF_FREE(ptr);
 
         } else if (!strcasecmp(node->name, "link")) {
-            ptr = xmlGetProp(node, "href");
+            tmp = node->xmlChildrenNode;
+            ptr = xmlNodeListGetString(doc, tmp, 1);
             strtrim(ptr);
 
             eke_feed_item_link_set(item, ptr);

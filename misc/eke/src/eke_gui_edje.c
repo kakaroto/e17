@@ -126,7 +126,7 @@ eke_gui_edje_feed_change(Eke *eke, Eke_Feed *feed)
             
             evas_object_data_set(disp->menu_item, "feed", feed);
             edje_object_signal_callback_add(disp->menu_item,
-                            "eke,feed,select", "",
+                                "eke,feed,select", "",
                                  eke_gui_edje_feed_select_cb, eke);
             if((list = evas_object_name_find(evas, "feeds.list"))) {
                 esmart_container_element_append(list, disp->menu_item);
