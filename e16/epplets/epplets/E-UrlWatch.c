@@ -737,7 +737,7 @@ cb_shoot (void *data)
   D (("In cb_shoot: valid url -->%s<--\n", validurl));
 
   Epplet_register_focus_out_handler(work_out_cb, NULL);
-  display_string (validurl);  /*wookie*/
+  display_string (validurl);  /*richlowe is a wookie*/
   handle_url (validurl, data);
   return;
 }
