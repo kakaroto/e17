@@ -319,14 +319,17 @@ feh_handle_event(XEvent * ev)
              break;
           case 2:
              D(("Button 2 Release event\n"));
-             winwid = winwidget_get_from_window(ev->xbutton.window);
-             if (winwid != NULL)
+             if (!opt.full_screen)
              {
-                winwid->zoom_mode = 0;
-                opt.zoom_mode = 0;
-                feh_smooth_image(winwid);
-                if (opt.draw_filename)
-                   feh_draw_filename(winwid);
+                winwid = winwidget_get_from_window(ev->xbutton.window);
+                if (winwid != NULL)
+                {
+                   winwid->zoom_mode = 0;
+                   opt.zoom_mode = 0;
+                   feh_smooth_image(winwid);
+                   if (opt.draw_filename)
+                      feh_draw_filename(winwid);
+                }
              }
              break;
           case 3:
@@ -388,7 +391,8 @@ feh_handle_event(XEvent * ev)
         }
         break;
      case MotionNotify:
-        while (XCheckTypedWindowEvent(disp, ev->xmotion.window, MotionNotify, ev));
+        while (XCheckTypedWindowEvent
+               (disp, ev->xmotion.window, MotionNotify, ev));
         if (menu_root)
         {
            feh_menu *m;
