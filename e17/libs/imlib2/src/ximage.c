@@ -174,12 +174,18 @@ __imlib_ProduceXImage(Display * d, Visual * v, int depth, int w, int h,
    /* go thru the current image list */
    for (i = 0; i < list_num; i++)
      {
+	  int depth_ok = 0;
+
         /* if the image has the same depth, width and height - recycle it */
         /* as long as its not used */
-        if ((list_xim[i]->bits_per_pixel == depth) &&
-            (list_xim[i]->width >= w) && (list_xim[i]->height >= h) &&
-            /*    (list_d[i] == d) && */
-            (!list_used[i]))
+        if ( (list_xim[i]->bits_per_pixel == depth) ||
+             ((list_xim[i]->bits_per_pixel == 32) && (depth == 24)) )
+            depth_ok = 1;
+	  if ( depth_ok &&
+	     (list_xim[i]->width >= w) &&
+	     (list_xim[i]->height >= h) &&
+	     /*	  (list_d[i] == d) && */
+	     (!list_used[i]))
           {
              /* mark it as used */
              list_used[i] = 1;
