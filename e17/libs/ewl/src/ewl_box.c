@@ -112,7 +112,7 @@ int ewl_box_init(Ewl_Box * b, Ewl_Orientation o)
 		ewl_container_init(EWL_CONTAINER(b), "vbox", ewl_box_add_cb,
 				ewl_box_child_resize_cb, ewl_box_remove_cb);
 
-	ewl_callback_prepend(w, EWL_CALLBACK_CONFIGURE, ewl_box_configure_cb,
+	ewl_callback_append(w, EWL_CALLBACK_CONFIGURE, ewl_box_configure_cb,
 			NULL);
 
 	/*
