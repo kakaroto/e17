@@ -33,13 +33,6 @@
                                 action, SIGNAL_EMIT "SWITCH_GROUP", "eplayer_small";
                         }
 
-                        program {
-                                name, "titlebar_click";
-                                signal, "mouse,clicked,1";
-                                source, "titlebar";
-                                action, SIGNAL_EMIT "RAISE", "titlebar";
-                        }
-
                         /* Previous File */
                         program {
                                 name,       "previous_click";
