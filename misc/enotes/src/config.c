@@ -26,7 +26,7 @@ mainconfig_new(void)
 	p->debug = 0;
 	p->intro = 0;
 	p->controlcentre = 1;
-	p->autosave = 1;
+	p->autosave = 0;
 
 	return (p);
 }
