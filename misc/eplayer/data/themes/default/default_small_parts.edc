@@ -1,4 +1,4 @@
-/*** Minimized Interface for Default theme - by El SomeoneOh ***/
+/*** Minimized Interface for Default theme - by digitalfallout ***/
                         part {
                                 name, "background";
                                 mouse_events, 1;

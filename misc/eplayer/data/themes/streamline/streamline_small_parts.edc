@@ -1,3 +1,4 @@
+/** Minimized functionality by digitalfallout **/
                         part {
                                 name, "background";
                                 mouse_events, 1;
