@@ -512,6 +512,7 @@ main_handle_connections(void)
 
   if (bind(listen_fd, (struct sockaddr *)&serv_sun, sizeof(serv_sun)) < 0)
     {
+      perror("Error:");
       fprintf(stderr, "Could not bind socket -- exiting.\n");
       exit(-1);
     }
