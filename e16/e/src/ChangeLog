@@ -3820,3 +3820,11 @@ I can't think of why this would be segfaulting or how this code could have
 gotten called if there were no border, but I think this must be the segfault
 I received in email. *shrug*
 
+
+-------------------------------------------------------------------------------
+
+Thu Oct 28 13:07:01 PDT 1999
+(Raster)
+
+dont allow snapshotting of command (retsrat on login) for remote apps 
+if we can detect they are remote.

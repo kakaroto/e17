@@ -22,6 +22,7 @@
  */
 #include "E.h"
 #include "timestamp.h"
+#include <sys/utsname.h>
 
 static void
 runDocBrowser(void)
@@ -48,6 +49,7 @@ main(int argc, char **argv)
    Button            **lst;
    Background         *bg;
    ECursor            *ec = NULL;
+   struct utsname      ubuf;
 
    /* This function runs all the setup for startup, and then 
     * proceeds into the primary event loop at the end.
@@ -87,6 +89,10 @@ main(int argc, char **argv)
    AssignExitFunction(doExit, NULL);
    srand(time(NULL));
 
+   if (!uname(&ubuf))
+      e_machine_name = duplicate(ubuf.nodename);
+   if (!e_machine_name)
+      e_machine_name = duplicate("localhost");
    command = duplicate(argv[0]);
    themepath[0] = 0;
    {

@@ -67,3 +67,4 @@ Group              *current_group;
 char               *dstr = NULL;
 char               *badtheme = NULL;
 char               *badreason = NULL;
+char               *e_machine_name = NULL;

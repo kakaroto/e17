@@ -454,13 +454,28 @@ SnapshotEwinDialog(EWin * ewin)
 
    if (ewin->client.command)
      {
-	di = DialogAddItem(table, DITEM_CHECKBUTTON);
-	DialogItemSetColSpan(di, 2);
-	DialogItemSetPadding(di, 2, 2, 2, 2);
-	DialogItemSetFill(di, 1, 0);
-	DialogItemCheckButtonSetText(di, "Restart application on login");
-	DialogItemCheckButtonSetState(di, tmp_snap_cmd);
-	DialogItemCheckButtonSetPtr(di, &tmp_snap_cmd);
+	char                ok = 1;
+
+	if (ewin->client.machine)
+	  {
+	     if (strcmp(ewin->client.machine, e_machine_name))
+		ok = 0;
+	  }
+	if (ok)
+	  {
+	     di = DialogAddItem(table, DITEM_CHECKBUTTON);
+	     DialogItemSetColSpan(di, 2);
+	     DialogItemSetPadding(di, 2, 2, 2, 2);
+	     DialogItemSetFill(di, 1, 0);
+	     DialogItemCheckButtonSetText(di, "Restart application on login");
+	     DialogItemCheckButtonSetState(di, tmp_snap_cmd);
+	     DialogItemCheckButtonSetPtr(di, &tmp_snap_cmd);
+	  }
+	else
+	  {
+	     di = DialogAddItem(table, DITEM_NONE);
+	     DialogItemSetColSpan(di, 2);
+	  }
      }
    else
      {
@@ -615,14 +630,24 @@ void
 SnapshotEwinCmd(EWin * ewin)
 {
    Snapshot           *sn;
+   char                ok = 1;
 
    sn = GetSnapshot(ewin);
    if (!sn)
       return;
-   sn->use_cmd = 1;
-   if (sn->cmd)
-      Efree(sn->cmd);
-   sn->cmd = duplicate(ewin->client.command);
+
+   if (ewin->client.machine)
+     {
+	if (strcmp(ewin->client.machine, e_machine_name))
+	   ok = 0;
+     }
+   if (ok)
+     {
+	sn->use_cmd = 1;
+	if (sn->cmd)
+	   Efree(sn->cmd);
+	sn->cmd = duplicate(ewin->client.command);
+     }
 }
 
 void

@@ -810,6 +810,7 @@ MakeExtInitWin(void)
    signal(SIGTSTP, SIG_DFL);
 #endif
    signal(SIGBUS, SIG_IGN);
+
    d2 = XOpenDisplay(DisplayString(disp));
    close(ConnectionNumber(disp));
    XGrabServer(d2);

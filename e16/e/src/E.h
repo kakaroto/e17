@@ -2969,6 +2969,7 @@ extern Group       *current_group;
 extern char        *dstr;
 extern char        *badtheme;
 extern char        *badreason;
+extern char        *e_machine_name;
 
 /* This turns on E's internal stack tracking system for coarse debugging */
 /* and being able to trace E for profiling/optimisation purposes (which */
