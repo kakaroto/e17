@@ -1560,25 +1560,7 @@ FreeEwin(EWin * ewin)
    /* hide any menus this ewin has brought up if they are still up when we */
    /* destroy this ewin */
    if (ewin->shownmenu)
-     {
-	Menu               *m;
-	int                 ok = 0;
-
-	m = FindMenu(ewin->shownmenu);
-	if (m)
-	  {
-	     HideMenu(m);
-	     ok = 0;
-	     for (i = 0; i < mode.cur_menu_depth; i++)
-	       {
-		  if (ok)
-		     HideMenu(mode.cur_menu[i]);
-		  if (mode.cur_menu[i] == m)
-		     ok = 1;
-	       }
-	     HideMenuMasker();
-	  }
-     }
+      MenusHideByWindow(ewin->shownmenu);
 
    if (ewin == mode.focuswin)
      {

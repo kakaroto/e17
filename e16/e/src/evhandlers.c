@@ -23,15 +23,8 @@
 #include "E.h"
 
 static ToolTip     *ttip = NULL;
-struct _mdata
-{
-   Menu               *m;
-   MenuItem           *mi;
-   EWin               *ewin;
-};
 
 static void         ToolTipTimeout(int val, void *data);
-static void         SubmenuShowTimeout(int val, void *dat);
 
 static char         sentpress = 0;
 static Window       click_was_in = 0;
@@ -1361,8 +1354,6 @@ HandleMouseDown(XEvent * ev)
    EWin               *ewin;
    EWin              **ewins;
    int                 i, j, num;
-   Menu               *m;
-   MenuItem           *mi;
    int                 desk_click;
    char                double_click = 0;
    float               mode_double_click_time = 0.25;
@@ -1442,8 +1433,10 @@ HandleMouseDown(XEvent * ev)
 	EDBUG_RETURN_;
      }
 
-   m = FindMenuItem(win, &mi);
-   if ((!m) && ((mode.clickalways) || (mode.focusmode == FOCUS_CLICK)))
+   if (MenusEventMouseDown(ev))
+      goto exit;
+
+   if ((mode.clickalways) || (mode.focusmode == FOCUS_CLICK))
      {
 	ewin = FindEwinByChildren(win);
 	if (!ewin)
@@ -1460,44 +1453,6 @@ HandleMouseDown(XEvent * ev)
 	     XSync(disp, False);
 	  }
 	/* done */
-     }
-   if (m)
-     {
-	mode.cur_menu_mode = 1;
-	mi->state = STATE_CLICKED;
-	DrawMenuItem(m, mi, 1);
-	if (mi->child)
-	  {
-	     int                 mx, my;
-	     unsigned int        mw, mh;
-	     EWin               *ewin2;
-
-	     mode.cur_menu[0] = m;
-	     mode.cur_menu_depth = 1;
-	     ShowMenuMasker(m);
-	     XUngrabPointer(disp, CurrentTime);
-	     ewin = FindEwinByMenu(m);
-	     if (ewin)
-	       {
-		  GetWinXY(mi->win, &mx, &my);
-		  GetWinWH(mi->win, &mw, &mh);
-		  ShowMenu(mi->child, 1);
-		  ewin2 = FindEwinByMenu(mi->child);
-		  if (ewin2)
-		    {
-		       MoveEwin(ewin2,
-				ewin->x + ewin->border->border.left + mx + mw,
-				ewin->y + ewin->border->border.top + my -
-				ewin2->border->border.top);
-		       RaiseEwin(ewin2);
-		       ShowEwin(ewin2);
-		       if (mode.menuslide)
-			  UnShadeEwin(ewin2);
-		       mode.cur_menu[mode.cur_menu_depth++] = mi->child;
-		    }
-	       }
-	  }
-	EDBUG_RETURN_;
      }
 
    if (double_click)
@@ -1579,8 +1534,6 @@ HandleMouseUp(XEvent * ev)
    char                wasmovres;
    char                justclicked = 0;
    Slideout           *pslideout;
-   Menu               *m;
-   MenuItem           *mi;
    EWin              **gwins;
 
    EDBUG(5, "HandleMouseUp");
@@ -1709,87 +1662,17 @@ HandleMouseUp(XEvent * ev)
 	   wasdrag = 1;
 	doDragButtonEnd(NULL);
      }
-   m = FindMenuItem(win, &mi);
+
    if ((((float)(ev->xbutton.time - last_time) / 1000) < 0.5)
        && (mode.cur_menu_depth > 0) && (!clickmenu))
      {
 	clickmenu = 1;
 	justclicked = 1;
      }
-   if ((m) && (mi->state))
-     {
-	mi->state = STATE_HILITED;
-	DrawMenuItem(m, mi, 1);
-	if ((mi->act_id) && (!justclicked))
-	  {
-	     (*(ActionFunctions[mi->act_id])) (mi->params);
-	     if (clickmenu)
-	       {
-		  for (i = 0; i < mode.cur_menu_depth; i++)
-		    {
-		       if (!mode.cur_menu[i]->stuck)
-			  HideMenu(mode.cur_menu[i]);
-		    }
-		  HideMenuMasker();
-		  mode.cur_menu_depth = 0;
-		  mode.cur_menu_mode = 0;
-		  mode.context_ewin = NULL;
-		  last_bpress = 0;
-		  clickmenu = 0;
-		  EDBUG_RETURN_;
-	       }
-	  }
-     }
-   if ((mode.cur_menu_mode) && (!clickmenu))
-     {
-	if (!m)
-	  {
-	     Window              ww;
 
-	     ww = WindowAtXY(mode.x, mode.y);
-	     if ((ewin = FindEwinByChildren(ww)))
-	       {
-		  for (i = 0; i < ewin->border->num_winparts; i++)
-		    {
-		       if (ww == ewin->bits[i].win)
-			 {
-			    if ((ewin->border->part[i].flags & FLAG_TITLE)
-				&& (ewin->menu))
-			      {
-				 ewin->menu->stuck = 1;
-				 mode.context_ewin = ewin;
-				 i = ewin->border->num_winparts;
-			      }
-			 }
-		    }
-	       }
-	  }
-	for (i = 0; i < mode.cur_menu_depth; i++)
-	  {
-	     if (!mode.cur_menu[i]->stuck)
-		HideMenu(mode.cur_menu[i]);
-	  }
-	HideMenuMasker();
-	mode.cur_menu_depth = 0;
-	mode.cur_menu_mode = 0;
-	last_bpress = 0;
-	clickmenu = 0;
-	EDBUG_RETURN_;
-     }
-   if ((mode.cur_menu_mode) && (!justclicked))
-     {
-	for (i = 0; i < mode.cur_menu_depth; i++)
-	  {
-	     if (!mode.cur_menu[i]->stuck)
-		HideMenu(mode.cur_menu[i]);
-	  }
-	HideMenuMasker();
-	mode.cur_menu_depth = 0;
-	mode.cur_menu_mode = 0;
-	last_bpress = 0;
-	clickmenu = 0;
-	EDBUG_RETURN_;
-     }
+   if (MenusEventMouseUp(ev, justclicked))
+      goto exit;
+
    ewins = (EWin **) ListItemType(&num, LIST_TYPE_EWIN);
    for (i = 0; i < num; i++)
      {
@@ -1883,84 +1766,10 @@ HandleMouseUp(XEvent * ev)
    EDBUG_RETURN_;
 }
 
-static void
-SubmenuShowTimeout(int val, void *dat)
-{
-   int                 mx, my;
-   unsigned int        mw, mh;
-   EWin               *ewin2, *ewin;
-   struct _mdata      *data;
-
-   data = (struct _mdata *)dat;
-   if (!data)
-      return;
-   if (!data->m)
-      return;
-   if (!FindEwinByMenu(data->m))
-      return;
-   GetWinXY(data->mi->win, &mx, &my);
-   GetWinWH(data->mi->win, &mw, &mh);
-   ShowMenu(data->mi->child, 1);
-   ewin2 = FindEwinByMenu(data->mi->child);
-   if (ewin2)
-     {
-	MoveEwin(ewin2,
-		 data->ewin->x + data->ewin->border->border.left + mx + mw,
-		 data->ewin->y + data->ewin->border->border.top + my -
-		 ewin2->border->border.top);
-	RaiseEwin(ewin2);
-	ShowEwin(ewin2);
-	if (mode.menuslide)
-	   UnShadeEwin(ewin2);
-	if (mode.cur_menu[mode.cur_menu_depth - 1] != data->mi->child)
-	   mode.cur_menu[mode.cur_menu_depth++] = data->mi->child;
-	if (mode.menusonscreen)
-	  {
-	     EWin               *menus[256];
-	     int                 fx[256];
-	     int                 fy[256];
-	     int                 tx[256];
-	     int                 ty[256];
-	     int                 i;
-	     int                 xdist = 0, ydist = 0;
-
-	     if (ewin2->x + ewin2->w > root.w)
-		xdist = root.w - (ewin2->x + ewin2->w);
-	     if (ewin2->y + ewin2->h > root.h)
-		ydist = root.h - (ewin2->y + ewin2->h);
-	     if ((xdist != 0) || (ydist != 0))
-	       {
-		  for (i = 0; i < mode.cur_menu_depth; i++)
-		    {
-		       menus[i] = NULL;
-		       if (mode.cur_menu[i])
-			 {
-			    ewin = FindEwinByMenu(mode.cur_menu[i]);
-			    if (ewin)
-			      {
-				 menus[i] = ewin;
-				 fx[i] = ewin->x;
-				 fy[i] = ewin->y;
-				 tx[i] = ewin->x + xdist;
-				 ty[i] = ewin->y + ydist;
-			      }
-			 }
-		    }
-		  SlideEwinsTo(menus, fx, fy, tx, ty, mode.cur_menu_depth,
-			       mode.shadespeed);
-		  if (mode.warpmenus)
-		     XWarpPointer(disp, None, None, 0, 0, 0, 0, xdist, ydist);
-	       }
-	  }
-     }
-   val = 0;
-}
-
 void
 HandleMouseIn(XEvent * ev)
 {
    Window              win;
-   EWin               *ewin;
    EWin              **ewins;
    int                 i, j, num;
 
@@ -1979,54 +1788,8 @@ HandleMouseIn(XEvent * ev)
    if (PagersEventMouseIn(ev))
       goto exit;
 
-   {
-      Menu               *m;
-      MenuItem           *mi;
-      static struct _mdata mdata;
-
-      m = FindMenuItem(win, &mi);
-      if (m)
-	{
-	   int                 j;
-
-	   if ((win == mi->icon_win) &&
-	       (ev->xcrossing.detail == NotifyAncestor))
-	      EDBUG_RETURN_;
-	   if ((win == mi->win) && (ev->xcrossing.detail == NotifyInferior))
-	      EDBUG_RETURN_;
-	   mi->state = STATE_HILITED;
-	   DrawMenuItem(m, mi, 1);
-
-	   RemoveTimerEvent("SUBMENU_SHOW");
-	   for (i = 0; i < mode.cur_menu_depth; i++)
-	     {
-		if (mode.cur_menu[i] == m)
-		  {
-		     if ((!mi->child) ||
-			 ((mi->child) && (mode.cur_menu[i + 1] != mi->child)))
-		       {
-			  for (j = i + 1; j < mode.cur_menu_depth; j++)
-			     HideMenu(mode.cur_menu[j]);
-			  mode.cur_menu_depth = i + 1;
-			  i = mode.cur_menu_depth;
-			  break;
-		       }
-		  }
-	     }
-	   if ((mi->child) && (mode.cur_menu_mode))
-	     {
-		ewin = FindEwinByMenu(m);
-		if (ewin)
-		  {
-		     mdata.m = m;
-		     mdata.mi = mi;
-		     mdata.ewin = ewin;
-		     DoIn("SUBMENU_SHOW", 0.2, SubmenuShowTimeout, 0, &mdata);
-		  }
-	     }
-	   EDBUG_RETURN_;
-	}
-   }
+   if (MenusEventMouseIn(ev))
+      goto exit;
 
    ewins = (EWin **) ListItemType(&num, LIST_TYPE_EWIN);
    for (i = 0; i < num; i++)
@@ -2093,26 +1856,12 @@ HandleMouseOut(XEvent * ev)
    if (PagersEventMouseOut(ev))
       goto exit;
 
-   {
-      Menu               *m;
-      MenuItem           *mi;
+   if (MenusEventMouseOut(ev))
+      goto exit;
 
-      m = FindMenuItem(win, &mi);
-      if (m)
-	{
-	   if ((win == mi->icon_win) &&
-	       (ev->xcrossing.detail == NotifyAncestor))
-	      EDBUG_RETURN_;
-	   if ((win == mi->win) && (ev->xcrossing.detail == NotifyInferior))
-	      EDBUG_RETURN_;
-	   mi->state = STATE_NORMAL;
-	   DrawMenuItem(m, mi, 1);
-	   EDBUG_RETURN_;
-	}
-   }
+   ICCCM_Cmap(NULL);
 
    ewins = (EWin **) ListItemType(&num, LIST_TYPE_EWIN);
-   ICCCM_Cmap(NULL);
    for (i = 0; i < num; i++)
      {
 	for (j = 0; j < ewins[i]->border->num_winparts; j++)

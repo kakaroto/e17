@@ -4815,42 +4815,9 @@ IPC_ReloadMenus(char *params, Client * c)
     * but i'll try this 08/17/99
     */
 
-   Menu               *menu;
-   Menu              **menus;
-   int                 i, j, num, not_task, found_one = 1;
-
-   /* Free all menustyles first (gulp) */
-   do
-     {
-	found_one = 0;
-	menus = (Menu **) ListItemType(&num, LIST_TYPE_MENU);
-	for (i = 0; i < num; i++)
-	  {
-	     menu = menus[i];
-	     not_task = 1;
-	     for (j = 0; j < ENLIGHTENMENT_CONF_NUM_DESKTOPS; j++)
-		if (menu == task_menu[j])
-		   not_task = 0;
-	     if ((menu != desk_menu) && (menu != group_menu) && not_task)
-	       {
-		  DestroyMenu(menu);
-		  /* Destroying a menu may result in sub-menus being
-		   * destroyed too, so we have to re-find all menus
-		   * afterwards. Inefficient yes, but it works...
-		   */
-		  found_one = 1;
-		  break;
-	       }
-	  }
-	if (menus)
-	   Efree(menus);
-     }
-   while (found_one);
+   MenusDestroyLoaded();
 
    LoadConfigFile("menus.cfg");
-
-   params = NULL;
-   c = NULL;
 }
 
 static void

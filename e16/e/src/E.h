@@ -655,6 +655,8 @@ int                 Esnprintf(va_alist);
 #define ENCOING_ISO_8859_4 3
 
 typedef struct _menu Menu;
+typedef struct _menuitem MenuItem;
+typedef struct _menustyle MenuStyle;
 typedef struct _dialog Dialog;
 typedef struct _ditem DItem;
 typedef struct _pager Pager;
@@ -1402,7 +1404,8 @@ typedef struct _qentry
 }
 Qentry;
 
-typedef struct _menustyle
+#ifdef DECLARE_STRUCT_MENU
+struct _menustyle
 {
    char               *name;
    TextClass          *tclass;
@@ -1415,10 +1418,9 @@ typedef struct _menustyle
    int                 maxy;
    char               *border_name;
    unsigned int        ref_count;
-}
-MenuStyle;
+};
 
-typedef struct _menuitem
+struct _menuitem
 {
    ImageClass         *icon_iclass;
    char               *text;
@@ -1435,8 +1437,7 @@ typedef struct _menuitem
    short               text_h;
    short               text_x;
    short               text_y;
-}
-MenuItem;
+};
 
 struct _menu
 {
@@ -1447,7 +1448,9 @@ struct _menu
    MenuItem          **items;
    Window              win;
    PmapMask            pmm;
+   char                shown;
    char                stuck;
+   char                internal;	/* Don't destroy when reloading */
    Menu               *parent;
    MenuItem           *sel_item;
    time_t              last_change;
@@ -1455,6 +1458,7 @@ struct _menu
    Menu               *ref_menu;
    unsigned int        ref_count;
 };
+#endif /* DECLARE_STRUCT_MENU */
 
 typedef struct _progressbar
 {
@@ -2387,42 +2391,50 @@ void                ShowToolTip(ToolTip * tt, char *text, ActionClass * ac,
 void                HideToolTip(ToolTip * tt);
 void                FreeToolTip(ToolTip * tt);
 
+/* menus.c functions */
+void                MenusInit(void);
+void                MenusHide(void);
+MenuStyle          *MenuStyleCreate(void);
+Menu               *MenuCreate(const char *name);
+void                MenuDestroy(Menu * m);
+void                MenuHide(Menu * m);
+void                MenuShow(Menu * m, char noshow);
+void                MenuRepack(Menu * m);
+void                MenuEmpty(Menu * m);
+MenuItem           *MenuItemCreate(char *text, ImageClass * iclass,
+				   int action_id, char *action_params,
+				   Menu * child);
+void                MenuAddItem(Menu * menu, MenuItem * item);
+void                MenuAddName(Menu * menu, const char *name);
+void                MenuAddTitle(Menu * menu, const char *title);
+void                MenuAddStyle(Menu * menu, const char *style);
+void                MenuRealize(Menu * m);
+void                MenuDrawItem(Menu * m, MenuItem * mi, char shape);
+Menu               *MenuCreateFromDirectory(char *name, MenuStyle * ms,
+					    char *dir);
+Menu               *MenuCreateFromFlatFile(char *name, MenuStyle * ms,
+					   char *file, Menu * parent);
+Menu               *MenuCreateFromGnome(char *name, MenuStyle * ms, char *dir);
+Menu               *MenuCreateFromAllEWins(char *name, MenuStyle * ms);
+Menu               *MenuCreateFromDesktopEWins(char *name, MenuStyle * ms,
+					       int desk);
+Menu               *MenuCreateFromDesktops(char *name, MenuStyle * ms);
+Menu               *MenuCreateFromThemes(char *name, MenuStyle * ms);
+Menu               *MenuCreateFromBorders(char *name, MenuStyle * ms);
+Window              MenuWindow(Menu * menu);
+void                MenuShowMasker(Menu * m);
+void                MenuHideMasker(void);
+void                MenusDestroyLoaded(void);
+void                MenusHideByWindow(Window win);
+int                 MenusEventMouseDown(XEvent * ev);
+int                 MenusEventMouseUp(XEvent * ev, int justclicked);
+int                 MenusEventMouseIn(XEvent * ev);
+int                 MenusEventMouseOut(XEvent * ev);
+
+void                ShowNamedMenu(const char *name);
 void                ShowTaskMenu(void);
 void                ShowAllTaskMenu(void);
 void                ShowDeskMenu(void);
-Menu               *RefreshTaskMenu(int desk);
-Menu               *RefreshAllTaskMenu(Menu * m);
-Menu               *RefreshDeskMenu(Menu * m);
-void                HideMenu(Menu * m);
-void                ShowMenu(Menu * m, char noshow);
-MenuStyle          *CreateMenuStyle(void);
-MenuItem           *CreateMenuItem(char *text, ImageClass * iclass,
-				   int action_id, char *action_params,
-				   Menu * child);
-Menu               *CreateMenu(void);
-void                DestroyMenu(Menu * m);
-void                AddItemToMenu(Menu * menu, MenuItem * item);
-void                AddTitleToMenu(Menu * menu, char *title);
-void                RealizeMenu(Menu * m);
-void                DrawMenuItem(Menu * m, MenuItem * mi, char shape);
-Menu               *CreateMenuFromDirectory(char *name, MenuStyle * ms,
-					    char *dir);
-Menu               *CreateMenuFromFlatFile(char *name, MenuStyle * ms,
-					   char *file, Menu * parent);
-Menu               *CreateMenuFromGnome(char *name, MenuStyle * ms, char *dir);
-Menu               *CreateMenuFromAllEWins(char *name, MenuStyle * ms);
-Menu               *CreateMenuFromDesktopEWins(char *name, MenuStyle * ms,
-					       int desk);
-Menu               *CreateMenuFromDesktops(char *name, MenuStyle * ms);
-Menu               *CreateMenuFromThemes(char *name, MenuStyle * ms);
-Menu               *CreateMenuFromBorders(char *name, MenuStyle * ms);
-int                 BorderNameCompare(Border * b1, Border * b2);
-void                ShowMenuMasker(Menu * m);
-void                HideMenuMasker(void);
-void                RepackMenu(Menu * m);
-void                EmptyMenu(Menu * m);
-Menu               *CreateMenuFromGroups(char *name, MenuStyle * ms);
-Menu               *RefreshGroupMenu(Menu * m);
 void                ShowGroupMenu(void);
 
 void                SetNewAreaSize(int ax, int ay);
@@ -2878,10 +2890,6 @@ extern char         mustdel;
 
 #define DRAW_QUEUE_ENABLE 1
 extern char         queue_up;
-extern Menu        *all_task_menu;
-extern Menu        *task_menu[ENLIGHTENMENT_CONF_NUM_DESKTOPS];
-extern Menu        *desk_menu;
-extern Menu        *group_menu;
 extern char         no_overwrite;
 extern char         clickmenu;
 extern Window       last_bpress;

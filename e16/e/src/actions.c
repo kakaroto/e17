@@ -515,7 +515,6 @@ handleAction(ActionType * Action)
 int
 spawnMenu(void *params)
 {
-   Menu               *m = NULL;
    char                s[1024];
    char                s2[1024];
    int                 x, y, di;
@@ -526,11 +525,13 @@ spawnMenu(void *params)
    int                 i;
 
    EDBUG(6, "spawnMenu");
+
    if (!params)
       EDBUG_RETURN(0);
+
    if (mode.cur_menu_depth > 0)
       EDBUG_RETURN(0);
-   sscanf((char *)params, "%1000s %1000s", s, s2);
+
    ewin = mode.ewin = GetFocusEwin();
    for (i = 0; i < mode.numdesktops; i++)
      {
@@ -557,8 +558,11 @@ spawnMenu(void *params)
 	     mode.context_h = h;
 	  }
      }
+
    if (mode.button)
       clickmenu = 1;
+
+   sscanf((char *)params, "%1000s %1000s", s, s2);
    if (!strcmp(s, "deskmenu"))
      {
 	AUDIO_PLAY("SOUND_MENU_SHOW");
@@ -576,33 +580,17 @@ spawnMenu(void *params)
      }
    else if (!strcmp(s, "named"))
      {
-	m = FindItem(s2, 0, LIST_FINDBY_NAME, LIST_TYPE_MENU);
-	if (m)
-	  {
-	     AUDIO_PLAY("SOUND_MENU_SHOW");
-	     mode.cur_menu_mode = 1;
-	     XUngrabPointer(disp, CurrentTime);
-	     if (!FindEwinByMenu(m))
-		ShowMenu(m, 0);
-	     mode.cur_menu[0] = m;
-	     mode.cur_menu_depth = 1;
-	     ShowMenuMasker(m);
-	     m->ref_count++;
-	  }
-	else
-	  {
-	     mode.cur_menu[0] = NULL;
-	     mode.cur_menu_depth = 0;
-	     HideMenuMasker();
-	  }
+	AUDIO_PLAY("SOUND_MENU_SHOW");
+	ShowNamedMenu(s2);
      }
+
    if (((ewin) && (ewin->win == mode.context_win))
        || (ewin = FindEwinByChildren(mode.context_win)))
      {
 	if ((ewin) && (mode.cur_menu_depth > 0) && (mode.cur_menu[0]))
-	   ewin->shownmenu = mode.cur_menu[0]->win;
+	   ewin->shownmenu = MenuWindow(mode.cur_menu[0]);
      }
-   params = NULL;
+
    if (mode.cur_menu_depth == 0)
       EDBUG_RETURN(0);
    EDBUG_RETURN(1);

@@ -660,7 +660,7 @@ PagerRedraw(Pager * p, char newbg)
 	     int                 wx, wy, ww, wh;
 
 	     ewin = desks.desk[p->desktop].list[i];
-	     if (!ewin->iconified)
+	     if (!ewin->iconified && ewin->visible)
 	       {
 		  wx = ((ewin->x + (cx * root.w)) * (p->w / ax)) / root.w;
 		  wy = ((ewin->y + (cy * root.h)) * (p->h / ay)) / root.h;
@@ -863,7 +863,7 @@ PagerAreaAt(Pager * p, int x, int y, int *ax, int *ay)
 }
 
 static void
-PagerShowMenu(Pager * p, int x, int y)
+PagerMenuShow(Pager * p, int x, int y)
 {
    static Menu        *p_menu = NULL, *pw_menu = NULL;
    MenuItem           *mi;
@@ -878,66 +878,59 @@ PagerShowMenu(Pager * p, int x, int y)
    if (ewin)
      {
 	if (pw_menu)
-	   DestroyMenu(pw_menu);
-	pw_menu = CreateMenu();
-	AddTitleToMenu(pw_menu, _("Window Options"));
-	pw_menu->name = duplicate("__DESK_WIN_MENU");
-	pw_menu->style =
-	   FindItem("DEFAULT", 0, LIST_FINDBY_NAME, LIST_TYPE_MENU_STYLE);
+	   MenuDestroy(pw_menu);
+	pw_menu = MenuCreate("__DESK_WIN_MENU");
+	MenuAddTitle(pw_menu, _("Window Options"));
+	MenuAddStyle(pw_menu, "DEFAULT");
 
 	Esnprintf(s, sizeof(s), "%i", (unsigned)ewin->client.win);
-	mi = CreateMenuItem(_("Iconify"), NULL, ACTION_ICONIFY, s, NULL);
-	AddItemToMenu(pw_menu, mi);
+	mi = MenuItemCreate(_("Iconify"), NULL, ACTION_ICONIFY, s, NULL);
+	MenuAddItem(pw_menu, mi);
 
-	mi = CreateMenuItem(_("Close"), NULL, ACTION_KILL, s, NULL);
-	AddItemToMenu(pw_menu, mi);
+	mi = MenuItemCreate(_("Close"), NULL, ACTION_KILL, s, NULL);
+	MenuAddItem(pw_menu, mi);
 
-	mi = CreateMenuItem(_("Annihilate"), NULL, ACTION_KILL_NASTY, s, NULL);
-	AddItemToMenu(pw_menu, mi);
+	mi = MenuItemCreate(_("Annihilate"), NULL, ACTION_KILL_NASTY, s, NULL);
+	MenuAddItem(pw_menu, mi);
 
-	mi = CreateMenuItem(_("Stick / Unstick"), NULL, ACTION_STICK, s, NULL);
-	AddItemToMenu(pw_menu, mi);
+	mi = MenuItemCreate(_("Stick / Unstick"), NULL, ACTION_STICK, s, NULL);
+	MenuAddItem(pw_menu, mi);
 
-	AddItem(pw_menu, pw_menu->name, 0, LIST_TYPE_MENU);
-	Esnprintf(s, sizeof(s), "named %s", pw_menu->name);
-	spawnMenu(s);
+	spawnMenu("named __DESK_WIN_MENU");
 	return;
      }
 
    PagerAreaAt(p, x, y, &ax, &ay);
    if (p_menu)
-      DestroyMenu(p_menu);
-   p_menu = CreateMenu();
-   AddTitleToMenu(p_menu, _("Desktop Options"));
-   p_menu->name = duplicate("__DESK_MENU");
-   p_menu->style =
-      FindItem("DEFAULT", 0, LIST_FINDBY_NAME, LIST_TYPE_MENU_STYLE);
+      MenuDestroy(p_menu);
+   p_menu = MenuCreate("__DESK_MENU");
+   MenuAddTitle(p_menu, _("Desktop Options"));
+   MenuAddStyle(p_menu, "DEFAULT");
 
-   mi = CreateMenuItem(_("Pager Settings..."), NULL, ACTION_CONFIG, "pager",
+   mi = MenuItemCreate(_("Pager Settings..."), NULL, ACTION_CONFIG, "pager",
 		       NULL);
-   AddItemToMenu(p_menu, mi);
+   MenuAddItem(p_menu, mi);
 
-   mi = CreateMenuItem(_("Snapshotting On"), NULL, ACTION_SET_PAGER_SNAP, "1",
+   mi = MenuItemCreate(_("Snapshotting On"), NULL, ACTION_SET_PAGER_SNAP, "1",
 		       NULL);
-   AddItemToMenu(p_menu, mi);
+   MenuAddItem(p_menu, mi);
 
-   mi = CreateMenuItem(_("Snapshotting Off"), NULL, ACTION_SET_PAGER_SNAP, "0",
+   mi = MenuItemCreate(_("Snapshotting Off"), NULL, ACTION_SET_PAGER_SNAP, "0",
 		       NULL);
-   AddItemToMenu(p_menu, mi);
+   MenuAddItem(p_menu, mi);
 
    if (mode.pager_snap)
      {
-	mi = CreateMenuItem(_("High Quality On"), NULL, ACTION_SET_PAGER_HIQ,
+	mi = MenuItemCreate(_("High Quality On"), NULL, ACTION_SET_PAGER_HIQ,
 			    "1", NULL);
-	AddItemToMenu(p_menu, mi);
+	MenuAddItem(p_menu, mi);
 
-	mi = CreateMenuItem(_("High Quality Off"), NULL, ACTION_SET_PAGER_HIQ,
+	mi = MenuItemCreate(_("High Quality Off"), NULL, ACTION_SET_PAGER_HIQ,
 			    "0", NULL);
-	AddItemToMenu(p_menu, mi);
+	MenuAddItem(p_menu, mi);
      }
-   AddItem(p_menu, p_menu->name, 0, LIST_TYPE_MENU);
-   Esnprintf(s, sizeof(s), "named %s", p_menu->name);
-   spawnMenu(s);
+
+   spawnMenu("named __DESK_MENU");
 }
 
 void
@@ -1659,7 +1652,7 @@ PagersEventMouseDown(XEvent * ev)
 	    && (ev->xbutton.x < p->w) && (ev->xbutton.y < p->h))
 	  {
 	     PagerHideHi(p);
-	     PagerShowMenu(p, ev->xbutton.x, ev->xbutton.y);
+	     PagerMenuShow(p, ev->xbutton.x, ev->xbutton.y);
 	  }
      }
    else if ((int)ev->xbutton.button == mode.pager_win_button)

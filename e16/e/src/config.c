@@ -22,6 +22,7 @@
  */
 #define DECLARE_STRUCT_BUTTON
 #define DECLARE_STRUCT_ICONBOX
+#define DECLARE_STRUCT_MENU
 #include "E.h"
 #include "conf.h"
 #include <ctype.h>
@@ -895,13 +896,14 @@ Config_MenuStyle(FILE * ConfigFile)
 		  Alert(_("CONFIG: missing required data in \"%s\"\n"), s);
 	       }
 	  }
+
 	switch (i1)
 	  {
 	  case CONFIG_CLOSE:
 	     AddItem(ms, ms->name, 0, LIST_TYPE_MENU_STYLE);
 	     return;
 	  case CONFIG_CLASSNAME:
-	     ms = CreateMenuStyle();
+	     ms = MenuStyleCreate();
 	     if (ms->name)
 		Efree(ms->name);
 	     ms->name = duplicate(s2);
@@ -922,7 +924,6 @@ Config_MenuStyle(FILE * ConfigFile)
 		FindItem(s2, 0, LIST_FINDBY_NAME, LIST_TYPE_ICLASS);
 	     if (ms->item_iclass)
 		ms->item_iclass->ref_count++;
-
 	     break;
 	  case MENU_SUBMENU_ICLASS:
 	     ms->sub_iclass =
@@ -1018,7 +1019,7 @@ Config_Menu(FILE * ConfigFile)
 	  case CONFIG_CLOSE:
 	     if (m)
 	       {
-		  RealizeMenu(m);
+		  MenuRealize(m);
 		  AddItem(m, m->name, m->win, LIST_TYPE_MENU);
 	       }
 	     return;
@@ -1038,7 +1039,7 @@ Config_Menu(FILE * ConfigFile)
 		  if (ms)
 		    {
 		       AUDIO_PLAY("SOUND_SCANNING");
-		       m = CreateMenuFromDirectory(s2, ms, s5);
+		       m = MenuCreateFromDirectory(s2, ms, s5);
 		       ms->ref_count++;
 		    }
 	       }
@@ -1049,7 +1050,7 @@ Config_Menu(FILE * ConfigFile)
 		  ms = FindItem(s3, 0, LIST_FINDBY_NAME, LIST_TYPE_MENU_STYLE);
 		  if (ms)
 		    {
-		       m = CreateMenuFromGnome(s2, ms, s5);
+		       m = MenuCreateFromGnome(s2, ms, s5);
 		       ms->ref_count++;
 		    }
 	       }
@@ -1060,7 +1061,7 @@ Config_Menu(FILE * ConfigFile)
 		  ms = FindItem(s3, 0, LIST_FINDBY_NAME, LIST_TYPE_MENU_STYLE);
 		  if (ms)
 		    {
-		       m = CreateMenuFromBorders(s2, ms);
+		       m = MenuCreateFromBorders(s2, ms);
 		       ms->ref_count++;
 		    }
 	       }
@@ -1071,7 +1072,7 @@ Config_Menu(FILE * ConfigFile)
 		  ms = FindItem(s3, 0, LIST_FINDBY_NAME, LIST_TYPE_MENU_STYLE);
 		  if (ms)
 		    {
-		       m = CreateMenuFromThemes(s2, ms);
+		       m = MenuCreateFromThemes(s2, ms);
 		       ms->ref_count++;
 		    }
 	       }
@@ -1082,7 +1083,7 @@ Config_Menu(FILE * ConfigFile)
 		  ms = FindItem(s3, 0, LIST_FINDBY_NAME, LIST_TYPE_MENU_STYLE);
 		  if (ms)
 		    {
-		       m = CreateMenuFromFlatFile(s2, ms, s5, NULL);
+		       m = MenuCreateFromFlatFile(s2, ms, s5, NULL);
 		       ms->ref_count++;
 		    }
 	       }
@@ -1093,7 +1094,7 @@ Config_Menu(FILE * ConfigFile)
 		  ms = FindItem(s3, 0, LIST_FINDBY_NAME, LIST_TYPE_MENU_STYLE);
 		  if (ms)
 		    {
-		       m = CreateMenuFromAllEWins(s2, ms);
+		       m = MenuCreateFromAllEWins(s2, ms);
 		       ms->ref_count++;
 		    }
 	       }
@@ -1104,17 +1105,16 @@ Config_Menu(FILE * ConfigFile)
 		  ms = FindItem(s3, 0, LIST_FINDBY_NAME, LIST_TYPE_MENU_STYLE);
 		  if (ms)
 		    {
-		       m = CreateMenuFromDesktops(s2, ms);
+		       m = MenuCreateFromDesktops(s2, ms);
 		       ms->ref_count++;
 		    }
 	       }
 	     break;
 	  case CONFIG_CLASSNAME:
 	     if (!m)
-		m = CreateMenu();
-	     if (m->name)
-		Efree(m->name);
-	     m->name = duplicate(s2);
+		m = MenuCreate(s2);
+	     else
+		MenuAddName(m, s2);
 	     break;
 	  case MENU_USE_STYLE:
 	     {
@@ -1131,13 +1131,13 @@ Config_Menu(FILE * ConfigFile)
 	     break;
 	  case MENU_TITLE:
 	     if (m)
-		AddTitleToMenu(m, atword(s, 2));
+		MenuAddTitle(m, atword(s, 2));
 	     break;
 	  case MENU_ITEM:
 	     if ((txt) || (ic))
 	       {
-		  mi = CreateMenuItem(txt, ic, act, params, NULL);
-		  AddItemToMenu(m, mi);
+		  mi = MenuItemCreate(txt, ic, act, params, NULL);
+		  MenuAddItem(m, mi);
 	       }
 	     ic = NULL;
 	     if (txt)
@@ -1176,8 +1176,8 @@ Config_Menu(FILE * ConfigFile)
 		  if (ok)
 		    {
 		       params = atword(s, 3);
-		       mi = CreateMenuItem(txt, ic, act, params, NULL);
-		       AddItemToMenu(m, mi);
+		       mi = MenuItemCreate(txt, ic, act, params, NULL);
+		       MenuAddItem(m, mi);
 		    }
 		  ic = NULL;
 		  if (txt)
@@ -1194,8 +1194,8 @@ Config_Menu(FILE * ConfigFile)
 	     /* if submenu empty - dont put it in - only if menu found */
 	     if ((mm) && (mm->num > 0) && (mm->style))
 	       {
-		  mi = CreateMenuItem(atword(s, 4), ic, 0, NULL, mm);
-		  AddItemToMenu(m, mi);
+		  mi = MenuItemCreate(atword(s, 4), ic, 0, NULL, mm);
+		  MenuAddItem(m, mi);
 	       }
 	     break;
 	  default:

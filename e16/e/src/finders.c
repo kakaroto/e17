@@ -187,79 +187,27 @@ FindActionClass(Window win)
    EDBUG_RETURN(NULL);
 }
 
-Menu               *
-FindMenuItem(Window win, MenuItem ** mi)
-{
-   Menu               *menu;
-   Menu              **menus;
-   int                 i, j, num;
-
-   EDBUG(6, "FindMenuItem");
-
-   menus = (Menu **) ListItemType(&num, LIST_TYPE_MENU);
-   for (i = 0; i < num; i++)
-     {
-	for (j = 0; j < menus[i]->num; j++)
-	  {
-	     if ((win == menus[i]->items[j]->win)
-		 || (win == menus[i]->items[j]->icon_win))
-	       {
-		  *mi = menus[i]->items[j];
-		  menu = menus[i];
-		  Efree(menus);
-		  EDBUG_RETURN(menu);
-	       }
-	  }
-     }
-   if (menus)
-      Efree(menus);
-   EDBUG_RETURN(NULL);
-}
-
-Menu               *
-FindMenu(Window win)
-{
-   Menu               *menu;
-   Menu              **menus;
-   int                 i, num;
-
-   EDBUG(6, "FindMenu");
-   menus = (Menu **) ListItemType(&num, LIST_TYPE_MENU);
-   for (i = 0; i < num; i++)
-     {
-	if (menus[i]->win == win)
-	  {
-	     menu = menus[i];
-	     Efree(menus);
-	     EDBUG_RETURN(menu);
-	  }
-     }
-   if (menus)
-      Efree(menus);
-   EDBUG_RETURN(NULL);
-}
-
 EWin               *
 FindEwinByMenu(Menu * m)
 {
-   EWin               *ewin;
+   EWin               *ewin = NULL;
    EWin              **ewins;
    int                 i, num;
 
    EDBUG(6, "FindEwinByMenu");
+
    ewins = (EWin **) ListItemType(&num, LIST_TYPE_EWIN);
    for (i = 0; i < num; i++)
      {
-	if (ewins[i]->menu == m)
-	  {
-	     ewin = ewins[i];
-	     Efree(ewins);
-	     EDBUG_RETURN(ewin);
-	  }
+	if (ewins[i]->menu != m)
+	   continue;
+	ewin = ewins[i];
+	break;
      }
    if (ewins)
       Efree(ewins);
-   EDBUG_RETURN(NULL);
+
+   EDBUG_RETURN(ewin);
 }
 
 Group             **
@@ -507,27 +455,4 @@ FindADialog(void)
    if (ewins)
       Efree(ewins);
    EDBUG_RETURN(0);
-}
-
-EWin               *
-FindEwinSpawningMenu(Menu * m)
-{
-   EWin               *ewin;
-   EWin              **ewins;
-   int                 i, num;
-
-   EDBUG(6, "FindEwinSpawningMenu");
-   ewins = (EWin **) ListItemType(&num, LIST_TYPE_EWIN);
-   for (i = 0; i < num; i++)
-     {
-	if (ewins[i]->shownmenu == m->win)
-	  {
-	     ewin = ewins[i];
-	     Efree(ewins);
-	     EDBUG_RETURN(ewin);
-	  }
-     }
-   if (ewins)
-      Efree(ewins);
-   EDBUG_RETURN(NULL);
 }

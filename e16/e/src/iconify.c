@@ -2179,27 +2179,22 @@ IB_ShowMenu(Iconbox * ib, int x, int y)
    char                s[1024];
 
    if (p_menu)
-      DestroyMenu(p_menu);
-   p_menu = CreateMenu();
+      MenuDestroy(p_menu);
+   p_menu = MenuCreate("__IBOX_MENU");
 
-   AddTitleToMenu(p_menu, _("Iconbox Options"));
-   p_menu->name = duplicate("__IBOX_MENU");
-   p_menu->style =
-      FindItem("DEFAULT", 0, LIST_FINDBY_NAME, LIST_TYPE_MENU_STYLE);
+   MenuAddTitle(p_menu, _("Iconbox Options"));
+   MenuAddStyle(p_menu, "DEFAULT");
    Esnprintf(s, sizeof(s), "iconbox %s", ib->name);
-   mi = CreateMenuItem(_("This Iconbox Settings..."), NULL, ACTION_CONFIG, s,
+   mi = MenuItemCreate(_("This Iconbox Settings..."), NULL, ACTION_CONFIG, s,
 		       NULL);
-   AddItemToMenu(p_menu, mi);
-   mi = CreateMenuItem(_("Close Iconbox"), NULL, ACTION_KILL, NULL, NULL);
-   AddItemToMenu(p_menu, mi);
-   mi = CreateMenuItem(_("Create New Iconbox"), NULL, ACTION_CREATE_ICONBOX,
+   MenuAddItem(p_menu, mi);
+   mi = MenuItemCreate(_("Close Iconbox"), NULL, ACTION_KILL, NULL, NULL);
+   MenuAddItem(p_menu, mi);
+   mi = MenuItemCreate(_("Create New Iconbox"), NULL, ACTION_CREATE_ICONBOX,
 		       NULL, NULL);
-   AddItemToMenu(p_menu, mi);
-   AddItem(p_menu, p_menu->name, 0, LIST_TYPE_MENU);
-   Esnprintf(s, sizeof(s), "named %s", p_menu->name);
-   spawnMenu(s);
-   x = 0;
-   y = 0;
+   MenuAddItem(p_menu, mi);
+
+   spawnMenu("named __IBOX_MENU");
 }
 
 void

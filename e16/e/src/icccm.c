@@ -164,7 +164,7 @@ ICCCM_Delete(EWin * ewin)
 	XEvent              ev;
 
 	if (ewin->menu)
-	   HideMenu(ewin->menu);
+	   MenuHide(ewin->menu);
 	if (ewin->pager)
 	  {
 	     HideEwin(ewin);
