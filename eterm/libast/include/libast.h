@@ -66,6 +66,7 @@
 
 #include <netdb.h>
 #include <sys/socket.h>
+#include <sys/un.h>
 #include <arpa/inet.h>
 #include <netinet/ip.h>
 #include <netinet/tcp.h>
@@ -243,6 +244,8 @@
 
 #define DEBUG_OPTIONS          1
 #define D_OPTIONS(x)           DPRINTF1(x)
+#define DEBUG_OBJ              2
+#define D_OBJ(x)               DPRINTF2(x)
 #define DEBUG_CONF             3
 #define D_CONF(x)              DPRINTF3(x)
 #define DEBUG_MEM              5
@@ -623,7 +626,7 @@ extern GC libast_x_create_gc(const char *, unsigned long, Display *, Drawable, u
 extern void libast_x_free_gc(const char *, const char *, unsigned long, Display *, GC);
 extern void libast_dump_gc_tables(void);
 #endif
-extern void free_array(void **, size_t);
+extern void free_array(void *, size_t);
 
 /* file.c */
 extern int libast_temp_file(char *, size_t);

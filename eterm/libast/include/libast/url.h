@@ -43,10 +43,8 @@
 #define SPIF_URL_DUP(o)                  SPIF_OBJ_DUP(o)
 #define SPIF_URL_TYPE(o)                 SPIF_OBJ_TYPE(o)
 
-typedef struct spif_url_t_struct *spif_url_t;
-typedef struct spif_url_t_struct spif_const_url_t;
 
-struct spif_url_t_struct {
+SPIF_DEFINE_OBJ(url) {
     spif_const_str_t parent;
     spif_str_t proto;
     spif_str_t user, passwd;

@@ -30,10 +30,7 @@
 #define SPIF_ARRAY_ISNULL(o)                 (SPIF_ARRAY(o) == SPIF_NULL_TYPE(array))
 #define SPIF_OBJ_IS_ARRAY(o)                 (SPIF_OBJ_IS_TYPE((o), array))
 
-typedef struct spif_array_t_struct *spif_array_t;
-typedef struct spif_array_t_struct spif_const_array_t;
-
-struct spif_array_t_struct {
+SPIF_DEFINE_OBJ(array) {
   spif_obj_t parent;
   size_t len;
   spif_obj_t *items;

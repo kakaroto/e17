@@ -46,12 +46,9 @@
 
 #define SPIF_TOK_LIST(obj)           SPIF_LIST(SPIF_TOK(obj)->tokens)
 
-/* Types for the tokenizer object. */
-typedef struct spif_tok_t_struct *spif_tok_t;
-typedef struct spif_tok_t_struct spif_const_tok_t;
 
 /* An tok object is a string tokenizer */
-struct spif_tok_t_struct {
+SPIF_DEFINE_OBJ(tok) {
     spif_const_obj_t parent;
     spif_str_t src;
     spif_char_t quote, dquote, escape;

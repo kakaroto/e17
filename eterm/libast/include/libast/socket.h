@@ -49,21 +49,34 @@
 #define SPIF_SOCKET_TYPE(o)                 SPIF_OBJ_TYPE(o)
 
 /* Socket flags */
-#define SPIF_SOCKET_FLAGS_OPEN              (1UL << 0)
-#define SPIF_SOCKET_FLAGS_CONNECTED         (1UL << 1)
-#define SPIF_SOCKET_FLAGS_HAVE_INPUT        (1UL << 2)
-#define SPIF_SOCKET_FLAGS_HAVE_OUTPUT       (1UL << 3)
-
-typedef struct spif_socket_t_struct *spif_socket_t;
-typedef struct spif_socket_t_struct spif_const_socket_t;
+#define SPIF_SOCKET_FLAGS_FAMILY_INET       (1UL << 0)
+#define SPIF_SOCKET_FLAGS_FAMILY_UNIX       (1UL << 1)
+#define SPIF_SOCKET_FLAGS_FAMILY            (0x0f << 0)
+#define SPIF_SOCKET_FLAGS_TYPE_STREAM       (1UL << 4)
+#define SPIF_SOCKET_FLAGS_TYPE_DGRAM        (1UL << 5)
+#define SPIF_SOCKET_FLAGS_TYPE_RAW          (1UL << 6)
+#define SPIF_SOCKET_FLAGS_TYPE              (0x0f << 4)
+#define SPIF_SOCKET_FLAGS_LISTEN            (1UL << 8)
+#define SPIF_SOCKET_FLAGS_OPEN              (1UL << 9)
+#define SPIF_SOCKET_FLAGS_CONNECTED         (1UL << 10)
+#define SPIF_SOCKET_FLAGS_HAVE_INPUT        (1UL << 11)
+#define SPIF_SOCKET_FLAGS_HAVE_OUTPUT       (1UL << 12)
+#define SPIF_SOCKET_FLAGS(s)                (SPIF_SOCKET(s)->flags)
+#define SPIF_SOCKET_FLAGS_SET(s, b)         do {SPIF_SOCKET_FLAGS(s) |= (b);} while (0)
+#define SPIF_SOCKET_FLAGS_CLEAR(s, b)       do {SPIF_SOCKET_FLAGS(s) &= ~(b);} while (0)
+#define SPIF_SOCKET_FLAGS_IS_SET(s, b)      (SPIF_SOCKET_FLAGS(s) & (b))
 
 #include <libast/url.h>
 
-struct spif_socket_t_struct {
+SPIF_DEFINE_OBJ(socket) {
     spif_const_obj_t parent;
-    int fd;
-    spif_uint32_t flags;
+    spif_sockfd_t fd;
+    spif_sockfamily_t fam;
+    spif_socktype_t type;
+    spif_sockproto_t proto;
     spif_sockaddr_t addr;
+    spif_sockport_t port;
+    spif_uint32_t flags;
     spif_url_t src_url, dest_url;
     spif_str_t input, output;
 };
@@ -79,5 +92,6 @@ extern spif_str_t spif_socket_show(spif_socket_t, spif_charptr_t, spif_str_t, si
 extern spif_cmp_t spif_socket_comp(spif_socket_t, spif_socket_t);
 extern spif_socket_t spif_socket_dup(spif_socket_t);
 extern spif_classname_t spif_socket_type(spif_socket_t);
+extern spif_bool_t spif_socket_open(spif_socket_t);
 
 #endif /* _LIBAST_SOCKET_H_ */

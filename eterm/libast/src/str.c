@@ -32,10 +32,10 @@ static const char cvs_ident[] = "$Id$";
 /* *INDENT-OFF* */
 static spif_const_class_t s_class = {
     SPIF_DECL_CLASSNAME(str),
-    (spif_newfunc_t) spif_str_new,
-    (spif_memberfunc_t) spif_str_init,
-    (spif_memberfunc_t) spif_str_done,
-    (spif_memberfunc_t) spif_str_del,
+    (spif_func_t) spif_str_new,
+    (spif_func_t) spif_str_init,
+    (spif_func_t) spif_str_done,
+    (spif_func_t) spif_str_del,
     (spif_func_t) spif_str_show,
     (spif_func_t) spif_str_cmp,
     (spif_func_t) spif_str_dup,
@@ -411,6 +411,7 @@ spif_str_splice(spif_str_t self, size_t idx, size_t cnt, spif_str_t other)
     }
     self->len = newsize - 1;
     memcpy(self->s, tmp, newsize);
+    FREE(tmp);
     return TRUE;
 }
 
@@ -436,6 +437,7 @@ spif_str_splice_from_ptr(spif_str_t self, size_t idx, size_t cnt, spif_charptr_t
     }
     self->len = newsize - 1;
     memcpy(self->s, tmp, newsize);
+    FREE(tmp);
     return TRUE;
 }
 
@@ -496,13 +498,15 @@ spif_str_show(spif_str_t self, spif_charptr_t name, spif_str_t buff, size_t inde
 {
     char tmp[4096];
 
-    memset(tmp, ' ', indent);
     if (SPIF_STR_ISNULL(self)) {
-        snprintf(tmp + indent, sizeof(tmp) - indent, "(spif_str_t) %s:  " SPIF_NULLSTR_TYPE(str) "\n", NONULL(name));
-    } else {
-        snprintf(tmp + indent, sizeof(tmp) - indent, "(spif_str_t) %s:  { \"%s\", len %lu, size %lu }\n",
-                 name, self->s, (unsigned long) self->len, (unsigned long) self->mem);
+        SPIF_OBJ_SHOW_NULL("str", name, buff, indent);
+        return buff;
     }
+
+    memset(tmp, ' ', indent);
+    snprintf(tmp + indent, sizeof(tmp) - indent, "(spif_str_t) %s:  { \"%s\", len %lu, size %lu }\n",
+             name, self->s, (unsigned long) self->len, (unsigned long) self->mem);
+
     if (SPIF_STR_ISNULL(buff)) {
         buff = spif_str_new_from_ptr(tmp);
     } else {

@@ -67,26 +67,24 @@
 #define SPIF_LIST_TO_ARRAY(o)                           SPIF_CAST_PTR(obj) ((SPIF_LIST_CALL_METHOD((o), to_array))(o))
 
 typedef spif_obj_t spif_list_t;
-typedef struct spif_listclass_t_struct *spif_listclass_t;
-typedef struct spif_listclass_t_struct spif_const_listclass_t;
 
-struct spif_listclass_t_struct {
+SPIF_DEFINE_OBJ(listclass) {
   spif_const_class_t parent;
 
-  spif_memberfunc_t append;
-  spif_memberfunc_t contains;
-  spif_memberfunc_t count;
-  spif_memberfunc_t get;
-  spif_memberfunc_t index;
-  spif_memberfunc_t insert;
-  spif_memberfunc_t insert_at;
-  spif_memberfunc_t iterator;
-  spif_memberfunc_t next;
-  spif_memberfunc_t prepend;
-  spif_memberfunc_t remove;
-  spif_memberfunc_t remove_at;
-  spif_memberfunc_t reverse;
-  spif_memberfunc_t to_array;
+  spif_func_t append;
+  spif_func_t contains;
+  spif_func_t count;
+  spif_func_t get;
+  spif_func_t index;
+  spif_func_t insert;
+  spif_func_t insert_at;
+  spif_func_t iterator;
+  spif_func_t next;
+  spif_func_t prepend;
+  spif_func_t remove;
+  spif_func_t remove_at;
+  spif_func_t reverse;
+  spif_func_t to_array;
 };
 
 #endif /* _LIBAST_LIST_IF_H_ */

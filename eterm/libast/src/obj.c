@@ -32,10 +32,10 @@ static const char cvs_ident[] = "$Id$";
 /* *INDENT-OFF* */
 static spif_const_class_t o_class = {
     SPIF_DECL_CLASSNAME(obj),
-    (spif_newfunc_t) spif_obj_new,
-    (spif_memberfunc_t) spif_obj_init,
-    (spif_memberfunc_t) spif_obj_done,
-    (spif_memberfunc_t) spif_obj_del,
+    (spif_func_t) spif_obj_new,
+    (spif_func_t) spif_obj_init,
+    (spif_func_t) spif_obj_done,
+    (spif_func_t) spif_obj_del,
     (spif_func_t) spif_obj_show,
     (spif_func_t) spif_obj_comp,
     (spif_func_t) spif_obj_dup,
@@ -127,6 +127,11 @@ spif_str_t
 spif_obj_show(spif_obj_t self, spif_charptr_t name, spif_str_t buff, size_t indent)
 {
     char tmp[4096];
+
+    if (SPIF_OBJ_ISNULL(self)) {
+        SPIF_OBJ_SHOW_NULL("obj", name, buff, indent);
+        return buff;
+    }
 
     memset(tmp, ' ', indent);
     snprintf(tmp + indent, sizeof(tmp) - indent, "(spif_obj_t) %s:  (spif_obj_t) { \"%s\" }\n", name, SPIF_OBJ_CLASSNAME(self));

@@ -43,14 +43,7 @@
 #define SPIF_STR_DUP(obj)            SPIF_OBJ_DUP(obj)
 #define SPIF_STR_TYPE(obj)           SPIF_OBJ_TYPE(obj)
 
-
-
-/* Types for the string object. */
-typedef struct spif_str_t_struct *spif_str_t;
-typedef struct spif_str_t_struct spif_const_str_t;
-
-/* An str object stores a string (obviously) */
-struct spif_str_t_struct {
+SPIF_DEFINE_OBJ(str) {
   spif_const_obj_t parent;
   spif_charptr_t s;
   size_t mem, len;

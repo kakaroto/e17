@@ -32,10 +32,10 @@ static const char cvs_ident[] = "$Id$";
 /* *INDENT-OFF* */
 static spif_const_class_t u_class = {
     SPIF_DECL_CLASSNAME(url),
-    (spif_newfunc_t) spif_url_new,
-    (spif_memberfunc_t) spif_url_init,
-    (spif_memberfunc_t) spif_url_done,
-    (spif_memberfunc_t) spif_url_del,
+    (spif_func_t) spif_url_new,
+    (spif_func_t) spif_url_init,
+    (spif_func_t) spif_url_done,
+    (spif_func_t) spif_url_del,
     (spif_func_t) spif_url_show,
     (spif_func_t) spif_url_comp,
     (spif_func_t) spif_url_dup,
@@ -135,31 +135,31 @@ spif_bool_t
 spif_url_done(spif_url_t self)
 {
     if (!SPIF_STR_ISNULL(self->proto)) {
-        spif_str_done(self->proto);
+        spif_str_del(self->proto);
         self->proto = SPIF_NULL_TYPE(str);
     }
     if (!SPIF_STR_ISNULL(self->user)) {
-        spif_str_done(self->user);
+        spif_str_del(self->user);
         self->user = SPIF_NULL_TYPE(str);
     }
     if (!SPIF_STR_ISNULL(self->passwd)) {
-        spif_str_done(self->passwd);
+        spif_str_del(self->passwd);
         self->passwd = SPIF_NULL_TYPE(str);
     }
     if (!SPIF_STR_ISNULL(self->host)) {
-        spif_str_done(self->host);
+        spif_str_del(self->host);
         self->host = SPIF_NULL_TYPE(str);
     }
     if (!SPIF_STR_ISNULL(self->port)) {
-        spif_str_done(self->port);
+        spif_str_del(self->port);
         self->port = SPIF_NULL_TYPE(str);
     }
     if (!SPIF_STR_ISNULL(self->path)) {
-        spif_str_done(self->path);
+        spif_str_del(self->path);
         self->path = SPIF_NULL_TYPE(str);
     }
     if (!SPIF_STR_ISNULL(self->query)) {
-        spif_str_done(self->query);
+        spif_str_del(self->query);
         self->query = SPIF_NULL_TYPE(str);
     }
     spif_str_done(SPIF_STR(self));
@@ -170,6 +170,11 @@ spif_str_t
 spif_url_show(spif_url_t self, spif_charptr_t name, spif_str_t buff, size_t indent)
 {
     char tmp[4096];
+
+    if (SPIF_URL_ISNULL(self)) {
+        SPIF_OBJ_SHOW_NULL("url", name, buff, indent);
+        return buff;
+    }
 
     memset(tmp, ' ', indent);
     snprintf(tmp + indent, sizeof(tmp) - indent, "(spif_url_t) %s:  {\n", name);

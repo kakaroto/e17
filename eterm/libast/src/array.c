@@ -56,29 +56,29 @@ static spif_obj_t *spif_array_to_array(spif_array_t);
 static spif_const_listclass_t a_class = {
     {
         SPIF_DECL_CLASSNAME(array),
-        (spif_newfunc_t) spif_array_new,
-        (spif_memberfunc_t) spif_array_init,
-        (spif_memberfunc_t) spif_array_done,
-        (spif_memberfunc_t) spif_array_del,
+        (spif_func_t) spif_array_new,
+        (spif_func_t) spif_array_init,
+        (spif_func_t) spif_array_done,
+        (spif_func_t) spif_array_del,
         (spif_func_t) spif_array_show,
         (spif_func_t) spif_array_comp,
         (spif_func_t) spif_array_dup,
         (spif_func_t) spif_array_type
     },
-    (spif_memberfunc_t) spif_array_append,
-    (spif_memberfunc_t) spif_array_contains,
-    (spif_memberfunc_t) spif_array_count,
-    (spif_memberfunc_t) spif_array_get,
-    (spif_memberfunc_t) spif_array_index,
-    (spif_memberfunc_t) spif_array_insert,
-    (spif_memberfunc_t) spif_array_insert_at,
-    (spif_memberfunc_t) spif_array_iterator,
-    (spif_memberfunc_t) spif_array_next,
-    (spif_memberfunc_t) spif_array_prepend,
-    (spif_memberfunc_t) spif_array_remove,
-    (spif_memberfunc_t) spif_array_remove_at,
-    (spif_memberfunc_t) spif_array_reverse,
-    (spif_memberfunc_t) spif_array_to_array
+    (spif_func_t) spif_array_append,
+    (spif_func_t) spif_array_contains,
+    (spif_func_t) spif_array_count,
+    (spif_func_t) spif_array_get,
+    (spif_func_t) spif_array_index,
+    (spif_func_t) spif_array_insert,
+    (spif_func_t) spif_array_insert_at,
+    (spif_func_t) spif_array_iterator,
+    (spif_func_t) spif_array_next,
+    (spif_func_t) spif_array_prepend,
+    (spif_func_t) spif_array_remove,
+    (spif_func_t) spif_array_remove_at,
+    (spif_func_t) spif_array_reverse,
+    (spif_func_t) spif_array_to_array
 };
 spif_listclass_t SPIF_CLASS_VAR(array) = &a_class;
 /* *INDENT-ON* */
@@ -109,12 +109,12 @@ spif_array_done(spif_array_t self)
     size_t i;
 
     for (i = 0; i < self->len; i++) {
-        if (self->items[i]) {
+        if (!SPIF_OBJ_ISNULL(self->items[i])) {
             SPIF_OBJ_DEL(self->items[i]);
         }
     }
     self->len = 0;
-    self->items = SPIF_NULL_CTYPE(spif_obj_t *);
+    FREE(self->items);
     return TRUE;
 }
 

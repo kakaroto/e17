@@ -31,19 +31,13 @@
 #define SPIF_DLINKED_LIST_ITEM_ISNULL(o)            (SPIF_DLINKED_LIST_ITEM(o) == SPIF_NULL_TYPE(dlinked_list_item))
 #define SPIF_OBJ_IS_DLINKED_LIST_ITEM(o)            (SPIF_OBJ_IS_TYPE((o), dlinked_list_item))
 
-typedef struct spif_dlinked_list_item_t_struct *spif_dlinked_list_item_t;
-typedef struct spif_dlinked_list_item_t_struct spif_const_dlinked_list_item_t;
-
-struct spif_dlinked_list_item_t_struct {
+SPIF_DEFINE_OBJ(dlinked_list_item) {
     spif_nullobj_t parent;
     spif_obj_t data;
     spif_dlinked_list_item_t prev, next;
 };
 
-typedef struct spif_dlinked_list_t_struct *spif_dlinked_list_t;
-typedef struct spif_dlinked_list_t_struct spif_const_dlinked_list_t;
-
-struct spif_dlinked_list_t_struct {
+SPIF_DEFINE_OBJ(dlinked_list) {
   spif_obj_t parent;
   size_t len;
   spif_dlinked_list_item_t head, tail;

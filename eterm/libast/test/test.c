@@ -79,6 +79,7 @@ test_macros(void)
 int
 test_mem(void)
 {
+    memrec_init();
 
     return 0;
 }
@@ -145,9 +146,11 @@ test_strings(void)
     TEST_FAIL_IF(regexp_match("/the/path/to/some/odd/file.txt", "/this/should/not/match"));
     TEST_FAIL_IF(!regexp_match("1600x1200", "[[:digit:]]+x[[:digit:]]+"));
     TEST_FAIL_IF(regexp_match("xxx", NULL));
+    regexp_match(NULL, NULL);
     TEST_FAIL_IF(!regexp_match_r("AbCdEfGhIjKlMnOpQrStUvWxYz", "[[:upper:]]", &r));
     TEST_FAIL_IF(regexp_match_r("abcdefjhijklmnopqrstuvwxyz", NULL, &r));
     TEST_FAIL_IF(!regexp_match_r("aaaaa", "[[:lower:]]", &r));
+    FREE(r);
     TEST_PASS();
 #endif
 
@@ -160,6 +163,8 @@ test_strings(void)
     TEST_FAIL_IF(strcmp(slist[2], "string"));
     TEST_FAIL_IF(strcmp(slist[3], "on"));
     TEST_FAIL_IF(strcmp(slist[4], "spaces"));
+    free_array(SPIF_CAST(ptr) slist, 5);
+
     slist = split(NULL, "          a\t \ta        a a a a       a     ");
     TEST_FAIL_IF(!slist);
     TEST_FAIL_IF(!slist[0] || !slist[1] || !slist[2] || !slist[3] || !slist[4] || !slist[5] || !slist[6] || slist[7]);
@@ -170,6 +175,8 @@ test_strings(void)
     TEST_FAIL_IF(strcmp(slist[4], "a"));
     TEST_FAIL_IF(strcmp(slist[5], "a"));
     TEST_FAIL_IF(strcmp(slist[6], "a"));
+    free_array(SPIF_CAST(ptr) slist, 7);
+
     slist = split(NULL, "  first \"just the second\" third \'fourth and \'\"fifth to\"gether last");
     TEST_FAIL_IF(!slist);
     TEST_FAIL_IF(!slist[0] || !slist[1] || !slist[2] || !slist[3] || !slist[4] || slist[5]);
@@ -178,6 +185,8 @@ test_strings(void)
     TEST_FAIL_IF(strcmp(slist[2], "third"));
     TEST_FAIL_IF(strcmp(slist[3], "fourth and fifth together"));
     TEST_FAIL_IF(strcmp(slist[4], "last"));
+    free_array(SPIF_CAST(ptr) slist, 5);
+
     slist = split(NULL, "\'don\\\'t\' try this    at home \"\" ");
     TEST_FAIL_IF(!slist);
     TEST_FAIL_IF(!slist[0] || !slist[1] || !slist[2] || !slist[3] || !slist[4] || !slist[5] || slist[6]);
@@ -187,6 +196,8 @@ test_strings(void)
     TEST_FAIL_IF(strcmp(slist[3], "at"));
     TEST_FAIL_IF(strcmp(slist[4], "home"));
     TEST_FAIL_IF(slist[5][0]);
+    free_array(SPIF_CAST(ptr) slist, 6);
+
     slist = split(":", "A:B:C:D:::E");
     TEST_FAIL_IF(!slist);
     TEST_FAIL_IF(!slist[0] || !slist[1] || !slist[2] || !slist[3] || !slist[4] || slist[5]);
@@ -195,6 +206,7 @@ test_strings(void)
     TEST_FAIL_IF(strcmp(slist[2], "C"));
     TEST_FAIL_IF(strcmp(slist[3], "D"));
     TEST_FAIL_IF(strcmp(slist[4], "E"));
+    free_array(SPIF_CAST(ptr) slist, 5);
     TEST_PASS();
 
     TEST_PASSED("string");
@@ -266,6 +278,8 @@ test_options(void)
     TEST_FAIL_IF(exec_list == NULL);
     TEST_FAIL_IF(num_var != 1);
     TEST_FAIL_IF(geom_var != 3);
+    FREE(file_var);
+    free_array(exec_list, -1);
 
     SPIFOPT_FLAGS_CLEAR(SPIFOPT_SETTING_POSTPARSE);
     SPIFOPT_OPTLIST_SET(opts2);
@@ -297,6 +311,11 @@ test_options(void)
     TEST_FAIL_IF(foo[3] != NULL);
     TEST_FAIL_IF(color != 4);
     TEST_FAIL_IF(options != 0x1e);
+    FREE(display);
+    FREE(name);
+    FREE(theme);
+    free_array(exec, -1);
+    free_array(foo, -1);
 
     TEST_PASS();
 
@@ -749,7 +768,7 @@ test_list(void)
 {
     unsigned short i;
     spif_list_t testlist;
-    spif_str_t s;
+    spif_str_t s, s2;
 
     for (i = 0; i < 3; i++) {
         if (i == 0) {
@@ -876,10 +895,14 @@ test_list(void)
 
         TEST_BEGIN("SPIF_LIST_REMOVE() macro");
         s = spif_str_new_from_ptr("MOO");
-        TEST_FAIL_IF(SPIF_OBJ_ISNULL(SPIF_LIST_REMOVE(testlist, s)));
+        s2 = SPIF_LIST_REMOVE(testlist, s);
+        TEST_FAIL_IF(SPIF_OBJ_ISNULL(s2));
+        spif_str_del(s2);
         spif_str_done(s);
         spif_str_init_from_ptr(s, "GRIN");
-        TEST_FAIL_IF(SPIF_OBJ_ISNULL(SPIF_LIST_REMOVE(testlist, s)));
+        s2 = SPIF_LIST_REMOVE(testlist, s);
+        TEST_FAIL_IF(SPIF_OBJ_ISNULL(s2));
+        spif_str_del(s2);
         spif_str_del(s);
 
         s = spif_str_new_from_ptr("0");
@@ -900,8 +923,10 @@ test_list(void)
         TEST_PASS();
 
         TEST_BEGIN("SPIF_LIST_REMOVE_AT() macro");
-        SPIF_LIST_REMOVE_AT(testlist, 6);
-        SPIF_LIST_REMOVE_AT(testlist, 3);
+        s2 = SPIF_LIST_REMOVE_AT(testlist, 6);
+        spif_str_del(s2);
+        s2 = SPIF_LIST_REMOVE_AT(testlist, 3);
+        spif_str_del(s2);
 
         s = spif_str_new_from_ptr("0");
         TEST_FAIL_IF(SPIF_LIST_INDEX(testlist, s) != 0);
@@ -924,8 +949,8 @@ test_list(void)
         TEST_PASS();
 
         /*SPIF_SHOW(testlist, stdout);*/
+        SPIF_LIST_DEL(testlist);
     }
-
 
     TEST_PASSED("list interface class");
     return 0;
@@ -938,6 +963,8 @@ main(int argc, char *argv[])
 
     USE_VAR(argc);
     USE_VAR(argv);
+
+    DEBUG_LEVEL = 0;
 
     if ((ret = test_macros()) != 0) {
         return ret;
@@ -971,5 +998,7 @@ main(int argc, char *argv[])
     }
 
     printf("All tests passed.\n\n");
+
+    /*MALLOC_DUMP();*/
     return 0;
 }

@@ -32,10 +32,10 @@ static const char cvs_ident[] = "$Id$";
 /* *INDENT-OFF* */
 static spif_const_class_t t_class = {
     SPIF_DECL_CLASSNAME(tok),
-    (spif_newfunc_t) spif_tok_new,
-    (spif_memberfunc_t) spif_tok_init,
-    (spif_memberfunc_t) spif_tok_done,
-    (spif_memberfunc_t) spif_tok_del,
+    (spif_func_t) spif_tok_new,
+    (spif_func_t) spif_tok_init,
+    (spif_func_t) spif_tok_done,
+    (spif_func_t) spif_tok_del,
     (spif_func_t) spif_tok_show,
     (spif_func_t) spif_tok_comp,
     (spif_func_t) spif_tok_dup,
@@ -244,6 +244,11 @@ spif_str_t
 spif_tok_show(spif_tok_t self, spif_charptr_t name, spif_str_t buff, size_t indent)
 {
     char tmp[4096];
+
+    if (SPIF_TOK_ISNULL(self)) {
+        SPIF_OBJ_SHOW_NULL("tok", name, buff, indent);
+        return buff;
+    }
 
     memset(tmp, ' ', indent);
     snprintf(tmp + indent, sizeof(tmp) - indent, "(spif_tok_t) %s:  {\n", name);

@@ -24,42 +24,14 @@
 #ifndef _LIBAST_OBJ_H_
 #define _LIBAST_OBJ_H_
 
+
 /*
  * Generic macro goop
  */
 
-/* Macros to construct object types from the basenames of the types (obj, str, etc.) */
-#define SPIF_TYPE(type)                  spif_ ## type ## _t
-#define SPIF_CONST_TYPE(type)            spif_const_ ## type ## _t
-
-/* Macros to allocate and deallocate memory for an object.  For use only in
-   object constructors/destructors, not in end-user programs. */
-#define SPIF_ALLOC(type)                 SPIF_CAST(type) MALLOC(SPIF_SIZEOF_TYPE(type))
-#define SPIF_DEALLOC(obj)                FREE(obj)
-
-/* Macros for specifying the classname variables for each class type.  Each subclass of
-   spif_obj_t must define this variable using these macros. */
-#define SPIF_DECL_CLASSNAME(type)        "!spif_" #type "_t!"
-
-/* Typecast macros */
-#define SPIF_CAST_C(type)                (type)
-#define SPIF_CONST_CAST_C(type)          (const type)
-#define SPIF_CAST(type)                  (SPIF_TYPE(type))
-#define SPIF_CONST_CAST(type)            (const SPIF_TYPE(type))
-#define SPIF_CAST_PTR(type)              (SPIF_TYPE(type) *)
-#define SPIF_CONST_CAST_PTR(type)        (const SPIF_TYPE(type) *)
-
-/* Cast the NULL pointer to a particular object type. */
-#define SPIF_NULL_TYPE(type)             (SPIF_CAST(type) (NULL))
-#define SPIF_NULL_CTYPE(type)            (SPIF_CAST_C(type) (NULL))
-
-/* Converts a type (such as "obj") to a string denoting a NULL object of that type. */
-#define SPIF_NULLSTR_TYPE(type)          "{ ((spif_" #type "_t) NULL) }"
-#define SPIF_NULLSTR_CTYPE(type)         "{ ((" #type ") NULL) }"
-
-/* Our own version of the sizeof() operator since objects are actually pointers. */
-#define SPIF_SIZEOF_TYPE(type)           (sizeof(SPIF_CONST_TYPE(type)))
-
+/* Convenience macros for declaring object structures and types. */
+#define SPIF_DECL_OBJ_STRUCT(t)          struct spif_ ## t ## _t_struct
+#define SPIF_DEFINE_OBJ(t)               SPIF_DEFINE_TYPE(t, SPIF_DECL_OBJ_STRUCT(t)); SPIF_DECL_OBJ_STRUCT(t)
 
 /* Cast an arbitrary object pointer to a pointer to a nullobj.  Coincidentally,
    a nullobj *is* an arbitrary object pointer.  Even moreso than an obj. :-) */
@@ -121,53 +93,51 @@
                                            spif_str_del(tmp__); \
                                          } while (0)
 
+#define SPIF_OBJ_SHOW_NULL(t, n, b, i)   do { \
+                                           memset(tmp, ' ', (i)); \
+                                           snprintf(tmp + (i), sizeof(tmp) - (i), "(spif_" #t "_t) %s:  " \
+                                                     SPIF_NULLSTR_TYPE(t) "\n", NONULL(n)); \
+                                           if (SPIF_STR_ISNULL(b)) { \
+                                             (b) = spif_str_new_from_ptr(tmp); \
+                                           } else { \
+                                             spif_str_append_from_ptr((b), tmp); \
+                                           } \
+                                         } while (0)
 
-
-/* Types for null objects */
-typedef struct spif_nullobj_t_struct *spif_nullobj_t;
-typedef struct spif_nullobj_t_struct spif_const_nullobj_t;
-
-/* An obj is the most basic object type.  It contains simply a pointer to
-   the class name (a const char * so you can test it with ==). */
-typedef struct spif_obj_t_struct *spif_obj_t;
-typedef struct spif_obj_t_struct spif_const_obj_t;
 
 /* The type for the classname variables.  I don't see any reason why this
    would be anything but a const char *, but you never know.  :-) */
 typedef const char *spif_classname_t;
 
-/* The class contains the function pointers for the generic object functions. */
-typedef struct spif_class_t_struct *spif_class_t;
-typedef struct spif_class_t_struct spif_const_class_t;
-
-/* Generic function pointers. */
-typedef spif_obj_t (*spif_newfunc_t)(void);
-typedef spif_bool_t (*spif_memberfunc_t)(spif_obj_t, ...);
+/* Generic function pointer. */
 typedef void * (*spif_func_t)();
-
-
 
 /* A nullobj contains...well, nothing.  Any class that is really small and/or
    needs to be very memory-efficient should be derived from this class. */
-struct spif_nullobj_t_struct {
+SPIF_DEFINE_OBJ(nullobj) {
 };
 
-struct spif_class_t_struct {
+/* The class contains the function pointers for the generic object functions. */
+SPIF_DEFINE_OBJ(class) {
   spif_classname_t classname;
 
-  spif_newfunc_t noo;  /* FIXME:  Do we really need this? */
-  spif_memberfunc_t init;
-  spif_memberfunc_t done;
-  spif_memberfunc_t del;
+  spif_func_t noo;  /* FIXME:  Do we really need this? */
+  spif_func_t init;
+  spif_func_t done;
+  spif_func_t del;
   spif_func_t show;
   spif_func_t comp;
   spif_func_t dup;
   spif_func_t type;
 };
 
-struct spif_obj_t_struct {
+/* An obj is the most basic object type.  It contains simply a pointer to
+   the class name (a const char * so you can test it with ==). */
+SPIF_DEFINE_OBJ(obj) {
   spif_class_t cls;
 };
+
+
 
 /* We need typedef's from here... */
 #include <libast/str.h>

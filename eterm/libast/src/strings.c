@@ -149,11 +149,12 @@ regexp_match(register const char *str, register const char *pattern)
     register int result;
     char errbuf[256];
 
-    if (!rexp) {
+    if (!str) {
+        FREE(rexp);
+        return FALSE;
+    } else if (!rexp) {
         rexp = (regex_t *) MALLOC(sizeof(regex_t));
     }
-
-    REQUIRE_RVAL(str != NULL, FALSE);
 
     if (pattern) {
         if ((result = regcomp(rexp, pattern, REG_EXTENDED)) != 0) {

@@ -66,10 +66,10 @@ static spif_obj_t *spif_dlinked_list_to_array(spif_dlinked_list_t);
 /* *INDENT-OFF* */
 static spif_const_class_t dli_class = {
     SPIF_DECL_CLASSNAME(dlinked_list_item),
-    (spif_newfunc_t) spif_dlinked_list_item_new,
-    (spif_memberfunc_t) spif_dlinked_list_item_init,
-    (spif_memberfunc_t) spif_dlinked_list_item_done,
-    (spif_memberfunc_t) spif_dlinked_list_item_del,
+    (spif_func_t) spif_dlinked_list_item_new,
+    (spif_func_t) spif_dlinked_list_item_init,
+    (spif_func_t) spif_dlinked_list_item_done,
+    (spif_func_t) spif_dlinked_list_item_del,
     (spif_func_t) spif_dlinked_list_item_show,
     (spif_func_t) spif_dlinked_list_item_comp,
     (spif_func_t) spif_dlinked_list_item_dup,
@@ -80,29 +80,29 @@ spif_class_t SPIF_CLASS_VAR(dlinked_list_item) = &dli_class;
 static spif_const_listclass_t dl_class = {
     {
         SPIF_DECL_CLASSNAME(dlinked_list),
-        (spif_newfunc_t) spif_dlinked_list_new,
-        (spif_memberfunc_t) spif_dlinked_list_init,
-        (spif_memberfunc_t) spif_dlinked_list_done,
-        (spif_memberfunc_t) spif_dlinked_list_del,
+        (spif_func_t) spif_dlinked_list_new,
+        (spif_func_t) spif_dlinked_list_init,
+        (spif_func_t) spif_dlinked_list_done,
+        (spif_func_t) spif_dlinked_list_del,
         (spif_func_t) spif_dlinked_list_show,
         (spif_func_t) spif_dlinked_list_comp,
         (spif_func_t) spif_dlinked_list_dup,
         (spif_func_t) spif_dlinked_list_type
     },
-    (spif_memberfunc_t) spif_dlinked_list_append,
-    (spif_memberfunc_t) spif_dlinked_list_contains,
-    (spif_memberfunc_t) spif_dlinked_list_count,
-    (spif_memberfunc_t) spif_dlinked_list_get,
-    (spif_memberfunc_t) spif_dlinked_list_index,
-    (spif_memberfunc_t) spif_dlinked_list_insert,
-    (spif_memberfunc_t) spif_dlinked_list_insert_at,
-    (spif_memberfunc_t) spif_dlinked_list_iterator,
-    (spif_memberfunc_t) spif_dlinked_list_next,
-    (spif_memberfunc_t) spif_dlinked_list_prepend,
-    (spif_memberfunc_t) spif_dlinked_list_remove,
-    (spif_memberfunc_t) spif_dlinked_list_remove_at,
-    (spif_memberfunc_t) spif_dlinked_list_reverse,
-    (spif_memberfunc_t) spif_dlinked_list_to_array
+    (spif_func_t) spif_dlinked_list_append,
+    (spif_func_t) spif_dlinked_list_contains,
+    (spif_func_t) spif_dlinked_list_count,
+    (spif_func_t) spif_dlinked_list_get,
+    (spif_func_t) spif_dlinked_list_index,
+    (spif_func_t) spif_dlinked_list_insert,
+    (spif_func_t) spif_dlinked_list_insert_at,
+    (spif_func_t) spif_dlinked_list_iterator,
+    (spif_func_t) spif_dlinked_list_next,
+    (spif_func_t) spif_dlinked_list_prepend,
+    (spif_func_t) spif_dlinked_list_remove,
+    (spif_func_t) spif_dlinked_list_remove_at,
+    (spif_func_t) spif_dlinked_list_reverse,
+    (spif_func_t) spif_dlinked_list_to_array
 };
 spif_listclass_t SPIF_CLASS_VAR(dlinked_list) = &dl_class;
 /* *INDENT-ON* */

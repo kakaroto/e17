@@ -24,6 +24,43 @@
 #ifndef _LIBAST_TYPES_H_
 #define _LIBAST_TYPES_H_
 
+/* Macros to construct object types from the basenames of the types (obj, str, etc.) */
+#define SPIF_TYPE(type)                  spif_ ## type ## _t
+#define SPIF_CONST_TYPE(type)            spif_const_ ## type ## _t
+
+/* Macros to allocate and deallocate memory for an object.  For use only in
+   object constructors/destructors, not in end-user programs. */
+#define SPIF_ALLOC(type)                 SPIF_CAST(type) MALLOC(SPIF_SIZEOF_TYPE(type))
+#define SPIF_DEALLOC(obj)                FREE(obj)
+
+/* Macros for specifying the classname variables for each class type.  Each subclass of
+   spif_obj_t must define this variable using these macros. */
+#define SPIF_DECL_CLASSNAME(type)        "!spif_" #type "_t!"
+
+/* Typecast macros */
+#define SPIF_CAST_C(type)                (type)
+#define SPIF_CONST_CAST_C(type)          (const type)
+#define SPIF_CAST(type)                  (SPIF_TYPE(type))
+#define SPIF_CONST_CAST(type)            (const SPIF_TYPE(type))
+#define SPIF_CAST_PTR(type)              (SPIF_TYPE(type) *)
+#define SPIF_CONST_CAST_PTR(type)        (const SPIF_TYPE(type) *)
+
+/* Cast the NULL pointer to a particular object type. */
+#define SPIF_NULL_TYPE(type)             (SPIF_CAST(type) (NULL))
+#define SPIF_NULL_CTYPE(type)            (SPIF_CAST_C(type) (NULL))
+
+/* Converts a type (such as "obj") to a string denoting a NULL object of that type. */
+#define SPIF_NULLSTR_TYPE(type)          "{ ((spif_" #type "_t) NULL) }"
+#define SPIF_NULLSTR_CTYPE(type)         "{ ((" #type ") NULL) }"
+
+/* Our own version of the sizeof() operator since objects are actually pointers. */
+#define SPIF_SIZEOF_TYPE(type)           (sizeof(SPIF_CONST_TYPE(type)))
+
+/* Make typedef's easier. */
+#define SPIF_DEFINE_TYPE(t, u) \
+typedef u SPIF_CONST_TYPE(t); \
+typedef SPIF_CONST_TYPE(t) * SPIF_TYPE(t)
+
 /* Integer types that are guaranteed to be there and to work...more or less. :) */
 typedef signed   @INT_8_TYPE@  spif_int8_t;
 typedef unsigned @INT_8_TYPE@  spif_uint8_t;
@@ -47,10 +84,18 @@ typedef unsigned long spif_ulong_t;
 typedef spif_char_t *spif_charptr_t;
 
 /* Socket types */
-typedef struct sockaddr *spif_sockaddr_t;
-typedef struct sockaddr_in *spif_ipsockaddr_t;
-typedef struct in_addr *spif_ipaddr_t;
-typedef struct hostent *spif_hostinfo_t;
+SPIF_DEFINE_TYPE(sockaddr, struct sockaddr);
+SPIF_DEFINE_TYPE(ipsockaddr, struct sockaddr_in);
+SPIF_DEFINE_TYPE(unixsockaddr, struct sockaddr_un);
+SPIF_DEFINE_TYPE(ipaddr, struct in_addr);
+SPIF_DEFINE_TYPE(hostinfo, struct hostent);
+SPIF_DEFINE_TYPE(protoinfo, struct protoent);
+SPIF_DEFINE_TYPE(servinfo, struct servent);
+typedef int spif_sockfd_t;
+typedef int spif_sockfamily_t;
+typedef int spif_socktype_t;
+typedef int spif_sockproto_t;
+typedef spif_uint16_t spif_sockport_t;
 
 /* Type for object comparisons */
 typedef enum {
@@ -86,5 +131,5 @@ typedef enum {
 /* Generic pointer */
 typedef void *spif_ptr_t;
 /* Generic function pointer */
-typedef void (*spif_fptr_t)(spif_ptr_t, ...);
+typedef spif_ptr_t (*spif_fptr_t)(spif_ptr_t, ...);
 #endif /* _LIBAST_TYPES_H_ */

@@ -216,3 +216,11 @@ Tue May  7 16:37:40 2002                        Michael Jennings (mej)
 A few small bugfixes and some touchups.  Also work on the socket
 object.
 ----------------------------------------------------------------------
+Tue May 21 00:15:37 2002                        Michael Jennings (mej)
+
+Fixed a number of memory leaks in both the testing code and the object
+classes themselves.
+
+Also rearranged some header stuff and created a few new helper macros
+for object declarations.
+----------------------------------------------------------------------
