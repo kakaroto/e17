@@ -448,7 +448,7 @@ __imlib_draw_line(ImlibImage *im, int x1, int y1, int x2, int y2,
 	x2 -= ((im->h - y2) * (x1 - x2)) / (y2 - y1);
 	y2 = im->h - 1;
      }
-   /* clip to top edge */
+   /* clip to left edge */
    if ((x1 < 0) && (x2 < 0))
       return NULL;
    if (x1 < 0)
@@ -461,7 +461,7 @@ __imlib_draw_line(ImlibImage *im, int x1, int y1, int x2, int y2,
 	y2 += (x2 * (y1 - y2)) / (x2 - x1);
 	x2 = 0;
      }
-   /* clip to bottom edge */   
+   /* clip to right edge */   
    if ((x1 >= im->w) && (x2 >= im->w))
       return NULL;
    if (x1 >= im->w)
@@ -469,7 +469,7 @@ __imlib_draw_line(ImlibImage *im, int x1, int y1, int x2, int y2,
 	y1 -= ((im->w - x1) * (y1 - y2)) / (x2 - x1);
 	x1 = im->w - 1;
      }
-   if (y2 >= im->w)
+   if (x2 >= im->w)
      {
 	y2 -= ((im->w - x2) * (y1 - y2)) / (x2 - x1);
 	x2 = im->w - 1;
