@@ -351,6 +351,7 @@ _container_elements_fix(Container *cont)
   double L; // length of all objects at original size (for nonhomog)
   int num; // number of elements
   double error = 0;
+  int r,g,b;
 
   /* FIXME: add a 'changed' flag to prevent excessive recalcs */
   
@@ -377,6 +378,13 @@ _container_elements_fix(Container *cont)
 
   L = _container_elements_orig_length_get(cont);
   num = evas_list_count(cont->elements);
+  
+  
+  evas_object_color_get(cont->clipper, &r, &g, &b, NULL);
+  if(num > 0)
+	  evas_object_color_set(cont->clipper, r,g,b, cont->clipper_orig_alpha);
+  else
+	  evas_object_color_set(cont->clipper, r,g,b, 0);
 
   for (l = cont->elements; l; l = l->next)
   {

@@ -75,6 +75,8 @@ _container_add(Evas_Object *obj)
   data->clipper = evas_object_rectangle_add(data->evas);
   evas_object_smart_member_add(obj, data->clipper);
   evas_object_repeat_events_set(data->clipper, 1);
+  
+  data->clipper_orig_alpha = 255;
 
   data->grabber = evas_object_rectangle_add(data->evas);
   evas_object_color_set(data->grabber, 40, 40, 255, 0);
@@ -279,6 +281,7 @@ _container_color_set(Evas_Object *obj, int r, int g, int b, int a)
   data = evas_object_smart_data_get(obj);
 
   evas_object_color_set(data->clipper, r, g, b, a);
+  data->clipper_orig_alpha = a;
 }
 
 void

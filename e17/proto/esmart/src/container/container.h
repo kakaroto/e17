@@ -53,6 +53,8 @@ struct _Container
   } padding;
 
   double x, y, w, h;    /* geometry */
+  
+  int clipper_orig_alpha;		/* original alpha value of clipper */
 
   int spacing;          /* space between elements */
 
