@@ -216,18 +216,28 @@ main_loop (void)
 		  winwid = winwidget_get_from_window (ev.xmotion.window);
 		  if ((winwid) && (winwid->rectangle_drawing_mode))
 		    {
-		      GC gc;
-		      XGCValues gcv;
+		      static GC gc=0;
+		      static XGCValues gcv;
 		      while (XCheckTypedWindowEvent
 			     (disp, winwid->win, MotionNotify, &ev));
 
-		      gcv.function = GXxor;
-		      gcv.foreground = WhitePixel(disp, DefaultScreen(disp));
-		      gc = XCreateGC (disp, winwid->win, GCFunction | GCForeground, &gcv);
-
-		      /* Overwrite old rectangle */
-		      if (x != -9999)
+		      if (x == -9999)
 			{
+			    D(("Creating GC\n"));
+			  /* Create/recreate the gc */
+			  if (gc)
+			    XFreeGC (disp, gc);
+			  gcv.function = GXxor;
+			  gcv.foreground =
+			    WhitePixel (disp, DefaultScreen (disp));
+			  gc =
+			    XCreateGC (disp, winwid->win,
+				       GCFunction | GCForeground, &gcv);
+			}
+		      else
+		      {
+			  D(("Overwriting old rectangle\n"));
+			  /* Overwrite old rectangle */
 			  /* down right */
 			  if ((winwid->rec_x < x) && (winwid->rec_y < y))
 			    XDrawRectangle (disp, winwid->win, gc,
@@ -284,14 +294,12 @@ main_loop (void)
 			XDrawRectangle (disp, winwid->win, gc,
 					winwid->rec_x, y,
 					x - winwid->rec_x, winwid->rec_y - y);
-		      XFreeGC (disp, gc);
 		    }
 		}
 	      /* If zoom mode is set, then a window needs zooming, 'cos
 	       * button 2 is pressed */
 	      if (zoom_mode)
 		{
-		  D (("Received MotionNotify event that I care about\n"));
 		  winwid = winwidget_get_from_window (ev.xmotion.window);
 		  if (winwid != NULL)
 		    {
@@ -386,7 +394,6 @@ main_loop (void)
 	      FD_SET (xfd, &fdset);
 	      D (("oo Performing wait then pass-thru select\n"));
 	      count = select (fdsize, &fdset, NULL, NULL, &tval);
-	      D (("oo Performed wait then pass-thru select\n"));
 	      if ((count < 0)
 		  && ((errno == ENOMEM) || (errno == EINVAL)
 		      || (errno == EBADF)))
@@ -462,7 +469,6 @@ main_loop (void)
 	      FD_SET (xfd, &fdset);
 	      D (("oo Performing blocking select\n"));
 	      count = select (fdsize, &fdset, NULL, NULL, NULL);
-	      D (("oo Performed blocking select\n"));
 	      if ((count < 0)
 		  && ((errno == ENOMEM) || (errno == EINVAL)
 		      || (errno == EBADF)))

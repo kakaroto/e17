@@ -1,3 +1,9 @@
+Sun Dec 26 22:57:53 1999  Tom Gilbert  <gilbertt@tomgilbert.freeserve.co.uk>
+
+	* Take the gc creation out of the loop, as much as poss.
+	* Is xmas over now?
+	* Am I still drunk?
+
 Fri Dec 24 13:22:19 1999  Tom Gilbert  <gilbertt@tomgilbert.freeserve.co.uk>
 
 	* I've switched to using XFindContext et al to associate X Windows
