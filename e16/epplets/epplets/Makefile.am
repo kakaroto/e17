@@ -112,6 +112,8 @@ install-data-hook:
 	$(mkinstalldirs) $(EROOT)/epplet_icons/E-Clock.ABOUT/
 	$(mkinstalldirs) $(EROOT)/epplet_icons/E-Power.ABOUT/
 	$(mkinstalldirs) $(EROOT)/epplet_icons/Emix.ABOUT/
+	$(mkinstalldirs) $(EROOT)/epplet_icons/E-NetFlame.ABOUT/
+	$(mkinstalldirs) $(EROOT)/epplet_icons/E-ScreenShoot.ABOUT/
 	@for i in ${ICONS}; do \
 	  echo $(INSTALL_DATA) $(srcdir)/$$i $(EROOT)/epplet_icons/ ; \
 	  $(INSTALL_DATA) $(srcdir)/$$i $(EROOT)/epplet_icons/ ; \
