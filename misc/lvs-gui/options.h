@@ -40,7 +40,7 @@
 #ifdef HAVE_CONFIG_H
 #include "../config.h"
 #else
-#define HAVE_GETOPT_LONG
+#define HAVE_GETOPT_LONG /*Comment this out if you do not have getopt_long*/
 #endif
 
 #define MAX_LINE_LENGTH 4096

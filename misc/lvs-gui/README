@@ -1,40 +1,79 @@
 lvs-gui 
 Copyright (C) 1999 Carsten Haitzler and Simon Horman
 
-The lvs-gui enables the configuration of servers running
-the Linux Virtual Server (http://linuxvirtualserver.org/)
-kernel patches.
+The lvs-gui enables the configuration of servers running the Linux Virtual
+Server (http://linuxvirtualserver.org/) kernel patches.
 
-The lvs-gui is run on a client with an X display with ssh access
-to both the Linux Directors and the back end-servers that they
-load balance. The gui writes configuration files to configure
-both ipvs, using ipvsadm on Linux Directors and transparent
-proxying on back end servers using ipchains.
+The lvs-gui is run on a client with an X display with shell access to both
+the Linux Directors and the back end-servers that they load balance. The
+gui writes configuration files to configure both ipvs, using ipvsadm on
+Linux Directors and transparent proxying on back end servers using
+ipchains.
 
-On clients that run the lvs-gui only the lvs-gui programme needs
-to be installed. If using the RPM distribution this is equivalent
-to installing the lvs-gui RPM.
+On clients that run the lvs-gui only the lvs-gui programme needs to be
+installed. If using the RPM distribution this is equivalent to installing
+the lvs-gui RPM.
 
-On servers that have the Linux Virtual Server patch applied and
-are to be configured as a Linux Director, the init script
-/etc/rc.d/init.d/ipvs needs to be installed.  This is equivalent
-to installing the lvs-gui-lvs-server RPM.
+On servers that have the Linux Virtual Server patch applied and are to be
+configured as a Linux Director, the init script /etc/rc.d/init.d/ipvs needs
+to be installed.  This is equivalent to installing the lvs-gui-lvs-server
+RPM.
 
-On servers that run as back end servers, behind a Linux Director,
-the init script /etc/rc.d/init.d/transparent_proxy needs to be
-installed. This is equivalent to installing the
-lvs-gui-back-end-server RPM. 
+On servers that run as back end servers, behind a Linux Director, the init
+script /etc/rc.d/init.d/transparent_proxy needs to be installed. This is
+equivalent to installing the lvs-gui-back-end-server RPM. 
 
-Note: Back end servers need to be configured with IP forwarding
-turned on and need to have IP firewalling compiled into the
-kernel.
+Note: Back end servers need to be configured with IP forwarding turned on
+and need to have IP firewalling compiled into the kernel.
 
-The client that runs the lvs-gui needs to have ssh access, with
-either an RSA key with a null pass phrase, or key management
-using ssh-agent and ssh-add to access both the servers that are
-Linux Directors and the back end servers.
+By default lvs-gui uses ssh for access to remote hosts to execute commands
+and copy files. For this to work cleanly the client that runs the lvs-gui
+needs to have ssh access, with either an RSA key with a null pass phrase,
+or key management using ssh-agent and ssh-add to access both the servers
+that are Linux Directors and the back end servers. Alternative shell access
+and copy commands can be specified, see options for details.
 
-The GUI will configure the Linux Director to use direct
-routing, and as transparent proxying is set up on the
-back end servers, the Linux Director and back end servers
-can be on the same network both physically and logically.
+The GUI will configure the Linux Director to use direct routing, and as
+transparent proxying is set up on the back end servers, the Linux Director
+and back end servers can be on the same network both physically and
+logically.
+
+
+Options
+
+lvs-gui has the following command line options. With the exception of
+-r|--rc_file these can be configured through the gui itself and are saved
+to an rc file, set by -r|--rc_file .
+
+Usage: lvs-gui [options]
+  options:
+     -c|--rcp_command: 
+                      Command to execute to copy files between hosts
+                      (default "scp -q")
+     -h|--help:       Display this message
+     -I|--ipvs_init_script:
+                      Init script for IPVS
+                      (default "/etc/rc.d/init.d/ipvs")
+     -i|--ipvs_config_file:
+                      Config File for IPVS
+                      (default "/etc/sysconfig/ipvs")
+     -m|--master_host:
+                      The master host to read and store the
+                      from and to.
+                      (default "localhost")
+     -r|--rc_file:    The rc file to read lvs-gui configuration options
+                      from. Relative to users home directory unless
+                      there is a leading /
+                      (default ".lvs-gui.rc")
+     -s|--rsh_command:
+                      Command to execute to get a remote shell on hosts
+                      (default "ssh -q -x -a")
+     -T|--transparent_proxy_init_script:
+                      Init script for transparent proxy
+                      (default "/etc/rc.d/init.d/transparent_proxy")
+     -t|--transparent_proxy_config_file:
+                      Config File for transparent proxy
+                      (default "/etc/sysconfig/transparent_proxy")
+     -u|--user:       User to login as when copying files to and
+                      executing commands on remote hosts
+                      (default "root")
