@@ -604,45 +604,109 @@ SetupX()
    EDBUG_RETURN_;
 }
 
+static void         ChkDir(char *d);
+
+static void
+ChkDir(char *d)
+{
+   if (!isdir(d))
+     {
+	Alert("The directory %s is apparently not a directory\n"
+	      "This is a fatal condition.\n"
+	      "Please remove this file\n",
+	      d);
+	EExit((void *)1);
+     }
+   if (!canexec(d))
+     {
+	Alert("Do not have execute access to %s\n"
+	      "This is a fatal condition.\n"
+	      "Please check the ownership and permissions of this\n"
+	      "directory and take steps to rectify this.\n",
+	      d);
+	EExit((void *)1);
+     }
+   if (!canread(d))
+     {
+	Alert("Do not have read access to %s\n"
+	      "This is a fatal condition.\n"
+	      "Please check the ownership and permissions of this\n"
+	      "directory and take steps to rectify this.\n",
+	      d);
+	EExit((void *)1);
+     }
+   if (!canwrite(d))
+     {
+	Alert("Do not have write access to %s\n"
+	      "This is a fatal condition.\n"
+	      "Please check the ownership and permissions of this\n"
+	      "directory and take steps to rectify this.\n",
+	      d);
+	EExit((void *)1);
+     }
+}
+
 void
 SetupDirs()
 {
-   char                s[1024], ss[1024];
+   char                s[1024], ss[1024], *home;
 
    EDBUG(6, "SetupDirs");
    Esnprintf(s, sizeof(s), "%s", UserEDir());
+   home = homedir(getuid());
+   if (home)
+     {
+	ChkDir(home);
+	Efree(home);
+     }
    if (exists(s))
      {
-	if (isfile(s))
+	if (!isdir(s))
 	  {
 	     Esnprintf(ss, sizeof(ss), "%s.old", UserEDir());
 	     mv(s, ss);
 	     md(s);
 	  }
+	else
+	   ChkDir(UserEDir());
      }
    else
       md(s);
    Esnprintf(s, sizeof(s), "%s/themes", UserEDir());
    if (!exists(s))
       md(s);
+   else
+      ChkDir(s);
    Esnprintf(s, sizeof(s), "%s/backgrounds", UserEDir());
    if (!exists(s))
       md(s);
+   else
+      ChkDir(s);
    Esnprintf(s, sizeof(s), "%s/cached", UserEDir());
    if (!exists(s))
       md(s);
+   else
+      ChkDir(s);
    Esnprintf(s, sizeof(s), "%s/cached/img", UserEDir());
    if (!exists(s))
       md(s);
+   else
+      ChkDir(s);
    Esnprintf(s, sizeof(s), "%s/cached/cfg", UserEDir());
    if (!exists(s))
       md(s);
+   else
+      ChkDir(s);
    Esnprintf(s, sizeof(s), "%s/cached/bgsel", UserEDir());
    if (!exists(s))
       md(s);
+   else
+      ChkDir(s);
    Esnprintf(s, sizeof(s), "%s/cached/pager", UserEDir());
    if (!exists(s))
       md(s);
+   else
+      ChkDir(s);
    EDBUG_RETURN_;
 }
 
