@@ -1,6 +1,6 @@
 ## Process this file with automake to produce Makefile.in
 
-SUBDIRS = src test
+SUBDIRS = src test doc
 
 MAINTAINERCLEANFILES = Makefile.in aclocal.m4 config.guess \
 		   config.h.in config.sub configure install-sh \
@@ -25,3 +25,13 @@ EXTRA_DIST = README AUTHORS COPYING estyle.m4 estyle.spec
 
 m4datadir = $(datadir)/aclocal
 m4data_DATA = estyle.m4
+
+
+docs:
+	                $(MAKE) -C $(top_srcdir)/doc docs
+
+if HAVE_JADE
+html-docs:
+	                $(MAKE) -C $(top_srcdir)/doc html-docs
+endif
+			

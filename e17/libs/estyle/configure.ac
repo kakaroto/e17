@@ -75,15 +75,35 @@ AC_SUBST(imlib2_libs)
 imlib2_cflags=`imlib2-config --cflags`
 imlib2_libs=`imlib2-config --libs`
 
+dnl Checking for Perl:
+AC_PATH_PROG(PERL,perl,0)
+AC_SUBST(PERL)
+
+dnl Look for jade for sgml translations.
+AC_ARG_WITH(dbsheets,
+       [  --with-dbsheets=DIR     use DIR to specify your DocBook stylesheets
+       installation path.],
+              DB_STYLESHEETS="$withval",
+	      DB_STYLESHEETS="/usr/lib/sgml/stylesheet/dsssl/docbook/nwalsh")
+	      AC_SUBST(DB_STYLESHEETS)
+	      AC_PATH_PROG(JADE, jade)
+	      AM_CONDITIONAL(HAVE_JADE, test "x$JADE" != "x" && test -d
+	      "$DB_STYLESHEETS")
+
+	      
+
 AC_CONFIG_FILES([
 Makefile
 estyle-config
 src/Makefile
+doc/kernel-doc
+doc/html-customizations.dsl
+doc/Makefile
 test/Makefile
 test/img/Makefile
 ])
 AC_CONFIG_COMMANDS([default],[[
 chmod +x estyle-config
-
+chmod +x doc/kernel-doc
 ]],[[]])
 AC_OUTPUT

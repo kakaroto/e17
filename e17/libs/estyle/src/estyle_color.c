@@ -9,7 +9,7 @@ static E_DB_File *user_colors = NULL;
 
 static int __estyle_color_cmp(void *c1, void *c2);
 
-/*
+/**
  * estyle_color_instance - get a pointer to a color structure
  * @r: the red value of the color
  * @g: the green value of the color
@@ -41,7 +41,7 @@ Estyle_Color *estyle_color_instance(int r, int g, int b, int a)
 	return ret;
 }
 
-/*
+/**
  * estyle_color_instance_db - get a pointer to a color structure by name
  * @color: the name of the color to retrieve from the colors dbs
  *
@@ -107,7 +107,7 @@ Estyle_Color *estyle_color_instance_db(char *color)
 	return found;
 }
 
-/*
+/**
  * estyle_colors_init - setup some internal variables for colors
  *
  * Returns no value. Sets up necessary internal variables for color handling.
@@ -129,7 +129,7 @@ void estyle_color_init()
 	color_table = ewd_hash_new(NULL, __estyle_color_cmp);
 }
 
-/*
+/**
  * Comparison function for hashing colors.
  */
 static int __estyle_color_cmp(void *c1, void *c2)
