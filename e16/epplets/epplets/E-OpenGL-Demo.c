@@ -297,7 +297,7 @@ int
 main(int argc, char **argv)
 {
 	GLXContext cx;
-	int prio, p_type;
+	int prio;
 	Epplet_gadget objectPopup, lightingPopup;
 
 	prio = getpriority(PRIO_PROCESS, getpid());
