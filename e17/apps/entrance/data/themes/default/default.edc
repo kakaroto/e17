@@ -162,7 +162,7 @@ images {
 
 collections {
    group {
-      name, "main";
+      name, "Main";
       parts {
 	 part {
 	    name, "all_clip";
