@@ -25,6 +25,15 @@
 static void         Elogin_SetRootBG(void);
 
 void
+Elogin_SetImage(Ewidget * bit, char *file)
+{
+
+   IF_FREE(bit->im);
+   bit->im = imlib_load_image(file);
+   printf("Attempting to open image: %s\n", file);
+}
+
+void
 Elogin_ImageSetName(Elogin_Image * im, char *name)
 {
    IF_FREE(im->name);
@@ -204,6 +213,7 @@ Elogin_ViewFree(Elogin_View * view)
    e_window_destroy(view->frame);
    /* Free our widgets */
    FREE(view);
+   printf("Freeing our view\n");
 }
 
 void
@@ -214,20 +224,55 @@ Elogin_Display(void)
    /* setup the widgets */
 //      main_view->bg                   = Elogin_LoadImage("images/bg2.png");
    Elogin_SetRootBG();
-   main_view->login_box = Elogin_WidgetLoad("login_box");
 
-   pm = e_pixmap_new(main_view->win, main_view->login_box->im->w,
-		     main_view->login_box->h, default_depth);
+   main_view->box = Elogin_WidgetLoad("box");
+   main_view->login_box = Elogin_WidgetLoad("login_box");
+   main_view->logo = Elogin_WidgetLoad("logo");
+   main_view->user_box = Elogin_WidgetLoad("user_box");
+   main_view->pass_box = Elogin_WidgetLoad("pass_box");
+
+   /* setup the big box to draw on */
+   pm = e_pixmap_new(main_view->win, main_view->box->w,
+		     main_view->box->h, default_depth);
    imlib_context_set_drawable(pm);
-   imlib_context_set_image(main_view->login_box->im->im);
+
+   /* logo */
+   imlib_context_set_image(main_view->box->im);
+   imlib_blend_image_onto_image(main_view->logo->im, 0,
+				0, 0, main_view->logo->w, main_view->logo->h,
+				15, 15, main_view->logo->w, main_view->logo->h);
+   /* user and pass inputs */
+   imlib_context_set_image(main_view->login_box->im);
+   imlib_blend_image_onto_image(main_view->user_box->im, 0,
+				0, 0, main_view->user_box->w,
+				main_view->user_box->h, 50, 25,
+				main_view->user_box->w, main_view->user_box->h);
+   imlib_blend_image_onto_image(main_view->pass_box->im, 0, 0, 0,
+				main_view->pass_box->w, main_view->pass_box->h,
+				50, 55, main_view->pass_box->w,
+				main_view->pass_box->h);
+   /*login box */
+   imlib_context_set_image(main_view->box->im);
+   imlib_blend_image_onto_image(main_view->login_box->im, 0,
+				0, 0, main_view->login_box->w,
+				main_view->login_box->h, 250, 200,
+				main_view->login_box->w,
+				main_view->login_box->h);
+
    imlib_render_image_on_drawable(0, 0);
    e_window_set_background_pixmap(main_view->win, pm);
-   e_window_resize(main_view->win, main_view->login_box->im->w,
-		   main_view->login_box->im->h);
-//      e_window_resize(main_view->win, 100, 100);
+   e_window_resize(main_view->win, main_view->box->w, main_view->box->h);
    e_window_show(main_view->win);
    e_sync();
 
-   imlib_context_set_image(main_view->login_box->im->im);
+   imlib_context_set_image(main_view->box->im);
+   imlib_free_image();
+   imlib_context_set_image(main_view->logo->im);
+   imlib_free_image();
+   imlib_context_set_image(main_view->login_box->im);
+   imlib_free_image();
+   imlib_context_set_image(main_view->user_box->im);
+   imlib_free_image();
+   imlib_context_set_image(main_view->pass_box->im);
    imlib_free_image();
 }

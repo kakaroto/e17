@@ -45,6 +45,7 @@ struct _elogin_view
    int                 sel_x, sel_y, sel_w, sel_h;
    char                psel, sel;
    Ewidget            *box, *logo, *login_box;
+   Ewidget            *user_box, *pass_box;
 //      Elogin_ImageObject              *user_box, *pass_box;
    Ewidget            *widgets;
    Elogin_View        *prev, *next;
@@ -54,6 +55,7 @@ void                Elogin_ImageSetName(Elogin_Image * im, char *name);
 void                Elogin_ImageSetImage(Elogin_Image * im,
 
 					 Imlib_Image * imlib);
+void                Elogin_SetImage(Ewidget * bit, char *file);
 Elogin_Image       *Elogin_LoadImage(char *file);
 Elogin_Image       *Elogin_ImageNew();
 Elogin_View        *Elogin_ViewNew();

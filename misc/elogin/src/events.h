@@ -50,5 +50,5 @@ struct _ev_mouse_down
 };
 
 void                Elogin_EventLoop(void);
-
+void                Elogin_ViewFree(Elogin_View * view);
 #endif

@@ -82,6 +82,90 @@ e_db_int_get(char *name, char *bit)
 	else if (e_string_cmp(bit, "h"))
 	   X = 100;
      }
+   else if (e_string_cmp(name, "box"))
+     {
+	if (e_string_cmp(bit, "type"))
+	   X = 0;
+	else if (e_string_cmp(bit, "x1"))
+	   X = 0;
+	else if (e_string_cmp(bit, "y1"))
+	   X = 0;
+	else if (e_string_cmp(bit, "x2"))
+	   X = 0;
+	else if (e_string_cmp(bit, "y2"))
+	   X = 0;
+	else if (e_string_cmp(bit, "x"))
+	   X = 0;
+	else if (e_string_cmp(bit, "y"))
+	   X = 0;
+	else if (e_string_cmp(bit, "w"))
+	   X = 500;
+	else if (e_string_cmp(bit, "h"))
+	   X = 350;
+     }
+   else if (e_string_cmp(name, "logo"))
+     {
+	if (e_string_cmp(bit, "type"))
+	   X = 0;
+	else if (e_string_cmp(bit, "x1"))
+	   X = 0;
+	else if (e_string_cmp(bit, "y1"))
+	   X = 0;
+	else if (e_string_cmp(bit, "x2"))
+	   X = 0;
+	else if (e_string_cmp(bit, "y2"))
+	   X = 0;
+	else if (e_string_cmp(bit, "x"))
+	   X = 0;
+	else if (e_string_cmp(bit, "y"))
+	   X = 0;
+	else if (e_string_cmp(bit, "w"))
+	   X = 181;
+	else if (e_string_cmp(bit, "h"))
+	   X = 132;
+     }
+   else if (e_string_cmp(name, "user_box"))
+     {
+	if (e_string_cmp(bit, "type"))
+	   X = 0;
+	else if (e_string_cmp(bit, "x1"))
+	   X = 0;
+	else if (e_string_cmp(bit, "y1"))
+	   X = 0;
+	else if (e_string_cmp(bit, "x2"))
+	   X = 0;
+	else if (e_string_cmp(bit, "y2"))
+	   X = 0;
+	else if (e_string_cmp(bit, "x"))
+	   X = 0;
+	else if (e_string_cmp(bit, "y"))
+	   X = 0;
+	else if (e_string_cmp(bit, "w"))
+	   X = 125;
+	else if (e_string_cmp(bit, "h"))
+	   X = 25;
+     }
+   else if (e_string_cmp(name, "pass_box"))
+     {
+	if (e_string_cmp(bit, "type"))
+	   X = 0;
+	else if (e_string_cmp(bit, "x1"))
+	   X = 0;
+	else if (e_string_cmp(bit, "y1"))
+	   X = 0;
+	else if (e_string_cmp(bit, "x2"))
+	   X = 0;
+	else if (e_string_cmp(bit, "y2"))
+	   X = 0;
+	else if (e_string_cmp(bit, "x"))
+	   X = 0;
+	else if (e_string_cmp(bit, "y"))
+	   X = 0;
+	else if (e_string_cmp(bit, "w"))
+	   X = 125;
+	else if (e_string_cmp(bit, "h"))
+	   X = 25;
+     }
 
    return X;
 }

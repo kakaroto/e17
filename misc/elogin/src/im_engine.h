@@ -14,7 +14,8 @@ struct _e_widget
    char               *rel1, *rel2;
    int                 x1, y1, x2, y2;
    int                 x, y, w, h;
-   Elogin_Image       *im;
+   Imlib_Image        *im;
+//   Elogin_Image       *im;
    Ewidget            *next;
 };
 

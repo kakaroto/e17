@@ -30,7 +30,8 @@ Elogin_WidgetLoad(char *name)
 	bit->y1 = e_db_int_get(name, "y1");
 	bit->x2 = e_db_int_get(name, "x2");
 	bit->y2 = e_db_int_get(name, "y2");
-	bit->im = Elogin_LoadImage(e_db_str_get(name, "image"));
+//      bit->im = Elogin_LoadImage(e_db_str_get(name, "image"));
+	Elogin_SetImage(bit, e_db_str_get(name, "image"));
 	bit->x = e_db_int_get(name, "x");
 	bit->y = e_db_int_get(name, "y");
 	bit->w = e_db_int_get(name, "w");

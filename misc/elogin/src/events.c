@@ -37,6 +37,7 @@ Eevent             *last_event = NULL;
 static void
 Elogin_CleanQuit(void)
 {
+   Elogin_ViewFree(main_view);
    exit(0);
 }
 
@@ -176,7 +177,7 @@ Elogin_HandleEvent(void)
 		       ((Ev_Mouse_Down *) last_event->event)->x,
 		       ((Ev_Mouse_Down *) last_event->event)->y);
 
-		if (((Ev_Mouse_Down *) last_event->event)->button == 1)
+		if (((Ev_Mouse_Down *) last_event->event)->button == 3)
 		   Elogin_CleanQuit();
 	     }
 	     break;
