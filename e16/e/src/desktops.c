@@ -1459,17 +1459,14 @@ DesktopHandleEvents(XEvent * ev, void *prm)
 
 /* Settings */
 
-#if 0				/* About to go */
-
-static int
-doDragdirSet(EWin * edummy, const char *params)
+static void
+DeskDragdirSet(const char *params)
 {
-   char                pd;
-   Button             *b;
-   int                 i;
+   int                 pd, i;
 
    pd = Conf.desks.dragdir;
-   if (params)
+
+   if (params && params[0])
       Conf.desks.dragdir = atoi(params);
    else
      {
@@ -1485,18 +1482,18 @@ doDragdirSet(EWin * edummy, const char *params)
 	   MoveDesktop(i, 0, 0);
 	DesksControlsRefresh();
      }
+
    autosave();
-   return 0;
 }
 
-static int
-doDragbarOrderSet(EWin * edummy, const char *params)
+static void
+DeskDragbarOrderSet(const char *params)
 {
    char                pd;
-   Button             *b;
 
    pd = Conf.desks.dragbar_ordering;
-   if (params)
+
+   if (params && params[0])
       Conf.desks.dragbar_ordering = atoi(params);
    else
      {
@@ -1509,9 +1506,11 @@ doDragbarOrderSet(EWin * edummy, const char *params)
      {
 	DesksControlsRefresh();
      }
+
    autosave();
-   return 0;
 }
+
+#if 0				/* FIXME */
 
 static int
 doDragbarWidthSet(EWin * edummy, const char *params)
@@ -2214,11 +2213,18 @@ DesktopsIpcDesk(const char *params, Client * c __UNUSED__)
 	SoundPlay("SOUND_DESKTOP_LOWER");
 	LowerDesktop(desk);
      }
-   else if (!strncmp(cmd, "drag", 2))
+   else if (!strcmp(cmd, "drag"))
      {
 	if (prm[0])
 	   desk = atoi(prm);
 	DesktopOpDrag(desk);
+     }
+   else if (!strcmp(cmd, "dragbar"))
+     {
+	if (!strncmp(prm, "dir", 3))
+	   DeskDragdirSet(p);
+	else if (!strncmp(prm, "ord", 3))
+	   DeskDragbarOrderSet(p);
      }
 }
 
@@ -2285,13 +2291,16 @@ IpcItem             DesktopsIpcArray[] = {
     "Desktop functions",
     "  desk ?               Desktop info\n"
     "  desk cfg             Configure desktops\n"
+    "  desk drag            Start deskdrag\n"
     "  desk set <nd>        Set number of desktops\n"
     "  desk goto <d>        Goto specified desktop\n"
     "  desk next            Goto next desktop\n"
     "  desk prev            Goto previous desktop\n"
     "  desk this            Goto this desktop\n"
     "  desk lower <d>       Lower desktop\n"
-    "  desk raise <d>       Raise desktop\n"}
+    "  desk raise <d>       Raise desktop\n"
+    "  desk dragbar pos     Set dragbar position\n"
+    "  desk dragbar order   Set dragbar button order\n"}
    ,
    {
     DesktopsIpcArea,
