@@ -1474,6 +1474,8 @@ Frequently Asked Questions
 _I_Can't_Find_My_Iconbox_Or_Change_Its_Settings(faq2)
 <p>
 _I_Can't_Seem_To_Find_My_Left_Mouse_Menu(faq2)
+<p>
+_These_Docs_Didn't_Help,_Where_Can_I_Get_More_Help(faq3)
 
 
 
@@ -1503,3 +1505,25 @@ Q:  I Can't Seem To Find My Left Mouse Menu
 A:  Your menu files may be destroyed.  Try rerunning the program that initially
 generated them.  First you'll want to remove the ~/.enlightenment/*.menu files.
 Then you can rerun the e_gen_menu script.
+
+
+
+
+
+<page columns=1 padding=16 name=faq3 background=Edoc_bg.png linkcolor=#88dddd>
+<font face=rothwell/25 color=#ffffff>
+<p>
+Frequently Asked Questions: Page 2
+<font face=aircut3/12 color=#ffffff>
+<p>
+<br>
+<br>
+<br>
+Q:  These Docs Didn't Help, Where Can I Get More Help
+<p>
+A: Well, we obviously can't answer all of your questions just by predicting
+them, so I would try the _website(web) as well as looking at the
+_mailing_lists(mail) , especially the mail archives.  Chances are that someone
+else has probably had the same problem that you have.  And if all that still
+fails, you might try someone on the _irc(irc) channel
+<p>
