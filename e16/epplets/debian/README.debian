@@ -1,7 +1,6 @@
 epplets for DEBIAN
 ----------------------
 
-This is the "official" epplet set from the CVS tree. Stay tuned
-a package or more of third party epplets.
+This is the "official" epplet set from the CVS tree.
 
-Laurence J. Lane <ljlane@debian.org>, Mon, 25 Oct 1999 22:31:06 -0400
+Stephen Frost <sfrost@debian.org>, Fri, 26 Jan 2001 23:33:35 -0500

@@ -1,25 +1,27 @@
-Source: epplets 
+Source: epplets
 Section: x11
 Priority: optional
-Maintainer: Laurence J. Lane <ljlane@debian.org>
+Maintainer: Stephen Frost <sfrost@debian.org>
+Build-Depends: freetype2-dev, libesd0-dev | libesd-alsa0-dev, libfnlib-dev, imlib-dev, gettext, xlibs-dev, debhelper (>=2.0)
 Standards-Version: 3.1.1.0
 
 Package: epplets
 Architecture: any
-Depends: libepplet0 (= ${Source-Version}), ${shlibs:Depends}
-Description: Epplets for the Enlightenment Window Manager
-  Epplets are small applets for the Enlightenment Window Manager. Epplets 
-  are similar to dock apps for other window managers, but they take full 
-  advantage of Enlightenment's themeability.
-  .
-  This is the base set of epplets, featuring E-Exec, E-Time, E-Sys,
-  E-Mixer, E-Screenshoot, E-Xscreensaver, and others.
+Depends: libepplet0 (= ${Source-Version}), ${shlibs:Depends}, enlightenment (>= 0.16.5-1)
+Suggests: eeyes
+Description: The Epplets for the Enlightenment Window Manager
+ Epplets are small applets for the Enlightenment Window Manager. Epplets 
+ are similar to dock apps for other window managers, but they take full 
+ advantage of Enlightenment's themeability.
+ .
+ This is the base set of epplets, featuring E-Exec, E-Time, E-Sys,
+ E-Mixer, E-Screenshoot, E-Xscreensaver, and others.
 
 Package: libepplet0
 Architecture: any
 Depends: ${shlibs:Depends}
-Description: Epplet Shared Libraries
-  Shared libraries used by Epplets.
+Description: The Epplet Shared Libraries
+ Shared libraries used by Epplets.
 
 Package: libepplet-dev
 Architecture: any

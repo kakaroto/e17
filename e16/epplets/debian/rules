@@ -4,7 +4,7 @@ export DH_COMPAT=2
 
 vpath build debian/pmt/
 vpath install debian/pmt/
-cfg = --prefix=/usr --mandir=/usr/share/man
+cfg = --enable-fsstd=yes --mandir=/usr/share/man --enable-new-remember
 pwd := $(shell pwd)
 
 SHELL = /bin/sh -e
@@ -48,17 +48,55 @@ install: build
 
 	# bin package, epplets
 	$(MAKE) install DESTDIR=$(pwd)/debian/epplets/
+	mkdir -p debian/epplets/usr/share/doc/epplets
+	cp -v COPYING debian/epplets/usr/share/doc/epplets/copyright
+	mkdir -p debian/epplets/usr/share/man/man1
+	cp -v epplets/man/epplets.1 debian/epplets/usr/share/man/man1/epplets.1
+	dh_link usr/share/man/man1/epplets.1 usr/share/man/man1/E-Areas.epplet.1
+	dh_link usr/share/man/man1/epplets.1 usr/share/man/man1/E-LoadMeter.epplet.1
+	dh_link usr/share/man/man1/epplets.1 usr/share/man/man1/E-NetGraph.epplet.1
+	dh_link usr/share/man/man1/epplets.1 usr/share/man/man1/E-Time.epplet.1
+	dh_link usr/share/man/man1/epplets.1 usr/share/man/man1/E-Biff.epplet.1
+	dh_link usr/share/man/man1/epplets.1 usr/share/man/man1/E-Magic.epplet.1
+	dh_link usr/share/man/man1/epplets.1 usr/share/man/man1/E-Pinger.epplet.1
+	dh_link usr/share/man/man1/epplets.1 usr/share/man/man1/E-Toolbox.epplet.1
+	dh_link usr/share/man/man1/epplets.1 usr/share/man/man1/E-Clock.epplet.1
+	dh_link usr/share/man/man1/epplets.1 usr/share/man/man1/E-MemWatch.epplet.1
+	dh_link usr/share/man/man1/epplets.1 usr/share/man/man1/E-Power.epplet.1
+	dh_link usr/share/man/man1/epplets.1 usr/share/man/man1/E-Pants.epplet.1
+	dh_link usr/share/man/man1/epplets.1 usr/share/man/man1/E-UrlWatch.epplet.1
+	dh_link usr/share/man/man1/epplets.1 usr/share/man/man1/E-Cpu.epplet.1
+	dh_link usr/share/man/man1/epplets.1 usr/share/man/man1/E-Mixer.epplet.1
+	dh_link usr/share/man/man1/epplets.1 usr/share/man/man1/E-SD.epplet.1
+	dh_link usr/share/man/man1/epplets.1 usr/share/man/man1/E-Xss.epplet.1
+	dh_link usr/share/man/man1/epplets.1 usr/share/man/man1/E-Disk.epplet.1
+	dh_link usr/share/man/man1/epplets.1 usr/share/man/man1/E-MoonClock.epplet.1
+	dh_link usr/share/man/man1/epplets.1 usr/share/man/man1/E-ScreenSave.epplet.1
+	dh_link usr/share/man/man1/epplets.1 usr/share/man/man1/Emix.epplet.1
+	dh_link usr/share/man/man1/epplets.1 usr/share/man/man1/E-Exec.epplet.1
+	dh_link usr/share/man/man1/epplets.1 usr/share/man/man1/E-Mountbox.epplet.1
+	dh_link usr/share/man/man1/epplets.1 usr/share/man/man1/E-ScreenShoot.epplet.1
+	dh_link usr/share/man/man1/epplets.1 usr/share/man/man1/E-GtkRc.epplet.1
+	dh_link usr/share/man/man1/epplets.1 usr/share/man/man1/E-Net.epplet.1
+	dh_link usr/share/man/man1/epplets.1 usr/share/man/man1/E-Slides.epplet.1
+	dh_link usr/share/man/man1/epplets.1 usr/share/man/man1/E-Load.epplet.1
+	dh_link usr/share/man/man1/epplets.1 usr/share/man/man1/E-NetFlame.epplet.1
+	dh_link usr/share/man/man1/epplets.1 usr/share/man/man1/E-Sys.epplet.1
 
 	# dev package, libepplet-dev
 	$(INSTALL) -d debian/libepplet-dev/usr/lib
 	mv -v debian/epplets/usr/lib/libepplet.{so,a} debian/libepplet-dev/usr/lib
 	mv -v debian/epplets/usr/include debian/libepplet-dev/usr/include
+	mkdir -p debian/libepplet-dev/usr/share/doc/libepplet-dev
+	cp -v COPYING debian/libepplet-dev/usr/share/doc/libepplet-dev/copyright
 
-	# lib package, libepplets0
+	# lib package, libepplet0
 	$(INSTALL) -d debian/libepplet0/usr/lib
 	mv -v debian/epplets/usr/lib/libepplet.so.???* debian/libepplet0/usr/lib/
 	mv -v debian/epplets/usr/lib/libepplet.so* debian/libepplet0/usr/lib/
 	chmod -x debian/libepplet0/usr/lib/*
+	mkdir -p debian/libepplet0/usr/share/doc/libepplet0
+	cp -v COPYING debian/libepplet0/usr/share/doc/libepplet0/copyright
 	
 	# remove leftovers
 	rm -rfv debian/epplets/usr/lib/

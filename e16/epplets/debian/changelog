@@ -1,4 +1,23 @@
-epplets (0.6.0-0.2001012300) unstable; urgency=low
+epplets (0.6.0-0.2001030401) unstable; urgency=low
+
+  * New CVS build.
+  * Added Build-Depends line, closes #84227
+
+ -- Stephen Frost <sfrost@debian.org>  Sun,  4 Mar 2001 19:39:09 -0500
+
+epplets (0.6.0-0.2001012601) unstable; urgency=low
+
+  * New CVS build.
+  * E-Biff epplet sound configuration problem fixed, closes: #83089
+  * E-Slides epplet now defaults to 'eeyes' in config instead of 'ee', closes: #58560
+  * Upstream report is that E-UrlWatch should be fixed now, closes: #62514
+  * Upstream changes appear to fix problems on alpha (these may have been
+    related to problems enlightenment was having on alpha as well which
+    have been fixed), closes #58361
+
+ -- Stephen Frost <sfrost@debian.org>  Sat, 27 Jan 2001 15:00:24 -0500
+
+epplets (0.6.0-0.2000030701) unstable; urgency=low
 
   * A CVS release.
 
@@ -6,5 +25,5 @@ epplets (0.6.0-0.2001012300) unstable; urgency=low
 
 Local variables:
 mode: debian-changelog
-add-log-mailing-address: "ljlane@debian.org"
+add-log-mailing-address: "sfrost@debian.org"
 End:
