@@ -39,3 +39,10 @@ Tue Aug 31 13:03:02 PDT 1999	Michael Jennings <mej@eterm.org>
 	requires some source code hacking, but it's playable.
 	
 -------------------------------------------------------------------------------
+Tue Aug 31 16:41:55 PDT 1999	Michael Jennings <mej@eterm.org>
+
+	A working instructions box is now present.  If you're still wondering
+	what the Not Game is, read that box ("Help" -> "How to Play...").
+	:-)
+	
+-------------------------------------------------------------------------------

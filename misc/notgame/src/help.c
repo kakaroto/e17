@@ -93,7 +93,21 @@ about_cb(GtkWidget *widget, GdkEvent *event) {
 void
 help_display(void) {
 
-  GtkWidget *button, *label, *vbox;
+  GtkWidget *button, *label, *vbox, *hbox, *text, *vscrollbar, *align;
+  const char *instructions =
+    "The Not Game is a mechanism for getting a diverse group of people to agree on a single "
+    "choice by allowing each person to eliminate one alternative of their choice per turn "
+    "until only one remains.  The single remaining choice wins.\n\n"
+    "Before beginning the game, use the Pre-Game screen to add, modify, and choose your "
+    "players and destination choices.  You can create new groups, add players or destinations "
+    "to a group, and so on from this screen.\n\n"
+    "Once you are finished, select \"Play Game\" from the menu (or click the button) to begin "
+    "playing the Not Game.\n\n"
+    "During the game, each player will take turns eliminating one destination at a time by "
+    "clicking on the button for that choice.  The button will then deactivate.  Continue "
+    "until only one button remains active; that is your winner!  The text near the bottom "
+    "of the game window will tell you whose turn it is.  You can also quit the game early "
+    "by pressing the \"Quit Game\" button.\n";
 
   if (help != ((GtkWidget *) NULL)) {
     return;
@@ -113,13 +127,31 @@ help_display(void) {
   label = gtk_label_new("Instructions");
   gtk_label_set_line_wrap(GTK_LABEL(label), FALSE);
   gtk_box_pack_start(GTK_BOX(vbox), label, TRUE, TRUE, 10);
+  gtk_widget_show(label);
+
+  hbox = gtk_hbox_new(FALSE, 0);
+  gtk_box_pack_start(GTK_BOX(vbox), hbox, FALSE, FALSE, 0);
+  text = gtk_text_new(NULL, NULL);
+  gtk_widget_set_usize(text, 300, 100);
+  gtk_box_pack_start(GTK_BOX(hbox), text, FALSE, FALSE, 0);
+  gtk_text_set_editable(GTK_TEXT(text), FALSE);
+  gtk_text_set_word_wrap(GTK_TEXT(text), TRUE);
+  vscrollbar = gtk_vscrollbar_new(GTK_TEXT(text)->vadj);
+  gtk_box_pack_start(GTK_BOX(hbox), vscrollbar, FALSE, FALSE, 0);
+  gtk_widget_show(vscrollbar);
+  gtk_text_insert(GTK_TEXT(text), NULL, NULL, NULL, instructions, -1);
+  gtk_widget_show(text);
+  gtk_widget_show(hbox);
 
   button = gtk_button_new_with_label("OK");
-  gtk_signal_connect(GTK_OBJECT(button), "clicked", GTK_SIGNAL_FUNC(help_cb), NULL);
-  gtk_box_pack_start(GTK_BOX(vbox), button, FALSE, FALSE, 10);
-
-  gtk_widget_show(label);
+  align = gtk_alignment_new(0.5, 0.5, 0.2, 0.0);
+  gtk_box_pack_start(GTK_BOX(vbox), align, FALSE, FALSE, 10);
+  gtk_container_add(GTK_CONTAINER(align), button);
+  gtk_widget_show(align);
   gtk_widget_show(button);
+  
+  gtk_signal_connect(GTK_OBJECT(button), "clicked", GTK_SIGNAL_FUNC(help_cb), NULL);
+
   gtk_widget_show(vbox);
   gtk_widget_show(help);
 

@@ -23,5 +23,7 @@
 extern void clean_exit(const char *msg, ...);
 extern void fatal_handler(int sig);
 extern void ng_init(void);
+extern void print_error(const char *msg, ...);
+extern void print_warning(const char *msg, ...);
 
 #endif	/* _NOTGAME_H_ */

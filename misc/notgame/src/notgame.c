@@ -80,3 +80,32 @@ void fatal_handler(int sig) {
 
   clean_exit("Got fatal signal %d\n", sig);
 }
+
+void
+print_error(const char *msg, ...) {
+
+  va_list args;
+
+  if (msg != NULL) {
+    va_start(args, msg);
+    fprintf(stderr, PACKAGE ":  Error:  ");
+    vfprintf(stderr, msg, args);
+    va_end(args);
+    fflush(stderr);
+  }
+}
+
+void
+print_warning(const char *msg, ...) {
+
+  va_list args;
+
+  if (msg != NULL) {
+    va_start(args, msg);
+    fprintf(stderr, PACKAGE ":  Warning:  ");
+    vfprintf(stderr, msg, args);
+    va_end(args);
+    fflush(stderr);
+  }
+}
+

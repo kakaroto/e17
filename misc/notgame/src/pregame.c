@@ -37,7 +37,7 @@ static const char cvs_ident[] = "$Id$";
 static void pregame_menu_init(GtkWidget *window, GtkWidget *vbox);
 static void pregame_player_frame_init(GtkWidget *window, GtkWidget *vbox);
 static void pregame_dest_frame_init(GtkWidget *window, GtkWidget *vbox);
-static void button_cb(gpointer item, GtkWidget *w);
+static void button_cb(GtkWidget *w, gpointer item);
 static void gamemenu_cb(gpointer item, GtkWidget *w);
 static void helpmenu_cb(gpointer item, GtkWidget *w);
 
@@ -306,11 +306,16 @@ pregame_dest_frame_init(GtkWidget *window, GtkWidget *vbox) {
 }
 
 static void
-button_cb(gpointer item, GtkWidget *w) {
+button_cb(GtkWidget *w, gpointer item) {
 
   if (((int) item) == 1) {
     play_game();
+  } else if (((int) item) == 2) {
+    /* Add Player */
+  } else if (((int) item) == 3) {
+    /* Add Destination */
   } else {
+    print_warning("button_cb():  Invalid button handle 0x%08x\n", (int) item);
   }
 }
 
@@ -319,7 +324,10 @@ gamemenu_cb(gpointer item, GtkWidget *w) {
 
   if (((int) item) == 1) {
     play_game();
+  } else if (((int) item) == 2) {
+    /* Preferences */
   } else {
+    print_warning("gamemenu_cb():  Invalid button handle 0x%08x\n", (int) item);
   }
 }
 
