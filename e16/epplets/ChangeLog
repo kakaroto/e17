@@ -767,3 +767,38 @@ session, instead of only when you click the close button.
 
 How did I let this go unfixed???
 
+-------------------------------------------------------------------------------
+
+Tue Nov 23 22:30:44 GMT 1999
+(gilbertt)
+
+Whee! Say hello to E-UrlWatch.epplet.
+
+This is a url-launcher, which will do a few cool things. Currently, it
+launches urls using the X paste buffer. The idea is that you are on irc, or
+reading an email, and see a url, you select the text, press the "Paste"
+button on the epplet, and the url is launched. The command to launch the
+url is defined in the config.
+
+The epplet will parse the text, so you can grab a load of text, and it'll
+find and launch the embedded url.
+
+It'll also clean up naughty chars, but I have more to do here.
+
+The next step is the "watching" part. The epplet will watch a text file (or
+several) containing a list of urls, and will flash when a new one is added.
+Clicking the (not yet existing) launch button will launch this url. The idea
+is for apps like TE which use a url list ~/.te/.urls. So you're in irc,
+someone gives you a url, and the epplet flashes and lets you launch it, no
+typing.
+
+Also, (once I code it), the epplet will record all urls you launch through 
+it in a text file. In a later version, this list will be emailed to your mom
+on a weekly basis
+;)
+
+Obviously, this thing has the cloaking stuff, as I just copy and paste it
+these days :)
+
+Its an early beta, so bear with me while I rapidly add features :)
+
