@@ -2846,7 +2846,7 @@ __imlib_RGBA_to_RGB8888_fast(DATA32 *src , int src_jump,
 		    DATA32 *dest, int dest_jump,
 		    int width, int height, int dx, int dy)
 {
-   int x, y, w, h;
+   int /* x,*/ y, w, h;
    
    w = width;
    h = height;
