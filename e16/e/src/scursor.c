@@ -37,7 +37,8 @@ static Window       sc_window = 0;
 static Atom         sc_atom = 0;
 static ImlibData   *imd = NULL;
 
-Window SC_GetDestWin(void)
+Window 
+SC_GetDestWin(void)
 {
    return 0;
 }

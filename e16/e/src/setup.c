@@ -222,10 +222,10 @@ SetupX()
 	      ("Enlightenment cannot connect to the display nominated by\n"
 	       "your shell's DISPLAY environment variable. You may set this\n"
 	       "variable to indicate which display name Enlightenment is to\n"
-	       "connect to. It may be that you do not have an Xserver already\n"
+	     "connect to. It may be that you do not have an Xserver already\n"
 	       "running to serve that Display connection, or that you do not\n"
 	       "have permission to connect to that display. Please make sure\n"
-	       "all is correct before trying again. Run an Xserver by running\n"
+	     "all is correct before trying again. Run an Xserver by running\n"
 	       "xdm or startx first, or contact your local system\n"
 	       "administrator, or Xserver vendor, or read the X, xdm and\n"
 	       "startx manual pages before proceeding.\n"));
@@ -405,10 +405,10 @@ SetupX()
 		     gettext("Ignore this error"),
 		     "", gettext("Quit Enlightenment"));
 	Alert(gettext("WARNING:\n"
-		      "This is not an X11 Xserver. It infact talks the X%i protocol.\n"
-		      "This may mean Enlightenment will either not function, or\n"
-		      "function incorrectly. If it is later than X11, then your\n"
-		      "server is one the author of Enlightenment neither have\n"
+	     "This is not an X11 Xserver. It infact talks the X%i protocol.\n"
+		  "This may mean Enlightenment will either not function, or\n"
+		  "function incorrectly. If it is later than X11, then your\n"
+		    "server is one the author of Enlightenment neither have\n"
 		      "access to, nor have heard of.\n"),
 	      ProtocolVersion(disp));
 	RESET_ALERT;
@@ -437,7 +437,8 @@ SetupX()
       XModifierKeymap    *mod;
       KeyCode             nl, sl;
       int                 i;
-      int                 masks[8] = {
+      int                 masks[8] =
+      {
 	 ShiftMask, LockMask, ControlMask, Mod1Mask, Mod2Mask, Mod3Mask,
 	 Mod4Mask, Mod5Mask
       };
@@ -740,7 +741,8 @@ SetupEnv()
    return;
 }
 
-Window MakeExtInitWin(void)
+Window 
+MakeExtInitWin(void)
 {
    Display            *d2;
    Window              win;
@@ -809,7 +811,7 @@ Window MakeExtInitWin(void)
    attr.background_pixel = 0;
    attr.save_under = True;
    win = XCreateWindow(d2, root.win, 0, 0, root.w, root.h, 0, root.depth,
-		       InputOutput, root.vis, CWOverrideRedirect | CWSaveUnder |
+		     InputOutput, root.vis, CWOverrideRedirect | CWSaveUnder |
 		       CWBackingStore | CWColormap | CWBackPixel |
 		       CWBorderPixel, &attr);
    pmap = ECreatePixmap(d2, win, root.w, root.h, root.depth);

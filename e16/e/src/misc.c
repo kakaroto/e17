@@ -37,15 +37,16 @@ BlumFlimFrub(void)
    char                s[1024];
    char               *bins[3] =
 #ifndef __EMX__
-   { "dox", "eesh", "epp" };
+   {"dox", "eesh", "epp"};
 
 #else
-   { "dox.exe", "eesh.exe", "epp.exe" };
+   {"dox.exe", "eesh.exe", "epp.exe"};
 
 #endif
    char               *docs[4] =
-      { "E-docs/MAIN", "E-docs/Edoc_bg.png", "E-docs/E_logo.png" };
-   char               *thms[1] = { "themes/DEFAULT/epplets/epplets.cfg" };
+   {"E-docs/MAIN", "E-docs/Edoc_bg.png", "E-docs/E_logo.png"};
+   char               *thms[1] =
+   {"themes/DEFAULT/epplets/epplets.cfg"};
 
    for (i = 0; i < 3; i++)
      {
@@ -59,15 +60,15 @@ BlumFlimFrub(void)
 	  {
 	     Alert(gettext("!!!!!!!! ERROR ERROR ERROR ERROR !!!!!!!!\n"
 			   "\n"
-			   "Enlightenment's utility executable cannot be found at:\n"
+		    "Enlightenment's utility executable cannot be found at:\n"
 			   "\n"
 			   "%s\n"
-			   "This is a fatal error and Enlightenment will cease to run.\n"
-			   "Please rectify this situation and ensure it is installed\n"
+		"This is a fatal error and Enlightenment will cease to run.\n"
+		  "Please rectify this situation and ensure it is installed\n"
 			   "correctly.\n"
 			   "\n"
-			   "The reason this could be missing is due to badly created\n"
-			   "packages, someone manually deleting that program or perhaps\n"
+		  "The reason this could be missing is due to badly created\n"
+	       "packages, someone manually deleting that program or perhaps\n"
 			   "an error in installing Enlightenment.\n"), s);
 	     EExit(NULL);
 	  }
@@ -75,11 +76,11 @@ BlumFlimFrub(void)
 	  {
 	     Alert(gettext("!!!!!!!! ERROR ERROR ERROR ERROR !!!!!!!!\n"
 			   "\n"
-			   "Enlightenment's dox executable is not able to be executed:\n"
+		"Enlightenment's dox executable is not able to be executed:\n"
 			   "\n"
 			   "%s\n"
-			   "This is a fatal error and Enlightenment will cease to run.\n"
-			   "Please rectify this situation and ensure dox is installed\n"
+		"This is a fatal error and Enlightenment will cease to run.\n"
+		 "Please rectify this situation and ensure dox is installed\n"
 			   "correctly.\n"), s);
 	     EExit(NULL);
 	  }
@@ -99,12 +100,12 @@ BlumFlimFrub(void)
 			   "\n"
 			   "Enlightenment's documentation is not present or correctly installed\n"
 			   "\n"
-			   "This is a fatal error and Enlightenment will cease to run.\n"
-			   "Please rectify this situation and ensure it is installed\n"
+		"This is a fatal error and Enlightenment will cease to run.\n"
+		  "Please rectify this situation and ensure it is installed\n"
 			   "correctly.\n"
 			   "\n"
-			   "The reason this could be missing is due to badly created\n"
-			   "packages, someone manually deleting those files or perhaps\n"
+		  "The reason this could be missing is due to badly created\n"
+		"packages, someone manually deleting those files or perhaps\n"
 			   "an error in installing Enlightenment.\n"));
 	     EExit(NULL);
 	  }
@@ -124,9 +125,9 @@ BlumFlimFrub(void)
 			   "Enlightenment's DEFAULT installed theme is missing or inadequately\n"
 			   "configured to be a useful DEFAULT theme.\n"
 			   "\n"
-			   "This is a fatal error and Enlightenment will cease to run.\n"
-			   "Please rectify this situation and ensure it is installed\n"
-			   "correctly. The DEFAULT theme Enlightenment comes with normally\n"
+		"This is a fatal error and Enlightenment will cease to run.\n"
+		  "Please rectify this situation and ensure it is installed\n"
+	     "correctly. The DEFAULT theme Enlightenment comes with normally\n"
 			   "is BrushedMetal-Tigert and this theme is adequate for a DEFAULT\n"
 			   "theme.\n"));
 	     EExit(NULL);

@@ -795,7 +795,7 @@ Config_Control(FILE * ConfigFile)
 	  default:
 	     RecoverUserConfig();
 	     Alert(gettext("Warning: unable to determine what to do with\n"
-			   "the following text in the middle of current Control "
+			"the following text in the middle of current Control "
 			   "definition:\n"
 			   "%s\nWill ignore and continue...\n"), s);
 	  }
@@ -1170,7 +1170,7 @@ BorderPartLoad(FILE * ConfigFile, char type, Border * b)
    int                 flags = FLAG_BUTTON;
    char                isregion = 0, keepshade = 1;
    int                 wmin = 0, wmax = 0, hmin = 0, hmax = 0, torigin = 0,
-      txp = 0, txa = 0, typ = 0, tya = 0, borigin = 0;
+                       txp = 0, txa = 0, typ = 0, tya = 0, borigin = 0;
    int                 bxp = 0, bxa = 0, byp = 0, bya = 0;
    int                 fields;
 
@@ -1400,8 +1400,7 @@ Config_Button(FILE * ConfigFile)
    int                 flags = 0, minw = 1, maxw = 99999, minh = 1;
    int                 maxh = 99999, xo = 0, yo = 0, xa = 0;
    int                 xr = 0, ya = 0, yr = 0, xsr = 0, xsa = 0, ysr = 0,
-
-      ysa = 0;
+                       ysa = 0;
    char                simg = 0;
    int                 desk = 0;
    char                sticky = 0;
@@ -1444,7 +1443,7 @@ Config_Button(FILE * ConfigFile)
 	       {
 		  bt = CreateButton(name, ic, ac, tc, label, ontop, flags,
 				    minw, maxw, minh, maxh, xo, yo, xa, xr, ya,
-				    yr, xsr, xsa, ysr, ysa, simg, desk, sticky);
+				  yr, xsr, xsa, ysr, ysa, simg, desk, sticky);
 		  bt->default_show = show;
 		  bt->internal = internal;
 		  AddItem(bt, bt->name, 0, LIST_TYPE_BUTTON);
@@ -2244,7 +2243,7 @@ Config_ActionClass(FILE * ConfigFile)
 	       {
 		  action_tooltipstring = Erealloc(action_tooltipstring,
 						  (strlen(action_tooltipstring)
-						   + strlen(atword(s, 2)) + 2));
+						 + strlen(atword(s, 2)) + 2));
 		  action_tooltipstring = strcat(action_tooltipstring, "\n");
 		  action_tooltipstring =
 		     strcat(action_tooltipstring, atword(s, 2));
@@ -2282,7 +2281,7 @@ Config_ActionClass(FILE * ConfigFile)
    RecoverUserConfig();
    Alert(gettext
 	 ("Warning:  Configuration appears to have ended before we were\n"
-	  "Done loading an Action Class block.  Outcome is likely not good.\n"));
+       "Done loading an Action Class block.  Outcome is likely not good.\n"));
 }
 
 void
@@ -2854,7 +2853,7 @@ Config_ToolTip(FILE * ConfigFile)
 	  }
      }
    Alert(gettext("Warning: Configuration appears to have ended before we were\n"
-		 "Done loading an ToolTip block.  Outcome is likely not good.\n"));
+	    "Done loading an ToolTip block.  Outcome is likely not good.\n"));
 
 }
 
@@ -2936,7 +2935,7 @@ Config_Extras(FILE * ConfigFile)
      }
    RecoverUserConfig();
    Alert(gettext("Warning: Configuration appears to have ended before we were\n"
-		 "Done loading an Extras block.  Outcome is likely not good.\n"));
+	     "Done loading an Extras block.  Outcome is likely not good.\n"));
 }
 
 void
@@ -3034,7 +3033,7 @@ Config_Ibox(FILE * ConfigFile)
      }
    RecoverUserConfig();
    Alert(gettext("Warning: Configuration appears to have ended before we were\n"
-		 "Done loading an Iconbox block.  Outcome is likely not good.\n"));
+	    "Done loading an Iconbox block.  Outcome is likely not good.\n"));
 }
 
 void
@@ -3148,7 +3147,7 @@ Config_WindowMatch(FILE * ConfigFile)
 	  }
      }
    Alert(gettext("Warning: Configuration appears to have ended before we were\n"
-		 "Done loading an WindowMatch block.  Outcome is likely not good.\n"));
+	"Done loading an WindowMatch block.  Outcome is likely not good.\n"));
 }
 
 int
@@ -3200,7 +3199,7 @@ OpenConfigFileForReading(char *path, char preprocess)
 			   "Enlightenment is looking for epp here:\n"
 			   "%s\n"
 			   "This is a FATAL ERROR.\n"
-			   "This is probably due to either the program not existing or\n"
+		"This is probably due to either the program not existing or\n"
 			   "it not being able to be executed by you.\n"),
 		   epp_path);
 	     doExit(gettext("error"));
@@ -3297,8 +3296,7 @@ LoadConfigFile(char *f)
 {
    FILE               *ConfigFile;
    char                s[FILEPATH_LEN_MAX], s2[FILEPATH_LEN_MAX], *file,
-
-      *ppfile;
+                      *ppfile;
    int                 i;
    char                notheme = 0;
 
@@ -3411,15 +3409,15 @@ LoadOpenConfigFile(FILE * ConfigFile)
 				     "\n"
 				     "The configuration for the theme you are "
 				     "running is\n"
-				     "incompatible. It's config revision is %i.  "
+				 "incompatible. It's config revision is %i.  "
 				     "It needs to\n"
 				     "be marked as being revision %i\n"
 				     "\n"
 				     "Please contact the theme author or "
 				     "maintainer and\n"
-				     "inform them that in order for their theme "
+				  "inform them that in order for their theme "
 				     "to function\n"
-				     "with this version of Enlightenment, they "
+				   "with this version of Enlightenment, they "
 				     "have to\n"
 				     "update it to the current settings, and "
 				     "then match\n"
@@ -3429,8 +3427,8 @@ LoadOpenConfigFile(FILE * ConfigFile)
 				     "Enlightenment's\n"
 				     "it may be that you haven't upgraded "
 				     "Enlightenment for\n"
-				     "a while and this theme takes advantages of new\n"
-				     "features in Enlightenment in new versions.\n"),
+			    "a while and this theme takes advantages of new\n"
+			      "features in Enlightenment in new versions.\n"),
 			     e_cfg_ver, min_e_cfg_ver);
 		       RESET_ALERT;
 		       doExit("restart_theme DEFAULT");
@@ -3446,13 +3444,13 @@ LoadOpenConfigFile(FILE * ConfigFile)
 				     "The settings you are using are "
 				     "incompatible with\n"
 				     "this version of Enlightenment.\n"
-				     "It's revision is %i It needs to be revision "
+				"It's revision is %i It needs to be revision "
 				     "%i to\n"
 				     "be compatible.\n"
 				     "\n"
-				     "If you just upgraded to a new version of E\n"
-				     "Restarting with Defaults will remove your current\n"
-				     "user preferences and start cleanly with system\n"
+				"If you just upgraded to a new version of E\n"
+			 "Restarting with Defaults will remove your current\n"
+			    "user preferences and start cleanly with system\n"
 				     "defaults. You can then modify your "
 				     "configuration to\n"
 				     "your liking again safely.\n"),
@@ -3683,7 +3681,7 @@ LoadEConfig(char *themelocation)
 	       "permissions or lack of disk space. It also could be that the\n"
 	       "config directory has been inadvertently deleted since\n"
 	       "installation.\n"
-	       "This is a serious problem and should be rectified immediately\n"
+	     "This is a serious problem and should be rectified immediately\n"
 	       "Please contact your system administrator or package "
 	       "maintainer.\n"
 	       "If you are the administrator of your own system please\n"
@@ -3697,7 +3695,8 @@ LoadEConfig(char *themelocation)
    {
       Progressbar        *p = NULL;
       int                 i;
-      char               *config_files[] = {
+      char               *config_files[] =
+      {
 	 "init.cfg",
 	 "control.cfg",
 	 "textclasses.cfg",
@@ -4165,12 +4164,12 @@ RecoverUserConfig(void)
 		     gettext("Restart and try again"),
 		     gettext("Quit and give up"));
 	Alert(gettext
-	      ("Enlightenment has encountered parsing errors in your autosaved\n"
-	       "configuration.\n" "\n"
-	       "This may be due to filing system errors, Minor bugs or"
-	       " unforeseen\n" "system shutdowns.\n" "\n"
-	       "Do you wish Enlightenment to recover its original system\n"
-	       "configuration and try again?\n"));
+	   ("Enlightenment has encountered parsing errors in your autosaved\n"
+	    "configuration.\n" "\n"
+	    "This may be due to filing system errors, Minor bugs or"
+	    " unforeseen\n" "system shutdowns.\n" "\n"
+	    "Do you wish Enlightenment to recover its original system\n"
+	    "configuration and try again?\n"));
 	RESET_ALERT;
 	mode.autosave = 0;
 	MapUnmap(1);

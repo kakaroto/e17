@@ -71,10 +71,10 @@ end: \
 }
 
 static struct _symtab
-{
-   void               *val;
-   char               *symbol;
-}
+  {
+     void               *val;
+     char               *symbol;
+  }
                    *sym = NULL;
 
 static int          sym_count = 0;
@@ -198,15 +198,15 @@ __Emalloc(int size, const char *file, int line)
 		     gettext("Quit Enlightenment"));
 	Alert(gettext("WARNING!!!!!!\n"
 		      "\n"
-		      "Allocation for %i bytes (%3.0f Kb or %3.1f Mb) did not succeed.\n"
+	   "Allocation for %i bytes (%3.0f Kb or %3.1f Mb) did not succeed.\n"
 		      "\n"
-		      "Either this is a bug where ridiculous amounts of memory\n"
-		      "are being allocated, or your system has run out of both\n"
-		      "real and virtual memory and is unable to satisfy the request.\n"
+		   "Either this is a bug where ridiculous amounts of memory\n"
+		   "are being allocated, or your system has run out of both\n"
+	     "real and virtual memory and is unable to satisfy the request.\n"
 		      "\n"
-		      "If you have a low memory system it is suggested to either\n"
-		      "purchase more memory, increase SWAP space, or reconfigure\n"
-		      "Enlightenment to use less resources by turning features off.\n"
+		 "If you have a low memory system it is suggested to either\n"
+		 "purchase more memory, increase SWAP space, or reconfigure\n"
+	      "Enlightenment to use less resources by turning features off.\n"
 		      "\n"
 		      "The malloc requested was at %s, line %d\n "),
 	      size, (float)size / 1024, (float)size / (1024 * 1024), file,
@@ -274,7 +274,7 @@ __Erealloc(void *ptr, int size, const char *file, int line)
 	if (disp)
 	   UngrabX();
 	ASSIGN_ALERT(gettext
-		     ("Error in reallocating memory that hasn't been allocated"),
+		  ("Error in reallocating memory that hasn't been allocated"),
 		     gettext("Ignore this"), gettext("Restart Enlightenment"),
 		     gettext("Quit Enlightenment"));
 	Alert(gettext
@@ -284,7 +284,7 @@ __Erealloc(void *ptr, int size, const char *file, int line)
 	       "memory chunk that has not been allocated or has already been\n"
 	       "freed.\n" "\n" "This is definitely a bug. Please report it.\n"
 	       "\n" "The error occured at %s, line %d.\n"), size,
-	      (float)size / 1024, (float)size / (1024 * 1024), ptr, file, line);
+	    (float)size / 1024, (float)size / (1024 * 1024), ptr, file, line);
 	RESET_ALERT;
 	EDBUG_RETURN(NULL);
      }
@@ -300,15 +300,15 @@ __Erealloc(void *ptr, int size, const char *file, int line)
 		     gettext("Quit Enlightenment"));
 	Alert(gettext("WARNING!!!!!!\n"
 		      "\n"
-		      "Re-allocation for %i bytes (%3.0f Kb or %3.1f Mb) did not succeed.\n"
+	"Re-allocation for %i bytes (%3.0f Kb or %3.1f Mb) did not succeed.\n"
 		      "\n"
-		      "Either this is a bug where ridiculous amounts of memory\n"
-		      "are being allocated, or your system has run out of both\n"
-		      "real and virtual memory and is unable to satisfy the request.\n"
+		   "Either this is a bug where ridiculous amounts of memory\n"
+		   "are being allocated, or your system has run out of both\n"
+	     "real and virtual memory and is unable to satisfy the request.\n"
 		      "\n"
-		      "If you have a low memory system it is suggested to either\n"
-		      "purchase more memory, increase SWAP space, or reconfigure\n"
-		      "Enlightenment to use less resources by turning features off.\n"
+		 "If you have a low memory system it is suggested to either\n"
+		 "purchase more memory, increase SWAP space, or reconfigure\n"
+	      "Enlightenment to use less resources by turning features off.\n"
 		      "\n"
 		      "The realloc requested was at %s, line %d\n "),
 	      size, (float)size / 1024, (float)size / (1024 * 1024), file,
@@ -382,7 +382,7 @@ __Efree(void *ptr, const char *file, int line)
 	Alert(gettext
 	      ("WARNING!!!!!!\n" "\n"
 	       "freeing for pointer %x is attempting to free memory for a\n"
-	       "memory chunk that has not been allocated, or has already been\n"
+	     "memory chunk that has not been allocated, or has already been\n"
 	       "freed.\n" "\n" "This is definitely a bug. Please report it.\n"
 	       "\n" "The error occured at %s, line %d.\n"), ptr, file, line);
 	RESET_ALERT;
@@ -402,7 +402,7 @@ __Efree(void *ptr, const char *file, int line)
 		      "Enlightenment attempted to free a NULL pointer.\n"
 		      "\n"
 		      "This is definitely a bug. Please report it.\n"
-		      "It is safe to ignore this error and continue running Enlightenment.\n"
+	"It is safe to ignore this error and continue running Enlightenment.\n"
 		      "\n"
 		      "The pointer value was %x.\n"
 		      "The error occured at %s, line %d.\n"), ptr, file, line);

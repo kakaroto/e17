@@ -128,12 +128,12 @@
 
 /* Preferences for behavior for app */
 /* ONLY the client sets this */
-#define WIN_HINTS_SKIP_FOCUS             (1<<0)	/* "alt-tab" skips this win */
-#define WIN_HINTS_SKIP_WINLIST           (1<<1)	/* not in win list */
-#define WIN_HINTS_SKIP_TASKBAR           (1<<2)	/* not on taskbar */
-#define WIN_HINTS_GROUP_TRANSIENT        (1<<3)	/* ??????? */
-#define WIN_HINTS_FOCUS_ON_CLICK         (1<<4)	/* app only accepts focus when clicked */
-#define WIN_HINTS_DO_NOT_COVER           (1<<5)	/* attempt to not cover this window */
+#define WIN_HINTS_SKIP_FOCUS             (1<<0)		/* "alt-tab" skips this win */
+#define WIN_HINTS_SKIP_WINLIST           (1<<1)		/* not in win list */
+#define WIN_HINTS_SKIP_TASKBAR           (1<<2)		/* not on taskbar */
+#define WIN_HINTS_GROUP_TRANSIENT        (1<<3)		/* ??????? */
+#define WIN_HINTS_FOCUS_ON_CLICK         (1<<4)		/* app only accepts focus when clicked */
+#define WIN_HINTS_DO_NOT_COVER           (1<<5)		/* attempt to not cover this window */
 #define XA_WIN_HINTS                     "_WIN_HINTS"
 /* WIN_HINTS = CARD32 */
 
@@ -720,7 +720,8 @@ GNOME_SetWMNameVer(void)
 void
 GNOME_DelHints(EWin * ewin)
 {
-   static Atom         atom_get[7] = { 0, 0, 0, 0, 0, 0, 0 };
+   static Atom         atom_get[7] =
+   {0, 0, 0, 0, 0, 0, 0};
 
    EDBUG(6, "GNOME_DelHints");
    if (!atom_get[0])

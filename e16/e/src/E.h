@@ -222,7 +222,7 @@ int                 Evsnprintf(char *str, size_t count, const char *fmt,
 			       va_list args);
 
 #ifdef HAVE_STDARGS
-int                 Esnprintf(char *str, size_t count, const char *fmt, ...);
+int                 Esnprintf(char *str, size_t count, const char *fmt,...);
 
 #else
 int                 Esnprintf(va_alist);
@@ -521,863 +521,863 @@ typedef struct _iconbox Iconbox;
 typedef struct _group Group;
 
 typedef struct _icondef
-{
-   char               *title_match;
-   char               *name_match;
-   char               *class_match;
-   char               *icon_file;
-}
+  {
+     char               *title_match;
+     char               *name_match;
+     char               *class_match;
+     char               *icon_file;
+  }
 Icondef;
 
 typedef struct _exid
-{
-   Window              parent;
-   Window              win;
-   int                 x, y, w, h;
-   char                mapped;
-   int                 num_rect;
-   int                 ord;
-   XRectangle         *rects;
-   int                 depth;
-   Pixmap              bgpmap;
-   int                 bgcol;
-}
+  {
+     Window              parent;
+     Window              win;
+     int                 x, y, w, h;
+     char                mapped;
+     int                 num_rect;
+     int                 ord;
+     XRectangle         *rects;
+     int                 depth;
+     Pixmap              bgpmap;
+     int                 bgcol;
+  }
 EXID;
 
 typedef struct _actiontype
-{
-   void               *params;
-   struct _actiontype *Next;
-   int                 Type;
-}
+  {
+     void               *params;
+     struct _actiontype *Next;
+     int                 Type;
+  }
 ActionType;
 
 typedef struct _list
-{
-   char               *name;
-   int                 id;
-   void               *item;
+  {
+     char               *name;
+     int                 id;
+     void               *item;
 
-   struct _list       *next;
-}
+     struct _list       *next;
+  }
 List;
 
 typedef struct _client
-{
-   char               *name;
-   Window              win;
-   char               *msg;
-   char               *clientname;
-   char               *version;
-   char               *author;
-   char               *email;
-   char               *web;
-   char               *address;
-   char               *info;
-   Pixmap              pmap;
-}
+  {
+     char               *name;
+     Window              win;
+     char               *msg;
+     char               *clientname;
+     char               *version;
+     char               *author;
+     char               *email;
+     char               *web;
+     char               *address;
+     char               *info;
+     Pixmap              pmap;
+  }
 Client;
 
 typedef struct _root
-{
-   Window              win;
-   Visual             *vis;
-   int                 depth;
-   Colormap            cmap;
-   int                 scr;
-   int                 w, h;
-   Window              focuswin;
-}
+  {
+     Window              win;
+     Visual             *vis;
+     int                 depth;
+     Colormap            cmap;
+     int                 scr;
+     int                 w, h;
+     Window              focuswin;
+  }
 Root;
 
 typedef struct _modcurve
-{
-   int                 num;
-   unsigned char      *px;
-   unsigned char      *py;
-   unsigned char       map[256];
-}
+  {
+     int                 num;
+     unsigned char      *px;
+     unsigned char      *py;
+     unsigned char       map[256];
+  }
 ModCurve;
 
 typedef struct _colormodifierclass
-{
-   char               *name;
-   ModCurve            red, green, blue;
-   unsigned int        ref_count;
-}
+  {
+     char               *name;
+     ModCurve            red, green, blue;
+     unsigned int        ref_count;
+  }
 ColorModifierClass;
 
 typedef struct _imagestate
-{
-   char               *im_file;
-   char               *real_file;
-   char                unloadable;
-   ImlibImage         *im;
-   ImlibColor         *transp;
-   ImlibBorder        *border;
-   int                 pixmapfillstyle;
-   ImlibColor          bg, hi, lo, hihi, lolo;
-   int                 bevelstyle;
-   ColorModifierClass *colmod;
-}
+  {
+     char               *im_file;
+     char               *real_file;
+     char                unloadable;
+     ImlibImage         *im;
+     ImlibColor         *transp;
+     ImlibBorder        *border;
+     int                 pixmapfillstyle;
+     ImlibColor          bg, hi, lo, hihi, lolo;
+     int                 bevelstyle;
+     ColorModifierClass *colmod;
+  }
 ImageState;
 
 typedef struct _ImageStateArray
-{
-   ImageState         *normal;
-   ImageState         *hilited;
-   ImageState         *clicked;
-   ImageState         *disabled;
-}
+  {
+     ImageState         *normal;
+     ImageState         *hilited;
+     ImageState         *clicked;
+     ImageState         *disabled;
+  }
 ImageStateArray;
 
 typedef struct _imageclass
-{
-   char               *name;
-   char                external;
-   ImageStateArray     norm, active, sticky, sticky_active;
-   ImlibBorder         padding;
-   ColorModifierClass *colmod;
-   unsigned int        ref_count;
-}
+  {
+     char               *name;
+     char                external;
+     ImageStateArray     norm, active, sticky, sticky_active;
+     ImlibBorder         padding;
+     ColorModifierClass *colmod;
+     unsigned int        ref_count;
+  }
 ImageClass;
 
 typedef struct _efont
-{
-   TT_Engine           engine;
-   TT_Face             face;
-   TT_Instance         instance;
-   TT_Face_Properties  properties;
-   int                 num_glyph;
-   TT_Glyph           *glyphs;
-   TT_Raster_Map     **glyphs_cached;
-   int                 max_descent;
-   int                 max_ascent;
-}
+  {
+     TT_Engine           engine;
+     TT_Face             face;
+     TT_Instance         instance;
+     TT_Face_Properties  properties;
+     int                 num_glyph;
+     TT_Glyph           *glyphs;
+     TT_Raster_Map     **glyphs_cached;
+     int                 max_descent;
+     int                 max_ascent;
+  }
 Efont;
 
 typedef struct _textstate
-{
-   char               *fontname;
-   FnlibStyle          style;
-   FnlibFont          *font;
-   ImlibColor          fg_col;
-   ImlibColor          bg_col;
-   int                 effect;
-   Efont              *efont;
-   XFontStruct        *xfont;
-   XFontSet            xfontset;
-   int                 xfontset_ascent;
-}
+  {
+     char               *fontname;
+     FnlibStyle          style;
+     FnlibFont          *font;
+     ImlibColor          fg_col;
+     ImlibColor          bg_col;
+     int                 effect;
+     Efont              *efont;
+     XFontStruct        *xfont;
+     XFontSet            xfontset;
+     int                 xfontset_ascent;
+  }
 TextState;
 
 typedef struct _textclass
-{
-   char               *name;
-   struct
-   {
-      TextState          *normal;
-      TextState          *hilited;
-      TextState          *clicked;
-      TextState          *disabled;
-   }
-   norm               , active, sticky, sticky_active;
-   int                 justification;
-   unsigned int        ref_count;
-}
+  {
+     char               *name;
+     struct
+       {
+	  TextState          *normal;
+	  TextState          *hilited;
+	  TextState          *clicked;
+	  TextState          *disabled;
+       }
+     norm               , active, sticky, sticky_active;
+     int                 justification;
+     unsigned int        ref_count;
+  }
 TextClass;
 
 typedef struct _action
-{
-   char                event;
-   char                anymodifier;
-   int                 modifiers;
-   char                anybutton;
-   int                 button;
-   char                anykey;
-   KeyCode             key;
-   char               *key_str;
-   char               *tooltipstring;
-   ActionType         *action;
-}
+  {
+     char                event;
+     char                anymodifier;
+     int                 modifiers;
+     char                anybutton;
+     int                 button;
+     char                anykey;
+     KeyCode             key;
+     char               *key_str;
+     char               *tooltipstring;
+     ActionType         *action;
+  }
 Action;
 
 typedef struct _actionclass
-{
-   char               *name;
-   int                 num;
-   Action            **list;
-   char               *tooltipstring;
-   unsigned int        ref_count;
-}
+  {
+     char               *name;
+     int                 num;
+     Action            **list;
+     char               *tooltipstring;
+     unsigned int        ref_count;
+  }
 ActionClass;
 
 typedef struct _constraints
-{
-   int                 min, max;
-}
+  {
+     int                 min, max;
+  }
 Constraints;
 
 typedef struct _winpoint
-{
-   int                 originbox;
-   struct
-   {
-      int                 percent;
-      int                 absolute;
-   }
-   x                  , y;
-}
+  {
+     int                 originbox;
+     struct
+       {
+	  int                 percent;
+	  int                 absolute;
+       }
+     x                  , y;
+  }
 WinPoint;
 
 typedef struct _geometry
-{
-   Constraints         width, height;
-   WinPoint            topleft, bottomright;
-}
+  {
+     Constraints         width, height;
+     WinPoint            topleft, bottomright;
+  }
 Geometry;
 
 typedef struct _ecursor
-{
-   char               *name;
-   ImlibColor          fg, bg;
-   char               *file;
-   Cursor              cursor;
-   unsigned int        ref_count;
-   char                inroot;
-}
+  {
+     char               *name;
+     ImlibColor          fg, bg;
+     char               *file;
+     Cursor              cursor;
+     unsigned int        ref_count;
+     char                inroot;
+  }
 ECursor;
 
 typedef struct _winpart
-{
-   Geometry            geom;
-   ImageClass         *iclass;
-   ActionClass        *aclass;
-   TextClass          *tclass;
-   ECursor            *ec;
-   char                ontop;
-   int                 flags;
-   char                keep_for_shade;
-}
+  {
+     Geometry            geom;
+     ImageClass         *iclass;
+     ActionClass        *aclass;
+     TextClass          *tclass;
+     ECursor            *ec;
+     char                ontop;
+     int                 flags;
+     char                keep_for_shade;
+  }
 WinPart;
 
 typedef struct _border
-{
-   char               *name;
-   char               *group_border_name;
-   ImlibBorder         border;
-   int                 num_winparts;
-   WinPart            *part;
-   char                changes_shape;
-   char                shadedir;
-   unsigned int        ref_count;
-}
+  {
+     char               *name;
+     char               *group_border_name;
+     ImlibBorder         border;
+     int                 num_winparts;
+     WinPart            *part;
+     char                changes_shape;
+     char                shadedir;
+     unsigned int        ref_count;
+  }
 Border;
 
 typedef struct _ewinbit
-{
-   Window              win;
-   int                 x, y, w, h;
-   int                 cx, cy, cw, ch;
-   int                 state;
-   char                expose;
-   char                no_expose;
-   char                left;
-}
+  {
+     Window              win;
+     int                 x, y, w, h;
+     int                 cx, cy, cw, ch;
+     int                 state;
+     char                expose;
+     char                no_expose;
+     char                left;
+  }
 EWinBit;
 
 typedef struct _winclient
-{
-   Window              win;
-   char               *title;
-   int                 x, y, w, h, bw;
-   Colormap            cmap;
-   Window              icon_win;
-   Pixmap              icon_pmap;
-   Pixmap              icon_mask;
-   char                start_iconified;
-   Window              group;
-   Window              client_leader;
-   char                need_input;
-   char                transient;
-   Window              transient_for;
-   char               *class;
-   char               *name;
-   char               *role;
-   char               *command;
-   char               *machine;
-   char               *icon_name;
-   char                is_group_leader;
-   char                no_resize_h;
-   char                no_resize_v;
-   char                shaped;
-   Constraints         width, height;
-   int                 base_w, base_h;
-   int                 w_inc, h_inc;
-   int                 grav;
-   double              aspect_min, aspect_max;
-   char                already_placed;
-   char                mwm_decor_border;
-   char                mwm_decor_resizeh;
-   char                mwm_decor_title;
-   char                mwm_decor_menu;
-   char                mwm_decor_minimize;
-   char                mwm_decor_maximize;
-   char                mwm_func_resize;
-   char                mwm_func_move;
-   char                mwm_func_minimize;
-   char                mwm_func_maximize;
-   char                mwm_func_close;
-   unsigned int        app_state;
-}
+  {
+     Window              win;
+     char               *title;
+     int                 x, y, w, h, bw;
+     Colormap            cmap;
+     Window              icon_win;
+     Pixmap              icon_pmap;
+     Pixmap              icon_mask;
+     char                start_iconified;
+     Window              group;
+     Window              client_leader;
+     char                need_input;
+     char                transient;
+     Window              transient_for;
+     char               *class;
+     char               *name;
+     char               *role;
+     char               *command;
+     char               *machine;
+     char               *icon_name;
+     char                is_group_leader;
+     char                no_resize_h;
+     char                no_resize_v;
+     char                shaped;
+     Constraints         width, height;
+     int                 base_w, base_h;
+     int                 w_inc, h_inc;
+     int                 grav;
+     double              aspect_min, aspect_max;
+     char                already_placed;
+     char                mwm_decor_border;
+     char                mwm_decor_resizeh;
+     char                mwm_decor_title;
+     char                mwm_decor_menu;
+     char                mwm_decor_minimize;
+     char                mwm_decor_maximize;
+     char                mwm_func_resize;
+     char                mwm_func_move;
+     char                mwm_func_minimize;
+     char                mwm_func_maximize;
+     char                mwm_func_close;
+     unsigned int        app_state;
+  }
 WinClient;
 
 typedef struct _ewin
-{
-   Window              win;
-   int                 x, y, w, h, reqx, reqy;
-   int                 lx, ly, lw, lh;
-   char                toggle;
-   Window              win_container;
-   WinClient           client;
-   Border             *border;
-   Border             *previous_border;
-   char                border_new;
-   EWinBit            *bits;
-   int                 flags;
-   int                 desktop;
-   Group             **groups;
-   int                 num_groups;
-   int                 docked;
-   char                sticky;
-   char                visible;
-   char                iconified;
-   char                shaded;
-   char                active;
-   int                 layer;
-   char                never_use_area;
-   Window              parent;
-   char                floating;
-   char                shapedone;
-   char                fixedpos;
-   int                 expanded_x;
-   int                 expanded_y;
-   int                 expanded_width;
-   int                 expanded_height;
-   char                ignorearrange;
-   char                skiptask;
-   char                skipfocus;
-   char                skipwinlist;
-   char                focusclick;
-   char                internal;
-   Menu               *menu;
-   Window              shownmenu;
-   Dialog             *dialog;
-   Pager              *pager;
-   Iconbox            *ibox;
-   int                 area_x;
-   int                 area_y;
-   char               *session_id;
-   int                 has_transients;
-   int                 mini_w, mini_h;
-   Pixmap              mini_pmap, mini_mask;
-   Snapshot           *snap;
-   int                 icon_pmap_w, icon_pmap_h;
-   Pixmap              icon_pmap, icon_mask;
-   char                kde_hint;
-}
+  {
+     Window              win;
+     int                 x, y, w, h, reqx, reqy;
+     int                 lx, ly, lw, lh;
+     char                toggle;
+     Window              win_container;
+     WinClient           client;
+     Border             *border;
+     Border             *previous_border;
+     char                border_new;
+     EWinBit            *bits;
+     int                 flags;
+     int                 desktop;
+     Group             **groups;
+     int                 num_groups;
+     int                 docked;
+     char                sticky;
+     char                visible;
+     char                iconified;
+     char                shaded;
+     char                active;
+     int                 layer;
+     char                never_use_area;
+     Window              parent;
+     char                floating;
+     char                shapedone;
+     char                fixedpos;
+     int                 expanded_x;
+     int                 expanded_y;
+     int                 expanded_width;
+     int                 expanded_height;
+     char                ignorearrange;
+     char                skiptask;
+     char                skipfocus;
+     char                skipwinlist;
+     char                focusclick;
+     char                internal;
+     Menu               *menu;
+     Window              shownmenu;
+     Dialog             *dialog;
+     Pager              *pager;
+     Iconbox            *ibox;
+     int                 area_x;
+     int                 area_y;
+     char               *session_id;
+     int                 has_transients;
+     int                 mini_w, mini_h;
+     Pixmap              mini_pmap, mini_mask;
+     Snapshot           *snap;
+     int                 icon_pmap_w, icon_pmap_h;
+     Pixmap              icon_pmap, icon_mask;
+     char                kde_hint;
+  }
 EWin;
 
 typedef struct _groupconfig
-{
-   char                iconify;
-   char                kill;
-   char                move;
-   char                raise;
-   char                set_border;
-   char                stick;
-   char                shade;
-   char                mirror;
-}
+  {
+     char                iconify;
+     char                kill;
+     char                move;
+     char                raise;
+     char                set_border;
+     char                stick;
+     char                shade;
+     char                mirror;
+  }
 GroupConfig;
 
 struct _group
-{
-   int                 index;
-   EWin              **members;
-   int                 num_members;
-   GroupConfig         cfg;
-};
+  {
+     int                 index;
+     EWin              **members;
+     int                 num_members;
+     GroupConfig         cfg;
+  };
 
 typedef struct _awaiticlass
-{
-   Window              client_win;
-   int                 ewin_bit;
-   ImageClass         *iclass;
-}
+  {
+     Window              client_win;
+     int                 ewin_bit;
+     ImageClass         *iclass;
+  }
 AwaitIclass;
 
 typedef struct _bgeometry
-{
-   Constraints         width, height;
-   int                 xorigin, yorigin;
-   int                 xabs, xrel;
-   int                 yabs, yrel;
-   int                 xsizerel, xsizeabs;
-   int                 ysizerel, ysizeabs;
-   char                size_from_image;
-}
+  {
+     Constraints         width, height;
+     int                 xorigin, yorigin;
+     int                 xabs, xrel;
+     int                 yabs, yrel;
+     int                 xsizerel, xsizeabs;
+     int                 ysizerel, ysizeabs;
+     char                size_from_image;
+  }
 BGeometry;
 
 typedef struct _strip Strip;
 typedef struct _stripjoint Stripjoint;
 
 typedef struct _button
-{
-   char               *name;
-   BGeometry           geom;
-   ImageClass         *iclass;
-   ActionClass        *aclass;
-   TextClass          *tclass;
-   char               *label;
-   char                ontop;
-   int                 flags;
-   char                sticky;
-   int                 desktop;
-   char                visible;
-   char                internal;
-   char                default_show;
-   char                used;
+  {
+     char               *name;
+     BGeometry           geom;
+     ImageClass         *iclass;
+     ActionClass        *aclass;
+     TextClass          *tclass;
+     char               *label;
+     char                ontop;
+     int                 flags;
+     char                sticky;
+     int                 desktop;
+     char                visible;
+     char                internal;
+     char                default_show;
+     char                used;
 
-   Window              win;
-   int                 x, y, w, h;
-   int                 cx, cy, cw, ch;
-   int                 state;
-   char                expose;
-   Window              inside_win;
-   Window              event_win;
-   char                destroy_inside_win;
-   char                left;
-   unsigned int        ref_count;
-}
+     Window              win;
+     int                 x, y, w, h;
+     int                 cx, cy, cw, ch;
+     int                 state;
+     char                expose;
+     Window              inside_win;
+     Window              event_win;
+     char                destroy_inside_win;
+     char                left;
+     unsigned int        ref_count;
+  }
 Button;
 
 typedef struct _buttoncontainer
-{
-   char               *name;
-   ImageClass         *iclass;
+  {
+     char               *name;
+     ImageClass         *iclass;
 
-   Window              win;
-   int                 w, h;
-   int                 state;
-   char                expose;
-   char                orientation;
-   Button            **ButtonList;
-   int                 numofbuttonsinlist;
-}
+     Window              win;
+     int                 w, h;
+     int                 state;
+     char                expose;
+     char                orientation;
+     Button            **ButtonList;
+     int                 numofbuttonsinlist;
+  }
 Container;
 
 struct _strip
-{
-   char               *name;
-   int                 xabs, yabs;
-   int                 xrel, yrel;
-   char                ontop;
-   char                sticky;
-   int                 desktop;
-   char                orientation;
-   char                out;
-   int                 justification;
-   int                 spacing;
+  {
+     char               *name;
+     int                 xabs, yabs;
+     int                 xrel, yrel;
+     char                ontop;
+     char                sticky;
+     int                 desktop;
+     char                orientation;
+     char                out;
+     int                 justification;
+     int                 spacing;
 
-   char               *anchor_name;
-   char               *bg_name;
-   Button             *anchor;
-   Button             *bg;
+     char               *anchor_name;
+     char               *bg_name;
+     Button             *anchor;
+     Button             *bg;
 
-   int                 num_buttons;
-   Button             *button;
+     int                 num_buttons;
+     Button             *button;
 
-   Window              win;
-   int                 x, y, w, h;
-   int                 cx, cy, cw, ch;
-};
+     Window              win;
+     int                 x, y, w, h;
+     int                 cx, cy, cw, ch;
+  };
 
 typedef struct _background
-{
-   char               *name;
-   Pixmap              pmap;
-   time_t              last_viewed;
-   struct _bg
-   {
-      ImlibColor          solid;
-      char               *file;
-      char               *real_file;
-      ImlibImage         *im;
-      char                tile;
-      char                keep_aspect;
-      int                 xjust, yjust;
-      int                 xperc, yperc;
-   }
-   bg;
-   struct _top
-   {
-      char               *file;
-      char               *real_file;
-      ImlibImage         *im;
-      char                keep_aspect;
-      int                 xjust, yjust;
-      int                 xperc, yperc;
-   }
-   top;
-   ColorModifierClass *cmclass;
-   char                keepim;
-   unsigned int        ref_count;
-}
+  {
+     char               *name;
+     Pixmap              pmap;
+     time_t              last_viewed;
+     struct _bg
+       {
+	  ImlibColor          solid;
+	  char               *file;
+	  char               *real_file;
+	  ImlibImage         *im;
+	  char                tile;
+	  char                keep_aspect;
+	  int                 xjust, yjust;
+	  int                 xperc, yperc;
+       }
+     bg;
+     struct _top
+       {
+	  char               *file;
+	  char               *real_file;
+	  ImlibImage         *im;
+	  char                keep_aspect;
+	  int                 xjust, yjust;
+	  int                 xperc, yperc;
+       }
+     top;
+     ColorModifierClass *cmclass;
+     char                keepim;
+     unsigned int        ref_count;
+  }
 Background;
 
 typedef struct _desk
-{
-   char                viewable;
-   Window              win;
-   int                 x, y;
-   Background         *bg;
-   int                 num;
-   EWin              **list;
-   Button             *tag;
-   int                 current_area_x;
-   int                 current_area_y;
-}
+  {
+     char                viewable;
+     Window              win;
+     int                 x, y;
+     Background         *bg;
+     int                 num;
+     EWin              **list;
+     Button             *tag;
+     int                 current_area_x;
+     int                 current_area_y;
+  }
 Desk;
 
 typedef struct _desktops
-{
-   int                 current;
-   Desk                desk[ENLIGHTENMENT_CONF_NUM_DESKTOPS];
-   int                 dragdir;
-   int                 dragbar_width;
-   int                 dragbar_ordering;
-   int                 dragbar_length;
-   char                slidein;
-   int                 slidespeed;
-   char                hiqualitybg;
-}
+  {
+     int                 current;
+     Desk                desk[ENLIGHTENMENT_CONF_NUM_DESKTOPS];
+     int                 dragdir;
+     int                 dragbar_width;
+     int                 dragbar_ordering;
+     int                 dragbar_length;
+     char                slidein;
+     int                 slidespeed;
+     char                hiqualitybg;
+  }
 Desktops;
 
 typedef struct _sample
-{
-   char               *file;
-   int                 rate;
-   int                 format;
-   int                 samples;
-   unsigned char      *data;
-   int                 id;
-}
+  {
+     char               *file;
+     int                 rate;
+     int                 format;
+     int                 samples;
+     unsigned char      *data;
+     int                 id;
+  }
 Sample;
 
 typedef struct _soundclass
-{
-   char               *name;
-   char               *file;
-   Sample             *sample;
-   unsigned int        ref_count;
-}
+  {
+     char               *name;
+     char               *file;
+     Sample             *sample;
+     unsigned int        ref_count;
+  }
 SoundClass;
 
 typedef struct _windowmatch
-{
-   char               *name;
-   char               *win_title;
-   char               *win_name;
-   char               *win_class;
-   Constraints         width;
-   Constraints         height;
-   signed char         transient;
-   signed char         no_resize_h;
-   signed char         no_resize_v;
-   signed char         shaped;
-   Border             *border;
-   ImageClass         *icon;
-   int                 desk;
-   char                make_sticky;
-}
+  {
+     char               *name;
+     char               *win_title;
+     char               *win_name;
+     char               *win_class;
+     Constraints         width;
+     Constraints         height;
+     signed char         transient;
+     signed char         no_resize_h;
+     signed char         no_resize_v;
+     signed char         shaped;
+     Border             *border;
+     ImageClass         *icon;
+     int                 desk;
+     char                make_sticky;
+  }
 WindowMatch;
 
 typedef struct
-{
-   char               *name;
-   char                direction;
-   int                 num_buttons;
-   Button            **button;
-   int                 w, h;
-   Window              win;
-   Window              from_win;
-   unsigned int        ref_count;
-}
+  {
+     char               *name;
+     char                direction;
+     int                 num_buttons;
+     Button            **button;
+     int                 w, h;
+     Window              win;
+     Window              from_win;
+     unsigned int        ref_count;
+  }
 Slideout;
 
 typedef struct _emode
-{
-   int                 mode;
-   int                 deskmode;
-   char                place;
-   char                flipp;
-   char                startup;
-   char                xselect;
-   int                 next_move_x_plus;
-   int                 next_move_y_plus;
-   EWin               *ewin;
-   Button             *button;
-   int                 resize_detail;
-   int                 win_x, win_y, win_w, win_h;
-   int                 start_x, start_y;
-   char                noewin;
-   char                have_place_grab;
-   int                 focusmode;
-   char                dockdirmode;
-   char                primaryicondir;
-   char                click_focus_grabbed;
-   EWin               *focuswin;
-   EWin               *realfocuswin;
-   EWin               *mouse_over_win;
-   EWin               *context_ewin;
-   int                 px, py, x, y;
-   char                firstlast;
-   int                 movemode;
-   int                 resizemode;
-   int                 slidemode;
-   char                cleanupslide;
-   char                mapslide;
-   int                 slidespeedmap;
-   int                 slidespeedcleanup;
-   char                animate_shading;
-   int                 shadespeed;
-   char                doingslide;
-   int                 server_grabbed;
-   int                 desktop_bg_timeout;
-   int                 deskdrag;
-   char                sound;
-   int                 button_move_resistance;
-   char                button_move_pending;
-   Colormap            current_cmap;
-   char                autosave;
-   char                memory_paranoia;
-   char                destroy;
-   char                adestroy;
-   Slideout           *slideout;
-   Window              context_win;
-   char                tooltips;
-   double              tiptime;
-   char                autoraise;
-   double              autoraisetime;
-   int                 dockstartx;
-   int                 dockstarty;
-   char                save_under;
-   char                cur_menu_mode;
-   int                 cur_menu_depth;
-   Menu               *cur_menu[256];
-   char                menuslide;
-   char                menusonscreen;
-   char                numdesktops;
-   char                transientsfollowleader;
-   char                switchfortransientmap;
-   char                showicons;
-   char                snap;
-   int                 edge_snap_dist;
-   int                 screen_snap_dist;
-   Window              menu_cover_win;
-   char                all_new_windows_get_focus;
-   char                new_transients_get_focus;
-   char                new_transients_get_focus_if_group_focused;
-   char                manual_placement;
-   char                raise_on_next_focus;
-   char                raise_after_next_focus;
-   char                display_warp;
-   char                warp_on_next_focus;
-   char                warp_after_next_focus;
-   int                 edge_flip_resistance;
-   EWin               *moveresize_pending_ewin;
-   char                borderpartpress;
-   char                windowdestroy;
-   int                 context_w;
-   int                 context_h;
-   char                autoupgrade;
-   char                activenetwork;
-   int                 motddate;
-   char                motd;
-   char                alreadytestingnetwork;
-   char                show_pagers;
-   Pager              *context_pager;
-   char                pager_hiq;
-   char                pager_snap;
-   char                user_bg;
-   char                pager_zoom;
-   char                pager_title;
-   char                constrained;
-   int                 pager_scanspeed;
-   TextClass          *icon_textclass;
-   int                 icon_mode;
-   char                nogroup;
-   GroupConfig         group_config;
-   Window              kde_dock;
-   int                 kde_support;
-   int                 kde_x1;
-   int                 kde_x2;
-   int                 kde_y1;
-   int                 kde_y2;
-   char                clickalways;
-   char                keybinds_changed;
-   char                firsttime;
-   char                showroottooltip;
-   int                 pager_sel_button;
-   int                 pager_win_button;
-   int                 pager_menu_button;
-}
+  {
+     int                 mode;
+     int                 deskmode;
+     char                place;
+     char                flipp;
+     char                startup;
+     char                xselect;
+     int                 next_move_x_plus;
+     int                 next_move_y_plus;
+     EWin               *ewin;
+     Button             *button;
+     int                 resize_detail;
+     int                 win_x, win_y, win_w, win_h;
+     int                 start_x, start_y;
+     char                noewin;
+     char                have_place_grab;
+     int                 focusmode;
+     char                dockdirmode;
+     char                primaryicondir;
+     char                click_focus_grabbed;
+     EWin               *focuswin;
+     EWin               *realfocuswin;
+     EWin               *mouse_over_win;
+     EWin               *context_ewin;
+     int                 px, py, x, y;
+     char                firstlast;
+     int                 movemode;
+     int                 resizemode;
+     int                 slidemode;
+     char                cleanupslide;
+     char                mapslide;
+     int                 slidespeedmap;
+     int                 slidespeedcleanup;
+     char                animate_shading;
+     int                 shadespeed;
+     char                doingslide;
+     int                 server_grabbed;
+     int                 desktop_bg_timeout;
+     int                 deskdrag;
+     char                sound;
+     int                 button_move_resistance;
+     char                button_move_pending;
+     Colormap            current_cmap;
+     char                autosave;
+     char                memory_paranoia;
+     char                destroy;
+     char                adestroy;
+     Slideout           *slideout;
+     Window              context_win;
+     char                tooltips;
+     double              tiptime;
+     char                autoraise;
+     double              autoraisetime;
+     int                 dockstartx;
+     int                 dockstarty;
+     char                save_under;
+     char                cur_menu_mode;
+     int                 cur_menu_depth;
+     Menu               *cur_menu[256];
+     char                menuslide;
+     char                menusonscreen;
+     char                numdesktops;
+     char                transientsfollowleader;
+     char                switchfortransientmap;
+     char                showicons;
+     char                snap;
+     int                 edge_snap_dist;
+     int                 screen_snap_dist;
+     Window              menu_cover_win;
+     char                all_new_windows_get_focus;
+     char                new_transients_get_focus;
+     char                new_transients_get_focus_if_group_focused;
+     char                manual_placement;
+     char                raise_on_next_focus;
+     char                raise_after_next_focus;
+     char                display_warp;
+     char                warp_on_next_focus;
+     char                warp_after_next_focus;
+     int                 edge_flip_resistance;
+     EWin               *moveresize_pending_ewin;
+     char                borderpartpress;
+     char                windowdestroy;
+     int                 context_w;
+     int                 context_h;
+     char                autoupgrade;
+     char                activenetwork;
+     int                 motddate;
+     char                motd;
+     char                alreadytestingnetwork;
+     char                show_pagers;
+     Pager              *context_pager;
+     char                pager_hiq;
+     char                pager_snap;
+     char                user_bg;
+     char                pager_zoom;
+     char                pager_title;
+     char                constrained;
+     int                 pager_scanspeed;
+     TextClass          *icon_textclass;
+     int                 icon_mode;
+     char                nogroup;
+     GroupConfig         group_config;
+     Window              kde_dock;
+     int                 kde_support;
+     int                 kde_x1;
+     int                 kde_x2;
+     int                 kde_y1;
+     int                 kde_y2;
+     char                clickalways;
+     char                keybinds_changed;
+     char                firsttime;
+     char                showroottooltip;
+     int                 pager_sel_button;
+     int                 pager_win_button;
+     int                 pager_menu_button;
+  }
 EMode;
 
 typedef struct _handlestruct
-{
-   void                (*func) (XEvent * ev);
-}
+  {
+     void                (*func) (XEvent * ev);
+  }
 HandleStruct;
 
 typedef struct _IPCstruct
-{
-   void                (*func) (char *params, Client * c);
-   char               *commandname;
-   char               *help_text;
-   char               *extended_help_text;
-}
+  {
+     void                (*func) (char *params, Client * c);
+     char               *commandname;
+     char               *help_text;
+     char               *extended_help_text;
+  }
 IPCStruct;
 
 typedef struct _tooltip
-{
-   char               *name;
+  {
+     char               *name;
 
-   ImageClass         *iclass;
-   ImageClass         *s_iclass[4];
-   TextClass          *tclass;
-   int                 dist;
-   Window              win;
-   Window              iwin;
-   Window              s_win[4];
-   char                visible;
-   ImageClass         *tooltippic;
-   unsigned int        ref_count;
-}
+     ImageClass         *iclass;
+     ImageClass         *s_iclass[4];
+     TextClass          *tclass;
+     int                 dist;
+     Window              win;
+     Window              iwin;
+     Window              s_win[4];
+     char                visible;
+     ImageClass         *tooltippic;
+     unsigned int        ref_count;
+  }
 ToolTip;
 
 typedef struct _qentry
-{
-   char               *name;
-   double              in_time;
-   void                (*func) (int val, void *data);
-   struct _qentry     *next;
-   int                 runtime_val;
-   void               *runtime_data;
-   char                just_added;
-}
+  {
+     char               *name;
+     double              in_time;
+     void                (*func) (int val, void *data);
+     struct _qentry     *next;
+     int                 runtime_val;
+     void               *runtime_data;
+     char                just_added;
+  }
 Qentry;
 
 typedef struct _menustyle
-{
-   char               *name;
-   TextClass          *tclass;
-   ImageClass         *bg_iclass;
-   ImageClass         *item_iclass;
-   ImageClass         *sub_iclass;
-   char                use_item_bg;
-   char                iconpos;
-   int                 maxx;
-   int                 maxy;
-   char               *border_name;
-   unsigned int        ref_count;
-}
+  {
+     char               *name;
+     TextClass          *tclass;
+     ImageClass         *bg_iclass;
+     ImageClass         *item_iclass;
+     ImageClass         *sub_iclass;
+     char                use_item_bg;
+     char                iconpos;
+     int                 maxx;
+     int                 maxy;
+     char               *border_name;
+     unsigned int        ref_count;
+  }
 MenuStyle;
 
 typedef struct _menuitem
-{
-   ImageClass         *icon_iclass;
-   char               *text;
-   short               act_id;
-   void               *params;
-   Menu               *child;
-   char                state;
-   Pixmap              pmap[3];
-   Pixmap              mask[3];
-   Window              win;
-   Window              icon_win;
-   short               icon_w;
-   short               icon_h;
-   short               text_w;
-   short               text_h;
-   short               text_x;
-   short               text_y;
-}
+  {
+     ImageClass         *icon_iclass;
+     char               *text;
+     short               act_id;
+     void               *params;
+     Menu               *child;
+     char                state;
+     Pixmap              pmap[3];
+     Pixmap              mask[3];
+     Window              win;
+     Window              icon_win;
+     short               icon_w;
+     short               icon_h;
+     short               text_w;
+     short               text_h;
+     short               text_x;
+     short               text_y;
+  }
 MenuItem;
 
 struct _menu
-{
-   char               *name;
-   char               *title;
-   MenuStyle          *style;
-   int                 num;
-   MenuItem          **items;
-   Window              win;
-   Pixmap              pmap;
-   Pixmap              mask;
-   char                stuck;
-   Menu               *parent;
-   MenuItem           *sel_item;
-   time_t              last_change;
-   void               *data;
-   Menu               *ref_menu;
-   unsigned int        ref_count;
-};
+  {
+     char               *name;
+     char               *title;
+     MenuStyle          *style;
+     int                 num;
+     MenuItem          **items;
+     Window              win;
+     Pixmap              pmap;
+     Pixmap              mask;
+     char                stuck;
+     Menu               *parent;
+     MenuItem           *sel_item;
+     time_t              last_change;
+     void               *data;
+     Menu               *ref_menu;
+     unsigned int        ref_count;
+  };
 
 typedef struct _progressbar
-{
-   char               *name;
-   int                 value;
-   int                 x;
-   int                 y;
-   int                 w;
-   int                 h;
-   Window              win;
-   Window              n_win;
-   Window              p_win;
-   ImageClass         *ic, *inc, *ipc;
-   TextClass          *tc, *tnc;
-}
+  {
+     char               *name;
+     int                 value;
+     int                 x;
+     int                 y;
+     int                 w;
+     int                 h;
+     Window              win;
+     Window              n_win;
+     Window              p_win;
+     ImageClass         *ic, *inc, *ipc;
+     TextClass          *tc, *tnc;
+  }
 Progressbar;
 
 struct _snapshot
-{
-   char               *name;
-   char               *win_title;
-   char               *win_name;
-   char               *win_class;
-   char               *border_name;
-   char                use_desktop;
-   int                 desktop;
-   int                 area_x, area_y;
-   char                use_wh;
-   int                 w, h;
-   char                use_xy;
-   int                 x, y;
-   char                use_layer;
-   int                 layer;
-   char                use_sticky;
-   char                sticky;
-   char               *iclass_name;
-   char                use_shade;
-   char                shade;
-   char                use_cmd;
-   char               *cmd;
-   int                *groups;
-   int                 num_groups;
-   int                 used;
-};
+  {
+     char               *name;
+     char               *win_title;
+     char               *win_name;
+     char               *win_class;
+     char               *border_name;
+     char                use_desktop;
+     int                 desktop;
+     int                 area_x, area_y;
+     char                use_wh;
+     int                 w, h;
+     char                use_xy;
+     int                 x, y;
+     char                use_layer;
+     int                 layer;
+     char                use_sticky;
+     char                sticky;
+     char               *iclass_name;
+     char                use_shade;
+     char                shade;
+     char                use_cmd;
+     char               *cmd;
+     int                *groups;
+     int                 num_groups;
+     int                 used;
+  };
 
 typedef struct _ditembutton DItemButton;
 typedef struct _ditemcheckbutton DItemCheckButton;
@@ -1391,99 +1391,99 @@ typedef struct _ditemarea DItemArea;
 typedef struct _ditem DItem;
 
 struct _ditemslider
-{
-   char                horizontal;
+  {
+     char                horizontal;
 
-   char                numeric;
-   char                numeric_side;
+     char                numeric;
+     char                numeric_side;
 
-   int                 upper;
-   int                 lower;
-   int                 unit;
-   int                 jump;
-   int                 val;
-   int                *val_ptr;
+     int                 upper;
+     int                 lower;
+     int                 unit;
+     int                 jump;
+     int                 val;
+     int                *val_ptr;
 
-   int                 min_length;
+     int                 min_length;
 
-   int                 base_orig_w, base_orig_h;
-   int                 knob_orig_w, knob_orig_h;
-   int                 border_orig_w, border_orig_h;
+     int                 base_orig_w, base_orig_h;
+     int                 knob_orig_w, knob_orig_h;
+     int                 border_orig_w, border_orig_h;
 
-   int                 base_x, base_y, base_w, base_h;
-   int                 knob_x, knob_y, knob_w, knob_h;
-   int                 border_x, border_y, border_w, border_h;
-   int                 numeric_x, numeric_y, numeric_w, numeric_h;
+     int                 base_x, base_y, base_w, base_h;
+     int                 knob_x, knob_y, knob_w, knob_h;
+     int                 border_x, border_y, border_w, border_h;
+     int                 numeric_x, numeric_y, numeric_w, numeric_h;
 
-   ImageClass         *ic_base;
-   ImageClass         *ic_knob;
-   ImageClass         *ic_border;
+     ImageClass         *ic_base;
+     ImageClass         *ic_knob;
+     ImageClass         *ic_border;
 
-   char                in_drag;
-   int                 wanted_val;
+     char                in_drag;
+     int                 wanted_val;
 
-   Window              base_win;
-   Window              knob_win;
-   Window              border_win;
-};
+     Window              base_win;
+     Window              knob_win;
+     Window              border_win;
+  };
 
 struct _ditemarea
-{
-   Window              area_win;
-   int                 w, h;
-   void                (*event_func) (int val, void *data);
-};
+  {
+     Window              area_win;
+     int                 w, h;
+     void                (*event_func) (int val, void *data);
+  };
 
 struct _ditembutton
-{
-   char               *text;
-};
+  {
+     char               *text;
+  };
 
 struct _ditemcheckbutton
-{
-   char               *text;
-   Window              check_win;
-   int                 check_orig_w, check_orig_h;
-   char                onoff;
-   char               *onoff_ptr;
-};
+  {
+     char               *text;
+     Window              check_win;
+     int                 check_orig_w, check_orig_h;
+     char                onoff;
+     char               *onoff_ptr;
+  };
 
 struct _ditemtext
-{
-   char               *text;
-};
+  {
+     char               *text;
+  };
 
 struct _ditemimage
-{
-   char               *image;
-};
+  {
+     char               *image;
+  };
 
 struct _ditemseparator
-{
-   char                horizontal;
-};
+  {
+     char                horizontal;
+  };
 
 struct _ditemtable
-{
-   int                 num_columns;
-   char                border;
-   char                homogenous_h;
-   char                homogenous_v;
-   int                 num_items;
-   DItem             **items;
-};
+  {
+     int                 num_columns;
+     char                border;
+     char                homogenous_h;
+     char                homogenous_v;
+     int                 num_items;
+     DItem             **items;
+  };
 
 struct _ditemradiobutton
-{
-   char               *text;
-   Window              radio_win;
-   int                 radio_orig_w, radio_orig_h;
-   char                onoff;
-   int                 val;
-   int                *val_ptr;
-   DItem              *next;
-   DItem              *first;
-};
+  {
+     char               *text;
+     Window              radio_win;
+     int                 radio_orig_w, radio_orig_h;
+     char                onoff;
+     int                 val;
+     int                *val_ptr;
+     DItem              *next;
+     DItem              *first;
+  };
 
 #define DITEM_NONE         0
 #define DITEM_BUTTON       1
@@ -1497,211 +1497,211 @@ struct _ditemradiobutton
 #define DITEM_AREA         9
 
 struct _ditem
-{
-   int                 type;
-   void                (*func) (int val, void *data);
-   int                 val;
-   void               *data;
-   ImageClass         *iclass;
-   TextClass          *tclass;
-   ImlibBorder         padding;
-   char                fill_h;
-   char                fill_v;
-   int                 align_h;
-   int                 align_v;
-   int                 row_span;
-   int                 col_span;
+  {
+     int                 type;
+     void                (*func) (int val, void *data);
+     int                 val;
+     void               *data;
+     ImageClass         *iclass;
+     TextClass          *tclass;
+     ImlibBorder         padding;
+     char                fill_h;
+     char                fill_v;
+     int                 align_h;
+     int                 align_v;
+     int                 row_span;
+     int                 col_span;
 
-   int                 x, y, w, h;
-   char                hilited;
-   char                clicked;
-   Window              win;
-   union
-   {
-      DItemButton         button;
-      DItemCheckButton    check_button;
-      DItemText           text;
-      DItemTable          table;
-      DItemImage          image;
-      DItemSeparator      separator;
-      DItemRadioButton    radio_button;
-      DItemSlider         slider;
-      DItemArea           area;
-   }
-   item;
-};
+     int                 x, y, w, h;
+     char                hilited;
+     char                clicked;
+     Window              win;
+     union
+       {
+	  DItemButton         button;
+	  DItemCheckButton    check_button;
+	  DItemText           text;
+	  DItemTable          table;
+	  DItemImage          image;
+	  DItemSeparator      separator;
+	  DItemRadioButton    radio_button;
+	  DItemSlider         slider;
+	  DItemArea           area;
+       }
+     item;
+  };
 
 typedef struct _dbutton
-{
-   char               *text;
-   void                (*func) (int val, void *data);
-   Window              win;
-   int                 x, y, w, h;
-   char                hilited;
-   char                clicked;
-   char                close;
-   TextClass          *tclass;
-   ImageClass         *iclass;
-}
+  {
+     char               *text;
+     void                (*func) (int val, void *data);
+     Window              win;
+     int                 x, y, w, h;
+     char                hilited;
+     char                clicked;
+     char                close;
+     TextClass          *tclass;
+     ImageClass         *iclass;
+  }
 DButton;
 
 typedef struct _Dkeybind
-{
-   KeyCode             key;
-   int                 val;
-   void               *data;
-   void                (*func) (int val, void *data);
-}
+  {
+     KeyCode             key;
+     int                 val;
+     void               *data;
+     void                (*func) (int val, void *data);
+  }
 DKeyBind;
 
 struct _dialog
-{
-   char               *name;
-   char               *title;
-   char               *text;
-   int                 num_buttons;
-   Window              win;
-   DButton           **button;
-   TextClass          *tclass;
-   ImageClass         *iclass;
-   int                 w, h;
-   DItem              *item;
-   void                (*exit_func) (int val, void *data);
-   int                 exit_val;
-   void               *exit_data;
-   int                 num_bindings;
-   DKeyBind           *keybindings;
-};
+  {
+     char               *name;
+     char               *title;
+     char               *text;
+     int                 num_buttons;
+     Window              win;
+     DButton           **button;
+     TextClass          *tclass;
+     ImageClass         *iclass;
+     int                 w, h;
+     DItem              *item;
+     void                (*exit_func) (int val, void *data);
+     int                 exit_val;
+     void               *exit_data;
+     int                 num_bindings;
+     DKeyBind           *keybindings;
+  };
 
 typedef struct _PixImg
-{
-   XImage             *xim;
-   XShmSegmentInfo    *shminfo;
-   Pixmap              pmap;
-   GC                  gc;
-}
+  {
+     XImage             *xim;
+     XShmSegmentInfo    *shminfo;
+     Pixmap              pmap;
+     GC                  gc;
+  }
 PixImg;
 
 typedef struct _Clone
-{
-   char               *name;
-   Window              win;
-   EWin               *ewin;
-}
+  {
+     char               *name;
+     Window              win;
+     EWin               *ewin;
+  }
 Clone;
 
 struct _iconbox
-{
-   /* user settings */
-   char               *name;
-   char                orientation;
-   char                animate;
-   char                scrollbar_side;
-   char                arrow_side;
-   char                shownames;
-   char                nobg;
-   int                 iconsize;
-   int                 icon_mode;
+  {
+     /* user settings */
+     char               *name;
+     char                orientation;
+     char                animate;
+     char                scrollbar_side;
+     char                arrow_side;
+     char                shownames;
+     char                nobg;
+     int                 iconsize;
+     int                 icon_mode;
 
-   char                auto_resize;
-   char                draw_icon_base;
-   char                scrollbar_hide;
-   char                cover_hide;
-   int                 auto_resize_anchor;
+     char                auto_resize;
+     char                draw_icon_base;
+     char                scrollbar_hide;
+     char                cover_hide;
+     int                 auto_resize_anchor;
 
-   /* internally set stuff */
-   int                 w, h;
-   int                 pos;
-   int                 max;
-   char                arrow1_hilited;
-   char                arrow1_clicked;
-   char                arrow2_hilited;
-   char                arrow2_clicked;
-   char                icon_clicked;
-   char                scrollbar_hilited;
-   char                scrollbar_clicked;
-   char                scrollbox_clicked;
+     /* internally set stuff */
+     int                 w, h;
+     int                 pos;
+     int                 max;
+     char                arrow1_hilited;
+     char                arrow1_clicked;
+     char                arrow2_hilited;
+     char                arrow2_clicked;
+     char                icon_clicked;
+     char                scrollbar_hilited;
+     char                scrollbar_clicked;
+     char                scrollbox_clicked;
 
-   Pixmap              pmap;
+     Pixmap              pmap;
 
-   Window              win;
-   Window              cover_win;
-   Window              icon_win;
-   Window              scroll_win;
-   Window              arrow1_win;
-   Window              arrow2_win;
-   Window              scrollbar_win;
-   Window              scrollbarknob_win;
-   EWin               *ewin;
+     Window              win;
+     Window              cover_win;
+     Window              icon_win;
+     Window              scroll_win;
+     Window              arrow1_win;
+     Window              arrow2_win;
+     Window              scrollbar_win;
+     Window              scrollbarknob_win;
+     EWin               *ewin;
 
-   int                 num_icons;
-   EWin              **icons;
+     int                 num_icons;
+     EWin              **icons;
 
-   /* these are theme-settable parameters */
-   int                 scroll_thickness;
-   int                 arrow_thickness;
-   int                 bar_thickness;
-   int                 knob_length;
+     /* these are theme-settable parameters */
+     int                 scroll_thickness;
+     int                 arrow_thickness;
+     int                 bar_thickness;
+     int                 knob_length;
 
-};
+  };
 
 struct _pager
-{
-   char               *name;
-   Window              win;
-   Pixmap              pmap;
-   Pixmap              bgpmap;
-   int                 desktop;
-   int                 w, h;
-   int                 dw, dh;
-   char                visible;
-   int                 update_phase;
-   EWin               *ewin;
-   char               *border_name;
-   Window              sel_win;
-   char                hi_visible;
-   Window              hi_win;
-   EWin               *hi_ewin;
-};
+  {
+     char               *name;
+     Window              win;
+     Pixmap              pmap;
+     Pixmap              bgpmap;
+     int                 desktop;
+     int                 w, h;
+     int                 dw, dh;
+     char                visible;
+     int                 update_phase;
+     EWin               *ewin;
+     char               *border_name;
+     Window              sel_win;
+     char                hi_visible;
+     Window              hi_win;
+     EWin               *hi_ewin;
+  };
 
 typedef struct _drawqueue
-{
-   Window              win;
-   ImageClass         *iclass;
-   int                 w, h, active, sticky, state, expose;
-   TextClass          *tclass;
-   char               *text;
-   char                shape_propagate;
-   Pager              *pager;
-   Pager              *redraw_pager;
-   char                newbg;
-   Dialog             *d;
-   DItem              *di;
-   int                 x, y;
-}
+  {
+     Window              win;
+     ImageClass         *iclass;
+     int                 w, h, active, sticky, state, expose;
+     TextClass          *tclass;
+     char               *text;
+     char                shape_propagate;
+     Pager              *pager;
+     Pager              *redraw_pager;
+     char                newbg;
+     Dialog             *d;
+     DItem              *di;
+     int                 x, y;
+  }
 DrawQueue;
 
 /* some kde hint enums here */
 
 typedef enum
-{
-   StickyFlag = (1 << 0),
-   MaximizedFlag = (1 << 1),
-   IconifiedFlag = (1 << 2),
-   AllFlags = 7
-}
+  {
+     StickyFlag = (1 << 0),
+     MaximizedFlag = (1 << 1),
+     IconifiedFlag = (1 << 2),
+     AllFlags = 7
+  }
 KStates;
 
 typedef enum
-{
-   AddWindow,
-   RemoveWindow,
-   FocusWindow,
-   RaiseWindow,
-   LowerWindow,
-   ChangedClient,
-   IconChange
-}
+  {
+     AddWindow,
+     RemoveWindow,
+     FocusWindow,
+     RaiseWindow,
+     LowerWindow,
+     ChangedClient,
+     IconChange
+  }
 KMessage;
 
 /* function prototypes */
@@ -1899,10 +1899,10 @@ Border             *MatchEwinBorder(EWin * ewin, WindowMatch * b);
 ImageClass         *MatchEwinIcon(EWin * ewin, WindowMatch * b);
 int                 MatchEwinDesktop(EWin * ewin, WindowMatch * b);
 void               *MatchEwinByFunction(EWin * ewin,
-					void *(*FunctionToTest) (EWin *,
-								 WindowMatch
+				void *              (*FunctionToTest) (EWin *,
+								   WindowMatch
 
-								 *));
+								       *));
 void                RemoveWindowMatch(WindowMatch * wm);
 
 /* borders.c functions */
@@ -1945,7 +1945,7 @@ void                ImageStatePopulate(ImageState * is);
 void                ImageStateRealize(ImageState * is);
 void                IclassPopulate(ImageClass * iclass);
 void                IclassApply(ImageClass * iclass, Window win, int w, int h,
-				int active, int sticky, int state, char expose);
+			      int active, int sticky, int state, char expose);
 void                IclassApplyCopy(ImageClass * iclass, Window win, int w,
 				    int h, int active, int sticky, int state,
 				    Pixmap * pret, Pixmap * mret);
@@ -2347,7 +2347,7 @@ int                 matchregexp(char *rx, char *s);
 
 double              GetTime(void);
 void                DoIn(char *name, double in_time,
-			 void (*func) (int val, void *data),
+			 void                (*func) (int val, void *data),
 
 			 int runtime_val, void *runtime_data);
 Qentry             *GetHeadTimerQueue(void);
@@ -2657,7 +2657,7 @@ __Erealloc(x, y, "<unknown>", 0)
 
 char               *duplicate(char *s);
 
-void                Alert(char *fmt, ...);
+void                Alert(char *fmt,...);
 void                InitStringList(void);
 void                AssignIgnoreFunction(int (*FunctionToAssign) (void *),
 
@@ -2754,11 +2754,11 @@ void                SetDefaultTheme(char *theme);
 
 char                SanitiseThemeDir(char *dir);
 void                Quicksort(void **a, int l, int r,
-			      int (*CompareFunc) (void *d1, void *d2));
+		     int                 (*CompareFunc) (void *d1, void *d2));
 
 Dialog             *CreateDialog(char *name);
 void                DialogBindKey(Dialog * d, char *key,
-				  void (*func) (int val, void *data),
+			    void                (*func) (int val, void *data),
 
 				  int val, void *data);
 void                FreeDButton(DButton * db);
@@ -2766,7 +2766,7 @@ void                FreeDialog(Dialog * d);
 void                DialogSetText(Dialog * d, char *text);
 void                DialogSetTitle(Dialog * d, char *title);
 void                DialogAddButton(Dialog * d, char *text,
-				    void (*func) (int val, void *data),
+			    void                (*func) (int val, void *data),
 
 				    char close);
 void                DialogDrawButton(Dialog * d, int bnum);
@@ -2776,15 +2776,15 @@ void                DialogDrawArea(Dialog * d, int x, int y, int w, int h);
 void                DialogRedraw(Dialog * d);
 void                ShowDialog(Dialog * d);
 void                DialogClose(Dialog * d);
-void                DialogSetParamText(Dialog * d, char *fmt, ...);
-void                DialogAlert(char *fmt, ...);
-void                DialogAlertOK(char *fmt, ...);
+void                DialogSetParamText(Dialog * d, char *fmt,...);
+void                DialogAlert(char *fmt,...);
+void                DialogAlertOK(char *fmt,...);
 void                DialogRestart(int val, void *data);
 void                DialogQuit(int val, void *data);
 DItem              *DialogInitItem(Dialog * d);
 DItem              *DialogAddItem(DItem * dii, int type);
 void                DialogItemSetCallback(DItem * di,
-					  void (*func) (int val, void *data),
+			    void                (*func) (int val, void *data),
 					  int val, char *data);
 void                DialogItemSetClass(DItem * di, ImageClass * iclass,
 				       TextClass * tclass);
@@ -2815,7 +2815,7 @@ DItem              *DialogItemFindWindow(DItem * di, Window win);
 void                DialogItemSetRowSpan(DItem * di, int row_span);
 void                DialogItemSetColSpan(DItem * di, int col_span);
 void                DialogSetExitFunction(Dialog * d,
-					  void (*func) (int val, void *data),
+			    void                (*func) (int val, void *data),
 					  int val, void *data);
 void                DialogItemRadioButtonSetText(DItem * di, char *text);
 void                DialogItemRadioButtonSetFirst(DItem * di, DItem * first);
@@ -2835,9 +2835,9 @@ void                DialogItemAreaSetSize(DItem * di, int w, int h);
 void                DialogItemAreaGetSize(DItem * di, int *w, int *h);
 Window              DialogItemAreaGetWindow(DItem * di);
 void                DialogItemAreaSetEventFunc(DItem * di,
-					       void (*func) (int val,
+					 void                (*func) (int val,
 
-							     void *data));
+								 void *data));
 
 Window              SC_GetDestWin(void);
 void                SC_PassEvent(XEvent * ev);

@@ -58,12 +58,12 @@ HandleSigIll(int num)
       UngrabX();
    DialogAlert(gettext("Enlightenment performed an Illegal Instruction.\n"
 		       "\n"
-		       "This most likely is due to you having installed an run a\n"
-		       "binary of Enlightenment that was compiled for a make or model\n"
-		       "of CPU not 100% identical or compatible with yours. Please\n"
-		       "either obtain the correct package for your system, or\n"
-		       "re-compile enlightenment and possibly any support libraries\n"
-		       "that you got in binary format to run Enlightenment.\n"));
+		  "This most likely is due to you having installed an run a\n"
+	     "binary of Enlightenment that was compiled for a make or model\n"
+		"of CPU not 100% identical or compatible with yours. Please\n"
+		     "either obtain the correct package for your system, or\n"
+	       "re-compile enlightenment and possibly any support libraries\n"
+		    "that you got in binary format to run Enlightenment.\n"));
    doExit("error");
    EDBUG_RETURN_;
 }
@@ -86,13 +86,13 @@ HandleSigFpe(int num)
       UngrabX();
    DialogAlert(gettext("Enlightenment caused a Floating Point Exception.\n"
 		       "\n"
-		       "This means that Enlightenment or support library routines it calls\n"
-		       "have performed an illegal mathematical operation (most likely\n"
-		       "dividing a number by zero). This is most likely a bug. It is\n"
-		       "recommended to restart now. If you wish to help fix this please\n"
-		       "compile Enlightenment with debugging symbols in and run\n"
-		       "Enlightenment under gdb so you can backtrace for where it died and\n"
-		       "send in a useful bug report with backtrace information and variable\n"
+	"This means that Enlightenment or support library routines it calls\n"
+	     "have performed an illegal mathematical operation (most likely\n"
+	      "dividing a number by zero). This is most likely a bug. It is\n"
+	   "recommended to restart now. If you wish to help fix this please\n"
+		   "compile Enlightenment with debugging symbols in and run\n"
+	"Enlightenment under gdb so you can backtrace for where it died and\n"
+       "send in a useful bug report with backtrace information and variable\n"
 		       "dumps etc.\n"));
    doExit("error");
    EDBUG_RETURN_;
@@ -111,13 +111,13 @@ HandleSigSegv(int num)
       UngrabX();
    DialogAlert(gettext("Enlightenment caused Segment Violation (Segfault)\n"
 		       "\n"
-		       "This means that Enlightenment or support library routines it calls\n"
-		       "have accessed areas of your system's memory that they are not\n"
-		       "allowed access to. This is most likely a bug. It is recommended to\n"
-		       "restart now. If you wish to help fix this please compile\n"
-		       "Enlightenment with debugging symbols in and run Enlightenment\n"
-		       "under gdb so you can backtrace for where it died and send in a\n"
-		       "useful bug report with backtrace information and variable\n"
+	"This means that Enlightenment or support library routines it calls\n"
+	     "have accessed areas of your system's memory that they are not\n"
+	"allowed access to. This is most likely a bug. It is recommended to\n"
+		  "restart now. If you wish to help fix this please compile\n"
+	     "Enlightenment with debugging symbols in and run Enlightenment\n"
+	    "under gdb so you can backtrace for where it died and send in a\n"
+		 "useful bug report with backtrace information and variable\n"
 		       "dumps etc.\n"));
    abort();
    num = 0;
@@ -195,8 +195,8 @@ HandleSigBus(int num)
       UngrabX();
    DialogAlert(gettext("Enlightenment caused Bus Error.\n"
 		       "\n"
-		       "It is suggested you check your hardware and OS installation.\n"
-		       "It is highly unusual to cause Bus Errors on operational\n"
+	      "It is suggested you check your hardware and OS installation.\n"
+		   "It is highly unusual to cause Bus Errors on operational\n"
 		       "hardware.\n"));
    EDBUG_RETURN_;
 }
@@ -217,27 +217,27 @@ EHandleXError(Display * d, XErrorEvent * ev)
 			  "", gettext("Cancel (do NOT edit)"));
 	     Alert(gettext("Another Window Manager is already running.\n"
 			   "\n"
-			   "You will have to quit your current Window Manager first before\n"
+	     "You will have to quit your current Window Manager first before\n"
 			   "you can successfully run Enlightenment.\n"
 			   "\n"
-			   "If you haven't edited your user startup files, Enlightenment\n"
-			   "can do that now for you, so when you log in again after\n"
-			   "quitting your current window manager, you will have\n"
+	      "If you haven't edited your user startup files, Enlightenment\n"
+		   "can do that now for you, so when you log in again after\n"
+		       "quitting your current window manager, you will have\n"
 			   "Enlightenment running.\n"
 			   "\n"
-			   "If you want to do this, click OK, otherwise hit cancel\n"
-			   "to abort this operation and edit the files by hand.\n"
+		    "If you want to do this, click OK, otherwise hit cancel\n"
+		       "to abort this operation and edit the files by hand.\n"
 			   "\n"
 			   "WARNING WARNING WARNING WARNING!\n"
 			   "\n"
-			   "It is possible that this MAY not properly edit your files.\n"));
+	     "It is possible that this MAY not properly edit your files.\n"));
 	     ASSIGN_ALERT(gettext("Are you sure?"),
 			  gettext("YES (edit file)"),
 			  "", gettext("NO (do not edit)"));
 	     Alert(gettext
 		   ("Are you absolutely sure you want to have Enlightenment\n"
 		    "edit your startup files for you?\n" "\n"
-		    "If your startup files are highly customised this may not\n"
+		  "If your startup files are highly customised this may not\n"
 		    "work.\n" "\n" "Are you ABSOLUTELY sure?\n"));
 	     RESET_ALERT;
 	     AddE();

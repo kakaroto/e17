@@ -152,7 +152,7 @@ SettingsPager(void)
    DialogItemSetColSpan(di, 2);
    DialogItemCheckButtonSetText(di,
 				gettext
-				("Smooth high quality snapshots in snapshot mode"));
+			  ("Smooth high quality snapshots in snapshot mode"));
    DialogItemCheckButtonSetState(di, tmp_pager_hiq);
    DialogItemCheckButtonSetPtr(di, &tmp_pager_hiq);
 
@@ -162,7 +162,7 @@ SettingsPager(void)
    DialogItemSetColSpan(di, 2);
    DialogItemCheckButtonSetText(di,
 				gettext
-				("Zoom in on pager windows when mouse is over them"));
+			("Zoom in on pager windows when mouse is over them"));
    DialogItemCheckButtonSetState(di, tmp_pager_zoom);
    DialogItemCheckButtonSetPtr(di, &tmp_pager_zoom);
 
@@ -172,7 +172,7 @@ SettingsPager(void)
    DialogItemSetColSpan(di, 2);
    DialogItemCheckButtonSetText(di,
 				gettext
-				("Pop up window title when mouse is over the window"));
+		       ("Pop up window title when mouse is over the window"));
    DialogItemCheckButtonSetState(di, tmp_pager_title);
    DialogItemCheckButtonSetPtr(di, &tmp_pager_title);
 
@@ -455,7 +455,7 @@ SettingsFocus(void)
    DialogItemSetFill(di, 1, 0);
    DialogItemSetColSpan(di, 2);
    DialogItemCheckButtonSetText(di,
-				gettext("All new windows first get the focus"));
+			      gettext("All new windows first get the focus"));
    DialogItemCheckButtonSetState(di, tmp_new_focus);
    DialogItemCheckButtonSetPtr(di, &tmp_new_focus);
 
@@ -475,7 +475,7 @@ SettingsFocus(void)
    DialogItemSetColSpan(di, 2);
    DialogItemCheckButtonSetText(di,
 				gettext
-				("Only new dialogs whose owner is focused get the focus"));
+		   ("Only new dialogs whose owner is focused get the focus"));
    DialogItemCheckButtonSetState(di, tmp_owner_popup_focus);
    DialogItemCheckButtonSetPtr(di, &tmp_owner_popup_focus);
 
@@ -493,7 +493,7 @@ SettingsFocus(void)
    DialogItemSetColSpan(di, 2);
    DialogItemCheckButtonSetText(di,
 				gettext
-				("Send mouse pointer to window on focus switch"));
+			    ("Send mouse pointer to window on focus switch"));
    DialogItemCheckButtonSetState(di, tmp_warp_focus);
    DialogItemCheckButtonSetPtr(di, &tmp_warp_focus);
 
@@ -527,7 +527,7 @@ SettingsFocus(void)
    DialogItemSetColSpan(di, 2);
    DialogItemCheckButtonSetText(di,
 				gettext
-				("Send mouse pointer to window after focus switch"));
+			 ("Send mouse pointer to window after focus switch"));
    DialogItemCheckButtonSetState(di, tmp_warp_after_focus);
    DialogItemCheckButtonSetPtr(di, &tmp_warp_after_focus);
 #endif /* WITH_TARTY_WARP */
@@ -1180,7 +1180,7 @@ SettingsPlacement(void)
    DialogItemSetColSpan(di, 2);
    DialogItemCheckButtonSetText(di,
 				gettext
-				("Dialog windows appear together with their owner"));
+			 ("Dialog windows appear together with their owner"));
    DialogItemCheckButtonSetState(di, tmp_with_leader);
    DialogItemCheckButtonSetPtr(di, &tmp_with_leader);
 
@@ -1245,8 +1245,8 @@ SettingsAutoRaise(void)
    DItem              *table, *di;
 
    if (
-       (d =
-	FindItem("CONFIGURE_AUTORAISE", 0, LIST_FINDBY_NAME, LIST_TYPE_DIALOG)))
+	 (d =
+      FindItem("CONFIGURE_AUTORAISE", 0, LIST_FINDBY_NAME, LIST_TYPE_DIALOG)))
      {
 	AUDIO_PLAY("SOUND_SETTINGS_ACTIVE");
 	ShowDialog(d);
@@ -1343,8 +1343,8 @@ SettingsTooltips(void)
    DItem              *table, *di;
 
    if (
-       (d =
-	FindItem("CONFIGURE_TOOLTIPS", 0, LIST_FINDBY_NAME, LIST_TYPE_DIALOG)))
+	 (d =
+       FindItem("CONFIGURE_TOOLTIPS", 0, LIST_FINDBY_NAME, LIST_TYPE_DIALOG)))
      {
 	AUDIO_PLAY("SOUND_SETTINGS_ACTIVE");
 	ShowDialog(d);
@@ -1706,7 +1706,7 @@ SettingsSpecialFX(void)
    DialogItemSetFill(di, 1, 0);
    DialogItemSetColSpan(di, 3);
    DialogItemCheckButtonSetText(di,
-				gettext("Slide desktops around when changing"));
+			      gettext("Slide desktops around when changing"));
    DialogItemCheckButtonSetState(di, tmp_desktop_slide);
    DialogItemCheckButtonSetPtr(di, &tmp_desktop_slide);
 
@@ -2604,7 +2604,7 @@ CB_BGAreaEvent(int val, void *data)
 		   stmp = duplicate(gettext("-NONE-"));
 		Esnprintf(s, sizeof(s),
 			  gettext
-			  ("Background definition information:\nName: %s\nFile: %s\n"),
+		 ("Background definition information:\nName: %s\nFile: %s\n"),
 			  tmp_bg->name, stmp);
 		Efree(stmp);
 		DialogItemTextSetText(bg_filename, s);
@@ -3427,7 +3427,7 @@ SettingsIconbox(char *name)
    Iconbox            *ib;
 
    if (
-       (d =
+	 (d =
 	FindItem("CONFIGURE_ICONBOX", 0, LIST_FINDBY_NAME, LIST_TYPE_DIALOG)))
      {
 	AUDIO_PLAY("SOUND_SETTINGS_ACTIVE");
@@ -3541,7 +3541,7 @@ SettingsIconbox(char *name)
    DialogItemSetAlign(di, 0, 0);
    DialogItemTextSetText(di,
 			 gettext
-			 ("Alignment of anchoring when automatically resizing:"));
+		     ("Alignment of anchoring when automatically resizing:"));
 
    di = DialogAddItem(table, DITEM_SLIDER);
    DialogItemSetPadding(di, 2, 2, 2, 2);
@@ -3563,14 +3563,14 @@ SettingsIconbox(char *name)
    DialogItemSetAlign(di, 0, 0);
    DialogItemTextSetText(di,
 			 gettext
-			 ("Icon image display policy (if one operation fails, try the next):"));
+       ("Icon image display policy (if one operation fails, try the next):"));
 
    radio4 = di = DialogAddItem(table, DITEM_RADIOBUTTON);
    DialogItemSetPadding(di, 2, 2, 2, 2);
    DialogItemSetFill(di, 1, 0);
    DialogItemRadioButtonSetText(di,
 				gettext
-				("Snapshot Windows, Use application icon, Use Enlightenment Icon"));
+	  ("Snapshot Windows, Use application icon, Use Enlightenment Icon"));
    DialogItemRadioButtonSetFirst(di, radio4);
    DialogItemRadioButtonGroupSetVal(di, 0);
 
@@ -3579,7 +3579,7 @@ SettingsIconbox(char *name)
    DialogItemSetFill(di, 1, 0);
    DialogItemRadioButtonSetText(di,
 				gettext
-				("Use application icon, Use Enlightenment Icon, Snapshot Window"));
+	   ("Use application icon, Use Enlightenment Icon, Snapshot Window"));
    DialogItemRadioButtonSetFirst(di, radio4);
    DialogItemRadioButtonGroupSetVal(di, 1);
 
@@ -3833,7 +3833,7 @@ SettingsGroups(EWin * ewin)
      {
 	DIALOG_OK(gettext("Window Group Error"),
 		  gettext
-		  ("\n  This window currently does not belong to any groups.  \n\n"));
+	  ("\n  This window currently does not belong to any groups.  \n\n"));
 	return;
      }
    if ((d = FindItem("CONFIGURE_GROUP", 0, LIST_FINDBY_NAME, LIST_TYPE_DIALOG)))

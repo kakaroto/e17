@@ -54,7 +54,8 @@ Etmp(char *s)
       n_calls = (unsigned long)time(NULL) + (unsigned long)getpid();
    Esnprintf(s, 1024, "%s/TMP_%Xl", UserEDir(), n_calls);
    n_calls++;
-EDBUG_RETURN_}
+   EDBUG_RETURN_
+}
 
 void
 md(char *s)
@@ -262,7 +263,8 @@ cp(char *s, char *ss)
    EDBUG_RETURN_;
 }
 
-time_t moddate(char *s)
+time_t 
+moddate(char *s)
 {
    struct stat         st;
 
