@@ -814,7 +814,16 @@ etox_index_to_geometry(Evas_Object * obj, int index, Evas_Coord *x,
 		if (x) *x = line->x + line->w;
 	}
 	else {
-		etox_line_index_to_geometry(line, index - sum, x, y, w, h);
+		Evas_List *l;
+		for (l = et->lines; l; l = l->next) {
+			line = l->data;
+			sum += line->length;
+			if (sum > index)
+				break;
+		}
+		if (line)
+			etox_line_index_to_geometry(line, index - sum, x, y,
+						    w, h);
 	}
 }
 
