@@ -658,7 +658,6 @@ hideMenu(EWin * ewin, void *params)
 static int
 runApp(char *exe, char *params)
 {
-
    char               *sh;
    char               *path;
    char               *real_exec;
@@ -779,6 +778,7 @@ runApp(char *exe, char *params)
 int
 execApplication(void *params)
 {
+#if 0				/* Is there any reason to do this? */
    char                exe[FILEPATH_LEN_MAX];
    char                s[FILEPATH_LEN_MAX], *ss;
    int                 i, l;
@@ -825,6 +825,15 @@ execApplication(void *params)
 	pclose(f);
      }
    EDBUG_RETURN(0);
+#else
+   char                exe[FILEPATH_LEN_MAX];
+   char               *s = params;
+
+   sscanf(s, "%4000s", exe);
+   runApp(exe, s);
+
+   return 0;
+#endif
 }
 
 static int
