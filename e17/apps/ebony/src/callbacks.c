@@ -1077,6 +1077,8 @@ on_export_size_toggled(GtkToggleButton * togglebutton, gpointer user_data)
            break;
         case 5:
            set_export_size_editable();
+           on_export_screen_h_changed(NULL, NULL);
+           on_export_screen_w_changed(NULL, NULL);
            break;
         default:
            break;
