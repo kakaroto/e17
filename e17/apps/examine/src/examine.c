@@ -332,7 +332,8 @@ draw_tree(examine_prop * prop_item)
         }
         dp = opendir((const char *) path);
         while (next = readdir(dp)) {
-          if (!strcmp(next->d_name, ".") || !strcmp(next->d_name, ".."))
+          if (!strcmp(next->d_name, ".") || !strcmp(next->d_name, "..")
+              || strlen(next->d_name) <= 4 || !strstr(next->d_name, ".eet"))
             continue;
 
           theme_seen = 0;

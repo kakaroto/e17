@@ -229,7 +229,7 @@ examine_client_list_props_cb(void)
   char           *label, *typename, *start, *end;
   int             tmpi;
   float           tmpd;
-  char            type[20], range[10], step[5];
+  char            type[20], range[50], step[5];
   int             mini, maxi;
   float           mind, maxd;
 
