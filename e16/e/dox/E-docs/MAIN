@@ -1006,8 +1006,8 @@ clicking on Apply again.
 <p>
 Window Groups
 <font face=aircut3/12 color=#ffffff>
-Sometimes you have a number of windows on your desktop that logically go together,
-like for example the pager windows. Enlightenment allows you to group windows
+Sometimes you have a number of windows on your desktop that logically go
+together. Enlightenment allows you to group windows
 together, so that whenever you change a property of one window in a group,
 the change is reflected on the other group members. If you have a group whose
 members span multiple _desktops(desktops) , changing a property will show effect only on
