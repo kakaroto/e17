@@ -279,10 +279,6 @@
 /* Define if lex declares yytext as a char * by default, not a char[].  */
 #undef YYTEXT_POINTER
 
-/* Enlightenment paths */
-#undef EROOT
-#undef EBIN
-
 /* Do we need libgtop? */
 #undef HAVE_LIBGTOP
 

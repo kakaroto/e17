@@ -158,10 +158,6 @@ E_GtkRc_epplet_DEPENDENCIES = $(top_builddir)/api/libepplet.la
 E_GtkRc_epplet_LDFLAGS = -rpath $(libdir):$(pkglibdir) $(X_LIBS)
 E_GtkRc_epplet_LDADD = $(top_builddir)/api/libepplet.la -L$(libdir) -L$(prefix)/lib $(LIBS) $(X_LIBS)
 
-E_Areas_epplet_SOURCES = E-Areas.c
-E_Areas_epplet_DEPENDENCIES = $(top_builddir)/api/libepplet.la
-E_Areas_epplet_LDFLAGS = -rpath $(libdir):$(pkglibdir)
-
 E_Mountbox_epplet_SOURCES = E-Mountbox.c E-Mountbox.h
 E_Mountbox_epplet_DEPENDENCIES = $(top_builddir)/api/libepplet.la
 E_Mountbox_epplet_LDFLAGS = -rpath $(libdir):$(pkglibdir)
@@ -301,19 +297,21 @@ install-data-hook:
 	done
 	$(INSTALL_DATA) $(srcdir)/$(BG_SRC) $(DESTDIR)$(edatadir)/epplet_data/
 	$(INSTALL_DATA) $(srcdir)/$(FONT_SRC) $(DESTDIR)$(edatadir)/epplet_data/
-	@cd $(DESTDIR)$(edatadir)/epplet_data/ ; \
-	for i in $(NEED_BG) ; do \
+	@for i in $(NEED_BG) ; do \
 	  about_dir="$(DESTDIR)$(edatadir)/epplet_data/$$i/$${i}.ABOUT" ; \
 	  echo "test -d  $$about_dir || $(mkinstalldirs) $$about_dir" ; \
 	  test -d  $$about_dir || $(mkinstalldirs) $$about_dir ; \
 	  echo "test -f $$about_dir/$(BG_SRC) || ln -sf ../../$(BG_SRC) $$about_dir || :" ; \
 	  test -f $$about_dir/$(BG_SRC) || ln -sf ../../$(BG_SRC) $$about_dir || : ; \
 	done
-	@cd $(DESTDIR)$(edatadir)/epplet_data/ ; \
-	for i in $(NEED_FONT) ; do \
+	@for i in $(NEED_FONT) ; do \
 	  about_dir="$(DESTDIR)$(edatadir)/epplet_data/$$i/$${i}.ABOUT" ; \
 	  echo "test -d  $$about_dir || $(mkinstalldirs) $$about_dir" ; \
 	  test -d  $$about_dir || $(mkinstalldirs) $$about_dir ; \
 	  echo "test -f $$about_dir/$(FONT_SRC) || ln -sf ../../$(FONT_SRC) $$about_dir || :" ; \
 	  test -f $$about_dir/$(FONT_SRC) || ln -sf ../../$(FONT_SRC) $$about_dir || : ; \
 	done
+
+uninstall-local:
+	$(RM) $(DESTDIR)$(edatadir)/epplet_data/$(BG_SRC)
+	$(RM) $(DESTDIR)$(edatadir)/epplet_data/$(FONT_SRC)

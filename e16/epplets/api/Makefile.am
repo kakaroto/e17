@@ -7,13 +7,8 @@ libepplet_la_SOURCES = epplet.c snprintf.c
 libepplet_la_DEPENDENCIES = $(top_builddir)/config.h epplet.h
 libepplet_la_LDFLAGS = -version-info 1:0:1
 
-INCLUDES = -I. -I$(top_srcdir) -I.. -I$(includedir) \
--I$(prefix)/include $(X_CFLAGS)
+INCLUDES = -I$(top_srcdir) $(X_CFLAGS)
 
 LDADD = -L$(libdir) -L$(prefix)/lib $(LIBS) $(X_LIBS)
 
 EXTRA_DIST = epplet.h.in
-
-epplet.h: epplet.h.in
-	sed -e "s%@""EROOT@%@EROOT@%g" -e "s%@""EBIN@%@EBIN@%g" \
-		$(srcdir)/epplet.h.in > $(srcdir)/epplet.h

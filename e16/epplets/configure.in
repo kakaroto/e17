@@ -117,9 +117,9 @@ dnl* I hope I'm doing this right
 dnl#
 AC_CHECK_LIB(GL, glXChooseVisual, GL_LIBS="GL", , $X_LIBS $SUBLIBS)
 
-if test "$GL_LIBS" = "GL"; then
-  AC_CHECK_LIB(GLU, main, , GL_LIBS="", $X_LIBS $SUBLIBS)
-fi
+#if test "$GL_LIBS" = "GL"; then
+#  AC_CHECK_LIB(GLU, main, , GL_LIBS="", $X_LIBS $SUBLIBS)
+#fi
 
 GL_PROGS=""
 
@@ -227,6 +227,13 @@ else
   GTLIBS=""
 fi
 
+if test "x$prefix" = "xNONE"; then
+  prefix=$ac_default_prefix
+fi
+if test "x$exec_prefix" = "xNONE"; then
+  exec_prefix=$prefix
+fi
+
 # Build test programs?
 AC_ARG_WITH(test-programs, [  --with-test-programs    Builds the test programs [default=no]],
             TEST_PROGS="EppletTest.epplet EppletConfigTest.epplet",TEST_PROGS="")
@@ -275,7 +282,7 @@ then
   AC_SUBST(EROOT)
   AC_MSG_RESULT($EROOT)
 else
-  EROOT=$ENLIGHTENMENT_ROOT
+  EROOT=`eval echo $ENLIGHTENMENT_ROOT`
   AC_MSG_RESULT(warning:  EROOT environment variable not detected.  Using $EROOT)
   AC_SUBST(EROOT)
 fi
@@ -288,14 +295,10 @@ then
   AC_SUBST(EBIN)
   AC_MSG_RESULT($EBIN)
 else
-  EBIN=$ENLIGHTENMENT_BIN
+  EBIN=`eval echo $ENLIGHTENMENT_BIN`
   AC_MSG_RESULT(warning:  EBIN environment variable not detected.  Using $EBIN)
   AC_SUBST(EBIN)
 fi
-AC_DEFINE_UNQUOTED(EROOT, "$EROOT")
-AC_DEFINE_UNQUOTED(EBIN, "$EBIN")
-AC_SUBST(EROOT)
-AC_SUBST(EBIN)
 
 # Should we install E-Mixer?
 # Probably not ;-) But we may as well check!
@@ -361,17 +364,7 @@ basedir=.
 
 AM_CONFIG_HEADER(config.h)
 
-AC_OUTPUT(Makefile api/Makefile epplets/Makefile debian/Makefile)
-
-echo "creating api/epplet.h"
-sed -e "s%@EROOT@%$EROOT%g" -e "s%@EBIN@%$EBIN%g" -e "s%\${exec_prefix}%${exec_prefix}%g" -e "s%\${prefix}%${prefix}%g" ${srcdir}/api/epplet.h.in > api/epplet.h.new
-if (diff api/epplet.h.new api/epplet.h >/dev/null 2>&1); then
-  echo "api/epplet.h unchanged."
-  rm -f api/epplet.h.new
-else
-  rm -f api/epplet.h
-  mv api/epplet.h.new api/epplet.h
-fi
+AC_OUTPUT(Makefile api/Makefile epplets/Makefile debian/Makefile api/epplet.h)
 
 echo
 echo "If you are running Enlightenment < 0.16.4, you *must* configure"
