@@ -2308,3 +2308,13 @@ Thu Sep 23 15:34:31 PDT 1999
 (KainX)
 
 Did I leave that debugging printf() in there?  Surely not!
+
+-------------------------------------------------------------------------------
+
+Thu Sep 23 15:51:32 PDT 1999
+(KainX)
+
+Removed color modifiers from the Ganymede theme and added imageclasses
+required for Eterm's "auto" mode.  (Note to Christian:  Mine are just
+temporary, for testing only.  Please make real ones as you see fit.)
+:-)
