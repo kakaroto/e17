@@ -272,7 +272,8 @@ _econf_new_fat_entry_to_disk(char *loc, unsigned long position,
 }
 
 int 
-_econf_replace_fat_entry_to_disk(char *loc, unsigned long length, char *path)
+_econf_replace_fat_entry_to_disk(char *loc, unsigned long position,
+				 unsigned long length, char *path)
 {
 
    /* This function replaces the current FAT table entry at the specified
@@ -301,6 +302,7 @@ _econf_replace_fat_entry_to_disk(char *loc, unsigned long length, char *path)
 	sprintf(tableentry.loc, "%s", loc);
 	tableentry.length = length;
 	tableentry.usage_index = 0;
+	tableentry.position = position;
 	tableentry.updated_on = _econf_timestamp();
 	while (!feof(FAT_TABLE))
 	  {
@@ -373,7 +375,8 @@ _econf_save_data_to_disk(void *data, char *loc, unsigned long length,
 	       }
 	     else
 	       {
-		  if (!_econf_replace_fat_entry_to_disk(loc, length, path))
+		  if (!_econf_replace_fat_entry_to_disk(loc, position, length,
+							path))
 		    {
 		       /* we failed writing to the disk at this point.  uh oh.
 		        * this is bad.  return an error
@@ -385,7 +388,7 @@ _econf_save_data_to_disk(void *data, char *loc, unsigned long length,
 	  }
 	else
 	  {
-	     if (!_econf_append_data_to_disk_at_path(path, length, data))
+	     if (!(position = _econf_append_data_to_disk_at_path(path, length, data)))
 	       {
 		  /* we failed writing to the disk at this point.  uh oh.
 		   * this is bad.  return an error
@@ -394,7 +397,7 @@ _econf_save_data_to_disk(void *data, char *loc, unsigned long length,
 	       }
 	     else
 	       {
-		  if (!_econf_replace_fat_entry_to_disk(loc, length, path))
+		  if (!_econf_replace_fat_entry_to_disk(loc, position, length, path))
 		    {
 		       /* we failed writing to the disk at this point.  uh oh.
 		        * this is bad.  return an error
@@ -428,7 +431,6 @@ _econf_save_data_to_disk(void *data, char *loc, unsigned long length,
 		  /* we failed adding the fat entry to disk, return an error */
 		  return -3;
 	       }
-
 	     return 1;
 	  }
      }
