@@ -135,7 +135,7 @@ debian/Makefile
 imlib2_loaders.spec
 ])
 
-echo    "\nBuild summary:"
+echo -e "\nBuild summary:"
 echo    "------------------------"
 echo -n " XCF: "
 if test x$XCF_LOADER_TRUE = "x#"; then
@@ -151,4 +151,4 @@ else
    echo    "Enabled "
 fi   
 
-echo    "------------------------\n"
+echo -e "------------------------\n"
