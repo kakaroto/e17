@@ -808,6 +808,8 @@ conf_parse_line(FILE *fp, char *buff)
   chomp(buff);
   D_CONF(("Parsing line #%lu of file %s\n", file_peek_line(), file_peek_path()));
   switch (*buff) {
+    case '#':
+      return;
     case '%':
       if (!BEG_STRCASECMP(get_pword(1, buff + 1), "include ")) {
         char *path;
