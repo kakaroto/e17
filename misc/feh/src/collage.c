@@ -36,7 +36,7 @@ init_collage_mode(void)
    int ww, hh, www, hhh, xxx, yyy;
    int w = 800, h = 600;
    int bg_w = 0, bg_h = 0;
-   winwidget winwid;
+   winwidget winwid = NULL;
    Imlib_Image bg_im = NULL, im_thumb = NULL;
    feh_file *file = NULL;
    feh_list *l, *last = NULL;
@@ -99,9 +99,18 @@ init_collage_mode(void)
       feh_imlib_image_fill_rectangle(im_main, 0, 0, w, h, 0, 0, 0, 255);
    }
 
+   if (opt.display && opt.progressive)
+   {
+      winwid =
+         winwidget_create_from_image(im_main, PACKAGE " [collage mode]",
+                                     WIN_TYPE_SINGLE);
+      winwidget_show(winwid);
+   }
+
+
    for (l = filelist; l; l = l->next)
    {
-       file = FEH_FILE(l->data);
+      file = FEH_FILE(l->data);
       if (last)
       {
          filelist = feh_file_remove_from_list(filelist, last);
@@ -171,6 +180,8 @@ init_collage_mode(void)
          if (opt.verbose)
             feh_display_status('x');
       }
+      if (opt.display && opt.progressive)
+         winwidget_render_image(winwid, 1, 0);
    }
    if (opt.verbose)
       fprintf(stdout, "\n");
@@ -193,10 +204,15 @@ init_collage_mode(void)
 
    if (opt.display)
    {
-      winwid =
-         winwidget_create_from_image(im_main, PACKAGE " [collage mode]",
-                                     WIN_TYPE_SINGLE);
-      winwidget_show(winwid);
+      if (opt.progressive && winwid)
+         winwidget_render_image(winwid, 1, 1);
+      else
+      {
+         winwid =
+            winwidget_create_from_image(im_main, PACKAGE " [collage mode]",
+                                        WIN_TYPE_SINGLE);
+         winwidget_show(winwid);
+      }
    }
    else
       feh_imlib_free_image_and_decache(im_main);
