@@ -520,12 +520,10 @@ main(int argc, char *argv[])
 	 */
 	evas_object_show(edje);
 
-	/*
-	*/
-#if X_TESTING
-	    ecore_evas_resize(e, WINW, WINH);
-#else
+#if (X_TESTING == 0)
 	    ecore_evas_fullscreen_set(e, 1);
+#elif (X_TESTING == 1)
+	    ecore_evas_resize(e, WINW, WINH);
 #endif
 	
 	entrance_session_ecore_evas_set(session, e);

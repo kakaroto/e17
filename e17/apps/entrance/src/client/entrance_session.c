@@ -127,7 +127,7 @@ entrance_session_start_user_session(Entrance_Session e)
    /* If a path was specified for the session, use that path instead of
       passing the session name to Xsession */
 
-#if X_TESTING
+#if (X_TESTING == 1)
    snprintf(buf, PATH_MAX, "/usr/X11R6/bin/xterm");
 #endif
 
