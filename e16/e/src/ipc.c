@@ -1249,6 +1249,14 @@ IPC_Warp(const char *params, Client * c __UNUSED__)
 	sscanf(params, "%*s %i %i", &x, &y);
 	XWarpPointer(disp, None, None, 0, 0, 0, 0, x, y);
      }
+   else if (!strncmp(params, "scr", 3))
+     {
+	x = (VRoot.scr + 1) % ScreenCount(disp);
+	sscanf(params, "%*s %i", &x);
+	if (x >= 0 && x < ScreenCount(disp))
+	   XWarpPointer(disp, None, RootWindow(disp, x), 0, 0, 0, 0,
+			DisplayWidth(disp, x) / 2, DisplayHeight(disp, x) / 2);
+     }
    else
      {
 	sscanf(params, "%i %i", &x, &y);
@@ -1496,6 +1504,7 @@ IpcItem             IPCArray[] = {
     "  warp ?               Get pointer position\n"
     "  warp abs <x> <y>     Set pointer position\n"
     "  warp rel <x> <y>     Move pointer relative to current position\n"
+    "  warp scr [<i>]       Move pointer to other screen (default next)\n"
     "  warp <x> <y>         Same as \"warp rel\"\n"},
 };
 
