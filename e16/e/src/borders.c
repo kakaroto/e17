@@ -1596,6 +1596,10 @@ FreeEwin(EWin * ewin)
 	     HideMenuMasker();
 	  }
      }
+
+   if (ewin == mode.focuswin)
+      FocusToNone();
+
    if (ewin->pager)
       PagerKill(ewin->pager);
    if (ewin->ibox)
@@ -1608,8 +1612,6 @@ FreeEwin(EWin * ewin)
    if (mode.kde_support)
       KDE_RemoveWindow(ewin);
 
-   if (ewin == mode.focuswin)
-      FocusToEWin(NULL);
    if (ewin->client.transient)
      {
 	ewin2 = FindItem(NULL, ewin->client.transient_for, LIST_FINDBY_ID,

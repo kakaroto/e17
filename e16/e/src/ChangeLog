@@ -3965,3 +3965,18 @@ Mon Nov 15 14:53:40 PST 1999
 fixed an uninitialized memory check in menus.c (reported by Alan Stange - this
 man is getting it on with debuggers - I will put his name in the credits
 sometime this week for 0.16.3)
+
+-------------------------------------------------------------------------------
+
+Fri Nov 19 16:34:16 EST 1999
+(Christian)
+
+Fixed a segfault that Paul Radford <prbluebottle@netscape.net>
+reported: "Minimize a window into an iconbox, close the icon-
+box and minimize the app again". I could not exactly reproduce
+this because I already got segfaults when I _entered_ the window
+that is uniconified when the iconbox is closed.
+
+In any case, there were strange things going on with
+mode.focuswin, because FocusToEWin(NULL) returns immediately
+in clickmode ... hope the whole thing is history now.
