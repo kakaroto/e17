@@ -73,6 +73,9 @@ gib_style *title_style = NULL;
 gib_style *text_style = NULL;
 char *title_style_file = NULL;
 char *text_style_file = NULL;
+char *overlay_file = NULL;
+Imlib_Image overlay_im = NULL;
+int overlay_x = 0, overlay_y = 0;
 
 /* these work for v4l only, not v4l2 */
 int grab_input = 0;
@@ -143,7 +146,7 @@ grab_init()
    grab_size = vid_mbuf.size;
    grab_data =
       mmap(0, grab_size, PROT_READ | PROT_WRITE, MAP_SHARED, grab_fd, 0);
-   if ((grab_data == NULL) || (-1 == (int)grab_data))
+   if ((grab_data == NULL) || (-1 == (int) grab_data))
    {
       fprintf(stderr,
               "couldn't mmap vidcam. your card doesn't support that?\n");
@@ -151,13 +154,14 @@ grab_init()
    }
 }
 
-Imlib_Image
-grab_one(int *width, int *height)
+Imlib_Image grab_one(int *width, int *height)
 {
    Imlib_Image im;
    int i = 0;
    int j = lag_reduce;
-   if (j == 0) j++;
+
+   if (j == 0)
+      j++;
 
    while (j--)
    {
@@ -238,14 +242,14 @@ add_time_text(Imlib_Image image, char *message, int width, int height)
       if (title_fn)
       {
          gib_imlib_get_text_size(title_fn, title_line, title_style, &w, &h,
-                                  IMLIB_TEXT_TO_RIGHT);
+                                 IMLIB_TEXT_TO_RIGHT);
          x = width - w - 2;
          y = 2;
          gib_imlib_image_fill_rectangle(image, x - 2, y - 1, w + 4, h + 2,
-                                         bg_r, bg_g, bg_b, bg_a);
+                                        bg_r, bg_g, bg_b, bg_a);
          gib_imlib_text_draw(image, title_fn, title_style, x, y, title_line,
-                              IMLIB_TEXT_TO_RIGHT, title_r, title_g, title_b,
-                              title_a);
+                             IMLIB_TEXT_TO_RIGHT, title_r, title_g, title_b,
+                             title_a);
       }
    }
 
@@ -254,20 +258,20 @@ add_time_text(Imlib_Image image, char *message, int width, int height)
       text_fn = imlib_load_font(text_font);
       if (text_fn)
       {
-         gib_imlib_get_text_size(text_fn, line, text_style, &w, &h, IMLIB_TEXT_TO_RIGHT);
+         gib_imlib_get_text_size(text_fn, line, text_style, &w, &h,
+                                 IMLIB_TEXT_TO_RIGHT);
          x = 2;
          y = height - h - 2;
          gib_imlib_image_fill_rectangle(image, x - 2, y - 1, w + 4, h + 2,
-                                         bg_r, bg_g, bg_b, bg_a);
+                                        bg_r, bg_g, bg_b, bg_a);
          gib_imlib_text_draw(image, text_fn, text_style, x, y, line,
-                              IMLIB_TEXT_TO_RIGHT, text_r, text_g, text_b,
-                              text_a);
+                             IMLIB_TEXT_TO_RIGHT, text_r, text_g, text_b,
+                             text_a);
       }
    }
 }
 
-Imlib_Image
-convert_rgb_to_imlib2(unsigned char *mem, int width, int height)
+Imlib_Image convert_rgb_to_imlib2(unsigned char *mem, int width, int height)
 {
    Imlib_Image im;
    DATA32 *data, *dest;
@@ -358,6 +362,18 @@ log(char *entry)
    fclose(fp);
 }
 
+void
+draw_overlay(Imlib_Image image)
+{
+   int w, h;
+
+   w = gib_imlib_image_get_width(overlay_im);
+   h = gib_imlib_image_get_height(overlay_im);
+   gib_imlib_blend_image_onto_image(image, overlay_im, 0, 0, 0, w, h,
+                                    overlay_x, overlay_y, w, h, 0,
+                                    gib_imlib_image_has_alpha(overlay_im), 0);
+}
+
 int
 main(int argc, char *argv[])
 {
@@ -428,6 +444,8 @@ main(int argc, char *argv[])
       title_style_file = val;
    if (NULL != (val = cfg_get_str("grab", "text_style")))
       text_style_file = val;
+   if (NULL != (val = cfg_get_str("grab", "overlay_image")))
+      overlay_file = val;
    if (-1 != (i = cfg_get_int("grab", "width")))
       grab_width = i;
    if (-1 != (i = cfg_get_int("grab", "height")))
@@ -468,6 +486,10 @@ main(int argc, char *argv[])
       close_dev = i;
    if (-1 != (i = cfg_get_int("grab", "lag_reduce")))
       lag_reduce = i;
+   if (-1 != (i = cfg_get_int("grab", "overlay_x")))
+      overlay_x = i;
+   if (-1 != (i = cfg_get_int("grab", "overlay_y")))
+      overlay_y = i;
 
    /* print config */
    fprintf(stderr, "camE v0.5 - (c) 1999, 2000 Gerd Knorr, Tom Gilbert\n");
@@ -486,10 +508,12 @@ main(int argc, char *argv[])
    imlib_add_path_to_font_path(ttf_dir);
    imlib_add_path_to_font_path(".");
    imlib_context_set_operation(IMLIB_OP_COPY);
-   if(title_style_file)
+   if (title_style_file)
       title_style = gib_style_new_from_ascii(title_style_file);
-   if(text_style_file)
+   if (text_style_file)
       text_style = gib_style_new_from_ascii(text_style_file);
+   if (overlay_file)
+      overlay_im = imlib_load_image(overlay_file);
 
    if (ftp_do)
    {
@@ -530,6 +554,8 @@ main(int argc, char *argv[])
             log("running post-shot action");
             system(action_post_shot);
          }
+         if (overlay_im)
+            draw_overlay(image);
          add_time_text(image, get_message(), width, height);
          gib_imlib_save_image(image, temp_file);
          do_postprocess(temp_file);

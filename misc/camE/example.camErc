@@ -74,3 +74,7 @@ ttf_dir = /usr/X11R6/lib/X11/fonts/TrueType
 # file to check for before shooting. while this file exists, no shots will
 # be taken.
 blockfile = /home/gilbertt/BLOCKCAM
+# image to overlay
+overlay_image = /home/gilbertt/.lb.png
+overlay_x = 5
+overlay_y = 5
