@@ -559,11 +559,27 @@ spif_dlinked_list_remove_at(spif_dlinked_list_t self, size_t idx)
 static spif_bool_t
 spif_dlinked_list_reverse(spif_dlinked_list_t self)
 {
+    spif_dlinked_list_item_t current, tmp;
 
+    for (current = self->head; current; ) {
+        tmp = current;
+        current = current->next;
+        BINSWAP(tmp->prev, tmp->next);
+    }
+    self->head = tmp;
+    return TRUE;
 }
 
 static spif_obj_t *
 spif_dlinked_list_to_array(spif_dlinked_list_t self)
 {
+    spif_obj_t *tmp;
+    spif_dlinked_list_item_t current;
+    size_t i;
 
+    tmp = SPIF_CAST_C(spif_obj_t *) MALLOC(SPIF_SIZEOF_TYPE(obj) * self->len);
+    for (i = 0, current = self->head; i < self->len; current = current->next, i++) {
+        tmp[i] = SPIF_CAST(obj) SPIF_OBJ(spif_dlinked_list_item_get_data(current));
+    }
+    return tmp;
 }

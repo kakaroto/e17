@@ -351,11 +351,23 @@ spif_array_remove_at(spif_array_t self, size_t idx)
 static spif_bool_t
 spif_array_reverse(spif_array_t self)
 {
+    size_t i, j;
 
+    for (i = 0, j = self->len - 1; i < j; i++, j--) {
+        BINSWAP(self->items[i], self->items[j]);
+    }
+    return TRUE;
 }
 
 static spif_obj_t *
 spif_array_to_array(spif_array_t self)
 {
+    spif_obj_t *tmp;
+    size_t i;
 
+    tmp = SPIF_CAST_C(spif_obj_t *) MALLOC(SPIF_SIZEOF_TYPE(obj) * self->len);
+    for (i = 0; i < self->len; i++) {
+        tmp[i] = SPIF_CAST(obj) SPIF_OBJ(self->items[i]);
+    }
+    return tmp;
 }

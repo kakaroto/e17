@@ -44,7 +44,7 @@ static SPIF_CONST_TYPE(class) u_class = {
 SPIF_TYPE(class) SPIF_CLASS_VAR(url) = &u_class;
 /* *INDENT-ON* */
 
-static spif_bool_t spif_url_parse(spif_url_t, spif_str_t);
+static spif_bool_t spif_url_parse(spif_url_t);
 
 spif_url_t
 spif_url_new(void)
@@ -111,7 +111,7 @@ spif_url_init_from_str(spif_url_t self, spif_str_t other)
     self->port = SPIF_NULL_TYPE(str);
     self->path = SPIF_NULL_TYPE(str);
     self->query = SPIF_NULL_TYPE(str);
-    spif_url_parse(self, SPIF_STR(self));
+    spif_url_parse(self);
     return TRUE;
 }
 
@@ -127,7 +127,7 @@ spif_url_init_from_ptr(spif_url_t self, spif_charptr_t other)
     self->port = SPIF_NULL_TYPE(str);
     self->path = SPIF_NULL_TYPE(str);
     self->query = SPIF_NULL_TYPE(str);
-    spif_url_parse(self, SPIF_STR(self));
+    spif_url_parse(self);
     return TRUE;
 }
 
@@ -352,9 +352,9 @@ spif_url_set_query(spif_url_t self, spif_str_t newquery)
 }
 
 static spif_bool_t
-spif_url_parse(spif_url_t self, spif_str_t url_str)
+spif_url_parse(spif_url_t self)
 {
-    const char *s = SPIF_STR_STR(url_str);
+    const char *s = SPIF_STR_STR(SPIF_STR(self));
     const char *pstr, *pend, *ptmp;
 
     pstr = s;
@@ -448,5 +448,58 @@ spif_url_parse(spif_url_t self, spif_str_t url_str)
         }
     }
 
+    return TRUE;
+}
+
+spif_bool_t
+spif_url_unparse(spif_url_t self)
+{
+    spif_str_t tmp_str;
+
+    tmp_str = spif_str_new_from_buff(SPIF_NULL_TYPE(charptr), 128);
+
+    /* First, proto followed by a colon. */
+    if (!SPIF_STR_ISNULL(self->proto)) {
+        spif_str_append(tmp_str, self->proto);
+        spif_str_append_char(tmp_str, ':');
+    }
+
+    /* If we have a port but no host, make it localhost. */
+    if (!SPIF_STR_ISNULL(self->port) && SPIF_STR_ISNULL(self->host)) {
+        self->host = spif_str_new_from_ptr("localhost");
+    }
+
+    /* We need the // if we have a hostname. */
+    if (!SPIF_STR_ISNULL(self->host)) {
+        spif_str_append_from_ptr(tmp_str, "//");
+    }
+
+    if (!SPIF_STR_ISNULL(self->user)) {
+        spif_str_append(tmp_str, self->user);
+        if (!SPIF_STR_ISNULL(self->passwd)) {
+            spif_str_append_char(tmp_str, ':');
+            spif_str_append(tmp_str, self->passwd);
+        }
+        spif_str_append_char(tmp_str, '@');
+    }
+
+    if (!SPIF_STR_ISNULL(self->host)) {
+        spif_str_append(tmp_str, self->host);
+        if (!SPIF_STR_ISNULL(self->port)) {
+            spif_str_append_char(tmp_str, ':');
+            spif_str_append(tmp_str, self->port);
+        }
+    }
+
+    if (!SPIF_STR_ISNULL(self->path)) {
+        spif_str_append(tmp_str, self->path);
+    }
+
+    if (!SPIF_STR_ISNULL(self->query)) {
+        spif_str_append_char(tmp_str, '?');
+        spif_str_append(tmp_str, self->query);
+    }
+
+    SPIF_STR(self) = tmp_str;
     return TRUE;
 }

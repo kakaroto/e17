@@ -268,3 +268,13 @@ for strings to eliminate the 4K length limit.
 The current socket test will actually download the HTML for my home
 page.  Uncomment the SPIF_SHOW() call in test_socket() to see it work.
 ----------------------------------------------------------------------
+Wed Jul 31 17:49:17 2002                        Michael Jennings (mej)
+
+Added the _reverse() and _to_array() routines to all 3 list classes
+(finally).  Also added unit tests for those.
+
+The tests for the socket code no longer download my home page.  Now,
+I create a listening socket and a sending socket for a TCP/IP and a
+UNIX socket.  Then I send/receive data across the socket and compare
+what I received with what I sent.  Self-contained is better. :-)
+----------------------------------------------------------------------

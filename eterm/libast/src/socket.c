@@ -29,6 +29,10 @@ static const char cvs_ident[] = "$Id$";
 
 #include <libast_internal.h>
 
+static spif_url_t spif_url_new_from_ipaddr(spif_ipsockaddr_t);
+static spif_bool_t spif_url_init_from_ipaddr(spif_url_t, spif_ipsockaddr_t);
+static spif_url_t spif_url_new_from_unixaddr(spif_unixsockaddr_t);
+static spif_bool_t spif_url_init_from_unixaddr(spif_url_t, spif_unixsockaddr_t);
 static spif_ipsockaddr_t spif_url_get_ipaddr(spif_url_t);
 static spif_unixsockaddr_t spif_url_get_unixaddr(spif_url_t);
 static spif_sockport_t spif_url_get_portnum(spif_url_t);
@@ -89,8 +93,8 @@ spif_socket_init(spif_socket_t self)
     self->addr = SPIF_NULL_TYPE(sockaddr);
     self->len = 0;
     self->flags = 0;
-    self->src_url = SPIF_NULL_TYPE(url);
-    self->dest_url = SPIF_NULL_TYPE(url);
+    self->local_url = SPIF_NULL_TYPE(url);
+    self->remote_url = SPIF_NULL_TYPE(url);
     return TRUE;
 }
 
@@ -107,14 +111,14 @@ spif_socket_init_from_urls(spif_socket_t self, spif_url_t surl, spif_url_t durl)
     self->len = 0;
     self->flags = 0;
     if (!SPIF_URL_ISNULL(surl)) {
-        self->src_url = spif_url_dup(surl);
+        self->local_url = spif_url_dup(surl);
     } else {
-        self->src_url = SPIF_NULL_TYPE(url);
+        self->local_url = SPIF_NULL_TYPE(url);
     }
     if (!SPIF_URL_ISNULL(durl)) {
-        self->dest_url = spif_url_dup(durl);
+        self->remote_url = spif_url_dup(durl);
     } else {
-        self->dest_url = SPIF_NULL_TYPE(url);
+        self->remote_url = SPIF_NULL_TYPE(url);
     }
     return TRUE;
 }
@@ -134,13 +138,13 @@ spif_socket_done(spif_socket_t self)
     }
     self->len = 0;
     self->flags = 0;
-    if (!SPIF_URL_ISNULL(self->src_url)) {
-        spif_url_del(self->src_url);
-        self->src_url = SPIF_NULL_TYPE(url);
+    if (!SPIF_URL_ISNULL(self->local_url)) {
+        spif_url_del(self->local_url);
+        self->local_url = SPIF_NULL_TYPE(url);
     }
-    if (!SPIF_URL_ISNULL(self->dest_url)) {
-        spif_url_del(self->dest_url);
-        self->dest_url = SPIF_NULL_TYPE(url);
+    if (!SPIF_URL_ISNULL(self->remote_url)) {
+        spif_url_del(self->remote_url);
+        self->remote_url = SPIF_NULL_TYPE(url);
     }
     return TRUE;
 }
@@ -186,8 +190,8 @@ spif_socket_show(spif_socket_t self, spif_charptr_t name, spif_str_t buff, size_
     snprintf(tmp + indent, sizeof(tmp) - indent, "(spif_uint32_t) flags:  0x%08x\n", (unsigned) self->flags);
     spif_str_append_from_ptr(buff, tmp);
 
-    spif_url_show(self->src_url, "src_url", buff, indent);
-    spif_url_show(self->dest_url, "dest_url", buff, indent);
+    spif_url_show(self->local_url, "local_url", buff, indent);
+    spif_url_show(self->remote_url, "remote_url", buff, indent);
 
     indent -= 2;
     snprintf(tmp + indent, sizeof(tmp) - indent, "}\n");
@@ -220,11 +224,11 @@ spif_socket_dup(spif_socket_t self)
         memcpy(tmp->addr, self->addr, tmp->len);
     }
     tmp->flags = self->flags;
-    if (!SPIF_URL_ISNULL(self->src_url)) {
-        tmp->src_url = spif_url_dup(self->src_url);
+    if (!SPIF_URL_ISNULL(self->local_url)) {
+        tmp->local_url = spif_url_dup(self->local_url);
     }
-    if (!SPIF_URL_ISNULL(self->dest_url)) {
-        tmp->dest_url = spif_url_dup(self->dest_url);
+    if (!SPIF_URL_ISNULL(self->remote_url)) {
+        tmp->remote_url = spif_url_dup(self->remote_url);
     }
     return tmp;
 }
@@ -244,15 +248,23 @@ spif_socket_open(spif_socket_t self)
         /* Set family, protocol, and type flags. */
         spif_socket_get_proto(self);
 
-        /* Get destination address, if we have one. */
+        /* Get remote address, if we have one. */
         if (SPIF_SOCKET_FLAGS_IS_SET(self, SPIF_SOCKET_FLAGS_FAMILY_INET)) {
             self->fam = AF_INET;
-            self->addr = SPIF_CAST(sockaddr) spif_url_get_ipaddr(self->dest_url);
-            self->len = SPIF_SIZEOF_TYPE(ipsockaddr);
+            self->addr = SPIF_CAST(sockaddr) spif_url_get_ipaddr(self->remote_url);
+            if (self->addr == SPIF_NULL_TYPE(sockaddr)) {
+                self->len = 0;
+            } else {
+                self->len = SPIF_SIZEOF_TYPE(ipsockaddr);
+            }
         } else if (SPIF_SOCKET_FLAGS_IS_SET(self, SPIF_SOCKET_FLAGS_FAMILY_UNIX)) {
             self->fam = AF_UNIX;
-            self->addr = SPIF_CAST(sockaddr) spif_url_get_unixaddr(self->dest_url);
-            self->len = SPIF_SIZEOF_TYPE(unixsockaddr);
+            self->addr = SPIF_CAST(sockaddr) spif_url_get_unixaddr(self->remote_url);
+            if (self->addr == SPIF_NULL_TYPE(sockaddr)) {
+                self->len = 0;
+            } else {
+                self->len = SPIF_SIZEOF_TYPE(unixsockaddr);
+            }
         } else {
             D_OBJ(("Unknown socket family 0x%08x!\n", SPIF_SOCKET_FLAGS_IS_SET(self, SPIF_SOCKET_FLAGS_FAMILY)));
             ASSERT_NOTREACHED_RVAL(FALSE);
@@ -279,39 +291,54 @@ spif_socket_open(spif_socket_t self)
             return FALSE;
         }
 
-        /* If we have a source URL, bind it to the appropriate address and port. */
-        if (!SPIF_URL_ISNULL(self->src_url)) {
+        /* If we have a local URL, bind it to the appropriate address and port. */
+        if (!SPIF_URL_ISNULL(self->local_url)) {
             if (SPIF_SOCKET_FLAGS_IS_SET(self, SPIF_SOCKET_FLAGS_FAMILY_INET)) {
                 spif_ipsockaddr_t addr;
 
-                addr = spif_url_get_ipaddr(self->src_url);
-                addr->sin_port = htonl(spif_url_get_portnum(self->src_url));
+                addr = spif_url_get_ipaddr(self->local_url);
 
+                D_OBJ(("Binding to port %d\n", ntohs(addr->sin_port)));
                 if (bind(self->fd, SPIF_CAST(sockaddr) addr, SPIF_SIZEOF_TYPE(ipsockaddr))) {
                     print_error("Unable to bind socket %d to %s -- %s\n", (int) self->fd,
-                                SPIF_STR_STR(self->src_url), strerror(errno));
+                                SPIF_STR_STR(self->local_url), strerror(errno));
+                    FREE(addr);
+                    return FALSE;
+                }
+                FREE(addr);
+            } else if (SPIF_SOCKET_FLAGS_IS_SET(self, SPIF_SOCKET_FLAGS_FAMILY_UNIX)) {
+                spif_unixsockaddr_t addr;
+
+                addr = spif_url_get_unixaddr(self->local_url);
+
+                if (bind(self->fd, SPIF_CAST(sockaddr) addr, SPIF_SIZEOF_TYPE(unixsockaddr))) {
+                    print_error("Unable to bind socket %d to %s -- %s\n", (int) self->fd,
+                                SPIF_STR_STR(self->local_url), strerror(errno));
                     FREE(addr);
                     return FALSE;
                 }
                 FREE(addr);
             }
         }
+        SPIF_SOCKET_FLAGS_SET(self, SPIF_SOCKET_FLAGS_OPEN);
     }
 
     /* Connect if we have a destination.  If not, open a listening socket. */
-    if (!SPIF_URL_ISNULL(self->dest_url)) {
+    if (!SPIF_URL_ISNULL(self->remote_url)) {
         spif_socket_clear_nbio(self);
         if ((connect(self->fd, self->addr, self->len)) < 0) {
             print_error("Unable to connect socket %d to %s -- %s\n", (int) self->fd,
-                        SPIF_STR_STR(self->dest_url), strerror(errno));
+                        SPIF_STR_STR(self->remote_url), strerror(errno));
             return FALSE;
         }
-    } else if (!SPIF_URL_ISNULL(self->src_url)) {
+        SPIF_SOCKET_FLAGS_SET(self, SPIF_SOCKET_FLAGS_CONNECTED);
+    } else if (!SPIF_URL_ISNULL(self->local_url)) {
         if ((listen(self->fd, 5)) < 0) {
             print_error("Unable to listen at %s on socket %d -- %s\n", 
-                        SPIF_STR_STR(self->src_url), (int) self->fd, strerror(errno));
+                        SPIF_STR_STR(self->local_url), (int) self->fd, strerror(errno));
             return FALSE;
         }
+        SPIF_SOCKET_FLAGS_SET(self, SPIF_SOCKET_FLAGS_LISTEN);
     }
 
     return TRUE;
@@ -323,6 +350,7 @@ spif_socket_close(spif_socket_t self)
     int ret;
 
     REQUIRE_RVAL(self->fd >= 0, FALSE);
+    SPIF_SOCKET_FLAGS_CLEAR(self, SPIF_SOCKET_FLAGS_IOSTATE);
     do {
         ret = close(self->fd);
     } while ((ret < 0) && (errno == EINTR));
@@ -364,6 +392,41 @@ spif_socket_check_io(spif_socket_t self)
         SPIF_SOCKET_FLAGS_CLEAR(self, SPIF_SOCKET_FLAGS_CAN_OUTPUT);
     }
     return TRUE;
+}
+
+spif_socket_t
+spif_socket_accept(spif_socket_t self)
+{
+    spif_sockaddr_t addr;
+    spif_sockaddr_len_t len;
+    int newfd;
+    spif_socket_t tmp;
+
+    REQUIRE_RVAL(!SPIF_SOCKET_ISNULL(self), SPIF_NULL_TYPE(socket));
+
+    addr = SPIF_ALLOC(sockaddr);
+    do {
+        newfd = accept(self->fd, addr, &len);
+    } while ((newfd < 0) && ((errno == EAGAIN) || (errno == EWOULDBLOCK)));
+
+    if (newfd < 0) {
+        print_error("Unable to accept() connection on %d -- %s\n", self->fd, strerror(errno));
+        return SPIF_NULL_TYPE(socket);
+    }
+
+    /* We got one.  Create and return a new socket object for the accepted connection. */
+    tmp = spif_socket_dup(self);
+    tmp->fd = newfd;
+    SPIF_SOCKET_FLAGS_CLEAR(tmp, (SPIF_SOCKET_FLAGS_LISTEN | SPIF_SOCKET_FLAGS_HAVE_INPUT | SPIF_SOCKET_FLAGS_CAN_OUTPUT));
+    if (SPIF_SOCKET_FLAGS_IS_SET(self, SPIF_SOCKET_FLAGS_FAMILY_INET)) {
+        tmp->remote_url = spif_url_new_from_ipaddr(SPIF_CAST(ipsockaddr) addr);
+    } else if (SPIF_SOCKET_FLAGS_IS_SET(self, SPIF_SOCKET_FLAGS_FAMILY_UNIX)) {
+        tmp->remote_url = spif_url_new_from_unixaddr(SPIF_CAST(unixsockaddr) addr);
+    }
+    if (SPIF_SOCKET_FLAGS_IS_SET(self, SPIF_SOCKET_FLAGS_NBIO)) {
+        spif_socket_set_nbio(tmp);
+    }
+    return tmp;
 }
 
 spif_bool_t
@@ -417,6 +480,7 @@ spif_socket_send(spif_socket_t self, spif_str_t data)
             case EINVAL:
             default:
                 self->fd = -1;
+                SPIF_SOCKET_FLAGS_CLEAR(self, SPIF_SOCKET_FLAGS_IOSTATE);
                 return FALSE;
                 break;
         }
@@ -451,6 +515,7 @@ spif_socket_set_nbio(spif_socket_t self)
     if ((fcntl(self->fd, F_SETFL, flags)) != 0) {
         return FALSE;
     } else {
+        SPIF_SOCKET_FLAGS_SET(self, SPIF_SOCKET_FLAGS_NBIO);
         return TRUE;
     }
 #elif defined(O_NONBLOCK)
@@ -463,13 +528,15 @@ spif_socket_set_nbio(spif_socket_t self)
     if ((fcntl(self->fd, F_SETFL, flags)) != 0) {
         return FALSE;
     } else {
+        SPIF_SOCKET_FLAGS_SET(self, SPIF_SOCKET_FLAGS_NBIO);
         return TRUE;
     }
 #else
     flags = 1;
-    if ((ioctl(fd, FIONBIO, &flags)) != 0) {
+    if ((ioctl(self->fd, FIONBIO, &flags)) != 0) {
         return FALSE;
     } else {
+        SPIF_SOCKET_FLAGS_SET(self, SPIF_SOCKET_FLAGS_NBIO);
         return TRUE;
     }
 #endif
@@ -493,6 +560,7 @@ spif_socket_clear_nbio(spif_socket_t self)
     if ((fcntl(self->fd, F_SETFL, flags)) != 0) {
         return FALSE;
     } else {
+        SPIF_SOCKET_FLAGS_CLEAR(self, SPIF_SOCKET_FLAGS_NBIO);
         return TRUE;
     }
 #elif defined(O_NONBLOCK)
@@ -505,19 +573,95 @@ spif_socket_clear_nbio(spif_socket_t self)
     if ((fcntl(self->fd, F_SETFL, flags)) != 0) {
         return FALSE;
     } else {
+        SPIF_SOCKET_FLAGS_CLEAR(self, SPIF_SOCKET_FLAGS_NBIO);
         return TRUE;
     }
 #else
     flags = 0;
-    if ((ioctl(fd, FIONBIO, &flags)) != 0) {
+    if ((ioctl(self->fd, FIONBIO, &flags)) != 0) {
         return FALSE;
     } else {
+        SPIF_SOCKET_FLAGS_CLEAR(self, SPIF_SOCKET_FLAGS_NBIO);
         return TRUE;
     }
 #endif
 }     
 
 /**************** Static internal functions ****************/
+
+static spif_url_t
+spif_url_new_from_ipaddr(spif_ipsockaddr_t ipaddr)
+{
+    spif_url_t self;
+
+    self = SPIF_ALLOC(url);
+    spif_url_init_from_ipaddr(self, ipaddr);
+    return self;
+}
+
+static spif_bool_t
+spif_url_init_from_ipaddr(spif_url_t self, spif_ipsockaddr_t ipaddr)
+{
+    spif_uint8_t tries;
+    spif_hostinfo_t hinfo;
+
+    spif_str_init(SPIF_STR(self));
+    spif_obj_set_class(SPIF_OBJ(self), SPIF_CLASS_VAR(url));
+    self->proto = SPIF_NULL_TYPE(str);
+    self->user = SPIF_NULL_TYPE(str);
+    self->passwd = SPIF_NULL_TYPE(str);
+    self->path = SPIF_NULL_TYPE(str);
+    self->query = SPIF_NULL_TYPE(str);
+
+    /* Try up to 3 times to resolve the hostname. */
+    h_errno = 0;
+    tries = 0;
+    do {
+        tries++;
+        hinfo = gethostbyaddr(SPIF_CONST_CAST_C(char *) &(ipaddr->sin_addr), sizeof(ipaddr->sin_addr), AF_INET);
+    } while ((tries <= 3) && (hinfo == NULL) && (h_errno == TRY_AGAIN));
+    if (hinfo == NULL || hinfo->h_name == NULL) {
+        char *buff;
+
+        buff = inet_ntoa(ipaddr->sin_addr);
+        self->host = spif_str_new_from_ptr(buff);
+    } else {
+        self->host = spif_str_new_from_ptr(hinfo->h_name);
+    }
+
+    self->port = spif_str_new_from_num(ntohs(ipaddr->sin_port));
+    return TRUE;
+}
+
+static spif_url_t
+spif_url_new_from_unixaddr(spif_unixsockaddr_t unixaddr)
+{
+    spif_url_t self;
+
+    self = SPIF_ALLOC(url);
+    spif_url_init_from_unixaddr(self, unixaddr);
+    return self;
+}
+
+static spif_bool_t
+spif_url_init_from_unixaddr(spif_url_t self, spif_unixsockaddr_t unixaddr)
+{
+    spif_str_init(SPIF_STR(self));
+    spif_obj_set_class(SPIF_OBJ(self), SPIF_CLASS_VAR(url));
+    self->proto = SPIF_NULL_TYPE(str);
+    self->user = SPIF_NULL_TYPE(str);
+    self->passwd = SPIF_NULL_TYPE(str);
+    self->host = SPIF_NULL_TYPE(str);
+    self->port = SPIF_NULL_TYPE(str);
+    self->query = SPIF_NULL_TYPE(str);
+
+    if (unixaddr->sun_path != NULL) {
+        self->path = spif_str_new_from_ptr(unixaddr->sun_path);
+    } else {
+        self->path = SPIF_NULL_TYPE(str);
+    }
+    return TRUE;
+}
 
 static spif_ipsockaddr_t
 spif_url_get_ipaddr(spif_url_t self)
@@ -527,11 +671,11 @@ spif_url_get_ipaddr(spif_url_t self)
     spif_ipsockaddr_t addr;
     spif_str_t hostname;
 
-    REQUIRE_RVAL(!SPIF_URL_ISNULL(self), 0);
+    REQUIRE_RVAL(!SPIF_URL_ISNULL(self), SPIF_NULL_TYPE(ipsockaddr));
 
     /* We need a hostname of some type to connect to. */
     hostname = SPIF_STR(spif_url_get_host(self));
-    REQUIRE_RVAL(!SPIF_STR_ISNULL(hostname), 0);
+    REQUIRE_RVAL(!SPIF_STR_ISNULL(hostname), SPIF_NULL_TYPE(ipsockaddr));
 
     /* Try up to 3 times to resolve the hostname. */
     h_errno = 0;
@@ -555,7 +699,7 @@ spif_url_get_ipaddr(spif_url_t self)
     addr->sin_family = AF_INET;
     addr->sin_port = htons(spif_url_get_portnum(self));
     memcpy(&(addr->sin_addr), (void *) (hinfo->h_addr_list[0]), sizeof(addr->sin_addr));
-    D_OBJ(("Got address 0x%08x and port %d for name \"%s\"\n", *((int *) (&addr->sin_addr)),
+    D_OBJ(("Got address 0x%08x and port %d for name \"%s\"\n", (long) ntohl(*((int *) (&addr->sin_addr))),
            (int) ntohs(addr->sin_port), SPIF_STR_STR(hostname)));
     return addr;
 }
@@ -564,6 +708,8 @@ static spif_unixsockaddr_t
 spif_url_get_unixaddr(spif_url_t self)
 {
     spif_unixsockaddr_t addr;
+
+    REQUIRE_RVAL(!SPIF_URL_ISNULL(self), SPIF_NULL_TYPE(unixsockaddr));
 
     /* No address to look up, just a file path. */
     addr = SPIF_ALLOC(unixsockaddr);
@@ -577,6 +723,8 @@ static spif_sockport_t
 spif_url_get_portnum(spif_url_t self)
 {
     spif_str_t port_str;
+
+    REQUIRE_RVAL(!SPIF_URL_ISNULL(self), SPIF_NULL_TYPE(sockport));
 
     /* Return the integer form of the port number for a URL */
     port_str = spif_url_get_port(self);
@@ -595,8 +743,8 @@ spif_socket_get_proto(spif_socket_t self)
     spif_str_t proto_str;
     spif_servinfo_t serv;
 
-    /* If we have a destination URL, use it.  Otherwise, use the source. */
-    url = ((SPIF_URL_ISNULL(self->dest_url)) ? (self->src_url) : (self->dest_url));
+    /* If we have a remote URL, use it.  Otherwise, use the local one. */
+    url = ((SPIF_URL_ISNULL(self->remote_url)) ? (self->local_url) : (self->remote_url));
     REQUIRE_RVAL(!SPIF_URL_ISNULL(url), FALSE);
 
     proto_str = spif_url_get_proto(url);

@@ -29,8 +29,6 @@
 #define SPIF_SOCKET_SOCKFD(o)               (SPIF_SOCKET(o)->fd)
 #define SPIF_SOCKET_SOCKADDR(o)             (SPIF_SOCKET(o)->addr)
 #define SPIF_SOCKET_SOCKADDR_IP(o)          (SPIF_CAST(ipsockaddr) (SPIF_SOCKET(o)->addr))
-#define SPIF_SOCKET_INBUFF(o)               SPIF_STR(SPIF_SOCKET(o)->input)
-#define SPIF_SOCKET_OUTBUFF(o)              SPIF_STR(SPIF_SOCKET(o)->output)
 
 /* Check to see if a pointer references an socket. */
 #define SPIF_OBJ_IS_SOCKET(o)               (SPIF_OBJ_IS_TYPE(o, socket))
@@ -61,6 +59,8 @@
 #define SPIF_SOCKET_FLAGS_CONNECTED         (1UL << 10)
 #define SPIF_SOCKET_FLAGS_HAVE_INPUT        (1UL << 11)
 #define SPIF_SOCKET_FLAGS_CAN_OUTPUT        (1UL << 12)
+#define SPIF_SOCKET_FLAGS_NBIO              (1UL << 13)
+#define SPIF_SOCKET_FLAGS_IOSTATE           (0xff << 8)
 #define SPIF_SOCKET_FLAGS(s)                (SPIF_SOCKET(s)->flags)
 #define SPIF_SOCKET_FLAGS_SET(s, b)         do {SPIF_SOCKET_FLAGS(s) |= (b);} while (0)
 #define SPIF_SOCKET_FLAGS_CLEAR(s, b)       do {SPIF_SOCKET_FLAGS(s) &= ~(b);} while (0)
@@ -77,7 +77,7 @@ SPIF_DEFINE_OBJ(socket) {
     spif_sockaddr_t addr;
     spif_sockaddr_len_t len;
     spif_uint32_t flags;
-    spif_url_t src_url, dest_url;
+    spif_url_t local_url, remote_url;
 };
 
 extern spif_class_t SPIF_CLASS_VAR(socket);
@@ -94,6 +94,7 @@ extern spif_classname_t spif_socket_type(spif_socket_t);
 extern spif_bool_t spif_socket_open(spif_socket_t);
 extern spif_bool_t spif_socket_close(spif_socket_t);
 extern spif_bool_t spif_socket_check_io(spif_socket_t);
+extern spif_socket_t spif_socket_accept(spif_socket_t);
 extern spif_bool_t spif_socket_send(spif_socket_t, spif_str_t);
 extern spif_str_t spif_socket_recv(spif_socket_t);
 extern spif_bool_t spif_socket_set_nbio(spif_socket_t);

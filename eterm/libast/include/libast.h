@@ -359,7 +359,7 @@
 #else
 # define SWAP(a, b)  do {void *tmp = ((void *)(a)); (a) = (b); (b) = tmp;} while (0)
 #endif
-#define BINSWAP(a, b)  ((a) ^= (b) ^= (a) ^= (b))
+#define BINSWAP(a, b)  (((long) (a)) ^= ((long) (b)) ^= ((long) (a)) ^= ((long) (b)))
 
 #define CONST_STRLEN(x)            (sizeof(x) - 1)
 #define BEG_STRCASECMP(s, constr)  (strncasecmp(s, constr, CONST_STRLEN(constr)))

@@ -80,5 +80,6 @@ extern spif_str_t spif_url_get_path(spif_url_t);
 extern spif_bool_t spif_url_set_path(spif_url_t, spif_str_t);
 extern spif_str_t spif_url_get_query(spif_url_t);
 extern spif_bool_t spif_url_set_query(spif_url_t, spif_str_t);
+extern spif_bool_t spif_url_unparse(spif_url_t);
 
 #endif /* _LIBAST_URL_H_ */

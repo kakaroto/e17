@@ -392,7 +392,7 @@ test_str(void)
 
     TEST_BEGIN("spif_str_new() function");
     teststr = spif_str_new();
-    TEST_FAIL_IF(SPIF_OBJ_ISNULL(teststr));
+    TEST_FAIL_IF(SPIF_STR_ISNULL(teststr));
     TEST_PASS();
 
     TEST_BEGIN("spif_obj_get_classname() function");
@@ -451,6 +451,22 @@ test_str(void)
     TEST_FAIL_IF(spif_str_get_size(teststr) != sizeof(tmp2));
     spif_str_del(teststr);
     close(fd);
+    TEST_PASS();
+
+    TEST_BEGIN("spif_str_new_from_num() function");
+    teststr = spif_str_new_from_num(1234567890L);
+    TEST_FAIL_IF(SPIF_STR_ISNULL(teststr));
+    TEST_FAIL_IF(!SPIF_CMP_IS_EQUAL(spif_str_cmp_with_ptr(teststr, "1234567890")));
+    spif_str_done(teststr);
+    spif_str_init_from_num(teststr, 2147483647L);
+    TEST_FAIL_IF(!SPIF_CMP_IS_EQUAL(spif_str_cmp_with_ptr(teststr, "2147483647")));
+    spif_str_done(teststr);
+    spif_str_init_from_num(teststr, -2147483647L);
+    TEST_FAIL_IF(!SPIF_CMP_IS_EQUAL(spif_str_cmp_with_ptr(teststr, "-2147483647")));
+    spif_str_done(teststr);
+    spif_str_init_from_num(teststr, 0x00000000);
+    TEST_FAIL_IF(!SPIF_CMP_IS_EQUAL(spif_str_cmp_with_ptr(teststr, "0")));
+    spif_str_del(teststr);
     TEST_PASS();
 
     TEST_BEGIN("spif_str_dup() function");
@@ -800,6 +816,7 @@ test_list(void)
     unsigned short i;
     spif_list_t testlist;
     spif_str_t s, s2;
+    spif_obj_t *list_array;
 
     for (i = 0; i < 3; i++) {
         if (i == 0) {
@@ -979,6 +996,52 @@ test_list(void)
         spif_str_del(s);
         TEST_PASS();
 
+        TEST_BEGIN("SPIF_LIST_REVERSE() macro");
+        SPIF_LIST_REVERSE(testlist);
+
+        s = spif_str_new_from_ptr("0");
+        TEST_FAIL_IF(SPIF_LIST_INDEX(testlist, s) != 5);
+        spif_str_done(s);
+        spif_str_init_from_ptr(s, "1");
+        TEST_FAIL_IF(SPIF_LIST_INDEX(testlist, s) != 4);
+        spif_str_done(s);
+        spif_str_init_from_ptr(s, "2");
+        TEST_FAIL_IF(SPIF_LIST_INDEX(testlist, s) != 3);
+        spif_str_done(s);
+        spif_str_init_from_ptr(s, "3");
+        TEST_FAIL_IF(SPIF_LIST_INDEX(testlist, s) != 2);
+        spif_str_done(s);
+        spif_str_init_from_ptr(s, "4");
+        TEST_FAIL_IF(SPIF_LIST_INDEX(testlist, s) != 1);
+        spif_str_done(s);
+        spif_str_init_from_ptr(s, "5");
+        TEST_FAIL_IF(SPIF_LIST_INDEX(testlist, s) != 0);
+        spif_str_del(s);
+        TEST_PASS();
+
+        TEST_BEGIN("SPIF_LIST_TO_ARRAY() macro");
+        list_array = SPIF_LIST_TO_ARRAY(testlist);
+
+        s = spif_str_new_from_ptr("0");
+        TEST_FAIL_IF(!SPIF_CMP_IS_EQUAL(SPIF_OBJ_COMP(list_array[5], s)));
+        spif_str_done(s);
+        spif_str_init_from_ptr(s, "1");
+        TEST_FAIL_IF(!SPIF_CMP_IS_EQUAL(SPIF_OBJ_COMP(list_array[4], s)));
+        spif_str_done(s);
+        spif_str_init_from_ptr(s, "2");
+        TEST_FAIL_IF(!SPIF_CMP_IS_EQUAL(SPIF_OBJ_COMP(list_array[3], s)));
+        spif_str_done(s);
+        spif_str_init_from_ptr(s, "3");
+        TEST_FAIL_IF(!SPIF_CMP_IS_EQUAL(SPIF_OBJ_COMP(list_array[2], s)));
+        spif_str_done(s);
+        spif_str_init_from_ptr(s, "4");
+        TEST_FAIL_IF(!SPIF_CMP_IS_EQUAL(SPIF_OBJ_COMP(list_array[1], s)));
+        spif_str_done(s);
+        spif_str_init_from_ptr(s, "5");
+        TEST_FAIL_IF(!SPIF_CMP_IS_EQUAL(SPIF_OBJ_COMP(list_array[0], s)));
+        spif_str_del(s);
+        TEST_PASS();
+
         /*SPIF_SHOW(testlist, stdout);*/
         SPIF_LIST_DEL(testlist);
     }
@@ -990,51 +1053,88 @@ test_list(void)
 int
 test_socket(void)
 {
-    spif_socket_t s1, s2;
+    spif_socket_t src1, dest1, src2, dest2, listen1, listen2;
     spif_url_t url1, url2;
-    spif_str_t data;
-    spif_charptr_t tmp1 = "http://www.kainx.org/";
-    spif_charptr_t tmp2 = "unix:/tmp/.X11-unix/X0";
+    spif_str_t data1, data2;
+    spif_charptr_t tmp1 = "tcp://127.0.0.1:31737";
+    spif_charptr_t tmp2 = "unix:/tmp/libast-test-socket";
+    spif_charptr_t strdata = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
     spif_bool_t b;
+
+    /* Unlink the UNIX socket in case it exists. */
+    unlink(tmp2 + 5);
 
     TEST_BEGIN("spif_socket_new_from_urls() function");
     url1 = spif_url_new_from_ptr(tmp1);
     TEST_FAIL_IF(SPIF_URL_ISNULL(url1));
-    s1 = spif_socket_new_from_urls(SPIF_NULL_TYPE(url), url1);
+    listen1 = spif_socket_new_from_urls(url1, SPIF_NULL_TYPE(url));
+    dest1 = spif_socket_new_from_urls(SPIF_NULL_TYPE(url), url1);
     spif_url_del(url1);
-    TEST_FAIL_IF(SPIF_SOCKET_ISNULL(s1));
+    TEST_FAIL_IF(SPIF_SOCKET_ISNULL(listen1));
+    TEST_FAIL_IF(SPIF_SOCKET_ISNULL(dest1));
     url2 = spif_url_new_from_ptr(tmp2);
     TEST_FAIL_IF(SPIF_URL_ISNULL(url2));
-    s2 = spif_socket_new_from_urls(SPIF_NULL_TYPE(url), url2);
+    listen2 = spif_socket_new_from_urls(url2, SPIF_NULL_TYPE(url));
+    dest2 = spif_socket_new_from_urls(SPIF_NULL_TYPE(url), url2);
     spif_url_del(url2);
-    TEST_FAIL_IF(SPIF_SOCKET_ISNULL(s2));
+    TEST_FAIL_IF(SPIF_SOCKET_ISNULL(listen2));
+    TEST_FAIL_IF(SPIF_SOCKET_ISNULL(dest2));
     TEST_PASS();
 
     TEST_BEGIN("spif_socket_open() function");
-    b = spif_socket_open(s1);
+    b = spif_socket_open(listen1);
     TEST_FAIL_IF(b == FALSE);
-    b = spif_socket_open(s2);
+    b = spif_socket_open(listen2);
+    TEST_FAIL_IF(b == FALSE);
+    b = spif_socket_open(dest1);
+    TEST_FAIL_IF(b == FALSE);
+    b = spif_socket_open(dest2);
     TEST_FAIL_IF(b == FALSE);
     TEST_PASS();
 
-    TEST_BEGIN("spif_socket_send() function");
-    data = spif_str_new_from_ptr("GET / HTTP/1.0\015\012Host: www.kainx.org\015\012\015\012");
-    b = spif_socket_send(s1, data);
+    TEST_BEGIN("spif_socket_set_nbio() function");
+    b = spif_socket_set_nbio(listen1);
     TEST_FAIL_IF(b == FALSE);
-    spif_str_del(data);
+    b = spif_socket_set_nbio(listen2);
+    TEST_FAIL_IF(b == FALSE);
+    b = spif_socket_set_nbio(dest1);
+    TEST_FAIL_IF(b == FALSE);
+    b = spif_socket_set_nbio(dest2);
+    TEST_FAIL_IF(b == FALSE);
     TEST_PASS();
 
-    TEST_BEGIN("spif_socket_recv() function");
-    data = spif_socket_recv(s1);
-    /*SPIF_SHOW(data, stdout);*/
-    TEST_FAIL_IF(SPIF_STR_ISNULL(data));
-    spif_str_del(data);
+    TEST_BEGIN("spif_socket_accept() function");
+    src1 = spif_socket_accept(listen1);
+    TEST_FAIL_IF(SPIF_SOCKET_ISNULL(src1));
+    src2 = spif_socket_accept(listen2);
+    TEST_FAIL_IF(SPIF_SOCKET_ISNULL(src2));
+    TEST_PASS();
+
+    TEST_BEGIN("spif_socket_send() and spif_socket_recv() functions");
+    signal(SIGPIPE, SIG_IGN);
+    data1 = spif_str_new_from_ptr(strdata);
+    TEST_FAIL_IF(SPIF_STR_ISNULL(data1));
+    b = spif_socket_send(dest1, data1);
+    TEST_FAIL_IF(b == FALSE);
+    data2 = spif_socket_recv(src1);
+    TEST_FAIL_IF(SPIF_STR_ISNULL(data2));
+    TEST_FAIL_IF(!SPIF_CMP_IS_EQUAL(spif_str_cmp(data1, data2)));
+    spif_str_del(data1);
+    spif_str_del(data2);
     TEST_PASS();
 
     TEST_BEGIN("spif_socket_del() function");
-    b = spif_socket_del(s1);
+    b = spif_socket_del(listen1);
     TEST_FAIL_IF(b == FALSE);
-    b = spif_socket_del(s2);
+    b = spif_socket_del(listen2);
+    TEST_FAIL_IF(b == FALSE);
+    b = spif_socket_del(src1);
+    TEST_FAIL_IF(b == FALSE);
+    b = spif_socket_del(src2);
+    TEST_FAIL_IF(b == FALSE);
+    b = spif_socket_del(dest1);
+    TEST_FAIL_IF(b == FALSE);
+    b = spif_socket_del(dest2);
     TEST_FAIL_IF(b == FALSE);
     TEST_PASS();
 

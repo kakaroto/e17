@@ -504,11 +504,27 @@ spif_linked_list_remove_at(spif_linked_list_t self, size_t idx)
 static spif_bool_t
 spif_linked_list_reverse(spif_linked_list_t self)
 {
+    spif_linked_list_item_t current, tmp, previous;
 
+    for (previous = SPIF_NULL_TYPE(linked_list_item), current = self->head; current; previous = tmp) {
+        tmp = current;
+        current = current->next;
+        tmp->next = previous;
+    }
+    self->head = tmp;
+    return TRUE;
 }
 
 static spif_obj_t *
 spif_linked_list_to_array(spif_linked_list_t self)
 {
+    spif_obj_t *tmp;
+    spif_linked_list_item_t current;
+    size_t i;
 
+    tmp = SPIF_CAST_C(spif_obj_t *) MALLOC(SPIF_SIZEOF_TYPE(obj) * self->len);
+    for (i = 0, current = self->head; i < self->len; current = current->next, i++) {
+        tmp[i] = SPIF_CAST(obj) SPIF_OBJ(spif_linked_list_item_get_data(current));
+    }
+    return tmp;
 }
