@@ -4,7 +4,7 @@
 /* This code is copyright 1999 The Enlightenment Development Team */
 /* based on code by Matthias Ettrich from KWM (http://www.kde.org)
  * and code by Alfredo Kojima in Window Maker (http://www.windowmaker.org)
- * both of which are copyright under the GPL
+ * both of which are copyright under the GPL  (http://www.fsf.org)
  *
  * To anyone who hasn't implemented KDE hints in your window manager,
  * feel free to snarf this code and make it work for you, too.
@@ -15,18 +15,13 @@
 
 /* some #defines to make this a little more legible later */
 
-#define _KDE_NO_DECORATION 0
-#define _KDE_NORMAL_DECORATION 1
-#define _KDE_TINY_DECORATION 2
-#define _KDE_NO_FOCUS 256
-#define _KDE_STANDALONE_MENUBAR 512
-#define _KDE_DESKTOP_ICON 1024
-#define _KDE_ONTOP 2048
-
-#define KWM_STICKY 1<<0
-#define KWM_MAXIMIZED 1<<1
-#define KWM_ICONIFIED 1<<2
-#define KWM_ALL 7
+#define KDE_NO_DECORATION 0
+#define KDE_NORMAL_DECORATION 1
+#define KDE_TINY_DECORATION 2
+#define KDE_NO_FOCUS 256
+#define KDE_STANDALONE_MENUBAR 512
+#define KDE_DESKTOP_ICON 1024
+#define KDE_ONTOP 2048
 
 /* initialize all the KDE Hint Atoms */
 
@@ -79,7 +74,7 @@ KModuleList;
 
 static KModuleList *KModules = NULL;
 
-void
+void 
 KDE_ClientMessage(EWin * ewin, Atom atom, long data, Time timestamp)
 {
 
@@ -102,7 +97,7 @@ KDE_ClientMessage(EWin * ewin, Atom atom, long data, Time timestamp)
 
 }
 
-void
+void 
 KDE_ClientTextMessage(EWin * ewin, Atom atom, char *data)
 {
 
@@ -124,7 +119,7 @@ KDE_ClientTextMessage(EWin * ewin, Atom atom, char *data)
 
 }
 
-void
+void 
 KDE_SendMessagesToModules(Atom atom, long data)
 {
 
@@ -143,7 +138,7 @@ KDE_SendMessagesToModules(Atom atom, long data)
 
 }
 
-void
+void 
 KDE_AddModule(EWin * ewin)
 {
 
@@ -222,7 +217,7 @@ KDE_AddModule(EWin * ewin)
 
 }
 
-void
+void 
 KDE_RemoveModule(EWin * ewin)
 {
 
@@ -277,7 +272,7 @@ KDE_RemoveModule(EWin * ewin)
 
 }
 
-void
+void 
 KDE_Init(void)
 {
    /*
@@ -365,23 +360,54 @@ KDE_Init(void)
    /* and we tell the root window to announce we're KDE compliant */
    setSimpleHint(root.win, KDE_RUNNING, 1);
 
+   /* then we're going to set a series of string hints on the root window */
+#define SETSTR(hint, str) {\
+	static Atom a = 0; if (!a) a = XInternAtom(disp, #hint, False);\
+		XChangeProperty(disp, root.win, a, XA_STRING, 8, PropModeReplace,\
+				(unsigned char*)str, strlen(str));\
+}
+
+   SETSTR(KWM_STRING_MAXIMIZE, "Maximize");
+   SETSTR(KWM_STRING_UNMAXIMIZE, "Unmaximize");
+   SETSTR(KWM_STRING_ICONIFY, "Miniaturize");
+   SETSTR(KWM_STRING_UNICONIFY, "Deminiaturize");
+   SETSTR(KWM_STRING_STICKY, "Omnipresent");
+   SETSTR(KWM_STRING_UNSTICKY, "Not Omnipresent");
+   SETSTR(KWM_STRING_STRING_MOVE, "Move");
+   SETSTR(KWM_STRING_STRING_RESIZE, "Resize");
+   SETSTR(KWM_STRING_CLOSE, "Close");
+   SETSTR(KWM_STRING_TODESKTOP, "Move To");
+   SETSTR(KWM_STRING_ONTOCURRENTDESKTOP, "Bring Here");
+
    EDBUG_RETURN_;
 
 }
 
-void
+void 
 KDE_Shutdown(void)
 {
+
+   KModuleList        *ptr;
 
    EDBUG(6, "KDE_Shutdown");
 
    /* tell the root window we're not doing KDE compliance anymore */
    deleteHint(root.win, KDE_RUNNING);
 
+   /* kill off the modules */
+   ptr = KModules;
+
+   while (ptr)
+     {
+	XKillClient(disp, ptr->ewin->win);
+	ptr = ptr->next;
+     }
+
    EDBUG_RETURN_;
+
 }
 
-void
+void 
 KDE_ClientInit(EWin * ewin)
 {
 
@@ -411,7 +437,7 @@ KDE_ClientInit(EWin * ewin)
 
 }
 
-void
+void 
 KDE_ClientChange(EWin * ewin, XPropertyEvent * event)
 {
 
@@ -482,7 +508,7 @@ KDE_ClientChange(EWin * ewin, XPropertyEvent * event)
 
 }
 
-void
+void 
 KDE_GetDecorationHint(EWin * ewin, long *dechints)
 {
 
@@ -490,19 +516,34 @@ KDE_GetDecorationHint(EWin * ewin, long *dechints)
 
    EDBUG(6, "KDE_GetDecorationHint");
 
-   ewin->skipfocus = *dechints & _KDE_NO_FOCUS;
+   ewin->skipfocus = *dechints & KDE_NO_FOCUS;
 
-   switch (*dechints & ~_KDE_NO_FOCUS)
+   switch (*dechints & ~KDE_NO_FOCUS)
      {
-     case _KDE_NO_DECORATION:
+     case KDE_NO_DECORATION:
 	b = (Border *) FindItem("BORDERLESS", 0, LIST_FINDBY_NAME,
 				LIST_TYPE_BORDER);
 	break;
-     case _KDE_TINY_DECORATION:
+     case KDE_TINY_DECORATION:
 	b = (Border *) FindItem("TRANSIENT", 0, LIST_FINDBY_NAME,
 				LIST_TYPE_BORDER);
 	break;
-     case _KDE_NORMAL_DECORATION:
+     case KDE_STANDALONE_MENUBAR:
+	b = (Border *) FindItem("BORDERLESS", 0, LIST_FINDBY_NAME,
+				LIST_TYPE_BORDER);
+	ewin->skipfocus = 1;
+	break;
+     case KDE_DESKTOP_ICON:
+	b = (Border *) FindItem("BORDERLESS", 0, LIST_FINDBY_NAME,
+				LIST_TYPE_BORDER);
+	ewin->skipfocus = 1;
+	ewin->sticky = 1;
+	ewin->layer = 1;
+	break;
+     case KDE_ONTOP:
+	ewin->layer = 11;
+	break;
+     case KDE_NORMAL_DECORATION:
      default:
 	b = (Border *) FindItem("DEFAULT", 0, LIST_FINDBY_NAME,
 				LIST_TYPE_BORDER);
@@ -530,7 +571,30 @@ KDE_GetDecorationHint(EWin * ewin, long *dechints)
 
 }
 
-int
+void 
+KDE_CheckClientHints(EWin * ewin)
+{
+
+   EDBUG(6, "KDE_CheckClientHints");
+
+   if (!ewin)
+     {
+	EDBUG_RETURN_;
+     }
+   if (getSimpleHint(ewin->win, KDE_WIN_DECORATION))
+     {
+	KDE_GetDecorationHint(ewin, getSimpleHint(ewin->win,
+						  KDE_WIN_DECORATION));
+     }
+   if (getSimpleHint(ewin->win, KDE_WIN_DESKTOP))
+     {
+	ewin->desktop = *(getSimpleHint(ewin->win, KDE_WIN_DESKTOP)) - 1;
+     }
+   EDBUG_RETURN_;
+
+}
+
+int 
 KDE_WindowCommand(EWin * ewin, char *cmd)
 {
 
@@ -586,7 +650,7 @@ KDE_WindowCommand(EWin * ewin, char *cmd)
 
 }
 
-void
+void 
 KDE_Command(char *cmd, XClientMessageEvent * event)
 {
 
@@ -610,27 +674,27 @@ KDE_Command(char *cmd, XClientMessageEvent * event)
      }
    else if (!strncmp(cmd, "go:", 3))
      {
-
+	/* not supported right now */
      }
    else if (!strcmp(cmd, "desktop+1"))
      {
-
+	GotoDesktop(desks.current + 1);
      }
    else if (!strcmp(cmd, "desktop-1"))
      {
-
+	GotoDesktop(desks.current - 1);
      }
    else if (!strcmp(cmd, "desktop+2"))
      {
-
+	GotoDesktop(desks.current + 2);
      }
    else if (!strcmp(cmd, "desktop-2"))
      {
-
+	GotoDesktop(desks.current - 2);
      }
    else if (!strncmp(cmd, "desktop", 7))
      {
-
+	GotoDesktop(atoi(&cmd[7]));
      }
    else if (!strcmp(cmd, "deskUnclutter"))
      {
@@ -660,6 +724,122 @@ KDE_Command(char *cmd, XClientMessageEvent * event)
 
 	     ptr = ptr->next;
 	  }
+     }
+   EDBUG_RETURN_;
+
+}
+
+void 
+KDE_ProcessClientMessage(XClientMessageEvent * event)
+{
+
+   EDBUG(6, "KDE_ProcessClientMessage");
+
+   if (event->message_type == KDE_COMMAND && event->format == 8)
+     {
+	char                s[24];
+
+	strcpy(s, event->data.b);
+	KDE_Command(s, event);
+     }
+   else if (event->message_type == KDE_ACTIVATE_WINDOW)
+     {
+	FocusToEWin(FindEwinByBase(event->data.l[0]));
+     }
+   else if (event->message_type == KDE_DO_NOT_MANAGE)
+     {
+	EWin               *ewin;
+	Border             *b;
+
+	ewin = FindEwinByBase(event->data.l[0]);
+	b = (Border *) FindItem("BORDERLESS", 0, LIST_FINDBY_NAME,
+				LIST_TYPE_BORDER);
+
+	MakeWindowSticky(ewin);
+	ewin->border_new = 1;
+	SetEwinToBorder(ewin, b);
+	ICCCM_MatchSize(ewin);
+	MoveResizeEwin(ewin, ewin->x, ewin->y, ewin->client.w,
+		       ewin->client.h);
+
+     }
+   else if (event->message_type == KDE_MODULE)
+     {
+	if (getSimpleHint(event->data.l[0], KDE_MODULE))
+	  {
+	     KDE_AddModule(FindEwinByBase(event->data.l[0]));
+	  }
+	else
+	  {
+	     KDE_RemoveModule(FindEwinByBase(event->data.l[0]));
+	  }
+     }
+   else
+     {
+	/* not supported right now */
+     }
+
+   EDBUG_RETURN_;
+
+}
+
+void 
+KDE_ModuleAssert(EWin * ewin)
+{
+
+   EDBUG(6, "KDE_ModuleAssert");
+
+   if (getSimpleHint(ewin->win, KDE_MODULE))
+     {
+	KDE_AddModule(ewin);
+     }
+
+   EDBUG_RETURN_;
+
+}
+
+void 
+KDE_PrepModuleEvent(EWin * ewin, KMessage msg)
+{
+
+   Atom                event;
+
+   EDBUG(6, "KDE_PrepModuleEvent");
+
+   switch (msg)
+     {
+     case AddWindow:
+	event = KDE_MODULE_WIN_ADD;
+	break;
+     case RemoveWindow:
+	event = KDE_MODULE_WIN_REMOVE;
+	break;
+     case FocusWindow:
+	event = KDE_MODULE_WIN_ACTIVATE;
+	break;
+     case RaiseWindow:
+	event = KDE_MODULE_WIN_RAISE;
+	break;
+     case LowerWindow:
+	event = KDE_MODULE_WIN_LOWER;
+	break;
+     case ChangedClient:
+	event = KDE_MODULE_WIN_CHANGE;
+	break;
+     case IconChange:
+	event = KDE_MODULE_WIN_ICON_CHANGE;
+	break;
+     default:
+	EDBUG_RETURN_;
+
+     }
+   if (ewin)
+     {
+	KDE_SendMessagesToModules(event, ewin->win);
+     }
+   else
+     {
+	KDE_SendMessagesToModules(event, 0);
      }
 
    EDBUG_RETURN_;

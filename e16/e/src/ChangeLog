@@ -1348,3 +1348,11 @@ Tue Sep  7 11:26:24 PDT 1999
 (Raster)
 
 fixed "not recognising clicks when chaded" problem
+
+-------------------------------------------------------------------------------
+
+Tue Sep  7 14:36:02 PDT 1999
+(Mandrake)
+
+yet more KDE stuff.  time to make a couple of configuration flags, add in
+the stuff to the main event loop, and test test test

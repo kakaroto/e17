@@ -1600,6 +1600,31 @@ typedef struct _drawqueue
   }
 DrawQueue;
 
+/* some kde hint enums here */
+
+typedef enum
+  {
+     StickyFlag = (1 << 0),
+     MaximizedFlag = (1 << 1),
+     IconifiedFlag = (1 << 2),
+     AllFlags = 7
+  }
+KStates;
+
+typedef enum
+  {
+     AddWindow,
+     RemoveWindow,
+     FocusWindow,
+     RaiseWindow,
+     LowerWindow,
+     ChangedClient,
+     IconChange
+  }
+KMessage;
+
+/* function prototypes */
+
 void                Efont_extents(Efont * f, char *text,
 				  int *font_ascent_return,
 				  int *font_descent_return, int *width_return,
@@ -2173,6 +2198,10 @@ void                KDE_ClientChange(EWin * ewin, XPropertyEvent * event);
 void                KDE_GetDecorationHint(EWin * ewin, long *dechints);
 int                 KDE_WindowCommand(EWin * ewin, char *cmd);
 void                KDE_Command(char *cmd, XClientMessageEvent * event);
+void                KDE_ProcessClientMessage(XClientMessageEvent * event);
+void                KDE_ModuleAssert(EWin * ewin);
+void                KDE_PrepModuleEvent(EWin * ewin, KMessage msg);
+void                KDE_CheckClientHints(EWin * ewin);
 
 /* sound.c functions */
 Sample             *LoadWav(char *file);
