@@ -101,13 +101,19 @@ void ewl_text_text_set(Ewl_Text * ta, char *text)
 {
 	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR("ta", ta);
-	DCHECK_PARAM_PTR("text", text);
 
-	/*
-	 * Keep a copy of the text for quick access and for creating the etox
-	 * when needed.
-	 */
-	ta->text = strdup(text);
+	if (text) {
+		/*
+		 * Keep a copy of the text for quick access and for creating
+		 * the etox when needed.
+		 */
+		ta->text = strdup(text);
+		ta->length = strlen(text);
+	}
+	else {
+		ta->text = NULL;
+		ta->length = 0;
+	}
 
 	/*
 	 * Update the etox and the sizing of the text widget.
@@ -147,17 +153,10 @@ char *ewl_text_text_get(Ewl_Text * ta)
  */
 int ewl_text_length_get(Ewl_Text *ta)
 {
-	int len = 0;
-
 	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR_RET("ta", ta, 0);
 
-	if (ta->etox)
-		len = etox_get_length(ta->etox);
-	else if (ta->text)
-		len = strlen(ta->text);
-
-	DRETURN_INT(len, DLEVEL_STABLE);
+	DRETURN_INT(ta->length, DLEVEL_STABLE);
 }
 
 /**

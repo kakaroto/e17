@@ -35,6 +35,7 @@ struct Ewl_Text
 {
 	Ewl_Widget      widget;       /**< Inherit from Ewl_Widget */
 	char           *text;         /**< The initial text in the text */
+	int             length;       /**< Length of the text displayed */
 	Evas_Object    *etox;         /**< Etox does the actual layout work */
 	Etox_Context   *context; /**< Contains various format settings */
 	Ecore_DList    *ops;          /**< Series of operations to apply */
