@@ -1223,8 +1223,8 @@ __imlib_FreePixmap(Display * d, Pixmap p)
    {
 #ifdef DEBUG_CACHE
       fprintf(stderr, "[Imlib2]  Pixmap 0x%08x not found.  Freeing.\n", p);
-      XFreePixmap(d, p);
 #endif
+      XFreePixmap(d, p);
    }
 }
 
