@@ -1222,3 +1222,11 @@ Thu Sep  2 17:00:15 PDT 1999
 
 and more changes to bushed metal.. pretty much done now.. and added a 
 label in settings dialogs
+
+-------------------------------------------------------------------------------
+
+Thu Sep  2 17:13:45 PDT 1999
+(Raster)
+
+added patch from duncan for mirror group properties - also added mroe padding 
+in dialog ok/etrc. buttons for theme :)

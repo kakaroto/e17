@@ -1543,6 +1543,7 @@ doStick(void *params)
 {
    EWin               *ewin;
    EWin              **gwins = NULL;
+   Group              *curr_group = NULL;
    int                 i, num;
    char                sticky;
 
@@ -1559,11 +1560,13 @@ doStick(void *params)
       EDBUG_RETURN(0);
    gwins = ListWinGroupMembersForEwin(ewin, ACTION_STICK, &num);
    sticky = ewin->sticky;
+   curr_group = ewin->group;
+
    for (i = 0; i < num; i++)
      {
-	if (gwins[i]->sticky && sticky)
+	if (gwins[i]->sticky && ((curr_group && !curr_group->mirror) || sticky))
 	   MakeWindowUnSticky(gwins[i]);
-	else if (!gwins[i]->sticky && !sticky)
+	else if (!gwins[i]->sticky && ((curr_group && !curr_group->mirror) || !sticky))
 	   MakeWindowSticky(gwins[i]);
 	params = NULL;
 	GNOME_SetHint(gwins[i]);
@@ -2254,6 +2257,7 @@ int
 doIconifyWindow(void *params)
 {
    EWin               *ewin;
+   Group              *curr_group = NULL;
    char               *windowid = 0;
    char                iconified;
    EWin              **gwins = NULL;
@@ -2278,14 +2282,15 @@ doIconifyWindow(void *params)
 
    gwins = ListWinGroupMembersForEwin(ewin, ACTION_ICONIFY, &num);
    iconified = ewin->iconified;
+   curr_group = ewin->group;
 
    for (i = 0; i < num; i++)
      {
-	if (gwins[i]->iconified && iconified)
+	if (gwins[i]->iconified && ((curr_group && !curr_group->mirror) || iconified))
 	  {
 	     DeIconifyEwin(gwins[i]);
 	  }
-	else if (!gwins[i]->iconified && !iconified)
+	else if (!gwins[i]->iconified && ((curr_group && !curr_group->mirror) || !iconified))
 	  {
 	     IconifyEwin(gwins[i]);
 	  }
@@ -2356,6 +2361,7 @@ doShade(void *params)
 {
    EWin               *ewin;
    EWin              **gwins = NULL;
+   Group              *curr_group = NULL;
    int                 i, num;
    char                shaded;
 
@@ -2372,15 +2378,16 @@ doShade(void *params)
       EDBUG_RETURN(0);
 
    gwins = ListWinGroupMembersForEwin(ewin, ACTION_SHADE, &num);
+   curr_group = ewin->group;
    shaded = ewin->shaded;
    for (i = 0; i < num; i++)
      {
-	if (gwins[i]->shaded && shaded)
+	if (gwins[i]->shaded && ((curr_group && !curr_group->mirror) || shaded))
 	  {
 	     AUDIO_PLAY("SOUND_UNSHADE");
 	     UnShadeEwin(gwins[i]);
 	  }
-	else if (!gwins[i]->shaded && !shaded)
+	else if (!gwins[i]->shaded && ((curr_group && !curr_group->mirror) || !shaded))
 	  {
 	     AUDIO_PLAY("SOUND_SHADE");
 	     ShadeEwin(gwins[i]);

@@ -3374,6 +3374,7 @@ static char         tmp_group_raise;
 static char         tmp_group_set_border;
 static char         tmp_group_stick;
 static char         tmp_group_shade;
+static char         tmp_group_mirror;
 
 static void         CB_ConfigureGroup(int val, void *data);
 static void
@@ -3391,6 +3392,7 @@ CB_ConfigureGroup(int val, void *data)
 	     tmp_group->set_border = tmp_group_set_border;
 	     tmp_group->stick = tmp_group_stick;
 	     tmp_group->shade = tmp_group_shade;
+         tmp_group->mirror = tmp_group_mirror;
 	  }
      }
    autosave();
@@ -3422,6 +3424,7 @@ SettingsGroup(Group * g)
    tmp_group_set_border = g->set_border;
    tmp_group_stick = g->stick;
    tmp_group_shade = g->shade;
+   tmp_group_mirror = g->mirror;
 
    d = CreateDialog("CONFIGURE_GROUP");
    DialogSetTitle(d, "Window Group Settings");
@@ -3510,6 +3513,14 @@ SettingsGroup(Group * g)
    DialogItemCheckButtonSetText(di, "Shading");
    DialogItemCheckButtonSetState(di, tmp_group_shade);
    DialogItemCheckButtonSetPtr(di, &tmp_group_shade);
+
+   di = DialogAddItem(table, DITEM_CHECKBUTTON);
+   DialogItemSetPadding(di, 2, 2, 2, 2);
+   DialogItemSetFill(di, 1, 0);
+   DialogItemSetColSpan(di, 2);
+   DialogItemCheckButtonSetText(di, "Mirror Shade/Iconify/Stick");
+   DialogItemCheckButtonSetState(di, tmp_group_mirror);
+   DialogItemCheckButtonSetPtr(di, &tmp_group_mirror);
 
    di = DialogAddItem(table, DITEM_SEPARATOR);
    DialogItemSetColSpan(di, 2);

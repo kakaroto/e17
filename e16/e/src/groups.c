@@ -17,6 +17,7 @@ CreateGroup()
    g->set_border = 1;
    g->stick = 1;
    g->shade = 1;
+   g->mirror = 0;
    g->num_members = 0;
    g->members = NULL;
 

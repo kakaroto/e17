@@ -841,6 +841,7 @@ struct _group
      char                set_border;
      char                stick;
      char                shade;
+     char                mirror;
   };
 
 typedef struct _awaiticlass
