@@ -4768,3 +4768,11 @@ Mon Mar 31 12:29:44 EST 2003
 
 -------------------------------------------------------------------------------
 
+
+-------------------------------------------------------------------------------
+
+Thu Apr  3 23:00:16 EST 2003
+(Mandrake)
+
+updated some translations that didn't actually like building properly because
+they were out of sync.
