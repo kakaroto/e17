@@ -241,7 +241,7 @@ void text_update_cb(Ewl_Widget *w, void *event, void *data) {
     Ewl_Widget *label = NULL;
     char buf[BUFSIZ];
 
-    s = ewl_entry_get_text(EWL_ENTRY(w));
+    s = ewl_entry_text_get(EWL_ENTRY(w));
     label = (Ewl_Widget *)data;
 
     snprintf(buf, BUFSIZ, "Hello %s", s);
@@ -339,7 +339,7 @@ void text_update_cb(Ewl_Widget *w, void *event, void *data) {
     Ewl_Widget *label = NULL;
     char buf[BUFSIZ];
 
-    s = ewl_entry_get_text(EWL_ENTRY(w));
+    s = ewl_entry_text_get(EWL_ENTRY(w));
     label = (Ewl_Widget *)data;
 
     snprintf(buf, BUFSIZ, "Hello %s", s);
@@ -357,7 +357,7 @@ as the destroy callback, and all other EWL callbacks that we will be registering
 
 <para>
 The text that has been entered is retrieved with a call to 
-<function>ewl_entry_get_text()</function> passing the entry widget from which
+<function>ewl_entry_text_get()</function> passing the entry widget from which
 we want to retrieve the text. This will return a pointer to the text string, 
 it is the applications responsibility to free this pointer.
 </para>

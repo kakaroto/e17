@@ -398,22 +398,22 @@ and adding a little bit of padding to the widget with
   <title>Ewl_Entry value changed callback</title>
   <programlisting role="C">
 void entry_cb(Ewl_Widget *w, void *event, void *data) {
-    char *s = ewl_entry_get_text(EWL_ENTRY(w));
+    char *s = ewl_entry_text_get(EWL_ENTRY(w));
     printf("%s\n", s);
 
-    ewl_entry_set_text(EWL_ENTRY(w), "New Text");
+    ewl_entry_text_set(EWL_ENTRY(w), "New Text");
 }
   </programlisting>
  </example>
 This callback grabs the current value of the entry widget with the call to
-<function>ewl_entry_get_text()</function> and then resets the text to the 
-value of 'New Text' by calling <function>ewl_entry_set_text()</function>.
+<function>ewl_entry_text_get()</function> and then resets the text to the 
+value of 'New Text' by calling <function>ewl_entry_text_set()</function>.
 </para>
 
 <para>
 The <literal>Ewl_Entry</literal> object allows you to set whether or not the
 text is editable with a call to 
-<function>void ewl_entry_set_editable(Ewl_Entry *, unsigned int edit)</function>
+<function>void ewl_entry_editable_set(Ewl_Entry *, unsigned int edit)</function>
 where <literal>edit</literal> is 0 for uneditable and editable otherwise.
 </para>
 </sect1>
