@@ -578,13 +578,18 @@ void setup_bg(GtkWidget * gevas)
 
 	/** Make this a group_selector **/
 	evh_selector = evh = gevasevh_group_selector_new();
+    printf("...  GTK_IS_GEVASEVH1  %d\n",GTK_IS_GEVASEVH(evh));
     gevasevh_group_selector_set_object( (GtkgEvasEvHGroupSelector*)evh, 
 		GTK_GEVASOBJ(gevas_image));
+    printf("...  GTK_IS_GEVASEVH2  %d\n",GTK_IS_GEVASEVH(evh));
+    
+    printf("gevasobj_add_evhandler() image:%p evh:%p\n",gevas_image,evh);
 	gevasobj_add_evhandler(GTK_GEVASOBJ(gevas_image), evh);
     setup_dnd(gevas);
     
 
 	/** test the evas callback to gtk+ signal connections **/
+    
 	evh = gevasevh_to_gtk_signal_new();
 	gevasobj_add_evhandler(GTK_GEVASOBJ(gevas_image), evh);
 
@@ -985,8 +990,9 @@ int main(int argc, char *argv[])
 					   "delete_event", GTK_SIGNAL_FUNC(delete_event_cb), NULL);
 
 	gtk_widget_show_all(window);
+    
 
-	gevas_add_fontpath(GTK_GEVAS(gevas), PACKAGE_DATA_DIR);
+    gevas_add_fontpath(GTK_GEVAS(gevas), PACKAGE_DATA_DIR);
 	printf("added a font path to %s\n", PACKAGE_DATA_DIR);
 
 	setup_bg(gevas);

@@ -135,6 +135,14 @@ Evas_Object gevasobj_get_evasobj(GtkObject * object)
 	return _gevas_get_obj(object);
 }
 
+GtkgEvasObj*
+gevasobj_from_evasobj( GtkgEvas* gevas, Evas_Object eo )
+{
+    return evas_get_data(gevas_get_evas(gevas), eo, PRIVATE_GTK_GEVASOBJ);
+}
+
+
+
 
 GtkgEvas *gevasobj_get_gevas(GtkObject * object)
 {
@@ -286,7 +294,9 @@ int _gevasobj_get_alpha(GtkgEvasObj * object)
 void _gevasobj_add_evhandler(GtkgEvasObj * object, GtkObject * h)
 {
 	GtkgEvasObj *ev;
+	g_return_if_fail(h != NULL);
 	g_return_if_fail(object != NULL);
+	g_return_if_fail(GTK_IS_GEVASEVH(h));
 	g_return_if_fail(GTK_IS_GEVASOBJ(object));
 	ev = GTK_GEVASOBJ(object);
 
@@ -528,6 +538,15 @@ void gevasobj_hide(GtkgEvasObj * object)
 {
 	VTAB->hide(object);
 }
+
+void gevasobj_set_visible(GtkgEvasObj * object, gboolean v)
+{
+    if( v ) gevasobj_show(object);
+    else    gevasobj_hide(object);
+}
+
+
+
 void gevasobj_get_color(GtkgEvasObj * object, int *r, int *g, int *b, int *a)
 {
 	VTAB->get_color(object, r, g, b, a);

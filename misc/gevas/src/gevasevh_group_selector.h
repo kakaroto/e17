@@ -31,19 +31,28 @@
 #ifndef INC_GTK_GEVASEVH_GROUP_SELECTOR__H
 #define INC_GTK_GEVASEVH_GROUP_SELECTOR__H
 
+#include <gevasev_handler.h>
+#include <gevasevh_selectable.h>
+#include <gevas.h>
+#include <gevasobj.h>
+#include <gevas_obj_collection.h>
+
 #include <gtk/gtkobject.h>
 #include <gtk/gtk.h>
-#include "gevasev_handler.h"
-#include "gevasevh_selectable.h"
-#include "gevas.h"
-#include "gevasobj.h"
 
 #ifdef __cplusplus
 extern "C" {
 #endif							/* __cplusplus */
-#define GTK_GEVASEVH_GROUP_SELECTOR(obj)          GTK_CHECK_CAST (obj, gevasevh_group_selector_get_type (), GtkgEvasEvHGroupSelector)
-#define GTK_GEVASEVH_GROUP_SELECTOR_CLASS(klass)  GTK_CHECK_CLASS_CAST (klass, gevasevh_group_selector_get_type (), GtkgEvasEvHGroupSelectorClass)
-#define GTK_IS_GEVASEVH_GROUP_SELECTOR(obj)       GTK_CHECK_TYPE (obj, gevasevh_group_selector_get_type ())
+
+    
+#define GTK_GEVASEVH_GROUP_SELECTOR(obj)          GTK_CHECK_CAST \
+        (obj, gevasevh_group_selector_get_type (), GtkgEvasEvHGroupSelector)
+    
+#define GTK_GEVASEVH_GROUP_SELECTOR_CLASS(klass)  GTK_CHECK_CLASS_CAST \
+        (klass, gevasevh_group_selector_get_type (), GtkgEvasEvHGroupSelectorClass)
+    
+#define GTK_IS_GEVASEVH_GROUP_SELECTOR(obj)       GTK_CHECK_TYPE \
+        (obj, gevasevh_group_selector_get_type ())
 
 /*
 #define GTK_GEVASEVH_GROUP_SELECTOR_SELECTED_OBJ	"GtkgEvasEvHGroupSelector::selected_gevasobj"
@@ -80,7 +89,12 @@ struct _GtkgEvasEvHGroupSelector
     gboolean drag_is_dragging;
 
     
+    /* This keeps a collection of all the gevasobjs that are selected */
+    GtkgEvasObjCollection* col;
+
+    GtkgEvas* gevas;
     
+
 };
 
 struct _GtkgEvasEvHGroupSelectorClass {
@@ -92,27 +106,26 @@ guint gevasevh_group_selector_get_type(void);
 GtkObject *gevasevh_group_selector_new(void);
 
 /*public*/
-void gevasevh_group_selector_set_object( GtkgEvasEvHGroupSelector* object, GtkgEvasObj* obj );
-Evas_List gevasevh_group_selector_get_selection_objs(GtkgEvasEvHGroupSelector* ev );
-void gevasevh_group_selector_set_drag_targets(
-    GtkgEvasEvHGroupSelector* ev, GtkTargetList *dt );
+    void gevasevh_group_selector_set_object( GtkgEvasEvHGroupSelector* object, GtkgEvasObj* obj );
+    Evas_List gevasevh_group_selector_get_selection_objs(GtkgEvasEvHGroupSelector* ev );
+    Evas_List gevasevh_group_selector_get_selected_selectables(GtkgEvasEvHGroupSelector* ev );
+    void gevasevh_group_selector_set_drag_targets(GtkgEvasEvHGroupSelector* ev, GtkTargetList *dt );
 
 /*package*/
-void gevasevh_group_selector_addtosel( 
-	GtkgEvasEvHGroupSelector* ev, GtkgEvasEvHSelectable* o );
-void gevasevh_group_selector_floodtosel( 
-	GtkgEvasEvHGroupSelector* ev, GtkgEvasEvHSelectable* o );
-void gevasevh_group_selector_remfromsel( 
-	GtkgEvasEvHGroupSelector* ev, GtkgEvasEvHSelectable* o );
-void gevasevh_group_selector_flushsel(GtkgEvasEvHGroupSelector* ev );
-void gevasevh_group_selector_movesel(GtkgEvasEvHGroupSelector* ev, gint32 dx, gint32 dy );
-gboolean 
-gevasevh_group_selector_isinsel(GtkgEvasEvHGroupSelector* ev, GtkgEvasEvHSelectable* o );
-void gevas_group_selector_get_wh(GtkgEvasEvHGroupSelector *ev, gint  cx,
-								 gint cy, double* x, double* y, double* rw,
-								 double* rh);
-
-void gevasevh_group_selector_dragging( GtkgEvasEvHGroupSelector *ev, gboolean d );
+    void gevasevh_group_selector_addtosel( GtkgEvasEvHGroupSelector* ev, GtkgEvasEvHSelectable* o );
+    void gevasevh_group_selector_floodtosel(
+        GtkgEvasEvHGroupSelector* ev,
+        GtkgEvasEvHSelectable* o,
+        GtkgEvasObj* go);
+        
+    void gevasevh_group_selector_remfromsel( GtkgEvasEvHGroupSelector* ev, GtkgEvasEvHSelectable* o );
+    void gevasevh_group_selector_flushsel(GtkgEvasEvHGroupSelector* ev );
+    void gevasevh_group_selector_movesel(GtkgEvasEvHGroupSelector* ev, gint32 dx, gint32 dy );
+    gboolean gevasevh_group_selector_isinsel(GtkgEvasEvHGroupSelector* ev, GtkgEvasEvHSelectable* o );
+    void gevas_group_selector_get_wh(GtkgEvasEvHGroupSelector *ev, gint  cx,
+                                     gint cy, double* x, double* y, double* rw,
+                                     double* rh);
+    void gevasevh_group_selector_dragging( GtkgEvasEvHGroupSelector *ev, gboolean d );
     
 
 #ifdef __cplusplus

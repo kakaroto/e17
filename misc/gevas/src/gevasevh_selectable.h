@@ -32,11 +32,14 @@
 #ifndef INC_GTK_GEVASEVH_SELECTABLE__H
 #define INC_GTK_GEVASEVH_SELECTABLE__H
 
+#include <gevasev_handler.h>
+#include <gevas.h>
+#include <gevasobj.h>
+#include <gevas_obj_collection.h>
+
 #include <gtk/gtkobject.h>
 #include <gtk/gtk.h>
-#include "gevasev_handler.h"
-#include "gevas.h"
-#include "gevasobj.h"
+
 
 #ifdef __cplusplus
 extern "C" {
@@ -58,8 +61,9 @@ typedef struct _GtkgEvasEvHSelectableClass GtkgEvasEvHSelectableClass;
 struct _GtkgEvasEvHSelectable 
 {
 	GtkgEvasEvH evh_obj;
-	GtkgEvasObj *normal;
-	GtkgEvasObj *selected;
+	GtkgEvas* gevas;
+	GtkgEvasObj* normal;
+	GtkgEvasObj* selected;
 
 	gboolean tracking;		/* Are we tracking the mouse movement*/
 	gint32 tracking_x;		/* The x,y of the mouse on mouse down*/
@@ -88,21 +92,28 @@ GtkObject *gevasevh_selectable_new(void);
 
 
 /* public*/
-void gevasevh_selectable_set_normal_gevasobj(
-	GtkgEvasEvHSelectable* ev, 
-	GtkgEvasObj* nor );
-void gevasevh_selectable_set_selector( GtkgEvasEvHSelectable* evh, GtkObject* evh_selector );
-void gevasevh_selectable_set_confine( GtkgEvasEvHSelectable* evh, gboolean c );
+    void gevasevh_selectable_set_normal_gevasobj(
+        GtkgEvasEvHSelectable* ev, 
+        GtkgEvasObj* nor );
+    void gevasevh_selectable_set_selector( GtkgEvasEvHSelectable* evh, GtkObject* evh_selector );
+    void gevasevh_selectable_set_confine( GtkgEvasEvHSelectable* evh, gboolean c );
+    GtkgEvasEvHSelectable* gevas_selectable_get_backref(
+        GtkgEvas* gevas,
+        GtkgEvasObj* o);
+
+#include <gevas_obj_collection.h>
+    GtkgEvasObjCollection* gevasevh_selectable_to_collection( GtkgEvasEvHSelectable* evh );
+    
     
 
 
 
 /* package:*/
-void gevas_selectable_select( GtkgEvasEvHSelectable * ev, gboolean s );
-void gevas_selectable_move( GtkgEvasEvHSelectable * ev, gint32 dx, gint32 dy );
-#define GEVASEVH_SELECTABLE_KEY		"GEVASEVH_SELECTABLE_KEY"
-
-
+    void gevas_selectable_select( GtkgEvasEvHSelectable * ev, gboolean s );
+    void gevas_selectable_move( GtkgEvasEvHSelectable * ev, gint32 dx, gint32 dy );
+    void gevas_selectable_set_backref(GtkgEvasEvHSelectable * ev, GtkgEvasObj* o );
+    
+    
 
 #ifdef __cplusplus
 }

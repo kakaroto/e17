@@ -118,6 +118,7 @@ extern "C" {
 
 	Evas gevasobj_get_evas(GtkObject * object);
 
+
 	void gevasobj_add_evhandler(GtkgEvasObj * object, GtkObject * h);
 	void gevasobj_remove_evhandler(GtkgEvasObj * object, GtkObject * h);
 
@@ -143,8 +144,9 @@ extern "C" {
 							   double *w, double *h);
 	void gevasobj_get_location(GtkgEvasObj * object, double *x, double *y);
     void gevasobj_get_size(GtkgEvasObj * object, double *w, double *h);
-        void gevasobj_show(GtkgEvasObj * object);
+    void gevasobj_show(GtkgEvasObj * object);
 	void gevasobj_hide(GtkgEvasObj * object);
+	void gevasobj_set_visible(GtkgEvasObj * object, gboolean v);
 	void gevasobj_get_color(GtkgEvasObj * object, int *r, int *g, int *b,
 							int *a);
 	int gevasobj_get_alpha(GtkgEvasObj * object);
@@ -158,6 +160,8 @@ extern "C" {
 	Evas_Object _gevas_get_obj(GtkObject * object);
 	void _gevasobj_ensure_obj_free(GtkObject * object);
 	GSList *gevasobj_get_evhandlers(GtkgEvasObj * object);
+    GtkgEvasObj* gevasobj_from_evasobj( GtkgEvas* gevas, Evas_Object eo );
+    
 
 
 

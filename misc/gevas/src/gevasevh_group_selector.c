@@ -59,8 +59,9 @@
 #endif							/* ENABLE_NLS */
 
 
-#include "gevasevh_group_selector.h"
-#include "gevasevh_selectable.h"
+#include <gevasevh_group_selector.h>
+#include <gevasevh_selectable.h>
+
 #include <gtk/gtkmarshal.h>
 #include <gtk/gtksignal.h>
 
@@ -68,10 +69,8 @@ static void gevasevh_group_selector_class_init(GtkgEvasEvHGroupSelectorClass * k
 static void gevasevh_group_selector_init(GtkgEvasEvHGroupSelector * ev);
 /* GtkObject functions */
 static void gevasevh_group_selector_destroy(GtkObject * object);
-static void
-gevasevh_group_selector_get_arg(GtkObject * object, GtkArg * arg, guint arg_id);
-static void
-gevasevh_group_selector_set_arg(GtkObject * object, GtkArg * arg, guint arg_id);
+static void gevasevh_group_selector_get_arg(GtkObject * object, GtkArg * arg, guint arg_id);
+static void gevasevh_group_selector_set_arg(GtkObject * object, GtkArg * arg, guint arg_id);
 
 
 void gevas_group_selector_get_wh( 
@@ -85,13 +84,26 @@ void gevas_group_selector_get_wh(
 
 enum {
 	ARG_0,				/* Skip 0, an invalid argument ID */
-	ARG_SELECTEDb_OBJ,
+	ARG_SELECTED_OBJ,
 };
 
+/*
+ * This creates a list of all the GtkgEvasObj that are selected.
+ *
+ * Note that a object that has many images, eg a, icon that changes when selected, both
+ * of the images will be in the return list.
+ *
+ * caller frees return value.
+ */
 Evas_List gevasevh_group_selector_get_selection_objs(GtkgEvasEvHGroupSelector* ev )
 {
-	Evas_List ret = 0;
+	g_return_val_if_fail(ev != NULL,0);
+	g_return_val_if_fail(GTK_IS_GEVASEVH_GROUP_SELECTOR(ev),0);
 
+    return gevas_obj_collection_to_evas_list( ev->col );
+
+/*	Evas_List ret = 0;
+    
 	Evas_List tl = ev->selected_objs;
 	while(tl)
 	{
@@ -102,32 +114,104 @@ Evas_List gevasevh_group_selector_get_selection_objs(GtkgEvasEvHGroupSelector* e
 		tl = tl->next;
 	}
 return ret;
+*/
 }
 
-
-/**/
-/* Flush the current selection, add selected files are first unselected.*/
-/**/
-void gevasevh_group_selector_flushsel( 
-	GtkgEvasEvHGroupSelector* ev )
+/*
+ * Get all the selectables that we have selected. caller frees list.
+ */
+Evas_List gevasevh_group_selector_get_selected_selectables(GtkgEvasEvHGroupSelector* ev )
 {
+    Evas_List ret = 0;
+    Evas_List tl = 0;
+    GtkgEvasEvHSelectable* s = 0;
+    
+	g_return_val_if_fail(ev != NULL,0);
+	g_return_val_if_fail(GTK_IS_GEVASEVH_GROUP_SELECTOR(ev),0);
+
+	for(tl = gevas_obj_collection_to_evas_list( ev->col ); tl; tl = tl->next)
+    {
+        if( s = gevas_selectable_get_backref( ev->gevas , tl->data) )
+        {
+			ret = evas_list_append( ret, s );
+        }
+    }
+
+    return ret;
+    
+    
+
+/*	Evas_List ret = 0;
+    
 	Evas_List tl = ev->selected_objs;
 	while(tl)
 	{
 		if( tl->data )
-			gevas_selectable_select( (GtkgEvasEvHSelectable*)tl->data, 0 );
+		{
+			ret = evas_list_append( ret, gevasevh_selectable_gevasobj(tl->data) );
+		}
 		tl = tl->next;
 	}
-	ev->selected_objs = evas_list_free( ev->selected_objs );
-	ev->selected_objs = 0;
-	ev->selected_objs_lastadded = 0;
+return ret;
+*/
 }
 
+
+
+
+// ok
+/**/
+/* Flush the current selection, add selected files are first unselected.*/
+/**/
+void
+gevasevh_group_selector_flushsel( GtkgEvasEvHGroupSelector* ev )
+{
+	Evas_List tl = 0;
+    GtkgEvasEvHSelectable* s=0;
+    
+	g_return_if_fail(ev != NULL);
+	g_return_if_fail(GTK_IS_GEVASEVH_GROUP_SELECTOR(ev));
+
+    printf("gevasevh_group_selector_flushsel()\n");
+    
+    
+    gevas_obj_collection_clear( ev->col );
+    
+
+/*    
+	for(tl = gevas_obj_collection_to_evas_list( ev->col ); tl; tl = tl->next)
+    {
+        if( s = gevas_selectable_get_backref( ev->gevas , tl->data) )
+        {
+            gevas_selectable_select( s, 0 );
+        }
+    }
+*/  
+    
+//	ev->selected_objs_lastadded = 0;
+    gevas_obj_collection_clear( ev->col );
+    
+}
+
+// ok
 /**/
 /* Move all the selected items.*/
 /**/
 void gevasevh_group_selector_movesel(GtkgEvasEvHGroupSelector* ev, gint32 dx, gint32 dy )
 {
+
+	g_return_if_fail(ev != NULL);
+	g_return_if_fail(GTK_IS_GEVASEVH_GROUP_SELECTOR(ev));
+
+/*
+  printf("gevasevh_group_selector_movesel() dx:%d dy:%d\n",dx,dy);
+  printf("ev->col: "); gevas_obj_collection_dump( ev->col, ev->col->selected_objs );
+*/  
+    
+    
+    gevas_obj_collection_move_relative( ev->col, dx, dy );
+    
+/*    
 	Evas_List tl = ev->selected_objs;
 	for( ; tl ; tl = tl->next)
 	{
@@ -136,8 +220,22 @@ void gevasevh_group_selector_movesel(GtkgEvasEvHGroupSelector* ev, gint32 dx, gi
 			gevas_selectable_move( (GtkgEvasEvHSelectable*)tl->data, dx, dy );
 		}
 	}
+*/
 }
 
+static void clean( GtkgEvasObjCollection* c )
+{
+    if( !c )
+        return;
+
+//    printf("clean() c:%p\n",c);
+    
+//    gtk_object_destroy(c);
+    gtk_object_unref(c);
+}
+
+
+// ok
 /**/
 /* Check to see if a selectable is in the current selection*/
 /**/
@@ -145,7 +243,19 @@ gboolean gevasevh_group_selector_isinsel(
 	GtkgEvasEvHGroupSelector* ev, 
 	GtkgEvasEvHSelectable* o )
 {
-	Evas_List tl = ev->selected_objs;
+    GtkgEvasObjCollection* c = 0;
+    gboolean ret = 0;
+
+	g_return_if_fail(ev != NULL);
+	g_return_if_fail(GTK_IS_GEVASEVH_GROUP_SELECTOR(ev));
+	g_return_if_fail(ev->col != NULL);
+
+    c = gevasevh_selectable_to_collection( o );
+    ret = gevas_obj_collection_contains_all( ev->col, c );
+    clean(c);
+    return ret;
+    
+/*	Evas_List tl = ev->selected_objs;
 
 	if( !o ) return 0;
 	for( ; tl ; tl = tl->next)
@@ -154,18 +264,32 @@ gboolean gevasevh_group_selector_isinsel(
 			return 1;
 	}
 	return 0;
+*/
 }
 
-
+// ok
 /**/
 /* Add a new selectable to the current selection.*/
 /**/
-void gevasevh_group_selector_addtosel( 
-	GtkgEvasEvHGroupSelector* ev, GtkgEvasEvHSelectable* o )
+void
+gevasevh_group_selector_addtosel( GtkgEvasEvHGroupSelector* ev, GtkgEvasEvHSelectable* o )
 {
-	ev->selected_objs = evas_list_append( ev->selected_objs, o);
+    GtkgEvasObjCollection* c = 0;
+    
+	g_return_if_fail(ev != NULL);
+	g_return_if_fail(GTK_IS_GEVASEVH_GROUP_SELECTOR(ev));
+
+    
+    gevas_obj_collection_add_all( ev->col, c = gevasevh_selectable_to_collection( o ));
+    clean(c);
+    gevas_selectable_select( o , 1 );
+    
+
+/*    ev->selected_objs = evas_list_append( ev->selected_objs, o);
 	gevas_selectable_select( o , 1 );
 	ev->selected_objs_lastadded = o;
+*/
+    
 }
 
 /**/
@@ -175,6 +299,11 @@ void gevasevh_group_selector_floodselect(
 	GtkgEvasEvHGroupSelector* ev,
 	double x, double y, double w, double h)
 {
+
+    gevas_obj_collection_add_flood_area( ev->col, x, y, w, h );
+
+
+#if 0
 	Evas_List list;
 	void* data;
 
@@ -197,14 +326,26 @@ void gevasevh_group_selector_floodselect(
 		
 		list = list->next;
 	}
+
+#endif
 }
+
 
 /**/
 /* Select all objects between the last clicked selectable and "o"*/
 /**/
 void gevasevh_group_selector_floodtosel( 
-	GtkgEvasEvHGroupSelector* ev, GtkgEvasEvHSelectable* o )
+	GtkgEvasEvHGroupSelector* ev,
+    GtkgEvasEvHSelectable* o,
+    GtkgEvasObj* go)
 {
+
+    gevas_obj_collection_add_flood( ev->col, go,
+                                    gevas_obj_collection_get_lastadded(ev->col));
+    
+
+    
+#if 0    
 	GtkgEvasEvHSelectable* la = ev->selected_objs_lastadded;
 	GtkgEvasEvHSelectable* tl = la; /* top left*/
 	GtkgEvasEvHSelectable* br = o; /* bottom right*/
@@ -240,18 +381,30 @@ void gevasevh_group_selector_floodtosel(
 	gevasevh_group_selector_floodselect( ev, x, y, w, h );
 
 	ev->selected_objs_lastadded = o;
+#endif    
 }
 
-
+// ok
 /**/
 /* Remove a selectable from the current selection*/
 /**/
 void gevasevh_group_selector_remfromsel( 
 	GtkgEvasEvHGroupSelector* ev, GtkgEvasEvHSelectable* o )
 {
-	gevas_selectable_select( o , 0 );
+    GtkgEvasObjCollection* c = 0;
+    
+	g_return_if_fail(ev != NULL);
+	g_return_if_fail(GTK_IS_GEVASEVH_GROUP_SELECTOR(ev));
+
+    gevas_selectable_select( o , 0 );
+    gevas_obj_collection_remove_all( ev->col, c = gevasevh_selectable_to_collection( o ));
+    clean(c);
+    
+
+/*	gevas_selectable_select( o , 0 );
 	ev->selected_objs = evas_list_remove( ev->selected_objs, o );
 	ev->selected_objs_lastadded = 0;
+*/
 }
 
 
@@ -347,12 +500,109 @@ static gint __gevasevh_group_selector_leave_notify_cb(
 }
 
 
+static gboolean col_add_predicate_cb(
+    GtkgEvasObjCollection* col,
+    GtkgEvasObjCollection_T o,
+    gpointer udata)
+{
+    GtkgEvasEvHGroupSelector* ev=0;
+    
+    g_return_if_fail(o     != NULL);
+	g_return_if_fail(col   != NULL);
+	g_return_if_fail(udata != NULL);
+    
+	g_return_if_fail( GTK_IS_GEVAS_OBJ_COLLECTION(col));
+	g_return_if_fail( GTK_IS_GEVASOBJ(o));
+	g_return_if_fail( GTK_GEVASEVH_GROUP_SELECTOR(udata));
+    
+    ev = GTK_GEVASEVH_GROUP_SELECTOR(udata);
+    
+    
+    printf("col_add_predicate_cb() ev:%p ev->mark:%p o:%p\n",ev,ev->mark,o);
+
+    if( ev->mark == o )
+        return 0;
+
+    return 1;
+}
+
+
+
+static void col_item_add(
+    GtkgEvasObjCollection* col,
+    GtkgEvasObj* o,
+    GtkgEvasEvHGroupSelector* ev )
+{
+    GtkgEvasEvHSelectable* s = 0;
+
+	g_return_if_fail(col   != NULL);
+	g_return_if_fail(o     != NULL);
+	g_return_if_fail(ev    != NULL);
+    
+	g_return_if_fail( GTK_IS_GEVAS_OBJ_COLLECTION(col) );
+	g_return_if_fail( GTK_IS_GEVASOBJ(o));
+	g_return_if_fail( GTK_IS_GEVASEVH_GROUP_SELECTOR(ev));
+
+    printf("col_item_add()\n");
+    if(s = gevas_selectable_get_backref( ev->gevas , o))
+    {
+        gevas_selectable_select( s , 1 );
+    }
+    
+}
+
+static void col_item_remove(
+    GtkgEvasObjCollection* col,
+    GtkgEvasObj* o,
+    GtkgEvasEvHGroupSelector* ev )
+{
+    GtkgEvasEvHSelectable* s = 0;
+
+	g_return_if_fail(col   != NULL);
+	g_return_if_fail(o     != NULL);
+	g_return_if_fail(ev    != NULL);
+    
+	g_return_if_fail( GTK_IS_GEVAS_OBJ_COLLECTION(col) );
+	g_return_if_fail( GTK_IS_GEVASOBJ(o));
+	g_return_if_fail( GTK_IS_GEVASEVH_GROUP_SELECTOR(ev));
+	g_return_if_fail( GTK_IS_GEVAS(ev->gevas));
+
+    printf("col_item_remove() 1: o:%p s:%p\n",o,
+           gevas_selectable_get_backref( ev->gevas , o)
+        );
+
+    if(s = gevas_selectable_get_backref( ev->gevas , o))
+    {
+        printf("col_item_remove() ...\n");
+        gevas_selectable_select( s , 0 );
+    }
+    printf("col_item_remove() 2\n");
+    
+    
+}
+
+
 
 void gevasevh_group_selector_set_object( GtkgEvasEvHGroupSelector* object, GtkgEvasObj* obj )
 {
-	GtkgEvasEvHGroupSelector* ev = object;
-    GtkgEvas* gevas = GTK_GEVAS(gevasobj_get_gevas(GTK_OBJECT(obj)));
+	GtkgEvasEvHGroupSelector* ev = 0;
+    GtkgEvas* gevas = 0;
+
+	g_return_if_fail(object != NULL);
+	g_return_if_fail(GTK_IS_GEVASEVH_GROUP_SELECTOR(object));
+
+	ev = object;
+    gevas = GTK_GEVAS(gevasobj_get_gevas(GTK_OBJECT(obj)));
 	object->mark = obj;
+    
+    ev->gevas = gevasobj_get_gevas(GTK_OBJECT(obj));
+    ev->col = gevas_obj_collection_new(gevas);
+
+    gtk_signal_connect( GTK_OBJECT(ev->col), "add",    GTK_SIGNAL_FUNC(col_item_add),    ev);
+    gtk_signal_connect( GTK_OBJECT(ev->col), "remove", GTK_SIGNAL_FUNC(col_item_remove), ev);
+
+    gevas_obj_collection_set_add_predicate( ev->col, ev, col_add_predicate_cb);
+    
 
     gtk_signal_connect(GTK_OBJECT(gevas), "leave_notify_event",
                        GTK_SIGNAL_FUNC(__gevasevh_group_selector_leave_notify_cb), ev);
@@ -383,6 +633,7 @@ void gevasevh_group_selector_set_object( GtkgEvasEvHGroupSelector* object, GtkgE
 		gevasobj_set_layer(ct, 9999);
 /*		printf(" Made the gradient\n");*/
 	}
+    
 /*	printf("gevasevh_group_selector_set_object(end)");*/
 }
 
@@ -608,23 +859,17 @@ static void gevasevh_group_selector_class_init(GtkgEvasEvHGroupSelectorClass * k
 
 static void gevasevh_group_selector_init(GtkgEvasEvHGroupSelector * ev)
 {
-/*	ev->selected = 0;*/
 	ev->rect = 0;
 	ev->selected_objs =0;
+    ev->col = 0;
 }
 
 GtkObject *gevasevh_group_selector_new(void)
 {
 	GtkgEvasEvHGroupSelector *ev;
-	GtkgEvasEvH *hev;
-
-	ev = gtk_type_new(gevasevh_group_selector_get_type());
-	hev = (GtkgEvasEvH *) ev;
-/*	ev->selected = 0;*/
-	ev->rect = 0;
-	ev->selected_objs =0;
-
-	return GTK_OBJECT(ev);
+    ev = gtk_type_new(gevasevh_group_selector_get_type());
+    printf("gevasevh_group_selector_new(void) %d\n", GTK_IS_GEVASEVH(ev));
+    return GTK_OBJECT(ev);
 }
 
 /* GtkObject functions */
