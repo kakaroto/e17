@@ -849,7 +849,7 @@ KDE_PrepModuleEvent(EWin * ewin, KMessage msg)
 }
 
 void
-KDE_HintChange(Atom * a)
+KDE_HintChange(Atom a)
 {
 
    EDBUG(6, "KDE_HintChange");
