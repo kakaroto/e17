@@ -19,8 +19,8 @@ VPATH = @srcdir@
 prefix = @prefix@
 exec_prefix = @exec_prefix@
 datadir = $(prefix)/@DATADIRNAME@
-localedir = $(prefix)/enlightenment/locale
-gnulocaledir = $(prefix)/enlightenment/locale
+localedir = @ENLIGHTENMENT_ROOT@/locale
+gnulocaledir = @ENLIGHTENMENT_ROOT@/locale
 gettextsrcdir = $(prefix)/share/gettext/po
 subdir = po
 
