@@ -20,6 +20,21 @@
 
 static Entrance_Session *session = NULL;
 
+static int
+idler_before_cb(void *data)
+{
+   edje_thaw();
+   return 1;
+}
+
+static int
+idler_after_cb(void *data)
+{
+   edje_freeze();
+   return 1;
+}
+    
+
 /**
  * get the hostname of the machine, surrounded by the before and after
  * strings the config specifies
@@ -543,7 +558,7 @@ timer_cb(void *data)
  * <li> Show the main edje </li>
  * <li> Emit an "In" signal on the main entry for lazy themers </li>
  * <li> Tell the Entrance_Sesssion that the Ecore_Evas belongs to it</li>
- * <li> Run.............. until ecore_main_loop_quit is called</li>
+ * <li> Run.............. until ecore_main_(loop_quit is called</li>
  * <li> If the user is authenticated, try to run their session</li>
  * <li>Shut down edje, ecore_evas, ecore_x, ecore</li>
  * </ol>
@@ -682,10 +697,12 @@ main(int argc, char *argv[])
    }
 #endif
    ecore_event_handler_add(ECORE_EVENT_SIGNAL_EXIT, exit_cb, NULL);
-
+   ecore_idle_enterer_add(idler_before_cb, NULL);
+   
    if (ecore_evas_init())
    {
       edje_init();
+      edje_freeze();
       edje_frametime_set(1.0 / 30.0);
 
       /* setup our ecore_evas */
@@ -851,6 +868,7 @@ main(int argc, char *argv[])
          ecore_evas_fullscreen_set(e, 1);
       else
          ecore_evas_resize(e, g_x, g_y);
+      ecore_idle_enterer_add(idler_after_cb, NULL);
 
       entrance_session_ecore_evas_set(session, e);
       entrance_ipc_session_set(session);
