@@ -1,3 +1,6 @@
+#ifndef GEIST_DOCUMENT_XML_H
+#define GEIST_DOCUMENT_XML_H
+
 #include "geist.h"
 #include "geist_object.h"
 #include "geist_image.h"
@@ -11,3 +14,5 @@ geist_document *
 geist_project_load_xml (char *xml, int from_mem, int * err_return);
 int
 geist_project_save_xml (geist_document *doc, char *filename);
+
+#endif
