@@ -1,3 +1,9 @@
+Wed Mar 22 02:55:37 2000  Tom Gilbert  <gilbertt@btinternet.com>
+
+	* Okay. I found a naughty bug of mine. If the last image of a
+	montage/index was not loadable - core was dumped. Nice bug. Fun to
+	find =) I blame redhat.
+
 Tue Mar 21 15:45:02 2000  Tom Gilbert  <gilbertt@btinternet.com>
 
 	* Major cruft removal and tidying of code path. Progressive
