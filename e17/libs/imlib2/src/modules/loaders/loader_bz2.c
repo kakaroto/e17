@@ -60,6 +60,8 @@ char load (ImlibImage *im, ImlibProgressFunction progress,
 	if (p) {
 		if (strcasecmp(p + 1, "bz2")) return 0;
 	}
+	else
+		return 0;
 	if (!(fp = fopen (im->real_file, "rb"))) {
 		return 0;
 	}
