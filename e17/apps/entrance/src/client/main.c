@@ -8,6 +8,7 @@
 #include <unistd.h>
 #include <getopt.h>
 #include <string.h>
+#include <locale.h>
 #include <Edje.h>
 #include <Esmart/Esmart_Text_Entry.h>
 #include <Esmart/Esmart_Container.h>
@@ -628,6 +629,13 @@ main(int argc, char *argv[])
    if (!ecore_init())
       return (-1);
    ecore_app_args_set(argc, (const char **) argv);
+   
+   /* Set locale to user's environment */
+   if(!(setlocale(LC_ALL, "")))
+      fprintf(stderr, "Locale set failed!\n"
+                      "Please make sure you have your locale files installed for \"%s\"\n",
+                      getenv("LANG"));
+   
 
    /* Parse command-line options */
    while (1)
