@@ -131,7 +131,6 @@ ewl_entry_show(Ewl_Widget * widget, void * func_data)
 	ebits_show(EWL_ENTRY(widget)->ebits_object);
 	
 	ebits_set_clip(EWL_ENTRY(widget)->cursor, widget->fx_clip_box);
-	ebits_show(EWL_ENTRY(widget)->cursor);
 
 	ewl_widget_show(EWL_ENTRY(widget)->text);
 
@@ -239,6 +238,12 @@ ewl_entry_key_down(Ewl_Widget * widget, void * func_data)
 	else if (!strcmp(ev->key, "Delete"))
 	  {
 		ewl_entry_delete_to_right(widget);
+	  }
+	else if (!strcmp(ev->key, "Return"))
+	  {
+	  }
+	else if (!strcmp(ev->key, "KP_Enter"))
+	  {
 	  }
 	else if (ev->compose && strlen(ev->compose) == 1)
 	  {

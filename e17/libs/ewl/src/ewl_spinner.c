@@ -7,13 +7,15 @@ static void __ewl_spinner_show(Ewl_Widget * widget, void * func_data);
 static void __ewl_spinner_hide(Ewl_Widget * widget, void * func_data);
 static void __ewl_spinner_destroy(Ewl_Widget * widget, void * func_data);
 static void __ewl_spinner_configure(Ewl_Widget * widget, void * func_data);
+static void __ewl_spinner_key_down(Ewl_Widget * widget, void * func_data);
 
 static void		__ewl_spinner_set_value(Ewl_Widget * widget, double value);
 static double	__ewl_spinner_get_value(Ewl_Widget * widget);
 static void		__ewl_spinner_set_digits(Ewl_Widget * widget, int digits);
 static void		__ewl_spinner_set_min_val(Ewl_Widget * widget, double val);
 static void		__ewl_spinner_set_max_val(Ewl_Widget * widget, double val);
-
+static void	__ewl_spinner_increase_value(Ewl_Widget * widget, void * func_data);
+static void	__ewl_spinner_decrease_value(Ewl_Widget * widget, void * func_data);
 
 Ewl_Widget *
 ewl_spinner_new()
@@ -121,18 +123,28 @@ __ewl_spinner_realize(Ewl_Widget * widget, void * func_data)
 
 	entry = ewl_entry_new();
 	ewl_container_append_child(widget, entry);
+	ewl_callback_append(entry, EWL_CALLBACK_KEY_DOWN,
+			__ewl_spinner_key_down, NULL);
 	ewl_widget_realize(entry);
 
 	button_increase = ewl_button_new();
 	ewl_container_append_child(widget, button_increase);
 	EWL_OBJECT(button_increase)->minimum.w = 10;
 	EWL_OBJECT(button_increase)->minimum.h = 10;
+	ewl_callback_append(button_increase, EWL_CALLBACK_CLICKED,
+			__ewl_spinner_increase_value, widget);
+	ewl_callback_append(button_increase, EWL_CALLBACK_KEY_DOWN,
+			__ewl_spinner_key_down, NULL);
 	ewl_widget_realize(button_increase);
 
 	button_decrease = ewl_button_new();
 	ewl_container_append_child(widget, button_decrease);
 	EWL_OBJECT(button_decrease)->minimum.w = 10;
 	EWL_OBJECT(button_decrease)->minimum.h = 10;
+	ewl_callback_append(button_decrease, EWL_CALLBACK_CLICKED,
+			__ewl_spinner_decrease_value, widget);
+	ewl_callback_append(button_decrease, EWL_CALLBACK_KEY_DOWN,
+			__ewl_spinner_key_down, NULL);
 	ewl_widget_realize(button_decrease);
 }
 
@@ -217,6 +229,20 @@ __ewl_spinner_configure(Ewl_Widget * widget, void * func_data)
 	ewl_fx_clip_box_resize(widget);
 }
 
+static void
+__ewl_spinner_key_down(Ewl_Widget * widget, void * func_data)
+{
+	Ev_Key_Down * ev;
+	CHECK_PARAM_POINTER("widget", widget);
+	CHECK_PARAM_POINTER("func_data", func_data);
+
+	ev = func_data;
+
+	if (!strcmp(ev->key, "Up"))
+		__ewl_spinner_increase_value(widget, NULL);
+	else if (!strcmp(ev->key, "Down"))
+		__ewl_spinner_decrease_value(widget, NULL);
+}
 
 
 static void
@@ -284,4 +310,58 @@ __ewl_spinner_set_max_val(Ewl_Widget * widget, double val)
 	EWL_SPINNER(widget)->max_val = val;
 
 	__ewl_spinner_set_value(widget, EWL_SPINNER(widget)->value);
+}
+
+static void
+__ewl_spinner_increase_value(Ewl_Widget * widget, void * func_data)
+{
+	double val;
+
+	CHECK_PARAM_POINTER("widget", widget);
+
+	if (!EWL_SPINNER(widget->parent)->digits)
+		val = 1.0;
+	else if (EWL_SPINNER(widget->parent)->digits == 1)
+		val = 0.1;
+	else if (EWL_SPINNER(widget->parent)->digits == 2)
+		val = 0.01;
+	else if (EWL_SPINNER(widget->parent)->digits == 3)
+		val = 0.001;
+	else if (EWL_SPINNER(widget->parent)->digits == 4)
+		val = 0.0001;
+	else if (EWL_SPINNER(widget->parent)->digits == 5)
+		val = 0.00001;
+	else if (EWL_SPINNER(widget->parent)->digits == 6)
+		val = 0.000001;
+	else
+		val = 0.0000001;
+
+	__ewl_spinner_set_value(widget->parent, EWL_SPINNER(widget->parent)->value + val);
+}
+
+static void
+__ewl_spinner_decrease_value(Ewl_Widget * widget, void * func_data)
+{
+	double val;
+
+	CHECK_PARAM_POINTER("widget", widget);
+
+    if (!EWL_SPINNER(widget->parent)->digits)
+        val = 1.0;
+    else if (EWL_SPINNER(widget->parent)->digits == 1)
+        val = 0.1;
+    else if (EWL_SPINNER(widget->parent)->digits == 2)
+        val = 0.01;
+    else if (EWL_SPINNER(widget->parent)->digits == 3)
+        val = 0.001;
+    else if (EWL_SPINNER(widget->parent)->digits == 4)
+        val = 0.0001;
+    else if (EWL_SPINNER(widget->parent)->digits == 5)
+        val = 0.00001;
+    else if (EWL_SPINNER(widget->parent)->digits == 6)
+        val = 0.000001;
+    else
+        val = 0.0000001;
+
+    __ewl_spinner_set_value(widget->parent, EWL_SPINNER(widget->parent)->value - val);
 }

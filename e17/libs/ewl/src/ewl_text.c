@@ -377,6 +377,8 @@ ewl_text_set_text(Ewl_Widget * widget, const char * text)
 
 	ewl_container_append_child(widget, EWL_WIDGET(row));
 
+	ewl_widget_configure(widget);
+
 	if (widget->parent)
 		ewl_widget_configure(widget->parent);
 }

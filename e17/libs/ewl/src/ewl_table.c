@@ -74,12 +74,12 @@ ewl_table_init(Ewl_Table * table)
 
     EWL_OBJECT(table)->current.w = 100;
     EWL_OBJECT(table)->current.h = 50;
-    EWL_OBJECT(table)->maximum.w = 200;
-    EWL_OBJECT(table)->maximum.h = 75;
-    EWL_OBJECT(table)->minimum.w = 200;
-    EWL_OBJECT(table)->minimum.h = 75;
-    EWL_OBJECT(table)->request.w = 200;
-    EWL_OBJECT(table)->request.h = 75;
+    EWL_OBJECT(table)->maximum.w = 2048;
+    EWL_OBJECT(table)->maximum.h = 2048;
+    EWL_OBJECT(table)->minimum.w = 1;
+    EWL_OBJECT(table)->minimum.h = 1;
+    EWL_OBJECT(table)->request.w = 100;
+    EWL_OBJECT(table)->request.h = 50;
 }
 
 void
@@ -127,10 +127,20 @@ ewl_table_attach(Ewl_Widget * table,
 		ewl_container_set_clip(table);
 	}
 
-	ewd_list_goto_index(table->container.children, start_col);
+	ewd_list_goto_index(table->container.children, start_row + start_col);
 	ewd_list_insert(table->container.children, tb_child);
 
 	ewl_widget_configure(table->parent);
+}
+
+void
+ewl_table_detach(Ewl_Widget * table,
+				 unsigned int start_row,
+				 unsigned int start_col)
+{
+	CHECK_PARAM_POINTER("table", table);
+	
+	
 }
 
 void
@@ -230,6 +240,7 @@ ewl_table_configure(Ewl_Widget * widget, void * func_data)
 	int l = 0, r = 0, t = 0, b = 0;
 	int max_col_w[EWL_TABLE(widget)->columns];
 	int max_row_h[EWL_TABLE(widget)->rows];
+	int first = 1;
 	int x = 0, y = 0;
 	int total_w = 0, total_h = 0, total_w2 = 0;
 	int top_row_h = 0, top_col_w = 0;
@@ -255,6 +266,7 @@ ewl_table_configure(Ewl_Widget * widget, void * func_data)
 		max_row_h[row] = 0;
 	 }
 
+	first = FALSE;
 	/* Really really incomplete atm */
 	if (widget->container.children)
 	for (row=0;row<EWL_TABLE(widget)->rows;row++)

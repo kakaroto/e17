@@ -3,7 +3,7 @@
 
 
 static Ewl_Widget * ewl_seeker_new(Ewl_Orientation orientation);
-static void __ewl_seeker_init(Ewl_Seeker * Seeker, Ewl_Orientation orientation);
+static void __ewl_seeker_init(Ewl_Seeker * seeker, Ewl_Orientation orientation);
 static void __ewl_seeker_realize(Ewl_Widget * widget, void * func_data);
 static void __ewl_seeker_show(Ewl_Widget * widget, void * func_data);
 static void __ewl_seeker_hide(Ewl_Widget * widget, void * func_data);
@@ -419,6 +419,11 @@ __ewl_seeker_mouse_move(Ewl_Widget * widget, void * func_data)
 		  }
 		else if (EWL_SEEKER(widget)->orientation == EWL_ORIENTATION_VERTICAL)
 		  {
+			play = ((float) ev->y - EWL_OBJECT(widget)->current.y) /
+						EWL_OBJECT(widget)->current.h;
+			play = 1.00 - play;
+			value = EWL_SEEKER(widget)->range * play;
+			ewl_seeker_set_value(widget, value);
 		  }
 	  }
 }

@@ -4,6 +4,7 @@
 static Ewl_Widget		* last_selected;
 static Ewl_Widget		* last_key;
 static Ewl_Widget		* last_focused;
+static Ewl_Widget		* dnd_widget;
 
 static void				ewl_ev_window_expose(Eevent * _ev);
 static void				ewl_ev_window_configure(Eevent * _ev);
@@ -162,14 +163,22 @@ ewl_ev_mouse_move(Eevent * _ev)
 		  {
 			widget->state = widget->state | EWL_STATE_HILITED;
 			ewl_callback_call(widget, EWL_CALLBACK_FOCUS_IN);
-			DPRINT(5, "Focus In on %p", widget);
+			DPRINT(8, "Focus In on %p", widget);
 			ewl_callback_call_with_data(widget, EWL_CALLBACK_MOUSE_MOVE,ev);
 		  }
 		if (last_focused != widget && last_focused)
 		  {
 			last_focused->state = widget->state & !EWL_STATE_HILITED;
 			ewl_callback_call(last_focused, EWL_CALLBACK_FOCUS_OUT);
-			DPRINT(5, "Focus Out off %p", last_focused);
+			DPRINT(8, "Focus Out off %p", last_focused);
+			if (last_focused->state & EWL_STATE_DND)
+			  {
+				dnd_widget = last_focused;
+				ewl_callback_call_with_data(dnd_widget,
+							EWL_CALLBACK_MOUSE_MOVE, ev);
+			  }
+			else
+				dnd_widget = NULL;
 		  }
 	last_focused = widget;
 	  }

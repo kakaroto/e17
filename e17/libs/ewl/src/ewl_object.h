@@ -18,4 +18,7 @@ struct _ewl_object {
 
 #define EWL_OBJECT(object) ((Ewl_Object *) object)
 
+void ewl_object_set_minimum_size(Ewl_Object * object, int w, int h);
+void ewl_object_set_maximum_size(Ewl_Object * object, int w, int h);
+
 #endif

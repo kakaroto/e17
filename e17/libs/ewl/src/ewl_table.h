@@ -50,6 +50,10 @@ void ewl_table_attach(Ewl_Widget * table,
 					  unsigned int start_row,
 					  unsigned int end_row);
 
+void ewl_table_detach(Ewl_Widget * table,
+					  unsigned int start_row,
+					  unsigned int start_col);
+
 /* Set wether or not the table will set all columns to the widest column */
 void ewl_table_set_homogeneous(Ewl_Widget * widget,
 							   unsigned int homogeneous);

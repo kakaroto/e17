@@ -81,6 +81,8 @@ ewl_window_realize(Ewl_Widget * widget, void * func_data)
 										  EWL_OBJECT(widget)->maximum.h);
 	e_window_set_title(window->window, window->title);
 
+	e_window_set_delete_inform(window->window);
+
 	EWL_WIDGET(window)->evas = evas_new_all(e_display_get(),
 			window->window, 0, 0,
 			EWL_OBJECT(widget)->current.w, EWL_OBJECT(widget)->current.h,
@@ -126,8 +128,13 @@ ewl_window_destroy(Ewl_Widget * widget, void * func_data)
 
 	ebits_free(EWL_WINDOW(widget)->ebits_object);
 
+	evas_free(widget->evas);
+
 	e_window_destroy(widget->evas_window);
 	e_window_destroy(EWL_WINDOW(widget)->window);
+
+	if (ewd_list_goto(ewl_window_list, widget))
+		ewd_list_remove(ewl_window_list);
 
 	FREE(widget);
 }

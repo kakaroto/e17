@@ -44,6 +44,9 @@ ewl_idle_render(void * data)
 {
 	Ewl_Widget * widget;
 
+	if (!ewl_window_list || ewd_list_is_empty(ewl_window_list))
+		return;
+
 	ewd_list_goto_first(ewl_window_list);
 
 	while ((widget = EWL_WIDGET(ewd_list_next(ewl_window_list))) != NULL)
@@ -91,7 +94,8 @@ ewl_parse_option_array(int argc, char ** argv)
 			  break;
 
 			case '@':
-			  ewl_options.debug_level = 0;
+			  ewl_options.debug_level = atoi(optarg);
+			  DPRINT(0, "Setting debug level to %i", ewl_options.debug_level);
 			  break;
 
 			default:
