@@ -269,4 +269,88 @@ How do I add new programs to the "User Applications List" menu?
 Edit the file $HOME/.enlightenment/user_apps.menu and add your program on a new line
 in the following form: "Program Name" NULL exec "command --arg1 --arg2"
 <p>You can also use e16menuedit for a GUI interface to editing this file.  It is available in most distributions as a separate package.
-(null):news_title:news_body:news_end:news_title:news_body:news_end:news_title:news_body:news_end:news_title:news_body:news_end:news_title:news_body:news_end:news_title:news_body:news_end:news_title:news_body:news_endendbottom
+</td></tr></table>
+
+<p><table width="100%"><tr><td class="newstitle">
+<a name="AddNewMenu"></a>
+How can I add a new user menu?
+</td></tr></table><table width="100%"><tr><td class="newsbody">
+Edit the file $HOME/.enlightenment/file.menu and add a new menu using the form:
+"Menu Name" NULL menu "menu_name.menu".  Now create a menu file using the name
+you chose using the same format as the the user_apps.menu.  Menus can have 
+sub-menus using the same method as in the file.menu.  The first line
+of each menu file will serve as the name of the menu.
+</td></tr></table>
+
+<p><table width="100%"><tr><td class="newstitle">
+<a name="MenuExec"></a>
+I added a new menu item that uses quotes and my program doesn't seem to execute properly.
+</td></tr></table><table width="100%"><tr><td class="newsbody">
+You will need to alternate double and single quotes (ie: "command -arg 'my arg'") or if you
+still have problems wrap the command in a shell script and execute the shell script instead.
+</td></tr></table>
+
+<p><table width="100%"><tr><td class="newstitle">
+<a name="WhereEpplets"></a>
+Where can I get epplets?  How can I write my own?
+</td></tr></table><table width="100%"><tr><td class="newsbody">
+You can find the source package and RPMs on <a href="http://sourceforge.net/project/showfiles.php?group_id=2">
+the SourceForge files page</a>.  The best way to learn how to write new Epplets is 
+to crack open the source and take a peak, they are pretty simple to write.
+</td></tr></table>
+
+<p><table width="100%"><tr><td class="newstitle">
+<a name="ManyEpplets"></a>
+My epplets keep multiplying whenever I launch E. Help!
+</td></tr></table><table width="100%"><tr><td class="newsbody">
+That's a bug in the Epplet library. The latest releases of enlightenment don't have this problem.<br>  
+For the adventurous, you need to remove all bogus epplet entries from ~/.enlightenment/...e_session-XXXXXX.snapshots.0 while E isn't running. A more radical approach is to simply delete this file -- this may cause other settings to be lost, such as those for the icon box and the pagers.  An even better method proposed by digitalfallout is to use the following sed line to clean up the dups and make a backup: sed -i.bak -e '/[0-9]\.Epplet$/,/^CMD:/d' .enlightenment/...e_session-XXXXXX.snapshots.0
+</td></tr></table>
+
+<p><table width="100%"><tr><td class="newstitle">
+<a name="RememberSettings"></a>
+Why can't E remember my desktop when I exit? 
+</td></tr></table><table width="100%"><tr><td class="newsbody">
+E is not, and does not contain or use, a session manager.  If you want this type of 
+functionality you can use an external session manager to do it for you.  Popular session
+managers include xsm (check the man page), and
+<a href="http://rox.sourceforge.net/rox_session.html">ROX-Session</a>.
+<br>
+For remembering individual application settings use the "alt-right-click - Remember..." menu.
+</td></tr></table>
+
+<p><table width="100%"><tr><td class="newstitle">
+<a name="FileManager"></a>
+How can I get icons and file management in DR16?
+</td></tr></table><table width="100%"><tr><td class="newsbody">
+Thanks to the <a href="http://www.etherdoxproject.org/">EtherDox Project</a>
+a <a href="http://www.etherdoxproject.org/index.php?id=how+to+add+icons+to+your+E+desktop">tutorial 
+on adding icons to DR16</a> is avalible.  This tutorial details the proccess of
+modifying an E theme to present icons.  Please note that this proccess is theme dependant,
+you must modify each theme you wish to have icons.  These icons will provide app
+loading, but not a filemanager.
+Another popular choice is <a href="http://rox.sourceforge.net/">
+The ROX Desktop</a> which can run ontop of Enlightenment.  When supported, you 
+can also use GNOME and KDE on top of E.
+</td></tr></table>
+
+<p><table width="100%"><tr><td class="newstitle">
+<a name="LearnDR16"></a>
+I'm not sure how to use all of E's features, how can I learn?
+</td></tr></table><table width="100%"><tr><td class="newsbody">
+On the main drop down menu (middle-click) choose help and read thru all the pages
+to learn all the diffrent ways you can utilize E more efficiently.  Also, if tooltips
+aren't enabled (the clouds when you don't move your mouse)  you can enable them
+in the Settings menu by choosing "Tooltip Settings...".
+</td></tr></table>
+
+</td>
+</tr>
+</table>
+</td>
+</tr></table>
+</div> <!-- Close the content div -->
+<div id="bottom" style="width:100%; background-image:url('i/bottom.png'); background-repeat:no-repeat; background-position:'left bottom';"><img src=img/blank.gif width=120 height=120></div>
+
+</body></html>
+
