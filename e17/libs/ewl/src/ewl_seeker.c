@@ -233,6 +233,9 @@ void ewl_seeker_set_step(Ewl_Seeker * s, double step)
 	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR("s", s);
 
+	if (step > s->range)
+		step = s->range;
+
 	s->step = step;
 
 	DLEAVE_FUNCTION(DLEVEL_STABLE);

@@ -221,10 +221,10 @@ void __ewl_scrollpane_configure(Ewl_Widget * w, void *ev_data, void *user_data)
 	 * A rare case where we need to know the preferred size over the
 	 * minimum size.
 	 */
-	b_width = ewl_object_get_preferred_w(EWL_OBJECT(s->box)) - content_w;
+	b_width = ewl_object_get_preferred_w(EWL_OBJECT(s->box));
 	if (b_width < 0)
 		b_width = 0;
-	b_height = ewl_object_get_preferred_h(EWL_OBJECT(s->box)) - content_h;
+	b_height = ewl_object_get_preferred_h(EWL_OBJECT(s->box));
 	if (b_height < 0)
 		b_height = 0;
 
@@ -237,9 +237,9 @@ void __ewl_scrollpane_configure(Ewl_Widget * w, void *ev_data, void *user_data)
 			(double)content_h / (double)b_height);
 
 	b_width = (int)(ewl_scrollbar_get_value(EWL_SCROLLBAR(s->hscrollbar)) *
-					      (double)(b_width));
+					      (double)(b_width - content_w));
 	b_height= (int)(ewl_scrollbar_get_value(EWL_SCROLLBAR(s->vscrollbar)) *
-					      (double)(b_height));
+					      (double)(b_height - content_h));
 
 	/*
 	 * Now move the box into position. For the scrollpane to work we move

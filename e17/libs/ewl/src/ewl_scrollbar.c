@@ -79,7 +79,6 @@ void ewl_scrollbar_init(Ewl_Scrollbar * s, Ewl_Orientation orientation)
 	 * Setup the seeker portion
 	 */
 	s->seeker = ewl_seeker_new(orientation);
-	ewl_seeker_set_range(EWL_SEEKER(s->seeker), 1.0);
 	ewl_widget_show(s->seeker);
 
 	/*
@@ -113,7 +112,7 @@ void ewl_scrollbar_init(Ewl_Scrollbar * s, Ewl_Orientation orientation)
 
 	/*
 	 * Define the maximum value that the seeker can reach, and the
-	 * increments it takes to get there.
+	 * default increments it takes to get there.
 	 */
 	ewl_seeker_set_range(EWL_SEEKER(s->seeker), 1.0);
 	ewl_seeker_set_step(EWL_SEEKER(s->seeker), 0.05);
@@ -217,7 +216,7 @@ void ewl_scrollbar_init(Ewl_Scrollbar * s, Ewl_Orientation orientation)
 		/*
 		 * Set the default value to the beginning of the seeker.
 		 */
-		ewl_seeker_set_value(EWL_SEEKER(s->seeker), 1.0);
+		ewl_seeker_set_value(EWL_SEEKER(s->seeker), 0);
 		ewl_widget_set_appearance(w, "vscrollbar");
 		ewl_object_set_fill_policy(EWL_OBJECT(s),
 				EWL_FILL_POLICY_VFILL);
@@ -241,8 +240,10 @@ double ewl_scrollbar_get_value(Ewl_Scrollbar * s)
 
 	v = ewl_seeker_get_value(EWL_SEEKER(s->seeker));
 
+	/*
 	if (EWL_BOX(s)->orientation == EWL_ORIENTATION_VERTICAL)
 		v = 1.0 - v;
+		*/
 
 	DRETURN_FLOAT(v, DLEVEL_UNSTABLE);
 }
@@ -258,8 +259,10 @@ void ewl_scrollbar_set_value(Ewl_Scrollbar * s, double v)
 	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR("s", s);
 
+	/*
 	if (EWL_BOX(s)->orientation == EWL_ORIENTATION_VERTICAL)
 		v = 1.0 - v;
+		*/
 
 	ewl_seeker_set_value(EWL_SEEKER(s->seeker), v);
 
