@@ -44,8 +44,19 @@ EwlBool _cb_ewl_window_event_handler(EwlWidget *widget, EwlEvent *ev,
 	switch(ev->type)	{
 	case EWL_EVENT_SHOW:
 		ewl_widget_set_flag(widget, VISIBLE, TRUE);
+		fprintf(stderr,"_cb_ewl_window_event_handler: SHOW rect = ");
+		ewl_rect_dump(widget->layout->rect);
 		if (!window->xwin)
 			ewl_window_realize(widget);
+		fprintf(stderr,"_cb_ewl_window_event_handler: SHOW rect = ");
+		ewl_rect_dump(widget->layout->rect);
+		if (widget->layout->rect->w > 8000 ||
+		    widget->layout->rect->y > 8000)  {
+				fprintf(stderr,"WHAT THE FUCK!! widget = %08x, w = %d, h = %d", 
+				        (unsigned int) widget,
+				        widget->layout->rect->w, widget->layout->rect->h );
+				exit(-1);
+		}
 		XMapWindow(s->disp, window->xwin);
 		break;
 	case EWL_EVENT_HIDE:
@@ -84,6 +95,15 @@ EwlBool _cb_ewl_window_event_handler(EwlWidget *widget, EwlEvent *ev,
 
 		if (window->pmap)	
 			XFreePixmap(s->disp,window->pmap);
+		fprintf(stderr,"_cb_ewl_window_event_handler: CONFIGURE rect = ");
+		ewl_rect_dump(widget->layout->rect);
+		if (widget->layout->rect->w > 8000 ||
+		    widget->layout->rect->y > 8000)  {
+				fprintf(stderr,"WHAT THE FUCK!! widget = %08x, w = %d, h = %d", 
+				        (unsigned int) widget,
+				        widget->layout->rect->w, widget->layout->rect->h );
+				exit(-1);
+		}
 		window->pmap = XCreatePixmap(s->disp,
 		                             window->xwin,
 		                             width, height,
@@ -109,8 +129,6 @@ void         ewl_window_init(EwlWindow *win, EwlWinType type,
 {
 	EwlWidget            *widget = (EwlWidget*) win;
 	EwlContainer         *container = (EwlContainer*) win;
-	EwlState             *s = ewl_state_get();
-	XGCValues             gc;
 	char                 *str = NULL;
 	int                   t = 0;
 
@@ -168,7 +186,7 @@ void         ewl_window_init(EwlWindow *win, EwlWinType type,
 		else 
 			h = EWL_DEFAULT_WINDOW_HEIGHT;
 	}
-	ewl_widget_moveresize(widget,0,0,w,h);
+	ewl_widget_resize(widget,w,h);
 		
 	if (!title)
 		title = ewl_theme_get_string("/EwlWindow/title");
@@ -189,40 +207,6 @@ void         ewl_window_init(EwlWindow *win, EwlWinType type,
 		win->name_hint  = EWL_DEFAULT_WINDOW_NAME_H;
 
 	win->decoration_hint = TRUE;
-
-	win->screen = ScreenOfDisplay(s->disp, DefaultScreen(s->disp));
-	win->vis = DefaultVisual(s->disp, DefaultScreen(s->disp));
-	win->depth = DefaultDepth(s->disp, DefaultScreen(s->disp));
-	win->cm = DefaultColormap(s->disp,DefaultScreen(s->disp));
-	win->root = RootWindow(s->disp,DefaultScreen(s->disp));
-	/*wid->root = DefaultRootWindow(s->disp);*/
-	win->xid = XUniqueContext();
-	
-	/* init X attributes */
-	win->attr.backing_store = NotUseful;
-	if (win->type == EWL_WINDOW_TOPLEVEL) {
-		win->attr.override_redirect = False;
-	}
-	else if (win->type == EWL_WINDOW_TRANSIENT) {
-		win->attr.override_redirect = True;
-	}
-	win->attr.colormap = win->cm;
-	win->attr.border_pixel = 0;
-	win->attr.background_pixel = 0;
-	win->attr.save_under = 0;
-	win->attr.event_mask = StructureNotifyMask | ButtonPressMask |
-	                  ButtonReleaseMask | PointerMotionMask |
-	                  EnterWindowMask | LeaveWindowMask | KeyPressMask |
-	                  KeyReleaseMask | ButtonMotionMask | ExposureMask |
-	                  FocusChangeMask | PropertyChangeMask |
-	                  VisibilityChangeMask;
-
-	win->mwmhints.flags = 0;
-
-	win->title	=	title?title:EWL_DEFAULT_WINDOW_TITLE;
-
-	gc.foreground = BlackPixel(s->disp, DefaultScreen(s->disp));
-	win->gc = XCreateGC(s->disp, win->root, GCForeground, &gc);
 
 	FUNC_END("ewl_window_init");
 	return;
@@ -299,6 +283,7 @@ void	ewl_window_realize(EwlWidget *widget)
 {
 	EwlState	*s		= ewl_state_get();
 	EwlWindow	*win	= (EwlWindow *) widget;
+	XGCValues             gc;
 	Atom				  wmhints;
 
 	FUNC_BGN("ewl_window_new_from_properties");
@@ -309,6 +294,49 @@ void	ewl_window_realize(EwlWidget *widget)
 		          "window");
 	} else {
 		fprintf(stdout, "Realizing window 0x%08x\n", (unsigned int)win);
+
+		win->screen = ScreenOfDisplay(s->disp, DefaultScreen(s->disp));
+		win->vis = DefaultVisual(s->disp, DefaultScreen(s->disp));
+		win->depth = DefaultDepth(s->disp, DefaultScreen(s->disp));
+		win->cm = DefaultColormap(s->disp,DefaultScreen(s->disp));
+		win->root = RootWindow(s->disp,DefaultScreen(s->disp));
+		/*wid->root = DefaultRootWindow(s->disp);*/
+		win->xid = XUniqueContext();
+		
+		/* init X attributes */
+		win->attr.backing_store = NotUseful;
+		if (win->type == EWL_WINDOW_TOPLEVEL) {
+			win->attr.override_redirect = False;
+		}
+		else if (win->type == EWL_WINDOW_TRANSIENT) {
+			win->attr.override_redirect = True;
+		}
+		win->attr.colormap = win->cm;
+		win->attr.border_pixel = 0;
+		win->attr.background_pixel = 0;
+		win->attr.save_under = 0;
+		win->attr.event_mask = StructureNotifyMask | ButtonPressMask |
+		                  ButtonReleaseMask | PointerMotionMask |
+		                  EnterWindowMask | LeaveWindowMask | KeyPressMask |
+		                  KeyReleaseMask | ButtonMotionMask | ExposureMask |
+		                  FocusChangeMask | PropertyChangeMask |
+		                  VisibilityChangeMask;
+
+		win->mwmhints.flags = 0;
+	
+		fprintf(stderr,"ewl_window_realize: rect = ");
+		ewl_rect_dump(widget->layout->rect);
+		if (widget->layout->rect->w < 1)
+				widget->layout->rect->w = 1;
+		if (widget->layout->rect->w > EWL_WINDOW_MAX_WIDTH)
+				widget->layout->rect->w = EWL_WINDOW_MAX_WIDTH;
+		if (widget->layout->rect->h < 1)
+				widget->layout->rect->h = 1;
+		if (widget->layout->rect->h > EWL_WINDOW_MAX_HEIGHT)
+				widget->layout->rect->h = EWL_WINDOW_MAX_HEIGHT;
+		
+		gc.foreground = BlackPixel(s->disp, DefaultScreen(s->disp));
+		win->gc = XCreateGC(s->disp, win->root, GCForeground, &gc);
 		win->xwin = XCreateWindow(s->disp, win->root,
 		                          widget->layout->rect->x,
 		                          widget->layout->rect->y, 
@@ -320,7 +348,7 @@ void	ewl_window_realize(EwlWidget *widget)
 		                          CWBackingStore | CWColormap |
 		                          CWBackPixel | CWBorderPixel |
 		                          CWEventMask, &win->attr);
-		
+	
 		/* setting title */
 		XStoreName(s->disp, win->xwin, win->title);
 		
@@ -332,7 +360,6 @@ void	ewl_window_realize(EwlWidget *widget)
 		/*XFree(win->xclass_hint);*/
 		
 		/* Setting up decor */
-#if 0
 		if (win->decoration_hint == TRUE) {
 			fprintf(stdout, "We want decor!\n");
 		}
@@ -346,7 +373,6 @@ void	ewl_window_realize(EwlWidget *widget)
 					sizeof(MWMHints)/4);
 			}
 		}
-#endif
 	}
 	FUNC_END("ewl_window_new_from_properties");
 	return;
@@ -486,7 +512,7 @@ void	ewl_window_move(EwlWidget *widget, int x, int y)
 	FUNC_BGN("ewl_window_move");
 	fprintf(stderr,"ewl_window_move: widget=0x%08x, x = %8d, y = %8d\n",
 		(unsigned int) widget, x, y);
-	/*ewl_widget_set_rect(widget,&x,&y,0,0);*/
+	ewl_widget_set_rect(widget,&x,&y,0,0);
 	FUNC_END("ewl_window_move");
 	return;
 }
@@ -496,7 +522,7 @@ void	ewl_window_resize(EwlWidget *widget, int w, int h)
 	FUNC_BGN("ewl_window_resize");
 	fprintf(stderr,"ewl_window_resize: widget=0x%08x, x = %8d, y = %8d\n",
 		(unsigned int) widget, h, w);
-	/*ewl_widget_set_rect(widget,0,0, (w>-1)?(&w):0,(h>-1)?(&h):0);*/
+	ewl_widget_set_rect(widget,0,0, (w>-1)?(&w):0,(h>-1)?(&h):0);
 	FUNC_END("ewl_window_resize");
 	return;
 }
@@ -506,7 +532,7 @@ void	ewl_window_moveresize(EwlWidget *widget, int x, int y, int w, int h)
 	FUNC_BGN("ewl_window_moveresize");
 	fprintf(stderr,"ewl_window_moveresize: widget=0x%08x, x = %8d, y = %8d\n",
 		(unsigned int) widget, w, h);
-	/*ewl_widget_set_rect(widget,&x, &y, (w>-1)?(&w):0, (h>-1)?(&h):0);*/
+	ewl_widget_set_rect(widget,&x, &y, (w>-1)?(&w):0, (h>-1)?(&h):0);
 	FUNC_END("ewl_window_moveresize");
 	return;
 }

@@ -15,6 +15,9 @@
 #define EWL_DEFAULT_WINDOW_CLASS_H "Untitled EwlWindow"
 #define EWL_DEFAULT_WINDOW_DECOR_H TRUE
 
+#define EWL_WINDOW_MAX_WIDTH  4096
+#define EWL_WINDOW_MAX_HEIGHT 4096
+
 typedef struct _EwlWindow EwlWindow;
 
 enum _EwlWinType	{
@@ -30,11 +33,11 @@ struct _EwlWindow	{
 	
 	/* window properties */
 	XSetWindowAttributes	attr;
-	EwlWinType	 	 type;
-	char			*title;
+	EwlWindowType    type;
+	char            *title;
 	char            *name_hint;
 	char            *class_hint;
-	EwlBool			 decoration_hint;				 
+	EwlBool          decoration_hint;				 
 
 	/* x junk */
 	Screen          *screen;
@@ -47,8 +50,8 @@ struct _EwlWindow	{
 	GC               gc;
 	Pixmap           pmap; /* everything is rendered into this pixmap */
 	
-	XClassHint		 *xclass_hint;
-	MWMHints		 mwmhints;
+	XClassHint      *xclass_hint;
+	MWMHints         mwmhints;
 };
 
 EwlWidget   *ewl_window_new(EwlWinType type);

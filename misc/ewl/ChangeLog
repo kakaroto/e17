@@ -733,3 +733,22 @@ FOR THE LOVE OF GOD DON'T RUN THIS UNLESS YOU KNOW WHAT YOU'RE DOING.
 We'll let y'all know when it's fixed (probalby sometime tonight or
 tomorrow).
 
+-----
+20000818-1915-PDT, pabs
+
+- moved all X calls in ewl_window_init() to ewl_widnow_realize()
+- on a side note, i think I hate autoconf and automake -- no real
+benefit on _my_ side of things, and it slows down the compile and
+generates crappy bloated makefiles.  plus it's harder for me to
+configure 'em (i'm a pure Makefile man myself).
+
+-----
+20000818-2052-PDT, pabs
+
+- got it.. passing a 32-bit integer to a func expecting a 16-bit one
+is always a bad idea.  it's an especially bad idea when the fucntion
+in question creates X drawables.
+
+/me points at ewl_window_realize()
+/me slaps x5rings on the wrist.
+

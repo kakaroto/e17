@@ -48,6 +48,12 @@ int main(int argc, char *argv[])
 	fprintf(stderr, "win = 0x%08x\nbox = 0x%08x\nbtn = 0x%08x\n",
 	        (unsigned int) win, (unsigned int) box, (unsigned int) btn);
 
+	fprintf(stderr,"win: ");
+	ewl_rect_dump(win->layout->rect);
+	fprintf(stderr,"box: ");
+	ewl_rect_dump(box->layout->rect);
+	fprintf(stderr,"btn: ");
+	ewl_rect_dump(btn->layout->rect);
 	/* call the ewl_main() routine */
 	ewl_main();
 
