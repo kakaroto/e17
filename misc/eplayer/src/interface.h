@@ -12,6 +12,7 @@ void ui_fill_playlist(ePlayer *player);
 
 int ui_refresh_volume(void *udata);
 int ui_refresh_time(ePlayer *player, int time);
+int ui_refresh_seeker(ePlayer *player, double song_pos);
 
 #endif
 
