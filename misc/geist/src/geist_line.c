@@ -65,17 +65,7 @@ geist_line_new_from_to(int start_x, int start_y, int end_x, int end_y, int a,
    line->g = g;
    line->r = r;
 
-   obj->x = MIN(start_x, end_x);
-   obj->y = MIN(start_y, end_y);
-   obj->w = obj->rendered_w = MAX(start_x, end_x) - obj->x;
-   obj->h = obj->rendered_h = MAX(start_y, end_y) - obj->x;
-   obj->rendered_x = 0;
-   obj->rendered_y = 0;
-
-   line->start.x = start_x - obj->x;
-   line->start.y = start_y - obj->y;
-   line->end.x = end_x - obj->x;
-   line->end.y = end_y - obj->y;
+   geist_line_change_from_to(line, start_x, start_y, end_x, end_y);
 
    D_RETURN(5, GEIST_OBJECT(line));
 }
@@ -503,7 +493,8 @@ geist_line_render_selected(geist_object * obj, Imlib_Image dest,
    }
 }
 
-Imlib_Updates geist_line_get_selection_updates(geist_object * obj)
+Imlib_Updates
+geist_line_get_selection_updates(geist_object * obj)
 {
    Imlib_Updates up = NULL;
    int clip_x0, clip_y0, clip_x1, clip_y1;
