@@ -292,7 +292,7 @@ geist_document_dirty_object(geist_document * doc, geist_object * obj)
    doc->up =
       imlib_update_append_rect(doc->up, obj->x - HALF_SEL_WIDTH,
                                obj->y - HALF_SEL_HEIGHT,
-                               obj->w + HALF_SEL_WIDTH,
-                               obj->h + HALF_SEL_HEIGHT);
+                               obj->w + (2 * HALF_SEL_WIDTH),
+                               obj->h + (2 * HALF_SEL_HEIGHT));
    D_RETURN_(5);
 }
