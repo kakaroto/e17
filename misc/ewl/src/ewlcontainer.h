@@ -57,6 +57,11 @@ void         ewl_container_set_propagate_events(EwlWidget *c, EwlBool v);
 void         ewl_container_render_children(EwlWidget *c);
 void         ewl_container_resize_children(EwlWidget *c);
 
+void         ewl_container_realize_children(EwlWidget *widget,
+                                            EwlData   *data);
+void         ewl_container_unrealize_children(EwlWidget *widget,
+                                              EwlData   *data);
+
 /* depcirted -- will be replaced with ewlrect calls soon */
 void         ewl_container_set_child_padding(EwlWidget *c, int *l, int *t,
                                                            int *r, int *b);

@@ -861,7 +861,7 @@ EwlImLayer      *ewl_widget_get_imlayer_by_name(EwlWidget *widget, char *name)
 		          EWL_NULL_ERROR,
 		          "name");
 	} else {
-		layer = ewl_ll_callback_find((EwlLL*) widget->layers, 
+		layer = ewl_ll_callback_find((EwlLL*) (widget->layers), 
 		                             _ewl_widget_get_imlayer_by_name_cb,
 		                             (EwlData*) name);
 	}

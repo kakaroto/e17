@@ -480,6 +480,64 @@ void         ewl_container_resize_children(EwlWidget *c)
 	return;
 }
 
+
+EwlBool _cb_ewl_container_realize_children(EwlLL *node, EwlData *data)
+{
+	EwlWidget *widget = (EwlWidget*) node->data;
+	EwlEvent  *ev = ewl_event_new_by_type_with_widget(EWL_EVENT_REALIZE,
+	                                                  widget);
+	ewl_event_queue(ev);
+	return TRUE;
+}
+
+void         ewl_container_realize_children(EwlWidget *widget, EwlData *data)
+{
+	EwlContainer *container = (EwlContainer*) widget;
+	FUNC_BGN("ewl_container_realize_children");
+	if (!container)	{
+		ewl_debug("ewl_container_realize_children",
+		          EWL_NULL_WIDGET_ERROR, "container");
+	} else if (!ewl_widget_get_flag(widget,HAS_CHILDREN)) {
+		ewl_debug("ewl_container_realize_children",
+		          EWL_GENERIC_ERROR, "Widget is not a Container.");
+	} else {
+		ewl_container_foreach(widget,
+		                      _cb_ewl_container_realize_children,
+		                      data);
+	}
+	FUNC_END("ewl_container_realize_children");
+	return;
+}
+
+EwlBool _cb_ewl_container_unrealize_children(EwlLL *node, EwlData *data)
+{
+	EwlWidget *widget = (EwlWidget*) node->data;
+	EwlEvent  *ev = ewl_event_new_by_type_with_widget(EWL_EVENT_UNREALIZE,
+	                                                  widget);
+	ewl_event_queue(ev);
+	return TRUE;
+}
+
+void         ewl_container_unrealize_children(EwlWidget *widget, EwlData *data)
+{
+	EwlContainer *container = (EwlContainer*) widget;
+	FUNC_BGN("ewl_container_unrealize_children");
+	if (!container)	{
+		ewl_debug("ewl_container_unrealize_children",
+		          EWL_NULL_WIDGET_ERROR, "container");
+	} else if (!ewl_widget_get_flag(widget,HAS_CHILDREN)) {
+		ewl_debug("ewl_container_unrealize_children",
+		          EWL_GENERIC_ERROR, "Widget is not a Container.");
+	} else {
+		ewl_container_foreach(widget,
+		                      _cb_ewl_container_unrealize_children,
+		                      data);
+	}
+	FUNC_END("ewl_container_unrealize_children");
+	return;
+}
+
+
 void         ewl_container_set_child_padding(EwlWidget *c, int *l, int *t,
                                                            int *r, int *b)
 {

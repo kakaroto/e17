@@ -965,3 +965,14 @@ stuff elsewhere (although I really do think in belongs as an event --
 it allows chaining, inheritance, and all sorts of other goodies for
 free).
 
+-----
+20000905-1222-PDT, pabs
+
+- added ewl_container_realize_children() and
+ewl_container_unrealize_children().  Note that you need to call this 
+yourself in your programs -- _after_ your finished in your realize
+handler, and _before_ you start in your unrealize handler.  I know
+this might cause problems, and I'm thinking about moving these
+beasts to ewl_widget_realize/unrealize()...  Suggestions anyone?
+
+

@@ -25,6 +25,10 @@ extern void  ewl_event_queue(EwlEvent *ev);
 
 /* defined in ewlcontainer.h */
 extern void ewl_container_render_children(EwlWidget *w);
+extern void ewl_container_realize_children(EwlWidget *widget,
+                                           EwlData   *data);
+extern void ewl_container_unrealize_children(EwlWidget *widget,
+                                             EwlData   *data);
 
 /* defined in ewlwindow.h */
 extern Evas ewl_window_get_evas(EwlWidget *widget);

@@ -679,6 +679,8 @@ EwlBool  ewl_window_handle_realize(EwlWidget *widget,
 					sizeof(MWMHints)/4);
 			}
 		}
+
+		ewl_container_realize_children(widget,NULL);
 	}
 	FUNC_END("ewl_window_handle_realize");
 	return TRUE;
@@ -696,8 +698,8 @@ EwlBool  ewl_window_handle_unrealize(EwlWidget *widget,
 		ewl_debug("ewl_window_handle_unrealize", EWL_NULL_WIDGET_ERROR,
 		          "window");
 	} else {
+		ewl_container_unrealize_children(widget,NULL);
 		fprintf(stdout, "Unrealizing window 0x%08x\n", (unsigned int)win);
-		XUnmapWindow(ewl_get_display(), win->xwin);
 	}
 	FUNC_END("ewl_window_handle_unrealize");
 	return TRUE;
