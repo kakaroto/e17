@@ -554,7 +554,7 @@ MenuRepack(Menu * m)
 void
 MenuMove(Menu * m)
 {
-   if (IclassIsTransparent(m->style->bg_iclass))
+   if (conf.theme.transparency || IclassIsTransparent(m->style->bg_iclass))
       MenuRealize(m);
 }
 

@@ -568,7 +568,7 @@ DialogRedraw(Dialog * d)
 void
 DialogMove(Dialog * d)
 {
-   if (IclassIsTransparent(d->iclass))
+   if (conf.theme.transparency || IclassIsTransparent(d->iclass))
       DialogRedraw(d);
 }
 
