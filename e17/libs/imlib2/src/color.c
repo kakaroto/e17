@@ -78,6 +78,11 @@ __imlib_AllocColorTable(Display *d, Colormap cmap, DATA8 *type_return)
 	*type_return = _pal_type;
 	return color_lut;
      }
+   if ((_max_colors >= 216) && (color_lut = __imlib_AllocColors666(d, cmap)))
+     {
+	*type_return = _pal_type;
+	return color_lut;
+     }
    if ((_max_colors >= 128) && (color_lut = __imlib_AllocColors232(d, cmap)))
      {
 	*type_return = _pal_type;
@@ -150,6 +155,51 @@ __imlib_AllocColors332(Display *d, Colormap cmap)
 	  }
      }
    _pal_type = 0;
+   return color_lut;
+}
+
+DATA8 *
+__imlib_AllocColors666(Display *d, Colormap cmap)
+{
+   int r, g, b, i = 0;
+   DATA8 *color_lut;
+
+   color_lut = malloc(256 * sizeof(DATA8));
+   for (r = 0; r < 6; r++)
+     {
+	for (g = 0; g < 6; g++)
+	  {
+	     for (b = 0; b < 6; b++)
+	       {
+		  XColor xcl;
+		  int val;
+		  
+		  val = (int)((((double)r) / 5.0) * 65535);
+		  xcl.red = (unsigned short)(val);
+		  val = (int)((((double)g) / 5.0) * 65535);
+		  xcl.green = (unsigned short)(val);
+		  val = (int)((((double)b) / 5.0) * 65535);
+		  xcl.blue = (unsigned short)(val);
+		  if (!XAllocColor(d, cmap, &xcl))
+		    {
+		       unsigned long pixels[256];
+		       int j;
+		       
+		       if (i > 0)
+			 {
+			    for(j = 0; j < i; j++)
+			       pixels[j] = (unsigned long) color_lut[j];
+			    XFreeColors(d, cmap, pixels, i, 0);
+			 }
+		       free(color_lut);
+		       return NULL;
+		    }
+		  color_lut[i] = xcl.pixel;
+		  i++;
+	       }
+	  }
+     }
+   _pal_type = 7;
    return color_lut;
 }
 

@@ -34,6 +34,9 @@ static DATA16 *_dither_b16;
 static DATA8 *_dither_r8;
 static DATA8 *_dither_g8;
 static DATA8 *_dither_b8;
+static DATA8 *_dither_666r;
+static DATA8 *_dither_666g;
+static DATA8 *_dither_666b;
 static int dither_a_init = 0;
 static DATA8 _dither_a1[8 * 8 * 256];
 
@@ -441,6 +444,144 @@ static DATA8 _dither_a1[8 * 8 * 256];
                      (_dither_color_lut[((DITHER_RGBA_332_LUT_R(1))) |         \
                                         ((DITHER_RGBA_332_LUT_G(1))) |         \
                                         ((DITHER_RGBA_332_LUT_B(1)))] << 8);   \
+                     dest += 2; src += 2;                                      \
+}
+#endif
+
+
+/*****************************************************************************/
+/* Actual rendering routines                                                 */
+/* RGBA -> RGB666                                                            */
+/*****************************************************************************/
+
+/*****************************************************************************/
+/* MACROS for plain RGBA -> RGB666 conversion */
+#define WRITE1_RGBA_RGB666(src, dest)        \
+{ \
+*dest = _dither_color_lut[(_dither_666r[(*src >> 16) & 0xff]     ) +        \
+                          (_dither_666g[(*src >> 8 ) & 0xff]     ) +        \
+                          (_dither_666b[(*src      ) & 0xff]     )]; dest++; src++; \
+}
+#ifdef WORDS_BIGENDIAN
+#define WRITE2_RGBA_RGB666(src, dest)                                      \
+{                                                                          \
+ *((DATA16 *)dest) = (_dither_color_lut[(_dither_666r[(src[1] >> 16) & 0xff]     ) + \
+                                        (_dither_666g[(src[1] >> 8 ) & 0xff]     ) + \
+                                        (_dither_666b[(src[1]      ) & 0xff]     )]) | \
+                     (_dither_color_lut[(_dither_666r[(src[0] >> 16) & 0xff]     ) + \
+                                        (_dither_666g[(src[0] >> 8 ) & 0xff]     ) + \
+                                        (_dither_666b[(src[0]      ) & 0xff]     )] << 8); \
+                     dest += 2; src += 2;                                  \
+}
+#define WRITE4_RGBA_RGB666(src, dest)                                      \
+{                                                                          \
+ *((DATA16 *)dest) = (_dither_color_lut[(_dither_666r[(src[3] >> 16) & 0xff]     ) + \
+                                        (_dither_666g[(src[3] >> 8 ) & 0xff]     ) + \
+                                        (_dither_666b[(src[3]      ) & 0xff]     )]) | \
+                     (_dither_color_lut[(_dither_666r[(src[2] >> 16) & 0xff]     ) + \
+                                        (_dither_666g[(src[2] >> 8 ) & 0xff]     ) + \
+                                        (_dither_666b[(src[2]      ) & 0xff]     )] << 8) | \
+                     (_dither_color_lut[(_dither_666r[(src[1] >> 16) & 0xff]     ) + \
+                                        (_dither_666g[(src[1] >> 8 ) & 0xff]     ) + \
+                                        (_dither_666b[(src[1]      ) & 0xff]     )] << 16) | \
+                     (_dither_color_lut[(_dither_666r[(src[0] >> 16) & 0xff]     ) + \
+                                        (_dither_666g[(src[0] >> 8 ) & 0xff]     ) + \
+                                        (_dither_666b[(src[0]      ) & 0xff]     )] << 24); \
+                     dest += 4; src += 4;                                  \
+}
+#else
+#define WRITE2_RGBA_RGB666(src, dest)                                      \
+{                                                                          \
+ *((DATA16 *)dest) = (_dither_color_lut[(_dither_666r[(src[0] >> 16) & 0xff]     ) + \
+                                        (_dither_666g[(src[0] >> 8 ) & 0xff]     ) + \
+                                        (_dither_666b[(src[0]      ) & 0xff]     )]) | \
+                     (_dither_color_lut[(_dither_666r[(src[1] >> 16) & 0xff]     ) + \
+                                        (_dither_666g[(src[1] >> 8 ) & 0xff]     ) + \
+                                        (_dither_666b[(src[1]      ) & 0xff]     )] << 8); \
+                     dest += 2; src += 2;                                  \
+}
+#define WRITE4_RGBA_RGB666(src, dest)                                      \
+{                                                                          \
+ *((DATA16 *)dest) = (_dither_color_lut[(_dither_666r[(src[0] >> 16) & 0xff]     ) + \
+                                        (_dither_666g[(src[0] >> 8 ) & 0xff]     ) + \
+                                        (_dither_666b[(src[0]      ) & 0xff]     )]) | \
+                     (_dither_color_lut[(_dither_666r[(src[1] >> 16) & 0xff]     ) + \
+                                        (_dither_666g[(src[1] >> 8 ) & 0xff]     ) + \
+                                        (_dither_666b[(src[1]      ) & 0xff]     )] << 8) | \
+                     (_dither_color_lut[(_dither_666r[(src[2] >> 16) & 0xff]     ) + \
+                                        (_dither_666g[(src[2] >> 8 ) & 0xff]     ) + \
+                                        (_dither_666b[(src[2]      ) & 0xff]     )] << 16) | \
+                     (_dither_color_lut[(_dither_666r[(src[3] >> 16) & 0xff]     ) + \
+                                        (_dither_666g[(src[3] >> 8 ) & 0xff]     ) + \
+                                        (_dither_666b[(src[3]      ) & 0xff]     )] << 24); \
+                     dest += 4; src += 4;                                  \
+}
+#endif
+/*****************************************************************************/
+/* MACROS for dithered RGBA -> RGB666 conversion */
+#define DITHER_RGBA_666_LUT_R(num) \
+(_dither_r8[(((x + num) & 0x7) << 11) | ((y & 0x7) << 8) | ((src[num] >> 16) & 0xff)])
+#define DITHER_RGBA_666_LUT_G(num) \
+(_dither_g8[(((x + num) & 0x7) << 11) | ((y & 0x7) << 8) | ((src[num] >> 8)  & 0xff)])
+#define DITHER_RGBA_666_LUT_B(num) \
+(_dither_b8[(((x + num) & 0x7) << 11) | ((y & 0x7) << 8) | ((src[num] >> 0) & 0xff)])
+
+#define WRITE1_RGBA_RGB666_DITHER(src, dest)                                   \
+*dest = _dither_color_lut[(DITHER_RGBA_666_LUT_R(0)) +                         \
+                          (DITHER_RGBA_666_LUT_G(0)) +                         \
+                          (DITHER_RGBA_666_LUT_B(0))]; dest++; src++
+#ifdef WORDS_BIGENDIAN
+#define WRITE4_RGBA_RGB666_DITHER(src, dest)                                   \
+{                                                                              \
+ *((DATA32 *)dest) = (_dither_color_lut[((DITHER_RGBA_666_LUT_R(3))) +         \
+                                        ((DITHER_RGBA_666_LUT_G(3))) +         \
+                                        ((DITHER_RGBA_666_LUT_B(3)))]) |       \
+                     (_dither_color_lut[((DITHER_RGBA_666_LUT_R(2))) +         \
+                                        ((DITHER_RGBA_666_LUT_G(2))) +         \
+                                        ((DITHER_RGBA_666_LUT_B(2)))] << 8) |  \
+                     (_dither_color_lut[((DITHER_RGBA_666_LUT_R(1))) +         \
+                                        ((DITHER_RGBA_666_LUT_G(1))) +         \
+                                        ((DITHER_RGBA_666_LUT_B(1)))] << 16) | \
+                     (_dither_color_lut[((DITHER_RGBA_666_LUT_R(0))) +         \
+                                        ((DITHER_RGBA_666_LUT_G(0))) +         \
+                                        ((DITHER_RGBA_666_LUT_B(0)))] << 24);  \
+                     dest += 4; src += 4;                                      \
+}
+#define WRITE2_RGBA_RGB666_DITHER(src, dest)                                   \
+{                                                                              \
+ *((DATA32 *)dest) = (_dither_color_lut[((DITHER_RGBA_666_LUT_R(1))) +         \
+                                        ((DITHER_RGBA_666_LUT_G(1))) +         \
+                                        ((DITHER_RGBA_666_LUT_B(1)))]) |       \
+                     (_dither_color_lut[((DITHER_RGBA_666_LUT_R(0))) +         \
+                                        ((DITHER_RGBA_666_LUT_G(0))) +         \
+                                        ((DITHER_RGBA_666_LUT_B(0)))] << 8);   \
+                     dest += 2; src += 2;                                      \
+}
+#else
+#define WRITE4_RGBA_RGB666_DITHER(src, dest)                                   \
+{                                                                              \
+ *((DATA32 *)dest) = (_dither_color_lut[((DITHER_RGBA_666_LUT_R(0))) +         \
+                                        ((DITHER_RGBA_666_LUT_G(0))) +         \
+                                        ((DITHER_RGBA_666_LUT_B(0)))]) |       \
+                     (_dither_color_lut[((DITHER_RGBA_666_LUT_R(1))) +         \
+                                        ((DITHER_RGBA_666_LUT_G(1))) +         \
+                                        ((DITHER_RGBA_666_LUT_B(1)))] << 8) |  \
+                     (_dither_color_lut[((DITHER_RGBA_666_LUT_R(2))) +         \
+                                        ((DITHER_RGBA_666_LUT_G(2))) +         \
+                                        ((DITHER_RGBA_666_LUT_B(2)))] << 16) | \
+                     (_dither_color_lut[((DITHER_RGBA_666_LUT_R(3))) +         \
+                                        ((DITHER_RGBA_666_LUT_G(3))) +         \
+                                        ((DITHER_RGBA_666_LUT_B(3)))] << 24);  \
+                     dest += 4; src += 4;                                      \
+}
+#define WRITE2_RGBA_RGB666_DITHER(src, dest)                                   \
+{                                                                              \
+ *((DATA32 *)dest) = (_dither_color_lut[((DITHER_RGBA_666_LUT_R(0))) +         \
+                                        ((DITHER_RGBA_666_LUT_G(0))) +         \
+                                        ((DITHER_RGBA_666_LUT_B(0)))]) |       \
+                     (_dither_color_lut[((DITHER_RGBA_666_LUT_R(1))) +         \
+                                        ((DITHER_RGBA_666_LUT_G(1))) +         \
+                                        ((DITHER_RGBA_666_LUT_B(1)))] << 8);   \
                      dest += 2; src += 2;                                      \
 }
 #endif
@@ -1267,6 +1408,7 @@ __imlib_RGBASetupContext(Context *ct)
 	  case 3:
 	  case 4:
 	  case 5:
+	  case 7:
 	     _dither_r8 = (DATA8 *)ct->r_dither;
 	     _dither_g8 = (DATA8 *)ct->g_dither;
 	     _dither_b8 = (DATA8 *)ct->b_dither;
@@ -1419,6 +1561,44 @@ __imlib_RGBA_init(void *rd, void *gd, void *bd, int depth, DATA8 palette_type)
 			     bd8[(x << 11) | (y << 8) | i] = (((pi + 64) >> 6)& 0x03);
 			   else
 			     bd8[(x << 11) | (y << 8) | i] = ((pi >> 6) & 0x03);
+			 }
+		    }
+	       } 
+	     break;
+	  case 7: /* 666 8 bit 216 color rgb cube */
+	     if (!_dither_666r)
+	       {
+		  _dither_666r = malloc(256 * sizeof(DATA8));
+		  _dither_666g = malloc(256 * sizeof(DATA8));
+		  _dither_666b = malloc(256 * sizeof(DATA8));
+	       }
+	     for (y = 0; y < 256; y++)
+	       {
+		  _dither_666r[y] = (DATA8)(((y * 6) >> 8) * 6 * 6);
+		  _dither_666g[y] = (DATA8)(((y * 6) >> 8) * 6);
+		  _dither_666b[y] = (DATA8)(((y * 6) >> 8));
+	       }
+	     for (y = 0; y < 8; y++)
+	       {
+		  for (x = 0; x < 8; x++)
+		    {
+		       for (i = 0; i < 256; i++)
+			 {
+			   double pi;
+
+			   pi = 64.0 * (((double)i - (_dither_666b[i] * (256.0 / 6.0))) / (256.0 / 6.0));
+			   if ((_dither_88[x][y] < (DATA8)pi) && ((double)i < (256 - (256.0 / 6.0))))
+			      {
+				 rd8[(x << 11) | (y << 8) | i] = (_dither_666b[i] + 1) * 6 * 6;
+				 gd8[(x << 11) | (y << 8) | i] = (_dither_666b[i] + 1) * 6;
+				 bd8[(x << 11) | (y << 8) | i] = (_dither_666b[i] + 1);
+			      }
+			   else
+			      {
+				 rd8[(x << 11) | (y << 8) | i] = (_dither_666b[i]) * 6 * 6;
+				 gd8[(x << 11) | (y << 8) | i] = (_dither_666b[i]) * 6;
+				 bd8[(x << 11) | (y << 8) | i] = (_dither_666b[i]);
+			      }
 			 }
 		    }
 	       } 
@@ -1742,10 +1922,10 @@ __imlib_RGBA_to_RGB565_dither(DATA32 *src , int src_jump,
   dy = 0;
 }
 
-   void
+static void
 __imlib_RGBA_to_BGR565_fast(DATA32 *src , int src_jump, 
-		    DATA8 *dst, int dow,
-		    int width, int height, int dx, int dy)
+			    DATA8 *dst, int dow,
+			    int width, int height, int dx, int dy)
 {
   int x, y, w, h;
   DATA16 *dest = (DATA16 *)dst;
@@ -2333,6 +2513,182 @@ __imlib_RGBA_to_RGB332_dither(DATA32 *src , int src_jump,
 	      for (; x < (width + dx); x++)
 		{
 		  WRITE1_RGBA_RGB332_DITHER(src, dest);
+		}
+	      src += src_jump;
+	      dest += dest_jump;
+	    }
+	}
+    }
+  return;
+  dx = 0;
+  dy = 0;
+}
+
+static void
+__imlib_RGBA_to_RGB666_fast(DATA32 *src , int src_jump, 
+		    DATA8 *dest, int dow,
+		    int width, int height, int dx, int dy)
+{
+  int x, y, w, h;
+  int dest_jump = dow - width;
+  
+  w = width;
+  h = height;
+
+  if (IS_ALIGNED_32((int)dest))
+    {
+      if (IS_MULTIPLE_4(width))
+	{
+	  for (y = 0; y < h; y++)
+	    {
+	      for (x = 0; x < w; x+=4)
+		WRITE4_RGBA_RGB666(src, dest);
+	      src += src_jump;
+	      dest += dest_jump;
+	    }
+	}
+      else if (IS_MULTIPLE_2(width))
+	{
+	  w-=2;
+	  for (y = 0; y < h; y++)
+	    {
+	      for (x = 0; x < w; x+=4)
+		WRITE4_RGBA_RGB666(src, dest);
+	      WRITE2_RGBA_RGB666(src, dest);
+	      src += src_jump;
+	      dest += dest_jump;
+	    }
+	}
+      else
+	{
+	  w-=3;
+	  for (y = 0; y < h; y++)
+	    {
+	      for (x = 0; x < w; x+=4)
+		WRITE4_RGBA_RGB666(src, dest);
+	      for (; x < width; x++)
+		{
+		  WRITE1_RGBA_RGB666(src, dest);
+		}
+	      src += src_jump;
+	      dest += dest_jump;
+	    }
+	}
+    }
+  else 
+    {
+      for (y = 0; y < h; y++)
+	{
+	  for (x = 0; ((x < w) && (!(IS_ALIGNED_32((int)dest)))); x++)
+	    {
+	      WRITE1_RGBA_RGB666(src, dest);
+	    }
+	  if (x < w)
+	    {
+	      if (IS_MULTIPLE_4((width - x)))
+		{
+		  for (; x < w; x+=4)
+		    WRITE4_RGBA_RGB666(src, dest);
+		  src += src_jump;
+		  dest += dest_jump;
+		}
+	      else if (IS_MULTIPLE_2((width - x)))
+		{
+		  w = width - 2 - x;
+		  for (; x < w; x+=4)
+		    WRITE4_RGBA_RGB666(src, dest);
+		  WRITE2_RGBA_RGB666(src, dest);
+		  src += src_jump;
+		  dest += dest_jump;
+		}
+	      else
+		{
+		  w = width - 3 - x;
+		  for (; x < w; x+=4)
+		    WRITE4_RGBA_RGB666(src, dest);
+		  for (; x < width; x++)
+		    {
+		      WRITE1_RGBA_RGB666(src, dest);
+		    }
+		  src += src_jump;
+		  dest += dest_jump;
+		}
+	    }
+	}
+    }
+  return;
+  dx = 0;
+  dy = 0;
+}
+
+static void
+__imlib_RGBA_to_RGB666_dither(DATA32 *src , int src_jump, 
+		      DATA8 *dest, int dow,
+		      int width, int height, int dx, int dy)
+{
+  int x, y, w, h;
+  int dest_jump = dow - width;
+
+  w = width + dx;
+  h = height + dy;
+
+  if (IS_ALIGNED_32((int)dest))
+    {
+      if (IS_MULTIPLE_4(width))
+	{
+	  for (y = dy; y < h; y++)
+	    {
+	      for (x = dx; x < w; x+=4)
+		WRITE4_RGBA_RGB666_DITHER(src, dest);
+	      src += src_jump;
+	      dest += dest_jump;
+	    }
+	}
+      else if (IS_MULTIPLE_2(width))
+	{
+	  w-=2;
+	  for (y = dy; y < h; y++)
+	    {
+	      for (x = dx; x < w; x+=4)
+		WRITE4_RGBA_RGB666_DITHER(src, dest);
+	      WRITE2_RGBA_RGB666_DITHER(src, dest);
+	      src += src_jump;
+	      dest += dest_jump;
+	    }
+	}
+      else
+	{
+	  w-=3;
+	  for (y = dy; y < h; y++)
+	    {
+	      for (x = dx; x < w; x+=4)
+		WRITE4_RGBA_RGB666_DITHER(src, dest);
+	      for (; x < (width + dx); x++)
+		{
+		  WRITE1_RGBA_RGB666_DITHER(src, dest);
+		}
+	      src += src_jump;
+	      dest += dest_jump;
+	    }
+	}
+    }
+  else 
+    {
+      for (y = dy; y < h; y++)
+	{
+	  w = width + dx;
+	  for (x = dx; ((x < w) && (!(IS_ALIGNED_32((int)dest)))); x++)
+	    {
+	      WRITE1_RGBA_RGB666_DITHER(src, dest);
+	    }
+	  if (x < w)
+	    {
+	      w = (width + dx) - (3 + x);
+	      for (; x < w; x+=4)
+		WRITE4_RGBA_RGB666_DITHER(src, dest);
+	      for (; x < (width + dx); x++)
+		{
+		  WRITE1_RGBA_RGB666_DITHER(src, dest);
 		}
 	      src += src_jump;
 	      dest += dest_jump;
@@ -3441,57 +3797,6 @@ __imlib_GetRGBAFunction(int depth,
 			unsigned long rm, unsigned long gm, unsigned long bm,
 			char hiq, DATA8 palette_type)
 {
-   unsigned int did;
-   static ImlibRGBAFunction functions[11][2][2] = {
-      { { &__imlib_RGBA_to_RGB555_fast, &__imlib_RGBA_to_RGB555_dither },
-	{ &__imlib_RGBA_to_BGR555_fast, &__imlib_RGBA_to_BGR555_dither } },
-      { { &__imlib_RGBA_to_RGB565_fast, &__imlib_RGBA_to_RGB565_dither },
-	{ &__imlib_RGBA_to_BGR565_fast, &__imlib_RGBA_to_BGR565_dither } },
-      { { &__imlib_RGBA_to_RGB888_fast, &__imlib_RGBA_to_RGB888_fast },
-	{ &__imlib_RGBA_to_BGR888_fast, &__imlib_RGBA_to_BGR888_fast } },
-      { { &__imlib_RGBA_to_RGB8888_fast, &__imlib_RGBA_to_RGB8888_fast },
-	{ &__imlib_RGBA_to_BGR8888_fast, &__imlib_RGBA_to_BGR8888_fast } },
-      { { &__imlib_RGBA_to_RGB332_fast, &__imlib_RGBA_to_RGB332_dither },
-	{ &__imlib_RGBA_to_RGB332_fast, &__imlib_RGBA_to_RGB332_dither } },
-      { { &__imlib_RGBA_to_RGB232_fast, &__imlib_RGBA_to_RGB232_dither },
-	{ &__imlib_RGBA_to_RGB232_fast, &__imlib_RGBA_to_RGB232_dither } },
-      { { &__imlib_RGBA_to_RGB222_fast, &__imlib_RGBA_to_RGB222_dither },
-	{ &__imlib_RGBA_to_RGB222_fast, &__imlib_RGBA_to_RGB222_dither } },
-      { { &__imlib_RGBA_to_RGB221_fast, &__imlib_RGBA_to_RGB221_dither },
-	{ &__imlib_RGBA_to_RGB221_fast, &__imlib_RGBA_to_RGB221_dither } },
-      { { &__imlib_RGBA_to_RGB121_fast, &__imlib_RGBA_to_RGB121_dither },
-	{ &__imlib_RGBA_to_RGB121_fast, &__imlib_RGBA_to_RGB121_dither } },
-      { { &__imlib_RGBA_to_RGB111_fast, &__imlib_RGBA_to_RGB111_dither },
-	{ &__imlib_RGBA_to_RGB111_fast, &__imlib_RGBA_to_RGB111_dither } },
-      { { &__imlib_RGBA_to_RGB1_fast, &__imlib_RGBA_to_RGB1_dither },
-	{ &__imlib_RGBA_to_RGB1_fast, &__imlib_RGBA_to_RGB1_dither } },
-   };
-#ifdef DO_MMX_ASM
-   static ImlibRGBAFunction mmx_functions[11][2][2] = {
-      { { &__imlib_mmx_rgb555_fast, &__imlib_RGBA_to_RGB555_dither },
-	{ &__imlib_mmx_bgr555_fast, &__imlib_RGBA_to_BGR555_dither } },
-      { { &__imlib_mmx_rgb565_fast, &__imlib_RGBA_to_RGB565_dither },
-	{ &__imlib_mmx_bgr565_fast, &__imlib_RGBA_to_BGR565_dither } },
-      { { &__imlib_RGBA_to_RGB888_fast, &__imlib_RGBA_to_RGB888_fast },
-	{ &__imlib_RGBA_to_BGR888_fast, &__imlib_RGBA_to_BGR888_fast } },
-      { { &__imlib_RGBA_to_RGB8888_fast, &__imlib_RGBA_to_RGB8888_fast },
-	{ &__imlib_RGBA_to_BGR8888_fast, &__imlib_RGBA_to_BGR8888_fast } },
-      { { &__imlib_RGBA_to_RGB332_fast, &__imlib_RGBA_to_RGB332_dither },
-	{ &__imlib_RGBA_to_RGB332_fast, &__imlib_RGBA_to_RGB332_dither } },
-      { { &__imlib_RGBA_to_RGB232_fast, &__imlib_RGBA_to_RGB232_dither },
-	{ &__imlib_RGBA_to_RGB232_fast, &__imlib_RGBA_to_RGB232_dither } },
-      { { &__imlib_RGBA_to_RGB222_fast, &__imlib_RGBA_to_RGB222_dither },
-	{ &__imlib_RGBA_to_RGB222_fast, &__imlib_RGBA_to_RGB222_dither } },
-      { { &__imlib_RGBA_to_RGB221_fast, &__imlib_RGBA_to_RGB221_dither },
-	{ &__imlib_RGBA_to_RGB221_fast, &__imlib_RGBA_to_RGB221_dither } },
-      { { &__imlib_RGBA_to_RGB121_fast, &__imlib_RGBA_to_RGB121_dither },
-	{ &__imlib_RGBA_to_RGB121_fast, &__imlib_RGBA_to_RGB121_dither } },
-      { { &__imlib_RGBA_to_RGB111_fast, &__imlib_RGBA_to_RGB111_dither },
-	{ &__imlib_RGBA_to_RGB111_fast, &__imlib_RGBA_to_RGB111_dither } },
-      { { &__imlib_RGBA_to_RGB1_fast, &__imlib_RGBA_to_RGB1_dither },
-	{ &__imlib_RGBA_to_RGB1_fast, &__imlib_RGBA_to_RGB1_dither } },
-   };
-#endif
    if (depth == 16)
      {
 	if (hiq)
@@ -3551,39 +3856,41 @@ __imlib_GetRGBAFunction(int depth,
 	if (hiq)
 	  {
 	     if (palette_type == 0)
-		return __imlib_RGBA_to_RGB232_dither;
+		return __imlib_RGBA_to_RGB332_dither;
 	     if (palette_type == 1)
-		return __imlib_RGBA_to_RGB222_dither;
+		return __imlib_RGBA_to_RGB232_dither;
 	     if (palette_type == 2)
-		return __imlib_RGBA_to_RGB221_dither;
+		return __imlib_RGBA_to_RGB222_dither;
 	     if (palette_type == 3)
-		return __imlib_RGBA_to_RGB121_dither;
+		return __imlib_RGBA_to_RGB221_dither;
 	     if (palette_type == 4)
-		return __imlib_RGBA_to_RGB111_dither;
+		return __imlib_RGBA_to_RGB121_dither;
 	     if (palette_type == 5)
+		return __imlib_RGBA_to_RGB111_dither;
+	     if (palette_type == 6)
 		return __imlib_RGBA_to_RGB1_dither;
+	     if (palette_type == 7)
+		return __imlib_RGBA_to_RGB666_dither;
 	  }
 	else
 	  {
 	     if (palette_type == 0)
-		return __imlib_RGBA_to_RGB232_fast;
+		return __imlib_RGBA_to_RGB332_fast;
 	     if (palette_type == 1)
-		return __imlib_RGBA_to_RGB222_fast;
+		return __imlib_RGBA_to_RGB232_fast;
 	     if (palette_type == 2)
-		return __imlib_RGBA_to_RGB221_fast;
+		return __imlib_RGBA_to_RGB222_fast;
 	     if (palette_type == 3)
-		return __imlib_RGBA_to_RGB121_fast;
+		return __imlib_RGBA_to_RGB221_fast;
 	     if (palette_type == 4)
-		return __imlib_RGBA_to_RGB111_fast;
+		return __imlib_RGBA_to_RGB121_fast;
 	     if (palette_type == 5)
+		return __imlib_RGBA_to_RGB111_fast;
+	     if (palette_type == 6)
 		return __imlib_RGBA_to_RGB1_fast;
+	     if (palette_type == 7)
+		return __imlib_RGBA_to_RGB666_fast;
 	  }
-	/* FIXME: return 1 byte rendering for mask */
-     }
-   else if (depth == 1)
-     {
-	printf("Imlib2: eeek! cannot handle depth 1\n");
-	return NULL;
      }
    printf("Imlib2: unknown depth %i\n", depth);
    return NULL;
