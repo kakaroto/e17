@@ -1991,6 +1991,8 @@ MoveEwinToDesktop(EWin * ewin, int num)
      }
    ForceUpdatePagersForDesktop(pdesk);
    ForceUpdatePagersForDesktop(ewin->desktop);
+   if (mode.kde_support)
+      KDE_UpdateClient(ewin);
    EDBUG_RETURN_;
 }
 

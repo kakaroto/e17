@@ -2100,3 +2100,12 @@ Mon Sep 20 21:30:28 PDT 1999
 (Mandrake)
 
 fixed the desktop changing bug in kde support.  (oops)
+
+-------------------------------------------------------------------------------
+
+Tue Sep 21 10:13:48 PDT 1999
+(Mandrake)
+
+fixed some problems with kde notifications on events.  all of these things
+should be accounted for now.  It looks like all of panel pretty much works
+out-of-box.

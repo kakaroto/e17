@@ -10,6 +10,10 @@ MakeWindowUnSticky(EWin * ewin)
    ewin->sticky = 0;
    RaiseEwin(ewin);
    DrawEwin(ewin);
+
+   if (mode.kde_support)
+      KDE_UpdateClient(ewin);
+
    ApplySclass(FindItem("SOUND_WINDOW_UNSTICK", 0, LIST_FINDBY_NAME,
 			LIST_TYPE_SCLASS));
 
@@ -22,6 +26,10 @@ MakeWindowSticky(EWin * ewin)
    MoveEwinToDesktopAt(ewin, desks.current, ewin->x, ewin->y);
    RaiseEwin(ewin);
    DrawEwin(ewin);
+
+   if (mode.kde_support)
+      KDE_UpdateClient(ewin);
+
    ApplySclass(FindItem("SOUND_WINDOW_STICK", 0,
 			LIST_FINDBY_NAME, LIST_TYPE_SCLASS));
 }

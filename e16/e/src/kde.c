@@ -235,6 +235,8 @@ KDE_NewWindow(EWin * ewin)
 		  setSimpleHint(ewin->client.win, KDE_WIN_MAXIMIZED, 0);
 	       }
 
+	     setSimpleHint(ewin->client.win, KDE_WIN_DESKTOP, ewin->desktop + 1);
+
 	     ewin->kde_hint = 1;
 	     KDE_SendMessagesToModules(KDE_MODULE_WIN_ADD, ewin->client.win);
 	  }
@@ -252,8 +254,17 @@ KDE_RemoveWindow(EWin * ewin)
    if (!ewin)
       EDBUG_RETURN_;
 
+   /* hose the hints from the window */
    if (getSimpleHint(ewin->client.win, KDE_WIN_TITLE))
       deleteHint(ewin->client.win, KDE_WIN_TITLE);
+   if (getSimpleHint(ewin->client.win, KDE_WIN_STICKY))
+      deleteHint(ewin->client.win, KDE_WIN_STICKY);
+   if (getSimpleHint(ewin->client.win, KDE_WIN_ICONIFIED))
+      deleteHint(ewin->client.win, KDE_WIN_ICONIFIED);
+   if (getSimpleHint(ewin->client.win, KDE_WIN_MAXIMIZED))
+      deleteHint(ewin->client.win, KDE_WIN_MAXIMIZED);
+   if (getSimpleHint(ewin->client.win, KDE_WIN_DESKTOP))
+      deleteHint(ewin->client.win, KDE_WIN_DESKTOP);
 
    if (!(ewin->internal))
       KDE_SendMessagesToModules(KDE_MODULE_WIN_REMOVE, ewin->client.win);
@@ -370,6 +381,8 @@ KDE_AddModule(Window win)
 				setSimpleHint(lst[i]->client.win,
 					      KDE_WIN_MAXIMIZED, 0);
 			  }
+			if (!getSimpleHint(lst[i]->client.win, KDE_WIN_DESKTOP))
+			   setSimpleHint(lst[i]->client.win, KDE_WIN_DESKTOP, lst[i]->desktop + 1);
 			KDE_ClientMessage(win, KDE_MODULE_WIN_ADD,
 					  lst[i]->client.win, CurrentTime);
 			lst[i]->kde_hint = 1;
@@ -1206,36 +1219,71 @@ KDE_UpdateClient(EWin * ewin)
 		   XA_STRING, 8, PropModeReplace,
 		   (unsigned char *)ewin->client.title,
 		   strlen(ewin->client.title) + 1);
-   if (ewin->sticky)
+   if (getSimpleHint(ewin->client.win, KDE_WIN_STICKY))
      {
-	if (!getSimpleHint(ewin->client.win, KDE_WIN_STICKY))
-	   setSimpleHint(ewin->client.win, KDE_WIN_STICKY, 1);
+	if (ewin->sticky)
+	  {
+	     if (!*(getSimpleHint(ewin->client.win, KDE_WIN_STICKY)))
+		setSimpleHint(ewin->client.win, KDE_WIN_STICKY, 1);
+	  }
+	else
+	  {
+	     if (*(getSimpleHint(ewin->client.win, KDE_WIN_STICKY)))
+		setSimpleHint(ewin->client.win, KDE_WIN_STICKY, 0);
+	  }
      }
    else
      {
-	if (*(getSimpleHint(ewin->client.win, KDE_WIN_STICKY)))
-	   setSimpleHint(ewin->client.win, KDE_WIN_STICKY, 0);
+	setSimpleHint(ewin->client.win, KDE_WIN_STICKY, ewin->sticky ? 1 : 0);
      }
-   if (ewin->iconified)
+
+   if (getSimpleHint(ewin->client.win, KDE_WIN_ICONIFIED))
      {
-	if (!*(getSimpleHint(ewin->client.win, KDE_WIN_ICONIFIED)))
-	   setSimpleHint(ewin->client.win, KDE_WIN_ICONIFIED, 1);
+	if (ewin->iconified)
+	  {
+	     if (!*(getSimpleHint(ewin->client.win, KDE_WIN_ICONIFIED)))
+		setSimpleHint(ewin->client.win, KDE_WIN_ICONIFIED, 1);
+	  }
+	else
+	  {
+	     if (*(getSimpleHint(ewin->client.win, KDE_WIN_ICONIFIED)))
+		setSimpleHint(ewin->client.win, KDE_WIN_ICONIFIED, 0);
+	  }
      }
    else
      {
-	if (*(getSimpleHint(ewin->client.win, KDE_WIN_ICONIFIED)))
-	   setSimpleHint(ewin->client.win, KDE_WIN_ICONIFIED, 0);
+	setSimpleHint(ewin->client.win, KDE_WIN_ICONIFIED,
+		      ewin->iconified ? 1 : 0);
      }
-   if (ewin->toggle)
+   if (getSimpleHint(ewin->client.win, KDE_WIN_MAXIMIZED))
      {
-	if (!*(getSimpleHint(ewin->client.win, KDE_WIN_MAXIMIZED)))
-	   setSimpleHint(ewin->client.win, KDE_WIN_MAXIMIZED, 1);
+	if (ewin->toggle)
+	  {
+	     if (!*(getSimpleHint(ewin->client.win, KDE_WIN_MAXIMIZED)))
+		setSimpleHint(ewin->client.win, KDE_WIN_MAXIMIZED, 1);
+	  }
+	else
+	  {
+	     if (*(getSimpleHint(ewin->client.win, KDE_WIN_MAXIMIZED)))
+		setSimpleHint(ewin->client.win, KDE_WIN_MAXIMIZED, 0);
+	  }
      }
    else
      {
-	if (*(getSimpleHint(ewin->client.win, KDE_WIN_MAXIMIZED)))
-	   setSimpleHint(ewin->client.win, KDE_WIN_MAXIMIZED, 0);
+	setSimpleHint(ewin->client.win, KDE_WIN_MAXIMIZED,
+		      ewin->toggle ? 1 : 0);
      }
+   if (getSimpleHint(ewin->client.win, KDE_WIN_DESKTOP))
+     {
+	if ((*(getSimpleHint(ewin->client.win, KDE_WIN_DESKTOP)) - 1) !=
+	    ewin->desktop)
+	   setSimpleHint(ewin->client.win, KDE_WIN_DESKTOP, (ewin->desktop) + 1);
+     }
+   else
+     {
+	setSimpleHint(ewin->client.win, KDE_WIN_DESKTOP, (ewin->desktop) + 1);
+     }
+
    if (!(ewin->internal))
       KDE_SendMessagesToModules(KDE_MODULE_WIN_CHANGE, ewin->client.win);
 

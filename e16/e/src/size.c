@@ -361,5 +361,8 @@ MaxSize(EWin * ewin, char *resize_type)
 	ewin->toggle = 0;
      }
 
+   if (mode.kde_support)
+      KDE_UpdateClient(ewin);
+
    return;
 }

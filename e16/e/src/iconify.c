@@ -94,6 +94,7 @@ IconifyEwin(EWin * ewin)
    static int          call_depth = 0;
    char                was_shaded;
 
+   EDBUG(6, "IconifyEwin");
    if (!ewin)
       EDBUG_RETURN_;
    if (GetZoomEWin() == ewin)
@@ -159,6 +160,9 @@ IconifyEwin(EWin * ewin)
 	  }
      }
    call_depth--;
+
+   KDE_UpdateClient(ewin);
+   EDBUG_RETURN_;
 }
 
 void
@@ -167,6 +171,7 @@ DeIconifyEwin(EWin * ewin)
    static int          call_depth = 0;
    Iconbox            *ib;
 
+   EDBUG(6, "DeIconifyEwin");
    call_depth++;
    if (call_depth > 256)
      {
@@ -208,6 +213,10 @@ DeIconifyEwin(EWin * ewin)
 	  }
      }
    call_depth--;
+
+   KDE_UpdateClient(ewin);
+   EDBUG_RETURN_;
+
 }
 
 void
