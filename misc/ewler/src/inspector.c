@@ -190,7 +190,7 @@ __inspector_combo_changed( Ewl_Widget *w, void *ev_data, void *user_data )
 	char *text;
 	int value;
 
-	text = ewl_combo_get_selected( EWL_COMBO(w) );
+	text = ewl_combo_selected_get( EWL_COMBO(w) );
 
 	if( data->type->w.w_type != WIDGET_ENUM_TYPE )
 		return;

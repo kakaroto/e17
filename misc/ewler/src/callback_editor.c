@@ -306,7 +306,7 @@ __add_cb( Ewl_Widget *w, void *event, void *user_data )
 
 	handler = ewl_entry_text_get( EWL_ENTRY(ce->handler_entry) );
 
-	cb_name = ewl_combo_get_selected( EWL_COMBO(ce->cb_combo) );
+	cb_name = ewl_combo_selected_get( EWL_COMBO(ce->cb_combo) );
 
 	callback = ewler_callback_value( cb_name );
 	if( callback < 0 || strlen( handler ) == 0 )
@@ -318,7 +318,7 @@ __add_cb( Ewl_Widget *w, void *event, void *user_data )
 	FREE( cb_name );
 
 	ewl_entry_text_set( EWL_ENTRY(ce->handler_entry), "" );
-	ewl_combo_set_selected( EWL_COMBO(ce->cb_combo), "             " );
+	ewl_combo_selected_set( EWL_COMBO(ce->cb_combo), "             " );
 
 	ewler_callback_editor_update( ce );
 }
@@ -331,7 +331,7 @@ __modify_cb( Ewl_Widget *w, void *event, void *user_data )
 	int callback = -1;
 
 	handler = ewl_entry_text_get( EWL_ENTRY(ce->handler_entry) );
-	cb_name = ewl_combo_get_selected( EWL_COMBO(ce->cb_combo) );
+	cb_name = ewl_combo_selected_get( EWL_COMBO(ce->cb_combo) );
 
 	callback = ewler_callback_value( cb_name );
 
@@ -343,7 +343,7 @@ __modify_cb( Ewl_Widget *w, void *event, void *user_data )
 	FREE( cb_name );
 
 	ewl_entry_text_set( EWL_ENTRY(ce->handler_entry), "" );
-	ewl_combo_set_selected( EWL_COMBO(ce->cb_combo), "             " );
+	ewl_combo_selected_set( EWL_COMBO(ce->cb_combo), "             " );
 
 	ewl_widget_enable( ce->add_button );
 	ewl_widget_disable( ce->modify_button );
@@ -361,7 +361,7 @@ __delete_cb( Ewl_Widget *w, void *event, void *user_data )
 	int callback = -1;
 
 	handler = ewl_entry_text_get( EWL_ENTRY(ce->handler_entry) );
-	cb_name = ewl_combo_get_selected( EWL_COMBO(ce->cb_combo) );
+	cb_name = ewl_combo_selected_get( EWL_COMBO(ce->cb_combo) );
 
 	callback = ewler_callback_value( cb_name );
 
@@ -373,7 +373,7 @@ __delete_cb( Ewl_Widget *w, void *event, void *user_data )
 	FREE( cb_name );
 
 	ewl_entry_text_set( EWL_ENTRY(ce->handler_entry), "" );
-	ewl_combo_set_selected( EWL_COMBO(ce->cb_combo), "             " );
+	ewl_combo_selected_set( EWL_COMBO(ce->cb_combo), "             " );
 
 	ewl_widget_enable( ce->add_button );
 	ewl_widget_disable( ce->modify_button );
@@ -389,7 +389,7 @@ __clear_cb( Ewl_Widget *w, void *event, void *user_data )
   Ewler_Callback_Editor *ce = user_data;
 
 	ewl_entry_text_set( EWL_ENTRY(ce->handler_entry), "" );
-	ewl_combo_set_selected( EWL_COMBO(ce->cb_combo), "             " );
+	ewl_combo_selected_set( EWL_COMBO(ce->cb_combo), "             " );
 
 	ewl_widget_disable( ce->add_button );
 	ewl_widget_disable( ce->modify_button );
@@ -415,7 +415,7 @@ __select_row( Ewl_Widget *w, void *event, void *user_data )
 	cb_id = ewler_callback_value( callback );
 
 	ewl_entry_text_set( EWL_ENTRY(ce->handler_entry), handler );
-	ewl_combo_set_selected( EWL_COMBO(ce->cb_combo), callback );
+	ewl_combo_selected_set( EWL_COMBO(ce->cb_combo), callback );
 
 	ce->active = ewler_callback_get( ce->target, handler, cb_id );
 
