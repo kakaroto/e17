@@ -45,6 +45,14 @@
 #define HALF_SEL_WIDTH 2
 #define HALF_SEL_HEIGHT 2 
 
+#ifndef PACKAGE
+#define PACKAGE "geist"
+#endif
+
+#ifndef VERSION
+#define VERSION 0.0.1
+#endif
+   
 extern int call_level;
 extern gint obj_sel_handler, obj_unsel_handler;
 

@@ -1,0 +1,29 @@
+
+Optimise rendering engine. Don't render an object area if it's covered by an
+opaque object above it.
+
+Optimise events. Don't render for *every* *damn* MotionNotify event :/ Damn
+GDK :)
+
+Resizing
+
+A GUI
+
+Saving/loading. I'll use libXML for this as it's the perfect format for
+structured/hierarchial storage, and means older app versions can ignore
+stuff in the file they don't grok.
+
+More object types. Lines, gradients etc
+
+Background definitions
+
+Modification layers
+
+Right-click context menus
+
+Object property dialogs etc
+
+Decent text layout. Justification, word wrapping, margins etc.
+
+Drag-rectangle for multiple selections.
+
