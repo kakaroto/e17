@@ -50,6 +50,8 @@ static void    _engage_config_menu_new(Engage *e);
 
 /* xdnd alpha code - this is a temp */
 static int     _engage_cb_event_dnd_drop(void *data, int type, void *event);
+static int     _engage_cb_event_dnd_position(void *data, int type, void *event);
+static int     _engage_cb_event_dnd_selection(void *data, int type, void *event);
 
 static int     _engage_cb_event_border_add(void *data, int type, void *event);
 static int     _engage_cb_event_border_remove(void *data, int type, void *event);
@@ -538,8 +540,9 @@ _engage_bar_new(Engage *e, E_Container *con)
    /* xdnd alpha code - this shouldnt hurt or break anything */
    e_hints_window_visible_set(eb->con->bg_win);   
    ecore_x_dnd_aware_set(eb->con->bg_win, 1);
-   ecore_event_handler_add(ECORE_X_EVENT_XDND_DROP, _engage_cb_event_dnd_drop , NULL);
-   
+   ecore_event_handler_add(ECORE_X_EVENT_XDND_DROP, _engage_cb_event_dnd_drop , eb);
+   ecore_event_handler_add(ECORE_X_EVENT_XDND_POSITION, _engage_cb_event_dnd_position, eb);
+   ecore_event_handler_add(ECORE_X_EVENT_SELECTION_NOTIFY, _engage_cb_event_dnd_selection, eb);
    
    return eb;
 }
@@ -881,47 +884,48 @@ _engage_config_menu_new(Engage *e)
 }
 
 /* xdnd alpha code */
+static int
+_engage_cb_event_dnd_position(void *data, int type, void *event)
+{
+   Ecore_X_Event_Xdnd_Position *ev;
+   Ecore_X_Rectangle rect;
+   Engage_Bar *eb;
 
-char *atom_to_string(Ecore_X_Atom atom) {
-   if (atom == ECORE_X_DND_ACTION_COPY)
-     return "copy";
-   
-   else if (atom == ECORE_X_DND_ACTION_MOVE)
-     return "move";
-   
-   else if (atom == ECORE_X_DND_ACTION_LINK)
-     return "link";
-   
-   else if (atom == ECORE_X_DND_ACTION_ASK)
-     return "ask";
-   
-   else if (atom == ECORE_X_DND_ACTION_PRIVATE)
-     return "private";
-   
+   eb = data;
+   ev = event;
+   e_gadman_client_geometry_get(eb->gmc, &rect.x, &rect.y, &rect.width, &rect.height);
+   if (ev->position.x >= rect.x && ev->position.x <= rect.x + rect.width &&
+       ev->position.y >= rect.y && ev->position.y <= rect.y + rect.height)
+     ecore_x_dnd_send_status(1, 1, rect, ECORE_X_DND_ACTION_PRIVATE);
    else
-     return "unknown";
+     ecore_x_dnd_send_status(0, 1, rect, ECORE_X_DND_ACTION_PRIVATE);
+   return 1;
 }
-
 
 static int
 _engage_cb_event_dnd_drop(void *data, int type, void *event)
 {
-   Ecore_X_Rectangle rect;
-   Ecore_X_Event_Xdnd_Drop *dnd;
-   
-   dnd = event;
-   
-   printf("XDND Drop win %d source %d action %s postion "
-	  "{x: %d y: %d}\n", dnd->win, dnd->source, atom_to_string(dnd->action),
-	  dnd->position.x, dnd->position.y);
-   
-   rect.x = dnd->position.x;
-   rect.y = dnd->position.y;
-   rect.width = 1; /* not sure */
-   rect.height = 1; /* not sure */
-   
-   ecore_x_dnd_send_status(1, 0, rect, dnd->action);
-   
+   Ecore_X_Event_Xdnd_Drop *ev;
+
+   ev = event;
+   /* FIXME - we do not really want plain text files! */
+   ecore_x_selection_xdnd_request(ev->win, "text/plain");
+   return 1;
+}
+
+int
+_engage_cb_event_dnd_selection(void *data, int type, void *event)
+{
+   Ecore_X_Event_Selection_Notify *ev;
+   int i, len;
+   char *buf;
+
+   ev = event;
+   ecore_x_selection_xdnd_request_data_get(&buf, &len);
+   printf("ENGAGE DND GOT %s\n", buf);
+   free(buf);
+   ecore_x_dnd_send_finished();
+   return 1;
 }
 
 static int
