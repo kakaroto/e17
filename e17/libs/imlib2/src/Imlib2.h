@@ -130,6 +130,7 @@ extern "C"
    void imlib_context_set_image(Imlib_Image image);
    void imlib_context_set_cliprect(int x, int y, int w, int h);
    void imlib_context_set_TTF_encoding(Imlib_TTF_Encoding encoding);
+   void imlib_context_set_filename_raw_mode(int onoff);
 
 /* context getting */
 #ifndef X_DISPLAY_MISSING
@@ -159,6 +160,7 @@ extern "C"
    Imlib_Image imlib_context_get_image(void);
    void imlib_context_get_cliprect(int *x, int *y, int *w, int *h);
    Imlib_TTF_Encoding imlib_context_get_TTF_encoding(void);
+   int imlib_context_get_filename_raw_mode(void);
 
    int imlib_get_cache_size(void);
    void imlib_set_cache_size(int bytes);
