@@ -32,12 +32,13 @@
 #include "config.h"
 #include "epplet.h"
 
-Epplet_gadget da, b_close, b_help, b_config, pop;
+Epplet_gadget da, b_close, b_help, b_config;
+Epplet_gadget gObjectPopupButton, gLightingPopupButton;
 Window	win;
 Display *dpy;
 
 static GLfloat gSpin = 0.0;
-GLuint gSquareList, gCubeList;
+GLuint gObjectList;
 int	gWhichRotate=1, gLighting=0;
 
 static void cb_in(void *data, Window w);
@@ -47,19 +48,30 @@ static void cb_close(void *data);
 static void cb_help(void *data);
 static void cb_config(void *data);
 static void cb_set_object(void *data);
+static void cb_set_lighting(void *data);
 static void save_conf(void);
 static void load_conf(void);
 static void setup_rotating_square(void);
 static void setup_rotating_cube(void);
+static void enable_lighting(void);
+static void disable_lighting(void);
 static void draw_rotating(void);
 
 #define DEBUG 0
 #define SQUARE 1
 #define CUBE 2
 
+#define OFF 0
+#define ON 1
+
 static int object_type_table[] =
 {
 	SQUARE, CUBE 
+};
+
+static int lighting_type_table[] =
+{
+	OFF, ON
 };
 
 /* All setup_rotating_* fucntions compile our display lists. Since most
@@ -71,8 +83,8 @@ setup_rotating_square(void)
 {
 	GLfloat x=40.0;
 
-	gSquareList = glGenLists(1);
-	glNewList(gSquareList, GL_COMPILE);
+	gObjectList = glGenLists(1);
+	glNewList(gObjectList, GL_COMPILE);
 		glBegin(GL_QUADS);
 			glColor3f(1.0, 0, 0);
 			glVertex3f(-x, -x, 0);
@@ -96,12 +108,6 @@ setup_rotating_cube(void)
 	static GLfloat y=32.0;
 	static GLfloat z=32.0;
 
-	/* Set up lighting info. */
-	GLfloat mat_specular[] = {1.0, 1.0, 1.0, 1.0};
-	GLfloat mat_shininess[] = {50.0};
-	GLfloat light_position[] = {0.0, 0.0, 1200.0, 0.0};
-	GLfloat white_light[] = {1.0, 1.0, 1.0, 1.0};
-
 	/* These are our 6 faces * 4 vertexes per face = 24 vertex
      coordinates. Its a bit messy, but its a hell of alot
      better than 24 glVertex3f() commands. */
@@ -113,18 +119,8 @@ setup_rotating_cube(void)
 	-x, -y, z, -x, y, z, -x, y, -z, -x, -y, -z,
 	x, -y, z, x, y, z, x, y, -z, x, -y, -z};
 
-	glMaterialfv(GL_FRONT, GL_SPECULAR, mat_specular);
-	glMaterialfv(GL_FRONT, GL_SHININESS, mat_shininess);
-	glLightfv(GL_LIGHT0, GL_POSITION, light_position);
-	glLightfv(GL_LIGHT0, GL_DIFFUSE, white_light);
-	glLightfv(GL_LIGHT0, GL_SPECULAR, white_light);
-
-	glEnable(GL_LIGHTING);
-	glEnable(GL_LIGHT0);
-	glEnable(GL_DEPTH_TEST);
-
-	gCubeList = glGenLists(1);
-	glNewList(gCubeList, GL_COMPILE);
+	gObjectList = glGenLists(1);
+	glNewList(gObjectList, GL_COMPILE);
 	glColor3f(.447, .243, .678);
 
 	glEnableClientState(GL_VERTEX_ARRAY);
@@ -136,6 +132,33 @@ setup_rotating_cube(void)
 	glEndList();
 }
 
+static void
+enable_lighting(void)
+{
+	GLfloat mat_specular[] = {1.0, 1.0, 1.0, 1.0};
+	GLfloat mat_shininess[] = {50.0};
+	GLfloat light_position[] = {0.0, 0.0, 1200.0, 0.0};
+	GLfloat white_light[] = {1.0, 1.0, 1.0, 1.0};
+
+	glMaterialfv(GL_FRONT, GL_SPECULAR, mat_specular);
+	glMaterialfv(GL_FRONT, GL_SHININESS, mat_shininess);
+	glLightfv(GL_LIGHT0, GL_POSITION, light_position);
+	glLightfv(GL_LIGHT0, GL_DIFFUSE, white_light);
+	glLightfv(GL_LIGHT0, GL_SPECULAR, white_light);
+
+	glEnable(GL_LIGHTING);
+	glEnable(GL_LIGHT0);
+	glEnable(GL_DEPTH_TEST);
+}
+
+static void
+disable_lighting(void)
+{
+	glDisable(GL_LIGHTING);
+	glDisable(GL_LIGHT0);
+	glDisable(GL_DEPTH_TEST);
+}
+
 /* These are our actual drawing functions */
 static void
 draw_rotating(void)
@@ -143,16 +166,10 @@ draw_rotating(void)
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 	glPushMatrix();
 	glRotatef(gSpin, .5, 1, .5);
-	switch(gWhichRotate) {
-	case SQUARE:
-		glCallList(gSquareList);
-		break;
-	case CUBE:
-		glCallList(gCubeList);
-		//testme();
-		break;
-	}
-  glXSwapBuffers(dpy,win);
+	
+	glCallList(gObjectList);
+  
+	glXSwapBuffers(dpy,win);
 }
 
 static void
@@ -209,27 +226,60 @@ static void
 cb_config(void *data)
 {
 	data = NULL;
-	Epplet_gadget_show(pop);
+	Epplet_gadget_show(gObjectPopupButton);
+	Epplet_gadget_show(gLightingPopupButton);
 }
 
 static void
 cb_set_object(void *data)
 {
-	int *d;
+	int *newObject;
 
-	d = (int *)data;
-	gWhichRotate = *d;
+	glDeleteLists(gObjectList, 1);
+	newObject = (int *)data;
+	gWhichRotate = *newObject;
 	save_conf();
-	Epplet_gadget_hide(pop);
+	Epplet_gadget_hide(gObjectPopupButton);
+	Epplet_gadget_hide(gLightingPopupButton);
+	
+	if(gWhichRotate == SQUARE)
+		setup_rotating_square();
+	else
+		setup_rotating_cube();
+}
+
+static void
+cb_set_lighting(void *data)
+{
+	int *newLighting;
+
+	newLighting = (int *)data;
+
+	if(gLighting && !*(newLighting)) { /* Lighting was on, turn it off */
+		gLighting = OFF;
+		disable_lighting();
+	}
+	else if(!gLighting && *newLighting) { /* Lighting was off, turn it on */
+		gLighting = ON;
+		enable_lighting();
+	}
+
+	save_conf();
+	Epplet_gadget_hide(gObjectPopupButton);
+	Epplet_gadget_hide(gLightingPopupButton);
 }
 
 static void
 save_conf(void)
 {
-	char s[32];
+	char s[8];
 
-	Esnprintf(s, sizeof(s), "%im %i", gWhichRotate, gLighting);
-	Epplet_modify_config("globals", s);
+	Esnprintf(s, sizeof(s), "%i", gWhichRotate);
+	Epplet_modify_config("gWhichRotate", s);
+	Esnprintf(s, sizeof(s), "%i", gLighting);
+	Epplet_modify_config("gLighting", s);
+
+	printf("gWhichRotate=%i, gLighting%i\n", gWhichRotate, gLighting);
 	Epplet_save_config();
 }
 
@@ -238,8 +288,12 @@ load_conf(void)
 {
 	char *str;
 
-	str = Epplet_query_config_def("globals", "1, 0");
-	sscanf(str, "%i, %i", &gWhichRotate, &gLighting);
+	str = Epplet_query_config_def("gWhichRotate", "1");
+	sscanf(str, "%i", &gWhichRotate);
+	str = Epplet_query_config_def("gLighting", "0");
+	sscanf(str, "%i", &gLighting);
+	
+	printf("gWhichRotate=%i, gLighting%i\n", gWhichRotate, gLighting);
 }
 
 int
@@ -247,7 +301,7 @@ main(int argc, char **argv)
 {
 	GLXContext cx;
 	int prio, p_type;
-	Epplet_gadget p;
+	Epplet_gadget objectPopup, lightingPopup;
 
 	prio = getpriority(PRIO_PROCESS, getpid());
 	setpriority(PRIO_PROCESS, getpid(), prio + 10);
@@ -270,12 +324,22 @@ main(int argc, char **argv)
 	b_config = Epplet_create_button(NULL, NULL, 28, 0, 0, 0, "CONFIGURE",
 		win, NULL, cb_config, NULL);
 
-	p = Epplet_create_popup();
-	Epplet_add_popup_entry(p, "Square", NULL, cb_set_object, 
+	objectPopup = Epplet_create_popup();
+	Epplet_add_popup_entry(objectPopup, "Square", NULL, cb_set_object, 
 		(void *)(&(object_type_table[0])));
-	Epplet_add_popup_entry(p, "Cube", NULL, cb_set_object,
+	Epplet_add_popup_entry(objectPopup, "Cube", NULL, cb_set_object,
 		(void *)(&(object_type_table[1])));
-	pop = Epplet_create_popupbutton("Objects", NULL, 6, 24, 36, 12, NULL, p);
+	gObjectPopupButton = Epplet_create_popupbutton("Objects", NULL,
+		9, 16, 46, 14, NULL, objectPopup);
+
+	lightingPopup = Epplet_create_popup();
+	Epplet_add_popup_entry(lightingPopup, "Off", NULL, cb_set_lighting,
+		(void *)(&(lighting_type_table[0])));
+	Epplet_add_popup_entry(lightingPopup, "On", NULL, cb_set_lighting,
+		(void *)(&(lighting_type_table[1])));
+	gLightingPopupButton = Epplet_create_popupbutton("Lights", NULL,
+		13, 31, 38, 14, NULL, lightingPopup);
+
   Epplet_register_focus_in_handler(cb_in, NULL);
   Epplet_register_focus_out_handler(cb_out, NULL);
 	
@@ -299,9 +363,16 @@ main(int argc, char **argv)
 
 	Epplet_show();
 
+	/* Sstup the default lighting */
+
+	if(gLighting)
+		enable_lighting();
+
 	/* Compile the display lists */
-	setup_rotating_square();
-	setup_rotating_cube();
+	if(gWhichRotate == SQUARE)
+		setup_rotating_square();
+	else
+		setup_rotating_cube();
 	
 	Epplet_Loop();
 	return 0;

@@ -1851,3 +1851,10 @@ Sun Jan 23 17:30:27 CST 2000
 
 Added saving for configurations. Also started to add lighting. As you can see, its going horribly wrong right now. I'll fix it as soon as i can.
 
+-------------------------------------------------------------------------------
+
+Sun Jan 23 20:44:15 CST 2000
+(thebard)
+
+New popup for lighting. Turn it on or off, ect. Only works for the cube, and it still doesnt work correctly.
+
