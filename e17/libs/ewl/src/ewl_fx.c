@@ -32,7 +32,7 @@ ewl_fx_init(void)
 	fx_protos = ewd_hash_new(ewd_str_hash, ewd_str_compare);
 	fx_timers = ewd_hash_new(ewd_str_hash, ewd_str_compare);
 
-	fx_group_id = ewd_plugin_group_new("fx");
+	fx_group_id = ewd_path_group_new("fx");
 
 	count = ewl_config_get_int("system", "/fx/paths/count");
 
@@ -48,7 +48,7 @@ ewl_fx_init(void)
 
 			    path = ewl_config_get_str("system", key);
 
-			    ewd_plugin_path_add(fx_group_id, path);
+			    ewd_path_group_add(fx_group_id, path);
 		    }
 	  }
 
@@ -66,7 +66,7 @@ ewl_fx_deinit(void)
 {
 	DENTER_FUNCTION(DLEVEL_STABLE);
 
-	ewd_plugin_group_del(fx_group_id);
+	ewd_path_group_del(fx_group_id);
 
 	DRETURN_INT(TRUE, DLEVEL_STABLE);
 }
@@ -657,7 +657,7 @@ ewl_fx_get_available(void)
 
 	DENTER_FUNCTION(DLEVEL_STABLE);
 
-	avail = ewd_plugin_get_available(fx_group_id);
+	avail = ewd_path_group_available(fx_group_id);
 
 	DRETURN_PTR(avail, DLEVEL_STABLE);
 }

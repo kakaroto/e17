@@ -1,6 +1,86 @@
 #include <Ewl.h>
 
+static unsigned int __ewl_callback_hash(void *key);
+static int __ewl_callback_compare(void *key1, void *key2);
+static Ewl_Callback * __ewl_callback_register(Ewl_Callback *cb);
+static void __ewl_callback_unregister(Ewl_Callback *cb);
+
 static int callback_id = 0;
+static Ewd_Hash *cb_registration = NULL;
+
+/**
+ * ewl_callbacks_init - setup internal registration variables for callbacks
+ *
+ * Returns no value. Sets up some important variables for tracking callbacks
+ * that allow shared callbacks.
+ *
+ * W/o shared callbacks ewl_test with all windows open has a top line of:
+ * 21279 ningerso  19   0 22972  22M  9412 R     6.0  8.0   0:40 ewl_test
+ * With shared callbacks ewl_test with all windows open has a top line of:
+ * 15901 ningerso  10   0 20120  19M  9148 S     0.0  7.0   0:34 ewl_test
+ * 
+ * So using shared callbacks saves us over 2 MB of memory in this case.
+ */
+void ewl_callbacks_init()
+{
+	cb_registration = ewd_hash_new(__ewl_callback_hash,
+			__ewl_callback_compare);
+}
+
+/*
+ * __ewl_callback_register - register a callback to check for duplicates
+ * @cb: the callback to register
+ *
+ * Returns a pointer to the callback that should be used instead of the passed
+ * @cb on success, NULL on failure. The returned callback may in fact be @cb,
+ * but this can not be counted on. The callback @cb will be freed if this is
+ * not the case.
+ */
+static Ewl_Callback *
+__ewl_callback_register(Ewl_Callback *cb)
+{
+	Ewl_Callback *found;
+
+	DENTER_FUNCTION(DLEVEL_STABLE);
+
+	DCHECK_PARAM_PTR_RET("cb", cb, NULL);
+
+	found = ewd_hash_get(cb_registration, cb);
+	if (!found) {
+		cb->id = ++callback_id;
+		ewd_hash_set(cb_registration, cb, cb);
+		found = cb;
+	}
+	else
+		FREE(cb);
+
+	found->references++;
+
+	DRETURN_PTR(found, DLEVEL_STABLE);
+}
+
+/*
+ * __ewl_callback_unregister - unreference a callback and free if appropriate
+ * @cb: the callback to unregister
+ *
+ * Returns no value. Checks to see if @cb has nay remaining references, if not
+ * it is removed from the registration system and freed.
+ */
+static void
+__ewl_callback_unregister(Ewl_Callback *cb)
+{
+	DENTER_FUNCTION(DLEVEL_STABLE);
+
+	DCHECK_PARAM_PTR("cb", cb);
+
+	cb->references--;
+	if (cb->references < 1) {
+		ewd_hash_remove(cb_registration, cb);
+		FREE(cb);
+	}
+
+	DLEAVE_FUNCTION(DLEVEL_STABLE);
+}
 
 /**
  * ewl_callback_append - append a callback of the specified type
@@ -31,14 +111,13 @@ ewl_callback_append(Ewl_Widget * w, Ewl_Callback_Type t,
 	ZERO(cb, Ewl_Callback, 1);
 	cb->func = f;
 	cb->user_data = user_data;
-	cb->type = t;
+
+	cb = __ewl_callback_register(cb);
 
 	if (!w->callbacks[t])
 		w->callbacks[t] = ewd_list_new();
 
 	ewd_list_append(w->callbacks[t], cb);
-
-	cb->id = ++callback_id;
 
 	DRETURN_INT(cb->id, DLEVEL_STABLE);
 }
@@ -71,14 +150,13 @@ ewl_callback_prepend(Ewl_Widget * w, Ewl_Callback_Type t,
 	ZERO(cb, Ewl_Callback, 1);
 	cb->func = f;
 	cb->user_data = user_data;
-	cb->type = t;
+
+	cb = __ewl_callback_register(cb);
 
 	if (!w->callbacks[t])
 		w->callbacks[t] = ewd_list_new();
 
 	ewd_list_prepend(w->callbacks[t], cb);
-
-	cb->id = ++callback_id;
 
 	DRETURN_INT(cb->id, DLEVEL_STABLE);
 }
@@ -146,41 +224,6 @@ ewl_callback_call_with_event_data(Ewl_Widget * w, Ewl_Callback_Type t,
 }
 
 /**
- * ewl_callback_set_user_data - set the user data for the specified callback
- * @w: the widget to search for the callback
- * @type: the type of the callback to be changed
- * @func: the function whose callback data will be changed
- * @user_data: the new data to pass into the callback
- *
- * Returns no value. Change the user data for the specified callback to
- * @user_data.
- */
-void
-ewl_callback_set_user_data(Ewl_Widget * w, Ewl_Callback_Type type,
-			   Ewl_Callback_Function func, void *user_data)
-{
-	Ewl_Callback *cb;
-
-	DENTER_FUNCTION(DLEVEL_STABLE);
-
-	if (!w->callbacks[type] || ewd_list_is_empty(w->callbacks[type]))
-		DRETURN(DLEVEL_STABLE);
-
-	ewd_list_goto_first(w->callbacks[type]);
-
-	while (w && (cb = ewd_list_next(w->callbacks[type])) != NULL)
-	  {
-		  if (cb->func == func)
-		    {
-			    cb->user_data = user_data;
-			    break;
-		    }
-	  }
-
-	DLEAVE_FUNCTION(DLEVEL_STABLE);
-}
-
-/**
  * ewl_callback_del_type - delete all callbacks of the specified type
  * @w: the widget to delete the callbacks
  * @t: the type of the callbacks to be deleted
@@ -190,13 +233,17 @@ ewl_callback_set_user_data(Ewl_Widget * w, Ewl_Callback_Type type,
 void
 ewl_callback_del_type(Ewl_Widget * w, Ewl_Callback_Type t)
 {
+	Ewl_Callback *rm;
+
 	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR("w", w);
 
 	if (!w->callbacks[t])
 		DRETURN(DLEVEL_STABLE);
 
-	ewd_list_clear(w->callbacks[t]);
+	while ((rm = ewd_list_remove_first(w->callbacks[t])))
+			__ewl_callback_unregister(rm);
+
 	ewd_list_destroy(w->callbacks[t]);
 	w->callbacks[t] = NULL;
 
@@ -284,15 +331,52 @@ ewl_callback_del(Ewl_Widget * w, Ewl_Callback_Type t, Ewl_Callback_Function f)
 
 	while ((cb = ewd_list_current(w->callbacks[t])) != NULL)
 	  {
-		  if (cb->func == f)
-		    {
-			    ewd_list_remove(w->callbacks[t]);
-			    break;
-		    }
-		  ewd_list_next(w->callbacks[t]);
+		if (cb->func == f)
+		{
+			ewd_list_remove(w->callbacks[t]);
+			break;
+		}
+
+		__ewl_callback_unregister(cb);
+		ewd_list_next(w->callbacks[t]);
 	  }
 
-	IF_FREE(cb);
-
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
+}
+
+/*
+ * Hashes the value of a callback based on it's type, function, and user data.
+ */
+static unsigned int
+__ewl_callback_hash(void *key)
+{
+	Ewl_Callback *cb = EWL_CALLBACK(key);
+
+	DENTER_FUNCTION(DLEVEL_STABLE);
+
+	DCHECK_PARAM_PTR_RET("key", key, 0);
+
+	DRETURN_INT((unsigned int)(cb->func) ^
+		(unsigned int)(cb->user_data), DLEVEL_STABLE);
+}
+
+/*
+ * Simple comparison of callbacks, always returns -1 unless there is an exact
+ * match, in which case it returns 0.
+ */
+static int
+__ewl_callback_compare(void *key1, void *key2)
+{
+	Ewl_Callback *cb1 = EWL_CALLBACK(key1);
+	Ewl_Callback *cb2 = EWL_CALLBACK(key2);
+
+	DENTER_FUNCTION(DLEVEL_STABLE);
+
+	DCHECK_PARAM_PTR_RET("key1", key1, -1)
+	DCHECK_PARAM_PTR_RET("key2", key2, -1)
+
+	if (cb1->func == cb2->func && cb1->user_data == cb2->user_data)
+		DRETURN_INT(0, DLEVEL_STABLE);
+
+	DRETURN_INT(-1, DLEVEL_STABLE);
 }

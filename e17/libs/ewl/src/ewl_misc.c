@@ -52,6 +52,8 @@ ewl_init(int argc, char **argv)
 		  exit(-1);
 	  }
 
+	ewl_callbacks_init();
+
 	if (!ewl_fx_init())
 	  {
 		  DERROR("Could not init fx data. Exiting....");
