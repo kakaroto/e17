@@ -197,6 +197,15 @@ cb_choose_theme(Ewl_Widget * w, void *ev_data, void *user_data)
   change->value.ptr = theme;
 }
 
+void
+cb_set_bln(Ewl_Widget * w, void *ev_data, void *user_data)
+{
+  examine_prop   *change;
+
+  change = (examine_prop *) user_data;
+  change->value.val = ewl_checkbutton_is_checked(EWL_CHECKBUTTON(w));
+}
+
 /* UI constructor */
 
 void
@@ -379,6 +388,11 @@ draw_tree(examine_prop * prop_item)
 
       free(search_path);
       ecore_list_destroy(themes);
+    } else if (prop_item->type == PT_BLN) {
+      entries[1] = ewl_checkbutton_new("");
+      ewl_callback_append(entries[1],
+                          EWL_CALLBACK_VALUE_CHANGED, cb_set_bln, prop_item);
+
     } else
       entries[1] = ewl_entry_new("unknown");
     prop_item->w = entries[1];

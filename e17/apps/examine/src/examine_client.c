@@ -307,6 +307,8 @@ examine_client_list_props_cb(void)
         } else if (!strcmp(type, "theme")) {
           prop_tmp->type = PT_THM;
           prop_tmp->data = strdup(range);
+        } else if (!strcmp(type, "boolean")) {
+          prop_tmp->type = PT_BLN;
         } else
           prop_tmp->value.ptr = NULL;
 
@@ -340,6 +342,7 @@ examine_client_revert(examine_prop * target)
 {
   switch (target->type) {
   case PT_INT:
+  case PT_BLN:
     target->value.val = target->oldvalue.val;
     break;
   case PT_FLT:
@@ -368,6 +371,7 @@ examine_client_save(examine_prop * target)
 {
   switch (target->type) {
   case PT_INT:
+  case PT_BLN:
     if (target->value.val != target->oldvalue.val) {
       target->oldvalue.val = target->value.val;
       examine_client_set_val(target);
@@ -462,6 +466,12 @@ examine_client_get_val_cb(void)
       ewl_text_text_set(EWL_TEXT(sibling), bugfix);
     }
     break;
+  case PT_BLN:
+    sscanf(ret, "%d", &tmpi);
+    prop->value.val = tmpi ? 1 : 0;
+    prop->oldvalue.val = tmpi;
+    ewl_checkbutton_checked_set(EWL_CHECKBUTTON(prop->w), tmpi);
+    break;
   default:                     /* PT_STR, PT_RGB */
     prop->value.ptr = strdup(ret);
     prop->oldvalue.ptr = strdup(ret);
@@ -479,6 +489,7 @@ examine_client_set_val(examine_prop * target)
 
   switch (target->type) {
   case PT_INT:
+  case PT_BLN:
     valstr = malloc(1000);      /* ### FIXME */
     snprintf(valstr, sizeof(valstr)-1, "%d", target->value.val);
     break;
