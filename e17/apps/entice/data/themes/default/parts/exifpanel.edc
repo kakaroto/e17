@@ -1,6 +1,7 @@
     part {
 	name: "exif_panel_region";
 	type: RECT;
+	mouse_events: 0;
 	description {
 	    state: "default" 0.0;
 	    rel1 {
@@ -16,6 +17,7 @@
     part {
 	name: "exif_panel_clip";
 	type: RECT;
+	mouse_events: 0;
 	description {
 	    state: "default" 0.0;
 	    rel1 {
@@ -47,6 +49,7 @@
 	name: "exif_panel_label_clip";
 	type: RECT;
 	clip_to: "exif_panel_clip";
+	mouse_events: 0;
 	description {
 	    state: "default" 0.0;
 	    rel1 {
@@ -78,6 +81,7 @@
 	name: "exif_panel_label";
 	type: IMAGE;
 	clip_to: "exif_panel_label_clip";
+	mouse_events: 0;
 	description {
 	    state: "default" 0.0;
 	    rel1 {
@@ -117,6 +121,7 @@
 	type: TEXT;
 	effect: SOFT_SHADOW;
 	clip_to: "exif_panel_label_clip";
+	mouse_events: 0;
 	description {
 	    state: "default" 0.0;
 	    rel1 {
@@ -141,6 +146,7 @@
     part {
 	name: "exif_panel_border";
 	type: IMAGE;
+	mouse_events: 0;
 	clip_to: "exif_panel_clip";
 	description {
 	    state: "default" 0.0;
@@ -178,6 +184,7 @@
     part {
 	name: "exif_panel_border_bevel";
 	type: IMAGE;
+	mouse_events: 0;
 	clip_to: "exif_panel_clip";
 	description {
 	    state: "default" 0.0;
