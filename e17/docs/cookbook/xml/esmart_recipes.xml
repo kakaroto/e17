@@ -80,7 +80,7 @@ as the window is moved or resized.
 #include &lt;stdio.h&gt;
 #include &lt;Ecore.h&gt;
 #include &lt;Ecore_Evas.h&gt;
-#include &lt;Esmart/Esmart_Trans.h&gt;
+#include &lt;Esmart/Esmart_Trans_X11.h&gt;
 
 int sig_exit_cb(void *data, int ev_type, void *ev);
 void win_del_cb(Ecore_Evas *ee);
