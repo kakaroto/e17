@@ -178,7 +178,6 @@ void erss_tooltip_free(Erss_Article *item) {
     tt = evas_object_event_callback_del (item->obj,
 				    EVAS_CALLBACK_MOUSE_OUT, erss_tooltip_mouse_out);
     if (tt==NULL) {
-	fprintf(stderr,"%s error: trying to free non-existent tooltip\n", PACKAGE);
 	return;
     }
     evas_object_event_callback_del (tt->etox,
