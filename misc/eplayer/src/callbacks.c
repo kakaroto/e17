@@ -512,7 +512,7 @@ static void cb_file_dialog_value_changed(Ewl_Widget *w, void *ev_data,
 	if (ev_data)
 		playlist_load_any(player->playlist, ev_data, true);
 
-	ewl_widget_hide(w);
+	ewl_widget_hide(_fd_win);
 }
 
 /* File Dialog to add files, thanx to EWL */
