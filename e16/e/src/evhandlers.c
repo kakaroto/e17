@@ -2285,7 +2285,7 @@ HandleMouseUp(XEvent * ev)
 		       Pager              *pp;
 		       int                 w, h, x, y, ax, ay, cx, cy, px,
 		                           py;
-		       int                 wx, wy;
+		       int                 wx, wy, base_x = 0, base_y = 0;
 		       Window              dw;
 
 		       gwins = ListWinGroupMembersForEwin(p->hi_ewin, ACTION_MOVE,
@@ -2320,7 +2320,24 @@ HandleMouseUp(XEvent * ev)
 			    MoveEwinToDesktop(p->hi_ewin, ndesk);
 			 }
 		       else
-			  MoveEwinToDesktopAt(p->hi_ewin, pp->desktop, wx, wy);
+			 {
+			    gwins = ListWinGroupMembersForEwin(p->hi_ewin, ACTION_MOVE,
+							  mode.nogroup, &num);
+			    // get get the location of the base win so we can move the
+			    // rest of the windows in the group to the correct offset
+			    for (i = 0; i < num; i++)
+			       if (gwins[i] == p->hi_ewin)
+				 {
+				    base_x = gwin_px[i];
+				    base_y = gwin_py[i];
+				 }
+			    for (i = 0; i < num; i++)
+			      {
+				 MoveEwinToDesktopAt(gwins[i], pp->desktop,
+						   wx + (gwin_px[i] - base_x),
+						  wy + (gwin_py[i] - base_y));
+			      }
+			 }
 		    }
 		  else if ((ewin) && (ewin->ibox) &&
 			   (!((p->hi_ewin->ibox) ||
