@@ -759,19 +759,19 @@ Config_Control(FILE * ConfigFile)
 	     Conf.place.ignore_struts = i2;
 	     break;
 	  case CONTROL_RAISE_ON_NEXT_FOCUS:
-	     Conf.focus.raise_on_next_focus = i2;
+	     Conf.focus.raise_on_focus = i2;
 	     break;
 	  case CONTROL_RAISE_AFTER_NEXT_FOCUS:
-	     Conf.focus.raise_after_next_focus = i2;
+	     Conf.warplist.raise_on_select = i2;
 	     break;
 	  case CONTROL_DISPLAY_WARP:
 	     Conf.warplist.enable = i2;
 	     break;
 	  case CONTROL_WARP_ON_NEXT_FOCUS:
-	     Conf.focus.warp_on_next_focus = i2;
+	     Conf.focus.warp_on_focus = i2;
 	     break;
 	  case CONTROL_WARP_AFTER_NEXT_FOCUS:
-	     Conf.focus.warp_after_next_focus = i2;
+	     Conf.warplist.warp_on_select = i2;
 	     break;
 	  case CONTROL_PAGER_SCANSPEED:
 	     Conf.pagers.scanspeed = i2;
@@ -3898,8 +3898,8 @@ SaveUserControlConfig(FILE * autosavefile)
 	fprintf(autosavefile, "3360 %i\n",
 		(int)Conf.place.manual_mouse_pointer);
 	fprintf(autosavefile, "3361 %i\n", (int)Conf.place.ignore_struts);
-	fprintf(autosavefile, "344 %i\n", (int)Conf.focus.raise_on_next_focus);
-	fprintf(autosavefile, "345 %i\n", (int)Conf.focus.warp_on_next_focus);
+	fprintf(autosavefile, "344 %i\n", (int)Conf.focus.raise_on_focus);
+	fprintf(autosavefile, "345 %i\n", (int)Conf.focus.warp_on_focus);
 	fprintf(autosavefile, "346 %i\n", (int)Conf.edge_flip_resistance);
 	fprintf(autosavefile, "347 %i\n", (int)Conf.pagers.enable);
 	fprintf(autosavefile, "348 %i\n", (int)Conf.pagers.hiq);
@@ -3917,11 +3917,9 @@ SaveUserControlConfig(FILE * autosavefile)
 	fprintf(autosavefile, "1350 %i\n", (int)Conf.backgrounds.user);
 	fprintf(autosavefile, "1351 %i\n", (int)Conf.pagers.zoom);
 	fprintf(autosavefile, "1352 %i\n", (int)Conf.pagers.title);
-	fprintf(autosavefile, "1353 %i\n",
-		(int)Conf.focus.raise_after_next_focus);
+	fprintf(autosavefile, "1353 %i\n", (int)Conf.warplist.raise_on_select);
 	fprintf(autosavefile, "1354 %i\n", (int)Conf.warplist.enable);
-	fprintf(autosavefile, "1355 %i\n",
-		(int)Conf.focus.warp_after_next_focus);
+	fprintf(autosavefile, "1355 %i\n", (int)Conf.warplist.warp_on_select);
 	fprintf(autosavefile, "1356 %i\n", (int)Conf.pagers.scanspeed);
 	fprintf(autosavefile, "1358 %i\n", (int)Conf.group_config.set_border);
 	fprintf(autosavefile, "1359 %i\n", (int)Conf.group_config.kill);

@@ -186,6 +186,8 @@ FocusEwinSetGrabs(EWin * ewin)
 static void
 FocusEwinSetActive(EWin * ewin, int active)
 {
+   Eprintf("FocusEwinSetActive %#lx %s active=%d\n", ewin->client.win,
+	   EwinGetTitle(ewin), active);
    ewin->active = active;
    EwinBorderUpdateState(ewin);
 
@@ -330,12 +332,10 @@ FocusToEWin(EWin * ewin, int why)
 		ewin->client.win, NULL);
      }
 
-   if ((Conf.focus.raise_on_next_focus && (why == FOCUS_NEXT)) ||
-       (Conf.focus.raise_after_next_focus && (why == FOCUS_WARP_DONE)))
+   if (Conf.focus.raise_on_focus)
       RaiseEwin(ewin);
 
-   if ((Conf.focus.warp_on_next_focus && (why == FOCUS_NEXT)) ||
-       (Conf.focus.warp_after_next_focus && (why == FOCUS_WARP_DONE)))
+   if (Conf.focus.warp_on_focus)
      {
 	if (ewin != Mode.mouse_over_ewin)
 	   XWarpPointer(disp, None, ewin->win, 0, 0, 0, 0, ewin->w / 2,

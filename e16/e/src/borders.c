@@ -1301,6 +1301,7 @@ AdoptInternal(Window win, Border * border, int type)
    switch (type)
      {
      case EWIN_TYPE_DIALOG:
+	ewin->layer = 6;
 	break;
      case EWIN_TYPE_MENU:
 	ewin->layer = 99;

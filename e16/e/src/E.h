@@ -1201,10 +1201,8 @@ typedef struct
       char                all_new_windows_get_focus;
       char                new_transients_get_focus;
       char                new_transients_get_focus_if_group_focused;
-      char                raise_on_next_focus;
-      char                raise_after_next_focus;
-      char                warp_on_next_focus;
-      char                warp_after_next_focus;
+      char                raise_on_focus;
+      char                warp_on_focus;
    } focus;
    struct
    {
@@ -1252,6 +1250,8 @@ typedef struct
       char                warpshaded;
       char                warpiconified;
       char                warpfocused;
+      char                raise_on_select;
+      char                warp_on_select;
    } warplist;
 #if USE_IMLIB2
    struct
