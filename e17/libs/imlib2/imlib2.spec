@@ -33,6 +33,12 @@ Requires: %{name} = %{version}
 %description filters
 Basic set of plugin filters that come with Imlib2
 
+%package loader_lbm
+Summary: Imlib2 LBM loader
+Group: System Environment/Libraries
+%description loader_lbm
+LBM image loader/saver for Imlib2
+
 %package loader_jpeg
 Summary: Imlib2 JPEG loader
 Group: System Environment/Libraries
@@ -138,6 +144,9 @@ test "x$RPM_BUILD_ROOT" != "x/" && rm -rf $RPM_BUILD_ROOT
 
 %files filters
 %attr(755,root,root) %{_libdir}/imlib2_loaders/filter/*
+
+%files loader_lbm
+%attr(755,root,root) %{_libdir}/imlib2_loaders/image/lbm.*
 
 %files loader_jpeg
 %attr(755,root,root) %{_libdir}/imlib2_loaders/image/jpeg.*
