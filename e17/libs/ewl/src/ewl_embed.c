@@ -93,7 +93,7 @@ int ewl_embed_init(Ewl_Embed * w)
 	ewl_callback_prepend(EWL_WIDGET(w), EWL_CALLBACK_DESTROY,
 			     ewl_embed_destroy_cb, NULL);
 
-	w->max_layer = LAYER(w) = -1000;
+	LAYER(w) = -1000;
 
 	ewd_list_append(ewl_embed_list, w);
 

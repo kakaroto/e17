@@ -203,6 +203,39 @@
  */
 
 /**
+ * @page layering Layering Scheme
+ *
+ * As widgets are placed inside containers, there becomes the issue of
+ * specifying which gets drawn on top. It is important that the widgets placed
+ * inside of a container are above the container's background, or the user
+ * would be unable to view the placed widgets.
+ *
+ * @image html e_mini.png
+ *
+ * The current scheme to accomplish this is that each widget has a layer
+ * field. This field is an integer that indicates an offset relative to it's
+ * parent containers layer. The default value is 5, which raises any widgets
+ * inside of a container 5 layers above the container. This use of offsets
+ * allows for children that have the same level of nesting to be at the same
+ * layer in the Evas.
+ *
+ * @image html e_mini.png
+ *
+ * Unfortunately, this also means that if two containers overlap, the children
+ * may seem to intermingle as they are above the layers of their containers.
+ * So far this has not become an issue, but it may in the future. See the
+ * diagram below for further information.
+ *
+ * @image html layer-problem.png
+ *
+ * @image html e_mini.png
+ *
+ * One issue that did occur was with the imenu's popup portion. It was placed
+ * at the first level above the window, so the contents of the menu were
+ * overlapped by items placed in nested containers in the window.
+ */
+
+/**
  * @page images Documentation Images
  *
  * Miniature E logo.

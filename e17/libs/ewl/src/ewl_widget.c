@@ -1260,7 +1260,6 @@ ewl_widget_focus_out_cb(Ewl_Widget *w, void *ev_data, void *user_data)
 		DRETURN(DLEVEL_STABLE);
 
 	ewl_widget_set_state(w, "mouse,out");
-	ewl_widget_set_state(w, "default");
 }
 
 void
@@ -1282,12 +1281,13 @@ ewl_widget_mouse_up_cb(Ewl_Widget *w, void *ev_data, void *user_data)
 	if (ewl_object_has_state(EWL_OBJECT(w), EWL_FLAG_STATE_DISABLED))
 		DRETURN(DLEVEL_STABLE);
 
+	ewl_widget_set_state(w, "mouse,up");
 	if (ewl_object_has_state(EWL_OBJECT(w), EWL_FLAG_STATE_HILITED)) {
 		ewl_widget_set_state(w, "mouse,in");
 		ewl_callback_call_with_event_data(w, EWL_CALLBACK_CLICKED,
 						  ev_data);
 	} else
-		ewl_widget_set_state(w, "default");
+		ewl_widget_set_state(w, "mouse,out");
 }
 
 void
