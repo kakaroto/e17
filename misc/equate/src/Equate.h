@@ -27,7 +27,6 @@
 
 /* structures */
 typedef struct {
-   Evas           *evas;
    Ecore_Evas     *ee;
    Evas_Object    *edje;
 } Gui;

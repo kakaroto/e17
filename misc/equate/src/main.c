@@ -93,8 +93,6 @@ main(int argc, char *argv[], char *env[])
 
    equate_init(&equate);
 
-   ewl_init(&argc, argv);
-
    init_gui(&equate);
 
    return 0;

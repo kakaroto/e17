@@ -3,7 +3,8 @@
 typedef enum {
    DEFAULT,
    BASIC,
-   SCI
+   SCI,
+   EDJE
 } Mode;
 
 // needed 'cos generated h files suck

@@ -184,9 +184,29 @@ do_key(void *ev_data, int action)
 }
 
 void
-init_gui(Equate * equate)
+init_gui(Equate * equate, int argc, char **argv)
 {
-   draw_ewl(equate->conf.mode);
+   if (equate) {
+      switch (equate->conf.mode) {
+      case EDJE:
+         //fprintf(stderr, "%s\n", equate->conf.path);
+         if (ecore_init()) {
+            ecore_app_args_set(argc, (const char **) argv);
+            equate_edje_init(equate);
+            ecore_shutdown();
+         }
+         break;
+         /*
+          * case DEFAULT:
+          * case BASIC:
+          * case SCI:
+          */
+      default:
+         ewl_init(&argc, argv);
+         draw_ewl(equate->conf.mode);
+         break;
+      }
+   }
 }
 
 void

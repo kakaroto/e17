@@ -12,6 +12,7 @@ bin_PROGRAMS = equate
 equate_SOURCES = \
 gui.c \
 calc.tab.c \
+edje.c \
 main.c
 
 equate_LDADD = @ewl_libs@ @ecore_libs@
