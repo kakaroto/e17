@@ -76,14 +76,17 @@ esmart_thumb_new (Evas * evas, const char *file)
 		      if (epsilon_info_exif_get (e->info))
 			{
 			  switch (epsilon_info_exif_props_as_int_get
-			      (e->info, 0x0112))
+				  (e->info, 0x0112))
 			    {
 			    case 3:
 			      imlib_image_orientate (2);
+			      break;
 			    case 6:
 			      imlib_image_orientate (1);
+			      break;
 			    case 8:
 			      imlib_image_orientate (3);
+			      break;
 			    default:
 			      break;
 			    }
@@ -190,18 +193,21 @@ esmart_thumb_evas_object_get (Evas_Object * o, int orient)
 		      imlib_context_set_image (im);
 		      imlib_image_orientate (2);
 		    }
+		  break;
 		case 6:
 		  if ((im = imlib_load_image (e->e->src)))
 		    {
 		      imlib_context_set_image (im);
 		      imlib_image_orientate (1);
 		    }
+		  break;
 		case 8:
 		  if ((im = imlib_load_image (e->e->src)))
 		    {
 		      imlib_context_set_image (im);
 		      imlib_image_orientate (3);
 		    }
+		  break;
 		default:
 		  break;
 		}
