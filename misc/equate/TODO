@@ -1,5 +1,5 @@
 make <enter> perform =
-add brackets to new backend
-add % ^ root etc
-add function capability
+add % root etc
+fix */ , *2= etc
+fix .5 != 0.5
 

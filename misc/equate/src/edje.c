@@ -37,7 +37,7 @@
 #define NUM_9 29
 #define NUM_PI 30
 
-#define FONTS "/usr/share/edje/data/test/fonts"
+#define FONTS "/usr/local/share/edje/data/test/fonts"
 
 /**
  * defined in calc.tab.c
@@ -374,7 +374,7 @@ equate_edje_init(Equate * eq)
 
       o = edje_object_add(evas);
       evas_object_move(o, 0, 0);
-      if (edje_object_file_set(o, "default.eet", "Main")) {
+      if (edje_object_file_set(o, PACKAGE_DATA_DIR "/themes/equate.eet", "Main")) {
          evas_object_name_set(o, "edje");
          edje_object_size_min_get(o, &mw, &mh);
          ecore_evas_size_min_set(eq->gui.ee, (int) mw, (int) mh);
@@ -387,7 +387,7 @@ equate_edje_init(Equate * eq)
          edje_callback_define(o);
          evas_object_show(o);
       } else {
-         fprintf(stderr, "Unable to open %s for edje theme", "default.eet");
+         fprintf(stderr, "Unable to open %s for edje theme", PACKAGE_DATA_DIR "/themes/equate.eet");
          ecore_evas_shutdown();
          return;
       }
