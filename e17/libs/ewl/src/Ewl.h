@@ -262,7 +262,6 @@ extern"C" {
 #include <Evas.h>
 #include <Edje.h>
 #include <Ecore.h>
-#include <Ecore_X.h>
 #include <Edb.h>
 #include <Etox.h>
 #include <Ewd.h>

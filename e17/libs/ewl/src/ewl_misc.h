@@ -29,6 +29,7 @@ void            ewl_garbage_collect(void);
 void            ewl_enter_realize_phase(void);
 void            ewl_exit_realize_phase(void);
 int             ewl_in_realize_phase(void);
+unsigned int    ewl_get_engine_mask();
 void            ewl_evas_destroy(Evas *evas);
 void            ewl_evas_object_destroy(Evas_Object *obj);
 

@@ -1,24 +1,52 @@
-
 #include <Ewl.h>
 
-int             ewl_idle_render(void *data);
+#ifdef HAVE_CONFIG_H
+#include "ewl-config.h"
+#endif
+
+#ifdef HAVE_EVAS_ENGINE_FB_H
+#include <Ecore_Fb.h>
+#endif
+
+#ifdef HAVE_EVAS_ENGINE_SOFTWARE_X11_H
+#include <Ecore_X.h>
+#endif
+
+#ifdef HAVE_EVAS_ENGINE_SOFTWARE_X11_H
+#include <Evas_Engine_Software_X11.h>
+#endif
 
 extern Ewd_List *ewl_embed_list;
 extern Ewd_List *ewl_window_list;
 
+/*
+ * Configuration and option related flags.
+ */
 static unsigned int    debug_segv = 0;
+static unsigned int    use_engine = EWL_ENGINE_ALL;
 static unsigned int    phase_status = 0;
+
+/*
+ *
+ */
 static Ecore_Timer    *config_timer = NULL;
 
+/*
+ * Queues for scheduling various actions.
+ */
 static Ewd_List *configure_list = NULL;
 static Ewd_List *realize_list = NULL;
 static Ewd_List *destroy_list = NULL;
+static Ewd_List *child_add_list= NULL;
 
+/*
+ * Lists for cleaning up evas related memory at convenient times.
+ */
 static Ewd_List *free_evas_list = NULL;
 static Ewd_List *free_evas_object_list = NULL;
 
-static Ewd_List *child_add_list= NULL;
 
+int             ewl_idle_render(void *data);
 static void     ewl_init_parse_options(int *argc, char **argv);
 static void     ewl_init_remove_option(int *argc, char **argv, int i);
 int             ewl_ecore_exit(void *data, int type, void *event);
@@ -55,9 +83,13 @@ inline void ewl_print_warning()
  */
 void ewl_init(int *argc, char **argv)
 {
-	char           *xdisplay = NULL;
+	static int initialized = 0;
 
 	DENTER_FUNCTION(DLEVEL_STABLE);
+
+	initialized++;
+	if (initialized > 1)
+		DRETURN(DLEVEL_STABLE);
 
 	configure_list = ewd_list_new();
 	realize_list = ewd_list_new();
@@ -70,8 +102,35 @@ void ewl_init(int *argc, char **argv)
 
 	ecore_init();
 	edje_init();
-	if (!ecore_x_init(xdisplay)) {
-		fprintf(stderr, "ERRR: Cannot connect to X display!\n");
+
+#ifdef HAVE_EVAS_ENGINE_SOFTWARE_X11_H
+	/*
+	 * Attempt to pick the correct engine by adjusting the bitmask
+	 * relative to the success of each engines init routine.
+	 */
+	if (use_engine & EWL_ENGINE_X11) {
+		if (!ecore_x_init(NULL))
+			use_engine &= ~EWL_ENGINE_X11;
+		else
+			use_engine &= EWL_ENGINE_X11;
+	}
+#endif
+
+#ifdef HAVE_EVAS_ENGINE_FB_H
+	/*
+	 * Maybe the X11 engines arent' available or they failed, so see if
+	 * we should load up the FB.
+	 */
+	if (use_engine & EWL_ENGINE_FB) {
+		if (!ecore_fb_init(NULL))
+			use_engine &= ~EWL_ENGINE_FB;
+		else
+			use_engine &= EWL_ENGINE_FB;
+	}
+#endif
+
+	if (!use_engine) {
+		fprintf(stderr, "ERRR: Cannot open display!\n");
 		exit(-1);
 	}
 
@@ -250,10 +309,26 @@ static void ewl_init_parse_options(int *argc, char **argv)
 
 	i = 0;
 	while (i < *argc) {
+		int matched = 0;
 		if (!strcmp(argv[i], "--ewl-segv")) {
 			debug_segv = 1;
-			ewl_init_remove_option(argc, argv, i);
+			matched++;
 		}
+		else if (!strcmp(argv[i], "--ewl-software-x11")) {
+			use_engine = EWL_ENGINE_SOFTWARE_X11;
+			matched++;
+		}
+		else if (!strcmp(argv[i], "--ewl-gl-x11")) {
+			use_engine = EWL_ENGINE_GL_X11;
+			matched++;
+		}
+		else if (!strcmp(argv[i], "--ewl-fb")) {
+			use_engine = EWL_ENGINE_FB;
+			matched++;
+		}
+
+		if (matched)
+			ewl_init_remove_option(argc, argv, i);
 		else
 			i++;
 	}
@@ -629,6 +704,12 @@ int ewl_in_realize_phase()
 {
 	DENTER_FUNCTION(DLEVEL_STABLE);
 	DRETURN_INT((phase_status & EWL_FLAG_QUEUED_RSCHEDULED), DLEVEL_STABLE);
+}
+
+unsigned int ewl_get_engine_mask()
+{
+	DENTER_FUNCTION(DLEVEL_STABLE);
+	DRETURN_INT(use_engine, DLEVEL_STABLE);
 }
 
 void ewl_destroy_request(Ewl_Widget *w)

@@ -232,6 +232,19 @@ enum Ewl_Filedialog_Type
 
 typedef enum Ewl_Filedialog_Type Ewl_Filedialog_Type;
 
+enum Ewl_Engine
+{
+	EWL_ENGINE_SOFTWARE_X11 = 1,
+	EWL_ENGINE_GL_X11 = 2,
+	EWL_ENGINE_FB = 4,
+};
+
+typedef enum Ewl_Engine Ewl_Engine;
+
+#define EWL_ENGINE_X11 (EWL_ENGINE_SOFTWARE_X11 | EWL_ENGINE_GL_X11)
+#define EWL_ENGINE_ALL (EWL_ENGINE_SOFTWARE_X11 | EWL_ENGINE_GL_X11 | \
+			EWL_ENGINE_FB)
+
 /**
  * @}
  */

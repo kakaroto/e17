@@ -4,6 +4,14 @@
 #include "ewl-config.h"
 #endif
 
+#ifdef HAVE_EVAS_ENGINE_FB_H
+#include "Ecore_Fb.h"
+#endif
+
+#ifdef HAVE_EVAS_ENGINE_SOFTWARE_X11_H
+#include "Ecore_X.h"
+#endif
+
 extern Ewl_Widget     *last_selected;
 extern Ewl_Widget     *last_key;
 extern Ewl_Widget     *last_focused;
@@ -40,56 +48,63 @@ int ewl_ev_fb_mouse_move(void *data, int type, void *_ev);
  */
 int ewl_ev_init(void)
 {
+	unsigned int engine;
 	DENTER_FUNCTION(DLEVEL_STABLE);
 
+	engine = ewl_get_engine_mask();
 #ifdef HAVE_EVAS_ENGINE_SOFTWARE_X11_H
 	/*
 	 * Register dispatching functions for window events.
 	 */
-	ecore_event_handler_add(ECORE_X_EVENT_WINDOW_DAMAGE,
-				ewl_ev_x_window_expose, NULL);
-	ecore_event_handler_add(ECORE_X_EVENT_WINDOW_CONFIGURE,
-				ewl_ev_x_window_configure, NULL);
-	ecore_event_handler_add(ECORE_X_EVENT_WINDOW_DELETE_REQUEST,
-				ewl_ev_x_window_delete, NULL);
+	if (engine & EWL_ENGINE_X11) {
+		ecore_event_handler_add(ECORE_X_EVENT_WINDOW_DAMAGE,
+					ewl_ev_x_window_expose, NULL);
+		ecore_event_handler_add(ECORE_X_EVENT_WINDOW_CONFIGURE,
+					ewl_ev_x_window_configure, NULL);
+		ecore_event_handler_add(ECORE_X_EVENT_WINDOW_DELETE_REQUEST,
+					ewl_ev_x_window_delete, NULL);
 
-	/*
-	 * Register dispatching functions for keyboard events.
-	 */
-	ecore_event_handler_add(ECORE_X_EVENT_KEY_DOWN, ewl_ev_x_key_down,
-				NULL);
-	ecore_event_handler_add(ECORE_X_EVENT_KEY_UP, ewl_ev_x_key_up, NULL);
+		/*
+		 * Register dispatching functions for keyboard events.
+		 */
+		ecore_event_handler_add(ECORE_X_EVENT_KEY_DOWN,
+					ewl_ev_x_key_down, NULL);
+		ecore_event_handler_add(ECORE_X_EVENT_KEY_UP, ewl_ev_x_key_up,
+					NULL);
 
-	/*
-	 * Finally, register dispatching functions for mouse events.
-	 */
-	ecore_event_handler_add(ECORE_X_EVENT_MOUSE_BUTTON_DOWN,
-				ewl_ev_x_mouse_down, NULL);
-	ecore_event_handler_add(ECORE_X_EVENT_MOUSE_BUTTON_UP,
-				ewl_ev_x_mouse_up, NULL);
-	ecore_event_handler_add(ECORE_X_EVENT_MOUSE_MOVE,
-				ewl_ev_x_mouse_move, NULL);
-	ecore_event_handler_add(ECORE_X_EVENT_MOUSE_OUT, ewl_ev_x_mouse_out,
-				NULL);
+		/*
+		 * Finally, register dispatching functions for mouse events.
+		 */
+		ecore_event_handler_add(ECORE_X_EVENT_MOUSE_BUTTON_DOWN,
+					ewl_ev_x_mouse_down, NULL);
+		ecore_event_handler_add(ECORE_X_EVENT_MOUSE_BUTTON_UP,
+					ewl_ev_x_mouse_up, NULL);
+		ecore_event_handler_add(ECORE_X_EVENT_MOUSE_MOVE,
+					ewl_ev_x_mouse_move, NULL);
+		ecore_event_handler_add(ECORE_X_EVENT_MOUSE_OUT,
+					ewl_ev_x_mouse_out, NULL);
 
-	/*
-	 * Selection callbacks to allow for pasting.
-	 */
-	ecore_event_handler_add(ECORE_X_EVENT_SELECTION_NOTIFY, ewl_ev_x_paste,
-				NULL);
+		/*
+		 * Selection callbacks to allow for pasting.
+		 */
+		ecore_event_handler_add(ECORE_X_EVENT_SELECTION_NOTIFY,
+					ewl_ev_x_paste, NULL);
+	}
 #endif
 
 #ifdef HAVE_EVAS_ENGINE_FB
-	ecore_event_handler_add(ECORE_FB_EVENT_KEY_DOWN, ewl_ev_fb_key_down,
-				NULL);
-	ecore_event_handler_add(ECORE_FB_EVENT_KEY_UP, ewl_ev_fb_key_up,
-				NULL);
-	ecore_event_handler_add(ECORE_FB_EVENT_MOUSE_DOWN, ewl_ev_fb_mouse_down,
-				NULL);
-	ecore_event_handler_add(ECORE_FB_EVENT_MOUSE_UP, ewl_ev_fb_mouse_up,
-				NULL);
-	ecore_event_handler_add(ECORE_FB_EVENT_MOUSE_MOVE, ewl_ev_fb_mouse_move,
-				NULL);
+	if (engine & EWL_ENGINE_FB) {
+		ecore_event_handler_add(ECORE_FB_EVENT_KEY_DOWN,
+					ewl_ev_fb_key_down, NULL);
+		ecore_event_handler_add(ECORE_FB_EVENT_KEY_UP, ewl_ev_fb_key_up,
+					NULL);
+		ecore_event_handler_add(ECORE_FB_EVENT_MOUSE_DOWN,
+					ewl_ev_fb_mouse_down, NULL);
+		ecore_event_handler_add(ECORE_FB_EVENT_MOUSE_UP,
+					ewl_ev_fb_mouse_up, NULL);
+		ecore_event_handler_add(ECORE_FB_EVENT_MOUSE_MOVE,
+					ewl_ev_fb_mouse_move, NULL);
+	}
 #endif
 
 	DRETURN_INT(1, DLEVEL_STABLE);
@@ -119,7 +134,7 @@ int ewl_ev_x_window_expose(void *data, int type, void * e)
 
 	ev = e;
 
-	embed = ewl_embed_find_by_evas_window(ev->win);
+	embed = ewl_embed_find_by_evas_window((void *)ev->win);
 	if (!embed)
 		DRETURN_INT(TRUE, DLEVEL_STABLE);
 
@@ -150,7 +165,7 @@ int ewl_ev_x_window_configure(void *data, int type, void *e)
 	DENTER_FUNCTION(DLEVEL_STABLE);
 	ev = e;
 
-	window = ewl_window_find_window(ev->win);
+	window = ewl_window_find_window((void *)ev->win);
 	if (!window)
 		DRETURN_INT(TRUE, DLEVEL_STABLE);
 
@@ -191,7 +206,7 @@ int ewl_ev_x_window_delete(void *data, int type, void *e)
 
 	ev = e;
 
-	window = ewl_window_find_window(ev->win);
+	window = ewl_window_find_window((void *)ev->win);
 	if (!window)
 		DRETURN_INT(TRUE, DLEVEL_STABLE);
 
@@ -218,7 +233,7 @@ int ewl_ev_x_key_down(void *data, int type, void *e)
 
 	ev = e;
 
-	embed = ewl_embed_find_by_evas_window(ev->win);
+	embed = ewl_embed_find_by_evas_window((void *)ev->win);
 
 	if (!embed)
 		DRETURN_INT(TRUE, DLEVEL_STABLE);
@@ -246,7 +261,7 @@ int ewl_ev_x_key_up(void *data, int type, void *e)
 
 	ev = e;
 
-	embed = ewl_embed_find_by_evas_window(ev->win);
+	embed = ewl_embed_find_by_evas_window((void *)ev->win);
 	if (!embed)
 		DRETURN_INT(TRUE, DLEVEL_STABLE);
 
@@ -275,7 +290,7 @@ int ewl_ev_x_mouse_down(void *data, int type, void *e)
 
 	ev = e;
 
-	embed = ewl_embed_find_by_evas_window(ev->win);
+	embed = ewl_embed_find_by_evas_window((void *)ev->win);
 	if (!embed)
 		DRETURN_INT(TRUE, DLEVEL_STABLE);
 
@@ -304,7 +319,7 @@ int ewl_ev_x_mouse_up(void *data, int type, void *e)
 
 	ev = e;
 
-	embed = ewl_embed_find_by_evas_window(ev->win);
+	embed = ewl_embed_find_by_evas_window((void *)ev->win);
 	if (!embed)
 		DRETURN_INT(TRUE, DLEVEL_STABLE);
 
@@ -332,7 +347,7 @@ int ewl_ev_x_mouse_move(void *data, int type, void *e)
 
 	ev = e;
 
-	embed = ewl_embed_find_by_evas_window(ev->win);
+	embed = ewl_embed_find_by_evas_window((void *)ev->win);
 	if (!embed)
 		DRETURN_INT(TRUE, DLEVEL_STABLE);
 

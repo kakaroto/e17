@@ -4,6 +4,14 @@
 #include "ewl-config.h"
 #endif
 
+#ifdef HAVE_EVAS_ENGINE_FB_H
+#include <Ecore_Fb.h>
+#endif
+
+#ifdef HAVE_EVAS_ENGINE_SOFTWARE_X11_H
+#include <Ecore_X.h>
+#endif
+
 #ifdef HAVE_EVAS_ENGINE_GL_X11_H
 #include <Evas_Engine_GL_X11.h>
 #endif
@@ -54,7 +62,7 @@ Ewl_Widget     *ewl_window_new()
  * @return Returns the found ewl window on success, NULL on failure.
  * @brief Find an ewl window by it's X window
  */
-Ewl_Window     *ewl_window_find_window(Ecore_X_Window window)
+Ewl_Window     *ewl_window_find_window(void *window)
 {
 	Ewl_Window     *retwin;
 
@@ -95,7 +103,7 @@ void ewl_window_set_title(Ewl_Window * win, char *title)
 	if (!REALIZED(win))
 		return;
 
-	ecore_x_window_prop_title_set(win->window, title);
+	ecore_x_window_prop_title_set((Ecore_X_Window)win->window, title);
 
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
@@ -140,7 +148,7 @@ void ewl_window_set_name(Ewl_Window * win, char *name)
 	if (!REALIZED(win))
 		return;
 
-	ecore_x_window_prop_name_class_set(win->window, name, win->name);
+	ecore_x_window_prop_name_class_set((Ecore_X_Window)win->window, name, win->name);
 
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
@@ -185,7 +193,7 @@ void ewl_window_set_class(Ewl_Window * win, char *classname)
 	if (!REALIZED(win))
 		return;
 
-	ecore_x_window_prop_name_class_set(win->window, classname,
+	ecore_x_window_prop_name_class_set((Ecore_X_Window)win->window, classname,
 					   win->classname);
 
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
@@ -222,7 +230,7 @@ void ewl_window_set_borderless(Ewl_Window * win)
 	win->flags |= EWL_WINDOW_BORDERLESS;
 
 	if (REALIZED(win))
-		ecore_x_window_prop_borderless_set(win->window, TRUE);
+		ecore_x_window_prop_borderless_set((Ecore_X_Window)win->window, TRUE);
 
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
@@ -243,7 +251,7 @@ void ewl_window_move(Ewl_Window * win, int x, int y)
 	DCHECK_PARAM_PTR("win", win);
 
 	if (REALIZED(win))
-		ecore_x_window_move(win->window, x, y);
+		ecore_x_window_move((Ecore_X_Window)win->window, x, y);
 
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
@@ -360,18 +368,19 @@ void ewl_window_realize_cb(Ewl_Widget * w, void *ev_data, void *user_data)
 	 */
 #ifdef HAVE_EVAS_ENGINE_SOFTWARE_X11_H
 	if (strstr(render, "x11")) {
-		window->window = ecore_x_window_new(0, window->x, window->y,
+		window->window = (void *)ecore_x_window_new(0, window->x,
+						window->y,
 						ewl_object_get_current_w(o),
 						ewl_object_get_current_h(o));
 
-		ecore_x_window_prop_name_class_set(window->window, window->name,
+		ecore_x_window_prop_name_class_set((Ecore_X_Window)window->window, window->name,
 					   window->classname);
-		ecore_x_window_prop_title_set(window->window, window->title);
-		ecore_x_window_prop_protocol_set(window->window,
+		ecore_x_window_prop_title_set((Ecore_X_Window)window->window, window->title);
+		ecore_x_window_prop_protocol_set((Ecore_X_Window)window->window,
 					ECORE_X_WM_PROTOCOL_DELETE_REQUEST,1);
 
 		if (window->flags & EWL_WINDOW_BORDERLESS)
-			ecore_x_window_prop_borderless_set(window->window, 1);
+			ecore_x_window_prop_borderless_set((Ecore_X_Window)window->window, 1);
 	}
 #endif
 
@@ -392,7 +401,7 @@ void ewl_window_realize_cb(Ewl_Widget * w, void *ev_data, void *user_data)
 		glinfo->info.colormap = glinfo->func.best_colormap_get(
 				glinfo->info.display,
 				DefaultScreen(glinfo->info.display));
-		glinfo->info.drawable = window->window;
+		glinfo->info.drawable = (Ecore_X_Window)window->window;
 		glinfo->info.depth = glinfo->func.best_depth_get(
 				glinfo->info.display,
 				DefaultScreen(glinfo->info.display));
@@ -421,7 +430,7 @@ void ewl_window_realize_cb(Ewl_Widget * w, void *ev_data, void *user_data)
 				DefaultScreen(sinfo->info.display));
 		sinfo->info.colormap = DefaultColormap(sinfo->info.display,
 				DefaultScreen(sinfo->info.display));
-		sinfo->info.drawable = window->window;
+		sinfo->info.drawable = (Ecore_X_Window)window->window;
 		sinfo->info.depth = DefaultDepth(sinfo->info.display,
 				DefaultScreen(sinfo->info.display));
 		sinfo->info.rotation = 0;
@@ -460,7 +469,7 @@ void ewl_window_unrealize_cb(Ewl_Widget * w, void *ev_data, void *user_data)
 	ewl_evas_destroy(embed->evas);
 	embed->evas = NULL;
 
-	ecore_x_window_del(EWL_WINDOW(embed)->window);
+	ecore_x_window_del((Ecore_X_Window)EWL_WINDOW(embed)->window);
 
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
@@ -474,10 +483,10 @@ void ewl_window_show_cb(Ewl_Widget * w, void *ev_data, void *user_data)
 		DRETURN(DLEVEL_STABLE);
 
 	if (EWL_WINDOW(w)->flags & EWL_WINDOW_BORDERLESS)
-		ecore_x_window_prop_borderless_set(EWL_WINDOW(w)->window, 1);
+		ecore_x_window_prop_borderless_set((Ecore_X_Window)EWL_WINDOW(w)->window, 1);
 
-	ecore_x_window_show(EWL_WINDOW(w)->window);
-	ecore_x_window_show(EWL_EMBED(w)->evas_window);
+	ecore_x_window_show((Ecore_X_Window)EWL_WINDOW(w)->window);
+	ecore_x_window_show((Ecore_X_Window)EWL_EMBED(w)->evas_window);
 
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
@@ -487,8 +496,8 @@ void ewl_window_hide_cb(Ewl_Widget * widget, void *ev_data, void *user_data)
 	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR("widget", widget);
 
-	ecore_x_window_hide(EWL_EMBED(widget)->evas_window);
-	ecore_x_window_hide(EWL_WINDOW(widget)->window);
+	ecore_x_window_hide((Ecore_X_Window)EWL_EMBED(widget)->evas_window);
+	ecore_x_window_hide((Ecore_X_Window)EWL_WINDOW(widget)->window);
 
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
@@ -504,11 +513,11 @@ void ewl_window_destroy_cb(Ewl_Widget * w, void *ev_data, void *user_data)
 
 	IF_FREE(win->title);
 
-	ecore_x_window_hide(EWL_EMBED(win)->evas_window);
-	ecore_x_window_hide(win->window);
+	ecore_x_window_hide((Ecore_X_Window)EWL_EMBED(win)->evas_window);
+	ecore_x_window_hide((Ecore_X_Window)win->window);
 
-	ecore_x_window_del(EWL_EMBED(win)->evas_window);
-	ecore_x_window_del(win->window);
+	ecore_x_window_del((Ecore_X_Window)EWL_EMBED(win)->evas_window);
+	ecore_x_window_del((Ecore_X_Window)win->window);
 
 	IF_FREE(win->title);
 
@@ -534,10 +543,10 @@ void ewl_window_configure_cb(Ewl_Widget * w, void *ev_data, void *user_data)
 	/*
 	 * Adjust the maximum window bounds to match the widget
 	 */
-	ecore_x_window_prop_min_size_set(win->window,
+	ecore_x_window_prop_min_size_set((Ecore_X_Window)win->window,
 			ewl_object_get_minimum_w(EWL_OBJECT(w)),
 		       	ewl_object_get_minimum_h(EWL_OBJECT(w)));
-	ecore_x_window_prop_max_size_set(win->window,
+	ecore_x_window_prop_max_size_set((Ecore_X_Window)win->window,
 			ewl_object_get_maximum_w(EWL_OBJECT(w)),
 			ewl_object_get_maximum_h(EWL_OBJECT(w)));
 
@@ -554,12 +563,12 @@ void ewl_window_configure_cb(Ewl_Widget * w, void *ev_data, void *user_data)
 	if (win->flags & EWL_WINDOW_USER_CONFIGURE)
 		win->flags &= ~EWL_WINDOW_USER_CONFIGURE;
 	else {
-		ecore_x_window_resize(win->window, width, height);
+		ecore_x_window_resize((Ecore_X_Window)win->window, width, height);
 
 	}
 
 	if (EWL_EMBED(win)->evas_window != win->window)
-		ecore_x_window_resize(EWL_EMBED(win)->evas_window, width,
+		ecore_x_window_resize((Ecore_X_Window)EWL_EMBED(win)->evas_window, width,
 				      height);
 	evas_output_size_set(EWL_EMBED(win)->evas, width, height);
 	evas_output_viewport_set(EWL_EMBED(win)->evas,
