@@ -18,16 +18,22 @@ Known bugs
 - Various minor focus issues.
   Exact steps to reproduce are welcome.
 
+- When zooming (fullscreen) decreases screen resolution, the mouse should be
+  confined to the zoomed window.
+! May be impossible to fix due to limitations in X (vidmode extension, mouse
+  grabs).
+
+
+Fixed in E 16.6-pre6
+~~~~~~~~~~~~~~~~~~~~
+
+- _NET_WORKAREA hint is not supported (breaking kuickshow, among others).
+
 - If the focus list (Alt-Tab) gets covered, it is not redrawn when exposed.
   The real problem is that the window list is not supposed to get covered.
 
 - The focus list is sometimes not closed when it should be.
   Press Alt, press Ctrl, release Ctrl, press Tab, release Tab, release Alt.
-
-- When zooming (fullscreen) decreases screen resolution, the mouse should be
-  confined to the zoomed window.
-! May be impossible to fix due to limitations in X (vidmode extension, mouse
-  grabs).
 
 - Window ("remember") settings may not be saved on exit.
 

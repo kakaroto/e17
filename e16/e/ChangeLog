@@ -2124,3 +2124,10 @@ Implemented _NET_WORKAREA, patch from Roger Luethi <rl@hellgate.ch>.
 
 Attempted to sort out weirdness with ...e_session-XXXXXX.clients.?.
 Not entirely sure about this - please yell if it causes trouble.
+
+-------------------------------------------------------------------------------
+
+Fri Aug 22 22:56:32 CEST 2003
+(Kim)
+
+Updated BUGS for pre6.
