@@ -12,7 +12,11 @@
 
 #include "config.h"
 
-/* TODO: make Esetroot respect out options */
+/* TODO: 
+ * make Esetroot respect our options
+ * add empty -s -t -c flags that will take current bg and apply option
+ * implement -g (get current bg)
+ */
 
 int e_bg_type;
 
