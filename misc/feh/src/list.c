@@ -58,11 +58,11 @@ init_list_mode (void)
   if (opt.verbose)
     fprintf (stdout, "\n");
 
-  printf ("WIDTH\tHEIGHT\tPIXELS\tSIZE(bytes)\tNAME\n");
+  printf ("WIDTH\tHEIGHT\tPIXELS\tSIZE(bytes)\tALPHA\tNAME\n");
   for (info = info_list; info; info = info->next)
     {
-	printf ("%d\t%d\t%d\t%d\t%s\n", info->width, info->height, info->pixels,
-	       	info->size, info->name);
+	printf ("%d\t%d\t%d\t%d\t\t%c\t%s\n", info->width, info->height, info->pixels,
+	       	info->size, info->has_alpha ? 'X' : ' ', info->name);
     }
 
   exit (0);
