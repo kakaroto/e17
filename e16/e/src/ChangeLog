@@ -2227,3 +2227,11 @@ Wed Sep 22 16:39:43 PDT 1999
 
 moved kde client change property handler a little, but I don't think this is
 going to make a difference.
+
+-------------------------------------------------------------------------------
+
+Wed Sep 22 17:55:48 PDT 1999
+(KainX)
+
+Added a "query" command to the imageclass IPC.  This is for an Eterm
+feature.

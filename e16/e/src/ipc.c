@@ -1514,6 +1514,19 @@ IPC_ImageClass(char *params, Client * c)
 		     Esnprintf(buf, sizeof(buf), "%u references remain.\n",
 			       i->ref_count);
 	       }
+	     else if (!strcmp(param2, "query"))
+	       {
+		  ImageClass         *i;
+
+		  i = (ImageClass *) FindItem(param1, 0, LIST_FINDBY_NAME,
+					      LIST_TYPE_ICLASS);
+		  if (i)
+		     Esnprintf(buf, sizeof(buf), "ImageClass %s found.\n",
+			       i->name);
+		  else
+		     Esnprintf(buf, sizeof(buf), "ImageClass %s not found.\n",
+			       param1);
+	       }
 	     else
 	       {
 		  Esnprintf(buf, sizeof(buf),
