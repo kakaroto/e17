@@ -43,6 +43,9 @@
 #else
 #  define D(x) ((void) 0)
 #endif
+#if defined(linux) && !defined(KERNEL_VERSION)
+# define KERNEL_VERSION(a, b, c) (((a) << 16) + ((b) << 8) + (c))
+#endif
 
 char **
 net_get_devices(void) {
@@ -104,7 +107,11 @@ net_get_bytes_inout(const char *device, double *in_bytes, double *out_bytes) {
     if (colon) {
       *colon = ' ';
     }
+# if LINUX_VERSION_CODE <= KERNEL_VERSION(2, 1, 0)
+    sscanf(buff, "%s %s %*s %*s %*s %*s %s", dev, in_str, out_str);
+# else
     sscanf(buff, "%s %s %*s %*s %*s %*s %*s %*s %*s %s", dev, in_str, out_str);
+# endif
     if (!strcmp(dev, device)) {
       match = 1;
       if (in_bytes != NULL) {
