@@ -37,6 +37,7 @@ void ewl_spectrum_init(Ewl_Spectrum * sp)
 	ewl_callback_append(w, EWL_CALLBACK_CONFIGURE,
 			    ewl_spectrum_configure_cb, NULL);
 
+	sp->orientation = EWL_ORIENTATION_VERTICAL;
 	sp->mode = EWL_PICK_MODE_HSV_HUE;
 	sp->dimensions = 2;
 	sp->redraw = 1;
@@ -50,14 +51,32 @@ void ewl_spectrum_init(Ewl_Spectrum * sp)
 	DRETURN(DLEVEL_STABLE);
 }
 
+void ewl_spectrum_orientation_set(Ewl_Spectrum *sp, int o)
+{
+	DENTER_FUNCTION(DLEVEL_STABLE);
+	DCHECK_PARAM_PTR("sp", sp);
+
+	if (sp->orientation != o) {
+		sp->orientation = o;
+		if (sp->dimensions == 1) {
+			sp->redraw = 1;
+			ewl_widget_configure(EWL_WIDGET(sp));
+		}
+	}
+
+	DLEAVE_FUNCTION(DLEVEL_STABLE);
+}
+
 void ewl_spectrum_mode_set(Ewl_Spectrum * sp, int mode)
 {
 	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR("sp", sp);
 
-	sp->mode = mode;
-	sp->redraw = 1;
-	ewl_widget_configure(EWL_WIDGET(sp));
+	if (sp->mode != mode) {
+		sp->mode = mode;
+		sp->redraw = 1;
+		ewl_widget_configure(EWL_WIDGET(sp));
+	}
 
 	DRETURN(DLEVEL_STABLE);
 }
@@ -69,11 +88,11 @@ ewl_spectrum_dimensions_set(Ewl_Spectrum * sp,
 	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR("sp", sp);
 
-	if (dimensions == 1 || dimensions == 2)
+	if (dimensions == 1 || dimensions == 2) {
 		sp->dimensions = dimensions;
-
-	sp->redraw = 1;
-	ewl_widget_configure(EWL_WIDGET(sp));
+		sp->redraw = 1;
+		ewl_widget_configure(EWL_WIDGET(sp));
+	}
 
 	DRETURN(DLEVEL_STABLE);
 }
@@ -111,6 +130,8 @@ ewl_spectrum_hsv_set(Ewl_Spectrum * sp, float h,
 		sp->s = s;
 	if (v >= 0 && v <= 1)
 		sp->v = v;
+
+	sp->redraw = 1;
 
 	ewl_widget_configure(EWL_WIDGET(sp));
 
@@ -171,22 +192,23 @@ ewl_spectrum_configure_cb(Ewl_Widget * w, void *ev_data,
 				a = 255;
 
 				if (pick_mode == EWL_PICK_MODE_RGB) {
-					r = red * (1 - (float) j / (float) ph);
-					g = green * (1 - (float) j / (float) ph);
-					b = blue * (1 - (float) j / (float) ph);
-				}
-				else if (pick_mode == EWL_PICK_MODE_RGB_RED) {
-					r = red;
-					g = 255 * (float) i / (float) pw;
-					b = 255 * (float) j / (float) ph;
-				} else if (pick_mode == EWL_PICK_MODE_RGB_GREEN) {
-					r = 255 * (float) i / (float) pw;
-					g = green;
-					b = 255 * (float) j / (float) ph;
-				} else if (pick_mode == EWL_PICK_MODE_RGB_BLUE) {
-					r = 255 * (float) i / (float) pw;
-					g = 255 * (float) j / (float) ph;
-					b = blue;
+
+					r = red + (j) * (255 - red) / ph;
+					r = r * i / pw;
+					g = green + (j) * (255 - green) / ph;
+					g = g * i / pw;
+					b = blue + (j) * (255 - blue) / ph;
+					b = b * i / pw;
+
+					/*
+					r = red + (ph - j) * (255 - red) / ph;
+					r = r * i / pw;
+					g = green + (ph - j) * (255 - green) / ph;
+					g = g * i / pw;
+					b = blue + (ph - j) * (255 - blue) / ph;
+					b = b * i / pw;
+					*/
+
 				} else if (pick_mode == EWL_PICK_MODE_HSV_HUE) {
 					h = hue;
 					s = 1 - (float) i / (float) pw;
@@ -240,18 +262,6 @@ ewl_spectrum_configure_cb(Ewl_Widget * w, void *ev_data,
 				r = red * (1 - (float) j / (float) ph);
 				g = green * (1 - (float) j / (float) ph);
 				b = blue * (1 - (float) j / (float) ph);
-			} else if (pick_mode == EWL_PICK_MODE_RGB_RED) {
-				r = 255 * (1 - (float) j / (float) ph);
-				g = 0;
-				b = 0;
-			} else if (pick_mode == EWL_PICK_MODE_RGB_GREEN) {
-				r = 0;
-				g = 255 * (1 - (float) j / (float) ph);
-				b = 0;
-			} else if (pick_mode == EWL_PICK_MODE_RGB_BLUE) {
-				r = 0;
-				g = 0;
-				b = 255 * (1 - (float) j / (float) ph);
 			} else if (pick_mode == EWL_PICK_MODE_HSV_HUE) {
 				h = 360 * (float) j / (float) ph;
 				s = 1.0;
