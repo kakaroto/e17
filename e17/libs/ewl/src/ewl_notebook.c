@@ -577,17 +577,17 @@ __ewl_notebook_add(Ewl_Container *c, Ewl_Widget *w)
 	/*
 	 * Sizing depends on the placement of the tabs
 	 */
-	if (n->flags & EWL_POSITION_TOP || n->flags & EWL_POSITION_BOTTOM) {
-		ewl_container_prefer_largest(EWL_CONTAINER(c),
-				EWL_ORIENTATION_VERTICAL);
-		ewl_object_set_preferred_h(EWL_OBJECT(c), PREFERRED_H(c) +
-				ewl_object_get_preferred_h(EWL_OBJECT(w)));
-	}
-	else {
+	if (n->flags & EWL_POSITION_LEFT || n->flags & EWL_POSITION_RIGHT) {
 		ewl_container_prefer_largest(EWL_CONTAINER(c),
 				EWL_ORIENTATION_HORIZONTAL);
 		ewl_object_set_preferred_w(EWL_OBJECT(c), PREFERRED_W(c) +
 				ewl_object_get_preferred_w(EWL_OBJECT(w)));
+	}
+	else {
+		ewl_container_prefer_largest(EWL_CONTAINER(c),
+				EWL_ORIENTATION_VERTICAL);
+		ewl_object_set_preferred_h(EWL_OBJECT(c), PREFERRED_H(c) +
+				ewl_object_get_preferred_h(EWL_OBJECT(w)));
 	}
 
 	if (n->tab_box == w)
@@ -609,6 +609,19 @@ __ewl_notebook_resize(Ewl_Container *c, Ewl_Widget *w, int size,
 	DENTER_FUNCTION(DLEVEL_STABLE);
 
 	n = EWL_NOTEBOOK(c);
+
+	ewl_container_prefer_largest(c, EWL_ORIENTATION_HORIZONTAL);
+	ewl_container_prefer_largest(c, EWL_ORIENTATION_VERTICAL);
+
+	/*
+	 * Sizing depends on the placement of the tabs
+	 */
+	if (n->flags & EWL_POSITION_LEFT || n->flags & EWL_POSITION_RIGHT)
+		ewl_object_set_preferred_w(EWL_OBJECT(c), PREFERRED_W(c) +
+				ewl_object_get_preferred_w(EWL_OBJECT(w)));
+	else
+		ewl_object_set_preferred_h(EWL_OBJECT(c), PREFERRED_H(c) +
+				ewl_object_get_preferred_h(EWL_OBJECT(w)));
 
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
