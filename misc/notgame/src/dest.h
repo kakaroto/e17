@@ -16,12 +16,32 @@
 /************ Macros and Definitions ************/
 
 /************ Structures ************/
+typedef struct dest_struct {
+  char *name;
+} dest_t;
+typedef struct dest_group_struct {
+  char *name;
+  GList *members;
+} dest_group_t;
 
 /************ Variables ************/
-extern GList *dest_group_list;
+extern GList *dest_groups, *dest_group_names;
+extern GtkWidget *dest_clist, *dest_groups_box;
 
 /************ Function Prototypes ************/
-extern void dest_group_add(gpointer pbox, GtkWidget *w);
-extern void dest_list_update(GList *group);
+
+extern char dest_group_cmp(const dest_group_t *g1, const dest_group_t *g2);
+extern char dest_group_cmp_name(const dest_group_t *group, const char *name);
+extern unsigned char dest_group_add(dest_group_t *group);
+extern void dest_group_add_from_gui(void);
+extern void dest_group_update_lists_from_gui(void);
+extern void dest_group_update_lists(dest_group_t *entry);
+extern dest_group_t *dest_group_find_by_name(char *name);
+extern char dest_cmp(const dest_t *p1, const dest_t *p2);
+extern char dest_cmp_name(const dest_t *p1, const char *name);
+extern unsigned char dest_group_add_dest(dest_group_t *group, dest_t *dest);
+extern void dest_add_to_clist(dest_t *dest, GtkWidget *list);
+extern void dest_group_make_clist(GtkWidget *list, dest_group_t *group);
+extern dest_group_t *dest_group_get_current(void);
 
 #endif	/* _DEST_H_ */

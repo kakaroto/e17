@@ -156,7 +156,7 @@ static void
 pregame_player_frame_init(GtkWidget *window, GtkWidget *vbox) {
 
   GtkWidget *player_frame, *player_table, *align, *scroller;
-  GtkWidget *label, *player_groups_box;
+  GtkWidget *label;
   const char *cols[] = { "Player Name", "Player Type" };
 
   /* Add the frame around the player section.  This will contain everything we create in this function */
@@ -188,8 +188,8 @@ pregame_player_frame_init(GtkWidget *window, GtkWidget *vbox) {
   if (player_group_names) {
     gtk_combo_set_popdown_strings(GTK_COMBO(player_groups_box), player_group_names);
   }
-  gtk_signal_connect(GTK_OBJECT(GTK_COMBO(player_groups_box)->entry), "activate", GTK_SIGNAL_FUNC(player_group_add_from_gui), (gpointer) player_groups_box);
-  gtk_signal_connect(GTK_OBJECT(GTK_COMBO(player_groups_box)->list), "selection_changed", GTK_SIGNAL_FUNC(player_group_update_lists_from_gui), (gpointer) player_groups_box);
+  gtk_signal_connect(GTK_OBJECT(GTK_COMBO(player_groups_box)->entry), "activate", GTK_SIGNAL_FUNC(player_group_add_from_gui), (gpointer) NULL);
+  gtk_signal_connect(GTK_OBJECT(GTK_COMBO(player_groups_box)->list), "selection_changed", GTK_SIGNAL_FUNC(player_group_update_lists_from_gui), (gpointer) NULL);
   gtk_table_attach_defaults(GTK_TABLE(player_table), GTK_WIDGET(player_groups_box), 1, 2, 0, 1);
   gtk_widget_show(player_groups_box);
 
@@ -219,7 +219,7 @@ static void
 pregame_dest_frame_init(GtkWidget *window, GtkWidget *vbox) {
 
   GtkWidget *dest_frame, *dest_table, *align, *scroller;
-  GtkWidget *label, *dest_groups, *dest_list, *dest_clist;
+  GtkWidget *label, *dest_list;
   const char *cols[] = { "Destination" };
 
   dest_frame = gtk_frame_new(NULL);
@@ -240,20 +240,22 @@ pregame_dest_frame_init(GtkWidget *window, GtkWidget *vbox) {
   gtk_widget_show(align);
   gtk_widget_show(label);
 
-  dest_groups = gtk_combo_new();
-  gtk_combo_set_use_arrows_always(GTK_COMBO(dest_groups), TRUE);
-  gtk_combo_set_case_sensitive(GTK_COMBO(dest_groups), TRUE);
+  dest_groups_box = gtk_combo_new();
+  gtk_combo_set_use_arrows_always(GTK_COMBO(dest_groups_box), TRUE);
+  gtk_combo_set_case_sensitive(GTK_COMBO(dest_groups_box), TRUE);
 
-  /* Destination Groups are hardcoded for now.  Change these to whatever names you want, and add/remove
-     names as needed.  To add more entries, simply copy one of the lines below as many times as
-     needed.  Change only the name the appears within the double quotes ("). */
-  dest_group_list = g_list_append(dest_group_list, "Fast Food");
-  dest_group_list = g_list_append(dest_group_list, "Sit Down");
+  /* The combo box containing the dest groups */
+  dest_groups_box = gtk_combo_new();
+  gtk_combo_set_use_arrows_always(GTK_COMBO(dest_groups_box), TRUE);
+  gtk_combo_set_case_sensitive(GTK_COMBO(dest_groups_box), TRUE);
 
-  gtk_combo_set_popdown_strings(GTK_COMBO(dest_groups), dest_group_list);
-  gtk_signal_connect(GTK_OBJECT(GTK_COMBO(dest_groups)->entry), "activate", GTK_SIGNAL_FUNC(dest_group_add), (gpointer) dest_groups);
-  gtk_table_attach_defaults(GTK_TABLE(dest_table), GTK_WIDGET(dest_groups), 1, 2, 0, 1);
-  gtk_widget_show(dest_groups);
+  if (dest_group_names) {
+    gtk_combo_set_popdown_strings(GTK_COMBO(dest_groups_box), dest_group_names);
+  }
+  gtk_signal_connect(GTK_OBJECT(GTK_COMBO(dest_groups_box)->entry), "activate", GTK_SIGNAL_FUNC(dest_group_add_from_gui), (gpointer) NULL);
+  gtk_signal_connect(GTK_OBJECT(GTK_COMBO(dest_groups_box)->list), "selection_changed", GTK_SIGNAL_FUNC(dest_group_update_lists_from_gui), (gpointer) NULL);
+  gtk_table_attach_defaults(GTK_TABLE(dest_table), GTK_WIDGET(dest_groups_box), 1, 2, 0, 1);
+  gtk_widget_show(dest_groups_box);
 
   /* The clist for the dests in the current group */
   scroller = gtk_scrolled_window_new(NULL, NULL);
@@ -265,29 +267,8 @@ pregame_dest_frame_init(GtkWidget *window, GtkWidget *vbox) {
   gtk_clist_set_column_justification(GTK_CLIST(dest_clist), 1, GTK_JUSTIFY_LEFT);
   gtk_container_add(GTK_CONTAINER(scroller), dest_clist);
 
-  /* Dest Names are hardcoded for now.  Change these to whatever names you want, and add/remove
-     names as needed.  To add more entries, simply copy one of the lines below as many times as
-     needed.  Change only the name the appears within the double quotes ("). */
-  {
-    char *r1[] = { "Burger King" };
-    char *r2[] = { "Denny's" };
-    char *r3[] = { "Gumba's" };
-    char *r4[] = { "Hobee's" };
-    char *r5[] = { "Java Street Cafe" };
-    char *r6[] = { "Kal's BBQ" };
-    char *r7[] = { "Mandarin" };
-    char *r8[] = { "McDonalds" };
-    char *r9[] = { "Sneha" };
-
-    gtk_clist_append(GTK_CLIST(dest_clist), (gchar **) r1);
-    gtk_clist_append(GTK_CLIST(dest_clist), (gchar **) r2);
-    gtk_clist_append(GTK_CLIST(dest_clist), (gchar **) r3);
-    gtk_clist_append(GTK_CLIST(dest_clist), (gchar **) r4);
-    gtk_clist_append(GTK_CLIST(dest_clist), (gchar **) r5);
-    gtk_clist_append(GTK_CLIST(dest_clist), (gchar **) r6);
-    gtk_clist_append(GTK_CLIST(dest_clist), (gchar **) r7);
-    gtk_clist_append(GTK_CLIST(dest_clist), (gchar **) r8);
-    gtk_clist_append(GTK_CLIST(dest_clist), (gchar **) r9);
+  if (dest_groups) {
+    dest_group_make_clist(dest_clist, dest_groups->data);
   }
   gtk_widget_show(dest_clist);
   gtk_widget_show(scroller);

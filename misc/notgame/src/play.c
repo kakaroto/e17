@@ -29,23 +29,25 @@ static const char cvs_ident[] = "$Id$";
 
 #include "debug.h"
 #include "conf.h"
+#include "dest.h"
 #include "notgame.h"
 #include "play.h"
+#include "players.h"
 #include "pregame.h"
 
 static gint close_cb(void);
 static gint click_cb(GtkWidget *button, gpointer data);
 
 static GtkWidget **dest_buttons, *game_win = NULL, *label, *current_player, *quit_button, *quit_label;
-static char *dests[] = { "Burger King", "Denny's", "Gumba's", "Hobee's", "Java Street Cafe", "Kal's BBQ", "Mandarin", "McDonalds", "Sneha" };
-static const unsigned char dest_total = 9;
-static unsigned char dest_cnt;
+static unsigned char dest_cnt, dest_total;
 
 void
 play_game(void) {
 
   unsigned short i, rows, cols, r, c;
   GtkWidget *big_vbox, *hbox, *dest_frame, *dest_table, *game_frame, *game_table, *align;
+  GList *dest_current;
+  dest_group_t *dest_group;
 
   /* Create game window */
   if (game_win != NULL) {
@@ -70,7 +72,11 @@ play_game(void) {
   gtk_frame_set_shadow_type(GTK_FRAME(dest_frame), GTK_SHADOW_ETCHED_IN);
   gtk_box_pack_start(GTK_BOX(big_vbox), dest_frame, TRUE, FALSE, 0);
 
+  dest_group = dest_group_get_current();
+  dest_current = dest_group->members;
+  dest_total = (unsigned char) g_list_length(dest_current);
   rows = dest_total / 3;
+  if (rows == 0) rows = 1;
   cols = dest_total / 3 + ((dest_total % 3) ? 1 : 0);
   dest_table = gtk_table_new(rows, cols, FALSE);
   gtk_table_set_row_spacings(GTK_TABLE(dest_table), 3);
@@ -79,12 +85,16 @@ play_game(void) {
   gtk_container_add(GTK_CONTAINER(dest_frame), dest_table);
 
   dest_buttons = (GtkWidget **) malloc(sizeof(GtkWidget *) * dest_total);
-  for (i=0, r=0, c=0; i < dest_total; i++) {
-    dest_buttons[i] = gtk_button_new_with_label(dests[i]);
-    gtk_signal_connect(GTK_OBJECT(dest_buttons[i]), "clicked", GTK_SIGNAL_FUNC(click_cb), NULL);
-    gtk_object_set_data(GTK_OBJECT(dest_buttons[i]), "label", (void *) dests[i]);
-    gtk_table_attach_defaults(GTK_TABLE(dest_table), GTK_WIDGET(dest_buttons[i]), c, c+1, r, r+1);
-    gtk_widget_show(dest_buttons[i]);
+  for (r=0, c=0, dest_cnt = 0; (dest_current != NULL); dest_current = g_list_next(dest_current), dest_cnt++) {
+    GtkWidget *button;
+    char *name;
+
+    name = ((player_t *) (dest_current->data))->name;
+    button = gtk_button_new_with_label(name);
+    gtk_signal_connect(GTK_OBJECT(button), "clicked", GTK_SIGNAL_FUNC(click_cb), NULL);
+    gtk_object_set_data(GTK_OBJECT(button), "label", (void *) name);
+    gtk_table_attach_defaults(GTK_TABLE(dest_table), GTK_WIDGET(button), c, c+1, r, r+1);
+    gtk_widget_show(button);
     if (++c == cols) {
       c = 0;
       if (++r == rows) {
@@ -92,7 +102,6 @@ play_game(void) {
       }
     }
   }
-  dest_cnt = dest_total;
 
   gtk_widget_show(dest_table);
   gtk_widget_show(dest_frame);

@@ -30,6 +30,7 @@ static const char cvs_ident[] = "$Id$";
 
 #include "debug.h"
 #include "conf.h"
+#include "dest.h"
 #include "parse.h"
 #include "players.h"
 #include "strings.h"
@@ -73,14 +74,33 @@ parse_player_group(char *buff, void *state) {
 void *
 parse_dest_group(char *buff, void *state) {
 
+  dest_group_t *group;
+  dest_t *dest;
+
   if (*buff == CONF_BEGIN_CHAR) {
-    return (NULL);
+    group = (dest_group_t *) malloc(sizeof(dest_group_t));
+    MEMSET(group, 0, sizeof(dest_group_t));
+    return ((void *) group);
   } else if (*buff == CONF_END_CHAR) {
+    ASSERT(state != NULL);
+    group = (dest_group_t *) state;
+    if (!dest_group_add(group)) {
+      free(group);  /* Duplicate group, so delete the structure */
+    }
     return (NULL);
   } else {
+    ASSERT(state != NULL);
+    group = (dest_group_t *) state;
     if (!BEG_STRCASECMP(buff, "name")) {
+      group->name = Word(2, buff);
     } else if (!BEG_STRCASECMP(buff, "dest")) {
+      dest = (dest_t *) malloc(sizeof(dest_t));
+      dest->name = Word(2, buff);
+      if (!dest_group_add_dest(group, dest)) {
+        free(dest);
+      }
     } else {
+      print_error("Parse error in file %s, line %lu:  Attribute \"%s\" is not valid in the current context.", file_peek_path(), file_peek_line(), buff);
     }
     return (state);
   }

@@ -33,7 +33,7 @@ static const char cvs_ident[] = "$Id$";
 #include "players.h"
 
 GList *player_groups = NULL, *player_group_names = NULL;
-GtkWidget *player_clist;
+GtkWidget *player_clist, *player_groups_box;
 
 char
 player_group_cmp(const player_group_t *g1, const player_group_t *g2) {
@@ -60,19 +60,16 @@ player_group_add(player_group_t *group) {
 
 /* Creating from the GUI */
 void
-player_group_add_from_gui(GtkWidget *w, gpointer pbox) {
+player_group_add_from_gui(void) {
 
   char *name;
-  GtkWidget *player_groups_box;
-  GList *entry;
-  player_group_t *group;
+  player_group_t *entry, *group;
 
-  player_groups_box = (GtkWidget *) pbox;
   name = gtk_entry_get_text(GTK_ENTRY(GTK_COMBO(player_groups_box)->entry));
   REQUIRE(name != NULL);
   D(("name == %s (0x%08x)\n", name, name));
 
-  entry = g_list_find_custom(player_group_names, name, (GCompareFunc) strcasecmp);
+  entry = player_group_find_by_name(name);
   D(("entry == 0x%08x\n", entry));
 
   if (entry) {
@@ -85,30 +82,34 @@ player_group_add_from_gui(GtkWidget *w, gpointer pbox) {
   player_groups = g_list_insert_sorted(player_groups, (gpointer) group, (GCompareFunc) player_group_cmp);
   player_group_names = g_list_insert_sorted(player_group_names, (gpointer) group->name, (GCompareFunc) strcasecmp);
   gtk_combo_set_popdown_strings(GTK_COMBO(player_groups_box), player_group_names);
+  player_group_update_lists(entry);
 }
 
 /* Updating from the GUI */
 void
-player_group_update_lists_from_gui(GtkWidget *w, gpointer pbox) {
+player_group_update_lists_from_gui(void) {
 
   char *name;
-  GtkWidget *box;
-  GList *entry;
-  player_group_t *group;
+  player_group_t *entry;
 
-  box = (GtkWidget *) pbox;
-  name = gtk_entry_get_text(GTK_ENTRY(GTK_COMBO(box)->entry));
+  name = gtk_entry_get_text(GTK_ENTRY(GTK_COMBO(player_groups_box)->entry));
   REQUIRE(name != NULL);
   D(("name == %s (0x%08x)\n", name, name));
 
   entry = player_group_find_by_name(name);
-  ASSERT(entry != NULL);
+  player_group_update_lists(entry);
+}
+
+void
+player_group_update_lists(player_group_t *entry) {
+
+  REQUIRE(entry != NULL);
   D(("entry == 0x%08x\n", entry));
 
-  gtk_clist_freeze(player_clist);
-  gtk_clist_clear(player_clist);
+  gtk_clist_freeze(GTK_CLIST(player_clist));
+  gtk_clist_clear(GTK_CLIST(player_clist));
   player_group_make_clist(player_clist, entry);
-  gtk_clist_thaw(player_clist);
+  gtk_clist_thaw(GTK_CLIST(player_clist));
 }
 
 player_group_t *
@@ -162,7 +163,15 @@ player_group_make_clist(GtkWidget *list, player_group_t *group) {
   g_list_foreach(group->members, (GFunc) player_add_to_clist, (gpointer) list);
 }
 
-void
-player_list_update(GList *group) {
+player_group_t *
+player_group_get_current(void) {
 
+  char *name;
+  GList *entry;
+
+  name = gtk_entry_get_text(GTK_ENTRY(GTK_COMBO(player_groups_box)->entry));
+  REQUIRE_RVAL(name != NULL, NULL);
+  D(("name == %s (0x%08x)\n", name, name));
+
+  return (player_group_find_by_name(name));
 }
