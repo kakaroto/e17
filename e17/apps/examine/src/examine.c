@@ -333,7 +333,7 @@ draw_tree(examine_prop * prop_item)
         dp = opendir((const char *) path);
         while (next = readdir(dp)) {
           if (!strcmp(next->d_name, ".") || !strcmp(next->d_name, "..")
-              || strlen(next->d_name) <= 4 || !strstr(next->d_name, ".eet"))
+              || strlen(next->d_name) <= 4 || !strstr(next->d_name, ".edj"))
             continue;
 
           theme_seen = 0;
@@ -360,7 +360,7 @@ draw_tree(examine_prop * prop_item)
             ewl_widget_show(tmp);
             free(file);
 
-            file_len = strlen(next->d_name) - 4; /* 4 = .eet*/
+            file_len = strlen(next->d_name) - 4; /* 4 = .edj*/
             file = malloc(file_len + 1);
             strncpy(file, next->d_name, file_len);
             *(file + file_len) = '\0';
