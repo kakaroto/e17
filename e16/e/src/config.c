@@ -565,6 +565,12 @@ Config_Control(FILE * ConfigFile)
 	  case CONTROL_SHADESPEED:
 	     mode.shadespeed = i2;
 	     break;
+	  case CONTROL_ANIMATESHADING:
+	     mode.animate_shading = i2;
+	     break;
+	  case CONTROL_MENUONSCREEN:
+	     mode.menusonscreen = i2;
+	     break;
 	  case DESKTOP_HIQUALITYBG:
 	     desks.hiqualitybg = i2;
 	     break;
@@ -3597,6 +3603,8 @@ SaveUserControlConfig(FILE * autosavefile)
 	fprintf(autosavefile, "347 %i\n", (int)mode.show_pagers);
 	fprintf(autosavefile, "348 %i\n", (int)mode.pager_hiq);
 	fprintf(autosavefile, "349 %i\n", (int)mode.pager_snap);
+	fprintf(autosavefile, "350 %i\n", (int)mode.animate_shading);
+	fprintf(autosavefile, "351 %i\n", (int)mode.menusonscreen);
 	fprintf(autosavefile, "1350 %i\n", (int)mode.user_bg);
 	fprintf(autosavefile, "1351 %i\n", (int)mode.pager_zoom);
 	fprintf(autosavefile, "1352 %i\n", (int)mode.pager_title);

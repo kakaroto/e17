@@ -1343,10 +1343,11 @@ SettingsAudio(void)
 
 static char         tmp_saveunders;
 static char         tmp_animated_menus;
+static char         tmp_menusonscreen;
 static char         tmp_map_slide;
 static char         tmp_cleanup_slide;
 static char         tmp_desktop_slide;
-static char         tmp_shade;
+static char         tmp_animate_shading;
 static char         tmp_dragbar;
 static int          tmp_dragdir;
 static int          tmp_slide_mode;
@@ -1363,13 +1364,12 @@ CB_ConfigureFX(int val, void *data)
      {
 	mode.save_under = tmp_saveunders;
 	mode.menuslide = tmp_animated_menus;
+	mode.menusonscreen = tmp_menusonscreen;
 	mode.mapslide = tmp_map_slide;
 	mode.cleanupslide = tmp_cleanup_slide;
 	desks.slidein = tmp_desktop_slide;
-	if (tmp_shade)
-	   mode.shadespeed = tmp_shade_speed;
-	else
-	   mode.shadespeed = 90000;
+	mode.animate_shading = tmp_animate_shading;
+	mode.shadespeed = tmp_shade_speed;
 	mode.slidemode = tmp_slide_mode;
 	mode.slidespeedmap = tmp_map_slide_speed;
 	mode.slidespeedcleanup = tmp_cleanup_slide_speed;
@@ -1413,21 +1413,19 @@ SettingsSpecialFX(void)
 
    tmp_saveunders = mode.save_under;
    tmp_animated_menus = mode.menuslide;
+   tmp_menusonscreen = mode.menusonscreen;
    tmp_map_slide = mode.mapslide;
    tmp_cleanup_slide = mode.cleanupslide;
    tmp_desktop_slide = desks.slidein;
-   if (mode.shadespeed > 20000)
-      tmp_shade = 0;
-   else
-      tmp_shade = 1;
+   tmp_animate_shading = mode.animate_shading;
    if (desks.dragbar_width < 1)
       tmp_dragbar = 0;
    else
       tmp_dragbar = 1;
    tmp_dragdir = desks.dragdir;
    tmp_slide_mode = mode.slidemode;
-   tmp_shade_speed = mode.shadespeed;
    tmp_map_slide_speed = mode.slidespeedmap;
+   tmp_shade_speed = mode.shadespeed;
    tmp_cleanup_slide_speed = mode.slidespeedcleanup;
    tmp_desktop_slide_speed = desks.slidespeed;
 
@@ -1533,9 +1531,9 @@ SettingsSpecialFX(void)
    DialogItemSetPadding(di, 2, 2, 2, 2);
    DialogItemSetFill(di, 1, 0);
    DialogItemSetColSpan(di, 3);
-   DialogItemCheckButtonSetText(di, "Use saveunders to reduce window exposures");
-   DialogItemCheckButtonSetState(di, tmp_saveunders);
-   DialogItemCheckButtonSetPtr(di, &tmp_saveunders);
+   DialogItemCheckButtonSetText(di, "Always popup menus onscreen");
+   DialogItemCheckButtonSetState(di, tmp_menusonscreen);
+   DialogItemCheckButtonSetPtr(di, &tmp_menusonscreen);
 
    di = DialogAddItem(table, DITEM_RADIOBUTTON);
    DialogItemSetPadding(di, 2, 2, 2, 2);
@@ -1549,9 +1547,17 @@ SettingsSpecialFX(void)
    DialogItemSetPadding(di, 2, 2, 2, 2);
    DialogItemSetFill(di, 1, 0);
    DialogItemSetColSpan(di, 4);
+   DialogItemCheckButtonSetText(di, "Use saveunders to reduce window exposures");
+   DialogItemCheckButtonSetState(di, tmp_saveunders);
+   DialogItemCheckButtonSetPtr(di, &tmp_saveunders);
+
+   di = DialogAddItem(table, DITEM_CHECKBUTTON);
+   DialogItemSetPadding(di, 2, 2, 2, 2);
+   DialogItemSetFill(di, 1, 0);
+   DialogItemSetColSpan(di, 4);
    DialogItemCheckButtonSetText(di, "Animate shading and unshading of windows");
-   DialogItemCheckButtonSetState(di, tmp_shade);
-   DialogItemCheckButtonSetPtr(di, &tmp_shade);
+   DialogItemCheckButtonSetState(di, tmp_animate_shading);
+   DialogItemCheckButtonSetPtr(di, &tmp_animate_shading);
 
    di = DialogAddItem(table, DITEM_SEPARATOR);
    DialogItemSetColSpan(di, 4);
@@ -3388,13 +3394,9 @@ SettingsGroup(Group * g)
    DialogItemSetPadding(di, 2, 2, 2, 2);
    DialogItemSetFill(di, 1, 0);
    DialogItemSetAlign(di, 0, 512);
-   DialogItemTextSetText(di, "  The following actions are  ");
-   di = DialogAddItem(table, DITEM_TEXT);
-   DialogItemSetColSpan(di, 2);
-   DialogItemSetPadding(di, 2, 2, 2, 2);
-   DialogItemSetFill(di, 1, 0);
-   DialogItemSetAlign(di, 0, 512);
-   DialogItemTextSetText(di, "  applied to all group members:  ");
+   DialogItemTextSetText(di,
+			 "  The following actions are  \n"
+			 "  applied to all group members:  ");
 
    di = DialogAddItem(table, DITEM_CHECKBUTTON);
    DialogItemSetPadding(di, 2, 2, 2, 2);

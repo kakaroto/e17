@@ -2853,6 +2853,7 @@ doSetWinBorder(void *params)
    int                 i, num;
    char                buf[1024], has_shaded;
    Border             *b;
+   char                shadechange = 0;
 
    EDBUG(6, "doSetWinBorder");
 
@@ -2889,7 +2890,15 @@ doSetWinBorder(void *params)
 	  {
 	     gwins[i]->border_new = 1;
 	     AUDIO_PLAY("SOUND_WINDOW_BORDER_CHANGE");
+	     if (ewin->shaded)
+	       {
+		  shadechange = 1;
+		  InstantUnShadeEwin(ewin);
+	       }
 	     SetEwinToBorder(gwins[i], b);
+	     if (shadechange)
+		InstantShadeEwin(ewin);
+	     shadechange = 0;
 	     ICCCM_MatchSize(gwins[i]);
 	     MoveResizeEwin(gwins[i], gwins[i]->x, gwins[i]->y, gwins[i]->client.w,
 			    gwins[i]->client.h);
@@ -3163,6 +3172,15 @@ doConfigure(void *params)
 		     SettingsGroup(ewin->group);
 		  else
 		     DIALOG_OK("Window Group Error", "\n  This window does not currently  \n  belong to a group.  \n");
+	       }
+	  }
+	else if (!strcmp(s, "group_membership"))
+	  {
+	     EWin               *ewin = GetFocusEwin();
+
+	     if (ewin)
+	       {
+		  ChooseGroupForEwinDialog(ewin);
 	       }
 	  }
      }

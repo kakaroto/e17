@@ -206,38 +206,6 @@ FindEwinByMenu(Menu * m)
 }
 
 EWin              **
-ListWinGroupMembers(Group * g, int *num)
-{
-   EWin              **ewins, **lst = NULL;
-   int                 i, j, n;
-
-   if (!g)
-     {
-	*num = 0;
-	EDBUG_RETURN(NULL);
-     }
-
-   ewins = (EWin **) ListItemType(&n, LIST_TYPE_EWIN);
-   j = 0;
-   for (i = 0; i < n; i++)
-     {
-	if (ewins[i]->group)
-	  {
-	     if (g->index == ewins[i]->group->index)
-	       {
-		  j++;
-		  lst = Erealloc(lst, sizeof(EWin *) * j);
-		  lst[j - 1] = ewins[i];
-	       }
-	  }
-     }
-   if (ewins)
-      Efree(ewins);
-   *num = j;
-   EDBUG_RETURN(lst);
-}
-
-EWin              **
 ListWinGroupMembersForEwin(EWin * ewin, int action, int *num)
 {
 
@@ -293,12 +261,14 @@ ListWinGroupMembersForEwin(EWin * ewin, int action, int *num)
 	     gwins = Emalloc(sizeof(EWin *));
 	     gwins[0] = ewin;
 	     *num = 1;
-	     EDBUG_RETURN(gwins);
 	  }
 	else
 	  {
-	     EDBUG_RETURN(ListWinGroupMembers(ewin->group, num));
+	     gwins = Emalloc(sizeof(EWin *) * ewin->group->num_members);
+	     memcpy(gwins, ewin->group->members, sizeof(EWin *) * ewin->group->num_members);
+	     *num = ewin->group->num_members;
 	  }
+	EDBUG_RETURN(gwins);
      }
    else
       EDBUG_RETURN(NULL);

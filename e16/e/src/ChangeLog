@@ -983,3 +983,32 @@ Wed Aug  4 23:08:41 PDT 1999
 The beginnings of the imageclass apply IPC.
 
 -------------------------------------------------------------------------------
+
+Fri Aug 20 13:45:41 CEST 1999
+(Christian)
+
+Ok, quite some stuff:
+
+:) Fixed window shading: it can now really be turned on and off.
+:) Having a window shaded and switching the border to one that
+   shades to another direction works properly now.
+:) Changed the layout management of the Remember dialog a bit to avoid
+   a problem that Hall Stevenson reported to the list. Also added a nice
+   pic ;)
+:) Lots of internal changes to window groups, they're now a list type and
+   pointered in both directions: an ewin in a group has a pointer to a
+   group, the Group has a list of EWin pointers that are group members.
+:) Added dialog for picking the group a window shall belong to. See
+   'Window Group'->'Select group to add to'. Maybe the layout could be
+   nicer.
+:) Groups are remembered now. Therefore, pagers are no longer a group
+   by default, but you can make them a group and have that group be
+   remembered. See the 'Remember' dialog settings. Should work, but I tested
+   it only for a day or so.
+:) I turned that menu onscreen appearance thing into an option, since
+   I'm not too happy with it. I'm used to just left-clicking on the
+   desktop for getting an Eterm, and if I do that now and the cursor
+   happens to be near the screen edge, I get ee or whatever. I turned
+   it on by default though :)
+
+Hope you like it folks.

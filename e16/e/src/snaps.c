@@ -72,6 +72,7 @@ GetSnapshot(EWin * ewin)
 	sn->shade = 0;
 	sn->use_cmd = 0;
 	sn->cmd = NULL;
+	sn->group = 0;
 	sn->apply_to_all = 0;
 	sn->used = 1;
 	ewin->snap = sn;
@@ -109,10 +110,19 @@ NewSnapshot(char *name)
    sn->shade = 0;
    sn->use_cmd = 0;
    sn->cmd = NULL;
+   sn->group = 0;
    sn->apply_to_all = 0;
    sn->used = 0;
    AddItemEnd(sn, sn->name, 0, LIST_TYPE_SNAPSHOT);
    return sn;
+}
+
+static void         CB_ApplySnapEscape(int val, void *data);
+static void
+CB_ApplySnapEscape(int val, void *data)
+{
+   DialogClose((Dialog *) data);
+   val = 0;
 }
 
 static Window       tmp_snap_client;
@@ -126,6 +136,7 @@ static char         tmp_snap_icon;
 static char         tmp_snap_shade;
 static char         tmp_snap_cmd;
 static char         tmp_snap_all_instances;
+static char         tmp_snap_group;
 
 static void         CB_ApplySnap(int val, void *data);
 static void
@@ -158,6 +169,7 @@ CB_ApplySnap(int val, void *data)
 		SnapshotEwinShade(ewin);
 	     if (tmp_snap_cmd)
 		SnapshotEwinCmd(ewin);
+	     SnapshotEwinGroup(ewin, tmp_snap_group);
 	     SnapshotEwinAllInstances(ewin, tmp_snap_all_instances);
 	     if ((!tmp_snap_border) &&
 		 (!tmp_snap_desktop) &&
@@ -167,7 +179,8 @@ CB_ApplySnap(int val, void *data)
 		 (!tmp_snap_sticky) &&
 		 (!tmp_snap_icon) &&
 		 (!tmp_snap_shade) &&
-		 (!tmp_snap_cmd))
+		 (!tmp_snap_cmd) &&
+		 (!tmp_snap_group))
 		UnsnapshotEwin(ewin);
 	     SaveSnapInfo();
 	  }
@@ -192,13 +205,15 @@ SnapshotEwinDialog(EWin * ewin)
    DialogSetTitle(d, "Application attributes");
 
    table = DialogInitItem(d);
-   DialogItemTableSetOptions(table, 2, 0, 0, 0);
+   DialogItemTableSetOptions(table, 4, 0, 0, 0);
 
    di = DialogAddItem(table, DITEM_IMAGE);
    DialogItemSetPadding(di, 2, 2, 2, 2);
+   DialogItemSetColSpan(di, 2);
    DialogItemImageSetFile(di, "pix/snapshots.png");
 
    di = DialogAddItem(table, DITEM_TEXT);
+   DialogItemSetColSpan(di, 2);
    DialogItemSetPadding(di, 2, 2, 2, 2);
    DialogItemSetFill(di, 1, 0);
    DialogItemTextSetText(di,
@@ -217,6 +232,7 @@ SnapshotEwinDialog(EWin * ewin)
    tmp_snap_icon = 0;
    tmp_snap_shade = 0;
    tmp_snap_cmd = 0;
+   tmp_snap_group = 0;
    tmp_snap_all_instances = 0;
    if (sn)
      {
@@ -238,64 +254,109 @@ SnapshotEwinDialog(EWin * ewin)
 	   tmp_snap_shade = 1;
 	if (sn->use_cmd)
 	   tmp_snap_cmd = 1;
+	if (sn->group)
+	   tmp_snap_group = 1;
 	if (sn->apply_to_all)
 	   tmp_snap_all_instances = 1;
      }
 
    di = DialogAddItem(table, DITEM_SEPARATOR);
-   DialogItemSetColSpan(di, 2);
+   DialogItemSetColSpan(di, 4);
    DialogItemSetPadding(di, 2, 2, 2, 2);
    DialogItemSetFill(di, 1, 0);
    DialogItemSeparatorSetOrientation(di, 0);
 
-   Esnprintf(s, sizeof(s), "Title: %80s", ewin->client.title);
    di = DialogAddItem(table, DITEM_TEXT);
    DialogItemSetPadding(di, 2, 2, 2, 2);
-   DialogItemSetColSpan(di, 2);
-   DialogItemSetFill(di, 0, 0);
+   DialogItemSetFill(di, 1, 0);
    DialogItemSetAlign(di, 0, 512);
-   DialogItemTextSetText(di, s);
+   DialogItemTextSetText(di, "Title:");
+
+   di = DialogAddItem(table, DITEM_TEXT);
+   DialogItemSetColSpan(di, 3);
+   DialogItemSetPadding(di, 2, 2, 2, 2);
+   DialogItemSetFill(di, 1, 0);
+   DialogItemSetAlign(di, 1024, 512);
+   DialogItemTextSetText(di, ewin->client.title);
 
    if (ewin->client.name)
      {
 	di = DialogAddItem(table, DITEM_TEXT);
 	DialogItemSetPadding(di, 2, 2, 2, 2);
-	DialogItemSetFill(di, 0, 0);
+	DialogItemSetFill(di, 1, 0);
 	DialogItemSetAlign(di, 0, 512);
+	DialogItemTextSetText(di, "Name:");
+
+	di = DialogAddItem(table, DITEM_TEXT);
+	DialogItemSetColSpan(di, 3);
+	DialogItemSetPadding(di, 2, 2, 2, 2);
+	DialogItemSetFill(di, 1, 0);
+	DialogItemSetAlign(di, 1024, 512);
 	DialogItemTextSetText(di, ewin->client.name);
      }
-   else
-      di = DialogAddItem(table, DITEM_NONE);
 
    if (ewin->client.class)
      {
 	di = DialogAddItem(table, DITEM_TEXT);
 	DialogItemSetPadding(di, 2, 2, 2, 2);
-	DialogItemSetFill(di, 0, 0);
+	DialogItemSetFill(di, 1, 0);
+	DialogItemSetAlign(di, 0, 512);
+	DialogItemTextSetText(di, "Class:");
+
+	di = DialogAddItem(table, DITEM_TEXT);
+	DialogItemSetColSpan(di, 3);
+	DialogItemSetPadding(di, 2, 2, 2, 2);
+	DialogItemSetFill(di, 1, 0);
 	DialogItemSetAlign(di, 1024, 512);
 	DialogItemTextSetText(di, ewin->client.class);
      }
-   else
-      di = DialogAddItem(table, DITEM_NONE);
 
    if (ewin->client.command)
      {
-	Esnprintf(s, sizeof(s), "Command: %s", ewin->client.command);
 	di = DialogAddItem(table, DITEM_TEXT);
 	DialogItemSetPadding(di, 2, 2, 2, 2);
-	DialogItemSetColSpan(di, 2);
-	DialogItemSetFill(di, 0, 0);
+	DialogItemSetFill(di, 1, 0);
 	DialogItemSetAlign(di, 0, 512);
-	DialogItemTextSetText(di, s);
+	DialogItemTextSetText(di, "Command:");
+
+	di = DialogAddItem(table, DITEM_TEXT);
+	DialogItemSetColSpan(di, 3);
+	DialogItemSetPadding(di, 2, 2, 2, 2);
+	DialogItemSetFill(di, 1, 0);
+	DialogItemSetAlign(di, 1024, 512);
+
+	/* if the command is long, cut in into slices of about 80 characters */
+	if (strlen(ewin->client.command) > 80)
+	  {
+	     int                 i = 0, slice, last;
+
+	     s[0] = 0;
+	     slice = 80;
+	     while (i <= strlen(ewin->client.command))
+	       {
+		  last = i;
+		  i += 80;
+		  slice = 80;
+		  /* and make sure that we don't cut in the middle of a word. */
+		  while (ewin->client.command[i++] != ' ')
+		     slice++;
+		  strncat(s, ewin->client.command + last, slice);
+		  strcat(s, "\n");
+	       }
+	     DialogItemTextSetText(di, s);
+	  }
+	else
+	   DialogItemTextSetText(di, ewin->client.command);
      }
 
    di = DialogAddItem(table, DITEM_SEPARATOR);
-   DialogItemSetColSpan(di, 2);
+   DialogItemSetColSpan(di, 4);
    DialogItemSetPadding(di, 2, 2, 2, 2);
    DialogItemSetFill(di, 1, 0);
    DialogItemSeparatorSetOrientation(di, 0);
 
    di = DialogAddItem(table, DITEM_CHECKBUTTON);
+   DialogItemSetColSpan(di, 2);
    DialogItemSetPadding(di, 2, 2, 2, 2);
    DialogItemSetFill(di, 1, 0);
    DialogItemCheckButtonSetText(di, "Location");
@@ -303,6 +364,7 @@ SnapshotEwinDialog(EWin * ewin)
    DialogItemCheckButtonSetPtr(di, &tmp_snap_location);
 
    di = DialogAddItem(table, DITEM_CHECKBUTTON);
+   DialogItemSetColSpan(di, 2);
    DialogItemSetPadding(di, 2, 2, 2, 2);
    DialogItemSetFill(di, 1, 0);
    DialogItemCheckButtonSetText(di, "Border style");
@@ -310,6 +372,7 @@ SnapshotEwinDialog(EWin * ewin)
    DialogItemCheckButtonSetPtr(di, &tmp_snap_border);
 
    di = DialogAddItem(table, DITEM_CHECKBUTTON);
+   DialogItemSetColSpan(di, 2);
    DialogItemSetPadding(di, 2, 2, 2, 2);
    DialogItemSetFill(di, 1, 0);
    DialogItemCheckButtonSetText(di, "Size");
@@ -317,6 +380,7 @@ SnapshotEwinDialog(EWin * ewin)
    DialogItemCheckButtonSetPtr(di, &tmp_snap_size);
 
    di = DialogAddItem(table, DITEM_CHECKBUTTON);
+   DialogItemSetColSpan(di, 2);
    DialogItemSetPadding(di, 2, 2, 2, 2);
    DialogItemSetFill(di, 1, 0);
    DialogItemCheckButtonSetText(di, "Desktop");
@@ -324,6 +388,7 @@ SnapshotEwinDialog(EWin * ewin)
    DialogItemCheckButtonSetPtr(di, &tmp_snap_desktop);
 
    di = DialogAddItem(table, DITEM_CHECKBUTTON);
+   DialogItemSetColSpan(di, 2);
    DialogItemSetPadding(di, 2, 2, 2, 2);
    DialogItemSetFill(di, 1, 0);
    DialogItemCheckButtonSetText(di, "Shaded state");
@@ -331,6 +396,7 @@ SnapshotEwinDialog(EWin * ewin)
    DialogItemCheckButtonSetPtr(di, &tmp_snap_shade);
 
    di = DialogAddItem(table, DITEM_CHECKBUTTON);
+   DialogItemSetColSpan(di, 2);
    DialogItemSetPadding(di, 2, 2, 2, 2);
    DialogItemSetFill(di, 1, 0);
    DialogItemCheckButtonSetText(di, "Sticky state");
@@ -338,6 +404,7 @@ SnapshotEwinDialog(EWin * ewin)
    DialogItemCheckButtonSetPtr(di, &tmp_snap_sticky);
 
    di = DialogAddItem(table, DITEM_CHECKBUTTON);
+   DialogItemSetColSpan(di, 2);
    DialogItemSetPadding(di, 2, 2, 2, 2);
    DialogItemSetFill(di, 1, 0);
    DialogItemCheckButtonSetText(di, "Stacking layer");
@@ -347,6 +414,7 @@ SnapshotEwinDialog(EWin * ewin)
    if (ewin->client.command)
      {
 	di = DialogAddItem(table, DITEM_CHECKBUTTON);
+	DialogItemSetColSpan(di, 2);
 	DialogItemSetPadding(di, 2, 2, 2, 2);
 	DialogItemSetFill(di, 1, 0);
 	DialogItemCheckButtonSetText(di, "Restart application on login");
@@ -354,10 +422,24 @@ SnapshotEwinDialog(EWin * ewin)
 	DialogItemCheckButtonSetPtr(di, &tmp_snap_cmd);
      }
    else
-      di = DialogAddItem(table, DITEM_NONE);
+     {
+	di = DialogAddItem(table, DITEM_NONE);
+	DialogItemSetColSpan(di, 2);
+     }
+
+   if (ewin->group)
+     {
+	di = DialogAddItem(table, DITEM_CHECKBUTTON);
+	DialogItemSetColSpan(di, 4);
+	DialogItemSetPadding(di, 2, 2, 2, 2);
+	DialogItemSetFill(di, 1, 0);
+	DialogItemCheckButtonSetText(di, "Remember entire group");
+	DialogItemCheckButtonSetState(di, tmp_snap_group);
+	DialogItemCheckButtonSetPtr(di, &tmp_snap_group);
+     }
 
    di = DialogAddItem(table, DITEM_SEPARATOR);
-   DialogItemSetColSpan(di, 2);
+   DialogItemSetColSpan(di, 4);
    DialogItemSetPadding(di, 2, 2, 2, 2);
    DialogItemSetFill(di, 1, 0);
    DialogItemSeparatorSetOrientation(di, 0);
@@ -365,13 +447,13 @@ SnapshotEwinDialog(EWin * ewin)
    di = DialogAddItem(table, DITEM_CHECKBUTTON);
    DialogItemSetPadding(di, 2, 2, 2, 2);
    DialogItemSetFill(di, 1, 0);
-   DialogItemSetColSpan(di, 2);
+   DialogItemSetColSpan(di, 4);
    DialogItemCheckButtonSetText(di, "Applies to all instances of this window");
    DialogItemCheckButtonSetState(di, tmp_snap_all_instances);
    DialogItemCheckButtonSetPtr(di, &tmp_snap_all_instances);
 
    di = DialogAddItem(table, DITEM_SEPARATOR);
-   DialogItemSetColSpan(di, 2);
+   DialogItemSetColSpan(di, 4);
    DialogItemSetPadding(di, 2, 2, 2, 2);
    DialogItemSetFill(di, 1, 0);
    DialogItemSeparatorSetOrientation(di, 0);
@@ -379,7 +461,10 @@ SnapshotEwinDialog(EWin * ewin)
    DialogAddButton(d, "OK", CB_ApplySnap, 1);
    DialogAddButton(d, "Apply", CB_ApplySnap, 0);
    DialogAddButton(d, "Cancel", CB_ApplySnap, 1);
-   DialogSetExitFunction(d, CB_ApplySnap, 1, d);
+   DialogSetExitFunction(d, CB_ApplySnap, 2, d);
+   DialogBindKey(d, "Escape", CB_ApplySnapEscape, 0, d);
+   DialogBindKey(d, "Return", CB_ApplySnap, 0, d);
+
    ShowDialog(d);
 }
 /* record info about this Ewin's attributes */
@@ -510,6 +595,52 @@ SnapshotEwinCmd(EWin * ewin)
 }
 
 void
+SnapshotEwinGroup(EWin * ewin, char onoff)
+{
+   Snapshot           *sn;
+   EWin              **gwins = NULL;
+   int                 i, num;
+
+   if (!ewin->group)
+      return;
+
+   gwins = ListWinGroupMembersForEwin(ewin, ACTION_NONE, &num);
+
+   for (i = 0; i < num; i++)
+     {
+	if (onoff)
+	  {
+	     if (gwins[i]->snap)
+		UnsnapshotEwin(gwins[i]);
+	     sn = GetSnapshot(gwins[i]);
+	     if (sn)
+	       {
+		  sn->group = gwins[i]->group->index;
+		  SnapshotEwinBorder(gwins[i]);
+		  SnapshotEwinDesktop(gwins[i]);
+		  SnapshotEwinSize(gwins[i]);
+		  SnapshotEwinLocation(gwins[i]);
+		  SnapshotEwinLayer(gwins[i]);
+		  SnapshotEwinSticky(gwins[i]);
+		  SnapshotEwinIcon(gwins[i]);
+		  SnapshotEwinShade(gwins[i]);
+		  SnapshotEwinCmd(gwins[i]);
+	       }
+	  }
+	else
+	  {
+	     sn = GetSnapshot(gwins[i]);
+	     if (sn)
+	       {
+		  sn->group = 0;
+	       }
+	  }
+     }
+
+   Efree(gwins);
+}
+
+void
 SnapshotEwinAllInstances(EWin * ewin, char onoff)
 {
    Snapshot           *sn;
@@ -542,6 +673,7 @@ SnapshotEwinAll(EWin * ewin)
    SnapshotEwinIcon(ewin);
    SnapshotEwinShade(ewin);
    SnapshotEwinCmd(ewin);
+   SnapshotEwinGroup(ewin, 1);
 }
 
 /* unsnapshot any saved info about this ewin */
@@ -645,6 +777,8 @@ SaveSnapInfo(void)
 		fprintf(f, "ICON: %s\n", sn->iclass_name);
 	     if (sn->cmd)
 		fprintf(f, "CMD: %s\n", sn->cmd);
+	     if (sn->group)
+		fprintf(f, "GROUP: %i\n", sn->group);
 	  }
 	Efree(lst);
      }
@@ -770,6 +904,11 @@ LoadSnapInfo(void)
 		sn->border_name = duplicate(atword(buf, 2));
 	     else if (!strcmp(s, "ICON:"))
 		sn->iclass_name = duplicate(atword(buf, 2));
+	     else if (!strcmp(s, "GROUP:"))
+	       {
+		  word(buf, 2, s);
+		  sn->group = atoi(s);
+	       }
 	  }
      }
    fclose(f);
@@ -844,6 +983,19 @@ MatchEwinToSnapInfo(EWin * ewin)
 	     SetEwinToBorder(ewin, b);
 	  }
      }
+   if (sn->group)
+     {
+	Group              *g = (Group *) FindItem(NULL, sn->group, LIST_FINDBY_ID, LIST_TYPE_GROUP);
+
+	if (!g)
+	  {
+	     BuildWindowGroup(&ewin, 1);
+	     ewin->group->index = sn->group;
+	     ListChangeItemID(LIST_TYPE_GROUP, ewin->group, sn->group);
+	  }
+	else
+	   AddEwinToGroup(ewin, g);
+     }
 }
 
 void
@@ -896,7 +1048,7 @@ MatchEwinToSnapInfoAfter(EWin * ewin)
 	if (sn->sticky)
 	   MakeWindowSticky(ewin);
 	else
-	   MakeWindowSticky(ewin);
+	   MakeWindowUnSticky(ewin);
      }
    if (sn->use_shade)
      {

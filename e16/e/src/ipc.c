@@ -305,6 +305,7 @@ IPCStruct           IPCArray[] =
       "raindrops <on/off> (raindrops will appear across your desktop)\n"
       "menu_animate <on/off> (toggles the animation of menus "
       "as they appear)\n"
+    "animate_win_shading <on/off> (toggles the animation of window shading)\n"
       "window_shade_speed <#> (number of pixels/sec to shade a window)\n"
       "dragbar <on/off/left/right/top/bottom> (changes "
       "location of dragbar)\n"
@@ -2694,12 +2695,36 @@ IPC_FX(char *params, Client * c)
 			    "Error: unknown mode specified\n");
 	       }
 	  }
+	else if (!strcmp(word1, "animate_win_shading"))
+	  {
+	     word(params, 2, word2);
+	     if (!strcmp(word2, "on"))
+	       {
+		  mode.animate_shading = 1;
+	       }
+	     else if (!strcmp(word2, "off"))
+	       {
+		  mode.animate_shading = 0;
+	       }
+	     else if (!strcmp(word2, "?"))
+	       {
+		  if (mode.animate_shading)
+		     Esnprintf(buf, sizeof(buf), "animate_win_shading: on\n");
+		  else
+		     Esnprintf(buf, sizeof(buf), "animate_win_shading: off\n");
+	       }
+	     else
+	       {
+		  Esnprintf(buf, sizeof(buf),
+			    "Error: unknown mode specified\n");
+	       }
+	  }
 	else if (!strcmp(word1, "window_shade_speed"))
 	  {
 	     word(params, 2, word2);
 	     if (!strcmp(word2, "?"))
 	       {
-		  if (mode.shadespeed)
+		  if (mode.animate_shading)
 		    {
 		       Esnprintf(buf, sizeof(buf), "shadespeed: %d seconds\n",
 				 mode.shadespeed);

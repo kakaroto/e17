@@ -603,13 +603,15 @@ PagerShow(Pager * p)
 	ewin->client.height.max = 240 * ay;
 	ewin->pager = p;
 	ewin->desktop = desks.current;
-	if (!pager_group)
-	  {
-	     BuildWindowGroup(&ewin, 1);
-	     pager_group = ewin->group;
-	  }
-	else
-	   AddEwinToGroup(ewin, pager_group);
+	/*
+	 * if (!pager_group)
+	 * {
+	 * BuildWindowGroup(&ewin, 1);
+	 * pager_group = ewin->group;
+	 * }
+	 * else
+	 * AddEwinToGroup(ewin, pager_group);
+	 */
 	p->ewin = ewin;
 	p->visible = 1;
 	DesktopRemoveEwin(ewin);

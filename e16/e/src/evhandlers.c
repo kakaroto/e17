@@ -1349,6 +1349,7 @@ HandleUnmap(XEvent * ev)
 	  }
 	else
 	   HideEwin(ewin);
+	RemoveEwinFromGroup(ewin);
      }
    EDBUG_RETURN_;
 }

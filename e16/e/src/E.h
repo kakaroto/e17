@@ -292,8 +292,9 @@ int                 Esnprintf(va_alist);
 #define LIST_TYPE_WARP_RING     29
 #define LIST_TYPE_XID           30
 #define LIST_TYPE_ICONDEF       31
+#define LIST_TYPE_GROUP         32
 
-#define LIST_TYPE_COUNT         32
+#define LIST_TYPE_COUNT         33
 
 #define BEVEL_NONE              0
 #define BEVEL_AMIGA             1
@@ -827,7 +828,8 @@ EWin;
 struct _group
   {
      int                 index;
-     int                 ref_count;
+     EWin              **members;
+     int                 num_members;
      /* these are flags that define what is applied to the whole group */
      char                iconify;
      char                kill;
@@ -1078,6 +1080,7 @@ typedef struct _emode
      char                mapslide;
      int                 slidespeedmap;
      int                 slidespeedcleanup;
+     char                animate_shading;
      int                 shadespeed;
      char                doingslide;
      int                 server_grabbed;
@@ -1104,6 +1107,7 @@ typedef struct _emode
      int                 cur_menu_depth;
      Menu               *cur_menu[256];
      char                menuslide;
+     char                menusonscreen;
      char                numdesktops;
      char                transientsfollowleader;
      char                switchfortransientmap;
@@ -1299,6 +1303,7 @@ struct _snapshot
      char                shade;
      char                use_cmd;
      char               *cmd;
+     int                 group;
      char                apply_to_all;
      int                 used;
   };
@@ -2766,7 +2771,6 @@ extern int          numlock_mask;
 extern int          scrollock_mask;
 extern int          mask_mod_combos[8];
 extern Group       *current_group;
-extern Group       *pager_group;
 
 /* This turns on E's internal stack tracking system for coarse debugging */
 /* and being able to trace E for profiling/optimisation purposes (which */

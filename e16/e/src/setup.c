@@ -477,6 +477,7 @@ SetupX()
    mode.slidespeedmap = 6000;
    mode.slidespeedcleanup = 8000;
    mode.shadespeed = 8000;
+   mode.animate_shading = 1;
    mode.doingslide = 0;
    mode.server_grabbed = 0;
    mode.desktop_bg_timeout = 240;
@@ -497,6 +498,7 @@ SetupX()
    for (i = 0; i < 256; i++)
       mode.cur_menu[i] = NULL;
    mode.menuslide = 0;
+   mode.menusonscreen = 1;
    mode.numdesktops = 2;
    mode.transientsfollowleader = 1;
    mode.switchfortransientmap = 1;
