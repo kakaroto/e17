@@ -5,7 +5,7 @@ part {
 	type, TEXT;
 
 	description {
-		color, 128 128 128 255;
+		color, 255 255 255 255;
 
 		rel1 {
 			relative, 1.0 0.0;
