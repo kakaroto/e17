@@ -60,7 +60,10 @@ void        ewl_widget_show(EwlWidget *widget);
 void        ewl_widget_hide(EwlWidget *widget);
 void        ewl_widget_resize(EwlWidget *widget);
 
-/* WIDGET RECT FUNCTIONS */
+/* WIDGET RECT/LAYOUT FUNCTIONS */
+
+EwlRequisition *ewl_widget_get_requisition(EwlWidget *widget);
+
 EwlRect    *ewl_widget_get_rect(EwlWidget *widget);
 void        ewl_widget_set_rect(EwlWidget *widget, EwlRect *rect);
 

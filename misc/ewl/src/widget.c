@@ -219,6 +219,42 @@ void        ewl_widget_resize_handler(void    *object,
 }
 
 /* WIDGET RECT/PADDING FUNCTIONS */
+
+void        ewl_widget_get_requisition_handler(void    *object,
+                                               char    *type,
+                                               EwlHash *params)
+{
+	EwlWidget      *widget = EWL_WIDGET(object);
+	EwlRequisition *r;
+	EwlRect        *req = ewl_widget_get_requested_rect(widget),
+	               *min = ewl_widget_get_min_rect(widget),
+	               *max = ewl_widget_get_max_rect(widget);
+	int             min_w = min?min->w:0,
+	                min_h = min?min->h:0,
+	                max_w = max?max->w:0,
+	                max_h = max?max->h:0;
+	r = ewl_requisition_new_with_values(req, min_w, min_h, max_w, max_h);
+	ewl_hash_set(params, "requisition", r);
+	return;
+}
+
+EwlRequisition *ewl_widget_get_requisition(EwlWidget *widget)
+{
+	EwlHandler  handler = ewl_handler_get(widget, "/widget/get_requisition");
+	EwlHash    *params;
+	EwlRequisition *req = NULL;
+	if (handler) {
+		params = ewl_hash_new();
+		ewl_hash_set(params, "widget", widget);
+		handler(widget, "/widget/get_requisition", params);
+		req = ewl_hash_get(params, "requisition");
+		ewl_hash_free(params);
+	} else {
+		req = ewl_requisition_new_with_values(0, 0, 0, 0, 0);
+	}
+	return req;
+}
+
 EwlRect    *ewl_widget_get_rect(EwlWidget *widget)
 {
 	return ewl_get(widget, "/widget/rect");
