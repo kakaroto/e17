@@ -1806,7 +1806,7 @@ collections {
 	    target,     "power_button_glow";
 	 }
 	 program {
-	    name,       "power_button_up";
+	    name,       "power_button_clicked";
 	    signal,     "mouse,clicked,1";
 	    source,     "power_button";
 	    action,     STATE_SET "hilited" 0.0;
@@ -1814,7 +1814,7 @@ collections {
 	    target,     "power_button_glow";
 	 }
 	 program {
-	    name,       "power_button_clicked";
+	    name,       "power_button_clicked_emission";
 	    signal,     "mouse,clicked,1";
 	    source,     "power_button";
 	    action,     SIGNAL_EMIT "EntranceSystemHalt" "";
@@ -1975,7 +1975,7 @@ collections {
 	  }
 	  program
 	   {
-		name, "SelectSession";
+		name, "SelectSessionToo";
 		signal, "SessionSelected";
 		source, "";
 		action, STATE_SET "default" 0.0;
