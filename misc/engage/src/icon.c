@@ -20,8 +20,8 @@ Evas_List      *icon_paths = NULL;
 static OD_Icon *od_icon_new(const char *name, const char *icon_path);
 static void     od_icon_mapping_get(const char *winclass, char **name, char **icon_name);       // DON'T free returned
 static char    *od_icon_path_get(const char *icon_name);
-static void od_icon_edje_cb(void *data, Evas_Object *obj, 
-			    const char *emission, const char *source);
+static void     od_icon_edje_cb(void *data, Evas_Object * obj,
+                                const char *emission, const char *source);
 
 OD_Icon        *
 od_icon_new_applnk(const char *command, const char *winclass)
@@ -67,6 +67,7 @@ od_icon_new_minwin(Ecore_X_Window win)
   od_icon_mapping_get(winclass, &name, &icon_name);
   char           *icon_path = od_icon_path_get(icon_name);
   OD_Icon        *ret;
+
   ret = od_icon_new(title, icon_path);
 #ifdef HAVE_IMLIB
   if (options.grab_min_icons != 0)
@@ -133,17 +134,13 @@ void
 od_object_resize_intercept_cb(void *data, Evas_Object * o,
                               Evas_Coord w, Evas_Coord h)
 {
-  if (o)
-  {
-    if (!strcmp("image", evas_object_type_get(o)))
-    {
+  if (o) {
+    if (!strcmp("image", evas_object_type_get(o))) {
       evas_object_resize(o, w, h);
       evas_object_image_fill_set(o, 0.0, 0.0, w, h);
-    }
-    else
-    {
-	fprintf(stderr, "Intercepting something other than an image(%s)\n",
-		evas_object_type_get(o));
+    } else {
+      fprintf(stderr, "Intercepting something other than an image(%s)\n",
+              evas_object_type_get(o));
     }
   }
 }
@@ -161,68 +158,61 @@ od_icon_new(const char *name, const char *icon_file)
   Evas_Object    *tt_txt = ret->tt_txt = evas_object_text_add(evas);
   Evas_Object    *tt_shd = ret->tt_shd = evas_object_text_add(evas);
   Evas_Object    *pic = ret->pic = evas_object_image_add(evas);
+
   evas_object_image_file_set(pic, icon_file, NULL);
   evas_object_image_alpha_set(pic, 1);
   evas_object_image_smooth_scale_set(pic, 1);
   evas_object_pass_events_set(pic, 1);
   evas_object_layer_set(pic, 100);
-          
+
   evas_object_show(pic);
   evas_object_intercept_resize_callback_add(pic,
-                                            od_object_resize_intercept_cb,NULL);
-  
+                                            od_object_resize_intercept_cb,
+                                            NULL);
+
   ret->arrow = NULL;
   ret->state = 0;
   ret->appear_timer = NULL;
-  
+
 
   if ((strstr(options.theme, "/")))
     snprintf(path, PATH_MAX, options.theme);
   else
     snprintf(path, PATH_MAX, PACKAGE_DATA_DIR "/themes/%s.eet", options.theme);
 
-  if(edje_object_file_set(icon, path, "Main") > 0)
-  {
-    if(edje_object_part_exists(icon, "EngageIcon"))
-    {
-	edje_object_part_swallow(icon, "EngageIcon", pic);
+  if (edje_object_file_set(icon, path, "Main") > 0) {
+    if (edje_object_part_exists(icon, "EngageIcon")) {
+      edje_object_part_swallow(icon, "EngageIcon", pic);
+    } else {
+      evas_object_del(pic);
+      ret->pic = NULL;
     }
-    else
-    {
-	evas_object_del(pic);
-	ret->pic = NULL;
-    }
-    if(edje_object_part_exists(icon, "EngageName"))
-    {
-	edje_object_part_text_set(icon, "EngageName", name);
-    }
-    else
-    {
-	evas_object_text_font_set(tt_txt, options.tt_fa, options.tt_fs);
-	evas_object_text_text_set(tt_txt, name);
-	evas_object_color_set(tt_txt,
-                        (options.tt_txt_color >> 16) & 0xff,
-                        (options.tt_txt_color >> 8) & 0xff,
-                        (options.tt_txt_color >> 0) & 0xff, 255);
-	evas_object_layer_set(tt_txt, 200);
+    if (edje_object_part_exists(icon, "EngageName")) {
+      edje_object_part_text_set(icon, "EngageName", name);
+    } else {
+      evas_object_text_font_set(tt_txt, options.tt_fa, options.tt_fs);
+      evas_object_text_text_set(tt_txt, name);
+      evas_object_color_set(tt_txt,
+                            (options.tt_txt_color >> 16) & 0xff,
+                            (options.tt_txt_color >> 8) & 0xff,
+                            (options.tt_txt_color >> 0) & 0xff, 255);
+      evas_object_layer_set(tt_txt, 200);
 
-	evas_object_text_font_set(tt_shd, options.tt_fa, options.tt_fs);
-	evas_object_text_text_set(tt_shd, name);
-	evas_object_color_set(tt_shd,
-                        (options.tt_shd_color >> 16) & 0xff,
-                        (options.tt_shd_color >> 8) & 0xff,
-                        (options.tt_shd_color >> 0) & 0xff, 127);
-	evas_object_layer_set(tt_shd, 199);
+      evas_object_text_font_set(tt_shd, options.tt_fa, options.tt_fs);
+      evas_object_text_text_set(tt_shd, name);
+      evas_object_color_set(tt_shd,
+                            (options.tt_shd_color >> 16) & 0xff,
+                            (options.tt_shd_color >> 8) & 0xff,
+                            (options.tt_shd_color >> 0) & 0xff, 127);
+      evas_object_layer_set(tt_shd, 199);
     }
     edje_object_signal_callback_add(icon, "engage,app,*", "*",
-				    od_icon_edje_cb, ret);
+                                    od_icon_edje_cb, ret);
     evas_object_layer_set(icon, 100);
     evas_object_show(icon);
-  } 
-  else
-  {
-      evas_object_del(icon);
-      ret->icon = NULL;
+  } else {
+    evas_object_del(icon);
+    ret->icon = NULL;
   }
 
   return ret;
@@ -412,86 +402,71 @@ od_icon_add_kde_set(const char *path)
   }
 }
 static void
-od_icon_edje_cb(void *data, Evas_Object *obj, const char *emission, const
-char *source)
+od_icon_edje_cb(void *data, Evas_Object * obj, const char *emission, const
+                char *source)
 {
-  pid_t pid;
-  Evas_List *l = NULL;
+  pid_t           pid;
+  Evas_List      *l = NULL;
   OD_Icon        *icon = NULL;
-  
-  if((icon = (OD_Icon *) data))
-  {
-    if(!strcmp(emission, "engage,app,raise"))
-    {
-	switch(icon->type)
-	{
-	    case application_link:
-		for(l = clients; l; l = l->next)
-		{
-		    OD_Window *win = (OD_Window*)l->data;
-		    if(win->applnk == icon)
-		    {
-			clients = evas_list_remove(clients, win);
-			clients = evas_list_append(clients, win);
-			od_wm_activate_window(win->id);
-			break;
-		    }
-		}
-		break;
-	    case docked_icon:
-		break;
-	    case minimised_window:
-		od_wm_activate_window(icon->data.minwin.window);
-		break;
-	}
-    }
-    else if(!strcmp(emission, "engage,app,minimize"))
-    {
-	switch(icon->type)
-	{
-	    case application_link:
-		for(l = clients; l; l = l->next)
-		{
-		    OD_Window *win = (OD_Window*)l->data;
-		    if(win->applnk == icon)
-		    {
-			clients = evas_list_remove(clients, win);
-			clients = evas_list_append(clients, win);
-			od_wm_deactivate_window(win->id);
-			break;
-		    }
-		}
-		break;
-	    case docked_icon:
-		break;
-	    case minimised_window:
-		break;
-	}
-    }
-    else if (!strcmp(emission, "engage,app,open"))
-    {
-	switch(icon->type)
-	{
-	    case application_link:
-		if((pid = fork()) < 0)
-		    return;
-		else if(pid == 0)	/* child */
-		{
-		 execl("/bin/sh", "sh", "-c", icon->data.applnk.command, NULL);
-		}
-		else /* parent */
-		{
-		}
-		break;
-	    case docked_icon:
-		break;
-	    case minimised_window:
-		break;
-	}
-    }
-    else if (!strcmp(emission, "engage,app,close"))
-    {
-	/* FIXME Useful ? */
+
+  if ((icon = (OD_Icon *) data)) {
+    if (!strcmp(emission, "engage,app,raise")) {
+      switch (icon->type) {
+      case application_link:
+        for (l = clients; l; l = l->next) {
+          OD_Window      *win = (OD_Window *) l->data;
+
+          if (win->applnk == icon) {
+            clients = evas_list_remove(clients, win);
+            clients = evas_list_append(clients, win);
+            od_wm_activate_window(win->id);
+            break;
+          }
+        }
+        break;
+      case docked_icon:
+        break;
+      case minimised_window:
+        od_wm_activate_window(icon->data.minwin.window);
+        break;
+      }
+    } else if (!strcmp(emission, "engage,app,minimize")) {
+      switch (icon->type) {
+      case application_link:
+        for (l = clients; l; l = l->next) {
+          OD_Window      *win = (OD_Window *) l->data;
+
+          if (win->applnk == icon) {
+            clients = evas_list_remove(clients, win);
+            clients = evas_list_append(clients, win);
+            od_wm_deactivate_window(win->id);
+            break;
+          }
+        }
+        break;
+      case docked_icon:
+        break;
+      case minimised_window:
+        break;
+      }
+    } else if (!strcmp(emission, "engage,app,open")) {
+      switch (icon->type) {
+      case application_link:
+        if ((pid = fork()) < 0)
+          return;
+        else if (pid == 0) {    /* child */
+          execl("/bin/sh", "sh", "-c", icon->data.applnk.command, NULL);
+        } else {                /* parent */
+
+        }
+        break;
+      case docked_icon:
+        break;
+      case minimised_window:
+        break;
+      }
+    } else if (!strcmp(emission, "engage,app,close")) {
+      /* FIXME Useful ? */
     }
     fprintf(stderr, "got %s from %s\n", emission, icon->name);
   }

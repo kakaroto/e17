@@ -22,14 +22,14 @@ static void     handle_mouse_move(void *data, Evas * e, Evas_Object * obj,
 
 void
 od_window_move()
-{ 
-  int x, y, w, h;
-  Evas_Object *o = NULL;
-  
-  ecore_evas_geometry_get (ee, &x, &y, &w, &h);
-  
+{
+  int             x, y, w, h;
+  Evas_Object    *o = NULL;
+
+  ecore_evas_geometry_get(ee, &x, &y, &w, &h);
+
 #ifdef HAVE_TRANS_BG
-  if((o = evas_object_name_find(ecore_evas_get(ee), "trans")))
+  if ((o = evas_object_name_find(ecore_evas_get(ee), "trans")))
     esmart_trans_x11_freshen(o, x, y, w, h);
 #endif
 }
@@ -37,14 +37,13 @@ od_window_move()
 void
 od_window_resize()
 {
-  int x, y, w, h;
-  Evas_Object *o = NULL;
-  
+  int             x, y, w, h;
+  Evas_Object    *o = NULL;
+
   ecore_evas_geometry_get(ee, &x, &y, &w, &h);
 
 #ifdef HAVE_TRANS_BG
-  if((o = evas_object_name_find(ecore_evas_get(ee), "trans")))
-  {
+  if ((o = evas_object_name_find(ecore_evas_get(ee), "trans"))) {
     evas_object_resize(o, w, h);
     esmart_trans_x11_freshen(o, x, y, w, h);
   }
@@ -76,11 +75,10 @@ od_window_init()
                                (int) ((res_x - options.width) / 2.0),
                                (int) (res_y - options.height),
                                options.width, options.height);
-  else
-  {
-    if (strcmp(options.engine, "software"))
-    {
-      fprintf(stderr, "Warning: Invalid engine type \"%s\" specified in config.\n");
+  else {
+    if (strcmp(options.engine, "software")) {
+      fprintf(stderr,
+              "Warning: Invalid engine type \"%s\" specified in config.\n");
       fprintf(stderr, "         Defaulting to software engine.\n");
     }
     ee = ecore_evas_software_x11_new(NULL, 0,
@@ -88,7 +86,7 @@ od_window_init()
                                      (int) (res_y - options.height),
                                      options.width, options.height);
   }
-  
+
   ecore_evas_title_set(ee, "Engage");
   ecore_evas_name_class_set(ee, "engage", "engage");
   ecore_evas_borderless_set(ee, 1);
