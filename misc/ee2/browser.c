@@ -138,8 +138,9 @@ void
 browser_sel(GtkWidget *clist, gint row, gint column,
 						GdkEventButton *event, gpointer data)
 {
-   gchar *lblt;
-   gchar *img;
+	gchar lblt[255];
+	gchar *img;
+	int w, h;
    
    gtk_clist_get_text(GTK_CLIST(clist), row, 0, &img);
    
@@ -150,15 +151,15 @@ browser_sel(GtkWidget *clist, gint row, gint column,
       LoadImage(cimg);
       DrawImage(im, 0, 0);
    }
-   /* FIXME (im to tired atm)
-      if(im){
-	 imlib_context_set_image(im);
-	 sprintf(lblt, "Resolution:  %d x %d\n"
-		 "File Size:  \n"
-		 "Last Modification:  \n"
-		 "Has Alpha:  ",
-		 imlib_image_get_width(),
-		 imlib_image_get_height());
-	 gtk_label_set_text(GTK_LABEL(infol), lblt);
-	}*/
+ 
+	if(im){
+		imlib_context_set_image(im);
+		sprintf(lblt, "Resolution:  %dx%d\n"
+						"File Size:  \n"
+						"Last Modification:  \n"
+						"Has Alpha:  ",
+						imlib_image_get_width(),
+						imlib_image_get_height());
+		gtk_label_set_text(GTK_LABEL(infol), lblt);
+	}
 }
