@@ -463,12 +463,12 @@ static Action      *
 ActionDecode(const char *line)
 {
    Action             *aa;
-   char                ev[16], key[128], mod[16], *s;
+   char                ev[16], mod[16], key[128], *s;
    int                 len, event, modifiers, button;
    char                anymod, anybut, anykey;
 
    len = -1;
-   sscanf(line, "%15s %127s %15s %n", ev, mod, key, &len);
+   sscanf(line, "%15s %15s %127s %n", ev, mod, key, &len);
    if (len <= 0)
       return NULL;
 
