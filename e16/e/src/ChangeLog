@@ -2294,3 +2294,10 @@ Thu Sep 23 14:55:59 PDT 1999
 
 and dont save colro modifiers in the user config anymore since they have been 
 disabled
+
+-------------------------------------------------------------------------------
+
+Thu Sep 23 14:57:35 PDT 1999
+(Raster)
+
+get the end of comment thing right :)
