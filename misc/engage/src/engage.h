@@ -130,6 +130,7 @@ struct _OD_Icon {
   double          scale;
   double          start_time;
   Ecore_Timer    *appear_timer;
+  int             launcher;
   enum { application_link, minimised_window, system_icon } type;
   union {
     struct {

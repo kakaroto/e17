@@ -5,4 +5,4 @@ HandyAndE:
 update config, trans etc and added autofoo
 
 lycos:
-added config file loading for icons
+added config file loading for icons (now removed in favour of e_app)

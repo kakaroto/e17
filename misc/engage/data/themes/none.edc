@@ -227,7 +227,7 @@ collections {
       }
       program {
         name, "engage_icon_mouse_down";
-        signal, "mouse,clicked,3";
+        signal, "mouse,clicked,2";
         source, "background";
         action, SIGNAL_EMIT "engage,window,minimize" "";
       }
@@ -240,7 +240,7 @@ collections {
       }
       program {
         name, "engage_icon_mouse_clicked";
-        signal, "mouse,down,1";
+        signal, "mouse,clicked,1";
         source, "background";
         action, SIGNAL_EMIT "engage,app,open" "";
       }

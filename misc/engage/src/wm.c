@@ -340,7 +340,7 @@ od_sync_clients(void *data)
         owd->applnk->data.applnk.count--;
         if (owd->applnk->data.applnk.count == 0) {
           od_icon_arrow_hide(owd->applnk);
-          if (owd->applnk->data.applnk.command[0] == '\0') {
+          if (owd->applnk->launcher == 0) {
             od_dock_del_icon(owd->applnk);
             free(owd);
           }

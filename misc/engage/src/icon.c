@@ -306,6 +306,7 @@ od_icon_new(E_App *app, char *name_override, char *class_override, int type)
                                     od_icon_edje_win_raise_cb, ret);
   }
 
+  ret->launcher = 0;
   return ret;
 }
 

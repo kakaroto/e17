@@ -54,9 +54,13 @@ userconfig_applinks_load(char* fp)
   
   l = applist->subapps;
   while(l) {
-    E_App *ptr = l->data;
+    E_App *ptr;
+    OD_Icon *ico;
+    ptr = l->data;
+    ico = od_icon_new_applnk(ptr, NULL, NULL);
+    ico->launcher = 1;
 
-    od_dock_add_applnk(od_icon_new_applnk(ptr, NULL, NULL));
+    od_dock_add_applnk(ico);
     l = l->next;
   }
 }

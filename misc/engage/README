@@ -3,4 +3,12 @@ thanks to genneth for the code ;)
 
 Requirements: ECORE, EVAS
 
-Read INSTALL for installation and usage, and AUTHORS for some credits
+Read INSTALL for installation and and AUTHORS for some credits
+
+Quick guide to mouse clicks: (supplied ("none" and "gentoo") themes only)
+
+left click - launch app (for launch icons) restore app (iconified icons)
+left hold - raise window ("hold" definition needs work)
+middle click - iconify apps
+right click - config menu
+
