@@ -333,8 +333,6 @@ od_icon_del(OD_Icon * icon)
     evas_object_del(icon->tt_txt);
   if (icon->tt_shd)
     evas_object_del(icon->tt_shd);
-  if (icon->arrow)
-    evas_object_del(icon->arrow);
   assert(icon->name);
   free(icon->name);
   free(icon);
@@ -346,36 +344,6 @@ od_icon_arrow_show(OD_Icon * icon)
   assert(icon);
   assert(icon->icon);
   edje_object_signal_emit(icon->icon, "engage,app,opened", "");
-#if 0
-  if (icon->arrow)
-    evas_object_show(icon->arrow);
-  else {
-    icon->arrow = evas_object_image_add(evas);
-    int             height = (int) options.arrow_size;
-    int             width = 1 + 2 * (int) options.arrow_size;
-    int            *pattern = (int *) malloc(sizeof(int) * width * height);
-
-    int             x, y;
-
-    for (y = 0; y < height; y++) {
-      for (x = 0; x < width; x++)
-        pattern[y * width + x] = (x + y < 3 * height / 2 ||
-                                  y - x <
-                                  -height / 2 ? 0x00000000 : 0xff000000);
-    }
-
-    evas_object_image_alpha_set(icon->arrow, 1);
-    evas_object_image_size_set(icon->arrow, width, height);
-    evas_object_image_smooth_scale_set(icon->arrow, 0);
-    evas_object_image_data_copy_set(icon->arrow, pattern);
-    evas_object_image_data_update_add(icon->arrow, 0, 0, width, height);
-    evas_object_image_fill_set(icon->arrow, 0.0, 0.0, width, height);
-    evas_object_resize(icon->arrow, width, height);
-    evas_object_layer_set(icon->arrow, 100);
-    evas_object_show(icon->arrow);
-    free(pattern);
-  }
-#endif
 }
 
 void
@@ -384,10 +352,6 @@ od_icon_arrow_hide(OD_Icon * icon)
   assert(icon);
   assert(icon->icon);
   edje_object_signal_emit(icon->icon, "engage,app,closed", "");
-#if 0
-  if (icon->arrow)
-    evas_object_hide(icon->arrow);
-#endif
 }
 
 void

@@ -26,4 +26,4 @@ aspect: 1.0 1.0;\
 image.normal: \"/tmp/icon_source.png\";
 } } } } }" > /tmp/icon_sources.edc
 
-edje_cc /tmp/icon_sources.edc $1.eet
+edje_cc /tmp/icon_sources.edc "$1.eet"

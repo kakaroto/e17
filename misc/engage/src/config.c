@@ -121,9 +121,7 @@ od_config_init(void)
   ecore_config_float_create("engage.options.zoom_factor", 2.0, 'Z',
                             "zoom-factor",
                             "Zoom factor of the icons - 1.0 == 100% == nozoom");
-  ecore_config_int_create("engage.options.arrow_size", 6, 'a', "arrow-size",
-                          "Size (in pixels) of the status arrows");
-  ecore_config_float_create("engage.options.zoom_duration", 0.1, 'd',
+  ecore_config_float_create("engage.options.zoom_duration", 0.2, 'd',
                             "zoom-time",
                             "Time taken (in seconds) for icons to zoom");
 
@@ -160,7 +158,6 @@ od_config_init(void)
   options.zoom = ecore_config_int_get("engage.options.zoom");
   ecore_config_listen("zoom", "engage.options.zoom", zoom_listener, 0, NULL);
   options.zoomfactor = ecore_config_float_get("engage.options.zoom_factor");
-  options.arrow_size = ecore_config_int_get("engage.options.arrow_size");
   options.dock_zoom_duration =
     ecore_config_float_get("engage.options.zoom_duration");
 

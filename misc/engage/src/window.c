@@ -300,7 +300,7 @@ handle_mouse_move(void *data, Evas * e, Evas_Object * obj, void *event)
   Evas_Event_Mouse_Move *ev = (Evas_Event_Mouse_Move *) event;
 
   if (ev->cur.canvas.y >=
-      (options.height - options.arrow_size - options.size * dock.zoom) &&
+      (options.height - ARROW_SPACE - options.size * dock.zoom) &&
       ev->cur.canvas.y <= options.height && ev->cur.canvas.x > dock.left_end &&
       ev->cur.canvas.x < dock.right_end) {
     dock.x = ev->cur.canvas.x;

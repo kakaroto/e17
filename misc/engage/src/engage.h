@@ -11,6 +11,9 @@
 
 #include "e17_tmp/e.h"
 
+#define ARROW_SPACE 6
+#define ARROW_SPACE_DOUBLE 12 /* ARROW_SPACE * 2 is less efficient */
+
 typedef enum { false = 0, true = 1 } bool;
 typedef struct _OD_Options OD_Options;
 typedef struct _OD_Window OD_Window;
@@ -87,7 +90,7 @@ struct _OD_Options {
   int             grab_min_icons, grab_app_icons;
 
   int             auto_hide;
-  int             size, spacing, arrow_size;    // icon-*
+  int             size, spacing;    // icon-*
   double          zoomfactor, dock_zoom_duration;
 
   unsigned        tt_txt_color, tt_shd_color, bg_fore, bg_back; // color - ARGB
@@ -123,7 +126,7 @@ struct _OD_Dock {
 #define OD_ICON_STATE_BOUNCING                 0x00000008
 
 struct _OD_Icon {
-  Evas_Object    *icon, *pic, *tt_txt, *tt_shd, *arrow;
+  Evas_Object    *icon, *pic, *tt_txt, *tt_shd;
   unsigned        state;        // see above
   char           *name, *icon_file, *winclass;
   double          x, y;         // relative to evas

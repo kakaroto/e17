@@ -17,7 +17,7 @@ static int      od_dock_zoom_out_slave(void *data);
 void
 od_dock_init()
 {
-  int             height = (int) options.size + 2 * (int) options.arrow_size;
+  int             height = (int) options.size + ARROW_SPACE_DOUBLE;
   int            *pic1 = (int *) malloc(sizeof(int) * height);
   int            *pic2 = (int *) malloc(sizeof(int) * height);
   int             y;
@@ -101,7 +101,7 @@ od_dock_reposition()
 			} \
 		}
   x = 0.5 * (options.width - width);
-  y = options.height - options.arrow_size - 0.5 * options.size;
+  y = options.height - ARROW_SPACE - 0.5 * options.size;
 
   POSITION(dock.applnks);
   x += 0.5 * options.spacing;
@@ -138,10 +138,7 @@ od_dock_redraw(Ecore_Evas * ee)
     evas_object_resize(icon->icon, size, size);
     evas_object_move(icon->icon,
                      dock.x + relative_x - 0.5 * size,
-                     options.height - options.arrow_size - size);
-    evas_object_move(icon->arrow,
-                     dock.x + relative_x - options.arrow_size,
-                     options.height - options.arrow_size);
+                     options.height - ARROW_SPACE - size);
 
     if (fabs(relative_x) < 0.5 * size && dock.state != unzoomed)
       od_icon_tt_show(icon);
@@ -153,9 +150,9 @@ od_dock_redraw(Ecore_Evas * ee)
 
       evas_object_geometry_get(icon->tt_txt, NULL, NULL, &w, &h);
       evas_object_move(icon->tt_txt, dock.x + relative_x - 0.5 * w,
-                       options.height - 2.0 * options.arrow_size - size - h);
+                       options.height - ARROW_SPACE_DOUBLE - size - h);
       evas_object_move(icon->tt_shd, dock.x + relative_x - 0.5 * w + 1.0,
-                       options.height - 2.0 * options.arrow_size - size - h +
+                       options.height - ARROW_SPACE_DOUBLE - size - h +
                        1.0);
     }
 
@@ -181,31 +178,29 @@ od_dock_redraw(Ecore_Evas * ee)
     middle2 = middle2_disp + dock.x;
 
     evas_object_move(dock.background[OD_BG_LEFT], dock.left_end,
-                     options.height - options.size - 2.0 * options.arrow_size);
+                     options.height - options.size - ARROW_SPACE_DOUBLE);
     evas_object_move(dock.background[OD_BG_RIGHT], dock.right_end,
-                     options.height - options.size - 2.0 * options.arrow_size);
+                     options.height - options.size - ARROW_SPACE_DOUBLE);
     if (dock.minwins) {
       evas_object_move(dock.background[OD_BG_MIDDLE], middle,
-                       options.height - options.size -
-                       2.0 * options.arrow_size);
+                       options.height - options.size - ARROW_SPACE_DOUBLE);
       evas_object_show(dock.background[OD_BG_MIDDLE]);
     } else
       evas_object_hide(dock.background[OD_BG_MIDDLE]);
     if (dock.sysicons) { 
       evas_object_move(dock.background[OD_BG_MIDDLE2], middle2,
-                       options.height - options.size -
-                       2.0 * options.arrow_size);
+                       options.height - options.size - ARROW_SPACE_DOUBLE);
       evas_object_show(dock.background[OD_BG_MIDDLE2]);
     } else
       evas_object_hide(dock.background[OD_BG_MIDDLE2]);
     evas_object_image_fill_set(dock.background[OD_BG_FILL], 0.0, 0.0,
                                dock.right_end - dock.left_end - 1.0,
-                               options.size + 2.0 * options.arrow_size);
+                               options.size + ARROW_SPACE_DOUBLE);
     evas_object_resize(dock.background[OD_BG_FILL],
                        dock.right_end - dock.left_end - 1.0,
-                       options.size + 2.0 * options.arrow_size);
+                       options.size + ARROW_SPACE_DOUBLE);
     evas_object_move(dock.background[OD_BG_FILL], dock.left_end + 1.0,
-                     options.height - options.size - 2.0 * options.arrow_size);
+                     options.height - options.size - ARROW_SPACE_DOUBLE);
   }
 
   od_tray_move(dock.right_end - tray_width - 2);
