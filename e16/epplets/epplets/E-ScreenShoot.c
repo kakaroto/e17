@@ -307,6 +307,7 @@ static void
 cb_cloak_delay (void *data)
 {
   Epplet_remove_timer ("CLOAK_TIMER");
+
   opt.cloak_delay = *(int *) data;
   Epplet_timer (cloak_epplet, NULL, opt.cloak_delay, "CLOAK_TIMER");
   return;
@@ -325,6 +326,11 @@ static void
 cb_dont_cloak (void *data)
 {
   opt.do_cloak = 0;
+  if (cloaked)
+    {
+      Epplet_gadget_hide (da);
+      cloaked = 0;
+    }
   Epplet_remove_timer ("CLOAK_TIMER");
   return;
   data = NULL;
@@ -458,25 +464,26 @@ cb_config (void *data)
 						 20, 12, 12, "ARROW_DOWN",
 						 p));
 
-  Epplet_gadget_show (lbl = Epplet_create_label (20, 40, "Shot Directory:", 2));
+  Epplet_gadget_show (lbl =
+		      Epplet_create_label (20, 40, "Shot Directory:", 2));
   Epplet_gadget_show (txt_dir =
-                      Epplet_create_textbox (NULL, opt.dir, 20, 55,
-                                             170, 20, 2, NULL, NULL));
+		      Epplet_create_textbox (NULL, opt.dir, 20, 55, 170, 20,
+					     2, NULL, NULL));
 
   Epplet_gadget_show (lbl = Epplet_create_label (200, 40, "File Prefix:", 2));
   Epplet_gadget_show (txt_file_prefix =
 		      Epplet_create_textbox (NULL, opt.file_prefix, 200, 55,
-			  100, 20, 2, NULL, NULL));
+					     100, 20, 2, NULL, NULL));
   Epplet_gadget_show (lbl = Epplet_create_label (310, 40, "File Type:", 2));
   Epplet_gadget_show (txt_file_type =
 		      Epplet_create_textbox (NULL, opt.file_type, 310, 55,
 					     60, 20, 2, NULL, NULL));
-  
+
   Epplet_gadget_show (lbl = Epplet_create_label (20, 80, "File Stamp:", 2));
   Epplet_gadget_show (txt_file_stamp =
 		      Epplet_create_textbox (NULL, opt.file_stamp, 20, 95,
 					     350, 20, 2, NULL, NULL));
-  
+
   Epplet_gadget_show (btn_view =
 		      Epplet_create_togglebutton (NULL, NULL, 20, 130, 12, 12,
 						  &opt.view_shot, NULL,
@@ -484,20 +491,25 @@ cb_config (void *data)
   Epplet_gadget_show (lbl =
 		      Epplet_create_label (40, 130,
 					   "View shot after taking?", 2));
-  Epplet_gadget_show (lbl = Epplet_create_label (20, 145, "Image Viewer:", 2));
-  Epplet_gadget_show (txt_viewer =
-                      Epplet_create_textbox (NULL, opt.viewer, 20, 160,
-			  350, 20, 2, NULL, NULL));
-  Epplet_gadget_show (btn_script =
-                      Epplet_create_togglebutton (NULL, NULL, 20, 195, 12, 12,
-                                                  &opt.run_script, NULL, NULL));
   Epplet_gadget_show (lbl =
-                      Epplet_create_label (40, 195,
-                                           "Run script/program on file after taking?", 2));
-  Epplet_gadget_show (lbl = Epplet_create_label (20, 210, "Script/program to run:", 2));
+		      Epplet_create_label (20, 145, "Image Viewer:", 2));
+  Epplet_gadget_show (txt_viewer =
+		      Epplet_create_textbox (NULL, opt.viewer, 20, 160, 350,
+					     20, 2, NULL, NULL));
+  Epplet_gadget_show (btn_script =
+		      Epplet_create_togglebutton (NULL, NULL, 20, 195, 12, 12,
+						  &opt.run_script, NULL,
+						  NULL));
+  Epplet_gadget_show (lbl =
+		      Epplet_create_label (40, 195,
+					   "Run script/program on file after taking?",
+					   2));
+  Epplet_gadget_show (lbl =
+		      Epplet_create_label (20, 210, "Script/program to run:",
+					   2));
   Epplet_gadget_show (txt_script =
-                      Epplet_create_textbox (NULL, opt.script, 20, 225,
-                          350, 20, 2, NULL, NULL));
+		      Epplet_create_textbox (NULL, opt.script, 20, 225, 350,
+					     20, 2, NULL, NULL));
 
   Epplet_window_show (confwin);
 
