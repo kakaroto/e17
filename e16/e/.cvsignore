@@ -14,3 +14,5 @@ config.sub
 ltconfig
 ltmain.sh
 config.guess
+cat-id-tbl.c
+enlightenment.pot
