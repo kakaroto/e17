@@ -194,9 +194,8 @@ void __ewl_entry_configure(Ewl_Widget * w, void *ev_data, void *user_data)
 	Ewl_Entry      *e;
 	int             xx, yy, ww, hh;
 	int             c_spos, c_epos, base, l;
-	int             sx = 0, sy = 0, ex = 0, ey = 0;
+	int             sx = 0, sy = 0, ex = 0, ey = 0, dx = 0;
 	unsigned int    ew = 0;
-	char           *str;
 
 	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR("w", w);
@@ -217,15 +216,15 @@ void __ewl_entry_configure(Ewl_Widget * w, void *ev_data, void *user_data)
 	ewl_object_request_geometry(EWL_OBJECT(e->text), xx - e->offset, yy,
 			ww, hh);
 
-	str = ewl_text_get_text(EWL_TEXT(e->text));
 	c_spos = ewl_cursor_get_start_position(EWL_CURSOR(e->cursor));
 	c_epos = ewl_cursor_get_end_position(EWL_CURSOR(e->cursor));
 	base = ewl_cursor_get_base_position(EWL_CURSOR(e->cursor));
 
 	l = ewl_text_get_length(EWL_TEXT(e->text));
-	if (str && l && c_spos > l) {
-		sx = xx + ewl_object_get_current_w(EWL_OBJECT(e->text));
-		ew = 5 + sx;
+	if (l && c_spos > l) {
+		ex = sx = ewl_object_get_current_x(EWL_OBJECT(e->text)) +
+			ewl_object_get_current_w(EWL_OBJECT(e->text));
+		ew = 5;
 	} else {
 
 		/*
@@ -244,27 +243,25 @@ void __ewl_entry_configure(Ewl_Widget * w, void *ev_data, void *user_data)
 	 * Scroll the text to fit the contents.
 	 */
 	if ((c_spos == base) && ((ex + ew) > (int)(xx + ww))) {
-		/*
-		 * Calculation re-ordered to maintain precision
-		 */
-		e->offset += (int)((ex + ew) - (xx + ww));
-		printf("Scrolling text by %d\n", e->offset);
+		dx -= (int)((ex + ew) - (xx + ww));
 	}
 	else if ((c_epos == base) && (sx < xx)) {
-		e->offset -= xx - sx;
+		dx = xx - sx;
 	}
 
 	if (e->offset < 0)
 		e->offset = 0;
+	printf("Scrolling text by %d\n", e->offset);
 
-	ew = (ex + ew);
-	ewl_object_request_geometry(EWL_OBJECT(e->text), xx - e->offset,
-				CURRENT_Y(e), CURRENT_W(e), hh);
+	ewl_object_request_geometry(EWL_OBJECT(e->text),
+			ewl_object_get_current_x(EWL_OBJECT(e->text)) + dx,
+			CURRENT_Y(e), CURRENT_W(e), hh);
 
-	ewl_object_request_geometry(EWL_OBJECT(e->cursor), sx, yy,
-			ew - sx, hh);
+	ew = (ex + ew) - sx;
+	ewl_object_request_geometry(EWL_OBJECT(e->cursor), sx + dx, yy,
+			ew, hh);
 
-	FREE(str);
+	e->offset -= dx;
 
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
@@ -363,7 +360,7 @@ void __ewl_entry_mouse_move(Ewl_Widget * w, void *ev_data, void *user_data)
 	if (ev->x < CURRENT_X(e->text))
 		index = 0;
 	else if (ev->x > CURRENT_X(e->text) + CURRENT_W(e->text))
-		index = ewl_text_get_length(EWL_TEXT(e->text));
+		index = ewl_text_get_length(EWL_TEXT(e->text)) + 1;
 	else {
 		index = ewl_text_get_index_at(EWL_TEXT(e->text), ev->x,
 				      (CURRENT_Y(e->text) +
