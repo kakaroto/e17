@@ -38,7 +38,6 @@ Ewl_Widget *ewl_tree_new(unsigned short columns)
 	if (!w)
 		DRETURN_PTR(NULL, DLEVEL_STABLE);
 
-	ZERO(w, Ewl_Tree, 1);
 	if (!ewl_tree_init(EWL_TREE(w), columns)) {
 		FREE(w);
 		DRETURN_PTR(NULL, DLEVEL_STABLE);
@@ -237,7 +236,8 @@ Ewl_Widget *ewl_tree_add_text_row(Ewl_Tree *tree, Ewl_Row *prow, char **text)
 	DCHECK_PARAM_PTR_RET("text", text, NULL);
 
 	entries = NEW(Ewl_Widget *, tree->ncols);
-	ZERO(entries, Ewl_Widget *, tree->ncols);
+	if (!entries)
+		DRETURN_PTR(NULL, DLEVEL_STABLE);
 
 	for (i = 0; i < tree->ncols; i++) {
 		if (text[i]) {
@@ -377,7 +377,6 @@ Ewl_Widget *ewl_tree_node_new()
 	if (!node)
 		DRETURN_PTR(NULL, DLEVEL_STABLE);
 
-	ZERO(node, Ewl_Tree_Node, 1);
 	if (!ewl_tree_node_init(EWL_TREE_NODE(node))) {
 		FREE(node);
 		DRETURN_PTR(NULL, DLEVEL_STABLE);

@@ -21,7 +21,6 @@ Ewl_Widget     *ewl_checkbutton_new(char *label)
 	if (!b)
 		return NULL;
 
-	ZERO(b, Ewl_CheckButton, 1);
 	ewl_checkbutton_init(b, label);
 
 	DRETURN_PTR(EWL_WIDGET(b), DLEVEL_STABLE);

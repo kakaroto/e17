@@ -23,11 +23,8 @@ Ewl_Widget     *ewl_spectrum_new()
 	Ewl_Spectrum *sp = NULL;
 
 	sp = NEW(Ewl_Spectrum, 1);
-
 	if (!sp)
 		DRETURN_PTR(NULL, DLEVEL_STABLE);
-
-	ZERO(sp, Ewl_Spectrum, 1);
 
 	ewl_spectrum_init(sp);
 

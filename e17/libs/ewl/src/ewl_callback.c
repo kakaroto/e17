@@ -119,7 +119,6 @@ ewl_callback_append(Ewl_Widget * w, Ewl_Callback_Type t,
 	if (!cb)
 		DRETURN_INT(0, DLEVEL_STABLE);
 
-	ZERO(cb, Ewl_Callback, 1);
 	cb->func = f;
 	cb->user_data = user_data;
 
@@ -163,7 +162,6 @@ ewl_callback_prepend(Ewl_Widget * w, Ewl_Callback_Type t,
 	if (!cb)
 		DRETURN_INT(0, DLEVEL_STABLE);
 
-	ZERO(cb, Ewl_Callback, 1);
 	cb->func = f;
 	cb->user_data = user_data;
 
@@ -212,7 +210,6 @@ ewl_callback_insert_after(Ewl_Widget * w, Ewl_Callback_Type t,
 	if (!cb)
 		DRETURN_INT(0, DLEVEL_STABLE);
 
-	ZERO(cb, Ewl_Callback, 1);
 	cb->func = f;
 	cb->user_data = user_data;
 

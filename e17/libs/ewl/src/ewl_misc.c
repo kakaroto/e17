@@ -143,6 +143,15 @@ int ewl_idle_render(void *data)
 	if (ewd_list_is_empty(ewl_embed_list))
 		DRETURN_INT(TRUE, DLEVEL_STABLE);
 
+	/*
+	 * Freeze events on the evases to reduce overhead
+	 */
+	ewd_list_goto_first(ewl_embed_list);
+	while ((emb = ewd_list_next(ewl_embed_list)) != NULL) {
+		if (emb->evas)
+			evas_event_freeze(emb->evas);
+	}
+
 	edje_freeze();
 
 	/*
@@ -162,12 +171,14 @@ int ewl_idle_render(void *data)
 	edje_thaw();
 
 	/*
-	 * Allow each embed to render itself.
+	 * Allow each embed to render itself, this requires thawing the evas.
 	 */
 	ewd_list_goto_first(ewl_embed_list);
 	while ((emb = ewd_list_next(ewl_embed_list)) != NULL) {
-		if (emb->evas)
+		if (emb->evas) {
+			evas_event_thaw(emb->evas);
 			evas_render(emb->evas);
+		}
 	}
 
 	DRETURN_INT(TRUE, DLEVEL_STABLE);

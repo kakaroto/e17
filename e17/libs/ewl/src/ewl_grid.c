@@ -28,8 +28,6 @@ Ewl_Widget     *ewl_grid_new(int cols, int rows)
 	if (!g)
 		DRETURN_PTR(NULL, DLEVEL_STABLE);
 
-	memset(g, 0, sizeof(Ewl_Grid));
-
 	ewl_grid_init(g, cols, rows);
 
 	DRETURN_PTR(EWL_WIDGET(g), DLEVEL_STABLE);
@@ -61,10 +59,14 @@ void ewl_grid_init(Ewl_Grid * g, int cols, int rows)
 	 * horisontal and vertical size of cols/rows
 	 */
 	g->col_size = NEW(Ewl_Grid_Info, cols);
-	ZERO(g->col_size, Ewl_Grid_Info, cols);
+	if (!g->col_size)
+		DRETURN(DLEVEL_STABLE);
 
 	g->row_size = NEW(Ewl_Grid_Info, rows);
-	ZERO(g->row_size, Ewl_Grid_Info, rows);
+	if (!g->row_size) {
+		FREE(g->col_size);
+		DRETURN(DLEVEL_STABLE);
+	}
 
 	/*
 	 * Store the cols/rows in the grid
@@ -111,10 +113,14 @@ void ewl_grid_reset(Ewl_Grid * g, int cols, int rows)
 	IF_FREE(g->row_size);
 
 	g->col_size = NEW(Ewl_Grid_Info, cols);
-	ZERO(g->col_size, Ewl_Grid_Info, cols);
+	if (!g->col_size)
+		DRETURN(DLEVEL_STABLE);
 
 	g->row_size = NEW(Ewl_Grid_Info, rows);
-	ZERO(g->row_size, Ewl_Grid_Info, rows);
+	if (!g->row_size) {
+		FREE(g->col_size);
+		DRETURN(DLEVEL_STABLE);
+	}
 
 	g->cols = cols;
 	g->rows = rows;
@@ -186,8 +192,6 @@ ewl_grid_add(Ewl_Grid * g, Ewl_Widget * w,
 	child = NEW(Ewl_Grid_Child, 1);
 	if (!child)
 		DLEAVE_FUNCTION(DLEVEL_STABLE);
-
-	memset(child, 0, sizeof(Ewl_Grid_Child));
 
 	child->start_col = start_col;
 	child->end_col = end_col;
@@ -512,6 +516,8 @@ void __ewl_grid_add(Ewl_Container * p, Ewl_Widget * c)
 	 */
 	if (!cdata) {
 		cdata = NEW(Ewl_Grid_Child, 1);
+		if (!cdata)
+			DRETURN(DLEVEL_STABLE);
 		cdata->start_col = cdata->end_col = 1;
 		cdata->start_row = cdata->end_row = 1;
 

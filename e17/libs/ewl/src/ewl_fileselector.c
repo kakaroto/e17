@@ -85,8 +85,6 @@ Ewl_Widget     *ewl_fileselector_new(Ewl_Callback_Function clicked)
 	if (!fs)
 		DRETURN_PTR(NULL, DLEVEL_STABLE);
 
-	memset(fs, 0, sizeof(Ewl_Fileselector));
-
 	ewl_fileselector_init(fs, clicked);
 
 	DRETURN_PTR(EWL_WIDGET(fs), DLEVEL_STABLE);
@@ -250,12 +248,30 @@ void __process_directory(Ewl_Fileselector * fs, char *directory)
 	IF_FREE(fs->d_info);
 
 	fs->f_info = NEW(Ewl_Fileinfo, f_count);
+	if (!fs->f_info)
+		DRETURN(DLEVEL_STABLE);
+
 	fs->d_info = NEW(Ewl_Dirinfo, d_count);
+	if (!fs->d_info) {
+		FREE(fs->f_info);
+		DRETURN(DLEVEL_STABLE);
+	}
 
 	dir_head = NEW(char *, 1);
+	if (!dir_head) {
+		FREE(fs->f_info);
+		FREE(fs->d_info);
+		DRETURN(DLEVEL_STABLE);
+	}
 
 	dir_head[0] = "Directory";
 	file_head = NEW(char *, 1);
+	if (!file_head) {
+		FREE(fs->f_info);
+		FREE(fs->d_info);
+		FREE(dir_head);
+		DRETURN(DLEVEL_STABLE);
+	}
 
 	file_head[0] = "File Name";
 

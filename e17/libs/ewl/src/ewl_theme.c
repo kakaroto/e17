@@ -228,6 +228,10 @@ char           *ewl_theme_image_get(Ewl_Widget * w, char *k)
 
 	if (*data != '/') {
 		path = NEW(char, PATH_MAX);
+		if (!path) {
+			FREE(data);
+			DRETURN_PTR(NULL, DLEVEL_STABLE);
+		}
 
 		snprintf(path, PATH_MAX, "%s/%s", theme_path, data);
 

@@ -30,8 +30,6 @@ Ewl_Widget     *ewl_selectionbook_new()
 	if (!s)
 		DRETURN_PTR(NULL, DLEVEL_STABLE);
 
-	memset(s, 0, sizeof(Ewl_Selectionbook));
-
 	ewl_selectionbook_init(s);
 
 	DRETURN_PTR(EWL_WIDGET(s), DLEVEL_STABLE);
@@ -95,8 +93,6 @@ ewl_selectionbook_add_page(Ewl_Selectionbook * s, Ewl_Widget * tab,
 	p = NEW(Ewl_SbookPage, 1);
 	if (!p)
 		return;
-
-	memset(p, 0, sizeof(Ewl_SbookPage));
 
 	p->tab = tab;
 	p->page = page;

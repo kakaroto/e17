@@ -73,8 +73,6 @@ Ewl_Widget     *ewl_menu_item_new(char *image, char *text)
 	if (!item)
 		DRETURN_PTR(NULL, DLEVEL_STABLE);
 
-	ZERO(item, Ewl_Menu_Item, 1);
-
 	ewl_menu_item_init(item, image, text);
 
 	DRETURN_PTR(EWL_WIDGET(item), DLEVEL_STABLE);
@@ -168,7 +166,6 @@ Ewl_Menu_Separator *ewl_menu_separator_new()
 	if (!sep)
 		DRETURN_PTR(NULL, DLEVEL_STABLE);
 
-	ZERO(sep, Ewl_Menu_Separator, 1);
 	ewl_menu_separator_init(sep);
 
 	DRETURN_PTR(sep, DLEVEL_STABLE);

@@ -13,8 +13,9 @@ Ewl_Widget     *ewl_cursor_new(void)
 	DENTER_FUNCTION(DLEVEL_STABLE);
 
 	c = NEW(Ewl_Cursor, 1);
+	if (!c)
+		DRETURN_PTR(NULL, DLEVEL_STABLE);
 
-	ZERO(c, Ewl_Cursor, 1);
 	ewl_cursor_init(c);
 
 	DRETURN_PTR(EWL_WIDGET(c), DLEVEL_STABLE);

@@ -13,9 +13,8 @@ Ewl_Widget     *ewl_spacer_new()
 
 	s = NEW(Ewl_Spacer, 1);
 	if (!s)
-		return NULL;
+		DRETURN_PTR(NULL, DLEVEL_STABLE);
 
-	ZERO(s, Ewl_Spacer, 1);
 	ewl_spacer_init(s);
 
 	DRETURN_PTR(EWL_WIDGET(s), DLEVEL_STABLE);

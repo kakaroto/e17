@@ -28,8 +28,9 @@ Ewl_Widget     *ewl_image_new(char *i)
 	DENTER_FUNCTION(DLEVEL_STABLE);
 
 	image = NEW(Ewl_Image, 1);
+	if (!image)
+		DRETURN_PTR(NULL, DLEVEL_STABLE);
 
-	ZERO(image, Ewl_Image, 1);
 	ewl_image_init(image, i);
 
 	DRETURN_PTR(EWL_WIDGET(image), DLEVEL_STABLE);

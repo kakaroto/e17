@@ -33,9 +33,11 @@ main(int argc, char **argv)
 		{ "Floater", __create_floater_test_window },
 		{ "Image", __create_image_test_window },
 		{ "Notebook", __create_notebook_test_window },
+		{ "Progressbar", __create_progressbar_test_window },
 		{ "Spinner", __create_spinner_test_window },
 		{ "Textarea", __create_textarea_test_window },
 		{ "Tree", __create_tree_test_window },
+		
 		{ 0, 0 }
 	};
 	void *heap_start, *heap_end;

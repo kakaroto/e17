@@ -28,8 +28,8 @@ Ewl_Widget     *ewl_scrollpane_new(void)
 	DENTER_FUNCTION(DLEVEL_UNSTABLE);
 
 	s = NEW(Ewl_ScrollPane, 1);
-
-	ZERO(s, Ewl_ScrollPane, 1);
+	if (!s)
+		DRETURN_PTR(NULL, DLEVEL_UNSTABLE);
 
 	ewl_scrollpane_init(s);
 

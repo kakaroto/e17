@@ -32,9 +32,6 @@ Ewl_Widget     *ewl_table_new(int cols, int rows, char **col_headers)
 	if (!t)
 		DRETURN_PTR(NULL, DLEVEL_STABLE);
 
-	memset(t, 0, sizeof(Ewl_Table));
-	ewl_table_init(t, cols, rows, col_headers);
-
 	DRETURN_PTR(EWL_WIDGET(t), DLEVEL_STABLE);
 }
 

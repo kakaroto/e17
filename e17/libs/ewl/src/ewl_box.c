@@ -77,7 +77,6 @@ Ewl_Widget     *ewl_box_new(Ewl_Orientation o)
 	if (!b)
 		DRETURN_PTR(NULL, DLEVEL_STABLE);
 
-	ZERO(b, Ewl_Box, 1);
 	if (!ewl_box_init(b, o)) {
 		ewl_widget_destroy(EWL_WIDGET(b));
 		b = NULL;
@@ -764,7 +763,8 @@ __ewl_box_setup()
 {
 	if (!vertical) {
 		vertical = NEW(Box_Orientation, 1);
-		ZERO(vertical, Box_Orientation, 1);
+		if (!vertical)
+			DRETURN(DLEVEL_STABLE);
 
 		/*
 		 * This sets the aligments for filling direction.
@@ -804,7 +804,8 @@ __ewl_box_setup()
 
 	if (!horizontal) {
 		horizontal = NEW(Box_Orientation, 1);
-		ZERO(horizontal, Box_Orientation, 1);
+		if (!horizontal)
+			DRETURN(DLEVEL_STABLE);
 
 		/*
 		 * This sets the aligments for the filling direction.

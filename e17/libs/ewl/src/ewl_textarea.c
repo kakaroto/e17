@@ -24,7 +24,8 @@ Ewl_Widget     *ewl_textarea_new(char *text)
 	DENTER_FUNCTION(DLEVEL_STABLE);
 
 	ta = NEW(Ewl_TextArea, 1);
-	ZERO(ta, Ewl_TextArea, 1);
+	if (!ta)
+		DRETURN_PTR(NULL, DLEVEL_STABLE);
 
 	ewl_textarea_init(ta, text);
 

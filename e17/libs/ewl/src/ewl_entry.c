@@ -46,8 +46,6 @@ Ewl_Widget     *ewl_entry_new(char *text)
 	if (!e)
 		return NULL;
 
-	ZERO(e, Ewl_Entry, 1);
-
 	ewl_entry_init(e, text);
 
 	DRETURN_PTR(EWL_WIDGET(e), DLEVEL_STABLE);
@@ -538,6 +536,10 @@ void __ewl_entry_insert_text(Ewl_Widget * w, char *s)
 	sp = ewl_cursor_get_start_position(EWL_CURSOR(e->cursor));
 
 	s3 = NEW(char, l + 1 + l2);
+	if (!s3) {
+		FREE(s2);
+		DRETURN(DLEVEL_STABLE);
+	}
 
 	s3[0] = 0;
 	strncat(s3, s2, sp - 1);

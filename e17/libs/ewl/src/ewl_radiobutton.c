@@ -28,9 +28,8 @@ Ewl_Widget     *ewl_radiobutton_new(char *label)
 
 	b = NEW(Ewl_RadioButton, 1);
 	if (!b)
-		return NULL;
+		DRETURN_PTR(NULL, DLEVEL_STABLE);
 
-	ZERO(b, Ewl_RadioButton, 1);
 	ewl_radiobutton_init(b, label);
 
 	DRETURN_PTR(EWL_WIDGET(b), DLEVEL_STABLE);

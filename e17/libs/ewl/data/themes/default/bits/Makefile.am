@@ -2,6 +2,7 @@ EDCS =  button.edc \
 	checkbox.edc \
 	entry.edc \
 	misc.edc \
+	progressbar.edc \
 	radio.edc \
 	scrollbar.edc \
 	window.edc

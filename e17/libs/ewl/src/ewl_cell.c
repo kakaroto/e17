@@ -21,7 +21,6 @@ Ewl_Widget *ewl_cell_new()
 	if (!cell)
 		DRETURN_PTR(NULL, DLEVEL_STABLE);
 
-	ZERO(cell, Ewl_Cell, 1);
 	if (!ewl_cell_init(EWL_CELL(cell))) {
 		FREE(cell);
 		DRETURN_PTR(NULL, DLEVEL_STABLE);
@@ -67,7 +66,7 @@ __ewl_cell_configure(Ewl_Widget * w, void *ev_data, void *user_data)
 	child = ewd_list_goto_first(c->children);
 
 	if (child)
-		ewl_object_request_geometry(child, CURRENT_X(w), CURRENT_Y(w),
+		ewl_object_place(child, CURRENT_X(w), CURRENT_Y(w),
 				CURRENT_W(w), CURRENT_H(w));
 
 	DLEAVE_FUNCTION(DLEVEL_STABLE);

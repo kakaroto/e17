@@ -24,7 +24,6 @@ Ewl_Widget     *ewl_check_new()
 	if (!b)
 		return NULL;
 
-	ZERO(b, Ewl_Check, 1);
 	ewl_check_init(b);
 
 	DRETURN_PTR(EWL_WIDGET(b), DLEVEL_STABLE);

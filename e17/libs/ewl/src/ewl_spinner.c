@@ -43,11 +43,8 @@ Ewl_Widget     *ewl_spinner_new()
 	Ewl_Spinner    *s = NULL;
 
 	s = NEW(Ewl_Spinner, 1);
-
 	if (!s)
 		DRETURN_PTR(NULL, DLEVEL_STABLE);
-
-	ZERO(s, Ewl_Spinner, 1);
 
 	ewl_spinner_init(s);
 

@@ -31,8 +31,6 @@ Ewl_Widget     *ewl_floater_new(Ewl_Widget * parent)
 	if (!f)
 		DRETURN_PTR(NULL, DLEVEL_STABLE);
 
-	memset(f, 0, sizeof(Ewl_Floater));
-
 	ewl_floater_init(EWL_FLOATER(f), parent);
 
 

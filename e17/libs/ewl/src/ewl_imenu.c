@@ -22,8 +22,6 @@ Ewl_Widget     *ewl_imenu_new(char *image, char *title)
 	if (!menu)
 		DRETURN_PTR(NULL, DLEVEL_STABLE);
 
-	ZERO(menu, Ewl_IMenu, 1);
-
 	ewl_imenu_init(menu, image, title);
 
 	DRETURN_PTR(EWL_WIDGET(menu), DLEVEL_STABLE);

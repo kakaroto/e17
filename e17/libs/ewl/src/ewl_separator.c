@@ -12,7 +12,8 @@ Ewl_Widget     *ewl_separator_new(Ewl_Orientation o)
 	DENTER_FUNCTION(DLEVEL_STABLE);
 
 	s = NEW(Ewl_Separator, 1);
-	ZERO(s, Ewl_Separator, 1);
+	if (!s)
+		DRETURN_PTR(NULL, DLEVEL_STABLE);
 
 	ewl_separator_init(s, o);
 

@@ -25,8 +25,6 @@ Ewl_Widget     *ewl_scrollbar_new(Ewl_Orientation orientation)
 	if (!s)
 		DRETURN_PTR(NULL, DLEVEL_STABLE);
 
-	ZERO(s, Ewl_Scrollbar, 1);
-
 	/*
 	 * Initialize the objects fields.
 	 */

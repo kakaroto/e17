@@ -63,7 +63,6 @@ Ewl_Widget     *ewl_embed_new()
 	if (!w)
 		DRETURN_PTR(NULL, DLEVEL_STABLE);
 
-	ZERO(w, Ewl_Embed, 1);
 	if (!ewl_embed_init(w)) {
 		ewl_widget_destroy(EWL_WIDGET(w));
 		w = NULL;

@@ -97,8 +97,6 @@ void __open_dialog_init(Ewl_Filedialog * fd, Ewl_Callback_Function cb)
 	od = NEW(Open_Dialog, 1);
 	if (!od)
 		return;
-	memset(od, 0, sizeof(Open_Dialog));
-
 
 	fd->selector = ewl_fileselector_new(cb);
 	ewl_object_set_fill_policy(EWL_OBJECT(fd->selector),
@@ -156,8 +154,6 @@ void __save_dialog_init(Ewl_Filedialog * fd, Ewl_Callback_Function cb)
 	sd = NEW(Save_Dialog, 1);
 	if (!sd)
 		return;
-	memset(sd, 0, sizeof(Save_Dialog));
-
 
 	fd->selector = ewl_fileselector_new(cb);
 	ewl_object_set_fill_policy(EWL_OBJECT(fd->selector),

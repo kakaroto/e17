@@ -27,8 +27,6 @@ Ewl_Widget     *ewl_seeker_new(Ewl_Orientation o)
 	if (!s)
 		DRETURN_PTR(NULL, DLEVEL_STABLE);
 
-	ZERO(s, Ewl_Seeker, 1);
-
 	ewl_seeker_init(s, o);
 
 	DRETURN_PTR(EWL_WIDGET(s), DLEVEL_STABLE);

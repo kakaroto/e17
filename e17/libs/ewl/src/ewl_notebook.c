@@ -29,7 +29,8 @@ Ewl_Widget     *ewl_notebook_new(void)
 	DENTER_FUNCTION(DLEVEL_STABLE);
 
 	n = NEW(Ewl_Notebook, 1);
-	ZERO(n, Ewl_Notebook, 1);
+	if (!n)
+		DRETURN_PTR(NULL, DLEVEL_STABLE);
 
 	ewl_notebook_init(n);
 

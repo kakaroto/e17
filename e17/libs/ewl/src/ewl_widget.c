@@ -859,6 +859,8 @@ void __ewl_widget_realize(Ewl_Widget * w, void *ev_data, void *user_data)
 	 */
 	len = strlen(w->appearance) + 7;
 	key = NEW(char, len);
+	if (!key)
+		DRETURN(DLEVEL_STABLE);
 
 	/*
 	 * Retrieve the path to the theme file that will be loaded

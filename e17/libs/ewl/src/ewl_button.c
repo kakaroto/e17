@@ -15,7 +15,6 @@ Ewl_Widget     *ewl_button_new(char *label)
 	if (!b)
 		return NULL;
 
-	ZERO(b, Ewl_Button, 1);
 	ewl_button_init(b, label);
 
 	DRETURN_PTR(EWL_WIDGET(b), DLEVEL_STABLE);

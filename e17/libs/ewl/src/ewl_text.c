@@ -25,7 +25,8 @@ ewl_text_new(char *text)
 	DENTER_FUNCTION(DLEVEL_STABLE);
 
 	t = NEW(Ewl_Text, 1);
-	ZERO(t, Ewl_Text, 1);
+	if (!t)
+		DRETURN_PTR(NULL, DLEVEL_STABLE);
 
 	ewl_text_init(t, text);
 

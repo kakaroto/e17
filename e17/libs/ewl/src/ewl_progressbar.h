@@ -35,6 +35,7 @@ struct Ewl_Progressbar
 {
 	Ewl_Container   container; /**< Inherit from Ewl_Container */
 	Ewl_Widget      *bar;      /**< The moving bar on top */
+	Ewl_Widget      *text;     /**< text label on the bar */
 	double          value;     /**< current value of the progressbar */
 };
 
@@ -44,5 +45,7 @@ void ewl_progressbar_init (Ewl_Progressbar * p);
 
 void ewl_progressbar_set_value (Ewl_Progressbar * p, double v);
 double ewl_progressbar_get_value(Ewl_Progressbar * p);
+
+void ewl_progressbar_set_text (Ewl_Progressbar * p, char *text);
 
 #endif				/* __EWL_PROGRESSBAR_H__ */
