@@ -37,7 +37,7 @@ void ewl_spectrum_init(Ewl_Spectrum * sp)
 	ewl_callback_append(w, EWL_CALLBACK_CONFIGURE,
 			    ewl_spectrum_configure_cb, NULL);
 
-	sp->mode = PICK_MODE_HSV_HUE;
+	sp->mode = EWL_PICK_MODE_HSV_HUE;
 	sp->dimensions = 2;
 	sp->redraw = 1;
 	sp->r = 255;
@@ -170,33 +170,38 @@ ewl_spectrum_configure_cb(Ewl_Widget * w, void *ev_data,
 
 				a = 255;
 
-				if (pick_mode == PICK_MODE_RGB_RED) {
+				if (pick_mode == EWL_PICK_MODE_RGB) {
+					r = red * (1 - (float) j / (float) ph);
+					g = green * (1 - (float) j / (float) ph);
+					b = blue * (1 - (float) j / (float) ph);
+				}
+				else if (pick_mode == EWL_PICK_MODE_RGB_RED) {
 					r = red;
 					g = 255 * (float) i / (float) pw;
 					b = 255 * (float) j / (float) ph;
-				} else if (pick_mode == PICK_MODE_RGB_GREEN) {
+				} else if (pick_mode == EWL_PICK_MODE_RGB_GREEN) {
 					r = 255 * (float) i / (float) pw;
 					g = green;
 					b = 255 * (float) j / (float) ph;
-				} else if (pick_mode == PICK_MODE_RGB_BLUE) {
+				} else if (pick_mode == EWL_PICK_MODE_RGB_BLUE) {
 					r = 255 * (float) i / (float) pw;
 					g = 255 * (float) j / (float) ph;
 					b = blue;
-				} else if (pick_mode == PICK_MODE_HSV_HUE) {
+				} else if (pick_mode == EWL_PICK_MODE_HSV_HUE) {
 					h = hue;
 					s = 1 - (float) i / (float) pw;
 					v = 1 - (float) j / (float) ph;
 					ewl_spectrum_hsv_to_rgb(h, s, v,
 								&r, &g, &b);
 				} else if (pick_mode ==
-					   PICK_MODE_HSV_SATURATION) {
+					   EWL_PICK_MODE_HSV_SATURATION) {
 					h = (float) i / (float) pw *360;
 
 					s = sat;
 					v = 1 - (float) j / (float) ph;
 					ewl_spectrum_hsv_to_rgb(h, s, v,
 								&r, &g, &b);
-				} else if (pick_mode == PICK_MODE_HSV_VALUE) {
+				} else if (pick_mode == EWL_PICK_MODE_HSV_VALUE) {
 					h = (float) i / (float) pw *360;
 
 					s = 1 - (float) j / (float) ph;
@@ -231,29 +236,33 @@ ewl_spectrum_configure_cb(Ewl_Widget * w, void *ev_data,
 
 			a = 255;
 
-			if (pick_mode == PICK_MODE_RGB_RED) {
+			if (pick_mode == EWL_PICK_MODE_RGB) {
+				r = red * (1 - (float) j / (float) ph);
+				g = green * (1 - (float) j / (float) ph);
+				b = blue * (1 - (float) j / (float) ph);
+			} else if (pick_mode == EWL_PICK_MODE_RGB_RED) {
 				r = 255 * (1 - (float) j / (float) ph);
 				g = 0;
 				b = 0;
-			} else if (pick_mode == PICK_MODE_RGB_GREEN) {
+			} else if (pick_mode == EWL_PICK_MODE_RGB_GREEN) {
 				r = 0;
 				g = 255 * (1 - (float) j / (float) ph);
 				b = 0;
-			} else if (pick_mode == PICK_MODE_RGB_BLUE) {
+			} else if (pick_mode == EWL_PICK_MODE_RGB_BLUE) {
 				r = 0;
 				g = 0;
 				b = 255 * (1 - (float) j / (float) ph);
-			} else if (pick_mode == PICK_MODE_HSV_HUE) {
+			} else if (pick_mode == EWL_PICK_MODE_HSV_HUE) {
 				h = 360 * (float) j / (float) ph;
 				s = 1.0;
 				v = 1.0;
 				ewl_spectrum_hsv_to_rgb(h, s, v, &r, &g, &b);
-			} else if (pick_mode == PICK_MODE_HSV_SATURATION) {
+			} else if (pick_mode == EWL_PICK_MODE_HSV_SATURATION) {
 				h = hue;
 				s = 1 - (float) j / (float) ph;
 				v = val;
 				ewl_spectrum_hsv_to_rgb(h, s, v, &r, &g, &b);
-			} else if (pick_mode == PICK_MODE_HSV_VALUE) {
+			} else if (pick_mode == EWL_PICK_MODE_HSV_VALUE) {
 				h = hue;
 				s = sat;
 				v = 1 - (float) j / (float) ph;
