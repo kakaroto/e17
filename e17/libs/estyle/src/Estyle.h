@@ -44,11 +44,9 @@ void estyle_set_layer(Estyle * es, int layer);
 char *estyle_get_style(Estyle * es);
 void estyle_set_style(Estyle * es, char *name);
 void estyle_set_color(Estyle * es, int r, int g, int b, int a);
+void estyle_get_color(Estyle *es, int *r, int *g, int *b, int *a);
+void estyle_lookup_color_db(char *name, int *r, int *g, int *b, int *a);
 void estyle_set_color_db(Estyle * es, char *name);
-int estyle_get_color_red(Estyle * es);
-int estyle_get_color_green(Estyle * es);
-int estyle_get_color_blue(Estyle * es);
-int estyle_get_color_alpha(Estyle * es);
 
 /*
  * Geometry querying

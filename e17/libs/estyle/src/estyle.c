@@ -125,6 +125,34 @@ void estyle_move(Estyle *es, int x, int y)
 }
 
 /**
+ * estyle_get_color - get the color of the estyle
+ * @es: the estyle to get the color
+ * @r: the pointer to the int to store the red value of the estyle
+ * @g: the pointer to the int to store the green value of the estyle
+ * @b: the pointer to the int to store the blue value of the estyle
+ * @a: the pointer to the int to store the alpha value of the estyle
+ *
+ * Returns no value. Retrieves the color of the estyle into the integer pointers
+ * @r, @g, @b and @a.
+ */
+void estyle_get_color(Estyle *es, int *r, int *g, int *b, int *a)
+{
+	CHECK_PARAM_POINTER("es", es);
+
+	if (r)
+		*r = es->color->r;
+
+	if (g)
+		*g = es->color->g;
+
+	if (b)
+		*b = es->color->b;
+
+	if (a)
+		*a = es->color->a;
+}
+
+/**
  * estyle_set_color - change the color of the estyle
  * @es: the estyle to change color
  * @r: the red value of the estyle
@@ -142,6 +170,38 @@ void estyle_set_color(Estyle *es, int r, int g, int b, int a)
 	es->color = estyle_color_instance(r, g, b, a);
 	evas_set_color(es->evas, es->bit, r, g, b, a);
 	estyle_style_set_color(es);
+}
+
+/**
+ * estyle_lookup_color_db - lookup a colors values by name in color db
+ * @name: the name of the color to lookup in the color db
+ * @r: the pointer to the int to store the red value of the estyle
+ * @g: the pointer to the int to store the green value of the estyle
+ * @b: the pointer to the int to store the blue value of the estyle
+ * @a: the pointer to the int to store the alpha value of the estyle
+ *
+ * Returns no value. Looks up the color name in the color db and stores the
+ * values in the integers pointed to by @r, @g, @b, and @a.
+ */
+void estyle_lookup_color_db(char *name, int *r, int *g, int *b, int *a)
+{
+	Estyle_Color *color;
+
+	CHECK_PARAM_POINTER("name", name);
+
+	color = estyle_color_instance_db(name);
+
+	if (r)
+		*r = color->r;
+
+	if (g)
+		*g = color->g;
+
+	if (b)
+		*b = color->b;
+
+	if (a)
+		*a = color->a;
 }
 
 /**
@@ -487,10 +547,17 @@ void estyle_text_at(Estyle *es, int index, int *char_x, int *char_y,
 
 	evas_text_at(es->evas, es->bit, index, &xx, &yy, &ww, &hh);
 
-	*char_x = D2I_ROUND(xx) + es->x;
-	*char_y = D2I_ROUND(yy) + es->y;
-	*char_w = D2I_ROUND(ww);
-	*char_h = D2I_ROUND(hh);
+	if (char_x)
+		*char_x = D2I_ROUND(xx) + es->x;
+
+	if (char_y)
+		*char_y = D2I_ROUND(yy) + es->y;
+
+	if (char_w)
+		*char_w = D2I_ROUND(ww);
+
+	if (char_h)
+		*char_h = D2I_ROUND(hh);
 }
 
 /**
