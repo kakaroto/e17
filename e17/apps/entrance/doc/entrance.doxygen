@@ -15,6 +15,13 @@
 
 
 
+<OL>
+<LI><A HREF="index.html#intro">What is Entrance?</A>
+<LI><A HREF="index.html#requirements">What does Entrance require?</A>
+<LI><A HREF="index.html#example1">Theme Example 1</A>
+<LI><A HREF="index.html#example2">Theme Example 2</A>
+<LI><A HREF="index.html#example3">Theme Example 3</A>
+</OL>
 
 
 
@@ -775,6 +782,243 @@ signal.
 EntrancePassEntry fails to authenticate with the system.
 </UL>
 
-@todo Theme edc walkthrough
+@section example3 Example Three
+
+Example Three is the fun and powerful part of Entrance.  As you might have
+noticed during <A HREF="index.html#example2">Example Two</A> we're starting to
+have more and more edje parts in this theme.  Before long we could have a few
+thousand lines of .edc code that could end up being tough to understand.  Let's
+divert our attention to a <A HREF="./EntranceThemeTemplate.tar.gz">theme
+template</A>.  This is a stripped down framework from the example that follows,
+and should serve as a decent skeleton for anyone wanting to write their own
+Entrance theme.  Armed with this theme template, it's time for the themer to
+brainstorm.</P>
+<P>You have to have some sort of idea of what you want your login screen to
+look like to go any further.  My idea coming into Example 3 was
+<UL>
+<LI>Use all the signals available in Entrance
+<LI>Keep the different parts of the code readable as an example
+<LI>Allow for minimization of the SessionList and UserList
+<LI>Have some sort of animation when no EntranceFace is displayed
+<LI>Have nice borders for every "window" in the theme
+<LI>"Shake Off" bad user and password input
+<LI>Make it pretty
+</UL>
+
+So I hit the web and found a high resolution photo that <A
+HREF="http://www.cozmo85.net">a friend</A> had taken, and I had my
+background.  I've always been very impressed by the themes <A
+HREF="http://tokyo.cored.org">Tokyo</A> comes up with, and I pieced together
+the borders from his e16 theme "Presence" in <A
+HREF="http://www.gimp.org">The Gimp</A>.  Gathering images was a lengthy
+process, but after digging around in other themes long enough I was ready to
+begin.  </P>
+<P>Using the template file above, I started working on the theme part by
+part, testing it as I went along.(The only current way to test Entrance
+themes is to a) set X_TESTING to 1 in src/client/entrance.h of the entrance
+source, or start Entrance in an Xnest session) Sub-Edjes, smaller components
+of the whole edje, can be designed independently, and reused if they're
+written with proper care.  In order to make things more clear, Edje parts
+that have to do with entrance are LabeledSoTheyAreEasyToIdentify, while Edje
+parts that are not relevant to Entrance are named in lower case. Also notice
+that the programs for each sub-edje are broken out for coherency also.</P>
+<P>
+What follows the main edc for Example3, titled "Headlights".  A short divx4
+capture(poor quality) is available <A HREF="./headlights.avi">here</A>.  A
+screenshot of this theme doesn't do it justice, the animation present has to
+be captured by video.  The complete <A
+HREF="./EntranceExample3.tar.gz">source code</A> and images are available,
+and the reader is encouraged to disect this source code.  
+
+@verbatim
+/***************************************************************************
+ * Corey Donohoe<atmos@atmos.org>
+ * Theme: headlights
+ *
+ * Borders by Tokyo : tokyo.cored.org
+ * Various images by Rephorm: www.rephorm.com
+ * Background by Roy Wagner : www.cozmo85.net
+ * Various images by Raster : www.rasterman.com
+ **************************************************************************/
+
+/**
+ * include our image { } block elsewhere
+ */
+#include "images/images.edc"
+
+collections {
+    group {
+	name, "Main";
+	parts {
+
+/** provides:
+ * EntranceDate 
+ * EntranceTime
+ * bottom_bar 
+ */ 
+#include "parts/bg.edc"
+
+/** provides: 
+ * error_string 
+ * error_string_clip  
+ */
+#include "parts/error_string.edc"
+
+/**
+ * provides: 
+ * EntranceSessionList 
+ * session_list_border 
+ * session_list_clip  
+ */
+#include "parts/session_list_area.edc"
+
+/**
+ * provides: 
+ * EntranceUserList 
+ * user_list_border 
+ * user_list_clip 
+ */
+#include "parts/user_list_area.edc"
+
+/**
+ * provides: 
+ * EntranceSession 
+ * session_clip 
+ * session_description 
+ */
+#include "parts/entrance_session.edc"
+
+/**
+ * provides: 
+ * power_button 
+ * power_button_description 
+ */
+#include "parts/power_button.edc"
+
+/**
+ * provides: 
+ * restart_button 
+ * restart_button_description 
+ */
+#include "parts/restart_button.edc"
+
+/**
+ * provides:
+ * EntranceFace 
+ * EntranceUserEntry 
+ * EntrancePassEntry
+ * EntranceHostname 
+ * login_border 
+ * login_area_clip
+ */
+#include "parts/login_area.edc"
+
+	}
+	programs {
+	    program {
+		name, "authed";
+		signal, "EntranceUserAuthSuccess";
+		source, "";
+		action, SIGNAL_EMIT "EntranceUserAuthSuccessDone" "";
+	    }
+/**
+ * handle EntranceSessionList callbacks:
+ * minimize, show, etc 
+ */
+#include "programs/session_list_area_programs.edc"
+
+/**
+ * handle EntranceUserList callbacks:
+ * minimize, show, etc 
+ */
+#include "programs/user_list_area_programs.edc"
+
+/** 
+ * catch signals from entrance, related to the login area
+ *
+ * EntranceUserAuth
+ * EntranceUserFail
+ * EntranceUserAuthFail
+ *
+ * UserSelected
+ * UserUnSelected
+ */
+#include "programs/login_area_programs.edc"
+
+/** 
+ * emit signals to entrance, related to the system halting 
+ *
+ * EntranceSystemHalt
+ */
+#include "programs/power_button_programs.edc"
+
+/** 
+ * emit signals to entrance, related to the system rebooting
+ *
+ * EntranceSystemReboot
+ */
+#include "programs/restart_button_programs.edc"
+
+/** 
+ * catch signals from entrance, related to the error messages
+ *
+ * EntranceUserAuth
+ * EntranceUserFail
+ * EntranceUserAuthFail
+ */
+#include "programs/error_string_programs.edc"
+
+/**
+  * macro defined to make the fade effect on all the windows easy to
+  * maintain
+  */
+#include "programs/effects_programs.edc"
+	}
+    }
+/**
+ * Session Group
+ */
+    group
+    {
+	name, "Session";
+	parts
+	{
+/**
+ * provides the EntranceSessionIcon and EntranceSessionTitle parts
+ */
+#include "parts/session_group.edc"
+	}
+	programs
+	{
+/**
+ * emit the following signals to entrance, 
+ * SessionSelected and
+ * SessionUnSelected
+ */
+#include "programs/session_group_programs.edc"
+	}
+    }
+}
+@endverbatim
+
+Perhaps it's just me, but this edc reads a lot smoother than the first two.
+Perhaps because we can see the different components of the Edje at a much
+higher level, or perhaps because this one has comments describing what each
+of the #include operations are doing.</P>
+<P>Somethings to perhaps keep in mind as you're writing themes might be
+<UL>
+<LI>Keep the main .edc simple enough that even someone who isn't an edje
+wizard could walk up to this theme and change the background to one that
+they'd prefer.
+<LI>Planning it out on the frontend will save you tons of rewriting
+</UL>
+</P>
+<P>If you found this theme tutorial useful or useless please let <A
+HREF="mailto:atmos@atmos.org">me</A> known.</P>
+@todo 
+<UL>
+<LI>Theme edc walkthrough
+<LI>Separate user icons out like sessions are
+</UL>
 
 */
