@@ -15,7 +15,7 @@ typedef enum {
 
 
 typedef struct _call {
-  ex_ipc_call     id;
+  Ecore_Config_Ipc_Call     id;
   char           *name;
   para            signature;
 } call;

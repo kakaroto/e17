@@ -15,14 +15,14 @@
 
 
 char           *examine_client_buf;
-ex_ipc_server_list *examine_client_server;
+Ecore_Config_Ipc_Server_List *examine_client_server;
 examine_prop   *prop_list;
 
 /*****************************************************************************/
 
 
 int
-ex_ipc_server_con(void *data, int type, void *event)
+ecore_config_ipc_server_con(void *data, int type, void *event)
 {
   connstate      *cs = (connstate *) data;
 
@@ -34,7 +34,7 @@ ex_ipc_server_con(void *data, int type, void *event)
 
 
 int
-ex_ipc_server_dis(void *data, int type, void *event)
+ecore_config_ipc_server_dis(void *data, int type, void *event)
 {
   connstate      *cs = (connstate *) data;
 
@@ -47,7 +47,7 @@ ex_ipc_server_dis(void *data, int type, void *event)
 
 
 int
-ex_ipc_server_sent(void *data, int type, void *event)
+ecore_config_ipc_server_sent(void *data, int type, void *event)
 {
   Ecore_Ipc_Event_Server_Data *e;
 
@@ -137,7 +137,7 @@ examine_client_send(call * c, char *key, char *val)
     send_append(&m, &l, key);
   if (val)
     send_append(&m, &l, val);
-  ret = ex_ipc_send(&examine_client_server, c->id, serial, m, l);
+  ret = ecore_config_ipc_send(&examine_client_server, c->id, serial, m, l);
   if (m)
     free(m);
 }
@@ -371,11 +371,11 @@ examine_client_set_val(examine_prop * target)
 int
 examine_client_init(char *pipe_name, connstate * cs)
 {
-  return ex_ipc_init(&examine_client_server, pipe_name, cs);
+  return ecore_config_ipc_init(&examine_client_server, pipe_name, cs);
 }
 
 int
 examine_client_exit(void)
 {
-  return ex_ipc_exit(&examine_client_server);
+  return ecore_config_ipc_exit(&examine_client_server);
 }

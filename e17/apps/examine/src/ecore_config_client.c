@@ -88,7 +88,8 @@ is_dir(const char *dir)
 
 
 int
-ex_ipc_init(ex_ipc_server_list ** srv_list, char *pipe_name, connstate * cs)
+ecore_config_ipc_init(Ecore_Config_Ipc_Server_List ** srv_list, char *pipe_name,
+                        connstate * cs)
 {
   int global     , port, connected;
   struct stat     st;
@@ -97,7 +98,7 @@ ex_ipc_init(ex_ipc_server_list ** srv_list, char *pipe_name, connstate * cs)
   DIR            *dir;
   struct dirent  *socket;
   Ecore_Ipc_Server *tmp_sock;
-  ex_ipc_server_list *tmp;
+  Ecore_Config_Ipc_Server_List *tmp;
 
   global = FALSE;
 
@@ -136,9 +137,9 @@ ex_ipc_init(ex_ipc_server_list ** srv_list, char *pipe_name, connstate * cs)
                ecore_ipc_server_connect(ECORE_IPC_LOCAL_USER, pipe_name, port,
                                         NULL))) {
             E(2, "- connected!\n");
-            if (!(tmp = malloc(sizeof(ex_ipc_server_list))))
+            if (!(tmp = malloc(sizeof(Ecore_Config_Ipc_Server_List))))
               return ECORE_CONFIG_ERR_OOM;
-            memset(tmp, 0, sizeof(ex_ipc_server_list));
+            memset(tmp, 0, sizeof(Ecore_Config_Ipc_Server_List));
             tmp->srv = tmp_sock;
 
             if (!*srv_list)
@@ -166,12 +167,12 @@ ex_ipc_init(ex_ipc_server_list ** srv_list, char *pipe_name, connstate * cs)
 
       if (connected) {
 
-        ecore_event_handler_add(ECORE_IPC_EVENT_SERVER_ADD, ex_ipc_server_con,
-                                cs);
-        ecore_event_handler_add(ECORE_IPC_EVENT_SERVER_DEL, ex_ipc_server_dis,
-                                cs);
-        ecore_event_handler_add(ECORE_IPC_EVENT_SERVER_DATA, ex_ipc_server_sent,
-                                NULL);
+        ecore_event_handler_add(ECORE_IPC_EVENT_SERVER_ADD,
+                                ecore_config_ipc_server_con, cs);
+        ecore_event_handler_add(ECORE_IPC_EVENT_SERVER_DEL,
+                                ecore_config_ipc_server_dis, cs);
+        ecore_event_handler_add(ECORE_IPC_EVENT_SERVER_DATA,
+                                ecore_config_ipc_server_sent, NULL);
 
         return ECORE_CONFIG_ERR_SUCC;
       }
@@ -180,15 +181,15 @@ ex_ipc_init(ex_ipc_server_list ** srv_list, char *pipe_name, connstate * cs)
     if ((tmp_sock =
          ecore_ipc_server_connect(ECORE_IPC_LOCAL_USER, pipe_name, 0, NULL))) {
       E(2, "Connected to %s on default port (0)!\n", pipe_name);
-      ecore_event_handler_add(ECORE_IPC_EVENT_SERVER_ADD, ex_ipc_server_con,
-                              cs);
-      ecore_event_handler_add(ECORE_IPC_EVENT_SERVER_DEL, ex_ipc_server_dis,
-                              cs);
-      ecore_event_handler_add(ECORE_IPC_EVENT_SERVER_DATA, ex_ipc_server_sent,
-                              NULL);
-      if (!(tmp = malloc(sizeof(ex_ipc_server_list))))
+      ecore_event_handler_add(ECORE_IPC_EVENT_SERVER_ADD,
+                              ecore_config_ipc_server_con, cs);
+      ecore_event_handler_add(ECORE_IPC_EVENT_SERVER_DEL,
+                              ecore_config_ipc_server_dis, cs);
+      ecore_event_handler_add(ECORE_IPC_EVENT_SERVER_DATA,
+                              ecore_config_ipc_server_sent, NULL);
+      if (!(tmp = malloc(sizeof(Ecore_Config_Ipc_Server_List))))
         return ECORE_CONFIG_ERR_OOM;
-      memset(tmp, 0, sizeof(ex_ipc_server_list));
+      memset(tmp, 0, sizeof(Ecore_Config_Ipc_Server_List));
       tmp->srv = tmp_sock;
 
       if (!*srv_list)
@@ -205,9 +206,9 @@ ex_ipc_init(ex_ipc_server_list ** srv_list, char *pipe_name, connstate * cs)
 
 
 int
-ex_ipc_exit(ex_ipc_server_list ** srv_list)
+ecore_config_ipc_exit(Ecore_Config_Ipc_Server_List ** srv_list)
 {
-  ex_ipc_server_list *tmp = *srv_list;
+  Ecore_Config_Ipc_Server_List *tmp = *srv_list;
 
   if (!srv_list)
     return ECORE_CONFIG_ERR_FAIL;
@@ -224,7 +225,7 @@ ex_ipc_exit(ex_ipc_server_list ** srv_list)
 
 
 int
-ex_ipc_sigexit(void *data, int type, void *event)
+ecore_config_ipc_sigexit(void *data, int type, void *event)
 {
   return 0;
 }
@@ -236,10 +237,10 @@ ex_ipc_sigexit(void *data, int type, void *event)
 
 
 int
-ex_ipc_send(ex_ipc_server_list ** srv_list, int major, int minor, void *data,
-            int size)
+ecore_config_ipc_send(Ecore_Config_Ipc_Server_List ** srv_list, int major,
+            int minor, void *data, int size)
 {
-  ex_ipc_server_list *tmp = *srv_list;
+  Ecore_Config_Ipc_Server_List *tmp = *srv_list;
   static int      ref = 0;
   int             ret;
 

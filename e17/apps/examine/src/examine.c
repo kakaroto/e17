@@ -53,7 +53,8 @@ main(int argc, char **argv)
 
   ecore_init();
   ecore_app_args_set(argc, (const char **) argv);
-  ecore_event_handler_add(ECORE_EVENT_SIGNAL_EXIT, ex_ipc_sigexit, &cs);
+  ecore_event_handler_add(ECORE_EVENT_SIGNAL_EXIT, ecore_config_ipc_sigexit,
+                            &cs);
 
   ewl_init(&argc, argv);
 

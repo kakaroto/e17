@@ -67,7 +67,7 @@ typedef enum {
 
 
 typedef struct _call {
-  ex_ipc_call     id;
+  Ecore_Config_Ipc_Call     id;
   char           *name;
   para            signature;
   const char     *help;
@@ -131,7 +131,7 @@ int             debug = 99;
 
 
 int
-ex_ipc_server_con(void *data, int type, void *event)
+ecore_config_ipc_server_con(void *data, int type, void *event)
 {
   connstate      *cs = (connstate *) data;
 
@@ -143,7 +143,7 @@ ex_ipc_server_con(void *data, int type, void *event)
 
 
 int
-ex_ipc_server_dis(void *data, int type, void *event)
+ecore_config_ipc_server_dis(void *data, int type, void *event)
 {
   connstate      *cs = (connstate *) data;
 
@@ -156,7 +156,7 @@ ex_ipc_server_dis(void *data, int type, void *event)
 
 
 int
-ex_ipc_server_sent(void *data, int type, void *event)
+ecore_config_ipc_server_sent(void *data, int type, void *event)
 {
   Ecore_Ipc_Event_Server_Data *e = (Ecore_Ipc_Event_Server_Data *) event;
 
@@ -250,7 +250,7 @@ get_token(char **beg, char **end, int tol)
 
 
 static int
-handle_any(ex_ipc_server_list ** server_list, call * cp, char *line)
+handle_any(Ecore_Config_Ipc_Server_List ** server_list, call * cp, char *line)
 {
   long            serial = -1;
   int             ret, pars = 0, l = 0;
@@ -296,7 +296,7 @@ handle_any(ex_ipc_server_list ** server_list, call * cp, char *line)
   E(3, "found \"%s\" |serial:%ld|file:%s|key:%s|value:%s|\n", cp->name, serial,
     file, k, v);
 
-  ret = ex_ipc_send(server_list, cp->id, serial, m, l);
+  ret = ecore_config_ipc_send(server_list, cp->id, serial, m, l);
   if (m)
     free(m);
   return ret;
@@ -490,7 +490,7 @@ find_with_spaces(char **beg, char **end)
 
 
 static int
-parse_line(ex_ipc_server_list ** server_list, char *line)
+parse_line(Ecore_Config_Ipc_Server_List ** server_list, char *line)
 {
   call           *cp = NULL;
   char           *c = NULL, *b = line, *e = NULL, *p;
@@ -579,7 +579,7 @@ done:
 int
 main(int argc, char **argv)
 {
-  ex_ipc_server_list *server;
+  Ecore_Config_Ipc_Server_List *server;
   int             ret, cc;
   connstate       cs;
   char           *p, *f, *q;
@@ -622,11 +622,11 @@ main(int argc, char **argv)
 
   ecore_init();
   ecore_app_args_set(argc, (const char **) argv);
-  ecore_event_handler_add(ECORE_EVENT_SIGNAL_EXIT, ex_ipc_sigexit, &cs);
+  ecore_event_handler_add(ECORE_EVENT_SIGNAL_EXIT, ecore_config_ipc_sigexit, &cs);
 
 reconnect:
   cc++;
-  if ((ret = ex_ipc_init(&server, pipe_name, &cs)) != ECORE_CONFIG_ERR_SUCC)
+  if ((ret = ecore_config_ipc_init(&server, pipe_name, &cs)) != ECORE_CONFIG_ERR_SUCC)
     E(0, "exsh: %sconnect to %s failed: %d\n", (cc > 1) ? "re" : "", pipe_name,
       ret);
   else {
@@ -634,7 +634,7 @@ reconnect:
       p = NULL;
       ecore_main_loop_iterate();
       if (cs == OFFLINE) {
-        ex_ipc_exit(&server);
+        ecore_config_ipc_exit(&server);
         cs = ONLINE;
         goto reconnect;
       }
@@ -665,7 +665,7 @@ reconnect:
     }
   }
 
-  ex_ipc_exit(&server);
+  ecore_config_ipc_exit(&server);
   ecore_shutdown();
 
 #ifdef HAVE_READLINE_HISTORY
