@@ -189,7 +189,7 @@ ewl_tooltip_parent_focus_out_cb(Ewl_Widget * w, void *ev_data, void *user_data)
 void
 ewl_tooltip_destroy_cb(Ewl_Widget * w, void *ev_data, void *user_data)
 {
-	Ewl_Tooltip *t = w;
+	Ewl_Tooltip *t = EWL_TOOLTIP(w);
 	
 	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR("w", w);
