@@ -24,7 +24,20 @@
 #include <errno.h>
 #include <sys/time.h>
 
+#ifdef HAS_XRANDR
+#ifdef HAVE_X11_EXTENSIONS_XRANDR_H
+#include <X11/extensions/Xrandr.h>
+#define USE_XRANDR 1
+#endif
+#endif
+
 static int          event_base_shape = 0;
+static int          error_base_shape = 0;
+
+#ifdef USE_XRANDR
+static int          event_base_randr = 0;
+static int          error_base_randr = 0;
+#endif
 
 char                throw_move_events_away = 0;
 
@@ -47,10 +60,18 @@ DeskAccountTimeout(int val, void *data)
 void
 EventsInit(void)
 {
-   int                 shape_event_base, shape_error_base;
+   int                 major, minor;
 
    /* Check for the Shape Extension */
-   if (!XShapeQueryExtension(disp, &shape_event_base, &shape_error_base))
+   if (XShapeQueryExtension(disp, &event_base_shape, &error_base_shape))
+     {
+	XShapeQueryVersion(disp, &major, &minor);
+	if (mode.debug)
+	   printf("Found extension Shape version %d.%d\n"
+		  " Event/error base = %d/%d\n",
+		  major, minor, event_base_shape, error_base_shape);
+     }
+   else
      {
 	ASSIGN_ALERT(_("X server setup error"), "", "",
 		     _("Quit Enlightenment"));
@@ -63,7 +84,6 @@ EventsInit(void)
 	RESET_ALERT;
 	EExit((void *)1);
      }
-   event_base_shape = shape_event_base;
 
    /* check for the XTEST extension */
 /*
@@ -81,7 +101,16 @@ EventsInit(void)
  * "For your XServer to find out how to enable the XTest\n"
  * "Extension\n");
  */
-   /* record the event base for shape change events */
+#ifdef USE_XRANDR
+   if (XRRQueryExtension(disp, &event_base_randr, &error_base_randr))
+     {
+	XRRQueryVersion(disp, &major, &minor);
+	if (mode.debug)
+	   printf("Found extension RandR version %d.%d\n"
+		  " Event/error base = %d/%d\n",
+		  major, minor, event_base_randr, error_base_randr);
+     }
+#endif
 }
 
 static char        *
@@ -805,7 +834,7 @@ WaitEvent(void)
 /*
  * Event debug stuff
  */
-#define N_DEBUG_FLAGS 64
+#define N_DEBUG_FLAGS 256
 static char         ev_debug;
 static char         ev_debug_flags[N_DEBUG_FLAGS];
 
