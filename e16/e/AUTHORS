@@ -123,7 +123,10 @@ Carl Strasen <carl@valinux.com>
 		Lots of help with documentation before the release
 
 David Mason <dave@peckham.net>
-		patch with seveal spellign mistakes that got missed - thanks
+		patch with several spelling mistakes that got missed - thanks
+
+Tom Christiansen <tchrist@jhereg.perl.com>
+		Man / Pod Pages
 
 And others whose names we probably forgot to add (email us and we'll put you
 in here)

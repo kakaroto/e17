@@ -21,7 +21,9 @@
  * CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 #include "E.h"
+#ifdef __EMX__
 #include <io.h>			/* for EMX select() */
+#endif
 #ifdef HAVE_LIBXTST
 #include <X11/extensions/XTest.h>
 #endif
