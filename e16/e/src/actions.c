@@ -17,6 +17,28 @@ CreateAclass(char *name)
 }
 
 void
+RefreshScreen(void)
+{
+
+   Window              win;
+   XSetWindowAttributes attr;
+
+   EDBUG(4, "CreateAclass");
+
+   attr.save_under = False;
+   attr.backing_store = NotUseful;
+
+   win = XCreateWindow(disp, root.win, 0, 0, root.w, root.h, 0, CopyFromParent,
+		       CopyFromParent, CopyFromParent,
+		       CWBackingStore | CWSaveUnder, &attr);
+   XMapRaised(disp, win);
+   XDestroyWindow(disp, win);
+   XFlush(disp);
+
+   EDBUG_RETURN_;
+}
+
+void
 GrabButtonGrabs(EWin * ewin)
 {
    ActionClass        *ac;
@@ -593,30 +615,28 @@ doNothing(void *params)
 }
 
 int
-execApplication(void *params)
+runApp(char *exe)
 {
+
    char               *sh;
    char               *path;
-   char                exe[FILEPATH_LEN_MAX];
    char               *real_exec;
 
-   EDBUG(6, "execApplication");
-   if (!params)
-      EDBUG_RETURN(0);
+   EDBUG(6, "runApp");
+
    if (fork())
       EDBUG_RETURN(0);
+
    setsid();
    sh = usershell(getuid());
-   exe[0] = 0;
-   sscanf((char *)params, "%4000s", exe);
-   if (exe[0])
+   if (exe)
      {
 	path = pathtoexec(exe);
 	if (path)
 	  {
 	     Efree(path);
-	     real_exec = (char *)Emalloc(strlen((char *)params) + 6);
-	     sprintf(real_exec, "exec %s", (char *)params);
+	     real_exec = (char *)Emalloc(strlen(exe) + 6);
+	     sprintf(real_exec, "exec %s", exe);
 	     execl(sh, sh, "-c", (char *)real_exec, NULL);
 	     exit(0);
 	  }
@@ -706,10 +726,25 @@ execApplication(void *params)
 	  }
 	exit(100);
      }
-   real_exec = (char *)Emalloc(strlen((char *)params) + 6);
-   sprintf(real_exec, "exec %s", (char *)params);
+   real_exec = (char *)Emalloc(strlen(exe) + 6);
+   sprintf(real_exec, "exec %s", (char *)exe);
    execl(sh, sh, "-c", (char *)real_exec, NULL);
    exit(0);
+
+   EDBUG_RETURN(0);
+
+}
+
+int
+execApplication(void *params)
+{
+   char                exe[FILEPATH_LEN_MAX];
+
+   EDBUG(6, "execApplication");
+   if (!params)
+      EDBUG_RETURN(0);
+   sscanf((char *)params, "%4000s", exe);
+   runApp(exe);
    EDBUG_RETURN(0);
 }
 
@@ -1369,29 +1404,22 @@ int
 doKill(void *params)
 {
    EWin               *ewin;
-   EWin              **gwins;
-   int                 num, i;
 
    EDBUG(6, "doKill");
    if (params)
-      ewin = FindItem(NULL, atoi((char *)params), LIST_FINDBY_ID,
-		      LIST_TYPE_EWIN);
-   else
-      ewin = GetFocusEwin();
-   if (!ewin)
-      EDBUG_RETURN(0);
-   gwins = ListWinGroupMembersForEwin(ewin, ACTION_KILL, &num);
-   if (gwins)
      {
-	for (i = 0; i < num; i++)
-	  {
-	     RemoveEwinFromGroup(gwins[i]);
-	     ICCCM_Delete(gwins[i]);
-	     AUDIO_PLAY("SOUND_WINDOW_CLOSE");
-	  }
-	Efree(gwins);
+	ewin = FindItem(NULL, atoi((char *)params), LIST_FINDBY_ID,
+			LIST_TYPE_EWIN);
      }
+   else
+     {
+	ewin = GetFocusEwin();
+     }
+
+   KillEwin(ewin);
+
    EDBUG_RETURN(0);
+
 }
 
 int

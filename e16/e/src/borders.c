@@ -1,6 +1,29 @@
 #include "E.h"
 
 void
+KillEwin(EWin * ewin)
+{
+   EWin              **gwins;
+   int                 num, i;
+
+   if (!ewin)
+      EDBUG_RETURN_;
+   gwins = ListWinGroupMembersForEwin(ewin, ACTION_KILL, &num);
+   if (gwins)
+     {
+	for (i = 0; i < num; i++)
+	  {
+	     RemoveEwinFromGroup(gwins[i]);
+	     ICCCM_Delete(gwins[i]);
+	     AUDIO_PLAY("SOUND_WINDOW_CLOSE");
+	  }
+	Efree(gwins);
+     }
+   EDBUG_RETURN_;
+
+}
+
+void
 DetermineEwinFloat(EWin * ewin, int dx, int dy)
 {
    char                dofloat = 0;

@@ -585,7 +585,7 @@ ShowToolTip(ToolTip * tt, char *text, ActionClass * ac, int x, int y)
 		  if (ac->list[i]->event == EVENT_DOUBLE_DOWN)
 		    {
 		       TextDraw(tt->tclass, tt->win, 0, 0, STATE_NORMAL, "2x",
-				xx + iw - double_w, y, double_w, heights[i], 17, 0);
+			  xx + iw - double_w, y, double_w, heights[i], 17, 0);
 		    }
 		  if (ac->list[i]->anybutton)
 		    {

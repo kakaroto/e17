@@ -1778,6 +1778,7 @@ void               *MatchEwinByFunction(EWin * ewin,
 void                RemoveWindowMatch(WindowMatch * wm);
 
 /* borders.c functions */
+void                KillEwin(EWin * ewin);
 void                ResizeEwin(EWin * ewin, int w, int h);
 void                DetermineEwinArea(EWin * ewin);
 void                MoveEwin(EWin * ewin, int x, int y);
@@ -1876,6 +1877,8 @@ void                ICCCM_SetMainEInfo(void);
 void                ICCCM_GetMainEInfo(void);
 
 /* actions.c functions */
+void                RefreshScreen(void);
+int                 runApp(char *exe);
 void                GrabButtonGrabs(EWin * ewin);
 void                UnGrabButtonGrabs(EWin * ewin);
 ActionClass        *CreateAclass(char *name);
@@ -2163,6 +2166,8 @@ void                KDE_Shutdown(void);
 void                KDE_ClientInit(EWin * ewin);
 void                KDE_ClientChange(EWin * ewin, XPropertyEvent * event);
 void                KDE_GetDecorationHint(EWin * ewin, long *dechints);
+int                 KDE_WindowCommand(EWin * ewin, char *cmd);
+void                KDE_Command(char *cmd, XClientMessageEvent * event);
 
 /* sound.c functions */
 Sample             *LoadWav(char *file);

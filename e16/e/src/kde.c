@@ -529,3 +529,139 @@ KDE_GetDecorationHint(EWin * ewin, long *dechints)
    EDBUG_RETURN_;
 
 }
+
+int
+KDE_WindowCommand(EWin * ewin, char *cmd)
+{
+
+   EDBUG(6, "KDE_WindowCommand");
+
+   if (!ewin)
+      EDBUG_RETURN(0);
+
+   if (!cmd)
+      EDBUG_RETURN(0);
+
+   if (!strcmp(cmd, "winMove"))
+     {
+	/* this isn't supported right now */
+     }
+   else if (!strcmp(cmd, "winResize"))
+     {
+	/* this isn't supported right now */
+     }
+   else if (!strcmp(cmd, "winRestore"))
+     {
+	MaxSize(ewin, "conservative");
+     }
+   else if (!strcmp(cmd, "winMaximize"))
+     {
+	MaxSize(ewin, "conservative");
+     }
+   else if (!strcmp(cmd, "winIconify"))
+     {
+	IconifyEwin(ewin);
+     }
+   else if (!strcmp(cmd, "winClose"))
+     {
+	KillEwin(ewin);
+     }
+   else if (!strcmp(cmd, "winSticky"))
+     {
+	MakeWindowSticky(ewin);
+     }
+   else if (!strcmp(cmd, "winShade"))
+     {
+	ShadeEwin(ewin);
+     }
+   else if (!strcmp(cmd, "winOperation"))
+     {
+	/* this isn't supported right now */
+     }
+   else
+     {
+	EDBUG_RETURN(0);
+     }
+   EDBUG_RETURN(1);
+
+}
+
+void
+KDE_Command(char *cmd, XClientMessageEvent * event)
+{
+
+   EDBUG(6, "KDE_Command");
+
+   if (!strcmp(cmd, "commandLine"))
+     {
+	/* not supported right now */
+     }
+   else if (!strcmp(cmd, "execute"))
+     {
+	/* not supported right now */
+     }
+   else if (!strcmp(cmd, "logout"))
+     {
+	doExit("logout");
+     }
+   else if (!strcmp(cmd, "refreshScreen"))
+     {
+	RefreshScreen();
+     }
+   else if (!strncmp(cmd, "go:", 3))
+     {
+
+     }
+   else if (!strcmp(cmd, "desktop+1"))
+     {
+
+     }
+   else if (!strcmp(cmd, "desktop-1"))
+     {
+
+     }
+   else if (!strcmp(cmd, "desktop+2"))
+     {
+
+     }
+   else if (!strcmp(cmd, "desktop-2"))
+     {
+
+     }
+   else if (!strncmp(cmd, "desktop", 7))
+     {
+
+     }
+   else if (!strcmp(cmd, "deskUnclutter"))
+     {
+	doCleanup(NULL);
+     }
+   else if (!KDE_WindowCommand(GetFocusEwin(), cmd))
+     {
+	XEvent              ev;
+	KModuleList        *ptr = KModules;
+	long                mask;
+
+	ev.xclient = *event;
+
+	while (ptr)
+	  {
+	     ev.xclient.window = ptr->ewin->win;
+	     if (ptr->ewin->win == root.win)
+	       {
+		  mask = SubstructureRedirectMask;
+	       }
+	     else
+	       {
+		  mask = 0;
+	       }
+
+	     XSendEvent(disp, ptr->ewin->win, False, mask, &ev);
+
+	     ptr = ptr->next;
+	  }
+     }
+
+   EDBUG_RETURN_;
+
+}
