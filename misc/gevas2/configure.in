@@ -1,0 +1,72 @@
+AC_INIT(src/gevas.h)
+AM_CONFIG_HEADER(config.h)
+AM_INIT_AUTOMAKE(gevas, 1.9.9)
+
+AM_PATH_GTK_2_0( 2.0.6 )
+
+AC_PROG_CC
+AM_PROG_CC_STDC
+AC_C_BIGENDIAN
+AM_WITH_DMALLOC
+AC_C_CONST
+AM_ENABLE_SHARED
+AM_PROG_LIBTOOL
+if test X"$enable_shared" = Xyes; then
+  DLLDFLAGS=-export-dynamic
+  AC_SUBST(DLLDFLAGS)
+fi
+AC_PROG_INSTALL
+AC_PROG_MAKE_SET
+
+dnl Set PACKAGE_DATA_DIR in config.h.
+if test "x${datadir}" = 'x${prefix}/share'; then
+  if test "x${prefix}" = "xNONE"; then
+    AC_DEFINE_UNQUOTED(PACKAGE_DATA_DIR, "${ac_default_prefix}/share/${PACKAGE}")
+  else
+    AC_DEFINE_UNQUOTED(PACKAGE_DATA_DIR, "${prefix}/share/${PACKAGE}")
+  fi
+else
+  AC_DEFINE_UNQUOTED(PACKAGE_DATA_DIR, "${datadir}/${PACKAGE}")
+fi
+
+evas_cflags=`evas-config --cflags`
+evas_libs=`evas-config --libs`
+
+
+if test "x${prefix}" = 'xNONE'; then
+        prefix=${ac_default_prefix};
+fi;
+if test "x${exec_prefix}" = 'xNONE'; then
+        exec_prefix=${ac_default_prefix};
+fi;
+
+PREFIX=${prefix};
+SYSCONFDIR=`eval echo ${sysconfdir}`
+EXECPREFIX=`eval echo ${exec_prefix}`
+BINDIR=`eval echo ${bindir}`
+LIBDIR=`eval echo ${libdir}`
+INCLUDEDIR=`eval echo ${includedir}`
+
+AC_SUBST(PREFIX)
+AC_SUBST(SYSCONFDIR)
+AC_SUBST(EXECPREFIX)
+AC_SUBST(BINDIR)
+AC_SUBST(LIBDIR)
+AC_SUBST(INCLUDEDIR)
+
+ICON_INSTALL_DIR="/usr/local/gevas2/icons"
+AC_SUBST(ICON_INSTALL_DIR)
+AC_DEFINE_UNQUOTED(ICON_INSTALL_DIR, "$ICON_INSTALL_DIR" )
+
+AC_SUBST(CFLAGS)
+AC_SUBST(CPPFLAGS)
+AC_SUBST(LDFLAGS)
+AC_SUBST(evas_cflags)
+AC_SUBST(evas_libs)
+
+AC_OUTPUT([
+Makefile
+src/Makefile
+media/Makefile
+demo/Makefile
+])

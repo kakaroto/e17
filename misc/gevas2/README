@@ -1,0 +1,6 @@
+
+you should be able to build and install gevas simply by running 
+
+./autogen.sh
+make
+
