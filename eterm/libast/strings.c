@@ -266,9 +266,13 @@ split(const char *delim, const char *str)
     /* Move past any trailing "whitespace." */
     for (; *pstr && IS_DELIM(*pstr); pstr++);
   }
-  /* The last element of slist[] should be NULL. */
-  slist[cnt] = 0;
-  return slist;
+  if (cnt == 0) {
+    return NULL;
+  } else {
+    /* The last element of slist[] should be NULL. */
+    slist[cnt] = 0;
+    return slist;
+  }
 }
 
 char **

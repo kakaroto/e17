@@ -54,3 +54,8 @@ Tue May  8 19:51:51 PDT 2001	Michael Jennings <mej@eterm.org>
 	macro for getting rid of bogus unused variable warnings.
 	
 -------------------------------------------------------------------------------
+Wed May  9 17:20:46 PDT 2001	Michael Jennings <mej@eterm.org>
+
+	Better handling of NULL values all around.
+	
+-------------------------------------------------------------------------------

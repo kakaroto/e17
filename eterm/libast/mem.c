@@ -455,6 +455,8 @@ free_array(void **list, size_t count)
 {
   register size_t i;
 
+  REQUIRE(list != NULL);
+
   if (count == 0) {
     count = (size_t) -1;
   }
