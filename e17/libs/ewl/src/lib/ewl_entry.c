@@ -201,7 +201,7 @@ int ewl_entry_init(Ewl_Entry * e, char *text)
  * @return Returns no value.
  * @brief Set multiline for an entry widget
  *
- * Set the multiline flag for $a e to @a m
+ * Set the multiline flag for @a e to @a m
  */
 void ewl_entry_multiline_set(Ewl_Entry * e, int m)
 {
@@ -735,10 +735,11 @@ void ewl_entry_index_geometry_map(Ewl_Entry *e, int index, int *x, int *y,
 
 	evas_object_textblock_char_pos_get(e->textobj, index, &tx, &ty,
 			&tw, &th);
+	printf("char %d at %d, %d size %dx%d\n", index, tx, ty, tw, th);
 	if (x)
-		*x = (int)(tx);
+		*x = (int)(tx + CURRENT_X(e));
 	if (y)
-		*y = (int)(ty);
+		*y = (int)(ty + CURRENT_Y(e));
 	if (w)
 		*w = (int)(tw);
 	if (h)
