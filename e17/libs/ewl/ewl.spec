@@ -51,14 +51,21 @@ make prefix=$RPM_BUILD_ROOT%{prefix} install
 %clean
 rm -rf $RPM_BUILD_ROOT
 
+
 %files
 %defattr(-,root,root)
 %{prefix}/lib/libewl.so.*
+%{prefix}/lib/libewl.la
+%{prefix}/bin/ewl_embed_test
+%{prefix}/bin/ewl_test
+%{prefix}/share/ewl/themes
 
 %files devel
 %defattr(-,root,root)
+%{prefix}/share/aclocal/ewl.m4
+%{prefix}/bin/ewl_config
 %{prefix}/lib/libewl.so
-%{prefix}/lib/libewl.*a
-%{prefix}/include/Ewl.h
-%{prefix}/include/ewl_*.h
+%{prefix}/lib/libewl.a
+%{prefix}/include/ewl/Ewl.h
+%{prefix}/include/ewl/ewl_*.h
 %{prefix}/bin/ewl-config
