@@ -5,7 +5,7 @@
 if test $? = 1; then
   echo "Happy building ...";
 else
-  echo "Trobule!";
+  echo "Trouble!";
   echo "You have automake 1.4 and autoconf 2.5. either downgrade autoconf to";
   echo "2.13 or upgrade automake to 1.5";
   exit
