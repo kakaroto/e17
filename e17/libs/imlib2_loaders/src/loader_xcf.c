@@ -1,30 +1,48 @@
 /*
   
-  ----------------------------------[ XCF Loader ]----------------------------------
-   
-  There's a quick overview of the XCF file structure in Gimp's source tree, in
-  docs/xcf.doc. However it's brief, so here's a more verbose overview. All image
-  characteristics are defined in "properties". In the data stream properties are
-  defined through a 4 bit index number (see enum below), followed by a 4 byte length.
-  The property data directly follows this information. A list of properties ends
-  when PROP_END is encountered. There is a properties block at the beginning of
-  the file, as well as at the beginning of each layer and channel. Layers and
-  channels are read at offsets in the file, the list of layers (resp. channels) is
-  exhausted when the next offset read in is zero.
+  -----------------------------[ XCF Loader ]-----------------------------
 
-  The actual image data is stored in tiles, which are by default 64x64 in size,
-  likely with smaller ones on the right and bottom edges.
+  This program is free software; you can redistribute it and/or modify
+  it under the terms of the GNU General Public License as published by
+  the Free Software Foundation; either version 2, or (at your option)
+  any later version.
 
-  The position of the tiles on the image is left->right, row by row. The actual
-  DATA8* data is contained in a "level" which is contained in a "hierarchy". I've
-  not really understood the purpose of the hierarchy, as it seems to always contain
-  only one level anyway.
+  This program is distributed in the hope that it will be useful,
+  but WITHOUT ANY WARRANTY; without even the implied warranty of
+  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+  GNU General Public License for more details.
+
+  You should have received a copy of the GNU General Public License
+  along with this program; if not, write to the Free Software Foundation,
+  Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
+
+  ------------------------------------------------------------------------
+
+  There's a quick overview of the XCF file structure in Gimp's source
+  tree, in docs/xcf.doc. However it's brief, so here's a more verbose
+  overview based on my understanding of XCF.  All image characteristics
+  are defined in "properties". In the data stream properties are defined
+  through a 4 bit index number (see enum below), followed by a 4 byte
+  length. The property data directly follows this information. A list of
+  properties ends when PROP_END is encountered. There is a properties
+  block at the beginning of the file, as well as at the beginning of each
+  layer and channel. Layers and channels are read at offsets in the file,
+  the list of layers (resp. channels) is exhausted when the next offset
+  read in is zero.
+
+  The actual image data is stored in tiles, which are by default 64x64 in
+  size, likely with smaller ones on the right and bottom edges.
+
+  The position of the tiles on the image is left->right, row by row. The
+  actual DATA8* data is contained in a "level" which is contained in a
+  "hierarchy". I've not really understood the purpose of the hierarchy, as
+  it seems to always contain only one level anyway.
   
-  Layer masks are stored as channels (basically grayscale layers with a single
-  color definition. For the purpose of this loader I replaced the concept of a
-  channel with a layer, since it doesn't really matter.
+  Layer masks are stored as channels (basically grayscale layers with a
+  single color definition. For the purpose of this loader I replaced the
+  concept of a channel with a layer, since it doesn't really matter.
 
-  Ok, hope this helps with understanding docs/xcf.c.               --cK.
+  Ok, hope this helps with understanding XCF.                 -- cK.
 
 */
 
@@ -34,15 +52,10 @@
 #endif
 
 #include <stdio.h>
-#include <sys/types.h>
-#include <sys/stat.h>
-#include <fcntl.h>
 #include <string.h>
-#include <X11/Xlib.h>
-#include <X11/extensions/XShm.h>
-#include <X11/Xutil.h>
 #include <netinet/in.h>
-#include <Imlib2.h>
+#include <X11/Xlib.h>
+
 #include "common.h"
 #include "image.h"
 #include "color_values.h"
