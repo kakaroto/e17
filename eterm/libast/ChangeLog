@@ -616,3 +616,7 @@ Removed bogus assertion.
 
 Added map_if.h to install.
 ----------------------------------------------------------------------
+Mon Mar  1 14:29:13 2004                        Michael Jennings (mej)
+
+AVL tree removal work-in-progress.
+----------------------------------------------------------------------

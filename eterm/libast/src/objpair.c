@@ -1,14 +1,14 @@
 /*
- * Copyright (C) 1997-2004, Michael Jennings
+ * Copyvalue (C) 1997-2004, Michael Jennings
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to
  * deal in the Software without restriction, including without limitation the
- * rights to use, copy, modify, merge, publish, distribute, sublicense, and/or
+ * values to use, copy, modify, merge, publish, distribute, sublicense, and/or
  * sell copies of the Software, and to permit persons to whom the Software is
  * furnished to do so, subject to the following conditions:
  *
- * The above copyright notice and this permission notice shall be included in
+ * The above copyvalue notice and this permission notice shall be included in
  * all copies of the Software, its documentation and marketing & publicity
  * materials, and acknowledgment shall be given in the documentation, materials
  * and software packages that this Software was used.
@@ -22,7 +22,7 @@
  */
 
 /**
- * @file obj.c
+ * @file objpair.c
  * LibAST Object Infrastructure -- Paired Objects
  *
  * This file contains the objpair class.
@@ -127,23 +127,23 @@ spif_objpair_new(void)
 }
 
 /**
- * Create a new @c objpair instance with a left object.
+ * Create a new @c objpair instance with a key object.
  *
  * This function creates and returns a new instance of an @c objpair
- * with a given left object.
+ * with a given key object.
  *
- * @param left The left object for the pair.
- * @return     A new @c objpair instance whose left object is @a left.
+ * @param key  The key object for the pair.
+ * @return     A new @c objpair instance whose key object is @a key.
  *
  * @see @link DOXGRP_OBJPAIR Paired Objects @endlink
  */
 spif_objpair_t
-spif_objpair_new_from_left(spif_obj_t left)
+spif_objpair_new_from_key(spif_obj_t key)
 {
     spif_objpair_t self;
 
     self = SPIF_ALLOC(objpair);
-    if (!spif_objpair_init_from_left(self, left)) {
+    if (!spif_objpair_init_from_key(self, key)) {
         SPIF_DEALLOC(self);
         self = SPIF_NULL_TYPE(objpair);
     }
@@ -151,23 +151,23 @@ spif_objpair_new_from_left(spif_obj_t left)
 }
 
 /**
- * Create a new @c objpair instance with a right object.
+ * Create a new @c objpair instance with a value object.
  *
  * This function creates and returns a new instance of an @c objpair
- * with a given right object.
+ * with a given value object.
  *
- * @param right The right object for the pair.
- * @return      A new @c objpair instance whose right object is @a right.
+ * @param value The value object for the pair.
+ * @return      A new @c objpair instance whose value object is @a value.
  *
  * @see @link DOXGRP_OBJPAIR Paired Objects @endlink
  */
 spif_objpair_t
-spif_objpair_new_from_right(spif_obj_t right)
+spif_objpair_new_from_value(spif_obj_t value)
 {
     spif_objpair_t self;
 
     self = SPIF_ALLOC(objpair);
-    if (!spif_objpair_init_from_right(self, right)) {
+    if (!spif_objpair_init_from_value(self, value)) {
         SPIF_DEALLOC(self);
         self = SPIF_NULL_TYPE(objpair);
     }
@@ -175,25 +175,25 @@ spif_objpair_new_from_right(spif_obj_t right)
 }
 
 /**
- * Create a new @c objpair instance with both left and right objects.
+ * Create a new @c objpair instance with both key and value objects.
  *
  * This function creates and returns a new instance of an @c objpair
- * with given left and right objects.
+ * with given key and value objects.
  *
- * @param left  The left object for the pair.
- * @param right The right object for the pair.
- * @return      A new @c objpair instance whose left and right objects
- *              are @a left and @a right, respectively.
+ * @param key   The key object for the pair.
+ * @param value The value object for the pair.
+ * @return      A new @c objpair instance whose key and value objects
+ *              are @a key and @a value, respectively.
  *
  * @see @link DOXGRP_OBJPAIR Paired Objects @endlink
  */
 spif_objpair_t
-spif_objpair_new_from_both(spif_obj_t left, spif_obj_t right)
+spif_objpair_new_from_both(spif_obj_t key, spif_obj_t value)
 {
     spif_objpair_t self;
 
     self = SPIF_ALLOC(objpair);
-    if (!spif_objpair_init_from_both(self, left, right)) {
+    if (!spif_objpair_init_from_both(self, key, value)) {
         SPIF_DEALLOC(self);
         self = SPIF_NULL_TYPE(objpair);
     }
@@ -221,80 +221,80 @@ spif_objpair_init(spif_objpair_t self)
 }
 
 /**
- * Initialize an @c objpair instance with a given left object.
+ * Initialize an @c objpair instance with a given key object.
  *
  * This function initializes the member variables of the @c objpair
- * instance to their appropriate "bootstrap" values, assigning @a left
- * to the left property of @a self.
+ * instance to their appropriate "bootstrap" values, assigning @a key
+ * to the key property of @a self.
  *
  * @param self The @c objpair instance to be initialized.
- * @param left The left object for the pair.
+ * @param key  The key object for the pair.
  * @return     #TRUE if successful, #FALSE otherwise.
  *
  * @see @link DOXGRP_OBJPAIR Paired Objects @endlink
  * @ingroup DOXGRP_OBJPAIR
  */
 spif_bool_t
-spif_objpair_init_from_left(spif_objpair_t self, spif_obj_t left)
+spif_objpair_init_from_key(spif_objpair_t self, spif_obj_t key)
 {
     ASSERT_RVAL(!SPIF_OBJPAIR_ISNULL(self), FALSE);
-    ASSERT_RVAL(!SPIF_OBJ_ISNULL(left), FALSE);
+    ASSERT_RVAL(!SPIF_OBJ_ISNULL(key), FALSE);
     spif_obj_set_class(SPIF_OBJ(self), SPIF_CLASS_VAR(objpair));
-    self->left = SPIF_OBJ_DUP(SPIF_OBJ(left));
-    self->right = SPIF_NULL_TYPE(obj);
+    self->key = SPIF_OBJ_DUP(SPIF_OBJ(key));
+    self->value = SPIF_NULL_TYPE(obj);
     return TRUE;
 }
 
 /**
- * Initialize an @c objpair instance with a given right object.
+ * Initialize an @c objpair instance with a given value object.
  *
  * This function initializes the member variables of the @c objpair
- * instance to their appropriate "bootstrap" values, assigning @a right
- * to the right property of @a self.
+ * instance to their appropriate "bootstrap" values, assigning @a value
+ * to the value property of @a self.
  *
  * @param self  The @c objpair instance to be initialized.
- * @param right The right object for the pair.
+ * @param value The value object for the pair.
  * @return      #TRUE if successful, #FALSE otherwise.
  *
  * @see @link DOXGRP_OBJPAIR Paired Objects @endlink
  * @ingroup DOXGRP_OBJPAIR
  */
 spif_bool_t
-spif_objpair_init_from_right(spif_objpair_t self, spif_obj_t right)
+spif_objpair_init_from_value(spif_objpair_t self, spif_obj_t value)
 {
     ASSERT_RVAL(!SPIF_OBJPAIR_ISNULL(self), FALSE);
-    ASSERT_RVAL(!SPIF_OBJ_ISNULL(right), FALSE);
+    ASSERT_RVAL(!SPIF_OBJ_ISNULL(value), FALSE);
     spif_obj_set_class(SPIF_OBJ(self), SPIF_CLASS_VAR(objpair));
-    self->left = SPIF_NULL_TYPE(obj);
-    self->right = SPIF_OBJ_DUP(SPIF_OBJ(right));
+    self->key = SPIF_NULL_TYPE(obj);
+    self->value = SPIF_OBJ_DUP(SPIF_OBJ(value));
     return TRUE;
 }
 
 /**
- * Initialize an @c objpair instance with both left and right
+ * Initialize an @c objpair instance with both key and value
  * objects.
  *
  * This function initializes the member variables of the @c objpair
- * instance to their appropriate "bootstrap" values, assigning @a left
- * to the left property of @self and @a right to the right property.
+ * instance to their appropriate "bootstrap" values, assigning @a key
+ * to the key property of @self and @a value to the value property.
  *
  * @param self  The @c objpair instance to be initialized.
- * @param left  The left object for the pair.
- * @param right The right object for the pair.
+ * @param key   The key object for the pair.
+ * @param value The value object for the pair.
  * @return      #TRUE if successful, #FALSE otherwise.
  *
  * @see @link DOXGRP_OBJPAIR Paired Objects @endlink
  * @ingroup DOXGRP_OBJPAIR
  */
 spif_bool_t
-spif_objpair_init_from_both(spif_objpair_t self, spif_obj_t left, spif_obj_t right)
+spif_objpair_init_from_both(spif_objpair_t self, spif_obj_t key, spif_obj_t value)
 {
     ASSERT_RVAL(!SPIF_OBJPAIR_ISNULL(self), FALSE);
-    ASSERT_RVAL(!SPIF_OBJ_ISNULL(left), FALSE);
-    ASSERT_RVAL(!SPIF_OBJ_ISNULL(right), FALSE);
+    ASSERT_RVAL(!SPIF_OBJ_ISNULL(key), FALSE);
+    ASSERT_RVAL(!SPIF_OBJ_ISNULL(value), FALSE);
     spif_obj_set_class(SPIF_OBJ(self), SPIF_CLASS_VAR(objpair));
-    self->left = SPIF_OBJ_DUP(SPIF_OBJ(left));
-    self->right = SPIF_OBJ_DUP(SPIF_OBJ(right));
+    self->key = SPIF_OBJ_DUP(SPIF_OBJ(key));
+    self->value = SPIF_OBJ_DUP(SPIF_OBJ(value));
     return TRUE;
 }
 
@@ -314,14 +314,14 @@ spif_bool_t
 spif_objpair_done(spif_objpair_t self)
 {
     ASSERT_RVAL(!SPIF_OBJPAIR_ISNULL(self), FALSE);
-    if (!SPIF_OBJ_ISNULL(SPIF_OBJ(self->left))) {
-        SPIF_OBJ_DEL(SPIF_OBJ(self->left));
+    if (!SPIF_OBJ_ISNULL(SPIF_OBJ(self->key))) {
+        SPIF_OBJ_DEL(SPIF_OBJ(self->key));
     }
-    self->left = SPIF_NULL_TYPE(obj);
-    if (!SPIF_OBJ_ISNULL(SPIF_OBJ(self->right))) {
-        SPIF_OBJ_DEL(SPIF_OBJ(self->right));
+    self->key = SPIF_NULL_TYPE(obj);
+    if (!SPIF_OBJ_ISNULL(SPIF_OBJ(self->value))) {
+        SPIF_OBJ_DEL(SPIF_OBJ(self->value));
     }
-    self->right = SPIF_NULL_TYPE(obj);
+    self->value = SPIF_NULL_TYPE(obj);
 
     return TRUE;
 }
@@ -398,16 +398,14 @@ spif_objpair_show(spif_objpair_t self, spif_charptr_t name, spif_str_t buff, siz
  * @ingroup DOXGRP_OBJPAIR
  */
 spif_cmp_t
-spif_objpair_comp(spif_objpair_t self, spif_objpair_t other)
+spif_objpair_comp(spif_objpair_t self, spif_obj_t other)
 {
-    spif_cmp_t c;
-
     SPIF_OBJ_COMP_CHECK_NULL(self, other);
-    c = SPIF_OBJ_COMP(self->left, other->left);
-    if (SPIF_CMP_IS_EQUAL(c)) {
-        c = SPIF_OBJ_COMP(self->right, other->right);
+    if (SPIF_OBJ_IS_OBJPAIR(other)) {
+        return SPIF_OBJ_COMP(self->key, other->key);
+    } else {
+        return SPIF_OBJ_COMP(self->key, other);
     }
-    return c;
 }
 
 /**
@@ -427,7 +425,7 @@ spif_objpair_t
 spif_objpair_dup(spif_objpair_t self)
 {
     ASSERT_RVAL(!SPIF_OBJPAIR_ISNULL(self), SPIF_NULL_TYPE(objpair));
-    return spif_objpair_new_from_both(self->left, self->right);
+    return spif_objpair_new_from_both(self->key, self->value);
 }
 
 /**
@@ -449,6 +447,6 @@ spif_objpair_type(spif_objpair_t self)
     return SPIF_OBJ_CLASSNAME(SPIF_OBJ(self));
 }
 
-SPIF_DEFINE_PROPERTY_FUNC(objpair, obj, left);
-SPIF_DEFINE_PROPERTY_FUNC(objpair, obj, right);
+SPIF_DEFINE_PROPERTY_FUNC(objpair, obj, key);
+SPIF_DEFINE_PROPERTY_FUNC(objpair, obj, value);
 /*@}*/

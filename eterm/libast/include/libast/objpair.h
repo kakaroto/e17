@@ -1,14 +1,14 @@
 /*
- * Copyright (C) 1997-2004, Michael Jennings
+ * Copyvalue (C) 1997-2004, Michael Jennings
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to
  * deal in the Software without restriction, including without limitation the
- * rights to use, copy, modify, merge, publish, distribute, sublicense, and/or
+ * values to use, copy, modify, merge, publish, distribute, sublicense, and/or
  * sell copies of the Software, and to permit persons to whom the Software is
  * furnished to do so, subject to the following conditions:
  *
- * The above copyright notice and this permission notice shall be included in
+ * The above copyvalue notice and this permission notice shall be included in
  * all copies of the Software, its documentation and marketing & publicity
  * materials, and acknowledgment shall be given in the documentation, materials
  * and software packages that this Software was used.
@@ -214,27 +214,27 @@
  */
 SPIF_DECL_OBJ(objpair) {
     SPIF_DECL_PARENT_TYPE(obj);
-    SPIF_DECL_PROPERTY(obj, left);
-    SPIF_DECL_PROPERTY(obj, right);
+    SPIF_DECL_PROPERTY(obj, key);
+    SPIF_DECL_PROPERTY(obj, value);
 };
 /*@}*/
 
 extern spif_class_t SPIF_CLASS_VAR(objpair);
 extern spif_objpair_t spif_objpair_new(void);
-extern spif_objpair_t spif_objpair_new_from_left(spif_obj_t left);
-extern spif_objpair_t spif_objpair_new_from_right(spif_obj_t right);
-extern spif_objpair_t spif_objpair_new_from_both(spif_obj_t left, spif_obj_t right);
+extern spif_objpair_t spif_objpair_new_from_key(spif_obj_t key);
+extern spif_objpair_t spif_objpair_new_from_value(spif_obj_t value);
+extern spif_objpair_t spif_objpair_new_from_both(spif_obj_t key, spif_obj_t value);
 extern spif_bool_t spif_objpair_del(spif_objpair_t self);
 extern spif_bool_t spif_objpair_init(spif_objpair_t self);
-extern spif_bool_t spif_objpair_init_from_left(spif_objpair_t self, spif_obj_t left);
-extern spif_bool_t spif_objpair_init_from_right(spif_objpair_t self, spif_obj_t right);
-extern spif_bool_t spif_objpair_init_from_both(spif_objpair_t self, spif_obj_t left, spif_obj_t right);
+extern spif_bool_t spif_objpair_init_from_key(spif_objpair_t self, spif_obj_t key);
+extern spif_bool_t spif_objpair_init_from_value(spif_objpair_t self, spif_obj_t value);
+extern spif_bool_t spif_objpair_init_from_both(spif_objpair_t self, spif_obj_t key, spif_obj_t value);
 extern spif_bool_t spif_objpair_done(spif_objpair_t self);
 extern spif_str_t spif_objpair_show(spif_objpair_t self, spif_charptr_t name, spif_str_t buff, size_t indent);
-extern spif_cmp_t spif_objpair_comp(spif_objpair_t self, spif_objpair_t other);
+extern spif_cmp_t spif_objpair_comp(spif_objpair_t self, spif_obj_t other);
 extern spif_objpair_t spif_objpair_dup(spif_objpair_t self);
 extern spif_classname_t spif_objpair_type(spif_objpair_t self);
-SPIF_DECL_PROPERTY_FUNC(objpair, obj, left);
-SPIF_DECL_PROPERTY_FUNC(objpair, obj, right);
+SPIF_DECL_PROPERTY_FUNC(objpair, obj, key);
+SPIF_DECL_PROPERTY_FUNC(objpair, obj, value);
 
 #endif /* _LIBAST_OBJPAIR_H_ */

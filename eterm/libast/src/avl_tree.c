@@ -478,6 +478,7 @@ insert_node(spif_avl_tree_node_t root, spif_avl_tree_node_t node, spif_uint8_t *
 
     ASSERT_RVAL(!SPIF_AVL_TREE_NODE_ISNULL(root), SPIF_NULL_TYPE(avl_tree_node));
     ASSERT_RVAL(!SPIF_AVL_TREE_NODE_ISNULL(node), root);
+    ASSERT_RVAL(!SPIF_PTR_ISNULL(taller), root);
 
     diff = SPIF_OBJ_COMP(node->data, root->data);
     if (SPIF_CMP_IS_LESS(diff)) {
@@ -567,6 +568,125 @@ insert_node(spif_avl_tree_node_t root, spif_avl_tree_node_t node, spif_uint8_t *
         }
         root->data = node->data;
     }
+    return root;
+}
+
+
+static spif_avl_tree_node_t
+remove_node(spif_avl_tree_node_t root, spif_avl_tree_node_t node, spif_avl_tree_node_t *removed, spif_uint8_t *shorter)
+{
+    int shorter_subnode = 0;
+    spif_cmp_t diff;
+
+    ASSERT_RVAL(!SPIF_AVL_TREE_NODE_ISNULL(root), SPIF_NULL_TYPE(avl_tree_node));
+    ASSERT_RVAL(!SPIF_AVL_TREE_NODE_ISNULL(node), root);
+    ASSERT_RVAL(!SPIF_PTR_ISNULL(removed), root);
+    ASSERT_RVAL(!SPIF_PTR_ISNULL(shorter), root);
+
+    diff = SPIF_OBJ_COMP(node->data, root->data);
+    if (SPIF_CMP_IS_EQUAL(diff)) {
+        spif_avl_tree_node_t tmp;
+
+        /* The node in question is equal to the current node, so remove the current node. */
+        *removed = root;
+        if (SPIF_AVL_TREE_NODE_ISNULL(root->right)) {
+            root = root->left;
+        } else if (SPIF_AVL_TREE_NODE_ISNULL(root->right->left)) {
+            tmp = root->left;
+            switch (root->balance) {
+                case RIGHT_HEAVY:
+                    root->right->balance = BALANCED;
+                    break;
+                case BALANCED:
+                    root->right->balance = LEFT_HEAVY;
+            }
+            root = root->right;
+            root->left = tmp;
+        } else {
+            spif_avl_tree_node_t new_spot;
+
+            switch (root->balance) {
+                case LEFT_HEAVY:
+                    tmp = root->right;
+                    root = root->left;
+                    root = insert_node(root, tmp, shorter);
+                    break;
+                case RIGHT_HEAVY:
+                case BALANCED:
+
+            }
+
+        }
+    } else if (SPIF_CMP_IS_LESS(diff)) {
+        /* node must be in the left subtree of root. */
+        if (SPIF_AVL_TREE_NODE_ISNULL(root->left)) {
+            /* Nothing there.  We didn't find it. */
+            *removed = SPIF_NULL_TYPE(avl_tree_node);
+            return root;
+        } else {
+            /* Search the left tree. */
+            root->left = remove_node(root->left, node, removed, &shorter_subtree);
+
+            /* If the subtree is now shorter, we need to rebalance. */
+            if (shorter_subtree == 1) {
+                switch (root->balance) {
+                case LEFT_HEAVY:
+                    root = left_balance(root);
+                    *shorter = 0;
+                    break;
+                case RIGHT_HEAVY:
+                    root->balance = BALANCED;
+                    *shorter = 0;
+                    break;
+                case BALANCED:
+                    root->balance = LEFT_HEAVY;
+                    *shorter = 1;
+                    break;
+                }
+            } else {
+                *shorter = 0;
+            }
+        }
+    } else if (SPIF_CMP_IS_GREATER(diff)) {
+        /* node needs to go in the right subtree of root. */
+        if (SPIF_AVL_TREE_NODE_ISNULL(root->right)) {
+            /* Nothing there.  Make this the new right child of root. */
+            root->right = node;
+            /* Update balance factor. */
+            switch (root->balance) {
+            case LEFT_HEAVY:
+                root->balance = BALANCED;
+                *shorter = 0;
+                break;
+            case BALANCED:
+                root->balance = RIGHT_HEAVY;
+                *shorter = 1;
+                break;
+            }
+        } else {
+            /* We already have a right child, so insert it under there. */
+            root->right = insert_node(root->right, node, removed, &shorter_subtree);
+
+            /* If the subtree is now shorter, we need to rebalance. */
+            if (shorter_subtree == 1) {
+                switch (root->balance) {
+                case LEFT_HEAVY:
+                    root->balance = BALANCED;
+                    *shorter = 0;
+                    break;
+                case RIGHT_HEAVY:
+                    root = right_balance(root);
+                    *shorter = 0;
+                    break;
+                case BALANCED:
+                    root->balance = RIGHT_HEAVY;
+                    *shorter = 1;
+                    break;
+                }
+            } else {
+                *shorter = 0;
+            }
+        }
     return root;
 }
 
