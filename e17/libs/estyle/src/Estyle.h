@@ -88,11 +88,7 @@ extern "C" {
 				 void (*func) (void *_data, Estyle * _es,
 					       int _b, int _x, int _y),
 				 void *data);
-/*
-void estyle_callback_add(Evas evas, Estyle *es, Evas_Callback_Type callback,
-     void (*func) (void *_data,  Estyle *es, int _b, int _x, int _y))
-*/
-
+	void estyle_callback_del(Estyle * es, Evas_Callback_Type callback);
 #ifdef __cplusplus
 }
 #endif

@@ -86,6 +86,8 @@ Estyle *estyle_new(Evas evas, char *text, char *style)
  */
 void estyle_free(Estyle * es)
 {
+	Evas_List l;
+
 	CHECK_PARAM_POINTER("es", es);
 
 	if (es->bit)
@@ -93,6 +95,12 @@ void estyle_free(Estyle * es)
 
 	if (es->style)
 		_estyle_style_release(es->style, es->evas);
+
+	if (es->callbacks) {
+		for (l = es->callbacks; l; l = l->next)
+			FREE(l->data);
+		evas_list_free(es->callbacks);
+	}
 
 	FREE(es);
 }
@@ -846,6 +854,7 @@ void estyle_callback_add(Estyle * es, Evas_Callback_Type callback,
 	 */
 	cb = malloc(sizeof(Estyle_Callback));
 	cb->estyle = es;
+	cb->type = callback;
 	cb->data = data;
 	cb->callback = func;
 
@@ -868,4 +877,43 @@ void __estyle_callback_dispatcher(void *_data, Evas _e, Evas_Object _o,
 {
 	Estyle_Callback *cb = _data;
 	cb->callback(cb->data, cb->estyle, _b, _x, _y);
+}
+
+/*
+ * estyle_callback_del - remove all callbacks of the type @callback from estyle
+ * @es: the estyle to delete the callback
+ * @callback: the event type to be removed
+ *
+ * Returns no value.
+ */
+void estyle_callback_del(Estyle * es, Evas_Callback_Type callback)
+{
+	Evas_List l;
+	int have_cb;
+
+	Evas evas = es->evas;
+	Evas_Object bit = es->bit;
+
+	if (!es)
+		return;
+	if (!es->evas)
+		return;
+
+	have_cb = 1;
+	while (have_cb) {
+		have_cb = 0;
+		for (l = es->callbacks; l; l = l->next) {
+			Estyle_Callback *cb;
+
+			cb = l->data;
+			if (cb->type == callback) {
+				evas_callback_del(evas, bit, callback);
+				es->callbacks =
+				    evas_list_remove(es->callbacks, cb);
+				FREE(cb);
+				have_cb = 1;
+				break;
+			}
+		}
+	}
 }

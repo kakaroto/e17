@@ -20,6 +20,7 @@ typedef void (*Estyle_Callback_Function) (void *_data, Estyle * _es,
 typedef struct _estyle_callback Estyle_Callback;
 struct _estyle_callback {
 	Estyle *estyle;
+	Evas_Callback_Type type;
 	void *data;
 	Estyle_Callback_Function callback;
 };

@@ -1,4 +1,3 @@
-
 #include <stdio.h>
 #include <stdlib.h>
 #include <math.h>
@@ -16,10 +15,7 @@
 #define OBST_X 100.0
 #define OBST_Y 100.0
 
-char string1[] = "This text should test the basic styles";
-
-char string2[] = "This is the alternate text to test";
-char *last = string1;
+char string1[] = "This text should test callbacks";
 
 int obstacle_w = -1, obstacle_h = -1, obstacle_x, obstacle_y;
 
@@ -76,11 +72,6 @@ static void ecore_mouse_down(Ecore_Event * ev)
 	evas_event_button_down(evas, e->x, e->y, e->button);
 }
 
-void mouse_down(void *_data, Estyle * _es, int _b, int _x, int _y)
-{
-	printf("Clicked\n%d,%d,%d\n", _b, _x, _y);
-}
-
 /*
  * Follow the mouse around the window
  */
@@ -90,6 +81,31 @@ static void ecore_mouse_move(Ecore_Event * ev)
 	    (Ecore_Event_Mouse_Move *) ev->event;
 	if (focused)
 		estyle_move(e, eemm->x, eemm->y);
+}
+
+void mouse_move(void *_data, Estyle * _es, int _b, int _x, int _y)
+{
+	printf("Mouse movement detected\n");
+
+	_es = NULL;
+	_data = NULL;
+	_b = 0;
+	_x = 0;
+	_y = 0;
+}
+
+void mouse_down(void *_data, Estyle * _es, int _b, int _x, int _y)
+{
+	printf("Clicked button %d at %d, %d\n", _b, _x, _y);
+	evas_move(evas, cursor, _x, _y);
+
+	if (_b == 2)
+		estyle_callback_add(e, CALLBACK_MOUSE_MOVE, mouse_move,
+				    NULL);
+	if (_b == 3)
+		estyle_callback_del(_es, CALLBACK_MOUSE_MOVE);
+
+	_data = NULL;
 }
 
 void setup(void)
@@ -127,7 +143,6 @@ int main(int argc, char *argv[])
 	int curs_x, curs_y, curs_w, curs_h;
 	Evas_Object clip_rect;
 	Evas_Object bg, et_bg, obst;
-	Evas_Object bit;
 
 	obstacle_x = OBST_X;
 	obstacle_y = OBST_Y;
@@ -202,6 +217,7 @@ int main(int argc, char *argv[])
 	e = estyle_new(evas, string1, "raised");
 	estyle_move(e, 100, 100);
 	estyle_set_color(e, 128, 255, 255, 255);
+	estyle_set_clip(e, clip_rect);
 	estyle_set_font(e, "nationff", 14);
 	estyle_set_style(e, "shadow");
 	estyle_show(e);
