@@ -144,7 +144,7 @@
         signal, "mouse,out";		\
         source, NAME;			\
         action, STATE_SET "default" 0.0;\
-        transition, DECELERATE, 0.5;	\
+        transition, DECELERATE 0.5;	\
         target, NAME;			\
       }					\
       program {				\
@@ -152,7 +152,7 @@
 	signal, "mouse,down,1";		\
 	source, NAME;			\
 	action, STATE_SET "down" 0.0;	\
-        transition, LINEAR, 0.0;	\
+        transition, LINEAR 0.0;	\
 	target, NAME;			\
       }					\
       program {				\
@@ -160,7 +160,7 @@
 	signal, "mouse,up,1";		\
 	source, NAME;			\
 	action, STATE_SET "over" 0.0;	\
-        transition, LINEAR, 0.0;	\
+        transition, LINEAR 0.0;	\
 	target, NAME;			\
       }					
 

@@ -100,7 +100,7 @@
         signal, "mouse,out";		\
         source, "tab."NAME;			\
         action, STATE_SET "default" 0.0;\
-        transition, DECELERATE, 0.5;	\
+        transition, DECELERATE 0.5;	\
         target, "tab."NAME".icon";			\
       }					\
 
