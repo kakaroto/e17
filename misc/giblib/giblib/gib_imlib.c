@@ -141,7 +141,7 @@ gib_imlib_image_get_filename(Imlib_Image im)
 
 void
 gib_imlib_render_image_on_drawable(Drawable d, Imlib_Image im, int x, int y,
-                                     char dither, char blend, char alias)
+                                   char dither, char blend, char alias)
 {
    imlib_context_set_image(im);
    imlib_context_set_drawable(d);
@@ -154,9 +154,9 @@ gib_imlib_render_image_on_drawable(Drawable d, Imlib_Image im, int x, int y,
 
 void
 gib_imlib_render_image_on_drawable_with_rotation(Drawable d, Imlib_Image im,
-                                                   int x, int y, double angle,
-                                                   char dither, char blend,
-                                                   char alias)
+                                                 int x, int y, double angle,
+                                                 char dither, char blend,
+                                                 char alias)
 {
    Imlib_Image new_im;
 
@@ -173,10 +173,9 @@ gib_imlib_render_image_on_drawable_with_rotation(Drawable d, Imlib_Image im,
 }
 
 void
-gib_imlib_render_image_on_drawable_at_size(Drawable d, Imlib_Image im,
-                                             int x, int y, int w, int h,
-                                             char dither, char blend,
-                                             char alias)
+gib_imlib_render_image_on_drawable_at_size(Drawable d, Imlib_Image im, int x,
+                                           int y, int w, int h, char dither,
+                                           char blend, char alias)
 {
    imlib_context_set_image(im);
    imlib_context_set_drawable(d);
@@ -189,13 +188,12 @@ gib_imlib_render_image_on_drawable_at_size(Drawable d, Imlib_Image im,
 
 void
 gib_imlib_render_image_on_drawable_at_size_with_rotation(Drawable d,
-                                                           Imlib_Image im,
-                                                           int x, int y,
-                                                           int w, int h,
-                                                           double angle,
-                                                           char dither,
-                                                           char blend,
-                                                           char alias)
+                                                         Imlib_Image im,
+                                                         int x, int y, int w,
+                                                         int h, double angle,
+                                                         char dither,
+                                                         char blend,
+                                                         char alias)
 {
    Imlib_Image new_im;
 
@@ -213,10 +211,10 @@ gib_imlib_render_image_on_drawable_at_size_with_rotation(Drawable d,
 
 void
 gib_imlib_render_image_part_on_drawable_at_size(Drawable d, Imlib_Image im,
-                                                  int sx, int sy, int sw,
-                                                  int sh, int dx, int dy,
-                                                  int dw, int dh, char dither,
-                                                  char blend, char alias)
+                                                int sx, int sy, int sw,
+                                                int sh, int dx, int dy,
+                                                int dw, int dh, char dither,
+                                                char blend, char alias)
 {
    imlib_context_set_image(im);
    imlib_context_set_drawable(d);
@@ -230,19 +228,15 @@ gib_imlib_render_image_part_on_drawable_at_size(Drawable d, Imlib_Image im,
 
 void
 gib_imlib_render_image_part_on_drawable_at_size_with_rotation(Drawable d,
-                                                                Imlib_Image
-                                                                im, int sx,
-                                                                int sy,
-                                                                int sw,
-                                                                int sh,
-                                                                int dx,
-                                                                int dy,
-                                                                int dw,
-                                                                int dh,
-                                                                double angle,
-                                                                char dither,
-                                                                char blend,
-                                                                char alias)
+                                                              Imlib_Image im,
+                                                              int sx, int sy,
+                                                              int sw, int sh,
+                                                              int dx, int dy,
+                                                              int dw, int dh,
+                                                              double angle,
+                                                              char dither,
+                                                              char blend,
+                                                              char alias)
 {
    Imlib_Image new_im;
 
@@ -261,7 +255,7 @@ gib_imlib_render_image_part_on_drawable_at_size_with_rotation(Drawable d,
 
 void
 gib_imlib_image_fill_rectangle(Imlib_Image im, int x, int y, int w, int h,
-                                 int r, int g, int b, int a)
+                               int r, int g, int b, int a)
 {
    imlib_context_set_image(im);
    imlib_context_set_color(r, g, b, a);
@@ -269,9 +263,9 @@ gib_imlib_image_fill_rectangle(Imlib_Image im, int x, int y, int w, int h,
 }
 
 void
-gib_imlib_image_fill_polygon(Imlib_Image im, ImlibPolygon poly, int r,
-                               int g, int b, int a, unsigned char alias,
-                               int cx, int cy, int cw, int ch)
+gib_imlib_image_fill_polygon(Imlib_Image im, ImlibPolygon poly, int r, int g,
+                             int b, int a, unsigned char alias, int cx,
+                             int cy, int cw, int ch)
 {
    imlib_context_set_image(im);
    imlib_context_set_color(r, g, b, a);
@@ -282,10 +276,10 @@ gib_imlib_image_fill_polygon(Imlib_Image im, ImlibPolygon poly, int r,
 }
 
 void
-gib_imlib_image_draw_polygon(Imlib_Image im, ImlibPolygon poly, int r,
-                               int g, int b, int a, unsigned char closed,
-                               unsigned char alias, int cx, int cy, int cw,
-                               int ch)
+gib_imlib_image_draw_polygon(Imlib_Image im, ImlibPolygon poly, int r, int g,
+                             int b, int a, unsigned char closed,
+                             unsigned char alias, int cx, int cy, int cw,
+                             int ch)
 {
    imlib_context_set_image(im);
    imlib_context_set_color(r, g, b, a);
@@ -298,7 +292,7 @@ gib_imlib_image_draw_polygon(Imlib_Image im, ImlibPolygon poly, int r,
 
 void
 gib_imlib_image_draw_rectangle(Imlib_Image im, int x, int y, int w, int h,
-                                 int r, int g, int b, int a)
+                               int r, int g, int b, int a)
 {
    imlib_context_set_image(im);
    imlib_context_set_color(r, g, b, a);
@@ -308,8 +302,8 @@ gib_imlib_image_draw_rectangle(Imlib_Image im, int x, int y, int w, int h,
 
 void
 gib_imlib_text_draw(Imlib_Image im, Imlib_Font fn, gib_style * s, int x,
-                      int y, char *text, Imlib_Text_Direction dir, int r,
-                      int g, int b, int a)
+                    int y, char *text, Imlib_Text_Direction dir, int r, int g,
+                    int b, int a)
 {
    imlib_context_set_image(im);
    imlib_context_set_font(fn);
@@ -345,11 +339,11 @@ gib_imlib_text_draw(Imlib_Image im, Imlib_Font fn, gib_style * s, int x,
          bb = (gib_style_bit *) l->data;
          if (bb)
          {
-            if((bb->r + bb->g + bb->b + bb->a) == 0)
-               imlib_context_set_color(r,g,b,a);
+            if ((bb->r + bb->g + bb->b + bb->a) == 0)
+               imlib_context_set_color(r, g, b, a);
             else
-            imlib_context_set_color(bb->r, bb->g, bb->b, bb->a);
-            imlib_text_draw(x +bb->x_offset, y + bb->y_offset, text);
+               imlib_context_set_color(bb->r, bb->g, bb->b, bb->a);
+            imlib_text_draw(x + bb->x_offset, y + bb->y_offset, text);
          }
          l = l->next;
       }
@@ -370,7 +364,7 @@ gib_imlib_list_fonts(int *num)
 
 void
 gib_imlib_get_text_size(Imlib_Font fn, char *text, gib_style * s, int *w,
-                          int *h, Imlib_Text_Direction dir)
+                        int *h, Imlib_Text_Direction dir)
 {
 
    imlib_context_set_font(fn);
@@ -412,7 +406,8 @@ gib_imlib_get_text_size(Imlib_Font fn, char *text, gib_style * s, int *w,
    }
 }
 
-Imlib_Image gib_imlib_clone_image(Imlib_Image im)
+Imlib_Image
+gib_imlib_clone_image(Imlib_Image im)
 {
    imlib_context_set_image(im);
    return imlib_clone_image();
@@ -427,10 +422,10 @@ gib_imlib_image_format(Imlib_Image im)
 
 void
 gib_imlib_blend_image_onto_image(Imlib_Image dest_image,
-                                   Imlib_Image source_image, char merge_alpha,
-                                   int sx, int sy, int sw, int sh, int dx,
-                                   int dy, int dw, int dh, char dither,
-                                   char blend, char alias)
+                                 Imlib_Image source_image, char merge_alpha,
+                                 int sx, int sy, int sw, int sh, int dx,
+                                 int dy, int dw, int dh, char dither,
+                                 char blend, char alias)
 {
    imlib_context_set_image(dest_image);
    imlib_context_set_anti_alias(alias);
@@ -443,13 +438,12 @@ gib_imlib_blend_image_onto_image(Imlib_Image dest_image,
 
 void
 gib_imlib_blend_image_onto_image_with_rotation(Imlib_Image dest_image,
-                                                 Imlib_Image source_image,
-                                                 char merge_alpha, int sx,
-                                                 int sy, int sw, int sh,
-                                                 int dx, int dy, int dw,
-                                                 int dh, double angle,
-                                                 char dither, char blend,
-                                                 char alias)
+                                               Imlib_Image source_image,
+                                               char merge_alpha, int sx,
+                                               int sy, int sw, int sh, int dx,
+                                               int dy, int dw, int dh,
+                                               double angle, char dither,
+                                               char blend, char alias)
 {
    imlib_context_set_image(dest_image);
    imlib_context_set_anti_alias(alias);
@@ -464,10 +458,9 @@ gib_imlib_blend_image_onto_image_with_rotation(Imlib_Image dest_image,
    dh = 0;
 }
 
-Imlib_Image gib_imlib_create_cropped_scaled_image(Imlib_Image im, int sx,
-                                                    int sy, int sw, int sh,
-                                                    int dw, int dh,
-                                                    char alias)
+Imlib_Image
+gib_imlib_create_cropped_scaled_image(Imlib_Image im, int sx, int sy, int sw,
+                                      int sh, int dw, int dh, char alias)
 {
    imlib_context_set_image(im);
    imlib_context_set_anti_alias(alias);
@@ -476,9 +469,9 @@ Imlib_Image gib_imlib_create_cropped_scaled_image(Imlib_Image im, int sx,
 
 void
 gib_imlib_apply_color_modifier_to_rectangle(Imlib_Image im, int x, int y,
-                                              int w, int h, DATA8 * rtab,
-                                              DATA8 * gtab, DATA8 * btab,
-                                              DATA8 * atab)
+                                            int w, int h, DATA8 * rtab,
+                                            DATA8 * gtab, DATA8 * btab,
+                                            DATA8 * atab)
 {
    Imlib_Color_Modifier cm;
 
@@ -501,11 +494,25 @@ void
 gib_imlib_save_image(Imlib_Image im, char *file)
 {
    char *tmp;
+
    imlib_context_set_image(im);
    tmp = strrchr(file, '.');
    if (tmp)
       imlib_image_set_format(tmp + 1);
    imlib_save_image(file);
+}
+
+void
+gib_imlib_save_image_with_error_return(Imlib_Image im, char *file,
+                                       Imlib_Load_Error * error_return)
+{
+   char *tmp;
+
+   imlib_context_set_image(im);
+   tmp = strrchr(file, '.');
+   if (tmp)
+      imlib_image_set_format(tmp + 1);
+   imlib_save_image_with_error_return(file, error_return);
 }
 
 void
@@ -517,14 +524,15 @@ gib_imlib_free_font(Imlib_Font fn)
 
 void
 gib_imlib_image_draw_line(Imlib_Image im, int x1, int y1, int x2, int y2,
-                            char make_updates, int r, int g, int b, int a)
+                          char make_updates, int r, int g, int b, int a)
 {
    imlib_context_set_image(im);
    imlib_context_set_color(r, g, b, a);
    imlib_image_draw_line(x1, y1, x2, y2, make_updates);
 }
 
-Imlib_Image gib_imlib_create_rotated_image(Imlib_Image im, double angle)
+Imlib_Image
+gib_imlib_create_rotated_image(Imlib_Image im, double angle)
 {
    imlib_context_set_image(im);
    return (imlib_create_rotated_image(angle));
@@ -552,9 +560,9 @@ gib_imlib_image_sharpen(Imlib_Image im, int radius)
 }
 
 void
-gib_imlib_line_clip_and_draw(Imlib_Image dest, int x0, int y0, int x1,
-                               int y1, int cx, int cy, int cw, int ch, int r,
-                               int g, int b, int a)
+gib_imlib_line_clip_and_draw(Imlib_Image dest, int x0, int y0, int x1, int y1,
+                             int cx, int cy, int cw, int ch, int r, int g,
+                             int b, int a)
 {
    imlib_context_set_cliprect(cx, cy, cw, ch);
    gib_imlib_image_draw_line(dest, x0, y0, x1, y1, 0, r, g, b, a);

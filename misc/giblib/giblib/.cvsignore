@@ -26,3 +26,4 @@ macros
 *.o
 *~
 core
+giblib_config.h.in giblib_config.h

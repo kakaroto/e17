@@ -143,13 +143,13 @@ void gib_imlib_apply_color_modifier_to_rectangle(Imlib_Image im, int x,
                                                    DATA8 * atab);
 void gib_imlib_image_set_has_alpha(Imlib_Image im, int alpha);
 void gib_imlib_save_image(Imlib_Image im, char *file);
+void gib_imlib_save_image_with_error_return(Imlib_Image im, char *file, Imlib_Load_Error * error_return);
 void gib_imlib_free_font(Imlib_Font fn);
 void gib_imlib_free_image(Imlib_Image im);
 void gib_imlib_image_draw_line(Imlib_Image im, int x1, int y1, int x2,
                                  int y2, char make_updates, int r, int g,
                                  int b, int a);
 void gib_imlib_image_set_has_alpha(Imlib_Image im, int alpha);
-void gib_image_save_image(Imlib_Image im, char *file);
 void gib_imlib_free_font(Imlib_Font fn);
 Imlib_Image gib_imlib_create_rotated_image(Imlib_Image im, double angle);
 void gib_imlib_image_tile(Imlib_Image im);
