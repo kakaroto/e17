@@ -73,15 +73,24 @@ equate_clear(void)
    tmp[0] = '\0';
 }
 
-void
+int
 equate_append(char *str)
 {
-   int             len, slen;
+   int             len, slen, ret;
 
+   ret = 0;
+   if (tmp[0] == '\0') {
+     if ((*str == '+') || (*str == '-') || (*str == '*') || (*str == '/')) {
+       sprintf(tmp, "%.10g", _result);
+       ret = 1;
+     }
+   }
    len = strlen(tmp);
    slen = strlen(str);
    memcpy(&tmp[len], str, slen);
    tmp[len + slen] = '\0';
+
+   return ret;
 }
 
 double

@@ -3,7 +3,7 @@
 
 /* Functions the gui calls                           */
 void            equate_clear(void);
-void            equate_append(char *str);
+int             equate_append(char *str);
 double          equate_eval(void);
 
 /* Fonctions type.                                   */

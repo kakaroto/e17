@@ -47,7 +47,7 @@
  */
 extern void     equate_clear(void);
 extern double   equate_eval(void);
-extern void     equate_append(char *str);
+extern int      equate_append(char *str);
 extern const char *equate_string_get(void);
 
 Evas_Object    *equate_edje_root;

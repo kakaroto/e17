@@ -105,15 +105,19 @@ void
 calc_append(Ewl_Widget * w, void *ev_data, void *user_data)
 {
    char           *key;
-   int             len, slen;
+   int             len, slen, cont;
 
    key = (char *) user_data;
    slen = strlen(key);
 
-   equate_append(key);
-
+   cont = equate_append(key);
    len = strlen(disp);
-   memcpy(&disp[len], key, slen);
+   if (cont) {
+     memcpy(&disp[0], "Ans", 3);
+     memcpy(&disp[3], key, slen);
+     len = strlen(disp);
+   } else
+     memcpy(&disp[len], key, slen);
    disp[len + slen] = '\0';
    if (calc_mode == SCI)
       update_eqn_display(disp);
