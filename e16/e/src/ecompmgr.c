@@ -289,7 +289,7 @@ ECompMgrMoveResizeFix(EObj * eo, int x, int y, int w, int h)
      }
 
    wo = ho = 0;
-   GetWinWH(eo->win, &wo, &ho);
+   EGetGeometry(eo->win, NULL, NULL, NULL, &wo, &ho, NULL, NULL);
    if (wo <= 0 || ho <= 0 || (wo == w && ho == h))
      {
 	EMoveResizeWindow(eo->win, x, y, w, h);

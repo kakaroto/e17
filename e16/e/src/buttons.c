@@ -551,7 +551,7 @@ ButtonEmbedWindow(Button * b, Window WindowToEmbed)
 
    EReparentWindow(WindowToEmbed, EoGetWin(b), 0, 0);
    b->inside_win = WindowToEmbed;
-   GetWinWH(WindowToEmbed, &w, &h);
+   EGetGeometry(WindowToEmbed, NULL, NULL, NULL, &w, &h, NULL, NULL);
    EMoveWindow(b->inside_win, (EoGetW(b) - w) >> 1, (EoGetH(b) - h) >> 1);
    b->event_win = ECreateEventWindow(EoGetWin(b), 0, 0, w, h);
    EventCallbackRegister(b->event_win, 0, ButtonHandleEvents, b);

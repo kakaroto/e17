@@ -774,7 +774,28 @@ EGetGeometry(Window win, Window * root_return, int *x, int *y,
      }
    else
      {
-	ok = XGetGeometry(disp, win, root_return, x, y, w, h, bw, depth);
+	Window              rr;
+	int                 xx, yy;
+	unsigned int        ww, hh, bb, dd;
+
+	ok = XGetGeometry(disp, win, &rr, &xx, &yy, &ww, &hh, &bb, &dd);
+	if (ok)
+	  {
+	     if (root_return)
+		*root_return = rr;
+	     if (x)
+		*x = xx;
+	     if (y)
+		*y = yy;
+	     if (w)
+		*w = ww;
+	     if (h)
+		*h = hh;
+	     if (bw)
+		*bw = bb;
+	     if (depth)
+		*depth = dd;
+	  }
      }
 #if 0				/* Debug */
    if (!ok)
@@ -923,7 +944,7 @@ EWindowGetShapePixmap(Window win)
    int                 i, w, h;
    int                 rect_num, rect_ord;
 
-   GetWinWH(win, &w, &h);
+   EGetGeometry(win, NULL, NULL, NULL, &w, &h, NULL, NULL);
    mask = ECreatePixmap(win, w, h, 1);
 
    gc = XCreateGC(disp, mask, 0, NULL);
@@ -968,15 +989,6 @@ ecore_x_ungrab(void)
 }
 #endif
 
-void
-GetWinXY(Window win, int *x, int *y)
-{
-   Window              w1;
-   unsigned int        w, h, b, d;
-
-   EGetGeometry(win, &w1, x, y, &w, &h, &b, &d);
-}
-
 Window
 GetWinParent(Window win)
 {
@@ -987,16 +999,6 @@ GetWinParent(Window win)
       return xid->parent;
 
    return 0;
-}
-
-void
-GetWinWH(Window win, unsigned int *w, unsigned int *h)
-{
-   Window              w1;
-   int                 x, y;
-   unsigned int        b, d;
-
-   EGetGeometry(win, &w1, &x, &y, w, h, &b, &d);
 }
 
 int
@@ -1196,7 +1198,7 @@ EDrawableDumpImage(Drawable draw, const char *txt)
    int                 w, h;
 
    w = h = 0;
-   GetWinWH(draw, &w, &h);
+   EGetGeometry(draw, NULL, NULL, NULL, &w, &h, NULL, NULL);
    if (w <= 0 || h <= 0)
       return;
    imlib_context_set_drawable(draw);

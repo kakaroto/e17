@@ -467,16 +467,16 @@ BgFindImageSize(BgPart * bgp, int rw, int rh, int *pw, int *ph, int setbg)
 void
 BackgroundApply(Background * bg, Window win, int setbg)
 {
-   unsigned int        rw, rh;
+   unsigned int        rw, rh, depth;
    Pixmap              dpmap;
    GC                  gc;
-   int                 rt, depth;
+   int                 rt;
 
    if (!WinExists(win))
       return;
 
-   GetWinWH(win, &rw, &rh);
-   depth = GetWinDepth(win);
+   EGetGeometry(win, NULL, NULL, NULL, &rw, &rh, NULL, &depth);
+
    imlib_context_set_drawable(win);
 
    EAllocColor(&bg->bg_solid);

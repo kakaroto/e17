@@ -136,7 +136,7 @@ HandleTimerEvent(void)
       Efree(qe);
 }
 
-void
+int
 RemoveTimerEvent(const char *name)
 {
    Qentry             *qe, *ptr, *pptr;
@@ -164,10 +164,12 @@ RemoveTimerEvent(const char *name)
 	     if (qe)
 		Efree(qe);
 	     /* done */
-	     return;
+	     return 1;
 	  }
 	pptr = ptr;
 	ptr = ptr->next;
 	/* keep going through the queue */
      }
+
+   return 0;
 }

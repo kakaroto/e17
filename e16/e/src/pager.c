@@ -1506,7 +1506,7 @@ PagerEwinMove(Pager * p, Pager * pd)
    if (dx || dy)
      {
 	/* Move mini window */
-	GetWinXY(p->hi_win, &x, &y);
+	EGetGeometry(p->hi_win, NULL, &x, &y, NULL, NULL, NULL, NULL);
 	x += dx;
 	y += dy;
 	ERaiseWindow(p->hi_win);

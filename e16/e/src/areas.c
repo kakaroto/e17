@@ -177,7 +177,8 @@ SlideWindowsBy(Window * win, int num, int dx, int dy, int speed)
    xy = Emalloc(sizeof(struct _xy) * num);
 
    for (i = 0; i < num; i++)
-      GetWinXY(win[i], &(xy[i].x), &(xy[i].y));
+      EGetGeometry(win[i], NULL, &(xy[i].x), &(xy[i].y), NULL, NULL, NULL,
+		   NULL);
 
    ETimedLoopInit(0, 1024, speed);
    for (k = 0; k <= 1024;)

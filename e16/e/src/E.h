@@ -2134,7 +2134,7 @@ void                DoIn(const char *name, double in_time,
 			 void *runtime_data);
 Qentry             *GetHeadTimerQueue(void);
 void                HandleTimerEvent(void);
-void                RemoveTimerEvent(const char *name);
+int                 RemoveTimerEvent(const char *name);
 
 /* tooltips.c */
 typedef struct _tooltip ToolTip;
@@ -2241,8 +2241,7 @@ int                 EFreeGC(GC gc);
 
 void                ESetColor(XColor * pxc, int r, int g, int b);
 void                EGetColor(const XColor * pxc, int *pr, int *pg, int *pb);
-void                GetWinXY(Window win, int *x, int *y);
-void                GetWinWH(Window win, unsigned int *w, unsigned int *h);
+
 int                 GetWinDepth(Window win);
 Window              GetWinParent(Window win);
 int                 WinExists(Window win);

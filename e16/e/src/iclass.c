@@ -981,7 +981,7 @@ ITApply(Window win, ImageClass * ic, ImageState * is, int w, int h, int state,
 
    /* FIXME - Why? */
    if (w <= 0 || h <= 0)
-      GetWinWH(win, (unsigned int *)&w, (unsigned int *)&h);
+      EGetGeometry(win, NULL, NULL, NULL, &w, &h, NULL, NULL);
    if (w <= 0 || h <= 0)
       return;
 

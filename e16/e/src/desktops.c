@@ -983,7 +983,6 @@ void
 DeskGoto(int desk)
 {
    Desk               *d;
-   int                 x, y;
 
    if (Conf.desks.desks_wraparound)
      {
@@ -1047,7 +1046,6 @@ DeskGoto(int desk)
 	       }
 	     else
 	       {
-		  GetWinXY(EoGetWin(d), &x, &y);
 		  SlideWindowTo(EoGetWin(d), EoGetX(d), EoGetY(d), 0, 0,
 				Conf.desks.slidespeed);
 		  DeskRaise(desk);

@@ -1,5 +1,6 @@
 /*
  * Copyright (C) 2000-2004 Carsten Haitzler, Geoff Harrison and various contributors
+ * Copyright (C) 2004-2005 Kim Woelders
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to
@@ -184,10 +185,11 @@ MenuHide(Menu * m)
 
    ewin = FindEwinByMenu(m);
    if (ewin)
-      HideEwin(ewin);
+     {
+	HideEwin(ewin);
+	EReparentWindow(m->win, VRoot.win, ewin->client.x, ewin->client.y);
+     }
    m->ewin = NULL;
-   if (m->win)
-      EReparentWindow(m->win, VRoot.win, 0, 0);
 
    m->stuck = 0;
    m->shown = 0;
@@ -299,9 +301,9 @@ MenuShow(Menu * m, char noshow)
 #endif
      }
 
-   GetWinXY(m->items[0]->win, &x, &y);
-   GetWinWH(m->items[0]->win, &w, &h);
-   GetWinWH(m->win, &mw, &mh);
+   EGetGeometry(m->items[0]->win, NULL, &x, &y, &w, &h, NULL, NULL);
+   mw = m->w;
+   mh = m->h;
 
    wx = 0;
    wy = 0;
@@ -629,7 +631,8 @@ MenuRepack(Menu * m)
    ewin = FindEwinByMenu(m);
    if (ewin)
      {
-	GetWinWH(m->win, &w, &h);
+	w = m->w;
+	h = m->h;
 	ewin->client.height.min = h;
 	ewin->client.height.max = h;
 	ewin->client.width.min = w;
@@ -806,7 +809,8 @@ MenuRealize(Menu * m)
 	  {
 	     iw = 0;
 	     ih = 0;
-	     GetWinWH(m->items[i]->icon_win, &iw, &ih);
+	     EGetGeometry(m->items[i]->icon_win, NULL, NULL, NULL, &iw, &ih,
+			  NULL, NULL);
 	     ImageclassApply(m->items[i]->icon_iclass, m->items[i]->icon_win,
 			     iw, ih, 0, 0, STATE_NORMAL, 0, ST_MENU_ITEM);
 	  }
@@ -875,7 +879,8 @@ MenuRedraw(Menu * m)
 
    if (!m->style->use_item_bg)
      {
-	GetWinWH(m->win, &w, &h);
+	w = m->w;
+	h = m->h;
 	FreePmapMask(&m->pmm);
 	ImageclassApplyCopy(m->style->bg_iclass, m->win, w, h, 0, 0,
 			    STATE_NORMAL, &m->pmm, 1, ST_MENU);
@@ -911,8 +916,7 @@ MenuDrawItem(Menu * m, MenuItem * mi, char shape)
 	int                 item_type;
 	ImageClass         *ic;
 
-	GetWinWH(mi->win, &w, &h);
-	GetWinXY(mi->win, &x, &y);
+	EGetGeometry(mi->win, NULL, &x, &y, &w, &h, NULL, NULL);
 
 	mi_pmm->type = 0;
 	mi_pmm->pmap = ECreatePixmap(mi->win, w, h, VRoot.depth);
@@ -1151,6 +1155,9 @@ MenusHide(void)
 {
    int                 i;
 
+   while (RemoveTimerEvent("SUBMENU_SHOW"))
+      ;
+
    for (i = 0; i < Mode_menus.current_depth; i++)
      {
 	if (!Mode_menus.list[i]->stuck)
@@ -1340,8 +1347,7 @@ MenuItemEventMouseDown(MenuItem * mi, XEvent * ev __UNUSED__)
 	ewin = FindEwinByMenu(m);
 	if (ewin)
 	  {
-	     GetWinXY(mi->win, &mx, &my);
-	     GetWinWH(mi->win, &mw, &mh);
+	     EGetGeometry(mi->win, NULL, &mx, &my, &mw, &mh, NULL, NULL);
 #if 1				/* Whatgoesonhere ??? */
 	     MenuShow(mi->child, 1);
 	     ewin2 = FindEwinByMenu(mi->child);
@@ -1565,7 +1571,6 @@ struct _mdata
 {
    Menu               *m;
    MenuItem           *mi;
-   EWin               *ewin;
 };
 
 static void
@@ -1589,10 +1594,11 @@ MenusSetEvents(int on)
 }
 
 static void
-SubmenuShowTimeout(int val, void *dat)
+SubmenuShowTimeout(int val __UNUSED__, void *dat)
 {
    int                 mx, my;
    unsigned int        mw, mh;
+   Menu               *m;
    MenuItem           *mi;
    EWin               *ewin2, *ewin;
    struct _mdata      *data;
@@ -1602,76 +1608,78 @@ SubmenuShowTimeout(int val, void *dat)
       return;
    if (!data->m)
       return;
-   if (!FindEwinByMenu(data->m))
+
+   m = data->m;
+   ewin = FindItem(NULL, m->win, LIST_FINDBY_ID, LIST_TYPE_EWIN);
+   if (!ewin)
       return;
+   if (!ewin->shown)
+	return;
 
    mi = data->mi;
-   GetWinXY(mi->win, &mx, &my);
-   GetWinWH(mi->win, &mw, &mh);
    MenuShow(mi->child, 1);
-   ewin2 = FindEwinByMenu(mi->child);
-   if (ewin2)
+   ewin2 = FindItem(NULL, mi->child->win, LIST_FINDBY_ID, LIST_TYPE_EWIN);
+   if (!ewin2)
+      return;
+
+   EGetGeometry(mi->win, NULL, &mx, &my, &mw, &mh, NULL, NULL);
+   MoveEwin(ewin2,
+	    EoGetX(ewin) + ewin->border->border.left + mx + mw,
+	    EoGetY(ewin) + ewin->border->border.top + my -
+	    ewin2->border->border.top);
+   RaiseEwin(ewin2);
+   ShowEwin(ewin2);
+
+   if (Conf.menus.slide)
+      EwinUnShade(ewin2);
+
+   if (Mode_menus.list[Mode_menus.current_depth - 1] != mi->child)
+      Mode_menus.list[Mode_menus.current_depth++] = mi->child;
+
+   if (Conf.menus.onscreen)
      {
-	ewin = data->ewin;
-	MoveEwin(ewin2,
-		 EoGetX(ewin) + ewin->border->border.left + mx + mw,
-		 EoGetY(ewin) + ewin->border->border.top + my -
-		 ewin2->border->border.top);
-	RaiseEwin(ewin2);
-	ShowEwin(ewin2);
+	EWin               *menus[256];
+	int                 fx[256];
+	int                 fy[256];
+	int                 tx[256];
+	int                 ty[256];
+	int                 i;
+	int                 xdist = 0, ydist = 0;
 
-	if (Conf.menus.slide)
-	   EwinUnShade(ewin2);
-
-	if (Mode_menus.list[Mode_menus.current_depth - 1] != mi->child)
-	   Mode_menus.list[Mode_menus.current_depth++] = mi->child;
-
-	if (Conf.menus.onscreen)
+	if (EoGetX(ewin2) + EoGetW(ewin2) > VRoot.w)
+	   xdist = VRoot.w - (EoGetX(ewin2) + EoGetW(ewin2));
+	if (EoGetY(ewin2) + EoGetH(ewin2) > VRoot.h)
+	   ydist = VRoot.h - (EoGetY(ewin2) + EoGetH(ewin2));
+	if ((xdist != 0) || (ydist != 0))
 	  {
-	     EWin               *menus[256];
-	     int                 fx[256];
-	     int                 fy[256];
-	     int                 tx[256];
-	     int                 ty[256];
-	     int                 i;
-	     int                 xdist = 0, ydist = 0;
-
-	     if (EoGetX(ewin2) + EoGetW(ewin2) > VRoot.w)
-		xdist = VRoot.w - (EoGetX(ewin2) + EoGetW(ewin2));
-	     if (EoGetY(ewin2) + EoGetH(ewin2) > VRoot.h)
-		ydist = VRoot.h - (EoGetY(ewin2) + EoGetH(ewin2));
-	     if ((xdist != 0) || (ydist != 0))
+	     for (i = 0; i < Mode_menus.current_depth; i++)
 	       {
-		  for (i = 0; i < Mode_menus.current_depth; i++)
+		  menus[i] = NULL;
+		  if (Mode_menus.list[i])
 		    {
-		       menus[i] = NULL;
-		       if (Mode_menus.list[i])
+		       ewin = FindEwinByMenu(Mode_menus.list[i]);
+		       if (ewin)
 			 {
-			    ewin = FindEwinByMenu(Mode_menus.list[i]);
-			    if (ewin)
-			      {
-				 menus[i] = ewin;
-				 fx[i] = EoGetX(ewin);
-				 fy[i] = EoGetY(ewin);
-				 tx[i] = EoGetX(ewin) + xdist;
-				 ty[i] = EoGetY(ewin) + ydist;
-			      }
+			    menus[i] = ewin;
+			    fx[i] = EoGetX(ewin);
+			    fy[i] = EoGetY(ewin);
+			    tx[i] = EoGetX(ewin) + xdist;
+			    ty[i] = EoGetY(ewin) + ydist;
 			 }
 		    }
-
-		  /* Disable menu item events while sliding */
-		  MenusSetEvents(0);
-		  SlideEwinsTo(menus, fx, fy, tx, ty, Mode_menus.current_depth,
-			       Conf.shadespeed);
-		  MenusSetEvents(1);
-
-		  if (Conf.menus.warp)
-		     XWarpPointer(disp, None, mi->win, 0, 0, 0, 0,
-				  mi->text_w / 2, mi->text_h / 2);
 	       }
+
+	     /* Disable menu item events while sliding */
+	     MenusSetEvents(0);
+	     SlideEwinsTo(menus, fx, fy, tx, ty, Mode_menus.current_depth,
+			  Conf.shadespeed);
+	     MenusSetEvents(1);
+
+	     if (Conf.menus.warp)
+		XWarpPointer(disp, None, mi->win, 0, 0, 0, 0,
+			     mi->text_w / 2, mi->text_h / 2);
 	  }
      }
-   val = 0;
 }
 
 static void
@@ -1722,7 +1730,6 @@ MenuActivateItem(Menu * m, MenuItem * mi)
 	  {
 	     mdata.m = m;
 	     mdata.mi = mi;
-	     mdata.ewin = ewin;
 	     DoIn("SUBMENU_SHOW", 0.2, SubmenuShowTimeout, 0, &mdata);
 	  }
      }
