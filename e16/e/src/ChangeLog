@@ -3219,3 +3219,11 @@ Thu Oct  7 16:46:47 PDT 1999
 
 a little bit better arrange code for handling panel hints.
 still have some work
+
+-------------------------------------------------------------------------------
+
+Thu Oct  7 20:44:53 PDT 1999
+(Mandrake)
+
+now when you use the standard autoarrange action stuff it also will pay
+attention to panel's hints

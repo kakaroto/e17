@@ -1400,6 +1400,43 @@ doCleanup(void *params)
 	       }
 	     Efree(blst);
 	  }
+	if (mode.kde_support)
+	  {
+	     fixed = Erealloc(fixed, sizeof(RectBox) * (k + 2));
+	     ret = Erealloc(ret, sizeof(RectBox) * ((num + j) + 1 + k + 2));
+
+	     fixed[k].data = NULL;
+	     fixed[k].p = 50;
+	     fixed[k].x = 0;
+	     fixed[k].y = 0;
+	     if (mode.kde_y1 == 0)
+	       {
+		  fixed[k].w = mode.kde_x1;
+	       }
+	     else
+	       {
+		  fixed[k].w = root.w;
+	       }
+	     if (mode.kde_x1 == 0)
+	       {
+		  fixed[k].h = mode.kde_y1;
+	       }
+	     else
+	       {
+		  fixed[k].h = root.h;
+	       }
+	     k++;
+
+	     fixed[k].data = NULL;
+	     fixed[k].x = mode.kde_x2;
+	     fixed[k].y = mode.kde_y2;
+	     fixed[k].w = mode.kde_x2 - root.w;
+	     fixed[k].h = mode.kde_y2 - root.h;
+	     fixed[k].p = 50;
+	     k++;
+
+	  }
+
 	ArrangeRects(fixed, k, floating, j, ret, root.w, root.h, method);
 	for (i = 0; i < (j + k); i++)
 	  {
