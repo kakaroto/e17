@@ -1,16 +1,9 @@
 TODO List
 =========
 
-- Add config option for login faces (rather than use matching filenames)
-
-- Allow face images to be custom sizes, instead of forcing them to a fixed
-  size
-
 - Add more FX functions, and add more GFX callbacks
 
 - Add theme options for additional graphics/images on screen
-
-- Fix sys callback to load default Xsession if "Default" is selected
 
 - Move some callbacks (especially enter key) out of sys_callbacks.c into
   ui_callbacks.c
@@ -22,4 +15,6 @@ TODO List
 - XAuth
 
 - Plugin interface
+
+- Port to Ecore2
 
