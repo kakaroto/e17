@@ -37,15 +37,6 @@ __imlib_MergeUpdate(ImlibUpdate *u, int w, int h, int hgapmax)
    /* if theres no rects to process.. return NULL */
    if (!u)
       return NULL;
-   /* if theres only one rect - return it - no point cleaning up 1 rect */
-   if (!u->next)
-     {
-	CLIP(u->x, u->y, u->w, u->h, 0, 0, w, h);
-	if ((u->w > 0) && (u->h > 0))
-	   return u;
-	__imlib_FreeUpdates(u);
-	return NULL;
-     }
    tw = w >> TB;
    if (w & TM)
       tw++;

@@ -1165,17 +1165,6 @@ __imlib_FreePixmap(Display *d, Pixmap p)
       XFreePixmap(d, p);
 }
 
-/* flush the cache of all speculatively cached images and pixmaps */
-void
-__imlib_FlushCache(void)
-{
-   int previous_size;
-   
-   previous_size = __imlib_GetCacheSize();
-   __imlib_SetCacheSize(0);
-   __imlib_SetCacheSize(previous_size);
-}
-
 /* mark all pixmaps generated from this image as diryt so the cache code */
 /* wont pick up on them again sicne they are now invalid sicn ehte original */
 /* data they were generated form has changed */
