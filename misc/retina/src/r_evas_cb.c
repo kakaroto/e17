@@ -16,6 +16,7 @@ extern Evas_Object e_btn1;
 extern GtkWidget *area, *window;
 extern int tb_status;
 extern int mouse_button;
+extern guint current_idle;
 
 static void r_cb_m_down(void *_data, Evas _e, Evas_Object _o, int _b, int _x, int _y);
 static void r_b1_click(void *_data, Evas _e, Evas_Object _o, int _b, int _x, int _y);
@@ -39,13 +40,13 @@ r_cb_m_down(void *_data, Evas _e, Evas_Object _o, int _b, int _x, int _y)
 				case 0:
 					evas_show(e_area, e_btn1);
 					evas_update_rect(e_area, 0, 0, 77, 23);
-					evas_render(e_area);
+					QUEUE_DRAW;
 					tb_status = 1;
 					break;
 				case 1:
 					evas_hide(e_area, e_btn1);
 					evas_update_rect(e_area, 0, 0, 77, 23);
-					evas_render(e_area);
+					QUEUE_DRAW
 					tb_status = 0;
 					break;
 			}

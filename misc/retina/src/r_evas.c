@@ -18,6 +18,16 @@ extern GdkVisual *gdk_vis;
 extern GdkColormap *gdk_cmap;
 extern Visual *vis;
 extern Colormap cmap;
+extern guint current_idle;
+
+gint
+view_redraw(gpointer data)
+{
+   evas_render(e_area);
+   current_idle = 0;
+   return FALSE;
+}
+
 
 void
 r_evas_init()
@@ -64,7 +74,7 @@ r_evas_config_event(GtkWidget *area, GdkEventConfigure *event)
 		area->allocation.width,
 		area->allocation.height);
 
-	evas_render(e_area);
+	QUEUE_DRAW;
 }
 
 void
@@ -106,7 +116,7 @@ r_evas_expose_event(GtkWidget *area, GdkEventExpose *event)
 		area->allocation.width,
 		area->allocation.height);
 
-	evas_render(e_area);
+	QUEUE_DRAW;
 }
 
 void
@@ -141,7 +151,7 @@ r_evas_load(char *img)
 	gtk_widget_set_usize(GTK_WIDGET(area), w, h);
 	gtk_widget_set_usize(GTK_WIDGET(window), w, h);
 
-	evas_render(e_area);
+	QUEUE_DRAW;
 	
 	return 0;
 }

@@ -21,6 +21,7 @@ GdkVisual *gdk_vis;
 GdkColormap *gdk_cmap;
 Visual *vis;
 Colormap cmap;
+guint current_idle = 0;
 
 /* Other Globals */
 char window_title[255] = "Retina - Nothing Loaded...";
