@@ -121,7 +121,7 @@ MAIN: {
 			$title =~ s/\%u/$url/g;
 			$title =~ s/\%r/$ref/g;
 			$title =~ s/\%\%/\%/g;
-			$title = " --title $title ";
+			$title = " --title \"$title\" ";
 		}
 	
 		my $cmd = "$feh $PRE $title -R $ref $url $POST";
