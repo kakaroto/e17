@@ -54,11 +54,10 @@ main(int argc, char *argv[])
 {
    GtkWidget *hwid, *vwid, *mvbox, *menubar, *menu, *menuitem;
    GtkWidget *obj_table, *obj_btn, *obj_btn_hbox, *obj_scroll;
+   GtkWidget *nbook, *label;
 
    opt.debug_level = 5;
    D_ENTER(3);
-
-   printf("%s - version %s\n", PACKAGE, VERSION);
 
    gtk_init(&argc, &argv);
 
@@ -70,6 +69,7 @@ main(int argc, char *argv[])
    gtk_signal_connect(GTK_OBJECT(mainwin), "destroy_event",
                       GTK_SIGNAL_FUNC(mainwin_destroy_cb), NULL);
    gtk_widget_show(mainwin);
+   imlib_init(mainwin);
 
    mvbox = gtk_vbox_new(FALSE, 0);
    gtk_widget_show(mvbox);
@@ -85,9 +85,17 @@ main(int argc, char *argv[])
       geist_gtk_create_menuitem(menu, "Save as...", "", "Save Document As...",
                                 (GtkFunction) menu_cb, "save doc as");
 
+
+   nbook = gtk_notebook_new();
+   gtk_notebook_set_tab_pos(GTK_NOTEBOOK(nbook), GTK_POS_BOTTOM);
+   gtk_widget_show(nbook);
+   gtk_box_pack_start(GTK_BOX(mvbox), nbook, TRUE, TRUE, 0);
+   
    hwid = gtk_hbox_new(TRUE, 0);
    gtk_widget_show(hwid);
-   gtk_box_pack_start(GTK_BOX(mvbox), hwid, TRUE, TRUE, 0);
+   label = gtk_label_new("New Document");
+   gtk_widget_show(label);
+   gtk_notebook_append_page(GTK_NOTEBOOK(nbook), hwid, label);
 
    vwid = gtk_vbox_new(TRUE, 0);
    gtk_widget_show(vwid);
@@ -119,7 +127,6 @@ main(int argc, char *argv[])
    gtk_signal_connect_after(GTK_OBJECT(darea), "configure_event",
                             GTK_SIGNAL_FUNC(configure_cb), NULL);
    gtk_widget_show(darea);
-   imlib_init(darea);
 
    obj_win = gtk_window_new(GTK_WINDOW_TOPLEVEL);
    obj_table = gtk_table_new(3, 4, FALSE);

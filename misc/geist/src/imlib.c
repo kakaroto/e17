@@ -38,10 +38,10 @@ imlib_init(GtkWidget * area)
 
    gtk_widget_realize(area);
    disp = GDK_WINDOW_XDISPLAY(area->window);
-   vis = GDK_VISUAL_XVISUAL(gtk_widget_get_visual(area));
-   depth = imlib_get_visual_depth(disp, vis);
-   cm = GDK_COLORMAP_XCOLORMAP(gtk_widget_get_colormap(area));
-   root = GDK_WINDOW_XWINDOW(area->window);
+   vis = DefaultVisual(disp, DefaultScreen(disp));
+   depth = DefaultDepth(disp, DefaultScreen(disp));
+   cm = DefaultColormap(disp, DefaultScreen(disp));
+   root = RootWindow(disp, DefaultScreen(disp));
    scr = ScreenOfDisplay(disp, DefaultScreen(disp));
 
    imlib_context_set_display(disp);
