@@ -1,0 +1,31 @@
+ Slets Readme File
+ #################
+
+
+	Requirements
+	""""""""""""
+		latest Evas from cvs  (module evas)
+		[latest] esound [form cvs]  (module esound)
+		  (older could work too..)
+
+		-> http://www.enlightenment.org/cvs.html
+	
+	Install (temp)
+	"""""""
+		make
+
+		-> that's it :)
+
+	Usage
+	"""""
+		./slets [<theme file>]
+
+		- click in the slot you want to put the icons
+		- click on 'rehash' if all your slots are full
+		- click on 'quit' if you want to quit
+
+	BTW
+	"""
+		test.slets if an example theme file..
+		You can put a '.sletrc' themefile in your
+		homedir if you want.

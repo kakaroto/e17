@@ -1,0 +1,35 @@
+Sat Sep  9 20:15:26 CEST 2000 BLAdER:
+	* Some code restructuring and init of sleth,
+	  the slets themefile generator.
+
+Wed Sep  6 19:15:43 CEST 2000 BLAdER:
+	* Bugfixes, rtfs for more info ;)
+
+Wed Sep  6 17:58:19 CEST 2000 BLAdER:
+	* Lets hope that X bug is _really_ fixed now.. ;)
+	* Implemented sound based on esound;
+	* Added FONT_PATH theme option.
+
+Sat Sep  2 17:42:15 CEST 2000 BLAdER:
+	* Bugfix in X code.
+
+
+Thu Aug 31 18:15:01 CEST 2000 BLAdER:
+	* Bugfixes (damn _messy_ code!);
+	* The parsing is much more stable now, and 
+	  it should be impossible for a theme to crash
+	  slets;
+	* Icons will now blink if there is a possible solution.
+
+
+Wed Aug 30 20:12:17 CEST 2000 BLAdER:
+	* The score system is now a bit more slots-alike.
+	  Maybe I change this again in the future, I'm not
+	  sure wich way it would be more fun to play...
+	  _LET ME KNOW IF YOU HAVE AN IDEA!!_ 
+	* It's almost totally themeable know;
+	* Too many bugfixes to discribe in detail.
+
+
+Tue Aug 29 19:35:08 CEST 2000 BLAdER:
+	* Start of project ;)

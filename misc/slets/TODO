@@ -1,0 +1,26 @@
+ Slets Todo File
+ """""""""""""""
+
+	* Fix the bugs decribed in 'BUGS'!
+
+	* Make themes and icons! ;)
+
+	* Make it more themeable.
+
+	* Use autoconf and automake.
+
+	* Make a theme file generation tool.
+	  -> slethe should do this.
+
+	* Add 9 alike, 3 winning slots, etc.
+
+	* Add transparent background.
+
+	* Maybe integrate with efm/e in the future:
+
+		Make it possible to drag 'n drop backgrounds
+		etc. ..
+
+        * Keep some highscore list.
+
+	* ...

@@ -1,0 +1,90 @@
+##
+## Slets Theme File
+##
+
+##  - Lines starting with '#' are comment 
+##  - strings should be placed between '"'s
+##     (not needed for one-word strings)
+
+# window (w h title)
+WINDOW 640 460 "This is a test theme!"
+
+# backgrounds (max 25)
+BG ./img/gail.png
+BG ./img/rows.png
+
+# icons (max 9)
+ICON ./img/bomb.png
+ICON ./img/book.png
+ICON ./img/spider.png
+ICON ./img/log.png
+ICON ./img/cdrom.png
+ICON ./img/clock.png
+ICON ./img/dynamite.png
+ICON ./img/floppy.png
+ICON ./img/flower.png
+
+# font path (path)
+FONT_PATH ./fnt
+
+# text color (r g b a)
+TEXT_COLOR 0 0 0 100
+
+# text (font-name font-size x y)
+TEXT notepad 17 165 50
+
+# total prevs
+TOTAL_PREVS 2
+
+# prevs (wich x y r g b a) (max 1, for now)
+PREV 1 10 100 0 0 0 100
+PREV 2 575 100 0 0 0 100
+
+# total slots 
+TOTAL_SLOTS 4
+
+# slots (wich x y r g b a)
+SLOT 1 10 300 0 0 0 30
+SLOT 2 165 300 0 0 0 30
+SLOT 3 320 300 0 0 0 30
+SLOT 4 475 300 0 0 0 30
+
+# menu (items w h end)
+MENU 2 640 20 200
+
+# menu color (r g b a)
+MENU_COLOR 229 229 229 200
+
+# menu_items (wich font-name font-size x r g b a text)
+MENU_ITEM 1 notepad 12 10 0 0 0 100 "Rehash it"
+MENU_ITEM 2 notepad 12 120 0 0 0 100 "Quit now"
+
+# points (font-name font-size r g b a)
+POINTS notepad 17 0 0 0 100
+
+# points (wich x y)
+POINTS_ICON 1 150 100
+POINTS_TEXT 1 200 125
+POINTS_ICON 2 150 150
+POINTS_TEXT 2 200 175
+POINTS_ICON 3 150 200
+POINTS_TEXT 3 200 225
+
+POINTS_ICON 4 275 100
+POINTS_TEXT 4 325 125
+POINTS_ICON 5 275 150 
+POINTS_TEXT 5 325 175 
+POINTS_ICON 6 275 200
+POINTS_TEXT 6 325 225
+
+POINTS_ICON 7 400 100 
+POINTS_TEXT 7 450 125
+POINTS_ICON 8 400 150
+POINTS_TEXT 8 450 175
+POINTS_ICON 9 400 200
+POINTS_TEXT 9 450 225
+
+# sounds (filename)
+SOUND_STARTUP ./snd/startup.wav
+SOUND_MENU ./snd/menu.wav
+SOUND_SLOT ./snd/slot.wav

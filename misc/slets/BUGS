@@ -1,0 +1,9 @@
+ Slets Bug File
+ """"""""""""""
+
+	* Code is _way_ too messy ;)
+
+	* Slets segments when free()'ing stuff in gfx_exit() [gfx.c]
+	  I call it the 'weird malloc thing' .. ;)
+
+	* ... 
