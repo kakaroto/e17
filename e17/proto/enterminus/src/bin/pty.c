@@ -60,15 +60,11 @@ int get_tty(Term *term)
    return 0;
 }
 
-void sigchld_handler(void *data, int type, void *ev){//int a) {
+void sigchld_handler(int a) {
    int status = 0;
-   Term *term;
-   term = data;
-
-   printf("Exec singchld_handler %d\n",term->pid);
-   
-   if(waitpid(term->pid, &status, 0) < 0) {
-      fprintf(stderr, "Waiting for pid %hd failed: %m\n", term->pid);
+      
+   if(waitpid(pid, &status, 0) < 0) {
+      fprintf(stderr, "Waiting for pid %hd failed: %m\n", pid);
       exit(1);
    }
 
@@ -114,11 +110,11 @@ int execute_command(Term *term)//, int argc, const char **argv)
    if((term->cmd_fd.sys = get_pty(term)) < 0)
      return -1;
 
-   if((term->pid = fork()) < 0) {
+   if((pid = fork()) < 0) {
       fprintf(stderr, "Couldn't fork: %m\n");
       return -1;
    }
-   if(!term->pid) {
+   if(!pid) {
       /* child */
       get_tty(term);
 
@@ -140,9 +136,7 @@ int execute_command(Term *term)//, int argc, const char **argv)
 
    /* parent */
    close(term->slave.sys);
-   //signal(SIGCHLD, sigchld_handler);
-
-   ecore_event_handler_add(SIGCHLD, sigchld_handler, term);
+   signal(SIGCHLD, sigchld_handler);
    
    return 0;
 }
