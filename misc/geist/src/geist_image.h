@@ -23,5 +23,6 @@ void geist_image_free(geist_object *obj);
 void geist_image_render(geist_object *obj, Imlib_Image dest);
 void geist_image_render_partial(geist_object * obj, Imlib_Image dest, int x, int y, int w, int h);
 int geist_image_load_file(geist_image *img, char *filename);
+Imlib_Image geist_image_get_rendered_image(geist_object *obj);
 
 #endif

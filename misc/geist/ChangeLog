@@ -1,3 +1,12 @@
+Sat Aug  5 00:44:08 2000  Tom Gilbert  <gilbertt@linuxbrit.co.uk>
+
+	* Okay. Partial rendering works again
+	* Multiple motionnotify events in the queue are reduced to one.
+	* Transparency mask for object clicking. i.e. clicking the
+	see-thru part of an object won't select it. I may make this fuzzy
+	over 9 pixels in the future, so you don't have to be too precise
+	in your clicking...
+
 Fri Aug  4 13:06:58 2000  Tom Gilbert  <gilbertt@linuxbrit.co.uk>
 
 	* Multiple selections (using shift-click) and dragging of multiple

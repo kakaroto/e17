@@ -51,7 +51,8 @@ geist_layer_render(geist_layer * layer, Imlib_Image dest)
 }
 
 void
-geist_layer_render_partial(geist_layer * layer, Imlib_Image dest, int x, int y, int w, int h)
+geist_layer_render_partial(geist_layer * layer, Imlib_Image dest, int x,
+                           int y, int w, int h)
 {
    geist_list *l;
    geist_object *obj;
@@ -64,9 +65,11 @@ geist_layer_render_partial(geist_layer * layer, Imlib_Image dest, int x, int y, 
       for (l = layer->objects; l; l = l->next)
       {
          obj = ((geist_object *) l->data);
-         if(RECTS_INTERSECT(x, y, w, h, obj->x, obj->y, obj->w, obj->h))
+         if (RECTS_INTERSECT(x, y, w, h, obj->x, obj->y, obj->w, obj->h))
          {
-            D(4, ("rects intersect: %d,%d %dx%d   and   %d,%d %dx%d\n", x, y, w, h, obj->x, obj->y, obj->w, obj->h));
+            D(4,
+              ("rects intersect: %d,%d %dx%d   and   %d,%d %dx%d\n", x, y, w,
+               h, obj->x, obj->y, obj->w, obj->h));
             geist_object_render_partial(obj, dest, x, y, w, h);
          }
       }
@@ -101,26 +104,32 @@ geist_layer_find_clicked_object(geist_layer * layer, int x, int y)
    {
       obj = ((geist_object *) l->data);
       if (XY_IN_RECT(x, y, obj->x, obj->y, obj->w, obj->h))
-         ret = obj;
+      {
+         if (!geist_imlib_image_part_is_transparent
+             (geist_object_get_rendered_image(obj), x - obj->x, y - obj->y))
+            ret = obj;
+      }
    }
 
    D_RETURN(4, ret);
 }
 
-void geist_layer_raise_object(geist_document *doc, geist_object * obj)
+void
+geist_layer_raise_object(geist_document * doc, geist_object * obj)
 {
    geist_list *l, *ll;
    geist_layer *lay;
    geist_object *ob;
+
    D_ENTER(4);
 
    for (l = doc->layers; l; l = l->next)
    {
-      lay = (geist_layer *)l->data;
-      for(ll = lay->objects; ll; ll = ll->next)
+      lay = (geist_layer *) l->data;
+      for (ll = lay->objects; ll; ll = ll->next)
       {
-         ob = (geist_object *)ll->data;
-         if(ob == obj)
+         ob = (geist_object *) ll->data;
+         if (ob == obj)
          {
             D(4, ("Found object %p - popping to end of list\n", obj));
             lay->objects = geist_list_pop_to_end(lay->objects, ll);
@@ -128,6 +137,6 @@ void geist_layer_raise_object(geist_document *doc, geist_object * obj)
          }
       }
    }
-   
+
    D_RETURN_(4);
 }

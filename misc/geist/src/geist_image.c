@@ -56,6 +56,7 @@ geist_image_init(geist_image * img)
    obj->render = geist_image_render;
    obj->render_selected = geist_object_int_render_selected;
    obj->render_partial = geist_image_render_partial;
+   obj->get_rendered_image = geist_image_get_rendered_image;
 
    D_RETURN_(5);
 }
@@ -190,4 +191,11 @@ geist_image_load_file(geist_image * img, char *filename)
    }
 
    D_RETURN(5, ret);
+}
+
+Imlib_Image geist_image_get_rendered_image(geist_object *obj)
+{
+   D_ENTER(3);
+
+   D_RETURN(3, GEIST_IMAGE(obj)->im);
 }

@@ -39,56 +39,49 @@ geist_imlib_load_image(Imlib_Image * im, char *filename)
       switch (err)
       {
         case IMLIB_LOAD_ERROR_FILE_DOES_NOT_EXIST:
-              weprintf("%s - File does not exist", filename);
+           weprintf("%s - File does not exist", filename);
            break;
         case IMLIB_LOAD_ERROR_FILE_IS_DIRECTORY:
-              weprintf("%s - Directory specified for image filename",
-                       filename);
+           weprintf("%s - Directory specified for image filename", filename);
            break;
         case IMLIB_LOAD_ERROR_PERMISSION_DENIED_TO_READ:
-              weprintf("%s - No read access to directory", filename);
+           weprintf("%s - No read access to directory", filename);
            break;
         case IMLIB_LOAD_ERROR_NO_LOADER_FOR_FILE_FORMAT:
-              weprintf("%s - No Imlib2 loader for that file format",
-                       filename);
+           weprintf("%s - No Imlib2 loader for that file format", filename);
            break;
         case IMLIB_LOAD_ERROR_PATH_TOO_LONG:
-              weprintf("%s - Path specified is too long", filename);
+           weprintf("%s - Path specified is too long", filename);
            break;
         case IMLIB_LOAD_ERROR_PATH_COMPONENT_NON_EXISTANT:
-              weprintf("%s - Path component does not exist", filename);
+           weprintf("%s - Path component does not exist", filename);
            break;
         case IMLIB_LOAD_ERROR_PATH_COMPONENT_NOT_DIRECTORY:
-              weprintf("%s - Path component is not a directory",
-                       filename);
+           weprintf("%s - Path component is not a directory", filename);
            break;
         case IMLIB_LOAD_ERROR_PATH_POINTS_OUTSIDE_ADDRESS_SPACE:
-              weprintf("%s - Path points outside address space",
-                       filename);
+           weprintf("%s - Path points outside address space", filename);
            break;
         case IMLIB_LOAD_ERROR_TOO_MANY_SYMBOLIC_LINKS:
-              weprintf("%s - Too many levels of symbolic links",
-                       filename);
+           weprintf("%s - Too many levels of symbolic links", filename);
            break;
         case IMLIB_LOAD_ERROR_OUT_OF_MEMORY:
            eprintf("While loading %s - Out of memory", filename);
            break;
         case IMLIB_LOAD_ERROR_OUT_OF_FILE_DESCRIPTORS:
-           eprintf("While loading %s - Out of file descriptors",
-                   filename);
+           eprintf("While loading %s - Out of file descriptors", filename);
            break;
         case IMLIB_LOAD_ERROR_PERMISSION_DENIED_TO_WRITE:
-              weprintf("%s - Cannot write to directory", filename);
+           weprintf("%s - Cannot write to directory", filename);
            break;
         case IMLIB_LOAD_ERROR_OUT_OF_DISK_SPACE:
-              weprintf("%s - Cannot write - out of disk space",
-                       filename);
+           weprintf("%s - Cannot write - out of disk space", filename);
            break;
         case IMLIB_LOAD_ERROR_UNKNOWN:
         default:
-              weprintf
-                 ("While loading %s - Unknown error. Attempting to continue",
-                  filename);
+           weprintf
+              ("While loading %s - Unknown error. Attempting to continue",
+               filename);
            break;
       }
       return (0);
@@ -423,4 +416,22 @@ geist_imlib_image_sharpen(Imlib_Image im, int radius)
 {
    imlib_context_set_image(im);
    imlib_image_sharpen(radius);
+}
+
+DATA8
+geist_imlib_image_part_is_transparent(Imlib_Image im, int x, int y)
+{
+   Imlib_Color c;
+
+   imlib_context_set_image(im);
+   imlib_image_query_pixel(x, y, &c);
+
+   D(5, ("pixel %d,%d is A:%d R:%d B:%d G:%d\n", x, y, c.alpha, c.red,
+          c.green, c.blue));
+
+   if (c.alpha == 0)
+      return 1;
+   else
+      return 0;
+
 }

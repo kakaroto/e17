@@ -25,6 +25,7 @@ geist_object_init(geist_object * obj)
    obj->render = geist_object_int_render;
    obj->render_selected = geist_object_int_render_selected;
    obj->render_partial = geist_object_int_render_partial;
+   obj->get_rendered_image = geist_object_int_get_rendered_image;
    obj->sizemode = SIZEMODE_ZOOM;
 
    D_RETURN_(5);
@@ -189,3 +190,19 @@ geist_object_int_render_selected(geist_object * obj, Imlib_Image dest,
 
    D_RETURN_(3);
 }
+
+Imlib_Image geist_object_get_rendered_image(geist_object *obj)
+{
+   D_ENTER(5);
+
+   D_RETURN(5, obj->get_rendered_image(obj));
+}
+
+
+Imlib_Image geist_object_int_get_rendered_image(geist_object *obj)
+{
+   D_ENTER(5);
+   
+   D_RETURN(5, NULL);
+}  
+

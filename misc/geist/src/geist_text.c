@@ -62,6 +62,7 @@ geist_text_init(geist_text * txt)
    obj->render = geist_text_render;
    obj->render_selected = geist_object_int_render_selected;
    obj->render_partial = geist_text_render_partial;
+   obj->get_rendered_image= geist_text_get_rendered_image;
 
    D_RETURN_(5);
 }
@@ -151,6 +152,11 @@ geist_text_render_partial(geist_object * obj, Imlib_Image dest, int x, int y,
    if (sh > geist_imlib_image_get_height(im->im))
       sh = geist_imlib_image_get_height(im->im);
 
+      if (sw > w)
+      sw = w;
+   if (sh > h)
+      sh = h;
+
    dx = obj->x + sx;
    dy = obj->y + sy;
    dw = sw;
@@ -227,4 +233,11 @@ geist_text_create_image(geist_text * txt, int *w, int *h)
                          0, 0, 255);
 
    D_RETURN(3, im);
+}
+
+Imlib_Image geist_text_get_rendered_image(geist_object *obj)
+{
+   D_ENTER(3);
+
+   D_RETURN(3, GEIST_TEXT(obj)->im);
 }
