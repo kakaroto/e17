@@ -8,7 +8,7 @@ Source: ftp://ftp.enlightenment.org/pub/enlightenment/enlightenment-%{version}.t
 Prefix: %{_prefix}
 Docdir: %{_docdir}
 BuildRoot: /tmp/e-%{version}-root
-Packager: Michael Jennings <mej@eterm.org>
+Packager: Kim Woelders <kim@woelders.dk>
 URL: http://www.enlightenment.org/
 Requires: imlib >= 1.9.8
 Requires: fnlib >= 0.5
@@ -33,8 +33,7 @@ This package will install the Enlightenment window manager.
 %setup
 
 %build
-CFLAGS="-O0 -g3"
-#CFLAGS="${RPM_OPT_FLAGS}"
+CFLAGS="${RPM_OPT_FLAGS}"
 export CFLAGS
 if [ ! -f configure ]; then
   ./autogen.sh --prefix=%{_prefix} --bindir=%{_bindir} --datadir=%{_datadir} --mandir=%{_mandir} --enable-fsstd --enable-upgrade=no --enable-hints-kde
