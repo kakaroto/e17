@@ -5,115 +5,114 @@
  */
 
 void
-__imlib_rgb_to_hsv(int r, int g, int b, float *hue, float *saturation,
-                   float *value)
+__imlib_rgb_to_hsv(int r, int g, int b, float *h, float *s, float *v)
 {
-   int                 f;
-   float               i, j, k, max, min, d;
-
-   i = ((float)r) / 255.0;
-   j = ((float)g) / 255.0;
-   k = ((float)b) / 255.0;
-
-   f = 0;
-   max = min = i;
-   if (j > max)
-     {
-        max = j;
-        f = 1;
-     }
-   else
-      min = j;
-   if (k > max)
-     {
-        max = k;
-        f = 2;
-     }
-   else if (k < min)
-      min = k;
-   d = max - min;
-
-   *value = max;
-   if (max != 0)
-      *saturation = d / max;
-   else
-      *saturation = 0;
-   if (*saturation == 0)
-      *hue = 0;
+   int min, max;
+   int delta;
+   
+   max = (r+g+abs(r-g))/2;
+   max = (max+b+abs(max-b))/2;
+   min = (r+g-abs(r-g))/2;
+   min = (min+b-abs(min-b))/2;
+   
+   delta = max - min;
+   *v = (float)(100 * max) / 255.0;
+   
+   if (max!=0)
+     *s = (float)(100 * delta) / (float)max;
    else
      {
-        switch (f)
-          {
-            case 0:
-               *hue = (j - k) / d;
-               break;
-            case 1:
-               *hue = 2 + (k - i) / d;
-               break;
-            case 2:
-               *hue = 4 + (i - j) / d;
-               break;
-          }
-        *hue *= 60.0;
-        if (*hue < 0)
-           *hue += 360.0;
+	*s = 0.0;
+	*h = 0.0;
+	*v = 0.0;
      }
+   if (r == max)
+     {
+	*h = (float)(100*(g-b)) / (float)(6.0*delta);
+     }
+   else
+     {
+	if (g == max)
+	  {
+	     *h = (float)(100*(2*delta + b-r)) / (float)(6.0*delta);
+	  }
+	else
+	  {
+	     *h = (float)(100*(4*delta+r-g)) / (float)(6.0*delta);
+	  }
+     }
+   if (*h < 0.0) *h += 100.0;
+   if (*h > 100.0) *h -= 100.0;
 }
 
 void
-__imlib_hsv_to_rgb(float hue, float saturation, float value, int *r, int *g,
-                   int *b)
+__imlib_hsv_to_rgb(float h, float s, float v, int *r, int *g, int *b)
 {
-   int                 i, p, q, t, h;
-   float               vs, vsf;
-
-   i = (int)(value * 255.0);
-   if (saturation == 0)
-      *r = *g = *b = i;
-   else
+   float hh, f;
+   float p, q, t;
+   int i;
+   
+   if (s == 0.0)
      {
-        if (hue == 360)
-           hue = 0;
-        hue = hue / 60.0;
-        h = (int)hue;
-        vs = value * saturation;
-        vsf = vs * (hue - h);
-        p = (int)(255.0 * (value - vs));
-        q = (int)(255.0 * (value - vsf));
-        t = (int)(255.0 * (value - vs + vsf));
-        switch (h)
-          {
-            case 0:
-               *r = i;
-               *g = t;
-               *b = p;
-               break;
-            case 1:
-               *r = q;
-               *g = i;
-               *b = p;
-               break;
-            case 2:
-               *r = p;
-               *g = i;
-               *b = t;
-               break;
-            case 3:
-               *r = p;
-               *g = q;
-               *b = i;
-               break;
-            case 4:
-               *r = t;
-               *g = p;
-               *b = i;
-               break;
-            case 5:
-               *r = i;
-               *g = p;
-               *b = q;
-               break;
-          }
+	*r = lround ((v*255.0)/100.0);
+	*g = lround ((v*255.0)/100.0);
+	*b = lround ((v*255.0)/100.0);
+	
+	return;
+     }
+   
+   hh = (h * 6.0) / 100.0;
+   i = floor (hh);
+   f = hh - (float)i;
+   
+   p = v*(1.0 - s / 100.0) / 100.0;
+   q = v*(1.0 - (s*f) / 100.0) / 100.0;
+   t = v*(1.0 - s*(1.0 - f) / 100.0) / 100.0;
+   
+   switch (i)
+     {
+      case 0:
+	  {
+	     *r = lround (v*255.0 / 100.0);
+	     *g = lround (t*255.0);
+	     *b = lround (p*255.0);
+	     break;
+	  }
+      case 1:
+	  {
+	     *r = lround (q*255.0);
+	     *g = lround (v*255.0 / 100.0);
+	     *b = lround (p*255.0);
+	     break;
+	  }
+      case 2:
+	  {
+	     *r = lround (p*255.0);
+	     *g = lround (v*255.0 / 100.0);
+	     *b = lround (t*255.0);
+	     break;
+	  }
+      case 3:
+	  {
+	     *r = lround (p*255.0);
+	     *g = lround (q*255.0);
+	     *b = lround (v*255.0 / 100.0);
+	     break;
+	  }
+      case 4:
+	  {
+	     *r = lround (t*255.0);
+	     *g = lround (p*255.0);
+	     *b = lround (v*255.0 / 100.0);
+	     break;
+	  }
+      case 5:
+	  {
+	     *r = lround (v*255.0 / 100.0);
+	     *g = lround (p*255.0);
+	     *b = lround (q*255.0);
+	     break;
+	  }
      }
 }
 
