@@ -543,6 +543,7 @@ PagerEwinUpdateMini(Pager * p, EWin * ewin)
 	     ewin->mini_pmm.type = 0;
 	     ewin->mini_pmm.pmap =
 		ECreatePixmap(disp, p->win, w, h, VRoot.depth);
+	     ewin->mini_pmm.mask = None;
 	     ScaleRect(ewin->mini_pmm.pmap, ewin->win, 0, 0, 0, 0, ewin->w,
 		       ewin->h, w, h);
 	  }
@@ -577,7 +578,10 @@ PagerEwinUpdateFromPager(Pager * p, EWin * ewin)
    if (!gc)
       gc = XCreateGC(disp, p->pmap, 0, &gcv);
 
-   if ((ewin->mini_w != w) || (ewin->mini_h != h))
+   /* NB! If the pixmap/mask was created by imlib, free it. Due to imlibs */
+   /*     image/pixmap cache it may be in use elsewhere. */
+   if (ewin->mini_pmm.pmap &&
+       ((ewin->mini_pmm.type) || (ewin->mini_w != w) || (ewin->mini_h != h)))
       FreePmapMask(&ewin->mini_pmm);
 
    if (!ewin->mini_pmm.pmap)
@@ -586,6 +590,7 @@ PagerEwinUpdateFromPager(Pager * p, EWin * ewin)
 	ewin->mini_h = h;
 	ewin->mini_pmm.type = 0;
 	ewin->mini_pmm.pmap = ECreatePixmap(disp, p->win, w, h, VRoot.depth);
+	ewin->mini_pmm.mask = None;
      }
    XCopyArea(disp, p->pmap, ewin->mini_pmm.pmap, gc, x, y, w, h, 0, 0);
 
