@@ -149,7 +149,10 @@ src/Makefile
 src/client/Makefile
 src/daemon/Makefile
 src/daemon/entrance_wrapper
+config/Makefile
+config/init.d/Makefile
 config/init.d/entrance
+config/pam.d/Makefile
 data/Makefile
 data/config/Makefile
 data/fonts/Makefile
