@@ -163,6 +163,7 @@ void e_container_element_prepend_relative(Evas_Object *container,
 void e_container_element_remove(Evas_Object *container, Evas_Object *element);
 void e_container_element_destroy(Evas_Object *container, Evas_Object *element);
 void e_container_empty (Evas_Object *container);
+void e_container_sort(Evas_Object *container, int (*func)(void*,void*));
 
 Evas_List *e_container_elements_get(Evas_Object *container);
 

@@ -15,6 +15,17 @@ int _container_scroll_timer(void *data);
 
 /*** external API ***/
 
+void e_container_sort(Evas_Object *container, int (*func)(void*,void*))
+{
+  Container *cont;
+  
+  cont = _container_fetch(container);
+  if (!cont) return;
+    
+  cont->elements = evas_list_sort(cont->elements, evas_list_count(cont->elements),
+				func);
+  _container_elements_fix(cont);
+}
 void e_container_direction_set(Evas_Object *container, int direction)
 {
   Container *cont;
