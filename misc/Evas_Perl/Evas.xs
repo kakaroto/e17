@@ -303,3 +303,18 @@ set_color(e,o,r,g,b,a)
 	int a
 	CODE:
 	evas_set_color(e,o,r,g,b,a);
+
+
+void 
+font_add_path(e,path)
+	Evas::Evas e
+	char *path
+	CODE:
+	evas_font_add_path(e,path);
+	
+void 
+font_del_path(e,path)
+	Evas::Evas e
+	char *path
+	CODE:
+	evas_font_del_path(e,path);

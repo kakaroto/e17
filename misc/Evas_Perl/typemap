@@ -3,7 +3,7 @@ TYPEMAP
 Evas::Evas	T_PTR
 Evas::Gradient	T_PTR
 Evas::Object	T_PTR
-Imlib2::Imlib_Image T_PTR
+Imlib2::Imlib_Image T_PTROBJ
 Evas::Display T_PTR
 Evas::Visual T_PTR
 Evas::Window T_UV
