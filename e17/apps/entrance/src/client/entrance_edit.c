@@ -10,7 +10,7 @@
 #include <getopt.h>
 #include <string.h>
 #include <Edje.h>
-#include <Esmart/container.h>
+#include <Esmart/Esmart_Container.h>
 #include "entrance.h"
 #include "entrance_config.h"
 #include "entrance_x_session.h"
@@ -274,7 +274,7 @@ interp_return_key(void *data, const char *str)
                                       ecco.current_session->name,
                                       ecco.current_session);
 
-                     e_container_empty(ecco.container.sessions);
+                     esmart_container_empty(ecco.container.sessions);
                      edje_object_signal_emit(ecco.edje, "ecco,show,sessions",
                                              "");
                      ecco.hashes =
@@ -323,7 +323,7 @@ interp_return_key(void *data, const char *str)
                                       ecco.current_user->name,
                                       ecco.current_user);
 
-                     e_container_empty(ecco.container.users);
+                     esmart_container_empty(ecco.container.users);
                      edje_object_signal_emit(ecco.edje, "ecco,show,users",
                                              "");
                      ecco.hashes =
@@ -546,7 +546,7 @@ _show_cb(void *data, Evas_Object * o, const char *emission,
    {
 
       session_item_unselected_cb(ecco.current_session, NULL, "", "");
-      if ((l = e_container_elements_get(ecco.container.users)) == NULL)
+      if ((l = esmart_container_elements_get(ecco.container.users)) == NULL)
       {
          ecco_users_list_init(ecco.container.users);
       }
@@ -567,23 +567,23 @@ _show_cb(void *data, Evas_Object * o, const char *emission,
       edje_object_part_drag_value_get(o, str, &dx, &dy);
       oo = ecco.container.users;
       evas_object_geometry_get(oo, &cx, &cy, &cw, &ch);
-      if (e_container_direction_get(oo) > 0)
+      if (esmart_container_direction_get(oo) > 0)
       {
-         scroll = (int) (dy * (e_container_elements_length_get(oo) - ch));
+         scroll = (int) (dy * (esmart_container_elements_length_get(oo) - ch));
       }
       else
       {
-         scroll = (int) (dx * (e_container_elements_length_get(oo) - cw));
+         scroll = (int) (dx * (esmart_container_elements_length_get(oo) - cw));
       }
 #if DEBUG
-      fprintf(stderr, "%d %d\n", scroll, e_container_scroll_offset_get(oo));
+      fprintf(stderr, "%d %d\n", scroll, esmart_container_scroll_offset_get(oo));
 #endif
-      e_container_scroll_offset_set(oo, -scroll);
+      esmart_container_scroll_offset_set(oo, -scroll);
    }
    else if (!strcmp(emission, "ecco,show,sessions"))
    {
       user_unselected_cb(ecco.current_user, NULL, "", "");
-      if ((l = e_container_elements_get(ecco.container.sessions)) == NULL)
+      if ((l = esmart_container_elements_get(ecco.container.sessions)) == NULL)
       {
          ecco_sessions_list_init(ecco.container.sessions);
       }
@@ -601,18 +601,18 @@ _show_cb(void *data, Evas_Object * o, const char *emission,
       edje_object_part_drag_value_get(o, str, &dx, &dy);
       oo = ecco.container.sessions;
       evas_object_geometry_get(oo, &cx, &cy, &cw, &ch);
-      if (e_container_direction_get(oo) > 0)
+      if (esmart_container_direction_get(oo) > 0)
       {
-         scroll = (int) (dy * (e_container_elements_length_get(oo) - ch));
+         scroll = (int) (dy * (esmart_container_elements_length_get(oo) - ch));
       }
       else
       {
-         scroll = (int) (dx * (e_container_elements_length_get(oo) - cw));
+         scroll = (int) (dx * (esmart_container_elements_length_get(oo) - cw));
       }
 #if DEBUG
-      fprintf(stderr, "%d %d\n", scroll, e_container_scroll_offset_get(oo));
+      fprintf(stderr, "%d %d\n", scroll, esmart_container_scroll_offset_get(oo));
 #endif
-      e_container_scroll_offset_set(oo, -scroll);
+      esmart_container_scroll_offset_set(oo, -scroll);
    }
 #if DEBUG
    fprintf(stderr, "Show: (%s)(%s)\n", emission, source);
@@ -830,7 +830,7 @@ _button_add_cb(void *data, Evas_Object * o, const char *emission,
                   ecco.config->theme);
          if ((oo = entrance_user_edje_get(eu, ecco.edje, buf)))
          {
-            e_container_element_append(ecco.container.users, oo);
+            esmart_container_element_append(ecco.container.users, oo);
             ecco.config->users.hash =
                evas_hash_add(ecco.config->users.hash, eu->name, eu);
             ecco.config->users.keys =
@@ -875,7 +875,7 @@ _button_del_cb(void *data, Evas_Object * o, const char *emission,
 
          entrance_user_free(eu);
          ecco.current_user = NULL;
-         e_container_empty(ecco.container.users);
+         esmart_container_empty(ecco.container.users);
          edje_object_signal_emit(ecco.edje, "ecco,show,users", "");
       }
       ecco.config->users.hash = hash;
@@ -896,7 +896,7 @@ _button_del_cb(void *data, Evas_Object * o, const char *emission,
 
          entrance_x_session_free(exs);
          ecco.current_session = NULL;
-         e_container_empty(ecco.container.sessions);
+         esmart_container_empty(ecco.container.sessions);
          edje_object_signal_emit(ecco.edje, "ecco,show,sessions", "");
       }
    }
@@ -1015,18 +1015,18 @@ _scrollbar_cb(void *data, Evas_Object * o, const char *emission,
       return;
    }
    evas_object_geometry_get(oo, &cx, &cy, &cw, &ch);
-   if (e_container_direction_get(oo) > 0)
+   if (esmart_container_direction_get(oo) > 0)
    {
-      scroll = (int) (dy * (e_container_elements_length_get(oo) - ch));
+      scroll = (int) (dy * (esmart_container_elements_length_get(oo) - ch));
    }
    else
    {
-      scroll = (int) (dx * (e_container_elements_length_get(oo) - cw));
+      scroll = (int) (dx * (esmart_container_elements_length_get(oo) - cw));
    }
 #if DEBUG
-   fprintf(stderr, "%0.02f %d\n", scroll, e_container_scroll_offset_get(oo));
+   fprintf(stderr, "%0.02f %d\n", scroll, esmart_container_scroll_offset_get(oo));
 #endif
-   e_container_scroll_offset_set(oo, -scroll);
+   esmart_container_scroll_offset_set(oo, -scroll);
 }
 
 /**
@@ -1052,9 +1052,9 @@ _scroll_next_cb(void *data, Evas_Object * o, const char *emission,
          {
             fprintf(stderr, "%s\n", tmp);
             if (!strcmp(tmp + 1, "start"))
-               e_container_scroll_start(oo, -1);
+               esmart_container_scroll_start(oo, -1);
             else
-               e_container_scroll_stop(oo);
+               esmart_container_scroll_stop(oo);
          }
       }
    }
@@ -1086,9 +1086,9 @@ _scroll_back_cb(void *data, Evas_Object * o, const char *emission,
          {
             fprintf(stderr, "%s\n", tmp);
             if (!strcmp(tmp + 1, "start"))
-               e_container_scroll_start(oo, 1);
+               esmart_container_scroll_start(oo, 1);
             else
-               e_container_scroll_stop(oo);
+               esmart_container_scroll_stop(oo);
          }
       }
    }
@@ -1452,8 +1452,8 @@ _preview_selected(void *data, Evas_Object * o, const char *emission,
 
    if ((file = (char *) data))
    {
-      e_container_empty(ecco.container.users);
-      e_container_empty(ecco.container.sessions);
+      esmart_container_empty(ecco.container.users);
+      esmart_container_empty(ecco.container.sessions);
       if ((str = evas_hash_find(ecco.hashes, sig)))
       {
          if ((cstr = evas_hash_find(ecco.hashes, str)))
@@ -1503,7 +1503,7 @@ ecco_dir_list_init(Evas_Object * container, const char *dir)
             else
                evas_object_resize(o, 50, 50);
             evas_object_show(o);
-            e_container_element_append(container, o);
+            esmart_container_element_append(container, o);
             edje_object_signal_callback_add(o, "PreviewSelected", "*",
                                             _preview_selected,
                                             strdup(di->d_name));
@@ -1541,7 +1541,7 @@ ecco_users_list_init(Evas_Object * container)
       if ((eu = evas_hash_find(ecco.config->users.hash, str)))
       {
          if ((o = entrance_user_edje_get(eu, ecco.edje, buf)))
-            e_container_element_append(container, o);
+            esmart_container_element_append(container, o);
       }
    }
 }
@@ -1574,7 +1574,7 @@ ecco_sessions_list_init(Evas_Object * container)
       {
          if ((o = entrance_x_session_edje_get(exs, container, buf)))
          {
-            e_container_element_append(container, o);
+            esmart_container_element_append(container, o);
          }
       }
    }
@@ -1809,18 +1809,18 @@ ecco_hashes_init(Evas_Object * o)
             snprintf(buf, PATH_MAX, "ecco,container,scroll,next,%s,stop",
                      containers[i]);
             ecco.hashes = evas_hash_add(ecco.hashes, buf, str);
-            if ((oo = e_container_new(evas_object_evas_get(o))))
+            if ((oo = esmart_container_new(evas_object_evas_get(o))))
             {
 #if 0
-               e_container_layout_plugin_set(oo, "entice");
+               esmart_container_layout_plugin_set(oo, "entice");
 #endif
                evas_object_layer_set(oo, 0);
                edje_object_part_geometry_get(o, str, NULL, NULL, &cw, &ch);
-               e_container_fill_policy_set(oo,
+               esmart_container_fill_policy_set(oo,
                                            CONTAINER_FILL_POLICY_KEEP_ASPECT |
                                            CONTAINER_FILL_POLICY_HOMOGENOUS);
-               e_container_padding_set(oo, 0, 0, 0, 0);
-               e_container_spacing_set(oo, 4);
+               esmart_container_padding_set(oo, 0, 0, 0, 0);
+               esmart_container_spacing_set(oo, 4);
                snprintf(buf, PATH_MAX, "ecco,container,%s,direction",
                         containers[i]);
                if ((cstr = edje_file_data_get(file, buf)))
@@ -1829,9 +1829,9 @@ ecco_hashes_init(Evas_Object * o)
                   fprintf(stderr, "Direction %s %s\n", buf, cstr);
 #endif
                   if (!strcmp(cstr, "horizontal"))
-                     e_container_direction_set(oo, 0);
+                     esmart_container_direction_set(oo, 0);
                   else
-                     e_container_direction_set(oo, 1);
+                     esmart_container_direction_set(oo, 1);
                   free(cstr);
                }
 #if DEBUG

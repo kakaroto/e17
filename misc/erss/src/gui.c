@@ -151,7 +151,7 @@ static erss_gai_error erss_gui_item_new(Erss_Feed *f,Erss_Article *item) {
     evas_object_event_callback_add (item->obj,
 				    EVAS_CALLBACK_MOUSE_OUT, erss_mouse_out_cursor_change, f);
 
-    e_container_element_append(cont, item->obj);
+    esmart_container_element_append(cont, item->obj);
     edje_object_part_text_set (item->obj, "article", item->title);
   }
 
@@ -196,7 +196,7 @@ static Erss_Article *erss_gui_item_dst(Erss_Article **i) {
 		*i = NULL;
 
 		if (item->obj)
-			e_container_element_destroy (cont, item->obj);
+			esmart_container_element_destroy (cont, item->obj);
 
 		if (item->title)
 			free (item->title);
@@ -300,16 +300,16 @@ int erss_gui_init (char *winname, Erss_Config *cfg) {
 	ecore_evas_callback_move_set (ee, erss_window_move);
 	ecore_evas_callback_resize_set(ee, erss_window_resize);
 
-	cont = e_container_new(evas);
+	cont = esmart_container_new(evas);
 	evas_object_move(cont, 0, 0);
 	evas_object_resize(cont, width, height);
 	evas_object_layer_set(cont, 0);
 	evas_object_name_set(cont, "container");
 	evas_object_show(cont);
-	e_container_padding_set(cont, 10, 10, 10, 10);
-	e_container_spacing_set(cont, 5);
-	e_container_direction_set(cont, 1);
-	e_container_fill_policy_set(cont,
+	esmart_container_padding_set(cont, 10, 10, 10, 10);
+	esmart_container_spacing_set(cont, 5);
+	esmart_container_direction_set(cont, 1);
+	esmart_container_fill_policy_set(cont,
 			CONTAINER_FILL_POLICY_FILL);
 
 	edje_init();
@@ -330,7 +330,7 @@ int erss_gui_init (char *winname, Erss_Config *cfg) {
 		edje_object_signal_emit (header, "mouse,in", "article");
 		edje_object_signal_emit (header, "mouse,out", "article");
 
-		e_container_element_append(cont, header);
+		esmart_container_element_append(cont, header);
 	}
 
 	if ((rc->clock==1)||((cfg->clock==1)&&(rc->clock!=0))) {
@@ -339,7 +339,7 @@ int erss_gui_init (char *winname, Erss_Config *cfg) {
 		edje_object_part_text_set (tid, "clock", "");
 		evas_object_show (tid);
 
-		e_container_element_append(cont, tid);
+		esmart_container_element_append(cont, tid);
 	}
 	return 0;
 }

@@ -9,7 +9,6 @@
 #include <getopt.h>
 #include <string.h>
 #include <Edje.h>
-#include <Esmart/container.h>
 #include "entrance.h"
 #include "entrance_session.h"
 #include "entrance_x_session.h"

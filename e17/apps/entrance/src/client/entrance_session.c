@@ -1,7 +1,7 @@
 #include "entrance.h"
 #include "entrance_session.h"
 #include <X11/Xlib.h>
-#include <Esmart/container.h>
+#include <Esmart/Esmart_Container.h>
 #include <sys/types.h>
 #include <sys/wait.h>
 #include <unistd.h>
@@ -500,22 +500,22 @@ entrance_session_list_add(Entrance_Session * e)
       return;
    edje_object_part_geometry_get(e->edje, "EntranceSessionList", NULL, NULL,
                                  &w, &h);
-   if ((container = e_container_new(evas_object_evas_get(e->edje))))
+   if ((container = esmart_container_new(evas_object_evas_get(e->edje))))
    {
-      e_container_padding_set(container, 4, 4, 4, 4);
-      e_container_spacing_set(container, 4);
-      e_container_move_button_set(container, 2);
+      esmart_container_padding_set(container, 4, 4, 4, 4);
+      esmart_container_spacing_set(container, 4);
+      esmart_container_move_button_set(container, 2);
       if (w > h)
       {
-         e_container_fill_policy_set(container,
+         esmart_container_fill_policy_set(container,
                                      CONTAINER_FILL_POLICY_KEEP_ASPECT);
-         e_container_direction_set(container, 0);
+         esmart_container_direction_set(container, 0);
       }
       else
       {
-         e_container_fill_policy_set(container,
+         esmart_container_fill_policy_set(container,
                                      CONTAINER_FILL_POLICY_KEEP_ASPECT);
-         e_container_direction_set(container, 1);
+         esmart_container_direction_set(container, 1);
       }
       edje_object_file_get(e->edje, &file, NULL);
       for (l = e->config->sessions.keys; l; l = l->next)
@@ -525,7 +525,7 @@ entrance_session_list_add(Entrance_Session * e)
          {
             if ((edje = entrance_x_session_edje_get(exs, e->edje, file)))
             {
-               e_container_element_append(container, edje);
+               esmart_container_element_append(container, edje);
             }
          }
       }
@@ -553,22 +553,22 @@ entrance_session_user_list_add(Entrance_Session * e)
       return;
    edje_object_part_geometry_get(e->edje, "EntranceUserList", NULL, NULL, &w,
                                  &h);
-   if ((container = e_container_new(evas_object_evas_get(e->edje))))
+   if ((container = esmart_container_new(evas_object_evas_get(e->edje))))
    {
-      e_container_padding_set(container, 4, 4, 4, 4);
-      e_container_spacing_set(container, 4);
-      e_container_move_button_set(container, 2);
+      esmart_container_padding_set(container, 4, 4, 4, 4);
+      esmart_container_spacing_set(container, 4);
+      esmart_container_move_button_set(container, 2);
       if (w > h)
       {
-         e_container_fill_policy_set(container,
+         esmart_container_fill_policy_set(container,
                                      CONTAINER_FILL_POLICY_KEEP_ASPECT);
-         e_container_direction_set(container, 0);
+         esmart_container_direction_set(container, 0);
       }
       else
       {
-         e_container_fill_policy_set(container,
+         esmart_container_fill_policy_set(container,
                                      CONTAINER_FILL_POLICY_KEEP_ASPECT);
-         e_container_direction_set(container, 1);
+         esmart_container_direction_set(container, 1);
       }
       edje_object_file_get(e->edje, &file, NULL);
       for (l = e->config->users.keys; l; l = l->next)
@@ -577,7 +577,7 @@ entrance_session_user_list_add(Entrance_Session * e)
          if ((key = evas_hash_find(e->config->users.hash, str)))
          {
             if ((edje = entrance_user_edje_get(key, e->edje, file)))
-               e_container_element_append(container, edje);
+               esmart_container_element_append(container, edje);
          }
       }
       edje_object_part_swallow(e->edje, "EntranceUserList", container);
