@@ -38,6 +38,12 @@ main (int argc, char **argv)
 	return 1;
   }
 
+  if (!exp_services_init())
+  {
+    printf("Unable to setup services handler\n");
+    return 1;
+  }
+
   if (!exp_gui_init(exp))
   {
     printf("Unable to setup GUI subsystem\n");
@@ -55,6 +61,7 @@ main (int argc, char **argv)
 
   ecore_main_loop_begin();
 
+  exp_services_shutdown();
   exp_eb_shutdown();
   edje_shutdown();
   ecore_evas_shutdown();

@@ -14,6 +14,7 @@ express_SOURCES = \
 		exp_buddy.c \
 		exp_message.c \
 		exp_conversation.c \
+		exp_services.c \
 		exp_eb.c exp_eb.h
 		
 express_LDADD = @edje_libs@ @ecore_libs@ @edb_libs@ @evas_libs@ \

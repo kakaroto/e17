@@ -124,6 +124,7 @@ struct _Exp_Message
   } changes;
 };
 
+#include "exp_services.h"
 
 int exp_gui_init(Exp *exp);
 

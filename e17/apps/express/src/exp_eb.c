@@ -275,30 +275,51 @@ exp_eb_command_handle(Exp *exp, char **cmds)
   {
     char *service_name, *theme_colour;
     int capabilities;
+    Exp_Service *service;
 
     service_name = cmds[1];
     theme_colour = cmds[2];
     capabilities = atoi(cmds[3]);
 
-    printf("name %s, colour %s, caps %d\n", service_name, theme_colour,
-        capabilities);
-
+    service = exp_service_find(service_name);
+    if (!service)
+    {
+        service = exp_service_new(service_name);
+    }
+    exp_service_colour_set(service, theme_colour);
+    exp_service_capabilities_set(service, capabilities);
   }
   else if (!strcmp(cmds[0], "list_service_done"))
   {
-
+    /* don't need to do anything */
   }
   else if (!strcmp(cmds[0], "list_service_actions"))
   {
+    int count;
+    count = atoi(cmds[3]);
 
+    /* don't know what these are, eb-lite gives a count of 0 all the time
+     * for them */
+    if (count > 0)
+      printf("%s %s %d\n", cmds[1], cmds[2], count);
   }
   else if (!strcmp(cmds[0], "list_service_states"))
   {
+    int count, i;
 
+    /* we probably need to store these to display to the use as states they
+     * can set the account into */
+    count = atoi(cmds[2]);
+    if (count > 0)
+    {
+      printf("%s %d\n", cmds[1], count);
+      for (i = 3; i < count + 3; i++)
+        printf("\t%s\n", cmds[i]);
+    }
   }
   else if (!strcmp(cmds[0], "list_services_done"))
   {
-
+    /* ignore it ... */
   }
 
   /* contact functions */
