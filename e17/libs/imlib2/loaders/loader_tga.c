@@ -18,6 +18,7 @@
 #include <stdio.h>
 #include <string.h>
 #include <sys/stat.h>
+#include <sys/mman.h>
 
 #ifndef X_DISPLAY_MISSING
 #  include <X11/Xlib.h>
@@ -213,56 +214,60 @@ char
 load(ImlibImage * im, ImlibProgressFunction progress,
      char progress_granularity, char immediate_load)
 {
-   FILE               *fp;
+   int                 fd;
+   void                *seg, *filedata;
+   struct stat         ss;
    int                 bpp, vinverted = 0;
    int                 rle = 0, footer_present = 0;
 
-   tga_header          header;
-   tga_footer          footer;
+   tga_header          *header;
+   tga_footer          *footer;
 
    if (im->data)
       return 0;
 
-   fp = fopen(im->real_file, "rb");
-   if (!fp)
+   fd = open(im->real_file, O_RDONLY);
+   if (fd < 0)
       return 0;
 
-   /* read the footer first */
-   fseek(fp, 0L - (sizeof(tga_footer)), SEEK_END);
-   if (fread(&footer, sizeof(tga_footer), 1, fp) != 1)
+   if (fstat(fd, &ss) < 0)
      {
-        fclose(fp);
+        close(fd);
         return 0;
      }
 
+   seg = mmap(0, ss.st_size, PROT_READ, MAP_SHARED, fd, 0);
+   if (seg == MAP_FAILED)
+     {
+        close(fd);
+	return 0;
+     }
+
+   filedata = seg;
+   header = (tga_header *) filedata;
+   footer = (tga_footer *) (filedata + ss.st_size - sizeof(tga_footer));
+
    /* check the footer to see if we have a v2.0 TGA file */
-   if (memcmp(footer.signature, TGA_SIGNATURE, sizeof(footer.signature)) == 0)
+   if (memcmp(footer->signature, TGA_SIGNATURE, sizeof(footer->signature)) == 0)
       footer_present = 1;
 
    if (!footer_present)
      {
      }
 
-   /* now read the header */
-   if (fseek(fp, 0, SEEK_SET) || fread(&header, sizeof(header), 1, fp) != 1)
-     {
-        fclose(fp);
-        return 0;
-     }
+   /* skip over header */
+   filedata += sizeof(tga_header);
 
    /* skip over alphanumeric ID field */
-   if (header.idLength && fseek(fp, header.idLength, SEEK_CUR))
-     {
-        fclose(fp);
-        return 0;
-     }
+   if (header->idLength)
+      filedata += header->idLength;
 
    /* now parse the header */
 
    /* this flag indicated bottom-up pixel storage */
-   vinverted = !(header.descriptor & TGA_DESC_VERTICAL);
+   vinverted = !(header->descriptor & TGA_DESC_VERTICAL);
 
-   switch (header.imageType)
+   switch (header->imageType)
      {
        case TGA_TYPE_COLOR_RLE:
        case TGA_TYPE_GRAY_RLE:
@@ -275,27 +280,30 @@ load(ImlibImage * im, ImlibProgressFunction progress,
           break;
 
        default:
-          fclose(fp);
-          return 0;
+	  munmap(seg, ss.st_size);
+	  close(fd);
+	  return 0;
      }
 
    /* bits per pixel */
-   bpp = header.bpp;
+   bpp = header->bpp;
 
    if (!((bpp == 32) || (bpp == 24) || (bpp == 8)))
      {
-        fclose(fp);
+	munmap(seg, ss.st_size);
+        close(fd);
         return 0;
      }
 
    /* endian-safe loading of 16-bit sizes */
-   im->w = (header.widthHi << 8) | header.widthLo;
-   im->h = (header.heightHi << 8) | header.heightLo;
+   im->w = (header->widthHi << 8) | header->widthLo;
+   im->h = (header->heightHi << 8) | header->heightLo;
 
    if ((im->w > 32767) || (im->w < 1) || (im->h > 32767) || (im->h < 1))
      {
         im->w = 0;
-        fclose(fp);
+	munmap(seg, ss.st_size);
+        close(fd);
         return 0;
      }
 
@@ -312,8 +320,7 @@ load(ImlibImage * im, ImlibProgressFunction progress,
    if (((!im->data) && (im->loader)) || (immediate_load) || (progress))
      {
         unsigned long       datasize;
-        struct stat         ss;
-        unsigned char      *buf, *bufptr;
+        unsigned char      *bufptr;
         DATA32             *dataptr;
 
         int                 y, pl = 0;
@@ -324,7 +331,8 @@ load(ImlibImage * im, ImlibProgressFunction progress,
         if (!im->data)
           {
              im->w = 0;
-             fclose(fp);
+	     munmap(seg, ss.st_size);
+             close(fd);
              return 0;
           }
 
@@ -334,29 +342,13 @@ load(ImlibImage * im, ImlibProgressFunction progress,
         /* find out how much data must be read from the file */
         /* (this is NOT simply width*height*4, due to compression) */
 
-        stat(im->real_file, &ss);
-        datasize = ss.st_size - sizeof(tga_header) - header.idLength -
+        datasize = ss.st_size - sizeof(tga_header) - header->idLength -
             (footer_present ? sizeof(tga_footer) : 0);
-
-        buf = malloc(datasize);
-        if (!buf)
-          {
-             im->w = 0;
-             fclose(fp);
-             return 0;
-          }
-
-        /* read in the pixel data */
-        if (fread(buf, 1, datasize, fp) != datasize)
-          {
-             fclose(fp);
-             return 0;
-          }
 
         /* buffer is ready for parsing */
 
         /* bufptr is the next byte to be read from the buffer */
-        bufptr = buf;
+        bufptr = filedata;
 
         /* dataptr is the next 32-bit pixel to be filled in */
         dataptr = im->data;
@@ -536,11 +528,11 @@ load(ImlibImage * im, ImlibProgressFunction progress,
 	       } /* end for (each row) */
           }
 	/* end if (image is RLE) */
-        free(buf);
      }
    /* end if (loading pixel data) */
 
-   fclose(fp);
+   munmap(seg, ss.st_size);
+   close(fd);
    return 1;
 }
 
