@@ -186,7 +186,7 @@ DrawImage(Imlib_Image * im, int w, int h)
   D(("DrawImage(%8p, %d, %d)\n", im, w, h));
 
   if (!disp) {
-     gtk_widget_realize(area);
+    gtk_widget_realize(area);
     disp = GDK_WINDOW_XDISPLAY(area->window);
     win = GDK_WINDOW_XWINDOW(area->window);
     vis = GDK_VISUAL_XVISUAL(gtk_widget_get_visual(area));
@@ -220,47 +220,55 @@ DrawImage(Imlib_Image * im, int w, int h)
   pm = XCreatePixmap(disp, win, w, h, depth);
   imlib_context_set_drawable(pm);
 
-  if (bg == NULL) {
-    DrawChecks();
-  }
-  if (bimg) {
+  if(imlib_image_has_alpha()){
+    if(bg == NULL){
+      DrawChecks();
+    }
+    if(bimg){
+      imlib_context_set_image(bimg);
+      imlib_free_image();
+    }
+    bimg = imlib_create_image(w, h);
     imlib_context_set_image(bimg);
-    imlib_free_image();
-  }
-  bimg = imlib_create_image(w, h);
-  imlib_context_set_image(bimg);
-  Checks(w, h);
+    Checks(w, h);
 
-  if (w > imgw) {
-    x = (w - imgw) / 2;
-    w = imgw;
-  } else {
-    x = 0;
-  }
-  if (h > imgh) {
-    y = (h - imgh) / 2;
-    h = imgh;
-  } else {
-    y = 0;
-  }
-  imlib_blend_image_onto_image(im, 1, 0, 0, w, h, x, y, w, h);
+    if(w > imgw){
+      x = (w - imgw) / 2;
+      w = imgw;
+    } else {
+      x = 0;
+    }
+    
+    if (h > imgh) {
+      y = (h - imgh) / 2;
+      h = imgh;
+    } else {
+      y = 0;
+    }
+    imlib_blend_image_onto_image(im, 1, 0, 0, w, h, x, y, w, h);
 
-  imlib_render_image_on_drawable(0, 0);
-  XSetWindowBackgroundPixmap(disp, win, pm);
-  XClearWindow(disp, win);
+    imlib_render_image_on_drawable(0, 0);
+    XSetWindowBackgroundPixmap(disp, win, pm);
+    XClearWindow(disp, win);
+  } else {
+    imlib_context_set_image(im);
+    imlib_render_image_on_drawable_at_size(0, 0, w, h);
+    XSetWindowBackgroundPixmap(disp, win, pm);
+    XClearWindow(disp, win);
+  }
+
+  /* decide whether to draw a thumbnail or not... */
+  c_test = check_cache_file(currentimage);
+  if(c_test == 0){ /* draw one */
+    /*thumb = XCreatePixmap(disp, win, 100, 100, depth);
+      imlib_context_set_drawable(thumb);
+      imlib_render_image_on_drawable_at_size(0, 0, 100, 100);
+      imlib_image_set_format("argb");
+      printf("%s\n", cache);
+      imlib_save_image("/home/tv/.ee2/blah.argb");*/
+  }
 	
-	/* decide whether to draw a thumbnail or not... */
-	c_test = check_cache_file(currentimage);
-	if(c_test == 0){ /* draw one */
-		/*thumb = XCreatePixmap(disp, win, 100, 100, depth);
-		imlib_context_set_drawable(thumb);
-		imlib_render_image_on_drawable_at_size(0, 0, 100, 100);
-		imlib_image_set_format("argb");
-		printf("%s\n", cache);
-		imlib_save_image("/home/tv/.ee2/blah.argb");*/
-	}
-	
-	XFreePixmap(disp, pm);
+  XFreePixmap(disp, pm);
   imlib_context_set_drawable(None);
 }
 

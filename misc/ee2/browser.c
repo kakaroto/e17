@@ -237,6 +237,27 @@ prev_draw(Imlib_Image *im, int w, int h)
   pm_t = XCreatePixmap(disp_t, win_t, w, h, d);
   imlib_context_set_drawable(pm_t);
 
+  if(imlib_image_has_alpha()){
+    bg = NULL;
+    DrawChecks();
+    if(bimg){
+      imlib_context_set_image(bimg);
+      imlib_free_image();
+    }
+    bimg = imlib_create_image(ww, hh);
+    imlib_context_set_image(bimg);
+    Checks(ww, hh);
+    imlib_blend_image_onto_image(im, 1, 0, 0, ww, hh, 0, 0, ww, hh);
+    imlib_render_image_on_drawable_at_size(0, 0, w, h);
+    XSetWindowBackgroundPixmap(disp_t, win_t, pm_t);
+    XClearWindow(disp_t, win_t);
+  } else {
+    imlib_context_set_image(im);
+    imlib_render_image_on_drawable_at_size(0, 0, w, h);
+    XSetWindowBackgroundPixmap(disp_t, win_t, pm_t);
+    XClearWindow(disp_t, win_t);
+  }
+
   bg = NULL;
   DrawChecks();
   if(bimg){
@@ -250,8 +271,6 @@ prev_draw(Imlib_Image *im, int w, int h)
   imlib_blend_image_onto_image(im, 1, 0, 0, ww, hh, 0, 0, ww, hh);
   imlib_render_image_on_drawable_at_size(0, 0, w, h);
 	
-  XSetWindowBackgroundPixmap(disp_t, win_t, pm_t);
-  XClearWindow(disp_t, win_t);
   XFreePixmap(disp_t, pm_t);
   imlib_context_set_drawable(None);
 }

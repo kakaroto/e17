@@ -324,3 +324,12 @@ all be fixed now. yippie.
 
 -------------------------------------------------------------------------------
 
+Wed Mar 15 16:53:47 CST 2000
+(dphase)
+
+Why eat gobs of memory when you need to?  Now we can render an image with no
+alpha channel and it will not render a checkerboard pixmap, its a waste of
+resources to render an image that isnt really being used.
+
+-------------------------------------------------------------------------------
+
