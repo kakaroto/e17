@@ -35,8 +35,12 @@ void                e_db_float_set(E_DB_File * db, char *key, float val);
 int                 e_db_float_get(E_DB_File * db, char *key, float *val);
 /* set a string in the db */
 void                e_db_str_set(E_DB_File * db, char *key, char *str);
-/* get a string from the db - you must fre is when done using free() */
+/* get a string from the db - you must free it when done using free() */
 char               *e_db_str_get(E_DB_File * db, char *key);
+/* set a bytestring in the db -- the string can contain zeroes. */
+void                e_db_bytestr_set(E_DB_File * edb, char *key, char *str, int len);
+/* get a bytestring from the db - you must free it when done using free() */
+char               *e_db_bytestr_get(E_DB_File * edb, char *key, int *len);
 /* set the encoding type of an entry - types defined are: */
 /* "int"    - integer        */
 /* "str"    - string         */

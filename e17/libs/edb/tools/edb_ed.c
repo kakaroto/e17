@@ -12,10 +12,10 @@ sort_compare(const void *v1, const void *v2)
    return strcmp(*(char **)v1, *(char **)v2);
 }
 
-static void 
+static int
 unescape_string(char *str)
 {
-  int  i;
+  int  i, len = 0;
   unsigned char val = 0;
   char c;
   char *s;
@@ -23,6 +23,7 @@ unescape_string(char *str)
   for (s = str ; *str != '\0'; str++, s++)
     {
       val = 0;
+      len++;
 
       if (*str == '\\')
 	{	 
@@ -133,6 +134,7 @@ unescape_string(char *str)
     }
   
   *s = '\0';
+  return len;
 }
 
 
@@ -221,8 +223,10 @@ main(int argc, char **argv)
 	       }
 	     else if (!strcmp(type, "str"))
 	       {
-		  unescape_string(data);
-		  e_db_str_set(db, key, data);
+		  int len;
+
+		  len = unescape_string(data);
+		  e_db_bytestr_set(db, key, data, len);
 	       }
 	     else if (!strcmp(type, "float"))
 	       {
