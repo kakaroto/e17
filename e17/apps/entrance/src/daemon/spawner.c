@@ -221,14 +221,6 @@ Entranced_Respawn_Reset(void *data)
 int
 Entranced_X_Restart(Entranced_Display * d)
 {
-   /* Reinitialize display handle */
-   if (d->e_exe)
-      ecore_exe_free(d->e_exe);
-   d->e_exe = NULL;
-   if (d->x_exe)
-      ecore_exe_free(d->x_exe);
-   d->x_exe = NULL;
-   
    /* Attempt to restart X server */
    d->status = NOT_RUNNING;
 
@@ -308,9 +300,9 @@ Entranced_Exe_Exited(void *data, int type, void *event)
    }
 
    is_respawning = 1;
-   respawn_timer = ecore_timer_add(5.0, Entranced_Respawn_Reset, d);
+   respawn_timer = ecore_timer_add(1.0, Entranced_Respawn_Reset, d);
 
-   if (e->exe == d->e_exe && e->pid == ecore_exe_pid_get(d->e_exe))
+   if (e->exe == d->e_exe || e->pid == ecore_exe_pid_get(d->e_exe))
    {
       /* Session exited or crashed */
       if (e->exited)
