@@ -42,6 +42,7 @@ typedef enum __geist_object_type
    GEIST_TYPE_TEXT,
    GEIST_TYPE_RECT,
    GEIST_TYPE_LINE,
+   GEIST_TYPE_POLY,
    GEIST_TYPE_MAX
 }
 geist_object_type;

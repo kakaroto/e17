@@ -266,6 +266,31 @@ geist_imlib_image_fill_rectangle(Imlib_Image im, int x, int y, int w, int h,
    imlib_image_fill_rectangle(x, y, w, h);
 }
 
+void                                                       
+geist_imlib_image_fill_polygon(Imlib_Image im, ImlibPolygon poly,
+                                 int r, int g, int b, int a, unsigned char alias, int cx, int cy, int cw, int ch)
+{
+   imlib_context_set_image(im);
+   imlib_context_set_color(r, g, b, a);
+   imlib_context_set_anti_alias(alias);
+   imlib_context_set_cliprect(cx,cy,cw,ch);
+   imlib_image_fill_polygon(poly);
+   imlib_context_set_cliprect(0,0,0,0);
+} 
+
+void
+geist_imlib_image_draw_polygon(Imlib_Image im, ImlibPolygon poly,
+                                 int r, int g, int b, int a, unsigned char closed, unsigned char alias, int cx, int cy, int cw, int ch)
+{
+   imlib_context_set_image(im);
+   imlib_context_set_color(r, g, b, a);
+   imlib_context_set_anti_alias(alias);
+   imlib_context_set_cliprect(cx,cy,cw,ch);
+   imlib_image_draw_polygon(poly, closed);
+   imlib_context_set_cliprect(0,0,0,0);
+}
+
+
 void
 geist_imlib_image_draw_rectangle(Imlib_Image im, int x, int y, int w, int h,
                                  int r, int g, int b, int a)

@@ -82,6 +82,33 @@ geist_list_free_and_data(geist_list * l)
    D_RETURN_(4);
 }
 
+geist_list *
+geist_list_dup(geist_list * list)
+{
+   geist_list *ret = NULL;
+
+   D_ENTER(3);
+
+   if (list)
+   {
+      geist_list *last;
+
+      ret = geist_list_new();
+      ret->data = list->data;
+      last = ret;
+      list = list->next;
+      while (list)
+      {
+         last->next = geist_list_new();
+         last->next->prev = last;
+         last = last->next;
+         last->data = list->data;
+         list = list->next;
+      }
+   }
+
+   D_RETURN(3, ret);
+}
 
 geist_list *
 geist_list_add_front(geist_list * root, void *data)

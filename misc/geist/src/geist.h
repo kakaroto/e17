@@ -86,6 +86,9 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 #define MIN(a, b) (((a) < (b)) ? (a) : (b))
 #define MAX(a, b) (((a) > (b)) ? (a) : (b))
 
+struct __geist_point {
+   int x, y;
+};
 
 extern int call_level;
 extern gint obj_sel_handler, obj_unsel_handler;

@@ -1,3 +1,8 @@
+Thu Sep 28 11:54:11 2000  Tom Gilbert  <gilbertt@linuxbrit.co.uk>
+
+	* Initial polygon object code. Not active yet (need to write
+	create/load/save code first).
+
 Mon Sep 15 17:30:26 2000  Tom Gilbert  <gilbertt@linuxbrit.co.uk>
 
 	* Fixed the "rotating vertical lines makes them disappear" bug.

@@ -257,10 +257,10 @@ geist_text_update_image(geist_text * txt, unsigned char resize)
          obj->h = obj->rendered_h;
    }
 
-    obj->rendered_x = 0;
-    obj->rendered_y = 0;
-    
-   
+   obj->rendered_x = 0;
+   obj->rendered_y = 0;
+
+
    geist_object_dirty(obj);
    D_RETURN_(3);
 }
@@ -302,7 +302,7 @@ geist_text_create_image(geist_text * txt)
       weprintf("no font for text.");
       D_RETURN_(3);
    }
-   
+
    geist_text_free_lines(txt);
    geist_text_calculate_lines(txt);
 
@@ -348,63 +348,64 @@ geist_text_create_image(geist_text * txt)
       switch (txt->justification)
       {
         case JUST_LEFT:
-	   x = 0;
-	   geist_imlib_text_draw(im, txt->fn, x, y, p, IMLIB_TEXT_TO_RIGHT,
-				 txt->r, txt->g, txt->b, txt->a);
+           x = 0;
+           geist_imlib_text_draw(im, txt->fn, x, y, p, IMLIB_TEXT_TO_RIGHT,
+                                 txt->r, txt->g, txt->b, txt->a);
            break;
         case JUST_CENTER:
-	   x = (w - ww) / 2;
-	   geist_imlib_text_draw(im, txt->fn, x, y, p, IMLIB_TEXT_TO_RIGHT,
-				 txt->r, txt->g, txt->b, txt->a);
+           x = (w - ww) / 2;
+           geist_imlib_text_draw(im, txt->fn, x, y, p, IMLIB_TEXT_TO_RIGHT,
+                                 txt->r, txt->g, txt->b, txt->a);
            break;
         case JUST_RIGHT:
-	   x = w - ww;
+           x = w - ww;
            geist_imlib_text_draw(im, txt->fn, x, y, p, IMLIB_TEXT_TO_RIGHT,
-				 txt->r, txt->g, txt->b, txt->a);
+                                 txt->r, txt->g, txt->b, txt->a);
 
-	   break;
-	case JUST_BLOCK:
-	   words = geist_string_split(p, " ");
-	   if(words)
-	   {
-	      int wordcnt, word_spacing, line_w;
-	      int t_width, m_width, space_width, offset = 0;
-	      
-	      wordcnt = geist_list_length(words);
-	      geist_imlib_get_text_size(txt->fn, p, &line_w, NULL, 
-		    IMLIB_TEXT_TO_RIGHT);
-	      geist_imlib_get_text_size(txt->fn, "M M", &t_width, NULL, 
-		     IMLIB_TEXT_TO_RIGHT);
-	      geist_imlib_get_text_size(txt->fn, "M", &m_width, NULL, 
-		    IMLIB_TEXT_TO_RIGHT);
-	      space_width = t_width - (2 * m_width);
+           break;
+        case JUST_BLOCK:
+           words = geist_string_split(p, " ");
+           if (words)
+           {
+              int wordcnt, word_spacing, line_w;
+              int t_width, m_width, space_width, offset = 0;
 
-	      if (wordcnt>1)
-		   word_spacing = (obj->w - line_w) / (wordcnt -1) ;
-	      else
-		   word_spacing = (obj->w - line_w);
-	      
+              wordcnt = geist_list_length(words);
+              geist_imlib_get_text_size(txt->fn, p, &line_w, NULL,
+                                        IMLIB_TEXT_TO_RIGHT);
+              geist_imlib_get_text_size(txt->fn, "M M", &t_width, NULL,
+                                        IMLIB_TEXT_TO_RIGHT);
+              geist_imlib_get_text_size(txt->fn, "M", &m_width, NULL,
+                                        IMLIB_TEXT_TO_RIGHT);
+              space_width = t_width - (2 * m_width);
 
-	      ll = words;
-	      while(ll)
-	      {
-		 pp = (char*) ll->data;
+              if (wordcnt > 1)
+                 word_spacing = (obj->w - line_w) / (wordcnt - 1);
+              else
+                 word_spacing = (obj->w - line_w);
 
-         D(1, ("got word %s\n", pp));
-		 if (strcmp(pp, " "))
-		 {
-		    int wordw;
-		    geist_imlib_text_draw(im, txt->fn, x + offset, y, pp, 
-			  IMLIB_TEXT_TO_RIGHT, txt->r, txt->g, txt->b, txt->a);
-		    geist_imlib_get_text_size(txt->fn, pp, &wordw, NULL, 
-					      IMLIB_TEXT_TO_RIGHT);
-		    offset += (wordw + space_width + word_spacing);
-		 }
-		 ll = ll->next;
-	      }
-	      geist_list_free_and_data(words);
-	   }
-	   break;
+              ll = words;
+              while (ll)
+              {
+                 pp = (char *) ll->data;
+
+                 D(1, ("got word %s\n", pp));
+                 if (strcmp(pp, " "))
+                 {
+                    int wordw;
+
+                    geist_imlib_text_draw(im, txt->fn, x + offset, y, pp,
+                                          IMLIB_TEXT_TO_RIGHT, txt->r, txt->g,
+                                          txt->b, txt->a);
+                    geist_imlib_get_text_size(txt->fn, pp, &wordw, NULL,
+                                              IMLIB_TEXT_TO_RIGHT);
+                    offset += (wordw + space_width + word_spacing);
+                 }
+                 ll = ll->next;
+              }
+              geist_list_free_and_data(words);
+           }
+           break;
 
         default:
            break;
@@ -555,7 +556,8 @@ geist_text_calculate_lines(geist_text * txt)
    D_RETURN_(3);
 }
 
-Imlib_Image geist_text_get_rendered_image(geist_object * obj)
+Imlib_Image
+geist_text_get_rendered_image(geist_object * obj)
 {
    D_ENTER(3);
 
@@ -899,8 +901,8 @@ geist_text_display_props(geist_object * obj)
    gtk_entry_set_text(GTK_ENTRY(GTK_COMBO(ok_data->font)->entry),
                       GEIST_TEXT(obj)->fontname);
    gtk_entry_set_text(GTK_ENTRY(GTK_COMBO(ok_data->just)->entry),
-                      geist_text_get_justification_string(GEIST_TEXT
-                                                          (obj)->justification));
+                      geist_text_get_justification_string(GEIST_TEXT(obj)->
+                                                          justification));
    gtk_spin_button_set_value(GTK_SPIN_BUTTON(ok_data->size),
                              GEIST_TEXT(obj)->fontsize);
    gtk_text_forward_delete(GTK_TEXT(ok_data->text), -1);

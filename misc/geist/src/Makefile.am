@@ -3,8 +3,8 @@
 SUBDIRS = testimages ttfonts
 
 INCLUDES = \
-	-I. -I$(top_srcdir) \
-    @GTK_CFLAGS@ -DPREFIX=\""$(prefix)"\" @XML_CFLAGS@ @IMLIB_CFLAGS@
+-I. -I$(top_srcdir) \
+@GTK_CFLAGS@ -DPREFIX=\""$(prefix)"\" @XML_CFLAGS@ @IMLIB_CFLAGS@
 
 bin_PROGRAMS = geist
 
@@ -21,6 +21,7 @@ geist_SOURCES = \
     geist_text.c geist_text.h \
     geist_rect.c geist_rect.h \
     geist_line.c geist_line.h \
+    geist_poly.c geist_poly.h \
     geist_imlib.c geist_imlib.h \
     geist_document.c geist_document.h \
     geist_document_gtk.c geist_document_gtk.h \

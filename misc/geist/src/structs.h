@@ -36,5 +36,7 @@ typedef struct __geist_document geist_document;
 typedef struct __geist_layer geist_layer;
 typedef struct __geist_fill geist_fill;
 typedef struct __geist_line geist_line;
+typedef struct __geist_poly geist_poly;
+typedef struct __geist_point geist_point;
 
 #endif
