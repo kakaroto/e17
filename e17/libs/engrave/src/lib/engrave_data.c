@@ -73,4 +73,33 @@ engrave_data_int_value_get(Engrave_Data *ed)
   return (ed ? ed->int_value : 0);
 }
 
+/**
+ * engrave_data_value_set - set the value of the data object
+ * @param ed: The Engrave_Data to set the value into
+ * @param value: The value to set.
+ * 
+ * @return Returns no value.
+ */
+void
+engrave_data_value_set(Engrave_Data *ed, const char *value)
+{
+    if (!ed) return;
+    IF_FREE(ed->value);
+    ed->value = (value ? strdup(value) : NULL);
+}
+
+/**
+ * engrave_data_int_value_set - set the int value of the data object
+ * @param ed: The Engrave_Data to set the value into
+ * @param value: The value to set
+ * 
+ * @return Returns no value
+ */
+void
+engrave_data_int_value_set(Engrave_Data *ed, int value)
+{
+    if (!ed) return;
+    ed->int_value = value;
+}
+
 

@@ -34,6 +34,9 @@ const char *engrave_data_key_get(Engrave_Data *ed);
 const char *engrave_data_value_get(Engrave_Data *ed);
 int engrave_data_int_value_get(Engrave_Data *ed);
 
+void engrave_data_value_set(Engrave_Data *ed, const char *value);
+void engrave_data_int_value_set(Engrave_Data *ed, int value);
+
 /**
  * @}
  */
