@@ -1,3 +1,9 @@
+Sat Mar 02 21:12:54 2002 Christopher Rosendahl <crosendahl@northernwatch.com>
+	* When trying to change image and if the old image were allready saved,
+	  it wouldnt load the new image, and much less save it.
+	* Fixed some memleaks
+	* Made the browse state file dialog goto the last dir it browsed.
+
 Sat Mar 02 19:58:40 2002 Christopher Rosendahl <crosendahl@northernwatch.com>
 	* Added a rectangle to the workspace that layers beneath everything
 	  else, this fixes the problem with the workspace getting artifacts

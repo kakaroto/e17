@@ -69,6 +69,10 @@ on_file_ok_clicked(GtkButton * button, gpointer user_data)
 		gtk_entry_set_text(GTK_ENTRY(states_entry),
 				   (gtk_file_selection_get_filename
 				    (GTK_FILE_SELECTION(top))));
+
+		E_DB_STR_SET(pref_get_config(), "/paths/image",
+			     (gtk_file_selection_get_filename
+			      (GTK_FILE_SELECTION(top))));
 	} else if (gtk_object_get_data(GTK_OBJECT(top), "grid_image")) {
 		pref_set_grid_image(gtk_file_selection_get_filename
 				    (GTK_FILE_SELECTION(top)));
@@ -575,7 +579,7 @@ on_add_state_ok_clicked(GtkButton * button, gpointer user_data)
 
 	o = etching_get_bits(workspace_get_current_etching());
 
-	ebits_add_state_name(o, strdup(state_name));
+	ebits_add_state_name(o, g_strdup(state_name));
 
 	workspace_update_states();
 
@@ -630,7 +634,7 @@ on_states2_select_row(GtkCList * clist,
 
 	gtk_clist_get_text(GTK_CLIST(clist), row, 0, &row_data);
 
-	state_name = strdup(row_data);
+	state_name = g_strdup(row_data);
 
 	len = strlen(state_name);
 
@@ -673,7 +677,11 @@ on_images_unselect_row(GtkCList * clist,
 		       gint row,
 		       gint column, GdkEvent * event, gpointer user_data)
 {
+	GtkWidget      *w;
 
+	w = gtk_object_get_data(GTK_OBJECT(main_win), "states2");
+
+	gtk_clist_unselect_all(GTK_CLIST(w));
 }
 
 void
@@ -693,7 +701,7 @@ on_state_entry_ok_clicked(GtkButton * button, gpointer user_data)
 	gtk_clist_get_text(GTK_CLIST(clist), states2_selected_row, 0,
 			   &row_data);
 
-	state_name = strdup(row_data);
+	state_name = g_strdup(row_data);
 
 	len = strlen(state_name);
 
@@ -701,6 +709,8 @@ on_state_entry_ok_clicked(GtkButton * button, gpointer user_data)
 		state_name[i] = tolower(state_name[i]);
 
 	snprintf(key, sizeof(key), "properties_state_%s_image", state_name);
+
+	g_free(state_name);
 
 	image = gtk_entry_get_text(GTK_ENTRY(states_entry));
 
@@ -712,7 +722,7 @@ on_state_entry_ok_clicked(GtkButton * button, gpointer user_data)
 		image2 = realloc(image2, sizeof(gchar) * (len + 1));
 		snprintf(image2, sizeof(gchar) * (len + 1), "%s", image);
 	} else
-		image2 = strdup(image);
+		image2 = g_strdup(image);
 
 	gtk_object_set_data(GTK_OBJECT(main_win), key, image2);
 

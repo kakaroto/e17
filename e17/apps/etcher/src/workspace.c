@@ -511,84 +511,82 @@ workspace_update_selection_from_widget(void)
 		prev_i3 = NULL;
 		prev_i4 = NULL;
 		if (selected->description->normal.image)
-			prev_i1 = g_strdup(selected->description->normal.image);
+			prev_i1 = selected->description->normal.image;
 		if (selected->description->hilited.image)
-			prev_i2 =
-				g_strdup(selected->description->hilited.image);
+			prev_i2 = selected->description->hilited.image;
 		if (selected->description->clicked.image)
-			prev_i3 =
-				g_strdup(selected->description->clicked.image);
+			prev_i3 = selected->description->clicked.image;
 		if (selected->description->disabled.image)
-			prev_i4 =
-				g_strdup(selected->description->disabled.image);
+			prev_i4 = selected->description->disabled.image;
 
 		get_entry("name", &(selected->description->name));
 		get_entry("class", &(selected->description->class));
 		get_entry("color_class", &(selected->description->color_class));
 
-/*		get_entry("img_normal", &(selected->description->normal.image));
-		get_entry("img_hilited",
-			  &(selected->description->hilited.image));
-		get_entry("img_clicked",
-			  &(selected->description->clicked.image));
-		get_entry("img_disabled",
-			  &(selected->description->disabled.image));*/
 		selected->description->border.l = get_spin("border_l");
 		selected->description->border.r = get_spin("border_r");
 		selected->description->border.t = get_spin("border_t");
 		selected->description->border.b = get_spin("border_b");
 
 		selected->description->normal.image =
-			gtk_object_get_data(GTK_OBJECT(main_win),
-					    "properties_state_normal_image");
+			g_strdup(gtk_object_get_data(GTK_OBJECT(main_win),
+						     "properties_state_normal_image"));
 		selected->description->hilited.image =
-			gtk_object_get_data(GTK_OBJECT(main_win),
-					    "properties_state_hilited_image");
+			g_strdup(gtk_object_get_data(GTK_OBJECT(main_win),
+						     "properties_state_hilited_image"));
 		selected->description->clicked.image =
-			gtk_object_get_data(GTK_OBJECT(main_win),
-					    "properties_state_clicked_image");
+			g_strdup(gtk_object_get_data(GTK_OBJECT(main_win),
+						     "properties_state_clicked_image"));
 		selected->description->disabled.image =
-			gtk_object_get_data(GTK_OBJECT(main_win),
-					    "properties_state_disabled_image");
+			g_strdup(gtk_object_get_data(GTK_OBJECT(main_win),
+						     "properties_state_disabled_image"));
 
-		if ((selected->description->normal.image) && (prev_i1) &&
-		    (strcmp(selected->description->normal.image, prev_i1))) {
-			selected->normal.saved = 0;
-			if (selected->normal.image) {
+
+		if (selected->description->normal.image) {
+			if (!prev_i1 ||
+			    strcmp(selected->description->normal.image,
+				   prev_i1)) {
 				imlib_context_set_image(selected->normal.image);
 				imlib_free_image();
 				selected->normal.image = NULL;
-			}
+			} else
+				selected->normal.saved = 0;
 		}
-		if ((selected->description->hilited.image) && (prev_i2) &&
-		    (strcmp(selected->description->hilited.image, prev_i2))) {
-			selected->hilited.saved = 0;
-			if (selected->hilited.image) {
+
+		if (selected->description->hilited.image) {
+			if (!prev_i1 ||
+			    strcmp(selected->description->hilited.image,
+				   prev_i1)) {
 				imlib_context_set_image(selected->hilited.
 							image);
 				imlib_free_image();
 				selected->hilited.image = NULL;
-			}
+			} else
+				selected->hilited.saved = 0;
 		}
-		if ((selected->description->clicked.image) && (prev_i3) &&
-		    (strcmp(selected->description->clicked.image, prev_i3))) {
-			selected->clicked.saved = 0;
-			if (selected->clicked.image) {
+
+		if (selected->description->clicked.image) {
+			if (!prev_i1 ||
+			    strcmp(selected->description->clicked.image,
+				   prev_i1)) {
 				imlib_context_set_image(selected->clicked.
 							image);
 				imlib_free_image();
 				selected->clicked.image = NULL;
-			}
+			} else
+				selected->clicked.saved = 0;
 		}
-		if ((selected->description->disabled.image) && (prev_i4) &&
-		    (strcmp(selected->description->disabled.image, prev_i4))) {
-			selected->disabled.saved = 0;
-			if (selected->disabled.image) {
+
+		if (selected->description->disabled.image) {
+			if (!prev_i1 ||
+			    strcmp(selected->description->disabled.image,
+				   prev_i1)) {
 				imlib_context_set_image(selected->disabled.
 							image);
 				imlib_free_image();
 				selected->disabled.image = NULL;
-			}
+			} else
+				selected->disabled.saved = 0;
 		}
 
 		for (l = ebits_get_state_names(bits); l; l = l->next) {
