@@ -576,6 +576,7 @@ XMMS_CB(playlist_add) {
 	unsigned int id = (unsigned int) arg;
 
 	playlist_item_add(e->playlist, id);
+	xmmsc_playlist_get_mediainfo(e->xmms, id);
 }
 
 XMMS_CB(playlist_remove) {
