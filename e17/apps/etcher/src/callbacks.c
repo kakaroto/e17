@@ -19,12 +19,17 @@
 #include "support.h"
 #include "bits.h"
 
+#define QUEUE_DRAW \
+if (current_idle) gtk_idle_remove(current_idle);\
+current_idle = gtk_idle_add(view_redraw, NULL);
+
 extern GtkWidget *main_win;
 extern char etcher_config[4096];
 
 Evas view_evas = NULL;
 gint render_method = 0;
 gint zoom_method = 0;
+guint current_idle = 0;
 
 static int new_evas = 1;
 static int new_fade = 0;
@@ -567,6 +572,7 @@ view_redraw(gpointer data)
 {
    evas_render(view_evas);
    zoom_redraw(zoom_x, zoom_y);
+   current_idle = 0;
    return FALSE;
 }
 
@@ -635,7 +641,7 @@ handle_bg_mouse_down (void *_data, Evas _e, Evas_Object _o, int _b, int _x, int 
    selected_state = NULL;
    update_widget_from_selection();
    update_visible_selection();
-   gtk_idle_add(view_redraw, NULL);
+   QUEUE_DRAW;
 }
 
 static void
@@ -647,7 +653,7 @@ handle_mouse_down (void *_data, Evas _e, Evas_Object _o, int _b, int _x, int _y)
    selected_state = NULL;
    update_widget_from_selection();
    update_visible_selection();
-   gtk_idle_add(view_redraw, NULL);
+   QUEUE_DRAW;
 }
 
 static void
@@ -751,7 +757,7 @@ handle_bit_mouse_down (void *_data, Evas _e, Evas_Object _o, int _b, int _x, int
 	evas_put_data(_e, _o, "y", (void *)_y);
      }
    update_widget_from_selection();
-   gtk_idle_add(view_redraw, NULL);
+   QUEUE_DRAW;
 }
 
 static void
@@ -761,7 +767,7 @@ handle_bit_mouse_up (void *_data, Evas _e, Evas_Object _o, int _b, int _x, int _
 
    state = _data;
    evas_remove_data(_e, _o, "clicked");
-   gtk_idle_add(view_redraw, NULL);
+   QUEUE_DRAW;
 }
 
 static void
@@ -794,7 +800,7 @@ handle_bit_mouse_move (void *_data, Evas _e, Evas_Object _o, int _b, int _x, int
 	     ebits_set_state(bits, current_state);
 	  }
      }
-   gtk_idle_add(view_redraw, NULL);
+   QUEUE_DRAW;
 }
 
 static void
@@ -805,14 +811,14 @@ handle_adjuster_mouse_down (void *_data, Evas _e, Evas_Object _o, int _b, int _x
    evas_put_data(_e, _o, "clicked", (void *)1);
    evas_put_data(_e, _o, "x", (void *)_x);
    evas_put_data(_e, _o, "y", (void *)_y);
-   gtk_idle_add(view_redraw, NULL);
+   QUEUE_DRAW;
 }
 
 static void
 handle_adjuster_mouse_up (void *_data, Evas _e, Evas_Object _o, int _b, int _x, int _y)
 {
    evas_remove_data(_e, _o, "clicked");
-   gtk_idle_add(view_redraw, NULL);
+   QUEUE_DRAW;
 }
 
 static void
@@ -907,7 +913,7 @@ handle_adjuster_mouse_move (void *_data, Evas _e, Evas_Object _o, int _b, int _x
 	update_visible_selection();
 	ebits_set_state(bits, current_state);
      }
-   gtk_idle_add(view_redraw, NULL);
+   QUEUE_DRAW;
 }
 
 gint
@@ -970,7 +976,7 @@ view_configure_handles(gpointer data)
    g_snprintf(buf, sizeof(buf), "%3.0f", backing_h);
    gtk_entry_set_text(GTK_ENTRY(entry), buf);
    
-   gtk_idle_add(view_redraw, NULL);
+   QUEUE_DRAW;
    return 0;
 }
 
@@ -1038,7 +1044,7 @@ view_shrink_logo(gpointer data)
      }
    if (w > 0)
      {
-	gtk_idle_add(view_redraw, NULL);
+	QUEUE_DRAW;
 	gtk_timeout_add(50, view_shrink_logo, NULL);
      }
    else
@@ -1046,7 +1052,7 @@ view_shrink_logo(gpointer data)
 	evas_del_object(view_evas, o_logo);
 	o_logo = NULL;
 	if (!o_handle1) view_create_handles(NULL);
-	gtk_idle_add(view_redraw, NULL);
+	QUEUE_DRAW;
      }
    return FALSE;
 }
@@ -1072,7 +1078,7 @@ view_fade_info(gpointer data)
    if (val < 1.0)
      {
 	val += 0.01;
-	gtk_idle_add(view_redraw, NULL);
+	QUEUE_DRAW;
 	gtk_timeout_add(50, view_fade_info, NULL);
      }
    else
@@ -1085,7 +1091,7 @@ view_fade_info(gpointer data)
 	o_info2 = NULL;
 	o_info3 = NULL;
 	o_info4 = NULL;
-	gtk_idle_add(view_redraw, NULL);
+	QUEUE_DRAW;
      }
    return FALSE;
 }
@@ -1103,12 +1109,12 @@ view_scroll_logo(gpointer data)
 	     x, y + ((((eh - h) / 2) -y) / 10) + 1);
    if (y < ((eh - h) / 2))
      {
-	gtk_idle_add(view_redraw, NULL);
+	QUEUE_DRAW;
 	gtk_timeout_add(50, view_scroll_logo, NULL);
      }
    else
      {
-	gtk_idle_add(view_redraw, NULL);
+	QUEUE_DRAW;
 	gtk_timeout_add(3000, view_shrink_logo, NULL);
      }
    return FALSE;
@@ -1172,12 +1178,12 @@ view_scroll_info(gpointer data)
    if (val < 1.0)
      {
 	val += 0.02;
-	gtk_idle_add(view_redraw, NULL);
+	QUEUE_DRAW;
 	gtk_timeout_add(50, view_scroll_info, NULL);
      }
    else
      {
-	gtk_idle_add(view_redraw, NULL);
+	QUEUE_DRAW;
 	new_fade = 1;
 	gtk_timeout_add(1000, view_fade_info, NULL);
      }
@@ -1234,7 +1240,7 @@ on_file_ok_clicked                     (GtkButton       *button,
 	      w = gtk_object_get_data(GTK_OBJECT(main_win), "file");
 	      gtk_entry_set_text(GTK_ENTRY(w), gtk_file_selection_get_filename(GTK_FILE_SELECTION(top)));
 	   }
-	gtk_idle_add(view_redraw, NULL);
+	QUEUE_DRAW;
 	E_DB_STR_SET(etcher_config, "/paths/bit", 
 		     gtk_file_selection_get_filename(GTK_FILE_SELECTION(top)));
 	e_db_flush();
@@ -1250,7 +1256,7 @@ on_file_ok_clicked                     (GtkButton       *button,
 	evas_callback_add(view_evas, state->object, CALLBACK_MOUSE_DOWN, handle_bit_mouse_down, state);
 	evas_callback_add(view_evas, state->object, CALLBACK_MOUSE_UP, handle_bit_mouse_up, state);
 	evas_callback_add(view_evas, state->object, CALLBACK_MOUSE_MOVE, handle_bit_mouse_move, state);
-	gtk_idle_add(view_redraw, NULL);
+	QUEUE_DRAW;
 	
 	exists = 1;
 	num = 1;
@@ -1500,7 +1506,7 @@ on_delete1_activate                    (GtkMenuItem     *menuitem,
 	selected_state = NULL;
 	update_visible_selection();
 	update_widget_from_selection();
-	gtk_idle_add(view_redraw, NULL);
+	QUEUE_DRAW;
 	
 	w = gtk_object_get_data(GTK_OBJECT(main_win), "images");
 	gtk_clist_freeze(GTK_CLIST(w));
@@ -1557,7 +1563,7 @@ on_view_motion_notify_event            (GtkWidget       *widget,
 	evas_move(view_evas, o_pointer, event->x, event->y);
      }
    evas_event_move(view_evas, event->x, event->y);
-   gtk_idle_add(view_redraw, NULL);
+   QUEUE_DRAW;
    return FALSE;
 }
 
@@ -1588,7 +1594,7 @@ on_view_enter_notify_event             (GtkWidget       *widget,
 {
    if (o_pointer)
       evas_show(view_evas, o_pointer);
-   gtk_idle_add(view_redraw, NULL);
+   QUEUE_DRAW;
    return FALSE;
 }
 
@@ -1600,7 +1606,7 @@ on_view_leave_notify_event             (GtkWidget       *widget,
 {
    if (o_pointer)
       evas_hide(view_evas, o_pointer);
-   gtk_idle_add(view_redraw, NULL);
+   QUEUE_DRAW;
    return FALSE;
 }
 
@@ -1745,7 +1751,7 @@ on_view_expose_event                   (GtkWidget       *widget,
 		    event->area.y,
 		    event->area.width,
 		    event->area.height);
-   gtk_idle_add(view_redraw, NULL);
+   QUEUE_DRAW;
    
    return FALSE;
 }
@@ -1770,7 +1776,7 @@ on_view_configure_event                (GtkWidget       *widget,
 		    0, 0, 
 		    widget->allocation.width,
 		    widget->allocation.height);
-   gtk_idle_add(view_redraw, NULL);
+   QUEUE_DRAW;
    return FALSE;
 }
 
@@ -1780,7 +1786,7 @@ on_zoom_configure_event                (GtkWidget       *widget,
                                         GdkEventConfigure *event,
                                         gpointer         user_data)
 {
-   gtk_idle_add(view_redraw, NULL);
+   QUEUE_DRAW;
    return FALSE;
 }
 
@@ -1790,7 +1796,7 @@ on_zoom_expose_event                   (GtkWidget       *widget,
                                         GdkEventExpose  *event,
                                         gpointer         user_data)
 {
-   gtk_idle_add(view_redraw, NULL);
+   QUEUE_DRAW;
    return FALSE;
 }
 
@@ -1815,7 +1821,7 @@ on_images_select_row                   (GtkCList        *clist,
      {
 	update_visible_selection();
 	update_widget_from_selection();
-	gtk_idle_add(view_redraw, NULL);
+	QUEUE_DRAW;
      }
 }
 
@@ -1831,7 +1837,7 @@ on_states_select_row                   (GtkCList        *clist,
      {
 	current_state = row;
 	ebits_set_state(bits, current_state);
-	gtk_idle_add(view_redraw, NULL);
+	QUEUE_DRAW;
      }
 }
 
@@ -1892,7 +1898,7 @@ on_raise_clicked                       (GtkButton       *button,
 	   evas_raise(selected_state->o->state.evas, selected_state->object);
 	update_widget_from_selection();
 	update_visible_selection();
-	gtk_idle_add(view_redraw, NULL);
+	QUEUE_DRAW;
      }
 }
 
@@ -1911,7 +1917,7 @@ on_lower_clicked                       (GtkButton       *button,
 	   evas_lower(selected_state->o->state.evas, selected_state->object);
 	update_widget_from_selection();
 	update_visible_selection();
-	gtk_idle_add(view_redraw, NULL);
+	QUEUE_DRAW;
      }
 }
 
@@ -1929,7 +1935,7 @@ on_delete_clicked                      (GtkButton       *button,
 	selected_state = NULL;
 	update_visible_selection();
 	update_widget_from_selection();
-	gtk_idle_add(view_redraw, NULL);
+	QUEUE_DRAW;
 	
 	w = gtk_object_get_data(GTK_OBJECT(main_win), "images");
 	gtk_clist_freeze(GTK_CLIST(w));
@@ -1975,7 +1981,7 @@ on_prop_apply_clicked                  (GtkButton       *button,
    update_visible_selection();
    ebits_set_state(bits, current_state);
    update_widget_from_selection();
-   gtk_idle_add(view_redraw, NULL);
+   QUEUE_DRAW;
 }
 
 
@@ -2032,7 +2038,7 @@ on_draft_toggled                       (GtkToggleButton *togglebutton,
 	     evas_hide(view_evas, o_select_line4);
 	  }
      }
-   gtk_idle_add(view_redraw, NULL);
+   QUEUE_DRAW;
 }
 
 
