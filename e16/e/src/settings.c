@@ -934,6 +934,20 @@ SettingsArea(void)
    DialogItemSetFill(di, 1, 0);
    DialogItemSeparatorSetOrientation(di, 0);
 
+   di = DialogAddItem(table, DITEM_CHECKBUTTON);
+   DialogItemSetColSpan(di, 3);
+   DialogItemSetPadding(di, 2, 2, 2, 2);
+   DialogItemSetFill(di, 1, 0);
+   DialogItemCheckButtonSetText(di, "Enable edge flip");
+   DialogItemCheckButtonSetState(di, tmp_edge_flip);
+   DialogItemCheckButtonSetPtr(di, &tmp_edge_flip);
+
+   di = DialogAddItem(table, DITEM_TEXT);
+   DialogItemSetPadding(di, 2, 2, 2, 2);
+   DialogItemSetFill(di, 1, 0);
+   DialogItemSetColSpan(di, 3);
+   DialogItemTextSetText(di, "Resistance at edge of screen:\n");
+   
    di = slider = DialogAddItem(table, DITEM_SLIDER);
    DialogItemSliderSetMinLength(di, 10);
    DialogItemSetColSpan(di, 3);
@@ -944,14 +958,6 @@ SettingsArea(void)
    DialogItemSliderSetJump(di, 10);
    DialogItemSliderSetVal(di, tmp_edge_resist);
    DialogItemSliderSetValPtr(di, &tmp_edge_resist);
-
-   di = DialogAddItem(table, DITEM_CHECKBUTTON);
-   DialogItemSetColSpan(di, 3);
-   DialogItemSetPadding(di, 2, 2, 2, 2);
-   DialogItemSetFill(di, 1, 0);
-   DialogItemCheckButtonSetText(di, "Enable edge flip");
-   DialogItemCheckButtonSetState(di, tmp_edge_flip);
-   DialogItemCheckButtonSetPtr(di, &tmp_edge_flip);
 
    di = DialogAddItem(table, DITEM_SEPARATOR);
    DialogItemSetColSpan(di, 3);
