@@ -199,5 +199,4 @@ scripts/enlightenment.install
 misc/Makefile
 po/Makefile.in
 intl/Makefile
-debian/Makefile
 ])

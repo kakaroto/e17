@@ -8,9 +8,6 @@ Enlightenment has been divided in several packages:
 
   enlightenment (executables, extended docs, scripts, etc.)
   enlightenment-data (most of /usr/share and brushedmetal)
-  enlightenment-theme-brushedmetal (sound samples and config)
-  enlightenment-theme-shinymetal
-  enlightenment-theme-bluesteel
 
 At a minimum, you'll need enlightenment and enlightenment-data
 installed. See /usr/share/doc/enlightenment for additional

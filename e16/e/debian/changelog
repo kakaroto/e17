@@ -1,3 +1,19 @@
+enlightenment (0.16.7.1-0cvs) unstable; urgency=high
+
+  * cvs update
+  * bugfix on debian/rules
+    corrects bug with menus
+    some other corrections
+    cleanup
+
+ -- Julien Portalier <ju-li-un@portalier.com>  Wed, 11 Aug 2004 00:27:51 +0000
+
+enlightenment (0.16.7-1) unstable; urgency=low
+
+  * new upstream release
+
+ -- Julien Portalier <ju-li-un@portalier.com>  Sat, 31 Jul 2004 15:50:34 +0200
+
 enlightenment (0.16.4-3) unstable; urgency=low
 
   * removed xinerama from description

@@ -16,7 +16,7 @@ export DH_OPTIONS
 
 # Other Stuff
 pwd:=$(shell pwd)
-cfg=--prefix=/usr --enable-upgrade=no  --enable-fsstd=yes --mandir=/usr/share/man 
+cfg=--prefix=/usr --enable-xrandr=yes --enable-fsstd=yes --mandir=/usr/share/man
 INSTALL=/usr/bin/install -o root -g root
 
 build: build-stamp
@@ -36,8 +36,8 @@ clean:
 	rm -f build-stamp
 
 	# Add here commands to clean up after the build process.
-	-$(MAKE) clean
-	#-$(MAKE) distclean
+	#-$(MAKE) clean
+	-$(MAKE) distclean
 
 	rm -rf build-stamp
 	dh_clean
@@ -60,30 +60,24 @@ install: build
 	# Move files to sub-packages and remove empty directories
 	dh_movefiles --sourcedir=debian/enlightenment-data
 	cd debian/enlightenment-data/usr; rm -rf bin \
-		share/enlightenment/themes/BlueSteel \
-		share/enlightenment/themes/ShinyMetal \
-		share/enlightenment/themes/Ganymede \
 		debian/enlightenment-data/usr/share/man
 
 	# Populate /usr/share/doc/enlightenment with interesting looking stuff
 	$(INSTALL) -m 644 ABOUT-NLS INSTALL README AUTHORS NEWS \
 		debian/enlightenment/usr/share/doc/enlightenment/
-	$(INSTALL) -m 644 src/ChangeLog \
+	$(INSTALL) -m 644 ChangeLog \
 		debian/enlightenment/usr/share/doc/enlightenment/changelog-src
 	$(INSTALL) -m 755  sample-scripts/*.{pl,sh} \
 		debian/enlightenment/usr/share/doc/enlightenment/examples
 	
 	# Add stub to menus.cfg for Debian menus
-	perl -pw debian/menumangler.pl src/themes/configs/menus.cfg > \
+	perl -pw debian/menumangler.pl config/menus.cfg > \
 		debian/enlightenment-data/usr/share/enlightenment/config/menus.cfg
-
+	
 	# Something is stuffed with EBIN in the install script, so hardcode it
 	perl -pi -lwe 's/^EBIN=.*/EBIN=\/usr\/bin/' \
-		debian/enlightenment/usr/bin/enlightenment.install
+		debian/enlightenment-data/usr/share/enlightenment/scripts/enlightenment.install
 
-	# *sigh*
-	-rm debian/enlightenment-theme-ganymede/usr/share/enlightenment/themes/Ganymede/dialogs/#dialogs.cfg#
-	
 	# man page
 	cp -v debian/e-utils.1 debian/enlightenment/usr/share/man/man1/
 	
@@ -92,8 +86,6 @@ install: build
 # affect _all_ packages. Anything you want to only affect one package
 # should be put in another target, such as the install target.
 binary-common:
-	# Need this version of debhelper for DH_OPTIONS to work.
-	dh_testversion 2.0
 	dh_testdir
 	dh_testroot
 	dh_installdocs
@@ -124,7 +116,7 @@ binary-%: build install
 manpage:
 	pod2man debian/e-utils.pod \
 	--center="Debian GNU/Linux" \
-	--release="woody" > debian/e-utils.1
+	--release="sarge" > debian/e-utils.1
 	
 binary: install binary-indep binary-arch
 .PHONY: build clean binary-indep binary-arch binary install

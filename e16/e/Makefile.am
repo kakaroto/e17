@@ -1,4 +1,4 @@
-SUBDIRS = intl dox eesh epp src config themes man scripts misc po debian
+SUBDIRS = intl dox eesh epp src config themes man scripts misc po
 
 EXTRA_DIST = \
 sample-scripts/bouncingball.pl \

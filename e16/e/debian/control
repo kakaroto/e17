@@ -3,11 +3,11 @@ Section: x11
 Priority: optional
 Maintainer: Laurence J. Lane <ljlane@debian.org>
 Standards-Version: 3.0.1
-Build-Depends: freetype2-dev, libjpeg62-dev, libungif3g-dev | giflib3g-dev, libesd0-dev, zlib1g-dev, libaudiofile-dev, libfnlib-dev, imlib-dev, libpng2-dev, libtiff3g-dev, gettext
+Build-Depends: debhelper(>= 2.0), libfreetype6-dev, libjpeg62-dev, libimlib2-dev, libpng3-dev, gettext, zlib1g-dev
 
 Package: enlightenment
 Architecture: any
-Depends: enlightenment-data (>= 0.16.4-1), ${shlibs:Depends}
+Depends: enlightenment-data (>= 0.16.7.1), ${shlibs:Depends}
 Replaces: enlightenment-nosound, enlightenment-sound, enlightenment-theme-brushedmetal, enlightenment-dox
 Recommends: esound, menu
 Conflicts: dox, enlightenment-dox, enlightenment-docs, menu (<< 2.0), enlightenment-theme (<< 0.16.1-0)
@@ -22,60 +22,15 @@ Description: The Enlightenment Window Manager
  set of graphical images in a variety of formats. Theme makers can
  unleash their artistic talents without bounds. Themes are not limited
  to just different colors and background images on the same old desktop.  
- .
- Enlightenment features the BrushedMetal theme, designed by gimp legend,
- tigert. It is predominately grey with the subtle texture of - you
- guessed it - brushed metal.  The menus in particular look superb. The
- sound files for BrushedMetal are in a separate package,
- enlightenment-theme-brushedmetal.
 
 Package: enlightenment-data
 Architecture: all
 Suggests: enlightenment
 Pre-depends: dpkg (>= 1.4.1.17)
 Recommends: enlightenment
-Conflicts: enlightenment (<< 0.16.3-3)
-Replaces: enlightenment (<< 0.16.3-3)
+Conflicts: enlightenment (<< 0.16.7.1-0)
+Replaces: enlightenment (<< 0.16.7.1-0)
 Description: Enlightenment Window Manager Run Time Data Files
  These are the architecture independent runtime support files for the
- Enlightenment Window Manger package.
-
-Package: enlightenment-theme-brushedmetal
-Architecture: all
-Provides: enlightenment-theme
-Suggests: enlightenment
-Pre-depends: dpkg (>= 1.4.1.17)
-Description: Audio files for the BrushedMEtal-Tigert E Theme
- Enlightenment features the BrushedMetal theme as a default. This is a
- package contains the audio samples and sound configs that will enhance
- your BrushedMetal-Tigert theme experience.
-
-Package: enlightenment-theme-shinymetal
-Architecture: all
-Provides: enlightenment-theme
-Suggests: enlightenment
-Description: Raster's ShinyMetal Theme for E
- This is the theme formerly known as 'E15 default'.  It is fairly
- simple, by raster's standards, and attractive.  The motif used is shiny
- metal borders, with translucent dark orange highlights.  It includes
- some nice background pictures.
-
-Package: enlightenment-theme-bluesteel
-Architecture: all
-Provides: enlightenment-theme
-Suggests: enlightenment
-Description: Hunchback's BlueSteel theme for E
- This theme really shows off what you can do with enlightenment.  It's
- by Daniel Erat, and shows off anti-aliased text, extensively shaped
- windows, and is compliant with the 0.16.0 theme spec.
-
-Package: enlightenment-theme-ganymede
-Architecture: all
-Recommends: enlightenment
-Provides: enlightenment-theme
-Description: cK's Ganymede theme for E
- This is cK's Ganymede theme. It contains pretty much everything that E
- can currently do, including configurable pulldown menses, lots of
- borders, themes for Eterm and gkrellm, and documentation. The dominant
- colors are bright copper and dark blue. Fully up to date with the
- E-0.16.0 specs.  The author can be reached at chrisk@engr.uconn.edu.
+ Enlightenment Window Manager package.
+ It also contains the default Winter theme.
