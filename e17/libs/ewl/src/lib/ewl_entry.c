@@ -1763,20 +1763,16 @@ ewl_entry_op_font_apply(Ewl_Entry *e, Ewl_Entry_Op *op)
 
 	DENTER_FUNCTION(DLEVEL_STABLE);
 
+	of[0] = '\0';
+	size = 1;
 	format = evas_object_textblock_format_current_get(e->textobj);
 	if (format) {
 		sscanf(format, "font=%s", of);
 		sscanf(format, "size=%d", &size);
 	}
-	else {
-		of[0] = '\0';
-		size = 1;
-	}
 
-  if (of[0]) {
-    snprintf(nformat, PATH_MAX, "font=%s size=%d", opf->font, opf->size);
-	  evas_object_textblock_format_insert(e->textobj, nformat);
-  }
+	snprintf(nformat, PATH_MAX, "font=%s size=%d", opf->font, opf->size);
+	evas_object_textblock_format_insert(e->textobj, nformat);
 
 	IF_FREE(format);
 
