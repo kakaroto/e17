@@ -1,7 +1,7 @@
 
 MAINTAINERCLEANFILES = Makefile.in
 
-ICON_FILES   = *png
+ICON_FILES   = checks.png
 EXTRA_DIST   = $(ICON_FILES)
 pkgdata_DATA = $(ICON_FILES)
 
