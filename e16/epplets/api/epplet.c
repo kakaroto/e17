@@ -475,14 +475,12 @@ Epplet_internal_create_window(int w, int h, char *title, char vertical,
    return ret->win;
 }
 
-Window
-Epplet_create_window(int w, int h, char *title, char vertical)
+Window Epplet_create_window(int w, int h, char *title, char vertical)
 {
    return Epplet_internal_create_window(w, h, title, vertical, 1);
 }
 
-Window
-Epplet_create_window_borderless(int w, int h, char *title, char vertical)
+Window Epplet_create_window_borderless(int w, int h, char *title, char vertical)
 {
    return Epplet_internal_create_window(w, h, title, vertical, 0);
 }
@@ -645,8 +643,7 @@ Epplet_window_push_context(Window newwin)
    context_win = win;
 }
 
-Window
-Epplet_window_pop_context(void)
+Window Epplet_window_pop_context(void)
 {
    Epplet_window       ret;
 
@@ -809,8 +806,7 @@ Epplet_unremember(void)
    ESYNC;
 }
 
-Window
-Epplet_get_main_window(void)
+Window Epplet_get_main_window(void)
 {
    return mainwin->win;
 }
@@ -1955,20 +1951,13 @@ Epplet_textbox_insert(Epplet_gadget eg, char *new_contents)
 
    Epplet_textbox_textsize(g, &w, &h, g->contents);
 
-   g->x_offset = 0;
-
-   if (w > g->w)
-     {
-	g->x_offset -= w - g->w - CRSR_WDTH;
-	/*
-	 * Epplet_textbox_textsize(g, &w, &h, (g->contents + g->text_offset));
-	 * g->text_offset++;
-	 * if (g->text_offset >= strlen(g->contents))
-	 * break;
-	 */
-     }
-
    g->cursor_pos = g->contents ? strlen(g->contents) : 0;
+
+   g->x_offset = 0;
+   if (w > g->w)
+      g->x_offset -= w - g->w + 2 + CRSR_WDTH;
+
+   g->to_cursor = w;
 
    Epplet_draw_textbox(eg);
 }
@@ -2096,7 +2085,7 @@ Epplet_draw_textbox(Epplet_gadget eg)
 	if (h == 0)
 	   Epplet_textbox_textsize(eg, &x, &h, "X");
 
-	x = 2 + g->x_offset;
+	x = g->x_offset + 2;
 	y = (g->h - h) / 2;
 
 	switch (g->size)
@@ -2129,23 +2118,6 @@ Epplet_draw_textbox(Epplet_gadget eg)
    gc_values.function = GXinvert;
    gc = XCreateGC(disp, g->win, gc_valuemask, &gc_values);
    XSetForeground(disp, gc, Epplet_get_color(0, 0, 0));
-
-   /*
-    * if ((to_cursor + 5) >= g->w)
-    * {
-    * if ((last_gadget == g) || (g->hilited))
-    * XFillRectangle(disp, g->win, gc, (g->w - 5) - 2, 2, 5, g->h - 4);
-    * else
-    * XDrawRectangle(disp, g->win, gc, (g->w - 5) - 2, 2, 5, g->h - 4);
-    * }
-    * else
-    * {
-    * if ((last_gadget == g) || (g->hilited))
-    * XFillRectangle(disp, g->win, gc, to_cursor + 2, 2, 5, g->h - 4);
-    * else
-    * XDrawRectangle(disp, g->win, gc, to_cursor + 2, 2, 5, g->h - 4);
-    * }
-    */
 
    if ((last_gadget == g) || (g->hilited))
       XFillRectangle(disp, g->win, gc, g->to_cursor + g->x_offset + 2, 2,
@@ -2231,10 +2203,10 @@ Epplet_textbox_handle_keyevent(XEvent * ev, Epplet_gadget gadget)
 		       }
 
 		     if (((int)g->to_cursor + g->x_offset) <= 2)
-			  g->x_offset += char_width;
+			g->x_offset += char_width;
 
-		     if(g->cursor_pos == 0)
-			     g->x_offset = 0;
+		     if (g->cursor_pos == 0)
+			g->x_offset = 0;
 		  }
 	     }
 	   return;
@@ -2269,9 +2241,11 @@ Epplet_textbox_handle_keyevent(XEvent * ev, Epplet_gadget gadget)
 		else
 		   Epplet_textbox_textsize(g, &char_width, &h, s);
 
-		if (((int)g->to_cursor + g->x_offset) >=
-		    (g->w - (3 + CRSR_WDTH)))
+		if (((int)g->to_cursor + g->x_offset + CRSR_WDTH) >= g->w)
+		{
+		   printf("bam -- %d\n", char_width);
 		   g->x_offset -= char_width;
+		}
 	     }
 	   return;
 	   break;
@@ -2297,25 +2271,27 @@ Epplet_textbox_handle_keyevent(XEvent * ev, Epplet_gadget gadget)
      case XK_Home:
      case XK_KP_Home:
 	{
-		if(g->contents)
-			g->cursor_pos = g->to_cursor = g->x_offset = 0;
-		break;
+	   if (g->contents)
+	      g->cursor_pos = g->to_cursor = g->x_offset = 0;
+	   break;
 	}
      case XK_End:
      case XK_KP_End:
 	{
-		int w, h;
+	   int                 w, h;
 
-		if(g->contents)
-			g->cursor_pos = strlen(g->contents);
+	   if (g->contents && (g->cursor_pos != strlen(g->contents)))
+	     {
+		g->cursor_pos = strlen(g->contents);
 
 		Epplet_textbox_textsize(g, &w, &h, g->contents);
 
 		g->x_offset = 0;
-		if(w > g->w)
-			g->x_offset -= w - g->w;
+		if (w > g->w)
+		   g->x_offset -= w - g->w + 2 + CRSR_WDTH;
 
 		g->to_cursor = w;
+	     }
 	}
      default:
 	break;
@@ -2410,10 +2386,14 @@ Epplet_textbox_handle_keyevent(XEvent * ev, Epplet_gadget gadget)
 		Epplet_textbox_textsize(g, &char_width, &h,
 					&g->contents[strlen(g->contents) - 1]);
 
-	     g->x_offset += char_width;
+	     if (((int)g->to_cursor + g->x_offset) <= 2)
+		g->x_offset += char_width;
+
+	     if (g->cursor_pos == 0)
+		g->x_offset = 0;
 	  }
      }
-   else if ((g->to_cursor + g->x_offset) >= (g->w - CRSR_WDTH))
+   else if (((int)g->to_cursor + g->x_offset) >= (g->w - CRSR_WDTH - 2))
       g->x_offset -= char_width;
 }
 
@@ -2760,8 +2740,7 @@ typedef struct
 }
 GadDrawingArea;
 
-Epplet_gadget
-Epplet_create_drawingarea(int x, int y, int w, int h)
+Epplet_gadget Epplet_create_drawingarea(int x, int y, int w, int h)
 {
    GadDrawingArea     *g;
    XSetWindowAttributes attr;
@@ -3013,8 +2992,7 @@ typedef struct
 }
 GadHBar;
 
-Epplet_gadget
-Epplet_create_hbar(int x, int y, int w, int h, char dir, int *val)
+Epplet_gadget Epplet_create_hbar(int x, int y, int w, int h, char dir, int *val)
 {
    GadHBar            *g;
    XSetWindowAttributes attr;
@@ -3083,8 +3061,7 @@ typedef struct
 }
 GadVBar;
 
-Epplet_gadget
-Epplet_create_vbar(int x, int y, int w, int h, char dir, int *val)
+Epplet_gadget Epplet_create_vbar(int x, int y, int w, int h, char dir, int *val)
 {
    GadHBar            *g;
    XSetWindowAttributes attr;
@@ -3150,8 +3127,7 @@ typedef struct
 }
 GadImage;
 
-Epplet_gadget
-Epplet_create_image(int x, int y, int w, int h, char *image)
+Epplet_gadget Epplet_create_image(int x, int y, int w, int h, char *image)
 {
    GadImage           *g;
 
@@ -3220,8 +3196,7 @@ typedef struct
 }
 GadLabel;
 
-Epplet_gadget
-Epplet_create_label(int x, int y, char *label, char size)
+Epplet_gadget Epplet_create_label(int x, int y, char *label, char size)
 {
    GadLabel           *g;
 
@@ -3381,8 +3356,7 @@ struct _gadpopupbutton
    Pixmap              pmap, mask;
 };
 
-Epplet_gadget
-Epplet_create_popup(void)
+Epplet_gadget Epplet_create_popup(void)
 {
    GadPopup           *g;
    XSetWindowAttributes attr;
@@ -3843,8 +3817,7 @@ Epplet_change_label(Epplet_gadget gadget, char *label)
       Epplet_draw_label(gadget, 0);
 }
 
-Window
-Epplet_get_drawingarea_window(Epplet_gadget gadget)
+Window Epplet_get_drawingarea_window(Epplet_gadget gadget)
 {
    GadDrawingArea     *g;
 
@@ -4910,8 +4883,7 @@ Epplet_draw_outline(Window win, int x, int y, int w, int h, int r, int g, int b)
    XFreeGC(disp, gc);
 }
 
-RGB_buf
-Epplet_make_rgb_buf(int w, int h)
+RGB_buf Epplet_make_rgb_buf(int w, int h)
 {
    RGB_buf             buf;
    unsigned char      *data;
