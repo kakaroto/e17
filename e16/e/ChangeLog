@@ -3350,3 +3350,20 @@ Remove obsolete memory debugging feature.
 GSOD: Don't show unused buttons, don't try restarting/exiting E after forking.
 Don't show icons for iconified window transients in iconbox after restart.
 Initial hint setup tweaks.
+
+-------------------------------------------------------------------------------
+
+Sat Mar 26 13:09:50 CET 2005
+(Kim)
+
+--- 0.16.8 0.07 ---
+Update theme.
+Remove non-functional "external imageclass" stuff.
+Copyright updates. More enlightenment->e16.
+Simplify building non-final releases.
+Fix pointer focus on virtual roots.
+Fix type (may have caused trouble with focus list settings).
+Avoid confusion with edb. Fix null string item problem.
+Fix some remembered settings bugs.
+Fix various opacity setting bugs.
+Fix keygrabs handling (e.g. focus list staying up).
