@@ -7,6 +7,7 @@
 #include <sys/types.h>
 #include <sys/wait.h>
 #include <X11/Xlib.h>
+#include <limits.h>
 
 /* defines */
 #define NOT_RUNNING 0
@@ -18,10 +19,10 @@ typedef struct _Spawner_Display Spawner_Display;
 
 struct _Spawner_Display
 {
-   Display *display;
-   char *name;
-   char *xprog;
-   int pid;
-   int attempts;
-   int status;
+  Display *display;
+  char *name;
+  char *xprog;
+  int pid;
+  int attempts;
+  int status;
 };
