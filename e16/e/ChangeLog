@@ -2826,3 +2826,13 @@ Don't restrict window placement requests.
 Add Korean config/theme files. Patch from Michael Kim <lavnrose@e.sarang.net>.
 Correct Danish translations file name.
 Some more preparations for UTF8.
+
+-------------------------------------------------------------------------------
+
+Sun May 23 18:19:25 CEST 2004
+(Kim)
+
+Clean up setting internal window name/class hints.
+Fix segv when there are no client windows.
+Added "verbose" command line option.
+Localisation/UTF8 fixed.

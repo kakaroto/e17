@@ -23,16 +23,15 @@ Known bugs
 TODO for E 16.7
 ~~~~~~~~~~~~~~~
 
-- Language/font handling is broken when using imlib2 to draw text.
-
-- Various segv's.
-  Please provide directions to reproduce.
-
 ? eesh/libedit ?
 
 
 Fixed in CVS
 ~~~~~~~~~~~~
+
+- Language/font handling is broken when using imlib2 to draw text.
+
+- Segv on mouse click when there are no client windows.
 
 - IPC "save configuration" command is broken.
   This causes changes made with e16keyedit to be lost after restart.
