@@ -169,6 +169,7 @@ void etox_context_set_wrap_marker_place(Etox_Context *context,
 void etox_append_text(Evas_Object * et, char *text);
 void etox_prepend_text(Evas_Object * et, char *text);
 void etox_insert_text(Evas_Object * et, char *text, int index);
+void etox_delete_text(Evas_Object * et, unsigned int index, unsigned int len);
 void etox_set_text(Evas_Object * et, char *text);
 char *etox_get_text(Evas_Object * et);
 void etox_clear(Evas_Object * et);

@@ -457,6 +457,88 @@ void etox_insert_text(Evas_Object * obj, char *text, int index)
 }
 
 /**
+ * etox_delete_text - delete text from an etox at specified index
+ * @et: the etox to delete the text from
+ * @index: the start position to delete from
+ * @len: the number of chars to delete
+ *
+ * Returns no value. Removes @len characters from text starting at @index
+ * and updates the layout and display of the etox.
+ */
+void etox_delete_text(Evas_Object * obj, unsigned int index, unsigned int len)
+{
+	Etox *et;
+	Etox_Line *start, *idx;
+	Evas_Object *bit;
+	int orig_index = index;
+
+	CHECK_PARAM_POINTER("obj", obj);
+
+	et = evas_object_smart_data_get(obj);
+
+	start = etox_index_to_line(et, &index);
+	if (!start) return;
+
+	bit = etox_line_index_to_bit(start, &index);
+	etox_line_split(start, bit, index);
+
+	index ++;
+	idx = etox_index_to_line(et, &index);
+	if (!idx) return;
+
+	bit = etox_line_index_to_bit(idx, &index);
+	if (!bit) {
+		evas_list_remove(et->lines, idx);
+		etox_line_free(idx);
+		return;
+	}
+
+	/*
+	 * these +1's are here cuz the etox length seems to be +1 for some
+	 * reason so this just accomidates that
+	 */
+	if (idx->length == len + 1) {
+		etox_line_remove(idx, bit);
+		evas_list_remove(et->lines, idx);
+		etox_line_free(idx);
+
+	} else if (idx->length > (len + 1)) {
+		Etox_Line *end = NULL;
+		Evas_Object *b2; 
+
+		index = len;
+		b2 = etox_line_index_to_bit(idx, &index);
+		etox_line_split(idx, b2, index);
+
+		index = orig_index + len + 2;
+		end = etox_index_to_line(et, &index);
+
+		etox_line_merge_append(start, end);
+
+		et->length -= len;
+
+		evas_list_remove(et->lines, idx);
+		evas_list_remove(et->lines, end);
+
+		etox_line_free(idx);
+		etox_line_free(end);
+
+	} else {
+		etox_line_remove(idx, bit);
+		evas_list_remove(et->lines, idx);
+		etox_line_free(idx);
+
+		/* FIXME */
+		printf("WARNING: etox_delete_text, this isn't finished\n");
+	}
+	etox_line_minimize(start);
+
+	etox_layout(et);
+	if (et->lines && evas_object_visible_get(obj))
+		evas_object_show(et->clip);
+}
+
+/**
  * etox_set_text - change the text in the etox
  * @et: the etox to change text
  * @text: the new text to display in @et

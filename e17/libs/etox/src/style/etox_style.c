@@ -660,12 +660,8 @@ int etox_style_merge(Evas_Object *obj1, Evas_Object *obj2)
 	if (!BIT_MERGEABLE(es1, es2))
 		return FALSE;
 
-	/*
-	 * These return a pointer to the actual text in the evas object, not a
-	 * copy of it. So don't free them.
-	 */
-	text1 = (char *)evas_object_text_text_get(es1->bit);
-	text2 = (char *)evas_object_text_text_get(es2->bit);
+	text1 = etox_style_get_text(obj1);
+	text2 = etox_style_get_text(obj2);
 
 	/*
 	 * When the evas changes text it free's the old text, so malloc a new
@@ -678,9 +674,11 @@ int etox_style_merge(Evas_Object *obj1, Evas_Object *obj2)
 
 	strcpy(new_text, text1);
 	strcat(new_text, text2);
+	FREE(text1);
+	FREE(text2);
 
 	etox_style_set_text(obj1, new_text);
-
+    
 	FREE(new_text);
 
 	evas_object_del(obj2);
@@ -736,6 +734,7 @@ Evas_Object *etox_style_split(Evas_Object *obj, unsigned int index)
 	 */
 	temp = content[index];
 	content[index] = '\0';
+
 	etox_style_set_text(obj, content);
 
 	/*

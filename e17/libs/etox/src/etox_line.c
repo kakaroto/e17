@@ -605,7 +605,7 @@ etox_line_print_bits(Etox_Line *line)
 	Evas_List *l;
 
 	for (l = line->bits; l; l = l->next) {
-		printf("\tBit %d: %s\n", i, etox_style_get_text(l->data));
+		printf("\tBit %d: (%s)\n", i, etox_style_get_text(l->data));
 		i++;
 	}
 }
