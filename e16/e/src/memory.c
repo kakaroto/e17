@@ -298,7 +298,7 @@ _("Quit Enlightenment"));
 		     _("Restart Enlightenment"), _("Quit Enlightenment"));
 	Alert(_("WARNING!!!!!!\n"
 		"\n"
-		"Re-allocation for %i bytes (%3.0f Kb or %3.1f Mb) did not succeed.\n"
+		"Re-allocation for %i bytes (%3.0f kB or %3.1f MB) did not succeed.\n"
 		"\n"
 		"Either this is a bug where ridiculous amounts of memory\n"
 		"are being allocated, or your system has run out of both\n"
