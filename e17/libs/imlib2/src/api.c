@@ -1050,7 +1050,10 @@ imlib_image_set_border(Imlib_Border * border)
    im->border.right = border->right;
    im->border.top = border->top;
    im->border.bottom = border->bottom;
+
+#ifndef X_DISPLAY_MISSING
    __imlib_DirtyPixmapsForImage(im);
+#endif
 }
 
 void
