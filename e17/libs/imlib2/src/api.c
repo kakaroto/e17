@@ -1654,8 +1654,16 @@ imlib_text_get_index_and_location(const char *text, int x, int y,
    switch(ctxt_direction)
      {
      case IMLIB_TEXT_TO_RIGHT:
-	return __imlib_char_pos(fn, text, x, y, char_x_return, char_y_return, 
-				char_width_return, char_height_return);
+	cp = __imlib_char_pos(fn, text, x, y, &cx, &cy, &cw, &ch);
+	if (char_x_return)
+	   *char_x_return = cx;
+	if (char_y_return)
+	   *char_y_return = cy;
+	if (char_width_return)
+	   *char_width_return = cw;
+	if (char_height_return)
+	   *char_height_return = ch;
+	return cp;
 	break;
      case IMLIB_TEXT_TO_LEFT:
 	__imlib_calc_size(fn, &w, &h, text);
@@ -1706,6 +1714,80 @@ imlib_text_get_index_and_location(const char *text, int x, int y,
 	break;
      default:
 	return -1;
+	break;
+     }
+   return -1;
+}
+
+void
+imlib_text_get_location_at_index(const char *text, int index,
+				 int *char_x_return, int *char_y_return,
+				 int *char_width_return,
+				 int *char_height_return)
+{
+   ImlibFont *fn;
+   int cx, cy, cw, ch, w, h;
+   
+   CHECK_PARAM_POINTER("imlib_text_get_index_and_location", "font", ctxt_font);
+   CHECK_PARAM_POINTER("imlib_text_get_index_and_location", "text", text);
+   fn = (ImlibFont *)ctxt_font;
+   switch(ctxt_direction)
+     {
+     case IMLIB_TEXT_TO_RIGHT:
+	__imlib_char_geom(fn, text, index, &cx, &cy, &cw, &ch);
+	if (char_x_return)
+	   *char_x_return = cx;
+	if (char_y_return)
+	   *char_y_return = cy;
+	if (char_width_return)
+	   *char_width_return = cw;
+	if (char_height_return)
+	   *char_height_return = ch;
+	return;
+	break;
+     case IMLIB_TEXT_TO_LEFT:
+	__imlib_calc_size(fn, &w, &h, text);
+	__imlib_char_geom(fn, text, index, &cx, &cy, &cw, &ch);
+	cx = 1 + w - cx - cw;
+	if (char_x_return)
+	   *char_x_return = cx;
+	if (char_y_return)
+	   *char_y_return = cy;
+	if (char_width_return)
+	   *char_width_return = cw;
+	if (char_height_return)
+	   *char_height_return = ch;
+	return;
+	break;
+     case IMLIB_TEXT_TO_DOWN:
+	__imlib_calc_size(fn, &w, &h, text);
+	__imlib_char_geom(fn, text, index, &cx, &cy, &cw, &ch);
+	if (char_x_return)
+	   *char_x_return = cy;
+	if (char_y_return)
+	   *char_y_return = cx;
+	if (char_width_return)
+	   *char_width_return = ch;
+	if (char_height_return)
+	   *char_height_return = cw;
+	return;
+	break;
+     case IMLIB_TEXT_TO_UP:
+	__imlib_calc_size(fn, &w, &h, text);
+	__imlib_char_geom(fn, text, index, &cx, &cy, &cw, &ch);
+	cy = 1 + h - cy - ch;
+	if (char_x_return)
+	   *char_x_return = cy;
+	if (char_y_return)
+	   *char_y_return = cx;
+	if (char_width_return)
+	   *char_width_return = ch;
+	if (char_height_return)
+	   *char_height_return = cw;
+	return;
+	break;
+     default:
+	return;
 	break;
      }
    return -1;

@@ -754,6 +754,45 @@ __imlib_char_pos(ImlibFont *fn, const char *text, int x, int y,
    return -1;
 }
 
+void
+__imlib_char_geom(ImlibFont *fn, const char *text, int num,
+		  int *cx, int *cy, int *cw, int *ch)
+{
+   int                 i, px, ppx;
+   TT_Glyph_Metrics    gmetrics;
+
+   if (cy)
+      *cy = 0;
+   if (ch)
+      *ch = fn->ascent + fn->descent;
+   ppx = 0;
+   px = 0;
+   for (i = 0; text[i]; i++)
+     {
+	unsigned char       j;
+	
+	j = text[i];
+	if (!TT_VALID(fn->glyphs[j]))
+	   continue;
+	TT_Get_Glyph_Metrics(fn->glyphs[j], &gmetrics);
+	ppx = px;
+	if (i == 0)
+	   px += ((-gmetrics.bearingX) / 64);
+	if (text[i + 1] == 0)
+	   px += (gmetrics.bbox.xMax / 64);
+	else
+	   px += gmetrics.advance / 64;
+	if (i == num)
+	  {
+	     if (cx)
+		*cx = ppx;
+	     if (cw)
+		*cw = px - ppx;
+	     return;
+	  }
+     }
+}
+
 char **
 __imlib_list_fonts(int *num_ret)
 {

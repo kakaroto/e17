@@ -40,6 +40,8 @@ void           __imlib_render_str(ImlibImage *im, ImlibFont *fn, int drx,
 				  int *nextx, int *nexty, ImlibOp op);
 int           __imlib_char_pos(ImlibFont *fn, const char *text, int x, int y,
 			       int *cx, int *cy, int *cw, int *ch);
+void          __imlib_char_geom(ImlibFont *fn, const char *text, int num,
+				int *cx, int *cy, int *cw, int *ch);
 char        **__imlib_list_fonts(int *num_ret);
 void          __imlib_free_font_list(char **list, int num);
 int           __imlib_get_cached_font_size(void);

@@ -206,6 +206,7 @@ void       imlib_add_path_to_font_path(const char *path);
 void       imlib_remove_path_from_font_path(const char *path);
 char     **imlib_list_font_path(int *number_return);
 int        imlib_text_get_index_and_location(const char *text, int x, int y, int *char_x_return, int *char_y_return, int *char_width_return, int *char_height_return);
+void       imlib_text_get_location_at_index(const char *text, int index, int *char_x_return, int *char_y_return, int *char_width_return, int *char_height_return);
 char     **imlib_list_fonts(int *number_return);
 void       imlib_free_font_list(char **font_list, int number);
 int        imlib_get_font_cache_size(void);
