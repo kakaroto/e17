@@ -22,10 +22,10 @@
 #define NEXT_PIC()      ((void) 0)
 #define INC_PIC()       do {idx++; if (idx == image_cnt) idx = 0;} while (0)
 
-Epplet_gadget close_button, play_button, pause_button, prev_button, next_button, zoom_button, picture;
+Epplet_gadget close_button, play_button, pause_button, prev_button, next_button, zoom_button, bg_button, picture;
 unsigned long idx = 0, image_cnt = 0;
 double delay = 5.0;
-char **filenames = NULL, *path, *zoom_cmd;
+char **filenames = NULL, *path, *zoom_cmd, *bg_cmd;
 unsigned char paused = 0;
 Window zoom_win = None;
 
@@ -169,6 +169,17 @@ zoom_cb(void *data) {
 }
 
 static void
+bg_cb(void *data) {
+
+  char buff[1024];
+
+  Esnprintf(buff, sizeof(buff), bg_cmd, filenames[CUR_PIC()]);
+  Epplet_spawn_command(buff);
+  return;
+  data = NULL;
+}
+
+static void
 play_cb(void *data) {
 
   int op = (int) data;
@@ -208,6 +219,7 @@ static void
 in_cb(void *data, Window w) {
 
   Epplet_gadget_show(close_button);
+  Epplet_gadget_show(bg_button);
   Epplet_gadget_show(zoom_button);
   Epplet_gadget_show(prev_button);
   Epplet_gadget_show(next_button);
@@ -226,6 +238,7 @@ out_cb(void *data, Window w) {
 
   Epplet_gadget_hide(close_button);
   Epplet_gadget_hide(zoom_button);
+  Epplet_gadget_hide(bg_button);
   Epplet_gadget_hide(prev_button);
   Epplet_gadget_hide(next_button);
   Epplet_gadget_hide(play_button);
@@ -253,6 +266,7 @@ parse_config(void) {
     Epplet_add_config("delay", "5.0");
   }
   zoom_cmd = Epplet_query_config_def("zoom_prog", "ee %s");
+  bg_cmd = Epplet_query_config_def("bg_prog", "ee -r %s");
 }
 
 int
@@ -278,6 +292,7 @@ main(int argc, char **argv) {
   chdir(path);
   
   close_button = Epplet_create_button(NULL, NULL, 3, 3, 0, 0, "CLOSE", 0, NULL, close_cb, NULL);
+ bg_button = Epplet_create_button(NULL, NULL, 18, 3, 0, 0, "ARROW_UP", 0, NULL, bg_cb, NULL);
   zoom_button = Epplet_create_button(NULL, NULL, 33, 3, 0, 0, "EJECT", 0, NULL, zoom_cb, NULL);
   prev_button = Epplet_create_button(NULL, NULL, 3, 33, 0, 0, "PREVIOUS", 0, NULL, play_cb, (void *) (-1));
   play_button = Epplet_create_button(NULL, NULL, 18, 33, 0, 0, "PLAY", 0, NULL, play_cb, (void *) (1));
