@@ -46,6 +46,8 @@ rm -rf $RPM_BUILD_ROOT
 %defattr(-,root,root)
 %attr(755,root,root) %{prefix}/bin/elation*
 %attr(755,root,root) %{prefix}/lib/elation/*
+%attr(755,root,root) %{prefix}/share/elation/data/theme.edc
+%attr(755,root,root) %{prefix}/share/elation/data/theme.eet
 
 %changelog
 * Sat Jun 23 2001 The Rasterman <raster@rasterman.com>
