@@ -1,8 +1,8 @@
-enlightenment (0.16.0-1.1) unstable; urgency=low
+enlightenment (0.16.0-1) unstable; urgency=low
 
-  * New upstream release coming RSN 
+  * New upstream release
 
- -- Laurence J. Lane <ljlane@debian.org>  Sat,  2 Oct 1999 18:21:01 -0400
+ -- Laurence J. Lane <ljlane@debian.org>  Sun, 10 Oct 1999 07:25:50 -0400
 
 Local variables:
 mode: debian-changelog
