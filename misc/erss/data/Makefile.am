@@ -2,16 +2,16 @@ SUBDIRS = fonts config
 
 EDCS =  default.edc white.edc darkgray.edc
 
-EETS = $(EDCS:%.edc=%.eet)
+EDJS = $(EDCS:%.edc=%.edj)
 
 EXTRA_DIST = $(EDCS)
-CLEANFILES = $(EETS)
+CLEANFILES = $(EDJS)
 
 themedir = $(pkgdatadir)
-theme_DATA = $(EETS)
+theme_DATA = $(EDJS)
 
-all: $(EETS)
+all: $(EDJS)
 
-SUFFIXES = .edc .eet
-.edc.eet:
+SUFFIXES = .edc .edj
+.edc.edj:
 	edje_cc -v $< $@

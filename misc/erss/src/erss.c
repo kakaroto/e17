@@ -185,7 +185,7 @@ int main (int argc, char * const argv[]) {
 	
 				printf ("  -c CONFIG \t specify a config file (required)\n");
 				printf ("  -l        \t list avaliable config files\n\n");
-				printf ("  -t THEME  \t specify an edje theme file (.eet)\n");
+				printf ("  -t THEME  \t specify an edje theme file (.edj)\n");
 				printf ("            \t else the default will be used.\n\n");
 				printf ("  -h        \t display this help and exit\n");
 				printf ("  -v        \t display %s version\n\n", PACKAGE);
@@ -203,7 +203,7 @@ int main (int argc, char * const argv[]) {
 
 	if (!got_theme_file) {
 		if (!got_rc_file) 
-			theme = strdup (PACKAGE_DATA_DIR"/default.eet");
+			theme = strdup (PACKAGE_DATA_DIR"/default.edj");
 		else
 			theme = strdup (rc->theme);
 	}

@@ -72,7 +72,7 @@ int erss_parse_rc_file ()
 	 * Set sane defaults for unspecified config options.
 	 */
 	if (!rc->theme)
-		rc->theme = strdup(PACKAGE_DATA_DIR "/default.eet");
+		rc->theme = strdup(PACKAGE_DATA_DIR "/default.edj");
 	if (!rc->config)
 		rc->config = strdup(PACKAGE_DATA_DIR "/config/slashdot.cfg");
 
