@@ -1,3 +1,12 @@
+Fri Feb 18 23:51:14 2000  Tom Gilbert  <gilbertt@tomgilbert.freeserve.co.uk>
+
+	* Well, if I wasn't so dumb, I'd have realised that my last
+	comment only holds true for depths > 4000 or so. I don't have that
+	here. So, s/massive/fscking enormous/g.
+	* Fixed the *actual* problem, which was, of course, that I forgot
+	to close my damn dirents.
+	* Pull out the cl00bats, for I have goofed.
+
 Fri Feb 18 23:33:54 2000  Tom Gilbert  <gilbertt@tomgilbert.freeserve.co.uk>
 
 	* Okay, okay. I suck. There is a mild problem I have to fix when

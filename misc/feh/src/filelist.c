@@ -234,6 +234,7 @@ add_file_to_filelist_recursively (char *path, unsigned char enough)
 		}
 	      de = readdir (dir);
 	    }
+	  closedir(dir);
 	}
       else
 	{
