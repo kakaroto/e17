@@ -1,4 +1,4 @@
-<!-- Estyle & Etox Recipes -->
+<!-- Etox Recipes -->
 <!-- 
 ###################################################
 This example section is commented out:
@@ -38,7 +38,7 @@ symbols with the proper &lt; and &gt; even in your program listings.
 <!--	\/ \/ \/ CONTENT \/ \/ \/	-->
 
 <chapter>
-<title>Etox &amp; Estyle</title>
+<title>Etox</title>
 
 <para>
 Etox provides a power library for manipulation and layout of text in your

@@ -8,8 +8,7 @@
 <!ENTITY evas_recipes SYSTEM "xml/evas_recipes.xml">
 <!ENTITY ecore_recipes SYSTEM "xml/ecore_recipes.xml">
 <!ENTITY esmart_recipes SYSTEM "xml/esmart_recipes.xml">
-<!ENTITY estyle_etox_recipes SYSTEM "xml/estyle_etox_recipes.xml">
-<!ENTITY ewd_recipes SYSTEM "xml/ewd_recipes.xml">
+<!ENTITY etox_recipes SYSTEM "xml/etox_recipes.xml">
 <!ENTITY edje_edc_recipes SYSTEM "xml/edje_edc_recipes.xml">
 <!ENTITY edje_recipes SYSTEM "xml/edje_recipes.xml">
 <!ENTITY ewl_recipes SYSTEM "xml/ewl_recipes.xml">
@@ -35,8 +34,7 @@
 
 &esmart_recipes;
 
-&estyle_etox_recipes;
-&ewd_recipes;
+&etox_recipes;
 
 &edje_edc_recipes;
 &edje_recipes;
