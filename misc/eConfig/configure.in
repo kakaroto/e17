@@ -1,0 +1,94 @@
+# Process this file with autoconf to produce a configure script.
+AC_INIT(eConfig.spec)
+
+# Save this value here, since automake will set cflags later
+cflags_set=${CFLAGS+set}
+
+AM_CONFIG_HEADER(config.h)
+
+AM_INIT_AUTOMAKE(eConfig, 0.0.1)
+
+AM_PROG_LIBTOOL
+
+dnl Initialize maintainer mode
+AM_MAINTAINER_MODE
+
+AC_PROG_CC
+
+AC_HEADER_STDC
+AC_HEADER_DIRENT
+AC_HEADER_SYS_WAIT
+
+AC_TYPE_SIGNAL
+
+AC_CHECK_HEADER(stdarg.h, AC_DEFINE(HAVE_STDARGS))
+
+AC_CHECK_HEADER(string.h)
+AC_CHECK_HEADER(strings.h)
+
+AC_PATH_X
+AC_PATH_XTRA
+
+if test "x$x_includes" = "x"; then
+  x_includes="/usr/include"
+fi
+
+CPPFLAGS="$CPPFLAGS -I$includedir -I$prefix/include"
+
+SUPPORT_LIBS=""
+
+dnl Test for shared memory headers and semantics, unless we are
+dnl configured to build without shared memory extensions.
+if test "x$enable_shm" = "xyes"; then
+  # Check for shared memory
+  AC_CHECK_HEADER(sys/ipc.h, AC_DEFINE(HAVE_IPC_H), no_sys_ipc=yes)
+  AC_CHECK_HEADER(sys/shm.h, AC_DEFINE(HAVE_SHM_H), no_sys_shm=yes)
+
+  if test "x$no_sys_ipc" != "xyes" \
+     && test "x$no_sys_shm" != "xyes" \
+     && test "x$no_xshm_ext" != "xyes" ; then
+    AC_DEFINE(HAVE_SHM)
+  fi
+
+  # Check whether shmctl IPC_RMID allowes subsequent attaches
+  if test "$ac_cv_header_sys_shm_h" = "yes"; then
+    AC_MSG_CHECKING(whether shmctl IPC_RMID allowes subsequent attaches)
+    AC_TRY_RUN([
+          #include <sys/types.h>
+          #include <sys/ipc.h>
+          #include <sys/shm.h>
+          int main()
+          {
+            int id;
+            char *shmaddr;
+          id = shmget (IPC_PRIVATE, 4, IPC_CREAT | 0777);
+          if (id == -1)
+            exit (2);
+            shmaddr = shmat (id, 0, 0);
+            shmctl (id, IPC_RMID, 0);
+            if ((char*) shmat (id, 0, 0) == (char*) -1)
+            {
+              shmdt (shmaddr);
+              exit (1);
+            }
+            shmdt (shmaddr);
+            shmdt (shmaddr);
+            exit (0);
+          }
+      ],
+      AC_DEFINE(IPC_RMID_DEFERRED_RELEASE)
+        AC_MSG_RESULT(yes),
+      AC_MSG_RESULT(no),
+      AC_MSG_RESULT(assuming no))
+  fi
+fi
+
+SUPPORT_LIBS="$SUPPORT_LIBS -lm"
+
+AC_SUBST(CPPFLAGS)
+
+AC_OUTPUT([
+src/Makefile 
+Makefile 
+], [
+])
