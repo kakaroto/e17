@@ -428,4 +428,6 @@ dnl# AC_OUTPUT
 
 AC_OUTPUT([imlib2-config imlib2.pc Makefile loaders/Makefile src/Makefile test/Makefile \
            filters/Makefile demo/Makefile doc/Makefile libltdl/Makefile \
-          ])
+          ],[
+	  chmod +x imlib2-config
+	  ])
