@@ -460,29 +460,75 @@ TextDraw(TextClass * tclass, Window win, int active, int sticky, int state,
 		  char               *new_line;
 		  int                 nuke_count = 0;
 		  int                 len;
+		  wchar_t            *wc_line;
+		  int                 wc_len;
 
 		  len = strlen(lines[i]);
 		  new_line = Emalloc(len + 10);
+		  wc_len = mbstowcs(NULL, lines[i], 0);
+		  if (wc_len > 0)
+		    {
+		       wc_line = (wchar_t *) Emalloc((wc_len + 1) * sizeof(wchar_t));
+		       mbstowcs(wc_line, lines[i], len);
+		       wc_line[wc_len] = (wchar_t) '\0';
+		    }
+
 		  while (ret2.width > textwidth_limit)
 		    {
 		       nuke_count++;
 		       if (nuke_count > len)
 			 {
+			    int                 mlen;
+
 			    new_line[0] = 0;
-			    strncat(new_line, lines[i], 1);
+			    if (MB_CUR_MAX > 1 && wc_len > 0)	/* if multibyte locale,... */
+			      {
+				 mlen = mblen(lines[i], MB_CUR_MAX);
+				 if (mlen < 0)
+				    mlen = 1;
+			      }
+			    else
+			       mlen = 1;
+
+			    strncat(new_line, lines[i], mlen);
 			    strcat(new_line, "...");
 			    break;
 			 }
 		       new_line[0] = 0;
-		       strncat(new_line, lines[i], (len - nuke_count) / 2);
-		       strcat(new_line, "...");
-		       strcat(new_line,
+		       if (MB_CUR_MAX > 1 && wc_len > 0)
+			 {
+			    int                 j, k, len_mb;
+
+			    for (j = k = 0; k < (wc_len - nuke_count) / 2; k++)
+			      {
+				 len_mb = wctomb(new_line + j, wc_line[k]);
+				 if (len_mb > 0)
+				    j += len_mb;
+			      }
+			    new_line[j] = '\0';
+			    strcat(new_line, "...");
+			    j += 3;
+			    len_mb = wcstombs(new_line + j,
+			     wc_line + (wc_len - nuke_count) / 2 + nuke_count,
+					      len + 10 - j);
+			    if (len_mb > 0)
+			       j += len_mb;
+			    new_line[j] = '\0';
+			 }
+		       else
+			 {
+			    strncat(new_line, lines[i], (len - nuke_count) / 2);
+			    strcat(new_line, "...");
+			    strcat(new_line,
 			    lines[i] + ((len - nuke_count) / 2) + nuke_count);
+			 }
 		       XmbTextExtents(ts->xfontset, new_line, strlen(new_line),
 				      &ret1, &ret2);
 		    }
 		  Efree(lines[i]);
 		  lines[i] = new_line;
+		  if (wc_len > 0)
+		     Efree(wc_line);
 	       }
 	     if (i == 0)
 		yy += ts->xfontset_ascent;

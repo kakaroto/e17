@@ -4191,3 +4191,11 @@ Fri Jan 28 14:24:27 PST 2000
 (KainX)
 
 Fixed issues on platforms with unsigned chars.
+
+-------------------------------------------------------------------------------
+
+Mon Jan 31 10:50:09 PST 2000
+(Raster)
+
+
+text compression works wiht multi-byte stuff now thanks to masahiko :)
