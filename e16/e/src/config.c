@@ -248,8 +248,11 @@ Config_Text(FILE * ConfigFile)
 	switch (i1)
 	  {
 	  case CONFIG_CLOSE:
-	     TclassPopulate(tc);
-	     AddItem(tc, tc->name, 0, LIST_TYPE_TCLASS);
+	     if (tc)
+	       {
+		  TclassPopulate(tc);
+		  AddItem(tc, tc->name, 0, LIST_TYPE_TCLASS);
+	       }
 	     return;
 	  case CONFIG_CLASSNAME:
 	     SKIP_If_EXISTS(s2, LIST_TYPE_TCLASS);
@@ -257,110 +260,179 @@ Config_Text(FILE * ConfigFile)
 	     tc->name = duplicate(s2);
 	     break;
 	  case TEXT_ORIENTATION:
-	     ts->style.orientation = atoi(s2);
+	     if (ts)
+		ts->style.orientation = atoi(s2);
 	     break;
 	  case TEXT_JUSTIFICATION:
-	     tc->justification = atoi(s2);
+	     if (tc)
+		tc->justification = atoi(s2);
 	     break;
 	  case CONFIG_DESKTOP:
 	  case ICLASS_NORMAL:
-	     tc->norm.normal = ts = CreateTextState();
-	     ts->fontname = duplicate(s2);
-	     ts->style.mode = MODE_VERBATIM;
+	     if (tc)
+		tc->norm.normal = ts = CreateTextState();
+	     if (ts)
+	       {
+		  ts->fontname = duplicate(s2);
+		  ts->style.mode = MODE_VERBATIM;
+	       }
 	     break;
 	  case ICLASS_CLICKED:
-	     tc->norm.clicked = ts = CreateTextState();
-	     ts->fontname = duplicate(s2);
-	     ts->style.mode = MODE_VERBATIM;
+	     if (tc)
+		tc->norm.clicked = ts = CreateTextState();
+	     if (ts)
+	       {
+		  ts->fontname = duplicate(s2);
+		  ts->style.mode = MODE_VERBATIM;
+	       }
 	     break;
 	  case ICLASS_HILITED:
-	     tc->norm.hilited = ts = CreateTextState();
-	     ts->fontname = duplicate(s2);
-	     ts->style.mode = MODE_VERBATIM;
+	     if (tc)
+		tc->norm.hilited = ts = CreateTextState();
+	     if (ts)
+	       {
+		  ts->fontname = duplicate(s2);
+		  ts->style.mode = MODE_VERBATIM;
+	       }
 	     break;
 	  case ICLASS_DISABLED:
-	     tc->norm.disabled = ts = CreateTextState();
-	     ts->fontname = duplicate(s2);
-	     ts->style.mode = MODE_VERBATIM;
+	     if (tc)
+		tc->norm.disabled = ts = CreateTextState();
+	     if (ts)
+	       {
+		  ts->fontname = duplicate(s2);
+		  ts->style.mode = MODE_VERBATIM;
+	       }
 	     break;
 	  case ICLASS_STICKY_NORMAL:
-	     tc->sticky.normal = ts = CreateTextState();
-	     ts->fontname = duplicate(s2);
-	     ts->style.mode = MODE_VERBATIM;
+	     if (tc)
+		tc->sticky.normal = ts = CreateTextState();
+	     if (ts)
+	       {
+		  ts->fontname = duplicate(s2);
+		  ts->style.mode = MODE_VERBATIM;
+	       }
 	     break;
 	  case ICLASS_STICKY_CLICKED:
-	     tc->sticky.clicked = ts = CreateTextState();
-	     ts->fontname = duplicate(s2);
-	     ts->style.mode = MODE_VERBATIM;
+	     if (tc)
+		tc->sticky.clicked = ts = CreateTextState();
+	     if (ts)
+	       {
+		  ts->fontname = duplicate(s2);
+		  ts->style.mode = MODE_VERBATIM;
+	       }
 	     break;
 	  case ICLASS_STICKY_HILITED:
-	     tc->sticky.hilited = ts = CreateTextState();
-	     ts->fontname = duplicate(s2);
-	     ts->style.mode = MODE_VERBATIM;
+	     if (tc)
+		tc->sticky.hilited = ts = CreateTextState();
+	     if (ts)
+	       {
+		  ts->fontname = duplicate(s2);
+		  ts->style.mode = MODE_VERBATIM;
+	       }
 	     break;
 	  case ICLASS_STICKY_DISABLED:
-	     tc->sticky.disabled = ts = CreateTextState();
-	     ts->fontname = duplicate(s2);
-	     ts->style.mode = MODE_VERBATIM;
+	     if (tc)
+		tc->sticky.disabled = ts = CreateTextState();
+	     if (ts)
+	       {
+		  ts->fontname = duplicate(s2);
+		  ts->style.mode = MODE_VERBATIM;
+	       }
 	     break;
 	  case ICLASS_ACTIVE_NORMAL:
-	     tc->active.normal = ts = CreateTextState();
-	     ts->fontname = duplicate(s2);
-	     ts->style.mode = MODE_VERBATIM;
+	     if (tc)
+		tc->active.normal = ts = CreateTextState();
+	     if (ts)
+	       {
+		  ts->fontname = duplicate(s2);
+		  ts->style.mode = MODE_VERBATIM;
+	       }
 	     break;
 	  case ICLASS_ACTIVE_CLICKED:
-	     tc->active.clicked = ts = CreateTextState();
-	     ts->fontname = duplicate(s2);
-	     ts->style.mode = MODE_VERBATIM;
+	     if (tc)
+		tc->active.clicked = ts = CreateTextState();
+	     if (ts)
+	       {
+		  ts->fontname = duplicate(s2);
+		  ts->style.mode = MODE_VERBATIM;
+	       }
 	     break;
 	  case ICLASS_ACTIVE_HILITED:
-	     tc->active.hilited = ts = CreateTextState();
-	     ts->fontname = duplicate(s2);
-	     ts->style.mode = MODE_VERBATIM;
+	     if (tc)
+		tc->active.hilited = ts = CreateTextState();
+	     if (ts)
+	       {
+		  ts->fontname = duplicate(s2);
+		  ts->style.mode = MODE_VERBATIM;
+	       }
 	     break;
 	  case ICLASS_ACTIVE_DISABLED:
-	     tc->active.disabled = ts = CreateTextState();
-	     ts->fontname = duplicate(s2);
-	     ts->style.mode = MODE_VERBATIM;
+	     if (tc)
+		tc->active.disabled = ts = CreateTextState();
+	     if (ts)
+	       {
+		  ts->fontname = duplicate(s2);
+		  ts->style.mode = MODE_VERBATIM;
+	       }
 	     break;
 	  case ICLASS_STICKY_ACTIVE_NORMAL:
-	     tc->sticky_active.normal = ts = CreateTextState();
-	     ts->fontname = duplicate(s2);
-	     ts->style.mode = MODE_VERBATIM;
+	     if (tc)
+		tc->sticky_active.normal = ts = CreateTextState();
+	     if (ts)
+	       {
+		  ts->fontname = duplicate(s2);
+		  ts->style.mode = MODE_VERBATIM;
+	       }
 	     break;
-
 	  case ICLASS_STICKY_ACTIVE_CLICKED:
-	     tc->sticky_active.clicked = ts = CreateTextState();
-	     ts->fontname = duplicate(s2);
-	     ts->style.mode = MODE_VERBATIM;
+	     if (tc)
+		tc->sticky_active.clicked = ts = CreateTextState();
+	     if (ts)
+	       {
+		  ts->fontname = duplicate(s2);
+		  ts->style.mode = MODE_VERBATIM;
+	       }
 	     break;
 	  case ICLASS_STICKY_ACTIVE_HILITED:
-	     tc->sticky_active.hilited = ts = CreateTextState();
-	     ts->fontname = duplicate(s2);
-	     ts->style.mode = MODE_VERBATIM;
+	     if (tc)
+		tc->sticky_active.hilited = ts = CreateTextState();
+	     if (ts)
+	       {
+		  ts->fontname = duplicate(s2);
+		  ts->style.mode = MODE_VERBATIM;
+	       }
 	     break;
 	  case ICLASS_STICKY_ACTIVE_DISABLED:
-	     tc->sticky_active.disabled = ts = CreateTextState();
-	     ts->fontname = duplicate(s2);
-	     ts->style.mode = MODE_VERBATIM;
+	     if (tc)
+		tc->sticky_active.disabled = ts = CreateTextState();
+	     if (ts)
+	       {
+		  ts->fontname = duplicate(s2);
+		  ts->style.mode = MODE_VERBATIM;
+	       }
 	     break;
 	  case TEXT_MODE:
-	     ts->style.mode = atoi(s2);
+	     if (ts)
+		ts->style.mode = atoi(s2);
 	     break;
 	  case TEXT_EFFECT:
-	     ts->effect = atoi(s2);
+	     if (ts)
+		ts->effect = atoi(s2);
 	     break;
 	  case TEXT_FG_COL:
-	     sscanf(s, "%*s %i %i %i",
-		    &ts->fg_col.r,
-		    &ts->fg_col.g,
-		    &ts->fg_col.b);
+	     if (ts)
+		sscanf(s, "%*s %i %i %i",
+		       &ts->fg_col.r,
+		       &ts->fg_col.g,
+		       &ts->fg_col.b);
 	     break;
 	  case TEXT_BG_COL:
-	     sscanf(s, "%*s %i %i %i",
-		    &ts->bg_col.r,
-		    &ts->bg_col.g,
-		    &ts->bg_col.b);
+	     if (ts)
+		sscanf(s, "%*s %i %i %i",
+		       &ts->bg_col.r,
+		       &ts->bg_col.g,
+		       &ts->bg_col.b);
 	     break;
 	  default:
 	     Alert("Warning: unable to determine what to do with\n"
