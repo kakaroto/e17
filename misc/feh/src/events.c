@@ -74,9 +74,6 @@ static void
 feh_event_handle_ButtonPress(XEvent * ev)
 {
    winwidget winwid = NULL;
-   const int next_button = opt.next_button;
-   const int zoom_button = opt.zoom_button;
-   const int pan_button = opt.pan_button;
 
    D_ENTER;
    /* hide the menus and get the heck out if it's a mouse-click on the
