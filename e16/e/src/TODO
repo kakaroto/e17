@@ -1,7 +1,7 @@
 BUGS:
 raster: 	must update dox docs fully
 cK:		keeping the groups file in sync with the existing groups that need to be remembered. I'm sure there are bugs in that.
-mandrake:   cvs versions of kde core dump enlightenment.  there's bugs to hammer out in the kde support.  (hammering)
+mandrake:   kde tasklist and pager names don't show up, and don't update when enlightenment changes things.  needs fixing
 
 FEATURES:
 raster: 	add dnd to iconbox
