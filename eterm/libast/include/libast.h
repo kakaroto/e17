@@ -356,6 +356,7 @@
 #  define PATH_MAX 255
 #endif
 
+#define CONFIG_BUFF                     20480
 #define CONF_BEGIN_CHAR                 ((char) 1)
 #define CONF_BEGIN_STRING               "\001"
 #define CONF_END_CHAR                   ((char) 2)

@@ -185,18 +185,6 @@ else
 fi
 AC_SUBST(LIBAST_MMX_SUPPORT)
 
-CONFIG_BUFF_SIZE=20480
-AC_MSG_CHECKING(for the buffer size of the config file parser)
-AC_ARG_WITH(config-buffer-size,
-[  --with-config-buffer-size
-                         specifies the size of the buffer Eterm uses for parsing the config file (default is 20 Kb)], [
-            if test "$withval" != "yes" -a "$withval" != "no"; then
-              CONFIG_BUFF_SIZE=$withval
-            fi
-])
-AC_MSG_RESULT($CONFIG_BUFF_SIZE bytes)
-AC_DEFINE_UNQUOTED(CONFIG_BUFF, $CONFIG_BUFF_SIZE)
-
 AC_MSG_CHECKING(if backquote execution support should be enabled)
 AC_ARG_WITH(backquote-exec,
 [  --without-backquote-exec
@@ -226,7 +214,7 @@ AC_SUBST(LIBS)
 
 basedir=.
 
-AM_CONFIG_HEADER(${srcdir}/include/libast/config.h:config.h.in)
+AM_CONFIG_HEADER(config.h)
 
 AC_OUTPUT(${srcdir}/include/libast/types.h Makefile include/Makefile \
           include/libast/Makefile src/Makefile test/Makefile \
