@@ -361,21 +361,21 @@ __ewl_box_theme_update(Ewl_Widget * w, void *ev_data, void *user_data)
 }
 
 static void
-__ewl_hbox_configure(Ewl_Widget * w, void *ev_data, void *user_data)
+__ewl_vbox_configure(Ewl_Widget * w, void *ev_data, void *user_data)
 {
 	DENTER_FUNCTION;
 	DCHECK_PARAM_PTR("w", w);
 
 	ewl_object_apply_requested(w);
 
-	__ewl_hbox_configure_children(w);
-	__ewl_hbox_configure_gfx(w);
+	__ewl_vbox_configure_children(w);
+	__ewl_vbox_configure_gfx(w);
 
 	DLEAVE_FUNCTION;
 }
 
 static void
-__ewl_hbox_configure_gfx(Ewl_Widget * w)
+__ewl_vbox_configure_gfx(Ewl_Widget * w)
 {
 	int l = 0, r = 0, t = 0, b = 0;
 
@@ -419,7 +419,7 @@ __ewl_hbox_configure_gfx(Ewl_Widget * w)
 }
 
 static void
-__ewl_hbox_configure_children(Ewl_Widget * w)
+__ewl_vbox_configure_children(Ewl_Widget * w)
 {
 	Ewd_List *f;
 	int rh;
@@ -427,18 +427,18 @@ __ewl_hbox_configure_children(Ewl_Widget * w)
 	DENTER_FUNCTION;
 	DCHECK_PARAM_PTR("w", w);
 
-	f = __ewl_hbox_configure_normal(w, &rh);
+	f = __ewl_vbox_configure_normal(w, &rh);
 
 	if (f)
-		__ewl_hbox_configure_fillers(w, f, rh);
+		__ewl_vbox_configure_fillers(w, f, rh);
 
-	__ewl_hbox_layout_children(w);
+	__ewl_vbox_layout_children(w);
 
 	DLEAVE_FUNCTION;
 }
 
 static Ewd_List *
-__ewl_hbox_configure_normal(Ewl_Widget * w, int *rh)
+__ewl_vbox_configure_normal(Ewl_Widget * w, int *rh)
 {
 	Ewd_List *f = NULL;
 	Ewl_Box *box;
@@ -491,7 +491,7 @@ __ewl_hbox_configure_normal(Ewl_Widget * w, int *rh)
 }
 
 static void
-__ewl_hbox_configure_fillers(Ewl_Widget * w, Ewd_List * f, int rh)
+__ewl_vbox_configure_fillers(Ewl_Widget * w, Ewd_List * f, int rh)
 {
 	Ewl_Box *b;
 	Ewl_Widget *c;
@@ -530,7 +530,7 @@ __ewl_hbox_configure_fillers(Ewl_Widget * w, Ewd_List * f, int rh)
 }
 
 static void
-__ewl_hbox_layout_children(Ewl_Widget * w)
+__ewl_vbox_layout_children(Ewl_Widget * w)
 {
 	Ewl_Box *box;
 	Ewl_Widget *c;
@@ -584,13 +584,13 @@ __ewl_hbox_layout_children(Ewl_Widget * w)
 
 
 static void
-__ewl_vbox_configure(Ewl_Widget * w, void *ev_data, void *user_data)
+__ewl_hbox_configure(Ewl_Widget * w, void *ev_data, void *user_data)
 {
 	DENTER_FUNCTION;
 	DCHECK_PARAM_PTR("w", w);
 
-	__ewl_vbox_configure_children(w);
-	__ewl_vbox_configure_gfx(w);
+	__ewl_hbox_configure_children(w);
+	__ewl_hbox_configure_gfx(w);
 
 	ewl_object_set_current_geometry(EWL_OBJECT(w),
 					REQUEST_X(w), REQUEST_Y(w),
@@ -600,7 +600,7 @@ __ewl_vbox_configure(Ewl_Widget * w, void *ev_data, void *user_data)
 }
 
 static void
-__ewl_vbox_configure_gfx(Ewl_Widget * w)
+__ewl_hbox_configure_gfx(Ewl_Widget * w)
 {
 	int l = 0, r = 0, t = 0, b = 0;
 
@@ -650,7 +650,7 @@ __ewl_vbox_configure_gfx(Ewl_Widget * w)
 }
 
 static void
-__ewl_vbox_configure_children(Ewl_Widget * w)
+__ewl_hbox_configure_children(Ewl_Widget * w)
 {
 	Ewd_List *f;
 	int rw;
@@ -658,18 +658,18 @@ __ewl_vbox_configure_children(Ewl_Widget * w)
 	DENTER_FUNCTION;
 	DCHECK_PARAM_PTR("w", w);
 
-	f = __ewl_vbox_configure_normal(w, &rw);
+	f = __ewl_hbox_configure_normal(w, &rw);
 
 	if (f)
-		__ewl_vbox_configure_fillers(w, f, rw);
+		__ewl_hbox_configure_fillers(w, f, rw);
 
-	__ewl_vbox_layout_children(w);
+	__ewl_hbox_layout_children(w);
 
 	DLEAVE_FUNCTION;
 }
 
 static Ewd_List *
-__ewl_vbox_configure_normal(Ewl_Widget * w, int *rw)
+__ewl_hbox_configure_normal(Ewl_Widget * w, int *rw)
 {
 	Ewd_List *f = NULL;
 	Ewl_Box *box;
@@ -722,7 +722,7 @@ __ewl_vbox_configure_normal(Ewl_Widget * w, int *rw)
 }
 
 static void
-__ewl_vbox_configure_fillers(Ewl_Widget * w, Ewd_List * f, int rw)
+__ewl_hbox_configure_fillers(Ewl_Widget * w, Ewd_List * f, int rw)
 {
 	Ewl_Box *box;
 	Ewl_Widget *c;
@@ -761,7 +761,7 @@ __ewl_vbox_configure_fillers(Ewl_Widget * w, Ewd_List * f, int rw)
 }
 
 static void
-__ewl_vbox_layout_children(Ewl_Widget * w)
+__ewl_hbox_layout_children(Ewl_Widget * w)
 {
 	Ewl_Box *box;
 	Ewl_Widget *c;
