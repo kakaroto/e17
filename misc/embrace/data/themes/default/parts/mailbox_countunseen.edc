@@ -16,7 +16,7 @@ part {
 		text {
 			text, "MailBoxCountUnseen";
 			font, "Edje.Vera";
-			size, 8;
+			size, 10;
 			align, 0.0 0.0;
 		}
 	}

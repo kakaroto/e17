@@ -16,7 +16,7 @@ part {
 		text {
 			text, "MailboxTitle";
 			font, "Edje.Vera";
-			size, 10;
+			size, 12;
 			align, 0.0 0.0;
 		}
 	}
