@@ -15,6 +15,7 @@
 #include <unistd.h>
 #include <syslog.h>
 
+#define ENTRANCE_USE_CRYPT 0
 #define ENTRANCE_USE_PAM 1
 #define ENTRANCE_USE_SHADOW 2
 

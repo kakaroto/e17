@@ -124,6 +124,7 @@ entrance_auth_free(Entrance_Auth * e)
    if (e->pw)
       e->pw = struct_passwd_free(e->pw);
 
+   memset(e->user, 0, sizeof(e->user));
    memset(e->pass, 0, sizeof(e->pass));
    entrance_auth_session_end(e);
    free(e);
@@ -151,7 +152,7 @@ entrance_auth_reset(Entrance_Auth * e)
  * function and others.
  */
 static int
-_entrance_auth_pam_initialize(Entrance_Auth * e)
+_entrance_auth_pam_initialize(Entrance_Auth * e, const char *display)
 {
    int pamerr;
 
@@ -171,7 +172,7 @@ _entrance_auth_pam_initialize(Entrance_Auth * e)
 
    /* Set TTY to DISPLAY */
    if ((pamerr =
-        pam_set_item(e->pam.handle, PAM_TTY, e->display)) != PAM_SUCCESS)
+        pam_set_item(e->pam.handle, PAM_TTY, display)) != PAM_SUCCESS)
    {
       syslog(LOG_CRIT, "Error: Unable to configure PAM_TTY.");
       return ERROR_PAM_SET;
@@ -206,13 +207,13 @@ _entrance_auth_pam_initialize(Entrance_Auth * e)
  * @e The Entrance_Auth struct to attempt to validate on the system
  * @return - 0 on success, 1 on error
  */
-int
-entrance_auth_cmp_pam(Entrance_Auth * e)
+static int
+entrance_auth_cmp_pam(Entrance_Auth * e, const char *display)
 {
-   int result = 0;
+   int result = AUTH_FAIL;
    int pamerr;
 
-   if (_entrance_auth_pam_initialize(e) != E_SUCCESS)
+   if (_entrance_auth_pam_initialize(e, display) != E_SUCCESS)
       return ERROR_NO_PAM_INIT;
 
    if ((pamerr = pam_authenticate(e->pam.handle, 0)) == PAM_SUCCESS)
@@ -251,30 +252,80 @@ entrance_auth_cmp_pam(Entrance_Auth * e)
 }
 #endif
 
-int
-entrance_auth_cmp_crypt(Entrance_Auth * e, Entrance_Config * cfg)
+static int
+entrance_auth_cmp_crypt(Entrance_Auth * e)
 {
    char *encrypted;
-   char *correct = e->pw->pw_passwd;
+   char *correct;
+   
+   correct = e->pw->pw_passwd;
 
-#if HAVE_SHADOW
-   struct spwd *sp;
-
-   if (cfg->auth == ENTRANCE_USE_SHADOW)
-   {
-      sp = getspnam(e->pw->pw_name);
-      endspent();
-
-      if (sp)
-         correct = sp->sp_pwdp;
-   }
-#endif
-   if (!correct || !correct[0])
+   /* Only successfully auth blank password *if* a blank password is given */
+   if ((!correct || !correct[0]) && !strcmp(e->pass, ""))
       return AUTH_SUCCESS;
 
    encrypted = crypt(e->pass, correct);
 
    return (strcmp(encrypted, correct)) ? ERROR_BAD_PASS : AUTH_SUCCESS;
+}
+
+static int
+entrance_auth_cmp_shadow(Entrance_Auth * e)
+{
+   char *encrypted;
+   char *correct;
+   struct spwd *sp;
+   
+   sp = getspnam(e->pw->pw_name);
+   endspent();
+
+   if (sp)
+      correct = sp->sp_pwdp;
+   else
+   {
+      syslog(LOG_CRIT, "FATAL: Unable to fetch shadow password.");
+      return AUTH_FAIL;
+   }
+   
+   /* Don't authenticate blank password unless blank password is given */
+   if ((!correct || !correct[0]) && !strcmp(e->pass, ""))
+      return AUTH_SUCCESS;
+
+   encrypted = crypt(e->pass, correct);
+
+   return (strcmp(encrypted, correct)) ? ERROR_BAD_PASS : AUTH_SUCCESS;
+}
+
+int
+entrance_auth_cmp(Entrance_Auth * e, const char *display, int mode)
+{
+   switch (mode)
+   {
+     case ENTRANCE_USE_PAM:
+#if HAVE_PAM
+        return (entrance_auth_cmp_pam(e, display));
+#else
+        syslog(LOG_CRIT, "FATAL: PAM authentication support unavailable.");
+        return (1);
+#endif
+        break;
+     case ENTRANCE_USE_SHADOW:
+#if HAVE_SHADOW
+        return (entrance_auth_cmp_shadow(e));
+#else
+        syslog(LOG_CRIT, "FATAL: Shadow authentication support unavailable.");
+        return (1);
+#endif
+        break;
+     case ENTRANCE_USE_CRYPT:
+        return (entrance_auth_cmp_crypt(e));
+        break;
+     default:
+        syslog(LOG_CRIT, "FATAL: Invalid authentication mode %d requested", mode);
+        break;
+   }
+   return AUTH_FAIL;
+
 }
 
 /**
@@ -326,7 +377,7 @@ entrance_auth_user_set(Entrance_Auth * e, const char *str)
  * I'm not sure if this is correct, but for now it works.
  */
 void
-entrance_auth_setup_environment(Entrance_Auth * e)
+entrance_auth_setup_environment(Entrance_Auth * e, const char *display)
 {
    extern char **environ;
    int size;
@@ -353,8 +404,7 @@ entrance_auth_setup_environment(Entrance_Auth * e)
    setenv("USER", e->pw->pw_name, 1);
    setenv("LOGNAME", e->pw->pw_name, 1);
 
-   if (e->display)
-      setenv("DISPLAY", e->display, 1);
+   setenv("DISPLAY", display, 1);
 
    size = (strlen(_PATH_MAILDIR) + strlen(e->pw->pw_name) + 2);
    mail = (char *) malloc(sizeof(char) * size);

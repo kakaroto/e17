@@ -32,7 +32,7 @@ static void _entrance_session_user_list_fix(Entrance_Session * e);
  * Also Allocates the auth, and parse the config struct 
  */
 Entrance_Session *
-entrance_session_new(const char *config, char *display, int testing)
+entrance_session_new(const char *config, const char *display, int testing)
 {
    Entrance_Session *e;
    char *db;
@@ -46,9 +46,12 @@ entrance_session_new(const char *config, char *display, int testing)
    memset(e, 0, sizeof(struct _Entrance_Session));
 
    openlog("entrance", LOG_NOWAIT, LOG_DAEMON);
-   e->display = display;
+   if (!display)
+      e->display = strdup(getenv("DISPLAY"));
+   else
+      e->display = strdup(display);
+
    e->auth = entrance_auth_new();
-   e->auth->display = display;
    e->config = entrance_config_parse(db);
    if (!e->config)
    {
@@ -196,12 +199,7 @@ entrance_session_run(Entrance_Session * e)
 int
 entrance_session_auth_user(Entrance_Session * e)
 {
-#if HAVE_PAM
-   if (e->config->auth == ENTRANCE_USE_PAM)
-      return (entrance_auth_cmp_pam(e->auth));
-   else
-#endif
-      return (entrance_auth_cmp_crypt(e->auth, e->config));
+   return (entrance_auth_cmp(e->auth, e->display, e->config->auth));
 }
 
 /**
@@ -215,13 +213,9 @@ entrance_session_user_reset(Entrance_Session * e)
    {
       Evas_Object *obj = NULL;
 
-#if 0
       if (e->auth)
          entrance_auth_free(e->auth);
       e->auth = entrance_auth_new();
-#else
-      entrance_auth_reset(e->auth);
-#endif
       if ((obj =
            edje_object_part_swallow_get(e->edje, "entrance.user.avatar")))
       {
@@ -341,7 +335,7 @@ entrance_session_setup_user_session(Entrance_Session * e)
 {
    char *homedir;
 
-   entrance_auth_setup_environment(e->auth);
+   entrance_auth_setup_environment(e->auth, e->display);
    homedir = getenv("HOME");
    if (entrance_ipc_connected_get())
       entrance_ipc_request_xauth(homedir, e->auth->pw->pw_uid,
@@ -364,7 +358,7 @@ entrance_session_start_user_session(Entrance_Session * e)
    char buf[PATH_MAX];
    char *shell = NULL;
 
-   entrance_auth_setup_environment(e->auth);
+   entrance_auth_setup_environment(e->auth, e->display);
    if ((e->session) && (strlen(e->session) > 0))
    {
       if (!strcmp(e->session, "default"))

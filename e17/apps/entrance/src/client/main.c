@@ -692,7 +692,7 @@ main(int argc, char *argv[])
            config = strdup(optarg);
            break;
         case 'z':
-           printf("entrance: main: z optarg = %s\n", optarg);
+           /* printf("entrance: main: z optarg = %s\n", optarg); */
            server_pid = (pid_t) atoi(optarg);
            break;
         default:
