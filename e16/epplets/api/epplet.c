@@ -3768,6 +3768,7 @@ Epplet_find_instance(char *name)
 	      fprintf(stderr, "Read attempt for lock file %s failed -- %s\n", s, strerror(errno));
 	      continue;
 	    }
+          close(fd);
 	  if (pid <= 0)
 	    {
 	      /* We got a bogus process ID.  Next! */
