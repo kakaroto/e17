@@ -468,13 +468,48 @@ char *ewl_entry_font_get(Ewl_Entry *e)
 	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR_RET("e", e, NULL);
 
-	op = ewl_entry_op_relevant_find(e, EWL_ENTRY_OP_TYPE_FONT_SET);
-	opf = (Ewl_Entry_Op_Font *)op;
-	if (opf && opf->font) {
-		font = strdup(opf->font);
+	if (REALIZED(e)) {
+		int size;
+		font = etox_context_get_font(e->context, &size);
+	}
+	else {
+		op = ewl_entry_op_relevant_find(e, EWL_ENTRY_OP_TYPE_FONT_SET);
+		opf = (Ewl_Entry_Op_Font *)op;
+		if (opf && opf->font)
+			font = strdup(opf->font);
 	}
 
 	DRETURN_PTR(font, DLEVEL_STABLE);
+}
+
+/**
+ * @param e: the entry widget to retrieve the current font size
+ * @brief Retrieve the size of the currently used font.
+ * @return Returns the currently used size of the font.
+ */
+int ewl_entry_font_size_get(Ewl_Entry *e)
+{
+	Ewl_Entry_Op *op;
+	Ewl_Entry_Op_Font *opf;
+	int size = 1;
+
+	DENTER_FUNCTION(DLEVEL_STABLE);
+	DCHECK_PARAM_PTR_RET("e", e, NULL);
+
+	if (REALIZED(e)) {
+		char *font = NULL;
+		font = etox_context_get_font(e->context, &size);
+		if (font)
+			FREE(font);
+	}
+	else {
+		op = ewl_entry_op_relevant_find(e, EWL_ENTRY_OP_TYPE_FONT_SET);
+		opf = (Ewl_Entry_Op_Font *)op;
+		if (opf)
+			size = opf->size;
+	}
+
+	DRETURN_INT(size, DLEVEL_STABLE);
 }
 
 /**
@@ -638,7 +673,7 @@ void ewl_entry_index_geometry_map(Ewl_Entry *e, int index, int *x, int *y,
 void ewl_entry_configure_cb(Ewl_Widget * w, void *ev_data, void *user_data)
 {
 	Ewl_Entry    *e;
-	int          xx, yy, ww, hh;
+	int           xx, yy, ww, hh;
 	int	      c_pos = 0, pos, l;
 	int           cx = 0, cy = 0;
 	unsigned int  cw = 0, ch = 0;

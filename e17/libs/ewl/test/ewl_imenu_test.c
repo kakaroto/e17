@@ -78,8 +78,6 @@ __create_imenu_test_window(Ewl_Widget * w, void *ev_data, void *user_data)
 	imenu1 = ewl_imenu_new(NULL, "test menu");
 	ewl_object_fill_policy_set(EWL_OBJECT(imenu1), EWL_FLAG_FILL_NONE);
 	ewl_container_child_append(EWL_CONTAINER(imenu_box), imenu1);
-	ewl_callback_append(imenu1, EWL_CALLBACK_CONFIGURE,
-			    __imenu_configure, NULL);
 	ewl_widget_show(imenu1);
 
 	/*
@@ -88,6 +86,8 @@ __create_imenu_test_window(Ewl_Widget * w, void *ev_data, void *user_data)
 	item = ewl_menu_item_new("/usr/share/pixmaps/dia-diagram.png", "dia");
 	ewl_container_child_append(EWL_CONTAINER(imenu1), item);
 	ewl_callback_append(item, EWL_CALLBACK_SELECT, __imenu_select, NULL);
+	ewl_callback_append(item, EWL_CALLBACK_CONFIGURE,
+			    __imenu_configure, NULL);
 	ewl_widget_show(item);
 
 	item = ewl_menu_separator_new();
@@ -109,8 +109,6 @@ __create_imenu_test_window(Ewl_Widget * w, void *ev_data, void *user_data)
 	 */
 	imenu2 = ewl_imenu_new(NULL, "Sub menu");
 	ewl_container_child_append(EWL_CONTAINER(imenu1), imenu2);
-	ewl_callback_append(imenu2, EWL_CALLBACK_CONFIGURE,
-			    __imenu_configure, NULL);
 	ewl_widget_show(imenu2);
 
 	item = ewl_menu_item_new(NULL, "button");

@@ -119,6 +119,33 @@ evidence_text(void *data, Evas_Object *obj, const char *emission,
     source = NULL;
 }
 
+void
+edje_text(void *data, Evas_Object *obj, const char *emission,
+              const char *source)
+{
+        char *text;
+        Ewl_Widget *label = data;
+
+	printf("In %s, %s\n", emission, source);
+
+	if (strstr(emission, "Present") != emission)
+		return;
+
+	text = (char *)emission + strlen("Present");
+
+        ewl_text_align_set(EWL_TEXT(label), EWL_FLAG_ALIGN_LEFT);
+        ewl_text_font_set(EWL_TEXT(label), "Vera", 12);
+        ewl_text_style_set(EWL_TEXT(label), "soft_shadow");
+        ewl_text_text_set(EWL_TEXT(label), (char *)source);
+
+        ewl_text_style_set(EWL_TEXT(label), "none");
+        ewl_text_font_set(EWL_TEXT(label), "Vera", 7);
+        ewl_text_text_append(EWL_TEXT(label), text);
+    
+	return;
+	obj = NULL;
+}
+
 void start_text(Ewl_Widget *w, void *ev_data, void *user_data)
 {
 	Ewl_Widget *label = user_data;
@@ -143,17 +170,11 @@ void start_text(Ewl_Widget *w, void *ev_data, void *user_data)
 
 void realize_logo_cb(Ewl_Widget *w, void *ev_data, void *user_data)
 {
-	edje_object_signal_callback_add(w->theme_object, "elicit", "tour",
-			elicit_text, user_data);
-	edje_object_signal_callback_add(w->theme_object, "entrance", "tour",
-			entrance_text, user_data);
-	edje_object_signal_callback_add(w->theme_object, "entice", "tour",
-			entice_text, user_data);
-	edje_object_signal_callback_add(w->theme_object, "evidence", "tour",
-			evidence_text, user_data);
+	edje_object_signal_callback_add(w->theme_object, "Present*", "*",
+			edje_text, user_data);
 
-    return;
-    ev_data = NULL;
+	return;
+	ev_data = NULL;
 }
 
 void test_cb(Ewl_Widget *w, void *ev_data, void *user_data)

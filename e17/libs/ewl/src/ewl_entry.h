@@ -41,7 +41,6 @@ struct Ewl_Entry
 	Ecore_DList  *applied;        /**< Applied set of operations */
 
 	Ewl_Widget   *cursor;         /**< Cursor widget */
-	Ecore_List   *selections;     /**< List of selections for display */
 
 	int           offset;         /**< Starting position of scrolling */
 	int           editable;       /**< Flag indicating user can edit text */
