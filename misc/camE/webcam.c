@@ -136,7 +136,8 @@ grab_init()
       mmap(0, grab_size, PROT_READ | PROT_WRITE, MAP_SHARED, grab_fd, 0);
 }
 
-Imlib_Image grab_one(int *width, int *height)
+Imlib_Image
+grab_one(int *width, int *height)
 {
    Imlib_Image im;
    int i = lag_reduce;
@@ -198,8 +199,8 @@ add_time_text(Imlib_Image image, char *message, int width, int height)
    time(&t);
    tm = localtime(&t);
    strftime(line, 254, grab_text, tm);
-   if(title_text)
-   strftime(title_line, 254, title_text, tm);
+   if (title_text)
+      strftime(title_line, 254, title_text, tm);
 
    msg = get_message();
    if (msg)
@@ -245,7 +246,8 @@ add_time_text(Imlib_Image image, char *message, int width, int height)
    }
 }
 
-Imlib_Image convert_rgb_to_imlib2(unsigned char *mem, int width, int height)
+Imlib_Image
+convert_rgb_to_imlib2(unsigned char *mem, int width, int height)
 {
    Imlib_Image im;
    DATA32 *data, *dest;
@@ -525,12 +527,10 @@ main(int argc, char *argv[])
             log("running post upload action");
             system(action_post_upload);
          }
+         log("sleeping");
       }
       if (grab_delay > 0)
-      {
-         log("sleeping");
          sleep(grab_delay);
-      }
    }
    return 0;
 }
