@@ -260,6 +260,8 @@ _The_Pager(pager)
 <br>
 _The_Iconbox(iconbox)
 <br>
+_Recovering_Minimized_Apps(minimized)
+<br>
 _Remembering_App_Properties(properties)
 <br>
 _Intro_To_Settings(settings)
@@ -270,6 +272,15 @@ _Desktop_Backgrounds(backgrounds)
 <br>
 _Tooltips(tooltips)
 <br>
+_Audio(audio)
+<br>
+_Special_Effects(fx)
+<br>
+_Focus_Settings(focus)
+<br>
+_Moving_and_Resizing(movemode)
+<br>
+_Placement_And_Autoraise(placement)
 
 
 
@@ -352,9 +363,12 @@ menu.
 
 
 <page columns=1 padding=16 name=tut5 background=Edoc_bg.png linkcolor=#88dddd>
+<font face=rothwell/25 color=#ffffff>
+<p>
+Mouse Bindings / Configuration
 <font face=aircut3/12 color=#ffffff>
 <p>
-You will also find that holding down the ALT key whilst clicking the middle 
+You will find that holding down the ALT key whilst clicking the middle 
 mouse button will bring up a menu with the titles of all currently active
 application windows. Selecting one of these will take you to that application.
 By using the CTRL key instead of ALT you will get a menu displaying all 
@@ -365,13 +379,12 @@ If your mouse does not have a middle button you should have enabled
 "Emulate 3 Buttons" in your X-Server - in which case pressing both left and 
 right mouse buttons at once will be the equivalent of pressing a middle
 mouse button. If this does not work this may not be turned on. Please see
-your X Server documentation on how to configure this.
+your X Server documentation to configure this.
 <p>
 This may vary from system to system. OS and XServer may also vary the method 
 in which you do this, if it is possible. Not having a middle mouse button in 
 Enlightenment, or for that matter X is not a good thing as it is almost 
-assumed to be there, and is used by many applications, as well as
-Enlightenment.
+assumed to be there, and is used by many applications, as well as by E.
 
 
 
@@ -455,7 +468,8 @@ start with).
 <font face=aircut3/12 color=#ffffff>
 <p>
 Clicking left mouse button on the iconify button will iconify the window
-and send it off to the Iconbox. Hitting the Maximize button will maximize the
+and send it off to the _Iconbox(iconbox). Hitting the Maximize button will
+maximize the
 size of the application fill your screen. Hitting it again will Unmaximize, 
 bringing the window back to its normal size.
 <p>
@@ -773,23 +787,58 @@ allow you to move the pager about, just like the titlebar of any window.
 <p>
 The Iconbox
 <font face=aircut3/12 color=#ffffff>
+<p>
 The iconbox is the place the icons for all your iconified windows go. Whenever
 you iconify or minimize a window it will go into an iconbox and have an icon 
-displayed for it there. Clicking on the icon again will de-iconify it. Clicking
-right-mouse button anywhere in the iconbox will bring up a menu to configure 
-that iconbox. If you accidentally close your iconbox and want it back, you can 
-bring an iconbox back by selecting "Create New Iconbox" from the Desktop 
-sub-menu of the desktop menu tied to the middle-mouse button.
+displayed for it there. Clicking on the icon again will de-iconify it. 
 <p>
-You can actually create as many iconboxes as you like and move them about,
-rotate them differently, change each iconbox's settings to be different, and
-Enlightenment will use the iconbox closest to the window when you iconify it.
+You can have as many icon boxes on your desktop as you want to.  You can create
+more by using the Middle Click _Menu(tut3) - select Desktop->Create New Iconbox
+and a new Iconbox will pop up on your desktop.  Each of these Iconboxes can
+have individual configurations, as detailed on the next page.
 <p>
-By default below the iconbox you will find a scroll bar with scroll arrows 
-that you can use to scroll around your iconbox if it fills up with iconified 
-windows.
+You can _move(movemode) the Iconbox around the screen using alt-leftclick
+on the window, and then moving it to the desired location on the screen.  You
+can _resize(movemode) the Iconbox by alt-middleclicking on the window and
+then adjusting the size  as described in the _Mouse_Configuration(tut5) section
+<p>
 
 
+<page columns=1 padding=16 name=iconbox2 background=Edoc_bg.png linkcolor=#88dddd>
+<font face=aircut3/12 color=#ffffff>
+<img src=E_iconbox_menu.png x=300 y=20>
+<img src=E_iconbox_settings.png x=10 y=200>
+<p>
+Clicking the right-mouse button anywhere in the Iconbox will bring up a menu
+to configure that iconbox.  This menu will look a little something like the one
+here to the right.  This menu allows you to also close the Iconbox or open up
+an additional Iconbox.
+<p>
+To change the settings of an individual Iconbox, we'll use the right mouse
+button _menu(tut5) and select "This
+Iconbox Settings" - this should get us a dialog that looks something like the
+one  to our left.  You can change the orientation, icon size, scrollbar
+options, display policy, base image, and many more options of the Iconbox
+from this dialog.  You may choose to change the anchor of
+alignment for resizes - play with it until it resizes appropriately for your
+Iconbox location.
+
+
+<page columns=1 padding=16 name=minimized background=Edoc_bg.png linkcolor=#88dddd>
+<font face=rothwell/25 color=#ffffff>
+<p>
+Recovering Minimized Applications
+<font face=aircut3/12 color=#ffffff>
+<p>
+There are several ways to recover an application once you have minimized it.
+The most obvious way is to use the _Iconbox(iconbox).  Of course, you might
+have had some applications in your Iconbox when you accidentally closed it.  Or
+maybe you minimized some applications and forgot you didn't have an Iconbox.
+Or maybe you don't like the Iconbox and usually use KDE or GNOME's panel to
+recover them and forgot to launch them.  Never fear.  You can always middle or
+right click on the _Dragbar(dragbar) and get a _menu(tut5) that will allow you
+to recover them.  You can also alt or ctrl middleclick on the desktop to get
+the same menus.
 
 
 
@@ -1004,6 +1053,51 @@ Tooltips are, like, cool.
 
 
 
+<page columns=1 padding=16 name=audio background=Edoc_bg.png linkcolor=#88dddd>
+<font face=rothwell/25 color=#ffffff>
+<p>
+Audio
+<font face=aircut3/12 color=#ffffff>
+<p>
+Audio is, like, cool.
+
+
+<page columns=1 padding=16 name=fx background=Edoc_bg.png linkcolor=#88dddd>
+<font face=rothwell/25 color=#ffffff>
+<p>
+Special FX
+<font face=aircut3/12 color=#ffffff>
+<p>
+Special effects are, like, cool.
+
+
+<page columns=1 padding=16 name=focus background=Edoc_bg.png linkcolor=#88dddd>
+<font face=rothwell/25 color=#ffffff>
+<p>
+Focus Settings
+<font face=aircut3/12 color=#ffffff>
+<p>
+Focus Settings are, like, cool.
+
+
+
+<page columns=1 padding=16 name=movemode background=Edoc_bg.png linkcolor=#88dddd>
+<font face=rothwell/25 color=#ffffff>
+<p>
+Moving and Resizing Windows
+<font face=aircut3/12 color=#ffffff>
+<p>
+Moving Windows is cool.
+
+
+
+<page columns=1 padding=16 name=placement background=Edoc_bg.png linkcolor=#88dddd>
+<font face=rothwell/25 color=#ffffff>
+<p>
+Window Placement and Autoraise
+<font face=aircut3/12 color=#ffffff>
+<p>
+huhuhuhuh he said butter
 
 
 <page columns=1 padding=16 name=faq background=Edoc_bg.png linkcolor=#88dddd>
