@@ -3,7 +3,7 @@
 
 <font face=helvetica size=3>
 <center><img src=img/imlib.gif alt="Imlib"></center>
-<center><b><font color=#ffffff size=6>The Imlib Programmers Guide</font></b></center>
+<center><b><font color=#6a7a8a size=6>The Imlib Programmers Guide</font></b></center>
 <p>
 <b>What is Imlib?</b><br>
 Imlib is a general Image loading and rendering library designed to make the
@@ -113,7 +113,7 @@ Imlib.
 To compile:<br>
 cc test.c -o test -I/usr/X11R6/include -I/usr/local/include -L/usr/X11R6/lib
 -L/usr/local/lib -lX11 -lXext -ljpeg -lpng -ltiff -lz -lgif -lm -lImlib
-</font></td></tr><tr><td bgcolor=#ffffff>
+</font></td></tr><tr><td bgcolor=#6a7a8a>
 <pre>
 #include &lt;X11/Xlib.h&gt;
 #include &lt;X11/Xutil.h&gt;
@@ -205,7 +205,7 @@ To compile:<br>
 cc test.c -o test -I/usr/X11R6/include -I/usr/local/include -L/usr/X11R6/lib
 -L/usr/local/lib -lX11 -lXext -ljpeg -lpng -ltiff -lz -lgif -lglib -lgdk -lm
 -lgdk_imlib
-</font></td></tr><tr><td bgcolor=#ffffff>
+</font></td></tr><tr><td bgcolor=#6a7a8a>
 <pre>
 #include &lt;gdk_imlib.h&gt;
 #include &lt;gdk/gdk.h&gt;
@@ -309,7 +309,7 @@ just as an exercise) to use Imlib a bit more. Note the Differences.
 To compile:<br>
 cc test.c -o test -I/usr/X11R6/include -I/usr/local/include -L/usr/X11R6/lib
 -L/usr/local/lib -lX11 -lXext -ljpeg -lpng -ltiff -lz -lgif -lm -lImlib
-</font></td></tr><tr><td bgcolor=#ffffff>
+</font></td></tr><tr><td bgcolor=#6a7a8a>
 <pre>
 #include &lt;X11/Xlib.h&gt;
 #include &lt;X11/Xutil.h&gt;
@@ -378,7 +378,7 @@ To compile:<br>
 cc test.c -o test -I/usr/X11R6/include -I/usr/local/include -L/usr/X11R6/lib
 -L/usr/local/lib -lX11 -lXext -ljpeg -lpng -ltiff -lz -lgif -lglib -lgdk -lm
 -lgdk_imlib
-</font></td></tr><tr><td bgcolor=#ffffff>
+</font></td></tr><tr><td bgcolor=#6a7a8a>
 <pre>
 #include &lt;gdk_imlib.h&gt;
 #include &lt;gdk/gdk.h&gt;
@@ -498,13 +498,13 @@ is an RGB triplet, with the bytes in the order Red Green Blue, so the array
 looks something like RGBRGBRGBRGBRGBRGB...
 <p>
 If our image is:
-<center><table width=100% border=1><tr><td bgcolor=#ffffff><pre>
+<center><table width=100% border=1><tr><td bgcolor=#6a7a8a><pre>
 ImlibImage *im;
 GdkImlibImage *im;
 </pre></td></tr></table></center>
 <p>
 The pointer to the RGB data and the alpha data would be:
-<center><table width=100% border=1><tr><td bgcolor=#ffffff><pre>
+<center><table width=100% border=1><tr><td bgcolor=#6a7a8a><pre>
 im->rgb_data;   /* pointer to unsigned char RGB data */
 im->alpha_data; /* pointer to unsigned char Alpha data */
 </pre></td></tr></table></center>
@@ -523,7 +523,7 @@ values for the Shape Color to R,G,B -1,-1,-1.
 The way to retrieve the shape color, examine it and set it is as follows. It
 is assumes images have been loaded, Imlib initialised etc. already:
 <p>
-<center><table width=100% border=1><tr><td bgcolor=#ffffff><pre>
+<center><table width=100% border=1><tr><td bgcolor=#6a7a8a><pre>
 ImlibData *id;
 ImlibImage *im;
 ImlibColor color;
@@ -597,7 +597,7 @@ values. These are calculated form the image's brightness, gamma, and
 contrast settings for the image as a whole and each red, green and blue
 channel. You can set and get these values as follows:
 <p>
-<center><table width=100% border=1><tr><td bgcolor=#ffffff><pre>
+<center><table width=100% border=1><tr><td bgcolor=#6a7a8a><pre>
 ImlibData *id;
 ImlibImage *im;
 ImlibColorModifier mod;
@@ -675,7 +675,7 @@ functions will not be mentioned, but it will be assumed you realise that it
 is required.
 <hr>
 <p>
-<center><table width=100% border=1><tr><td bgcolor=#ffffff><pre>
+<center><table width=100% border=1><tr><td bgcolor=#6a7a8a><pre>
 ImlibData *Imlib_init(Display *disp);
 void gdk_imlib_init();
 </td></tr></table></center>
@@ -702,7 +702,7 @@ Imlib can be told not to create images of greater than a certain size in
 bytes with the Shm_Max_Size option in the imrc file. Image and pixmap caches
 can be turned on or off and set to their sizes here as well.
 <p>
-<center><table width=100% border=1><tr><td bgcolor=#ffffff><pre>
+<center><table width=100% border=1><tr><td bgcolor=#6a7a8a><pre>
 ImlibData *Imlib_init_with_params(Display *disp, ImlibInitParams *p);
 void gdk_imlib_init_params(GdkImlibInitParams *p);
 </td></tr></table></center>
@@ -713,7 +713,7 @@ options with cauthion, as it is assumed you know what you are doing.
 <p>
 The structure containing the parameters to giv Imlib is:
 <p>
-<center><table width=100% border=1><tr><td bgcolor=#ffffff><pre>
+<center><table width=100% border=1><tr><td bgcolor=#6a7a8a><pre>
 typedef struct _ImlibInitParams
 {
    int   flags;
@@ -777,7 +777,7 @@ that structure member is used. the members are as follows:
 Remember the member is ignored if the flags does not contain the bit set for
 that member - if the bit is set, then that member is used.
 <p>
-<center><table width=100% border=1><tr><td bgcolor=#ffffff><pre>
+<center><table width=100% border=1><tr><td bgcolor=#6a7a8a><pre>
 int Imlib_get_render_type(ImlibData *id);
 gint gdk_imlib_get_render_type();
 </td></tr></table></center>
@@ -815,7 +815,7 @@ quality renderer that only has effect in 15 and 16 bit depths. It dithers in
 these modes to provide the highest quality images. This option is turned on
 by the HighQuality option in the user's or system imrc file.
 <p>
-<center><table width=100% border=1><tr><td bgcolor=#ffffff><pre>
+<center><table width=100% border=1><tr><td bgcolor=#6a7a8a><pre>
 void Imlib_set_render_type(ImlibData *id, int rend_type);
 void gdk_imlib_set_render_type(gint rend_type);
 </td></tr></table></center>
@@ -826,7 +826,7 @@ settings provided by the user, system and Xserver. This is primarily here, in
 conjunction with Imlib_get_render_type or gdk_imlib_get_render_type to allow
 fine tweaking by applications of Imlib's rendering performance.
 <p>
-<center><table width=100% border=1><tr><td bgcolor=#ffffff><pre>
+<center><table width=100% border=1><tr><td bgcolor=#6a7a8a><pre>
 int Imlib_load_colors(ImlibData *id, char *file);
 gint gdk_imlib_load_colors(char *file);
 </td></tr></table></center>
@@ -837,7 +837,7 @@ calling this. There may be strange effects when changing palettes "on the
 fly" in 8-bit color. All pixmaps should be re-rendered to inherit this new
 palette.
 <p>
-<center><table width=100% border=1><tr><td bgcolor=#ffffff><pre>
+<center><table width=100% border=1><tr><td bgcolor=#6a7a8a><pre>
 ImlibImage *Imlib_load_image(ImlibData *id, char *file);
 GdkImlibImage *gdk_imlib_load_image(char *file);
 </td></tr></table></center>
@@ -856,7 +856,7 @@ Imlib can, if all native loaders are compiled in, read JPEG, GIF, PPM, PGM,
 XPM, PNG, TIFF and EIM image formats. GIF, PNG, XPM, TIFF  and EIM images all 
 retain their transparency information when being loaded.
 <p>
-<center><table width=100% border=1><tr><td bgcolor=#ffffff><pre>
+<center><table width=100% border=1><tr><td bgcolor=#6a7a8a><pre>
 int Imlib_best_color_match(ImlibData *id, int *r, int *g, int *b);
 gint gdk_imlib_best_color_match(gint *r, gint *g, gint *b);
 </td></tr></table></center>
@@ -868,7 +868,7 @@ Imlib returns the closest match to the allocated palette and the rgb members
 are set to the actual RGB value of the color returned, The function always
 returns the pixel value of this color.
 <p>
-<center><table width=100% border=1><tr><td bgcolor=#ffffff><pre>
+<center><table width=100% border=1><tr><td bgcolor=#6a7a8a><pre>
 int Imlib_render(ImlibData *id, ImlibImage *image, int width, int height);
 gint gdk_imlib_render(GdkImlibImage *image, gint width, gint height);
 </td></tr></table></center>
@@ -880,7 +880,7 @@ If any pixmaps were already existant in the image, these are destroyed upon
 re-rendering the image. If Imlib was unable for some reason to render the 
 Image to that pixmap, it will return 0, otherwise it will return 1.
 <p>
-<center><table width=100% border=1><tr><td bgcolor=#ffffff><pre>
+<center><table width=100% border=1><tr><td bgcolor=#6a7a8a><pre>
 Pixmap Imlib_copy_image(ImlibData *id, ImlibImage *image);
 GdkPixmap *gdk_imlib_copy_image(GdkImlibImage *image);
 </td></tr></table></center>
@@ -891,7 +891,7 @@ it. Do NOT use the move functions for pixmap that will be modified later.
 You can make multiple copies of the pixmap by calling this function
 repeatedly. If no pixmap was rendered it will return 0 or NULL.
 <p>
-<center><table width=100% border=1><tr><td bgcolor=#ffffff><pre>
+<center><table width=100% border=1><tr><td bgcolor=#6a7a8a><pre>
 Pixmap Imlib_copy_mask(ImlibData *id, ImlibImage *image);
 GdkBitmap *gdk_imlib_copy_mask(GdkImlibImage *image);
 </td></tr></table></center>
@@ -900,7 +900,7 @@ This is the Imlib_copy_image or gdk_imlib_copy_image functions, but it returns
 the mask for the image. If there is no transparency, or no mask was rendered, 
 it returns 0, or NULL.
 <p>
-<center><table width=100% border=1><tr><td bgcolor=#ffffff><pre>
+<center><table width=100% border=1><tr><td bgcolor=#6a7a8a><pre>
 Pixmap Imlib_move_image(ImlibData *id, ImlibImage *image);
 GdkPixmap *gdk_imlib_move_image(GdkImlibImage *image);
 </td></tr></table></center>
@@ -910,7 +910,7 @@ image pixmap (setting it to 0 or NULL) inside the image structure. If you do
 not need to modify the pixmap - ie just use it, this is the function you
 should call. It is faster than Imlib_copy_image or gdk_imlib_copy_image.
 <p>
-<center><table width=100% border=1><tr><td bgcolor=#ffffff><pre>
+<center><table width=100% border=1><tr><td bgcolor=#6a7a8a><pre>
 Pixmap Imlib_move_mask(ImlibData *id, ImlibImage *image);
 GdkBitmap *gdk_imlib_move_mask(GdkImlibImage *image);
 </td></tr></table></center>
@@ -918,7 +918,7 @@ GdkBitmap *gdk_imlib_move_mask(GdkImlibImage *image);
 This is the same as Imlib_move_image or gdk_imlib_move_image but returns the
 mask for the rendered Image.
 <p>
-<center><table width=100% border=1><tr><td bgcolor=#ffffff><pre>
+<center><table width=100% border=1><tr><td bgcolor=#6a7a8a><pre>
 void Imlib_destroy_image(ImlibData *id, ImlibImage *image);
 void gdk_imlib_destroy_image(GdkImlibImage *image);
 </td></tr></table></center>
@@ -928,7 +928,7 @@ reference count on that image and if at zero, it enters the cache. Once the
 cache fills and this image gets to the oldest part of the cache, it will be
 freed when the cache exceeds its boundaries.
 <p>
-<center><table width=100% border=1><tr><td bgcolor=#ffffff><pre>
+<center><table width=100% border=1><tr><td bgcolor=#6a7a8a><pre>
 void Imlib_kill_image(ImlibData *id, ImlibImage *image);
 void gdk_imlib_kill_image(GdkImlibImage *image);
 </td></tr></table></center>
@@ -937,7 +937,7 @@ This does the same as Imlib_destroy_image or gdk_imlib_destroy_image but
 forces it to be freed immediately once its reference count hits zero - ie it
 does not hang around in the cache.
 <p>
-<center><table width=100% border=1><tr><td bgcolor=#ffffff><pre>
+<center><table width=100% border=1><tr><td bgcolor=#6a7a8a><pre>
 void Imlib_free_colors(ImlibData *id);
 void gdk_imlib_free_colors();
 </td></tr></table></center>
@@ -946,7 +946,7 @@ This frees the current colormap used by Imlib and all the colors in it,
 setting the color count to zero. It is not a good idea to go rendering
 anything in an 8-bit display if the colors are freed.
 <p>
-<center><table width=100% border=1><tr><td bgcolor=#ffffff><pre>
+<center><table width=100% border=1><tr><td bgcolor=#6a7a8a><pre>
 void Imlib_free_pixmap(ImlibData *id, Pixmap pixmap);
 void gdk_imlib_free_pixmap(GdkPixmap *pixmap);
 </td></tr></table></center>
@@ -959,14 +959,14 @@ will free them as normal. This function ALSO frees (or reduces the reference
 count) on the associated mask pixmap for that image pixmap, if there is a
 mask, so you do not need to free the mask separately.
 <p>
-<center><table width=100% border=1><tr><td bgcolor=#ffffff><pre>
+<center><table width=100% border=1><tr><td bgcolor=#6a7a8a><pre>
 void Imlib_get_image_border(ImlibData *id, ImlibImage *image, ImlibBorder *border);
 void gdk_imlib_get_image_border(GdkImlibImage *image, GdkImlibBorder *border);
 </td></tr></table></center>
 <p>
 This function returns the image's border attributes in the  border structure.
 <p>
-<center><table width=100% border=1><tr><td bgcolor=#ffffff><pre>
+<center><table width=100% border=1><tr><td bgcolor=#6a7a8a><pre>
 void Imlib_set_image_border(ImlibData *id, ImlibImage *image, ImlibBorder *border);
 void gdk_imlib_set_image_border(GdkImlibImage *image, GdkImlibBorder *border);
 </td></tr></table></center>
@@ -974,7 +974,7 @@ void gdk_imlib_set_image_border(GdkImlibImage *image, GdkImlibBorder *border);
 This function sets the image's border attributes to those in the border
 structure.
 <p>
-<center><table width=100% border=1><tr><td bgcolor=#ffffff><pre>
+<center><table width=100% border=1><tr><td bgcolor=#6a7a8a><pre>
 void Imlib_get_image_shape(ImlibData *id, ImlibImage *image, ImlibColor *color);
 void gdk_imlib_get_image_shape(GdkImlibImage *image, GdkImlibColor *color);
 </td></tr></table></center>
@@ -983,7 +983,7 @@ This function returns the color of the transparent color in an image - if
 there is no transparent color the RGB members are all set to -1, otherwise
 they are set to the RGB value of this color.
 <p>
-<center><table width=100% border=1><tr><td bgcolor=#ffffff><pre>
+<center><table width=100% border=1><tr><td bgcolor=#6a7a8a><pre>
 void Imlib_set_image_shape(ImlibData *id, ImlibImage *image, ImlibColor *color);
 void gdk_imlib_set_image_shape(GdkImlibImage *image, GdkImlibColor *color);
 </td></tr></table></center>
@@ -991,7 +991,7 @@ void gdk_imlib_set_image_shape(GdkImlibImage *image, GdkImlibColor *color);
 This function sets the transparent color to the RGB values in the color
 structure. If any of these are -1, transparency for that image is turned off.
 <p>
-<center><table width=100% border=1><tr><td bgcolor=#ffffff><pre>
+<center><table width=100% border=1><tr><td bgcolor=#6a7a8a><pre>
 int Imlib_save_image_to_eim(ImlibData *id, ImlibImage *image, char *file);
 gint gdk_imlib_save_image_to_eim(GdkImlibImage *image, char *file);
 </td></tr></table></center>
@@ -999,7 +999,7 @@ gint gdk_imlib_save_image_to_eim(GdkImlibImage *image, char *file);
 This Function saves the image into an EIM format image. EIM image format is
 currently under construction. Please come back later.
 <p>
-<center><table width=100% border=1><tr><td bgcolor=#ffffff><pre>
+<center><table width=100% border=1><tr><td bgcolor=#6a7a8a><pre>
 int Imlib_add_image_to_eim(ImlibData *id, ImlibImage *image, char *file);
 gint gdk_imlib_add_image_to_eim(GdkImlibImage *image, char *file);
 </td></tr></table></center>
@@ -1007,7 +1007,7 @@ gint gdk_imlib_add_image_to_eim(GdkImlibImage *image, char *file);
 This Function adds the image into an EIM file that currently exists. EIM 
 image format is currently under construction. Please come back later.
 <p>
-<center><table width=100% border=1><tr><td bgcolor=#ffffff><pre>
+<center><table width=100% border=1><tr><td bgcolor=#6a7a8a><pre>
 int Imlib_save_image_to_ppm(ImlibData *id, ImlibImage *image, char *file);
 gint gdk_imlib_save_image_to_ppm(GdkImlibImage *image, char *file);
 </td></tr></table></center>
@@ -1015,7 +1015,7 @@ gint gdk_imlib_save_image_to_ppm(GdkImlibImage *image, char *file);
 This function saves the current image as a binary format PPM file. If it is
 successful, it returns 1, otherwise it returns 0.
 <p>
-<center><table width=100% border=1><tr><td bgcolor=#ffffff><pre>
+<center><table width=100% border=1><tr><td bgcolor=#6a7a8a><pre>
 int Imlib_load_file_to_pixmap(ImlibData *id, char *filename, Pixmap *pmap, Pixmap *mask);
 gint gdk_imlib_load_file_to_pixmap(char *filename, GdkPixmap **pmap, GdkBitmap **mask);
 </td></tr></table></center>
@@ -1028,7 +1028,7 @@ after loading. The pixmaps should be freed by Imlib_free_pixmap or
 gdk_imlib_free_pixmap. This is a nigh identical replacement for 
 XpmReadFileToPixmap or gdk_pixmap_create_from_xpm.
 <p>
-<center><table width=100% border=1><tr><td bgcolor=#ffffff><pre>
+<center><table width=100% border=1><tr><td bgcolor=#6a7a8a><pre>
 void Imlib_set_image_modifier(ImlibData *id, ImlibImage *im, ImlibColorModifier *mod);
 void gdk_imlib_set_image_modifier(GdkImlibImage *im, GdkImlibColorModifier *mod);
 </td></tr></table></center>
@@ -1037,7 +1037,7 @@ This function sets the image's brightness, contrast and gamma settings to
 those defined in the mod structure. You need to re-render the image to make
 this have any effect.
 <p>
-<center><table width=100% border=1><tr><td bgcolor=#ffffff><pre>
+<center><table width=100% border=1><tr><td bgcolor=#6a7a8a><pre>
 void Imlib_set_image_red_modifier(ImlibData *id, ImlibImage *im, ImlibColorModifier *mod);
 void gdk_imlib_set_image_red_modifier(GdkImlibImage *im, GdkImlibColorModifier *mod);
 </td></tr></table></center>
@@ -1046,7 +1046,7 @@ This function sets the image's red channel brightness, contrast and gamma
 settings to those defined in the mod structure. You need to re-render the 
 image to make this have any effect.
 <p>
-<center><table width=100% border=1><tr><td bgcolor=#ffffff><pre>
+<center><table width=100% border=1><tr><td bgcolor=#6a7a8a><pre>
 void Imlib_set_image_green_modifier(ImlibData *id, ImlibImage *im, ImlibColorModifier *mod);
 void gdk_imlib_set_image_green_modifier(GdkImlibImage *im, GdkImlibColorModifier *mod);
 </td></tr></table></center>
@@ -1055,7 +1055,7 @@ This function sets the image's green channel brightness, contrast and gamma
 settings to those defined in the mod structure. You need to re-render the 
 image to make this have any effect.
 <p>
-<center><table width=100% border=1><tr><td bgcolor=#ffffff><pre>
+<center><table width=100% border=1><tr><td bgcolor=#6a7a8a><pre>
 void Imlib_set_image_blue_modifier(ImlibData *id, ImlibImage *im, ImlibColorModifier *mod);
 void gdk_imlib_set_image_blue_modifier(GdkImlibImage *im, GdkImlibColorModifier *mod);
 </td></tr></table></center>
@@ -1064,7 +1064,7 @@ This function sets the image's blue channel brightness, contrast and gamma
 settings to those defined in the mod structure. You need to re-render the 
 image to make this have any effect.
 <p>
-<center><table width=100% border=1><tr><td bgcolor=#ffffff><pre>
+<center><table width=100% border=1><tr><td bgcolor=#6a7a8a><pre>
 void Imlib_get_image_modifier(ImlibData *id, ImlibImage *im, ImlibColorModifier *mod);
 void gdk_imlib_get_image_modifier(GdkImlibImage *im, GdkImlibColorModifier *mod);
 </td></tr></table></center>
@@ -1072,7 +1072,7 @@ void gdk_imlib_get_image_modifier(GdkImlibImage *im, GdkImlibColorModifier *mod)
 This function returns the image's current modifier settings in the mod
 structure.
 <p>
-<center><table width=100% border=1><tr><td bgcolor=#ffffff><pre>
+<center><table width=100% border=1><tr><td bgcolor=#6a7a8a><pre>
 void Imlib_get_image_red_modifier(ImlibData *id, ImlibImage *im, ImlibColorModifier *mod);
 void gdk_imlib_get_image_red_modifier(GdkImlibImage *im, GdkImlibColorModifier *mod);
 </td></tr></table></center>
@@ -1080,7 +1080,7 @@ void gdk_imlib_get_image_red_modifier(GdkImlibImage *im, GdkImlibColorModifier *
 This function returns the image's red channel modifier settings in the mod
 structure.
 <p>
-<center><table width=100% border=1><tr><td bgcolor=#ffffff><pre>
+<center><table width=100% border=1><tr><td bgcolor=#6a7a8a><pre>
 void Imlib_get_image_green_modifier(ImlibData *id, ImlibImage *im, ImlibColorModifier *mod);
 void gdk_imlib_get_image_green_modifier(GdkImlibImage *im, GdkImlibColorModifier *mod);
 </td></tr></table></center>
@@ -1088,7 +1088,7 @@ void gdk_imlib_get_image_green_modifier(GdkImlibImage *im, GdkImlibColorModifier
 This function returns the image's green channel modifier settings in the mod
 structure.
 <p>
-<center><table width=100% border=1><tr><td bgcolor=#ffffff><pre>
+<center><table width=100% border=1><tr><td bgcolor=#6a7a8a><pre>
 void Imlib_get_image_blue_modifier(ImlibData *id, ImlibImage *im, ImlibColorModifier *mod);
 void gdk_imlib_get_image_blue_modifier(GdkImlibImage *im, GdkImlibColorModifier *mod);
 </td></tr></table></center>
@@ -1096,7 +1096,7 @@ void gdk_imlib_get_image_blue_modifier(GdkImlibImage *im, GdkImlibColorModifier 
 This function returns the image's blue channel modifier settings in the mod
 structure.
 <p>
-<center><table width=100% border=1><tr><td bgcolor=#ffffff><pre>
+<center><table width=100% border=1><tr><td bgcolor=#6a7a8a><pre>
 void Imlib_set_image_red_curve(ImlibData *id, ImlibImage *im, unsigned char *mod);
 void gdk_imlib_set_image_red_curve(GdkImlibImage *im, unsigned char *mod);
 </td></tr></table></center>
@@ -1107,7 +1107,7 @@ unsigned char values that map newvalue=mod[value]. This overrides the
 current modifier table generated by any gamma, brightness or contrast
 settings.
 <p>
-<center><table width=100% border=1><tr><td bgcolor=#ffffff><pre>
+<center><table width=100% border=1><tr><td bgcolor=#6a7a8a><pre>
 void Imlib_set_image_green_curve(ImlibData *id, ImlibImage *im, unsigned char *mod);
 void gdk_imlib_set_image_green_curve(GdkImlibImage *im, unsigned char *mod);
 </td></tr></table></center>
@@ -1118,7 +1118,7 @@ unsigned char values that map newvalue=mod[value]. This overrides the
 current modifier table generated by any gamma, brightness or contrast
 settings.
 <p>
-<center><table width=100% border=1><tr><td bgcolor=#ffffff><pre>
+<center><table width=100% border=1><tr><td bgcolor=#6a7a8a><pre>
 void Imlib_set_image_blue_curve(ImlibData *id, ImlibImage *im, unsigned char *mod);
 void gdk_imlib_set_image_blue_curve(GdkImlibImage *im, unsigned char *mod);
 </td></tr></table></center>
@@ -1129,7 +1129,7 @@ unsigned char values that map newvalue=mod[value]. This overrides the
 current modifier table generated by any gamma, brightness or contrast
 settings.
 <p>
-<center><table width=100% border=1><tr><td bgcolor=#ffffff><pre>
+<center><table width=100% border=1><tr><td bgcolor=#6a7a8a><pre>
 void Imlib_get_image_red_curve(ImlibData *id, ImlibImage *im, unsigned char *mod);
 void gdk_imlib_set_image_red_curve(GdkImlibImage *im, unsigned char *mod);
 </td></tr></table></center>
@@ -1137,7 +1137,7 @@ void gdk_imlib_set_image_red_curve(GdkImlibImage *im, unsigned char *mod);
 This function returns the current red channel mapping table curve by copying
 its contents into the 256 element array of unsigned char's pointed to by mod.
 <p>
-<center><table width=100% border=1><tr><td bgcolor=#ffffff><pre>
+<center><table width=100% border=1><tr><td bgcolor=#6a7a8a><pre>
 void Imlib_get_image_green_curve(ImlibData *id, ImlibImage *im, unsigned char *mod);
 void gdk_imlib_get_image_green_curve(GdkImlibImage *im, unsigned char *mod);
 </td></tr></table></center>
@@ -1145,7 +1145,7 @@ void gdk_imlib_get_image_green_curve(GdkImlibImage *im, unsigned char *mod);
 This function returns the current green channel mapping table curve by copying
 its contents into the 256 element array of unsigned char's pointed to by mod.
 <p>
-<center><table width=100% border=1><tr><td bgcolor=#ffffff><pre>
+<center><table width=100% border=1><tr><td bgcolor=#6a7a8a><pre>
 void Imlib_get_image_blue_curve(ImlibData *id, ImlibImage *im, unsigned char *mod);
 void gdk_imlib_get_image_blue_curve(GdkImlibImage *im, unsigned char *mod);
 </td></tr></table></center>
@@ -1153,7 +1153,7 @@ void gdk_imlib_get_image_blue_curve(GdkImlibImage *im, unsigned char *mod);
 This function returns the current blue channel mapping table curve by copying
 its contents into the 256 element array of unsigned char's pointed to by mod.
 <p>
-<center><table width=100% border=1><tr><td bgcolor=#ffffff><pre>
+<center><table width=100% border=1><tr><td bgcolor=#6a7a8a><pre>
 void Imlib_apply_modifiers_to_rgb(ImlibData *id, ImlibImage *im);
 void gdk_imlib_apply_modifiers_to_rgb(GdkImlibImage *im);
 </td></tr></table></center>
@@ -1162,7 +1162,7 @@ This function takes all the current RGB mapping tables and modifies the
 original 24-bit RGB data to match. This dirties all cached pixmaps of that
 image, and you will need to re-render the image for it to take any effect.
 <p>
-<center><table width=100% border=1><tr><td bgcolor=#ffffff><pre>
+<center><table width=100% border=1><tr><td bgcolor=#6a7a8a><pre>
 void Imlib_changed_image(ImlibData *id, ImlibImage *im);
 void gdk_imlib_changed_image(GdkImlibImage *im);
 </td></tr></table></center>
@@ -1171,7 +1171,7 @@ If you go and modify the image's RGB data yourself via your own routines,
 once finished and before rendering any more pixmaps, you should call this
 function to inform Imlib that the contents of the image have changed.
 <p>
-<center><table width=100% border=1><tr><td bgcolor=#ffffff><pre>
+<center><table width=100% border=1><tr><td bgcolor=#6a7a8a><pre>
 void Imlib_apply_image(ImlibData *id, ImlibImage *im, Window p);
 void gdk_imlib_apply_image(GdkImlibImage *im, GdkWindow *p);
 </td></tr></table></center>
@@ -1181,7 +1181,7 @@ as p, sets the window's background pixmap to be this rendered pixmap, and
 sets the window's shape mask to the the mask for the image if it has any
 transparency. It frees both pixmaps after use.
 <p>
-<center><table width=100% border=1><tr><td bgcolor=#ffffff><pre>
+<center><table width=100% border=1><tr><td bgcolor=#6a7a8a><pre>
 void Imlib_paste_image(ImlibData *id, ImlibImage *im, Window p, int x, int y, int w, int h);
 void gdk_imlib_paste_image(GdkImlibImage *im, GdkWindow *p, gint x, gint y, gint w, gint h);
 </td></tr></table></center>
@@ -1192,7 +1192,7 @@ determine which pixels are actually drawn. It is effectively like pasting
 the image at that size at that location. Both the pixmap and the mask are
 freed afterwards.
 <p>
-<center><table width=100% border=1><tr><td bgcolor=#ffffff><pre>
+<center><table width=100% border=1><tr><td bgcolor=#6a7a8a><pre>
 void Imlib_paste_image_border(ImlibData *id, ImlibImage *im, Window p, int x, int y, int w, int h);
 void gdk_imlib_paste_image_border(GdkImlibImage *im, GdkWindow *p, gint x, gint y, gint w, gint h);
 </td></tr></table></center>
@@ -1201,7 +1201,7 @@ This function works just like Imlib_paste_image or gdk_imlib_paste_image,
 but only pastes the borders of the image. This is handy if the image is
 being used to define bevel borders on a button for maximum efficiency.
 <p>
-<center><table width=100% border=1><tr><td bgcolor=#ffffff><pre>
+<center><table width=100% border=1><tr><td bgcolor=#6a7a8a><pre>
 void Imlib_flip_image_horizontal(ImlibData *id, ImlibImage *im);
 void gdk_imlib_flip_image_horizontal(GdkImlibImage *im);
 </td></tr></table></center>
@@ -1209,7 +1209,7 @@ void gdk_imlib_flip_image_horizontal(GdkImlibImage *im);
 This flips the RGB data in an image horizontally. You need to re-render the 
 image for it to take effect.
 <p>
-<center><table width=100% border=1><tr><td bgcolor=#ffffff><pre>
+<center><table width=100% border=1><tr><td bgcolor=#6a7a8a><pre>
 void Imlib_flip_image_vertical(ImlibData *id, ImlibImage *im);
 void gdk_imlib_flip_image_vertical(GdkImlibImage *im);
 </td></tr></table></center>
@@ -1217,7 +1217,7 @@ void gdk_imlib_flip_image_vertical(GdkImlibImage *im);
 This flips the RGB data in an image vertically. You need to re-render the 
 image for it to take effect.
 <p>
-<center><table width=100% border=1><tr><td bgcolor=#ffffff><pre>
+<center><table width=100% border=1><tr><td bgcolor=#6a7a8a><pre>
 void Imlib_rotate_image(ImlibData *id, ImlibImage *im, int d);
 void gdk_imlib_rotate_image(GdkImlibImage *im, gint d);
 </td></tr></table></center>
@@ -1230,7 +1230,7 @@ image any orientation in steps of 90 degrees. This function needs some work
 (it must use the d parameter to work out which way to rotate and how much - 1
 rotates clockwise, -1 counter-clockwise by 90 degrees, 2 or -2 180 degrees etc.)
 <p>
-<center><table width=100% border=1><tr><td bgcolor=#ffffff><pre>
+<center><table width=100% border=1><tr><td bgcolor=#6a7a8a><pre>
 ImlibImage *Imlib_create_image_from_data(ImlibData *id, unsigned char *data, unsigned char *alpha, int w, int h);
 GdkImlibImage *gdk_imlib_create_image_from_data(unsigned char *data, unsigned char *alpha, gint w, gint h);
 </td></tr></table></center>
@@ -1243,7 +1243,7 @@ the image, or NULL of unsuccessful. The data pointed to is copied into the
 image. This means you may free or destroy this original data or do with it
 as you see fit without affecting Imlib's image.
 <p>
-<center><table width=100% border=1><tr><td bgcolor=#ffffff><pre>
+<center><table width=100% border=1><tr><td bgcolor=#6a7a8a><pre>
 ImlibImage *Imlib_clone_image(ImlibData *id, ImlibImage *im);
 GdkImlibImage *gdk_imlib_clone_image(GdkImlibImage *im);
 </td></tr></table></center>
@@ -1251,7 +1251,7 @@ GdkImlibImage *gdk_imlib_clone_image(GdkImlibImage *im);
 This function makes a duplicate copy of the image pointed to. If
 unsuccessful it returns NULL, otherwise it returns a pointer to the new image.
 <p>
-<center><table width=100% border=1><tr><td bgcolor=#ffffff><pre>
+<center><table width=100% border=1><tr><td bgcolor=#6a7a8a><pre>
 ImlibImage *Imlib_clone_scaled_image(ImlibData *id, ImlibImage *im, int w, int h);
 GdkImlibImage *gdk_imlib_clone_scaled_image(GdkImlibImage *im, int w, int h);
 </td></tr></table></center>
@@ -1260,7 +1260,7 @@ This Function creates a duplicate image scaled to the size w x h of the
 image pointed to - the 24-bit data is what is scaled. If successful it
 returns a pointer to the new image or NULL if not.
 <p>
-<center><table width=100% border=1><tr><td bgcolor=#ffffff><pre>
+<center><table width=100% border=1><tr><td bgcolor=#6a7a8a><pre>
 int Imlib_get_fallback(ImlibData *id);
 gint gdk_imlib_get_fallback();
 </td></tr></table></center>
@@ -1268,7 +1268,7 @@ gint gdk_imlib_get_fallback();
 This function gets the status of ImageMagick and NETPBM fallback mechanisms.
 1 means they are active, 0 means they are not.
 <p>
-<center><table width=100% border=1><tr><td bgcolor=#ffffff><pre>
+<center><table width=100% border=1><tr><td bgcolor=#6a7a8a><pre>
 void Imlib_set_fallback(ImlibData *id, int fallback);
 void gdk_imlib_set_fallback(gint fallback);
 </td></tr></table></center>
@@ -1276,7 +1276,7 @@ void gdk_imlib_set_fallback(gint fallback);
 This function sets the state of the ImageMagick and NETPBM fallback
 mechanisms. 1 makes them active, 0 deactivates them.
 <p>
-<center><table width=100% border=1><tr><td bgcolor=#ffffff><pre>
+<center><table width=100% border=1><tr><td bgcolor=#6a7a8a><pre>
 Visual *Imlib_get_visual(ImlibData *id);
 GdkVisual *gdk_imlib_get_visual();
 </td></tr></table></center>
@@ -1284,7 +1284,7 @@ GdkVisual *gdk_imlib_get_visual();
 This function returns the Visual that Imlib has decided to use (accoridng to
 imrc and XServer capabilities).
 <p>
-<center><table width=100% border=1><tr><td bgcolor=#ffffff><pre>
+<center><table width=100% border=1><tr><td bgcolor=#6a7a8a><pre>
 Colormap Imlib_get_colormap(ImlibData *id);
 GdkColormap *gdk_imlib_get_colormap();
 </td></tr></table></center>
@@ -1292,7 +1292,7 @@ GdkColormap *gdk_imlib_get_colormap();
 This function returns the Colormap that Imlib has chosen to use for its
 visual.
 <p>
-<center><table width=100% border=1><tr><td bgcolor=#ffffff><pre>
+<center><table width=100% border=1><tr><td bgcolor=#6a7a8a><pre>
 char *Imlib_get_sysconfig(ImlibData *id);
 gchar *gdk_imlib_get_sysconfig();
 </td></tr></table></center>
@@ -1300,7 +1300,7 @@ gchar *gdk_imlib_get_sysconfig();
 This function returns a pointer to a copy of the path to the system imrc
 file. When finished you should free this string.
 <p>
-<center><table width=100% border=1><tr><td bgcolor=#ffffff><pre>
+<center><table width=100% border=1><tr><td bgcolor=#6a7a8a><pre>
 ImlibImage *Imlib_create_image_from_xpm_data(ImlibData *id, char **data);
 GdkImlibImage *gdk_imlib_create_image_from_xpm_data(char **data);
 </td></tr></table></center>
@@ -1309,7 +1309,7 @@ This function creates an Imlib image out of an inlined XPM image
 (ie. #include "file.xpm"). data is the pointer to the XPM data.
 <p>
 <p>
-<center><table width=100% border=1><tr><td bgcolor=#ffffff><pre>
+<center><table width=100% border=1><tr><td bgcolor=#6a7a8a><pre>
 gint gdk_imlib_data_to_pixmap(char **data, GdkPixmap **pmap, GdkBitmap **mask);
 int Imlib_data_to_pixmap(ImlibData *id, char **data, Pixmap *pmap, Pixmap *mask);
 </td></tr></table></center>
@@ -1321,7 +1321,7 @@ transparency the mask is set to 0 or NULL. The pmap is set to the pixmap
 created. If the operation fails 0 is returned, otherwise 1 is returned.
 <p>
 <hr>
-<center><table width=100% border=1><tr><td bgcolor=#ffffff><pre>
+<center><table width=100% border=1><tr><td bgcolor=#6a7a8a><pre>
 void gdk_imlib_crop_image(GdkImlibImage *im, gint x, gint y, gint w, gint h);
 void Imlib_crop_image(ImlibData *id, ImlibImage *im, int x, int y, int w, int h);
 </td></tr></table></center>
@@ -1333,7 +1333,7 @@ width w and height h in pixels. These pixels are pixels in the original
 version.
 <p>
 <hr>
-<center><table width=100% border=1><tr><td bgcolor=#ffffff><pre>
+<center><table width=100% border=1><tr><td bgcolor=#6a7a8a><pre>
 GdkImlibImage *gdk_imlib_crop_and_clone_image(GdkImlibImage *im, gint x, gint y, gint w, gint h);
 ImlibImage *Imlib_crop_and_clone_image(ImlibData *id, ImlibImage *im, int x, int y, int w, int h);
 </td></tr></table></center>
@@ -1346,7 +1346,7 @@ version. Instead of modifying the original, it makes a copy of the Image and
 returns that. NULL is returned if the crop fails.
 <p>
 <hr>
-<center><table width=100% border=1><tr><td bgcolor=#ffffff><pre>
+<center><table width=100% border=1><tr><td bgcolor=#6a7a8a><pre>
 void gdk_imlib_best_color_get(GdkColor *c);
 </td></tr></table></center>
 <p>
@@ -1358,7 +1358,7 @@ conserving colors wherever possible. In truecolor and higher it will give
 exact matches.
 <p>
 <hr>
-<center><table width=100% border=1><tr><td bgcolor=#ffffff><pre>
+<center><table width=100% border=1><tr><td bgcolor=#6a7a8a><pre>
 gint gdk_imlib_save_image(GdkImlibImage *im, char *file, GdkImlibSaveInfo *info);
 int Imlib_save_image(ImlibData *id, ImlibImage *im, char *file, ImlibSaveInfo *info);
 </td></tr></table></center>
@@ -1388,7 +1388,7 @@ PAGE_SIZE_LEGAL, PAGE_SIZE_A4, PAGE_SIZE_A3, PAGE_SIZE_A5, or
 PAGE_SIZE_FOLIO. This specifies the page size for the postscript output.
 <p>
 <hr>
-<center><table width=100% border=1><tr><td bgcolor=#ffffff><pre>
+<center><table width=100% border=1><tr><td bgcolor=#6a7a8a><pre>
 GdkImlibImage *gdk_imlib_create_image_from_drawable(GdkWindow *gwin, GdkBitmap *gmask, int x, int y, int width, int height);
 ImlibImage *Imlib_create_image_from_drawable(ImlibData *id, Drawable win, Pixmap mask, int x, int y, int width, int height);
 </td></tr></table></center>
@@ -1409,7 +1409,7 @@ Here are some data types that you may be interested in (note I have only
 listed the structure members that you should view or play with. It is not
 advisable to play with any structure members, but inspecting them is fine).
 <p>
-<center><table width=100% border=1><tr><td bgcolor=#ffffff><pre>
+<center><table width=100% border=1><tr><td bgcolor=#6a7a8a><pre>
 typedef struct _ImlibBorder
 {
    int left,right;
@@ -1426,7 +1426,7 @@ typedef struct _GdkImlibBorder
 This is the structure containing the border pixel settings in pixels from
 their respective sides. Normally all images have borders of 0,0,0,0.
 <p>
-<center><table width=100% border=1><tr><td bgcolor=#ffffff><pre>
+<center><table width=100% border=1><tr><td bgcolor=#6a7a8a><pre>
 typedef struct _ImlibColor
 {
    int r,g,b;
@@ -1442,7 +1442,7 @@ The r,g and b members are ints in the range 0 - 255. If any value is -1, and
 this is used to set or get that shape color, the shape color is either off, 
 or will be turned off.
 <p>
-<center><table width=100% border=1><tr><td bgcolor=#ffffff><pre>
+<center><table width=100% border=1><tr><td bgcolor=#6a7a8a><pre>
 typedef struct _ImlibColorModifier
 {
    int gamma;
@@ -1462,7 +1462,7 @@ The members of this structure are fairly self-evident. They are integers,
 with 256 being taken as a value of 1.0. Multiply your gamma, brightness and
 contrast values by 256 to get a value to put in these structures.
 <p>
-<center><table width=100% border=1><tr><td bgcolor=#ffffff><pre>
+<center><table width=100% border=1><tr><td bgcolor=#6a7a8a><pre>
 typedef struct _ImlibImage
 {
    int                   rgb_width,rgb_height;
@@ -1488,7 +1488,7 @@ not free this data or change the pointer. Currently the alpha_data member is
 unused and will remain NULL. Setting it to anything else may produce
 unexpected results.
 <p>
-<center><table width=100% border=1><tr><td bgcolor=#ffffff><pre>
+<center><table width=100% border=1><tr><td bgcolor=#6a7a8a><pre>
 typedef struct _ImlibSaveInfo
 {
    int quality;
@@ -1513,7 +1513,7 @@ typedef struct _GdkImlibSaveInfo
 These are the ImlibSaveInfo data structs - they may be expanded in future.
 Their use is described above in the imlib_save_image function.
 <p>
-<center><table width=100% border=1><tr><td bgcolor=#ffffff><pre>
+<center><table width=100% border=1><tr><td bgcolor=#6a7a8a><pre>
 typedef struct _ImlibData
 {
    struct _xdata
