@@ -169,6 +169,7 @@ unsigned long libast_debug_flags = 0;
  *
  * @section topiclist Topic List
  *
+ * -# @link DOXGRP_TYPES   Portable Data Types @endlink
  * -# @link DOXGRP_DEBUG   Debugging Subsystem @endlink
  * -# @link DOXGRP_MEM     Memory Management Subsystem @endlink
  * -# @link DOXGRP_STRINGS String Utility Routines @endlink

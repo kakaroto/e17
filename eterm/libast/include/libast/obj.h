@@ -71,7 +71,7 @@
  * @param t The object type as a non-quoted string (e.g., obj).
  * @return  An appropriate @c typedef and @c struct introducer.
  *
- * @see DOXGRP_OBJ
+ * @see DOXGRP_OBJ, SPIF_DEFINE_TYPE(), SPIF_DECL_OBJ_STRUCT()
  */
 #define SPIF_DEFINE_OBJ(t)               SPIF_DEFINE_TYPE(t, SPIF_DECL_OBJ_STRUCT(t)); SPIF_DECL_OBJ_STRUCT(t)
 /**
@@ -89,9 +89,42 @@
  *
  * @param t The object type as a non-quoted string (e.g., obj).
  *
- * @see DOXGRP_OBJ
+ * @see DOXGRP_OBJ, SPIF_CONST_TYPE()
  */
 #define SPIF_DECL_PARENT_TYPE(t)         SPIF_CONST_TYPE(t) parent
+
+/**
+ * Declare the class variable for objects of a given type.
+ *
+ * Every object type has a class variable which is declared using this
+ * macro.  Any instance of that type of object contains a pointer to
+ * this same class variable.  This class variable is both declared and
+ * referenced using this macro so that its actual name is abstracted.
+ *
+ * @param type The object type as a non-quoted string (e.g., obj).
+ * @return     The class variable for the given type.
+ *
+ * @see DOXGRP_OBJ
+ */
+#define SPIF_CLASS_VAR(type)             spif_ ## type ## _class
+/*@}*/
+
+/*@{*/
+/**
+ * @name Generic Object/Class Casting Macros
+ * Macros used to typecast arbitrary objects to generic types.
+ *
+ * This set of macros allows objects of any type (i.e., any object
+ * descended from the basic "obj" or "class" type) to be treated as
+ * generic object/class variables.  In other words, as long as an
+ * object is properly defined (i.e., properly descended from its basic
+ * type), it can be treated as that basic type via use of these
+ * macros.  The end result is that any operation which is defined for
+ * all objects can be executed on an object of any type without the
+ * need to know its exact type.
+ *
+ * @ingroup DOXGRP_OBJ
+ */
 
 /**
  * Cast an arbitrary class object to the generic class type.
@@ -108,7 +141,7 @@
  * @param cls An arbitrary class object.
  * @return    The class object cast to the generic type.
  *
- * @see DOXGRP_OBJ, SPIF_OBJ_CLASS()
+ * @see DOXGRP_OBJ, SPIF_OBJ_CLASS(), SPIF_CAST()
  */
 #define SPIF_CLASS(cls)                  (SPIF_CAST(class) (cls))
 
@@ -121,12 +154,48 @@
  * @param cls An arbitrary class object.
  * @return    The class object cast to the generic type.
  *
- * @see DOXGRP_OBJ, SPIF_CLASS()
+ * @see DOXGRP_OBJ, SPIF_CLASS(), SPIF_CONST_CAST()
  */
 #define SPIF_CONST_CLASS(cls)            (SPIF_CONST_CAST(class) (cls))
 
-/* Assembles the name of the object class variable. */
-#define SPIF_CLASS_VAR(type)             spif_ ## type ## _class
+/* FIXME:  Do we need the nullobj stuff?  I don't think so. */
+/* UNDOCUMENTED */
+#define SPIF_NULLOBJ(obj)                (SPIF_CAST(nullobj) (obj))
+
+/**
+ * Cast an arbitrary object to an obj.
+ *
+ * This macro allows an arbitrary object of any valid object type
+ * (i.e., anything derived from spif_obj_t) to be treated as a generic
+ * object (the spif_obj_t type).  Any method defined for generic
+ * objects (i.e., all objects) can be called on any object using a
+ * typecast such as this, and any function or macro which needs an
+ * arbitrary object can be passed any object using this macro.
+ *
+ * @param obj An object of any valid type.
+ * @return    A generic object reference to that object.
+ *
+ * @see DOXGRP_OBJ, SPIF_CAST()
+ */
+#define SPIF_OBJ(obj)                    (SPIF_CAST(obj) (obj))
+/*@}*/
+
+/*@{*/
+/**
+ * @name Generic Object Type Safety Macros
+ * Macros used to test, determine, and/or verify an object's type.
+ *
+ * Macros in this group are used to verify the validity of an object
+ * instance and its type.
+ *
+ * @ingroup DOXGRP_OBJ
+ */
+
+/* Check to see if a pointer references an obj. */
+#define SPIF_OBJ_IS_OBJ(o)               (SPIF_OBJ_IS_TYPE(o, obj))
+
+/* Used for testing the NULL-ness of objects. */
+#define SPIF_OBJ_ISNULL(o)               (SPIF_OBJ(o) == SPIF_NULL_TYPE(obj))
 
 /* Check to see if a pointer references an object.  Increasing levels
    of accuracy at the expense of some speed for the higher debug levels.
@@ -139,20 +208,18 @@
 #else
 #  define SPIF_OBJ_CHECK_TYPE(o, type)   SPIF_OBJ_IS_TYPE(o, type)
 #endif
+/*@}*/
 
-/* Cast an arbitrary object pointer to a pointer to a nullobj.  Coincidentally,
-   a nullobj *is* an arbitrary object pointer.  Even moreso than an obj. :-) */
-#define SPIF_NULLOBJ(obj)                ((spif_nullobj_t) (obj))
-
-/* Cast an arbitrary object pointer to an obj.  Any object of sufficient size
-   and/or complexity should be derived from this type. */
-#define SPIF_OBJ(obj)                    ((spif_obj_t) (obj))
-
-/* Check to see if a pointer references an obj. */
-#define SPIF_OBJ_IS_OBJ(o)               (SPIF_OBJ_IS_TYPE(o, obj))
-
-/* Used for testing the NULL-ness of objects. */
-#define SPIF_OBJ_ISNULL(o)               (SPIF_OBJ(o) == SPIF_NULL_TYPE(obj))
+/*@{*/
+/**
+ * @name Generic Object Instance Macros
+ * Macros used to operate on generic objects.
+ *
+ * This set of macros manipulates actual object instances in various
+ * ways.
+ *
+ * @ingroup DOXGRP_OBJ
+ */
 
 /* Access the implementation class member of an object. */
 #define SPIF_OBJ_CLASS(obj)              (SPIF_CLASS(SPIF_OBJ(obj)->cls))
