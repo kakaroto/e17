@@ -38,6 +38,8 @@ elicit_shots_save(Elicit *el)
   }
 
   db = e_db_open(buf);
+  
+  if (!db) return;
 
   for (l = esmart_container_elements_get(el->shots.cont); l; l = l->next, i++)
   {

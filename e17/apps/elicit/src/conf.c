@@ -9,6 +9,8 @@ elicit_config_init(Elicit *el)
 
   elicit_config_load();
   ecore_config_listen("theme", "/settings/theme", elicit_config_listener, 0, el);
+  /* cheap way to create ~/.e/apps/elicit */
+  elicit_config_save();
   return 1;
 }
 
