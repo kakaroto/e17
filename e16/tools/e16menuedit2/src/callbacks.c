@@ -166,11 +166,12 @@ void on_menu_info_activate (GtkMenuItem *menuitem,
 
   logo_image = lookup_libglade_widget ("info_window", "logo_image");
 
-
   gtk_image_set_from_file (GTK_IMAGE (logo_image),
                            SYSTEM_PIXMAPS_DIR"/e16menuedit2-icon.png");
 
-  gtk_widget_show (info_window);
+  gtk_window_set_icon_from_file (GTK_WINDOW (info_window),
+                                 SYSTEM_PIXMAPS_DIR"/e16menuedit2-icon.png",
+                                 NULL);
 }
 
 void on_toolbutton_save_clicked (GtkToolButton *toolbutton,
@@ -310,17 +311,18 @@ on_menu_properties_activate            (GtkMenuItem     *menuitem,
   GtkWidget *comboboxentry1;
 
   properties_xml = glade_xml_new (PACKAGE_DATA_DIR"/glade/e16menuedit2.glade",
-                            "properties_window", NULL);
+                                  "properties_window", NULL);
   register_libglade_parent (properties_xml, "properties_window");
   glade_xml_signal_autoconnect (properties_xml);
 
   properties_window = lookup_libglade_widget ("properties_window", "properties_window");
 
   comboboxentry1 = lookup_libglade_widget ("properties_window", "comboboxentry1");
-  
+
   gtk_combo_box_set_active (GTK_COMBO_BOX (comboboxentry1), 0);
 
-  gtk_widget_show (properties_window);
+  gtk_window_set_icon_from_file (GTK_WINDOW (properties_window),
+                                 SYSTEM_PIXMAPS_DIR"/e16menuedit2-icon.png",                                 NULL);
 }
 
 
