@@ -178,8 +178,7 @@ MaxHeight(EWin * ewin, char *resize_type)
 		  for (i = 0; i < num; i++)
 		    {
 		       if (
-			   (((ewin->
-			      desktop == lst[i]->desktop)
+			   (((ewin->desktop == lst[i]->desktop)
 			     && !(lst[i]->iconified)) || (lst[i]->sticky))
 			   && (!(lst[i]->floating)) && (lst[i] != ewin)
 			   && (lst[i]->never_use_area)
@@ -295,8 +294,7 @@ MaxWidth(EWin * ewin, char *resize_type)
 		  for (i = 0; i < num; i++)
 		    {
 		       if (
-			   (((ewin->
-			      desktop == lst[i]->desktop)
+			   (((ewin->desktop == lst[i]->desktop)
 			     && !(lst[i]->iconified)) || (lst[i]->sticky))
 			   && (!(lst[i]->floating)) && (lst[i] != ewin)
 			   && (!(lst[i]->ignorearrange))
@@ -508,8 +506,7 @@ MaxSize(EWin * ewin, char *resize_type)
 		  for (i = 0; i < num; i++)
 		    {
 		       if (
-			   (((ewin->
-			      desktop == lst[i]->desktop)
+			   (((ewin->desktop == lst[i]->desktop)
 			     && !(lst[i]->iconified)) || (lst[i]->sticky))
 			   && (!(lst[i]->floating)) && (lst[i] != ewin)
 			   && (!(lst[i]->ignorearrange))
@@ -629,8 +626,8 @@ MaxSize(EWin * ewin, char *resize_type)
 			   ((lst[i] != ewin) && (!(lst[i]->ignorearrange))
 			    && !(lst[i]->iconified)) && (!(lst[i]->floating))
 			   &&
-			   (((ewin->
-			      desktop == lst[i]->desktop) && (lst[i]->fixedpos))
+			   (((ewin->desktop
+			      == lst[i]->desktop) && (lst[i]->fixedpos))
 			    || (lst[i]->sticky))
 			   && SPANS_COMMON(ewin->x, ewin->w, lst[i]->x,
 					   lst[i]->w))

@@ -4506,3 +4506,10 @@ Tue Mar 28 10:31:25 PST 2000
 (Mandrake)
 
 fixed maximize bug where it would pay attention to iconified windows.
+
+-------------------------------------------------------------------------------
+
+Thu Mar 30 15:43:39 PST 2000
+(Mandrake)
+
+fixed logout dialog box to work properly under xinerama
