@@ -332,7 +332,6 @@ DeIconifyEwin(EWin * ewin)
    RaiseEwin(ewin);
    ShowEwin(ewin);
    ICCCM_DeIconify(ewin);
-   FocusToEWin(ewin, FOCUS_SET);
 
    lst = EwinListTransients(ewin, &num, 0);
    for (i = 0; i < num; i++)

@@ -26,17 +26,24 @@ static int          new_desk_focus_nesting = 0;
 
 /*
  * Return !0 if it is OK to focus ewin.
+ * on_screen: Require window to be on-screen now
  */
 static int
-FocusEwinValid(EWin * ewin)
+FocusEwinValid(EWin * ewin, int on_screen)
 {
-   if (ewin->skipfocus || ewin->neverfocus || ewin->shaded || ewin->iconified)
+   if (!ewin)
+      return 0;
+
+   if (ewin->skipfocus || ewin->neverfocus || ewin->iconified)
+      return 0;
+
+   if (!ewin->client.need_input)
       return 0;
 
    if (!EwinIsMapped(ewin))
       return 0;
 
-   return EwinIsOnScreen(ewin);
+   return !on_screen || EwinIsOnScreen(ewin);
 }
 
 /*
@@ -52,14 +59,18 @@ FocusEwinSelect(void)
      {
      default:
      case MODE_FOCUS_POINTER:
-     case MODE_FOCUS_SLOPPY:
 	ewin = GetEwinPointerInClient();
 	break;
+     case MODE_FOCUS_SLOPPY:
+	ewin = GetEwinPointerInClient();
+	if (ewin)
+	   break;
+	/* If pointer not in window -  fall thru and select other */
      case MODE_FOCUS_CLICK:
 	lst = EwinListGetFocus(&num);
 	for (i = 0; i < num; i++)
 	  {
-	     if (!FocusEwinValid(lst[i]))
+	     if (!FocusEwinValid(lst[i], 1))
 		continue;
 	     ewin = lst[i];
 	     break;
@@ -98,15 +109,13 @@ FocusCycle(int inc)
 {
    EWin               *const *lst0;
    EWin              **lst, *ewin;
-   int                 i, num0, num, ax, ay;
+   int                 i, num0, num;
 
    EDBUG(5, "FocusCycle");
 
    /* On previous only ? */
    RemoveTimerEvent("REVERSE_FOCUS_TIMEOUT");
    DoIn("REVERSE_FOCUS_TIMEOUT", 1.0, ReverseTimeout, 0, NULL);
-
-   GetCurrentArea(&ax, &ay);
 
    lst0 = EwinListGetFocus(&num0);
    if (lst0 == NULL)
@@ -117,7 +126,7 @@ FocusCycle(int inc)
    for (i = 0; i < num0; i++)
      {
 	ewin = lst0[i];
-	if (FocusEwinValid(ewin))
+	if (FocusEwinValid(ewin, 1))
 	  {
 	     num++;
 	     lst = Erealloc(lst, sizeof(EWin *) * num);
@@ -221,6 +230,28 @@ FocusToEWin(EWin * ewin, int why)
    switch (why)
      {
      default:
+     case FOCUS_SET:
+     case FOCUS_ENTER:
+     case FOCUS_LEAVE:		/* Unused */
+     case FOCUS_NEXT:
+     case FOCUS_CLICK:
+	if (ewin == Mode.focuswin)
+	   EDBUG_RETURN_;
+	if (ewin == NULL)	/* Unfocus */
+	   break;
+	if (!FocusEwinValid(ewin, 1))
+	   EDBUG_RETURN_;
+	break;
+
+     case FOCUS_DESK_ENTER:
+	ewin = FocusEwinSelect();
+	if (!ewin)
+	   EDBUG_RETURN_;
+	break;
+
+     case FOCUS_NONE:
+     case FOCUS_DESK_LEAVE:
+	ewin = NULL;
 	if (ewin == Mode.focuswin)
 	   EDBUG_RETURN_;
 	break;
@@ -228,10 +259,8 @@ FocusToEWin(EWin * ewin, int why)
      case FOCUS_EWIN_GONE:
 	if (ewin != Mode.focuswin)
 	   EDBUG_RETURN_;
-	Mode.focuswin = NULL;
-	if (Conf.focus.mode == MODE_FOCUS_CLICK)
-	   ewin = FocusEwinSelect();
-	else
+	ewin = FocusEwinSelect();
+	if (ewin == Mode.focuswin)
 	   ewin = NULL;
 	break;
 
@@ -265,39 +294,32 @@ FocusToEWin(EWin * ewin, int why)
 
 	if (!do_follow)
 	   EDBUG_RETURN_;
+	if (ewin == Mode.focuswin)
+	   EDBUG_RETURN_;
+	if (!FocusEwinValid(ewin, 0))
+	   EDBUG_RETURN_;
 	break;
 
      case FOCUS_WARP_NEXT:
 	why = FOCUS_NEXT;
-	break;
-
      case FOCUS_WARP_DONE:
+	if (!FocusEwinValid(ewin, 1))
+	   EDBUG_RETURN_;
 	break;
      }
+
+   if (ewin == Mode.focuswin)
+      EDBUG_RETURN_;
+
+   /* Check if ewin is a valid focus window target */
 
    if (!ewin)
       goto done;
 
    /* NB! ewin != NULL */
 
-   if (ewin->neverfocus)
-      EDBUG_RETURN_;
-
-   if (ewin->iconified)
-      EDBUG_RETURN_;
-
-   if (!ewin->client.need_input)
-      EDBUG_RETURN_;
-
-   /* Don't focus menus (use client.need_input?) */
-   if (ewin->menu)
-      EDBUG_RETURN_;
-
    if (do_follow)
       GotoDesktopByEwin(ewin);
-
-   if (!EwinIsOnScreen(ewin))
-      EDBUG_RETURN_;
 
    if (Conf.autoraise.enable)
      {
@@ -372,9 +394,7 @@ FocusNewDesk(void)
    ewin = GetEwinByCurrentPointer();
    Mode.mouse_over_ewin = ewin;
 
-   ewin = FocusEwinSelect();
-   if (ewin)
-      FocusToEWin(ewin, FOCUS_DESK_ENTER);
+   FocusToEWin(NULL, FOCUS_DESK_ENTER);
 
    EDBUG_RETURN_;
 }
@@ -396,9 +416,7 @@ FocusHandleEnter(XEvent * ev)
        (ev->xcrossing.mode == NotifyNormal &&
 	ev->xcrossing.detail != NotifyInferior))
      {
-	ewin = FocusEwinSelect();
-	if (ewin)
-	   FocusToEWin(ewin, FOCUS_DESK_ENTER);
+	FocusToEWin(NULL, FOCUS_DESK_ENTER);
 	goto done;
      }
 
