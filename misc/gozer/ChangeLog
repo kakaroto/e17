@@ -1,3 +1,7 @@
+Wed Jan 16 21:00:18 2002  Tom Gilbert  <tom@linuxbrit.co.uk>
+
+	* Fix broken -j center with multiple lines.
+
 Tue Oct 16 23:01:01 2001  Tom Gilbert  <tom@linuxbrit.co.uk>
 
 	* Life! Added -x and -y for specifying text offsets. Very useful

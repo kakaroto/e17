@@ -157,7 +157,7 @@ main(int argc, char **argv)
            break;
         case JUST_CENTER:
            x = ((((opt.bg_resize && bgw) ? bgw : w) - ww) / 2);
-           y = ((((opt.bg_resize && bgw) ? bgh : h) - hh) / 2);
+           /* y = ((((opt.bg_resize && bgw) ? bgh : h) - hh) / 2); */
            gib_imlib_text_draw(image, fn, style, x, y, p, IMLIB_TEXT_TO_RIGHT,
                                opt.fn_r, opt.fn_g, opt.fn_b, opt.fn_a);
            break;
