@@ -1824,3 +1824,11 @@ added patch to fix some behavior of raiselower
 fixed pager starting up shaded problem
 
 fixed iconfiicaton of thing son other desktops problem
+
+-------------------------------------------------------------------------------
+
+Thu Sep 16 16:33:08 EDT 1999
+(Christian)
+
+Don't snapshot group borders.
+

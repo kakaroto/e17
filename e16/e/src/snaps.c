@@ -490,7 +490,10 @@ SnapshotEwinBorder(EWin * ewin)
    if (sn->border_name)
       Efree(sn->border_name);
    sn->border_name = NULL;
-   sn->border_name = duplicate(ewin->border->name);
+   if (ewin->previous_border)
+      sn->border_name = duplicate(ewin->previous_border->name);
+   else
+      sn->border_name = duplicate(ewin->border->name);
 }
 
 void
