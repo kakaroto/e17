@@ -24,10 +24,10 @@ Etox_Obstacle *etox_obstacle_new(Etox * et, int x, int y, int w, int h)
 	obst = (Etox_Obstacle *) calloc(1, sizeof(Etox_Obstacle));
 	if (obst) {
 		obst->et = et;
-		obst->bit = estyle_new(et->evas, "", NULL);
-		estyle_set_type(obst->bit, ETOX_BIT_TYPE_OBSTACLE);
+		obst->bit = etox_style_new(et->evas, "", NULL);
+		etox_style_set_type(obst->bit, ETOX_BIT_TYPE_OBSTACLE);
 		evas_object_smart_member_add(obst->bit, et->smart_obj);
-		estyle_fix_geometry(obst->bit, x, y, w, h);
+		etox_style_fix_geometry(obst->bit, x, y, w, h);
 	}
 
 	return obst;
@@ -142,14 +142,14 @@ void etox_obstacle_line_insert(Etox_Line * line, Etox_Obstacle * obst)
 	/*
 	 * Find the index into the line of the obstacle.
 	 */
-	i = estyle_text_at_position(bit, x, line->y + (line->h / 2), NULL, NULL,
+	i = etox_style_text_at_position(bit, x, line->y + (line->h / 2), NULL, NULL,
 			NULL, NULL);
 
 	/*
 	 * Check if we can append it after this bit, possibly after splitting.
 	 */
 	if (i > 0) {
-		if (i < estyle_length(bit)) {
+		if (i < etox_style_length(bit)) {
 			etox_split_bit(line, bit, i);
 		}
 		line->bits = evas_list_append_relative(line->bits, obst->bit,

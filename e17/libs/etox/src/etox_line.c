@@ -117,7 +117,7 @@ void etox_line_append(Etox_Line * line, Evas_Object * bit)
 	line->w += w;
 	if (h > line->h)
 		line->h = h;
-	line->length += estyle_length(bit);
+	line->length += etox_style_length(bit);
 
         etox_selections_update(bit, line);
 }
@@ -146,7 +146,7 @@ void etox_line_prepend(Etox_Line * line, Evas_Object * bit)
 	line->w += w;
 	if (h > line->h)
 		line->h = h;
-	line->length += estyle_length(bit);
+	line->length += etox_style_length(bit);
 
         etox_selections_update(bit, line);
 }
@@ -167,7 +167,7 @@ void etox_line_remove(Etox_Line * line, Evas_Object * bit)
 	CHECK_PARAM_POINTER("bit", bit);
 
 	line->bits = evas_list_remove(line->bits, bit);
-	line->length -= estyle_length(bit);
+	line->length -= etox_style_length(bit);
 	evas_object_geometry_get(bit, NULL, NULL, &w, NULL);
 	line->w -= w;
 
@@ -220,7 +220,7 @@ void etox_line_layout(Etox_Line * line)
 	for (l = line->bits; l; l = l->next) {
 		bit = l->data;
 		evas_object_geometry_get(bit, &tx, &ty, &tw, &th);
-		if (!estyle_fixed(bit)) {
+		if (!etox_style_fixed(bit)) {
 
 			if (line->h < th)
 				line->h = th;
@@ -273,7 +273,7 @@ void etox_line_minimize(Etox_Line * line)
 		 * Attempt to merge the bits if possible, remove the second
 		 * one if successful.
 		 */
-		if (estyle_merge(last_bit, bit)) {
+		if (etox_style_merge(last_bit, bit)) {
 			line->bits = evas_list_remove(line->bits, bit);
 			l = evas_list_find_list(line->bits, last_bit);
 			l = l->next;
@@ -375,12 +375,12 @@ void etox_line_get_text(Etox_Line * line, char *buf)
 	for (l = line->bits; l; l = l->next) {
 		es = l->data;
 
-		sum += estyle_length(es);
+		sum += etox_style_length(es);
 
-		if (estyle_get_type(es) == ETOX_BIT_TYPE_WRAP_MARKER)
+		if (etox_style_get_type(es) == ETOX_BIT_TYPE_WRAP_MARKER)
 		  continue;
 
-		temp = estyle_get_text(es);
+		temp = etox_style_get_text(es);
 		strcat(buf, temp);
 		free(temp);
 	}
@@ -416,14 +416,14 @@ etox_line_wrap(Etox *et, Etox_Line *line)
 
 	/* get the index of the character on the edge */
 	if (bit)
-		index = estyle_text_at_position(bit, et->x + et->w, y + (h / 2),
+		index = etox_style_text_at_position(bit, et->x + et->w, y + (h / 2),
 				NULL, NULL, NULL, NULL);
 
 	/* Adjust the index to find the actual character we want to wrap. */
 	if (index > 0) {
 		char *tmp;
 
-		tmp = estyle_get_text(bit);
+		tmp = etox_style_get_text(bit);
 
 		/* Back up to some whitespace when necessary */
 		if (et->flags & ETOX_BREAK_WORDS) {
@@ -445,16 +445,16 @@ etox_line_wrap(Etox *et, Etox_Line *line)
 		ll = ll->next;
 
 		/* create a marker bit. */
-		marker = estyle_new(et->evas, et->context->marker.text,
+		marker = etox_style_new(et->evas, et->context->marker.text,
 				et->context->marker.style);
-		estyle_set_type(marker, ETOX_BIT_TYPE_WRAP_MARKER);
+		etox_style_set_type(marker, ETOX_BIT_TYPE_WRAP_MARKER);
 		evas_object_smart_member_add(marker, et->smart_obj);
 		evas_object_color_set(marker, et->context->marker.r,
 				et->context->marker.g,
 				et->context->marker.b,
 				et->context->marker.a);
 		evas_object_clip_set(marker, et->clip);
-		estyle_set_font(marker, et->context->font,
+		etox_style_set_font(marker, et->context->font,
 				et->context->font_size);
 		evas_object_show(marker);
 		if (et->context->marker.placement == ETOX_MARKER_BEGINNING)
@@ -489,7 +489,7 @@ etox_line_split(Etox_Line *line, Evas_Object *bit, int index)
 	 * If the bit starts on the boundary, simply move it to the next line.
 	 */
 	if (index > 0) {
-		if (index < estyle_length(bit)) {
+		if (index < etox_style_length(bit)) {
 			split = etox_split_bit(line, bit, index);
 		}
 		ll = ll->next;
@@ -537,7 +537,7 @@ etox_line_unwrap(Etox *et, Etox_Line *line)
 
 			ll = ll->next;
 
-			if (estyle_get_type(marker) == 
+			if (etox_style_get_type(marker) == 
 			  ETOX_BIT_TYPE_WRAP_MARKER) {
 				line->bits = evas_list_remove(line->bits, marker);
 			}
@@ -588,14 +588,14 @@ etox_line_index_to_bit(Etox_Line *line, int *i)
 	l = line->bits;
 	while (l) {
 		bit = l->data;
-		len += estyle_length(bit);
+		len += etox_style_length(bit);
 		if (*i < len)
 			break;
 		l = l->next;
 	}
 
 	if (l)
-		*i -= (len - estyle_length(bit));
+		*i -= (len - etox_style_length(bit));
 
 	return bit;
 }
@@ -607,7 +607,7 @@ etox_line_print_bits(Etox_Line *line)
 	Evas_List *l;
 
 	for (l = line->bits; l; l = l->next) {
-		printf("\tBit %d: %s\n", i, estyle_get_text(l->data));
+		printf("\tBit %d: %s\n", i, etox_style_get_text(l->data));
 		i++;
 	}
 }
@@ -642,7 +642,7 @@ etox_line_index_to_geometry(Etox_Line *line, int index, Evas_Coord *x,
     int length;
     
     bit = l->data;
-    length = estyle_length(bit);
+    length = etox_style_length(bit);
 
     if ( sum + length < index)
       break;
@@ -666,7 +666,7 @@ etox_line_index_to_geometry(Etox_Line *line, int index, Evas_Coord *x,
   }
 
   /* get the geometry from the bit */
-  estyle_text_at(bit, index - sum, x, y, w, h); 
+  etox_style_text_at(bit, index - sum, x, y, w, h); 
 }
 
 void
@@ -692,7 +692,7 @@ etox_line_apply_context(Etox_Line *line, Etox_Context *context, Evas_Object *sta
     if (!l->prev && line->flags & ETOX_LINE_WRAPPED)
     {
       /* go past any obstacles */
-      while (estyle_fixed(bit))
+      while (etox_style_fixed(bit))
       {
         /* if there are only obstacles on the line (can this happen?) */
         if (!l->next)
@@ -701,17 +701,17 @@ etox_line_apply_context(Etox_Line *line, Etox_Context *context, Evas_Object *sta
         l = l->next;
         bit = l->data;
       }
-      estyle_set_text(bit, context->marker.text);
-      estyle_set_style(bit, context->marker.style);
+      etox_style_set_text(bit, context->marker.text);
+      etox_style_set_style(bit, context->marker.style);
       evas_object_color_set(bit, context->marker.r, context->marker.g,
                            context->marker.b, context->marker.a);
     }
     else
     {
-      estyle_set_style(bit, context->style);
+      etox_style_set_style(bit, context->style);
       evas_object_color_set(bit, context->r, context->g, context->b,
                             context->a);
-      estyle_set_font(bit, context->font, context->font_size);
+      etox_style_set_font(bit, context->font, context->font_size);
     }
     if (l == le)
       break;

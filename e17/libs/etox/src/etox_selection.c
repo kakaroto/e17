@@ -44,8 +44,8 @@ etox_split_bit(Etox_Line *line, Evas_Object *bit, int index)
 	 * Split the leading bit, only need to inform selections that end with
 	 * this bit.
 	 */
-	if (index && index < estyle_length(bit)) {
-		point = estyle_split(bit, index);
+	if (index && index < etox_style_length(bit)) {
+		point = etox_style_split(bit, index);
 		evas_object_smart_member_add(point, line->et->smart_obj);
 		line->bits = evas_list_append_relative(line->bits, point, bit);
 
@@ -182,8 +182,8 @@ etox_select_coords(Evas_Object *obj, Evas_Coord sx, Evas_Coord sy,
 	if (!eb)
 		goto out;
 
-	i1 = estyle_text_at_position(sb, sx, sy, NULL, NULL, NULL, NULL);
-	i2 = estyle_text_at_position(eb, sx, sy, NULL, NULL, NULL, NULL);
+	i1 = etox_style_text_at_position(sb, sx, sy, NULL, NULL, NULL, NULL);
+	i2 = etox_style_text_at_position(eb, sx, sy, NULL, NULL, NULL, NULL);
 
 	selected = etox_selection_new(et, sl, el, sb, eb, i1, i2);
 

@@ -2,7 +2,7 @@ Source: etox
 Section: libs
 Priority: optional
 Maintainer: Sytse Wielinga <s.b.wielinga@student.utwente.nl>
-Build-Depends: libedb1-dev, libevas2-dev, libestyle0-dev, debhelper (>= 3.0)
+Build-Depends: libedb1-dev, libevas2-dev, debhelper (>= 3.0)
 Standards-Version: 3.6.1.0
 
 Package: libetox0
@@ -10,15 +10,15 @@ Architecture: any
 Section: libs
 Depends: ${shlibs:Depends}
 Description: Evas-based text layout library
- This library is used within Enlightenment DR 0.17 for text layout. It's usable
- within Evas-based programs for showing multiple lines of text, possibly
- obstructed and styled with libestyle.
+ This is a text-styling and layout library, based on Evas. It can layout
+ text with different formatting and special styles such as soft shadows and
+ outlines.
  
 Package: libetox0-dev
 Architecture: any
 Section: devel
 Architecture: any
-Depends: libetox0 (= ${Source-Version}), libc6-dev | libc-dev, libedb1-dev, libevas2-dev, libestyle0-dev
+Depends: libetox0 (= ${Source-Version}), libc6-dev | libc-dev, libedb1-dev, libevas2-dev
 Provides: libetox-dev
 Conflicts: libetox-dev
 Description: libetox0 headers, static libraries and documentation

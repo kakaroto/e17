@@ -245,7 +245,7 @@ void etox_context_set_color_db(Etox_Context * context, char *name)
 {
 	CHECK_PARAM_POINTER("context", context);
 
-	estyle_lookup_color_db(name, &context->r, &context->g,
+	etox_style_lookup_color_db(name, &context->r, &context->g,
 			       &context->b, &context->a);
 }
 

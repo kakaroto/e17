@@ -890,7 +890,7 @@ etox_coord_to_geometry(Evas_Object * obj, Evas_Coord xc, Evas_Coord yc,
 		evas_object_geometry_get(bit, &tx, &ty, &tw, &th);
 		if (xc >= tx && xc <= tx + tw)
 			break;
-		sum += estyle_length(bit);
+		sum += etox_style_length(bit);
 	}
 
 	/*
@@ -918,7 +918,7 @@ etox_coord_to_geometry(Evas_Object * obj, Evas_Coord xc, Evas_Coord yc,
 		/*
 		 * Now get the actual geometry from the bit
 		 */
-		sum += estyle_text_at_position(bit, xc, yc, x, y, w, h);
+		sum += etox_style_text_at_position(bit, xc, yc, x, y, w, h);
 	}
 
 	return sum;
@@ -1089,13 +1089,13 @@ static Evas_List *_etox_break_text(Etox * et, char *text)
 			/*
 			 * Make a bit for the preceding text
 			 */
-			bit = estyle_new(et->evas, text, et->context->style);
+			bit = etox_style_new(et->evas, text, et->context->style);
 			evas_object_smart_member_add(bit, et->smart_obj);
 			evas_object_clip_set(bit, et->clip);
 			evas_object_color_set(bit, et->context->r,
 					      et->context->g, et->context->b,
 					      et->context->a);
-			estyle_set_font(bit, et->context->font,
+			etox_style_set_font(bit, et->context->font,
 					et->context->font_size);
 			etox_line_append(line, bit);
 			evas_object_show(bit);
@@ -1108,13 +1108,13 @@ static Evas_List *_etox_break_text(Etox * et, char *text)
 			 * Make a bit for the tab character
 			 */
 			*text = '\0';
-			bit = estyle_new(et->evas, walk, et->context->style);
+			bit = etox_style_new(et->evas, walk, et->context->style);
 			evas_object_smart_member_add(bit, et->smart_obj);
 			evas_object_color_set(bit, et->context->r,
 					      et->context->g, et->context->b,
 					      et->context->a);
 			evas_object_clip_set(bit, et->clip);
-			estyle_set_font(bit, et->context->font,
+			etox_style_set_font(bit, et->context->font,
 					et->context->font_size);
 			etox_line_append(line, bit);
 			evas_object_show(bit);
@@ -1135,13 +1135,13 @@ static Evas_List *_etox_break_text(Etox * et, char *text)
 			/*
 			 * Create a bit for the text preceding \n
 			 */
-			bit = estyle_new(et->evas, text, et->context->style);
+			bit = etox_style_new(et->evas, text, et->context->style);
 			evas_object_smart_member_add(bit, et->smart_obj);
 			evas_object_color_set(bit, et->context->r,
 					 et->context->g, et->context->b,
 					 et->context->a);
 			evas_object_clip_set(bit, et->clip);
-			estyle_set_font(bit, et->context->font,
+			etox_style_set_font(bit, et->context->font,
 					et->context->font_size);
 			etox_line_append(line, bit);
 			evas_object_show(bit);
@@ -1174,12 +1174,12 @@ static Evas_List *_etox_break_text(Etox * et, char *text)
 	 * Add any remaining text after the last line break or tab.
 	 */
 	if (*text) {
-		bit = estyle_new(et->evas, text, et->context->style);
+		bit = etox_style_new(et->evas, text, et->context->style);
 		evas_object_smart_member_add(bit, et->smart_obj);
 		evas_object_color_set(bit, et->context->r, et->context->g,
 				 et->context->b, et->context->a);
 		evas_object_clip_set(bit, et->clip);
-		estyle_set_font(bit, et->context->font, et->context->font_size);
+		etox_style_set_font(bit, et->context->font, et->context->font_size);
 		etox_line_append(line, bit);
 		evas_object_show(bit);
 	} else if (line->bits == NULL) {
