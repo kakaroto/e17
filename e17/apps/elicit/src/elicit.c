@@ -94,6 +94,7 @@ main (int argc, char **argv)
   /* shutdown the subsystems (when event loop exits, app is done) */
   ecore_evas_shutdown();
   ecore_shutdown();
+  edje_shutdown();
 
   return 0;
 }
