@@ -2162,6 +2162,7 @@ void                TooltipHide(ToolTip * tt);
 
 void                TooltipsHandleEvent(void);
 void                TooltipsHide(void);
+void                TooltipsEnable(int enable);
 
 /* ttfont.c */
 void                Efont_extents(Efont * f, const char *text,

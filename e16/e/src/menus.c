@@ -388,6 +388,7 @@ MenuShow(Menu * m, char noshow)
 	Mode_menus.current_depth = 1;
 	MenuShowMasker(m);
 #endif
+	TooltipsEnable(0);
 	GrabKeyboard(m->win);
      }
    m->ref_count++;
@@ -1083,11 +1084,6 @@ RefreshInternalMenu(Menu * m, MenuStyle * ms,
 	     MoveEwin(ewin, lx, ly);
 	     ShowEwin(ewin);
 	  }
-#if 0
-	Mode_menus.list[0] = m;
-	Mode_menus.current_depth = 1;
-	MenuShowMasker(m);
-#endif
      }
 
    return m;
@@ -1107,18 +1103,6 @@ MenusShowNamed(const char *name)
      {
 	if (!FindEwinByMenu(m))	/* Don't show if already shown */
 	   MenuShow(m, 0);
-#if 0
-	Mode_menus.list[0] = m;
-	Mode_menus.current_depth = 1;
-	MenuShowMasker(m);
-	m->ref_count++;
-     }
-   else
-     {
-	Mode_menus.list[0] = NULL;
-	Mode_menus.current_depth = 0;
-	MenuHideMasker();
-#endif
      }
 }
 
@@ -1148,17 +1132,6 @@ ShowInternalMenu(Menu ** pm, MenuStyle ** pms, const char *style,
      {
 	if (!FindEwinByMenu(m))
 	   MenuShow(m, 0);
-#if 0
-	Mode_menus.list[0] = m;
-	Mode_menus.current_depth = 1;
-	MenuShowMasker(m);
-     }
-   else
-     {
-	Mode_menus.list[0] = NULL;
-	Mode_menus.current_depth = 0;
-	MenuHideMasker();
-#endif
      }
 }
 
@@ -1181,6 +1154,7 @@ MenusHide(void)
    MenuHideMasker();
    Mode_menus.current_depth = 0;
    Mode_menus.clicked = 0;
+   TooltipsEnable(1);
 
 #if 0
    /* If all done properly this shouldn't be necessary... */
@@ -1358,11 +1332,6 @@ MenuItemEventMouseDown(MenuItem * mi, XEvent * ev __UNUSED__)
 	unsigned int        mw, mh;
 	EWin               *ewin2;
 
-#if 0
-	Mode_menus.list[0] = m;
-	Mode_menus.current_depth = 1;
-	MenuShowMasker(m);
-#endif
 	ewin = FindEwinByMenu(m);
 	if (ewin)
 	  {

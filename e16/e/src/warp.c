@@ -82,6 +82,7 @@ WarpFocusShowTitle(EWin * ewin)
 	warpFocusTitleWindow = ECreateWindow(VRoot.win, 0, 0, 1, 1, 1);
 	EventCallbackRegister(warpFocusTitleWindow, 0, WarpFocusHandleEvent,
 			      NULL);
+	TooltipsEnable(0);
      }
 
    pq = Mode.queue_up;
@@ -217,6 +218,11 @@ WarpFocusHideTitle(void)
 	     EDestroyWindow(warplist[i].win);
 	     Efree(warplist[i].txt);
 	  }
+	EventCallbackUnregister(warpFocusTitleWindow, 0, WarpFocusHandleEvent,
+				NULL);
+	EDestroyWindow(warpFocusTitleWindow);
+	TooltipsEnable(1);
+	warpFocusTitleWindow = None;
      }
 
    if (warplist)

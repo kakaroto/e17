@@ -31,6 +31,11 @@ static struct
    unsigned int        opacity;
 } Conf_tooltips;
 
+static struct
+{
+   int                 inhibit;
+} Mode_tooltips;
+
 struct _tooltip
 {
    char               *name;
@@ -684,6 +689,20 @@ TooltipsHide(void)
      }
 }
 
+void
+TooltipsEnable(int enable)
+{
+   if (enable)
+     {
+	if (Mode_tooltips.inhibit > 0)
+	   Mode_tooltips.inhibit--;
+     }
+   else
+     {
+	Mode_tooltips.inhibit++;
+     }
+}
+
 static ToolTip     *ttip = NULL;
 
 static void
@@ -750,10 +769,14 @@ TooltipsHandleEvent(void)
 {
    if (ttip)
       TooltipHide(ttip);
+
    RemoveTimerEvent("TOOLTIP_TIMEOUT");
-   if (Conf_tooltips.enable)
-      DoIn("TOOLTIP_TIMEOUT", 0.001 * Conf_tooltips.delay, ToolTipTimeout, 0,
-	   NULL);
+
+   if (Mode_tooltips.inhibit || !Conf_tooltips.enable)
+      return;
+
+   DoIn("TOOLTIP_TIMEOUT", 0.001 * Conf_tooltips.delay, ToolTipTimeout, 0,
+	NULL);
 }
 
 /*
@@ -765,6 +788,9 @@ TooltipsSighan(int sig, void *prm __UNUSED__)
 {
    switch (sig)
      {
+     case ESIGNAL_INIT:
+	memset(&Mode_tooltips, 0, sizeof(Mode_tooltips));
+	break;
      case ESIGNAL_AREA_SWITCH_START:
      case ESIGNAL_DESK_SWITCH_START:
 	TooltipsHide();
