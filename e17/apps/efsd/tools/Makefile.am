@@ -18,6 +18,10 @@ pattern.db: build_pattern_db.sh
 	chmod 755 build_pattern_db.sh
 	./build_pattern_db.sh pattern.db
 
+distclean-local:
+	rm -f magic.db
+	rm -f patterns.db
+
 install-data-local:
 	@$(NORMAL_INSTALL)
 	$(mkinstalldirs) $(DESTDIR)$(pkgdatadir)
