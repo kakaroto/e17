@@ -3,8 +3,6 @@
 
 /**
  * @param type: type of dialog to display
- * @param ok_cb: callback to be called when open/save button is pushed
- * @param cancel_cb: callback to be called when cancel button is pushed
  * @return Returns a new filedialog in success, NULL on failure.
  * @brief Create a new filedialog
  */
@@ -27,8 +25,6 @@ Ewl_Widget     *ewl_filedialog_new(Ewl_Filedialog_Type type)
 /**
  * @param fd: the filedialog
  * @param type: the filedialog type
- * @param ok_cb: the callback to call when open/save button is pushed
- * @param cancel_cb: the callback to call when cancel button is pushed
  * @return Returns no value.
  * @brief Initialize a new filedialog
  */

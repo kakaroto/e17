@@ -9,9 +9,8 @@ extern Ewl_Widget     *dnd_widget;
 
 
 /**
- * ewl_ev_init - initialize the event handlers for dispatching to proper widgets
- *
- * Returns true or false to indicate success in initiating the event filters.
+ * @return Returns true or false to indicate success in initializing events.
+ * @brief Initialize the event handlers for dispatching to proper widgets
  */
 int ewl_ev_init(void)
 {
@@ -45,17 +44,25 @@ int ewl_ev_init(void)
 	ecore_event_handler_add(ECORE_X_EVENT_MOUSE_OUT, ewl_ev_mouse_out,
 				NULL);
 
+	/*
+	 * Selection callbacks to allow for pasting.
+	 */
+	ecore_event_handler_add(ECORE_X_EVENT_SELECTION_NOTIFY, ewl_ev_paste,
+				NULL);
+
 	DRETURN_INT(1, DLEVEL_STABLE);
 }
 
 /**
- * ewl_ev_window_expose - handles the exposing of a window
- * @_ev: the expose event information
+ * @param data: user specified data passed to the function
+ * @param type: the type of event triggering the function call
+ * @param e: the expose event information
+ * @return Returns no value.
+ * @brief Handles the exposing of a window
  *
- * Returns no value. Dispatches the expose event to the appropriate window for
- * handling.
+ * Dispatches the expose event to the appropriate window for handling.
  */
-int ewl_ev_window_expose(void *data, int type, void * _ev)
+int ewl_ev_window_expose(void *data, int type, void * e)
 {
 	/*
 	 * Widgets don't need to know about this usually, but we still need to
@@ -66,7 +73,7 @@ int ewl_ev_window_expose(void *data, int type, void * _ev)
 
 	DENTER_FUNCTION(DLEVEL_STABLE);
 
-	ev = _ev;
+	ev = e;
 
 	embed = ewl_embed_find_by_evas_window(ev->win);
 	if (!embed)
@@ -79,13 +86,15 @@ int ewl_ev_window_expose(void *data, int type, void * _ev)
 }
 
 /**
- * ewl_ev_window_configure - handles configure events that occur in windows
- * @_ev: the configure event information
+ * @param data: user specified data passed to the function
+ * @param type: the type of event triggering the function call
+ * @param e: the configure event information
+ * @return Returns no value.
+ * @brief Handles configure events that occur in windows
  *
- * Returns no value. Dispatches a configure even to the appropriate ewl
- * window.
+ * Dispatches a configure even to the appropriate ewl window.
  */
-int ewl_ev_window_configure(void *data, int type, void *_ev)
+int ewl_ev_window_configure(void *data, int type, void *e)
 {
 	/*
 	 * When a configure event occurs, we must update the windows geometry
@@ -95,7 +104,7 @@ int ewl_ev_window_configure(void *data, int type, void *_ev)
 	Ewl_Window     *window;
 
 	DENTER_FUNCTION(DLEVEL_STABLE);
-	ev = _ev;
+	ev = e;
 
 	window = ewl_window_find_window(ev->win);
 	if (!window)
@@ -116,13 +125,15 @@ int ewl_ev_window_configure(void *data, int type, void *_ev)
 }
 
 /**
- * ewl_ev_window_delete - handles delete events that occur to windows
- * @_ev: the delete event information
+ * @param data: user specified data passed to the function
+ * @param type: the type of event triggering the function call
+ * @param e: the delete event information
+ * @return Returns no value.
+ * @brief Handles delete events that occur to windows
  *
- * Returns no value. Dispatches the delete event to the appropriate ewl
- * window.
+ * Dispatches the delete event to the appropriate ewl window.
  */
-int ewl_ev_window_delete(void *data, int type, void *_ev)
+int ewl_ev_window_delete(void *data, int type, void *e)
 {
 	/*
 	 * Retrieve the appropriate ewl_window using the x window id that is
@@ -133,7 +144,7 @@ int ewl_ev_window_delete(void *data, int type, void *_ev)
 
 	DENTER_FUNCTION(DLEVEL_STABLE);
 
-	ev = _ev;
+	ev = e;
 
 	window = ewl_window_find_window(ev->win);
 	if (!window)
@@ -145,13 +156,15 @@ int ewl_ev_window_delete(void *data, int type, void *_ev)
 }
 
 /**
- * ewl_ev_key_down - handles key down events in windows
- * @_ev: the key down event information
+ * @param data: user specified data passed to the function
+ * @param type: the type of event triggering the function call
+ * @param e: the key down event information
+ * @return Returns no value.
+ * @brief Handles key down events in windows
  *
- * Returns no value. Dispatches the key down event to the appropriate ewl
- * window.
+ * Dispatches the key down event to the appropriate ewl window.
  */
-int ewl_ev_key_down(void *data, int type, void *_ev)
+int ewl_ev_key_down(void *data, int type, void *e)
 {
 	Ewl_Widget     *temp;
 	Ewl_Embed      *embed;
@@ -159,7 +172,7 @@ int ewl_ev_key_down(void *data, int type, void *_ev)
 
 	DENTER_FUNCTION(DLEVEL_STABLE);
 
-	ev = _ev;
+	ev = e;
 
 	embed = ewl_embed_find_by_evas_window(ev->win);
 
@@ -195,13 +208,15 @@ int ewl_ev_key_down(void *data, int type, void *_ev)
 }
 
 /**
- * ewl_ev_key_up - handles key up events in windows
- * @_ev: the key up event information
+ * @param data: user specified data passed to the function
+ * @param type: the type of event triggering the function call
+ * @param e: the key up event information
+ * @return Returns no value.
+ * @brief Handles key up events in windows
  *
- * Returns no value. Dispatches the key up event to the appropriate ewl
- * window.
+ * Dispatches the key up event to the appropriate ewl window.
  */
-int ewl_ev_key_up(void *data, int type, void *_ev)
+int ewl_ev_key_up(void *data, int type, void *e)
 {
 	Ewl_Widget     *temp;
 	Ewl_Embed      *embed;
@@ -209,7 +224,7 @@ int ewl_ev_key_up(void *data, int type, void *_ev)
 
 	DENTER_FUNCTION(DLEVEL_STABLE);
 
-	ev = _ev;
+	ev = e;
 
 	embed = ewl_embed_find_by_evas_window(ev->win);
 	if (!embed)
@@ -233,13 +248,16 @@ int ewl_ev_key_up(void *data, int type, void *_ev)
 
 
 /**
- * ewl_ev_mouse_down - handles mouse down events in windows
- * @_ev: the mouse down event information
+ * @param data: user specified data passed to the function
+ * @param type: the type of event triggering the function call
+ * @param e: the mouse down event information
+ * @return Returns no value.
+ * @brief Handles mouse down events in windows
  *
- * Returns no value. Dispatches the mouse down event to the appropriate ewl
- * window. Also determines the widgets clicked state.
+ * Dispatches the mouse down event to the appropriate ewl window.
+ * Also determines the widgets clicked state.
  */
-int ewl_ev_mouse_down(void *data, int type, void *_ev)
+int ewl_ev_mouse_down(void *data, int type, void *e)
 {
 	Ewl_Widget     *widget = NULL;
 	Ewl_Widget     *temp = NULL;
@@ -248,7 +266,7 @@ int ewl_ev_mouse_down(void *data, int type, void *_ev)
 
 	DENTER_FUNCTION(DLEVEL_STABLE);
 
-	ev = _ev;
+	ev = e;
 
 	embed = ewl_embed_find_by_evas_window(ev->win);
 	if (!embed)
@@ -312,13 +330,16 @@ int ewl_ev_mouse_down(void *data, int type, void *_ev)
 
 
 /**
- * ewl_ev_mouse_up - handles mouse up events in windows
- * @_ev: the mouse up event information
+ * @param data: user specified data passed to the function
+ * @param type: the type of event triggering the function call
+ * @param e: the mouse up event information
+ * @return Returns no value.
+ * @brief Handles mouse up events in windows
  *
- * Returns no value. Dispatches the mouse up event to the appropriate ewl
- * window. Also determines the widgets clicked state.
+ * Dispatches the mouse up event to the appropriate ewl window.
+ * Also determines the widgets clicked state.
  */
-int ewl_ev_mouse_up(void *data, int type, void *_ev)
+int ewl_ev_mouse_up(void *data, int type, void *e)
 {
 	Ewl_Widget     *temp;
 	Ewl_Embed      *embed;
@@ -326,7 +347,7 @@ int ewl_ev_mouse_up(void *data, int type, void *_ev)
 
 	DENTER_FUNCTION(DLEVEL_STABLE);
 
-	ev = _ev;
+	ev = e;
 
 	embed = ewl_embed_find_by_evas_window(ev->win);
 	if (!embed)
@@ -355,13 +376,15 @@ int ewl_ev_mouse_up(void *data, int type, void *_ev)
 
 
 /**
- * ewl_ev_mouse_move - handles mouse move events in windows
- * @_ev: the mouse move event information
+ * @param data: user specified data passed to the function
+ * @param type: the type of event triggering the function call
+ * @param e: the mouse move event information
+ * @return Returns no value.
+ * @brief Handles mouse move events in windows
  *
- * Returns no value. Dispatches the mouse move event to the appropriate ewl
- * window.
+ * Dispatches the mouse move event to the appropriate ewl window.
  */
-int ewl_ev_mouse_move(void *data, int type, void *_ev)
+int ewl_ev_mouse_move(void *data, int type, void *e)
 {
 	Ewl_Widget     *widget;
 	Ewl_Embed      *embed;
@@ -369,7 +392,7 @@ int ewl_ev_mouse_move(void *data, int type, void *_ev)
 
 	DENTER_FUNCTION(DLEVEL_STABLE);
 
-	ev = _ev;
+	ev = e;
 
 	embed = ewl_embed_find_by_evas_window(ev->win);
 	if (!embed)
@@ -435,13 +458,15 @@ int ewl_ev_mouse_move(void *data, int type, void *_ev)
 }
 
 /**
- * ewl_ev_mouse_out - handles the mouse out events in windows
- * @_ev: the mouse out event information
+ * @param data: user specified data passed to the function
+ * @param type: the type of event triggering the function call
+ * @param e: the mouse out event information
+ * @return Returns no value.
+ * @brief Handles the mouse out events in windows
  *
- * Returns no value. Dispatches the mouse out event to the appropriate ewl
- * window.
+ * Dispatches the mouse out event to the appropriate ewl window.
  */
-int ewl_ev_mouse_out(void *data, int type, void *_ev)
+int ewl_ev_mouse_out(void *data, int type, void *e)
 {
 	DENTER_FUNCTION(DLEVEL_STABLE);
 
@@ -449,6 +474,24 @@ int ewl_ev_mouse_out(void *data, int type, void *_ev)
 		ewl_callback_call(last_focused, EWL_CALLBACK_FOCUS_OUT);
 		last_focused = last_focused->parent;
 	}
+
+	DRETURN_INT(TRUE, DLEVEL_STABLE);
+}
+
+/**
+ * @param data: user specified data passed to the function
+ * @param type: the type of event triggering the function call
+ * @param e: the mouse out event information
+ * @return Returns no value.
+ * @brief Handles the data for a paste becoming available in windows
+ *
+ * Dispatches the mouse out event to the appropriate ewl window.
+ */
+int ewl_ev_paste(void *data, int type, void *e)
+{
+	DENTER_FUNCTION(DLEVEL_STABLE);
+
+	printf("Paste event received\n");
 
 	DRETURN_INT(TRUE, DLEVEL_STABLE);
 }

@@ -3,13 +3,12 @@
 
 
 /**
- * ewl_table_new - create a new table
- * @cols: the number of columns
- * @rows: the number of rows
- * @col_headers: the column titles
+ * @param cols: the number of columns
+ * @param rows: the number of rows
+ * @param col_headers: the column titles
+ * @return Returns a a newl table on success, NULL on failure.
+ * @brief Create a new table
  *
- * Returns a pointer to a newly allocated table on success, NULL on
- * failure.
  */
 Ewl_Widget     *ewl_table_new(int cols, int rows, char **col_headers)
 {
@@ -21,18 +20,21 @@ Ewl_Widget     *ewl_table_new(int cols, int rows, char **col_headers)
 	if (!t)
 		DRETURN_PTR(NULL, DLEVEL_STABLE);
 
+	ewl_table_init(t, cols, rows, col_headers);
+
 	DRETURN_PTR(EWL_WIDGET(t), DLEVEL_STABLE);
 }
 
 /**
- * ewl_table_init - initialize table to starting values
- * @t: the table
- * @cols: the number of columns
- * @rows: the number of rows
- * @col_headers: the column titles
+ * @param t: the table
+ * @param cols: the number of columns
+ * @param rows: the number of rows
+ * @param col_headers: the column titles
+ * @return Returns no value.
+ * @brief Initialize table to starting values
  *
- * Returns no value. Responsible for setting up default values and
- * callbacks withing the table structure
+ * Responsible for setting up default values and callbacks withing the table
+ * structure
  */
 void ewl_table_init(Ewl_Table * t, int cols, int rows, char **col_headers)
 {
@@ -93,16 +95,14 @@ void ewl_table_init(Ewl_Table * t, int cols, int rows, char **col_headers)
 
 
 /**
- * ewl_table_add - add a child widget to the table
- * @table: the table
- * @cell: the cell to add
- * @dm_click: callback function to be called on double mouse click
- * @start_col: the start column
- * @end_col: the end columnt
- * @start_row: the start row
- * @end_row: the end row
- *
- * Returns no value.
+ * @param table: the table
+ * @param cell: the cell to add
+ * @param start_col: the start column
+ * @param end_col: the end columnt
+ * @param start_row: the start row
+ * @param end_row: the end row
+ * @return Returns no value.
+ * @brief Add a child widget to the table
  */
 void
 ewl_table_add(Ewl_Table * table, Ewl_Cell * cell,
@@ -128,16 +128,14 @@ ewl_table_add(Ewl_Table * table, Ewl_Cell * cell,
 
 
 /**
- * ewl_table_get_col_row - get the column and row of a widget
- * @t: the table
- * @cell: the cell to add
- * @w: the widget to find
- * @start_col: integer pointer to store the start column
- * @end_col: integer pointer to store the end column in
- * @start_row: integer pointer to store the start row in
- * @end_row: integer pointer to store the end row in
- *
- * Returns nothing
+ * @param t: the table
+ * @param cell: the cell to add
+ * @param start_col: integer pointer to store the start column
+ * @param end_col: integer pointer to store the end column in
+ * @param start_row: integer pointer to store the start row in
+ * @param end_row: integer pointer to store the end row in
+ * @return Returns nothing
+ * @brief Get the column and row of a widget
  */
 void ewl_table_get_col_row(Ewl_Table * t, Ewl_Cell * cell,
 			   int *start_col, int *end_col, int *start_row,
@@ -187,14 +185,13 @@ void ewl_table_get_col_row(Ewl_Table * t, Ewl_Cell * cell,
 
 
 /**
- * ewl_table_find - get a list of the widgets in the specified col/row
- * @t: the table
- * @start_col: the start column
- * @end_col: the end column
- * @start_row: the start row
- * @end_row: the end row
- *
- * Returns Ewd_List of widgets found in the specified col/row area
+ * @param t: the table
+ * @param start_col: the start column
+ * @param end_col: the end column
+ * @param start_row: the start row
+ * @param end_row: the end row
+ * @return Returns Ewd_List of widgets found in the specified col/row area.
+ * @brief Get a list of the widgets in the specified col/row
  */
 Ewd_List       *ewl_table_find(Ewl_Table * t, int start_col, int end_col,
 			       int start_row, int end_row)
@@ -236,12 +233,11 @@ Ewd_List       *ewl_table_find(Ewl_Table * t, int start_col, int end_col,
 
 
 /**
- * ewl_table_set_col_w - set the width of a table column
- * @table: the table
- * @col: the column
- * @width: the new width
- *
- * Returns no value.
+ * @param table: the table
+ * @param col: the column
+ * @param width: the new width
+ * @return Returns no value.
+ * @brief Set the width of a table column
  */
 void ewl_table_set_col_w(Ewl_Table * table, int col, int width)
 {
@@ -261,12 +257,11 @@ void ewl_table_set_col_w(Ewl_Table * table, int col, int width)
 }
 
 /**
- * ewl_table_get_col_w - get the width of a table column
- * @table: the table
- * @col: the column
- * @width: integer pointer to store the width in
- *
- * Returns no value.
+ * @param table: the table
+ * @param col: the column
+ * @param width: integer pointer to store the width in
+ * @return Returns no value.
+ * @brief Get the width of a table column
  */
 void ewl_table_get_col_w(Ewl_Table * table, int col, int *width)
 {
@@ -286,12 +281,11 @@ void ewl_table_get_col_w(Ewl_Table * table, int col, int *width)
 
 
 /**
- * ewl_table_set_row_h - set the height of a table row
- * @table: the table
- * @row: the row
- * @height: the new height
- *
- * Returns no value.
+ * @param table: the table
+ * @param row: the row
+ * @param height: the new height
+ * @return Returns no value.
+ * @brief Set the height of a table row
  */
 void ewl_table_set_row_h(Ewl_Table * table, int row, int height)
 {
@@ -311,12 +305,11 @@ void ewl_table_set_row_h(Ewl_Table * table, int row, int height)
 }
 
 /**
- * ewl_table_get_row_h - get the height of a table row
- * @table: the table
- * @row: the row
- * @height: integer pointer to store the height in
- *
- * Returns no value.
+ * @param table: the table
+ * @param row: the row
+ * @param height: integer pointer to store the height in
+ * @return Returns no value.
+ * @brief Get the height of a table row
  */
 void ewl_table_get_row_h(Ewl_Table * table, int row, int *height)
 {
@@ -336,13 +329,12 @@ void ewl_table_get_row_h(Ewl_Table * table, int row, int *height)
 
 
 /**
- * ewl_table_reset - clear the table and set new geometry
- * @t: the table
- * @cols: the new number of columns
- * @rows: the new number of columns
- * @col_headers: the new column headers
- *
- * Returns no value
+ * @param t: the table
+ * @param cols: the new number of columns
+ * @param rows: the new number of columns
+ * @param col_headers: the new column headers
+ * @return Returns no value
+ * @brief Clear the table and set new geometry
  */
 void ewl_table_reset(Ewl_Table * t, int cols, int rows, char **col_headers)
 {
@@ -377,10 +369,9 @@ void ewl_table_reset(Ewl_Table * t, int cols, int rows, char **col_headers)
 
 
 /**
- * ewl_table_get_selected - get the text in the current selected box
- * @t: the table
- *
- * Returns the text in the currently selected widget in the table
+ * @param t: the table
+ * @return Returns the text in the currently selected widget in the table
+ * @brief Get the text in the current selected box
  */
 char           *ewl_table_get_selected(Ewl_Table * t)
 {

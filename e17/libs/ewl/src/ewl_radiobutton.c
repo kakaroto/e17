@@ -22,8 +22,8 @@ Ewl_Widget     *ewl_radiobutton_new(char *label)
 }
 
 /**
- * @param w: the radio button to be added to a chain of radio buttons
- * @param c: a radio button already in the chain of radio buttons
+ * @param rb: the radio button to be added to a chain of radio buttons
+ * @param crb: a radio button already in the chain of radio buttons
  * @return Returns no value.
  * @brief Attach the button to a chain of radio buttons
  *

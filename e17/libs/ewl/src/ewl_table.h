@@ -1,15 +1,31 @@
-
 #ifndef __EWL_TABLE_H__
 #define __EWL_TABLE_H__
 
-/*
+/**
+ * @defgroup Ewl_Table Table: The Table Layout Container.
+ * @brief Defines the Ewl_Box class used for laying out Ewl_Widget's in a
+ * horizontal or vertical line.
+ *
+ * @{
+ */
+
+/**
  * @themekey /table/file
  * @themekey /table/group
  */
 
+/**
+ * The table widget is an Ewl_Container used to lay out widgets in a grid like
+ * pattern with headers and alignment.
+ */
 typedef struct Ewl_Table Ewl_Table;
 
+/**
+ * @def EWL_TABLE(table)
+ * Typecase a pointer to an Ewl_Table pointer.
+ */
 #define EWL_TABLE(table) ((Ewl_Table *)table)
+
 struct Ewl_Table
 {
 	Ewl_Container   container;

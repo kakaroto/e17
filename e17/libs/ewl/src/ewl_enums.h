@@ -14,7 +14,6 @@
  */
 enum Ewl_Callback_Type
 {
-	EWL_CALLBACK_NONE, /**< A placeholder FIXME: Is this necessary still? */
 	EWL_CALLBACK_EXPOSE, /**< Triggered when the window needs redrawing */
 	EWL_CALLBACK_REALIZE, /**< Event when a widget is first drawn */
 	EWL_CALLBACK_UNREALIZE, /**< When a widget is no longer drawn */
@@ -41,6 +40,7 @@ enum Ewl_Callback_Type
 	EWL_CALLBACK_APPEARANCE_CHANGED, /**< Theme key of widget changed */
 	EWL_CALLBACK_WIDGET_ENABLE, /**< Widget has been re-enabled */
 	EWL_CALLBACK_WIDGET_DISABLE, /**< Widget no longer takes input */
+	EWL_CALLBACK_PASTE, /**< Data is ready to be pasted */
 	EWL_CALLBACK_MAX /**< Flag to indicate last value */
 };
 
