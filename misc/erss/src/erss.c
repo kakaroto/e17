@@ -273,7 +273,7 @@ int handler_server_del (void *data, int type, void *event)
 	waiting_for_reply = FALSE;
 
 	if (total_connects == 1)
-		printf ("%s info: connection information only displays on first connect.\n", 
+		printf ("%s info: connection information only displays on the first connect.\n", 
 				PACKAGE);
 
 	return 1;
@@ -347,7 +347,7 @@ int erss_alphasort (const void *a, const void *b)
 	return (strcmp((*bd)->d_name, (*ad)->d_name));
 }
 
-void list_config_files ()
+void list_config_files (int output)
 {
 	char *str;
 	char *ptr;
@@ -356,6 +356,8 @@ void list_config_files ()
 	struct stat statbuf;
 	int num, i;
 	char file[PATH_MAX];
+	int found_files = FALSE;
+	int no_dir = FALSE;
 
 	paths = ewd_list_new ();
 	config_files = ewd_list_new ();
@@ -363,6 +365,10 @@ void list_config_files ()
 	str = malloc (PATH_MAX);
 	snprintf (str, PATH_MAX, "%s/.%s/config", 
 			getenv("HOME"), PACKAGE);
+	ewd_list_append (paths, str);
+
+	str = malloc (PATH_MAX);
+	snprintf (str, PATH_MAX, "/etc/%s/config", PACKAGE);
 	ewd_list_append (paths, str);
 
 	str = malloc (PATH_MAX);
@@ -375,40 +381,57 @@ void list_config_files ()
 			PACKAGE);
 	ewd_list_append (paths, str);
 
-	printf ("\n%s processing potential dirs ...\n", PACKAGE);
+	if (output)
+		printf ("\n%s processing potential dirs ...\n", PACKAGE);
 
 	ptr = ewd_list_goto_first (paths);
 	while ((ptr = ewd_list_current (paths))) {
-		printf ("\nLookin in %s:\n", ptr);
+		if (output)
+			printf ("\nprocessing '%s':\n", ptr);
 
 		i = stat (ptr, &statbuf);
 
-		if (S_ISDIR(statbuf.st_mode)) {
+		if (i == -1) {
+			no_dir = TRUE;
+		} else {
+			if (S_ISDIR(statbuf.st_mode)) {
 		
-			if ((num = scandir(ptr, &dentries, 0, erss_alphasort)) < 0) 
-				perror("erss - scandir");
+				if ((num = scandir(ptr, &dentries, 0, erss_alphasort)) < 0) 
+					perror("erss - scandir");
 
-			while (num--) {
-				snprintf(file, PATH_MAX, "%s/%s", ptr, dentries[num]->d_name);
+				while (num--) {
+					snprintf(file, PATH_MAX, "%s/%s", ptr, dentries[num]->d_name);
 
-				i = stat (file, &statbuf);
-				if (i == -1) {
-					perror("erss - stat 1");
-					continue;
+					i = stat (file, &statbuf);
+					if (i == -1) {
+						perror("erss - stat 1");
+						continue;
+					}
+
+					if (S_ISDIR(statbuf.st_mode))
+						continue;
+
+					if (strstr (dentries[num]->d_name, ".cfg")) {
+						found_files = TRUE;
+						printf ("\t%s\n", file);
+						ewd_list_append (config_files, file);
+					}
 				}
 
-				if (S_ISDIR(statbuf.st_mode))
-					continue;
-
-				if (strstr (dentries[num]->d_name, ".cfg")) {
-					printf ("\t%s\n", file);
-					ewd_list_append (config_files, file);
+				if (!found_files) {
+					if (output)
+						printf ("\tno config files in this dir ...\n");
+					found_files = FALSE;
 				}
 			}
-		} else {
-			printf ("\tno such dir ..\n");
 		}
 		
+		if (output) {
+			if (no_dir)
+				printf ("\tno such dir ...\n");
+			no_dir = FALSE;
+		}
+
 		ewd_list_next (paths);
 	}
 
@@ -425,6 +448,13 @@ void list_config_files ()
 	}
 
 	ewd_list_destroy (paths);
+}
+
+void display_default_usage ()
+{
+	fprintf (stderr, "Usage: %s [OPTION] ...\n", PACKAGE);
+	fprintf (stderr, "Try `%s -h` for more information\n", PACKAGE);
+	exit (-1);
 }
 
 int main (int argc, char * const argv[])
@@ -449,15 +479,13 @@ int main (int argc, char * const argv[])
 	{
 		switch (c) {
 			case 'l':
-				list_config_files ();
+				list_config_files (TRUE);
 				exit (-1);
 			case 'c':
 				
-				if(optind >= argc) {
-					fprintf (stderr, "Usage: %s [OPTION] ...\n", PACKAGE);
-					fprintf (stderr, "Try `%s -h` for more information\n", PACKAGE);
-					exit (-1);
-				} 
+				if(optind >= argc) 
+					display_default_usage ();
+				
 				got_config_file = TRUE;
 				snprintf (config_file, PATH_MAX, "%s", (char *) argv[optind]);
 				break;
@@ -488,13 +516,12 @@ int main (int argc, char * const argv[])
 		got_rc_file = TRUE;
 		
 	if(!got_config_file) {
-		if (!got_rc_file) {
-			fprintf (stderr, "Usage: %s [OPTION] ...\n", PACKAGE);
-			fprintf (stderr, "Try `%s -h` for more information\n", PACKAGE);
-			exit (-1);
-		} else {
+		
+		if (!got_rc_file) 
+			display_default_usage ();
+		 else 
 			parse_config_file (rc->config);
-		}
+
 	} else {
 		parse_config_file (config_file);
 	}
