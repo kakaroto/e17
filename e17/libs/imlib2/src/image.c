@@ -214,6 +214,7 @@ __imlib_RemoveImageFromCache(ImlibImage *im)
 		images = im->next;
 	     return;
 	  }
+	previous_im = current_im;
 	current_im = current_im->next;
      }	
 }
@@ -441,6 +442,7 @@ __imlib_RemoveImagePixmapFromCache(ImlibImagePixmap *ip)
 		pixmaps = ip->next;
 	     return;
 	  }
+	previous_ip = current_ip;
 	current_ip = current_ip->next;
      }	
 }
