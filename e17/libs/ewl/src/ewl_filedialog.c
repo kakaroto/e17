@@ -97,7 +97,7 @@ ewl_filedialog_open_init(Ewl_Filedialog * fd, Ewl_Callback_Function cb)
 
 	fd->selector = ewl_fileselector_new(cb);
 	ewl_object_set_fill_policy(EWL_OBJECT(fd->selector),
-				   EWL_FLAG_FILL_FILL);
+				   EWL_FLAG_FILL_SHRINK);
 	ewl_container_append_child(EWL_CONTAINER(fd), fd->selector);
 
 	od->box = ewl_box_new(EWL_ORIENTATION_HORIZONTAL);
@@ -128,7 +128,6 @@ ewl_filedialog_open_init(Ewl_Filedialog * fd, Ewl_Callback_Function cb)
 	fd->dialog = (void *) od;
 	ewl_container_append_child(EWL_CONTAINER(fd), od->box);
 	ewl_widget_show(od->box);
-
 
 	ewl_widget_show(fd->selector);
 

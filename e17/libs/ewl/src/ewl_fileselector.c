@@ -105,7 +105,7 @@ void ewl_fileselector_init(Ewl_Fileselector * fs, Ewl_Callback_Function fc)
 	w = EWL_WIDGET(fs);
 
 	ewl_box_init(EWL_BOX(w), EWL_ORIENTATION_HORIZONTAL);
-	ewl_object_set_fill_policy(EWL_OBJECT(w), EWL_FLAG_FILL_FILL);
+	ewl_object_set_fill_policy(EWL_OBJECT(w), EWL_FLAG_FILL_SHRINK);
 
 	/* 
 	 * Create the vbox that should contain the directories tree
@@ -118,6 +118,7 @@ void ewl_fileselector_init(Ewl_Fileselector * fs, Ewl_Callback_Function fc)
 	fs->dirs = ewl_tree_new (1);
 	ewl_tree_set_headers (EWL_TREE (fs->dirs), head_dirs);
 	ewl_container_append_child(EWL_CONTAINER (fs->dbox), fs->dirs);
+	ewl_object_set_minimum_size (EWL_OBJECT (fs->dirs), 100, 50);
 	ewl_widget_show (fs->dirs);
 
 	/*
@@ -203,6 +204,7 @@ ewl_filedialog_process_directory(Ewl_Fileselector * fs, char *directory)
 	char file[PATH_MAX];
 	struct stat     statbuf;
 	Ewl_Widget *items[1];
+	Ewl_Widget *row;
 	
 	
 	DENTER_FUNCTION(DLEVEL_STABLE);
@@ -219,7 +221,6 @@ ewl_filedialog_process_directory(Ewl_Fileselector * fs, char *directory)
 	
 	while (num--) {
 		snprintf(file, PATH_MAX, "%s/%s", dir, dentries[num]->d_name);
-		printf ("%s\n", dentries[num]->d_name);
 
 		i = stat (file, &statbuf);
 		if (i == -1) {
@@ -233,7 +234,9 @@ ewl_filedialog_process_directory(Ewl_Fileselector * fs, char *directory)
 		if (S_ISDIR(statbuf.st_mode)) {
 			ewl_tree_add_row (EWL_TREE (fs->dirs), NULL, items);
 		} else if (S_ISREG(statbuf.st_mode)) {
-			ewl_tree_add_row (EWL_TREE (fs->files), NULL, items);
+			row = ewl_tree_add_row (EWL_TREE (fs->files), NULL, items);
+			ewl_callback_append (row, EWL_CALLBACK_CLICKED, 
+					fs->file_clicked, NULL);
 		}
 	}
 	
