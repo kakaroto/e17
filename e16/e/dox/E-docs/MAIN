@@ -1664,15 +1664,15 @@ Frequently Asked Questions
 <p>
 <br>
 <br>
-_I_can't_find_my_iconbox_or_change_its_settings?(faq2)
+_I_can't_find_my_iconbox_or_change_its_settings.(faq2)
 <p>
-_I_can't_seem_to_find_my_left_mouse_menu?(faq2)
+_I_can't_seem_to_find_my_left_mouse_menu.(faq2)
 <p>
-_All_my_settings_are_mangled_and_I_can't_fix_it?(faq3)
+_All_my_settings_are_mangled_and_I_can't_fix_it.(faq3)
 <p>
-_I_upgraded_a_theme_but_the_new_one_isn't_being_used?(faq3)
+_I_upgraded_a_theme_but_the_new_one_isn't_being_used.(faq3)
 <p>
-_I_set_my_window_to_borderless_and_can't_set_it_back?(faq4)
+_I_set_my_window_to_borderless_and_can't_set_it_back.(faq4)
 <p>
 _How_can_I_move_or_resize_the_iconbox?(faq4)
 <p>
@@ -1754,7 +1754,7 @@ the _window_operations(windowops) menu. ALT + Left mouse button will move the
 window and ALT + Middle mouse button will resize the window.
 <p>
 <br>
-Q: How can I move or resize the iconbox.
+Q: How can I move or resize the iconbox?
 <p>
 A: As described above, ALT + Right mouse button will give you the 
 _window_operations(windowops) menu, ALT + Middle mouse button will resize the
