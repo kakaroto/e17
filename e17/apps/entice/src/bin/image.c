@@ -674,6 +674,7 @@ entice_image_resize(Evas_Object * o, double w, double h)
       ww = (int) ((double) im->iw / im->zoom);
       hh = (int) ((double) im->ih / im->zoom);
 
+      /*
       if (ww > w)
       {
          if (im->scroll.x > ((ww - w) / 2))
@@ -702,8 +703,9 @@ entice_image_resize(Evas_Object * o, double w, double h)
          else if (im->scroll.y < -((h - hh + 1) / 2))
             im->scroll.y = -((h - hh + 1) / 2);
       }
-      evas_object_move(im->obj, im->scroll.x + im->x + (im->w - ww) / 2,
-                       im->scroll.y + im->y + (im->h - hh) / 2);
+      */
+      evas_object_move(im->obj, im->scroll.x + im->x, im->scroll.y +
+      im->y);
       evas_object_resize(im->obj, ww, hh);
       evas_object_image_fill_set(im->obj, 0, 0, ww, hh);
    }

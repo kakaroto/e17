@@ -741,6 +741,7 @@ entice_dragable_image_fix(Evas_Coord x, Evas_Coord y)
 {
    Evas_Coord xx, yy;
    Evas_Coord dx, dy;
+   Evas_Coord w, h;
    Evas_Object *swallowed = NULL;
 
    if (entice && entice->current)
@@ -755,6 +756,9 @@ entice_dragable_image_fix(Evas_Coord x, Evas_Coord y)
          entice_image_x_scroll_offset_add(entice->current, -dx);
          entice_image_y_scroll_offset_add(entice->current, -dy);
          edje_object_part_drag_value_set(entice->edje, "EnticeImage", dx, dy);
+	 evas_object_geometry_get(entice->current, &x, &y, &w, &h);
+	 evas_damage_rectangle_add(ecore_evas_get(entice->ee), x,
+	 y,w,h); 
       }
    }
 }
