@@ -375,12 +375,15 @@ void ewl_window_realize_cb(Ewl_Widget * w, void *ev_data, void *user_data)
 		glinfo = (Evas_Engine_Info_GL_X11 *)info;
 
 		glinfo->info.display = ecore_x_display_get();
-		glinfo->info.visual = DefaultVisual(glinfo->info.display,
+		glinfo->info.visual = glinfo->func.best_depth_get(
+				glinfo->info.display,
 				DefaultScreen(glinfo->info.display));
-		glinfo->info.colormap = DefaultColormap(glinfo->info.display,
+		glinfo->info.colormap = glinfo->func.best_colormap_get(
+				glinfo->info.display,
 				DefaultScreen(glinfo->info.display));
 		glinfo->info.drawable = window->window;
-		glinfo->info.depth = DefaultDepth(glinfo->info.display,
+		glinfo->info.depth = glinfo->func.best_depth_get(
+				glinfo->info.display,
 				DefaultScreen(glinfo->info.display));
 	}
 	else
