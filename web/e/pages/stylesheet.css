@@ -1,20 +1,14 @@
 body {
-	//background-image: url("img/Ebanner.png");
 	background-image: url("img/background-logo-grad.jpg");
 	background-repeat: no-repeat;
-	//background-attachment: scroll;
 	background-attachment: fixed;
-	//background-position: left top;
 	background-position: right bottom;
-	//background-color: #dddddd;
 	background-color: #ffffff;
 	color: #000000;
-	 /* font-family: sans-serif; */
 	font-family: "Trebuchet MS", Trebuchet, Tahoma, sans-serif;
 	font-size: 12px; 
 	padding: 0px;
 	margin: 0px;
-	//margin-top: 140px;
 }
 
 h1 {
@@ -49,32 +43,21 @@ table {
 
 a:link {
 	text-decoration: none;
-	/* color: #444444; */
 	color: #A36209;
-	/* font-weight: bold; */
 }
 
 a:visited {
 	text-decoration: none;
-	/* color: #666666; */
 	color: #A36209;
-	/* font-weight: bold; */
 }
 
 a:hover {
 	text-decoration: none;
 	color: #000000;
-	/* font-weight: bold; */
 }
 
-/** Side Nav Bar **/
 div.navbar {
-        //background-image: url("i/hilite.png");
-        background-repeat: no-repeat;
-        background-position: left top;
-        //border: thin solid #888888;
         border-right: thin solid #888888;
-        //background-color: #eeeeee;
         margin-top: 30px;
         padding: 4px;
         text-align: left;
@@ -111,15 +94,11 @@ ul.navsection li{
 }
 
 p.navtitle {
-	//border: thin solid #888888;
-	//background-color: #eeeeee;
-	
 	font-family: "Trebuchet MS", Trebuchet, Tahoma, sans-serif;
 	font-size: 12px; 
 	padding-right: 8px;
 }
 
-/** Content Area - The real stuff **/
 div.content {
 	padding: 10px;
 	margin: auto;
@@ -130,7 +109,6 @@ td {
 }
 
 div.fragment {
-	//background-image: url("i/hilite.png");
 	background-repeat: no-repeat;
 	background-position: left top;
 	border: thin solid #888888;
@@ -178,7 +156,6 @@ tr.team-dark {
 } 
 
 td.newstitle {
-	//background-image: url("i/hilite.png");
 	background-repeat: no-repeat;
 	background-position: left top;
 	border: thin solid #888888;
@@ -201,7 +178,6 @@ strong.qsindex {
 	font-size: small;
 }
 
-/*  Project Page Classes  */
 div.code {
 	width: 94%;
 	border: thin solid #888888;
@@ -214,7 +190,6 @@ div.code {
 }
 
 p.manager {
-	//border: thin solid #888888;	
 	background-color: black;	
 	padding: 1px;
 	text-align: right;
