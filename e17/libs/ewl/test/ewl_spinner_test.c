@@ -101,7 +101,6 @@ __create_spinner_test_window(Ewl_Widget * w, void *ev_data, void *user_data)
 	spinner_button = w;
 
 	spinner_win = ewl_window_new();
-	ewl_box_set_spacing(EWL_BOX(spinner_win), 10);
 	ewl_window_set_min_size(EWL_WINDOW(spinner_win), 151, 316);
 	ewl_callback_append(spinner_win, EWL_CALLBACK_DELETE_WINDOW,
 			    __destroy_spinner_test_window, NULL);

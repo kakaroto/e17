@@ -31,7 +31,6 @@ __create_seeker_test_window(Ewl_Widget * w, void *ev_data, void *user_data)
 	seeker_button = w;
 
 	seeker_win = ewl_window_new();
-	ewl_box_set_spacing(EWL_BOX(seeker_win), 10);
 	ewl_callback_append(seeker_win, EWL_CALLBACK_DELETE_WINDOW,
 			    __destroy_seeker_test_window, NULL);
 	ewl_widget_show(seeker_win);

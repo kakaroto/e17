@@ -34,7 +34,6 @@ __create_scrollpane_test_window(Ewl_Widget * w, void *ev_data,
 	scrollpane_button = w;
 
 	scrollpane_win = ewl_window_new();
-	ewl_box_set_spacing(EWL_BOX(scrollpane_win), 10);
 	ewl_callback_append(scrollpane_win, EWL_CALLBACK_DELETE_WINDOW,
 			    __destroy_scrollpane_test_window, NULL);
 	ewl_widget_show(scrollpane_win);

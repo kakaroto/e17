@@ -32,7 +32,6 @@ __create_scrollbar_test_window(Ewl_Widget * w, void *ev_data, void *user_data)
 	scrollbar_button = w;
 
 	scrollbar_win = ewl_window_new();
-	ewl_box_set_spacing(EWL_BOX(scrollbar_win), 10);
 	ewl_callback_append(scrollbar_win, EWL_CALLBACK_DELETE_WINDOW,
 			    __destroy_scrollbar_test_window, NULL);
 	ewl_widget_show(scrollbar_win);

@@ -31,7 +31,6 @@ __create_text_test_window(Ewl_Widget * w, void *ev_data, void *user_data)
 	text_button = w;
 
 	text_win = ewl_window_new();
-	ewl_box_set_spacing(EWL_BOX(text_win), 10);
 	ewl_callback_append(text_win, EWL_CALLBACK_DELETE_WINDOW,
 			    __destroy_text_test_window, NULL);
 	ewl_widget_show(text_win);
