@@ -3,6 +3,7 @@
 
 /**
  * @param follows: the widget this dialog follows
+ * @param type: type of dialog to display
  * @param cb: callback to be called when open/save button is pushed
  * @return Returns a new filedialog in success, NULL on failure.
  * @brief Create a new filedialog
@@ -26,13 +27,12 @@ Ewl_Widget     *ewl_filedialog_new(Ewl_Widget * follows,
 
 
 /**
- * ewl_filedialog_init - initialize a new filedialog
- * @fd: the filedialog
- * @follows: widget to follow for the floater
- * @type: the filedialog type
- * @cb: the callback to call when open/save button is pushed
- *
- * Returns nothing. Iinitialize the filedialog to default values.
+ * @param fd: the filedialog
+ * @param follows: widget to follow for the floater
+ * @param type: the filedialog type
+ * @param cb: the callback to call when open/save button is pushed
+ * @return Returns no value.
+ * @brief Initialize a new filedialog
  */
 void
 ewl_filedialog_init(Ewl_Filedialog * fd, Ewl_Widget * follows,

@@ -121,7 +121,7 @@ void ewl_fileselector_init(Ewl_Fileselector * fs, Ewl_Callback_Function fc)
 }
 
 /**
- * @param row: the fileselector
+ * @param fs: the fileselector
  * @return Returns the selected filename including its path
  * @brief Retrieve the selected filename
  */
