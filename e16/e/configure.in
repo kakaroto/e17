@@ -126,10 +126,14 @@ LDFLAGS="$LDFLAGS -L$prefix/lib"
 if test "x$with_imlib2" = "xyes"; then
 # Use Imlib2
 
-AC_CHECK_LIB(Imlib2, imlib_create_image, IMLIB_LIBS=-lImlib2, [
-echo "ERROR: Imlib2 support requested but not found (imlib2)."
-AC_MSG_ERROR([Fatal Error: no Imlib2 detected.])], -lm)
-AC_DEFINE(USE_IMLIB2, 1, [Imlib2 support])
+IMLIB_LIBS=`imlib2-config --libs`
+IMLIB_CFLAGS=`imlib2-config --cflags`
+AC_SUBST(IMLIB_LIBS)
+AC_SUBST(IMLIB_CFLAGS)
+AC_CHECK_LIB(Imlib2, imlib_create_image,
+             AC_DEFINE(USE_IMLIB2, 1, [Imlib2 support]),
+             AC_MSG_ERROR([Fatal Error: no Imlib2 detected.]),
+             $IMLIB_LIBS)
 with_fnlib="no"
 
 else
