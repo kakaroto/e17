@@ -3,6 +3,7 @@
 SUBDIRS = plugins
 
 AM_CFLAGS = @ECORE_CFLAGS@  \
+            @EDB_CFLAGS@    \
             @EVAS_CFLAGS@   \
             @EDJE_CFLAGS@   \
             @ESMART_CFLAGS@
@@ -15,6 +16,7 @@ embrace_SOURCES = main.c                            \
                   mailbox.c mailbox.h
 
 embrace_LDADD = @ECORE_LIBS@  \
+                @EDB_LIBS@    \
                 @EVAS_LIBS@   \
                 @EDJE_LIBS@   \
                 @ESMART_LIBS@ \

@@ -103,6 +103,9 @@ AM_CONDITIONAL(BUILD_SYLPHEED, test x$build_sylpheed = xyes)
 AC_PATH_GENERIC(ecore, , ,
 	AC_MSG_ERROR(Cannot find ecore: Is ecore-config in path?))
 
+AC_PATH_GENERIC(edb, , ,
+	AC_MSG_ERROR(Cannot find edb: Is edb-config in path?))
+
 AC_PATH_GENERIC(evas, , ,
 	AC_MSG_ERROR(Cannot find evas: Is evas-config in path?))
 
