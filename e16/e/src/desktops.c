@@ -1112,7 +1112,11 @@ ConformEwinToDesktop(EWin * ewin)
    if ((ewin->iconified) && (ewin->parent != desks.desk[ewin->desktop].win))
      {
 	ewin->parent = desks.desk[ewin->desktop].win;
+#if 0
 	DesktopAddEwinToTop(ewin);
+#else
+	EwinListStackingRaise(ewin);
+#endif
 	EReparentWindow(disp, ewin->win, desks.desk[ewin->desktop].win, ewin->x,
 			ewin->y);
 	ICCCM_Configure(ewin);
@@ -1135,7 +1139,11 @@ ConformEwinToDesktop(EWin * ewin)
    else if (ewin->parent != desks.desk[ewin->desktop].win)
      {
 	ewin->parent = desks.desk[ewin->desktop].win;
+#if 0
 	DesktopAddEwinToTop(ewin);
+#else
+	EwinListStackingRaise(ewin);
+#endif
 	EReparentWindow(disp, ewin->win, desks.desk[ewin->desktop].win, ewin->x,
 			ewin->y);
 	StackDesktops();
@@ -1701,7 +1709,6 @@ MoveEwinToDesktop(EWin * ewin, int desk)
    ewin->floating = 0;
    pdesk = ewin->desktop;
    ewin->desktop = DESKTOPS_WRAP_NUM(desk);
-   DesktopAddEwinToTop(ewin);
    ConformEwinToDesktop(ewin);
    if (ewin->has_transients)
      {
@@ -1723,6 +1730,7 @@ MoveEwinToDesktop(EWin * ewin, int desk)
    EDBUG_RETURN_;
 }
 
+#if 0
 void
 DesktopAddEwinToTop(EWin * ewin)
 {
@@ -1752,6 +1760,7 @@ DesktopAddEwinToBottom(EWin * ewin)
 
    EDBUG_RETURN_;
 }
+#endif
 
 void
 MoveEwinToDesktopAt(EWin * ewin, int desk, int x, int y)
@@ -1765,7 +1774,6 @@ MoveEwinToDesktopAt(EWin * ewin, int desk, int x, int y)
      {
 	ForceUpdatePagersForDesktop(ewin->desktop);
 	ewin->desktop = DESKTOPS_WRAP_NUM(desk);
-	DesktopAddEwinToTop(ewin);
      }
    dx = x - ewin->x;
    dy = y - ewin->y;

@@ -559,7 +559,7 @@ AddToFamily(Window win)
 
    /* add it to our list of managed clients */
    AddItem(ewin, "EWIN", ewin->client.win, LIST_TYPE_EWIN);
-   DesktopAddEwinToTop(ewin);
+
    /* if the window asked to be iconified at the start */
    if (ewin->iconified)
      {
@@ -1385,9 +1385,8 @@ FreeEwin(EWin * ewin)
 
    if (ewin->client.transient)
      {
-	ewin2 =
-	   FindItem(NULL, ewin->client.transient_for, LIST_FINDBY_ID,
-		    LIST_TYPE_EWIN);
+	ewin2 = FindItem(NULL, ewin->client.transient_for, LIST_FINDBY_ID,
+			 LIST_TYPE_EWIN);
 	if (ewin2)
 	  {
 	     ewin2->has_transients--;
@@ -1881,6 +1880,9 @@ RestackEwin(EWin * ewin)
 {
    EDBUG(3, "RestackEwin");
 
+   if (EventDebug(EDBUG_TYPE_RAISELOWER))
+      printf("RestackEwin %#lx %s\n", ewin->client.win, EwinGetTitle(ewin));
+
    if (ewin->floating)
      {
 	XRaiseWindow(disp, ewin->win);
@@ -1901,41 +1903,44 @@ void
 RaiseEwin(EWin * ewin)
 {
    static int          call_depth = 0;
+   EWin              **lst;
+   int                 i, num;
 
    EDBUG(3, "RaiseEwin");
    if (call_depth > 256)
       EDBUG_RETURN_;
    call_depth++;
 
-#if 0
-   printf("RaiseEwin %#lx %s\n", ewin->client.win, EwinGetTitle(ewin));
-#endif
+   if (EventDebug(EDBUG_TYPE_RAISELOWER))
+      printf("RaiseEwin(%d) %#lx %s\n", call_depth, ewin->client.win,
+	     EwinGetTitle(ewin));
+
    if (ewin->win)
      {
 	if (ewin->floating)
 	  {
 	     XRaiseWindow(disp, ewin->win);
+	     goto done;
 	  }
-	else
-	  {
-	     DesktopAddEwinToTop(ewin);
-	     if (ewin->has_transients)
-	       {
-		  EWin              **lst;
-		  int                 i, num;
 
-		  lst = ListTransientsFor(ewin->client.win, &num);
-		  if (lst)
-		    {
-		       for (i = 0; i < num; i++)
-			  DesktopAddEwinToTop(lst[i]);
-		       Efree(lst);
-		    }
-	       }
-	     RestackEwin(ewin);
+	num = EwinListStackingRaise(ewin);
+	if (num == 0)		/* Quit if stacking is unchanged */
+	   goto done;
+
+	if (ewin->has_transients)
+	  {
+	     lst = ListTransientsFor(ewin->client.win, &num);
+	     for (i = 0; i < num; i++)
+		RaiseEwin(lst[i]);
+	     if (lst)
+		Efree(lst);
 	  }
+
+	if (call_depth == 1)
+	   RestackEwin(ewin);
      }
 
+ done:
    call_depth--;
    EDBUG_RETURN_;
 }
@@ -1944,34 +1949,38 @@ void
 LowerEwin(EWin * ewin)
 {
    static int          call_depth = 0;
+   EWin               *ewin2;
+   int                 num;
 
    EDBUG(3, "LowerEwin");
    if (call_depth > 256)
       EDBUG_RETURN_;
    call_depth++;
 
-#if 0
-   printf("LowerEwin %#lx %s\n", ewin->client.win, EwinGetTitle(ewin));
-#endif
+   if (EventDebug(EDBUG_TYPE_RAISELOWER))
+      printf("LowerEwin(%d) %#lx %s\n", call_depth, ewin->client.win,
+	     EwinGetTitle(ewin));
+
    if ((ewin->win) && (!ewin->floating))
      {
-	if (ewin->has_transients)
-	  {
-	     EWin              **lst;
-	     int                 i, num;
+	num = EwinListStackingLower(ewin);
+	if (num == 0)		/* Quit if stacking is unchanged */
+	   goto done;
 
-	     lst = ListTransientsFor(ewin->client.win, &num);
-	     if (lst)
-	       {
-		  for (i = 0; i < num; i++)
-		     DesktopAddEwinToBottom(lst[i]);
-		  Efree(lst);
-	       }
+	if (ewin->client.transient_for)
+	  {
+	     ewin2 = FindItem(NULL, ewin->client.transient_for, LIST_FINDBY_ID,
+			      LIST_TYPE_EWIN);
+	     if (ewin2 == NULL)	/* Should never happen */
+		goto done;
+	     LowerEwin(ewin2);
 	  }
-	DesktopAddEwinToBottom(ewin);
-	RestackEwin(ewin);
+
+	if (call_depth == 1)
+	   RestackEwin(ewin);
      }
 
+ done:
    call_depth--;
    EDBUG_RETURN_;
 }
