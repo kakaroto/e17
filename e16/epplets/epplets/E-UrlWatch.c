@@ -494,6 +494,9 @@ validate_url (char *url)
 
   D (("In validate_url: url -->%s<--\n", url));
 
+  if(!url)
+        return NULL;
+
   if (orig_ret)
     free (orig_ret);
 

@@ -2052,3 +2052,11 @@ Mon Apr  3 02:05:32 CEST 2000
 (Christian)
 
 E-Mountbox: Show items in the sequence they're given in fstab, not reversed.
+
+-------------------------------------------------------------------------------
+
+Mon Apr 17 18:30:32 GMT 2000
+(gilbertt)
+
+E-UrlWatch: Hopefully fixes Debian Bug#62514
+
