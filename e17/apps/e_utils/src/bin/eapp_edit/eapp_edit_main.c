@@ -325,6 +325,6 @@ main(int argc, char **argv) {
 static void
 _eapp_edit_help(void) {
   printf("USAGE:\n"
-      "enlightenment_ewl_eapp file.eapp\n\n"
+      "e_util_eapp_edit file.eapp\n\n"
       "if file.eapp does not exist a new icon file will be created\n");
 }
