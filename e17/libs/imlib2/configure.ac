@@ -142,8 +142,6 @@ echo "http://voyager.cns.ohiou.edu/~sadkins/web_library/fonts/font_archive/"
 echo ""
 AC_MSG_ERROR([Fatal Error: no FreeType detected.])], -lm)
 
-AC_CHECK_HEADERS(freetype.h freetype/freetype.h freetype1/freetype/freetype.h,[ break] , )
-
 AC_CHECK_HEADER(freetype.h, [ ftype=yes ], [ ftype=no ])
 AC_CHECK_HEADER(freetype/freetype.h, [ ftype_ftype=yes ], [ ftype_ftype=no ])
 AC_CHECK_HEADER(freetype1/freetype/freetype.h, [ ftype1_ftype=yes ], [ ftype1_ftype=no ])

@@ -26,12 +26,10 @@
 #include "Imlib2.h"
 #ifdef HAVE_FREETYPE1_FREETYPE_FREETYPE_H
 #include <freetype1/freetype/freetype.h>
-#else 
-#if HAVE_FREETYPE_FREETYPE_H
+#elif defined(HAVE_FREETYPE_FREETYPE_H)
 #include <freetype/freetype.h>
 #else
 #include <freetype.h>
-#endif
 #endif
 #include "font.h"
 #include "grad.h"
