@@ -1,3 +1,8 @@
+Sun Nov 12 15:16:40 2000  Tom Gilbert  <gilbertt@linuxbrit.co.uk>
+
+	* Now uses giblib. You'll need the very latest giblib from CVS as
+	of right now.
+
 Sun Nov  5 02:17:57 2000  Tom Gilbert  <gilbertt@linuxbrit.co.uk>
 
 	* Beep when about to take the shot.

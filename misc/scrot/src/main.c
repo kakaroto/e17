@@ -29,7 +29,6 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 int
 main(int argc, char **argv)
 {
-   char *tmp;
    Imlib_Image image;
    Imlib_Load_Error err;
 
@@ -52,18 +51,14 @@ main(int argc, char **argv)
       eprintf("no image grabbed");
 
    imlib_context_set_image(image);
-   opt.output_file = im_printf(opt.output_file, NULL, image);
-   tmp = strrchr(opt.output_file, '.');
-   if (tmp)
-      imlib_image_set_format(tmp + 1);
-
    imlib_image_attach_data_value("quality", NULL, opt.quality, NULL);
-   imlib_save_image_with_error_return(opt.output_file, &err);
+
+   gib_imlib_save_image_with_error_return(image, opt.output_file, &err);
    if (err)
       eprintf("Saving to file %s failed\n", opt.output_file);
    if (opt.exec)
       scrot_exec_app(image);
-   imlib_free_image_and_decache();
+   gib_imlib_free_image_and_decache(image);
 
    return 0;
 }
@@ -99,9 +94,8 @@ scrot_grab_shot(void)
 {
    Imlib_Image im;
 
-   imlib_context_set_drawable(root);
    XBell(disp, 0);
-   im = imlib_create_image_from_drawable(0, 0, 0, scr->width, scr->height, 1);
+   im = gib_imlib_create_image_from_drawable(root, 0, 0, 0, scr->width, scr->height, 1);
 
    return im;
 }
@@ -331,8 +325,7 @@ Imlib_Image scrot_sel_and_grab_image(void)
          rh = scr->height - ry;
 
       XBell(disp, 0);
-      imlib_context_set_drawable(root);
-      im = imlib_create_image_from_drawable(0, rx, ry, rw, rh, 1);
+      im = gib_imlib_create_image_from_drawable(root, 0, rx, ry, rw, rh, 1);
    }
    return im;
 }
@@ -381,8 +374,6 @@ im_printf(char *str, char *filename, Imlib_Image im)
    struct tm *tm;
 
    ret[0] = '\0';
-   imlib_context_set_image(im);
-
    time(&t);
    tm = localtime(&t);
    strftime(strf, 4095, str, tm);
@@ -409,11 +400,11 @@ im_printf(char *str, char *filename, Imlib_Image im)
               }
               break;
            case 'w':
-              snprintf(buf, sizeof(buf), "%d", imlib_image_get_width());
+              snprintf(buf, sizeof(buf), "%d", gib_imlib_image_get_width(im));
               strcat(ret, buf);
               break;
            case 'h':
-              snprintf(buf, sizeof(buf), "%d", imlib_image_get_height());
+              snprintf(buf, sizeof(buf), "%d", gib_imlib_image_get_height(im));
               strcat(ret, buf);
               break;
            case 's':
@@ -433,11 +424,11 @@ im_printf(char *str, char *filename, Imlib_Image im)
               break;
            case 'p':
               snprintf(buf, sizeof(buf), "%d",
-                       imlib_image_get_width() * imlib_image_get_height());
+                       gib_imlib_image_get_width(im) * gib_imlib_image_get_height(im));
               strcat(ret, buf);
               break;
            case 't':
-              strcat(ret, imlib_image_format());
+              strcat(ret, gib_imlib_image_format(im));
               break;
            case '$':
               strcat(ret, "$");

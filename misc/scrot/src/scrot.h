@@ -47,7 +47,7 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 #include <stdarg.h>
 #include <signal.h>
 #include <sys/wait.h>
-#include <Imlib2.h>
+#include <giblib/giblib.h>
 
 #include "structs.h"
 #include "utils.h"
@@ -82,7 +82,6 @@ extern Display *disp;
 extern Visual *vis;
 extern Colormap cm;
 extern int depth;
-extern Atom wmDeleteWindow;
 
 /* Thumbnail sizes */
 extern Window root;

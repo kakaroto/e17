@@ -12,21 +12,16 @@ AC_PROG_MAKE_SET
 
 AM_MAINTAINER_MODE
 
-AC_ARG_WITH(imlib2,
-        [  --with-imlib2=DIR       use imlib2 in <DIR>],
-        [CFLAGS="$CFLAGS -I$withval/include"
-        LIBS="-L$withval/lib $LIBS"])
-
-AC_PATH_GENERIC(imlib2, 1.0.0, [
-  AC_SUBST(IMLIB_LIBS)
-  AC_SUBST(IMLIB_CFLAGS) ],
-  AC_MSG_ERROR(Cannot find imlib2: Is imlib2-config in the path?) )
+AC_PATH_GENERIC(giblib, 1.0.0, [
+  AC_SUBST(GIBLIB_LIBS)
+  AC_SUBST(GIBLIB_CFLAGS) ],
+  AC_MSG_ERROR(Cannot find giblib: Is giblib-config in the path?) )
 
 LIBS="$LIBS -lm"
-IMLIB_LIBS=`imlib2-config --libs`
-IMLIB_CFLAGS=`imlib2-config --cflags`
-AC_SUBST(IMLIB_LIBS)
-AC_SUBST(IMLIB_CFLAGS)
+GIBLIB_LIBS=`giblib-config --libs`
+GIBLIB_CFLAGS=`giblib-config --cflags`
+AC_SUBST(GIBLIB_LIBS)
+AC_SUBST(GIBLIB_CFLAGS)
 
 AC_CHECK_FUNC(getopt_long,,[LIBOBJS="$LIBOBJS getopt.o getopt1.o"])
 AC_SUBST(LIBOBJS)

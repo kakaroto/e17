@@ -31,7 +31,6 @@ Visual *vis = NULL;
 Screen *scr = NULL;
 Colormap cm;
 int depth;
-Atom wmDeleteWindow;
 Window root = 0;
 
 void
@@ -51,7 +50,6 @@ init_x_and_imlib(void)
    imlib_context_set_colormap(cm);
    imlib_context_set_color_modifier(NULL);
    imlib_context_set_operation(IMLIB_OP_COPY);
-   wmDeleteWindow = XInternAtom(disp, "WM_DELETE_WINDOW", False);
 
    /* Initialise random numbers */
    srand(getpid() * time(NULL) % ((unsigned int) -1));
