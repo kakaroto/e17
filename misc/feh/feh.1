@@ -217,6 +217,9 @@ below each thumbnail.
 .TP 5
 .B -M, --menu-font FONT
 Use FONT for the font in menus.
+.TP 5
+.B -N, --no-menus
+Don't load or show any menus.
 .SH MONTAGE MODE OPTIONS
 .TP 5
 .B -X, --ignore-aspect
@@ -323,6 +326,9 @@ Goto previous slide
 .B n, N, <SPACE>, <RIGHT>
 Goto next slide
 .TP 5
+.B r, R
+Reload current image. Useful for webcams.
+.TP 5
 .B <HOME>
 Goto first slide
 .TP 5
@@ -346,8 +352,9 @@ Quit the slideshow
 .SH MOUSE ACTIONS
 When viewing an image, mouse button 1 moves to the next image (slideshow
 mode only), button 2 zooms (click and drag left->right to zoom in, right->
-left to zoom out, click once to restore 1x zoom), and mouse button 3 closes
-all open windows and ends the current session.
+left to zoom out, click once to restore 1x zoom), and mouse button 3 shows
+menus. If --no-menus is specified, button 3 closes all open windows and
+closes the application.
 .SH SUGGESTED USAGE EXAMPLES
 Here are some examples of nice option combinations to achieve cool results:
 .TP 5
@@ -416,4 +423,6 @@ THE AUTHORS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER
 IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN
 CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 .PP
-Email bugs and feature requests to <gilbertt@btinternet.com>
+Email bugs and feature requests to
+.br
+.B <gilbertt@btinternet.com>

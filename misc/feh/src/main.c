@@ -249,20 +249,23 @@ feh_handle_event(XEvent * ev)
                 unsigned int c;
                 Window r;
 
-                if (!menu_main)
-                   feh_menu_init();
-                if (winwid->type == WIN_TYPE_ABOUT)
+                if (!opt.no_menus)
                 {
-                   /* winwidget_destroy(winwid); */
-                   XQueryPointer(disp, winwid->win, &r, &r, &x, &y, &b, &b,
-                                 &c);
-                   feh_menu_show_at_xy(menu_close, winwid, x, y);
-                }
-                else
-                {
-                   XQueryPointer(disp, winwid->win, &r, &r, &x, &y, &b, &b,
-                                 &c);
-                   feh_menu_show_at_xy(menu_main, winwid, x, y);
+                   if (!menu_main)
+                      feh_menu_init();
+                   if (winwid->type == WIN_TYPE_ABOUT)
+                   {
+                      /* winwidget_destroy(winwid); */
+                      XQueryPointer(disp, winwid->win, &r, &r, &x, &y, &b, &b,
+                                    &c);
+                      feh_menu_show_at_xy(menu_close, winwid, x, y);
+                   }
+                   else
+                   {
+                      XQueryPointer(disp, winwid->win, &r, &r, &x, &y, &b, &b,
+                                    &c);
+                      feh_menu_show_at_xy(menu_main, winwid, x, y);
+                   }
                 }
              }
              break;
@@ -285,28 +288,6 @@ feh_handle_event(XEvent * ev)
         break;
      case ButtonRelease:
         D(("Received ButtonRelease event\n"));
-        /* if menus are open, handle the release and get the heck out */
-        if (menu_root)
-        {
-           feh_menu *m;
-
-           if (ev->xbutton.window == menu_cover)
-              feh_menu_hide(menu_root);
-           else if ((m = feh_menu_get_from_window(ev->xbutton.window)))
-           {
-              feh_menu_item *i = NULL;
-
-              i = feh_menu_find_selected(m);
-              /* watch out for this. I put it this way around so the menu goes
-                 away *before* we perform the action, if we start freeing
-                 menus on hiding, it will break ;-) */
-              feh_menu_hide(menu_root);
-              feh_main_iteration(0);
-              if ((i) && (i->func))
-                 (i->func) (m, i, i->data);
-           }
-           break;
-        }
         switch (ev->xbutton.button)
         {
           case 1:
@@ -326,7 +307,39 @@ feh_handle_event(XEvent * ev)
              break;
           case 3:
              D(("Button 3 Release event\n"));
+             if (opt.no_menus)
+                winwidget_destroy_all();
+             else if (menu_root)
+             {
+                feh_menu *m;
 
+                /* if menus are open, close them, and execute action if
+                   needed */
+
+                if (ev->xbutton.window == menu_cover)
+                   feh_menu_hide(menu_root);
+                else if (menu_root)
+                {
+                   feh_menu *m;
+
+                   if (ev->xbutton.window == menu_cover)
+                      feh_menu_hide(menu_root);
+                   else
+                      if ((m = feh_menu_get_from_window(ev->xbutton.window)))
+                   {
+                      feh_menu_item *i = NULL;
+
+                      i = feh_menu_find_selected(m);
+                      /* watch out for this. I put it this way around so the
+                         menu goes away *before* we perform the action, if we 
+                         start freeing menus on hiding, it will break ;-) */
+                      feh_menu_hide(menu_root);
+                      feh_main_iteration(0);
+                      if ((i) && (i->func))
+                         (i->func) (m, i, i->data);
+                   }
+                }
+             }
              break;
           default:
              break;

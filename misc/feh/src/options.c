@@ -49,7 +49,7 @@ init_parse_options(int argc, char **argv)
    opt.slideshow_delay = -1;
    opt.thumb_w = 60;
    opt.thumb_h = 60;
-   opt.menu_font = estrdup ("20thcent/12");
+   opt.menu_font = estrdup("20thcent/12");
 
    D(("About to parse env options (if any)\n"));
    /* Check for and parse any options in FEH_OPTIONS */
@@ -219,7 +219,7 @@ feh_parse_option_array(int argc, char **argv)
 {
    static char stropts[] =
 
-      "a:A:b:BcC:dD:e:f:Fg:hH:iIklLmM:no:O:pPqrR:sS:t:T:uUvVwW:xXy:zZ";
+      "a:A:b:BcC:dD:e:f:Fg:hH:iIklLmM:nNo:O:pPqrR:sS:t:T:uUvVwW:xXy:zZ";
    static struct option lopts[] = {
       /* actions */
       {"help", 0, 0, 'h'},                  /* okay */
@@ -241,6 +241,7 @@ feh_parse_option_array(int argc, char **argv)
       {"quiet", 0, 0, 'q'},                 /* okay */
       {"loadables", 0, 0, 'U'},             /* okay */
       {"unloadables", 0, 0, 'u'},           /* okay */
+      {"no-menus", 0, 0, 'N'},
       {"full-screen", 0, 0, 'F'},
       {"auto-zoom", 0, 0, 'Z'},
       {"no-progressive", 0, 0, 'P'},
@@ -259,7 +260,7 @@ feh_parse_option_array(int argc, char **argv)
       {"sort", 1, 0, 'S'},                  /* okay */
       {"theme", 1, 0, 't'},                 /* okay */
       {"filelist", 1, 0, 'f'},              /* okay */
-      {"menu-font", 1, 0, 'M'},              
+      {"menu-font", 1, 0, 'M'},
       {"thumb-width", 1, 0, 'y'},
       {"thumb-height", 1, 0, 'g'},
       {"slideshow-delay", 1, 0, 'D'},
@@ -317,6 +318,9 @@ feh_parse_option_array(int argc, char **argv)
            break;
         case 'n':
            opt.reverse = 1;
+           break;
+        case 'N':
+           opt.no_menus = 1;
            break;
         case 'V':
            opt.verbose = 1;
@@ -643,6 +647,7 @@ show_usage(void)
            "                            get image name, size and dimensions\n"
            "      --fontpath PATH       Specify an extra directory to look in for fonts\n"
            "  -M, --menu-font FONT      Use FONT for the font in menus.\n"
+           "  -N, --no-menus            Don't load or show any menus.\n"
            " MONTAGE MODE OPTIONS\n"
            "  -X, --ignore-aspect       By default, the montage thumbnails will retain\n"
            "                            their aspect ratios, while fitting in --thumb-width\n"
@@ -698,8 +703,9 @@ show_usage(void)
            " MOUSE ACTIONS\n"
            " When viewing an image, mouse button 1 moves to the next image (slideshow\n"
            " mode only), button 2 zooms (click and drag left->right to zoom in, right->\n"
-           " left to zoom out, click once to restore 1x zoom), and mouse button 3 closes\n"
-           " all open windows and ends the application\n" "\n"
+           " left to zoom out, click once to restore 1x zoom), and mouse button 3 shows\n"
+           " menus. If --no-menus is specified, button 2 closes all open windows and\n"
+           " closes the application\n" "\n"
            "See 'man feh' for more detailed information\n" "\n"
            "This program is free software see the man page for licensing info.\n"
            "Copyright Tom Gilbert, 1999\n"
