@@ -1,0 +1,17 @@
+Frequently asked questions
+
+This is a list of questions you can expect based on past presentations
+related to enlightenment. Yes most of these questions are in the faq on
+the website, but we all know how many end users read that before asking
+questions.
+
+Is enlightenment development dead?
+How many active developers are there
+How active is CVS (average time between cvs commits)
+How long until DR17
+Why is there so much bloat in E
+Why are you making ANOTHER wm like gnome or kde
+How fast will the new e apps work
+How much memory or cpu will the libs use
+Where do the libs run (portability)
+Why are you redoing a lot of work being done in fd.o
