@@ -537,7 +537,7 @@ void ewl_grid_add_cb(Ewl_Container * p, Ewl_Widget * c)
 		 */
 		if (g->col_size[i].size < temp) {
 			if (!g->col_size[i].override)
-				g->col_size[i].size = temp;
+				g->col_size[i].size = 0;
 
 			/*
 			 * Save a pointer to the largest child.
@@ -569,7 +569,7 @@ void ewl_grid_add_cb(Ewl_Container * p, Ewl_Widget * c)
 		 */
 		if (g->row_size[i].size < temp) {
 			if (!g->row_size[i].override)
-				g->row_size[i].size = temp;
+				g->row_size[i].size = 0;
 
 			/*
 			 * Save a pointer to the largest child.
