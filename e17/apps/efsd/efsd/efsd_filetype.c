@@ -834,7 +834,8 @@ magic_test_fs(char *filename, struct stat *st)
 		  *lastslash = '/';
 		  D_RETURN_(NULL);
 		}
-	      
+
+	      *lastslash = '/';
 	      broken_link = TRUE;
 	    }
 	}
