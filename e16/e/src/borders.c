@@ -42,8 +42,7 @@
    StructureNotifyMask | ResizeRedirectMask | \
    PropertyChangeMask | ColormapChangeMask)
 
-static void         EwinSetBorderInit(EWin * ewin);
-static void         EwinSetBorderTo(EWin * ewin, Border * b);
+static void         EwinBorderSetTo(EWin * ewin, Border * b);
 static EWin        *EwinCreate(Window win);
 static EWin        *Adopt(Window win);
 static EWin        *AdoptInternal(Window win, Border * border, int type);
@@ -1125,6 +1124,37 @@ HonorIclass(char *s, int id)
    EDBUG_RETURN_;
 }
 
+static void
+EwinBorderSelect(EWin * ewin)
+{
+   Border             *b;
+
+   /* Quit if we allready have a border that isn't the fallback one */
+   b = ewin->border;
+   if (b && strcmp(b->name, "__FALLBACK_BORDER"))
+      return;
+
+   ICCCM_GetShapeInfo(ewin);
+
+   if ((!ewin->client.mwm_decor_title) && (!ewin->client.mwm_decor_border))
+      b = (Border *) FindItem("BORDERLESS", 0, LIST_FINDBY_NAME,
+			      LIST_TYPE_BORDER);
+   else
+      b = MatchEwinByFunction(ewin,
+			      (void
+			       *(*)(EWin *, WindowMatch *))(MatchEwinBorder));
+   if (Conf.dockapp_support && ewin->docked)
+      b = (Border *) FindItem("BORDERLESS", 0, LIST_FINDBY_NAME,
+			      LIST_TYPE_BORDER);
+   if (!b)
+      b = (Border *) FindItem("DEFAULT", 0, LIST_FINDBY_NAME, LIST_TYPE_BORDER);
+
+   if (!b)
+      b = FindItem("__FALLBACK_BORDER", 0, LIST_FINDBY_NAME, LIST_TYPE_BORDER);
+
+   ewin->border = b;
+}
+
 /*
  * Derive frame window position from client window and border properties
  */
@@ -1239,9 +1269,8 @@ Adopt(Window win)
    ICCCM_MatchSize(ewin);
    ICCCM_Adopt(ewin);
 
-   if (!ewin->border)
-      EwinSetBorderInit(ewin);
-   EwinSetBorderTo(ewin, NULL);
+   EwinBorderSelect(ewin);
+   EwinBorderSetTo(ewin, NULL);
 
    EwinGetGeometry(ewin);
    EwinEventsConfigure(ewin, 0);
@@ -1313,9 +1342,8 @@ AdoptInternal(Window win, Border * border, int type)
    ICCCM_MatchSize(ewin);
    ICCCM_Adopt(ewin);
 
-   if (!ewin->border)
-      EwinSetBorderInit(ewin);
-   EwinSetBorderTo(ewin, NULL);
+   EwinBorderSelect(ewin);
+   EwinBorderSetTo(ewin, NULL);
 
    EwinGetGeometry(ewin);
    EwinEventsConfigure(ewin, 0);
@@ -1601,37 +1629,7 @@ EwinEventUnmap(EWin * ewin)
 }
 
 static void
-EwinSetBorderInit(EWin * ewin)
-{
-   Border             *b;
-
-   EDBUG(4, "EwinSetBorderInit");
-
-   ICCCM_GetShapeInfo(ewin);
-
-   if ((!ewin->client.mwm_decor_title) && (!ewin->client.mwm_decor_border))
-      b = (Border *) FindItem("BORDERLESS", 0, LIST_FINDBY_NAME,
-			      LIST_TYPE_BORDER);
-   else
-      b = MatchEwinByFunction(ewin,
-			      (void
-			       *(*)(EWin *, WindowMatch *))(MatchEwinBorder));
-   if (Conf.dockapp_support && ewin->docked)
-      b = (Border *) FindItem("BORDERLESS", 0, LIST_FINDBY_NAME,
-			      LIST_TYPE_BORDER);
-   if (!b)
-      b = (Border *) FindItem("DEFAULT", 0, LIST_FINDBY_NAME, LIST_TYPE_BORDER);
-
-   if (!b)
-      b = FindItem("__FALLBACK_BORDER", 0, LIST_FINDBY_NAME, LIST_TYPE_BORDER);
-
-   ewin->border = b;
-
-   EDBUG_RETURN_;
-}
-
-static void
-EwinSetBorderTo(EWin * ewin, Border * b)
+EwinBorderSetTo(EWin * ewin, Border * b)
 {
    int                 i;
    int                 px = 0, py = 0;
@@ -1639,7 +1637,7 @@ EwinSetBorderTo(EWin * ewin, Border * b)
 
    AwaitIclass        *await;
 
-   EDBUG(4, "EwinSetBorderTo");
+   EDBUG(4, "EwinBorderSetTo");
 
    if (ewin->border == b)
       EDBUG_RETURN_;
@@ -1769,7 +1767,7 @@ EwinSetBorder(EWin * ewin, Border * b, int apply)
      {
 	if (ewin->border != b)
 	  {
-	     EwinSetBorderTo(ewin, b);
+	     EwinBorderSetTo(ewin, b);
 	     ICCCM_MatchSize(ewin);
 	     MoveResizeEwin(ewin, ewin->x, ewin->y,
 			    ewin->client.w, ewin->client.h);
