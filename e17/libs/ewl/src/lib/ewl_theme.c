@@ -12,6 +12,7 @@ static Ecore_Hash *cached_theme_data = NULL;
 static Ecore_Hash *def_theme_data = NULL;
 
 static void ewl_theme_font_path_init(void);
+static char * ewl_theme_path_find(const char * name);
 
 /**
  * @return Returns TRUE on success, FALSE on failure.
@@ -23,10 +24,6 @@ static void ewl_theme_font_path_init(void);
  */
 int ewl_theme_init(void)
 {
-	struct stat     st;
-	char            theme_db_path[PATH_MAX];
-	char           *home;
-	
 	DENTER_FUNCTION(DLEVEL_STABLE);
 
 	/*
@@ -40,69 +37,18 @@ int ewl_theme_init(void)
 	 * Retrieve the current theme from the users config.
 	 */
 	if (!theme_name) {
-		theme_name = ewl_config_str_get("/ewl/theme/name");
-		if (!theme_name)
-			theme_name = strdup("default");
-	}
-
-	if (!theme_name)
-		DRETURN_INT(FALSE, DLEVEL_STABLE);
-
-	/*
-	 * Get the users home directory. This environment variable should
-	 * always be set.
-	 */
-	home = getenv("HOME");
-	if (!home) {
-		DERROR("Environment variable HOME not defined\n"
-		       "Try export HOME=/home/user in a bash like environemnt or\n"
-		       "setenv HOME=/home/user in a csh like environment.\n");
-		DRETURN_INT(FALSE, DLEVEL_STABLE);
-	}
-
-	/*
-	 * Build a path to the theme if it is the users home dir and use it if
-	 * available. 
-	 */
-	snprintf(theme_db_path, PATH_MAX, "%s/.e/ewl/themes/%s.eet",
-			home, theme_name);
-	if (((stat(theme_db_path, &st)) == 0) && S_ISREG(st.st_mode)) {
-		theme_path = strdup(theme_db_path);
-	}
-
-	/*
-	 * No user theme, so we try the system-wide theme.
-	 */
-	if (!theme_path) {
-		snprintf(theme_db_path, PATH_MAX, PACKAGE_DATA_DIR
-				"/themes/%s.eet", theme_name);
-		if (((stat(theme_db_path, &st)) == 0) &&
-				S_ISREG(st.st_mode)) {
-			theme_path = strdup(theme_db_path);
+		if(ewl_config.theme.name) {
+			theme_name = strdup(ewl_config.theme.name);
+			theme_path = ewl_theme_path_find(theme_name);
 		}
-	}
+	}		
 
 	/*
-	 * see if they gave a full path to the theme
-	 */
-	if (!theme_path) {
-		if (theme_name[0] != '/') {
-			char   *cwd;
-
-			cwd = getenv("PWD");
-			if (cwd != NULL) 
-				snprintf(theme_db_path, PATH_MAX, "%s/%s", cwd, theme_name);
-			else
-				snprintf(theme_db_path, PATH_MAX, "%s", theme_name);
-
-		} else {
-			snprintf(theme_db_path, PATH_MAX, "%s", theme_name);
-		}
-
-		if (((stat(theme_db_path, &st)) == 0) &&
-				S_ISREG(st.st_mode)) {
-			theme_path = strdup(theme_db_path);
-		}
+	 * Fall back to the default theme.
+	 */	
+	if(!theme_path) {
+		theme_name = strdup("default");
+		theme_path = ewl_theme_path_find(theme_name);
 	}
 
 	/*
@@ -118,6 +64,79 @@ int ewl_theme_init(void)
 	IF_FREE(theme_name);
 
 	DRETURN_INT(TRUE, DLEVEL_STABLE);
+}
+
+/*
+ * Private function for finding the theme path given a theme name, If no theme
+ * of name is found we will return null.
+ */
+static char * ewl_theme_path_find(const char * name) 
+{		
+	struct stat     st;
+	char 	       *theme_found_path = NULL;
+	char 		theme_tmp_path[PATH_MAX];
+	char 	       *home;
+
+	/*
+	 * Get the users home directory. This environment variable should
+	 * always be set.
+	 */
+	home = getenv("HOME");
+	if (!home) {
+		DERROR("Environment variable HOME not defined\n"
+		       "Try export HOME=/home/user in a bash like environemnt or\n"
+		       "setenv HOME=/home/user in a csh like environment.\n");
+	}
+
+	/*
+	 * Build a path to the theme if it is the users home dir and use it if
+	 * available. 
+	 */
+	if (home) {
+		snprintf(theme_tmp_path, PATH_MAX, "%s/.e/ewl/themes/%s.eet",
+			home, name);
+		if (((stat(theme_tmp_path, &st)) == 0) && S_ISREG(st.st_mode)) {
+			theme_found_path = strdup(theme_tmp_path);
+		}
+	}
+
+	/*
+	 * No user theme, so we try the system-wide theme.
+	 */
+	if (!theme_found_path) {
+		snprintf(theme_tmp_path, PATH_MAX, PACKAGE_DATA_DIR
+				"/themes/%s.eet", name);
+		if (((stat(theme_tmp_path, &st)) == 0) &&
+				S_ISREG(st.st_mode)) {
+			theme_found_path = strdup(theme_tmp_path);
+		}
+	}
+
+	/*
+	 * see if they gave a full path to the theme
+	 */
+	if (!theme_found_path) {
+		if (name[0] != '/') {
+			char   *cwd;
+
+			cwd = getenv("PWD");
+			if (cwd != NULL) 
+				snprintf(theme_tmp_path, PATH_MAX, "%s/%s", cwd, name);
+			else
+				snprintf(theme_tmp_path, PATH_MAX, "%s", name);
+
+		} else {
+			snprintf(theme_tmp_path, PATH_MAX, "%s", name);
+		}
+
+		if (((stat(theme_tmp_path, &st)) == 0) &&
+				S_ISREG(st.st_mode)) {
+			theme_found_path = strdup(theme_tmp_path);
+		}
+	}
+
+	return theme_found_path;
+
 }
 
 /**

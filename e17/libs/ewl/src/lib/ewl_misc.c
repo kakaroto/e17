@@ -87,6 +87,7 @@ int ewl_init(int *argc, char **argv)
 {
 	DENTER_FUNCTION(DLEVEL_STABLE);
 
+	/* check if we are already initialized */
 	if (++_ewl_init_count > 1)
 		DRETURN_INT(_ewl_init_count, DLEVEL_STABLE);
 
@@ -137,15 +138,15 @@ int ewl_init(int *argc, char **argv)
 #endif
 
 	if (!use_engine) {
-		fprintf(stderr, "ERRR: Cannot open display!\n");
+		fprintf(stderr, "Cannot open display!\n");
 		ewl_shutdown();
-		DRETURN_INT(_ewl_init_count, DLEVEL_STABLE);
+		DRETURN_INT(--_ewl_init_count, DLEVEL_STABLE);
 	}
 
 	if (!ewl_config_init()) {
-		DERROR("Could not init config data....");
+		DERROR("Could not init config data.");
 		ewl_shutdown();
-		DRETURN_INT(_ewl_init_count, DLEVEL_STABLE);
+		DRETURN_INT(--_ewl_init_count, DLEVEL_STABLE);
 	}
 
 	if (print_theme_keys)
@@ -157,17 +158,17 @@ int ewl_init(int *argc, char **argv)
 	}
 
 	if (!ewl_ev_init()) {
-		DERROR("Could not init event data....");
+		DERROR("Could not init event data.");
 		ewl_shutdown();
-		DRETURN_INT(_ewl_init_count, DLEVEL_STABLE);
+		DRETURN_INT(--_ewl_init_count, DLEVEL_STABLE);
 	}
 
 	ewl_callbacks_init();
 
 	if (!ewl_theme_init()) {
-		DERROR("Could not init theme data....");
+		DERROR("Could not init theme data.");
 		ewl_shutdown();
-		DRETURN_INT(_ewl_init_count, DLEVEL_STABLE);
+		DRETURN_INT(--_ewl_init_count, DLEVEL_STABLE);
 	}
 
 	ewl_embed_list = ecore_list_new();

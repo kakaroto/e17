@@ -772,24 +772,7 @@ void ewl_container_child_show_call(Ewl_Container *c, Ewl_Widget *w)
 	DENTER_FUNCTION(DLEVEL_STABLE);
 
 	if (c->child_show && VISIBLE(w) && REALIZED(w)) {
-		Ewl_Object *tmp;
-		printf("Parent: %dx%d\n",
-			ewl_object_preferred_w_get(EWL_OBJECT(c)),
-			ewl_object_preferred_h_get(EWL_OBJECT(c)));
-
-		ecore_list_goto_first(c->children);
-		while ((tmp = ecore_list_next(c->children))) {
-			if (VISIBLE(tmp) && REALIZED(tmp))
-				printf("\tChild: %dx%d\n",
-					ewl_object_preferred_w_get(tmp),
-					ewl_object_preferred_h_get(tmp));
-		}
-
 		c->child_show(c, w);
-
-		printf("Parent: %dx%d\n",
-			ewl_object_preferred_w_get(EWL_OBJECT(c)),
-			ewl_object_preferred_h_get(EWL_OBJECT(c)));
 	}
 
 	/*

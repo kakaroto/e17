@@ -38,6 +38,7 @@ int ewl_config_init(void)
 	DENTER_FUNCTION(DLEVEL_STABLE);
 
 	ecore_config_system_init();
+	ecore_config_load();
 	memset(&ewl_config, 0, sizeof(Ewl_Config));
 	ewl_config_config_read();
 
