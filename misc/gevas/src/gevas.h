@@ -140,6 +140,12 @@ struct _GtkgEvas {
     GtkWidget*   scrolledwindow; 
     GtkViewport* scrolledwindow_viewport;
     
+
+    // Place to find metadata 
+    GList* metadata_prefix_list;
+
+    // Place to find images
+    GList* image_prefix_list;
     
 	};
 
@@ -166,6 +172,12 @@ struct _GtkgEvasClass {
     void gevas_new_gtkscrolledwindow(GtkgEvas** gevas, GtkWidget** scrolledwindow );
     void gevas_add_fontpath(GtkgEvas * ev, const gchar * path);
     void gevas_remove_fontpath(GtkgEvas * ev, const gchar * path);
+
+    void gevas_add_metadata_prefix( GtkgEvas * ev, const char* p );
+    void gevas_remove_metadata_prefix ( GtkgEvas * ev, const char* p );
+
+    void gevas_add_image_prefix( GtkgEvas * ev, const char* p );
+    void gevas_remove_image_prefix ( GtkgEvas * ev, const char* p );
 
 
 /** protected **/
@@ -196,6 +208,11 @@ struct _GtkgEvasClass {
 
 
 /** protected access only **/
+
+    GList* gevas_get_metadata_prefix_list( GtkgEvas *ev );
+    GList* gevas_get_image_prefix_list   ( GtkgEvas *ev );
+    
+    
 	void __gevas_mouse_in(void *_data, Evas _e, Evas_Object _o, int _b, int _x,
 						  int _y);
 	void __gevas_mouse_out(void *_data, Evas _e, Evas_Object _o, int _b, int _x,

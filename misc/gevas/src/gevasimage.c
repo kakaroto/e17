@@ -35,6 +35,14 @@
  */
 
 #include "config.h"
+
+#include <gevasimage.h>
+#include <gevas_util.h>
+
+
+#include <Edb.h>
+
+
 /* Always disable NLS, since we have no config.h; 
  * a real app would not do this of course.
  */
@@ -59,7 +67,6 @@
 #endif							/* ENABLE_NLS */
 
 
-#include "gevasimage.h"
 
 enum {
 	ARG_0,						/* Skip 0, an invalid argument ID */
@@ -203,12 +210,19 @@ static void gevasimage_set_arg(GtkObject * object, GtkArg * arg, guint arg_id)
 				Evas_Object o;
 
 				gstr = GTK_VALUE_STRING(*arg);
+
+                // Trim off leading double slash
+                while( *gstr && *(gstr+1) && *gstr=='/' && *(gstr+1)=='/')
+                    gstr++;
+
+                printf("ARG_IMAGENAME: %s\n",gstr);
+                
 				_gevasobj_ensure_obj_free(object);
 				e = _gevas_evas(object);
-				o = evas_add_image_from_file(EVAS(ev), gstr);
+                ev->image_filename = g_strdup(gstr);
+				o = evas_add_image_from_file(EVAS(ev), ev->image_filename);
 				_gevas_set_obj(object, o);
 
-                ev->image_filename = g_strdup(gstr);
             }
 			break;
 
@@ -238,3 +252,151 @@ static void gevasimage_get_arg(GtkObject * object, GtkArg * arg, guint arg_id)
 			break;
 	}
 }
+
+
+static void
+setup_attribs( GtkgEvasImage* ev, GHashTable* hash_args )
+{
+    gint n=0;
+    gint x=0;
+    gint y=0;
+
+    g_return_if_fail(ev != NULL);
+	g_return_if_fail(GTK_IS_GEVASIMAGE(ev));
+
+    x = url_args_lookup_int(hash_args, "x", 0 );
+    y = url_args_lookup_int(hash_args, "y", 0 );
+    if( x && y )
+        gevasobj_move( ev, x, y );
+
+    x = url_args_lookup_int(hash_args, "rx", 0 );
+    y = url_args_lookup_int(hash_args, "ry", 0 );
+    if( x && y )
+        gevasobj_move_relative( ev, x, y );
+
+    n = url_args_lookup_int(hash_args, "layer", 0 );
+    if(n)
+        gevasobj_set_layer( ev, n );
+
+    x = url_args_lookup_int(hash_args, "resize_x", 0 );
+    y = url_args_lookup_int(hash_args, "resize_y", 0 );
+    if( x && y )
+        gevasobj_resize( ev, x, y );
+
+    n = url_args_lookup_int(hash_args, "fill_size", 0 );
+    if(n)
+    {
+        int w,h;
+        gevasimage_get_image_size(GTK_GEVASOBJ(ev), &w, &h);
+        gevasimage_set_image_fill(GTK_GEVASOBJ(ev), 0,0,w,h);
+    }
+    
+
+    
+    n = url_args_lookup_int(hash_args, "visible", 0 );
+    if(n)
+        gevasobj_set_visible( ev, n );
+
+}
+
+
+
+static void
+load_from_metadata(
+    gpointer data,
+    gpointer user_data
+    )
+{
+    const char* fully_qualified_prefix = data;
+    GtkgEvasImage* ev = user_data;
+    char* full_buffer;
+    char* filen;
+    char* edb_prefix = 0;
+    char* p = 0;
+    GHashTable* hash_args = 0;
+    E_DB_File* edb = 0;
+    gboolean failed=1;
+    
+    g_return_if_fail(ev != NULL);
+	g_return_if_fail(fully_qualified_prefix!= NULL);
+    g_return_if_fail(GTK_IS_GEVASIMAGE(ev));
+
+    if( ev->metadata_load_loaded )
+    {
+        return;
+    }
+    
+
+    if( strlen( fully_qualified_prefix ))
+    {
+        full_buffer = g_strconcat( fully_qualified_prefix,
+                                   "/", ev->metadata_load_postfix,0 );
+    }
+    else
+    {
+        full_buffer = g_strdup(ev->metadata_load_postfix);
+    }
+
+
+
+    filen = p = url_file_name_part_new( full_buffer );
+    hash_args = url_args_to_hash( full_buffer );
+    g_free(full_buffer);
+    filen = gevas_trim_prefix("file:",filen);
+    
+    printf("image load_from_metadata() filen1      :%s\n",filen);
+
+    gevasimage_set_image_name(ev, filen);
+    ev->metadata_load_loaded = 1;
+    setup_attribs( ev, hash_args );
+    
+    hash_str_str_clean( hash_args );
+    g_free(p);
+
+}
+
+
+gboolean
+gevasimage_load_from_metadata( GtkgEvasObj * object, const char* loc )
+{
+	GtkgEvasImage *ev;
+    char* no_prefix = "";
+
+    g_return_val_if_fail(object != NULL,0);
+	g_return_val_if_fail(GTK_IS_GEVASIMAGE(object),0);
+	g_return_val_if_fail(GTK_IS_GEVAS(gevasobj_get_gevas(GTK_OBJECT(object))),0);
+    
+    ev = GTK_GEVASIMAGE(object);
+
+    ev->metadata_load_loaded = 0;
+    ev->metadata_load_postfix = loc;
+
+    load_from_metadata((gpointer)no_prefix,ev);
+    
+    if( gevas_get_image_prefix_list(gevasobj_get_gevas(GTK_OBJECT(ev))))
+    {
+        g_list_foreach( gevas_get_image_prefix_list(gevasobj_get_gevas(GTK_OBJECT(ev))),
+                        load_from_metadata, ev);
+    }
+    
+    return ev->metadata_load_loaded;
+}
+
+GtkgEvasImage *gevasimage_new_from_metadata( GtkgEvas* gevas, const char* loc )
+{
+	GtkgEvasImage* o = gevasimage_new();
+    gboolean b = 1;
+
+    if(!loc || !strlen(loc))
+        return 0;
+    
+    gevasobj_set_gevas(o, gevas);
+    b = gevasimage_load_from_metadata(o, loc );
+    if(!b)
+    {
+        gtk_object_unref( GTK_OBJECT(o) );
+        return 0;
+    }
+    return o;
+}
+

@@ -43,7 +43,8 @@ gevastwin.h \
 gevasevh_selectable.h \
 gevasevh_group_selector.h \
 gevas_obj_collection.h \
-gevas_sprite.h
+gevas_sprite.h \
+gevas_util.h 
 
 
 libgevas_la_SOURCES   = \
@@ -64,7 +65,9 @@ gevastwin.c \
 gevasevh_selectable.c \
 gevasevh_group_selector.c \
 gevas_obj_collection.c \
-gevas_sprite.c 
+gevas_sprite.c \
+gevas_util.c
+
 
 libgevas_la_LIBADD       = $(LIBS_ALL)  @GTK_LIBS@
 libgevas_la_LDFLAGS      = -version-info 1:0:1

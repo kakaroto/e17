@@ -59,6 +59,10 @@ struct _GtkgEvasImage {
     GtkgEvasObj gobj;
 
     gchar* image_filename;
+
+    // These are both temp data used in _load_from_metadata 
+    gboolean       metadata_load_loaded;
+    const char *   metadata_load_postfix;
     
 };
 
@@ -80,9 +84,11 @@ struct _GtkgEvasImage {
 
 	guint gevasimage_get_type(void);
 	GtkgEvasImage *gevasimage_new(void);
+	GtkgEvasImage *gevasimage_new_from_metadata( GtkgEvas* gevas, const char* loc );
 
+    gboolean gevasimage_load_from_metadata( GtkgEvasObj * object, const char* loc );
 
-	void gevasimage_set_image_fill(GtkgEvasObj * object, double x, double y,
+    void gevasimage_set_image_fill(GtkgEvasObj * object, double x, double y,
 								   double w, double h);
 	void gevasimage_set_image_border(GtkgEvasObj * object, int l, int r, int t,
 									 int b);

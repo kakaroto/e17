@@ -1432,3 +1432,106 @@ static void gevas_get_arg(GtkObject * object, GtkArg * arg, guint arg_id)
 	}
 }
 
+
+static void
+add_string_to_list( GtkgEvas * ev, const char* p, GList **li )
+{
+	g_return_if_fail(ev != NULL);
+	g_return_if_fail(p  != NULL);
+	g_return_if_fail(GTK_IS_GEVAS(ev));
+
+    if(!strlen(p))
+        return;
+
+    *li = g_list_append(*li, g_strdup(p));
+}
+
+static void
+remove_string_from_list( GtkgEvas * ev, const char* p, GList **li )
+{
+    GList *t = 0;
+    
+    g_return_if_fail(ev != NULL);
+	g_return_if_fail(p  != NULL);
+	g_return_if_fail(GTK_IS_GEVAS(ev));
+
+    if(!strlen(p))
+        return;
+
+    if(t = g_list_find(*li, (gpointer)p))
+    {
+        g_free(t->data);
+        *li = g_list_remove_link(*li, t);
+    }
+}
+
+
+
+void gevas_add_metadata_prefix( GtkgEvas * ev, const char* p )
+{
+	g_return_if_fail(ev != NULL);
+	g_return_if_fail(p  != NULL);
+	g_return_if_fail(GTK_IS_GEVAS(ev));
+
+    if(!strlen(p))
+        return;
+
+    add_string_to_list( ev, p, &ev->metadata_prefix_list );
+}
+
+void gevas_remove_metadata_prefix ( GtkgEvas * ev, const char* p )
+{
+    GList *li = 0;
+    
+    g_return_if_fail(ev != NULL);
+	g_return_if_fail(p  != NULL);
+	g_return_if_fail(GTK_IS_GEVAS(ev));
+
+    if(!strlen(p))
+        return;
+
+    remove_string_from_list( ev, p, &ev->metadata_prefix_list );
+    
+}
+
+
+
+
+
+void gevas_add_image_prefix( GtkgEvas * ev, const char* p )
+{
+    g_return_if_fail(ev != NULL);
+	g_return_if_fail(p  != NULL);
+	g_return_if_fail(GTK_IS_GEVAS(ev));
+    if(!strlen(p))
+        return;
+    add_string_to_list( ev, p, &ev->image_prefix_list );
+}
+
+void gevas_remove_image_prefix ( GtkgEvas * ev, const char* p )
+{
+    g_return_if_fail(ev != NULL);
+	g_return_if_fail(p  != NULL);
+	g_return_if_fail(GTK_IS_GEVAS(ev));
+    if(!strlen(p))
+        return;
+    remove_string_from_list( ev, p, &ev->image_prefix_list );
+}
+
+
+
+GList* gevas_get_metadata_prefix_list( GtkgEvas *ev )
+{
+    g_return_if_fail(ev != NULL);
+	g_return_if_fail(GTK_IS_GEVAS(ev));
+    return ev->metadata_prefix_list;
+}
+
+
+GList* gevas_get_image_prefix_list   ( GtkgEvas *ev )
+{
+    g_return_if_fail(ev != NULL);
+	g_return_if_fail(GTK_IS_GEVAS(ev));
+    return ev->image_prefix_list;
+}
+

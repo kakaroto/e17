@@ -3,8 +3,30 @@
 ------
 ------
 
-Make all the gevas headers that are installed use <> include style
-not "" style. autobook_48.html#SEC48
+* gevas_add_image_prefix() needs to actually work.
+
+
+* move the inter frame delay array into extra data tagged to the collection.
+
+* Add relative x/y offsets per frame of a sprite to the metadata. This way a
+	sprite can move relative to its previous frame.
+
+
+
+* Make all the gevas headers that are installed use <> include style
+	not "" style. autobook_48.html#SEC48
+
+
+sprite and image URIs
+        ftp://username:password@host.net/path/to/file.tar.gz#gzip#tar/path/to/hello.c</programlisting>
+        method://user:password@host/path/to/file
+       file:/home/ettore/file.gz#gzip
+
+CURRENT: edb :/cvs/writeE/misc/gevas-examples/trivial-sprite/cell?prefix=cell
+NEW    : file:/cvs/writeE/misc/gevas-examples/trivial-sprite/cell#edb?prefix=/cell
+
+This will allow the extended gevas-gnome to use gnome-vfs code to load images from
+ftp, http, imap etc.
 
 
 

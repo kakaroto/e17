@@ -69,7 +69,6 @@ extern "C" {
         gint current_frame;
         gboolean playing_backwards;
 
-        GList* metadata_prefix_list;
 
         // These are both temp data used in gevas_sprite_load_from_metadata //
         gboolean       metadata_load_loaded;
@@ -91,6 +90,7 @@ extern "C" {
 
     guint           gevas_sprite_get_type(void);
     GtkgEvasSprite* gevas_sprite_new( GtkgEvas* _gevas );
+    GtkgEvasSprite* gevas_sprite_new_from_metadata( GtkgEvas* gevas, const char* loc );
 
 
 
@@ -117,8 +117,6 @@ extern "C" {
     gboolean gevas_sprite_contains(  GtkgEvasSprite* ev, GtkgEvasSprite_T o );
     gboolean gevas_sprite_contains_all( GtkgEvasSprite* ev, GtkgEvasSprite*s);
 
-    void gevas_sprite_push_metadata_prefix( GtkgEvasSprite* ev, const char* p );
-    void gevas_sprite_pop_metadata_prefix ( GtkgEvasSprite* ev, const char* p );
     gboolean gevas_sprite_load_from_metadata( GtkgEvasSprite* ev, const char* loc );
 
     gint gevas_sprite_get_current_frame( GtkgEvasSprite* ev );

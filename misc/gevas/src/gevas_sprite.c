@@ -31,6 +31,7 @@
 #include <gevas_obj_collection.h>
 #include <gevas_sprite.h>
 #include <gevasimage.h>
+#include <gevas_util.h>
 
 #include <gtk/gtkmarshal.h>
 #include <gtk/gtksignal.h>
@@ -210,38 +211,42 @@ gboolean gevas_sprite_contains_all( GtkgEvasSprite* ev, GtkgEvasSprite*s)
 }
 
 
-void gevas_sprite_push_metadata_prefix( GtkgEvasSprite* ev, const char* p )
+static void
+setup_attribs( GtkgEvasSprite* ev, GHashTable* hash_args )
 {
-	g_return_if_fail(ev != NULL);
-	g_return_if_fail(p  != NULL);
-	g_return_if_fail(GTK_IS_GEVAS_SPRITE(ev));
+    gint n=0;
+    gint x=0;
+    gint y=0;
 
-    if(!strlen(p))
-        return;
-
-    ev->metadata_prefix_list = g_list_append(ev->metadata_prefix_list,
-                                             g_strdup(p));
-    
-}
-
-void gevas_sprite_pop_metadata_prefix ( GtkgEvasSprite* ev, const char* p )
-{
-    GList *li = 0;
-    
     g_return_if_fail(ev != NULL);
-	g_return_if_fail(p  != NULL);
 	g_return_if_fail(GTK_IS_GEVAS_SPRITE(ev));
+	g_return_if_fail(GTK_IS_GEVAS_OBJ_COLLECTION(ev->col));
 
-    if(!strlen(p))
-        return;
+    n = url_args_lookup_int(hash_args, "default_frame_delay", 0 );
+    if(n)
+        gevas_sprite_set_default_frame_delay( ev, n );
 
-    if(li = g_list_find(ev->metadata_prefix_list, (gpointer)p))
-    {
-        g_free(li->data);
-        ev->metadata_prefix_list =
-            g_list_remove_link(ev->metadata_prefix_list, li);
-    }
+    x = url_args_lookup_int(hash_args, "x", 0 );
+    y = url_args_lookup_int(hash_args, "y", 0 );
+    if( x && y )
+        gevas_sprite_move( ev, x, y );
+
+    x = url_args_lookup_int(hash_args, "rx", 0 );
+    y = url_args_lookup_int(hash_args, "ry", 0 );
+    if( x && y )
+        gevas_sprite_move_relative( ev, x, y );
+
+    n = url_args_lookup_int(hash_args, "visible", 0 );
+    if(n)
+        gevas_sprite_set_visible( ev, n );
+
+    n = url_args_lookup_int(hash_args, "play_forever", 0 );
+    if(n)
+        gevas_sprite_play_forever( ev );
 }
+
+
+
 
 static void
 load_from_metadata(
@@ -256,8 +261,11 @@ load_from_metadata(
     char* edb_prefix = 0;
     char* p = 0;
     E_DB_File* edb = 0;
-    gboolean failed=1;
-
+    gboolean loaded=1;
+    GHashTable* hash_args = 0;
+    char* strbuf1 = 0;
+    
+    
     g_return_if_fail(ev != NULL);
 	g_return_if_fail(fully_qualified_prefix!= NULL);
     g_return_if_fail(GTK_IS_GEVAS_SPRITE(ev));
@@ -267,41 +275,33 @@ load_from_metadata(
         return;
     }
     
+    printf("SPRITE load_from_metadata() fully_qualified_prefix: %s\n",
+           fully_qualified_prefix);
 
-    full_buffer = g_strconcat( fully_qualified_prefix, "/", ev->metadata_load_postfix,0 );
-    filen       = full_buffer;
-
-    p="edb://";
-    if( !g_strncasecmp(filen, p, strlen(p)))
-    {
-        filen+=strlen(p);
-    }
-
-    for(p=filen; *p; p++ )
-    {
-        if( *p == '?' )
-        {
-            *p = '\0';
-            p++;
-            for(; *p; p++ )
-            {
-                if( *p == '=' )
-                {
-                    edb_prefix = ++p;
-                    break;
-                }
-            }
-            
-        }
-        if( *p == '&' )
-        {
-            *p = '\0';
-            break;
-        }
-        
-    }
+    printf("SPRITE load_from_metadata() ev->metadata_load_postfix:%s\n",
+           ev->metadata_load_postfix);
     
+    
+    if( strlen( fully_qualified_prefix ))
+    {
+        full_buffer = g_strconcat( fully_qualified_prefix,
+                                   "/", ev->metadata_load_postfix,0 );
+    }
+    else
+    {
+        full_buffer = g_strdup(ev->metadata_load_postfix);
+    }
 
+
+    printf("full_buffer:%s\n",full_buffer );
+    filen = strbuf1 = url_file_name_part_new( full_buffer );
+    hash_args       = url_args_to_hash( full_buffer );
+
+    g_free(full_buffer);
+
+    filen = gevas_trim_prefix("file:",filen);
+    edb_prefix = url_args_lookup_str(hash_args, "prefix", "" );
+    
     printf("load_from_metadata() filen      :%s\n",filen);
     printf("load_from_metadata() edb_prefix :%s\n",edb_prefix);
     
@@ -310,27 +310,26 @@ load_from_metadata(
 
     if( edb )
     {
-        gint idx = 0;
-        gint count = 0;
-        char *t;
+        gint  idx   = 0;
+        gint  count = 0;
+        char* t     = 0;
+        int   rc    = 0;
+        gint  n     = 0;
 
         printf("load_from_metadata() loaded edb\n");
 
 
-        while( strlen(edb_prefix) && edb_prefix[ strlen(edb_prefix)-1 ] == '/' )
-        {
-            edb_prefix[ strlen(edb_prefix)-1 ] = '\0';
-        }
+        t  = g_strconcat( edb_prefix, "/Count",0 );
+        rc = e_db_int_get(edb, t, &count);
+        g_free(t);
 
-        t = g_strconcat( edb_prefix, "/Count",0 );
-        if(1 == e_db_int_get(edb, t, &count))
+        if( rc == 1 )
         {
-            g_free(t);
 
             printf("load_from_metadata() count:%d\n",count);
         
    
-            for( idx = 0; idx < count ; idx++ )
+            for( idx = 0; loaded && idx < count ; idx++ )
             {
                 GtkgEvasImage* o = gevasimage_new();
                 char* image_name = 0;
@@ -342,30 +341,35 @@ load_from_metadata(
 
                 printf("load_from_metadata() image_name:%s\n",image_name);
 
-                
-                if( !image_name )
+                if(!(o = gevasimage_new_from_metadata( ev->gevas, image_name )))
                 {
-                    break;
+                    loaded=0;
                 }
-
-                p="file://";
-                if( !g_strncasecmp(image_name, p, strlen(p)))
+                else
                 {
-                    char* f = image_name + strlen(p);
-
-                    gevasobj_set_gevas(o, ev->gevas);
-                    printf("load_from_metadata() f:%s\n",f);
-                    gevasimage_set_image_name(o, f);
                     gevas_obj_collection_add( ev->col, GTK_GEVASOBJ(o) );
                 }
                 
                 g_free(image_name);
-                
             }
             
-            if(!failed || !(idx < count))
+            if(loaded && !(idx < count))
             {
+                char* p = edb_prefix;
+                GHashTable* def_hash_args = g_hash_table_new( g_str_hash, g_str_equal );
+                
                 ev->metadata_load_loaded = 1;
+
+                edb_to_hash_int( edb, def_hash_args, "default_frame_delay", p, 0 );
+                edb_to_hash_int( edb, def_hash_args, "x", p, 0 );
+                edb_to_hash_int( edb, def_hash_args, "y", p, 0 );
+                edb_to_hash_int( edb, def_hash_args, "visible", p, 0 );
+                edb_to_hash_int( edb, def_hash_args, "play_forever", p, 0 );
+
+                setup_attribs( ev, def_hash_args );
+                setup_attribs( ev, hash_args );
+
+                hash_str_str_clean( def_hash_args );
             }
             e_db_close(edb);
         }
@@ -373,25 +377,38 @@ load_from_metadata(
     }
     
 
-    g_free(full_buffer);
+    hash_str_str_clean( hash_args );
+    g_free(strbuf1);
 
 }
 
 
-gboolean gevas_sprite_load_from_metadata( GtkgEvasSprite* ev, const char* loc )
+gboolean
+gevas_sprite_load_from_metadata( GtkgEvasSprite* ev, const char* loc )
 {
+    char* no_prefix = "";
     
 	g_return_val_if_fail(ev != NULL,0);
 	g_return_val_if_fail(loc!= NULL,0);
 	g_return_val_if_fail(GTK_IS_GEVAS_SPRITE(ev),0);
 	g_return_val_if_fail(GTK_IS_GEVAS_OBJ_COLLECTION(ev->col),0);
+	g_return_val_if_fail(GTK_IS_GEVAS(ev->gevas),0);
+    
 
     ev->metadata_load_loaded = 0;
     ev->metadata_load_postfix = loc;
 
-    load_from_metadata((gpointer)loc,ev);
-    g_list_foreach(ev->metadata_prefix_list, load_from_metadata, ev);
+    printf("SPRITE gevas_sprite_load_from_metadata() loc:%s\n", loc );
+
     
+    if( gevas_get_metadata_prefix_list(ev->gevas))
+    {
+        g_list_foreach( gevas_get_metadata_prefix_list(ev->gevas),
+                        load_from_metadata, ev);
+    }
+    load_from_metadata((gpointer)no_prefix,ev);
+    
+    return ev->metadata_load_loaded;
 }
 
 gint
@@ -646,9 +663,10 @@ void gevas_sprite_play( GtkgEvasSprite* ev )
 	g_return_if_fail(GTK_IS_GEVAS_OBJ_COLLECTION(ev->col));
 
     printf("gevas_sprite_play()\n");
-    
+
     clock_sprite(ev);
     restart_timer(ev);
+    
 }
 
 void gevas_sprite_play_n( GtkgEvasSprite* ev, gint n )
@@ -769,7 +787,6 @@ gevas_sprite_init(GtkgEvasSprite * ev)
     ev->gevas             = 0;
     ev->col               = 0;
     ev->playing_backwards = 0;
-    ev->metadata_prefix_list = 0;
     ev->frame_delay_ms_base = 0;
     ev->frame_delay_ms = 0;
 }
@@ -786,7 +803,8 @@ gevas_sprite_new(GtkgEvas* _gevas)
     ev->gevas = _gevas;
     ev->col   = gevas_obj_collection_new(ev->gevas);
     gevas_sprite_set_default_frame_delay( ev, 40 );
-    
+    gevas_sprite_move( ev, 0, 0 );
+
     return GTK_GEVAS_SPRITE(ev);
 }
 
@@ -851,5 +869,19 @@ gevas_sprite_get_arg(GtkObject * object, GtkArg * arg, guint arg_id)
         break;
         
 	}
+}
+
+
+GtkgEvasSprite*
+gevas_sprite_new_from_metadata( GtkgEvas* gevas, const char* loc )
+{
+    GtkgEvasSprite* sprite = gevas_sprite_new( gevas );
+    if(gevas_sprite_load_from_metadata(
+        sprite,
+        loc))
+    {
+        return sprite;
+    }
+    return 0;
 }
 
