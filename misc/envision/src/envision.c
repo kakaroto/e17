@@ -3,7 +3,7 @@
  * vim:expandtab:ts=3:sts=3:sw=3
  */
 
-#include <config.h>
+#include <../config.h>
 #include "envision.h"
 #include "callbacks.h"
 

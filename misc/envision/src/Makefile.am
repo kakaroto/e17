@@ -8,7 +8,7 @@ bin_PROGRAMS = envision
 envision_SOURCES =                      \
 	envision.c        envision.h        \
 	callbacks.c	      callbacks.h       \
-	envision_config.c envision_config.h
+	config.c 		  config.h
 
 envision_LDADD = @ECORE_LIBS@ @EVAS_LIBS@ @EDJE_LIBS@ \
 	@EMOTION_LIBS@
