@@ -16,7 +16,7 @@ menus.cfg
 
 configdatadir = $(ENLIGHTENMENT_ROOT)/config
 
-TRANSLATIONS = config.ja config.pl
+TRANSLATIONS = config.ja config.pl config.ko
 EXTRA_DIST = $(configdata_DATA) $(TRANSLATIONS)
 
 install-data-local:

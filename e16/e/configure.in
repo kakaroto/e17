@@ -216,12 +216,6 @@ AC_DEFINE(WITH_TARTY_WARP, 1, [Tarty Warp])
 
 AC_SUBST(E_X_LIBS)
 
-# The default theme
-THEME=winter
-THEME_FILES=winter.etheme
-AC_SUBST(THEME)
-AC_SUBST(THEME_FILES)
-
 AC_OUTPUT([
 Makefile
 src/Makefile
