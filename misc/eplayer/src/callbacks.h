@@ -14,6 +14,11 @@ EDJE_CB(stop);
 EDJE_CB(seek_forward);
 EDJE_CB(seek_backward);
 
+EDJE_CB(seek_forward_start);
+EDJE_CB(seek_forward_stop);
+EDJE_CB(seek_backward_start);
+EDJE_CB(seek_backward_stop);
+
 EDJE_CB(track_next);
 EDJE_CB(track_prev);
 

@@ -101,3 +101,21 @@ void track_rewind(ePlayer *player) {
 	track_close(player);
 	track_open(player);
 }
+
+/**
+ * Set the current track postion (time)
+ *
+ * @param position
+ */
+void track_position_set(ePlayer *player, int position)
+{
+    PlayListItem *pli = playlist_current_item_get(player->playlist);
+
+    eplayer_playback_stop(player);
+
+    pli->plugin->set_current_pos(position);
+    pli->current_pos = position;
+    track_update_time(player);
+
+    eplayer_playback_start(player, 0);
+}

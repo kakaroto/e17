@@ -9,11 +9,14 @@
 #include "utils.h"
 #include "callbacks.h"
 
+int _eplayer_seek_timer(void *data);
+
 typedef enum {
 	PLAYBACK_STATE_STOPPED,
 	PLAYBACK_STATE_PAUSED,
 	PLAYBACK_STATE_PLAYING
 } PlaybackState;
+
 
 /*static int paused = 0;*/
 static PlaybackState state = PLAYBACK_STATE_STOPPED;
@@ -268,6 +271,30 @@ EDJE_CB(seek_backward) {
 	state = PLAYBACK_STATE_PLAYING;
 }
 
+EDJE_CB(seek_forward_start) {
+  debug(DEBUG_LEVEL_INFO, "Start Seeking Forward");
+  player->flags.seeking = 1; 
+  player->flags.seek_dir = 1; 
+  ecore_timer_add(.02, _eplayer_seek_timer, player);
+}
+
+EDJE_CB(seek_forward_stop) {
+  debug(DEBUG_LEVEL_INFO, "Stop Seeking Forward");
+  player->flags.seeking = 0; 
+}
+
+EDJE_CB(seek_backward_start) {
+  debug(DEBUG_LEVEL_INFO, "Start Seeking Backward");
+  player->flags.seeking = 1; 
+  player->flags.seek_dir = -1; 
+  ecore_timer_add(.02, _eplayer_seek_timer, player);
+}
+
+EDJE_CB(seek_backward_stop) {
+  debug(DEBUG_LEVEL_INFO, "Stop Seeking Backward");
+  player->flags.seeking = 0; 
+}
+
 EDJE_CB(eplayer_quit) {
 	ecore_main_loop_quit();
 }
@@ -284,18 +311,18 @@ EDJE_CB(switch_group) {
 EDJE_CB(update_seeker) {
   if (!strcmp(emission, "SEEKER_START"))
   {
-    player->gui.seeking = 1;
+    player->flags.seeker_seeking = 1;
   }
   else if (!strcmp(emission, "SEEKER_STOP"))
   {
-    player->gui.seeking = 0;
+    player->flags.seeker_seeking = 0;
   }
 
-  if (player->gui.seeking)
+  if (player->flags.seeker_seeking)
   {
+    PlayListItem *pli = playlist_current_item_get(player->playlist);
     Evas_Coord x, y, w, h;
     int ex, ey;
-    PlayListItem *pli = playlist_current_item_get(player->playlist);
     double pos;
 
     if (ecore_event_current_type_get() == ECORE_X_EVENT_MOUSE_MOVE)
@@ -320,12 +347,26 @@ EDJE_CB(update_seeker) {
     if (pos < 0) pos = 0;
     if (pos > 1) pos = 1;
 
-    eplayer_playback_stop(player);
-    pli->plugin->set_current_pos(pli->plugin->get_duration() * pos);
-
-    pli->current_pos = pli->duration * pos;
-    track_update_time(player);
-
-    eplayer_playback_start(player, 0);
+    track_position_set(player, (int)(pli->duration * pos));
   }
+}
+
+int
+_eplayer_seek_timer(void *data)
+{
+  ePlayer *player = data;
+  PlayListItem *pli = playlist_current_item_get(player->playlist);
+  int new_pos;
+
+  new_pos = pli->current_pos + player->flags.seek_dir;
+
+  if (new_pos <= 0) new_pos = 0;
+  if (new_pos > pli->duration) new_pos = pli->duration;
+
+  track_position_set(player, new_pos);
+
+  if (player->flags.seeking)
+    return 1;
+  else
+    return 0;
 }

@@ -26,8 +26,13 @@ typedef struct {
 	Evas_Object *edje;
 	Evas_Object *playlist; /* playlist container */
 	int playlist_font_size;
-	int seeking; /* 1 if seeking, 0 if not */
 } Gui;
+
+typedef struct {
+	int seeker_seeking; /* 1 if seeking, 0 if not */
+	int seeking;
+	int seek_dir;
+} Flags;
 
 typedef struct {
 	const char **args;
@@ -48,6 +53,7 @@ typedef struct {
 
 	Config cfg;
 	Gui gui;
+	Flags flags;
 } ePlayer;
 
 void eplayer_playback_stop(ePlayer *player);
