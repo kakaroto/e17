@@ -61,14 +61,18 @@ void       ewl_widget_init(EwlWidget *w)
 	w->event_callbacks = 0;
 	w->render = NULL;
 	w->rendered = NULL;
+	w->evas_object = NULL;
 	w->bg = 0;
 
 	/* lOAD DB SHIT HERE */
 	ewl_widget_get_theme(w,"/EwlWidget");
 
-	/*ewl_callback_add(w, EWL_EVENT_RESIZE, _cb_ewl_widget_event_handler, NULL);*/
-	
-
+	/*ewl_callback_add(w, EWL_EVENT_REALIZE,
+	                   ewl_widget_handle_realize, NULL);
+	ewl_callback_add(w, EWL_EVENT_UNREALIZE,
+	                 ewl_widget_handle_unrealize, NULL);*/
+	/*ewl_callback_add(w, EWL_EVENT_RESIZE,
+	                   _cb_ewl_widget_event_handler, NULL);*/
 	ewl_widget_add(w);
 
 	FUNC_END("ewl_widget_init");
