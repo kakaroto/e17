@@ -12,8 +12,8 @@
 
 #include <Evas.h>
 #include <Ecore.h>
-#include <Ecore_Evas.h>
 #include <Ecore_X.h>
+#include <Ecore_Evas.h>
 #define X_DISPLAY_MISSING
 #include <Imlib2.h>
 #undef X_DISPLAY_MISSING
