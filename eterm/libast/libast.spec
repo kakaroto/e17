@@ -25,9 +25,9 @@ version number that begins with 0.
 %build
 if [ -e ./configure ]
 then
-  %configure --prefix=%{_prefix} --bindir=%{_bindir} --libdir=%{_libdir} --includedir=%{_includedir}
+  %configure --prefix=%{_prefix} --bindir=%{_bindir} --libdir=%{_libdir} --includedir=%{_includedir} --datadir=%{_datadir}
 else
-  ./autogen.sh --prefix=%{_prefix} --bindir=%{_bindir} --libdir=%{_libdir} --includedir=%{_includedir}
+  ./autogen.sh --prefix=%{_prefix} --bindir=%{_bindir} --libdir=%{_libdir} --includedir=%{_includedir} --datadir=%{_datadir}
 fi
 make
 
@@ -47,3 +47,4 @@ rm -rf $RPM_BUILD_ROOT
 %{_bindir}/*
 %{_libdir}/*
 %{_includedir}/*
+%{_datadir}/*

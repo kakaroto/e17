@@ -15,11 +15,12 @@ LDFLAGS="@LDFLAGS@"
 X11_SUPPORT=@LIBAST_X11_SUPPORT@
 IMLIB2_SUPPORT=@LIBAST_IMLIB2_SUPPORT@
 MMX_SUPPORT=@LIBAST_MMX_SUPPORT@
+REGEXP_SUPPORT=@LIBAST_REGEXP_SUPPORT@
 VERSION=@VERSION@
 
 case $1 in
   -h | --help | -help)
-    echo "Usage:  libast-config [--version] [--prefix] [--exec-prefix] [--cppflags] [--ldflags]"
+    echo "Usage:  libast-config [--version] [--prefix] [--exec-prefix] [--cppflags] [--ldflags] [--support]"
     ;;
   -v | --version | -version)
     echo "Libary of Assorted Spiffy Things:  libast $VERSION"

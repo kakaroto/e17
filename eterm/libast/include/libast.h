@@ -83,6 +83,7 @@
 
 #include <libast/types.h>
 #include <libast/obj.h>
+#include <libast/regexp.h>
 #include <libast/socket.h>
 #include <libast/str.h>
 #include <libast/tok.h>

@@ -278,3 +278,12 @@ I create a listening socket and a sending socket for a TCP/IP and a
 UNIX socket.  Then I send/receive data across the socket and compare
 what I received with what I sent.  Self-contained is better. :-)
 ----------------------------------------------------------------------
+Sun Aug  4 20:11:38 2002                        Michael Jennings (mej)
+
+Did a complete overhaul of the configure.in script.  Moved everything
+to macros in libast.m4, which is now installed by the package.  That
+will facilitate easier development of libast-based programs.
+
+Also added the beginnings of a regexp class with support for PCRE,
+POSIX-, and BSD-style regular expressions.
+----------------------------------------------------------------------
