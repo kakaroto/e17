@@ -1028,33 +1028,6 @@ typedef struct _buttoncontainer
 }
 Container;
 
-typedef struct _strip
-{
-   char               *name;
-   int                 xabs, yabs;
-   int                 xrel, yrel;
-   signed char         ontop;
-   char                sticky;
-   int                 desktop;
-   char                orientation;
-   char                out;
-   int                 justification;
-   int                 spacing;
-
-   char               *anchor_name;
-   char               *bg_name;
-   Button             *anchor;
-   Button             *bg;
-
-   int                 num_buttons;
-   Button             *button;
-
-   Window              win;
-   int                 x, y, w, h;
-   int                 cx, cy, cw, ch;
-}
-Strip;
-
 typedef struct _background
 {
    char               *name;
@@ -2287,17 +2260,6 @@ void                HideSlideout(Slideout * s, Window w);
 void                CalcSlideoutSize(Slideout * s);
 void                AddButtonToSlideout(Slideout * s, Button * b);
 void                RemoveButtonFromSlideout(Slideout * s, Button * b);
-
-Strip              *CreateStrip(char *name);
-void                DestroyStrip(Strip * s);
-void                RotateStripTo(Strip * s, char rot);
-void                MoveStripTo(Strip * s, int x, int y);
-void                ShowStrip(Strip * s);
-void                HideStrip(Strip * s);
-void                RemoveButtonFromStrip(Strip * s, Button * b);
-void                AddButtonToStrip(Strip * s, Button * b, int x, int y);
-void                RepackStrip(Strip * s);
-Strip              *IsInStrip(int x, int y);
 
 TextState          *TextGetState(TextClass * tclass, int active, int sticky,
 				 int state);
