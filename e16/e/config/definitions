@@ -455,6 +455,7 @@
 #define __NEITHER 3
 
 /* Native cursor definitions */
+#define XC_NONE 999
 #define XC_x_CURSOR 0
 #define XC_ARROW 2
 #define XC_BASED_ARROW_DOWN 4

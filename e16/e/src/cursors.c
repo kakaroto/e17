@@ -84,7 +84,7 @@ ECursorCreate(const char *name, const char *image, int native_id, XColor * fg,
      }
    else
      {
-	curs = XCreateFontCursor(disp, native_id);
+	curs = (native_id == 999) ? None : XCreateFontCursor(disp, native_id);
      }
 
    ec = Emalloc(sizeof(ECursor));
@@ -200,8 +200,8 @@ void
 ECursorsInit(void)
 {
    ECsrs[ECSR_NONE] = None;
-   ECsrs[ECSR_ROOT] = ECursorGetByName("DEFAULT", XC_arrow);
-   ECsrs[ECSR_GRAB] = ECursorGetByName("GRAB", XC_circle);
-   ECsrs[ECSR_ACT_MOVE] = ECursorGetByName("ACTION_MOVE", XC_X_cursor);
-   ECsrs[ECSR_ACT_RESIZE] = ECursorGetByName("ACTION_RESIZE", XC_sizing);
+   ECsrs[ECSR_ROOT] = ECursorGetByName("DEFAULT", XC_left_ptr);
+   ECsrs[ECSR_GRAB] = ECursorGetByName("GRAB", XC_crosshair);
+   ECsrs[ECSR_ACT_MOVE] = ECursorGetByName("GRAB_MOVE", XC_fleur);
+   ECsrs[ECSR_ACT_RESIZE] = ECursorGetByName("GRAB_RESIZE", XC_sizing);
 }
