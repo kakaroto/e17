@@ -18,12 +18,9 @@
 
 #ifdef DEBUG
 
-#define _etox_rebuild(A) \
-printf("ETOX: %s() (%s:%d): Rebuilding..\n", __FUNCTION__, __FILE__, __LINE__); \
-_D_etox_rebuild(A)
-#define _etox_refresh(A) \
-printf("ETOX: %s() (%s:%d): Refreshing..\n", __FUNCTION__, __FILE__, __LINE__); \
-_D_etox_refresh(A)
+#define _etox_update(A) \
+printf("ETOX: %s() (%s:%d): Updating..\n", __FUNCTION__, __FILE__, __LINE__); \
+_D_etox_update(A)
 #define D_PRINT(args...) \
 printf("ETOX: %s() (%s:%d): ", __FUNCTION__, __FILE__, __LINE__); printf(args)
 
@@ -103,15 +100,6 @@ struct _Etox
   Ewd_List *bits;
   Ewd_List *obstacles;
 
-  /* This is a list of Etox_Object_Bits. It only needs to be built once
-   * initially and then everytime the text changes. The dirty flag is set
-   * whenever that happens.*/
-  struct _etox_object_bits
-  {
-     Ewd_List *list;
-     int dirty;
-  } etox_object_bits;
-
   /* This is a list of Etox_Objects. Those continuous chunks that group
    * together several Etox_Object_Bits. They need to be recalculated once
    * initially and on every change of layout. */
@@ -120,6 +108,11 @@ struct _Etox
     double h; 
     Ewd_List *list;
     int dirty;
+    struct _etox_objects_bits
+    {
+      Ewd_List *list;
+      int dirty;
+    } bits;
   } etox_objects;
 
   /* These are the actual evas objects that are rendered. They change whenever
@@ -127,6 +120,7 @@ struct _Etox
   struct _evas_objects
   {
     Ewd_List *list;
+    int dirty;
   } evas_objects;
 };
 
@@ -244,15 +238,15 @@ struct _Etox_Sort
 /** Internal Functions **/
 
 #ifdef DEBUG
-void		_D_etox_rebuild(Etox e);
-void		_D_etox_refresh(Etox e);
+void		_D_etox_update(Etox e);
 #else
-void		_etox_rebuild(Etox e);
-void		_etox_refresh(Etox e);
+void		_etox_update(Etox e);
 #endif
 
 void		_etox_create_etox_objects(Etox e);
 void		_etox_create_evas_objects(Etox e);
+void		_etox_create_etox_object_bits(Etox e);
+
 
 Etox_Object		_etox_object_new(Etox e, double x, double y);
 void			_etox_object_free(Etox_Object obj);
