@@ -1,6 +1,6 @@
 /* E-Mixer.c
  *
- * Copyright (C) 1999 Tom Gilbert
+ * Copyright (C) 1999 Tom Gilbert, Steve Brunton
  *
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of the GNU General Public License as
@@ -17,6 +17,9 @@
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
  * USA
  */
+
+/* SGI Stuff skillfully implemented (and supported by) Steve Brunton
+ * <brunton@dweeb.turner.com> */
 
 #include <stdio.h>
 #include <sys/ioctl.h>
