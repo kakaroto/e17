@@ -70,7 +70,7 @@ void __start_fd (Ewl_Widget *w, void *ev_data, void *user_data)
 	fd = ewl_filedialog_new(w->parent->parent, EWL_FILEDIALOG_TYPE_OPEN,
 			__open_file);
 
-	ewl_object_set_minimum_size (EWL_OBJECT (w->parent->parent), 400, 300);
+	ewl_object_set_minimum_size (EWL_OBJECT (w->parent->parent), 500, 400);
 	ewl_container_append_child(EWL_CONTAINER(vbox), fd);
 	ewl_widget_show(fd);
 

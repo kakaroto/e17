@@ -108,12 +108,13 @@ void ewl_fileselector_init(Ewl_Fileselector * fs, Ewl_Callback_Function fc)
 	fs->dirs = ewl_tree_new (1);
 	ewl_tree_set_headers (EWL_TREE (fs->dirs), head_dirs);
 	ewl_container_append_child(EWL_CONTAINER(w), fs->dirs);
-	ewl_object_set_minimum_size (EWL_OBJECT (fs->dirs), 100, 50);
+	ewl_object_set_padding(EWL_OBJECT(fs->dirs), 2, 2, 2, 2);
 	ewl_widget_show (fs->dirs);
 
 	fs->files = ewl_tree_new (1);
 	ewl_tree_set_headers (EWL_TREE (fs->files), head_files);
 	ewl_container_append_child(EWL_CONTAINER(w), fs->files);
+	ewl_object_set_padding(EWL_OBJECT(fs->files), 2, 2, 2, 2);
 	ewl_widget_show (fs->files);
 
 	/* Set what callback the user has defined */
@@ -252,8 +253,8 @@ void ewl_fileselector_process_directory(Ewl_Fileselector * fs, char *path)
 		} else if (S_ISREG(statbuf.st_mode)) {
 			row = ewl_tree_add_row (EWL_TREE (fs->files), NULL, items);
 			
-			ewl_callback_append (row, EWL_CALLBACK_DOUBLE_CLICKED, 
-					fs->file_clicked, fs);
+	//		ewl_callback_append (row, EWL_CALLBACK_DOUBLE_CLICKED, 
+		//			fs->file_clicked, fs);
 			ewl_callback_append(row, EWL_CALLBACK_CLICKED,
 					ewl_filedialog_file_clicked_cb, fs);
 			
@@ -286,7 +287,6 @@ void ewl_filedialog_file_clicked_cb(Ewl_Widget * w, void *ev_data,
 
 	file = malloc (PATH_MAX);
 	snprintf (file, PATH_MAX, "%s/%s", f_info->path, f_info->name);
-	printf ("Single click: %s\n", file);
 
 	fs->item = strdup (file);
 	ewl_callback_call(EWL_WIDGET(fs), EWL_CALLBACK_CLICKED);
@@ -330,8 +330,6 @@ void ewl_filedialog_directory_clicked_single_cb(Ewl_Widget * w, void *ev_data,
 	if (!strcmp (d_info->name, "..")) {
 		ptr = ewl_fileselector_path_down (d_info->path);
 
-		printf ("%s - %s\n", d_info->path, ptr);
-		
 		snprintf (dir, PATH_MAX, "%s", ptr);
 	} else {
 		if (!strcmp (d_info->path, "/"))
@@ -378,6 +376,9 @@ void ewl_filedialog_directory_clicked_cb(Ewl_Widget * w, void *ev_data,
 	fs->item = strdup (dir);
 	ewl_callback_call(EWL_WIDGET(fs), EWL_CALLBACK_CLICKED);
 
+	if (ev->double_click == -1)
+		ewl_fileselector_process_directory (fs, dir);
+		
 	printf ("double click: %d\n", ev->double_click);
 	
 	DLEAVE_FUNCTION(DLEVEL_STABLE);

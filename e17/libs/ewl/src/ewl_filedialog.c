@@ -95,12 +95,16 @@ void ewl_filedialog_change_labels (Ewl_Widget * w, void *ev_data,
 		void *user_data) 
 {
 	char *ptr;
+	char str[PATH_MAX + 50];
 	Ewl_Filedialog *fd = user_data; 
 
 	DENTER_FUNCTION(DLEVEL_STABLE);
 	
 	ptr = ewl_fileselector_get_path (EWL_FILESELECTOR (fd->selector));
-	ewl_text_set_text (EWL_TEXT (fd->path_label), ptr);
+
+	snprintf (str, sizeof (str), "Current dir: %s", ptr);
+
+	ewl_text_set_text (EWL_TEXT (fd->path_label), str);
 
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
@@ -140,6 +144,7 @@ ewl_filedialog_open_init(Ewl_Filedialog * fd, Ewl_Callback_Function cb)
 
 	fd->path_label = ewl_text_new ("");
 	ewl_container_append_child(EWL_CONTAINER(vbox), fd->path_label);
+	ewl_object_set_padding(EWL_OBJECT(fd->path_label), 2, 2, 2, 2);
 	ewl_widget_show (fd->path_label);
 
 	fd->selector = ewl_fileselector_new(cb);
