@@ -13,7 +13,9 @@ extern GtkAccelGroup *accel_group;
 
 GtkWidget *clist;
 GtkWidget *act_key;
+GtkWidget *act_params;
 GtkWidget *act_mod;
+GtkWidget *act_clist;
 
 static void receive_ipc_msg(gchar * msg);
 static gchar *wait_for_ipc_msg(void);
@@ -395,7 +397,7 @@ create_list_window(void)
 			for (k = 0; (actions[k].text); k++) {
 				if (j == actions[k].id) {
 					if (strcmp(stuff[3],"")) {
-						if ((actions[k].param_tpe == 0) && (actions[k].params)) {
+						if ((actions[k].param_tpe == 0)&&(actions[k].params)) {
 							if (!strcmp(stuff[3], actions[k].params)) {
 								sprintf(stuff[2],"%s",actions[k].text);
 							}
@@ -434,7 +436,7 @@ create_list_window(void)
 	gtk_container_set_border_width(GTK_CONTAINER(frame_vbox),4);
 	gtk_container_add(GTK_CONTAINER(frames), frame_vbox);
 
-	table = gtk_table_new(4, 2, FALSE);
+	table = gtk_table_new(3, 3, FALSE);
 	gtk_widget_show(table);
 	gtk_table_set_row_spacings(GTK_TABLE(table),3);
 	gtk_table_set_col_spacings(GTK_TABLE(table),3);
@@ -459,7 +461,7 @@ create_list_window(void)
 			GTK_FILL, (GtkAttachOptions) (0), 0, 0);
 
 	alignment = gtk_alignment_new(1.0,0.5,0,0);
-	label = gtk_label_new("Action:");
+	label = gtk_label_new("Parameters:");
 	gtk_container_add(GTK_CONTAINER(alignment),label);
 	gtk_widget_show(alignment);
 	gtk_label_set_justify(GTK_LABEL(label), GTK_JUSTIFY_RIGHT);
@@ -467,19 +469,19 @@ create_list_window(void)
 	gtk_table_attach(GTK_TABLE(table), alignment, 0, 1, 2, 3,
 			GTK_FILL, (GtkAttachOptions) (0), 0, 0);
 
-	alignment = gtk_alignment_new(1.0,0.5,0,0);
-	label = gtk_label_new("Parameters:");
-	gtk_container_add(GTK_CONTAINER(alignment),label);
-	gtk_widget_show(alignment);
-	gtk_label_set_justify(GTK_LABEL(label), GTK_JUSTIFY_RIGHT);
-	gtk_widget_show(label);
-	gtk_table_attach(GTK_TABLE(table), alignment, 0, 1, 3, 4,
-			GTK_FILL, (GtkAttachOptions) (0), 0, 0);
-
 	act_key = entry = gtk_entry_new_with_max_length(4096);
 	gtk_widget_show(entry);
 	gtk_widget_set_sensitive(entry, FALSE);
-	gtk_table_attach_defaults(GTK_TABLE(table), entry, 1, 2, 0, 1);
+	/* gtk_widget_set_usize(entry, 24, -1); */
+	gtk_table_attach(GTK_TABLE(table), entry, 1, 2, 0, 1,
+			GTK_EXPAND | GTK_FILL, (GtkAttachOptions) (0), 0, 0);
+
+	button = gtk_button_new_with_label("Change");
+	gtk_widget_show(button);
+	gtk_table_attach(GTK_TABLE(table), button, 2, 3, 0, 1,
+			GTK_EXPAND | GTK_FILL, (GtkAttachOptions) (0), 0, 0);
+
+
 
 	m = gtk_menu_new();
 	gtk_widget_show(m);
@@ -589,7 +591,38 @@ create_list_window(void)
 	gtk_widget_show(om);
 	gtk_option_menu_set_menu(GTK_OPTION_MENU(om), m);
 	gtk_option_menu_set_history(GTK_OPTION_MENU(om), 0);
-	gtk_table_attach_defaults(GTK_TABLE(table), om, 1, 3, 1, 2);
+	gtk_table_attach(GTK_TABLE(table),om, 1, 3, 1, 2,
+			GTK_EXPAND | GTK_FILL, (GtkAttachOptions) (0), 0, 0);
+
+	act_params = entry = gtk_entry_new_with_max_length(4096);
+	gtk_widget_show(entry);
+	gtk_widget_set_sensitive(entry,FALSE);
+	gtk_table_attach(GTK_TABLE(table),entry, 1, 3, 2, 3,
+			GTK_EXPAND | GTK_FILL, (GtkAttachOptions) (0), 0, 0);
+
+
+	scrollybit = gtk_scrolled_window_new(NULL, NULL);
+	gtk_widget_show(scrollybit);
+	gtk_scrolled_window_set_policy(GTK_SCROLLED_WINDOW(scrollybit),
+			GTK_POLICY_NEVER, GTK_POLICY_AUTOMATIC);
+
+	act_clist = gtk_clist_new(1);
+	gtk_widget_show(act_clist);
+	gtk_box_pack_start(GTK_BOX(frame_vbox), scrollybit, TRUE, TRUE, 0);
+	gtk_clist_set_column_title(GTK_CLIST(act_clist), 0, "Action Used:");
+	gtk_clist_column_titles_show(GTK_CLIST(act_clist));
+	gtk_container_add(GTK_CONTAINER(scrollybit), act_clist);
+
+	{
+		char *stuff[1];
+		int k;
+		for(k=0; (actions[k].text); k++) {
+			stuff[0] = malloc(1024);
+			strcpy(stuff[0],actions[k].text);
+			gtk_clist_append(GTK_CLIST(act_clist),stuff);
+			free(stuff[0]);
+		}
+	}
 
 
 	hbox = gtk_hbox_new(FALSE, 0);
