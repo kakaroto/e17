@@ -123,8 +123,10 @@ my $third = "";
 (my $first, my $second, my $third) = /^((\w*)\/(\w+| )*\/(.*))/;
 if ($first eq 'e17') {
   $module = $first . "/" . $second . "/" . $third;
-} elsif ($first eq 'CVSROOT') {
+} elsif ($first eq "CVSROOT") {
   $module = $first;
+} elsif ($first eq "") {
+  $module = 'CVSROOT';
 } else {
   $module = $first . "/" . $second;
 }
