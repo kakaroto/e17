@@ -17,7 +17,7 @@ entrance_SOURCES = \
 	main.c 
 
 entrance_LDADD = @edje_libs@ @ecore_libs@ @edb_libs@ @evas_libs@ \
-@esmart_libs@
+@esmart_libs@ -lesmart_container
 
 entrance_login_SOURCES = entrance_login.c
 entrance_login_LDADD = @edje_libs@ @ecore_libs@ @edb_libs@ @evas_libs@ \
