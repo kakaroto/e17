@@ -40,6 +40,9 @@ geist_document_new(int w, int h)
    d->w = w;
    d->h = h;
 
+   d->clicked_x = 0;
+   d->clicked_y = 0;
+   
    d->im = imlib_create_image(w, h);
    d->pmap = XCreatePixmap(disp, root, w, h, depth);
    d->bg_fill = geist_fill_new_coloured(255, 255, 255, 255);
@@ -273,7 +276,6 @@ geist_document_add_object(geist_document * doc, geist_object * obj)
 
    D_RETURN_(3);
 }
-
 
 void
 geist_document_reset_object_list(geist_document * d)

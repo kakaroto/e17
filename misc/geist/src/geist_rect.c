@@ -363,3 +363,4 @@ geist_rect_has_transparency(geist_object * obj)
       D_RETURN(3, FALSE);
    }
 }
+

@@ -44,6 +44,8 @@ struct __geist_document
    geist_fill *bg_fill;
    int w;
    int h;
+   int clicked_x;
+   int clicked_y;
    Imlib_Image im;
    Pixmap pmap;
    Imlib_Updates up;

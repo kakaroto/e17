@@ -1,3 +1,10 @@
+Sat Oct 21 15:53:25 2000  Till Adam  <till@adam-lilienthal.de>
+        
+	* clicking on an empty area of the document and dragging 
+	will now draw a selection rectangle. Shift toggles the selection.
+	Any suggestions for the color of this thingy ? Should we make that
+	configurable? Who prefers a line rect (not filled)?
+
 Fri Oct 20 00:22:54 2000  Tom Gilbert  <gilbertt@linuxbrit.co.uk>
 
 	* Working text styles. There is no UI for editing/creating these
