@@ -118,6 +118,8 @@ void etox_line_append(Etox_Line * line, Evas_Object * bit)
 	if (h > line->h)
 		line->h = h;
 	line->length += estyle_length(bit);
+
+        etox_selections_update(bit, line);
 }
 
 /*
@@ -143,6 +145,8 @@ void etox_line_prepend(Etox_Line * line, Evas_Object * bit)
 
 	line->w += w;
 	line->length += estyle_length(bit);
+
+        etox_selections_update(bit, line);
 }
 
 /*
@@ -300,6 +304,8 @@ void etox_line_merge_append(Etox_Line * line1, Etox_Line * line2)
 		bit = line2->bits->data;
 		line1->bits = evas_list_append(line1->bits, bit);
 		line2->bits = evas_list_remove(line2->bits, bit);
+
+        	etox_selections_update(bit, line1);
 	}
 	/*
 	 * Adjust the height, width and length of the merged line.
@@ -398,7 +404,7 @@ etox_line_wrap(Etox *et, Etox_Line *line)
 				NULL, NULL, NULL, NULL);
 
 	/* if we have an index and there is more than one char on the line */
-        if (index != -1){
+	if (index != -1){
 		char *tmp;
 
 		/* don't start a new line with a space */
@@ -676,8 +682,8 @@ etox_line_apply_context(Etox_Line *line, Etox_Context *context, Evas_Object *sta
       }
       estyle_set_text(bit, context->marker.text);
       estyle_set_style(bit, context->marker.style);
-      estyle_set_color(bit, context->marker.r, context->marker.g,
-                       context->marker.b, context->marker.a);
+      evas_object_color_set(bit, context->marker.r, context->marker.g,
+                           context->marker.b, context->marker.a);
     }
     else
     {
@@ -690,3 +696,4 @@ etox_line_apply_context(Etox_Line *line, Etox_Context *context, Evas_Object *sta
       break;
   }
 }
+

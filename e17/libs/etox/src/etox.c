@@ -186,9 +186,15 @@ void etox_append_text(Evas_Object * obj, char *text)
 
 	/*
 	 * Break the incoming text into lines, and merge the first line of the
-	 * new text with the last line of the old text.
+	 * new text with the last line of the old text. Duplicate text to avoid
+	 * read-only memory segv's when parsing.
 	 */
-	lines = _etox_break_text(et, text);
+	if (text && *text) {
+		text = strdup(text);
+		lines = _etox_break_text(et, text);
+		FREE(text);
+	}
+
 	if (!lines)
 		return;
 
@@ -262,9 +268,15 @@ void etox_prepend_text(Evas_Object * obj, char *text)
 
 	/*
 	 * Break the incoming text into lines, and merge the first line of the
-	 * new text with the last line of the old text.
+	 * new text with the last line of the old text. Duplicate text to avoid
+	 * read-only memory segv's when parsing.
 	 */
-	lines = _etox_break_text(et, text);
+	if (text && *text) {
+		text = strdup(text);
+		lines = _etox_break_text(et, text);
+		FREE(text);
+	}
+
 	if (!lines)
 		return;
 
@@ -352,9 +364,15 @@ void etox_insert_text(Evas_Object * obj, char *text, int index)
 
 	/*
 	 * Break the incoming text into lines, and merge the first line of the
-	 * new text with the last line of the old text.
+	 * new text with the last line of the old text. Duplicate text to avoid
+	 * read-only memory segv's when parsing.
 	 */
-	lines = _etox_break_text(et, text);
+	if (text && *text) {
+		text = strdup(text);
+		lines = _etox_break_text(et, text);
+		FREE(text);
+	}
+
 	if (!lines)
 		return;
 
@@ -711,7 +729,7 @@ void etox_index_to_geometry(Evas_Object * obj, int index, double *x, double *y,
 
 	if (index > et->length) {
 		sum = et->length;
-                line = evas_list_last(et->lines);
+                line = evas_list_data(evas_list_last(et->lines));
 
 		if (h) *h = line->h;
 		if (w) *w = line->w / line->length;

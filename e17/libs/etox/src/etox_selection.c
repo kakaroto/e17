@@ -418,21 +418,38 @@ etox_selection_apply_context(Etox_Selection *selected,
     {
       line = l->data;
 
-      if (line == selected->start.line)
-      {
-        etox_line_apply_context(line, context, selected->start.bit, NULL);
-      }
-      else if (line == selected->end.line)
-      {
-        etox_line_apply_context(line, context, NULL, selected->end.bit);
+      /*
+       * if start.bit is not on line, then the first bit of line will be
+       * used as the starting bit. same for end.bit.
+       */
+      etox_line_apply_context(line, context, selected->start.bit,
+                              selected->end.bit);
+      
+      if (line == selected->end.line)
         break;
-      }
-      else
-      {
-        etox_line_apply_context(line, context, NULL, NULL);
-      }
     }
   }
   
   etox_layout(selected->etox);
+}
+
+void
+etox_selections_update(Evas_Object *bit, Etox_Line *line)
+{
+	Evas_List *l;
+
+	for (l = active_selections; l; l = l->next)
+	{
+		Etox_Selection *selected = evas_list_data(l);
+		
+		if (selected->start.bit == bit)
+		{
+		  selected->start.line = line;
+		}
+
+		if (selected->end.bit == bit)
+		{
+		  selected->end.line = line;
+		}
+	}
 }
