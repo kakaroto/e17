@@ -501,6 +501,7 @@ AddToFamily(Window win)
 	     cangrab = 1;
 	  }
      }
+
    /* if it hasn't been placed yet.... find a spot for it */
    if ((!ewin->client.already_placed) && (!manplace))
      {
@@ -604,13 +605,13 @@ AddToFamily(Window win)
 	       {
 		  ArrangeRects(fixed, j, &newrect, 1, ret, mode.kde_x1,
 			       mode.kde_y1, mode.kde_x2, mode.kde_y2,
-			       ARRANGE_BY_SIZE);
+			       ARRANGE_BY_SIZE, 1);
 
 	       }
 	     else
 	       {
 		  ArrangeRects(fixed, j, &newrect, 1, ret, 0, 0, root.w, root.h,
-			       ARRANGE_BY_SIZE);
+			       ARRANGE_BY_SIZE, 1);
 	       }
 	     for (i = 0; i < j + 1; i++)
 	       {
@@ -1176,12 +1177,12 @@ CalcEwinWinpart(EWin * ewin, int i)
    if (bottomright == -1)
      {
 	ox =
-	   ((ewin->border->
-	     part[i].geom.bottomright.x.percent * ewin->w) >> 10) +
+	   ((ewin->
+	     border->part[i].geom.bottomright.x.percent * ewin->w) >> 10) +
 	   ewin->border->part[i].geom.bottomright.x.absolute;
 	oy =
-	   ((ewin->border->
-	     part[i].geom.bottomright.y.percent * ewin->h) >> 10) +
+	   ((ewin->
+	     border->part[i].geom.bottomright.y.percent * ewin->h) >> 10) +
 	   ewin->border->part[i].geom.bottomright.y.absolute;
      }
    else if (bottomright >= 0)
@@ -2577,8 +2578,8 @@ MinShadeSize(EWin * ewin, int *mw, int *mh)
      case 0:
      case 1:
 	p = ewin->w;
-	/* get the correct width, based on the borderparts that are remaining */
-	/* visible */
+	/* get the correct width, based on the borderparts that */
+	/*are remaining visible */
 	leftborderwidth = rightborderwidth = 0;
 	for (i = 0; i < ewin->border->num_winparts; i++)
 	  {
@@ -2592,9 +2593,8 @@ MinShadeSize(EWin * ewin, int *mw, int *mh)
 		      (ewin->w - ewin->border->border.right) > rightborderwidth)
 		     rightborderwidth =
 			(ewin->bits[i].x + ewin->bits[i].w) - (ewin->w -
-							       ewin->
-							       border->border.
-							       right);
+							       ewin->border->
+							       border.right);
 	       }
 	  }
 	ewin->w = rightborderwidth + leftborderwidth;
@@ -2620,9 +2620,8 @@ MinShadeSize(EWin * ewin, int *mw, int *mh)
 		      bottomborderwidth)
 		     bottomborderwidth =
 			(ewin->bits[i].y + ewin->bits[i].h) - (ewin->h -
-							       ewin->
-							       border->border.
-							       bottom);
+							       ewin->border->
+							       border.bottom);
 	       }
 	  }
 	ewin->h = bottomborderwidth + topborderwidth;
@@ -2857,7 +2856,8 @@ ShadeEwin(EWin * ewin)
 				  ewin->h);
 		CalcEwinSizes(ewin);
 		if (ewin->client.shaped)
-		   EShapeCombineShape(disp, ewin->win_container, ShapeBounding,
+		   EShapeCombineShape(disp, ewin->win_container,
+				      ShapeBounding,
 				      -(ewin->client.w - ww), 0,
 				      ewin->client.win, ShapeBounding,
 				      ShapeSet);
@@ -2912,7 +2912,8 @@ ShadeEwin(EWin * ewin)
 				  ewin->h);
 		CalcEwinSizes(ewin);
 		if (ewin->client.shaped)
-		   EShapeCombineShape(disp, ewin->win_container, ShapeBounding,
+		   EShapeCombineShape(disp, ewin->win_container,
+				      ShapeBounding,
 				      0, 0,
 				      ewin->client.win, ShapeBounding,
 				      ShapeSet);
@@ -2965,7 +2966,8 @@ ShadeEwin(EWin * ewin)
 				  ewin->h);
 		CalcEwinSizes(ewin);
 		if (ewin->client.shaped)
-		   EShapeCombineShape(disp, ewin->win_container, ShapeBounding,
+		   EShapeCombineShape(disp, ewin->win_container,
+				      ShapeBounding,
 				      0, -(ewin->client.h - hh),
 				      ewin->client.win, ShapeBounding,
 				      ShapeSet);
@@ -3021,7 +3023,8 @@ ShadeEwin(EWin * ewin)
 				  ewin->h);
 		CalcEwinSizes(ewin);
 		if (ewin->client.shaped)
-		   EShapeCombineShape(disp, ewin->win_container, ShapeBounding,
+		   EShapeCombineShape(disp, ewin->win_container,
+				      ShapeBounding,
 				      0, 0,
 				      ewin->client.win, ShapeBounding,
 				      ShapeSet);
@@ -3119,7 +3122,8 @@ UnShadeEwin(EWin * ewin)
 				  ewin->h);
 		CalcEwinSizes(ewin);
 		if (ewin->client.shaped)
-		   EShapeCombineShape(disp, ewin->win_container, ShapeBounding,
+		   EShapeCombineShape(disp, ewin->win_container,
+				      ShapeBounding,
 				      -(ewin->client.w -
 					(ewin->w - ewin->border->border.left -
 					 ewin->border->border.right)),
@@ -3180,7 +3184,8 @@ UnShadeEwin(EWin * ewin)
 				  ewin->h);
 		CalcEwinSizes(ewin);
 		if (ewin->client.shaped)
-		   EShapeCombineShape(disp, ewin->win_container, ShapeBounding,
+		   EShapeCombineShape(disp, ewin->win_container,
+				      ShapeBounding,
 				      0,
 				      0,
 				      ewin->client.win, ShapeBounding,
@@ -3235,7 +3240,8 @@ UnShadeEwin(EWin * ewin)
 				  ewin->h);
 		CalcEwinSizes(ewin);
 		if (ewin->client.shaped)
-		   EShapeCombineShape(disp, ewin->win_container, ShapeBounding,
+		   EShapeCombineShape(disp, ewin->win_container,
+				      ShapeBounding,
 				      0,
 				      -(ewin->client.h -
 					(ewin->h - ewin->border->border.top -
@@ -3297,7 +3303,8 @@ UnShadeEwin(EWin * ewin)
 				  ewin->w, ewin->h);
 		CalcEwinSizes(ewin);
 		if (ewin->client.shaped)
-		   EShapeCombineShape(disp, ewin->win_container, ShapeBounding,
+		   EShapeCombineShape(disp, ewin->win_container,
+				      ShapeBounding,
 				      0,
 				      0,
 				      ewin->client.win, ShapeBounding,

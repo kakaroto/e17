@@ -4433,3 +4433,14 @@ Another fine patch from Marius Eriksen <marius@linux.com>. Gives windows the
 focus when they are cycled through in the focuslist. Enabled by default, as  
 it's nice behaviour, but toggleable of course =)
 
+
+-------------------------------------------------------------------------------
+
+Sat Mar 25 17:32:16 PST 2000
+(Mandrake)
+
+This is still slightly hacking xinerama support - needs some more work.
+some things will still pop up inbetween heads, but for the most part windows
+will pop up on the head that is currently focused and will pop up without
+going between heads.
+

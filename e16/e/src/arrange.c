@@ -1,18 +1,18 @@
 /*
  * Copyright (C) 2000 Carsten Haitzler, Geoff Harrison and various contributors
- * *
+ *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to
  * deal in the Software without restriction, including without limitation the
  * rights to use, copy, modify, merge, publish, distribute, sublicense, and/or
  * sell copies of the Software, and to permit persons to whom the Software is
  * furnished to do so, subject to the following conditions:
- * *
+ *
  * The above copyright notice and this permission notice shall be included in
  * all copies of the Software, its documentation and marketing & publicity
  * materials, and acknowledgment shall be given in the documentation, materials
  * and software packages that this Software was used.
- * *
+ *
  * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
  * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
  * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL
@@ -74,7 +74,7 @@ ArrangeSwapList(RectBox * list, int a, int b)
 void
 ArrangeRects(RectBox * fixed, int fixed_count, RectBox * floating,
 	     int floating_count, RectBox * sorted, int startx, int starty,
-	     int width, int height, int policy)
+	     int width, int height, int policy, char initial_window)
 {
    int                 num_sorted = 0;
    int                 xsize = 0, ysize = 0;
@@ -89,6 +89,59 @@ ArrangeRects(RectBox * fixed, int fixed_count, RectBox * floating,
    int                 num_leftover = 0;
 
    EDBUG(7, "ArrangeRects");
+
+#ifdef HAS_XINERAMA
+   if (initial_window)
+     {
+	if (xinerama_active)
+	  {
+	     Window              rt, ch;
+	     int                 d;
+	     unsigned int        ud;
+	     int                 pointer_x, pointer_y;
+	     int                 num;
+	     XineramaScreenInfo *screens;
+
+	     XQueryPointer(disp, root.win, &rt, &ch, &pointer_x, &pointer_y,
+			   &d, &d, &ud);
+
+	     screens = XineramaQueryScreens(disp, &num);
+	     for (i = 0; i < num; i++)
+	       {
+		  if (pointer_x >= screens[i].x_org)
+		    {
+		       if (pointer_x <= (screens[i].width + screens[i].x_org))
+			 {
+			    if (pointer_y >= screens[i].y_org)
+			      {
+				 if (pointer_y <= (screens[i].height +
+						   screens[i].y_org))
+				   {
+				      if (screens[i].x_org > startx)
+					 startx = screens[i].x_org;
+				      if ((screens[i].x_org + screens[i].width)
+					  < width)
+					 width =
+					    screens[i].x_org + screens[i].width;
+				      if (screens[i].y_org > starty)
+					 starty = screens[i].y_org;
+				      if ((screens[i].y_org + screens[i].height)
+					  < height)
+					 height =
+					    screens[i].y_org +
+					    screens[i].height;
+				   }
+			      }
+			 }
+		    }
+	       }
+
+	     XFree(screens);
+	  }
+     }
+#else
+   initial_window = 0;
+#endif
 
    switch (policy)
      {
@@ -356,15 +409,23 @@ ArrangeRects(RectBox * fixed, int fixed_count, RectBox * floating,
 		  a2 = (spaces[k].y + (spaces[k].h >> 1)) -
 		     (floating[i].y + (floating[i].h >> 1));
 		  if (a1 >= 0)
-		     sorted[num_sorted].x = spaces[k].x;
+		    {
+		       sorted[num_sorted].x = spaces[k].x;
+		    }
 		  else
-		     sorted[num_sorted].x =
-			spaces[k].x + spaces[k].w - floating[i].w;
+		    {
+		       sorted[num_sorted].x =
+			  spaces[k].x + spaces[k].w - floating[i].w;
+		    }
 		  if (a2 >= 0)
-		     sorted[num_sorted].y = spaces[k].y;
+		    {
+		       sorted[num_sorted].y = spaces[k].y;
+		    }
 		  else
-		     sorted[num_sorted].y =
-			spaces[k].y + spaces[k].h - floating[i].h;
+		    {
+		       sorted[num_sorted].y =
+			  spaces[k].y + spaces[k].h - floating[i].h;
+		    }
 	       }
 	     else
 	       {
@@ -380,13 +441,14 @@ ArrangeRects(RectBox * fixed, int fixed_count, RectBox * floating,
 	else
 	   leftover[num_leftover++] = i;
      }
-/* ok we cant fit everything in this baby.... time fit the leftovers into the */
-/* leftover space */
+
+   /* ok we cant fit everything in this baby.... time fit */
+   /*the leftovers into the leftover space */
    for (i = 0; i < num_leftover; i++)
      {
 	xsize = 0;
 	ysize = 0;
-/* put all the sorted rects into the xy arrays */
+	/* put all the sorted rects into the xy arrays */
 	xsize = ArrangeAddToList(&xarray, xsize, 0);
 	xsize = ArrangeAddToList(&xarray, xsize, width);
 	ysize = ArrangeAddToList(&yarray, ysize, 0);
@@ -404,7 +466,7 @@ ArrangeRects(RectBox * fixed, int fixed_count, RectBox * floating,
 		ysize =
 		   ArrangeAddToList(&yarray, ysize, sorted[j].y + sorted[j].h);
 	  }
-/* fill the allocation array */
+	/* fill the allocation array */
 	for (j = 0; j < (xsize - 1) * (ysize - 1); filled[j++] = 0);
 	for (j = 0; j < num_sorted; j++)
 	  {
@@ -446,12 +508,12 @@ ArrangeRects(RectBox * fixed, int fixed_count, RectBox * floating,
 	       }
 	  }
 	num_spaces = 0;
-/* create list of all "spaces" */
+	/* create list of all "spaces" */
 	for (y = 0; y < ysize - 1; y++)
 	  {
 	     for (x = 0; x < xsize - 1; x++)
 	       {
-/* if the square is empty "grow" the space */
+		  /* if the square is empty "grow" the space */
 		  if (!filled[(y * (xsize - 1)) + x])
 		    {
 		       int                 can_expand_x = 1;
@@ -512,7 +574,7 @@ ArrangeRects(RectBox * fixed, int fixed_count, RectBox * floating,
 		    }
 	       }
 	  }
-/* find the first space that fits */
+	/* find the first space that fits */
 	k = -1;
 	sort = 0x7fffffff;
 	a1 = floating[leftover[i]].w * floating[leftover[i]].h;
@@ -526,7 +588,7 @@ ArrangeRects(RectBox * fixed, int fixed_count, RectBox * floating,
 		  sort = a1 - a2;
 	       }
 	  }
-/* if there's a small space ... */
+	/* if there's a small space ... */
 	if (k >= 0)
 	  {
 	     sorted[num_sorted].x = spaces[k].x;
@@ -544,9 +606,10 @@ ArrangeRects(RectBox * fixed, int fixed_count, RectBox * floating,
 		sorted[num_sorted].y = starty;
 	     num_sorted++;
 	  }
-/* there is no room - put it centered (but dont put top left off screen) */
 	else
 	  {
+	     /* there is no room - put it centered */
+	     /* (but dont put top left off screen) */
 	     sorted[num_sorted].data = floating[leftover[i]].data;
 	     sorted[num_sorted].x = (width - floating[leftover[i]].w) / 2;
 	     sorted[num_sorted].y = (height - floating[leftover[i]].h) / 2;
@@ -559,7 +622,7 @@ ArrangeRects(RectBox * fixed, int fixed_count, RectBox * floating,
 	     num_sorted++;
 	  }
      }
-/* free up memory */
+   /* free up memory */
    Efree(xarray);
    Efree(yarray);
    Efree(filled);
@@ -618,7 +681,9 @@ SnapEwin(EWin * ewin, int dx, int dy, int *new_dx, int *new_dy)
    if (dx < 0)
      {
 	if (IN_BELOW(ewin->x + dx, 0, screen_snap_dist) && (ewin->x >= 0))
-	   dx = 0 - ewin->x;
+	  {
+	     dx = 0 - ewin->x;
+	  }
 	else if (lst)
 	  {
 	     for (i = 0; i < num; i++)
@@ -651,7 +716,9 @@ SnapEwin(EWin * ewin, int dx, int dy, int *new_dx, int *new_dy)
      {
 	if (IN_ABOVE(ewin->x + ewin->w + dx, root.w, screen_snap_dist)
 	    && ((ewin->x + ewin->w) <= root.w))
-	   dx = root.w - (ewin->x + ewin->w);
+	  {
+	     dx = root.w - (ewin->x + ewin->w);
+	  }
 	else if (lst)
 	  {
 	     for (i = 0; i < num; i++)
@@ -682,7 +749,9 @@ SnapEwin(EWin * ewin, int dx, int dy, int *new_dx, int *new_dy)
    if (dy < 0)
      {
 	if (IN_BELOW(ewin->y + dy, 0, screen_snap_dist) && (ewin->y >= 0))
-	   dy = 0 - ewin->y;
+	  {
+	     dy = 0 - ewin->y;
+	  }
 	else if (lst)
 	  {
 	     for (i = 0; i < num; i++)
@@ -715,7 +784,9 @@ SnapEwin(EWin * ewin, int dx, int dy, int *new_dx, int *new_dy)
      {
 	if (IN_ABOVE(ewin->y + ewin->h + dy, root.h, screen_snap_dist)
 	    && ((ewin->y + ewin->h) <= root.h))
-	   dy = root.h - (ewin->y + ewin->h);
+	  {
+	     dy = root.h - (ewin->y + ewin->h);
+	  }
 	else if (lst)
 	  {
 	     for (i = 0; i < num; i++)
@@ -749,12 +820,14 @@ SnapEwin(EWin * ewin, int dx, int dy, int *new_dx, int *new_dy)
      {
 	if (!last_res)
 	  {
-/*           AUDIO_PLAY("SOUND_MOVE_RESIST"); */
+	     /* AUDIO_PLAY("SOUND_MOVE_RESIST"); */
 	     last_res = 1;
 	  }
      }
    else
-      last_res = 0;
+     {
+	last_res = 0;
+     }
    *new_dx = dx;
    *new_dy = dy;
    EDBUG_RETURN_;
@@ -781,8 +854,7 @@ ArrangeEwin(EWin * ewin)
 	  {
 	     if ((lst[i] != ewin) && (!lst[i]->iconified) &&
 		 (!lst[i]->ignorearrange) && (lst[i]->layer != 0) &&
-		 (((lst
-		    [i]->area_x == desks.desk[ewin->desktop].current_area_x)
+		 (((lst[i]->area_x == desks.desk[ewin->desktop].current_area_x)
 		   && (lst[i]->area_y ==
 		       desks.desk[ewin->desktop].current_area_y)
 		   && (lst[i]->desktop == ewin->desktop)) || (lst[i]->sticky)))
@@ -809,9 +881,13 @@ ArrangeEwin(EWin * ewin)
 		  if ((fixed[j].w > 0) && (fixed[j].h > 0))
 		    {
 		       if (!(lst[i])->never_use_area)
-			  fixed[j].p = (lst[i])->layer;
+			 {
+			    fixed[j].p = (lst[i])->layer;
+			 }
 		       else
-			  fixed[j].p = 50;
+			 {
+			    fixed[j].p = 50;
+			 }
 		       j++;
 		    }
 	       }
@@ -849,9 +925,13 @@ ArrangeEwin(EWin * ewin)
 		       if ((fixed[j].w > 0) && (fixed[j].h > 0))
 			 {
 			    if (blst[i]->sticky)
-			       fixed[j].p = 50;
+			      {
+				 fixed[j].p = 50;
+			      }
 			    else
-			       fixed[j].p = 0;
+			      {
+				 fixed[j].p = 0;
+			      }
 			    j++;
 			 }
 		    }
@@ -867,12 +947,12 @@ ArrangeEwin(EWin * ewin)
 	if (mode.kde_support)
 	  {
 	     ArrangeRects(fixed, j, &newrect, 1, ret, mode.kde_x1, mode.kde_y1,
-			  mode.kde_x2, mode.kde_y2, ARRANGE_BY_SIZE);
+			  mode.kde_x2, mode.kde_y2, ARRANGE_BY_SIZE, 1);
 	  }
 	else
 	  {
 	     ArrangeRects(fixed, j, &newrect, 1, ret, 0, 0, root.w, root.h,
-			  ARRANGE_BY_SIZE);
+			  ARRANGE_BY_SIZE, 1);
 	  }
 	for (i = 0; i < j + 1; i++)
 	  {
