@@ -5,7 +5,6 @@
 
 #include "utils.h"
 #include "geist.h"
-#include "main.h"
 #include "geist_document.h"
 #include "geist_object.h"
 #include "geist_image.h"
