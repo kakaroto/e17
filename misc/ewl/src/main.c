@@ -87,6 +87,8 @@ EwlBool cb_keydown(EwlWidget *w, EwlEvent *ev, EwlData *d)
 
 EwlBool cb_resize(EwlWidget *w, EwlEvent *ev, EwlData *d)
 {
+	EwlState *s = ewl_state_get();
 	ewl_window_resize(win,50,50);
+	/*XResizeWindow(s->disp,((EwlWindow*)win)->xwin, 50, 50);*/
 	return TRUE;
 }

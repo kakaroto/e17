@@ -82,7 +82,6 @@ EwlBool _cb_ewl_window_event_handler(EwlWidget *widget, EwlEvent *ev,
 		ewl_rect_free(widget->layout->rect);
 		widget->layout->rect = ewl_rect_new_with_values(0, 0, 
 		                                                &width, &height);
-
 		if (window->pmap)	
 			XFreePixmap(s->disp,window->pmap);
 		window->pmap = XCreatePixmap(s->disp,
@@ -93,7 +92,6 @@ EwlBool _cb_ewl_window_event_handler(EwlWidget *widget, EwlEvent *ev,
 		ewl_container_resize_children(widget);
 		break;
 	case EWL_EVENT_RESIZE:
-		fprintf(stderr,"resizing window\n");
 		if (widget->layout->req->w < 1)
 				widget->layout->req->w = 1;
 		if (widget->layout->req->w > EWL_WINDOW_MAX_WIDTH)
@@ -104,7 +102,28 @@ EwlBool _cb_ewl_window_event_handler(EwlWidget *widget, EwlEvent *ev,
 				widget->layout->req->h = EWL_WINDOW_MAX_HEIGHT;
 		width = widget->layout->req->w;
 		height = widget->layout->req->h;
-		XResizeWindow(s->disp,window->xwin,width,height);
+		fprintf(stderr,"attempting to resize window, "
+		        "widget = %08x, width = %d, height = %d\n",
+		        (unsigned int) widget, width, height);
+		ewl_rect_free(widget->layout->rect);
+		widget->layout->rect = ewl_rect_dup(widget->layout->req);
+		if (!window->xwin) {
+			fprintf(stderr, "window not realized yet");
+		} else {
+			XResizeWindow(s->disp,window->xwin,width,height);
+			fprintf(stderr,"done... "
+			        "widget = %08x, width = %d, height = %d\n",
+			        (unsigned int) widget, width, height);
+			if (window->pmap)	
+				XFreePixmap(s->disp,window->pmap);
+			window->pmap = XCreatePixmap(s->disp,
+			                             window->xwin,
+			                             width, height,
+			                             window->depth);
+			ewl_widget_set_flag(widget, NEEDS_RESIZE, TRUE);
+			ewl_container_resize_children(widget);
+		}
+		break;
 	default:
 		break;
 	}
@@ -137,6 +156,7 @@ void         ewl_window_init(EwlWindow *win, EwlWindowType type,
 	ewl_container_init(container);
 	ewl_container_set_max_children(widget, 1);
 	ewl_widget_set_type(widget,EWL_WINDOW);
+	ewl_widget_set_flag(widget,CAN_RESIZE, TRUE);
 	win->pmap = 0;
 	win->xwin = 0;
 

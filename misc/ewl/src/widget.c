@@ -66,7 +66,7 @@ void       ewl_widget_init(EwlWidget *w)
 	/* lOAD DB SHIT HERE */
 	ewl_widget_get_theme(w,"/EwlWidget");
 
-	ewl_callback_add(w, EWL_EVENT_RESIZE, _cb_ewl_widget_event_handler, NULL);
+	/*ewl_callback_add(w, EWL_EVENT_RESIZE, _cb_ewl_widget_event_handler, NULL);*/
 
 	ewl_widget_add(w);
 
@@ -350,6 +350,7 @@ EwlRect         *ewl_widget_get_rect(EwlWidget *widget)
 void             ewl_widget_set_rect(EwlWidget *widget,
                                      int *x, int *y, int *w, int *h)
 {
+	EwlRect  *rect = NULL;
 	EwlEvent *ev = NULL;
 	FUNC_BGN("ewl_widget_set_rect");
 	if (!widget) {
@@ -358,8 +359,10 @@ void             ewl_widget_set_rect(EwlWidget *widget,
 		ewl_debug("ewl_widget_set_rect", EWL_GENERIC_ERROR,
 		          "widget cannot be resized");
 	} else {
+		rect = ewl_layout_get_req_rect(widget->layout);
+		ewl_rect_set(rect,x,y,w,h);
 		ewl_layout_set_req_rect(widget->layout,
-		                        ewl_rect_new_with_values(x,y,w,h));
+		                        rect);
 		if (x||y) ewl_widget_set_needs_refresh(widget);
 		if (w||h) ewl_widget_set_needs_resize(widget);
 		ev = ewl_event_new_by_type(EWL_EVENT_RESIZE);

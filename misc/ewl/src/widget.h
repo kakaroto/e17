@@ -45,20 +45,20 @@ enum _EwlPaddingEnum	{
 };
 
 enum _EwlWidgetFlags	{
-	VISIBLE                = 1<<0,
-	FOCUSED                = 1<<1,
-	GRABBED                = 1<<2,
-	RENDER_ALPHA           = 1<<3,
-	HAS_CHILDREN           = 1<<4,
+	VISIBLE                = 0x00000001, /* 1<<0, */
+	FOCUSED                = 0x00000002, /* 1<<1, */
+	GRABBED                = 0x00000004, /* 1<<2, */
+	RENDER_ALPHA           = 0x00000008, /* 1<<3, */
+	HAS_CHILDREN           = 0x0000000F, /* 1<<4, */
 
-	NEEDS_REFRESH          = 1<<5,
-	NEEDS_RESIZE           = 1<<6,
-	DONT_PROPAGATE_RESIZE  = 1<<7,
-	DONT_PROPAGATE_REFRESH = 1<<8,
+	NEEDS_REFRESH          = 0x00000010, /* 1<<5, */
+	NEEDS_RESIZE           = 0x00000020, /* 1<<6, */
+	CAN_RESIZE             = 0x00000040, /* 1<<7, */
 
-	CAN_RESIZE             = 1<<9,
+	DONT_PROPAGATE_RESIZE  = 0x00000080, /* 1<<8, */
+	DONT_PROPAGATE_REFRESH = 0x000000F0, /* 1<<9, */
 
-	CONTAINER_FILL         = 1<<10
+	CONTAINER_FILL         = 0x00000100  /* 1<<10 */
 };
 
 /*typedef struct _EwlWidget EwlWidget;*/
@@ -92,7 +92,7 @@ void             ewl_widget_init(EwlWidget *w);
 void             ewl_widget_free(EwlWidget *w);
 
 /* flag functions */
-void             ewl_widget_set_flags(EwlWidget *w, unsigned int flags);
+void             ewl_widget_set_flags(EwlWidget *w, EwlFlag flags);
 void             ewl_widget_set_flag(EwlWidget *w, EwlFlag f, EwlBool v);
 EwlBool          ewl_widget_get_flag(EwlWidget *w, EwlFlag f);
 

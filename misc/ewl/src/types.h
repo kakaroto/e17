@@ -12,7 +12,7 @@ typedef unsigned int    EwlType;
 typedef EwlType         EwlWidgetType;
 typedef void            EwlData;
 typedef char            EwlBool;
-typedef unsigned int    EwlFlag;
+typedef unsigned long   EwlFlag;
 typedef unsigned int    EwlWidgetState;
 
 /* delta for doing double comparisons */
