@@ -391,16 +391,19 @@ equate_edje_init(Equate * eq)
 
 int
 equate_edje_theme_set(char *theme) {
-  char         tmp[PATH_MAX];
+//  char         tmp[PATH_MAX];
   Evas_Coord      mw, mh;
 
   if (!equate_edje_inited) return;
+#if 0
   if ((strstr(theme, "/")))
      snprintf(tmp, PATH_MAX, theme);
   else
      snprintf(tmp, PATH_MAX, PACKAGE_DATA_DIR "/themes/%s.eet", theme);
-
-  if(edje_object_file_set(equate_edje_root, tmp, "Main")) {
+#endif
+  if(edje_object_file_set(equate_edje_root,
+                          ecore_config_theme_with_path_from_name_get(theme),
+                          "Main")) {
      evas_object_name_set(equate_edje_root, "edje");
      edje_object_size_min_get(equate_edje_root, &mw, &mh);
      ecore_evas_size_min_set(equate_edje_window, (int) mw, (int) mh);
