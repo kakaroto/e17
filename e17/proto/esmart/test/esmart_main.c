@@ -16,7 +16,33 @@
 #include "E_Thumb.h"
 #include "container.h"
 #include "Esmart_Trans.h"
+#include "dragable.h"
 #include "../src/config.h"
+
+#define MOVE_REFRESH 0.06
+#define RESIZE_REFRESH 0.02
+
+static Ecore_Timer *refresh_timer = NULL;
+
+static int
+fix_bg(void *data)
+{
+    int x, y, w, h;
+    Ecore_Evas *ee = NULL;
+    Evas_Object *o = NULL;
+    
+    if((ee = (Ecore_Evas*)data))
+    {
+	ecore_evas_geometry_get(ee, &x, &y, &w, &h);
+	if((o = evas_object_name_find(ecore_evas_get(ee), "root_background")))
+	{
+	    evas_object_resize(o, w, h);
+	    esmart_trans_x11_freshen(o, x, y, w, h);
+	}
+    }
+    refresh_timer = NULL;
+    return(0);
+}
 
 static void
 window_del_cb(Ecore_Evas *ee)
@@ -30,32 +56,33 @@ window_move_cb(Ecore_Evas *ee)
     int x, y, w, h;
     Evas_Object *o = NULL;
 
-    ecore_evas_geometry_get(ee, &x, &y, &w, &h);
-
-    if((o = evas_object_name_find(ecore_evas_get(ee), "root_background")))
-    {
-	esmart_trans_x11_freshen(o, x, y, w, h);
-    }
+    if(refresh_timer) ecore_timer_del(refresh_timer);
+    refresh_timer = ecore_timer_add(MOVE_REFRESH, fix_bg, ee);
 }
 static void
 window_resize_cb(Ecore_Evas *ee)
 {
     int x, y, w, h;
     Evas_Object *o = NULL;
-
+    
     ecore_evas_geometry_get(ee, &x, &y, &w, &h);
+    if(refresh_timer) ecore_timer_del(refresh_timer);
+    refresh_timer = ecore_timer_add(RESIZE_REFRESH, fix_bg, ee);
 
-    if((o = evas_object_name_find(ecore_evas_get(ee), "root_background")))
-    {
-	evas_object_resize(o, w, h);
-	esmart_trans_x11_freshen(o, x, y, w, h);
-    }
     if((o = evas_object_name_find(ecore_evas_get(ee), "background")))
     {
 	evas_object_resize(o, w, h);
     }
     if((o = evas_object_name_find(ecore_evas_get(ee), "container")))
 	evas_object_resize(o, w, h);
+    if((o = evas_object_name_find(ecore_evas_get(ee), "dragger")))
+	evas_object_resize(o, w, h);
+#if 0
+    if((o = evas_object_name_find(ecore_evas_get(ee), "resizer")))
+    {
+	evas_object_move(o, w - 20, h - 20);
+    }
+#endif
 }
 
 static int
@@ -126,6 +153,30 @@ main(int argc, char *argv[])
 	evas_object_layer_set(o, -6);
 	evas_object_color_set(o, 255, 255, 255, 0);
 	evas_object_name_set(o, "background");
+	evas_object_show(o);
+	
+	o = esmart_draggies_new(ee);
+	evas_object_move(o, 0, 0);
+	evas_object_resize(o, 300, 120);
+	evas_object_layer_set(o, -5);
+#if 0
+	evas_object_color_set(o, 255, 255, 255, 0);
+#endif
+	evas_object_name_set(o, "dragger");
+	esmart_draggies_button_set(o, 1);
+	evas_object_show(o);
+
+#if 0
+	o = esmart_draggies_new(ee);
+	evas_object_move(o, 280, 100);
+	evas_object_resize(o, 20, 20);
+	evas_object_layer_set(o, -4);
+	evas_object_color_set(o, 255, 255, 255, 128);
+	evas_object_name_set(o, "resizer");
+	esmart_draggies_type_set(o, DRAGGIES_TYPE_RESIZE_BR);
+	esmart_draggies_button_set(o, 1);
+	evas_object_show(o);
+#endif
 
    if (argc < 2) {
       image = evas_object_image_add(evas);
@@ -134,10 +185,10 @@ main(int argc, char *argv[])
       evas_object_resize(image, iw, ih);
       evas_object_image_fill_set(image, 0.0, 0.0, (Evas_Coord) iw, (Evas_Coord) ih);
       evas_object_layer_set(image, 1000);
+      evas_object_pass_events_set(image, 1);
       evas_object_show(image);
    }
 	
-	evas_object_show(o);
 
 	cont = e_container_new(evas);
 	evas_object_move(cont, 0, 0);
