@@ -18,9 +18,6 @@ do = 1
 
 [grab]
 device = /dev/video0
-# close device between shots? (some v4l drivers suck cpu when the device is
-# open)
-close_dev = 0
 # store temp image on local machine
 temp_file = /tmp/webcam.jpg
 # lag reduction, takes 5 shots, discards the first 4, thus clearing mmap

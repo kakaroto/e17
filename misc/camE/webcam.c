@@ -35,7 +35,6 @@ char *ftp_tmp = "uploading.jpeg";
 char *temp_file = "/tmp/webcam.jpg";
 int ftp_passive = 1;
 int ftp_do = 1;
-int lag_reduce = 5;
 char *scp_target = NULL;
 char *grab_device = "/dev/video0";
 char *grab_text = "webcam %Y-%m-%d %H:%M:%S";	/* strftime */
@@ -48,6 +47,7 @@ int grab_width = 320;
 int grab_height = 240;
 int grab_delay = 3;
 int grab_quality = 75;
+int lag_reduce = 5;
 int text_r = 255;
 int text_g = 255;
 int text_b = 255;
@@ -82,9 +82,15 @@ Imlib_Image convert_rgb_to_imlib2(unsigned char *mem, int width, int height);
 void
 close_device()
 {
-   close(grab_fd);
+   if (munmap(grab_data, grab_size) != 0)
+   {
+      perror("munmap()");
+      exit(1);
+   }
+   grab_data = NULL;
+   if (close(grab_fd))
+      perror("close(grab_fd) ");
    grab_fd = -1;
-   munmap(grab_data, grab_size);
 }
 
 void
@@ -140,26 +146,31 @@ grab_init()
    }
 }
 
-Imlib_Image grab_one(int *width, int *height)
+Imlib_Image
+grab_one(int *width, int *height)
 {
    Imlib_Image im;
-   int i = lag_reduce;
+   int i = 0;
+   int j = lag_reduce;
 
-   /* lag removal */
-   while (i--)
+   while (j--)
    {
+      if (grab_fd == -1)
+         grab_init();
       if (ioctl(grab_fd, VIDIOCMCAPTURE, &grab_buf) == -1)
       {
          perror("ioctl VIDIOCMCAPTURE");
          return NULL;
       }
-      if (ioctl(grab_fd, VIDIOCSYNC, &grab_buf) == -1)
+      if (ioctl(grab_fd, VIDIOCSYNC, &i) == -1)
       {
          perror("ioctl VIDIOCSYNC");
          return NULL;
       }
    }
    im = convert_rgb_to_imlib2(grab_data, grab_buf.width, grab_buf.height);
+   if (close_dev)
+      close_device();
    if (im)
    {
       imlib_context_set_image(im);
@@ -249,7 +260,8 @@ add_time_text(Imlib_Image image, char *message, int width, int height)
    }
 }
 
-Imlib_Image convert_rgb_to_imlib2(unsigned char *mem, int width, int height)
+Imlib_Image
+convert_rgb_to_imlib2(unsigned char *mem, int width, int height)
 {
    Imlib_Image im;
    DATA32 *data, *dest;
@@ -443,13 +455,13 @@ main(int argc, char *argv[])
       bg_b = i;
    if (-1 != (i = cfg_get_int("grab", "bg_a")))
       bg_a = i;
-   if (-1 != (i = cfg_get_int("grab", "lag_reduce")))
-      lag_reduce = i;
    if (-1 != (i = cfg_get_int("grab", "close_dev")))
       close_dev = i;
+   if (-1 != (i = cfg_get_int("grab", "lag_reduce")))
+      lag_reduce = i;
 
    /* print config */
-   fprintf(stderr, "camE v0.3 - (c) 1999, 2000 Gerd Knorr, Tom Gilbert\n");
+   fprintf(stderr, "camE v0.5 - (c) 1999, 2000 Gerd Knorr, Tom Gilbert\n");
    fprintf(stderr,
            "grabber config: size %dx%d, input %d, norm %d, "
            "jpeg quality %d\n", grab_width, grab_height, grab_input,
