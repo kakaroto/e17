@@ -17,6 +17,8 @@ edb_ed $DB add /entrance/time_format str "%l:%M:%S %p"
 #edb_ed $DB add /entrance/fonts/count int 2
 #edb_ed $DB add /entrance/fonts/0/str str "/usr/share/fonts/truetype/"
 #edb_ed $DB add /entrance/fonts/1/str str "/usr/X11R6/lib/X11/fonts/Truetype/"
+edb_ed $DB add /entrance/greeting/before str "Welcome to "
+edb_ed $DB add /entrance/greeting/after str ""
 edb_ed $DB add /entrance/session/count int 8
 edb_ed $DB add /entrance/session/0/session str "default"
 edb_ed $DB add /entrance/session/0/title str "Default"
