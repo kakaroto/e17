@@ -28,6 +28,9 @@ init_list_mode (void)
 
   D (("In init_list_mode\n"));
 
+  if(!filelist_length(filelist))
+	show_mini_usage();
+  
   if (opt.longlist)
     printf
       ("NUM\tFORMAT\tWIDTH\tHEIGHT\tPIXELS\tSIZE(bytes)\tALPHA\tFILENAME\n");
@@ -72,6 +75,9 @@ real_loadables_mode (int loadable)
 {
   feh_file *file;
 
+  if(!filelist_length(filelist))
+	show_mini_usage();
+  
   opt.quiet = 1;
 
   for (file = filelist; file; file = file->next)
