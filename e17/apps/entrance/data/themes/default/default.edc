@@ -94,6 +94,16 @@ collections
 		    {
 			normal, "e_logo_bg.jpg";
 		    }
+		    // set the offset to the size of each display
+		    //fill 
+		    //{
+		    //	smooth, 0;
+		    //	size 
+		    //	{
+		    //	    relative, 0.0 0.0;
+		    //	    offset, 1280 1024;
+		    //	}
+		    //}
 		}
 	    }
 	    part
