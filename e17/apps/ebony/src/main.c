@@ -37,9 +37,10 @@ init_globals(void)
    ebony_base_bg = NULL;
    bl = NULL;
    idle = 0;
+   ebony_base_bg = NULL;
    export_info.screen.w = export_info.screen.h = 0;
    export_info.xinerama.h = export_info.xinerama.v = 1;
-   snprintf(image_fileselection_dir, PATH_MAX, "%s", getenv("HOME"));
+   snprintf(image_fileselection_dir, PATH_MAX, "%s/*", getenv("HOME"));
    snprintf(bg_fileselection_dir, PATH_MAX, "%s", getenv("HOME"));
    snprintf(save_as_fileselection_dir, PATH_MAX, "%s", getenv("HOME"));
    snprintf(export_fileselection_dir, PATH_MAX, "%s", getenv("HOME"));
@@ -54,8 +55,6 @@ main(int argc, char *argv[])
    char bgfile[PATH_MAX];
 
    bgfile[0] = '\0';
-
-
 
 #ifdef ENABLE_NLS
    bindtextdomain(PACKAGE, PACKAGE_LOCALE_DIR);
@@ -78,10 +77,19 @@ main(int argc, char *argv[])
    gtk_widget_show(main_win);
    win_ref = main_win;
 
-   rebuild_bg_ref();
-
    gdk_window_get_geometry(GDK_ROOT_PARENT(), &rx, &ry, &rw, &rh, &rd);
    gtk_widget_realize(GTK_WIDGET(main_win));
+
+   export_info.screen.w = rw;
+   export_info.screen.h = rh;
+   if ((w = gtk_object_get_data(GTK_OBJECT(win_ref), "scale_preview")))
+      gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(w), TRUE);
+   if ((w = gtk_object_get_data(GTK_OBJECT(win_ref), "export_screen_w")))
+      gtk_spin_button_set_value(GTK_SPIN_BUTTON(w), export_info.screen.w);
+   if ((w = gtk_object_get_data(GTK_OBJECT(win_ref), "export_screen_h")))
+      gtk_spin_button_set_value(GTK_SPIN_BUTTON(w), export_info.screen.h);
+
+   rebuild_bg_ref();
 
    /* drawing area requests initialization */
    gdk_rgb_init();

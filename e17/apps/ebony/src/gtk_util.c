@@ -288,7 +288,7 @@ cs_ok_button_clicked(GtkWidget * w, gpointer data)
       bl->fg.b = 255 * color[2];
       bl->fg.a = 255 * color[3];
 
-      evas_set_color(evas, bl->obj, bl->fg.r, bl->fg.g, bl->fg.b, bl->fg.a);
+      evas_object_color_set(bl->obj, bl->fg.r, bl->fg.g, bl->fg.b, bl->fg.a);
       update_background(bg);
    }
 
@@ -347,7 +347,6 @@ filemenu_load_ok_clicked(GtkWidget * w, gpointer data)
    gchar *file = gtk_file_selection_get_filename(GTK_FILE_SELECTION(data));
 
    dirpath = get_dirpath_from_filename((char *) file);
-
    snprintf(bg_fileselection_dir, PATH_MAX, "%s/", dirpath);
    free(dirpath);
 
@@ -373,18 +372,18 @@ display_bg(E_Background _bg)
    int size;
 
    /* clear the evas cache */
-   size = evas_get_image_cache(evas);
-   evas_set_image_cache(evas, 0);
-   evas_set_image_cache(evas, size);
+   size = evas_object_image_cache_get(evas);
+   evas_object_image_cache_set(evas, 0);
+   evas_object_image_cache_set(evas, size);
 
    e_bg_add_to_evas(_bg, evas);
    e_bg_set_layer(_bg, 0);
    e_bg_show(_bg);
+   bg = _bg;
    _bl = e_bg_get_layer_number(_bg, 0);
    display_layer_values(_bl);
    set_spin_value("layer_num", 0);
    update_background(_bg);
-   bg = _bg;
 }
 
 /**
@@ -395,7 +394,6 @@ display_bg(E_Background _bg)
 void
 save_as_ok_clicked(GtkWidget * w, gpointer data)
 {
-   E_Background _bg;
    gchar *file;
    gchar errstr[1024];
    char *dirpath, *filesize = NULL;
@@ -403,26 +401,13 @@ save_as_ok_clicked(GtkWidget * w, gpointer data)
    file = gtk_file_selection_get_filename(GTK_FILE_SELECTION(data));
 
    dirpath = get_dirpath_from_filename((char *) file);
-
    snprintf(save_as_fileselection_dir, PATH_MAX, "%s/", dirpath);
    free(dirpath);
 
    if (!file)
       return;
 
-
-   /* Save as over another file, load images before nuking it */
-   fill_background_images(bg);
-
-   _bg = e_bg_load((char *) file);
-   if (_bg)
-   {
-      clear_bg_db_keys(_bg);
-      e_bg_free(_bg);
-   }
-
    e_bg_save(bg, (char *) file);
-
    open_bg_named((char *) file);
    if ((filesize = filesize_as_string(bg->file)))
    {
@@ -608,6 +593,7 @@ gradient_one_cs_ok_button_clicked(GtkWidget * w, gpointer data)
       g->g = 255 * color[1];
       g->b = 255 * color[2];
       g->a = 255 * color[3];
+      g->dist = 1;
    }
    da = gtk_object_get_data(GTK_OBJECT(win_ref), "gradient_one_color_box");
    gtk_widget_set_sensitive(da, TRUE);
@@ -652,6 +638,7 @@ gradient_two_cs_ok_button_clicked(GtkWidget * w, gpointer data)
       g->g = 255 * color[1];
       g->b = 255 * color[2];
       g->a = 255 * color[3];
+      g->dist = 1;
    }
    da = gtk_object_get_data(GTK_OBJECT(win_ref), "gradient_two_color_box");
    gtk_widget_set_sensitive(da, TRUE);
@@ -742,7 +729,15 @@ display_layer_values_for_image(E_Background_Layer _bl)
    w = gtk_object_get_data(GTK_OBJECT(win_ref), "image_file");
    if (w)
    {
-      if (_bl->file)
+      if (_bl->file && _bl->inlined)
+      {
+         char buf[PATH_MAX];
+
+         snprintf(buf, PATH_MAX, "%s:%s", bg->file, (gchar *) _bl->file);
+         gtk_entry_set_text(GTK_ENTRY(w), buf);
+      }
+
+      else if (_bl->file)
          gtk_entry_set_text(GTK_ENTRY(w), (gchar *) _bl->file);
       else
          gtk_entry_set_text(GTK_ENTRY(w), "");
@@ -952,6 +947,10 @@ browse_file_ok_clicked(GtkWidget * w, gpointer data)
    snprintf(image_fileselection_dir, PATH_MAX, "%s/", dirpath);
    free(dirpath);
 
+   dirpath = get_dirpath_from_filename((char *) file);
+   snprintf(image_fileselection_dir, PATH_MAX, "%s/", dirpath);
+   free(dirpath);
+
    if (file)
       set_entry_text("image_file", file);
 
@@ -1082,8 +1081,9 @@ handle_recent_bgs_append(char *name)
 void
 export_ok_clicked(GtkWidget * w, gpointer data)
 {
+#if 0
    E_Background export_bg;
-   Evas export_evas;
+   Evas *export_evas;
    Imlib_Image image;
    gchar *file;
    gchar errstr[1024];
@@ -1110,7 +1110,7 @@ export_ok_clicked(GtkWidget * w, gpointer data)
 
    /* Setup Evas and render */
    export_evas = evas_new();
-   evas_set_output_method(export_evas, RENDER_METHOD_IMAGE);
+   evas_output_method_set(export_evas, RENDER_METHOD_IMAGE);
    evas_set_output_image(export_evas, image);
    evas_set_output_viewport(export_evas, 0, 0, width, height);
    evas_set_output_size(export_evas, width, height);
@@ -1136,4 +1136,5 @@ export_ok_clicked(GtkWidget * w, gpointer data)
    return;
    UN(w);
    UN(data);
+#endif
 }

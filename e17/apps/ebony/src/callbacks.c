@@ -78,10 +78,7 @@ on_save_bg_activate(GtkMenuItem * menuitem, gpointer user_data)
 
    if (bg)
    {
-      fill_background_images(bg);
-      clear_bg_db_keys(bg);
       e_bg_save(bg, bg->file);
-
       if ((filesize = filesize_as_string(bg->file)))
       {
          g_snprintf(errstr, 1024, "Saved background: %s(%s)",
@@ -95,9 +92,7 @@ on_save_bg_activate(GtkMenuItem * menuitem, gpointer user_data)
          ebony_status_message(errstr, EBONY_STATUS_TO);
    }
    return;
-
 }
-
 
 void
 on_save_bg_as_activate(GtkMenuItem * menuitem, gpointer user_data)
@@ -116,9 +111,7 @@ on_save_bg_as_activate(GtkMenuItem * menuitem, gpointer user_data)
                       (gpointer) fs);
    gtk_widget_show(fs);
    return;
-
 }
-
 
 void
 on_quit_ebony_activate(GtkMenuItem * menuitem, gpointer user_data)
@@ -131,15 +124,14 @@ gboolean
 on_bg_evas_configure_event(GtkWidget * widget, GdkEventConfigure * event,
                            gpointer user_data)
 {
-   evas_set_output_viewport(evas, 0, 0, event->width, event->height);
-   evas_set_output_size(evas, event->width, event->height);
-   e_bg_set_scale(bg, export_info.screen.w * export_info.xinerama.h,
-                  export_info.screen.h * export_info.xinerama.v);
-   e_bg_resize(ebony_base_bg, event->width, event->height);
-   if (bl)
-      outline_evas_object(bl->obj);
+   if (evas)
+   {
+      evas_output_viewport_set(evas, 0, 0, event->width, event->height);
+      evas_output_size_set(evas, event->width, event->height);
+      e_bg_resize(ebony_base_bg, event->width, event->height);
 
-   DRAW();
+      update_background(bg);
+   }
 
    return FALSE;
 }
@@ -179,7 +171,7 @@ void
 on_layer_add_clicked(GtkButton * button, gpointer user_data)
 {
    E_Background_Layer _bl;
-   Evas_List l;
+   Evas_List *l;
    int size = 0;
 
    if (!bl)
@@ -192,9 +184,10 @@ on_layer_add_clicked(GtkButton * button, gpointer user_data)
    _bl->size.w = _bl->size.h = 1.0;
    _bl->fg.r = _bl->fg.g = _bl->fg.b = 255;
    _bl->fg.a = 80;
-   _bl->obj = evas_add_rectangle(evas);
-   evas_set_color(evas, _bl->obj, _bl->fg.r, _bl->fg.g, _bl->fg.b, _bl->fg.a);
-   evas_show(evas, _bl->obj);
+   _bl->obj = evas_object_rectangle_add(evas);
+   evas_object_color_set(_bl->obj, _bl->fg.r, _bl->fg.g, _bl->fg.b,
+                         _bl->fg.a);
+   evas_object_show(_bl->obj);
    bg->layers = evas_list_append(bg->layers, _bl);
    for (l = bg->layers; l; l = l->next)
       size++;
@@ -230,10 +223,10 @@ on_layer_delete_clicked(GtkButton * button, gpointer user_data)
          _bl->type = E_BACKGROUND_TYPE_SOLID;
          _bl->fg.a = _bl->fg.r = _bl->fg.g = _bl->fg.b = 255;
          _bl->size.w = _bl->size.h = 1.0;
-         _bl->obj = evas_add_rectangle(evas);
-         evas_set_color(evas, _bl->obj, _bl->fg.r, _bl->fg.g, _bl->fg.b,
-                        _bl->fg.a);
-         evas_show(evas, _bl->obj);
+         _bl->obj = evas_object_rectangle_add(evas);
+         evas_object_color_set(_bl->obj, _bl->fg.r, _bl->fg.g, _bl->fg.b,
+                               _bl->fg.a);
+         evas_object_show(_bl->obj);
          bg->layers = evas_list_append(bg->layers, _bl);
       }
       /* return the front */
@@ -288,23 +281,18 @@ on_image_file_entry_changed(GtkEditable * editable, gpointer user_data)
       if (bl->file)
          free(bl->file);
       bl->file = strdup(filename);
-      if (bl->image)
-      {
-         imlib_context_set_image(bl->image);
-         imlib_free_image_and_decache();
-         bl->image = imlib_load_image(bl->file);
-      }
       if (bl->obj)
-         evas_del_object(evas, bl->obj);
-      bl->obj = evas_add_image_from_file(evas, bl->file);
-      evas_show(evas, bl->obj);
+         evas_object_del(bl->obj);
+      bl->obj = evas_object_image_add(evas);
+      evas_object_image_file_set(bl->obj, bl->file, NULL);
+      evas_object_show(bl->obj);
       bl->size.w = bl->size.h = 1.0;
       bl->fill.w = bl->fill.h = 1.0;
-      bl->inlined = 1;
+      bl->size.orig.w = bl->size.orig.h = 1;
+      bl->fill.orig.w = bl->fill.orig.h = 1.0;
       update_background(bg);
    }
    return;
-
 }
 
 
@@ -325,8 +313,6 @@ on_file_select_button_clicked(GtkButton * button, gpointer user_data)
    gtk_widget_show(fs);
 
    return;
-
-
 }
 
 
@@ -337,7 +323,6 @@ on_inline_image_toggled(GtkToggleButton * togglebutton, gpointer user_data)
       return;
    bl->inlined = get_toggled_state("inline_image");
    return;
-
 }
 
 
@@ -356,7 +341,6 @@ on_scroll_x_changed(GtkEditable * editable, gpointer user_data)
    bl->scroll.x = (float) get_spin_value("scroll_x");
    update_background(bg);
    return;
-
 }
 
 
@@ -368,7 +352,6 @@ on_scroll_y_changed(GtkEditable * editable, gpointer user_data)
    bl->scroll.y = (float) get_spin_value("scroll_y");
    update_background(bg);
    return;
-
 }
 
 
@@ -380,7 +363,6 @@ on_pos_x_changed(GtkEditable * editable, gpointer user_data)
    bl->pos.x = (float) get_spin_value("pos_x");
    update_background(bg);
    return;
-
 }
 
 
@@ -808,8 +790,8 @@ gboolean
 on_evas_expose_event(GtkWidget * widget, GdkEventExpose * event,
                      gpointer user_data)
 {
-   evas_update_rect(evas, event->area.x, event->area.y, event->area.width,
-                    event->area.height);
+   evas_damage_rectangle_add(evas, event->area.x, event->area.y,
+                             event->area.width, event->area.height);
    DRAW();
    return FALSE;
 }
@@ -855,12 +837,17 @@ on_layer_type_toggled(GtkToggleButton * togglebutton, gpointer user_data)
 void
 on_gradient_angle_changed(GtkEditable * editable, gpointer user_data)
 {
+   char *type;
+
    if (!bl)
       return;
 
    bl->gradient.angle = get_spin_value("gradient_angle");
-   evas_set_angle(evas, bl->obj, bl->gradient.angle);
-   update_background(bg);
+   if ((type = evas_object_type_get(bl->obj)) && (!strcmp(type, "gradient")))
+   {
+      evas_object_gradient_angle_set(bl->obj, bl->gradient.angle);
+      update_background(bg);
+   }
    return;
 
 }
@@ -955,8 +942,6 @@ on_scale_preview_toggled(GtkToggleButton * togglebutton, gpointer user_data)
       fprintf(stderr, "Unable to find screen_size_frame widget\n");
    if (gtk_toggle_button_get_active(togglebutton))
    {
-      export_info.screen.w = 800;
-      export_info.screen.h = 600;
       gtk_widget_set_sensitive(GTK_WIDGET(w), TRUE);
 
       w = gtk_object_get_data(GTK_OBJECT(win_ref), "export_xinerama_h");
@@ -979,6 +964,21 @@ on_scale_preview_toggled(GtkToggleButton * togglebutton, gpointer user_data)
       {
          fprintf(stderr, "Unable to find export_xinerama_v\n");
       }
+      if ((export_info.screen.w == 0) || (export_info.screen.h == 0))
+      {
+         if ((w =
+              gtk_object_get_data(GTK_OBJECT(win_ref), "export_screen_w")))
+         {
+            export_info.screen.w =
+               gtk_spin_button_get_value_as_int(GTK_SPIN_BUTTON(w));
+         }
+         if ((w =
+              gtk_object_get_data(GTK_OBJECT(win_ref), "export_screen_h")))
+         {
+            export_info.screen.h =
+               gtk_spin_button_get_value_as_int(GTK_SPIN_BUTTON(w));
+         }
+      }
    }
    else
    {
@@ -987,9 +987,7 @@ on_scale_preview_toggled(GtkToggleButton * togglebutton, gpointer user_data)
       export_info.xinerama.v = export_info.xinerama.h = 1;
       gtk_widget_set_sensitive(GTK_WIDGET(w), FALSE);
    }
-   e_bg_set_scale(bg, export_info.screen.w * export_info.xinerama.h,
-                  export_info.screen.h * export_info.xinerama.v);
-   DRAW();
+   update_background(bg);
 }
 
 
@@ -1083,9 +1081,7 @@ on_export_size_toggled(GtkToggleButton * togglebutton, gpointer user_data)
         default:
            break;
       }
-      e_bg_set_scale(bg, export_info.screen.w * export_info.xinerama.h,
-                     export_info.screen.h * export_info.xinerama.v);
-      DRAW();
+      update_background(bg);
    }
 
 }
@@ -1100,15 +1096,12 @@ on_export_screen_h_changed(GtkEditable * editable, gpointer user_data)
    {
       export_info.screen.h =
          gtk_spin_button_get_value_as_int(GTK_SPIN_BUTTON(w));
-
    }
    else
    {
       fprintf(stderr, "Unable to find export_screen_h\n");
    }
-   e_bg_set_scale(bg, export_info.screen.w * export_info.xinerama.h,
-                  export_info.screen.h * export_info.xinerama.v);
-   DRAW();
+   update_background(bg);
 }
 
 
@@ -1127,9 +1120,7 @@ on_export_screen_w_changed(GtkEditable * editable, gpointer user_data)
    {
       fprintf(stderr, "Unable to find export_screen_w\n");
    }
-   e_bg_set_scale(bg, export_info.screen.w * export_info.xinerama.h,
-                  export_info.screen.h * export_info.xinerama.v);
-   DRAW();
+   update_background(bg);
 }
 
 
@@ -1149,9 +1140,7 @@ on_export_xinerama_v_changed(GtkEditable * editable, gpointer user_data)
    {
       fprintf(stderr, "Unable to find export_xinerama_v\n");
    }
-   e_bg_set_scale(bg, export_info.screen.w * export_info.xinerama.h,
-                  export_info.screen.h * export_info.xinerama.v);
-   DRAW();
+   update_background(bg);
 }
 
 
@@ -1170,9 +1159,7 @@ on_export_xinerama_h_changed(GtkEditable * editable, gpointer user_data)
    {
       fprintf(stderr, "Unable to find export_xinerama_h\n");
    }
-   e_bg_set_scale(bg, export_info.screen.w * export_info.xinerama.h,
-                  export_info.screen.h * export_info.xinerama.v);
-   DRAW();
+   update_background(bg);
 }
 
 void

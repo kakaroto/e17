@@ -1236,7 +1236,6 @@ create_main_win(void)
    gtk_table_attach(GTK_TABLE(table3), radiobutton3, 0, 1, 1, 2,
                     (GtkAttachOptions) (GTK_EXPAND | GTK_FILL),
                     (GtkAttachOptions) (0), 0, 0);
-   gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(radiobutton3), TRUE);
 
    radiobutton4 =
       gtk_radio_button_new_with_label(export_size_group_group,
@@ -1281,6 +1280,7 @@ create_main_win(void)
    gtk_table_attach(GTK_TABLE(table3), radiobutton6, 1, 2, 2, 3,
                     (GtkAttachOptions) (GTK_EXPAND | GTK_FILL),
                     (GtkAttachOptions) (0), 0, 0);
+   gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(radiobutton6), TRUE);
 
    table5 = gtk_table_new(2, 2, FALSE);
    gtk_widget_set_name(table5, "table5");
@@ -1302,7 +1302,6 @@ create_main_win(void)
    gtk_table_attach(GTK_TABLE(table5), export_screen_h, 1, 2, 1, 2,
                     (GtkAttachOptions) (GTK_EXPAND | GTK_FILL),
                     (GtkAttachOptions) (0), 0, 0);
-   gtk_widget_set_sensitive(export_screen_h, FALSE);
 
    label26 = gtk_label_new(_("Screen Height"));
    gtk_widget_set_name(label26, "label26");
@@ -1328,7 +1327,6 @@ create_main_win(void)
    gtk_table_attach(GTK_TABLE(table5), export_screen_w, 1, 2, 0, 1,
                     (GtkAttachOptions) (GTK_EXPAND | GTK_FILL),
                     (GtkAttachOptions) (0), 0, 0);
-   gtk_widget_set_sensitive(export_screen_w, FALSE);
 
    label25 = gtk_label_new(_("Screen Width"));
    gtk_widget_set_name(label25, "label25");
@@ -1564,9 +1562,7 @@ create_win_bg(void)
    win_bg = gtk_window_new(GTK_WINDOW_TOPLEVEL);
    gtk_widget_set_name(win_bg, "win_bg");
    gtk_object_set_data(GTK_OBJECT(win_bg), "win_bg", win_bg);
-   gtk_widget_set_uposition(win_bg, 30, -2);
    gtk_window_set_title(GTK_WINDOW(win_bg), _("Filename: "));
-   gtk_window_set_default_size(GTK_WINDOW(win_bg), 400, 250);
    gtk_window_set_policy(GTK_WINDOW(win_bg), TRUE, TRUE, FALSE);
    gtk_window_set_wmclass(GTK_WINDOW(win_bg), "Ebony", "Background");
 

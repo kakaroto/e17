@@ -1876,7 +1876,7 @@ Tintable_Gradient
 		  <last_modification_time>Sun, 02 Jun 2002 21:11:25 GMT</last_modification_time>
 		</signal>
 		<label>1024x768</label>
-		<active>True</active>
+		<active>False</active>
 		<draw_indicator>True</draw_indicator>
 		<group>export_size_group</group>
 		<child>
@@ -1966,7 +1966,7 @@ Tintable_Gradient
 		  <last_modification_time>Sun, 02 Jun 2002 21:11:46 GMT</last_modification_time>
 		</signal>
 		<label>Specify</label>
-		<active>False</active>
+		<active>True</active>
 		<draw_indicator>True</draw_indicator>
 		<group>export_size_group</group>
 		<child>
@@ -2003,7 +2003,6 @@ Tintable_Gradient
 	      <widget>
 		<class>GtkSpinButton</class>
 		<name>export_screen_h</name>
-		<sensitive>False</sensitive>
 		<can_focus>True</can_focus>
 		<signal>
 		  <name>changed</name>
@@ -2067,7 +2066,6 @@ Tintable_Gradient
 	      <widget>
 		<class>GtkSpinButton</class>
 		<name>export_screen_w</name>
-		<sensitive>False</sensitive>
 		<can_focus>True</can_focus>
 		<signal>
 		  <name>changed</name>
@@ -2323,7 +2321,6 @@ Tintable_Gradient
 <widget>
   <class>GtkWindow</class>
   <name>win_bg</name>
-  <x>30</x>
   <signal>
     <name>delete_event</name>
     <handler>on_win_bg_delete_event</handler>
@@ -2338,8 +2335,6 @@ Tintable_Gradient
   <type>GTK_WINDOW_TOPLEVEL</type>
   <position>GTK_WIN_POS_NONE</position>
   <modal>False</modal>
-  <default_width>400</default_width>
-  <default_height>250</default_height>
   <allow_shrink>True</allow_shrink>
   <allow_grow>True</allow_grow>
   <auto_shrink>False</auto_shrink>
