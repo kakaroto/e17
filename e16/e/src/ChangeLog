@@ -3242,3 +3242,10 @@ Thu Oct  7 22:33:36 PDT 1999
 (Mandrake)
 
 extra dump_mem_debug command in IPC
+
+-------------------------------------------------------------------------------
+
+Thu Oct  7 23:53:06 PDT 1999
+(Raster)
+
+fix vbar imageclass to use pb_v.png :)
