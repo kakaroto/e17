@@ -18,33 +18,32 @@ main(int argc, char ** argv)
 	ewl_init(argc, argv);
 
 	window = ewl_window_new();
+	ewl_window_set_title(window, "EWL Demonstation Application");
 	ewl_widget_show(window);
 	ewl_window_resize(window, 299, 500);
-/*	ewl_window_set_min_size(window, 299, 267);
-	ewl_window_set_max_size(window, 640, 480);
-*/
+
 	vbox[0] = ewl_box_new(Ewl_Box_Type_Vertical);
 	ewl_container_append_child(window, vbox[0]);
 	ewl_widget_show(vbox[0]);
 
     vbox[2] = ewl_box_new(Ewl_Box_Type_Vertical);
-    ewl_container_prepend_child(vbox[0], vbox[2]);
+    ewl_container_append_child(vbox[0], vbox[2]);
     ewl_widget_show(vbox[2]);
 
     text[0] = ewl_text_new();
-    ewl_container_append_child(vbox[2], text[0]);
+    ewl_container_prepend_child(vbox[0], text[0]);
     ewl_widget_show(text[0]);
-    ewl_text_set_text(text[0], "Guess what button will change my font.");
+    ewl_text_set_text(text[0], "Blehe blaha bleho\nBlah blah blah\nBleh bleh blaha!");
 
     text[1] = ewl_text_new();
     ewl_container_append_child(vbox[2], text[1]);
     ewl_widget_show(text[1]);
-    ewl_text_set_text(text[1], "Bleh blah bloh\nBlahblah!!!\n");
+    ewl_text_set_text(text[1], "Bleh blah bloh\nBlahblah!!!");
 
 	entry[0] = ewl_entry_new();
 	ewl_container_append_child(vbox[2], entry[0]);
 	ewl_widget_show(entry[0]);
-	ewl_entry_set_text(entry[0], "Want to play with me ?");
+	ewl_entry_set_text(entry[0], "Play with me!");
 
 	vbox[1] = ewl_box_new(Ewl_Box_Type_Vertical);
 	ewl_container_append_child(vbox[0], vbox[1]);
@@ -105,7 +104,6 @@ create_info_win(Ewl_Widget * widget, void * func_data)
 	Ewl_Widget * text;
 	Ewl_Widget * vbox = NULL;
 	char * str;
-	int i;
 
 	CHECK_PARAM_POINTER("widget", widget);
 
@@ -122,14 +120,15 @@ create_info_win(Ewl_Widget * widget, void * func_data)
 	ewl_container_append_child(window2, vbox);
 	ewl_widget_show(vbox);
 
-	str = strdup("EWL has a window, text,\n"
-				 "h and v box's, and a entry widget.\n"
-				 "Every widget get layered and clipped,\n"
-				 "With evas and ebits, EWL is also\n"
-				 "EWL is way far from complete, but one\n"
-				 "day it will reach a point where i will\n"
-				 "concider this done.\n"
-				 " \n"
+	str = strdup("Bleh bleh bleh blah blah blah bleh!\n"
+				 "Bleh bleh bleh blah blah blah bleh!\n"
+				 "Bleh bleh bleh blah blah blah bleh!\n"
+				 "Bleh bleh bleh blah blah blah bleh!\n"
+				 "Bleh bleh bleh blah blah blah bleh!\n"
+				 "Bleh bleh bleh blah blah blah bleh!\n"
+				 "Bleh bleh bleh blah blah blah bleh!\n"
+				 "Bleh bleh bleh blah blah blah bleh!\n"
+				 "Bleh bleh bleh blah blah blah bleh!\n"
 				 "    // smugg");
 	text = ewl_text_new();
 	ewl_container_append_child(vbox, text);

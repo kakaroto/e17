@@ -18,7 +18,7 @@ typedef struct _ewl_text Ewl_Text;
 
 Ewl_Widget	  * ewl_text_new();
 
-void			ewl_text_set_text(Ewl_Widget * etext, char * text);
+void			ewl_text_set_text(Ewl_Widget * etext, const char * text);
 char		  * ewl_text_get_text(Ewl_Widget * text);
 void			ewl_text_set_font(Ewl_Widget * text, char * font);
 char		  * ewl_text_get_font(Ewl_Widget * text);

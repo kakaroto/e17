@@ -14,10 +14,7 @@ ewl_box_new(Ewl_Box_Type type)
 {
 	Ewl_Box * box = NULL;
 
-	box = malloc(sizeof(Ewl_Box));
-
-	if (!box)
-		return NULL;
+	box = NEW(Ewl_Box, 1);
 
 	ewl_box_init(EWL_WIDGET(box), type);
 
@@ -31,12 +28,6 @@ ewl_box_init(Ewl_Widget * widget, Ewl_Box_Type type)
 
 	memset(EWL_BOX(widget), 0, sizeof(Ewl_Box));
 
-	EWL_BOX(widget)->type = type;
-
-	EWL_BOX(widget)->spacing = 5;
-
-	widget->container.recursive = TRUE;
-
 	ewl_callback_append(widget, Ewl_Callback_Realize,
 							ewl_box_realize, NULL);
 	ewl_callback_append(widget, Ewl_Callback_Show,
@@ -47,6 +38,11 @@ ewl_box_init(Ewl_Widget * widget, Ewl_Box_Type type)
 							ewl_box_destroy, NULL);
 	ewl_callback_append(widget, Ewl_Callback_Configure,
 							ewl_box_configure, NULL);
+
+	widget->container.recursive = TRUE;
+
+	EWL_BOX(widget)->type = type;
+	EWL_BOX(widget)->spacing = 5;
 
 	EWL_OBJECT(widget)->current.w = 10;
 	EWL_OBJECT(widget)->current.h = 10;
@@ -68,8 +64,7 @@ ewl_box_realize(Ewl_Widget * widget, void * func_data)
 		ewl_widget_set_ebit(widget,
 				ewl_theme_ebit_get("box", "vertical", "base"));
 
-	return;
-	func_data = NULL;
+	ewl_container_new(widget);
 }
 
 static void
@@ -78,6 +73,8 @@ ewl_box_show(Ewl_Widget * widget, void * func_data)
 	CHECK_PARAM_POINTER("widget", widget);
 
 	ebits_show(widget->ebits_object);
+
+	ewl_container_set_clip(widget);
 }
 
 static void
@@ -94,7 +91,9 @@ ewl_box_destroy(Ewl_Widget * widget, void * func_data)
 	CHECK_PARAM_POINTER("widget", widget);
 
 	ebits_hide(widget->ebits_object);
-	ebits_free(widget->ebits_object);	
+	ebits_free(widget->ebits_object);
+
+	FREE(EWL_BOX(widget));
 }
 
 static void
@@ -102,18 +101,18 @@ ewl_box_configure(Ewl_Widget * widget, void * func_data)
 {
 	CHECK_PARAM_POINTER("widget", widget);
 
+    EWL_OBJECT(widget)->current.x = EWL_OBJECT(widget)->request.x;
+    EWL_OBJECT(widget)->current.y = EWL_OBJECT(widget)->request.y;
+    EWL_OBJECT(widget)->current.w = EWL_OBJECT(widget)->request.w;
+    EWL_OBJECT(widget)->current.h = EWL_OBJECT(widget)->request.h;
+
 	if (EWL_OBJECT(widget)->realized) {
 		ebits_move(widget->ebits_object, EWL_OBJECT(widget)->request.x,
 										 EWL_OBJECT(widget)->request.y);
 		ebits_resize(widget->ebits_object, EWL_OBJECT(widget)->request.w,
 										   EWL_OBJECT(widget)->request.h);
-		ewl_widget_clip_box_resize(widget);
+		ewl_container_clip_box_resize(widget);
 	}
-
-	EWL_OBJECT(widget)->current.x = EWL_OBJECT(widget)->request.x;
-	EWL_OBJECT(widget)->current.y = EWL_OBJECT(widget)->request.y;
-	EWL_OBJECT(widget)->current.w = EWL_OBJECT(widget)->request.w;
-	EWL_OBJECT(widget)->current.h = EWL_OBJECT(widget)->request.h;
 
 	if (!widget->container.children || !widget->container.children->nodes)
 		return;
@@ -238,6 +237,7 @@ ewl_box_set_type(Ewl_Widget * widget, Ewl_Box_Type type)
 	CHECK_PARAM_POINTER("widget", widget);
 
 	EWL_BOX(widget)->type = type;
+
 	ewl_callback_call(widget, Ewl_Callback_Configure);
 }
 
@@ -247,6 +247,7 @@ ewl_box_set_spacing(Ewl_Widget * widget, unsigned int spacing)
 	CHECK_PARAM_POINTER("widget", widget);
 
 	EWL_BOX(widget)->spacing = spacing;
+
 	ewl_callback_call(widget, Ewl_Callback_Configure);
 }
 
@@ -256,5 +257,6 @@ ewl_box_set_homogeneous(Ewl_Widget * widget, unsigned int homogeneous)
 	CHECK_PARAM_POINTER("widget", widget);
 
 	EWL_BOX(widget)->homogeneous = homogeneous;
+
 	ewl_callback_call(widget, Ewl_Callback_Configure);
 }

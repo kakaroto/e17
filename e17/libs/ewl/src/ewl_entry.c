@@ -2,7 +2,7 @@
 #include <Ewl.h>
 
 
-static void ewl_entry_init(Ewl_Widget * widget, void * func_data);
+static void ewl_entry_init(Ewl_Widget * widget);
 static void ewl_entry_realize(Ewl_Widget * widget, void * func_data);
 static void ewl_entry_show(Ewl_Widget * widget, void * func_data);
 static void ewl_entry_hide(Ewl_Widget * widget, void * func_data);
@@ -30,24 +30,19 @@ ewl_entry_new()
 {
 	Ewl_Entry * entry = NULL;
 
-	entry = malloc(sizeof(Ewl_Entry));
+	entry = NEW(Ewl_Entry, 1);
 
-	if (!entry)
-		return NULL;
-
-	ewl_entry_init(EWL_WIDGET(entry), NULL);
+	ewl_entry_init(EWL_WIDGET(entry));
 
 	return EWL_WIDGET(entry);
 }
 
 static void
-ewl_entry_init(Ewl_Widget * widget, void * func_data)
+ewl_entry_init(Ewl_Widget * widget)
 {
 	CHECK_PARAM_POINTER("widget", widget);
 
 	memset(EWL_ENTRY(widget), 0, sizeof(Ewl_Entry));
-
-	widget->container.recursive = FALSE;
 
 	EWL_ENTRY(widget)->cursor = ewl_widget_new();
 	EWL_ENTRY(widget)->selection = ewl_widget_new();
@@ -76,6 +71,12 @@ ewl_entry_init(Ewl_Widget * widget, void * func_data)
     ewl_callback_append(widget, Ewl_Callback_Focus_Out,
                             ewl_entry_focus_out, NULL);
 
+	widget->container.recursive = FALSE;
+
+	EWL_ENTRY(widget)->cursor = ewl_widget_new();
+	EWL_ENTRY(widget)->selection = ewl_widget_new();
+	EWL_ENTRY(widget)->text = ewl_text_new();
+			
 	EWL_ENTRY(widget)->font = strdup("borzoib");
 	EWL_ENTRY(widget)->font_size = 8;
 
@@ -98,21 +99,27 @@ ewl_entry_realize(Ewl_Widget * widget, void * func_data)
 	CHECK_PARAM_POINTER("widget", widget);
 
 	ewl_widget_set_ebit(widget, ewl_theme_ebit_get("entry", "default", "base"));
+	ewl_container_new(widget);
+
 	EWL_ENTRY(widget)->cursor->evas = widget->evas;
 	EWL_ENTRY(widget)->cursor->parent = widget;
-	EWL_OBJECT(EWL_ENTRY(widget)->cursor)->layer = EWL_OBJECT(widget)->layer +3;
+	EWL_OBJECT(EWL_ENTRY(widget)->cursor)->layer = EWL_OBJECT(widget)->layer +30;
 	ewl_widget_set_ebit(EWL_ENTRY(widget)->cursor,
 						ewl_theme_ebit_get("entry", "cursor", "base"));
-	ewl_widget_realize(EWL_ENTRY(widget)->cursor);
+	ewl_container_set_clip(EWL_ENTRY(widget)->cursor);
+
 	EWL_ENTRY(widget)->selection->evas = widget->evas;
 	EWL_ENTRY(widget)->selection->parent = widget;
 	EWL_OBJECT(EWL_ENTRY(widget)->selection)->layer =
-							EWL_OBJECT(widget)->layer +2;
+							EWL_OBJECT(widget)->layer +20;
 	ewl_widget_set_ebit(EWL_ENTRY(widget)->selection,
-						ewl_theme_ebit_get("entry", "selection", "base"));
+					ewl_theme_ebit_get("entry", "selection", "base"));
+
 	EWL_WIDGET(EWL_ENTRY(widget)->text)->parent = widget;
 	EWL_WIDGET(EWL_ENTRY(widget)->text)->evas = widget->evas;
-	EWL_OBJECT(EWL_ENTRY(widget)->text)->layer = EWL_OBJECT(widget)->layer +1;
+	EWL_OBJECT(EWL_ENTRY(widget)->text)->layer = EWL_OBJECT(widget)->layer +10;
+/*	EWL_WIDGET(EWL_ENTRY(widget)->text)->container.clip_box =
+						widget->container.clip_box;*/
 	ewl_text_set_font(EWL_WIDGET(EWL_ENTRY(widget)->text),
 				EWL_ENTRY(widget)->font);
 	ewl_text_set_font_size(EWL_WIDGET(EWL_ENTRY(widget)->text),
@@ -128,6 +135,8 @@ ewl_entry_show(Ewl_Widget * widget, void * func_data)
 	ebits_show(widget->ebits_object);
 	ewl_widget_show(EWL_WIDGET(EWL_ENTRY(widget)->text));
 	ebits_show(EWL_ENTRY(widget)->cursor->ebits_object);
+	evas_show(widget->evas, widget->container.clip_box);
+	ewl_container_set_clip(widget);
 }
 
 static void
@@ -163,7 +172,7 @@ ewl_entry_configure(Ewl_Widget * widget, void * func_data)
 	ebits_resize(widget->ebits_object, EWL_OBJECT(widget)->current.w,
 									   EWL_OBJECT(widget)->current.h);
 
-	ewl_widget_clip_box_resize(widget);
+	ewl_container_clip_box_resize(widget);
 
 	ebits_get_insets(widget->ebits_object, &l, &r, &t, &b);
 

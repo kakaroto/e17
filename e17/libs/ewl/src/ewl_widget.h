@@ -39,7 +39,5 @@ void ewl_widget_hide(Ewl_Widget * widget);
 void ewl_widget_destroy(Ewl_Widget * widget);
 void ewl_widget_configure(Ewl_Widget * widget);
 void ewl_widget_set_ebit(Ewl_Widget * widget, char * ebit);
-void ewl_widget_clip_box_create(Ewl_Widget * widget);
-void ewl_widget_clip_box_resize(Ewl_Widget * widget);
 
 #endif

@@ -5,7 +5,9 @@
 typedef struct _ewl_callback Ewl_Callback;
 
 struct _ewl_callback {
-	void					(* func) (Ewl_Widget * widget, void * func_data);
+	Ewl_Widget              * widget;
+	void					(* func) (Ewl_Widget * widget,
+									  void * func_data);
 	void					* func_data;
 	Ewl_Callback_Type		type;
 };

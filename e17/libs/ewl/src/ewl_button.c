@@ -1,8 +1,7 @@
 
 #include <Ewl.h>
 
-
-static void ewl_button_init(Ewl_Widget * widget, void * func_data);
+static void ewl_button_init(Ewl_Widget * widget, Ewl_Button_Type type);
 static void ewl_button_realize(Ewl_Widget * widget, void * func_data);
 static void ewl_button_show(Ewl_Widget * widget, void * func_data);
 static void ewl_button_hide(Ewl_Widget * widget, void * func_data);
@@ -24,27 +23,22 @@ ewl_button_new(Ewl_Button_Type type)
 {
 	Ewl_Button * button = NULL;
 
-	button = malloc(sizeof(Ewl_Button));
+	button = NEW(Ewl_Button, 1);
 
-	if (!button)
-		return NULL;
-
-	ewl_button_init(EWL_WIDGET(button), (void *) type);
+	ewl_button_init(EWL_WIDGET(button), type);
 
 	return EWL_WIDGET(button);
 }
 
 static void
-ewl_button_init(Ewl_Widget * widget, void * func_data)
+ewl_button_init(Ewl_Widget * widget, Ewl_Button_Type type)
 {
 	CHECK_PARAM_POINTER("widget", widget);
 
+	/* Zero out bogus values before adding anything */
 	memset(EWL_BUTTON(widget), 0, sizeof(Ewl_Button));
 
-	EWL_BUTTON(widget)->type = (Ewl_Button_Type) func_data;
-
-	widget->container.recursive = FALSE;
-
+	/* Add necessery callback's */
 	ewl_callback_append(widget, Ewl_Callback_Realize,
 							ewl_button_realize, NULL);
 	ewl_callback_append(widget, Ewl_Callback_Show,
@@ -68,12 +62,17 @@ ewl_button_init(Ewl_Widget * widget, void * func_data)
 	ewl_callback_append(widget, Ewl_Callback_Focus_Out,
 							ewl_button_focus_out, NULL);
 
+	/* Do this so the button's child wont get any events */
+	widget->container.recursive = FALSE;
+
+	EWL_BUTTON(widget)->type = type;
+
 	EWL_OBJECT(widget)->current.w = 85;
 	EWL_OBJECT(widget)->current.h = 35;
 	EWL_OBJECT(widget)->minimum.w = 85;
 	EWL_OBJECT(widget)->minimum.h = 35;
-	EWL_OBJECT(widget)->maximum.w = 2024;
-	EWL_OBJECT(widget)->maximum.h = 2024;
+	EWL_OBJECT(widget)->maximum.w = 256;
+	EWL_OBJECT(widget)->maximum.h = 256;
 	EWL_OBJECT(widget)->request.w = 85;
 	EWL_OBJECT(widget)->request.h = 35;
 }
@@ -83,9 +82,12 @@ ewl_button_realize(Ewl_Widget * widget, void * func_data)
 {
 	CHECK_PARAM_POINTER("widget", widget);
 
+	/* Lets do only this for now */
 	EWL_BUTTON(widget)->state = Ewl_Button_State_Normal;
 
 	ewl_widget_set_ebit(widget,ewl_theme_ebit_get("button", "default", "base"));
+
+	ewl_container_new(widget);
 }
 
 static void
@@ -93,7 +95,11 @@ ewl_button_show(Ewl_Widget * widget, void * func_data)
 {
 	CHECK_PARAM_POINTER("widget", widget);
 
+	/* Prehaps show it's parent automatically ?
+	 * But that sounds more like the ewl_widget_show's responsibility */
 	ebits_show(widget->ebits_object);
+
+	ewl_container_set_clip(widget);
 }
 
 static void
@@ -101,6 +107,7 @@ ewl_button_hide(Ewl_Widget * widget, void * func_data)
 {
 	CHECK_PARAM_POINTER("widget", widget);
 
+	/* Maybe hide children to ? */
 	ebits_hide(widget->ebits_object);
 }
 
@@ -109,14 +116,15 @@ ewl_button_destroy(Ewl_Widget * widget, void * func_data)
 {
 	CHECK_PARAM_POINTER("widget", widget);
 
-	ebits_hide(widget->ebits_object);
 	ebits_free(widget->ebits_object);
+
+	FREE(EWL_BUTTON(widget));
 }
 
 static void
 ewl_button_configure(Ewl_Widget * widget, void * func_data)
 {
-	Ewl_Widget * child;
+	Ewl_Widget * child = NULL;
 
 	CHECK_PARAM_POINTER("widget", widget);
 
@@ -155,10 +163,7 @@ ewl_button_configure(Ewl_Widget * widget, void * func_data)
 	ebits_resize(widget->ebits_object,
 		EWL_OBJECT(widget)->request.w, EWL_OBJECT(widget)->request.h);
 
-	if (!widget->container.clip_box)
-		ewl_widget_clip_box_create(widget);
-
-	ewl_widget_clip_box_resize(widget);
+	ewl_container_clip_box_resize(widget);
 
 	EWL_OBJECT(widget)->current.w = EWL_OBJECT(widget)->request.w;
 	EWL_OBJECT(widget)->current.h = EWL_OBJECT(widget)->request.h;
@@ -171,10 +176,9 @@ ewl_button_configure(Ewl_Widget * widget, void * func_data)
 static void
 ewl_button_key_down(Ewl_Widget * widget, void * func_data)
 {
-	Ev_Key_Down * ev;
+	Ev_Key_Down * ev = NULL;
 
 	CHECK_PARAM_POINTER("widget", widget);
-	CHECK_PARAM_POINTER("func_data", func_data);
 
 	ev = func_data;
 
@@ -190,10 +194,9 @@ ewl_button_key_down(Ewl_Widget * widget, void * func_data)
 static void
 ewl_button_key_up(Ewl_Widget * widget, void * func_data)
 {
-	Ev_Key_Up * ev;
+	Ev_Key_Up * ev = NULL;
 
 	CHECK_PARAM_POINTER("widget", widget);
-	CHECK_PARAM_POINTER("func_data", func_data);
 
 	ev = func_data;
 
@@ -209,10 +212,9 @@ ewl_button_key_up(Ewl_Widget * widget, void * func_data)
 static void
 ewl_button_mouse_down(Ewl_Widget * widget, void * func_data)
 {
-	Ev_Mouse_Down * ev;
+	Ev_Mouse_Down * ev = NULL;
 
 	CHECK_PARAM_POINTER("widget", widget);
-	CHECK_PARAM_POINTER("func_data", func_data);
 
 	ev = func_data;
 
@@ -226,10 +228,9 @@ ewl_button_mouse_down(Ewl_Widget * widget, void * func_data)
 static void
 ewl_button_mouse_up(Ewl_Widget * widget, void * func_data)
 {
-	Ev_Mouse_Up * ev;
+	Ev_Mouse_Up * ev = NULL;
 
 	CHECK_PARAM_POINTER("widget", widget);
-	CHECK_PARAM_POINTER("func_data", func_data);
 
 	ev = func_data;
 

@@ -6,10 +6,11 @@ ewl_callback_append(Ewl_Widget * widget, Ewl_Callback_Type type,
 {
 	Ewl_Callback * callback = NULL;
 
-	callback = malloc(sizeof(Ewl_Callback));
+	callback = NEW(Ewl_Callback, 1);
 
 	memset(callback, 0, sizeof(Ewl_Callback));
 
+	callback->widget = widget;
 	callback->func = func;
 	callback->func_data = func_data;
 	callback->type = type;
@@ -28,9 +29,10 @@ ewl_callback_prepend(Ewl_Widget * widget, Ewl_Callback_Type type,
 {
 	Ewl_Callback * callback = NULL;
 
-	callback = malloc(sizeof(Ewl_Callback));
+	callback = NEW(Ewl_Callback, 1);;
 	callback = memset(callback, 0, sizeof(Ewl_Callback));
 
+	callback->widget = widget;
 	callback->func = func;
 	callback->func_data = func_data;
 	callback->type = type;
@@ -61,7 +63,7 @@ void ewl_callback_del_all(Ewl_Widget * widget);
 void
 ewl_callback_call(Ewl_Widget * widget, Ewl_Callback_Type type)
 {
-	Ewl_Callback * callback;
+	Ewl_Callback * callback = NULL;
 
 	if (!widget->callbacks[type] || ewd_list_is_empty(widget->callbacks[type]))
 		return;
@@ -69,14 +71,14 @@ ewl_callback_call(Ewl_Widget * widget, Ewl_Callback_Type type)
 	ewd_list_goto_first(widget->callbacks[type]);
 
 	while ((callback = ewd_list_next(widget->callbacks[type])) != NULL) {
-			callback->func(EWL_WIDGET(widget), callback->func_data);
+			callback->func(callback->widget, callback->func_data);
 	}
 }
 
 void ewl_callback_call_with_data(Ewl_Widget * widget,
 							   Ewl_Callback_Type type, void * func_data)
 {
-	Ewl_Callback * callback;
+	Ewl_Callback * callback = NULL;
 
 	if (!widget->callbacks[type] || ewd_list_is_empty(widget->callbacks[type]))
 		return;
@@ -84,6 +86,6 @@ void ewl_callback_call_with_data(Ewl_Widget * widget,
 	ewd_list_goto_first(widget->callbacks[type]);
 
 	while ((callback = ewd_list_next(widget->callbacks[type])) != NULL) {
-		callback->func(EWL_WIDGET(widget), func_data);
+		callback->func(callback->widget, func_data);
 	}
 }

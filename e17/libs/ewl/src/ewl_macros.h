@@ -15,4 +15,6 @@
 		fprintf(stderr, format, args); \
 }
 
+#define NEW(dat, num) malloc(sizeof(dat) * (num))
+
 #endif

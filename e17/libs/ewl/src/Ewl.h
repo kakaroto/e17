@@ -44,7 +44,6 @@ typedef enum _ewl_callback_type Ewl_Callback_Type;
 
 typedef struct _ewl_container Ewl_Container;
 
-/* Ewl Base Classes */
 #include <ewl_object.h>
 #include <ewl_widget.h>
 #include <ewl_container.h>
