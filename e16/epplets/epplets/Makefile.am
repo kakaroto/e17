@@ -27,12 +27,25 @@ EppletTest_epplet_LDFLAGS = -rpath $(libdir):$(pkglibdir)
 INCLUDES = -DEBIN=\"$(EBIN)\" -DEROOT=\"$(EROOT)\" -I. -I$(top_srcdir)/api -I$(top_srcdir) -I.. -I$(includedir) -I$(prefix)/include $(X_CFLAGS)
 LDADD = $(top_builddir)/api/libepplet.la -L$(libdir) -L$(prefix)/lib $(LIBS) $(X_LIBS)
 
-EXTRA_DIST = E-Load.icon E-Clock.icon E-Net.icon E-Cpu.icon EppletTest.icon \
-E-Clock-Image.png
+ABOUT_DOCS = E-Cpu.ABOUT/MAIN E-Cpu.ABOUT/bg.png E-Cpu.ABOUT/aircut3.ttf
+ICONS = E-Load.icon E-Clock.icon E-Net.icon E-Cpu.icon
+DATA =E-Clock-Image.png
+
+EXTRA_DIST = ${ICONS} ${ABOUT_DOCS} ${DATA}
+
+
 
 install-data-hook:
 	$(mkinstalldirs) $(EROOT)/epplet_icons
-	@for i in $(srcdir)/*.icon ; do \
+	@for i in ${ICONS}; do \
 	  echo $(INSTALL_DATA) $$i $(EROOT)/epplet_icons/ ; \
 	  $(INSTALL_DATA) $$i $(EROOT)/epplet_icons/ ; \
+	done
+	@for i in ${DATA}; do \
+	  echo $(INSTALL_DATA) $$i $(EROOT)/epplet_icons/ ; \
+	  $(INSTALL_DATA) $$i $(EROOT)/epplet_icons/ ; \
+	done
+	@for i in ${ABOUT_DOCS}; do \
+	  echo $(INSTALL_DATA) -D $$i $(EROOT)/epplet_icons/$$i ; \
+	  $(INSTALL_DATA) -D $$i $(EROOT)/epplet_icons/$$i ; \
 	done

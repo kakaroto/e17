@@ -5,7 +5,7 @@ double             *prev_val = NULL;
 int                *load_val = NULL;
 Window              win;
 RGB_buf             buf;
-Epplet_gadget       da, b_close, b_config, pop;
+Epplet_gadget       da, b_close, b_config, b_help, pop;
 int                *flame = NULL;
 int                *vspread, *hspread, *residual;
 unsigned char       rm[255], gm[255], bm[255];
@@ -49,6 +49,7 @@ static void cb_out(void *data, Window w);
 static void cb_timer(void *data);
 static void cb_close(void *data);
 static void cb_config(void *data);
+static void cb_help(void *data);
 static int  count_cpus(void);
 static void draw_flame(void);
 static void flame_col(int r1, int g1, int b1, int r2, int g2, int b2, int r3, int g3, int b3);
@@ -245,10 +246,17 @@ cb_config(void *data)
 }
 
 static void
+cb_help(void *data)
+{
+   Epplet_show_about("E-Cpu");
+}
+
+static void
 cb_in(void *data, Window w)
 {
    Epplet_gadget_show(b_close);
    Epplet_gadget_show(b_config);
+   Epplet_gadget_show(b_help);
 }
 
 static void
@@ -256,6 +264,7 @@ cb_out(void *data, Window w)
 {
    Epplet_gadget_hide(b_close);
    Epplet_gadget_hide(b_config);
+   Epplet_gadget_hide(b_help);
 }
 
 static int
@@ -351,6 +360,9 @@ main(int argc, char **argv)
    b_config = Epplet_create_button(NULL, NULL,
 				28, 0, 0, 0, "CONFIGURE", win, NULL,
 				cb_config, NULL);
+   b_help = Epplet_create_button(NULL, NULL,
+				 14, 0, 0, 0, "HELP", win, NULL,
+				 cb_help, NULL);
    p = Epplet_create_popup();
    Epplet_add_popup_entry(p, "Turquoise", NULL, cb_color, (void *)(&(colors[0 * 9])));
    Epplet_add_popup_entry(p, "Fire", NULL, cb_color,      (void *)(&(colors[1 * 9])));
