@@ -137,6 +137,7 @@ file_cmd(EfsdConnection *ec, EfsdCommandType type, char *file,
 	 int num_options, EfsdOption *ops)
 {
   EfsdCommand  cmd;
+  EfsdCmdId    id;
 
   D_ENTER;
 
@@ -161,8 +162,9 @@ file_cmd(EfsdConnection *ec, EfsdCommandType type, char *file,
       D_RETURN_(-1);
     }
 
+  id = cmd.efsd_file_cmd.id;
   efsd_cmd_cleanup(&cmd);
-  D_RETURN_(cmd.efsd_file_cmd.id);
+  D_RETURN_(id);
 }
 
 

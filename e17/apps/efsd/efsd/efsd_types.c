@@ -274,5 +274,7 @@ efsd_event_cleanup(EfsdEvent *ev)
       D(("Warning -- unknown event type.\n"));
     }  
 
+  memset(ev, 0, sizeof(EfsdEvent));
+
   D_RETURN;
 }

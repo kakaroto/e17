@@ -251,7 +251,7 @@ main_handle_client_command(void *data)
 
   efsd_cmd_free(command);
   FREE(container);
-  D(("Thread %i exits\n", pthread_self()));
+  D(("Thread exits\n"));
 
   D_RETURN_(NULL);
 }
@@ -378,12 +378,15 @@ main_handle_fam_events(void)
 		{
 		case EFSD_FAM_MONITOR_NORMAL:
 
+		  D(("NORMAL\n"));
 		  if (clientfd[efr->client] >= 0)
 		    {
 		      ee.efsd_filechange_event.id = efr->id;
 		      
 		      if (list_all_files || !efsd_misc_file_is_dotfile(famev.filename))
 			{
+			  D(("Writing FAM event %i to client %i\n",
+			     famev.code, efr->client));
 			  if (efsd_io_write_event(clientfd[efr->client], &ee) < 0)
 			    {
 			      if (errno == EPIPE)
@@ -414,6 +417,7 @@ main_handle_fam_events(void)
 		    }
 		  break;
 		case EFSD_FAM_MONITOR_INTERNAL:
+		  D(("INTERNAL\n"));
 		  if (famev.code == FAMChanged)
 		    {
 		      D(("File change event for stat cached file %s\n", famev.filename));

@@ -341,12 +341,12 @@ efsd_file_stat(EfsdCommand *cmd, int client, char use_lstat)
     {
       if (efsd_lstat(cmd->efsd_file_cmd.file, &st))
 	{
-	  D(("Stat suceeded, sending struct...\n"));
+	  D(("lstat suceeded, sending struct...\n"));
 	  result = send_reply(cmd, SUCCESS, 0, sizeof(struct stat), &st, client);
 	}
       else
 	{
-	  D(("Stat failed, sending FAILURE.\n"));
+	  D(("lstat failed, sending FAILURE.\n"));
 	  result = send_reply(cmd, FAILURE, errno, 0, NULL, client);
 	}
     }
@@ -354,17 +354,15 @@ efsd_file_stat(EfsdCommand *cmd, int client, char use_lstat)
     {
       if (efsd_stat(cmd->efsd_file_cmd.file, &st))
 	{
-	  D(("Stat suceeded, sending struct...\n"));
+	  D(("stat suceeded, sending struct...\n"));
 	  result = send_reply(cmd, SUCCESS, 0, sizeof(struct stat), &st, client);
 	}
       else
 	{
-	  D(("Stat failed, sending FAILURE.\n"));
+	  D(("stat failed, sending FAILURE.\n"));
 	  result = send_reply(cmd, FAILURE, errno, 0, NULL, client);
 	}
     }
-
-  /* st is in struct cache -- no need to free it. */
 
   D_RETURN_(result);
 }
