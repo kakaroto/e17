@@ -559,6 +559,7 @@ SetupX()
    mode.group_config.stick = 1;
    mode.group_config.shade = 1;
    mode.group_config.mirror = 1;
+   mode.clickalways = 0;
 
    desks.dragdir = 2;
    desks.dragbar_width = 16;

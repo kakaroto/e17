@@ -1732,3 +1732,10 @@ fix menu segfault bug
 fix raiswlower for groups :)
 
 make "abotu this theme" brign up the ABOUT for the CURRENT theme :)
+
+-------------------------------------------------------------------------------
+
+Tue Sep 14 11:50:29 PDT 1999
+(Raster)
+
+add click always raises patch... :)

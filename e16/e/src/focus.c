@@ -259,7 +259,7 @@ FocusToEWin(EWin * ewin)
 	/* losing the focus may cause the titlebar to be resized */
 	CalcEwinSizes(mode.focuswin);
 	DrawEwin(mode.focuswin);
-	if (mode.focusmode == FOCUS_CLICK)
+	if ((mode.clickalways) || (mode.focusmode == FOCUS_CLICK))
 	   XGrabButton(disp, AnyButton, AnyModifier,
 		       mode.focuswin->win_container, False,
 		       ButtonPressMask,

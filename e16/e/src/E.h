@@ -1187,6 +1187,7 @@ typedef struct _emode
      GroupConfig         group_config;
      EWin               *kde_dock;
      int                 kde_support;
+     char                clickalways;
   }
 EMode;
 

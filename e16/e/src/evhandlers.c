@@ -1543,7 +1543,7 @@ HandleMouseDown(XEvent * ev)
 	EDBUG_RETURN_;
      }
    m = FindMenuItem(click_was_in, &mi);
-   if ((!m) && (mode.focusmode == FOCUS_CLICK))
+   if ((!m) && ((mode.clickalways) || (mode.focusmode == FOCUS_CLICK)))
      {
 	ewin = FindEwinByChildren(win);
 	if (!ewin)

@@ -668,6 +668,9 @@ Config_Control(FILE * ConfigFile)
 	  case CONTROL_KDESUPPORT:
 	     mode.kde_support = i2;
 	     break;
+	  case CONTROL_CLICK_ALWAYS:
+	     mode.clickalways = i2;
+	     break;
 	  case CONTROL_ICONTEXT:
 	     {
 		char                s2[FILEPATH_LEN_MAX];
@@ -3630,6 +3633,7 @@ SaveUserControlConfig(FILE * autosavefile)
 	fprintf(autosavefile, "1364 %i\n", (int)mode.group_config.shade);
 	fprintf(autosavefile, "1365 %i\n", (int)mode.group_config.mirror);
 	fprintf(autosavefile, "1366 %i\n", (int)mode.kde_support);
+	fprintf(autosavefile, "1367 %i\n", (int)mode.clickalways);
 	fprintf(autosavefile, "1000\n");
 	fprintf(autosavefile, "1001 0\n");
 	ac = (ActionClass *) FindItem("KEYBINDINGS", 0,

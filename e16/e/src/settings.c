@@ -206,6 +206,7 @@ static char         tmp_warp_focus;
 static char         tmp_warp_after_focus;
 static char         tmp_raise_after_focus;
 static char         tmp_display_warp;
+static char         tmp_clickalways;
 
 static void         CB_ConfigureFocus(int val, void *data);
 static void
@@ -224,6 +225,7 @@ CB_ConfigureFocus(int val, void *data)
 	mode.raise_after_next_focus = tmp_raise_after_focus;
 	mode.display_warp = tmp_display_warp;
 #endif /* WITH_TARTY_WARP */
+	mode.clickalways = tmp_clickalways;
 	FixFocus();
      }
    autosave();
@@ -255,6 +257,7 @@ SettingsFocus(void)
    tmp_warp_after_focus = mode.warp_after_next_focus;
    tmp_display_warp = mode.display_warp;
 #endif /* WITH_TARTY_WARP */
+   tmp_clickalways = mode.clickalways;
 
    d = CreateDialog("CONFIGURE_FOCUS");
    DialogSetTitle(d, "Focus Settings");
@@ -303,6 +306,20 @@ SettingsFocus(void)
    DialogItemRadioButtonSetFirst(di, radio);
    DialogItemRadioButtonGroupSetVal(di, 2);
    DialogItemRadioButtonGroupSetValPtr(radio, &tmp_focus);
+
+   di = DialogAddItem(table, DITEM_SEPARATOR);
+   DialogItemSetColSpan(di, 2);
+   DialogItemSetPadding(di, 2, 2, 2, 2);
+   DialogItemSetFill(di, 1, 0);
+   DialogItemSeparatorSetOrientation(di, 0);
+
+   di = DialogAddItem(table, DITEM_CHECKBUTTON);
+   DialogItemSetPadding(di, 2, 2, 2, 2);
+   DialogItemSetFill(di, 1, 0);
+   DialogItemSetColSpan(di, 2);
+   DialogItemCheckButtonSetText(di, "Clicking in a window always raises it");
+   DialogItemCheckButtonSetState(di, tmp_clickalways);
+   DialogItemCheckButtonSetPtr(di, &tmp_clickalways);
 
    di = DialogAddItem(table, DITEM_SEPARATOR);
    DialogItemSetColSpan(di, 2);

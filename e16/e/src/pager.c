@@ -623,7 +623,13 @@ PagerShow(Pager * p)
 	if (sn)
 	  {
 	     if (sn->use_wh)
-		ResizeEwin(ewin, sn->w, sn->h);
+	       {
+		  if ((sn->use_shade) && (sn->shade))
+		     InstantUnShadeEwin(ewin);
+		  ResizeEwin(ewin, sn->w, sn->h);
+		  if ((sn->use_shade) && (sn->shade))
+		     InstantShadeEwin(ewin);
+	       }
 	  }
 	/* no snapshots ? first time ? make a row on the bottom left up */
 	else

@@ -398,8 +398,11 @@ ShowIconbox(Iconbox * ib)
 	/* get the size right damnit! */
 	if (sn)
 	  {
-	     if (sn->use_wh)
-		ResizeEwin(ewin, sn->w, sn->h);
+	     if ((sn->use_shade) && (sn->shade))
+		InstantUnShadeEwin(ewin);
+	     ResizeEwin(ewin, sn->w, sn->h);
+	     if ((sn->use_shade) && (sn->shade))
+		InstantShadeEwin(ewin);
 	     if (sn->use_xy)
 		MoveEwin(ewin, sn->x, sn->y);
 	  }
