@@ -27,18 +27,18 @@ static void _e_thumb_stack_below (Evas_Object * o, Evas_Object * below);
 static void _e_thumb_color_set (Evas_Object * o, int r, int g, int b, int a);
 
 Evas_Object *
-e_thumb_new (Evas * evas, const char *file)
+esmart_thumb_new (Evas * evas, const char *file)
 {
   char buf[PATH_MAX];
   Evas_Object *result = NULL;
   if (file)
     {
-      E_Thumb *e = NULL;
+      Esmart_Thumb *e = NULL;
       static Evas_Smart *s = NULL;
 
       if (!s)
 	{
-	  s = evas_smart_new ("E_Thumb",
+	  s = evas_smart_new ("Esmart_Thumb",
 			      _e_thumb_add,
 			      _e_thumb_del,
 			      _e_thumb_layer_set,
@@ -55,7 +55,7 @@ e_thumb_new (Evas * evas, const char *file)
 	}
       result = evas_object_smart_add (evas, s);
 
-      if ((e = (E_Thumb *) evas_object_smart_data_get (result)))
+      if ((e = (Esmart_Thumb *) evas_object_smart_data_get (result)))
 	{
 	  if (!realpath (file, buf))
 	    snprintf (buf, PATH_MAX, "%s", file);
@@ -64,7 +64,7 @@ e_thumb_new (Evas * evas, const char *file)
 	    {
 	      if (epsilon_exists (e->e) == EPSILON_FAIL)
 		{
-		  e_thumb_free (result);
+		  esmart_thumb_free (result);
 		  result = NULL;
 		}
 	      else
@@ -79,7 +79,7 @@ e_thumb_new (Evas * evas, const char *file)
 		    }
 		  else
 		    {
-		      e_thumb_free (result);
+		      esmart_thumb_free (result);
 		      e->image = NULL;
 		    }
 
@@ -92,18 +92,18 @@ e_thumb_new (Evas * evas, const char *file)
 }
 
 void
-e_thumb_free (Evas_Object * o)
+esmart_thumb_free (Evas_Object * o)
 {
   if (o)
     evas_object_del (o);
 }
 const char *
-e_thumb_file_get (Evas_Object * o)
+esmart_thumb_file_get (Evas_Object * o)
 {
   if (o)
     {
-      E_Thumb *e = NULL;
-      if ((e = (E_Thumb *) evas_object_smart_data_get (o)))
+      Esmart_Thumb *e = NULL;
+      if ((e = (Esmart_Thumb *) evas_object_smart_data_get (o)))
 	if (e->e)
 	  return (e->e->src);
     }
@@ -111,12 +111,12 @@ e_thumb_file_get (Evas_Object * o)
 }
 
 void
-e_thumb_geometry_get (Evas_Object * o, int *w, int *h)
+esmart_thumb_geometry_get (Evas_Object * o, int *w, int *h)
 {
   if (o)
     {
-      E_Thumb *e = NULL;
-      if ((e = (E_Thumb *) evas_object_smart_data_get (o)))
+      Esmart_Thumb *e = NULL;
+      if ((e = (Esmart_Thumb *) evas_object_smart_data_get (o)))
 	{
 	  if (!e->info)
 	    e->info = epsilon_info_get (e->e);
@@ -128,13 +128,13 @@ e_thumb_geometry_get (Evas_Object * o, int *w, int *h)
     }
 }
 Evas_Object *
-e_thumb_evas_object_get (Evas_Object * o)
+esmart_thumb_evas_object_get (Evas_Object * o)
 {
   Evas_Object *result = NULL;
   if (o)
     {
-      E_Thumb *e = NULL;
-      if ((e = (E_Thumb *) evas_object_smart_data_get (o)))
+      Esmart_Thumb *e = NULL;
+      if ((e = (Esmart_Thumb *) evas_object_smart_data_get (o)))
 	{
 	  Imlib_Image tmp = NULL;
 
@@ -162,13 +162,13 @@ e_thumb_evas_object_get (Evas_Object * o)
 }
 
 const char *
-e_thumb_format_get (Evas_Object * o)
+esmart_thumb_format_get (Evas_Object * o)
 {
   char *result = NULL;
   if (o)
     {
-      E_Thumb *e = NULL;
-      if ((e = (E_Thumb *) evas_object_smart_data_get (o)))
+      Esmart_Thumb *e = NULL;
+      if ((e = (Esmart_Thumb *) evas_object_smart_data_get (o)))
 	{
 	  if (!e->info)
 	    e->info = epsilon_info_get (e->e);
@@ -179,13 +179,13 @@ e_thumb_format_get (Evas_Object * o)
 }
 
 int
-e_thumb_freshen (Evas_Object * o)
+esmart_thumb_freshen (Evas_Object * o)
 {
   int result = EPSILON_FAIL;
   if (o)
     {
-      E_Thumb *e = NULL;
-      if ((e = (E_Thumb *) evas_object_smart_data_get (o)))
+      Esmart_Thumb *e = NULL;
+      if ((e = (Esmart_Thumb *) evas_object_smart_data_get (o)))
 	{
 	  if (epsilon_exists (e->e) == EPSILON_FAIL)
 	    {
@@ -227,10 +227,10 @@ e_thumb_freshen (Evas_Object * o)
 static void
 _e_thumb_add (Evas_Object * o)
 {
-  E_Thumb *e = NULL;
+  Esmart_Thumb *e = NULL;
 
-  e = (E_Thumb *) malloc (sizeof (E_Thumb));
-  memset (e, 0, sizeof (E_Thumb));
+  e = (Esmart_Thumb *) malloc (sizeof (Esmart_Thumb));
+  memset (e, 0, sizeof (Esmart_Thumb));
 
   evas_object_smart_data_set (o, e);
 }
@@ -244,8 +244,8 @@ _e_thumb_del (Evas_Object * o)
 {
   if (o)
     {
-      E_Thumb *e = NULL;
-      if ((e = (E_Thumb *) evas_object_smart_data_get (o)) == NULL)
+      Esmart_Thumb *e = NULL;
+      if ((e = (Esmart_Thumb *) evas_object_smart_data_get (o)) == NULL)
 	{
 	  if (e->image)
 	    evas_object_del (e->image);
@@ -267,8 +267,8 @@ _e_thumb_layer_set (Evas_Object * o, int layer)
 {
   if (o)
     {
-      E_Thumb *e = NULL;
-      if ((e = (E_Thumb *) evas_object_smart_data_get (o)))
+      Esmart_Thumb *e = NULL;
+      if ((e = (Esmart_Thumb *) evas_object_smart_data_get (o)))
 	{
 	  if (e->image)
 	    evas_object_layer_set (e->image, layer);
@@ -285,8 +285,8 @@ _e_thumb_raise (Evas_Object * o)
 {
   if (o)
     {
-      E_Thumb *e = NULL;
-      if ((e = (E_Thumb *) evas_object_smart_data_get (o)))
+      Esmart_Thumb *e = NULL;
+      if ((e = (Esmart_Thumb *) evas_object_smart_data_get (o)))
 	{
 	  evas_object_raise (e->image);
 	}
@@ -302,8 +302,8 @@ _e_thumb_lower (Evas_Object * o)
 {
   if (o)
     {
-      E_Thumb *e = NULL;
-      if ((e = (E_Thumb *) evas_object_smart_data_get (o)))
+      Esmart_Thumb *e = NULL;
+      if ((e = (Esmart_Thumb *) evas_object_smart_data_get (o)))
 	{
 	  evas_object_lower (e->image);
 	}
@@ -321,8 +321,8 @@ _e_thumb_stack_above (Evas_Object * o, Evas_Object * above)
 {
   if (o)
     {
-      E_Thumb *e = NULL;
-      if ((e = (E_Thumb *) evas_object_smart_data_get (o)))
+      Esmart_Thumb *e = NULL;
+      if ((e = (Esmart_Thumb *) evas_object_smart_data_get (o)))
 	{
 	  evas_object_stack_above (e->image, above);
 	}
@@ -340,8 +340,8 @@ _e_thumb_stack_below (Evas_Object * o, Evas_Object * below)
 {
   if (o)
     {
-      E_Thumb *e = NULL;
-      if ((e = (E_Thumb *) evas_object_smart_data_get (o)))
+      Esmart_Thumb *e = NULL;
+      if ((e = (Esmart_Thumb *) evas_object_smart_data_get (o)))
 	{
 	  evas_object_stack_below (e->image, below);
 	}
@@ -359,8 +359,8 @@ _e_thumb_move (Evas_Object * o, double x, double y)
 {
   if (o)
     {
-      E_Thumb *e = NULL;
-      if ((e = (E_Thumb *) evas_object_smart_data_get (o)))
+      Esmart_Thumb *e = NULL;
+      if ((e = (Esmart_Thumb *) evas_object_smart_data_get (o)))
 	{
 	  e->x = x;
 	  e->y = y;
@@ -380,8 +380,8 @@ _e_thumb_resize (Evas_Object * o, double w, double h)
 {
   if (o && (w > 1) && (h > 1))
     {
-      E_Thumb *e = NULL;
-      if ((e = (E_Thumb *) evas_object_smart_data_get (o)))
+      Esmart_Thumb *e = NULL;
+      if ((e = (Esmart_Thumb *) evas_object_smart_data_get (o)))
 	{
 	  double ww = w, hh = h;
 	  e->w = w;
@@ -408,8 +408,8 @@ _e_thumb_show (Evas_Object * o)
 {
   if (o)
     {
-      E_Thumb *e = NULL;
-      if ((e = (E_Thumb *) evas_object_smart_data_get (o)))
+      Esmart_Thumb *e = NULL;
+      if ((e = (Esmart_Thumb *) evas_object_smart_data_get (o)))
 	{
 	  evas_object_show (e->image);
 	}
@@ -425,8 +425,8 @@ _e_thumb_hide (Evas_Object * o)
 {
   if (o)
     {
-      E_Thumb *e = NULL;
-      if ((e = (E_Thumb *) evas_object_smart_data_get (o)))
+      Esmart_Thumb *e = NULL;
+      if ((e = (Esmart_Thumb *) evas_object_smart_data_get (o)))
 	{
 	  evas_object_hide (e->image);
 	}
@@ -446,8 +446,8 @@ _e_thumb_color_set (Evas_Object * o, int r, int g, int b, int a)
 {
   if (o)
     {
-      E_Thumb *e = NULL;
-      if ((e = (E_Thumb *) evas_object_smart_data_get (o)))
+      Esmart_Thumb *e = NULL;
+      if ((e = (Esmart_Thumb *) evas_object_smart_data_get (o)))
 	{
 	  evas_object_color_set (e->image, r, g, b, a);
 	}
@@ -464,8 +464,8 @@ _e_thumb_clip_set (Evas_Object * o, Evas_Object * clip)
 {
   if (o)
     {
-      E_Thumb *e = NULL;
-      if ((e = (E_Thumb *) evas_object_smart_data_get (o)))
+      Esmart_Thumb *e = NULL;
+      if ((e = (Esmart_Thumb *) evas_object_smart_data_get (o)))
 	{
 	  evas_object_clip_set (e->image, clip);
 	}
@@ -481,8 +481,8 @@ _e_thumb_clip_unset (Evas_Object * o)
 {
   if (o)
     {
-      E_Thumb *e = NULL;
-      if ((e = (E_Thumb *) evas_object_smart_data_get (o)))
+      Esmart_Thumb *e = NULL;
+      if ((e = (Esmart_Thumb *) evas_object_smart_data_get (o)))
 	{
 	  evas_object_clip_unset (e->image);
 	}
