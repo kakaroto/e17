@@ -279,6 +279,11 @@ static void
 cb_dont_cloak (void *data)
 {
   opt.do_cloak = 0;
+  if(cloaked)
+  {
+      Epplet_gadget_hide(da);
+      cloaked=0;
+  }
   Epplet_remove_timer ("CLOAK_TIMER");
   return;
   data = NULL;
