@@ -535,11 +535,7 @@ feh_draw_filename(winwidget w)
    feh_imlib_text_draw(im, fn, 0, 0, FEH_FILE(w->file->data)->filename,
                        IMLIB_TEXT_TO_RIGHT, 255, 255, 255, 255);
 
-   if (w->has_rotated)
-      feh_imlib_render_image_on_drawable_with_rotation(w->bg_pmap, im, 0, 0,
-                                                       w->im_angle, 1, 0, 0);
-   else
-      feh_imlib_render_image_on_drawable(w->bg_pmap, im, 0, 0, 1, 0, 0);
+   feh_imlib_render_image_on_drawable(w->bg_pmap, im, 0, 0, 1, 0, 0);
 
    feh_imlib_free_image_and_decache(im);
 
