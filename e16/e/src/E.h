@@ -643,7 +643,7 @@ typedef struct _client
 }
 Client;
 
-typedef struct _root
+typedef struct
 {
    Window              win;
    Visual             *vis;
@@ -652,7 +652,18 @@ typedef struct _root
    int                 scr;
    int                 w, h;
 }
-Root;
+RealRoot;
+
+typedef struct
+{
+   Window              win;
+   Visual             *vis;
+   int                 depth;
+   Colormap            cmap;
+   int                 scr;
+   int                 w, h;
+}
+VirtRoot;
 
 typedef struct _modcurve
 {
@@ -1301,6 +1312,7 @@ typedef struct
    {
       char                master;	/* We are the master E */
       char                single;	/* No slaves */
+      char                window;	/* Running in virtual root window */
       pid_t               master_pid;
       int                 master_screen;
       char                startup;
@@ -1785,6 +1797,7 @@ EWin               *AddInternalToFamily(Window win, const char *bname, int type,
 					void (*init) (EWin * ewin, void *ptr));
 void                HonorIclass(char *s, int id);
 void                EwinWithdraw(EWin * ewin);
+void                EwinReparent(EWin * ewin, Window parent);
 void                SyncBorderToEwin(EWin * ewin);
 void                BorderWinpartChange(EWin * ewin, int i, int force);
 void                EwinBorderUpdateInfo(EWin * ewin);
@@ -2874,7 +2887,8 @@ extern Imlib_Context *prImlib_Context;
 extern FnlibData   *pFnlibData;
 #endif
 extern List        *lists;
-extern Root         VRoot;
+extern RealRoot     RRoot;
+extern VirtRoot     VRoot;
 extern EConf        Conf;
 extern EMode        Mode;
 extern Desktops     desks;

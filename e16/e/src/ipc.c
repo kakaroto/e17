@@ -5873,6 +5873,26 @@ IPC_MiscInfo(const char *params __UNUSED__, Client * c)
    CommsSend(c, buf);
 }
 
+static void
+IPC_Reparent(const char *params, Client * c __UNUSED__)
+{
+   char                param1[FILEPATH_LEN_MAX];
+   char                param2[FILEPATH_LEN_MAX];
+   EWin               *ewin, *enew;
+
+   if (params == NULL)
+      return;
+
+   sscanf(params, "%100s %100s", param1, param2);
+
+   ewin = IpcFindEwin(param1);
+   enew = IpcFindEwin(param2);
+   if (!ewin || !enew)
+      IpcPrintf("No matching client or target EWin found\n");
+   else
+      EwinReparent(ewin, enew->client.win);
+}
+
 /* the IPC Array */
 
 /* the format of an IPC member of the IPC array is as follows:
@@ -6383,6 +6403,11 @@ IPCStruct           IPCArray[] = {
     IPC_EwinInfo2, "win_info", "wi", "Show client window info", NULL},
    {
     IPC_MiscInfo, "dump_info", NULL, "TBD", NULL},
+   {
+    IPC_Reparent,
+    "reparent", "rep",
+    "Reparent window",
+    "usage:\n" "  reparent <windowid> <new parent>"},
 };
 
 /* The IPC Handler */

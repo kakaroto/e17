@@ -296,7 +296,7 @@ void
 HintsProcessPropertyChange(EWin * ewin, Atom atom_change)
 {
    EDBUG(6, "HintsHandlePropertyChange");
-#if ENABLE_GNOME
+#if 0				/* No! - ENABLE_GNOME */
    GNOME_GetHints(ewin, atom_change);
 #endif
 #if ENABLE_EWMH

@@ -1427,14 +1427,14 @@ EwinDestroy(EWin * ewin)
    EwinListDelete(&EwinListStack, ewin);
    EwinListDelete(&EwinListFocus, ewin);
 
+   XSelectInput(disp, ewin->client.win, 0);
+
    HintsSetClientList();
 
    UnmatchEwinToSnapInfo(ewin);
 
    if (ewin->iconified > 0)
       RemoveMiniIcon(ewin);
-
-   HintsDelWindowHints(ewin);
 
    lst = EwinListTransientFor(ewin, &num);
    for (i = 0; i < num; i++)
@@ -1499,6 +1499,14 @@ EwinWithdraw(EWin * ewin)
 		   ewin->client.y);
 
    ICCCM_Withdraw(ewin);
+   HintsDelWindowHints(ewin);
+   EwinDestroy(ewin);
+}
+
+void
+EwinReparent(EWin * ewin, Window parent)
+{
+   EReparentWindow(disp, ewin->client.win, parent, 0, 0);
    EwinDestroy(ewin);
 }
 
@@ -3489,8 +3497,6 @@ BorderWinpartEventMouseDown(XEvent * ev, EWin * ewin, int j)
 static void
 BorderWinpartEventMouseUp(XEvent * ev, EWin * ewin, int j)
 {
-   Window              win2;
-
    if ((ewin->bits[j].state == STATE_CLICKED) && (!ewin->bits[j].left))
       ewin->bits[j].state = STATE_HILITED;
    else
@@ -3498,8 +3504,7 @@ BorderWinpartEventMouseUp(XEvent * ev, EWin * ewin, int j)
    ewin->bits[j].left = 0;
    BorderWinpartChange(ewin, j, 0);
 
-   win2 = WindowAtXY(ev->xbutton.x_root, ev->xbutton.y_root);
-   if (win2 == Mode.context_win && (ewin->border->part[j].aclass))
+   if (ewin->bits[j].win == Mode.context_win && ewin->border->part[j].aclass)
       EventAclass(ev, ewin, ewin->border->part[j].aclass);
 }
 

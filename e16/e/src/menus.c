@@ -262,15 +262,6 @@ MenuShow(Menu * m, char noshow)
    GetWinWH(m->items[0]->win, &w, &h);
    GetWinWH(m->win, &mw, &mh);
 
-   if (!Mode.button)
-     {
-	int                 dum;
-	Window              rt, ch;
-
-	XQueryPointer(disp, m->win, &rt, &ch, &(Mode.x), &(Mode.y), &dum, &dum,
-		      (unsigned int *)&dum);
-     }
-
    wx = 0;
    wy = 0;
    if (Conf.menusonscreen)

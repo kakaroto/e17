@@ -133,14 +133,17 @@ static char        *
 default_save_prefix(void)
 {
    static char        *def_prefix = NULL;
+   char                s[1024];
 
-   if (!def_prefix)
-     {
-	char                s[1024];
+   if (def_prefix)
+      return def_prefix;
 
-	Esnprintf(s, sizeof(s), "%s/...e_session-XXXXXX", EDirUser());
-	def_prefix = Estrdup(s);
-     }
+   if (Mode.wm.window)
+      Esnprintf(s, sizeof(s), "%s/...e_session-window", EDirUser());
+   else
+      Esnprintf(s, sizeof(s), "%s/...e_session-XXXXXX", EDirUser());
+   def_prefix = Estrdup(s);
+
    return def_prefix;
 }
 

@@ -151,6 +151,12 @@ main(int argc, char **argv)
 	     {
 		no_overwrite = 1;
 	     }
+	   else if ((!strcmp("-window", argv[j])) && (argc - j > 1))
+	     {
+		sscanf(argv[++j], "%dx%d", &VRoot.w, &VRoot.h);
+		Mode.wm.window = 1;
+		Mode.wm.single = 1;
+	     }
 	   else if ((!strcmp("-h", argv[j])) || (!strcmp("-help", argv[j])) ||
 		    (!strcmp("-?", argv[j])) || (!strcmp("--help", argv[j])))
 	     {

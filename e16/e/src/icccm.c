@@ -62,12 +62,19 @@ ICCCM_Init(void)
    E_XA_WM_HINTS = XInternAtom(disp, "WM_HINTS", False);
    E_XA_WM_CLIENT_LEADER = XInternAtom(disp, "WM_CLIENT_LEADER", False);
    E_XA_WM_TRANSIENT_FOR = XInternAtom(disp, "WM_TRANSIENT_FOR", False);
+
+   if (Mode.wm.window)
+     {
+	Atom                wm_props[1] = { E_XA_WM_DELETE_WINDOW };
+	XSetWMProtocols(disp, VRoot.win, wm_props, 1);
+     }
 }
 
 void
 ICCCM_ProcessClientMessage(XClientMessageEvent * event)
 {
    EWin               *ewin;
+   Atom                a;
 
    if (event->message_type == E_XA_WM_CHANGE_STATE)
      {
@@ -80,6 +87,12 @@ ICCCM_ProcessClientMessage(XClientMessageEvent * event)
 	     if (!(ewin->iconified))
 		IconifyEwin(ewin);
 	  }
+     }
+   else if (event->message_type == E_XA_WM_PROTOCOLS)
+     {
+	a = event->data.l[0];
+	if (a == E_XA_WM_DELETE_WINDOW)
+	   SessionExit(NULL);
      }
 }
 
@@ -318,6 +331,7 @@ ICCCM_Configure(EWin * ewin)
    XEvent              ev;
    XWindowChanges      xwc;
    int                 d;
+   Window              child;
 
    EDBUG(6, "ICCCM_Configure");
 
@@ -358,6 +372,10 @@ ICCCM_Configure(EWin * ewin)
    ev.xconfigure.window = ewin->client.win;
    ev.xconfigure.x = desks.desk[d].x + ewin->client.x;
    ev.xconfigure.y = desks.desk[d].y + ewin->client.y;
+   if (Mode.wm.window)
+      XTranslateCoordinates(disp, VRoot.win, RRoot.win,
+			    ev.xconfigure.x, ev.xconfigure.y,
+			    &ev.xconfigure.x, &ev.xconfigure.y, &child);
    ev.xconfigure.width = ewin->client.w;
    ev.xconfigure.height = ewin->client.h;
    ev.xconfigure.border_width = 0;

@@ -22,17 +22,14 @@
  */
 #include "E.h"
 
-static ToolTip     *ttip = NULL;
-
-static void         ToolTipTimeout(int val, void *data);
-
 static char         sentpress = 0;
+
+static ToolTip     *ttip = NULL;
 
 static void
 ToolTipTimeout(int val, void *data)
 {
    int                 x, y, dum;
-
    unsigned int        mask;
    Window              win, rt, ch;
    ActionClass        *ac;
@@ -42,12 +39,14 @@ ToolTipTimeout(int val, void *data)
    /* In the case of multiple screens, check to make sure
     * the root window is still where the mouse is... */
    if (False ==
-       XQueryPointer(disp, VRoot.win, &rt, &ch, &x, &y, &dum, &dum, &mask))
+       XQueryPointer(disp, VRoot.win, &rt, &ch, &dum, &dum, &x, &y, &mask))
       EDBUG_RETURN_;
+
    /* dont pop up tooltip is mouse button down */
    if (mask &
        (Button1Mask | Button2Mask | Button3Mask | Button4Mask | Button5Mask))
       EDBUG_RETURN_;
+
    win = WindowAtXY(x, y);
    ac = FindActionClass(win);
    if (!ac)
@@ -90,6 +89,23 @@ TooltipsHandleEvent(void)
    RemoveTimerEvent("TOOLTIP_TIMEOUT");
    if (Conf.tooltips.enable)
       DoIn("TOOLTIP_TIMEOUT", Conf.tooltips.delay, ToolTipTimeout, 0, NULL);
+}
+
+static void
+ModeGetXY(Window rwin, int rx, int ry)
+{
+   Window              child;
+
+   if (Mode.wm.window)
+     {
+	XTranslateCoordinates(disp, rwin, VRoot.win,
+			      rx, ry, &Mode.x, &Mode.y, &child);
+     }
+   else
+     {
+	Mode.x = rx;
+	Mode.y = ry;
+     }
 }
 
 void
@@ -167,8 +183,7 @@ HandleMouseDown(XEvent * ev)
    Mode.last_button = ev->xbutton.button;
    Mode.last_bpress = win;
 
-   Mode.x = ev->xbutton.x_root;
-   Mode.y = ev->xbutton.y_root;
+   ModeGetXY(ev->xbutton.root, ev->xbutton.x_root, ev->xbutton.y_root);
 
    desk_click = -1;
    for (i = 0; i < Conf.desks.num; i++)
@@ -256,8 +271,7 @@ HandleMouseUp(XEvent * ev)
    TooltipsHandleEvent();
    UnGrabTheButtons();
 
-   Mode.x = ev->xbutton.x_root;
-   Mode.y = ev->xbutton.y_root;
+   ModeGetXY(ev->xbutton.root, ev->xbutton.x_root, ev->xbutton.y_root);
 
    pslideout = Mode.slideout;
 
@@ -344,10 +358,11 @@ HandleMotion(XEvent * ev)
 
    TooltipsHandleEvent();
    EdgeHandleMotion(ev);
+
    Mode.px = Mode.x;
    Mode.py = Mode.y;
-   Mode.x = ev->xmotion.x_root;
-   Mode.y = ev->xmotion.y_root;
+   ModeGetXY(ev->xmotion.root, ev->xmotion.x_root, ev->xmotion.y_root);
+
    desks.current = DesktopAt(Mode.x, Mode.y);
 
    if ((!(ev->xmotion.state

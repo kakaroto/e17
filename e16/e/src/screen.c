@@ -24,7 +24,7 @@
 #include "E.h"
 
 #ifdef HAS_XINERAMA
-char                xinerama_active;
+char                xinerama_active = 0;
 static XineramaScreenInfo *screens = NULL;
 static int          num_screens = 0;
 #endif
@@ -32,6 +32,8 @@ static int          num_screens = 0;
 void
 ScreenInit(void)
 {
+   if (Mode.wm.window)
+      return;
 #ifdef HAS_XINERAMA
    xinerama_active = XineramaIsActive(disp);
    Conf.extra_head = 0;

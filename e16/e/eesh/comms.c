@@ -24,12 +24,20 @@
 #include "E.h"
 
 char                waitonly;
+Window              root_win;
 
 void
 CommsSetup()
 {
+   char               *str;
+
    EDBUG(5, "CommsSetup");
-   my_win = XCreateSimpleWindow(disp, root.win, -100, -100, 5, 5, 0, 0, 0);
+
+   str = getenv("ENL_WM_ROOT");
+   root_win = (str) ? strtoul(str, NULL, 0) : root.win;
+
+   my_win = XCreateSimpleWindow(disp, root_win, -100, -100, 5, 5, 0, 0, 0);
+
    EDBUG_RETURN_;
 }
 
@@ -49,7 +57,7 @@ CommsFindCommsWindow()
    if (a != None)
      {
 	s = NULL;
-	XGetWindowProperty(disp, root.win, a, 0, 14, False, AnyPropertyType,
+	XGetWindowProperty(disp, root_win, a, 0, 14, False, AnyPropertyType,
 			   &ar, &format, &num, &after, &s);
 	if (s)
 	  {

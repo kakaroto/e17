@@ -111,10 +111,13 @@ MapUnmap(int start)
    EDBUG_RETURN_;
 }
 
+/*
+ * This function sets up all of our connections to X
+ */
 void
 SetupX(void)
 {
-   /* This function sets up all of our connections to X */
+   char                buf[128];
 
    EDBUG(6, "SetupX");
 
@@ -209,13 +212,58 @@ SetupX(void)
    XSetIOErrorHandler((XIOErrorHandler) HandleXIOError);
 
    /* Root defaults */
-   VRoot.scr = DefaultScreen(disp);
-   VRoot.win = DefaultRootWindow(disp);
-   VRoot.vis = DefaultVisual(disp, VRoot.scr);
-   VRoot.depth = DefaultDepth(disp, VRoot.scr);
-   VRoot.cmap = DefaultColormap(disp, VRoot.scr);
-   VRoot.w = DisplayWidth(disp, VRoot.scr);
-   VRoot.h = DisplayHeight(disp, VRoot.scr);
+   RRoot.scr = DefaultScreen(disp);
+   RRoot.win = DefaultRootWindow(disp);
+   RRoot.vis = DefaultVisual(disp, RRoot.scr);
+   RRoot.depth = DefaultDepth(disp, RRoot.scr);
+   RRoot.cmap = DefaultColormap(disp, RRoot.scr);
+   RRoot.w = DisplayWidth(disp, RRoot.scr);
+   RRoot.h = DisplayHeight(disp, RRoot.scr);
+
+   VRoot.win = RRoot.win;
+   VRoot.vis = RRoot.vis;
+   VRoot.depth = RRoot.depth;
+   VRoot.cmap = RRoot.cmap;
+
+   if (Mode.wm.window)
+     {
+	XSetWindowAttributes attr;
+	XClassHint         *xch;
+	XTextProperty       xtp;
+
+	/* Running E in its own virtual root window */
+	attr.backing_store = NotUseful;
+	attr.override_redirect = False;
+	attr.colormap = VRoot.cmap;
+	attr.border_pixel = 0;
+	attr.background_pixel = 0;
+	attr.save_under = True;
+	VRoot.win = XCreateWindow(disp, RRoot.win, 0, 0, VRoot.w, VRoot.h, 0,
+				  VRoot.depth, InputOutput, VRoot.vis,
+				  CWOverrideRedirect | CWSaveUnder |
+				  CWBackingStore | CWColormap | CWBackPixel |
+				  CWBorderPixel, &attr);
+
+	xtp.encoding = XA_STRING;
+	xtp.format = 8;
+	xtp.value = (unsigned char *)("Enlightenment");
+	xtp.nitems = strlen((char *)(xtp.value));
+	XSetWMName(disp, VRoot.win, &xtp);
+	xch = XAllocClassHint();
+	xch->res_name = (char *)"Virtual-Root";
+	xch->res_class = (char *)"Enlightenment";
+	XSetClassHint(disp, VRoot.win, xch);
+	XFree(xch);
+     }
+   else
+     {
+	/* Running E normally on the root window */
+	VRoot.w = RRoot.w;
+	VRoot.h = RRoot.h;
+     }
+
+   Esnprintf(buf, sizeof(buf), "%#lx", VRoot.win);
+   Esetenv("ENL_WM_ROOT", buf, 1);
 
    /* initialise imlib */
 #if USE_IMLIB2
