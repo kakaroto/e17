@@ -81,7 +81,7 @@ fonts:  FONTS OPEN_BRACE { section = FONTS; } font_statement CLOSE_BRACE { secti
 
 font_statement: /* empty */
 	| font
-	| font font_statement
+	| font_statement font
 	;
 
 font: FONT COLON STRING STRING SEMICOLON {
@@ -94,7 +94,7 @@ images:  IMAGES OPEN_BRACE { section = IMAGES; } image_statement CLOSE_BRACE { s
 
 image_statement: /* empty */
 	| image
-	| image image_statement
+	| image_statement image
 	;
 
 image: IMAGE COLON STRING image_type SEMICOLON {
@@ -117,7 +117,7 @@ data:  DATA OPEN_BRACE data_statement CLOSE_BRACE
 
 data_statement: /* empty */
 	| item 
-	| item data_statement
+	| data_statement item
 	;
 
 item: ITEM COLON STRING STRING SEMICOLON {
@@ -153,7 +153,7 @@ programs: PROGRAMS OPEN_BRACE { section = PROGRAMS; } program_statement CLOSE_BR
 
 program_statement: /* empty */
 	| program
-	| program program_statement
+	| program_statement program
 	;
 
 program: PROGRAM OPEN_BRACE { engrave_parse_program(); section = PROGRAM; } program_body CLOSE_BRACE { section = PROGRAMS; }
@@ -161,7 +161,7 @@ program: PROGRAM OPEN_BRACE { engrave_parse_program(); section = PROGRAM; } prog
 
 program_body: /* blank */ 
 	| program_cmd
-	| program_cmd program_body
+	| program_body program_cmd
 	;
 
 program_cmd: name
@@ -253,7 +253,7 @@ program_after: AFTER COLON STRING SEMICOLON {
 
 collection_statement: /* empty */
 	| group
-	| group collection_statement
+	| collection_statement group
 	;
 
 group: GROUP OPEN_BRACE { engrave_parse_group(); section = GROUP; } group_foo CLOSE_BRACE { section = GROUPS; }
@@ -334,7 +334,7 @@ parts: PARTS OPEN_BRACE { section = PARTS; } parts_statement CLOSE_BRACE { secti
 
 parts_statement: /* empty */
 	| part
-	| part parts_statement
+	| parts_statement part
 	;
 
 part: PART OPEN_BRACE { engrave_parse_part(); section = PART; } part_foo CLOSE_BRACE { section = PARTS; }
@@ -398,16 +398,6 @@ clip_to: CLIP_TO COLON STRING SEMICOLON {
 	}
 	;
 
-color_class: COLOR_CLASS COLON STRING SEMICOLON {
-                engrave_parse_state_color_class($3);
-	}
-	;
-
-text_class: TEXT_CLASS COLON STRING SEMICOLON {
-                engrave_parse_state_text_text_class($3);
-	}
-	;
-
 part_body: part_body_entry
 	| part_body_entry part_body
 	;
@@ -421,7 +411,7 @@ dragable: DRAGABLE OPEN_BRACE { section = DRAGABLE; } dragable_statement CLOSE_B
 
 dragable_statement: /* empty */
 	| dragable_body
-	| dragable_body dragable_statement
+	| dragable_statement dragable_body
 	;
 
 dragable_body: x
@@ -538,7 +528,7 @@ rel2: REL2 OPEN_BRACE {section = REL2;} rel_statement CLOSE_BRACE {section = STA
 
 rel_statement: /* empty */ 
 	| rel_body
-	| rel_body rel_statement
+	| rel_statement rel_body
 	;
 
 rel_body: relative
@@ -636,13 +626,13 @@ to_y: TO_Y COLON STRING SEMICOLON {
 	}
 	;
 
-image: IMAGE OPEN_BRACE { section = IMAGE; } image_statement CLOSE_BRACE { section = STATE; }
+image: IMAGE OPEN_BRACE { section = IMAGE; } image_state_statement CLOSE_BRACE { section = STATE; }
 	| IMAGE DOT { section = IMAGE; } image_body { section = STATE; }
 	;
 
-image_statement: /* empty */ 
+image_state_statement: /* empty */ 
 	| image_body
-	| image_body image_statement
+	| image_state_statement image_body
 	;
 
 image_body: normal
@@ -670,7 +660,7 @@ fill: FILL OPEN_BRACE { section = FILL; } fill_statement CLOSE_BRACE { section =
 
 fill_statement: /* empty */
 	| fill_body
-	| fill_body fill_statement
+	| fill_statement fill_body
 	;
 
 fill_body: smooth
@@ -726,7 +716,7 @@ text: TEXT OPEN_BRACE { section = TEXT; } text_statement CLOSE_BRACE { section =
 
 text_statement: /* empty */
 	| text_body
-	| text_body text_statement
+	| text_statement text_body
 	;
 
 text_body: text_entry
