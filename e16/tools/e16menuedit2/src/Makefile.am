@@ -26,9 +26,7 @@ e16menuedit2_SOURCES = \
 	e16menu.c\
 	e16menu.h\
 	treeview.c\
-	treeview.h\
-	toolbar.c\
-	toolbar.h
+	treeview.h
 
 e16menuedit2_LDFLAGS = 
 

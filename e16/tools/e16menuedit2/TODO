@@ -1,5 +1,7 @@
 BUGS:
 - bind menu callbacks in sourcecode to get treeview pointer
+- compressed svg?
+- check libglade version and look for tooltip support and callbacks
 
 FEATURES:
 - Gnome2 panel and desktop Drag&Drop support

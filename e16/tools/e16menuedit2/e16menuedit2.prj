@@ -84,9 +84,7 @@ module.source.files=\
 	e16menu.c\
 	e16menu.h\
 	treeview.c\
-	treeview.h\
-	toolbar.c\
-	toolbar.h
+	treeview.h
 
 module.pixmap.name=pixmaps
 module.pixmap.type=

@@ -38,6 +38,70 @@
 #include "e16menu.h"
 #include "treeview.h"
 
+void bind_toolbar_callbacks (GladeXML *main_xml, GtkWidget *treeview_menu)
+{
+  GtkWidget *toolbar1;
+  GtkWidget *toolitem1;
+
+  toolbar1 = glade_xml_get_widget (main_xml, "toolbar1");
+
+  /* bind callbacks */
+  toolitem1 = glade_xml_get_widget (main_xml, "toolbutton_save");
+  gtk_tool_item_set_tooltip (GTK_TOOL_ITEM (toolitem1),
+                             GTK_TOOLBAR (toolbar1)->tooltips,
+                             _("Save"), "");
+  g_signal_connect (toolitem1, "clicked",
+                    G_CALLBACK (on_toolbutton_save_clicked), treeview_menu);
+
+  toolitem1 = glade_xml_get_widget (main_xml, "toolbutton_new");
+  gtk_tool_item_set_tooltip (GTK_TOOL_ITEM (toolitem1),
+                             GTK_TOOLBAR (toolbar1)->tooltips,
+                             _("New Entry"), "");
+  g_signal_connect (toolitem1, "clicked",
+                    G_CALLBACK (on_toolbutton_new_clicked), treeview_menu);
+
+  toolitem1 = glade_xml_get_widget (main_xml, "toolbutton_icon");
+  gtk_tool_item_set_tooltip (GTK_TOOL_ITEM (toolitem1),
+                             GTK_TOOLBAR (toolbar1)->tooltips,
+                             _("Choose Icon"), "");
+  g_signal_connect (toolitem1, "clicked",
+                    G_CALLBACK (on_toolbutton_icon_clicked), treeview_menu);
+
+  toolitem1 = glade_xml_get_widget (main_xml, "toolbutton_del");
+  gtk_tool_item_set_tooltip (GTK_TOOL_ITEM (toolitem1),
+                             GTK_TOOLBAR (toolbar1)->tooltips,
+                             _("Delete Entry"), "");
+  g_signal_connect (toolitem1, "clicked",
+                    G_CALLBACK (on_toolbutton_del_clicked), treeview_menu);
+
+  toolitem1 = glade_xml_get_widget (main_xml, "toolbutton_quit");
+  gtk_tool_item_set_tooltip (GTK_TOOL_ITEM (toolitem1),
+                             GTK_TOOLBAR (toolbar1)->tooltips,
+                             _("Quit"), "");
+}
+
+void bind_menubar_callbacks (GladeXML *main_xml, GtkWidget *treeview_menu)
+{
+  GtkWidget *menuitem;
+
+  menuitem = glade_xml_get_widget (main_xml, "menu_save");
+  g_signal_connect (menuitem, "activate",
+                    G_CALLBACK (on_menu_save_activate), treeview_menu);
+
+  menuitem = glade_xml_get_widget (main_xml, "menu_new");
+  g_signal_connect (menuitem, "activate",
+                    G_CALLBACK (on_menu_new_activate), treeview_menu);
+
+  menuitem = glade_xml_get_widget (main_xml, "menu_icon");
+  g_signal_connect (menuitem, "activate",
+                    G_CALLBACK (on_menu_icon_activate), treeview_menu);
+
+  menuitem = glade_xml_get_widget (main_xml, "menu_delete");
+  g_signal_connect (menuitem, "activate",
+                    G_CALLBACK (on_menu_delete_activate), treeview_menu);
+
+}
+
 void on_descrenderer_edited (GtkCellRendererText *celltext,
                              const gchar *string_path,
                              const gchar *new_text,
@@ -90,21 +154,31 @@ void on_menu_save_activate (GtkMenuItem *menuitem,
   save_table_to_menu (treeview_menu);
 }
 
-void on_menu_quit_activate (GtkMenuItem *menuitem,
-                            gpointer user_data)
-{
-  gtk_main_quit ();
-}
-
 void on_menu_info_activate (GtkMenuItem *menuitem,
                             gpointer user_data)
 {
+  GladeXML *info_xml;
+  GtkWidget *info_window;
+  GtkWidget *logo_image;
 
+  info_xml = glade_xml_new (PACKAGE_SOURCE_DIR"/e16menuedit2.glade",
+                            "info_window", NULL);
+  glade_xml_signal_autoconnect (info_xml);
+
+  info_window = glade_xml_get_widget (info_xml, "info_window");
+
+  logo_image = glade_xml_get_widget (info_xml, "logo_image");
+
+
+  gtk_image_set_from_file (GTK_IMAGE (logo_image),
+                           PACKAGE_PIXMAPS_DIR"/e16menuedit2-icon.png");
+
+
+  gtk_widget_show (info_window);
 }
 
-void
-on_toolbutton_save_clicked             (GtkToolButton   *toolbutton,
-                                        gpointer         user_data)
+void on_toolbutton_save_clicked (GtkToolButton *toolbutton,
+                                 gpointer user_data)
 {
   GtkWidget *treeview_menu;
 
@@ -113,9 +187,8 @@ on_toolbutton_save_clicked             (GtkToolButton   *toolbutton,
 }
 
 
-void
-on_toolbutton_new_clicked              (GtkToolButton   *toolbutton,
-                                        gpointer         user_data)
+void on_toolbutton_new_clicked (GtkToolButton *toolbutton,
+                                gpointer user_data)
 {
   GtkWidget *treeview_menu;
 
@@ -124,17 +197,39 @@ on_toolbutton_new_clicked              (GtkToolButton   *toolbutton,
 }
 
 
-void
-on_toolbutton_icon_clicked             (GtkToolButton   *toolbutton,
-                                        gpointer         user_data)
+void on_toolbutton_icon_clicked (GtkToolButton *toolbutton,
+                                 gpointer user_data)
 {
   open_icon_chooser ((GtkWidget *) user_data);
 }
 
 
-void
-on_toolbutton_del_clicked              (GtkToolButton   *toolbutton,
-                                        gpointer         user_data)
+void on_toolbutton_del_clicked (GtkToolButton *toolbutton,
+                                gpointer user_data)
+{
+  GtkWidget *treeview_menu;
+
+  treeview_menu = (GtkWidget*) user_data;
+  delete_table_row (treeview_menu);
+}
+
+void on_menu_new_activate (GtkMenuItem *menuitem,
+                           gpointer user_data)
+{
+  GtkWidget *treeview_menu;
+
+  treeview_menu = (GtkWidget*) user_data;
+  new_table_row (treeview_menu);
+}
+
+void on_menu_icon_activate (GtkMenuItem *menuitem,
+                            gpointer user_data)
+{
+  open_icon_chooser ((GtkWidget *) user_data);
+}
+
+void on_menu_delete_activate (GtkMenuItem *menuitem,
+                              gpointer user_data)
 {
   GtkWidget *treeview_menu;
 

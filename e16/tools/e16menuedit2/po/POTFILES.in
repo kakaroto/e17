@@ -18,7 +18,5 @@ src/e16menu.c
 src/e16menu.h
 src/treeview.c
 src/treeview.h
-src/toolbar.c
-src/toolbar.h
 e16menuedit2.glade
 

@@ -28,39 +28,7 @@
 #define _CALLBACKS_H
 
 #include <gtk/gtk.h>
-
-void on_menu_save_activate (GtkMenuItem *menuitem,
-                            gpointer user_data);
-void on_menu_quit_activate (GtkMenuItem *menuitem,
-                            gpointer user_data);
-void on_descrenderer_edited (GtkCellRendererText *celltext,
-                             const gchar *string_path,
-                             const gchar *new_text,
-                             gpointer data);
-void on_paramsrenderer_edited (GtkCellRendererText *celltext,
-                               const gchar *string_path,
-                               const gchar *new_text,
-                               gpointer data);
-void on_iconcolumn_clicked (GtkTreeViewColumn *treeviewcolumn,
-                            gpointer user_data);
-void on_menu_info_activate (GtkMenuItem *menuitem,
-                            gpointer user_data);
-void
-on_toolbutton_save_clicked             (GtkToolButton   *toolbutton,
-                                        gpointer         user_data);
-
-void
-on_toolbutton_new_clicked              (GtkToolButton   *toolbutton,
-                                        gpointer         user_data);
-
-void
-on_toolbutton_icon_clicked             (GtkToolButton   *toolbutton,
-                                        gpointer         user_data);
-
-void
-on_toolbutton_del_clicked              (GtkToolButton   *toolbutton,
-                                        gpointer         user_data);
-
+#include <glade/glade.h>
 
 #define ICON_SIZE_AUTO_STRING "auto (64x64 limit)"
 #define ICON_SIZE1_STRING "64x64"
@@ -80,4 +48,38 @@ on_toolbutton_del_clicked              (GtkToolButton   *toolbutton,
 #define ICON_SIZE6 22
 #define ICON_SIZE7 16
 
+void bind_toolbar_callbacks (GladeXML *main_xml, GtkWidget *treeview_menu);
+void bind_menubar_callbacks (GladeXML *main_xml, GtkWidget *treeview_menu);
+void on_menu_save_activate (GtkMenuItem *menuitem,
+                            gpointer user_data);
+void on_descrenderer_edited (GtkCellRendererText *celltext,
+                             const gchar *string_path,
+                             const gchar *new_text,
+                             gpointer data);
+void on_paramsrenderer_edited (GtkCellRendererText *celltext,
+                               const gchar *string_path,
+                               const gchar *new_text,
+                               gpointer data);
+void on_iconcolumn_clicked (GtkTreeViewColumn *treeviewcolumn,
+                            gpointer user_data);
+void on_menu_info_activate (GtkMenuItem *menuitem,
+                            gpointer user_data);
+void on_toolbutton_save_clicked (GtkToolButton *toolbutton,
+                                 gpointer user_data);
+
+void on_toolbutton_new_clicked (GtkToolButton *toolbutton,
+                                gpointer         user_data);
+
+void on_toolbutton_icon_clicked (GtkToolButton *toolbutton,
+                                 gpointer user_data);
+
+void on_toolbutton_del_clicked (GtkToolButton *toolbutton,
+                                gpointer user_data);
+void on_menu_new_activate (GtkMenuItem *menuitem,
+                      gpointer user_data);
+void on_menu_icon_activate (GtkMenuItem *menuitem,
+                       gpointer user_data);
+void on_menu_delete_activate (GtkMenuItem *menuitem,
+                         gpointer user_data);
+			 
 #endif /* _CALLBACKS_H */

@@ -32,7 +32,6 @@
 #include "callbacks.h"
 #include "e16menu.h"
 #include "treeview.h"
-#include "toolbar.h"
 
 int librsvg_cmp;
 
@@ -78,6 +77,7 @@ int main (int argc, char *argv[])
 
   /* bind callbacks manual. Is Glade too stupid for it? */
   bind_toolbar_callbacks (main_xml, treeview_menu);
+  bind_menubar_callbacks (main_xml, treeview_menu);
 
   /* create initial directories */
   sprintf (app_dir, "%s/%s/%s", homedir (getuid ()), APP_HOME, ICON_DIR);
@@ -86,6 +86,7 @@ int main (int argc, char *argv[])
   /* get librsvg version and check if good enough */
   version = pkg_config_version (package);
   librsvg_cmp = version_cmp (version, good_version);
+  g_free (version);
   
   gtk_widget_show (main_window);
 
