@@ -2,6 +2,7 @@ SUBDIRS = fonts images
 
 EDCS = eplayer.edc
 EETS = $(EDCS:%.edc=%.eet)
+SUFFIXES = .edc .eet
 
 CLEANFILES = $(EETS)
 EXTRA_DIST = $(EDCS) README

@@ -1,4 +1,4 @@
-IMAGES = background-dark-green.png background-green.png \
+EXTRA_DIST = background-dark-green.png background-green.png \
 	border-scale.png button-3stage-fulldown.png \
 	button-3stage-selected.png button-3stage-unselected.png \
 	button-full-blinking.png button-full-clicked.png \
@@ -9,7 +9,3 @@ IMAGES = background-dark-green.png background-green.png \
 	vol-display.png vol-label.png vol-minus-clicked.png \
 	vol-minus.png vol-plus-clicked.png vol-plus.png
 
-imagedir = $(pkgdatadir)/themes/images
-image_DATA = $(IMAGES)
-
-EXTRA_DIST = $(IMAGES)

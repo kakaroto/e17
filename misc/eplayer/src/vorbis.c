@@ -14,27 +14,33 @@ OggVorbis_File current_track = {0};
 /* Main Play Loop */
 int play_loop(void *udata) {
 	ePlayer *player = udata;
-	long buff_len;
-	unsigned char pcmout[16384];
+	long bytes_read;
 	int big_endian = 0;
-	
+	static char pcmout[4096];
+
 #ifdef WORDS_BIGENDIAN
 	big_endian = 1;
 #endif
 	
-	buff_len = ov_read(&current_track, pcmout, sizeof(pcmout), big_endian,
+	/* read the data ... */
+	bytes_read = ov_read(&current_track, pcmout, sizeof(pcmout), big_endian,
 	                   2, 1, NULL);
 
-    if (buff_len) {
-		ao_play (device, pcmout, buff_len);
+    if (bytes_read) { /* ... and play it */
+		ao_play(device, pcmout, bytes_read);
+		
+		/* FIXME move this to its own timer callback
+		 * it doesn't make sense to call this function *that* often
+		 */
 		update_time(player);
-		return 1;
-	} else { /* move to the next track */
+	} else /* EOF -> move to the next track */
 		edje_object_signal_emit(player->gui.edje,
 	                            "PLAY_NEXT", "next_button");
-	}
-		
-	return 0;
+
+	/* the edje callback will re-add the idler, so we can remove it here,
+	 * in case ov_read() failed
+	 */
+	return !!bytes_read;
 }
 
 int update_time(ePlayer *player) {
