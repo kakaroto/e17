@@ -64,7 +64,7 @@ hist_next(void *data)
 {
   if (current_command < num_commands-1)
     Epplet_change_textbox(textbox, command_history[++current_command]);
-  else if (current_command == num_commands-1) 
+  else if(current_command == num_commands-1)
   {
 	  current_command++;
 	  Epplet_change_textbox(textbox, "");

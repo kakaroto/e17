@@ -472,3 +472,12 @@ Changed epplets/E-Exec.c
 
 Added Epplet_unremember to cb_close.
 
+-------------------------------------------------------------------------------
+
+Fri Nov 12 13:41:29 EST 1999
+(StriderZ)
+
+Added a feature to allow you to scroll off the end of the command history and 
+back into a blank textbox. Was supposed to already be in, but for some reason 
+it didn't work.
+
