@@ -4,6 +4,8 @@
 #define SOFTWARE_X11 0
 #define GL_X11 1
 
+#include<Evas.h>
+
 /** 
  * _Entice_Config - there is a static struct of this type in
  * entice_config.c, add the attributes you want to be in the config
@@ -12,12 +14,17 @@
 struct _Entice_Config
 {
    char *theme;
+   char *db;
    int engine;
    struct
    {
       int image, font;
    } cache;
    int x, y, w, h;
+   struct {
+       Evas_List *list;
+       Evas_Hash *hash;
+   } themes;
 };
 typedef struct _Entice_Config Entice_Config;
 

@@ -114,20 +114,17 @@ entice_config_geometry_get(int *x, int *y, int *w, int *h)
 void
 entice_config_geometry_set(int x, int y, int w, int h)
 {
-   if (econfig)
+   if (econfig && econfig->db)
    {
-      char file[PATH_MAX];
-
       econfig->x = x;
       econfig->y = y;
       econfig->w = w;
       econfig->h = h;
 
-      snprintf(file, PATH_MAX, "%s/.entice.db", getenv("HOME"));
-      E_DB_INT_SET(file, "/entice/x", x);
-      E_DB_INT_SET(file, "/entice/y", y);
-      E_DB_INT_SET(file, "/entice/w", w);
-      E_DB_INT_SET(file, "/entice/h", h);
+      E_DB_INT_SET(econfig->db, "/entice/x", x);
+      E_DB_INT_SET(econfig->db, "/entice/y", y);
+      E_DB_INT_SET(econfig->db, "/entice/w", w);
+      E_DB_INT_SET(econfig->db, "/entice/h", h);
       e_db_flush();
    }
 }
@@ -175,16 +172,18 @@ entice_config_init(void)
       if ((econfig = entice_config_new()))
       {
          entice_keys_init();
-         snprintf(buf, PATH_MAX, "%s/.entice.db", getenv("HOME"));
 
+         snprintf(buf, PATH_MAX, "%s/.e/apps/entice/entice.db",
+                  getenv("HOME"));
+         econfig->db = strdup(buf);
          /* make sure we have a db, if not generate it */
-         if ((db = e_db_open_read(buf)) == NULL)
-            entice_config_generate_original_db(buf);
+         if ((db = e_db_open_read(econfig->db)) == NULL)
+            entice_config_generate_original_db(econfig->db);
          else
             e_db_close(db);
 
          /* now actually read the config */
-         if ((db = e_db_open_read(buf)))
+         if ((db = e_db_open_read(econfig->db)))
          {
             if ((str = e_db_str_get(db, "/entice/theme")))
             {
@@ -252,9 +251,13 @@ static void
 entice_config_generate_original_db(char *filename)
 {
    int i, count;
+   struct stat status;
    char buf[PATH_MAX];
    E_DB_File *db = NULL;
 
+   char *dirs[] = { ".e", ".e/apps", ".e/apps/entice",
+      ".e/apps/entice/themes"
+   };
    char *signals[] = { "EnticeImageZoomIn", "EnticeImageZoomOut",
       "EnticeFullScreen",
       "EnticeImageNext", "EnticeImagePrev", "EnticeImageZoomDefault",
@@ -268,6 +271,13 @@ entice_config_generate_original_db(char *filename)
    };
    count = sizeof(signals) / sizeof(char *);
 
+   for (i = 0; i < 4; i++)
+   {
+      snprintf(buf, PATH_MAX, "%s/%s", getenv("HOME"), dirs[i]);
+      if (!stat(buf, &status))
+         continue;
+      mkdir(buf, S_IRUSR | S_IWUSR | S_IXUSR);
+   }
    if (filename)
    {
       if ((db = e_db_open(filename)))
