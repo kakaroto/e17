@@ -20,5 +20,6 @@ struct __geist_layer
 geist_layer *geist_layer_new(void);
 void geist_layer_free(geist_layer *l);
 void geist_layer_render(geist_layer * layer, Imlib_Image dest);
+void geist_layer_add_object(geist_layer * layer, geist_object *obj);
 
 #endif 

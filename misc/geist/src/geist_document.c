@@ -60,3 +60,23 @@ geist_document_render(geist_document * document)
 
    D_RETURN_(3);
 }
+
+void geist_document_add_object(geist_document *doc, geist_object *obj)
+{
+   geist_list *top;
+   D_ENTER(3);
+
+   top = geist_list_last(doc->layers);
+   geist_layer_add_object(((geist_layer *) top->data), obj);
+   
+   D_RETURN_(3);
+}
+
+void geist_document_add_layer(geist_document *doc)
+{
+   D_ENTER(3);
+
+   doc->layers = geist_list_add_end(doc->layers, geist_layer_new());
+   
+   D_RETURN_(3);
+}

@@ -50,3 +50,16 @@ geist_layer_render(geist_layer * layer, Imlib_Image dest)
 
    D_RETURN_(3);
 }
+
+void
+geist_layer_add_object(geist_layer * layer, geist_object * obj)
+{
+   D_ENTER(3);
+
+   if (!obj)
+      D_RETURN_(3);
+
+   layer->objects = geist_list_add_end(layer->objects, obj);
+
+   D_RETURN_(3);
+}

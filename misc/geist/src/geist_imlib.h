@@ -29,6 +29,9 @@
 #include <stdarg.h>
 #include "geist.h"
 
+#ifndef GEIST_IMLIB_H
+#define GEIST_IMLIB_H
+
 int
 geist_imlib_load_image(Imlib_Image * im, char *filename);
 int geist_imlib_image_get_width(Imlib_Image im);
@@ -129,4 +132,6 @@ void geist_imlib_image_tile(Imlib_Image im);
 void geist_imlib_image_blur(Imlib_Image im, int radius);
 void geist_imlib_image_sharpen(Imlib_Image im, int radius);
 void geist_imlib_image_draw_rectangle(Imlib_Image im, int x, int y, int w,
-                                    int h, int r, int g, int b, int a);
+   int h, int r, int g, int b, int a);
+
+#endif

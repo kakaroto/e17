@@ -72,20 +72,21 @@ main(int argc, char *argv[])
                       GTK_SIGNAL_FUNC(mainwin_destroy_cb), NULL);
    gtk_widget_show(mainwin);
 
-   
+
    evbox = gtk_event_box_new();
    gtk_container_add(GTK_CONTAINER(mainwin), evbox);
    gtk_widget_show(evbox);
 
-  scrollwin = gtk_scrolled_window_new (NULL, NULL);
-  gtk_widget_show (scrollwin);
-  gtk_container_add (GTK_CONTAINER (evbox), scrollwin);
-  gtk_scrolled_window_set_policy (GTK_SCROLLED_WINDOW (scrollwin), GTK_POLICY_AUTOMATIC, GTK_POLICY_AUTOMATIC);
+   scrollwin = gtk_scrolled_window_new(NULL, NULL);
+   gtk_widget_show(scrollwin);
+   gtk_container_add(GTK_CONTAINER(evbox), scrollwin);
+   gtk_scrolled_window_set_policy(GTK_SCROLLED_WINDOW(scrollwin),
+                                  GTK_POLICY_AUTOMATIC, GTK_POLICY_AUTOMATIC);
 
-  viewport = gtk_viewport_new (NULL, NULL);
-  gtk_widget_show (viewport);
-  gtk_container_add (GTK_CONTAINER (scrollwin), viewport);
-   
+   viewport = gtk_viewport_new(NULL, NULL);
+   gtk_widget_show(viewport);
+   gtk_container_add(GTK_CONTAINER(scrollwin), viewport);
+
    /* The drawing area itself */
    darea = gtk_drawing_area_new();
    gtk_container_add(GTK_CONTAINER(viewport), darea);
@@ -93,28 +94,28 @@ main(int argc, char *argv[])
                             GTK_SIGNAL_FUNC(configure_cb), NULL);
    gtk_widget_show(darea);
    imlib_init(darea);
-   
-   
+
+
    doc = geist_document_new(400, 400);
-   doc->layers = geist_list_add_front(doc->layers, geist_layer_new());
+   geist_document_add_layer(doc);
 
-   ((geist_layer *) doc->layers->data)->objects =
-      geist_list_add_front(((geist_layer *) doc->layers->data)->objects,
-                           geist_image_new_from_file(20,40,"testimages/elogo.png"));
+   geist_document_add_object(doc,
+                             geist_image_new_from_file(20, 40,
+                                                       "testimages/elogo.png"));
 
-   ((geist_layer *) doc->layers->data)->objects =
-      geist_list_add_front(((geist_layer *) doc->layers->data)->objects,
-                           geist_image_new_from_file(5,5,"testimages/globe.png"));
+   geist_document_add_object(doc,
+                             geist_image_new_from_file(5, 5,
+                                                       "testimages/globe.png"));
 
-   ((geist_layer *) doc->layers->data)->objects =
-      geist_list_add_front(((geist_layer *) doc->layers->data)->objects,
-                           geist_image_new_from_file(75,35,"testimages/bulb.png"));
+   geist_document_add_object(doc,
+                             geist_image_new_from_file(75, 35,
+                                                       "testimages/bulb.png"));
 
-   ((geist_layer *) doc->layers->data)->objects =
-      geist_list_add_front(((geist_layer *) doc->layers->data)->objects,
-                           geist_image_new_from_file(275,145,"testimages/bulb.png"));
+   geist_document_add_object(doc,
+                             geist_image_new_from_file(275, 145,
+                                                       "testimages/bulb.png"));
 
-   
+
    geist_document_render(doc);
    gtk_window_set_default_size(GTK_WINDOW(mainwin), doc->w, doc->h);
    gtk_widget_set_usize(darea, doc->w, doc->h);

@@ -75,6 +75,29 @@ geist_list_add_front(geist_list * root, void *data)
 }
 
 geist_list *
+geist_list_add_end(geist_list * root, void *data)
+{
+   geist_list *l, *last;
+
+   D_ENTER(4);
+   last = geist_list_last(root);
+   l = geist_list_new();
+   l->next = NULL;
+   l->prev = last;
+   l->data = data;
+   if(last)
+   {
+      last->next = l;
+      D_RETURN(4, root);
+   }
+   else
+   {
+      D_RETURN(4, l);
+   }
+}
+
+
+geist_list *
 geist_list_cat(geist_list * root, geist_list * l)
 {
    geist_list *last;

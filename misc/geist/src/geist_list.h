@@ -40,6 +40,7 @@ typedef int (geist_compare_fn) (void *data1, void *data2);
 geist_list *geist_list_new(void);
 void geist_list_free(geist_list * l);
 geist_list *geist_list_add_front(geist_list * root, void *data);
+geist_list *geist_list_add_end(geist_list * root, void *data);
 geist_list *geist_list_cat(geist_list * root, geist_list * l);
 int geist_list_length(geist_list * l);
 geist_list *geist_list_last(geist_list * l);
