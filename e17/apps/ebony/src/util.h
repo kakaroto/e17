@@ -20,4 +20,6 @@ void setup_evas(Display * disp, Window win, Visual * vis, Colormap cm, int w,
 void rebuild_bg_ref(void);
 char *get_dirpath_from_filename(const char *filename);
 
+void e_bg_set_scale(E_Background _bg, int width, int height);
+
 #endif

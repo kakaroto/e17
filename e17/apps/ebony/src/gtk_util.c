@@ -818,9 +818,6 @@ open_bg_named(char *name)
       g_snprintf(errstr, 1024, "Unable to load %s", name);
       ebony_status_message(errstr, EBONY_STATUS_TO);
    }
-
-   return;
-   UN(name);
 }
 
 gboolean
@@ -980,29 +977,42 @@ void
 regen_recent_menu(void)
 {
    GList *l;
-   GtkWidget *mi, *w;
+   GtkWidget *w;
    GtkWidget *menu;
+   GtkWidget *mi = NULL;
    char *short_name, *filename;
 
    w = gtk_object_get_data(GTK_OBJECT(win_ref), "recent_bg_mi");
-
-   menu = gtk_menu_new();
-   gtk_widget_show(menu);
-   gtk_menu_item_set_submenu(GTK_MENU_ITEM(w), menu);
-
-   for (l = recent_bgs; l; l = l->next)
+   if (w)
    {
-      filename = (char *) l->data;
+      gtk_menu_item_remove_submenu(GTK_MENU_ITEM(w));
+      menu = gtk_menu_new();
+      gtk_widget_show(menu);
+      gtk_menu_item_set_submenu(GTK_MENU_ITEM(w), menu);
 
-      short_name = get_shortname_for(filename);
-      mi = gtk_menu_item_new_with_label(short_name);
+      for (l = recent_bgs; l; l = l->next)
+      {
+         filename = (char *) l->data;
 
-      gtk_menu_append(GTK_MENU(menu), mi);
-      gtk_signal_connect(GTK_OBJECT(mi), "activate", GTK_SIGNAL_FUNC(open_bg),
-                         (gpointer) filename);
-      gtk_widget_show(mi);
+         short_name = get_shortname_for(filename);
+         if (short_name)
+         {
+            mi = gtk_menu_item_new_with_label(short_name);
+
+            free(short_name);
+         }
+
+         gtk_menu_append(GTK_MENU(menu), mi);
+         gtk_signal_connect(GTK_OBJECT(mi), "activate",
+                            GTK_SIGNAL_FUNC(open_bg), (gpointer) filename);
+         gtk_widget_show(mi);
+      }
+      recent_menu = menu;
    }
-   recent_menu = menu;
+   else
+   {
+      fprintf(stderr, "Unable to locate the recent_bg_mi widget\n");
+   }
 }
 
 /**
@@ -1115,11 +1125,6 @@ export_ok_clicked(GtkWidget * w, gpointer data)
    ebony_status_message(errstr, EBONY_STATUS_TO);
 
    gtk_widget_destroy(GTK_WIDGET(data));
-   if (export_ref)
-   {
-      gtk_widget_destroy(export_ref);
-      export_ref = NULL;
-   }
 
    return;
    UN(w);

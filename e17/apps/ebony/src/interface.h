@@ -4,4 +4,3 @@
 
 GtkWidget *create_main_win(void);
 GtkWidget *create_win_bg(void);
-GtkWidget *create_export_win(void);

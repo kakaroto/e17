@@ -21,6 +21,7 @@ on_new_bg_activate(GtkMenuItem * menuitem, gpointer user_data)
 
    if (bg)
       e_bg_free(bg);
+
    if (!bg_ref)
       rebuild_bg_ref();
 
@@ -122,7 +123,9 @@ on_bg_evas_configure_event(GtkWidget * widget, GdkEventConfigure * event,
 {
    evas_set_output_viewport(evas, 0, 0, event->width, event->height);
    evas_set_output_size(evas, event->width, event->height);
-   e_bg_resize(bg, event->width, event->height);
+   e_bg_set_scale(bg, export_info.screen.w * export_info.xinerama.h,
+                  export_info.screen.h * export_info.xinerama.v);
+   e_bg_resize(ebony_base_bg, event->width, event->height);
    if (bl)
       outline_evas_object(bl->obj);
 
@@ -863,6 +866,11 @@ on_win_bg_delete_event(GtkWidget * widget, GdkEvent * event,
       bg = NULL;
       bl = NULL;
    }
+   if (ebony_base_bg)
+   {
+      e_bg_free(ebony_base_bg);
+      ebony_base_bg = NULL;
+   }
    if (evas)
    {
       evas_free(evas);
@@ -931,43 +939,57 @@ on_scale_scroll_request(GtkWidget * widget, gpointer user_data)
 void
 on_scale_preview_toggled(GtkToggleButton * togglebutton, gpointer user_data)
 {
+   GtkWidget *w;
 
+   w = gtk_object_get_data(GTK_OBJECT(win_ref), "screen_size_frame");
+   if (!w)
+      fprintf(stderr, "Unable to find screen_size_frame widget\n");
+   if (gtk_toggle_button_get_active(togglebutton))
+   {
+      export_info.screen.w = 800;
+      export_info.screen.h = 600;
+      gtk_widget_set_sensitive(GTK_WIDGET(w), TRUE);
+
+      w = gtk_object_get_data(GTK_OBJECT(win_ref), "export_xinerama_h");
+      if (w)
+      {
+         export_info.xinerama.h =
+            gtk_spin_button_get_value_as_int(GTK_SPIN_BUTTON(w));
+      }
+      else
+      {
+         fprintf(stderr, "Unable to find export_xinerama_h\n");
+      }
+      w = gtk_object_get_data(GTK_OBJECT(win_ref), "export_xinerama_v");
+      if (w)
+      {
+         export_info.xinerama.v =
+            gtk_spin_button_get_value_as_int(GTK_SPIN_BUTTON(w));
+      }
+      else
+      {
+         fprintf(stderr, "Unable to find export_xinerama_v\n");
+      }
+   }
+   else
+   {
+      export_info.screen.w = 0;
+      export_info.screen.h = 0;
+      export_info.xinerama.v = export_info.xinerama.h = 1;
+      gtk_widget_set_sensitive(GTK_WIDGET(w), FALSE);
+   }
+   e_bg_set_scale(bg, export_info.screen.w * export_info.xinerama.h,
+                  export_info.screen.h * export_info.xinerama.v);
+   DRAW();
 }
 
-
-void
-on_preview_screen_h_changed(GtkEditable * editable, gpointer user_data)
-{
-
-}
-
-
-void
-on_preview_screen_w_changed(GtkEditable * editable, gpointer user_data)
-{
-
-}
-
-
-void
-on_preview_xinerama_v_changed(GtkEditable * editable, gpointer user_data)
-{
-
-}
-
-
-void
-on_preview_xinerama_h_changed(GtkEditable * editable, gpointer user_data)
-{
-
-}
 
 void
 unset_export_size_editable(void)
 {
    GtkWidget *w;
 
-   w = gtk_object_get_data(GTK_OBJECT(export_ref), "export_screen_w");
+   w = gtk_object_get_data(GTK_OBJECT(win_ref), "export_screen_w");
    if (w)
    {
       gtk_widget_set_sensitive(GTK_WIDGET(w), FALSE);
@@ -976,7 +998,7 @@ unset_export_size_editable(void)
    {
       fprintf(stderr, "Unable to find export_screen_w\n");
    }
-   w = gtk_object_get_data(GTK_OBJECT(export_ref), "export_screen_h");
+   w = gtk_object_get_data(GTK_OBJECT(win_ref), "export_screen_h");
    if (w)
    {
       gtk_widget_set_sensitive(GTK_WIDGET(w), FALSE);
@@ -991,7 +1013,7 @@ set_export_size_editable(void)
 {
    GtkWidget *w;
 
-   w = gtk_object_get_data(GTK_OBJECT(export_ref), "export_screen_w");
+   w = gtk_object_get_data(GTK_OBJECT(win_ref), "export_screen_w");
    if (w)
    {
       gtk_widget_set_sensitive(GTK_WIDGET(w), TRUE);
@@ -1000,7 +1022,7 @@ set_export_size_editable(void)
    {
       fprintf(stderr, "Unable to find export_screen_w\n");
    }
-   w = gtk_object_get_data(GTK_OBJECT(export_ref), "export_screen_h");
+   w = gtk_object_get_data(GTK_OBJECT(win_ref), "export_screen_h");
    if (w)
    {
       gtk_widget_set_sensitive(GTK_WIDGET(w), TRUE);
@@ -1009,22 +1031,6 @@ set_export_size_editable(void)
    {
       fprintf(stderr, "Unable to find export_screen_h\n");
    }
-}
-
-void
-on_export_bg_activate(GtkMenuItem * menuitem, gpointer user_data)
-{
-   if (!export_ref)
-   {
-      export_info.xinerama.v = export_info.xinerama.h = 1;
-      export_info.screen.w = 1024;
-      export_info.screen.h = 768;
-
-      export_ref = create_export_win();
-      unset_export_size_editable();
-      gtk_widget_show(export_ref);
-   }
-
 }
 
 
@@ -1066,13 +1072,106 @@ on_export_size_toggled(GtkToggleButton * togglebutton, gpointer user_data)
         default:
            break;
       }
+      e_bg_set_scale(bg, export_info.screen.w * export_info.xinerama.h,
+                     export_info.screen.h * export_info.xinerama.v);
+      DRAW();
    }
 
 }
 
+void
+on_export_screen_h_changed(GtkEditable * editable, gpointer user_data)
+{
+   GtkWidget *w;
+
+   w = gtk_object_get_data(GTK_OBJECT(win_ref), "export_screen_h");
+   if (w)
+   {
+      export_info.screen.h =
+         gtk_spin_button_get_value_as_int(GTK_SPIN_BUTTON(w));
+
+   }
+   else
+   {
+      fprintf(stderr, "Unable to find export_screen_h\n");
+   }
+   e_bg_set_scale(bg, export_info.screen.w * export_info.xinerama.h,
+                  export_info.screen.h * export_info.xinerama.v);
+   DRAW();
+}
+
 
 void
-on_export_next_button_clicked(GtkButton * button, gpointer user_data)
+on_export_screen_w_changed(GtkEditable * editable, gpointer user_data)
+{
+   GtkWidget *w;
+
+   w = gtk_object_get_data(GTK_OBJECT(win_ref), "export_screen_w");
+   if (w)
+   {
+      export_info.screen.w =
+         gtk_spin_button_get_value_as_int(GTK_SPIN_BUTTON(w));
+   }
+   else
+   {
+      fprintf(stderr, "Unable to find export_screen_w\n");
+   }
+   e_bg_set_scale(bg, export_info.screen.w * export_info.xinerama.h,
+                  export_info.screen.h * export_info.xinerama.v);
+   DRAW();
+}
+
+
+void
+on_export_xinerama_v_changed(GtkEditable * editable, gpointer user_data)
+{
+   GtkWidget *w;
+
+   w = gtk_object_get_data(GTK_OBJECT(win_ref), "export_xinerama_v");
+   if (w)
+   {
+      export_info.xinerama.v =
+         gtk_spin_button_get_value_as_int(GTK_SPIN_BUTTON(w));
+
+   }
+   else
+   {
+      fprintf(stderr, "Unable to find export_xinerama_v\n");
+   }
+   e_bg_set_scale(bg, export_info.screen.w * export_info.xinerama.h,
+                  export_info.screen.h * export_info.xinerama.v);
+   DRAW();
+}
+
+
+void
+on_export_xinerama_h_changed(GtkEditable * editable, gpointer user_data)
+{
+   GtkWidget *w;
+
+   w = gtk_object_get_data(GTK_OBJECT(win_ref), "export_xinerama_h");
+   if (w)
+   {
+      export_info.xinerama.h =
+         gtk_spin_button_get_value_as_int(GTK_SPIN_BUTTON(w));
+   }
+   else
+   {
+      fprintf(stderr, "Unable to find export_xinerama_h\n");
+   }
+   e_bg_set_scale(bg, export_info.screen.w * export_info.xinerama.h,
+                  export_info.screen.h * export_info.xinerama.v);
+   DRAW();
+}
+
+void
+on_export_cancel_button_clicked(GtkButton * button, gpointer user_data)
+{
+   gtk_widget_destroy(user_data);
+}
+
+void
+on_export_button_clicked(GtkButton * button, gpointer user_data)
 {
    GtkWidget *fs;
    char buf[PATH_MAX];
@@ -1088,86 +1187,5 @@ on_export_next_button_clicked(GtkButton * button, gpointer user_data)
                       "clicked", GTK_SIGNAL_FUNC(export_ok_clicked),
                       (gpointer) fs);
    gtk_widget_show(fs);
-}
 
-
-void
-on_export_cancel_button_clicked(GtkButton * button, gpointer user_data)
-{
-   gtk_widget_destroy(export_ref);
-   export_ref = NULL;
-}
-
-
-void
-on_export_screen_h_changed(GtkEditable * editable, gpointer user_data)
-{
-   GtkWidget *w;
-
-   w = gtk_object_get_data(GTK_OBJECT(export_ref), "export_screen_h");
-   if (w)
-   {
-      export_info.screen.h =
-         gtk_spin_button_get_value_as_int(GTK_SPIN_BUTTON(w));
-
-   }
-   else
-   {
-      fprintf(stderr, "Unable to find export_screen_h\n");
-   }
-}
-
-
-void
-on_export_screen_w_changed(GtkEditable * editable, gpointer user_data)
-{
-   GtkWidget *w;
-
-   w = gtk_object_get_data(GTK_OBJECT(export_ref), "export_screen_w");
-   if (w)
-   {
-      export_info.screen.w =
-         gtk_spin_button_get_value_as_int(GTK_SPIN_BUTTON(w));
-   }
-   else
-   {
-      fprintf(stderr, "Unable to find export_screen_w\n");
-   }
-}
-
-
-void
-on_export_xinerama_v_changed(GtkEditable * editable, gpointer user_data)
-{
-   GtkWidget *w;
-
-   w = gtk_object_get_data(GTK_OBJECT(export_ref), "export_xinerama_v");
-   if (w)
-   {
-      export_info.xinerama.v =
-         gtk_spin_button_get_value_as_int(GTK_SPIN_BUTTON(w));
-
-   }
-   else
-   {
-      fprintf(stderr, "Unable to find export_xinerama_v\n");
-   }
-}
-
-
-void
-on_export_xinerama_h_changed(GtkEditable * editable, gpointer user_data)
-{
-   GtkWidget *w;
-
-   w = gtk_object_get_data(GTK_OBJECT(export_ref), "export_xinerama_h");
-   if (w)
-   {
-      export_info.xinerama.h =
-         gtk_spin_button_get_value_as_int(GTK_SPIN_BUTTON(w));
-   }
-   else
-   {
-      fprintf(stderr, "Unable to find export_xinerama_h\n");
-   }
 }

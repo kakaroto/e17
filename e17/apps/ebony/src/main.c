@@ -30,13 +30,15 @@ init_globals(void)
    win_ref = NULL;
    ebony_status = NULL;
    bg_ref = NULL;
-   export_ref = NULL;
    recent_bgs = NULL;
 
    evas = NULL;
    bg = NULL;
+   ebony_base_bg = NULL;
    bl = NULL;
    idle = 0;
+   export_info.screen.w = export_info.screen.h = 0;
+   export_info.xinerama.h = export_info.xinerama.v = 1;
    snprintf(image_fileselection_dir, PATH_MAX, "%s", getenv("HOME"));
    snprintf(bg_fileselection_dir, PATH_MAX, "%s", getenv("HOME"));
    snprintf(save_as_fileselection_dir, PATH_MAX, "%s", getenv("HOME"));

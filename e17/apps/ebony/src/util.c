@@ -115,7 +115,7 @@ get_dirpath_from_filename(const char *filename)
 char *
 get_shortname_for(const char *filename)
 {
-   char *tmp, *str, *result = NULL;
+   char *tmp, *result = NULL;
    int length, i;
 
    tmp = strdup(filename);
@@ -126,22 +126,7 @@ get_shortname_for(const char *filename)
    /* chop the slash */
    i++;
 
-   str = &tmp[i];
-   length = strlen(str);
-   if (length > 5)
-   {
-      char *s = &str[length - 6];
-
-      if (!(strcmp(s, ".bg.db")))
-      {
-         str[length - 6] = '\0';
-         result = strdup(str);
-         str[length - 6] = '.';
-      }
-   }
-   /* see if it has our extension */
-   else
-      result = strdup(&tmp[i]);
+   result = strdup(&tmp[i]);
 
    free(tmp);
    return (result);
@@ -162,7 +147,7 @@ update_background(E_Background _bg)
    h = _bg->geom.h;
    _bg->geom.w = 0;
    _bg->geom.h = 0;
-   e_bg_resize(_bg, w, h);
+   e_bg_set_scale(_bg, w, h);
    e_bg_set_layer(_bg, 0);
    if ((bl) && (bl->obj))
       outline_evas_object(bl->obj);
@@ -354,6 +339,7 @@ setup_evas(Display * disp, Window win, Visual * vis, Colormap cm, int w,
            int h)
 {
    Evas_Object o;
+
    int colors[] = { 255, 255, 255, 255 };
 
    evas = evas_new();
@@ -364,12 +350,6 @@ setup_evas(Display * disp, Window win, Visual * vis, Colormap cm, int w,
    evas_set_font_cache(evas, ((1024 * 1024) * 1));
    evas_set_image_cache(evas, ((1024 * 1024) * 4));
    evas_font_add_path(evas, PACKAGE_DATA_DIR "/fnt/");
-   o = evas_add_rectangle(evas);
-   evas_move(evas, o, 0, 0);
-   evas_resize(evas, o, 999999, 999999);
-   evas_set_color(evas, o, 255, 255, 255, 255);
-   evas_set_layer(evas, o, -100);
-   evas_show(evas, o);
 
    o = evas_add_line(evas);
    evas_object_set_name(evas, o, "top_line");
@@ -390,6 +370,21 @@ setup_evas(Display * disp, Window win, Visual * vis, Colormap cm, int w,
    evas_object_set_name(evas, o, "right_line");
    evas_set_color(evas, o, colors[0], colors[1], colors[2], colors[3]);
    evas_show(evas, o);
+
+   ebony_base_bg = e_bg_load(PACKAGE_DATA_DIR "/pixmaps/base.bg.db");
+   if (ebony_base_bg)
+   {
+      e_bg_add_to_evas(ebony_base_bg, evas);
+      e_bg_set_layer(ebony_base_bg, -20);
+      e_bg_resize(ebony_base_bg, w, h);
+      e_bg_show(ebony_base_bg);
+   }
+   else
+   {
+      fprintf(stderr, "Unable to load %s\n",
+              PACKAGE_DATA_DIR "/pixmaps/base.bg.db");
+   }
+
 }
 
 void
@@ -428,4 +423,173 @@ rebuild_bg_ref(void)
    w = gtk_object_get_data(GTK_OBJECT(bg_ref), "_ebony_statusbar");
    if (w)
       ebony_status = w;
+}
+
+/**
+ * e_bg_resize_scaled
+ * @_bg - the E_Background to be resized and scaled
+ * @width - the width of the requested size
+ * @height - the height of the requested size
+ * @scale - the percentage that the background should scale to
+ * I haven't tested zooming in(scale > 1.0), though it should work with 
+ * a little effort.
+ */
+static void
+e_bg_resize_scaled(E_Background _bg, int width, int height, double scale)
+{
+   Evas_List l;
+   int i;
+
+   if (!_bg)
+      return;
+   if (!_bg->evas)
+      return;
+
+   evas_move(_bg->evas, _bg->base_obj, _bg->x, _bg->y);
+   evas_resize(_bg->evas, _bg->base_obj, (double) width * scale,
+               (double) height * scale);
+   for (i = 0, l = _bg->layers; l; l = l->next, i++)
+   {
+      E_Background_Layer bl;
+      double x, y, w, h, fw, fh;
+      int iw, ih;
+
+      bl = (E_Background_Layer) l->data;
+      iw = ih = 0;
+      fw = fh = 0.0;
+
+      x = _bg->x;
+      y = _bg->y;
+
+      w = bl->size.w * (double) width;
+      h = bl->size.h * (double) height;
+
+      /* absolutely sized object */
+      if (bl->size.absolute.w)
+         w = bl->size.w;
+      if (bl->size.absolute.h)
+         h = bl->size.h;
+
+      /* object is an image, resize and calculate fill */
+      if (bl->type == E_BACKGROUND_TYPE_IMAGE)
+      {
+         evas_get_image_size(_bg->evas, bl->obj, &iw, &ih);
+         if (bl->size.orig.w)
+            w = (double) iw *bl->size.w;
+
+         if (bl->size.orig.h)
+            h = (double) ih *bl->size.h;
+
+         x += (scale * (((double) width - w) * bl->pos.x));
+         y += (scale * (((double) height - h) * bl->pos.y));
+
+         w = (int) (scale * (double) w);
+         h = (int) (scale * (double) h);
+
+         if (bl->fill.orig.w)
+            fw = (double) iw *bl->fill.w;
+
+         else
+            fw = bl->fill.w * width;
+
+
+         if (bl->fill.orig.h)
+            fh = (double) ih *bl->fill.h;
+
+         else
+            fh = bl->fill.h * height;
+
+         fw = (int) (scale * (double) fw);
+         fh = (int) (scale * (double) fh);
+      }
+      else
+      {
+
+         x += (scale * (((double) width - w) * bl->pos.x));
+         y += (scale * (((double) height - h) * bl->pos.y));
+
+         w = (int) (scale * (double) w);
+         h = (int) (scale * (double) h);
+      }
+      /* adjust for absolute positioning */
+      x += (scale * (double) bl->abs.x);
+      y += (scale * (double) bl->abs.y);
+
+      evas_move(_bg->evas, bl->obj, x, y);
+      evas_resize(_bg->evas, bl->obj, w, h);
+
+      switch (bl->type)
+      {
+        case E_BACKGROUND_TYPE_IMAGE:
+           evas_set_image_fill(_bg->evas, bl->obj,
+                               (double) _bg->geom.sx * bl->scroll.x,
+                               (double) _bg->geom.sy * bl->scroll.y, fw, fh);
+           break;
+        case E_BACKGROUND_TYPE_GRADIENT:
+           /* FIXME Necessary to call again ? */
+           evas_set_angle(_bg->evas, bl->obj, bl->gradient.angle);
+           break;
+        case E_BACKGROUND_TYPE_SOLID:
+           break;
+        default:
+      }
+   }
+}
+
+/**
+ * e_bg_set_scale - resize the background to the requested size
+ * @_bg - the E_Background to resize
+ * @width - the requested width for the bg
+ * @height - the requested height for the bg
+ * If width or height are 0 the bg will fill the canvas, otherwise it scales
+ * the background to the closest fit and scales the objects in the canvas
+ * accordingly
+ */
+void
+e_bg_set_scale(E_Background _bg, int width, int height)
+{
+   int ww = 0, wh = 0;
+   int ew = 0, eh = 0;
+   double vx = 0.0, vy = 0.0;
+   double scale = 1.0;
+
+   if (!_bg)
+      return;
+   evas_get_drawable_size(evas, &ww, &wh);
+
+   /* fill the evas */
+   if (height <= 0 || width <= 0)
+   {
+      width = ew = ww;
+      height = eh = wh;
+      vx = vy = 0;
+      export_info.screen.w = 0;
+      export_info.screen.h = 0;
+      export_info.xinerama.v = export_info.xinerama.h = 1;
+   }
+   else if ((width > ww) || (height > wh))
+   {
+      double scalex = 0.0, scaley = 0.0;
+
+      scalex = ((double) ww / (double) width);
+      scaley = ((double) wh / (double) height);
+
+      if (scalex > scaley)
+         scale = scaley;
+      else
+         scale = scalex;
+      ew = scale * (double) width;
+      eh = scale * (double) height;
+   }
+   else                         /* height < wh && width < ww */
+   {
+      ew = width;
+      eh = height;
+   }
+   _bg->x = (((double) (ww - ew)) * 0.5);
+   _bg->y = (((double) (wh - eh)) * 0.5);
+   e_bg_move(_bg, _bg->x, _bg->y);
+   e_bg_resize_scaled(_bg, width, height, scale);
+   if (bl)
+      outline_evas_object(bl->obj);
 }

@@ -148,20 +148,8 @@ void on_export_bg_activate(GtkMenuItem * menuitem, gpointer user_data);
 void on_scale_preview_toggled(GtkToggleButton * togglebutton,
                               gpointer user_data);
 
-void on_preview_screen_h_changed(GtkEditable * editable, gpointer user_data);
-
-void on_preview_screen_w_changed(GtkEditable * editable, gpointer user_data);
-
-void on_preview_xinerama_v_changed(GtkEditable * editable,
-                                   gpointer user_data);
-
-void on_preview_xinerama_h_changed(GtkEditable * editable,
-                                   gpointer user_data);
-
 void on_export_size_toggled(GtkToggleButton * togglebutton,
                             gpointer user_data);
-
-void on_export_next_button_clicked(GtkButton * button, gpointer user_data);
 
 void on_export_cancel_button_clicked(GtkButton * button, gpointer user_data);
 
@@ -175,3 +163,5 @@ void on_export_xinerama_h_changed(GtkEditable * editable, gpointer user_data);
 
 void on_export_size_toggled(GtkToggleButton * togglebutton,
                             gpointer user_data);
+
+void on_export_button_clicked(GtkButton * button, gpointer user_data);

@@ -10,12 +10,12 @@
 
 GtkWidget *ebony_status;
 GtkWidget *win_ref, *bg_ref;
-GtkWidget *export_ref;
 
 GList *recent_bgs;
 
 Evas evas;
-E_Background bg;
+E_Background bg;                /* the bg we're manipulating */
+E_Background ebony_base_bg;     /* the canvases background */
 E_Background_Layer bl;
 int idle;
 
