@@ -45,6 +45,7 @@ struct _Icon
 };
 
 Evas_Object *iconbar_new(Evas *evas);
+Evas_Object *iconbar_gui_get(Evas_Object *o);
 Evas_Smart *iconbar_smart_get();
 double iconbar_icons_length_get(Iconbar *ib);
 

@@ -48,7 +48,17 @@ iconbar_new(Evas *evas)
   
   return iconbar;
 }
+Evas_Object *
+iconbar_gui_get(Evas_Object *o)
+{
+    Iconbar *ib = NULL;
 
+    if((ib = evas_object_smart_data_get(o)))
+    {
+	return(ib->gui);
+    }
+    return(NULL);
+}
 /* set the path for data (bits, order, icons) */
 void
 iconbar_path_set(Evas_Object *obj, char *path)
@@ -56,13 +66,21 @@ iconbar_path_set(Evas_Object *obj, char *path)
   Iconbar *ib = evas_object_smart_data_get(obj);
   char buf[2048];
 
+  if(ib->path) free(ib->path);
   ib->path = (char *)strdup(path);
 
   snprintf(buf, sizeof(buf) - 1, "%s/iconbar.eet", ib->path);
-  ib->gui = edje_object_add(evas_object_evas_get(ib->obj));
-  edje_object_file_set(ib->gui, buf, "iconbar");
-
-  if (!ib->gui)
+  if((ib->gui = edje_object_add(evas_object_evas_get(ib->obj))))
+  {
+    if(!edje_object_file_set(ib->gui, buf, "iconbar"))
+    {
+	evas_object_del(ib->gui);
+	ib->gui = NULL;
+	if(ib->path) free(ib->path);
+	return;
+    }
+  }
+  else
   {
     printf("no bits!\n");
     return;

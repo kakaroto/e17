@@ -26,8 +26,10 @@ int shaped = 1;
 int
 main(int argc, char **argv)
 {
-  int i, withdrawn = 0;
   char buf[2048];
+  int i, withdrawn = 0;
+  Evas_Coord edjew, edjeh;
+  Evas_Object *edje = NULL;
 
   for (i = 1; i < argc; i++)
   {
@@ -47,7 +49,6 @@ main(int argc, char **argv)
   ecore_evas_callback_move_set(ee, resize);
 
 
-  ecore_event_handler_add(ECORE_EVENT_SIGNAL_EXIT, cb_exit, ee);
 
   ecore_evas_callback_delete_request_set(ee, cb_exit);
   ecore_evas_callback_destroy_set(ee, cb_exit);
@@ -79,6 +80,16 @@ main(int argc, char **argv)
   if (e_file_exists(buf))
   {
     iconbar_path_set(iconbar, buf);
+    if((edje = iconbar_gui_get(iconbar)))
+    {
+	edje_object_size_min_get(edje, &edjew, &edjeh);
+	if((edjew > 0) && (edjeh > 0))
+	    ecore_evas_size_min_set(ee, (int)edjew, (int)edjeh);
+	
+	edje_object_size_max_get(edje, &edjew, &edjeh);
+	if((edjew > 0) && (edjeh > 0))
+	    ecore_evas_size_max_set(ee, (int)edjew, (int)edjeh);
+    }
   }
 
   else
