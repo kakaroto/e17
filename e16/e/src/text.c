@@ -459,7 +459,7 @@ TextstateDrawText(TextState * ts, Window win, const char *text, int x, int y,
 		  while (ret2.width > textwidth_limit)
 		    {
 		       nuke_count++;
-		       if (nuke_count > len)
+		       if (nuke_count > wc_len)
 			 {
 			    int                 mlen;
 
