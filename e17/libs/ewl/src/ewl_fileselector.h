@@ -65,8 +65,6 @@ void ewl_fileselector_select_file_cb(Ewl_Widget *w, void *ev_data, Ewl_Fileselec
 void ewl_fileselector_select_dir_cb(Ewl_Widget *w, void *ev_data, Ewl_Fileselector *fs);
 void ewl_fileselector_go_up_cb(Ewl_Widget *w, void *ev_data, Ewl_Fileselector *fs);
 void ewl_fileselector_go_home_cb(Ewl_Widget *w, void *ev_data, Ewl_Fileselector *fs);
-void ewl_fileselector_configure_cb(Ewl_Fileselector *fs, char *path);
-
 void ewl_fileselector_filter_cb(Ewl_Widget *entry, void *ev_data, void *user_data);
 
 /* Private: data for a file */

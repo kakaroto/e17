@@ -10,15 +10,14 @@
 /*
  * Internally used functions
  */
-
-static void ewl_fileselector_tooltip_add(Ewl_Widget * w, Ewl_Fileselector_Data * d);
+static void  ewl_fileselector_tooltip_add(Ewl_Widget * w, Ewl_Fileselector_Data * d);
 static char *ewl_fileselector_str_append(char *s1, char *s2);
 static char *ewl_fileselector_path_up_get(char *path);
 static char *ewl_fileselector_path_home_get(void);
-static char* ewl_fileselector_size_string_get(off_t st_size);
+static char *ewl_fileselector_size_string_get(off_t st_size);
 static char *ewl_fileselector_perm_string_get(mode_t st_mode);
 static void  ewl_fileselector_file_list_get(char *path, char *filter, Ecore_List *flist, Ecore_List *dlist);
-
+static void  ewl_fileselector_path_setup(Ewl_Fileselector *fs, char *path);
 
 /**
  * @return Returns NULL on failure, or the new fileselector on success.
@@ -189,7 +188,7 @@ void ewl_fileselector_init(Ewl_Fileselector * fs)
 	}
 
 	tmp = getenv("HOME");
-	ewl_fileselector_configure_cb(fs, (tmp ? tmp : "/"));
+	ewl_fileselector_path_setup(fs, (tmp ? tmp : "/"));
 
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
@@ -201,7 +200,14 @@ void ewl_fileselector_init(Ewl_Fileselector * fs)
  */
 char *ewl_fileselector_path_get(Ewl_Fileselector * fs)
 {
-	return strdup(fs->path);
+	char *s;
+
+	DENTER_FUNCTION(DLEVEL_STABLE);
+	DCHECK_PARAM_PTR_RET("fs", fs, NULL);
+
+	s = strdup(fs->path);
+
+	DRETURN_PTR(s, DLEVEL_STABLE);
 }
 
 /**
@@ -213,15 +219,19 @@ char *ewl_fileselector_file_get(Ewl_Fileselector * fs)
 {
 	char *entry_file;
 
-	entry_file = ewl_entry_text_get(EWL_ENTRY(fs->entry_file));
-	if (!fs->file || (fs->file && strcmp(fs->file, entry_file))) {
-		IF_FREE(fs->file);
-		fs->file = entry_file;
-	}
-	if (!fs->file || !fs->path)
-		return NULL;
+	DENTER_FUNCTION(DLEVEL_STABLE);
+	DCHECK_PARAM_PTR_RET("fs", fs, NULL);
 
-	return ewl_fileselector_str_append(fs->path, fs->file);
+	entry_file = ewl_entry_text_get(EWL_ENTRY(fs->entry_file));
+	IF_FREE(fs->file);
+	fs->file = entry_file;
+
+	if (!fs->file || !fs->path) {
+		DRETURN_PTR(NULL, DLEVEL_STABLE);
+	}
+	entry_file = ewl_fileselector_str_append(fs->path, fs->file);
+
+	DRETURN_PTR(entry_file, DLEVEL_STABLE);
 }
 
 /**
@@ -232,7 +242,13 @@ char *ewl_fileselector_file_get(Ewl_Fileselector * fs)
  */
 void ewl_fileselector_path_set(Ewl_Fileselector * fs, char *path)
 {
-	ewl_fileselector_configure_cb(fs, path);
+	DENTER_FUNCTION(DLEVEL_STABLE);
+	DCHECK_PARAM_PTR("fs", fs);
+	DCHECK_PARAM_PTR("path", path);
+
+	ewl_fileselector_path_setup(fs, path);
+
+	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
 
 /*
@@ -479,7 +495,7 @@ void ewl_fileselector_select_dir_cb(Ewl_Widget * w, void *ev_data, Ewl_Fileselec
 		new_path = ewl_fileselector_str_append(fs->path, path);
 	path = ewl_fileselector_str_append(new_path, "/");
 	free(new_path);
-	ewl_fileselector_configure_cb(EWL_FILESELECTOR(fs), path);
+	ewl_fileselector_path_setup(EWL_FILESELECTOR(fs), path);
 }
 
 void ewl_fileselector_go_up_cb(Ewl_Widget * w, void *ev_data, Ewl_Fileselector * fs)
@@ -487,7 +503,7 @@ void ewl_fileselector_go_up_cb(Ewl_Widget * w, void *ev_data, Ewl_Fileselector *
 	char *path;
 
 	path = ewl_fileselector_path_up_get(fs->path);
-	ewl_fileselector_configure_cb(EWL_FILESELECTOR(fs), path);
+	ewl_fileselector_path_setup(EWL_FILESELECTOR(fs), path);
 }
 
 void ewl_fileselector_go_home_cb(Ewl_Widget * w, void *ev_data, Ewl_Fileselector * fs)
@@ -495,10 +511,10 @@ void ewl_fileselector_go_home_cb(Ewl_Widget * w, void *ev_data, Ewl_Fileselector
 	char *path;
 
 	path = ewl_fileselector_path_home_get();
-	ewl_fileselector_configure_cb(EWL_FILESELECTOR(fs), path);
+	ewl_fileselector_path_setup(EWL_FILESELECTOR(fs), path);
 }
 
-void ewl_fileselector_configure_cb(Ewl_Fileselector * fs, char *path)
+static void ewl_fileselector_path_setup(Ewl_Fileselector * fs, char *path)
 {
 	char *filter;
 	Ewl_Fileselector_Data *d;
@@ -542,8 +558,9 @@ void ewl_fileselector_configure_cb(Ewl_Fileselector * fs, char *path)
 	}
 
 	title = malloc(PATH_MAX);
-	if (!title)
+	if (!title) {
 		DRETURN(DLEVEL_STABLE);
+	}
 
 	snprintf(title, PATH_MAX, "Files (%d)", ecore_list_nodes(files));
 	ewl_tree_headers_set(EWL_TREE(fs->list_files), &title);
@@ -597,20 +614,17 @@ void ewl_fileselector_configure_cb(Ewl_Fileselector * fs, char *path)
 	}
 
 	if (cont)
-		ewl_container_redirect_set(EWL_CONTAINER(parent_win),
-					   cont);
+		ewl_container_redirect_set(EWL_CONTAINER(parent_win), cont);
 
 	ecore_list_destroy(files);
 	ecore_list_destroy(dirs);
-
 }
 
 void ewl_fileselector_filter_cb(Ewl_Widget * entry, void *ev_data, void *user_data)
 {
 	Ewl_Fileselector *fs = user_data;
-	ewl_fileselector_configure_cb(fs, ewl_fileselector_path_get(fs));
+	ewl_fileselector_path_setup(fs, ewl_fileselector_path_get(fs));
 }
-
 
 /* Private: data for a file */
 
@@ -624,7 +638,7 @@ Ewl_Fileselector_Data
 	n = strdup(name);
 
 	d = (Ewl_Fileselector_Data *) malloc(sizeof(Ewl_Fileselector_Data));
-	d->name = n;
+	d->name = strdup(n);
 	d->size = size;
 	d->time = time;
 	d->mode = mode;
@@ -635,11 +649,10 @@ Ewl_Fileselector_Data
 /* Free an allocated data */
 void ewl_fileselector_data_free(Ewl_Fileselector_Data * d)
 {
-	if (d) {
-		if (d->name)
-			free(d->name);
-		free(d);
-	}
+	if (!d) return;
+
+	IF_FREE(d->name);
+	free(d);
 }
 
 static void ewl_fileselector_tooltip_add(Ewl_Widget * w, Ewl_Fileselector_Data * d)
@@ -663,10 +676,13 @@ static void ewl_fileselector_tooltip_add(Ewl_Widget * w, Ewl_Fileselector_Data *
 					      strlen(perm) + 3));
 	str = memcpy(str, name, strlen(name));
 	str[strlen(name)] = '\n';
+
 	memcpy(str + strlen(name) + 1, size, strlen(size));
 	str[strlen(name) + strlen(size) + 1] = '\n';
+
 	memcpy(str + strlen(name) + strlen(size) + 2, perm, strlen(perm));
 	str[strlen(name) + strlen(size) + strlen(perm) + 2] = '\0';
+
 	ewl_tooltip_text_set(EWL_TOOLTIP(tooltip), str);
 
 	/* destroy tooltip when the row is destroyed */
@@ -674,6 +690,8 @@ static void ewl_fileselector_tooltip_add(Ewl_Widget * w, Ewl_Fileselector_Data *
 			    EWL_CALLBACK_FUNCTION
 			    (ewl_fileselector_tooltip_destroy_cb), tooltip);
 
+	free(str);
 	free(size);
 	free(perm);
 }
+
