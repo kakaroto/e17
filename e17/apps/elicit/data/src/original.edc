@@ -1,0 +1,1697 @@
+images
+{
+  image, "elicit-bg.png" LOSSY 98;
+  image, "left-panel.png" LOSSY 98;
+  image, "right-panel.png" LOSSY 98;
+  image, "center-panel.png" LOSSY 98;
+  image, "dropper.png" LOSSY 98;
+  image, "dropper-glow.png" LOSSY 98;
+  image, "target.png" LOSSY 98;
+  image, "target-glow.png" LOSSY 98;
+  image, "box_up.png" LOSSY 98;
+  image, "box_dn.png" LOSSY 98;
+  image, "rgbhsv.png" LOSSY 98;
+  image, "zoom.png" LOSSY 98;
+}
+
+collections {
+  group {
+    name, "elicit";
+    min, 325, 150;
+    parts {
+
+      // center panel
+      part {
+        name, "center";
+        description {
+          state, "default" 0.0;
+          min, 105 110;
+          max, 105 9999;
+          rel1 {
+            relative, 0.5 0.0;
+            offset, -1 10;
+          }
+          rel2 {
+            relative, .5 1.0;
+            offset, 0 -11;
+          }
+          image {
+            normal, "center-panel.png";
+          }
+          border, 0 0 7 7;
+        }
+      }
+
+      // left panel
+      part {
+        name, "left";
+        description {
+          state, "default" 0.0;
+          min, 50 100;
+          max, 9999 9999;
+          rel1 {
+            relative, 0.0 0.0;
+            offset, 0 0;
+          }
+          rel2 {
+            to, "center"; 
+            relative, 0.0 1.0;
+            offset, 0 10;
+          }
+          image {
+            normal, "left-panel.png";
+          }
+          border, 12 14 14 15;
+        }
+      }
+
+      // right panel
+      part {
+        name, "right";
+        description {
+          state, "default" 0.0;
+          min, 50 100;
+          max, 9999 9999;
+          rel1 {
+            to, "center";
+            relative, 1.0 0.0;
+            offset, 0 -10;
+          }
+          rel2 {
+            relative, 1.0 1.0;
+            offset, -1 -1;
+          }
+          image {
+            normal, "right-panel.png";
+          }
+          border, 14 13 14 15;
+        }
+      }
+      part {
+        name, "swatch";
+        description {
+          state, "default" 0.0;
+          min, 10 10;
+          rel1 {
+            to, "left";
+            relative, 0.0 0.0;
+            offset, 12 14;
+          }
+          rel2 {
+            to, "left";
+            relative, 1.0 1.0;
+            offset, -12 -14;
+          }
+        }
+      }
+      part {
+        name, "shot";
+        description {
+          state, "default" 0.0;
+          min, 10 10;
+          rel1 {
+            to, "right";
+            relative, 0.0 0.0;
+            offset, 12 14;
+          }
+          rel2 {
+            to, "right";
+            relative, 1.0 1.0;
+            offset, -12 -14;
+          }
+        }
+      }
+
+
+      // pick button
+      part {
+        name, "pick";
+        description {
+          state, "default" 0.0;
+          min, 19 19;
+          max, 19 19;
+          aspect, 1.0 1.0;
+          rel1 {
+            relative, 0.5 1.0;
+            offset, -24 -38;
+          }
+          rel2 {
+            relative, 0.5 1.0;
+            offset, -5 -19;
+          }
+          image {
+            normal, "dropper.png";
+          }
+          border, 0 0 0 0;
+        }
+        description {
+          state, "down" 0.0;
+          min, 19 19;
+          max, 19 19;
+          aspect, 1.0 1.0;
+          rel1 {
+            relative, 0.5 1.0;
+            offset, -23 -37;
+          }
+          rel2 {
+            relative, 0.5 1.0;
+            offset, -4 -18;
+          }
+          image {
+            normal, "dropper.png";
+          }
+          border, 0 0 0 0;
+        }
+      }
+
+      // pick glow
+      part {
+        name, "pick-glow";
+        description {
+          state, "default" 0.0;
+          visible, 0;
+          min, 19 19;
+          max, 19 19;
+          aspect, 1.0 1.0;
+          color, 255, 255, 255, 20;
+          rel1 {
+            relative, 0.5 1.0;
+            offset, -23 -37;
+          }
+          rel2 {
+            relative, 0.5 1.0;
+            offset, -4 -18;
+          }
+          image {
+            normal, "dropper-glow.png";
+          }
+          border, 0 0 0 0;
+        }
+        description {
+          state, "down" 0.0;
+          visible, 1;
+          min, 19 19;
+          max, 19 19;
+          aspect, 1.0 1.0;
+          color, 255, 255, 255, 255;
+          rel1 {
+            relative, 0.5 1.0;
+            offset, -23 -37;
+          }
+          rel2 {
+            relative, 0.5 1.0;
+            offset, -4 -18;
+          }
+          image {
+            normal, "dropper-glow.png";
+          }
+          border, 0 0 0 0;
+        }
+      }
+
+
+      // shoot button
+      part {
+        name, "shoot";
+        description {
+          state, "default" 0.0;
+          min, 17 17;
+          max, 17 17;
+          aspect, 1.0 1.0;
+          rel1 {
+            relative, 0.5 1.0;
+            offset, 4 -37;
+          }
+          rel2 {
+            relative, 0.5 1.0;
+            offset, 21 -20;
+          }
+          image {
+            normal, "target.png";
+          }
+          border, 0 0 0 0;
+        }
+        description {
+          state, "down" 0.0;
+          min, 17 17;
+          max, 17 17;
+          aspect, 1.0 1.0;
+          rel1 {
+            relative, 0.5 1.0;
+            offset, 5 -36;
+          }
+          rel2 {
+            relative, 0.5 1.0;
+            offset, 22 -19;
+          }
+          image {
+            normal, "target.png";
+          }
+          border, 0 0 0 0;
+        }
+      }
+      
+      // shoot glow
+      part {
+        name, "shoot-glow";
+        description {
+          state, "default" 0.0;
+          visible, 0;
+          min, 17 17;
+          max, 17 17;
+          aspect, 1.0 1.0;
+          color, 255, 255, 255, 20;
+          rel1 {
+            relative, 0.5 1.0;
+            offset, 5 -36;
+          }
+          rel2 {
+            relative, 0.5 1.0;
+            offset, 22 -19;
+          }
+          image {
+            normal, "target-glow.png";
+          }
+          border, 0 0 0 0;
+        }
+        description {
+          state, "down" 0.0;
+          visible, 1;
+          min, 17 17;
+          max, 17 17;
+          aspect, 1.0 1.0;
+          color, 255, 255, 255, 255;
+          rel1 {
+            relative, 0.5 1.0;
+            offset, 5 -36;
+          }
+          rel2 {
+            relative, 0.5 1.0;
+            offset, 22 -19;
+          }
+          image {
+            normal, "target-glow.png";
+          }
+          border, 0 0 0 0;
+        }
+      }
+
+
+      // -------- troughs ---- //
+
+      part {
+        name, "red-trough";
+        description {
+          state, "default" 0.0;
+          min, 10 10;
+          max, 9999 9999;
+          rel1 {
+            to, "center";
+            relative, 0.0 0.0;
+            offset, 4, 10;
+          }
+          rel2 {
+            to, "center"; 
+            relative, 0.0 0.0;
+            offset, 34 26;
+          }
+          image {
+            normal, "box_dn.png";
+          }
+          border, 2 2 2 2;
+        }
+      }
+      part {
+        name, "green-trough";
+        description {
+          state, "default" 0.0;
+          min, 10 10;
+          max, 9999 9999;
+          rel1 {
+            to, "red-trough";
+            relative, 0.0 1.0;
+            offset, 0, 0;
+          }
+          rel2 {
+            to, "red-trough"; 
+            relative, 1.0 1.0;
+            offset, 0 16;
+          }
+          image {
+            normal, "box_dn.png";
+          }
+          border, 2 2 2 2;
+        }
+      }
+      part {
+        name, "blue-trough";
+        description {
+          state, "default" 0.0;
+          min, 10 10;
+          max, 9999 9999;
+          rel1 {
+            to, "green-trough";
+            relative, 0.0 1.0;
+            offset, 0, 0;
+          }
+          rel2 {
+            to, "green-trough"; 
+            relative, 1.0 1.0;
+            offset, 0 16;
+          }
+          image {
+            normal, "box_dn.png";
+          }
+          border, 2 2 2 2;
+        }
+      }
+
+
+      part {
+        name, "hue-trough";
+        description {
+          state, "default" 0.0;
+          min, 10 10;
+          max, 9999 9999;
+          rel1 {
+            to, "center";
+            relative, 1.0 0.0;
+            offset, -35 10;
+          }
+          rel2 {
+            to, "center"; 
+            relative, 1.0 0.0;
+            offset, -5 26;
+          }
+          image {
+            normal, "box_dn.png";
+          }
+          border, 2 2 2 2;
+        }
+      }
+      part {
+        name, "sat-trough";
+        description {
+          state, "default" 0.0;
+          min, 10 10;
+          max, 9999 9999;
+          rel1 {
+            to, "hue-trough";
+            relative, 0.0 1.0;
+            offset, 0, 0;
+          }
+          rel2 {
+            to, "hue-trough"; 
+            relative, 1.0 1.0;
+            offset, 0 16;
+          }
+          image {
+            normal, "box_dn.png";
+          }
+          border, 2 2 2 2;
+        }
+      }
+      part {
+        name, "val-trough";
+        description {
+          state, "default" 0.0;
+          min, 10 10;
+          max, 9999 9999;
+          rel1 {
+            to, "sat-trough";
+            relative, 0.0 1.0;
+            offset, 0, 0;
+          }
+          rel2 {
+            to, "sat-trough"; 
+            relative, 1.0 1.0;
+            offset, 0 16;
+          }
+          image {
+            normal, "box_dn.png";
+          }
+          border, 2 2 2 2;
+        }
+      }
+
+      part {
+        name, "hex-trough";
+        description {
+          state, "default" 0.0;
+          min, 10 10;
+          max, 9999 9999;
+          rel1 {
+            to, "blue-trough";
+            relative, 0.0 1.0;
+            offset, 0, 5;
+          }
+          rel2 {
+            to, "val-trough"; 
+            relative, 1.0 1.0;
+            offset, 0 21;
+          }
+          image {
+            normal, "box_dn.png";
+          }
+          border, 2 2 2 2;
+        }
+      }
+
+      part {
+        name, "zoom-trough";
+        description {
+          state, "default" 0.0;
+          min, 10 10;
+          max, 9999 9999;
+          rel1 {
+            to, "hex-trough";
+            relative, 1.0 1.0;
+            offset, -40, 5;
+          }
+          rel2 {
+            to, "hex-trough"; 
+            relative, 1.0 1.0;
+            offset, 0 21;
+          }
+          image {
+            normal, "box_dn.png";
+          }
+          border, 2 2 2 2;
+        }
+      }
+
+      // ------------- rgb buttons ----------- //
+
+      part {
+        name, "red-up";
+        description {
+          state, "default" 0.0;
+          min, 8 8;
+          max, 9999 9999;
+          rel1 {
+            to, "red-trough";
+            relative, 1.0 0.0;
+            offset, -1, 0;
+          }
+          rel2 {
+            to, "red-trough"; 
+            relative, 1.0 0.0;
+            offset, 8 8;
+          }
+          image {
+            normal, "box_up.png";
+          }
+          border, 2 2 2 2;
+        }
+        description {
+          state, "down" 0.0;
+          min, 8 8;
+          max, 9999 9999;
+          rel1 {
+            to, "red-trough";
+            relative, 1.0 0.0;
+            offset, -1, 0;
+          }
+          rel2 {
+            to, "red-trough"; 
+            relative, 1.0 0.0;
+            offset, 8 8;
+          }
+          image {
+            normal, "box_dn.png";
+          }
+          border, 2 2 2 2;
+        }
+      }
+      part {
+        name, "red-dn";
+        description {
+          state, "default" 0.0;
+          min, 8 8;
+          max, 9999 9999;
+          rel1 {
+            to, "red-trough";
+            relative, 1.0 1.0;
+            offset, -1 -8;
+          }
+          rel2 {
+            to, "red-trough"; 
+            relative, 1.0 1.0;
+            offset, 8 0;
+          }
+          image {
+            normal, "box_up.png";
+          }
+          border, 2 2 2 2;
+        }
+        description {
+          state, "down" 0.0;
+          min, 8 8;
+          max, 9999 9999;
+          rel1 {
+            to, "red-trough";
+            relative, 1.0 1.0;
+            offset, -1, -8;
+          }
+          rel2 {
+            to, "red-trough"; 
+            relative, 1.0 1.0;
+            offset, 8 0;
+          }
+          image {
+            normal, "box_dn.png";
+          }
+          border, 2 2 2 2;
+        }
+      }
+
+      // green //
+      part {
+        name, "green-up";
+        description {
+          state, "default" 0.0;
+          min, 8 8;
+          max, 9999 9999;
+          rel1 {
+            to, "green-trough";
+            relative, 1.0 0.0;
+            offset, -1, 0;
+          }
+          rel2 {
+            to, "green-trough"; 
+            relative, 1.0 0.0;
+            offset, 8 8;
+          }
+          image {
+            normal, "box_up.png";
+          }
+          border, 2 2 2 2;
+        }
+        description {
+          state, "down" 0.0;
+          min, 8 8;
+          max, 9999 9999;
+          rel1 {
+            to, "green-trough";
+            relative, 1.0 0.0;
+            offset, -1, 0;
+          }
+          rel2 {
+            to, "green-trough"; 
+            relative, 1.0 0.0;
+            offset, 8 8;
+          }
+          image {
+            normal, "box_dn.png";
+          }
+          border, 2 2 2 2;
+        }
+      }
+      part {
+        name, "green-dn";
+        description {
+          state, "default" 0.0;
+          min, 8 8;
+          max, 9999 9999;
+          rel1 {
+            to, "green-trough";
+            relative, 1.0 1.0;
+            offset, -1 -8;
+          }
+          rel2 {
+            to, "green-trough"; 
+            relative, 1.0 1.0;
+            offset, 8 0;
+          }
+          image {
+            normal, "box_up.png";
+          }
+          border, 2 2 2 2;
+        }
+        description {
+          state, "down" 0.0;
+          min, 8 8;
+          max, 9999 9999;
+          rel1 {
+            to, "green-trough";
+            relative, 1.0 1.0;
+            offset, -1, -8;
+          }
+          rel2 {
+            to, "green-trough"; 
+            relative, 1.0 1.0;
+            offset, 8 0;
+          }
+          image {
+            normal, "box_dn.png";
+          }
+          border, 2 2 2 2;
+        }
+      }
+
+      // blue //
+      part {
+        name, "blue-up";
+        description {
+          state, "default" 0.0;
+          min, 8 8;
+          max, 9999 9999;
+          rel1 {
+            to, "blue-trough";
+            relative, 1.0 0.0;
+            offset, -1, 0;
+          }
+          rel2 {
+            to, "blue-trough"; 
+            relative, 1.0 0.0;
+            offset, 8 8;
+          }
+          image {
+            normal, "box_up.png";
+          }
+          border, 2 2 2 2;
+        }
+        description {
+          state, "down" 0.0;
+          min, 8 8;
+          max, 9999 9999;
+          rel1 {
+            to, "blue-trough";
+            relative, 1.0 0.0;
+            offset, -1, 0;
+          }
+          rel2 {
+            to, "blue-trough"; 
+            relative, 1.0 0.0;
+            offset, 8 8;
+          }
+          image {
+            normal, "box_dn.png";
+          }
+          border, 2 2 2 2;
+        }
+      }
+      part {
+        name, "blue-dn";
+        description {
+          state, "default" 0.0;
+          min, 8 8;
+          max, 9999 9999;
+          rel1 {
+            to, "blue-trough";
+            relative, 1.0 1.0;
+            offset, -1 -8;
+          }
+          rel2 {
+            to, "blue-trough"; 
+            relative, 1.0 1.0;
+            offset, 8 0;
+          }
+          image {
+            normal, "box_up.png";
+          }
+          border, 2 2 2 2;
+        }
+        description {
+          state, "down" 0.0;
+          min, 8 8;
+          max, 9999 9999;
+          rel1 {
+            to, "blue-trough";
+            relative, 1.0 1.0;
+            offset, -1, -8;
+          }
+          rel2 {
+            to, "blue-trough"; 
+            relative, 1.0 1.0;
+            offset, 8 0;
+          }
+          image {
+            normal, "box_dn.png";
+          }
+          border, 2 2 2 2;
+        }
+      }
+
+      // ------------- hsv buttons ----------- //
+
+      part {
+        name, "hue-up";
+        description {
+          state, "default" 0.0;
+          min, 8 8;
+          max, 9999 9999;
+          rel1 {
+            to, "hue-trough";
+            relative, 0.0 0.0;
+            offset, -8, 0;
+          }
+          rel2 {
+            to, "hue-trough"; 
+            relative, 0.0 0.0;
+            offset, 1 8;
+          }
+          image {
+            normal, "box_up.png";
+          }
+          border, 2 2 2 2;
+        }
+        description {
+          state, "down" 0.0;
+          min, 8 8;
+          max, 9999 9999;
+          rel1 {
+            to, "hue-trough";
+            relative, 0.0 0.0;
+            offset, -8, 0;
+          }
+          rel2 {
+            to, "hue-trough"; 
+            relative, 0.0 0.0;
+            offset, 1 8;
+          }
+          image {
+            normal, "box_dn.png";
+          }
+          border, 2 2 2 2;
+        }
+      }
+      part {
+        name, "hue-dn";
+        description {
+          state, "default" 0.0;
+          min, 8 8;
+          max, 9999 9999;
+          rel1 {
+            to, "hue-trough";
+            relative, 0.0 1.0;
+            offset, -8 -8;
+          }
+          rel2 {
+            to, "hue-trough"; 
+            relative, 0.0 1.0;
+            offset, 1 0;
+          }
+          image {
+            normal, "box_up.png";
+          }
+          border, 2 2 2 2;
+        }
+        description {
+          state, "down" 0.0;
+          min, 8 8;
+          max, 9999 9999;
+          rel1 {
+            to, "hue-trough";
+            relative, 0.0 1.0;
+            offset, -8, -8;
+          }
+          rel2 {
+            to, "hue-trough"; 
+            relative, 0.0 1.0;
+            offset, 1 0;
+          }
+          image {
+            normal, "box_dn.png";
+          }
+          border, 2 2 2 2;
+        }
+      }
+
+      part {
+        name, "sat-up";
+        description {
+          state, "default" 0.0;
+          min, 8 8;
+          max, 9999 9999;
+          rel1 {
+            to, "sat-trough";
+            relative, 0.0 0.0;
+            offset, -8, 0;
+          }
+          rel2 {
+            to, "sat-trough"; 
+            relative, 0.0 0.0;
+            offset, 1 8;
+          }
+          image {
+            normal, "box_up.png";
+          }
+          border, 2 2 2 2;
+        }
+        description {
+          state, "down" 0.0;
+          min, 8 8;
+          max, 9999 9999;
+          rel1 {
+            to, "sat-trough";
+            relative, 0.0 0.0;
+            offset, -8, 0;
+          }
+          rel2 {
+            to, "sat-trough"; 
+            relative, 0.0 0.0;
+            offset, 1 8;
+          }
+          image {
+            normal, "box_dn.png";
+          }
+          border, 2 2 2 2;
+        }
+      }
+      part {
+        name, "sat-dn";
+        description {
+          state, "default" 0.0;
+          min, 8 8;
+          max, 9999 9999;
+          rel1 {
+            to, "sat-trough";
+            relative, 0.0 1.0;
+            offset, -8 -8;
+          }
+          rel2 {
+            to, "sat-trough"; 
+            relative, 0.0 1.0;
+            offset, 1 0;
+          }
+          image {
+            normal, "box_up.png";
+          }
+          border, 2 2 2 2;
+        }
+        description {
+          state, "down" 0.0;
+          min, 8 8;
+          max, 9999 9999;
+          rel1 {
+            to, "sat-trough";
+            relative, 0.0 1.0;
+            offset, -8, -8;
+          }
+          rel2 {
+            to, "sat-trough"; 
+            relative, 0.0 1.0;
+            offset, 1 0;
+          }
+          image {
+            normal, "box_dn.png";
+          }
+          border, 2 2 2 2;
+        }
+      }
+
+      part {
+        name, "val-up";
+        description {
+          state, "default" 0.0;
+          min, 8 8;
+          max, 9999 9999;
+          rel1 {
+            to, "val-trough";
+            relative, 0.0 0.0;
+            offset, -8, 0;
+          }
+          rel2 {
+            to, "val-trough"; 
+            relative, 0.0 0.0;
+            offset, 1 8;
+          }
+          image {
+            normal, "box_up.png";
+          }
+          border, 2 2 2 2;
+        }
+        description {
+          state, "down" 0.0;
+          min, 8 8;
+          max, 9999 9999;
+          rel1 {
+            to, "val-trough";
+            relative, 0.0 0.0;
+            offset, -8, 0;
+          }
+          rel2 {
+            to, "val-trough"; 
+            relative, 0.0 0.0;
+            offset, 1 8;
+          }
+          image {
+            normal, "box_dn.png";
+          }
+          border, 2 2 2 2;
+        }
+      }
+      part {
+        name, "val-dn";
+        description {
+          state, "default" 0.0;
+          min, 8 8;
+          max, 9999 9999;
+          rel1 {
+            to, "val-trough";
+            relative, 0.0 1.0;
+            offset, -8 -8;
+          }
+          rel2 {
+            to, "val-trough"; 
+            relative, 0.0 1.0;
+            offset, 1 0;
+          }
+          image {
+            normal, "box_up.png";
+          }
+          border, 2 2 2 2;
+        }
+        description {
+          state, "down" 0.0;
+          min, 8 8;
+          max, 9999 9999;
+          rel1 {
+            to, "val-trough";
+            relative, 0.0 1.0;
+            offset, -8, -8;
+          }
+          rel2 {
+            to, "val-trough"; 
+            relative, 0.0 1.0;
+            offset, 1 0;
+          }
+          image {
+            normal, "box_dn.png";
+          }
+          border, 2 2 2 2;
+        }
+      }
+
+      // -- zoom button -- //
+      part {
+        name, "zoom-up";
+        description {
+          state, "default" 0.0;
+          min, 8 8;
+          max, 9999 9999;
+          rel1 {
+            to, "zoom-trough";
+            relative, 0.0 0.0;
+            offset, -8, 0;
+          }
+          rel2 {
+            to, "zoom-trough"; 
+            relative, 0.0 0.0;
+            offset, 1 8;
+          }
+          image {
+            normal, "box_up.png";
+          }
+          border, 2 2 2 2;
+        }
+        description {
+          state, "down" 0.0;
+          min, 8 8;
+          max, 9999 9999;
+          rel1 {
+            to, "zoom-trough";
+            relative, 0.0 0.0;
+            offset, -8, 0;
+          }
+          rel2 {
+            to, "zoom-trough"; 
+            relative, 0.0 0.0;
+            offset, 1 8;
+          }
+          image {
+            normal, "box_dn.png";
+          }
+          border, 2 2 2 2;
+        }
+      }
+      part {
+        name, "zoom-dn";
+        description {
+          state, "default" 0.0;
+          min, 8 8;
+          max, 9999 9999;
+          rel1 {
+            to, "zoom-trough";
+            relative, 0.0 1.0;
+            offset, -8 -8;
+          }
+          rel2 {
+            to, "zoom-trough"; 
+            relative, 0.0 1.0;
+            offset, 1 0;
+          }
+          image {
+            normal, "box_up.png";
+          }
+          border, 2 2 2 2;
+        }
+        description {
+          state, "down" 0.0;
+          min, 8 8;
+          max, 9999 9999;
+          rel1 {
+            to, "zoom-trough";
+            relative, 0.0 1.0;
+            offset, -8, -8;
+          }
+          rel2 {
+            to, "zoom-trough"; 
+            relative, 0.0 1.0;
+            offset, 1 0;
+          }
+          image {
+            normal, "box_dn.png";
+          }
+          border, 2 2 2 2;
+        }
+      }
+
+      // ---- labels --- //
+
+      part {
+        name, "rgbhsv";
+        description {
+          state, "default" 0.0;
+          min, 16 43;
+          max, 16 43;
+          rel1 {
+            to, "center";
+            relative, 0.5 0.0;
+            offset, -8 12;
+          }
+          rel2 {
+            to, "center";
+            relative, .5 0.0;
+            offset, 8 55;
+          }
+          image {
+            normal, "rgbhsv.png";
+          }
+          border, 0 0 7 7;
+        }
+      }
+      part {
+        name, "zoom";
+        description {
+          state, "default" 0.0;
+          min, 23 11;
+          max, 23 11;
+          rel1 {
+            to, "zoom-up";
+            relative, 0.0 0.0;
+            offset, -28 0;
+          }
+          rel2 {
+            to, "zoom-dn";
+            relative, 0.0 1.0;
+            offset, -5 0;
+          }
+          image {
+            normal, "zoom.png";
+          }
+          border, 0 0 7 7;
+        }
+      }
+
+      // -- text -- //
+      
+      part {
+        name, "red-val";
+        type, TEXT;
+        effect, NONE;
+        description {
+          state, "default" 0.0;
+          min, 0 0;
+          max, 100 100;
+          rel1 {
+            to, "red-trough";
+            relative, 0.0 0.0;
+            offset, 0 0;
+          }
+          rel2 {
+            to, "red-trough";
+            relative, 1.0 1.0;
+            offset, 0 0;
+          }
+          color, 0 0 0 255;
+          text {
+            text, "";
+            font, "Vera";
+            size, 8;
+            fit, 0 0;
+            min, 1 1;
+            align, 0.5 0.5;
+          }
+          border, 0 0 7 7;
+        }
+      }
+
+      part {
+        name, "green-val";
+        type, TEXT;
+        effect, NONE;
+        description {
+          state, "default" 0.0;
+          min, 0 0;
+          max, 100 100;
+          rel1 {
+            to, "green-trough";
+            relative, 0.0 0.0;
+            offset, 0 0;
+          }
+          rel2 {
+            to, "green-trough";
+            relative, 1.0 1.0;
+            offset, 0 0;
+          }
+          color, 0 0 0 255;
+          text {
+            text, "";
+            font, "Vera";
+            size, 8;
+            fit, 0 0;
+            min, 1 1;
+            align, 0.5 0.5;
+          }
+          border, 0 0 7 7;
+        }
+      }
+
+      part {
+        name, "blue-val";
+        type, TEXT;
+        effect, NONE;
+        description {
+          state, "default" 0.0;
+          min, 0 0;
+          max, 100 100;
+          rel1 {
+            to, "blue-trough";
+            relative, 0.0 0.0;
+            offset, 0 0;
+          }
+          rel2 {
+            to, "blue-trough";
+            relative, 1.0 1.0;
+            offset, 0 0;
+          }
+          color, 0 0 0 255;
+          text {
+            text, "";
+            font, "Vera";
+            size, 8;
+            fit, 0 0;
+            min, 1 1;
+            align, 0.5 0.5;
+          }
+          border, 0 0 7 7;
+        }
+      }
+
+      part {
+        name, "hue-val";
+        type, TEXT;
+        effect, NONE;
+        description {
+          state, "default" 0.0;
+          min, 0 0;
+          max, 100 100;
+          rel1 {
+            to, "hue-trough";
+            relative, 0.0 0.0;
+            offset, 0 0;
+          }
+          rel2 {
+            to, "hue-trough";
+            relative, 1.0 1.0;
+            offset, 0 0;
+          }
+          color, 0 0 0 255;
+          text {
+            text, "";
+            font, "Vera";
+            size, 8;
+            fit, 0 0;
+            min, 1 1;
+            align, 0.5 0.5;
+          }
+          border, 0 0 7 7;
+        }
+      }
+
+      part {
+        name, "val-val";
+        type, TEXT;
+        effect, NONE;
+        description {
+          state, "default" 0.0;
+          min, 0 0;
+          max, 100 100;
+          rel1 {
+            to, "val-trough";
+            relative, 0.0 0.0;
+            offset, 0 0;
+          }
+          rel2 {
+            to, "val-trough";
+            relative, 1.0 1.0;
+            offset, 0 0;
+          }
+          color, 0 0 0 255;
+          text {
+            text, "";
+            font, "Vera";
+            size, 8;
+            fit, 0 0;
+            min, 1 1;
+            align, 0.5 0.5;
+          }
+          border, 0 0 7 7;
+        }
+      }
+
+      part {
+        name, "sat-val";
+        type, TEXT;
+        effect, NONE;
+        description {
+          state, "default" 0.0;
+          min, 0 0;
+          max, 100 100;
+          rel1 {
+            to, "sat-trough";
+            relative, 0.0 0.0;
+            offset, 0 0;
+          }
+          rel2 {
+            to, "sat-trough";
+            relative, 1.0 1.0;
+            offset, 0 0;
+          }
+          color, 0 0 0 255;
+          text {
+            text, "";
+            font, "Vera";
+            size, 8;
+            fit, 0 0;
+            min, 1 1;
+            align, 0.5 0.5;
+          }
+          border, 0 0 7 7;
+        }
+      }
+
+      part {
+        name, "hex-val";
+        type, TEXT;
+        effect, NONE;
+        description {
+          state, "default" 0.0;
+          min, 0 0;
+          max, 100 100;
+          rel1 {
+            to, "hex-trough";
+            relative, 0.0 0.0;
+            offset, 5 0;
+          }
+          rel2 {
+            to, "hex-trough";
+            relative, 1.0 1.0;
+            offset, 0 0;
+          }
+          color, 0 0 0 255;
+          text {
+            text, "";
+            font, "Vera";
+            size, 8;
+            fit, 0 0;
+            min, 1 1;
+            align, 0.0 0.5;
+          }
+          border, 0 0 7 7;
+        }
+      }
+
+      part {
+        name, "zoom-val";
+        type, TEXT;
+        effect, NONE;
+        description {
+          state, "default" 0.0;
+          min, 0 0;
+          max, 100 100;
+          rel1 {
+            to, "zoom-trough";
+            relative, 0.0 0.0;
+            offset, 0 0;
+          }
+          rel2 {
+            to, "zoom-trough";
+            relative, 1.0 1.0;
+            offset, 0 0;
+          }
+          color, 0 0 0 255;
+          text {
+            text, "";
+            font, "Vera";
+            size, 8;
+            fit, 0 0;
+            min, 1 1;
+            align, 0.5 0.5;
+          }
+          border, 0 0 7 7;
+        }
+      }
+
+    }
+
+//--------------------- programs -------------------------//
+    programs {
+      program {
+        name, "pick_down";
+        signal, "mouse,down,1";
+        source, "pick";
+        action, STATE_SET "down" 0.0;
+        transition, LINEAR, 0.01;
+        target, "pick";
+      }
+      program {
+        name, "pick_up";
+        signal, "mouse,up,1";
+        source, "pick";
+        action, STATE_SET "default" 0.0;
+        transition, LINEAR, 0.01;
+        target, "pick";
+      }
+      program {
+        name, "shoot_down";
+        signal, "mouse,down,1";
+        source, "shoot";
+        action, STATE_SET "down" 0.0;
+        transition, LINEAR, 0.01;
+        target, "shoot";
+      }
+      program {
+        name, "shoot_up";
+        signal, "mouse,up,1";
+        source, "shoot";
+        action, STATE_SET "default" 0.0;
+        transition, LINEAR, 0.01;
+        target, "shoot";
+      }
+
+      // pick button glow
+      program {
+        name, "pick_glow_anim";
+        signal, "mouse,down,1";
+        source, "pick";
+        action, STATE_SET "down" 0.0;
+        transition, SINUSOIDAL, 1.0;
+        target, "pick-glow";
+        after, "pick_glow_anim2";
+      }
+      program {
+        name, "pick_glow_anim2";
+        action, STATE_SET "default" 0.0;
+        transition, SINUSOIDAL, 1.0;
+        target, "pick-glow";
+        after, "pick_glow_anim";
+      }
+      program {
+        name, "pick_glow_stop";
+        signal, "mouse,up,1";
+        source, "pick";
+        action, STATE_SET "default" 0.0;
+        transition, LINEAR, 0.1;
+        target, "pick-glow";
+      }
+
+      // shoot button glow
+      program {
+        name, "shoot_glow_anim";
+        signal, "mouse,down,1";
+        source, "shoot";
+        action, STATE_SET "down" 0.0;
+        transition, SINUSOIDAL, 1.0;
+        target, "shoot-glow";
+        after, "shoot_glow_anim2";
+      }
+      program {
+        name, "shoot_glow_anim2";
+        action, STATE_SET "default" 0.0;
+        transition, SINUSOIDAL, 1.0;
+        target, "shoot-glow";
+        after, "shoot_glow_anim";
+      }
+      program {
+        name, "shoot_glow_stop";
+        signal, "mouse,up,1";
+        source, "shoot";
+        action, STATE_SET "default" 0.0;
+        transition, LINEAR, 0.1;
+        target, "shoot-glow";
+      }
+
+      // red //
+      program {
+        name, "red-up1";
+        signal, "mouse,down,1";
+        source, "red-up";
+        action, STATE_SET "down" 0.0;
+        transition, LINEAR, 0.0;
+        target, "red-up";
+      }
+      program {
+        name, "red-up2";
+        signal, "mouse,up,1";
+        source, "red-up";
+        action, STATE_SET "default" 0.0;
+        transition, LINEAR, 0.0;
+        target, "red-up";
+      }
+      program {
+        name, "red-dn1";
+        signal, "mouse,down,1";
+        source, "red-dn";
+        action, STATE_SET "down" 0.0;
+        transition, LINEAR, 0.0;
+        target, "red-dn";
+      }
+      program {
+        name, "red-dn2";
+        signal, "mouse,up,1";
+        source, "red-dn";
+        action, STATE_SET "default" 0.0;
+        transition, LINEAR, 0.0;
+        target, "red-dn";
+      }
+
+      // green //
+      program {
+        name, "green-up1";
+        signal, "mouse,down,1";
+        source, "green-up";
+        action, STATE_SET "down" 0.0;
+        transition, LINEAR, 0.0;
+        target, "green-up";
+      }
+      program {
+        name, "green-up2";
+        signal, "mouse,up,1";
+        source, "green-up";
+        action, STATE_SET "default" 0.0;
+        transition, LINEAR, 0.0;
+        target, "green-up";
+      }
+      program {
+        name, "green-dn1";
+        signal, "mouse,down,1";
+        source, "green-dn";
+        action, STATE_SET "down" 0.0;
+        transition, LINEAR, 0.0;
+        target, "green-dn";
+      }
+      program {
+        name, "green-dn2";
+        signal, "mouse,up,1";
+        source, "green-dn";
+        action, STATE_SET "default" 0.0;
+        transition, LINEAR, 0.0;
+        target, "green-dn";
+      }
+
+      // blue //
+      program {
+        name, "blue-up1";
+        signal, "mouse,down,1";
+        source, "blue-up";
+        action, STATE_SET "down" 0.0;
+        transition, LINEAR, 0.0;
+        target, "blue-up";
+      }
+      program {
+        name, "blue-up2";
+        signal, "mouse,up,1";
+        source, "blue-up";
+        action, STATE_SET "default" 0.0;
+        transition, LINEAR, 0.0;
+        target, "blue-up";
+      }
+      program {
+        name, "blue-dn1";
+        signal, "mouse,down,1";
+        source, "blue-dn";
+        action, STATE_SET "down" 0.0;
+        transition, LINEAR, 0.0;
+        target, "blue-dn";
+      }
+      program {
+        name, "blue-dn2";
+        signal, "mouse,up,1";
+        source, "blue-dn";
+        action, STATE_SET "default" 0.0;
+        transition, LINEAR, 0.0;
+        target, "blue-dn";
+      }
+
+      // hue //
+      program {
+        name, "hue-up1";
+        signal, "mouse,down,1";
+        source, "hue-up";
+        action, STATE_SET "down" 0.0;
+        transition, LINEAR, 0.0;
+        target, "hue-up";
+      }
+      program {
+        name, "hue-up2";
+        signal, "mouse,up,1";
+        source, "hue-up";
+        action, STATE_SET "default" 0.0;
+        transition, LINEAR, 0.0;
+        target, "hue-up";
+      }
+      program {
+        name, "hue-dn1";
+        signal, "mouse,down,1";
+        source, "hue-dn";
+        action, STATE_SET "down" 0.0;
+        transition, LINEAR, 0.0;
+        target, "hue-dn";
+      }
+      program {
+        name, "hue-dn2";
+        signal, "mouse,up,1";
+        source, "hue-dn";
+        action, STATE_SET "default" 0.0;
+        transition, LINEAR, 0.0;
+        target, "hue-dn";
+      }
+
+      // sat //
+      program {
+        name, "sat-up1";
+        signal, "mouse,down,1";
+        source, "sat-up";
+        action, STATE_SET "down" 0.0;
+        transition, LINEAR, 0.0;
+        target, "sat-up";
+      }
+      program {
+        name, "sat-up2";
+        signal, "mouse,up,1";
+        source, "sat-up";
+        action, STATE_SET "default" 0.0;
+        transition, LINEAR, 0.0;
+        target, "sat-up";
+      }
+      program {
+        name, "sat-dn1";
+        signal, "mouse,down,1";
+        source, "sat-dn";
+        action, STATE_SET "down" 0.0;
+        transition, LINEAR, 0.0;
+        target, "sat-dn";
+      }
+      program {
+        name, "sat-dn2";
+        signal, "mouse,up,1";
+        source, "sat-dn";
+        action, STATE_SET "default" 0.0;
+        transition, LINEAR, 0.0;
+        target, "sat-dn";
+      }
+
+      // val //
+      program {
+        name, "val-up1";
+        signal, "mouse,down,1";
+        source, "val-up";
+        action, STATE_SET "down" 0.0;
+        transition, LINEAR, 0.0;
+        target, "val-up";
+      }
+      program {
+        name, "val-up2";
+        signal, "mouse,up,1";
+        source, "val-up";
+        action, STATE_SET "default" 0.0;
+        transition, LINEAR, 0.0;
+        target, "val-up";
+      }
+      program {
+        name, "val-dn1";
+        signal, "mouse,down,1";
+        source, "val-dn";
+        action, STATE_SET "down" 0.0;
+        transition, LINEAR, 0.0;
+        target, "val-dn";
+      }
+      program {
+        name, "val-dn2";
+        signal, "mouse,up,1";
+        source, "val-dn";
+        action, STATE_SET "default" 0.0;
+        transition, LINEAR, 0.0;
+        target, "val-dn";
+      }
+
+      // zoom //
+      program {
+        name, "zoom-up1";
+        signal, "mouse,down,1";
+        source, "zoom-up";
+        action, STATE_SET "down" 0.0;
+        transition, LINEAR, 0.0;
+        target, "zoom-up";
+      }
+      program {
+        name, "zoom-up2";
+        signal, "mouse,up,1";
+        source, "zoom-up";
+        action, STATE_SET "default" 0.0;
+        transition, LINEAR, 0.0;
+        target, "zoom-up";
+      }
+      program {
+        name, "zoom-dn1";
+        signal, "mouse,down,1";
+        source, "zoom-dn";
+        action, STATE_SET "down" 0.0;
+        transition, LINEAR, 0.0;
+        target, "zoom-dn";
+      }
+      program {
+        name, "zoom-dn2";
+        signal, "mouse,up,1";
+        source, "zoom-dn";
+        action, STATE_SET "default" 0.0;
+        transition, LINEAR, 0.0;
+        target, "zoom-dn";
+      }
+
+    }
+  }
+}

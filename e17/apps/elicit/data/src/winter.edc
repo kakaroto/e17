@@ -1,0 +1,2051 @@
+// --- Winter theme for elicit --- //
+// Author: Rephorm
+// Created: June/July '03
+//
+//  Feel free to use this as an example of an edc based
+//  edje them for elicit.  I think I'd recommend waiting
+//  around for a GUI editor (or getting really familiar
+//  with relative placement and copy/paste/replace)
+//  For instance, I created one label, value, and arrow set and
+//  then just duplicated it 7 times with proper relative postioning.
+
+
+
+images
+{
+  image, "base.png" LOSSY 98;
+  image, "left-border.png" LOSSY 98;
+  image, "left-panel.png" LOSSY 98;
+  image, "left-shadow.png" LOSSY 98;
+  image, "roundedbox.png" LOSSY 98;
+  image, "dropper.png" LOSSY 98;
+  image, "target.png" LOSSY 98;
+  image, "x.png" LOSSY 98;
+  image, "arrow-up.png" LOSSY 98;
+  image, "arrow-dn.png" LOSSY 98;
+}
+
+collections {
+  group {
+    name, "elicit";
+    parts {
+
+      // center panel
+      part {
+        name, "center";
+        description {
+          state, "default" 0.0;
+          min, 104 113;
+          max, 9999 9999;
+          rel1 {
+            relative, 0.0 0.0;
+            offset, 60 0;
+          }
+          rel2 {
+            relative, 1.0 1.0;
+            offset, -1 -1;
+          }
+          image {
+            normal, "base.png";
+          }
+          border, 7 8 7 8;
+        }
+      }
+
+    //-- shot --//
+      part {
+        name, "shot";
+        description {
+          state, "default" 0.0;
+          min, 0 0;
+          max, 9999 9999;
+          rel1 {
+            to, "shot-border";
+            relative, 0.0 0.0;
+            offset, 1 1;
+          }
+          rel2 {
+            to, "shot-border";
+            relative, 1.0 1.0;
+            offset, -1 -1;
+          }
+        }
+      }
+      part {
+        name, "shot-border";
+        description {
+          state, "default" 0.0;
+          min, 0 0;
+          max, 9999 9999;
+          rel1 {
+            to, "center";
+            relative, 0.0 0.0;
+            offset, 6 13;
+          }
+          rel2 {
+            to, "center";
+            relative, 1.0 1.0;
+            offset, -6 -39;
+          }
+          image {
+            normal, "roundedbox.png";
+          }
+          border, 7 8 7 8;
+        }
+      }
+      
+  //-- swatch --//
+      part {
+        name, "swatch";
+        description {
+          state, "default" 0.0;
+          min, 0 0;
+          max, 9999 9999;
+          rel1 {
+            to, "swatch-border";
+            relative, 0.0 0.0;
+            offset, 1 1;
+          }
+          rel2 {
+            to, "swatch-border";
+            relative, 1.0 1.0;
+            offset, -1 -1;
+          }
+        }
+      }
+      part {
+        name, "swatch-border";
+        description {
+          state, "default" 0.0;
+          min, 22 22;
+          max, 22 22;
+          rel1 {
+            to, "center";
+            relative, 0.0 1.0;
+            offset, 6 -34;
+          }
+          rel2 {
+            to, "center";
+            relative, 0.0 1.0;
+            offset, 28 -12;
+          }
+          image {
+            normal, "roundedbox.png";
+          }
+          border, 7 8 7 8;
+        }
+
+      }
+
+  // ------- buttons ----------- //
+
+      // close button //
+      part {
+        name, "close";
+        description {
+          state, "default" 0.0;
+          min, 17 17;
+          max, 17 17;
+          color, 255, 255, 255, 128;
+          rel1 {
+            to, "center";
+            relative, 1.0 1.0;
+            offset, -22 -30;
+          }
+          rel2 {
+            to, "center";
+            relative, 1.0 1.0;
+            offset, -5 -13;
+          }
+          image {
+            normal, "x.png";
+          }
+        }
+        description {
+          state, "over" 0.0;
+          min, 17 17;
+          max, 17 17;
+          color, 255, 255, 255, 255;
+          rel1 {
+            to, "center";
+            relative, 1.0 1.0;
+            offset, -22 -30;
+          }
+          rel2 {
+            to, "center";
+            relative, 1.0 1.0;
+            offset, -5 -13;
+          }
+          image {
+            normal, "x.png";
+          }
+        }
+        description {
+          state, "down" 0.0;
+          min, 17 17;
+          max, 17 17;
+          rel1 {
+            to, "center";
+            relative, 1.0 1.0;
+            offset, -21 -29;
+          }
+          rel2 {
+            to, "center";
+            relative, 1.0 1.0;
+            offset, -4 -12;
+          }
+          image {
+            normal, "x.png";
+          }
+        }
+      }
+
+      // shoot button //
+      part {
+        name, "shoot";
+        description {
+          state, "default" 0.0;
+          min, 17 17;
+          max, 17 17;
+          color, 255, 255, 255, 128;
+          rel1 {
+            to, "center";
+            relative, 1.0 1.0;
+            offset, -43 -30;
+          }
+          rel2 {
+            to, "center";
+            relative, 1.0 1.0;
+            offset, -26 -13;
+          }
+          image {
+            normal, "target.png";
+          }
+        }
+        description {
+          state, "over" 0.0;
+          min, 17 17;
+          max, 17 17;
+          color, 255, 255, 255, 255;
+          rel1 {
+            to, "center";
+            relative, 1.0 1.0;
+            offset, -43 -30;
+          }
+          rel2 {
+            to, "center";
+            relative, 1.0 1.0;
+            offset, -26 -13;
+          }
+          image {
+            normal, "target.png";
+          }
+        }
+        description {
+          state, "down" 0.0;
+          min, 17 17;
+          max, 17 17;
+          rel1 {
+            to, "center";
+            relative, 1.0 1.0;
+            offset, -42 -29;
+          }
+          rel2 {
+            to, "center";
+            relative, 1.0 1.0;
+            offset, -25 -12;
+          }
+          image {
+            normal, "target.png";
+          }
+        }
+      }
+
+      // pick button //
+      part {
+        name, "pick";
+        description {
+          state, "default" 0.0;
+          min, 19 19;
+          max, 19 19;
+          color, 255, 255, 255, 128;
+          rel1 {
+            to, "center";
+            relative, 1.0 1.0;
+            offset, -64 -31;
+          }
+          rel2 {
+            to, "center";
+            relative, 1.0 1.0;
+            offset, -47 -12;
+          }
+          image {
+            normal, "dropper.png";
+          }
+        }
+        description {
+          state, "over" 0.0;
+          min, 19 19;
+          max, 19 19;
+          color, 255, 255, 255, 255;
+          rel1 {
+            to, "center";
+            relative, 1.0 1.0;
+            offset, -64 -31;
+          }
+          rel2 {
+            to, "center";
+            relative, 1.0 1.0;
+            offset, -47 -12;
+          }
+          image {
+            normal, "dropper.png";
+          }
+        }
+        description {
+          state, "down" 0.0;
+          min, 19 19;
+          max, 19 19;
+          rel1 {
+            to, "center";
+            relative, 1.0 1.0;
+            offset, -63 -30;
+          }
+          rel2 {
+            to, "center";
+            relative, 1.0 1.0;
+            offset, -46 -11;
+          }
+          image {
+            normal, "dropper.png";
+          }
+        }
+      }
+
+   //--- left panel ---//   
+
+      part {
+        name, "left-panel";
+        description {
+          state, "default" 0.0;
+          min, 0 99;
+          max, 99 9999;
+          rel1 {
+            to, "left-border";
+            relative, 1.0 0.0;
+            offset, 0 0;
+          }
+          rel2 {
+            to, "center";
+            relative, 0.0 1.0;
+            offset, 0 -7;
+          }
+          image {
+            normal, "left-panel.png";
+          }
+          border, 0 0 7 8;
+        }
+      }
+
+      part {
+        name, "left-shadow";
+        clip_to, "left-clip";
+        description {
+          state, "default" 0.0;
+          min, 6 97;
+          max, 6 9999;
+          rel1 {
+            to, "left-panel";
+            relative, 1.0 0.0;
+            offset, -6 0;
+          }
+          rel2 {
+            to, "left-panel";
+            relative, 1.0 1.0;
+            offset, 0 0;
+          }
+          image {
+            normal, "left-shadow.png";
+          }
+          border, 0 0 7 8;
+        }
+      }
+
+      part {
+        name, "left-border";
+        description {
+          state, "default" 0.0;
+          min, 7 99;
+          max, 7 9999;
+          rel1 {
+            to, "center";
+            relative, 0.0 0.0;
+            offset, -6 7;
+          }
+          rel2 {
+            to, "center";
+            relative, 0.0 1.0;
+            offset, 1 -7;
+          }
+          image {
+            normal, "left-border.png";
+          }
+          border, 0 0 7 8;
+        }
+        description {
+          state, "open" 0.0;
+          min, 7 99;
+          max, 7 9999;
+          rel1 {
+            to, "center";
+            relative, 0.0 0.0;
+            offset, -60 7;
+          }
+          rel2 {
+            to, "center";
+            relative, 0.0 1.0;
+            offset, -53 -7;
+          }
+          image {
+            normal, "left-border.png";
+          }
+          border, 0 0 7 8;
+        }
+      }
+
+      part {
+        name, "left-clip";
+        description {
+          state, "default" 0.0;
+          min, 0 97;
+          max, 9999 9999;
+          rel1 {
+            to, "left-panel";
+            relative, 0.0 0.0;
+            offset, 0 0;
+          }
+          rel2 {
+            to, "left-panel";
+            relative, 1.0 1.0;
+            offset, 0 0;
+          }
+          border, 0 0 0 0;
+        }
+      }
+
+
+      part {
+        name, "left-border-close";
+        description {
+          state, "default" 0.0;
+          visible, 0;
+          min, 0 97;
+          max, 9999 9999;
+          rel1 {
+            to, "left-border";
+            relative, 0.0 0.0;
+            offset, 0 0;
+          }
+          rel2 {
+            to, "left-border";
+            relative, 1.0 1.0;
+            offset, 0 0;
+          }
+          border, 0 0 0 0;
+        }
+        description {
+          state, "open" 0.0;
+          visible, 1;
+          min, 0 97;
+          max, 9999 9999;
+          rel1 {
+            to, "left-border";
+            relative, 0.0 0.0;
+            offset, 0 0;
+          }
+          rel2 {
+            to, "left-border";
+            relative, 1.0 1.0;
+            offset, 0 0;
+          }
+          border, 0 0 0 0;
+        }
+      }
+
+// ----------  Labels (color vals) --------- //
+
+  // ----- red stuff ---- //
+
+    // -- label -- //
+      part {
+        name, "red";
+        clip_to, "left-clip";
+        type, TEXT;
+        effect, NONE;
+        description {
+          state, "default" 0.0;
+          align, 0.0 0.5;
+          min, 0 0;
+          max, 9999 9999;
+          rel1 {
+            to, "left-panel";
+            relative, 0.0 0.0;
+            offset, 6 7;
+          }
+          rel2 {
+            to, "left-panel";
+            relative, 0.0 0.0;
+            offset, 15 14;
+          }
+          color, 0 0 0 200;
+          text {
+            text, "R:";
+            font, "Vera";
+            size, 7;
+            fit, 0 0;
+            min, 0 0;
+            align, 1.0 0.5;
+          }
+        }
+      }
+
+      // -- val -- //
+      part {
+        name, "red-val";
+        clip_to, "left-clip";
+        type, TEXT;
+//        effect, NONE;
+        description {
+          state, "default" 0.0;
+          align, 0.0 0.5;
+          min, 0 0;
+          max, 9999 9999;
+          rel1 {
+            to, "red";
+            relative, 1.0 0.0;
+            offset, 5 0;
+          }
+          rel2 {
+            to, "red";
+            relative, 1.0 1.0;
+            offset, 25 0;
+          }
+          color, 0 0 0 200;
+          text {
+            text, "255";
+            font, "Vera";
+            size, 7;
+            fit, 0 0;
+            min, 0 0;
+            align, 0.0 0.5;
+          }
+        }
+      }
+
+      // -- up -- //
+      part {
+        name, "red-up";
+        clip_to, "left-clip";
+        description {
+          state, "default" 0.0;
+          min, 5 3;
+          max, 5 3;
+          align, 0.0 0.0;
+          color, 255 255 255 102;
+          rel1 {
+            to, "red-val";
+            relative, 1.0 0.0;
+            offset, 4 -1;
+          }
+          rel2 {
+            to, "red-val";
+            relative, 1.0 0.0;
+            offset, 9 2;
+          }
+          image {
+            normal, "arrow-up.png";
+          }
+        }
+        description {
+          state, "over" 0.0;
+          min, 5 3;
+          max, 5 3;
+          align, 0.0 0.0;
+          color, 255 255 255 255;
+          rel1 {
+            to, "red-val";
+            relative, 1.0 0.0;
+            offset, 4 -1;
+          }
+          rel2 {
+            to, "red-val";
+            relative, 1.0 0.0;
+            offset, 9 2;
+          }
+          image {
+            normal, "arrow-up.png";
+          }
+        }
+        description {
+          state, "down" 0.0;
+          min, 5 3;
+          max, 5 3;
+          align, 0.0 0.0;
+          color, 255 255 255 102;
+          rel1 {
+            to, "red-val";
+            relative, 1.0 0.0;
+            offset, 5 0;
+          }
+          rel2 {
+            to, "red-val";
+            relative, 1.0 0.0;
+            offset, 10 3;
+          }
+          image {
+            normal, "arrow-up.png";
+          }
+        }
+      }
+
+      // -- down -- //
+      part {
+        name, "red-dn";
+        clip_to, "left-clip";
+        description {
+          state, "default" 0.0;
+          min, 5 3;
+          max, 5 3;
+          align, 0.0 0.0;
+          color, 255 255 255 102;
+          rel1 {
+            to, "red-val";
+            relative, 1.0 0.0;
+            offset, 4 3;
+          }
+          rel2 {
+            to, "red-val";
+            relative, 1.0 0.0;
+            offset, 9 6;
+          }
+          image {
+            normal, "arrow-dn.png";
+          }
+        }
+        description {
+          state, "over" 0.0;
+          min, 5 3;
+          max, 5 3;
+          align, 0.0 0.0;
+          color, 255 255 255 255;
+          rel1 {
+            to, "red-val";
+            relative, 1.0 0.0;
+            offset, 4 3;
+          }
+          rel2 {
+            to, "red-val";
+            relative, 1.0 0.0;
+            offset, 9 6;
+          }
+          image {
+            normal, "arrow-dn.png";
+          }
+        }
+        description {
+          state, "down" 0.0;
+          min, 5 3;
+          max, 5 3;
+          align, 0.0 0.0;
+          color, 255 255 255 102;
+          rel1 {
+            to, "red-val";
+            relative, 1.0 0.0;
+            offset, 5 4;
+          }
+          rel2 {
+            to, "red-val";
+            relative, 1.0 0.0;
+            offset, 10 7;
+          }
+          image {
+            normal, "arrow-dn.png";
+          }
+        }
+      }
+
+  //--------- green stuff ------------- //
+
+      part {
+        name, "green";
+        clip_to, "left-clip";
+        type, TEXT;
+        effect, NONE;
+        description {
+          state, "default" 0.0;
+          align, 0.0 0.5;
+          min, 0 0;
+          max, 9999 9999;
+          rel1 {
+            to, "red";
+            relative, 0.0 1.0;
+            offset, 0 5;
+          }
+          rel2 {
+            to, "red";
+            relative, 1.0 1.0;
+            offset, 0 12;
+          }
+          color, 0 0 0 200;
+          text {
+            text, "G:";
+            font, "Vera";
+            size, 7;
+            fit, 0 0;
+            min, 0 0;
+            align, 1.0 0.5;
+          }
+        }
+      }
+
+      // -- val -- //
+      part {
+        name, "green-val";
+        clip_to, "left-clip";
+        type, TEXT;
+        effect, NONE;
+        description {
+          state, "default" 0.0;
+          align, 0.0 0.5;
+          min, 0 0;
+          max, 9999 9999;
+          rel1 {
+            to, "green";
+            relative, 1.0 0.0;
+            offset, 5 0;
+          }
+          rel2 {
+            to, "green";
+            relative, 1.0 1.0;
+            offset, 25 0;
+          }
+          color, 0 0 0 200;
+          text {
+            text, "255";
+            font, "Vera";
+            size, 7;
+            fit, 0 0;
+            min, 0 0;
+            align, 0.0 0.5;
+          }
+        }
+      }
+
+      // -- up -- //
+      part {
+        name, "green-up";
+        clip_to, "left-clip";
+        description {
+          state, "default" 0.0;
+          min, 5 3;
+          max, 5 3;
+          align, 0.0 0.0;
+          color, 255 255 255 102;
+          rel1 {
+            to, "green-val";
+            relative, 1.0 0.0;
+            offset, 4 -1;
+          }
+          rel2 {
+            to, "green-val";
+            relative, 1.0 0.0;
+            offset, 9 2;
+          }
+          image {
+            normal, "arrow-up.png";
+          }
+        }
+        description {
+          state, "over" 0.0;
+          min, 5 3;
+          max, 5 3;
+          align, 0.0 0.0;
+          color, 255 255 255 255;
+          rel1 {
+            to, "green-val";
+            relative, 1.0 0.0;
+            offset, 4 -1;
+          }
+          rel2 {
+            to, "green-val";
+            relative, 1.0 0.0;
+            offset, 9 2;
+          }
+          image {
+            normal, "arrow-up.png";
+          }
+        }
+        description {
+          state, "down" 0.0;
+          min, 5 3;
+          max, 5 3;
+          align, 0.0 0.0;
+          color, 255 255 255 102;
+          rel1 {
+            to, "green-val";
+            relative, 1.0 0.0;
+            offset, 5 0;
+          }
+          rel2 {
+            to, "green-val";
+            relative, 1.0 0.0;
+            offset, 10 3;
+          }
+          image {
+            normal, "arrow-up.png";
+          }
+        }
+      }
+
+      // -- down -- //
+      part {
+        name, "green-dn";
+        clip_to, "left-clip";
+        description {
+          state, "default" 0.0;
+          min, 5 3;
+          max, 5 3;
+          align, 0.0 0.0;
+          color, 255 255 255 102;
+          rel1 {
+            to, "green-val";
+            relative, 1.0 0.0;
+            offset, 4 3;
+          }
+          rel2 {
+            to, "green-val";
+            relative, 1.0 0.0;
+            offset, 9 6;
+          }
+          image {
+            normal, "arrow-dn.png";
+          }
+        }
+        description {
+          state, "over" 0.0;
+          min, 5 3;
+          max, 5 3;
+          align, 0.0 0.0;
+          color, 255 255 255 255;
+          rel1 {
+            to, "green-val";
+            relative, 1.0 0.0;
+            offset, 4 3;
+          }
+          rel2 {
+            to, "green-val";
+            relative, 1.0 0.0;
+            offset, 9 6;
+          }
+          image {
+            normal, "arrow-dn.png";
+          }
+        }
+        description {
+          state, "down" 0.0;
+          min, 5 3;
+          max, 5 3;
+          align, 0.0 0.0;
+          color, 255 255 255 102;
+          rel1 {
+            to, "green-val";
+            relative, 1.0 0.0;
+            offset, 5 4;
+          }
+          rel2 {
+            to, "green-val";
+            relative, 1.0 0.0;
+            offset, 10 7;
+          }
+          image {
+            normal, "arrow-dn.png";
+          }
+        }
+      }
+
+  //--------- blue stuff ------------- //
+
+      part {
+        name, "blue";
+        clip_to, "left-clip";
+        type, TEXT;
+        effect, NONE;
+        description {
+          state, "default" 0.0;
+          align, 0.0 0.5;
+          min, 0 0;
+          max, 9999 9999;
+          rel1 {
+            to, "green";
+            relative, 0.0 1.0;
+            offset, 0 5;
+          }
+          rel2 {
+            to, "green";
+            relative, 1.0 1.0;
+            offset, 0 12;
+          }
+          color, 0 0 0 200;
+          text {
+            text, "B:";
+            font, "Vera";
+            size, 7;
+            fit, 0 0;
+            min, 0 0;
+            align, 1.0 0.5;
+          }
+        }
+      }
+
+      // -- val -- //
+      part {
+        name, "blue-val";
+        clip_to, "left-clip";
+        type, TEXT;
+        effect, NONE;
+        description {
+          state, "default" 0.0;
+          align, 0.0 0.5;
+          min, 0 0;
+          max, 9999 9999;
+          rel1 {
+            to, "blue";
+            relative, 1.0 0.0;
+            offset, 5 0;
+          }
+          rel2 {
+            to, "blue";
+            relative, 1.0 1.0;
+            offset, 25 0;
+          }
+          color, 0 0 0 200;
+          text {
+            text, "255";
+            font, "Vera";
+            size, 7;
+            fit, 0 0;
+            min, 0 0;
+            align, 0.0 0.5;
+          }
+        }
+      }
+
+      // -- up -- //
+      part {
+        name, "blue-up";
+        clip_to, "left-clip";
+        description {
+          state, "default" 0.0;
+          min, 5 3;
+          max, 5 3;
+          align, 0.0 0.0;
+          color, 255 255 255 102;
+          rel1 {
+            to, "blue-val";
+            relative, 1.0 0.0;
+            offset, 4 -1;
+          }
+          rel2 {
+            to, "blue-val";
+            relative, 1.0 0.0;
+            offset, 9 2;
+          }
+          image {
+            normal, "arrow-up.png";
+          }
+        }
+        description {
+          state, "over" 0.0;
+          min, 5 3;
+          max, 5 3;
+          align, 0.0 0.0;
+          color, 255 255 255 255;
+          rel1 {
+            to, "blue-val";
+            relative, 1.0 0.0;
+            offset, 4 -1;
+          }
+          rel2 {
+            to, "blue-val";
+            relative, 1.0 0.0;
+            offset, 9 2;
+          }
+          image {
+            normal, "arrow-up.png";
+          }
+        }
+        description {
+          state, "down" 0.0;
+          min, 5 3;
+          max, 5 3;
+          align, 0.0 0.0;
+          color, 255 255 255 102;
+          rel1 {
+            to, "blue-val";
+            relative, 1.0 0.0;
+            offset, 5 0;
+          }
+          rel2 {
+            to, "blue-val";
+            relative, 1.0 0.0;
+            offset, 10 3;
+          }
+          image {
+            normal, "arrow-up.png";
+          }
+        }
+      }
+
+      // -- down -- //
+      part {
+        name, "blue-dn";
+        clip_to, "left-clip";
+        description {
+          state, "default" 0.0;
+          min, 5 3;
+          max, 5 3;
+          align, 0.0 0.0;
+          color, 255 255 255 102;
+          rel1 {
+            to, "blue-val";
+            relative, 1.0 0.0;
+            offset, 4 3;
+          }
+          rel2 {
+            to, "blue-val";
+            relative, 1.0 0.0;
+            offset, 9 6;
+          }
+          image {
+            normal, "arrow-dn.png";
+          }
+        }
+        description {
+          state, "over" 0.0;
+          min, 5 3;
+          max, 5 3;
+          align, 0.0 0.0;
+          color, 255 255 255 255;
+          rel1 {
+            to, "blue-val";
+            relative, 1.0 0.0;
+            offset, 4 3;
+          }
+          rel2 {
+            to, "blue-val";
+            relative, 1.0 0.0;
+            offset, 9 6;
+          }
+          image {
+            normal, "arrow-dn.png";
+          }
+        }
+        description {
+          state, "down" 0.0;
+          min, 5 3;
+          max, 5 3;
+          align, 0.0 0.0;
+          color, 255 255 255 102;
+          rel1 {
+            to, "blue-val";
+            relative, 1.0 0.0;
+            offset, 5 4;
+          }
+          rel2 {
+            to, "blue-val";
+            relative, 1.0 0.0;
+            offset, 10 7;
+          }
+          image {
+            normal, "arrow-dn.png";
+          }
+        }
+      }
+
+
+  //--------- hue stuff ------------- //
+
+      part {
+        name, "hue";
+        clip_to, "left-clip";
+        type, TEXT;
+        effect, NONE;
+        description {
+          state, "default" 0.0;
+          align, 0.0 0.5;
+          min, 0 0;
+          max, 9999 9999;
+          rel1 {
+            to, "blue";
+            relative, 0.0 1.0;
+            offset, 0 10;
+          }
+          rel2 {
+            to, "blue";
+            relative, 1.0 1.0;
+            offset, 0 17;
+          }
+          color, 0 0 0 200;
+          text {
+            text, "H:";
+            font, "Vera";
+            size, 7;
+            fit, 0 0;
+            min, 0 0;
+            align, 1.0 0.5;
+          }
+        }
+      }
+
+      // -- val -- //
+      part {
+        name, "hue-val";
+        clip_to, "left-clip";
+        type, TEXT;
+        effect, NONE;
+        description {
+          state, "default" 0.0;
+          align, 0.0 0.5;
+          min, 0 0;
+          max, 9999 9999;
+          rel1 {
+            to, "hue";
+            relative, 1.0 0.0;
+            offset, 5 0;
+          }
+          rel2 {
+            to, "hue";
+            relative, 1.0 1.0;
+            offset, 25 0;
+          }
+          color, 0 0 0 200;
+          text {
+            text, "0";
+            font, "Vera";
+            size, 7;
+            fit, 0 0;
+            min, 0 0;
+            align, 0.0 0.5;
+          }
+        }
+      }
+
+      // -- up -- //
+      part {
+        name, "hue-up";
+        clip_to, "left-clip";
+        description {
+          state, "default" 0.0;
+          min, 5 3;
+          max, 5 3;
+          align, 0.0 0.0;
+          color, 255 255 255 102;
+          rel1 {
+            to, "hue-val";
+            relative, 1.0 0.0;
+            offset, 4 -1;
+          }
+          rel2 {
+            to, "hue-val";
+            relative, 1.0 0.0;
+            offset, 9 2;
+          }
+          image {
+            normal, "arrow-up.png";
+          }
+        }
+        description {
+          state, "over" 0.0;
+          min, 5 3;
+          max, 5 3;
+          align, 0.0 0.0;
+          color, 255 255 255 255;
+          rel1 {
+            to, "hue-val";
+            relative, 1.0 0.0;
+            offset, 4 -1;
+          }
+          rel2 {
+            to, "hue-val";
+            relative, 1.0 0.0;
+            offset, 9 2;
+          }
+          image {
+            normal, "arrow-up.png";
+          }
+        }
+        description {
+          state, "down" 0.0;
+          min, 5 3;
+          max, 5 3;
+          align, 0.0 0.0;
+          color, 255 255 255 102;
+          rel1 {
+            to, "hue-val";
+            relative, 1.0 0.0;
+            offset, 5 0;
+          }
+          rel2 {
+            to, "hue-val";
+            relative, 1.0 0.0;
+            offset, 10 3;
+          }
+          image {
+            normal, "arrow-up.png";
+          }
+        }
+      }
+
+      // -- down -- //
+      part {
+        name, "hue-dn";
+        clip_to, "left-clip";
+        description {
+          state, "default" 0.0;
+          min, 5 3;
+          max, 5 3;
+          align, 0.0 0.0;
+          color, 255 255 255 102;
+          rel1 {
+            to, "hue-val";
+            relative, 1.0 0.0;
+            offset, 4 3;
+          }
+          rel2 {
+            to, "hue-val";
+            relative, 1.0 0.0;
+            offset, 9 6;
+          }
+          image {
+            normal, "arrow-dn.png";
+          }
+        }
+        description {
+          state, "over" 0.0;
+          min, 5 3;
+          max, 5 3;
+          align, 0.0 0.0;
+          color, 255 255 255 255;
+          rel1 {
+            to, "hue-val";
+            relative, 1.0 0.0;
+            offset, 4 3;
+          }
+          rel2 {
+            to, "hue-val";
+            relative, 1.0 0.0;
+            offset, 9 6;
+          }
+          image {
+            normal, "arrow-dn.png";
+          }
+        }
+        description {
+          state, "down" 0.0;
+          min, 5 3;
+          max, 5 3;
+          align, 0.0 0.0;
+          color, 255 255 255 102;
+          rel1 {
+            to, "hue-val";
+            relative, 1.0 0.0;
+            offset, 5 4;
+          }
+          rel2 {
+            to, "hue-val";
+            relative, 1.0 0.0;
+            offset, 10 7;
+          }
+          image {
+            normal, "arrow-dn.png";
+          }
+        }
+      }
+
+  //--------- sat stuff ------------- //
+
+      part {
+        name, "sat";
+        clip_to, "left-clip";
+        type, TEXT;
+        effect, NONE;
+        description {
+          state, "default" 0.0;
+          align, 0.0 0.5;
+          min, 0 0;
+          max, 9999 9999;
+          rel1 {
+            to, "hue";
+            relative, 0.0 1.0;
+            offset, 0 5;
+          }
+          rel2 {
+            to, "hue";
+            relative, 1.0 1.0;
+            offset, 0 12;
+          }
+          color, 0 0 0 200;
+          text {
+            text, "S:";
+            font, "Vera";
+            size, 7;
+            fit, 0 0;
+            min, 0 0;
+            align, 1.0 0.5;
+          }
+        }
+      }
+
+      // -- val -- //
+      part {
+        name, "sat-val";
+        clip_to, "left-clip";
+        type, TEXT;
+        effect, NONE;
+        description {
+          state, "default" 0.0;
+          align, 0.0 0.5;
+          min, 0 0;
+          max, 9999 9999;
+          rel1 {
+            to, "sat";
+            relative, 1.0 0.0;
+            offset, 5 0;
+          }
+          rel2 {
+            to, "sat";
+            relative, 1.0 1.0;
+            offset, 25 0;
+          }
+          color, 0 0 0 200;
+          text {
+            text, "0.0";
+            font, "Vera";
+            size, 7;
+            fit, 0 0;
+            min, 0 0;
+            align, 0.0 0.5;
+          }
+        }
+      }
+
+      // -- up -- //
+      part {
+        name, "sat-up";
+        clip_to, "left-clip";
+        description {
+          state, "default" 0.0;
+          min, 5 3;
+          max, 5 3;
+          align, 0.0 0.0;
+          color, 255 255 255 102;
+          rel1 {
+            to, "sat-val";
+            relative, 1.0 0.0;
+            offset, 4 -1;
+          }
+          rel2 {
+            to, "sat-val";
+            relative, 1.0 0.0;
+            offset, 9 2;
+          }
+          image {
+            normal, "arrow-up.png";
+          }
+        }
+        description {
+          state, "over" 0.0;
+          min, 5 3;
+          max, 5 3;
+          align, 0.0 0.0;
+          color, 255 255 255 255;
+          rel1 {
+            to, "sat-val";
+            relative, 1.0 0.0;
+            offset, 4 -1;
+          }
+          rel2 {
+            to, "sat-val";
+            relative, 1.0 0.0;
+            offset, 9 2;
+          }
+          image {
+            normal, "arrow-up.png";
+          }
+        }
+        description {
+          state, "down" 0.0;
+          min, 5 3;
+          max, 5 3;
+          align, 0.0 0.0;
+          color, 255 255 255 102;
+          rel1 {
+            to, "sat-val";
+            relative, 1.0 0.0;
+            offset, 5 0;
+          }
+          rel2 {
+            to, "sat-val";
+            relative, 1.0 0.0;
+            offset, 10 3;
+          }
+          image {
+            normal, "arrow-up.png";
+          }
+        }
+      }
+
+      // -- down -- //
+      part {
+        name, "sat-dn";
+        clip_to, "left-clip";
+        description {
+          state, "default" 0.0;
+          min, 5 3;
+          max, 5 3;
+          align, 0.0 0.0;
+          color, 255 255 255 102;
+          rel1 {
+            to, "sat-val";
+            relative, 1.0 0.0;
+            offset, 4 3;
+          }
+          rel2 {
+            to, "sat-val";
+            relative, 1.0 0.0;
+            offset, 9 6;
+          }
+          image {
+            normal, "arrow-dn.png";
+          }
+        }
+        description {
+          state, "over" 0.0;
+          min, 5 3;
+          max, 5 3;
+          align, 0.0 0.0;
+          color, 255 255 255 255;
+          rel1 {
+            to, "sat-val";
+            relative, 1.0 0.0;
+            offset, 4 3;
+          }
+          rel2 {
+            to, "sat-val";
+            relative, 1.0 0.0;
+            offset, 9 6;
+          }
+          image {
+            normal, "arrow-dn.png";
+          }
+        }
+        description {
+          state, "down" 0.0;
+          min, 5 3;
+          max, 5 3;
+          align, 0.0 0.0;
+          color, 255 255 255 102;
+          rel1 {
+            to, "sat-val";
+            relative, 1.0 0.0;
+            offset, 5 4;
+          }
+          rel2 {
+            to, "sat-val";
+            relative, 1.0 0.0;
+            offset, 10 7;
+          }
+          image {
+            normal, "arrow-dn.png";
+          }
+        }
+      }
+
+  //--------- val stuff ------------- //
+
+      part {
+        name, "val";
+        clip_to, "left-clip";
+        type, TEXT;
+        effect, NONE;
+        description {
+          state, "default" 0.0;
+          align, 0.0 0.5;
+          min, 0 0;
+          max, 9999 9999;
+          rel1 {
+            to, "sat";
+            relative, 0.0 1.0;
+            offset, 0 5;
+          }
+          rel2 {
+            to, "sat";
+            relative, 1.0 1.0;
+            offset, 0 12;
+          }
+          color, 0 0 0 200;
+          text {
+            text, "V:";
+            font, "Vera";
+            size, 7;
+            fit, 0 0;
+            min, 0 0;
+            align, 1.0 0.5;
+          }
+        }
+      }
+
+      // -- val -- //
+      part {
+        name, "val-val";
+        clip_to, "left-clip";
+        type, TEXT;
+        effect, NONE;
+        description {
+          state, "default" 0.0;
+          align, 0.0 0.5;
+          min, 0 0;
+          max, 9999 9999;
+          rel1 {
+            to, "val";
+            relative, 1.0 0.0;
+            offset, 5 0;
+          }
+          rel2 {
+            to, "val";
+            relative, 1.0 1.0;
+            offset, 25 0;
+          }
+          color, 0 0 0 200;
+          text {
+            text, "0.0";
+            font, "Vera";
+            size, 7;
+            fit, 0 0;
+            min, 0 0;
+            align, 0.0 0.5;
+          }
+        }
+      }
+
+      // -- up -- //
+      part {
+        name, "val-up";
+        clip_to, "left-clip";
+        description {
+          state, "default" 0.0;
+          min, 5 3;
+          max, 5 3;
+          align, 0.0 0.0;
+          color, 255 255 255 102;
+          rel1 {
+            to, "val-val";
+            relative, 1.0 0.0;
+            offset, 4 -1;
+          }
+          rel2 {
+            to, "val-val";
+            relative, 1.0 0.0;
+            offset, 9 2;
+          }
+          image {
+            normal, "arrow-up.png";
+          }
+        }
+        description {
+          state, "over" 0.0;
+          min, 5 3;
+          max, 5 3;
+          align, 0.0 0.0;
+          color, 255 255 255 255;
+          rel1 {
+            to, "val-val";
+            relative, 1.0 0.0;
+            offset, 4 -1;
+          }
+          rel2 {
+            to, "val-val";
+            relative, 1.0 0.0;
+            offset, 9 2;
+          }
+          image {
+            normal, "arrow-up.png";
+          }
+        }
+        description {
+          state, "down" 0.0;
+          min, 5 3;
+          max, 5 3;
+          align, 0.0 0.0;
+          color, 255 255 255 102;
+          rel1 {
+            to, "val-val";
+            relative, 1.0 0.0;
+            offset, 5 0;
+          }
+          rel2 {
+            to, "val-val";
+            relative, 1.0 0.0;
+            offset, 10 3;
+          }
+          image {
+            normal, "arrow-up.png";
+          }
+        }
+      }
+
+      // -- down -- //
+      part {
+        name, "val-dn";
+        clip_to, "left-clip";
+        description {
+          state, "default" 0.0;
+          min, 5 3;
+          max, 5 3;
+          align, 0.0 0.0;
+          color, 255 255 255 102;
+          rel1 {
+            to, "val-val";
+            relative, 1.0 0.0;
+            offset, 4 3;
+          }
+          rel2 {
+            to, "val-val";
+            relative, 1.0 0.0;
+            offset, 9 6;
+          }
+          image {
+            normal, "arrow-dn.png";
+          }
+        }
+        description {
+          state, "over" 0.0;
+          min, 5 3;
+          max, 5 3;
+          align, 0.0 0.0;
+          color, 255 255 255 255;
+          rel1 {
+            to, "val-val";
+            relative, 1.0 0.0;
+            offset, 4 3;
+          }
+          rel2 {
+            to, "val-val";
+            relative, 1.0 0.0;
+            offset, 9 6;
+          }
+          image {
+            normal, "arrow-dn.png";
+          }
+        }
+        description {
+          state, "down" 0.0;
+          min, 5 3;
+          max, 5 3;
+          align, 0.0 0.0;
+          color, 255 255 255 102;
+          rel1 {
+            to, "val-val";
+            relative, 1.0 0.0;
+            offset, 5 4;
+          }
+          rel2 {
+            to, "val-val";
+            relative, 1.0 0.0;
+            offset, 10 7;
+          }
+          image {
+            normal, "arrow-dn.png";
+          }
+        }
+      }
+
+  //--------- hex stuff ------------- //
+
+      part {
+        name, "hex-val";
+        clip_to, "left-clip";
+        type, TEXT;
+        effect, NONE;
+        description {
+          state, "default" 0.0;
+          align, 0.0 0.5;
+          min, 30 0;
+          max, 9999 9999;
+          rel1 {
+            to, "val";
+            relative, 0.0 1.0;
+            offset, 0 22;
+          }
+          rel2 {
+            to, "hue-dn";
+            relative, 1.0 1.0;
+            offset, 0 30;
+          }
+          color, 0 0 0 200;
+          text {
+            text, "#000000";
+            font, "Vera";
+            size, 7;
+            fit, 0 0;
+            min, 0 0;
+            align, 0.0 0.5;
+          }
+        }
+      }
+
+
+
+
+    }
+
+
+    
+// ------------------------ programs ----------------------------- //
+
+    programs {
+      program {
+        name, "left-open";
+        signal, "mouse,clicked,1";
+        source, "left-border";
+        action, STATE_SET "open" 0.0;
+        transition, DECELERATE, 0.5;
+        target, "left-border";
+        target, "left-border-close";
+      }
+      program {
+        name, "left-close";
+        signal, "mouse,clicked,1";
+        source, "left-border-close";
+        action, STATE_SET "default" 0.0;
+        transition, DECELERATE, 0.5;
+        target, "left-border";
+        target, "left-border-close";
+      }
+
+
+      // close button //
+
+      program {
+        name, "close-over";
+        signal, "mouse,in";
+        source, "close";
+        action, STATE_SET "over" 0.0;
+        transition, DECELERATE, 0.5;
+        target, "close";
+      }
+      program {
+        name, "close-out";
+        signal, "mouse,out";
+        source, "close";
+        action, STATE_SET "default" 0.0;
+        transition, DECELERATE, 0.5;
+        target, "close";
+      }
+      program {
+        name, "close-down";
+        signal, "mouse,down,1";
+        source, "close";
+        action, STATE_SET "down" 0.0;
+        transition, DECELERATE, 0.0;
+        target, "close";
+      }
+      program {
+        name, "close-up";
+        signal, "mouse,up,1";
+        source, "close";
+        action, STATE_SET "over" 0.0;
+        transition, DECELERATE, 0.0;
+        target, "close";
+      }
+
+      // pick button //
+
+      program {
+        name, "pick-over";
+        signal, "mouse,in";
+        source, "pick";
+        action, STATE_SET "over" 0.0;
+        transition, DECELERATE, 0.5;
+        target, "pick";
+      }
+      program {
+        name, "pick-out";
+        signal, "mouse,out";
+        source, "pick";
+        action, STATE_SET "default" 0.0;
+        transition, DECELERATE, 0.5;
+        target, "pick";
+      }
+      program {
+        name, "pick-down";
+        signal, "mouse,down,1";
+        source, "pick";
+        action, STATE_SET "down" 0.0;
+        transition, DECELERATE, 0.0;
+        target, "pick";
+      }
+      program {
+        name, "pick-up";
+        signal, "mouse,up,1";
+        source, "pick";
+        action, STATE_SET "over" 0.0;
+        transition, DECELERATE, 0.0;
+        target, "pick";
+      }
+
+      // shoot button //
+
+      program {
+        name, "shoot-over";
+        signal, "mouse,in";
+        source, "shoot";
+        action, STATE_SET "over" 0.0;
+        transition, DECELERATE, 0.5;
+        target, "shoot";
+      }
+      program {
+        name, "shoot-out";
+        signal, "mouse,out";
+        source, "shoot";
+        action, STATE_SET "default" 0.0;
+        transition, DECELERATE, 0.5;
+        target, "shoot";
+      }
+      program {
+        name, "shoot-down";
+        signal, "mouse,down,1";
+        source, "shoot";
+        action, STATE_SET "down" 0.0;
+        transition, LINEAR, 0.0;
+        target, "shoot";
+      }
+      program {
+        name, "shoot-up";
+        signal, "mouse,up,1";
+        source, "shoot";
+        action, STATE_SET "over" 0.0;
+        transition, LINEAR, 0.0;
+        target, "shoot";
+      }
+
+    // -- arrows -- //
+
+      program {
+        name, "red-up-over";
+        signal, "mouse,in";
+        source, "red-up";
+        action, STATE_SET "over" 0.0;
+        transition, DECELERATE, 0.5;
+        target, "red-up";
+      }
+      program {
+        name, "red-up-out";
+        signal, "mouse,out";
+        source, "red-up";
+        action, STATE_SET "default" 0.0;
+        transition, DECELERATE, 0.5;
+        target, "red-up";
+      }
+
+      program {
+        name, "green-up-over";
+        signal, "mouse,in";
+        source, "green-up";
+        action, STATE_SET "over" 0.0;
+        transition, DECELERATE, 0.5;
+        target, "green-up";
+      }
+      program {
+        name, "green-up-out";
+        signal, "mouse,out";
+        source, "green-up";
+        action, STATE_SET "default" 0.0;
+        transition, DECELERATE, 0.5;
+        target, "green-up";
+      }
+
+      program {
+        name, "blue-up-over";
+        signal, "mouse,in";
+        source, "blue-up";
+        action, STATE_SET "over" 0.0;
+        transition, DECELERATE, 0.5;
+        target, "blue-up";
+      }
+      program {
+        name, "blue-up-out";
+        signal, "mouse,out";
+        source, "blue-up";
+        action, STATE_SET "default" 0.0;
+        transition, DECELERATE, 0.5;
+        target, "blue-up";
+      }
+
+      program {
+        name, "hue-up-over";
+        signal, "mouse,in";
+        source, "hue-up";
+        action, STATE_SET "over" 0.0;
+        transition, DECELERATE, 0.5;
+        target, "hue-up";
+      }
+      program {
+        name, "hue-up-out";
+        signal, "mouse,out";
+        source, "hue-up";
+        action, STATE_SET "default" 0.0;
+        transition, DECELERATE, 0.5;
+        target, "hue-up";
+      }
+
+      program {
+        name, "sat-up-over";
+        signal, "mouse,in";
+        source, "sat-up";
+        action, STATE_SET "over" 0.0;
+        transition, DECELERATE, 0.5;
+        target, "sat-up";
+      }
+      program {
+        name, "sat-up-out";
+        signal, "mouse,out";
+        source, "sat-up";
+        action, STATE_SET "default" 0.0;
+        transition, DECELERATE, 0.5;
+        target, "sat-up";
+      }
+
+      program {
+        name, "val-up-over";
+        signal, "mouse,in";
+        source, "val-up";
+        action, STATE_SET "over" 0.0;
+        transition, DECELERATE, 0.5;
+        target, "val-up";
+      }
+      program {
+        name, "val-up-out";
+        signal, "mouse,out";
+        source, "val-up";
+        action, STATE_SET "default" 0.0;
+        transition, DECELERATE, 0.5;
+        target, "val-up";
+      }
+
+      program {
+        name, "red-dn-over";
+        signal, "mouse,in";
+        source, "red-dn";
+        action, STATE_SET "over" 0.0;
+        transition, DECELERATE, 0.5;
+        target, "red-dn";
+      }
+      program {
+        name, "red-dn-out";
+        signal, "mouse,out";
+        source, "red-dn";
+        action, STATE_SET "default" 0.0;
+        transition, DECELERATE, 0.5;
+        target, "red-dn";
+      }
+
+      program {
+        name, "green-dn-over";
+        signal, "mouse,in";
+        source, "green-dn";
+        action, STATE_SET "over" 0.0;
+        transition, DECELERATE, 0.5;
+        target, "green-dn";
+      }
+      program {
+        name, "green-dn-out";
+        signal, "mouse,out";
+        source, "green-dn";
+        action, STATE_SET "default" 0.0;
+        transition, DECELERATE, 0.5;
+        target, "green-dn";
+      }
+
+      program {
+        name, "blue-dn-over";
+        signal, "mouse,in";
+        source, "blue-dn";
+        action, STATE_SET "over" 0.0;
+        transition, DECELERATE, 0.5;
+        target, "blue-dn";
+      }
+      program {
+        name, "blue-dn-out";
+        signal, "mouse,out";
+        source, "blue-dn";
+        action, STATE_SET "default" 0.0;
+        transition, DECELERATE, 0.5;
+        target, "blue-dn";
+      }
+
+      program {
+        name, "hue-dn-over";
+        signal, "mouse,in";
+        source, "hue-dn";
+        action, STATE_SET "over" 0.0;
+        transition, DECELERATE, 0.5;
+        target, "hue-dn";
+      }
+      program {
+        name, "hue-dn-out";
+        signal, "mouse,out";
+        source, "hue-dn";
+        action, STATE_SET "default" 0.0;
+        transition, DECELERATE, 0.5;
+        target, "hue-dn";
+      }
+
+      program {
+        name, "sat-dn-over";
+        signal, "mouse,in";
+        source, "sat-dn";
+        action, STATE_SET "over" 0.0;
+        transition, DECELERATE, 0.5;
+        target, "sat-dn";
+      }
+      program {
+        name, "sat-dn-out";
+        signal, "mouse,out";
+        source, "sat-dn";
+        action, STATE_SET "default" 0.0;
+        transition, DECELERATE, 0.5;
+        target, "sat-dn";
+      }
+
+      program {
+        name, "val-dn-over";
+        signal, "mouse,in";
+        source, "val-dn";
+        action, STATE_SET "over" 0.0;
+        transition, DECELERATE, 0.5;
+        target, "val-dn";
+      }
+      program {
+        name, "val-dn-out";
+        signal, "mouse,out";
+        source, "val-dn";
+        action, STATE_SET "default" 0.0;
+        transition, DECELERATE, 0.5;
+        target, "val-dn";
+      }
+    }
+
+  }
+}
+

@@ -1,0 +1,13 @@
+Elicit 0.7 (yet another rewrite)
+--------------------------------
+
+The Enlightenment libraries keep changing, and so to learn the new API's I tend to port Elicit over to them.  This time we see a significant improvement in the gui, which now uses Edje instead of Ebits.  This allows for all sorts of animation and freedom at the theme level. (For instance, the sliding panel in the default theme is done with no code, purely at the theme level... so are the fading in and out buttons). Its really worth the upgrade this time.
+
+Unfortunately, no gui editor exists for edje (yet), and so creating themes is an arduous task. But I hope the two I provide (the original elicit theme, and the new winter theme) are good enough to keep you satisfied for now. (To change themes, copy the desired .eet file over elicit.eet in the installed data/themes dir)
+
+To install, edit Makefile and change the PREFIX to the location you want. Then:
+
+make
+sudo make install
+
+to run, just type: elicit

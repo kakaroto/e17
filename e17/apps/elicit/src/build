@@ -1,0 +1,1 @@
+gcc `evas-config --libs --cflags` `ecore-config --libs --cflags` -I/usr/X11R6/include viewer.c -o viewer
