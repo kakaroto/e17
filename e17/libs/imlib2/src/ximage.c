@@ -94,10 +94,24 @@ __imlib_FlushXImage(Display *d)
 		       list_used[j] = list_used[j + 1];
 		       list_d[j] = list_d[j + 1];
 		    }
-		  list_xim = realloc(list_xim, sizeof(XImage *) * list_num);
-		  list_si = realloc(list_si, sizeof(XShmSegmentInfo *) * list_num);
-		  list_used = realloc(list_used, sizeof(char) * list_num);
-		  list_d = realloc(list_d, sizeof(Display *) * list_num);
+		  if (list_num == 0)
+		    {
+		       if (list_xim) free(list_xim);
+		       if (list_si) free(list_si);
+		       if (list_used) free(list_used);
+		       if (list_d) free(list_d);
+		       list_xim = NULL;
+		       list_si = NULL;
+		       list_used = NULL;
+		       list_d = NULL;
+		    }
+		  else
+		    {
+		       list_xim = realloc(list_xim, sizeof(XImage *) * list_num);
+		       list_si = realloc(list_si, sizeof(XShmSegmentInfo *) * list_num);
+		       list_used = realloc(list_used, sizeof(char) * list_num);
+		       list_d = realloc(list_d, sizeof(Display *) * list_num);
+		    }
 		  did_free = 1;
 	       }
 	  }
@@ -170,10 +184,20 @@ __imlib_ProduceXImage(Display *d, Visual *v, int depth, int w, int h, char *shar
    /* can't find a usable XImage on the cache - create one */
    /* add the new XImage to the XImage cache */
    list_num++;
-   list_xim  = realloc(list_xim,  sizeof(XImage *)          * list_num);
-   list_si   = realloc(list_si,   sizeof(XShmSegmentInfo *) * list_num);
-   list_used = realloc(list_used, sizeof(char)              * list_num);
-   list_d    = realloc(list_d,    sizeof(Display *)         * list_num);
+   if (list_num == 1)
+     {
+	list_xim  = malloc(sizeof(XImage *)          * list_num);
+	list_si   = malloc(sizeof(XShmSegmentInfo *) * list_num);
+	list_used = malloc(sizeof(char)              * list_num);
+	list_d    = malloc(sizeof(Display *)         * list_num);
+     }
+   else
+     {
+	list_xim  = realloc(list_xim,  sizeof(XImage *)          * list_num);
+	list_si   = realloc(list_si,   sizeof(XShmSegmentInfo *) * list_num);
+	list_used = realloc(list_used, sizeof(char)              * list_num);
+	list_d    = realloc(list_d,    sizeof(Display *)         * list_num);
+     }
    list_si[list_num - 1] = malloc(sizeof(XShmSegmentInfo));
    
    /* work on making a shared image */
