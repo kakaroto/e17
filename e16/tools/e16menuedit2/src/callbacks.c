@@ -172,7 +172,9 @@ void on_change_icon_button (GtkButton *button, gpointer user_data)
         entry_select = gtk_entry_get_text (GTK_ENTRY (GTK_COMBO (
                                              resize_combo)->entry));
 
-	/* temporary fix for probability broken gdk function */
+        /* temporary fix for probability broken librsvg function.
+         * it should autodetect librsvg version...
+         */
         right = g_malloc (3);
         strsplit (filename, &right, g_utf8_strlen (filename, -1) - 3);
         if (strcmp (right, "svg"))
@@ -183,11 +185,11 @@ void on_change_icon_button (GtkButton *button, gpointer user_data)
         }
         else
         {
-          width = 64;
-          height = 64;
+          width = ICON_SIZE_AUTO;
+          height = ICON_SIZE_AUTO;
         }
-	g_free (right);
-      
+        g_free (right);
+
         if (width <= 0)
           width = 1;
         if (height <= 0)
@@ -413,7 +415,9 @@ void update_preview_cb (GtkFileChooser *file_chooser, gpointer data)
   {
     gchar *right;
 
-    /* temporary fix for probability broken gdk function */
+    /* temporary fix for probability broken librsvg function
+     * it should autodetect librsvg version...
+     */
     right = g_malloc (3);
     strsplit (filename, &right, g_utf8_strlen (filename, -1) - 3);
 
@@ -427,7 +431,7 @@ void update_preview_cb (GtkFileChooser *file_chooser, gpointer data)
       height = ICON_SIZE_AUTO;
     }
     g_free (right);
-  
+
     if ((width > ICON_SIZE_AUTO) || (height > ICON_SIZE_AUTO))
     {
       width = ICON_SIZE_AUTO;
