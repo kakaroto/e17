@@ -34,6 +34,7 @@ enlightenment_SOURCES = \
 	dialog.c	        \
 	dock.c			\
 	draw.c			\
+	edge.c			\
 	events.c		\
 	evhandlers.c		\
 	file.c		        \

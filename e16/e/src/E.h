@@ -1973,6 +1973,13 @@ void                DrawEwinShape(EWin * ewin, int md, int x, int y, int w,
 				  int h, char firstlast);
 void                PropagateShapes(Window win);
 
+/* edge.c */
+void                ShowEdgeWindows(void);
+void                HideEdgeWindows(void);
+void                EdgeHandleEnter(XEvent * ev);
+void                EdgeHandleLeave(XEvent * ev);
+void                EdgeHandleMotion(XEvent * ev);
+
 /* events.c */
 #define ENABLE_DEBUG_EVENTS 1
 #if ENABLE_DEBUG_EVENTS
@@ -2363,12 +2370,6 @@ char               *EDirUser(void);
 void                EDirUserCacheSet(const char *d);
 char               *EDirUserCache(void);
 int                 EExit(void *code);
-void                ShowEdgeWindows(void);
-void                HideEdgeWindows(void);
-int                 IsEdgeWin(Window win);
-void                EdgeHandleEnter(XEvent * ev);
-void                EdgeHandleLeave(XEvent * ev);
-void                EdgeHandleMotion(XEvent * ev);
 void                Quicksort(void **a, int l, int r,
 			      int (*CompareFunc) (void *d1, void *d2));
 void                Eprintf(const char *fmt, ...);
