@@ -2351,3 +2351,11 @@ Fri Sep 24 13:06:55 PDT 1999
 
 remove iconbox auto create code - add creat eiconbox entyr to 
 settings menu aswell
+
+-------------------------------------------------------------------------------
+
+Fri Sep 24 13:31:05 PDT 1999
+(Raster)
+
+allow borderless windows in focus list - rmeve hack laying around 
+since early gnome days..

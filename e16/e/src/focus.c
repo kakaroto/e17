@@ -78,8 +78,8 @@ GetNextFocusEwin(void)
 		 ((ewin->area_x == ax) && (ewin->area_y == ay)) &&
 		 (!ewin->skipfocus) && (!ewin->shaded) &&
 		 (!ewin->menu) && (!ewin->pager) && (!ewin->ibox) &&
-		 (!ewin->iconified) && (ewin->client.mwm_decor_title) &&
-		 (ewin->client.mwm_decor_border))
+		 (!ewin->iconified)	/*&& (ewin->client.mwm_decor_title) &&
+					 * (ewin->client.mwm_decor_border) */ )
 	       {
 		  num++;
 		  lst = Erealloc(lst, sizeof(EWin *) * num);
@@ -149,8 +149,8 @@ GetPrevFocusEwin(void)
 		 ((ewin->area_x == ax) && (ewin->area_y == ay)) &&
 		 (!ewin->skipfocus) && (!ewin->shaded) &&
 		 (!ewin->menu) && (!ewin->pager) && (!ewin->ibox) &&
-		 (!ewin->iconified) && (ewin->client.mwm_decor_title) &&
-		 (ewin->client.mwm_decor_border))
+		 (!ewin->iconified)	/*&& (ewin->client.mwm_decor_title) &&
+					 * (ewin->client.mwm_decor_border) */ )
 	       {
 		  num++;
 		  lst = Erealloc(lst, sizeof(EWin *) * num);
