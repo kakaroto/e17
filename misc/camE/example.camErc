@@ -100,8 +100,10 @@ ttf_dir = /usr/X11R6/lib/X11/fonts/TrueType
 # file to check for before shooting. while this file exists, no shots will
 # be taken.
 blockfile = /home/gilbertt/BLOCKCAM
+# image to upload when blockfile is first put in place
+offline_image = /home/gilbertt/.block.jpg
 # File to check before shotting, while this file exists, shots will be taken.
-# but not uploaded.
+# but not uploaded. blockimage will not be uploaded if you set this.
 uploadblockfile = /home/gilbertt/BLOCKUPLOAD
 # Shots will only be taken/uploaded if the specified interface is active.  
 #watch_interface = ppp0

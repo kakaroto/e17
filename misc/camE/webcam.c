@@ -105,6 +105,7 @@ int overlay_x = 0, overlay_y = 0;
 Imlib_Font title_fn, text_fn;
 char *ftp_interface = "-";
 char *watch_interface = NULL;
+char *offline_image = NULL;
 int interface_active = 0;
 int device_palette;
 
@@ -736,7 +737,7 @@ bw_res_change(int diff)
 
 /* upload local to tmp then MV to remote */
 void
-ftp_upload1(char *local, char *remote, char *tmp)
+ftp_upload(char *local, char *remote, char *tmp)
 {
    char buf[2096];
    FILE *infile;
@@ -918,19 +919,82 @@ check_interface(char *watch_interface)
    return if_nametoindex(watch_interface);
 }
 
-void version(void)
+void
+version(void)
 {
    printf("camE version %s\n", VERSION);
    exit(0);
 }
 
-void usage(void)
+void
+usage(void)
 {
    printf("usage: camE [OPTION]\n");
    printf("       -c FILE    Use config file FILE\n");
    printf("       -f         Don't fork to background\n");
    printf("       -h -v      This message\n");
    exit(0);
+}
+
+int
+do_upload(char *file)
+{
+   struct stat st;
+   int upload_successful = 1;
+   if (ftp_do)
+   {
+      if ((upload_blockfile && (stat(upload_blockfile, &st) == -1))
+          || !upload_blockfile)
+      {
+         log("*** uploading via ftp\n");
+         ftp_upload(file, ftp_file, ftp_tmp);
+         log("shot uploaded\n");
+         if (action_post_upload)
+         {
+            log("running post upload action\n");
+            system(action_post_upload);
+            log("post upload action done\n");
+         }
+      }
+   }
+   else if (scp_target)
+   {
+      char target_buf[2048];
+      char cmd_buf[4096];
+      char *scp_args[] = { "scp", "-BCq", NULL, NULL, NULL };
+      char *ssh_args[] = { "ssh", "-n", "-q", NULL, NULL, NULL };
+
+      if (!upload_blockfile
+          || (upload_blockfile && (stat(upload_blockfile, &st) == -1)))
+      {
+         log("uploading via scp\n");
+         snprintf(target_buf, sizeof(target_buf), "%s:%s/%s", scp_target,
+                  ftp_dir, ftp_tmp);
+         snprintf(cmd_buf, sizeof(cmd_buf), "mv %s/%s %s/%s", ftp_dir,
+                  ftp_tmp, ftp_dir, ftp_file);
+         scp_args[2] = file;
+         scp_args[3] = target_buf;
+         if ((upload_successful =
+              execvp_with_timeout(scp_timeout, "scp", scp_args)))
+         {
+            ssh_args[3] = scp_target;
+            ssh_args[4] = cmd_buf;
+            if ((upload_successful =
+                 execvp_with_timeout(scp_timeout, "ssh", ssh_args)))
+            {
+               log("shot uploaded\n");
+
+               if (action_post_upload)
+               {
+                  log("running post upload action\n");
+                  system(action_post_upload);
+                  log("post upload action done\n");
+               }
+            }
+         }
+      }
+   }
+   return upload_successful;
 }
 
 int
@@ -949,6 +1013,7 @@ main(int argc, char *argv[])
    FILE *fp;
    int ch;
    int dont_fork = 0;
+   int offline_done = 1;
    char *config_file = NULL;
 
    while ((ch = getopt(argc, argv, "c:fhv")) != EOF)
@@ -1067,6 +1132,8 @@ main(int argc, char *argv[])
       overlay_file = val;
    if (NULL != (val = cfg_get_str("grab", "watch_interface")))
       watch_interface = val;
+   if (NULL != (val = cfg_get_str("grab", "offline_image")))
+      offline_image = val;
    if (-1 != (i = cfg_get_int("grab", "width")))
       grab_width = i;
    if (-1 != (i = cfg_get_int("grab", "height")))
@@ -1148,7 +1215,7 @@ main(int argc, char *argv[])
       cam_framerate = 60;
    if (cam_framerate < 1)
       cam_framerate = 1;
-   
+
    /* clear logfile */
    if (logfile)
    {
@@ -1159,15 +1226,8 @@ main(int argc, char *argv[])
 
    /* print config */
    log("camE " VERSION " - (c) 1999, 2000 Gerd Knorr, Tom Gilbert\n");
-   log("grabber config: size %dx%d, input %d, norm %d, "
-           "jpeg quality %d\n", grab_width, grab_height, grab_input,
-           grab_norm, grab_quality);
-   if (ftp_do)
-      log("ftp config:\n  %s@%s:%s\n  %s => %s\n", ftp_user,
-              ftp_host, ftp_dir, ftp_tmp, ftp_file);
-
-   /* init everything */
-   grab_init();
+   log("grabber config: size %dx%d, input %d, norm %d, " "jpeg quality %d\n",
+       grab_width, grab_height, grab_input, grab_norm, grab_quality);
 
    imlib_context_set_direction(IMLIB_TEXT_TO_RIGHT);
    imlib_add_path_to_font_path(ttf_dir);
@@ -1186,6 +1246,25 @@ main(int argc, char *argv[])
    text_fn = imlib_load_font(text_font);
    if (!text_fn)
       fprintf(stderr, "can't load font %s\n", text_font);
+   if (offline_image)
+   {
+      Imlib_Image image = imlib_load_image(offline_image);
+
+      if (!image)
+      {
+         fprintf(stderr, "can't load offline image %s, ignoring\n",
+            offline_image);
+         offline_image = NULL;
+      }
+      else
+      {
+         imlib_context_set_image(image);
+         imlib_free_image_and_decache();
+      }
+   }
+
+   /* init everything */
+   grab_init();
 
    /* go! */
    for (;;)
@@ -1195,10 +1274,10 @@ main(int argc, char *argv[])
       end_shot = 0;
       start_shot = 0;
 
-
       if (((grab_blockfile && (stat(grab_blockfile, &st) == -1))
            || !grab_blockfile) && check_interface(watch_interface))
       {
+         offline_done = 0;
          time(&start_shot);
          if (action_pre_shot)
          {
@@ -1268,61 +1347,17 @@ main(int argc, char *argv[])
          do_postprocess(temp_file);
          archive_jpeg(image);
          gib_imlib_free_image_and_decache(image);
-         if (ftp_do)
-         {
-            if ((upload_blockfile && (stat(upload_blockfile, &st) == -1))
-                || !upload_blockfile)
-            {
-               log("*** uploading via ftp\n");
-               ftp_upload1(temp_file, ftp_file, ftp_tmp);
-               log("shot uploaded\n");
-               if (action_post_upload)
-               {
-                  log("running post upload action\n");
-                  system(action_post_upload);
-                  log("post upload action done\n");
-               }
-            }
-         }
-         else if (scp_target)
-         {
-            char target_buf[2048];
-            char cmd_buf[4096];
-            char *scp_args[] = { "scp", "-BCq", NULL, NULL, NULL };
-            char *ssh_args[] = { "ssh", "-n", "-q", NULL, NULL, NULL };
-
-            if ((upload_blockfile && (stat(upload_blockfile, &st) == -1))
-                || !upload_blockfile)
-            {
-               log("uploading via scp\n");
-               snprintf(target_buf, sizeof(target_buf), "%s:%s/%s",
-                        scp_target, ftp_dir, ftp_tmp);
-               snprintf(cmd_buf, sizeof(cmd_buf), "mv %s/%s %s/%s", ftp_dir,
-                        ftp_tmp, ftp_dir, ftp_file);
-               scp_args[2] = temp_file;
-               scp_args[3] = target_buf;
-               if ((upload_successful =
-                    execvp_with_timeout(scp_timeout, "scp", scp_args)))
-               {
-                  ssh_args[3] = scp_target;
-                  ssh_args[4] = cmd_buf;
-                  if ((upload_successful =
-                       execvp_with_timeout(scp_timeout, "ssh", ssh_args)))
-                  {
-                     log("shot uploaded\n");
-
-                     if (action_post_upload)
-                     {
-                        log("running post upload action\n");
-                        system(action_post_upload);
-                        log("post upload action done\n");
-                     }
-                  }
-               }
-            }
-         }
+         upload_successful = do_upload(temp_file);
          just_shot = 1;
          time(&end_shot);
+      }
+      else if (offline_image && !offline_done
+               && ((upload_blockfile && (stat(upload_blockfile, &st) == -1))
+                   || !upload_blockfile) && check_interface(watch_interface))
+      {
+         /* blockfile was just created */
+         log("uploading offline image\n");
+         offline_done = do_upload(offline_image);
       }
       new_delay = grab_delay;
       if (just_shot && upload_successful)
