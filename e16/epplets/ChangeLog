@@ -347,3 +347,11 @@ E-Mountbox is now size-matched with everything else, and the help/config/close
 buttons appear and disappear just like the other epplets.  Consistency is a
 good thing. :-)  Also, E-Xss won't show/hide the drawing area any more when
 it gains/loses focus.
+
+-------------------------------------------------------------------------------
+
+Wed Nov 10 20:49:04 PST 1999
+(KainX)
+
+Oh my goodness.  This should resolve all the textbox silliness.  (At least all
+that I've run across so far....)

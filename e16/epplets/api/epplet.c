@@ -1550,86 +1550,57 @@ Epplet_draw_textbox(Epplet_gadget eg)
 static void
 Epplet_textbox_handle_keyevent(XEvent *ev, Epplet_gadget *gadget)
 {
-  char               *s = NULL;
-  char               *TheKey;
-  char                c;
-  int                 shift;
-  int                 space;
+  int                 len;
+  static char         kbuf[20];
+  KeySym              keysym;
   XKeyEvent          *kev;
   GadTextBox         *g;
 
   kev = (XKeyEvent *) ev;
   g = (GadTextBox *) gadget;
 
-  shift = (ev->xkey.state & ShiftMask);	//Thank you Eterm
-  //ctrl = (ev->xkey.state & ControlMask);
-  //meta = (ev->xkey.state & Mod1Mask);
+  len = XLookupString(&ev->xkey, (char *) kbuf, sizeof(kbuf), &keysym, NULL);
+  /* Convert unmapped Latin2-4 keysyms into Latin1 characters */
+  if (!len && (keysym >= 0x0100) && (keysym < 0x0400)) {
+    len = 1;
+    kbuf[0] = (keysym & 0xff);
+  }
 
-  TheKey = XKeysymToString(XKeycodeToKeysym(disp, kev->keycode, 0));
-
-  if (TheKey == NULL)
+  if (len <= 0 || len > (int) sizeof(kbuf))
     return;
+  kbuf[len] = 0;
 
-  space = strcmp(TheKey, "space");
-
-  if ((strlen(TheKey) == 1) || !space)
+  if (*kbuf == '\r' || *kbuf == '\n')
     {
-      if (shift)
-	c = (char)toupper(TheKey[0]);
-      else
-	c = TheKey[0];
-
-      if (!space)
-	c = ' ';
-
-      if (g->contents != NULL)
-	{
-	  s = g->contents;
-
-	  g->contents = malloc(sizeof(char) * (strlen(s) + 2));
-
-	  if (g->contents != NULL)
-	    sprintf(g->contents, "%s%c", s, c);
-
-	  free(s);
-	}
-      else
-	{
-	  g->contents = malloc(2);
-
-	  if (g->contents != NULL)
-	    sprintf(g->contents, "%s", TheKey);
-	}
-
-      if (g->cursor_pos <= g->w)
-	g->cursor_pos++;
-      else
-	g->text_offset++;
-
-    }
-
-  if (strcmp(TheKey, "Return") == 0)
-    {
-
       if (g->func)
-	(*(g->func)) (g->data);
-
+        (*(g->func)) (g->data);
     }
-
-  if ((strcmp(TheKey, "BackSpace") == 0) && (strlen(g->contents) > 0))
+  else if (*kbuf == '\b')
     {
-      s = malloc(strlen(g->contents));
-      if (s != NULL)
-	{
-	  s[0] = '\0';
-
-	  strncat(s, g->contents, strlen(g->contents) - 1);
-	  free(g->contents);
-	  g->contents = s;
+      if (g->contents && *(g->contents))
+        {
+          len = strlen(g->contents) - 1;
+          g->contents[len] = 0;
 	  g->cursor_pos--;
-	}
+        }
     }
-
+  else 
+    {
+      if (g->contents != NULL)
+        {
+          g->contents = (char *) realloc(g->contents, (strlen(g->contents) + len + 1));
+        }
+      else
+        {
+          g->contents = (char *) malloc(len + 1);
+          *(g->contents) = 0;
+        }
+      strcat(g->contents, kbuf);
+      if (g->cursor_pos <= g->w)
+        g->cursor_pos += len;
+      else
+        g->text_offset += len;
+    }
 }
 
 Epplet_gadget 
