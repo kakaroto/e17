@@ -59,16 +59,14 @@ interp_changed_taglist(struct tagitem *t)
 static void
 interp_warning_taglist(struct tagitem *t)
 {
-    printf("Received a warning\n");
     while(t->tag != TAG_END)
     {
 	switch(t->tag)
 	{
 	    case TAG_CURRENTBWL:
-		printf("TAG_CURRENTBWL is t->tag\n");
+		epbb_warning_battery_set(epbb, (int)t->data);
 		break;
 	    case TAG_SLEEPINSECONDS:
-		printf("TAG_SLEEPINSECONDS is t->tag\nvalue is %d\n", (int)t->data);
 		epbb_warning_sleep_set(epbb, (int)t->data);
 		break;
 	    default:
@@ -156,7 +154,6 @@ window_show_cb(Ecore_Evas *ee)
     if(ee)
     {
 	int sw, sh, w, h;
-	Evas_Object *o = NULL;
 	
 	ecore_evas_geometry_get(ee, NULL, NULL, &w, &h);
 	ecore_x_window_size_get(0, &sw, &sh);
@@ -202,10 +199,7 @@ main(int argc, const char *argv[])
     {
 	Ecore_Evas *ee;
 	Evas *evas = NULL;
-	Evas_Object *o = NULL;
-	char buf[PATH_MAX];
 	int w = 300, h = 80;
-	int sw, sh;
 
 	ee = ecore_evas_software_x11_new(NULL, 0, 0, 0, w, h);
 	ecore_evas_title_set(ee, PACKAGE);
@@ -218,7 +212,7 @@ main(int argc, const char *argv[])
 	ecore_evas_callback_hide_set(ee, window_hide_cb);
 	evas = ecore_evas_get(ee);
 	evas_image_cache_set(evas,512 * 1024); 
-	evas_font_cache_set(evas, 2 * (1024 * 1024)); 
+	evas_font_cache_set(evas, 512 * 1024); 
 	evas_font_path_append(evas, PACKAGE_DATA_DIR "/fonts/");
 	
 	epbb = epbb_new(ee);

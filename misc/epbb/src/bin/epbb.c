@@ -10,14 +10,25 @@
 #include "epbb.h"
 #include "../config.h"
 
-#define DISPLAY_TIMEOUT 1.75
 #define UN(ptr) ptr = 0
 
+static void
+_window_cb(void *data, Evas_Object *o, const char *sig, const char *src)
+{
+    Epbb *e = NULL;
+
+    if((e = (Epbb*)data))
+    {
+	if(!strcmp(sig, "window,show"))
+	    ecore_evas_show(e->ee);
+	else if(!strcmp(sig, "window,hide"))
+	    ecore_evas_hide(e->ee);
+    }
+}
 
 Epbb*
 epbb_new(Ecore_Evas *ee)
 {
-    int sw, sh;
     Evas_Coord w, h;
     Epbb *result = NULL;
     if((result = malloc(sizeof(Epbb))))
@@ -34,7 +45,8 @@ epbb_new(Ecore_Evas *ee)
 	    evas_object_layer_set(result->obj, 0);
 	    evas_object_name_set(result->obj, "edje");
 	    evas_object_show(result->obj);
-	   
+	    
+	    edje_object_signal_callback_add(result->obj, "window,*", "", _window_cb, result);
 	    /* fix our ecore_evas to do the theme's bidding */
 	    edje_object_size_max_get(result->obj, &w, &h);
 	    ecore_evas_size_min_set(ee, (int)w, (int)h);
@@ -63,20 +75,6 @@ epbb_free(Epbb *e)
     }
 }
 
-
-static int
-display_timer(void *data)
-{
-    Epbb *e = NULL;
-    if((e = (Epbb*)data))
-    {
-	ecore_evas_hide(e->ee);
-	e->timer = NULL;
-    }
-    return(0);
-    UN(data);
-}
-
 static void
 epbb_progress_bar_percent_set(Epbb *e, double percent)
 {
@@ -100,18 +98,23 @@ epbb_status_text_set(Epbb *e, char *buf)
 void
 epbb_warning_sleep_set(Epbb *e, int val)
 {
-#if 0
-    ebits_set_named_bit_state(bg, "Icon", "Clicked");
-	
     char buf[120];
-    snprintf(buf, 120, "%d Minutes Left", val/60);
-    status_set_text(buf);
+    
+    edje_object_signal_emit(e->obj, "SLEEP_WARNING", "");
+    snprintf(buf, 120, "Sleeping in %d Minutes.", val/60);
+    epbb_status_text_set(e, buf);
+    if(!ecore_evas_visibility_get(e->ee))
+	ecore_evas_show(e->ee);
+}
 
-    if(!ecore_evas_visibility_get(e))
-	ecore_evas_show(e);
-    if(timer) ecore_timer_del(timer);
-    timer = ecore_timer_add(DISPLAY_TIMEOUT * 4, display_timer, NULL);
-#endif
+void
+epbb_warning_battery_set(Epbb *e, int val)
+{
+    char buf[120];
+    
+    edje_object_signal_emit(e->obj, "BATTERY_WARNING", "");
+    snprintf(buf, 120, "%d Minutes Left", val/60);
+    epbb_status_text_set(e, buf);
 }
 
 void
@@ -119,14 +122,10 @@ epbb_mute_set(Epbb *e)
 {
     char buf[120];
     
-    edje_object_signal_emit(e->obj, "MUTE", "");
+    edje_object_signal_emit(e->obj, "MUTED", "");
     epbb_progress_bar_percent_set(e, 0.0);
     snprintf(buf, 120, "%d%%", 0);
     epbb_status_text_set(e, buf);
-    if(!ecore_evas_visibility_get(e->ee))
-	ecore_evas_show(e->ee);
-    if(e->timer) ecore_timer_del(e->timer);
-	e->timer = ecore_timer_add(DISPLAY_TIMEOUT, display_timer, e);
 }
 void
 epbb_volume_set(Epbb *e, int val)
@@ -136,10 +135,6 @@ epbb_volume_set(Epbb *e, int val)
     epbb_progress_bar_percent_set(e, (double)val/(double)100);
     snprintf(buf, 120, "%d%%", val);
     epbb_status_text_set(e, buf);
-    if(!ecore_evas_visibility_get(e->ee))
-	ecore_evas_show(e->ee);
-    if(e->timer) ecore_timer_del(e->timer);
-	e->timer = ecore_timer_add(DISPLAY_TIMEOUT, display_timer, e);
 }
 void
 epbb_brightness_set(Epbb *e, int val)
@@ -150,10 +145,6 @@ epbb_brightness_set(Epbb *e, int val)
     epbb_progress_bar_percent_set(e, (double)val/(double)15);
     snprintf(buf, 120, "%0.0f%%", 100 * ((double)val/15.0));
     epbb_status_text_set(e, buf);
-    if(!ecore_evas_visibility_get(e->ee))
-	ecore_evas_show(e->ee);
-    if(e->timer) ecore_timer_del(e->timer);
-	e->timer = ecore_timer_add(DISPLAY_TIMEOUT, display_timer, e);
 }
 
 void

@@ -20,5 +20,6 @@ void epbb_battery_remaining_set(Epbb *e, int mins);
 void epbb_battery_source_set(Epbb *e, int mins);
 void epbb_brightness_set(Epbb *e, int val);
 void epbb_warning_sleep_set(Epbb *e, int val);
+void epbb_warning_battery_set(Epbb *e, int val);
 
 #endif
