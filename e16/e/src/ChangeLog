@@ -2954,3 +2954,10 @@ Sun Oct  3 18:03:12 PDT 1999
 (Mandrake)
 
 typo
+
+-------------------------------------------------------------------------------
+
+Sun Oct  3 18:23:28 PDT 1999
+(Raster)
+
+flippy iconify anim + resize DOWN not UP with icons if > iconsize

@@ -1,5 +1,7 @@
 #include "E.h"
 
+#include<math.h>
+
 static void         IcondefChecker(int val, void *data);
 
 #define IB_ANIM_TIME 0.25
@@ -8,14 +10,15 @@ void
 IB_Animate(char iconify, EWin * from, EWin * to)
 {
    double              t1, t2, t, i, spd, ii;
-   int                 x, y, w, h, fx, fy, fw, fh, dx, dy, dw, dh;
+   int                 x, y, x1, y1, x2, y2, x3, y3, x4, y4, w, h, fx, fy,
+                       fw, fh, dx, dy, dw, dh;
    GC                  gc;
    XGCValues           gcv;
 
    if (mode.startup)
       return;
    GrabX();
-   spd = 0.01;
+   spd = 0.00001;
    gcv.subwindow_mode = IncludeInferiors;
    gcv.function = GXxor;
    gcv.foreground = WhitePixel(disp, root.scr);
@@ -37,21 +40,64 @@ IB_Animate(char iconify, EWin * from, EWin * to)
 	for (i = 0.0; i < 1.0; i += spd)
 	  {
 	     ii = 1.0 - i;
+
 	     x = (fx * ii) + (dx * i);
 	     y = (fy * ii) + (dy * i);
 	     w = (fw * ii) + (dw * i);
 	     h = (fh * ii) + (dh * i);
-	     XDrawRectangle(disp, root.win, gc, x, y, w, h);
-	     XDrawRectangle(disp, root.win, gc, x + 1, y + 1, w - 2, h - 2);
-	     XDrawRectangle(disp, root.win, gc, x + 2, y + 2, w - 4, h - 4);
+
+	     x = (2 * x + w) / 2;	//x middle
+
+	     y = (2 * y + h) / 2;	// y middle
+
+	     w /= 2;		//width/2
+
+	     h /= 2;		//height/2
+
+	     x1 = x + w * (1 - .5 * sin(3.14159 + i * 6.2831853072));
+	     y1 = y + h * cos(i * 6.2831853072);
+	     x2 = x + w * (1 - .5 * sin(i * 6.2831853072));
+	     y2 = y - h * cos(i * 6.2831853072);
+	     x3 = x - w * (1 - .5 * sin(3.14159 + i * 6.2831853072));
+	     y3 = y - h * cos(i * 6.2831853072);
+	     x4 = x - w * (1 - .5 * sin(i * 6.2831853072));
+	     y4 = y + h * cos(i * 6.2831853072);
+
+	     XDrawLine(disp, root.win, gc, x1, y1, x2, y2);
+	     XDrawLine(disp, root.win, gc, x2, y2, x3, y3);
+	     XDrawLine(disp, root.win, gc, x3, y3, x4, y4);
+	     XDrawLine(disp, root.win, gc, x4, y4, x1, y1);
+
+	     XDrawLine(disp, root.win, gc, x1 + 1, y1 + 1, x2 - 1, y2 - 1);
+	     XDrawLine(disp, root.win, gc, x2 + 1, y2 + 1, x3 - 1, y3 - 1);
+	     XDrawLine(disp, root.win, gc, x3 + 1, y3 + 1, x4 - 1, y4 - 1);
+	     XDrawLine(disp, root.win, gc, x4 + 1, y4 + 1, x1 - 1, y1 - 1);
+
+	     XDrawLine(disp, root.win, gc, x1 + 2, y1 + 2, x2 - 2, y2 - 2);
+	     XDrawLine(disp, root.win, gc, x2 + 2, y2 + 2, x3 - 2, y3 - 2);
+	     XDrawLine(disp, root.win, gc, x3 + 2, y3 + 2, x4 - 2, y4 - 2);
+	     XDrawLine(disp, root.win, gc, x4 + 2, y4 + 2, x1 - 2, y1 - 2);
+
 	     XSync(disp, False);
 	     t2 = GetTime();
 	     t = t2 - t1;
 	     t1 = t2;
 	     spd = t / IB_ANIM_TIME;
-	     XDrawRectangle(disp, root.win, gc, x, y, w, h);
-	     XDrawRectangle(disp, root.win, gc, x + 1, y + 1, w - 2, h - 2);
-	     XDrawRectangle(disp, root.win, gc, x + 2, y + 2, w - 4, h - 4);
+
+	     XDrawLine(disp, root.win, gc, x1, y1, x2, y2);
+	     XDrawLine(disp, root.win, gc, x2, y2, x3, y3);
+	     XDrawLine(disp, root.win, gc, x3, y3, x4, y4);
+	     XDrawLine(disp, root.win, gc, x4, y4, x1, y1);
+
+	     XDrawLine(disp, root.win, gc, x1 + 1, y1 + 1, x2 - 1, y2 - 1);
+	     XDrawLine(disp, root.win, gc, x2 + 1, y2 + 1, x3 - 1, y3 - 1);
+	     XDrawLine(disp, root.win, gc, x3 + 1, y3 + 1, x4 - 1, y4 - 1);
+	     XDrawLine(disp, root.win, gc, x4 + 1, y4 + 1, x1 - 1, y1 - 1);
+
+	     XDrawLine(disp, root.win, gc, x1 + 2, y1 + 2, x2 - 2, y2 - 2);
+	     XDrawLine(disp, root.win, gc, x2 + 2, y2 + 2, x3 - 2, y3 - 2);
+	     XDrawLine(disp, root.win, gc, x3 + 2, y3 + 2, x4 - 2, y4 - 2);
+	     XDrawLine(disp, root.win, gc, x4 + 2, y4 + 2, x1 - 2, y1 - 2);
 	  }
      }
    else
@@ -67,21 +113,64 @@ IB_Animate(char iconify, EWin * from, EWin * to)
 	for (i = 1.0; i >= 0.0; i -= spd)
 	  {
 	     ii = 1.0 - i;
+
 	     x = (fx * ii) + (dx * i);
 	     y = (fy * ii) + (dy * i);
 	     w = (fw * ii) + (dw * i);
 	     h = (fh * ii) + (dh * i);
-	     XDrawRectangle(disp, root.win, gc, x, y, w, h);
-	     XDrawRectangle(disp, root.win, gc, x + 1, y + 1, w - 2, h - 2);
-	     XDrawRectangle(disp, root.win, gc, x + 2, y + 2, w - 4, h - 4);
+
+	     x = (2 * x + w) / 2;	//x middle
+
+	     y = (2 * y + h) / 2;	// y middle
+
+	     w /= 2;		//width/2
+
+	     h /= 2;		//height/2
+
+	     x1 = x + w * (1 - .5 * sin(3.14159 + i * 6.2831853072));
+	     y1 = y + h * cos(i * 6.2831853072);
+	     x2 = x + w * (1 - .5 * sin(i * 6.2831853072));
+	     y2 = y - h * cos(i * 6.2831853072);
+	     x3 = x - w * (1 - .5 * sin(3.14159 + i * 6.2831853072));
+	     y3 = y - h * cos(i * 6.2831853072);
+	     x4 = x - w * (1 - .5 * sin(i * 6.2831853072));
+	     y4 = y + h * cos(i * 6.2831853072);
+
+	     XDrawLine(disp, root.win, gc, x1, y1, x2, y2);
+	     XDrawLine(disp, root.win, gc, x2, y2, x3, y3);
+	     XDrawLine(disp, root.win, gc, x3, y3, x4, y4);
+	     XDrawLine(disp, root.win, gc, x4, y4, x1, y1);
+
+	     XDrawLine(disp, root.win, gc, x1 + 1, y1 + 1, x2 - 1, y2 - 1);
+	     XDrawLine(disp, root.win, gc, x2 + 1, y2 + 1, x3 - 1, y3 - 1);
+	     XDrawLine(disp, root.win, gc, x3 + 1, y3 + 1, x4 - 1, y4 - 1);
+	     XDrawLine(disp, root.win, gc, x4 + 1, y4 + 1, x1 - 1, y1 - 1);
+
+	     XDrawLine(disp, root.win, gc, x1 + 2, y1 + 2, x2 - 2, y2 - 2);
+	     XDrawLine(disp, root.win, gc, x2 + 2, y2 + 2, x3 - 2, y3 - 2);
+	     XDrawLine(disp, root.win, gc, x3 + 2, y3 + 2, x4 - 2, y4 - 2);
+	     XDrawLine(disp, root.win, gc, x4 + 2, y4 + 2, x1 - 2, y1 - 2);
+
 	     XSync(disp, False);
 	     t2 = GetTime();
 	     t = t2 - t1;
 	     t1 = t2;
 	     spd = t / IB_ANIM_TIME;
-	     XDrawRectangle(disp, root.win, gc, x, y, w, h);
-	     XDrawRectangle(disp, root.win, gc, x + 1, y + 1, w - 2, h - 2);
-	     XDrawRectangle(disp, root.win, gc, x + 2, y + 2, w - 4, h - 4);
+
+	     XDrawLine(disp, root.win, gc, x1, y1, x2, y2);
+	     XDrawLine(disp, root.win, gc, x2, y2, x3, y3);
+	     XDrawLine(disp, root.win, gc, x3, y3, x4, y4);
+	     XDrawLine(disp, root.win, gc, x4, y4, x1, y1);
+
+	     XDrawLine(disp, root.win, gc, x1 + 1, y1 + 1, x2 - 1, y2 - 1);
+	     XDrawLine(disp, root.win, gc, x2 + 1, y2 + 1, x3 - 1, y3 - 1);
+	     XDrawLine(disp, root.win, gc, x3 + 1, y3 + 1, x4 - 1, y4 - 1);
+	     XDrawLine(disp, root.win, gc, x4 + 1, y4 + 1, x1 - 1, y1 - 1);
+
+	     XDrawLine(disp, root.win, gc, x1 + 2, y1 + 2, x2 - 2, y2 - 2);
+	     XDrawLine(disp, root.win, gc, x2 + 2, y2 + 2, x3 - 2, y3 - 2);
+	     XDrawLine(disp, root.win, gc, x3 + 2, y3 + 2, x4 - 2, y4 - 2);
+	     XDrawLine(disp, root.win, gc, x4 + 2, y4 + 2, x1 - 2, y1 - 2);
 	  }
      }
    XFreeGC(disp, gc);
@@ -725,12 +814,12 @@ IB_GetEIcon(EWin * ewin)
 			  mh -= ic->padding.top + ic->padding.bottom;
 		       }
 		  }
-		if (mw > w)
+		if (mw < w)
 		  {
 		     h = (mw * h) / w;
 		     w = mw;
 		  }
-		if (mh > h)
+		if (mh < h)
 		  {
 		     w = (mh * w) / h;
 		     h = mh;
