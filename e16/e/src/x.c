@@ -52,7 +52,7 @@ ECreateWindow(Window parent, int x, int y, int w, int h, int saveunder)
    attr.override_redirect = True;
    attr.colormap = root.cmap;
    attr.border_pixel = 0;
-   attr.background_pixel = 0;
+/*   attr.background_pixel = 0; */
    attr.background_pixmap = None;
    if ((saveunder == 1) && (mode.save_under))
       attr.save_under = True;
@@ -61,9 +61,9 @@ ECreateWindow(Window parent, int x, int y, int w, int h, int saveunder)
    else
       attr.save_under = False;
    win = XCreateWindow(disp, parent, x, y, w, h, 0, root.depth,
-		     InputOutput, root.vis, CWOverrideRedirect | CWSaveUnder |
-		    CWBackingStore | CWColormap | CWBackPixmap | CWBackPixel |
-		       CWBorderPixel,
+		       InputOutput, root.vis, CWOverrideRedirect |
+		       CWSaveUnder | CWBackingStore | CWColormap |
+		       CWBackPixmap | CWBorderPixel,
 		       &attr);
    xid = NewXID();
    xid->parent = parent;

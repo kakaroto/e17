@@ -3880,3 +3880,10 @@ Sat Nov  6 11:54:31 PST 1999
 
 fixed sticky windows beig moved by the pager problems....... :) you can't lose
 them now anyway... :)
+
+-------------------------------------------------------------------------------
+
+Sat Nov  6 11:58:59 PST 1999
+(Raster)
+
+use no backing pixel for windows by default... :)
