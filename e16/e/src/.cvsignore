@@ -13,3 +13,4 @@ config.status
 bb.out
 gmon.out
 CommitLog
+errors
