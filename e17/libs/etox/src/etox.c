@@ -1,6 +1,15 @@
 #include "config.h"
 #include "Etox_private.h"
 
+static void etox_free(Evas_Object * et);
+static void etox_show(Evas_Object * et);
+static void etox_hide(Evas_Object * et);
+static void etox_move(Evas_Object * et, Evas_Coord x, Evas_Coord y);
+static void etox_resize(Evas_Object * et, Evas_Coord w, Evas_Coord h);
+static void etox_set_layer(Evas_Object * et, int layer);
+static void etox_set_clip(Evas_Object * et, Evas_Object *clip);
+static void etox_unset_clip(Evas_Object * et);
+
 static Evas_List *_etox_break_text(Etox * et, char *text);
 
 Evas_Smart *etox_smart = NULL;
@@ -187,11 +196,15 @@ void etox_append_text(Evas_Object * obj, char *text)
 	 * new text with the last line of the old text. Duplicate text to avoid
 	 * read-only memory segv's when parsing.
 	 */
-	if (text && *text) {
+	if (text) {
 		text = strdup(text);
-		lines = _etox_break_text(et, text);
-		FREE(text);
 	}
+	else {
+		text = strdup(text);
+	}
+
+	lines = _etox_break_text(et, text);
+	FREE(text);
 
 	if (!lines)
 		return;
@@ -269,11 +282,15 @@ void etox_prepend_text(Evas_Object * obj, char *text)
 	 * new text with the last line of the old text. Duplicate text to avoid
 	 * read-only memory segv's when parsing.
 	 */
-	if (text && *text) {
+	if (text) {
 		text = strdup(text);
-		lines = _etox_break_text(et, text);
-		FREE(text);
 	}
+	else {
+		text = strdup("");
+	}
+
+	lines = _etox_break_text(et, text);
+	FREE(text);
 
 	if (!lines)
 		return;
@@ -365,11 +382,15 @@ void etox_insert_text(Evas_Object * obj, char *text, int index)
 	 * new text with the last line of the old text. Duplicate text to avoid
 	 * read-only memory segv's when parsing.
 	 */
-	if (text && *text) {
+	if (text) {
 		text = strdup(text);
-		lines = _etox_break_text(et, text);
-		FREE(text);
 	}
+	else {
+		text = strdup("");
+	}
+
+	lines = _etox_break_text(et, text);
+	FREE(text);
 
 	if (!lines)
 		return;
@@ -441,11 +462,15 @@ void etox_set_text(Evas_Object * obj, char *text)
 	 * Layout the text and add to the display. Duplicate text to avoid
 	 * read-only memory segv's when parsing.
 	 */
-	if (text && *text) {
+	if (text) {
 		text = strdup(text);
-		et->lines = _etox_break_text(et, text);
-		FREE(text);
 	}
+	else {
+		text = strdup("");
+	}
+
+	et->lines = _etox_break_text(et, text);
+	FREE(text);
 
 	/*
 	 * Sum up the length and height of the text in the etox.
@@ -456,7 +481,7 @@ void etox_set_text(Evas_Object * obj, char *text)
 	for (l = et->lines; l; l = l->next) {
 		line = l->data;
 		/*
-		   * Grab the largest line width for the width of the etox.
+		 * Grab the largest line width for the width of the etox.
 		 */
 		if (line->w > et->tw)
 			et->tw = line->w;
@@ -679,7 +704,7 @@ etox_get_length(Evas_Object *obj)
 	CHECK_PARAM_POINTER_RETURN("obj", obj, 0);
 
 	et = evas_object_smart_data_get(obj);
-	return et->length + evas_list_count(et->lines);
+	return et->length + evas_list_count(et->lines) - 1;
 }
 
 
@@ -1211,7 +1236,7 @@ static Evas_List *_etox_break_text(Etox * et, char *text)
 	/*
 	 * Add any remaining text after the last line break or tab.
 	 */
-	if (*text) {
+	if (*text || !line->bits) {
 		bit = etox_style_new(et->evas, text, et->context->style);
 		evas_object_smart_member_add(bit, et->smart_obj);
 		evas_object_color_set(bit, et->context->r, et->context->g,
@@ -1220,9 +1245,6 @@ static Evas_List *_etox_break_text(Etox * et, char *text)
 		etox_style_set_font(bit, et->context->font, et->context->font_size);
 		etox_line_append(line, bit);
 		evas_object_show(bit);
-	} else if (line->bits == NULL) {
-		ret = evas_list_remove(ret, line);
-		etox_line_free(line);
 	}
 
 	return ret;
@@ -1245,14 +1267,17 @@ void etox_layout(Etox * et)
 
 	CHECK_PARAM_POINTER("et", et);
 
+	if (!et->flags & ETOX_SOFT_WRAP)
+		et->w = 0;
+
 	if (!et->w)
 		et->w = et->tw;
 
 	/*
-	 * What the hell, do you expect us to "just know" what text to
-	 * display, you've got to set some dumbass!
+	 * Don't skip out just because the size is 0 x 0, we need to resize
+	 * things later.
 	 */
-	if (!et->lines || et->w <= 0 || et->h <= 0)
+	if (!et->lines)
 		return;
 
 	y = et->y;

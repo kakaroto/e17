@@ -190,15 +190,6 @@ struct _etox_selection
 	} start, end;
 };
 
-void etox_free(Evas_Object * et);
-void etox_show(Evas_Object * et);
-void etox_hide(Evas_Object * et);
-void etox_move(Evas_Object * et, Evas_Coord x, Evas_Coord y);
-void etox_resize(Evas_Object * et, Evas_Coord w, Evas_Coord h);
-void etox_set_layer(Evas_Object * et, int layer);
-void etox_set_clip(Evas_Object * et, Evas_Object *clip);
-void etox_unset_clip(Evas_Object * et);
-
 void etox_layout(Etox * et);
 Evas_Object * etox_split_bit(Etox_Line *line, Evas_Object *bit, int index);
 
