@@ -469,8 +469,6 @@ feh_calc_needed_zoom(double *zoom, int orig_w, int orig_h, int dest_w,
 
    if (ratio > 1.0)
       *zoom = ((double) dest_w / orig_w);
-   else if (ratio != 1.0)
-      *zoom = ((double) dest_h / orig_h);
    else
       *zoom = ((double) dest_h / orig_h);
 
