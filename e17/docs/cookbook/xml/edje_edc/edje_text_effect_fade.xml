@@ -1,0 +1,128 @@
+
+<section>
+<sectioninfo>
+  <author>
+    <firstname>dan</firstname>
+    <surname>sinclair</surname>
+    <email>zero@perplexity.org</email>
+    <othername>'dj2'</othername>
+  </author>
+  <date>17 September 2004</date>
+</sectioninfo>
+
+<title>Recipe: Edje text effect fading</title>
+
+<para>
+Text effects can make your program look cool. But what if you want to fade
+those text effects with your text? Well, Edje makes it possible and relatively
+simple.
+</para>
+
+<para>
+All you need to do is to fade out the <literal>color3</literal> attribute 
+as your fading the <literal>color</literal> attribute of your text. The
+<literal>color3</literal> will change the colour values of the effect.
+</para>
+
+<para>
+This is illustrated in the following example.
+</para>
+
+<example>
+<title>Fade effect with text</title>
+<programlisting>
+collections {
+    group {
+        name, "Main";
+        min, 30 30;
+
+        parts {
+            part {
+                name, "foo";
+                type, TEXT;
+                effect, SOFT_SHADOW; 
+                mouse_events, 1;
+
+                description {
+                    state, "default" 0.0;
+                    rel1 {
+                        relative, 0 0;
+                        offset, 0 0;
+                    }
+                    rel2 {
+                        relative, 1.0 1.0;
+                        offset, -1 -1;
+                    }
+
+                    text {
+                        text, "foo text";
+                        font, "Vera";
+                        size, 22;
+                    }
+                    color, 255 255 255 255;
+                    color3, 0 0 0 255;
+                }
+                description {
+                    state, "out" 0.0;
+                    rel1 {
+                        relative, 0 0;
+                        offset, 0 0;
+                    }
+                    rel2 {
+                        relative, 1.0 1.0;
+                        offset, -1 -1;
+                    }
+
+                    text {
+                        text, "foo text";
+                        font, "Vera";
+                        size, 22;
+                    }
+                    color, 0 0 0 0;
+                    color3, 255 255 255 0;
+                }
+            }
+        }
+        programs {
+            program {
+                name, "foo";
+                signal, "mouse,in";
+                source, "foo";
+                action, STATE_SET "out" 0.0;
+                transition, SINUSOIDAL 2.0;
+                target, "foo";
+            }
+            program {
+                name, "foo";
+                signal, "mouse,out";
+                source, "foo";
+                action, STATE_SET "default" 0.0;
+                transition, SINUSOIDAL 2.0;
+                target, "foo";
+            }
+        }
+    }
+}
+</programlisting>
+</example>
+
+<para>
+This example can be compiled into a <literal>.eet</literal> with the
+following command.
+</para>
+
+<example>
+<title>Compliation</title>
+<screen>
+zero@oberon[edje_text] -&gt; edje_cc text.edc
+</screen>
+</example>
+
+<para>
+By altering the <literal>color3</literal> value along with the
+<literal>color</literal> value you will be able to alter the appearance of
+your effects along with your text.
+</para>
+
+</section>
+
