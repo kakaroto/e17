@@ -73,11 +73,10 @@
 #include <sys/resource.h>
 #include <sys/ipc.h>
 #include <sys/shm.h>
-#ifdef HAVE_FREETYPE_H
-#include <freetype.h>
-#endif
 #ifdef HAVE_FREETYPE_FREETYPE_H
 #include <freetype/freetype.h>
+#else
+#include <freetype.h>
 #endif
 #include "econfig.h"
 

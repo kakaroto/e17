@@ -3546,7 +3546,7 @@ FindFile(char *file)
    EDBUG(6, "FindFile");
 
 #ifndef __EMX__
-   locale = getenv("LANG");
+   locale = setlocale(LC_MESSAGES, NULL);
 #endif
 
    /* if absolute path - and file exists - return it */
@@ -3617,8 +3617,14 @@ char               *
 FindNoThemeFile(char *file)
 {
    char                s[FILEPATH_LEN_MAX];
+   char               *locale = NULL;
 
    EDBUG(6, "FindFile");
+
+#ifndef __EMX__
+   locale = setlocale(LC_MESSAGES, NULL);
+#endif
+
    /* if absolute path - and file exists - return it */
 #ifndef __EMX__
    if (file[0] == '/')
@@ -3626,6 +3632,13 @@ FindNoThemeFile(char *file)
    if (_fnisabs(file))
 #endif
      {
+	if (locale)
+	  {
+	     Esnprintf(s, sizeof(s), "%s.%s", file, locale);
+	     if (isfile(s))
+		EDBUG_RETURN(duplicate(s));
+	  }
+
 	if (isfile(file))
 	   EDBUG_RETURN(duplicate(file));
      }
@@ -3637,11 +3650,23 @@ FindNoThemeFile(char *file)
      }
 #endif
    /* look in ~/.enlightenment first */
+   if (locale)
+     {
+	Esnprintf(s, sizeof(s), "%s/%s.%s", UserEDir(), file, locale);
+	if (isfile(s))
+	   EDBUG_RETURN(duplicate(s));
+     }
    Esnprintf(s, sizeof(s), "%s/%s", UserEDir(), file);
    if (isfile(s))
       EDBUG_RETURN(duplicate(s));
    /* look in system config dir */
 #ifndef __EMX__
+   if (locale)
+     {
+	Esnprintf(s, sizeof(s), "%s/config/%s.%s", ENLIGHTENMENT_ROOT, file, locale);
+	if (isfile(s))
+	   EDBUG_RETURN(duplicate(s));
+     }
    Esnprintf(s, sizeof(s), "%s/config/%s", ENLIGHTENMENT_ROOT, file);
 #else
    Esnprintf(s, sizeof(s), "%s/config/%s", __XOS2RedirRoot(ENLIGHTENMENT_ROOT),

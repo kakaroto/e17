@@ -4119,3 +4119,10 @@ Thu Dec 23 10:46:56 PST 1999
 (Raster)
 
 dont animate if animate is turend off for iconbox when dnd to iconbox..
+
+-------------------------------------------------------------------------------
+
+Thu Dec 23 10:59:57 PST 1999
+(Raster)
+
+use setlocale.... 

@@ -1634,7 +1634,7 @@ CreateMenuFromGnome(char *name, MenuStyle * ms, char *dir)
 
    EDBUG(5, "CreateMenuFromGnome");
 
-   if ((lang = getenv("LANG")) != NULL)
+   if ((lang = setlocale(LC_MESSAGES, NULL)) != NULL)
       Esnprintf(name_buf, sizeof(name_buf), "Name[%s]=", lang);
    else
       name_buf[0] = '\0';
