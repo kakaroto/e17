@@ -1,19 +1,22 @@
 Simple:
 =======
-- add mouse selection
 - handle up / down movement when lower line longer that top one and v/v
 - remove all hardcoded values
 
 Medium:
 =======
+- add mouse selection
 - when we reach the top / botton line, up / down need special cases
 - if on the last line and hit enter, cursor doesnt move till you enter 
   a character
-	       
+- handle empty lines	       
 
 Hard:
 =====
 - add copy / paste (clipboard support)
+- sort out \n removal
+- look into fact that at end of line, cursor is 1 pos ahead
+- save / restore text with \n
 
 Insane:
 =======

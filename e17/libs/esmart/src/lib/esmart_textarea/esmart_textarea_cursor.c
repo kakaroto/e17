@@ -76,14 +76,26 @@ void _esmart_textarea_cursor_move_down(Esmart_Text_Area *t) {
       cur_line = evas_object_textblock_cursor_line_get(t->text);
    }
    
-   /* keep moving until we hit the required x coord */
-   evas_object_textblock_char_pos_get(t->text,pos,&i,&cy,&cw,&ch);   
-   while(cx > i && pos <= len) {
-      pos++;
-      evas_object_textblock_cursor_pos_set(t->text, pos);      
-      evas_object_textblock_char_pos_get(t->text,pos,&i,&cy,&cw,&ch);
-      
-   }   
+   /* get y of this line */   
+   evas_object_textblock_char_pos_get(t->text,pos,&i,&cy,&cw,&ch);
+   
+   /* get pos using y of line and x of initial char */
+   pos = evas_object_textblock_char_coords_get(t->text, cx, cy,
+					       NULL,NULL,NULL,NULL);
+   if(pos > 0) pos++;
+   else if(pos < 0)
+     {
+	/* handle case where upper line is longer than lower line */
+	pos = evas_object_textblock_line_end_pos_get(t->text);
+     }
+   
+   evas_object_textblock_cursor_pos_set(t->text, pos);   
+   /* keep moving until we hit the required x coord */   
+//   while(cx > i && pos <= len) {
+//      pos++;
+//      evas_object_textblock_cursor_pos_set(t->text, pos);      
+//      evas_object_textblock_char_pos_get(t->text,pos,&i,&cy,&cw,&ch);
+//   }   
 }
 
 
@@ -107,43 +119,56 @@ void _esmart_textarea_cursor_move_up(Esmart_Text_Area *t) {
       pos--;
       evas_object_textblock_cursor_pos_set(t->text, pos);
       cur_line = evas_object_textblock_cursor_line_get(t->text);
-   }
+   }         
    
-   /* keep moving until we hit the required x coord */
-   evas_object_textblock_char_pos_get(t->text,pos,&i,&cy,&cw,&ch);   
-   while(cx < i && pos >= 0) {      
-      pos--;
-      evas_object_textblock_cursor_pos_set(t->text, pos);      
-      evas_object_textblock_char_pos_get(t->text,pos,&i,&cy,&cw,&ch);
-   }   
+   /* get y of this line */   
+   evas_object_textblock_char_pos_get(t->text,pos,&i,&cy,&cw,&ch);
+   
+   /* get pos using y of line and x of initial char */
+   pos = evas_object_textblock_char_coords_get(t->text, cx, cy,
+					       NULL,NULL,NULL,NULL);
+   /* pos is always one char behind because of above loop */
+   if(pos > 0) pos++;
+   else if(pos < 0) {
+      /* handle case where lower line is longer than upper line */
+      pos = evas_object_textblock_line_end_pos_get(t->text);      
+   }
+   evas_object_textblock_cursor_pos_set(t->text, pos);   
 }
 
 
 /* move cursor to home position, usually, start of line */
-void _esmart_textarea_cursor_move_home(Esmart_Text_Area *ta) {
+void _esmart_textarea_cursor_move_home(Esmart_Text_Area *t) {
 }
 
 /* move cursor to end position, usually, end of line */
-void _esmart_textarea_cursor_move_end(Esmart_Text_Area *ta) {
+void _esmart_textarea_cursor_move_end(Esmart_Text_Area *t) {
 }
 
 /* delete one character from current cursor location */
 /* TODO: make sure that the last pos = len, and not len - 1 */
-void _esmart_textarea_cursor_delete_right(Esmart_Text_Area *ta) {
+void _esmart_textarea_cursor_delete_right(Esmart_Text_Area *t) {
    int pos, len;
-   pos = evas_object_textblock_cursor_pos_get(ta->text);
-   len = evas_object_textblock_length_get(ta->text);
+   pos = evas_object_textblock_cursor_pos_get(t->text);
+   len = evas_object_textblock_length_get(t->text);
    if(pos == len) return;
-   evas_object_textblock_text_del(ta->text, 1);
+   evas_object_textblock_text_del(t->text, 1);
 }
 
 /* delete left, backspace, one character from current location */
-void _esmart_textarea_cursor_delete_left(Esmart_Text_Area *ta) {
-   int pos;
-   pos = evas_object_textblock_cursor_pos_get(ta->text);
+void _esmart_textarea_cursor_delete_left(Esmart_Text_Area *t) {
+   int pos, start;
+   pos = evas_object_textblock_cursor_pos_get(t->text);
+   start = evas_object_textblock_line_start_pos_get(t->text);
    if(pos == 0) return;
-   evas_object_textblock_cursor_pos_set(ta->text, pos - 1);
-   evas_object_textblock_text_del(ta->text, 1);   
+   if(pos == start)
+     {
+	/* we need to remove the formatting!! we cant though because
+	 * of current limitations in textblock, bug raster to fix
+	 */
+     }
+   evas_object_textblock_cursor_pos_set(t->text, pos - 1);
+   evas_object_textblock_text_del(t->text, 1);   
 }
 
 /* override the default cursor */

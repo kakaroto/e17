@@ -43,7 +43,7 @@ _esmart_textarea_cb_key_down(void *data, Evas *e, Evas_Object *obj,
 	    !strcmp(ev->keyname, "KP_Return") ||
 	    !strcmp(ev->keyname, "Enter") ||
 	    !strcmp(ev->keyname, "KP_Enter")) {
-      evas_object_textblock_text_insert(t->text, "\0");
+      //evas_object_textblock_text_insert(t->text, "\0");
       evas_object_textblock_format_insert(t->text, "\n");
    } else {
       evas_object_textblock_text_insert(t->text, ev->string);
