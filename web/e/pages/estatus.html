@@ -147,12 +147,43 @@ Tools:<br>
   <td class="border-l" width="25"><img src="img/empty.gif" height="1" width="25" alt=""></td>
   <td class="content" valign="top" align="center" width="100%">
 
-<p class=contenttitle">State of the E-nion</p>
+<p class="contenttitle">State of the E-nion</p>
 
 <p>This "mini-document" is intended for reference for people wanting to be
 involved in Enlightenment development for 0.17.0 and beyond. Please read ALL
 of this before leaping to conclusions. Any part is subject to review and can
 be changed. There is no priority implied here by the order of items.</p>
+
+<p><table width="100%"><tr><td class="newstitle">
+LibAST:
+</td></tr></table><table width="100%"><tr><td class="newsbody">
+Although this has historically been a miscellaneous/random
+utility library, I'm taking steps to improve its usability.
+Specifically, I'm in the process of documenting the entire API using
+Doxygen to make it easier for other developers to make use of what it
+offers. I'm also planning to work on cleaning up some of the
+namespace issues.<br></br><br></br>
+LibAST currently implements a fairly complete Object model, including
+inheritence, polymorphism, interface classes, and more. This object
+model will be used heavily in future Eterm development to simplify
+compile- and run-time capability customization. The interface
+mechanism will be especially useful for making pluggable rendering,
+screen data storage, and configuration engines.
+</td></tr></table>
+
+<p><table width="100%"><tr><td class="newstitle">
+Eterm
+</td></tr></table><table width="100%"><tr><td class="newsbody">
+The 0.9.x branch of Eterm development is essentially in bugfix
+mode. I will continue maintenance and periodic release of this
+codebase while 0.10 development proceeds.<br></br><br></br>
+The 0.10 branch is where all the fun stuff will be happening. That
+said, non-developers should beware of using it, since part of the
+development process will involve ripping out large portions of code
+and reimplementing them in a more OO fashion, which of course means
+things will break. Hopefully, however, the end result will be one of
+the most powerful and feature-rich terminal emulators in existence.
+</td></tr></table>
 
 <p><table width="100%"><tr><td class="newstitle">
 Evas
