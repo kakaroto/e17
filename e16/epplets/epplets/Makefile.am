@@ -137,13 +137,15 @@ E-ScreenShoot.ABOUT/E_ScreenShoot_cloak.png \
 E-Mountbox.ABOUT/MAIN E-Mountbox.ABOUT/bg.png E-Mountbox.ABOUT/aircut3.ttf \
 E-Mountbox.ABOUT/shot.png E-Mountbox.ABOUT/shot_unmounted.png \
 E-Mixer.ABOUT/MAIN E-Mixer.ABOUT/aircut3.ttf E-Mixer.ABOUT/bg.png \
-E-SD.ABOUT/MAIN E-SD.ABOUT/aircut3.ttf E-SD.ABOUT/bg.png
+E-SD.ABOUT/MAIN E-SD.ABOUT/aircut3.ttf E-SD.ABOUT/bg.png \
+E-ScreenSave.ABOUT/MAIN E-ScreenSave.ABOUT/bg.png \
+E-ScreenSave.ABOUT/aircut3.ttf
 
 ICONS = \
 E-Load.icon E-Clock.icon E-Net.icon E-Cpu.icon E-Power.icon E-Biff.icon \
 Emix.icon E-NetFlame.icon E-ScreenShoot.icon E-Slides.icon E-Disk.icon \
 E-MemWatch.icon E-Sys.icon E-Time.icon E-Xss.icon E-Mountbox.icon \
-E-Mixer.icon E-SD.icon
+E-Mixer.icon E-SD.icon E-ScreenSave.icon
 
 IMAGES =\
 E-Clock-Image.png E-Power-Bat-0.png E-Power-Bat-10.png E-Power-Bat-20.png \
@@ -167,6 +169,7 @@ install-data-hook:
 	$(mkinstalldirs) $(EROOT)/epplet_icons/Emix.ABOUT/
 	$(mkinstalldirs) $(EROOT)/epplet_icons/E-NetFlame.ABOUT/
 	$(mkinstalldirs) $(EROOT)/epplet_icons/E-ScreenShoot.ABOUT/
+	$(mkinstalldirs) $(EROOT)/epplet_icons/E-ScreenSave.ABOUT/
 	$(mkinstalldirs) $(EROOT)/epplet_icons/E-Mixer.ABOUT/
 	$(mkinstalldirs) $(EROOT)/epplet_icons/E-SD.ABOUT/
 	$(mkinstalldirs) $(EROOT)/epplet_icons/E-Mountbox.ABOUT/
