@@ -1240,3 +1240,12 @@ I also tidied up some other stuff, and killed another global :)
 See E-ScreenSave in cvs for an example, press the "lock" button to see it in
 action :)
 
+-------------------------------------------------------------------------------
+
+Fri Dec 03 20:22:56 GMT 1999
+(gilbertt)
+
+Removed the int x, and int y properties for Epplet_create_window, as they
+were pretty pointless, and I hate it when windows decide where they should
+go ;)
+

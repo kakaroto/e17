@@ -354,7 +354,7 @@ Epplet_Init(char *name,
 }
 
 Epplet_window
-Epplet_create_window(int w, int h, int x, int y, char *title, char vertical)
+Epplet_create_window(int w, int h, char *title, char vertical)
 {
    XSetWindowAttributes attr;
    Atom                a;
@@ -378,7 +378,7 @@ Epplet_create_window(int w, int h, int x, int y, char *title, char vertical)
       ExposureMask | FocusChangeMask | PropertyChangeMask |
       VisibilityChangeMask;
 
-   ret->win = XCreateWindow(disp, DefaultRootWindow(disp), x, y, w, h, 0,
+   ret->win = XCreateWindow(disp, DefaultRootWindow(disp), 0, 0, w, h, 0,
 			    id->x.depth, InputOutput, Imlib_get_visual(id),
 			    CWOverrideRedirect | CWSaveUnder | CWBackingStore |
 			    CWColormap | CWBackPixel | CWBorderPixel |

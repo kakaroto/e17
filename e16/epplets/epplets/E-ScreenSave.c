@@ -338,7 +338,7 @@ cb_shoot (void *data)
   Epplet_window mywin, mywin2, mywin3;
   Epplet_gadget sld, sld2, sld3, lbl, btn;
   mywin =
-    Epplet_create_window (400, 300, 100, 100,
+    Epplet_create_window (400, 300,
 			  "See! I told you this stuff was easy ;)",1);
   Epplet_window_show (mywin);
   Epplet_gadget_show (lbl =
@@ -362,7 +362,7 @@ cb_shoot (void *data)
   Epplet_window_pop_context ();
 
   mywin2 =
-    Epplet_create_window (400, 300, 100, 100,
+    Epplet_create_window (400, 300,
 			  "See! I told you this stuff was easy ;)",0);
   Epplet_window_show (mywin2);
   Epplet_gadget_show (lbl =
@@ -384,7 +384,7 @@ cb_shoot (void *data)
 					    mywin2));
 
   mywin3 =
-    Epplet_create_window (400, 300, 100, 100,
+    Epplet_create_window (400, 300,
 			  "See! I told you this stuff was easy ;)",0);
   Epplet_window_show (mywin3);
   Epplet_gadget_show (lbl =
