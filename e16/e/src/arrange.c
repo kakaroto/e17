@@ -93,7 +93,7 @@ ArrangeRects(RectBox * fixed, int fixed_count, RectBox * floating,
      {
 	int                 xx1, yy1, xx2, yy2;
 
-	GetPointerScreenGeometry(&xx1, &yy1, &xx2, &yy2);
+	GetPointerScreenAvailableArea(&xx1, &yy1, &xx2, &yy2);
 	xx2 += xx1;
 	yy2 += yy1;
 	if (startx < xx1)
@@ -597,8 +597,8 @@ SnapEwin(EWin * ewin, int dx, int dy, int *new_dx, int *new_dy)
 	EDBUG_RETURN_;
      }
 
-   ScreenGetGeometry(ewin->shape_x, ewin->shape_y, &left_bound, &top_bound, &w,
-		     &h);
+   ScreenGetAvailableArea(ewin->shape_x, ewin->shape_y,
+			  &left_bound, &top_bound, &w, &h);
    right_bound = left_bound + w;
    bottom_bound = top_bound + h;
    screen_snap_dist = Mode.constrained ? (w + h) : Conf.snap.screen_snap_dist;
@@ -941,7 +941,7 @@ ArrangeEwinCenteredXY(EWin * ewin, int *px, int *py)
 {
    int                 x, y, w, h;
 
-   GetPointerScreenGeometry(&x, &y, &w, &h);
+   GetPointerScreenAvailableArea(&x, &y, &w, &h);
    *px = (w - ewin->w) / 2 + x;
    *py = (h - ewin->h) / 2 + y;
 }

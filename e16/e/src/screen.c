@@ -90,6 +90,62 @@ ScreenGetGeometry(int xi, int yi, int *px, int *py, int *pw, int *ph)
    return head;
 }
 
+static void
+VRootGetAvailableArea(int *px, int *py, int *pw, int *ph)
+{
+   EWin               *const *lst, *ewin;
+   int                 i, num, l, r, t, b;
+
+   l = r = t = b = 0;
+   lst = EwinListGetAll(&num);
+   for (i = 0; i < num; i++)
+     {
+	ewin = lst[i];
+
+	if (l < ewin->strut.left)
+	   l = ewin->strut.left;
+	if (r < ewin->strut.right)
+	   r = ewin->strut.right;
+	if (t < ewin->strut.top)
+	   t = ewin->strut.top;
+	if (b < ewin->strut.bottom)
+	   b = ewin->strut.bottom;
+     }
+
+   *px = l;
+   *py = t;
+   *pw = VRoot.w - (l + r);
+   *ph = VRoot.h - (t + b);
+}
+
+int
+ScreenGetAvailableArea(int xi, int yi, int *px, int *py, int *pw, int *ph)
+{
+   int                 x1, y1, w1, h1, x2, y2, w2, h2, head;
+
+   head = ScreenGetGeometry(xi, yi, &x1, &y1, &w1, &h1);
+
+   if (!Conf.place.ignore_struts)
+     {
+	VRootGetAvailableArea(&x2, &y2, &w2, &h2);
+	if (x1 < x2)
+	   x1 = x2;
+	if (y1 < y2)
+	   y1 = y2;
+	if (w1 > w2)
+	   w1 = w2;
+	if (h1 > h2)
+	   h1 = h2;
+     }
+
+   *px = x1;
+   *py = y1;
+   *pw = w1;
+   *ph = h1;
+
+   return head;
+}
+
 int
 GetPointerScreenGeometry(int *px, int *py, int *pw, int *ph)
 {
@@ -102,4 +158,18 @@ GetPointerScreenGeometry(int *px, int *py, int *pw, int *ph)
 		 &ud);
 
    return ScreenGetGeometry(pointer_x, pointer_y, px, py, pw, ph);
+}
+
+int
+GetPointerScreenAvailableArea(int *px, int *py, int *pw, int *ph)
+{
+   Window              rt, ch;
+   int                 pointer_x, pointer_y;
+   int                 d;
+   unsigned int        ud;
+
+   XQueryPointer(disp, VRoot.win, &rt, &ch, &pointer_x, &pointer_y, &d, &d,
+		 &ud);
+
+   return ScreenGetAvailableArea(pointer_x, pointer_y, px, py, pw, ph);
 }

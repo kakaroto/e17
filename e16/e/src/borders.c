@@ -3215,7 +3215,7 @@ EwinSetFullscreen(EWin * ewin, int on)
 	ewin->lw = ewin->client.w;
 	ewin->lh = ewin->client.h;
 	ewin->ll = ewin->layer;
-	ScreenGetGeometry(ewin->x, ewin->y, &x, &y, &w, &h);
+	ScreenGetAvailableArea(ewin->x, ewin->y, &x, &y, &w, &h);
 #if 0
 	ewin->layer = 10;
 #endif

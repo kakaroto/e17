@@ -92,7 +92,7 @@ MaxSizeHV(EWin * ewin, const char *resize_type, int direction)
      case MAX_ABSOLUTE:
      case MAX_AVAILABLE:
      case MAX_CONSERVATIVE:
-	ScreenGetGeometry(ewin->x, ewin->y, &x1, &y1, &x2, &y2);
+	ScreenGetAvailableArea(ewin->x, ewin->y, &x1, &y1, &x2, &y2);
 	x2 += x1;
 	y2 += y1;
 

@@ -68,6 +68,10 @@ Atom                _NET_CLIENT_LIST_STACKING;
 /* Misc window ops */
 Atom                _NET_CLOSE_WINDOW;
 
+#if 0				/* Not yet implemented */
+Atom                _NET_MOVERESIZE_WINDOW;
+#endif
+
 /*
  * _NET_WM_MOVERESIZE
  *
@@ -93,6 +97,11 @@ Atom                _NET_WM_MOVERESIZE;
  */
 Atom                _NET_WM_NAME;
 Atom                _NET_WM_ICON_NAME;
+
+#if 0				/* Not yet implemented */
+Atom                _NET_WM_VISIBLE_NAME;
+Atom                _NET_WM_VISIBLE_ICON_NAME;
+#endif
 Atom                _NET_WM_DESKTOP;
 
 /* _NET_WM_WINDOW_TYPE (window property) */
@@ -126,6 +135,22 @@ Atom                _NET_WM_STATE_BELOW;
 #define _NET_WM_STATE_REMOVE    0
 #define _NET_WM_STATE_ADD       1
 #define _NET_WM_STATE_TOGGLE    2
+
+Atom                _NET_WM_STRUT;
+
+#if 0				/* Not yet implemented */
+Atom                _NET_WM_ALLOWED_ACTIONS;
+Atom                _NET_WM_ICON_GEOMETRY;
+Atom                _NET_WM_ICON;
+Atom                _NET_WM_PID;
+Atom                _NET_WM_HANDLED_ICONS;
+
+Atom                _NET_WM_PING;
+#endif
+
+#ifndef ENABLE_HINTS_GNOME
+Atom                _G_WIN_LAUER;
+#endif
 
 /*
  * Set/clear Atom in list
@@ -218,6 +243,8 @@ EWMH_Init(Window win_wm_check)
    _ATOM_INIT(_NET_WM_STATE_FULLSCREEN);
    _ATOM_INIT(_NET_WM_STATE_ABOVE);
    _ATOM_INIT(_NET_WM_STATE_BELOW);
+
+   _ATOM_INIT(_NET_WM_STRUT);
 
    _ATOM_SET_ATOM(_NET_SUPPORTED, VRoot.win, atom_list, atom_count);
 
@@ -715,6 +742,30 @@ EWMH_GetWindowMisc(EWin * ewin)
    EDBUG_RETURN_;
 }
 
+static void
+EWMH_GetWindowStrut(EWin * ewin)
+{
+   CARD32             *val;
+   int                 size;
+
+   EDBUG(6, "EWMH_GetWindowStrut");
+
+   val = AtomGet(ewin->client.win, _NET_WM_STRUT, XA_CARDINAL, &size);
+   if (val)
+     {
+	if (size > 4)
+	  {
+	     ewin->strut.left = val[0];
+	     ewin->strut.right = val[1];
+	     ewin->strut.top = val[2];
+	     ewin->strut.bottom = val[3];
+	  }
+	Efree(val);
+     }
+
+   EDBUG_RETURN_;
+}
+
 void
 EWMH_GetWindowHints(EWin * ewin)
 {
@@ -726,6 +777,7 @@ EWMH_GetWindowHints(EWin * ewin)
    EWMH_GetWindowState(ewin);
    EWMH_GetWindowType(ewin);
 /*  EWMH_GetWindowIcons(ewin);  TBD */
+   EWMH_GetWindowStrut(ewin);
    EDBUG_RETURN_;
 }
 
@@ -959,6 +1011,8 @@ EWMH_ProcessPropertyChange(EWin * ewin, Atom atom_change)
       EWMH_GetWindowName(ewin);
    else if (atom_change == _NET_WM_ICON_NAME)
       EWMH_GetWindowIconName(ewin);
+   else if (atom_change == _NET_WM_STRUT)
+      EWMH_GetWindowStrut(ewin);
 
    EDBUG_RETURN_;
 }

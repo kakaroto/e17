@@ -984,6 +984,10 @@ struct _ewin
    int                 head;
    struct
    {
+      int                 left, right, top, bottom;
+   } strut;
+   struct
+   {
       unsigned            vroot:1;	/* Virtual root window */
    } props;
    struct
@@ -1230,6 +1234,7 @@ typedef struct
    {
       char                manual;
       char                manual_mouse_pointer;
+      char                ignore_struts;
    } place;
    struct
    {
@@ -2543,8 +2548,12 @@ int                 matchregexp(const char *rx, const char *s);
 void                ScreenInit(void);
 int                 ScreenGetGeometry(int x, int y, int *px, int *py,
 				      int *pw, int *ph);
+int                 ScreenGetAvailableArea(int x, int y, int *px, int *py,
+					   int *pw, int *ph);
 int                 GetPointerScreenGeometry(int *px, int *py,
 					     int *pw, int *ph);
+int                 GetPointerScreenAvailableArea(int *px, int *py,
+						  int *pw, int *ph);
 
 /* session.c */
 void                SessionInit(void);

@@ -41,6 +41,7 @@ static Atom         E_XA_WM_WINDOW_ROLE = 0;
 static Atom         E_XA_WM_HINTS = 0;
 static Atom         E_XA_WM_CLIENT_LEADER = 0;
 static Atom         E_XA_WM_TRANSIENT_FOR = 0;
+static Atom         E_XA_WM_ICON_SIZE = 0;
 
 void
 ICCCM_Init(void)
@@ -62,6 +63,7 @@ ICCCM_Init(void)
    E_XA_WM_HINTS = XInternAtom(disp, "WM_HINTS", False);
    E_XA_WM_CLIENT_LEADER = XInternAtom(disp, "WM_CLIENT_LEADER", False);
    E_XA_WM_TRANSIENT_FOR = XInternAtom(disp, "WM_TRANSIENT_FOR", False);
+   E_XA_WM_ICON_SIZE = XInternAtom(disp, "WM_ICON_SIZE", False);
 
    if (Mode.wm.window)
      {

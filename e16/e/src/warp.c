@@ -228,7 +228,7 @@ WarpFocusShowTitle(EWin * ewin)
 	  }
 	w += (ic->padding.left + ic->padding.right);
 	h += (ic->padding.top + ic->padding.bottom);
-	GetPointerScreenGeometry(&x, &y, &ww, &hh);
+	GetPointerScreenAvailableArea(&x, &y, &ww, &hh);
 	x += (ww - w) / 2;
 	y += (hh - h * warplist_num) / 2;
 	mw = w;
