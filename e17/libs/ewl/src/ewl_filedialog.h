@@ -53,7 +53,7 @@ int         ewl_filedialog_init     (Ewl_Filedialog *fd,
 char       *ewl_filedialog_path_get (Ewl_Filedialog *fd);
 char       *ewl_filedialog_file_get (Ewl_Filedialog *fd);
 void        ewl_filedialog_path_set (Ewl_Filedialog *fd,
-			     char   *path);
+					     char   *path);
 
 /*
  * Internally used callbacks, override at your own risk.

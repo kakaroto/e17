@@ -94,7 +94,14 @@ int ewl_filedialog_init(Ewl_Filedialog * fd, Ewl_Filedialog_Type type)
  */
 char *ewl_filedialog_path_get(Ewl_Filedialog * fd)
 {
-	return ewl_fileselector_path_get(EWL_FILESELECTOR(fd->fs));
+	char *s;
+
+	DENTER_FUNCTION(DLEVEL_STABLE);
+	DCHECK_PARAM_PTR_RET("fd", fd, NULL);
+
+	s = ewl_fileselector_path_get(EWL_FILESELECTOR(fd->fs)); 
+
+	DRETURN_PTR(s, DLEVEL_STABLE);
 }
 
 /**
@@ -104,7 +111,14 @@ char *ewl_filedialog_path_get(Ewl_Filedialog * fd)
  */
 char *ewl_filedialog_file_get(Ewl_Filedialog * fd)
 {
-	return ewl_fileselector_file_get(EWL_FILESELECTOR(fd->fs));
+	char *s;
+
+	DENTER_FUNCTION(DLEVEL_STABLE);
+	DCHECK_PARAM_PTR_RET("fd", fd, NULL);
+	
+	s = ewl_fileselector_file_get(EWL_FILESELECTOR(fd->fs));
+
+	DRETURN_PTR(s, DLEVEL_STABLE);
 }
 
 /**
@@ -115,7 +129,13 @@ char *ewl_filedialog_file_get(Ewl_Filedialog * fd)
  */
 void ewl_filedialog_path_set(Ewl_Filedialog * fd, char *path)
 {
+	DENTER_FUNCTION(DLEVEL_STABLE);
+	DCHECK_PARAM_PTR("fd", fd);
+	DCHECK_PARAM_PTR("path", path);
+
 	ewl_fileselector_path_set(EWL_FILESELECTOR(fd->fs), path);
+
+	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
 
 /*
