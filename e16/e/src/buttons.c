@@ -108,7 +108,6 @@ CreateButton(char *name, ImageClass * iclass, ActionClass * aclass,
    b->ref_count = 0;
 
    EDBUG_RETURN(b);
-
 }
 
 void
@@ -214,45 +213,7 @@ CalcButton(Button * b)
    b->y = y;
    b->w = w;
    b->h = h;
-   EDBUG_RETURN_;
-}
 
-void
-SimpleShowButton(Button * b)
-{
-   char                move, resize;
-
-   EDBUG(4, "SimpleShowButton");
-   CalcButton(b);
-   move = 0;
-   resize = 0;
-   if ((b->x != b->cx) || (b->y != b->cy))
-      move = 1;
-   if ((b->w != b->cw) || (b->h != b->ch))
-      resize = 1;
-   if ((move) && (resize))
-      EMoveResizeWindow(disp, b->win, b->x, b->y, b->w, b->h);
-   else if (move)
-      EMoveWindow(disp, b->win, b->x, b->y);
-   else if (resize)
-      EResizeWindow(disp, b->win, b->w, b->h);
-   if (b->sticky)
-      XRaiseWindow(disp, b->win);
-   DrawButton(b);
-   b->visible = 1;
-   if (init_win1)
-     {
-	XRaiseWindow(disp, init_win1);
-	XRaiseWindow(disp, init_win2);
-     }
-   if (init_win_ext)
-      XRaiseWindow(disp, init_win_ext);
-   RaiseProgressbars();
-   EMapWindow(disp, b->win);
-   b->cx = b->x;
-   b->cy = b->y;
-   b->cw = b->w;
-   b->ch = b->h;
    EDBUG_RETURN_;
 }
 
@@ -264,26 +225,20 @@ ShowButton(Button * b)
    EDBUG(4, "ShowButton");
 
    CalcButton(b);
+
    move = 0;
    resize = 0;
-
    if ((b->x != b->cx) || (b->y != b->cy))
       move = 1;
    if ((b->w != b->cw) || (b->h != b->ch))
       resize = 1;
 
    if ((move) && (resize))
-     {
-	EMoveResizeWindow(disp, b->win, b->x, b->y, b->w, b->h);
-     }
+      EMoveResizeWindow(disp, b->win, b->x, b->y, b->w, b->h);
    else if (move)
-     {
-	EMoveWindow(disp, b->win, b->x, b->y);
-     }
+      EMoveWindow(disp, b->win, b->x, b->y);
    else if (resize)
-     {
-	EResizeWindow(disp, b->win, b->w, b->h);
-     }
+      EResizeWindow(disp, b->win, b->w, b->h);
    if (b->sticky)
       XRaiseWindow(disp, b->win);
 
@@ -294,7 +249,6 @@ ShowButton(Button * b)
    b->cy = b->y;
    b->cw = b->w;
    b->ch = b->h;
-   StackDesktops();
 
    EDBUG_RETURN_;
 }
@@ -316,7 +270,6 @@ MoveButtonToDesktop(Button * b, int num)
 	EReparentWindow(disp, b->win, desks.desk[DESKTOPS_WRAP_NUM(num)].win,
 			b->x, b->y);
      }
-   StackDesktops();
 
    EDBUG_RETURN_;
 }
@@ -328,6 +281,19 @@ HideButton(Button * b)
 
    EUnmapWindow(disp, b->win);
    b->visible = 0;
+
+   EDBUG_RETURN_;
+}
+
+void
+ToggleButton(Button * b)
+{
+   EDBUG(3, "ToggleButton");
+
+   if (b->visible)
+      HideButton(b);
+   else
+      ShowButton(b);
 
    EDBUG_RETURN_;
 }
@@ -402,7 +368,7 @@ MovebuttonToCoord(Button * b, int x, int y)
    b->cy = b->y;
    b->cw = b->w;
    b->ch = b->h;
-   StackDesktops();
+
    EDBUG_RETURN_;
 }
 
@@ -429,7 +395,6 @@ EmbedWindowIntoButton(Button * ButtonToUse, Window WindowToEmbed)
    EMapRaised(disp, ButtonToUse->event_win);
 
    EDBUG_RETURN(0);
-
 }
 
 void
@@ -475,6 +440,6 @@ FindEmptySpotForButton(Button * bt, char *listname, char dirtomove)
 	Efree(blst);
      }
    MovebuttonToCoord(bt, bt->x, bt->y);
-   EDBUG_RETURN_;
 
+   EDBUG_RETURN_;
 }

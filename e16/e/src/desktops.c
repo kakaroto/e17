@@ -188,15 +188,15 @@ ChangeNumberOfDesktops(int quantity)
 void
 ShowDesktopControls()
 {
-   Button            **lst;
+   Button            **blst;
    int                 num, i;
 
-   lst = (Button **) ListItemTypeID(&num, LIST_TYPE_BUTTON, 1);
-   if ((lst) && (num > 0))
+   blst = (Button **) ListItemTypeID(&num, LIST_TYPE_BUTTON, 1);
+   if ((blst) && (num > 0))
      {
 	for (i = 0; i < num; i++)
-	   SimpleShowButton(lst[i]);
-	Efree(lst);
+	   ShowButton(blst[i]);
+	Efree(blst);
 	StackDesktops();
      }
 }
@@ -204,15 +204,15 @@ ShowDesktopControls()
 void
 ShowDesktopTabs()
 {
-   Button            **lst;
+   Button            **blst;
    int                 num, i;
 
-   lst = (Button **) ListItemTypeID(&num, LIST_TYPE_BUTTON, 2);
-   if ((lst) && (num > 0))
+   blst = (Button **) ListItemTypeID(&num, LIST_TYPE_BUTTON, 2);
+   if ((blst) && (num > 0))
      {
 	for (i = 0; i < num; i++)
-	   SimpleShowButton(lst[i]);
-	Efree(lst);
+	   ShowButton(blst[i]);
+	Efree(blst);
 	StackDesktops();
      }
 }

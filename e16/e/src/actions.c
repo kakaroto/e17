@@ -2461,9 +2461,11 @@ doHideShowButton(void *params)
    /* This is unused - where did this come from? -Mandrake */
    /* static char         lasthide = 0; */
 
-   EDBUG(6, "doHideButtons");
+   EDBUG(6, "doHideShowButton");
+
    if (InZoom())
       EDBUG_RETURN(0);
+
    if ((mode.mode == MODE_MOVE) || (mode.mode == MODE_RESIZE_H)
        || (mode.mode == MODE_RESIZE_V) || (mode.mode == MODE_RESIZE))
       EDBUG_RETURN(0);
@@ -2476,16 +2478,7 @@ doHideShowButton(void *params)
 	     sscanf((char *)params, "%*s %1000s", s);
 	     b = (Button *) FindItem(s, 0, LIST_FINDBY_NAME, LIST_TYPE_BUTTON);
 	     if ((b) && (!b->used))
-	       {
-		  if (b->visible)
-		    {
-		       HideButton(b);
-		    }
-		  else
-		    {
-		       ShowButton(b);
-		    }
-	       }
+		ToggleButton(b);
 	  }
 	else if (!strcmp(s, "buttons"))
 	  {
@@ -2499,20 +2492,10 @@ doHideShowButton(void *params)
 			 {
 			    if (matchregexp(ss, lst[i]->name))
 			      {
-				 if ((strcmp
-				      (lst[i]->name,
-				       "_DESKTOP_DESKRAY_DRAG_CONTROL")
+				 if ((strcmp(lst[i]->name,
+					     "_DESKTOP_DESKRAY_DRAG_CONTROL")
 				      && (!lst[i]->used)))
-				   {
-				      if (!(lst[i]->visible))
-					{
-					   ShowButton(lst[i]);
-					}
-				      else
-					{
-					   HideButton(lst[i]);
-					}
-				   }
+				    ToggleButton(lst[i]);
 			      }
 			 }
 		    }
@@ -2530,20 +2513,10 @@ doHideShowButton(void *params)
 			 {
 			    if (!matchregexp(ss, lst[i]->name))
 			      {
-				 if ((strcmp
-				      (lst[i]->name,
-				       "_DESKTOP_DESKRAY_DRAG_CONTROL")
+				 if ((strcmp(lst[i]->name,
+					     "_DESKTOP_DESKRAY_DRAG_CONTROL")
 				      && (!lst[i]->used)))
-				   {
-				      if (!(lst[i]->visible))
-					{
-					   ShowButton(lst[i]);
-					}
-				      else
-					{
-					   HideButton(lst[i]);
-					}
-				   }
+				    ToggleButton(lst[i]);
 			      }
 			 }
 		    }
@@ -2559,16 +2532,7 @@ doHideShowButton(void *params)
 		       if ((strcmp
 			    (lst[i]->name, "_DESKTOP_DESKRAY_DRAG_CONTROL")
 			    && (!lst[i]->used)))
-			 {
-			    if (!(lst[i]->visible))
-			      {
-				 ShowButton(lst[i]);
-			      }
-			    else
-			      {
-				 HideButton(lst[i]);
-			      }
-			 }
+			  ToggleButton(lst[i]);
 		    }
 	       }
 	  }
@@ -2581,19 +2545,11 @@ doHideShowButton(void *params)
 	     for (i = 0; i < num; i++)
 	       {
 		  if (!lst[i]->used)
-		    {
-		       if (!(lst[i]->visible))
-			 {
-			    ShowButton(lst[i]);
-			 }
-		       else
-			 {
-			    HideButton(lst[i]);
-			 }
-		    }
+		     ToggleButton(lst[i]);
 	       }
 	  }
      }
+   StackDesktops();
    autosave();
 
    EDBUG_RETURN(0);

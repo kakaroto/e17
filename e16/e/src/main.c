@@ -45,7 +45,7 @@ main(int argc, char **argv)
 {
    char                restarting = 0;
    int                 i, num;
-   Button            **lst;
+   Button            **blst;
    Background         *bg;
    ECursor            *ec = NULL;
    struct utsname      ubuf;
@@ -270,15 +270,15 @@ main(int argc, char **argv)
    /* toss down the dragbar and related */
    InitDesktopControls();
    /* then draw all the buttons that belong on the desktop */
-   lst = (Button **) ListItemTypeID(&num, LIST_TYPE_BUTTON, 0);
-   if (lst)
+   blst = (Button **) ListItemTypeID(&num, LIST_TYPE_BUTTON, 0);
+   if (blst)
      {
 	for (i = 0; i < num; i++)
 	  {
-	     if ((!lst[i]->internal) && (lst[i]->default_show))
-		SimpleShowButton(lst[i]);
+	     if ((!blst[i]->internal) && (blst[i]->default_show))
+		ShowButton(blst[i]);
 	  }
-	Efree(lst);
+	Efree(blst);
      }
    HintsInit();
    SessionInit();

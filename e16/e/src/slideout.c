@@ -336,7 +336,7 @@ AddButtonToSlideout(Slideout * s, Button * b)
    b->default_show = 0;
    b->flags |= FLAG_FIXED;
    b->used = 1;
-   SimpleShowButton(b);
+   ShowButton(b);
    CalcSlideoutSize(s);
 
    EDBUG_RETURN_;

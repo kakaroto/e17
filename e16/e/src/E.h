@@ -2350,9 +2350,9 @@ Button             *CreateButton(char *name, ImageClass * iclass,
 void                DestroyButton(Button * b);
 void                CalcButton(Button * b);
 void                ShowButton(Button * b);
-void                SimpleShowButton(Button * b);
 void                MoveButtonToDesktop(Button * b, int num);
 void                HideButton(Button * b);
+void                ToggleButton(Button * b);
 void                DrawButton(Button * b);
 void                MovebuttonToCoord(Button * b, int x, int y);
 int                 EmbedWindowIntoButton(Button * ButtonToUse,
