@@ -92,7 +92,7 @@ _econf_matchregexp(char *rx, char *s)
 	     while ((rx[l] != '*') && (rx[l]) && (m < 1023))
 		rx2[m++] = rx[l++];
 	     rx2[m] = 0;
-	     i = isafter(i, s, rx2);
+	     i = _econf_isafter(i, s, rx2);
 	     if (i < 0)
 		return (0);
 	  }

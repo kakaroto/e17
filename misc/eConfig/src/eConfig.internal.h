@@ -101,3 +101,15 @@ int                 _econf_replace_fat_entry_to_disk(char *loc,
 int                 _econf_create_new_data_repository(char *path);
 int                 _econf_isafter(int p, char *s1, char *s2);
 int                 _econf_matchregexp(char *rx, char *s);
+
+int                 _econf_vsnprintf(char *str, size_t count, const char *fmt,
+				     va_list args);
+
+#ifdef HAVE_STDARGS
+int                 _econf_snprintf(char *str, size_t count,
+				    const char *fmt,...);
+
+#else
+int                 _econf_snprintf(va_alist);
+
+#endif
