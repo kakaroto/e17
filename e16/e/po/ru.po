@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: enlightenment 0.16.4\n"
 "POT-Creation-Date: 2000-01-14 15:06+0100\n"
-"PO-Revision-Date: 2000-01-04 23:15+0100\n"
+"PO-Revision-Date: 2000-01-14 20:43-0300\n"
 "Last-Translator: Vladimir STEPANOV <stepanov@bird.iki.rssi.ru>\n"
 "Language-Team: Russian <ru@li.org>\n"
 "MIME-Version: 1.0\n"
@@ -109,7 +109,7 @@ msgstr ""
 #: src/actions.c:3139
 #, c-format
 msgid "About Enlightenment %s"
-msgstr "О Enlightenment %s"
+msgstr "Enlightenment %s"
 
 #: src/actions.c:3155
 msgid "Welcome to the "
@@ -2143,19 +2143,19 @@ msgstr ""
 
 #: src/settings.c:1792
 msgid "Display desktop dragbar"
-msgstr ""
+msgstr "Показывать Dragbar"
 
 #: src/settings.c:1801
 msgid "Drag bar position:"
-msgstr ""
+msgstr "Сторона экрана, на которой расположен Dragbar"
 
 #: src/settings.c:1812
 msgid "Top"
-msgstr ""
+msgstr "Верхняя"
 
 #: src/settings.c:1819
 msgid "Bottom"
-msgstr ""
+msgstr "Нижняя"
 
 #: src/settings.c:1856
 msgid "Desktop Slide speed: (slow)\n"
@@ -2272,7 +2272,7 @@ msgstr ""
 
 #: src/settings.c:3198
 msgid "Use dithering in Hi-Colour"
-msgstr ""
+msgstr "Использовать сглаживание в Hi-Colour"
 
 #: src/settings.c:3205
 msgid "Background overrides theme"
@@ -2280,7 +2280,7 @@ msgstr "Фоновый рисунок перекрывает установки темы"
 
 #: src/settings.c:3262
 msgid "Pre-scan BG's"
-msgstr "Предв.сканировать"
+msgstr "Предварительно сканировать"
 
 #: src/settings.c:3272
 msgid "Sort by File"
@@ -2308,11 +2308,11 @@ msgstr "Прятать рамку внутри Iconbox"
 
 #: src/settings.c:3478
 msgid "Show icon names"
-msgstr "Показывать имена иконок"
+msgstr "Показывать имена пиктограмм"
 
 #: src/settings.c:3485
 msgid "Draw base image behind Icons"
-msgstr "Рисовать основной фон под иконками"
+msgstr "Рисовать основной фон под пиктограммами"
 
 #: src/settings.c:3492
 msgid "Hide scrollbar when not needed"
@@ -2320,7 +2320,7 @@ msgstr "Прятать полосу прокрутки, когда она не нужна"
 
 #: src/settings.c:3499
 msgid "Automatically resize to fit Icons"
-msgstr "Автоматически менять размер по количеству иконок"
+msgstr "Автоматически менять размер по количеству пиктограмм"
 
 #: src/settings.c:3507
 msgid "Animate when iconifying to this Iconbox"
@@ -2333,66 +2333,67 @@ msgstr ""
 #: src/settings.c:3539
 msgid "Icon image display policy (if one operation fails, try the next):"
 msgstr ""
+"Способ отображения пиктограмм (если один не работает, пробовать следующий):"
 
 #: src/settings.c:3546
 msgid "Snapshot Windows, Use application icon, Use Enlightenment Icon"
-msgstr ""
+msgstr "Снимок окна, Пиктограмма приложения, Пиктограмма Enlightenment"
 
 #: src/settings.c:3555
 msgid "Use application icon, Use Enlightenment Icon, Snapshot Window"
-msgstr ""
+msgstr "Пиктограмма приложения, Пиктограмма Enlightenment, Снимок окна"
 
 #: src/settings.c:3563
 msgid "Use Enlightenment Icon, Snapshot Window"
-msgstr ""
+msgstr "Пиктограмма Enlightenment, Снимок окна"
 
 #: src/settings.c:3577
 msgid "Icon size"
-msgstr ""
+msgstr "Размер пиктограммы"
 
 #: src/settings.c:3600
 msgid "Orientation:"
-msgstr ""
+msgstr "Ориентация:"
 
 #: src/settings.c:3606
 msgid "Scrollbar side:"
-msgstr ""
+msgstr "Полоса прокрутки:"
 
 #: src/settings.c:3612
 msgid "Scrollbar arrows:"
-msgstr ""
+msgstr "Стрелки:"
 
 #: src/settings.c:3617
 msgid "Horizontal"
-msgstr ""
+msgstr "Горизонтальная"
 
 #: src/settings.c:3624
 msgid "Left / Top"
-msgstr ""
+msgstr "Слева / вверху"
 
 #: src/settings.c:3631
 msgid "Start"
-msgstr ""
+msgstr "В начале"
 
 #: src/settings.c:3638
 msgid "Vertical"
-msgstr ""
+msgstr "Вертикальная"
 
 #: src/settings.c:3646
 msgid "Right / Bottom"
-msgstr ""
+msgstr "Справа / внизу"
 
 #: src/settings.c:3654
 msgid "Both ends"
-msgstr ""
+msgstr "С обеих сторон"
 
 #: src/settings.c:3664
 msgid "End"
-msgstr ""
+msgstr "В конце"
 
 #: src/settings.c:3674
 msgid "None"
-msgstr ""
+msgstr "Нигде"
 
 #: src/settings.c:3808
 msgid ""
@@ -2400,14 +2401,17 @@ msgid ""
 "  This window currently does not belong to any groups.  \n"
 "\n"
 msgstr ""
+"\n"
+"  В настоящий момент это окно не входит ни в одну группу.  \n"
+"\n"
 
 #: src/settings.c:3831
 msgid "Window Group Settings"
-msgstr ""
+msgstr "Установки группы окон"
 
 #: src/settings.c:3857
 msgid "   Pick the group to configure:   "
-msgstr ""
+msgstr "  Выберите группу для настройки:  "
 
 #: src/settings.c:3893
 msgid ""
@@ -2464,10 +2468,20 @@ msgid ""
 "administrator, or Xserver vendor, or read the X, xdm and\n"
 "startx manual pages before proceeding.\n"
 msgstr ""
+"Enlightenment не может установить соединение и дисплеем,\n"
+"который указан в переменной DISPLAY Вашего shell. Вы можете\n"
+"менять эту переменную и таким образом указывать Enlightenment,\n"
+"с каким дисплеем работать. Возможно, Ваш X-сервер не настроен\n"
+"на обслуживание подключения к этому дисплею, или у Вас нет\n"
+"прав на подключение к нему. Убедитесь в том, что все в порядке,\n"
+"прежде чем запускать Enlightenment снова. Запустите X-сервер\n"
+"(команда xdm или startx), или свяжитесь со своим системным\n"
+"администратором, с разработчиком X-сервера, или же изучите\n"
+"man-страницы (описания) команд X, xdm  и startx.\n"
 
 #: src/setup.c:294 src/setup.c:341
 msgid "X server setup error"
-msgstr ""
+msgstr "Ошибка установки X-сервера"
 
 #: src/setup.c:296
 msgid ""
@@ -2480,10 +2494,19 @@ msgid ""
 "\n"
 "Exiting.\n"
 msgstr ""
+"ФАТАЛЬНАЯ ОШИБКА:\n"
+"\n"
+"Ваш X-сервер не поддерживает расширение Shape.\n"
+"Поддержка этого расширения необходима для работы Enlightenment.\n"
+"\n"
+"Возможно, Ваш X-сервер слишком старой версии, или\n"
+"он неверно настроен.\n"
+"\n"
+"Выходим.\n"
 
 #: src/setup.c:328
 msgid "Imlib initialisation error"
-msgstr ""
+msgstr "Ошибка инициализации Imlib"
 
 #: src/setup.c:330
 msgid ""
@@ -2494,6 +2517,12 @@ msgid ""
 "This is unusual. Unable to continue.\n"
 "Exiting.\n"
 msgstr ""
+"ФАТАЛЬНАЯ ОШИБКА:\n"
+"\n"
+"Enlightenment не может инициализировать Imlib.\n"
+"\n"
+"Невозможно продолжать работу.\n"
+"Выходим.\n"
 
 #: src/setup.c:343
 msgid ""
@@ -2523,6 +2552,12 @@ msgid ""
 "server is one the author of Enlightenment neither have\n"
 "access to, nor have heard of.\n"
 msgstr ""
+"ПРЕДУПРЕЖДЕНИЕ:\n"
+"X-сервер не является сервером X11. На самом деле, этот сервер\n"
+"работает по протоколу X%i. Это может привести к тому, что\n"
+"Enlightenment либо не будет работать, либо будет работать\n"
+"некорректно. Если Ваш X-сервер более поздней версии, чем X11,\n"
+"то автор Enlightenment о таком еще не слышал и не видел такового.\n"
 
 #: src/setup.c:620
 #, c-format
@@ -2531,6 +2566,9 @@ msgid ""
 "This is a fatal condition.\n"
 "Please remove this file\n"
 msgstr ""
+"Директория %s очевидно не является директорией.\n"
+"Фатальная ошибка.\n"
+"Пожалуйста, удалите этот файл.\n"
 
 #: src/setup.c:626
 #, c-format
@@ -2540,6 +2578,10 @@ msgid ""
 "Please check the ownership and permissions of this\n"
 "directory and take steps to rectify this.\n"
 msgstr ""
+"Нет прав на выполнение %s\n"
+"Фатальная ошибка.\n"
+"Проверьте владельца этой папки и права доступа к ней,\n"
+"и по необходимости измените их.\n"
 
 #: src/setup.c:634
 #, c-format
@@ -2549,6 +2591,10 @@ msgid ""
 "Please check the ownership and permissions of this\n"
 "directory and take steps to rectify this.\n"
 msgstr ""
+"Нет прав на чтение %s\n"
+"Фатальная ошибка.\n"
+"Проверьте владельца этой папки и права доступа к ней,\n"
+"и по необходимости измените их.\n"
 
 #: src/setup.c:642
 #, c-format
@@ -2558,6 +2604,10 @@ msgid ""
 "Please check the ownership and permissions of this\n"
 "directory and take steps to rectify this.\n"
 msgstr ""
+"Нет прав на запись в %s\n"
+"Фатальная ошибка.\n"
+"Проверьте владельца этой папки и права доступа к ней,\n"
+"и по необходимости измените их.\n"
 
 #: src/snaps.c:405
 msgid "Location"
@@ -2616,6 +2666,11 @@ msgid ""
 "Enlightenment will continue to operate, but you\n"
 "may wish to check your configuration settings.\n"
 msgstr ""
+"Предупреждение!  Enlightenment не смог загрузить\n"
+"звуковой файл:\n"
+"%s\n"
+"Enlightenment продолжит работу, однако, возможно,\n"
+"Вам следует проверить установки конфигурации.\n"
 
 #: src/sound.c:262
 msgid "Error initialising sound"
@@ -2627,6 +2682,9 @@ msgid ""
 "communicating with the audio server (Esound). Audio will\n"
 "now be disabled.\n"
 msgstr ""
+"Была включена поддержка звука в Enlightenment, однако произошла\n"
+"ошибка при установлении соединения с Esound. Поддержка звука\n"
+"будет сейчас отключена.\n"
 
 #: src/theme.c:293
 msgid "Unknown\n"
@@ -2647,6 +2705,13 @@ msgid ""
 "The reason this theme is bad is:\n"
 "%s"
 msgstr ""
+"Тема:\n"
+"%s\n"
+"не соответствует требованиям Enlightenment, и потому не может.\n"
+"быть использована. Переходим к теме DEFAULT.\n"
+"\n"
+"Причина, из-за которой тема не может быть использована:\n"
+"%s"
 
 #: src/theme.c:354
 msgid "Bad Theme"
