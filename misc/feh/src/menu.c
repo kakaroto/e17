@@ -1786,7 +1786,9 @@ feh_menu_cb_sort_filename(feh_menu * m,
 {
   D_ENTER(4);
   filelist = gib_list_sort(filelist, feh_cmp_filename);
-  slideshow_change_image(m->fehwin, SLIDE_FIRST);
+  if(!opt.no_jump_on_resort){
+    slideshow_change_image(m->fehwin, SLIDE_FIRST);
+  };
   D_RETURN_(4);
   i = NULL;
   data = NULL;
@@ -1799,7 +1801,9 @@ feh_menu_cb_sort_imagename(feh_menu * m,
 {
   D_ENTER(4);
   filelist = gib_list_sort(filelist, feh_cmp_name);
-  slideshow_change_image(m->fehwin, SLIDE_FIRST);
+  if(!opt.no_jump_on_resort){
+    slideshow_change_image(m->fehwin, SLIDE_FIRST);
+  };
   D_RETURN_(4);
   i = NULL;
   data = NULL;
@@ -1812,7 +1816,9 @@ feh_menu_cb_sort_filesize(feh_menu * m,
 {
   D_ENTER(4);
   filelist = gib_list_sort(filelist, feh_cmp_size);
-  slideshow_change_image(m->fehwin, SLIDE_FIRST);
+  if(!opt.no_jump_on_resort){
+    slideshow_change_image(m->fehwin, SLIDE_FIRST);
+  };
   D_RETURN_(4);
   i = NULL;
   data = NULL;
@@ -1825,7 +1831,9 @@ feh_menu_cb_sort_randomize(feh_menu * m,
 {
   D_ENTER(4);
   filelist = gib_list_randomize(filelist);
-  slideshow_change_image(m->fehwin, SLIDE_FIRST);
+  if(!opt.no_jump_on_resort){
+    slideshow_change_image(m->fehwin, SLIDE_FIRST);
+  };
   D_RETURN_(4);
   i = NULL;
   data = NULL;

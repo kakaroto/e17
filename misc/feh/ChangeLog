@@ -1,3 +1,8 @@
+Fri Apr 11 11:34:41 BST 2003  Tom Gilbert <tom@linuxbrit.co.uk>
+
+  * Patch from Rami Lehti <rammer@vapaa.dc.inet.fi>
+  * New option not to jump to start of filelist when it's re-sorted.
+
 Tue Mar 18 19:07:17 GMT 2003  Tom Gilbert <tom@linuxbrit.co.uk>
 
   * Fix bug reloading http images that fail to download on subsequent

@@ -70,6 +70,7 @@ init_parse_options(int argc, char **argv)
    opt.blur_button = 1;
    opt.no_blur_ctrl_mask = 0;
 
+   opt.no_jump_on_resort = 0;
 
    opt.builtin_http = 0;
 
@@ -391,6 +392,7 @@ feh_parse_option_array(int argc, char **argv)
       {"screen-clip", 1, 0, 207},
       {"menu-border", 1, 0, 208},
       {"caption-path", 1, 0, 209},
+      {"no-jump-on-resort",0,0,210},
       {0, 0, 0, 0}
    };
    int optch = 0, cmdx = 0, i = 0;
@@ -674,6 +676,9 @@ feh_parse_option_array(int argc, char **argv)
         case 209:
            opt.caption_path = estrdup(optarg);
            break; 
+	case 210:
+           opt.no_jump_on_resort = 1;
+           break;
         default:
            break;
       }
@@ -789,6 +794,8 @@ show_usage(void)
            "                            the content of those directories. (Take it easy)\n"
            "  -z, --randomize           When viewing multiple files in a slideshow,\n"
            "                            randomise the file list before displaying\n"
+           "  --no-jump-on-resort       Don't jump to the first image when the filelist\n"
+           "                            is resorted.\n"
            "  -g, --geometry STRING     Limit (and don't change) the window size. Takes\n"
            "                            an X-style geometry string like 640x480.\n"
            "                            Note that larger images will be zoomed out to fit\n"
