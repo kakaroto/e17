@@ -2231,3 +2231,12 @@ Made E-Toolbox's action string checking a little friendlier.
 
 -------------------------------------------------------------------------------
 
+Wed Aug  2 19:13:31 PDT 2000
+(KainX)
+
+I'm an old xload fan, and none of the CPU meters actually measure load
+averages.  So I wrote E-LoadMeter.  It displays the 1/5/15-minute load figures
+as well as a vertical bar for each.
+
+-------------------------------------------------------------------------------
+

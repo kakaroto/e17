@@ -7,7 +7,8 @@ E-Cpu.epplet E-Biff.epplet E-Power.epplet @TEST_PROGS@ @MIXER_PROGS@ @GL_PROGS@ 
 E-MemWatch.epplet E-Disk.epplet E-Areas.epplet E-Magic.epplet E-Toolbox.epplet \
 E-NetFlame.epplet E-Sys.epplet E-ScreenShoot.epplet E-Slides.epplet \
 E-Xss.epplet E-Mountbox.epplet E-Exec.epplet @ESD_PROGS@ @PLAYCD_PROGS@ \
-E-ScreenSave.epplet E-NetGraph.epplet E-MoonClock.epplet E-UrlWatch.epplet
+E-ScreenSave.epplet E-NetGraph.epplet E-MoonClock.epplet E-UrlWatch.epplet \
+E-LoadMeter.epplet
 
 EXTRA_PROGRAMS = EppletTest.epplet EppletConfigTest.epplet E-Mixer.epplet \
                  Emix.epplet E-PlayCD.epplet E-OpenGL-Demo.epplet E-SD.epplet
@@ -52,6 +53,11 @@ E_Load_epplet_SOURCES = E-Load.c
 E_Load_epplet_DEPENDENCIES = $(top_builddir)/api/libepplet.la
 E_Load_epplet_LDFLAGS = -rpath $(libdir):$(pkglibdir)
 E_Load_epplet_LDADD = $(top_builddir)/api/libepplet.la -L$(libdir) -L$(prefix)/lib $(LIBS) $(X_LIBS) $(GTLIBS)
+
+E_LoadMeter_epplet_SOURCES = E-LoadMeter.c load.c
+E_LoadMeter_epplet_DEPENDENCIES = $(top_builddir)/api/libepplet.la
+E_LoadMeter_epplet_LDFLAGS = -rpath $(libdir):$(pkglibdir)
+E_LoadMeter_epplet_LDADD = $(top_builddir)/api/libepplet.la -L$(libdir) -L$(prefix)/lib $(LIBS) $(X_LIBS) $(GTLIBS)
 
 E_Clock_epplet_SOURCES = E-Clock.c
 E_Clock_epplet_DEPENDENCIES = $(top_builddir)/api/libepplet.la
