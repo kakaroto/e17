@@ -1,4 +1,2 @@
-fonts 
-{
-	font, "visitor1.ttf" "Edje.visitor1";
-}
+
+font, "visitor1.ttf" "Edje.visitor1";

@@ -1,40 +1,35 @@
 
 /* Syntax: images {	image "name" COMPRESSION_TYPE; 	} */
 
-	images {
-
-	image, "small_base.png" LOSSY 98;
+	image, "small_base.png" LOSSY 98; 
 	image, "small_lcd.png" LOSSY 98;
-
-	image, "s_b_pause.png" RAW;
-	image, "s_b_prev.png" RAW;
+	image, "s_b_pause.png" RAW; 
+	image, "s_b_prev.png" RAW; 
 	image, "s_b_play.png" RAW;
-	image, "s_b_next.png" RAW;
+	image, "s_b_next.png" RAW; 
 	image, "s_b_stop.png" RAW;
-
-	image, "a_1.png" LOSSY 98;
-	image, "a_2.png" LOSSY 98;
+	image, "a_1.png" LOSSY 98; 
+	image, "a_2.png" LOSSY 98; 
 	image, "a_3.png" LOSSY 98;
-	image, "a_4.png" LOSSY 98;
-	image, "a_5.png" LOSSY 98;
+	image, "a_4.png" LOSSY 98; 
+	image, "a_5.png" LOSSY 98; 
 	image, "a_6.png" LOSSY 98;
-	image, "a_7.png" LOSSY 98;
-	image, "a_8.png" LOSSY 98;
-	image, "a_9.png" LOSSY 98;
-	image, "a_10.png" LOSSY 98;
-	image, "a_11.png" LOSSY 98;
+	image, "a_7.png" LOSSY 98; 
+	image, "a_8.png" LOSSY 98; 
+	image, "a_9.png" LOSSY 98; 
+	image, "a_10.png" LOSSY 98; 
+	image, "a_11.png" LOSSY 98; 
 	image, "a_12.png" LOSSY 98;
 	image, "a_13.png" LOSSY 98;
-	image, "a_14.png" LOSSY 98;
+	image, "a_14.png" LOSSY 98; 
 	image, "a_15.png" LOSSY 98;
-	image, "a_16.png" LOSSY 98;
-	image, "a_17.png" LOSSY 98;
+	image, "a_16.png" LOSSY 98; 
+	image, "a_17.png" LOSSY 98; 
 	image, "a_18.png" LOSSY 98;
-	image, "a_19.png" LOSSY 98;
-	image, "a_20.png" LOSSY 98;
+	image, "a_19.png" LOSSY 98; 
+	image, "a_20.png" LOSSY 98; 
 	image, "a_21.png" LOSSY 98;
 	image, "a_22.png" LOSSY 98;
-
 	image, "a_s_lcd.png" LOSSY 98;	
 	image, "a_s_lcd_01.png" LOSSY 98;
 	image, "a_s_lcd_02.png" LOSSY 98;	
@@ -67,62 +62,47 @@
 	image, "a_s_lcd_0129.png" LOSSY 98;	
 	image, "a_s_lcd_0130.png" LOSSY 98;	
 	image, "a_s_lcd_0131.png" LOSSY 98;	
-	image, "a_s_lcd_0132.png" LOSSY 98;		
-
-	image, "a_base.png" LOSSY 98;
-
+	image, "a_s_lcd_0132.png" LOSSY 98;	
+	image, "a_s_lcd_0133.png" LOSSY 98;	
+	image, "a_base.png" LOSSY 98; 
 	image, "base_layer.png" LOSSY 98;
-
 	image, "bar_delay_left.png" LOSSY 98;
 	image, "bar_delay_hilited.png" LOSSY 98;
 	image, "bar_delay_clicked.png" LOSSY 98;
-
 	image, "bar_delay_right.png" LOSSY 98;
 	image, "bar_delay_right_hilited.png" LOSSY 98;
 	image, "bar_delay_right_clicked.png" LOSSY 98;
-
 	image, "align_top.png" LOSSY 98;
 	image, "align_left.png" LOSSY 98;
 	image, "align_center.png" LOSSY 98;
 	image, "align_right.png" LOSSY 98;
 	image, "align_bottom.png" LOSSY 98;
-
 	image, "previous_button.png" RAW;
 	image, "previous_button_hilited.png" RAW;
 	image, "previous_button_clicked.png" RAW;
-
 	image, "pause_button.png" RAW;
 	image, "pause_button_hilited.png" RAW;
 	image, "pause_button_clicked.png" RAW;
-
 	image, "play_button.png" RAW;
 	image, "play_button_hilited.png" RAW;
 	image, "play_button_clicked.png" RAW;
-
 	image, "next_button.png" RAW;
 	image, "next_button_hilited.png" RAW;
 	image, "next_button_clicked.png" RAW;
-
 	image, "stop_button.png" RAW;
 	image, "stop_button_hilited.png" RAW;
 	image, "stop_button_clicked.png" RAW;
-
-	image, "lcd_window.png" LOSSY 98;
-
-	image, "arrow.png" LOSSY 98;
-
+	image, "lcd_window.png" LOSSY 98; 
+	image, "seeker_bar.png" RAW;
+	image, "seeker_trough.png" RAW;
+	image, "arrow.png" LOSSY 98; 
 	image, "fake_rect.png" LOSSY 98; 
-
 	image, "switch_mode.png" LOSSY 98;
 	image, "switch_mode_hilited.png" LOSSY 98;
 	image, "switch_mode_clicked.png" LOSSY 98;
-
 	image, "close_mode_button_normal.png" LOSSY 98;
 	image, "close_mode_button_hilited.png" LOSSY 98;
-	image, "close_mode_button_clicked.png" LOSSY 98;
-	
+	image, "close_mode_button_clicked.png" LOSSY 98;	
 	image, "close_button.png" LOSSY 98;
 	image, "close_button_hilited.png" LOSSY 98;
 	image, "close_button_clicked.png" LOSSY 98;
-
-	}

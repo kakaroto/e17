@@ -1,453 +1,179 @@
 
+program { name, "_switch_mode_hilited"; signal, "mouse,in"; source, "left_bar";
+	action, STATE_SET "hilited" 0.0; transition, LINEAR, 0.1; target, "left_bar"; }
 
-#define PLAYBACK_STATE_PLAYING PB_STARTED
-#define PLAYBACK_STATE_STOPPED PB_STOPPED
-#define PLAYBACK_STATE_PAUSED PB_PAUSED
+program { name, "_switch_mode_un_unhilited"; signal, "mouse,out"; source, "left_bar";
+	action, STATE_SET "default" 0.0; transition, LINEAR, 0.1; target, "left_bar"; }
 
-/* switch:stance */
+program { name, "_switch_mode_clicked"; signal, "mouse,down,1"; source, "left_bar";
+	action, STATE_SET "clicked" 0.0; transition, LINEAR, 1.0; target, "left_bar"; }
 
-	program {
-			name, 			"_switch_mode_hilited";
-			signal,     		"mouse,in"; 
-			source,     		"left_bar";
-            		action,     		STATE_SET "hilited" 0.0;
-            		transition, 		LINEAR, 0.1;
-            		target,     		"left_bar";
-	}
+program { name, "_switch_mode_unclicked"; signal, "mouse,down"; source, "left_bar";
+	action, STATE_SET "clicked" 0.0; transition, LINEAR, 1.0; target, "left_bar"; }
 
-	program {
-			name, 			"_switch_mode_un_unhilited";
-			signal,     		"mouse,out"; 
-			source,     		"left_bar";
-            		action,     		STATE_SET "default" 0.0;
-            		transition, 		LINEAR, 0.1;
-            		target,     		"left_bar";
-	}
+program { name, "_switch_mode_1"; signal, "mouse,down,1"; source, "left_bar";
+	action, SIGNAL_EMIT "SWITCH_GROUP", "euphoria_small"; 
+}
 
-	program {
-			name,       		"_switch_mode_clicked";
-			signal,     		"mouse,down,1"; 
-			source,     		"left_bar";
-            		action,     		STATE_SET "clicked" 0.0;
-            		transition, 		LINEAR, 1.0;
-            		target,     		"left_bar";
-	}
+program { name, "__switch_mode_hilited"; signal, "mouse,in";  source, "right_bar";
+	action, STATE_SET "hilited" 0.0; transition, LINEAR, 0.1; target, "right_bar"; }
 
-	program {
-			name,       		"_switch_mode_unclicked";
-			signal,     		"mouse,down"; 
-			source,     		"left_bar";
-            		action,     		STATE_SET "clicked" 0.0;
-            		transition, 		LINEAR, 1.0;
-            		target,     		"left_bar";
-	}
+program { name, "__switch_mode_un_unhilited"; signal, "mouse,out";  source, "right_bar";
+	action, STATE_SET "default" 0.0; transition, LINEAR, 0.1; target, "right_bar"; }
 
-	program {
-			name, 			"_switch_mode_1";
-			signal, 			"mouse,down,1";
-			source, 			"left_bar";
-			action, 			SIGNAL_EMIT "SWITCH_GROUP", "euphoria_small";
-	}
+program { name, "__switch_mode_clicked"; signal, "mouse,down,1"; source, "right_bar";
+	action, STATE_SET "clicked" 0.0; transition, LINEAR, 1.0; target, "right_bar"; }
 
-	program {
-			name, 			"__switch_mode_hilited";
-			signal,     		"mouse,in"; 
-			source,     		"right_bar";
-            		action,     		STATE_SET "hilited" 0.0;
-            		transition, 		LINEAR, 0.1;
-            		target,     		"right_bar";
-	}
+program { name, "__switch_mode_unclicked"; signal, "mouse,down"; source, "right_bar";
+	action, STATE_SET "clicked" 0.0; transition, LINEAR, 1.0; target, "right_bar"; }
 
-	program {
-			name, 			"__switch_mode_un_unhilited";
-			signal,     		"mouse,out"; 
-			source,     		"right_bar";
-            		action,     		STATE_SET "default" 0.0;
-            		transition, 		LINEAR, 0.1;
-            		target,     		"right_bar";
-	}
+program { name, "__switch_mode_1"; signal, "mouse,down,1"; source, "right_bar";
+	action, SIGNAL_EMIT "SWITCH_GROUP", "euphoria_small"; } 
 
-	program {
-			name,       		"__switch_mode_clicked";
-			signal,     		"mouse,down,1"; 
-			source,     		"right_bar";
-            		action,     		STATE_SET "clicked" 0.0;
-            		transition, 		LINEAR, 1.0;
-            		target,     		"right_bar";
-	}
+program { name, "switch_mode_2"; signal, "mouse,down,1,double"; source, "small_base";
+	action, SIGNAL_EMIT "SWITCH_GROUP", "euphoria"; 
+}
 
-	program {
-			name,       		"__switch_mode_unclicked";
-			signal,     		"mouse,down"; 
-			source,     		"right_bar";
-            		action,     		STATE_SET "clicked" 0.0;
-            		transition, 		LINEAR, 1.0;
-            		target,     		"right_bar";
-	}
+// SWITCH
 
-	program {
-			name, 			"__switch_mode_1";
-			signal, 			"mouse,down,1";
-			source, 			"right_bar";
-			action, 			SIGNAL_EMIT "SWITCH_GROUP", "euphoria_small";
-	} 
+program { // raise
+	name, "titlebar_click"; signal, "mouse,clicked,1"; source, "base";
+	action, SIGNAL_EMIT "RAISE", "base"; }
 
-	program {
-			name, 			"switch_mode_2";
-			signal, 			"mouse,down,1,double";
-			source, 			"small_base";
-			action, 			SIGNAL_EMIT "SWITCH_GROUP", "euphoria_small";
-	}
+//#define PLAYBACK_STATE_PLAYING PB_STARTED
+//#define PLAYBACK_STATE_STOPPED PB_STOPPED
+//#define PLAYBACK_STATE_PAUSED PB_PAUSED
 
+// playback signals
 
-	program {
-			name, 			"titlebar_click";
-			signal, 			"mouse,clicked,1";
-			source, 			"base";
-			action, 			SIGNAL_EMIT "RAISE", "base";
-	}
+program { name, "pb_started";  signal, "PLAYBACK_STATE_PLAYING"; source, "*";
+	action, STATE_SET "default" 1.0; transition, ACCELERATE 0.1;
+	target, "layer_in";	after, "aa"; target, "quit"; target, "seekerBar"; target, "time_text"; target, "seekerTrough"; }
 
-	program { 
-	name,	"pb_started"; 
-	signal,     "PLAYBACK_STATE_PLAYING"; 
-	source,	"*";
-	action,     STATE_SET "default" 1.0;
-	transition, ACCELERATE 0.1;
-	target, 	"layer_in";	
-	after, 	"aa";
-	target, 	"quit";
-	}
+program { 
+name, "pb_paused"; signal, "PLAYBACK_STATE_PAUSED"; source, "*";
+	action, STATE_SET "default" 1.0; transition, ACCELERATE 1.0;
+	target, "layer_in";	after, "a_a_stop"; target, "quit"; } 
 
-	program { 
-	name,	"pb_paused"; 
-	signal,     "PLAYBACK_STATE_PAUSED"; 
-	source,	"*";
-	action,     STATE_SET "default" 1.0;
-	transition, ACCELERATE 1.0;
-	target, 	"layer_in";	
-	after, 	"a_a_stop";
-	target, 	"quit";
-	} 
+program { 
+name, "pb_stopped"; signal, "PLAYBACK_STATE_STOPPED"; source, "*";
+	action, STATE_SET "default" 0.0; transition, DECELERATE 0.1;
+	target, "layer_in"; target, "a_a"; target, "quit"; target, "seekerBar"; target, "seekerTrough"; target, "time_text"; }
 
-	program { 
-	name,	"pb_stopped"; 
-	signal,     "PLAYBACK_STATE_STOPPED"; 
-	source,	"*";
-	action, 	STATE_SET "default" 0.0;
-	transition, DECELERATE 0.1;
-	target, 	"layer_in";
-	target, 	"a_a";
-	target, 	"quit";
-	}
+// deals with main_lcd ani
+program { name, "stop_the_animation"; signal, "mouse,down,*"; source, "layer_in";
+	action, STATE_SET "default" 0.0;  transition, DECELERATE 0.1; 
+	target, "layer_in"; target, "a_a"; target, "quit"; target, "seekerBar"; target, "seekerTrough"; target, "time_text"; }
 
-	program { 
-	name,	"stop_the_animation"; 
-	signal,     "mouse,down,*"; 
-	source,	"layer_in";
-	action, 	STATE_SET "default" 0.0;
-	transition, DECELERATE 0.1;
-	target, 	"layer_in";
-	target, 	"a_a";
-	target,		"quit";
-	}
+program { name, "aa"; signal, "mouse,click,1"; source, "play_button";
+	action, STATE_SET "default" 1.0; transition, LINEAR, 1.5; 
+	target, "a_a"; after, "aa"; target, "seekerBar"; target, "seekerTrough"; target, "time_text"; }
 
+program { name, "aa_paused"; signal, "mouse,click,1"; source, "paused_button";
+	action, STATE_SET "default" 1.0; transition, LINEAR, 1.5; target, "a_a_paused"; after, "aa_paused"; }	
 
-	program { 
-	    		name,       		"aa";
-	    		signal,     		"mouse,click,1";
-	    		source,     		"play_button";
-	    		action,     		STATE_SET "default" 1.0;
-	    		transition, 		LINEAR, 1.5;
-	    		target,     		"a_a";
-	    		after,      			"aa"; 
-	}
+program { name, "a_a_stop"; signal, "mouse,clicked,2"; source, "a_a";
+	action, ACTION_STOP; 
+	target, "aa"; }
 
-	program { 
-	    		name,       		"aa_paused";
-	    		signal,     		"mouse,click,1";
-	    		source,     		"paused_button";
-	    		action,     		STATE_SET "default" 1.0;
-	    		transition, 		LINEAR, 1.5;
-	    		target,     		"a_a_paused";
-	    		after,      			"aa_paused"; 
-	}
-	
-	program { 
-	    		name,       		"a_a_stop";
-	   		//signal,     		"mouse,click,2";
-	   		signal,     		"mouse,clicked,2";
-	    		source,     		"a_a";
-	    		action,     		ACTION_STOP;
-	    		target,     		"aa";
-	}
+// seeker
+program { name, "seeker-start"; signal, "mouse,down,1"; source, "seeker_grabber";
+	action, SIGNAL_EMIT "SEEKER_START" ""; }
+     
+program { name, "seeker-update"; signal, "mouse,move"; source, "seeker_grabber";
+	action, SIGNAL_EMIT "SEEKER_UPDATE" ""; }
+      
+program { name, "seeker-stop"; signal, "mouse,up,1"; source, "seeker_grabber";
+	action, SIGNAL_EMIT "SEEKER_STOP" ""; }
 
-	/* play_button */
-
-	program {
-			name,			"play_hilited";
-			signal,			"mouse,in";
-			source,			"play_button";
-            		action,     		STATE_SET "hilited" 0.0;
-            		transition, 		LINEAR, 0.1;
-            		target,     		"play_button";
-	}
-
-	program {
-			name,			"play_unhilited";
-			signal,			"mouse,out";
-			source,			"play_button";
-            		action,     		STATE_SET "default" 0.0;
-            		transition, 		LINEAR, 1.0;
-            		target,     		"play_button";
-	}
-	
-	program {
-			name,			"play_click";
-			signal,			"mouse,down,1";
-			source,			"play_button";
-            		action,     		STATE_SET "clicked" 0.0;
-            		transition, 		LINEAR, 0.1;
-            		target,     		"play_button";
-	}
-	
-	program {
-			name,			"play_unclick";
-			signal,			"mouse,down";
-			source,			"play_button";
-            		action,     		STATE_SET "default" 0.0;
-            		transition, 		LINEAR, 0.1;
-            		target,     		"play_button";
-	}
-	
-	program {
-			name,			"play_click";
-			signal,			"mouse,down,1";
-			source,			"play_button";
-			action, 			SIGNAL_EMIT "PLAY" "play_button";
-	}
-	
-
-	/* previous_button */
-
-	program {
-            		name,       		"prev_button_hilited";
-            		signal,     		"mouse,in";
-            		source,     		"prev_button";
-            		action,     		STATE_SET "hilited" 0.0;
-            		transition, 		LINEAR, 0.1;
-            		target,     		"prev_button";
-         }
-
-	program {
-            		name,       		"prev_button_unhilited";
-            		signal,     		"mouse,out";
-            		source,     		"prev_button";
-            		action,     		STATE_SET "default" 0.0;
-            		transition, 		LINEAR, 1.0;
-            		target,     		"prev_button";
-         }
-
-	program {
-            		name,       		"prev_clicked";
-            		signal,     		"mouse,down,1";
-            		source,     		"prev_button";
-            		action,     		STATE_SET "clicked" 0.0;
-            		transition, 		LINEAR, 0.1;
-            		target,     		"prev_button";
-         }
-
-	program {
-            		name,       		"prev_unclicked";
-            		signal,     		"mouse,down";
-            		source,     		"prev_button";
-            		action,     		STATE_SET "default" 0.0;
-            		transition, 		LINEAR, 0.1;
-            		target,     		"prev_button";
-         }
-
-	program {
-			name,			"previous_click";
-			signal,			"mouse,down,1";
-			source,			"prev_button";
-			action,     		SIGNAL_EMIT "PLAY_PREVIOUS" "previous_button";
-	}
-
-	/* next_button */
-	
-	program {
-			name,			"next_hilited";
-			signal,			"mouse,in";
-			source,			"next_button";
-			action,     		STATE_SET "hilited" 0.0;
-            		transition, 		LINEAR, 0.1;
-            		target,     		"next_button";
-	}
-
-	program {
-			name,			"next_unhilited";
-			signal,			"mouse,out";
-			source,			"next_button";
-			action,     		STATE_SET "default" 0.0;
-            		transition, 		LINEAR, 1.0;
-            		target,     		"next_button";
-	}
-
-	program {
-			name,			"next_click";
-			signal,			"mouse,down,1";
-			source,			"next_button";
-			action,     		STATE_SET "clicked" 0.0;
-            		transition, 		LINEAR, 0.1;
-            		target,     		"next_button";
-	}
-
-	program {
-			name,			"next_unclick";
-			signal,			"mouse,down";
-			source,			"next_button";
-			action,     		STATE_SET "default" 0.0;
-            		transition, 		LINEAR, 0.1;
-            		target,     		"next_button";
-	}
-	
-	program {
-			name,			"next_click";
-			signal,			"mouse,down,1";
-			source,			"next_button";
-			action, 			SIGNAL_EMIT "PLAY_NEXT" "next_button";
-	}
-
-	/* pause_button */
-
-	program {
-			name,			"pause_hilited";
-			signal,			"mouse,in";
-			source,			"pause_button";
-			action,     		STATE_SET "hilited" 0.0;
-            		transition, 		LINEAR, 0.1;
-            		target,     		"pause_button";
-	}
-
-	program {
-			name,			"pause_unhilited";
-			signal,			"mouse,out";
-			source,			"pause_button";
-			action,     		STATE_SET "default" 0.0;
-            		transition, 		LINEAR, 1.0;
-            		target,     		"pause_button";
-	}
-
-	program {
-			name,			"pause_click";
-			signal,			"mouse,down,1";
-			source,			"pause_button";
-			action,     		STATE_SET "clicked" 0.0;
-            		transition, 		LINEAR, 0.1;
-            		target,     		"pause_button";
-	}
-
-	program {
-			name,			"pause_unclick";
-			signal,			"mouse,down";
-			source,			"pause_button";
-			action,     		STATE_SET "default" 0.0;
-            		transition, 		LINEAR, 0.1;
-            		target,     		"pause_button";
-	}
-
-	program {
-			name,			"pause_click";
-			signal,			"mouse,down,1";
-			source,			"pause_button";
-			action, 			SIGNAL_EMIT "PAUSE" "pause_button";
-	}
-
-	/* Quit */
-
-	program {
-			name, 			"quit_hilited";
-			signal,     		"mouse,in"; 
-			source,     		"quit";
-            		action,     		STATE_SET "hilited" 0.0;
-            		transition, 		LINEAR, 0.1;
-            		target,     		"quit";
-	}
-
-	program {
-			name, 			"quit_unhilited";
-			signal,     		"mouse,out"; 
-			source,     		"quit";
-            		action,     		STATE_SET "default" 0.0;
-            		transition, 		LINEAR, 0.1;
-            		target,     		"quit";
-	}
-
-	program {
-			name,       		"quit_clicked";
-			signal,     		"mouse,down,1"; 
-			source,     		"quit";
-            		action,     		STATE_SET "clicked" 0.0;
-            		transition, 		LINEAR, 1.0;
-            		target,     		"quit";
-	}
-
-	program {
-			name,       		"quit_unclicked";
-			signal,     		"mouse,down"; 
-			source,     		"quit";
-            		action,     		STATE_SET "clicked" 0.0;
-            		transition, 		LINEAR, 1.0;
-            		target,     		"quit";
-	}
-
-	program {
-			name,       		"quit_exit";
-			signal,     		"mouse,down,1"; 
-			source,     		"quit";
-			action,     		SIGNAL_EMIT "QUIT" "quit";
-	}
-
-	/* stop_button */
-
-	program {
-			name,			"stop_hilited";
-			signal,			"mouse,in";
-			source,			"stop_button";
-			action,     		STATE_SET "hilited" 0.0;
-            		transition, 		LINEAR, 0.1;
-            		target,     		"stop_button";
-	} 
-	
-	program {
-			name,			"stop_unhilited";
-			signal,			"mouse,out";
-			source,			"stop_button";
-			action,     		STATE_SET "default" 0.0;
-            		transition, 		LINEAR, 1.0;
-            		target,     		"stop_button";
-	}
-	
-	program {
-			name,			"stop_click";
-			signal,			"mouse,down,1";
-			source,			"stop_button";
-			action,     		STATE_SET "clicked" 0.0;
-            		transition, 		LINEAR, 0.1;
-            		target,     		"stop_button";
-	}
- 
-	program {
-			name,			"stop_unclick";
-			signal,			"mouse,down";
-			source,			"stop_button";
-			action,     		STATE_SET "default" 0.0;
-            		transition, 		LINEAR, 0.1;
-            		target,     		"stop_button";
-	}
- 
-	program {
-			name,			"stop_click";
-			signal,			"mouse,down,1";
-			source,			"stop_button";
-			action, 			SIGNAL_EMIT "STOP" "stop_button";
-	} 
+//action_buttons
+program { name, "play_hilited"; signal, "mouse,in"; source, "play_button";
+	action, STATE_SET "hilited" 0.0; transition, LINEAR, 0.1; target, "play_button";
+}
+program { name, "play_unhilited"; signal, "mouse,out"; source, "play_button";
+	action, STATE_SET "default" 0.0; transition, LINEAR, 1.0; target, "play_button";
+}	
+program { name, "play_click"; signal, "mouse,down,1";source, "play_button";
+	action, STATE_SET "clicked" 0.0; transition, LINEAR, 0.1; target, "play_button";
+}	
+program { name, "play_unclick"; signal, "mouse,down"; source, "play_button";
+	action, STATE_SET "default" 0.0; transition, LINEAR, 0.1; target, "play_button";
+}
+program { name, "play_click"; signal, "mouse,down,1"; source, "play_button";
+	action, SIGNAL_EMIT "PLAY" "play_button"; }
+//prev
+program { name, "prev_button_hilited"; signal, "mouse,in"; source, "prev_button";
+ 	action, STATE_SET "hilited" 0.0; transition, LINEAR, 0.1; target, "prev_button";
+}
+program { name, "prev_button_unhilited"; signal, "mouse,out"; source, "prev_button";
+	action, STATE_SET "default" 0.0; transition, LINEAR, 1.0; target, "prev_button";
+}
+program { name, "prev_clicked"; signal, "mouse,down,1"; source, "prev_button";
+	action, STATE_SET "clicked" 0.0; transition, LINEAR, 0.1; target, "prev_button";
+}
+program { name, "prev_unclicked"; signal, "mouse,down"; source, "prev_button";
+	action, STATE_SET "default" 0.0; transition, LINEAR, 0.1; target, "prev_button";
+}
+program { name, "previous_click"; signal, "mouse,down,1"; source, "prev_button";
+	action, SIGNAL_EMIT "PLAY_PREVIOUS" "previous_button"; }
+//next
+program { name, "next_hilited"; signal, "mouse,in"; source, "next_button";
+	action, STATE_SET "hilited" 0.0; transition, LINEAR, 0.1; target, "next_button";
+}
+program { name, "next_unhilited"; signal, "mouse,out"; source, "next_button";
+	action, STATE_SET "default" 0.0; transition, LINEAR, 1.0; target, "next_button";
+}
+program { name, "next_click"; signal, "mouse,down,1"; source, "next_button";
+	action, STATE_SET "clicked" 0.0; transition, LINEAR, 0.1; target, "next_button";
+}
+program { name, "next_unclick"; signal, "mouse,down"; source, "next_button";
+	action, STATE_SET "default" 0.0; transition, LINEAR, 0.1; target, "next_button";
+}
+program { name, "next_click"; signal, "mouse,down,1"; source, "next_button";
+	action, SIGNAL_EMIT "PLAY_NEXT" "next_button"; }
+//pause
+program { name, "pause_hilited"; signal, "mouse,in"; source, "pause_button";
+	action, STATE_SET "hilited" 0.0; transition, LINEAR, 0.1; target, "pause_button";
+}
+program { name, "pause_unhilited"; signal, "mouse,out"; source, "pause_button";
+	action, STATE_SET "default" 0.0; transition, LINEAR, 1.0; target, "pause_button";
+}
+program { name, "pause_click"; signal, "mouse,down,1"; source, "pause_button";
+	action, STATE_SET "clicked" 0.0; transition, LINEAR, 0.1; target, "pause_button";
+}
+program { name, "pause_unclick"; signal, "mouse,down"; source, "pause_button";
+	action, STATE_SET "default" 0.0; transition, LINEAR, 0.1; target, "pause_button";
+}
+program { name, "pause_click"; signal, "mouse,down,1"; source, "pause_button";
+	action, SIGNAL_EMIT "PAUSE" "pause_button"; }
+//quit
+program { name, "quit_hilited"; signal, "mouse,in"; source, "quit";
+	action, STATE_SET "hilited" 0.0; transition, LINEAR, 0.1; target, "quit";
+}
+program { name, "quit_unhilited"; signal, "mouse,out";  source, "quit";
+	action, STATE_SET "default" 0.0; transition, LINEAR, 0.1; target, "quit";
+}
+program { name, "quit_clicked"; signal, "mouse,down,1"; source, "quit";
+	action, STATE_SET "clicked" 0.0; transition, LINEAR, 1.0; target, "quit";
+}
+program { name, "quit_unclicked"; signal, "mouse,down"; source, "quit";
+	action, STATE_SET "clicked" 0.0; transition, LINEAR, 1.0; target, "quit";
+}
+program { name, "quit_exit"; signal,  "mouse,down,1"; source, "quit";
+	action, SIGNAL_EMIT "QUIT" "quit"; }
+//stop
+program { name, "stop_hilited"; signal, "mouse,in"; source, "stop_button";
+	action, STATE_SET "hilited" 0.0; transition, LINEAR, 0.1; target, "stop_button"; 
+} 
+program { name, "stop_unhilited"; signal, "mouse,out"; source, "stop_button";
+	action, STATE_SET "default" 0.0; transition, LINEAR, 1.0; target, "stop_button"; 
+}	
+program { name, "stop_click"; signal, "mouse,down,1"; source, "stop_button";
+	action, STATE_SET "clicked" 0.0; transition, LINEAR, 0.1; target, "stop_button";
+}
+program { name, "stop_unclick"; signal, "mouse,down"; source, "stop_button";
+	action, STATE_SET "default" 0.0; transition, LINEAR, 0.1; target, "stop_button";
+}
+program { name, "stop_click"; signal, "mouse,down,1"; source, "stop_button";
+	action, SIGNAL_EMIT "STOP" "stop_button"; } 
+}

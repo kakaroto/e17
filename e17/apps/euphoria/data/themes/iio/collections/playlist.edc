@@ -1,77 +1,21 @@
-parts {
-		part {
-				name, "clip";
-				type, RECT;
 
-			description {
-				state, "default" 0.0;
-			}
-		}
-
-		part {
-				name, "background";
-				type, RECT;
-				clip_to, "clip";
-
-			description {
-					state, "default" 0.0;
-					color, 232 232 239 255;
-				}
-
-			description {
-				state, "selected" 0.0;
-				color, 187 187 196 255;
-				//color, 198 198 211 255;
-				//color, 189 189 205 255;
-			}
-		}
-
-		part {
-				name, "title";
-				type, TEXT;
-				mouse_events, 1;
-				clip_to, "clip";
-
-			description {
-				color, 106 105 115 255;
-				max, 103 7;
-
-			rel1 {
-				relative, 0.0 0.0;
-				offset, 0 0;
-				to, "clip";
-			}
-
-			rel2 {
-				relative, 1.0 1.0;
-				offset, -27 2;
-				to, "clip";
-			}
-
-				text {
-					text, "Dummy";
-					font, "Edje.visitor1";
-					size, 7;
-					align, 0.0 0.0;
-				}
-			}
-		}
-
-		part {
-				name, "length";
-				type, TEXT;
-				mouse_events, 1;
-				clip_to, "clip";
-
-			description {
-				color,  106 95 113 255;
-				//max, 32 5;
-				text {
-					text, "2:55";
-					font, "Edje.visitor1";
-					size, 7;
-					align, 1.0 1.0;
-				}
-			}
-		}
+	part { name, "clip"; type, RECT;
+	description { state, "default" 0.0; }
+}
+	part { name, "background"; type, RECT; clip_to, "clip";
+	description { state, "default" 0.0; color, 232 232 239 255; }
+	description { state, "selected" 0.0; color, 187 187 196 255; }
+}
+	part { name, "title"; type, TEXT; mouse_events, 1; clip_to, "clip";
+	description { color, 106 105 115 255; max, 103 7;
+	
+	rel1 { relative, 0.0 0.0; offset, 0 0; to, "clip"; }
+	rel2 { relative, 1.0 1.0; offset, -27 2; to, "clip"; }
+	text { text, "Dummy"; font, "Edje.visitor1"; size, 7; align, 0.0 0.0; }
+}
+}
+	part { name, "length"; type, TEXT; mouse_events, 1; clip_to, "clip";
+	description { color,  106 95 113 255;
+	text { text, "2:55"; font, "Edje.visitor1"; size, 7; align, 1.0 1.0; }
+}
 }
