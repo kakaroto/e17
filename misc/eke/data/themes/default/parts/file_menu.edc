@@ -1,0 +1,12 @@
+
+MENU("file.menu", "main_menu_clip", "file", 50, 30, 13,
+        "main_menu_outline", 0.0 0.0, 0 0,
+        "main_menu_outline", 0.0 1.0, 50 0,
+        "main_menu_outline", 0.0 1.0, 0 0,
+        "main_menu_outline", 0.0 1.0, 107 122)
+MENU_ADD_ITEM("file.menu", "feed.add.item", "add feed", 10, 2, 27)
+MENU_ADD_ITEM("file.menu", "feed.del.item", "del feed", 10, 26, 51)
+MENU_ADD_ITEM("file.menu", "feed.refresh.item", "refresh feed", 10, 50, 75)
+MENU_ADD_SEPARATOR("file.menu", "file.menu.item1", 74, 84)
+MENU_ADD_ITEM("file.menu", "quit.menu.item", "quit", 10, 83, 108)
+

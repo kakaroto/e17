@@ -14,6 +14,15 @@ static void eke_gui_edje_feed_container_scroll_cb(void *data,
                         Evas_Object *o, const char *src, const char *em);
 static void eke_gui_edje_feed_select_cb(void *data, Evas_Object *o, 
                         const char *em, const char *src);
+static void eke_gui_edje_quit_cb(void *data, Evas_Object *obj, 
+                        const char *em, const char *src);
+static void eke_gui_edje_feed_add_cb(void *data, Evas_Object *obj, 
+                        const char *em, const char *src);
+static void eke_gui_edje_feed_del_cb(void *data, Evas_Object *obj, 
+                        const char *em, const char *src);
+static void eke_gui_edje_feed_refresh_cb(void *data, Evas_Object *obj, 
+                        const char *em, const char *src);
+
 void eke_gui_edje_feed_swap(Eke *eke, Eke_Feed *feed);
 
 typedef struct Eke_Gui_Edje_Feed Eke_Gui_Edje_Feed;
@@ -87,6 +96,15 @@ eke_gui_edje_create(Eke *eke)
     esmart_container_direction_set(o, CONTAINER_DIRECTION_VERTICAL);
     edje_object_part_swallow(edje, "feeds.list.items", o);
     evas_object_show(o);
+
+    edje_object_signal_callback_add(edje, "eke,feed,add", "",
+                                        eke_gui_edje_feed_add_cb, NULL);
+    edje_object_signal_callback_add(edje, "eke,feed,del", "",
+                                        eke_gui_edje_feed_del_cb, NULL);
+    edje_object_signal_callback_add(edje, "eke,feed,refresh", "",
+                                        eke_gui_edje_feed_refresh_cb, eke);
+    edje_object_signal_callback_add(edje, "eke,quit", "",
+                                        eke_gui_edje_quit_cb, NULL);
 
     edje_thaw();
 }
@@ -236,6 +254,58 @@ eke_gui_edje_win_resize_cb(Ecore_Evas *ee)
         ecore_evas_geometry_get(ee, NULL, NULL, &w, &h);
         evas_object_resize(o, w, h);
     }
+}
+
+static void
+eke_gui_edje_quit_cb(void *data, Evas_Object *obj, 
+                        const char *em, const char *src)
+{
+    ecore_main_loop_quit();
+
+    return;
+    data = NULL;
+    obj = NULL;
+    em = NULL;
+    src = NULL;
+}
+
+static void
+eke_gui_edje_feed_add_cb(void *data, Evas_Object *obj, 
+                        const char *em, const char *src)
+{
+    printf("add cb\n");
+
+    return;
+    data = NULL;
+    obj = NULL;
+    em = NULL;
+    src = NULL;
+}
+
+static void
+eke_gui_edje_feed_del_cb(void *data, Evas_Object *obj, 
+                        const char *em, const char *src)
+{
+    printf("del cb\n");
+
+    return;
+    data = NULL;
+    obj = NULL;
+    em = NULL;
+    src = NULL;
+}
+
+static void
+eke_gui_edje_feed_refresh_cb(void *data, Evas_Object *obj, 
+                        const char *em, const char *src)
+{
+    printf("refresh cb\n");
+
+    return;
+    data = NULL;
+    obj = NULL;
+    em = NULL;
+    src = NULL;
 }
 
 static void

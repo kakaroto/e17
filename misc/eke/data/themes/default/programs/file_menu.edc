@@ -1,0 +1,6 @@
+
+MENU_ITEM_PROGS("feed.add.item", "eke,feed,add");
+MENU_ITEM_PROGS("feed.del.item", "eke,feed,del");
+MENU_ITEM_PROGS("feed.refresh.item", "eke,feed,refresh");
+MENU_ITEM_PROGS("quit.menu.item", "eke,quit")
+

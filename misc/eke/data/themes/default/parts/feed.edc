@@ -5,7 +5,7 @@ part {
         state, "default" 0.0;
         rel1 {
             relative, 0.0 0.0;
-            offset, 10 10;
+            offset, 10 35;
             to, "background";
         } 
         rel2 {
@@ -72,7 +72,7 @@ part {
         min: 350 400;
         rel1 {
             relative, 0.0 0.0;
-            offset, 110 10;
+            offset, 110 35;
             to, "background";
         }
         rel2 {

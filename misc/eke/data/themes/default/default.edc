@@ -1,8 +1,9 @@
 #include "macros/scrollbar.edc"
 #include "macros/glintbar.edc"
+#include "macros/menus.edc"
 
 fonts {
-    font, "Vera.ttf" "vera";
+    font, "Vera.ttf" "Vera";
 }
 
 images {
@@ -13,12 +14,19 @@ collections {
     group {
         name, "Main";
 
+        script {
+#include "embryo/menu.edc"
+        }
+
         parts {
 #include "parts/bg.edc"
 #include "parts/feed.edc"
+#include "parts/main_menu.edc"
         }
         programs {
+#include "programs/bg.edc"
 #include "programs/feed.edc"
+#include "programs/main_menu.edc"
         }
     }
 

@@ -1,0 +1,5 @@
+
+MENU_PROGS("file.menu", 0)
+
+#include "file_menu.edc"
+

@@ -1,0 +1,47 @@
+    public mouse_down_time;
+    public menu_list;
+    public menu_selected;
+    
+    public init_globals() {
+        set_int(menu_selected, -1);
+        append_str(menu_list, "file.menu");
+    }
+    public show_submenu(to) {
+        new buf[256];
+        new sig[256];
+
+        new index = get_int(menu_selected);
+        if(index < 0) {
+            fetch_str(menu_list, to, buf, 255);
+            snprintf(sig, 256, "%s,show", buf);
+            emit(sig, "");
+            set_int(menu_selected, to);
+        } else {
+            hide_submenu(index);
+            set_int(menu_selected, -1);
+        }
+    }
+    public transition_submenu(to) {
+        new buf[256];
+        new sig[256];
+        new index = get_int(menu_selected);
+        if(index < 0) {
+            return;
+        } else if(index == to) {
+            return;
+        } else    {
+            hide_submenu(index);
+            fetch_str(menu_list, to, buf, 255);
+            set_int(menu_selected, to);
+            snprintf(sig, 256, "%s,show", buf);
+            emit(sig, "");
+        }
+    }
+    public hide_submenu(index) {
+        new buf[256]
+        new sig[256];
+        fetch_str(menu_list, index, buf, 255);
+        snprintf(sig, 256, "%s,hide", buf);
+        emit(sig, "");
+    }
+

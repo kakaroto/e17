@@ -1,0 +1,10 @@
+
+program {
+    name, "edje_load";
+    signal, "load";
+    source, "";
+    script {
+        init_globals();
+    }
+}
+

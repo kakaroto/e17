@@ -282,7 +282,7 @@ part {
         color3, 255 255 255 128;
         text {
             text, "Item Label";
-            font, "vera";
+            font, "Vera";
             size, 10;
             min, 1 1;
             align, 0.0 0.7;

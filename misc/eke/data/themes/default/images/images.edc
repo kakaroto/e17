@@ -8,3 +8,4 @@
 	image, "e17_titlebar_outline.png" LOSSY 95;
 	image, "e17_titlebar_shadow1.png" LOSSY 95;
 	image, "e17_titlebar_shadow2.png" LOSSY 95;
+	image, "e17_menu_separator.png" LOSSY 95;
