@@ -14,16 +14,16 @@ void            __ewl_container_child_destroy(Ewl_Widget * w, void *ev_data,
 					      void *user_data);
 
 /**
- * ewl_container_init - initialize a containers default fields and callbacks
- * @c: the container to initialize
- * @appearance: the appearance key for this container
- * @add: the function to call when children added to container
- * @remove: the function to call when children removed from container
- * @rs: the function to call when children of container are resized
+ * @param c: the container to initialize
+ * @param appearance: the appearance key for this container
+ * @param add: the function to call when children added to container
+ * @param remove: the function to call when children removed from container
+ * @param rs: the function to call when children of container are resized
+ * @return Returns no value.
+ * @brief Initialize a containers default fields and callbacks
  *
- * Returns no value. Initializes the default values of the container, this
- * also sets up the widget fields of the container, so the @appearance string
- * is necessary.
+ * Initializes the default values of the container, this also sets up the
+ * widget fields of the container, so the @a appearance string is necessary.
  */
 void
 ewl_container_init(Ewl_Container * c, char *appearance, Ewl_Child_Add add,
@@ -67,11 +67,12 @@ ewl_container_init(Ewl_Container * c, char *appearance, Ewl_Child_Add add,
 }
 
 /**
- * ewl_container_add_notify - set the function to be called when adding children
- * @container: the container to change the add notifier
- * @add: the new add notifier for the container
+ * @param container: the container to change the add notifier
+ * @param add: the new add notifier for the container
+ * @return Returns no value.
+ * @brief Set the function to be called when adding children
  *
- * Returns no value. Changes the add nofitier function of @container to @add.
+ * Changes the add notifier function of @a container to @a add.
  */
 void
 ewl_container_add_notify(Ewl_Container * container, Ewl_Child_Add add)
@@ -86,12 +87,12 @@ ewl_container_add_notify(Ewl_Container * container, Ewl_Child_Add add)
 }
 
 /**
- * ewl_container_remove_notify - set the function to be called when removing children
- * @container: the container to change the add notifier
- * @remove: the new remove notifier for the container
+ * @param container: the container to change the add notifier
+ * @param remove: the new remove notifier for the container
+ * @return Returns no value.
+ * @brief Set the function to be called when removing children
  *
- * Returns no value. Changes the remove notifier function of @container to
- * @remove.
+ * Changes the remove notifier function of @a container to @a remove.
  */
 void
 ewl_container_remove_notify(Ewl_Container * container, Ewl_Child_Remove remove)
@@ -106,12 +107,12 @@ ewl_container_remove_notify(Ewl_Container * container, Ewl_Child_Remove remove)
 }
 
 /**
- * ewl_container_resize_notify - set function to be called when children resize
- * @container: the container to change the resize notifier
- * @resize: the new resizenotifier for the container
+ * @param container: the container to change the resize notifier
+ * @param resize: the new resizenotifier for the container
+ * @return Returns no value.
+ * @brief Set function to be called when children resize
  *
- * Returns no value. Changes the resize nofitier function of @container to
- * @resize.
+ * Changes the resize nofitier function of @a container to @a resize.
  */
 void
 ewl_container_resize_notify(Ewl_Container * container, Ewl_Child_Resize resize)
@@ -126,12 +127,12 @@ ewl_container_resize_notify(Ewl_Container * container, Ewl_Child_Resize resize)
 }
 
 /**
- * ewl_container_append_child - add a child at the end of the container
- * @pc: the parent container that will hold the child
- * @child: the child to add to the container
+ * @param pc: the parent container that will hold the child
+ * @param child: the child to add to the container
+ * @return Returns no value.
+ * @brief Add a child at the end of the container
  *
- * Returns no value. Attaches the child to the end of the parent containers
- * child list.
+ * Attaches the child to the end of the parent containers child list.
  */
 void ewl_container_append_child(Ewl_Container * pc, Ewl_Widget * child)
 {
@@ -161,12 +162,12 @@ void ewl_container_append_child(Ewl_Container * pc, Ewl_Widget * child)
 
 
 /**
- * ewl_container_prepend_child - add a child at the end of the container
- * @pc: the parent container that will hold the child
- * @child: the child to add to the container
+ * @param pc: the parent container that will hold the child
+ * @param child: the child to add to the container
+ * @return Returns no value.
+ * @brief Add a child at the end of the container
  *
- * Returns no value. Attaches the child to the start of the parent containers
- * child list.
+ * Attaches the child to the start of the parent containers child list.
  */
 void ewl_container_prepend_child(Ewl_Container * pc, Ewl_Widget * child)
 {
@@ -196,13 +197,14 @@ void ewl_container_prepend_child(Ewl_Container * pc, Ewl_Widget * child)
 
 
 /**
- * ewl_container_insert_child - add a child at an index of the container
- * @pc: the parent container that will hold the child
- * @child: the child to add to the container
- * @index: the position in the child list to add the cihld
+ * @param pc: the parent container that will hold the child
+ * @param child: the child to add to the container
+ * @param index: the position in the child list to add the cihld
+ * @return Returns no value.
+ * @brief Add a child at an index of the container
  *
- * Returns no value. Attaches the child to the @index position of the parent
- * containers child list.
+ * Attaches the child to the @a index position of the parent containers child
+ * list.
  */
 void
 ewl_container_insert_child(Ewl_Container * pc, Ewl_Widget * child, int index)
@@ -233,12 +235,12 @@ ewl_container_insert_child(Ewl_Container * pc, Ewl_Widget * child, int index)
 }
 
 /**
- * ewl_container_remove_child - remove the specified child from the container
- * @pc: the container to search for the child to remove
- * @child: the child to remove from the container
+ * @param pc: the container to search for the child to remove
+ * @param child: the child to remove from the container
+ * @return Returns no value.
+ * @brief Remove the specified child from the container
  *
- * Returns no value. Removes the specified child from the container without
- * destroying the child.
+ * Removes the specified child from the container without destroying the child.
  */
 void ewl_container_remove_child(Ewl_Container * pc, Ewl_Widget * child)
 {
@@ -278,10 +280,11 @@ void ewl_container_remove_child(Ewl_Container * pc, Ewl_Widget * child)
 }
 
 /**
- * ewl_container_resize_child - notify a container of a child pref size change
- * @w: the child widget that has had it's preferred size changed
- * @size: the amount of change in size
- * @o: the orientation of the size change
+ * @param w: the child widget that has had it's preferred size changed
+ * @param size: the amount of change in size
+ * @param o: the orientation of the size change
+ * @return Returns no value.
+ * @brief Notify a container of a child pref size change
  */
 void ewl_container_resize_child(Ewl_Widget * w, int size, Ewl_Orientation o)
 {
@@ -331,13 +334,14 @@ void ewl_container_resize_child(Ewl_Widget * w, int size, Ewl_Orientation o)
 }
 
 /**
- * ewl_container_get_child_at - find the child at the given coordinates
- * @widget: the searched container
- * @x: the x coordinate to search for
- * @y: the y coordinate to search for
+ * @param widget: the searched container
+ * @param x: the x coordinate to search for
+ * @param y: the y coordinate to search for
+ * @return Returns the found widget on success, NULL on failure.
+ * @brief Find the child at the given coordinates
  *
- * Returns the found widget on success, NULL on failure. The given container
- * is searched to find any child that intersects the given coordinates.
+ * The given container is searched to find any child that intersects the given
+ * coordinates.
  */
 Ewl_Widget     *ewl_container_get_child_at(Ewl_Container * widget, int x, int y)
 {
@@ -371,12 +375,11 @@ Ewl_Widget     *ewl_container_get_child_at(Ewl_Container * widget, int x, int y)
 }
 
 /**
- * ewl_container_get_child_at_recursive - find child that intersects coordinates
- * @widget: the widget to search for intersecting child
- * @x: the x coordinate of the intersection point
- * @y: the y coordinate of the intersection point
- *
- * Returns a point to the intersecting widget on success, NULL on failure.
+ * @param widget: the widget to search for intersecting child
+ * @param x: the x coordinate of the intersection point
+ * @param y: the y coordinate of the intersection point
+ * @return Returns the intersecting widget on success, NULL on failure.
+ * @brief Find child that intersects coordinates
  */
 Ewl_Widget     *ewl_container_get_child_at_recursive(Ewl_Container * widget,
 						     int x, int y)
@@ -415,11 +418,10 @@ Ewl_Widget     *ewl_container_get_child_at_recursive(Ewl_Container * widget,
 }
 
 /**
- * ewl_container_parent_of - determine if a container is a parent of a widget
- * @c: the container to compare against, it is safe to pass a non-container
- * @w: the widget to check parentage
- *
- * Returns TRUE if @c is a parent of @w, otherwise returns FALSE.
+ * @param c: the container to compare against, safe to pass a non-container
+ * @param w: the widget to check parentage
+ * @return Returns TRUE if @a c is a parent of @a w, otherwise returns FALSE.
+ * @brief Determine if a container is a parent of a widget
  */
 int ewl_container_parent_of(Ewl_Widget *c, Ewl_Widget *w)
 {
@@ -440,11 +442,11 @@ int ewl_container_parent_of(Ewl_Widget *c, Ewl_Widget *w)
 }
 
 /**
- * ewl_container_reset - destroy all children of the container
- * @c: the container to reset
+ * @param c: the container to reset
+ * @return Returns no value.
+ * @brief Destroy all children of the container
  *
- * Returns no value. Destroys all the children of the container but not the
- * container itself.
+ * Destroys all the children of the container but not the container itself.
  */
 void ewl_container_reset(Ewl_Container * c)
 {
@@ -463,13 +465,13 @@ void ewl_container_reset(Ewl_Container * c)
 }
 
 /**
- * ewl_container_intercept_callback - receive a callback in place of children
- * @c: the container to intercept the callback
- * @t: the type of callback to intercept
+ * @param c: the container to intercept the callback
+ * @param t: the type of callback to intercept
+ * @return Returns no value.
+ * @brief Receive a callback in place of children
  *
- * Returns no value. Marks the callbacks of type @t that are directed to
- * children to be triggered on the container @c, and not propagated to the
- * receiving child.
+ * Marks the callbacks of type @a t that are directed to children to be
+ * triggered on the container @a c, and not propagated to the receiving child.
  */
 void ewl_container_intercept_callback(Ewl_Container *c, Ewl_Callback_Type t)
 {
@@ -482,13 +484,13 @@ void ewl_container_intercept_callback(Ewl_Container *c, Ewl_Callback_Type t)
 }
 
 /**
- * ewl_container_notify_callback - receive a callback of a child
- * @c: the container to notify the callback
- * @t: the type of callback to notify
+ * @param c: the container to notify the callback
+ * @param t: the type of callback to notify
+ * @return Returns no value.
+ * @brief receive a callback of a child
  *
- * Returns no value. Marks the callbacks of type @t that are directed to
- * children to be triggered on the container @c, and propagated to the
- * receiving child.
+ * Marks the callbacks of type @a t that are directed to children to be
+ * triggered on the container @a c, and propagated to the receiving child.
  */
 void ewl_container_notify_callback(Ewl_Container *c, Ewl_Callback_Type t)
 {
@@ -501,11 +503,12 @@ void ewl_container_notify_callback(Ewl_Container *c, Ewl_Callback_Type t)
 }
 
 /**
- * ewl_container_prefer_largest - set preferred size to widest child
- * @c: the container to change preferred size
- * @o: the orientation/direction to prefer the largest widget
+ * @param c: the container to change preferred size
+ * @param o: the orientation/direction to prefer the largest widget
+ * @return Returns no value.
+ * @brief Set preferred size to widest child
  *
- * Returns no value. This function can be used by any container which wishes
+ * This function can be used by any container which wishes
  * to set it's preferred width to that of it's widest child.
  */
 void

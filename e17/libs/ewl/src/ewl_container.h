@@ -1,58 +1,64 @@
-
-/*\
-|*|
-|*| The container is a sub class for each widget, Ewl_Widget structure holds it
-|*| and is used to keep all subwidgets for a widget.
-|*|
-\*/
-
 #ifndef __EWL_CONTAINER_H__
 #define __EWL_CONTAINER_H__
 
-typedef struct _ewl_container Ewl_Container;
+/**
+ * @file ewl_container.h
+ * Define the Ewl_Container class which inherits from Ewl_Widget and adds the
+ * ability to nest Ewl_Widget's inside.
+ */
 
+/**
+ * This class inherits from Ewl_Widget and provides the capabilities necessary
+ * for nesting other widgets inside.
+ */
+typedef struct Ewl_Container Ewl_Container;
+
+/**
+ * @def EWL_CONTAINER(widget)
+ * @brief Typecast a poiner to an Ewl_Container pointer.
+ */
 #define EWL_CONTAINER(widget) ((Ewl_Container *) widget)
 
+/**
+ * A typedef to shorten the definition of the child_add callbacks. This
+ * callback is container specific and is triggered when an Ewl_Widget is added
+ * to the Ewl_Container.
+ */
 typedef void    (*Ewl_Child_Add) (Ewl_Container * c, Ewl_Widget * w);
+
+/**
+ * A typedef to shorten the definition of the child_remove callbacks. This
+ * callback is container specific and is triggered when an Ewl_Widget is
+ * removed from the Ewl_Container.
+ */
 typedef void    (*Ewl_Child_Remove) (Ewl_Container * c, Ewl_Widget * w);
+
+/**
+ * A typedef to shorten the definition of the child_resize callbacks. This
+ * callback is container specific and is triggered when an Ewl_Widget is
+ * resized in the Ewl_Container.
+ */
 typedef void    (*Ewl_Child_Resize) (Ewl_Container * c, Ewl_Widget * w,
 				     int size, Ewl_Orientation o);
 
-struct _ewl_container
+/**
+ * @struct Ewl_Container
+ * Inherits from the Ewl_Widget and expands to allow for placing child widgets
+ * within the available space. Also adds notifiers for various child events.
+ */
+struct Ewl_Container
 {
-	/*
-	 * Inherit the basics of the widget.
-	 */
-	Ewl_Widget      widget;
+	Ewl_Widget      widget; /**< Inherit the basics of the widget. */
 
-	/*
-	 * The list of children that are contained.
-	 */
-	Ewd_List       *children;
+	Ewd_List       *children; /**< List of children that are contained. */
 
-	/*
-	 * The clip box of the container to bound the widgets of the
-	 * container.
-	 */
-	Evas_Object    *clip_box;
+	Evas_Object    *clip_box; /**< Clip box to bound widgets inside. */
 
-	/*
-	 * Addition function updates the preferred size of the container when
-	 * a child is added.
-	 */
-	Ewl_Child_Add   child_add;
+	Ewl_Child_Add   child_add; /**< Function called on child add */
 
-	/*
-	 * Removal function updates the preferred size of the container when
-	 * a child is removed.
-	 */
-	Ewl_Child_Add   child_remove;
+	Ewl_Child_Add   child_remove; /**< Function called on child remove */
 
-	/*
-	 * Changes the preferred size of the container when the preferred size
-	 * of the child changes.
-	 */
-	Ewl_Child_Resize child_resize;
+	Ewl_Child_Resize child_resize; /**< Function called on child resize */
 };
 
 void            ewl_container_init(Ewl_Container * widget, char *appearance,
