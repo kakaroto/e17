@@ -1,37 +1,80 @@
 	    program {
+		name, "user_list_show";
+		signal, "show";
+		source, "";
+		action, DRAG_VAL_SET 0.0 0.0;
+		target, "user_list_border";
+	    }
+	    program {
+		name, "show_user_menu";
+		signal, "mouse,clicked,1";
+		source, "session_mouse_area";
+		action, SIGNAL_EMIT "user,list,in" "";
+	    }
+	    program {
 		name, "hide_user_menu";
 		signal, "mouse,clicked,3";
 		source, "bgimage";
-		action, STATE_SET "default" 0.0;
-		target, "user_list_clip";
-		target, "user_list_border";
-		transition, DECELERATE 0.5;
-	    }
-#if 0
-	    program {
-		name, "user_selected";
-		signal, "UserSelected";
-		source, "";
-		action, STATE_SET "default" 0.0;
-		target, "user_list_border";
-		target, "user_list_clip";
-		transition, DECELERATE 0.75;
-	    }
-#endif
-	    program {
-		name, "user_unselected";
-		signal, "UserUnSelected";
-		source, "";
-		action, STATE_SET "default" 0.0;
-		target, "user_list_border";
-		target, "user_list_clip";
-		transition, DECELERATE 0.75;
+		action, SIGNAL_EMIT "user,list,out" "";
 	    }
 	    program {
 		name, "mouse_double_clicked_user_list_border";
 		signal, "mouse,down,1,double";
 		source, "user_list_border";
+		action, SIGNAL_EMIT "user,list,out" "";
+	    }
+	    program {
+		name, "user_selected_hide_list";
+		signal, "UserSelected";
+		source, "";
+		action, SIGNAL_EMIT "user,list,out" "";
+	    }
+
+	    /* ani out */
+	    program {
+		name, "slide_out_user_list";
+		signal, "user,list,out";
+		source, "";
+		script {
+		    new i;
+		    i = get_int(user_list_visible);
+		    if(i == 1)
+		    {
+			set_int(user_list_visible, 0);
+			anim(1.0, "animate_user_list_out_callback", 5);
+		    }
+		}
+	    }
+	    program {
+		name, "fade_out_user_list";
+		signal, "user,list,out";
+		source, "";
 		action, STATE_SET "default" 0.0;
-		target, "user_list_border";
-		transition, DECELERATE 0.3;
+		target, "user_list_clip";
+		target, "user_list_confine";
+		transition, LINEAR 0.95;
+	    }
+	    /* ani in */
+	    program {
+		name, "slide_in_user_list";
+		signal, "user,list,in";
+		source, "";
+		script {
+		    new i;
+		    i = get_int(user_list_visible);
+		    if(i == 0)
+		    {
+			set_int(user_list_visible, 1);
+			anim(1.0, "animate_user_list_in_callback", 5);
+		    }
+		}
+	    }
+	    program {
+		name, "fade_in_user_list";
+		signal, "user,list,in";
+		source, "";
+		action, STATE_SET "visible" 0.0;
+		target, "user_list_clip";
+		target, "user_list_confine";
+		transition, LINEAR 0.95;
 	    }

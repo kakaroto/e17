@@ -21,6 +21,8 @@
 collections {
     group {
 	name, "Main";
+	min, 640 480;
+	max, 9999 9999;
 #include "embryo/globals.edc"
 	parts {
 
@@ -36,22 +38,6 @@ collections {
  * error_string_clip  
  */
 #include "parts/error_string.edc"
-
-/**
- * provides: 
- * EntranceSessionList 
- * session_list_border 
- * session_list_clip  
- */
-#include "parts/session_list_area.edc"
-
-/**
- * provides: 
- * EntranceUserList 
- * user_list_border 
- * user_list_clip 
- */
-#include "parts/user_list_area.edc"
 
 /**
  * provides: 
@@ -74,6 +60,23 @@ collections {
  * restart_button_description 
  */
 #include "parts/restart_button.edc"
+
+/**
+ * provides: 
+ * EntranceSessionList 
+ * session_list_border 
+ * session_list_clip  
+ */
+#include "parts/session_list_area.edc"
+
+/**
+ * provides: 
+ * EntranceUserList 
+ * user_list_border 
+ * user_list_clip 
+ */
+#include "parts/user_list_area.edc"
+
 
 /**
  * provides:
@@ -187,8 +190,8 @@ collections {
     group
     {
 	name, "Session";
-	min, 210 50;
-	max, 210 50;
+	min, 210 55;
+	max, 210 55;
 	parts
 	{
 /**

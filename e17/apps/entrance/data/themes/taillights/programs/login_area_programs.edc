@@ -7,6 +7,14 @@
 	    transition, SINUSOIDAL 0.5;
 	}
 	program {
+	    name, "LoginAreaMoveShow";
+	    source, "";
+	    signal, "show";
+	    action, DRAG_VAL_SET 0.5 0.5;
+	    target, "login_border";
+	    transition, SINUSOIDAL 0.5;
+	}
+	program {
 	    name, "ToPass";
 	    source, "";
 	    signal, "EntranceUserAuth";
@@ -25,69 +33,28 @@
 	    transition, SINUSOIDAL 0.4;
 	}
 	program {
-	    name, "ShakeOffPass";
+	    name, "ShakeOffFail";
 	    source, "";
 	    signal, "EntranceUserAuthFail";
-	    action, STATE_SET "left" 0.0;
-	    target, "login_border";
-	    transition, DECELERATE 0.08;
-	    after, "ShakeRight";
+	    script {
+		if(get_int(login_shaking) == 0)
+		{
+		    set_float(login_area_align_x, 0.5);
+		    set_float(login_area_shaking_direction, 0);
+		    set_int(login_shaking, 1);
+		    anim(1.55, "shake_off_bad_user", 2);
+		}
+	    }
 	}
 	program {
-	    name, "StopShakingPassDaminIt";
+	    name, "ShakeOffFailReset";
 	    source, "";
 	    signal, "EntranceUserAuthFail";
-	    action, ACTION_STOP;
-	    target, "ShakeRight";
-	    target, "ShakeLeft";
-	    in, 0.8 0.0;
-	    after, "ShakeReset";
-	}
-	program {
-	    name, "ShakeRight";
-	    source, "";
-	    signal, "";
-	    action, STATE_SET "right" 0.0;
-	    target, "login_border";
-	    transition, DECELERATE 0.08;
-	    after, "ShakeLeft";
-	}
-	program {
-	    name, "ShakeLeft";
-	    source, "";
-	    signal, "";
-	    action, STATE_SET "left" 0.0;
-	    target, "login_border";
-	    transition, DECELERATE 0.08;
-	    after, "ShakeRight";
-	}
-	program {
-	    name, "ShakeReset";
-	    source, "";
-	    signal, "";
-	    action, STATE_SET "default" 0.0;
-	    target, "login_border";
-	    transition, DECELERATE 0.08;
+	    script {
+		set_int(login_shaking, 0);
+	    }
+	    in, 1.55 0.0;
 	    after, "FaceReset";
-	}
-	program {
-	    name, "ShakeOffUser";
-	    source, "";
-	    signal, "EntranceUserFail";
-	    action, STATE_SET "left" 0.0;
-	    target, "login_border";
-	    transition, DECELERATE 0.08;
-	    after, "ShakeRight";
-	}
-	program {
-	    name, "StopShakingUserDaminIt";
-	    source, "";
-	    signal, "EntranceUserFail";
-	    action, ACTION_STOP;
-	    target, "ShakeRight";
-	    target, "ShakeLeft";
-	    in, 0.4 0.0;
-	    after, "ShakeReset";
 	}
 	program {
 	    name, "animate_e_logo";
@@ -125,4 +92,11 @@
 	    target, "entrance_e_logo_clip";
 	    transition, DECELERATE 0.25;
 	}
-
+	program {
+	    name, "setup";
+	    source, "show";
+	    signal, "";
+	    script {
+		set_int(login_shaking, 0);
+	    }
+	}

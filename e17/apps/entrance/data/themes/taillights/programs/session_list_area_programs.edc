@@ -5,9 +5,13 @@
 		action, STATE_SET "visible" 1.0;
 		target, "session_list_clip";
 		target, "session_list_border";
-		target, "user_list_clip";
-		target, "user_list_border";
 		transition, LINEAR 0.5;
+	    }
+	    program {
+		name, "show_session_menu2";
+		signal, "mouse,clicked,1";
+		source, "session_mouse_area";
+		action, SIGNAL_EMIT "user,list,in" "";
 	    }
 	    program {
 		name, "show_session_description";

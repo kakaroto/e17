@@ -11,9 +11,5 @@
 	    action, STATE_SET "visible" 0.0; target, ptarget; \
 	    transition, DECELERATE 0.3; } \
 
-FADERS("session_fade_in", "session_fade_out",
-"entrance_session_mouse_area", "session_list_clip")
-FADERS("user_fade_in", "user_fade_out", 
-"user_area_mouse_area", "user_list_clip")
 FADERS("login_fade_in", "login_fade_out", 
 "login_area_mouse_area", "login_area_clip")

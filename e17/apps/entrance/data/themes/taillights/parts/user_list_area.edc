@@ -1,5 +1,39 @@
 	    part
 	    {
+		name, "user_list_confine";
+		type, RECT;
+		mouse_events, 0;
+		description {
+		    state, "default" 0.0;
+		    visible, 1;
+		    rel1 {
+			relative, 0.0 0.0;
+			offset, -150 0;
+			to, "bg";
+		    } rel2 {
+			relative, 1.0 1.0;
+			offset, 0 0;
+			to, "bg";
+		    }
+		    color, 255 255 255 0;
+		}
+		description {
+		    state, "visible" 0.0;
+		    visible, 1;
+		    rel1 {
+			relative, 0.0 0.0;
+			offset, 0 0;
+			to, "bg";
+		    } rel2 {
+			relative, 1.0 1.0;
+			offset, 0 0;
+			to, "bg";
+		    }
+		    color, 255 255 255 0;
+		}
+	    }
+	    part
+	    {
 		name, "user_list_clip";
 		type, RECT;
 		mouse_events, 0;
@@ -19,20 +53,6 @@
 		}
 		description {
 		    state, "visible" 0.0;
-		    visible, 1;
-		    rel1 {
-			relative, 0.0 0.0;
-			offset, -10 -10;
-			to, "user_list_border";
-		    } rel2 {
-			relative, 1.0 1.0;
-			offset, 10 10;
-			to, "user_list_border";
-		    }
-		    color, 255 255 255 128;
-		}
-		description {
-		    state, "visible" 1.0;
 		    visible, 1;
 		    rel1 {
 			relative, 0.0 0.0;
@@ -77,6 +97,54 @@
 		}
 	    }
 	    part {
+		name, "user_list_border";
+		type, IMAGE;
+		mouse_events, 1;
+		repeat_events, 0;
+		clip_to, "user_list_clip";
+		dragable {
+		    x, 1 1 0;
+		    y, 1 1 0;
+		    confine, "user_list_confine";
+		}
+		description {
+		    state, "default" 0.0;
+		    visible, 1;
+		    min, 145 300;
+		    max, 145 400;
+		    rel1 {
+			relative, 0.0 0.0;
+			offset, 0 0;
+		    } rel2 {
+			relative, 0.0 0.0;
+			offset, 5 5;
+		    }
+		    image 
+		    {
+			normal, "user_border.png";
+		    }
+		    border, 40 40 12 12;
+		}
+		description {
+		    state, "visible" 0.0;
+		    visible, 1;
+		    min, 145 300;
+		    max, 145 400;
+		    rel1 {
+			relative, 0.0 0.0;
+			offset, 0 0;
+		    } rel2 {
+			relative, 0.0 0.0;
+			offset, 65 300;
+		    }
+		    image 
+		    {
+			normal, "user_border.png";
+		    }
+		    border, 40 40 12 12;
+		}
+	    }
+	    part {
 		name, "EntranceUserList";
 		type, RECT;
 		mouse_events, 1;
@@ -86,11 +154,11 @@
 		    visible, 1;
 		    rel1 {
 			relative, 0.0 0.0;
-			offset, 15 20;
+			offset, 10 20;
 			to, "user_list_border";
 		    } rel2 {
 			relative, 1.0 1.0;
-			offset, -15 0;
+			offset, -10 0;
 			to, "user_list_border";
 		    }
 		    color, 100 100 100 0;
@@ -106,11 +174,11 @@
 		    visible, 1;
 		    rel1 {
 			relative, 0.0 0.0;
-			offset, 10 2;
+			offset, 12 2;
 			to, "user_list_border";
 		    } rel2 {
 			relative, 1.0 1.0;
-			offset, -10 -2;
+			offset, -12 -5;
 			to, "user_list_border";
 		    }
 		    image
@@ -118,71 +186,6 @@
 			normal, "shading.png";
 		    }
 		    border, 6 6 6 6;
-		}
-	    }
-	    part {
-		name, "user_list_border";
-		type, IMAGE;
-		mouse_events, 1;
-		repeat_events, 1;
-		clip_to, "user_list_clip";
-		dragable {
-		    x, 1 1 0;
-		    y, 1 1 0;
-		}
-		description {
-		    state, "default" 0.0;
-		    visible, 0;
-		    rel1 {
-			relative, 0.5 1.0;
-			offset, -5 0;
-			to, "bg";
-		    } rel2 {
-			relative, 0.5 1.0;
-			offset, 5 21;
-			to, "bg";
-		    }
-		    image 
-		    {
-			normal, "user_border.png";
-		    }
-		    border, 40 40 12 12;
-		}
-		description {
-		    state, "visible" 0.0;
-		    visible, 1;
-		    rel1 {
-			relative, 0.0 0.0;
-			offset, 3 -300;
-			to_y, "bottom_bar";
-		    } rel2 {
-			relative, 0.0 0.0;
-			offset, 10 -2;
-			to_y, "bottom_bar";
-		    }
-		    image 
-		    {
-			normal, "user_border.png";
-		    }
-		    border, 40 40 12 12;
-		}
-		description {
-		    state, "visible" 1.0;
-		    visible, 1;
-		    rel1 {
-			relative, 0.0 0.0;
-			offset, 3 -300;
-			to_y, "bottom_bar";
-		    } rel2 {
-			relative, 0.0 0.0;
-			offset, 145 -2;
-			to_y, "bottom_bar";
-		    }
-		    image 
-		    {
-			normal, "user_border.png";
-		    }
-		    border, 40 40 12 12;
 		}
 	    }
 	    part {

@@ -49,20 +49,49 @@
 		}
 	    }
 	    part {
+		name, "login_border";
+		type, IMAGE;
+		mouse_events, 1;
+		clip_to, "login_area_clip";
+		dragable {
+		    x, 1 1 0;
+		    y, 1 1 0;
+		    confine, "bg";
+		}
+		description {
+		    min, 360 250;
+		    max, 360 250;
+		    state, "default" 0.0;
+		    visible, 1;
+		    rel1 {
+			relative, 0.5 0.5;
+			offset, -180 -125;
+		    } rel2 {
+			relative, 0.5 0.5;
+			offset, 180 125;
+		    }
+		    image 
+		    {
+			normal, "menu_border.png";
+		    }
+		    border, 25 80 20 20;
+		}
+	    }
+	    part {
 		name, "login_bg_base";
 		type, IMAGE;
-		mouse_events, 0;
+		mouse_events, 1;
 		clip_to, "login_area_clip";
 		description {
 		    state, "default" 0.0;
 		    visible, 1;
 		    rel1 {
 			relative, 0.0 0.0;
-			offset, 0 0;
+			offset, 3 20;
 			to, "login_border";
 		    } rel2 {
 			relative, 1.0 1.0;
-			offset, 0 -2;
+			offset, -3 -5;
 			to, "login_border";
 		    }
 		    image
@@ -100,64 +129,6 @@
 			normal, "shading.png";
 		    }
 		    border, 5 5 5 5;
-		}
-	    }
-	    part {
-		name, "login_border";
-		type, IMAGE;
-		mouse_events, 1;
-		clip_to, "login_area_clip";
-		dragable {
-		    x, 1 1 0;
-		    y, 1 1 0;
-		}
-		description {
-		    state, "default" 0.0;
-		    visible, 1;
-		    rel1 {
-			relative, 0.5 0.5;
-			offset, -180 -120;
-		    } rel2 {
-			relative, 0.5 0.5;
-			offset, 180 120;
-		    }
-		    image 
-		    {
-			normal, "menu_border.png";
-		    }
-		    border, 25 80 20 20;
-		}
-		description {
-		    state, "left" 0.0;
-		    visible, 1;
-		    rel1 {
-			relative, 0.5 0.5;
-			offset, -210 -120;
-		    } rel2 {
-			relative, 0.5 0.5;
-			offset, 150 120;
-		    }
-		    image 
-		    {
-			normal, "menu_border.png";
-		    }
-		    border, 25 80 20 20;
-		}
-		description {
-		    state, "right" 0.0;
-		    visible, 1;
-		    rel1 {
-			relative, 0.5 0.5;
-			offset, -150 -120;
-		    } rel2 {
-			relative, 0.5 0.5;
-			offset, 210 120;
-		    }
-		    image 
-		    {
-			normal, "menu_border.png";
-		    }
-		    border, 25 80 20 20;
 		}
 	    }
 	    part {
