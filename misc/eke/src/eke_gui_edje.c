@@ -13,7 +13,8 @@ static void eke_gui_edje_win_resize_cb(Ecore_Evas *ee);
 static void eke_gui_edje_feed_container_scroll_cb(void *data, 
                         Evas_Object *o, const char *src, const char *em);
 static void eke_gui_edje_feed_select_cb(void *data, Evas_Object *o, 
-                            const char *em, const char *src);
+                        const char *em, const char *src);
+void eke_gui_edje_feed_swap(Eke *eke, Eke_Feed *feed);
 
 typedef struct Eke_Gui_Edje_Feed Eke_Gui_Edje_Feed;
 struct Eke_Gui_Edje_Feed
@@ -105,7 +106,6 @@ eke_gui_edje_feed_change(Eke *eke, Eke_Feed *feed)
     Eke_Gui_Edje_Feed *disp;
     const char *file;
     Eke_Feed_Item *item;
-    Evas_Object *part;
     Evas *evas;
     Evas_Coord w, h;
     Evas_Object *obj = NULL; 
@@ -150,28 +150,9 @@ eke_gui_edje_feed_change(Eke *eke, Eke_Feed *feed)
     }
     edje_object_part_text_set(disp->menu_item, "label", feed->title);
 
-    {
-        char buf[128];
-        snprintf(buf, sizeof(buf), PACKAGE " -- %s", feed->title);
-        ecore_evas_title_set(eke->gui.edje.ee, buf);
-    }
-
-    if((part = edje_object_part_swallow_get(eke->gui.edje.edje, 
-                                                    "feed.body"))) {
-        edje_object_part_unswallow(eke->gui.edje.edje, part);
-        esmart_container_empty(part);
-        evas_object_hide(part);
-    }
-    edje_object_part_swallow(eke->gui.edje.edje, "feed.body", disp->body);
-    edje_object_part_geometry_get(eke->gui.edje.edje, "feed.body",
-                                                        NULL, NULL, &w, &h);
-    edje_object_signal_callback_del(eke->gui.edje.edje, "drag",
-                                    "feed.body.scroll", 
-                                    eke_gui_edje_feed_container_scroll_cb);
-    edje_object_signal_callback_add(eke->gui.edje.edje, "drag",
-                                    "feed.body.scroll",
-                                    eke_gui_edje_feed_container_scroll_cb,
-                                    disp->body);
+    /* if there is no current feed displayed, then show this one */
+    if ((!edje_object_part_swallow_get(eke->gui.edje.edje, "feed.body"))) 
+        eke_gui_edje_feed_swap(eke, feed);
 
     esmart_container_empty(disp->body);
     ecore_list_goto_first(feed->items);
@@ -187,6 +168,35 @@ eke_gui_edje_feed_change(Eke *eke, Eke_Feed *feed)
         }
     }
     edje_thaw();
+}
+
+void
+eke_gui_edje_feed_swap(Eke *eke, Eke_Feed *feed)
+{
+    char buf[128];
+    Evas_Object *part;
+    Eke_Gui_Edje_Feed *disp;
+
+    snprintf(buf, sizeof(buf), PACKAGE " -- %s", feed->title);
+    ecore_evas_title_set(eke->gui.edje.ee, buf);
+
+    if ((part = edje_object_part_swallow_get(eke->gui.edje.edje, 
+                                                    "feed.body"))) {
+        edje_object_part_unswallow(eke->gui.edje.edje, part);
+        evas_object_hide(part);
+    }
+
+    disp = ecore_hash_get(eke->feeds, feed);
+    edje_object_part_swallow(eke->gui.edje.edje, "feed.body", disp->body);
+    evas_object_show(disp->body);
+
+    edje_object_signal_callback_del(eke->gui.edje.edje, "drag",
+                                    "feed.body.scroll", 
+                                    eke_gui_edje_feed_container_scroll_cb);
+    edje_object_signal_callback_add(eke->gui.edje.edje, "drag",
+                                    "feed.body.scroll",
+                                    eke_gui_edje_feed_container_scroll_cb,
+                                    disp->body);
 }
 
 void
@@ -235,7 +245,7 @@ eke_gui_edje_feed_select_cb(void *data, Evas_Object *o,
 
     if((eke = (Eke*)data)) {
         if((feed = evas_object_data_get(o, "feed"))) {
-            eke_gui_edje_feed_change(eke, feed);
+            eke_gui_edje_feed_swap(eke, feed);
         }
     }
 
