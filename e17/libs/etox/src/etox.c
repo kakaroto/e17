@@ -1116,36 +1116,45 @@ void _etox_wrap_lines(Etox *et)
  */
 void _etox_unwrap_lines(Etox *et)
 {
+  Evas_List l, newlines;
   Etox_Line *line, *prevline;
-  Evas_List l;
-  int i = 0;
 
   CHECK_PARAM_POINTER("et", et);
 
-  prevline = et->lines->data;
+  if (!(et->context->flags & ETOX_SOFT_WRAP)) return;
 
+  /* The first line can't be a wrapped line, so set it as 'prevline' */
+  prevline = et->lines->data;
+  /* Add it to the list of newlines */
+  newlines = evas_list_append(newlines, prevline);
+
+  /* iterate through the remaining lines */
   for (l = et->lines->next; l; l = l->next)
   {
-    i++;
     line = l->data;
+
+    /* if its a line created due to wrapping */
     if (line->flags & ETOX_LINE_WRAPPED)
     {
-      printf("unwrap line: %i\n", i);
-      /* remove the wrap marker bit */
-      line->bits = evas_list_remove(line->bits, line->bits->data);
+      /* free and remove the wrap marker bit (first bit) */
+      estyle_free((Estyle *)(line->bits->data));
+      line->bits = line->bits->next;
 
-      /* remove the line from the list */
-      et->lines = evas_list_remove(et->lines, line);
-
-      /* merge the two lines */
+      /* merge it with the line before */
       etox_line_merge(prevline, line);
-     
-      /* skip the line we just merged */
-      l = l->next;
+
     }
     else
+    {
+      /* if not a wrapped line, add it to the list of newlines */
+      newlines = evas_list_append(newlines, line);
+      /* make it the new 'previous line' */
       prevline = line;
+    }
   }
+
+  /* set the etox's list of lines to newlines */
+  et->lines = newlines;
 }
 
 /*
