@@ -6,7 +6,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
-"POT-Creation-Date: 2000-08-22 13:46-0700\n"
+"POT-Creation-Date: 2000-08-22 14:11-0700\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -349,7 +349,7 @@ msgstr ""
 msgid "Select your display method"
 msgstr ""
 
-#: src/interface.c:2027
+#: src/interface.c:2026
 msgid ""
 "Please select your preferred canvas display method.\n"
 "\n"
@@ -359,11 +359,11 @@ msgid ""
 "the case choose software rendering."
 msgstr ""
 
-#: src/interface.c:2047
+#: src/interface.c:2046
 msgid "Software"
 msgstr ""
 
-#: src/interface.c:2055
+#: src/interface.c:2054
 msgid "3D Hardware"
 msgstr ""
 

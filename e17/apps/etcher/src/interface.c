@@ -2005,7 +2005,6 @@ create_render_method (void)
   render_method = gtk_dialog_new ();
   gtk_object_set_data (GTK_OBJECT (render_method), "render_method", render_method);
   gtk_window_set_title (GTK_WINDOW (render_method), _("Select your display method"));
-  GTK_WINDOW (render_method)->type = GTK_WINDOW_POPUP;
   gtk_window_set_position (GTK_WINDOW (render_method), GTK_WIN_POS_MOUSE);
   gtk_window_set_modal (GTK_WINDOW (render_method), TRUE);
   gtk_window_set_policy (GTK_WINDOW (render_method), FALSE, TRUE, TRUE);

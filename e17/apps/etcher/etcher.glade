@@ -3797,7 +3797,7 @@ Scrollbar_Arrow2
   <class>GtkDialog</class>
   <name>render_method</name>
   <title>Select your display method</title>
-  <type>GTK_WINDOW_POPUP</type>
+  <type>GTK_WINDOW_DIALOG</type>
   <position>GTK_WIN_POS_MOUSE</position>
   <modal>True</modal>
   <allow_shrink>False</allow_shrink>
