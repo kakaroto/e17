@@ -21,7 +21,7 @@ AC_PREREQ(2.53)
 AC_INIT(embrace, 0.0.1, , embrace)
 AC_CONFIG_SRCDIR([src/embrace.c])
 
-AM_INIT_AUTOMAKE([dist-bzip2])
+AM_INIT_AUTOMAKE([embrace])
 AM_CONFIG_HEADER(config.h)
 
 AC_PROG_CC
