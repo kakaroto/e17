@@ -48,8 +48,10 @@ load(ImlibImage *im, progress_func *progress, char progress_granularity, char im
   if (fd < 0)
       return 0;
   gif = DGifOpenFileHandle(fd);
-  if (!gif)
+  if (!gif) {
+      close(fd);
       return 0;
+  }
   do {
     if (DGifGetRecordType(gif, &rec) == GIF_ERROR) {
       /* PrintGifError(); */
