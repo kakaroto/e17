@@ -7,6 +7,8 @@ void quit_edjecallback(void *data, Evas_Object *obj, const char *emission, const
 void raisevol_edjecallback(void *data, Evas_Object *obj, const char *emission, const char *source);
 void lowervol_edjecallback(void *data, Evas_Object *obj, const char *emission, const char *source);
 void keydown_evascallback(void *data, Evas *e, Evas_Object *obj, void *event_info);
+void seekforward_edjecallback(void *data, Evas_Object *obj, const char *emission, const char *source);
+void seekbackward_edjecallback(void *data, Evas_Object *obj, const char *emission, const char *source);
 
 
 #define WIDTH 400
@@ -20,6 +22,7 @@ void keydown_evascallback(void *data, Evas *e, Evas_Object *obj, void *event_inf
 	Evas_Coord	minw, minh;
 	double		volume;
 	char 		vol_str[3];
+	int 		muted = 0;
 
 void keydown_evascallback(void *data, Evas *e, Evas_Object *obj, void *event_info) {
         Evas_Event_Key_Down *ev;
@@ -41,6 +44,15 @@ void keydown_evascallback(void *data, Evas *e, Evas_Object *obj, void *event_inf
         else if (!strcmp(ev->keyname, "q")){
 		ecore_main_loop_quit();
 	}
+        else if (!strcmp(ev->keyname, "m")){
+		if(muted = 0){
+			emotion_object_video_mute_set(emotion, 1);
+			muted = 1;
+		else {
+			emotion_object_video_mute_set(emotion, 0);
+			muted = 0;
+		}
+        }
         else if (!strcmp(ev->keyname, "Down")){
 		double pos;
 
@@ -138,6 +150,8 @@ int main(int argc, char *argv[]){
 	edje_object_signal_callback_add(edje, "VOL_INCR", "vol_incr_button", raisevol_edjecallback, NULL);
 	edje_object_signal_callback_add(edje, "VOL_DECR", "vol_decr_button", lowervol_edjecallback, NULL);
 	edje_object_signal_callback_add(edje, "QUIT", "quit", quit_edjecallback, NULL);
+        edje_object_signal_callback_add(edje, "SEEK_BACK", "seekback_button", seekbackward_edjecallback, NULL);
+        edje_object_signal_callback_add(edje, "SEEK_FORWARD", "seekforward_button", seekforward_edjecallback, NULL);
 	
 
         ecore_main_loop_begin();
@@ -171,4 +185,19 @@ void lowervol_edjecallback(void *data, Evas_Object *obj, const char *emission, c
         edje_object_part_text_set(edje, "vol_display_text", vol_str);
 
 }
+
+void seekbackward_edjecallback(void *data, Evas_Object *obj, const char *emission, const char *source){
+	double pos;
+
+	pos = emotion_object_position_get(emotion);
+	emotion_object_position_set(emotion, pos-30);
+}
+void seekforward_edjecallback(void *data, Evas_Object *obj, const char *emission, const char *source){
+        double pos;
+
+        pos = emotion_object_position_get(emotion);
+        emotion_object_position_set(emotion, pos+30);
+}
+
+
 
