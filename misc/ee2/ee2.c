@@ -25,6 +25,7 @@ int depth, imgw = 0, imgh = 0;
 int ww = 0, wh = 0;
 int i = 0;
 gint simgw = 0, simgh = 0;
+char currentimage[255];
 char *imagefile = NULL;
 char *splashfile = NULL;
 Imlib_Image *im = NULL;
@@ -107,6 +108,8 @@ int main(int argc, char **argv)
 
 	gtk_signal_connect(GTK_OBJECT(FOpen), "activate",
 							 GTK_SIGNAL_FUNC(OpenImageFromMenu), NULL);
+	gtk_signal_connect(GTK_OBJECT(FSave), "activate",
+							 GTK_SIGNAL_FUNC(SaveImage), NULL);
 
 	gtk_signal_connect(GTK_OBJECT(GTK_FILE_SELECTION(FileSel)->cancel_button),
 							 "clicked", (GtkSignalFunc) CloseFileSel, FileSel);
@@ -139,8 +142,10 @@ int main(int argc, char **argv)
 	
 	/* main stuff */
 	if(argc == 2){
+		sprintf(currentimage, "%s", argv[1]);
 		LoadImage(argv[1]);
 	} else {
+		sprintf(currentimage, "./ee2.png");
 		LoadImage("./ee2.png");
 	}
 	
@@ -205,6 +210,7 @@ void FileOpen(GtkWidget *widget, GtkFileSelection *fs)
 {
 	printf("file open function\n");
 	imagefile = gtk_file_selection_get_filename(GTK_FILE_SELECTION(fs));
+	sprintf(currentimage, "%s", imagefile);
 	gtk_widget_hide(FileSel);
 	gtk_widget_hide(area);
 	LoadImage(imagefile);
@@ -222,6 +228,12 @@ void FileOpen(GtkWidget *widget, GtkFileSelection *fs)
 void OpenImageFromMenu(GtkWidget *widget, GdkEvent *event, gpointer data)
 {
 	gtk_widget_show(FileSel);
+}
+
+void SaveImage(GtkWidget *widget, GdkEvent *event, gpointer data)
+{
+	printf("Saving %s\n...", currentimage);
+	imlib_save_image(currentimage);
 }
 
 void RefreshImage(GtkWidget *widget, GdkEvent *event, gpointer data)

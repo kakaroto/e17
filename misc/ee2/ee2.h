@@ -24,6 +24,7 @@ void CloseWindow(GtkWidget *widget, GdkEvent *event, gpointer data);
 void CloseFileSel(GtkWidget *widget, GdkEvent *event, gpointer data);
 void FileOpen(GtkWidget *widget, GtkFileSelection *fs);
 void OpenImageFromMenu(GtkWidget *widget, GdkEvent *event, gpointer data);
+void SaveImage(GtkWidget *widget, GdkEvent *event, gpointer data);
 void RefreshImage(GtkWidget *widget, GdkEvent *event, gpointer data);
 void BlurImage(GtkWidget *widget, GdkEvent *event, gpointer data);
 void BlurImageMore(GtkWidget *widget, GdkEvent *event, gpointer data);
