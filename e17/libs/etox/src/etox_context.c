@@ -399,24 +399,6 @@ void etox_context_set_align(Etox_Context * context, int align)
 }
 
 /**
- * etox_context_set_soft_wrap - turns on soft wrapping of lines that are
- * longer than the etox is wide
- * @et: the etox to set for
- * @boolean: 0 is off, anything else is on
- * 
- * Returns no value. changes current context alignment value.
- */
-void etox_context_set_soft_wrap(Etox_Context * context, int boolean)
-{
-	CHECK_PARAM_POINTER("context", context);
-
-	if (boolean)
-		context->flags |= ETOX_SOFT_WRAP;
-	else
-		context->flags &= ~ETOX_SOFT_WRAP;
-}
-
-/**
  * etox_set_wrap_marker - sets string to mark wrapped lines
  * @et: the etox to set for
  * @marker: the string to mark wrapped lines

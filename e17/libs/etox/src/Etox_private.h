@@ -4,6 +4,38 @@
 #include "Etox.h"
 #include <Edb.h>
 
+typedef enum _etox_flags Etox_Flags;
+enum _etox_flags
+{
+	ETOX_SOFT_WRAP = 0x1,
+	ETOX_BREAK_WORDS = 0x2
+};
+
+
+/*
+ * Eventually, where to place the wrap marker (if ETOX_SOFT_WRAP is set)
+ * (at start or end of line, and inside or outside etox bounds)
+ */
+typedef enum _etox_marker_position Etox_Marker_Position;
+enum _etox_marker_position
+{
+	ETOX_MARKER_POSITION_FIRST = 0x10,
+	ETOX_MARKER_POSITION_LAST = 0x20,
+	ETOX_MARKER_POSITION_INSIDE = 0x40,
+	ETOX_MARKER_POSITION_OUTSIDE = 0x80
+};
+
+/*
+ * There is some subtelty to this enum. It leaves the bits used by alignment
+ * untouched so that a single char can hold all of the necessary information.
+ */
+typedef enum _etox_line_flags Etox_Line_Flags;
+enum _etox_line_flags
+{
+	ETOX_LINE_WRAPPED = 0x10
+};
+
+
 /*
  * The color struct simply keeps track of the various colors available
  */
@@ -82,25 +114,14 @@ struct _etox
 	Evas_List *obstacles;
 
 	/*
-	 * Determine if the etox has been displayed yet.
+	 * Whether to wrap the etox or not.
 	 */
-	char visible;
+	char flags;
 
 	/*
 	 * Alpha level of clip box that is applied to the text
 	 */
 	int alpha;
-};
-
-/*
- * There is some subtelty to this enum. It leaves the bits used by alignment
- * untouched so that a single char can hold all of the necessary information.
- */
-typedef enum _etox_line_flags Etox_Line_Flags;
-enum _etox_line_flags
-{
-	ETOX_SOFT_WRAP = 0x10,
-	ETOX_LINE_WRAPPED = 0x20,
 };
 
 /*

@@ -128,8 +128,6 @@ void etox_show(Evas_Object * obj)
 
 	et = evas_object_smart_data_get(obj);
 
-	et->visible = TRUE;
-
 	for (l = et->lines; l; l = l->next) {
 		if (l->data) {
 			line = l->data;
@@ -159,8 +157,6 @@ void etox_hide(Evas_Object * obj)
 	CHECK_PARAM_POINTER("obj", obj);
 
 	et = evas_object_smart_data_get(obj);
-
-	et->visible = FALSE;
 
 	evas_object_hide(et->clip);
 }
@@ -243,7 +239,7 @@ void etox_append_text(Evas_Object * obj, char *text)
 	 * Layout the lines on the etox starting at the newly added text.
 	 */
 	etox_layout(et);
-	if (et->lines && et->visible)
+	if (et->lines && evas_object_visible_get(obj))
 		evas_object_show(et->clip);
 }
 
@@ -328,7 +324,7 @@ void etox_prepend_text(Evas_Object * obj, char *text)
 	 * Layout the lines on the etox.
 	 */
 	etox_layout(et);
-	if (et->lines && et->visible)
+	if (et->lines && evas_object_visible_get(obj))
 		evas_object_show(et->clip);
 }
 
@@ -416,7 +412,7 @@ void etox_insert_text(Evas_Object * obj, char *text, int index)
 	}
 
 	etox_layout(et);
-	if (et->lines && et->visible)
+	if (et->lines && evas_object_visible_get(obj))
 		evas_object_show(et->clip);
 }
 
@@ -467,7 +463,7 @@ void etox_set_text(Evas_Object * obj, char *text)
 	}
 
 	etox_layout(et);
-	if (et->lines && et->visible)
+	if (et->lines && evas_object_visible_get(obj))
 		evas_object_show(et->clip);
 }
 
@@ -554,6 +550,30 @@ void etox_clear(Evas_Object * obj)
 	et->lines = NULL;
 	evas_object_hide(et->clip);
 }
+
+/**
+ * etox_set_soft_wrap - turns on soft wrapping of lines that are
+ * longer than the etox is wide
+ * @obj: the etox evas object to set for
+ * @boolean: 0 is off, anything else is on
+ * 
+ * Returns no value. changes current context alignment value.
+ */
+void etox_set_soft_wrap(Evas_Object *obj, int boolean)
+{
+	Etox *et;
+	CHECK_PARAM_POINTER("obj", obj);
+
+	et = evas_object_smart_data_get(obj);
+
+	if (boolean)
+		et->flags |= ETOX_SOFT_WRAP;
+	else
+		et->flags &= ~ETOX_SOFT_WRAP;
+}
+
+
+
 
 /**
  * etox_set_layer - change the layer where the etox is displayed
@@ -690,6 +710,7 @@ void etox_resize(Evas_Object * obj, double w, double h)
 		return;
 
 	et->w = w;
+	et->h = h;
 
 	/*
 	 * Layout lines if appropriate.
@@ -1215,7 +1236,7 @@ void etox_layout(Etox * et)
 		 * If we need to wrap the line, we don't need to re-layout since
 		 * the maximal width was used for splitting.
 		 */
-		if ((et->context->flags & ETOX_SOFT_WRAP) && (line->w > et->w))
+		if ((et->flags & ETOX_SOFT_WRAP) && (line->w > et->w))
 				etox_line_wrap(et, line);
 
 		l = l->next;
@@ -1226,15 +1247,17 @@ void etox_layout(Etox * et)
 	 * Adjust the height of the etox to the height of all lines
 	 */
 	et->h = y - et->y;
+	et->th = et->h;
+	
 
-	if (et->context->flags & ETOX_SOFT_WRAP)
+	if (et->flags & ETOX_SOFT_WRAP)
 	{
 		evas_object_resize(et->clip, et->w, et->h);
 		evas_object_resize(et->smart_obj, et->w, et->h);
 	}
 	else
 	{
-		evas_object_resize(et->clip, et->tw, et->h);
+		evas_object_resize(et->clip, et->tw, et->th);
 		evas_object_resize(et->smart_obj, et->tw, et->th);
 	}
 
