@@ -4,6 +4,9 @@ some odd, can't-see-how-it-could-possibly-trigger potential segfault in drawupda
 bounds check in icccm.c out of bounds in ICCCM_Configure()
 fixed a uninitialized memory check in buttons.c CreateButton()
 fixed an uninitialized memory area in menus.c in CreateMenu()
+Fixed a segfault: Minimize a window into an iconbox, close the iconbox and minimize the app again
+fix variable expansion for file execcing...
+fix menus to be onscreen including submenus when you have menus onscreen selected.
 
 The Road to 0.17 (post 0.16.x):
 File Manager Preview Application (you'll hopefully get a chance to see a little bit of a preview of what E's filemanager will look like)
