@@ -6,13 +6,17 @@
 
 OD_Options      options;
 
-void
-od_config_init()
+int
+od_config_init(int argc, char **argv)
 {
+  int ret;
+  
   ecore_config_default_int("engage.options.width", 1024);
   ecore_config_default_int("engage.options.height", 100);
   ecore_config_default_theme("engage.options.theme", "gentoo");
-//  ecore_config_set_theme_preview_group("engage.options.theme", "Terminal");
+  /* not technically correct - iconsets should do this, but it looks better for
+     everything bar 'gentoo' - and we all have the others installed ;) */
+  ecore_config_set_theme_preview_group("engage.options.theme", "Terminal");
   ecore_config_default_string("engage.options.engine", "software");
   options.icon_path = PACKAGE_DATA_DIR "/icons/";
   ecore_config_default_int_bound("engage.options.mode", OM_BELOW, 0, 1, 1);
@@ -34,6 +38,8 @@ od_config_init()
   ecore_config_default_float("engage.options.icon_appear_duration", 0.1);
 
   ecore_config_load();
+  ret = ecore_config_args_parse(argc, argv);
+  
   options.width = ecore_config_get_int("engage.options.width");
   options.height = ecore_config_get_int("engage.options.height");
   options.engine = ecore_config_get_string("engage.options.engine");
@@ -55,5 +61,6 @@ od_config_init()
   options.tt_fs = ecore_config_get_int("engage.options.tt_fs");
   options.icon_appear_duration =
     ecore_config_get_float("engage.options.icon_appear_duration");
-
+  
+  return ret;
 }

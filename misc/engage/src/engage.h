@@ -29,7 +29,7 @@ extern Evas    *evas;
 extern Ecore_X_Window od_window;
 extern bool     need_redraw;
 
-void            od_config_init();
+int             od_config_init(int argc, char **argv);
 
 void            od_window_init();
 

@@ -21,7 +21,12 @@ main(int argc, char **argv)
   ecore_x_init(NULL);
   ecore_config_init("engage");
 
-  od_config_init();
+  if (od_config_init(argc, argv) != ECORE_CONFIG_PARSE_CONTINUE) {
+    ecore_config_shutdown();
+    ecore_x_shutdown();
+    ecore_shutdown();
+    exit(0);
+  }
 
   ecore_app_args_set(argc, (const char **) argv);
   ecore_event_handler_add(ECORE_EVENT_SIGNAL_EXIT, exit_cb, NULL);
@@ -45,7 +50,7 @@ main(int argc, char **argv)
   edje_shutdown();
   ecore_evas_shutdown();
   ecore_config_save();
-  ecore_config_exit();
+  ecore_config_shutdown();
   ecore_x_shutdown();
   ecore_shutdown();
 
