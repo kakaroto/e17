@@ -359,6 +359,7 @@ feh_handle_event(XEvent * ev)
               {
                  w->w = ev->xconfigure.width;
                  w->h = ev->xconfigure.height;
+                 w->had_resize = 1;
                  winwidget_render_image(w, 0);
               }
            }

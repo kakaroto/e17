@@ -17,7 +17,6 @@
 -ndj
 --dont-format-first-column-comments
 --ignore-newlines
---format-all-comments
 --indent-level 3
 --parameter-indentation 3
 --continue-at-parentheses

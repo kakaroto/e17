@@ -47,7 +47,6 @@ winwidget_allocate(void)
    ret->h = 0;
    ret->im_w = 0;
    ret->im_h = 0;
-   ret->visible = 0;
    ret->bg_pmap = 0;
    ret->im = NULL;
    ret->name = NULL;
@@ -132,7 +131,9 @@ winwidget_create_from_file(feh_file * file, char *name, char type)
       imlib_context_set_image(ret->im);
       ret->w = ret->im_w = imlib_image_get_width();
       ret->h = ret->im_h = imlib_image_get_height();
-      D(("image is %dx%d pixels, format %s\n", ret->w, ret->h, imlib_image_format()));
+      D(
+        ("image is %dx%d pixels, format %s\n", ret->w, ret->h,
+         imlib_image_format()));
       winwidget_create_window(ret, ret->w, ret->h);
       winwidget_render_image(ret, 1);
    }
@@ -278,11 +279,15 @@ winwidget_setup_pixmaps(winwidget winwid)
    }
    else
    {
-      if (winwid->bg_pmap)
-         XFreePixmap(disp, winwid->bg_pmap);
+      if (!winwid->bg_pmap || winwid->had_resize)
+      {
+         if (winwid->bg_pmap)
+            XFreePixmap(disp, winwid->bg_pmap);
 
-      winwid->bg_pmap =
-         XCreatePixmap(disp, winwid->win, winwid->w, winwid->h, depth);
+         winwid->bg_pmap =
+            XCreatePixmap(disp, winwid->win, winwid->w, winwid->h, depth);
+         winwid->had_resize = 0;
+      }
    }
    D_RETURN_;
 }
@@ -351,12 +356,15 @@ winwidget_render_image(winwidget winwid, int resize)
    }
    else
    {
-      /* This centers the window, but is pointless right now, as zooming *
+      /* This centers the window, but is pointless right now, as zooming 
          doesn't ;-) */
-      /* 
-         if ((winwid->h > winwid->im_h) || (winwid->w > winwid->im_w)) { x =
-         (winwid->w - winwid->im_w) >> 1; y = (winwid->h - winwid->im_h) >>
-         1; } */
+      /*
+         if ((winwid->h > winwid->im_h) || (winwid->w > winwid->im_w))
+         {
+         x = (winwid->w - winwid->im_w) >> 1;
+         y = (winwid->h - winwid->im_h) >> 1;
+         }
+       */
       imlib_render_image_on_drawable(x, y);
 
       /* resize window if the image size has changed */
@@ -400,7 +408,7 @@ winwidget_destroy(winwidget winwid)
       XFreePixmap(disp, winwid->bg_pmap);
    if (winwid->name)
       free(winwid->name);
-   if((winwid->type == WIN_TYPE_ABOUT) && winwid->file)
+   if ((winwid->type == WIN_TYPE_ABOUT) && winwid->file)
       feh_file_free(winwid->file);
    if (winwid->im)
    {
@@ -443,7 +451,6 @@ winwidget_show(winwidget winwid)
    D(("Waiting for window to map\n"));
    XMaskEvent(disp, StructureNotifyMask, &ev);
    D(("Window mapped\n"));
-   winwid->visible = 1;
    D_RETURN_;
 }
 
@@ -458,8 +465,12 @@ winwidget_resize(winwidget winwid, int w, int h)
    XResizeWindow(disp, winwid->win, w, h);
    winwid->w = w;
    winwid->h = h;
-   /* wait for the window to resize D(("Waiting for window to resize\n"));
-      XMaskEvent(disp, StructureNotifyMask, &ev); D(("Window resized\n")); */
+   winwid->had_resize = 1;
+   /* 
+      D(("Waiting for window to resize\n"));
+      XMaskEvent(disp, StructureNotifyMask, &ev);
+      D(("Window resized\n"));
+    */
    D_RETURN_;
 }
 
@@ -468,7 +479,6 @@ winwidget_hide(winwidget winwid)
 {
    D_ENTER;
    XUnmapWindow(disp, winwid->win);
-   winwid->visible = 0;
    D_RETURN_;
 }
 

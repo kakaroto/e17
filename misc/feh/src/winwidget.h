@@ -75,8 +75,8 @@ struct __winwidget
    int h;
    int im_w;
    int im_h;
-   unsigned char visible;
    unsigned char type;
+   unsigned char had_resize;
    Imlib_Image *im;
    GC gc;
    Pixmap bg_pmap;
