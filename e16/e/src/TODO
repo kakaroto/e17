@@ -4,7 +4,7 @@ cK:		keeping the groups file in sync with the existing groups that need to be re
 cK		some groups stuff, like groups on multiple desktops, hammering on this whole raise/lower/raiselower stuff etc.
 mandrake:   kontrol-center seems to crash E when you click on just about anything. needs fixing
 mandrake:   need to write some code to un-override redirect kfm and kpanel so I can manage them easier
-mandrake:   apparently only having one desktop makes the kde taskbar not show any apps
+mandrake:   closing windows on other desktops works, but if you close the last window on another desktop it crashes E for some reason
 
 FEATURES FOR DR 0.17:
 kainx: 		reduce need for tooltip text to have auto gened tooltips work
@@ -23,3 +23,4 @@ mandrake: 	I'm sure that focus code has bugs in it somewhere.  just needs to be 
 
 THOUGHTS/IDEAS:
 cK: 		Some of the group dialogs could work with check- instead of radiobuttons.  Like the one for breaking groups, for example.
+mandrake:   apparently only having one desktop makes the kde taskbar not show any apps  -- THIS is a bug in kpanel, not in E.  ettrich@kde.org has been informed of this, unfortunately it won't be fixed before KDE 2.0
