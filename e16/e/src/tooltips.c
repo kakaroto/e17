@@ -234,6 +234,34 @@ ShowToolTip(ToolTip * tt, char *text, ActionClass * ac, int x, int y)
 			  if (ic->norm.normal)
 			     ImageStateRealize(ic->norm.normal);
 			  break;
+		       case 4:
+			  ic = FindItem("TOOLTIP_MOUSEBUTTON_4", 0, LIST_FINDBY_NAME,
+					LIST_TYPE_ICLASS);
+			  if (!ic)
+			    {
+			       ic = CreateIclass();
+			       ic->norm.normal = CreateImageState();
+			       ic->norm.normal->im_file = "pix/mouse_4.png";
+			       IclassPopulate(ic);
+			       AddItem(ic, "TOOLTIP_MOUSEBUTTON_4", 0, LIST_TYPE_ICLASS);
+			    }
+			  if (ic->norm.normal)
+			     ImageStateRealize(ic->norm.normal);
+			  break;
+		       case 5:
+			  ic = FindItem("TOOLTIP_MOUSEBUTTON_5", 0, LIST_FINDBY_NAME,
+					LIST_TYPE_ICLASS);
+			  if (!ic)
+			    {
+			       ic = CreateIclass();
+			       ic->norm.normal = CreateImageState();
+			       ic->norm.normal->im_file = "pix/mouse_5.png";
+			       IclassPopulate(ic);
+			       AddItem(ic, "TOOLTIP_MOUSEBUTTON_5", 0, LIST_TYPE_ICLASS);
+			    }
+			  if (ic->norm.normal)
+			     ImageStateRealize(ic->norm.normal);
+			  break;
 		       case 0:
 		       default:
 			  break;
@@ -654,6 +682,32 @@ ShowToolTip(ToolTip * tt, char *text, ActionClass * ac, int x, int y)
 			  break;
 		       case 3:
 			  ic = FindItem("TOOLTIP_MOUSEBUTTON_3", 0, LIST_FINDBY_NAME,
+					LIST_TYPE_ICLASS);
+			  if (ic)
+			     if (ic->norm.normal->im)
+			       {
+				  Imlib_render(id, ic->norm.normal->im,
+					       ic->norm.normal->im->rgb_width, ic->norm.normal->im->rgb_height);
+				  PastePixmap(disp, tt->win, Imlib_copy_image(id, ic->norm.normal->im),
+					      Imlib_copy_mask(id, ic->norm.normal->im), x, y);
+				  x += ic->norm.normal->im->rgb_width;
+			       }
+			  break;
+		       case 4:
+			  ic = FindItem("TOOLTIP_MOUSEBUTTON_4", 0, LIST_FINDBY_NAME,
+					LIST_TYPE_ICLASS);
+			  if (ic)
+			     if (ic->norm.normal->im)
+			       {
+				  Imlib_render(id, ic->norm.normal->im,
+					       ic->norm.normal->im->rgb_width, ic->norm.normal->im->rgb_height);
+				  PastePixmap(disp, tt->win, Imlib_copy_image(id, ic->norm.normal->im),
+					      Imlib_copy_mask(id, ic->norm.normal->im), x, y);
+				  x += ic->norm.normal->im->rgb_width;
+			       }
+			  break;
+		       case 5:
+			  ic = FindItem("TOOLTIP_MOUSEBUTTON_5", 0, LIST_FINDBY_NAME,
 					LIST_TYPE_ICLASS);
 			  if (ic)
 			     if (ic->norm.normal->im)
