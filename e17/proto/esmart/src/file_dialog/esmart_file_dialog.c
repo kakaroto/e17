@@ -15,7 +15,7 @@
 #include <errno.h>
 #include "../container/container.h"
 #include "../entry/Esmart_Text_Entry.h"
-#include "File_Dialog.h"
+#include "Esmart_File_Dialog.h"
 
 #include "../config.h"
 
@@ -85,7 +85,6 @@ esmart_file_dialog_new (Evas * e, const char *edje_file)
   const char *part = NULL;
   const char *str = NULL;
   char buf[PATH_MAX];
-  int w = 48, h = 48;
   Evas_Object *result = NULL;
   Evas_Object *entry = NULL;
   Evas_Object *container = NULL;
