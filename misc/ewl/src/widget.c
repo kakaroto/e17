@@ -54,6 +54,10 @@ void        ewl_widget_init(EwlWidget *widget)
 	ewl_set(widget, "/object/type", ewl_string_dup("EwlWidget"));
 	/*ewl_widget_set_flag(widget, "realized", FALSE);
 	ewl_widget_set_flag(widget, "visible", FALSE);*/
+
+	ewl_handler_set(widget,"/widget/show", ewl_widget_show_handler);
+	ewl_handler_set(widget,"/widget/hide", ewl_widget_hide_handler);
+
 	ewl_callback_add(widget, "realize", ewl_widget_realize_callback, NULL);
 	ewl_callback_push(widget, "unrealize", ewl_widget_unrealize_callback, NULL);
 
@@ -103,6 +107,23 @@ void        ewl_widget_unrealize_callback(void     *object,
 /* WIDGET SHOW/HIDE FUNCTIONS */
 void        ewl_widget_show(EwlWidget *widget)
 {
+	EwlHandler handler = ewl_handler_get(widget, "/widget/show");
+	EwlHash *params;
+	if (handler)	{
+		params = ewl_hash_new();
+		ewl_hash_set(params, "widget", widget);
+		handler(widget,"/widget/show", params);
+		ewl_hash_free(params);
+	}
+}
+
+void        ewl_widget_show_handler(void    *object,
+                                    char    *type,
+                                    EwlHash *params)
+{
+	EwlWidget *widget = EWL_WIDGET(ewl_hash_get(params,"widget"));
+	UNUSED(object); UNUSED(type);
+
 	ewl_widget_set_flag(widget, "visible", TRUE);
 	if (ewl_widget_is_realized(widget))	{
 		evas_show(ewl_widget_get_evas(widget),
@@ -117,6 +138,23 @@ void        ewl_widget_show(EwlWidget *widget)
 
 void        ewl_widget_hide(EwlWidget *widget)
 {
+	EwlHandler handler = ewl_handler_get(widget, "/widget/hide");
+	EwlHash *params;
+	if (handler)	{
+		params = ewl_hash_new();
+		ewl_hash_set(params, "widget", widget);
+		handler(widget,"/widget/hide", params);
+		ewl_hash_free(params);
+	}
+}
+
+void        ewl_widget_hide_handler(void    *object,
+                                    char    *type,
+                                    EwlHash *params)
+{
+	EwlWidget *widget = EWL_WIDGET(ewl_hash_get(params,"widget"));
+	UNUSED(object); UNUSED(type);
+
 	ewl_widget_set_flag(widget, "visible", FALSE);
 	if (ewl_widget_is_realized(widget))	{
 		evas_hide(ewl_widget_get_evas(widget),
