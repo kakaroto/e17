@@ -79,8 +79,8 @@ void geist_object_render_selected(geist_object * obj, Imlib_Image dest,
                                   unsigned char multiple);
 void geist_object_render_partial(geist_object * obj, Imlib_Image dest, int x,
                                  int y, int w, int h);
-void geist_object_show(geist_object * obj);
-void geist_object_hide(geist_object * obj);
+void geist_object_show(geist_document * doc, geist_object * obj);
+void geist_object_hide(geist_document * doc, geist_object * obj);
 void geist_object_raise(geist_document * doc, geist_object * obj);
 void geist_object_int_free(geist_object * obj);
 void geist_object_int_render(geist_object * obj, Imlib_Image dest);
@@ -101,11 +101,16 @@ geist_object *geist_object_int_duplicate(geist_object * obj);
 unsigned char geist_object_part_is_transparent(geist_object * obj, int x,
 
                                                int y);
+void geist_object_move(geist_document * doc, geist_object * obj, int x,
+
+                       int y);
 unsigned char geist_object_int_part_is_transparent(geist_object * obj, int x,
 
                                                    int y);
 int geist_object_check_resize_click(geist_object * obj, int x, int y);
-void geist_object_resize(geist_object * obj, int x, int y);
+void geist_object_resize(geist_document * doc, geist_object * obj, int x,
+
+                         int y);
 void geist_object_int_resize(geist_object * obj, int x, int y);
 void geist_object_resize_object(geist_object * obj, int x, int y);
 
