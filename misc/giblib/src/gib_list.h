@@ -47,33 +47,31 @@ gib_list *gib_list_new(void);
 void gib_list_free(gib_list * l);
 gib_list *gib_list_add_front(gib_list * root, void *data);
 gib_list *gib_list_add_end(gib_list * root, void *data);
-gib_list *gib_list_add_at_pos(gib_list *root, int pos, void *data);
+gib_list *gib_list_add_at_pos(gib_list * root, int pos, void *data);
 gib_list *gib_list_pop_to_end(gib_list * root, gib_list * l);
 gib_list *gib_list_unlink(gib_list * root, gib_list * l);
-void gib_debug_print_list(gib_list * l);
 gib_list *gib_list_cat(gib_list * root, gib_list * l);
 int gib_list_length(gib_list * l);
 gib_list *gib_list_last(gib_list * l);
 gib_list *gib_list_first(gib_list * l);
 gib_list *gib_list_jump(gib_list * root, gib_list * l, int direction,
 
-                            int num);
+                        int num);
 gib_list *gib_list_reverse(gib_list * l);
 gib_list *gib_list_randomize(gib_list * list);
 int gib_list_num(gib_list * root, gib_list * l);
 gib_list *gib_list_remove(gib_list * root, gib_list * l);
 gib_list *gib_list_sort(gib_list * list, gib_compare_fn cmp);
 gib_list *gib_list_sort_merge(gib_list * l1, gib_list * l2,
-                                  gib_compare_fn cmp);
+
+                              gib_compare_fn cmp);
 gib_list *gib_list_nth(gib_list * root, unsigned int num);
 unsigned char gib_list_has_more_than_one_item(gib_list * root);
 void gib_list_free_and_data(gib_list * l);
 gib_list *gib_list_dup(gib_list * list);
 gib_list *gib_list_dup_special(gib_list * list,
-                                   void (*cpy_func)(void **dest, void *data));
-gib_list *
-gib_list_move_down_by_one(gib_list * root, gib_list * l);
-gib_list *
-gib_list_move_up_by_one(gib_list * root, gib_list * l);
+                               void (*cpy_func) (void **dest, void *data));
+gib_list *gib_list_move_down_by_one(gib_list * root, gib_list * l);
+gib_list *gib_list_move_up_by_one(gib_list * root, gib_list * l);
 
 #endif

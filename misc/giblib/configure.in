@@ -33,7 +33,10 @@ AM_CONFIG_HEADER(config.h)
 
 AC_OUTPUT([
 Makefile
+giblib-config
 src/Makefile
+], [
+chmod +x giblib-config
 ])
 
 echo "

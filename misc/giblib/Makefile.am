@@ -7,3 +7,4 @@ docsdir = $(prefix)/doc/giblib
 
 EXTRA_DIST= $(docs_DATA)
 
+bin_SCRIPTS = giblib-config

@@ -168,13 +168,9 @@ gib_list_add_at_pos(gib_list * root, int pos, void *data)
    gib_list *l, *top;
 
    if (pos == gib_list_length(root))
-   {
       root = gib_list_add_end(root, data);
-   }
    else if (pos == 0)
-   {
       root = gib_list_add_front(root, data);
-   }
    else
    {
       top = gib_list_nth(root, pos);
@@ -218,9 +214,7 @@ gib_list_move_down_by_one(gib_list * root, gib_list * l)
    l->next = temp->next;
    l->prev = temp;
    if (temp->next)
-   {
       temp->next->prev = l;
-   }
    temp->next = l;
 
    return (root);
@@ -240,9 +234,7 @@ gib_list *
 gib_list_pop_to_end(gib_list * root, gib_list * l)
 {
    root = gib_list_unlink(root, l);
-
    root = gib_list_add_end(root, l->data);
-
    efree(l);
 
    return (root);
@@ -275,17 +267,6 @@ gib_list_length(gib_list * l)
       l = l->next;
    }
    return (length);
-}
-
-void
-gib_debug_print_list(gib_list * l)
-{
-   while (l)
-   {
-      printf("Item %p data %p\n", l, l->data);
-      l = l->next;
-   }
-   return;
 }
 
 gib_list *
@@ -507,10 +488,7 @@ gib_list_nth(gib_list * root, unsigned int num)
    gib_list *l;
 
    if (num > (unsigned int) gib_list_length(root))
-   {
-      weprintf("BUG: there aren't that many files in this list\n");
-      return (root);
-   }
+      return (gib_list_last(root));
    l = root;
    for (i = 0; l; ++i)
    {
