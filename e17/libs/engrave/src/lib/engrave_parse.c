@@ -2,6 +2,7 @@
 
 static Engrave_File *engrave_file = 0;
 extern FILE *yyin;
+int yyparse(void);
 
 Engrave_File *
 engrave_parse(const char *file, const char *imdir, const char *fontdir)
@@ -34,10 +35,14 @@ engrave_parse_image(char *name, Engrave_Image_Type type, double value)
 }
 
 void
-engrave_parse_data(char *key, char *value)
+engrave_parse_data(char *key, char *value, int int_val)
 {
   Engrave_Data *data;
   data = engrave_data_new(key, value);
+
+  if (!value)
+      engrave_data_int_value_set(data, int_val);
+
   engrave_file_data_add(engrave_file, data);
 }
 
@@ -50,12 +55,15 @@ engrave_parse_group()
 }
 
 void
-engrave_parse_group_data(char *key, char *value)
+engrave_parse_group_data(char *key, char *value, int int_value)
 {
   Engrave_Group *group;
   Engrave_Data *data;
  
   data = engrave_data_new(key, value);
+  if (!value)
+      engrave_data_int_value_set(data, int_value);
+
   group = engrave_file_group_last_get(engrave_file);
   engrave_group_data_add(group, data);
 }

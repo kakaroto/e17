@@ -2,10 +2,10 @@
 #include <stdio.h>
 #include <string.h>
 #include "Engrave.h"
-//#include "engrave_private.h"
+#include "engrave_parse.h"
 
 #define YYDEBUG 1
-
+    int yylex(void);
 	void yyerror(const char *s);
 	void parse_error(void);
 

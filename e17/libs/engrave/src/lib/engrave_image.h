@@ -25,12 +25,17 @@ struct _Engrave_Image
   char *name;               /**< The image basename */
   Engrave_Image_Type type;  /**< The image storage type */
   double value;             /**< Compression value for image */
+
+  void *parent;     /**< Pointer to parent */
 };
 
 Engrave_Image *engrave_image_new(const char *name, 
                     Engrave_Image_Type type, double value);
 Engrave_Image *engrave_image_dup(Engrave_Image *from);
 void engrave_image_free(Engrave_Image *ef);
+
+void engrave_image_parent_set(Engrave_Image *ei, void *ef);
+void *engrave_image_parent_get(Engrave_Image *ei);
 
 const char *engrave_image_name_get(Engrave_Image *ei);
 Engrave_Image_Type engrave_image_type_get(Engrave_Image *ei);

@@ -77,6 +77,7 @@ extern "C" {
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
+#include <limits.h>
 #include <Evas.h>
 
 #include <engrave_enums.h>
@@ -91,6 +92,8 @@ extern "C" {
 
 #include <engrave_load.h>
 #include <engrave_out.h>
+
+#include <engrave_canvas.h>
 
 #ifdef __cplusplus
 }

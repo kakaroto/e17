@@ -1,4 +1,5 @@
 #include <errno.h>
+#include <unistd.h>
 #include <stdio.h>
 #include <stdarg.h>
 #include <Engrave.h>
@@ -197,7 +198,6 @@ static void
 _engrave_output_group(Engrave_Group *group, void *data)
 {
   FILE *out = data;
-  char *tmp = NULL;
   int w, h;
 
   engrave_out_start(out, "group");
@@ -243,7 +243,6 @@ static void
 _engrave_output_part(Engrave_Part *part, void *data)
 {
   FILE *out = data;
-  char *tmp;
   int x, step_x, count_x;
   int y, step_y, count_y;
 
@@ -289,7 +288,6 @@ static void
 _engrave_output_program(Engrave_Program *program, void *data)
 {
   FILE *out = data;
-  char *tmp;
   Engrave_Action action;
   double value, value2;
   char state[128], state2[128];
@@ -394,11 +392,11 @@ _engrave_output_state(Engrave_Part_State *state, Engrave_Part *part, void *data)
   if (x || y)
     engrave_out_data(out, "step", "%.2f %.2f", x, y);
 
-  engrave_part_state_min_get(state, &w, &h);
+  engrave_part_state_min_size_get(state, &w, &h);
   if (w > 0 || h > 0)
     engrave_out_data(out, "min", "%d %d", w, h);
 
-  engrave_part_state_max_get(state, &w, &h);
+  engrave_part_state_max_size_get(state, &w, &h);
   if (w >= 0 || h >= 0)
     engrave_out_data(out, "max", "%d %d", w, h);
 
@@ -547,7 +545,6 @@ _engrave_output_image(Engrave_Image *image, void *data)
 static void
 _engrave_output_font(Engrave_Font *font, void *data)
 {
-  char *name, *path;
   FILE *out;
 
   out = data;

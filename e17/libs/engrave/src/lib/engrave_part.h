@@ -50,10 +50,20 @@ struct _Engrave_Part
   } dragable;
 
   Evas_List *states;    /**< The list of states assocated with the part */
+  Engrave_Part_State *current_state; /**< The current state */
+
+  void *parent;    /**< Pointer to parent */
 };
 
 Engrave_Part * engrave_part_new(Engrave_Part_Type type);
 void engrave_part_free(Engrave_Part *ep);
+
+void engrave_part_parent_set(Engrave_Part *ep, void *eg);
+void *engrave_part_parent_get(Engrave_Part *ep);
+
+void engrave_part_current_state_set(Engrave_Part *ep, 
+                                    Engrave_Part_State *eps);
+Engrave_Part_State *engrave_part_current_state_get(Engrave_Part *ep);
 
 void engrave_part_name_set(Engrave_Part *ep, const char *name);
 void engrave_part_mouse_events_set(Engrave_Part *ep, int val);

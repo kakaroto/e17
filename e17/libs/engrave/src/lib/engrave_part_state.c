@@ -68,7 +68,6 @@ engrave_part_state_new(void)
 void
 engrave_part_state_free(Engrave_Part_State *eps)
 {
-  Evas_List *l;
   if (!eps) return;
 
   IF_FREE(eps->name);
@@ -128,7 +127,7 @@ engrave_part_state_visible_set(Engrave_Part_State *eps, int visible)
  * @return Returns no value 
  */
 void
-engrave_part_state_align_set(Engrave_Part_State *eps, int x, int y)
+engrave_part_state_align_set(Engrave_Part_State *eps, double x, double y)
 {
   if (!eps) return;
   eps->align.x = x;
@@ -144,7 +143,7 @@ engrave_part_state_align_set(Engrave_Part_State *eps, int x, int y)
  * @return Returns no value 
  */
 void
-engrave_part_state_step_set(Engrave_Part_State *eps, int x, int y)
+engrave_part_state_step_set(Engrave_Part_State *eps, double x, double y)
 {
   if (!eps) return;
   eps->step.x = x;
@@ -192,7 +191,7 @@ engrave_part_state_max_size_set(Engrave_Part_State *eps, int w, int h)
  * @return Returns no value 
  */
 void
-engrave_part_state_aspect_set(Engrave_Part_State *eps, int w, int h)
+engrave_part_state_aspect_set(Engrave_Part_State *eps, double w, double h)
 {
   if (!eps) return;
   eps->aspect.w = w;
@@ -223,7 +222,7 @@ engrave_part_state_aspect_preference_set(Engrave_Part_State *eps,
  * @return Returns no value 
  */
 void
-engrave_part_state_rel1_relative_set(Engrave_Part_State *eps, int x, int y)
+engrave_part_state_rel1_relative_set(Engrave_Part_State *eps, double x, double y)
 {
   if (!eps) return;
   eps->rel1.relative.x = x;
@@ -239,7 +238,7 @@ engrave_part_state_rel1_relative_set(Engrave_Part_State *eps, int x, int y)
  * @return Returns no value 
  */
 void
-engrave_part_state_rel2_relative_set(Engrave_Part_State *eps, int x, int y)
+engrave_part_state_rel2_relative_set(Engrave_Part_State *eps, double x, double y)
 {
   if (!eps) return;
   eps->rel2.relative.x = x;
@@ -813,7 +812,7 @@ engrave_part_state_step_get(Engrave_Part_State *eps, double *x, double *y)
 }
 
 /**
- * engrave_part_state_min_get - get the minimum size of the state
+ * engrave_part_state_min_size_get - get the minimum size of the state
  * @param eps: The Engrave_Part_State to get the min from
  * @param w: Where to store the w value
  * @param h: Where to store the h value
@@ -821,14 +820,14 @@ engrave_part_state_step_get(Engrave_Part_State *eps, double *x, double *y)
  * @return Returns no value.
  */
 void
-engrave_part_state_min_get(Engrave_Part_State *eps, int *w, int *h)
+engrave_part_state_min_size_get(Engrave_Part_State *eps, int *w, int *h)
 {
   if (w) *w = (eps ? eps->min.w : 0);
   if (h) *h = (eps ? eps->min.h : 0);
 }
 
 /**
- * engrave_part_state_max_get - get the maximum size of the state
+ * engrave_part_state_max_size_get - get the maximum size of the state
  * @param eps: The Engrave_Part_State to get the max from
  * @param w: Where to store the w value
  * @param h: Where to store the h value
@@ -836,7 +835,7 @@ engrave_part_state_min_get(Engrave_Part_State *eps, int *w, int *h)
  * @return Returns no value.
  */
 void
-engrave_part_state_max_get(Engrave_Part_State *eps, int *w, int *h)
+engrave_part_state_max_size_get(Engrave_Part_State *eps, int *w, int *h)
 {
   if (w) *w = (eps ? eps->max.w : -1);
   if (h) *h = (eps ? eps->max.h : -1);
@@ -1176,6 +1175,43 @@ engrave_part_state_text_align_get(Engrave_Part_State *eps,
   if (y) *y = (eps ? eps->text.align.y : 0.5);
 }
 
+int
+engrave_part_state_fill_smooth_get(Engrave_Part_State *eps)
+{
+    return (eps ? eps->fill.smooth : 1);
+}
+
+void
+engrave_part_state_fill_origin_relative_get(Engrave_Part_State *state,
+                                                double *x, double *y)
+{
+    if (x) *x = (state ? state->fill.pos_rel.x : 0);
+    if (y) *y = (state ? state->fill.pos_rel.y : 0);
+}
+
+void
+engrave_part_state_fill_size_relative_get(Engrave_Part_State *eps,
+                                                double *x, double *y)
+{
+    if (x) *x = (eps ? eps->fill.rel.x : 1);
+    if (y) *y = (eps ? eps->fill.rel.y : 1);
+}
+
+void
+engrave_part_state_fill_origin_offset_get(Engrave_Part_State *eps,
+                                                      int *x, int *y)
+{
+    if (x) *x = (eps ? eps->fill.pos_abs.x : 0);
+    if (y) *y = (eps ? eps->fill.pos_abs.y : 0);
+}
+
+void engrave_part_state_fill_size_offset_get(Engrave_Part_State *eps,
+                                                int *x, int *y)
+{
+    if (x) *x = (eps ? eps->fill.abs.x : 0);
+    if (y) *y = (eps ? eps->fill.abs.y : 0);
+}
+
 /**
  * engrave_part_state_tweens_count - get the number of tweens in the state
  * @param eps: The Engrave_Part_State to check for tweens
@@ -1208,5 +1244,58 @@ engrave_part_state_tween_foreach(Engrave_Part_State *eps,
     if (ei) func(ei, data);
   }
 }
+
+/**
+ * engrave_part_state_evas_object_get - get the object for this state
+ * @param eps: The Engrave_Part_State to get the object from
+ *
+ * @return Returns the evas object that displays this state
+ */
+Evas_Object *
+engrave_part_state_evas_object_get(Engrave_Part_State *eps)
+{
+    return (eps ? eps->object : NULL);
+}
+
+/**
+ * engrave_part_state_evas_object_set - set the evas object for this state
+ * @param eps: The Engrave_Part_State to set the object into
+ * @param o: The Evas_Object to set into the state
+ *
+ * @return Returns no value.
+ */
+void
+engrave_part_state_evas_object_set(Engrave_Part_State *eps, Evas_Object *o)
+{
+    if (!eps) return;
+    eps->object = o;
+}
+
+/**
+ * engrave_part_state_parent_set - set the parent part on this state
+ * @param eps: The Engrave_Part_State to set the parent into
+ * @param ep: The Engrave_Part to set as the parent
+ * 
+ * @return Returns no value.
+ */
+void
+engrave_part_state_parent_set(Engrave_Part_State *eps, void *ep)
+{
+    if (!eps) return;
+    eps->parent = ep;
+}
+
+/**
+ * engrave_part_state_parent_get - get the parent part of this state
+ * @param eps: The Engrave_Part_State to get the parent from
+ * 
+ * @return Returns the Engrave_Part parent pointer, or NULL if none set.
+ */
+void *
+engrave_part_state_parent_get(Engrave_Part_State *eps)
+{
+    return (eps ? eps->parent : NULL);
+}
+
 
 

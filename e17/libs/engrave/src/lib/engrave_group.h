@@ -37,10 +37,15 @@ struct _Engrave_Group
   Evas_List *data;      /**< The list of data used in this group */
 
   char *script;         /**< The script attached to this group */
+
+  void *parent; /**< Pointer to parent */
 };
 
 Engrave_Group *engrave_group_new(void);
 void engrave_group_free(Engrave_Group *eg);
+
+void engrave_group_parent_set(Engrave_Group *eg, void *ef);
+void *engrave_group_parent_get(Engrave_Group *eg);
 
 void engrave_group_data_add(Engrave_Group *eg, Engrave_Data *ed);
 void engrave_group_part_add(Engrave_Group *eg, Engrave_Part *ep);
@@ -70,6 +75,8 @@ void engrave_group_parts_foreach(Engrave_Group *eg,
 void engrave_group_programs_foreach(Engrave_Group *eg, 
                         void (*func)(Engrave_Program *, void *), void *data);
 
+Engrave_Part *engrave_group_part_by_name_find(Engrave_Group *eg, 
+                                    const char *part);
 Engrave_Data *engrave_group_data_by_key_find(Engrave_Group *eg, 
                                     const char *key);
 

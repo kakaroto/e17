@@ -46,6 +46,10 @@ void engrave_file_data_add(Engrave_File *ef, Engrave_Data *ed);
 void engrave_file_group_add(Engrave_File *ef, Engrave_Group *eg);
 
 Engrave_Group *engrave_file_group_last_get(Engrave_File *ef);
+Engrave_Group *engrave_file_group_by_name_find(Engrave_File *ef,
+                                              const char *name);
+Engrave_Font *engrave_file_font_by_name_find(Engrave_File *ef, 
+                                                const char *name);
 
 Engrave_Image *engrave_file_image_by_name_find(Engrave_File *ef,
                                               const char *name);

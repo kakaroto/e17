@@ -1,4 +1,5 @@
 #include <errno.h>
+#include <unistd.h>
 
 #include <Engrave.h>
 #include "engrave_parse.h"

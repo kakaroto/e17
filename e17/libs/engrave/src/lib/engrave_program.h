@@ -46,10 +46,15 @@ struct _Engrave_Program
   double duration;                  /**< The duration of the transition */
  
   char *script;             /**< The script associated with the program */
+
+  void *parent;    /**< Pointer to parent */
 };
 
 Engrave_Program *engrave_program_new(void);
 void engrave_program_free(Engrave_Program *ep);
+
+void engrave_program_parent_set(Engrave_Program *ep, void *eg);
+void *engrave_program_parent_get(Engrave_Program *ep);
 
 void engrave_program_script_set(Engrave_Program *ep, const char *script);
 void engrave_program_name_set(Engrave_Program *ep, const char *name);

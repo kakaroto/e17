@@ -102,4 +102,32 @@ engrave_data_int_value_set(Engrave_Data *ed, int value)
     ed->int_value = value;
 }
 
+/**
+ * engrave_data_parent_set - set the parent pointer on this node
+ * @param ed: The Engrave_Data to set the parent on
+ * @param parent: The parent pointer to set
+ *
+ * @return Returns no value.
+ * @brief This will set the parent pointer, in the case of Engrave_Data this
+ * can be either an Engrave_File or an Engrave_Group.
+ */
+void
+engrave_data_parent_set(Engrave_Data *ed, void *parent)
+{
+    if (!ed) return;
+    ed->parent = parent;
+}
+
+/**
+ * engrave_data_parent_get - get the parent pointer on this node
+ * @param ed: The Engrave_Data to get the pointer from
+ * 
+ * @return Returns the parent pointer, or NULL if none set.
+ */
+void *
+engrave_data_parent_get(Engrave_Data *ed)
+{
+    return (ed ? ed->parent : NULL);
+}
+
 

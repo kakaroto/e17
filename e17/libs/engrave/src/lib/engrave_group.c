@@ -69,6 +69,7 @@ engrave_group_data_add(Engrave_Group *eg, Engrave_Data *ed)
 {
   if (!eg || !ed) return;
   eg->data = evas_list_append(eg->data, ed);
+  engrave_data_parent_set(ed, eg);
 }
 
 /**
@@ -145,6 +146,7 @@ engrave_group_part_add(Engrave_Group *eg, Engrave_Part *ep)
 {
   if (!eg || !ep) return;
   eg->parts = evas_list_append(eg->parts, ep);
+  engrave_part_parent_set(ep, eg);
 }
 
 /**
@@ -158,6 +160,7 @@ void
 engrave_group_program_add(Engrave_Group *eg, Engrave_Program *ep)
 {
   eg->programs = evas_list_append(eg->programs, ep);
+  engrave_program_parent_set(ep, eg);
 }
 
 /**
@@ -170,7 +173,7 @@ engrave_group_program_add(Engrave_Group *eg, Engrave_Program *ep)
 Engrave_Part *
 engrave_group_part_last_get(Engrave_Group *eg)
 {
-  if (!eg) return;
+  if (!eg) return NULL;
   return evas_list_data(evas_list_last(eg->parts));
 }
 
@@ -382,5 +385,52 @@ engrave_group_data_by_key_find(Engrave_Group *eg, const char *key)
         if (!strcmp(key, data_key))
             return ed;
     }
+    return NULL;
 }
+
+Engrave_Part *
+engrave_group_part_by_name_find(Engrave_Group *eg, const char *part)
+{
+    Evas_List *l;
+
+    if (!eg || !part) return NULL;
+    for (l = eg->data; l; l = l->next) {
+        Engrave_Part *ep = l->data;
+        const char *name = engrave_part_name_get(ep);
+
+        if (!strcmp(part, name))
+            return ep;
+    }
+    return NULL;
+}
+
+/**
+ * engrave_group_parent_set - set the parent pointer
+ * @param eg: The Engrave_Group to set the parent pointer into
+ * @param ef: The Engrave_File to set as the parent
+ * 
+ * @return Returns no value.
+ */
+void
+engrave_group_parent_set(Engrave_Group *eg, void *ef)
+{
+    if (!eg) return;
+    eg->parent = ef;
+}
+
+/**
+ * engrave_group_parent_get - get the parent pointer
+ * @param eg: The Engrave_Group to get the parent pointer from
+ * 
+ * @return Returns the Engrave_File parent pointer or NULL if none set
+ */
+void *
+engrave_group_parent_get(Engrave_Group *eg)
+{
+    return (eg ? eg->parent : NULL);
+}
+
+
+
+
 

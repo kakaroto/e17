@@ -45,7 +45,7 @@
     #define SCRIPT_NEW_LINE() engrave_lnum ++; SCRIPT_PIECE(); 
 
     #define SCRIPT_OPEN_BRACE() script_level++; \
-                                if (script_level > 1) SCRIPT_PIECE();
+                                if (script_level > 1) { SCRIPT_PIECE(); }
 
     #define SCRIPT_CLOSE_BRACE() script_level--; \
                                  if (script_level > 0) { SCRIPT_PIECE();}\

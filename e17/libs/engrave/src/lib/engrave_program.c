@@ -385,5 +385,31 @@ engrave_program_after_foreach(Engrave_Program *ep,
   }
 }
 
+/**
+ * engrave_program_parent_set - set the parent of the program
+ * @param ep: The Engrave_Program to set the parent into
+ * @param eg: The Engrave_Group to set as parent
+ *
+ * @return Returns no value.
+ */
+void
+engrave_program_parent_set(Engrave_Program *ep, void *eg)
+{
+    if (!ep) return;
+    ep->parent = eg;
+}
 
- 
+/**
+ * engrave_program_parent_get - get the parent pointer
+ * @param ep: The Engrave_Program to get the parent from
+ * 
+ * @return Returns a pointer to the Engrave_Group parent, or NULL if none set
+ */
+void *
+engrave_program_parent_get(Engrave_Program *ep)
+{
+    return (ep ? ep->parent : NULL);
+}
+
+
+

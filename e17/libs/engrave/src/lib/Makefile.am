@@ -27,11 +27,12 @@ ENGRAVEHEADERS = \
 	engrave_parse.h \
 	engrave_part.h \
 	engrave_part_state.h \
-	engrave_program.h
+	engrave_program.h \
+	engrave_canvas.h
 
 ENGRAVEFILES = \
-	engrave.y \
 	engrave.l \
+	engrave.y \
 	engrave_out.c \
 	engrave_data.c \
 	engrave_file.c \
@@ -43,6 +44,7 @@ ENGRAVEFILES = \
 	engrave_part_state.c \
 	engrave_program.c \
 	engrave_load.c \
+	engrave_canvas.c \
 	$(ENGRAVEHEADERS)
 
 libengrave_la_SOURCES = $(ENGRAVEFILES)
@@ -54,4 +56,5 @@ libengrave_la_YFLAGS		= -d
 libengrave_la_LIBADD		= @EVAS_LIBS@ @ECORE_LIBS@ @LEXLIB@ -lm
 libengrave_la_DEPENDENCIES	= $(top_builddir)/src/config.h
 libengrave_la_LDFLAGS		= -version-info 1:0:1
+libengrave_la_CFLAGS        = -Wall
 

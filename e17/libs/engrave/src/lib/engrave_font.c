@@ -61,4 +61,32 @@ engrave_font_path_get(Engrave_Font *ef)
   return (ef ? ef->path : NULL);
 }
 
+/**
+ * engrave_font_parent_set - set the parent of the font node
+ * @param font: The Engrave_Font to set the parent into
+ * @param ef: The Engrave_File to set as parent
+ *
+ * @return Retruns no value.
+ */
+void
+engrave_font_parent_set(Engrave_Font *font, void *ef)
+{
+    if (!font) return;
+    font->parent = ef;
+}
+
+/**
+ * engrave_font_parent_get - get the parent pointer
+ * @param ef: The Engrave_Font to get the parent from
+ * 
+ * @return Returns the pointer to the parent or NULL if none set
+ */
+void *
+engrave_font_parent_get(Engrave_Font *ef)
+{
+    return (ef ? ef->parent : NULL);
+}
+
+
+
 

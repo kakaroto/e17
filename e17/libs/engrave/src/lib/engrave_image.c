@@ -91,4 +91,33 @@ engrave_image_compression_value_get(Engrave_Image *ei)
   return (ei ? ei->value : 0.0);
 }
 
+/**
+ * engrave_image_parent_set - set the image parent pointer
+ * @param ei: The Engrave_Image to set the parent into
+ * @param ef: The Engrave_File to set as the parent
+ * 
+ * @return Returns no value.
+ */
+void
+engrave_image_parent_set(Engrave_Image *ei, void *ef)
+{
+    if (!ei) return;
+    ei->parent = ef;
+}
+
+/**
+ * engrave_image_parent_get - get the parent of the image
+ * @param ei: The Engrave_Image to get the parent from
+ *
+ * @return Returns the pointer to the Engrave_File parent or NULL if none set
+ */
+void *
+engrave_image_parent_get(Engrave_Image *ei)
+{
+    return (ei ? ei->parent : NULL);
+}
+
+
+
+
 

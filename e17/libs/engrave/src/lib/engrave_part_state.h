@@ -40,8 +40,8 @@ struct _Engrave_Part_State
    */
   struct
   {
-    double w;   /**< width value */
-    double h;   /**< height value */
+    int w;   /**< width value */
+    int h;   /**< height value */
   } min, max;
 
   /**
@@ -167,30 +167,45 @@ struct _Engrave_Part_State
       double y; /**< The y value */
     } align;
   } text;
+
+  struct
+  {
+    Evas_Coord x;   /**< The x position to place the object */
+    Evas_Coord y;   /**< The y position to place the object */
+    Evas_Coord w;   /**< The width of the object */
+    Evas_Coord h;   /**< The hight of the object */
+  } pos;
+
+  Evas_Object *object;  /**< The evas object used to display this state */
+
+  void *parent; /**< Pointer to parent */
 };
 
 Engrave_Part_State * engrave_part_state_new(void);
 void engrave_part_state_free(Engrave_Part_State *eps);
 
+void engrave_part_state_parent_set(Engrave_Part_State *eps, void *ep);
+void *engrave_part_state_parent_get(Engrave_Part_State *eps);
+
 void engrave_part_state_name_set(Engrave_Part_State *eps, const char *name, 
                                                           double value);
 void engrave_part_state_visible_set(Engrave_Part_State *eps, int visible);
-void engrave_part_state_align_set(Engrave_Part_State *eps, int x, int y);
-void engrave_part_state_step_set(Engrave_Part_State *eps, int x, int y);
+void engrave_part_state_align_set(Engrave_Part_State *eps, double x, double y);
+void engrave_part_state_step_set(Engrave_Part_State *eps, double x, double y);
 void engrave_part_state_min_size_set(Engrave_Part_State *eps, int w, int h);
 void engrave_part_state_max_size_set(Engrave_Part_State *eps, int w, int h);
-void engrave_part_state_aspect_set(Engrave_Part_State *eps, int w, int h);
+void engrave_part_state_aspect_set(Engrave_Part_State *eps, double w, double h);
 void engrave_part_state_aspect_preference_set(Engrave_Part_State *eps,
                                             Engrave_Aspect_Preference prefer);
 void engrave_part_state_rel1_relative_set(Engrave_Part_State *eps, 
-                                                        int x, int y);
+                                                        double x, double y);
 void engrave_part_state_rel1_offset_set(Engrave_Part_State *eps, int x, int y);
 void engrave_part_state_rel1_to_set(Engrave_Part_State *eps, const char *to);
 void engrave_part_state_rel1_to_x_set(Engrave_Part_State *eps, const char *to);
 void engrave_part_state_rel1_to_y_set(Engrave_Part_State *eps, const char *to);
 
 void engrave_part_state_rel2_relative_set(Engrave_Part_State *eps, 
-                                                        int x, int y);
+                                                        double x, double y);
 void engrave_part_state_rel2_offset_set(Engrave_Part_State *eps, int x, int y);
 void engrave_part_state_rel2_to_set(Engrave_Part_State *eps, const char *to);
 void engrave_part_state_rel2_to_x_set(Engrave_Part_State *eps, const char *to);
@@ -242,8 +257,8 @@ void engrave_part_state_align_get(Engrave_Part_State *eps,
                                                       double *x, double *y);
 void engrave_part_state_step_get(Engrave_Part_State *eps,
                                                       double *x, double *y);
-void engrave_part_state_min_get(Engrave_Part_State *eps, int *w, int *h);
-void engrave_part_state_max_get(Engrave_Part_State *eps, int *w, int *h);
+void engrave_part_state_min_size_get(Engrave_Part_State *eps, int *w, int *h);
+void engrave_part_state_max_size_get(Engrave_Part_State *eps, int *w, int *h);
 void engrave_part_state_aspect_get(Engrave_Part_State *eps,
                                                       double *w, double *h);
 Engrave_Aspect_Preference
@@ -280,11 +295,23 @@ void engrave_part_state_text_min_get(Engrave_Part_State *eps,
                                             int *x, int *y);
 void engrave_part_state_text_align_get(Engrave_Part_State *eps,
                                             double *x, double *y);
+int engrave_part_state_fill_smooth_get(Engrave_Part_State *eps);
+void engrave_part_state_fill_origin_relative_get(Engrave_Part_State *state,
+                                                double *x, double *y);
+void engrave_part_state_fill_size_relative_get(Engrave_Part_State *eps,
+                                                double *x, double *y);
+void engrave_part_state_fill_origin_offset_get(Engrave_Part_State *eps,
+                                                      int *x, int *y);
+void engrave_part_state_fill_size_offset_get(Engrave_Part_State *eps,
+                                                int *x, int *y);
 
 int engrave_part_state_tweens_count(Engrave_Part_State *eps);
 void engrave_part_state_tween_foreach(Engrave_Part_State *eps,
                 void (*func)(Engrave_Image *, void *), void *data);
 
+Evas_Object *engrave_part_state_evas_object_get(Engrave_Part_State *eps);
+void engrave_part_state_evas_object_set(Engrave_Part_State *eps, 
+                                                    Evas_Object *o);
 /**
  * @}
  */

@@ -127,6 +127,7 @@ engrave_file_font_add(Engrave_File *e, Engrave_Font *ef)
 {
   if (!e || !ef) return;
   e->fonts = evas_list_append(e->fonts, ef);
+  engrave_font_parent_set(ef, e);
 }
 
 /**
@@ -141,6 +142,7 @@ engrave_file_image_add(Engrave_File *ef, Engrave_Image *ei)
 {
   if (!ef || !ei) return;
   ef->images = evas_list_append(ef->images, ei);
+  engrave_image_parent_set(ei, ef);
 }
 
 /**
@@ -155,6 +157,7 @@ engrave_file_data_add(Engrave_File *ef, Engrave_Data *ed)
 {
   if (!ef || !ed) return;
   ef->data = evas_list_append(ef->data, ed);
+  engrave_data_parent_set(ed, ef);
 }
 
 /**
@@ -169,6 +172,7 @@ engrave_file_group_add(Engrave_File *ef, Engrave_Group *eg)
 {
   if (!ef || !eg) return;
   ef->groups = evas_list_append(ef->groups, eg);
+  engrave_group_parent_set(eg, ef);
 }
 
 /**
@@ -181,7 +185,29 @@ engrave_file_group_add(Engrave_File *ef, Engrave_Group *eg)
 Engrave_Group *
 engrave_file_group_last_get(Engrave_File *ef)
 {
+  if (!ef) return NULL;
   return evas_list_data(evas_list_last(ef->groups));
+}
+
+/**
+ * engrave_file_group_by_name_find - returns the Engrave_Group with the given name.
+ * @param ef: The Engrave_File to search for the group in.
+ * @param name: The name of the group to search for.
+ *
+ * @return Returns the Engrave_Group with the given @a name or NULL if no
+ * corresponding group can be found.
+ */
+Engrave_Group *
+engrave_file_group_by_name_find(Engrave_File *ef, const char *name)
+{
+  Evas_List *l;
+  for (l = ef->groups; l; l = l->next)
+  {
+    Engrave_Group *eg = l->data;
+    if (eg && !strcmp(engrave_group_name_get(eg), name))
+      return eg;
+  }
+  return NULL;
 }
 
 /**
@@ -199,7 +225,7 @@ engrave_file_image_by_name_find(Engrave_File *ef, const char *name)
   for (l = ef->images; l; l = l->next)
   {
     Engrave_Image *im = l->data;
-    if (im && !strcmp(im->name, name))
+    if (im && !strcmp(engrave_image_name_get(im), name))
       return im;
   }
   return NULL;
@@ -366,7 +392,33 @@ engrave_file_data_by_key_find(Engrave_File *ef, const char *key)
         if (!strcmp(key, data_key))
             return ed;
     }
+    return NULL;
 }
+
+/**
+ * engrave_file_font_by_name_find - find the Engrave_Font by name
+ * @param ef: The Engrave_File to search
+ * @param name: They name to search for
+ *
+ * @return Returns the Engrave_Font with the matching name or NULL if no such
+ * font exists.
+ */
+Engrave_Font *
+engrave_file_font_by_name_find(Engrave_File *ef, const char *name)
+{
+    Evas_List *l;
+
+    if (!ef || !name) return NULL;
+    for (l = ef->fonts; l; l = l->next) {
+        Engrave_Font *ef = l->data;
+        const char *font_name = engrave_font_name_get(ef);
+
+        if (!strcmp(name, font_name))
+            return ef;
+    }
+    return NULL;
+}
+
 
 
 

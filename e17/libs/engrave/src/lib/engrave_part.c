@@ -352,6 +352,14 @@ engrave_part_state_add(Engrave_Part *ep, Engrave_Part_State *eps)
 {
   if (!ep || !eps) return;
   ep->states = evas_list_append(ep->states, eps);
+  engrave_part_state_parent_set(eps, ep);
+
+  /* set the current state if it isnt' set already */
+  if (engrave_part_state_name_get(eps, NULL) && 
+        !strcmp(engrave_part_state_name_get(eps, NULL), "default")) {
+    if (ep->current_state == NULL)
+        engrave_part_current_state_set(ep, eps);
+  }
 }
 
 /**
@@ -419,6 +427,50 @@ void engrave_part_state_foreach(Engrave_Part *ep,
     Engrave_Part_State *eps = l->data;
     if (eps) func(eps, ep, data);
   }
+}
+
+/**
+ * engrave_part_parent_set - set the parent pointer in the part
+ * @param ep: The Engrave_Part to set the pointer into
+ * @param eg: The Engrave_Group to set as parent
+ *
+ * @return Returns no value.
+ */
+void
+engrave_part_parent_set(Engrave_Part *ep, void *eg)
+{
+    if (!ep) return;
+    ep->parent = eg;
+}
+
+/**
+ * engrave_part_parent_get - get the parent pointer for the part
+ * @param ep: The Engrave_Part to get the parent from
+ * 
+ * @return Returns the Engrave_Group pointer if set, or NULL if none set.
+ */
+void *
+engrave_part_parent_get(Engrave_Part *ep)
+{
+    return (ep ? ep->parent : NULL);
+}
+
+void
+engrave_part_current_state_set(Engrave_Part *ep, Engrave_Part_State *eps)
+{
+    if (!ep) return;
+    ep->current_state = eps;
+}
+
+Engrave_Part_State *
+engrave_part_current_state_get(Engrave_Part *ep)
+{
+    if (!ep) return NULL;
+    if (ep->current_state) return ep->current_state;
+
+    ep->current_state = engrave_part_state_by_name_value_find(ep, 
+                                                        "default", 0.0);
+    return ep->current_state;
 }
 
 

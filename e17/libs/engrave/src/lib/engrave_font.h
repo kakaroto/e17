@@ -24,10 +24,15 @@ struct _Engrave_Font
 {
   char *name; /**< The font alias */
   char *path; /**< The font relative path */
+
+  void *parent; /**< Pointer to parent */
 };
 
 Engrave_Font *engrave_font_new(const char *path, const char *name);
 void engrave_font_free(Engrave_Font *ef);
+
+void engrave_font_parent_set(Engrave_Font *font, void *ef);
+void *engrave_font_parent_get(Engrave_Font *ef);
 
 const char *engrave_font_name_get(Engrave_Font *ef);
 const char *engrave_font_path_get(Engrave_Font *ef);
