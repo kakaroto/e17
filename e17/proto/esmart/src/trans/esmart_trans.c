@@ -215,7 +215,7 @@ _esmart_trans_x11_add(Evas_Object *o)
   Esmart_Trans_X11 *data;
  
   data = (Esmart_Trans_X11*)malloc(sizeof(Esmart_Trans_X11));
-  memset(data, 0, sizeof(Esmart_Trans_X11*));
+  memset(data, 0, sizeof(Esmart_Trans_X11));
       
   data->clip = evas_object_rectangle_add(evas_object_evas_get(o));
   evas_object_color_set(data->clip, 255, 255, 255, 255);
