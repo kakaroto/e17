@@ -3,7 +3,7 @@ part { name, "base"; type, IMAGE; mouse_events, 1; repeat_events, 1;
 	description { state, "default" 0.0; visible, 1;
 	rel1 { relative, 0.0 0.0; offset, 20 0; } 
 	rel2 { relative, 1.0 1.0; offset, -18 0; }
-	border, 0 0 12 12; image { normal, "base_layer.png"; } 
+	image { border, 0 0 12 12; normal, "base_layer.png"; } 
 	} 
 }
 
@@ -20,8 +20,7 @@ part { name, "base.dragable"; type, IMAGE; mouse_events, 1;
 	description { state, "default" 0.0; visible, 1; min, 11 85;
 	rel1 { relative, 0.5 0.5; offset, 0 0; } 
 	rel2 { relative, 0.5 0.5; offset, 0 0; }
-	image { normal, "v_scrollbar.png"; } 
-	border, 4 4 17 17;
+	image { normal, "v_scrollbar.png"; border, 4 4 17 17; }
 	color, 255 255 255 200; 
 	}
 }
@@ -30,7 +29,7 @@ part { name, "base_left"; type, IMAGE; repeat_events, 1;
 	description { state, "default" 0.0; visible, 1;
 	rel1 { relative, 0.0 0.0; offset, 0 0; } 
 	rel2 { relative, 0.0 1.0; offset, 19 0; }
-	border, 18 0 12 12; image { normal, "bar_delay_left.png"; }
+	image { border, 18 0 12 12; normal, "bar_delay_left.png"; }
 	}
 }
     
@@ -52,7 +51,7 @@ part { name, "base_right"; type, IMAGE; repeat_events, 1;
 	description { state, "default" 0.0; visible, 1;
 	rel1 { relative, 1.0 0.0; offset, -19 0; } 
 	rel2 { relative, 1.0 1.0; offset, 0 0; }
-	border, 0 18 12 12; image { normal, "bar_delay_right.png"; }
+	image { border, 0 18 12 12; normal, "bar_delay_right.png"; }
 	}
 }
     

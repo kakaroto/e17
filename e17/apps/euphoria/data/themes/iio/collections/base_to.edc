@@ -4,28 +4,26 @@
 	description { state, "default" 0.0; min, 123 94; max, 123 94; 
 	rel1 { relative, 0.0 0.0; offset, 0.0 0.0; }              
 	rel2 { relative, 1.0 1.0; offset, 0 0; }	
-	image { normal, "base_layer.png"; }		
-	border, 6 6 6 6; fill { smooth, 1; } } }
+	image { normal, "base_layer.png"; border, 6 6 6 6; }
+	fill { smooth, 1; } } }
 ///////////////////////////////////////////////////////////////////////
 	part { name, RIGHT"panel"; type, IMAGE; mouse_events, 1; repeat_events, 1;
 	description { state, "default" 0.0; min, 0 94; max, 145 94;
 	rel1 { to, BASE; relative, 1.0 0.0; offset, 0 0; }
 	rel2 { to, RIGHT"border"; relative, 0.0 1.0; offset, -1 -1; } 
-	image { normal, "base_layer.png"; }
-	border, 6 6 6 6; fill { smooth, 1; } } }
+	image { normal, "base_layer.png"; border, 6 6 6 6; }
+	fill { smooth, 1; } } }
 
 	part { name, RIGHT"border"; mouse_events, 1;
 	description { state, "default" 0.0; min, 19 94; max, 19 94;
 	rel1 { to, BASE; relative, 2.0 0.0; offset, 145 0; }
 	rel2 { to, BASE; relative, 1.0 1.0; offset, 3 -1; }
-	image { normal, "bar_delay_right.png"; }
-	border, 0 0 7 8; }
+	image { normal, "bar_delay_right.png"; border, 0 0 7 8; } }
 
 	description { state, "slide" 0.0; min, 19 94; max, 19 94; 
 	rel1 { to, BASE; relative, 1.0 1.0; offset, -3 0; }
 	rel2 { to, BASE; relative, 0.0 0.0; offset, 145 -1; }
-	image { normal, "bar_delay_right.png"; }
-	border, 0 0 7 8; } }
+	image { normal, "bar_delay_right.png"; border, 0 0 7 8; } } }
 
 	part { name, RIGHT"border-slide"; type, RECT;
 	description { state, "default" 0.0; visible, 0; min, 0 94; max, 9999 9999;
@@ -42,8 +40,8 @@
 	description { state, "default" 0.0; min, 0 94; max, 145 94;
 	rel1 { to, LEFT"border"; relative, 1.0 0.0; offset, 0 0; }
 	rel2 { to, BASE; relative, 0.0 1.0; offset, -1 -1; } 
-	image { normal, "base_layer.png"; }
-	border, 6 6 6 6; fill { smooth, 1; } } }
+	image { normal, "base_layer.png"; border, 6 6 6 6; }
+	fill { smooth, 1; } } }
 
 	part { name, LEFT"border"; mouse_events, 1;
 	description { state, "default" 0.0; min, 19 94; max, 19 94; align, 0.0 0.0;       
@@ -71,14 +69,14 @@
 	description { state, "default" 0.0; min, 0 94; max, 142 94; 
 	rel1 { to, BASE; relative, 1.0  0.0; offset, -16 0; }
 	rel2 { to, RIGHT"border"; relative, 0.0 1.0; offset, -1 -1; }
-	image { normal, "lcd_window.png"; }
-	border, 9 9 9 9; fill { smooth, 0; } } 
+	image { normal, "lcd_window.png"; border, 9 9 9 9; }
+	fill { smooth, 0; } } 
 
 	description { state, "slide" 0.0; min, 0 94; max, 142 94; 
 	rel1 { to, BASE; relative, 1.0  0.0; offset, -8 0; }
 	rel2 { to, RIGHT"border"; relative, 0.0 1.0; offset, -1 -1; }
-	image { normal, "lcd_window.png"; }
-	border, 9 9 9 9; fill { smooth, 0; } } }
+	image { normal, "lcd_window.png"; border, 9 9 9 9; }
+	fill { smooth, 0; } } }
 
 //	part { name, "RpanelClipArea"; description {
 //	state, "default" 0.0; min, 0 94; max, 142 94;
@@ -90,14 +88,14 @@
 	description { state, "default" 0.0; min, 0 94; max, 142 94; align, 0.0 0.0; 
 	rel1 { to, LEFT"border"; relative, 1.0 0.0; offset, 0 0; }	       		
 	rel2 { to, BASE; relative, 0.0 1.0; offset, 16 0;  }
-	image { normal, "lcd_window.png"; }
-	border, 9 9 9 9; fill { smooth, 0; } }
+	image { normal, "lcd_window.png"; border, 9 9 9 9; }
+	fill { smooth, 0; } }
 
 	description { state, "slide" 0.0; min, 0 94; max, 142 94; align, 0.0 0.0; 
 	rel1 { to, LEFT"border"; relative, 1.0  0.0; offset, 0 0; }	       		
 	rel2 { to, BASE; relative, 0.0 1.0; offset, 7 0;  }
-	image { normal, "lcd_window.png"; }
-	border, 9 9 9 9; fill { smooth, 0; } } }
+	image { normal, "lcd_window.png"; border, 9 9 9 9; }
+	fill { smooth, 0; } } }
 //
 ///////////////////////////////////////////////////////////////////////
 	part { name, "CenterClipArea"; type, RECT;
@@ -178,20 +176,20 @@
 	description { state, "default" 0.0; min, 23 23; max, 23 23;       		
 	rel1 { relative, 0.0  0.0; offset, 0 0; to, "cc_align"; }
 	rel2 { relative, 1.0 1.0; offset, 0 0; to, "cc_align"; }			
-	image { normal, "play_button.png";	}		
-	border, 1 1 1 1; fill { smooth, 0; } }	
+	image { normal, "play_button.png"; border, 1 1 1 1; }
+	fill { smooth, 0; } }
 	
 	description { state, "hilited" 0.0; min, 23 23; max, 23 23;	       		
 	rel1 { relative, 0.0  0.0; offset, 0 0; to, "cc_align"; }
 	rel2 { relative, 1.0 1.0; offset, 0 0; to, "cc_align"; }	
-	image { normal, "play_button_hilited.png"; }
-	
-	border, 1 1 1 1; fill { smooth, 1; } }
+	image { normal, "play_button_hilited.png"; border, 1 1 1 1; }
+	fill { smooth, 1; } }
+
 	description { state, "clicked" 0.0; min, 23 23; max, 23 23;       		
 	rel1 { relative, 0.0  0.0; offset, 0 0; to, "cc_align"; }
 	rel2 { relative, 1.0 1.0; offset, 0 0; to, "cc_align"; }		
-	image { normal, "play_button_clicked.png"; }		
-	border, 1 1 1 1; fill { smooth, 0; } } }
+	image { normal, "play_button_clicked.png"; border, 1 1 1 1; }
+	fill { smooth, 0; } } }
 //
 	part { name, "next_button"; type, IMAGE; mouse_events, 1;	    
 	description { state, "default" 0.0; min, 13 39; max, 13 39;       		
@@ -314,15 +312,13 @@
 	description { state, "default" 0.0; visible, 1; min, 10 5; max, 9999 5;
 	rel1 { relative, 0.0 0.0; offset, 1 15; to, "trans_Rect"; }
 	rel2 { relative, 1.0 1.0; offset, -7 15; to, "trans_Rect"; }
-	image { normal, "seeker_trough.png"; }
-	border, 5 5 1 1; } }
+	image { normal, "seeker_trough.png"; border, 5 5 1 1; } } }
 //
 	part { name, "seekerBar"; clip_to, "trans_Rect";
 	description { state, "default" 0.0; visible, 1; min, 0 5; max, 9999 5;
 	rel1 { to, "seekerTrough"; relative, 0 0; offset, 0 0; }
 	rel2 { to_x, "seeker"; to_y, "seekerTrough"; relative, 0 1; offset, 0 -1; }
-	image { normal, "seeker_bar.png"; }
-	border, 5 5 1 1; } }
+	image { normal, "seeker_bar.png"; border, 5 5 1 1; } } }
 //
 	part { name, "seeker"; type, RECT; clip_to, "trans_Rect";
 	dragable { x, 1 1 1;  y, 0 0 0; confine, "seekerTrough"; }

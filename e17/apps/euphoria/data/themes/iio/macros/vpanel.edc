@@ -45,8 +45,8 @@
 	  }				\
 	  image {			\
 	      normal, "lcd_window.png"; \
+	      border, 9 9 14 10;		\
 	  }				\
-	  border, 9 9 14 10;		\
 	}				\
       }					\
       part {				\
@@ -69,8 +69,8 @@
 	  }				\
 	  image {			\
 	      normal, "v_scrollbar_base.png"; \
+	      border, 6 6 20 20;		\
 	  }				\
-	  border, 6 6 20 20;		\
 	}				\
       }					\
       part {				\
