@@ -196,6 +196,7 @@ CreateIconbox(char *name)
    ib->draw_icon_base = 0;
    ib->scrollbar_hide = 0;
    ib->cover_hide = 0;
+   ib->auto_resize_anchor = 0;
    /* FIXME: need to have theme settable params for this and get them */
    ib->scroll_thickness = 12;
    ib->arrow_thickness = 12;
@@ -1571,7 +1572,8 @@ RedrawIconbox(Iconbox * ib)
 		add = root.h - (ib->ewin->border->border.top +
 				ib->ewin->border->border.bottom);
 	     x = ib->ewin->x;
-	     y = ib->ewin->y;
+	     y = ib->ewin->y +
+		(((ib->ewin->client.h - add) * ib->auto_resize_anchor) >> 10);
 	     w = ib->ewin->client.w;
 	     h = add;
 	     if ((ib->ewin->y + ib->ewin->border->border.top +
@@ -1596,7 +1598,8 @@ RedrawIconbox(Iconbox * ib)
 		 root.w)
 		add = root.w - (ib->ewin->border->border.left +
 				ib->ewin->border->border.right);
-	     x = ib->ewin->x;
+	     x = ib->ewin->x +
+		(((ib->ewin->client.w - add) * ib->auto_resize_anchor) >> 10);
 	     y = ib->ewin->y;
 	     w = add;
 	     h = ib->ewin->client.h;

@@ -1539,6 +1539,7 @@ struct _iconbox
      char                draw_icon_base;
      char                scrollbar_hide;
      char                cover_hide;
+     int                 auto_resize_anchor;
 
      /* internally set stuff */
      int                 w, h;

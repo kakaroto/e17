@@ -402,6 +402,7 @@
 #define __SHOW_ICON_BASE 2008
 #define __SCROLLBAR_AUTOHIDE 2009
 #define __COVER_HIDE 2010
+#define __RESIZE_ANCHOR 2011
 
 #define __HORIZONTAL 0
 #define __VERTICAL 1

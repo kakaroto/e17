@@ -2837,6 +2837,10 @@ Config_Ibox(FILE * ConfigFile)
 	     if (ib)
 		ib->cover_hide = (char)atoi(s2);
 	     break;
+	  case CONFIG_RESIZE_ANCHOR:	/* __COVER_HIDE 0-1024 */
+	     if (ib)
+		ib->auto_resize_anchor = atoi(s2);
+	     break;
 	  case CONFIG_CLOSE:
 	     return;
 	     break;
@@ -3773,6 +3777,7 @@ SaveUserControlConfig(FILE * autosavefile)
 		  fprintf(autosavefile, "2008 %i\n", (int)iblist[i]->draw_icon_base);
 		  fprintf(autosavefile, "2009 %i\n", (int)iblist[i]->scrollbar_hide);
 		  fprintf(autosavefile, "2010 %i\n", (int)iblist[i]->cover_hide);
+		  fprintf(autosavefile, "2011 %i\n", (int)iblist[i]->auto_resize_anchor);
 		  fprintf(autosavefile, "1000\n");
 	       }
 	     Efree(iblist);

@@ -3036,6 +3036,7 @@ static char         tmp_ib_auto_resize;
 static char         tmp_ib_draw_icon_base;
 static char         tmp_ib_scrollbar_hide;
 static char         tmp_ib_cover_hide;
+static int          tmp_ib_autoresize_anchor;
 
 static void         CB_ConfigureIconbox(int val, void *data);
 static void
@@ -3062,6 +3063,7 @@ CB_ConfigureIconbox(int val, void *data)
 	ib->draw_icon_base = tmp_ib_draw_icon_base;
 	ib->scrollbar_hide = tmp_ib_scrollbar_hide;
 	ib->cover_hide = tmp_ib_cover_hide;
+	ib->auto_resize_anchor = tmp_ib_autoresize_anchor;
 	IB_CompleteRedraw(ib);
      }
    autosave();
@@ -3099,6 +3101,7 @@ SettingsIconbox(char *name)
    tmp_ib_draw_icon_base = ib->draw_icon_base;
    tmp_ib_scrollbar_hide = ib->scrollbar_hide;
    tmp_ib_cover_hide = ib->cover_hide;
+   tmp_ib_autoresize_anchor = ib->auto_resize_anchor;
    if (tmp_ib_name)
       Efree(tmp_ib_name);
    tmp_ib_name = duplicate(name);
@@ -3155,14 +3158,6 @@ SettingsIconbox(char *name)
    DialogItemSetPadding(di, 2, 2, 2, 2);
    DialogItemSetFill(di, 1, 0);
    DialogItemSetColSpan(di, 3);
-   DialogItemCheckButtonSetText(di, "Automatically resize to fit Icons");
-   DialogItemCheckButtonSetState(di, tmp_ib_auto_resize);
-   DialogItemCheckButtonSetPtr(di, &tmp_ib_auto_resize);
-
-   di = DialogAddItem(table, DITEM_CHECKBUTTON);
-   DialogItemSetPadding(di, 2, 2, 2, 2);
-   DialogItemSetFill(di, 1, 0);
-   DialogItemSetColSpan(di, 3);
    DialogItemCheckButtonSetText(di, "Draw base image behind Icons");
    DialogItemCheckButtonSetState(di, tmp_ib_draw_icon_base);
    DialogItemCheckButtonSetPtr(di, &tmp_ib_draw_icon_base);
@@ -3174,6 +3169,31 @@ SettingsIconbox(char *name)
    DialogItemCheckButtonSetText(di, "Hide scrollbar when not needed");
    DialogItemCheckButtonSetState(di, tmp_ib_scrollbar_hide);
    DialogItemCheckButtonSetPtr(di, &tmp_ib_scrollbar_hide);
+
+   di = DialogAddItem(table, DITEM_CHECKBUTTON);
+   DialogItemSetPadding(di, 2, 2, 2, 2);
+   DialogItemSetFill(di, 1, 0);
+   DialogItemSetColSpan(di, 3);
+   DialogItemCheckButtonSetText(di, "Automatically resize to fit Icons");
+   DialogItemCheckButtonSetState(di, tmp_ib_auto_resize);
+   DialogItemCheckButtonSetPtr(di, &tmp_ib_auto_resize);
+
+   di = DialogAddItem(table, DITEM_TEXT);
+   DialogItemSetColSpan(di, 3);
+   DialogItemSetPadding(di, 2, 2, 2, 2);
+   DialogItemSetFill(di, 0, 0);
+   DialogItemSetAlign(di, 0, 0);
+   DialogItemTextSetText(di, "Alignment of anchoring when automatically resizing:");
+
+   di = DialogAddItem(table, DITEM_SLIDER);
+   DialogItemSetColSpan(di, 3);
+   DialogItemSetPadding(di, 2, 2, 2, 2);
+   DialogItemSetFill(di, 1, 0);
+   DialogItemSliderSetBounds(di, 0, 1024);
+   DialogItemSliderSetUnits(di, 1);
+   DialogItemSliderSetJump(di, 8);
+   DialogItemSliderSetVal(di, tmp_ib_autoresize_anchor);
+   DialogItemSliderSetValPtr(di, &tmp_ib_autoresize_anchor);
 
    di = DialogAddItem(table, DITEM_SEPARATOR);
    DialogItemSetColSpan(di, 3);

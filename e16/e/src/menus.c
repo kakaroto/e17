@@ -288,9 +288,9 @@ ShowMenu(Menu * m, char noshow)
       EDBUG_RETURN_;
    if (m->stuck)
      {
-	Button *button;
-	EWin   *ewin99;
-	
+	Button             *button;
+	EWin               *ewin99;
+
 	if ((button = FindButton(mode.context_win)))
 	  {
 	     button->state = STATE_NORMAL;
@@ -298,8 +298,8 @@ ShowMenu(Menu * m, char noshow)
 	  }
 	else if ((ewin99 = FindEwinByDecoration(mode.context_win)))
 	  {
-	     int i99;
-	     
+	     int                 i99;
+
 	     for (i99 = 0; i99 < ewin99->border->num_winparts; i99++)
 	       {
 		  if (mode.context_win == ewin99->bits[i99].win)
@@ -417,30 +417,30 @@ ShowMenu(Menu * m, char noshow)
    m->stuck = 0;
    if (!FindMenu(m->win))
       AddItem(m, m->name, m->win, LIST_TYPE_MENU);
-     {
-	Button *button;
-	EWin   *ewin99;
-	
-	if ((button = FindButton(mode.context_win)))
-	  {
-	     button->state = STATE_NORMAL;
-	     DrawButton(button);
-	  }
-	else if ((ewin99 = FindEwinByDecoration(mode.context_win)))
-	  {
-	     int i99;
-	     
-	     for (i99 = 0; i99 < ewin99->border->num_winparts; i99++)
-	       {
-		  if (mode.context_win == ewin99->bits[i99].win)
-		    {
-		       ewin99->bits[i99].state = STATE_NORMAL;
-		       ChangeEwinWinpart(ewin99, i99);
-		       i99 = ewin99->border->num_winparts;
-		    }
-	       }
-	  }
-     }
+   {
+      Button             *button;
+      EWin               *ewin99;
+
+      if ((button = FindButton(mode.context_win)))
+	{
+	   button->state = STATE_NORMAL;
+	   DrawButton(button);
+	}
+      else if ((ewin99 = FindEwinByDecoration(mode.context_win)))
+	{
+	   int                 i99;
+
+	   for (i99 = 0; i99 < ewin99->border->num_winparts; i99++)
+	     {
+		if (mode.context_win == ewin99->bits[i99].win)
+		  {
+		     ewin99->bits[i99].state = STATE_NORMAL;
+		     ChangeEwinWinpart(ewin99, i99);
+		     i99 = ewin99->border->num_winparts;
+		  }
+	     }
+	}
+   }
    EDBUG_RETURN_;
 }
 

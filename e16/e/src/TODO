@@ -8,13 +8,14 @@ mark: grab cursor and confine to root window when moving windows / resizing.
 mark: focus swtiching in multihead between the heads gets confused... :)
 
 FEATURES:
+raster: add dnd to iconbox
+raster: iconify animation suport
+
+FEATURES FOR DR 0.17:
 kainx: reduce need for tooltip text to have auto gened tooltips work
 user: spacers in menus
 user: "default button" indicator for the default "enter" activated button
 user: add submenu resistance / timeout for running across to a submenu
 user: add "virtual" resistance boxes
 user: finer grained control on selecting icon display policy
-raster: add dnd to iconbox
-raster: iconify animation suport
 raster: need to lock .enlightenment dir for multiple logins etc.
-
