@@ -584,3 +584,87 @@ etox_line_print_bits(Etox_Line *line)
 		i++;
 	}
 }
+
+void
+etox_line_set_layer(Etox_Line *line, int layer)
+{
+  Evas_List *l;
+
+  if (!line->bits) return;
+  
+  for (l = line->bits; l; l = l->next)
+  {
+    Evas_Object *bit;
+
+    bit = l->data;
+    evas_object_layer_set(bit, layer);
+  }
+}
+
+void
+etox_line_index_to_geometry(Etox_Line *line, int index, double *x, double *y,
+                            double *w, double *h)
+{
+  Evas_Object *bit = NULL;
+  Evas_List *l;
+  int sum = 0;
+
+  /* find the bit containing the character */
+  for (l = line->bits; l; l = l->next)
+  {
+    int length;
+    
+    bit = l->data;
+    length = estyle_length(bit);
+
+    if ( sum + length < index)
+      break;
+
+    sum += length;
+
+    if (!l->next)
+      bit = NULL;
+  }
+
+  /* No bit intersects, so set the geometry to the end of the
+   * line, with the average character width on the line
+   */
+  if (!bit)
+  {
+    if (h) *h = line->h;
+    if (w) *w = line->w / line->length;
+    if (y) *y = line->y;
+    if (x) *x = line->x + line->w;
+    return;
+  }
+
+  /* get the geometry from the bit */
+  estyle_text_at(bit, index - sum, x, y, w, h); 
+}
+
+void
+etox_line_apply_context(Etox_Line *line, Etox_Context *context, Evas_Object *start, Evas_Object *end)
+{
+  Evas_List *l, *ls = NULL, *le = NULL;
+
+  ls = evas_list_find(line->bits, start);
+  le = evas_list_find(line->bits, end);
+  
+  /* make sure start and end exist and are in line->bits */
+  if ( !ls )
+    ls = line->bits;
+  if ( !le ) 
+    le = evas_list_last(line->bits); 
+
+  for (l = ls; l && l != le; l = l->next)
+  {
+    Evas_Object *bit;
+
+    bit = l->data;
+
+    estyle_set_style(bit, context->style);
+    evas_object_color_set(bit, context->r, context->g, context->b,
+                          context->a);
+    estyle_set_font(bit, context->font, context->font_size);
+  }
+}

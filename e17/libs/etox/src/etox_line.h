@@ -21,4 +21,9 @@ Evas_Object *etox_line_coord_to_bit(Etox_Line *line, int x);
 Evas_Object *etox_line_index_to_bit(Etox_Line *line, int *i);
 void etox_line_print_bits(Etox_Line *line);
 
+void etox_line_set_layer(Etox_Line *line, int layer);
+void etox_line_index_to_geom(Etox_Line *line, double *x, double *y, 
+                             double *w, double *h);
+void etox_line_apply_context(Etox_Line *line, Etox_Context *context, Evas_Object *start, Evas_Object *end);
+
 #endif

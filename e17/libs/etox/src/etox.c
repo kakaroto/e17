@@ -551,17 +551,7 @@ void etox_set_layer(Evas_Object * obj, int layer)
 	 */
 	for (l = et->lines; l; l = l->next) {
 		line = l->data;
-
-		if (line->bits) {
-
-			/*
-			 * Set the layer for each bit in the line
-			 */
-			for (ll = line->bits; ll; ll = ll->next) {
-				bit = ll->data;
-				evas_object_layer_set(bit, layer);
-			}
-		}
+                etox_line_set_layer(line, et->layer);
 	}
 }
 
@@ -710,9 +700,8 @@ void etox_index_to_geometry(Evas_Object * obj, int index, double *x, double *y,
 {
 	Etox *et;
 	int sum;
-	Evas_Object *bit = NULL;
 	Etox_Line *line = NULL;
-	Evas_List *l, *ll, *lll;
+	Evas_List *l;
 
 	CHECK_PARAM_POINTER("obj", obj);
 
@@ -720,51 +709,14 @@ void etox_index_to_geometry(Evas_Object * obj, int index, double *x, double *y,
 
 	if (index > et->length) {
 		sum = et->length;
-		for (lll = et->lines; lll; lll = lll->next)
-			line = lll->data;
+                line = evas_list_last(et->lines);
 
-		*h = line->h;
-		*w = line->w / line->length;
-		*y = line->y;
-		*x = line->x + line->w;
+		if (h) *h = line->h;
+		if (w) *w = line->w / line->length;
+		if (y) *y = line->y;
+		if (x) *x = line->x + line->w;
 	} else {
-		/*
-		 * Find the line that contains the character
-		 */
-		sum = 0;
-		for (l = et->lines; l; l = l->next) {
-			line = l->data;
-			if (sum + line->length < index)
-				break;
-			sum += line->length;
-		}
-
-		/*
-		 * Find the bit that contains the character
-		 */
-		for (ll = line->bits; ll; ll = ll->next) {
-			bit = ll->data;
-			if (sum + estyle_length(bit) < index)
-				break;
-			sum += estyle_length(bit);
-		}
-
-		/*
-		 * No bit intersects, so set the geometry to the start of the
-		 * line, with the average character width on the line.
-		 */
-		if (!bit) {
-			*h = line->h;
-			*w = line->w / line->length;
-			*y = line->y;
-			*x = line->x + line->w;
-			return;
-		}
-
-		/*
-		 * Now get the actual geometry from the bit
-		 */
-		estyle_text_at(bit, index - sum, x, y, w, h);
+          etox_line_index_to_geometry(line, index - sum, x, y, w, h);
 	}
 }
 
