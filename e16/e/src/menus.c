@@ -1481,93 +1481,96 @@ FillFlatFileMenu(Menu * m, MenuStyle * ms, char *name, char *file,
    while (fgets(s, 4096, f))
      {
 	s[strlen(s) - 1] = 0;
-	if (first)
+	if ((s[0]) && s[0] != '#')
 	  {
-	     char               *wd;
-
-	     wd = field(s, 0);
-	     if (wd)
+	     if (first)
 	       {
-		  AddTitleToMenu(m, wd);
-		  Efree(wd);
-	       }
-	     first = 0;
-	  }
-	else
-	  {
-	     char               *txt = NULL, *icon = NULL, *act = NULL;
-	     char               *params = NULL, *tmp = NULL, wd[4096];
+		  char               *wd;
 
-	     MenuItem           *mi;
-	     ImageClass         *icc = NULL;
-	     Menu               *mm;
-	     int                 count = 0;
-
-	     txt = field(s, 0);
-	     icon = field(s, 1);
-	     act = field(s, 2);
-	     params = field(s, 3);
-	     tmp = NULL;
-	     if (icon)
-	       {
-		  Esnprintf(wd, sizeof(wd), "__FM.%s", icon);
-		  icc = FindItem(wd, 0, LIST_FINDBY_NAME, LIST_TYPE_ICLASS);
-		  if (!icc)
+		  wd = field(s, 0);
+		  if (wd)
 		    {
-		       icc = CreateIclass();
-		       icc->name = duplicate(wd);
-		       icc->norm.normal = CreateImageState();
-		       icc->norm.normal->im_file = icon;
-		       IclassPopulate(icc);
-		       AddItem(icc, icc->name, 0, LIST_TYPE_ICLASS);
+		       AddTitleToMenu(m, wd);
+		       Efree(wd);
+		    }
+		  first = 0;
+	       }
+	     else
+	       {
+		  char               *txt = NULL, *icon = NULL, *act = NULL;
+		  char               *params = NULL, *tmp = NULL, wd[4096];
+
+		  MenuItem           *mi;
+		  ImageClass         *icc = NULL;
+		  Menu               *mm;
+		  int                 count = 0;
+
+		  txt = field(s, 0);
+		  icon = field(s, 1);
+		  act = field(s, 2);
+		  params = field(s, 3);
+		  tmp = NULL;
+		  if (icon)
+		    {
+		       Esnprintf(wd, sizeof(wd), "__FM.%s", icon);
+		       icc = FindItem(wd, 0, LIST_FINDBY_NAME, LIST_TYPE_ICLASS);
+		       if (!icc)
+			 {
+			    icc = CreateIclass();
+			    icc->name = duplicate(wd);
+			    icc->norm.normal = CreateImageState();
+			    icc->norm.normal->im_file = icon;
+			    IclassPopulate(icc);
+			    AddItem(icc, icc->name, 0, LIST_TYPE_ICLASS);
+			 }
+		       else
+			 {
+			    Efree(icon);
+			 }
+		    }
+		  if ((act) && (!strcmp(act, "exec")) && (params))
+		    {
+		       word(params, 1, wd);
+		       tmp = pathtoexec(wd);
+		       if (tmp)
+			 {
+			    Efree(tmp);
+
+			    mi = CreateMenuItem(txt, icc, ACTION_EXEC, params, NULL);
+			    AddItemToMenu(m, mi);
+			    if (txt)
+			       Efree(txt);
+			    if (params)
+			       Efree(params);
+			 }
+		    }
+		  else if ((act) && (!strcmp(act, "menu")) && (params))
+		    {
+		       Esnprintf(wd, sizeof(wd), "__FM.%s.%i", name, count);
+		       count++;
+		       mm = CreateMenuFromFlatFile(wd, ms, params, parent);
+		       if (mm)
+			 {
+			    mm->parent = m;
+			    AddItem(mm, mm->name, mm->win, LIST_TYPE_MENU);
+			    mi = CreateMenuItem(txt, icc, 0, NULL, mm);
+			    AddItemToMenu(m, mi);
+			 }
+		       if (txt)
+			  Efree(txt);
 		    }
 		  else
 		    {
-		       Efree(icon);
-		    }
-	       }
-	     if ((act) && (!strcmp(act, "exec")) && (params))
-	       {
-		  word(params, 1, wd);
-		  tmp = pathtoexec(wd);
-		  if (tmp)
-		    {
-		       Efree(tmp);
-
-		       mi = CreateMenuItem(txt, icc, ACTION_EXEC, params, NULL);
+		       mi = CreateMenuItem(txt, icc, 0, NULL, NULL);
 		       AddItemToMenu(m, mi);
 		       if (txt)
 			  Efree(txt);
 		       if (params)
 			  Efree(params);
 		    }
+		  if (act)
+		     Efree(act);
 	       }
-	     else if ((act) && (!strcmp(act, "menu")) && (params))
-	       {
-		  Esnprintf(wd, sizeof(wd), "__FM.%s.%i", name, count);
-		  count++;
-		  mm = CreateMenuFromFlatFile(wd, ms, params, parent);
-		  if (mm)
-		    {
-		       mm->parent = m;
-		       AddItem(mm, mm->name, mm->win, LIST_TYPE_MENU);
-		       mi = CreateMenuItem(txt, icc, 0, NULL, mm);
-		       AddItemToMenu(m, mi);
-		    }
-		  if (txt)
-		     Efree(txt);
-	       }
-	     else
-	       {
-		  mi = CreateMenuItem(txt, icc, 0, NULL, NULL);
-		  AddItemToMenu(m, mi);
-		  if (txt)
-		     Efree(txt);
-		  if (params)
-		     Efree(params);
-	       }
-	     if (act)
-		Efree(act);
 	  }
      }
    fclose(f);

@@ -4199,3 +4199,11 @@ Mon Jan 31 10:50:09 PST 2000
 
 
 text compression works wiht multi-byte stuff now thanks to masahiko :)
+
+-------------------------------------------------------------------------------
+
+Sun Feb 13 13:57:02 PST 2000
+(Mandrake)
+
+allowing a # style comment in .menu files.
+# MUST be the very first character however :)
