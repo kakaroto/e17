@@ -71,6 +71,8 @@ HAVE_PTHREADS=0
 PTHREAD_LIBS=""
 fi
 
+AC_CHECK_LIB(dl, dlopen, dlopen_libs=-ldl)
+AC_SUBST(dlopen_libs)
 
 dnl Checking for Perl:
 AC_PATH_PROG(PERL,perl,0)

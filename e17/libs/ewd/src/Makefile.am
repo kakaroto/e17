@@ -29,5 +29,5 @@ libewd_la_SOURCES = \
 	ewd_path.c \
 	ewd_plugin.c
 
-libewd_la_LIBADD = -lm -ldl
+libewd_la_LIBADD = -lm @dlopen_libs@
 libewd_la_LDFLAGS = -version-info 0:0:0
