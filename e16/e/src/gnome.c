@@ -849,7 +849,7 @@ GNOME_ProcessClientMessage(XClientMessageEvent * event)
 		    {
 		       ewin->sticky = 1;
 		       RaiseEwin(ewin);
-		       DrawEwin(ewin);
+		       EwinBorderDraw(ewin, 0, 0);
 		    }
 	       }
 	     else
@@ -858,7 +858,7 @@ GNOME_ProcessClientMessage(XClientMessageEvent * event)
 		    {
 		       ewin->sticky = 0;
 		       RaiseEwin(ewin);
-		       DrawEwin(ewin);
+		       EwinBorderDraw(ewin, 0, 0);
 		    }
 	       }
 	  }

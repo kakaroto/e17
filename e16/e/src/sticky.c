@@ -37,7 +37,7 @@ MakeWindowUnSticky(EWin * ewin)
    MoveEwinToDesktopAt(ewin, desks.current, ewin->x, ewin->y);
    ewin->sticky = 0;
    RaiseEwin(ewin);
-   DrawEwin(ewin);
+   EwinBorderDraw(ewin, 0, 0);
 
    HintsSetWindowState(ewin);
 
@@ -79,7 +79,7 @@ MakeWindowSticky(EWin * ewin)
      }
    MoveEwinToDesktopAt(ewin, desks.current, ewin->x, ewin->y);
    RaiseEwin(ewin);
-   DrawEwin(ewin);
+   EwinBorderDraw(ewin, 0, 0);
 
    HintsSetWindowState(ewin);
 

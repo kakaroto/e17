@@ -347,7 +347,6 @@ AddToFamily(Window win)
    EWin               *const *lst;
    int                 i, k, num, speed, fx, fy, x, y;
    char                doslide, manplace;
-   char                pq;
    char                cangrab = 0;
 
    EDBUG(3, "AddToFamily");
@@ -563,11 +562,7 @@ AddToFamily(Window win)
    /* if the window asked to be iconified at the start */
    if (ewin->iconified)
      {
-	pq = Mode.queue_up;
-	Mode.queue_up = 0;
-	DrawEwin(ewin);
-	PropagateShapes(ewin->win);
-	Mode.queue_up = pq;
+	EwinBorderDraw(ewin, 1, 1);
 	MoveEwinToDesktopAt(ewin, ewin->desktop, x, y);
 	RaiseEwin(ewin);
 	ShowEwin(ewin);
@@ -596,12 +591,8 @@ AddToFamily(Window win)
 	ewin->client.already_placed = 1;
 	x = Mode.x + 1;
 	y = Mode.y + 1;
-	pq = Mode.queue_up;
-	Mode.queue_up = 0;
-	DrawEwin(ewin);
 	ICCCM_Configure(ewin);
-	PropagateShapes(ewin->win);
-	Mode.queue_up = pq;
+	EwinBorderDraw(ewin, 1, 1);
 	MoveEwinToDesktop(ewin, ewin->desktop);
 	RaiseEwin(ewin);
 	MoveEwin(ewin, x, y);
@@ -640,11 +631,7 @@ AddToFamily(Window win)
 	     fx = root.w;
 	     fy = (rand() % (root.h)) - ewin->h;
 	  }
-	pq = Mode.queue_up;
-	Mode.queue_up = 0;
-	DrawEwin(ewin);
-	PropagateShapes(ewin->win);
-	Mode.queue_up = pq;
+	EwinBorderDraw(ewin, 1, 1);
 	MoveEwinToDesktop(ewin, ewin->desktop);
 	RaiseEwin(ewin);
 	MoveEwin(ewin, fx, fy);
@@ -654,11 +641,7 @@ AddToFamily(Window win)
      }
    else
      {
-	pq = Mode.queue_up;
-	Mode.queue_up = 0;
-	DrawEwin(ewin);
-	PropagateShapes(ewin->win);
-	Mode.queue_up = pq;
+	EwinBorderDraw(ewin, 1, 1);
 	MoveEwinToDesktopAt(ewin, ewin->desktop, x, y);
 	RaiseEwin(ewin);
 	ShowEwin(ewin);
@@ -679,7 +662,6 @@ AddInternalToFamily(Window win, const char *bname, int type, void *ptr,
 		    void (*init) (EWin * ewin, void *ptr))
 {
    EWin               *ewin;
-   char                pq;
    Border             *b;
 
    EDBUG(3, "AddInternalToFamily");
@@ -703,12 +685,7 @@ AddInternalToFamily(Window win, const char *bname, int type, void *ptr,
       init(ewin, ptr);		/* Type specific initialisation */
 
    ICCCM_Configure(ewin);
-
-   pq = Mode.queue_up;
-   Mode.queue_up = 0;
-   DrawEwin(ewin);
-   PropagateShapes(ewin->win);
-   Mode.queue_up = pq;
+   EwinBorderDraw(ewin, 1, 1);
 
    UngrabX();
 
@@ -760,29 +737,37 @@ RealiseEwinWinpart(EWin * ewin, int i)
    EDBUG_RETURN_;
 }
 
-int
+static void
+EwinWinpartITclassApply(EWin * ewin, int i)
+{
+   IclassApply(ewin->border->part[i].iclass, ewin->bits[i].win,
+	       ewin->bits[i].w, ewin->bits[i].h, ewin->active,
+	       ewin->sticky, ewin->bits[i].state, ewin->bits[i].expose);
+
+   if (ewin->border->part[i].flags == FLAG_TITLE)
+      TclassApply(ewin->border->part[i].iclass, ewin->bits[i].win,
+		  ewin->bits[i].w, ewin->bits[i].h, ewin->active,
+		  ewin->sticky, ewin->bits[i].state, ewin->bits[i].expose,
+		  ewin->border->part[i].tclass, EwinGetTitle(ewin));
+
+}
+
+static int
 DrawEwinWinpart(EWin * ewin, int i)
 {
-   int                 move = 0, resize = 0, state = 0, ret = 0;
+   int                 move = 0, resize = 0, ret = 0;
 
    EDBUG(4, "DrawEwinWinpart");
-   if ((ewin->bits[i].x != ewin->bits[i].cx)
-       || (ewin->bits[i].y != ewin->bits[i].cy))
+   if ((ewin->bits[i].x != ewin->bits[i].cx) ||
+       (ewin->bits[i].y != ewin->bits[i].cy))
       move = 1;
-   if ((ewin->bits[i].w != ewin->bits[i].cw)
-       || (ewin->bits[i].h != ewin->bits[i].ch))
+   if ((ewin->bits[i].w != ewin->bits[i].cw) ||
+       (ewin->bits[i].h != ewin->bits[i].ch))
       resize = 1;
    if ((resize) || (ewin->bits[i].expose))
      {
-	state = ewin->bits[i].state;
-	IclassApply(ewin->border->part[i].iclass, ewin->bits[i].win,
-		    ewin->bits[i].w, ewin->bits[i].h, ewin->active,
-		    ewin->sticky, state, ewin->bits[i].expose);
-	if (ewin->border->part[i].flags == FLAG_TITLE)
-	   TclassApply(ewin->border->part[i].iclass, ewin->bits[i].win,
-		       ewin->bits[i].w, ewin->bits[i].h, ewin->active,
-		       ewin->sticky, state, ewin->bits[i].expose,
-		       ewin->border->part[i].tclass, EwinGetTitle(ewin));
+	EwinWinpartITclassApply(ewin, i);
+	ewin->bits[i].expose = 0;
 	ret = 1;
      }
    if ((move) || (resize))
@@ -793,68 +778,49 @@ DrawEwinWinpart(EWin * ewin, int i)
 	ewin->bits[i].cw = ewin->bits[i].w;
 	ewin->bits[i].ch = ewin->bits[i].h;
      }
-   ewin->bits[i].expose = 0;
-   EDBUG_RETURN(ret);
-}
-
-int
-ChangeEwinWinpart(EWin * ewin, int i)
-{
-   int                 state = 0, ret = 0;
-
-   EDBUG(3, "ChangeEwinWinpart");
-   state = ewin->bits[i].state;
-   IclassApply(ewin->border->part[i].iclass, ewin->bits[i].win,
-	       ewin->bits[i].w, ewin->bits[i].h, ewin->active, ewin->sticky,
-	       state, ewin->bits[i].expose);
-   if (ewin->border->part[i].flags == FLAG_TITLE)
-      TclassApply(ewin->border->part[i].iclass, ewin->bits[i].win,
-		  ewin->bits[i].w, ewin->bits[i].h, ewin->active,
-		  ewin->sticky, state, ewin->bits[i].expose,
-		  ewin->border->part[i].tclass, EwinGetTitle(ewin));
-   if (ewin->bits[i].win)
-      ChangeEwinWinpartContents(ewin, i);
-   if (!ewin->shapedone)
-      PropagateShapes(ewin->win);
-   else
-     {
-	if (ewin->border->changes_shape)
-	   PropagateShapes(ewin->win);
-     }
-   ewin->shapedone = 1;
-   ret = 1;
    EDBUG_RETURN(ret);
 }
 
 void
-DrawEwin(EWin * ewin)
+ChangeEwinWinpart(EWin * ewin, int i)
 {
-   int                 i, state;
+   EDBUG(3, "ChangeEwinWinpart");
 
-   EDBUG(4, "DrawEwin");
+   EwinWinpartITclassApply(ewin, i);
+   if (ewin->bits[i].win)
+      ChangeEwinWinpartContents(ewin, i);
+
+   if (!ewin->shapedone || ewin->border->changes_shape)
+      PropagateShapes(ewin->win);
+   ewin->shapedone = 1;
+
+   EDBUG_RETURN_;
+}
+
+void
+EwinBorderDraw(EWin * ewin, int do_shape, int queue_off)
+{
+   int                 i, pq;
+
+   EDBUG(4, "EwinBorderDraw");
 
    if (!ewin)
       EDBUG_RETURN_;
+
+   pq = Mode.queue_up;
+   if (queue_off)
+      Mode.queue_up = 0;
+
    for (i = 0; i < ewin->border->num_winparts; i++)
-     {
-	state = ewin->bits[i].state;
-	IclassApply(ewin->border->part[i].iclass, ewin->bits[i].win,
-		    ewin->bits[i].w, ewin->bits[i].h, ewin->active,
-		    ewin->sticky, state, ewin->bits[i].expose);
-	if (ewin->border->part[i].flags == FLAG_TITLE)
-	   TclassApply(ewin->border->part[i].iclass, ewin->bits[i].win,
-		       ewin->bits[i].w, ewin->bits[i].h, ewin->active,
-		       ewin->sticky, state, ewin->bits[i].expose,
-		       ewin->border->part[i].tclass, EwinGetTitle(ewin));
-     }
-   if (!ewin->shapedone)
+      EwinWinpartITclassApply(ewin, i);
+
+   if (do_shape || !ewin->shapedone || ewin->border->changes_shape)
       PropagateShapes(ewin->win);
-   else
-     {
-	if (ewin->border->changes_shape)
-	   PropagateShapes(ewin->win);
-     }
    ewin->shapedone = 1;
+
+   if (queue_off)
+      Mode.queue_up = pq;
+
    EDBUG_RETURN_;
 }
 
@@ -1675,7 +1641,7 @@ EwinRefresh(EWin * ewin)
       return;
 
    if (Conf.theme.transparency)
-      DrawEwin(ewin);		/* Update the border */
+      EwinBorderDraw(ewin, 0, 0);	/* Update the border */
 
    if (ewin->Refresh)
       ewin->Refresh(ewin);
@@ -1690,10 +1656,7 @@ EwinUpdateAfterMoveResize(EWin * ewin, int resize)
    DetermineEwinArea(ewin);
 
    if (Conf.theme.transparency)
-     {
-	DrawEwin(ewin);		/* Update the border */
-	PropagateShapes(ewin->win);
-     }
+      EwinBorderDraw(ewin, 1, 0);	/* Update the border */
 
    if (ewin->MoveResize)
       ewin->MoveResize(ewin, resize);
