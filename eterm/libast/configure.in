@@ -53,12 +53,20 @@ AC_CHECK_PROG(MV, mv, mv, true)
 AC_LN_S
 
 AC_CHECK_SIZEOF(char, 1)
-AC_CHECK_SIZEOF(short, 4)
+AC_CHECK_SIZEOF(short, 2)
 AC_CHECK_SIZEOF(int, 4)
 AC_CHECK_SIZEOF(long, 4)
-AC_CHECK_SIZEOF(void *, 4)
 AC_CHECK_SIZEOF(long long, 8)
 AC_C_BIGENDIAN
+
+AST_SIZE_TYPE(8)
+AC_SUBST(INT_8_TYPE)
+AST_SIZE_TYPE(16)
+AC_SUBST(INT_16_TYPE)
+AST_SIZE_TYPE(32)
+AC_SUBST(INT_32_TYPE)
+AST_SIZE_TYPE(64)
+AC_SUBST(INT_64_TYPE)
 
 AC_C_CONST
 AC_C_INLINE
@@ -214,7 +222,9 @@ basedir=.
 
 AM_CONFIG_HEADER(config.h)
 
-AC_OUTPUT(Makefile test/Makefile libast-config libast.spec)
+AC_OUTPUT(${srcdir}/include/libast/types.h Makefile include/Makefile \
+          include/libast/Makefile src/Makefile test/Makefile \
+          libast-config libast.spec)
 test -f libast-config && chmod 755 libast-config
 
 echo "

@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 1997-2001, Michael Jennings
+ * Copyright (C) 1997-2002, Michael Jennings
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to
@@ -21,53 +21,16 @@
  * CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 
-#ifndef _LIBAST_INTERNAL_H_
-#define _LIBAST_INTERNAL_H_
+static const char cvs_ident[] = "$Id$";
 
-/* This GNU goop has to go before the system headers */
-#ifdef __GNUC__
-# ifndef __USE_GNU
-#  define __USE_GNU
-# endif
-# ifndef _GNU_SOURCE
-#  define _GNU_SOURCE
-# endif
-# ifndef _BSD_SOURCE
-#  define _BSD_SOURCE
-# endif
-# ifndef inline
-#  define inline __inline__
-# endif
+#ifdef HAVE_CONFIG_H
+# include <config.h>
 #endif
 
-#include "config.h"
-#include "libast.h"
+#include "libast_internal.h"
 
-#ifdef HAVE_REGEX_H
-# include <regex.h>
-#endif
-#ifdef HAVE_STDARG_H
-# include <stdarg.h>
-#endif
+/* FIXME:  Change this to an unsigned short once the
+   options parser can handle function pointers. */
+unsigned int libast_debug_level = 0;
+unsigned long libast_debug_flags = 0;
 
-/******************************** MSGS GOOP ***********************************/
-extern char *libast_program_name, *libast_program_version;
-
-
-
-/********************************* MEM GOOP ***********************************/
-#define LIBAST_FNAME_LEN  20
-
-typedef struct ptr_struct {
-  void *ptr;
-  size_t size;
-  char file[LIBAST_FNAME_LEN + 1];
-  unsigned long line;
-} ptr_t;
-typedef struct memrec_struct {
-  unsigned long cnt;
-  ptr_t *ptrs;
-} memrec_t;
-
-
-#endif /* _LIBAST_INTERNAL_H_ */

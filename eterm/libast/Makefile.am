@@ -1,15 +1,9 @@
 # $Id$
 
 AUTOMAKE_OPTIONS = foreign
-SUBDIRS = . test
+SUBDIRS = include src test
 
 bin_SCRIPTS = libast-config
-lib_LTLIBRARIES = libast.la
-include_HEADERS = libast.h
-
-libast_la_SOURCES = conf.c debug.c file.c mem.c msgs.c strings.c snprintf.c libast.h libast_internal.h
-
-libast_la_LDFLAGS = -version-info 1:3:0
 
 EXTRA_DIST = README
 

@@ -111,3 +111,8 @@ Sat Sep 22 09:24:41 2001                        Michael Jennings (mej)
 Fixed a compilation issue on some systems where libX11 would not be
 linked in with the test program.  This is libast 0.4.
 ----------------------------------------------------------------------
+Mon Jan 21 18:02:20 2002                        Michael Jennings (mej)
+
+Don't try this at home.  This package has been discombobulated by
+trained professionals.
+----------------------------------------------------------------------

@@ -1,3 +1,17 @@
+dnl 
+AC_DEFUN(AST_SIZE_TYPE,
+[BIT_SIZE=[$1]
+BYTE_SIZE=`expr $BIT_SIZE '/' 8`
+case $BYTE_SIZE in
+    $ac_cv_sizeof_char)       eval INT_${BIT_SIZE}_TYPE=char ;;
+    $ac_cv_sizeof_short)      eval INT_${BIT_SIZE}_TYPE=short ;;
+    $ac_cv_sizeof_int)        eval INT_${BIT_SIZE}_TYPE=int ;;
+    $ac_cv_sizeof_long)       eval INT_${BIT_SIZE}_TYPE=long ;;
+    $ac_cv_sizeof_long_long)  eval INT_${BIT_SIZE}_TYPE="'long long'" ;;
+esac
+test -z "`eval echo '$'INT_${BIT_SIZE}_TYPE`" && eval INT_${BIT_SIZE}_TYPE=long
+])
+
 dnl acl.m4 -- Written by Duncan Simpson <dps@io.stargate.co.uk>
 dnl Posted to BUGTRAQ on 17 June 1999
 dnl Used by encouragement. :-)
