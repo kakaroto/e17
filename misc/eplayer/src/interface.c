@@ -214,7 +214,8 @@ static void register_callbacks(ePlayer *player) {
 		 (EdjeCb) cb_repeat_mode_toggle},
 		{"SWITCH_GROUP", "*",
 		 (EdjeCb) cb_switch_group},
-		{"*", "*", (EdjeCb) debug}
+		{"SEEKER*", "*",
+		 (EdjeCb) cb_update_seeker}
 	};
 
 	for (i = 0; i < sizeof (cb) / sizeof (EdjeCallback); i++)
@@ -321,6 +322,7 @@ int ui_refresh_time(ePlayer *player, int time) {
 int ui_refresh_seeker(ePlayer *player, double song_pos) {
 	edje_object_part_drag_value_set(player->gui.edje, "seeker",
 	                                song_pos, song_pos);
+	edje_object_thaw(player->gui.edje);					
 	evas_render(player->gui.evas);
 
 	return 1;

@@ -1,6 +1,7 @@
 #include <config.h>
 #include <Edje.h>
 #include <Esmart/container.h>
+#include <Ecore_X.h>
 #include <assert.h>
 #include "eplayer.h"
 #include "track.h"
@@ -278,4 +279,53 @@ EDJE_CB(eplayer_raise) {
 EDJE_CB(switch_group) {
 	evas_object_del(player->gui.edje);
 	ui_init_edje(player, src);
+}
+
+EDJE_CB(update_seeker) {
+  if (!strcmp(emission, "SEEKER_START"))
+  {
+    player->gui.seeking = 1;
+  }
+  else if (!strcmp(emission, "SEEKER_STOP"))
+  {
+    player->gui.seeking = 0;
+  }
+
+  if (player->gui.seeking)
+  {
+    Evas_Coord x, y, w, h;
+    int ex, ey;
+    PlayListItem *pli = playlist_current_item_get(player->playlist);
+    double pos;
+
+    if (ecore_event_current_type_get() == ECORE_X_EVENT_MOUSE_MOVE)
+    {
+      Ecore_X_Event_Mouse_Move *event;
+     
+      event = ecore_event_current_event_get();
+      ex = event->x; ey = event->y;
+    }
+    else if (ecore_event_current_type_get() == ECORE_X_EVENT_MOUSE_BUTTON_DOWN)
+    {
+      Ecore_X_Event_Mouse_Button_Down *event;
+     
+      event = ecore_event_current_event_get();
+      ex = event->x; ey = event->y;
+    }
+
+    edje_object_part_geometry_get(player->gui.edje, "seeker_grabber",
+                                  &x, &y, &w, &h);
+      
+    pos = ((double)(ex - x)) / ((double)w);
+    if (pos < 0) pos = 0;
+    if (pos > 1) pos = 1;
+
+    eplayer_playback_stop(player);
+    pli->plugin->set_current_pos(pli->plugin->get_duration() * pos);
+
+    pli->current_pos = pli->duration * pos;
+    track_update_time(player);
+
+    eplayer_playback_start(player, 0);
+  }
 }
