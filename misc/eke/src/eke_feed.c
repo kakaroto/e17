@@ -6,6 +6,7 @@
 #include "eke_parse.h"
 #include "eke_macros.h"
 #include "eke_file.h"
+#include "eke_feed_item.h"
 
 #define MINUTES     * 60
 
@@ -461,6 +462,31 @@ eke_feed_cache_name_get(const char *name, const char *path)
     FREE(path_tmp);
 
     return strdup(c_name);
+}
+
+void
+eke_feed_del(Eke_Feed *feed)
+{
+    if (!feed) return;
+
+    if (feed->timer) ecore_timer_del(feed->timer);
+    IF_FREE(feed->name);
+    IF_FREE(feed->server.name);
+    IF_FREE(feed->server.path);
+    IF_FREE(feed->server.proxy.name);
+    IF_FREE(feed->server.proxy.user);
+    IF_FREE(feed->server.proxy.passwd);
+    IF_FREE(feed->server.data.data);
+    IF_FREE(feed->data.data);
+    IF_FREE(feed->update.crypt);
+    IF_FREE(feed->title);
+    IF_FREE(feed->link);
+    IF_FREE(feed->desc);
+
+    ecore_list_set_free_cb(feed->items, ECORE_FREE_CB(eke_feed_item_free));
+    ecore_list_destroy(feed->items);
+
+    FREE(feed);
 }
 
 

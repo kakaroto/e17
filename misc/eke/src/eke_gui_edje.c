@@ -100,7 +100,7 @@ eke_gui_edje_create(Eke *eke)
     edje_object_signal_callback_add(edje, "eke,feed,add", "",
                                         eke_gui_edje_feed_add_cb, NULL);
     edje_object_signal_callback_add(edje, "eke,feed,del", "",
-                                        eke_gui_edje_feed_del_cb, NULL);
+                                        eke_gui_edje_feed_del_cb, eke);
     edje_object_signal_callback_add(edje, "eke,feed,refresh", "",
                                         eke_gui_edje_feed_refresh_cb, eke);
     edje_object_signal_callback_add(edje, "eke,quit", "",
@@ -288,7 +288,41 @@ static void
 eke_gui_edje_feed_del_cb(void *data, Evas_Object *obj, 
                         const char *em, const char *src)
 {
-    printf("del cb\n");
+    Eke *eke;
+    Eke_Feed *feed;
+    Eke_Gui_Edje_Feed *disp;
+    Evas_Object *list;
+    Evas *evas;
+    Ecore_List *key_list;
+
+    eke = data;
+    feed = eke->current_feed;
+    disp = ecore_hash_remove(eke->feeds, feed);
+
+    key_list = ecore_hash_keys(eke->feeds);
+    if (key_list) {
+        Eke_Feed *new_feed;
+
+        new_feed = ecore_list_goto_first(key_list);
+        if (new_feed) eke_gui_edje_feed_swap(eke, new_feed);
+
+        ecore_list_destroy(key_list);
+    }
+
+    evas = evas_object_evas_get(eke->gui.edje.edje);
+    if ((list = evas_object_name_find(evas, "feeds.list")))
+        esmart_container_element_remove(list, disp->menu_item);
+
+    if (disp->menu_item) evas_object_del(disp->menu_item);
+    disp->menu_item = NULL;
+
+    if (disp->body) evas_object_del(disp->body);
+    disp->body = NULL;
+
+    if (feed) eke_feed_del(feed);
+    feed = NULL;
+
+    FREE(disp);
 
     return;
     data = NULL;

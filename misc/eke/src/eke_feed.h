@@ -64,6 +64,8 @@ int EKE_FEED_EVENT_DATA;
 int eke_feed_init(const char *dir);
 int eke_feed_shutdown(void);
 
+void eke_feed_del(Eke_Feed *feed);
+
 Eke_Feed *eke_feed_new_from_uri(const char *uri);
 Eke_Feed *eke_feed_new(const char *name, const char *srv, int port, 
                                                     const char *path);

@@ -19,7 +19,7 @@ eke_feed_item_free(Eke_Feed_Item *item)
     IF_FREE(item->title);
     IF_FREE(item->link);
     IF_FREE(item->desc);
-
+    IF_FREE(item->date);
     FREE(item);
 }
 
