@@ -329,3 +329,11 @@ Wed Nov 10 19:48:22 GMT 1999
 (gilbertt)
 
 Added E-SD. I don't think I screwed anything up in the process.
+
+-------------------------------------------------------------------------------
+
+Wed Nov 10 14:54:28 PST 1999
+(Mandrake)
+
+removed EppletTest and EppletConfigTest from install procedure.  no need for
+those to be automagically installed.
