@@ -1561,7 +1561,28 @@ HandleMouseDown(XEvent * ev)
    if (mode.mode != MODE_NONE)
       EDBUG_RETURN_;
    if ((mode.cur_menu_mode) && (!clickmenu))
-      EDBUG_RETURN_;
+     {
+	unsigned int        bmask = 0, evmask;
+
+	evmask = ev->xbutton.state &
+	   (Button1Mask | Button2Mask | Button3Mask | Button4Mask | Button5Mask);
+	if (ev->xbutton.button == 1)
+	   bmask = Button1Mask;
+	else if (ev->xbutton.button == 2)
+	   bmask = Button2Mask;
+	else if (ev->xbutton.button == 3)
+	   bmask = Button3Mask;
+	else if (ev->xbutton.button == 4)
+	   bmask = Button4Mask;
+	else if (ev->xbutton.button == 5)
+	   bmask = Button5Mask;
+	if (bmask != evmask)
+	   clickmenu = 1;
+	else
+	  {
+	     EDBUG_RETURN_;
+	  }
+     }
    if (ttip)
       HideToolTip(ttip);
    RemoveTimerEvent("TOOLTIP_TIMEOUT");
