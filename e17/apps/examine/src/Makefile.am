@@ -27,6 +27,7 @@ $(INCLUDES)
 exsh_DEPENDENCIES =
 
 examine_SOURCES = \
+ipc.h \
 examine_client.c \
 examine_client.h \
 ecore_config_client.c \
@@ -44,4 +45,3 @@ $(INCLUDES) \
 @ewl_cflags@
 
 examine_DEPENDENCIES = 
-

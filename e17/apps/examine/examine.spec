@@ -59,6 +59,8 @@ rm -rf $RPM_BUILD_ROOT
 
 %files
 %defattr(-,root,root)
+%{prefix}/bin/exsh
+%{prefix}/bin/examine
 
 %files devel
 %attr(755,root,root) %{prefix}/bin/examine*
