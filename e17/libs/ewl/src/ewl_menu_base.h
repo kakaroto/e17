@@ -92,6 +92,7 @@ void ewl_menu_base_expand_cb(Ewl_Widget *w, void *ev_data, void *user_data);
 void ewl_menu_base_collapse_cb(Ewl_Widget * w, void *ev_data, void *user_data);
 void ewl_menu_base_destroy_cb(Ewl_Widget * w, void *ev_data, void *user_data);
 
+void ewl_menu_item_configure_cb(Ewl_Widget *w, void *ev_data, void *user_data);
 void ewl_menu_add_cb(Ewl_Container * parent, Ewl_Widget * child);
 void ewl_menu_item_add_cb(Ewl_Container *parent, Ewl_Widget *child);
 void ewl_menu_item_resize_cb(Ewl_Container *parent, Ewl_Widget *child,

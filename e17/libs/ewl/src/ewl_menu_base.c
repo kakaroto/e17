@@ -40,10 +40,11 @@ void ewl_menu_base_init(Ewl_Menu_Base * menu, char *image, char *title)
 	ewl_widget_show(menu->popbox);
 
 	/*
-	 * The add notifier makes sure newly added children go in the popup
+	 * Redirect the container so that newly added children go in the popup
 	 * menu.
 	 */
-	ewl_container_add_notify(EWL_CONTAINER(menu), ewl_menu_add_cb);
+	ewl_container_set_redirect(EWL_CONTAINER(menu),
+				   EWL_CONTAINER(menu->popbox));
 
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
@@ -65,7 +66,6 @@ Ewl_Widget     *ewl_menu_item_new(char *image, char *text)
 		DRETURN_PTR(NULL, DLEVEL_STABLE);
 
 	ewl_menu_item_init(item, image, text);
-	ewl_container_add_notify(EWL_CONTAINER(item), ewl_menu_add_cb);
 
 	DRETURN_PTR(EWL_WIDGET(item), DLEVEL_STABLE);
 }
@@ -87,14 +87,18 @@ void ewl_menu_item_init(Ewl_Menu_Item * item, char *image, char *text)
 	DCHECK_PARAM_PTR("item", item);
 
 	/*
-	 * Initialize the inherited fields and override an appearance setting
-	 * and the recursive setting. This will cause clicks to stop at this
-	 * level.
+	 * Initialize the inherited container fields.
 	 */
 	ewl_container_init(EWL_CONTAINER(item), "menuitem",
 			ewl_menu_item_add_cb, ewl_menu_item_resize_cb, NULL);
 	ewl_object_set_fill_policy(EWL_OBJECT(item), EWL_FLAG_FILL_HFILL);
 
+	ewl_callback_append(EWL_WIDGET(item), EWL_CALLBACK_CONFIGURE,
+			    ewl_menu_item_configure_cb, NULL);
+
+	/*
+	 * Intercept mouse events this will cause callbacks to on this widget.
+	 */
 	ewl_container_intercept_callback(EWL_CONTAINER(item),
 			EWL_CALLBACK_CLICKED);
 	ewl_container_intercept_callback(EWL_CONTAINER(item),
@@ -191,6 +195,30 @@ void ewl_menu_separator_init(Ewl_Menu_Separator *sep)
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
 
+void
+ewl_menu_item_configure_cb(Ewl_Widget *w, void *ev_data, void *user_data)
+{
+	int x;
+	Ewl_Container *c;
+	Ewl_Widget *child;
+
+	DENTER_FUNCTION(DLEVEL_STABLE);
+
+	c = EWL_CONTAINER(w);
+	x = CURRENT_X(w);
+	ewd_list_goto_first(c->children);
+	while ((child = ewd_list_next(c->children))) {
+		int width;
+
+		width = ewl_object_get_preferred_w(EWL_OBJECT(child));
+		ewl_object_place(EWL_OBJECT(child), x, CURRENT_Y(w), width,
+				 CURRENT_H(w));
+		x += width;
+	}
+
+	DLEAVE_FUNCTION(DLEVEL_STABLE);
+}
+
 void ewl_menu_item_add_cb(Ewl_Container *parent, Ewl_Widget *child)
 {
 	DENTER_FUNCTION(DLEVEL_STABLE);
@@ -213,30 +241,6 @@ ewl_menu_item_resize_cb(Ewl_Container *parent, Ewl_Widget *child, int size,
 	else
 		ewl_object_set_preferred_w(EWL_OBJECT(parent),
 				PREFERRED_W(parent) + size);
-
-	DLEAVE_FUNCTION(DLEVEL_STABLE);
-}
-
-void ewl_menu_add_cb(Ewl_Container * parent, Ewl_Widget * child)
-{
-	Ewl_IMenu      *menu;
-	Ewl_Menu_Item  *item;
-
-	DENTER_FUNCTION(DLEVEL_STABLE);
-
-	menu = EWL_IMENU(parent);
-	item = EWL_MENU_ITEM(parent);
-
-	/*
-	 * Place the newly added child in the popup menu.
-	 */
-	if (child != item->icon && child != item->text)
-		ewl_container_append_child(EWL_CONTAINER(menu->base.popbox),
-				child);
-	else
-		ewl_menu_item_add_cb(parent, child);
-
-	EWL_MENU_ITEM(child)->submenu = TRUE;
 
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
