@@ -17,57 +17,75 @@ signals:			source		description
 EnticeThumbPreview		""		Send thumb to the previewer
 EnticeThumbLoad			""		Load this thumbnail as the 
 						current image.
+EnticeThumbDelete		""		Delete the thumbnail
+						from entice and off disk
+EnticeThumbRemove		""		Remove the thumbnail
+						from entice
 /*========================================================================*/
 
 Entice:
-parts(states)			type
-EnticeFileName(default)		TEXT
-EnticeFileSize(default)		TEXT
-EnticeImageDimensions(default) 	TEXT		maybe one each for width and height
+parts				type
+-----				----
+EnticeFileName			TEXT		full path to image
+EnticeFileShortName		TEXT		only filename
+EnticeFileSize			TEXT		filesize in KB or MB
+EnticeImageDimensions		TEXT		widthxheight
+EnticeImageHeight		TEXT		just height in pixels
+EnticeImageWidth		TEXT		just width in pixels
 EnticeImage			swallowed	the main image display
-EnticeImageScroller		swallowed	the bottom-right corner
+EnticeImageScroller		swallowed	area visible relative to
+						screen size, high level
+						magnifying glass
+						(NEEDS WORK)
 EnticeImagePreview		swallowed	Preview an image before
 						loading
 EnticeThumbnailArea		swallowed	Thumbnail container
 
 signals emitted by entice:
+signal			source	description
+------			------	-----------
 EnticeImageDisplay	""	when a new image is displayed
+EnticeImageModified	""	When the image in memory is no longer
+				is consistent with the disk image
+EnticeImagePreviewPrep	""	Emitted before, preview show
+				attempts loading
+EnticeImagePreviewShow	""	when we have previewed a new
+				image
 
 signals understood by entice:
 signal			source	description
-EnticeDeleteCurrent	  ""	deletes the current image from the disk
-EnticeRemoveCurrent	  ""	removes the current image from the image list
-EnticeSaveCurrent	  ""	save the image to disk
+------			------	-----------
+/* Things you can do to the image */
+EnticeImageDelete	  ""	deletes the current image from the disk
+EnticeImageRemove	  ""	removes the current image from the image list
+EnticeImageSave		  ""	save the image to disk
 EnticeImageNext		  ""	shows the next image in the list
 EnticeImagePrev		  ""	shows the previous image in the list
-EnticeZoomDefault	""	zooms 1:1
-EnticeZoomFit		  ""	zooms so the image fits the screen
-EnticeZoomIn		  ""	zooms in
-EnticeZoomOut		  ""	zooms out
-EnticeZoomInFocused  	""	zooms in focused on the current mouse x,y
-EnticeZoomOutFocused 	""	zooms out focused on the current mouse x,y
-EnticeFitWindow		  ""	resizes the window to fit the image
-EnticeRotateRight	  ""	rotates the image 90deg clockwise
-EnticeRotateLeft	  ""	I'm sure you can guess this one
-EnticeFlipH		  ""	flips left <-> right
-EnticeFlipV		  ""	flips top <-> bottom
-EnticeFullScreen	  ""	switches to/from fullscreen mode
-EnticeQuit		  ""	exits entice
+EnticeImageZoomDefault	  ""	zooms 1:1
+EnticeImageZoomFit	  ""	zooms so the image fits the screen
+EnticeImageZoomIn	  ""	zooms in
+EnticeImageZoomOut	  ""	zooms out
+EnticeImageZoomInFocused  ""	zooms in focused on the current mouse x,y
+EnticeImageZoomOutFocused ""	zooms out focused on the current mouse x,y
+EnticeImageFitWindow	  ""	resizes the window to fit the image
+EnticeImageRotateRight	  ""	rotates the image 90deg clockwise
+EnticeImageRotateLeft	  ""	I'm sure you can guess this one
+EnticeImageFlipH		  ""	flips left <-> right
+EnticeImageFlipV		  ""	flips top <-> bottom
 
+/* For Panning across the image */
 EnticeImageScrollEastStart   	""	start scrolling the image right 
 EnticeImageScrollSouthStart  	""	start scrolling the image down
 EnticeImageScrollWestStart   	""	start scrolling the image left
 EnticeImageScrollNorthStart  	""	start scrolling the image upwards 
-EnticeImageScrollStop  ""	stop image directional scrolling
+EnticeImageScrollStop  		""	stop image directional scrolling
 
+/* For Scrolling the thumbnail area */
 EnticeThumbsScrollNextStart	""	start scrolling down the thumbnailer
 EnticeThumbsScrollPrevStart	""	start scrolling up the thumbnailer
 EnticeThumbsScrollStop		""  	stop scrolling in either direction
 
-EnticeImageModified		""	When the image in memory is no longer
-					is consistent with the disk image
-EnticeImagePreviewPrep		""	Emitted before, preview show
-					attempts loading
-EnticeImagePreviewShow		""	when we have previewed a new
-					image
+EnticeFullScreen	  ""	switches to/from fullscreen mode
+EnticeQuit		  ""	exits entice
+
 /*========================================================================*/
