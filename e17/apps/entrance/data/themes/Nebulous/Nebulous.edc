@@ -12,6 +12,7 @@ images
     image, "menu_top_left.png"		LOSSY 80;
     image, "menu_top_right.png"		LOSSY 80;
     image, "menu.png"		LOSSY 80;
+    image, "Nebulous_preview.png"		LOSSY 80;
 }
 collections
 {
@@ -1668,6 +1669,51 @@ collections
 		signal, "mouse,clicked,1";
 		source, "EntranceSessionTitle";
 		action, SIGNAL_EMIT "SessionSelected" "";
+	    }
+	}
+    }
+    group
+    {
+	name, "Preview";
+	min, 80 60;
+	max, 80 60;
+	parts
+	{
+	    part
+	    {
+		name, "img";
+		type, IMAGE;
+		mouse_events, 1;
+		description
+		{
+		    state, "default" 0.0;
+		    min, 80 60;
+		    max, 80 60;
+		    visible, 1;
+		    rel1
+		    {
+			relative, 0.0 0.0;
+			offset, 2 2;
+		    }
+		    rel2
+		    {
+			relative, 1.0 1.0;
+			offset, -2 -2;
+		    }
+		    image {
+			normal, "Nebulous_preview.png";
+		    }
+		}
+	    }
+	}
+	programs
+	{
+	    program
+	    {
+		name, "PreviewClicked";
+		signal, "mouse,clicked,1";
+		source, "img";
+		action, SIGNAL_EMIT "PreviewSelected" "";
 	    }
 	}
     }
