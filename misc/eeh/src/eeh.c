@@ -9,6 +9,7 @@ int show_image(char * filename);
 #define MAXH 1024
 
 	Evas_List   *   file_list;
+	Evas_List   *   file_list_clean;
         Ecore_Evas  *   ee;
         Evas        *   evas;
         Evas_Object *   base_rect;
@@ -25,6 +26,7 @@ int main(int argc, char *argv[]){
 	}
 
 	x = evas_list_count(file_list);	
+	file_list_clean = file_list;
 	//printf("There are %d elements in the list\n", x);
 
         ecore_init();
@@ -70,10 +72,23 @@ void key_down(void *data, Evas *e, Evas_Object *obj, void *event_info) {
                 ecore_main_loop_quit();
 	} else if (!strcmp(ev->keyname, "Left")){
 		file_list = evas_list_prev(file_list);		
-		show_image(evas_list_data(file_list));
+		if(evas_list_data(file_list)){
+			show_image(evas_list_data(file_list));
+		} else {
+			printf("Prev past begining...\n");
+			file_list = evas_list_last(file_list_clean);
+			show_image(evas_list_data(file_list));
+		}
 	} else if (!strcmp(ev->keyname, "Right")){
 		file_list = evas_list_next(file_list);		
 		show_image(evas_list_data(file_list));
+		if(evas_list_data(file_list)){
+                        show_image(evas_list_data(file_list));
+                } else {
+                        printf("Hit end...\n");
+                        file_list = file_list_clean;
+                        show_image(evas_list_data(file_list));
+                }
 	} else {
         	//printf("You hit key: %s\n", ev->keyname);
 	}
@@ -90,6 +105,12 @@ static int main_signal_exit(void *data, int ev_type, void *ev) {
 int show_image(char * filename){
 
         evas_object_image_file_set(image, filename, NULL);
+
+	if(evas_object_image_load_error_get(image)){
+		printf("Can't load %s.\n", filename);
+		return;
+	}
+
         evas_object_image_size_get(image, &w, &h);
         printf("%s: Orig Size is %d by %d\n", filename, w, h);
 
