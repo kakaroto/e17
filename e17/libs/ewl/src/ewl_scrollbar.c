@@ -381,7 +381,7 @@ ewl_scrollbar_scroll_start_cb(Ewl_Widget * w, void *ev_data, void *user_data)
 	 * Need to scroll in the opposite direction for the vertical
 	 * scrollbar.
 	 */
-	o = ewl_box_get_orientation(EWL_BOX(s));
+	o = ewl_box_orientation_get(EWL_BOX(s));
 	if (o == EWL_ORIENTATION_VERTICAL)
 		s->direction = -s->direction;
 

@@ -148,13 +148,13 @@ void __create_progressbar_test_window(Ewl_Widget * w, void *ev_data, void *user_
 	
 	progressbar_vbox = ewl_vbox_new();
 	ewl_container_child_append(EWL_CONTAINER(progressbar_win), progressbar_vbox);
-	ewl_box_set_spacing(EWL_BOX(progressbar_vbox), 0);
+	ewl_box_spacing_set(EWL_BOX(progressbar_vbox), 0);
 	ewl_widget_show(progressbar_vbox);
 
 	progressbar_box = ewl_hbox_new();
 	ewl_container_child_append(EWL_CONTAINER(progressbar_vbox), 
 			progressbar_box);
-	ewl_box_set_spacing(EWL_BOX(progressbar_box), 0);
+	ewl_box_spacing_set(EWL_BOX(progressbar_box), 0);
 	ewl_widget_show(progressbar_box);
 
 	/*
@@ -191,7 +191,7 @@ void __create_progressbar_test_window(Ewl_Widget * w, void *ev_data, void *user_
 	progressbar_box = ewl_hbox_new();
 	ewl_container_child_append(EWL_CONTAINER(progressbar_vbox),
 			progressbar_box);
-	ewl_box_set_spacing(EWL_BOX(progressbar_box), 0);
+	ewl_box_spacing_set(EWL_BOX(progressbar_box), 0);
 	ewl_widget_show(progressbar_box);
 					
 	button = ewl_button_new ("Rerun");

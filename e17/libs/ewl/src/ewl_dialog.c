@@ -64,7 +64,7 @@ ewl_dialog_init (Ewl_Dialog *dialog, Ewl_Position pos)
   if (dialog->vbox)
     {
       ewl_container_child_append(EWL_CONTAINER(box), dialog->vbox);
-      ewl_box_set_homogeneous (EWL_BOX (dialog->vbox), FALSE);
+      ewl_box_homogeneous_set (EWL_BOX (dialog->vbox), FALSE);
       switch (pos)
 	{
 	case EWL_POSITION_LEFT: 
@@ -167,7 +167,7 @@ ewl_dialog_init (Ewl_Dialog *dialog, Ewl_Position pos)
 	  }
 	}
 
-      ewl_box_set_homogeneous (EWL_BOX (dialog->action_area), FALSE);
+      ewl_box_homogeneous_set (EWL_BOX (dialog->action_area), FALSE);
       ewl_widget_show (dialog->action_area);
       
       spacer = ewl_spacer_new();

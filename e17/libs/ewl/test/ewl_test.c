@@ -140,8 +140,8 @@ main(int argc, char **argv)
 	 */
 	main_box = ewl_hbox_new();
 	ewl_container_child_append(EWL_CONTAINER(main_win), main_box);
-	ewl_box_set_spacing(EWL_BOX(main_box), 6);
-	ewl_box_set_homogeneous (EWL_BOX (main_box), FALSE);
+	ewl_box_spacing_set(EWL_BOX(main_box), 6);
+	ewl_box_homogeneous_set (EWL_BOX (main_box), FALSE);
 	ewl_widget_show(main_box);
 
 	main_tree = ewl_tree_new(1);

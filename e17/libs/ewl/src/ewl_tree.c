@@ -68,7 +68,7 @@ int ewl_tree_init(Ewl_Tree *tree, unsigned short columns)
 	row = ewl_row_new();
 	for (i = 0; i < tree->ncols; i++) {
 		button = ewl_button_new(NULL);
-		ewl_box_set_orientation(EWL_BOX(button),
+		ewl_box_orientation_set(EWL_BOX(button),
 				EWL_ORIENTATION_VERTICAL);
 		ewl_object_fill_policy_set(EWL_OBJECT(button),
 				EWL_FLAG_FILL_HSHRINK |

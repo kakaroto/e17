@@ -67,7 +67,7 @@ ewl_filedialog_init(Ewl_Filedialog * fd, Ewl_Filedialog_Type type)
 	ewl_widget_show (fd->path_label);
 
 	hbox = ewl_hbox_new();
-	ewl_box_set_homogeneous(EWL_BOX(hbox), FALSE);
+	ewl_box_homogeneous_set(EWL_BOX(hbox), FALSE);
 	ewl_widget_internal_set(hbox, TRUE);
 	ewl_container_child_append(EWL_CONTAINER(vbox), hbox);
 	ewl_widget_show (hbox);
@@ -107,7 +107,7 @@ ewl_filedialog_init(Ewl_Filedialog * fd, Ewl_Filedialog_Type type)
 	ewl_widget_internal_set(fd->button_box, TRUE);
 	ewl_object_fill_policy_set(EWL_OBJECT(fd->button_box),
 			EWL_FLAG_FILL_HFILL | EWL_FLAG_FILL_HSHRINK);
-	ewl_box_set_spacing(EWL_BOX(fd->button_box), 4);
+	ewl_box_spacing_set(EWL_BOX(fd->button_box), 4);
 	ewl_object_padding_set(EWL_OBJECT(fd->button_box), 10, 10, 10, 10);
 	ewl_object_alignment_set(EWL_OBJECT(fd->button_box), EWL_FLAG_ALIGN_RIGHT);
 	ewl_container_child_append(EWL_CONTAINER(vbox), fd->button_box);

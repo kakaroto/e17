@@ -81,7 +81,7 @@ __create_entry_test_window(Ewl_Widget * w, void *ev_data, void *user_data)
 	 */
 	entry_box = ewl_vbox_new();
 	ewl_container_child_append(EWL_CONTAINER(entry_win), entry_box);
-	ewl_box_set_spacing(EWL_BOX(entry_box), 10);
+	ewl_box_spacing_set(EWL_BOX(entry_box), 10);
 	ewl_widget_show(entry_box);
 
 	entry[0] = ewl_entry_new("Play with me ?");
@@ -105,7 +105,7 @@ __create_entry_test_window(Ewl_Widget * w, void *ev_data, void *user_data)
 	button_hbox = ewl_hbox_new();
 	ewl_object_alignment_set(EWL_OBJECT(button_hbox), EWL_FLAG_ALIGN_CENTER);
 	ewl_container_child_append(EWL_CONTAINER(entry_box), button_hbox);
-	ewl_box_set_spacing(EWL_BOX(button_hbox), 5);
+	ewl_box_spacing_set(EWL_BOX(button_hbox), 5);
 	ewl_widget_show(button_hbox);
 
 	button[0] = ewl_button_new("Fetch text");

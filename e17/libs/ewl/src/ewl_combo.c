@@ -96,7 +96,7 @@ void ewl_combo_init(Ewl_Combo * combo, char *title)
 	ewl_widget_internal_set(combo->base.popup, TRUE);
 	ewl_widget_layer_set(combo->base.popup, 1000);
 	ewl_widget_appearance_set(EWL_WIDGET(combo->base.popup), "imenu");
-	ewl_box_set_orientation(EWL_BOX(combo->base.popup),
+	ewl_box_orientation_set(EWL_BOX(combo->base.popup),
 				EWL_ORIENTATION_VERTICAL);
 	ewl_object_fill_policy_set(EWL_OBJECT(combo->base.popup),
 				   EWL_FLAG_FILL_HFILL);

@@ -53,7 +53,7 @@ void ewl_imenu_init(Ewl_IMenu * menu, char *image, char *title)
 	ewl_widget_internal_set(menu->base.popup, TRUE);
 	ewl_widget_layer_set(menu->base.popup, 1000);
 	ewl_widget_appearance_set(EWL_WIDGET(menu->base.popup), "imenu");
-	ewl_box_set_orientation(EWL_BOX(menu->base.popup),
+	ewl_box_orientation_set(EWL_BOX(menu->base.popup),
 				EWL_ORIENTATION_VERTICAL);
 	ewl_object_fill_policy_set(EWL_OBJECT(menu->base.popup),
 				   EWL_FLAG_FILL_NONE);

@@ -84,7 +84,7 @@ void __notebook_create_main_page(Ewl_Widget * notebook)
 	ewl_widget_show(tab);
 
 	main_vbox = ewl_vbox_new();
-	ewl_box_set_spacing(EWL_BOX(main_vbox), 10);
+	ewl_box_spacing_set(EWL_BOX(main_vbox), 10);
 	ewl_widget_show(main_vbox);
 
 	text = ewl_text_new("Main");
@@ -202,7 +202,7 @@ __notebook_generate_page(Ewl_Widget * notebook)
 	ewl_widget_show(tab);
 
 	main_vbox = ewl_vbox_new();
-	ewl_box_set_spacing(EWL_BOX(main_vbox), 10);
+	ewl_box_spacing_set(EWL_BOX(main_vbox), 10);
 	ewl_widget_show(main_vbox);
 
 	text = ewl_text_new(label);
@@ -211,7 +211,7 @@ __notebook_generate_page(Ewl_Widget * notebook)
 	ewl_widget_show(text);
 
 	hbox = ewl_hbox_new();
-	ewl_box_set_spacing(EWL_BOX(hbox), 5);
+	ewl_box_spacing_set(EWL_BOX(hbox), 5);
 	ewl_object_padding_set(EWL_OBJECT(hbox), 0, 0, 20, 0);
 	ewl_object_alignment_set(EWL_OBJECT(hbox), EWL_FLAG_ALIGN_CENTER);
 	ewl_container_child_append(EWL_CONTAINER(main_vbox), hbox);
@@ -299,7 +299,7 @@ __create_notebook_test_window(Ewl_Widget * w, void *ev_data, void *user_data)
 	 */
 	notebook_box = ewl_vbox_new();
 	ewl_container_child_append(EWL_CONTAINER(notebook_win), notebook_box);
-	ewl_box_set_spacing(EWL_BOX(notebook_box), 10);
+	ewl_box_spacing_set(EWL_BOX(notebook_box), 10);
 	ewl_widget_show(notebook_box);
 
 	notebook = ewl_notebook_new();

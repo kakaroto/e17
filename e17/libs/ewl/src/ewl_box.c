@@ -135,7 +135,7 @@ int ewl_box_init(Ewl_Box * b, Ewl_Orientation o)
 	 * that the orientation does it's job.
 	 */
 	b->orientation = 0xdeadbeef;
-	ewl_box_set_orientation(b, o);
+	ewl_box_orientation_set(b, o);
 
 	DRETURN_INT(TRUE, DLEVEL_STABLE);
 }
@@ -149,7 +149,7 @@ int ewl_box_init(Ewl_Box * b, Ewl_Orientation o)
  * Changes the orientation of the specified box, and
  * reconfigures it in order for the appearance to be updated.
  */
-void ewl_box_set_orientation(Ewl_Box * b, Ewl_Orientation o)
+void ewl_box_orientation_set(Ewl_Box * b, Ewl_Orientation o)
 {
 	Ewl_Widget     *w;
 
@@ -183,7 +183,7 @@ void ewl_box_set_orientation(Ewl_Box * b, Ewl_Orientation o)
  * @return Returns the orientation value of the box @a b.
  * @brief Retrieves the orientation of the box
  */
-Ewl_Orientation ewl_box_get_orientation(Ewl_Box *b)
+Ewl_Orientation ewl_box_orientation_get(Ewl_Box *b)
 {
 	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR_RET("b", b, 0);
@@ -200,7 +200,7 @@ Ewl_Orientation ewl_box_get_orientation(Ewl_Box *b)
  * Boxes use homogeneous layout by default, this can be used
  * to change that.
  */
-void ewl_box_set_homogeneous(Ewl_Box *b, int h)
+void ewl_box_homogeneous_set(Ewl_Box *b, int h)
 {
 	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR("b", b);
@@ -243,7 +243,7 @@ void ewl_box_set_homogeneous(Ewl_Box *b, int h)
  * Adjust the spacing of the specified box and reconfigure
  * it to change the appearance.
  */
-void ewl_box_set_spacing(Ewl_Box * b, int s)
+void ewl_box_spacing_set(Ewl_Box * b, int s)
 {
 	int nodes;
 	Ewl_Widget     *w;

@@ -98,8 +98,8 @@ int ewl_button_with_stock_init(Ewl_Button_Stock * b, char *stock_id)
 
   /* Set the homogeneous flag to false, and add some space between image and
    * label */
-  ewl_box_set_homogeneous (EWL_BOX (b), FALSE);
-  ewl_box_set_spacing(EWL_BOX (b), 6);
+  ewl_box_homogeneous_set(EWL_BOX (b), FALSE);
+  ewl_box_spacing_set(EWL_BOX (b), 6);
   
   w = EWL_WIDGET(b);
 

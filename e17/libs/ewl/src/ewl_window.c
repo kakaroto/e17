@@ -638,14 +638,21 @@ void ewl_window_configure_cb(Ewl_Widget * w, void *ev_data, void *user_data)
 	 */
 	ecore_list_goto_first(EWL_CONTAINER(w)->children);
 	while ((child = ecore_list_next(EWL_CONTAINER(w)->children))) {
+		int             x, y;
+
 		/*
 		 * Try to give the child the full size of the window from it's
 		 * base position. The object will constrict it based on the
 		 * fill policy. Don't add the TOP and LEFT insets since
 		 * they've already been accounted for.
 		 */
-		ewl_object_place(child, CURRENT_X(w), CURRENT_Y(w),
-				 CURRENT_W(w), CURRENT_H(w));
+		x = ewl_object_current_x_get(EWL_OBJECT(child));
+		y = ewl_object_current_y_get(EWL_OBJECT(child));
+		if (x < CURRENT_X(w))
+			x = CURRENT_X(w);
+		if (y < CURRENT_Y(w))
+			y = CURRENT_Y(w);
+		ewl_object_place(child, x, y, CURRENT_W(w), CURRENT_H(w));
 	}
 
 	DLEAVE_FUNCTION(DLEVEL_STABLE);

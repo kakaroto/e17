@@ -139,7 +139,7 @@ __create_image_test_window(Ewl_Widget * w, void *ev_data, void *user_data)
 	 */
 	image_box = ewl_vbox_new();
 	ewl_container_child_append(EWL_CONTAINER(image_win), image_box);
-	ewl_box_set_spacing(EWL_BOX(image_box), 10);
+	ewl_box_spacing_set(EWL_BOX(image_box), 10);
 	ewl_widget_show(image_box);
 
 	scrollpane = ewl_scrollpane_new();
@@ -169,7 +169,7 @@ __create_image_test_window(Ewl_Widget * w, void *ev_data, void *user_data)
 	ewl_widget_show(entry_path);
 
 	button_hbox = ewl_hbox_new();
-	ewl_box_set_spacing(EWL_BOX(button_hbox), 5);
+	ewl_box_spacing_set(EWL_BOX(button_hbox), 5);
 	ewl_object_alignment_set(EWL_OBJECT(button_hbox), EWL_FLAG_ALIGN_CENTER);
 	ewl_object_custom_size_set(EWL_OBJECT(button_hbox), 300, 26);
 	ewl_container_child_append(EWL_CONTAINER(image_box), button_hbox);

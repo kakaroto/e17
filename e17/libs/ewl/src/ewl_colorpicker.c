@@ -33,7 +33,7 @@ int ewl_colorpicker_init(Ewl_ColorPicker *cp)
 		DRETURN_INT(FALSE, DLEVEL_STABLE);
 
 	ewl_widget_appearance_set(EWL_WIDGET(cp), "colorpicker");
-	ewl_box_set_spacing(EWL_BOX(cp), 20);
+	ewl_box_spacing_set(EWL_BOX(cp), 20);
 
 	/*
 	 * Setup the larger spectrum region for selecting shades of the base

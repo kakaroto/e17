@@ -204,7 +204,7 @@ int main(int argc, char **argv)
 	ewl_widget_show(label);
 
 	hbox = ewl_hbox_new();
-	ewl_box_set_spacing(EWL_BOX(hbox), 10);
+	ewl_box_spacing_set(EWL_BOX(hbox), 10);
 	ewl_container_child_append(EWL_CONTAINER(vbox), hbox);
 	ewl_object_fill_policy_set(EWL_OBJECT(hbox), EWL_FLAG_FILL_NONE);
 	ewl_object_alignment_set(EWL_OBJECT(hbox), EWL_FLAG_ALIGN_CENTER);

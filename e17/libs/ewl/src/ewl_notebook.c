@@ -472,7 +472,7 @@ void ewl_notebook_set_tabs_position(Ewl_Notebook * n, Ewl_Position p)
 	switch (n->flags & EWL_POSITION_MASK) {
 		case EWL_POSITION_LEFT:
 			snprintf(file, PATH_MAX, "lnotebook");
-			ewl_box_set_orientation(EWL_BOX(n->tab_box),
+			ewl_box_orientation_set(EWL_BOX(n->tab_box),
 					EWL_ORIENTATION_VERTICAL);
 			ewl_callback_append(w, EWL_CALLBACK_CONFIGURE,
 					    ewl_notebook_configure_left_cb,
@@ -480,7 +480,7 @@ void ewl_notebook_set_tabs_position(Ewl_Notebook * n, Ewl_Position p)
 			break;
 		case EWL_POSITION_RIGHT:
 			snprintf(file, PATH_MAX, "rnotebook");
-			ewl_box_set_orientation(EWL_BOX(n->tab_box),
+			ewl_box_orientation_set(EWL_BOX(n->tab_box),
 					EWL_ORIENTATION_VERTICAL);
 			ewl_callback_append(w, EWL_CALLBACK_CONFIGURE,
 					    ewl_notebook_configure_right_cb,
@@ -488,7 +488,7 @@ void ewl_notebook_set_tabs_position(Ewl_Notebook * n, Ewl_Position p)
 			break;
 		case EWL_POSITION_BOTTOM:
 			snprintf(file, PATH_MAX, "bnotebook");
-			ewl_box_set_orientation(EWL_BOX(n->tab_box),
+			ewl_box_orientation_set(EWL_BOX(n->tab_box),
 					EWL_ORIENTATION_HORIZONTAL);
 			ewl_callback_append(w, EWL_CALLBACK_CONFIGURE,
 					    ewl_notebook_configure_bottom_cb,
@@ -497,7 +497,7 @@ void ewl_notebook_set_tabs_position(Ewl_Notebook * n, Ewl_Position p)
 		case EWL_POSITION_TOP:
 		default:
 			snprintf(file, PATH_MAX, "tnotebook");
-			ewl_box_set_orientation(EWL_BOX(n->tab_box),
+			ewl_box_orientation_set(EWL_BOX(n->tab_box),
 					EWL_ORIENTATION_HORIZONTAL);
 			ewl_callback_append(w, EWL_CALLBACK_CONFIGURE,
 					    ewl_notebook_configure_top_cb,

@@ -42,7 +42,7 @@ __create_button_test_window(Ewl_Widget * w, void *ev_data, void *user_data)
 	 */
 	button_box = ewl_vbox_new();
 	ewl_container_child_append(EWL_CONTAINER(button_win), button_box);
-	ewl_box_set_spacing(EWL_BOX(button_box), 10);
+	ewl_box_spacing_set(EWL_BOX(button_box), 10);
 	ewl_widget_show(button_box);
 
 	/*

@@ -36,7 +36,7 @@ void __create_tooltip_test_window(Ewl_Widget * w, void *ev_data, void *user_data
 	
 	tooltip_vbox = ewl_vbox_new();
 	ewl_container_child_append(EWL_CONTAINER(tooltip_win), tooltip_vbox);
-	ewl_box_set_spacing(EWL_BOX(tooltip_vbox), 0);
+	ewl_box_spacing_set(EWL_BOX(tooltip_vbox), 0);
 	ewl_widget_show(tooltip_vbox);
 
 	button = ewl_button_new ("Hoover on this button");
