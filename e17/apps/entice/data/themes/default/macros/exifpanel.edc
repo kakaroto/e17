@@ -84,7 +84,7 @@
 		text: label; \
 		font: lfont; \
 		size: lfontsize; \
-		align: 0.0 0.5; \
+		align: 0.0 0.75; \
 	    } \
 	} \
     } \
@@ -104,12 +104,12 @@
 		text: "0x00"; \
 		font: vfont; \
 		size: vfontsize; \
-		align: 1.0 0.5; \
+		align: 1.0 0.75; \
 	    } \
 	} \
     }
 #define EXIF_ELEMENT(related_to, element_name, element_label, clipto) \
-    PACK_ITEM_SOUTH(related_to, element_name, 255, 30, clipto) \
+    PACK_ITEM_SOUTH(related_to, element_name, 255, 26, clipto) \
     EXIF_PART(element_name, clipto, element_label, \
 			"Edje.Vera", 14,  "Edje.Vera", 12)
    

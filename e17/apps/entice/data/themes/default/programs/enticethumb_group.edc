@@ -3,7 +3,7 @@
 		name, "ShowThumb";
 		signal, "mouse,in";
 		source, "entice.thumb";
-		in, 	0.35 0.0;
+		in, 	0.15 0.0;
 		action, SIGNAL_EMIT "entice,thumb,preview" "";
 	    }
 	    program
