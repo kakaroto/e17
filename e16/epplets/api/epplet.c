@@ -1670,6 +1670,8 @@ Epplet_create_hslider(int x, int y, int len, int min, int max,
    g->val = val;
    g->func = func;
    g->data = data;
+   g->hilited = 0;
+   g->clicked = 0;
    attr.backing_store     = NotUseful;
    attr.override_redirect = False;
    attr.colormap          = Imlib_get_colormap(id);
@@ -1765,6 +1767,8 @@ Epplet_create_vslider(int x, int y, int len, int min, int max,
    g->val = val;
    g->func = func;
    g->data = data;
+   g->hilited = 0;
+   g->clicked = 0;
    attr.backing_store     = NotUseful;
    attr.override_redirect = False;
    attr.colormap          = Imlib_get_colormap(id);
@@ -3567,4 +3571,22 @@ Epplet_dialog_ok(char *text)
    sprintf(s, "dialog_ok %s", text);
    ECommsSend(s);
    free(s);
+}
+
+int 
+Epplet_get_hslider_clicked(Epplet_gadget gadget)
+{
+   GadHSlider *g;
+   
+   g = (GadHSlider *)gadget;
+   return (int)g->clicked;
+}
+
+int 
+Epplet_get_vslider_clicked(Epplet_gadget gadget)
+{
+   GadVSlider *g;
+   
+   g = (GadVSlider *)gadget;
+   return (int)g->clicked;
 }
