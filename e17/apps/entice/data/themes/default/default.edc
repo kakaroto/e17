@@ -40,25 +40,25 @@ collections
 		    }
 		}
 	    }
-	    #include "parts/enticeimage.edc"
-	    #include "parts/enticeimagescroller.edc"
-	    #include "parts/bg.edc"
-	    #include "parts/panel.edc"
-	    #include "parts/buttons.edc"
-	    #include "parts/tooltip.edc"
-	    #include "parts/delete_dialog.edc"
-	    #include "parts/enticeimagepreview.edc"
+#include "parts/enticeimage.edc"
+#include "parts/enticeimagescroller.edc"
+#include "parts/bg.edc"
+#include "parts/panel.edc"
+#include "parts/buttons.edc"
+#include "parts/tooltip.edc"
+#include "parts/delete_dialog.edc"
+#include "parts/enticeimagepreview.edc"
 	}
 	programs
 	{
-	    #include "programs/bg.edc"
-	    #include "programs/panel.edc"
-	    #include "programs/buttons.edc"
-	    #include "programs/panning.edc"
-	    #include "programs/slideshow.edc"
-	    #include "programs/tooltip.edc"
-	    #include "programs/enticeimage.edc"
-	    #include "programs/delete_dialog.edc"
+#include "programs/bg.edc"
+#include "programs/panel.edc"
+#include "programs/buttons.edc"
+#include "programs/panning.edc"
+#include "programs/slideshow.edc"
+#include "programs/tooltip.edc"
+#include "programs/enticeimage.edc"
+#include "programs/delete_dialog.edc"
 
 	    /* just for looks */
 	    program
@@ -77,11 +77,11 @@ collections
 	name, "EnticeThumb";
 	parts
 	{
-	    #include "parts/enticethumb_group.edc"
+#include "parts/enticethumb_group.edc"
 	}
 	programs
 	{
-	    #include "programs/enticethumb_group.edc"
+#include "programs/enticethumb_group.edc"
 	}
     }
     group
