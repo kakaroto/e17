@@ -31,7 +31,7 @@ static const char cvs_ident[] = "$Id$";
 #include "conf.h"
 #include "notgame.h"
 
-GList *player_group_list = NULL;
+GList *player_group_list = NULL, *player_list = NULL;
 
 void
 player_group_add(GtkWidget *w, gpointer pbox) {

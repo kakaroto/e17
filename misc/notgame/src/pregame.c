@@ -86,7 +86,7 @@ pregame_init(void) {
   gtk_signal_connect(GTK_OBJECT(button), "clicked", GTK_SIGNAL_FUNC(button_cb), (gpointer) 3);
   gtk_container_add(GTK_CONTAINER(buttonbox), button);
   gtk_widget_show(button);
-  gtk_box_pack_start(GTK_BOX(vbox), buttonbox, TRUE, FALSE, 5);
+  gtk_box_pack_start(GTK_BOX(vbox), buttonbox, FALSE, FALSE, 0);
 
   /* Cleanup and finalize everything */
   gtk_widget_realize(pregame_win);
@@ -148,36 +148,80 @@ pregame_menu_init(GtkWidget *window, GtkWidget *vbox) {
   gtk_menu_item_set_submenu(GTK_MENU_ITEM(menuitem), menu);
   gtk_menu_bar_append(GTK_MENU_BAR(menubar), menuitem);
 
-  gtk_box_pack_start(GTK_BOX(vbox), menubar, TRUE, FALSE, 0);
+  gtk_box_pack_start(GTK_BOX(vbox), menubar, FALSE, FALSE, 0);
   gtk_widget_show(menubar);
 }
 
 static void
 pregame_player_frame_init(GtkWidget *window, GtkWidget *vbox) {
 
-  GtkWidget *player_frame, *player_table, *player_groups, *player_list;
+  GtkWidget *player_frame, *player_table, *align;
+  GtkWidget *label, *player_groups, *player_clist;
+  const char *cols[] = { "Player Name", "Player Type" };
 
+  /* Add the frame around the player section.  This will contain everything we create in this function */
   player_frame = gtk_frame_new(NULL);
+  gtk_container_set_border_width(GTK_CONTAINER(player_frame), 5);
   gtk_frame_set_label(GTK_FRAME(player_frame), "Not Game Players");
   gtk_frame_set_label_align(GTK_FRAME(player_frame), 0.0, 0.0);
   gtk_frame_set_shadow_type(GTK_FRAME(player_frame), GTK_SHADOW_ETCHED_IN);
-  gtk_box_pack_start(GTK_BOX(vbox), player_frame, TRUE, FALSE, 5);
+  gtk_box_pack_start(GTK_BOX(vbox), player_frame, TRUE, FALSE, 0);
 
-  player_table = gtk_table_new(2, 1, FALSE);
+  /* A 2-by-2 table will contain the two labels, the combo box, and the CList */
+  player_table = gtk_table_new(2, 2, FALSE);
+  gtk_container_set_border_width(GTK_CONTAINER(player_table), 5);
   gtk_container_add(GTK_CONTAINER(player_frame), player_table);
 
+  /* The label for the groups combo box, right justified */
+  label = gtk_label_new("Group:  ");
+  align = gtk_alignment_new(1.0, 0.5, 0.0, 0.0);
+  gtk_table_attach_defaults(GTK_TABLE(player_table), GTK_WIDGET(align), 0, 1, 0, 1);
+  gtk_container_add(GTK_CONTAINER(align), label);
+  gtk_widget_show(align);
+  gtk_widget_show(label);
+
+  /* The combo box containing the player groups */
   player_groups = gtk_combo_new();
   gtk_combo_set_use_arrows_always(GTK_COMBO(player_groups), TRUE);
   gtk_combo_set_case_sensitive(GTK_COMBO(player_groups), TRUE);
 
-  /* Temporary */
+  /* Player Groups are hardcoded for now.  Change these to whatever names you want, and add/remove
+     names as needed.  To add more entries, simply copy one of the lines below as many times as
+     needed.  Change only the name the appears within the double quotes ("). */
   player_group_list = g_list_append(player_group_list, "The Den");
   player_group_list = g_list_append(player_group_list, "The Den Plus One");
 
   gtk_combo_set_popdown_strings(GTK_COMBO(player_groups), player_group_list);
   gtk_signal_connect(GTK_OBJECT(GTK_COMBO(player_groups)->entry), "activate", GTK_SIGNAL_FUNC(player_group_add), (gpointer) player_groups);
-  gtk_table_attach_defaults(GTK_TABLE(player_table), GTK_WIDGET(player_groups), 0, 1, 0, 1);
+  gtk_table_attach_defaults(GTK_TABLE(player_table), GTK_WIDGET(player_groups), 1, 2, 0, 1);
   gtk_widget_show(player_groups);
+
+  /* The clist for the players in the current group */
+  player_clist = gtk_clist_new_with_titles(2, (gchar **) cols);
+  gtk_clist_column_titles_passive(GTK_CLIST(player_clist));
+  gtk_clist_set_column_justification(GTK_CLIST(player_clist), 1, GTK_JUSTIFY_LEFT);
+  gtk_clist_set_column_justification(GTK_CLIST(player_clist), 2, GTK_JUSTIFY_LEFT);
+  gtk_table_attach_defaults(GTK_TABLE(player_table), GTK_WIDGET(player_clist), 1, 2, 1, 2);
+
+  /* Player Names are hardcoded for now.  Change these to whatever names you want, and add/remove
+     names as needed.  To add more entries, simply copy one of the lines below as many times as
+     needed.  Change only the name the appears within the double quotes ("). */
+  {
+    char *r1[] = { "Chris", "Human" };
+    char *r2[] = { "horms", "Human" };
+    char *r3[] = { "mandrake", "Human" };
+    char *r4[] = { "Michael", "Human" };
+    char *r5[] = { "raster", "Human" };
+    char *r6[] = { "San", "Human" };
+
+    gtk_clist_append(GTK_CLIST(player_clist), (gchar **) r1);
+    gtk_clist_append(GTK_CLIST(player_clist), (gchar **) r2);
+    gtk_clist_append(GTK_CLIST(player_clist), (gchar **) r3);
+    gtk_clist_append(GTK_CLIST(player_clist), (gchar **) r4);
+    gtk_clist_append(GTK_CLIST(player_clist), (gchar **) r5);
+    gtk_clist_append(GTK_CLIST(player_clist), (gchar **) r6);
+  }
+  gtk_widget_show(player_clist);
 
   gtk_widget_show(player_table);
   gtk_widget_show(player_frame);
@@ -187,29 +231,74 @@ pregame_player_frame_init(GtkWidget *window, GtkWidget *vbox) {
 static void
 pregame_dest_frame_init(GtkWidget *window, GtkWidget *vbox) {
 
-  GtkWidget *dest_frame, *dest_table, *dest_groups, *dest_list;
+  GtkWidget *dest_frame, *dest_table, *align;
+  GtkWidget *label, *dest_groups, *dest_list, *dest_clist;
+  const char *cols[] = { "Destination" };
 
   dest_frame = gtk_frame_new(NULL);
+  gtk_container_set_border_width(GTK_CONTAINER(dest_frame), 5);
   gtk_frame_set_label(GTK_FRAME(dest_frame), "Not Game Destinations");
   gtk_frame_set_label_align(GTK_FRAME(dest_frame), 0.0, 0.0);
   gtk_frame_set_shadow_type(GTK_FRAME(dest_frame), GTK_SHADOW_ETCHED_IN);
-  gtk_box_pack_start(GTK_BOX(vbox), dest_frame, TRUE, FALSE, 5);
+  gtk_box_pack_start(GTK_BOX(vbox), dest_frame, TRUE, FALSE, 0);
 
-  dest_table = gtk_table_new(2, 1, FALSE);
+  dest_table = gtk_table_new(2, 2, FALSE);
+  gtk_container_set_border_width(GTK_CONTAINER(dest_table), 5);
   gtk_container_add(GTK_CONTAINER(dest_frame), dest_table);
+
+  label = gtk_label_new("Group:  ");
+  align = gtk_alignment_new(1.0, 0.5, 0.0, 0.0);
+  gtk_table_attach_defaults(GTK_TABLE(dest_table), GTK_WIDGET(align), 0, 1, 0, 1);
+  gtk_container_add(GTK_CONTAINER(align), label);
+  gtk_widget_show(align);
+  gtk_widget_show(label);
 
   dest_groups = gtk_combo_new();
   gtk_combo_set_use_arrows_always(GTK_COMBO(dest_groups), TRUE);
   gtk_combo_set_case_sensitive(GTK_COMBO(dest_groups), TRUE);
 
-  /* Temporary */
+  /* Destination Groups are hardcoded for now.  Change these to whatever names you want, and add/remove
+     names as needed.  To add more entries, simply copy one of the lines below as many times as
+     needed.  Change only the name the appears within the double quotes ("). */
   dest_group_list = g_list_append(dest_group_list, "Fast Food");
   dest_group_list = g_list_append(dest_group_list, "Sit Down");
 
   gtk_combo_set_popdown_strings(GTK_COMBO(dest_groups), dest_group_list);
   gtk_signal_connect(GTK_OBJECT(GTK_COMBO(dest_groups)->entry), "activate", GTK_SIGNAL_FUNC(dest_group_add), (gpointer) dest_groups);
-  gtk_table_attach_defaults(GTK_TABLE(dest_table), GTK_WIDGET(dest_groups), 0, 1, 0, 1);
+  gtk_table_attach_defaults(GTK_TABLE(dest_table), GTK_WIDGET(dest_groups), 1, 2, 0, 1);
   gtk_widget_show(dest_groups);
+
+  /* The clist for the dests in the current group */
+  dest_clist = gtk_clist_new_with_titles(1, (gchar **) cols);
+  gtk_clist_column_titles_passive(GTK_CLIST(dest_clist));
+  gtk_clist_set_column_justification(GTK_CLIST(dest_clist), 1, GTK_JUSTIFY_LEFT);
+  gtk_table_attach_defaults(GTK_TABLE(dest_table), GTK_WIDGET(dest_clist), 1, 2, 1, 2);
+
+  /* Dest Names are hardcoded for now.  Change these to whatever names you want, and add/remove
+     names as needed.  To add more entries, simply copy one of the lines below as many times as
+     needed.  Change only the name the appears within the double quotes ("). */
+  {
+    char *r1[] = { "Burger King" };
+    char *r2[] = { "Denny's" };
+    char *r3[] = { "Gumba's" };
+    char *r4[] = { "Hobee's" };
+    char *r5[] = { "Java Street Cafe" };
+    char *r6[] = { "Kal's BBQ" };
+    char *r7[] = { "Mandarin" };
+    char *r8[] = { "McDonalds" };
+    char *r9[] = { "Sneha" };
+
+    gtk_clist_append(GTK_CLIST(dest_clist), (gchar **) r1);
+    gtk_clist_append(GTK_CLIST(dest_clist), (gchar **) r2);
+    gtk_clist_append(GTK_CLIST(dest_clist), (gchar **) r3);
+    gtk_clist_append(GTK_CLIST(dest_clist), (gchar **) r4);
+    gtk_clist_append(GTK_CLIST(dest_clist), (gchar **) r5);
+    gtk_clist_append(GTK_CLIST(dest_clist), (gchar **) r6);
+    gtk_clist_append(GTK_CLIST(dest_clist), (gchar **) r7);
+    gtk_clist_append(GTK_CLIST(dest_clist), (gchar **) r8);
+    gtk_clist_append(GTK_CLIST(dest_clist), (gchar **) r9);
+  }
+  gtk_widget_show(dest_clist);
 
   gtk_widget_show(dest_table);
   gtk_widget_show(dest_frame);

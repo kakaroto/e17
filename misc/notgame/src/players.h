@@ -18,7 +18,7 @@
 /************ Structures ************/
 
 /************ Variables ************/
-extern GList *player_group_list;
+extern GList *player_group_list, *player_list;
 
 /************ Function Prototypes ************/
 extern void player_group_add(gpointer pbox, GtkWidget *w);
