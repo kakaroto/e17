@@ -2592,3 +2592,12 @@ Mon Mar 22 18:13:11 CET 2004
 Add some more debug stuff.
 Fix raise/lower for windows with transients.
 Fix viewport change (window sliding) for windows with transients.
+
+-------------------------------------------------------------------------------
+
+Fri Mar 26 23:07:27 CET 2004
+(Kim)
+
+Use new static stacking list whereever possible.
+Use unwrapped libc malloc/realloc/free by default.
+Fix bottom border when shaded, remove redundant window stacking.
