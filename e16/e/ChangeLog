@@ -2245,3 +2245,12 @@ Sun Nov 16 20:47:20 CET 2003
 (Kim)
 
 dox -> imlib2.
+
+-------------------------------------------------------------------------------
+
+Sat Nov 22 17:22:33 CET 2003
+(Kim)
+
+Enable focusing desktop app windows (e.g. nautilus), "breaks" sloppy focus
+when using such.
+Various fixups after imlib2 port.
