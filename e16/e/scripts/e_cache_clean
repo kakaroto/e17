@@ -4,7 +4,9 @@
 # Copyright 1999 The Rasterman                                               #
 ##############################################################################
 
-if [ $# -lt 2 ]; then
+export PATH=$PATH:"/usr/local/enlightenment/bin:/usr/enlightenment/bin:/opt/enlightenment/bin:/usr/local/bin"
+
+if [ $# -lt 1 ]; then
   echo "usage:"
   echo "    "$0" [ all | pager | bgsel | config ]"
   exit
@@ -17,23 +19,27 @@ if [ $1 = "all" ]; then
   rm -rf ~/.enlightenment/cached/cfg/.*
   rm -rf ~/.enlightenment/cached/pager/*
   rm -rf ~/.enlightenment/cached/pager/.*
+  eesh -e "dialog_ok All caches purged."
   exit
 fi
 
 if [ $1 = "pager" ]; then
   rm -rf ~/.enlightenment/cached/pager/*
   rm -rf ~/.enlightenment/cached/pager/.*
+  eesh -e "dialog_ok Pager background cache purged."
   exit
 fi
 
 if [ $1 = "config" ]; then
   rm -rf ~/.enlightenment/cached/cfg/*
   rm -rf ~/.enlightenment/cached/cfg/.*
+  eesh -e "dialog_ok Config file cache purged."
   exit
 fi
 
 if [ $1 = "bgsel" ]; then
   rm -rf ~/.enlightenment/cached/bgsel/*
   rm -rf ~/.enlightenment/cached/bgsel/.*
+  eesh -e "dialog_ok Background selector cache purged."
   exit
 fi
