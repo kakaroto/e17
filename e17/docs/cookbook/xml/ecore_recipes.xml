@@ -40,6 +40,7 @@ for abstract socket communication.
 &ecore_con_server_intro;
 &ecore_ipc_intro;
 &ecore_timers;
+&ecore_events_adding;
 
 </chapter>
 
