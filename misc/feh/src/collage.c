@@ -236,14 +236,7 @@ init_collage_mode(void)
       }
    }
 
-   if (opt.display)
-   {
-         winwid =
-            winwidget_create_from_image(im_main, PACKAGE " [collage mode]",
-                                        WIN_TYPE_SINGLE);
-         winwidget_show(winwid);
-   }
-   else
+   if (!opt.display)
       feh_imlib_free_image_and_decache(im_main);
    free(s);
    D_RETURN_(4);

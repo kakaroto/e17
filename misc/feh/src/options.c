@@ -378,7 +378,7 @@ feh_parse_option_array(int argc, char **argv)
    D_ENTER(4);
 
    /* Now to pass some optionarinos */
-   while ((optch = getopt_long_only(argc, argv, stropts, lopts, &cmdx)) !=
+   while ((optch = getopt_long(argc, argv, stropts, lopts, &cmdx)) !=
           EOF)
    {
       D(5, ("Got option, getopt calls it %d, or %c\n", optch, optch));

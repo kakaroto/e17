@@ -1,3 +1,10 @@
+Thu Aug  9 23:57:41 2001  Tom Gilbert  <gilbertt@linuxbrit.co.uk>
+
+	* Oops. Went back to getopt_long. getopt_long_only is cool if you
+	only have a few cmdline options, but feh has a bunch and most
+	short option combos were coming up as "ambiguous". i.e. feh -Vw
+	actually ignores the -w. Fixed.
+
 Thu Aug  9 23:39:02 2001  Tom Gilbert  <gilbertt@linuxbrit.co.uk>
 
 	* Remembered some things I changed a while back and didn't put in
