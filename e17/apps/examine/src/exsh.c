@@ -99,8 +99,6 @@ static call     calls[] = {
   {IPC_NONE, "prop", P_HELPONLY, "List of property-related commands"},
   {IPC_PROP_LIST, "prop-list", P_SERIAL,
    "prop.list <bundle-id>\nList all properties that are currently registered for bundle <bundle-id>."},
-  {IPC_GLOBAL_PROP_LIST, "global-prop-list", P_NONE,
-   "global.prop.list\nList all global properties that are currently registered."},
   {IPC_PROP_DESC, "prop-describe", P_SERIAL | P_KEY,
    "prop.desc <bundle-id> <prop>\nDescribe property <prop> set on bundle <bundle-id>."},
   {IPC_PROP_GET, "prop-get", P_SERIAL | P_KEY,
@@ -127,7 +125,6 @@ static call     calls[] = {
 
 
 int             debug = 99;
-char           *pipe_name;
 
 
 /*****************************************************************************/
@@ -539,10 +536,6 @@ parse_line(Ecore_Config_Ipc_Server_List ** server_list, char *line)
       ret = ECORE_CONFIG_ERR_NOTFOUND;
     else {
       
-    if (cp->id == IPC_PROP_LIST)
-      if (!strcmp(pipe_name, ECORE_CONFIG_GLOBAL_ID))
-        cp=find_call("global-prop-list");
-      
       if (h)
         puts(cp->help);
       else if (cp->signature & P_HELPONLY) {
@@ -591,7 +584,7 @@ main(int argc, char **argv)
   Ecore_Config_Ipc_Server_List *server;
   int             ret, cc;
   connstate       cs;
-  char           *p, *f, *q;
+  char           *p, *f, *q, *pipe_name;
 
 #ifndef HAVE_LIBREADLINE
   char            buf[MI];
