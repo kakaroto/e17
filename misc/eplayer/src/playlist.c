@@ -74,11 +74,10 @@ void playlist_item_read_comments(PlayListItem *pli,
 	for (i = 0; i < comment->comments; i++) {
 		cmt = comment->user_comments[i];
 
-		for (j = 0; j < NUM_COMMENTS; j++) {
+		for (j = 0; j < NUM_COMMENTS; j++)
 			if (!strncmp(cmt, key[j], len[j])) {
 				snprintf(dest[j], PLAYLIST_ITEM_COMMENT_LEN,
 				         "%s", &cmt[len[j]]);
-			}
 		}
 	}
 #undef NUM_COMMENTS
@@ -199,6 +198,7 @@ void playlist_free(PlayList *pl) {
  * @param pl
  * @param file File to add
  * @param append If 0, the old entries will be overwritten.
+ * @return Boolean success or failure.
  */
 int playlist_load_file(PlayList *pl, const char *file, int append) {
 	PlayListItem *pli;
@@ -223,6 +223,7 @@ int playlist_load_file(PlayList *pl, const char *file, int append) {
  * @param pl
  * @param path Directory to load
  * @param append If 0, the old entries will be overwritten.
+ * @return Boolean success or failure.
  */
 int playlist_load_dir(PlayList *pl, const char *path, int append) {
 	PlayListItem *pli = NULL;
@@ -267,6 +268,7 @@ int playlist_load_dir(PlayList *pl, const char *path, int append) {
  * @param pl
  * @param file
  * @param append If 0, the old entries will be overwritten.
+ * @return Boolean success or failure.
  */
 int playlist_load_m3u(PlayList *pl, const char *file, int append) {
 	PlayListItem *pli = NULL;
@@ -318,6 +320,7 @@ int playlist_load_m3u(PlayList *pl, const char *file, int append) {
  * @param pl
  * @param path
  * @param append If 0, the old entries will be overwritten.
+ * @return Boolean success or failure.
  */
 int playlist_load_any(PlayList *pl, const char *path, int append) {
 	char *ptr = NULL;

@@ -12,16 +12,14 @@ static void eplayer_free(ePlayer *player) {
 		return;
 
 	playlist_free(player->playlist);
-	mixer_free(player->mixer);
-	ao_shutdown();
+	output_plugin_free(player->output);
 	
 	free(player);
 }
 
 static ePlayer *eplayer_new() {
 	ePlayer *player;
-	int driver;
-	ao_info *driver_info;
+	const char *plugin = PLUGIN_DIR"/output/libOSS.so";
 
 	if (!(player = malloc(sizeof(ePlayer))))
 		return NULL;
@@ -30,24 +28,14 @@ static ePlayer *eplayer_new() {
 
 	player->playlist = playlist_new();
 
-	/* FIXME: the user should be able to choose which control
-	 * will be used
-	 */
-	player->mixer = mixer_new(MIXER_CONTROL_VOL);
+	/* load the output plugin */
+	player->output = output_plugin_new(plugin);
 
-	ao_initialize();
-
-	if ((driver = ao_default_driver_id()) == -1) {
-		fprintf(stderr, "AO: Can't get default driver!\n");
+	if (!player->output) {
+		fprintf(stderr, "Cannot load output plugin %s!\n", plugin);
 		eplayer_free(player);
 		return NULL;
 	}
-	
-	driver_info = ao_driver_info(driver);
-
-#ifdef DEBUG
-	printf("AO DEBUG: Audio Device: %s\n", driver_info->name);
-#endif
 
 	return player;
 }
@@ -75,8 +63,8 @@ void eplayer_playback_stop(ePlayer *player, int rewind_track) {
 	}
 
 	if (rewind_track) {
-		track_close(player);
-		track_open(player);
+		vorbis_close(player);
+		vorbis_open(player);
 	}
 }
 
@@ -88,19 +76,14 @@ void eplayer_playback_stop(ePlayer *player, int rewind_track) {
  */
 void eplayer_playback_start(ePlayer *player, int rewind_track) {
 	if (rewind_track) {
-		track_close(player);
-		track_open(player);
+		vorbis_close(player);
+		vorbis_open(player);
 	}
 
 	/* start the playloop */
-	player->play_idler = ecore_idler_add(track_play_chunk, player);
-	player->time_timer = ecore_timer_add(0.5, update_time, player);
-}
-
-static int read_mixer(void *udata) {
-	refresh_volume(udata, 1);
-
-	return 1;
+	player->play_idler = ecore_idler_add(vorbis_play_chunk, player);
+	player->time_timer = ecore_timer_add(0.5, vorbis_update_time,
+	                                     player);
 }
 
 int main(int argc, const char **argv) {
@@ -127,13 +110,17 @@ int main(int argc, const char **argv) {
 		playlist_load_any(player->playlist, argv[args], args > 1);
 	}
 	
-	setup_ecore(player);
+	if (!setup_gui(player)) {
+		eplayer_free(player);
+		return 1;
+	}
+		
 	show_playlist(player);
 
-	read_mixer(player);
-	ecore_timer_add(1.5, read_mixer, player);
+	refresh_volume(player);
+	ecore_timer_add(1.5, refresh_volume, player);
 
-	track_open(player);
+	vorbis_open(player);
 	refresh_time(player, 0);
 
 #ifdef DEBUG

@@ -1,5 +1,15 @@
 $Id$
 
+2003-10-21 Tilman Sauerbeck <tilman@code-monkey.de>
+        * configure.ac: check for sys/soundcard.h to determine whether
+          the OSS output plugin should be built
+        * src/vorbis.c, src/output: added output plugin stuff to replace
+          libao
+        * src/output/oss/oss.c: added OSS output plugin
+        * src/mixer.c, src/mixer.h: removed, mixer is controlled by the
+          output plugin now
+        * misc other stuff
+
 2003-10-18 Tilman Sauerbeck <tilman@code-monkey.de>
         * src/vorbis.c: track_open() initializes the "time_text"
           part, too

@@ -17,7 +17,7 @@ typedef struct {
 	char artist[PLAYLIST_ITEM_COMMENT_LEN];
 	char title[PLAYLIST_ITEM_COMMENT_LEN];
 	char album[PLAYLIST_ITEM_COMMENT_LEN];
-	double duration;
+	int duration;
 
 	int channels; /* number of channels */
 	long rate; /* bitrate */

@@ -4,13 +4,7 @@
 #include <Esmart/container.h>
 #include <Edje.h>
 #include "callbacks.h"
-#include "mixer.h"
 #include "vorbis.h"
-
-#define	WIDTH 500
-#define	HEIGHT 500
-
-static Ecore_Evas *ee = NULL;
 
 static int app_signal_exit(void *data, int type, void *event) {
 #ifdef DEBUG
@@ -21,7 +15,8 @@ static int app_signal_exit(void *data, int type, void *event) {
 	return 1;
 }
 
-void setup_ecore(ePlayer *player) {
+int setup_gui(ePlayer *player) {
+	Ecore_Evas *ee;
 	double edje_w = 0, edje_h = 0;
 
 #ifdef DEBUG
@@ -32,7 +27,7 @@ void setup_ecore(ePlayer *player) {
 	ecore_evas_init();
 	ecore_event_handler_add(ECORE_EVENT_SIGNAL_EXIT, app_signal_exit, NULL);
 
-	ee = ecore_evas_software_x11_new(NULL, 0,  0, 0, WIDTH, HEIGHT);
+	ee = ecore_evas_software_x11_new(NULL, 0,  0, 0, 500, 500);
 	ecore_evas_title_set(ee, "eVorbisPlayer");
 	ecore_evas_name_class_set(ee, "ecore_test", "test_evas");
 	ecore_evas_borderless_set(ee, 1);
@@ -48,8 +43,13 @@ void setup_ecore(ePlayer *player) {
 #endif
 
 	player->gui.edje = edje_object_add(player->gui.evas);
-	edje_object_file_set(player->gui.edje,
-	                     DATA_DIR"/themes/eplayer.eet", "eplayer");
+	
+	if (!(edje_object_file_set(player->gui.edje,
+	                     DATA_DIR"/themes/eplayer.eet", "eplayer"))) {
+		fprintf(stderr, "Cannot load theme!\n");
+		return 0;
+	}
+	
 	evas_object_move(player->gui.edje, 0, 0);
 	edje_object_size_min_get(player->gui.edje, &edje_w, &edje_h);
 	evas_object_resize(player->gui.edje, edje_w, edje_h);
@@ -96,6 +96,8 @@ void setup_ecore(ePlayer *player) {
 	edje_object_signal_callback_add(player->gui.edje,
 	                                "SWITCH_TIME_DISPLAY", "time_text",
 	                                cb_time_display_toggle, player);
+
+	return 1;
 }
 
 static Evas_Object *playlist_column_add(ePlayer *player,
@@ -125,7 +127,7 @@ void show_playlist(ePlayer *player) {
 		title = ((PlayListItem *) l->data)->title;
 		duration = ((PlayListItem *) l->data)->duration;
 		
-		snprintf(len, sizeof(len), "%i:%02i", (duration / 60),
+		snprintf(len, sizeof(len), "%i:%02i", duration / 60,
 		         duration % 60);
 		
 		/* add the title/length items to the container */
@@ -180,14 +182,18 @@ void show_playlist(ePlayer *player) {
 	                                cb_playlist_scroll_up, player);
 }
 
-void refresh_volume(ePlayer *player, int read) {
+int refresh_volume(void *udata) {
+	ePlayer *player = udata;
 	char buf[8];
+	int left = 0, right = 0;
 
-	if (read)
-		mixer_read(player->mixer);
+	if (!player->output->volume_get(&left, &right))
+		return 1;
 	
-	snprintf(buf, sizeof(buf), "%i", player->mixer->volume);
+	snprintf(buf, sizeof(buf), "%i", (left + right) / 2);
 	edje_object_part_text_set(player->gui.edje, "vol_display_text", buf);
+	
+	return 1;
 }
 
 int refresh_time(ePlayer *player, int time) {

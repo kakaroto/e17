@@ -8,8 +8,8 @@ eVorbisPlayer is an OggVorbis audio player which requires the Xiph Ogg Suite of 
 found here:
 http://xiph.org/ogg/vorbis/
 
-It relies on libvorbis, libvorbisfile, libao, and libogg.  Further, it uses Ecore(2) and EVAS
-for the interface.
+It relies on libvorbis, libvorbisfile and libogg.  Further, it uses
+Ecore(2), EVAS and Edje for the interface.
 
 --------------------------------------------------------------------------------------------
 FAQ

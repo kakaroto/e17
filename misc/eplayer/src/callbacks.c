@@ -2,7 +2,6 @@
 #include <Edje.h>
 #include <Esmart/container.h>
 #include "eplayer.h"
-#include "mixer.h"
 #include "vorbis.h"
 #include "interface.h"
 
@@ -61,7 +60,7 @@ void cb_track_next(ePlayer *player, Evas *e, Evas_Object *obj,
 		 * but don't start playing yet.
 		 */
 		player->playlist->cur_item = player->playlist->items;
-		track_open(player); /* refresh track info parts */
+		vorbis_open(player); /* refresh track info parts */
 	}
 }
 
@@ -85,28 +84,38 @@ void cb_track_prev(ePlayer *player, Evas *e, Evas_Object *obj,
 
 void cb_volume_raise(ePlayer *player, Evas_Object *obj,
                      const char *emission, const char *src) {
+	int left = 0, right = 0;
+	
 #ifdef DEBUG
 	printf("DEBUG: Raising volume\n");
 #endif
 
-	mixer_change(player->mixer, 5);
-	refresh_volume(player, 0);
+	if (!player->output->volume_get(&left, &right))
+		return;
+	
+	player->output->volume_set(left + 5, right + 5);
+	refresh_volume(player);
 }
 
 void cb_volume_lower(ePlayer *player, Evas_Object *obj,
                      const char *emission, const char *src) {
+	int left = 0, right = 0;
+	
 #ifdef DEBUG
 	printf("DEBUG: Lowering volume\n");
 #endif
 	
-	mixer_change(player->mixer, -5);
-	refresh_volume(player, 0);
+	if (!player->output->volume_get(&left, &right))
+		return;
+	
+	player->output->volume_set(left - 5, right - 5);
+	refresh_volume(player);
 }
 
 void cb_time_display_toggle(ePlayer *player, Evas_Object *obj,
                             const char *emission, const char *src) {
 	player->time_display = !player->time_display;
-	update_time(player);
+	vorbis_update_time(player);
 }
 
 /**

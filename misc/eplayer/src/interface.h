@@ -4,9 +4,9 @@
 #include "eplayer.h"
 
 void show_playlist(ePlayer *player);
-void setup_ecore(ePlayer *player);
+int setup_gui(ePlayer *player);
 
-void refresh_volume(ePlayer *player, int read);
+int refresh_volume(void *udata);
 int refresh_time(ePlayer *player, int time);
 
 #endif

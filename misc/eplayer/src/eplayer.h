@@ -3,9 +3,8 @@
 
 #include <Ecore.h>
 #include <vorbis/vorbisfile.h>
-#include <ao/ao.h>
 #include "playlist.h"
-#include "mixer.h"
+#include "output_plugin.h"
 
 typedef enum {
 	TIME_DISPLAY_ELAPSED,
@@ -14,7 +13,6 @@ typedef enum {
 
 typedef struct {
 	PlayList *playlist;
-	Mixer *mixer;
 	Ecore_Idler *play_idler;
 	Ecore_Timer *time_timer;
 	
@@ -29,7 +27,7 @@ typedef struct {
 	TimeDisplay time_display;
 
 	OggVorbis_File current_track;
-	ao_device *ao_dev;
+	OutputPlugin *output;
 } ePlayer;
 
 void eplayer_playback_stop(ePlayer *player, int rewind_track);
