@@ -8,6 +8,8 @@
 #include<string.h>
 #include<limits.h>
 #include "epbb.h"
+#include "../config.h"
+
 #define DISPLAY_TIMEOUT 1.75
 #define UN(ptr) ptr = 0
 
@@ -24,7 +26,7 @@ epbb_new(Ecore_Evas *ee)
 	result->ee = ee;
 
 	result->obj = edje_object_add(ecore_evas_get(ee));
-	if(edje_object_file_set(result->obj, "../data/epbb.eet", "Epbb"))
+	if(edje_object_file_set(result->obj, PACKAGE_DATA_DIR"/themes/default.eet", "Epbb"))
 	{
 	    /* add our object */
 	    evas_object_move(result->obj, 0, 0);

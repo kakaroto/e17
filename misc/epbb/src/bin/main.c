@@ -5,11 +5,11 @@
 #include<Ecore_Evas.h>
 #include<limits.h>
 #include"epbb.h"
+#include"../config.h"
 
 #define UN(ptr) ptr = 0
 #define PBBUTTONSD_TIMEOUT 0.25
 #define PBBUTTONSD_BATTERY_TIMEOUT 15.0
-#define PACKAGE "epbbuttons"
 
 static Epbb *epbb = NULL;
 
@@ -219,7 +219,7 @@ main(int argc, const char *argv[])
 	evas = ecore_evas_get(ee);
 	evas_image_cache_set(evas,512 * 1024); 
 	evas_font_cache_set(evas, 2 * (1024 * 1024)); 
-	evas_font_path_append(evas, "/usr/share/edje/data/test/fonts");
+	evas_font_path_append(evas, PACKAGE_DATA_DIR "/fonts/");
 	
 	epbb = epbb_new(ee);
     }
