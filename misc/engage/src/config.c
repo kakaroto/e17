@@ -25,20 +25,23 @@ zoom_listener(const char *key, const Ecore_Config_Type type, const int tag,
 }
 
 theme_listener(const char *key, const Ecore_Config_Type type, const int tag,
-                  void *data)    
-{ 
+               void *data)
+{
   char           *path;
   Evas_List      *icons;
+
+  if (options.theme)
+    free(options.theme);
   options.theme = ecore_config_theme_get(key);
 
   path = ecore_config_theme_with_path_get(key);
-  
+
   icons = dock.icons;
   while (icons) {
-    od_icon_reload((OD_Icon *)icons->data);
+    od_icon_reload((OD_Icon *) icons->data);
     icons = evas_list_next(icons);
   }
-} 
+}
 
 int
 od_config_init(void)
@@ -72,7 +75,7 @@ od_config_init(void)
   ecore_config_int_create("engage.options.spacing", 4, 'S', "spacing",
                           "Space in pixels between each icon");
   ecore_config_int_create_bound("engage.options.zoom", 1, 0, 1, 1, 'z', "zoom",
-                          "Should we zoom icons?");
+                                "Should we zoom icons?");
   ecore_config_float_create("engage.options.zoom_factor", 2.0, 'Z',
                             "zoom-factor",
                             "Zoom factor of the icons - 1.0 == 100% == nozoom");
@@ -139,7 +142,8 @@ od_config_menu_move_cb(Ewl_Widget * w, void *ev_data, void *user_data)
 void
 od_config_menu_out_cb(Ewl_Widget * w, void *ev_data, void *user_data)
 {
-  int x,y;
+  int             x, y;
+
   evas_pointer_output_xy_get(evas, &x, &y);
   if (x < menu_x || x > (menu_x + menu_width) ||
       y < menu_y || y > (menu_y + menu_height))

@@ -200,7 +200,15 @@ od_icon_reload(OD_Icon * in)
   icon_file = in->icon_file;
   pic = in->pic;
 
-  path = ecore_config_theme_with_path_from_name_get(options.theme);
+  if (!(path = ecore_config_theme_with_path_from_name_get(options.theme))) {
+    path = ecore_config_theme_with_path_from_name_get("gentoo");
+  }
+  assert(path);
+  if (pic) {
+    evas_object_del(pic);
+    pic = NULL;
+  }
+
   if (edje_object_file_set(icon, path, "Main") > 0) {
 #if 0
     fprintf(stderr, "Trying to find part for %s\n", winclass);
