@@ -256,8 +256,7 @@ od_wm_ignored(Ecore_X_Window win)
     cur++;
   }
 
-  if (ecore_x_window_prop_state_isset(win, ECORE_X_WINDOW_STATE_SKIP_TASKBAR) ||
-      ecore_x_window_prop_state_isset(win, ECORE_X_WINDOW_STATE_SKIP_PAGER))
+  if (ecore_x_window_prop_state_isset(win, ECORE_X_WINDOW_STATE_SKIP_TASKBAR))
     return true;
   return false;
 }
