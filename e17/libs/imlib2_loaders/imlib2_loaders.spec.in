@@ -53,7 +53,7 @@ rm -rf $RPM_BUILD_ROOT
 %postun -p /sbin/ldconfig
 
 %files
-%attr(755,root,root) %{prefix}/lib/loaders/image/*
+%attr(755,root,root) %{prefix}/lib/imlib2_loaders/image/*
 
 %changelog
 * Sun Aug 12 2001 Tom Gilbert <tom@linuxbrit.co.uk>
