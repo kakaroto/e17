@@ -7,6 +7,8 @@
 
 #include "ee2.h"
 
+#define CHECKS 160
+
 GtkWidget *EventBox;
 
 GtkWidget *MainWindow, *FileSel, *SaveSel,
@@ -223,12 +225,12 @@ void LoadImage(char *imagetoload)
 void DrawChecks(char image_w, char image_h)
 {
 	/* renders the checkerboard scratch pad a la gimp */
-	bg = imlib_create_image(image_w, image_h);
+	bg = imlib_create_image(CHECKS, CHECKS);
 	imlib_context_set_image(bg);
 	
-	for(yy = 0; yy < image_w; yy += 8){
+	for(yy = 0; yy < CHECKS; yy += 8){
 		onoff = (yy / 8) & 0x1;
-		for(xx = 0; xx < image_h; xx += 8){
+		for(xx = 0; xx < CHECKS; xx += 8){
 			if(onoff)
 			  imlib_context_set_color(144, 144, 144, 255);
 			else
@@ -239,6 +241,10 @@ void DrawChecks(char image_w, char image_h)
 			  onoff = 0;
 		}
 	}
+}
+
+void Checks(void)
+{
 }
 
 void CloseWindow(GtkWidget *widget, gpointer data)
