@@ -74,5 +74,7 @@ void entice_save_image(void);
 void entice_thumb_load_ethumb(Evas_Object * o);
 void entice_dragable_image_set(int state);
 
+void entice_image_horizontal_align_set(double align);
+void entice_image_vertical_align_set(double align);
 
 #endif

@@ -425,83 +425,6 @@ _entice_thumbs_scroll_stop(void *data, Evas_Object * o, const char *emission,
    source = NULL;
 }
 
-/* entice,imageScrollEastStart */
-void
-_entice_image_scroll_east_start(void *data, Evas_Object * o,
-                                const char *emission, const char *source)
-{
-#if DEBUG
-   fprintf(stderr, "SCROLL EAST!!!\n");
-#endif
-   entice_main_image_scroll_east_start();
-   return;
-   data = NULL;
-   o = NULL;
-   emission = NULL;
-   source = NULL;
-}
-
-/* entice,imageScrollWestStart */
-void
-_entice_image_scroll_west_start(void *data, Evas_Object * o,
-                                const char *emission, const char *source)
-{
-#if DEBUG
-   fprintf(stderr, "SCROLL WEST!!!\n");
-#endif
-   entice_main_image_scroll_west_start();
-   return;
-   data = NULL;
-   o = NULL;
-   emission = NULL;
-   source = NULL;
-}
-
-/* entice,imageScrollNorthStart */
-void
-_entice_image_scroll_north_start(void *data, Evas_Object * o,
-                                 const char *emission, const char *source)
-{
-#if DEBUG
-   fprintf(stderr, "SCROLL NORTH!!!\n");
-#endif
-   entice_main_image_scroll_north_start();
-   return;
-   data = NULL;
-   o = NULL;
-   emission = NULL;
-   source = NULL;
-}
-
-/* entice,imageScrollSouthStart */
-void
-_entice_image_scroll_south_start(void *data, Evas_Object * o,
-                                 const char *emission, const char *source)
-{
-#if DEBUG
-   fprintf(stderr, "SCROLL SOUTH!!!\n");
-#endif
-   entice_main_image_scroll_south_start();
-   return;
-   data = NULL;
-   o = NULL;
-   emission = NULL;
-   source = NULL;
-}
-
-/* entice,imageScrollStop */
-void
-_entice_image_scroll_stop(void *data, Evas_Object * o, const char *emission,
-                          const char *source)
-{
-   entice_main_image_scroll_stop();
-   return;
-   data = NULL;
-   o = NULL;
-   emission = NULL;
-   source = NULL;
-}
-
 /* entice,quit */
 void
 _entice_quit(void *data, Evas_Object * o, const char *emission,
@@ -548,23 +471,44 @@ _entice_image_save(void *data, Evas_Object * o, const char *emission,
 
 /* drag,* */
 void
-_entice_image_drag_stop(void *data, Evas_Object * o, const char *emission,
-                        const char *source)
+_entice_image_align_seek(void *data, Evas_Object * o, const char *emission,
+                         const char *source)
 {
+   Evas_Coord x, y, w, h;
+
 #if DEBUG
-   fprintf(stderr, "Drag stopped\n");
+   fprintf(stderr, "Seek Request\n");
 #endif
-   if ((source) && !strcmp(source, "entice.image"))
-      entice_dragable_image_set(0);
+   if(edje_object_part_exists(o, source))
+   {
+      edje_object_part_geometry_get(o, source, &x, &y, &w, &h);
+      fprintf(stderr, "Seek on %s(%0.2f,%0.2f,%0.2f, %0.2f)\n",
+      source,x,y,w,h);
+   }
+
 }
 
 void
-_entice_image_drag_start(void *data, Evas_Object * o, const char *emission,
+_entice_image_align_drag(void *data, Evas_Object * o, const char *emission,
                          const char *source)
 {
+   double dx = 0.0, dy = 0.0;
+
 #if DEBUG
-   fprintf(stderr, "Drag started\n");
+   fprintf(stderr, "Dragging %s\n", source);
 #endif
-   if ((source) && !strcmp(source, "entice.image"))
-      entice_dragable_image_set(1);
+   if (!strcmp(source, "entice.image.scroll.horizontal.scrollbar"))
+   {
+      edje_object_part_drag_value_get(o,
+                                      "entice.image.scroll.horizontal.scrollbar",
+                                      &dx, NULL);
+      entice_image_horizontal_align_set(dx);
+   }
+   else if (!strcmp(source, "entice.image.scroll.vertical.scrollbar"))
+   {
+      edje_object_part_drag_value_get(o,
+                                      "entice.image.scroll.vertical.scrollbar",
+                                      NULL, &dy);
+      entice_image_vertical_align_set(dy);
+   }
 }

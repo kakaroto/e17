@@ -62,8 +62,8 @@ void _entice_image_modified(void *data, Evas_Object * o, const char *emission,
                             const char *source);
 void _entice_image_save(void *data, Evas_Object * o, const char *emission,
                         const char *source);
-void _entice_image_drag_start(void *data, Evas_Object * o,
+void _entice_image_align_drag(void *data, Evas_Object * o,
                               const char *emission, const char *source);
-void _entice_image_drag_stop(void *data, Evas_Object * o,
-                             const char *emission, const char *source);
+void _entice_image_align_seek(void *data, Evas_Object * o,
+                              const char *emission, const char *source);
 #endif

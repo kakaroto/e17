@@ -59,11 +59,8 @@ hookup_edje_signals(Evas_Object * o)
       "entice,image,current,rotate,right",
       "entice,image,current,flip,horizontal",
       "entice,image,current,flip,vertical",
-      "entice,image,current,scroll,start,east",
-      "entice,image,current,scroll,start,west",
-      "entice,image,current,scroll,start,north",
-      "entice,image,current,scroll,start,south",
-      "entice,image,current,scroll,stop",
+      "entice,image,current,align,seek,*",
+      "entice,image,current,align,drag,*",
       "entice,image,current,modified",
       "entice,image,current,save",
       "entice,thumbnail,scroll,start,next",
@@ -81,21 +78,21 @@ hookup_edje_signals(Evas_Object * o)
          _entice_zoom_in_focused, _entice_zoom_out_focused,
          _entice_zoom_default, _entice_zoom_fit, _entice_rotate_left,
          _entice_rotate_right, _entice_flip_horizontal,
-         _entice_flip_vertical, _entice_image_scroll_east_start,
-         _entice_image_scroll_west_start, _entice_image_scroll_north_start,
-         _entice_image_scroll_south_start, _entice_image_scroll_stop,
-         _entice_image_modified, _entice_image_save,
-         _entice_thumbs_scroll_next_start,
+         _entice_flip_vertical, _entice_image_align_seek,
+         _entice_image_align_drag, _entice_image_modified,
+         _entice_image_save, _entice_thumbs_scroll_next_start,
          _entice_thumbs_scroll_prev_start, _entice_thumbs_scroll_stop,
          _entice_fit_window, _entice_fullscreen, _entice_quit, NULL};
    count = sizeof(signals) / sizeof(char *);
    for (i = 0; i < count; i++)
-      edje_object_signal_callback_add(o, signals[i], "", funcs[i], NULL);
+      edje_object_signal_callback_add(o, signals[i], "*", funcs[i], NULL);
 
+#if 0
    edje_object_signal_callback_add(o, "drag,stop", "entice.image",
                                    _entice_image_drag_stop, NULL);
    edje_object_signal_callback_add(o, "drag,start", "entice.image",
                                    _entice_image_drag_start, NULL);
+#endif
    return;
 }
 
@@ -354,6 +351,10 @@ _entice_thumb_load(void *_data, Evas * _e, Evas_Object * _o, void *_ev)
          {
             entice_image_zoom_set(new_current,
                                   entice_image_zoom_get(entice->current));
+	    entice_image_x_align_set(new_current, 
+		    entice_image_x_align_get(entice->current));
+	    entice_image_y_align_set(new_current, 
+		    entice_image_y_align_get(entice->current));
             if (entice_image_zoom_fit_get(entice->current))
                should_fit = 1;
             entice_current_free();
@@ -853,41 +854,6 @@ entice_resize(int w, int h)
 }
 
 void
-entice_main_image_scroll_east_start(void)
-{
-   if (entice && entice->edje && entice->current)
-      entice_image_scroll_start(entice->current, ENTICE_SCROLL_EAST);
-}
-
-void
-entice_main_image_scroll_west_start(void)
-{
-   if (entice && entice->edje && entice->current)
-      entice_image_scroll_start(entice->current, ENTICE_SCROLL_WEST);
-}
-
-void
-entice_main_image_scroll_north_start(void)
-{
-   if (entice && entice->edje && entice->current)
-      entice_image_scroll_start(entice->current, ENTICE_SCROLL_NORTH);
-}
-
-void
-entice_main_image_scroll_south_start(void)
-{
-   if (entice && entice->edje && entice->current)
-      entice_image_scroll_start(entice->current, ENTICE_SCROLL_SOUTH);
-}
-
-void
-entice_main_image_scroll_stop(void)
-{
-   if (entice && entice->edje && entice->current)
-      entice_image_scroll_stop(entice->current);
-}
-
-void
 entice_preview_thumb(Evas_Object * o)
 {
    Evas_Object *swallowed = NULL;
@@ -1025,8 +991,9 @@ entice_dragable_image_fix(Evas_Coord x, Evas_Coord y)
                                        NULL, NULL);
          dx = x - xx;
          dy = y - yy;
-         entice_image_x_scroll_offset_add(entice->current, -dx);
-         entice_image_y_scroll_offset_add(entice->current, -dy);
+	 fprintf(stderr, "Align changed\n");
+         entice_image_x_align_set(entice->current, -dx);
+         entice_image_y_align_set(entice->current, -dy);
          edje_object_part_drag_value_set(entice->edje, "entice.image", dx,
                                          dy);
          evas_object_geometry_get(entice->current, &x, &y, &w, &h);
@@ -1060,5 +1027,21 @@ entice_thumb_load_ethumb(Evas_Object * o)
    if (entice && entice->edje && o)
    {
       _entice_thumb_load(o, NULL, NULL, NULL);
+   }
+}
+void
+entice_image_horizontal_align_set(double align)
+{
+   if (entice && entice->edje && entice->current)
+   {
+      entice_image_x_align_set(entice->current, align);
+   }
+}
+void
+entice_image_vertical_align_set(double align)
+{
+   if (entice && entice->edje && entice->current)
+   {
+      entice_image_y_align_set(entice->current, align);
    }
 }

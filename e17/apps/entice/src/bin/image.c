@@ -16,8 +16,29 @@
 static void entice_image_resize(Evas_Object * o, Evas_Coord w, Evas_Coord h);
 static int _entice_image_scroll_timer(void *data);
 
+double
+entice_image_x_align_get(Evas_Object * o)
+{
+   Entice_Image *im = NULL;
+
+   if ((im = evas_object_smart_data_get(o)))
+   {
+      return(im->align.x);
+   }
+   return(0.5);
+}
+double
+entice_image_y_align_get(Evas_Object * o)
+{
+   Entice_Image *im = NULL;
+   if ((im = evas_object_smart_data_get(o)))
+   {
+      return(im->align.y);
+   }
+   return(0.5);
+}
 void
-entice_image_x_scroll_offset_add(Evas_Object * o, Evas_Coord offset)
+entice_image_x_align_set(Evas_Object * o, double align)
 {
    Entice_Image *im = NULL;
 
@@ -26,12 +47,12 @@ entice_image_x_scroll_offset_add(Evas_Object * o, Evas_Coord offset)
 #if DEBUG
       fprintf(stderr, "Adding X OFfset: %0.2f\n", offset);
 #endif
-      im->scroll.x += offset;
+      im->align.x = align;
    }
 
 }
 void
-entice_image_y_scroll_offset_add(Evas_Object * o, Evas_Coord offset)
+entice_image_y_align_set(Evas_Object * o, double align)
 {
    Entice_Image *im = NULL;
 
@@ -40,7 +61,7 @@ entice_image_y_scroll_offset_add(Evas_Object * o, Evas_Coord offset)
 #if DEBUG
       fprintf(stderr, "Adding Y OFfset: %0.2f\n", offset);
 #endif
-      im->scroll.y += offset;
+      im->align.y = align;
    }
 
 }
@@ -272,93 +293,6 @@ entice_image_zoom_fit_get(Evas_Object * o)
 }
 
 /**
- * entice_image_scroll_stop - stop scrolling in any direction
- * @o - the Entice_Image object
- */
-void
-entice_image_scroll_stop(Evas_Object * o)
-{
-   Entice_Image *im = NULL;
-
-   if ((im = evas_object_smart_data_get(o)))
-   {
-      if (im->scroll.timer)
-         ecore_timer_del(im->scroll.timer);
-      im->scroll.timer = NULL;
-   }
-}
-
-/**
- * entice_image_scroll_start - start scrolling in a given direction
- * @o - the Entice_Image object
- * @d - the Entice_Image_Scroll_Direction
- */
-void
-entice_image_scroll_start(Evas_Object * o, Entice_Scroll_Direction d)
-{
-   Entice_Image *im = NULL;
-
-   if ((im = evas_object_smart_data_get(o)))
-   {
-      if (im->scroll.timer)
-         return;
-      im->scroll.direction = d;
-      im->scroll.velocity = 1.0 * im->zoom;
-      im->scroll.start_time = ecore_time_get();
-      im->scroll.timer = ecore_timer_add(0.03, _entice_image_scroll_timer, o);
-   }
-}
-
-/**
- * entice_image_scroll - scrolling in a given direction, a given value
- * @o - the Entice_Image object
- * @d - the Entice_Image_Scroll_Direction
- * @val - the number of pixels to scroll
- */
-void
-entice_image_scroll(Evas_Object * o, Entice_Scroll_Direction d, int val)
-{
-   Entice_Image *im = NULL;
-
-   if ((im = evas_object_smart_data_get(o)))
-   {
-      switch (d)
-      {
-        case ENTICE_SCROLL_NORTH:
-           if (im->scroll.y > 0)
-              im->scroll.y -= val;
-           if (im->scroll.y < 0)
-              im->scroll.y = 0;
-           break;
-        case ENTICE_SCROLL_EAST:
-           if (im->scroll.x > 0)
-              im->scroll.x += val;
-           if (im->scroll.x < 0)
-              im->scroll.x = 0;
-           break;
-        case ENTICE_SCROLL_SOUTH:
-           if (im->scroll.y > 0)
-              im->scroll.y += val;
-           if (im->scroll.y < 0)
-              im->scroll.y = 0;
-           break;
-        case ENTICE_SCROLL_WEST:
-           if (im->scroll.x > 0)
-              im->scroll.x -= val;
-           if (im->scroll.x < 0)
-              im->scroll.x = 0;
-           break;
-        default:
-#if DEBUG
-           fprintf(stderr, "Scrolling WTF\n");
-#endif
-           break;
-      }
-      entice_image_resize(o, im->w, im->h);
-   }
-}
-
-/**
  * entice_image_zoom_get - get the current zoom value for the image
  * @o - The Entice_Image we're curious about
  */
@@ -478,6 +412,7 @@ entice_image_zoom_in(Evas_Object * o)
    }
 }
 
+#if 0
 /**
  * _entice_image_scroll_timer - our ecore timer to do continuous
  * scrolling
@@ -572,6 +507,7 @@ _entice_image_scroll_timer(void *data)
    }
    return (ok);
 }
+#endif
 
 /*=========================================================================
  * Entice_Image smart object definitions
@@ -690,6 +626,7 @@ entice_image_resize(Evas_Object * o, double w, double h)
       im->w = w;
       im->h = h;
 
+      evas_object_move(im->clip, im->x, im->y);
       evas_object_resize(im->clip, w, h);
       if (w < 5 || h < 5)
          return;
@@ -730,8 +667,8 @@ entice_image_resize(Evas_Object * o, double w, double h)
 #endif
       evas_object_resize(im->obj, ww, hh);
       evas_object_image_fill_set(im->obj, 0, 0, ww, hh);
-      evas_object_move(im->obj, im->scroll.x + im->x + ((im->w - ww) / 2),
-                       im->scroll.y + im->y + ((im->h - hh) / 2));
+      evas_object_move(im->obj, im->x - ((ww - im->w) * im->align.x),
+                       im->y - ((hh - im->h) * im->align.y));
    }
 }
 static void

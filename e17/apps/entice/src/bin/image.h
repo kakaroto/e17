@@ -38,11 +38,8 @@ struct _Entice_Image
    double zoom;                 /* the current zoom percentage */
    struct
    {
-      Ecore_Timer *timer;
-      double velocity, start_time, x, y, dx, dy;
-      Entice_Scroll_Direction direction;
-   }
-   scroll;
+      double x, y;
+   } align;
    char *filename;              /* we need to keep track of this */
    char *format;                /* we need to keep track of this too */
    Entice_Image_Moving_State state;
@@ -73,9 +70,6 @@ double entice_image_zoom_get(Evas_Object * o);
 void entice_image_zoom_set(Evas_Object * o, double zoom);
 void entice_image_zoom_focused_set(Evas_Object * o, double zoom, double x,
                                    double y);
-void entice_image_scroll_stop(Evas_Object * o);
-void entice_image_scroll_start(Evas_Object * o, Entice_Scroll_Direction d);
-void entice_image_scroll(Evas_Object * o, Entice_Scroll_Direction d, int val);
 const char *entice_image_file_get(Evas_Object * o);
 const char *entice_image_format_get(Evas_Object * o);
 int entice_image_rotate(Evas_Object * o, int direction);
@@ -87,8 +81,10 @@ void entice_image_dragable_set(Evas_Object * o, int dragging);
 void entice_image_geometry_get(Evas_Object * o, Evas_Coord * x,
                                Evas_Coord * y, Evas_Coord * w,
                                Evas_Coord * h);
-void entice_image_x_scroll_offset_add(Evas_Object * o, Evas_Coord offset);
-void entice_image_y_scroll_offset_add(Evas_Object * o, Evas_Coord offset);
+void entice_image_x_align_set(Evas_Object * o, double align);
+void entice_image_y_align_set(Evas_Object * o, double align);
+double entice_image_x_align_get(Evas_Object *o);
+double entice_image_y_align_get(Evas_Object *o);
 void entice_image_save_quality_set(Evas_Object * o, int quality);
 
 #endif
