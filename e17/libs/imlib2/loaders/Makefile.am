@@ -39,7 +39,7 @@ $(TIFF_L) \
 $(GIF_L) \
 $(ZLIB_L) \
 $(BZ2_L) \
-pnm.la argb.la bmp.la xpm.la tga.la
+pnm.la argb.la bmp.la xpm.la tga.la lbm.la
 
 jpeg_la_SOURCES	     = loader_jpeg.c
 jpeg_la_LDFLAGS	     = -no-undefined -module -avoid-version -L$(top_builddir)/src -L$(top_builddir)/src/.libs
@@ -84,3 +84,7 @@ zlib_la_LIBADD       = @ZLIBLIBS@ -lImlib2
 bz2_la_SOURCES       = loader_bz2.c
 bz2_la_LDFLAGS       = -no-undefined -module -avoid-version -L$(top_builddir)/src -L$(top_builddir)/src/.libs
 bz2_la_LIBADD        = @BZ2LIBS@ -lImlib2
+
+lbm_la_SOURCES	     = loader_lbm.c
+lbm_la_LDFLAGS	     = -no-undefined -module -avoid-version -L$(top_builddir)/src -L$(top_builddir)/src/.libs
+lbm_la_LIBADD	     = -lImlib2
