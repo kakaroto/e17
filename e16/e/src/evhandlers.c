@@ -105,8 +105,8 @@ HandleClientMessage(XEvent * ev)
    char               *name = XGetAtomName(disp, ev->xclient.message_type);
 
    printf
-      ("HandleClientMessage: ev_type=%s(%d) ev_win=%#x data[0-3]= %08x %08x %08x %08x\n",
-       name, ev->xclient.message_type, ev->xclient.window,
+      ("HandleClientMessage: ev_type=%s(%d) ev_win=%#x data[0-3]= %08lx %08lx %08lx %08lx\n",
+       name, (unsigned)ev->xclient.message_type, (unsigned)ev->xclient.window,
        ev->xclient.data.l[0], ev->xclient.data.l[1], ev->xclient.data.l[2],
        ev->xclient.data.l[3]);
    XFree(name);
