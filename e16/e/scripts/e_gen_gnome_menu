@@ -140,8 +140,6 @@ get_icon() {
 
     # The "Icon" entery can contain an absolute path, if it does forget the
     # $GICONDIR
-    GICON=""
-    EICON=""
     VAL3=`echo $VAL2 | grep /`
     if [ "$VAL3" != "$VAL2" ];then
       if [ -n "$VAL2" ]; then
@@ -154,10 +152,16 @@ get_icon() {
 	EICON=$EICONDIR/"`basename "$VAL3"`"
       fi
     fi
-
     CONVERT=`which convert`
-    if [ -n "$CONVERT" ] && [ -x "$CONVERT" ] && [ -n "$EICON" ] && [ -f "$EICON" ];then
-      $CONVERT -geometry 16x16 $GICON $EICON >& /dev/null
+    echo convert: $CONVERT eiocn: $EICON  $GICON >> 2
+    if [ -n "$CONVERT" ]; then
+      if [ -n "$GICON" ]; then
+        if [ -f "$GICON" ]; then
+          if [ ! -f "$EICON" ]; then
+            $CONVERT $GICON -geometry 16x16 $EICON
+          fi
+        fi
+      fi
     fi
     echo -n "$EICON"
     return 0
