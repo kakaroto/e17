@@ -444,4 +444,14 @@ around. I need to fix the way it figures out where to stop spitting out
 chars since upper/lowercase chars are not all the same width. I'll look into
 it unless someone has some insight on this.
 
+-------------------------------------------------------------------------------
+
+Fri Nov 12 16:50:11 GMT 1999
+(gilbertt)
+
+Changes to E-Clock.c E-Areas.c Emix.x E-Sys.c E-Mountbox.c E-Load.c
+E-Memwatch.c
+
+Using atexit(Epplet_cleanup) prevents all those "mulitple spawning on
+startup problems" people get.
 
