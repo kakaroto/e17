@@ -56,3 +56,11 @@ Wed Oct 27 09:55:14 PDT 1999
 (Mandrake)
 
 Trying to get this to build under Tru64
+
+-------------------------------------------------------------------------------
+
+Wed Oct 27 15:48:58 PDT 1999
+(Mandrake)
+
+Now that we've gone through with -ansi -pedantic and there are no more
+warnings, maybe Tru64 support will work in epp?

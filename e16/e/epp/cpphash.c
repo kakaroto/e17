@@ -26,10 +26,10 @@
 #include "cpphash.h"
 
 static HASHNODE    *hashtab[HASHSIZE];
-HASHNODE           *cpp_lookup(struct parse_file *pfile, const unsigned char * name, int len,
+HASHNODE           *cpp_lookup(struct parse_file *pfile, const unsigned char *name, int len,
 			       int hash);
 void                delete_macro(HASHNODE * hp);
-HASHNODE           *install(unsigned char * name, int len, enum node_type type, int ivalue,
+HASHNODE           *install(unsigned char *name, int len, enum node_type type, int ivalue,
 			    char *value, int hash);
 
 /* Define a generic NULL if one hasn't already been defined.  */
@@ -77,7 +77,7 @@ hashf(name, len, hashsize)
 HASHNODE           *
 cpp_lookup(pfile, name, len, hash)
      struct parse_file  *pfile;
-     const unsigned char       *name;
+     const unsigned char *name;
      int                 len;
      int                 hash;
 {
@@ -96,7 +96,7 @@ cpp_lookup(pfile, name, len, hash)
    bucket = hashtab[hash];
    while (bucket)
      {
-	if (bucket->length == len && strncmp(bucket->name, name, len) == 0)
+	if (bucket->length == len && strncmp((char *)bucket->name, (char *)name, len) == 0)
 	   return bucket;
 	bucket = bucket->next;
      }
@@ -164,7 +164,7 @@ delete_macro(hp)
  */
 HASHNODE           *
 install(name, len, type, ivalue, value, hash)
-     unsigned char             *name;
+     unsigned char      *name;
      int                 len;
      enum node_type      type;
      int                 ivalue;
@@ -173,7 +173,7 @@ install(name, len, type, ivalue, value, hash)
 {
    register HASHNODE  *hp;
    register int        i, bucket;
-   register unsigned char    *p, *q;
+   register unsigned char *p, *q;
 
    if (len < 0)
      {
@@ -200,7 +200,7 @@ install(name, len, type, ivalue, value, hash)
       hp->value.ival = ivalue;
    else
       hp->value.cpval = value;
-   hp->name = ((unsigned char *) hp) + sizeof(HASHNODE);
+   hp->name = ((unsigned char *)hp) + sizeof(HASHNODE);
    p = hp->name;
    q = name;
    for (i = 0; i < len; i++)
