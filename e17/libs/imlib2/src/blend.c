@@ -1,5 +1,6 @@
 #include "common.h"
 #include <X11/Xlib.h>
+#include <math.h>
 #include "colormod.h"
 #include "image.h"
 #include "blend.h"
@@ -82,14 +83,14 @@ __imlib_BlendRGBAToRGBA(DATA32 *src, int srcw, DATA32 *dst, int dstw,
 {
    LOOP_START_3
 
-   SATURATE_UPPER(a, A_VAL(p1) + (((255 - A_VAL(p2)) * (A_VAL(p1))) / 255));
-	 
+   a = 255 * pow((double)A_VAL(p1) / 255, (double)A_VAL(p2) / 255);
+   
    BLEND_COLOR(a, R_VAL(p2), R_VAL(p1), R_VAL(p2));
    BLEND_COLOR(a, G_VAL(p2), G_VAL(p1), G_VAL(p2));
    BLEND_COLOR(a, B_VAL(p2), B_VAL(p1), B_VAL(p2));
    
    A_VAL(p2) = A_VAL(p2) + ((A_VAL(p1) * (255 - A_VAL(p2))) / 255);
-   
+
    LOOP_END_WITH_INCREMENT
 }
 
@@ -149,7 +150,7 @@ __imlib_AddBlendRGBAToRGBA(DATA32 *src, int srcw, DATA32 *dst, int dstw,
 {
    LOOP_START_3
 
-   SATURATE_UPPER(a, A_VAL(p1) + (((255 - A_VAL(p2)) * (A_VAL(p1))) / 255));
+   a = 255 * pow((double)A_VAL(p1) / 255, (double)A_VAL(p2) / 255);
 
    ADD_COLOR_WITH_ALPHA(a, R_VAL(p2), R_VAL(p1), R_VAL(p2));
    ADD_COLOR_WITH_ALPHA(a, G_VAL(p2), G_VAL(p1), G_VAL(p2));
@@ -224,7 +225,7 @@ __imlib_SubBlendRGBAToRGBA(DATA32 *src, int srcw, DATA32 *dst, int dstw,
 {
    LOOP_START_3
 
-   SATURATE_UPPER(a, A_VAL(p1) + (((255 - A_VAL(p2)) * (A_VAL(p1))) / 255));
+   a = 255 * pow((double)A_VAL(p1) / 255, (double)A_VAL(p2) / 255);
 
    SUB_COLOR_WITH_ALPHA(a, R_VAL(p2), R_VAL(p1), R_VAL(p2));
    SUB_COLOR_WITH_ALPHA(a, G_VAL(p2), G_VAL(p1), G_VAL(p2));
@@ -300,7 +301,7 @@ __imlib_ReBlendRGBAToRGBA(DATA32 *src, int srcw, DATA32 *dst, int dstw,
 {
    LOOP_START_3
 
-   SATURATE_UPPER(a, A_VAL(p1) + (((255 - A_VAL(p2)) * (A_VAL(p1))) / 255));
+   a = 255 * pow((double)A_VAL(p1) / 255, (double)A_VAL(p2) / 255);
 
    RESHADE_COLOR_WITH_ALPHA(a, R_VAL(p2), R_VAL(p1), R_VAL(p2));
    RESHADE_COLOR_WITH_ALPHA(a, G_VAL(p2), G_VAL(p1), G_VAL(p2));
@@ -882,42 +883,42 @@ __imlib_GetBlendFunction(ImlibOp op, char blend, char merge_alpha, char rgb_src,
    /*\ OP_COPY \*/
    {{{{{ __imlib_mmx_copy_rgba_to_rgb,  __imlib_mmx_blend_rgba_to_rgb },
        {  __imlib_mmx_copy_rgb_to_rgb,   __imlib_mmx_blend_rgb_to_rgb } },
-      {{ __imlib_mmx_copy_rgba_to_rgba, __imlib_mmx_blend_rgba_to_rgba },
+      {{ __imlib_mmx_copy_rgba_to_rgba, __imlib_BlendRGBAToRGBA/*__imlib_mmx_blend_rgba_to_rgba*/ },
        {  __imlib_mmx_copy_rgb_to_rgba,  __imlib_mmx_blend_rgb_to_rgba } } },
 
      {{{ __imlib_mmx_copy_rgba_to_rgb_cmod,  __imlib_mmx_blend_rgba_to_rgb_cmod },
        {  __imlib_mmx_copy_rgb_to_rgb_cmod,   __imlib_mmx_blend_rgb_to_rgb_cmod } },
-      {{ __imlib_mmx_copy_rgba_to_rgba_cmod, __imlib_mmx_blend_rgba_to_rgba_cmod },
+      {{ __imlib_mmx_copy_rgba_to_rgba_cmod, __imlib_BlendRGBAToRGBACmod/*__imlib_mmx_blend_rgba_to_rgba_cmod*/ },
        {  __imlib_mmx_copy_rgb_to_rgba_cmod,  __imlib_mmx_blend_rgb_to_rgba_cmod } } } },
    /*\ OP_ADD \*/
     {{{{ __imlib_mmx_add_copy_rgba_to_rgb,  __imlib_mmx_add_blend_rgba_to_rgb },
        {  __imlib_mmx_add_copy_rgb_to_rgb,   __imlib_mmx_add_blend_rgb_to_rgb } },
-      {{ __imlib_mmx_add_copy_rgba_to_rgba, __imlib_mmx_add_blend_rgba_to_rgba },
+      {{ __imlib_mmx_add_copy_rgba_to_rgba, __imlib_AddBlendRGBAToRGBA/*__imlib_mmx_add_blend_rgba_to_rgba*/ },
        {  __imlib_mmx_add_copy_rgb_to_rgba,  __imlib_mmx_add_blend_rgb_to_rgba } } },
 
      {{{ __imlib_mmx_add_copy_rgba_to_rgb_cmod,  __imlib_mmx_add_blend_rgba_to_rgb_cmod },
        {  __imlib_mmx_add_copy_rgb_to_rgb_cmod,   __imlib_mmx_add_blend_rgb_to_rgb_cmod } },
-      {{ __imlib_mmx_add_copy_rgba_to_rgba_cmod, __imlib_mmx_add_blend_rgba_to_rgba_cmod },
+      {{ __imlib_mmx_add_copy_rgba_to_rgba_cmod, __imlib_AddBlendRGBAToRGBACmod/*__imlib_mmx_add_blend_rgba_to_rgba_cmod*/ },
        {  __imlib_mmx_add_copy_rgb_to_rgba_cmod,  __imlib_mmx_add_blend_rgb_to_rgba_cmod } } } },
    /*\ OP_SUBTRACT \*/
     {{{{ __imlib_mmx_subtract_copy_rgba_to_rgb,  __imlib_mmx_subtract_blend_rgba_to_rgb },
        {  __imlib_mmx_subtract_copy_rgb_to_rgb,   __imlib_mmx_subtract_blend_rgb_to_rgb } },
-      {{ __imlib_mmx_subtract_copy_rgba_to_rgba, __imlib_mmx_subtract_blend_rgba_to_rgba },
+      {{ __imlib_mmx_subtract_copy_rgba_to_rgba, __imlib_SubBlendRGBAToRGBA/*__imlib_mmx_subtract_blend_rgba_to_rgba*/ },
        {  __imlib_mmx_subtract_copy_rgb_to_rgba,  __imlib_mmx_subtract_blend_rgb_to_rgba } } },
 
      {{{ __imlib_mmx_subtract_copy_rgba_to_rgb_cmod,  __imlib_mmx_subtract_blend_rgba_to_rgb_cmod },
        {  __imlib_mmx_subtract_copy_rgb_to_rgb_cmod,   __imlib_mmx_subtract_blend_rgb_to_rgb_cmod } },
-      {{ __imlib_mmx_subtract_copy_rgba_to_rgba_cmod, __imlib_mmx_subtract_blend_rgba_to_rgba_cmod },
+      {{ __imlib_mmx_subtract_copy_rgba_to_rgba_cmod, __imlib_SubBlendRGBAToRGBACmod/*__imlib_mmx_subtract_blend_rgba_to_rgba_cmod*/ },
        {  __imlib_mmx_subtract_copy_rgb_to_rgba_cmod,  __imlib_mmx_subtract_blend_rgb_to_rgba_cmod } } } },
    /*\ OP_RESHADE \*/
     {{{{ __imlib_mmx_reshade_copy_rgba_to_rgb,  __imlib_mmx_reshade_blend_rgba_to_rgb },
        {  __imlib_mmx_reshade_copy_rgb_to_rgb,   __imlib_mmx_reshade_blend_rgb_to_rgb } },
-      {{ __imlib_mmx_reshade_copy_rgba_to_rgba, __imlib_mmx_reshade_blend_rgba_to_rgba },
+      {{ __imlib_mmx_reshade_copy_rgba_to_rgba, __imlib_ReBlendRGBAToRGBA/*__imlib_mmx_reshade_blend_rgba_to_rgba*/ },
        {  __imlib_mmx_reshade_copy_rgb_to_rgba,  __imlib_mmx_reshade_blend_rgb_to_rgba } } },
 
      {{{ __imlib_mmx_reshade_copy_rgba_to_rgb_cmod,  __imlib_mmx_reshade_blend_rgba_to_rgb_cmod },
        {  __imlib_mmx_reshade_copy_rgb_to_rgb_cmod,   __imlib_mmx_reshade_blend_rgb_to_rgb_cmod } },
-      {{ __imlib_mmx_reshade_copy_rgba_to_rgba_cmod, __imlib_mmx_reshade_blend_rgba_to_rgba_cmod },
+      {{ __imlib_mmx_reshade_copy_rgba_to_rgba_cmod, __imlib_ReBlendRGBAToRGBACmod/*__imlib_mmx_reshade_blend_rgba_to_rgba_cmod*/ },
        {  __imlib_mmx_reshade_copy_rgb_to_rgba_cmod,  __imlib_mmx_reshade_blend_rgb_to_rgba_cmod } } } } },
 #endif
    };
