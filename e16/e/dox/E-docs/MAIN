@@ -253,13 +253,13 @@ Documentation Index
 <p>
 <br>
 <br>
-_Basic_Intro(tut2)<br>
-_Using_Menus(tut3)<br>
-_Mouse_Bindings(tut5)<br>
+_Basic_Intro(basicintro)<br>
+_Using_Menus(rootmenu)<br>
+_Mouse_Bindings(mousebind)<br>
 _Mouse_Configuration(mouseconfig)<br>
-_Using_The_Window_Border(tut7)<br>
+_Using_The_Window_Border(border)<br>
 _Changing_Window_Borders(changeborder)<br>
-_Default_Keybindings(tut10)<br>
+_Default_Keybindings(defkeys)<br>
 _Multiple_Desktops(desktops)<br>
 _Changing_Desktops(changedesk)<br>
 _The_Dragbar(dragbar)<br>
@@ -296,7 +296,7 @@ _Extra_Eyecandy(eyecandy)<br>
 
 
 
-<page columns=1 padding=16 name=tut2 background=Edoc_bg.png linkcolor=#88dddd>
+<page columns=1 padding=16 name=basicintro background=Edoc_bg.png linkcolor=#88dddd>
 <font face=aircut3/12 color=#ffffff>
 <img src=E_screen_start.png x=16 y=16>
 <p>
@@ -319,7 +319,7 @@ else is your desktop background.
 
 
 
-<page columns=1 padding=16 name=tut3 background=Edoc_bg.png linkcolor=#88dddd>
+<page columns=1 padding=16 name=rootmenu background=Edoc_bg.png linkcolor=#88dddd>
 <img src=E_app_menu.png x=350 y=38>
 <font face=rothwell/25 color=#ffffff>
 <p>
@@ -373,14 +373,14 @@ menu.
 
 
 
-<page columns=1 padding=16 name=tut5 background=Edoc_bg.png linkcolor=#88dddd>
+<page columns=1 padding=16 name=mousebind background=Edoc_bg.png linkcolor=#88dddd>
 <font face=rothwell/25 color=#ffffff>
 <p>
 Mouse Bindings
 <font face=aircut3/12 color=#ffffff>
 Of course, when you click on the _desktop(desktops) _backgound(backgrounds) of
-your screen, normally you will bring up a _menu(tut3).  And of course, when you
-click on the _border(tut7) of a window, you will do various things.  But these
+your screen, normally you will bring up a _menu(rootmenu).  And of course, when you
+click on the _border(border) of a window, you will do various things.  But these
 are not the only things you can do with your mouse.
 <p>
 In enlightenment, there are several other actions that the mouse can do by
@@ -466,7 +466,7 @@ You may need to modify this for your mouse.
 
 
 
-<page columns=1 padding=16 name=tut7 background=Edoc_bg.png linkcolor=#88dddd>
+<page columns=1 padding=16 name=border background=Edoc_bg.png linkcolor=#88dddd>
 <font face=rothwell/25 color=#ffffff>
 <p>
 Using the Window Border
@@ -561,7 +561,7 @@ the current window border.
 
 
 
-<page columns=1 padding=16 name=tut10 background=Edoc_bg.png linkcolor=#88dddd>
+<page columns=1 padding=16 name=defkeys background=Edoc_bg.png linkcolor=#88dddd>
 <font face=rothwell/25 color=#ffffff>
 <img src=E_keyboard.png x=312 y=0>
 <p>
@@ -711,7 +711,7 @@ To change the number of virtual areas, use the "Virtual Desktop Settings"
 menu.  This will bring up a menu that looks something like the one on the left.
 Use the slider bars to extend the size of the virtual areas to the size that
 you best prefer.  You can also use this dialog to enable/disable edge
-resistance (when your _mouse(tut5) hits the edge of an area) moving between
+resistance (when your _mouse(mousebind) hits the edge of an area) moving between
 virtual areas.
 
 
@@ -746,9 +746,9 @@ Changing Desktops
 There are seveal ways that you can change your current desktop - let's go over
 a few of them here.
 <p>
-You can use the _Keybindings(tut10) alt-F1 through alt-F12 for the first 12
+You can use the _Keybindings(defkeys) alt-F1 through alt-F12 for the first 12
 desktops.<br>
-You can use the _Keybindings(tut10) ctrl-alt-left and ctrl-alt-right to
+You can use the _Keybindings(defkeys) ctrl-alt-left and ctrl-alt-right to
 navigate to the next/previous desktop.<br>
 You can use the _Keybindings(tut11) shift-alt-directional arrow to change
 virtual areas in a given direction.<br>
@@ -892,14 +892,14 @@ you iconify or minimize a window it will go into an iconbox and have an icon
 displayed for it there. Clicking on the icon again will de-iconify it.  
 <p>
 You can have as many icon boxes on your desktop as you want to.  You can create
-more by using the Middle Click _Menu(tut3) - select Desktop->Create New Iconbox
+more by using the Middle Click _Menu(rootmenu) - select Desktop->Create New Iconbox
 and a new Iconbox will pop up on your desktop.  Each of these Iconboxes can
 have individual configurations, as detailed on the next page.
 <p>
 You can _move(movemode) the Iconbox around the screen using alt-leftclick
 on the window, and then moving it to the desired location on the screen.  You
 can _resize(movemode) the Iconbox by alt-middleclicking on the window and
-then adjusting the size  as described in the _Mouse_Bindings(tut5) section
+then adjusting the size  as described in the _Mouse_Bindings(mousebind) section
 <p>
 
 
@@ -914,7 +914,7 @@ here to the right.  This menu allows you to also close the Iconbox or open up
 an additional Iconbox.
 <p>
 To change the settings of an individual Iconbox, we'll use the right mouse
-button _menu(tut5) and select "This
+button _menu(mousebind) and select "This
 Iconbox Settings" - this should get us a dialog that looks something like the
 one  to our left.  You can change the orientation, icon size, scrollbar
 options, display policy, base image, and many more options of the Iconbox
@@ -936,7 +936,7 @@ maybe you minimized some applications and forgot you didn't have an Iconbox.
 Or maybe you don't like the Iconbox and usually use KDE or GNOME's panel to
 recover them and forgot to launch them.  Never fear.  You can always
 middle click on the _Dragbar(dragbar)
-and get a _menu(tut3) that will allow you
+and get a _menu(rootmenu) that will allow you
 to recover them.  You can also alt or ctrl middleclick on the desktop to get
 the same menus. (in case you don't have a Dragbar anymore)
 <p>
@@ -1159,7 +1159,7 @@ Tooltips
 <p>
 From time to time, as you use enlightenment, if you don't remember what does
 what, if you keep the mouse still for a little bit a tooltip will pop up.  The
-easiest example of this is when you hold the mouse over a _Window_Border(tut7)
+easiest example of this is when you hold the mouse over a _Window_Border(border)
 .
 <p>
 <br>
@@ -1250,31 +1250,62 @@ up a dialog that looks something like the one on the right.  At the top, we can
 select between our three focus modes, as described on the previous page.
 <p>
 We can also enable some other features, such as one that will allow a simple
-_mouse(tut5) click to raise any window to the foreground, as well as several
+_mouse(mousebind) click to raise any window to the foreground, as well as several
 other advanced focus settings.
 <p>
 Here we can also enable the focuslist feature.  This feature requires Xkb to be
 enabled in your X server.  If you don't have Xkb enabled, please consult your X
 server docs to see how to do this.  The focuslist is a window list that pops up
 as you cycle through your focus using the ALT + TAB<br>
-_Keybinding(tut10) .
+_Keybinding(defkeys) .
 
 
 <page columns=1 padding=16 name=movemode background=Edoc_bg.png linkcolor=#88dddd>
+<img src=E_move_resize_settings.png x=300 y=50>
 <font face=rothwell/25 color=#ffffff>
 <p>
 Moving Windows
 <font face=aircut3/12 color=#ffffff>
 <p>
-Moving Windows is cool.
+Enlightenment comes with several different available methods for moving a
+window.  You can perform the actual moves using the  Window
+<br>
+_Border(border), or by using the available
+<br>
+_Mouse_Bindings(mousebind) .  This will cause the window to move until you have
+released the mouse button.
+<p>
+To change the mode that the moving of the windows uses (opaque being the
+default), open up the _Settings(settings) menu, and select "Move & Resize
+Settings".  You can select from a list that looks similar to the one here 
+above-right.  Experiment until you find one that suits you best.
+<p>
+For some serious eyecandy, try out the Translucent move mode.  This will only
+work if your X Server and enlightenment are running on the same machine,
+however.
+
 
 <page columns=1 padding=16 name=resizemode background=Edoc_bg.png linkcolor=#88dddd>
+<img src=E_move_resize_settings.png x=300 y=50>
 <font face=rothwell/25 color=#ffffff>
 <p>
 Resizing Windows
 <font face=aircut3/12 color=#ffffff>
 <p>
-Moving Windows is cool.
+Enlightenment also comes with several available methods for resizing windows.
+You can perform the actual resize on the window by clicking on any
+resize-handle of your window _border(border) and dragging to the desired size.
+You can also get the same effect by using the ALT + middle button
+_mouse_binding(mousebind) in any part of the window.
+<p>
+To change the mode that the resizing of the windows uses (opaque being the
+default), open up the _Settings(settings) menu, and select "Move & Resize
+Settings".  You can select from a list that looks similar to the one here 
+above-right.  Experiment until you find one that suits you best.
+<p>
+The best eyecandy resize mode is probably technical move mode.  This mode shows
+you the height and width of the window, in addition to the distance from the
+nearest edge.
 
 <page columns=1 padding=16 name=windowops background=Edoc_bg.png linkcolor=#88dddd>
 <img src=E_app_rightmouse_menu.png x=360 y=40>
@@ -1325,7 +1356,8 @@ More on the _next(windowops3) page.
 <page columns=1 padding=16 name=windowops3 background=Edoc_bg.png linkcolor=#88dddd>
 <font face=aircut3/12 color=#ffffff>
 <p>
-In the Window Groups submenu there are various options for configuring window
+In the _Window_Groups(groups) submenu there are various options for
+configuring window
 groups and how this window relates to any groups you may have. Note that you
 cannot group _Pagers(pager) windows or _Iconboxes(iconbox) together with 
 eachother or any other windows.
