@@ -26,6 +26,8 @@ build-stamp:
 configure-stamp:
 	test -x autogen.sh && ./autogen.sh
 	./configure $(configure_options)
+	-mv src/themes/Makefile.am.old src/themes/Makefile.am
+	-mv src/Makefile.am.old src/Makefile.am
 	mv econfig.h econfig.h.old; sed -n '/LIBESD/ d; w econfig.h' econfig.h.old
 	touch $@
 
@@ -57,6 +59,7 @@ install-stamp: build-stamp
 		| (cd debian/enlightenment; tar xpf -)
 	(cd debian/tmp; tar --remove-files --create --file -  ./) \
 		| (cd debian/enlightenment-nosound; tar xpf -)
+	-mv src/themes/configs/menus.cfg.old src/themes/configs/menus.cfg
 	gunzip -dc src/themes/BrushedMetal-Tigert.etheme \
 		| (cd debian/enlightenment-theme-brushedmetal/usr/share/enlightenment/themes/BrushedM; tar xpf -)
 	gunzip -dc  src/themes/ShinyMetal.etheme  \
