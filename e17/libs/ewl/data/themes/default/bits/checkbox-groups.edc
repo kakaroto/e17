@@ -1,10 +1,11 @@
    group {
       name, "checkbox";
+      max, 10, 10;
       data {
-          item, "inset/left" "5";
-          item, "inset/right" "5";
-          item, "inset/top" "3";
-          item, "inset/bottom" "3";
+          item, "inset/left" "2";
+          item, "inset/right" "2";
+          item, "inset/top" "1";
+          item, "inset/bottom" "1";
       }
       parts {
 	 part {
