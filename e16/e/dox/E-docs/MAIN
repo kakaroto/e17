@@ -602,12 +602,64 @@ desktop - select one and you'll set the focus on that too.
 <p>
 The Pager
 <font face=aircut3/12 color=#ffffff>
+The Pager to those of you new to the concept of virtaul and multiple desktops
+may be a foreign concept, but once gotten used to is highly useful in being 
+able to manage your application ovr multiple screens that you might not 
+necessarily be able to see.
+<p>
+The pager lets you see your desktop screen area in miniature. It lets you click
+on a certain desktop to "visit" it, clcik and drag windows around in the pager 
+itself to move them about the screen quickly, or between desktops.
+<p>
+Pressing right-mouse button over a blank portion of the pager gets you the 
+pager menu, allowing you to change settings. Right-mouse button on a window
+miniature will get you a small window operations menu. Dragging a window from 
+one area of a pager to another will move it there, or to another desktop. 
+Dragging it out onto the actual desktop will drop that window right there.
+
+
+
+
+
+
+
+<page columns=1 padding=16 name=pager2 background=Edoc_bg.png linkcolor=#88dddd>
+<font face=aircut3/12 color=#ffffff>
+<p>
+You can resize the pager to make it the size you'd like (hint - hint. hold down
+ALT and use the middle-mouse button to resize the pager in any direction. using
+left-mouse button whilst holding ALT and dragging will move the window. Holding
+down ALT whilst pressing right-mouse button, just like any normal window will
+get you a window operations menu).
+<p>
+In the default theme clicking the tab on the right side of the pager with the
+arrow pointing riht will shade and unshade the pager window horizontally, 
+allowing you to hide and unhide the window easily.
+<p>
+The striped area above this tab on the pager's border is a handle that will
+allow you to move the pager about, just like the titlebar of any window.
+
+
+
+
+
 
 <page columns=1 padding=16 name=iconbox background=Edoc_bg.png linkcolor=#88dddd>
 <font face=rothwell/25 color=#ffffff>
 <p>
 The Iconbox
 <font face=aircut3/12 color=#ffffff>
+The iconbox is the place the icons for all your iconified windows go. Whenever
+you iconify or minimize a window it will go into an iconbox and have an icon 
+displayed for it there. Clicking ont he icon again will de-iconify it. Clicking
+right-mouse button anywhere in the iconbox will pring up a menu to configure 
+that iconbox. If you accidentally close your iconbox and want it back, you can 
+bring an iconbox back by selecting "Create New Iconbox" from the Desktop 
+submenu of the desktop menu tied to the middle-mouse button.
+<p>
+You can actually create as many iconboxes as you like and move them about,
+rotate them differently, change each iconbox's settings to be diferent, and
+Enlightenment will use the iconbox closest to the window when you iconify it.
 
 <page columns=1 padding=16 name=settings background=Edoc_bg.png linkcolor=#88dddd>
 <font face=rothwell/25 color=#ffffff>
