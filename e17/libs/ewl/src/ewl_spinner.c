@@ -417,7 +417,7 @@ ewl_spinner_key_down_cb(Ewl_Widget * w, void *ev_data, void *user_data)
 	else if (ev->keyname && (isdigit(ev->keyname[0]) ||
 				 ev->keyname[0] == '.' ||
 				 ev->keyname[0] == '-'))
-		ewl_entry_text_append(e, ev->keyname);
+		ewl_entry_text_at_cursor_insert(e, ev->keyname);
 
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }

@@ -348,6 +348,30 @@ void ewl_entry_text_insert(Ewl_Entry * e, char *text, int index)
 }
 
 /**
+ * @param e: the entry widget to insert the text
+ * @param text: the text to insert in the entry widget @a e 
+ * @return Returns no value.
+ * @brief Inserts text at cursor position
+ *
+ * Inserts text to the entry widget @a e at the current cursor position.
+ */
+void
+ewl_entry_text_at_cursor_insert(Ewl_Entry * e, char *text)
+{
+	Ewl_Entry_Op *op;
+	int pos = 0;
+
+	DENTER_FUNCTION(DLEVEL_STABLE);
+	DCHECK_PARAM_PTR("e", e);
+	DCHECK_PARAM_PTR("text", text);
+
+	pos = ewl_entry_cursor_position_get(EWL_ENTRY_CURSOR(e->cursor));
+	ewl_entry_text_insert(e, text, pos);
+
+	DLEAVE_FUNCTION(DLEVEL_STABLE);
+}
+
+/**
  * @param e: then entry to change
  * @param edit: a boolean value indicating the ability to edit the entry
  * @return Returns no value.

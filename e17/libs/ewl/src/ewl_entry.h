@@ -62,6 +62,7 @@ int             ewl_entry_multiline_get(Ewl_Entry * e);
 void            ewl_entry_text_prepend(Ewl_Entry * e, char *text);
 void            ewl_entry_text_append(Ewl_Entry * e, char *text);
 void            ewl_entry_text_insert(Ewl_Entry * e, char *text, int index);
+void		ewl_entry_text_at_cursor_insert(Ewl_Entry * e, char *text);
 
 int             ewl_entry_length_get(Ewl_Entry *e);
 
