@@ -8,10 +8,12 @@ E-MemWatch.epplet E-Disk.epplet E-Areas.epplet E-Magic.epplet E-Toolbox.epplet \
 E-NetFlame.epplet E-Sys.epplet E-ScreenShoot.epplet E-Slides.epplet \
 E-Xss.epplet E-Mountbox.epplet E-Exec.epplet @ESD_PROGS@ @PLAYCD_PROGS@ \
 E-ScreenSave.epplet E-NetGraph.epplet E-MoonClock.epplet E-UrlWatch.epplet \
-E-LoadMeter.epplet E-GtkRc.epplet
+E-LoadMeter.epplet E-GtkRc.epplet E-Pinger.epplet
+
 
 EXTRA_PROGRAMS = EppletTest.epplet EppletConfigTest.epplet E-Mixer.epplet \
-                 Emix.epplet E-PlayCD.epplet E-OpenGL-Demo.epplet E-SD.epplet
+                 Emix.epplet E-PlayCD.epplet E-OpenGL-Demo.epplet \
+		 E-SD.epplet
 
 ################ Conditional Builds ################
 E_Mixer_epplet_SOURCES = E-Mixer.c
@@ -158,6 +160,10 @@ E_Mountbox_epplet_SOURCES = E-Mountbox.c E-Mountbox.h
 E_Mountbox_epplet_DEPENDENCIES = $(top_builddir)/api/libepplet.la
 E_Mountbox_epplet_LDFLAGS = -rpath $(libdir):$(pkglibdir)
 
+E_Pinger_epplet_SOURCES = E-Pinger.c
+E_Pinger_epplet_DEPENDENCIES = $(top_builddir)/api/libepplet.la
+E_Pinger_epplet_LDFLAGS = -rpath $(libdir):$(pkglibdir)
+
 INCLUDES = -I. -I$(top_builddir)/api -I$(top_srcdir)/api -I$(top_srcdir) -I.. -I$(includedir) -I$(prefix)/include -I/usr/local/include $(X_CFLAGS) @SGI_DEFINES@
 LDADD = $(top_builddir)/api/libepplet.la -L$(libdir) -L$(prefix)/lib -L/usr/local/lib $(LIBS) $(X_LIBS)
 
@@ -174,7 +180,7 @@ E-ScreenShoot.ABOUT/E_ScreenShoot_buttons.png  \
 E-ScreenShoot.ABOUT/E_ScreenShoot_cloak.png E-ScreenShoot.ABOUT/MAIN \
 Emix.ABOUT/MAIN E-UrlWatch.ABOUT/MAIN E-PlayCD.ABOUT/EPlayCD.jpg \
 E-PlayCD.ABOUT/MAIN E-PlayCD.ABOUT/E-PlayCD_Controls.png \
-E-GtkRc.ABOUT/MAIN
+E-GtkRc.ABOUT/MAIN E-Pinger.ABOUT/MAIN
 
 
 # ICONS = `(cd epplets && ls -1d icons/*.icon | grep -v CVS)`
@@ -241,8 +247,8 @@ E-Toolbox-data/sample.cfg E-Toolbox-data/popup-sample.cfg E-Toolbox-data/default
 
 EXTRA_DIST = ${ICONS} ${ABOUT_DOCS} ${DATA_FILES}
 
-NEED_FONT = E-Clock E-Mixer E-MoonClock E-Mountbox E-NetFlame E-Power E-SD E-ScreenSave E-ScreenShoot Emix E-UrlWatch E-PlayCD E-OpenGL-Demo E-GtkRc
-NEED_BG = E-Clock E-Mixer E-MoonClock E-Mountbox E-NetFlame E-Power E-SD E-ScreenSave E-ScreenShoot Emix E-UrlWatch E-PlayCD E-OpenGL-Demo E-GtkRc
+NEED_FONT = E-Clock E-Mixer E-MoonClock E-Mountbox E-NetFlame E-Power E-SD E-ScreenSave E-ScreenShoot Emix E-UrlWatch E-PlayCD E-OpenGL-Demo E-GtkRc E-Pinger
+NEED_BG = E-Clock E-Mixer E-MoonClock E-Mountbox E-NetFlame E-Power E-SD E-ScreenSave E-ScreenShoot Emix E-UrlWatch E-PlayCD E-OpenGL-Demo E-GtkRc E-Pinger
 BG_SRC = E-Cpu.ABOUT/bg.png
 FONT_SRC = E-Cpu.ABOUT/aircut3.ttf
 
