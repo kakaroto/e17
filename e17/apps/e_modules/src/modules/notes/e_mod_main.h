@@ -6,6 +6,12 @@
 #define BGCOLOR_GREEN  3
 #define BGCOLOR_YELLOW 4
 
+#define TRANS_0    1
+#define TRANS_25   2
+#define TRANS_50   3
+#define TRANS_75   4
+#define TRANS_100  5
+
 typedef struct _Note Note;
 typedef struct _Note_Face Note_Face;
 typedef struct _Config Config;
@@ -15,6 +21,7 @@ struct _Config
    Evas_Coord  height;
    Evas_Coord  width;
    int         bgcolor;   
+   int         trans;
 };
 
 
@@ -22,8 +29,6 @@ struct _Config
 struct _Note
 {
    E_Menu     *config_menu;
-   E_Menu     *config_menu_bg;
-   E_Menu     *config_menu_trans;   
    Evas_List  *faces;
    
    E_Config_DD *conf_edd;
@@ -40,7 +45,11 @@ struct _Note_Face
    Evas_Object     *event_object;
    Evas_Coord       xx, yy, ww;
    E_Gadman_Client *gmc;
-   E_Menu          *menu;   
+   E_Menu          *menu; 
+   E_Menu          *menu_bg;
+   E_Menu          *menu_trans;
+   E_Config_DD     *conf_edd;
+   Config          *conf;   
 };
 
 EAPI void *init     (E_Module *m);
