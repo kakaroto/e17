@@ -601,6 +601,56 @@ feh_strip_hostname(char *url)
 }
 
 void
+feh_draw_zoom(winwidget w)
+{
+   static Imlib_Font fn = NULL;
+   int tw = 0, th = 0;
+   Imlib_Image im = NULL;
+   char buf[100];
+
+   D_ENTER(4);
+
+   if(!w->im)
+      D_RETURN_(4);
+
+   if (!fn)
+   {
+      if (w->full_screen)
+         fn = feh_imlib_load_font("20thcent/16");
+      else
+         fn = feh_imlib_load_font("20thcent/12");
+   }
+
+   if (!fn)
+   {
+      weprintf("Couldn't load font for zoom printing");
+      D_RETURN_(4);
+   }
+
+   snprintf(buf, sizeof(buf), "%.1f%%, %dx%d", w->zoom * 100, (int) (w->im_w * w->zoom), (int) (w->im_h * w->zoom));
+
+   /* Work out how high the font is */
+   feh_imlib_get_text_size(fn, buf, &tw, &th,
+                           IMLIB_TEXT_TO_RIGHT);
+
+   tw+=2;
+   th+=2;
+   im = imlib_create_image(tw, th);
+   if (!im)
+      eprintf("Couldn't create image. Out of memory?");
+
+   feh_imlib_image_fill_rectangle(im, 0, 0, tw, th, 0, 0, 0, 255);
+
+   feh_imlib_text_draw(im, fn, 1, 1, buf,
+                       IMLIB_TEXT_TO_RIGHT, 255, 255, 255, 255);
+
+   feh_imlib_render_image_on_drawable(w->bg_pmap, im, 0, w->h - th, 1, 0, 0);
+
+   feh_imlib_free_image_and_decache(im);
+   D_RETURN_(4);
+}
+
+void
 feh_draw_filename(winwidget w)
 {
    static Imlib_Font fn = NULL;
@@ -631,13 +681,15 @@ feh_draw_filename(winwidget w)
    feh_imlib_get_text_size(fn, FEH_FILE(w->file->data)->filename, &tw, &th,
                            IMLIB_TEXT_TO_RIGHT);
 
+   tw +=2;
+   th +=2;
    im = imlib_create_image(tw, th);
    if (!im)
       eprintf("Couldn't create image. Out of memory?");
 
    feh_imlib_image_fill_rectangle(im, 0, 0, tw, th, 0, 0, 0, 255);
 
-   feh_imlib_text_draw(im, fn, 0, 0, FEH_FILE(w->file->data)->filename,
+   feh_imlib_text_draw(im, fn, 1, 1, FEH_FILE(w->file->data)->filename,
                        IMLIB_TEXT_TO_RIGHT, 255, 255, 255, 255);
 
    feh_imlib_render_image_on_drawable(w->bg_pmap, im, 0, 0, 1, 0, 0);

@@ -200,22 +200,24 @@ feh_event_handle_ButtonPress(XEvent * ev)
             winwid->im_x = 0;
             winwid->im_y = 0;
          }
-         if (winwid->im_click_offset_x < 0)
-            winwid->im_click_offset_x = 0;
+         if (winwid->im_click_offset_x < 30)
+            winwid->im_click_offset_x = 30;
          if (winwid->im_click_offset_y < 0)
             winwid->im_click_offset_y = 0;
          if (winwid->im_click_offset_x > winwid->im_w)
             winwid->im_click_offset_x = winwid->im_w;
          if (winwid->im_click_offset_y > winwid->im_h)
             winwid->im_click_offset_y = winwid->im_h;
-         if (winwid->click_offset_x < 0)
-            winwid->click_offset_x = 0;
+
+         if (winwid->click_offset_x < 30)
+            winwid->click_offset_x = 30;
          if (winwid->click_offset_y < 0)
             winwid->click_offset_y = 0;
-         if (winwid->click_offset_x > winwid->im_w)
-            winwid->click_offset_x = winwid->im_w;
-         if (winwid->click_offset_y > winwid->im_h)
-            winwid->click_offset_y = winwid->im_h;
+         if (winwid->click_offset_x > winwid->w)
+            winwid->click_offset_x = winwid->w;
+         if (winwid->click_offset_y > winwid->h)
+            winwid->click_offset_y = winwid->h;
+         
          winwidget_render_image(winwid, 0, 0);
       }
    }

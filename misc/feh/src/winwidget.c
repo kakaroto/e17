@@ -470,6 +470,8 @@ winwidget_render_image(winwidget winwid, int resize, int alias)
 
    if (opt.draw_filename)
       feh_draw_filename(winwid);
+   if((opt.mode == MODE_ZOOM) && !alias)
+      feh_draw_zoom(winwid);
    XSetWindowBackgroundPixmap(disp, winwid->win, winwid->bg_pmap);
    XClearWindow(disp, winwid->win);
    D_RETURN_(4);
