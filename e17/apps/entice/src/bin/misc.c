@@ -236,9 +236,13 @@ void e_toggle_fullscreen(void)
 	e_slide_buttons_out(0, NULL);
       ecore_window_show(win);
       ecore_keyboard_grab(ewin);
-      ecore_pointer_grab(ewin, CurrentTime);
+      ecore_grab_mouse(ewin, 1, 0);
       full = 1;
-    }   
+      if ((!ecore_grab_window_get()) || (!ecore_keyboard_grab_window_get()))
+	 {
+	    e_toggle_fullscreen();
+	 }
+    }
   else
     {
       Window ewin;

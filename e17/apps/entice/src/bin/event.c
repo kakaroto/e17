@@ -183,6 +183,24 @@ void e_key_down(Ecore_Event * ev)
     {
       exit(0);
     }
+  else if (!strcmp(e->key, "p"))
+    {
+	if (panel_active) 
+	    e_slide_panel_out(0, NULL); 
+	else 
+	    e_slide_panel_in(0, NULL);
+    }
+  else if (!strcmp(e->key, "b"))
+    {
+	if (buttons_active) 
+	    e_slide_buttons_out(0, NULL); 
+	else 
+	    e_slide_buttons_in(0, NULL);
+    }
+  else if (!strcmp(e->key, "d"))
+    {
+	e_delete_current_image();
+    }
   else if (!strcmp(e->key, "Escape"))
     {
       exit(0);

@@ -147,6 +147,38 @@ void e_image_free(Image *im)
   free(im);
 }
 
+void e_delete_current_image(void)
+{
+    Evas_List l = NULL;
+    Image *im;
+
+    if (current_image)
+    {
+	im = (Image *)(current_image->data);
+       
+	if (im->o_thumb) {
+	    evas_callback_del(evas,im->o_thumb,CALLBACK_MOUSE_DOWN );
+	    evas_callback_del(evas,im->o_thumb,CALLBACK_MOUSE_IN   );
+	    evas_callback_del(evas,im->o_thumb,CALLBACK_MOUSE_OUT  );
+
+	    evas_del_object(evas, im->o_thumb); }
+	 
+	if (current_image->next)
+	    l = current_image->next;
+	else if (current_image->prev)
+	    l = current_image->prev;
+
+	if (l) {
+	    images = evas_list_remove(images, current_image->data);
+	    e_image_free((Image *)current_image->data); }
+	else
+	    image_destroy_list();
+	 
+	current_image = l;
+	e_display_current_image();
+    }
+}
+	   
 void e_display_current_image(void)
 {
   scroll_x = 0;
