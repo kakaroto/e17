@@ -547,9 +547,9 @@ KDE_Shutdown(void)
 	     }
 	   Efree(lst);
 	}
-
    }
 
+   mode.kde_dock = 0;
    mode.kde_support = 0;
    EDBUG_RETURN_;
 

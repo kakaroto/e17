@@ -36,7 +36,7 @@ static Time         last_time = 0;
 static int          last_button = 0;
 static int          pgd_x = 0, pgd_y = 0;
 
-void
+void 
 ToolTipTimeout(int val, void *data)
 {
    int                 x, y, dum;
@@ -73,7 +73,7 @@ ToolTipTimeout(int val, void *data)
    EDBUG_RETURN_;
 }
 
-void
+void 
 HandleClientMessage(XEvent * ev)
 {
    EWin               *ewin;
@@ -185,7 +185,6 @@ HandleClientMessage(XEvent * ev)
 	     EDBUG_RETURN_;
 	  }
      }
-
    if (mode.kde_support)
       KDE_ProcessClientMessage(&(ev->xclient));
 
@@ -193,7 +192,7 @@ HandleClientMessage(XEvent * ev)
 
 }
 
-void
+void 
 HandleFocusWindowIn(Window win)
 {
    EWin               *ewin;
@@ -233,7 +232,7 @@ HandleFocusWindowIn(Window win)
    EDBUG_RETURN_;
 }
 
-void
+void 
 HandleFocusWindow(Window win)
 {
    EWin               *found_ewin;
@@ -267,7 +266,7 @@ HandleFocusWindow(Window win)
    EDBUG_RETURN_;
 }
 
-void
+void 
 HandleChildShapeChange(XEvent * ev)
 {
    Window              win;
@@ -287,7 +286,7 @@ HandleChildShapeChange(XEvent * ev)
    EDBUG_RETURN_;
 }
 
-void
+void 
 HandleMotion(XEvent * ev)
 {
    int                 dx, dy;
@@ -905,7 +904,7 @@ HandleMotion(XEvent * ev)
    EDBUG_RETURN_;
 }
 
-void
+void 
 HandleDestroy(XEvent * ev)
 {
    Window              win;
@@ -921,6 +920,9 @@ HandleDestroy(XEvent * ev)
 	 RemoveMiniIcon(ewin);
 
    mode.context_win = win;
+
+   if (mode.kde_support)
+      KDE_RemoveModule(win);
 
    if (ewin)
      {
@@ -982,7 +984,7 @@ HandleDestroy(XEvent * ev)
    EDBUG_RETURN_;
 }
 
-void
+void 
 HandleProperty(XEvent * ev)
 {
    Window              win;
@@ -1062,7 +1064,7 @@ HandleProperty(XEvent * ev)
    EDBUG_RETURN_;
 }
 
-void
+void 
 HandleCirculate(XEvent * ev)
 {
    Window              win;
@@ -1088,7 +1090,7 @@ HandleCirculate(XEvent * ev)
    EDBUG_RETURN_;
 }
 
-void
+void 
 HandleReparent(XEvent * ev)
 {
    Window              par;
@@ -1145,7 +1147,7 @@ HandleReparent(XEvent * ev)
    EDBUG_RETURN_;
 }
 
-void
+void 
 HandleConfigureRequest(XEvent * ev)
 {
    Window              win, winrel;
@@ -1242,7 +1244,7 @@ HandleConfigureRequest(XEvent * ev)
    EDBUG_RETURN_;
 }
 
-void
+void 
 HandleResizeRequest(XEvent * ev)
 {
    Window              win;
@@ -1275,7 +1277,7 @@ HandleResizeRequest(XEvent * ev)
    EDBUG_RETURN_;
 }
 
-void
+void 
 HandleUnmap(XEvent * ev)
 {
    Window              win;
@@ -1355,7 +1357,7 @@ HandleUnmap(XEvent * ev)
    EDBUG_RETURN_;
 }
 
-void
+void 
 HandleMapRequest(XEvent * ev)
 {
    EDBUG(5, "HandleMapRequest");
@@ -1372,7 +1374,7 @@ HandleMapRequest(XEvent * ev)
    EDBUG_RETURN_;
 }
 
-void
+void 
 HandleExpose(XEvent * ev)
 {
    Window              win;
@@ -1463,7 +1465,7 @@ HandleExpose(XEvent * ev)
 
 static int          pwin_px, pwin_py;
 
-void
+void 
 HandleMouseDown(XEvent * ev)
 {
    Window              win;
@@ -1782,7 +1784,7 @@ HandleMouseDown(XEvent * ev)
    EDBUG_RETURN_;
 }
 
-void
+void 
 HandleMouseUp(XEvent * ev)
 {
    Window              win, win2;
@@ -2336,7 +2338,7 @@ HandleMouseUp(XEvent * ev)
    EDBUG_RETURN_;
 }
 
-void
+void 
 SubmenuShowTimeout(int val, void *dat)
 {
    int                 mx, my;
@@ -2370,7 +2372,7 @@ SubmenuShowTimeout(int val, void *dat)
    val = 0;
 }
 
-void
+void 
 HandleMouseIn(XEvent * ev)
 {
    Window              win;
@@ -2526,7 +2528,7 @@ HandleMouseIn(XEvent * ev)
    EDBUG_RETURN_;
 }
 
-void
+void 
 HandleMouseOut(XEvent * ev)
 {
    Window              win;

@@ -2026,3 +2026,11 @@ Mon Sep 20 11:53:55 PDT 1999
 (Mandrake)
 
 fixed a fairly significant list freeing bug in the kde support.
+
+-------------------------------------------------------------------------------
+
+Mon Sep 20 12:43:48 PDT 1999
+(Mandrake)
+
+well, we had some issues with removing the kde dock windows.  that should be
+taken care of now (hooked in destroy handler)
