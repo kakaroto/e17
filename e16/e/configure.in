@@ -134,9 +134,7 @@ fi
 
 LDFLAGS="$LDFLAGS -L$prefix/lib"
 
-PKG_CHECK_MODULES(IMLIB2, imlib2 >= 1.2.0, have_imlib2=yes,
-  AC_MSG_ERROR(["Imlib2 version >= 1.2.0 not found."])
-)
+PKG_CHECK_MODULES(IMLIB2, imlib2 >= 1.2.0, have_good_imlib2=yes)
 IMLIB_LIBS=`imlib2-config --libs`
 IMLIB_CFLAGS=`imlib2-config --cflags`
 AC_SUBST(IMLIB_LIBS)
@@ -236,3 +234,10 @@ misc/Makefile
 po/Makefile.in
 intl/Makefile
 ])
+
+if test "x$have_good_imlib2" != "xyes"; then
+  echo "***************************************************************"
+  echo "*** WARNING: imlib2 >= 1.2.0 was not detected               ***"
+  echo "*** WARNING: If you indeed do not have this, expect trouble ***"
+  echo "***************************************************************"
+fi
