@@ -1669,11 +1669,23 @@ imlib_create_cropped_image(int x, int y, int width, int height)
         __imlib_FreeImage(im);
         return NULL;
      }
-   __imlib_BlendImageToImage(im_old, im, 0, 0, 0, x, y, abs(width),
-                             abs(height), 0, 0, width, height, NULL,
-                             IMLIB_OP_COPY,
-                             ctx->cliprect.x, ctx->cliprect.y,
-                             ctx->cliprect.w, ctx->cliprect.h);
+   if (IMAGE_HAS_ALPHA(im_old))
+     {
+        SET_FLAG(im->flags, F_HAS_ALPHA);
+	__imlib_BlendImageToImage(im_old, im, 0, 0, 1, x, y, abs(width),
+				  abs(height), 0, 0, width, height, NULL,
+				  IMLIB_OP_COPY,
+				  ctx->cliprect.x, ctx->cliprect.y,
+				  ctx->cliprect.w, ctx->cliprect.h);
+     }
+   else
+     {
+	__imlib_BlendImageToImage(im_old, im, 0, 0, 0, x, y, abs(width),
+				  abs(height), 0, 0, width, height, NULL,
+				  IMLIB_OP_COPY,
+				  ctx->cliprect.x, ctx->cliprect.y,
+				  ctx->cliprect.w, ctx->cliprect.h);
+     }
    return (Imlib_Image) im;
 }
 
