@@ -1,6 +1,7 @@
       // center panel
       part {
         name, "center";
+	type: IMAGE;
         mouse_events, 0;
         description {
           state, "default" 0.0;
@@ -16,8 +17,8 @@
           }
           image {
             normal, "base.png";
+            border, 7 8 7 8;
           }
-          border, 7 8 7 8;
         }
       }
 
@@ -25,6 +26,7 @@
 
       part {
         name, "grad-top";
+	type: IMAGE;
         mouse_events, 0;
         description {
           state, "default" 0.0;
@@ -43,8 +45,8 @@
           }
           image {
             normal, "grad-top.png";
+	    border, 7 8 0 0;
           }
-          border, 7 8 0 0;
         }
         description {
           state, "active" 0.0;
@@ -64,12 +66,13 @@
           }
           image {
             normal, "grad-top.png";
+	    border, 7 8 0 0;
           }
-          border, 7 8 0 0;
         }
       }
       part {
         name, "grad-bot";
+	type: IMAGE;
         mouse_events, 0;
         description {
           state, "default" 0.0;
@@ -88,8 +91,8 @@
           }
           image {
             normal, "grad-bot.png";
+	    border, 7 8 0 0;
           }
-          border, 7 8 0 0;
         }
         description {
           state, "active" 0.0;
@@ -109,8 +112,8 @@
           }
           image {
             normal, "grad-bot.png";
+	    border, 7 8 0 0;
           }
-          border, 7 8 0 0;
         }
       }
 
@@ -135,6 +138,7 @@
       }
       part {
         name, "shot-border";
+	type: IMAGE;
         description {
           state, "default" 0.0;
           min, 0 0;
@@ -151,8 +155,8 @@
           }
           image {
             normal, "roundedbox.png";
+	    border, 7 8 7 8;
           }
-          border, 7 8 7 8;
         }
         description {
           state, "hidden" 0.0;
@@ -171,8 +175,8 @@
           }
           image {
             normal, "roundedbox.png";
+	    border, 7 8 7 8;
           }
-          border, 7 8 7 8;
         }
       }
       
@@ -197,6 +201,7 @@
       }
       part {
         name, "swatch-border";
+	type: IMAGE;
         description {
           state, "default" 0.0;
           min, 22 22;
@@ -213,8 +218,8 @@
           }
           image {
             normal, "roundedbox.png";
+	    border, 7 8 7 8;
           }
-          border, 7 8 7 8;
         }
         description {
           state, "hidden" 0.0;
@@ -233,8 +238,8 @@
           }
           image {
             normal, "roundedbox.png";
+	    border, 7 8 7 8;
           }
-          border, 7 8 7 8;
         }
 
       }
@@ -243,6 +248,7 @@
 
       part {
         name, "left-panel";
+	type: IMAGE;
         description {
           state, "default" 0.0;
           min, 0 99;
@@ -259,14 +265,15 @@
           }
           image {
             normal, "left-panel.png";
+	    border, 0 0 7 8;
           }
-          border, 0 0 7 8;
         }
       }
 
 
       part {
         name, "left-border";
+	type: IMAGE;
         description {
           state, "default" 0.0;
           min, 7 99;
@@ -283,8 +290,8 @@
           }
           image {
             normal, "left-border.png";
+	    border, 0 0 7 8;
           }
-          border, 0 0 7 8;
         }
         description {
           state, "open" 0.0;
@@ -302,8 +309,8 @@
           }
           image {
             normal, "left-border.png";
+	    border, 0 0 7 8;
           }
-          border, 0 0 7 8;
         }
       }
 
@@ -325,7 +332,6 @@
             relative, 1.0 1.0;
             offset, -1 -1;
           }
-          border, 0 0 0 0;
         }
         description {
           state, "open" 0.0;
@@ -342,7 +348,6 @@
             relative, 1.0 1.0;
             offset, -1 -1;
           }
-          border, 0 0 0 0;
         }
       }
 
