@@ -26,6 +26,10 @@ char               *version_string = "0.0.0";
 
 #include "econfig.h"
 
+#ifdef __EMX__
+#include <strings.h>
+#endif
+
 #ifndef STANDARD_INCLUDE_DIR
 #define STANDARD_INCLUDE_DIR "/usr/include"
 #endif
@@ -3439,7 +3443,11 @@ do_include(pfile, keyword, unused1, unused2)
 
    /* If specified file name is absolute, just open it.  */
 
-   if (*fbeg == '/')
+#ifndef __EMX__
+    if (*fbeg == '/')
+#else
+    if (_fnisabs(fbeg))
+#endif
      {
 	strncpy(fname, fbeg, flen);
 	fname[flen] = 0;
@@ -5584,7 +5592,11 @@ read_name_map(pfile, dirname)
    if (*dirname)
       strcat(name, "/");
    strcat(name, FILE_NAME_MAP_FILE);
-   f = fopen(name, "r");
+#ifndef __EMX__
+      f = fopen(name, "r");
+#else
+      f = fopen(name, "rt");
+#endif
    if (!f)
       map_list_ptr->map_list_map = NULL;
    else

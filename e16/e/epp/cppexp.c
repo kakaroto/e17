@@ -27,6 +27,10 @@
 #include "config.h"
 #include "header.h"
 
+#ifdef __EMX__
+#include <strings.h>
+#endif
+
 #ifdef MULTIBYTE_CHARS
 #include <locale.h>
 #endif
