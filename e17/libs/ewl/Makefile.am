@@ -10,8 +10,10 @@ MAINTAINERCLEANFILES = Makefile.in aclocal.m4 config.guess \
 
 bin_SCRIPTS = ewl-config
 
-EXTRA_DIST = README AUTHORS COPYING ewl.m4 ewl.spec
+EXTRA_DIST = README AUTHORS COPYING ewl.m4 ewl.spec ewl.pc.in
 
 m4datadir = $(datadir)/aclocal
 m4data_DATA = ewl.m4
 
+pkgconfigdir = $(libdir)/pkgconfig
+pkgconfig_DATA = ewl.pc

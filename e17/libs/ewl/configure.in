@@ -267,8 +267,12 @@ AC_SUBST(edje_libs)
 edje_cflags=`$EDJE_CONFIG --cflags`
 edje_libs=`$EDJE_CONFIG --libs`
 
+requirements="evas ecore edb etox edje"
+AC_SUBST(requirements)
+
 AC_OUTPUT([
 Makefile
+ewl.pc
 ewl-config
 src/Makefile
 test/Makefile
