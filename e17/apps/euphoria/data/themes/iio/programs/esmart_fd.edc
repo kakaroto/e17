@@ -6,3 +6,10 @@ VPANEL_PROG("files",
 	"e,fd,container,scroll,back,files",
 	"e,fd,container,scroll,next,files",
 	"e,fd,container,scrollbar,scroll,,files")
+program {
+    name, "file_dialog_align_show";
+    signal, "show";
+    source, "";
+    action, DRAG_VAL_SET 0.5 0.5;
+    target, "base.dragable";
+}
