@@ -208,6 +208,13 @@ imlib_set_color_usage(int max)
    _max_colors = max;
 }
 
+void
+imlib_flush_loaders(void)
+{
+   __imlib_RemoveAllLoaders();
+   LTDL_Exit();
+}
+
 int 
 imlib_get_visual_depth(Display *display, Visual *visual)
 {

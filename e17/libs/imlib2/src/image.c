@@ -490,13 +490,14 @@ __imlib_CleanupImagePixmapCache(void)
 
 #define LOADERS_UNINITIALISED -4444
 
+static int errors = LOADERS_UNINITIALISED;
+    
 static void
 LTDL_Init(void)
 {
-  static int errors = LOADERS_UNINITIALISED;
-    
   /* Do this only once! */
-  if ((errors = LOADERS_UNINITIALISED))
+   
+  if ((errors == LOADERS_UNINITIALISED))
     {
       errors = lt_dlinit();
 
@@ -512,6 +513,13 @@ LTDL_Init(void)
       fprintf(stderr, "ERROR: failed to initialise ltdl: %s\n", dlerror);
       exit(1);
     }
+}
+
+void
+LTDL_Exit(void)
+{
+   errors = LOADERS_UNINITIALISED;
+   lt_dlexit();
 }
 
 /* try dlopen()ing the file if we succeed finish filling out the malloced */

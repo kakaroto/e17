@@ -98,6 +98,7 @@ int     imlib_get_cache_size(void);
 void    imlib_set_cache_size(int bytes);
 int     imlib_get_color_usage(void);
 void    imlib_set_color_usage(int max);
+void    imlib_flush_loaders(void);
 int     imlib_get_visual_depth(Display *display, Visual *visual);
 Visual *imlib_get_best_visual(Display *display, int screen, int *depth_return);
 
