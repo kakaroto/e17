@@ -21,7 +21,7 @@ $indents{mike} = "indent -i2 -bl -bad -nbap -sob -ncdb -di20 -nbc -lp -nce -npcs
 if(($ARGV[0] =~ /up/)) {
 	print "force removing and updating timestamp.h\n";
 	unlink "timestamp.h";
-	system("cvs -z3 update timestamp.h");
+	system("cvs update timestamp.h");
 }
 
 if(($ARGV[0] =~ /com/) || ($ARGV[0] =~ /ci/)) {
@@ -51,12 +51,12 @@ if(($ARGV[0] =~ /com/) || ($ARGV[0] =~ /ci/)) {
 
 	print "Force updating ChangeLog and removing src/timestamp.h\n";
 	unlink "ChangeLog";
-	system("cvs -z3 update ChangeLog");
+	system("cvs update ChangeLog");
 	unlink "src/timestamp.h";
-	system("cvs -z3 update src/timestamp.h");
+	system("cvs update src/timestamp.h");
 
 	print "Updating the files you are committing.\n";
-	system("cvs -z3 @ARGV2 2>&1 |tee errors");
+	system("cvs @ARGV2 2>&1 |tee errors");
 
 	open ERRORS, "errors";
 	while(<ERRORS>) {
@@ -103,7 +103,7 @@ if(($ARGV[0] =~ /com/) || ($ARGV[0] =~ /ci/)) {
 	}
 }
 
-system("cvs -z3 @ARGV");
+system("cvs @ARGV");
 
 unlink "CommitLog" if(-f "CommitLog");
 
