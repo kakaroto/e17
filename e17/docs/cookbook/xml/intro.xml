@@ -142,6 +142,17 @@ The EFL is a comprehensive group of C libraries that can provide for nearly any 
         </para>
         </listitem>
 </varlistentry>
+
+<varlistentry>
+        <term>Emotion</term>
+
+        <listitem>
+        <para>
+	An Evas object library for video and DVD playback using libxine.
+        </para>
+        </listitem>
+</varlistentry>
+
 </variablelist>
 
 

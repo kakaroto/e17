@@ -1,11 +1,46 @@
 <!-- Edje EDC Recipes -->
 
 <chapter>
-<title>Edje EDC</title>
+<title>Edje EDC &amp; Embryo</title>
 
 <para>
 Edje Data Collections (EDC) source files allow for easy creation of  rich and powerful
-interface designs...
+graphical interfaces.  Your Edje application is devided into two distinct parts, the
+application code (using calls from <filename>Edje.h</filename>) and the interface 
+description in the EDC.  The only connectivity needed between your interface and
+your application code are signals emited by your interface and are recieved by
+Edje callbacks in your application code.  
+</para>
+
+<para>
+An EDC is broken into several major sections describing the images and fonts that are used
+in the interface, descriptions of how the various <term>parts</term> of the interface are
+laid out, and descriptions of actions or <term>programs</term> that occur when your interface
+is interacted with.  This functionality can be further supplimented by employing Embryo's
+scripting language to add C like programability into the Edje EDC itself.
+</para>
+
+<para>
+The end result of an EDC, including all of it's fonts and images, is a single EET.  Because
+the entire interface is made avalible in a single file "theme" distribution is greatly simplified.
+</para>
+
+<para>
+While Edje EDC's might be considered "themes" they are much more.  A traditional "theme"
+is a file or group of files that augment some existing interface by changing the color
+of elements or replacing the images that make up the interface itself.  But these 
+methods insuffient for really changing the design of an applications interface, limiting
+themers from modification and often requiring an application redesign at some point
+in order to expand the capabilities of the interface for greater funcationlity.
+A GTK application will always look the same, despite what theme it is using.  A simple
+example might be that a GTK or QT application will always have a rectangular shape and if
+it isn't borderless you can't make it borderless via a theme.  However, an Edje application
+could be change from rectangular to an oval shaped border with a simple modification of
+the EDC, or could remove and rearrange all of the elements of the interface without ever
+touching application code.  In this way Edje allows a far greater ammount of control
+and flexablity than provided by any other solution in the Open Source comminity and allows
+the Open programing model to be truely leverage to allow even non-programmers (as many themers are)
+to contribute and modify things as they see fit.
 </para>
 
 &edje_embryo_toggle;
