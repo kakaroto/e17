@@ -361,7 +361,7 @@ basedir=.
 
 AM_CONFIG_HEADER(config.h)
 
-AC_OUTPUT(epplets.spec Makefile api/Makefile epplets/Makefile debian/Makefile)
+AC_OUTPUT(Makefile api/Makefile epplets/Makefile debian/Makefile)
 
 echo "creating api/epplet.h"
 sed -e "s%@EROOT@%$EROOT%g" -e "s%@EBIN@%$EBIN%g" -e "s%\${exec_prefix}%${exec_prefix}%g" -e "s%\${prefix}%${prefix}%g" ${srcdir}/api/epplet.h.in > api/epplet.h.new
