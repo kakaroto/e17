@@ -390,7 +390,7 @@ equate_edje_init(Equate * eq)
          edje_callback_define(o);
          evas_object_show(o);
       } else {
-         fprintf(stderr, "Unable to open %s for edje theme", theme);
+         fprintf(stderr, "Unable to open %s for edje theme\n", theme);
          ecore_evas_shutdown();
          return;
       }
