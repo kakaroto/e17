@@ -351,6 +351,11 @@ ConfigFileRead(FILE * fs)
 		       if (err)
 			  ConfigAlertLoad(_("Background"));
 		       break;
+		    case CONFIG_WINDOWMATCH:
+		       err = WindowMatchConfigLoad(fs);
+		       if (err)
+			  ConfigAlertLoad(_("Window match"));
+		       break;
 		    case CONFIG_COLORMOD:
 #if 0				/* FIXME - ? */
 		       Config_ColorModifier(fs);
@@ -505,6 +510,7 @@ ThemeConfigLoad(void)
       "slideouts.cfg",
       "borders.cfg",
       "backup-borders.cfg",
+      "windowmatches.cfg",
       "tooltips.cfg",
       "backup-tooltips.cfg",
       "menustyles.cfg",

@@ -118,7 +118,7 @@ WindowMatchDestroy(WindowMatch * wm)
    Efree(wm);
 }
 
-static int
+int
 WindowMatchConfigLoad(FILE * fs)
 {
    int                 err = 0;
@@ -159,17 +159,18 @@ WindowMatchConfigLoad(FILE * fs)
 	     break;
 
 	  case CONFIG_CLOSE:
-	     if (!wm)
-		break;
-	     if (wm->match && wm->op)
-		AddItemEnd(wm, wm->name, 0, LIST_TYPE_WINDOWMATCH);
-	     else
+	     if (wm)
 	       {
-		  WindowMatchDestroy(wm);
+		  if (wm->match && wm->op)
+		     AddItemEnd(wm, wm->name, 0, LIST_TYPE_WINDOWMATCH);
+		  else
+		    {
+		       WindowMatchDestroy(wm);
+		    }
+		  wm = NULL;
+		  err = 0;
 	       }
-	     wm = NULL;
-	     err = 0;
-	     break;
+	     goto done;
 
 	  case WINDOWMATCH_MATCHTITLE:
 	     if (!wm)
@@ -189,18 +190,6 @@ WindowMatchConfigLoad(FILE * fs)
 	     wm->match = MATCH_TYPE_WM_CLASS;
 	     wm->value = Estrdup(atword(s, 2));
 	     break;
-#if 0				/* FIXME */
-	  case WINDOWMATCH_DESKTOP:
-	  case CONFIG_DESKTOP:
-	     wm->desk = atoi(s2);
-	     break;
-	  case WINDOWMATCH_ICON:
-	  case CONFIG_ICONBOX:
-	     wm->icon = ImageclassFind(s2, 0);
-	     if (wm->icon)
-		wm->icon->ref_count++;
-	     break;
-#endif
 
 	  case WINDOWMATCH_WIDTH:
 	     if (!wm)
@@ -267,6 +256,26 @@ WindowMatchConfigLoad(FILE * fs)
 	     BorderIncRefcount(wm->border);
 	     break;
 
+	  case WINDOWMATCH_ICON:
+	  case CONFIG_ICONBOX:
+#if 0				/* This has not been active since at least 0.16.5 */
+	     if (!wm)
+		break;
+	     wm->icon = ImageclassFind(s2, 0);
+	     if (!wm->icon)
+		break;
+	     wm->op = MATCH_OP_ICON;
+	     wm->icon->ref_count++;
+#endif
+	     break;
+
+	  case WINDOWMATCH_DESKTOP:
+	  case CONFIG_DESKTOP:
+#if 0				/* This has not been active since at least 0.16.5 */
+	     wm->desk = atoi(s2);
+#endif
+	     break;
+
 	  case WINDOWMATCH_MAKESTICKY:
 	     if (!wm)
 		break;
@@ -282,6 +291,7 @@ WindowMatchConfigLoad(FILE * fs)
 	  }
      }
 
+ done:
    return err;
 }
 
@@ -290,7 +300,7 @@ WindowMatchDecode(const char *line)
 {
    char                match[32], value[1024], op[32], args[1024];
    WindowMatch        *wm = NULL;
-   int                 err, num, a, b;
+   int                 err, num, w1, w2, h1, h2;
 
    match[0] = value[0] = op[0] = args[0] = '\0';
    num = sscanf(line, "%32s %1024s %32s %1024s", match, value, op, args);
@@ -327,31 +337,27 @@ WindowMatchDecode(const char *line)
 	break;
 
      case MATCH_TYPE_SIZE:
-	num = sscanf(value, "%c%ux%u", match, &a, &b);
-	if (num < 3)
+	num = sscanf(value, "%u-%ux%u-%u", &w1, &w2, &h1, &h2);
+	if (num < 4)
 	   goto case_error;
-	if (*match == '<')
-	   wm->qual = 1;
-	else if (*value == '>')
-	   wm->qual = 0;
-	else
-	   goto case_error;
-	wm->width.max = a;
-	wm->height.max = b;
+	wm->width.min = w1;
+	wm->width.max = w2;
+	wm->height.min = h1;
+	wm->height.max = h2;
 	break;
      case MATCH_TYPE_SIZE_H:
-	num = sscanf(value, "%u-%u", &a, &b);
+	num = sscanf(value, "%u-%u", &w1, &w2);
 	if (num < 2)
 	   goto case_error;
-	wm->width.min = a;
-	wm->width.max = b;
+	wm->width.min = w1;
+	wm->width.max = w2;
 	break;
      case MATCH_TYPE_SIZE_V:
-	num = sscanf(value, "%u-%u", &a, &b);
+	num = sscanf(value, "%u-%u", &h1, &h2);
 	if (num < 2)
 	   goto case_error;
-	wm->height.min = a;
-	wm->height.max = b;
+	wm->height.min = h1;
+	wm->height.max = h2;
 	break;
 
      case MATCH_TYPE_PROP:
@@ -430,8 +436,8 @@ WindowMatchEncode(WindowMatch * wm, char *buf, int len)
 
      case MATCH_TYPE_SIZE:
 	value = s;
-	qual = (wm->qual) ? "<" : ">";
-	sprintf(s, "%ux%u", wm->width.max, wm->height.max);
+	sprintf(s, "%u-%ux%u-%u", wm->width.min, wm->width.max,
+		wm->height.min, wm->height.max);
 	break;
      case MATCH_TYPE_SIZE_H:
 	value = s;
@@ -648,7 +654,7 @@ WindowMatchSighan(int sig, void *prm __UNUSED__)
    switch (sig)
      {
      case ESIGNAL_CONFIGURE:
-#if 1
+#if 0
 	ConfigFileLoad("windowmatches.cfg", Mode.theme.path,
 		       WindowMatchConfigLoad);
 #endif

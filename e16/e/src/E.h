@@ -2185,6 +2185,7 @@ void                WarpFocus(int delta);
 /* windowmatch.c */
 typedef struct _windowmatch WindowMatch;
 
+int                 WindowMatchConfigLoad(FILE * fs);
 void               *WindowMatchEwin(EWin * ewin);
 Border             *WindowMatchEwinBorder(const EWin * ewin);
 const char         *WindowMatchEwinIcon(const EWin * ewin);
