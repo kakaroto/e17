@@ -254,9 +254,7 @@ feh_action_run (winwidget w)
 char *
 feh_printf (char *str, winwidget w)
 {
-  int i = 0;
   char *c;
-  int retpos = 0;
   char buf[20];
   static char ret[4096];
   D (("In feh_printf\n"));

@@ -25,7 +25,7 @@ static void feh_parse_option_array (int argc, char **argv);
 static void feh_parse_environment_options (void);
 static void feh_check_theme_options (int arg, char **argv);
 static void feh_parse_options_from_string (char *opts);
-static char *feh_load_options_for_theme (char *theme);
+static void feh_load_options_for_theme (char *theme);
 static char *theme;
 
 void
@@ -69,7 +69,6 @@ init_parse_options (int argc, char **argv)
 static void
 feh_check_theme_options (int arg, char **argv)
 {
-  char *opts = NULL;
   D (("In feh_check_theme_options\n"));
   if (!theme)
     {
@@ -82,16 +81,14 @@ feh_check_theme_options (int arg, char **argv)
       D (("Theme name is %s\n", theme));
     }
 
-  opts = feh_load_options_for_theme (theme);
-  if (opts)
-    {
-      feh_parse_options_from_string (opts);
-      free (opts);
-    }
+  feh_load_options_for_theme (theme);
+
   free (theme);
+  return;
+  arg = 0;
 }
 
-static char *
+static void
 feh_load_options_for_theme (char *theme)
 {
   FILE *fp = NULL;
@@ -113,7 +110,7 @@ feh_load_options_for_theme (char *theme)
       free (rcpath);
     }
   if (!fp && ((fp = fopen ("/etc/fehrc", "r")) == NULL))
-    return NULL;
+    return;
 
   /* Oooh. We have an options file :) */
   for (; fgets (s, sizeof (s), fp);)
@@ -125,7 +122,7 @@ feh_load_options_for_theme (char *theme)
       if (!strcmp (s1, theme))
 	{
 	  D (("  A match. Using options %s\n", s2));
-	  feh_parse_options_from_string (s2);
+	  feh_parse_options_from_string(s2);
 	  break;
 	}
     }
@@ -196,7 +193,7 @@ static void
 feh_parse_option_array (int argc, char **argv)
 {
   static char stropts[] =
-    "a:AbBcC:dD:f:FhH:iIklLmo:O:pPqrR:sS:tTuUvVwW:xX:y:z:";
+    "a:Ab:BcC:dD:f:FhH:iIklLmo:O:pPqrR:sS:tTuUvVwW:xX:y:z:";
   static struct option lopts[] = {
     /* actions and macros */
     {"help", 0, 0, 'h'},

@@ -276,17 +276,6 @@ winwidget_render_image (winwidget winwid)
 
   winwidget_setup_pixmaps (winwid);
 
-  if (!opt.full_screen)
-    {
-      /* resize window if the image size has changed */
-      if ((winwid->w != winwid->im_w) || (winwid->h != winwid->im_h))
-	{
-	  winwid->h = winwid->im_h;
-	  winwid->w = winwid->im_w;
-	  XResizeWindow (disp, winwid->win, winwid->im_w, winwid->im_h);
-	}
-    }
-
   imlib_context_set_drawable (winwid->bg_pmap);
   imlib_context_set_image (winwid->im);
   imlib_context_set_blend (0);
@@ -303,6 +292,17 @@ winwidget_render_image (winwidget winwid)
       y = (scr->height - winwid->im_h) >> 1;
     }
   imlib_render_image_on_drawable (x, y);
+
+  if (!opt.full_screen)
+    {
+      /* resize window if the image size has changed */
+      if ((winwid->w != winwid->im_w) || (winwid->h != winwid->im_h))
+	{
+	  winwid->h = winwid->im_h;
+	  winwid->w = winwid->im_w;
+	  XResizeWindow (disp, winwid->win, winwid->im_w, winwid->im_h);
+	}
+    }
 
   XSetWindowBackgroundPixmap (disp, winwid->win, winwid->bg_pmap);
   XClearWindow (disp, winwid->win);
