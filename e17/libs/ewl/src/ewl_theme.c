@@ -36,6 +36,7 @@ ewl_theme_init(void)
 	 * Setup a string with the path to the users theme dir 
 	 */
 	theme_name = ewl_config_get_str("/theme/name");
+
 	if (!theme_name)
 		theme_name = strdup("default");
 
@@ -235,7 +236,7 @@ ewl_theme_data_get_str(Ewl_Widget * w, char *k)
 			    if (!cached_theme_data)
 				    cached_theme_data =
 					    ewd_hash_new(ewd_str_hash,
-							 ewd_str_compare);
+							 ewd_direct_compare);
 			    ewd_hash_set(cached_theme_data, k, ret);
 		    }
 	  }

@@ -27,10 +27,10 @@ ewl_config_init(void)
 
 	memset(&ewl_config, 0, sizeof(Ewl_Config));
 
-	if (!__open_user_config())
+	if (__open_user_config())
 	  {
 		  __close_config();
-		  DRETURN_INT(FALSE, DLEVEL_STABLE);
+		  DRETURN_INT(TRUE, DLEVEL_STABLE);
 	  }
 	else
 		__create_user_config();
@@ -125,7 +125,7 @@ ewl_config_get_str(char *k)
 
 	DENTER_FUNCTION(DLEVEL_STABLE);
 
-	if (!__open_user_config())
+	if (__open_user_config())
 	  {
 		  ret = e_db_str_get(config_db, k);
 
@@ -151,7 +151,7 @@ ewl_config_get_int(char *k)
 
 	DENTER_FUNCTION(DLEVEL_STABLE);
 
-	if (!__open_user_config())
+	if (__open_user_config())
 	  {
 		  ret = e_db_int_get(config_db, k, &v);
 
@@ -179,7 +179,7 @@ ewl_config_get_float(char *k)
 
 	DENTER_FUNCTION(DLEVEL_STABLE);
 
-	if (!__open_user_config())
+	if (__open_user_config())
 	  {
 		  ret = e_db_float_get(config_db, k, &v);
 

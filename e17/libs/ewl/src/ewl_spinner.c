@@ -262,7 +262,9 @@ __ewl_spinner_key_down(Ewl_Widget * w, void *ev_data, void *user_data)
 				 ev->compose[0] == '6' ||
 				 ev->compose[0] == '7' ||
 				 ev->compose[0] == '8' ||
-				 ev->compose[0] == '9'))
+				 ev->compose[0] == '9' ||
+				 ev->compose[0] == '.' ||
+				 ev->compose[0] == '-'))
 		__ewl_entry_insert_text(s->entry, ev->compose);
 
 	DLEAVE_FUNCTION(DLEVEL_STABLE);

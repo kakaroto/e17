@@ -23,7 +23,6 @@
 #undef FREE
 #define FREE(dat) \
 { \
-	D(12, "About to FREE %i bytes", sizeof(dat)); \
 	free(dat); dat = NULL; \
 }
 
@@ -31,7 +30,6 @@
 #undef IF_FREE
 #define IF_FREE(dat) \
 { \
-	D(12, "About to IF_FREE %i bytes", sizeof(dat)); \
 	if (dat) free(dat); dat = NULL; \
 }
 

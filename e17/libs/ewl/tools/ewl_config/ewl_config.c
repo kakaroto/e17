@@ -81,11 +81,6 @@ main(int argc, char **argv)
 
 	ewl_config_read_configs();
 
-	ewl_theme_data_set_default("/appearance/box/horizontal/base/visible",
-				   "no");
-	ewl_theme_data_set_default("/appearance/box/vertical/base/visible",
-				   "no");
-
 	e_conf.main_win = ewl_window_new();
 	ewl_window_resize(e_conf.main_win, 446, 300);
 	ewl_window_set_min_size(e_conf.main_win, 446, 300);
@@ -197,10 +192,10 @@ main(int argc, char **argv)
 	ewl_widget_show(e_conf.font_cache_label);
 
 	e_conf.font_cache = ewl_spinner_new();
-	ewl_spinner_set_min_val(e_conf.font_cache, (1024 * 0.5));
-	ewl_spinner_set_max_val(e_conf.font_cache, (1024 * 250));
+	ewl_spinner_set_min_val(e_conf.font_cache, (1024.0 * 0.5));
+	ewl_spinner_set_max_val(e_conf.font_cache, (1024.0 * 256));
 	ewl_spinner_set_digits(e_conf.font_cache, 0);
-	ewl_spinner_set_step(e_conf.font_cache, 1);
+	ewl_spinner_set_step(e_conf.font_cache, 1.0);
 	ewl_container_append_child(EWL_CONTAINER(e_conf.page_evas),
 				   e_conf.font_cache);
 	ewl_widget_show(e_conf.font_cache);
@@ -212,10 +207,10 @@ main(int argc, char **argv)
 	ewl_widget_show(e_conf.image_cache_label);
 
 	e_conf.image_cache = ewl_spinner_new();
-	ewl_spinner_set_min_val(e_conf.image_cache, (1024 * 0.5));
-	ewl_spinner_set_max_val(e_conf.image_cache, (1024 * 250));
+	ewl_spinner_set_min_val(e_conf.image_cache, (1024.0 * 0.5));
+	ewl_spinner_set_max_val(e_conf.image_cache, (1024.0 * 256));
 	ewl_spinner_set_digits(e_conf.image_cache, 0);
-	ewl_spinner_set_step(e_conf.image_cache, 1);
+	ewl_spinner_set_step(e_conf.image_cache, 1.0);
 	ewl_container_append_child(EWL_CONTAINER(e_conf.page_evas),
 				   e_conf.image_cache);
 	ewl_widget_show(e_conf.image_cache);
@@ -278,6 +273,9 @@ main(int argc, char **argv)
 	ewl_widget_show(e_conf.max_fps_label);
 
 	e_conf.max_fps = ewl_spinner_new();
+	ewl_spinner_set_min_val(e_conf.max_fps, 5.0);
+	ewl_spinner_set_max_val(e_conf.max_fps, 150.0);
+	ewl_spinner_set_digits(e_conf.max_fps, 2);
 	ewl_container_append_child(EWL_CONTAINER(e_conf.page_fx),
 				   e_conf.max_fps);
 	ewl_widget_show(e_conf.max_fps);
@@ -289,6 +287,9 @@ main(int argc, char **argv)
 	ewl_widget_show(e_conf.timeout_label);
 
 	e_conf.timeout = ewl_spinner_new();
+	ewl_spinner_set_min_val(e_conf.timeout, 0.5);
+	ewl_spinner_set_max_val(e_conf.timeout, 100.0);
+	ewl_spinner_set_digits(e_conf.timeout, 1);
 	ewl_container_append_child(EWL_CONTAINER(e_conf.page_fx),
 				   e_conf.timeout);
 	ewl_widget_show(e_conf.timeout);
@@ -363,11 +364,11 @@ ewl_config_read_config(Ewl_Config * conf)
 
 	conf->evas.font_cache = ewl_config_get_int("/evas/font_cache");
 	if (!conf->evas.font_cache)
-		conf->evas.font_cache = 1024 * 1024 * 2;
+		conf->evas.font_cache = 1024.0 * 1024.0 * 2.0;
 
 	conf->evas.image_cache = ewl_config_get_int("/evas/image_cache");
 	if (!conf->evas.image_cache)
-		conf->evas.image_cache = 1024 * 1024 * 8;
+		conf->evas.image_cache = 1024.0 * 1024.0 * 8.0;
 
 	/* Debug stuff */
 	conf->debug.enable = ewl_config_get_int("/debug/enable");
@@ -415,9 +416,9 @@ ewl_set_settings(Ewl_Config * c)
 		ewl_radiobutton_set_checked(e_conf.render_method_software, 1);
 
 	ewl_spinner_set_value(e_conf.font_cache,
-			      (double) (c->evas.font_cache) / 1024);
+			      (double) (c->evas.font_cache) / 1024.0);
 	ewl_spinner_set_value(e_conf.image_cache,
-			      (double) (c->evas.image_cache) / 1024);
+			      (double) (c->evas.image_cache) / 1024.0);
 
 	ewl_checkbutton_set_checked(e_conf.enable_debug, c->debug.enable);
 	ewl_spinner_set_value(e_conf.debug_level, (double) (c->debug.level));
@@ -446,9 +447,9 @@ ewl_get_settings(void)
 		c->evas.render_method = strdup("x11");
 
 	c->evas.font_cache =
-		(int) (ewl_spinner_get_value(e_conf.font_cache)) * 1024;
+		(float) (ewl_spinner_get_value(e_conf.font_cache)) * 1024.0;
 	c->evas.image_cache =
-		(int) (ewl_spinner_get_value(e_conf.image_cache)) * 1024;
+		(float) (ewl_spinner_get_value(e_conf.image_cache)) * 1024.0;
 
 	if (ewl_checkbutton_is_checked(e_conf.enable_debug))
 		c->debug.enable = 1;
@@ -565,7 +566,7 @@ ewl_config_exit_cb(Ewl_Widget * w, void *user_data, void *ev_data)
 	     strcasecmp(nc->evas.render_method, oc.evas.render_method) ||
 	     nc->fx.max_fps != oc.fx.max_fps ||
 	     nc->fx.timeout != oc.fx.timeout ||
-	     strcasecmp(nc->theme.name, oc.theme.name) ||
+	     strcmp(nc->theme.name, oc.theme.name) ||
 	     nc->theme.cache != oc.theme.cache) && !confirm.win)
 		ewl_config_create_confirm_dialog();
 	else

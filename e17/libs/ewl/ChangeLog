@@ -1,3 +1,9 @@
+Tue Oct  23 16:43:48 2001 Christopher Rosendahl	<crosendahl@northernwatch.com>
+	* Fixed much unwanted behaviour in the ewl_config program.
+	* ewl_config.c had some "typos".
+	* Made the Ewl_Spinner accept '.'and '-' as input.
+	* Ewl_Table now operates better.
+
 Mon Oct  22 20:25:16 2001 Christopher Rosendahl <crosendahl@northernwatch.com>
 	* Made Ewl_Table layout its children correctly.
 	* Some cleanups in the ewl_test program.

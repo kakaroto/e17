@@ -16,6 +16,9 @@ void __create_entry_test_window(Ewl_Widget * w, void *ev_data,
 void __create_image_test_window(Ewl_Widget * w, void *ev_data,
 				void *user_data);
 
+void __create_list_test_window(Ewl_Widget * w, void *ev_data,
+			       void *user_data);
+
 void __create_notebook_test_window(Ewl_Widget * w, void *ev_data,
 				   void *user_data);
 
@@ -91,6 +94,9 @@ main(int argc, char **argv)
 	button[4] = ewl_button_new("Ewl_List");
 	ewl_object_set_custom_size(EWL_OBJECT(button[4]), 100, 17);
 	ewl_container_append_child(EWL_CONTAINER(main_win), button[4]);
+
+/*        ewl_callback_append(button[4], EWL_CALLBACK_CLICKED,
+                            __create_list_test_window, NULL);*/
 
 	button[5] = ewl_button_new("Ewl_Notebook");
 	ewl_object_set_custom_size(EWL_OBJECT(button[5]), 100, 17);
