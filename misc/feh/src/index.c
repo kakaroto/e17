@@ -42,8 +42,12 @@ init_index_mode (void)
   Imlib_Font title_fn = NULL;
   int im_per_col = 0;
   int im_per_row = 0;
-  int fontwidth = 0;
-  int tw, th;
+  int text_area_w = 0;
+  int tw = 0, th = 0;
+  int fw, fh;
+  int vertical = 0;
+  int max_column_w = 0;
+  int thumbnailcount = 0;
 
   D (("In init_index_mode\n"));
 
@@ -52,7 +56,7 @@ init_index_mode (void)
   if (opt.title_font)
     title_area_h = 50;
 
-  /* Time to set up the font stuff */
+  /* Set up the font stuff */
   imlib_add_path_to_font_path (".");
   imlib_add_path_to_font_path (PREFIX "/share/feh/fonts");
   imlib_add_path_to_font_path ("./ttfonts");
@@ -82,7 +86,7 @@ init_index_mode (void)
 
   /* Work out how high the font is */
   imlib_get_text_size ("W", &tw, &th);
-  /* For now, allow room for 3 lines */
+  /* For now, allow room for 3 lines with small gaps */
   text_area_h = ((th + 2) * 3) + 5;
 
   /* Use bg image dimensions for default size */
@@ -121,88 +125,104 @@ init_index_mode (void)
 	}
     }
 
-  if (opt.limit_w && opt.limit_h)
-    {
-      w = opt.limit_w;
-      h = opt.limit_h;
-      im_per_col = h / tot_thumb_h;
-      im_per_row = w / opt.thumb_w;
-      D (("   Limiting width to %d and height to %d\n", w, h));
-      D (
-	 ("   The image will be %d thumbnails wide by %d high\n", im_per_row,
-	  im_per_col));
-      D (
-	 ("   You asked for %d thumbnails, this image is big enough for %d\n",
-	  file_num, im_per_row * im_per_col));
-      if (file_num > (im_per_row * im_per_col))
-	{
-	  int rec_w = 0;
-	  int rec_h = 0;
-	  int rec_im_per_col = 0;
-	  int rec_im_per_row = 0;
 
-	  if (w > h)
-	    {
-	      rec_h = 2 * h;
-	      rec_im_per_col = rec_h / tot_thumb_h;
-	      rec_im_per_row = file_num / rec_im_per_col;
-	      rec_w = rec_im_per_row * opt.thumb_w;
-	      if (file_num % rec_im_per_col)
-		rec_w += opt.thumb_w;
-	    }
-	  else
-	    {
-	      rec_w = 2 * w;
-	      rec_im_per_row = rec_w / opt.thumb_w;
-	      rec_im_per_col = file_num / rec_im_per_row;
-	      rec_h = rec_im_per_col * tot_thumb_h;
-	      if (file_num % rec_im_per_row)
-		rec_h += tot_thumb_h;
-	    }
-	  weprintf ("The image size you requested (%d by %d) is"
-		    " NOT big\n      enough to fit the number of thumbnails specified"
-		    " (%d).\nNot all images will be shown (only %d). May I recommend a"
-		    " size of %d by %d?",
-		    w, h, file_num, im_per_row * im_per_col, rec_w, rec_h);
-	}
-    }
-  else if (opt.limit_h)
-    {
-      h = opt.limit_h;
+  /* Here we need to whiz through the files, and look at the filenames and
+   * info in the selected font, work out how much space we need, and
+   * calculate the size of the image we will require */
+  {
+    x = 0;
+    y = 0;
 
-      im_per_col = h / tot_thumb_h;
-      im_per_row = file_num / im_per_col;
-      w = im_per_row * opt.thumb_w;
-      if (file_num % im_per_col)
-	w += opt.thumb_w;
-      if ((bg_im) && (w < bg_w))
-	w = bg_w;
-      D (("   Width will be %d - Height limited to %d\n", w, h));
-      D (
-	 ("   The image will be %d thumbnails wide by %d high\n", im_per_row,
-	  im_per_col));
-    }
-  else if (opt.limit_w)
-    {
-      w = opt.limit_w;
+    if (opt.limit_w && opt.limit_h)
+      {
+	w = opt.limit_w;
+	h = opt.limit_h;
 
-      im_per_row = w / opt.thumb_w;
-      im_per_col = file_num / im_per_row;
-      h = im_per_col * tot_thumb_h;
-      if (file_num % im_per_row)
-	h += tot_thumb_h;
-      if ((bg_im) && (h < bg_h))
-	h = bg_h;
-      D (("   Width limited to %d - Height will be %d\n", w, h));
-      D (
-	 ("   The image will be %d thumbnails wide by %d high\n", im_per_row,
-	  im_per_col));
-    }
+	/* Work out if this is big enough, and give a warning if not */
+	/* TODO */
+
+      }
+    else if (opt.limit_h)
+      {
+	vertical = 1;
+	h = opt.limit_h;
+	/* calc w */
+	for (i = 0; i < file_num; i++)
+	  {
+	    text_area_w = opt.thumb_w;
+	    /* Calc width of text */
+	    imlib_get_text_size (chop_file_from_full_path (files[i]), &fw,
+				 &fh);
+	    if (fw > text_area_w)
+	      text_area_w = fw;
+	    imlib_get_text_size (create_index_dimension_string
+				 (1000, 1000), &fw, &fh);
+	    if (fw > text_area_w)
+	      text_area_w = fw;
+	    imlib_get_text_size (create_index_size_string
+				 (files[i]), &fw, &fh);
+	    if (fw > text_area_w)
+	      text_area_w = fw;
+
+	    if (text_area_w > opt.thumb_w)
+	      text_area_w += 5;
+
+	    if (text_area_w > max_column_w)
+	      max_column_w = text_area_w;
+
+	    if ((y > h - tot_thumb_h))
+	      {
+		y = 0;
+		x += max_column_w;
+		max_column_w = 0;
+	      }
+
+	    y += tot_thumb_h;
+	  }
+	w = x + text_area_w;
+	max_column_w = 0;
+      }
+    else if (opt.limit_w)
+      {
+	w = opt.limit_w;
+	/* calc h */
+
+	for (i = 0; i < file_num; i++)
+	  {
+	    text_area_w = opt.thumb_w;
+	    imlib_get_text_size (chop_file_from_full_path (files[i]), &fw,
+				 &fh);
+	    if (fw > text_area_w)
+	      text_area_w = fw;
+	    imlib_get_text_size (create_index_dimension_string
+				 (1000, 1000), &fw, &fh);
+	    if (fw > text_area_w)
+	      text_area_w = fw;
+	    if (fw > text_area_w)
+	      text_area_w = fw;
+	    imlib_get_text_size (create_index_size_string
+				 (files[i]), &fw, &fh);
+	    if (fw > text_area_w)
+	      text_area_w = fw;
+
+	    if ((x > w - text_area_w))
+	      {
+		x = 0;
+		y += tot_thumb_h;
+	      }
+
+	    x += text_area_w;
+	  }
+	h = y + tot_thumb_h;
+      }
+  }
+
+  x = y = 0;
 
   im_main = imlib_create_image (w, h + title_area_h);
 
   if (!im_main)
-    eprintf ("Imlib error creating image");
+    eprintf ("Imlib error creating index image, are you low on RAM?");
 
   imlib_context_set_image (im_main);
   imlib_context_set_blend (0);
@@ -213,29 +233,30 @@ init_index_mode (void)
   for (i = 0; i < file_num; i++)
     {
       D (("   About to load image %s\n", files[i]));
-      if (opt.verbose)
-	{
-	  if (i)
-	    {
-	      if (!(i % 50))
-		fprintf (stdout, "\n ");
-	      else if (!(i % 10))
-		fprintf (stdout, " ");
-	    }
-	  else
-	    fprintf (stdout, " ");
-
-	  fprintf (stdout, ".");
-	  fflush (stdout);
-	}
       if (feh_load_image (&im_temp, files[i]) != 0)
 	{
+	  if (opt.verbose)
+	    {
+	      if (i)
+		{
+		  if (!(i % 50))
+		    fprintf (stdout, "\n ");
+		  else if (!(i % 10))
+		    fprintf (stdout, " ");
+		}
+	      else
+		fprintf (stdout, " ");
+
+	      fprintf (stdout, ".");
+	      fflush (stdout);
+	    }
 	  D (("   Successfully loaded %s\n", files[i]));
 	  www = opt.thumb_w;
 	  hhh = opt.thumb_h;
 	  imlib_context_set_image (im_temp);
 	  ww = imlib_image_get_width ();
 	  hh = imlib_image_get_height ();
+	  thumbnailcount++;
 
 	  if (opt.aspect)
 	    {
@@ -256,6 +277,53 @@ init_index_mode (void)
 	      hhh = hh;
 	    }
 
+	  imlib_context_set_image (im_main);
+
+	  if (opt.alpha & opt.alpha_level)
+	    {
+	      /* TODO */
+	      D (("Applying alpha options\n"));
+	    }
+	  text_area_w = opt.thumb_w;
+	  /* Now draw on the info text */
+	  imlib_get_text_size (chop_file_from_full_path (files[i]), &fw, &fh);
+	  if (fw > text_area_w)
+	    text_area_w = fw;
+	  imlib_get_text_size (create_index_dimension_string
+			       (ww, hh), &fw, &fh);
+	  if (fw > text_area_w)
+	    text_area_w = fw;
+	  imlib_get_text_size (create_index_size_string (files[i]), &fw, &fh);
+	  if (fw > text_area_w)
+	    text_area_w = fw;
+
+	  if (text_area_w > opt.thumb_w)
+	    text_area_w += 5;
+
+	  if (!vertical)
+	    {
+	      if (x > w - text_area_w)
+		{
+		  x = 0;
+		  y += tot_thumb_h;
+		}
+	      if (y > h - tot_thumb_h)
+		break;
+	    }
+	  else
+	    {
+	      if (text_area_w > max_column_w)
+		max_column_w = text_area_w;
+	      if (y > h - tot_thumb_h)
+		{
+		  y = 0;
+		  x += max_column_w;
+		  max_column_w = 0;
+		}
+	      if (x > w - text_area_w)
+		break;
+	    }
+
 	  if (opt.aspect)
 	    {
 	      xxx = x + ((opt.thumb_w - www) / 2);
@@ -268,37 +336,33 @@ init_index_mode (void)
 	      yyy = y;
 	    }
 
-	  imlib_context_set_image (im_main);
+	  /* Draw now */
 
-	  if (opt.alpha & opt.alpha_level)
-	    {
-	      /* TODO */
-	      D (("Applying alpha options\n"));
-	    }
-	  if(imlib_image_has_alpha())
-		imlib_context_set_blend (1);
+	  if (imlib_image_has_alpha ())
+	    imlib_context_set_blend (1);
 	  else
-		imlib_context_set_blend (0);
+	    imlib_context_set_blend (0);
 	  imlib_blend_image_onto_image (im_temp, 0, 0, 0, ww, hh, xxx, yyy,
 					www, hhh);
-	  /* Now draw on the info text */
-	  D (("Drawing at %d,%d\n", x, y + opt.thumb_h + 10));
-	  imlib_text_draw (x, y + opt.thumb_h + 2,
-			   chop_file_from_full_path (files[i]));
-	  imlib_text_draw (x, y + opt.thumb_h + (th + 2) + 2,
-			   create_index_dimension_string (ww, hh));
-	  imlib_text_draw (x, y + opt.thumb_h + 2 * (th + 2) + 2,
-			   create_index_size_string (files[i]));
+
 	  imlib_context_set_image (im_temp);
 	  imlib_free_image_and_decache ();
-	  x += opt.thumb_w;
-	  if (x > w - opt.thumb_w)
-	    {
-	      x = 0;
-	      y += tot_thumb_h;
-	    }
-	  if (y > h - tot_thumb_h)
-	    break;
+	  imlib_context_set_image (im_main);
+
+	  imlib_text_draw (x, y + opt.thumb_h + 2,
+			   chop_file_from_full_path (files[i]));
+	  imlib_text_draw (x,
+			   y + opt.thumb_h + (th + 2) +
+			   2, create_index_dimension_string (ww, hh));
+	  imlib_text_draw (x,
+			   y + opt.thumb_h + 2 * (th +
+						  2) +
+			   2, create_index_size_string (files[i]));
+
+	  if (!vertical)
+	    x += text_area_w;
+	  else
+	    y += tot_thumb_h;
 	}
     }
   if (opt.verbose)
@@ -326,7 +390,7 @@ init_index_mode (void)
 	  fprintf (stdout, PACKAGE " - File saved as %s\n", opt.output_file);
 	  fprintf (stdout,
 		   "    - Image is %dx%d pixels and contains %d thumbnails\n",
-		   tw, th, (tw / opt.thumb_w) * (th / tot_thumb_h));
+		   tw, th, thumbnailcount);
 	}
     }
 

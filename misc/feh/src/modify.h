@@ -20,7 +20,7 @@
 
 #include "X11/extensions/xf86vmode.h"
 
-void feh_set_background (winwidget winwid);
+void feh_set_background (winwidget winwid, int weeble);
 void feh_blur (winwidget winwid, int radius);
 void feh_sharpen (winwidget winwid, int radius);
 void feh_tile_seamless_v (winwidget winwid);
@@ -47,3 +47,4 @@ void feh_scale_max_x (winwidget winwid);
 void feh_scale_max_pect (winwidget winwid);
 void feh_scale_half (winwidget winwid);
 void feh_scale_double (winwidget winwid);
+void set_pixmap_property (Pixmap p, Window woot);

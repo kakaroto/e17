@@ -1,3 +1,12 @@
+Wed Dec 22 18:12:43 1999  Tom Gilbert  <gilbertt@tomgilbert.freeserve.co.uk>
+
+	* More modify.c submissions from Andrew, including the start of
+	some very funky background setting and image scaling ::)
+	* A total rewrite of the index generating code to take into
+	account the font size and string length. The old version was
+	pretty flim, so its nice to clean it up a bit. However, the niew
+	code still has a couple of issues, which I am looking into.
+
 Wed Dec 22 13:21:12 1999  Tom Gilbert  <gilbertt@tomgilbert.freeserve.co.uk>
 
 	* Okay, index mode now kinda takes into account the height of the

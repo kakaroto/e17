@@ -77,6 +77,11 @@ enum winwidget_type
 enum slide_change
 { SLIDE_NEXT, SLIDE_PREV, SLIDE_FIRST, SLIDE_LAST };
 
+enum bg_type
+{
+  SCALE, CENTER, FIT, TILE
+};
+
 struct __winwidget
 {
   Window win;

@@ -102,7 +102,7 @@ handle_keypress_event (XEvent * ev, Window win)
       winwidget_destroy_all ();
       break;
     case '1':
-      feh_set_background (winwid);
+      feh_set_background (winwid, 3);
       break;
     case '2':
       feh_blur (winwid, 10);
