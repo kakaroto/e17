@@ -183,10 +183,10 @@ be dropped into the loaders directory with the others and all Imlib2 programs
 will automatically be able to use it - without a restart).
 <blockquote>
 <pre><tt><font color="#660000">/* standard headers */
-#include &lt;X11/Xlib.h>
-#include &lt;Imlib2.h>
-#include &lt;stdio.h>
-#include &lt;string.h>
+#include &lt;X11/Xlib.h&gt;
+#include &lt;Imlib2.h&gt;
+#include &lt;stdio.h&gt;
+#include &lt;string.h&gt;
 
 /* main program */
 int main(int argc, char **argv)
@@ -201,11 +201,14 @@ int main(int argc, char **argv)
 &nbsp; /* if the load was successful */
 &nbsp; if (image)
 &nbsp;&nbsp;&nbsp; {
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; char *tmp;
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp; /* set the image we loaded as the current context image to work on */
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp; imlib_context_set_image(image);
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp; /* set the image format to be the format of the extension of our last */
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp; /* argument - i.e. .png = png, .tif = tiff etc. */
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; imlib_image_set_format(strrchr(argv[2], '.') + 1);
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; tmp = strrchr(argv[2], '.');
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; if(tmp)
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; imlib_image_set_format(tmp + 1);
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp; /* save the image */
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp; imlib_save_image(argv[2]);
 &nbsp;&nbsp;&nbsp; }
