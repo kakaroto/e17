@@ -7,6 +7,9 @@ Paul Duncan (pabs) <pabs@pablotron.org>
 Richard Lowe (richlowe) <richlowe@btinternet.com>
     - background setting code, thumbnail patches.
 
+Benjamin Elijah Griffin <bgriffin@cddb.com>
+    - made builtin http work.
+
 Mrinal Kalakrishnan <mrinal@india.com>
     - auto-zoom mode.
 
