@@ -44,6 +44,20 @@ typedef void    (*Ewl_Child_Resize) (Ewl_Container * c, Ewl_Widget * w,
 				     int size, Ewl_Orientation o);
 
 /**
+ * A typedef to shorten the definition of the child_show callbacks. This
+ * callback is container specific and is triggered when an Ewl_Widget is shown
+ * to the Ewl_Container.
+ */
+typedef void    (*Ewl_Child_Show) (Ewl_Container * c, Ewl_Widget * w);
+
+/**
+ * A typedef to shorten the definition of the child_hide callbacks. This
+ * callback is container specific and is triggered when an Ewl_Widget is hidden
+ * from the Ewl_Container.
+ */
+typedef void    (*Ewl_Child_Hide) (Ewl_Container * c, Ewl_Widget * w);
+
+/**
  * @struct Ewl_Container
  * Inherits from the Ewl_Widget and expands to allow for placing child widgets
  * within the available space. Also adds notifiers for various child events.
@@ -51,24 +65,33 @@ typedef void    (*Ewl_Child_Resize) (Ewl_Container * c, Ewl_Widget * w,
 struct Ewl_Container
 {
 	Ewl_Widget       widget; /**< Inherit the basics of the widget. */
+
 	Ewd_List        *children; /**< List of children that are contained. */
-	Ewd_List        *hidden; /**< Invisible children that are contained. */
+
 	Evas_Object     *clip_box; /**< Clip box to bound widgets inside. */
-	Ewl_Child_Add    child_add; /**< Function called on child add */
-	Ewl_Child_Add    child_remove; /**< Function called on child remove */
-	Ewl_Child_Resize child_resize; /**< Function called on child resize */
+
 	Ewl_Container   *redirect; /**< Non-internal widgets placed here */
+
+	Ewl_Child_Add    child_add; /**< Function called on child add */
+	Ewl_Child_Remove child_remove; /**< Function called on child remove */
+	Ewl_Child_Resize child_resize; /**< Function called on child resize */
+	Ewl_Child_Show   child_show; /**< Function called on child hide */
+	Ewl_Child_Hide   child_hide; /**< Function called on child hide */
 };
 
-int             ewl_container_init(Ewl_Container * widget, char *appearance,
-				   Ewl_Child_Add add, Ewl_Child_Resize rs,
-				   Ewl_Child_Remove remove);
+int             ewl_container_init(Ewl_Container * container, char *appearance);
+
 void            ewl_container_add_notify(Ewl_Container * container,
 					 Ewl_Child_Add add);
 void            ewl_container_remove_notify(Ewl_Container * container,
-					 Ewl_Child_Add add);
+					 Ewl_Child_Remove remove);
 void            ewl_container_resize_notify(Ewl_Container * container,
 					    Ewl_Child_Resize resize);
+void            ewl_container_show_notify(Ewl_Container * container,
+					 Ewl_Child_Show show);
+void            ewl_container_hide_notify(Ewl_Container * container,
+					 Ewl_Child_Hide show);
+
 void            ewl_container_append_child(Ewl_Container * parent,
 					   Ewl_Widget * child);
 void            ewl_container_prepend_child(Ewl_Container * parent,
@@ -79,6 +102,7 @@ void            ewl_container_remove_child(Ewl_Container * parent,
 					   Ewl_Widget * child);
 void            ewl_container_resize_child(Ewl_Widget * w, int size,
 					   Ewl_Orientation o);
+
 void            ewl_container_destroy(Ewl_Container * c);
 void            ewl_container_reset(Ewl_Container * c);
 void            ewl_container_notify_callback(Ewl_Container *c,

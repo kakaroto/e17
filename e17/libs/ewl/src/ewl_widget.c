@@ -201,7 +201,7 @@ void ewl_widget_hide(Ewl_Widget * w)
 
 	pc = EWL_CONTAINER(w->parent);
 	if (pc)
-		ewl_container_call_child_remove(pc, w);
+		ewl_container_call_child_hide(pc, w);
 
 	ewl_object_remove_visible(EWL_OBJECT(w), EWL_FLAG_VISIBLE_SHOWN);
 	ewl_callback_call(w, EWL_CALLBACK_HIDE);
@@ -546,7 +546,7 @@ void ewl_widget_set_parent(Ewl_Widget * w, Ewl_Widget * p)
 		if (VISIBLE(w)) {
 			if (REALIZED(w)) {
 				ewl_callback_call(w, EWL_CALLBACK_REPARENT);
-				ewl_container_call_child_add(EWL_CONTAINER(p),
+				ewl_container_call_child_show(EWL_CONTAINER(p),
 							     w);
 			}
 			else {

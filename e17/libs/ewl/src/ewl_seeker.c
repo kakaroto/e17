@@ -45,15 +45,15 @@ void ewl_seeker_init(Ewl_Seeker * s, Ewl_Orientation orientation)
 	 * type
 	 */
 	if (orientation == EWL_ORIENTATION_HORIZONTAL) {
-		ewl_container_init(EWL_CONTAINER(w), "hseeker",
-				NULL, NULL, NULL);
+		if (!ewl_container_init(EWL_CONTAINER(w), "hseeker"))
+			DRETURN_INT(FALSE, DLEVEL_STABLE);
 
 		ewl_object_set_fill_policy(EWL_OBJECT(w), EWL_FLAG_FILL_HFILL |
 				EWL_FLAG_FILL_HSHRINK);
 	}
 	else {
-		ewl_container_init(EWL_CONTAINER(w), "vseeker", NULL, NULL,
-				   NULL);
+		if (!ewl_container_init(EWL_CONTAINER(w), "vseeker"))
+			DRETURN_INT(FALSE, DLEVEL_STABLE);
 
 		ewl_object_set_fill_policy(EWL_OBJECT(w),
 				EWL_FLAG_FILL_VFILL |

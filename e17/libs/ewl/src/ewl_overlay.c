@@ -37,10 +37,12 @@ int ewl_overlay_init(Ewl_Overlay *w)
 	/*
 	 * Initialize the fields of the inherited container class
 	 */
-	if (!ewl_container_init(EWL_CONTAINER(w), "overlay",
-				ewl_overlay_child_add_cb,
-				ewl_overlay_child_resize_cb, NULL))
+	if (!ewl_container_init(EWL_CONTAINER(w), "overlay"))
 		DRETURN_INT(FALSE, DLEVEL_STABLE);
+
+	ewl_container_show_notify(EWL_CONTAINER(w), ewl_overlay_child_show_cb);
+	ewl_container_resize_notify(EWL_CONTAINER(w),
+				    ewl_overlay_child_resize_cb);
 
 	ewl_object_set_fill_policy(EWL_OBJECT(w), EWL_FLAG_FILL_NONE);
 	ewl_object_set_toplevel(EWL_OBJECT(w), EWL_FLAG_PROPERTY_TOPLEVEL);
@@ -85,7 +87,7 @@ void ewl_overlay_configure_cb(Ewl_Widget *w, void *ev_data, void *user_data)
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
 
-void ewl_overlay_child_add_cb(Ewl_Container * o, Ewl_Widget * child)
+void ewl_overlay_child_show_cb(Ewl_Container * o, Ewl_Widget * child)
 {
 	int size;
 

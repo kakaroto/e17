@@ -426,8 +426,15 @@ int ewl_tree_node_init(Ewl_Tree_Node *node)
 
 	DCHECK_PARAM_PTR_RET("node", node, FALSE);
 
-	ewl_container_init(EWL_CONTAINER(node), "node", ewl_tree_node_add_cb,
-			ewl_tree_node_resize_cb, ewl_tree_node_remove_cb);
+	if (!ewl_container_init(EWL_CONTAINER(node), "node"))
+		DRETURN_INT(FALSE, DLEVEL_STABLE);
+	
+	ewl_container_show_notify(EWL_CONTAINER(node),
+				  ewl_tree_node_child_show_cb);
+	ewl_container_resize_notify(EWL_CONTAINER(node),
+				    ewl_tree_node_resize_cb);
+	ewl_container_remove_notify(EWL_CONTAINER(node),
+				    ewl_tree_node_child_hide_cb);
 
 	ewl_object_set_fill_policy(EWL_OBJECT(node), EWL_FLAG_FILL_HFILL |
 			EWL_FLAG_FILL_HSHRINK);
@@ -569,7 +576,7 @@ ewl_tree_node_clicked_cb(Ewl_Widget * w, void *ev_data, void *user_data)
 }
 
 void
-ewl_tree_node_add_cb(Ewl_Container *c, Ewl_Widget *w)
+ewl_tree_node_child_show_cb(Ewl_Container *c, Ewl_Widget *w)
 {
 	int width;
 	Ewl_Tree_Node *node;
@@ -595,7 +602,7 @@ ewl_tree_node_add_cb(Ewl_Container *c, Ewl_Widget *w)
 }
 
 void
-ewl_tree_node_remove_cb(Ewl_Container *c, Ewl_Widget *w)
+ewl_tree_node_child_hide_cb(Ewl_Container *c, Ewl_Widget *w)
 {
 	int width;
 	Ewl_Tree_Node *node;
@@ -605,7 +612,7 @@ ewl_tree_node_remove_cb(Ewl_Container *c, Ewl_Widget *w)
 	node = EWL_TREE_NODE(c);
 
 	ewl_object_set_preferred_h(EWL_OBJECT(c), PREFERRED_H(c) -
-				ewl_object_get_preferred_h(EWL_OBJECT(w)));
+				   ewl_object_get_preferred_h(EWL_OBJECT(w)));
 
 	width = ewl_object_get_preferred_w(EWL_OBJECT(w));
 	if (PREFERRED_W(c) >= width)

@@ -14,8 +14,7 @@
  * widget fields of the container, so the @a appearance string is necessary.
  */
 int 
-ewl_container_init(Ewl_Container * c, char *appearance, Ewl_Child_Add add,
-		   Ewl_Child_Resize rs, Ewl_Child_Remove remove)
+ewl_container_init(Ewl_Container * c, char *appearance)
 {
 	Ewl_Widget     *w;
 
@@ -36,9 +35,6 @@ ewl_container_init(Ewl_Container * c, char *appearance, Ewl_Child_Add add,
 	 * Initialize the fields specific to the container class.
 	 */
 	c->children = ewd_list_new();
-	c->child_add = add;
-	c->child_remove = remove;
-	c->child_resize = rs;
 
 	/*
 	 * All containers need to perform the function of updating the
@@ -117,6 +113,46 @@ ewl_container_resize_notify(Ewl_Container * container, Ewl_Child_Resize resize)
 }
 
 /**
+ * @param container: the container to change the show notifier
+ * @param show: the new show notifier for the container
+ * @return Returns no value.
+ * @brief Set the function to be called when showing children
+ *
+ * Changes the show notifier function of @a container to @a show.
+ */
+void
+ewl_container_show_notify(Ewl_Container * container, Ewl_Child_Show show)
+{
+	DENTER_FUNCTION(DLEVEL_STABLE);
+
+	DCHECK_PARAM_PTR("container", container);
+
+	container->child_show = show;
+
+	DLEAVE_FUNCTION(DLEVEL_STABLE);
+}
+
+/**
+ * @param container: the container to change the hide notifier
+ * @param hide: the new show notifier for the container
+ * @return Returns no value.
+ * @brief Set the function to be called when hideing children
+ *
+ * Changes the hide notifier function of @a container to @a hide.
+ */
+void
+ewl_container_hide_notify(Ewl_Container * container, Ewl_Child_Hide hide)
+{
+	DENTER_FUNCTION(DLEVEL_STABLE);
+
+	DCHECK_PARAM_PTR("container", container);
+
+	container->child_hide = hide;
+
+	DLEAVE_FUNCTION(DLEVEL_STABLE);
+}
+
+/**
  * @param pc: the parent container that will hold the child
  * @param child: the child to add to the container
  * @return Returns no value.
@@ -143,6 +179,7 @@ void ewl_container_append_child(Ewl_Container * pc, Ewl_Widget * child)
 
 	ewd_list_append(pc->children, child);
 	ewl_widget_set_parent(child, EWL_WIDGET(pc));
+	ewl_container_call_child_add(pc, child);
 
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
@@ -175,6 +212,7 @@ void ewl_container_prepend_child(Ewl_Container * pc, Ewl_Widget * child)
 
 	ewd_list_prepend(pc->children, child);
 	ewl_widget_set_parent(child, EWL_WIDGET(pc));
+	ewl_container_call_child_add(pc, child);
 
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
@@ -211,6 +249,7 @@ ewl_container_insert_child(Ewl_Container * pc, Ewl_Widget * child, int index)
 	ewd_list_goto_index(pc->children, index);
 	ewd_list_insert(pc->children, child);
 	ewl_widget_set_parent(child, EWL_WIDGET(pc));
+	ewl_container_call_child_add(pc, child);
 
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
@@ -625,6 +664,42 @@ void ewl_container_call_child_remove(Ewl_Container *c, Ewl_Widget *w)
 {
 	if (c->child_remove && VISIBLE(w))
 		c->child_remove(c, w);
+}
+
+/**
+ * @param c: the container receiving a new child widget
+ * @param w: the child widget shown in the container
+ * @return Returns no value.
+ * @brief Triggers the child_show callback for the container @a c.
+ */
+void ewl_container_call_child_show(Ewl_Container *c, Ewl_Widget *w)
+{
+	DENTER_FUNCTION(DLEVEL_STABLE);
+
+	if (c->child_show && VISIBLE(w) && REALIZED(w))
+		c->child_show(c, w);
+
+	ewl_widget_configure(EWL_WIDGET(c));
+
+	DLEAVE_FUNCTION(DLEVEL_STABLE);
+}
+
+/**
+ * @param c: the container receiving a new child widget
+ * @param w: the child widget hidden in the container
+ * @return Returns no value.
+ * @brief Triggers the child_hide callback for the container @a c.
+ */
+void ewl_container_call_child_hide(Ewl_Container *c, Ewl_Widget *w)
+{
+	DENTER_FUNCTION(DLEVEL_STABLE);
+
+	if (c->child_hide && VISIBLE(w) && REALIZED(w))
+		c->child_hide(c, w);
+
+	ewl_widget_configure(EWL_WIDGET(c));
+
+	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
 
 /**

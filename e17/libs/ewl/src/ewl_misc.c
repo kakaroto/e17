@@ -640,8 +640,8 @@ void ewl_realize_queue()
 	 */
 	while ((w = ewd_list_remove_first(child_add_list))) {
 		if (w->parent)
-			ewl_container_call_child_add(EWL_CONTAINER(w->parent),
-						     w);
+			ewl_container_call_child_show(EWL_CONTAINER(w->parent),
+						      w);
 	}
 
 	ewl_exit_realize_phase();

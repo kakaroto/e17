@@ -35,10 +35,13 @@ void ewl_progressbar_init(Ewl_Progressbar * p)
 
 	w = EWL_WIDGET(p);
 
-	ewl_container_init(EWL_CONTAINER(w), "progressbar",
-			ewl_progressbar_child_add_cb, 
-			ewl_progressbar_child_resize_cb, 
-			NULL);
+	if (!ewl_container_init(EWL_CONTAINER(w), "progressbar"))
+		DRETURN(DLEVEL_STABLE);
+
+	ewl_container_show_notify(EWL_CONTAINER(w),
+				  ewl_progressbar_child_show_cb);
+	ewl_container_resize_notify(EWL_CONTAINER(w),
+				    ewl_progressbar_child_resize_cb);
 
 	p->bar = NEW(Ewl_Widget, 1);
 	if (!p->bar)
@@ -279,7 +282,7 @@ static void ewl_progressbar_child_handle(Ewl_Container *c, Ewl_Widget *w)
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
 
-void ewl_progressbar_child_add_cb(Ewl_Container *c, Ewl_Widget *w)
+void ewl_progressbar_child_show_cb(Ewl_Container *c, Ewl_Widget *w)
 {
 	DENTER_FUNCTION(DLEVEL_STABLE);
 

@@ -39,10 +39,15 @@ int ewl_notebook_init(Ewl_Notebook * n)
 	 * Initialize the container portion of the notebook and set the fill
 	 * policy to fill the area available.
 	 */
-	if (!ewl_container_init(EWL_CONTAINER(w), "tnotebook",
-				ewl_notebook_add_cb, ewl_notebook_resize_cb,
-				ewl_notebook_add_cb))
+	if (!ewl_container_init(EWL_CONTAINER(w), "tnotebook"))
 		DRETURN_INT(FALSE, DLEVEL_STABLE);
+
+	ewl_container_show_notify(EWL_CONTAINER(w),
+				  ewl_notebook_child_show_cb);
+	ewl_container_resize_notify(EWL_CONTAINER(w),
+				    ewl_notebook_child_resize_cb);
+	ewl_container_hide_notify(EWL_CONTAINER(w),
+				  ewl_notebook_child_show_cb);
 
 	ewl_object_set_fill_policy(EWL_OBJECT(w), EWL_FLAG_FILL_FILL);
 
@@ -768,7 +773,7 @@ ewl_notebook_configure_right_cb(Ewl_Widget * w, void *ev_data, void *user_data)
 }
 
 void
-ewl_notebook_add_cb(Ewl_Container *c, Ewl_Widget *w)
+ewl_notebook_child_show_cb(Ewl_Container *c, Ewl_Widget *w)
 {
 	Ewl_Notebook *n;
 
@@ -812,7 +817,7 @@ ewl_notebook_add_cb(Ewl_Container *c, Ewl_Widget *w)
 }
 
 void
-ewl_notebook_resize_cb(Ewl_Container *c, Ewl_Widget *w, int size,
+ewl_notebook_child_resize_cb(Ewl_Container *c, Ewl_Widget *w, int size,
 		Ewl_Orientation o)
 {
 	Ewl_Notebook *n;

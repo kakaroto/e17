@@ -1,9 +1,8 @@
 #include <Ewl.h>
 
 /**
- * ewl_row_new - allocate and initialize a new row
- *
- * Returns a newly allocated row on success, NULL on failure.
+ * @return Returns a newly allocated row on success, NULL on failure.
+ * @brief Allocate and initialize a new row
  */
 Ewl_Widget *ewl_row_new()
 {
@@ -24,11 +23,11 @@ Ewl_Widget *ewl_row_new()
 }
 
 /**
- * ewl_row_init - initialize the row fields of an inheriting object
- * @row: the row object to initialize
+ * @param row: the row object to initialize
+ * @return Returns TRUE on success, FALSE on failure.
+ * @brief Initialize the row fields of an inheriting object
  *
- * Returns TRUE on success, FALSE on failure. The fields of the @row object
- * are initialized to their defaults.
+ * The fields of the @row object are initialized to their defaults.
  */
 int ewl_row_init(Ewl_Row *row)
 {
@@ -36,8 +35,12 @@ int ewl_row_init(Ewl_Row *row)
 
 	DCHECK_PARAM_PTR_RET("row", row, FALSE);
 
-	ewl_container_init(EWL_CONTAINER(row), "row", ewl_row_add_cb,
-			ewl_row_resize_cb, NULL);
+	if (ewl_container_init(EWL_CONTAINER(row), "row"))
+		DRETURN_INT(FALSE, DLEVEL_STABLE);
+	
+	ewl_container_show_notify(EWL_CONTAINER(row), ewl_row_child_show_cb);
+	ewl_container_resize_notify(EWL_CONTAINER(row), ewl_row_resize_cb);
+
 	ewl_object_set_fill_policy(EWL_OBJECT(row), EWL_FLAG_FILL_HFILL |
 			EWL_FLAG_FILL_HSHRINK);
 
@@ -92,12 +95,10 @@ ewl_row_set_header(Ewl_Row *row, Ewl_Row *header)
 }
 
 /**
- * ewl_row_get_column - retrieve the widget at a specified column
- * @row: the row to retrieve a columns widget from
- * @n: the column containing the desired widget
- *
- * Returns the widget located in column @n in @row on success, NULL on
- * failure.
+ * @param row: the row to retrieve a columns widget from
+ * @param n: the column containing the desired widget
+ * @return Returns widget located in column @n in @row on success.
+ * @brief Retrieve the widget at a specified column
  */
 Ewl_Widget *
 ewl_row_get_column(Ewl_Row *row, short n)
@@ -226,7 +227,7 @@ ewl_row_header_destroy_cb(Ewl_Widget * w, void *ev_data, void *user_data)
 }
 
 void
-ewl_row_add_cb(Ewl_Container *c, Ewl_Widget *w)
+ewl_row_child_show_cb(Ewl_Container *c, Ewl_Widget *w)
 {
 	Ewl_Row *row;
 

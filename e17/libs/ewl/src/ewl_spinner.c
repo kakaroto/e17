@@ -36,9 +36,13 @@ void ewl_spinner_init(Ewl_Spinner * s)
 
 	w = EWL_WIDGET(s);
 
-	ewl_container_init(EWL_CONTAINER(w), "spinner",
-			ewl_spinner_child_add_cb, ewl_spinner_child_resize_cb,
-			NULL);
+	if (!ewl_container_init(EWL_CONTAINER(w), "spinner"))
+		DRETURN_INT(FALSE, DLEVEL_STABLE);
+
+	ewl_container_show_notify(EWL_CONTAINER(w), ewl_spinner_child_show_cb);
+	ewl_container_resize_notify(EWL_CONTAINER(w),
+				    ewl_spinner_child_resize_cb);
+
 	ewl_object_set_fill_policy(EWL_OBJECT(w), EWL_FLAG_FILL_HFILL);
 
 	ewl_callback_append(w, EWL_CALLBACK_REALIZE, ewl_spinner_realize_cb,
@@ -200,7 +204,7 @@ void ewl_spinner_set_step(Ewl_Spinner * s, double step)
 }
 
 void
-ewl_spinner_child_add_cb(Ewl_Container *c, Ewl_Widget *w)
+ewl_spinner_child_show_cb(Ewl_Container *c, Ewl_Widget *w)
 {
 	Ewl_Spinner *s = EWL_SPINNER(c);
 

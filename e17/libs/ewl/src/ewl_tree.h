@@ -98,8 +98,8 @@ void ewl_tree_node_configure_cb(Ewl_Widget * w, void *ev_data,
 void ewl_tree_node_clicked_cb(Ewl_Widget * w, void *ev_data,
 			   void *user_data);
 
-void ewl_tree_node_add_cb(Ewl_Container *c, Ewl_Widget *w);
-void ewl_tree_node_remove_cb(Ewl_Container *c, Ewl_Widget *w);
+void ewl_tree_node_child_show_cb(Ewl_Container *c, Ewl_Widget *w);
+void ewl_tree_node_child_hide_cb(Ewl_Container *c, Ewl_Widget *w);
 void ewl_tree_node_resize_cb(Ewl_Container *c, Ewl_Widget *w, int size,
 			     Ewl_Orientation o);
 

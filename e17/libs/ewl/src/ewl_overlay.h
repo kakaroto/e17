@@ -44,7 +44,7 @@ int             ewl_overlay_init(Ewl_Overlay * win);
  */
 void ewl_overlay_configure_cb(Ewl_Widget *w, void *ev_data, void *user_data);
 
-void ewl_overlay_child_add_cb(Ewl_Container * emb, Ewl_Widget * child);
+void ewl_overlay_child_show_cb(Ewl_Container * emb, Ewl_Widget * child);
 void ewl_overlay_child_resize_cb(Ewl_Container *c, Ewl_Widget *w, int size,
 			       Ewl_Orientation o);
 

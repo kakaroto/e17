@@ -35,12 +35,14 @@ int ewl_cell_init(Ewl_Cell *cell)
 
 	DCHECK_PARAM_PTR_RET("cell", cell, FALSE);
 
-	if (!ewl_container_init(EWL_CONTAINER(cell), "cell", ewl_cell_add_cb,
-			ewl_cell_child_resize_cb, NULL))
+	if (!ewl_container_init(EWL_CONTAINER(cell), "cell"))
 		DRETURN_INT(FALSE, DLEVEL_STABLE);
 
+	ewl_container_show_notify(EWL_CONTAINER(cell), ewl_cell_child_show_cb);
+	ewl_container_resize_notify(EWL_CONTAINER(cell),
+				    ewl_cell_child_resize_cb);
 	ewl_callback_append(EWL_WIDGET(cell), EWL_CALLBACK_CONFIGURE,
-			ewl_cell_configure_cb, NULL);
+			    ewl_cell_configure_cb, NULL);
 
 	DRETURN_INT(TRUE, DLEVEL_STABLE);
 }
@@ -67,7 +69,7 @@ ewl_cell_configure_cb(Ewl_Widget * w, void *ev_data, void *user_data)
 }
 
 void
-ewl_cell_add_cb(Ewl_Container *c, Ewl_Widget *w)
+ewl_cell_child_show_cb(Ewl_Container *c, Ewl_Widget *w)
 {
 	Ewl_Widget *child;
 

@@ -39,10 +39,12 @@ int ewl_entry_init(Ewl_Entry * e, char *text)
 
 	w = EWL_WIDGET(e);
 
-	if (!ewl_container_init(EWL_CONTAINER(w), "entry",
-				ewl_entry_child_add_cb,
-				ewl_entry_child_resize_cb, NULL))
+	if (!ewl_container_init(EWL_CONTAINER(w), "entry"))
 		DRETURN_INT(FALSE, DLEVEL_STABLE);
+
+	ewl_container_show_notify(EWL_CONTAINER(w), ewl_entry_child_show_cb);
+	ewl_container_resize_notify(EWL_CONTAINER(w),
+				    ewl_entry_child_resize_cb);
 
 	ewl_object_set_fill_policy(EWL_OBJECT(w), EWL_FLAG_FILL_HSHRINK |
 			EWL_FLAG_FILL_HFILL);
@@ -624,7 +626,7 @@ void ewl_entry_delete_to_right(Ewl_Entry * e)
 }
 
 void
-ewl_entry_child_add_cb(Ewl_Container * c, Ewl_Widget * w)
+ewl_entry_child_show_cb(Ewl_Container * c, Ewl_Widget * w)
 {
 	Ewl_Entry *e;
 

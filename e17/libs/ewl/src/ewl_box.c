@@ -106,17 +106,19 @@ int ewl_box_init(Ewl_Box * b, Ewl_Orientation o)
 	 * Initialize the container portion of the box
 	 */
 	if (o == EWL_ORIENTATION_HORIZONTAL) {
-		if (!ewl_container_init(EWL_CONTAINER(b), "hbox",
-					ewl_box_add_cb, ewl_box_child_resize_cb,
-					ewl_box_remove_cb))
+		if (!ewl_container_init(EWL_CONTAINER(b), "hbox"))
 			DRETURN_INT(FALSE, DLEVEL_STABLE);
 	}
 	else {
-		if (!ewl_container_init(EWL_CONTAINER(b), "vbox",
-					ewl_box_add_cb, ewl_box_child_resize_cb,
-					ewl_box_remove_cb))
+		if (!ewl_container_init(EWL_CONTAINER(b), "vbox"))
 			DRETURN_INT(FALSE, DLEVEL_STABLE);
 	}
+
+	ewl_container_add_notify(EWL_CONTAINER(b), ewl_box_child_add_cb);
+	ewl_container_remove_notify(EWL_CONTAINER(b), ewl_box_child_remove_cb);
+	ewl_container_resize_notify(EWL_CONTAINER(b), ewl_box_child_resize_cb);
+	ewl_container_show_notify(EWL_CONTAINER(b), ewl_box_child_show_cb);
+	ewl_container_hide_notify(EWL_CONTAINER(b), ewl_box_child_hide_cb);
 
 	ewl_callback_append(w, EWL_CALLBACK_CONFIGURE, ewl_box_configure_cb,
 			NULL);
@@ -641,11 +643,21 @@ ewl_box_configure_child(Ewl_Box * b, Ewl_Object * c, int *x, int *y,
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
 
+void
+ewl_box_child_add_cb(Ewl_Container * c, Ewl_Widget * w)
+{
+}
+
+void
+ewl_box_child_remove_cb(Ewl_Container * c, Ewl_Widget * w)
+{
+}
+
 /*
  * When a child gets added to the box update it's size.
  */
 void
-ewl_box_add_cb(Ewl_Container * c, Ewl_Widget * w)
+ewl_box_child_show_cb(Ewl_Container * c, Ewl_Widget * w)
 {
 	int             space = 0;
 
@@ -675,7 +687,7 @@ ewl_box_add_cb(Ewl_Container * c, Ewl_Widget * w)
 }
 
 void
-ewl_box_remove_cb(Ewl_Container * c, Ewl_Widget * w)
+ewl_box_child_hide_cb(Ewl_Container * c, Ewl_Widget * w)
 {
 	int space = 0;
 	Ewl_Box *b = EWL_BOX(c);

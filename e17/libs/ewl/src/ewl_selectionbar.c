@@ -61,8 +61,9 @@ void ewl_selectionbar_init(Ewl_Selectionbar * s, Ewl_Widget * parent)
 	if (!s->bar)
 		DRETURN(DLEVEL_STABLE);
 
-	ewl_container_init(EWL_CONTAINER(s->bar), "/selectionbar", NULL, NULL,
-			NULL);
+	if (!ewl_container_init(EWL_CONTAINER(s->bar), "selectionbar"))
+		DRETURN_INT(FALSE, DLEVEL_STABLE);
+
 	ewl_object_set_fill_policy(EWL_OBJECT(s->bar), EWL_FLAG_FILL_HFILL |
 				   EWL_FLAG_FILL_HSHRINK);
 	ewl_container_append_child(EWL_CONTAINER(w), EWL_WIDGET(s->bar));

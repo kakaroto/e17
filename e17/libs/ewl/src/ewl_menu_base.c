@@ -92,10 +92,13 @@ int ewl_menu_item_init(Ewl_Menu_Item * item, char *image, char *text)
 	/*
 	 * Initialize the inherited container fields.
 	 */
-	if (!ewl_container_init(EWL_CONTAINER(item), "menuitem",
-				ewl_menu_item_add_cb, ewl_menu_item_resize_cb,
-				NULL))
+	if (!ewl_container_init(EWL_CONTAINER(item), "menuitem"))
 		DRETURN_INT(FALSE, DLEVEL_STABLE);
+
+	ewl_container_show_notify(EWL_CONTAINER(item),
+				  ewl_menu_item_child_show_cb);
+	ewl_container_resize_notify(EWL_CONTAINER(item),
+				  ewl_menu_item_child_resize_cb);
 	ewl_object_set_fill_policy(EWL_OBJECT(item), EWL_FLAG_FILL_HFILL);
 
 	ewl_callback_append(EWL_WIDGET(item), EWL_CALLBACK_CONFIGURE,
@@ -230,7 +233,7 @@ ewl_menu_item_configure_cb(Ewl_Widget *w, void *ev_data, void *user_data)
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
 
-void ewl_menu_item_add_cb(Ewl_Container *parent, Ewl_Widget *child)
+void ewl_menu_item_child_show_cb(Ewl_Container *parent, Ewl_Widget *child)
 {
 	DENTER_FUNCTION(DLEVEL_STABLE);
 
@@ -242,8 +245,8 @@ void ewl_menu_item_add_cb(Ewl_Container *parent, Ewl_Widget *child)
 }
 
 void
-ewl_menu_item_resize_cb(Ewl_Container *parent, Ewl_Widget *child, int size,
-		Ewl_Orientation o)
+ewl_menu_item_child_resize_cb(Ewl_Container *parent, Ewl_Widget *child,
+			      int size, Ewl_Orientation o)
 {
 	DENTER_FUNCTION(DLEVEL_STABLE);
 

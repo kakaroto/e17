@@ -1,5 +1,6 @@
 #include <Ewl.h>
 
+static void ewl_grid_resize(Ewl_Grid * g);
 
 /**
  * ewl_grid_new - create a new grid
@@ -42,9 +43,11 @@ int ewl_grid_init(Ewl_Grid * g, int cols, int rows)
 	/*
 	 * Initialize the grids inherited fields
 	 */
-	if (!ewl_container_init(EWL_CONTAINER(g), "vbox", ewl_grid_add_cb,
-				ewl_grid_auto_resize_cb, NULL))
+	if (!ewl_container_init(EWL_CONTAINER(g), "vbox"))
 		DRETURN_INT(FALSE, DLEVEL_STABLE);
+
+	ewl_container_show_notify(EWL_CONTAINER(g), ewl_grid_child_show_cb);
+	ewl_container_resize_notify(EWL_CONTAINER(g), ewl_grid_child_resize_cb);
 
 	/*
 	 * Initialize the lists that keep track of the
@@ -369,7 +372,7 @@ void ewl_grid_configure_cb(Ewl_Widget * w, void *ev_data, void *user_data)
 	}
 
 
-	ewl_grid_resize_cb(g);
+	ewl_grid_resize(g);
 
 	c_x = CURRENT_X(EWL_OBJECT(w));
 	c_y = CURRENT_Y(EWL_OBJECT(w));
@@ -412,7 +415,7 @@ void ewl_grid_configure_cb(Ewl_Widget * w, void *ev_data, void *user_data)
 
 
 
-void ewl_grid_resize_cb(Ewl_Grid * g)
+static void ewl_grid_resize(Ewl_Grid * g)
 {
 	int             w_flag = 0, h_flag = 0;
 	int             i, new_w = 0, new_h = 0;
@@ -492,7 +495,7 @@ void ewl_grid_resize_cb(Ewl_Grid * g)
 /*
  * Notify the grid that a child has been added.
  */
-void ewl_grid_add_cb(Ewl_Container * p, Ewl_Widget * c)
+void ewl_grid_child_show_cb(Ewl_Container * p, Ewl_Widget * c)
 {
 	int             i;
 	int             temp;
@@ -586,7 +589,7 @@ void ewl_grid_add_cb(Ewl_Container * p, Ewl_Widget * c)
  * Catch notification of child resizes.
  */
 void
-ewl_grid_auto_resize_cb(Ewl_Container * p, Ewl_Widget * child, int size,
+ewl_grid_child_resize_cb(Ewl_Container * p, Ewl_Widget * child, int size,
 		        Ewl_Orientation o)
 {
 	int             give;

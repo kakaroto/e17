@@ -66,10 +66,13 @@ void            ewl_box_set_homogeneous(Ewl_Box *b, int h);
 /*
  * Internally used callbacks, override at your own risk.
  */
-void            ewl_box_add_cb(Ewl_Container * c, Ewl_Widget * w);
-void            ewl_box_remove_cb(Ewl_Container * c, Ewl_Widget * w);
+void            ewl_box_child_add_cb(Ewl_Container * c, Ewl_Widget * w);
+void            ewl_box_child_remove_cb(Ewl_Container * c, Ewl_Widget * w);
 void            ewl_box_child_resize_cb(Ewl_Container * c, Ewl_Widget * w,
 				        int size, Ewl_Orientation o);
+void            ewl_box_child_show_cb(Ewl_Container * c, Ewl_Widget * w);
+void            ewl_box_child_hide_cb(Ewl_Container * c, Ewl_Widget * w);
+
 void            ewl_box_configure_cb(Ewl_Widget * w, void *ev_data,
 				     void *user_data);
 void            ewl_box_configure_homogeneous_cb(Ewl_Widget *w, void *ev_data,

@@ -55,7 +55,7 @@ void            ewl_spinner_set_step(Ewl_Spinner * s, double step);
 /*
  * Internally used callbacks, override at your own risk.
  */
-void ewl_spinner_child_add_cb(Ewl_Container *c, Ewl_Widget *w);
+void ewl_spinner_child_show_cb(Ewl_Container *c, Ewl_Widget *w);
 void ewl_spinner_child_resize_cb(Ewl_Container *c, Ewl_Widget *w,
 				 int size, Ewl_Orientation o);
 void ewl_spinner_realize_cb(Ewl_Widget * widget, void *ev_data,

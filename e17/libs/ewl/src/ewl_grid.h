@@ -76,9 +76,8 @@ void ewl_grid_realize_cb(Ewl_Widget * w, void *ev_data,
 			 void *user_data);
 void ewl_grid_configure_cb(Ewl_Widget * w, void *ev_data,
 			   void *user_data);
-void ewl_grid_resize_cb(Ewl_Grid * g);
-void ewl_grid_add_cb(Ewl_Container * p, Ewl_Widget * c);
-void ewl_grid_auto_resize_cb(Ewl_Container * p, Ewl_Widget * child,
+void ewl_grid_child_show_cb(Ewl_Container * p, Ewl_Widget * c);
+void ewl_grid_child_resize_cb(Ewl_Container * p, Ewl_Widget * child,
 			     int size, Ewl_Orientation o);
 
 #endif				/* __EWL_GRID_H__ */

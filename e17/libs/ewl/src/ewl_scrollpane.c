@@ -26,18 +26,22 @@ Ewl_Widget     *ewl_scrollpane_new(void)
  *
  * Sets up default callbacks and field values for the scrollpane @a s.
  */
-void ewl_scrollpane_init(Ewl_ScrollPane * s)
+int ewl_scrollpane_init(Ewl_ScrollPane * s)
 {
 	Ewl_Widget     *w;
 
 	DENTER_FUNCTION(DLEVEL_UNSTABLE);
-	DCHECK_PARAM_PTR("s", s);
+	DCHECK_PARAM_PTR_RET("s", s, FALSE);
 
 	w = EWL_WIDGET(s);
 
-	ewl_container_init(EWL_CONTAINER(s), "scrollpane",
-			   ewl_scrollpane_add_cb,
-			   ewl_scrollpane_child_resize_cb, NULL);
+	if (!ewl_container_init(EWL_CONTAINER(s), "scrollpane"))
+		DRETURN_INT(FALSE, DLEVEL_STABLE);
+
+	ewl_container_show_notify(EWL_CONTAINER(s),
+				  ewl_scrollpane_child_show_cb);
+	ewl_container_resize_notify(EWL_CONTAINER(s),
+				    ewl_scrollpane_child_resize_cb);
 	ewl_object_set_fill_policy(EWL_OBJECT(s), EWL_FLAG_FILL_FILL |
 			EWL_FLAG_FILL_SHRINK);
 
@@ -87,7 +91,7 @@ void ewl_scrollpane_init(Ewl_ScrollPane * s)
 	ewl_callback_append(s->vscrollbar, EWL_CALLBACK_VALUE_CHANGED,
 			    ewl_scrollpane_vscroll_cb, s);
 
-	DLEAVE_FUNCTION(DLEVEL_UNSTABLE);
+	DRETURN_INT(FALSE, DLEVEL_STABLE);
 }
 
 /**
@@ -376,7 +380,7 @@ void ewl_scrollpane_vscroll_cb(Ewl_Widget * w, void *ev_data, void *user_data)
 /*
  * Actually add the child to the box rather than the scrollpane itself.
  */
-void ewl_scrollpane_add_cb(Ewl_Container * parent, Ewl_Widget * child)
+void ewl_scrollpane_child_show_cb(Ewl_Container * parent, Ewl_Widget * child)
 {
 	int pw, ph;
 	Ewl_ScrollPane *s;

@@ -62,7 +62,7 @@ void ewl_progressbar_label_hide (Ewl_Progressbar * p);
  */
 void ewl_progressbar_configure_cb(Ewl_Widget * w, void *ev_data,
 				  void *user_data);
-void ewl_progressbar_child_add_cb(Ewl_Container *c, Ewl_Widget *w);
+void ewl_progressbar_child_show_cb(Ewl_Container *c, Ewl_Widget *w);
 void ewl_progressbar_child_resize_cb(Ewl_Container *c, Ewl_Widget *w, int size,
 				     Ewl_Orientation o);
 
