@@ -24,7 +24,7 @@ my $keep        = '';
 my $deftitle    = '%cCAM - %u';
 my $title       = '';
 my $bp          = $ENV{HOME}."/.cam_bookmarks";
-my $DEBUG       = 1;
+my $DEBUG       = 0;
 
 # check args
 &print_usage_and_exit unless (@ARGV);
@@ -105,7 +105,6 @@ if ($list) {
 MAIN: {
     do {
         $title="";
-        $4="";
         $url = $bms{$key};
         die "Couldn't find URL key \"$key.\"\n" unless($url);
         
