@@ -1630,7 +1630,7 @@ IPC_ImageClass(char *params, Client * c)
 	       {
 		  Pixmap              p;
 
-		  word(params, 2, param3);
+		  word(params, 3, param3);
 		  p = atoi(param3);
 		  Imlib_free_pixmap(id, p);
 	       }
