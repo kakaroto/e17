@@ -330,35 +330,84 @@ char *get_fallback_locale (char *locale)
   return locale_dup;
 }
 
-int run_yelp (char *help_name)
+int run_help (char *help_app, char *help_dir, char *help_file)
 {
   gboolean spawn;
   gchar *argv_child[3];
-  char *locale = malloc (30);
-  int help_exist;
-  struct stat *buf;
-
-  strcpy (argv_child[0], "yelp");
-  argv_child[2] = NULL;
+  gchar *params;
+  char *locale;
+  char *locale_fallback;
+  char *locale_tmp;
+  gboolean help_missing = TRUE;
+  struct stat buf;
 
   locale = setlocale (LC_ALL, NULL);
 
-  argv_child[1] = g_strdup_printf ("%s/%s/%s",YELP_HELP_DIR, "C", help_name);
+  params = g_strdup_printf ("%s/%s/%s", help_dir,
+                            locale, help_file);
+  help_missing = stat (params, &buf);
 
-  help_exist = stat (argv_child[1], buf);
-
-  if (!help_exist)
+  /* locale fallback 1 */
+  if (help_missing)
   {
-    spawn = g_spawn_async (NULL, argv_child, NULL,
-                           G_SPAWN_SEARCH_PATH, NULL,
-                           NULL, NULL, NULL);
+    locale_fallback = get_fallback_locale (locale);
+    g_free (params);
+    params = g_strdup_printf ("%s/%s/%s", help_dir,
+                              locale_fallback, help_file);
+    help_missing = stat (params, &buf);
+
+    /* locale fallback 2 */
+    if (help_missing)
+    {
+      locale_tmp = strdup (locale_fallback);
+      g_free (locale_fallback);
+      locale_fallback = get_fallback_locale (locale_tmp);
+      g_free (locale_tmp);
+      g_free (params);
+      params = g_strdup_printf ("%s/%s/%s", help_dir,
+                                locale_fallback, help_file);
+      help_missing = stat (params, &buf);
+
+      /* locale fallback 3 */
+      if (help_missing)
+      {
+        locale_tmp = strdup (locale_fallback);
+        g_free (locale_fallback);
+        locale_fallback = get_fallback_locale (locale_tmp);
+        g_free (locale_tmp);
+        g_free (params);
+        params = g_strdup_printf ("%s/%s/%s", help_dir,
+                                  locale_fallback, help_file);
+        help_missing = stat (params, &buf);
+      }
+    }
+  }
+
+  if (help_missing)
+  {
+    /* no yelp files found */
+    return 1;
   }
   else
   {
-    g_print ("help doesn't exist for locale %s\n", locale);
-  }
+    argv_child[0] = help_app;
+    argv_child[1] = params;
+    argv_child[2] = NULL;
 
-  g_free (argv_child[1]);
+    spawn = g_spawn_async (NULL, argv_child, NULL,
+                           G_SPAWN_SEARCH_PATH, NULL,
+                           NULL, NULL, NULL);
+
+    if (!spawn)
+    {
+      /* no yelp application found */
+      return 2;
+    }
+
+    //g_free (argv_child[0]);
+    g_free (params);
+    g_free (locale_fallback);
+  }
 
   return 0;
 }

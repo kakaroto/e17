@@ -22,5 +22,5 @@ e16menuedit2_SOURCES = \
         libglade_support.c\
         libglade_support.h
 
-e16menuedit2_LDADD = @PACKAGE_LIBS@ $(INTLLIBS)
+e16menuedit2_LDADD = @PACKAGE_LIBS@ $(INTLLIBS) 
 

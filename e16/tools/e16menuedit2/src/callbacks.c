@@ -286,7 +286,17 @@ on_pop_menu1_destroy_event (GtkWidget *widget,
 void on_menu_contents_activate (GtkMenuItem *menuitem,
                                 gpointer user_data)
 {
-  /* only yelp execution currenty in lang C
-     other languages and html fallback comes... */
-  run_yelp (PACKAGE".xml");
+  int help_error;
+
+  help_error = run_help ("yelp", YELP_HELP_DIR, PACKAGE".xml");
+
+  if (help_error)
+  {
+    help_error = run_help ("mozilla", PACKAGE_DOC_DIR, PACKAGE".html");
+
+    if (help_error)
+    {
+      g_print ("no help system or help file found!\n");
+    }
+  }
 }
