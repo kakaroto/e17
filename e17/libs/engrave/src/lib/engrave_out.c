@@ -3,10 +3,13 @@
 #include <stdarg.h>
 #include "Engrave.h"
 
-static void _engrave_output_group(Engrave_Group *group, FILE *out);
 static void _engrave_output_part(Engrave_Part *part, FILE *out);
 static void _engrave_output_program(Engrave_Program *program, FILE *out);
 static void _engrave_output_state(Engrave_Part *part, Engrave_Part_State *state, FILE *out);
+static void _engrave_output_image(Engrave_Image *image, void *data);
+static void _engrave_output_font(Engrave_Font *font, void *data);
+static void _engrave_output_data(Engrave_Data *data, void *udata);
+static void _engrave_output_group(Engrave_Group *group, void *data);
 
 static int level = 0;
 
@@ -152,12 +155,10 @@ int
 engrave_edc_output(Engrave_File *engrave_file, char *path)
 {
   FILE *out = NULL;
-  Evas_List *l;
   
   if (!engrave_file) return 0;
 
   out = fopen(path, "w");
-
   if (!out)
   {
     printf("can't open %s for writing\n", path);
@@ -166,67 +167,35 @@ engrave_edc_output(Engrave_File *engrave_file, char *path)
 
   /* fonts */
   engrave_out_start(out, "fonts");
-  for (l = engrave_file->fonts; l; l = l->next)
-  {
-    Engrave_Font *font = l->data;
-    if (font)
-      engrave_out_data(out, "font", "\"%s\" \"%s\"", font->path, font->name);
-  }
+  engrave_file_font_foreach(engrave_file, _engrave_output_font, out);
   engrave_out_end(out);
 
   /* images */
   engrave_out_start(out, "images");
-  for (l = engrave_file->images; l; l = l->next)
-  {
-    Engrave_Image *image = l->data;
-    if (image)
-    {
-      if (image->type == ENGRAVE_IMAGE_TYPE_LOSSY)
-        engrave_out_data(out, "image", "\"%s\" %s %.2f", image->name,
-                _image_type_string[image->type],
-                image->value);
-      else
-        engrave_out_data(out, "image", "\"%s\" %s", image->name,
-                _image_type_string[image->type]);
-    }
-  }
+  engrave_file_image_foreach(engrave_file, _engrave_output_image, out);
   engrave_out_end(out);
 
   /* data */
   engrave_out_start(out, "data");
-  for (l = engrave_file->data; l; l = l->next)
-  {
-    Engrave_Data *data = l->data;
-    if (data)
-    {
-      if (data->value)
-        engrave_out_data(out, "item", "\"%s\" \"%s\"",
-                data->key, data->value);
-      else
-        engrave_out_data(out, "item", "\"%s\" %d",
-                data->key, data->int_value);
-    }
-  }
+  engrave_file_data_foreach(engrave_file, _engrave_output_data, out);
   engrave_out_end(out);
 
   /* collections */
   engrave_out_start(out, "collections");
-  for (l = engrave_file->groups; l; l = l->next)
-  {
-    Engrave_Group *group = l->data;
-    if (group) _engrave_output_group(group, out);
-  }
+  engrave_file_group_foreach(engrave_file, _engrave_output_group, out);
   engrave_out_end(out);
 
   fclose(out);
-
   return 1;
 }
 
 static void
-_engrave_output_group(Engrave_Group *group, FILE *out)
+_engrave_output_group(Engrave_Group *group, void *data)
 {
   Evas_List *l;
+  FILE *out;
+
+  out = data;
 
   engrave_out_start(out, "group");
 
@@ -551,6 +520,61 @@ _engrave_output_state(Engrave_Part *part, Engrave_Part_State *state, FILE *out)
   }
 
   engrave_out_end(out);
+}
+
+static void
+_engrave_output_image(Engrave_Image *image, void *data)
+{
+  char *name;
+  FILE *out;
+
+  out = data;
+  name = engrave_image_name_get(image);
+
+  if (engrave_image_type_get(image) == ENGRAVE_IMAGE_TYPE_LOSSY)
+    engrave_out_data(out, "image", "\"%s\" %s %.2f", name,
+              _image_type_string[engrave_image_type_get(image)],
+              engrave_image_value_get(image));
+  else
+    engrave_out_data(out, "image", "\"%s\" %s", name,
+              _image_type_string[engrave_image_type_get(image)]);
+
+  if (name) free(name);
+}
+
+static void
+_engrave_output_font(Engrave_Font *font, void *data)
+{
+  char *name, *path;
+  FILE *out;
+
+  out = data;
+  name = engrave_font_name_get(font);
+  path = engrave_font_path_get(font);
+
+  engrave_out_data(out, "font", "\"%s\" \"%s\"", path, name);
+  if (name) free(name);
+  if (path) free(path);
+}
+
+static void
+_engrave_output_data(Engrave_Data *data, void *udata)
+{
+  char *key, *value;
+  FILE *out;
+
+  out = udata;
+  key = engrave_data_key_get(data);
+  value = engrave_data_value_get(data);
+
+  if (value)
+    engrave_out_data(out, "item", "\"%s\" \"%s\"", key, value);
+  else
+    engrave_out_data(out, "item", "\"%s\" %d",
+                            key, engrave_data_int_value_get(data));
+
+  free(key);
+  free(value);
 }
 
 

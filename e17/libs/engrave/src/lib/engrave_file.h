@@ -36,8 +36,21 @@ void engrave_file_group_add(Engrave_File *ef, Engrave_Group *eg);
 
 Engrave_Group *engrave_file_group_last_get(Engrave_File *ef);
 
-Engrave_Image * engrave_file_image_by_name_find(Engrave_File *ef,
+Engrave_Image *engrave_file_image_by_name_find(Engrave_File *ef,
                                                       char *name);
+
+void engrave_file_image_foreach(Engrave_File *ef,
+                                    void (*func)(Engrave_Image *, void *),
+                                    void *data);
+void engrave_file_data_foreach(Engrave_File *ef,
+                                    void (*func)(Engrave_Data *, void *),
+                                    void *data);
+void engrave_file_group_foreach(Engrave_File *ef,
+                                    void (*func)(Engrave_Group *, void *),
+                                    void *data);
+void engrave_file_font_foreach(Engrave_File *ef,
+                                    void (*func)(Engrave_Font *, void *),
+                                    void *data);
 
 /**
  * @}

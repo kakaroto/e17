@@ -31,6 +31,12 @@ struct _Engrave_Image
 Engrave_Image *engrave_image_new(char *name, 
                     Engrave_Image_Type type, double value);
 Engrave_Image *engrave_image_dup(Engrave_Image *from);
+void engrave_image_free(Engrave_Image *ef);
+
+char *engrave_image_name_get(Engrave_Image *ei);
+char *engrave_image_path_get(Engrave_Image *ei);
+Engrave_Image_Type engrave_image_type_get(Engrave_Image *ei);
+double engrave_image_value_get(Engrave_Image *ei);
 
 /**
  * @}

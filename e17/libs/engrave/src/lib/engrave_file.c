@@ -104,3 +104,88 @@ engrave_file_image_by_name_find(Engrave_File *ef, char *name)
   return NULL;
 }
 
+/**
+ * engrave_file_image_foreach - call the given function for each image object
+ * @param ef: The Engrave_File for which the images should be iterated over
+ * @param func: The function to call for each image
+ * @param data: Any user data to pass to the given function.
+ *
+ * @return Returns no value.
+ */
+void
+engrave_file_image_foreach(Engrave_File *ef, 
+                      void (*func)(Engrave_Image *, void *data),
+                      void *data)
+{
+  Evas_List *l;
+
+  for (l = ef->images; l; l = l->next) {
+    Engrave_Image *image = l->data;
+    if (image) func(image, data);
+  }
+}
+
+/**
+ * engrave_file_data_foreach - call the given function for each data object
+ * @param ef: The Engrave_File for which the data should be iterated over
+ * @param func: The function to call for each piece of data
+ * @param data: Any user data to pass to the given function.
+ *
+ * @return Returns no value.
+ */
+void
+engrave_file_data_foreach(Engrave_File *ef, 
+                        void (*func)(Engrave_Data *, void *data),
+                        void *udata)
+{
+  Evas_List *l;
+
+  for (l = ef->data; l; l = l->next) {
+    Engrave_Data *data = l->data;
+    if (data) func(data, udata);
+  }
+}
+
+/**
+ * engrave_file_group_foreach - call the given function for each group object
+ * @param ef: The Engrave_File for which the groups should be iterated over
+ * @param func: The function to call for each group
+ * @param data: Any user data to pass to the given function.
+ *
+ * @return Returns no value.
+ */
+void
+engrave_file_group_foreach(Engrave_File *ef, 
+                          void (*func)(Engrave_Group *, void *data),
+                          void *data)
+{
+  Evas_List *l;
+
+  for (l = ef->groups; l; l = l->next) {
+    Engrave_Group *group = l->data;
+    if (group) func(group, data);
+  }
+}
+
+/**
+ * engrave_file_font_foreach - call the given function for each font object
+ * @param ef: The Engrave_File for which the fonts should be iterated over
+ * @param func: The function to call for each font
+ * @param data: Any user data to pass to the given function.
+ *
+ * @return Returns no value.
+ */
+void
+engrave_file_font_foreach(Engrave_File *ef, 
+                            void (*func)(Engrave_Font *, void *data), 
+                            void *data)
+{
+  Evas_List *l;
+
+  for (l = ef->fonts; l; l = l->next) {
+    Engrave_Font *font = l->data;
+    if (font) func(font, data);
+  }
+}
+
+
