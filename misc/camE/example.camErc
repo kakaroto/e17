@@ -44,6 +44,8 @@ logfile = /home/gilbertt/.camlog
 infofile = /home/gilbertt/.caminfo
 # directory to archive pics in. They are datestamped and saved in here.
 archive = /opt/images/webcam
+# extension (determines type) of archived images.
+archive_ext = jpg
 # jpeg quality (you can save as png etc too, but then quality does squat)
 quality = 80
 input  = 0

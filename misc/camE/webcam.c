@@ -73,6 +73,7 @@ int close_dev = 0;
 int ftp_timeout = 30;
 char *title_font = "arial/8";
 char *ttf_dir = "/usr/X11R6/lib/X11/fonts/TrueType";
+char *archive_ext = "jpg";
 char *grab_archive = NULL;
 char *grab_blockfile = NULL;
 char *upload_blockfile = NULL;
@@ -184,8 +185,6 @@ grab_one(int *width, int *height)
 
    while (j--)
    {
-      if (grab_fd == -1)
-         grab_init();
       if (ioctl(grab_fd, VIDIOCMCAPTURE, &grab_buf) == -1)
       {
          perror("ioctl VIDIOCMCAPTURE");
@@ -338,7 +337,7 @@ archive_jpeg(Imlib_Image im)
 
       do
       {
-         snprintf(buffer, sizeof(buffer), "%s/webcam_%s.jpg", grab_archive,
+         snprintf(buffer, sizeof(buffer), "%s/webcam_%s.%s", archive_ext, grab_archive,
                   date);
       }
       while (stat(buffer, &st) == 0);
@@ -628,14 +627,21 @@ main(int argc, char *argv[])
    int just_shot = 0;
    int new_delay;
 
-   /* fork and die */
-   if ((childpid = fork()) < 0)
+   if ((argc >= 2) && (!strcmp(argv[1], "-f")))
    {
-      fprintf(stderr, "fork (%s)\n", strerror(errno));
-      return (2);
+      /* don't fork */
    }
-   else if (childpid > 0)
-      exit(0);          /* parent */
+   else
+   {
+      /* fork and die */
+      if ((childpid = fork()) < 0)
+      {
+         fprintf(stderr, "fork (%s)\n", strerror(errno));
+         return (2);
+      }
+      else if (childpid > 0)
+         exit(0);       /* parent */
+   }
 
    /* read config */
    sprintf(filename, "%s/%s", getenv("HOME"), ".camErc");
@@ -688,6 +694,8 @@ main(int argc, char *argv[])
       grab_postprocess = val;
    if (NULL != (val = cfg_get_str("grab", "title_text")))
       title_text = val;
+   if (NULL != (val = cfg_get_str("grab", "archive_ext")))
+      archive_ext = val;
    if (NULL != (val = cfg_get_str("grab", "logfile")))
       logfile = val;
    if (NULL != (val = cfg_get_str("grab", "ttf_dir")))

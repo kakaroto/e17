@@ -27,7 +27,7 @@ camE: $(OBJS)
 
 install: all
 	$(INSTALL_DIR) $(bindir)
-	$(INSTALL_PROGRAM) -s camE $(bindir)
+	$(INSTALL_PROGRAM) camE $(bindir)
 
 clean:
 	-rm -f $(OBJS) *.moc *~ core* *.bak TAGS camE
