@@ -110,6 +110,8 @@ etox_selection_new(Etox *etox, Etox_Line *l1, Etox_Line *l2,
 void
 etox_selection_free(Etox_Selection *selected)
 {
+        if (!selected) return;
+
 	etox_context_free(selected->context);
 	active_selections = evas_list_remove(active_selections, selected);
 	FREE(selected);
@@ -121,22 +123,37 @@ void
 etox_selection_free_by_etox(Evas_Object *obj)
 {
 	Etox *etox;
-	Evas_List *l;
+	Evas_List *l, *r = NULL;
 	Etox_Selection *selected;
 
 	CHECK_PARAM_POINTER("obj", obj);
 
+        if (!obj) return;
+
 	etox = evas_object_smart_data_get(obj);
 
-	l = active_selections;
-	while (l) {
+        /*
+         * loop through all active selections. add the ones on etox
+         * to a second list, to be removed later.
+         */
+	for (l = active_selections; l; l = l->next) {
 		selected = l->data;
 		if (selected->etox == etox) {
-			active_selections = evas_list_remove(active_selections, selected);
-			etox_context_free(selected->context);
-			FREE(selected);
+                        r = evas_list_append(r, selected);
 		}
 	}
+
+
+        for (l = r; l; l = l->next)
+        {
+          selected = l->data;
+
+          active_selections = evas_list_remove(active_selections, selected);
+          etox_context_free(selected->context);
+          free(selected);
+        }
+
+        evas_list_free(r);
 }
 
 /**

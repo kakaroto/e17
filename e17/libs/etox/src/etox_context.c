@@ -140,6 +140,8 @@ void etox_context_free(Etox_Context * context)
 {
 	CHECK_PARAM_POINTER("context", context);
 
+        if (!context) return;
+
 	IF_FREE(context->font);
 	IF_FREE(context->style);
 	IF_FREE(context->marker.text);
