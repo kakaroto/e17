@@ -146,7 +146,7 @@ cb_set_str(Ewl_Widget * w, void *ev_data, void *user_data)
   char           *data;
 
   change = (examine_prop *) user_data;
-  data = ewl_text_text_get(EWL_TEXT(EWL_ENTRY(w)->text));
+  data = ewl_text_text_get(EWL_TEXT(w));
   free(change->value.ptr);
   change->value.ptr = strdup(data);
 }
@@ -257,8 +257,6 @@ draw_tree(examine_prop * prop_item)
       entries[1] = ewl_entry_new("");
       ewl_callback_append(EWL_ENTRY(entries[1])->text,
                           EWL_CALLBACK_VALUE_CHANGED, cb_set_str, prop_item);
-      ewl_callback_append(entries[1],
-                          EWL_CALLBACK_VALUE_CHANGED, cb_set_str, prop_item);
     } else if (prop_item->type == PT_INT) {
       entries[1] = ewl_spinner_new();
 
@@ -288,8 +286,6 @@ draw_tree(examine_prop * prop_item)
     } else if (prop_item->type == PT_RGB) {
       entries[1] = ewl_entry_new("");
       ewl_callback_append(EWL_ENTRY(entries[1])->text,
-                          EWL_CALLBACK_VALUE_CHANGED, cb_set_str, prop_item);
-      ewl_callback_append(entries[1],
                           EWL_CALLBACK_VALUE_CHANGED, cb_set_str, prop_item);
 				
     } else if (prop_item->type == PT_THM) {
