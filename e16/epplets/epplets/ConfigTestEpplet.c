@@ -22,7 +22,7 @@ main(int argc, char **argv)
 {
    char          s[1024];
    char         *result = NULL;
-   int           use_count; 
+   int           use_count = 1; 
 
    Epplet_Init("E-Config", "0.1", "Enlightenment Config Test Epplet",
 	       5, 2, argc, argv, 0);

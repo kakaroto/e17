@@ -5,9 +5,9 @@ AM_INIT_AUTOMAKE(Epplets, 0.3)
 
 dnl# Supply default CFLAGS, if not specified by `CFLAGS=flags ./configure'
 if test ! -z "${CFLAGS}" -o ! -z "${CCOPTS}"; then
-  CFLAGS_GIVEN=1
+  CFLAGS_GIVEN="${CFLAGS} ${CCOPTS}"
 else
-  CFLAGS_GIVEN=0
+  CFLAGS_GIVEN=""
 fi
 
 if test -z "${CFLAGS}"; then
@@ -35,13 +35,17 @@ AM_PROG_LIBTOOL
 AC_GCC_TRADITIONAL
 
 dnl # If using gcc, use -O2.  If -g works with it, use that too
-if test "$GCC" = "yes"; then
+if test -z "$CFLAGS_GIVEN"; then
+  if test "$GCC" = "yes"; then
     if test "$ac_cv_prog_cc_g" = "yes"; then
-        CCOPTS='-g -O2'
+      CCOPTS='-g -O2'
     else
-        CCOPTS='-O2'
+      CCOPTS='-O2'
     fi
     CFLAGS="$CCOPTS"
+  fi
+else
+  CFLAGS="$CFLAGS_GIVEN"
 fi
 
 AC_PROG_INSTALL

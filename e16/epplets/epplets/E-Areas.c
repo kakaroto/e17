@@ -25,7 +25,10 @@ Epplet_gadget b_close;
 static void close_cb(void *data);
 static void in_cb(void *data, Window w);
 static void out_cb(void *data, Window w);
+Epplet_gadget epp_create_std_button(int x, int y, char* std, void (*func) (void *data), void *data);
 
+#if 0
+/* Unused */
 static void epp_dialog_ok_f(char* fmt, ...)
 {
     va_list ap;
@@ -35,6 +38,7 @@ static void epp_dialog_ok_f(char* fmt, ...)
     va_end(ap);
     Epplet_dialog_ok(buf);
 }
+#endif
 
 static void
 close_cb(void *data)
@@ -56,15 +60,19 @@ static void arrow_cb(void* data)
 static void
 in_cb(void *data, Window w)
 {
-   data = NULL;
    Epplet_gadget_show(b_close);
+   return;
+   data = NULL;
+   w = (Window) 0;
 }
 
 static void
 out_cb(void *data, Window w)
 {
-   data = NULL;
    Epplet_gadget_hide(b_close);
+   return;
+   data = NULL;
+   w = (Window) 0;
 }
 
 Epplet_gadget epp_create_std_button(int x, int y, char* std, 

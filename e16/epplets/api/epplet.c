@@ -126,7 +126,6 @@ static void    Epplet_popup_arrange_contents(Epplet_gadget gadget);
 static void    Epplet_prune_events(XEvent *ev, int num);
 static void    Epplet_handle_child(int num);
 static void    Epplet_find_instance(char *name);
-static void    Epplet_config_add_data(char *key, char *value);
 
 void 
 Epplet_send_ipc(char *s)
@@ -148,7 +147,6 @@ Epplet_Init(char *name,
             int argc, char **argv, char vertical)
 {
    struct sigaction     sa;
-   XEvent               ev;
    char                 s[1024];
    XSetWindowAttributes attr;
    Atom                 a;
@@ -278,7 +276,6 @@ void
 Epplet_cleanup(void)
 {
    char s[1024];
-   int i;
 
    /* remove lock file */
    snprintf(s, 1024, "%s/.lock_%i", conf_dir, epplet_instance);
@@ -299,6 +296,8 @@ Epplet_cleanup(void)
    /* free config stuff */
    if (config_dict)
      {
+       int i;
+
        for (i = 0; i < config_dict->num_entries; i++)
 	 {
 	   if (config_dict->entries[i].key)
@@ -1124,9 +1123,6 @@ ECommsSend(char *s)
    int                 i, j, k, len;
    XEvent              ev;
    Atom                a = 0;
-   Window              rt;
-   int                 dint;
-   unsigned int        duint;
    
    if (!s)
       return;
@@ -3553,6 +3549,8 @@ Epplet_handle_child(int num)
 		(*child_func) (child_data, pid, code);
 	  }
      }
+   return;
+   num = 0;
 }
 
 void
@@ -3564,6 +3562,7 @@ Epplet_run_command(char *cmd)
 char *
 Epplet_read_run_command(char *cmd)
 {
+  return (cmd);
 }
 
 int

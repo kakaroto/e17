@@ -7,6 +7,7 @@ Epplet_gadget      *load     = NULL;
 
 static void cb_timer(void *data);
 static void cb_close(void *data);
+int count_cpus(void);
 
 static void
 cb_timer(void *data)

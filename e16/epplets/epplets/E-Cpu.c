@@ -68,8 +68,8 @@ static void flame_col(int r1, int g1, int b1, int r2, int g2, int b2, int r3, in
 static void 
 flame_col(int r1, int g1, int b1, int r2, int g2, int b2, int r3, int g3, int b3)
 {
-   int i, d, d1, d2, rr, gg, bb;
-   
+   int i;
+
    for (i = 0; i < 25; i++)
      {
 	rm[i] = (r1 * i) / 25;
@@ -261,19 +261,23 @@ cb_help(void *data)
 static void
 cb_in(void *data, Window w)
 {
-   data = NULL;
    Epplet_gadget_show(b_close);
    Epplet_gadget_show(b_config);
    Epplet_gadget_show(b_help);
+   return;
+   data = NULL;
+   w = (Window) 0;
 }
 
 static void
 cb_out(void *data, Window w)
 {
-   data = NULL;
    Epplet_gadget_hide(b_close);
    Epplet_gadget_hide(b_config);
    Epplet_gadget_hide(b_help);
+   return;
+   data = NULL;
+   w = (Window) 0;
 }
 
 static int

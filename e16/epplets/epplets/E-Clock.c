@@ -49,31 +49,39 @@ cb_close(void *data)
 static void
 cb_in(void *data, Window w)
 {
-   data = NULL;
    Epplet_gadget_show(b_close);
    Epplet_gadget_show(b_help);
+   return;
+   data = NULL;
+   w = (Window) 0;
 }
 
 static void
 cb_out(void *data, Window w)
 {
-   data = NULL;
    Epplet_gadget_hide(b_close);
    Epplet_gadget_hide(b_help);
+   return;
+   data = NULL;
+   w = (Window) 0;
 }
 
 static void
 cb_expose(void *data, Window win, int x, int y, int w, int h)
 {
-   data = NULL;
    draw_arms();
+   return;
+   data = NULL;
+   win = (Window) 0;
+   x = y = w = h = 0;
 }
 
 static void
 cb_help(void *data)
 {
-   data = NULL;
    Epplet_show_about("E-Clock");
+   return;
+   data = NULL;
 }
 
 static void

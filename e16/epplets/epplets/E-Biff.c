@@ -45,13 +45,13 @@ static void help_cb(void *data);
 static void in_cb(void *data, Window w);
 static void out_cb(void *data, Window w);
 static void process_conf(void);
+extern int mbox_folder_count(char *, int);
 
 static void
 mailcheck_cb(void *data)
 {
   char label_text[64];
 
-  data = NULL;
   D(("mailcheck_cb() called.\n"));
   if ((mbox_folder_count(folder_path, 0)) != 0) {
     if (new_cnt != 0) {
@@ -78,6 +78,8 @@ mailcheck_cb(void *data)
     Epplet_change_label(label, label_text);
   }
   Epplet_timer(mailcheck_cb, NULL, interval, "TIMER");
+  return;
+  data = NULL;
 }
 
 static void
@@ -85,40 +87,46 @@ close_cb(void *data)
 {
   Epplet_unremember();
   Esync();
-  data = NULL;
   exit(0);
+  data = NULL;
 }
 
 static void
 mailprog_cb(void *data)
 {
-  data = NULL;
   mp_pid = Epplet_spawn_command(mailprog);
+  return;
+  data = NULL;
 }
 
 static void
 help_cb(void *data)
 {
-  data = NULL;
   Epplet_show_about("E-Biff");
+  return;
+  data = NULL;
 }
 
 static void
 in_cb(void *data, Window w)
 {
-  data = NULL;
   Epplet_gadget_show(close_button);
   Epplet_gadget_show(mp_button);
   Epplet_gadget_show(help_button);
+  return;
+  data = NULL;
+  w = (Window) 0;
 }
 
 static void
 out_cb(void *data, Window w)
 {
-  data = NULL;
   Epplet_gadget_hide(close_button);
   Epplet_gadget_hide(mp_button);
   Epplet_gadget_hide(help_button);
+  return;
+  data = NULL;
+  w = (Window) 0;
 }
 
 static void
@@ -142,7 +150,7 @@ process_conf(void) {
     interval = (double) atof(s);
   } else {
     sprintf(s2, "%3.2f", interval);
-    Epplet_add_config_data("interval", interval);
+    Epplet_add_config_data("interval", s2);
   }
   s = Epplet_query_config_data("beep");
   if (s) {

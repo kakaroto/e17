@@ -8,6 +8,11 @@
 #include <sys/ioctl.h>
 #include <sys/soundcard.h>
 
+int open_mixer(void);
+int read_volume(int);
+void set_volume(void *);
+void initialize_channels(void);
+
 #define MIXER_DEV	"/dev/mixer"
 
 typedef struct _MIX_CHANNEL {

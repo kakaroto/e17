@@ -32,6 +32,7 @@
 #include <string.h>
 #include <time.h>
 #include <utime.h>
+#include <malloc.h>
 
 #define ISSPACE(c) isspace((unsigned char) c)
 #define SKIPWS(c) while (*(c) && isspace((unsigned char) *(c))) c++;
@@ -53,6 +54,19 @@
 #else
 #  define D(x) ((void) 0)
 #endif
+
+int ebiff_utimes(const char *file, struct timeval tvp[2]);
+void safe_free(void **p);
+char *safe_strdup(const char *s);
+void safe_realloc(void **p, size_t siz);
+void *safe_calloc(size_t nmemb, size_t size);
+char *read_rfc822_line(FILE *f, char *line, size_t *linelen);
+static const char *next_word(const char *s);
+int check_month(const char *s);
+static int is_day_name(const char *s);
+int is_from(const char *s, char *path, size_t pathlen);
+int parse_mime_header(FILE *fp);
+int mbox_folder_count(char *path, int force);
 
 const char *Weekdays[] =
 {"Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"};
@@ -383,7 +397,6 @@ mbox_folder_count(char *path, int force)
   FILE *fp;
   char buffer[BUFFSIZE];
   char garbage[BUFFSIZE];
-  int in_header = TRUE;
   struct stat s;
   struct timeval t[2];
 
@@ -398,7 +411,7 @@ mbox_folder_count(char *path, int force)
     file_mtime = 0;
     return 0;
   }
-  if (!force && (s.st_size == file_size) && (s.st_mtime == file_mtime)) {
+  if (!force && ((size_t) s.st_size == file_size) && (s.st_mtime == file_mtime)) {
     D((" -> Mailbox unchanged.\n"));
     return 0;
   }

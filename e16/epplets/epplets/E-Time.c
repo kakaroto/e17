@@ -43,15 +43,19 @@ close_cb(void *data)
 static void
 in_cb(void *data, Window w)
 {
-   data = NULL;
    Epplet_gadget_show(b_close);
+   return;
+   data = NULL;
+   w = (Window) 0;
 }
 
 static void
 out_cb(void *data, Window w)
 {
-   data = NULL;
    Epplet_gadget_hide(b_close);
+   return;
+   data = NULL;
+   w = (Window) 0;
 }
 
 int

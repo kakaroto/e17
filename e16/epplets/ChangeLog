@@ -40,3 +40,11 @@ Fri Oct 22 22:48:20 PDT 1999
 Multiple instance and config file support for E-Cpu, E-Net, and E-Biff. :-)
 
 -------------------------------------------------------------------------------
+
+Fri Oct 22 23:22:25 PDT 1999
+(KainX)
+
+Fixed configure.in so that user-specified $CFLAGS will be honored.  Also
+removed all the warnings from compiling.
+
+-------------------------------------------------------------------------------
