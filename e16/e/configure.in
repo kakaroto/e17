@@ -229,6 +229,7 @@ src/Makefile
 src/themes/Makefile
 src/themes/configs/Makefile
 src/themes/configs/pix/Makefile
+src/themes/configs/backup/Makefile
 dox/Makefile
 dox/E-docs/Makefile
 eesh/Makefile
