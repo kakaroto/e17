@@ -36,5 +36,6 @@ void geist_image_apply_image_mods(geist_object * obj);
 void geist_image_update_sizemode(geist_object * obj);
 void geist_image_update_positioning(geist_object *obj);
 char *geist_image_get_object_list_entry(geist_object * obj, int column);
+unsigned char geist_image_has_transparency(geist_object * obj);
 
 #endif

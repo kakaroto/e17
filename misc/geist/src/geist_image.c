@@ -47,6 +47,7 @@ geist_image_init(geist_image * img)
    obj->alignment = ALIGN_CENTER;
    obj->display_props = geist_image_display_props;
    obj->get_object_list_entry = geist_image_get_object_list_entry;
+   obj->has_transparency = geist_image_has_transparency;
    img->last.opacity = 0;
    img->opacity = FULL_OPACITY;
 
@@ -201,7 +202,8 @@ geist_image_load_file(geist_image * img, char *filename)
    D_RETURN(5, ret);
 }
 
-Imlib_Image geist_image_get_rendered_image(geist_object * obj)
+Imlib_Image
+geist_image_get_rendered_image(geist_object * obj)
 {
    D_ENTER(3);
 
@@ -301,7 +303,8 @@ img_load_cancel_cb(GtkWidget * widget, gpointer data)
 
 
 
-gboolean geist_image_select_file_cb(GtkWidget * widget, gpointer * data)
+gboolean
+geist_image_select_file_cb(GtkWidget * widget, gpointer * data)
 {
    cb_data *sel_cb_data = NULL;
    geist_object *obj = GEIST_OBJECT(data);
@@ -322,8 +325,7 @@ gboolean geist_image_select_file_cb(GtkWidget * widget, gpointer * data)
    return TRUE;
 }
 
-gboolean
-refresh_aa_cb(GtkWidget * widget, gpointer * data)
+gboolean refresh_aa_cb(GtkWidget * widget, gpointer * data)
 {
    geist_object *obj = NULL;
    geist_list *l = NULL;
@@ -594,4 +596,19 @@ geist_image_get_object_list_entry(geist_object * obj, int column)
    D_ENTER(3);
 
    D_RETURN(3, GEIST_IMAGE(obj)->filename);
+}
+
+unsigned char
+geist_image_has_transparency(geist_object * obj)
+{
+   geist_image *img;
+
+   D_ENTER(3);
+
+   img = GEIST_OBJECT(obj);
+
+   if (img->opacity != FULL_OPACITY)
+      D_RETURN(3, TRUE);
+
+   D_RETURN(3, geist_imlib_image_has_alpha(img->im));
 }

@@ -43,6 +43,7 @@ geist_object_init(geist_object * obj)
    obj->update_positioning = geist_object_int_update_positioning;
    obj->get_updates = geist_object_int_get_updates;
    obj->get_object_list_entry = geist_object_int_get_object_list_entry;
+   obj->has_transparency = geist_object_int_has_transparency;
    obj->name = estrdup("Untitled Object");
    obj->last.alias = FALSE;
    obj->alias = TRUE;
@@ -1056,4 +1057,18 @@ geist_object_int_update_position_relative(geist_object * obj, int x_offset,
    obj->x = obj->x + x_offset;
    obj->y = obj->y + y_offset;
    D_RETURN_(3);
+}
+
+unsigned char geist_object_has_transparency (geist_object *obj)
+{
+   D_ENTER(3);
+
+   D_RETURN(3, obj->has_transparency(obj));
+}
+
+unsigned char geist_object_int_has_transparency (geist_object *obj)
+{
+   D_ENTER(3);
+
+   D_RETURN(3, TRUE);
 }

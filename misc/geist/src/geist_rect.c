@@ -319,3 +319,22 @@ geist_rect_display_props(geist_object * obj)
    return (win);
 
 }
+
+unsigned char
+geist_rect_has_transparency(geist_object * obj)
+{
+   geist_rect *rect;
+
+   D_ENTER(3);
+
+   rect = GEIST_RECT(obj);
+
+   if(rect->a < 255)
+   {
+      D_RETURN(3, TRUE);
+   }
+   else
+   {
+      D_RETURN(3, FALSE);
+   }
+}
