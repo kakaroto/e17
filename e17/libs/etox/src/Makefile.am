@@ -19,5 +19,5 @@ etox_selection.c
 
 
 libetox_la_LIBADD       = @evas_libs@ @ewd_libs@
-libetox_la_DEPENDENCIES = $(top_builddir)/etox-config.h
+libetox_la_DEPENDENCIES = $(top_builddir)/config.h
 libetox_la_LDFLAGS      = -version-info 0:2:0

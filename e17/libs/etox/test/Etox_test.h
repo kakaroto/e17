@@ -13,7 +13,7 @@
 #include <Ecore_Evas.h>
 
 #include "src/Etox.h"
-#include "etox-config.h"
+#include "config.h"
 
 #define MAX_EVAS_COLORS (216)
 #define MAX_FONT_CACHE  (512 * 1024)

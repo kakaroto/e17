@@ -1,4 +1,4 @@
-#include <../etox-config.h>
+#include "../config.h"
 #include <Evas.h>
 #include <Ecore.h>
 #include <Ecore_Evas.h>

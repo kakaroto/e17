@@ -1,4 +1,4 @@
-#include "etox-config.h"
+#include "config.h"
 #include "Etox_private.h"
 
 static Evas_List *_etox_break_text(Etox * et, char *text);

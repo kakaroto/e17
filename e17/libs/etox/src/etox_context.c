@@ -1,4 +1,4 @@
-#include "../etox-config.h"
+#include "../config.h"
 #include "Etox_private.h"
 
 /**
