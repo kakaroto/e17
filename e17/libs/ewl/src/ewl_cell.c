@@ -17,6 +17,7 @@ Ewl_Widget *ewl_cell_new()
 	if (!cell)
 		DRETURN_PTR(NULL, DLEVEL_STABLE);
 
+	ZERO(cell, Ewl_Cell, 1);
 	if (!ewl_cell_init(EWL_CELL(cell))) {
 		FREE(cell);
 		DRETURN_PTR(NULL, DLEVEL_STABLE);

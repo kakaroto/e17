@@ -200,6 +200,7 @@ Ewl_Widget *ewl_tree_node_new()
 	if (!node)
 		DRETURN_PTR(NULL, DLEVEL_STABLE);
 
+	ZERO(node, Ewl_Tree_Node, 1);
 	if (!ewl_tree_node_init(EWL_TREE_NODE(node))) {
 		FREE(node);
 		DRETURN_PTR(NULL, DLEVEL_STABLE);
