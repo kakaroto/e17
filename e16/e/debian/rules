@@ -6,8 +6,7 @@ export DH_COMPAT=2
 configure_options = --enable-fsstd=yes --prefix=/usr --bindir=/usr/X11R6/bin
 programs = enlightenment enlightenment-nosound enlightenment-dox
 docs = enlightenment-docs
-themes = enlightenment-theme-ganymede enlightenment-theme-brushedmetal \
-         enlightenment-theme-shinymetal
+themes = enlightenment-theme-ganymede enlightenment-theme-brushedmetal enlightenment-theme-shinymetal
 
 pwd := $(shell pwd)
 install_dir = $(pwd)/debian/$@
@@ -29,7 +28,7 @@ build-stamp:
 	dh_testroot
 	./autogen.sh $(configure_options) || ./configure $(configure_options) 
 	mv econfig.h econfig.h.old
-	sed -e 's/^#define HAVE_LIBESD 1$$@//* \0 */@' econfig.h.old > econfig.h
+	sed 's@^#define HAVE_LIBESD 1$$@\/* \0 *\/@' econfig.h.old > econfig.h
 	cp src/themes/configs/menus.cfg menus.cfg.old
 	$(MAKE)
 	touch $@
