@@ -128,6 +128,26 @@ SettingsPager(void)
    table = DialogInitItem(d);
    DialogItemTableSetOptions(table, 2, 0, 0, 0);
 
+   if (mode.dialog_headers)
+     {
+	di = DialogAddItem(table, DITEM_IMAGE);
+	DialogItemSetPadding(di, 2, 2, 2, 2);
+	DialogItemImageSetFile(di, "pix/pager.png");
+
+	di = DialogAddItem(table, DITEM_TEXT);
+	DialogItemSetPadding(di, 2, 2, 2, 2);
+	DialogItemSetFill(di, 1, 0);
+	DialogItemTextSetText(di,
+			      _("Enlightenment Desktop & Area\n"
+				"Pager Settings Dialog\n"));
+
+	di = DialogAddItem(table, DITEM_SEPARATOR);
+	DialogItemSetColSpan(di, 2);
+	DialogItemSetPadding(di, 2, 2, 2, 2);
+	DialogItemSetFill(di, 1, 0);
+	DialogItemSeparatorSetOrientation(di, 0);
+     }
+
    di = DialogAddItem(table, DITEM_CHECKBUTTON);
    DialogItemSetPadding(di, 2, 2, 2, 2);
    DialogItemSetFill(di, 1, 0);
@@ -150,8 +170,7 @@ SettingsPager(void)
    DialogItemSetFill(di, 1, 0);
    DialogItemSetColSpan(di, 2);
    DialogItemCheckButtonSetText(di,
-				_
-				("Smooth high quality snapshots in snapshot mode"));
+			 _("Smooth high quality snapshots in snapshot mode"));
    DialogItemCheckButtonSetState(di, tmp_pager_hiq);
    DialogItemCheckButtonSetPtr(di, &tmp_pager_hiq);
 
@@ -160,8 +179,7 @@ SettingsPager(void)
    DialogItemSetFill(di, 1, 0);
    DialogItemSetColSpan(di, 2);
    DialogItemCheckButtonSetText(di,
-				_
-				("Zoom in on pager windows when mouse is over them"));
+		       _("Zoom in on pager windows when mouse is over them"));
    DialogItemCheckButtonSetState(di, tmp_pager_zoom);
    DialogItemCheckButtonSetPtr(di, &tmp_pager_zoom);
 
@@ -170,8 +188,7 @@ SettingsPager(void)
    DialogItemSetFill(di, 1, 0);
    DialogItemSetColSpan(di, 2);
    DialogItemCheckButtonSetText(di,
-				_
-				("Pop up window title when mouse is over the window"));
+		      _("Pop up window title when mouse is over the window"));
    DialogItemCheckButtonSetState(di, tmp_pager_title);
    DialogItemCheckButtonSetPtr(di, &tmp_pager_title);
 
@@ -394,22 +411,27 @@ SettingsFocus(void)
 
    table = DialogInitItem(d);
    DialogItemTableSetOptions(table, 2, 0, 0, 0);
-#ifdef WITH_SETTINGS_PICS
-   di = DialogAddItem(table, DITEM_IMAGE);
-   DialogItemSetPadding(di, 2, 2, 2, 2);
-   DialogItemImageSetFile(di, "pix/focus.png");
 
-   di = DialogAddItem(table, DITEM_TEXT);
-   DialogItemSetPadding(di, 2, 2, 2, 2);
-   DialogItemSetFill(di, 1, 0);
-   DialogItemTextSetText(di, "Enlightenment Focus\n" "Settings Dialog\n");
+   if (mode.dialog_headers)
+     {
+	di = DialogAddItem(table, DITEM_IMAGE);
+	DialogItemSetPadding(di, 2, 2, 2, 2);
+	DialogItemImageSetFile(di, "pix/focus.png");
 
-   di = DialogAddItem(table, DITEM_SEPARATOR);
-   DialogItemSetColSpan(di, 2);
-   DialogItemSetPadding(di, 2, 2, 2, 2);
-   DialogItemSetFill(di, 1, 0);
-   DialogItemSeparatorSetOrientation(di, 0);
-#endif
+	di = DialogAddItem(table, DITEM_TEXT);
+	DialogItemSetPadding(di, 2, 2, 2, 2);
+	DialogItemSetFill(di, 1, 0);
+	DialogItemTextSetText(di,
+			      _("Enlightenment Focus\n"
+				"Settings Dialog\n"));
+
+	di = DialogAddItem(table, DITEM_SEPARATOR);
+	DialogItemSetColSpan(di, 2);
+	DialogItemSetPadding(di, 2, 2, 2, 2);
+	DialogItemSetFill(di, 1, 0);
+	DialogItemSeparatorSetOrientation(di, 0);
+     }
+
    radio = di = DialogAddItem(table, DITEM_RADIOBUTTON);
    DialogItemSetPadding(di, 2, 2, 2, 2);
    DialogItemSetFill(di, 1, 0);
@@ -467,7 +489,8 @@ SettingsFocus(void)
    DialogItemSetPadding(di, 2, 2, 2, 2);
    DialogItemSetFill(di, 1, 0);
    DialogItemSetColSpan(di, 2);
-   DialogItemCheckButtonSetText(di, _("Only new dialog windows get the focus"));
+   DialogItemCheckButtonSetText(di,
+				_("Only new dialog windows get the focus"));
    DialogItemCheckButtonSetState(di, tmp_popup_focus);
    DialogItemCheckButtonSetPtr(di, &tmp_popup_focus);
 
@@ -476,8 +499,7 @@ SettingsFocus(void)
    DialogItemSetFill(di, 1, 0);
    DialogItemSetColSpan(di, 2);
    DialogItemCheckButtonSetText(di,
-				_
-				("Only new dialogs whose owner is focused get the focus"));
+		  _("Only new dialogs whose owner is focused get the focus"));
    DialogItemCheckButtonSetState(di, tmp_owner_popup_focus);
    DialogItemCheckButtonSetPtr(di, &tmp_owner_popup_focus);
 
@@ -494,8 +516,7 @@ SettingsFocus(void)
    DialogItemSetFill(di, 1, 0);
    DialogItemSetColSpan(di, 2);
    DialogItemCheckButtonSetText(di,
-				_
-				("Send mouse pointer to window on focus switch"));
+			   _("Send mouse pointer to window on focus switch"));
    DialogItemCheckButtonSetState(di, tmp_warp_focus);
    DialogItemCheckButtonSetPtr(di, &tmp_warp_focus);
 
@@ -560,8 +581,7 @@ SettingsFocus(void)
    DialogItemSetFill(di, 1, 0);
    DialogItemSetColSpan(di, 2);
    DialogItemCheckButtonSetText(di,
-				_
-				("Send mouse pointer to window after focus switch"));
+			_("Send mouse pointer to window after focus switch"));
    DialogItemCheckButtonSetState(di, tmp_warp_after_focus);
    DialogItemCheckButtonSetPtr(di, &tmp_warp_after_focus);
 #endif /* WITH_TARTY_WARP */
@@ -620,24 +640,27 @@ SettingsMoveResize(void)
 
    table = DialogInitItem(d);
    DialogItemTableSetOptions(table, 2, 0, 0, 0);
-#ifdef WITH_SETTINGS_PICS
-   di = DialogAddItem(table, DITEM_IMAGE);
-   DialogItemSetPadding(di, 2, 2, 2, 2);
-   DialogItemImageSetFile(di, "pix/moveres.png");
 
-   di = DialogAddItem(table, DITEM_TEXT);
-   DialogItemSetPadding(di, 2, 2, 2, 2);
-   DialogItemSetFill(di, 1, 0);
-   DialogItemTextSetText(di,
-			 "Enlightenment Move & Resize\n"
-			 "Method Settings Dialog\n");
+   if (mode.dialog_headers)
+     {
+	di = DialogAddItem(table, DITEM_IMAGE);
+	DialogItemSetPadding(di, 2, 2, 2, 2);
+	DialogItemImageSetFile(di, "pix/moveres.png");
 
-   di = DialogAddItem(table, DITEM_SEPARATOR);
-   DialogItemSetColSpan(di, 2);
-   DialogItemSetPadding(di, 2, 2, 2, 2);
-   DialogItemSetFill(di, 1, 0);
-   DialogItemSeparatorSetOrientation(di, 0);
-#endif
+	di = DialogAddItem(table, DITEM_TEXT);
+	DialogItemSetPadding(di, 2, 2, 2, 2);
+	DialogItemSetFill(di, 1, 0);
+	DialogItemTextSetText(di,
+			      _("Enlightenment Move & Resize\n"
+				"Method Settings Dialog\n"));
+
+	di = DialogAddItem(table, DITEM_SEPARATOR);
+	DialogItemSetColSpan(di, 2);
+	DialogItemSetPadding(di, 2, 2, 2, 2);
+	DialogItemSetFill(di, 1, 0);
+	DialogItemSeparatorSetOrientation(di, 0);
+     }
+
    di = DialogAddItem(table, DITEM_TEXT);
    DialogItemSetPadding(di, 2, 2, 2, 2);
    DialogItemSetFill(di, 0, 0);
@@ -857,24 +880,27 @@ SettingsDesktops(void)
 
    table = DialogInitItem(d);
    DialogItemTableSetOptions(table, 2, 0, 0, 0);
-#ifdef WITH_SETTINGS_PICS
-   di = DialogAddItem(table, DITEM_IMAGE);
-   DialogItemSetPadding(di, 2, 2, 2, 2);
-   DialogItemImageSetFile(di, "pix/desktops.png");
 
-   di = DialogAddItem(table, DITEM_TEXT);
-   DialogItemSetPadding(di, 2, 2, 2, 2);
-   DialogItemSetFill(di, 1, 0);
-   DialogItemTextSetText(di,
-			 "Enlightenment Multiple Desktop\n"
-			 "Settings Dialog\n");
+   if (mode.dialog_headers)
+     {
+	di = DialogAddItem(table, DITEM_IMAGE);
+	DialogItemSetPadding(di, 2, 2, 2, 2);
+	DialogItemImageSetFile(di, "pix/desktops.png");
 
-   di = DialogAddItem(table, DITEM_SEPARATOR);
-   DialogItemSetColSpan(di, 2);
-   DialogItemSetPadding(di, 2, 2, 2, 2);
-   DialogItemSetFill(di, 1, 0);
-   DialogItemSeparatorSetOrientation(di, 0);
-#endif
+	di = DialogAddItem(table, DITEM_TEXT);
+	DialogItemSetPadding(di, 2, 2, 2, 2);
+	DialogItemSetFill(di, 1, 0);
+	DialogItemTextSetText(di,
+			      _("Enlightenment Multiple Desktop\n"
+				"Settings Dialog\n"));
+
+	di = DialogAddItem(table, DITEM_SEPARATOR);
+	DialogItemSetColSpan(di, 2);
+	DialogItemSetPadding(di, 2, 2, 2, 2);
+	DialogItemSetFill(di, 1, 0);
+	DialogItemSeparatorSetOrientation(di, 0);
+     }
+
    di = DialogAddItem(table, DITEM_TEXT);
    DialogItemSetPadding(di, 2, 2, 2, 2);
    DialogItemSetFill(di, 1, 0);
@@ -1041,25 +1067,29 @@ SettingsArea(void)
 
    table = DialogInitItem(d);
    DialogItemTableSetOptions(table, 1, 0, 0, 0);
-#ifdef WITH_SETTINGS_PICS
-   di = DialogAddItem(table, DITEM_NONE);
-   di = DialogAddItem(table, DITEM_IMAGE);
-   DialogItemSetPadding(di, 2, 2, 2, 2);
-   DialogItemImageSetFile(di, "pix/areas.png");
 
-   di = DialogAddItem(table, DITEM_TEXT);
-   DialogItemSetPadding(di, 2, 2, 2, 2);
-   DialogItemSetFill(di, 1, 0);
-   DialogItemTextSetText(di,
-			 "Enlightenment Virtual Desktop\n"
-			 "Size Settings Dialog\n");
+   if (mode.dialog_headers)
+     {
+	table2 = DialogAddItem(table, DITEM_TABLE);
+	DialogItemTableSetOptions(table2, 2, 0, 0, 0);
 
-   di = DialogAddItem(table, DITEM_SEPARATOR);
-   DialogItemSetColSpan(di, 3);
-   DialogItemSetPadding(di, 2, 2, 2, 2);
-   DialogItemSetFill(di, 1, 0);
-   DialogItemSeparatorSetOrientation(di, 0);
-#endif
+	di = DialogAddItem(table2, DITEM_IMAGE);
+	DialogItemSetPadding(di, 2, 2, 2, 2);
+	DialogItemImageSetFile(di, "pix/areas.png");
+
+	di = DialogAddItem(table2, DITEM_TEXT);
+	DialogItemSetPadding(di, 2, 2, 2, 2);
+	DialogItemSetFill(di, 1, 0);
+	DialogItemTextSetText(di,
+			      _("Enlightenment Virtual Desktop\n"
+				"Settings Dialog\n"));
+
+	di = DialogAddItem(table, DITEM_SEPARATOR);
+	DialogItemSetPadding(di, 2, 2, 2, 2);
+	DialogItemSetFill(di, 1, 0);
+	DialogItemSeparatorSetOrientation(di, 0);
+     }
+
    di = DialogAddItem(table, DITEM_TEXT);
    DialogItemSetPadding(di, 2, 2, 2, 2);
    DialogItemSetFill(di, 1, 0);
@@ -1200,31 +1230,33 @@ SettingsPlacement(void)
 
    table = DialogInitItem(d);
    DialogItemTableSetOptions(table, 2, 0, 0, 0);
-#ifdef WITH_SETTINGS_PICS
-   di = DialogAddItem(table, DITEM_IMAGE);
-   DialogItemSetPadding(di, 2, 2, 2, 2);
-   DialogItemImageSetFile(di, "pix/place.png");
 
-   di = DialogAddItem(table, DITEM_TEXT);
-   DialogItemSetPadding(di, 2, 2, 2, 2);
-   DialogItemSetFill(di, 1, 0);
-   DialogItemTextSetText(di,
-			 "Enlightenment Window Placement\n"
-			 "Settings Dialog\n");
+   if (mode.dialog_headers)
+     {
+	di = DialogAddItem(table, DITEM_IMAGE);
+	DialogItemSetPadding(di, 2, 2, 2, 2);
+	DialogItemImageSetFile(di, "pix/place.png");
 
-   di = DialogAddItem(table, DITEM_SEPARATOR);
-   DialogItemSetColSpan(di, 2);
-   DialogItemSetPadding(di, 2, 2, 2, 2);
-   DialogItemSetFill(di, 1, 0);
-   DialogItemSeparatorSetOrientation(di, 0);
-#endif
+	di = DialogAddItem(table, DITEM_TEXT);
+	DialogItemSetPadding(di, 2, 2, 2, 2);
+	DialogItemSetFill(di, 1, 0);
+	DialogItemTextSetText(di,
+			      _("Enlightenment Window Placement\n"
+				"Settings Dialog\n"));
+
+	di = DialogAddItem(table, DITEM_SEPARATOR);
+	DialogItemSetColSpan(di, 2);
+	DialogItemSetPadding(di, 2, 2, 2, 2);
+	DialogItemSetFill(di, 1, 0);
+	DialogItemSeparatorSetOrientation(di, 0);
+     }
+
    di = DialogAddItem(table, DITEM_CHECKBUTTON);
    DialogItemSetPadding(di, 2, 2, 2, 2);
    DialogItemSetFill(di, 1, 0);
    DialogItemSetColSpan(di, 2);
    DialogItemCheckButtonSetText(di,
-				_
-				("Dialog windows appear together with their owner"));
+			_("Dialog windows appear together with their owner"));
    DialogItemCheckButtonSetState(di, tmp_with_leader);
    DialogItemCheckButtonSetPtr(di, &tmp_with_leader);
 
@@ -1304,24 +1336,27 @@ SettingsAutoRaise(void)
 
    table = DialogInitItem(d);
    DialogItemTableSetOptions(table, 2, 0, 0, 0);
-#ifdef WITH_SETTINGS_PICS
-   di = DialogAddItem(table, DITEM_IMAGE);
-   DialogItemSetPadding(di, 2, 2, 2, 2);
-   DialogItemImageSetFile(di, "pix/raise.png");
 
-   di = DialogAddItem(table, DITEM_TEXT);
-   DialogItemSetPadding(di, 2, 2, 2, 2);
-   DialogItemSetFill(di, 1, 0);
-   DialogItemTextSetText(di,
-			 "Enlightenment Automatic Raising\n"
-			 "of Windows Settings Dialog\n");
+   if (mode.dialog_headers)
+     {
+	di = DialogAddItem(table, DITEM_IMAGE);
+	DialogItemSetPadding(di, 2, 2, 2, 2);
+	DialogItemImageSetFile(di, "pix/raise.png");
 
-   di = DialogAddItem(table, DITEM_SEPARATOR);
-   DialogItemSetColSpan(di, 2);
-   DialogItemSetPadding(di, 2, 2, 2, 2);
-   DialogItemSetFill(di, 1, 0);
-   DialogItemSeparatorSetOrientation(di, 0);
-#endif
+	di = DialogAddItem(table, DITEM_TEXT);
+	DialogItemSetPadding(di, 2, 2, 2, 2);
+	DialogItemSetFill(di, 1, 0);
+	DialogItemTextSetText(di,
+			      _("Enlightenment Automatic Raising\n"
+				"of Windows Settings Dialog\n"));
+
+	di = DialogAddItem(table, DITEM_SEPARATOR);
+	DialogItemSetColSpan(di, 2);
+	DialogItemSetPadding(di, 2, 2, 2, 2);
+	DialogItemSetFill(di, 1, 0);
+	DialogItemSeparatorSetOrientation(di, 0);
+     }
+
    di = DialogAddItem(table, DITEM_CHECKBUTTON);
    DialogItemSetPadding(di, 2, 2, 2, 2);
    DialogItemSetFill(di, 1, 0);
@@ -1402,22 +1437,27 @@ SettingsTooltips(void)
 
    table = DialogInitItem(d);
    DialogItemTableSetOptions(table, 2, 0, 0, 0);
-#ifdef WITH_SETTINGS_PICS
-   di = DialogAddItem(table, DITEM_IMAGE);
-   DialogItemSetPadding(di, 2, 2, 2, 2);
-   DialogItemImageSetFile(di, "pix/tips.png");
 
-   di = DialogAddItem(table, DITEM_TEXT);
-   DialogItemSetPadding(di, 2, 2, 2, 2);
-   DialogItemSetFill(di, 1, 0);
-   DialogItemTextSetText(di, "Enlightenment Tooltip\n" "Settings Dialog\n");
+   if (mode.dialog_headers)
+     {
+	di = DialogAddItem(table, DITEM_IMAGE);
+	DialogItemSetPadding(di, 2, 2, 2, 2);
+	DialogItemImageSetFile(di, "pix/tips.png");
 
-   di = DialogAddItem(table, DITEM_SEPARATOR);
-   DialogItemSetColSpan(di, 2);
-   DialogItemSetPadding(di, 2, 2, 2, 2);
-   DialogItemSetFill(di, 1, 0);
-   DialogItemSeparatorSetOrientation(di, 0);
-#endif
+	di = DialogAddItem(table, DITEM_TEXT);
+	DialogItemSetPadding(di, 2, 2, 2, 2);
+	DialogItemSetFill(di, 1, 0);
+	DialogItemTextSetText(di,
+			      _("Enlightenment Tooltip\n"
+				"Settings Dialog\n"));
+
+	di = DialogAddItem(table, DITEM_SEPARATOR);
+	DialogItemSetColSpan(di, 2);
+	DialogItemSetPadding(di, 2, 2, 2, 2);
+	DialogItemSetFill(di, 1, 0);
+	DialogItemSeparatorSetOrientation(di, 0);
+     }
+
    di = DialogAddItem(table, DITEM_CHECKBUTTON);
    DialogItemSetPadding(di, 2, 2, 2, 2);
    DialogItemSetFill(di, 1, 0);
@@ -1506,6 +1546,26 @@ SettingsKDE(void)
    table = DialogInitItem(d);
    DialogItemTableSetOptions(table, 2, 0, 0, 0);
 
+   if (mode.dialog_headers)
+     {
+	di = DialogAddItem(table, DITEM_IMAGE);
+	DialogItemSetPadding(di, 2, 2, 2, 2);
+	DialogItemImageSetFile(di, "pix/kde.png");
+
+	di = DialogAddItem(table, DITEM_TEXT);
+	DialogItemSetPadding(di, 2, 2, 2, 2);
+	DialogItemSetFill(di, 1, 0);
+	DialogItemTextSetText(di,
+			      _("Enlightenment KDE\n"
+				"Settings Dialog\n"));
+
+	di = DialogAddItem(table, DITEM_SEPARATOR);
+	DialogItemSetColSpan(di, 2);
+	DialogItemSetPadding(di, 2, 2, 2, 2);
+	DialogItemSetFill(di, 1, 0);
+	DialogItemSeparatorSetOrientation(di, 0);
+     }
+
    di = DialogAddItem(table, DITEM_CHECKBUTTON);
    DialogItemSetPadding(di, 2, 2, 2, 2);
    DialogItemSetFill(di, 1, 0);
@@ -1526,6 +1586,85 @@ SettingsKDE(void)
    DialogSetExitFunction(d, CB_ConfigureKDE, 2, d);
    DialogBindKey(d, "Escape", CB_SettingsEscape, 0, d);
    DialogBindKey(d, "Return", CB_ConfigureKDE, 0, d);
+   ShowDialog(d);
+}
+
+static char         tmp_dialog_headers;
+static void         CB_ConfigureMiscellaneous(int val, void *data);
+static void
+CB_ConfigureMiscellaneous(int val, void *data)
+{
+   if (val < 2)
+     {
+	mode.dialog_headers = tmp_dialog_headers;
+     }
+   autosave();
+   data = NULL;
+}
+
+void
+SettingsMiscellaneous(void)
+{
+   Dialog             *d;
+   DItem              *table, *di;
+
+   if ((d = FindItem("CONFIGURE_MISCELLANEOUS", 0, LIST_FINDBY_NAME,
+		     LIST_TYPE_DIALOG)))
+     {
+	AUDIO_PLAY("SOUND_SETTINGS_ACTIVE");
+	ShowDialog(d);
+	return;
+     }
+   AUDIO_PLAY("SOUND_SETTINGS_MISCELLANEOUS");
+
+   tmp_dialog_headers = mode.dialog_headers;
+
+   d = CreateDialog("CONFIGURE_MISCELLANEOUS");
+   DialogSetTitle(d, _("Miscellaneous Settings"));
+
+   table = DialogInitItem(d);
+   DialogItemTableSetOptions(table, 2, 0, 0, 0);
+
+   if (mode.dialog_headers)
+     {
+	di = DialogAddItem(table, DITEM_IMAGE);
+	DialogItemSetPadding(di, 2, 2, 2, 2);
+	DialogItemImageSetFile(di, "pix/miscellaneous.png");
+
+	di = DialogAddItem(table, DITEM_TEXT);
+	DialogItemSetPadding(di, 2, 2, 2, 2);
+	DialogItemSetFill(di, 1, 0);
+	DialogItemTextSetText(di,
+			      _("Enlightenment Miscellaneous\n"
+				"Settings Dialog\n"));
+
+	di = DialogAddItem(table, DITEM_SEPARATOR);
+	DialogItemSetColSpan(di, 2);
+	DialogItemSetPadding(di, 2, 2, 2, 2);
+	DialogItemSetFill(di, 1, 0);
+	DialogItemSeparatorSetOrientation(di, 0);
+     }
+
+   di = DialogAddItem(table, DITEM_CHECKBUTTON);
+   DialogItemSetPadding(di, 2, 2, 2, 2);
+   DialogItemSetFill(di, 1, 0);
+   DialogItemSetColSpan(di, 2);
+   DialogItemCheckButtonSetText(di, _("Enable Dialog Headers"));
+   DialogItemCheckButtonSetState(di, tmp_dialog_headers);
+   DialogItemCheckButtonSetPtr(di, &tmp_dialog_headers);
+
+   di = DialogAddItem(table, DITEM_SEPARATOR);
+   DialogItemSetColSpan(di, 2);
+   DialogItemSetPadding(di, 2, 2, 2, 2);
+   DialogItemSetFill(di, 1, 0);
+   DialogItemSeparatorSetOrientation(di, 0);
+
+   DialogAddButton(d, _("OK"), CB_ConfigureMiscellaneous, 1);
+   DialogAddButton(d, _("Apply"), CB_ConfigureMiscellaneous, 0);
+   DialogAddButton(d, _("Close"), CB_ConfigureMiscellaneous, 1);
+   DialogSetExitFunction(d, CB_ConfigureMiscellaneous, 2, d);
+   DialogBindKey(d, "Escape", CB_SettingsEscape, 0, d);
+   DialogBindKey(d, "Return", CB_ConfigureMiscellaneous, 0, d);
    ShowDialog(d);
 }
 
@@ -1568,22 +1707,27 @@ SettingsAudio(void)
 
    table = DialogInitItem(d);
    DialogItemTableSetOptions(table, 2, 0, 0, 0);
-#ifdef WITH_SETTINGS_PICS
-   di = DialogAddItem(table, DITEM_IMAGE);
-   DialogItemSetPadding(di, 2, 2, 2, 2);
-   DialogItemImageSetFile(di, "pix/sound.png");
 
-   di = DialogAddItem(table, DITEM_TEXT);
-   DialogItemSetPadding(di, 2, 2, 2, 2);
-   DialogItemSetFill(di, 1, 0);
-   DialogItemTextSetText(di, "Enlightenment Audio\n" "Settings Dialog\n");
+   if (mode.dialog_headers)
+     {
+	di = DialogAddItem(table, DITEM_IMAGE);
+	DialogItemSetPadding(di, 2, 2, 2, 2);
+	DialogItemImageSetFile(di, "pix/sound.png");
 
-   di = DialogAddItem(table, DITEM_SEPARATOR);
-   DialogItemSetColSpan(di, 2);
-   DialogItemSetPadding(di, 2, 2, 2, 2);
-   DialogItemSetFill(di, 1, 0);
-   DialogItemSeparatorSetOrientation(di, 0);
-#endif
+	di = DialogAddItem(table, DITEM_TEXT);
+	DialogItemSetPadding(di, 2, 2, 2, 2);
+	DialogItemSetFill(di, 1, 0);
+	DialogItemTextSetText(di,
+			      _("Enlightenment Audio\n"
+				"Settings Dialog\n"));
+
+	di = DialogAddItem(table, DITEM_SEPARATOR);
+	DialogItemSetColSpan(di, 2);
+	DialogItemSetPadding(di, 2, 2, 2, 2);
+	DialogItemSetFill(di, 1, 0);
+	DialogItemSeparatorSetOrientation(di, 0);
+     }
+
 #ifdef HAVE_LIBESD
    di = DialogAddItem(table, DITEM_CHECKBUTTON);
    DialogItemSetPadding(di, 2, 2, 2, 2);
@@ -1712,27 +1856,31 @@ SettingsSpecialFX(void)
 
    table = DialogInitItem(d);
    DialogItemTableSetOptions(table, 4, 0, 0, 0);
-#ifdef WITH_SETTINGS_PICS
-   di = DialogAddItem(table, DITEM_IMAGE);
-   DialogItemSetPadding(di, 2, 2, 2, 2);
-   DialogItemImageSetFile(di, "pix/fx.png");
 
-   di = DialogAddItem(table, DITEM_TEXT);
-   DialogItemSetPadding(di, 2, 2, 2, 2);
-   DialogItemSetFill(di, 1, 0);
-   DialogItemTextSetText(di,
-			 "Enlightenment Special Effects\n" "Settings Dialog\n");
+   if (mode.dialog_headers)
+     {
+	di = DialogAddItem(table, DITEM_IMAGE);
+	DialogItemSetPadding(di, 2, 2, 2, 2);
+	DialogItemImageSetFile(di, "pix/fx.png");
 
-   di = DialogAddItem(table, DITEM_NONE);
+	di = DialogAddItem(table, DITEM_TEXT);
+	DialogItemSetPadding(di, 2, 2, 2, 2);
+	DialogItemSetFill(di, 1, 0);
+	DialogItemTextSetText(di,
+			      _("Enlightenment Special Effects\n"
+				"Settings Dialog\n"));
 
-   di = DialogAddItem(table, DITEM_NONE);
+	di = DialogAddItem(table, DITEM_NONE);
 
-   di = DialogAddItem(table, DITEM_SEPARATOR);
-   DialogItemSetColSpan(di, 4);
-   DialogItemSetPadding(di, 2, 2, 2, 2);
-   DialogItemSetFill(di, 1, 0);
-   DialogItemSeparatorSetOrientation(di, 0);
-#endif
+	di = DialogAddItem(table, DITEM_NONE);
+
+	di = DialogAddItem(table, DITEM_SEPARATOR);
+	DialogItemSetColSpan(di, 4);
+	DialogItemSetPadding(di, 2, 2, 2, 2);
+	DialogItemSetFill(di, 1, 0);
+	DialogItemSeparatorSetOrientation(di, 0);
+     }
+
    di = DialogAddItem(table, DITEM_NONE);
 
    di = DialogAddItem(table, DITEM_NONE);
@@ -2270,8 +2418,7 @@ CB_ConfigureRemBG(int val, void *data)
 		     else
 			stmp = duplicate(_("-NONE-"));
 		     Esnprintf(s, sizeof(s),
-			       _
-			       ("Background definition information:\nName: %s\nFile: %s\n"),
+			       _("Background definition information:\nName: %s\nFile: %s\n"),
 			       tmp_bg->name, stmp);
 		     Efree(stmp);
 		     DialogItemTextSetText(bg_filename, s);
@@ -2392,8 +2539,7 @@ CB_ConfigureDelBG(int val, void *data)
 		     else
 			stmp = duplicate(_("-NONE-"));
 		     Esnprintf(s, sizeof(s),
-			       _
-			       ("Background definition information:\nName: %s\nFile: %s\n"),
+			       _("Background definition information:\nName: %s\nFile: %s\n"),
 			       tmp_bg->name, stmp);
 		     Efree(stmp);
 		     DialogItemTextSetText(bg_filename, s);
@@ -2648,8 +2794,7 @@ CB_BGAreaEvent(int val, void *data)
 		else
 		   stmp = duplicate(_("-NONE-"));
 		Esnprintf(s, sizeof(s),
-			  _
-			  ("Background definition information:\nName: %s\nFile: %s\n"),
+		_("Background definition information:\nName: %s\nFile: %s\n"),
 			  tmp_bg->name, stmp);
 		Efree(stmp);
 		DialogItemTextSetText(bg_filename, s);
@@ -2771,8 +2916,7 @@ BGSettingsGoTo(Background * bg)
 		     else
 			stmp = duplicate(_("-NONE-"));
 		     Esnprintf(s, sizeof(s),
-			       _
-			       ("Background definition information:\nName: %s\nFile: %s\n"),
+			       _("Background definition information:\nName: %s\nFile: %s\n"),
 			       tmp_bg->name, stmp);
 		     Efree(stmp);
 		     DialogItemTextSetText(bg_filename, s);
@@ -3046,25 +3190,28 @@ SettingsBackground(Background * bg)
 
    table = DialogInitItem(d);
    DialogItemTableSetOptions(table, 3, 0, 0, 0);
-#ifdef WITH_SETTINGS_PICS
-   di = DialogAddItem(table, DITEM_IMAGE);
-   DialogItemSetColSpan(di, 2);
-   DialogItemSetPadding(di, 2, 2, 2, 2);
-   DialogItemImageSetFile(di, "pix/bg.png");
 
-   di = DialogAddItem(table, DITEM_TEXT);
-   DialogItemSetPadding(di, 2, 2, 2, 2);
-   DialogItemSetFill(di, 1, 0);
-   DialogItemTextSetText(di,
-			 "Enlightenment Desktop\n"
-			 "Background Settings Dialog\n");
+   if (mode.dialog_headers)
+     {
+	di = DialogAddItem(table, DITEM_IMAGE);
+	DialogItemSetColSpan(di, 2);
+	DialogItemSetPadding(di, 2, 2, 2, 2);
+	DialogItemImageSetFile(di, "pix/bg.png");
 
-   di = DialogAddItem(table, DITEM_SEPARATOR);
-   DialogItemSetColSpan(di, 3);
-   DialogItemSetPadding(di, 2, 2, 2, 2);
-   DialogItemSetFill(di, 1, 0);
-   DialogItemSeparatorSetOrientation(di, 0);
-#endif
+	di = DialogAddItem(table, DITEM_TEXT);
+	DialogItemSetPadding(di, 2, 2, 2, 2);
+	DialogItemSetFill(di, 1, 0);
+	DialogItemTextSetText(di,
+			      _("Enlightenment Desktop\n"
+				"Background Settings Dialog\n"));
+
+	di = DialogAddItem(table, DITEM_SEPARATOR);
+	DialogItemSetColSpan(di, 3);
+	DialogItemSetPadding(di, 2, 2, 2, 2);
+	DialogItemSetFill(di, 1, 0);
+	DialogItemSeparatorSetOrientation(di, 0);
+     }
+
    di = DialogAddItem(table, DITEM_TEXT);
    DialogItemSetPadding(di, 2, 2, 2, 2);
    DialogItemSetFill(di, 1, 0);
@@ -3182,7 +3329,10 @@ SettingsBackground(Background * bg)
    DialogItemSetColSpan(di, 2);
    DialogItemTextSetText(di,
 			 _("Background\n"
-			   "Image\n" "Scaling\n" "and\n" "Alignment\n"));
+			   "Image\n"
+			   "Scaling\n"
+			   "and\n"
+			   "Alignment\n"));
 
    table2 = DialogAddItem(table, DITEM_TABLE);
    DialogItemSetPadding(table2, 2, 2, 2, 2);
@@ -3506,23 +3656,29 @@ SettingsIconbox(char *name)
 
    table = DialogInitItem(d);
    DialogItemTableSetOptions(table, 1, 0, 0, 0);
-#ifdef WITH_SETTINGS_PICS
-   di = DialogAddItem(table, DITEM_IMAGE);
-   DialogItemSetPadding(di, 2, 2, 2, 2);
-   DialogItemImageSetFile(di, "pix/iconbox.png");
 
-   di = DialogAddItem(table, DITEM_TEXT);
-   DialogItemSetColSpan(di, 2);
-   DialogItemSetPadding(di, 2, 2, 2, 2);
-   DialogItemSetFill(di, 1, 0);
-   DialogItemTextSetText(di, "Enlightenment Iconbox\n" "Settings Dialog\n");
+   if (mode.dialog_headers)
+     {
+	table2 = DialogAddItem(table, DITEM_TABLE);
+	DialogItemTableSetOptions(table2, 2, 0, 0, 0);
 
-   di = DialogAddItem(table, DITEM_SEPARATOR);
-   DialogItemSetColSpan(di, 3);
-   DialogItemSetPadding(di, 2, 2, 2, 2);
-   DialogItemSetFill(di, 1, 0);
-   DialogItemSeparatorSetOrientation(di, 0);
-#endif
+	di = DialogAddItem(table2, DITEM_IMAGE);
+	DialogItemSetPadding(di, 2, 2, 2, 2);
+	DialogItemImageSetFile(di, "pix/iconbox.png");
+
+	di = DialogAddItem(table2, DITEM_TEXT);
+	DialogItemSetPadding(di, 2, 2, 2, 2);
+	DialogItemSetFill(di, 1, 0);
+	DialogItemTextSetText(di,
+			      _("Enlightenment Iconbox\n"
+				"Settings Dialog\n"));
+
+	di = DialogAddItem(table, DITEM_SEPARATOR);
+	DialogItemSetPadding(di, 2, 2, 2, 2);
+	DialogItemSetFill(di, 1, 0);
+	DialogItemSeparatorSetOrientation(di, 0);
+     }
+
    di = DialogAddItem(table, DITEM_CHECKBUTTON);
    DialogItemSetPadding(di, 2, 2, 2, 2);
    DialogItemSetFill(di, 1, 0);
@@ -3578,8 +3734,7 @@ SettingsIconbox(char *name)
    DialogItemSetFill(di, 0, 0);
    DialogItemSetAlign(di, 0, 0);
    DialogItemTextSetText(di,
-			 _
-			 ("Alignment of anchoring when automatically resizing:"));
+		    _("Alignment of anchoring when automatically resizing:"));
 
    di = DialogAddItem(table, DITEM_SLIDER);
    DialogItemSetPadding(di, 2, 2, 2, 2);
@@ -3600,15 +3755,13 @@ SettingsIconbox(char *name)
    DialogItemSetFill(di, 0, 0);
    DialogItemSetAlign(di, 0, 0);
    DialogItemTextSetText(di,
-			 _
-			 ("Icon image display policy (if one operation fails, try the next):"));
+      _("Icon image display policy (if one operation fails, try the next):"));
 
    radio4 = di = DialogAddItem(table, DITEM_RADIOBUTTON);
    DialogItemSetPadding(di, 2, 2, 2, 2);
    DialogItemSetFill(di, 1, 0);
    DialogItemRadioButtonSetText(di,
-				_
-				("Snapshot Windows, Use application icon, Use Enlightenment Icon"));
+	 _("Snapshot Windows, Use application icon, Use Enlightenment Icon"));
    DialogItemRadioButtonSetFirst(di, radio4);
    DialogItemRadioButtonGroupSetVal(di, 0);
 
@@ -3616,8 +3769,7 @@ SettingsIconbox(char *name)
    DialogItemSetPadding(di, 2, 2, 2, 2);
    DialogItemSetFill(di, 1, 0);
    DialogItemRadioButtonSetText(di,
-				_
-				("Use application icon, Use Enlightenment Icon, Snapshot Window"));
+	  _("Use application icon, Use Enlightenment Icon, Snapshot Window"));
    DialogItemRadioButtonSetFirst(di, radio4);
    DialogItemRadioButtonGroupSetVal(di, 1);
 
@@ -3870,8 +4022,7 @@ SettingsGroups(EWin * ewin)
    if (ewin->num_groups == 0)
      {
 	DIALOG_OK(_("Window Group Error"),
-		  _
-		  ("\n  This window currently does not belong to any groups.  \n\n"));
+	 _("\n  This window currently does not belong to any groups.  \n\n"));
 	return;
      }
    if ((d = FindItem("CONFIGURE_GROUP", 0, LIST_FINDBY_NAME, LIST_TYPE_DIALOG)))
@@ -3898,23 +4049,27 @@ SettingsGroups(EWin * ewin)
 
    table = DialogInitItem(d);
    DialogItemTableSetOptions(table, 2, 0, 0, 0);
-#ifdef WITH_SETTINGS_PICS
-   di = DialogAddItem(table, DITEM_IMAGE);
-   DialogItemSetPadding(di, 2, 2, 2, 2);
-   DialogItemImageSetFile(di, "pix/place.png");
 
-   di = DialogAddItem(table, DITEM_TEXT);
-   DialogItemSetPadding(di, 2, 2, 2, 2);
-   DialogItemSetFill(di, 1, 0);
-   DialogItemTextSetText(di,
-			 "Enlightenment Window Group\n" "Settings Dialog\n");
+   if (mode.dialog_headers)
+     {
+	di = DialogAddItem(table, DITEM_IMAGE);
+	DialogItemSetPadding(di, 2, 2, 2, 2);
+	DialogItemImageSetFile(di, "pix/group.png");
 
-   di = DialogAddItem(table, DITEM_SEPARATOR);
-   DialogItemSetColSpan(di, 2);
-   DialogItemSetPadding(di, 2, 2, 2, 2);
-   DialogItemSetFill(di, 1, 0);
-   DialogItemSeparatorSetOrientation(di, 0);
-#endif
+	di = DialogAddItem(table, DITEM_TEXT);
+	DialogItemSetPadding(di, 2, 2, 2, 2);
+	DialogItemSetFill(di, 1, 0);
+	DialogItemTextSetText(di,
+			      _("Enlightenment Window Group\n"
+				"Settings Dialog\n"));
+
+	di = DialogAddItem(table, DITEM_SEPARATOR);
+	DialogItemSetColSpan(di, 2);
+	DialogItemSetPadding(di, 2, 2, 2, 2);
+	DialogItemSetFill(di, 1, 0);
+	DialogItemSeparatorSetOrientation(di, 0);
+     }
+
    di = DialogAddItem(table, DITEM_TEXT);
    DialogItemSetColSpan(di, 2);
    DialogItemSetPadding(di, 2, 2, 2, 2);
@@ -4095,24 +4250,27 @@ SettingsDefaultGroupControl(void)
 
    table = DialogInitItem(d);
    DialogItemTableSetOptions(table, 2, 0, 0, 0);
-#ifdef WITH_SETTINGS_PICS
-   di = DialogAddItem(table, DITEM_IMAGE);
-   DialogItemSetPadding(di, 2, 2, 2, 2);
-   DialogItemImageSetFile(di, "pix/place.png");
 
-   di = DialogAddItem(table, DITEM_TEXT);
-   DialogItemSetPadding(di, 2, 2, 2, 2);
-   DialogItemSetFill(di, 1, 0);
-   DialogItemTextSetText(di,
-			 "Enlightenment Default\n"
-			 "Group Control Settings Dialog\n");
+   if (mode.dialog_headers)
+     {
+	di = DialogAddItem(table, DITEM_IMAGE);
+	DialogItemSetPadding(di, 2, 2, 2, 2);
+	DialogItemImageSetFile(di, "pix/group.png");
 
-   di = DialogAddItem(table, DITEM_SEPARATOR);
-   DialogItemSetColSpan(di, 2);
-   DialogItemSetPadding(di, 2, 2, 2, 2);
-   DialogItemSetFill(di, 1, 0);
-   DialogItemSeparatorSetOrientation(di, 0);
-#endif
+	di = DialogAddItem(table, DITEM_TEXT);
+	DialogItemSetPadding(di, 2, 2, 2, 2);
+	DialogItemSetFill(di, 1, 0);
+	DialogItemTextSetText(di,
+			      _("Enlightenment Default\n"
+				"Group Control Settings Dialog\n"));
+
+	di = DialogAddItem(table, DITEM_SEPARATOR);
+	DialogItemSetColSpan(di, 2);
+	DialogItemSetPadding(di, 2, 2, 2, 2);
+	DialogItemSetFill(di, 1, 0);
+	DialogItemSeparatorSetOrientation(di, 0);
+     }
+
    di = DialogAddItem(table, DITEM_CHECKBUTTON);
    DialogItemSetPadding(di, 2, 2, 2, 2);
    DialogItemSetFill(di, 1, 0);
@@ -4287,6 +4445,27 @@ SettingsRemember()
    table = DialogInitItem(d);
    DialogItemTableSetOptions(table, 3, 0, 0, 0);
 
+   if (mode.dialog_headers)
+     {
+	di = DialogAddItem(table, DITEM_IMAGE);
+	DialogItemSetPadding(di, 2, 2, 2, 2);
+	DialogItemImageSetFile(di, "pix/snapshots.png");
+
+	di = DialogAddItem(table, DITEM_TEXT);
+	DialogItemSetColSpan(di, 2);
+	DialogItemSetPadding(di, 2, 2, 2, 2);
+	DialogItemSetFill(di, 1, 0);
+	DialogItemTextSetText(di,
+			      _("Enlightenment Remembered\n"
+				"Windows Settings Dialog\n"));
+
+	di = DialogAddItem(table, DITEM_SEPARATOR);
+	DialogItemSetColSpan(di, 3);
+	DialogItemSetPadding(di, 2, 2, 2, 2);
+	DialogItemSetFill(di, 1, 0);
+	DialogItemSeparatorSetOrientation(di, 0);
+     }
+
    /* there's a much more efficient way of doing this, but this will work
     * for now */
    lst = (EWin **) ListItemType(&num, LIST_TYPE_EWIN);
@@ -4352,8 +4531,7 @@ SettingsRemember()
 	DialogItemSetPadding(di, 2, 2, 2, 2);
 	DialogItemSetFill(di, 1, 0);
 	DialogItemTextSetText(di,
-			      _
-			      ("There are no active windows with remembered attributes."));
+		_("There are no active windows with remembered attributes."));
      }
 
    di = DialogAddItem(table, DITEM_SEPARATOR);

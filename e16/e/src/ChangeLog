@@ -4586,3 +4586,19 @@ Wed Apr  5 16:55:39 PDT 2000
 (Mandrake)
 
 a little bit of fixing to the xinerama menu code
+
+-------------------------------------------------------------------------------
+
+Thu Apr  6 03:45:54 CEST 2000
+(Saur)
+
+Revenge of the config dialog headers!
+
+There is now a new dialog for miscellaneous options (did not
+have much choice as there was no suitable dialog fit for the
+purpose), which currently only contains one option:
+the possibility to turn on dialog headers again.
+
+If anyone feels up to it, the following dialog images are
+missing (as I cannot draw  anything worth looking at):
+group.png, iconbox.png, kde.png and miscellaneous.png.

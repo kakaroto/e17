@@ -441,9 +441,8 @@ Config_Text(FILE * ConfigFile)
 	  }
 
      }
-   Alert(_
-	 ("Warning:  Configuration appears to have ended before we were\n"
-	  "Done loading a text block.  Outcome is likely not good.\n"));
+   Alert(_("Warning:  Configuration appears to have ended before we were\n"
+	   "Done loading a text block.  Outcome is likely not good.\n"));
 }
 
 void
@@ -518,9 +517,8 @@ Config_Slideout(FILE * ConfigFile)
 	  }
 
      }
-   Alert(_
-	 ("Warning:  Configuration appears to have ended before we were\n"
-	  "Done loading a Slideout block.  Outcome is likely not good.\n"));
+   Alert(_("Warning:  Configuration appears to have ended before we were\n"
+	   "Done loading a Slideout block.  Outcome is likely not good.\n"));
 }
 
 void
@@ -743,6 +741,9 @@ Config_Control(FILE * ConfigFile)
 	  case CONTROL_AREA_WRAPAROUND:
 	     mode.area_wraparound = i2;
 	     break;
+	  case CONTROL_DIALOG_HEADERS:
+	     mode.dialog_headers = i2;
+	     break;
 	  case CONTROL_SLIDESPEEDMAP:
 	     mode.slidespeedmap = i2;
 	     break;
@@ -813,9 +814,8 @@ Config_Control(FILE * ConfigFile)
 	  }
      }
    RecoverUserConfig();
-   Alert(_
-	 ("Warning:  Configuration appears to have ended before we were\n"
-	  "Done loading a Control block.  Outcome is likely not good.\n"));
+   Alert(_("Warning:  Configuration appears to have ended before we were\n"
+	   "Done loading a Control block.  Outcome is likely not good.\n"));
 }
 
 void
@@ -923,9 +923,8 @@ Config_MenuStyle(FILE * ConfigFile)
 	     break;
 	  }
      }
-   Alert(_
-	 ("Warning:  Configuration appears to have ended before we were\n"
-	  "Done loading a Menu block.  Outcome is likely not good.\n"));
+   Alert(_("Warning:  Configuration appears to have ended before we were\n"
+	   "Done loading a Menu block.  Outcome is likely not good.\n"));
 }
 
 void
@@ -1156,9 +1155,8 @@ Config_Menu(FILE * ConfigFile)
 	     break;
 	  }
      }
-   Alert(_
-	 ("Warning:  Configuration appears to have ended before we were\n"
-	  "Done loading a Menu block.  Outcome is likely not good.\n"));
+   Alert(_("Warning:  Configuration appears to have ended before we were\n"
+	   "Done loading a Menu block.  Outcome is likely not good.\n"));
 }
 
 void
@@ -1293,9 +1291,8 @@ BorderPartLoad(FILE * ConfigFile, char type, Border * b)
 	     break;
 	  }
      }
-   Alert(_
-	 ("Warning:  Configuration appears to have ended before we were\n"
-	  "Done loading a BorderPart block.  Outcome is likely not good.\n"));
+   Alert(_("Warning:  Configuration appears to have ended before we were\n"
+	   "Done loading a BorderPart block.  Outcome is likely not good.\n"));
 }
 
 void
@@ -1383,9 +1380,8 @@ Config_Border(FILE * ConfigFile)
 	       }
 	  }
      }
-   Alert(_
-	 ("Warning:  Configuration appears to have ended before we were\n"
-	  "Done loading a Main Border block.  Outcome is likely not good.\n"));
+   Alert(_("Warning:  Configuration appears to have ended before we were\n"
+	 "Done loading a Main Border block.  Outcome is likely not good.\n"));
 }
 
 void
@@ -1601,9 +1597,8 @@ Config_Button(FILE * ConfigFile)
       Efree(name);
 
    RecoverUserConfig();
-   Alert(_
-	 ("Warning:  Configuration appears to have ended before we were\n"
-	  "Done loading a Button block.  Outcome is likely not good.\n"));
+   Alert(_("Warning:  Configuration appears to have ended before we were\n"
+	   "Done loading a Button block.  Outcome is likely not good.\n"));
 
    return;
 }
@@ -1857,9 +1852,8 @@ Config_Desktop(FILE * ConfigFile)
       Efree(bg2);
 
    RecoverUserConfig();
-   Alert(_
-	 ("Warning:  Configuration appears to have ended before we were\n"
-	  "Done loading a Desktop block.  Outcome is likely not good.\n"));
+   Alert(_("Warning:  Configuration appears to have ended before we were\n"
+	   "Done loading a Desktop block.  Outcome is likely not good.\n"));
 
    return;
 }
@@ -1936,9 +1930,8 @@ Config_ECursor(FILE * ConfigFile)
       Efree(name);
    if (file)
       Efree(file);
-   Alert(_
-	 ("Warning:  Configuration appears to have ended before we were\n"
-	  "Done loading a Desktop block.  Outcome is likely not good.\n"));
+   Alert(_("Warning:  Configuration appears to have ended before we were\n"
+	   "Done loading a Desktop block.  Outcome is likely not good.\n"));
 }
 
 void
@@ -1979,9 +1972,8 @@ Config_Iconbox(FILE * ConfigFile)
 	     break;
 	  }
      }
-   Alert(_
-	 ("Warning:  Configuration appears to have ended before we were\n"
-	  "Done loading an Iconbox block.  Outcome is likely not good.\n"));
+   Alert(_("Warning:  Configuration appears to have ended before we were\n"
+	   "Done loading an Iconbox block.  Outcome is likely not good.\n"));
 }
 
 void
@@ -2015,9 +2007,8 @@ Config_Sound(FILE * ConfigFile)
 	     AddItem(sc, sc->name, 0, LIST_TYPE_SCLASS);
 	  }
      }
-   Alert(_
-	 ("Warning:  Configuration appears to have ended before we were\n"
-	  "Done loading an Sound block.  Outcome is likely not good.\n"));
+   Alert(_("Warning:  Configuration appears to have ended before we were\n"
+	   "Done loading an Sound block.  Outcome is likely not good.\n"));
 }
 
 void
@@ -2269,8 +2260,8 @@ Config_ActionClass(FILE * ConfigFile)
 	  default:
 	     RecoverUserConfig();
 	     Alert(_("Warning: unable to determine what to do with\n"
-		     "the following text in the middle of current"
-		     " ActionClass definition:\n"
+		     "the following text in the middle of current "
+		     "ActionClass definition:\n"
 		     "%s\nWill ignore and continue...\n"), s);
 	     break;
 	  }
@@ -2282,9 +2273,8 @@ Config_ActionClass(FILE * ConfigFile)
    if (action_tooltipstring)
       Efree(action_tooltipstring);
    RecoverUserConfig();
-   Alert(_
-	 ("Warning:  Configuration appears to have ended before we were\n"
-	  "Done loading an Action Class block.  Outcome is likely not good.\n"));
+   Alert(_("Warning:  Configuration appears to have ended before we were\n"
+       "Done loading an Action Class block.  Outcome is likely not good.\n"));
 }
 
 void
@@ -2488,9 +2478,8 @@ Config_ImageClass(FILE * ConfigFile)
 	     break;
 	  }
      }
-   Alert(_
-	 ("Warning:  Configuration appears to have ended before we were\n"
-	  "Done loading an ImageClass block.  Outcome is likely not good.\n"));
+   Alert(_("Warning:  Configuration appears to have ended before we were\n"
+	 "Done loading an ImageClass block.  Outcome is likely not good.\n"));
 }
 
 void
@@ -2752,10 +2741,9 @@ Config_ColorModifier(FILE * ConfigFile)
       Efree(by);
 
    RecoverUserConfig();
-   Alert(_
-	 ("Warning:  Configuration appears to have ended before we were\n"
-	  "Done loading an ColorModifier block.\n"
-	  "Outcome is likely not good.\n"));
+   Alert(_("Warning:  Configuration appears to have ended before we were\n"
+	   "Done loading an ColorModifier block.\n"
+	   "Outcome is likely not good.\n"));
 
    return;
 }
@@ -3674,30 +3662,29 @@ LoadEConfig(char *themelocation)
    theme = FindTheme(themelocation);
    if (!theme)
      {
-	Alert(_
-	      ("Enlightenment has just experienced some major problems in\n"
-	       "attempting to load the theme you specified or the default\n"
-	       "configuration directory:\n" "%s/config/\n"
-	       "This will prevent Enlightenment from loading any "
-	       "configuration\n" "files at all.\n"
-	       "Since this couldn't be found Enlightenment is probably not\n"
-	       "going to find any configuration files anywhere on your\n"
-	       "system, and so it will have almost no configuration loaded\n"
-	       "when it starts up. This is most likely the sign of a bad\n"
-	       "installation of Enlightenment if this directory is missing.\n"
-	       "The likely causes are that the package was improperly built,\n"
-	       "if a binary package, or 'make install' hasn't been typed\n"
-	       "or during the installation the directory above was not\n"
-	       "able to be copied over for installation perhaps due to\n"
-	       "permissions or lack of disk space. It also could be that the\n"
-	       "config directory has been inadvertently deleted since\n"
-	       "installation.\n"
-	       "This is a serious problem and should be rectified immediately\n"
-	       "Please contact your system administrator or package "
-	       "maintainer.\n"
-	       "If you are the administrator of your own system please\n"
-	       "consult the documentation that came with Enlightenment for\n"
-	       "additional information.\n"), ENLIGHTENMENT_ROOT);
+	Alert(_("Enlightenment has just experienced some major problems in\n"
+		"attempting to load the theme you specified or the default\n"
+		"configuration directory:\n" "%s/config/\n"
+		"This will prevent Enlightenment from loading any "
+		"configuration\n" "files at all.\n"
+		"Since this couldn't be found Enlightenment is probably not\n"
+		"going to find any configuration files anywhere on your\n"
+		"system, and so it will have almost no configuration loaded\n"
+		"when it starts up. This is most likely the sign of a bad\n"
+		"installation of Enlightenment if this directory is missing.\n"
+	      "The likely causes are that the package was improperly built,\n"
+		"if a binary package, or 'make install' hasn't been typed\n"
+		"or during the installation the directory above was not\n"
+		"able to be copied over for installation perhaps due to\n"
+	      "permissions or lack of disk space. It also could be that the\n"
+		"config directory has been inadvertently deleted since\n"
+		"installation.\n"
+	     "This is a serious problem and should be rectified immediately\n"
+		"Please contact your system administrator or package "
+		"maintainer.\n"
+		"If you are the administrator of your own system please\n"
+		"consult the documentation that came with Enlightenment for\n"
+		"additional information.\n"), ENLIGHTENMENT_ROOT);
 	EDBUG_RETURN(0);
      }
    strcpy(themepath, theme);
@@ -3845,6 +3832,7 @@ SaveUserControlConfig(FILE * autosavefile)
 	fprintf(autosavefile, "350 %i\n", (int)mode.animate_shading);
 	fprintf(autosavefile, "351 %i\n", (int)mode.menusonscreen);
 	fprintf(autosavefile, "352 %i\n", (int)mode.area_wraparound);
+	fprintf(autosavefile, "353 %i\n", (int)mode.dialog_headers);
 	fprintf(autosavefile, "666 %i\n", (int)mode.warpmenus);
 	fprintf(autosavefile, "667 %i\n", (int)mode.warpsticky);
 	fprintf(autosavefile, "668 %i\n", (int)mode.warpshaded);
@@ -4176,13 +4164,13 @@ RecoverUserConfig(void)
 	ASSIGN_ALERT(_("Recover system config?"),
 		     _("Yes, Attempt recovery"),
 		     _("Restart and try again"), _("Quit and give up"));
-	Alert(_
-	      ("Enlightenment has encountered parsing errors in your autosaved\n"
-	       "configuration.\n" "\n"
-	       "This may be due to filing system errors, Minor bugs or"
-	       " unforeseen\n" "system shutdowns.\n" "\n"
-	       "Do you wish Enlightenment to recover its original system\n"
-	       "configuration and try again?\n"));
+	Alert(
+	  _("Enlightenment has encountered parsing errors in your autosaved\n"
+	    "configuration.\n" "\n"
+	    "This may be due to filing system errors, Minor bugs or "
+	    "unforeseen\n" "system shutdowns.\n" "\n"
+	    "Do you wish Enlightenment to recover its original system\n"
+	    "configuration and try again?\n"));
 	RESET_ALERT;
 	mode.autosave = 0;
 	MapUnmap(1);

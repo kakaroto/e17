@@ -1257,6 +1257,7 @@ typedef struct _emode
    int                 pager_win_button;
    int                 pager_menu_button;
    char                area_wraparound;
+   char                dialog_headers;
 }
 EMode;
 
@@ -3010,6 +3011,7 @@ void                SettingsIconbox(char *name);
 void                SettingsGroups(EWin * ewin);
 void                SettingsDefaultGroupControl(void);
 void                SettingsRemember(void);
+void                SettingsMiscellaneous(void);
 
 void                BGSettingsGoTo(Background * bg);
 

@@ -218,17 +218,16 @@ SetupX()
    /* if cannot connect to display */
    if (!disp)
      {
-	Alert(_
-	      ("Enlightenment cannot connect to the display nominated by\n"
-	       "your shell's DISPLAY environment variable. You may set this\n"
-	       "variable to indicate which display name Enlightenment is to\n"
-	       "connect to. It may be that you do not have an Xserver already\n"
-	       "running to serve that Display connection, or that you do not\n"
-	       "have permission to connect to that display. Please make sure\n"
-	       "all is correct before trying again. Run an Xserver by running\n"
-	       "xdm or startx first, or contact your local system\n"
-	       "administrator, or Xserver vendor, or read the X, xdm and\n"
-	       "startx manual pages before proceeding.\n"));
+	Alert(_("Enlightenment cannot connect to the display nominated by\n"
+		"your shell's DISPLAY environment variable. You may set this\n"
+		"variable to indicate which display name Enlightenment is to\n"
+	     "connect to. It may be that you do not have an Xserver already\n"
+	      "running to serve that Display connection, or that you do not\n"
+	      "have permission to connect to that display. Please make sure\n"
+	     "all is correct before trying again. Run an Xserver by running\n"
+		"xdm or startx first, or contact your local system\n"
+		"administrator, or Xserver vendor, or read the X, xdm and\n"
+		"startx manual pages before proceeding.\n"));
 	EExit((void *)1);
      }
    root.scr = DefaultScreen(disp);
@@ -598,6 +597,7 @@ SetupX()
    mode.group_config.shade = 1;
    mode.group_config.mirror = 1;
    mode.area_wraparound = 0;
+   mode.dialog_headers = 0;
    mode.clickalways = 0;
    mode.keybinds_changed = 0;
 

@@ -260,31 +260,34 @@ SnapshotEwinDialog(EWin * ewin)
 	return;
      }
    d = CreateDialog("SNAPSHOT_WINDOW");
-   DialogSetTitle(d, "Application attributes");
+   DialogSetTitle(d, _("Remembered Application Attributes"));
 
    table = DialogInitItem(d);
    DialogItemTableSetOptions(table, 4, 0, 0, 0);
-/*
- * di = DialogAddItem(table, DITEM_IMAGE);
- * DialogItemSetPadding(di, 2, 2, 2, 2);
- * DialogItemSetColSpan(di, 2);
- * DialogItemImageSetFile(di, "pix/snapshots.png");
- * 
- * di = DialogAddItem(table, DITEM_TEXT);
- * DialogItemSetColSpan(di, 2);
- * DialogItemSetPadding(di, 2, 2, 2, 2);
- * DialogItemSetFill(di, 1, 0);
- * DialogItemTextSetText(di,
- * "Select the attributes of this\n"
- * "window you wish to Remember\n"
- * "from now on\n");
- * 
- * di = DialogAddItem(table, DITEM_SEPARATOR);
- * DialogItemSetColSpan(di, 4);
- * DialogItemSetPadding(di, 2, 2, 2, 2);
- * DialogItemSetFill(di, 1, 0);
- * DialogItemSeparatorSetOrientation(di, 0);
- */
+
+   if (mode.dialog_headers)
+     {
+	di = DialogAddItem(table, DITEM_IMAGE);
+	DialogItemSetPadding(di, 2, 2, 2, 2);
+	DialogItemSetColSpan(di, 2);
+	DialogItemImageSetFile(di, "pix/snapshots.png");
+
+	di = DialogAddItem(table, DITEM_TEXT);
+	DialogItemSetColSpan(di, 2);
+	DialogItemSetPadding(di, 2, 2, 2, 2);
+	DialogItemSetFill(di, 1, 0);
+	DialogItemTextSetText(di,
+			      _("Select the attributes of this\n"
+				"window you wish to Remember\n"
+				"from now on\n"));
+
+	di = DialogAddItem(table, DITEM_SEPARATOR);
+	DialogItemSetColSpan(di, 4);
+	DialogItemSetPadding(di, 2, 2, 2, 2);
+	DialogItemSetFill(di, 1, 0);
+	DialogItemSeparatorSetOrientation(di, 0);
+     }
+
    sn = ewin->snap;
    tmp_snap_client = ewin->client.win;
 
@@ -332,7 +335,7 @@ SnapshotEwinDialog(EWin * ewin)
    DialogItemSetPadding(di, 2, 2, 2, 2);
    DialogItemSetFill(di, 1, 0);
    DialogItemSetAlign(di, 0, 512);
-   DialogItemTextSetText(di, "Title:");
+   DialogItemTextSetText(di, _("Title:"));
 
    di = DialogAddItem(table, DITEM_TEXT);
    DialogItemSetColSpan(di, 3);
@@ -347,7 +350,7 @@ SnapshotEwinDialog(EWin * ewin)
 	DialogItemSetPadding(di, 2, 2, 2, 2);
 	DialogItemSetFill(di, 1, 0);
 	DialogItemSetAlign(di, 0, 512);
-	DialogItemTextSetText(di, "Name:");
+	DialogItemTextSetText(di, _("Name:"));
 
 	di = DialogAddItem(table, DITEM_TEXT);
 	DialogItemSetColSpan(di, 3);
@@ -363,7 +366,7 @@ SnapshotEwinDialog(EWin * ewin)
 	DialogItemSetPadding(di, 2, 2, 2, 2);
 	DialogItemSetFill(di, 1, 0);
 	DialogItemSetAlign(di, 0, 512);
-	DialogItemTextSetText(di, "Class:");
+	DialogItemTextSetText(di, _("Class:"));
 
 	di = DialogAddItem(table, DITEM_TEXT);
 	DialogItemSetColSpan(di, 3);
@@ -379,7 +382,7 @@ SnapshotEwinDialog(EWin * ewin)
 	DialogItemSetPadding(di, 2, 2, 2, 2);
 	DialogItemSetFill(di, 1, 0);
 	DialogItemSetAlign(di, 0, 512);
-	DialogItemTextSetText(di, "Command:");
+	DialogItemTextSetText(di, _("Command:"));
 
 	di = DialogAddItem(table, DITEM_TEXT);
 	DialogItemSetColSpan(di, 3);
@@ -546,7 +549,7 @@ SnapshotEwinDialog(EWin * ewin)
 
    DialogAddButton(d, _("OK"), CB_ApplySnap, 1);
    DialogAddButton(d, _("Apply"), CB_ApplySnap, 0);
-   DialogAddButton(d, _("Cancel"), CB_ApplySnap, 1);
+   DialogAddButton(d, _("Close"), CB_ApplySnap, 1);
    DialogSetExitFunction(d, CB_ApplySnap, 2, d);
    DialogBindKey(d, "Escape", CB_ApplySnapEscape, 0, d);
    DialogBindKey(d, "Return", CB_ApplySnap, 0, d);
