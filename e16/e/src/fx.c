@@ -54,10 +54,13 @@ void                FX_Waves_Init(const char *name);
 void                FX_Waves_Desk(void);
 void                FX_Waves_Quit(void);
 void                FX_Waves_Pause(void);
+
+#if 0				/* FIXME - Or remove */
 void                FX_ImageSpinner_Init(const char *name);
 void                FX_ImageSpinner_Desk(void);
 void                FX_ImageSpinner_Quit(void);
 void                FX_ImageSpinner_Pause(void);
+#endif
 
 static FXHandler    fx_handlers[] = {
    {"ripples",
@@ -70,10 +73,12 @@ static FXHandler    fx_handlers[] = {
    {"waves",
     FX_Waves_Init, FX_Waves_Desk, FX_Waves_Quit, FX_Waves_Pause,
     0, 0},
+#if 0				/* FIXME - Or remove */
    {"imagespinner",
     FX_ImageSpinner_Init, FX_ImageSpinner_Desk, FX_ImageSpinner_Quit,
     FX_ImageSpinner_Pause,
     0, 0}
+#endif
 };
 #define N_FX_HANDLERS (sizeof(fx_handlers)/sizeof(FXHandler))
 
@@ -858,6 +863,7 @@ FX_Waves_Pause(void)
 
 /****************************************************************************/
 
+#if 0				/* FIXME - Or remove */
 /****************************** IMAGESPINNER ********************************/
 
 static Window       fx_imagespinner_win = 0;
@@ -971,3 +977,4 @@ FX_ImageSpinner_Pause(void)
 }
 
 /****************************************************************************/
+#endif

@@ -2083,7 +2083,6 @@ char               *homedir(int uid);
 char               *usershell(int uid);
 const char         *atword(const char *s, int num);
 const char         *atchar(const char *s, char c);
-char               *getword(char *s, int num);
 void                word(const char *s, int num, char *wd);
 int                 canread(const char *s);
 int                 canwrite(const char *s);
