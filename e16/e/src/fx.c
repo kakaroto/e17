@@ -31,8 +31,8 @@
 
 typedef struct _fxhandler
 {
-   char               *name;
-   void                (*init_func) (char *name);
+   const char         *name;
+   void                (*init_func) (const char *name);
    void                (*desk_func) (void);
    void                (*quit_func) (void);
    void                (*pause_func) (void);
@@ -41,19 +41,19 @@ typedef struct _fxhandler
 }
 FXHandler;
 
-void                FX_Ripple_Init(char *name);
+void                FX_Ripple_Init(const char *name);
 void                FX_Ripple_Desk(void);
 void                FX_Ripple_Quit(void);
 void                FX_Ripple_Pause(void);
-void                FX_Raindrops_Init(char *name);
+void                FX_Raindrops_Init(const char *name);
 void                FX_Raindrops_Desk(void);
 void                FX_Raindrops_Quit(void);
 void                FX_Raindrops_Pause(void);
-void                FX_Waves_Init(char *name);
+void                FX_Waves_Init(const char *name);
 void                FX_Waves_Desk(void);
 void                FX_Waves_Quit(void);
 void                FX_Waves_Pause(void);
-void                FX_ImageSpinner_Init(char *name);
+void                FX_ImageSpinner_Init(const char *name);
 void                FX_ImageSpinner_Desk(void);
 void                FX_ImageSpinner_Quit(void);
 void                FX_ImageSpinner_Pause(void);
@@ -106,7 +106,7 @@ FX_Op(const char *name, int fx_op)
 	   break;
       do_start:
 	if (fxh->init_func)
-	   (*(fxh->init_func)) (name);
+	   fxh->init_func(name);
 	fxh->in_use = 1;
 	break;
 
@@ -140,7 +140,7 @@ FX_Activate(char *effect)
 	     if (!fx_handlers[i].in_use)
 	       {
 		  fx_handlers[i].in_use = 1;
-		  (*(fx_handlers[i].init_func)) (effect);
+		  fx_handlers[i].init_func(effect);
 	       }
 	  }
      }
@@ -174,13 +174,13 @@ FX_Pause(void)
 	     if (fx_handlers[i].paused)
 	       {
 		  if (fx_handlers[i].pause_func)
-		     (*(fx_handlers[i].pause_func)) ();
+		     fx_handlers[i].pause_func();
 		  fx_handlers[i].paused = 1;
 	       }
 	     else
 	       {
 		  if (fx_handlers[i].pause_func)
-		     (*(fx_handlers[i].pause_func)) ();
+		     fx_handlers[i].pause_func();
 		  fx_handlers[i].paused = 0;
 	       }
 	  }
@@ -318,11 +318,10 @@ FX_ripple_timeout(int val, void *data)
 }
 
 void
-FX_Ripple_Init(char *name)
+FX_Ripple_Init(const char *name)
 {
    fx_ripple_count = 0;
    DoIn("FX_RIPPLE_TIMEOUT", 0.066, FX_ripple_timeout, 0, NULL);
-   name = NULL;
 }
 
 void
@@ -626,7 +625,7 @@ FX_raindrops_timeout(int val, void *data)
 }
 
 void
-FX_Raindrops_Init(char *name)
+FX_Raindrops_Init(const char *name)
 {
    int                 i;
 
@@ -638,7 +637,6 @@ FX_Raindrops_Init(char *name)
 	fx_raindrops[i].y = rand() % (root.h - fx_raindrop_size);
      }
    DoIn("FX_RAINDROPS_TIMEOUT", 0.066, FX_raindrops_timeout, 0, NULL);
-   name = NULL;
 }
 
 void
@@ -842,11 +840,10 @@ FX_Wave_timeout(int val, void *data)
 }
 
 void
-FX_Waves_Init(char *name)
+FX_Waves_Init(const char *name)
 {
    fx_wave_count = 0;
    DoIn("FX_WAVE_TIMEOUT", 0.066, FX_Wave_timeout, 0, NULL);
-   name = NULL;
 }
 
 void
@@ -958,7 +955,7 @@ FX_imagespinner_timeout(int val, void *data)
 }
 
 void
-FX_ImageSpinner_Init(char *name)
+FX_ImageSpinner_Init(const char *name)
 {
    fx_imagespinner_count = 3;
    DoIn("FX_IMAGESPINNER_TIMEOUT", 0.066, FX_imagespinner_timeout, 0, NULL);
