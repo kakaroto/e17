@@ -20,7 +20,7 @@ struct _Entrance_Config
    }
    screens, display;            /* screens are the number of display */
    /* display is the screen for the "center" */
-   Evas_List users;
+   Evas_List *users;
    Evas_List *sessions;
    int default_index;
    void *default_session;
@@ -28,6 +28,17 @@ struct _Entrance_Config
 };
 
 typedef struct _Entrance_Config *Entrance_Config;
+
+struct _Entrance_User
+{
+   char *name;
+   char *img;
+   int sys;
+   // void *something
+};
+
+typedef struct _Entrance_User Entrance_User;
+
 
 Entrance_Config entrance_config_parse(char *file);
 void entrance_config_print(Entrance_Config e);

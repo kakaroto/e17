@@ -15,9 +15,9 @@
 
 struct _Entrance_Session_Type
 {
-	char *name;
-	char *path;
-	char *icon;
+   char *name;
+   char *path;
+   char *icon;
 };
 
 typedef struct _Entrance_Session_Type Entrance_Session_Type;
@@ -32,15 +32,15 @@ struct _Entrance_Session
    Evas_Object *sessionicon;
    Evas_Object *face, *face_shadow;
    Evas_Object *entrybox;
-   
+
    Evas_Object *date;
    Evas_Object *time;
    Evas_Object *hostname;
-   
+
    E_Background bg;             /* ebg in the evas */
-   Entrance_Auth auth;           /* encapsulated auth shit */
-   Entrance_Config config;       /* configuration options */
-   Entrance_Theme theme;		 /* Theme data */
+   Entrance_Auth auth;          /* encapsulated auth shit */
+   Entrance_Config config;      /* configuration options */
+   Entrance_Theme theme;        /* Theme data */
    Window main_win, ewin;       /* window ids */
 
    struct
@@ -49,10 +49,16 @@ struct _Entrance_Session
    }
    geom;                        /* the height/width of the evas */
 
-   Entrance_Session_Type *session;  /* The session to load */
+   Entrance_Session_Type *session;	/* The 
+	   session 
+	   to 
+	   load 
+	 */
    int session_index;
 
    Evas_List *users;            /* recent users */
+   Evas_List *EntUsers;
+
    /* find a way to have plugins running */
 };
 

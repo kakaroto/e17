@@ -139,6 +139,9 @@ init_session_list(Entrance_Session e)
       e->session = NULL;
 
    e->session_index = e->config->default_index;
+
+   e->EntUsers = e->config->users;
+
 }
 
 static void

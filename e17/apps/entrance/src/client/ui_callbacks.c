@@ -56,8 +56,39 @@ update_login_face(Entrance_Session e, char *name)
    char buf[PATH_MAX];
    int iw, ih;
 
-   snprintf(buf, PATH_MAX, "%s/%s.png", PACKAGE_DATA_DIR "/data/images/users",
-            name);
+   char *userimage;
+   int go = 1;
+   Entrance_User *eu = NULL;
+   Evas_List *el = e->EntUsers;
+
+   while (go)
+   {
+      eu = (Entrance_User *) malloc(sizeof(Entrance_User));
+      memset(eu, 0, sizeof(Entrance_User));
+      eu->name = ((Entrance_User *) evas_list_data(el))->name;
+
+      if (!strcmp(name, eu->name))
+      {
+         eu->img = ((Entrance_User *) evas_list_data(el))->img;
+         eu->sys = ((Entrance_User *) evas_list_data(el))->sys;
+
+         userimage = strdup(eu->img);
+         go = 0;
+      }
+      el = el->next;
+      if (!el)
+         go = 0;
+   }
+   if (!eu->sys)
+   {
+      /* OK, I really dislike hardcoding "/home/foo", but I'm too lazy right
+         now to find out the correct way to do it... blame it on college
+         blues */
+      snprintf(buf, PATH_MAX, "/home/%s/.e/entrance/%s", eu->name, userimage);
+   }
+   else
+      snprintf(buf, PATH_MAX, "%s/%s", PACKAGE_DATA_DIR "/data/images/users",
+               userimage);
    evas_object_image_file_set(e->face, buf, NULL);
    evas_object_image_reload(e->face);
    if (evas_object_image_load_error_get(e->face))
@@ -66,11 +97,11 @@ update_login_face(Entrance_Session e, char *name)
       evas_object_hide(e->face_shadow);
       return;
    }
-   
+
    evas_object_image_size_get(e->face, &iw, &ih);
    evas_object_resize(e->face, (double) iw, (double) ih);
    evas_object_image_fill_set(e->face, 0.0, 0.0, (double) iw, (double) ih);
-   
+
    fx_fade_in(e->face_shadow, 0.15);
    fx_fade_in(e->face, 0.15);
 }
@@ -267,4 +298,3 @@ entrance_return_key_cb(Entrance_Session e, char *buffer)
    }
    return (return_request);
 }
-

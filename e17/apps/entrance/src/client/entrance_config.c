@@ -40,8 +40,41 @@ entrance_config_populate(Entrance_Config e, E_DB_File * db)
    char buf[PATH_MAX];
    Entrance_Session_Type *st = NULL;
 
+   Evas_List *U = NULL;
+   Entrance_User *eu = NULL;
+   int num_user;
+   int sys;
+
+
    if ((!e) || (!db))
       return;
+
+
+   if (e_db_int_get(db, "/entrance/user/count", &num_user))
+   {
+      for (i = 0; i < num_user; i++)
+      {
+         eu = (Entrance_User *) malloc(sizeof(Entrance_User));
+         memset(eu, 0, sizeof(Entrance_User));
+         snprintf(buf, PATH_MAX, "/entrance/user/%d/name", i);
+         eu->name = e_db_str_get(db, buf);
+         snprintf(buf, PATH_MAX, "/entrance/user/%d/img", i);
+         eu->img = e_db_str_get(db, buf);
+         snprintf(buf, PATH_MAX, "/entrance/user/%d/sys", i);
+         if (!e_db_int_get(db, buf, &(eu->sys)))
+            eu->sys = 1;
+         U = evas_list_append(U, eu);
+      }
+
+      e->users = U;
+   }
+   else
+   {
+      evas_list_append(e->users, NULL);
+      e->users = NULL;
+      fprintf(stderr, "Warning: No users found\n");
+   }
+
 
    st = (Entrance_Session_Type *) malloc(sizeof(Entrance_Session_Type));
    memset(st, 0, sizeof(Entrance_Session_Type));
