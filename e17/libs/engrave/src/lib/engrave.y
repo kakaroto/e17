@@ -48,6 +48,7 @@
 %left TIMES DIVIDE
 %left NEG     /* negation--unary minus */
 %token OPEN_PAREN CLOSE_PAREN DOT INHERIT
+%token ON OFF TRUE FALSE
 
 %type <string> STRING 
 %type <val> FLOAT
@@ -57,7 +58,7 @@
 %type <image_type> image_type
 %type <text_effect> effect_type
 %type <aspect_pref> aspect_pref_type
-%type <val> exp
+%type <val> exp boolean
 
 %%
 
@@ -383,12 +384,26 @@ effect_type: NONE { $$ = ENGRAVE_TEXT_EFFECT_NONE; }
 	| OUTLINE_SOFT_SHADOW { $$ = ENGRAVE_TEXT_EFFECT_OUTLINE_SOFT_SHADOW; }
 	;
 
-mouse_events: MOUSE_EVENTS COLON exp SEMICOLON {
+boolean: ON { $$ = 1; }
+	| OFF { $$ = 0; }
+	| TRUE { $$ = 1; }
+	| FALSE { $$ = 0; }
+	| exp {
+		int i = $1;
+		if ((i != 0) && (i != 1)) {
+			printf("Invalid boolean %d at line %d\n", i, engrave_lnum);
+			i = 0;
+		}
+		$$ = i;
+	}
+	;
+
+mouse_events: MOUSE_EVENTS COLON boolean SEMICOLON {
                 engrave_parse_part_mouse_events((int)$3);
 	}
 	;
 
-repeat_events: REPEAT_EVENTS COLON exp SEMICOLON {
+repeat_events: REPEAT_EVENTS COLON boolean SEMICOLON {
                 engrave_parse_part_repeat_events((int)$3);
 	}
 	;
@@ -462,7 +477,7 @@ state: STATE COLON STRING exp SEMICOLON {
 	}
 	;
 
-visible: VISIBLE COLON exp SEMICOLON {
+visible: VISIBLE COLON boolean SEMICOLON {
                 engrave_parse_state_visible((int)$3);
 	}
 	;
@@ -675,7 +690,7 @@ fill_body: smooth
 	| size
 	;
 
-smooth: SMOOTH COLON exp SEMICOLON {
+smooth: SMOOTH COLON boolean SEMICOLON {
                 engrave_parse_state_fill_smooth((int)$3);
 	}
 	;
@@ -755,7 +770,7 @@ size_entry: SIZE COLON exp SEMICOLON {
 	}
 	;
 
-fit: FIT COLON exp exp SEMICOLON {
+fit: FIT COLON boolean boolean SEMICOLON {
                 engrave_parse_state_text_fit((int)$3, (int)$4);
 	}
 	;

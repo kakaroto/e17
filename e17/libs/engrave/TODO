@@ -1,9 +1,5 @@
 Everything
 
-- edje can take boolean values as:
-      true/false, 0/1, on/off
-  need to support this in engrave
-
 - need to write all of the corresponding _get methods and port engrave_out
   to use those methods.
 

@@ -174,6 +174,12 @@ VERTICAL			{ KEYWORD_RETURN(VERTICAL); }
 visible				{ KEYWORD_RETURN(VISIBLE); }
 x					{ KEYWORD_RETURN(X); }
 y					{ KEYWORD_RETURN(Y); }
+
+[o|O][n|N]			{ KEYWORD_RETURN(ON); }
+[o|O][f|F][f|F]		{ KEYWORD_RETURN(OFF); }
+[t|T][r|R][u|U][e|E] { KEYWORD_RETURN(TRUE); }
+[f|F][a|A][l|L][s|S][e|E] { KEYWORD_RETURN(FALSE); }
+
 (\"[^\"]*\")*       {{ 
                         char *tmp = NULL;
                         int i = 0;
