@@ -236,7 +236,7 @@ _engage_new()
      {
 	e->conf = E_NEW(Config, 1);
 	e->conf->appdir = strdup("engage");
-	e->conf->iconsize = 32;
+	e->conf->iconsize = 64;
 	/*
 	e->conf->handle = 0.5;
 	e->conf->autohide = 0;
@@ -293,14 +293,15 @@ _engage_new()
 		       eb->conf->zoom = 1;
 		       eb->conf->zoom_factor = 2.0;
 		       e->conf->bars = evas_list_append(e->conf->bars, eb->conf);
-		       E_CONFIG_LIMIT(eb->conf->zoom, 0, 1);
-		       E_CONFIG_LIMIT(eb->conf->zoom_factor, 1.0, 4.0);
 		    }
 		  else
 		    {
 		       eb->conf = cl->data;
 		       cl = cl->next;
 		    }
+		  E_CONFIG_LIMIT(eb->conf->zoom, 0, 1);
+		  E_CONFIG_LIMIT(eb->conf->zoom_factor, 1.0, 4.0);
+		  _engage_bar_iconsize_change(eb);
 		  /* Menu */
 		  _engage_bar_menu_new(eb);
 
@@ -314,6 +315,9 @@ _engage_new()
 		  if (!eb->conf->enabled)
 		    _engage_bar_disable(eb);
 
+		  /* We need to resize, the number of apps could have changed
+		   *  since last startup */
+		  _engage_bar_frame_resize(eb);
 	       }
 	  }
      }
@@ -560,16 +564,13 @@ _engage_bar_new(Engage *e, E_Container *con)
    e_gadman_client_auto_size_set(eb->gmc, -1, -1);
    e_gadman_client_align_set(eb->gmc, 0.5, 1.0);
    e_gadman_client_resize(eb->gmc, 400, 40);
+   e_gadman_client_edge_set(eb->gmc, E_GADMAN_EDGE_BOTTOM);
    e_gadman_client_change_func_set(eb->gmc, _engage_bar_cb_gmc_change, eb);
    e_gadman_client_load(eb->gmc);
    /* update for appropriate bar we loaded on */
    _engage_bar_update_policy(eb);
 
    evas_event_thaw(eb->evas);
-
-   /* We need to resize, if the width is auto and the number
-    * of apps has changed since last startup */
-   _engage_bar_frame_resize(eb);
 
    /*
    edje_object_signal_emit(eb->bar_object, "passive", "");
@@ -1218,7 +1219,7 @@ _engage_icon_reorder_after(Engage_Icon *ic, Engage_Icon *after)
 static void
 _engage_bar_frame_resize(Engage_Bar *eb)
 {
-   Evas_Coord w, h;
+   Evas_Coord x, y, w, h;
    /* Not finished loading config yet! */
    if ((eb->x == -1)
        || (eb->y == -1)
@@ -1230,9 +1231,11 @@ _engage_bar_frame_resize(Engage_Bar *eb)
    e_box_freeze(eb->box_object);
 
    e_box_min_size_get(eb->box_object, &w, &h);
+   e_gadman_client_geometry_get(eb->gmc, &x, &y, NULL, NULL);
 
    e_gadman_client_resize(eb->gmc, w, h);
    evas_object_resize(eb->event_object, w, h);
+   evas_object_move(eb->event_object, x, y);
    e_box_thaw(eb->box_object);
    evas_event_thaw(eb->evas);
 }
@@ -1678,6 +1681,7 @@ _engage_bar_cb_intercept_resize(void *data, Evas_Object *o, Evas_Coord w, Evas_C
 
    evas_object_resize(o, w, h);
    evas_object_resize(eb->event_object, w, h);
+   edje_extern_object_min_size_set(eb->box_object, w, h);
    
    if (eb->gmc)
      edge = e_gadman_client_edge_get(eb->gmc);
