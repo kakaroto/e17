@@ -66,8 +66,53 @@ void ewl_entry_right_delete(Ewl_Entry * e);
 void ewl_entry_word_begin_delete(Ewl_Entry * e);
 
 /*
+ * Internal API stuff
+ */
+
+/* 
+ * the cursor stuff 
+ */
+typedef struct Ewl_Entry_Cursor Ewl_Entry_Cursor;
+
+#define EWL_ENTRY_CURSOR(cursor) ((Ewl_Entry_Cursor *) cursor)
+
+struct Ewl_Entry_Cursor
+{
+	Ewl_Widget      widget;
+	int position;
+};
+
+Ewl_Widget *ewl_entry_cursor_new(void);
+void ewl_entry_cursor_init(Ewl_Entry_Cursor *c);
+void ewl_entry_cursor_position_set(Ewl_Entry_Cursor *c, int pos);
+int ewl_entry_cursor_position_get(Ewl_Entry_Cursor *c);
+
+/* 
+ * the selection stuff
+ */
+typedef struct Ewl_Entry_Selection Ewl_Entry_Selection;
+
+#define EWL_ENTRY_SELECTION(selection) ((Ewl_Entry_Selection *) selection)
+
+struct Ewl_Entry_Selection
+{
+	Ewl_Widget      widget;
+	unsigned int start;
+	unsigned int    end;
+};
+
+Ewl_Widget *ewl_entry_selection_new(void);
+void ewl_entry_selection_init(Ewl_Entry_Selection *s);
+void ewl_entry_selection_start_position_set(Ewl_Entry_Selection *s, unsigned int start);
+int ewl_entry_selection_start_position_get(Ewl_Entry_Selection *s);
+void ewl_entry_selection_end_position_set(Ewl_Entry_Selection *s, unsigned int end);
+int ewl_entry_selection_end_position_get(Ewl_Entry_Selection *s);
+void ewl_entry_selection_select_to(Ewl_Entry_Selection *s, unsigned int pos);
+
+/*
  * Internally used callbacks, override at your own risk.
  */
+
 void ewl_entry_configure_cb(Ewl_Widget * w, void *ev_data, void *user_data);
 void ewl_entry_configure_text_cb(Ewl_Widget * w, void *ev_data,
 				 void *user_data);
