@@ -181,8 +181,8 @@ static bool embrace_load_plugins (Embrace *e)
 
 	assert (e);
 
-	snprintf (path, sizeof (path), "%s/.e/apps/" PACKAGE "/plugins",
-	          getenv ("HOME"));
+	embrace_expand_path ("~/.e/apps/" PACKAGE "/plugins",
+	                     path, sizeof (path));
 
 	load_plugins (e, path);
 	load_plugins (e, PLUGIN_DIR);
