@@ -677,6 +677,7 @@ evbox_buttonrelease_cb(GtkWidget * widget,
     for (l = list; l; l = l->next) {
       obj = ALB_OBJECT(l->data);
       alb_object_resize_done(obj);
+      alb_document_render_updates(doc, 1);
     }
     gib_list_free(list);
     gtk_object_set_data_full(GTK_OBJECT(widget), "resizelist", NULL, NULL);
