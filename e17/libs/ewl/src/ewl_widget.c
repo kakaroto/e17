@@ -1067,7 +1067,7 @@ void ewl_widget_realize_cb(Ewl_Widget * w, void *ev_data, void *user_data)
 		 * Load the theme object
 		 */
 		w->theme_object = edje_object_add(emb->evas);
-		
+		evas_object_repeat_events_set(w->theme_object, 1);
 		edje_object_file_set(w->theme_object, i, group);
 		FREE(group);
 	}

@@ -28,7 +28,7 @@ int ewl_theme_init(void)
 	struct stat     st;
 	char            theme_db_path[PATH_MAX];
 	char           *home;
-
+	
 	DENTER_FUNCTION(DLEVEL_STABLE);
 
 	/*
@@ -121,6 +121,29 @@ int ewl_theme_init(void)
 	if (!theme_path) {
 		snprintf(theme_db_path, PATH_MAX, PACKAGE_DATA_DIR
 				"/themes/%s.eet", theme_name);
+		if (((stat(theme_db_path, &st)) == 0) &&
+				S_ISREG(st.st_mode)) {
+			theme_path = strdup(theme_db_path);
+		}
+	}
+
+	/*
+	 * see if they gave a full path to the theme
+	 */
+	if (!theme_path) {
+		if (theme_name[0] != '/') {
+			char   *cwd;
+
+			cwd = getenv("PWD");
+			if (cwd != NULL) 
+				snprintf(theme_db_path, PATH_MAX, "%s/%s", cwd, theme_name);
+			else
+				snprintf(theme_db_path, PATH_MAX, "%s", theme_name);
+
+		} else {
+			snprintf(theme_db_path, PATH_MAX, "%s", theme_name);
+		}
+
 		if (((stat(theme_db_path, &st)) == 0) &&
 				S_ISREG(st.st_mode)) {
 			theme_path = strdup(theme_db_path);
