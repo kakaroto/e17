@@ -187,6 +187,9 @@ Masahiko Mori <masa@cthulhu.engr.sgi.com>
 Laurence J. Lane <ljlane@debian.org>
 	minor stuff no one ever notices
 
+Matt Wilson <msw@redhat.com>
+	dox alpha patch
+
 (Real name?) <monkeyiq@flashmail.com>
     Patch for the option to position windows
     centered under the mouse pointer.

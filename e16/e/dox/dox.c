@@ -47,7 +47,7 @@
 
 #include "dox.h"
 
-#ifdef __alpha__				/* gets rid of some misalignment in GCC */
+#if defined(__alpha__) && defined(__GNUC__) && ((__GNUC__ == 2) && (__GNUC_MINOR__ < 96)) /* gets rid of some misalignment in GCC */
 #pragma 2
 #endif
 
