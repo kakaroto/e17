@@ -127,18 +127,16 @@ void e_container_empty (Evas_Object *container)
   if (!cont)
     return;
 
-  for (l = cont->elements; l; l = l->next)
+  while (cont->elements)
   {
-    Container_Element *el = l->data;
+    Container_Element *el = cont->elements->data;
 
-    printf ("removing %p\n", el->obj);
-    printf ("not implemented yet!\n");
-
-    /*
-    e_container_element_destroy (container, el->obj);
-    */
+    evas_object_del(el->obj);
+    evas_object_del(el->grabber);
+	
+    cont->elements = evas_list_remove(cont->elements, el);
+    free(el);
   }
-
 }
 
 

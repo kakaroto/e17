@@ -104,17 +104,7 @@ _container_add(Evas_Object *obj)
 void
 _container_del(Evas_Object *obj)
 {
-  Container *data;
-  Evas_List *l;
-  
-  data = evas_object_smart_data_get(obj);
-
-  for (l = data->elements; l; l = l->next)
-  {
-    Container_Element *el = l->data;
-    evas_object_del(el->obj);
-    evas_object_del(el->grabber);
-  }
+  e_container_empty(obj);
 }
 
 void
