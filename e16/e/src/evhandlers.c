@@ -666,7 +666,7 @@ HandleDestroy(XEvent * ev)
    ewin = RemoveItem(NULL, win, LIST_FINDBY_ID, LIST_TYPE_EWIN);
    if (ewin)
      {
-	EwinDestroy(ewin);
+	EwinEventDestroy(ewin);
 	EDBUG_RETURN_;
      }
 

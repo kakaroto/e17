@@ -198,8 +198,6 @@ PagerCreate(void)
    p->pmap = ECreatePixmap(disp, p->win, p->w, p->h, root.depth);
    p->bgpmap = ECreatePixmap(disp, p->win, p->w / ax, p->h / ay, root.depth);
    ESetWindowBackgroundPixmap(disp, p->win, p->pmap);
-   XSelectInput(disp, p->win,
-		ButtonPressMask | ButtonReleaseMask | PointerMotionMask);
    p->hi_win = ECreateWindow(root.win, 0, 0, 3, 3, 0);
    p->hi_visible = 0;
    p->hi_ewin = NULL;
@@ -345,6 +343,12 @@ PagerShow(Pager * p)
 	int                 ax, ay, w, h;
 	Snapshot           *sn;
 	double              aspect;
+
+#if 1				/* Do we need this? */
+	ewin->client.event_mask |=
+	   ButtonPressMask | ButtonReleaseMask | PointerMotionMask;
+	XSelectInput(disp, p->win, ewin->client.event_mask);
+#endif
 
 	aspect = ((double)root.w) / ((double)root.h);
 	GetAreaSize(&ax, &ay);

@@ -877,6 +877,7 @@ typedef struct _winclient
    char                mwm_func_maximize;
    char                mwm_func_close;
    unsigned int        app_state;
+   long                event_mask;
 }
 WinClient;
 
@@ -1730,8 +1731,7 @@ void                RealiseEwinWinpart(EWin * ewin, int i);
 void                ChangeEwinWinpart(EWin * ewin, int i);
 void                EwinBorderDraw(EWin * ewin, int do_shape, int queue_off);
 int                 ChangeEwinWinpartContents(EWin * ewin, int i);
-EWin               *EwinCreate(void);
-void                EwinDestroy(EWin * ewin);
+void                EwinEventDestroy(EWin * ewin);
 void                EwinEventMap(EWin * ewin);
 void                EwinEventUnmap(EWin * ewin);
 void                EwinSetArea(EWin * ewin, int ax, int ay);

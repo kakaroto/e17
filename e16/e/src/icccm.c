@@ -392,19 +392,12 @@ ICCCM_Adopt(EWin * ewin)
 {
    Window              win = ewin->client.win;
    unsigned long       c[2] = { 0, 0 };
-   XWindowAttributes   att;
 
    EDBUG(6, "ICCCM_Adopt");
 
    if (!ewin->internal)
       XSetWindowBorderWidth(disp, win, 0);
    EReparentWindow(disp, win, ewin->win_container, 0, 0);
-   XGetWindowAttributes(disp, win, &att);
-   XSelectInput(disp, win,
-		att.your_event_mask | PropertyChangeMask | EnterWindowMask |
-		LeaveWindowMask | FocusChangeMask | ResizeRedirectMask |
-		StructureNotifyMask | ColormapChangeMask);
-   XShapeSelectInput(disp, win, ShapeNotifyMask);
    c[0] = (ewin->client.start_iconified) ? IconicState : NormalState;
    XChangeProperty(disp, win, E_XA_WM_STATE, E_XA_WM_STATE, 32, PropModeReplace,
 		   (unsigned char *)c, 2);

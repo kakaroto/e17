@@ -23,11 +23,32 @@
 #include "E.h"
 #include <sys/time.h>
 
+#define EWIN_TOP_EVENT_MASK \
+  (ButtonPressMask | ButtonReleaseMask | \
+   EnterWindowMask | LeaveWindowMask | PointerMotionMask | \
+   StructureNotifyMask)
+#define EWIN_CONTAINER_EVENT_MASK \
+  (ButtonPressMask | ButtonReleaseMask | \
+   StructureNotifyMask | ResizeRedirectMask | \
+   SubstructureNotifyMask | SubstructureRedirectMask)
+#define EWIN_BORDER_PART_EVENT_MASK \
+  (KeyPressMask | KeyReleaseMask | ButtonPressMask | ButtonReleaseMask | \
+   EnterWindowMask | LeaveWindowMask | PointerMotionMask | ExposureMask)
+#define EWIN_BORDER_TITLE_EVENT_MASK \
+  (EWIN_BORDER_PART_EVENT_MASK | ExposureMask)
+
+#define EWIN_CLIENT_EVENT_MASK \
+  (EnterWindowMask | LeaveWindowMask | FocusChangeMask | \
+   StructureNotifyMask | ResizeRedirectMask | \
+   PropertyChangeMask | ColormapChangeMask)
+
 static void         EwinSetBorderInit(EWin * ewin);
 static void         EwinSetBorderTo(EWin * ewin, Border * b);
 static void         DetermineEwinArea(EWin * ewin);
-EWin               *Adopt(Window win);
-EWin               *AdoptInternal(Window win, Border * border, int type);
+static EWin        *EwinCreate(Window win);
+static EWin        *Adopt(Window win);
+static EWin        *AdoptInternal(Window win, Border * border, int type);
+static void         EwinEventsConfigure(EWin * ewin, int mode);
 
 void
 DetermineEwinFloat(EWin * ewin, int dx, int dy)
@@ -1092,15 +1113,16 @@ HonorIclass(char *s, int id)
    EDBUG_RETURN_;
 }
 
-EWin               *
+static EWin        *
 Adopt(Window win)
 {
    EWin               *ewin;
 
    EDBUG(4, "Adopt");
+
    GrabX();
-   ewin = EwinCreate();
-   ewin->client.win = win;
+   ewin = EwinCreate(win);
+
    ICCCM_AdoptStart(ewin);
    ICCCM_GetTitle(ewin, 0);
    ICCCM_GetHints(ewin, 0);
@@ -1114,14 +1136,13 @@ Adopt(Window win)
    MatchEwinToSnapInfo(ewin);
    ICCCM_GetEInfo(ewin);
 
-   AddItem(ewin, "EWIN", ewin->client.win, LIST_TYPE_EWIN);
-
    if (!ewin->border)
       EwinSetBorderInit(ewin);
    EwinSetBorderTo(ewin, NULL);
 
    ICCCM_MatchSize(ewin);
    ICCCM_Adopt(ewin);
+   EwinEventsConfigure(ewin, 0);
 
    UngrabX();
 
@@ -1134,15 +1155,16 @@ Adopt(Window win)
    EDBUG_RETURN(ewin);
 }
 
-EWin               *
+static EWin        *
 AdoptInternal(Window win, Border * border, int type)
 {
    EWin               *ewin;
 
    EDBUG(4, "AdoptInternal");
+
    GrabX();
-   ewin = EwinCreate();
-   ewin->client.win = win;
+   ewin = EwinCreate(win);
+
    ewin->border = border;
    ewin->internal = 1;
    ewin->type = type;
@@ -1176,14 +1198,13 @@ AdoptInternal(Window win, Border * border, int type)
    ICCCM_GetGeoms(ewin, 0);
    MatchEwinToSnapInfo(ewin);
 
-   AddItem(ewin, "EWIN", ewin->client.win, LIST_TYPE_EWIN);
-
    if (!ewin->border)
       EwinSetBorderInit(ewin);
    EwinSetBorderTo(ewin, NULL);
 
    ICCCM_MatchSize(ewin);
    ICCCM_Adopt(ewin);
+   EwinEventsConfigure(ewin, 0);
 
    UngrabX();
 
@@ -1196,8 +1217,8 @@ AdoptInternal(Window win, Border * border, int type)
    EDBUG_RETURN(ewin);
 }
 
-EWin               *
-EwinCreate(void)
+static EWin        *
+EwinCreate(Window win)
 {
    EWin               *ewin;
    XSetWindowAttributes att;
@@ -1248,23 +1269,26 @@ EwinCreate(void)
    ewin->area_x = -1;
    ewin->area_y = -1;
 
-   att.event_mask =
-      StructureNotifyMask | ResizeRedirectMask | ButtonPressMask |
-      ButtonReleaseMask | SubstructureNotifyMask | SubstructureRedirectMask;
+   att.event_mask = EWIN_CONTAINER_EVENT_MASK;
    att.do_not_propagate_mask = ButtonPressMask | ButtonReleaseMask;
    XChangeWindowAttributes(disp, ewin->win_container,
 			   CWEventMask | CWDontPropagate, &att);
    EMapWindow(disp, ewin->win_container);
-   att.event_mask =
-      StructureNotifyMask | PointerMotionMask | ButtonPressMask |
-      ButtonReleaseMask | EnterWindowMask | LeaveWindowMask;
+
+   att.event_mask = EWIN_TOP_EVENT_MASK;
    att.do_not_propagate_mask = ButtonPressMask | ButtonReleaseMask;
-   XChangeWindowAttributes(disp, ewin->win, CWEventMask | CWDontPropagate,
-			   &att);
+   XChangeWindowAttributes(disp, ewin->win,
+			   CWEventMask | CWDontPropagate, &att);
    FocusEwinSetGrabs(ewin);
    GrabButtonGrabs(ewin);
    EwinListAdd(&EwinListStack, ewin);
    EwinListAdd(&EwinListFocus, ewin);
+
+   ewin->client.win = win;
+   ewin->client.event_mask = EWIN_CLIENT_EVENT_MASK;
+   AddItem(ewin, "EWIN", win, LIST_TYPE_EWIN);
+
+   XShapeSelectInput(disp, win, ShapeNotifyMask);
 
    EDBUG_RETURN(ewin);
 }
@@ -1279,7 +1303,7 @@ EwinRemoveFromGroups(EWin * ewin)
       RemoveEwinFromGroup(ewin, ewin->groups[0]);
 }
 
-void
+static void
 EwinDestroy(EWin * ewin)
 {
    EWin               *ewin2;
@@ -1343,6 +1367,12 @@ EwinDestroy(EWin * ewin)
    Efree(ewin);
 
    EDBUG_RETURN_;
+}
+
+void
+EwinEventDestroy(EWin * ewin)
+{
+   EwinDestroy(ewin);
 }
 
 void
@@ -1519,20 +1549,11 @@ EwinSetBorderTo(EWin * ewin, Border * b)
 	      * OwnerGrabButtonMask
 	      */
 	     if (b->part[i].flags & FLAG_TITLE)
-	       {
-		  XSelectInput(disp, ewin->bits[i].win,
-			       ExposureMask | KeyPressMask | KeyReleaseMask |
-			       ButtonPressMask | ButtonReleaseMask |
-			       EnterWindowMask | LeaveWindowMask |
-			       PointerMotionMask);
-	       }
+		XSelectInput(disp, ewin->bits[i].win,
+			     EWIN_BORDER_TITLE_EVENT_MASK);
 	     else
-	       {
-		  XSelectInput(disp, ewin->bits[i].win,
-			       KeyPressMask | KeyReleaseMask | ButtonPressMask |
-			       ButtonReleaseMask | EnterWindowMask |
-			       LeaveWindowMask | PointerMotionMask);
-	       }
+		XSelectInput(disp, ewin->bits[i].win,
+			     EWIN_BORDER_PART_EVENT_MASK);
 	     ewin->bits[i].x = -10;
 	     ewin->bits[i].y = -10;
 	     ewin->bits[i].w = -10;
@@ -3171,87 +3192,38 @@ static void
 EwinEventsConfigure(EWin * ewin, int mode)
 {
    int                 i;
+   long                emask;
 
    if (mode)
      {
-	XSelectInput(disp, ewin->win,
-		     SubstructureNotifyMask | SubstructureRedirectMask |
-		     PropertyChangeMask | ResizeRedirectMask);
+	emask = ~(EnterWindowMask | LeaveWindowMask);
 
-	if (ewin->pager)
-	  {
-#if 0				/* ??? */
-	     XSelectInput(disp, ewin->client.win,
-			  PropertyChangeMask | FocusChangeMask |
-			  ResizeRedirectMask | StructureNotifyMask |
-			  ColormapChangeMask | ButtonPressMask |
-			  ButtonReleaseMask | PointerMotionMask);
-#endif
-	  }
-	else if (ewin->dialog)
-	   XSelectInput(disp, ewin->client.win,
-			PropertyChangeMask | FocusChangeMask |
-			ResizeRedirectMask | StructureNotifyMask |
-			ColormapChangeMask | ExposureMask | KeyPressMask);
-	else
-	   XSelectInput(disp, ewin->client.win,
-			PropertyChangeMask | FocusChangeMask |
-			ResizeRedirectMask | StructureNotifyMask |
-			ColormapChangeMask);
+	XSelectInput(disp, ewin->win, EWIN_TOP_EVENT_MASK & emask);
+	XSelectInput(disp, ewin->client.win, ewin->client.event_mask & emask);
 
 	for (i = 0; i < ewin->border->num_winparts; i++)
 	  {
 	     if (ewin->border->part[i].flags & FLAG_TITLE)
 		XSelectInput(disp, ewin->bits[i].win,
-			     ExposureMask | ButtonPressMask |
-			     ButtonReleaseMask);
+			     EWIN_BORDER_TITLE_EVENT_MASK & emask);
 	     else
 		XSelectInput(disp, ewin->bits[i].win,
-			     ButtonPressMask | ButtonReleaseMask);
+			     EWIN_BORDER_PART_EVENT_MASK & emask);
 	  }
      }
    else
      {
-	XSelectInput(disp, ewin->win,
-		     SubstructureNotifyMask | SubstructureRedirectMask |
-		     EnterWindowMask | LeaveWindowMask | PointerMotionMask
-		     | PropertyChangeMask | ResizeRedirectMask |
-		     ButtonPressMask | ButtonReleaseMask);
-
-	if (ewin->pager)
-	   XSelectInput(disp, ewin->client.win,
-			PropertyChangeMask | EnterWindowMask |
-			LeaveWindowMask | FocusChangeMask |
-			ResizeRedirectMask | StructureNotifyMask |
-			ColormapChangeMask | ButtonPressMask |
-			ButtonReleaseMask | PointerMotionMask);
-	else if (ewin->dialog)
-	   XSelectInput(disp, ewin->client.win,
-			PropertyChangeMask | EnterWindowMask |
-			LeaveWindowMask | FocusChangeMask |
-			ResizeRedirectMask | StructureNotifyMask |
-			ColormapChangeMask | ExposureMask | KeyPressMask);
-	else
-	   XSelectInput(disp, ewin->client.win,
-			PropertyChangeMask | EnterWindowMask |
-			LeaveWindowMask | FocusChangeMask |
-			ResizeRedirectMask | StructureNotifyMask |
-			ColormapChangeMask);
+	XSelectInput(disp, ewin->win, EWIN_TOP_EVENT_MASK);
+	XSelectInput(disp, ewin->client.win, ewin->client.event_mask);
 
 	for (i = 0; i < ewin->border->num_winparts; i++)
 	  {
 	     if (ewin->border->part[i].flags & FLAG_TITLE)
 		XSelectInput(disp, ewin->bits[i].win,
-			     ExposureMask | KeyPressMask | KeyReleaseMask |
-			     ButtonPressMask | ButtonReleaseMask |
-			     EnterWindowMask | LeaveWindowMask |
-			     PointerMotionMask);
+			     EWIN_BORDER_TITLE_EVENT_MASK);
 	     else
 		XSelectInput(disp, ewin->bits[i].win,
-			     KeyPressMask | KeyReleaseMask |
-			     ButtonPressMask | ButtonReleaseMask |
-			     EnterWindowMask | LeaveWindowMask |
-			     PointerMotionMask);
+			     EWIN_BORDER_PART_EVENT_MASK);
 	  }
      }
 }

@@ -323,6 +323,11 @@ MenuShow(Menu * m, char noshow)
 			      MenuEwinInit);
    if (ewin)
      {
+#if 0				/* Do we need this? */
+	ewin->client.event_mask |= PointerMotionMask;
+	XSelectInput(disp, m->win, ewin->client.event_mask);
+#endif
+
 	ewin->head = head_num;
 	if (Conf.menuslide)
 	   InstantShadeEwin(ewin, 0);
@@ -651,8 +656,6 @@ MenuRealize(Menu * m)
    maxx2 = 0;
    has_i = 0;
    has_s = 0;
-   att.event_mask = PointerMotionMask;
-   XChangeWindowAttributes(disp, m->win, CWEventMask, &att);
    att.event_mask =
       ButtonPressMask | ButtonReleaseMask | EnterWindowMask | LeaveWindowMask
       | PointerMotionMask;

@@ -25,6 +25,11 @@
 #include <time.h>
 #include <sys/time.h>
 
+#define EDESK_EVENT_MASK \
+  (KeyPressMask | KeyReleaseMask | ButtonPressMask | ButtonReleaseMask | \
+   EnterWindowMask | LeaveWindowMask | PointerMotionMask | ButtonMotionMask | \
+   SubstructureNotifyMask | SubstructureRedirectMask | PropertyChangeMask)
+
 void
 ChangeNumberOfDesktops(int quantity)
 {
@@ -283,12 +288,7 @@ InitDesktopBgs(void)
 	  {
 	     d->win =
 		ECreateWindow(root.win, -root.w, -root.h, root.w, root.h, 0);
-	     XSelectInput(disp, d->win,
-			  SubstructureNotifyMask | ButtonPressMask |
-			  ButtonReleaseMask | EnterWindowMask | LeaveWindowMask
-			  | ButtonMotionMask | PropertyChangeMask |
-			  SubstructureRedirectMask | KeyPressMask |
-			  KeyReleaseMask | PointerMotionMask);
+	     XSelectInput(disp, d->win, EDESK_EVENT_MASK);
 	  }
 	at = XInternAtom(disp, "ENLIGHTENMENT_DESKTOP", False);
 	XChangeProperty(disp, d->win, at, XA_CARDINAL, 32, PropModeReplace,
@@ -1293,12 +1293,7 @@ DesktopsEventsConfigure(int mode)
 	 PropertyChangeMask | SubstructureRedirectMask |
 	 ButtonPressMask | ButtonReleaseMask;
    else
-      event_mask =
-	 SubstructureNotifyMask | ButtonPressMask |
-	 ButtonReleaseMask | EnterWindowMask | LeaveWindowMask |
-	 ButtonMotionMask | PropertyChangeMask |
-	 SubstructureRedirectMask | KeyPressMask | KeyReleaseMask
-	 | PointerMotionMask;
+      event_mask = EDESK_EVENT_MASK;
 
    for (i = 0; i < ENLIGHTENMENT_CONF_NUM_DESKTOPS; i++)
       XSelectInput(disp, desks.desk[i].win, event_mask);

@@ -685,11 +685,13 @@ ShowDialog(Dialog * d)
 
    ewin = AddInternalToFamily(d->win, NULL, EWIN_TYPE_DIALOG, d,
 			      DialogEwinInit);
-   XSelectInput(disp, d->win,
-		ExposureMask | PointerMotionMask | EnterWindowMask |
-		LeaveWindowMask | FocusChangeMask | KeyPressMask);
    if (ewin)
      {
+#if 0				/* Do we need this? */
+	ewin->client.event_mask |=
+	   KeyPressMask | PointerMotionMask | ExposureMask;
+	XSelectInput(disp, d->win, ewin->client.event_mask);
+#endif
 	sn = FindSnapshot(ewin);
 	/* get the size right damnit! */
 	if (sn && sn->use_wh)
