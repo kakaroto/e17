@@ -849,10 +849,10 @@ SetupUserInitialization()
      {
 	mode.firsttime = 1;
 	f = fopen(file, "w");
-	fprintf(f, "Congradulations, you have run enlightenment before.\n");
-	fprintf(f, "Removing this file and *.menu in this directory\n");
-	fprintf(f, "will cause enlightenment to regenerate them, as\n");
-	fprintf(f, "run the documentation browser\n");
+	fprintf(f, "Congratulations, you have run enlightenment before.\n");
+	fprintf(f, "Removing this file and the *.menu files in this\n");
+	fprintf(f, "directory will cause enlightenment to regenerate them\n");
+	fprintf(f, "and run the documentation browser.\n");
 	fclose(f);
 	if (fork())
 	   EDBUG_RETURN_;
