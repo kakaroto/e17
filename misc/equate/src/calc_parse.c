@@ -1167,7 +1167,7 @@ yyreturn:
 }
 #line 53 "calc.y"
 
-#include "lex.yy.c"
+#include "calc_lex.c"
 
 void
 yyerror(const char *s)

@@ -1,4 +1,4 @@
 #!/bin/sh -e
-flex calc.l
-bison calc.y
-#gcc -o calc.o calc.tab.c -c
+flex -ocalc_lex.c calc.l
+bison calc.y -o calc_parse.c
+

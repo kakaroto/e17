@@ -51,7 +51,7 @@ exp:      NUM                  { $$ = $1;                         }
 ;
 /* End of grammar */
 %%
-#include "lex.yy.c"
+#include "calc_lex.c"
 
 void
 yyerror(const char *s)

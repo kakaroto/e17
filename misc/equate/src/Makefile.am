@@ -11,7 +11,7 @@ bin_PROGRAMS = equate
 
 equate_SOURCES = \
 gui.c \
-calc.tab.c \
+calc_parse.c \
 edje.c \
 main.c
 
