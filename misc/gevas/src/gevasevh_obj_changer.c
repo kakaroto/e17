@@ -28,7 +28,7 @@
  *
  */
 
-#include "evas-config.h"
+#include "config.h"
 /* If this widget was in an application or library, 
  * this i18n stuff would be in some other header file.
  * (in Gtk, gtkintl.h; in the Gnome libraries, libgnome/gnome-i18nP.h; 
