@@ -212,7 +212,8 @@ void ewl_notebook_remove_first_page(Ewl_Notebook * n)
 	if (page) {
 		ewl_container_remove_child(c, page);
 		tab = ewl_widget_get_data(page, n);
-		ewl_widget_destroy(tab);
+		if (tab)
+			ewl_widget_destroy(tab);
 		if (page == n->visible_page) {
 			n->visible_page = NULL;
 			ewl_notebook_set_visible_page(n, 0);
@@ -256,7 +257,8 @@ void ewl_notebook_remove_last_page(Ewl_Notebook * n)
 	if (page) {
 		ewl_container_remove_child(c, page);
 		tab = ewl_widget_get_data(page, n);
-		ewl_widget_destroy(tab);
+		if (tab)
+			ewl_widget_destroy(tab);
 		if (page == n->visible_page) {
 			n->visible_page = NULL;
 			ewl_notebook_set_visible_page(n, 0);
@@ -300,7 +302,8 @@ void ewl_notebook_remove_page(Ewl_Notebook * n, int i)
 	if (page) {
 		ewl_container_remove_child(c, page);
 		tab = ewl_widget_get_data(page, n);
-		ewl_widget_destroy(tab);
+		if (tab)
+			ewl_widget_destroy(tab);
 		if (page == n->visible_page) {
 			n->visible_page = NULL;
 			ewl_notebook_set_visible_page(n, 0);
@@ -353,8 +356,9 @@ void ewl_notebook_remove_visible(Ewl_Notebook * n)
 		 */
 		ewl_container_remove_child(c, page);
 		tab = ewl_widget_get_data(page, n);
+		if (tab)
+			ewl_widget_destroy(tab);
 		ewl_widget_destroy(page);
-		ewl_widget_destroy(tab);
 
 		/*
 		 * Set a usable visible page.
