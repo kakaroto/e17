@@ -89,10 +89,10 @@ void geist_imlib_render_image_part_on_drawable_at_size_with_rotation(Drawable
                                                                      alias);
 void geist_imlib_image_fill_rectangle(Imlib_Image im, int x, int y, int w,
                                       int h, int r, int g, int b, int a);
-void geist_imlib_text_draw(Imlib_Image im, Imlib_Font fn, int x, int y,
+void geist_imlib_text_draw(Imlib_Image im, Imlib_Font fn, geist_style *s,int x, int y,
                            char *text, Imlib_Text_Direction dir, int r, int g,
                            int b, int a);
-void geist_imlib_get_text_size(Imlib_Font fn, char *text, int *w, int *h,
+void geist_imlib_get_text_size(Imlib_Font fn, char *text, geist_style *s, int *w, int *h,
                                Imlib_Text_Direction dir);
 Imlib_Image geist_imlib_clone_image(Imlib_Image im);
 char *geist_imlib_image_format(Imlib_Image im);

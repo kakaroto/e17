@@ -62,6 +62,10 @@ static geist_list *geist_parse_point_list_xml(xmlDocPtr doc, xmlNsPtr ns,
                                               xmlNodePtr cur);
 static geist_point *geist_point_parse_xml(xmlDocPtr doc, xmlNsPtr ns,
                                           xmlNodePtr cur);
+static geist_style *geist_style_parse_xml(xmlDocPtr doc, xmlNsPtr ns,
+                                          xmlNodePtr cur);
+static geist_list *
+geist_style_bits_parse_xml(xmlDocPtr doc, xmlNsPtr ns, xmlNodePtr cur);
 
 
 static void geist_save_layer_xml(geist_layer * layer, xmlNodePtr parent,
@@ -87,6 +91,11 @@ static void geist_save_point_xml(geist_point * point, xmlNodePtr parent,
 static void geist_save_poly_xml(geist_poly * poly, xmlNodePtr parent,
 
                                 xmlNsPtr ns);
+static void geist_save_style_xml(geist_text * txt, xmlNodePtr parent,
+
+                                 xmlNsPtr ns);
+static void geist_save_style_bit_xml(geist_style_bit * b, xmlNodePtr parent,
+                                     xmlNsPtr ns);
 
 /* Utility functions */
 int geist_xml_read_int(xmlNodePtr cur, char *key, int def);
@@ -464,6 +473,7 @@ geist_parse_poly_xml(xmlDocPtr doc, xmlNsPtr ns, xmlNodePtr cur)
    int filled, closed, r, g, b, a;
    geist_list *points = NULL;
    geist_poly *poly;
+
    D_ENTER(3);
 
    a = geist_xml_read_int(cur, "A", 255);
@@ -522,7 +532,9 @@ geist_point_parse_xml(xmlDocPtr doc, xmlNsPtr ns, xmlNodePtr cur)
 
    D_ENTER(3);
 
-   ret = geist_point_new(geist_xml_read_int(cur, "X", 1), geist_xml_read_int(cur, "Y", 1));
+   ret =
+      geist_point_new(geist_xml_read_int(cur, "X", 1),
+                      geist_xml_read_int(cur, "Y", 1));
 
    D_RETURN(3, ret);
 }
@@ -531,19 +543,15 @@ static geist_object *
 geist_parse_text_xml(xmlDocPtr doc, xmlNsPtr ns, xmlNodePtr cur)
 {
    geist_object *ret = NULL;
-   int r, g, b, a;
    char *fontname = NULL;
    int fontsize = 0;
    char *text = NULL;
    int wordwrap = 0;
    int justification = 0;
+   geist_style *style = NULL;
 
    D_ENTER(3);
 
-   a = geist_xml_read_int(cur, "A", 255);
-   r = geist_xml_read_int(cur, "R", 255);
-   g = geist_xml_read_int(cur, "G", 255);
-   b = geist_xml_read_int(cur, "B", 255);
    fontsize = geist_xml_read_int(cur, "Fontsize", 12);
    wordwrap = geist_xml_read_int(cur, "Wordwrap", 1);
 
@@ -562,6 +570,8 @@ geist_parse_text_xml(xmlDocPtr doc, xmlNsPtr ns, xmlNodePtr cur)
          justification = geist_text_get_justification_from_string(temp);
          xmlFree(temp);
       }
+      else if ((!strcmp(cur->name, "Style")) && (cur->ns == ns))
+         style = geist_style_parse_xml(doc, ns, cur);
       cur = cur->next;
    }
 
@@ -569,8 +579,65 @@ geist_parse_text_xml(xmlDocPtr doc, xmlNsPtr ns, xmlNodePtr cur)
    {
       ret =
          geist_text_new_with_text(0, 0, fontname, fontsize, text,
-                                  justification, wordwrap, a, r, g, b);
+                                  justification, wordwrap, 0, 0, 0, 0);
+      GEIST_TEXT(ret)->style = style;
       geist_text_update_image(GEIST_TEXT(ret), FALSE);
+   }
+
+   D_RETURN(3, ret);
+}
+
+static geist_style *
+geist_style_parse_xml(xmlDocPtr doc, xmlNsPtr ns, xmlNodePtr cur)
+{
+   geist_style *ret = NULL;
+   char *name = NULL;
+   geist_list *bits = NULL;
+
+   D_ENTER(3);
+
+   cur = cur->children;
+   while (cur != NULL)
+   {
+      if ((!strcmp(cur->name, "Bits")) && (cur->ns == ns))
+      {
+         bits = geist_style_bits_parse_xml(doc, ns, cur);
+      }
+      else if ((!strcmp(cur->name, "Name")) && (cur->ns == ns))
+         name = xmlNodeGetContent(cur->children);
+      cur = cur->next;
+   }
+
+   ret = geist_style_new(name);
+   xmlFree(name);
+   ret->bits = bits;
+
+   D_RETURN(3, ret);
+}
+
+static geist_list *
+geist_style_bits_parse_xml(xmlDocPtr doc, xmlNsPtr ns, xmlNodePtr cur)
+{
+   geist_list *ret = NULL;
+
+   D_ENTER(3);
+
+   cur = cur->children;
+   while (cur != NULL)
+   {
+      int x_off, y_off, r, g, b, a;
+
+      if ((!strcmp(cur->name, "Bit")) && (cur->ns == ns))
+      {
+         x_off = geist_xml_read_int(cur, "X_Offset", 0);
+         y_off = geist_xml_read_int(cur, "Y_Offset", 0);
+         a = geist_xml_read_int(cur, "A", 255);
+         r = geist_xml_read_int(cur, "R", 255);
+         g = geist_xml_read_int(cur, "G", 255);
+         b = geist_xml_read_int(cur, "B", 255);
+         ret = geist_list_add_end(ret, geist_style_bit_new(x_off, y_off, r,g,b,a));
+      }
+      cur = cur->next;
    }
 
    D_RETURN(3, ret);
@@ -772,14 +839,50 @@ geist_save_text_xml(geist_text * txt, xmlNodePtr parent, xmlNsPtr ns)
 
    xmlNewTextChild(parent, ns, "Fontname", txt->fontname);
    geist_xml_write_int(parent, "Fontsize", txt->fontsize);
-   xmlNewTextChild(parent, ns, "Text", txt->text);
-   geist_xml_write_int(parent, "R", txt->r);
-   geist_xml_write_int(parent, "G", txt->g);
-   geist_xml_write_int(parent, "B", txt->b);
-   geist_xml_write_int(parent, "A", txt->a);
    geist_xml_write_int(parent, "Wordwrap", txt->wordwrap);
+   xmlNewTextChild(parent, ns, "Text", txt->text);
    xmlNewTextChild(parent, ns, "Justification",
                    geist_text_get_justification_string(txt->justification));
+   geist_save_style_xml(txt, parent, ns);
+
+   D_RETURN_(3);
+}
+
+static void
+geist_save_style_xml(geist_text * txt, xmlNodePtr parent, xmlNsPtr ns)
+{
+   xmlNodePtr subtree;
+   geist_list *l;
+
+   D_ENTER(3);
+   subtree = xmlNewChild(parent, ns, "Style", NULL);
+   xmlNewTextChild(subtree, ns, "Name", txt->style->name);
+
+   subtree = xmlNewChild(subtree, ns, "Bits", NULL);
+   l = txt->style->bits;
+   while (l)
+   {
+      geist_save_style_bit_xml(l->data, subtree, ns);
+      l = l->next;
+   }
+
+   D_RETURN_(3);
+}
+
+static void
+geist_save_style_bit_xml(geist_style_bit * b, xmlNodePtr parent, xmlNsPtr ns)
+{
+   xmlNodePtr subtree;
+
+   D_ENTER(3);
+
+   subtree = xmlNewChild(parent, ns, "Bit", NULL);
+   geist_xml_write_int(subtree, "X_Offset", b->x_offset);
+   geist_xml_write_int(subtree, "Y_Offset", b->y_offset);
+   geist_xml_write_int(subtree, "R", b->r);
+   geist_xml_write_int(subtree, "G", b->g);
+   geist_xml_write_int(subtree, "B", b->b);
+   geist_xml_write_int(subtree, "A", b->a);
 
    D_RETURN_(3);
 }

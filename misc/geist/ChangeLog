@@ -1,3 +1,9 @@
+Fri Oct 20 00:22:54 2000  Tom Gilbert  <gilbertt@linuxbrit.co.uk>
+
+	* Working text styles. There is no UI for editing/creating these
+	yet. There will be. For now, check out the outlined, soft-shadowed
+	text in the test.xml demo :-)
+
 Tue Oct 17 13:52:16 2000  Tom Gilbert  <gilbertt@linuxbrit.co.uk>
 
 	* The start of some text styles.

@@ -31,6 +31,7 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 #include "geist.h"
 #include "geist_imlib.h"
 #include "geist_image.h"
+#include "geist_style.h"
 
 #define GEIST_TEXT(O) ((geist_text *) O)
 
@@ -53,9 +54,9 @@ struct __geist_text
    geist_list *lines;
    Imlib_Font fn;
    Imlib_Image im;
-   int r, g, b, a;
    int wordwrap;
    int justification;
+   geist_style *style;
 };
 
 geist_object *geist_text_new(void);

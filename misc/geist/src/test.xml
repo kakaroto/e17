@@ -97,24 +97,6 @@
 <geist:Sizemode>Stretch</geist:Sizemode>
 <geist:Alignment>None</geist:Alignment>
 </geist:Object>
-<geist:Object X="246" Y="16" W="239" H="30" Alias="1" Visible="16" Fontsize="23" R="255" G="24" B="100" A="128" Wordwrap="1">
-<geist:Type>Text</geist:Type>
-<geist:Name>New text</geist:Name>
-<geist:Sizemode>None</geist:Sizemode>
-<geist:Alignment>Center Both</geist:Alignment>
-<geist:Fontname>20thcent</geist:Fontname>
-<geist:Text>So this is geist...</geist:Text>
-<geist:Justification>Left</geist:Justification>
-</geist:Object>
-<geist:Object X="3" Y="413" W="239" H="16" Alias="1" Visible="16" Fontsize="11" R="100" G="100" B="255" A="255" Wordwrap="1">
-<geist:Type>Text</geist:Type>
-<geist:Name>New text</geist:Name>
-<geist:Sizemode>None</geist:Sizemode>
-<geist:Alignment>Left</geist:Alignment>
-<geist:Fontname>20thcent</geist:Fontname>
-<geist:Text>pr0n had to be in there somewhere...</geist:Text>
-<geist:Justification>Left</geist:Justification>
-</geist:Object>
 <geist:Object X="83" Y="171" W="48" H="48" Alias="1" Visible="16" Colormod_A="100" Colormod_R="100" Colormod_G="100" Colormod_B="100">
 <geist:Type>Image</geist:Type>
 <geist:Name>globe.png</geist:Name>
@@ -254,6 +236,45 @@
 <geist:Sizemode>Zoom</geist:Sizemode>
 <geist:Alignment>Center Both</geist:Alignment>
 <geist:Filename>/usr/local/share/geist/images/mush.png</geist:Filename>
+</geist:Object>
+<geist:Object X="225" Y="9" W="252" H="34" Alias="1" Visible="16" Fontsize="25" Wordwrap="1">
+<geist:Type>Text</geist:Type>
+<geist:Name>New text</geist:Name>
+<geist:Sizemode>None</geist:Sizemode>
+<geist:Alignment>Center Both</geist:Alignment>
+<geist:Fontname>20thcent</geist:Fontname>
+<geist:Text>So this is Geist</geist:Text>
+<geist:Justification>Left</geist:Justification>
+<geist:Style>
+<geist:Name>Default</geist:Name>
+<geist:Bits>
+<geist:Bit X_Offset="-3" Y_Offset="-3" R="0" G="0" B="0" A="32"/>
+<geist:Bit X_Offset="-4" Y_Offset="-3" R="0" G="0" B="0" A="16"/>
+<geist:Bit X_Offset="-2" Y_Offset="-3" R="0" G="0" B="0" A="16"/>
+<geist:Bit X_Offset="-3" Y_Offset="-2" R="0" G="0" B="0" A="16"/>
+<geist:Bit X_Offset="-3" Y_Offset="-4" R="0" G="0" B="0" A="16"/>
+<geist:Bit X_Offset="1" Y_Offset="1" R="0" G="0" B="0" A="64"/>
+<geist:Bit X_Offset="1" Y_Offset="-1" R="0" G="0" B="0" A="64"/>
+<geist:Bit X_Offset="-1" Y_Offset="-1" R="0" G="0" B="0" A="64"/>
+<geist:Bit X_Offset="-1" Y_Offset="1" R="0" G="0" B="0" A="64"/>
+<geist:Bit X_Offset="0" Y_Offset="0" R="255" G="100" B="100" A="255"/>
+</geist:Bits>
+</geist:Style>
+</geist:Object>
+<geist:Object X="5" Y="412" W="237" H="15" Alias="1" Visible="16" Fontsize="12" Wordwrap="1">
+<geist:Type>Text</geist:Type>
+<geist:Name>New text</geist:Name>
+<geist:Sizemode>None</geist:Sizemode>
+<geist:Alignment>Center Both</geist:Alignment>
+<geist:Fontname>20thcent</geist:Fontname>
+<geist:Text>There is a lot more work to do</geist:Text>
+<geist:Justification>Left</geist:Justification>
+<geist:Style>
+<geist:Name>Default</geist:Name>
+<geist:Bits>
+<geist:Bit X_Offset="0" Y_Offset="0" R="40" G="50" B="255" A="255"/>
+</geist:Bits>
+</geist:Style>
 </geist:Object>
 </geist:Objects>
 </geist:Layer>

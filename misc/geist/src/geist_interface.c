@@ -881,7 +881,7 @@ gboolean obj_addtext_cb(GtkWidget * widget, gpointer * data)
       obj =
          GEIST_OBJECT(geist_text_new_with_text
                       (50, 50, "20thcent", 12, "New Text", JUST_LEFT, TRUE,
-                       40, 40, 255, 0));
+                       255, 40, 255, 0));
       geist_document_add_object(current_doc, obj);
       row = gtk_clist_find_row_from_data(GTK_CLIST(obj_list), (gpointer) obj);
       geist_document_unselect_all(current_doc);
