@@ -14,4 +14,4 @@ libtool
 config.status
 stamp-h
 Makefile
-.icons
+efsd-config
