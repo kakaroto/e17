@@ -6,9 +6,12 @@ static void elogin_display_init(char *display);
 static void elogin_view_init(void);
 static void elogin_setup(void);
 static void elogin_create_bg(void);
+static void elogin_create_entries(void);
 static void elogin_idle(void *data);
 static void elogin_window_expose(Eevent *ev);
 static void elogin_mouse_down(Eevent *ev);
+static void elogin_key_down(Eevent *ev);
+static void elogin_key_up(Eevent *ev);
 static void elogin_handle_mouse_down(void *_data, Evas _e, Evas_Object _o, int _b, int _x, int _y);
 static void elogin_exit_clean(void);
 Elogin_Greeter *elogin_greeter_new(void);
@@ -18,11 +21,14 @@ Evas elogin_main;
 Evas_Render_Method render_method = RENDER_METHOD_ALPHA_SOFTWARE;
 Evas_Object o_bg;
 Elogin_Greeter *greeter;
+E_Entry *entry;
 int screen_width = 0;
 int screen_height = 0;
-char *greet_img = "/home/chris/devel/elogin/img/elogin_greeter.png";
-char *bg_img = "/home/chris/devel/elogin/img/bg.png";
+char *greet_img = "/home/chris/cvs/e17/misc/elogin/img/elogin_greeter.png";
+char *bg_img = "/home/chris/cvs/e17/misc/elogin/img/bg.png";
 
+#define USERNAME "yourusernamehere"
+#define PASSWORD "yourpasswordhere"
 
 /* main */
 int main(int argc, char **argv)
@@ -54,9 +60,12 @@ static void elogin_view_init(void)
 {
    Display *dsp = e_display_get();
    Window bg, ebg;
+   char *font_dir = e_config_get("fonts");
 
    e_event_filter_handler_add(EV_WINDOW_EXPOSE, elogin_window_expose);
    e_event_filter_handler_add(EV_MOUSE_DOWN, elogin_mouse_down);
+   e_event_filter_handler_add(EV_KEY_DOWN, elogin_key_down);
+   e_event_filter_handler_add(EV_KEY_UP, elogin_key_up);
    e_event_filter_idle_handler_add(elogin_idle, NULL);
 
 
@@ -71,9 +80,9 @@ static void elogin_view_init(void)
 	 216,
 	 1 * (1024 * 1024),
 	 8 * (1024 * 1024),
-	 NULL);
+	 font_dir);
    ebg = evas_get_window(elogin_main);
-   e_window_set_events(ebg, XEV_MOUSE_MOVE | XEV_BUTTON | XEV_EXPOSE);
+   e_window_set_events(ebg, XEV_MOUSE_MOVE | XEV_BUTTON | XEV_EXPOSE | XEV_KEY);
    e_window_show(ebg);
 
    e_window_show(bg);
@@ -82,9 +91,11 @@ static void elogin_view_init(void)
 static void elogin_setup(void)
 {
    elogin_create_bg();
+   elogin_create_entries();
    greeter = elogin_greeter_new();
 
-   evas_raise(elogin_main, greeter->greet_win);
+   evas_raise(elogin_main, entry);
+   evas_lower(elogin_main, greeter->greet_win);
 }
 
 Elogin_Greeter *elogin_greeter_new(void)
@@ -114,6 +125,24 @@ static void elogin_create_bg(void)
    evas_show(elogin_main, o_bg);
 }
 
+static void elogin_create_entries(void)
+{
+   entry = e_entry_new();
+   e_entry_set_evas(entry, elogin_main);
+   e_entry_set_layer(entry, 100);
+   e_entry_move(entry, 700, 300);
+   e_entry_resize(entry, 100, 24);
+   e_entry_set_focus(entry, 1);
+   e_entry_show(entry);
+   e_entry_set_text(entry, "Some Test Entry Text... Play with me!");
+   {
+      int ew, eh;
+
+      e_entry_query_max_size(entry, &ew, &eh);
+      e_entry_resize(entry, ew, eh);
+   }
+}
+
 static void elogin_idle(void *data)
 {
    evas_render(elogin_main);
@@ -135,6 +164,25 @@ static void elogin_mouse_down(Eevent *ev)
    evas_event_button_down(elogin_main, e->x, e->y, e->button);
 }
 
+static void elogin_key_down(Eevent *ev)
+{
+   Ev_Key_Down *e;
+   char *type;
+
+   e = ev->event;
+
+   if (entry)
+      e_entry_handle_keypress(entry, e);
+}
+
+static void elogin_key_up(Eevent *ev)
+{
+   Ev_Key_Up *e;
+   
+   e = ev->event;
+
+}
+
 static void elogin_handle_mouse_down(void *_data, Evas _e, Evas_Object _o, int _b, int _x, int _y)
 {
    switch(_b)
@@ -144,7 +192,13 @@ static void elogin_handle_mouse_down(void *_data, Evas _e, Evas_Object _o, int _
 	 break;
       case 2:
 	 printf("Mouse button 2 was clicked\n");
-	 elogin_auth_user();
+	 if ((elogin_auth_user(USERNAME, PASSWORD)) == SUCCESS)
+	 {
+	    Userinfo *u = elogin_new_userinfo(USERNAME);
+
+	    elogin_start_client(u);
+	 }
+	 elogin_auth_cleanup();
 	 break;
       case 3:
 	 printf("Exiting\n");
@@ -164,3 +218,7 @@ static void elogin_exit_clean(void)
    exit(0);
 }
 
+char * elogin_greeter_msg (char *str)
+{
+   return str;
+}

@@ -24,4 +24,5 @@ stamp-h
 stamp-h.in 
 macros
 *~
+*.o
 elogin
