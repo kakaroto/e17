@@ -1,0 +1,6 @@
+Makefile.in
+Makefile
+.deps
+.libs
+libecore_evas_dragable.la
+*.lo

@@ -1,0 +1,9 @@
+config.h.in
+config.h
+stamp-h1
+Makefile.in
+Makefile
+.deps
+.libs
+libesmart.la
+*.lo

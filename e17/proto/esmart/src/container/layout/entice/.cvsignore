@@ -1,0 +1,6 @@
+Makefile.in
+Makefile
+.deps
+.libs
+entice.la
+*.lo

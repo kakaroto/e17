@@ -1,0 +1,6 @@
+Makefile.in
+Makefile
+.deps
+.libs
+libesmart_trans.la
+*.lo
