@@ -69,7 +69,7 @@ static int ui_init_dragger(ePlayer *player) {
 
 	evas_object_name_set(dragger, "dragger");
 	evas_object_move(dragger, 0, 0);
-	evas_object_layer_set(dragger, 9999);
+	evas_object_layer_set(dragger, 0);
 	evas_object_show(dragger);
 
 	esmart_draggies_event_callback_add(dragger, EVAS_CALLBACK_MOUSE_UP,
