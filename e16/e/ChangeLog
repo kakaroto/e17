@@ -2754,3 +2754,12 @@ We do need SubstructureNotifyMask on the desktop.
 Debug printout for ReparentNotify event.
 Don't focus windows before they are mapped (fixes segv when new window is
 destroyed before it becomes mapped).
+
+-------------------------------------------------------------------------------
+
+Sat May  1 12:49:21 CEST 2004
+(Kim)
+
+Update the client stacking list properly.
+Fix segv in ScaleLine, simplify some code a bit.
+Fix pager background pixmap handling.
