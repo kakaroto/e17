@@ -251,12 +251,12 @@ geist_document_dirty_object(geist_document * doc, geist_object * obj)
 {
    D_ENTER(3);
 
-   printf("adding dirty rect %d,%d %dx%d\n", obj->x - HALF_SEL_WIDTH,
-          obj->y - HALF_SEL_HEIGHT, obj->w + HALF_SEL_WIDTH,
-          obj->h + HALF_SEL_HEIGHT);
+   printf("adding dirty rect %d,%d %dx%d\n", obj->x - 1 - HALF_SEL_WIDTH,
+          obj->y - 1 - HALF_SEL_HEIGHT, obj->w + 1 + HALF_SEL_WIDTH,
+          obj->h + 1 + HALF_SEL_HEIGHT);
 
    doc->up =
-      imlib_update_append_rect(doc->up, obj->x - HALF_SEL_WIDTH,
+      imlib_update_append_rect(doc->up, obj->x  - HALF_SEL_WIDTH,
                                obj->y - HALF_SEL_HEIGHT,
                                obj->w + HALF_SEL_WIDTH,
                                obj->h + HALF_SEL_HEIGHT);

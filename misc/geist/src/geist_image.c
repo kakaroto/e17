@@ -144,6 +144,11 @@ geist_image_render_partial(geist_object * obj, Imlib_Image dest, int x, int y,
    if (sh > geist_imlib_image_get_height(im->im))
       sh = geist_imlib_image_get_height(im->im);
 
+   if (sw > w)
+      sw = w;
+   if (sh > h)
+      sh = h;
+
    dx = obj->x + sx;
    dy = obj->y + sy;
    dw = sw;
