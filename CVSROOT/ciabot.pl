@@ -117,7 +117,7 @@ $dirfiles[0] = "@files" or die "$0: no files specified\n";
 
 #$module = $dir[0]; $module =~ s#/.*##;
 $_ = $dir[0];
-if((my $first, my $second, my $third) = /^((\w*)\/(\w*)\/(.*))/)
+if((my $first, my $second, my $third) = /^(\w*)\/(\w*)\/(.*)/)
 {
   if ($first eq "e17") {
     $module = $third;
