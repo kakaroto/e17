@@ -659,6 +659,7 @@ AC_OUTPUT([
 Makefile
 src/Makefile
 tools/Makefile
+tools/edb_gtk_ed/Makefile
 test/Makefile
 src/db.h
 src/db_int.h
