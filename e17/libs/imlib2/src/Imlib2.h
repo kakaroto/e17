@@ -128,6 +128,7 @@ void    imlib_image_set_has_alpha(char has_alpha);
 
 void        imlib_render_pixmaps_for_whole_image(Pixmap *pixmap_return, Pixmap *mask_return, char create_dithered_mask);
 void        imlib_render_pixmaps_for_whole_image_at_size(Pixmap *pixmap_return, Pixmap *mask_return, char create_dithered_mask, int width, int height);
+void        imlib_free_pixmap_and_mask(Pixmap pixmap);
 void        imlib_render_image_on_drawable(int x, int y);
 void        imlib_render_image_on_drawable_at_size(int x, int y, int width, int height);
 void        imlib_render_image_part_on_drawable_at_size(int source_x, int source_y, int source_width, int source_height, int x, int y, int width, int height);

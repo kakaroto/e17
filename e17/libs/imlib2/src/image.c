@@ -1076,15 +1076,20 @@ __imlib_FreePixmap(Display *d, Pixmap p)
    
    /* find the pixmap in the cache by display and id */
    ip = __imlib_FindImlibImagePixmapByID(d, p);
-   /* if tis positive reference count */
-   if (ip->references > 0)
+   if (ip)
      {
-	/* dereference it by one */
-	ip->references--;
-	/* if it becaume 0 reference count - clean the cache up */
-	 if (ip->references == 0)
-	 __imlib_CleanupImagePixmapCache();
+	/* if tis positive reference count */
+	if (ip->references > 0)
+	  {
+	     /* dereference it by one */
+	     ip->references--;
+	     /* if it becaume 0 reference count - clean the cache up */
+	     if (ip->references == 0)
+		__imlib_CleanupImagePixmapCache();
+	  }
      }
+   else
+      XFreePixmap(d, p);
 }
 
 /* flush the cache of all speculatively cached images and pixmaps */
