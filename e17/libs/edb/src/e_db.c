@@ -535,6 +535,15 @@ e_db_float_set(E_DB_File * edb, char *key, float val)
    char                buf[256];
 
    sprintf(buf, "%f", val);
+
+   if (1.5 == atof("1,5")) {
+       char *p;
+       p = buf;
+       while ((++p)[0])
+          if (p[0] == ',')
+             p[0] = '.';
+   }
+
    e_db_str_set(edb, key, buf);
    e_db_type_set(edb, key, "float");
    return;
@@ -549,6 +558,15 @@ e_db_float_get(E_DB_File * edb, char *key, float *val)
    dat = e_db_str_get(edb, key);
    if (!dat)
       return 0;
+
+   if (1.5 == atof("1,5")) {
+       char *p;
+       p = dat;
+       while ((++p)[0])
+          if (p[0] == '.')
+             p[0] = ',';
+   }
+
    *val = atof(dat);
    FREE(dat);
    return 1;
