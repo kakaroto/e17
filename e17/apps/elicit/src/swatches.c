@@ -231,6 +231,8 @@ elicit_swatch_del_cb(void *data, Evas_Object *o, const char *emission, const cha
 {
   Elicit *el;
   Elicit_Swatch *sw;
+  Evas_Coord h;
+  int offset;
 
   el = evas_object_data_get(o, "elicit");
   sw = evas_object_data_get(o, "swatch");
@@ -240,7 +242,15 @@ elicit_swatch_del_cb(void *data, Evas_Object *o, const char *emission, const cha
 
   el->swatches.length = esmart_container_elements_length_get(el->swatches.cont);
 
-  /* FIXME if end of list is above bottom of cont, scroll to end */
+  evas_object_geometry_get(el->swatches.cont, NULL, NULL, NULL, &h);
+  offset = esmart_container_scroll_offset_get(el->swatches.cont);
+  if (offset < h - el->swatches.length - 10 && el->swatches.length > h)
+  {
+    esmart_container_scroll_offset_set(el->swatches.cont,
+                                       h - el->swatches.length - 10);
+  }
+  _elicit_swatches_update_scroll_bar(el);
+
   elicit_swatches_save(el);
 }
 

@@ -254,6 +254,8 @@ elicit_shot_del_cb(void *data, Evas_Object *o, const char *emission, const char 
 {
   Elicit *el;
   Elicit_Shot *sh;
+  Evas_Coord h;
+  int offset;
 
   el = evas_object_data_get(o, "elicit");
   sh = evas_object_data_get(o, "shot");
@@ -262,6 +264,16 @@ elicit_shot_del_cb(void *data, Evas_Object *o, const char *emission, const char 
   elicit_shot_free(sh);
   
   el->shots.length = esmart_container_elements_length_get(el->shots.cont);
+
+  evas_object_geometry_get(el->shots.cont, NULL, NULL, NULL, &h);
+  offset = esmart_container_scroll_offset_get(el->shots.cont);
+  if (offset < h - el->shots.length - 10 && el->shots.length > h)
+  {
+    esmart_container_scroll_offset_set(el->shots.cont,
+                                       h - el->shots.length - 10);
+  }
+  _elicit_shots_update_scroll_bar(el);
+
   elicit_shots_save(el);
 }
 
