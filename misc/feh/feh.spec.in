@@ -28,7 +28,7 @@ montages as index prints with many user-configurable options.
 %build
 CFLAGS="$RPM_OPT_FLAGS" ./configure --prefix=%{prefix}
 
-make prefix=$RPM_BUILD_ROOT%{prefix}
+make CFLAGS="$RPM_OPT_FLAGS"
 
 %install
 rm -fr $RPM_BUILD_ROOT

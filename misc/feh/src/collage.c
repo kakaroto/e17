@@ -44,7 +44,7 @@ init_collage_mode(void)
    int file_num = 0;
    char *s;
 
-   D_ENTER(3);
+   D_ENTER(4);
 
    mode = "collage";
 
@@ -58,7 +58,7 @@ init_collage_mode(void)
       else
       {
 
-         D(3,("Time to apply a background to blend onto\n"));
+         D(4,("Time to apply a background to blend onto\n"));
          if (feh_load_image_char(&bg_im, opt.bg_file, NULL) != 0)
          {
             bg_w = feh_imlib_image_get_width(bg_im);
@@ -93,7 +93,7 @@ init_collage_mode(void)
 
    w = opt.limit_w;
    h = opt.limit_h;
-   D(3,("Limiting width to %d and height to %d\n", w, h));
+   D(4,("Limiting width to %d and height to %d\n", w, h));
 
    im_main = imlib_create_image(w, h);
 
@@ -172,7 +172,7 @@ init_collage_mode(void)
          /* pick random coords for thumbnail */
          xxx = ((w - www) * ((double) rand() / RAND_MAX));
          yyy = ((h - hhh) * ((double) rand() / RAND_MAX));
-         D(3,("image going on at x=%d, y=%d\n", xxx, yyy));
+         D(5,("image going on at x=%d, y=%d\n", xxx, yyy));
 
          im_thumb =
             feh_imlib_create_cropped_scaled_image(im_temp, 0, 0, ww, hh, www,
@@ -183,7 +183,7 @@ init_collage_mode(void)
          {
             DATA8 atab[256];
 
-            D(3,("Applying alpha options\n"));
+            D(4,("Applying alpha options\n"));
             feh_imlib_image_set_has_alpha(im_thumb, 1);
             memset(atab, opt.alpha_level, sizeof(atab));
             feh_imlib_apply_color_modifier_to_rectangle(im_thumb, 0, 0, www,
@@ -245,5 +245,5 @@ init_collage_mode(void)
    else
       feh_imlib_free_image_and_decache(im_main);
    free(s);
-   D_RETURN_(3);
+   D_RETURN_(4);
 }

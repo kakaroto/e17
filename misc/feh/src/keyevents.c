@@ -38,11 +38,11 @@ handle_keypress_event(XEvent * ev, Window win)
    XKeyEvent *kev;
    winwidget winwid = NULL;
 
-   D_ENTER(3);
+   D_ENTER(4);
 
    winwid = winwidget_get_from_window(win);
    if (winwid == NULL)
-      D_RETURN_(3);
+      D_RETURN_(4);
 
    kev = (XKeyEvent *) ev;
    len = XLookupString(&ev->xkey, (char *) kbuf, sizeof(kbuf), &keysym, NULL);
@@ -112,7 +112,7 @@ handle_keypress_event(XEvent * ev, Window win)
    }
 
    if (len <= 0 || len > (int) sizeof(kbuf))
-      D_RETURN_(3);
+      D_RETURN_(4);
 
    kbuf[len] = '\0';
 
@@ -155,5 +155,5 @@ handle_keypress_event(XEvent * ev, Window win)
      default:
         break;
    }
-   D_RETURN_(3);
+   D_RETURN_(4);
 }

@@ -80,9 +80,9 @@ init_slideshow_mode(void)
 void
 cb_slide_timer(void *data)
 {
-   D_ENTER(3);
+   D_ENTER(4);
    slideshow_change_image((winwidget) data, SLIDE_NEXT);
-   D_RETURN_(3);
+   D_RETURN_(4);
 }
 
 void
@@ -90,10 +90,10 @@ cb_reload_timer(void *data)
 {
    winwidget w = (winwidget) data;
 
-   D_ENTER(3);
+   D_ENTER(4);
    feh_reload_image(w, 0);
    feh_add_unique_timer(cb_reload_timer, w, opt.reload);
-   D_RETURN_(3);
+   D_RETURN_(4);
 }
 
 void
@@ -101,12 +101,12 @@ feh_reload_image(winwidget w, int resize)
 {
    Imlib_Progress_Function pfunc = NULL;
 
-   D_ENTER(3);
+   D_ENTER(4);
 
    if (!w->file)
    {
       weprintf("couldn't reload, this image has no file associated with it.");
-      D_RETURN_(3);
+      D_RETURN_(4);
    }
 
    winwidget_free_image(w);
@@ -146,7 +146,7 @@ feh_reload_image(winwidget w, int resize)
    else
       weprintf("Couldn't reload image. Is it still there?");
 
-   D_RETURN_(3);
+   D_RETURN_(4);
 }
 
 
@@ -160,14 +160,14 @@ slideshow_change_image(winwidget winwid, int change)
    int jmp = 1;
    char *s;
 
-   D_ENTER(3);
+   D_ENTER(4);
 
    file_num = feh_list_length(filelist);
 
    /* Without this, clicking a one-image slideshow reloads it. Not very *
       intelligent behaviour :-) */
    if (file_num < 2)
-      D_RETURN_(3);
+      D_RETURN_(4);
 
    /* Ok. I do this in such an odd way to ensure that if the last or first *
       image is not loadable, it will go through in the right direction to *
@@ -272,7 +272,7 @@ slideshow_change_image(winwidget winwid, int change)
    if (opt.slideshow_delay >= 0)
       feh_add_timer(cb_slide_timer, winwid, opt.slideshow_delay,
                     "SLIDE_CHANGE");
-   D_RETURN_(3);
+   D_RETURN_(4);
 }
 
 char *
@@ -281,7 +281,7 @@ slideshow_create_name(feh_file * file)
    char *s = NULL;
    int len = 0;
 
-   D_ENTER(3);
+   D_ENTER(4);
    if (!opt.title)
    {
       len =
@@ -296,7 +296,7 @@ slideshow_create_name(feh_file * file)
       s = estrdup(feh_printf(opt.title, file));
    }
 
-   D_RETURN(3,s);
+   D_RETURN(4,s);
 }
 
 void
@@ -304,7 +304,7 @@ feh_action_run(feh_file * file)
 {
    char *sys;
 
-   D_ENTER(3);
+   D_ENTER(4);
    D(3,("Running action %s\n", opt.action));
 
    sys = feh_printf(opt.action, file);
@@ -312,7 +312,7 @@ feh_action_run(feh_file * file)
    if (opt.verbose && !opt.list && !opt.customlist)
       fprintf(stderr, "Running action -->%s<--\n", sys);
    system(sys);
-   D_RETURN_(3);
+   D_RETURN_(4);
 }
 
 char *
@@ -322,7 +322,7 @@ feh_printf(char *str, feh_file * file)
    char buf[20];
    static char ret[4096];
 
-   D_ENTER(3);
+   D_ENTER(4);
 
    ret[0] = '\0';
 
@@ -424,7 +424,7 @@ feh_printf(char *str, feh_file * file)
       else
          strncat(ret, c, 1);
    }
-   D_RETURN(3,ret);
+   D_RETURN(4,ret);
 }
 
 void

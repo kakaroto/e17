@@ -37,7 +37,7 @@ char *mode = NULL;
 int
 main(int argc, char **argv)
 {
-   D_ENTER(3);
+   D_ENTER(4);
    atexit(feh_clean_exit);
 
    init_parse_options(argc, argv);
@@ -70,7 +70,7 @@ main(int argc, char **argv)
    /* main event loop */
    while (feh_main_iteration(1));
 
-   D_RETURN(3,0);
+   D_RETURN(4,0);
 }
 
 
@@ -89,10 +89,10 @@ feh_main_iteration(int block)
    double t1 = 0.0, t2 = 0.0;
    fehtimer ft;
 
-   D_ENTER(3);
+   D_ENTER(5);
 
    if (window_num == 0)
-      D_RETURN(3,0);
+      D_RETURN(5,0);
 
    if (first)
    {
@@ -114,7 +114,7 @@ feh_main_iteration(int block)
          (*(ev_handler[ev.type])) (&ev);
 
       if (window_num == 0)
-         D_RETURN(3,0);
+         D_RETURN(5,0);
    }
    XFlush(disp);
 
@@ -128,23 +128,23 @@ feh_main_iteration(int block)
    /* Don't do timers if we're zooming/panning/etc */
    if (ft && (opt.mode == MODE_NORMAL))
    {
-      D(3,("There are timers in the queue\n"));
+      D(5,("There are timers in the queue\n"));
       if (ft->just_added)
       {
-         D(3,("The first timer has just been added\n"));
-         D(3,("ft->in = %f\n", ft->in));
+         D(5,("The first timer has just been added\n"));
+         D(5,("ft->in = %f\n", ft->in));
          ft->just_added = 0;
          t1 = ft->in;
       }
       else
       {
-         D(3,("The first timer was not just added\n"));
+         D(5,("The first timer was not just added\n"));
          t1 = ft->in - t2;
          if (t1 < 0.0)
             t1 = 0.0;
          ft->in = t1;
       }
-      D(3,("I next need to action a timer in %f seconds\n", t1));
+      D(5,("I next need to action a timer in %f seconds\n", t1));
       /* Only do a blocking select if there's a timer due, or no events
          waiting */
       if (t1 == 0.0 || (block && !XPending(disp)))
@@ -156,7 +156,7 @@ feh_main_iteration(int block)
          if (tval.tv_usec <= 1000)
             tval.tv_usec = 1000;
          errno = 0;
-         D(3,("Performing blocking select - waiting for timer or event\n"));
+         D(5,("Performing blocking select - waiting for timer or event\n"));
          count = select(fdsize, &fdset, NULL, NULL, &tval);
          if ((count < 0)
              && ((errno == ENOMEM) || (errno == EINVAL) || (errno == EBADF)))
@@ -176,7 +176,7 @@ feh_main_iteration(int block)
       if (block && !XPending(disp))
       {
          errno = 0;
-         D(3,("Performing blocking select - no timers, or zooming\n"));
+         D(5,("Performing blocking select - no timers, or zooming\n"));
          count = select(fdsize, &fdset, NULL, NULL, NULL);
          if ((count < 0)
              && ((errno == ENOMEM) || (errno == EINVAL) || (errno == EBADF)))
@@ -184,15 +184,15 @@ feh_main_iteration(int block)
       }
    }
    if (window_num == 0)
-      D_RETURN(3,0);
-   D_RETURN(3,1);
+      D_RETURN(5,0);
+   D_RETURN(5,1);
 }
 
 
 void
 feh_clean_exit(void)
 {
-   D_ENTER(3);
+   D_ENTER(4);
 
    if (!opt.keep_http)
       delete_rm_files();
@@ -200,5 +200,5 @@ feh_clean_exit(void)
    if (opt.filelistfile)
       feh_write_filelist(filelist, opt.filelistfile);
 
-   D_RETURN_(3);
+   D_RETURN_(4);
 }

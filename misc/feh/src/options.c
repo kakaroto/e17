@@ -40,7 +40,7 @@ fehoptions opt;
 void
 init_parse_options(int argc, char **argv)
 {
-   D_ENTER(3);
+   D_ENTER(4);
 
    /* For setting the command hint on X windows */
    cmdargc = argc;
@@ -89,7 +89,7 @@ init_parse_options(int argc, char **argv)
       filelist = feh_list_cat(filelist, feh_read_filelist(opt.filelistfile));
    }
 
-   D(3,("Options parsed\n"));
+   D(4,("Options parsed\n"));
 
    if (feh_list_length(filelist) == 0)
       show_mini_usage();
@@ -97,13 +97,13 @@ init_parse_options(int argc, char **argv)
    check_options();
 
    feh_prepare_filelist();
-   D_RETURN_(3);
+   D_RETURN_(4);
 }
 
 static void
 feh_check_theme_options(int arg, char **argv)
 {
-   D_ENTER(3);
+   D_ENTER(4);
    if (!theme)
    {
       /* This prevents screw up when running src/feh or ./feh */
@@ -119,7 +119,7 @@ feh_check_theme_options(int arg, char **argv)
    feh_load_options_for_theme(theme);
 
    free(theme);
-   D_RETURN_(3);
+   D_RETURN_(4);
    arg = 0;
 }
 
@@ -131,14 +131,14 @@ feh_load_options_for_theme(char *theme)
    char *rcpath = NULL;
    char s[1024], s1[1024], s2[1024];
 
-   D_ENTER(3);
+   D_ENTER(4);
 
    if (opt.rcfile)
    {
       if ((fp = fopen(opt.rcfile, "r")) == NULL)
       {
          weprintf("couldn't load the specified rcfile %s\n", opt.rcfile);
-         D_RETURN_(3);
+         D_RETURN_(4);
       }
    }
    else
@@ -156,7 +156,7 @@ feh_load_options_for_theme(char *theme)
          feh_create_default_config(rcpath);
 
          if ((fp = fopen(rcpath, "r")) == NULL)
-            D_RETURN_(3);
+            D_RETURN_(4);
       }
 
       free(rcpath);
@@ -170,16 +170,16 @@ feh_load_options_for_theme(char *theme)
       sscanf(s, "%s %[^\n]\n", (char *) &s1, (char *) &s2);
       if (!(*s1) || (!*s2) || (*s1 == '\n') || (*s1 == '#'))
          continue;
-      D(3,("Got theme/options pair %s/%s\n", s1, s2));
+      D(5,("Got theme/options pair %s/%s\n", s1, s2));
       if (!strcmp(s1, theme))
       {
-         D(3,("A match. Using options %s\n", s2));
+         D(4,("A match. Using options %s\n", s2));
          feh_parse_options_from_string(s2);
          break;
       }
    }
    fclose(fp);
-   D_RETURN_(3);
+   D_RETURN_(4);
 }
 
 static void
@@ -187,10 +187,10 @@ feh_parse_environment_options(void)
 {
    char *opts;
 
-   D_ENTER(3);
+   D_ENTER(4);
 
    if ((opts = getenv("FEH_OPTIONS")) == NULL)
-      D_RETURN_(3);
+      D_RETURN_(4);
 
    weprintf
       ("The FEH_OPTIONS configuration method is depreciated and will soon die.\n"
@@ -198,7 +198,7 @@ feh_parse_environment_options(void)
 
    /* We definitely have some options to parse */
    feh_parse_options_from_string(opts);
-   D_RETURN_(3);
+   D_RETURN_(4);
 }
 
 /* FIXME This function is a crufty bitch ;) */
@@ -213,7 +213,7 @@ feh_parse_options_from_string(char *opts)
    int inquote = 0;
    int i = 0;
 
-   D_ENTER(3);
+   D_ENTER(4);
 
    /* So we don't reinvent the wheel (not again, anyway), we use the
       getopt_long function to do this parsing as well. This means it has to
@@ -254,7 +254,7 @@ feh_parse_options_from_string(char *opts)
          free(list[i]);
    if (list)
       free(list);
-   D_RETURN_(3);
+   D_RETURN_(4);
 }
 
 char *
@@ -265,8 +265,8 @@ feh_string_normalize(char *str)
    int i = 0;
    char last = 0;
 
-   D_ENTER(3);
-   D(3,("normalizing %s\n", str));
+   D_ENTER(4);
+   D(4,("normalizing %s\n", str));
    ret[0] = '\0';
 
    for (s = str;; s++)
@@ -288,9 +288,9 @@ feh_string_normalize(char *str)
       ret[i - 1] = '\0';
    else
       ret[i] = '\0';
-   D(3,("normalized to %s\n", ret));
+   D(4,("normalized to %s\n", ret));
 
-   D_RETURN(3,estrdup(ret));
+   D_RETURN(4,estrdup(ret));
 }
 
 static void
@@ -366,12 +366,12 @@ feh_parse_option_array(int argc, char **argv)
    };
    int optch = 0, cmdx = 0;
 
-   D_ENTER(3);
+   D_ENTER(4);
 
    /* Now to pass some optionarinos */
    while ((optch = getopt_long(argc, argv, stropts, lopts, &cmdx)) != EOF)
    {
-      D(3,("Got option, getopt calls it %d, or %c\n", optch, optch));
+      D(5,("Got option, getopt calls it %d, or %c\n", optch, optch));
       switch (optch)
       {
         case 0:
@@ -615,14 +615,14 @@ feh_parse_option_array(int argc, char **argv)
 
    /* So that we can safely be called again */
    optind = 1;
-   D_RETURN_(3);
+   D_RETURN_(4);
 }
 
 
 static void
 check_options(void)
 {
-   D_ENTER(3);
+   D_ENTER(4);
    if ((opt.index + opt.collage) > 1)
    {
       weprintf("you can't use collage mode and index mode together.\n"
@@ -669,7 +669,7 @@ check_options(void)
                "loadables only will be shown\n");
       opt.unloadables = 0;
    }
-   D_RETURN_(3);
+   D_RETURN_(4);
 }
 
 void
@@ -919,12 +919,12 @@ feh_create_default_config(char *rcfile)
 {
    FILE *fp;
 
-   D_ENTER(3);
+   D_ENTER(4);
 
    if ((fp = fopen(rcfile, "w")) == NULL)
    {
       weprintf("Unable to create default config file %s\n", rcfile);
-      D_RETURN_(3);
+      D_RETURN_(4);
    }
 
    fprintf(fp,
@@ -971,5 +971,5 @@ feh_create_default_config(char *rcfile)
            PREFIX "/share/feh/images/menubg_britney.png\n");
    fclose(fp);
 
-   D_RETURN_(3);
+   D_RETURN_(4);
 }

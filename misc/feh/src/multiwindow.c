@@ -36,7 +36,7 @@ init_multiwindow_mode(void)
    feh_list *l;
    feh_file *file = NULL;
 
-   D_ENTER(3);
+   D_ENTER(2);
 
    mode = "multiwindow";
 
@@ -76,5 +76,5 @@ init_multiwindow_mode(void)
       }
       free(s);
    }
-   D_RETURN_(3);
+   D_RETURN_(2);
 }

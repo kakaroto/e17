@@ -41,7 +41,7 @@ winwidget progwin = NULL;
 void
 init_x_and_imlib(void)
 {
-   D_ENTER(3);
+   D_ENTER(4);
 
    disp = XOpenDisplay(NULL);
    if (!disp)
@@ -73,7 +73,7 @@ init_x_and_imlib(void)
    imlib_add_path_to_font_path(PREFIX "/share/feh/fonts");
    imlib_add_path_to_font_path("./ttfonts");
 
-   D_RETURN_(3);
+   D_RETURN_(4);
 }
 
 int
@@ -83,11 +83,11 @@ feh_load_image_char(Imlib_Image * im, char *filename,
    feh_file *file;
    int i;
 
-   D_ENTER(3);
+   D_ENTER(4);
    file = feh_file_new(filename);
    i = feh_load_image(im, file, pfunc);
    feh_file_free(file);
-   D_RETURN(3,i);
+   D_RETURN(4,i);
 }
 
 int
@@ -96,11 +96,11 @@ feh_load_image(Imlib_Image * im, feh_file * file,
 {
    Imlib_Load_Error err;
 
-   D_ENTER(3);
+   D_ENTER(4);
    D(3,("filename is %s\n", file->filename));
 
    if (!file || !file->filename)
-      D_RETURN(3,0);
+      D_RETURN(4,0);
 
    imlib_context_set_progress_function(pfunc);
    imlib_context_set_progress_granularity(opt.progress_gran);
@@ -114,7 +114,7 @@ feh_load_image(Imlib_Image * im, feh_file * file,
 
       tmpname = feh_http_load_image(file->filename);
       if (tmpname == NULL)
-         D_RETURN(3,0);
+         D_RETURN(4,0);
       *im = imlib_load_image_with_error_return(tmpname, &err);
       if (im)
       {
@@ -221,11 +221,11 @@ feh_load_image(Imlib_Image * im, feh_file * file,
            break;
       }
       D(3,("Load *failed*\n"));
-      D_RETURN(3,0);
+      D_RETURN(4,0);
    }
 
    D(3,("Loaded ok\n"));
-   D_RETURN(3,1);
+   D_RETURN(4,1);
 }
 
 int
@@ -235,14 +235,14 @@ progressive_load_cb(Imlib_Image im, char percent, int update_x, int update_y,
    int dest_x = 0, dest_y = 0;
    int newwin = 0;
 
-   D_ENTER(3);
+   D_ENTER(4);
    if (!progwin)
    {
       weprintf("progwin does not exist - this should not happen");
-      D_RETURN(3,0);
+      D_RETURN(4,0);
    }
 
-   D(3,("progress is %d\n", percent));
+   D(4,("progress is %d\n", percent));
 
    /* Is this the first progress return for a new image? */
    /* If so, we have some stuff to set up... */
@@ -323,7 +323,7 @@ progressive_load_cb(Imlib_Image im, char percent, int update_x, int update_y,
    XClearArea(disp, progwin->win, dest_x + update_x, dest_y + update_y,
               update_w, update_h, False);
 
-   D_RETURN(3,1);
+   D_RETURN(4,1);
    percent = 0;
 }
 
@@ -340,7 +340,7 @@ feh_http_load_image(char *url)
    char randnum[20];
    int rnum;
 
-   D_ENTER(3);
+   D_ENTER(4);
    snprintf(num, sizeof(num), "%04ld_", i++);
    /* Massive paranoia ;) */
    if (i > 9998)
@@ -362,7 +362,7 @@ feh_http_load_image(char *url)
    {
       weprintf("open url: fork failed:");
       free(tmpname);
-      D_RETURN(3,NULL);
+      D_RETURN(4,NULL);
    }
    else if (pid == 0)
    {
@@ -384,11 +384,11 @@ feh_http_load_image(char *url)
          weprintf("url: wget failed to load URL %s\n", url);
          free(tmpname);
          free(newurl);
-         D_RETURN(3,NULL);
+         D_RETURN(4,NULL);
       }
    }
    free(newurl);
-   D_RETURN(3,tmpname);
+   D_RETURN(4,tmpname);
 }
 
 void
@@ -398,7 +398,7 @@ feh_draw_filename(winwidget w)
    int tw = 0, th = 0;
    Imlib_Image im = NULL;
 
-   D_ENTER(3);
+   D_ENTER(4);
    if (!fn)
    {
       if (opt.full_screen)
@@ -410,7 +410,7 @@ feh_draw_filename(winwidget w)
    if (!fn)
    {
       weprintf("Couldn't load font for filename printing");
-      D_RETURN_(3);
+      D_RETURN_(4);
    }
 
    /* Work out how high the font is */
@@ -433,7 +433,7 @@ feh_draw_filename(winwidget w)
 
    XSetWindowBackgroundPixmap(disp, w->win, w->bg_pmap);
    XClearArea(disp, w->win, 0, 0, tw, th, False);
-   D_RETURN_(3);
+   D_RETURN_(4);
 }
 
 unsigned char reset_output = 0;
@@ -445,9 +445,9 @@ feh_display_status(char stat)
    static int init_len = 0;
    int j = 0;
 
-   D_ENTER(3);
+   D_ENTER(5);
 
-   D(3,("filelist %p, filelist->next %p\n", filelist, filelist->next));
+   D(5,("filelist %p, filelist->next %p\n", filelist, filelist->next));
 
    if (!init_len)
       init_len = feh_list_length(filelist);
@@ -482,5 +482,5 @@ feh_display_status(char stat)
    fprintf(stdout, "%c", stat);
    fflush(stdout);
    i++;
-   D_RETURN_(3);
+   D_RETURN_(5);
 }

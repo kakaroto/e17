@@ -47,7 +47,7 @@ feh_event_init(void)
 {
    int i;
 
-   D_ENTER(3);
+   D_ENTER(4);
    for (i = 0; i < LASTEvent; i++)
       ev_handler[i] = NULL;
 
@@ -60,16 +60,16 @@ feh_event_init(void)
    ev_handler[MotionNotify] = feh_event_handle_MotionNotify;
    ev_handler[ClientMessage] = feh_event_handle_ClientMessage;
 
-   D_RETURN_(3);
+   D_RETURN_(4);
 }
 
 static void
 feh_event_handle_KeyPress(XEvent * ev)
 {
-   D_ENTER(3);
+   D_ENTER(4);
    while (XCheckTypedWindowEvent(disp, ev->xkey.window, KeyPress, ev));
    handle_keypress_event(ev, ev->xkey.window);
-   D_RETURN_(3);
+   D_RETURN_(4);
 }
 
 static void
@@ -77,13 +77,13 @@ feh_event_handle_ButtonPress(XEvent * ev)
 {
    winwidget winwid = NULL;
 
-   D_ENTER(3);
+   D_ENTER(4);
    /* hide the menus and get the heck out if it's a mouse-click on the
       cover */
    if (ev->xbutton.window == menu_cover)
    {
       feh_menu_hide(menu_root);
-      D_RETURN_(3);
+      D_RETURN_(4);
    }
 
    if (!opt.no_menus
@@ -274,7 +274,7 @@ feh_event_handle_ButtonPress(XEvent * ev)
    {
       D(3,("Received other ButtonPress event\n"));
    }
-   D_RETURN_(3);
+   D_RETURN_(4);
 }
 
 static void
@@ -282,7 +282,7 @@ feh_event_handle_ButtonRelease(XEvent * ev)
 {
    winwidget winwid = NULL;
 
-   D_ENTER(3);
+   D_ENTER(4);
    if (menu_root)
    {
       /* if menus are open, close them, and execute action if needed */
@@ -309,7 +309,7 @@ feh_event_handle_ButtonRelease(XEvent * ev)
                (i->func) (m, i, i->data);
          }
       }
-      D_RETURN_(3);
+      D_RETURN_(4);
    }
 
    if ((ev->xbutton.button == opt.menu_button)
@@ -343,13 +343,13 @@ feh_event_handle_ButtonRelease(XEvent * ev)
          winwid->mode = MODE_NORMAL;
       }
    }
-   D_RETURN_(3);
+   D_RETURN_(4);
 }
 
 static void
 feh_event_handle_ConfigureNotify(XEvent * ev)
 {
-   D_ENTER(3);
+   D_ENTER(4);
    while (XCheckTypedWindowEvent
           (disp, ev->xconfigure.window, ConfigureNotify, ev));
    if (!menu_root)
@@ -373,31 +373,31 @@ feh_event_handle_ConfigureNotify(XEvent * ev)
       }
    }
 
-   D_RETURN_(3);
+   D_RETURN_(4);
 }
 
 static void
 feh_event_handle_EnterNotify(XEvent * ev)
 {
-   D_ENTER(3);
-   D_RETURN_(3);
+   D_ENTER(4);
+   D_RETURN_(4);
    ev = NULL;
 }
 
 static void
 feh_event_handle_LeaveNotify(XEvent * ev)
 {
-   D_ENTER(3);
+   D_ENTER(4);
    if ((menu_root) && (ev->xcrossing.window == menu_root->win))
    {
       feh_menu_item *ii;
 
-      D(3,("It is for a menu\n"));
+      D(4,("It is for a menu\n"));
       for (ii = menu_root->items; ii; ii = ii->next)
       {
          if (MENU_ITEM_IS_SELECTED(ii))
          {
-            D(3,("Unselecting menu\n"));
+            D(4,("Unselecting menu\n"));
             MENU_ITEM_SET_NORMAL(ii);
             menu_root->updates =
                imlib_update_append_rect(menu_root->updates, ii->x, ii->y,
@@ -408,7 +408,7 @@ feh_event_handle_LeaveNotify(XEvent * ev)
       feh_raise_all_menus();
    }
 
-   D_RETURN_(3);
+   D_RETURN_(4);
 }
 
 static void
@@ -416,7 +416,7 @@ feh_event_handle_MotionNotify(XEvent * ev)
 {
    winwidget winwid = NULL;
 
-   D_ENTER(3);
+   D_ENTER(5);
    if (menu_root)
    {
       feh_menu *m;
@@ -428,7 +428,7 @@ feh_event_handle_MotionNotify(XEvent * ev)
 
       if (ev->xmotion.window == menu_cover)
       {
-         D_RETURN_(3);
+         D_RETURN_(5);
       }
       else if ((m = feh_menu_get_from_window(ev->xmotion.window)))
       {
@@ -437,7 +437,7 @@ feh_event_handle_MotionNotify(XEvent * ev)
             feh_menu_find_at_xy(m, ev->xmotion.x, ev->xmotion.y);
          if (selected_item != mouseover_item)
          {
-            D(3,("selecting a menu item\n"));
+            D(4,("selecting a menu item\n"));
             if (selected_item)
                feh_menu_deselect_selected(m);
             if ((mouseover_item)
@@ -488,7 +488,7 @@ feh_event_handle_MotionNotify(XEvent * ev)
       winwid = winwidget_get_from_window(ev->xmotion.window);
       if (winwid)
       {
-         D(3,("Panning\n"));
+         D(5,("Panning\n"));
          orig_x = winwid->im_x;
          orig_y = winwid->im_y;
 
@@ -508,7 +508,7 @@ feh_event_handle_MotionNotify(XEvent * ev)
       winwid = winwidget_get_from_window(ev->xmotion.window);
       if (winwid)
       {
-         D(3,("Rotating\n"));
+         D(5,("Rotating\n"));
          if (!winwid->has_rotated)
          {
             Imlib_Image temp;
@@ -524,7 +524,7 @@ feh_event_handle_MotionNotify(XEvent * ev)
          winwid->im_angle =
             (ev->xmotion.x -
              winwid->w / 2) / ((double) winwid->w / 2) * 3.1415926535;
-         D(3,("angle: %f\n", winwid->im_angle));
+         D(5,("angle: %f\n", winwid->im_angle));
          winwidget_render_image(winwid, 0, 0);
       }
    }
@@ -538,11 +538,11 @@ feh_event_handle_MotionNotify(XEvent * ev)
          Imlib_Image temp, ptr;
          signed int blur_radius;
 
-         D(3,("Blurring\n"));
+         D(5,("Blurring\n"));
 
          temp = feh_imlib_clone_image(winwid->im);
          blur_radius = (((double) ev->xmotion.x / winwid->w) * 20) - 10;
-         D(3,("angle: %d\n", blur_radius));
+         D(5,("angle: %d\n", blur_radius));
          if (blur_radius > 0)
             feh_imlib_image_sharpen(temp, blur_radius);
          else
@@ -623,7 +623,7 @@ feh_event_handle_MotionNotify(XEvent * ev)
          }
       }
    }
-   D_RETURN_(3);
+   D_RETURN_(5);
 }
 
 static void
@@ -631,7 +631,7 @@ feh_event_handle_ClientMessage(XEvent * ev)
 {
    winwidget winwid = NULL;
 
-   D_ENTER(3);
+   D_ENTER(4);
    if (ev->xclient.format == 32
        && ev->xclient.data.l[0] == (signed) wmDeleteWindow)
    {
@@ -640,5 +640,5 @@ feh_event_handle_ClientMessage(XEvent * ev)
          winwidget_destroy(winwid);
    }
 
-   D_RETURN_(3);
+   D_RETURN_(4);
 }

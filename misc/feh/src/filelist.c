@@ -41,7 +41,7 @@ feh_file_new(char *filename)
    feh_file *newfile;
    char *s;
 
-   D_ENTER(3);
+   D_ENTER(4);
 
    newfile = (feh_file *) emalloc(sizeof(feh_file));
    newfile->filename = estrdup(filename);
@@ -51,15 +51,15 @@ feh_file_new(char *filename)
    else
       newfile->name = estrdup(filename);
    newfile->info = NULL;
-   D_RETURN(3,newfile);
+   D_RETURN(4,newfile);
 }
 
 void
 feh_file_free(feh_file * file)
 {
-   D_ENTER(3);
+   D_ENTER(4);
    if (!file)
-      D_RETURN_(3);
+      D_RETURN_(4);
    if (file->filename)
       free(file->filename);
    if (file->name)
@@ -67,7 +67,7 @@ feh_file_free(feh_file * file)
    if (file->info)
       feh_file_info_free(file->info);
    free(file);
-   D_RETURN_(3);
+   D_RETURN_(4);
 }
 
 feh_file_info *
@@ -75,7 +75,7 @@ feh_file_info_new(void)
 {
    feh_file_info *info;
 
-   D_ENTER(3);
+   D_ENTER(4);
 
    info = (feh_file_info *) emalloc(sizeof(feh_file_info));
 
@@ -87,37 +87,37 @@ feh_file_info_new(void)
    info->format = NULL;
    info->extension = NULL;
 
-   D_RETURN(3,info);
+   D_RETURN(4,info);
 }
 
 void
 feh_file_info_free(feh_file_info * info)
 {
-   D_ENTER(3);
+   D_ENTER(4);
    if (!info)
-      D_RETURN_(3);
+      D_RETURN_(4);
    if (info->format)
       free(info->format);
    if (info->extension)
       free(info->extension);
    free(info);
-   D_RETURN_(3);
+   D_RETURN_(4);
 }
 
 feh_list *
 feh_file_rm_and_free(feh_list * list, feh_list * l)
 {
-   D_ENTER(3);
+   D_ENTER(4);
    unlink(FEH_FILE(l->data)->filename);
-   D_RETURN(3,feh_file_remove_from_list(list, l));
+   D_RETURN(4,feh_file_remove_from_list(list, l));
 }
 
 feh_list *
 feh_file_remove_from_list(feh_list * list, feh_list * l)
 {
-   D_ENTER(3);
+   D_ENTER(4);
    feh_file_free(FEH_FILE(l->data));
-   D_RETURN(3,feh_list_remove(list, l));
+   D_RETURN(4,feh_list_remove(list, l));
 }
 
 /* Recursive */
@@ -127,12 +127,12 @@ add_file_to_filelist_recursively(char *origpath, unsigned char level)
    struct stat st;
    char *path;
 
-   D_ENTER(3);
+   D_ENTER(5);
    if (!origpath)
-      D_RETURN_(3);
+      D_RETURN_(5);
 
    path = estrdup(origpath);
-   D(3,("file is %s\n", path));
+   D(4,("file is %s\n", path));
 
    if (level == FILELIST_FIRST)
    {
@@ -150,7 +150,7 @@ add_file_to_filelist_recursively(char *origpath, unsigned char level)
          filelist = feh_list_add_front(filelist, feh_file_new(path));
          /* We'll download it later... */
          free(path);
-         D_RETURN_(3);
+         D_RETURN_(5);
       }
       else if (opt.filelistfile)
       {
@@ -188,7 +188,7 @@ add_file_to_filelist_recursively(char *origpath, unsigned char level)
            break;
       }
       free(path);
-      D_RETURN_(3);
+      D_RETURN_(5);
    }
 
    if ((S_ISDIR(st.st_mode)) && (level != FILELIST_LAST))
@@ -196,14 +196,14 @@ add_file_to_filelist_recursively(char *origpath, unsigned char level)
       struct dirent *de;
       DIR *dir;
 
-      D(3,("It is a directory\n"));
+      D(4,("It is a directory\n"));
 
       if ((dir = opendir(path)) == NULL)
       {
          if (!opt.quiet)
             weprintf("couldn't open directory %s:", path);
          free(path);
-         D_RETURN_(3);
+         D_RETURN_(5);
       }
       de = readdir(dir);
       while (de != NULL)
@@ -229,19 +229,19 @@ add_file_to_filelist_recursively(char *origpath, unsigned char level)
    }
    else if (S_ISREG(st.st_mode))
    {
-      D(3,("Adding regular file %s to filelist\n", path));
+      D(5,("Adding regular file %s to filelist\n", path));
       filelist = feh_list_add_front(filelist, feh_file_new(path));
    }
    free(path);
-   D_RETURN_(3);
+   D_RETURN_(5);
 }
 
 void
 add_file_to_rm_filelist(char *file)
 {
-   D_ENTER(3);
+   D_ENTER(4);
    rm_filelist = feh_list_add_front(rm_filelist, feh_file_new(file));
-   D_RETURN_(3);
+   D_RETURN_(4);
 }
 
 void
@@ -249,10 +249,10 @@ delete_rm_files(void)
 {
    feh_list *l;
 
-   D_ENTER(3);
+   D_ENTER(4);
    for (l = rm_filelist; l; l = l->next)
       unlink(FEH_FILE(l->data)->filename);
-   D_RETURN_(3);
+   D_RETURN_(4);
 }
 
 feh_list *
@@ -261,17 +261,17 @@ feh_file_info_preload(feh_list * list)
    feh_list *l, *last = NULL;
    feh_file *file = NULL;
 
-   D_ENTER(3);
+   D_ENTER(4);
    if (opt.verbose)
       fprintf(stdout, PACKAGE " - preloading...\n");
 
    for (l = list; l; l = l->next)
    {
       file = FEH_FILE(l->data);
-      D(3,("file %p, file->next %p, file->name %s\n", l, l->next, file->name));
+      D(5,("file %p, file->next %p, file->name %s\n", l, l->next, file->name));
       if (last)
       {
-         D(3,("removing item %p from list\n", last));
+         D(4,("removing item %p from list\n", last));
          filelist = list = feh_list_remove(list, last);
          last = NULL;
       }
@@ -291,7 +291,7 @@ feh_file_info_preload(feh_list * list)
    if (last)
       list = feh_list_remove(list, last);
 
-   D_RETURN(3,list);
+   D_RETURN(4,list);
 }
 
 int
@@ -300,7 +300,7 @@ feh_file_info_load(feh_file * file, Imlib_Image im)
    struct stat st;
    int need_free = 1;
 
-   D_ENTER(3);
+   D_ENTER(4);
 
    if (im)
       need_free = 0;
@@ -331,7 +331,7 @@ feh_file_info_load(feh_file * file, Imlib_Image im)
               weprintf("couldn't open %s ", file->filename);
            break;
       }
-      D_RETURN(3,1);
+      D_RETURN(4,1);
    }
 
    if (im || feh_load_image(&im, file, NULL))
@@ -352,65 +352,65 @@ feh_file_info_load(feh_file * file, Imlib_Image im)
       if (need_free)
          feh_imlib_free_image_and_decache(im);
 
-      D_RETURN(3,0);
+      D_RETURN(4,0);
    }
-   D_RETURN(3,1);
+   D_RETURN(4,1);
 }
 
 int
 feh_cmp_filename(void *file1, void *file2)
 {
-   D_ENTER(3);
-   D_RETURN(3,strcmp(FEH_FILE(file1)->filename, FEH_FILE(file2)->filename));
+   D_ENTER(4);
+   D_RETURN(4,strcmp(FEH_FILE(file1)->filename, FEH_FILE(file2)->filename));
 }
 
 int
 feh_cmp_name(void *file1, void *file2)
 {
-   D_ENTER(3);
-   D_RETURN(3,strcmp(FEH_FILE(file1)->name, FEH_FILE(file2)->name));
+   D_ENTER(4);
+   D_RETURN(4,strcmp(FEH_FILE(file1)->name, FEH_FILE(file2)->name));
 }
 
 int
 feh_cmp_width(void *file1, void *file2)
 {
-   D_ENTER(3);
-   D_RETURN(3,(FEH_FILE(file1)->info->width - FEH_FILE(file2)->info->width));
+   D_ENTER(4);
+   D_RETURN(4,(FEH_FILE(file1)->info->width - FEH_FILE(file2)->info->width));
 }
 
 int
 feh_cmp_height(void *file1, void *file2)
 {
-   D_ENTER(3);
-   D_RETURN(3,(FEH_FILE(file1)->info->height - FEH_FILE(file2)->info->height));
+   D_ENTER(4);
+   D_RETURN(4,(FEH_FILE(file1)->info->height - FEH_FILE(file2)->info->height));
 }
 
 int
 feh_cmp_pixels(void *file1, void *file2)
 {
-   D_ENTER(3);
-   D_RETURN(3,(FEH_FILE(file1)->info->pixels - FEH_FILE(file2)->info->pixels));
+   D_ENTER(4);
+   D_RETURN(4,(FEH_FILE(file1)->info->pixels - FEH_FILE(file2)->info->pixels));
 }
 
 int
 feh_cmp_size(void *file1, void *file2)
 {
-   D_ENTER(3);
-   D_RETURN(3,(FEH_FILE(file1)->info->size - FEH_FILE(file2)->info->size));
+   D_ENTER(4);
+   D_RETURN(4,(FEH_FILE(file1)->info->size - FEH_FILE(file2)->info->size));
 }
 
 int
 feh_cmp_format(void *file1, void *file2)
 {
-   D_ENTER(3);
-   D_RETURN(3,strcmp
+   D_ENTER(4);
+   D_RETURN(4,strcmp
             (FEH_FILE(file1)->info->format, FEH_FILE(file2)->info->format));
 }
 
 void
 feh_prepare_filelist(void)
 {
-   D_ENTER(3);
+   D_ENTER(4);
    if (opt.list || opt.customlist || (opt.sort > SORT_FILENAME)
        || opt.preload)
    {
@@ -467,7 +467,7 @@ feh_prepare_filelist(void)
       filelist = feh_list_reverse(filelist);
    }
 
-   D_RETURN_(3);
+   D_RETURN_(4);
 }
 
 int
@@ -476,16 +476,16 @@ feh_write_filelist(feh_list * list, char *filename)
    FILE *fp;
    feh_list *l;
 
-   D_ENTER(3);
+   D_ENTER(4);
 
    if (!list || !filename)
-      D_RETURN(3,0);
+      D_RETURN(4,0);
 
    errno = 0;
    if ((fp = fopen(filename, "w")) == NULL)
    {
       weprintf("can't write filelist %s:", filename);
-      D_RETURN(3,0);
+      D_RETURN(4,0);
    }
 
    for (l = list; l; l = l->next)
@@ -493,7 +493,7 @@ feh_write_filelist(feh_list * list, char *filename)
 
    fclose(fp);
 
-   D_RETURN(3,1);
+   D_RETURN(4,1);
 }
 
 feh_list *
@@ -503,33 +503,33 @@ feh_read_filelist(char *filename)
    feh_list *list = NULL;
    char s[1024], s1[1024];
 
-   D_ENTER(3);
+   D_ENTER(4);
 
    if (!filename)
-      D_RETURN(3,NULL);
+      D_RETURN(4,NULL);
 
    errno = 0;
    if ((fp = fopen(filename, "r")) == NULL)
    {
       /* return quietly, as it's okay to specify a filelist file that doesn't
          exist. In that case we create it on exit. */
-      D_RETURN(3,NULL);
+      D_RETURN(4,NULL);
    }
 
    for (; fgets(s, sizeof(s), fp);)
    {
-      D(3,("Got line '%s'\n", s));
+      D(5,("Got line '%s'\n", s));
       s1[0] = '\0';
       sscanf(s, "%s", (char *) &s1);
       if (!(*s1) || (*s1 == '\n'))
          continue;
-      D(3,("Got filename %s from filelist file\n", s1));
+      D(5,("Got filename %s from filelist file\n", s1));
       /* Add it to the new list */
       list = feh_list_add_front(list, feh_file_new(s1));
    }
    fclose(fp);
 
-   D_RETURN(3,list);
+   D_RETURN(4,list);
 }
 
 char *
@@ -540,16 +540,16 @@ feh_absolute_path(char *path)
    char temp[PATH_MAX];
    char *ret;
 
-   D_ENTER(3);
+   D_ENTER(4);
 
    if (!path)
-      D_RETURN(3,NULL);
+      D_RETURN(4,NULL);
    if (path[0] == '/')
-      D_RETURN(3,estrdup(path));
+      D_RETURN(4,estrdup(path));
    /* This path is not relative. We're gonna convert it, so that a
       filelist file can be saved anywhere and feh will still find the
       images */
-   D(3,("Need to convert %s to an absolute form\n", path));
+   D(4,("Need to convert %s to an absolute form\n", path));
    /* I SHOULD be able to just use a simple realpath() here, but dumb * 
       old Solaris's realpath doesn't return an absolute path if the
       path you give it is relative. Linux and BSD get this right... */
@@ -563,6 +563,6 @@ feh_absolute_path(char *path)
    {
       ret = estrdup(temp);
    }
-   D(3,("Converted path to %s\n", ret));
-   D_RETURN(3,ret);
+   D(4,("Converted path to %s\n", ret));
+   D_RETURN(4,ret);
 }
