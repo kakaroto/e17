@@ -2013,8 +2013,10 @@ doMoveModeSet(void *params)
 	if (mode.movemode > 5)
 	   mode.movemode = 0;
      }
-   if ((prImlibData) && (mode.movemode == 5))
+#if !USE_IMLIB2
+   if ((prImlib_Context) && (mode.movemode == 5))
       mode.movemode = 3;
+#endif
    autosave();
    EDBUG_RETURN(0);
 }

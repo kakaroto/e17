@@ -23,17 +23,14 @@
 #include "E.h"
 
 ECursor            *
-CreateECursor(char *name, char *image, int native_id,
-	      ImlibColor * fg, ImlibColor * bg)
+CreateECursor(char *name, char *image, int native_id, XColor * fg, XColor * bg)
 {
    Cursor              curs;
-   XColor              xfg, xbg;
    Pixmap              pmap, mask;
    int                 xh, yh;
    unsigned int        w, h, ww, hh;
    char               *img, msk[FILEPATH_LEN_MAX];
    ECursor            *ec;
-   int                 r, g, b;
 
    if ((!name) || (!image && native_id == -1))
       return NULL;
@@ -59,22 +56,12 @@ CreateECursor(char *name, char *image, int native_id,
 	     Efree(img);
 	     return NULL;
 	  }
-	r = fg->r;
-	g = fg->g;
-	b = fg->b;
-	xfg.red = (fg->r << 8) | (fg->r);
-	xfg.green = (fg->g << 8) | (fg->g);
-	xfg.blue = (fg->b << 8) | (fg->b);
-	xfg.pixel = Imlib_best_color_match(pImlibData, &r, &g, &b);
-	r = bg->r;
-	g = bg->g;
-	b = bg->b;
-	xbg.red = (bg->r << 8) | (bg->r);
-	xbg.green = (bg->g << 8) | (bg->g);
-	xbg.blue = (bg->b << 8) | (bg->b);
-	xbg.pixel = Imlib_best_color_match(pImlibData, &r, &g, &b);
+
+	EAllocColor(fg);
+	EAllocColor(bg);
+
 	curs = 0;
-	curs = XCreatePixmapCursor(disp, pmap, mask, &xfg, &xbg, xh, yh);
+	curs = XCreatePixmapCursor(disp, pmap, mask, fg, bg, xh, yh);
 	EFreePixmap(disp, pmap);
 	EFreePixmap(disp, mask);
 	Efree(img);
@@ -87,8 +74,10 @@ CreateECursor(char *name, char *image, int native_id,
    ec = Emalloc(sizeof(ECursor));
    ec->name = duplicate(name);
    ec->file = duplicate(image);
+#if 0				/* Not used */
    ec->fg = *fg;
    ec->bg = *bg;
+#endif
    ec->cursor = curs;
    ec->ref_count = 0;
    ec->inroot = 0;

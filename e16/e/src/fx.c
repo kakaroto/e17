@@ -262,14 +262,10 @@ FX_ripple_timeout(int val, void *data)
 	XGCValues           gcv;
 
 	fx_ripple_win = desks.desk[desks.current].win;
-	if ((desks.current == 0) && (prImlibData))
-	   fx_ripple_above =
-	      ECreatePixmap(disp, fx_ripple_win, root.w, fx_ripple_waterh * 2,
-			    prImlibData->x.depth);
-	else
-	   fx_ripple_above =
-	      ECreatePixmap(disp, fx_ripple_win, root.w, fx_ripple_waterh * 2,
-			    pImlibData->x.depth);
+
+	fx_ripple_above =
+	   ECreatePixmap(disp, fx_ripple_win, root.w, fx_ripple_waterh * 2,
+			 GetWinDepth(fx_ripple_win));
 	if (gc)
 	   XFreeGC(disp, gc);
 	if (gc1)
@@ -415,7 +411,8 @@ FX_raindrops_timeout(int val, void *data)
      {
 	XGCValues           gcv;
 
-	if (!pImlibData->x.shm)
+#if !USE_IMLIB2
+	if (!pImlib_Context->x.shm)
 	  {
 	     DIALOG_OK(_("Unable to display raindrops"),
 		       _("\n"
@@ -431,7 +428,7 @@ FX_raindrops_timeout(int val, void *data)
 			 "and editing it, enabling shared memory.\n" "\n"));
 	     return;
 	  }
-	if (!pImlibData->x.shmp)
+	if (!pImlib_Context->x.shmp)
 	  {
 	     DIALOG_OK(_("Unable to display raindrops"),
 		       _("\n"
@@ -446,6 +443,7 @@ FX_raindrops_timeout(int val, void *data)
 			 "and editing it, enabling shared pixmaps.\n" "\n"));
 	     return;
 	  }
+#endif
 
 	FX_raindrops_info();
 
@@ -733,14 +731,10 @@ FX_Wave_timeout(int val, void *data)
 	XGCValues           gcv;
 
 	fx_wave_win = desks.desk[desks.current].win;
-	if ((desks.current == 0) && (prImlibData))
-	   fx_wave_above =
-	      XCreatePixmap(disp, fx_wave_win, root.w, FX_WAVE_WATERH * 2,
-			    prImlibData->x.depth);
-	else
-	   fx_wave_above =
-	      XCreatePixmap(disp, fx_wave_win, root.w, FX_WAVE_WATERH * 2,
-			    pImlibData->x.depth);
+
+	fx_wave_above =
+	   XCreatePixmap(disp, fx_wave_win, root.w, FX_WAVE_WATERH * 2,
+			 GetWinDepth(fx_wave_win));
 	if (gc)
 	   XFreeGC(disp, gc);
 	if (gc1)
@@ -885,7 +879,6 @@ FX_Waves_Pause(void)
 
 static Window       fx_imagespinner_win = 0;
 static int          fx_imagespinner_count = 3;
-static ImlibData   *fx_imagespinner_imd = NULL;
 static char        *fx_imagespinner_params = NULL;
 
 static void
@@ -912,13 +905,9 @@ FX_imagespinner_timeout(int val, void *data)
    if (!fx_imagespinner_win)
      {
 	fx_imagespinner_win = desks.desk[desks.current].win;
-	if ((desks.current == 0) && (prImlibData))
-	   fx_imagespinner_imd = prImlibData;
-	else
-	   fx_imagespinner_imd = pImlibData;
-
 	FX_imagespinner_info();
      }
+
 /* do stuff here */
    string = getword(fx_imagespinner_params, fx_imagespinner_count);
    if (!string)
@@ -926,24 +915,28 @@ FX_imagespinner_timeout(int val, void *data)
 	fx_imagespinner_count = 3;
 	string = getword(fx_imagespinner_params, fx_imagespinner_count);
      }
+
    fx_imagespinner_count++;
    if (string)
      {
-	ImlibImage         *im;
+	Imlib_Image        *im;
 
-	im = ELoadImageImlibData(fx_imagespinner_imd, string);
+	IMLIB1_SET_CONTEXT(desks.current == 0);
+
+	im = ELoadImage(string);
 	if (im)
 	  {
 	     int                 x, y, w, h;
 
-	     w = im->rgb_width;
-	     h = im->rgb_height;
+	     imlib_context_set_image(im);
+	     w = imlib_image_get_width();
+	     h = imlib_image_get_height();
 	     sscanf(fx_imagespinner_params, "%*s %i %i ", &x, &y);
 	     x = ((root.w * x) >> 10) - ((w * x) >> 10);
 	     y = ((root.h * y) >> 10) - ((h * y) >> 10);
-	     Imlib_paste_image(fx_imagespinner_imd, im, fx_imagespinner_win, x,
-			       y, w, h);
-	     Imlib_destroy_image(fx_imagespinner_imd, im);
+	     imlib_context_set_drawable(fx_imagespinner_win);
+	     imlib_render_image_on_drawable_at_size(x, y, w, h);
+	     imlib_free_image();
 	  }
 	Efree(string);
      }
@@ -966,10 +959,6 @@ void
 FX_ImageSpinner_Desk(void)
 {
    fx_imagespinner_win = desks.desk[desks.current].win;
-   if ((desks.current == 0) && (prImlibData))
-      fx_imagespinner_imd = prImlibData;
-   else
-      fx_imagespinner_imd = pImlibData;
 }
 
 void

@@ -1070,6 +1070,7 @@ IPC_Background(char *params, Client * c)
    char                type[FILEPATH_LEN_MAX];
    char                valu[FILEPATH_LEN_MAX];
    Background         *bg = NULL;
+   int                 r, g, b;
 
    buf[0] = 0;
 
@@ -1093,6 +1094,7 @@ IPC_Background(char *params, Client * c)
 
 		  if (bg)
 		    {
+		       EGetColor(&(bg->bg.solid), &r, &g, &b);
 		       Esnprintf(buf, sizeof(buf),
 				 "%s ref_count %u\n" " bg.solid\t %i %i %i \n"
 				 " bg.file\t %s \ttop.file\t %s \n"
@@ -1102,13 +1104,12 @@ IPC_Background(char *params, Client * c)
 				 " bg.yjust\t %i \ttop.yjust\t %i \n"
 				 " bg.xperc\t %i \ttop.xperc\t %i \n"
 				 " bg.yperc\t %i \ttop.yperc\t %i \n", bg->name,
-				 bg->ref_count, bg->bg.solid.r, bg->bg.solid.g,
-				 bg->bg.solid.b, bg->bg.file, bg->top.file,
-				 bg->bg.tile, bg->bg.keep_aspect,
-				 bg->top.keep_aspect, bg->bg.xjust,
-				 bg->top.xjust, bg->bg.yjust, bg->top.yjust,
-				 bg->bg.xperc, bg->top.xperc, bg->bg.yperc,
-				 bg->top.yperc);
+				 bg->ref_count, r, g, b,
+				 bg->bg.file, bg->top.file, bg->bg.tile,
+				 bg->bg.keep_aspect, bg->top.keep_aspect,
+				 bg->bg.xjust, bg->top.xjust, bg->bg.yjust,
+				 bg->top.yjust, bg->bg.xperc, bg->top.xperc,
+				 bg->bg.yperc, bg->top.yperc);
 		    }
 		  else
 		     Esnprintf(buf, sizeof(buf),
@@ -1136,7 +1137,7 @@ IPC_Background(char *params, Client * c)
 		       word(params, 3, valu);
 		       if (!strcmp(type, "bg.solid"))
 			 {
-			    char                R[3], G[3], B[3];
+			    char                R[3], G[3], B[3];	/* Crash ??? */
 
 			    R[0] = 0;
 			    G[0] = 0;
@@ -1146,9 +1147,8 @@ IPC_Background(char *params, Client * c)
 			    word(params, 4, G);
 			    word(params, 5, B);
 
-			    bg->bg.solid.r = atoi(R);
-			    bg->bg.solid.g = atoi(G);
-			    bg->bg.solid.b = atoi(B);
+			    ESetColor(&(bg->bg.solid), atoi(R), atoi(G),
+				      atoi(B));
 			 }
 		       else if (!strcmp(type, "bg.file"))
 			 {
@@ -1225,8 +1225,8 @@ IPC_Background(char *params, Client * c)
 	       {
 		  if (bg->ref_count == 0)
 		    {
-		       RemoveItem(name, 0, LIST_FINDBY_NAME,
-				  LIST_TYPE_BACKGROUND);
+		       RemoveItem(name, 0,
+				  LIST_FINDBY_NAME, LIST_TYPE_BACKGROUND);
 		       FreeDesktopBG(bg);
 		    }
 		  else
@@ -1725,7 +1725,7 @@ IPC_ImageClass(char *params, Client * c)
 
 		  word(params, 3, param3);
 		  p = (Pixmap) strtol(param3, (char **)NULL, 0);
-		  Imlib_free_pixmap(pImlibData, p);
+		  imlib_free_pixmap_and_mask(p);
 	       }
 	     else if (!strcmp(param2, "get_padding"))
 	       {
@@ -1751,7 +1751,7 @@ IPC_ImageClass(char *params, Client * c)
 					     LIST_TYPE_ICLASS);
 		  if (iclass)
 		    {
-		       ImlibImage         *im = NULL;
+		       Imlib_Image        *im = NULL;
 
 		       if (iclass->norm.normal->im_file)
 			 {
@@ -1759,14 +1759,16 @@ IPC_ImageClass(char *params, Client * c)
 			       iclass->norm.normal->real_file =
 				  FindFile(iclass->norm.normal->im_file);
 			    if (iclass->norm.normal->real_file)
-			       im = Imlib_load_image(pImlibData,
-						     iclass->norm.
-						     normal->real_file);
+			       im =
+				  imlib_load_image(iclass->norm.normal->
+						   real_file);
 			    if (im)
 			      {
+				 imlib_context_set_image(im);
 				 Esnprintf(buf, sizeof(buf), "%i %i",
-					   im->rgb_width, im->rgb_height);
-				 Imlib_destroy_image(pImlibData, im);
+					   imlib_image_get_width(),
+					   imlib_image_get_height());
+				 imlib_free_image();
 			      }
 			    else
 			       Esnprintf(buf, sizeof(buf),
@@ -1819,7 +1821,6 @@ IPC_ImageClass(char *params, Client * c)
 	     else if (!strcmp(param2, "apply_copy"))
 	       {
 		  ImageClass         *iclass;
-		  Pixmap              pmap = 0, mask = 0;
 
 		  iclass =
 		     (ImageClass *) FindItem(param1, 0, LIST_FINDBY_NAME,
@@ -1846,16 +1847,19 @@ IPC_ImageClass(char *params, Client * c)
 				    "Error:  missing width and/or height");
 		       else
 			 {
+			    PmapMask            pmm;
+
 			    w = (int)strtol(atword(params, 5), (char **)NULL,
 					    0);
 			    h = (int)strtol(hptr, (char **)NULL, 0);
 			    pq = queue_up;
 			    queue_up = 0;
-			    IclassApplyCopy(iclass, win, w, h, 0, 0, st, &pmap,
-					    &mask);
+			    IclassApplyCopy(iclass, win, w, h, 0, 0, st, &pmm,
+					    1);
 			    queue_up = pq;
-			    Esnprintf(buf, sizeof(buf), "0x%08x 0x%08x", pmap,
-				      mask);
+			    Esnprintf(buf, sizeof(buf), "0x%08x 0x%08x",
+				      pmm.pmap, pmm.mask);
+/*			    FreePmapMask(&pmm);		??? */
 			 }
 		    }
 	       }

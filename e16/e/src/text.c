@@ -22,10 +22,10 @@
  */
 #include "E.h"
 
-void                TextDrawRotTo(Window win, Drawable * drawable, int x, int y,
+static void         TextDrawRotTo(Window win, Drawable * drawable, int x, int y,
 				  int w, int h, TextState * ts);
 
-void                TextDrawRotBack(Window win, Drawable drawable, int x, int y,
+static void         TextDrawRotBack(Window win, Drawable drawable, int x, int y,
 				    int w, int h, TextState * ts);
 
 TextState          *
@@ -330,7 +330,6 @@ TextDraw(TextClass * tclass, Window win, int active, int sticky, int state,
    int                 xx, yy;
    XGCValues           gcv;
    static GC           gc = 0;
-   int                 r, g, b;
 
    int                 textwidth_limit, offset_x, offset_y;
    Pixmap              drawable;
@@ -438,50 +437,29 @@ TextDraw(TextClass * tclass, Window win, int active, int sticky, int state,
 
 	     if (ts->effect == 1)
 	       {
-		  r = ts->bg_col.r;
-		  g = ts->bg_col.g;
-		  b = ts->bg_col.b;
-		  XSetForeground(disp, gc,
-				 Imlib_best_color_match(pImlibData, &r, &g,
-							&b));
+		  EAllocColor(&ts->bg_col);
+		  XSetForeground(disp, gc, ts->bg_col.pixel);
 		  EFont_draw_string(disp, drawable, gc, offset_x + 1,
 				    offset_y + 1, lines[i], ts->efont,
-				    Imlib_get_visual(pImlibData),
-				    Imlib_get_colormap(pImlibData));
+				    root.vis, root.cmap);
 	       }
 	     else if (ts->effect == 2)
 	       {
-		  r = ts->bg_col.r;
-		  g = ts->bg_col.g;
-		  b = ts->bg_col.b;
-		  XSetForeground(disp, gc,
-				 Imlib_best_color_match(pImlibData, &r, &g,
-							&b));
+		  EAllocColor(&ts->bg_col);
+		  XSetForeground(disp, gc, ts->bg_col.pixel);
 		  EFont_draw_string(disp, drawable, gc, offset_x - 1, offset_y,
-				    lines[i], ts->efont,
-				    Imlib_get_visual(pImlibData),
-				    Imlib_get_colormap(pImlibData));
+				    lines[i], ts->efont, root.vis, root.cmap);
 		  EFont_draw_string(disp, drawable, gc, offset_x + 1, offset_y,
-				    lines[i], ts->efont,
-				    Imlib_get_visual(pImlibData),
-				    Imlib_get_colormap(pImlibData));
+				    lines[i], ts->efont, root.vis, root.cmap);
 		  EFont_draw_string(disp, drawable, gc, offset_x, offset_y - 1,
-				    lines[i], ts->efont,
-				    Imlib_get_visual(pImlibData),
-				    Imlib_get_colormap(pImlibData));
+				    lines[i], ts->efont, root.vis, root.cmap);
 		  EFont_draw_string(disp, drawable, gc, offset_x, offset_y + 1,
-				    lines[i], ts->efont,
-				    Imlib_get_visual(pImlibData),
-				    Imlib_get_colormap(pImlibData));
+				    lines[i], ts->efont, root.vis, root.cmap);
 	       }
-	     r = ts->fg_col.r;
-	     g = ts->fg_col.g;
-	     b = ts->fg_col.b;
-	     XSetForeground(disp, gc,
-			    Imlib_best_color_match(pImlibData, &r, &g, &b));
+	     EAllocColor(&ts->fg_col);
+	     XSetForeground(disp, gc, ts->fg_col.pixel);
 	     EFont_draw_string(disp, drawable, gc, offset_x, offset_y, lines[i],
-			       ts->efont, Imlib_get_visual(pImlibData),
-			       Imlib_get_colormap(pImlibData));
+			       ts->efont, root.vis, root.cmap);
 
 	     TextDrawRotBack(win, drawable, xx - 1, yy - 1 - ascent, wid + 2,
 			     ascent + descent + 2, ts);
@@ -602,23 +580,15 @@ TextDraw(TextClass * tclass, Window win, int active, int sticky, int state,
 
 	     if (ts->effect == 1)
 	       {
-		  r = ts->bg_col.r;
-		  g = ts->bg_col.g;
-		  b = ts->bg_col.b;
-		  XSetForeground(disp, gc,
-				 Imlib_best_color_match(pImlibData, &r, &g,
-							&b));
+		  EAllocColor(&ts->bg_col);
+		  XSetForeground(disp, gc, ts->bg_col.pixel);
 		  XmbDrawString(disp, drawable, ts->xfontset, gc, offset_x + 1,
 				offset_y + 1, lines[i], strlen(lines[i]));
 	       }
 	     else if (ts->effect == 2)
 	       {
-		  r = ts->bg_col.r;
-		  g = ts->bg_col.g;
-		  b = ts->bg_col.b;
-		  XSetForeground(disp, gc,
-				 Imlib_best_color_match(pImlibData, &r, &g,
-							&b));
+		  EAllocColor(&ts->bg_col);
+		  XSetForeground(disp, gc, ts->bg_col.pixel);
 		  XmbDrawString(disp, drawable, ts->xfontset, gc, offset_x - 1,
 				offset_y, lines[i], strlen(lines[i]));
 		  XmbDrawString(disp, drawable, ts->xfontset, gc, offset_x + 1,
@@ -628,11 +598,8 @@ TextDraw(TextClass * tclass, Window win, int active, int sticky, int state,
 		  XmbDrawString(disp, drawable, ts->xfontset, gc, offset_x,
 				offset_y + 1, lines[i], strlen(lines[i]));
 	       }
-	     r = ts->fg_col.r;
-	     g = ts->fg_col.g;
-	     b = ts->fg_col.b;
-	     XSetForeground(disp, gc,
-			    Imlib_best_color_match(pImlibData, &r, &g, &b));
+	     EAllocColor(&ts->fg_col);
+	     XSetForeground(disp, gc, ts->fg_col.pixel);
 	     XmbDrawString(disp, drawable, ts->xfontset, gc, offset_x, offset_y,
 			   lines[i], strlen(lines[i]));
 
@@ -708,23 +675,15 @@ TextDraw(TextClass * tclass, Window win, int active, int sticky, int state,
 
 	     if (ts->effect == 1)
 	       {
-		  r = ts->bg_col.r;
-		  g = ts->bg_col.g;
-		  b = ts->bg_col.b;
-		  XSetForeground(disp, gc,
-				 Imlib_best_color_match(pImlibData, &r, &g,
-							&b));
+		  EAllocColor(&ts->bg_col);
+		  XSetForeground(disp, gc, ts->bg_col.pixel);
 		  XDrawString(disp, drawable, gc, offset_x + 1, offset_y + 1,
 			      lines[i], strlen(lines[i]));
 	       }
 	     else if (ts->effect == 2)
 	       {
-		  r = ts->bg_col.r;
-		  g = ts->bg_col.g;
-		  b = ts->bg_col.b;
-		  XSetForeground(disp, gc,
-				 Imlib_best_color_match(pImlibData, &r, &g,
-							&b));
+		  EAllocColor(&ts->bg_col);
+		  XSetForeground(disp, gc, ts->bg_col.pixel);
 		  XDrawString(disp, drawable, gc, offset_x - 1, offset_y,
 			      lines[i], strlen(lines[i]));
 		  XDrawString(disp, drawable, gc, offset_x + 1, offset_y,
@@ -734,11 +693,8 @@ TextDraw(TextClass * tclass, Window win, int active, int sticky, int state,
 		  XDrawString(disp, drawable, gc, offset_x, offset_y + 1,
 			      lines[i], strlen(lines[i]));
 	       }
-	     r = ts->fg_col.r;
-	     g = ts->fg_col.g;
-	     b = ts->fg_col.b;
-	     XSetForeground(disp, gc,
-			    Imlib_best_color_match(pImlibData, &r, &g, &b));
+	     EAllocColor(&ts->fg_col);
+	     XSetForeground(disp, gc, ts->fg_col.pixel);
 	     XDrawString(disp, drawable, gc, offset_x, offset_y, lines[i],
 			 strlen(lines[i]));
 
@@ -816,23 +772,15 @@ TextDraw(TextClass * tclass, Window win, int active, int sticky, int state,
 
 	     if (ts->effect == 1)
 	       {
-		  r = ts->bg_col.r;
-		  g = ts->bg_col.g;
-		  b = ts->bg_col.b;
-		  XSetForeground(disp, gc,
-				 Imlib_best_color_match(pImlibData, &r, &g,
-							&b));
+		  EAllocColor(&ts->bg_col);
+		  XSetForeground(disp, gc, ts->bg_col.pixel);
 		  XDrawString16(disp, drawable, gc, offset_x + 1, offset_y + 1,
 				(XChar2b *) lines[i], strlen(lines[i]) / 2);
 	       }
 	     else if (ts->effect == 2)
 	       {
-		  r = ts->bg_col.r;
-		  g = ts->bg_col.g;
-		  b = ts->bg_col.b;
-		  XSetForeground(disp, gc,
-				 Imlib_best_color_match(pImlibData, &r, &g,
-							&b));
+		  EAllocColor(&ts->bg_col);
+		  XSetForeground(disp, gc, ts->bg_col.pixel);
 		  XDrawString16(disp, drawable, gc, offset_x - 1, offset_y,
 				(XChar2b *) lines[i], strlen(lines[i]) / 2);
 		  XDrawString16(disp, drawable, gc, offset_y + 1, offset_y,
@@ -842,11 +790,8 @@ TextDraw(TextClass * tclass, Window win, int active, int sticky, int state,
 		  XDrawString16(disp, drawable, gc, offset_x, offset_y + 1,
 				(XChar2b *) lines[i], strlen(lines[i]) / 2);
 	       }
-	     r = ts->fg_col.r;
-	     g = ts->fg_col.g;
-	     b = ts->fg_col.b;
-	     XSetForeground(disp, gc,
-			    Imlib_best_color_match(pImlibData, &r, &g, &b));
+	     EAllocColor(&ts->fg_col);
+	     XSetForeground(disp, gc, ts->fg_col.pixel);
 	     XDrawString16(disp, drawable, gc, offset_x, offset_y,
 			   (XChar2b *) lines[i], strlen(lines[i]) / 2);
 
@@ -865,80 +810,84 @@ void
 TextDrawRotTo(Window win, Drawable * drawable, int x, int y, int w, int h,
 	      TextState * ts)
 {
-   ImlibImage         *ii = NULL;
+   Imlib_Image        *ii = NULL;
    int                 win_x, win_y;
    unsigned int        win_w, win_h, win_b, win_d;
 
    switch (ts->style.orientation)
      {
      case FONT_TO_UP:
-	ii = Imlib_create_image_from_drawable(pImlibData, win, 0, y, x, h, w);
-	Imlib_rotate_image(pImlibData, ii, 1);
-	Imlib_flip_image_horizontal(pImlibData, ii);
-	Imlib_paste_image(pImlibData, ii, *drawable, 0, 0, w, h);
+	imlib_context_set_drawable(win);
+	ii = imlib_create_image_from_drawable(0, y, x, h, w, 0);
+	imlib_context_set_image(ii);
+	imlib_image_orientate(1);
+	imlib_context_set_drawable(*drawable);
+	imlib_render_image_on_drawable_at_size(0, 0, w, h);
 	break;
      case FONT_TO_DOWN:
 	EGetGeometry(disp, win, &(root.win), &win_x, &win_y, &win_w, &win_h,
 		     &win_b, &win_d);
-	ii =
-	   Imlib_create_image_from_drawable(pImlibData, win, 0, win_w - y - h,
-					    x, h, w);
-	Imlib_rotate_image(pImlibData, ii, -1);
-	Imlib_flip_image_vertical(pImlibData, ii);
-	Imlib_paste_image(pImlibData, ii, *drawable, 0, 0, w, h);
+	imlib_context_set_drawable(win);
+	ii = imlib_create_image_from_drawable(0, win_w - y - h, x, h, w, 0);
+	imlib_context_set_image(ii);
+	imlib_image_orientate(3);
+	imlib_context_set_drawable(*drawable);
+	imlib_render_image_on_drawable_at_size(0, 0, w, h);
 	break;
      case FONT_TO_LEFT:	/* Holy carumba! That's for yoga addicts, maybe .... */
-	ii = Imlib_create_image_from_drawable(pImlibData, win, 0, x, y, w, h);
-	Imlib_flip_image_vertical(pImlibData, ii);
-	Imlib_flip_image_horizontal(pImlibData, ii);
-	Imlib_paste_image(pImlibData, ii, *drawable, 0, 0, w, h);
+	imlib_context_set_drawable(win);
+	ii = imlib_create_image_from_drawable(0, x, y, w, h, 0);
+	imlib_context_set_image(ii);
+	imlib_image_orientate(2);
+	imlib_context_set_drawable(*drawable);
+	imlib_render_image_on_drawable_at_size(0, 0, w, h);
 	break;
      default:
 	break;
      }
    if (ii)
-      Imlib_destroy_image(pImlibData, ii);
+      imlib_free_image();
 }
 
 void
 TextDrawRotBack(Window win, Pixmap drawable, int x, int y, int w, int h,
 		TextState * ts)
 {
-   ImlibImage         *ii = NULL;
+   Imlib_Image        *ii = NULL;
    int                 win_x, win_y;
    unsigned int        win_w, win_h, win_b, win_d;
 
    switch (ts->style.orientation)
      {
      case FONT_TO_UP:
-	ii =
-	   Imlib_create_image_from_drawable(pImlibData, drawable, 0, 0, 0, w,
-					    h);
-	Imlib_rotate_image(pImlibData, ii, -1);
-	Imlib_flip_image_vertical(pImlibData, ii);
-	Imlib_paste_image(pImlibData, ii, win, y, x, h, w);
+	imlib_context_set_drawable(drawable);
+	ii = imlib_create_image_from_drawable(0, 0, 0, w, h, 0);
+	imlib_context_set_image(ii);
+	imlib_image_orientate(3);
+	imlib_context_set_drawable(win);
+	imlib_render_image_on_drawable_at_size(y, x, h, w);
 	break;
      case FONT_TO_DOWN:
+	imlib_context_set_drawable(drawable);
 	EGetGeometry(disp, win, &(root.win), &win_x, &win_y, &win_w, &win_h,
 		     &win_b, &win_d);
-	ii =
-	   Imlib_create_image_from_drawable(pImlibData, drawable, 0, 0, 0, w,
-					    h);
-	Imlib_rotate_image(pImlibData, ii, 1);
-	Imlib_flip_image_horizontal(pImlibData, ii);
-	Imlib_paste_image(pImlibData, ii, win, win_w - y - h, x, h, w);
+	ii = imlib_create_image_from_drawable(0, 0, 0, w, h, 0);
+	imlib_context_set_image(ii);
+	imlib_image_orientate(1);
+	imlib_context_set_drawable(win);
+	imlib_render_image_on_drawable_at_size(win_w - y - h, x, h, w);
 	break;
      case FONT_TO_LEFT:	/* Holy carumba! That's for yoga addicts, maybe .... */
-	ii =
-	   Imlib_create_image_from_drawable(pImlibData, drawable, 0, 0, 0, w,
-					    h);
-	Imlib_flip_image_vertical(pImlibData, ii);
-	Imlib_flip_image_horizontal(pImlibData, ii);
-	Imlib_paste_image(pImlibData, ii, win, x, y, w, h);
+	imlib_context_set_drawable(drawable);
+	ii = imlib_create_image_from_drawable(0, 0, 0, w, h, 0);
+	imlib_context_set_image(ii);
+	imlib_image_orientate(2);
+	imlib_context_set_drawable(win);
+	imlib_render_image_on_drawable_at_size(x, y, w, h);
 	break;
      default:
 	break;
      }
    if (ii)
-      Imlib_destroy_image(pImlibData, ii);
+      imlib_free_image();
 }

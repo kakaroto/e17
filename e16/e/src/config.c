@@ -234,7 +234,7 @@ Config_Text(FILE * ConfigFile)
 
    char                s[FILEPATH_LEN_MAX];
    char                s2[FILEPATH_LEN_MAX];
-   int                 i1;
+   int                 i1, r, g, b;
    TextClass          *tc = NULL;
    TextState          *ts = NULL;
    int                 fields;
@@ -439,13 +439,19 @@ Config_Text(FILE * ConfigFile)
 	     break;
 	  case TEXT_FG_COL:
 	     if (ts)
-		sscanf(s, "%*s %i %i %i", &ts->fg_col.r, &ts->fg_col.g,
-		       &ts->fg_col.b);
+	       {
+		  r = g = b = 0;
+		  sscanf(s, "%*s %i %i %i", &r, &g, &b);
+		  ESetColor(&ts->fg_col, r, g, b);
+	       }
 	     break;
 	  case TEXT_BG_COL:
 	     if (ts)
-		sscanf(s, "%*s %i %i %i", &ts->bg_col.r, &ts->bg_col.g,
-		       &ts->bg_col.b);
+	       {
+		  r = g = b = 0;
+		  sscanf(s, "%*s %i %i %i", &r, &g, &b);
+		  ESetColor(&ts->bg_col, r, g, b);
+	       }
 	     break;
 	  default:
 	     Alert(_
@@ -1654,8 +1660,8 @@ static void
 Config_Desktop(FILE * ConfigFile)
 {
    /* this sets desktop settings */
-   ImlibColor          icl;
    Background         *bg = 0;
+   XColor              xclr;
    char                s[FILEPATH_LEN_MAX];
    char                s1[FILEPATH_LEN_MAX];
    char                s2[FILEPATH_LEN_MAX];
@@ -1669,9 +1675,7 @@ Config_Desktop(FILE * ConfigFile)
    ColorModifierClass *cm = NULL;
    int                 fields;
 
-   icl.r = 0;
-   icl.g = 0;
-   icl.b = 0;
+   ESetColor(&xclr, 0, 0, 0);
 
    while (GetLine(s, sizeof(s), ConfigFile))
      {
@@ -1737,7 +1741,7 @@ Config_Desktop(FILE * ConfigFile)
 			 }
 		       if (ok)
 			 {
-			    bg = CreateDesktopBG(name, &icl, bg1, i1, i2, i3,
+			    bg = CreateDesktopBG(name, &xclr, bg1, i1, i2, i3,
 						 i4, i5, i6, bg2, j1, j2, j3,
 						 j4, j5);
 			    AddItem(bg, bg->name, 0, LIST_TYPE_BACKGROUND);
@@ -1785,11 +1789,13 @@ Config_Desktop(FILE * ConfigFile)
 		    {
 		       if ((desks.desk[atoi(s2)].bg == NULL) || (mode.user_bg))
 			 {
-			    if ((prImlibData) && (atoi(s2) == 0))
+#if !USE_IMLIB2
+			    if ((prImlib_Context) && (atoi(s2) == 0))
 			       bg = NULL;
+#endif
 			    if (!bg)
 			      {
-				 bg = CreateDesktopBG(name, &icl, bg1, i1, i2,
+				 bg = CreateDesktopBG(name, &xclr, bg1, i1, i2,
 						      i3, i4, i5, i6, bg2, j1,
 						      j2, j3, j4, j5);
 				 AddItem(bg, bg->name, 0, LIST_TYPE_BACKGROUND);
@@ -1802,8 +1808,10 @@ Config_Desktop(FILE * ConfigFile)
 			      {
 				 SetDesktopBg(atoi(s2), bg);
 			      }
-			    if ((prImlibData) && (atoi(s2) == 0))
+#if !USE_IMLIB2
+			    if ((prImlib_Context) && (atoi(s2) == 0))
 			       bg = NULL;
+#endif
 			 }
 		    }
 	       }
@@ -1824,21 +1832,21 @@ Config_Desktop(FILE * ConfigFile)
 				   {
 				      SetDesktopBg(atoi(s2), bg);
 				   }
-				 if ((prImlibData) && (atoi(s2) == 0))
+#if !USE_IMLIB2
+				 if ((prImlib_Context) && (atoi(s2) == 0))
 				    bg = NULL;
+#endif
 			      }
 			 }
 		    }
 	       }
 	     break;
 	  case BG_RGB:
-	     sscanf(s, "%4000s %d %d %d", s1, &icl.r, &icl.g, &icl.b);
+	     i1 = i2 = i3 = 0;
+	     sscanf(s, "%4000s %d %d %d", s1, &i1, &i2, &i3);
+	     ESetColor(&xclr, i1, i2, i3);
 	     if (ignore)
-	       {
-		  bg->bg.solid.r = icl.r;
-		  bg->bg.solid.g = icl.g;
-		  bg->bg.solid.b = icl.b;
-	       }
+		bg->bg.solid = xclr;
 	     break;
 	  case BG_BG1:
 	     sscanf(s, "%4000s %4000s %d %d %d %d %d %d", s1, s2, &i1, &i2,
@@ -1909,21 +1917,17 @@ Config_Desktop(FILE * ConfigFile)
 static void
 Config_ECursor(FILE * ConfigFile)
 {
-   ImlibColor          icl, icl2;
+   XColor              xclr, xclr2;
    char                s[FILEPATH_LEN_MAX];
    char                s2[FILEPATH_LEN_MAX];
-   int                 ii1;
+   int                 ii1, r, g, b;
    char               *file = NULL, *name = NULL;
    int                 native_id = -1;
    ECursor            *ec = NULL;
    int                 fields;
 
-   icl.r = 0;
-   icl.g = 0;
-   icl.b = 0;
-   icl2.r = 255;
-   icl2.g = 255;
-   icl2.b = 255;
+   ESetColor(&xclr, 0, 0, 0);
+   ESetColor(&xclr2, 255, 255, 255);
 
    while (GetLine(s, sizeof(s), ConfigFile))
      {
@@ -1948,7 +1952,7 @@ Config_ECursor(FILE * ConfigFile)
 	switch (ii1)
 	  {
 	  case CONFIG_CLOSE:
-	     ec = CreateECursor(name, file, native_id, &icl, &icl2);
+	     ec = CreateECursor(name, file, native_id, &xclr, &xclr2);
 	     if (ec)
 		AddItem(ec, ec->name, 0, LIST_TYPE_ECURSOR);
 	     if (name)
@@ -1963,10 +1967,14 @@ Config_ECursor(FILE * ConfigFile)
 	     name = duplicate(s2);
 	     break;
 	  case CURS_BG_RGB:
-	     sscanf(s, "%4000s %d %d %d", s2, &icl.r, &icl.g, &icl.b);
+	     EGetColor(&xclr, &r, &g, &b);
+	     sscanf(s, "%4000s %d %d %d", s2, &r, &g, &b);
+	     ESetColor(&xclr, r, g, b);
 	     break;
 	  case CURS_FG_RGB:
-	     sscanf(s, "%4000s %d %d %d", s2, &icl2.r, &icl2.g, &icl2.b);
+	     EGetColor(&xclr, &r, &g, &b);
+	     sscanf(s, "%4000s %d %d %d", s2, &r, &g, &b);
+	     ESetColor(&xclr, r, g, b);
 	     break;
 	  case XBM_FILE:
 	     file = duplicate(s2);
@@ -2382,7 +2390,7 @@ Config_ImageClass(FILE * ConfigFile)
 		char                s4[FILEPATH_LEN_MAX];
 		char                s5[FILEPATH_LEN_MAX];
 
-		ICToRead->border = Emalloc(sizeof(ImlibBorder));
+		ICToRead->border = Emalloc(sizeof(Imlib_Border));
 
 		sscanf(s, "%4000s %4000s %4000s %4000s %4000s", s1, s2, s3,
 		       s4, s5);
@@ -3818,7 +3826,7 @@ SaveUserControlConfig(FILE * autosavefile)
    ActionClass        *ac;
    Action             *aa;
    int                 i, num, flags, j;
-   int                 a, b;
+   int                 a, b, r, g;
 
    EDBUG(5, "SaveUserControlConfig");
    if (autosavefile)
@@ -4142,8 +4150,8 @@ SaveUserControlConfig(FILE * autosavefile)
 	       {
 		  fprintf(autosavefile, "5 999\n");
 		  fprintf(autosavefile, "100 %s\n", bglist[i]->name);
-		  fprintf(autosavefile, "560 %d %d %d\n", bglist[i]->bg.solid.r,
-			  bglist[i]->bg.solid.g, bglist[i]->bg.solid.b);
+		  EGetColor(&(bglist[i]->bg.solid), &r, &g, &b);
+		  fprintf(autosavefile, "560 %d %d %d\n", r, g, b);
 		  if ((bglist[i]->bg.file) && (!bglist[i]->bg.real_file))
 		     bglist[i]->bg.real_file = FindFile(bglist[i]->bg.file);
 		  if ((bglist[i]->top.file) && (!bglist[i]->top.real_file))

@@ -43,6 +43,7 @@ PagerScaleLine(Pixmap dest, Window src, int dx, int dy, int sw, int pw, int sy,
 	gcv.subwindow_mode = IncludeInferiors;
 	gc = XCreateGC(disp, src, GCSubwindowMode, &gcv);
      }
+
    p_grab = ECreatePixImg(dest, sw, 1);
    if (p_grab)
      {
@@ -107,6 +108,7 @@ PagerScaleLine(Pixmap dest, Window src, int dx, int dy, int sw, int pw, int sy,
 	     return;
 	  }
      }
+
    if (HIQ)
      {
 	int                 v1, v2, v3, v4, difx;
@@ -125,7 +127,7 @@ PagerScaleLine(Pixmap dest, Window src, int dx, int dy, int sw, int pw, int sy,
 	     xim3 = px_buf;
 	  }
 	difx = (sw / pw) / 2;
-	switch (pImlibData->x.render_depth)
+	switch (IC_RenderDepth())
 	  {
 	  case 24:
 	  case 32:
@@ -522,9 +524,10 @@ CreatePager(void)
 
    if ((!did_dialog) && (SNAP))
      {
-	if (pImlibData->x.shm)
+#if !USE_IMLIB2
+	if (pImlib_Context->x.shm)
 	  {
-	     if (!pImlibData->x.shmp)
+	     if (!pImlib_Context->x.shmp)
 	       {
 		  if (XShmPixmapFormat(disp) != ZPixmap)
 		    {
@@ -569,6 +572,7 @@ CreatePager(void)
 			 "in your Imlib config, if you disabled it, or disable Pager\n"
 			 "snapshots.\n" "\n"));
 	  }
+#endif
 	did_dialog = 1;
      }
    GetAreaSize(&ax, &ay);
@@ -583,9 +587,8 @@ CreatePager(void)
    p->dw = ((48 * root.w) / root.h);
    p->dh = 48;
    p->win = ECreateWindow(root.win, 0, 0, p->w, p->h, 0);
-   p->pmap = ECreatePixmap(disp, p->win, p->w, p->h, pImlibData->x.depth);
-   p->bgpmap =
-      ECreatePixmap(disp, p->win, p->w / ax, p->h / ay, pImlibData->x.depth);
+   p->pmap = ECreatePixmap(disp, p->win, p->w, p->h, root.depth);
+   p->bgpmap = ECreatePixmap(disp, p->win, p->w / ax, p->h / ay, root.depth);
    ESetWindowBackgroundPixmap(disp, p->win, p->pmap);
    XSelectInput(disp, p->win,
 		ButtonPressMask | ButtonReleaseMask | PointerMotionMask);
@@ -629,9 +632,8 @@ PagerResize(Pager * p, int w, int h)
    p->h = h;
    p->dw = w / ax;
    p->dh = h / ay;
-   p->pmap = ECreatePixmap(disp, p->win, p->w, p->h, pImlibData->x.depth);
-   p->bgpmap =
-      ECreatePixmap(disp, p->win, p->w / ax, p->h / ay, pImlibData->x.depth);
+   p->pmap = ECreatePixmap(disp, p->win, p->w, p->h, root.depth);
+   p->bgpmap = ECreatePixmap(disp, p->win, p->w / ax, p->h / ay, root.depth);
    if (p->visible)
       PagerRedraw(p, 1);
    ESetWindowBackgroundPixmap(disp, p->win, p->pmap);
@@ -857,15 +859,10 @@ PagerEwinUpdateMini(Pager * p, EWin * ewin)
       h = 1;
    if ((ewin->mini_w != w) || (ewin->mini_h != h))
      {
+	FreePmapMask(&ewin->mini_pmm);
+
 	ewin->mini_w = w;
 	ewin->mini_h = h;
-
-	if (ewin->mini_pmap)
-	   EFreePixmap(disp, ewin->mini_pmap);
-	if (ewin->mini_mask)
-	   EFreePixmap(disp, ewin->mini_mask);
-	ewin->mini_pmap = 0;
-	ewin->mini_mask = 0;
 
 	if ((ewin->desktop != desks.current) || (ewin->area_x != cx)
 	    || (ewin->area_y != cy) || (!SNAP))
@@ -875,24 +872,30 @@ PagerEwinUpdateMini(Pager * p, EWin * ewin)
 	     ic = FindItem("PAGER_WIN", 0, LIST_FINDBY_NAME, LIST_TYPE_ICLASS);
 	     if (ic)
 		IclassApplyCopy(ic, ewin->win, w, h, 0, 0, STATE_NORMAL,
-				&(ewin->mini_pmap), &(ewin->mini_mask));
+				&ewin->mini_pmm, 1);
 	  }
 	else
 	  {
-	     ewin->mini_pmap = ECreatePixmap(disp, p->win, w, h, root.depth);
-	     PagerScaleRect(ewin->mini_pmap, ewin->win, 0, 0, 0, 0, ewin->w,
+	     ewin->mini_pmm.type = 0;
+	     ewin->mini_pmm.pmap =
+		ECreatePixmap(disp, p->win, w, h, root.depth);
+	     PagerScaleRect(ewin->mini_pmm.pmap, ewin->win, 0, 0, 0, 0, ewin->w,
 			    ewin->h, w, h);
 	  }
      }
+
    if (p->hi_ewin == ewin)
      {
-	ImlibImage         *im;
+	Imlib_Image        *im;
 
+	imlib_context_set_drawable(ewin->mini_pmm.pmap);
 	im =
-	   Imlib_create_image_from_drawable(pImlibData, ewin->mini_pmap, 0, 0,
-					    0, ewin->mini_w, ewin->mini_h);
-	Imlib_apply_image(pImlibData, im, p->hi_win);
-	Imlib_kill_image(pImlibData, im);
+	   imlib_create_image_from_drawable(0, 0, 0, ewin->mini_w, ewin->mini_h,
+					    0);
+	imlib_context_set_image(im);
+	imlib_context_set_drawable(p->hi_win);
+	imlib_render_image_on_drawable(0, 0);
+	imlib_free_image_and_decache();
      }
 }
 
@@ -920,31 +923,31 @@ PagerEwinUpdateFromPager(Pager * p, EWin * ewin)
    h = ((ewin->h) * (p->h / ay)) / root.h;
    if (!gc)
       gc = XCreateGC(disp, p->pmap, 0, &gcv);
+
    if ((ewin->mini_w != w) || (ewin->mini_h != h))
-     {
-	if (ewin->mini_pmap)
-	   EFreePixmap(disp, ewin->mini_pmap);
-	if (ewin->mini_mask)
-	   EFreePixmap(disp, ewin->mini_mask);
-	ewin->mini_pmap = 0;
-	ewin->mini_mask = 0;
-     }
-   if (!ewin->mini_pmap)
+      FreePmapMask(&ewin->mini_pmm);
+
+   if (!ewin->mini_pmm.pmap)
      {
 	ewin->mini_w = w;
 	ewin->mini_h = h;
-	ewin->mini_pmap = ECreatePixmap(disp, p->win, w, h, root.depth);
+	ewin->mini_pmm.type = 0;
+	ewin->mini_pmm.pmap = ECreatePixmap(disp, p->win, w, h, root.depth);
      }
-   XCopyArea(disp, p->pmap, ewin->mini_pmap, gc, x, y, w, h, 0, 0);
+   XCopyArea(disp, p->pmap, ewin->mini_pmm.pmap, gc, x, y, w, h, 0, 0);
+
    if (p->hi_ewin == ewin)
      {
-	ImlibImage         *im;
+	Imlib_Image        *im;
 
+	imlib_context_set_drawable(ewin->mini_pmm.pmap);
 	im =
-	   Imlib_create_image_from_drawable(pImlibData, ewin->mini_pmap, 0, 0,
-					    0, ewin->mini_w, ewin->mini_h);
-	Imlib_apply_image(pImlibData, im, p->hi_win);
-	Imlib_kill_image(pImlibData, im);
+	   imlib_create_image_from_drawable(0, 0, 0, ewin->mini_w, ewin->mini_h,
+					    0);
+	imlib_context_set_image(im);
+	imlib_context_set_drawable(p->hi_win);
+	imlib_render_image_on_drawable(0, 0);
+	imlib_free_image_and_decache();
      }
 }
 
@@ -954,7 +957,6 @@ PagerRedraw(Pager * p, char newbg)
    int                 i, x, y, ax, ay, cx, cy;
    GC                  gc;
    XGCValues           gcv;
-   int                 c1, c2, r, g, b;
 
    if (!mode.show_pagers)
       return;
@@ -989,14 +991,6 @@ PagerRedraw(Pager * p, char newbg)
    GetAreaSize(&ax, &ay);
    cx = desks.desk[p->desktop].current_area_x;
    cy = desks.desk[p->desktop].current_area_y;
-   r = 0;
-   g = 0;
-   b = 0;
-   c1 = Imlib_best_color_match(pImlibData, &r, &g, &b);
-   r = 255;
-   g = 255;
-   b = 255;
-   c2 = Imlib_best_color_match(pImlibData, &r, &g, &b);
    gc = XCreateGC(disp, p->pmap, 0, &gcv);
    if (gc)
      {
@@ -1005,13 +999,15 @@ PagerRedraw(Pager * p, char newbg)
 	     if (!SNAP)
 	       {
 		  ImageClass         *ic = NULL;
+		  PmapMask            pmm;
 
 		  EFreePixmap(disp, p->bgpmap);
 		  ic = FindItem("PAGER_BACKGROUND", 0, LIST_FINDBY_NAME,
 				LIST_TYPE_ICLASS);
 		  if (ic)
 		     IclassApplyCopy(ic, p->win, p->w / ax, p->h / ay, 0, 0,
-				     STATE_NORMAL, &(p->bgpmap), NULL);
+				     STATE_NORMAL, &pmm, 0);
+		  p->bgpmap = pmm.pmap;
 	       }
 	     else
 	       {
@@ -1019,7 +1015,8 @@ PagerRedraw(Pager * p, char newbg)
 		    {
 		       char                s[4096];
 		       char               *uniq;
-		       ImlibImage         *im;
+		       Imlib_Image        *im;
+		       Pixmap              mask;
 
 		       uniq = GetUniqueBGString(desks.desk[p->desktop].bg);
 		       Esnprintf(s, sizeof(s), "%s/cached/pager/%s.%i.%i.%s",
@@ -1028,34 +1025,40 @@ PagerRedraw(Pager * p, char newbg)
 				 (p->h / ay), uniq);
 		       Efree(uniq);
 
-		       im = Imlib_load_image(pImlibData, s);
+		       im = imlib_load_image(s);
 		       if (im)
 			 {
 			    EFreePixmap(disp, p->bgpmap);
-			    Imlib_render(pImlibData, im, (p->w / ax),
-					 (p->h / ay));
-			    p->bgpmap = Imlib_copy_image(pImlibData, im);
-			    Imlib_destroy_image(pImlibData, im);
+			    imlib_context_set_image(im);
+			    imlib_render_pixmaps_for_whole_image_at_size(&p->
+									 bgpmap,
+									 &mask,
+									 (p->w /
+									  ax),
+									 (p->h /
+									  ay));
+			    imlib_free_image();
 			 }
 		       else
 			 {
-			    SetBackgroundTo(pImlibData, p->bgpmap,
+			    SetBackgroundTo(p->bgpmap,
 					    desks.desk[p->desktop].bg, 0);
+			    imlib_context_set_drawable(p->bgpmap);
 			    im =
-			       Imlib_create_image_from_drawable(pImlibData,
-								p->bgpmap, 0, 0,
-								0, (p->w / ax),
-								(p->h / ay));
-			    Imlib_save_image_to_ppm(pImlibData, im, s);
-			    Imlib_changed_image(pImlibData, im);
-			    Imlib_kill_image(pImlibData, im);
+			       imlib_create_image_from_drawable(0, 0, 0,
+								(p->w / ax),
+								(p->h / ay), 0);
+			    imlib_context_set_image(im);
+			    imlib_image_set_format("ppm");
+			    imlib_save_image(s);
+			    imlib_free_image_and_decache();
 			 }
 		    }
 		  else
 		    {
-		       XSetForeground(disp, gc, c1);
+		       XSetForeground(disp, gc, BlackPixel(disp, root.scr));
 		       XDrawRectangle(disp, p->bgpmap, gc, 0, 0, p->dw, p->dh);
-		       XSetForeground(disp, gc, c2);
+		       XSetForeground(disp, gc, WhitePixel(disp, root.scr));
 		       XFillRectangle(disp, p->bgpmap, gc, 1, 1, p->dw - 2,
 				      p->dh - 2);
 		    }
@@ -1080,24 +1083,24 @@ PagerRedraw(Pager * p, char newbg)
 		  ww = ((ewin->w) * (p->w / ax)) / root.w;
 		  wh = ((ewin->h) * (p->h / ay)) / root.h;
 		  PagerEwinUpdateMini(p, ewin);
-		  if (ewin->mini_pmap)
+		  if (ewin->mini_pmm.pmap)
 		    {
-		       if (ewin->mini_mask)
+		       if (ewin->mini_pmm.mask)
 			 {
-			    XSetClipMask(disp, gc, ewin->mini_mask);
+			    XSetClipMask(disp, gc, ewin->mini_pmm.mask);
 			    XSetClipOrigin(disp, gc, wx, wy);
 			 }
-		       XCopyArea(disp, ewin->mini_pmap, p->pmap, gc, 0, 0, ww,
-				 wh, wx, wy);
-		       if (ewin->mini_mask)
+		       XCopyArea(disp, ewin->mini_pmm.pmap, p->pmap, gc, 0, 0,
+				 ww, wh, wx, wy);
+		       if (ewin->mini_pmm.mask)
 			  XSetClipMask(disp, gc, None);
 		    }
 		  else
 		    {
-		       XSetForeground(disp, gc, c1);
+		       XSetForeground(disp, gc, BlackPixel(disp, root.scr));
 		       XDrawRectangle(disp, p->pmap, gc, wx - 1, wy - 1, ww + 1,
 				      wh + 1);
-		       XSetForeground(disp, gc, c2);
+		       XSetForeground(disp, gc, WhitePixel(disp, root.scr));
 		       XFillRectangle(disp, p->pmap, gc, wx, wy, ww, wh);
 		    }
 	       }
@@ -1452,29 +1455,31 @@ PagerShowHi(Pager * p, EWin * ewin, int x, int y, int w, int h)
 	ic = FindItem("PAGER_WIN", 0, LIST_FINDBY_NAME, LIST_TYPE_ICLASS);
 	EMoveResizeWindow(disp, p->hi_win, x, y, w, h);
 	EMapRaised(disp, p->hi_win);
-	if (ewin->mini_pmap)
+	if (ewin->mini_pmm.pmap)
 	  {
-	     ImlibImage         *im;
+	     Imlib_Image        *im;
 	     int                 xx, yy, ww, hh, i;
 
+	     imlib_context_set_drawable(ewin->mini_pmm.pmap);
 	     im =
-		Imlib_create_image_from_drawable(pImlibData, ewin->mini_pmap, 0,
-						 0, 0, ewin->mini_w,
-						 ewin->mini_h);
+		imlib_create_image_from_drawable(0, 0, 0, ewin->mini_w,
+						 ewin->mini_h, 0);
 	     if (w > h)
 	       {
 		  for (i = w; i < (w * 2); i++)
 		    {
-		       Pixmap              pmap;
+		       Pixmap              pmap, mask;
 
 		       ww = i;
 		       hh = (i * h) / w;
 		       xx = x + ((w - ww) / 2);
 		       yy = y + ((h - hh) / 2);
-		       Imlib_render(pImlibData, im, ww, hh);
-		       pmap = Imlib_move_image(pImlibData, im);
+		       imlib_context_set_image(im);
+		       imlib_render_pixmaps_for_whole_image_at_size(&pmap,
+								    &mask, ww,
+								    hh);
 		       ESetWindowBackgroundPixmap(disp, p->hi_win, pmap);
-		       Imlib_free_pixmap(pImlibData, pmap);
+		       imlib_free_pixmap_and_mask(pmap);
 		       EMoveResizeWindow(disp, p->hi_win, xx, yy, ww, hh);
 		       XClearWindow(disp, p->hi_win);
 		       {
@@ -1484,7 +1489,7 @@ PagerShowHi(Pager * p, EWin * ewin, int x, int y, int w, int h)
 			  if ((px < x) || (py < y) || (px >= (x + w))
 			      || (py >= (y + h)))
 			    {
-			       Imlib_kill_image(pImlibData, im);
+			       imlib_free_image_and_decache();
 			       EUnmapWindow(disp, p->hi_win);
 			       goto exit;
 			    }
@@ -1495,16 +1500,18 @@ PagerShowHi(Pager * p, EWin * ewin, int x, int y, int w, int h)
 	       {
 		  for (i = h; i < (h * 2); i++)
 		    {
-		       Pixmap              pmap;
+		       Pixmap              pmap, mask;
 
 		       ww = (i * w) / h;
 		       hh = i;
 		       xx = x + ((w - ww) / 2);
 		       yy = y + ((h - hh) / 2);
-		       Imlib_render(pImlibData, im, ww, hh);
-		       pmap = Imlib_move_image(pImlibData, im);
+		       imlib_context_set_image(im);
+		       imlib_render_pixmaps_for_whole_image_at_size(&pmap,
+								    &mask, ww,
+								    hh);
 		       ESetWindowBackgroundPixmap(disp, p->hi_win, pmap);
-		       Imlib_free_pixmap(pImlibData, pmap);
+		       imlib_free_pixmap_and_mask(pmap);
 		       EMoveResizeWindow(disp, p->hi_win, xx, yy, ww, hh);
 		       XClearWindow(disp, p->hi_win);
 		       {
@@ -1514,7 +1521,7 @@ PagerShowHi(Pager * p, EWin * ewin, int x, int y, int w, int h)
 			  if ((px < x) || (py < y) || (px >= (x + w))
 			      || (py >= (y + h)))
 			    {
-			       Imlib_kill_image(pImlibData, im);
+			       imlib_free_image_and_decache();
 			       EUnmapWindow(disp, p->hi_win);
 			       goto exit;
 			    }
@@ -1523,8 +1530,10 @@ PagerShowHi(Pager * p, EWin * ewin, int x, int y, int w, int h)
 	       }
 	     EMoveResizeWindow(disp, p->hi_win, x - (w / 2), y - (h / 2), w * 2,
 			       h * 2);
-	     Imlib_apply_image(pImlibData, im, p->hi_win);
-	     Imlib_kill_image(pImlibData, im);
+	     imlib_context_set_image(im);
+	     imlib_context_set_drawable(p->hi_win);
+	     imlib_render_image_on_drawable(0, 0);
+	     imlib_free_image_and_decache();
 	  }
 	else if (ic)
 	  {
@@ -1589,17 +1598,8 @@ PagerShowHi(Pager * p, EWin * ewin, int x, int y, int w, int h)
 	     Pixmap              pmap;
 	     GC                  gc = 0;
 	     XGCValues           gcv;
-	     int                 c1, c2, r, g, b;
 	     int                 xx, yy, ww, hh, i;
 
-	     r = 0;
-	     g = 0;
-	     b = 0;
-	     c1 = Imlib_best_color_match(pImlibData, &r, &g, &b);
-	     r = 255;
-	     g = 255;
-	     b = 255;
-	     c2 = Imlib_best_color_match(pImlibData, &r, &g, &b);
 	     pmap = ECreatePixmap(disp, p->hi_win, w * 2, h * 2, root.depth);
 	     ESetWindowBackgroundPixmap(disp, p->hi_win, pmap);
 	     if (!gc)
@@ -1612,9 +1612,9 @@ PagerShowHi(Pager * p, EWin * ewin, int x, int y, int w, int h)
 		       hh = (i * h) / w;
 		       xx = x + ((w - ww) / 2);
 		       yy = y + ((h - hh) / 2);
-		       XSetForeground(disp, gc, c1);
+		       XSetForeground(disp, gc, BlackPixel(disp, root.scr));
 		       XFillRectangle(disp, pmap, gc, 0, 0, ww, hh);
-		       XSetForeground(disp, gc, c2);
+		       XSetForeground(disp, gc, WhitePixel(disp, root.scr));
 		       XFillRectangle(disp, pmap, gc, 1, 1, ww - 2, hh - 2);
 		       EMoveResizeWindow(disp, p->hi_win, xx, yy, ww, hh);
 		       XClearWindow(disp, p->hi_win);
@@ -1640,9 +1640,9 @@ PagerShowHi(Pager * p, EWin * ewin, int x, int y, int w, int h)
 		       hh = i;
 		       xx = x + ((w - ww) / 2);
 		       yy = y + ((h - hh) / 2);
-		       XSetForeground(disp, gc, c1);
+		       XSetForeground(disp, gc, BlackPixel(disp, root.scr));
 		       XFillRectangle(disp, pmap, gc, 0, 0, ww, hh);
-		       XSetForeground(disp, gc, c2);
+		       XSetForeground(disp, gc, WhitePixel(disp, root.scr));
 		       XFillRectangle(disp, pmap, gc, 1, 1, ww - 2, hh - 2);
 		       EMoveResizeWindow(disp, p->hi_win, xx, yy, ww, hh);
 		       XClearWindow(disp, p->hi_win);

@@ -1507,11 +1507,13 @@ CreateEwin()
    ewin->has_transients = 0;
    ewin->mini_w = 0;
    ewin->mini_h = 0;
-   ewin->mini_pmap = 0;
-   ewin->mini_mask = 0;
+   ewin->mini_pmm.type = 0;
+   ewin->mini_pmm.pmap = 0;
+   ewin->mini_pmm.mask = 0;
    ewin->snap = NULL;
-   ewin->icon_pmap = 0;
-   ewin->icon_mask = 0;
+   ewin->icon_pmm.type = 0;
+   ewin->icon_pmm.pmap = 0;
+   ewin->icon_pmm.mask = 0;
 
    att.event_mask =
       StructureNotifyMask | ResizeRedirectMask | ButtonPressMask |
@@ -1642,14 +1644,8 @@ FreeEwin(EWin * ewin)
       Efree(ewin->bits);
    if (ewin->session_id)
       Efree(ewin->session_id);
-   if (ewin->mini_pmap)
-      EFreePixmap(disp, ewin->mini_pmap);
-   if (ewin->mini_mask)
-      EFreePixmap(disp, ewin->mini_mask);
-   if (ewin->icon_pmap)
-      Imlib_free_pixmap(pImlibData, ewin->icon_pmap);
-   if (ewin->icon_mask)
-      Imlib_free_pixmap(pImlibData, ewin->icon_mask);
+   FreePmapMask(&ewin->mini_pmm);
+   FreePmapMask(&ewin->icon_pmm);
    if (ewin->groups)
      {
 	num_groups = ewin->num_groups;
@@ -2181,6 +2177,7 @@ void
 ShowEwin(EWin * ewin)
 {
    EDBUG(3, "ShowEwin");
+
    if (ewin->visible)
       EDBUG_RETURN_;
    if (ewin->client.win)

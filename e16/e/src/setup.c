@@ -231,9 +231,28 @@ SetupX()
  */
    /* record the event base for shape change events */
    event_base_shape = shape_event_base;
+
    /* initialise imlib */
-   pImlibData = Imlib_init(disp);
-   if (!pImlibData)
+#if USE_IMLIB2
+   root.win = DefaultRootWindow(disp);
+   root.vis = DefaultVisual(disp, root.scr);
+   root.depth = DefaultDepth(disp, root.scr);
+   root.cmap = DefaultColormap(disp, root.scr);
+
+   imlib_set_cache_size(2048 * 1024);
+   imlib_set_font_cache_size(512 * 1024);
+   imlib_set_color_usage(128);
+
+   imlib_context_set_dither(1);
+
+   imlib_context_set_display(disp);
+   imlib_context_set_visual(root.vis);
+   imlib_context_set_colormap(root.cmap);
+   imlib_context_set_dither_mask(0);
+#else
+   pImlib_Context = Imlib_init(disp);
+   IMLIB1_SET_CONTEXT(0);
+   if (!pImlib_Context)
      {
 	ASSIGN_ALERT(_("Imlib initialisation error"), "", "",
 		     _("Quit Enlightenment"));
@@ -245,7 +264,7 @@ SetupX()
 	EExit((void *)1);
      }
 #if USE_FNLIB
-   pFnlibData = Fnlib_init(pImlibData);
+   pFnlibData = Fnlib_init(pImlib_Context);
    if (!pFnlibData)
      {
 	ASSIGN_ALERT(_("X server setup error"), "", "",
@@ -258,13 +277,10 @@ SetupX()
 	EExit((void *)1);
      }
 #endif
-   root.win = pImlibData->x.root;
-   root.vis = Imlib_get_visual(pImlibData);
-   root.depth = pImlibData->x.depth;
-   root.cmap = Imlib_get_colormap(pImlibData);
-   root.w = DisplayWidth(disp, root.scr);
-   root.h = DisplayHeight(disp, root.scr);
-   root.focuswin = ECreateFocusWindow(root.win, -100, -100, 5, 5);
+   root.win = pImlib_Context->x.root;
+   root.vis = Imlib_get_visual(pImlib_Context);
+   root.depth = pImlib_Context->x.depth;
+   root.cmap = Imlib_get_colormap(pImlib_Context);
    /* warn, if necessary about visual problems */
    if (DefaultVisual(disp, root.scr) != root.vis)
      {
@@ -272,12 +288,16 @@ SetupX()
 
 	p.flags = PARAMS_VISUALID;
 	p.visualid = XVisualIDFromVisual(DefaultVisual(disp, root.scr));
-	prImlibData = Imlib_init_with_params(disp, &p);
+	prImlib_Context = Imlib_init_with_params(disp, &p);
      }
    else
      {
-	prImlibData = NULL;
+	prImlib_Context = NULL;
      }
+#endif
+   root.w = DisplayWidth(disp, root.scr);
+   root.h = DisplayHeight(disp, root.scr);
+   root.focuswin = ECreateFocusWindow(root.win, -100, -100, 5, 5);
    /* just in case - set them up again */
    /* set up an error handler for then E would normally have fatal X errors */
    XSetErrorHandler((XErrorHandler) EHandleXError);
@@ -654,14 +674,11 @@ MakeExtInitWin(void)
    XGCValues           gcv;
    GC                  gc;
    Pixmap              pmap;
-   Atom                a, aa;
+   Atom                a;
    CARD32              val;
-   int                 format_ret, i;
-   unsigned long       bytes_after, num_ret;
+   int                 i;
    Window             *retval;
    XSetWindowAttributes attr;
-
-   ImlibData          *imd;
 
    a = XInternAtom(disp, "ENLIGHTENMENT_RESTART_SCREEN", False);
    XSync(disp, False);
@@ -670,6 +687,10 @@ MakeExtInitWin(void)
 	UngrabX();
 	for (;;)
 	  {
+	     Atom                aa;
+	     int                 format_ret;
+	     unsigned long       bytes_after, num_ret;
+
 	     retval = NULL;
 	     XGetWindowProperty(disp, root.win, a, 0, 0x7fffffff, True,
 				XA_CARDINAL, &aa, &format_ret, &num_ret,
@@ -694,7 +715,18 @@ MakeExtInitWin(void)
    d2 = XOpenDisplay(DisplayString(disp));
    close(ConnectionNumber(disp));
    XGrabServer(d2);
-   imd = Imlib_init(d2);
+#if USE_IMLIB2
+   imlib_set_cache_size(2048 * 1024);
+   imlib_set_font_cache_size(512 * 1024);
+   imlib_set_color_usage(128);
+
+   imlib_context_set_display(d2);
+   imlib_context_set_visual(DefaultVisual(d2, DefaultScreen(d2)));
+   imlib_context_set_colormap(DefaultColormap(d2, DefaultScreen(d2)));
+#else
+   pImlib_Context = Imlib_init(d2);
+#endif
+   IMLIB1_SET_CONTEXT(0);
    attr.backing_store = NotUseful;
    attr.override_redirect = True;
    attr.colormap = root.cmap;
@@ -722,7 +754,8 @@ MakeExtInitWin(void)
    XUngrabServer(d2);
    XSync(d2, False);
 
-   if (!imd)
+#if !USE_IMLIB2
+   if (!pImlib_Context)
      {
 	i = 0;
 	for (;;)
@@ -743,11 +776,12 @@ MakeExtInitWin(void)
 	  }
      }
    else
+#endif
      {
 	Window              w2, ww;
 	char               *f, s[1024];
 	Pixmap              pmap, mask;
-	ImlibImage         *im;
+	Imlib_Image        *im;
 	struct timeval      tv;
 	int                 dd, x, y;
 	unsigned int        mm;
@@ -784,27 +818,29 @@ MakeExtInitWin(void)
 	     f = FindFile(s);
 	     im = NULL;
 	     if (f)
-		im = Imlib_load_image(imd, f);
-
-	     if (f)
-		Efree(f);
+	       {
+		  im = imlib_load_image(f);
+		  Efree(f);
+	       }
 
 	     if (im)
 	       {
-		  Imlib_render(imd, im, im->rgb_width, im->rgb_height);
-		  pmap = Imlib_move_image(imd, im);
-		  mask = Imlib_move_mask(imd, im);
-		  Imlib_destroy_image(imd, im);
+		  imlib_context_set_image(im);
+		  imlib_context_set_drawable(w2);
+		  imlib_render_pixmaps_for_whole_image(&pmap, &mask);
 		  EShapeCombineMask(d2, w2, ShapeBounding, 0, 0, mask,
 				    ShapeSet);
 		  ESetWindowBackgroundPixmap(d2, w2, pmap);
-		  Imlib_free_pixmap(imd, pmap);
+		  imlib_free_pixmap_and_mask(pmap);
 		  XClearWindow(d2, w2);
 		  XQueryPointer(d2, win, &ww, &ww, &dd, &dd, &x, &y, &mm);
-		  EMoveResizeWindow(d2, w2, x - (im->rgb_width / 2),
-				    y - (im->rgb_height / 2), im->rgb_width,
-				    im->rgb_height);
+		  EMoveResizeWindow(d2, w2,
+				    x - imlib_image_get_width() / 2,
+				    y - imlib_image_get_height() / 2,
+				    imlib_image_get_width(),
+				    imlib_image_get_height());
 		  EMapWindow(d2, w2);
+		  imlib_free_image();
 	       }
 	     tv.tv_sec = 0;
 	     tv.tv_usec = 50000;

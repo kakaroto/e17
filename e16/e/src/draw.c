@@ -48,6 +48,7 @@ HandleDrawQueue()
 	   (DrawQueue *) RemoveItem(NULL, 0, LIST_FINDBY_NONE, LIST_TYPE_DRAW)))
      {
 	already = 0;
+
 	if (dq->shape_propagate)
 	  {
 	     for (i = 0; i < num; i++)
@@ -286,18 +287,20 @@ ECreatePixImg(Window win, int w, int h)
    int                 bpp;
    PixImg             *pi;
 
-   if (pImlibData->x.depth <= 8)
+   if (root.depth <= 8)
       bpp = 1;
-   else if (pImlibData->x.depth <= 16)
+   else if (root.depth <= 16)
       bpp = 2;
-   else if (pImlibData->x.depth <= 24)
+   else if (root.depth <= 24)
       bpp = 3;
    else
       bpp = 4;
-   if ((pImlibData->max_shm) && ((bpp * w * h) > pImlibData->max_shm))
+#if !USE_IMLIB2
+   if ((pImlib_Context->max_shm) && ((bpp * w * h) > pImlib_Context->max_shm))
       return NULL;
-   if ((!pImlibData->x.shm) || (!pImlibData->x.shmp))
+   if ((!pImlib_Context->x.shm) || (!pImlib_Context->x.shmp))
       return NULL;
+#endif
 
    pi = Emalloc(sizeof(PixImg));
    if (!pi)
@@ -561,7 +564,7 @@ EBlendPixImg(EWin * ewin, PixImg * s1, PixImg * s2, PixImg * dst, int x, int y,
 	       }
 	     break;
 	  case 16:
-	     if (pImlibData->x.render_depth != 15)
+	     if (IC_RenderDepth() != 15)
 	       {
 		  for (j = 0; j < h; j++)
 		    {
@@ -570,32 +573,20 @@ EBlendPixImg(EWin * ewin, PixImg * s1, PixImg * s2, PixImg * dst, int x, int y,
 		       ptr1 =
 			  (unsigned int *)(s1->xim->data +
 					   ((x) *
-					    ((s1->xim->
-					      bits_per_pixel) >> 3)) + ((j +
-									 y) *
-									s1->
-									xim->
-									bytes_per_line));
+					    ((s1->xim->bits_per_pixel) >> 3)) +
+					   ((j + y) * s1->xim->bytes_per_line));
 		       ptr2 =
 			  (unsigned int *)(s2->xim->data +
 					   ((ox) *
-					    ((s2->xim->
-					      bits_per_pixel) >> 3)) + ((j +
-									 oy)
-									*
-									s2->
-									xim->
-									bytes_per_line));
+					    ((s2->xim->bits_per_pixel) >> 3)) +
+					   ((j +
+					     oy) * s2->xim->bytes_per_line));
 		       ptr3 =
 			  (unsigned int *)(dst->xim->data +
 					   ((ox) *
-					    ((dst->xim->
-					      bits_per_pixel) >> 3)) + ((j +
-									 oy)
-									*
-									dst->
-									xim->
-									bytes_per_line));
+					    ((dst->xim->bits_per_pixel) >> 3)) +
+					   ((j +
+					     oy) * dst->xim->bytes_per_line));
 		       if (!(w & 0x1))
 			 {
 			    for (i = 0; i < w; i += 2)
@@ -923,18 +914,21 @@ DrawEwinShape(EWin * ewin, int md, int x, int y, int w, int h, char firstlast)
       md = 0;
    if (md == 5)
      {
-	if (pImlibData->x.depth <= 8)
+	if (root.depth <= 8)
 	   bpp = 1;
-	else if (pImlibData->x.depth <= 16)
+	else if (root.depth <= 16)
 	   bpp = 2;
-	else if (pImlibData->x.depth <= 24)
+	else if (root.depth <= 24)
 	   bpp = 3;
 	else
 	   bpp = 4;
-	if ((prImlibData)
-	    || ((pImlibData->max_shm) && ((bpp * w * h) > pImlibData->max_shm))
-	    || ((!pImlibData->x.shm) || (!pImlibData->x.shmp)))
+#if !USE_IMLIB2
+	if ((prImlib_Context) ||
+	    (pImlib_Context->max_shm &&
+	     ((bpp * w * h) > pImlib_Context->max_shm)) ||
+	    ((!pImlib_Context->x.shm) || (!pImlib_Context->x.shmp)))
 	   md = 0;
+#endif
      }
    pw = w;
    ph = h;
@@ -1357,34 +1351,31 @@ DrawEwinShape(EWin * ewin, int md, int x, int y, int w, int h, char firstlast)
    EDBUG_RETURN_;
 }
 
-ImlibImage         *
+Imlib_Image        *
 ELoadImage(char *file)
 {
-   EDBUG(5, "ELoadImage");
-   EDBUG_RETURN(ELoadImageImlibData(pImlibData, file));
-}
-
-ImlibImage         *
-ELoadImageImlibData(ImlibData * imd, char *file)
-{
-   ImlibImage         *im;
+   Imlib_Image        *im;
    char               *f = NULL;
 
-   EDBUG(5, "ELoadImageImlibData");
+   EDBUG(5, "ELoadImage");
+
    if (!file)
       EDBUG_RETURN(NULL);
+
    if (file[0] == '/')
      {
-	EDBUG_RETURN(Imlib_load_image(imd, file));
+	im = imlib_load_image(file);
+	EDBUG_RETURN(im);
      }
-   else
-      f = FindFile(file);
+
+   f = FindFile(file);
    if (f)
      {
-	im = Imlib_load_image(imd, f);
+	im = imlib_load_image(f);
 	Efree(f);
 	EDBUG_RETURN(im);
      }
+
    EDBUG_RETURN(NULL);
 }
 

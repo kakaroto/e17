@@ -87,17 +87,18 @@ enlightenment_SOURCES = \
 
 
 LDADD = \
-	@INTLLIBS@			\
+	@INTLLIBS@		\
 	$(FNLIB_LIBS) 		\
 	$(TTF_LIBS) 		\
 	$(ESD_LIBS) 		\
 	$(IMLIB_LIBS) 		\
 	$(XTST_LIBS) 		\
 	$(XVM_LIBS) 		\
-	$(GHTTP_LIBS)           \
-	$(DL_LIBS)              \
-	$(XINERAMA_LIBS)              \
-	-lm
+	$(GHTTP_LIBS)		\
+	$(DL_LIBS)		\
+	$(XINERAMA_LIBS)	\
+	$(X_PRE_LIBS) 		\
+	-lX11 -lm
 
 INCLUDES = $(ESD_CFLAGS) $(IMLIB_CFLAGS) -I$(top_builddir) -I$(top_srcdir)/intl
 

@@ -136,7 +136,7 @@ struct _ditem
    void               *data;
    ImageClass         *iclass;
    TextClass          *tclass;
-   ImlibBorder         padding;
+   Imlib_Border        padding;
    char                fill_h;
    char                fill_v;
    int                 align_h;
@@ -220,9 +220,7 @@ DialogRealizeTClassDefault(void)
 	d_tc_default->norm.normal = CreateTextState();
 	d_tc_default->norm.normal->fontname =
 	   duplicate("-*-helvetica-medium-r-*-*-12-*-*-*-*-*-*-*");
-	d_tc_default->norm.normal->fg_col.r = 0;
-	d_tc_default->norm.normal->fg_col.g = 0;
-	d_tc_default->norm.normal->fg_col.b = 0;
+	ESetColor(&(d_tc_default->norm.normal->fg_col), 0, 0, 0);
      }
 }
 
@@ -235,111 +233,51 @@ DialogRealizeIClassDefault(void)
 	d_ic_default->name = NULL;
 
 	d_ic_default->norm.normal = CreateImageState();
-	d_ic_default->norm.normal->hihi.r = 255;
-	d_ic_default->norm.normal->hihi.g = 255;
-	d_ic_default->norm.normal->hihi.b = 255;
-	d_ic_default->norm.normal->hi.r = 220;
-	d_ic_default->norm.normal->hi.g = 220;
-	d_ic_default->norm.normal->hi.b = 220;
-	d_ic_default->norm.normal->bg.r = 160;
-	d_ic_default->norm.normal->bg.g = 160;
-	d_ic_default->norm.normal->bg.b = 160;
-	d_ic_default->norm.normal->lo.r = 100;
-	d_ic_default->norm.normal->lo.g = 100;
-	d_ic_default->norm.normal->lo.b = 100;
-	d_ic_default->norm.normal->lolo.r = 0;
-	d_ic_default->norm.normal->lolo.g = 0;
-	d_ic_default->norm.normal->lolo.b = 0;
+	ESetColor(&(d_ic_default->norm.normal->hihi), 255, 255, 255);
+	ESetColor(&(d_ic_default->norm.normal->hi), 220, 220, 220);
+	ESetColor(&(d_ic_default->norm.normal->bg), 160, 160, 160);
+	ESetColor(&(d_ic_default->norm.normal->lo), 100, 100, 100);
+	ESetColor(&(d_ic_default->norm.normal->lolo), 0, 0, 0);
 	d_ic_default->norm.normal->bevelstyle = BEVEL_NEXT;
 
 	d_ic_default->norm.hilited = CreateImageState();
-	d_ic_default->norm.hilited->hihi.r = 255;
-	d_ic_default->norm.hilited->hihi.g = 255;
-	d_ic_default->norm.hilited->hihi.b = 255;
-	d_ic_default->norm.hilited->hi.r = 240;
-	d_ic_default->norm.hilited->hi.g = 240;
-	d_ic_default->norm.hilited->hi.b = 240;
-	d_ic_default->norm.hilited->bg.r = 200;
-	d_ic_default->norm.hilited->bg.g = 200;
-	d_ic_default->norm.hilited->bg.b = 200;
-	d_ic_default->norm.hilited->lo.r = 160;
-	d_ic_default->norm.hilited->lo.g = 160;
-	d_ic_default->norm.hilited->lo.b = 160;
-	d_ic_default->norm.hilited->lolo.r = 0;
-	d_ic_default->norm.hilited->lolo.g = 0;
-	d_ic_default->norm.hilited->lolo.b = 0;
+	ESetColor(&(d_ic_default->norm.hilited->hihi), 255, 255, 255);
+	ESetColor(&(d_ic_default->norm.hilited->hi), 240, 240, 240);
+	ESetColor(&(d_ic_default->norm.hilited->bg), 200, 200, 200);
+	ESetColor(&(d_ic_default->norm.hilited->lo), 160, 160, 160);
+	ESetColor(&(d_ic_default->norm.hilited->lolo), 0, 0, 0);
 	d_ic_default->norm.hilited->bevelstyle = BEVEL_NEXT;
 
 	d_ic_default->norm.clicked = CreateImageState();
-	d_ic_default->norm.clicked->hihi.r = 0;
-	d_ic_default->norm.clicked->hihi.g = 0;
-	d_ic_default->norm.clicked->hihi.b = 0;
-	d_ic_default->norm.clicked->hi.r = 100;
-	d_ic_default->norm.clicked->hi.g = 100;
-	d_ic_default->norm.clicked->hi.b = 100;
-	d_ic_default->norm.clicked->bg.r = 160;
-	d_ic_default->norm.clicked->bg.g = 160;
-	d_ic_default->norm.clicked->bg.b = 160;
-	d_ic_default->norm.clicked->lo.r = 220;
-	d_ic_default->norm.clicked->lo.g = 220;
-	d_ic_default->norm.clicked->lo.b = 220;
-	d_ic_default->norm.clicked->lolo.r = 255;
-	d_ic_default->norm.clicked->lolo.g = 255;
-	d_ic_default->norm.clicked->lolo.b = 255;
+	ESetColor(&(d_ic_default->norm.clicked->hihi), 0, 0, 0);
+	ESetColor(&(d_ic_default->norm.clicked->hi), 100, 100, 100);
+	ESetColor(&(d_ic_default->norm.clicked->bg), 160, 160, 160);
+	ESetColor(&(d_ic_default->norm.clicked->lo), 220, 220, 220);
+	ESetColor(&(d_ic_default->norm.clicked->lolo), 255, 255, 255);
 	d_ic_default->norm.clicked->bevelstyle = BEVEL_NEXT;
 
 	d_ic_default->active.normal = CreateImageState();
-	d_ic_default->active.normal->hihi.r = 0;
-	d_ic_default->active.normal->hihi.g = 0;
-	d_ic_default->active.normal->hihi.b = 0;
-	d_ic_default->active.normal->hi.r = 100;
-	d_ic_default->active.normal->hi.g = 100;
-	d_ic_default->active.normal->hi.b = 100;
-	d_ic_default->active.normal->bg.r = 160;
-	d_ic_default->active.normal->bg.g = 160;
-	d_ic_default->active.normal->bg.b = 160;
-	d_ic_default->active.normal->lo.r = 220;
-	d_ic_default->active.normal->lo.g = 220;
-	d_ic_default->active.normal->lo.b = 220;
-	d_ic_default->active.normal->lolo.r = 255;
-	d_ic_default->active.normal->lolo.g = 255;
-	d_ic_default->active.normal->lolo.b = 255;
+	ESetColor(&(d_ic_default->active.normal->hihi), 0, 0, 0);
+	ESetColor(&(d_ic_default->active.normal->hi), 100, 100, 100);
+	ESetColor(&(d_ic_default->active.normal->bg), 160, 160, 160);
+	ESetColor(&(d_ic_default->active.normal->lo), 220, 220, 220);
+	ESetColor(&(d_ic_default->active.normal->lolo), 255, 255, 255);
 	d_ic_default->active.normal->bevelstyle = BEVEL_NEXT;
 
 	d_ic_default->active.hilited = CreateImageState();
-	d_ic_default->active.hilited->hihi.r = 0;
-	d_ic_default->active.hilited->hihi.g = 0;
-	d_ic_default->active.hilited->hihi.b = 0;
-	d_ic_default->active.hilited->hi.r = 100;
-	d_ic_default->active.hilited->hi.g = 100;
-	d_ic_default->active.hilited->hi.b = 100;
-	d_ic_default->active.hilited->bg.r = 160;
-	d_ic_default->active.hilited->bg.g = 160;
-	d_ic_default->active.hilited->bg.b = 160;
-	d_ic_default->active.hilited->lo.r = 220;
-	d_ic_default->active.hilited->lo.g = 220;
-	d_ic_default->active.hilited->lo.b = 220;
-	d_ic_default->active.hilited->lolo.r = 255;
-	d_ic_default->active.hilited->lolo.g = 255;
-	d_ic_default->active.hilited->lolo.b = 255;
+	ESetColor(&(d_ic_default->active.hilited->hihi), 0, 0, 0);
+	ESetColor(&(d_ic_default->active.hilited->hi), 100, 100, 100);
+	ESetColor(&(d_ic_default->active.hilited->bg), 160, 160, 160);
+	ESetColor(&(d_ic_default->active.hilited->lo), 220, 220, 220);
+	ESetColor(&(d_ic_default->active.hilited->lolo), 255, 255, 255);
 	d_ic_default->active.hilited->bevelstyle = BEVEL_NEXT;
 
 	d_ic_default->active.clicked = CreateImageState();
-	d_ic_default->active.clicked->hihi.r = 0;
-	d_ic_default->active.clicked->hihi.g = 0;
-	d_ic_default->active.clicked->hihi.b = 0;
-	d_ic_default->active.clicked->hi.r = 100;
-	d_ic_default->active.clicked->hi.g = 100;
-	d_ic_default->active.clicked->hi.b = 100;
-	d_ic_default->active.clicked->bg.r = 160;
-	d_ic_default->active.clicked->bg.g = 160;
-	d_ic_default->active.clicked->bg.b = 160;
-	d_ic_default->active.clicked->lo.r = 220;
-	d_ic_default->active.clicked->lo.g = 220;
-	d_ic_default->active.clicked->lo.b = 220;
-	d_ic_default->active.clicked->lolo.r = 255;
-	d_ic_default->active.clicked->lolo.g = 255;
-	d_ic_default->active.clicked->lolo.b = 255;
+	ESetColor(&(d_ic_default->active.clicked->hihi), 0, 0, 0);
+	ESetColor(&(d_ic_default->active.clicked->hi), 100, 100, 100);
+	ESetColor(&(d_ic_default->active.clicked->bg), 160, 160, 160);
+	ESetColor(&(d_ic_default->active.clicked->lo), 220, 220, 220);
+	ESetColor(&(d_ic_default->active.clicked->lolo), 255, 255, 255);
 	d_ic_default->active.clicked->bevelstyle = BEVEL_NEXT;
 
 	d_ic_default->padding.left = 8;
@@ -1182,14 +1120,15 @@ DialogRealizeItem(Dialog * d, DItem * di)
 	  }
 	if (di->item.slider.ic_base->norm.normal->im_file)
 	  {
-	     ImlibImage         *im;
+	     Imlib_Image        *im;
 
 	     im = ELoadImage(di->item.slider.ic_base->norm.normal->im_file);
 	     if (im)
 	       {
-		  di->item.slider.base_orig_w = im->rgb_width;
-		  di->item.slider.base_orig_h = im->rgb_height;
-		  Imlib_destroy_image(pImlibData, im);
+		  imlib_context_set_image(im);
+		  di->item.slider.base_orig_w = imlib_image_get_width();
+		  di->item.slider.base_orig_h = imlib_image_get_height();
+		  imlib_free_image();
 	       }
 	  }
 	if (di->item.slider.ic_base)
@@ -1220,14 +1159,15 @@ DialogRealizeItem(Dialog * d, DItem * di)
 
 	if (di->item.slider.ic_knob->norm.normal->im_file)
 	  {
-	     ImlibImage         *im;
+	     Imlib_Image        *im;
 
 	     im = ELoadImage(di->item.slider.ic_knob->norm.normal->im_file);
 	     if (im)
 	       {
-		  di->item.slider.knob_orig_w = im->rgb_width;
-		  di->item.slider.knob_orig_h = im->rgb_height;
-		  Imlib_destroy_image(pImlibData, im);
+		  imlib_context_set_image(im);
+		  di->item.slider.knob_orig_w = imlib_image_get_width();
+		  di->item.slider.knob_orig_h = imlib_image_get_height();
+		  imlib_free_image();
 	       }
 	  }
 	if (!di->item.slider.ic_border)
@@ -1249,15 +1189,16 @@ DialogRealizeItem(Dialog * d, DItem * di)
 	  {
 	     if (di->item.slider.ic_border->norm.normal->im_file)
 	       {
-		  ImlibImage         *im;
+		  Imlib_Image        *im;
 
 		  im = ELoadImage(di->item.slider.ic_border->norm.
 				  normal->im_file);
 		  if (im)
 		    {
-		       di->item.slider.border_orig_w = im->rgb_width;
-		       di->item.slider.border_orig_h = im->rgb_height;
-		       Imlib_destroy_image(pImlibData, im);
+		       imlib_context_set_image(im);
+		       di->item.slider.border_orig_w = imlib_image_get_width();
+		       di->item.slider.border_orig_h = imlib_image_get_height();
+		       imlib_free_image();
 		       di->item.slider.border_win =
 			  ECreateWindow(d->win, -20, -20, 2, 2, 0);
 		       EMapWindow(disp, di->item.slider.border_win);
@@ -1314,14 +1255,15 @@ DialogRealizeItem(Dialog * d, DItem * di)
      case DITEM_CHECKBUTTON:
 	if (di->iclass->norm.normal->im_file)
 	  {
-	     ImlibImage         *im;
+	     Imlib_Image        *im;
 
 	     im = ELoadImage(di->iclass->norm.normal->im_file);
 	     if (im)
 	       {
-		  di->item.check_button.check_orig_w = im->rgb_width;
-		  di->item.check_button.check_orig_h = im->rgb_height;
-		  Imlib_destroy_image(pImlibData, im);
+		  imlib_context_set_image(im);
+		  di->item.check_button.check_orig_w = imlib_image_get_width();
+		  di->item.check_button.check_orig_h = imlib_image_get_height();
+		  imlib_free_image();
 	       }
 	  }
 	TextSize(di->tclass, 0, 0, STATE_NORMAL, di->item.check_button.text,
@@ -1348,17 +1290,19 @@ DialogRealizeItem(Dialog * d, DItem * di)
 	break;
      case DITEM_IMAGE:
 	{
-	   ImlibImage         *im;
+	   Imlib_Image        *im;
 
 	   im = ELoadImage(di->item.image.image);
 	   if (im)
 	     {
-		iw = im->rgb_width;
-		ih = im->rgb_height;
+		imlib_context_set_image(im);
+		iw = imlib_image_get_width();
+		ih = imlib_image_get_height();
 		di->win = ECreateWindow(d->win, 0, 0, iw, ih, 0);
 		EMapWindow(disp, di->win);
-		Imlib_apply_image(pImlibData, im, di->win);
-		Imlib_destroy_image(pImlibData, im);
+		imlib_context_set_drawable(di->win);
+		imlib_render_image_on_drawable(0, 0);
+		imlib_free_image();
 	     }
 	}
 	di->w = iw;
@@ -1375,14 +1319,15 @@ DialogRealizeItem(Dialog * d, DItem * di)
      case DITEM_RADIOBUTTON:
 	if (di->iclass->norm.normal->im_file)
 	  {
-	     ImlibImage         *im;
+	     Imlib_Image        *im;
 
 	     im = ELoadImage(di->iclass->norm.normal->im_file);
 	     if (im)
 	       {
-		  di->item.radio_button.radio_orig_w = im->rgb_width;
-		  di->item.radio_button.radio_orig_h = im->rgb_height;
-		  Imlib_destroy_image(pImlibData, im);
+		  imlib_context_set_image(im);
+		  di->item.radio_button.radio_orig_w = imlib_image_get_width();
+		  di->item.radio_button.radio_orig_h = imlib_image_get_height();
+		  imlib_free_image();
 	       }
 	  }
 	TextSize(di->tclass, 0, 0, STATE_NORMAL, di->item.radio_button.text,

@@ -150,7 +150,7 @@ ShowAlert(char *text)
    XColor              xcl;
    Colormap            cmap;
    int                 cols[256];
-   int                 cnum, r, g, b, fh, x, y, ww, hh, mh;
+   int                 cnum, fh, x, y, ww, hh, mh;
    static char        *title = NULL, *str1 = NULL, *str2 = NULL, *str3 = NULL;
    KeyCode             key;
 
@@ -256,44 +256,19 @@ goto CN; \
    if (colorful)
      {
 	cmap = DefaultColormap(dd, DefaultScreen(dd));
-	r = 220;
-	g = 220;
-	b = 220;
-	xcl.red = (r << 8) | r;
-	xcl.green = (g << 8) | g;
-	xcl.blue = (b << 8) | b;
+	ESetColor(&xcl, 220, 220, 220);
 	ALLOC_COLOR(dd, cmap, &xcl);
 	cols[cnum++] = xcl.pixel;
-	r = 160;
-	g = 160;
-	b = 160;
-	xcl.red = (r << 8) | r;
-	xcl.green = (g << 8) | g;
-	xcl.blue = (b << 8) | b;
+	ESetColor(&xcl, 160, 160, 160);
 	ALLOC_COLOR(dd, cmap, &xcl);
 	cols[cnum++] = xcl.pixel;
-	r = 100;
-	g = 100;
-	b = 100;
-	xcl.red = (r << 8) | r;
-	xcl.green = (g << 8) | g;
-	xcl.blue = (b << 8) | b;
+	ESetColor(&xcl, 100, 100, 100);
 	ALLOC_COLOR(dd, cmap, &xcl);
 	cols[cnum++] = xcl.pixel;
-	r = 0;
-	g = 0;
-	b = 0;
-	xcl.red = (r << 8) | r;
-	xcl.green = (g << 8) | g;
-	xcl.blue = (b << 8) | b;
+	ESetColor(&xcl, 0, 0, 0);
 	ALLOC_COLOR(dd, cmap, &xcl);
 	cols[cnum++] = xcl.pixel;
-	r = 255;
-	g = 255;
-	b = 255;
-	xcl.red = (r << 8) | r;
-	xcl.green = (g << 8) | g;
-	xcl.blue = (b << 8) | b;
+	ESetColor(&xcl, 255, 255, 255);
 	ALLOC_COLOR(dd, cmap, &xcl);
 	cols[cnum++] = xcl.pixel;
      }

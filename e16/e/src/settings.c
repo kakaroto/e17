@@ -1071,7 +1071,7 @@ CB_DesktopDisplayRedraw(int val, void *data)
 
 		  pmap = ECreatePixmap(disp, wins[i], 64, 48, root.depth);
 		  ESetWindowBackgroundPixmap(disp, wins[i], pmap);
-		  SetBackgroundTo(pImlibData, pmap, desks.desk[i].bg, 0);
+		  SetBackgroundTo(pmap, desks.desk[i].bg, 0);
 		  EFreePixmap(disp, pmap);
 	       }
 	  }
@@ -1261,7 +1261,7 @@ CB_AreaDisplayRedraw(int val, void *data)
    if (!called)
      {
 	ImageClass         *ic;
-	Pixmap              pmap;
+	PmapMask            pmm;
 
 	ic = FindItem("SETTINGS_AREA_AREA", 0, LIST_FINDBY_NAME,
 		      LIST_TYPE_ICLASS);
@@ -1272,9 +1272,9 @@ CB_AreaDisplayRedraw(int val, void *data)
 		      LIST_TYPE_ICLASS);
 	if (ic)
 	  {
-	     IclassApplyCopy(ic, awin, 18, 14, 0, 0, STATE_NORMAL, &pmap, NULL);
-	     ESetWindowBackgroundPixmap(disp, awin, pmap);
-	     Imlib_free_pixmap(pImlibData, pmap);
+	     IclassApplyCopy(ic, awin, 18, 14, 0, 0, STATE_NORMAL, &pmm, 0);
+	     ESetWindowBackgroundPixmap(disp, awin, pmm.pmap);
+	     FreePmapMask(&pmm);
 	  }
 	XClearWindow(disp, awin);
 	called = 1;
@@ -2460,9 +2460,7 @@ CB_ConfigureBG(int val, void *data)
 	mode.desktop_bg_timeout = tmp_bg_timeout;
 	desks.hiqualitybg = tmp_hiq;
 	mode.user_bg = tmp_userbg;
-	tmp_bg->bg.solid.r = tmp_bg_r;
-	tmp_bg->bg.solid.g = tmp_bg_g;
-	tmp_bg->bg.solid.b = tmp_bg_b;
+	ESetColor(&(tmp_bg->bg.solid), tmp_bg_r, tmp_bg_g, tmp_bg_b);
 	tmp_bg->bg.tile = tmp_bg_tile;
 	tmp_bg->bg.keep_aspect = tmp_bg_keep_aspect;
 	tmp_bg->bg.xjust = tmp_bg_xjust;
@@ -2471,9 +2469,6 @@ CB_ConfigureBG(int val, void *data)
 	tmp_bg->bg.yperc = 1024 - tmp_bg_yperc;
 	if (!tmp_bg_image)
 	   RemoveImagesFromBG(tmp_bg);
-	if (tmp_bg->pmap)
-	   Imlib_free_pixmap(pImlibData, tmp_bg->pmap);
-	tmp_bg->pmap = 0;
 	for (i = 0; i < ENLIGHTENMENT_CONF_NUM_DESKTOPS; i++)
 	  {
 	     if (desks.desk[i].bg == tmp_bg)
@@ -2491,17 +2486,19 @@ CB_ConfigureBG(int val, void *data)
 	  }
 	{
 	   char                s[4096];
-	   ImlibImage         *im;
+	   Imlib_Image        *im;
 	   Pixmap              p2;
 
 	   Esnprintf(s, sizeof(s), "%s/cached/bgsel/%s", UserCacheDir(),
 		     tmp_bg->name);
 	   p2 = ECreatePixmap(disp, root.win, 64, 48, root.depth);
-	   SetBackgroundTo(pImlibData, p2, tmp_bg, 0);
-	   im =
-	      Imlib_create_image_from_drawable(pImlibData, p2, 0, 0, 0, 64, 48);
-	   Imlib_save_image_to_ppm(pImlibData, im, s);
-	   Imlib_kill_image(pImlibData, im);
+	   SetBackgroundTo(p2, tmp_bg, 0);
+	   imlib_context_set_drawable(p2);
+	   im = imlib_create_image_from_drawable(0, 0, 0, 64, 48, 0);
+	   imlib_context_set_image(im);
+	   imlib_image_set_format("ppm");
+	   imlib_save_image(s);
+	   imlib_free_image_and_decache();
 	   EFreePixmap(disp, p2);
 	   BG_RedrawView(1);
 	}
@@ -2536,20 +2533,18 @@ CB_DesktopMiniDisplayRedraw(int val, void *data)
    DItem              *di;
    Window              win;
    Pixmap              pmap;
-   ImlibColor          icl;
+   XColor              xclr;
 
    di = (DItem *) data;
    win = DialogItemAreaGetWindow(di);
    DialogItemAreaGetSize(di, &w, &h);
 
-   icl.r = tmp_bg_r;
-   icl.g = tmp_bg_g;
-   icl.b = tmp_bg_b;
+   ESetColor(&xclr, tmp_bg_r, tmp_bg_g, tmp_bg_b);
    if (!tbg)
      {
 	if (!tmp_bg_image)
 	   tbg =
-	      CreateDesktopBG("TEMP", &icl, NULL, tmp_bg_tile,
+	      CreateDesktopBG("TEMP", &xclr, NULL, tmp_bg_tile,
 			      tmp_bg_keep_aspect, tmp_bg_xjust,
 			      1024 - tmp_bg_yjust, tmp_bg_xperc,
 			      1024 - tmp_bg_yperc, tmp_bg->top.file,
@@ -2558,7 +2553,7 @@ CB_DesktopMiniDisplayRedraw(int val, void *data)
 			      tmp_bg->top.yperc);
 	else
 	   tbg =
-	      CreateDesktopBG("TEMP", &icl, tmp_bg->bg.file, tmp_bg_tile,
+	      CreateDesktopBG("TEMP", &xclr, tmp_bg->bg.file, tmp_bg_tile,
 			      tmp_bg_keep_aspect, tmp_bg_xjust,
 			      1024 - tmp_bg_yjust, tmp_bg_xperc,
 			      1024 - tmp_bg_yperc, tmp_bg->top.file,
@@ -2569,10 +2564,8 @@ CB_DesktopMiniDisplayRedraw(int val, void *data)
    else
      {
 	if (tbg->pmap)
-	   Imlib_free_pixmap(pImlibData, tbg->pmap);
-	tbg->bg.solid.r = tmp_bg_r;
-	tbg->bg.solid.g = tmp_bg_g;
-	tbg->bg.solid.b = tmp_bg_b;
+	   imlib_free_pixmap_and_mask(tbg->pmap);
+	ESetColor(&(tbg->bg.solid), tmp_bg_r, tmp_bg_g, tmp_bg_b);
 	if (tbg->bg.file)
 	   Efree(tbg->bg.file);
 	tbg->bg.file = NULL;
@@ -2581,8 +2574,11 @@ CB_DesktopMiniDisplayRedraw(int val, void *data)
 	else
 	  {
 	     if (tbg->bg.im)
-		Imlib_destroy_image(pImlibData, tbg->bg.im);
-	     tbg->bg.im = NULL;
+	       {
+		  imlib_context_set_image(tbg->bg.im);
+		  imlib_free_image();
+		  tbg->bg.im = NULL;
+	       }
 	  }
 	if (tbg->bg.real_file)
 	   Efree(tbg->bg.real_file);
@@ -2597,7 +2593,7 @@ CB_DesktopMiniDisplayRedraw(int val, void *data)
    KeepBGimages(tbg, 1);
    pmap = ECreatePixmap(disp, win, w, h, root.depth);
    ESetWindowBackgroundPixmap(disp, win, pmap);
-   SetBackgroundTo(pImlibData, pmap, tbg, 0);
+   SetBackgroundTo(pmap, tbg, 0);
    XClearWindow(disp, win);
    EFreePixmap(disp, pmap);
    val = 0;
@@ -2627,9 +2623,7 @@ BG_DoDialog(void)
    DialogItemTextSetText(bg_filename, s);
    DialogDrawItems(bg_sel_dialog, bg_filename, 0, 0, 99999, 99999);
 
-   tmp_bg_r = tmp_bg->bg.solid.r;
-   tmp_bg_g = tmp_bg->bg.solid.g;
-   tmp_bg_b = tmp_bg->bg.solid.b;
+   EGetColor(&(tmp_bg->bg.solid), &tmp_bg_r, &tmp_bg_g, &tmp_bg_b);
    tmp_bg_tile = tmp_bg->bg.tile;
    tmp_bg_keep_aspect = tmp_bg->bg.keep_aspect;
    tmp_bg_xjust = tmp_bg->bg.xjust;
@@ -2659,15 +2653,13 @@ static void
 CB_ConfigureNewBG(int val, void *data)
 {
    char                s[1024];
-   ImlibColor          icl;
+   XColor              xclr;
    Background         *bg;
    int                 lower, upper;
 
    Esnprintf(s, sizeof(s), "__NEWBG_%i\n", time(NULL));
-   icl.r = tmp_bg_r;
-   icl.g = tmp_bg_g;
-   icl.b = tmp_bg_b;
-   bg = CreateDesktopBG(s, &icl, tmp_bg->bg.file, tmp_bg_tile,
+   ESetColor(&xclr, tmp_bg_r, tmp_bg_g, tmp_bg_b);
+   bg = CreateDesktopBG(s, &xclr, tmp_bg->bg.file, tmp_bg_tile,
 			tmp_bg_keep_aspect, tmp_bg_xjust, 1024 - tmp_bg_yjust,
 			tmp_bg_xperc, 1024 - tmp_bg_yperc, tmp_bg->top.file,
 			tmp_bg->top.keep_aspect, tmp_bg->top.xjust,
@@ -2841,113 +2833,115 @@ BG_RedrawView(char nuke_old)
    Background        **bglist;
    int                 w, h;
    Window              win;
+   int                 x;
+   Pixmap              pmap;
+   GC                  gc;
+   XGCValues           gcv;
 
    win = DialogItemAreaGetWindow(bg_sel);
    DialogItemAreaGetSize(bg_sel, &w, &h);
    bglist = (Background **) ListItemType(&num, LIST_TYPE_BACKGROUND);
-   if (bglist)
+   if (!bglist)
+      goto exit;
+
+   pmap = ECreatePixmap(disp, win, w, h, root.depth);
+   gc = XCreateGC(disp, pmap, 0, &gcv);
+   XSetForeground(disp, gc, BlackPixel(disp, root.scr));
+   XFillRectangle(disp, pmap, gc, 0, 0, w, h);
+   ESetWindowBackgroundPixmap(disp, win, pmap);
+   x = -(tmp_bg_sel_sliderval * (64 + 8) / 4);
+   if (x < (w - ((64 + 8) * num)))
+      x = w - ((64 + 8) * num);
+   for (i = 0; i < num; i++)
      {
-	int                 x;
-	Pixmap              pmap;
-	GC                  gc;
-	XGCValues           gcv;
-
-	pmap = ECreatePixmap(disp, win, w, h, root.depth);
-	gc = XCreateGC(disp, pmap, 0, &gcv);
-	XSetForeground(disp, gc, BlackPixel(disp, root.scr));
-	XFillRectangle(disp, pmap, gc, 0, 0, w, h);
-	ESetWindowBackgroundPixmap(disp, win, pmap);
-	x = -(tmp_bg_sel_sliderval * (64 + 8) / 4);
-	if (x < (w - ((64 + 8) * num)))
-	   x = w - ((64 + 8) * num);
-	for (i = 0; i < num; i++)
+	if (((x + 64 + 8) >= 0) && (x < w))
 	  {
-	     if (((x + 64 + 8) >= 0) && (x < w))
+	     Pixmap              p2;
+	     ImageClass         *ic;
+	     Imlib_Image        *im;
+	     char                s[4096];
+
+	     ic = FindItem("DIALOG_BUTTON", 0, LIST_FINDBY_NAME,
+			   LIST_TYPE_ICLASS);
+	     if (ic)
 	       {
-		  Pixmap              p2;
-		  ImageClass         *ic;
-		  ImlibImage         *im;
-		  char                s[4096];
+		  PmapMask            pmm;
 
-		  ic = FindItem("DIALOG_BUTTON", 0, LIST_FINDBY_NAME,
-				LIST_TYPE_ICLASS);
-		  if (ic)
-		    {
-		       Pixmap              pbg;
-
-		       if (i == tmp_bg_selected)
-			  IclassApplyCopy(ic, pmap, 64 + 8, 48 + 8, 0, 0,
-					  STATE_CLICKED, &pbg, NULL);
-		       else
-			  IclassApplyCopy(ic, pmap, 64 + 8, 48 + 8, 0, 0,
-					  STATE_NORMAL, &pbg, NULL);
-		       XCopyArea(disp, pbg, pmap, gc, 0, 0, 64 + 8, 48 + 8, x,
-				 0);
-		       Imlib_free_pixmap(pImlibData, pbg);
-		    }
-		  if (!strcmp(bglist[i]->name, "NONE"))
-		    {
-		       TextClass          *tc;
-
-		       tc = FindItem("DIALOG", 0, LIST_FINDBY_NAME,
-				     LIST_TYPE_TCLASS);
-		       if (tc)
-			 {
-			    int                 tw, th;
-
-			    TextSize(tc, 0, 0, STATE_NORMAL,
-				     _("No\nBackground"), &tw, &th, 17);
-			    TextDraw(tc, pmap, 0, 0, STATE_NORMAL,
-				     _("No\nBackground"), x + 4,
-				     4 + ((48 - th) / 2), 64, 48, 17, 512);
-			 }
-		    }
+		  if (i == tmp_bg_selected)
+		     IclassApplyCopy(ic, pmap, 64 + 8, 48 + 8, 0, 0,
+				     STATE_CLICKED, &pmm, 0);
 		  else
+		     IclassApplyCopy(ic, pmap, 64 + 8, 48 + 8, 0, 0,
+				     STATE_NORMAL, &pmm, 0);
+		  XCopyArea(disp, pmm.pmap, pmap, gc, 0, 0, 64 + 8, 48 + 8, x,
+			    0);
+		  FreePmapMask(&pmm);
+	       }
+
+	     if (!strcmp(bglist[i]->name, "NONE"))
+	       {
+		  TextClass          *tc;
+
+		  tc = FindItem("DIALOG", 0, LIST_FINDBY_NAME,
+				LIST_TYPE_TCLASS);
+		  if (tc)
+		    {
+		       int                 tw, th;
+
+		       TextSize(tc, 0, 0, STATE_NORMAL,
+				_("No\nBackground"), &tw, &th, 17);
+		       TextDraw(tc, pmap, 0, 0, STATE_NORMAL,
+				_("No\nBackground"), x + 4,
+				4 + ((48 - th) / 2), 64, 48, 17, 512);
+		    }
+	       }
+	     else
+	       {
+		  Esnprintf(s, sizeof(s), "%s/cached/bgsel/%s",
+			    UserCacheDir(), bglist[i]->name);
+		  im = ELoadImage(s);
+		  if (!im)
 		    {
 		       Esnprintf(s, sizeof(s), "%s/cached/bgsel/%s",
 				 UserCacheDir(), bglist[i]->name);
-		       im = ELoadImage(s);
-		       if (!im)
+		       p2 = ECreatePixmap(disp, pmap, 64, 48, root.depth);
+		       SetBackgroundTo(p2, bglist[i], 0);
+		       XCopyArea(disp, p2, pmap, gc, 0, 0, 64, 48, x + 4, 4);
+		       imlib_context_set_drawable(p2);
+		       im =
+			  imlib_create_image_from_drawable(0, 0, 0, 64, 48, 0);
+		       imlib_context_set_image(im);
+		       imlib_image_set_format("ppm");
+		       imlib_save_image(s);
+		       imlib_free_image_and_decache();
+		       EFreePixmap(disp, p2);
+		    }
+		  else
+		    {
+		       if (nuke_old)
 			 {
-			    Esnprintf(s, sizeof(s), "%s/cached/bgsel/%s",
-				      UserCacheDir(), bglist[i]->name);
-			    p2 =
-			       ECreatePixmap(disp, pmap, 64, 48,
-					     pImlibData->x.depth);
-			    SetBackgroundTo(pImlibData, p2, bglist[i], 0);
-			    XCopyArea(disp, p2, pmap, gc, 0, 0, 64, 48, x + 4,
-				      4);
-			    im =
-			       Imlib_create_image_from_drawable(pImlibData, p2,
-								0, 0, 0, 64,
-								48);
-			    Imlib_save_image_to_ppm(pImlibData, im, s);
-			    Imlib_kill_image(pImlibData, im);
-			    EFreePixmap(disp, p2);
+			    imlib_context_set_image(im);
+			    imlib_free_image_and_decache();
+			    im = ELoadImage(s);
 			 }
-		       else
+		       if (im)
 			 {
-			    if (nuke_old)
-			      {
-				 Imlib_changed_image(pImlibData, im);
-				 Imlib_kill_image(pImlibData, im);
-				 im = ELoadImage(s);
-			      }
-			    if (im)
-			      {
-				 Imlib_paste_image(pImlibData, im, pmap, x + 4,
-						   4, 64, 48);
-				 Imlib_destroy_image(pImlibData, im);
-			      }
+			    imlib_context_set_image(im);
+			    imlib_context_set_drawable(pmap);
+			    imlib_render_image_on_drawable_at_size(x + 4, 4, 64,
+								   48);
+			    imlib_free_image();
 			 }
 		    }
 	       }
-	     x += (64 + 8);
 	  }
-	XFreeGC(disp, gc);
-	EFreePixmap(disp, pmap);
-	Efree(bglist);
+	x += (64 + 8);
      }
+   XFreeGC(disp, gc);
+   EFreePixmap(disp, pmap);
+   Efree(bglist);
+
+ exit:
    XClearWindow(disp, win);
 }
 
@@ -3295,9 +3289,7 @@ SettingsBackground(Background * bg)
       tmp_bg_image = 0;
    tmp_bg->keepim = 1;
 
-   tmp_bg_r = bg->bg.solid.r;
-   tmp_bg_g = bg->bg.solid.g;
-   tmp_bg_b = bg->bg.solid.b;
+   EGetColor(&(bg->bg.solid), &tmp_bg_r, &tmp_bg_g, &tmp_bg_b);
    tmp_bg_tile = bg->bg.tile;
    tmp_bg_keep_aspect = bg->bg.keep_aspect;
    tmp_bg_xjust = bg->bg.xjust;

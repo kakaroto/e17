@@ -1764,7 +1764,7 @@ HandleMouseDown(XEvent * ev)
 		     EMoveResizeWindow(disp, p->hi_win, px + wx, py + wy, ww,
 				       wh);
 		     ESetWindowBackgroundPixmap(disp, p->hi_win,
-						ewin->mini_pmap);
+						ewin->mini_pmm.pmap);
 		     EMapRaised(disp, p->hi_win);
 		     GrabThePointer(p->hi_win);
 		     p->hi_visible = 1;

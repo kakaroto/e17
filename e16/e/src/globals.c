@@ -34,9 +34,14 @@ int                 master_screen;
 int                 display_screens;
 int                 single_screen_mode;
 Display            *disp;
-ImlibData          *pImlibData;
-ImlibData          *prImlibData;
 
+#if !USE_IMLIB2
+ImlibData          *pImlib_Context;
+ImlibData          *prImlib_Context;
+ImlibData          *pI1Ctx;
+ImlibImage         *pIcImg;
+Drawable            vIcDrw;
+#endif
 #if USE_FNLIB
 FnlibData          *pFnlibData;
 #endif

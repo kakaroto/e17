@@ -505,7 +505,7 @@ HandleComms(XClientMessageEvent * ev)
 		  if (bg->top.file)
 		     Efree(bg->top.file);
 		  if (bg->pmap)
-		     Imlib_free_pixmap(pImlibData, bg->pmap);
+		     imlib_free_pixmap_and_mask(bg->pmap);
 		  Efree(bg);
 	       }
 	  }
@@ -829,7 +829,7 @@ HandleComms(XClientMessageEvent * ev)
 		  bg->cmclass = cm;
 	       }
 	     if (bg->pmap)
-		Imlib_free_pixmap(pImlibData, bg->pmap);
+		imlib_free_pixmap_and_mask(bg->pmap);
 	     bg->pmap = 0;
 	     for (i = 0; i < ENLIGHTENMENT_CONF_NUM_DESKTOPS; i++)
 	       {
@@ -987,6 +987,7 @@ HandleComms(XClientMessageEvent * ev)
      {
 	Background         *bg;
 	char                buf[FILEPATH_LEN_MAX];
+	int                 r, g, b;
 
 	sscanf(s, "%*s %1000s", w);
 	bg = (Background *) FindItem(w, 0, LIST_FINDBY_NAME,
@@ -994,11 +995,11 @@ HandleComms(XClientMessageEvent * ev)
 	Esnprintf(buf, sizeof(buf), "(null)");
 	if (bg)
 	  {
+	     EGetColor(&(bg->bg.solid), &r, &g, &b);
 	     if ((bg->bg.file) && (bg->top.file))
 		Esnprintf(buf, sizeof(buf),
 			  "%s %i %i %i %s %i %i %i %i %i %i %s %i %i %i %i %i",
-			  bg->name, bg->bg.solid.r, bg->bg.solid.g,
-			  bg->bg.solid.b, bg->bg.file, bg->bg.tile,
+			  bg->name, r, g, b, bg->bg.file, bg->bg.tile,
 			  bg->bg.keep_aspect, bg->bg.xjust, bg->bg.yjust,
 			  bg->bg.xperc, bg->bg.yperc, bg->top.file,
 			  bg->top.keep_aspect, bg->top.xjust, bg->top.yjust,
@@ -1006,8 +1007,7 @@ HandleComms(XClientMessageEvent * ev)
 	     else if ((!(bg->bg.file)) && (bg->top.file))
 		Esnprintf(buf, sizeof(buf),
 			  "%s %i %i %i %s %i %i %i %i %i %i %s %i %i %i %i %i",
-			  bg->name, bg->bg.solid.r, bg->bg.solid.g,
-			  bg->bg.solid.b, "(null)", bg->bg.tile,
+			  bg->name, r, g, b, "(null)", bg->bg.tile,
 			  bg->bg.keep_aspect, bg->bg.xjust, bg->bg.yjust,
 			  bg->bg.xperc, bg->bg.yperc, bg->top.file,
 			  bg->top.keep_aspect, bg->top.xjust, bg->top.yjust,
@@ -1015,8 +1015,7 @@ HandleComms(XClientMessageEvent * ev)
 	     else if ((bg->bg.file) && (!(bg->top.file)))
 		Esnprintf(buf, sizeof(buf),
 			  "%s %i %i %i %s %i %i %i %i %i %i %s %i %i %i %i %i",
-			  bg->name, bg->bg.solid.r, bg->bg.solid.g,
-			  bg->bg.solid.b, bg->bg.file, bg->bg.tile,
+			  bg->name, r, g, b, bg->bg.file, bg->bg.tile,
 			  bg->bg.keep_aspect, bg->bg.xjust, bg->bg.yjust,
 			  bg->bg.xperc, bg->bg.yperc, "(null)",
 			  bg->top.keep_aspect, bg->top.xjust, bg->top.yjust,
@@ -1024,8 +1023,7 @@ HandleComms(XClientMessageEvent * ev)
 	     else if ((!(bg->bg.file)) && (!(bg->top.file)))
 		Esnprintf(buf, sizeof(buf),
 			  "%s %i %i %i %s %i %i %i %i %i %i %s %i %i %i %i %i",
-			  bg->name, bg->bg.solid.r, bg->bg.solid.g,
-			  bg->bg.solid.b, "(null)", bg->bg.tile,
+			  bg->name, r, g, b, "(null)", bg->bg.tile,
 			  bg->bg.keep_aspect, bg->bg.xjust, bg->bg.yjust,
 			  bg->bg.xperc, bg->bg.yperc, "(null)",
 			  bg->top.keep_aspect, bg->top.xjust, bg->top.yjust,
@@ -1036,8 +1034,8 @@ HandleComms(XClientMessageEvent * ev)
    else if (!strcmp(w, "set_bg"))
      {
 	Background         *bg;
-	ImlibColor          icl;
-	int                 i;
+	XColor              xclr;
+	int                 i, r, g, b;
 	char                tmp[1024];
 	char               *name = NULL, *bgf = NULL, *topf = NULL;
 	int                 updated = 0, tile, keep_aspect, tkeep_aspect;
@@ -1047,12 +1045,14 @@ HandleComms(XClientMessageEvent * ev)
 	sscanf(s, "%1000s %1000s", tmp, w);
 	bg = (Background *) FindItem(w, 0, LIST_FINDBY_NAME,
 				     LIST_TYPE_BACKGROUND);
-	icl.r = 99;
+	r = 99;
 	i = sscanf(s,
 		   "%1000s %1000s %i %i %i %1000s %i %i %i %i %i %i %1000s %i %i %i %i %i",
-		   tmp, tmp, &(icl.r), &(icl.g), &(icl.b), tmp, &tile,
+		   tmp, tmp, &r, &g, &b, tmp, &tile,
 		   (int *)&keep_aspect, &xjust, &yjust, &xperc, &yperc, tmp,
 		   &tkeep_aspect, &txjust, &tyjust, &txperc, &typerc);
+	ESetColor(&xclr, r, g, b);
+
 	if (bg)
 	  {
 	     name = duplicate(w);
@@ -1063,15 +1063,13 @@ HandleComms(XClientMessageEvent * ev)
 	     if (strcmp("(null)", w))
 		topf = duplicate(w);
 
-	     if (icl.r != bg->bg.solid.r)
+	     if (xclr.red != bg->bg.solid.red)
 		updated = 1;
-	     if (icl.g != bg->bg.solid.g)
+	     if (xclr.green != bg->bg.solid.green)
 		updated = 1;
-	     if (icl.b != bg->bg.solid.b)
+	     if (xclr.blue != bg->bg.solid.blue)
 		updated = 1;
-	     bg->bg.solid.r = icl.r;
-	     bg->bg.solid.g = icl.g;
-	     bg->bg.solid.b = icl.b;
+	     bg->bg.solid = xclr;
 	     if ((bg->bg.file) && (bgf))
 	       {
 		  if (strcmp(bg->bg.file, bgf))
@@ -1128,8 +1126,9 @@ HandleComms(XClientMessageEvent * ev)
 	     if (updated)
 	       {
 		  if (bg->pmap)
-		     Imlib_free_pixmap(pImlibData, bg->pmap);
+		     imlib_free_pixmap_and_mask(bg->pmap);
 		  bg->pmap = 0;
+
 		  for (i = 0; i < ENLIGHTENMENT_CONF_NUM_DESKTOPS; i++)
 		    {
 		       if (desks.desk[i].bg == bg)
@@ -1156,7 +1155,7 @@ HandleComms(XClientMessageEvent * ev)
 	     word(s, 13, w);
 	     if (strcmp("(null)", w))
 		topf = duplicate(w);
-	     bg = CreateDesktopBG(name, &icl, bgf, tile, keep_aspect, xjust,
+	     bg = CreateDesktopBG(name, &xclr, bgf, tile, keep_aspect, xjust,
 				  yjust, xperc, yperc, topf, tkeep_aspect,
 				  txjust, tyjust, txperc, typerc);
 	     if (name)
@@ -1177,7 +1176,7 @@ HandleComms(XClientMessageEvent * ev)
 	bg = (Background *) FindItem(w, 0, LIST_FINDBY_NAME,
 				     LIST_TYPE_BACKGROUND);
 	if (bg)
-	   SetBackgroundTo(pImlibData, win, bg, 0);
+	   SetBackgroundTo(win, bg, 0);
 	CommsSend(c, "done");
      }
    else if (!strcmp(w, "set_controls"))
@@ -1217,8 +1216,10 @@ HandleComms(XClientMessageEvent * ev)
 	       {
 		  word(s, wd, w);
 		  mode.movemode = atoi(w);
-		  if ((prImlibData) && (mode.movemode == 5))
+#if !USE_IMLIB2
+		  if ((prImlib_Context) && (mode.movemode == 5))
 		     mode.movemode = 3;
+#endif
 	       }
 	     else if (!strcmp(w, "RESIZEMODE:"))
 	       {

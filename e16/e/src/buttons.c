@@ -158,7 +158,7 @@ void
 CalcButton(Button * b)
 {
    int                 w, h, x, y, xo, yo;
-   ImlibImage         *im;
+   Imlib_Image        *im;
 
    EDBUG(4, "CalcButton");
    x = 0;
@@ -172,9 +172,10 @@ CalcButton(Button * b)
 	     im = ELoadImage(b->iclass->norm.normal->im_file);
 	     if (im)
 	       {
-		  w = im->rgb_width;
-		  h = im->rgb_height;
-		  Imlib_destroy_image(pImlibData, im);
+		  imlib_context_set_image(im);
+		  w = imlib_image_get_width();
+		  h = imlib_image_get_height();
+		  imlib_free_image();
 	       }
 	     else
 	       {

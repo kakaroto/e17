@@ -257,13 +257,14 @@ main(int argc, char **argv)
    RefreshDesktop(0);
    if (mode.sound)
      {
-	ApplySclass(FindItem
-		    ("SOUND_STARTUP", 0, LIST_FINDBY_NAME, LIST_TYPE_SCLASS));
-	DestroySclass(RemoveItem
-		      ("SOUND_STARTUP", 0, LIST_FINDBY_NAME, LIST_TYPE_SCLASS));
+	ApplySclass(FindItem("SOUND_STARTUP", 0,
+			     LIST_FINDBY_NAME, LIST_TYPE_SCLASS));
+	DestroySclass(RemoveItem("SOUND_STARTUP", 0,
+				 LIST_FINDBY_NAME, LIST_TYPE_SCLASS));
      }
    /* toss down the dragbar and related */
    InitDesktopControls();
+
    /* then draw all the buttons that belong on the desktop */
    blst = (Button **) ListItemTypeID(&num, LIST_TYPE_BUTTON, 0);
    if (blst)
@@ -275,6 +276,7 @@ main(int argc, char **argv)
 	  }
 	Efree(blst);
      }
+
    HintsInit();
    SessionInit();
    ShowDesktopControls();
@@ -356,17 +358,18 @@ main(int argc, char **argv)
 	   desks.slidein = ps;
      }
    XSync(disp, False);
+
    /* if we didn't have an external window piped to us, we'll do some stuff */
    if (!mode.mapslide)
       CreateStartupDisplay(0);
-   if ((bg =
-	RemoveItem("STARTUP_BACKGROUND_SIDEWAYS", 0, LIST_FINDBY_NAME,
-		   LIST_TYPE_BACKGROUND)))
+
+   if ((bg = RemoveItem("STARTUP_BACKGROUND_SIDEWAYS", 0,
+			LIST_FINDBY_NAME, LIST_TYPE_BACKGROUND)))
       FreeDesktopBG(bg);
-   if ((bg =
-	RemoveItem("STARTUP_BACKGROUND", 0, LIST_FINDBY_NAME,
-		   LIST_TYPE_BACKGROUND)))
+   if ((bg = RemoveItem("STARTUP_BACKGROUND", 0,
+			LIST_FINDBY_NAME, LIST_TYPE_BACKGROUND)))
       FreeDesktopBG(bg);
+
 #ifdef SIGCONT
    for (i = 0; i < child_count; i++)
       kill(e_children[i], SIGCONT);

@@ -36,11 +36,11 @@ GetUniqueBGString(Background * bg)
 
    /* cyrillic symbols from 866 page correctly handled instead of eng. capitals */
 #endif
+   int                 r, g, b;
    int                 n1, n2, n3, n4, n5, f1, f2, f3, f4, f5, f6;
 
-   n1 = (bg->bg.solid.r << 24) | (bg->bg.solid.g << 16) | (bg->bg.solid.
-							   b << 8) | (bg->bg.
-								      tile << 7)
+   EGetColor(&(bg->bg.solid), &r, &g, &b);
+   n1 = (r << 24) | (g << 16) | (b << 8) | (bg->bg.tile << 7)
       | (bg->bg.keep_aspect << 6) | (bg->top.keep_aspect << 5);
    n2 = (bg->bg.xjust << 16) | (bg->bg.yjust);
    n3 = (bg->bg.xperc << 16) | (bg->bg.yperc);
@@ -295,6 +295,26 @@ SlideWindowTo(Window win, int fx, int fy, int tx, int ty, int speed)
    EDBUG_RETURN_;
 }
 
+static void
+FreeBGimages(Background * bg)
+{
+   if (bg->bg.im)
+     {
+	imlib_context_set_image(bg->bg.im);
+	imlib_free_image();
+	bg->bg.im = NULL;
+     }
+   if (bg->top.im)
+     {
+	imlib_context_set_image(bg->top.im);
+	imlib_free_image();
+	bg->top.im = NULL;
+     }
+   if (bg->pmap)
+      imlib_free_pixmap_and_mask(bg->pmap);
+   bg->pmap = 0;
+}
+
 void
 KeepBGimages(Background * bg, char onoff)
 {
@@ -305,15 +325,7 @@ KeepBGimages(Background * bg, char onoff)
    else
      {
 	bg->keepim = 0;
-	if (bg->bg.im)
-	   Imlib_destroy_image(pImlibData, bg->bg.im);
-	bg->bg.im = NULL;
-	if (bg->top.im)
-	   Imlib_destroy_image(pImlibData, bg->top.im);
-	bg->top.im = NULL;
-	if (bg->pmap)
-	   Imlib_free_pixmap(pImlibData, bg->pmap);
-	bg->pmap = 0;
+	FreeBGimages(bg);
      }
 }
 
@@ -322,20 +334,15 @@ RemoveImagesFromBG(Background * bg)
 {
    if (bg->bg.file)
       Efree(bg->bg.file);
+   bg->bg.file = NULL;
+
    if (bg->bg.real_file)
       Efree(bg->bg.real_file);
-   bg->bg.file = NULL;
    bg->bg.real_file = NULL;
-   if (bg->bg.im)
-      Imlib_destroy_image(pImlibData, bg->bg.im);
-   bg->bg.im = NULL;
-   if (bg->top.im)
-      Imlib_destroy_image(pImlibData, bg->top.im);
-   bg->top.im = NULL;
+
+   FreeBGimages(bg);
+
    bg->keepim = 0;
-   if (bg->pmap)
-      Imlib_free_pixmap(pImlibData, bg->pmap);
-   bg->pmap = 0;
 }
 
 void
@@ -358,46 +365,25 @@ FreeDesktopBG(Background * bg)
 	EDBUG_RETURN_;
      }
 
-   if (bg->bg.file)
-      Efree(bg->bg.file);
-   if (bg->bg.real_file)
-      Efree(bg->bg.real_file);
-   if (bg->bg.im)
-      Imlib_destroy_image(pImlibData, bg->bg.im);
-   if (bg->top.file)
-      Efree(bg->top.file);
-   if (bg->top.real_file)
-      Efree(bg->top.real_file);
-   if (bg->top.im)
-      Imlib_destroy_image(pImlibData, bg->top.im);
-   if (bg->pmap)
-      Imlib_free_pixmap(pImlibData, bg->pmap);
+   RemoveImagesFromBG(bg);
+
    if (bg->name)
       Efree(bg->name);
+
    Efree(bg);
 
    EDBUG_RETURN_;
 }
 
 Background         *
-CreateDesktopBG(char *name, ImlibColor * solid, char *bg, char tile,
+CreateDesktopBG(char *name, XColor * solid, char *bg, char tile,
 		char keep_aspect, int xjust, int yjust, int xperc,
 		int yperc, char *top, char tkeep_aspect, int txjust,
 		int tyjust, int txperc, int typerc)
 {
-   ImlibData          *imd;
    Background         *d;
 
    EDBUG(6, "CreateDesktopBG");
-
-   if (prImlibData)
-     {
-	imd = prImlibData;
-     }
-   else
-     {
-	imd = pImlibData;
-     }
 
    d = Emalloc(sizeof(Background));
    if (!d)
@@ -405,48 +391,33 @@ CreateDesktopBG(char *name, ImlibColor * solid, char *bg, char tile,
    d->name = duplicate(name);
    d->pmap = 0;
    d->last_viewed = 0;
-   d->bg.solid.r = 160;
-   d->bg.solid.g = 160;
-   d->bg.solid.b = 160;
-   d->bg.file = NULL;
-   d->bg.real_file = NULL;
-   d->bg.im = NULL;
-   d->bg.tile = 1;
-   d->bg.keep_aspect = 1;
-   d->bg.xjust = 512;
-   d->bg.yjust = 512;
-   d->bg.xperc = 1024;
-   d->bg.yperc = 1024;
-   d->top.file = NULL;
-   d->top.real_file = NULL;
-   d->top.im = NULL;
-   d->top.keep_aspect = 1;
-   d->top.xjust = 512;
-   d->top.yjust = 512;
-   d->top.xperc = 0;
-   d->top.yperc = 0;
+
+   ESetColor(&(d->bg.solid), 160, 160, 160);
    if (solid)
-     {
-	d->bg.solid.r = solid->r;
-	d->bg.solid.g = solid->g;
-	d->bg.solid.b = solid->b;
-     }
+      d->bg.solid = *solid;
    d->bg.file = NULL;
    if (bg)
       d->bg.file = duplicate(bg);
+   d->bg.real_file = NULL;
+   d->bg.im = NULL;
    d->bg.tile = tile;
    d->bg.keep_aspect = keep_aspect;
    d->bg.xjust = xjust;
    d->bg.yjust = yjust;
    d->bg.xperc = xperc;
    d->bg.yperc = yperc;
+
+   d->top.file = NULL;
    if (top)
       d->top.file = duplicate(top);
+   d->top.real_file = NULL;
+   d->top.im = NULL;
    d->top.keep_aspect = tkeep_aspect;
    d->top.xjust = txjust;
    d->top.yjust = tyjust;
    d->top.xperc = txperc;
    d->top.yperc = typerc;
+
    d->cmclass = NULL;
    d->keepim = 0;
    d->ref_count = 0;
@@ -466,29 +437,25 @@ void
 RefreshDesktop(int num)
 {
    Background         *dsk;
-   ImlibData          *imd;
 
    EDBUG(4, "RefreshDesktop");
 
    num = num % ENLIGHTENMENT_CONF_NUM_DESKTOPS;
    if (!desks.desk[num].viewable)
       EDBUG_RETURN_;
+
    dsk = desks.desk[num].bg;
    if (!dsk)
       EDBUG_RETURN_;
-   if ((prImlibData) && (num == 0))
-      imd = prImlibData;
-   else
-      imd = pImlibData;
 
-   SetBackgroundTo(imd, desks.desk[num].win, dsk, 1);
+   SetBackgroundTo(desks.desk[num].win, dsk, 1);
    EDBUG_RETURN_;
 }
 
 void
-SetBackgroundTo(ImlibData * imd, Window win, Background * dsk, char setbg)
+SetBackgroundTo(Window win, Background * dsk, char setbg)
 {
-   int                 r, g, b, w, h, x, y, ww, hh;
+   int                 w, h, x, y, ww, hh;
    unsigned int        rw, rh;
    Pixmap              pmap, mask, dpmap;
    GC                  gc;
@@ -501,25 +468,26 @@ SetBackgroundTo(ImlibData * imd, Window win, Background * dsk, char setbg)
 
    if (!WinExists(win))
       EDBUG_RETURN_;
+
+   IMLIB1_SET_CONTEXT(win == root.win);
+
    GetWinWH(win, &rw, &rh);
    depth = GetWinDepth(win);
-   if ((depth != imd->x.depth) && (prImlibData)
-       && (depth == prImlibData->x.depth))
-      imd = prImlibData;
-   r = dsk->bg.solid.r;
-   g = dsk->bg.solid.g;
-   b = dsk->bg.solid.b;
-   dsk->bg.solid.pixel = Imlib_best_color_match(imd, &r, &g, &b);
-   pmap = 0;
+
+   EAllocColor(&dsk->bg.solid);
+   pmap = mask = 0;
    gc = 0;
    w = 0;
    h = 0;
    hasbg = 0;
    hasfg = 0;
-   rt = Imlib_get_render_type(pImlibData);
+   rt = imlib_context_get_dither();
 
    if (desks.hiqualitybg)
-      Imlib_set_render_type(imd, RT_DITHER_TRUECOL);
+     {
+	imlib_context_set_dither(1);
+//    imlib_context_set_anti_alias(1);
+     }
 
    dpmap = dsk->pmap;
    if (!setbg)
@@ -544,47 +512,55 @@ SetBackgroundTo(ImlibData * imd, Window win, Background * dsk, char setbg)
 	       {
 		  if (!dsk->bg.real_file)
 		     dsk->bg.real_file = FindFile(dsk->bg.file);
-		  dsk->bg.im = ELoadImageImlibData(imd, dsk->bg.real_file);
+		  dsk->bg.im = ELoadImage(dsk->bg.real_file);
 	       }
 	  }
+
 	if (dsk->top.file)
 	  {
 	     if (!dsk->top.im)
 	       {
 		  if (!dsk->top.real_file)
 		     dsk->top.real_file = FindFile(dsk->top.file);
-		  dsk->top.im = ELoadImageImlibData(imd, dsk->top.real_file);
+		  dsk->top.im = ELoadImage(dsk->top.real_file);
 	       }
 	  }
+
 	if (cm)
 	  {
 	     cm->ref_count++;
+#if !USE_IMLIB2
 	     if (dsk->top.im)
 	       {
-		  Imlib_set_image_red_curve(pImlibData, dsk->top.im,
+		  Imlib_set_image_red_curve(pImlib_Context, dsk->top.im,
 					    cm->red.map);
-		  Imlib_set_image_green_curve(pImlibData, dsk->top.im,
+		  Imlib_set_image_green_curve(pImlib_Context, dsk->top.im,
 					      cm->green.map);
-		  Imlib_set_image_blue_curve(pImlibData, dsk->top.im,
+		  Imlib_set_image_blue_curve(pImlib_Context, dsk->top.im,
 					     cm->blue.map);
 	       }
 	     if (dsk->bg.im)
 	       {
-		  Imlib_set_image_red_curve(pImlibData, dsk->bg.im,
+		  Imlib_set_image_red_curve(pImlib_Context, dsk->bg.im,
 					    cm->red.map);
-		  Imlib_set_image_green_curve(pImlibData, dsk->bg.im,
+		  Imlib_set_image_green_curve(pImlib_Context, dsk->bg.im,
 					      cm->green.map);
-		  Imlib_set_image_blue_curve(pImlibData, dsk->bg.im,
+		  Imlib_set_image_blue_curve(pImlib_Context, dsk->bg.im,
 					     cm->blue.map);
 	       }
+#endif
 	  }
      }
+
    if (dsk->top.im)
       hasfg = 1;
    if (dsk->bg.im)
       hasbg = 1;
+
    if ((hasfg) && (hasbg))
      {
+	imlib_context_set_image(dsk->bg.im);
+
 	if (dsk->bg.xperc > 0)
 	  {
 	     w = (rw * dsk->bg.xperc) >> 10;
@@ -592,10 +568,11 @@ SetBackgroundTo(ImlibData * imd, Window win, Background * dsk, char setbg)
 	else
 	  {
 	     if (!setbg)
-		w = (dsk->bg.im->rgb_width * rw) / root.w;
+		w = (imlib_image_get_width() * rw) / root.w;
 	     else
-		w = dsk->bg.im->rgb_width;
+		w = imlib_image_get_width();
 	  }
+
 	if (dsk->bg.yperc > 0)
 	  {
 	     h = (rh * dsk->bg.yperc) >> 10;
@@ -604,33 +581,40 @@ SetBackgroundTo(ImlibData * imd, Window win, Background * dsk, char setbg)
 	  {
 	     if (!setbg)
 	       {
-		  h = (dsk->bg.im->rgb_height * rh) / root.h;
+		  h = (imlib_image_get_height() * rh) / root.h;
 	       }
 	     else
 	       {
-		  h = dsk->bg.im->rgb_height;
+		  h = imlib_image_get_height();
 	       }
 	  }
+
 	if (w <= 0)
 	   w = 1;
 	if (h <= 0)
 	   h = 1;
+
 	if (dsk->bg.keep_aspect)
 	  {
 	     if (dsk->bg.yperc <= 0)
 	       {
 		  if (((w << 10) / h) !=
-		      ((dsk->bg.im->rgb_width << 10) / dsk->bg.im->rgb_height))
-		     h = ((w * dsk->bg.im->rgb_height) / dsk->bg.im->rgb_width);
+		      ((imlib_image_get_width() << 10) /
+		       imlib_image_get_height()))
+		     h = ((w * imlib_image_get_height()) /
+			  imlib_image_get_width());
 	       }
 	     else
 	       {
 		  if (((h << 10) / w) !=
-		      ((dsk->bg.im->rgb_height << 10) / dsk->bg.im->rgb_width))
-		     w = ((h * dsk->bg.im->rgb_width) / dsk->bg.im->rgb_height);
+		      ((imlib_image_get_height() << 10) /
+		       imlib_image_get_width()))
+		     w = ((h * imlib_image_get_width()) /
+			  imlib_image_get_height());
 	       }
 	  }
-	dpmap = ECreatePixmap(disp, win, rw, rh, imd->x.depth);
+
+	dpmap = ECreatePixmap(disp, win, rw, rh, depth);
 	gc = XCreateGC(disp, dpmap, 0, &gcv);
 	if (!dsk->bg.tile)
 	  {
@@ -639,8 +623,7 @@ SetBackgroundTo(ImlibData * imd, Window win, Background * dsk, char setbg)
 	  }
 	x = ((rw - w) * dsk->bg.xjust) >> 10;
 	y = ((rh - h) * dsk->bg.yjust) >> 10;
-	Imlib_render(imd, dsk->bg.im, w, h);
-	pmap = Imlib_move_image(imd, dsk->bg.im);
+	imlib_render_pixmaps_for_whole_image_at_size(&pmap, &mask, w, h);
 	XSetTile(disp, gc, pmap);
 	XSetTSOrigin(disp, gc, x, y);
 	XSetFillStyle(disp, gc, FillTiled);
@@ -652,7 +635,9 @@ SetBackgroundTo(ImlibData * imd, Window win, Background * dsk, char setbg)
 	  {
 	     XFillRectangle(disp, dpmap, gc, 0, 0, rw, rh);
 	  }
-	Imlib_free_pixmap(imd, pmap);
+	imlib_free_pixmap_and_mask(pmap);
+
+	imlib_context_set_image(dsk->top.im);
 
 	if (dsk->top.xperc > 0)
 	  {
@@ -662,11 +647,11 @@ SetBackgroundTo(ImlibData * imd, Window win, Background * dsk, char setbg)
 	  {
 	     if (!setbg)
 	       {
-		  ww = (dsk->top.im->rgb_width * rw) / root.w;
+		  ww = (imlib_image_get_width() * rw) / root.w;
 	       }
 	     else
 	       {
-		  ww = dsk->top.im->rgb_width;
+		  ww = imlib_image_get_width();
 	       }
 	  }
 	if (dsk->top.yperc > 0)
@@ -677,11 +662,11 @@ SetBackgroundTo(ImlibData * imd, Window win, Background * dsk, char setbg)
 	  {
 	     if (!setbg)
 	       {
-		  hh = (dsk->top.im->rgb_height * rh) / root.h;
+		  hh = (imlib_image_get_height() * rh) / root.h;
 	       }
 	     else
 	       {
-		  hh = dsk->top.im->rgb_height;
+		  hh = imlib_image_get_height();
 	       }
 	  }
 	if (ww <= 0)
@@ -693,23 +678,23 @@ SetBackgroundTo(ImlibData * imd, Window win, Background * dsk, char setbg)
 	     if (dsk->top.yperc <= 0)
 	       {
 		  if (((ww << 10) / hh) !=
-		      ((dsk->top.im->rgb_width << 10) /
-		       dsk->top.im->rgb_height))
-		     hh = ((ww * dsk->top.im->rgb_height) /
-			   dsk->top.im->rgb_width);
+		      ((imlib_image_get_width() << 10) /
+		       imlib_image_get_height()))
+		     hh =
+			((ww * imlib_image_get_height()) /
+			 imlib_image_get_width());
 	       }
 	     else
 	       {
 		  if (((hh << 10) / ww) !=
-		      ((dsk->top.im->rgb_height << 10) /
-		       dsk->top.im->rgb_width))
-		     ww = ((hh * dsk->top.im->rgb_width) /
-			   dsk->top.im->rgb_height);
+		      ((imlib_image_get_height() << 10) /
+		       imlib_image_get_width()))
+		     ww =
+			((hh * imlib_image_get_width()) /
+			 imlib_image_get_height());
 	       }
 	  }
-	Imlib_render(imd, dsk->top.im, ww, hh);
-	pmap = Imlib_move_image(imd, dsk->top.im);
-	mask = Imlib_move_mask(imd, dsk->top.im);
+	imlib_render_pixmaps_for_whole_image_at_size(&pmap, &mask, ww, hh);
 	x = ((rw - ww) * dsk->top.xjust) >> 10;
 	y = ((rh - hh) * dsk->top.yjust) >> 10;
 	XSetTile(disp, gc, pmap);
@@ -721,45 +706,54 @@ SetBackgroundTo(ImlibData * imd, Window win, Background * dsk, char setbg)
 	     XSetClipOrigin(disp, gc, x, y);
 	  }
 	XFillRectangle(disp, dpmap, gc, x, y, ww, hh);
-	Imlib_free_pixmap(imd, pmap);
+	imlib_free_pixmap_and_mask(pmap);
      }
    else if (hasbg)
      {
+	imlib_context_set_image(dsk->bg.im);
+
 	if (dsk->bg.xperc > 0)
 	   w = (rw * dsk->bg.xperc) >> 10;
 	else
 	  {
 	     if (!setbg)
-		w = (dsk->bg.im->rgb_width * rw) / root.w;
+		w = (imlib_image_get_width() * rw) / root.w;
 	     else
-		w = dsk->bg.im->rgb_width;
+		w = imlib_image_get_width();
 	  }
+
 	if (dsk->bg.yperc > 0)
 	   h = (rh * dsk->bg.yperc) >> 10;
 	else
 	  {
 	     if (!setbg)
-		h = (dsk->bg.im->rgb_height * rh) / root.h;
+		h = (imlib_image_get_height() * rh) / root.h;
 	     else
-		h = dsk->bg.im->rgb_height;
+		h = imlib_image_get_height();
 	  }
+
 	if (w <= 0)
 	   w = 1;
 	if (h <= 0)
 	   h = 1;
+
 	if (dsk->bg.keep_aspect)
 	  {
 	     if (dsk->bg.yperc <= 0)
 	       {
 		  if (((w << 10) / h) !=
-		      ((dsk->bg.im->rgb_width << 10) / dsk->bg.im->rgb_height))
-		     h = ((w * dsk->bg.im->rgb_height) / dsk->bg.im->rgb_width);
+		      ((imlib_image_get_width() << 10) /
+		       imlib_image_get_height()))
+		     h = ((w * imlib_image_get_height()) /
+			  imlib_image_get_width());
 	       }
 	     else
 	       {
 		  if (((h << 10) / w) !=
-		      ((dsk->bg.im->rgb_height << 10) / dsk->bg.im->rgb_width))
-		     w = ((h * dsk->bg.im->rgb_width) / dsk->bg.im->rgb_height);
+		      ((imlib_image_get_height() << 10) /
+		       imlib_image_get_width()))
+		     w = ((h * imlib_image_get_width()) /
+			  imlib_image_get_height());
 	       }
 	  }
 	dpmap = 0;
@@ -771,14 +765,14 @@ SetBackgroundTo(ImlibData * imd, Window win, Background * dsk, char setbg)
 	       {
 		  if ((x != 0) || (y != 0))
 		    {
-		       dpmap = ECreatePixmap(disp, win, w, h, imd->x.depth);
+		       dpmap = ECreatePixmap(disp, win, w, h, depth);
 		       gc = XCreateGC(disp, dpmap, 0, &gcv);
 		    }
 	       }
 	     else if ((x != 0) || (y != 0) || ((int)rw != (int)w)
 		      || ((int)rh != (int)h))
 	       {
-		  dpmap = ECreatePixmap(disp, win, rw, rh, imd->x.depth);
+		  dpmap = ECreatePixmap(disp, win, rw, rh, depth);
 		  gc = XCreateGC(disp, dpmap, 0, &gcv);
 		  XSetForeground(disp, gc, dsk->bg.solid.pixel);
 		  XFillRectangle(disp, dpmap, gc, 0, 0, rw, rh);
@@ -788,19 +782,18 @@ SetBackgroundTo(ImlibData * imd, Window win, Background * dsk, char setbg)
 	  {
 	     if (dsk->bg.tile)
 	       {
-		  dpmap = ECreatePixmap(disp, win, w, h, imd->x.depth);
+		  dpmap = ECreatePixmap(disp, win, w, h, depth);
 		  gc = XCreateGC(disp, dpmap, 0, &gcv);
 	       }
 	     else
 	       {
-		  dpmap = ECreatePixmap(disp, win, rw, rh, imd->x.depth);
+		  dpmap = ECreatePixmap(disp, win, rw, rh, depth);
 		  gc = XCreateGC(disp, dpmap, 0, &gcv);
 		  XSetForeground(disp, gc, dsk->bg.solid.pixel);
 		  XFillRectangle(disp, dpmap, gc, 0, 0, rw, rh);
 	       }
 	  }
-	Imlib_render(imd, dsk->bg.im, w, h);
-	pmap = Imlib_move_image(imd, dsk->bg.im);
+	imlib_render_pixmaps_for_whole_image_at_size(&pmap, &mask, w, h);
 	if (dpmap)
 	  {
 	     XSetTile(disp, gc, pmap);
@@ -814,17 +807,19 @@ SetBackgroundTo(ImlibData * imd, Window win, Background * dsk, char setbg)
 	       {
 		  XFillRectangle(disp, dpmap, gc, x, y, w, h);
 	       }
-	     Imlib_free_pixmap(imd, pmap);
+	     imlib_free_pixmap_and_mask(pmap);
 	  }
 	else
 	   dpmap = pmap;
      }
    else if (hasfg)
      {
-	dpmap = ECreatePixmap(disp, win, rw, rh, imd->x.depth);
+	dpmap = ECreatePixmap(disp, win, rw, rh, depth);
 	gc = XCreateGC(disp, dpmap, 0, &gcv);
 	XSetForeground(disp, gc, dsk->bg.solid.pixel);
 	XFillRectangle(disp, dpmap, gc, 0, 0, rw, rh);
+
+	imlib_context_set_image(dsk->top.im);
 
 	if (dsk->top.xperc > 0)
 	  {
@@ -834,11 +829,11 @@ SetBackgroundTo(ImlibData * imd, Window win, Background * dsk, char setbg)
 	  {
 	     if (!setbg)
 	       {
-		  ww = (dsk->top.im->rgb_width * rw) / root.w;
+		  ww = (imlib_image_get_width() * rw) / root.w;
 	       }
 	     else
 	       {
-		  ww = dsk->top.im->rgb_width;
+		  ww = imlib_image_get_width();
 	       }
 	  }
 
@@ -850,11 +845,11 @@ SetBackgroundTo(ImlibData * imd, Window win, Background * dsk, char setbg)
 	  {
 	     if (!setbg)
 	       {
-		  hh = (dsk->top.im->rgb_height * rh) / root.h;
+		  hh = (imlib_image_get_height() * rh) / root.h;
 	       }
 	     else
 	       {
-		  hh = dsk->top.im->rgb_height;
+		  hh = imlib_image_get_height();
 	       }
 	  }
 	if (ww <= 0)
@@ -866,23 +861,23 @@ SetBackgroundTo(ImlibData * imd, Window win, Background * dsk, char setbg)
 	     if (dsk->top.yperc <= 0)
 	       {
 		  if (((ww << 10) / hh) !=
-		      ((dsk->top.im->rgb_width << 10) /
-		       dsk->top.im->rgb_height))
-		     hh = ((ww * dsk->top.im->rgb_height) /
-			   dsk->top.im->rgb_width);
+		      ((imlib_image_get_width() << 10) /
+		       imlib_image_get_height()))
+		     hh =
+			((ww * imlib_image_get_height()) /
+			 imlib_image_get_width());
 	       }
 	     else
 	       {
 		  if (((hh << 10) / ww) !=
-		      ((dsk->top.im->rgb_height << 10) /
-		       dsk->top.im->rgb_width))
-		     ww = ((hh * dsk->top.im->rgb_width) /
-			   dsk->top.im->rgb_height);
+		      ((imlib_image_get_height() << 10) /
+		       imlib_image_get_width()))
+		     ww =
+			((hh * imlib_image_get_width()) /
+			 imlib_image_get_height());
 	       }
 	  }
-	Imlib_render(imd, dsk->top.im, ww, hh);
-	pmap = Imlib_move_image(imd, dsk->top.im);
-	mask = Imlib_move_mask(imd, dsk->top.im);
+	imlib_render_pixmaps_for_whole_image_at_size(&pmap, &mask, ww, hh);
 	x = ((rw - ww) * dsk->top.xjust) >> 10;
 	y = ((rh - hh) * dsk->top.yjust) >> 10;
 	XSetTile(disp, gc, pmap);
@@ -894,16 +889,22 @@ SetBackgroundTo(ImlibData * imd, Window win, Background * dsk, char setbg)
 	     XSetClipOrigin(disp, gc, x, y);
 	  }
 	XFillRectangle(disp, dpmap, gc, x, y, ww, hh);
-	Imlib_free_pixmap(imd, pmap);
+	imlib_free_pixmap_and_mask(pmap);
      }
    if (!dsk->keepim)
      {
 	if (dsk->top.im)
-	   Imlib_destroy_image(imd, dsk->top.im);
+	  {
+	     imlib_context_set_image(dsk->top.im);
+	     imlib_free_image();
+	     dsk->top.im = NULL;
+	  }
 	if (dsk->bg.im)
-	   Imlib_destroy_image(imd, dsk->bg.im);
-	dsk->top.im = NULL;
-	dsk->bg.im = NULL;
+	  {
+	     imlib_context_set_image(dsk->bg.im);
+	     imlib_free_image();
+	     dsk->bg.im = NULL;
+	  }
      }
    if (setbg)
      {
@@ -928,7 +929,7 @@ SetBackgroundTo(ImlibData * imd, Window win, Background * dsk, char setbg)
 	     XSetTSOrigin(disp, gc, 0, 0);
 	     XSetFillStyle(disp, gc, FillTiled);
 	     XFillRectangle(disp, win, gc, 0, 0, rw, rh);
-	     Imlib_free_pixmap(imd, dpmap);
+	     imlib_free_pixmap_and_mask(dpmap);
 	  }
 	else
 	  {
@@ -941,12 +942,15 @@ SetBackgroundTo(ImlibData * imd, Window win, Background * dsk, char setbg)
 	  }
 	XSync(disp, False);
      }
+
    if (gc)
       XFreeGC(disp, gc);
-   Imlib_set_render_type(imd, rt);
+
+   imlib_context_set_dither(rt);
+
+   IMLIB1_SET_CONTEXT(0);
 
    EDBUG_RETURN_;
-
 }
 
 void
@@ -2160,7 +2164,6 @@ DesktopAccounting()
    time_t              now;
    int                 i, j, num;
    Background        **lst;
-   ImlibData          *imd = 0;
 
    EDBUG(3, "DesktopAccounting");
    now = time(NULL);
@@ -2169,39 +2172,30 @@ DesktopAccounting()
 	if ((desks.desk[i].bg) && (desks.desk[i].viewable))
 	   desks.desk[i].bg->last_viewed = now;
      }
+
    lst = (Background **) ListItemType(&num, LIST_TYPE_BACKGROUND);
    if (lst)
      {
 	for (i = 0; i < num; i++)
 	  {
-	     if (lst[i]->pmap)
+	     if ((lst[i]->pmap == 0) ||
+		 ((now - lst[i]->last_viewed) <= mode.desktop_bg_timeout))
+		continue;
+
+	     IMLIB1_SET_CONTEXT(lst[i] == desks.desk[0].bg);
+	     imlib_free_pixmap_and_mask(lst[i]->pmap);
+	     lst[i]->pmap = 0;
+
+	     for (j = 0; j < ENLIGHTENMENT_CONF_NUM_DESKTOPS; j++)
 	       {
-		  if ((now - lst[i]->last_viewed) > mode.desktop_bg_timeout)
-		    {
-		       imd = pImlibData;
-		       for (j = 0; j < ENLIGHTENMENT_CONF_NUM_DESKTOPS; j++)
-			 {
-			    if (desks.desk[j].bg == lst[i])
-			      {
-				 if ((prImlibData) && (j == 0))
-				    imd = prImlibData;
-				 else
-				    imd = pImlibData;
-				 j = ENLIGHTENMENT_CONF_NUM_DESKTOPS;
-			      }
-			 }
-		       Imlib_free_pixmap(imd, lst[i]->pmap);
-		       lst[i]->pmap = 0;
-		       for (j = 0; j < ENLIGHTENMENT_CONF_NUM_DESKTOPS; j++)
-			 {
-			    if ((desks.desk[j].bg == lst[i])
-				&& (!desks.desk[j].viewable))
-			       SetBG(desks.desk[j].win, 0, 0);
-			 }
-		    }
+		  if ((desks.desk[j].bg == lst[i]) && (!desks.desk[j].viewable))
+		     SetBG(desks.desk[j].win, 0, 0);
 	       }
+
 	  }
 	Efree(lst);
+	IMLIB1_SET_CONTEXT(0);
      }
+
    EDBUG_RETURN_;
 }

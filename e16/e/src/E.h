@@ -29,11 +29,119 @@
 #include <X11/Xlib.h>
 #include <X11/Xutil.h>
 #include <X11/Xproto.h>
+#include <X11/Xatom.h>
 #include <X11/Xlocale.h>
 #include <X11/cursorfont.h>
 #include <X11/extensions/shape.h>
 #include <X11/extensions/XShm.h>
+
+#define ESetColor(pxc, r, g, b) \
+	({ (pxc)->red = ((r)<<8)|r; (pxc)->green = ((g)<<8)|g; (pxc)->blue = ((b)<<8)|b; })
+#define EGetColor(pxc, pr, pg, pb) \
+	({ *(pr) = ((pxc)->red)>>8; *(pg) = ((pxc)->green)>>8; *(pb) = ((pxc)->blue)>>8; })
+
+#if USE_IMLIB2
+#include <Imlib2.h>
+
+#define IMLIB1_SET_CONTEXT(root_ctx)
+
+#define EAllocColor(pxc) \
+	XAllocColor(disp, root.cmap, pxc)
+
+#define IMLIB_FREE_PIXMAP_AND_MASK(pmap, mask) \
+	imlib_free_pixmap_and_mask(pmap)
+
+#define IC_RenderDepth() DefaultDepth(disp, root.scr)
+
+#else
+
 #include <Imlib.h>
+
+extern ImlibData   *pI1Ctx;
+extern ImlibImage  *pIcImg;
+extern Drawable     vIcDrw;
+
+#define IMLIB1_SET_CONTEXT(root_ctx) \
+	pI1Ctx = ((root_ctx) && prImlib_Context) ? prImlib_Context : pImlib_Context
+
+#define imlib_context_set_image(im_img) \
+	pIcImg = im_img
+#define imlib_context_set_drawable(im_drw) \
+	vIcDrw = im_drw
+
+#define imlib_context_set_dither(onoff) \
+	Imlib_set_render_type(pI1Ctx, RT_DITHER_TRUECOL)
+#define imlib_context_get_dither() \
+	Imlib_get_render_type(pI1Ctx)
+
+#define imlib_image_get_width() \
+	pIcImg->rgb_width
+#define imlib_image_get_height() \
+	pIcImg->rgb_height
+
+#define imlib_load_image(file) \
+	Imlib_load_image(pI1Ctx, file)
+#define imlib_create_image_from_drawable(mask, x, y, w, h, grab) \
+	Imlib_create_image_from_drawable(pI1Ctx, vIcDrw, mask, x, y, w, h)
+
+#define imlib_image_set_format(fmt)
+#define imlib_save_image(file) \
+	Imlib_save_image_to_ppm(pI1Ctx, pIcImg, file)
+
+#define imlib_render_pixmaps_for_whole_image(p, m) \
+	Imlib_render(pI1Ctx, pIcImg, imlib_image_get_width(), imlib_image_get_height()); \
+	if (p) *p = Imlib_copy_image(pI1Ctx, pIcImg); \
+	if (m) *m = Imlib_copy_mask(pI1Ctx, pIcImg)
+#define imlib_render_pixmaps_for_whole_image_at_size(p, m, w, h) \
+	Imlib_render(pI1Ctx, pIcImg, w, h); \
+	if (p) *p = Imlib_copy_image(pI1Ctx, pIcImg); \
+	if (m) *m = Imlib_copy_mask(pI1Ctx, pIcImg)
+#define imlib_render_image_on_drawable(x, y) \
+	Imlib_apply_image(pI1Ctx, pIcImg, vIcDrw)
+#define imlib_render_image_on_drawable_at_size(x, y, w, h) \
+	Imlib_paste_image(pI1Ctx, pIcImg, vIcDrw, x, y, w, h)
+
+#define imlib_create_cropped_scaled_image(x, y, w, h, w2, h2) \
+	Imlib_clone_scaled_image(pI1Ctx, pIcImg, w2, h2)
+
+#define imlib_image_orientate(rot) \
+	switch (rot) { \
+	case 1: \
+		Imlib_rotate_image(pI1Ctx, pIcImg, 1); \
+		Imlib_flip_image_horizontal(pI1Ctx, pIcImg); \
+		break; \
+	case 2: \
+        	Imlib_flip_image_vertical(pI1Ctx, pIcImg); \
+        	Imlib_flip_image_horizontal(pI1Ctx, pIcImg); \
+	case 3: \
+		Imlib_rotate_image(pI1Ctx, pIcImg, -1); \
+		Imlib_flip_image_vertical(pI1Ctx, pIcImg); \
+		break; \
+	}
+
+#define imlib_free_image() \
+	({ Imlib_destroy_image(pI1Ctx, pIcImg); pIcImg = NULL; })
+#define imlib_free_image_and_decache() \
+	({ Imlib_kill_image(pI1Ctx, pIcImg); pIcImg = NULL; })
+#define imlib_free_pixmap_and_mask(pmap) \
+	Imlib_free_pixmap(pI1Ctx, pmap)
+
+#define IMLIB_FREE_PIXMAP_AND_MASK(pmap, mask) \
+	({ Imlib_free_pixmap(pI1Ctx, pmap); Imlib_free_pixmap(pI1Ctx, mask); })
+
+#define imlib_image_set_border(im_bdr) \
+	Imlib_set_image_border(pI1Ctx, pIcImg, im_bdr)
+
+#define EAllocColor(pxc) \
+	({ int r = ((pxc)->red)>>8, g = ((pxc)->green)>>8, b = ((pxc)->blue)>>8; \
+		(pxc)->pixel = Imlib_best_color_match(pI1Ctx, &r, &g, &b); })
+
+#define Imlib_Context ImlibData
+#define Imlib_Image ImlibImage
+#define Imlib_Color ImlibColor
+#define Imlib_Border ImlibBorder
+#define IC_RenderDepth() (pImlib_Context->x.render_depth)
+#endif
 #if USE_FNLIB
 #include <Fnlib.h>
 #endif
@@ -556,6 +664,14 @@ typedef struct _snapshot Snapshot;
 typedef struct _iconbox Iconbox;
 typedef struct _group Group;
 
+typedef struct
+{
+   char                type;
+   Pixmap              pmap;
+   Pixmap              mask;
+}
+PmapMask;
+
 typedef struct _icondef
 {
    char               *title_match;
@@ -633,11 +749,11 @@ typedef struct _imagestate
    char               *im_file;
    char               *real_file;
    char                unloadable;
-   ImlibImage         *im;
-   ImlibColor         *transp;
-   ImlibBorder        *border;
+   Imlib_Image        *im;
+   Imlib_Color        *transp;
+   Imlib_Border       *border;
    int                 pixmapfillstyle;
-   ImlibColor          bg, hi, lo, hihi, lolo;
+   XColor              bg, hi, lo, hihi, lolo;
    int                 bevelstyle;
    ColorModifierClass *colmod;
 }
@@ -657,7 +773,7 @@ typedef struct _imageclass
    char               *name;
    char                external;
    ImageStateArray     norm, active, sticky, sticky_active;
-   ImlibBorder         padding;
+   Imlib_Border        padding;
    ColorModifierClass *colmod;
    unsigned int        ref_count;
 }
@@ -702,8 +818,8 @@ typedef struct _textstate
       char                orientation;
    } style;
 #endif
-   ImlibColor          fg_col;
-   ImlibColor          bg_col;
+   XColor              fg_col;
+   XColor              bg_col;
    int                 effect;
    Efont              *efont;
    XFontStruct        *xfont;
@@ -781,7 +897,9 @@ Geometry;
 typedef struct _ecursor
 {
    char               *name;
-   ImlibColor          fg, bg;
+#if 0				/* Not used */
+   Imlib_Color         fg, bg;
+#endif
    char               *file;
    Cursor              cursor;
    unsigned int        ref_count;
@@ -806,7 +924,7 @@ typedef struct _border
 {
    char               *name;
    char               *group_border_name;
-   ImlibBorder         border;
+   Imlib_Border        border;
    int                 num_winparts;
    WinPart            *part;
    char                changes_shape;
@@ -933,11 +1051,11 @@ typedef struct _ewin
    int                 area_y;
    char               *session_id;
    int                 has_transients;
+   PmapMask            mini_pmm;
    int                 mini_w, mini_h;
-   Pixmap              mini_pmap, mini_mask;
    Snapshot           *snap;
-   int                 icon_pmap_w, icon_pmap_h;
-   Pixmap              icon_pmap, icon_mask;
+   PmapMask            icon_pmm;
+   int                 icon_w, icon_h;
    int                 head;
 }
 EWin;
@@ -1035,10 +1153,10 @@ typedef struct _background
    time_t              last_viewed;
    struct _bg
    {
-      ImlibColor          solid;
+      XColor              solid;
       char               *file;
       char               *real_file;
-      ImlibImage         *im;
+      Imlib_Image        *im;
       char                tile;
       char                keep_aspect;
       int                 xjust, yjust;
@@ -1049,7 +1167,7 @@ typedef struct _background
    {
       char               *file;
       char               *real_file;
-      ImlibImage         *im;
+      Imlib_Image        *im;
       char                keep_aspect;
       int                 xjust, yjust;
       int                 xperc, yperc;
@@ -1330,8 +1448,7 @@ typedef struct _menuitem
    void               *params;
    Menu               *child;
    char                state;
-   Pixmap              pmap[3];
-   Pixmap              mask[3];
+   PmapMask            pmm[3];
    Window              win;
    Window              icon_win;
    short               icon_w;
@@ -1351,8 +1468,7 @@ struct _menu
    int                 num;
    MenuItem          **items;
    Window              win;
-   Pixmap              pmap;
-   Pixmap              mask;
+   PmapMask            pmm;
    char                stuck;
    Menu               *parent;
    MenuItem           *sel_item;
@@ -1749,8 +1865,6 @@ void                UnShadeEwin(EWin * ewin);
 
 /* iclass.c functions */
 ImageClass         *CreateIclass(void);
-void                FreeImageState(ImageState * i);
-void                FreeImageStateArray(ImageStateArray * isa);
 void                FreeImageClass(ImageClass * i);
 ImageState         *CreateImageState(void);
 void                ImageStatePopulate(ImageState * is);
@@ -1760,7 +1874,8 @@ void                IclassApply(ImageClass * iclass, Window win, int w, int h,
 				int active, int sticky, int state, char expose);
 void                IclassApplyCopy(ImageClass * iclass, Window win, int w,
 				    int h, int active, int sticky, int state,
-				    Pixmap * pret, Pixmap * mret);
+				    PmapMask * pmm, int make_mask);
+void                FreePmapMask(PmapMask * pmm);
 
 /* draw.c functions */
 void                HandleDrawQueue(void);
@@ -1775,8 +1890,7 @@ void                EDestroyPixImg(PixImg * pi);
 void                EBlendPixImg(EWin * ewin, PixImg * s1, PixImg * s2,
 				 PixImg * dst, int x, int y, int w, int h);
 
-ImlibImage         *ELoadImage(char *file);
-ImlibImage         *ELoadImageImlibData(ImlibData * imd, char *file);
+Imlib_Image        *ELoadImage(char *file);
 void                DrawEwinShape(EWin * ewin, int md, int x, int y, int w,
 				  int h, char firstlast);
 void                PropagateShapes(Window win);
@@ -1966,15 +2080,14 @@ void                SlideWindowTo(Window win, int fx, int fy, int tx, int ty,
 void                KeepBGimages(Background * bg, char onoff);
 void                RemoveImagesFromBG(Background * bg);
 void                FreeDesktopBG(Background * bg);
-Background         *CreateDesktopBG(char *name, ImlibColor * solid, char *bg,
+Background         *CreateDesktopBG(char *name, XColor * solid, char *bg,
 				    char tile, char keep_aspect, int xjust,
 				    int yjust, int xperc, int yperc, char *top,
 				    char tkeep_aspect, int txjust, int tyjust,
 				    int txperc, int typerc);
 void                RefreshCurrentDesktop(void);
 void                RefreshDesktop(int num);
-void                SetBackgroundTo(ImlibData * imd, Window win,
-				    Background * dsk, char setbg);
+void                SetBackgroundTo(Window win, Background * dsk, char setbg);
 void                InitDesktopBgs(void);
 void                InitDesktopControls(void);
 void                SetDesktopBg(int desk, Background * bg);
@@ -2455,7 +2568,7 @@ int                 findLocalizedFile(char *fname);
 
 /* cursors.c functions */
 ECursor            *CreateECursor(char *name, char *image, int native_id,
-				  ImlibColor * fg, ImlibColor * bg);
+				  XColor * fg, XColor * bg);
 void                ApplyECursor(Window win, ECursor * ec);
 void                FreeECursor(ECursor * ec);
 
@@ -2750,9 +2863,11 @@ extern int          master_screen;
 extern int          display_screens;
 extern int          single_screen_mode;
 extern Display     *disp;
-extern ImlibData   *pImlibData;
-extern ImlibData   *prImlibData;
 
+#if !USE_IMLIB2
+extern Imlib_Context *pImlib_Context;
+extern Imlib_Context *prImlib_Context;
+#endif
 #if USE_FNLIB
 extern FnlibData   *pFnlibData;
 #endif

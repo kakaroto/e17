@@ -85,11 +85,12 @@ ShowToolTip(ToolTip * tt, char *text, ActionClass * ac, int x, int y)
    int                 ww, hh, adx, ady, dist;
    int                 headline_h = 0, headline_w = 0, icons_width =
       0, labels_width = 0, double_w = 0, temp_w, temp_h;
-   ImlibImage         *im;
+   Imlib_Image        *im;
    char                pq;
    int                *heights = NULL;
    ImageClass         *ic = NULL;
    int                 cols[10] = { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 };
+   Pixmap              pmap, mask;
 
    EDBUG(5, "ShowToolTip");
    if (!tt)
@@ -227,10 +228,11 @@ ShowToolTip(ToolTip * tt, char *text, ActionClass * ac, int x, int y)
 		    {
 		       if (ic->norm.normal->im)
 			 {
-			    if (cols[1] < ic->norm.normal->im->rgb_width)
-			       cols[1] = ic->norm.normal->im->rgb_width;
-			    if (ic->norm.normal->im->rgb_height > temp_h)
-			       temp_h = ic->norm.normal->im->rgb_height;
+			    imlib_context_set_image(ic->norm.normal->im);
+			    if (cols[1] < imlib_image_get_width())
+			       cols[1] = imlib_image_get_width();
+			    if (imlib_image_get_height() > temp_h)
+			       temp_h = imlib_image_get_height();
 			 }
 		    }
 		  if (ac->list[i]->modifiers)
@@ -252,10 +254,11 @@ ShowToolTip(ToolTip * tt, char *text, ActionClass * ac, int x, int y)
 			       ImageStateRealize(ic->norm.normal);
 			    if (ic->norm.normal->im)
 			      {
-				 if (cols[2] < ic->norm.normal->im->rgb_width)
-				    cols[2] = ic->norm.normal->im->rgb_width;
-				 if (ic->norm.normal->im->rgb_height > temp_h)
-				    temp_h = ic->norm.normal->im->rgb_height;
+				 imlib_context_set_image(ic->norm.normal->im);
+				 if (cols[2] < imlib_image_get_width())
+				    cols[2] = imlib_image_get_width();
+				 if (imlib_image_get_height() > temp_h)
+				    temp_h = imlib_image_get_height();
 			      }
 			 }
 		       if (ac->list[i]->modifiers & LockMask)
@@ -275,10 +278,11 @@ ShowToolTip(ToolTip * tt, char *text, ActionClass * ac, int x, int y)
 			       ImageStateRealize(ic->norm.normal);
 			    if (ic->norm.normal->im)
 			      {
-				 if (cols[3] < ic->norm.normal->im->rgb_width)
-				    cols[3] = ic->norm.normal->im->rgb_width;
-				 if (ic->norm.normal->im->rgb_height > temp_h)
-				    temp_h = ic->norm.normal->im->rgb_height;
+				 imlib_context_set_image(ic->norm.normal->im);
+				 if (cols[3] < imlib_image_get_width())
+				    cols[3] = imlib_image_get_width();
+				 if (imlib_image_get_height() > temp_h)
+				    temp_h = imlib_image_get_height();
 			      }
 			 }
 		       if (ac->list[i]->modifiers & ControlMask)
@@ -298,10 +302,11 @@ ShowToolTip(ToolTip * tt, char *text, ActionClass * ac, int x, int y)
 			       ImageStateRealize(ic->norm.normal);
 			    if (ic->norm.normal->im)
 			      {
-				 if (cols[4] < ic->norm.normal->im->rgb_width)
-				    cols[4] = ic->norm.normal->im->rgb_width;
-				 if (ic->norm.normal->im->rgb_height > temp_h)
-				    temp_h = ic->norm.normal->im->rgb_height;
+				 imlib_context_set_image(ic->norm.normal->im);
+				 if (cols[4] < imlib_image_get_width())
+				    cols[4] = imlib_image_get_width();
+				 if (imlib_image_get_height() > temp_h)
+				    temp_h = imlib_image_get_height();
 			      }
 			 }
 		       if (ac->list[i]->modifiers & Mod1Mask)
@@ -321,10 +326,11 @@ ShowToolTip(ToolTip * tt, char *text, ActionClass * ac, int x, int y)
 			       ImageStateRealize(ic->norm.normal);
 			    if (ic->norm.normal->im)
 			      {
-				 if (cols[5] < ic->norm.normal->im->rgb_width)
-				    cols[5] = ic->norm.normal->im->rgb_width;
-				 if (ic->norm.normal->im->rgb_height > temp_h)
-				    temp_h = ic->norm.normal->im->rgb_height;
+				 imlib_context_set_image(ic->norm.normal->im);
+				 if (cols[5] < imlib_image_get_width())
+				    cols[5] = imlib_image_get_width();
+				 if (imlib_image_get_height() > temp_h)
+				    temp_h = imlib_image_get_height();
 			      }
 			 }
 		       if (ac->list[i]->modifiers & Mod2Mask)
@@ -344,10 +350,11 @@ ShowToolTip(ToolTip * tt, char *text, ActionClass * ac, int x, int y)
 			       ImageStateRealize(ic->norm.normal);
 			    if (ic->norm.normal->im)
 			      {
-				 if (cols[6] < ic->norm.normal->im->rgb_width)
-				    cols[6] = ic->norm.normal->im->rgb_width;
-				 if (ic->norm.normal->im->rgb_height > temp_h)
-				    temp_h = ic->norm.normal->im->rgb_height;
+				 imlib_context_set_image(ic->norm.normal->im);
+				 if (cols[6] < imlib_image_get_width())
+				    cols[6] = imlib_image_get_width();
+				 if (imlib_image_get_height() > temp_h)
+				    temp_h = imlib_image_get_height();
 			      }
 			 }
 		       if (ac->list[i]->modifiers & Mod3Mask)
@@ -367,10 +374,11 @@ ShowToolTip(ToolTip * tt, char *text, ActionClass * ac, int x, int y)
 			       ImageStateRealize(ic->norm.normal);
 			    if (ic->norm.normal->im)
 			      {
-				 if (cols[7] < ic->norm.normal->im->rgb_width)
-				    cols[7] = ic->norm.normal->im->rgb_width;
-				 if (ic->norm.normal->im->rgb_height > temp_h)
-				    temp_h = ic->norm.normal->im->rgb_height;
+				 imlib_context_set_image(ic->norm.normal->im);
+				 if (cols[7] < imlib_image_get_width())
+				    cols[7] = imlib_image_get_width();
+				 if (imlib_image_get_height() > temp_h)
+				    temp_h = imlib_image_get_height();
 			      }
 			 }
 		       if (ac->list[i]->modifiers & Mod4Mask)
@@ -390,10 +398,11 @@ ShowToolTip(ToolTip * tt, char *text, ActionClass * ac, int x, int y)
 			       ImageStateRealize(ic->norm.normal);
 			    if (ic->norm.normal->im)
 			      {
-				 if (cols[8] < ic->norm.normal->im->rgb_width)
-				    cols[8] = ic->norm.normal->im->rgb_width;
-				 if (ic->norm.normal->im->rgb_height > temp_h)
-				    temp_h = ic->norm.normal->im->rgb_height;
+				 imlib_context_set_image(ic->norm.normal->im);
+				 if (cols[8] < imlib_image_get_width())
+				    cols[8] = imlib_image_get_width();
+				 if (imlib_image_get_height() > temp_h)
+				    temp_h = imlib_image_get_height();
 			      }
 			 }
 		       if (ac->list[i]->modifiers & Mod5Mask)
@@ -413,10 +422,11 @@ ShowToolTip(ToolTip * tt, char *text, ActionClass * ac, int x, int y)
 			       ImageStateRealize(ic->norm.normal);
 			    if (ic->norm.normal->im)
 			      {
-				 if (cols[9] < ic->norm.normal->im->rgb_width)
-				    cols[9] = ic->norm.normal->im->rgb_width;
-				 if (ic->norm.normal->im->rgb_height > temp_h)
-				    temp_h = ic->norm.normal->im->rgb_height;
+				 imlib_context_set_image(ic->norm.normal->im);
+				 if (cols[9] < imlib_image_get_width())
+				    cols[9] = imlib_image_get_width();
+				 if (imlib_image_get_height() > temp_h)
+				    temp_h = imlib_image_get_height();
 			      }
 			 }
 		    }
@@ -448,9 +458,10 @@ ShowToolTip(ToolTip * tt, char *text, ActionClass * ac, int x, int y)
 	iy = 0;
 	if (im)
 	  {
-	     iw = im->rgb_width;
-	     ih = im->rgb_height;
-	     Imlib_destroy_image(pImlibData, im);
+	     imlib_context_set_image(im);
+	     iw = imlib_image_get_width();
+	     ih = imlib_image_get_height();
+	     imlib_free_image();
 	  }
 	w += iw;
 	if (h < ih)
@@ -594,335 +605,217 @@ ShowToolTip(ToolTip * tt, char *text, ActionClass * ac, int x, int y)
 	for (i = 0; i < ac->num; i++)
 	  {
 	     x = xx + iw;
-	     if (ac->list[i]->tooltipstring)
+	     if (!ac->list[i]->tooltipstring)
+		continue;
+
+	     if (ac->list[i]->event == EVENT_DOUBLE_DOWN)
 	       {
-		  if (ac->list[i]->event == EVENT_DOUBLE_DOWN)
+		  TextDraw(tt->tclass, tt->win, 0, 0, STATE_NORMAL, "2x",
+			   xx + iw - double_w, y, double_w, heights[i], 17, 0);
+	       }
+
+	     if (ac->list[i]->anybutton)
+	       {
+		  ic = FindItem("TOOLTIP_MOUSEBUTTON_ANY", 0,
+				LIST_FINDBY_NAME, LIST_TYPE_ICLASS);
+		  if (ic)
+		     if (ic->norm.normal->im)
+		       {
+			  imlib_context_set_image(ic->norm.normal->im);
+			  imlib_render_pixmaps_for_whole_image(&pmap, &mask);
+			  PastePixmap(disp, tt->win, pmap, mask, x, y);
+			  x += imlib_image_get_width();
+		       }
+	       }
+	     else
+		switch (ac->list[i]->button)
+		  {
+		  case 1:
+		     ic = FindItem("TOOLTIP_MOUSEBUTTON_1", 0,
+				   LIST_FINDBY_NAME, LIST_TYPE_ICLASS);
+		     if (ic)
+			if (ic->norm.normal->im)
+			  {
+			     imlib_context_set_image(ic->norm.normal->im);
+			     imlib_render_pixmaps_for_whole_image(&pmap, &mask);
+			     PastePixmap(disp, tt->win, pmap, mask, x, y);
+			     x += imlib_image_get_width();
+			  }
+		     break;
+		  case 2:
+		     ic = FindItem("TOOLTIP_MOUSEBUTTON_2", 0,
+				   LIST_FINDBY_NAME, LIST_TYPE_ICLASS);
+		     if (ic)
+			if (ic->norm.normal->im)
+			  {
+			     imlib_context_set_image(ic->norm.normal->im);
+			     imlib_render_pixmaps_for_whole_image(&pmap, &mask);
+			     PastePixmap(disp, tt->win, pmap, mask, x, y);
+			     x += imlib_image_get_width();
+			  }
+		     break;
+		  case 3:
+		     ic = FindItem("TOOLTIP_MOUSEBUTTON_3", 0,
+				   LIST_FINDBY_NAME, LIST_TYPE_ICLASS);
+		     if (ic)
+			if (ic->norm.normal->im)
+			  {
+			     imlib_context_set_image(ic->norm.normal->im);
+			     imlib_render_pixmaps_for_whole_image(&pmap, &mask);
+			     PastePixmap(disp, tt->win, pmap, mask, x, y);
+			     x += imlib_image_get_width();
+			  }
+		     break;
+		  case 4:
+		     ic = FindItem("TOOLTIP_MOUSEBUTTON_4", 0,
+				   LIST_FINDBY_NAME, LIST_TYPE_ICLASS);
+		     if (ic)
+			if (ic->norm.normal->im)
+			  {
+			     imlib_context_set_image(ic->norm.normal->im);
+			     imlib_render_pixmaps_for_whole_image(&pmap, &mask);
+			     PastePixmap(disp, tt->win, pmap, mask, x, y);
+			     x += imlib_image_get_width();
+			  }
+		     break;
+		  case 5:
+		     ic = FindItem("TOOLTIP_MOUSEBUTTON_5", 0,
+				   LIST_FINDBY_NAME, LIST_TYPE_ICLASS);
+		     if (ic)
+			if (ic->norm.normal->im)
+			  {
+			     imlib_context_set_image(ic->norm.normal->im);
+			     imlib_render_pixmaps_for_whole_image(&pmap, &mask);
+			     PastePixmap(disp, tt->win, pmap, mask, x, y);
+			     x += imlib_image_get_width();
+			  }
+		     break;
+		  default:
+		     break;
+		  }
+
+	     if (ac->list[i]->modifiers)
+	       {
+		  if (ac->list[i]->modifiers & ShiftMask)
 		    {
-		       TextDraw(tt->tclass, tt->win, 0, 0, STATE_NORMAL, "2x",
-				xx + iw - double_w, y, double_w, heights[i], 17,
-				0);
-		    }
-		  if (ac->list[i]->anybutton)
-		    {
-		       ic = FindItem("TOOLTIP_MOUSEBUTTON_ANY", 0,
+		       ic = FindItem("TOOLTIP_KEY_SHIFT", 0,
 				     LIST_FINDBY_NAME, LIST_TYPE_ICLASS);
 		       if (ic)
 			  if (ic->norm.normal->im)
 			    {
-			       Imlib_render(pImlibData, ic->norm.normal->im,
-					    ic->norm.normal->im->rgb_width,
-					    ic->norm.normal->im->rgb_height);
-			       PastePixmap(disp, tt->win,
-					   Imlib_copy_image(pImlibData,
-							    ic->norm.
-							    normal->im),
-					   Imlib_copy_mask(pImlibData,
-							   ic->norm.normal->im),
-					   x, y);
-			       x += ic->norm.normal->im->rgb_width;
+			       imlib_context_set_image(ic->norm.normal->im);
+			       imlib_render_pixmaps_for_whole_image(&pmap,
+								    &mask);
+			       PastePixmap(disp, tt->win, pmap, mask, x, y);
+			       x += imlib_image_get_width();
 			    }
 		    }
-		  else
-		     switch (ac->list[i]->button)
-		       {
-		       case 1:
-			  ic = FindItem("TOOLTIP_MOUSEBUTTON_1", 0,
-					LIST_FINDBY_NAME, LIST_TYPE_ICLASS);
-			  if (ic)
-			     if (ic->norm.normal->im)
-			       {
-				  Imlib_render(pImlibData, ic->norm.normal->im,
-					       ic->norm.normal->im->rgb_width,
-					       ic->norm.normal->im->rgb_height);
-				  PastePixmap(disp, tt->win,
-					      Imlib_copy_image(pImlibData,
-							       ic->norm.
-							       normal->im),
-					      Imlib_copy_mask(pImlibData,
-							      ic->norm.
-							      normal->im), x,
-					      y);
-				  x += ic->norm.normal->im->rgb_width;
-			       }
-			  break;
-		       case 2:
-			  ic = FindItem("TOOLTIP_MOUSEBUTTON_2", 0,
-					LIST_FINDBY_NAME, LIST_TYPE_ICLASS);
-			  if (ic)
-			     if (ic->norm.normal->im)
-			       {
-				  Imlib_render(pImlibData, ic->norm.normal->im,
-					       ic->norm.normal->im->rgb_width,
-					       ic->norm.normal->im->rgb_height);
-				  PastePixmap(disp, tt->win,
-					      Imlib_copy_image(pImlibData,
-							       ic->norm.
-							       normal->im),
-					      Imlib_copy_mask(pImlibData,
-							      ic->norm.
-							      normal->im), x,
-					      y);
-				  x += ic->norm.normal->im->rgb_width;
-			       }
-			  break;
-		       case 3:
-			  ic = FindItem("TOOLTIP_MOUSEBUTTON_3", 0,
-					LIST_FINDBY_NAME, LIST_TYPE_ICLASS);
-			  if (ic)
-			     if (ic->norm.normal->im)
-			       {
-				  Imlib_render(pImlibData, ic->norm.normal->im,
-					       ic->norm.normal->im->rgb_width,
-					       ic->norm.normal->im->rgb_height);
-				  PastePixmap(disp, tt->win,
-					      Imlib_copy_image(pImlibData,
-							       ic->norm.
-							       normal->im),
-					      Imlib_copy_mask(pImlibData,
-							      ic->norm.
-							      normal->im), x,
-					      y);
-				  x += ic->norm.normal->im->rgb_width;
-			       }
-			  break;
-		       case 4:
-			  ic = FindItem("TOOLTIP_MOUSEBUTTON_4", 0,
-					LIST_FINDBY_NAME, LIST_TYPE_ICLASS);
-			  if (ic)
-			     if (ic->norm.normal->im)
-			       {
-				  Imlib_render(pImlibData, ic->norm.normal->im,
-					       ic->norm.normal->im->rgb_width,
-					       ic->norm.normal->im->rgb_height);
-				  PastePixmap(disp, tt->win,
-					      Imlib_copy_image(pImlibData,
-							       ic->norm.
-							       normal->im),
-					      Imlib_copy_mask(pImlibData,
-							      ic->norm.
-							      normal->im), x,
-					      y);
-				  x += ic->norm.normal->im->rgb_width;
-			       }
-			  break;
-		       case 5:
-			  ic = FindItem("TOOLTIP_MOUSEBUTTON_5", 0,
-					LIST_FINDBY_NAME, LIST_TYPE_ICLASS);
-			  if (ic)
-			     if (ic->norm.normal->im)
-			       {
-				  Imlib_render(pImlibData, ic->norm.normal->im,
-					       ic->norm.normal->im->rgb_width,
-					       ic->norm.normal->im->rgb_height);
-				  PastePixmap(disp, tt->win,
-					      Imlib_copy_image(pImlibData,
-							       ic->norm.
-							       normal->im),
-					      Imlib_copy_mask(pImlibData,
-							      ic->norm.
-							      normal->im), x,
-					      y);
-				  x += ic->norm.normal->im->rgb_width;
-			       }
-			  break;
-		       default:
-			  break;
-		       }
-
-		  if (ac->list[i]->modifiers)
+		  if (ac->list[i]->modifiers & LockMask)
 		    {
-		       if (ac->list[i]->modifiers & ShiftMask)
-			 {
-			    ic = FindItem("TOOLTIP_KEY_SHIFT", 0,
-					  LIST_FINDBY_NAME, LIST_TYPE_ICLASS);
-			    if (ic)
-			       if (ic->norm.normal->im)
-				 {
-				    Imlib_render(pImlibData,
-						 ic->norm.normal->im,
-						 ic->norm.normal->im->rgb_width,
-						 ic->norm.normal->im->
-						 rgb_height);
-				    PastePixmap(disp, tt->win,
-						Imlib_copy_image(pImlibData,
-								 ic->norm.
-								 normal->im),
-						Imlib_copy_mask(pImlibData,
-								ic->norm.
-								normal->im), x,
-						y);
-				    x += ic->norm.normal->im->rgb_width;
-				 }
-			 }
-		       if (ac->list[i]->modifiers & LockMask)
-			 {
-			    ic = FindItem("TOOLTIP_KEY_LOCK", 0,
-					  LIST_FINDBY_NAME, LIST_TYPE_ICLASS);
-			    if (ic)
-			       if (ic->norm.normal->im)
-				 {
-				    Imlib_render(pImlibData,
-						 ic->norm.normal->im,
-						 ic->norm.normal->im->rgb_width,
-						 ic->norm.normal->im->
-						 rgb_height);
-				    PastePixmap(disp, tt->win,
-						Imlib_copy_image(pImlibData,
-								 ic->norm.
-								 normal->im),
-						Imlib_copy_mask(pImlibData,
-								ic->norm.
-								normal->im), x,
-						y);
-				    x += ic->norm.normal->im->rgb_width;
-				 }
-			 }
-		       if (ac->list[i]->modifiers & ControlMask)
-			 {
-			    ic = FindItem("TOOLTIP_KEY_CTRL", 0,
-					  LIST_FINDBY_NAME, LIST_TYPE_ICLASS);
-			    if (ic)
-			       if (ic->norm.normal->im)
-				 {
-				    Imlib_render(pImlibData,
-						 ic->norm.normal->im,
-						 ic->norm.normal->im->rgb_width,
-						 ic->norm.normal->im->
-						 rgb_height);
-				    PastePixmap(disp, tt->win,
-						Imlib_copy_image(pImlibData,
-								 ic->norm.
-								 normal->im),
-						Imlib_copy_mask(pImlibData,
-								ic->norm.
-								normal->im), x,
-						y);
-				    x += ic->norm.normal->im->rgb_width;
-				 }
-			 }
-		       if (ac->list[i]->modifiers & Mod1Mask)
-			 {
-			    ic = FindItem("TOOLTIP_KEY_MOD1", 0,
-					  LIST_FINDBY_NAME, LIST_TYPE_ICLASS);
-			    if (ic)
-			       if (ic->norm.normal->im)
-				 {
-				    Imlib_render(pImlibData,
-						 ic->norm.normal->im,
-						 ic->norm.normal->im->rgb_width,
-						 ic->norm.normal->im->
-						 rgb_height);
-				    PastePixmap(disp, tt->win,
-						Imlib_copy_image(pImlibData,
-								 ic->norm.
-								 normal->im),
-						Imlib_copy_mask(pImlibData,
-								ic->norm.
-								normal->im), x,
-						y);
-				    x += ic->norm.normal->im->rgb_width;
-				 }
-			 }
-		       if (ac->list[i]->modifiers & Mod2Mask)
-			 {
-			    ic = FindItem("TOOLTIP_KEY_MOD2", 0,
-					  LIST_FINDBY_NAME, LIST_TYPE_ICLASS);
-			    if (ic)
-			       if (ic->norm.normal->im)
-				 {
-				    Imlib_render(pImlibData,
-						 ic->norm.normal->im,
-						 ic->norm.normal->im->rgb_width,
-						 ic->norm.normal->im->
-						 rgb_height);
-				    PastePixmap(disp, tt->win,
-						Imlib_copy_image(pImlibData,
-								 ic->norm.
-								 normal->im),
-						Imlib_copy_mask(pImlibData,
-								ic->norm.
-								normal->im), x,
-						y);
-				    x += ic->norm.normal->im->rgb_width;
-				 }
-			 }
-		       if (ac->list[i]->modifiers & Mod3Mask)
-			 {
-			    ic = FindItem("TOOLTIP_KEY_MOD3", 0,
-					  LIST_FINDBY_NAME, LIST_TYPE_ICLASS);
-			    if (ic)
-			       if (ic->norm.normal->im)
-				 {
-				    Imlib_render(pImlibData,
-						 ic->norm.normal->im,
-						 ic->norm.normal->im->rgb_width,
-						 ic->norm.normal->im->
-						 rgb_height);
-				    PastePixmap(disp, tt->win,
-						Imlib_copy_image(pImlibData,
-								 ic->norm.
-								 normal->im),
-						Imlib_copy_mask(pImlibData,
-								ic->norm.
-								normal->im), x,
-						y);
-				    x += ic->norm.normal->im->rgb_width;
-				 }
-			 }
-		       if (ac->list[i]->modifiers & Mod4Mask)
-			 {
-			    ic = FindItem("TOOLTIP_KEY_MOD4", 0,
-					  LIST_FINDBY_NAME, LIST_TYPE_ICLASS);
-			    if (ic)
-			       if (ic->norm.normal->im)
-				 {
-				    Imlib_render(pImlibData,
-						 ic->norm.normal->im,
-						 ic->norm.normal->im->rgb_width,
-						 ic->norm.normal->im->
-						 rgb_height);
-				    PastePixmap(disp, tt->win,
-						Imlib_copy_image(pImlibData,
-								 ic->norm.
-								 normal->im),
-						Imlib_copy_mask(pImlibData,
-								ic->norm.
-								normal->im), x,
-						y);
-				    x += ic->norm.normal->im->rgb_width;
-				 }
-			 }
-		       if (ac->list[i]->modifiers & Mod5Mask)
-			 {
-			    ic = FindItem("TOOLTIP_KEY_MOD5", 0,
-					  LIST_FINDBY_NAME, LIST_TYPE_ICLASS);
-			    if (ic)
-			       if (ic->norm.normal->im)
-				 {
-				    Imlib_render(pImlibData,
-						 ic->norm.normal->im,
-						 ic->norm.normal->im->rgb_width,
-						 ic->norm.normal->im->
-						 rgb_height);
-				    PastePixmap(disp, tt->win,
-						Imlib_copy_image(pImlibData,
-								 ic->norm.
-								 normal->im),
-						Imlib_copy_mask(pImlibData,
-								ic->norm.
-								normal->im), x,
-						y);
-				    x += ic->norm.normal->im->rgb_width;
-				 }
-			 }
+		       ic = FindItem("TOOLTIP_KEY_LOCK", 0,
+				     LIST_FINDBY_NAME, LIST_TYPE_ICLASS);
+		       if (ic)
+			  if (ic->norm.normal->im)
+			    {
+			       imlib_context_set_image(ic->norm.normal->im);
+			       imlib_render_pixmaps_for_whole_image(&pmap,
+								    &mask);
+			       PastePixmap(disp, tt->win, pmap, mask, x, y);
+			       x += imlib_image_get_width();
+			    }
 		    }
-
-		  TextDraw(tt->tclass, tt->win, 0, 0, STATE_NORMAL,
-			   ac->list[i]->tooltipstring,
-			   tt->iclass->padding.left + icons_width + iw, y,
-			   labels_width, heights[i], 17, 0);
-		  y += heights[i];
+		  if (ac->list[i]->modifiers & ControlMask)
+		    {
+		       ic = FindItem("TOOLTIP_KEY_CTRL", 0,
+				     LIST_FINDBY_NAME, LIST_TYPE_ICLASS);
+		       if (ic)
+			  if (ic->norm.normal->im)
+			    {
+			       imlib_context_set_image(ic->norm.normal->im);
+			       imlib_render_pixmaps_for_whole_image(&pmap,
+								    &mask);
+			       PastePixmap(disp, tt->win, pmap, mask, x, y);
+			       x += imlib_image_get_width();
+			    }
+		    }
+		  if (ac->list[i]->modifiers & Mod1Mask)
+		    {
+		       ic = FindItem("TOOLTIP_KEY_MOD1", 0,
+				     LIST_FINDBY_NAME, LIST_TYPE_ICLASS);
+		       if (ic)
+			  if (ic->norm.normal->im)
+			    {
+			       imlib_context_set_image(ic->norm.normal->im);
+			       imlib_render_pixmaps_for_whole_image(&pmap,
+								    &mask);
+			       PastePixmap(disp, tt->win, pmap, mask, x, y);
+			       x += imlib_image_get_width();
+			    }
+		    }
+		  if (ac->list[i]->modifiers & Mod2Mask)
+		    {
+		       ic = FindItem("TOOLTIP_KEY_MOD2", 0,
+				     LIST_FINDBY_NAME, LIST_TYPE_ICLASS);
+		       if (ic)
+			  if (ic->norm.normal->im)
+			    {
+			       imlib_context_set_image(ic->norm.normal->im);
+			       imlib_render_pixmaps_for_whole_image(&pmap,
+								    &mask);
+			       PastePixmap(disp, tt->win, pmap, mask, x, y);
+			       x += imlib_image_get_width();
+			    }
+		    }
+		  if (ac->list[i]->modifiers & Mod3Mask)
+		    {
+		       ic = FindItem("TOOLTIP_KEY_MOD3", 0,
+				     LIST_FINDBY_NAME, LIST_TYPE_ICLASS);
+		       if (ic)
+			  if (ic->norm.normal->im)
+			    {
+			       imlib_context_set_image(ic->norm.normal->im);
+			       imlib_render_pixmaps_for_whole_image(&pmap,
+								    &mask);
+			       PastePixmap(disp, tt->win, pmap, mask, x, y);
+			       x += imlib_image_get_width();
+			    }
+		    }
+		  if (ac->list[i]->modifiers & Mod4Mask)
+		    {
+		       ic = FindItem("TOOLTIP_KEY_MOD4", 0,
+				     LIST_FINDBY_NAME, LIST_TYPE_ICLASS);
+		       if (ic)
+			  if (ic->norm.normal->im)
+			    {
+			       imlib_context_set_image(ic->norm.normal->im);
+			       imlib_render_pixmaps_for_whole_image(&pmap,
+								    &mask);
+			       PastePixmap(disp, tt->win, pmap, mask, x, y);
+			       x += imlib_image_get_width();
+			    }
+		    }
+		  if (ac->list[i]->modifiers & Mod5Mask)
+		    {
+		       ic = FindItem("TOOLTIP_KEY_MOD5", 0,
+				     LIST_FINDBY_NAME, LIST_TYPE_ICLASS);
+		       if (ic)
+			  if (ic->norm.normal->im)
+			    {
+			       imlib_context_set_image(ic->norm.normal->im);
+			       imlib_render_pixmaps_for_whole_image(&pmap,
+								    &mask);
+			       PastePixmap(disp, tt->win, pmap, mask, x, y);
+			       x += imlib_image_get_width();
+			    }
+		    }
 	       }
+
+	     TextDraw(tt->tclass, tt->win, 0, 0, STATE_NORMAL,
+		      ac->list[i]->tooltipstring,
+		      tt->iclass->padding.left + icons_width + iw, y,
+		      labels_width, heights[i], 17, 0);
+	     y += heights[i];
+
 	  }
      }
 
