@@ -106,8 +106,6 @@ e16_SOURCES = \
 LDADD = \
 	@LIBINTL@		\
 	@ecore_libs@		\
-	$(FNLIB_LIBS) 		\
-	$(TTF_LIBS) 		\
 	$(ESD_LIBS) 		\
 	$(IMLIB_LIBS) 		\
 	$(X_PRE_LIBS) 		\
