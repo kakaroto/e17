@@ -238,6 +238,9 @@ change_image(void *data)
   unsigned long first = idx;
   int new_w = 0, new_h = 0, new_x = 3, new_y = 3;
 
+  if(!filenames)
+     return;
+  
   /* Test-load each image to make sure it's a valid image file. */
   for (; ((filenames[idx] == NULL) || ((im = Imlib_load_image(Epplet_get_imlib_data(), filenames[idx])) == NULL));) {
     /* It isn't, so NULL out its name. */
