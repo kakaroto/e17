@@ -145,9 +145,10 @@ od_config_menu_out_cb(Ewl_Widget * w, void *ev_data, void *user_data)
   int             x, y;
 
   evas_pointer_output_xy_get(evas, &x, &y);
-  if (x < menu_x || x > (menu_x + menu_width) ||
-      y < menu_y || y > (menu_y + menu_height))
+  if (x <= menu_x + 1 || x >= (menu_x + menu_width) ||
+      y <= menu_y + 1 || y >= (menu_y + menu_height))
     od_config_menu_hide();
+
 }
 
 void
@@ -228,7 +229,7 @@ od_config_menu_hide(void)
 void
 od_config_menu_draw(Evas_Coord x, Evas_Coord y)
 {
-  int             menu_off_x, menu_off_y;
+  Evas_Coord      menu_off_x, menu_off_y;
 
   menu_off_x = 5;
   menu_off_y = 5;
