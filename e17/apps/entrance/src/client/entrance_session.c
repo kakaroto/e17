@@ -344,6 +344,7 @@ entrance_session_start_user_session(Entrance_Session * e)
    pid_t pid;
    char buf[PATH_MAX];
    char *session_key = NULL;
+   char *shell = NULL;
    Entrance_X_Session *exs = NULL;
 
    entrance_auth_setup_environment(e->auth);
@@ -404,10 +405,11 @@ entrance_session_start_user_session(Entrance_Session * e)
            syslog(LOG_CRIT, "Unable to set group id.");
         if (setuid(e->auth->pw->pw_uid))
            syslog(LOG_CRIT, "Unable to set user id.");
+        shell = strdup(e->auth->pw->pw_shell);
         entrance_auth_clear_pass(e->auth);
         entrance_auth_free(e->auth);
         e->auth = NULL;
-        execl("/bin/sh", "/bin/sh", "-c", buf, NULL);
+        execl(shell, "-", "-c", buf, NULL);
         exit(0);
         break;
      case -1:
