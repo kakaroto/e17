@@ -19,7 +19,7 @@ static const Ewl_Stock_Item builtin_items [] =
 /* Otherwise, return NULL */
 /* The result must be freed when not used anymore */
 char *
-ewl_stock_get_label (const char *stock_id)
+ewl_stock_label_get (const char *stock_id)
 {
   int i, val;
   char *label = NULL;
@@ -45,7 +45,7 @@ ewl_stock_get_label (const char *stock_id)
  * @brief Allocate and initialize a new button with eventually a stock
  * icon.
  */
-Ewl_Widget *ewl_button_with_stock_new (char *stock_id)
+Ewl_Widget *ewl_button_stock_new (char *stock_id)
 {
   Ewl_Button_Stock *b;
 
@@ -55,7 +55,7 @@ Ewl_Widget *ewl_button_with_stock_new (char *stock_id)
   if (!b)
     return NULL;
   
-  ewl_button_with_stock_init(b, stock_id);
+  ewl_button_stock_init(b, stock_id);
 
   DRETURN_PTR(EWL_WIDGET(b), DLEVEL_STABLE);
 }
@@ -69,7 +69,7 @@ Ewl_Widget *ewl_button_with_stock_new (char *stock_id)
  *
  * Initializes a button to default values and callbacks.
  */
-int ewl_button_with_stock_init(Ewl_Button_Stock * b, char *stock_id)
+int ewl_button_stock_init(Ewl_Button_Stock * b, char *stock_id)
 {
   Ewl_Widget *w;
   char       *label;
@@ -78,7 +78,7 @@ int ewl_button_with_stock_init(Ewl_Button_Stock * b, char *stock_id)
   DENTER_FUNCTION(DLEVEL_STABLE);
   DCHECK_PARAM_PTR_RET("b", b, 0);
 
-  label = ewl_stock_get_label (stock_id);
+  label = ewl_stock_label_get (stock_id);
  
   if (label)
     {

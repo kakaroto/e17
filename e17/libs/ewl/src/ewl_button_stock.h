@@ -67,9 +67,9 @@ struct _Ewl_Button_Stock
   int         response_id;  /* the response Id */
 };
 
-Ewl_Widget *ewl_button_with_stock_new (char *stock_id);
-int         ewl_button_with_stock_init(Ewl_Button_Stock *b, 
-				       char             *stock_id);
+Ewl_Widget *ewl_button_stock_new (char *stock_id);
+int         ewl_button_stock_init(Ewl_Button_Stock *b, 
+				  char *stock_id);
 
 /**
  * @}

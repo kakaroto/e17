@@ -172,14 +172,14 @@ int main(int argc, char ** argv) {
 	ewl_object_alignment_set(EWL_OBJECT(box2), EWL_FLAG_ALIGN_RIGHT);
 	ewl_widget_show(box2);
 
-	o = ewl_button_with_stock_new(EWL_STOCK_SAVE);
+	o = ewl_button_stock_new(EWL_STOCK_SAVE);
 	ewl_container_child_append(EWL_CONTAINER(box2), o);
 	ewl_callback_append(o, EWL_CALLBACK_CLICKED, save_cb, NULL);
 	ewl_object_fill_policy_set(EWL_OBJECT(o), EWL_FLAG_FILL_SHRINK);
 	ewl_object_padding_set(EWL_OBJECT(o), 5, 5, 2, 2);
 	ewl_widget_show(o);
 
-	o = ewl_button_with_stock_new(EWL_STOCK_QUIT);
+	o = ewl_button_stock_new(EWL_STOCK_QUIT);
 	ewl_container_child_append(EWL_CONTAINER(box2), o);
 	ewl_callback_append(o, EWL_CALLBACK_CLICKED, win_del_cb, NULL);
 	ewl_object_fill_policy_set(EWL_OBJECT(o), EWL_FLAG_FILL_SHRINK);

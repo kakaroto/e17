@@ -24,10 +24,10 @@ __toggle_child_fill(Ewl_Widget * w, void *ev_data, void *user_data)
 
 	if (f == EWL_FLAG_FILL_NONE) {
 		ewl_object_fill_policy_set(EWL_OBJECT(w), EWL_FLAG_FILL_FILL);
-		ewl_button_set_label(EWL_BUTTON(w), "Fill");
+		ewl_button_label_set(EWL_BUTTON(w), "Fill");
 	} else {
 		ewl_object_fill_policy_set(EWL_OBJECT(w), EWL_FLAG_FILL_NONE);
-		ewl_button_set_label(EWL_BUTTON(w), "None");
+		ewl_button_label_set(EWL_BUTTON(w), "None");
 	}
 
 	return;
@@ -45,11 +45,11 @@ __toggle_child_shrink(Ewl_Widget * w, void *ev_data, void *user_data)
 	if (f == EWL_FLAG_FILL_NONE) {
 		ewl_object_fill_policy_set(EWL_OBJECT(w),
 					   EWL_FLAG_FILL_HSHRINK);
-		ewl_button_set_label(EWL_BUTTON(w),
+		ewl_button_label_set(EWL_BUTTON(w),
 				     "Shrink This Box To Fit It's Parent");
 	} else {
 		ewl_object_fill_policy_set(EWL_OBJECT(w), EWL_FLAG_FILL_NONE);
-		ewl_button_set_label(EWL_BUTTON(w),
+		ewl_button_label_set(EWL_BUTTON(w),
 				     "Don't shrink this box at all");
 	}
 
@@ -77,7 +77,7 @@ __toggle_child_horizontal_align(Ewl_Widget * w, void *ev_data, void *user_data)
 		snprintf(l, 10, "Left");
 	}
 
-	ewl_button_set_label(EWL_BUTTON(w), l);
+	ewl_button_label_set(EWL_BUTTON(w), l);
 
 	ewl_object_alignment_set(EWL_OBJECT(w), a);
 
@@ -105,7 +105,7 @@ __toggle_child_vertical_align(Ewl_Widget * w, void *ev_data, void *user_data)
 		snprintf(l, 10, "Top");
 	}
 
-	ewl_button_set_label(EWL_BUTTON(w), l);
+	ewl_button_label_set(EWL_BUTTON(w), l);
 
 	ewl_object_alignment_set(EWL_OBJECT(w), a);
 

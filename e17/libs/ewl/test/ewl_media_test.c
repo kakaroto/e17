@@ -223,7 +223,7 @@ int main(int argc, char ** argv) {
 	int i;
 
 	for(i = 0; controls[i].name != NULL; i++) {
-	    o = ewl_button_with_stock_new(controls[i].name);
+	    o = ewl_button_stock_new(controls[i].name);
 	    ewl_container_child_append(EWL_CONTAINER(b), o);
 	    ewl_callback_append(o, EWL_CALLBACK_CLICKED, 
 					controls[i].func, NULL);
