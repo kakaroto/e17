@@ -6,7 +6,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
-"POT-Creation-Date: 1999-12-06 21:26-0800\n"
+"POT-Creation-Date: 1999-12-08 16:30-0500\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -96,7 +96,7 @@ msgstr ""
 msgid "  Pick the group the window will belong to:  \n"
 msgstr ""
 
-#: src/actions.c:3676
+#: src/actions.c:3677
 msgid ""
 "\n"
 "  There's no current group at the moment.  \n"
@@ -108,23 +108,23 @@ msgid ""
 "\n"
 msgstr ""
 
-#: src/actions.c:3710
+#: src/actions.c:3711
 msgid "   Select the group to remove the window from.  "
 msgstr ""
 
-#: src/actions.c:3735
+#: src/actions.c:3736
 msgid "  Select the group to break  "
 msgstr ""
 
-#: src/actions.c:3763
+#: src/actions.c:3764
 msgid "You have been warned about the dangers of Zoom mode\n"
 msgstr ""
 
-#: src/actions.c:3766
+#: src/actions.c:3767
 msgid "Warning !!!"
 msgstr ""
 
-#: src/actions.c:3768
+#: src/actions.c:3769
 msgid ""
 "This feature is heavily reliant on a feature of your\n"
 "X Server called the Vid Mode Extension. This feature exists\n"
@@ -172,19 +172,19 @@ msgid "E IPC Error"
 msgstr ""
 
 #: src/config.c:242 src/config.c:477 src/config.c:557 src/config.c:831
-#: src/config.c:949 src/config.c:1191 src/config.c:1320 src/config.c:1427
-#: src/config.c:1643 src/config.c:1891 src/config.c:1961 src/config.c:2057
-#: src/config.c:2314 src/config.c:2531 src/config.c:2795 src/config.c:2888
-#: src/config.c:2965 src/config.c:3066 src/config.c:3389
+#: src/config.c:949 src/config.c:1191 src/config.c:1320 src/config.c:1426
+#: src/config.c:1642 src/config.c:1890 src/config.c:1960 src/config.c:2056
+#: src/config.c:2313 src/config.c:2530 src/config.c:2794 src/config.c:2887
+#: src/config.c:2964 src/config.c:3065 src/config.c:3387
 #, c-format
 msgid "CONFIG: ignoring extra data in \"%s\"\n"
 msgstr ""
 
 #: src/config.c:248 src/config.c:483 src/config.c:565 src/config.c:837
-#: src/config.c:955 src/config.c:1197 src/config.c:1326 src/config.c:1435
-#: src/config.c:1651 src/config.c:1897 src/config.c:1967 src/config.c:2065
-#: src/config.c:2320 src/config.c:2539 src/config.c:2801 src/config.c:3072
-#: src/config.c:3397
+#: src/config.c:955 src/config.c:1197 src/config.c:1326 src/config.c:1434
+#: src/config.c:1650 src/config.c:1896 src/config.c:1966 src/config.c:2064
+#: src/config.c:2319 src/config.c:2538 src/config.c:2800 src/config.c:3071
+#: src/config.c:3395
 #, c-format
 msgid "CONFIG: missing required data in \"%s\"\n"
 msgstr ""
@@ -243,35 +243,35 @@ msgid ""
 "Done loading a Main Border block.  Outcome is likely not good.\n"
 msgstr ""
 
-#: src/config.c:1599
+#: src/config.c:1598
 msgid ""
 "Warning:  Configuration appears to have ended before we were\n"
 "Done loading a Button block.  Outcome is likely not good.\n"
 msgstr ""
 
-#: src/config.c:1856 src/config.c:1936
+#: src/config.c:1855 src/config.c:1935
 msgid ""
 "Warning:  Configuration appears to have ended before we were\n"
 "Done loading a Desktop block.  Outcome is likely not good.\n"
 msgstr ""
 
-#: src/config.c:1948
+#: src/config.c:1947
 msgid "Easter Egg!  Iconboxes aren't implemented yet.\n"
 msgstr ""
 
-#: src/config.c:1980
+#: src/config.c:1979
 msgid ""
 "Warning:  Configuration appears to have ended before we were\n"
 "Done loading an Iconbox block.  Outcome is likely not good.\n"
 msgstr ""
 
-#: src/config.c:2016
+#: src/config.c:2015
 msgid ""
 "Warning:  Configuration appears to have ended before we were\n"
 "Done loading an Sound block.  Outcome is likely not good.\n"
 msgstr ""
 
-#: src/config.c:2269
+#: src/config.c:2268
 #, c-format
 msgid ""
 "Warning: unable to determine what to do with\n"
@@ -280,13 +280,13 @@ msgid ""
 "Will ignore and continue...\n"
 msgstr ""
 
-#: src/config.c:2284
+#: src/config.c:2283
 msgid ""
 "Warning:  Configuration appears to have ended before we were\n"
 "Done loading an Action Class block.  Outcome is likely not good.\n"
 msgstr ""
 
-#: src/config.c:2483
+#: src/config.c:2482
 #, c-format
 msgid ""
 "Warning: unable to determine what to do with\n"
@@ -295,13 +295,13 @@ msgid ""
 "Will ignore and continue...\n"
 msgstr ""
 
-#: src/config.c:2491
+#: src/config.c:2490
 msgid ""
 "Warning:  Configuration appears to have ended before we were\n"
 "Done loading an ImageClass block.  Outcome is likely not good.\n"
 msgstr ""
 
-#: src/config.c:2731
+#: src/config.c:2730
 #, c-format
 msgid ""
 "Warning: unable to determine what to do with\n"
@@ -310,14 +310,14 @@ msgid ""
 "Will ignore and continue...\n"
 msgstr ""
 
-#: src/config.c:2756
+#: src/config.c:2755
 msgid ""
 "Warning:  Configuration appears to have ended before we were\n"
 "Done loading an ColorModifier block.\n"
 "Outcome is likely not good.\n"
 msgstr ""
 
-#: src/config.c:2849
+#: src/config.c:2848
 #, c-format
 msgid ""
 "Warning: unable to determine what to do with\n"
@@ -326,19 +326,19 @@ msgid ""
 "Will ignore and continue...\n"
 msgstr ""
 
-#: src/config.c:2856
+#: src/config.c:2855
 msgid ""
 "Warning: Configuration appears to have ended before we were\n"
 "Done loading an ToolTip block.  Outcome is likely not good.\n"
 msgstr ""
 
-#: src/config.c:2894
+#: src/config.c:2893
 msgid ""
 "Warning: Configuration appears to have ended before we were\n"
 "Done loading an FX block.  Outcome is likely not good.\n"
 msgstr ""
 
-#: src/config.c:2930
+#: src/config.c:2929
 #, c-format
 msgid ""
 "Warning: unable to determine what to do with\n"
@@ -347,13 +347,13 @@ msgid ""
 "Will ignore and continue...\n"
 msgstr ""
 
-#: src/config.c:2938
+#: src/config.c:2937
 msgid ""
 "Warning: Configuration appears to have ended before we were\n"
 "Done loading an Extras block.  Outcome is likely not good.\n"
 msgstr ""
 
-#: src/config.c:3028
+#: src/config.c:3027
 #, c-format
 msgid ""
 "Warning: unable to determine what to do with\n"
@@ -362,13 +362,13 @@ msgid ""
 "Will ignore and continue...\n"
 msgstr ""
 
-#: src/config.c:3036
+#: src/config.c:3035
 msgid ""
 "Warning: Configuration appears to have ended before we were\n"
 "Done loading an Iconbox block.  Outcome is likely not good.\n"
 msgstr ""
 
-#: src/config.c:3143
+#: src/config.c:3142
 #, c-format
 msgid ""
 "Warning: unable to determine what to do with\n"
@@ -377,13 +377,13 @@ msgid ""
 "Will ignore and continue...\n"
 msgstr ""
 
-#: src/config.c:3150
+#: src/config.c:3149
 msgid ""
 "Warning: Configuration appears to have ended before we were\n"
 "Done loading an WindowMatch block.  Outcome is likely not good.\n"
 msgstr ""
 
-#: src/config.c:3199
+#: src/config.c:3198
 #, c-format
 msgid ""
 "Help! Cannot find epp!\n"
@@ -394,23 +394,23 @@ msgid ""
 "it not being able to be executed by you.\n"
 msgstr ""
 
-#: src/config.c:3206
+#: src/config.c:3205
 msgid "error"
 msgstr ""
 
-#: src/config.c:3407
+#: src/config.c:3405
 msgid "Theme versioning ERROR"
 msgstr ""
 
-#: src/config.c:3408 src/config.c:3442
+#: src/config.c:3406 src/config.c:3440
 msgid "Restart with Defaults"
 msgstr ""
 
-#: src/config.c:3409 src/config.c:3443
+#: src/config.c:3407 src/config.c:3441
 msgid "Abort and Exit"
 msgstr ""
 
-#: src/config.c:3410
+#: src/config.c:3408
 #, c-format
 msgid ""
 "ERROR:\n"
@@ -431,11 +431,11 @@ msgid ""
 "features in Enlightenment in new versions.\n"
 msgstr ""
 
-#: src/config.c:3441
+#: src/config.c:3439
 msgid "User Config Version ERROR"
 msgstr ""
 
-#: src/config.c:3444
+#: src/config.c:3442
 #, c-format
 msgid ""
 "ERROR:\n"
@@ -452,7 +452,7 @@ msgid ""
 "your liking again safely.\n"
 msgstr ""
 
-#: src/config.c:3658
+#: src/config.c:3656
 #, c-format
 msgid ""
 "WARNING!\n"
@@ -462,7 +462,7 @@ msgid ""
 "filesystem permissions.\n"
 msgstr ""
 
-#: src/config.c:3669
+#: src/config.c:3667
 #, c-format
 msgid ""
 "Enlightenment has just experienced some major problems in\n"
@@ -490,27 +490,27 @@ msgid ""
 "additional information.\n"
 msgstr ""
 
-#: src/config.c:3735
+#: src/config.c:3734
 msgid "Enlightenment Starting..."
 msgstr ""
 
-#: src/config.c:4163
+#: src/config.c:4162
 msgid "Recover system config?"
 msgstr ""
 
-#: src/config.c:4164
+#: src/config.c:4163
 msgid "Yes, Attempt recovery"
 msgstr ""
 
-#: src/config.c:4165
+#: src/config.c:4164
 msgid "Restart and try again"
 msgstr ""
 
-#: src/config.c:4166
+#: src/config.c:4165
 msgid "Quit and give up"
 msgstr ""
 
-#: src/config.c:4168
+#: src/config.c:4167
 msgid ""
 "Enlightenment has encountered parsing errors in your autosaved\n"
 "configuration.\n"
@@ -559,11 +559,11 @@ msgstr ""
 msgid "Attention !!!"
 msgstr ""
 
-#: src/fx.c:253
+#: src/fx.c:254
 msgid "Starting up Ripples FX..."
 msgstr ""
 
-#: src/fx.c:254
+#: src/fx.c:255
 msgid ""
 "\n"
 "You have just started the Ripples Effect.\n"
@@ -577,11 +577,11 @@ msgid ""
 "it off.\n"
 msgstr ""
 
-#: src/fx.c:386 src/fx.c:405
+#: src/fx.c:387 src/fx.c:406
 msgid "Unable to display raindrops"
 msgstr ""
 
-#: src/fx.c:387
+#: src/fx.c:388
 msgid ""
 "\n"
 "Enlightenment is unable to display raindrops on this\n"
@@ -599,14 +599,14 @@ msgid ""
 "\n"
 msgstr ""
 
-#: src/fx.c:406
+#: src/fx.c:407
 msgid ""
 "\n"
 "Enlightenment is unable to display raindrops on this\n"
 "display because shared pixmaps are not available on this\n"
 "X-Server.\n"
 "\n"
-"This may be due to either the X-Server not implimenting\n"
+"This may be due to either the X-Server not implementing\n"
 "shared pixmaps, or shared pixmaps being disabled in\n"
 "Imlib's configuration.\n"
 "\n"
@@ -616,11 +616,11 @@ msgid ""
 "\n"
 msgstr ""
 
-#: src/fx.c:422
+#: src/fx.c:423
 msgid "Starting up Raindrops FX..."
 msgstr ""
 
-#: src/fx.c:423
+#: src/fx.c:424
 msgid ""
 "\n"
 "You have just started the Raindrops Effect.\n"
@@ -634,11 +634,11 @@ msgid ""
 "it off.\n"
 msgstr ""
 
-#: src/fx.c:717
+#: src/fx.c:718
 msgid "Starting up Waves FX..."
 msgstr ""
 
-#: src/fx.c:718
+#: src/fx.c:719
 msgid ""
 "\n"
 "You have just started the Waves Effect.\n"
@@ -652,11 +652,11 @@ msgid ""
 "it off.\n"
 msgstr ""
 
-#: src/fx.c:883
+#: src/fx.c:884
 msgid "Starting up imagespinners FX..."
 msgstr ""
 
-#: src/fx.c:884
+#: src/fx.c:885
 msgid ""
 "\n"
 "You have just started the imagespinners Effect.\n"
@@ -709,7 +709,7 @@ msgstr ""
 msgid "Window Group Selection"
 msgstr ""
 
-#: src/groups.c:695 src/pager.c:1277 src/settings.c:314 src/settings.c:543
+#: src/groups.c:695 src/pager.c:1278 src/settings.c:314 src/settings.c:543
 #: src/settings.c:708 src/settings.c:885 src/settings.c:1109
 #: src/settings.c:1213 src/settings.c:1314 src/settings.c:1421
 #: src/settings.c:1483 src/settings.c:1572 src/settings.c:1970
@@ -800,7 +800,7 @@ msgid ""
 "It is possible that this MAY not properly edit your files.\n"
 msgstr ""
 
-#: src/handlers.c:234 src/session.c:1159
+#: src/handlers.c:234 src/session.c:1166
 msgid "Are you sure?"
 msgstr ""
 
@@ -817,7 +817,7 @@ msgid ""
 "Are you absolutely sure you want to have Enlightenment\n"
 "edit your startup files for you?\n"
 "\n"
-"If your startup files are highly customised this may not\n"
+"If your startup files are highly customized this may not\n"
 "work.\n"
 "\n"
 "Are you ABSOLUTELY sure?\n"
@@ -839,32 +839,32 @@ msgstr ""
 msgid "Create New Iconbox"
 msgstr ""
 
-#: src/ipc.c:4622
+#: src/ipc.c:4705
 msgid "Enlightenment IPC Commands Help"
 msgstr ""
 
-#: src/ipc.c:4626 src/ipc.c:4665
+#: src/ipc.c:4709 src/ipc.c:4748
 msgid ""
 "\n"
 "commands currently available:\n"
 msgstr ""
 
-#: src/ipc.c:4628
+#: src/ipc.c:4711
 msgid ""
 "use \"help all\" for descriptions of each command\n"
 "use \"help <command>\" for an individual description\n"
 "\n"
 msgstr ""
 
-#: src/ipc.c:4666
+#: src/ipc.c:4749
 msgid "use \"help <command>\" for an individual description\n"
 msgstr ""
 
-#: src/ipc.c:4668
+#: src/ipc.c:4751
 msgid "<command> : <description>\n"
 msgstr ""
 
-#: src/ipc.c:4775
+#: src/ipc.c:4858
 #, c-format
 msgid ""
 "Enlightenment Version : %s\n"
@@ -938,7 +938,7 @@ msgid ""
 "\n"
 "This is definitely a bug. Please report it.\n"
 "\n"
-"The error occured at %s, line %d.\n"
+"The error occurred at %s, line %d.\n"
 msgstr ""
 
 #: src/memory.c:301
@@ -975,7 +975,7 @@ msgid ""
 "\n"
 "This is definitely a bug. Please report it.\n"
 "\n"
-"The error occured at %s, line %d.\n"
+"The error occurred at %s, line %d.\n"
 msgstr ""
 
 #: src/memory.c:396
@@ -997,32 +997,32 @@ msgid ""
 "It is safe to ignore this error and continue running Enlightenment.\n"
 "\n"
 "The pointer value was %x.\n"
-"The error occured at %s, line %d.\n"
+"The error occurred at %s, line %d.\n"
 msgstr ""
 
-#: src/menus.c:1919
+#: src/menus.c:1918
 msgid "Go to this Desktop"
 msgstr ""
 
-#: src/menus.c:1936
+#: src/menus.c:1935
 #, c-format
 msgid "Desktop %i"
 msgstr ""
 
-#: src/menus.c:1999
+#: src/menus.c:1998
 msgid "Show/Hide this group"
 msgstr ""
 
-#: src/menus.c:2003
+#: src/menus.c:2002
 msgid "Iconify this group"
 msgstr ""
 
-#: src/menus.c:2016
+#: src/menus.c:2015
 #, c-format
 msgid "Group %i"
 msgstr ""
 
-#: src/misc.c:60
+#: src/misc.c:61
 #, c-format
 msgid ""
 "!!!!!!!! ERROR ERROR ERROR ERROR !!!!!!!!\n"
@@ -1039,7 +1039,7 @@ msgid ""
 "an error in installing Enlightenment.\n"
 msgstr ""
 
-#: src/misc.c:76
+#: src/misc.c:77
 #, c-format
 msgid ""
 "!!!!!!!! ERROR ERROR ERROR ERROR !!!!!!!!\n"
@@ -1052,7 +1052,7 @@ msgid ""
 "correctly.\n"
 msgstr ""
 
-#: src/misc.c:98
+#: src/misc.c:99
 msgid ""
 "!!!!!!!! ERROR ERROR ERROR ERROR !!!!!!!!\n"
 "\n"
@@ -1067,7 +1067,7 @@ msgid ""
 "an error in installing Enlightenment.\n"
 msgstr ""
 
-#: src/misc.c:122
+#: src/misc.c:123
 msgid ""
 "!!!!!!!! ERROR ERROR ERROR ERROR !!!!!!!!\n"
 "\n"
@@ -1081,63 +1081,63 @@ msgid ""
 "theme.\n"
 msgstr ""
 
-#: src/misc.c:422
+#: src/misc.c:423
 msgid "Theme does not contain a borders.cfg file\n"
 msgstr ""
 
-#: src/misc.c:428
+#: src/misc.c:429
 msgid "Theme does not contain a buttons.cfg file\n"
 msgstr ""
 
-#: src/misc.c:435
+#: src/misc.c:436
 msgid "Theme does not contain a colormodifiers.cfg file\n"
 msgstr ""
 
-#: src/misc.c:441
+#: src/misc.c:442
 msgid "Theme does not contain a cursors.cfg file\n"
 msgstr ""
 
-#: src/misc.c:447
+#: src/misc.c:448
 msgid "Theme does not contain a desktops.cfg file\n"
 msgstr ""
 
-#: src/misc.c:453
+#: src/misc.c:454
 msgid "Theme does not contain a imageclasses.cfg file\n"
 msgstr ""
 
-#: src/misc.c:459
+#: src/misc.c:460
 msgid "Theme does not contain a init.cfg file\n"
 msgstr ""
 
-#: src/misc.c:465
+#: src/misc.c:466
 msgid "Theme does not contain a menustyles.cfg file\n"
 msgstr ""
 
-#: src/misc.c:471
+#: src/misc.c:472
 msgid "Theme does not contain a slideouts.cfg file\n"
 msgstr ""
 
-#: src/misc.c:478
+#: src/misc.c:479
 msgid "Theme does not contain a sound.cfg file\n"
 msgstr ""
 
-#: src/misc.c:485
+#: src/misc.c:486
 msgid "Theme does not contain a tooltips.cfg file\n"
 msgstr ""
 
-#: src/misc.c:492
+#: src/misc.c:493
 msgid "Theme does not contain a windowmatches.cfg file\n"
 msgstr ""
 
-#: src/misc.c:498
+#: src/misc.c:499
 msgid "Theme contains a menus.cfg file\n"
 msgstr ""
 
-#: src/misc.c:504
+#: src/misc.c:505
 msgid "Theme contains a control.cfg file\n"
 msgstr ""
 
-#: src/misc.c:510
+#: src/misc.c:511
 msgid "Theme contains a keybindings.cfg file\n"
 msgstr ""
 
@@ -1161,18 +1161,18 @@ msgstr ""
 msgid "Unknown Module Error.\n"
 msgstr ""
 
-#: src/pager.c:527 src/pager.c:543 src/pager.c:558
+#: src/pager.c:528 src/pager.c:544 src/pager.c:559
 msgid "Warning!"
 msgstr ""
 
-#: src/pager.c:528
+#: src/pager.c:529
 msgid ""
 "\n"
 "You seem to have an X Server capable of Shared Memory\n"
 "but it is incapable of doing ZPixmap Shared pixmaps\n"
 "(The server does not claim to be able to do them).\n"
 "\n"
-"The pager in enlightenment will run slowly in snapshot\n"
+"The pager in Enlightenment will run slowly in snapshot\n"
 "mode if you continue to use that mode of the pager\n"
 "under these conditions.\n"
 "\n"
@@ -1181,7 +1181,7 @@ msgid ""
 "\n"
 msgstr ""
 
-#: src/pager.c:544
+#: src/pager.c:545
 msgid ""
 "\n"
 "Your X Server is capable of doing Shared Memory but you do\n"
@@ -1193,7 +1193,7 @@ msgid ""
 "\n"
 msgstr ""
 
-#: src/pager.c:559
+#: src/pager.c:560
 msgid ""
 "\n"
 "You seem to be running Enlightenment over a network Connection\n"
@@ -1209,61 +1209,61 @@ msgid ""
 "\n"
 msgstr ""
 
-#: src/pager.c:1268
+#: src/pager.c:1269
 msgid "Window Options"
 msgstr ""
 
-#: src/pager.c:1274
+#: src/pager.c:1275
 msgid "Iconify"
 msgstr ""
 
-#: src/pager.c:1281
+#: src/pager.c:1282
 msgid "Annihilate"
 msgstr ""
 
-#: src/pager.c:1286
+#: src/pager.c:1287
 msgid "Stick / Unstick"
 msgstr ""
 
-#: src/pager.c:1299
+#: src/pager.c:1300
 msgid "Desktop Options"
 msgstr ""
 
-#: src/pager.c:1305
+#: src/pager.c:1306
 msgid "Pager Settings..."
 msgstr ""
 
-#: src/pager.c:1310
+#: src/pager.c:1311
 msgid "Snapshotting On"
 msgstr ""
 
-#: src/pager.c:1315
+#: src/pager.c:1316
 msgid "Snapshotting Off"
 msgstr ""
 
-#: src/pager.c:1322
+#: src/pager.c:1323
 msgid "High Quality On"
 msgstr ""
 
-#: src/pager.c:1327
+#: src/pager.c:1328
 msgid "High Quality Off"
 msgstr ""
 
-#: src/session.c:245
+#: src/session.c:246
 msgid ""
 "There was an error writing the clients session save file.\n"
 "You may have run out of disk space, not have permission\n"
 "to write to your filing system or other similar problems.\n"
 msgstr ""
 
-#: src/session.c:437
+#: src/session.c:438
 msgid ""
 "There was an error saving your autosave data - filing\n"
 "system problems.\n"
 msgstr ""
 
 #. Less of the hope.... E survives
-#: src/session.c:1019
+#: src/session.c:1026
 msgid ""
 "ERROR!\n"
 "\n"
@@ -1278,7 +1278,7 @@ msgid ""
 "... I hope.\n"
 msgstr ""
 
-#: src/session.c:1161
+#: src/session.c:1168
 msgid ""
 "\n"
 "\n"
@@ -1287,11 +1287,11 @@ msgid ""
 "\n"
 msgstr ""
 
-#: src/session.c:1165
+#: src/session.c:1172
 msgid "  Yes, Log Out  "
 msgstr ""
 
-#: src/session.c:1166
+#: src/session.c:1173
 msgid "  No  "
 msgstr ""
 
@@ -1933,16 +1933,16 @@ msgid ""
 msgstr ""
 
 #: src/setup.c:328
-msgid "Imlib initialisation error"
+msgid "Imlib initialization error"
 msgstr ""
 
 #: src/setup.c:330
 msgid ""
 "FATAL ERROR:\n"
 "\n"
-"Enlightenment is unable to initialise Imlib.\n"
+"Enlightenment is unable to initialize Imlib.\n"
 "\n"
-"This is unusual. Unable to contiune.\n"
+"This is unusual. Unable to continue.\n"
 "Exiting.\n"
 msgstr ""
 
@@ -1950,9 +1950,9 @@ msgstr ""
 msgid ""
 "FATAL ERROR:\n"
 "\n"
-"Enlightenment is unable to initialise Fnlib.\n"
+"Enlightenment is unable to initialize Fnlib.\n"
 "\n"
-"This is unusual. Unable to contiune.\n"
+"This is unusual. Unable to continue.\n"
 "Exiting.\n"
 msgstr ""
 
@@ -1975,7 +1975,7 @@ msgid ""
 "access to, nor have heard of.\n"
 msgstr ""
 
-#: src/setup.c:623
+#: src/setup.c:624
 #, c-format
 msgid ""
 "The directory %s is apparently not a directory\n"
@@ -1983,7 +1983,7 @@ msgid ""
 "Please remove this file\n"
 msgstr ""
 
-#: src/setup.c:630
+#: src/setup.c:631
 #, c-format
 msgid ""
 "Do not have execute access to %s\n"
@@ -1992,7 +1992,7 @@ msgid ""
 "directory and take steps to rectify this.\n"
 msgstr ""
 
-#: src/setup.c:638
+#: src/setup.c:639
 #, c-format
 msgid ""
 "Do not have read access to %s\n"
@@ -2001,7 +2001,7 @@ msgid ""
 "directory and take steps to rectify this.\n"
 msgstr ""
 
-#: src/setup.c:646
+#: src/setup.c:647
 #, c-format
 msgid ""
 "Do not have write access to %s\n"
@@ -2069,12 +2069,12 @@ msgid ""
 msgstr ""
 
 #: src/sound.c:262
-msgid "Error initialising sound"
+msgid "Error initializing sound"
 msgstr ""
 
 #: src/sound.c:265
 msgid ""
-"Audio was enabled for Enlightenemnt but there was an error\n"
+"Audio was enabled for Enlightenment but there was an error\n"
 "communicating with the audio server (Esound). Audio will\n"
 "now be disabled.\n"
 msgstr ""

@@ -106,7 +106,6 @@ msgid ""
 "  und bleibt bestehen, bis sie gelöscht wird oder bis  \n"
 "  eine neue Gruppe gebildet wird.  \n"
 "\n"
-"  Pick another group that the window will belong to here:  \n"
 "  Bitte wählen Sie hier eine andere Gruppe, zu der das Fenster gehören soll:  \n"
 "\n"
 msgstr ""
@@ -435,13 +434,13 @@ msgstr ""
 #: src/config.c:3410
 #, c-format
 msgid ""
-"ERROR:\n"
+"FEHLER:\n"
 "\n"
 "Die Konfiguration für das von Ihnen benutze Theme\n"
 "ist inkompatibel. Die Versionsnummer ist %i, benötigt\n"
 "wird aber %i.\n"
 "\n"
-"Bitte benachrichtigen Sie den Author oder Maintainer\n"
+"Bitte benachrichtigen Sie den Autor oder Maintainer\n"
 "des Themes und teilen Sie ihnen mit, daß sie die\n"
 "Versionsnummer auf den neusten Stand bringen müssen,\n"
 "damit das Theme mit dieser Version von Enlightenment\n"
@@ -489,7 +488,7 @@ msgstr ""
 msgid ""
 "Enlightenment ist soeben bei dem Versuch, das von Ihnen\n"
 "angegebene Theme oder die Standardeinstellungen zu laden,\n"
-"auf schwerwiegende Probleme gestossen. Der angegebene Pfad lautet:\n"
+"auf schwerwiegende Probleme gestoßen. Der angegebene Pfad lautet:\n"
 "%s/config/\n"
 "Dies verhindert das Laden sämtlicher Konfigurationsdaten.\n"
 "Daher wird Enlightenment quasi unkonfiguriert starten. Das\n"
@@ -502,7 +501,7 @@ msgid ""
 "Das Problem ist schwerwiegend und sollte schnellstmöglich vom\n"
 "Systemadministrator oder Distributor behoben werden.\n"
 "Falls Sie Ihr System selbst administrieren, konsultieren Sie\n"
-"bitte die mitgelieferte Dokumentation fuer weitere Hinweise.\n"
+"bitte die mitgelieferte Dokumentation für weitere Hinweise.\n"
 msgstr ""
 
 #: src/config.c:3735
@@ -527,7 +526,7 @@ msgstr ""
 
 #: src/config.c:4168
 msgid ""
-"Enlightenment ist auf Fehler in der atumatisch gesicherten\n"
+"Enlightenment ist auf Fehler in der automatisch gesicherten\n"
 "Konfiguration gestossen.\n"
 "\n"
 "Dies kann an Problemen des Dateisystems, kleineren Programmfehlern\n"
@@ -580,7 +579,7 @@ msgstr ""
 #: src/fx.c:254
 msgid ""
 "\n"
-"Sie haben soeben den \"Ripples\"-Effect gestartet.\n"
+"Sie haben soeben den \"Ripples\"-Effekt gestartet.\n"
 "\n"
 "Falls Ihr Bildschirmhintergrund nicht einfarbig ist, sehen Sie\n"
 "am unteren Rand Ihres Bildschirms reflektierende Wasserwellen\n"
@@ -604,8 +603,8 @@ msgid ""
 "inkompatibler X-Server, zu wenig SHM ID's im System oder\n"
 "ausgeschaltete unterstützung von Shared Memory in Imlib.\n"
 "\n"
-"Sie können dies korrigieren, indem Sie entweden \"imlib_config\"\n"
-"ausführen, oder die systemweite Imlib-Konfiguartionsdatei\n"
+"Sie können dies korrigieren, indem Sie entweder \"imlib_config\"\n"
+"ausführen, oder die systemweite Imlib-Konfigurationsdatei\n"
 "(z.B. /etc/imrc oder /usr/etc/imrc) nach ~/.imrc kopieren\n"
 "und dort die Shared Memory-Option aktivieren.\n"
 msgstr ""
@@ -620,7 +619,7 @@ msgid ""
 "von Shared Pixmaps im X-Server, oder Shared Pixmaps sind in der\n"
 "Konfiguration von Imlib ausgeschaltet worden.\n"
 "\n"
-"Sie können dies korrigieren, indem Sie entweden \"imlib_config\"\n"
+"Sie können dies korrigieren, indem Sie entweder \"imlib_config\"\n"
 "ausführen, oder die systemweite Imlib-Konfiguartionsdatei\n"
 "(z.B. /etc/imrc oder /usr/etc/imrc) nach ~/.imrc kopieren\n"
 "und dort die Shared Memory-Option aktivieren.\n"
@@ -697,7 +696,7 @@ msgstr ""
 #: src/groups.c:613
 msgid ""
 "\n"
-"  Momentain existieren keinerlei Gruppen oder  \n"
+"  Momentan existieren keinerlei Gruppen oder  \n"
 "  dieses Fenster gehört zu allen existierenden Gruppen.  \n"
 "  Sie müssen zuerst eine weitere Gruppe bilden.  \n"
 "\n"
@@ -721,7 +720,7 @@ msgstr ""
 #: src/settings.c:1483 src/settings.c:1572 src/settings.c:1970
 #: src/settings.c:3363 src/settings.c:3714 src/settings.c:4013
 #: src/settings.c:4151
-msgid "Schliessen"
+msgid "Schließen"
 msgstr ""
 
 #: src/handlers.c:59
@@ -754,7 +753,7 @@ msgstr ""
 
 #: src/handlers.c:112
 msgid ""
-"Enlightenment hat eine Speicherschutzverletzung versacht.\n"
+"Enlightenment hat eine Speicherschutzverletzung verursacht.\n"
 "\n"
 "Das bedeutet, daß Enlightenment oder benötigte Bibliotheken\n"
 "auf Bereiche Ihres Systemspeichers zugegriffen haben, zu dem sie\n"
@@ -772,7 +771,7 @@ msgid ""
 "\n"
 "Es wird dringend empfohlen, daß Sie Ihre Hardware- und Betriebs-\n"
 "systemeinstellungen überprüfen. Es ist höchst unwahrscheinlich, daß\n"
-"Busfehler auf dunktionierender Hardware auftreten.\n"
+"Busfehler auf funktionierender Hardware auftreten.\n"
 msgstr ""
 
 #: src/handlers.c:215
@@ -796,7 +795,7 @@ msgid ""
 "\n"
 "Falls Sie Ihre Benutzerstartdateien nicht editiert haben,\n"
 "kann Enlightenment das jetzt für Sie erledigen. Beim nächsten\n"
-"Enloggen in das System wird dann Enlightenment ausgeführt werden.\n"
+"Einloggen in das System wird dann Enlightenment ausgeführt werden.\n"
 "\n"
 "Falls Sie dies wünschen, klicken Sie \"OK\", andernfalls klicken\n"
 "Sie \"Abbrechen\" um den Vorgang abzubrechen und die Dateien\n"
@@ -825,7 +824,7 @@ msgid ""
 "Sind Sie wirklich sicher, daß Enlightenment Ihre\n"
 "Startdateien für Sie verändern soll?\n"
 "\n"
-"Falls Ihre Startdateien stark angepasst sind, kann der\n"
+"Falls Ihre Startdateien stark angepaßt sind, kann der\n"
 "Vorgang fehlschlagen.\n"
 "\n"
 "Sind Sie WIRKLICH sicher\n"
@@ -840,7 +839,7 @@ msgid "Einstellungen für Diese Iconbox..."
 msgstr "Einstellungen für Diese Iconbox..."
 
 #: src/iconify.c:2434
-msgid "Iconbox schliessen"
+msgid "Iconbox schließen"
 msgstr ""
 
 #: src/iconify.c:2437
@@ -881,12 +880,12 @@ msgstr ""
 
 #. Set up all the text bits that belong on the GSOD
 #: src/main.c:89
-msgid "Enlightenment Mittelungs-Dialog"
+msgid "Enlightenment Mitteilungs-Dialog"
 msgstr ""
 
 #: src/main.c:90 src/memory.c:196 src/memory.c:278 src/memory.c:298
 #: src/memory.c:380
-msgid "Ignoriern"
+msgid "Ignorieren"
 msgstr ""
 
 #: src/main.c:91 src/memory.c:197 src/memory.c:278 src/memory.c:299
@@ -918,13 +917,13 @@ msgid ""
 "\n"
 "Speicherreservierung von %i Bytes (%3.0f Kb oder %3.1f Mb) war nicht erfolgreich.\n"
 "\n"
-"Dies ist enweder ein Programmfehler, der das Reservieren von\n"
+"Dies ist entweder ein Programmfehler, der das Reservieren von\n"
 "enormen Mengen von Speicher verursacht, oder Ihr System\n"
 "verfügt über zuwenig Speicherresourcen und kann die Anfrage\n"
 "nicht erfüllen.\n"
 "\n"
-"Falls Ihr System über wenig Soeicher verfügt, raten wir zum\n"
-"Kauf von weiterm Speicher, vergrößerten Swap-Partitionen oder\n"
+"Falls Ihr System über wenig Speicher verfügt, raten wir zum\n"
+"Kauf von weiterem Speicher, vergrößerten Swap-Partitionen oder\n"
 "zur Rekonfigurierung von Enlightenment derart, daß weniger\n"
 "speicherintensive Features benutzt werden.\n"
 "\n"
@@ -939,7 +938,7 @@ msgstr ""
 #: src/memory.c:281
 #, c-format
 msgid ""
-"WARNING!!!!!!\n"
+"WARNUNG!!!!!!\n"
 "\n"
 "Reallokation von %i Bytes (%3.0f Kb oder %f3.1 Mb)\n"
 "für Pointer %x versucht Speicher für einen Speicherbereich zu\n"
@@ -963,8 +962,8 @@ msgid ""
 "verfügt über zuwenig Speicherresourcen und kann die Anfrage\n"
 "nicht erfüllen.\n"
 "\n"
-"Falls Ihr System über wenig Soeicher verfügt, raten wir zum\n"
-"Kauf von weiterm Speicher, vergrößerten Swap-Partitionen oder\n"
+"Falls Ihr System über wenig Speicher verfügt, raten wir zum\n"
+"Kauf von weiterem Speicher, vergrößerten Swap-Partitionen oder\n"
 "zur Rekonfigurierung von Enlightenment derart, daß weniger\n"
 "speicherintensive Features benutzt werden.\n"
 "\n"
@@ -1212,7 +1211,7 @@ msgid ""
 "Dies bedeutet, daß die Pager in Enlightenment langsam arbeiten\n"
 "und mehr Systemressourcen verbrauchen.\n"
 "\n"
-"Um die Geschwindigkeite zu erhöhen, aktivieren Sie entweder MIT-SHM\n"
+"Um die Geschwindigkeit zu erhöhen, aktivieren Sie entweder MIT-SHM\n"
 "Shared Memory in Ihrer Imlib-Konfiguration (sofern dort deaktiviert),\n"
 "oder schalten Sie den Snapshot-Modus der Pager ab.\n"
 "\n"
@@ -1494,7 +1493,7 @@ msgid ""
 msgstr ""
 
 #: src/settings.c:1003
-msgid "Einstellungen für virtuelle Deskops"
+msgid "Einstellungen für virtuelle Desktops"
 msgstr ""
 
 #: src/settings.c:1029
@@ -1530,7 +1529,7 @@ msgid "Einstellungen für Autoraise"
 msgstr ""
 
 #: src/settings.c:1287
-msgid "Fenster automatishc nach oben bringen"
+msgid "Fenster automatisch nach oben bringen"
 msgstr ""
 
 #: src/settings.c:1295
@@ -1913,16 +1912,17 @@ msgstr ""
 
 #: src/setup.c:222
 msgid ""
-"Enlightenment cannot connect to the display nominated by\n"
-"your shell's DISPLAY environment variable. You may set this\n"
-"variable to indicate which display name Enlightenment is to\n"
-"connect to. It may be that you do not have an Xserver already\n"
-"running to serve that Display connection, or that you do not\n"
-"have permission to connect to that display. Please make sure\n"
-"all is correct before trying again. Run an Xserver by running\n"
-"xdm or startx first, or contact your local system\n"
-"administrator, or Xserver vendor, or read the X, xdm and\n"
-"startx manual pages before proceeding.\n"
+"Enlightenment kann keine Verbindung zu dem durch die DISPLAY-\n"
+"Variable definierten Display herstellen. Diese Variable dient\n"
+"dazu, Enlightenment mitzuteilen, zu welchem Display Enlightenment\n"
+"eine Verbindung herstellen soll. Vielleicht läuft momentan noch \n"
+"kein X-Server im System, der diesen Dienst bereitstellen kann, oder\n"
+"Sie besitzen nicht die nötigen Rechte, um die Verbindung herzustellen.\n"
+"Bitte stellen Sie sicher, daß diese Probleme korrigiert sind, vor\n"
+"einem erneuten Versuch. Starten Sie einen X-Server durch Aufruf von\n"
+"xdm oder startx, fragen Sie Ihren Systemadministrator oder den\n"
+"Hersteller des X-Servers um Rat, oder lesen Sie die Manpages zu X, xdm\n"
+"und startx.\n"
 msgstr ""
 
 #: src/setup.c:294 src/setup.c:341
@@ -1931,104 +1931,107 @@ msgstr ""
 
 #: src/setup.c:296
 msgid ""
-"FATAL ERROR:\n"
+"Unübergehbarer Fehler:\n"
 "\n"
-"This Xserver does not support the Shape extension.\n"
-"This is required for Enlightenment to run.\n"
+"Dieser X-Server unterstützt nicht die Shape-Erweiterung.\n"
+"Diese wird zur Ausführung von Enlightenment benötigt.\n"
 "\n"
-"Your Xserver probably is too old or mis-configured.\n"
+"Ihr X-Server ist wahrscheinlich zu alt oder schlecht konfiguriert.\n"
 "\n"
-"Exiting.\n"
+"Abbruch.\n"
 msgstr ""
 
 #: src/setup.c:328
-msgid "Imlib initialisation error"
+msgid "Fehler bei der Initialisierung von Imlib"
 msgstr ""
 
 #: src/setup.c:330
 msgid ""
-"FATAL ERROR:\n"
+"Unübergehbarer Fehler:\n"
 "\n"
-"Enlightenment is unable to initialise Imlib.\n"
+"Enlightenment kann Imlib nicht initialisieren.\n"
 "\n"
-"This is unusual. Unable to contiune.\n"
-"Exiting.\n"
+"Dies ist ungewöhnlich und verhindert die Fortführung\n"
+"von Enlightenment.\n"
+"Abbruch.\n"
 msgstr ""
 
 #: src/setup.c:343
 msgid ""
-"FATAL ERROR:\n"
+"Unübergehbarer Fehler:\n"
 "\n"
-"Enlightenment is unable to initialise Fnlib.\n"
+"Enlightenment kann Fnlib nicht initialisieren.\n"
 "\n"
-"This is unusual. Unable to contiune.\n"
-"Exiting.\n"
+"Dies ist ungewöhnlich und verhindert die Fortführung\n"
+"von Enlightenment.\n"
+"Abbruch.\n"
 msgstr ""
 
 #: src/setup.c:404
-msgid "X server version error"
+msgid "Fehlerhafte Version des X-Servers"
 msgstr ""
 
 #: src/setup.c:405
-msgid "Ignore this error"
+msgid "Bitte ignorieren Sie diesen Fehler"
 msgstr ""
 
 #: src/setup.c:407
 #, c-format
 msgid ""
-"WARNING:\n"
-"This is not an X11 Xserver. It infact talks the X%i protocol.\n"
-"This may mean Enlightenment will either not function, or\n"
-"function incorrectly. If it is later than X11, then your\n"
-"server is one the author of Enlightenment neither have\n"
-"access to, nor have heard of.\n"
+"WARNUNG:\n"
+"Das ist kein X11 X-Server. Tatsächlich beherrscht er das\n"
+"X%i-Protokoll. Das kann bedeuten, daß Enlightenment entweder\n"
+"gar nicht oder zumindest eingeschränkt funktionieren wird.\n"
+"Falls die Version neuer als X11 ist, handelt es sich um eine\n"
+"Version die den Autoren nicht zur Verfügung stand oder von\n"
+"der sie noch nie gehört haben.\n"
 msgstr ""
 
 #: src/setup.c:623
 #, c-format
 msgid ""
-"The directory %s is apparently not a directory\n"
-"This is a fatal condition.\n"
-"Please remove this file\n"
+"Das Verzeichnis %s ist anscheinend kein Verzeichnis.\n"
+"Dieser Fehler ist unübergehbar.\n"
+"Bitte löschen Sie diese Datei.\n"
 msgstr ""
 
 #: src/setup.c:630
 #, c-format
 msgid ""
-"Do not have execute access to %s\n"
-"This is a fatal condition.\n"
-"Please check the ownership and permissions of this\n"
-"directory and take steps to rectify this.\n"
+"Es liegt keine Ausführberechtigung für\n"
+"%s vor. Dieser Fehler ist unübergehbar.\n"
+"Bitte überprüfen Sie die Zugriffsrechte auf dieses\n"
+"Verzeichnis und ergreifen Sie entsprechende Maßnahmen.\n"
 msgstr ""
 
 #: src/setup.c:638
 #, c-format
 msgid ""
-"Do not have read access to %s\n"
-"This is a fatal condition.\n"
-"Please check the ownership and permissions of this\n"
-"directory and take steps to rectify this.\n"
+"Es liegt keine Leseberechtigung für\n"
+"%s vor. Dieser Fehler ist unübergehbar.\n"
+"Bitte überprüfen Sie die Zugriffsrechte auf dieses\n"
+"Verzeichnis und ergreifen Sie entsprechende Maßnahmen.\n"
 msgstr ""
 
 #: src/setup.c:646
 #, c-format
 msgid ""
-"Do not have write access to %s\n"
-"This is a fatal condition.\n"
-"Please check the ownership and permissions of this\n"
-"directory and take steps to rectify this.\n"
+"Es liegt keine Schreibberechtigung für\n"
+"%s vor. Dieser Fehler ist unübergehbar.\n"
+"Bitte überprüfen Sie die Zugriffsrechte auf dieses\n"
+"Verzeichnis und ergreifen Sie entsprechende Maßnahmen.\n"
 msgstr ""
 
 #: src/snaps.c:405
-msgid "Location"
+msgid "Ort"
 msgstr ""
 
 #: src/snaps.c:413
-msgid "Border style"
+msgid "Rahmenart"
 msgstr ""
 
 #: src/snaps.c:421
-msgid "Size"
+msgid "Größe"
 msgstr ""
 
 #: src/snaps.c:429
@@ -2036,84 +2039,85 @@ msgid "Desktop"
 msgstr ""
 
 #: src/snaps.c:437
-msgid "Shaded state"
+msgid "Auf-/Abrollzustand"
 msgstr ""
 
 #: src/snaps.c:445
-msgid "Sticky state"
+msgid "Anpinnzustand"
 msgstr ""
 
 #: src/snaps.c:453
-msgid "Stacking layer"
+msgid "Position im Fensterstapel"
 msgstr ""
 
 #: src/snaps.c:474
-msgid "Restart application on login"
+msgid "Anwendung beim Login neu starten"
 msgstr ""
 
 #: src/snaps.c:498
-msgid "Remember this window's group(s)"
+msgid "Speichern der Gruppe(n) dieses Fensters"
 msgstr ""
 
 #: src/snaps.c:511
-msgid "Cancel"
+msgid "Abbrechen"
 msgstr ""
 
 #: src/snaps.c:840
-msgid "Error saving snaps file\n"
+msgid "Fehler beim Abspeichern der Snapshotdatei\n"
 msgstr ""
 
 #: src/sound.c:53
-msgid "Error finding sound file"
+msgid "Fehler beim Auffinden der Audiodatei"
 msgstr ""
 
 #: src/sound.c:55
 #, c-format
 msgid ""
-"Warning!  Enlightenment was unable to load the\n"
-"following sound file:\n"
+"Warnung! Enlightenment konnte folgende Audio-\n"
+"datei nicht laden:\n"
 "%s\n"
-"Enlightenment will continue to operate, but you\n"
-"may wish to check your configuration settings.\n"
+"Enlightenment wird trotzdem arbeiten, aber überprüfen\n"
+"Sie gegebenenfalls Ihre Einstellungen.\n"
 msgstr ""
 
 #: src/sound.c:262
-msgid "Error initialising sound"
+msgid "Fehler bei der Audio-Initialisierung"
 msgstr ""
 
 #: src/sound.c:265
 msgid ""
-"Audio was enabled for Enlightenemnt but there was an error\n"
-"communicating with the audio server (Esound). Audio will\n"
-"now be disabled.\n"
+"Audioausgabe ist in Enlightenment aktiviert, aber bei der\n"
+"Kommunikation mit dem Audioserver (EsounD) ist ein Fehler\n"
+"aufgetreten. Die Audioausgabe wird jetzt deaktiviert.\n"
 msgstr ""
 
 #: src/theme.c:293
-msgid "Unknown\n"
+msgid "Unbekannt\n"
 msgstr ""
 
 #: src/theme.c:316 src/theme.c:328
-msgid "Theme file/directory does not exist\n"
+msgid "Datei/Verzeichnis des Themes existiert nicht\n"
 msgstr ""
 
 #: src/theme.c:348
 #, c-format
 msgid ""
-"The theme:\n"
+"Das Theme:\n"
 "%s\n"
-"Is a badly formed theme package and is thus not being used.\n"
-"Enlightenment has fallen back to using the DEFAULT theme.\n"
+"ist in einem inkorrekten Archivformat komprimiert worden\n"
+"und wird daher nicht benutzt. Enlightenment weicht auf die\n"
+"Benutzung des DEFAULT-Themes aus.\n"
 "\n"
-"The reason this theme is bad is:\n"
+"Der Grund für das inkorrekte Format lautet:\n"
 "%s"
 msgstr ""
 
 #: src/theme.c:355
-msgid "Bad Theme"
+msgid "Schlechtes Theme"
 msgstr ""
 
 #: src/update.c:166
-msgid "Enlightenment's message of the day"
+msgid "Enlightenments Spruch des Tages"
 msgstr ""
 
 #~ msgid "iconbox %s"
