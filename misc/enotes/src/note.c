@@ -258,11 +258,20 @@ setup_note(Evas_List ** note, int x, int y, int width, int height,
 	ewl_container_child_append((Ewl_Container *) p->emb, p->pane);
 
 	if(edje_object_data_get(p->edje,EDJE_INFO_SCROLLBARS)!=NULL){
-		ewl_theme_data_str_set(p->pane,"/vscrollbar/file",edjefn);
-		ewl_theme_data_str_set(p->pane,"/hscrollbar/file",edjefn);
+		ewl_theme_data_str_set(p->pane,"/vscrollbar/button_increment/file",edjefn);
+		ewl_theme_data_str_set(p->pane,"/vscrollbar/button_decrement/file",edjefn);
+		ewl_theme_data_str_set(p->pane,"/vscrollbar/vseeker/file",edjefn);
+		ewl_theme_data_str_set(p->pane,"/hscrollbar/button_increment/file",edjefn);
+		ewl_theme_data_str_set(p->pane,"/hscrollbar/button_decrement/file",edjefn);
+		ewl_theme_data_str_set(p->pane,"/hscrollbar/hseeker/file",edjefn);
 
-		ewl_theme_data_str_set(p->pane,"/vscrollbar/group",EDJE_VSCROLLBAR);
-		ewl_theme_data_str_set(p->pane,"/hscrollbar/group",EDJE_HSCROLLBAR);
+		ewl_theme_data_str_set(p->pane,"/vscrollbar/button_increment/group",EDJE_VSCROLLBAR_BTN_INCR);
+		ewl_theme_data_str_set(p->pane,"/vscrollbar/button_decrement/group",EDJE_VSCROLLBAR_BTN_DECR);
+		ewl_theme_data_str_set(p->pane,"/vscrollbar/vseeker/group",EDJE_VSCROLLBAR_SEEKER);
+		ewl_theme_data_str_set(p->pane,"/hscrollbar/button_increment/group",EDJE_HSCROLLBAR_BTN_INCR);
+		ewl_theme_data_str_set(p->pane,"/hscrollbar/button_decrement/group",EDJE_HSCROLLBAR_BTN_DECR);
+		ewl_theme_data_str_set(p->pane,"/hscrollbar/hseeker/group",EDJE_HSCROLLBAR_SEEKER);
+
 	}
 	
 	ewl_widget_show(p->pane);

@@ -37,8 +37,14 @@
 #define EDJE_TEXT_USER "EnoteUser"
 #define EDJE_TEXT_DATE "EnoteDate"
 #define EDJE_TEXT_TITLE "EnoteTitle"
-#define EDJE_VSCROLLBAR "EnoteVScrollbar"
-#define EDJE_HSCROLLBAR "EnoteHScrollbar"
+
+#define EDJE_VSCROLLBAR_BTN_INCR "vscroll-up"
+#define EDJE_VSCROLLBAR_BTN_DECR "vscroll-down"
+#define EDJE_VSCROLLBAR_SEEKER "vtrough"
+
+#define EDJE_HSCROLLBAR_BTN_INCR "hscroll-left"
+#define EDJE_HSCROLLBAR_BTN_DECR "hscroll-right"
+#define EDJE_HSCROLLBAR_SEEKER "htrough"
 
 #define EDJE_INFO_SCROLLBARS "EnoteInfoScrollbars"
 #define EDJE_INFO_FONTNAME "EnoteInfoFontName"
