@@ -24,7 +24,7 @@ my $keep        = '';
 my $deftitle    = '%cCAM - %u';
 my $title       = '';
 my $bp          = $ENV{HOME}."/.cam_bookmarks";
-my $DEBUG       = 0;
+my $DEBUG       = 1;
 
 # check args
 &print_usage_and_exit unless (@ARGV);
@@ -40,7 +40,7 @@ GetOptions('help|?|h'                    => \$help,
            'list|l'                      => \$list,
            'verbose|v'                   => \$verbose,
            'add|a'                       => \$add,
-           'keep-images|k|save-pr0n'    => \$keep,
+           'keep-images|k|save-pr0n'     => \$keep,
            'title|t=s'                   => \$title,
            'debug|d'                     => \$DEBUG,
            'bookmarks|b=s'               => \$bp
@@ -50,106 +50,109 @@ my $key = shift @ARGV;
 
 &print_usage_and_exit if ($help);
 
-if ($verbose)	{
-	$PRE .= " -V ";
+if ($verbose)    {
+    $PRE .= " -V ";
 }
 
 if ($fullscreen) {
       $PRE =~ s/-w//;
-	  $PRE .= " --full-screen --auto-zoom ";
+      $PRE .= " --full-screen --auto-zoom ";
 }
 
 # if requested, add a key/url pair to bookmarks file
-if ($add)	{
+if ($add)    {
     my $mytitle          = '';
-	($url,$ref,$mytitle) = @ARGV;
+    ($url,$ref,$mytitle) = @ARGV;
     die "Bad key syntax\n" unless ($key && $url && $ref);
 
-   open(BMF, ">>$bp") or die "Couldn't open bookmarks file \"$bp\": $!\n";
-	print BMF "$key=$ref,$url \"$mytitle\"\n";
-	close BMF;
-	print "Added URL key \"$key\" = $url, $ref.\n"; # its useful to have this even if you arent debugging --richlowe
-	exit 0;
+    $mytitle="" unless ($mytitle);
+
+    open(BMF, ">>$bp") or die "Couldn't open bookmarks file \"$bp\": $!\n";
+    print BMF "$key=$ref,$url \"$mytitle\"\n";
+    close BMF;
+    print "Added URL key \"$key\" = $url, $ref.\n"; # its useful to have this even if you arent debugging --richlowe
+    exit 0;
 }
 
-if ($keep)	{
-	$PRE .= " -k ";
+if ($keep)    {
+    $PRE .= " -k ";
 }
 
 
 
 # load bookmarks
 open(BMF, "$bp") or die "Couldn't open bookmarks file \"$bp\": $!\n";
-foreach (<BMF>)	{
-	/^(.*?)=(.*)$/;
-	$bms{$1} = $2;
-	print "key=$1, url=$2\n" if ($DEBUG);
+foreach (<BMF>)    {
+    /^(.*?)=(.*)$/;
+    $bms{$1} = $2;
+    print "key=$1, url=$2\n" if ($DEBUG);
 }
 close BMF;
 
 # if requested, dump a list of key/url pair values
 if ($list) {
-	foreach (sort keys %bms)	{
-		my $t = $bms{$_}; 
+    foreach (sort keys %bms)    {
+        my $t = $bms{$_}; 
 
-   		$t =~ s/^(.+?),(.+?)(^ "(.*)"|)?$/$2/;
-		chomp $t;
-		print "$_ = $t, $1, $3\n";
-	}
-	exit 0;
+           $t =~ s/^(.+?),(.+?)(^ "(.*)"|)?$/$2/;
+        chomp $t;
+        print "$_ = $t, $1, $3\n";
+    }
+    exit 0;
 }
 
 # main loop
 MAIN: {
-	do {
-		$url = $bms{$key};
+    do {
+        $title="";
+        $4="";
+        $url = $bms{$key};
         die "Couldn't find URL key \"$key.\"\n" unless($url);
-		
-   		$url =~ s/^(.+?),(.+?)( ".*")?$/$2/;
-		$ref = $1;
+        
+        $url =~ s/^(.+?),(.+?)( "(.*)")?$/$2/;
+        $ref = $1;
    
-         unless ($title) {
-           $title = $3;
-         }
-         unless($title) {
+         if ($4) {
+            $title = $4;
+         } else {
            $title = $deftitle;
          }
 
-		if ($title)
-		{
-			$title =~ s/\%c/$key/g;
-			$title =~ s/\%u/$url/g;
-			$title =~ s/\%r/$ref/g;
-			$title =~ s/\%\%/\%/g;
-			$title = " --title \"$title\" ";
-		}
-	
-		my $cmd = "$feh $PRE $title -R $ref $url $POST";
-		print "$cmd\n" if ($DEBUG);
-		FORK: {
+        if ($title) {
+            $title =~ s/\%c/$key/g;
+            $title =~ s/\%u/$url/g;
+            $title =~ s/\%r/$ref/g;
+            $title =~ s/\%\%/\%/g;
+            $title = " --title \"$title\" ";
+        }
+    
+        my $cmd = "$feh $PRE $title -T".$key."cam -R $ref $url $POST";
+        print "$cmd\n" if ($DEBUG);
+        FORK: {
            my $pid;
-			if ($pid = fork) {
-				# We're a daddy! :)
-			} elsif (defined $pid) {
-				# child
-				exec "$cmd" or die "Couldnt exec() $feh: $!\n";
-			} elsif ( $! =~ /No more process/) {
-				sleep 5;
-				redo FORK;
-			} else {
-				# wtf?
-				die "Unrecoverable fork() error: $!\n";
-			}
-		}
-	} while ($key = shift @ARGV);
+            if ($pid = fork) {
+                # We're a daddy! :)
+            } elsif (defined $pid) {
+                # child
+                exec "$cmd" or die "Couldnt exec() $feh: $!\n";
+            } elsif ( $! =~ /No more process/) {
+                sleep 5;
+                redo FORK;
+            } else {
+                # wtf?
+                die "Unrecoverable fork() error: $!\n";
+            }
+        }
+    } while ($key = shift @ARGV);
 }
 
    
-sub print_usage_and_exit()	{
+sub print_usage_and_exit()    {
     print <<END_USAGE;
-Cam 0.3
+Cam 0.4
 by Paul Duncan <pabs\@pablotron.org>, and
    Richard Lowe <richlowe\@btinternet.com>
+
 Description:
   A convenient webcam wrapper for feh.
 
@@ -174,7 +177,7 @@ Usage:
     Display usage information (this screen).
 
 Notes:
-Thanks to gilbertt for feh, an awesome image and webcam viewing program,
+Thanks to giblet for feh, an awesome image and webcam viewing program,
 and raster for Imlib2.
 END_USAGE
     exit(-1);
