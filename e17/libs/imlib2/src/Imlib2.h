@@ -103,6 +103,28 @@ void imlib_context_set_progress_function(Imlib_Progress_Function progress_functi
 void imlib_context_set_progress_granularity(char progress_granularity);
 void imlib_context_set_image(Imlib_Image image);
 
+Display *imlib_context_get_display(void);
+void imlib_context_set_visual(Visual *visual);
+Visual *imlib_context_get_visual(void);
+Colormap imlib_context_get_colormap(void);
+Drawable imlib_context_get_drawable(void);
+Pixmap imlib_context_get_mask(void);
+char imlib_context_get_dither_mask(void);
+char imlib_context_get_anti_alias(void);
+char imlib_context_get_dither(void);
+char imlib_context_get_blend(void);
+Imlib_Color_Modifier imlib_context_get_color_modifier(void);
+Imlib_Operation imlib_context_get_operation(void);
+Imlib_Font imlib_context_get_font(void);
+double imlib_context_get_angle(void);
+Imlib_Text_Direction imlib_context_get_direction(void);
+void imlib_context_get_color(int *red, int *green, int *blue, int *alpha);
+Imlib_Color *imlib_context_get_imlib_color(void);
+Imlib_Color_Range imlib_context_get_color_range(void);
+Imlib_Progress_Function imlib_context_get_progress_function(void);
+char imlib_context_get_progress_granularity(void);
+Imlib_Image imlib_context_get_image(void);
+
 int     imlib_get_cache_size(void);
 void    imlib_set_cache_size(int bytes);
 int     imlib_get_color_usage(void);

@@ -242,6 +242,12 @@ imlib_context_set_angle(double angle)
    ctxt_angle = angle;
 }
 
+double
+imlib_context_get_angle(void)
+{
+   return ctxt_angle;
+}
+
 Imlib_Text_Direction
 imlib_context_get_direction(void)
 {
