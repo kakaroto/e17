@@ -1,4 +1,5 @@
 #include <Ewl.h>
+#include <errno.h>
 #include <sys/time.h>
 #include <time.h>
 
@@ -14,6 +15,49 @@ static Ewler_Project *project;
 static Ewl_Widget *options_dialog;
 static Ewl_Widget *params[3];
 
+static int
+project_close( void )
+{
+	static char buf[1024];
+	char *filename;
+
+	if( project->members ) {
+		ecore_list_goto_first( project->members );
+
+		while( (filename = ecore_list_next( project->members )) ) {
+			if( *filename != '/' )
+				sprintf( buf, "%s/%s", project->path, filename );
+			else
+				strcpy( buf, project->filename );
+
+			if( form_is_open( buf ) && form_is_dirty( buf ) )
+				return -1;
+		}
+	}
+
+	IF_FREE(project->path);
+	IF_FREE(project->filename);
+
+	if( project->members ) {
+		ecore_list_goto_first( project->members );
+
+		while( (filename = ecore_list_remove( project->members )) ) {
+			if( *filename != '/' )
+				sprintf( buf, "%s/%s", project->path, project->filename );
+			else
+				strcpy( buf, project->filename );
+
+			form_close( buf );
+			free( filename );
+		}
+
+		ecore_list_destroy( project->members );
+		project->members = NULL;
+	}
+
+	return 0;
+}
+
 static void
 __projects_destroy_cb( Ewl_Widget *w, void *ev_data, void *user_data )
 {
@@ -24,29 +68,26 @@ static void
 __project_new_cb( Ewl_Widget *w, void *ev_data, void *user_data )
 {
 	char *headers[2] = { NULL, NULL };
+	static char buf[256];
 
-	IF_FREE(project->name);
-	IF_FREE(project->filename);
-	IF_FREE(project->path);
-	
-	if( project->members ) {
+	if( !project_close() ) {
+		project->filename = strdup( "untitled.ewl" );
+		sprintf( buf, "%s/Untitled", getenv( "HOME" ) );
+		project->path = strdup( buf );
+		project->members = ecore_list_new();
 		ecore_list_set_free_cb( project->members, free );
-		ecore_list_destroy( project->members );
+
+		project->dirty = 0;
+		project->filename_set = 0;
+
+		headers[0] = project->filename;
+
+		ewl_container_reset( EWL_CONTAINER(project_tree) );
+		ewl_tree_set_headers( EWL_TREE(project_tree), headers );
+	} else {
+		ewler_error_dialog( "The current project has modified forms, a new "
+												"project cannot be created now." );
 	}
-
-	project->name = strdup( "Untitled" );
-	project->filename = NULL;
-	project->path = NULL;
-	project->members = ecore_list_new();
-	ecore_list_set_free_cb( project->members, free );
-
-	project->dirty = 0;
-	project->filename_set = 0;
-
-	headers[0] = project->name;
-
-	ewl_container_reset( EWL_CONTAINER(project_tree) );
-	ewl_tree_set_headers( EWL_TREE(project_tree), headers );
 }
 
 static void
@@ -127,7 +168,7 @@ project_update( void )
 	char *filename;
 	int i;
 
-	headers[0] = project->name;
+	headers[0] = project->filename;
 
 	ewl_container_reset( EWL_CONTAINER(project_tree) );
 	ewl_tree_set_headers( EWL_TREE(project_tree), headers );
@@ -236,22 +277,84 @@ project_get_path( void )
 	return project->path;
 }
 
+void
+__create_path( Ewl_Widget *w, void *ev_data, void *user_data )
+{
+	char *path, *errstr = NULL;
+
+	path = ewl_entry_get_text( EWL_ENTRY(params[1]) );
+
+	mkdir( path, 0777 );
+	switch( errno ) {
+		case EPERM: errstr = "%s: cannot create directory on filesystem"; break;
+		case EEXIST: errstr = "%s: file exists"; break;
+		case EFAULT: errstr = "%s: bad address"; break;
+		case EACCES: errstr = "%s: permission denied"; break;
+		case ENAMETOOLONG: errstr = "%s: directory does not exist"; break;
+		case ENOENT: errstr = "%s: out of memory"; break;
+		case EROFS: errstr = "%s: read-only filesystem"; break;
+		case ENOSPC: errstr = "%s: filesystem full"; break;
+	}
+
+	if( errstr )
+		ewler_error_dialog( errstr, path );
+}
+
 static void
 __apply_changes( Ewl_Widget *w, void *ev_data, void *user_data )
 {
-	IF_FREE(project->name);
-	IF_FREE(project->filename);
-	IF_FREE(project->path);
+	char *name, *path, *filename;
+	int delay = 0;
 
-	project->name = ewl_entry_get_text( EWL_ENTRY(params[0]) );
-	project->path = ewl_entry_get_text( EWL_ENTRY(params[1]) );
-	if( strlen( project->path ) == 0 )
-		project->path = NULL;
+	name = ewl_entry_get_text( EWL_ENTRY(params[0]) );
+	path = ewl_entry_get_text( EWL_ENTRY(params[1]) );
+	if( strlen( path ) == 0 )
+		path = NULL;
+	filename = ewl_entry_get_text( EWL_ENTRY(params[2]) );
+	if( strlen( filename ) == 0 )
+		filename = NULL;
+
+	if( path ) {
+		struct stat st_buf;
+		char *errstr = "%s: unknown error";
+
+		if( stat( path, &st_buf ) < 0 ) {
+			switch( errno ) {
+				case ENOENT:
+					ewler_yesno_dialog( __create_path, NULL, NULL,
+															"Project directory does not exist, create it?" );
+					break;
+				case ENOTDIR: errstr = "%s: no such directory in path"; break;
+				case ELOOP: errstr = "%s: too many links"; break;
+				case EFAULT: errstr = "%s: bad address"; break;
+				case EACCES: errstr = "%s: permission denied"; break;
+				case ENOMEM: errstr = "%s: out of memory"; break;
+				case ENAMETOOLONG: errstr = "%s: filename too long"; break;
+			}
+			if( errno != ENOENT )
+				ewler_error_dialog( errstr, path );
+			delay = 1;
+		} else if( !S_ISDIR(st_buf.st_mode) ) {
+			ewler_error_dialog( "%s: is not a directory", path );
+			delay = 1;
+		} else {
+			IF_FREE(project->path);
+			project->path = ewl_entry_get_text( EWL_ENTRY(params[1]) );
+		}
+	}
+
+	IF_FREE(project->filename);
+
 	project->filename = ewl_entry_get_text( EWL_ENTRY(params[2]) );
 	if( strlen( project->filename ) == 0 )
 		project->filename = NULL;
 
 	project->filename_set = 1;
+
+	if( !delay ) {
+		__destroy_dialog(options_dialog, NULL, options_dialog );
+		ewl_callback_call( options_dialog, EWL_CALLBACK_VALUE_CHANGED );
+	}
 
 	project_update();
 }
@@ -280,16 +383,6 @@ project_options_dialog( void )
 	hbox = ewl_hbox_new();
 	ewl_container_append_child( EWL_CONTAINER(vbox), hbox );
 	ewl_widget_show( hbox );
-	label = ewl_text_new( "Project Name:" );
-	params[0] = ewl_entry_new( project->name ? project->name : "" );
-	ewl_container_append_child( EWL_CONTAINER(hbox), label );
-	ewl_container_append_child( EWL_CONTAINER(hbox), params[0] );
-	ewl_widget_show( label );
-	ewl_widget_show( params[0] );
-
-	hbox = ewl_hbox_new();
-	ewl_container_append_child( EWL_CONTAINER(vbox), hbox );
-	ewl_widget_show( hbox );
 	label = ewl_text_new( "Project Directory:" );
 	params[1] = ewl_entry_new( project->path ? project->path : "" );
 	ewl_container_append_child( EWL_CONTAINER(hbox), label );
@@ -311,8 +404,6 @@ project_options_dialog( void )
 																	EWL_STOCK_OK, EWL_RESPONSE_OK );
 	ewl_callback_append( button, EWL_CALLBACK_CLICKED,
 											 __apply_changes, NULL );
-	ewl_callback_append( button, EWL_CALLBACK_CLICKED,
-											 __destroy_dialog, options_dialog );
 
 	button = ewl_dialog_add_button( EWL_DIALOG(options_dialog),
 																	EWL_STOCK_CANCEL, EWL_RESPONSE_CANCEL );
@@ -320,4 +411,187 @@ project_options_dialog( void )
 											 __destroy_dialog, options_dialog );
 
 	ewl_widget_show( options_dialog );
+}
+
+static void
+__project_save_cb( Ewl_Widget *w, void *ev_data, void *user_data )
+{
+	char *member, *filename = user_data;
+	FILE *fptr;
+
+	fptr = fopen( filename, "w" );
+
+	if( fptr ) {
+		fprintf( fptr, "FORMS = " );
+
+		ecore_list_goto_first( project->members );
+
+		while( (member = ecore_list_next( project->members )) ) {
+			fprintf( fptr, "%s", member );
+
+			if( ecore_list_current( project->members ) )
+				fprintf( fptr, " \\\n\t" );
+		}
+
+		fclose( fptr );
+	} else {
+		ewler_error_dialog( "Unable to open project file %s", filename );
+	}
+}
+
+static void
+__project_setup_save_cb( Ewl_Widget *w, void *ev_data, void *user_data )
+{
+	static char buf[1024];
+	struct stat st_buf;
+
+	sprintf( buf, "%s/%s", project->path, project->filename );
+
+	if( stat( buf, &st_buf ) < 0 ) {
+		ewler_yesno_dialog( __project_save_cb, NULL, buf,
+												"Project file %s does not exist, create it?", buf );
+	} else
+		__project_save_cb( NULL, NULL, buf );
+}
+
+void
+project_save( void )
+{
+	if( !project->filename_set ) {
+		project_options_dialog();
+
+		ewl_callback_append( options_dialog, EWL_CALLBACK_VALUE_CHANGED,
+												 __project_setup_save_cb, NULL );
+	} else
+		__project_setup_save_cb( NULL, NULL, NULL );
+}
+
+static void
+project_setup( char *pathname )
+{
+	char *filename;
+	static char path[256];
+	int pathlen;
+
+	filename = strrchr( pathname, '/' ) + 1;
+	pathlen = filename - pathname - 1;
+	strncpy( path, pathname, pathlen );
+	path[pathlen] = '\0';
+
+	project->filename = strdup( filename );
+	project->path = strdup( path );
+
+	project->members = ecore_list_new();
+
+	project->dirty = 0;
+	project->filename_set = 1;
+}
+
+static void
+project_parse( FILE *fptr )
+{
+	static char buf[256];
+	int had_equals, item_done;
+	int word_len;
+	char *ptr;
+
+	while( !feof( fptr ) ) {
+		if( !fgets( buf, 255, fptr ) )
+			break;
+
+		ptr = buf;
+		had_equals = 0;
+
+		if( !strncmp( buf, "FORMS", strlen( "FORMS" ) ) ) {
+			static char file_buf[256];
+
+			ptr += strlen( "FORMS" );
+			while( !had_equals )
+				if( *ptr++ == '=' )
+					had_equals = 1;
+
+			item_done = 0;
+
+			while( !item_done ) {
+				while( *ptr == ' ' || *ptr == '\t' )
+					*ptr++;
+
+				if( *ptr && *ptr != '\\' && *ptr != '\n' ) {
+					word_len = strcspn( ptr, " \t\\\n" );
+					strncpy( file_buf, ptr, word_len );
+					ptr += word_len;
+					
+					ecore_list_append( project->members, strdup( file_buf ) );
+				} else if( *ptr == '\\' ) {
+					if( !fgets( buf, 255, fptr ) )
+						break;
+					ptr = buf;
+				} else
+					item_done = 1;
+			}
+		}
+	}
+}
+
+static void
+__project_open_cb( Ewl_Widget *w, void *ev_data, void *user_data )
+{
+	FILE *fptr;
+	char *filename = ev_data;
+
+	if( !ev_data ) {
+		ewl_callback_call( w, EWL_CALLBACK_DELETE_WINDOW );
+		return;
+	}
+
+	if( !(fptr = fopen( filename, "r" )) ) {
+		ewler_error_dialog( "Unable to open file: %s", filename );
+		return;
+	}
+
+	__destroy_dialog( w, NULL, w->parent );
+
+	project_setup( filename );
+	project_parse( fptr );
+
+	fclose( fptr );
+
+	project_update();
+}
+
+static void
+__project_setup_open_cb( Ewl_Widget *w, void *ev_data, void *user_data )
+{
+	Ewl_Widget *dialog, *window;
+
+	if( !project_close() ) {
+		window = ewl_window_new();
+		ewl_window_set_title( EWL_WINDOW(window), "Open New Project" );
+		ewl_object_set_minimum_size( EWL_OBJECT(window), 400, 600 );
+		ewl_widget_show( window );
+
+		dialog = ewl_filedialog_new( EWL_FILEDIALOG_TYPE_OPEN );
+
+		ewl_container_append_child( EWL_CONTAINER(window), dialog );
+		ewl_callback_append( dialog, EWL_CALLBACK_VALUE_CHANGED,
+												 __project_open_cb, NULL );
+		ewl_callback_append( dialog, EWL_CALLBACK_DELETE_WINDOW,
+												 __destroy_dialog, window );
+		ewl_widget_show( dialog );
+	} else {
+		ewler_error_dialog( "The current project has modified forms, a new "
+												"project cannot be opened now." );
+	}
+}
+
+void
+project_open( void )
+{
+	if( project->dirty ) {
+		ewler_yesno_dialog( __project_setup_open_cb, NULL, NULL,
+												"Current project has not been saved, do you wish "
+												"to continue?" );
+	} else {
+		__project_setup_open_cb( NULL, NULL, NULL );
+	}
 }

@@ -44,7 +44,7 @@ ewler_selected_new(Ewl_Widget *w)
 int
 ewler_selected_init(Ewler_Selected *s, Ewl_Widget *w)
 {
-	Ewl_Widget *sw;
+	Ewl_Widget *sw, *cw;
 	Ewl_Container *parent;
 	int index;
 
@@ -66,7 +66,7 @@ ewler_selected_init(Ewler_Selected *s, Ewl_Widget *w)
 	ewl_theme_data_set_str(sw, "/selected/group", "selected");
 	ewl_widget_set_layer( sw, 0 );
 
-	ewl_container_insert_child(parent, sw, s->index);
+	ewl_container_insert_child(parent, sw, index);
 	ewl_object_request_geometry(EWL_OBJECT(s),
 															CURRENT_X(w), CURRENT_Y(w),
 															CURRENT_W(w), CURRENT_H(w));
@@ -90,12 +90,11 @@ ewler_selected_init(Ewler_Selected *s, Ewl_Widget *w)
 	ewl_callback_append(sw, EWL_CALLBACK_MOUSE_UP,
 											ewler_selected_mouse_up_cb, NULL);
 
-	if( ewl_object_get_preferred_w(EWL_OBJECT(w)) < SELECTED_MIN_WIDTH &&
-			ewl_object_get_preferred_h(EWL_OBJECT(w)) < SELECTED_MIN_HEIGHT )
+	if( ewl_object_preferred_w_sum_get(EWL_OBJECT(w)) < SELECTED_MIN_WIDTH &&
+			ewl_object_preferred_w_sum_get(EWL_OBJECT(w)) < SELECTED_MIN_HEIGHT )
 		ewl_object_set_preferred_size(EWL_OBJECT(w),
 																	SELECTED_MIN_WIDTH, SELECTED_MIN_HEIGHT);
 
-	s->index = index;
 	s->selected = w;
 	s->dragging = NULL;
 
@@ -129,7 +128,7 @@ ewler_selected_configure_cb(Ewl_Widget *w, void *ev_data, void *user_data)
 	s = EWLER_SELECTED(w);
 	
 	/* the width comes in from the selected, the position is set by the parent */
-	ewl_object_get_preferred_size(EWL_OBJECT(s->selected), &width, &height);
+	ewl_object_preferred_size_sum_get(EWL_OBJECT(s->selected), &width, &height);
 	x = CURRENT_X(s);
 	y = CURRENT_Y(s);
 
@@ -227,7 +226,7 @@ ewler_selected_realize_cb(Ewl_Widget *w, void *ev_data, void *user_data)
 
 	s = EWLER_SELECTED(user_data);
 
-	ewl_object_get_preferred_size(EWL_OBJECT(s->selected), &width, &height);
+	ewl_object_preferred_size_sum_get(EWL_OBJECT(s->selected), &width, &height);
 
 	ewl_object_request_size(EWL_OBJECT(s), width, height);
 	ewl_object_set_preferred_size(EWL_OBJECT(s), width, height);

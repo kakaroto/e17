@@ -33,6 +33,8 @@ void form_add_widget( Ewler_Form *form, char *name, Ewl_Widget *w );
 
 void form_save_file( Ewler_Form *form, int save_as );
 void form_open_file( char *filename );
+void form_close( char *filename );
 int form_is_open( char *filename );
+int form_is_dirty( char *filename );
 
 #endif

@@ -77,9 +77,9 @@ layout_widgets( Ewler_Form *form, Ewl_Orientation orientation )
 			sprintf( name, "Layout%d", count++ );
 			widget_name = strdup( name );
 
-			form->layout = ewl_hbox_new();
-			ewl_box_set_orientation( EWL_BOX(form->layout), orientation );
+			form->layout = ewl_box_new(orientation);
 			widget_create_info( form->layout, "Ewl_Box", widget_name );
+			ewl_box_set_orientation( EWL_BOX(form->layout), orientation );
 
 			ewl_object_request_position( EWL_OBJECT(form->layout), 0, 0 );
 			ewl_object_set_fill_policy( EWL_OBJECT(form->layout),
@@ -122,9 +122,9 @@ layout_widgets( Ewler_Form *form, Ewl_Orientation orientation )
 		sprintf( name, "Layout%d", count++ );
 		widget_name = strdup( name );
 
-		box = ewl_hbox_new();
-		ewl_box_set_orientation( EWL_BOX(box), orientation );
+		box = ewl_box_new(orientation);
 		widget_create_info( box, "Ewl_Box", widget_name );
+		ewl_box_set_orientation( EWL_BOX(box), orientation );
 
 		s = ecore_list_goto_first( form->selected );
 

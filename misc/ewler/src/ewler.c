@@ -37,6 +37,7 @@ __create_new_project( Ewl_Widget *w, void *ev_data, void *user_data )
 static void
 __open_project( Ewl_Widget *w, void *ev_data, void *user_data )
 {
+	project_open();
 }
 
 static void

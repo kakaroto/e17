@@ -16,7 +16,6 @@ struct Ewler_Selected {
 	struct {
 		int x, y;
 	} last_pos;
-	int index;
 };
 
 

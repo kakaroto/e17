@@ -4,7 +4,6 @@
 typedef struct Ewler_Project Ewler_Project;
 
 struct Ewler_Project {
-	char *name;
 	char *filename; /* filename of the project description */
 	char *path; /* project dir */
 	Ecore_List *members;
@@ -21,5 +20,6 @@ char *project_set_file( char *old, char *filename );
 void project_remove_file( char *filename );
 char *project_get_path( void );
 void project_options_dialog( void );
+void project_save( void );
 
 #endif

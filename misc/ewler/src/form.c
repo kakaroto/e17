@@ -533,7 +533,7 @@ form_save_file( Ewler_Form *form, int save_as )
 			}
 		}
 	} else {
-		/* do a project save */
+		project_save();
 	}
 }
 
@@ -650,6 +650,27 @@ form_get_element_by_name( Ewler_Form *form, char *name )
 	return ecore_hash_get( form->elements, name );
 }
 
+/* do not pass go, do not collect $200, do not call this unless you MEAN IT! */
+void
+form_close( char *filename )
+{
+	Ewler_Form *form;
+
+	ecore_list_goto_first( forms );
+
+	while( (form = ecore_list_current( forms )) ) {
+		if( !strcmp( form->filename, filename ) ) {
+			ecore_list_remove( forms );
+
+			FREE( form->filename );
+			ewl_widget_destroy( form->window );
+			FREE( form );
+			return;
+		}
+		ecore_list_next( forms );
+	}
+}
+
 void
 ewler_forms_close( void )
 {
@@ -684,6 +705,20 @@ form_is_open( char *filename )
 	while( (form = ecore_list_next(forms)) )
 		if( !strcmp( form->filename, filename ) )
 			return 1;
+
+	return 0;
+}
+
+int
+form_is_dirty( char *filename )
+{
+	Ewler_Form *form;
+
+	ecore_list_goto_first( forms );
+
+	while( (form = ecore_list_next(forms)) )
+		if( !strcmp( form->filename, filename ) )
+			return form->dirty;
 
 	return 0;
 }
