@@ -138,32 +138,40 @@ void
 browser_sel(GtkWidget *clist, gint row, gint column,
 						GdkEventButton *event, gpointer data)
 {
-	gchar lblt[255];
-	gchar *img;
-	int w, h;
-   
-   gtk_clist_get_text(GTK_CLIST(clist), row, 0, &img);
-   
-   if (cimg) g_free(cimg);
-   cimg = NULL;
-   if (img) cimg = g_strdup(img);
-   if(cimg){
-	  GetFileStats(cimg);
-      LoadImage(cimg);
-      DrawImage(im, 0, 0);
-   }
- 
-	if(im){
-	  /* FIXME: display kb instead of bytes */
-		imlib_context_set_image(im);
-		sprintf(lblt, "Resolution:  %dx%d\n"
-				  "File Size:  %d bytes\n"
-				  "Last Modification:  %s"
-				  "Has Alpha:  ",
-				  imlib_image_get_width(),
-				  imlib_image_get_height(),
-				  EFile.Size,
-				  ctime(&EFile.ModTime));
-		gtk_label_set_text(GTK_LABEL(infol), lblt);
-	}
+  gchar lblt[255];
+  char alp[255];
+  gchar *img;
+  int w, h;
+  
+  gtk_clist_get_text(GTK_CLIST(clist), row, 0, &img);
+  
+  if (cimg) g_free(cimg);
+  cimg = NULL;
+  if (img) cimg = g_strdup(img);
+  if(cimg){
+	 GetFileStats(cimg);
+	 LoadImage(cimg);
+	 DrawImage(im, 0, 0);
+  }
+  
+  if(im){
+	 /* FIXME: display kb instead of bytes */
+	 imlib_context_set_image(im);
+
+	 if(imlib_image_has_alpha())
+		sprintf(alp, "YES");
+	 else
+		sprintf(alp, "NO");
+	 
+	 sprintf(lblt, "Resolution: %dx%d\n"
+				"File Size: %d bytes\n"
+				"Last Mod: %s"
+				"Has Alpha: %s",
+				imlib_image_get_width(),
+				imlib_image_get_height(),
+				EFile.Size,
+				ctime(&EFile.ModTime),
+				alp);
+	 gtk_label_set_text(GTK_LABEL(infol), lblt);
+  }
 }
