@@ -32,9 +32,9 @@ main(int argc, char *argv[])
    imlib_init(mainwin);
 
    obj_win = geist_create_object_list();
-   
+
    nbook = gtk_object_get_data(GTK_OBJECT(mainwin), "notebook");
-   doc = geist_gtk_new_document_page(nbook, 500,500,"New document");
+   doc = geist_gtk_new_document_page(nbook, 500, 500, "New document");
 
    doc->bg_fill->r = 155;
    doc->bg_fill->g = 216;
@@ -93,11 +93,14 @@ main(int argc, char *argv[])
                                                     255, 255, 0));
 
    geist_document_render_full(doc);
-   
-   doc = geist_gtk_new_document_page(nbook, 200,200,"Second document");
+
+   doc = geist_gtk_new_document_page(nbook, 400, 300, "Second document");
+   geist_document_add_object(doc,
+                             geist_text_new_with_text(15, 15, "20thcent", 20,
+                                                      "Wow! 2 documents? Neato ;-)",
+                                                      255, 0, 100, 255));
    geist_document_render_full(doc);
 
    gtk_main();
    D_RETURN(3, 0);
 }
-
