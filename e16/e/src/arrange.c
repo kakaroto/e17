@@ -911,6 +911,46 @@ SnapEwin(EWin * ewin, int dx, int dy, int *new_dx, int *new_dy)
 void
 ArrangeEwin(EWin * ewin)
 {
+   EDBUG(8, "ArrangeEwin");
+
+   ewin->client.already_placed = 1;
+   ArrangeEwinXY(ewin, &ewin->x, &ewin->y);
+   MoveEwin(ewin, ewin->x, ewin->y);
+
+   EDBUG_RETURN_;
+}
+
+void
+ArrangeEwinCentered(EWin * ewin, int focus)
+{
+   EDBUG(8, "ArrangeEwinCentered");
+
+   ewin->client.already_placed = 1;
+   ArrangeEwinCenteredXY(ewin, &ewin->x, &ewin->y);
+   MoveEwin(ewin, ewin->x, ewin->y);
+   if (focus)
+      FocusToEWin(ewin);
+
+   EDBUG_RETURN_;
+}
+
+static int
+EWinIsOnViewport(EWin * ewin, int desktop)
+{
+   if (ewin->sticky)
+      return 1;
+
+   if (ewin->desktop == desktop &&
+       ewin->area_x == desks.desk[desktop].current_area_x &&
+       ewin->area_y == desks.desk[desktop].current_area_y)
+      return 1;
+
+   return 0;
+}
+
+void
+ArrangeEwinXY(EWin * ewin, int *px, int *py)
+{
    EWin              **lst;
    Button            **blst;
    int                 i, j, num;
@@ -918,29 +958,67 @@ ArrangeEwin(EWin * ewin)
 
    fixed = NULL;
    ret = NULL;
-   ewin->client.already_placed = 1;
+
    lst = (EWin **) ListItemType(&num, LIST_TYPE_EWIN);
    if ((lst) && (num > 0))
      {
         fixed = Emalloc(sizeof(RectBox) * num);
-        ret = Emalloc(sizeof(RectBox) * (num + 1));
         j = 0;
         for (i = 0; i < num; i++)
           {
-             if ((lst[i] != ewin) && (!lst[i]->iconified)
-                 && (!lst[i]->ignorearrange) && (lst[i]->layer != 0)
-                 &&
-                 (((lst
-                    [i]->area_x == desks.desk[ewin->desktop].current_area_x)
-                   && (lst[i]->area_y ==
-                       desks.desk[ewin->desktop].current_area_y)
-                   && (lst[i]->desktop == ewin->desktop)) || (lst[i]->sticky)))
+             EWin               *e = lst[i];
+
+             if (e == ewin ||
+                 e->iconified || e->ignorearrange || e->layer == 0 ||
+                 !EWinIsOnViewport(e, ewin->desktop))
+                continue;
+
+             fixed[j].data = e;
+             fixed[j].x = e->x;
+             fixed[j].y = e->y;
+             fixed[j].w = e->w;
+             fixed[j].h = e->h;
+             if (fixed[j].x < 0)
                {
-                  fixed[j].data = lst[i];
-                  fixed[j].x = (lst[i])->x;
-                  fixed[j].y = (lst[i])->y;
-                  fixed[j].w = (lst[i])->w;
-                  fixed[j].h = (lst[i])->h;
+                  fixed[j].w += fixed[j].x;
+                  fixed[j].x = 0;
+               }
+             if ((fixed[j].x + fixed[j].w) > root.w)
+                fixed[j].w = root.w - fixed[j].x;
+             if (fixed[j].y < 0)
+               {
+                  fixed[j].h += fixed[j].y;
+                  fixed[j].y = 0;
+               }
+             if ((fixed[j].y + fixed[j].h) > root.h)
+                fixed[j].h = root.h - fixed[j].y;
+             if ((fixed[j].w <= 0) || (fixed[j].h <= 0))
+                continue;
+
+             if (e->never_use_area)
+                fixed[j].p = 50;
+             else
+                fixed[j].p = e->layer;
+             j++;
+          }
+        blst = (Button **) ListItemType(&num, LIST_TYPE_BUTTON);
+        if (blst)
+          {
+             fixed = Erealloc(fixed, sizeof(RectBox) * (num + j));
+             for (i = 0; i < num; i++)
+               {
+                  Button             *b = blst[i];
+
+                  if (!b->visible || b->internal)
+                     continue;
+                  if (!b->sticky && (b->desktop != ewin->desktop))
+                     continue;
+
+                  fixed[j].data = NULL;
+                  fixed[j].x = b->x;
+                  fixed[j].y = b->y;
+                  fixed[j].w = b->w;
+                  fixed[j].h = b->h;
                   if (fixed[j].x < 0)
                     {
                        fixed[j].w += fixed[j].x;
@@ -955,66 +1033,18 @@ ArrangeEwin(EWin * ewin)
                     }
                   if ((fixed[j].y + fixed[j].h) > root.h)
                      fixed[j].h = root.h - fixed[j].y;
-                  if ((fixed[j].w > 0) && (fixed[j].h > 0))
-                    {
-                       if (!(lst[i])->never_use_area)
-                         {
-                            fixed[j].p = (lst[i])->layer;
-                         }
-                       else
-                         {
-                            fixed[j].p = 50;
-                         }
-                       j++;
-                    }
-               }
-          }
-        blst = (Button **) ListItemType(&num, LIST_TYPE_BUTTON);
-        if (blst)
-          {
-             fixed = Erealloc(fixed, sizeof(RectBox) * (num + j));
-             ret = Erealloc(ret, sizeof(RectBox) * ((num + j) + 1));
-             for (i = 0; i < num; i++)
-               {
-                  if (((blst[i]->desktop == ewin->desktop)
-                       || ((blst[i]->desktop == 0) && (blst[i]->sticky)))
-                      && (blst[i]->visible))
-                    {
-                       fixed[j].data = NULL;
-                       fixed[j].x = blst[i]->x;
-                       fixed[j].y = blst[i]->y;
-                       fixed[j].w = blst[i]->w;
-                       fixed[j].h = blst[i]->h;
-                       if (fixed[j].x < 0)
-                         {
-                            fixed[j].w += fixed[j].x;
-                            fixed[j].x = 0;
-                         }
-                       if ((fixed[j].x + fixed[j].w) > root.w)
-                          fixed[j].w = root.w - fixed[j].x;
-                       if (fixed[j].y < 0)
-                         {
-                            fixed[j].h += fixed[j].y;
-                            fixed[j].y = 0;
-                         }
-                       if ((fixed[j].y + fixed[j].h) > root.h)
-                          fixed[j].h = root.h - fixed[j].y;
-                       if ((fixed[j].w > 0) && (fixed[j].h > 0))
-                         {
-                            if (blst[i]->sticky)
-                              {
-                                 fixed[j].p = 50;
-                              }
-                            else
-                              {
-                                 fixed[j].p = 0;
-                              }
-                            j++;
-                         }
-                    }
+                  if ((fixed[j].w <= 0) || (fixed[j].h <= 0))
+                     continue;
+
+                  if (b->sticky)
+                     fixed[j].p = 50;
+                  else
+                     fixed[j].p = 0;
+                  j++;
                }
              Efree(blst);
           }
+        ret = Emalloc(sizeof(RectBox) * (j + 1));
         newrect.data = ewin;
         newrect.x = 0;
         newrect.y = 0;
@@ -1024,24 +1054,25 @@ ArrangeEwin(EWin * ewin)
 #if ENABLE_KDE
         if (mode.kde_support)
           {
-             ArrangeRects(fixed, j, &newrect, 1, ret, mode.kde_x1, mode.kde_y1,
-                          mode.kde_x2, mode.kde_y2, ARRANGE_BY_SIZE, 1);
+             ArrangeRects(fixed, j, &newrect, 1, ret,
+                          mode.kde_x1, mode.kde_y1, mode.kde_x2, mode.kde_y2,
+                          ARRANGE_BY_SIZE, 1);
+
           }
         else
+#endif
           {
-#endif
-             ArrangeRects(fixed, j, &newrect, 1, ret, 0, 0, root.w, root.h,
-                          ARRANGE_BY_SIZE, 1);
-#if ENABLE_KDE
+             ArrangeRects(fixed, j, &newrect, 1, ret,
+                          0, 0, root.w, root.h, ARRANGE_BY_SIZE, 1);
           }
-#endif
+
         for (i = 0; i < j + 1; i++)
           {
              if (ret[i].data == ewin)
                {
-                  ewin->x = ret[i].x;
-                  ewin->y = ret[i].y;
-                  i = j + 1;
+                  *px = ret[i].x;
+                  *py = ret[i].y;
+                  break;
                }
           }
         Efree(lst);
@@ -1052,51 +1083,16 @@ ArrangeEwin(EWin * ewin)
      }
    else
      {
-#ifdef HAS_XINERAMA
-        if (xinerama_active)
-          {
-             Window              rt, ch;
-             XineramaScreenInfo *screens;
-             int                 pointer_x, pointer_y;
-             int                 num;
-             int                 d;
-             unsigned int        ud;
-
-             XQueryPointer(disp, root.win, &rt, &ch, &pointer_x, &pointer_y, &d,
-                           &d, &ud);
-             screens = XineramaQueryScreens(disp, &num);
-             for (i = 0; i < num; i++)
-               {
-                  if (pointer_x >= screens[i].x_org)
-                    {
-                       if (pointer_x <= (screens[i].width + screens[i].x_org))
-                         {
-                            if (pointer_y >= screens[i].y_org)
-                              {
-                                 if (pointer_y <=
-                                     (screens[i].height + screens[i].y_org))
-                                   {
-                                      ewin->x =
-                                          ((screens[i].width - ewin->w) / 2) +
-                                          screens[i].x_org;
-                                      ewin->y =
-                                          ((screens[i].height - ewin->h) / 2) +
-                                          screens[i].y_org;
-                                   }
-                              }
-                         }
-                    }
-               }
-             XFree(screens);
-          }
-        else
-          {
-#endif
-             ewin->x = (root.w - ewin->w) >> 1;
-             ewin->y = (root.h - ewin->h) >> 1;
-#ifdef HAS_XINERAMA
-          }
-#endif
+        ArrangeEwinCenteredXY(ewin, px, py);
      }
-   MoveEwin(ewin, ewin->x, ewin->y);
+}
+
+void
+ArrangeEwinCenteredXY(EWin * ewin, int *px, int *py)
+{
+   int                 x, y, w, h;
+
+   GetPointerScreenGeometry(&x, &y, &w, &h);
+   *px = (w - ewin->w) / 2 + x;
+   *py = (h - ewin->h) / 2 + y;
 }

@@ -271,52 +271,9 @@ WarpFocusShowTitle(EWin * ewin)
           }
         w += (ic->padding.left + ic->padding.right);
         h += (ic->padding.top + ic->padding.bottom);
-        x = (root.w - w) / 2;
-        y = (root.h - (h * warptitles_num)) / 2;
-#ifdef HAS_XINERAMA
-        if (xinerama_active)
-          {
-             Window              rt, ch;
-             XineramaScreenInfo *screens;
-             int                 pointer_x, pointer_y;
-             int                 num;
-             int                 d;
-             unsigned int        ud;
-
-             XQueryPointer(disp, root.win, &rt, &ch, &pointer_x,
-                           &pointer_y, &d, &d, &ud);
-             screens = XineramaQueryScreens(disp, &num);
-             for (i = 0; i < num; i++)
-               {
-                  for (i = 0; i < num; i++)
-                    {
-                       if (pointer_x >= screens[i].x_org)
-                         {
-                            if (pointer_x <=
-                                (screens[i].width + screens[i].x_org))
-                              {
-                                 if (pointer_y >= screens[i].y_org)
-                                   {
-                                      if (pointer_y <=
-                                          (screens[i].height +
-                                           screens[i].y_org))
-                                        {
-                                           x = ((screens
-                                                 [i].width -
-                                                 w) / 2) + screens[i].x_org;
-                                           y = ((screens
-                                                 [i].height -
-                                                 h * warptitles_num) / 2) +
-                                               screens[i].y_org;
-                                        }
-                                   }
-                              }
-                         }
-                    }
-               }
-             XFree(screens);
-          }
-#endif
+        GetPointerScreenGeometry(&x, &y, &ww, &hh);
+        x += (ww - w) / 2;
+        y += (hh - h * warptitles_num) / 2;
         mw = w;
         mh = h;
         EMoveResizeWindow(disp, warpFocusTitleWindow, x, y, w,

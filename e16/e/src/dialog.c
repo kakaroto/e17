@@ -597,151 +597,18 @@ ShowDialog(Dialog * d)
         DesktopAddEwinToTop(ewin);
         sn = FindSnapshot(ewin);
         /* get the size right damnit! */
-        if (sn)
+        if (sn && sn->use_wh)
+           ResizeEwin(ewin, sn->w, sn->h);
+        if (sn && sn->use_xy)
           {
-             if (sn->use_wh)
-                ResizeEwin(ewin, sn->w, sn->h);
-             if (sn->use_xy)
-               {
-                  MoveEwin(ewin, sn->x, sn->y);
-               }
-             else
-               {
-                  if (FindADialog())
-                    {
-                       ArrangeEwin(ewin);
-                    }
-                  else
-                    {
-#ifdef HAS_XINERAMA
-                       if (xinerama_active)
-                         {
-                            Window              rt, ch;
-                            int                 d;
-                            unsigned int        ud;
-                            int                 pointer_x, pointer_y;
-                            int                 num;
-                            XineramaScreenInfo *screens;
-
-                            XQueryPointer(disp, root.win, &rt, &ch, &pointer_x,
-                                          &pointer_y, &d, &d, &ud);
-                            screens = XineramaQueryScreens(disp, &num);
-                            for (i = 0; i < num; i++)
-                              {
-                                 for (i = 0; i < num; i++)
-                                   {
-                                      if (pointer_x >= screens[i].x_org)
-                                        {
-                                           if (pointer_x <=
-                                               (screens[i].width +
-                                                screens[i].x_org))
-                                             {
-                                                if (pointer_y >=
-                                                    screens[i].y_org)
-                                                  {
-                                                     if (pointer_y <=
-                                                         (screens[i].height +
-                                                          screens[i].y_org))
-                                                       {
-                                                          ewin->x =
-                                                              ((screens
-                                                                [i].width -
-                                                                ewin->w) / 2) +
-                                                              screens[i].x_org;
-                                                          ewin->y =
-                                                              ((screens
-                                                                [i].height -
-                                                                ewin->h) / 2) +
-                                                              screens[i].y_org;
-                                                          MoveEwin(ewin,
-                                                                   ewin->x,
-                                                                   ewin->y);
-                                                       }
-                                                  }
-                                             }
-                                        }
-                                   }
-                              }
-                            XFree(screens);
-
-                         }
-                       else
-                         {
-#endif
-                            MoveEwin(ewin, ((root.w - (ewin->w)) / 2),
-                                     ((root.h - (ewin->h)) / 2));
-#ifdef HAS_XINERAMA
-                         }
-#endif
-                    }
-               }
+             MoveEwin(ewin, sn->x, sn->y);
           }
         else
           {
              if (FindADialog())
-               {
-                  ArrangeEwin(ewin);
-               }
+                ArrangeEwin(ewin);
              else
-               {
-#ifdef HAS_XINERAMA
-                  if (xinerama_active)
-                    {
-                       Window              rt, ch;
-                       int                 d;
-                       unsigned int        ud;
-                       int                 pointer_x, pointer_y;
-                       int                 num;
-                       XineramaScreenInfo *screens;
-
-                       XQueryPointer(disp, root.win, &rt, &ch, &pointer_x,
-                                     &pointer_y, &d, &d, &ud);
-                       screens = XineramaQueryScreens(disp, &num);
-                       for (i = 0; i < num; i++)
-                         {
-                            for (i = 0; i < num; i++)
-                              {
-                                 if (pointer_x >= screens[i].x_org)
-                                   {
-                                      if (pointer_x <=
-                                          (screens[i].width + screens[i].x_org))
-                                        {
-                                           if (pointer_y >= screens[i].y_org)
-                                             {
-                                                if (pointer_y <=
-                                                    (screens[i].height +
-                                                     screens[i].y_org))
-                                                  {
-                                                     ewin->x =
-                                                         ((screens
-                                                           [i].width -
-                                                           ewin->w) / 2) +
-                                                         screens[i].x_org;
-                                                     ewin->y =
-                                                         ((screens
-                                                           [i].height -
-                                                           ewin->h) / 2) +
-                                                         screens[i].y_org;
-                                                     MoveEwin(ewin, ewin->x,
-                                                              ewin->y);
-                                                  }
-                                             }
-                                        }
-                                   }
-                              }
-                         }
-                       XFree(screens);
-
-                    }
-                  else
-                    {
-#endif
-                       MoveEwin(ewin, ((root.w - (ewin->w)) / 2),
-                                ((root.h - (ewin->h)) / 2));
-#ifdef HAS_XINERAMA
-                    }
-#endif
-               }
+                ArrangeEwinCentered(ewin, 0);
           }
         RestackEwin(ewin);
         ShowEwin(ewin);

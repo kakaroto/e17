@@ -1805,6 +1805,8 @@ void                PastePixmap(Display * d, Drawable w, Pixmap p, Mask m,
                                 int x, int y);
 void                PasteMask(Display * d, Drawable w, Pixmap p, int x, int y,
                               int wd, int ht);
+int                 GetPointerScreenGeometry(int *px, int *py, int *pw,
+                                             int *ph);
 
 char               *NukeBoringevents(XEvent * ev, int num);
 void                DebugEvent(XEvent * ev);
@@ -2582,6 +2584,9 @@ int                 Emkstemp(char *template);
 void                SnapEwin(EWin * ewin, int dx, int dy, int *new_dx,
                              int *new_dy);
 void                ArrangeEwin(EWin * ewin);
+void                ArrangeEwinCentered(EWin * ewin, int focus);
+void                ArrangeEwinXY(EWin * ewin, int *px, int *py);
+void                ArrangeEwinCenteredXY(EWin * ewin, int *px, int *py);
 
 void                SessionInit(void);
 void                SessionSave(int shutdown);

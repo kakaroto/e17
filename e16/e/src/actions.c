@@ -1431,38 +1431,40 @@ doCleanup(void *params)
              ret = Erealloc(ret, sizeof(RectBox) * ((num + j) + 1 + k));
              for (i = 0; i < num; i++)
                {
-                  if (((blst[i]->desktop == desks.current)
-                       || ((blst[i]->desktop == 0) && (blst[i]->sticky)))
-                      && (blst[i]->visible))
+                  Button             *b = blst[i];
+
+                  if (!b->visible || b->internal)
+                     continue;
+                  if (!b->sticky && (b->desktop != desks.current))
+                     continue;
+
+                  fixed[k].data = NULL;
+                  fixed[k].x = blst[i]->x;
+                  fixed[k].y = blst[i]->y;
+                  fixed[k].w = blst[i]->w;
+                  fixed[k].h = blst[i]->h;
+                  if (fixed[k].x < 0)
                     {
-                       fixed[k].data = NULL;
-                       fixed[k].x = blst[i]->x;
-                       fixed[k].y = blst[i]->y;
-                       fixed[k].w = blst[i]->w;
-                       fixed[k].h = blst[i]->h;
-                       if (fixed[k].x < 0)
-                         {
-                            fixed[k].x += fixed[k].w;
-                            fixed[k].x = 0;
-                         }
-                       if ((fixed[k].x + fixed[k].w) > root.w)
-                          fixed[k].w = root.w - fixed[k].x;
-                       if (fixed[k].y < 0)
-                         {
-                            fixed[k].y += fixed[k].h;
-                            fixed[k].y = 0;
-                         }
-                       if ((fixed[k].y + fixed[k].h) > root.h)
-                          fixed[k].h = root.h - fixed[k].y;
-                       if ((fixed[k].w > 0) && (fixed[k].h > 0))
-                         {
-                            if (blst[i]->sticky)
-                               fixed[k].p = 50;
-                            else
-                               fixed[k].p = 0;
-                            k++;
-                         }
+                       fixed[k].x += fixed[k].w;
+                       fixed[k].x = 0;
                     }
+                  if ((fixed[k].x + fixed[k].w) > root.w)
+                     fixed[k].w = root.w - fixed[k].x;
+                  if (fixed[k].y < 0)
+                    {
+                       fixed[k].y += fixed[k].h;
+                       fixed[k].y = 0;
+                    }
+                  if ((fixed[k].y + fixed[k].h) > root.h)
+                     fixed[k].h = root.h - fixed[k].y;
+                  if ((fixed[k].w <= 0) || (fixed[k].h <= 0))
+                     continue;
+
+                  if (blst[i]->sticky)
+                     fixed[k].p = 50;
+                  else
+                     fixed[k].p = 0;
+                  k++;
                }
              Efree(blst);
           }

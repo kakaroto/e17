@@ -632,59 +632,7 @@ doSMExit(void *params)
              ewin = FindEwinByDialog(d);
              if (ewin)
                {
-#ifdef HAS_XINERAMA
-                  if (xinerama_active)
-                    {
-                       Window              rt, ch;
-                       XineramaScreenInfo *screens;
-                       int                 pointer_x, pointer_y;
-                       int                 num;
-                       int                 d;
-                       unsigned int        ud;
-                       int                 i;
-
-                       XQueryPointer(disp, root.win, &rt, &ch, &pointer_x,
-                                     &pointer_y, &d, &d, &ud);
-                       screens = XineramaQueryScreens(disp, &num);
-                       for (i = 0; i < num; i++)
-                         {
-                            if (pointer_x >= screens[i].x_org)
-                              {
-                                 if (pointer_x <=
-                                     (screens[i].width + screens[i].x_org))
-                                   {
-                                      if (pointer_y >= screens[i].y_org)
-                                        {
-                                           if (pointer_y <=
-                                               (screens[i].height +
-                                                screens[i].y_org))
-                                             {
-                                                ewin->x =
-                                                    ((screens[i].width -
-                                                      ewin->w) / 2) +
-                                                    screens[i].x_org;
-                                                ewin->y =
-                                                    ((screens[i].height -
-                                                      ewin->h) / 2) +
-                                                    screens[i].y_org;
-                                             }
-                                        }
-                                   }
-                              }
-                         }
-                       XFree(screens);
-                       MoveEwin(ewin, ewin->x, ewin->y);
-                       FocusToEWin(ewin);
-                    }
-                  else
-                    {
-#endif
-                       MoveEwin(ewin, ((root.w - (ewin->w)) / 2),
-                                ((root.h - (ewin->h)) / 2));
-                       FocusToEWin(ewin);
-#ifdef HAS_XINERAMA
-                    }
-#endif
+                  ArrangeEwinCentered(ewin, 1);
                }
              return;
           }
@@ -1237,59 +1185,7 @@ doSMExit(void *params)
         ewin = FindEwinByDialog(d);
         if (ewin)
           {
-#ifdef HAS_XINERAMA
-             if (xinerama_active)
-               {
-                  Window              rt, ch;
-                  XineramaScreenInfo *screens;
-                  int                 pointer_x, pointer_y;
-                  int                 num;
-                  int                 d;
-                  int                 i;
-                  unsigned int        ud;
-
-                  XQueryPointer(disp, root.win, &rt, &ch, &pointer_x,
-                                &pointer_y, &d, &d, &ud);
-                  screens = XineramaQueryScreens(disp, &num);
-                  for (i = 0; i < num; i++)
-                    {
-                       if (pointer_x >= screens[i].x_org)
-                         {
-                            if (pointer_x <=
-                                (screens[i].width + screens[i].x_org))
-                              {
-                                 if (pointer_y >= screens[i].y_org)
-                                   {
-                                      if (pointer_y <=
-                                          (screens[i].height +
-                                           screens[i].y_org))
-                                        {
-                                           ewin->x =
-                                               ((screens[i].width - ewin->w) /
-                                                2) + screens[i].x_org;
-                                           ewin->y =
-                                               ((screens[i].height - ewin->h) /
-                                                2) + screens[i].y_org;
-                                        }
-                                   }
-                              }
-                         }
-                    }
-                  XFree(screens);
-                  MoveEwin(ewin, ewin->x, ewin->y);
-                  FocusToEWin(ewin);
-               }
-             else
-               {
-#endif
-
-                  MoveEwin(ewin, ((root.w - (ewin->w)) / 2),
-                           ((root.h - (ewin->h)) / 2));
-                  FocusToEWin(ewin);
-#ifdef HAS_XINERAMA
-               }
-#endif
-
+             ArrangeEwinCentered(ewin, 1);
           }
         return;
      }

@@ -349,51 +349,9 @@ ShowMenu(Menu * m, char noshow)
              int                 x_origin;
              int                 y_origin;
 
-             width = root.w;
-             height = root.h;
-             x_origin = 0;
-             y_origin = 0;
-
-#ifdef HAS_XINERAMA
-             if (xinerama_active)
-               {
-                  Window              rt, ch;
-                  XineramaScreenInfo *screens;
-                  int                 pointer_x, pointer_y;
-                  int                 num;
-                  int                 d;
-                  unsigned int        ud;
-                  int                 i;
-
-                  XQueryPointer(disp, root.win, &rt, &ch, &pointer_x,
-                                &pointer_y, &d, &d, &ud);
-                  screens = XineramaQueryScreens(disp, &num);
-                  for (i = 0; i < num; i++)
-                    {
-                       if (pointer_x >= screens[i].x_org)
-                         {
-                            if (pointer_x <=
-                                (screens[i].width + screens[i].x_org))
-                              {
-                                 if (pointer_y >= screens[i].y_org)
-                                   {
-                                      if (pointer_y <=
-                                          (screens[i].height +
-                                           screens[i].y_org))
-                                        {
-                                           x_origin = screens[i].x_org;
-                                           y_origin = screens[i].y_org;
-                                           width = screens[i].width;
-                                           height = screens[i].height;
-                                           head_num = i;
-                                        }
-                                   }
-                              }
-                         }
-                    }
-                  XFree(screens);
-               }
-#endif
+             head_num =
+                 GetPointerScreenGeometry(&x_origin, &y_origin, &width,
+                                          &height);
 
              if (mode.x - x - ((int)mw / 2) > (x_origin + width))
                 wx = x_origin + (int)b->border.left;

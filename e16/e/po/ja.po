@@ -10,7 +10,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: enlightenment 0.16.5\n"
-"POT-Creation-Date: 2003-05-14 19:54+0200\n"
+"POT-Creation-Date: 2003-05-16 18:52+0200\n"
 "PO-Revision-Date: 2001-01-07 14:00+0900\n"
 "Last-Translator: Enlightenment-jp Mailing List <enlightenment-jp@UaUa.ORG>\n"
 "Language-Team: Japanese <ja@li.org>\n"
@@ -18,7 +18,7 @@ msgstr ""
 "Content-Type: text/plain; charset=EUC-JP\n"
 "Content-Transfer-Encoding: 8bit\n"
 
-#: src/actions.c:273 src/borders.c:2577 src/buttons.c:127 src/cmclass.c:97
+#: src/actions.c:273 src/borders.c:2389 src/buttons.c:127 src/cmclass.c:97
 #: src/cursors.c:120 src/desktops.c:379 src/iclass.c:111 src/tclass.c:86
 #: src/tooltips.c:1026
 #, c-format
@@ -117,16 +117,16 @@ msgstr ""
 "このプログラムは実行できません。\n"
 "このファイルは通常のファイルではありません。\n"
 
-#: src/actions.c:3308
+#: src/actions.c:3310
 #, c-format
 msgid "About Enlightenment %s"
 msgstr "Enlightenment %s について"
 
-#: src/actions.c:3324
+#: src/actions.c:3326
 msgid "Welcome to the "
 msgstr ""
 
-#: src/actions.c:3324
+#: src/actions.c:3326
 msgid ""
 " version\n"
 "of the Enlightenment window manager.\n"
@@ -140,7 +140,7 @@ msgid ""
 "This code last updated on:\n"
 msgstr ""
 
-#: src/actions.c:3334
+#: src/actions.c:3336
 msgid ""
 "\n"
 "\n"
@@ -150,7 +150,7 @@ msgid ""
 "Mandrake - mandrake@mandrake.net\n"
 msgstr ""
 
-#: src/actions.c:3339 src/dialog.c:304 src/groups.c:693 src/settings.c:329
+#: src/actions.c:3341 src/dialog.c:304 src/groups.c:693 src/settings.c:329
 #: src/settings.c:599 src/settings.c:971 src/settings.c:1179
 #: src/settings.c:1416 src/settings.c:1560 src/settings.c:1663
 #: src/settings.c:1771 src/settings.c:1855 src/settings.c:1936
@@ -160,11 +160,11 @@ msgstr ""
 msgid "OK"
 msgstr "了解"
 
-#: src/actions.c:3495
+#: src/actions.c:3497
 msgid "  Pick the group the window will belong to:  \n"
 msgstr " このウィンドウが属するグループを選択してください:  \n"
 
-#: src/actions.c:3849
+#: src/actions.c:3851
 msgid ""
 "\n"
 "  There's no current group at the moment.  \n"
@@ -184,23 +184,23 @@ msgstr ""
 "  このウィンドウが属する別のグループを選択してください :\n"
 "\n"
 
-#: src/actions.c:3882
+#: src/actions.c:3884
 msgid "   Select the group to remove the window from.  "
 msgstr " このグループからとりのぞくウィンドウを選択してください。"
 
-#: src/actions.c:3906
+#: src/actions.c:3908
 msgid "  Select the group to break  "
 msgstr " 破棄するグループを選択してください。 "
 
-#: src/actions.c:3934
+#: src/actions.c:3936
 msgid "You have been warned about the dangers of Zoom mode\n"
 msgstr "Zoom モードの危険性は以前に警告してあります。\n"
 
-#: src/actions.c:3937
+#: src/actions.c:3939
 msgid "Warning !!!"
 msgstr ""
 
-#: src/actions.c:3938
+#: src/actions.c:3940
 msgid ""
 "This feature is heavily reliant on a feature of your\n"
 "X Server called the Vid Mode Extension. This feature exists\n"
@@ -244,7 +244,7 @@ msgstr "再起動"
 msgid "Exit"
 msgstr "終了"
 
-#: src/borders.c:2579
+#: src/borders.c:2391
 msgid "Border Error!"
 msgstr "border エラー"
 
@@ -1208,7 +1208,7 @@ msgstr ""
 "\n"
 "たぶんスタートアップファイルが正しく編集されていない可能性があります。\n"
 
-#: src/handlers.c:231 src/session.c:1226
+#: src/handlers.c:231 src/session.c:1174
 msgid "Are you sure?"
 msgstr "いいですか?"
 
@@ -1488,24 +1488,24 @@ msgstr ""
 "ポインタの値は %x です。\n"
 "このエラーは %s の %d 行で生じました。\n"
 
-#: src/menus.c:1974
+#: src/menus.c:1932
 msgid "Go to this Desktop"
 msgstr "このデスクトップに移動"
 
-#: src/menus.c:1990
+#: src/menus.c:1948
 #, c-format
 msgid "Desktop %i"
 msgstr "デスクトップ %i"
 
-#: src/menus.c:2053
+#: src/menus.c:2011
 msgid "Show/Hide this group"
 msgstr "このグループを 表示/非表示 にする"
 
-#: src/menus.c:2056
+#: src/menus.c:2014
 msgid "Iconify this group"
 msgstr "このグループをアイコンに"
 
-#: src/menus.c:2068
+#: src/menus.c:2026
 #, c-format
 msgid "Group %i"
 msgstr "グループ %i"
@@ -1828,7 +1828,7 @@ msgstr ""
 "オートセーブデータを書き込み時点でエラーが起きました。\n"
 "ファイルシステムに問題があります。\n"
 
-#: src/session.c:1087
+#: src/session.c:1035
 msgid ""
 "ERROR!\n"
 "\n"
@@ -1854,7 +1854,7 @@ msgstr ""
 "\n"
 "...たぶん。\n"
 
-#: src/session.c:1228
+#: src/session.c:1176
 msgid ""
 "\n"
 "\n"
@@ -1868,11 +1868,11 @@ msgstr ""
 "\n"
 "\n"
 
-#: src/session.c:1231
+#: src/session.c:1179
 msgid "  Yes, Log Out  "
 msgstr " はい、ログアウトします"
 
-#: src/session.c:1232
+#: src/session.c:1180
 msgid "  No  "
 msgstr " いいえ、ログアウトしません "
 

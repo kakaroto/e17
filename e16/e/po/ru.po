@@ -5,7 +5,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: enlightenment 0.16.5\n"
-"POT-Creation-Date: 2003-05-14 19:54+0200\n"
+"POT-Creation-Date: 2003-05-16 18:52+0200\n"
 "PO-Revision-Date: 2000-01-14 20:43-0300\n"
 "Last-Translator: Vladimir STEPANOV <stepanov@bird.iki.rssi.ru>\n"
 "Language-Team: Russian <ru@li.org>\n"
@@ -13,7 +13,7 @@ msgstr ""
 "Content-Type: text/plain; charset=koi8-r\n"
 "Content-Transfer-Encoding: 8bit\n"
 
-#: src/actions.c:273 src/borders.c:2577 src/buttons.c:127 src/cmclass.c:97
+#: src/actions.c:273 src/borders.c:2389 src/buttons.c:127 src/cmclass.c:97
 #: src/cursors.c:120 src/desktops.c:379 src/iclass.c:111 src/tclass.c:86
 #: src/tooltips.c:1026
 #, c-format
@@ -116,16 +116,16 @@ msgstr ""
 "Программа не может быть выполнена,\n"
 "так как файл не является обычным файлом.\n"
 
-#: src/actions.c:3308
+#: src/actions.c:3310
 #, c-format
 msgid "About Enlightenment %s"
 msgstr "Enlightenment %s"
 
-#: src/actions.c:3324
+#: src/actions.c:3326
 msgid "Welcome to the "
 msgstr "Добро пожаловать в "
 
-#: src/actions.c:3324
+#: src/actions.c:3326
 msgid ""
 " version\n"
 "of the Enlightenment window manager.\n"
@@ -139,7 +139,7 @@ msgid ""
 "This code last updated on:\n"
 msgstr ""
 
-#: src/actions.c:3334
+#: src/actions.c:3336
 msgid ""
 "\n"
 "\n"
@@ -149,7 +149,7 @@ msgid ""
 "Mandrake - mandrake@mandrake.net\n"
 msgstr ""
 
-#: src/actions.c:3339 src/dialog.c:304 src/groups.c:693 src/settings.c:329
+#: src/actions.c:3341 src/dialog.c:304 src/groups.c:693 src/settings.c:329
 #: src/settings.c:599 src/settings.c:971 src/settings.c:1179
 #: src/settings.c:1416 src/settings.c:1560 src/settings.c:1663
 #: src/settings.c:1771 src/settings.c:1855 src/settings.c:1936
@@ -159,11 +159,11 @@ msgstr ""
 msgid "OK"
 msgstr ""
 
-#: src/actions.c:3495
+#: src/actions.c:3497
 msgid "  Pick the group the window will belong to:  \n"
 msgstr "  Выберите группу, к которой будет принадлежать окно:  \n"
 
-#: src/actions.c:3849
+#: src/actions.c:3851
 msgid ""
 "\n"
 "  There's no current group at the moment.  \n"
@@ -183,23 +183,23 @@ msgstr ""
 "  Выберите другую группу, к которой будет принадлежать окно, здесь:  \n"
 "\n"
 
-#: src/actions.c:3882
+#: src/actions.c:3884
 msgid "   Select the group to remove the window from.  "
 msgstr "   Выберите группу, из которой нужно убрать это окно.  "
 
-#: src/actions.c:3906
+#: src/actions.c:3908
 msgid "  Select the group to break  "
 msgstr "  Выберите группу, которую хотите разорвать  "
 
-#: src/actions.c:3934
+#: src/actions.c:3936
 msgid "You have been warned about the dangers of Zoom mode\n"
 msgstr "Вас предупреждали об опасностях режима изменения разрешения\n"
 
-#: src/actions.c:3937
+#: src/actions.c:3939
 msgid "Warning !!!"
 msgstr "Предупреждение !!!"
 
-#: src/actions.c:3938
+#: src/actions.c:3940
 msgid ""
 "This feature is heavily reliant on a feature of your\n"
 "X Server called the Vid Mode Extension. This feature exists\n"
@@ -245,7 +245,7 @@ msgstr "Перезапуск"
 msgid "Exit"
 msgstr "Выход"
 
-#: src/borders.c:2579
+#: src/borders.c:2391
 msgid "Border Error!"
 msgstr ""
 
@@ -1224,7 +1224,7 @@ msgstr ""
 "\n"
 "ВОЗМОЖНО, Ваши файлы будут отредактированы неверно.\n"
 
-#: src/handlers.c:231 src/session.c:1226
+#: src/handlers.c:231 src/session.c:1174
 msgid "Are you sure?"
 msgstr "Вы уверены?"
 
@@ -1507,24 +1507,24 @@ msgstr ""
 "pointer = %x.\n"
 "Ошибка возникла в %s, строка %d.\n"
 
-#: src/menus.c:1974
+#: src/menus.c:1932
 msgid "Go to this Desktop"
 msgstr "Перейти на этот рабочий стол"
 
-#: src/menus.c:1990
+#: src/menus.c:1948
 #, c-format
 msgid "Desktop %i"
 msgstr "Рабочий стол %i"
 
-#: src/menus.c:2053
+#: src/menus.c:2011
 msgid "Show/Hide this group"
 msgstr "Показать/спрятать эту группу"
 
-#: src/menus.c:2056
+#: src/menus.c:2014
 msgid "Iconify this group"
 msgstr "Свернуть эту группу"
 
-#: src/menus.c:2068
+#: src/menus.c:2026
 #, c-format
 msgid "Group %i"
 msgstr "Группа %i"
@@ -1849,7 +1849,7 @@ msgstr ""
 "Возможные причины: закончилось место на диске, отсутствие прав\n"
 "на запись, а также другие проблемы файловой системы.\n"
 
-#: src/session.c:1087
+#: src/session.c:1035
 msgid ""
 "ERROR!\n"
 "\n"
@@ -1875,7 +1875,7 @@ msgstr ""
 "\n"
 "... надеюсь.\n"
 
-#: src/session.c:1228
+#: src/session.c:1176
 msgid ""
 "\n"
 "\n"
@@ -1889,11 +1889,11 @@ msgstr ""
 "\n"
 "\n"
 
-#: src/session.c:1231
+#: src/session.c:1179
 msgid "  Yes, Log Out  "
 msgstr "  Да, хочу  "
 
-#: src/session.c:1232
+#: src/session.c:1180
 msgid "  No  "
 msgstr "  Нет  "
 

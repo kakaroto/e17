@@ -5,7 +5,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: enlightenment 0.16.5\n"
-"POT-Creation-Date: 2003-05-14 19:54+0200\n"
+"POT-Creation-Date: 2003-05-16 18:52+0200\n"
 "PO-Revision-Date: 2000-01-05 00:25+0100\n"
 "Last-Translator: Sylvain GIL <tootella@tootella.com>\n"
 "Language-Team: French <fr@li.org>\n"
@@ -13,7 +13,7 @@ msgstr ""
 "Content-Type: text/plain; charset=iso-8859-1\n"
 "Content-Transfer-Encoding: 8bit\n"
 
-#: src/actions.c:273 src/borders.c:2577 src/buttons.c:127 src/cmclass.c:97
+#: src/actions.c:273 src/borders.c:2389 src/buttons.c:127 src/cmclass.c:97
 #: src/cursors.c:120 src/desktops.c:379 src/iclass.c:111 src/tclass.c:86
 #: src/tooltips.c:1026
 #, c-format
@@ -111,16 +111,16 @@ msgstr ""
 "Ce programme ne peut pas être éxécuté.\n"
 "Le fichier n'est pas un fichier correct.\n"
 
-#: src/actions.c:3308
+#: src/actions.c:3310
 #, c-format
 msgid "About Enlightenment %s"
 msgstr "A propos d'Enlightenment %s"
 
-#: src/actions.c:3324
+#: src/actions.c:3326
 msgid "Welcome to the "
 msgstr "Bienvenue dans le"
 
-#: src/actions.c:3324
+#: src/actions.c:3326
 msgid ""
 " version\n"
 "of the Enlightenment window manager.\n"
@@ -134,7 +134,7 @@ msgid ""
 "This code last updated on:\n"
 msgstr ""
 
-#: src/actions.c:3334
+#: src/actions.c:3336
 msgid ""
 "\n"
 "\n"
@@ -144,7 +144,7 @@ msgid ""
 "Mandrake - mandrake@mandrake.net\n"
 msgstr ""
 
-#: src/actions.c:3339 src/dialog.c:304 src/groups.c:693 src/settings.c:329
+#: src/actions.c:3341 src/dialog.c:304 src/groups.c:693 src/settings.c:329
 #: src/settings.c:599 src/settings.c:971 src/settings.c:1179
 #: src/settings.c:1416 src/settings.c:1560 src/settings.c:1663
 #: src/settings.c:1771 src/settings.c:1855 src/settings.c:1936
@@ -154,11 +154,11 @@ msgstr ""
 msgid "OK"
 msgstr "Confirmer"
 
-#: src/actions.c:3495
+#: src/actions.c:3497
 msgid "  Pick the group the window will belong to:  \n"
 msgstr "  Choisissez le groupe auquel la fenêtre appartiendra : \n"
 
-#: src/actions.c:3849
+#: src/actions.c:3851
 msgid ""
 "\n"
 "  There's no current group at the moment.  \n"
@@ -178,23 +178,23 @@ msgstr ""
 "  Choisissez un autre groupe auquel la fenêtre appartiendra :  \n"
 "\n"
 
-#: src/actions.c:3882
+#: src/actions.c:3884
 msgid "   Select the group to remove the window from.  "
 msgstr "Choisissez le groupe duquel la fenêtre sera retirée.  "
 
-#: src/actions.c:3906
+#: src/actions.c:3908
 msgid "  Select the group to break  "
 msgstr "  Sélectionnez le groupe à détruire  "
 
-#: src/actions.c:3934
+#: src/actions.c:3936
 msgid "You have been warned about the dangers of Zoom mode\n"
 msgstr "Vous avez été averti des risques du mode Zoom\n"
 
-#: src/actions.c:3937
+#: src/actions.c:3939
 msgid "Warning !!!"
 msgstr "Avertissement !"
 
-#: src/actions.c:3938
+#: src/actions.c:3940
 msgid ""
 "This feature is heavily reliant on a feature of your\n"
 "X Server called the Vid Mode Extension. This feature exists\n"
@@ -235,7 +235,7 @@ msgstr "Redémarrer"
 msgid "Exit"
 msgstr "Sortir"
 
-#: src/borders.c:2579
+#: src/borders.c:2391
 msgid "Border Error!"
 msgstr ""
 
@@ -1164,7 +1164,7 @@ msgstr ""
 "\n"
 "AVERTISSEMENT AVERTISSEMENT AVERTISSEMENT !\n"
 
-#: src/handlers.c:231 src/session.c:1226
+#: src/handlers.c:231 src/session.c:1174
 msgid "Are you sure?"
 msgstr "Êtes vous sûrs ?"
 
@@ -1446,24 +1446,24 @@ msgstr ""
 "La valeur du pointeur était %x.\n"
 "L'erreur a eu lieu dans %s, ligne %d.\n"
 
-#: src/menus.c:1974
+#: src/menus.c:1932
 msgid "Go to this Desktop"
 msgstr "Aller à ce bureau"
 
-#: src/menus.c:1990
+#: src/menus.c:1948
 #, c-format
 msgid "Desktop %i"
 msgstr "Bureau %i"
 
-#: src/menus.c:2053
+#: src/menus.c:2011
 msgid "Show/Hide this group"
 msgstr "Montrer/Cacher ce groupe"
 
-#: src/menus.c:2056
+#: src/menus.c:2014
 msgid "Iconify this group"
 msgstr "Iconifier ce groupe"
 
-#: src/menus.c:2068
+#: src/menus.c:2026
 #, c-format
 msgid "Group %i"
 msgstr "Groupe %i"
@@ -1778,7 +1778,7 @@ msgstr ""
 "Peut-être que vous n'avez plus d'espace disque, oubien pas les\n"
 "privilèges nécessaires pour écrire dans votre système de fichiers.\n"
 
-#: src/session.c:1087
+#: src/session.c:1035
 msgid ""
 "ERROR!\n"
 "\n"
@@ -1804,7 +1804,7 @@ msgstr ""
 "\n"
 "... Enfin j'espère.\n"
 
-#: src/session.c:1228
+#: src/session.c:1176
 msgid ""
 "\n"
 "\n"
@@ -1818,11 +1818,11 @@ msgstr ""
 "\n"
 "\n"
 
-#: src/session.c:1231
+#: src/session.c:1179
 msgid "  Yes, Log Out  "
 msgstr "Oui, quitter"
 
-#: src/session.c:1232
+#: src/session.c:1180
 msgid "  No  "
 msgstr "  Non  "
 
