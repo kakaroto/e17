@@ -300,7 +300,7 @@ init_montage_mode(void)
 
    if (opt.display)
    {
-      winwid = winwidget_create_from_image(im_main, PACKAGE " [monage mode]");
+      winwid = winwidget_create_from_image(im_main, PACKAGE " [montage mode]");
       winwidget_show(winwid);
    }
    else
