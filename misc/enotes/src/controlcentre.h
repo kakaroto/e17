@@ -37,7 +37,7 @@
 
 /* Part */
 #define CC_PART "ControlCenter"
-#define CC_EDJE "%s/themes/%s.eet"
+#define CC_EDJE "%s/themes/%s.edj"
 
 /* Callbacks */
 #define EDJE_SIGNAL_CC_CLOSE "ENOTES_QUIT"

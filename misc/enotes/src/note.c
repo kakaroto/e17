@@ -227,7 +227,7 @@ setup_note(Evas_List ** note, int x, int y, int width, int height,
 	/* Setup the Edje */
 	p->edje = edje_object_add(p->evas);
 	snprintf(edjefn,
-		 PATH_MAX, PACKAGE_DATA_DIR "/themes/%s.eet", main_config->theme);
+		 PATH_MAX, PACKAGE_DATA_DIR "/themes/%s.edj", main_config->theme);
 	edje_object_file_set(p->edje, edjefn, NOTE_PART);
 	evas_object_name_set(p->edje, "edje");
 	evas_object_move(p->edje, 0, 0);
@@ -622,7 +622,7 @@ notes_update_themes(void)
 	char           *edjefn = malloc(PATH_MAX);
 
 	snprintf(edjefn,
-		 PATH_MAX, PACKAGE_DATA_DIR "/themes/%s.eet", main_config->theme);
+		 PATH_MAX, PACKAGE_DATA_DIR "/themes/%s.edj", main_config->theme);
 
 	working = get_cycle_begin();
 	if (working != NULL) {

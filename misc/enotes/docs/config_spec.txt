@@ -11,7 +11,7 @@ Default: software
 ---
 
 Tag: theme
-Brief: Set the theme to be used by enotes, minus the .eet extention.
+Brief: Set the theme to be used by enotes, minus the .edj extention.
 Required: Yes
 Type: String
 Default: atmos

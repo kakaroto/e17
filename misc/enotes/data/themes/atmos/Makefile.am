@@ -1,17 +1,17 @@
 THEMES = atmos
 EDCS = $(THEMES:%=%.edc)
-EETS = $(THEMES:%=%.eet)
-SUFFIXES = .edc .eet
+EDJS = $(THEMES:%=%.edj)
+SUFFIXES = .edc .edj
 
-CLEANFILES = $(EETS)
+CLEANFILES = $(EDJS)
 EXTRA_DIST = $(EDCS)
 
 themedir = $(pkgdatadir)/themes
-theme_DATA = $(EETS)
+theme_DATA = $(EDJS)
 
 all: $(EDCS)
 
-.edc.eet:
+.edc.edj:
 	edje_cc -v -id images $< $@
 
 

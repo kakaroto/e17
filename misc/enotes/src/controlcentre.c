@@ -297,7 +297,7 @@ void cc_update_theme(){
 	if (!controlcentre)return;
 
 	edjefn = malloc(PATH_MAX);
-	snprintf(edjefn, PATH_MAX, PACKAGE_DATA_DIR "/themes/%s.eet", main_config->theme);
+	snprintf(edjefn, PATH_MAX, PACKAGE_DATA_DIR "/themes/%s.edj", main_config->theme);
 	edje_object_file_set(controlcentre->edje, edjefn, CC_PART);
 	free(edjefn);
 
