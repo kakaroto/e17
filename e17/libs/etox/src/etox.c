@@ -9,7 +9,6 @@ _etox_rebuild(Etox e)
 #endif
 {
   _etox_create_etox_objects(e);
-  _etox_create_evas_objects(e);
   _etox_refresh(e);
 }
 
@@ -139,8 +138,12 @@ etox_new(Evas evas, char *name)
   e->bits = NULL;
   e->obstacles = NULL;
 
+  e->etox_object_bits.list = NULL;
+  e->etox_object_bits.dirty = 1;
+  
   e->etox_objects.list = NULL;
   e->etox_objects.h = 0.0;
+  e->etox_objects.dirty = 1;
   e->evas_objects.list = NULL;
 
   return e;
@@ -267,6 +270,7 @@ etox_resize(Etox e, double w, double h)
   e->w = w;
   e->h = h;
 
+  e->etox_objects.dirty = 1;
   _etox_rebuild(e);
 }
 

@@ -114,6 +114,42 @@ _etox_object_bit_new(void)
   return bit;
 }
 
+Etox_Object_Bit 
+_etox_object_bit_clone(Etox_Object_Bit old)
+{
+  Etox_Object_Bit bit;
+
+  bit = _etox_object_bit_new();
+  bit->type = old->type;
+  bit->w = old->w;
+  bit->h = old->h;
+  if (bit->evas_objects_list.fg)
+     bit->evas_objects_list.fg = bit->evas_objects_list.fg;
+  if (bit->evas_objects_list.sh)
+     bit->evas_objects_list.sh = bit->evas_objects_list.sh;
+  if (bit->evas_objects_list.ol)
+     bit->evas_objects_list.ol = bit->evas_objects_list.ol;
+  
+  switch (bit->type)
+    {
+    case ETOX_OBJECT_BIT_TYPE_STRING:
+      bit->body = _etox_object_string_clone((Etox_Object_String) old->body);
+      break;
+    case ETOX_OBJECT_BIT_TYPE_NEWLINE:
+      bit->body = _etox_object_newline_new();
+      break;
+    case ETOX_OBJECT_BIT_TYPE_TAB:
+      bit->body = _etox_object_tab_clone((Etox_Object_Tab) old->body);
+      break;
+    default:
+      D_PRINT("Unkown Etox_Object_Bit, not cloned!\n");
+      break;
+    }
+
+  return bit;
+}
+
+
 void
 _etox_object_bit_free(Etox_Object_Bit bit)
 {
@@ -337,6 +373,25 @@ _etox_object_string_new(char *str, Etox_Align align,
   return string;
 }
 
+Etox_Object_String
+_etox_object_string_clone(Etox_Object_String old)
+{
+  Etox_Object_String string;
+
+  if (!old)
+    return NULL;
+
+  string = (Etox_Object_String) malloc(sizeof(struct _Etox_Object_String));
+  string->str = strdup(old->str);
+  string->align = old->align;
+  string->callback = old->callback;
+  string->color = old->color;
+  string->font = old->font;
+  string->style = old->style;
+
+  return string;
+}
+
 void
 _etox_object_string_free(Etox_Object_String string)
 {
@@ -345,6 +400,16 @@ _etox_object_string_free(Etox_Object_String string)
   IF_FREE(string->str);
   FREE(string);
 }
+
+void
+_etox_object_string_set_string(Etox_Object_String string, char *t)
+{
+  if (!string)
+    return;
+  IF_FREE(string->str);
+  string->str = t;
+}
+
 
 Etox_Object_Newline
 _etox_object_newline_new(void)
@@ -378,6 +443,15 @@ _etox_object_tab_new(Etox_Align align,
 
   return tab;
 }
+
+Etox_Object_Tab
+_etox_object_tab_clone(Etox_Object_Tab old)
+{
+  Etox_Object_Tab tab;
+  tab = _etox_object_tab_new(old->align, old->callback, old->font);
+  return tab;
+}
+
 
 void
 _etox_object_tab_free(Etox_Object_Tab tab)

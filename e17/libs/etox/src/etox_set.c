@@ -173,6 +173,7 @@ etox_set_text(Etox e, ...)
 
   va_end(ap);
 
+  e->etox_object_bits.dirty = 1;
   _etox_rebuild(e); 
 }
 

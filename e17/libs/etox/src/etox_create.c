@@ -5,7 +5,8 @@
 static int __get_next_all_bits(Etox e, Ewd_List *bits_list, Etox_All_Bits bits);
 static char *__my_strchr(char *str, int *c);
 static Ewd_List *__get_etox_object_bits_list(Etox e);
-static int __check_if_in_obstacle_from_sort(Etox e, Etox_Sort sort, double x);
+static int __etox_get_next_obstacle_to_the_right(Etox e, Etox_Sort sort, 
+                                                 double x, int *inside);
 static Etox_Object __create_etox_object(Etox e, double *x, double *y);
 static int __compare_obstacles(void *ptr1, void *ptr2);
 static Ewd_List *__add_as_many_bits_as_possible_from_list(Etox e, 
@@ -120,140 +121,122 @@ __my_strchr(char *str, int *c)
 static Ewd_List *
 __get_etox_object_bits_list(Etox e)
 {
-  Ewd_List *bit_list = NULL;
+  Ewd_List *bit_list = NULL, *ret = NULL;
+  void *temp;
   struct _Etox_All_Bits bits;
   Etox_Object_Bit obj_bit;
   char *p = NULL, *q = NULL, *r = NULL;
   int c;
 
   if (!e || !e->bits)
-    return NULL;
+     return NULL;
 
-  /* put defaults.. */
-  bits.align = e->def.align;
-  bits.callback = e->def.callback;
-  bits.color = e->def.color;
-  bits.font = e->def.font;
-  bits.style = e->def.style;
-  bits.text = e->def.text;
+  /* only rebuild this list when the underlying bit list changes. */
+  if (e->etox_object_bits.dirty)
+  { 
+     bit_list = ewd_list_new();
+     ewd_list_set_free_cb(bit_list,EWD_FREE_CB(_etox_object_bit_free));
 
-  /* We don't need to free the bits because they'll be move to the
+     /* put defaults.. */
+     bits.align = e->def.align;
+     bits.callback = e->def.callback;
+     bits.color = e->def.color;
+     bits.font = e->def.font;
+     bits.style = e->def.style;
+     bits.text = e->def.text;
+
+     ewd_list_goto_first(e->bits);
+     while (__get_next_all_bits(e, e->bits, &bits))
+     {
+	if ((p = __my_strchr(bits.text->str, &c)))
+	{
+	   r = bits.text->str;
+	   do
+	   {
+	      IF_FREE(q);
+	      q = etox_str_chop_off_ending_string(r, p);
+	      obj_bit = _etox_object_bit_new();
+	      _etox_object_bit_set_body(e, obj_bit,
+		    _etox_object_string_new(q,
+		       bits.align,
+		       bits.callback,
+		       bits.color,
+		       bits.font,
+		       bits.style),
+		    ETOX_OBJECT_BIT_TYPE_STRING);
+	      ewd_list_append(bit_list, obj_bit);
+	      switch (c)
+	      {
+		 case '\n':
+		    obj_bit = _etox_object_bit_new();
+		    _etox_object_bit_set_body(e, obj_bit, 
+			  _etox_object_newline_new(),
+			  ETOX_OBJECT_BIT_TYPE_NEWLINE);
+		    ewd_list_append(bit_list, obj_bit);
+		    break;
+		 case '\t':
+		    obj_bit = _etox_object_bit_new();
+		    _etox_object_bit_set_body(e, obj_bit, 
+			  _etox_object_tab_new(bits.align,
+			     bits.callback,
+			     bits.font),
+			  ETOX_OBJECT_BIT_TYPE_TAB);
+		    ewd_list_append(bit_list, obj_bit);
+		    break;
+		 default:
+		    D_PRINT("Error!\n");
+		    break;
+	      }
+
+	      r = ++p;
+
+	   } while ((p = __my_strchr(r, &c)));
+
+	   if ((p = strrchr(bits.text->str, c)) && strlen(p))
+	   {
+	      p++;
+	      obj_bit = _etox_object_bit_new();
+	      _etox_object_bit_set_body(e, obj_bit,
+		    _etox_object_string_new(p,
+		       bits.align,
+		       bits.callback,
+		       bits.color,
+		       bits.font,
+		       bits.style),
+		    ETOX_OBJECT_BIT_TYPE_STRING);
+	      ewd_list_append(bit_list, obj_bit);              
+	   }
+	}
+	else
+	{
+	   obj_bit = _etox_object_bit_new();
+	   _etox_object_bit_set_body(e, obj_bit,
+		 _etox_object_string_new(bits.text->str,
+		    bits.align,
+		    bits.callback,
+		    bits.color,
+		    bits.font,
+		    bits.style),
+		 ETOX_OBJECT_BIT_TYPE_STRING);
+	   ewd_list_append(bit_list, obj_bit);
+	}
+     }
+     e->etox_object_bits.list = bit_list;
+  }
+  e->etox_object_bits.dirty = 0;
+  
+  /* 
+   * Return a copy of the list because it will be consumed.
+   * We don't need to free the bits because they'll be move to the
    * Etox_Objects..
    */
-  bit_list = ewd_list_new();
-  ewd_list_set_free_cb(bit_list, NULL);
-
-  /* put defaults.. */
-  bits.align = e->def.align;
-  bits.callback = e->def.callback;
-  bits.color = e->def.color;
-  bits.font = e->def.font;
-  bits.style = e->def.style;
-  bits.text = e->def.text;
-
-  ewd_list_goto_first(e->bits);
-  while (__get_next_all_bits(e, e->bits, &bits))
-    {
-      if ((p = __my_strchr(bits.text->str, &c)))
-        {
-          r = bits.text->str;
-          do
-            {
-              IF_FREE(q);
-              q = etox_str_chop_off_ending_string(r, p);
-              obj_bit = _etox_object_bit_new();
-              _etox_object_bit_set_body(e, obj_bit,
-                                        _etox_object_string_new(q,
-                                                                bits.align,
-                                                                bits.callback,
-                                                                bits.color,
-                                                                bits.font,
-                                                                bits.style),
-                                        ETOX_OBJECT_BIT_TYPE_STRING);
-              ewd_list_append(bit_list, obj_bit);
-              switch (c)
-              {
-                case '\n':
-                  obj_bit = _etox_object_bit_new();
-                  _etox_object_bit_set_body(e, obj_bit, 
-                                            _etox_object_newline_new(),
-                                            ETOX_OBJECT_BIT_TYPE_NEWLINE);
-                  ewd_list_append(bit_list, obj_bit);
-                break;
-                case '\t':
-                  obj_bit = _etox_object_bit_new();
-                  _etox_object_bit_set_body(e, obj_bit, 
-                                            _etox_object_tab_new(bits.align,
-                                                                 bits.callback,
-                                                                 bits.font),
-                                            ETOX_OBJECT_BIT_TYPE_TAB);
-                  ewd_list_append(bit_list, obj_bit);
-                break;
-                default:
-                  D_PRINT("Error!\n");
-                break;
-              }
-
-              r = ++p;
-
-            } while ((p = __my_strchr(r, &c)));
-          if ((p = strrchr(bits.text->str, c)) && strlen(p))
-            {
-              p++;
-              obj_bit = _etox_object_bit_new();
-              _etox_object_bit_set_body(e, obj_bit,
-                                        _etox_object_string_new(p,
-                                                                bits.align,
-                                                                bits.callback,
-                                                                bits.color,
-                                                                bits.font,
-                                                                bits.style),
-                                        ETOX_OBJECT_BIT_TYPE_STRING);
-              ewd_list_append(bit_list, obj_bit);              
-            }
-        }
-      else
-        {
-          obj_bit = _etox_object_bit_new();
-          _etox_object_bit_set_body(e, obj_bit,
-                                    _etox_object_string_new(bits.text->str,
-                                                            bits.align,
-                                                            bits.callback,
-                                                            bits.color,
-                                                            bits.font,
-                                                            bits.style),
-                                    ETOX_OBJECT_BIT_TYPE_STRING);
-          ewd_list_append(bit_list, obj_bit);
-        }
-    }
-
-  return bit_list;
-}
-
-static int
-__check_if_in_obstacle_from_sort(Etox e, Etox_Sort sort, double x)
-{
-  Etox_Obstacle obst;
-  int i;
-
-  if (!e || !sort)
-    return -1;
-
-  /* this func returns the index in the sort from the obstacle */
-
-  for (i = 0; i <= _etox_sort_get_size(sort); i++)
-    {
-      obst = (Etox_Obstacle) _etox_sort_get_data(sort, i);
-
-      if ((ET_X_TO_EV(x) > obst->x) &&
-          (ET_X_TO_EV(x) < (obst->x + obst->w)))
-        {
-          /* we're in an obstacle */
-          return i;
-        }
-    }
-
-  return -1;
+  ret = ewd_list_new();
+  ewd_list_set_free_cb(ret, NULL);
+  ewd_list_goto_first(e->etox_object_bits.list);
+  while ((temp = ewd_list_next(e->etox_object_bits.list)))
+     ewd_list_append(ret, temp);
+  
+  return ret;
 }
 
 static int
@@ -275,16 +258,73 @@ __compare_obstacles(void *ptr1, void *ptr2)
     return 0;
 }
 
+Ewd_List *
+__etox_get_obstacles_at_height(Etox e, int height)
+{
+   Ewd_List *obst_list = NULL;
+   Etox_Obstacle obst;
+
+   obst_list = ewd_list_new();
+   ewd_list_set_free_cb(obst_list, NULL);
+
+   ewd_list_goto_first(e->obstacles);
+   while ((obst = (Etox_Obstacle) ewd_list_next(e->obstacles)))
+   {
+      if ( ((ET_Y_TO_EV(height) > obst->y) &&
+	       (ET_Y_TO_EV(height) < (obst->y + obst->h))) ||
+	    ((ET_Y_TO_EV(height + e->etox_objects.h) > obst->y) &&
+	     (ET_Y_TO_EV(height + e->etox_objects.h) < (obst->y + obst->h))) ||
+	    ((ET_Y_TO_EV(height) < obst->y) &&
+	     (ET_Y_TO_EV(height + e->etox_objects.h) > obst->y)) )
+      {  
+	 ewd_list_append(obst_list, obst);
+      }
+   }
+   return obst_list;
+}
+
+static int
+__etox_get_next_obstacle_to_the_right(Etox e, Etox_Sort sort, 
+                                      double x, int *inside)
+{
+   Etox_Obstacle obst;
+   int i;
+
+  if (!e || !sort)
+    return -1;
+
+  /* iterate over obstacles and return the first one to the right of the
+   * current coordinate. Set inside flag when we are inside the obstacle */
+
+  for (i = 0; i <= _etox_sort_get_size(sort); i++)
+  {
+     obst = (Etox_Obstacle) _etox_sort_get_data(sort, i);
+
+     if ( (ET_X_TO_EV(x) < obst->x) )
+     {
+	*inside = 0;
+	return i;
+     }
+     else if ((ET_X_TO_EV(x) > obst->x) &&
+	   (ET_X_TO_EV(x) < (obst->x + obst->w)))
+     {
+	/* we're in an obstacle */
+	*inside = 1;
+	return i;
+     }
+  }
+  return -1;
+}
+
 static Etox_Object
 __create_etox_object(Etox e, double *x, double *y)
 {
-  /* FIXME: this func is _too long_ :) -redalb */
-
+  Ewd_List *obst_list = NULL;
   Etox_Object obj = NULL;
   Etox_Obstacle obst;
-  Ewd_List *obst_list = NULL;
   Etox_Sort sort;
   int i;
+  int inside= 0;
 
   if (!e)
     return NULL;
@@ -292,184 +332,48 @@ __create_etox_object(Etox e, double *x, double *y)
   obj = _etox_object_new(e, *x, *y);
 
   D_PRINT("xx Creating %p: -----\n", obj);
-
-  if (!e->obstacles || ewd_list_is_empty(e->obstacles))
-    {
-      D_PRINT("xx No obstacles..\n");
-      obj->w = e->w;
-      /* move to next line if no obstacles */
-      *x = 0.0;
-      *y += e->etox_objects.h + e->padding;
-    }
-  else
+  /* Default is to advance to the next line */
+  obj->w = e->w - obj->x;
+  *x = 0.0;
+  *y += e->etox_objects.h + e->padding;
+  
+  if (e->obstacles && !ewd_list_is_empty(e->obstacles))
     {
       D_PRINT("xx Obstacles..\n");
-      /* create list that contains all obstacles at the current height */
-      ewd_list_goto_first(e->obstacles);
-      while ((obst = (Etox_Obstacle) ewd_list_next(e->obstacles)))
-        if ( ((ET_Y_TO_EV(obj->y) > obst->y) &&
-              (ET_Y_TO_EV(obj->y) < (obst->y + obst->h))) ||
-             ((ET_Y_TO_EV(obj->y + e->etox_objects.h) > obst->y) &&
-              (ET_Y_TO_EV(obj->y + e->etox_objects.h) < (obst->y + obst->h))) ||
-             ((ET_Y_TO_EV(obj->y) < obst->y) &&
-              (ET_Y_TO_EV(obj->y + e->etox_objects.h) > obst->y)) )
-          {  
-            /* obstacle is at the current height.. */
-            if (!obst_list)
-              {
-                /* free'ing is not necessary 'cause it's a list of
-                 * _pointers_, and we still need the stuff they point
-                 * to later on.. 
-                 */
-                obst_list = ewd_list_new();
-                ewd_list_set_free_cb(obst_list, NULL);
-              }
-            ewd_list_append(obst_list, obst);
-          }
+      obst_list = __etox_get_obstacles_at_height(e, obj->y);
 
+      /* return whole row, there are no obstacles */
       if (!obst_list || ewd_list_is_empty(obst_list))
-        {
-          /* Yay! No obstacles at current height.. */
-          D_PRINT("xx No obstacles at current height..\n");
-          obj->w = e->w;
-          *x = 0.0;
-          *y += e->etox_objects.h + e->padding;  
-          D_PRINT("xx obj->w = %f\n", obj->w);
-          return obj;
-        }
-      
+	 return obj;
+             
       /* sort obstacles from left to right.. */
       sort = _etox_sort_new(ewd_list_nodes(obst_list) - 1);
       _etox_sort_set_data_from_list(sort, obst_list);
-      _etox_sort_now(sort, 0, _etox_sort_get_size(sort), __compare_obstacles);
+      _etox_sort_now(sort, 0, _etox_sort_get_size(sort), __compare_obstacles);	  
+      i = __etox_get_next_obstacle_to_the_right(e, sort, obj->x, &inside);
+      if (i >= 0)
+      {
+	 obst = (Etox_Obstacle) _etox_sort_get_data(sort, i);	 
 
-      obst = (Etox_Obstacle) _etox_sort_get_data(sort, 0);
-      if (obst && (ET_X_TO_EV(obj->x) < obst->x))
-        {
-          /* we're at the left of the first obstacle */
-          D_PRINT("xx At the left of first obstacle..\n");
-          obj->w = EV_X_TO_ET(obst->x) - obj->x;
-          *x = EV_X_TO_ET(obst->x) + obst->w;
-        }
-      else
-        {
-          /* we're either in or at the right of the first obstacle */ 
-          D_PRINT("xx At the right of or in first obstacle..\n");
+	 /* the next obj will have to be to the right of obstacle */
+	 *x = EV_X_TO_ET(obst->x) + obst->w;
+	 *y -= e->etox_objects.h + e->padding;
 
-          if ((i = __check_if_in_obstacle_from_sort(e, sort, obj->x)) >= 0)
-            {
-              /* move the x-coord 'cause we're in an obstacle */
-              do
-                {
-                  D_PRINT("xx In an obstacle..\n");
-                  obst = (Etox_Obstacle) _etox_sort_get_data(sort, i);
-                  obj->x = EV_X_TO_ET(obst->x) + obst->w;
-                  /* check if there are obstacles at the right of the x-coord */
-                  if ((obst = (Etox_Obstacle) _etox_sort_get_data(sort, i + 1)))
-                    {
-                      D_PRINT("xx Obstacle(s) at the right..\n");
-                      obj->w = EV_X_TO_ET(obst->x) - obj->x;
-                      *x = EV_X_TO_ET(obst->x) + obst->w;
-                    }
-                  else
-                    {
-                      D_PRINT("xx No obstacles at the right..\n");
-                      obj->w = e->w - obj->x;
-                      *x = 0.0;
-                      *y += e->etox_objects.h + e->padding;
-                    }
-                } while ((i = __check_if_in_obstacle_from_sort(e, sort, obj->x))
-                         >= 0);
-              D_PRINT("xx Moving on..\n");
-            }
-          else
-            {
-              /* we're at the right of the first but not in an obstacle */
-
-              switch(_etox_sort_get_size(sort))
-              {
-              case 0:  /* there's only one obstacle */
-                D_PRINT("xx There's only one obstacle\n");
-                obj->w = e->w - obj->x;
-                *x = 0.0;
-                *y += e->etox_objects.h + e->padding;
-                break;
-              case 1:  /* there are 2 obstacles.. */
-                D_PRINT("xx There are 2 obstacles..\n");
-                obst = (Etox_Obstacle) _etox_sort_get_data(sort, 1);
-                if (ET_X_TO_EV(obj->x) < obst->x)
-                  {
-                    /* were at the left of the last obst */
-                    D_PRINT("xx We're at the left of last obstacle\n");
-                    obj->w = EV_X_TO_ET(obst->x) - obj->x;
-                    *x = EV_X_TO_ET(obst->x) + obst->w;
-                  }
-                else
-                  {
-                    /* were at the right of the last obst */
-                    D_PRINT("xx We're at the right of last obstacle\n");
-                    obj->w = e->w - obj->x;
-                    *x = 0.0;
-                    *y += e->etox_objects.h + e->padding;
-                  }
-                break;
-              default:  /* there are at least 3 obstacles.. */
-                D_PRINT("xx There are at least 3 obstacles..\n");
-                /* check all obstacles exept the first and the last */
-                for (i = 1; i < _etox_sort_get_size(sort); i++)
-                  {
-                    obst = (Etox_Obstacle) _etox_sort_get_data(sort, i);
-                    if (ET_X_TO_EV(obj->x) < obst->x)
-                      {
-                        /* were at the left of 'obst' */
-                        obj->w = EV_X_TO_ET(obst->x) - obj->x;
-                        *x = EV_X_TO_ET(obst->x) + obst->w;
-                        break;
-                      }
-                  }
-                if (i == _etox_sort_get_size(sort))
-                  {
-                    /* check the last obstacle */
-                    obst = (Etox_Obstacle) _etox_sort_get_data(sort, i);
-                    if (ET_X_TO_EV(obj->x) < obst->x)
-                      {
-                        /* were at the left of the last obstacle */
-                        obj->w = EV_X_TO_ET(obst->x) - obj->x;
-                        *x = EV_X_TO_ET(obst->x) + obst->w;
-                      }
-                    else
-                      { 
-                        /* were at the right of the last obstacle */
-                        obj->w = e->w - obj->x;
-                        *x = 0.0;
-                        *y += e->etox_objects.h + e->padding;
-                      }
-                  }
-                break;
-              }
-            }
-        }
-   
-
-      D_PRINT("xx Checking if still in etox.. %f >= %f ?\n", obj->x, e->w);
-      /* move to next line anyway if we're out of the etox */
-      if (obj->x >= e->w)
-        {
-          D_PRINT("xx Out of the etox..\n");
-          obj->x = 0.0;
-          obj->y += e->etox_objects.h + e->padding;
-          obj->w = e->w;
-          *x = 0.0;
-          *y = obj->y + e->etox_objects.h + e->padding;
-        } 
-
-      /* cleanup.. */
-      _etox_sort_free(sort);
+	 if (inside)
+	 {
+	    /* inside, try again with new coordinates */
+            printf("recures\n");
+	    return __create_etox_object(e, x, y);   	 
+	 }
+	 else
+	 {
+	    obj->w = EV_X_TO_ET(obst->x) - obj->x;
+	 }
+      }
       ewd_list_destroy(obst_list);  
-    }
-
+      _etox_sort_free(sort);
+    }    
   D_PRINT("xx obj->w = %f\n", obj->w);
-
   D_PRINT("xx Created %p: -----\n", obj); 
 
   return obj;
@@ -481,7 +385,7 @@ __add_as_many_bits_as_possible_from_list(Etox e, Etox_Object obj,
 {
   /* FIXME: this func is _too long_ :)  -redalb */
 
-  /*  Adds as may bits (Etox_Object_Bit) as possible from
+  /*  Adds as many bits (Etox_Object_Bit) as possible from
    *  list to obj and returns the list of bits it couldn't add..
    *  The bits that could be added will be removed from list..
    */
@@ -496,15 +400,18 @@ __add_as_many_bits_as_possible_from_list(Etox e, Etox_Object obj,
 
   while (!ewd_list_is_empty(list))
     {
-      obj_bit = (Etox_Object_Bit) ewd_list_remove_first(list);
+       obj_bit = _etox_object_bit_clone(
+	     (Etox_Object_Bit) ewd_list_remove_first(list));
       if (!_etox_object_add_bit(obj, obj_bit))
         {
-          /* if there is space left, break a bit in two and add the first one */
+	 /* obj_bit didnt fit into the obj if there is space left in the obj,
+	  * and it is a string bit, break the bit in two and try again with 
+	  * the first part */
           if (_etox_object_get_available_size(obj, &w))
             switch (obj_bit->type)
-            {
-            case ETOX_OBJECT_BIT_TYPE_STRING:
-              {
+	    {
+               case ETOX_OBJECT_BIT_TYPE_STRING:
+	       {
                 Etox_Align align;
                 Etox_Callback callback;
                 Etox_Color color;
@@ -597,7 +504,7 @@ __add_as_many_bits_as_possible_from_list(Etox e, Etox_Object obj,
                 IF_FREE(q);
                 IF_FREE(r);
                 break;
-              }
+	    }
             default:
               break;
             }
@@ -612,7 +519,6 @@ __add_as_many_bits_as_possible_from_list(Etox e, Etox_Object obj,
                 }
               ewd_list_append(todo, obj_bit);
             }
-
           break;
         }
 #ifdef DEBUG
@@ -633,12 +539,12 @@ void
 _etox_create_etox_objects(Etox e)
 {
   Ewd_List *et_obj_bits, *l;
-  static Ewd_List *todo = NULL;
+  Ewd_List *todo = NULL;
   Etox_Object obj;
   Etox_Object_Bit obj_bit;
   double x = 0.0, y = 0.0;
 
-  if (!e || !e->bits || ewd_list_is_empty(e->bits))
+  if (!e || !e->bits || ewd_list_is_empty(e->bits) || !e->etox_objects.dirty)
     return;
 
   if (e->etox_objects.list)
@@ -649,7 +555,7 @@ _etox_create_etox_objects(Etox e)
 
   et_obj_bits = __get_etox_object_bits_list(e);
 
-  /* add value to e->etox_objects.h */
+  /* set e->etox_objects.h to the height of the tallest object_bit */
   e->etox_objects.h = 0.0;
   ewd_list_goto_first(et_obj_bits);
   while ((obj_bit = (Etox_Object_Bit) ewd_list_next(et_obj_bits)))
@@ -674,11 +580,11 @@ _etox_create_etox_objects(Etox e)
           if (todo && !ewd_list_is_empty(todo))
             continue;
         }
-
       todo = __add_as_many_bits_as_possible_from_list(e, obj, et_obj_bits);
     }
-
   ewd_list_destroy(et_obj_bits);
+  e->etox_objects.dirty = 0;
+  _etox_create_evas_objects(e);
 }
 
 

@@ -22,7 +22,7 @@ etox_obstacle_add(Etox e, double x, double y, double w, double h)
   obst->h = h;
 
   ewd_list_append(e->obstacles, obst);
-
+  e->etox_objects.dirty = 1;
   _etox_rebuild(e);
 
   return obst;
@@ -40,6 +40,7 @@ etox_obstacle_set(Etox e, Etox_Obstacle obst,
   obst->w = w;
   obst->h = h;
 
+  e->etox_objects.dirty = 1;
   _etox_rebuild(e);
 }
 
@@ -53,6 +54,6 @@ etox_obstacle_del(Etox e, Etox_Obstacle obst)
     ewd_list_remove(e->obstacles);
   FREE(obst);
   
+  e->etox_objects.dirty = 1;
   _etox_rebuild(e);
 }
-

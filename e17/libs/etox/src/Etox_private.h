@@ -33,7 +33,6 @@ printf("ETOX: %s() (%s:%d): ", __FUNCTION__, __FILE__, __LINE__); printf(args)
   
 #endif
 
-
 enum _Etox_Object_Bit_Type
 {
    ETOX_OBJECT_BIT_TYPE_NULL,
@@ -100,15 +99,31 @@ struct _Etox
 
   struct _Etox_All_Bits def;
 
+  /* This is the list of Etox_Bits as passed in by the user. */
   Ewd_List *bits;
   Ewd_List *obstacles;
 
+  /* This is a list of Etox_Object_Bits. It only needs to be built once
+   * initially and then everytime the text changes. The dirty flag is set
+   * whenever that happens.*/
+  struct _etox_object_bits
+  {
+     Ewd_List *list;
+     int dirty;
+  } etox_object_bits;
+
+  /* This is a list of Etox_Objects. Those continuous chunks that group
+   * together several Etox_Object_Bits. They need to be recalculated once
+   * initially and on every change of layout. */
   struct _etox_objects
   {
     double h; 
     Ewd_List *list;
+    int dirty;
   } etox_objects;
 
+  /* These are the actual evas objects that are rendered. They change whenever
+   * the above etox_objects change. */
   struct _evas_objects
   {
     Ewd_List *list;
@@ -246,6 +261,7 @@ int			_etox_object_get_available_size(Etox_Object obj,
 int			_etox_object_add_bit(Etox_Object obj, 
 					     Etox_Object_Bit obj_bit);
 Etox_Object_Bit		_etox_object_bit_new(void);
+Etox_Object_Bit		_etox_object_bit_clone(Etox_Object_Bit);
 void			_etox_object_bit_free(Etox_Object_Bit bit);
 void			_etox_object_bit_set_body(Etox e, 
 					  	Etox_Object_Bit bit, 
@@ -272,12 +288,16 @@ Etox_Object_String      _etox_object_string_new(char *str,
                                                 Etox_Font font,
                                                 Etox_Style style);
 void                    _etox_object_string_free(Etox_Object_String string);
+void                    _etox_object_string_set_string(
+                                         Etox_Object_String string, char *t);
+Etox_Object_String      _etox_object_string_clone(Etox_Object_String string);
 Etox_Object_Newline	_etox_object_newline_new(void);
 void			_etox_object_newline_free(Etox_Object_Newline nl);
 Etox_Object_Tab		_etox_object_tab_new(Etox_Align align,
                      			     Etox_Callback callback,
                      			     Etox_Font font);
 void			_etox_object_tab_free(Etox_Object_Tab tab);
+Etox_Object_Tab		_etox_object_tab_clone(Etox_Object_Tab tab);
 
 void		_etox_align_etox_object(Etox e, Etox_Object obj);
 
