@@ -4169,3 +4169,11 @@ Tue Jan 18 11:56:55 PST 2000
 (Raster)
 
 extra check for xim in ttfonts
+
+-------------------------------------------------------------------------------
+
+Tue Jan 25 14:38:37 EST 2000
+(Christian)
+
+Ganymede 0.5. Lots of minor changes I haven't commited yet, most
+notably on the Eterm theme.
