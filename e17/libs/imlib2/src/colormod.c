@@ -89,9 +89,9 @@ __imlib_DataCmodApply(DATA32 *data, int w, int h, int jump,
 	for (x = 0; x < w; x++)
 	  {
 	     R_VAL(p) = R_CMOD(cm, R_VAL(p));
-	     G_VAL(p) = R_CMOD(cm, G_VAL(p));
-	     B_VAL(p) = R_CMOD(cm, B_VAL(p));
-	     A_VAL(p) = R_CMOD(cm, A_VAL(p));
+	     G_VAL(p) = G_CMOD(cm, G_VAL(p));
+	     B_VAL(p) = B_CMOD(cm, B_VAL(p));
+	     A_VAL(p) = A_CMOD(cm, A_VAL(p));
 	     p++;
 	  }
 	p += jump;

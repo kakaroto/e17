@@ -31,6 +31,7 @@
 .global __imlib_mmx_copy_rgba_to_rgba
 	.type __imlib_mmx_copy_rgba_to_rgba,@function
 .global __imlib_mmx_copy_rgb_to_rgba
+
 	.type __imlib_mmx_copy_rgb_to_rgba,@function
 .global __imlib_mmx_add_blend_rgba_to_rgb
 	.type __imlib_mmx_add_blend_rgba_to_rgb,@function
@@ -40,6 +41,9 @@
 	.type __imlib_mmx_add_copy_rgba_to_rgb,@function
 .global __imlib_mmx_add_copy_rgba_to_rgba
 	.type __imlib_mmx_add_copy_rgba_to_rgba,@function
+.global __imlib_mmx_add_copy_rgb_to_rgba
+	.type __imlib_mmx_add_copy_rgb_to_rgba,@function
+
 .global __imlib_mmx_subtract_blend_rgba_to_rgb
 	.type __imlib_mmx_subtract_blend_rgba_to_rgb,@function
 .global __imlib_mmx_subtract_blend_rgba_to_rgba
@@ -48,6 +52,9 @@
 	.type __imlib_mmx_subtract_copy_rgba_to_rgb,@function
 .global __imlib_mmx_subtract_copy_rgba_to_rgba
 	.type __imlib_mmx_subtract_copy_rgba_to_rgba,@function
+.global __imlib_mmx_subtract_copy_rgb_to_rgba
+	.type __imlib_mmx_subtract_copy_rgb_to_rgba,@function
+
 .global __imlib_mmx_reshade_blend_rgba_to_rgb
 	.type __imlib_mmx_reshade_blend_rgba_to_rgb,@function
 .global __imlib_mmx_reshade_blend_rgba_to_rgba
@@ -56,6 +63,8 @@
 	.type __imlib_mmx_reshade_copy_rgba_to_rgb,@function
 .global __imlib_mmx_reshade_copy_rgba_to_rgba
 	.type __imlib_mmx_reshade_copy_rgba_to_rgba,@function
+.global __imlib_mmx_reshade_copy_rgb_to_rgba
+	.type __imlib_mmx_reshade_copy_rgb_to_rgba,@function
 	
 .bss
 .text
@@ -84,51 +93,49 @@ c1: .word 0x1, 0x1, 0x1, 0x1
 
 /*\ Common code \*/
 /*\ Set MMX mode, save registers, load common parameters \*/
-#define ENTER			\
-	emms;			\
-	pushl %ebp;		\
-	movl  %esp, %ebp;	\
-	pushl %ebx;		\
-	pushl %ecx;		\
-	pushl %edx;		\
-	pushl %edi;		\
-	pushl %esi;		\
-	movl  src,  %esi;	\
-	movl  dst,  %edi;	\
-	movl  w,    %ebx;	\
-	movl  h,    %edx
+#define ENTER				\
+	pushl %ebp			;\
+	movl  %esp, %ebp		;\
+	pushl %ebx			;\
+	pushl %ecx			;\
+	pushl %edx			;\
+	pushl %edi			;\
+	pushl %esi			;\
+	movl  h,    %edx		;\
+	movl  w,    %ebx		;\
+	movl  src,  %esi		;\
+	movl  dst,  %edi		;\
+	leal (%esi, %ebx, 4), %esi	;\
+	leal (%edi, %ebx, 4), %edi	;\
+	negl %ebx			;\
+	jz 9f				;\
+	decl  %edx			;\
+	jz 9f				;\
 
 #define LOOP_START		\
-	decl %edx;		\
-	js 3f;			\
-	decl %ebx;		\
-	js 3f;			\
-0:				\
+8:				;\
 	movl %ebx, %ecx
 
 #define LOOP_END			\
-	decl %ecx;			\
-	jns 1b;				\
-2:					\
-	movl sw, %ecx;			\
-	leal (%esi, %ecx, 4), %esi;	\
-	movl dw, %ecx;			\
-	leal (%edi, %ecx, 4), %edi;	\
-	decl %edx;			\
-	jns 0b
+	movl sw, %ecx			;\
+	leal (%esi, %ecx, 4), %esi	;\
+	movl dw, %ecx			;\
+	leal (%edi, %ecx, 4), %edi	;\
+	decl %edx			;\
+	jns 8b
 
 
 /*\ Unset MMX mode, reset registers, return \*/
 #define LEAVE			\
-3:				\
-	emms;			\
-	popl %esi;		\
-	popl %edi;		\
-	popl %edx;		\
-	popl %ecx;		\
-	popl %ebx;		\
-	movl %ebp, %esp;	\
-	popl %ebp;		\
+9:				;\
+	emms			;\
+	popl %esi		;\
+	popl %edi		;\
+	popl %edx		;\
+	popl %ecx		;\
+	popl %ebx		;\
+	movl %ebp, %esp		;\
+	popl %ebp		;\
 	ret
 
 
@@ -180,47 +187,8 @@ __imlib_mmx_blend_rgba_to_rgb:
 	packuswb %mm4, %mm2
 	movd %mm2, (%edi, %ecx, 4)
 
-	LOOP_END
-	LEAVE
-
-
-__imlib_mmx_copy_rgba_to_rgb:
-	ENTER
-
-	movq m0XXX0XXX, %mm5
-	movq mX000X000, %mm6
-
-	LOOP_START
-
-	/*\ Check for oddness \*/
-	sarl $1, %ecx
-	jc 1f
-
-	/*\ Load source and destination \*/
-	movd (%esi, %ecx, 8), %mm1
-	movd (%edi, %ecx, 8), %mm2
-
-	/*\ Clear alpha channel of source, get alpha of destination \*/
-	pand %mm5, %mm1
-	pand %mm6, %mm2
-
-	/*\ d = d | s, and save \*/
-	por %mm1, %mm2
-	movd %mm2, (%edi, %ecx, 8)
-        decl %ecx
-        js 2f
-1:
-	/*\ Load source and destination \*/
-	movq (%esi, %ecx, 8), %mm1
-	movq (%edi, %ecx, 8), %mm2
-
-	/*\ Clear alpha channel of source \*/
-	pand %mm5, %mm1
-	pand %mm6, %mm2
-
-	/*\ d = d | s, and save \*/
-	por %mm1, %mm2
-	movq %mm2, (%edi, %ecx, 8)
+	incl %ecx
+	js 1b
 
 	LOOP_END
 	LEAVE
@@ -273,6 +241,52 @@ __imlib_mmx_blend_rgba_to_rgba:
 	packuswb %mm4, %mm2
 	movd %mm2, (%edi, %ecx, 4)
 
+	incl %ecx
+	js 1b
+
+	LOOP_END
+	LEAVE
+
+
+__imlib_mmx_copy_rgba_to_rgb:
+	ENTER
+
+	movq m0XXX0XXX, %mm5
+	movq mX000X000, %mm6
+
+	/*\ Two at a time: last item is at %ecx = 0 \*/
+	subl $4, %esi
+	subl $4, %edi
+
+	LOOP_START
+	incl %ecx
+	jz 2f
+1:
+	/*\ Load source and destination \*/
+	movq (%esi, %ecx, 4), %mm1
+	movq (%edi, %ecx, 4), %mm2
+
+	/*\ Clear alpha channel of source, get alpha of destination \*/
+	pand %mm5, %mm1
+	pand %mm6, %mm2
+
+	/*\ d = d | s, and save \*/
+	por %mm1, %mm2
+	movq %mm2, (%edi, %ecx, 4)
+
+	addl $2, %ecx
+	js 1b
+	jnz 3f
+2:
+	movd (%esi), %mm1
+	movd (%edi), %mm2
+
+	pand %mm5, %mm1
+	pand %mm6, %mm2
+
+	por %mm1, %mm2
+	movd %mm2, (%edi)
+3:
 	LOOP_END
 	LEAVE
 
@@ -280,23 +294,24 @@ __imlib_mmx_blend_rgba_to_rgba:
 __imlib_mmx_copy_rgba_to_rgba:
 	ENTER
 
+	subl $4, %esi
+	subl $4, %edi
+
 	LOOP_START
-
-	/*\ Check for oddness \*/
-	sarl $1, %ecx
-	jc 1f
-
-	/*\ Load source, save destination \*/
-	movd (%esi, %ecx, 8), %mm1
-	movd %mm1, (%edi, %ecx, 8)
-
-        decl %ecx
+	incl %ecx
 	jz 2f
 1:
 	/*\ Load source, save destination \*/
-	movq (%esi, %ecx, 8), %mm1
-	movq %mm1, (%edi, %ecx, 8)
+	movq (%esi, %ecx, 4), %mm1
+	movq %mm1, (%edi, %ecx, 4)
 	
+	addl $2, %ecx
+	js 1b
+	jnz 3f
+2:
+	movd (%esi), %mm1
+	movd %mm1, (%edi)
+3:
 	LOOP_END
 	LEAVE
 
@@ -306,24 +321,26 @@ __imlib_mmx_copy_rgb_to_rgba:
 
 	movq mX000X000, %mm5
 
+	subl $4, %esi
+	subl $4, %edi
+
 	LOOP_START
-
-	/*\ Check for oddness \*/
-	sarl $1, %ecx
-	jc 1f
-
-	/*\ Load source, make alpha 0xff, save destination \*/
-	movd (%esi, %ecx, 8), %mm1
-	por %mm5, %mm1
-	movd %mm1, (%edi, %ecx, 8)
-
-        decl %ecx
+        incl %ecx
 	jz 2f
 1:
 	/*\ Load source, save destination \*/
-	movq (%esi, %ecx, 8), %mm1
+	movq (%esi, %ecx, 4), %mm1
 	por %mm5, %mm1
-	movq %mm1, (%edi, %ecx, 8)
+	movq %mm1, (%edi, %ecx, 4)
+
+	addl $2, %ecx
+	js 1b
+	jnz 3f
+2:
+	movd (%esi), %mm1
+	por %mm5, %mm1
+	movd %mm1, (%edi)
+3:
 
 	LOOP_END
 	LEAVE
@@ -362,6 +379,9 @@ __imlib_mmx_add_blend_rgba_to_rgb:
 	packuswb %mm4, %mm2
 	movd %mm2, (%edi, %ecx, 4)
 	
+	incl %ecx
+	js 1b
+
 	LOOP_END
 	LEAVE
 
@@ -407,6 +427,9 @@ __imlib_mmx_add_blend_rgba_to_rgba:
 	packuswb %mm4, %mm2
 	movd %mm2, (%edi, %ecx, 4)
 	
+	incl %ecx
+	js 1b
+
 	LOOP_END
 	LEAVE
 
@@ -416,37 +439,34 @@ __imlib_mmx_add_copy_rgba_to_rgb:
 
 	movq m0XXX0XXX, %mm5
 
+	subl $4, %esi
+	subl $4, %edi
+
 	LOOP_START
-
-	/*\ Check for oddness \*/
-	sarl $1, %ecx
-	jc 1f
-
-	/*\ Load source and destination \*/
-	movd (%esi, %ecx, 8), %mm1
-	movd (%edi, %ecx, 8), %mm2
-
-	/*\ Clear alpha channel of source \*/
-	pand %mm5, %mm1
-
-	/*\ d = d + s, unsigned saturation, and save \*/
-	paddusb %mm1, %mm2
-	movd %mm2, (%edi, %ecx, 8)
-        decl %ecx
+        incl %ecx
 	jz 2f
-
 1:
 	/*\ Load source and destination \*/
-	movq (%esi, %ecx, 8), %mm1
-	movq (%edi, %ecx, 8), %mm2
+	movq (%esi, %ecx, 4), %mm1
+	movq (%edi, %ecx, 4), %mm2
 
 	/*\ Clear alpha channel of source \*/
 	pand %mm5, %mm1
 
 	/*\ d = d + s, unsigned saturation, and save \*/
 	paddusb %mm1, %mm2
-	movq %mm2, (%edi, %ecx, 8)
+	movq %mm2, (%edi, %ecx, 4)
 	
+	addl $2, %ecx
+	js 1b
+	jnz 3f
+2:
+	movd (%esi), %mm1
+	movd (%edi), %mm2
+	pand %mm5, %mm1
+	paddusb %mm1, %mm2
+	movd %mm2, (%edi)
+3:
 	LOOP_END
 	LEAVE
 
@@ -454,30 +474,67 @@ __imlib_mmx_add_copy_rgba_to_rgb:
 __imlib_mmx_add_copy_rgba_to_rgba:
 	ENTER
 
+	subl $4, %esi
+	subl $4, %edi
+
 	LOOP_START
-
-	/*\ Check for oddness \*/
-	sarl $1, %ecx
-	jc 1f
-
-	/*\ Load source and destination \*/
-	movd (%esi, %ecx, 8), %mm1
-	movd (%edi, %ecx, 8), %mm2
-
-	/*\ d = d + s, unsigned saturation, and save \*/
-	paddusb %mm1, %mm2
-	movd %mm2, (%edi, %ecx, 8)
-        decl %ecx
+        incl %ecx
 	jz 2f
 1:
 	/*\ Load source and destination \*/
-	movq (%esi, %ecx, 8), %mm1
-	movq (%edi, %ecx, 8), %mm2
+	movq (%esi, %ecx, 4), %mm1
+	movq (%edi, %ecx, 4), %mm2
 
 	/*\ d = d + s, unsigned saturation, and save \*/
 	paddusb %mm1, %mm2
-	movq %mm2, (%edi, %ecx, 8)
+	movq %mm2, (%edi, %ecx, 4)
 	
+	addl $2, %ecx
+	js 1b
+	jnz 3f
+2:
+	movd (%esi), %mm1
+	movd (%edi), %mm2
+	paddusb %mm1, %mm2
+	movd %mm2, (%edi)
+3:
+	LOOP_END
+	LEAVE
+
+
+__imlib_mmx_add_copy_rgb_to_rgba:
+	ENTER
+
+	movq mX000X000, %mm5
+
+	subl $4, %esi
+	subl $4, %edi
+
+	LOOP_START
+        incl %ecx
+	jz 2f
+1:
+	/*\ Load source and destination \*/
+	movq (%esi, %ecx, 4), %mm1
+	movq (%edi, %ecx, 4), %mm2
+
+	/*\ d = d + s, unsigned saturation, and save \*/
+	paddusb %mm1, %mm2
+
+	/*\ Make result alpha 0xff \*/
+	por %mm5, %mm2
+	movq %mm2, (%edi, %ecx, 4)
+	
+	addl $2, %ecx
+	js 1b
+	jnz 3f
+2:
+	movd (%esi), %mm1
+	movd (%edi), %mm2
+	paddusb %mm1, %mm2
+	por %mm5, %mm2
+	movd %mm2, (%edi)
+3:
 	LOOP_END
 	LEAVE
 
@@ -515,6 +572,9 @@ __imlib_mmx_subtract_blend_rgba_to_rgb:
 	packuswb %mm4, %mm2
 	movd %mm2, (%edi, %ecx, 4)
 	
+	incl %ecx
+	js 1b
+
 	LOOP_END
 	LEAVE
 
@@ -560,6 +620,9 @@ __imlib_mmx_subtract_blend_rgba_to_rgba:
 	packuswb %mm4, %mm2
 	movd %mm2, (%edi, %ecx, 4)
 	
+	incl %ecx
+	js 1b
+
 	LOOP_END
 	LEAVE
 
@@ -569,37 +632,34 @@ __imlib_mmx_subtract_copy_rgba_to_rgb:
 
 	movq m0XXX0XXX, %mm5
 
+	subl $4, %esi
+	subl $4, %edi
+
 	LOOP_START
-
-	/*\ Check for oddness \*/
-	sarl $1, %ecx
-	jc 1f
-
-	/*\ Load source and destination \*/
-	movd (%esi, %ecx, 8), %mm1
-	movd (%edi, %ecx, 8), %mm2
-
-	/*\ Clear alpha channel of source \*/
-	pand %mm5, %mm1
-
-	/*\ d = d - s, unsigned saturation, and save \*/
-	psubusb %mm1, %mm2
-	movd %mm2, (%edi, %ecx, 8)
-        decl %ecx
+        incl %ecx
 	jz 2f
-
 1:
 	/*\ Load source and destination \*/
-	movq (%esi, %ecx, 8), %mm1
-	movq (%edi, %ecx, 8), %mm2
+	movq (%esi, %ecx, 4), %mm1
+	movq (%edi, %ecx, 4), %mm2
 
 	/*\ Clear alpha channel of source \*/
 	pand %mm5, %mm1
 
 	/*\ d = d - s, unsigned saturation, and save \*/
 	psubusb %mm1, %mm2
-	movq %mm2, (%edi, %ecx, 8)
+	movq %mm2, (%edi, %ecx, 4)
 	
+	addl $2, %ecx
+	js 1b
+	jnz 3f
+2:
+	movd (%esi), %mm1
+	movd (%edi), %mm2
+	pand %mm5, %mm1
+	psubusb %mm1, %mm2
+	movd %mm2, (%edi)
+3:
 	LOOP_END
 	LEAVE
 
@@ -609,15 +669,16 @@ __imlib_mmx_subtract_copy_rgba_to_rgba:
 
 	movq mX000X000, %mm5
 
+	subl $4, %esi
+	subl $4, %edi
+
 	LOOP_START
-
-	/*\ Check for oddness \*/
-	sarl $1, %ecx
-	jc 1f
-
+        incl %ecx
+	jz 2f
+1:
 	/*\ Load source and destination \*/
-	movd (%esi, %ecx, 8), %mm1
-	movd (%edi, %ecx, 8), %mm2
+	movq (%esi, %ecx, 4), %mm1
+	movq (%edi, %ecx, 4), %mm2
 
 	/*\ Negate destination alphas \*/
 	pxor %mm5, %mm2
@@ -627,20 +688,56 @@ __imlib_mmx_subtract_copy_rgba_to_rgba:
 
 	/*\ Negate result alphas \*/
 	pxor %mm5, %mm2
-	movd %mm2, (%edi, %ecx, 8)
-        decl %ecx
+	movq %mm2, (%edi, %ecx, 4)
+	
+	addl $2, %ecx
+	js 1b
+	jnz 3f
+2:
+	movd (%esi), %mm1
+	movd (%edi), %mm2
+	pxor %mm5, %mm2
+	psubusb %mm1, %mm2
+	pxor %mm5, %mm2
+	movd %mm2, (%edi)
+3:
+	LOOP_END
+	LEAVE
+
+
+__imlib_mmx_subtract_copy_rgb_to_rgba:
+	ENTER
+
+	movq mX000X000, %mm5
+
+	subl $4, %esi
+	subl $4, %edi
+
+	LOOP_START
+        incl %ecx
 	jz 2f
 1:
 	/*\ Load source and destination \*/
-	movq (%esi, %ecx, 8), %mm1
-	movq (%edi, %ecx, 8), %mm2
-	pxor %mm5, %mm2
+	movq (%esi, %ecx, 4), %mm1
+	movq (%edi, %ecx, 4), %mm2
 
 	/*\ d = d - s, unsigned saturation, and save \*/
 	psubusb %mm1, %mm2
-	pxor %mm5, %mm2
-	movq %mm2, (%edi, %ecx, 8)
+
+	/*\ Make result alpha 0xff \*/
+	por %mm5, %mm2
+	movq %mm2, (%edi, %ecx, 4)
 	
+	addl $2, %ecx
+	js 1b
+	jnz 3f
+2:
+	movd (%esi), %mm1
+	movd (%edi), %mm2
+	psubusb %mm1, %mm2
+	por %mm5, %mm2
+	movd %mm2, (%edi)
+3:
 	LOOP_END
 	LEAVE
 
@@ -680,6 +777,9 @@ __imlib_mmx_reshade_blend_rgba_to_rgb:
 	packuswb %mm4, %mm2
 	movd %mm2, (%edi, %ecx, 4)
 	
+	incl %ecx
+	js 1b
+
 	LOOP_END
 	LEAVE
 
@@ -728,6 +828,9 @@ __imlib_mmx_reshade_blend_rgba_to_rgba:
 	packuswb %mm4, %mm2
 	movd %mm2, (%edi, %ecx, 4)
 	
+	incl %ecx
+	js 1b
+
 	LOOP_END
 	LEAVE
 
@@ -739,15 +842,16 @@ __imlib_mmx_reshade_copy_rgba_to_rgb:
 	movq m0XXX0XXX, %mm5
 	movq m0VVV0VVV, %mm6
 
+	subl $4, %esi
+	subl $4, %edi
+
 	LOOP_START
-
-	/*\ Check for oddness \*/
-	sarl $1, %ecx
-	jc 1f
-
+        incl %ecx
+	jz 2f
+1:
 	/*\ Load source and destination \*/
-	movd (%esi, %ecx, 8), %mm1
-	movd (%edi, %ecx, 8), %mm2
+	movq (%esi, %ecx, 4), %mm1
+	movq (%edi, %ecx, 4), %mm2
 
 	/*\ To take advantage of saturation and be able to do 8 bytes
 	|*|  at a time, we divide reshading into two separate steps:
@@ -770,32 +874,26 @@ __imlib_mmx_reshade_copy_rgba_to_rgb:
 	/*\ d = d + s1 - s2, unsigned saturation, and save \*/
 	paddusb %mm1, %mm2
 	psubusb %mm3, %mm2
-	movd %mm2, (%edi, %ecx, 8)
-
-	/*\ MMX ops don't set flags \*/
-        decl %ecx
-	jz 2f
-1:
-	/*\ Load source and destination \*/
-	movq (%esi, %ecx, 8), %mm1
-	movq (%edi, %ecx, 8), %mm2
-
+	movq %mm2, (%edi, %ecx, 4)
+	
+	addl $2, %ecx
+	js 1b
+	jnz 3f
+2:
+	movd (%esi), %mm1
+	movd (%edi), %mm2
 	movq %mm1, %mm3
 	psubusb %mm6, %mm1
 	paddusb %mm1, %mm1
 	paddusb %mm6, %mm3
 	pxor %mm5, %mm3
 	paddusb %mm3, %mm3
-
-	/*\ Clear alpha channel of s1 and s2 \*/
 	pand %mm5, %mm1
 	pand %mm5, %mm3
-
-	/*\ d = d + s1 - s2, unsigned saturation, and save \*/
 	paddusb %mm1, %mm2
 	psubusb %mm3, %mm2
-	movq %mm2, (%edi, %ecx, 8)
-	
+	movd %mm2, (%edi)
+3:
 	LOOP_END
 	LEAVE
 
@@ -807,15 +905,16 @@ __imlib_mmx_reshade_copy_rgba_to_rgba:
 	movq m0XXX0XXX, %mm5
 	movq m0VVV0VVV, %mm6
 
+	subl $4, %esi
+	subl $4, %edi
+
 	LOOP_START
-
-	/*\ Check for oddness \*/
-	sarl $1, %ecx
-	jc 1f
-
+        incl %ecx
+	jz 2f
+1:
 	/*\ Load source and destination \*/
-	movd (%esi, %ecx, 8), %mm1
-	movd (%edi, %ecx, 8), %mm2
+	movq (%esi, %ecx, 4), %mm1
+	movq (%edi, %ecx, 4), %mm2
 
 	/*\ This time, the alpha channels have to be added.
 	|*| For that, the alpha channel of %mm1 should remain
@@ -838,16 +937,14 @@ __imlib_mmx_reshade_copy_rgba_to_rgba:
 	/*\ d = d + s1 - s2, unsigned saturation, and save \*/
 	paddusb %mm1, %mm2
 	psubusb %mm3, %mm2
-	movd %mm2, (%edi, %ecx, 8)
-
-	/*\ MMX ops don't set flags \*/
-        decl %ecx
-	jz 2f
-1:
-	/*\ Load source and destination \*/
-	movq (%esi, %ecx, 8), %mm1
-	movq (%edi, %ecx, 8), %mm2
-
+	movq %mm2, (%edi, %ecx, 4)
+	
+	addl $2, %ecx
+	js 1b
+	jnz 3f
+2:
+	movd (%esi), %mm1
+	movd (%edi), %mm2
 	movq %mm1, %mm3
 	psubusb %mm6, %mm1
 	movq %mm1, %mm0
@@ -856,15 +953,66 @@ __imlib_mmx_reshade_copy_rgba_to_rgba:
 	paddusb %mm6, %mm3
 	pxor %mm5, %mm3
 	paddusb %mm3, %mm3
-
-	/*\ Clear alpha channel of s2 \*/
 	pand %mm5, %mm3
+	paddusb %mm1, %mm2
+	psubusb %mm3, %mm2
+	movd %mm2, (%edi)
+3:
+	LOOP_END
+	LEAVE
+
+
+__imlib_mmx_reshade_copy_rgb_to_rgba:
+	ENTER
+
+	pxor %mm4, %mm4
+	movq m0XXX0XXX, %mm5
+	movq m0VVV0VVV, %mm6
+	movq mX000X000, %mm7
+
+	subl $4, %esi
+	subl $4, %edi
+
+	LOOP_START
+        incl %ecx
+	jz 2f
+1:
+	/*\ Load source and destination \*/
+	movq (%esi, %ecx, 4), %mm1
+	movq (%edi, %ecx, 4), %mm2
+
+	movq %mm1, %mm3
+	psubusb %mm6, %mm1
+	paddusb %mm1, %mm1
+	paddusb %mm6, %mm3
+	pxor %mm5, %mm3
+	paddusb %mm3, %mm3
 
 	/*\ d = d + s1 - s2, unsigned saturation, and save \*/
 	paddusb %mm1, %mm2
 	psubusb %mm3, %mm2
-	movq %mm2, (%edi, %ecx, 8)
+
+	/*\ Make result alpha 0xff \*/
+	por %mm7, %mm2
+	movq %mm2, (%edi, %ecx, 4)
 	
+	addl $2, %ecx
+	js 1b
+	jnz 3f
+2:
+	movd (%esi), %mm1
+	movd (%edi), %mm2
+	movq %mm1, %mm3
+	psubusb %mm6, %mm1
+	paddusb %mm1, %mm1
+	paddusb %mm6, %mm3
+	pxor %mm5, %mm3
+	paddusb %mm3, %mm3
+	paddusb %mm1, %mm2
+	psubusb %mm3, %mm2
+	por %mm7, %mm2
+	movd %mm2, (%edi)
+3:
 	LOOP_END
 	LEAVE
 

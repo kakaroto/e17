@@ -27,7 +27,7 @@ Colormap cm;
 int depth;
 
 void progress(Imlib_Image *im, char percent, int update_x, int update_y,
-			      int update_w, int update_h);
+	      int update_w, int update_h);
 
 void
 progress(Imlib_Image *im, char percent,
@@ -76,113 +76,136 @@ int main (int argc, char **argv)
    int scaleup = 0;
    int scaleboth = 0;
    int origone = 0;
-
+   Imlib_Color_Modifier colormod = 0;
+   
    /**
     * Parse all the command line arguments
     */
-   if ((argc > 1) && (!strcmp(argv[1], "-help"))
+   if ((argc > 1) && (!strcmp(argv[1], "-help")))
      {
-       printf ("Imlib2 program test. (Imlib v2.0.0.4)\n");
-       printf ("usage: imlib2 [options] [file]\n");
-       printf ("options are:\n");
-       printf ("-help\t\tDisplays this help.\n");
-       printf ("-root\t\tDraw in the root window.\n");
-       printf ("-smooth\t\tWhen scaling images scale with anti-aliasing.\n");
-       printf ("-up\t\tWhen doing scal test scale up, not down.\n");
-       printf ("-both\t\tScale horizontally AND vertically in scale test.\n");
-       printf ("-orig\t\tKeep original width and height in each pass of scale test.\n");
-       printf ("-blend\t\tBlending test.\n");
-       printf ("-dither\t\tTurn dithering on for depths < 24bpp\n");
-       printf ("-scale\t\tScale test.\n");
-       printf ("-noloop\t\tDont loop - timing test.\n");
-       printf ("-rotate\t\tAlso rotate background image with mouse in interative test.\n");
-       printf ("-size <w> <h>\t\tScale from w x h down in scaling test.\n"); // require parameters w / h
-       printf ("-maxcolors <n>\t\tLimit color allocation count to n colors.\n"); // require parameter nb colors
-       printf ("-text\t\tDisplays the text following this option. Need a loaded font.\n");
-       printf ("-font\t\tLoads a font. The parameter must follow the police_name/size format. Example: loading the grunge font at size 18 is : grunge/18.");
-       printf ("The following options requires a file to work properly.\n");
-       printf ("-blast\t\tDisplays the file.\n");
-       printf ("-loop\t\tScales down the image.\n");
-       printf ("-blendtest\tPerforms a blending test on the file.\n");
-       printf ("-rotatetest\tPerforms a rotate test on the file.\n");
-       printf ("-filter\t\tPerforms filtering. Possible filters are,\n\t\t\t1:Blur filter, 2:Sharpen filter, 3:Color blur filter, \n\t\t\t4:Emboss filter, 5:Grayscale filter, 6:Saturation filter,\n\t\t\t7:Edge detection filter.\n");
-       return 0;
+	printf ("Imlib2 program test. (Imlib v2.0.0.4)\n");
+	printf ("usage: imlib2 [options] [file]\n");
+	printf ("options are:\n");
+	printf ("-help\t\tDisplays this help.\n");
+	printf ("-root\t\tDraw in the root window.\n");
+	printf ("-smooth\t\tWhen scaling images scale with anti-aliasing.\n");
+	printf ("-up\t\tWhen doing scal test scale up, not down.\n");
+	printf ("-both\t\tScale horizontally AND vertically in scale test.\n");
+	printf ("-orig\t\tKeep original width and height in each pass of scale test.\n");
+	printf ("-blend\t\tBlending test.\n");
+	printf ("-dither\t\tTurn dithering on for depths < 24bpp\n");
+	printf ("-colormod <r> <g> <b> <a>\t\tSet up color mod tables\n");
+	printf ("-scale\t\tScale test.\n");
+	printf ("-noloop\t\tDont loop - timing test.\n");
+	printf ("-rotate\t\tAlso rotate background image with mouse in interative test.\n");
+	printf ("-size <w> <h>\t\tScale from w x h down in scaling test.\n"); // require parameters w / h
+	printf ("-maxcolors <n>\t\tLimit color allocation count to n colors.\n"); // require parameter nb colors
+	printf ("-text\t\tDisplays the text following this option. Need a loaded font.\n");
+	printf ("-font\t\tLoads a font. The parameter must follow the police_name/size format. Example: loading the grunge font at size 18 is : grunge/18.");
+	printf ("The following options requires a file to work properly.\n");
+	printf ("-blast\t\tDisplays the file.\n");
+	printf ("-loop\t\tScales down the image.\n");
+	printf ("-blendtest\tPerforms a blending test on the file.\n");
+	printf ("-rotatetest\tPerforms a rotate test on the file.\n");
+	printf ("-filter\t\tPerforms filtering. Possible filters are,\n\t\t\t1:Blur filter, 2:Sharpen filter, 3:Color blur filter, \n\t\t\t4:Emboss filter, 5:Grayscale filter, 6:Saturation filter,\n\t\t\t7:Edge detection filter.\n");
+	return 0;
      }
-
+   
    for (i = 1; i < argc; i++)
      {
-       if (!strcmp(argv[i], "-root"))
-	 root = 1;
-       else if (!strcmp(argv[i], "-smooth"))
-	 aa = 1;
-       else if (!strcmp(argv[i], "-blast"))
-	 interactive = 0;
-       else if (!strcmp(argv[i], "-loop"))
-	 {
+	if (!strcmp(argv[i], "-root"))
+	   root = 1;
+	else if (!strcmp(argv[i], "-smooth"))
+	   aa = 1;
+	else if (!strcmp(argv[i], "-blast"))
 	   interactive = 0;
-	   loop = 1;
-	 }
-       else if (!strcmp(argv[i], "-up"))
-	 scaleup = 1;
-       else if (!strcmp(argv[i], "-both"))
-	 scaleboth = 1;
-       else if (!strcmp(argv[i], "-orig"))
+	else if (!strcmp(argv[i], "-loop"))
+	  {
+	     interactive = 0;
+	     loop = 1;
+	  }
+	else if (!strcmp(argv[i], "-up"))
+	   scaleup = 1;
+	else if (!strcmp(argv[i], "-both"))
+	   scaleboth = 1;
+	else if (!strcmp(argv[i], "-orig"))
 	   origone = 1;
 	else if (!strcmp(argv[i], "-blend"))
-	  blend = 1;
-       else if (!strcmp(argv[i], "-blendtest"))
-	 {
-	   blendtest = 1;
-	   interactive = 0;
-	 }
-       else if (!strcmp(argv[i], "-dither"))
-	 dith = 1;
-       else if (!strcmp(argv[i], "-scale"))
-	 scale = 1;
-       else if (!strcmp(argv[i], "-noloop"))
-	 loop = 0;
-       else if (!strcmp(argv[i], "-size"))
-	 {
-	   i++;
-	   w = atoi(argv[i++]);
-	   h = atoi(argv[i]);
-	 }
-       else if (!strcmp(argv[i], "-maxcolors"))
-	 {
-	   i++;
-	   imlib_set_color_usage(atoi(argv[i]));
+	   blend = 1;
+	else if (!strcmp(argv[i], "-blendtest"))
+	  {
+	     blendtest = 1;
+	     interactive = 0;
 	  }
-       else if (!strcmp(argv[i], "-font"))
-	 {
-	   i++;
-	   fon = argv[i];
-	 }
-       else if (!strcmp(argv[i], "-text"))
-	 {
-	   i++;
-	   str = argv[i];
-	 }
-       else if (!strcmp(argv[i], "-rotate"))
-	 rotate = 1;
-       else if (!strcmp(argv[i], "-filter"))
-	 {
-	    filter = atoi(argv[++i]);
-	    interactive = 0;
-	 }
-       else if (!strcmp(argv[i], "-rotatetest"))
-	 {
-	   rottest = 1;
-	   interactive = 0;
-	 }
-       else
-	 file = argv[i];
+	else if (!strcmp(argv[i], "-colormod"))
+	  {
+	     DATA8 rt[256], gt[256], bt[256], at[256];
+	     double rm, gm, bm, am;
+	     int j;
+	     /*\ Setup color mod tables \*/
+	     if (!colormod) colormod = imlib_create_color_modifier();
+	     imlib_context_set_color_modifier(colormod);
+	     rm = strtod(argv[++i], 0);
+	     gm = strtod(argv[++i], 0);
+	     bm = strtod(argv[++i], 0);
+	     am = strtod(argv[++i], 0);
+	     imlib_get_color_modifier_tables(rt, gt, bt, at);
+	     for (j = 0x100; --j >= 0; ) {
+		rt[j] = ((double)rt[j]) * rm;
+		gt[j] = ((double)gt[j]) * gm;
+		bt[j] = ((double)bt[j]) * bm;
+		at[j] = ((double)at[j]) * am;
+	     }
+	     imlib_set_color_modifier_tables(rt, gt, bt, at);
+	  }
+	else if (!strcmp(argv[i], "-dither"))
+	   dith = 1;
+	else if (!strcmp(argv[i], "-scale"))
+	   scale = 1;
+	else if (!strcmp(argv[i], "-noloop"))
+	   loop = 0;
+	else if (!strcmp(argv[i], "-size"))
+	  {
+	     i++;
+	     w = atoi(argv[i++]);
+	     h = atoi(argv[i]);
+	  }
+	else if (!strcmp(argv[i], "-maxcolors"))
+	  {
+	     i++;
+	     imlib_set_color_usage(atoi(argv[i]));
+	  }
+	else if (!strcmp(argv[i], "-font"))
+	  {
+	     i++;
+	     fon = argv[i];
+	  }
+	else if (!strcmp(argv[i], "-text"))
+	  {
+	     i++;
+	     str = argv[i];
+	  }
+	else if (!strcmp(argv[i], "-rotate"))
+	   rotate = 1;
+	else if (!strcmp(argv[i], "-filter"))
+	  {
+	     filter = atoi(argv[++i]);
+	     interactive = 0;
+	  }
+	else if (!strcmp(argv[i], "-rotatetest"))
+	  {
+	     rottest = 1;
+	     interactive = 0;
+	  }
+	else
+	   file = argv[i];
      }
-
+   
    /**
     * Initialization according to options
     */
    printf("init\n");
-
+   
    /**
     * First tests to determine which rendering task to perform
     */
@@ -204,7 +227,7 @@ int main (int argc, char **argv)
 			  ButtonMotionMask | PointerMotionMask | ExposureMask);
 	  }
      }
-
+   
    if (!interactive)
      {
 	printf("load %s\n", file);
@@ -219,7 +242,7 @@ int main (int argc, char **argv)
 	h = imlib_image_get_height();   
 	printf("image %i x %i\n", w, h);
      }
-
+   
    if (!blendtest)
      {
 	if (!root)
@@ -241,13 +264,13 @@ int main (int argc, char **argv)
 	  }
 	XSync(disp, False);
      }
-
-
+   
+   
    /**
     * Start rendering
     */
    printf("rend\n");
-
+   
    if (!blendtest)
      {
 	imlib_context_set_display(disp);
@@ -269,7 +292,7 @@ int main (int argc, char **argv)
    if (loop)
      {
 	printf("loop\n");
-
+	
 	// first test
 	if (scaleup)
 	  {
@@ -305,7 +328,7 @@ int main (int argc, char **argv)
 		  pixels += (w + i) * (((w + i) * h) / w);
 	       }
 	  }
-
+	
 	// else if // second
 	else if (scaleboth)
 	  {
@@ -318,7 +341,7 @@ int main (int argc, char **argv)
 			    Imlib_Image im_tmp;
 			    
 			    im_tmp = imlib_create_cropped_scaled_image(0, 0, w, h, 
-								   w, (((i) * h) / w));
+								       w, (((i) * h) / w));
 			    if (im_tmp)
 			      {
 				 imlib_context_set_image(im_tmp);
@@ -387,7 +410,7 @@ int main (int argc, char **argv)
 	  }
 	else
 	  {
-	    printf("scale down 0 -> %i incriment by 1\n", w);
+	     printf("scale down 0 -> %i incriment by 1\n", w);
 	     for (i = 0; i < w; i++)
 	       {
 		  if (!blendtest)
@@ -409,40 +432,41 @@ int main (int argc, char **argv)
 	       }
 	  }
      }
-
-	// last test
-	/*	else if (scaleboth)
+   
+   // last test
+   /*	else if (scaleboth)
+     {
+	for (i = 0; i < w * 2; i+= 1)
 	  {
-	     for (i = 0; i < w * 2; i+= 1)
+	     if (!blendtest)
+		imlib_render_image_on_drawable_at_size(0, 0,
+						       2 * w - i, (((i) * h) / w));
+	     else
 	       {
-		  if (!blendtest)
-		     imlib_render_image_on_drawable_at_size(0, 0,
-							    2 * w - i, (((i) * h) / w));
-		  else
+		  Imlib_Image im_tmp;
+		  im_tmp = imlib_create_cropped_scaled_image(0, 0, w, h, 
+							     2 * w - i, (((i) * h) / w));
+		  if (im_tmp)
 		    {
-		       Imlib_Image im_tmp;
-		       im_tmp = imlib_create_cropped_scaled_image(0, 0, w, h, 
-								  2 * w - i, (((i) * h) / w));
-		       if (im_tmp)
-			 {
-			    imlib_context_set_image(im_tmp);
-			    imlib_free_image();
-			 }
-		       imlib_context_set_image(im);
+		       imlib_context_set_image(im_tmp);
+		       imlib_free_image();
 		    }
-		  pixels += (2 * w - i) * (((i) * h) / w);
+		  imlib_context_set_image(im);
 	       }
+	     pixels += (2 * w - i) * (((i) * h) / w);
 	  }
-	  } */// end if loop
+     }
+    } */// end if loop
    else if (blendtest)
      {
 	Imlib_Image im2;
-
+	
 	im2 = imlib_create_image(w, h);
 	imlib_context_set_image(im2);
 	w = imlib_image_get_width();
 	h = imlib_image_get_height();   
 	imlib_context_set_image(im2);
+	imlib_context_set_color_modifier(colormod);
 	for (i = 0; i < 256; i++)
 	  {
              imlib_blend_image_onto_image(im, 0, 0, 0, w, h, 0, 0, w, h);
@@ -451,7 +475,8 @@ int main (int argc, char **argv)
      }
    else if (rottest)
      {
-	int w, h, i;
+	int w, h;
+	double i;
 	
 	imlib_context_set_image(im);
 	imlib_render_image_on_drawable(0, 0);
@@ -462,31 +487,49 @@ int main (int argc, char **argv)
 	
 	imlib_context_set_blend(1);
 	imlib_context_set_image(imlib_create_image(w, h));
-	for (i = h; (i -= 10) >= 0; ) {
+	for (i = 0; i < 1; i += 0.01) {
 	   imlib_blend_image_onto_image(im, 0, 0, 0, w, h, 0, 0, w, h);
+	   imlib_context_set_color_modifier(colormod);
 	   imlib_blend_image_onto_image_at_angle(im, 0, 0, 0, w, h,
-						 0, h - i, w, i);
+						 0, h * i,
+						 w * (1 - i), -(h * i));
+	   imlib_context_set_color_modifier(NULL);
 	   imlib_render_image_on_drawable(0, 0);
 	   pixels += w * h;
 	}
-	for (i = w; (i -= 10) >= 0; ) {
+	for (i = 0; i < 1; i += 0.01) {
 	   imlib_blend_image_onto_image(im, 0, 0, 0, w, h, 0, 0, w, h);
+	   imlib_context_set_color_modifier(colormod);
+	   imlib_context_set_operation(IMLIB_OP_ADD);
 	   imlib_blend_image_onto_image_at_angle(im, 0, 0, 0, w, h,
-						 w - i, h, i, 0);
+						 w * i, h,
+						 -(w * i), h * (i - 1));
+	   imlib_context_set_operation(IMLIB_OP_COPY);
+	   imlib_context_set_color_modifier(NULL);
 	   imlib_render_image_on_drawable(0, 0);
 	   pixels += w * h;
 	}
-	for (i = h; (i -= 10) >= 0; ) {
+	for (i = 0; i < 1; i += 0.01) {
 	   imlib_blend_image_onto_image(im, 0, 0, 0, w, h, 0, 0, w, h);
+	   imlib_context_set_color_modifier(colormod);
+	   imlib_context_set_operation(IMLIB_OP_SUBTRACT);
 	   imlib_blend_image_onto_image_at_angle(im, 0, 0, 0, w, h,
-						 w, i, 0, h - i);
+						 w, h * (1 - i),
+						 w * (i - 1), h * i);
+	   imlib_context_set_operation(IMLIB_OP_COPY);
+	   imlib_context_set_color_modifier(NULL);
 	   imlib_render_image_on_drawable(0, 0);
 	   pixels += w * h;
 	}
-	for (i = w; (i -= 10) >= 0; ) {
+	for (i = 0; i < 1; i += 0.01) {
 	   imlib_blend_image_onto_image(im, 0, 0, 0, w, h, 0, 0, w, h);
+	   imlib_context_set_color_modifier(colormod);
+	   imlib_context_set_operation(IMLIB_OP_RESHADE);
 	   imlib_blend_image_onto_image_at_angle(im, 0, 0, 0, w, h,
-						 i, 0, w - i, h);
+						 w * (1 - i), 0,
+						 w * i, h * (1 - i));
+	   imlib_context_set_operation(IMLIB_OP_COPY);
+	   imlib_context_set_color_modifier(NULL);
 	   imlib_render_image_on_drawable(0, 0);
 	   pixels += w * h;
 	}
@@ -536,7 +579,7 @@ int main (int argc, char **argv)
 	   imlib_filter_set_green( 0,  0, 0,  1,  1,  1);
 	   imlib_filter_set_blue (-1, -1, 0, -1, -1, -1);
 	   imlib_filter_set_blue ( 0,  0, 0,  1,  1,  1);
-
+	   
 	   imlib_filter_constants(0, 768, 768, 768);
 	   imlib_filter_divisors (0,   6,   6,   6);
 	   break;
@@ -630,8 +673,8 @@ int main (int argc, char **argv)
 		    {
 		    case Expose:
 		       up = imlib_update_append_rect(up, 
-				ev.xexpose.x, ev.xexpose.y, 
-				ev.xexpose.width, ev.xexpose.height);
+						     ev.xexpose.x, ev.xexpose.y, 
+						     ev.xexpose.width, ev.xexpose.height);
 		       break;
 		    case ButtonRelease:
 		       exit(0);
@@ -662,7 +705,7 @@ int main (int argc, char **argv)
 	     im_ic[10] = imlib_load_image("test_images/tnt.png");
 	     im_ic[11] = imlib_load_image("test_images/bulb.png");
 	     im_ic[12] = imlib_load_image("test_images/lock.png");
-
+	     
 	     imlib_context_set_image(im);    
 	     if (first)
 	       {
@@ -731,7 +774,7 @@ int main (int argc, char **argv)
 	     if (fon)
 	       {
 		  int retw, reth, ty, nx, ny, cx, cy, cw, ch, cp;
-		
+		  
 		  if (!str)
 		     str = "This is a test string";
 		  ty = 50;
@@ -739,7 +782,7 @@ int main (int argc, char **argv)
 		    {
 		       int al;
 		       double an = (double)i / 10.0;
-
+		       
 		       imlib_context_set_direction(IMLIB_TEXT_TO_ANGLE);
 		       imlib_context_set_angle(an);
 		       
@@ -821,19 +864,20 @@ int main (int argc, char **argv)
 	     imlib_context_set_image(im_ic[1]);imlib_free_image();
 	     imlib_context_set_image(im_ic[2]);imlib_free_image();
 	     imlib_context_set_image(im_ic[3]);imlib_free_image();
-
+	     
 	  }
      }
    else
      {
 	pixels = 0;
+	imlib_context_set_color_modifier(colormod);
 	for (i = 0; i < w; i++)
 	  {
 	     imlib_render_image_on_drawable_at_size(0, 0, w, h);
 	     pixels += w * h;
 	  }
      }
-
+   
    /**
     * Determine horse power of your video card driver
     */

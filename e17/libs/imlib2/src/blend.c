@@ -92,17 +92,6 @@ __imlib_BlendRGBAToRGBA(DATA32 *src, int srcw, DATA32 *dst, int dstw,
 }
 
 static void
-__imlib_BlendRGBToRGBA(DATA32 *src, int srcw, DATA32 *dst, int dstw, 
-			int w, int h, ImlibColorModifier *cm)
-{
-   LOOP_START
-
-   *p2 = 0xff000000 | (*p1 & 0x00ffffff);
-
-   LOOP_END_WITH_INCREMENT
-}
-
-static void
 __imlib_CopyRGBAToRGB(DATA32 *src, int srcw, DATA32 *dst, int dstw, 
 		      int w, int h, ImlibColorModifier *cm)
 {
@@ -186,11 +175,24 @@ __imlib_AddCopyRGBAToRGBA(DATA32 *src, int srcw, DATA32 *dst, int dstw,
 {
    LOOP_START_3
 
-   SATURATE_UPPER(a, A_VAL(p1) + (255 - A_VAL(p2)));
    ADD_COLOR(R_VAL(p2), R_VAL(p1), R_VAL(p2));
    ADD_COLOR(G_VAL(p2), G_VAL(p1), G_VAL(p2));
    ADD_COLOR(B_VAL(p2), B_VAL(p1), B_VAL(p2));
    SATURATE_UPPER(A_VAL(p2), A_VAL(p1) + A_VAL(p2));
+
+   LOOP_END_WITH_INCREMENT
+}
+
+static void
+__imlib_AddCopyRGBToRGBA(DATA32 *src, int srcw, DATA32 *dst, int dstw, 
+			  int w, int h, ImlibColorModifier *cm)
+{
+   LOOP_START_3
+
+   ADD_COLOR(R_VAL(p2), R_VAL(p1), R_VAL(p2));
+   ADD_COLOR(G_VAL(p2), G_VAL(p1), G_VAL(p2));
+   ADD_COLOR(B_VAL(p2), B_VAL(p1), B_VAL(p2));
+   A_VAL(p2) = 0xff;
 
    LOOP_END_WITH_INCREMENT
 }
@@ -250,6 +252,20 @@ __imlib_SubCopyRGBAToRGBA(DATA32 *src, int srcw, DATA32 *dst, int dstw,
    SUB_COLOR(G_VAL(p2), G_VAL(p1), G_VAL(p2));
    SUB_COLOR(B_VAL(p2), B_VAL(p1), B_VAL(p2));
    SATURATE_UPPER(A_VAL(p2), A_VAL(p1) + A_VAL(p2));
+
+   LOOP_END_WITH_INCREMENT
+}
+
+static void
+__imlib_SubCopyRGBToRGBA(DATA32 *src, int srcw, DATA32 *dst, int dstw, 
+			  int w, int h, ImlibColorModifier *cm)
+{
+   LOOP_START_3
+
+   SUB_COLOR(R_VAL(p2), R_VAL(p1), R_VAL(p2));
+   SUB_COLOR(G_VAL(p2), G_VAL(p1), G_VAL(p2));
+   SUB_COLOR(B_VAL(p2), B_VAL(p1), B_VAL(p2));
+   A_VAL(p2) = 0xff;
 
    LOOP_END_WITH_INCREMENT
 }
@@ -314,6 +330,20 @@ __imlib_ReCopyRGBAToRGBA(DATA32 *src, int srcw, DATA32 *dst, int dstw,
    LOOP_END_WITH_INCREMENT
 }
 
+static void
+__imlib_ReCopyRGBToRGBA(DATA32 *src, int srcw, DATA32 *dst, int dstw, 
+			 int w, int h, ImlibColorModifier *cm)
+{
+   LOOP_START_3
+
+   RESHADE_COLOR(R_VAL(p2), R_VAL(p1), R_VAL(p2));
+   RESHADE_COLOR(G_VAL(p2), G_VAL(p1), G_VAL(p2));
+   RESHADE_COLOR(B_VAL(p2), B_VAL(p1), B_VAL(p2));
+   A_VAL(p2) = 0xff;
+
+   LOOP_END_WITH_INCREMENT
+}
+
 
 
 
@@ -369,10 +399,25 @@ __imlib_BlendRGBToRGBACmod(DATA32 *src, int srcw, DATA32 *dst, int dstw,
 {
    LOOP_START_3
 
-   R_VAL(p2) = R_CMOD(cm, R_VAL(p1));
-   G_VAL(p2) = G_CMOD(cm, G_VAL(p1));
-   B_VAL(p2) = B_CMOD(cm, B_VAL(p1));
-   A_VAL(p2) = 0xff;
+   SATURATE_UPPER(a, A_CMOD(cm, 0xff) + (255 - A_VAL(p2)));
+   BLEND_COLOR(a, R_VAL(p2), R_CMOD(cm, R_VAL(p1)), R_VAL(p2));
+   BLEND_COLOR(a, G_VAL(p2), G_CMOD(cm, G_VAL(p1)), G_VAL(p2));
+   BLEND_COLOR(a, B_VAL(p2), B_CMOD(cm, B_VAL(p1)), B_VAL(p2));
+   SATURATE_UPPER(A_VAL(p2), A_CMOD(cm, 0xff) + A_VAL(p2));
+
+   LOOP_END_WITH_INCREMENT
+}
+
+static void
+__imlib_BlendRGBToRGBCmod(DATA32 *src, int srcw, DATA32 *dst, int dstw, 
+			int w, int h, ImlibColorModifier *cm)
+{
+   LOOP_START_3
+
+   a = A_CMOD(cm, 0xff);
+   BLEND_COLOR(a, R_VAL(p2), R_CMOD(cm, R_VAL(p1)), R_VAL(p2));
+   BLEND_COLOR(a, G_VAL(p2), G_CMOD(cm, G_VAL(p1)), G_VAL(p2));
+   BLEND_COLOR(a, B_VAL(p2), B_CMOD(cm, B_VAL(p1)), B_VAL(p2));
 
    LOOP_END_WITH_INCREMENT
 }
@@ -399,7 +444,7 @@ __imlib_CopyRGBToRGBACmod(DATA32 *src, int srcw, DATA32 *dst, int dstw,
    R_VAL(p2) = R_CMOD(cm, R_VAL(p1));
    G_VAL(p2) = G_CMOD(cm, G_VAL(p1));
    B_VAL(p2) = B_CMOD(cm, B_VAL(p1));
-   A_VAL(p2) = 0xff;
+   A_VAL(p2) = A_CMOD(cm, 0xff);
 
    LOOP_END_WITH_INCREMENT
 }
@@ -450,6 +495,35 @@ __imlib_AddBlendRGBAToRGBACmod(DATA32 *src, int srcw, DATA32 *dst, int dstw,
 }
 
 static void
+__imlib_AddBlendRGBToRGBCmod(DATA32 *src, int srcw, DATA32 *dst, int dstw, 
+			   int w, int h, ImlibColorModifier *cm)
+{
+   LOOP_START_3
+
+   a = A_CMOD(cm, 0xff);
+   ADD_COLOR_WITH_ALPHA(a, R_VAL(p2), R_CMOD(cm, R_VAL(p1)), R_VAL(p2));
+   ADD_COLOR_WITH_ALPHA(a, G_VAL(p2), G_CMOD(cm, G_VAL(p1)), G_VAL(p2));
+   ADD_COLOR_WITH_ALPHA(a, B_VAL(p2), B_CMOD(cm, B_VAL(p1)), B_VAL(p2));
+
+   LOOP_END_WITH_INCREMENT
+}
+
+static void
+__imlib_AddBlendRGBToRGBACmod(DATA32 *src, int srcw, DATA32 *dst, int dstw, 
+			   int w, int h, ImlibColorModifier *cm)
+{
+   LOOP_START_3
+
+   SATURATE_UPPER(a, A_CMOD(cm, 0xff) + (255 - A_VAL(p2)));
+   ADD_COLOR_WITH_ALPHA(a, R_VAL(p2), R_CMOD(cm, R_VAL(p1)), R_VAL(p2));
+   ADD_COLOR_WITH_ALPHA(a, G_VAL(p2), G_CMOD(cm, G_VAL(p1)), G_VAL(p2));
+   ADD_COLOR_WITH_ALPHA(a, B_VAL(p2), B_CMOD(cm, B_VAL(p1)), B_VAL(p2));
+   SATURATE_UPPER(A_VAL(p2), A_CMOD(cm, A_VAL(p1)) + A_VAL(p2));
+
+   LOOP_END_WITH_INCREMENT
+}
+
+static void
 __imlib_AddCopyRGBAToRGBCmod(DATA32 *src, int srcw, DATA32 *dst, int dstw, 
 			 int w, int h, ImlibColorModifier *cm)
 {
@@ -472,6 +546,20 @@ __imlib_AddCopyRGBAToRGBACmod(DATA32 *src, int srcw, DATA32 *dst, int dstw,
    ADD_COLOR(G_VAL(p2), G_CMOD(cm, G_VAL(p1)), G_VAL(p2));
    ADD_COLOR(B_VAL(p2), B_CMOD(cm, B_VAL(p1)), B_VAL(p2));
    SATURATE_UPPER(A_VAL(p2), A_CMOD(cm, A_VAL(p1)) + A_VAL(p2));
+
+   LOOP_END_WITH_INCREMENT
+}
+
+static void
+__imlib_AddCopyRGBToRGBACmod(DATA32 *src, int srcw, DATA32 *dst, int dstw, 
+			  int w, int h, ImlibColorModifier *cm)
+{
+   LOOP_START_3
+
+   ADD_COLOR(R_VAL(p2), R_CMOD(cm, R_VAL(p1)), R_VAL(p2));
+   ADD_COLOR(G_VAL(p2), G_CMOD(cm, G_VAL(p1)), G_VAL(p2));
+   ADD_COLOR(B_VAL(p2), B_CMOD(cm, B_VAL(p1)), B_VAL(p2));
+   SATURATE_UPPER(A_VAL(p2), A_CMOD(cm, 0xff) + A_VAL(p2));
 
    LOOP_END_WITH_INCREMENT
 }
@@ -509,6 +597,36 @@ __imlib_SubBlendRGBAToRGBACmod(DATA32 *src, int srcw, DATA32 *dst, int dstw,
 }
 
 static void
+__imlib_SubBlendRGBToRGBCmod(DATA32 *src, int srcw, DATA32 *dst, int dstw, 
+			  int w, int h, ImlibColorModifier *cm)
+{
+   LOOP_START_2
+
+   a = A_CMOD(cm, 0xff);
+
+   SUB_COLOR_WITH_ALPHA(a, R_VAL(p2), R_CMOD(cm, R_VAL(p1)), R_VAL(p2));
+   SUB_COLOR_WITH_ALPHA(a, G_VAL(p2), G_CMOD(cm, G_VAL(p1)), G_VAL(p2));
+   SUB_COLOR_WITH_ALPHA(a, B_VAL(p2), B_CMOD(cm, B_VAL(p1)), B_VAL(p2));
+
+   LOOP_END_WITH_INCREMENT
+}
+
+static void
+__imlib_SubBlendRGBToRGBACmod(DATA32 *src, int srcw, DATA32 *dst, int dstw, 
+			   int w, int h, ImlibColorModifier *cm)
+{
+   LOOP_START_3
+
+   SATURATE_UPPER(a, A_CMOD(cm, 0xff) + (255 - A_VAL(p2)));
+   SUB_COLOR_WITH_ALPHA(a, R_VAL(p2), R_CMOD(cm, R_VAL(p1)), R_VAL(p2));
+   SUB_COLOR_WITH_ALPHA(a, G_VAL(p2), G_CMOD(cm, G_VAL(p1)), G_VAL(p2));
+   SUB_COLOR_WITH_ALPHA(a, B_VAL(p2), B_CMOD(cm, B_VAL(p1)), B_VAL(p2));
+   SATURATE_UPPER(A_VAL(p2), A_CMOD(cm, 0xff) + A_VAL(p2));
+
+   LOOP_END_WITH_INCREMENT
+}
+
+static void
 __imlib_SubCopyRGBAToRGBCmod(DATA32 *src, int srcw, DATA32 *dst, int dstw, 
 			 int w, int h, ImlibColorModifier *cm)
 {
@@ -531,6 +649,20 @@ __imlib_SubCopyRGBAToRGBACmod(DATA32 *src, int srcw, DATA32 *dst, int dstw,
    SUB_COLOR(G_VAL(p2), G_CMOD(cm, G_VAL(p1)), G_VAL(p2));
    SUB_COLOR(B_VAL(p2), B_CMOD(cm, B_VAL(p1)), B_VAL(p2));
    SATURATE_UPPER(A_VAL(p2), A_CMOD(cm, A_VAL(p1)) + A_VAL(p2));
+
+   LOOP_END_WITH_INCREMENT
+}
+
+static void
+__imlib_SubCopyRGBToRGBACmod(DATA32 *src, int srcw, DATA32 *dst, int dstw, 
+			  int w, int h, ImlibColorModifier *cm)
+{
+   LOOP_START_3
+
+   SUB_COLOR(R_VAL(p2), R_CMOD(cm, R_VAL(p1)), R_VAL(p2));
+   SUB_COLOR(G_VAL(p2), G_CMOD(cm, G_VAL(p1)), G_VAL(p2));
+   SUB_COLOR(B_VAL(p2), B_CMOD(cm, B_VAL(p1)), B_VAL(p2));
+   SATURATE_UPPER(A_VAL(p2), A_CMOD(cm, 0xff) + A_VAL(p2));
 
    LOOP_END_WITH_INCREMENT
 }
@@ -569,6 +701,36 @@ __imlib_ReBlendRGBAToRGBACmod(DATA32 *src, int srcw, DATA32 *dst, int dstw,
 }
 
 static void
+__imlib_ReBlendRGBToRGBCmod(DATA32 *src, int srcw, DATA32 *dst, int dstw, 
+			 int w, int h, ImlibColorModifier *cm)
+{
+   LOOP_START_2
+   
+   a = A_CMOD(cm, 0xff);
+
+   RESHADE_COLOR_WITH_ALPHA(a, R_VAL(p2), R_CMOD(cm, R_VAL(p1)), R_VAL(p2));
+   RESHADE_COLOR_WITH_ALPHA(a, G_VAL(p2), G_CMOD(cm, G_VAL(p1)), G_VAL(p2));
+   RESHADE_COLOR_WITH_ALPHA(a, B_VAL(p2), B_CMOD(cm, B_VAL(p1)), B_VAL(p2));
+
+   LOOP_END_WITH_INCREMENT
+}
+
+static void
+__imlib_ReBlendRGBToRGBACmod(DATA32 *src, int srcw, DATA32 *dst, int dstw, 
+			  int w, int h, ImlibColorModifier *cm)
+{
+   LOOP_START_3
+
+   SATURATE_UPPER(a, A_CMOD(cm, A_VAL(p1)) + (255 - A_VAL(p2)));
+   RESHADE_COLOR_WITH_ALPHA(a, R_VAL(p2), R_CMOD(cm, R_VAL(p1)), R_VAL(p2));
+   RESHADE_COLOR_WITH_ALPHA(a, G_VAL(p2), G_CMOD(cm, G_VAL(p1)), G_VAL(p2));
+   RESHADE_COLOR_WITH_ALPHA(a, B_VAL(p2), B_CMOD(cm, B_VAL(p1)), B_VAL(p2));
+   SATURATE_UPPER(A_VAL(p2), A_CMOD(cm, 0xff) + A_VAL(p2));
+
+   LOOP_END_WITH_INCREMENT
+}
+
+static void
 __imlib_ReCopyRGBAToRGBCmod(DATA32 *src, int srcw, DATA32 *dst, int dstw, 
 			int w, int h, ImlibColorModifier *cm)
 {
@@ -595,271 +757,169 @@ __imlib_ReCopyRGBAToRGBACmod(DATA32 *src, int srcw, DATA32 *dst, int dstw,
    LOOP_END_WITH_INCREMENT
 }
 
+static void
+__imlib_ReCopyRGBToRGBACmod(DATA32 *src, int srcw, DATA32 *dst, int dstw, 
+			 int w, int h, ImlibColorModifier *cm)
+{
+   LOOP_START_3
+
+   RESHADE_COLOR(R_VAL(p2), R_CMOD(cm, R_VAL(p1)), R_VAL(p2));
+   RESHADE_COLOR(G_VAL(p2), G_CMOD(cm, G_VAL(p1)), G_VAL(p2));
+   RESHADE_COLOR(B_VAL(p2), B_CMOD(cm, B_VAL(p1)), B_VAL(p2));
+   SATURATE_UPPER(A_VAL(p2), A_CMOD(cm, 0xff) + A_VAL(p2));
+
+   LOOP_END_WITH_INCREMENT
+}
 
 
 
 
 
+/*\ Equivalent functions \*/
 
+#define __imlib_CopyRGBToRGB			__imlib_CopyRGBToRGBA
+#define __imlib_BlendRGBToRGB			__imlib_CopyRGBToRGB
+#define __imlib_BlendRGBToRGBA			__imlib_CopyRGBToRGBA
+#define __imlib_mmx_copy_rgb_to_rgb		__imlib_mmx_copy_rgb_to_rgba
+#define __imlib_mmx_blend_rgb_to_rgb		__imlib_mmx_copy_rgb_to_rgb
+#define __imlib_mmx_blend_rgb_to_rgba		__imlib_mmx_copy_rgb_to_rgba
+#define __imlib_CopyRGBToRGBCmod		__imlib_CopyRGBAToRGBCmod
+#define __imlib_mmx_copy_rgb_to_rgb_cmod	__imlib_mmx_copy_rgba_to_rgb_cmod
+
+#define __imlib_AddCopyRGBToRGB			__imlib_AddCopyRGBAToRGB
+#define __imlib_AddBlendRGBToRGB		__imlib_AddCopyRGBToRGB
+#define __imlib_AddBlendRGBToRGBA		__imlib_AddCopyRGBToRGBA
+#define __imlib_mmx_add_copy_rgb_to_rgb		__imlib_mmx_add_copy_rgba_to_rgb
+#define __imlib_mmx_add_blend_rgb_to_rgb	__imlib_mmx_add_copy_rgb_to_rgb
+#define __imlib_mmx_add_blend_rgb_to_rgba	__imlib_mmx_add_copy_rgb_to_rgba
+#define __imlib_AddCopyRGBToRGBCmod		__imlib_AddCopyRGBAToRGBCmod
+#define __imlib_mmx_add_copy_rgb_to_rgb_cmod	__imlib_mmx_add_copy_rgb_to_rgba_cmod
+
+#define __imlib_SubCopyRGBToRGB			__imlib_SubCopyRGBAToRGB
+#define __imlib_SubBlendRGBToRGB		__imlib_SubCopyRGBToRGB
+#define __imlib_SubBlendRGBToRGBA		__imlib_SubCopyRGBToRGBA
+#define __imlib_mmx_subtract_copy_rgb_to_rgba	__imlib_mmx_subtract_copy_rgba_to_rgba
+#define __imlib_mmx_subtract_copy_rgb_to_rgb	__imlib_mmx_subtract_copy_rgba_to_rgb
+#define __imlib_mmx_subtract_blend_rgb_to_rgb	__imlib_mmx_subtract_copy_rgb_to_rgb
+#define __imlib_mmx_subtract_blend_rgb_to_rgba	__imlib_mmx_subtract_copy_rgb_to_rgba
+#define __imlib_SubCopyRGBToRGBCmod		__imlib_SubCopyRGBAToRGBCmod
+#define __imlib_mmx_subtract_copy_rgb_to_rgb_cmod	__imlib_mmx_subtract_copy_rgb_to_rgba_cmod
+
+#define __imlib_ReCopyRGBToRGB			__imlib_ReCopyRGBAToRGB
+#define __imlib_ReBlendRGBToRGB			__imlib_ReCopyRGBToRGB
+#define __imlib_ReBlendRGBToRGBA		__imlib_ReCopyRGBToRGBA
+#define __imlib_mmx_reshade_copy_rgb_to_rgba	__imlib_mmx_reshade_copy_rgba_to_rgba
+#define __imlib_mmx_reshade_copy_rgb_to_rgb	__imlib_mmx_reshade_copy_rgba_to_rgb
+#define __imlib_mmx_reshade_blend_rgb_to_rgb	__imlib_mmx_reshade_copy_rgb_to_rgb
+#define __imlib_mmx_reshade_blend_rgb_to_rgba	__imlib_mmx_reshade_copy_rgb_to_rgba
+#define __imlib_ReCopyRGBToRGBCmod		__imlib_ReCopyRGBAToRGBCmod
+#define __imlib_mmx_reshade_copy_rgb_to_rgb_cmod	__imlib_mmx_reshade_copy_rgb_to_rgba_cmod
 
 ImlibBlendFunction
 __imlib_GetBlendFunction(ImlibOp op, char blend, char merge_alpha, char rgb_src,
 			 ImlibColorModifier * cm)
 {
-   ImlibBlendFunction blender = NULL;
+   /*\ [ mmx ][ operation ][ cmod ][ merge_alpha ][ rgb_src ][ blend ] \*/
+   static ImlibBlendFunction ibfuncs[][4][2][2][2][2] = {
+   /*\ OP_COPY \*/
+   {{{{{ __imlib_CopyRGBAToRGB,  __imlib_BlendRGBAToRGB },
+       {  __imlib_CopyRGBToRGB,   __imlib_BlendRGBToRGB } },
+      {{ __imlib_CopyRGBAToRGBA, __imlib_BlendRGBAToRGBA },
+       {  __imlib_CopyRGBToRGBA,  __imlib_BlendRGBToRGBA } } },
 
-   if (cm)
-     {
-	switch(op)
-	  {
-	  case OP_COPY:
-	     if (merge_alpha)
-	       {
-		  if (rgb_src)
-		    {
-		       if (blend)
-			  blender = __imlib_BlendRGBToRGBACmod;
-		       else
-			  blender = __imlib_CopyRGBAToRGBACmod;
-		    }
-		  else
-		    {
-		       if (blend)
-			  blender = __imlib_BlendRGBAToRGBACmod;
-		       else
-			  blender = __imlib_CopyRGBAToRGBACmod;
-		    }
-	       }
-             else
-	       {
-		  if (blend)
-		     blender = __imlib_BlendRGBAToRGBCmod;
-		  else
-		     blender = __imlib_CopyRGBAToRGBCmod;
-	       }
-	     break;
-	  case OP_ADD:
-	     if (merge_alpha)
-	       {
-		  if (blend)
-		     blender = __imlib_AddBlendRGBAToRGBACmod;
-		  else
-		     blender = __imlib_AddCopyRGBAToRGBACmod;
-	       }
-             else
-	       {
-		  if (blend)
-		     blender = __imlib_AddBlendRGBAToRGBCmod;
-		  else
-		     blender = __imlib_AddCopyRGBAToRGBCmod;
-	       }
-	     break;
-	  case OP_SUBTRACT:
-	     if (merge_alpha)
-	       {
-		  if (blend)
-		     blender = __imlib_SubBlendRGBAToRGBACmod;
-		  else
-		     blender = __imlib_SubCopyRGBAToRGBACmod;
-	       }
-             else
-	       {
-		  if (blend)
-		     blender = __imlib_SubBlendRGBAToRGBCmod;
-		  else
-		     blender = __imlib_SubCopyRGBAToRGBCmod;
-	       }
-	     break;
-	  case OP_RESHADE:
-	     if (merge_alpha)
-	       {
-		  if (blend)
-		     blender = __imlib_ReBlendRGBAToRGBACmod;
-		  else
-		     blender = __imlib_ReCopyRGBAToRGBACmod;
-	       }
-             else
-	       {
-		  if (blend)
-		     blender = __imlib_ReBlendRGBAToRGBCmod;
-		  else
-		     blender = __imlib_ReCopyRGBAToRGBCmod;
-	       }
-	     break;
-	  default:
-	     break;
-	  }
-     }
-   else
-     {
+     {{{ __imlib_CopyRGBAToRGBCmod,  __imlib_BlendRGBAToRGBCmod },
+       {  __imlib_CopyRGBToRGBCmod,   __imlib_BlendRGBToRGBCmod } },
+      {{ __imlib_CopyRGBAToRGBACmod, __imlib_BlendRGBAToRGBACmod },
+       {  __imlib_CopyRGBToRGBACmod,  __imlib_BlendRGBToRGBACmod } } } },
+   /*\ OP_ADD \*/
+    {{{{ __imlib_AddCopyRGBAToRGB,  __imlib_AddBlendRGBAToRGB },
+       {  __imlib_AddCopyRGBToRGB,   __imlib_AddBlendRGBToRGB } },
+      {{ __imlib_AddCopyRGBAToRGBA, __imlib_AddBlendRGBAToRGBA },
+       {  __imlib_AddCopyRGBToRGBA,  __imlib_AddBlendRGBToRGBA } } },
+
+     {{{ __imlib_AddCopyRGBAToRGBCmod,  __imlib_AddBlendRGBAToRGBCmod },
+       {  __imlib_AddCopyRGBToRGBCmod,   __imlib_AddBlendRGBToRGBCmod } },
+      {{ __imlib_AddCopyRGBAToRGBACmod, __imlib_AddBlendRGBAToRGBACmod },
+       {  __imlib_AddCopyRGBToRGBACmod,  __imlib_AddBlendRGBToRGBACmod } } } },
+   /*\ OP_SUBTRACT \*/
+    {{{{ __imlib_SubCopyRGBAToRGB,  __imlib_SubBlendRGBAToRGB },
+       {  __imlib_SubCopyRGBToRGB,   __imlib_SubBlendRGBToRGB } },
+      {{ __imlib_SubCopyRGBAToRGBA, __imlib_SubBlendRGBAToRGBA },
+       {  __imlib_SubCopyRGBToRGBA,  __imlib_SubBlendRGBToRGBA } } },
+
+     {{{ __imlib_SubCopyRGBAToRGBCmod,  __imlib_SubBlendRGBAToRGBCmod },
+       {  __imlib_SubCopyRGBToRGBCmod,   __imlib_SubBlendRGBToRGBCmod } },
+      {{ __imlib_SubCopyRGBAToRGBACmod, __imlib_SubBlendRGBAToRGBACmod },
+       {  __imlib_SubCopyRGBToRGBACmod,  __imlib_SubBlendRGBToRGBACmod } } } },
+   /*\ OP_RESHADE \*/
+    {{{{ __imlib_ReCopyRGBAToRGB,  __imlib_ReBlendRGBAToRGB },
+       {  __imlib_ReCopyRGBToRGB,   __imlib_ReBlendRGBToRGB } },
+      {{ __imlib_ReCopyRGBAToRGBA, __imlib_ReBlendRGBAToRGBA },
+       {  __imlib_ReCopyRGBToRGBA,  __imlib_ReBlendRGBToRGBA } } },
+
+     {{{ __imlib_ReCopyRGBAToRGBCmod,  __imlib_ReBlendRGBAToRGBCmod },
+       {  __imlib_ReCopyRGBToRGBCmod,   __imlib_ReBlendRGBToRGBCmod } },
+      {{ __imlib_ReCopyRGBAToRGBACmod, __imlib_ReBlendRGBAToRGBACmod },
+       {  __imlib_ReCopyRGBToRGBACmod,  __imlib_ReBlendRGBToRGBACmod } } } } },
+
 #ifdef DO_MMX_ASM
-	if (__imlib_get_cpuid() & CPUID_MMX)
-	  {
-	     switch(op)
-	       {
-	       case OP_COPY:
-		  if (merge_alpha)
-		    {
-		       if (rgb_src)
-			 {
-			    blender = __imlib_mmx_copy_rgb_to_rgba;
-			 }
-		       else
-			 {
-			    if (blend)
-			       blender = __imlib_mmx_blend_rgba_to_rgba;
-			    else
-			       blender = __imlib_mmx_copy_rgba_to_rgba;
-			 }
-		    }
-		  else
-		    {
-		       if (blend)
-			  blender = __imlib_mmx_blend_rgba_to_rgb;
-		       else
-			  blender = __imlib_mmx_copy_rgba_to_rgb;
-		    }
-		  break;
-	       case OP_ADD:
-		  if (merge_alpha)
-		    {
-		       if (blend)
-			  blender = __imlib_mmx_add_blend_rgba_to_rgba;
-		       else
-			  blender = __imlib_mmx_add_copy_rgba_to_rgba;
-		    }
-		  else
-		    {
-		       if (blend)
-			  blender = __imlib_mmx_add_blend_rgba_to_rgb;
-		       else
-			  blender = __imlib_mmx_add_copy_rgba_to_rgb;
-		    }
-		  break;
-	       case OP_SUBTRACT:
-		  if (merge_alpha)
-		    {
-		       if (blend)
-			  blender = __imlib_mmx_subtract_blend_rgba_to_rgba;
-		       else
-			  blender = __imlib_mmx_subtract_copy_rgba_to_rgba;
-		    }
-		  else
-		    {
-		       if (blend)
-			  blender = __imlib_mmx_subtract_blend_rgba_to_rgb;
-		       else
-			  blender = __imlib_mmx_subtract_copy_rgba_to_rgb;
-		    }
-		  break;
-	       case OP_RESHADE:
-		  if (merge_alpha)
-		    {
-		       if (blend)
-			  blender = __imlib_mmx_reshade_blend_rgba_to_rgba;
-		       else
-			  blender = __imlib_mmx_reshade_copy_rgba_to_rgba;
-		    }
-		  else
-		    {
-		       if (blend)
-			  blender = __imlib_mmx_reshade_blend_rgba_to_rgb;
-		       else
-			  blender = __imlib_mmx_reshade_copy_rgba_to_rgb;
-		    }
-		  break;
-	       default:
-		  break;
-	       }
-	  }
-	else
-#endif
-	  {
-	     switch(op)
-	       {
-	       case OP_COPY:
-		  if (merge_alpha)
-		    {
-		       if (rgb_src)
-			 {
-			    if (blend)
-			      {
-				 blender = __imlib_BlendRGBToRGBA;
-			      }
-			    else
-			       blender = __imlib_CopyRGBAToRGBA;
-			 }
-		       else
-			 {
-			    if (blend)
-			       blender = __imlib_BlendRGBAToRGBA;
-			    else
-			       blender = __imlib_CopyRGBAToRGBA;
-			 }
-		    }
-		  else
-		    {
-		       if (blend)
-			  blender = __imlib_BlendRGBAToRGB;
-		       else
-			  blender = __imlib_CopyRGBAToRGB;
-		    }
-		  break;
-	       case OP_ADD:
-		  if (merge_alpha)
-		    {
-		       if (blend)
-			  blender = __imlib_AddBlendRGBAToRGBA;
-		       else
-			  blender = __imlib_AddCopyRGBAToRGBA;
-		    }
-		  else
-		    {
-		       if (blend)
-			  blender = __imlib_AddBlendRGBAToRGB;
-		       else
-			  blender = __imlib_AddCopyRGBAToRGB;
-		    }
-		  break;
-	       case OP_SUBTRACT:
-		  if (merge_alpha)
-		    {
-		       if (blend)
-			  blender = __imlib_SubBlendRGBAToRGBA;
-		       else
-			  blender = __imlib_SubCopyRGBAToRGBA;
-		    }
-		  else
-		    {
-		       if (blend)
-			  blender = __imlib_SubBlendRGBAToRGB;
-		       else
-			  blender = __imlib_SubCopyRGBAToRGB;
-		    }
-		  break;
-	       case OP_RESHADE:
-		  if (merge_alpha)
-		    {
-		       if (blend)
-			  blender = __imlib_ReBlendRGBAToRGBA;
-		       else
-			  blender = __imlib_ReCopyRGBAToRGBA;
-		    }
-		  else
-		    {
-		       if (blend)
-			  blender = __imlib_ReBlendRGBAToRGB;
-		       else
-			  blender = __imlib_ReCopyRGBAToRGB;
-		    }
-		  break;
-	       default:
-		  break;
-	       }
-	  }
-     }
+   /*\ OP_COPY \*/
+   {{{{{ __imlib_mmx_copy_rgba_to_rgb,  __imlib_mmx_blend_rgba_to_rgb },
+       {  __imlib_mmx_copy_rgb_to_rgb,   __imlib_mmx_blend_rgb_to_rgb } },
+      {{ __imlib_mmx_copy_rgba_to_rgba, __imlib_mmx_blend_rgba_to_rgba },
+       {  __imlib_mmx_copy_rgb_to_rgba,  __imlib_mmx_blend_rgb_to_rgba } } },
 
-   return blender;
+     {{{ __imlib_mmx_copy_rgba_to_rgb_cmod,  __imlib_mmx_blend_rgba_to_rgb_cmod },
+       {  __imlib_mmx_copy_rgb_to_rgb_cmod,   __imlib_mmx_blend_rgb_to_rgb_cmod } },
+      {{ __imlib_mmx_copy_rgba_to_rgba_cmod, __imlib_mmx_blend_rgba_to_rgba_cmod },
+       {  __imlib_mmx_copy_rgb_to_rgba_cmod,  __imlib_mmx_blend_rgb_to_rgba_cmod } } } },
+   /*\ OP_ADD \*/
+    {{{{ __imlib_mmx_add_copy_rgba_to_rgb,  __imlib_mmx_add_blend_rgba_to_rgb },
+       {  __imlib_mmx_add_copy_rgb_to_rgb,   __imlib_mmx_add_blend_rgb_to_rgb } },
+      {{ __imlib_mmx_add_copy_rgba_to_rgba, __imlib_mmx_add_blend_rgba_to_rgba },
+       {  __imlib_mmx_add_copy_rgb_to_rgba,  __imlib_mmx_add_blend_rgb_to_rgba } } },
+
+     {{{ __imlib_mmx_add_copy_rgba_to_rgb_cmod,  __imlib_mmx_add_blend_rgba_to_rgb_cmod },
+       {  __imlib_mmx_add_copy_rgb_to_rgb_cmod,   __imlib_mmx_add_blend_rgb_to_rgb_cmod } },
+      {{ __imlib_mmx_add_copy_rgba_to_rgba_cmod, __imlib_mmx_add_blend_rgba_to_rgba_cmod },
+       {  __imlib_mmx_add_copy_rgb_to_rgba_cmod,  __imlib_mmx_add_blend_rgb_to_rgba_cmod } } } },
+   /*\ OP_SUBTRACT \*/
+    {{{{ __imlib_mmx_subtract_copy_rgba_to_rgb,  __imlib_mmx_subtract_blend_rgba_to_rgb },
+       {  __imlib_mmx_subtract_copy_rgb_to_rgb,   __imlib_mmx_subtract_blend_rgb_to_rgb } },
+      {{ __imlib_mmx_subtract_copy_rgba_to_rgba, __imlib_mmx_subtract_blend_rgba_to_rgba },
+       {  __imlib_mmx_subtract_copy_rgb_to_rgba,  __imlib_mmx_subtract_blend_rgb_to_rgba } } },
+
+     {{{ __imlib_mmx_subtract_copy_rgba_to_rgb_cmod,  __imlib_mmx_subtract_blend_rgba_to_rgb_cmod },
+       {  __imlib_mmx_subtract_copy_rgb_to_rgb_cmod,   __imlib_mmx_subtract_blend_rgb_to_rgb_cmod } },
+      {{ __imlib_mmx_subtract_copy_rgba_to_rgba_cmod, __imlib_mmx_subtract_blend_rgba_to_rgba_cmod },
+       {  __imlib_mmx_subtract_copy_rgb_to_rgba_cmod,  __imlib_mmx_subtract_blend_rgb_to_rgba_cmod } } } },
+   /*\ OP_RESHADE \*/
+    {{{{ __imlib_mmx_reshade_copy_rgba_to_rgb,  __imlib_mmx_reshade_blend_rgba_to_rgb },
+       {  __imlib_mmx_reshade_copy_rgb_to_rgb,   __imlib_mmx_reshade_blend_rgb_to_rgb } },
+      {{ __imlib_mmx_reshade_copy_rgba_to_rgba, __imlib_mmx_reshade_blend_rgba_to_rgba },
+       {  __imlib_mmx_reshade_copy_rgb_to_rgba,  __imlib_mmx_reshade_blend_rgb_to_rgba } } },
+
+     {{{ __imlib_mmx_reshade_copy_rgba_to_rgb_cmod,  __imlib_mmx_reshade_blend_rgba_to_rgb_cmod },
+       {  __imlib_mmx_reshade_copy_rgb_to_rgb_cmod,   __imlib_mmx_reshade_blend_rgb_to_rgb_cmod } },
+      {{ __imlib_mmx_reshade_copy_rgba_to_rgba_cmod, __imlib_mmx_reshade_blend_rgba_to_rgba_cmod },
+       {  __imlib_mmx_reshade_copy_rgb_to_rgba_cmod,  __imlib_mmx_reshade_blend_rgb_to_rgba_cmod } } } } },
+#endif
+   };
+
+   int opi = (op == OP_COPY) ? 0
+	   : (op == OP_ADD) ? 1
+	   : (op == OP_SUBTRACT) ? 2
+	   : (op == OP_RESHADE) ? 3 : -1;
+   int do_mmx = 0;
+
+   if (opi == -1) return NULL;
+
+#ifdef DO_MMX_ASM
+   do_mmx = !!(__imlib_get_cpuid() & CPUID_MMX);
+#endif
+   if (cm && rgb_src && (A_CMOD(cm, 0xff) == 0xff))
+      blend = 0;
+   return ibfuncs[!!do_mmx][opi][!!cm][!!merge_alpha][!!rgb_src][!!blend];
 }
 
 void
@@ -948,8 +1008,6 @@ __imlib_BlendImageToImage(ImlibImage *im_src, ImlibImage *im_dst,
 	     rgb_src = 1;
 	     if (merge_alpha)
 		blend = 1;
-	     else
-		blend = 0;
 	  }
 
 	__imlib_BlendRGBAToData(im_src->data, im_src->w, im_src->h,
@@ -1047,8 +1105,6 @@ __imlib_BlendImageToImage(ImlibImage *im_src, ImlibImage *im_dst,
 		  rgb_src = 1;
 		  if (merge_alpha)
 		     blend = 1;
-		  else
-		     blend = 0;
 	       }
 	     __imlib_BlendRGBAToData(im_src->data, im_src->w, im_src->h,
 				     im_dst->data, im_dst->w, im_dst->h,
@@ -1074,8 +1130,6 @@ __imlib_BlendImageToImage(ImlibImage *im_src, ImlibImage *im_dst,
 	     rgb_src = 1;
 	     if (merge_alpha)
 		blend = 1;
-	     else
-		blend = 0;
 	  }
 	/* scale in LINESIZE Y chunks and convert to depth*/
 #ifdef DO_MMX_ASM
