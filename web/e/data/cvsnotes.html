@@ -1,11 +1,11 @@
 @top@
 @start@
 <p class="contenttitle">E17 CVS Build Notes</p>
-<p>After getting E17 from CVS you'll go through the length task of building each
+<p>After getting E17 from CVS you'll go through the lengthy task of building each
 of its dependencies. Below you'll find an ordered list that will help you build
-E. Please note that when we say "build" we're talking about a four stage
+E. Please note that when we say "build" we're talking about a five stage
 process of: ./autogen.sh, ./configure (if autogen.sh doesn't run it for you),
-make, make install. If all goes well you should shoot right through the list. If
+make, make install, and ldconfig. If all goes well you should shoot right through the list. If
 you have previously installed E17 and its libs your order will be different,
 this list is for fresh installs only. It is generally recommended that any
 existing installations of E17 or any of its components be completely removed
@@ -14,48 +14,83 @@ the libraries get linked.</p>
 
 <p><b>If you have problems building the source, the most common problems involve
 old versions of the build tools.  If you can't even get autogen.sh to run properly
-you should update libtool, automake, autoconf, and gettext.  It's also to have
+you should check versions of libtool, automake, autoconf, and gettext.
+Present versions recommended are autoconf 2.13, automake 1.4, libtool 1.4.2, gettext 0.10.38.
+It's also common to have
 problems with multiple aclocal directories (ie: both /usr/share/aclocal 
-and /usr/local/share/aclocal) which you should fix.  <font color="red">Enlightenment DOES 
-build! If it doesn't build, then it is YOUR PROBLEM.  There are people watching almost
-every commit and testing changes as quick as they are made, problems are being fixed
-faster than they can break the build.  If ANY part of E17 doesn't build DO NOT contact the list,
-developers or other people associated with the project, they can't help you debug your broken linux 
-box.</font></b></p>
+and /usr/local/share/aclocal) which you should fix.</b></p>
+
+<p><b>
+CVS normally builds fine.  Breakage occurs from time to time and will be fixed when the developers get a chance.  The denizens of #e do not look fondly on questions about build errors from CVS.  You have been warned!
+</b></p>
 
 <p>People are working currently on getting E CVS working on Solaris/SPARC
 and FreeBSD/x86.</p>
 
+
+<hr>
 <p>
-E17 CVS Build Order:
+Prerequisites, you'll need to have these to build the e17 tree:
 </p>
 <table border="0">
 <tr><td align="left">
 <ol>
-<li>Install <a href="ftp://oss.sgi.com/projects/fam/download/">FAM</a></li>
-<li>Build Imlib2</li>
-<li>Build Edb</li>
-<li>Build Imlib2_loaders</li>
-<li>Build Evas</li>
-<li>Build EWD</li>
-<li>Build Ebits</li>
-<li>Build Ecore</li>
-<li>Build Estyle</li>
-<li>Build Etox</li>
-<li>Build ebg</li>
-<li>Build EWL</li>
-<li>Build Etcher</li>
-<li>Build Ebony</li>
-<li>Build med</li>
-<li>Build <a href="ftp://ftp.gnome.org/pub/GNOME/stable/sources/libxml/libxml2-2.4.5.tar.gz">libxml2</a></li>
-<li>Build Efsd</li>
-<li>Build Ebindings</li>
-<li>Build <a href="ftp://ftp.csx.cam.ac.uk/pub/software/programming/pcre/">PCRE</a></li>
-<li>Build <a href="http://www.ferite.org/?page=download">Ferite</a>(NOTE: Currently optional)</li>
-<li>Build E.</li>
+<li><a href="ftp://oss.sgi.com/projects/fam/download/">FAM</a></li>
+<li><a href="ftp://ftp.gnome.org/pub/GNOME/stable/sources/libxml/libxml2-2.4.5.tar.gz">libxml2</a></li>
+<li><a href="ftp://ftp.csx.cam.ac.uk/pub/software/programming/pcre/">PCRE</a></li>
 </ol>
 </td></tr>
 </table>
+
+
+<p>
+E17 CVS Build Order:
+</p>
+<p>
+Items labeled 'SPLIT' need to be checked out with the SPLIT tag from CVS.  Everything else comes from HEAD.
+</p>
+<table border="0">
+<tr><td align="left">
+<ol>
+<li>e17/libs/imlib2</li>
+<li>e17/libs/edb</li>
+<li>e17/libs/eet</li>
+<li>e17/libs/imlib2_loaders</li>
+<li>e17/libs/evas (note1)</li>
+<li>SPLIT: e17/libs/ebits</li>
+<li>e17/libs/ecore</li>
+<li>SPLIT: e17/libs/ebg</li>
+<li>e17/apps/efsd</li>
+<li>SPLIT: e17/apps/e</li>
+</ol>
+</td></tr>
+</table>
+
+<hr>
+<p>
+Optional items not directly required to run the wm:
+</p>
+<table border="0">
+<tr><td align="left">
+<ul>
+<li>SPLIT: e17/apps/etcher - ebits editor, layout editor (note2)</li>
+<li>SPLIT: e17/apps/ebony - bg database editor</li>
+<li>SPLIT: e17/apps/entice - image viewer (note2)</li>
+<li>SPLIT: e17/apps/ebindings - keybindings, menu, settings editor</li>
+
+<li>Build EWD</li>
+
+<li>Build Estyle</li>
+<li>Build Etox</li>
+<li>Build EWL</li>
+
+<li>Build med - menu editor - evas1 only</li>
+
+<li>Build <a href="http://www.ferite.org/?page=download">Ferite</a>(NOTE: Currently not used by e)</li>
+</ul>
+</td></tr>
+</table>
+
 
 <p>After the build is complete you should make sure FAM is running, edit your
 .xinitrc and startx.</p>
@@ -63,6 +98,63 @@ E17 CVS Build Order:
 <p>Currently no support is available for E17 build issues. Don't contact the
 developers directly unless you are positive you've found a bug!
 Enjoy.</p>
+
+<hr>
+
+<p> (note1) - evas needs configure options to be usable with e17.  Check the README for an X11 target and run ./autogen, followed by the ./configure with the options it recommends.  At this writing 
+</p>
+<blockquote>
+./configure \
+--enable-software-x11 \
+--enable-image-loader-png \
+--enable-image-loader-jpeg \
+--enable-image-loader-eet \
+--enable-image-loader-edb \
+--enable-fmemopen \
+--enable-cpu-p2-only \
+--enable-cpu-mmx \
+--enable-cpu-sse \
+--enable-cpu-c \
+--enable-scale-smooth \
+--enable-scale-sample \
+--enable-convert-8-rgb-332 \
+--enable-convert-8-rgb-666 \
+--enable-convert-8-rgb-232 \
+--enable-convert-8-rgb-222 \
+--enable-convert-8-rgb-221 \
+--enable-convert-8-rgb-121 \
+--enable-convert-8-rgb-111 \
+--enable-convert-16-rgb-565 \
+--enable-convert-16-rgb-555 \
+--enable-convert-16-rgb-rot-0 \
+--enable-convert-32-rgb-8888 \
+--enable-convert-32-rgbx-8888 \
+--enable-convert-32-bgr-8888 \
+--enable-convert-32-bgrx-8888 \
+--enable-convert-32-rgb-rot-0
+</blockquote>
+<p>
+was a good choice.
+</p>
+
+<p>
+(note2) The entire e17 cvs tree built on SuSE 8.1 with 
+ gcc 3.2,
+ autoconf 2.53,
+ automake 1.6.3,
+ libtool 1.4.2, and
+ gettext 0.11.5. Etcher and Entice needed additional commands:
+</p>
+<pre>
+  ./autogen
+  gettextize -f --intl
+  aclocal -I m4
+  ./configure
+  make
+</pre>
+<p>
+Only run gettextize once in a tree.  You'll need to checkout again if you need to run this full sequence over.
+</p>
 
 @end@
 @bottom@
