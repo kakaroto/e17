@@ -410,7 +410,7 @@ efsd_remove(EfsdConnection *ec, int num_files, char **files, EfsdOptions *ops)
   D_ENTER;
 
   if (ops)
-    result = file_cmd(ec, EFSD_CMD_REMOVE, num_files, files, ops->num_options, ops->ops);
+    result = file_cmd(ec, EFSD_CMD_REMOVE, num_files, files, ops->num_used, ops->ops);
   else
     result = file_cmd(ec, EFSD_CMD_REMOVE, num_files, files, 0, NULL);
   
@@ -428,7 +428,7 @@ efsd_move(EfsdConnection *ec, int num_files, char **files, EfsdOptions *ops)
   D_ENTER;
 
   if (ops)
-    result = file_cmd(ec, EFSD_CMD_MOVE, num_files, files, ops->num_options, ops->ops);
+    result = file_cmd(ec, EFSD_CMD_MOVE, num_files, files, ops->num_used, ops->ops);
   else
     result = file_cmd(ec, EFSD_CMD_MOVE, num_files, files, 0, NULL);
   
@@ -446,7 +446,7 @@ efsd_copy(EfsdConnection *ec, int num_files, char **files, EfsdOptions *ops)
   D_ENTER;
 
   if (ops)
-    result = file_cmd(ec, EFSD_CMD_COPY, num_files, files, ops->num_options, ops->ops);
+    result = file_cmd(ec, EFSD_CMD_COPY, num_files, files, ops->num_used, ops->ops);
   else
     result = file_cmd(ec, EFSD_CMD_COPY, num_files, files, 0, NULL);
   
@@ -480,7 +480,7 @@ efsd_listdir(EfsdConnection *ec, char *dirname,
   D_ENTER;
 
   if (ops)
-    result = file_cmd(ec, EFSD_CMD_LISTDIR, 1, &dirname, ops->num_options, ops->ops);
+    result = file_cmd(ec, EFSD_CMD_LISTDIR, 1, &dirname, ops->num_used, ops->ops);
   else
     result = file_cmd(ec, EFSD_CMD_LISTDIR, 1, &dirname, 0, NULL);
   
@@ -777,7 +777,7 @@ efsd_start_monitor_dir(EfsdConnection *ec, char *filename, EfsdOptions *ops)
     D_RETURN_(-1);
 
   if (ops)
-    result = file_cmd(ec, EFSD_CMD_STARTMON_DIR, 1, &filename, ops->num_options, ops->ops);
+    result = file_cmd(ec, EFSD_CMD_STARTMON_DIR, 1, &filename, ops->num_used, ops->ops);
   else
     result = file_cmd(ec, EFSD_CMD_STARTMON_DIR, 1, &filename, 0, NULL);
   
@@ -796,7 +796,7 @@ efsd_start_monitor_file(EfsdConnection *ec, char *filename, EfsdOptions *ops)
   D_ENTER;
 
   if (ops)
-    result = file_cmd(ec, EFSD_CMD_STARTMON_FILE, 1, &filename, ops->num_options, ops->ops);
+    result = file_cmd(ec, EFSD_CMD_STARTMON_FILE, 1, &filename, ops->num_used, ops->ops);
   else
     result = file_cmd(ec, EFSD_CMD_STARTMON_FILE, 1, &filename, 0, NULL);
   

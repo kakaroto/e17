@@ -55,8 +55,7 @@ static EfsdMonitor     *monitor_new(EfsdCommand *com, int client,
 static void             monitor_free(EfsdMonitor *m);
 
 
-static EfsdMonitorRequest *monitor_request_new(int client, EfsdCmdId id,
-					       int num_options, EfsdOption *options);
+static EfsdMonitorRequest *monitor_request_new(int client, EfsdFileCmd *cmd);
 
 static void             monitor_request_free(EfsdMonitorRequest *emr);
 
@@ -90,20 +89,7 @@ monitor_new(EfsdCommand *com, int client, int dir_mode, int is_temporary, int is
   m->clients    = NULL;
   m->files      = efsd_dca_new();
 
-  emr = monitor_request_new(client, com->efsd_file_cmd.id,
-			    com->efsd_file_cmd.num_options,
-			    com->efsd_file_cmd.options);
-
-  /* If we have options for a listdir events, unhook (not free)
-     them from the command, so that they don't get freed in the
-     normal command cleanup. They will get cleaned up when we
-     see the acknowledge event and the EfsdMonitorRequest is freed. */
-     
-  if (com->efsd_file_cmd.num_options > 0)
-    {
-      com->efsd_file_cmd.num_options = 0;
-      com->efsd_file_cmd.options = NULL;
-    }
+  emr = monitor_request_new(client, &com->efsd_file_cmd);
   
   m->clients = efsd_list_prepend(m->clients, emr);				   
 
@@ -150,19 +136,31 @@ monitor_free(EfsdMonitor *m)
 
 
 static EfsdMonitorRequest *
-monitor_request_new(int client, EfsdCmdId id,
-		    int num_options, EfsdOption *options)
+monitor_request_new(int client, EfsdFileCmd *cmd)
 {
   EfsdMonitorRequest   *emr;
   
   D_ENTER;
 
   emr = NEW(EfsdMonitorRequest);
+  memset(emr, 0, sizeof(EfsdMonitorRequest));
 
   emr->client      = client;
-  emr->id          = id;
-  emr->num_options = num_options;
-  emr->options     = options;
+  emr->id          = cmd->id;
+
+  /* Unhook (not free) the options  from the command, so
+     that they don't get freed in the normal command
+     cleanup. They will get cleaned up when we see the
+     acknowledge event and the EfsdMonitorRequest is freed.
+  */
+     
+  if (cmd->num_options > 0)
+    {
+      emr->num_options = cmd->num_options;
+      emr->options     = cmd->options;
+      cmd->num_options = 0;
+      cmd->options = NULL;
+    }
 
   D_RETURN_(emr);
 }
@@ -177,10 +175,10 @@ monitor_request_free(EfsdMonitorRequest *emr)
 
   for (i = 0; i < emr->num_options; i++)
     efsd_option_cleanup(&emr->options[i]);
-
+  
   FREE(emr->options);
   FREE(emr);
-
+  
   D_RETURN;
 }
 
@@ -266,9 +264,7 @@ monitor_add_client(EfsdMonitor *m, EfsdCommand *com, int client)
 	m->filename, m->internal_use_count, m->client_use_count);
     }
   
-  emr = monitor_request_new(client, com->efsd_file_cmd.id,
-			    com->efsd_file_cmd.num_options,
-			    com->efsd_file_cmd.options);
+  emr = monitor_request_new(client, &com->efsd_file_cmd);
   
   m->clients = efsd_list_prepend(m->clients, emr);
 

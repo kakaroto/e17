@@ -40,11 +40,9 @@ EFSD implements (de)multiplexing of FAM events to multiple connected
 clients, i.e. it keeps state on which clients ordered which files to be
 monitored, using reference counting on the files to be monitored etc.
 When a file is changed that is monitored by multiple clients, all of
-those clients should receive EFSD filechange events. Generally, multi-
-ple clients should work fine, but this part has not really seen a large
-amount of testing yet :) Listing directory entries via efsd_listdir()
-is an exception -- events generated for those commands are sent only to
-the requesting client.
+those clients receive EFSD filechange events. Listing directory entries
+via efsd_listdir() is an exception -- events generated for those commands
+are sent only to the requesting client.
 
 
 Requirements:
@@ -55,6 +53,8 @@ Requirements:
   problem, so if you want to be on the safe side, download the version
   on Enlightenment's SourceForge download page, which has that problem
   fixed:
+
+  http://prdownloads.sourceforge.net/enlightenment/fam-oss-2.6.4-NULL-fix.tar.gz
 
 * Edb, the Enlightenment database library, based on Berkeley DB.
 

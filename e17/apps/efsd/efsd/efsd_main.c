@@ -41,6 +41,7 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 #ifdef __EMX__
 #include <strings.h>
 #include <sys/select.h>
+#define getcwd _getcwd2
 #endif
 
 #include <efsd.h>
@@ -74,6 +75,8 @@ char                 opt_nesting    = FALSE;
 
 /* File descriptor for accepting new clients */
 static int           listen_fd;
+static char          app_cmd[MAXPATHLEN];
+static pid_t         app_pid;
 
 #if USE_THREADS
 
@@ -104,9 +107,9 @@ static void  *main_handle_client_command(void *container);
 static void  *main_fam_events_listener(void *dummy);
 static void   main_handle_fam_events(void);
 static void   main_handle_connections(void);
-static void   main_cleanup_signal_callback(int signal);
+static void   main_cleanup_sighandler(int signal);
 static void   main_cleanup(void);
-static void   main_initialize(void);
+static void   main_initialize(char *appname);
 static void   main_daemonize(void);
 static void   main_check_permissions(void);
 static void   main_check_options(int argc, char**argv);
@@ -790,11 +793,86 @@ main_handle_connections(void)
 
 
 static void
-main_cleanup_signal_callback(int signal)
+main_hard_exit(void)
+{
+#if defined(SIGKILL)
+  kill(app_pid, SIGKILL);
+  abort();
+#else
+  kill(app_pid, 9);
+  abort();
+#endif
+}
+
+
+static void
+main_stacktrace(void)
+{
+  char cmd[256];
+  struct stat st;
+
+  D_ENTER;
+
+  /* This code taken from Eterm with permission
+   * of the author. Cheers Michael :)
+   */
+
+#ifdef HAVE_U_STACK_TRACE
+  U_STACK_TRACE();
+  D_RETURN;
+#elif defined(GDB)
+  if (((stat(GDB_CMD_FILE, &st)) != 0) || (!S_ISREG(st.st_mode))) {
+    D_RETURN;
+  }
+  snprintf(cmd, sizeof(cmd), GDB " -x " GDB_CMD_FILE " %s %d", app_cmd, getpid());
+#elif defined(PSTACK)
+  snprintf(cmd, sizeof(cmd), PSTACK " %d", getpid());
+#elif defined(DBX)
+#  ifdef _AIX
+  snprintf(cmd, sizeof(cmd), "/bin/echo 'where\ndetach' | " DBX " -a %d", getpid());
+#  elif defined(__sgi)
+  snprintf(cmd, sizeof(cmd), "/bin/echo 'where\ndetach' | " DBX " -p %d", getpid());
+#  else
+  snprintf(cmd, sizeof(cmd), "/bin/echo 'where\ndetach' | " DBX " %s %d", app_cmd, getpid());
+#  endif
+#else
+  print_error("Your system does not support any of the backtrace methods used.  Exiting.\n");
+  D_RETURN;
+#endif
+
+  printf("Launching %s\n", cmd);
+  system(cmd);
+  main_hard_exit();
+
+  D_RETURN;
+}
+
+
+
+static void
+main_crash_sighandler(int sig)
 {
   D_ENTER;
+
+  fprintf(stdout, "Efsd [%d] received signal %i, attempting stack trace.\n",
+	  getpid(), sig);
+
+  signal(sig, SIG_DFL);
+  main_stacktrace();
+  exit(sig);
+
+  D_RETURN;
+}
+
+
+static void
+main_cleanup_sighandler(int signal)
+{
+  D_ENTER;
+
   D("Received sig %i -- cleanup.\n", signal);
   main_cleanup();
+
   D_RETURN;
 }
 
@@ -835,44 +913,45 @@ main_cleanup(void)
 
 
 static void 
-main_initialize(void)
+main_initialize(char *appname)
 {
   D_ENTER;
 
    /* lots of paranoia - clean up dead socket on exit no matter what */
    /* only case it doesnt work: SIGKILL (kill -9) */
-  signal(SIGABRT,   main_cleanup_signal_callback);
-  signal(SIGALRM,   main_cleanup_signal_callback);
-  signal(SIGBUS,    main_cleanup_signal_callback);
+  signal(SIGALRM,   main_cleanup_sighandler);
+  signal(SIGBUS,    main_cleanup_sighandler);
 #ifdef SIGEMT
-  signal(SIGEMT, main_cleanup_signal_callback);
+  signal(SIGEMT, main_cleanup_sighandler);
 #endif
-  signal(SIGFPE,    main_cleanup_signal_callback);
-  signal(SIGHUP,    main_cleanup_signal_callback);
-  signal(SIGILL,    main_cleanup_signal_callback);
-  signal(SIGINT,    main_cleanup_signal_callback);
-  signal(SIGQUIT,   main_cleanup_signal_callback);
-  /* signal(SIGSEGV,   main_cleanup_signal_callback); */
-  signal(SIGSYS,    main_cleanup_signal_callback);
-  signal(SIGTERM,   main_cleanup_signal_callback);
-  signal(SIGTRAP,   main_cleanup_signal_callback);
-  signal(SIGUSR1,   main_cleanup_signal_callback);
-  signal(SIGUSR2,   main_cleanup_signal_callback);
+  signal(SIGHUP,    main_cleanup_sighandler);
+  signal(SIGINT,    main_cleanup_sighandler);
+  signal(SIGTERM,   main_cleanup_sighandler);
+  signal(SIGTRAP,   main_cleanup_sighandler);
+  signal(SIGUSR1,   main_cleanup_sighandler);
+  signal(SIGUSR2,   main_cleanup_sighandler);
 #ifndef __EMX__
-  signal(SIGIO,     main_cleanup_signal_callback);
-  signal(SIGIOT,    main_cleanup_signal_callback);
+  signal(SIGIO,     main_cleanup_sighandler);
+  signal(SIGIOT,    main_cleanup_sighandler);
 #ifdef SIGSTKFLT
-  signal(SIGSTKFLT, main_cleanup_signal_callback);
+  signal(SIGSTKFLT, main_cleanup_sighandler);
 #endif
-  signal(SIGVTALRM, main_cleanup_signal_callback);
-  signal(SIGXCPU,   main_cleanup_signal_callback);
-  signal(SIGXFSZ,   main_cleanup_signal_callback);
+  signal(SIGVTALRM, main_cleanup_sighandler);
+  signal(SIGXCPU,   main_cleanup_sighandler);
+  signal(SIGXFSZ,   main_cleanup_sighandler);
 #endif
   signal(SIGPIPE, SIG_IGN);
 
-  atexit(efsd_misc_remove_socket_file);
+  signal(SIGQUIT,   main_crash_sighandler);
+  signal(SIGSEGV,   main_crash_sighandler);
+  signal(SIGFPE,    main_crash_sighandler);
+  signal(SIGILL,    main_crash_sighandler);
+  signal(SIGSYS,    main_crash_sighandler);
 
+  atexit(efsd_misc_remove_socket_file);
   efsd_misc_create_efsd_dir();
+  getcwd(app_cmd, MAXPATHLEN);
+  sprintf(app_cmd + strlen(app_cmd), "/%s", appname);
 
   D_RETURN;
 }
@@ -904,6 +983,7 @@ main_daemonize(void)
 #endif
   chdir("/");
   umask(077);
+  app_pid = getpid();
 
   D_RETURN;
 }
@@ -1021,7 +1101,7 @@ main(int argc, char **argv)
   efsd_stat_init();
   efsd_meta_init();
   efsd_filetype_init();
-  main_initialize();
+  main_initialize(argv[0]);
   main_daemonize();
   main_handle_connections();
 

@@ -55,3 +55,8 @@ libefsd_la_SOURCES   = 				\
 	libefsd_misc.h libefsd_misc.c 		\
 	libefsd.c
 
+EXTRA_DIST = gdb.scr
+
+install-exec-hook:
+	$(mkinstalldirs) $(DESTDIR)$(pkgdatadir)
+	test ! -z "$(GDB_CMD_FILE)" && $(INSTALL_DATA) gdb.scr $(DESTDIR)$(pkgdatadir)/ || :

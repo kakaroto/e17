@@ -1,3 +1,4 @@
 * implement file information retrieval, with results
-  similar to that of file(), ideally with i18n.
+  similar to that of file(1), ideally with i18n.
+
 * implement a comprehensive test suite.

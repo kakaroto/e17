@@ -1178,7 +1178,7 @@ filetype_cache_update(char *filename, time_t time,
 static EfsdFiletypeCacheItem *
 filetype_cache_lookup(char *filename)
 {
-  EfsdFiletypeCacheItem *filetype_it;
+  EfsdFiletypeCacheItem *filetype_it = NULL;
 
   D_ENTER;
 
@@ -1364,7 +1364,6 @@ efsd_filetype_get(char *filename, char *type, int len)
      modification time to see if regeneration of
      filetype is necessary.
   */
-
 
   if (!efsd_lstat(filename, &st))
     {

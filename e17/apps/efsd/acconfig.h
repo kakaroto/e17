@@ -10,3 +10,8 @@
 #undef USE_THREADS
 #undef HAVE_STATFS
 #undef HAVE_STATVFS
+#undef NO_STACK_TRACE
+#undef DBX
+#undef GDB
+#undef GDB_CMD_FILE
+#undef PSTACK

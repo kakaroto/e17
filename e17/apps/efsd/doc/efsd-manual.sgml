@@ -64,27 +64,91 @@
     <title>Introduction</title>
     <para>
       This is the manual for &efsd;, the Enlightenment File System Daemon.
+      The purpose of &efsd; is to provide a facility that allows applications
+      to issue commands on filesystems (such as the familiar <command>cp</command>,
+      <command>mv</command> and <command>rm</command>, but much more than that)
+      in a non-blocking fashion
+      and get reports on the outcome of those commands asynchronously.      
     </para>
     <para>
+      If you're not sure why this is a good thing, read
+      <link linkend="why" endterm="why.title"></link>. If you want to jump right
+      in, Chapter <link linkend="libefsd" endterm="libefsd.title"></link> has
+      the gory details of using &lefsd;. If you want to go even further and read
+      the code, Chapter <link linkend="efsd" endterm="efsd.title"></link> is the
+      thing for you.
+    </para>
+    <para>
+      I'd like to thank Raster <email>raster@rasterman.com</email> for talking
+      me into writing &efsd; during one of our dinner sessions somewhere in San
+      Francisco in late 2000. I've had and am still having a blast working on it.
+      I'd also like to thank the various people who have contributed suggestions,
+      feedback and patches. Their names can always be found in the
+      <filename>AUTHORS</filename> file.
     </para>
   </chapter>
 
   <chapter id="overview">
-    <title>Overview of EFSD</title>
-    <section>
-      <title>EFSD Architecture Overview</title>
+    <title id="overview.title">Overview of &efsd;</title>
+    <section id="why">
+      <title id="why.title">Why use it?</title>
       <para>
       </para>
     </section>
     <section>
-      <title>Using EFSD in Your Application</title>
+      <title>Using &efsd; in Your Application</title>
+      <para>
+	What is usually referred to as &efsd; actually comes in two parts -
+        the &efsd; server daemon and a library to be used by the clients, called
+        &lefsd;. When referring to the software package &efsd;, the combination
+        of both the server and the library is meant. Context should make clear
+	what is referred to.
+      </para>
+      <para>
+        To enable your application to use &efsd;, all you have to
+        do is link your application against &lefsd;. In the tradition of
+	the various configuration scripts that lots of software packages
+	are providing now (think of <command>gtk-config</command>,
+	<command>gnome-config</command> etc), &efsd; has
+        <command>efsd-config</command>, which reports the necessary compilation
+        and linkage flags.
+      </para>
+      <para>
+        When running your application, the &efsd; daemon must be up and running.
+        You can do this by simply issuing the <command>efsd</command> command (see
+        <command>efsd --help</command> for the available options), or your
+        application can launch it for you (although it should do so only after
+        making sure that an &efsd; instance isn't already running).
+      </para>
+      <para>
+        &efsd; has only few requirements. Right now they are
+
+	<itemizedlist mark="opencircle">
+	  <listitem>
+	    <para>
+              FAM, the File Alteration Monitor, available at
+              <ulink url="http://oss.sgi.com/projects/fam">SGI's Open Source site</ulink>.
+            </para>
+          </listitem>
+	  <listitem>
+	    <para>
+              Edb, the Enlightenment Database, based on BerkeleyDB. It's available on
+              Enlightenment's SourceForge 
+              <ulink url="http://prdownloads.sourceforge.net/enlightenment">download page</ulink>.
+            </para>
+          </listitem>
+	</itemizedlist>
+      </para>
+    </section>
+    <section>
+      <title>&efsd; Architecture Overview</title>
       <para>
       </para>
     </section>
   </chapter>
 
   <chapter id="libefsd">
-    <title>&lefsd; - The Client Side of EFSD</title>
+    <title id="libefsd.title">&lefsd; - The Client Side of &efsd;</title>
     <section>
       <title>Using &lefsd;</title>
       <para>
@@ -213,13 +277,40 @@ if ( (id = efsd_makedir(ec, "foo/bar")) < 0)
         </section>
       </section>
 
+      <section id="monitoring">
+	<title id="monitoring.title">Monitoring Files</title>
+	<para>
+	</para>
+      </section>
+
+      <section>
+        <title>Setting and Retrieving File Metadata</title>
+          <para>
+
+	  </para>
+      </section>
+
+      <section>
+        <title>Handling Filetypes</title>
+	  <para>
+	  </para>
+      </section>
+
       <section>
 	<title>Passing Command Options</title>
 	<para>
 	  Many of the most commonly used commands at the command line use
-	  options, think of <function>ls -la</function>, <function>mkdir -p</function>
-	  etc. &lefsd; provides a flexible way of
-	  combining options for the same purpose.
+	  options, think of <command>ls -la</command>, <command>mkdir -p</command>
+	  etc. &lefsd; provides a flexible way of combining options for the same purpose.
+          Also, the ability to pass options can be a great performance
+          improvement: consider the case where monitoring a large directory is requested.
+          Chances are that an application will need to initialize data structures
+          according to the various <constant>EFSD_FILE_EXISTS</constant> events, and
+          that the application will send further commands to &efsd; based on those events.
+          By requesting those actions to be taken by passing a single option to the original
+          file monitoring request, the communication overhead can be drastically reduced,
+          because the request is sent only once, instead of once <emphasis>per
+          received <constant>EFSD_FILE_EXISTS</constant> event</emphasis>.
 	</para>
 	<para>
 	  There are two conceivable situations when you encounter the need
@@ -242,6 +333,7 @@ if ( (id = efsd_makedir(ec, "foo/bar")) < 0)
 
 	  <programlisting>  
 EfsdConnection *ec;
+EfsdCmdId id;
 EfsdOptions *ops;
 
 /* Connection setup, etc. */
@@ -268,20 +360,51 @@ if ( (id = efsd_listdir(ec, "foo/bar", ops)) < 0)
               the &efsd; command returns.
             </para>
 	  </caution>
+
+	  The other case is when you need to assemble options dynamically, at runtime
+	  <footnote><para><link linkend="efsdshell">&efsdsh;</link> is an example of an application
+          where this happens.</para></footnote>. Just create an <classname>EfsdOptions</classname>
+          object using <function>efsd_ops_create()</function>, and then add options created via
+          <function>efsd_op_XXX()</function> using <function>efsd_ops_add()</function>.
+
+	  <programlisting>  
+EfsdConnection *ec;
+EfsdCmdId id;
+EfsdOptions *ops;
+int show_all, get_stat, get_type, sort;
+
+/* Connection setup, etc. */
+
+/* Determine which options are needed (I assume here there's at least one),
+   and set the corresponding flags (show_all, get_stat etc).
+*/
+
+ops = efsd_ops_create();
+
+if (show_all)  efsd_ops_add(ops, efsd_op_list_all());
+if (get_stat)  efsd_ops_add(ops, efsd_op_get_stat());
+if (get_type)  efsd_ops_add(ops, efsd_op_get_filetype());
+if (sort)      efsd_ops_add(ops, efsd_op_sort());
+
+if ( (id = efsd_start_monitor_dir(ec, "/some/dir", ops)) < 0)
+  {
+     /* Could not send command. Continue accordingly. */
+  }
+	  </programlisting>
+
+        When using options on a file monitoring request (like <link linkend="API-efsd-start-monitor-dir">
+        <function>efsd_start_monitor_dir()</function></link>), you are guaranteed to receive
+        the <constant>EFSD_FILE_EXISTS</constant> events before any results of options applied
+	to the files that are covered by the monitor. You can <emphasis>not</emphasis>, however,
+        rely on receiving the <constant>EFSD_FILE_EXISTS</constant> events and all the results
+	generated through the options before receiving the <constant>EFSD_FILE_EXISTS</constant>
+        event for the next file, or on any sequence in which those results arrive. The reason
+        is that the actions requested by the options take varying amounts of time and
+        &efsd; processes those actions in parallel. See
+        <link linkend="multithreading" endterm="multithreading.title"></link> for details.
 	</para>
       </section>
 
-      <section>
-        <title>Setting and Retrieving File Metadata</title>
-          <para>
-	  </para>
-      </section>
-
-      <section>
-        <title>Handling Filetypes</title>
-	  <para>
-	  </para>
-      </section>
     </section>
 
     <section>
@@ -539,9 +662,9 @@ if ( (id = efsd_listdir(ec, "foo/bar", ops)) < 0)
 <refsect1>
  <title>Description</title>
  <para>
-   Blocks until an efsd event arrives, then returns it.
-   Returns -1 when called on closed connection, &gt;= 0
-   otherwise.
+   Blocks until an efsd event arrives, then returns it by filling
+   in the <parameter>ev</parameter> structure. Returns -1 when called on closed connection,
+   &gt;= 0 otherwise.
  </para>
 </refsect1>
 </refentry>
@@ -1899,7 +2022,10 @@ if ( (id = efsd_listdir(ec, "foo/bar", ops)) < 0)
    are efsd_op_get_stat, <function>efsd_op_get_lstat</function>, <function>efsd_op_get_metadata</function>,
    <function>efsd_op_get_filetype</function>, <function>efsd_op_sort</function> and <function>efsd_op_list_all</function>.
    You can rely on the fact that the <constant>EFSD_FILE_EXISTS</constant> events will be
-   received before any results of options applied to the files.
+   received before any results of options applied to the files. You
+   can not rely on receiving the <constant>EFSD_FILE_EXISTS</constant> events and all the
+   results generated through the options, before receiving the
+   <constant>EFSD_FILE_EXISTS</constant> event for the next file. 
  </para>
 </refsect1>
 </refentry>
@@ -2589,13 +2715,22 @@ if ( (id = efsd_listdir(ec, "foo/bar", ops)) < 0)
   </varlistentry>
  </variablelist>
 </refsect1>
+<refsect1>
+ <title>Description</title>
+ <para>
+   </para><para>
+
+   This option constructor returns an EfsdOption that causes Efsd to send
+   <constant>EFSD_FILE_EXISTS</constant> also for hidden files (starting with a '.').
+ </para>
+</refsect1>
 </refentry>
 
     </section>
   </chapter>
 
-  <chapter id="internals">
-    <title>&efsd; - The Server Side</title>
+  <chapter id="efsd">
+    <title id="efsd.title">&efsd; - The Server Side</title>
       <note>
         <title>This chapter explains the inner workings of the &efsd; daemon.</title>
         <para>
@@ -2665,8 +2800,8 @@ if ( (id = efsd_listdir(ec, "foo/bar", ops)) < 0)
       <para>
       </para>
     </section>
-    <section>
-      <title>Multithreading</title>
+    <section id="multithreading">
+      <title id="multithreading.title">Multithreaded Implementation</title>
       <para>
       </para>
     </section>
@@ -2680,7 +2815,7 @@ if ( (id = efsd_listdir(ec, "foo/bar", ops)) < 0)
 	<itemizedlist mark="opencircle">
 	  <listitem>
 	    <para>A thorough testsuite, especially for the cache interaction and the
-	      functions in <function>efsd_fs.c</function>, i.e. the file copy/move/remove
+	      functions in <filename>efsd_fs.c</filename>, i.e. the file copy/move/remove
 	      code. Ideally this would be an automated set of tests to check if changes
 	      broke anything. Think XP.
 	    </para>

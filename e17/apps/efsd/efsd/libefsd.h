@@ -101,9 +101,9 @@ int            efsd_next_event(EfsdConnection *ec, EfsdEvent *ev);
  * @ec: The Efsd connection
  * @ev: Pointer to an allocated EfsdEvent.
  *
- * Blocks until an efsd event arrives, then returns it.
- * Returns -1 when called on closed connection, >= 0
- * otherwise.
+ * Blocks until an efsd event arrives, then returns it by filling
+ * in the @ev structure. Returns -1 when called on closed connection,
+ * >= 0 otherwise.
  */
 int            efsd_wait_event(EfsdConnection *ec, EfsdEvent *ev);
 
@@ -485,7 +485,10 @@ EfsdCmdId      efsd_start_monitor_file(EfsdConnection *ec, char *filename,
  * are efsd_op_get_stat, efsd_op_get_lstat(), efsd_op_get_metadata(),
  * efsd_op_get_filetype(), efsd_op_sort() and efsd_op_list_all().
  * You can rely on the fact that the %EFSD_FILE_EXISTS events will be
- * received before any results of options applied to the files.
+ * received before any results of options applied to the files. You
+ * can not rely on receiving the %EFSD_FILE_EXISTS events and all the
+ * results generated through the options, before receiving the
+ * %EFSD_FILE_EXISTS event for the next file. 
  */
 EfsdCmdId      efsd_start_monitor_dir(EfsdConnection *ec, char *filename,
 				       EfsdOptions *ops);
@@ -635,6 +638,9 @@ EfsdOption    *efsd_op_sort(void);
 
 /**
  * efsd_op_list_all - include hidden files in %EFSD_FILE_EXISTS events.
+ * 
+ * This option constructor returns an EfsdOption that causes Efsd to send
+ * %EFSD_FILE_EXISTS also for hidden files (starting with a '.').
  */
 EfsdOption    *efsd_op_list_all(void);
 
