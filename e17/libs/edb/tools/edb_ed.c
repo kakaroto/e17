@@ -447,7 +447,7 @@ main(int argc, char **argv)
 		fprintf(stderr, "Database file %s cannot be opened!\n  %s -h for details\n", dbfile, argv[0]);
 		exit(-1);
 	      }
-	    keys = e_db_match_keys(dbfile, key, &keys_num);
+	    keys = e_db_match_keys(db, key, &keys_num);
 	    printf("---------------------------------------------------------------\n");
 	    printf("Keys in database %s matching '%s'\n", dbfile, key);
 	    printf("\n");
