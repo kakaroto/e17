@@ -20,14 +20,6 @@ geist_document *doc;
 GtkWidget *obj_win;
 GtkWidget *obj_list;
 gint obj_sel_handler, obj_unsel_handler;
-GtkWidget *obj_name;
-gint obj_name_handler;
-GtkWidget *obj_text;
-gint obj_text_handler;
-GtkWidget *obj_vis;
-gint obj_vis_handler;
-
-
 
 gboolean mainwin_delete_cb(GtkWidget * widget, GdkEvent * event,
 
@@ -49,8 +41,6 @@ gboolean obj_sel_cb(GtkWidget * widget, int row, int column,
                     GdkEventButton * event, gpointer * data);
 gboolean obj_unsel_cb(GtkWidget * widget, int row, int column,
                       GdkEventButton * event, gpointer * data);
-gboolean obj_vis_cb(GtkWidget * widget, gpointer * data);
-gboolean obj_name_cb(GtkWidget * widget, gpointer * data);
 gboolean obj_load_cancel_cb(GtkWidget * widget, gpointer data);
 gboolean obj_addtext_ok_cb(GtkWidget * widget, gpointer * data);
 gboolean obj_addtext_cb(GtkWidget * widget, gpointer * data);
@@ -60,7 +50,7 @@ int
 main(int argc, char *argv[])
 {
    GtkWidget *hwid, *vwid;
-   GtkWidget *obj_table, *obj_btn, *obj_btn_hbox, *obj_scroll, *obj_name_l;
+   GtkWidget *obj_table, *obj_btn, *obj_btn_hbox, *obj_scroll;
 
    opt.debug_level = 5;
    D_ENTER(3);
@@ -175,32 +165,11 @@ main(int argc, char *argv[])
    gtk_table_attach(GTK_TABLE(obj_table), obj_btn_hbox, 0, 3, 0, 1,
                     GTK_FILL | GTK_EXPAND, 0, 2, 2);
    gtk_widget_show(obj_btn_hbox);
-   obj_name_l = gtk_label_new("Name:");
-   gtk_misc_set_alignment(GTK_MISC(obj_name_l), 1.0, 0.5);
-   gtk_table_attach(GTK_TABLE(obj_table), obj_name_l, 0, 1, 2, 3,
-                    GTK_FILL | GTK_EXPAND, 0, 2, 2);
-   obj_name = gtk_entry_new();
-   gtk_table_attach(GTK_TABLE(obj_table), obj_name, 1, 3, 2, 3,
-                    GTK_FILL | GTK_EXPAND, 0, 2, 2);
-   obj_name_handler =
-      gtk_signal_connect(GTK_OBJECT(obj_name), "changed",
-                         GTK_SIGNAL_FUNC(obj_name_cb), NULL);
-   obj_vis = gtk_check_button_new_with_label("Visible");
-   gtk_table_attach(GTK_TABLE(obj_table), obj_vis, 0, 3, 4, 5,
-                    GTK_FILL | GTK_EXPAND, 0, 2, 2);
-   obj_vis_handler =
-      gtk_signal_connect(GTK_OBJECT(obj_vis), "clicked",
-                         GTK_SIGNAL_FUNC(obj_vis_cb), NULL);
-   gtk_widget_show(obj_vis);
    gtk_window_set_default_size(GTK_WINDOW(obj_win), 125, 230);
    gtk_widget_show(obj_list);
    gtk_widget_show(obj_scroll);
-   gtk_widget_show(obj_name_l);
-   gtk_widget_show(obj_name);
    gtk_widget_show(obj_table);
    gtk_widget_show(obj_win);
-   gtk_widget_set_sensitive(obj_vis, FALSE);
-   gtk_widget_set_sensitive(obj_name, FALSE);
 
    doc = geist_document_new(500, 500);
    doc->darea = darea;
@@ -357,17 +326,6 @@ evbox_buttonpress_cb(GtkWidget * widget, GdkEventButton * event)
          geist_document_render_updates(doc);
          D_RETURN(5, 1);
       }
-      gtk_widget_set_sensitive(obj_vis, TRUE);
-      gtk_widget_set_sensitive(obj_name, TRUE);
-
-      gtk_signal_handler_block(GTK_OBJECT(obj_name), obj_name_handler);
-      gtk_signal_handler_block(GTK_OBJECT(obj_vis), obj_vis_handler);
-      gtk_entry_set_text(GTK_ENTRY(obj_name), obj->name ? obj->name : "");
-      gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(obj_vis),
-                                   geist_object_get_state(obj, VISIBLE));
-      gtk_signal_handler_unblock(GTK_OBJECT(obj_name), obj_name_handler);
-      gtk_signal_handler_unblock(GTK_OBJECT(obj_vis), obj_vis_handler);
-
       gtk_signal_handler_block(GTK_OBJECT(obj_list), obj_sel_handler);
       gtk_signal_handler_block(GTK_OBJECT(obj_list), obj_unsel_handler);
 
@@ -405,11 +363,6 @@ evbox_buttonpress_cb(GtkWidget * widget, GdkEventButton * event)
                geist_object_dirty_selection(GEIST_OBJECT(lll->data));
             }
             geist_list_free(ll);
-         }
-         else
-         {
-            gtk_widget_set_sensitive(obj_vis, FALSE);
-            gtk_widget_set_sensitive(obj_name, FALSE);
          }
       }
       else
@@ -687,57 +640,6 @@ gboolean obj_edit_cb(GtkWidget * widget, gpointer * data)
 }
 
 
-gboolean obj_vis_cb(GtkWidget * widget, gpointer * data)
-{
-   geist_object *obj;
-   geist_list *list, *l;
-
-   D_ENTER(3);
-
-   list = geist_document_get_selected_list(doc);
-   if (!list)
-      D_RETURN(3, TRUE);
-
-   for (l = list; l; l = l->next)
-   {
-      obj = (geist_object *) l->data;
-      if (gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(widget)))
-         geist_object_show(obj);
-      else
-         geist_object_hide(obj);
-   }
-   geist_list_free(list);
-
-   geist_document_render_updates(doc);
-   D_RETURN(3, TRUE);
-}
-
-gboolean obj_name_cb(GtkWidget * widget, gpointer * data)
-{
-   geist_object *obj;
-   geist_list *list, *l;
-
-   D_ENTER(3);
-
-   list = geist_document_get_selected_list(doc);
-   if (!list)
-      D_RETURN(3, TRUE);
-
-   for (l = list; l; l = l->next)
-   {
-      obj = (geist_object *) l->data;
-      gtk_clist_set_text(GTK_CLIST(obj_list),
-                         gtk_clist_find_row_from_data(GTK_CLIST(obj_list),
-                                                      obj), 0,
-                         gtk_entry_get_text(GTK_ENTRY(widget)));
-      obj->name = estrdup(gtk_entry_get_text(GTK_ENTRY(widget)));
-   }
-
-   geist_list_free(list);
-
-   D_RETURN(3, TRUE);
-}
-
 gboolean obj_sel_cb(GtkWidget * widget, int row, int column,
                     GdkEventButton * event, gpointer * data)
 {
@@ -746,9 +648,6 @@ gboolean obj_sel_cb(GtkWidget * widget, int row, int column,
    geist_list *l, *list;
 
    D_ENTER(3);
-
-   gtk_widget_set_sensitive(obj_vis, TRUE);
-   gtk_widget_set_sensitive(obj_name, TRUE);
 
    obj = (geist_object *) gtk_clist_get_row_data(GTK_CLIST(widget), row);
    if (obj)
@@ -764,16 +663,6 @@ gboolean obj_sel_cb(GtkWidget * widget, int row, int column,
             geist_object_dirty_selection(GEIST_OBJECT(l->data));
          }
          geist_list_free(list);
-      }
-      else
-      {
-         gtk_signal_handler_block(GTK_OBJECT(obj_name), obj_name_handler);
-         gtk_signal_handler_block(GTK_OBJECT(obj_vis), obj_vis_handler);
-         gtk_entry_set_text(GTK_ENTRY(obj_name), obj->name ? obj->name : "");
-         gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(obj_vis),
-                                      geist_object_get_state(obj, VISIBLE));
-         gtk_signal_handler_unblock(GTK_OBJECT(obj_name), obj_name_handler);
-         gtk_signal_handler_unblock(GTK_OBJECT(obj_vis), obj_vis_handler);
       }
       geist_document_render_updates(doc);
    }
@@ -804,11 +693,6 @@ gboolean obj_unsel_cb(GtkWidget * widget, int row, int column,
             geist_object_dirty_selection(GEIST_OBJECT(l->data));
          }
          geist_list_free(list);
-      }
-      else if (g_list_length(selection) == 0)
-      {
-         gtk_widget_set_sensitive(obj_vis, FALSE);
-         gtk_widget_set_sensitive(obj_name, FALSE);
       }
       geist_document_render_updates(doc);
    }
