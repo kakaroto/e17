@@ -3034,3 +3034,10 @@ Mon Oct  4 18:19:13 PDT 1999
 (Raster)
 
 get rid of "//" C++ style comments..... eeeeeeevil
+
+-------------------------------------------------------------------------------
+
+Tue Oct  5 09:15:46 PDT 1999
+(Raster)
+
+get rid of ~ backup file and rogue .xvpics dir :)
