@@ -1269,11 +1269,20 @@ EwinCreate(void)
    EDBUG_RETURN(ewin);
 }
 
+static void
+EwinRemoveFromGroups(EWin * ewin)
+{
+   int                 num, i;
+
+   num = ewin->num_groups;
+   for (i = 0; i < num; i++)
+      RemoveEwinFromGroup(ewin, ewin->groups[0]);
+}
+
 void
 EwinDestroy(EWin * ewin)
 {
    EWin               *ewin2;
-   int                 i, num_groups;
 
    EDBUG(5, "FreeEwin");
    if (!ewin)
@@ -1330,12 +1339,7 @@ EwinDestroy(EWin * ewin)
       Efree(ewin->session_id);
    FreePmapMask(&ewin->mini_pmm);
    FreePmapMask(&ewin->icon_pmm);
-   if (ewin->groups)
-     {
-	num_groups = ewin->num_groups;
-	for (i = 0; i < num_groups; i++)
-	   RemoveEwinFromGroup(ewin, ewin->groups[0]);
-     }
+   EwinRemoveFromGroups(ewin);
    Efree(ewin);
 
    EDBUG_RETURN_;
@@ -1385,15 +1389,16 @@ EwinEventUnmap(EWin * ewin)
 	Mode.doingslide = 0;
      }
 
-   HideEwin(ewin);
-
-   if (!ewin->internal)
-      return;
+   if (ewin->iconified)
+     {
+	HideEwin(ewin);
+	return;
+     }
 
    if (ewin->Close)
       ewin->Close(ewin);
 
-   /* Park the client window on the root so we can use it again later */
+   /* Park the client window on the root */
    XTranslateCoordinates(disp, ewin->client.win, root.win,
 			 -ewin->border->border.left,
 			 -ewin->border->border.top, &ewin->client.x,
