@@ -110,6 +110,7 @@ od_config_init(void)
 
 #ifdef HAVE_EWL
 int             menu_height, menu_width;
+Evas_Coord      menu_x, menu_y;
 
 void
 od_config_menu_move_cb(Ewl_Widget * w, void *ev_data, void *user_data)
@@ -121,7 +122,11 @@ od_config_menu_move_cb(Ewl_Widget * w, void *ev_data, void *user_data)
 void
 od_config_menu_out_cb(Ewl_Widget * w, void *ev_data, void *user_data)
 {
-  od_config_menu_hide();
+  int x,y;
+  evas_pointer_output_xy_get(evas, &x, &y);
+  if (x < menu_x || x > (menu_x + menu_width) ||
+      y < menu_y || y > (menu_y + menu_height))
+    od_config_menu_hide();
 }
 
 void
@@ -147,7 +152,7 @@ od_config_menu_init(void)
     return;
   init = 1;
   /* FIXME: nasty nasty, we need to request the size, not code it in */
-  menu_height = 50;
+  menu_height = 60;
   menu_width = 100;
 
   menu_win = ewl_embed_new();
@@ -202,25 +207,25 @@ od_config_menu_hide(void)
 void
 od_config_menu_draw(Evas_Coord x, Evas_Coord y)
 {
-  int             xx, yy, menu_off_x, menu_off_y;
+  int             menu_off_x, menu_off_y;
 
   menu_off_x = 5;
   menu_off_y = 5;
 
   od_config_menu_init();
   if (x - menu_off_x + menu_width > options.width)
-    xx = options.width - menu_width;
+    menu_x = options.width - menu_width;
   else if (x < menu_off_x)
-    xx = 0;
+    menu_x = 0;
   else
-    xx = x - menu_off_x;
+    menu_x = x - menu_off_x;
   if (y - menu_off_y + menu_height > options.height)
-    yy = options.height - menu_height;
+    menu_y = options.height - menu_height;
   else if (y < menu_off_y)
-    yy = 0;
+    menu_y = 0;
   else
-    yy = y - menu_off_y;
-  evas_object_move(embed, xx, yy);
+    menu_y = y - menu_off_y;
+  evas_object_move(embed, menu_x, menu_y);
   ewl_callback_call(menu, EWL_CALLBACK_SELECT);
 }
 
