@@ -1,3 +1,19 @@
+/**
+@file signals_image.c
+@brief Edje Signal handlers for the main Entice Image
+
+Edc snippets and function explanations.
+
+I want to add new functionality to Entice!
+@verbatim
+These are callbacks for all the signals Entice responds to
+If you want to add a new callback for EnticeImage do the following
+1. Add a function to signals_image.[ch]
+2. Add a function to entice.[ch]
+3. Have your signals_image.c function call your entice.c function
+Keep the data in entice.c and the request for state changes separate
+@endverbatim
+*/
 #include <stdio.h>
 #include <stdlib.h>
 #include "signals_image.h"
@@ -5,7 +21,29 @@
 
 #define DEBUG 0
 
-/* EnticeImageDelete*/
+/**
+ * Delete the current image in entice from the disk
+ * @param data ignored
+ * @param o ignored
+ * @param emission ignored
+ * @param source ignored
+ * 
+ * There is currently no error checking done, or reporting saying
+ * whether or not the deletion was successful.  The signal you want your
+ * theme to emit to delete the file from disk is "EnticeImageDelete"
+ *
+ * Example .edc code to do this
+ * @code 
+ *  program 
+ *  {   
+ *	name, "DeleteFileRequest";
+ * 	signal, "";
+ *	source, "";
+ *	action, SIGNAL_EMIT "EnticeImageDelete" "";
+ *  }
+ * @endcode
+ *
+ */
 void
 _entice_delete_current(void *data, Evas_Object * o, const char *emission,
                        const char *source)
@@ -18,7 +56,30 @@ _entice_delete_current(void *data, Evas_Object * o, const char *emission,
    source = NULL;
 }
 
-/* EnticeImageRemove*/
+/**
+ * Remove the current image from entice's filelist
+ * @param data ignored
+ * @param o ignored
+ * @param emission ignored
+ * @param source ignored
+ * 
+ * The current image is removed, and the next image in the filelist is
+ * loaded.  The signal you want your theme to emit to remove the
+ * currently displayed image from entice's filelist is
+ * "EnticeImageRmove"
+ *
+ * Example .edc code to do this
+ * @code 
+ *  program 
+ *  {   
+ *	name, "RemoveFileRequest";
+ * 	signal, "";
+ *	source, "";
+ *	action, SIGNAL_EMIT "EnticeImageRemove" "";
+ *  }
+ * @endcode
+ *
+ */
 void
 _entice_remove_current(void *data, Evas_Object * o, const char *emission,
                        const char *source)
@@ -31,7 +92,29 @@ _entice_remove_current(void *data, Evas_Object * o, const char *emission,
    source = NULL;
 }
 
-/* EnticeImageNext */
+/**
+ * Load the next image in the file list
+ * @param data ignored
+ * @param o ignored
+ * @param emission ignored
+ * @param source ignored
+ * 
+ * Load the next image in the filelist, if there's < 2 elements in the
+ * list emitting this signal does nothing.  The signal you want your
+ * theme to emit to load the next image is "EnticeImageNext" 
+ *
+ * Example .edc code to do this
+ * @code 
+ *  program 
+ *  {   
+ *	name, "ImageNextRequest";
+ * 	signal, "";
+ *	source, "";
+ *	action, SIGNAL_EMIT "EnticeImageNext" "";
+ *  }
+ * @endcode
+ *
+ */
 void
 _entice_image_next(void *data, Evas_Object * o, const char *emission,
                    const char *source)
@@ -44,7 +127,29 @@ _entice_image_next(void *data, Evas_Object * o, const char *emission,
    source = NULL;
 }
 
-/* EnticeImagePrev */
+/**
+ * Load the previous image in the file list
+ * @param data ignored
+ * @param o ignored
+ * @param emission ignored
+ * @param source ignored
+ * 
+ * Load the previous image in the filelist, if there's < 2 elements in
+ * the list emitting this signal does nothing.  The signal you want your
+ * theme to emit to load the previous image is "EnticeImagePrev" 
+ *
+ * Example .edc code to do this
+ * @code 
+ *  program 
+ *  {   
+ *	name, "ImagePreviousRequest";
+ * 	signal, "";
+ *	source, "";
+ *	action, SIGNAL_EMIT "EnticeImagePrev" "";
+ *  }
+ * @endcode
+ *
+ */
 void
 _entice_image_prev(void *data, Evas_Object * o, const char *emission,
                    const char *source)
@@ -57,7 +162,29 @@ _entice_image_prev(void *data, Evas_Object * o, const char *emission,
    source = NULL;
 }
 
-/* EnticeImageZoomIn */
+/**
+ * Zoom in on the displayed image
+ * @param data ignored
+ * @param o ignored
+ * @param emission ignored
+ * @param source ignored
+ * 
+ * Zoom in on the currently displayed image.  The signal you want your
+ * theme to emit to zoom in on the currently displayed image is
+ * "EnticeImageZoomIn"
+ *
+ * Example .edc code to do this
+ * @code 
+ *  program 
+ *  {   
+ *	name, "ImageZoomInRequest";
+ * 	signal, "";
+ *	source, "";
+ *	action, SIGNAL_EMIT "EnticeImageZoomIn" "";
+ *  }
+ * @endcode
+ *
+ */
 void
 _entice_zoom_in(void *data, Evas_Object * o, const char *emission,
                 const char *source)
@@ -70,7 +197,29 @@ _entice_zoom_in(void *data, Evas_Object * o, const char *emission,
    source = NULL;
 }
 
-/* EnticeImageZoomOut */
+/**
+ * Zoom out on the displayed image
+ * @param data ignored
+ * @param o ignored
+ * @param emission ignored
+ * @param source ignored
+ * 
+ * Zoom in on the currently displayed image.  The signal you want your
+ * theme to emit to zoom in on the currently displayed image is
+ * "EnticeImageZoomOut"
+ *
+ * Example .edc code to do this
+ * @code 
+ *  program 
+ *  {   
+ *	name, "ImageZoomInRequest";
+ * 	signal, "";
+ *	source, "";
+ *	action, SIGNAL_EMIT "EnticeImageZoomOut" "";
+ *  }
+ * @endcode
+ *
+ */
 void
 _entice_zoom_out(void *data, Evas_Object * o, const char *emission,
                  const char *source)
@@ -83,7 +232,29 @@ _entice_zoom_out(void *data, Evas_Object * o, const char *emission,
    source = NULL;
 }
 
-/* EnticeImageZoomDefault */
+/**
+ * Zoom with a 1:1 aspect ratio relative to the original image's size
+ * @param data ignored
+ * @param o ignored
+ * @param emission ignored
+ * @param source ignored
+ * 
+ * Set zoom to be 1:1 relative to the images original size.  The signal
+ * you want your theme to emit to zoom in on the currently displayed
+ * image is "EnticeImageZoomDefault"
+ *
+ * Example .edc code to do this
+ * @code 
+ *  program 
+ *  {   
+ *	name, "ImageZoomDefaultRequest";
+ * 	signal, "";
+ *	source, "";
+ *	action, SIGNAL_EMIT "EnticeImageZoomDefault" "";
+ *  }
+ * @endcode
+ *
+ */
 void
 _entice_zoom_default(void *data, Evas_Object * o, const char *emission,
                      const char *source)
