@@ -34,7 +34,7 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 #include <stdio.h>
 #include <string.h>
 
-#include <libefsd.h>
+#include "../efsd/libefsd.h"
 #include <fam.h>
 
 void event_loop(EfsdConnection *ec);
