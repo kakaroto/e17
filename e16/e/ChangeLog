@@ -1959,3 +1959,13 @@ Mon Jun 16 21:05:11 CEST 2003
 (Kim)
 
 Corrected some property change event handling bugs.
+
+-------------------------------------------------------------------------------
+
+Sat Jun 21 22:44:32 CEST 2003
+(Kim)
+
+Fix mem leak and possible segv introduced last time.
+
+Create ENL_MSG atom early (as was probably intended), fixes problem with
+receiving client messages with message_type None (+ cleanups).

@@ -5,7 +5,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: enlightenment 0.16.6\n"
-"POT-Creation-Date: 2003-06-15 16:22+0200\n"
+"POT-Creation-Date: 2003-06-21 10:46+0200\n"
 "PO-Revision-Date: 2000-01-04 23:15+0100\n"
 "Last-Translator: Adam Kisiel <kisiel@if.pw.edu.pl>\n"
 "Language-Team: Polshi <pl@li.org>\n"
@@ -253,7 +253,7 @@ msgstr "B³±d sekcji Button"
 msgid "ColorModClass Error!"
 msgstr "B³±d sekcjiColorModClass"
 
-#: src/comms.c:2122
+#: src/comms.c:2073
 #, c-format
 msgid ""
 "Received Unknown Client Message.\n"
@@ -270,7 +270,7 @@ msgstr ""
 "\n"
 "%s\n"
 
-#: src/comms.c:2125
+#: src/comms.c:2076
 msgid "E IPC Error"
 msgstr "B³±d Enlightenment IPC"
 

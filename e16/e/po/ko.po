@@ -5,7 +5,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: enlightenment 0.16.6\n"
-"POT-Creation-Date: 2003-06-15 16:22+0200\n"
+"POT-Creation-Date: 2003-06-21 10:46+0200\n"
 "PO-Revision-Date: 2000-04-10 16:10:30+0900\n"
 "Last-Translator: Sung-Hyun Nam <namsh@kldp.org>\n"
 "Language-Team: Korean <ko@li.org>\n"
@@ -253,7 +253,7 @@ msgstr "버튼 에러!"
 msgid "ColorModClass Error!"
 msgstr "ColorModClass 에러!"
 
-#: src/comms.c:2122
+#: src/comms.c:2073
 #, c-format
 msgid ""
 "Received Unknown Client Message.\n"
@@ -270,7 +270,7 @@ msgstr ""
 "\n"
 "%s\n"
 
-#: src/comms.c:2125
+#: src/comms.c:2076
 msgid "E IPC Error"
 msgstr "E IPC 에러"
 

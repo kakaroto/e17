@@ -10,7 +10,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: enlightenment 0.16.6\n"
-"POT-Creation-Date: 2003-06-15 16:22+0200\n"
+"POT-Creation-Date: 2003-06-21 10:46+0200\n"
 "PO-Revision-Date: 2001-01-07 14:00+0900\n"
 "Last-Translator: Enlightenment-jp Mailing List <enlightenment-jp@UaUa.ORG>\n"
 "Language-Team: Japanese <ja@li.org>\n"
@@ -256,7 +256,7 @@ msgstr "button エラー"
 msgid "ColorModClass Error!"
 msgstr "colormodifier エラー"
 
-#: src/comms.c:2122
+#: src/comms.c:2073
 #, c-format
 msgid ""
 "Received Unknown Client Message.\n"
@@ -273,7 +273,7 @@ msgstr ""
 "\n"
 "%s\n"
 
-#: src/comms.c:2125
+#: src/comms.c:2076
 msgid "E IPC Error"
 msgstr "E IPC エラー"
 

@@ -5,7 +5,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: enlightenment 0.16.6\n"
-"POT-Creation-Date: 2003-06-15 16:22+0200\n"
+"POT-Creation-Date: 2003-06-21 10:46+0200\n"
 "PO-Revision-Date: 2000-01-05 00:25+0100\n"
 "Last-Translator: Sylvain GIL <tootella@tootella.com>\n"
 "Language-Team: French <fr@li.org>\n"
@@ -247,7 +247,7 @@ msgstr ""
 msgid "ColorModClass Error!"
 msgstr ""
 
-#: src/comms.c:2122
+#: src/comms.c:2073
 #, c-format
 msgid ""
 "Received Unknown Client Message.\n"
@@ -264,7 +264,7 @@ msgstr ""
 "\n"
 "%s\n"
 
-#: src/comms.c:2125
+#: src/comms.c:2076
 msgid "E IPC Error"
 msgstr "Erreur IPC Enlightenment"
 

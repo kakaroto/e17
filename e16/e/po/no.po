@@ -5,7 +5,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: enlightenment 0.16.6\n"
-"POT-Creation-Date: 2003-06-15 16:22+0200\n"
+"POT-Creation-Date: 2003-06-21 10:46+0200\n"
 "PO-Revision-Date: 2000-03-07 12:08+0100\n"
 "Last-Translator: Terje Røsten <terjeros@phys.ntnu.no>\n"
 "Language-Team: Norwegian <no@li.org>\n"
@@ -250,7 +250,7 @@ msgstr "Feil med knapp!"
 msgid "ColorModClass Error!"
 msgstr "Feil ved fargemodifiseringsklasse!"
 
-#: src/comms.c:2122
+#: src/comms.c:2073
 #, c-format
 msgid ""
 "Received Unknown Client Message.\n"
@@ -267,7 +267,7 @@ msgstr ""
 "\n"
 "%s\n"
 
-#: src/comms.c:2125
+#: src/comms.c:2076
 msgid "E IPC Error"
 msgstr "Feil ved E IPC"
 
