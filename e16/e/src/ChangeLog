@@ -1772,3 +1772,11 @@ Tue Sep 14 17:06:08 PDT 1999
 (Raster)
 
 ok - go make desktop windows off the screen.... :)
+
+-------------------------------------------------------------------------------
+
+Tue Sep 14 18:55:40 PDT 1999
+(Raster)
+
+and double check that ewins didnt go missing whilst we were dragging them
+in the pager

@@ -883,6 +883,9 @@ HandleMotion(XEvent * ev)
 	     GetAreaSize(&ax, &ay);
 	     dx = mode.x - mode.px;
 	     dy = mode.y - mode.py;
+	     if (!FindItem((char *)ewin, 0, 
+			   LIST_FINDBY_POINTER, LIST_TYPE_EWIN))
+		p->hi_ewin = NULL;
 	     if ((p->hi_ewin) && (!p->hi_ewin->pager) &&
 		 (!p->hi_ewin->fixedpos))
 	       {
@@ -2214,6 +2217,9 @@ HandleMouseUp(XEvent * ev)
 		  ev->xbutton.x += hx;
 		  ev->xbutton.y += hy;
 	       }
+	     if (!FindItem((char *)ewin, 0, 
+			   LIST_FINDBY_POINTER, LIST_TYPE_EWIN))
+		p->hi_ewin = NULL;
 	     if ((mode.mode == MODE_PAGER_DRAG) && (p->hi_ewin))
 	       {
 		  ewin = NULL;
