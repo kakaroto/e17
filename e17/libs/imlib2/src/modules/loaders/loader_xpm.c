@@ -192,37 +192,37 @@ load(ImlibImage * im, ImlibProgressFunction progress, char progress_granularity,
                     {
                        /* Header */
                        sscanf(line, "%i %i %i %i", &w, &h, &ncolors, &cpp);
-                       if (ncolors > 32766)
+                       if ((ncolors > 32766) || (ncolors < 1))
                          {
                             fprintf(stderr,
-                                    "IMLIB ERROR: XPM files with colors > 32766 not supported\n");
+                                    "IMLIB ERROR: XPM files with colors > 32766 or < 1 not supported\n");
                             free(line);
                             fclose(f);
                             xpm_parse_done();
                             return 0;
                          }
-                       if (cpp > 5)
+                       if ((cpp > 5) || (cpp < 1))
                          {
                             fprintf(stderr,
-                                    "IMLIB ERROR: XPM files with characters per pixel > 5 not supported\n");
+                                    "IMLIB ERROR: XPM files with characters per pixel > 5 or < 1not supported\n");
                             free(line);
                             fclose(f);
                             xpm_parse_done();
                             return 0;
                          }
-                       if (w > 32767)
+                       if ((w > 32767) || (w < 1))
                          {
                             fprintf(stderr,
-                                    "IMLIB ERROR: Image width > 32767 pixels for file\n");
+                                    "IMLIB ERROR: Image width > 32767 or < 1 pixels for file\n");
                             free(line);
                             fclose(f);
                             xpm_parse_done();
                             return 0;
                          }
-                       if (h > 32767)
+                       if ((h > 32767) || (h < 1))
                          {
                             fprintf(stderr,
-                                    "IMLIB ERROR: Image height > 32767 pixels for file\n");
+                                    "IMLIB ERROR: Image height > 32767 or < 1 pixels for file\n");
                             free(line);
                             fclose(f);
                             xpm_parse_done();
@@ -284,9 +284,14 @@ load(ImlibImage * im, ImlibProgressFunction progress, char progress_granularity,
                                            if (k >= len)
                                              {
                                                 if (col[0])
-                                                   strcat(col, " ");
+						  {
+						     if (strlen(col) < ( sizeof(col) - 2))
+						       strcat(col, " ");
+						     else
+						       done = 1;
+						  }
                                                 if (strlen(col) + strlen(s) <
-                                                    sizeof(col))
+                                                    (sizeof(col) - 1))
                                                    strcat(col, s);
                                              }
                                            if (col[0])
@@ -322,9 +327,16 @@ load(ImlibImage * im, ImlibProgressFunction progress, char progress_granularity,
                                         }
                                       else
                                         {
-                                           if (col[0])
-                                              strcat(col, " ");
-                                           strcat(col, s);
+					   if (col[0])
+					     {
+						if (strlen(col) < ( sizeof(col) - 2))
+						  strcat(col, " ");
+						else
+						  done = 1;
+					     }
+					   if (strlen(col) + strlen(s) <
+					       (sizeof(col) - 1))
+					     strcat(col, s);
                                         }
                                    }
                               }
