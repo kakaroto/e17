@@ -48,18 +48,20 @@ void on_open_from_file(GtkWidget *widget, gpointer user_data) {
 	}
 
 	if(!file_selector) {
-	file_selector = gtk_file_selection_new("Please Select the Template "
-			"File To Use");
-	gtk_window_set_modal(GTK_WINDOW(file_selector), TRUE);
+		file_selector = gtk_file_selection_new("Please Select the Template "
+				"File To Use");
+		gtk_window_set_modal(GTK_WINDOW(file_selector), TRUE);
 
-	gtk_signal_connect_object(GTK_OBJECT(GTK_FILE_SELECTION(file_selector)->ok_button),
-			"clicked", GTK_SIGNAL_FUNC (gtk_widget_destroy),
-			(gpointer) file_selector);
+		gtk_signal_connect_object(
+				GTK_OBJECT(GTK_FILE_SELECTION(file_selector)->ok_button),
+				"clicked", GTK_SIGNAL_FUNC (gtk_widget_destroy),
+				(gpointer) file_selector);
 
-	gtk_signal_connect_object(GTK_OBJECT(GTK_FILE_SELECTION(file_selector)->cancel_button),
-			"clicked", GTK_SIGNAL_FUNC (gtk_widget_destroy),
-			(gpointer) file_selector);
-	gtk_widget_show(file_selector);
+		gtk_signal_connect_object(
+				GTK_OBJECT(GTK_FILE_SELECTION(file_selector)->cancel_button),
+				"clicked", GTK_SIGNAL_FUNC (gtk_widget_destroy),
+				(gpointer) file_selector);
+		gtk_widget_show(file_selector);
 	}
 }
 

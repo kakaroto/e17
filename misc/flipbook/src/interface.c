@@ -97,6 +97,8 @@ GtkWidget *
 		GtkWidget *menuitem;
 		menuitem = CreateMenuItem(file1,"Open Movie","",
 				"Open an existing Movie", NULL,"open movie");
+		gtk_signal_connect (GTK_OBJECT (menuitem), "activate",
+			   	GTK_SIGNAL_FUNC (on_open_from_file), NULL);
 		menuitem = CreateMenuItem(file1,"Open Movie Using Template","",
 				"Open a new Movie Using the Template Form", NULL,
 				"open movie using template");
