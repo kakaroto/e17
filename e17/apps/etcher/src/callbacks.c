@@ -976,7 +976,10 @@ on_open1_activate                      (GtkMenuItem     *menuitem,
 	     free(dir);
 	  }
 	else
-	   gtk_file_selection_set_filename(GTK_FILE_SELECTION(file), name);
+	  {
+	     gtk_file_selection_set_filename(GTK_FILE_SELECTION(file), PACKAGE_DATA_DIR"/examples/bits/");
+	     gtk_file_selection_set_filename(GTK_FILE_SELECTION(file), name);
+	  }
 	e_db_flush();
      }
    gtk_widget_show(file);
@@ -1018,6 +1021,10 @@ on_save_as1_activate                   (GtkMenuItem     *menuitem,
 	  {
 	     gtk_file_selection_set_filename(GTK_FILE_SELECTION(file), dir);
 	     free(dir);
+	  }
+	else
+	  {
+	     gtk_file_selection_set_filename(GTK_FILE_SELECTION(file), getenv("HOME"));
 	  }
 	e_db_flush();
      }
@@ -1382,6 +1389,10 @@ on_new_image_clicked                   (GtkButton       *button,
 	     gtk_file_selection_set_filename(GTK_FILE_SELECTION(file), dir);
 	     free(dir);
 	  }
+	else
+	  {
+	     gtk_file_selection_set_filename(GTK_FILE_SELECTION(file), PACKAGE_DATA_DIR"/examples/images/");
+	  }
 	e_db_flush();
      }
    gtk_widget_show(file);
@@ -1627,6 +1638,10 @@ on_browse_clicked_clicked              (GtkButton       *button,
 	     gtk_file_selection_set_filename(GTK_FILE_SELECTION(file), dir);
 	     free(dir);
 	  }
+	else
+	  {
+	     gtk_file_selection_set_filename(GTK_FILE_SELECTION(file), PACKAGE_DATA_DIR"/examples/images/");
+	  }
 	e_db_flush();
      }
    gtk_widget_show(file);
@@ -1650,6 +1665,10 @@ on_borwse_hilited_clicked              (GtkButton       *button,
 	  {
 	     gtk_file_selection_set_filename(GTK_FILE_SELECTION(file), dir);
 	     free(dir);
+	  }
+	else
+	  {
+	     gtk_file_selection_set_filename(GTK_FILE_SELECTION(file), PACKAGE_DATA_DIR"/examples/images/");
 	  }
 	e_db_flush();
      }
@@ -1676,6 +1695,10 @@ on_browse_normal_clicked               (GtkButton       *button,
 	     gtk_file_selection_set_filename(GTK_FILE_SELECTION(file), dir);
 	     free(dir);
 	  }
+	else
+	  {
+	     gtk_file_selection_set_filename(GTK_FILE_SELECTION(file), PACKAGE_DATA_DIR"/examples/images/");
+	  }
 	e_db_flush();
      }
    gtk_widget_show(file);
@@ -1700,6 +1723,10 @@ on_browse_disabled_clicked             (GtkButton       *button,
 	  {
 	     gtk_file_selection_set_filename(GTK_FILE_SELECTION(file), dir);
 	     free(dir);
+	  }
+	else
+	  {
+	     gtk_file_selection_set_filename(GTK_FILE_SELECTION(file), PACKAGE_DATA_DIR"/examples/images/");
 	  }
 	e_db_flush();
      }
