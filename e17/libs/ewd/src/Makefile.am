@@ -11,7 +11,8 @@ installed_headers_DATA = \
 	ewd_threads.h \
 	ewd_tree.h \
 	ewd_value.h \
-	ewd_config.h
+	ewd_config.h \
+	ewd_plugin.h
 
 libewd_la_CFLAGS = -O6
 
@@ -19,7 +20,8 @@ libewd_la_SOURCES = \
 	ewd_hash.c \
 	ewd_list.c \
 	ewd_tree.c \
-	ewd_value.c
+	ewd_value.c \
+	ewd_plugin.c
 
 libewd_la_LIBADD = -lm
 libewd_la_LDFLAGS = -version-info 0:0:0
