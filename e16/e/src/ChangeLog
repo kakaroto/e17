@@ -1747,3 +1747,13 @@ Tue Sep 14 15:34:11 EDT 1999
 
 Don't use the fallback border for group borders. 
 
+
+-------------------------------------------------------------------------------
+
+Tue Sep 14 15:54:25 EDT 1999
+(Christian)
+
+Ooops, the middle button in the titlebar did raise/lower and show/hide
+group borders at the same time. Changed show/hide group borders
+to shift-middleclick.
+
