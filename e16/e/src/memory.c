@@ -399,8 +399,9 @@ __Efree(void *ptr, const char *file, int line)
 }
 #endif
 
+#if !(defined(USE_STRDUP) && defined(HAVE_STRDUP))
 char               *
-duplicate(char *s)
+duplicate(const char *s)
 {
    char               *ss;
    int                 sz;
@@ -413,3 +414,4 @@ duplicate(char *s)
    strncpy(ss, s, sz + 1);
    EDBUG_RETURN(ss);
 }
+#endif

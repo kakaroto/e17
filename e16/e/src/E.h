@@ -38,6 +38,7 @@
 #include <Fnlib.h>
 #endif
 
+#define USE_STRDUP  1
 #define DEBUG_EWMH  0
 
 #define XSync(d, f) \
@@ -2613,7 +2614,11 @@ __Emalloc(x, "<unknown>", 0)
 __Erealloc(x, y, "<unknown>", 0)
 #endif
 
-char               *duplicate(char *s);
+#if defined(USE_STRDUP) && defined(HAVE_STRDUP)
+#define duplicate(p) ((p) ? strdup(p) : NULL)
+#else
+char               *duplicate(const char *s);
+#endif
 
 void                Alert(char *fmt, ...);
 void                InitStringList(void);
