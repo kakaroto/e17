@@ -11,6 +11,9 @@
 #include <Esmart/container.h>
 #include <Esmart/E_Thumb.h>
 #include <string.h>
+#include <sys/types.h>
+#include <sys/stat.h>
+#include <unistd.h>
 #include "entice.h"
 #include "ipc.h"
 #include "image.h"
@@ -317,6 +320,48 @@ entice_file_add(const char *file)
    return (result);
 }
 
+void
+entice_file_add_dir_job_cb(void *data)
+{
+   DIR *d = NULL;
+   struct dirent *dent = NULL;
+   char buf[PATH_MAX], *file = NULL;
+
+   if (entice && entice->ee && data)
+   {
+      file = (char *) data;
+
+      if ((d = opendir(data)))
+      {
+         while ((dent = readdir(d)))
+         {
+            if (!strcmp(dent->d_name, ".") || !strcmp(dent->d_name, "..")
+                || (dent->d_name[0] == '.'))
+               continue;
+            snprintf(buf, PATH_MAX, "%s/%s", file, dent->d_name);
+            entice_file_add_job_cb(buf);
+         }
+         closedir(d);
+      }
+   }
+
+}
+
+int
+entice_file_is_dir(char *file)
+{
+   struct stat st;
+
+   if (file)
+   {
+      if (stat(file, &st) < 0)
+         return (0);
+      if (S_ISDIR(st.st_mode))
+         return (1);
+   }
+   return (0);
+}
+
 /**
  * entice_file_add_job_cb - generate the cached thumb and send an ipc
  * message telling entice to load it
@@ -350,10 +395,14 @@ entice_file_add_job_cb(void *data)
                snprintf(buf, PATH_MAX, "%s/%s", mycwd, file);
             }
          }
+         if (entice_file_is_dir(buf))
+            entice_file_add_dir_job_cb(buf);
+         else if ((o = e_thumb_new(ecore_evas_get(entice->ee), buf)))
+         {
+            evas_object_del(o);
+            entice_ipc_client_request_image_load(buf);
+         }
       }
-      if ((o = e_thumb_new(ecore_evas_get(entice->ee), buf)))
-         evas_object_del(o);
-      entice_ipc_client_request_image_load(buf);
    }
 }
 
@@ -756,9 +805,8 @@ entice_dragable_image_fix(Evas_Coord x, Evas_Coord y)
          entice_image_x_scroll_offset_add(entice->current, -dx);
          entice_image_y_scroll_offset_add(entice->current, -dy);
          edje_object_part_drag_value_set(entice->edje, "EnticeImage", dx, dy);
-	 evas_object_geometry_get(entice->current, &x, &y, &w, &h);
-	 evas_damage_rectangle_add(ecore_evas_get(entice->ee), x,
-	 y,w,h); 
+         evas_object_geometry_get(entice->current, &x, &y, &w, &h);
+         evas_damage_rectangle_add(ecore_evas_get(entice->ee), x, y, w, h);
       }
    }
 }

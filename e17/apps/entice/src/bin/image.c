@@ -393,7 +393,6 @@ entice_image_zoom_fit(Evas_Object * o)
       else
          im->zoom = ((double) (im->ih) / (double) im->h);
       im->fit = 1;
-      im->scroll.x = im->scroll.y = 0;
       entice_image_resize(o, im->w, im->h);
    }
 }
@@ -704,10 +703,10 @@ entice_image_resize(Evas_Object * o, double w, double h)
             im->scroll.y = -((h - hh + 1) / 2);
       }
       */
-      evas_object_move(im->obj, im->scroll.x + im->x, im->scroll.y +
-      im->y);
       evas_object_resize(im->obj, ww, hh);
       evas_object_image_fill_set(im->obj, 0, 0, ww, hh);
+      evas_object_move(im->obj, im->scroll.x + im->x + ((im->w - ww) / 2),
+                       im->scroll.y + im->y + ((im->h - hh) / 2));
    }
 }
 static void
