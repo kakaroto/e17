@@ -809,6 +809,7 @@ magic_test_fs(char *filename, struct stat *st)
 {
   static char   s[MAXPATHLEN];
   char         *ptr;
+  char          broken_link = FALSE;
   struct statfs stfs;
 
   D_ENTER;
@@ -820,7 +821,28 @@ magic_test_fs(char *filename, struct stat *st)
    sprintf(s, "%s", "hpfs");
 #else
   if (statfs(filename, &stfs) < 0)
-    D_RETURN_(NULL);
+    {
+      if (S_ISLNK(st->st_mode))
+	{
+	  char *lastslash = strrchr(filename, '/');
+
+	  if (lastslash)
+	    {
+	      *lastslash = '\0';
+	      if (statfs(filename, &stfs) < 0)
+		{
+		  *lastslash = '/';
+		  D_RETURN_(NULL);
+		}
+	      
+	      broken_link = TRUE;
+	    }
+	}
+      else
+	{
+	  D_RETURN_(NULL);
+	}
+    }
 #ifdef __FreeBSD__
   if (stfs.f_fstypename < 0)
     sprintf(s, "%s", "unknown-fs");
@@ -905,7 +927,10 @@ magic_test_fs(char *filename, struct stat *st)
     
   if (S_ISLNK(st->st_mode))
     {
-      sprintf(ptr, "%s", "/link");
+      if (broken_link)	
+	sprintf(ptr, "%s", "/link/broken");
+      else
+	sprintf(ptr, "%s", "/link");
     }
   else if (S_ISDIR(st->st_mode))
     {
