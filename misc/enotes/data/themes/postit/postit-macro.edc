@@ -9,7 +9,6 @@
         state, "default" 0.0; \
         visible, 1; \
         color, POSTIT_COL 255; \
-        border, 1 2 1 2; \
         rel1 { \
           to, REL1_TO; \
           relative, REL1_REL; \
@@ -21,13 +20,13 @@
         } \
         image { \
           normal, IMG".png"; \
+          border, 1 2 1 2; \
         } \
       } \
       description { \
         state, "over" 0.0; \
         visible, 1; \
         color, POSTIT_COL 255; \
-        border, 1 2 1 2; \
         rel1 { \
           to, REL1_TO; \
           relative, REL1_REL; \
@@ -39,6 +38,7 @@
         } \
         image { \
           normal, IMG"_over.png"; \
+          border, 1 2 1 2; \
         } \
       } \
     }
