@@ -1,8 +1,6 @@
 ## Process this file with automake to produce Makefile.in
 
 INCLUDES = \
--I../lib \
--I/usr/local/include \
 -I$(top_srcdir)/src/lib \
 @imlib_cflags@
 

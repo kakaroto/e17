@@ -5,19 +5,26 @@ AUTOMAKE_OPTIONS     = 1.4 foreign
 # A list of all the files in the current directory which can be regenerated
 MAINTAINERCLEANFILES = Makefile.in
 
-EXTRA_DIST = \
+INCLUDES             = -I$(includedir) \
+		       -I$(top_builddir)/src \
+		       -I$(top_srcdir)/src \
+		       -I$(top_srcdir)/src/lib \
+		       @imlib_cflags@ @epeg_cflags@
+
+noinst_LTLIBRARIES = libepsilon_exiftags.la
+libepsilon_exiftags_la_SOURCES = \
 canon.c \
 casio.c \
 exif.c \
-exif.h \
-exifint.h \
 exifutil.c \
 fuji.c \
 jpeg.c \
-jpeg.h \
 makers.c \
-makers.h \
 minolta.c \
 nikon.c \
 olympus.c \
 tagdefs.c
+
+libepsilon_exiftags_la_LIBADD    = @imlib_libs@ @epeg_libs@
+libepsilon_exiftags_la_DEPENDENCIES = ../../config.h
+libepsilon_exiftags_la_LDFLAGS      = $(LDFLAGS)
