@@ -20,13 +20,13 @@
 
 typedef struct _EwlWindow EwlWindow;
 
-enum _EwlWinType	{
+enum _EwlWindowType	{
 	EWL_WINDOW_TOPLEVEL,
 /* heh change this please i couldnt think of anything else ;) */
 	EWL_WINDOW_TRANSIENT
 };
 
-typedef enum _EwlWinType EwlWinType;
+typedef enum _EwlWindowType EwlWindowType;
 
 struct _EwlWindow	{
 	EwlContainer     container;
@@ -54,10 +54,10 @@ struct _EwlWindow	{
 	MWMHints         mwmhints;
 };
 
-EwlWidget   *ewl_window_new(EwlWinType type);
-EwlWidget   *ewl_window_new_with_values(EwlWinType type, char *title, 
+EwlWidget   *ewl_window_new(EwlWindowType type);
+EwlWidget   *ewl_window_new_with_values(EwlWindowType type, char *title, 
 										int w, int h);
-void         ewl_window_init(EwlWindow *win, EwlWinType type, char *title, 
+void         ewl_window_init(EwlWindow *win, EwlWindowType type, char *title, 
 							 int w, int h);
 
 void         ewl_window_pack(EwlWidget *window, EwlWidget *child);

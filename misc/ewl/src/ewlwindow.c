@@ -1,6 +1,6 @@
 #include "ewlwindow.h"
 
-EwlWidget   *ewl_window_new(EwlWinType	type)
+EwlWidget   *ewl_window_new(EwlWindowType	type)
 {
 	EwlWindow *win = NULL;
 	FUNC_BGN("ewl_window_new");
@@ -15,7 +15,7 @@ EwlWidget   *ewl_window_new(EwlWinType	type)
 	return (EwlWidget*) win;
 }
 
-EwlWidget   *ewl_window_new_with_values(EwlWinType type, char *title, 
+EwlWidget   *ewl_window_new_with_values(EwlWindowType type, char *title, 
 										int w, int h)
 {
 	EwlWindow *win = NULL;
@@ -105,7 +105,7 @@ static EwlBool _cb_ewl_window_init_show_imlayers(EwlImLayer *layer,
 	return TRUE;
 }
 
-void         ewl_window_init(EwlWindow *win, EwlWinType type,
+void         ewl_window_init(EwlWindow *win, EwlWindowType type,
 							 char *title, int w, int h)
 {
 	EwlWidget            *widget = (EwlWidget*) win;
