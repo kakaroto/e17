@@ -2,6 +2,30 @@
 #include <Ewl.h>
 
 void
+entice_text(void *data, Evas_Object *obj, const char *emission,
+		const char *source)
+{
+	Ewl_Widget *label = data;
+	char *text = "\nEntice is an image viewer that\n"
+			"allows for a fully themeable\n"
+			"experience. Every part of the\n"
+			"interface can be modified in\n"
+			"look and feel. Entice also\n"
+			"provides basic image editing\n"
+			"features to allow quick editing\n"
+			"while viewing.";
+
+	ewl_text_align_set(EWL_TEXT(label), EWL_FLAG_ALIGN_LEFT);
+	ewl_text_font_set(EWL_TEXT(label), "Vera", 12);
+	ewl_text_style_set(EWL_TEXT(label), "soft_shadow");
+	ewl_text_text_set(EWL_TEXT(label), "Entice");
+
+	ewl_text_style_set(EWL_TEXT(label), "none");
+	ewl_text_font_set(EWL_TEXT(label), "Vera", 7);
+	ewl_text_text_append(EWL_TEXT(label), text);
+}
+
+void
 entrance_text(void *data, Evas_Object *obj, const char *emission,
 		const char *source)
 {
@@ -99,6 +123,8 @@ void realize_logo_cb(Ewl_Widget *w, void *ev_data, void *user_data)
 			elicit_text, user_data);
 	edje_object_signal_callback_add(w->theme_object, "entrance", "tour",
 			entrance_text, user_data);
+	edje_object_signal_callback_add(w->theme_object, "entice", "tour",
+			entice_text, user_data);
 	edje_object_signal_callback_add(w->theme_object, "evidence", "tour",
 			evidence_text, user_data);
 }
@@ -165,7 +191,6 @@ int main(int argc, char **argv)
 	logo = NEW(Ewl_Widget, 1);
 	ewl_widget_init(logo, "demo_logo");
 	ewl_callback_append(logo, EWL_CALLBACK_REALIZE, realize_logo_cb, label);
-	ewl_callback_append(logo, EWL_CALLBACK_CONFIGURE, test_cb, "configure logo");
 	ewl_theme_data_set_str(logo, "/demo_logo/file", tmp);
 	ewl_theme_data_set_str(logo, "/demo_logo/group", "tour");
 	ewl_object_set_preferred_size(EWL_OBJECT(logo), 150, 150);
