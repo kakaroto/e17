@@ -381,6 +381,8 @@ char *exml_down(EXML *xml)
 
 	if( exml_has_children(xml) )
 		xml->current = ecore_list_goto_first( xml->current->children );
+	else
+		return NULL;
 
 	return xml->current ? xml->current->tag : NULL;
 }
