@@ -190,32 +190,6 @@ set_background(int tiled, int keep_aspect) {
 }
 
 static void
-aspect_change_image(Epplet_gadget pic, int ww, int hh, char *filename)
-{
-    ImlibImage *im = NULL;
-    double ratio = 0.0;
-    int neww = 0, newh = 0;
-
-    im = Imlib_load_image(Epplet_get_imlib_data(), filename);
-
-    ratio = (double)im->rgb_width / (double)im->rgb_height;
-    ratio /= (double)ww/(double)hh;
-    Imlib_destroy_image(Epplet_get_imlib_data(), im);  /* Destroy the image, but keep it in cache. */
-
-    if(ratio > 1.0) {
-	neww = ww;
-	newh = (double) hh / ratio;
-    } else if(ratio == 1.0) {
-	neww = ww;
-	newh = hh;
-    } else {
-	neww = (double)ww * ratio;
-	newh = hh;
-    }
-    Epplet_change_image(pic, neww, newh, filename);
-}
-
-static void
 change_image(void *data) {
 
   ImlibImage *im = NULL;
