@@ -3,7 +3,7 @@
 Summary: Enlightenment Epplets
 Name: epplets
 Version: 0.6
-Release: 2
+Release: 3
 Copyright: BSD
 Group: User Interface/X
 URL: http://www.enlightenment.org

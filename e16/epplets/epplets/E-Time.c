@@ -43,9 +43,9 @@ static const char cvs_ident[] = "$Id$";
 #define NONULL(x)       ((x) ? (x) : (""))
 
 Epplet_gadget close_button, cfg_button, label1, label2, label3, label4;
-Epplet_gadget cfg_tb_line1, cfg_tb_line2, cfg_tb_line3, cfg_tb_line4;
+Epplet_gadget cfg_tb_line1, cfg_tb_line2, cfg_tb_line3, cfg_tb_line4, cfg_tb_tz;
 Window config_win;
-char *line1, *line2, *line3, *line4;
+char *line1, *line2, *line3, *line4, *timezone_str;
 int just = 1, cfg_just = 1;
 
 static void timer_cb(void *data);
@@ -67,6 +67,10 @@ timer_cb(void *data)
   struct tm *tim2;
   time_t t2;
 
+  if (timezone_str && *timezone_str) {
+    Esnprintf(tm, sizeof(tm), "TZ=%s", timezone_str);
+    putenv(tm);
+  }
   t2 = time(NULL);
   tim2 = localtime(&t2);
   if (tim2) {
@@ -159,6 +163,10 @@ apply_config(void)
   Epplet_modify_config("line4", buff);
   line4 = Epplet_query_config("line4");
 
+  strcpy(buff, NONULL(Epplet_textbox_contents(cfg_tb_tz)));
+  Epplet_modify_config("timezone", buff);
+  timezone_str = Epplet_query_config("timezone");
+
   timer_cb(NULL);
 }
 
@@ -197,7 +205,7 @@ config_cb(void *data)
     return;
   }
 
-  config_win = Epplet_create_window_config(200, 230, "E-Time Configuration", ok_cb, NULL, apply_cb, NULL, cancel_cb, NULL);
+  config_win = Epplet_create_window_config(200, 280, "E-Time Configuration", ok_cb, NULL, apply_cb, NULL, cancel_cb, NULL);
 
   Epplet_gadget_show(Epplet_create_label(4, 4, "First Line:", 2));
   Epplet_gadget_show(cfg_tb_line1 = Epplet_create_textbox(NULL, line1, 4, 18, 192, 20, 2, NULL, NULL));
@@ -211,9 +219,12 @@ config_cb(void *data)
   Epplet_gadget_show(Epplet_create_label(4, 142, "Fourth Line:", 2));
   Epplet_gadget_show(cfg_tb_line4 = Epplet_create_textbox(NULL, line4, 4, 156, 192, 20, 2, NULL, NULL));
 
+  Epplet_gadget_show(Epplet_create_label(4, 186, "Time Zone ($TZ):", 2));
+  Epplet_gadget_show(cfg_tb_tz = Epplet_create_textbox(NULL, timezone_str, 4, 200, 192, 20, 2, NULL, NULL));
+
   cfg_just = ((just == -1) ? 1 : 0);
-  Epplet_gadget_show(Epplet_create_togglebutton(NULL, NULL, 4, 188, 12, 12, &cfg_just, NULL, NULL));
-  Epplet_gadget_show(Epplet_create_label(20, 188, "Right-justify text?", 2));
+  Epplet_gadget_show(Epplet_create_togglebutton(NULL, NULL, 4, 232, 12, 12, &cfg_just, NULL, NULL));
+  Epplet_gadget_show(Epplet_create_label(20, 232, "Right-justify text?", 2));
 
   Epplet_window_show(config_win);
   Epplet_window_pop_context();
@@ -229,6 +240,7 @@ parse_config(void)
   line2 = Epplet_query_config_def("line2", "%e  %b");
   line3 = Epplet_query_config_def("line3", "%H:%M:%S");
   line4 = Epplet_query_config_def("line4", "%Z %Y");
+  timezone_str = Epplet_query_config_def("timezone", "");
   just = atoi(Epplet_query_config_def("just", "-1"));
 }
 
