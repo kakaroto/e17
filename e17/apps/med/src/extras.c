@@ -7,9 +7,9 @@
 #include "extras.h"
 
 static void new_med_entry(Evas e, E_Entry *entry, Evas_Object eet, int x, int y, int w, const char *);
-static void med_entry_key_down(Eevent * ev);
+static void med_entry_key_down(Ecore_Event * ev);
 static void
-med_entry_mouse_down(Eevent * ev);
+med_entry_mouse_down(Ecore_Event * ev);
 static void 
 med_entry_mouse_down_cb( void *_data, Evas _e, Evas_Object _o,
 			 int _b, int _x, int _y);
@@ -175,8 +175,8 @@ med_setup_entries(Evas e_in)
   e_entry_set_focus(ee, 1);
 #endif
 
-  e_event_filter_handler_add(EV_KEY_DOWN, med_entry_key_down);
-  /*  e_event_filter_handler_add(EV_MOUSE_DOWN, med_entry_mouse_down);*/
+  ecore_event_filter_handler_add(ECORE_EVENT_KEY_DOWN, med_entry_key_down);
+  /*  ecore_event_filter_handler_add(ECORE_EVENT_MOUSE_DOWN, med_entry_mouse_down);*/
   /*  
   evas_callback_add(ee_test->evas, ee_test->event_box, CALLBACK_MOUSE_DOWN,
 		    med_entry_mouse_down_cb, ee_test);
@@ -262,9 +262,9 @@ med_display( MED_ENUM type, E_Menu_Item *mi)
 
 
 static void
-med_entry_key_down(Eevent * ev)
+med_entry_key_down(Ecore_Event * ev)
 {
-   Ev_Key_Down          *e;
+   Ecore_Event_Key_Down          *e;
 
    e = ev->event;
 
@@ -278,9 +278,9 @@ med_entry_key_down(Eevent * ev)
 
 
 static void
-med_entry_mouse_down(Eevent * ev)
+med_entry_mouse_down(Ecore_Event * ev)
 {
-   Ev_Mouse_Down          *e;
+   Ecore_Event_Mouse_Down          *e;
 
    e = ev->event;
 
@@ -777,7 +777,7 @@ free_mi( E_Menu_Item *mi )
 
 
 void
-med_move_focus( E_Entry *entry, Ev_Key_Down *_e)
+med_move_focus( E_Entry *entry, Ecore_Event_Key_Down *_e)
 {
   int b=0, x=0, y=0;
   static Time handled_event_time = 0;
@@ -791,7 +791,7 @@ med_move_focus( E_Entry *entry, Ev_Key_Down *_e)
 
   if(entry == ee_text)
     {
-      if(_e->mods && EV_KEY_MODIFIER_SHIFT)
+      if(_e->mods && ECORE_EVENT_KEY_MODIFIER_SHIFT)
 	{
 	  med_e_entry_down_internal(entry->evas, ee_script, b, x, y, 1);
 	}
@@ -803,7 +803,7 @@ med_move_focus( E_Entry *entry, Ev_Key_Down *_e)
     }
   else if(entry == ee_exe)
     {
-      if(_e->mods && EV_KEY_MODIFIER_SHIFT)
+      if(_e->mods && ECORE_EVENT_KEY_MODIFIER_SHIFT)
 	{
 	  med_e_entry_down_internal(entry->evas, ee_text, b, x, y, 1);
 	}
@@ -815,7 +815,7 @@ med_move_focus( E_Entry *entry, Ev_Key_Down *_e)
     }
   else if(entry == ee_icon)
     {
-      if(_e->mods && EV_KEY_MODIFIER_SHIFT)
+      if(_e->mods && ECORE_EVENT_KEY_MODIFIER_SHIFT)
 	{
 	  med_e_entry_down_internal(entry->evas, ee_exe, b, x, y, 1);
 	}
@@ -827,7 +827,7 @@ med_move_focus( E_Entry *entry, Ev_Key_Down *_e)
     }
   else if(entry == ee_script)
     {
-      if(_e->mods && EV_KEY_MODIFIER_SHIFT)
+      if(_e->mods && ECORE_EVENT_KEY_MODIFIER_SHIFT)
 	{
 	  med_e_entry_down_internal(entry->evas, ee_icon, b, x, y, 1);
 	}

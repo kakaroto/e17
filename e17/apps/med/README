@@ -9,8 +9,14 @@ from /usr/local/share/enlightenment/data/config/behavior/default/
 
 ------------ Building
 
-./configure
-make
+If you pull CVS:
+  ./autogen.sh
+
+If you grab a tar file:
+  ./configure
+
+And then:
+  make
 
 Now run src/med (or 'make install' as root)
 
@@ -54,11 +60,12 @@ files for configure support:
 NEWS
 ChangeLog
 autogen.sh
-acsite.m4
+acinclude.m4
 acconfig.h
 
 Makefile.am
 configure.in
+conigure.ac
 
 src/Makefile.am
 

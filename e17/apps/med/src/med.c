@@ -18,7 +18,7 @@ main ()
   pop_menu( 10, 10 );
 
   /* event handler - never returns (uses exit()) */
-  e_event_loop();
+  ecore_event_loop();
 
   return 0;
 }

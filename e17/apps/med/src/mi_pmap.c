@@ -119,7 +119,7 @@ med_drag_image( Window drag_win, E_Menu* m_in, E_Menu_Item *mi_in )
 
 
   /* create output pixmap */
-  pmap = e_pixmap_new(drag_win, ww, wh, 0);
+  pmap = ecore_pixmap_new(drag_win, ww, wh, 0);
 
   /* render to image */
   imlib_context_set_image(im);
@@ -131,18 +131,18 @@ med_drag_image( Window drag_win, E_Menu* m_in, E_Menu_Item *mi_in )
   imlib_render_image_on_drawable(0, 0);
 
   /* show it */
-  e_window_resize(drag_win, 
+  ecore_window_resize(drag_win, 
 		  mi->size.w + m->sel_border.l + m->sel_border.r 
 		  + m->border.l + m->border.r,
 		  mi->size.h  + m->sel_border.t + m->sel_border.b
 		  + m->border.t + m->border.b
 		  );
-  e_window_set_background_pixmap(drag_win, pmap);
+  ecore_window_set_background_pixmap(drag_win, pmap);
   /*e_window_set_shape_mask(ic->view->drag.win, mask);*/
-  e_window_ignore(drag_win);
-  e_window_raise(drag_win);
-  e_window_show(drag_win);
-  e_pixmap_free(pmap);
+  ecore_window_ignore(drag_win);
+  ecore_window_raise(drag_win);
+  ecore_window_show(drag_win);
+  ecore_pixmap_free(pmap);
 
 }
 

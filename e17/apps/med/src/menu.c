@@ -30,15 +30,15 @@ med_hide_event_rects(E_Menu *m);
 #endif
 
 static void e_idle(void *data);
-static void e_wheel(Eevent * ev);
-static void e_key_down(Eevent * ev);
-static void e_key_up(Eevent * ev);
-static void e_mouse_down(Eevent * ev);
-static void e_mouse_up(Eevent * ev);
-static void e_mouse_move(Eevent * ev);
-static void e_mouse_in(Eevent * ev);
-static void e_mouse_out(Eevent * ev);
-static void e_window_expose(Eevent * ev);
+static void e_wheel(Ecore_Event * ev);
+static void e_key_down(Ecore_Event * ev);
+static void e_key_up(Ecore_Event * ev);
+static void e_mouse_down(Ecore_Event * ev);
+static void e_mouse_up(Ecore_Event * ev);
+static void e_mouse_move(Ecore_Event * ev);
+static void e_mouse_in(Ecore_Event * ev);
+static void e_mouse_out(Ecore_Event * ev);
+static void e_window_expose(Ecore_Event * ev);
 
 static void 
 e_scroller_timer(int val, void *data)
@@ -57,7 +57,7 @@ e_scroller_timer(int val, void *data)
    E_CONFIG_INT_GET(cfg_resist, resist);
    E_CONFIG_INT_GET(cfg_scroll_speed, scroll_speed);
    
-   t = e_get_time();
+   t = ecore_get_time();
    if (val != 0)
      scroll_speed = (int)(((t - last_time) / 0.02) * (double)scroll_speed);
    last_time = t;
@@ -140,7 +140,7 @@ e_scroller_timer(int val, void *data)
 	  }
      }
    if ((ok) && (open_menus))
-     e_add_event_timer("menu_scroller", 0.02, e_scroller_timer, val + 1, NULL);   
+     ecore_add_event_timer("menu_scroller", 0.02, e_scroller_timer, val + 1, NULL);   
    return;
    UN(data);
 }
@@ -192,9 +192,9 @@ e_idle(void *data)
 }
 
 static void
-e_wheel(Eevent * ev)
+e_wheel(Ecore_Event * ev)
 {
-   Ev_Wheel           *e;
+   Ecore_Event_Wheel           *e;
    
    e = ev->event;
    if (e->win == menu_event_win)
@@ -203,9 +203,9 @@ e_wheel(Eevent * ev)
 }
 
 static void
-e_key_down(Eevent * ev)
+e_key_down(Ecore_Event * ev)
 {
-   Ev_Key_Down          *e;
+   Ecore_Event_Key_Down          *e;
    int ok;
    
    e = ev->event;
@@ -315,9 +315,9 @@ e_key_down(Eevent * ev)
 }
 
 static void
-e_key_up(Eevent * ev)
+e_key_up(Ecore_Event * ev)
 {
-   Ev_Key_Up          *e;
+   Ecore_Event_Key_Up          *e;
    
    e = ev->event;
      {
@@ -326,9 +326,9 @@ e_key_up(Eevent * ev)
 
 /* handling mouse down events */
 static void
-e_mouse_down(Eevent * ev)
+e_mouse_down(Ecore_Event * ev)
 {
-   Ev_Mouse_Down      *e;
+   Ecore_Event_Mouse_Down      *e;
    Evas_List l;
    int df = 0;
    
@@ -363,9 +363,9 @@ e_mouse_down(Eevent * ev)
 
 /* handling mouse up events */
 static void
-e_mouse_up(Eevent * ev)
+e_mouse_up(Ecore_Event * ev)
 {
-   Ev_Mouse_Up      *e;
+   Ecore_Event_Mouse_Up      *e;
    Evas_List l;
 
 #if 0
@@ -429,9 +429,9 @@ e_mouse_up(Eevent * ev)
 
 /* handling mouse move events */
 static void
-e_mouse_move(Eevent * ev)
+e_mouse_move(Ecore_Event * ev)
 {
-   Ev_Mouse_Move      *e;
+   Ecore_Event_Mouse_Move      *e;
    static int df =0, df2 = 0;
 
    
@@ -517,9 +517,9 @@ e_mouse_move(Eevent * ev)
 
 /* handling mouse enter events */
 static void
-e_mouse_in(Eevent * ev)
+e_mouse_in(Ecore_Event * ev)
 {
-   Ev_Window_Enter      *e;
+   Ecore_Event_Window_Enter      *e;
    
    e = ev->event;
    keyboard_nav = 0;
@@ -530,9 +530,9 @@ e_mouse_in(Eevent * ev)
 
 /* handling mouse leave events */
 static void
-e_mouse_out(Eevent * ev)
+e_mouse_out(Ecore_Event * ev)
 {
-   Ev_Window_Leave      *e;
+   Ecore_Event_Window_Leave      *e;
    
    e = ev->event;
    keyboard_nav = 0;
@@ -558,9 +558,9 @@ e_mouse_out(Eevent * ev)
 
 /* handling expose events */
 static void
-e_window_expose(Eevent * ev)
+e_window_expose(Ecore_Event * ev)
 {
-   Ev_Window_Expose      *e;
+   Ecore_Event_Window_Expose      *e;
    
    e = ev->event;
      {
@@ -822,18 +822,18 @@ e_menu_select(int dx, int dy)
 void
 e_menu_init(void)
 {
-  /*e_window_get_geometry(0, NULL, NULL, &screen_w, &screen_h);*/
-   e_window_get_geometry(parent_win, NULL, NULL, &screen_w, &screen_h);
-   e_event_filter_handler_add(EV_MOUSE_DOWN,               e_mouse_down);
-   e_event_filter_handler_add(EV_MOUSE_UP,                 e_mouse_up);
-   e_event_filter_handler_add(EV_MOUSE_MOVE,               e_mouse_move);
-   e_event_filter_handler_add(EV_MOUSE_IN,                 e_mouse_in);
-   e_event_filter_handler_add(EV_MOUSE_OUT,                e_mouse_out);
-   e_event_filter_handler_add(EV_WINDOW_EXPOSE,            e_window_expose);
-   e_event_filter_handler_add(EV_KEY_DOWN,                 e_key_down);
-   e_event_filter_handler_add(EV_KEY_UP,                   e_key_up);
-   e_event_filter_handler_add(EV_MOUSE_WHEEL,              e_wheel);
-   e_event_filter_idle_handler_add(e_idle, NULL);
+  /*ecore_window_get_geometry(0, NULL, NULL, &screen_w, &screen_h);*/
+   ecore_window_get_geometry(parent_win, NULL, NULL, &screen_w, &screen_h);
+   ecore_event_filter_handler_add(ECORE_EVENT_MOUSE_DOWN,               e_mouse_down);
+   ecore_event_filter_handler_add(ECORE_EVENT_MOUSE_UP,                 e_mouse_up);
+   ecore_event_filter_handler_add(ECORE_EVENT_MOUSE_MOVE,               e_mouse_move);
+   ecore_event_filter_handler_add(ECORE_EVENT_MOUSE_IN,                 e_mouse_in);
+   ecore_event_filter_handler_add(ECORE_EVENT_MOUSE_OUT,                e_mouse_out);
+   ecore_event_filter_handler_add(ECORE_EVENT_WINDOW_EXPOSE,            e_window_expose);
+   ecore_event_filter_handler_add(ECORE_EVENT_KEY_DOWN,                 e_key_down);
+   ecore_event_filter_handler_add(ECORE_EVENT_KEY_UP,                   e_key_up);
+   ecore_event_filter_handler_add(ECORE_EVENT_MOUSE_WHEEL,              e_wheel);
+   ecore_event_filter_idle_handler_add(e_idle, NULL);
 }
 
 void
@@ -842,18 +842,18 @@ e_menu_event_win_show(void)
    /* create it */
    if (!menu_event_win)
      {
-       /*menu_event_win = e_window_input_new(0, 0, 0, screen_w, screen_h);*/
-	menu_event_win = e_window_input_new(parent_win, 0, 0, screen_w, screen_h);
+       /*menu_event_win = ecore_window_input_new(0, 0, 0, screen_w, screen_h);*/
+	menu_event_win = ecore_window_input_new(parent_win, 0, 0, screen_w, screen_h);
 	/*printf( "mew = new\n" );*/
-	e_window_set_events(menu_event_win, XEV_MOUSE_MOVE | XEV_BUTTON | XEV_IN_OUT | XEV_KEY);
-	e_window_show(menu_event_win);
+	ecore_window_set_events(menu_event_win, XEV_MOUSE_MOVE | XEV_BUTTON | XEV_IN_OUT | XEV_KEY);
+	ecore_window_show(menu_event_win);
 #if 0
 	e_keyboard_grab(menu_event_win);
 	e_grab_mouse(menu_event_win, 1, 0);
 #endif
      }
    /* raise it */
-   if (menu_event_win) e_window_raise(menu_event_win);
+   if (menu_event_win) ecore_window_raise(menu_event_win);
 }
 
 void
@@ -865,7 +865,7 @@ e_menu_event_win_hide(void)
 #if 0
 	e_keyboard_ungrab();
 #endif
-	e_window_destroy(menu_event_win);
+	ecore_window_destroy(menu_event_win);
 	menu_event_win = 0;
 
 	/*printf( "mew = 0\n" );*/
@@ -1052,7 +1052,7 @@ e_menu_free(E_Menu *m)
    evas_list_free(m->entries);
    IF_FREE(m->bg_file);
    evas_free(m->evas);
-   e_window_destroy(m->win.main);
+   ecore_window_destroy(m->win.main);
    menus = evas_list_remove(menus, m);
    open_menus = evas_list_remove(open_menus, m);
    free(m);
@@ -1075,8 +1075,8 @@ e_menu_new(void)
    OBJ_INIT(m, e_menu_free);
    
    /*   m->win.main = e_window_override_new(0, 0, 0, 1, 1);*/
-   m->win.main = e_window_override_new(parent_win, 0, 0, 1, 1);
-   m->evas = evas_new_all(e_display_get(),
+   m->win.main = ecore_window_override_new(parent_win, 0, 0, 1, 1);
+   m->evas = evas_new_all(ecore_display_get(),
 			  m->win.main, 
 			  0, 0, 1, 1,
 			  RENDER_METHOD_ALPHA_SOFTWARE,
@@ -1104,10 +1104,10 @@ e_menu_new(void)
    evas_event_move(m->evas, -999999999, -99999999);
    
    m->win.evas = evas_get_window(m->evas);
-   e_window_set_events(m->win.evas, XEV_EXPOSE | XEV_MOUSE_MOVE | XEV_BUTTON | XEV_IN_OUT | XEV_KEY);
-   e_window_set_events(m->win.main, XEV_IN_OUT | XEV_KEY);
-   e_window_show(m->win.evas);
-   e_add_child(m->win.main, m->win.evas);
+   ecore_window_set_events(m->win.evas, XEV_EXPOSE | XEV_MOUSE_MOVE | XEV_BUTTON | XEV_IN_OUT | XEV_KEY);
+   ecore_window_set_events(m->win.main, XEV_IN_OUT | XEV_KEY);
+   ecore_window_show(m->win.evas);
+   ecore_add_child(m->win.main, m->win.evas);
    
    e_menu_set_background(m);
    
@@ -1646,23 +1646,23 @@ e_menu_update_base(E_Menu *m)
    
    if ((location_changed) && (size_changed) && (!m->pmap_render))
      {
-	e_window_move_resize(m->win.main, m->current.x, m->current.y, m->current.w, m->current.h);
+	ecore_window_move_resize(m->win.main, m->current.x, m->current.y, m->current.w, m->current.h);
 	e_menu_obscure_outside_screen(m);
      }
    else if ((location_changed) && (!m->pmap_render))
      {
-	e_window_move(m->win.main, m->current.x, m->current.y);
+	ecore_window_move(m->win.main, m->current.x, m->current.y);
 	e_menu_obscure_outside_screen(m);
      }
    else if ((size_changed)  && (!m->pmap_render))
      {
-	e_window_resize(m->win.main, m->current.w, m->current.h);
+	ecore_window_resize(m->win.main, m->current.w, m->current.h);
      }
    if (size_changed)
      {
        if( (!m->pmap_render) )
 	 {
-	   e_window_resize(m->win.evas, m->current.w, m->current.h);
+	   ecore_window_resize(m->win.evas, m->current.w, m->current.h);
 	 }
 	evas_set_output_size(m->evas, m->current.w, m->current.h);
 	evas_set_output_viewport(m->evas, 0, 0, m->current.w, m->current.h);
@@ -1701,9 +1701,9 @@ e_menu_update_shows(E_Menu *m)
      {
 	if (m->current.visible) 
 	  {
-	     e_window_raise(m->win.main);
+	     ecore_window_raise(m->win.main);
 	     e_menu_event_win_show();
-	     e_window_show(m->win.main);
+	     ecore_window_show(m->win.main);
 	     if (!open_menus) keyboard_nav = 0;
 	     med_show_event_rects(m);
 	     open_menus = evas_list_append(open_menus, m);
@@ -1743,7 +1743,7 @@ e_menu_update_hides(E_Menu *m)
 	       }
 	     med_hide_event_rects(m);
 	     open_menus = evas_list_remove(open_menus, m);
-	     e_window_hide(m->win.main);
+	     ecore_window_hide(m->win.main);
 	     if (!open_menus) e_menu_event_win_hide();
 	  }
      }

@@ -9,13 +9,13 @@
 
 void idle_cb(void* data);
 void
-expose_cb(Eevent* ev);
+expose_cb(Ecore_Event* ev);
 static void
-evaswin_mouse_down_cb(Eevent* ev);
+evaswin_mouse_down_cb(Ecore_Event* ev);
 static void
-evaswin_mouse_up_cb(Eevent* ev);
+evaswin_mouse_up_cb(Ecore_Event* ev);
 static void
-evaswin_mouse_move_cb(Eevent* ev);
+evaswin_mouse_move_cb(Ecore_Event* ev);
 void
 winobjects(void);
 void
@@ -68,8 +68,8 @@ evaswin_new( int w, int h, const char *title )
   /*  const char *fd= "/usr/local/share/enlightenment/data/fonts"*/
   wintitle = title ? strdup(title) : "New Win";
 
-  e_display_init(NULL);
-  disp = e_display_get();
+  ecore_display_init(NULL);
+  disp = ecore_display_get();
 
   e = evas_new_all(disp,
 		   DefaultRootWindow(disp),
@@ -81,30 +81,30 @@ evaswin_new( int w, int h, const char *title )
 		   fntdir);  /* font dir */
 
   win = evas_get_window(e);
-  e_window_set_title(win, wintitle);
+  ecore_window_set_title(win, wintitle);
 
-  e_window_set_events(win, 
+  ecore_window_set_events(win, 
 		      /*XEV_BUTTON_RELEASE*/ XEV_BUTTON 
 		      | XEV_EXPOSE
 		      | XEV_MOUSE_MOVE);
 
-  e_window_show(win);
+  ecore_window_show(win);
 
   med_set_parent( win );
 
   winobjects();
 
-  e_event_filter_init();
+  ecore_event_filter_init();
   /* window event translation init */
-  e_ev_x_init();
+  ecore_event_x_init();
 
-  e_event_filter_idle_handler_add( 
+  ecore_event_filter_idle_handler_add( 
 				  idle_cb
 				  , NULL);
-  e_event_filter_handler_add(EV_WINDOW_EXPOSE, expose_cb);
-  e_event_filter_handler_add(EV_MOUSE_DOWN, evaswin_mouse_down_cb);
-  e_event_filter_handler_add(EV_MOUSE_UP, evaswin_mouse_up_cb);
-  e_event_filter_handler_add(EV_MOUSE_MOVE, evaswin_mouse_move_cb);
+  ecore_event_filter_handler_add(ECORE_EVENT_WINDOW_EXPOSE, expose_cb);
+  ecore_event_filter_handler_add(ECORE_EVENT_MOUSE_DOWN, evaswin_mouse_down_cb);
+  ecore_event_filter_handler_add(ECORE_EVENT_MOUSE_UP, evaswin_mouse_up_cb);
+  ecore_event_filter_handler_add(ECORE_EVENT_MOUSE_MOVE, evaswin_mouse_move_cb);
 
 
 
@@ -115,7 +115,7 @@ evaswin_new( int w, int h, const char *title )
   evas_set_layer(e, o, 98);
   evas_show(e, o);
 
-  e_window_get_geometry(win, &scr_x, &scr_y, NULL, NULL);
+  ecore_window_get_geometry(win, &scr_x, &scr_y, NULL, NULL);
  
 }
 
@@ -179,9 +179,9 @@ idle_cb(void* data)
 
 
 void
-expose_cb(Eevent* ev)
+expose_cb(Ecore_Event* ev)
 {
-  Ev_Window_Expose *event = (Ev_Window_Expose *) ev->event;
+  Ecore_Event_Window_Expose *event = (Ecore_Event_Window_Expose *) ev->event;
 
   /* area exposes */
   evas_update_rect(e,
@@ -192,9 +192,9 @@ expose_cb(Eevent* ev)
 
 
 static void
-evaswin_mouse_down_cb(Eevent* ev)
+evaswin_mouse_down_cb(Ecore_Event* ev)
 {
-  Ev_Mouse_Down *event = (Ev_Mouse_Down *) ev->event;
+  Ecore_Event_Mouse_Down *event = (Ecore_Event_Mouse_Down *) ev->event;
 
   /*printf( "Ew bd\n" );*/
   evas_event_button_down(e, event->x, event->y, event->button);
@@ -202,18 +202,18 @@ evaswin_mouse_down_cb(Eevent* ev)
 
 
 static void
-evaswin_mouse_up_cb(Eevent* ev)
+evaswin_mouse_up_cb(Ecore_Event* ev)
 {
-  Ev_Mouse_Up *event = (Ev_Mouse_Up *) ev->event;
+  Ecore_Event_Mouse_Up *event = (Ecore_Event_Mouse_Up *) ev->event;
 
   evas_event_button_up(e, event->x, event->y, event->button);
 }
 
 
 static void
-evaswin_mouse_move_cb(Eevent* ev)
+evaswin_mouse_move_cb(Ecore_Event* ev)
 {
-  Ev_Mouse_Move *event = (Ev_Mouse_Move *) ev->event;
+  Ecore_Event_Mouse_Move *event = (Ecore_Event_Mouse_Move *) ev->event;
 
   evas_event_move(e, event->rx, event->ry);
 }
@@ -256,7 +256,7 @@ med_tool_mouse_up(void *_data, Evas _e, Evas_Object _o, int _b, int _x, int _y)
 
       E_Menu_Item *mi;
       
-      e_window_destroy(drag_win);
+      ecore_window_destroy(drag_win);
       dragging = 0;
 
       /* get selection, edit menu... */
@@ -346,7 +346,7 @@ med_tool_mouse_move(void *_data, Evas _e, Evas_Object _o, int _b, int _x, int _y
 
 	  /*printf( "scr %d,%d ev: %d,%d r: %d,%d\n", scr_x, scr_y, _x, _y);*/
 
-	     drag_win = e_window_override_new(0, 
+	     drag_win = ecore_window_override_new(0, 
 					      /*_x - 20, _y - 10, 
 					      100, 100
 					      */
@@ -398,7 +398,7 @@ med_tool_mouse_move(void *_data, Evas _e, Evas_Object _o, int _b, int _x, int _y
       if( dragging )
 	{
 	  /* move this to idle handler - update based on drag flag */
-	  e_window_move(drag_win, /*_x - 20, _y - 10);*/
+	  ecore_window_move(drag_win, /*_x - 20, _y - 10);*/
 			_x - 15 /*(m->current.w)/2*/,
 			/*_y - (m->current.h)/2*/
 			
@@ -547,7 +547,7 @@ med_add_commit_tool( int x, int y)
 
   o_discard = o;
 
-  e_add_event_timer("anim", anim_t, med_animate_cb, 1, NULL);
+  ecore_add_event_timer("anim", anim_t, med_animate_cb, 1, NULL);
 }
 
 
@@ -585,7 +585,7 @@ med_animate_cb(int val, void* data )
     {
       med_commit_dirty_anim();
     }
-  e_add_event_timer("anim", anim_t, med_animate_cb, 1, NULL);
+  ecore_add_event_timer("anim", anim_t, med_animate_cb, 1, NULL);
   /*printf("anim %d\n", anim_active);*/
 }
 

@@ -1,3 +1,10 @@
+Oct 18,	2001		Fixup for ecore changes.  Lots of renames.  No
+			functional changes in this commit (it builds again...)
+			ecore_key_press_translate... -> keypress ??? You know
+			who you are, you ought to be slapped silly for this
+			one. ;-)
+Oct 11,	2001		Changes suggested by Jon Bernard <jbernard@roanoke.edu>
+			for a compile warning and config.h.in removal.
 Oct 6,	2001            Update for new versions of autoconf:
 			mv acsite.m4 acinclude.m4
 			cp configure.in configure.ac

@@ -82,7 +82,7 @@ e_build_menu_db_poll(int val, void *data)
    mod = e_file_modified_time(bm->file);
    if (mod <= bm->mod_time) 
      {
-        e_add_event_timer(bm->file, 1.0, e_build_menu_db_poll, 0, data);
+        ecore_add_event_timer(bm->file, 1.0, e_build_menu_db_poll, 0, data);
 	return;
      }
    bm->mod_time = mod;
@@ -98,7 +98,7 @@ e_build_menu_db_poll(int val, void *data)
    bm->menu->edit_target = 1;
    e_menu_show_at_mouse(bm->menu, bm->x, bm->y, 0);
 
-   e_add_event_timer(bm->file, 1.0, e_build_menu_db_poll, 0, data);
+   ecore_add_event_timer(bm->file, 1.0, e_build_menu_db_poll, 0, data);
    return;
    UN(val);
 }
@@ -113,7 +113,7 @@ e_build_menu_gnome_apps_poll(int val, void *data)
    mod = e_file_modified_time(bm->file);
    if (mod <= bm->mod_time) 
      {
-	e_add_event_timer(bm->file, 1.0, e_build_menu_gnome_apps_poll, 0, data);
+	ecore_add_event_timer(bm->file, 1.0, e_build_menu_gnome_apps_poll, 0, data);
 	return;
      }
    bm->mod_time = mod;
@@ -122,7 +122,7 @@ e_build_menu_gnome_apps_poll(int val, void *data)
    e_build_menu_gnome_apps_build(bm);
    if (!bm->menu) bm->mod_time = 0;
    
-   e_add_event_timer(bm->file, 1.0, e_build_menu_gnome_apps_poll, 0, data);
+   ecore_add_event_timer(bm->file, 1.0, e_build_menu_gnome_apps_poll, 0, data);
    return;
    UN(val);
 }
@@ -399,7 +399,7 @@ e_build_menu_gnome_apps_build(E_Build_Menu *bm)
 void
 e_build_menu_free(E_Build_Menu *bm)
 {
-   e_del_event_timer(bm->file);
+   ecore_del_event_timer(bm->file);
    e_build_menu_unbuild(bm);
    IF_FREE(bm->file);
    build_menus = evas_list_remove(build_menus, bm);   

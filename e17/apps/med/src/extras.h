@@ -31,7 +31,7 @@ extern "C" {
 
   void med_insert_mi_at(E_Menu_Item *mi, med_tool_type tt);
 
-  void med_move_focus( E_Entry *entry, Ev_Key_Down *e);
+  void med_move_focus( E_Entry *entry, Ecore_Event_Key_Down *e);
 
 
 #ifdef __cplusplus
