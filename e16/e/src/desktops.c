@@ -444,21 +444,21 @@ RefreshCurrentDesktop()
 }
 
 void
-RefreshDesktop(int num)
+RefreshDesktop(int desk)
 {
    Background         *dsk;
 
    EDBUG(4, "RefreshDesktop");
 
-   num = num % ENLIGHTENMENT_CONF_NUM_DESKTOPS;
-   if (!desks.desk[num].viewable)
+   desk = desk % ENLIGHTENMENT_CONF_NUM_DESKTOPS;
+   if (!desks.desk[desk].viewable)
       EDBUG_RETURN_;
 
-   dsk = desks.desk[num].bg;
+   dsk = desks.desk[desk].bg;
    if (!dsk)
       EDBUG_RETURN_;
 
-   SetBackgroundTo(desks.desk[num].win, dsk, 1);
+   SetBackgroundTo(desks.desk[desk].win, dsk, 1);
    EDBUG_RETURN_;
 }
 
@@ -1207,7 +1207,7 @@ MoveStickyWindowsToCurrentDesk(void)
 }
 
 void
-GotoDesktop(int num)
+GotoDesktop(int desk)
 {
    int                 x, y, pdesk;
 
@@ -1215,12 +1215,12 @@ GotoDesktop(int num)
 
    if (conf.desks.wraparound)
      {
-	if (num >= conf.desks.num)
-	   num = 0;
-	else if (num < 0)
-	   num = conf.desks.num - 1;
+	if (desk >= conf.desks.num)
+	   desk = 0;
+	else if (desk < 0)
+	   desk = conf.desks.num - 1;
      }
-   if (num < 0 || num >= conf.desks.num || num == desks.current)
+   if (desk < 0 || desk >= conf.desks.num || desk == desks.current)
       EDBUG_RETURN_;
 
    pdesk = desks.current;
@@ -1249,36 +1249,36 @@ GotoDesktop(int num)
    if (mode.mode == MODE_NONE)
       mode.mode = MODE_DESKSWITCH;
 
-   if (num > 0)
+   if (desk > 0)
      {
 	if (conf.desks.slidein)
 	  {
-	     if (!desks.desk[num].viewable)
+	     if (!desks.desk[desk].viewable)
 	       {
 		  switch (conf.desks.dragdir)
 		    {
 		    case 0:
-		       MoveDesktop(num, root.w, 0);
-		       RaiseDesktop(num);
-		       SlideWindowTo(desks.desk[num].win, root.w, 0, 0, 0,
+		       MoveDesktop(desk, root.w, 0);
+		       RaiseDesktop(desk);
+		       SlideWindowTo(desks.desk[desk].win, root.w, 0, 0, 0,
 				     conf.desks.slidespeed);
 		       break;
 		    case 1:
-		       MoveDesktop(num, -root.w, 0);
-		       RaiseDesktop(num);
-		       SlideWindowTo(desks.desk[num].win, -root.w, 0, 0, 0,
+		       MoveDesktop(desk, -root.w, 0);
+		       RaiseDesktop(desk);
+		       SlideWindowTo(desks.desk[desk].win, -root.w, 0, 0, 0,
 				     conf.desks.slidespeed);
 		       break;
 		    case 2:
-		       MoveDesktop(num, 0, root.h);
-		       RaiseDesktop(num);
-		       SlideWindowTo(desks.desk[num].win, 0, root.h, 0, 0,
+		       MoveDesktop(desk, 0, root.h);
+		       RaiseDesktop(desk);
+		       SlideWindowTo(desks.desk[desk].win, 0, root.h, 0, 0,
 				     conf.desks.slidespeed);
 		       break;
 		    case 3:
-		       MoveDesktop(num, 0, -root.h);
-		       RaiseDesktop(num);
-		       SlideWindowTo(desks.desk[num].win, 0, -root.h, 0, 0,
+		       MoveDesktop(desk, 0, -root.h);
+		       RaiseDesktop(desk);
+		       SlideWindowTo(desks.desk[desk].win, 0, -root.h, 0, 0,
 				     conf.desks.slidespeed);
 		       break;
 		    default:
@@ -1287,23 +1287,23 @@ GotoDesktop(int num)
 	       }
 	     else
 	       {
-		  GetWinXY(desks.desk[num].win, &x, &y);
-		  SlideWindowTo(desks.desk[num].win, desks.desk[num].x,
-				desks.desk[num].y, 0, 0, conf.desks.slidespeed);
-		  RaiseDesktop(num);
+		  GetWinXY(desks.desk[desk].win, &x, &y);
+		  SlideWindowTo(desks.desk[desk].win, desks.desk[desk].x,
+				desks.desk[desk].y, 0, 0, conf.desks.slidespeed);
+		  RaiseDesktop(desk);
 	       }
 	     StackDesktops();
 	  }
 	else
 	  {
-	     RaiseDesktop(num);
+	     RaiseDesktop(desk);
 	     StackDesktops();
 	  }
-	MoveDesktop(num, 0, 0);
+	MoveDesktop(desk, 0, 0);
      }
    else
      {
-	RaiseDesktop(num);
+	RaiseDesktop(desk);
      }
 
    ActionsResume();
@@ -1313,36 +1313,36 @@ GotoDesktop(int num)
       mode.mode = MODE_NONE;
 
    RedrawPagersForDesktop(pdesk, 0);
-   RedrawPagersForDesktop(num, 3);
-   ForceUpdatePagersForDesktop(num);
+   RedrawPagersForDesktop(desk, 3);
+   ForceUpdatePagersForDesktop(desk);
    HandleDrawQueue();
 
    EDBUG_RETURN_;
 }
 
 void
-MoveDesktop(int num, int x, int y)
+MoveDesktop(int desk, int x, int y)
 {
    int                 i;
    EWin              **lst;
    int                 n, v, dx, dy;
 
    EDBUG(3, "MoveDesktop");
-   if (num < 0)
+   if (desk < 0)
       EDBUG_RETURN_;
-   if (num >= conf.desks.num)
+   if (desk >= conf.desks.num)
       EDBUG_RETURN_;
-   if (num == 0)
+   if (desk == 0)
       EDBUG_RETURN_;
-   dx = x - desks.desk[num].x;
-   dy = y - desks.desk[num].y;
+   dx = x - desks.desk[desk].x;
+   dy = y - desks.desk[desk].y;
    if ((x == 0) && (y == 0))
      {
 	n = -1;
 	i = 0;
 	while ((n < 0) && (i < ENLIGHTENMENT_CONF_NUM_DESKTOPS))
 	  {
-	     if (desks.order[i] == num)
+	     if (desks.order[i] == desk)
 		n = i;
 	     i++;
 	  }
@@ -1364,7 +1364,7 @@ MoveDesktop(int num, int x, int y)
 
 	while ((n < 0) && (i < ENLIGHTENMENT_CONF_NUM_DESKTOPS))
 	  {
-	     if (desks.order[i] == num)
+	     if (desks.order[i] == desk)
 		n = i;
 	     i++;
 	  }
@@ -1408,19 +1408,19 @@ MoveDesktop(int num, int x, int y)
 	  }
      }
 
-   EMoveWindow(disp, desks.desk[num].win, x, y);
+   EMoveWindow(disp, desks.desk[desk].win, x, y);
 
-   if (desks.desk[num].tag)
-      ButtonMoveRelative(desks.desk[num].tag, dx, dy);
+   if (desks.desk[desk].tag)
+      ButtonMoveRelative(desks.desk[desk].tag, dx, dy);
 
-   desks.desk[num].x = x;
-   desks.desk[num].y = y;
+   desks.desk[desk].x = x;
+   desks.desk[desk].y = y;
 
    lst = (EWin **) ListItemType(&n, LIST_TYPE_EWIN);
    if (lst)
      {
 	for (i = 0; i < n; i++)
-	   if (lst[i]->desktop == num)
+	   if (lst[i]->desktop == desk)
 	      ICCCM_Configure(lst[i]);
 	Efree(lst);
      }
@@ -1429,22 +1429,22 @@ MoveDesktop(int num, int x, int y)
 }
 
 void
-RaiseDesktop(int num)
+RaiseDesktop(int desk)
 {
    int                 i;
 
    EDBUG(3, "RaiseDesktop");
 
-   if ((num < 0) || (num >= conf.desks.num))
+   if ((desk < 0) || (desk >= conf.desks.num))
       EDBUG_RETURN_;
 
    FocusNewDeskBegin();
    CloneDesktop(desks.order[0]);
-   desks.desk[num].viewable = 1;
-   RefreshDesktop(num);
-   MoveToDeskTop(num);
+   desks.desk[desk].viewable = 1;
+   RefreshDesktop(desk);
+   MoveToDeskTop(desk);
 
-   if (num == 0)
+   if (desk == 0)
      {
 	for (i = ENLIGHTENMENT_CONF_NUM_DESKTOPS - 1; i > 0; i--)
 	  {
@@ -1452,17 +1452,17 @@ RaiseDesktop(int num)
 	  }
      }
    StackDesktops();
-   desks.current = num;
+   desks.current = desk;
    MoveStickyWindowsToCurrentDesk();
    FocusNewDesk();
    FX_DeskChange();
    RemoveClones();
-   RedrawPagersForDesktop(num, 3);
-   ForceUpdatePagersForDesktop(num);
+   RedrawPagersForDesktop(desk, 3);
+   ForceUpdatePagersForDesktop(desk);
    UpdatePagerSel();
    HandleDrawQueue();
    HintsSetCurrentDesktop();
-   EMapWindow(disp, desks.desk[num].win);
+   EMapWindow(disp, desks.desk[desk].win);
    XSync(disp, False);
 
    EDBUG_RETURN_;
@@ -1470,18 +1470,18 @@ RaiseDesktop(int num)
 }
 
 void
-LowerDesktop(int num)
+LowerDesktop(int desk)
 {
    EDBUG(3, "LowerDesktop");
 
-   if ((num <= 0) || (num >= conf.desks.num))
+   if ((desk <= 0) || (desk >= conf.desks.num))
       EDBUG_RETURN_;
 
    FocusNewDeskBegin();
-   CloneDesktop(num);
-   MoveToDeskBottom(num);
+   CloneDesktop(desk);
+   MoveToDeskBottom(desk);
    UncoverDesktop(desks.order[0]);
-   HideDesktop(num);
+   HideDesktop(desk);
    StackDesktops();
    desks.current = desks.order[0];
    MoveStickyWindowsToCurrentDesk();
@@ -1500,41 +1500,41 @@ LowerDesktop(int num)
 }
 
 void
-HideDesktop(int num)
+HideDesktop(int desk)
 {
    EDBUG(3, "HideDesktop");
 
-   if ((num < 0) || (num >= conf.desks.num))
+   if ((desk < 0) || (desk >= conf.desks.num))
       EDBUG_RETURN_;
-   if (num == 0)
+   if (desk == 0)
       EDBUG_RETURN_;
 
-   if ((desks.desk[num].viewable) && (desks.desk[num].bg))
-      desks.desk[num].bg->last_viewed = time(NULL);
-   desks.desk[num].viewable = 0;
-   EMoveWindow(disp, desks.desk[num].win, root.w, 0);
+   if ((desks.desk[desk].viewable) && (desks.desk[desk].bg))
+      desks.desk[desk].bg->last_viewed = time(NULL);
+   desks.desk[desk].viewable = 0;
+   EMoveWindow(disp, desks.desk[desk].win, root.w, 0);
 
    EDBUG_RETURN_;
 
 }
 
 void
-ShowDesktop(int num)
+ShowDesktop(int desk)
 {
    int                 i;
 
    EDBUG(3, "ShowDesktop");
 
-   if (num < 0)
+   if (desk < 0)
       EDBUG_RETURN_;
-   if (num >= conf.desks.num)
+   if (desk >= conf.desks.num)
       EDBUG_RETURN_;
 
-   desks.desk[num].viewable = 1;
-   RefreshDesktop(num);
-   MoveToDeskTop(num);
+   desks.desk[desk].viewable = 1;
+   RefreshDesktop(desk);
+   MoveToDeskTop(desk);
 
-   if (num == 0)
+   if (desk == 0)
      {
 	for (i = ENLIGHTENMENT_CONF_NUM_DESKTOPS - 1; i > 0; i--)
 	   HideDesktop(desks.order[i]);
@@ -1542,7 +1542,7 @@ ShowDesktop(int num)
    else
      {
 	StackDesktops();
-	EMapWindow(disp, desks.desk[num].win);
+	EMapWindow(disp, desks.desk[desk].win);
      }
 
    EDBUG_RETURN_;
@@ -1564,7 +1564,7 @@ StackDesktops()
      wl[tot - 1] = win; \
   }
 void
-StackDesktop(int num)
+StackDesktop(int desk)
 {
    Window             *wl, *wl2;
    int                 i, wnum, tot, bnum;
@@ -1574,6 +1574,10 @@ StackDesktop(int num)
    EDBUG(2, "StackDesktop");
    tot = 0;
    wl = NULL;
+
+   /*
+    * Build the window stack, top to bottom
+    */
 
    wl2 = ListProgressWindows(&wnum);
    if (wl2)
@@ -1595,6 +1599,7 @@ StackDesktop(int num)
    lst = (EWin **) ListItemType(&wnum, LIST_TYPE_EWIN);
    blst = (Button **) ListItemType(&bnum, LIST_TYPE_BUTTON);
 
+   /* Sticky buttons */
    if (blst)
      {
 	for (i = 0; i < bnum; i++)
@@ -1605,6 +1610,8 @@ StackDesktop(int num)
 	     _APPEND_TO_WIN_LIST(blst[i]->win);
 	  }
      }
+
+   /* Floating EWins */
    if (lst)
      {
 	for (i = 0; i < wnum; i++)
@@ -1615,6 +1622,8 @@ StackDesktop(int num)
 	     _APPEND_TO_WIN_LIST(lst[i]->win);
 	  }
      }
+
+   /* The virtual desktop windows */
    for (i = 0; i < ENLIGHTENMENT_CONF_NUM_DESKTOPS; i++)
      {
 	if (desks.order[i] == 0)
@@ -1622,37 +1631,45 @@ StackDesktop(int num)
 
 	_APPEND_TO_WIN_LIST(desks.desk[desks.order[i]].win);
      }
+
+   /* Non-sticky, "above" buttons */
    if (blst)
      {
 	for (i = 0; i < bnum; i++)
 	  {
-	     if (blst[i]->desktop != num || blst[i]->ontop != 1 ||
+	     if (blst[i]->desktop != desk || blst[i]->ontop != 1 ||
 		 blst[i]->sticky || blst[i]->internal)
 		continue;
 
 	     _APPEND_TO_WIN_LIST(blst[i]->win);
 	  }
      }
-   for (i = 0; i < desks.desk[num].num; i++)
+
+   /* Normal EWins on this desk */
+   for (i = 0; i < desks.desk[desk].num; i++)
      {
-	ewin = desks.desk[num].list[i];
+	ewin = desks.desk[desk].list[i];
 
 	_APPEND_TO_WIN_LIST(ewin->win);
 	if (ewin->win == mode.menu_win_covered)
 	   _APPEND_TO_WIN_LIST(mode.menu_cover_win);
      }
+
+   /* Non-sticky, "below" buttons */
    if (blst)
      {
 	for (i = 0; i < bnum; i++)
 	  {
-	     if (blst[i]->desktop != num || blst[i]->ontop != -1 ||
+	     if (blst[i]->desktop != desk || blst[i]->ontop != -1 ||
 		 blst[i]->sticky || blst[i]->internal)
 		continue;
 
 	     _APPEND_TO_WIN_LIST(blst[i]->win);
 	  }
      }
-   _APPEND_TO_WIN_LIST(desks.desk[num].win);
+
+   /* The current (virtual) root window */
+   _APPEND_TO_WIN_LIST(desks.desk[desk].win);
 
    XRestackWindows(disp, wl, tot);
    ShowEdgeWindows();
@@ -1670,22 +1687,22 @@ StackDesktop(int num)
 }
 
 void
-UncoverDesktop(int num)
+UncoverDesktop(int desk)
 {
    EDBUG(3, "UncoverDesktop");
-   if (num < 0)
+   if (desk < 0)
       EDBUG_RETURN_;
-   if (num >= conf.desks.num)
+   if (desk >= conf.desks.num)
       EDBUG_RETURN_;
-   desks.desk[num].viewable = 1;
-   RefreshDesktop(num);
-   if (num != 0)
-      EMapWindow(disp, desks.desk[num].win);
+   desks.desk[desk].viewable = 1;
+   RefreshDesktop(desk);
+   if (desk != 0)
+      EMapWindow(disp, desks.desk[desk].win);
    EDBUG_RETURN_;
 }
 
 void
-MoveEwinToDesktop(EWin * ewin, int num)
+MoveEwinToDesktop(EWin * ewin, int desk)
 {
    int                 pdesk;
 
@@ -1694,7 +1711,7 @@ MoveEwinToDesktop(EWin * ewin, int num)
    ewin->floating = 0;
    DesktopRemoveEwin(ewin);
    pdesk = ewin->desktop;
-   ewin->desktop = DESKTOPS_WRAP_NUM(num);
+   ewin->desktop = DESKTOPS_WRAP_NUM(desk);
    DesktopAddEwinToTop(ewin);
    ConformEwinToDesktop(ewin);
    if (ewin->has_transients)
@@ -1707,7 +1724,7 @@ MoveEwinToDesktop(EWin * ewin, int num)
 	  {
 	     for (i = 0; i < nn; i++)
 	       {
-		  MoveEwinToDesktop(lst[i], num);
+		  MoveEwinToDesktop(lst[i], desk);
 	       }
 	     Efree(lst);
 	  }
@@ -1831,23 +1848,24 @@ DesktopAddEwinToBottom(EWin * ewin)
 	  }
      }
    desks.desk[ewin->desktop].list[desks.desk[ewin->desktop].num - 1] = ewin;
+
    ForceUpdatePagersForDesktop(ewin->desktop);
    EDBUG_RETURN_;
 }
 
 void
-MoveEwinToDesktopAt(EWin * ewin, int num, int x, int y)
+MoveEwinToDesktopAt(EWin * ewin, int desk, int x, int y)
 {
    int                 dx, dy;
 
    EDBUG(3, "MoveEwinToDesktopAt");
 /*   ewin->sticky = 0; */
    ewin->floating = 0;
-   if (num != ewin->desktop && !ewin->sticky)
+   if (desk != ewin->desktop && !ewin->sticky)
      {
 	DesktopRemoveEwin(ewin);
 	ForceUpdatePagersForDesktop(ewin->desktop);
-	ewin->desktop = DESKTOPS_WRAP_NUM(num);
+	ewin->desktop = DESKTOPS_WRAP_NUM(desk);
 	DesktopAddEwinToTop(ewin);
      }
    dx = x - ewin->x;
@@ -1865,13 +1883,13 @@ MoveEwinToDesktopAt(EWin * ewin, int num, int x, int y)
 	  {
 	     for (i = 0; i < nn; i++)
 	       {
-		  MoveEwinToDesktopAt(lst[i], num, lst[i]->x + dx,
+		  MoveEwinToDesktopAt(lst[i], desk, lst[i]->x + dx,
 				      lst[i]->y + dy);
 	       }
 	     Efree(lst);
 	  }
      }
-   ForceUpdatePagersForDesktop(num);
+   ForceUpdatePagersForDesktop(desk);
    EDBUG_RETURN_;
 }
 
