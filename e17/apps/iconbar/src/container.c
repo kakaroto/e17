@@ -101,50 +101,6 @@ void e_container_padding_get(Evas_Object *container, double *l, double *r,
   if (b) *b = cont->padding.b;
 }
 
-void e_container_fit_x_set(Evas_Object *container, int fit_x)
-{
-  Container *cont;
-  
-  cont = _container_fetch(container);
-  if (!cont) return;
-
-  cont->fit_x = fit_x;
-
-  _container_elements_fix(cont);
-}
-
-int  e_container_fit_x_get(Evas_Object *container)
-{
-  Container *cont;
-  
-  cont = _container_fetch(container);
-  if (!cont) return 0;
-
-  return cont->fit_x;
-}
-
-void e_container_fit_y_set(Evas_Object *container, int fit_y)
-{
-  Container *cont;
-  
-  cont = _container_fetch(container);
-  if (!cont) return;
-
-  cont->fit_y = fit_y;
-
-  _container_elements_fix(cont);
-}
-
-int  e_container_fit_y_get(Evas_Object *container)
-{
-  Container *cont;
-  
-  cont = _container_fetch(container);
-  if (!cont) return 0;
-
-  return cont->fit_y;
-}
-
 void e_container_alignment_set(Evas_Object *container, 
                                Container_Alignment align)
 {
@@ -169,6 +125,32 @@ Container_Alignment e_container_alignment_get(Evas_Object *container)
   if (!cont) return 0;
 
   return cont->align;
+}
+
+void e_container_fill_policy_set(Evas_Object *container, 
+                               Container_Fill_Policy fill)
+{
+  Container *cont;
+  
+  cont = _container_fetch(container);
+  if (!cont) return;
+
+  if (cont->fill == fill) return;
+  
+  cont->fill = fill;
+
+  _container_elements_fix(cont);
+  
+}
+
+Container_Fill_Policy e_container_fill_policy_get(Evas_Object *container)
+{
+  Container *cont;
+  
+  cont = _container_fetch(container);
+  if (!cont) return 0;
+
+  return cont->fill;
 }
 
 void e_container_scroll_set(Evas_Object *container, int scroll)
@@ -375,7 +357,8 @@ _container_elements_fix(Container *cont)
 {
   Evas_List *l;
   double ax, ay, aw, ah; // element area geom
-  double ix, iy;
+  double ix, iy, iw, ih; // new x, y, w, h
+  int num; // number of elements
 
   evas_object_geometry_get(cont->grabber, &ax, &ay, &aw, &ah);
 
@@ -391,10 +374,12 @@ _container_elements_fix(Container *cont)
   ix = ax;
   iy = ay;
 
+  num = evas_list_count(cont->elements);
+
   for (l = cont->elements; l; l = l->next)
   {
     Container_Element *el = l->data;
-    double ew, eh; // element size
+    double ew, eh; // old element size
 
     if(!el)
     {
@@ -407,23 +392,97 @@ _container_elements_fix(Container *cont)
     /* vertical */
     if (cont->direction)
     {
-      /* FIXME: do other alignments also */
+      if (cont->fill & CONTAINER_FILL_POLICY_FILL)
+      {
+        iw = aw;
+        ih = (ah - cont->spacing * (num - 1) ) / num;
+      }
+      else if (cont->fill & CONTAINER_FILL_POLICY_FILL_X)
+      {
+        if (cont->fill & CONTAINER_FILL_POLICY_KEEP_ASPECT)
+        {
+          iw = aw;
+          ih = eh * iw/ew;
+        }
+        else
+        {
+          iw = aw;
+          ih = eh;
+        }
+      }
+      else if (cont->fill & CONTAINER_FILL_POLICY_FILL_Y)
+      {
+        if (cont->fill & CONTAINER_FILL_POLICY_KEEP_ASPECT)
+        {
+          ih = (ah - cont->spacing * (num - 1) ) / num;
+          iw = ew * ih/eh;
+        }
+        else
+        {
+          ih = (ah - cont->spacing * (num - 1) ) / num;
+          iw = ew;
+        }
+      }
+      else
+      {
+        iw = ew;
+        ih = eh;
+      }
 
       if (cont->align == CONTAINER_ALIGN_LEFT)
         ix = ax;
       else if (cont->align == CONTAINER_ALIGN_CENTER)
-        ix = ax + (aw - ew) / 2;
+        ix = ax + (aw - iw) / 2;
       else if (cont->align == CONTAINER_ALIGN_RIGHT)
-        ix = ax + aw - ew;
+        ix = ax + aw - iw;
 
       evas_object_move(el->obj, ix, iy);
+      evas_object_resize(el->obj, iw, ih);
       evas_object_move(el->grabber, ix, iy);
-      iy += eh + cont->spacing;
+      evas_object_resize(el->grabber, iw, ih);
+
+      iy += ih + cont->spacing;
     }
 
     /* horizontal */
     else
     {
+      if (cont->fill & CONTAINER_FILL_POLICY_FILL)
+      {
+        ih = ah;
+        iw = (aw - cont->spacing * (num - 1) ) / num;
+      }
+      else if (cont->fill & CONTAINER_FILL_POLICY_FILL_X)
+      {
+        if (cont->fill & CONTAINER_FILL_POLICY_KEEP_ASPECT)
+        {
+          ih = ah;
+          iw = ew * ih/eh;
+        }
+        else
+        {
+          ih = ah;
+          iw = ew;
+        }
+      }
+      else if (cont->fill & CONTAINER_FILL_POLICY_FILL_Y)
+      {
+        if (cont->fill & CONTAINER_FILL_POLICY_KEEP_ASPECT)
+        {
+          iw = (aw - cont->spacing * (num - 1) ) / num;
+          ih = eh * iw/ew;
+        }
+        else
+        {
+          iw = (aw - cont->spacing * (num - 1) ) / num;
+          ih = eh;
+        }
+      }
+      else
+      {
+        iw = ew;
+        ih = eh;
+      }
 
       if (cont->align == CONTAINER_ALIGN_TOP)
         iy = ay;
@@ -441,9 +500,6 @@ _container_elements_fix(Container *cont)
     evas_object_geometry_get(el->obj, NULL, NULL, &ew, &eh);
     evas_object_resize(el->grabber, ew, eh);
   }
-
-
-  
 }
 
 double
