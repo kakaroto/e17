@@ -64,10 +64,10 @@ load_new_menu_from_disk (char *file_to_load, GtkCTreeNode * my_parent)
 
 	      text[0] = txt;
 	      if (!icon)
-		icon = duplicate ("");
+		icon = g_strdup ("");
 	      text[1] = icon;
 	      if (!params)
-		params = duplicate ("");
+		params = g_strdup ("");
 	      text[2] = params;
 
 	      /* printf("subitem: %s, %s, %s, %s\n",txt,icon,act,params); */
@@ -80,14 +80,13 @@ load_new_menu_from_disk (char *file_to_load, GtkCTreeNode * my_parent)
 		}
 
 	      if (txt)
-		free (txt);
+		g_free (txt);
 	      if (icon)
-		free (icon);
+		g_free (icon);
 	      if (act)
-		free (act);
+		g_free (act);
 	      if (params)
-		free (params);
-
+		g_free (params);
 	    }
 	}
     }
@@ -132,9 +131,9 @@ load_menus_from_disk (void)
 
 	      txt = field (s, 0);
 	      text[0] = txt;
-	      txt2 = duplicate ("");
+	      txt2 = g_strdup ("");
 	      text[1] = txt2;
-	      txt3 = duplicate (buf);
+	      txt3 = g_strdup (buf);
 	      text[2] = txt3;
 
 	      parent = gtk_ctree_insert_node (GTK_CTREE (ctree), NULL, NULL,
@@ -143,11 +142,11 @@ load_menus_from_disk (void)
 	      /* printf("mainitem: %s, %s, %s, %s\n",txt,txt2,txt3,txt4); */
 
 	      if (txt)
-		free (txt);
+		g_free (txt);
 	      if (txt2)
-		free (txt2);
+		g_free (txt2);
 	      if (txt3)
-		free (txt3);
+		g_free (txt3);
 
 	      first = 0;
 	    }
@@ -164,10 +163,10 @@ load_menus_from_disk (void)
 
 	      text[0] = txt;
 	      if (!icon)
-		icon = duplicate ("");
+		icon = g_strdup ("");
 	      text[1] = icon;
 	      if (!params)
-		params = duplicate ("");
+		params = g_strdup ("");
 	      text[2] = params;
 
 	      /* printf("subitem: %s, %s, %s, %s\n",txt,icon,act,params); */
@@ -182,13 +181,13 @@ load_menus_from_disk (void)
 		}
 
 	      if (txt)
-		free (txt);
+		g_free (txt);
 	      if (icon)
-		free (icon);
+		g_free (icon);
 	      if (act)
-		free (act);
+		g_free (act);
 	      if (params)
-		free (params);
+		g_free (params);
 
 	    }
 	}
@@ -461,9 +460,9 @@ insert_entry (GtkWidget * widget, gpointer user_data)
   GtkCTreeNode *newp = NULL, *news = NULL;
   gchar *text[3];
 
-  text[0] = duplicate ("New Entry");
-  text[1] = duplicate ("");
-  text[2] = duplicate ("");
+  text[0] = g_strdup ("New Entry");
+  text[1] = g_strdup ("");
+  text[2] = g_strdup ("");
 
   if (GTK_CLIST (ctree)->selection)
     {
@@ -482,9 +481,9 @@ insert_entry (GtkWidget * widget, gpointer user_data)
 			   newp, news, text, 0, NULL, NULL,
 			   NULL, NULL, FALSE, TRUE);
 
-  free (text[0]);
-  free (text[1]);
-  free (text[2]);
+  g_free (text[0]);
+  g_free (text[1]);
+  g_free (text[2]);
 
   return;
   widget = NULL;
@@ -632,9 +631,9 @@ tree_to_gnode (GtkCTree * ctree,
       return FALSE;
     }
   edata = g_malloc (sizeof (struct entry_data));
-  edata->desc = duplicate (col1);
-  edata->icon = duplicate (col2);
-  edata->params = duplicate (col3);
+  edata->desc = g_strdup (col1);
+  edata->icon = g_strdup (col2);
+  edata->params = g_strdup (col3);
   gnode->data = edata;
   return TRUE;
   depth = 0;
@@ -660,7 +659,7 @@ gint write_menu (GNode * node, gchar * file)
 	g_strjoin ("/", homedir (getuid ()), ".enlightenment", file, NULL);
     }
   else
-    realfile = duplicate (file);
+    realfile = g_strdup (file);
 
   if ((fp = fopen (realfile, "w")) == NULL)
     {

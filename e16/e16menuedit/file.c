@@ -5,6 +5,7 @@
 #include <ctype.h>
 #include <pwd.h>
 #include <sys/types.h>
+#include <glib.h>
 #include "file.h"
 
 char               *
@@ -20,17 +21,17 @@ homedir(int uid)
       usr_uid = getuid();
    if ((uid == usr_uid) && (usr_s))
      {
-	return (duplicate(usr_s));
+	return (g_strdup(usr_s));
      }
    pwd = getpwuid(uid);
    if (pwd)
      {
-	s = duplicate(pwd->pw_dir);
+	s = g_strdup(pwd->pw_dir);
 	if (uid == usr_uid)
-	   usr_s = duplicate(s);
+	   usr_s = g_strdup(s);
 	return (s);
      }
-   return (duplicate((getenv("TMPDIR") == NULL) ? "/tmp" : getenv("TMPDIR")));
+   return (g_strdup((getenv("TMPDIR") == NULL) ? "/tmp" : getenv("TMPDIR")));
 }
 
 char               *
@@ -44,23 +45,9 @@ field(char *s, int field)
      {
 	if ((!strcmp(buf, "NULL")) || (!strcmp(buf, "(null)")))
 	   return (NULL);
-	return (duplicate(buf));
+	return (g_strdup(buf));
      }
    return NULL;
-}
-
-char               *
-duplicate(char *s)
-{
-   char               *ss;
-   int                 sz;
-
-   if (!s)
-      return (NULL);
-   sz = strlen(s);
-   ss = malloc(sz + 1);
-   strncpy(ss, s, sz + 1);
-   return (ss);
 }
 
 void
