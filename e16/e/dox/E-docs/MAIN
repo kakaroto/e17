@@ -344,14 +344,14 @@ manipulate it like a normal window. Close the window to unstick the menu.
 <p>
 You will also find that instead of using the left mouse button, you click the 
 right mouse button, a menu with the title "Settings" will appear. This is
-Enlightenment's settings menu. From it you can select what parts of your
-desktop that Enlightenment controls to customize and make more amenable to 
-your own needs.
+Enlightenment's _settings_menu(settings) . From it you can select what parts 
+of your desktop that Enlightenment controls to customize and make more
+amenable to your own needs.
 <p>
 When you select one of these _settings(settings) a dialog window will appear
 giving you options to configure that part of Enlightenment.
 <p>
-Clicking the middle button on the desktop background will display 
+Clicking the middle button on the desktop _background(backgrounds) will display 
 Enlightenment's main menu. You can access the other menus plus more options
 (including those to log out, restart and display Help information) from this
 menu.
@@ -426,12 +426,13 @@ You may need to modify this for your mouse.
 
 
 <page columns=1 padding=16 name=tut7 background=Edoc_bg.png linkcolor=#88dddd>
-<font face=aircut3/12 color=#ffffff>
+<font face=rothwell/25 color=#ffffff>
 <p>
+Using the Window Border
+<font face=aircut3/12 color=#ffffff>
 When you start an application, unless it has special properties, it will come 
 up on your screen with a border surrounding it that contains a titlebar and
 several control buttons.
-<p>
 This border is the primary interface to controlling an application window.
 The Default setup (shown on the next page) gives adequate control but still
 retains simplicity.
@@ -835,10 +836,16 @@ The most obvious way is to use the _Iconbox(iconbox).  Of course, you might
 have had some applications in your Iconbox when you accidentally closed it.  Or
 maybe you minimized some applications and forgot you didn't have an Iconbox.
 Or maybe you don't like the Iconbox and usually use KDE or GNOME's panel to
-recover them and forgot to launch them.  Never fear.  You can always middle or
-right click on the _Dragbar(dragbar) and get a _menu(tut5) that will allow you
+recover them and forgot to launch them.  Never fear.  You can always
+middle click on the _Dragbar(dragbar)
+and get a _menu(tut5) that will allow you
 to recover them.  You can also alt or ctrl middleclick on the desktop to get
-the same menus.
+the same menus. (in case you don't have a Dragbar anymore)
+<p>
+Remember, at any time you can always create a new _Iconbox(iconbox) to catch
+your applications as they minimize, if you want to re-enable it.  Unfortunately
+you'll have to reconfigure it since each Iconbox can have its own
+_settings(settings)
 
 
 
