@@ -2608,3 +2608,10 @@ Fri Oct  1 01:16:46 PDT 1999
 fix windowmatch border sige-effect for starting the firts time
 
 fix start/restart/logout on multihead 
+
+-------------------------------------------------------------------------------
+
+Fri Oct  1 01:32:30 PDT 1999
+(Raster)
+
+add bug i noticed to TODO
