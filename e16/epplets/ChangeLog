@@ -1725,3 +1725,10 @@ work on runtime now, modifying and adding mountpoint types too. Deleting
 still needs to be done. Oh, and untested, btw.
 
 Damn. I'm getting sick.
+
+-------------------------------------------------------------------------------
+
+Tue Dec 28 00:31:03 EST 1999
+(Christian)
+
+Textboxes can now be hidden.

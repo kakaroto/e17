@@ -4460,6 +4460,14 @@ Epplet_gadget_hide(Epplet_gadget gadget)
 	   XUnmapWindow(disp, g->win);
 	}
 	break;
+     case E_TEXTBOX:
+	{
+	   GadTextBox         *g;
+
+	   g = (GadTextBox *) gadget;
+	   XUnmapWindow(disp, g->win);
+	}
+	break;
      case E_DRAWINGAREA:
 	{
 	   GadDrawingArea     *g;
