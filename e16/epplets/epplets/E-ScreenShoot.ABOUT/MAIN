@@ -285,6 +285,43 @@ STRING: File extension. This also determines the file type. For a list of
 possible filetypes, see man convert(1). It'll do almost any filetype you can
 think of. I recommend jpg, png, or html (yes html - try it and see!)
 <p>
+_More_Screen-Shot_Options(shotopt3)
+
+
+<page columns=1 padding=16 name=shotopt3 background=bg.png linkcolor=#88dddd>
+<font face=aircut3/18 color=#88eeff>
+<p align=50%>
+Screen-Shot Configuration File Options
+<font face=aircut3/12 color=#ffffff>
+<p>
+<font face=aircut3/12 color=#112222>
+RUN_SCRIPT
+<br>
+<font face=aircut3/12 color=#ffffff>
+BOOLEAN 0/1: Run a script using the image filename when the shot has been taken?
+<br>
+I use this to run a script to add the file to my website screenshot page,
+you could also use it to play a sound, submit the shot, whatever.
+<br>
+<font face=aircut3/12 color=#112222>
+SCRIPT_TO_RUN
+<br>
+<font face=aircut3/12 color=#ffffff>
+STRING: What script (or program) would you like to run? The image filename will be
+sent as a parameter.
+<br>
+<font face=aircut3/12 color=#112222>
+VIEW_SHOT
+<br>
+<font face=aircut3/12 color=#ffffff>
+BOOLEAN 1/0: Would you like to view the screenshot after taking it?
+<br>
+<font face=aircut3/12 color=#112222>
+VIEWER
+<br>
+<font face=aircut3/12 color=#ffffff>
+STRING: What application would you like to use to view the file? (default ee)
+<p>
 _Misc_Info(misc)<br>
 
 

@@ -639,3 +639,19 @@ Changes to cloak.[ch]
 If those functions are not going to be static any more, declare them in
 cloak.h, so other epplets can use them
 
+-------------------------------------------------------------------------------
+
+Thu Nov 18 19:15:14 GMT 1999
+(gilbertt)
+
+Changes to E-ScreenShoot
+
+Added a couple of new config options. They're in the dox, but I'll yip about
+them too.
+
+VIEW_SHOT & VIEWER   -   View shot after taking it using VIEWER (ee default)
+RUN_SCRIPT & SCRIPT_TO_RUN  -  Run script/program after taking shot, sending
+filename as parameter.
+
+Also cleaned up some of that code, it was hairy.
+
