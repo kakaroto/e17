@@ -611,16 +611,22 @@ EWMH_GetWindowType(EWin * ewin)
      }
 #if 0
    else if (atom == _NET_WM_WINDOW_TYPE_TOOLBAR)
-      else
-   if (atom == _NET_WM_WINDOW_TYPE_MENU)
-      else
-   if (atom == _NET_WM_WINDOW_TYPE_SPLASH)
-      else
-   if (atom == _NET_WM_WINDOW_TYPE_DIALOG)
-      else
-   if (atom == _NET_WM_WINDOW_TYPE_NORMAL)
+     {
+     }
+   else if (atom == _NET_WM_WINDOW_TYPE_MENU)
+     {
+     }
+   else if (atom == _NET_WM_WINDOW_TYPE_SPLASH)
+     {
+     }
+   else if (atom == _NET_WM_WINDOW_TYPE_DIALOG)
+     {
+     }
+   else if (atom == _NET_WM_WINDOW_TYPE_NORMAL)
+     {
+     }
 #endif
-      Efree(p_atoms);
+   Efree(p_atoms);
 
  exit:
    EDBUG_RETURN_;
