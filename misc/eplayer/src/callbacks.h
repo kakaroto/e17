@@ -42,5 +42,8 @@ void cb_seek_backward(void *udata, Evas_Object *obj,
 void cb_eplayer_quit(void *udata, Evas_Object *obj,
                      const char *emission, const char *src);
 
+void cb_switch_group(void *udata, Evas_Object *obj,
+                     const char *emission, const char *src);
+
 #endif
 

@@ -222,3 +222,11 @@ void cb_eplayer_quit(void *udata, Evas_Object *obj,
                      const char *emission, const char *src) {
 	ecore_main_loop_quit();
 }
+
+void cb_switch_group(void *udata, Evas_Object *obj,
+                     const char *emission, const char *src) {
+	ePlayer *player = udata;
+	
+	evas_object_del(player->gui.edje);
+	setup_edje(player, src);
+}

@@ -2,7 +2,6 @@
 /* Edje Overhaul startnig phase 4 - Started 7/30/03 */
 
 #include <config.h>
-#include <Ecore_Evas.h>
 #include <Edb.h>
 #include <string.h>
 #include <sys/stat.h>

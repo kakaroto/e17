@@ -1,13 +1,12 @@
 #include <config.h>
 #include "eplayer.h"
-#include <Ecore_Evas.h>
 #include <Esmart/container.h>
 #include <Edje.h>
 #include "callbacks.h"
 #include "track.h"
 #include "utils.h"
+#include "interface.h"
 
-static int setup_edje(ePlayer *player, Ecore_Evas *ee);
 static void setup_playlist(ePlayer *player);
 
 static int app_signal_exit(void *data, int type, void *event) {
@@ -18,20 +17,22 @@ static int app_signal_exit(void *data, int type, void *event) {
 }
 
 int setup_gui(ePlayer *player) {
-	Ecore_Evas *ee;
-
 	debug(DEBUG_LEVEL_INFO, "Starting setup\n");
 
 	ecore_init();
 	ecore_evas_init();
-	ecore_event_handler_add(ECORE_EVENT_SIGNAL_EXIT, app_signal_exit, NULL);
+	ecore_event_handler_add(ECORE_EVENT_SIGNAL_EXIT, app_signal_exit,
+	                        NULL);
 
 	if (!strcasecmp(player->cfg.evas_engine, "gl"))
-		ee = ecore_evas_gl_x11_new(NULL, 0,  0, 0, 500, 500);
+		player->gui.ee = ecore_evas_gl_x11_new(NULL, 0,  0, 0,
+		                                       500, 500);
 	else
-		ee = ecore_evas_software_x11_new(NULL, 0,  0, 0, 500, 500);
+		player->gui.ee = ecore_evas_software_x11_new(NULL, 0,  0, 0,
+		                                             500, 500);
 
-	if (!ee) {
+
+	if (!player->gui.ee) {
 		debug(DEBUG_LEVEL_CRITICAL,
 		      "Cannot create Ecore Evas (using %s engine)\n",
 		      player->cfg.evas_engine);
@@ -39,16 +40,17 @@ int setup_gui(ePlayer *player) {
 		return 0;
 	}
 	
-	ecore_evas_title_set(ee, "eVorbisPlayer");
-	ecore_evas_name_class_set(ee, "ecore_test", "test_evas");
-	ecore_evas_borderless_set(ee, 1);
-	ecore_evas_shaped_set(ee, 1);
-	ecore_evas_show(ee);
+	ecore_evas_title_set(player->gui.ee, "ePlayer");
+	ecore_evas_name_class_set(player->gui.ee, "ecore_test",
+	                          "test_evas");
+	ecore_evas_borderless_set(player->gui.ee, 1);
+	ecore_evas_shaped_set(player->gui.ee, 1);
+	ecore_evas_show(player->gui.ee);
 
-	player->gui.evas = ecore_evas_get(ee);
+	player->gui.evas = ecore_evas_get(player->gui.ee);
 	evas_font_path_append(player->gui.evas, DATA_DIR "/themes/fonts");
 
-	if (!setup_edje(player, ee))
+	if (!setup_edje(player, "eplayer"))
 		return 0;
 
 	setup_playlist(player);
@@ -56,7 +58,7 @@ int setup_gui(ePlayer *player) {
 	return 1;
 }
 
-static int setup_edje(ePlayer *player, Ecore_Evas *ee) {
+int setup_edje(ePlayer *player, const char *name) {
 	char eet[PATH_MAX + 1];
 	double edje_w = 0, edje_h = 0;
 
@@ -67,7 +69,7 @@ static int setup_edje(ePlayer *player, Ecore_Evas *ee) {
 	snprintf(eet, sizeof(eet), DATA_DIR "/themes/%s.eet",
 	         player->cfg.theme);
 	
-	if (!edje_object_file_set(player->gui.edje, eet, "eplayer")) {
+	if (!edje_object_file_set(player->gui.edje, eet, name)) {
 		debug(DEBUG_LEVEL_CRITICAL, "Cannot load theme '%s'!\n",
 		      player->cfg.theme);
 		return 0;
@@ -78,8 +80,7 @@ static int setup_edje(ePlayer *player, Ecore_Evas *ee) {
 	evas_object_resize(player->gui.edje, edje_w, edje_h);
 	evas_object_show(player->gui.edje);
 
-	ecore_evas_resize(ee, (int) edje_w, (int) edje_h);
-	ecore_evas_show(ee);
+	ecore_evas_resize(player->gui.ee, (int) edje_w, (int) edje_h);
 
 	/*** Edje Callbacks ***************************/
 	edje_object_signal_callback_add(player->gui.edje,
@@ -119,6 +120,10 @@ static int setup_edje(ePlayer *player, Ecore_Evas *ee) {
 	edje_object_signal_callback_add(player->gui.edje,
 	                                "TOGGLE_REPEAT_MODE", "repeat_mode",
 	                                cb_repeat_mode_toggle, player);
+
+	edje_object_signal_callback_add(player->gui.edje,
+	                                "SWITCH_GROUP", "*",
+	                                cb_switch_group, player);
 
 	return 1;
 }

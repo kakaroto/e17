@@ -1,5 +1,9 @@
 $Id$
 
+2003-11-24 Tilman Sauerbeck <tilman@code-monkey.de>
+        * src/interface.[ch], scr/callbacks.[ch], data/README:
+          Added SWITCH_GROUP edje signal
+
 2003-11-18 Tilman Sauerbeck <tilman@code-monkey.de>
         * src/interface.c, src/eplayer.c, src/eplayer.h:
           The theme that's to be used can now be set in eplayer.db

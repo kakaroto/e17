@@ -18,9 +18,15 @@ The "eplayer" Edje emits the following signals:
 	action,     SIGNAL_EMIT "TOGGLE_TIME_DISPLAY_MODE" "time_text";
 	action,     SIGNAL_EMIT "TOGGLE_REPEAT_MODE" "repeat_mode";
 
+	action,     SIGNAL_EMIT "SWITCH_GROUP" "foo";
+
 	action,     SIGNAL_EMIT "QUIT" "quit";
 
-It provides the following parts for text display:
+The "SWITCH_GROUP" signal is special. It will reload the Edje using the
+group "foo" (src argument). This way, you can easily implement
+collapsed/expanded states etc.
+
+The Edje provides the following parts for text display:
 
 	Part: "title"            -> Window Title
 	Part: "artist_name"      -> Name of artist

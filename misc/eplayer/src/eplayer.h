@@ -2,6 +2,7 @@
 #define __EPLAYER_H
 
 #include <Ecore.h>
+#include <Ecore_Evas.h>
 #include <pthread.h>
 #include "playlist.h"
 #include "plugin.h"
@@ -21,6 +22,7 @@ typedef struct {
 
 typedef struct {
 	Evas *evas;
+	Ecore_Evas *ee;
 	Evas_Object *edje;
 	Evas_Object *playlist; /* playlist container */
 	int playlist_font_size;
