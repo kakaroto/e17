@@ -1137,3 +1137,10 @@ Wed Sep  1 17:12:17 PDT 1999
 (Mandrake)
 
 this is a test commit, to make sure everything works again.
+
+-------------------------------------------------------------------------------
+
+Wed Sep  1 18:08:53 PDT 1999
+(Raster)
+
+fix minor problem introduced by fixing other shape bug.. :)

@@ -1068,8 +1068,8 @@ ICCCM_GetShapeInfo(EWin * ewin)
      }
    else if (rn == 1)
      {
-	if ((rl[0].x == 0) && (rl[0].y == 0) &&
-	    (rl[0].width == w) && (rl[0].height == h))
+	if ((rl[0].x <= 0) && (rl[0].y <= 0) &&
+	    (rl[0].width >= w) && (rl[0].height >= h))
 	  {
 	     ewin->client.shaped = 0;
 	     EShapeCombineMask(disp, ewin->win_container, ShapeBounding, 0, 0,

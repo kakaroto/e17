@@ -1232,6 +1232,17 @@ HandleConfigureRequest(XEvent * ev)
 		       w, h);
 	if (mode.mode == MODE_MOVE)
 	   ICCCM_Configure(ewin);
+	  {
+	     char pshaped;
+	     
+	     pshaped = ewin->client.shaped;    
+	     ICCCM_GetShapeInfo(ewin);
+	     if (pshaped != ewin->client.shaped)
+	       {
+		  SyncBorderToEwin(ewin);
+		  PropagateShapes(ewin->win);
+	       }
+	  }
 	ReZoom(ewin);
      }
    else
@@ -1263,6 +1274,17 @@ HandleResizeRequest(XEvent * ev)
 	w = ev->xresizerequest.width;
 	h = ev->xresizerequest.height;
 	ResizeEwin(ewin, w, h);
+	  {
+	     char pshaped;
+	     
+	     pshaped = ewin->client.shaped;    
+	     ICCCM_GetShapeInfo(ewin);
+	     if (pshaped != ewin->client.shaped)
+	       {
+		  SyncBorderToEwin(ewin);
+		  PropagateShapes(ewin->win);
+	       }
+	  }
 	ReZoom(ewin);
      }
    else
