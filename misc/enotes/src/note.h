@@ -31,7 +31,11 @@
 
 #define EDJE_SIGNAL_NOTE_CLOSE "ENOTES_QUIT"
 #define EDJE_SIGNAL_NOTE_MINIMISE "ENOTES_MINIMIZE"
-#define EDJE_EWL_CONTAINER "EnotesContainer"
+
+#define EDJE_CONTAINER "EnoteContainer"
+#define EDJE_TEXT_USER "EnoteUser"
+#define EDJE_TEXT_DATE "EnoteDate"
+#define EDJE_TEXT_TITLE "EnoteTitle"
 
 #define COMPARE_INTERVAL 0.01
 #define TITLE_LENGTH 20
@@ -102,5 +106,7 @@ char           *get_title_by_content(char *content);
 Evas_List      *get_cycle_begin(void);
 Evas_List      *get_cycle_next_note(Evas_List * note);
 Evas_List      *get_cycle_previous_note(Evas_List * note);
+
+void update_enote_title(Evas_Object *edje,char *content);
 
 #endif

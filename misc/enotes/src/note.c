@@ -197,10 +197,11 @@ setup_note(Evas_List ** note, int x, int y, int width, int height,
 
 	evas_object_show(p->edje);
 
-	/* Setup the date and user */
-	edje_object_part_text_set(p->edje, "EnotesUser", getenv("USER"));
+	/* Setup the date, user and initial title */
+	edje_object_part_text_set(p->edje, EDJE_TEXT_USER, getenv("USER"));
 	datestr = get_date_string();
-	edje_object_part_text_set(p->edje, "EnotesDate", datestr);
+	edje_object_part_text_set(p->edje, EDJE_TEXT_DATE, datestr);
+	update_enote_title (p->edje,content);
 
 	/* Ewl */
 	p->emb = ewl_embed_new();
@@ -210,7 +211,7 @@ setup_note(Evas_List ** note, int x, int y, int width, int height,
 				   ecore_evas_get(p->win), (void *)
 				   ecore_evas_software_x11_window_get(p->win));
 	evas_object_layer_set(p->eo, 2);
-	edje_object_part_swallow(p->edje, EDJE_EWL_CONTAINER, p->eo);
+	edje_object_part_swallow(p->edje, EDJE_CONTAINER, p->eo);
 	evas_object_show(p->eo);
 
 	evas_object_focus_set(p->eo, TRUE);
@@ -254,6 +255,7 @@ setup_note(Evas_List ** note, int x, int y, int width, int height,
 				   get_title_by_note(*note), *note);
 		dml("Added new note to saveload list", 2);
 	}
+
 	return;
 }
 
@@ -460,7 +462,6 @@ get_note_by_content(char *content)
 	return (NULL);
 }
 
-
 /**
  * @param note: The note to grab the title from.
  * @return: Returns the title of the supplied note.
@@ -579,4 +580,15 @@ note_move_embed(Ewl_Widget * w, void *ev_data, void *user_data)
 {
 	ewl_object_geometry_request(EWL_OBJECT(user_data), CURRENT_X(w),
 				    CURRENT_Y(w), CURRENT_W(w), CURRENT_H(w));
+}
+
+/**
+ * @param content: The content to use for title setting.
+ * @brief: Sets the title in the edje.
+ */
+void
+update_enote_title(Evas_Object *edje,char *content)
+{
+	 edje_object_part_text_set(edje, EDJE_TEXT_TITLE,get_title_by_content(content));
+	 return;
 }
