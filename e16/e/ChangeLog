@@ -1952,3 +1952,10 @@ Introduced debug_flags, minor cleanups.
 I don't think we should process property notify events. Kick me if I'm wrong.
 
 Ignore theme stuff (but not dont-cover windows) when placing windows and low on space.
+
+-------------------------------------------------------------------------------
+
+Mon Jun 16 21:05:11 CEST 2003
+(Kim)
+
+Corrected some property change event handling bugs.
