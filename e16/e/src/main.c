@@ -67,11 +67,6 @@ main(int argc, char **argv)
    Mode.wm.startup = 1;
    Mode.move.check = 1;
 
-/*  unsetenv("LD_PRELOAD"); */
-
-   /* Initialise internationalisation */
-   LangInit();
-
    str = getenv("EDBUG");
    if (str)
       Mode.debug = atoi(str);
@@ -96,6 +91,9 @@ main(int argc, char **argv)
       e_machine_name = Estrdup(ubuf.nodename);
    if (!e_machine_name)
       e_machine_name = Estrdup("localhost");
+
+   /* Initialise internationalisation */
+   LangInit();
 
    SetSMProgName(argv[0]);
 

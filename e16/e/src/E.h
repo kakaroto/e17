@@ -719,6 +719,7 @@ typedef struct _textstate
    XFontStruct        *xfont;
    XFontSet            xfontset;
    int                 xfontset_ascent;
+   char                need_utf8;
 }
 TextState;
 
@@ -1277,7 +1278,8 @@ typedef struct
    } move;
    struct
    {
-      char                utf8;	/* Use UTF8 internally */
+      char                utf8_int;	/* Use UTF-8 internally */
+      char                utf8_loc;	/* Locale is UTF-8 */
    } text;
    int                 debug;
    int                 mode;
@@ -2337,7 +2339,10 @@ void                ButtonIPC(int val, void *data);
 
 /* lang.c */
 void                LangInit(void);
-char               *Eiconv(const char *txt, size_t len);
+char               *EstrLoc2Int(const char *str, int len);
+char               *EstrUtf82Int(const char *str, int len);
+const char         *EstrInt2Enc(const char *str, int want_utf8);
+void                EstrInt2EncFree(const char *str, int want_utf8);
 
 /* lists.c */
 void               *FindItem(const char *name, int id, int find_by, int type);
@@ -2619,11 +2624,8 @@ void                TclassApply(ImageClass * iclass, Window win, int w, int h,
 				TextClass * tclass, const char *text);
 
 /* text.c */
-int                 ExTextExtents(XFontSet font_set, const char *string,
-				  int len, XRectangle * oir, XRectangle * olr);
-void                ExDrawString(Display * display, Drawable d,
-				 XFontSet font_set, GC gc, int x, int y,
-				 const char *string, int len);
+#define ExTextExtents XmbTextExtents
+#define ExDrawString XmbDrawString
 TextState          *TextGetState(TextClass * tclass, int active, int sticky,
 				 int state);
 void                TextStateLoadFont(TextState * ts);

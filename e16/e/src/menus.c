@@ -425,36 +425,17 @@ MenuItemCreate(const char *text, ImageClass * iclass, int action_id,
 
    EDBUG(5, "MenuItemCreate");
    mi = Emalloc(sizeof(MenuItem));
+   memset(mi, 0, sizeof(MenuItem));
 
    mi->icon_iclass = iclass;
    if (iclass)
       iclass->ref_count++;
-   mi->text = Estrdup(text);
+
+   mi->text = EstrLoc2Int(text, 0);
    mi->act_id = action_id;
-   if (action_params)
-     {
-	mi->params = Estrdup(action_params);
-     }
-   else
-     {
-	mi->params = NULL;
-     }
+   mi->params = Estrdup(action_params);
    mi->child = child;
    mi->state = STATE_NORMAL;
-   mi->win = 0;
-   mi->pmm[0].pmap = 0;
-   mi->pmm[1].pmap = 0;
-   mi->pmm[2].pmap = 0;
-   mi->pmm[0].mask = 0;
-   mi->pmm[1].mask = 0;
-   mi->pmm[2].mask = 0;
-   mi->icon_win = 0;
-   mi->icon_w = 0;
-   mi->icon_h = 0;
-   mi->text_w = 0;
-   mi->text_h = 0;
-   mi->text_x = 0;
-   mi->text_y = 0;
 
    EDBUG_RETURN(mi);
 }

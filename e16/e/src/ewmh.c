@@ -448,7 +448,13 @@ EWMH_SetShowingDesktop(int on)
 void
 EWMH_SetWindowName(Window win, const char *name)
 {
-   _ATOM_SET_UTF8_STRING(_NET_WM_NAME, win, name);
+   const char         *str;
+
+   EDBUG(6, "EWMH_SetWindowName");
+   str = EstrInt2Enc(name, 1);
+   _ATOM_SET_UTF8_STRING(_NET_WM_NAME, win, str);
+   EstrInt2EncFree(str, 1);
+   EDBUG_RETURN_;
 }
 
 void
@@ -514,7 +520,7 @@ EWMH_GetWindowName(EWin * ewin)
 
    if (ewin->ewmh.wm_name)
       Efree(ewin->ewmh.wm_name);
-   ewin->ewmh.wm_name = Estrndup(val, size);
+   ewin->ewmh.wm_name = EstrUtf82Int(val, size);
 
    Efree(val);
    EwinChange(ewin, EWIN_CHANGE_NAME);
@@ -537,7 +543,7 @@ EWMH_GetWindowIconName(EWin * ewin)
 
    if (ewin->ewmh.wm_icon_name)
       Efree(ewin->ewmh.wm_icon_name);
-   ewin->ewmh.wm_icon_name = Estrndup(val, size);
+   ewin->ewmh.wm_icon_name = EstrUtf82Int(val, size);
 
    Efree(val);
    EwinChange(ewin, EWIN_CHANGE_ICON_NAME);

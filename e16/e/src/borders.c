@@ -1357,10 +1357,12 @@ EwinDestroy(EWin * ewin)
       Efree(ewin->icccm.wm_command);
    if (ewin->icccm.wm_machine)
       Efree(ewin->icccm.wm_machine);
+#if ENABLE_EWMH
    if (ewin->ewmh.wm_name)
       Efree(ewin->ewmh.wm_name);
    if (ewin->ewmh.wm_icon_name)
       Efree(ewin->ewmh.wm_icon_name);
+#endif
    if (ewin->icccm.wm_icon_name)
       Efree(ewin->icccm.wm_icon_name);
    if (ewin->win)
@@ -3095,7 +3097,7 @@ EwinGetTitle(const EWin * ewin)
 {
    const char         *name;
 
-#if 0				/* ENABLE_EWMH */
+#if ENABLE_EWMH
    name = ewin->ewmh.wm_name;
    if (name)
       goto done;
@@ -3113,7 +3115,7 @@ EwinGetIconName(const EWin * ewin)
 {
    const char         *name;
 
-#if 0				/* ENABLE_EWMH */
+#if ENABLE_EWMH
    name = ewin->ewmh.wm_icon_name;
    if (name)
       goto done;

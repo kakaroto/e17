@@ -28,34 +28,6 @@ static void         TextDrawRotTo(Window win, Drawable * drawable, int x, int y,
 static void         TextDrawRotBack(Window win, Drawable drawable, int x, int y,
 				    int w, int h, TextState * ts);
 
-int
-ExTextExtents(XFontSet font_set, const char *string, int len,
-	      XRectangle * oir, XRectangle * olr)
-{
-#ifdef X_HAVE_UTF8_STRING
-   if (Mode.text.utf8)
-     {
-	return Xutf8TextExtents(font_set, string, len, oir, olr);
-     }
-#endif
-
-   return XmbTextExtents(font_set, string, len, oir, olr);
-}
-
-void
-ExDrawString(Display * display, Drawable d, XFontSet font_set, GC
-	     gc, int x, int y, const char *string, int len)
-{
-#ifdef X_HAVE_UTF8_STRING
-   if (Mode.text.utf8)
-     {
-	Xutf8DrawString(display, d, font_set, gc, x, y, string, len);
-	return;
-     }
-#endif
-   XmbDrawString(display, d, font_set, gc, x, y, string, len);
-}
-
 TextState          *
 TextGetState(TextClass * tclass, int active, int sticky, int state)
 {
@@ -208,6 +180,10 @@ TextStateLoadFont(TextState * ts)
 	}
       if (s2)
 	 Efree(s2);
+#if USE_IMLIB2
+      if (ts->efont)
+	 ts->need_utf8 = 1;
+#endif
    }
    if (ts->efont)
       goto done;
@@ -259,6 +235,7 @@ void
 TextSize(TextClass * tclass, int active, int sticky, int state,
 	 const char *text, int *width, int *height, int fsize)
 {
+   const char         *str;
    char              **lines;
    int                 i, num_lines;
    TextState          *ts;
@@ -268,15 +245,18 @@ TextSize(TextClass * tclass, int active, int sticky, int state,
    *width = 0;
    *height = 0;
 
-   lines = TextGetLines(text, &num_lines);
-   if (!lines)
-      EDBUG_RETURN_;
-
    ts = TextGetState(tclass, active, sticky, state);
    if (!ts)
       EDBUG_RETURN_;
 
    TextStateLoadFont(ts);
+
+   /* Do encoding conversion, if necessary */
+   str = EstrInt2Enc(text, ts->need_utf8);
+   lines = TextGetLines(str, &num_lines);
+   EstrInt2EncFree(str, ts->need_utf8);
+   if (!lines)
+      EDBUG_RETURN_;
 
 #if USE_FNLIB
    if (ts->font)
@@ -341,9 +321,8 @@ TextSize(TextClass * tclass, int active, int sticky, int state,
 	  {
 	     int                 wid;
 
-	     wid =
-		XTextWidth16(ts->xfont, (XChar2b *) lines[i],
-			     strlen(lines[i]) / 2);
+	     wid = XTextWidth16(ts->xfont, (XChar2b *) lines[i],
+				strlen(lines[i]) / 2);
 	     *height += ts->xfont->ascent + ts->xfont->descent;
 	     if (wid > *width)
 		*width = wid;
@@ -359,34 +338,42 @@ TextDraw(TextClass * tclass, Window win, int active, int sticky, int state,
 	 const char *text, int x, int y, int w, int h, int fsize,
 	 int justification)
 {
+   const char         *str;
    char              **lines;
    int                 i, num_lines;
    TextState          *ts;
    int                 xx, yy;
    XGCValues           gcv;
    static GC           gc = 0;
-
    int                 textwidth_limit, offset_x, offset_y;
    Pixmap              drawable;
 
    EDBUG(4, "TextDraw");
-   lines = TextGetLines(text, &num_lines);
-   if (!lines)
-      EDBUG_RETURN_;
+
    ts = TextGetState(tclass, active, sticky, state);
    if (!ts)
       EDBUG_RETURN_;
+
    TextStateLoadFont(ts);
-   xx = x;
-   yy = y;
+
+   /* Do encoding conversion, if necessary */
+   str = EstrInt2Enc(text, ts->need_utf8);
+   lines = TextGetLines(str, &num_lines);
+   EstrInt2EncFree(str, ts->need_utf8);
+   if (!lines)
+      EDBUG_RETURN_;
+
    if (!gc)
       gc = XCreateGC(disp, win, 0, &gcv);
 
-   if (ts->style.orientation == FONT_TO_RIGHT
-       || ts->style.orientation == FONT_TO_LEFT)
+   if (ts->style.orientation == FONT_TO_RIGHT ||
+       ts->style.orientation == FONT_TO_LEFT)
       textwidth_limit = w;
    else
       textwidth_limit = h;
+
+   xx = x;
+   yy = y;
 
 #if USE_FNLIB
    if (ts->font)
@@ -747,9 +734,8 @@ TextDraw(TextClass * tclass, Window win, int active, int sticky, int state,
 	  {
 	     int                 wid, ascent, descent;
 
-	     wid =
-		XTextWidth16(ts->xfont, (XChar2b *) lines[i],
-			     strlen(lines[i]) / 2);
+	     wid = XTextWidth16(ts->xfont, (XChar2b *) lines[i],
+				strlen(lines[i]) / 2);
 	     ascent = ts->xfont->ascent;
 	     descent = ts->xfont->descent;
 	     if (wid > textwidth_limit)
