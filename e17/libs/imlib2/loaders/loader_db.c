@@ -115,7 +115,7 @@ load (ImlibImage *im, ImlibProgressFunction progress,
 #ifdef WORDS_BIGENDIAN
 	  {
 	     int i;
-	     for (i = 0; i < ret.dsize; i++)
+	     for (i = 0; i < 8; i++)
 		SWAP32(header[i]);
 	  }
 #endif
