@@ -1,0 +1,13 @@
+Makefile
+stamp-h
+config.status
+libtool
+config.cache
+config.h
+config.log
+configure
+Makefile.in
+ltconfig
+config.sub
+config.guess
+libltdl
