@@ -61,7 +61,8 @@ geist_document_load(void)
    D_RETURN_(3);
 }
 
-gboolean file_load_ok_cb(GtkWidget * widget, gpointer * data)
+gboolean
+file_load_ok_cb(GtkWidget * widget, gpointer * data)
 {
    char *filename;
    geist_document *doc;
@@ -81,7 +82,7 @@ gboolean file_load_ok_cb(GtkWidget * widget, gpointer * data)
       D_RETURN(3, TRUE);
    }
    else
-      printf("file %s loaded okay\n", filename);
+      D(2, ("file %s loaded okay\n", filename));
    geist_gtk_new_document_page(doc);
    geist_document_render_full(doc, 1);
    gtk_widget_destroy(GTK_WIDGET(data));
@@ -116,7 +117,8 @@ geist_document_save_as(geist_document * doc)
    D_RETURN_(3);
 }
 
-gboolean file_save_ok_cb(GtkWidget * widget, gpointer * data)
+gboolean
+file_save_ok_cb(GtkWidget * widget, gpointer * data)
 {
    char *filename;
    geist_document *doc;
@@ -139,4 +141,3 @@ gboolean file_save_ok_cb(GtkWidget * widget, gpointer * data)
 
    D_RETURN(3, TRUE);
 }
-

@@ -37,7 +37,7 @@ IMLIB_CFLAGS=`imlib2-config --cflags`
 AC_SUBST(IMLIB_LIBS)
 AC_SUBST(IMLIB_CFLAGS)
 
-AC_PATH_GENERIC(xml, 1.8.0, [
+AC_PATH_GENERIC(xml, 1.8.8, [
   AC_SUBST(XML_LIBS)
   AC_SUBST(XML_CFLAGS) ],
   AC_MSG_ERROR(Cannot find libXML: Is xml-config in the path?) )

@@ -1,3 +1,10 @@
+Wed Aug 23 17:14:27 2000  Tom Gilbert  <gilbertt@linuxbrit.co.uk>
+
+	* Upgrade to libxml2. You'd better have it. As far as I know,
+	libxml 1.8.8 upwards will work, but I wouldn't rely on anything
+	much less than the 2.2.1 I have tested it with.
+	* Enjoy.
+
 Wed Aug 23 16:20:39 2000  Tom Gilbert  <gilbertt@linuxbrit.co.uk>
 
 	* Added "New line..." buttons and menu entry.
