@@ -30,18 +30,10 @@ MakeWindowUnSticky(EWin * ewin)
    if (!ewin)
       EDBUG_RETURN_;
 
-   ewin->sticky = 2;		/* Grrr: we are "unsticking" (hack to get the desktop right) */
-   ewin->desktop = desks.current;
-   FloatEwinAt(ewin, ewin->x, ewin->y);
-   DrawEwinShape(ewin, 0, ewin->x, ewin->y, ewin->client.w, ewin->client.h, 0);
-   MoveEwinToDesktopAt(ewin, desks.current, ewin->x, ewin->y);
    ewin->sticky = 0;
-   RaiseEwin(ewin);
+   MoveEwinToDesktopAt(ewin, desks.current, ewin->x, ewin->y);
    EwinBorderDraw(ewin, 0, 0);
-
    HintsSetWindowState(ewin);
-
-   SoundPlay("SOUND_WINDOW_UNSTICK");
 
    EDBUG_RETURN_;
 }
@@ -55,8 +47,6 @@ MakeWindowSticky(EWin * ewin)
    if (!ewin)
       EDBUG_RETURN_;
 
-   ewin->sticky = 1;
-
    /* Avoid "losing" windows made sticky while not in the current viewport */
    dx = ewin->w / 2;
    dy = ewin->h / 2;
@@ -69,21 +59,10 @@ MakeWindowSticky(EWin * ewin)
       y += VRoot.h;
    y -= dy;
 
-   if (x != ewin->x || y != ewin->y)
-     {
-	ewin->x = x;
-	ewin->y = y;
-	FloatEwinAt(ewin, ewin->x, ewin->y);
-	DrawEwinShape(ewin, 0, ewin->x, ewin->y, ewin->client.w, ewin->client.h,
-		      0);
-     }
-   MoveEwinToDesktopAt(ewin, desks.current, ewin->x, ewin->y);
-   RaiseEwin(ewin);
+   MoveEwinToDesktopAt(ewin, desks.current, x, y);
+   ewin->sticky = 1;
    EwinBorderDraw(ewin, 0, 0);
-
    HintsSetWindowState(ewin);
-
-   SoundPlay("SOUND_WINDOW_STICK");
 
    EDBUG_RETURN_;
 }

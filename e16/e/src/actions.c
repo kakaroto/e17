@@ -1572,10 +1572,16 @@ DoStick(EWin * ewin, const void *params, int nogroup)
 	curr_group = EwinsInGroup(ewin, gwins[i]);
 	if (gwins[i]->sticky
 	    && ((curr_group && !curr_group->cfg.mirror) || sticky))
-	   MakeWindowUnSticky(gwins[i]);
+	  {
+	     SoundPlay("SOUND_WINDOW_UNSTICK");
+	     MakeWindowUnSticky(gwins[i]);
+	  }
 	else if (!gwins[i]->sticky
 		 && ((curr_group && !curr_group->cfg.mirror) || !sticky))
-	   MakeWindowSticky(gwins[i]);
+	  {
+	     SoundPlay("SOUND_WINDOW_STICK");
+	     MakeWindowSticky(gwins[i]);
+	  }
 	RememberImportantInfoForEwin(gwins[i]);
      }
    if (gwins)
