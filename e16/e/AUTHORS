@@ -150,7 +150,8 @@ Gergely Egervary <mauzi@poli.hu>
         po files for hungarian
 
 Bob Arendt <rdarendt@cwcom.net>
-        64-bit fixes for e and epplets
+        64-bit fixes for e and epplets. Added -ecachedir option to change
+	its location.
 	
 And others whose names we probably forgot to add (email us and we'll put you
 in here)
