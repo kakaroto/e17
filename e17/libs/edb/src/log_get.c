@@ -18,9 +18,9 @@ static const char sccsid[] = "@(#)log_get.c	10.38 (Sleepycat) 10/3/98";
 #include <unistd.h>
 #endif
 
-#include "db_int.h"
+#include "edb_int.h"
 #include "shqueue.h"
-#include "db_page.h"
+#include "edb_page.h"
 #include "log.h"
 #include "hash.h"
 #include "common_ext.h"
@@ -30,37 +30,37 @@ static const char sccsid[] = "@(#)log_get.c	10.38 (Sleepycat) 10/3/98";
  *	Get a log record.
  */
 int
-log_get(dblp, alsn, dbt, flags)
-	DB_LOG *dblp;
+log_get(edblp, alsn, edbt, flags)
+	DB_LOG *edblp;
 	DB_LSN *alsn;
-	DBT *dbt;
+	DBT *edbt;
 	u_int32_t flags;
 {
 	int ret;
 
-	LOG_PANIC_CHECK(dblp);
+	LOG_PANIC_CHECK(edblp);
 
 	/* Validate arguments. */
 	if (flags != DB_CHECKPOINT && flags != DB_CURRENT &&
 	    flags != DB_FIRST && flags != DB_LAST &&
 	    flags != DB_NEXT && flags != DB_PREV && flags != DB_SET)
-		return (__db_ferr(dblp->dbenv, "log_get", 1));
+		return (__edb_ferr(edblp->edbenv, "log_get", 1));
 
-	if (F_ISSET(dblp, DB_AM_THREAD)) {
+	if (F_ISSET(edblp, DB_AM_THREAD)) {
 		if (flags == DB_NEXT || flags == DB_PREV || flags == DB_CURRENT)
-			return (__db_ferr(dblp->dbenv, "log_get", 1));
-		if (!F_ISSET(dbt, DB_DBT_USERMEM | DB_DBT_MALLOC))
-			return (__db_ferr(dblp->dbenv, "threaded data", 1));
+			return (__edb_ferr(edblp->edbenv, "log_get", 1));
+		if (!F_ISSET(edbt, DB_DBT_USERMEM | DB_DBT_MALLOC))
+			return (__edb_ferr(edblp->edbenv, "threaded data", 1));
 	}
 
-	LOCK_LOGREGION(dblp);
+	LOCK_LOGREGION(edblp);
 
 	/*
 	 * If we get one of the log's header records, repeat the operation.
 	 * This assumes that applications don't ever request the log header
 	 * records by LSN, but that seems reasonable to me.
 	 */
-	ret = __log_get(dblp, alsn, dbt, flags, 0);
+	ret = __log_get(edblp, alsn, edbt, flags, 0);
 	if (ret == 0 && alsn->offset == 0) {
 		switch (flags) {
 		case DB_FIRST:
@@ -70,10 +70,10 @@ log_get(dblp, alsn, dbt, flags)
 			flags = DB_PREV;
 			break;
 		}
-		ret = __log_get(dblp, alsn, dbt, flags, 0);
+		ret = __log_get(edblp, alsn, edbt, flags, 0);
 	}
 
-	UNLOCK_LOGREGION(dblp);
+	UNLOCK_LOGREGION(edblp);
 
 	return (ret);
 }
@@ -85,10 +85,10 @@ log_get(dblp, alsn, dbt, flags)
  * PUBLIC: int __log_get __P((DB_LOG *, DB_LSN *, DBT *, u_int32_t, int));
  */
 int
-__log_get(dblp, alsn, dbt, flags, silent)
-	DB_LOG *dblp;
+__log_get(edblp, alsn, edbt, flags, silent)
+	DB_LOG *edblp;
 	DB_LSN *alsn;
-	DBT *dbt;
+	DBT *edbt;
 	u_int32_t flags;
 	int silent;
 {
@@ -102,15 +102,15 @@ __log_get(dblp, alsn, dbt, flags, silent)
 	const char *fail;
 	void *p, *shortp;
 
-	lp = dblp->lp;
+	lp = edblp->lp;
 	fail = np = tbuf = NULL;
 
-	nlsn = dblp->c_lsn;
+	nlsn = edblp->c_lsn;
 	switch (flags) {
 	case DB_CHECKPOINT:
 		nlsn = lp->chkpt_lsn;
 		if (IS_ZERO_LSN(nlsn)) {
-			__db_err(dblp->dbenv,
+			__edb_err(edblp->edbenv,
 	"log_get: unable to find checkpoint record: no checkpoint set.");
 			ret = ENOENT;
 			goto err2;
@@ -119,13 +119,13 @@ __log_get(dblp, alsn, dbt, flags, silent)
 	case DB_NEXT:				/* Next log record. */
 		if (!IS_ZERO_LSN(nlsn)) {
 			/* Increment the cursor by the cursor record size. */
-			nlsn.offset += dblp->c_len;
+			nlsn.offset += edblp->c_len;
 			break;
 		}
 		/* FALLTHROUGH */
 	case DB_FIRST:				/* Find the first log record. */
 		/* Find the first log file. */
-		if ((ret = __log_find(dblp, 1, &cnt)) != 0)
+		if ((ret = __log_find(edblp, 1, &cnt)) != 0)
 			goto err2;
 
 		/*
@@ -146,13 +146,13 @@ __log_get(dblp, alsn, dbt, flags, silent)
 			/* If at start-of-file, move to the previous file. */
 			if (nlsn.offset == 0) {
 				if (nlsn.file == 1 ||
-				    __log_valid(dblp, nlsn.file - 1, 0) != 0)
+				    __log_valid(edblp, nlsn.file - 1, 0) != 0)
 					return (DB_NOTFOUND);
 
 				--nlsn.file;
-				nlsn.offset = dblp->c_off;
+				nlsn.offset = edblp->c_off;
 			} else
-				nlsn.offset = dblp->c_off;
+				nlsn.offset = edblp->c_off;
 			break;
 		}
 		/* FALLTHROUGH */
@@ -172,9 +172,9 @@ retry:
 		return (DB_NOTFOUND);
 
 	/* If we've switched files, discard the current fd. */
-	if (dblp->c_lsn.file != nlsn.file && dblp->c_fd != -1) {
-		(void)__os_close(dblp->c_fd);
-		dblp->c_fd = -1;
+	if (edblp->c_lsn.file != nlsn.file && edblp->c_fd != -1) {
+		(void)__os_close(edblp->c_fd);
+		edblp->c_fd = -1;
 	}
 
 	/* If the entire record is in the in-memory buffer, copy it out. */
@@ -185,16 +185,16 @@ retry:
 
 		/* Copy the record. */
 		len = hdr.len - sizeof(HDR);
-		if ((ret = __db_retcopy(dbt, (u_int8_t *)p + sizeof(HDR),
-		    len, &dblp->c_dbt.data, &dblp->c_dbt.ulen, NULL)) != 0)
+		if ((ret = __edb_retcopy(edbt, (u_int8_t *)p + sizeof(HDR),
+		    len, &edblp->c_edbt.data, &edblp->c_edbt.ulen, NULL)) != 0)
 			goto err1;
 		goto cksum;
 	}
 
 	/* Acquire a file descriptor. */
-	if (dblp->c_fd == -1) {
-		if ((ret = __log_name(dblp, nlsn.file,
-		    &np, &dblp->c_fd, DB_RDONLY | DB_SEQUENTIAL)) != 0) {
+	if (edblp->c_fd == -1) {
+		if ((ret = __log_name(edblp, nlsn.file,
+		    &np, &edblp->c_fd, DB_RDONLY | DB_SEQUENTIAL)) != 0) {
 			fail = np;
 			goto err1;
 		}
@@ -204,11 +204,11 @@ retry:
 
 	/* Seek to the header offset and read the header. */
 	if ((ret =
-	    __os_seek(dblp->c_fd, 0, 0, nlsn.offset, 0, SEEK_SET)) != 0) {
+	    __os_seek(edblp->c_fd, 0, 0, nlsn.offset, 0, SEEK_SET)) != 0) {
 		fail = "seek";
 		goto err1;
 	}
-	if ((ret = __os_read(dblp->c_fd, &hdr, sizeof(HDR), &nr)) != 0) {
+	if ((ret = __os_read(edblp->c_fd, &hdr, sizeof(HDR), &nr)) != 0) {
 		fail = "read";
 		goto err1;
 	}
@@ -251,8 +251,8 @@ retry:
 	if (shortp != NULL) {
 		if (lp->b_off < ((u_int8_t *)shortp - lp->buf) + len)
 			goto corrupt;
-		if ((ret = __db_retcopy(dbt, shortp, len,
-		    &dblp->c_dbt.data, &dblp->c_dbt.ulen, NULL)) != 0)
+		if ((ret = __edb_retcopy(edbt, shortp, len,
+		    &edblp->c_edbt.data, &edblp->c_edbt.ulen, NULL)) != 0)
 			goto err1;
 		goto cksum;
 	}
@@ -273,7 +273,7 @@ retry:
 	 * buffer.  Note, the information may be garbage if we're in recovery,
 	 * so don't read past the end of the buffer's memory.
 	 */
-	if ((ret = __os_read(dblp->c_fd, tbuf, len, &nr)) != 0) {
+	if ((ret = __os_read(edblp->c_fd, tbuf, len, &nr)) != 0) {
 		fail = "read";
 		goto err1;
 	}
@@ -288,22 +288,22 @@ retry:
 	}
 
 	/* Copy the record into the user's DBT. */
-	if ((ret = __db_retcopy(dbt, tbuf, len,
-	    &dblp->c_dbt.data, &dblp->c_dbt.ulen, NULL)) != 0)
+	if ((ret = __edb_retcopy(edbt, tbuf, len,
+	    &edblp->c_edbt.data, &edblp->c_edbt.ulen, NULL)) != 0)
 		goto err1;
 	__os_free(tbuf, 0);
 	tbuf = NULL;
 
-cksum:	if (hdr.cksum != __ham_func4(dbt->data, dbt->size)) {
+cksum:	if (hdr.cksum != __ham_func4(edbt->data, edbt->size)) {
 		if (!silent)
-			__db_err(dblp->dbenv, "log_get: checksum mismatch");
+			__edb_err(edblp->edbenv, "log_get: checksum mismatch");
 		goto corrupt;
 	}
 
 	/* Update the cursor and the return lsn. */
-	dblp->c_off = hdr.prev;
-	dblp->c_len = hdr.len;
-	dblp->c_lsn = *alsn = nlsn;
+	edblp->c_off = hdr.prev;
+	edblp->c_len = hdr.len;
+	edblp->c_lsn = *alsn = nlsn;
 
 	return (0);
 
@@ -317,9 +317,9 @@ corrupt:/*
 
 err1:	if (!silent)
 		if (fail == NULL)
-			__db_err(dblp->dbenv, "log_get: %s", strerror(ret));
+			__edb_err(edblp->edbenv, "log_get: %s", strerror(ret));
 		else
-			__db_err(dblp->dbenv,
+			__edb_err(edblp->edbenv,
 			    "log_get: %s: %s", fail, strerror(ret));
 err2:	if (np != NULL)
 		__os_freestr(np);

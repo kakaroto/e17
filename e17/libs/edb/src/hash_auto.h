@@ -1,4 +1,4 @@
-/* Do not edit: automatically built by dist/db_gen.sh. */
+/* Do not edit: automatically built by dist/edb_gen.sh. */
 #ifndef ham_AUTO_H
 #define ham_AUTO_H
 
@@ -10,7 +10,7 @@ typedef struct _ham_insdel_args {
 	DB_LSN prev_lsn;
 	u_int32_t	opcode;
 	u_int32_t	fileid;
-	db_pgno_t	pgno;
+	edb_pgno_t	pgno;
 	u_int32_t	ndx;
 	DB_LSN 	pagelsn;
 	DBT	key;
@@ -26,11 +26,11 @@ typedef struct _ham_newpage_args {
 	DB_LSN prev_lsn;
 	u_int32_t	opcode;
 	u_int32_t	fileid;
-	db_pgno_t	prev_pgno;
+	edb_pgno_t	prev_pgno;
 	DB_LSN 	prevlsn;
-	db_pgno_t	new_pgno;
+	edb_pgno_t	new_pgno;
 	DB_LSN 	pagelsn;
-	db_pgno_t	next_pgno;
+	edb_pgno_t	next_pgno;
 	DB_LSN 	nextlsn;
 } __ham_newpage_args;
 
@@ -57,7 +57,7 @@ typedef struct _ham_splitdata_args {
 	DB_LSN prev_lsn;
 	u_int32_t	fileid;
 	u_int32_t	opcode;
-	db_pgno_t	pgno;
+	edb_pgno_t	pgno;
 	DBT	pageimage;
 	DB_LSN 	pagelsn;
 } __ham_splitdata_args;
@@ -70,7 +70,7 @@ typedef struct _ham_replace_args {
 	DB_TXN *txnid;
 	DB_LSN prev_lsn;
 	u_int32_t	fileid;
-	db_pgno_t	pgno;
+	edb_pgno_t	pgno;
 	u_int32_t	ndx;
 	DB_LSN 	pagelsn;
 	int32_t	off;
@@ -88,10 +88,10 @@ typedef struct _ham_newpgno_args {
 	DB_LSN prev_lsn;
 	u_int32_t	opcode;
 	u_int32_t	fileid;
-	db_pgno_t	pgno;
-	db_pgno_t	free_pgno;
+	edb_pgno_t	pgno;
+	edb_pgno_t	free_pgno;
 	u_int32_t	old_type;
-	db_pgno_t	old_pgno;
+	edb_pgno_t	old_pgno;
 	u_int32_t	new_type;
 	DB_LSN 	pagelsn;
 	DB_LSN 	metalsn;
@@ -105,9 +105,9 @@ typedef struct _ham_ovfl_args {
 	DB_TXN *txnid;
 	DB_LSN prev_lsn;
 	u_int32_t	fileid;
-	db_pgno_t	start_pgno;
+	edb_pgno_t	start_pgno;
 	u_int32_t	npages;
-	db_pgno_t	free_pgno;
+	edb_pgno_t	free_pgno;
 	u_int32_t	ovflpoint;
 	DB_LSN 	metalsn;
 } __ham_ovfl_args;
@@ -120,11 +120,11 @@ typedef struct _ham_copypage_args {
 	DB_TXN *txnid;
 	DB_LSN prev_lsn;
 	u_int32_t	fileid;
-	db_pgno_t	pgno;
+	edb_pgno_t	pgno;
 	DB_LSN 	pagelsn;
-	db_pgno_t	next_pgno;
+	edb_pgno_t	next_pgno;
 	DB_LSN 	nextlsn;
-	db_pgno_t	nnext_pgno;
+	edb_pgno_t	nnext_pgno;
 	DB_LSN 	nnextlsn;
 	DBT	page;
 } __ham_copypage_args;

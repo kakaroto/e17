@@ -14,7 +14,7 @@ static const char sccsid[] = "@(#)log_compare.c	10.3 (Sleepycat) 4/10/98";
 #include <sys/types.h>
 #endif
 
-#include "db_int.h"
+#include "edb_int.h"
 
 /*
  * log_compare --

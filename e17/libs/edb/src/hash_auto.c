@@ -1,4 +1,4 @@
-/* Do not edit: automatically built by dist/db_gen.sh. */
+/* Do not edit: automatically built by dist/edb_gen.sh. */
 #include "config.h"
 
 #ifndef NO_SYSTEM_INCLUDES
@@ -9,15 +9,15 @@
 #include <string.h>
 #endif
 
-#include "db_int.h"
-#include "db_page.h"
-#include "db_dispatch.h"
+#include "edb_int.h"
+#include "edb_page.h"
+#include "edb_dispatch.h"
 #include "hash.h"
-#include "db_am.h"
+#include "edb_am.h"
 /*
  * PUBLIC: int __ham_insdel_log
  * PUBLIC:     __P((DB_LOG *, DB_TXN *, DB_LSN *, u_int32_t,
- * PUBLIC:     u_int32_t, u_int32_t, db_pgno_t, u_int32_t,
+ * PUBLIC:     u_int32_t, u_int32_t, edb_pgno_t, u_int32_t,
  * PUBLIC:     DB_LSN *, const DBT *, const DBT *));
  */
 int __ham_insdel_log(logp, txnid, ret_lsnp, flags,
@@ -29,7 +29,7 @@ int __ham_insdel_log(logp, txnid, ret_lsnp, flags,
 	u_int32_t flags;
 	u_int32_t opcode;
 	u_int32_t fileid;
-	db_pgno_t pgno;
+	edb_pgno_t pgno;
 	u_int32_t ndx;
 	DB_LSN * pagelsn;
 	const DBT *key;
@@ -116,9 +116,9 @@ int __ham_insdel_log(logp, txnid, ret_lsnp, flags,
  * PUBLIC:    __P((DB_LOG *, DBT *, DB_LSN *, int, void *));
  */
 int
-__ham_insdel_print(notused1, dbtp, lsnp, notused2, notused3)
+__ham_insdel_print(notused1, edbtp, lsnp, notused2, notused3)
 	DB_LOG *notused1;
-	DBT *dbtp;
+	DBT *edbtp;
 	DB_LSN *lsnp;
 	int notused2;
 	void *notused3;
@@ -134,7 +134,7 @@ __ham_insdel_print(notused1, dbtp, lsnp, notused2, notused3)
 	notused2 = 0;
 	notused3 = NULL;
 
-	if ((ret = __ham_insdel_read(dbtp->data, &argp)) != 0)
+	if ((ret = __ham_insdel_read(edbtp->data, &argp)) != 0)
 		return (ret);
 	printf("[%lu][%lu]ham_insdel: rec: %lu txnid %lx prevlsn [%lu][%lu]\n",
 	    (u_long)lsnp->file,
@@ -221,8 +221,8 @@ __ham_insdel_read(recbuf, argpp)
 /*
  * PUBLIC: int __ham_newpage_log
  * PUBLIC:     __P((DB_LOG *, DB_TXN *, DB_LSN *, u_int32_t,
- * PUBLIC:     u_int32_t, u_int32_t, db_pgno_t, DB_LSN *,
- * PUBLIC:     db_pgno_t, DB_LSN *, db_pgno_t, DB_LSN *));
+ * PUBLIC:     u_int32_t, u_int32_t, edb_pgno_t, DB_LSN *,
+ * PUBLIC:     edb_pgno_t, DB_LSN *, edb_pgno_t, DB_LSN *));
  */
 int __ham_newpage_log(logp, txnid, ret_lsnp, flags,
 	opcode, fileid, prev_pgno, prevlsn, new_pgno, pagelsn,
@@ -233,11 +233,11 @@ int __ham_newpage_log(logp, txnid, ret_lsnp, flags,
 	u_int32_t flags;
 	u_int32_t opcode;
 	u_int32_t fileid;
-	db_pgno_t prev_pgno;
+	edb_pgno_t prev_pgno;
 	DB_LSN * prevlsn;
-	db_pgno_t new_pgno;
+	edb_pgno_t new_pgno;
 	DB_LSN * pagelsn;
-	db_pgno_t next_pgno;
+	edb_pgno_t next_pgno;
 	DB_LSN * nextlsn;
 {
 	DBT logrec;
@@ -313,9 +313,9 @@ int __ham_newpage_log(logp, txnid, ret_lsnp, flags,
  * PUBLIC:    __P((DB_LOG *, DBT *, DB_LSN *, int, void *));
  */
 int
-__ham_newpage_print(notused1, dbtp, lsnp, notused2, notused3)
+__ham_newpage_print(notused1, edbtp, lsnp, notused2, notused3)
 	DB_LOG *notused1;
-	DBT *dbtp;
+	DBT *edbtp;
 	DB_LSN *lsnp;
 	int notused2;
 	void *notused3;
@@ -331,7 +331,7 @@ __ham_newpage_print(notused1, dbtp, lsnp, notused2, notused3)
 	notused2 = 0;
 	notused3 = NULL;
 
-	if ((ret = __ham_newpage_read(dbtp->data, &argp)) != 0)
+	if ((ret = __ham_newpage_read(edbtp->data, &argp)) != 0)
 		return (ret);
 	printf("[%lu][%lu]ham_newpage: rec: %lu txnid %lx prevlsn [%lu][%lu]\n",
 	    (u_long)lsnp->file,
@@ -476,9 +476,9 @@ int __ham_splitmeta_log(logp, txnid, ret_lsnp, flags,
  * PUBLIC:    __P((DB_LOG *, DBT *, DB_LSN *, int, void *));
  */
 int
-__ham_splitmeta_print(notused1, dbtp, lsnp, notused2, notused3)
+__ham_splitmeta_print(notused1, edbtp, lsnp, notused2, notused3)
 	DB_LOG *notused1;
-	DBT *dbtp;
+	DBT *edbtp;
 	DB_LSN *lsnp;
 	int notused2;
 	void *notused3;
@@ -494,7 +494,7 @@ __ham_splitmeta_print(notused1, dbtp, lsnp, notused2, notused3)
 	notused2 = 0;
 	notused3 = NULL;
 
-	if ((ret = __ham_splitmeta_read(dbtp->data, &argp)) != 0)
+	if ((ret = __ham_splitmeta_read(edbtp->data, &argp)) != 0)
 		return (ret);
 	printf("[%lu][%lu]ham_splitmeta: rec: %lu txnid %lx prevlsn [%lu][%lu]\n",
 	    (u_long)lsnp->file,
@@ -555,7 +555,7 @@ __ham_splitmeta_read(recbuf, argpp)
 /*
  * PUBLIC: int __ham_splitdata_log
  * PUBLIC:     __P((DB_LOG *, DB_TXN *, DB_LSN *, u_int32_t,
- * PUBLIC:     u_int32_t, u_int32_t, db_pgno_t, const DBT *,
+ * PUBLIC:     u_int32_t, u_int32_t, edb_pgno_t, const DBT *,
  * PUBLIC:     DB_LSN *));
  */
 int __ham_splitdata_log(logp, txnid, ret_lsnp, flags,
@@ -566,7 +566,7 @@ int __ham_splitdata_log(logp, txnid, ret_lsnp, flags,
 	u_int32_t flags;
 	u_int32_t fileid;
 	u_int32_t opcode;
-	db_pgno_t pgno;
+	edb_pgno_t pgno;
 	const DBT *pageimage;
 	DB_LSN * pagelsn;
 {
@@ -637,9 +637,9 @@ int __ham_splitdata_log(logp, txnid, ret_lsnp, flags,
  * PUBLIC:    __P((DB_LOG *, DBT *, DB_LSN *, int, void *));
  */
 int
-__ham_splitdata_print(notused1, dbtp, lsnp, notused2, notused3)
+__ham_splitdata_print(notused1, edbtp, lsnp, notused2, notused3)
 	DB_LOG *notused1;
-	DBT *dbtp;
+	DBT *edbtp;
 	DB_LSN *lsnp;
 	int notused2;
 	void *notused3;
@@ -655,7 +655,7 @@ __ham_splitdata_print(notused1, dbtp, lsnp, notused2, notused3)
 	notused2 = 0;
 	notused3 = NULL;
 
-	if ((ret = __ham_splitdata_read(dbtp->data, &argp)) != 0)
+	if ((ret = __ham_splitdata_read(edbtp->data, &argp)) != 0)
 		return (ret);
 	printf("[%lu][%lu]ham_splitdata: rec: %lu txnid %lx prevlsn [%lu][%lu]\n",
 	    (u_long)lsnp->file,
@@ -726,7 +726,7 @@ __ham_splitdata_read(recbuf, argpp)
 /*
  * PUBLIC: int __ham_replace_log
  * PUBLIC:     __P((DB_LOG *, DB_TXN *, DB_LSN *, u_int32_t,
- * PUBLIC:     u_int32_t, db_pgno_t, u_int32_t, DB_LSN *,
+ * PUBLIC:     u_int32_t, edb_pgno_t, u_int32_t, DB_LSN *,
  * PUBLIC:     int32_t, const DBT *, const DBT *, u_int32_t));
  */
 int __ham_replace_log(logp, txnid, ret_lsnp, flags,
@@ -737,7 +737,7 @@ int __ham_replace_log(logp, txnid, ret_lsnp, flags,
 	DB_LSN *ret_lsnp;
 	u_int32_t flags;
 	u_int32_t fileid;
-	db_pgno_t pgno;
+	edb_pgno_t pgno;
 	u_int32_t ndx;
 	DB_LSN * pagelsn;
 	int32_t off;
@@ -829,9 +829,9 @@ int __ham_replace_log(logp, txnid, ret_lsnp, flags,
  * PUBLIC:    __P((DB_LOG *, DBT *, DB_LSN *, int, void *));
  */
 int
-__ham_replace_print(notused1, dbtp, lsnp, notused2, notused3)
+__ham_replace_print(notused1, edbtp, lsnp, notused2, notused3)
 	DB_LOG *notused1;
-	DBT *dbtp;
+	DBT *edbtp;
 	DB_LSN *lsnp;
 	int notused2;
 	void *notused3;
@@ -847,7 +847,7 @@ __ham_replace_print(notused1, dbtp, lsnp, notused2, notused3)
 	notused2 = 0;
 	notused3 = NULL;
 
-	if ((ret = __ham_replace_read(dbtp->data, &argp)) != 0)
+	if ((ret = __ham_replace_read(edbtp->data, &argp)) != 0)
 		return (ret);
 	printf("[%lu][%lu]ham_replace: rec: %lu txnid %lx prevlsn [%lu][%lu]\n",
 	    (u_long)lsnp->file,
@@ -937,8 +937,8 @@ __ham_replace_read(recbuf, argpp)
 /*
  * PUBLIC: int __ham_newpgno_log
  * PUBLIC:     __P((DB_LOG *, DB_TXN *, DB_LSN *, u_int32_t,
- * PUBLIC:     u_int32_t, u_int32_t, db_pgno_t, db_pgno_t,
- * PUBLIC:     u_int32_t, db_pgno_t, u_int32_t, DB_LSN *,
+ * PUBLIC:     u_int32_t, u_int32_t, edb_pgno_t, edb_pgno_t,
+ * PUBLIC:     u_int32_t, edb_pgno_t, u_int32_t, DB_LSN *,
  * PUBLIC:     DB_LSN *));
  */
 int __ham_newpgno_log(logp, txnid, ret_lsnp, flags,
@@ -950,10 +950,10 @@ int __ham_newpgno_log(logp, txnid, ret_lsnp, flags,
 	u_int32_t flags;
 	u_int32_t opcode;
 	u_int32_t fileid;
-	db_pgno_t pgno;
-	db_pgno_t free_pgno;
+	edb_pgno_t pgno;
+	edb_pgno_t free_pgno;
 	u_int32_t old_type;
-	db_pgno_t old_pgno;
+	edb_pgno_t old_pgno;
 	u_int32_t new_type;
 	DB_LSN * pagelsn;
 	DB_LSN * metalsn;
@@ -1031,9 +1031,9 @@ int __ham_newpgno_log(logp, txnid, ret_lsnp, flags,
  * PUBLIC:    __P((DB_LOG *, DBT *, DB_LSN *, int, void *));
  */
 int
-__ham_newpgno_print(notused1, dbtp, lsnp, notused2, notused3)
+__ham_newpgno_print(notused1, edbtp, lsnp, notused2, notused3)
 	DB_LOG *notused1;
-	DBT *dbtp;
+	DBT *edbtp;
 	DB_LSN *lsnp;
 	int notused2;
 	void *notused3;
@@ -1049,7 +1049,7 @@ __ham_newpgno_print(notused1, dbtp, lsnp, notused2, notused3)
 	notused2 = 0;
 	notused3 = NULL;
 
-	if ((ret = __ham_newpgno_read(dbtp->data, &argp)) != 0)
+	if ((ret = __ham_newpgno_read(edbtp->data, &argp)) != 0)
 		return (ret);
 	printf("[%lu][%lu]ham_newpgno: rec: %lu txnid %lx prevlsn [%lu][%lu]\n",
 	    (u_long)lsnp->file,
@@ -1123,7 +1123,7 @@ __ham_newpgno_read(recbuf, argpp)
 /*
  * PUBLIC: int __ham_ovfl_log
  * PUBLIC:     __P((DB_LOG *, DB_TXN *, DB_LSN *, u_int32_t,
- * PUBLIC:     u_int32_t, db_pgno_t, u_int32_t, db_pgno_t,
+ * PUBLIC:     u_int32_t, edb_pgno_t, u_int32_t, edb_pgno_t,
  * PUBLIC:     u_int32_t, DB_LSN *));
  */
 int __ham_ovfl_log(logp, txnid, ret_lsnp, flags,
@@ -1133,9 +1133,9 @@ int __ham_ovfl_log(logp, txnid, ret_lsnp, flags,
 	DB_LSN *ret_lsnp;
 	u_int32_t flags;
 	u_int32_t fileid;
-	db_pgno_t start_pgno;
+	edb_pgno_t start_pgno;
 	u_int32_t npages;
-	db_pgno_t free_pgno;
+	edb_pgno_t free_pgno;
 	u_int32_t ovflpoint;
 	DB_LSN * metalsn;
 {
@@ -1200,9 +1200,9 @@ int __ham_ovfl_log(logp, txnid, ret_lsnp, flags,
  * PUBLIC:    __P((DB_LOG *, DBT *, DB_LSN *, int, void *));
  */
 int
-__ham_ovfl_print(notused1, dbtp, lsnp, notused2, notused3)
+__ham_ovfl_print(notused1, edbtp, lsnp, notused2, notused3)
 	DB_LOG *notused1;
-	DBT *dbtp;
+	DBT *edbtp;
 	DB_LSN *lsnp;
 	int notused2;
 	void *notused3;
@@ -1218,7 +1218,7 @@ __ham_ovfl_print(notused1, dbtp, lsnp, notused2, notused3)
 	notused2 = 0;
 	notused3 = NULL;
 
-	if ((ret = __ham_ovfl_read(dbtp->data, &argp)) != 0)
+	if ((ret = __ham_ovfl_read(edbtp->data, &argp)) != 0)
 		return (ret);
 	printf("[%lu][%lu]ham_ovfl: rec: %lu txnid %lx prevlsn [%lu][%lu]\n",
 	    (u_long)lsnp->file,
@@ -1282,8 +1282,8 @@ __ham_ovfl_read(recbuf, argpp)
 /*
  * PUBLIC: int __ham_copypage_log
  * PUBLIC:     __P((DB_LOG *, DB_TXN *, DB_LSN *, u_int32_t,
- * PUBLIC:     u_int32_t, db_pgno_t, DB_LSN *, db_pgno_t,
- * PUBLIC:     DB_LSN *, db_pgno_t, DB_LSN *, const DBT *));
+ * PUBLIC:     u_int32_t, edb_pgno_t, DB_LSN *, edb_pgno_t,
+ * PUBLIC:     DB_LSN *, edb_pgno_t, DB_LSN *, const DBT *));
  */
 int __ham_copypage_log(logp, txnid, ret_lsnp, flags,
 	fileid, pgno, pagelsn, next_pgno, nextlsn, nnext_pgno,
@@ -1293,11 +1293,11 @@ int __ham_copypage_log(logp, txnid, ret_lsnp, flags,
 	DB_LSN *ret_lsnp;
 	u_int32_t flags;
 	u_int32_t fileid;
-	db_pgno_t pgno;
+	edb_pgno_t pgno;
 	DB_LSN * pagelsn;
-	db_pgno_t next_pgno;
+	edb_pgno_t next_pgno;
 	DB_LSN * nextlsn;
-	db_pgno_t nnext_pgno;
+	edb_pgno_t nnext_pgno;
 	DB_LSN * nnextlsn;
 	const DBT *page;
 {
@@ -1383,9 +1383,9 @@ int __ham_copypage_log(logp, txnid, ret_lsnp, flags,
  * PUBLIC:    __P((DB_LOG *, DBT *, DB_LSN *, int, void *));
  */
 int
-__ham_copypage_print(notused1, dbtp, lsnp, notused2, notused3)
+__ham_copypage_print(notused1, edbtp, lsnp, notused2, notused3)
 	DB_LOG *notused1;
-	DBT *dbtp;
+	DBT *edbtp;
 	DB_LSN *lsnp;
 	int notused2;
 	void *notused3;
@@ -1401,7 +1401,7 @@ __ham_copypage_print(notused1, dbtp, lsnp, notused2, notused3)
 	notused2 = 0;
 	notused3 = NULL;
 
-	if ((ret = __ham_copypage_read(dbtp->data, &argp)) != 0)
+	if ((ret = __ham_copypage_read(edbtp->data, &argp)) != 0)
 		return (ret);
 	printf("[%lu][%lu]ham_copypage: rec: %lu txnid %lx prevlsn [%lu][%lu]\n",
 	    (u_long)lsnp->file,
@@ -1484,33 +1484,33 @@ __ham_copypage_read(recbuf, argpp)
  * PUBLIC: int __ham_init_print __P((DB_ENV *));
  */
 int
-__ham_init_print(dbenv)
-	DB_ENV *dbenv;
+__ham_init_print(edbenv)
+	DB_ENV *edbenv;
 {
 	int ret;
 
-	if ((ret = __db_add_recovery(dbenv,
+	if ((ret = __edb_add_recovery(edbenv,
 	    __ham_insdel_print, DB_ham_insdel)) != 0)
 		return (ret);
-	if ((ret = __db_add_recovery(dbenv,
+	if ((ret = __edb_add_recovery(edbenv,
 	    __ham_newpage_print, DB_ham_newpage)) != 0)
 		return (ret);
-	if ((ret = __db_add_recovery(dbenv,
+	if ((ret = __edb_add_recovery(edbenv,
 	    __ham_splitmeta_print, DB_ham_splitmeta)) != 0)
 		return (ret);
-	if ((ret = __db_add_recovery(dbenv,
+	if ((ret = __edb_add_recovery(edbenv,
 	    __ham_splitdata_print, DB_ham_splitdata)) != 0)
 		return (ret);
-	if ((ret = __db_add_recovery(dbenv,
+	if ((ret = __edb_add_recovery(edbenv,
 	    __ham_replace_print, DB_ham_replace)) != 0)
 		return (ret);
-	if ((ret = __db_add_recovery(dbenv,
+	if ((ret = __edb_add_recovery(edbenv,
 	    __ham_newpgno_print, DB_ham_newpgno)) != 0)
 		return (ret);
-	if ((ret = __db_add_recovery(dbenv,
+	if ((ret = __edb_add_recovery(edbenv,
 	    __ham_ovfl_print, DB_ham_ovfl)) != 0)
 		return (ret);
-	if ((ret = __db_add_recovery(dbenv,
+	if ((ret = __edb_add_recovery(edbenv,
 	    __ham_copypage_print, DB_ham_copypage)) != 0)
 		return (ret);
 	return (0);
@@ -1520,33 +1520,33 @@ __ham_init_print(dbenv)
  * PUBLIC: int __ham_init_recover __P((DB_ENV *));
  */
 int
-__ham_init_recover(dbenv)
-	DB_ENV *dbenv;
+__ham_init_recover(edbenv)
+	DB_ENV *edbenv;
 {
 	int ret;
 
-	if ((ret = __db_add_recovery(dbenv,
+	if ((ret = __edb_add_recovery(edbenv,
 	    __ham_insdel_recover, DB_ham_insdel)) != 0)
 		return (ret);
-	if ((ret = __db_add_recovery(dbenv,
+	if ((ret = __edb_add_recovery(edbenv,
 	    __ham_newpage_recover, DB_ham_newpage)) != 0)
 		return (ret);
-	if ((ret = __db_add_recovery(dbenv,
+	if ((ret = __edb_add_recovery(edbenv,
 	    __ham_splitmeta_recover, DB_ham_splitmeta)) != 0)
 		return (ret);
-	if ((ret = __db_add_recovery(dbenv,
+	if ((ret = __edb_add_recovery(edbenv,
 	    __ham_splitdata_recover, DB_ham_splitdata)) != 0)
 		return (ret);
-	if ((ret = __db_add_recovery(dbenv,
+	if ((ret = __edb_add_recovery(edbenv,
 	    __ham_replace_recover, DB_ham_replace)) != 0)
 		return (ret);
-	if ((ret = __db_add_recovery(dbenv,
+	if ((ret = __edb_add_recovery(edbenv,
 	    __ham_newpgno_recover, DB_ham_newpgno)) != 0)
 		return (ret);
-	if ((ret = __db_add_recovery(dbenv,
+	if ((ret = __edb_add_recovery(edbenv,
 	    __ham_ovfl_recover, DB_ham_ovfl)) != 0)
 		return (ret);
-	if ((ret = __db_add_recovery(dbenv,
+	if ((ret = __edb_add_recovery(edbenv,
 	    __ham_copypage_recover, DB_ham_copypage)) != 0)
 		return (ret);
 	return (0);

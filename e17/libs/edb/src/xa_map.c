@@ -19,7 +19,7 @@ static const char sccsid[] = "@(#)xa_map.c	10.4 (Sleepycat) 10/20/98";
 #include <string.h>
 #endif
 
-#include "db_int.h"
+#include "edb_int.h"
 #include "shqueue.h"
 #include "txn.h"
 
@@ -29,21 +29,21 @@ static const char sccsid[] = "@(#)xa_map.c	10.4 (Sleepycat) 10/20/98";
  */
 
 /*
- * __db_rmid_to_env
+ * __edb_rmid_to_env
  *	Return the environment associated with a given XA rmid.
  *
- * PUBLIC: int __db_rmid_to_env __P((int rmid, DB_ENV **envp, int open_ok));
+ * PUBLIC: int __edb_rmid_to_env __P((int rmid, DB_ENV **envp, int open_ok));
  */
 int
-__db_rmid_to_env(rmid, envp, open_ok)
+__edb_rmid_to_env(rmid, envp, open_ok)
 	int rmid;
 	DB_ENV **envp;
 	int open_ok;
 {
 	DB_ENV *env;
-	char *dbhome;
+	char *edbhome;
 
-	env = TAILQ_FIRST(&DB_GLOBAL(db_envq));
+	env = TAILQ_FIRST(&DB_GLOBAL(edb_envq));
 	if (env != NULL && env->xa_rmid == rmid) {
 		*envp = env;
 		return (0);
@@ -52,12 +52,12 @@ __db_rmid_to_env(rmid, envp, open_ok)
 	/*
 	 * When we map an rmid, move that environment to be the first one in
 	 * the list of environments, so we pass the correct environment from
-	 * the upcoming db_xa_open() call into db_open().
+	 * the upcoming edb_xa_open() call into edb_open().
 	 */
 	for (; env != NULL; env = TAILQ_NEXT(env, links))
 		if (env->xa_rmid == rmid) {
-			TAILQ_REMOVE(&DB_GLOBAL(db_envq), env, links);
-			TAILQ_INSERT_HEAD(&DB_GLOBAL(db_envq), env, links);
+			TAILQ_REMOVE(&DB_GLOBAL(edb_envq), env, links);
+			TAILQ_INSERT_HEAD(&DB_GLOBAL(edb_envq), env, links);
 			*envp = env;
 			return (0);
 		}
@@ -70,7 +70,7 @@ __db_rmid_to_env(rmid, envp, open_ok)
 	if (!open_ok)
 		return (1);
 
-	if (__db_rmid_to_name(rmid, &dbhome) != 0)
+	if (__edb_rmid_to_name(rmid, &edbhome) != 0)
 		return (1);
 #undef XA_FLAGS
 #define	XA_FLAGS \
@@ -79,31 +79,31 @@ __db_rmid_to_env(rmid, envp, open_ok)
 	if (__os_calloc(1, sizeof(DB_ENV), &env) != 0)
 		return (1);
 
-	if (db_appinit(dbhome, NULL, env, XA_FLAGS) != 0) 
+	if (edb_appinit(edbhome, NULL, env, XA_FLAGS) != 0) 
 		goto err;
 
-	if (__db_map_rmid(rmid, env) != 0)
+	if (__edb_map_rmid(rmid, env) != 0)
 		goto err1;
 
-	__db_unmap_rmid_name(rmid);
+	__edb_unmap_rmid_name(rmid);
 
 	*envp = env;
 	return (0);
 
-err1:	(void)db_appexit(env);
+err1:	(void)edb_appexit(env);
 err:	__os_free(env, sizeof(DB_ENV));
 	return (1);
 }
 
 /*
- * __db_xid_to_txn
+ * __edb_xid_to_txn
  *	Return the txn that corresponds to this XID.
  *
- * PUBLIC: int __db_xid_to_txn __P((DB_ENV *, XID *, size_t *));
+ * PUBLIC: int __edb_xid_to_txn __P((DB_ENV *, XID *, size_t *));
  */
 int
-__db_xid_to_txn(dbenv, xid, offp)
-	DB_ENV *dbenv;
+__edb_xid_to_txn(edbenv, xid, offp)
+	DB_ENV *edbenv;
 	XID *xid;
 	size_t *offp;
 {
@@ -115,15 +115,15 @@ __db_xid_to_txn(dbenv, xid, offp)
 	 * matching xid.  If this is a performance hit, then we
 	 * can create a hash table, but I doubt it's worth it.
 	 */
-	tmr = dbenv->tx_info->region;
+	tmr = edbenv->tx_info->region;
 
-	LOCK_TXNREGION(dbenv->tx_info);
+	LOCK_TXNREGION(edbenv->tx_info);
 	for (td = SH_TAILQ_FIRST(&tmr->active_txn, __txn_detail);
 	    td != NULL;
 	    td = SH_TAILQ_NEXT(td, links, __txn_detail))
 		if (memcmp(xid->data, td->xid, XIDDATASIZE) == 0)
 			break;
-	UNLOCK_TXNREGION(dbenv->tx_info);
+	UNLOCK_TXNREGION(edbenv->tx_info);
 
 	if (td == NULL)
 		return (EINVAL);
@@ -133,13 +133,13 @@ __db_xid_to_txn(dbenv, xid, offp)
 }
 
 /*
- * __db_map_rmid
+ * __edb_map_rmid
  *	Create a mapping between the specified rmid and environment.
  *
- * PUBLIC: int __db_map_rmid __P((int, DB_ENV *));
+ * PUBLIC: int __edb_map_rmid __P((int, DB_ENV *));
  */
 int
-__db_map_rmid(rmid, env)
+__edb_map_rmid(rmid, env)
 	int rmid;
 	DB_ENV *env;
 {
@@ -147,44 +147,44 @@ __db_map_rmid(rmid, env)
 		return (XAER_RMERR);
 	env->xa_txn->txnid = TXN_INVALID;
 	env->xa_rmid = rmid;
-	TAILQ_INSERT_HEAD(&DB_GLOBAL(db_envq), env, links);
+	TAILQ_INSERT_HEAD(&DB_GLOBAL(edb_envq), env, links);
 	return (XA_OK);
 }
 
 /*
- * __db_unmap_rmid
+ * __edb_unmap_rmid
  *	Destroy the mapping for the given rmid.
  *
- * PUBLIC: int __db_unmap_rmid __P((int));
+ * PUBLIC: int __edb_unmap_rmid __P((int));
  */
 int
-__db_unmap_rmid(rmid)
+__edb_unmap_rmid(rmid)
 	int rmid;
 {
 	DB_ENV *e;
 
-	for (e = TAILQ_FIRST(&DB_GLOBAL(db_envq));
+	for (e = TAILQ_FIRST(&DB_GLOBAL(edb_envq));
 	    e->xa_rmid != rmid;
 	    e = TAILQ_NEXT(e, links));
 
 	if (e == NULL)
 		return (EINVAL);
 
-	TAILQ_REMOVE(&DB_GLOBAL(db_envq), e, links);
+	TAILQ_REMOVE(&DB_GLOBAL(edb_envq), e, links);
 	if (e->xa_txn != NULL)
 		__os_free(e->xa_txn, sizeof(DB_TXN));
 	return (0);
 }
 
 /*
- * __db_map_xid
+ * __edb_map_xid
  *	Create a mapping between this XID and the transaction at
  *	"off" in the shared region.
  *
- * PUBLIC: int __db_map_xid __P((DB_ENV *, XID *, size_t));
+ * PUBLIC: int __edb_map_xid __P((DB_ENV *, XID *, size_t));
  */
 int
-__db_map_xid(env, xid, off)
+__edb_map_xid(env, xid, off)
 	DB_ENV *env;
 	XID *xid;
 	size_t off;
@@ -203,14 +203,14 @@ __db_map_xid(env, xid, off)
 }
 
 /*
- * __db_unmap_xid
+ * __edb_unmap_xid
  *	Destroy the mapping for the specified XID.
  *
- * PUBLIC: void __db_unmap_xid __P((DB_ENV *, XID *, size_t));
+ * PUBLIC: void __edb_unmap_xid __P((DB_ENV *, XID *, size_t));
  */
 
 void
-__db_unmap_xid(env, xid, off)
+__edb_unmap_xid(env, xid, off)
 	DB_ENV *env;
 	XID *xid;
 	size_t off;
@@ -224,20 +224,20 @@ __db_unmap_xid(env, xid, off)
 }
 
 /*
- * __db_map_rmid_name --
+ * __edb_map_rmid_name --
  * 	Create a mapping from an rmid to a name (the xa_info argument).
  * We use this during create and then at some later point when we are
  * trying to map an rmid, we might indicate that it's OK to do an open
  * in which case, we'll get the xa_info parameter from here and then
  * free it up.
  *
- * PUBLIC: int __db_map_rmid_name __P((int, char *));
+ * PUBLIC: int __edb_map_rmid_name __P((int, char *));
  */
 
 int
-__db_map_rmid_name(rmid, dbhome)
+__edb_map_rmid_name(rmid, edbhome)
 	int rmid;
-	char *dbhome;
+	char *edbhome;
 {
 	struct __rmname *entry;
 	int ret;
@@ -245,35 +245,35 @@ __db_map_rmid_name(rmid, dbhome)
 	if ((ret = __os_malloc(sizeof(struct __rmname), NULL, &entry)) != 0)
 		return (ret);
 
-	if ((ret = __os_strdup(dbhome, &entry->dbhome)) != 0) {
+	if ((ret = __os_strdup(edbhome, &entry->edbhome)) != 0) {
 		__os_free(entry, sizeof(struct __rmname));
 		return (ret);
 	}
 
 	entry->rmid = rmid;
 
-	TAILQ_INSERT_HEAD(&DB_GLOBAL(db_nameq), entry, links);
+	TAILQ_INSERT_HEAD(&DB_GLOBAL(edb_nameq), entry, links);
 	return (0);
 }
 
 /*
- * __db_rmid_to_name --
+ * __edb_rmid_to_name --
  *	Given an rmid, return the name of the home directory for that
  * rmid.
  *
- * PUBLIC: int __db_rmid_to_name __P((int, char **));
+ * PUBLIC: int __edb_rmid_to_name __P((int, char **));
  */
 int
-__db_rmid_to_name(rmid, dbhomep)
+__edb_rmid_to_name(rmid, edbhomep)
 	int rmid;
-	char **dbhomep;
+	char **edbhomep;
 {
 	struct __rmname *np;
 
-	for (np = TAILQ_FIRST(&DB_GLOBAL(db_nameq)); np != NULL;
+	for (np = TAILQ_FIRST(&DB_GLOBAL(edb_nameq)); np != NULL;
 	    np = TAILQ_NEXT(np, links)) {
 		if (np->rmid == rmid) {
-			*dbhomep = np->dbhome;
+			*edbhomep = np->edbhome;
 			return (0);
 		}
 	}
@@ -281,22 +281,22 @@ __db_rmid_to_name(rmid, dbhomep)
 }
 
 /*
- * __db_unmap_rmid_name --
+ * __edb_unmap_rmid_name --
  *	Given an rmid, remove its entry from the name list.
  *
- * PUBLIC:  void __db_unmap_rmid_name __P((int));
+ * PUBLIC:  void __edb_unmap_rmid_name __P((int));
  */
 void
-__db_unmap_rmid_name(rmid)
+__edb_unmap_rmid_name(rmid)
 	int rmid;
 {
 	struct __rmname *np, *next;
 
-	for (np = TAILQ_FIRST(&DB_GLOBAL(db_nameq)); np != NULL; np = next) {
+	for (np = TAILQ_FIRST(&DB_GLOBAL(edb_nameq)); np != NULL; np = next) {
 		next = TAILQ_NEXT(np, links);
 		if (np->rmid == rmid) {
-			TAILQ_REMOVE(&DB_GLOBAL(db_nameq), np, links);
-			__os_freestr(np->dbhome);
+			TAILQ_REMOVE(&DB_GLOBAL(edb_nameq), np, links);
+			__os_freestr(np->edbhome);
 			__os_free(np, sizeof(struct __rmname));
 			return;
 		}

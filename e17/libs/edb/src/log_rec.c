@@ -50,10 +50,10 @@ static const char sccsid[] = "@(#)log_rec.c	10.26 (Sleepycat) 10/21/98";
 #include <string.h>
 #endif
 
-#include "db_int.h"
+#include "edb_int.h"
 #include "shqueue.h"
 #include "log.h"
-#include "db_dispatch.h"
+#include "edb_dispatch.h"
 #include "common_ext.h"
 
 static int __log_do_open __P((DB_LOG *,
@@ -66,26 +66,26 @@ static int __log_open_file __P((DB_LOG *, __log_register_args *));
  * PUBLIC:     __P((DB_LOG *, DBT *, DB_LSN *, int, void *));
  */
 int
-__log_register_recover(logp, dbtp, lsnp, redo, info)
+__log_register_recover(logp, edbtp, lsnp, redo, info)
 	DB_LOG *logp;
-	DBT *dbtp;
+	DBT *edbtp;
 	DB_LSN *lsnp;
 	int redo;
 	void *info;
 {
-	DB_ENTRY *dbe;
+	DB_ENTRY *edbe;
 	__log_register_args *argp;
 	int ret;
 
 #ifdef DEBUG_RECOVER
-	__log_register_print(logp, dbtp, lsnp, redo, info);
+	__log_register_print(logp, edbtp, lsnp, redo, info);
 #endif
 	COMPQUIET(info, NULL);
 	COMPQUIET(lsnp, NULL);
 
 	F_SET(logp, DBC_RECOVER);
 
-	if ((ret = __log_register_read(dbtp->data, &argp)) != 0)
+	if ((ret = __log_register_read(edbtp->data, &argp)) != 0)
 		goto out;
 
 	if ((argp->opcode == LOG_CHECKPOINT && redo == TXN_OPENFILES) ||
@@ -101,7 +101,7 @@ __log_register_recover(logp, dbtp, lsnp, redo, info)
 		ret = __log_open_file(logp, argp);
 		if (ret == ENOENT) {
 			if (redo == TXN_OPENFILES)
-				__db_err(logp->dbenv, "warning: %s: %s",
+				__edb_err(logp->edbenv, "warning: %s: %s",
 				    argp->name.data, strerror(ENOENT));
 			ret = 0;
 		}
@@ -117,28 +117,28 @@ __log_register_recover(logp, dbtp, lsnp, redo, info)
 		 * checkpoint, this will inadvertently close the file.
 		 *
   		 * If the file is deleted, then we can just ignore this close.
- 		 * Otherwise, we should usually have a valid dbp we should
+ 		 * Otherwise, we should usually have a valid edbp we should
   		 * close or whose reference count should be decremented.
  		 * However, if we shut down without closing a file, we
 		 * may, in fact, not have the file open, and that's OK.
 		 */
 		LOCK_LOGTHREAD(logp);
-		if (argp->id < logp->dbentry_cnt) {
-			dbe = &logp->dbentry[argp->id];
-			if (dbe->dbp != NULL && --dbe->refcount == 0) {
-				ret = dbe->dbp->close(dbe->dbp, 0);
-				if (dbe->name != NULL) {
-					__os_freestr(dbe->name);
-					dbe->name = NULL;
+		if (argp->id < logp->edbentry_cnt) {
+			edbe = &logp->edbentry[argp->id];
+			if (edbe->edbp != NULL && --edbe->refcount == 0) {
+				ret = edbe->edbp->close(edbe->edbp, 0);
+				if (edbe->name != NULL) {
+					__os_freestr(edbe->name);
+					edbe->name = NULL;
 				}
 				(void)__log_rem_logid(logp, argp->id);
 			}
 		}
 		UNLOCK_LOGTHREAD(logp);
  	} else if (argp->opcode == LOG_CHECKPOINT && redo == TXN_UNDO &&
- 	    (argp->id >= logp->dbentry_cnt ||
- 	    (!logp->dbentry[argp->id].deleted &&
- 	    logp->dbentry[argp->id].dbp == NULL))) {
+ 	    (argp->id >= logp->edbentry_cnt ||
+ 	    (!logp->edbentry[argp->id].deleted &&
+ 	    logp->edbentry[argp->id].edbp == NULL))) {
  		/*
  		 * It's a checkpoint and we are rolling backward.  It
  		 * is possible that the system was shut down and thus
@@ -148,7 +148,7 @@ __log_register_recover(logp, dbtp, lsnp, redo, info)
  		 */
  		ret = __log_open_file(logp, argp);
  		if (ret == ENOENT) {
- 			__db_err(logp->dbenv, "warning: %s: %s",
+ 			__edb_err(logp->edbenv, "warning: %s: %s",
 			    argp->name.data, strerror(ENOENT));
  			ret = 0;
  		}
@@ -164,7 +164,7 @@ out:	F_CLR(logp, DBC_RECOVER);
 
 /*
  * Called during log_register recovery.  Make sure that we have an
- * entry in the dbentry table for this ndx.
+ * entry in the edbentry table for this ndx.
  * Returns 0 on success, non-zero on error.
  */
 static int
@@ -172,7 +172,7 @@ __log_open_file(lp, argp)
 	DB_LOG *lp;
 	__log_register_args *argp;
 {
-	DB_ENTRY *dbe;
+	DB_ENTRY *edbe;
   
 	if (argp->name.size == 0)
 		return(0);
@@ -184,26 +184,26 @@ __log_open_file(lp, argp)
 	 * the old file and open the new one.
 	 */
 	LOCK_LOGTHREAD(lp);
-	if (argp->id < lp->dbentry_cnt)
-		dbe = &lp->dbentry[argp->id];
+	if (argp->id < lp->edbentry_cnt)
+		edbe = &lp->edbentry[argp->id];
 	else
-		dbe = NULL;
+		edbe = NULL;
 
-	if (dbe != NULL && (dbe->deleted == 1 || dbe->dbp != NULL) &&
-	    dbe->name != NULL && argp->name.data != NULL &&
-	    strncmp(argp->name.data, dbe->name, argp->name.size) == 0) {
+	if (edbe != NULL && (edbe->deleted == 1 || edbe->edbp != NULL) &&
+	    edbe->name != NULL && argp->name.data != NULL &&
+	    strncmp(argp->name.data, edbe->name, argp->name.size) == 0) {
 
-		dbe->refcount++;
+		edbe->refcount++;
 		UNLOCK_LOGTHREAD(lp);
 		return (0);
 	}
   	UNLOCK_LOGTHREAD(lp);
 
-	if (dbe != NULL && dbe->dbp != NULL) {
-                (void)dbe->dbp->close(dbe->dbp, 0);
-		if (dbe->name != NULL)
-			__os_freestr(dbe->name);
-                dbe->name = NULL;
+	if (edbe != NULL && edbe->edbp != NULL) {
+                (void)edbe->edbp->close(edbe->edbp, 0);
+		if (edbe->name != NULL)
+			__os_freestr(edbe->name);
+                edbe->name = NULL;
 		(void)__log_rem_logid(lp, argp->id);
         }
 
@@ -226,24 +226,24 @@ __log_do_open(lp, uid, name, ftype, ndx)
 	DBTYPE ftype;
 	u_int32_t ndx;
 {
-	DB *dbp;
+	DB *edbp;
 	int ret;
 
-	dbp = NULL;
-	if ((ret = db_open(name, ftype, 0, 0, lp->dbenv, NULL, &dbp)) == 0) {
+	edbp = NULL;
+	if ((ret = edb_open(name, ftype, 0, 0, lp->edbenv, NULL, &edbp)) == 0) {
 		/*
 		 * Verify that we are opening the same file that we were
 		 * referring to when we wrote this log record.
 		 */
-		if (memcmp(uid, dbp->fileid, DB_FILE_ID_LEN) != 0) {
-			(void)dbp->close(dbp, 0);
-			dbp = NULL;
+		if (memcmp(uid, edbp->fileid, DB_FILE_ID_LEN) != 0) {
+			(void)edbp->close(edbp, 0);
+			edbp = NULL;
 			ret = ENOENT;
 		}
 	}
 
 	if (ret == 0 || ret == ENOENT)
-		(void)__log_add_logid(lp, dbp, name, ndx);
+		(void)__log_add_logid(lp, edbp, name, ndx);
 
 	return (ret);
 }
@@ -255,9 +255,9 @@ __log_do_open(lp, uid, name, ftype, ndx)
  * PUBLIC: int __log_add_logid __P((DB_LOG *, DB *, const char *, u_int32_t));
  */
 int
-__log_add_logid(logp, dbp, name, ndx)
+__log_add_logid(logp, edbp, name, ndx)
 	DB_LOG *logp;
-	DB *dbp;
+	DB *edbp;
 	const char *name;
 	u_int32_t ndx;
 {
@@ -270,38 +270,38 @@ __log_add_logid(logp, dbp, name, ndx)
 
 	/*
 	 * Check if we need to grow the table.  Note, ndx is 0-based (the
-	 * index into the DB entry table) an dbentry_cnt is 1-based, the
+	 * index into the DB entry table) an edbentry_cnt is 1-based, the
 	 * number of available slots.
 	 */
-	if (logp->dbentry_cnt <= ndx) {
-		if ((ret = __os_realloc(&logp->dbentry,
+	if (logp->edbentry_cnt <= ndx) {
+		if ((ret = __os_realloc(&logp->edbentry,
 		    (ndx + DB_GROW_SIZE) * sizeof(DB_ENTRY))) != 0)
 			goto err;
 
 		/* Initialize the new entries. */
-		for (i = logp->dbentry_cnt; i < ndx + DB_GROW_SIZE; i++) {
-			logp->dbentry[i].dbp = NULL;
-			logp->dbentry[i].deleted = 0;
-			logp->dbentry[i].name = NULL;
+		for (i = logp->edbentry_cnt; i < ndx + DB_GROW_SIZE; i++) {
+			logp->edbentry[i].edbp = NULL;
+			logp->edbentry[i].deleted = 0;
+			logp->edbentry[i].name = NULL;
 		}
 
-		logp->dbentry_cnt = i;
+		logp->edbentry_cnt = i;
 	}
 
 	/* Make space for the name and copy it in. */
 	if (name != NULL) {
 		if ((ret = __os_malloc(strlen(name) + 1, 
-		    NULL, &logp->dbentry[ndx].name)) != 0)
+		    NULL, &logp->edbentry[ndx].name)) != 0)
 			goto err;
-		strcpy(logp->dbentry[ndx].name, name);
+		strcpy(logp->edbentry[ndx].name, name);
 	}
 
-	if (logp->dbentry[ndx].deleted == 0 && logp->dbentry[ndx].dbp == NULL) {
-		logp->dbentry[ndx].dbp = dbp;
-		logp->dbentry[ndx].refcount = 1;
-		logp->dbentry[ndx].deleted = dbp == NULL;
+	if (logp->edbentry[ndx].deleted == 0 && logp->edbentry[ndx].edbp == NULL) {
+		logp->edbentry[ndx].edbp = edbp;
+		logp->edbentry[ndx].refcount = 1;
+		logp->edbentry[ndx].deleted = edbp == NULL;
 	} else
-		logp->dbentry[ndx].refcount++;
+		logp->edbentry[ndx].refcount++;
 
 
 err:	UNLOCK_LOGTHREAD(logp);
@@ -310,15 +310,15 @@ err:	UNLOCK_LOGTHREAD(logp);
 
 
 /*
- * __db_fileid_to_db --
+ * __edb_fileid_to_edb --
  *	Return the DB corresponding to the specified fileid.
  *
- * PUBLIC: int __db_fileid_to_db __P((DB_LOG *, DB **, u_int32_t));
+ * PUBLIC: int __edb_fileid_to_edb __P((DB_LOG *, DB **, u_int32_t));
  */
 int
-__db_fileid_to_db(logp, dbpp, ndx)
+__edb_fileid_to_edb(logp, edbpp, ndx)
 	DB_LOG *logp;
-	DB **dbpp;
+	DB **edbpp;
 	u_int32_t ndx;
 {
 	int ret;
@@ -335,8 +335,8 @@ __db_fileid_to_db(logp, dbpp, ndx)
 	 * necessarily have the file open.  In this case, we must
 	 * open the file explicitly.
 	 */
-	if (ndx >= logp->dbentry_cnt ||
-	    (!logp->dbentry[ndx].deleted && logp->dbentry[ndx].dbp == NULL)) {
+	if (ndx >= logp->edbentry_cnt ||
+	    (!logp->edbentry[ndx].deleted && logp->edbentry[ndx].edbp == NULL)) {
 		if (__log_lid_to_fname(logp, ndx, &fname) != 0) {
 			/* Couldn't find entry; this is a fatal error. */
 			ret = EINVAL;
@@ -358,7 +358,7 @@ __db_fileid_to_db(logp, dbpp, ndx)
 		if ((ret = __log_do_open(logp,
 		    fname->ufid, name, fname->s_type, ndx)) != 0)
 			return (ret);
-		*dbpp = logp->dbentry[ndx].dbp;
+		*edbpp = logp->edbentry[ndx].edbp;
 		return (0);
 	}
 
@@ -366,7 +366,7 @@ __db_fileid_to_db(logp, dbpp, ndx)
 	 * Return DB_DELETED if the file has been deleted
 	 * (it's not an error).
 	 */
-	if (logp->dbentry[ndx].deleted) {
+	if (logp->edbentry[ndx].deleted) {
 		ret = DB_DELETED;
 		goto err;
 	}
@@ -375,7 +375,7 @@ __db_fileid_to_db(logp, dbpp, ndx)
 	 * Otherwise return 0, but if we don't have a corresponding DB,
 	 * it's an error.
 	 */
-	if ((*dbpp = logp->dbentry[ndx].dbp) == NULL)
+	if ((*edbpp = logp->edbentry[ndx].edbp) == NULL)
 		ret = ENOENT;
 
 err:	UNLOCK_LOGTHREAD(logp);
@@ -394,11 +394,11 @@ __log_close_files(logp)
 	u_int32_t i;
 
 	LOCK_LOGTHREAD(logp);
-	for (i = 0; i < logp->dbentry_cnt; i++)
-		if (logp->dbentry[i].dbp) {
-			logp->dbentry[i].dbp->close(logp->dbentry[i].dbp, 0);
-			logp->dbentry[i].dbp = NULL;
-			logp->dbentry[i].deleted = 0;
+	for (i = 0; i < logp->edbentry_cnt; i++)
+		if (logp->edbentry[i].edbp) {
+			logp->edbentry[i].edbp->close(logp->edbentry[i].edbp, 0);
+			logp->edbentry[i].edbp = NULL;
+			logp->edbentry[i].deleted = 0;
 		}
 	F_CLR(logp, DBC_RECOVER);
 	UNLOCK_LOGTHREAD(logp);
@@ -413,9 +413,9 @@ __log_rem_logid(logp, ndx)
 	u_int32_t ndx;
 {
 	LOCK_LOGTHREAD(logp);
-	if (--logp->dbentry[ndx].refcount == 0) {
-		logp->dbentry[ndx].dbp = NULL;
-		logp->dbentry[ndx].deleted = 0;
+	if (--logp->edbentry[ndx].refcount == 0) {
+		logp->edbentry[ndx].edbp = NULL;
+		logp->edbentry[ndx].deleted = 0;
 	}
 	UNLOCK_LOGTHREAD(logp);
 }
@@ -426,14 +426,14 @@ __log_rem_logid(logp, ndx)
  * matches the passed log fileid.  Returns 0 on success; -1 on error.
  */
 static int
-__log_lid_to_fname(dblp, lid, fnamep)
-	DB_LOG *dblp;
+__log_lid_to_fname(edblp, lid, fnamep)
+	DB_LOG *edblp;
 	u_int32_t lid;
 	FNAME **fnamep;
 {
 	FNAME *fnp;
 
-	for (fnp = SH_TAILQ_FIRST(&dblp->lp->fq, __fname);
+	for (fnp = SH_TAILQ_FIRST(&edblp->lp->fq, __fname);
 	    fnp != NULL; fnp = SH_TAILQ_NEXT(fnp, q, __fname)) {
 		if (fnp->ref == 0)	/* Entry not in use. */
 			continue;

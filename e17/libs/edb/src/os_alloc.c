@@ -19,7 +19,7 @@ static const char sccsid[] = "@(#)os_alloc.c	10.10 (Sleepycat) 10/12/98";
 #include <stdlib.h>
 #endif
 
-#include "db_int.h"
+#include "edb_int.h"
 #include "os_jump.h"
 
 /*
@@ -97,9 +97,9 @@ __os_calloc(num, size, storep)
  * PUBLIC: int __os_malloc __P((size_t, void *(*)(size_t), void *));
  */
 int
-__os_malloc(size, db_malloc, storep)
+__os_malloc(size, edb_malloc, storep)
 	size_t size;
-	void *(*db_malloc) __P((size_t)), *storep;
+	void *(*edb_malloc) __P((size_t)), *storep;
 {
 	void *p;
 
@@ -111,10 +111,10 @@ __os_malloc(size, db_malloc, storep)
 
 	/* Some C libraries don't correctly set errno when malloc(3) fails. */
 	errno = 0;
-	if (db_malloc != NULL)
-		p = db_malloc(size);
-	else if (__db_jump.j_malloc != NULL)
-		p = __db_jump.j_malloc(size);
+	if (edb_malloc != NULL)
+		p = edb_malloc(size);
+	else if (__edb_jump.j_malloc != NULL)
+		p = __edb_jump.j_malloc(size);
 	else
 		p = malloc(size);
 	if (p == NULL) {
@@ -124,7 +124,7 @@ __os_malloc(size, db_malloc, storep)
 	}
 
 #ifdef DIAGNOSTIC
-	memset(p, 0xdb, size);
+	memset(p, 0xedb, size);
 #endif
 	*(void **)storep = p;
 
@@ -161,8 +161,8 @@ __os_realloc(storep, size)
 	 * try to continue after realloc fails.
 	 */
 	errno = 0;
-	if (__db_jump.j_realloc != NULL)
-		p = __db_jump.j_realloc(ptr, size);
+	if (__edb_jump.j_realloc != NULL)
+		p = __edb_jump.j_realloc(ptr, size);
 	else
 		p = realloc(ptr, size);
 	if (p == NULL) {
@@ -189,11 +189,11 @@ __os_free(ptr, size)
 {
 #ifdef DIAGNOSTIC
 	if (size != 0)
-		memset(ptr, 0xdb, size);
+		memset(ptr, 0xedb, size);
 #endif
 
-	if (__db_jump.j_free != NULL)
-		__db_jump.j_free(ptr);
+	if (__edb_jump.j_free != NULL)
+		__edb_jump.j_free(ptr);
 	else
 		free(ptr);
 }
@@ -209,11 +209,11 @@ __os_freestr(ptr)
 	void *ptr;
 {
 #ifdef DIAGNOSTIC
-	memset(ptr, 0xdb, strlen(ptr) + 1);
+	memset(ptr, 0xedb, strlen(ptr) + 1);
 #endif
 
-	if (__db_jump.j_free != NULL)
-		__db_jump.j_free(ptr);
+	if (__edb_jump.j_free != NULL)
+		__edb_jump.j_free(ptr);
 	else
 		free(ptr);
 }

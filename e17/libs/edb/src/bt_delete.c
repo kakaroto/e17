@@ -56,8 +56,8 @@ static const char sccsid[] = "@(#)bt_delete.c	10.43 (Sleepycat) 12/7/98";
 #include <string.h>
 #endif
 
-#include "db_int.h"
-#include "db_page.h"
+#include "edb_int.h"
+#include "edb_page.h"
 #include "btree.h"
 
 /*
@@ -67,29 +67,29 @@ static const char sccsid[] = "@(#)bt_delete.c	10.43 (Sleepycat) 12/7/98";
  * PUBLIC: int __bam_delete __P((DB *, DB_TXN *, DBT *, u_int32_t));
  */
 int
-__bam_delete(dbp, txn, key, flags)
-	DB *dbp;
+__bam_delete(edbp, txn, key, flags)
+	DB *edbp;
 	DB_TXN *txn;
 	DBT *key;
 	u_int32_t flags;
 {
-	DBC *dbc;
+	DBC *edbc;
 	DBT data;
 	u_int32_t f_init, f_next;
 	int ret, t_ret;
 
-	DB_PANIC_CHECK(dbp);
+	DB_PANIC_CHECK(edbp);
 
 	/* Check for invalid flags. */
 	if ((ret =
-	    __db_delchk(dbp, key, flags, F_ISSET(dbp, DB_AM_RDONLY))) != 0)
+	    __edb_delchk(edbp, key, flags, F_ISSET(edbp, DB_AM_RDONLY))) != 0)
 		return (ret);
 
 	/* Allocate a cursor. */
-	if ((ret = dbp->cursor(dbp, txn, &dbc, DB_WRITELOCK)) != 0)
+	if ((ret = edbp->cursor(edbp, txn, &edbc, DB_WRITELOCK)) != 0)
 		return (ret);
 
-	DEBUG_LWRITE(dbc, txn, "bam_delete", key, NULL, flags);
+	DEBUG_LWRITE(edbc, txn, "bam_delete", key, NULL, flags);
 
 	/*
 	 * Walk a cursor through the key/data pairs, deleting as we go.  Set
@@ -103,18 +103,18 @@ __bam_delete(dbp, txn, key, flags)
 	/* If locking, set read-modify-write flag. */
 	f_init = DB_SET;
 	f_next = DB_NEXT_DUP;
-	if (dbp->dbenv != NULL && dbp->dbenv->lk_info != NULL) {
+	if (edbp->edbenv != NULL && edbp->edbenv->lk_info != NULL) {
 		f_init |= DB_RMW;
 		f_next |= DB_RMW;
 	}
 
 	/* Walk through the set of key/data pairs, deleting as we go. */
-	if ((ret = dbc->c_get(dbc, key, &data, f_init)) != 0)
+	if ((ret = edbc->c_get(edbc, key, &data, f_init)) != 0)
 		goto err;
 	for (;;) {
-		if ((ret = dbc->c_del(dbc, 0)) != 0)
+		if ((ret = edbc->c_del(edbc, 0)) != 0)
 			goto err;
-		if ((ret = dbc->c_get(dbc, key, &data, f_next)) != 0) {
+		if ((ret = edbc->c_get(edbc, key, &data, f_next)) != 0) {
 			if (ret == DB_NOTFOUND) {
 				ret = 0;
 				break;
@@ -124,7 +124,7 @@ __bam_delete(dbp, txn, key, flags)
 	}
 
 err:	/* Discard the cursor. */
-	if ((t_ret = dbc->c_close(dbc)) != 0 &&
+	if ((t_ret = edbc->c_close(edbc)) != 0 &&
 	    (ret == 0 || ret == DB_NOTFOUND))
 		ret = t_ret;
 
@@ -138,19 +138,19 @@ err:	/* Discard the cursor. */
  * PUBLIC: int __bam_ditem __P((DBC *, PAGE *, u_int32_t));
  */
 int
-__bam_ditem(dbc, h, indx)
-	DBC *dbc;
+__bam_ditem(edbc, h, indx)
+	DBC *edbc;
 	PAGE *h;
 	u_int32_t indx;
 {
 	BINTERNAL *bi;
 	BKEYDATA *bk;
 	BOVERFLOW *bo;
-	DB *dbp;
+	DB *edbp;
 	u_int32_t nbytes;
 	int ret;
 
-	dbp = dbc->dbp;
+	edbp = edbc->edbp;
 
 	switch (TYPE(h)) {
 	case P_IBTREE:
@@ -165,7 +165,7 @@ __bam_ditem(dbc, h, indx)
 			nbytes = BINTERNAL_SIZE(bi->len);
 			break;
 		default:
-			return (__db_pgfmt(dbp, h->pgno));
+			return (__edb_pgfmt(edbp, h->pgno));
 		}
 		break;
 	case P_IRECNO:
@@ -190,7 +190,7 @@ __bam_ditem(dbc, h, indx)
 			 */
 			if (indx + P_INDX < (u_int32_t)NUM_ENT(h) &&
 			    h->inp[indx] == h->inp[indx + P_INDX])
-				return (__bam_adjindx(dbc,
+				return (__bam_adjindx(edbc,
 				    h, indx, indx + O_INDX, 0));
 			/*
 			 * Check for a duplicate before us on the page.  It
@@ -198,7 +198,7 @@ __bam_ditem(dbc, h, indx)
 			 * after the data item for the purposes of this one.
 			 */
 			if (indx > 0 && h->inp[indx] == h->inp[indx - P_INDX])
-				return (__bam_adjindx(dbc,
+				return (__bam_adjindx(edbc,
 				    h, indx, indx - P_INDX, 0));
 		}
 		/* FALLTHROUGH */
@@ -213,30 +213,30 @@ __bam_ditem(dbc, h, indx)
 offpage:		/* Delete duplicate/offpage chains. */
 			if (B_TYPE(bo->type) == B_DUPLICATE) {
 				if ((ret =
-				    __db_ddup(dbc, bo->pgno, __bam_free)) != 0)
+				    __edb_ddup(edbc, bo->pgno, __bam_free)) != 0)
 					return (ret);
 			} else
 				if ((ret =
-				    __db_doff(dbc, bo->pgno, __bam_free)) != 0)
+				    __edb_doff(edbc, bo->pgno, __bam_free)) != 0)
 					return (ret);
 			break;
 		case B_KEYDATA:
 			nbytes = BKEYDATA_SIZE(bk->len);
 			break;
 		default:
-			return (__db_pgfmt(dbp, h->pgno));
+			return (__edb_pgfmt(edbp, h->pgno));
 		}
 		break;
 	default:
-		return (__db_pgfmt(dbp, h->pgno));
+		return (__edb_pgfmt(edbp, h->pgno));
 	}
 
 	/* Delete the item. */
-	if ((ret = __db_ditem(dbc, h, indx, nbytes)) != 0)
+	if ((ret = __edb_ditem(edbc, h, indx, nbytes)) != 0)
 		return (ret);
 
 	/* Mark the page dirty. */
-	return (memp_fset(dbp->mpf, h, DB_MPOOL_DIRTY));
+	return (memp_fset(edbp->mpf, h, DB_MPOOL_DIRTY));
 }
 
 /*
@@ -246,22 +246,22 @@ offpage:		/* Delete duplicate/offpage chains. */
  * PUBLIC: int __bam_adjindx __P((DBC *, PAGE *, u_int32_t, u_int32_t, int));
  */
 int
-__bam_adjindx(dbc, h, indx, indx_copy, is_insert)
-	DBC *dbc;
+__bam_adjindx(edbc, h, indx, indx_copy, is_insert)
+	DBC *edbc;
 	PAGE *h;
 	u_int32_t indx, indx_copy;
 	int is_insert;
 {
-	DB *dbp;
-	db_indx_t copy;
+	DB *edbp;
+	edb_indx_t copy;
 	int ret;
 
-	dbp = dbc->dbp;
+	edbp = edbc->edbp;
 
 	/* Log the change. */
-	if (DB_LOGGING(dbc) &&
-	    (ret = __bam_adj_log(dbp->dbenv->lg_info, dbc->txn, &LSN(h),
-	    0, dbp->log_fileid, PGNO(h), &LSN(h), indx, indx_copy,
+	if (DB_LOGGING(edbc) &&
+	    (ret = __bam_adj_log(edbp->edbenv->lg_info, edbc->txn, &LSN(h),
+	    0, edbp->log_fileid, PGNO(h), &LSN(h), indx, indx_copy,
 	    (u_int32_t)is_insert)) != 0)
 		return (ret);
 
@@ -269,21 +269,21 @@ __bam_adjindx(dbc, h, indx, indx_copy, is_insert)
 		copy = h->inp[indx_copy];
 		if (indx != NUM_ENT(h))
 			memmove(&h->inp[indx + O_INDX], &h->inp[indx],
-			    sizeof(db_indx_t) * (NUM_ENT(h) - indx));
+			    sizeof(edb_indx_t) * (NUM_ENT(h) - indx));
 		h->inp[indx] = copy;
 		++NUM_ENT(h);
 	} else {
 		--NUM_ENT(h);
 		if (indx != NUM_ENT(h))
 			memmove(&h->inp[indx], &h->inp[indx + O_INDX],
-			    sizeof(db_indx_t) * (NUM_ENT(h) - indx));
+			    sizeof(edb_indx_t) * (NUM_ENT(h) - indx));
 	}
 
 	/* Mark the page dirty. */
-	ret = memp_fset(dbp->mpf, h, DB_MPOOL_DIRTY);
+	ret = memp_fset(edbp->mpf, h, DB_MPOOL_DIRTY);
 
 	/* Adjust the cursors. */
-	__bam_ca_di(dbp, h->pgno, indx, is_insert ? 1 : -1);
+	__bam_ca_di(edbp, h->pgno, indx, is_insert ? 1 : -1);
 	return (0);
 }
 
@@ -294,20 +294,20 @@ __bam_adjindx(dbc, h, indx, indx_copy, is_insert)
  * PUBLIC: int __bam_dpage __P((DBC *, const DBT *));
  */
 int
-__bam_dpage(dbc, key)
-	DBC *dbc;
+__bam_dpage(edbc, key)
+	DBC *edbc;
 	const DBT *key;
 {
 	CURSOR *cp;
-	DB *dbp;
+	DB *edbp;
 	DB_LOCK lock;
 	PAGE *h;
-	db_pgno_t pgno;
+	edb_pgno_t pgno;
 	int level;		/* !!!: has to hold number of tree levels. */
 	int exact, ret;
 
-	dbp = dbc->dbp;
-	cp = dbc->internal;
+	edbp = edbc->edbp;
+	cp = edbc->internal;
 	ret = 0;
 
 	/*
@@ -324,7 +324,7 @@ __bam_dpage(dbc, key)
 	for (level = LEAFLEVEL;; ++level) {
 		/* Acquire a page and its parent, locked. */
 		if ((ret =
-		    __bam_search(dbc, key, S_WRPAIR, level, NULL, &exact)) != 0)
+		    __bam_search(edbc, key, S_WRPAIR, level, NULL, &exact)) != 0)
 			return (ret);
 
 		/*
@@ -336,10 +336,10 @@ __bam_dpage(dbc, key)
 			break;
 
 		/* Release the two locked pages. */
-		(void)memp_fput(dbp->mpf, cp->csp[-1].page, 0);
-		(void)__BT_TLPUT(dbc, cp->csp[-1].lock);
-		(void)memp_fput(dbp->mpf, cp->csp[0].page, 0);
-		(void)__BT_TLPUT(dbc, cp->csp[0].lock);
+		(void)memp_fput(edbp->mpf, cp->csp[-1].page, 0);
+		(void)__BT_TLPUT(edbc, cp->csp[-1].lock);
+		(void)memp_fput(edbp->mpf, cp->csp[0].page, 0);
+		(void)__BT_TLPUT(edbc, cp->csp[0].lock);
 	}
 
 	/*
@@ -373,9 +373,9 @@ __bam_dpage(dbc, key)
 		pgno = TYPE(h) == P_IBTREE ?
 		    GET_BINTERNAL(h, 0)->pgno : GET_RINTERNAL(h, 0)->pgno;
 
-		if ((ret = __bam_lget(dbc, 0, pgno, DB_LOCK_WRITE, &lock)) != 0)
+		if ((ret = __bam_lget(edbc, 0, pgno, DB_LOCK_WRITE, &lock)) != 0)
 			goto release;
-		if ((ret = memp_fget(dbp->mpf, &pgno, 0, &h)) != 0)
+		if ((ret = memp_fget(edbp->mpf, &pgno, 0, &h)) != 0)
 			goto release;
 		BT_STK_PUSH(cp, h, 0, lock, ret);
 	}
@@ -384,14 +384,14 @@ __bam_dpage(dbc, key)
 	BT_STK_POP(cp);
 
 	/* Delete the pages. */
-	return (__bam_dpages(dbc));
+	return (__bam_dpages(edbc));
 
 release:
 	/* Adjust back to reference the last page on the stack. */
 	BT_STK_POP(cp);
 
 	/* Discard any locked pages and return. */
-	__bam_stkrel(dbc, 0);
+	__bam_stkrel(edbc, 0);
 
 	return (ret);
 }
@@ -403,22 +403,22 @@ release:
  * PUBLIC: int __bam_dpages __P((DBC *));
  */
 int
-__bam_dpages(dbc)
-	DBC *dbc;
+__bam_dpages(edbc)
+	DBC *edbc;
 {
 	CURSOR *cp;
-	DB *dbp;
+	DB *edbp;
 	DBT a, b;
 	DB_LOCK c_lock, p_lock;
 	EPG *epg;
 	PAGE *child, *parent;
-	db_indx_t nitems;
-	db_pgno_t pgno;
-	db_recno_t rcnt;
+	edb_indx_t nitems;
+	edb_pgno_t pgno;
+	edb_recno_t rcnt;
 	int done, ret;
 
-	dbp = dbc->dbp;
-	cp = dbc->internal;
+	edbp = edbc->edbp;
+	cp = edbc->internal;
 	epg = cp->sp;
 
 	/*
@@ -432,7 +432,7 @@ __bam_dpages(dbc)
 	 * that we can never again access by walking down the tree.  So, before
 	 * we unlink the subtree, we relink the leaf page chain.
 	 */
-	if ((ret = __db_relink(dbc, DB_REM_PAGE, cp->csp->page, NULL, 1)) != 0)
+	if ((ret = __edb_relink(edbc, DB_REM_PAGE, cp->csp->page, NULL, 1)) != 0)
 		goto release;
 
 	/*
@@ -442,16 +442,16 @@ __bam_dpages(dbc)
 	 * stack of pages.  Then, release that page, letting the rest of the
 	 * tree get back to business.
 	 */
-	if ((ret = __bam_ditem(dbc, epg->page, epg->indx)) != 0) {
-release:	(void)__bam_stkrel(dbc, 0);
+	if ((ret = __bam_ditem(edbc, epg->page, epg->indx)) != 0) {
+release:	(void)__bam_stkrel(edbc, 0);
 		return (ret);
 	}
 
 	pgno = epg->page->pgno;
 	nitems = NUM_ENT(epg->page);
 
-	(void)memp_fput(dbp->mpf, epg->page, 0);
-	(void)__BT_TLPUT(dbc, epg->lock);
+	(void)memp_fput(edbp->mpf, epg->page, 0);
+	(void)__BT_TLPUT(edbc, epg->lock);
 
 	/*
 	 * Free the rest of the stack of pages.
@@ -467,10 +467,10 @@ release:	(void)__bam_stkrel(dbc, 0);
 		 * recovery.
 		 */
 		if (NUM_ENT(epg->page) != 0)
-			(void)__bam_ditem(dbc, epg->page, epg->indx);
+			(void)__bam_ditem(edbc, epg->page, epg->indx);
 
-		(void)__bam_free(dbc, epg->page);
-		(void)__BT_TLPUT(dbc, epg->lock);
+		(void)__bam_free(edbc, epg->page);
+		(void)__BT_TLPUT(edbc, epg->lock);
 	}
 	BT_STK_CLR(cp);
 
@@ -502,9 +502,9 @@ release:	(void)__bam_stkrel(dbc, 0);
 		/* Lock the root. */
 		pgno = PGNO_ROOT;
 		if ((ret =
-		    __bam_lget(dbc, 0, pgno, DB_LOCK_WRITE, &p_lock)) != 0)
+		    __bam_lget(edbc, 0, pgno, DB_LOCK_WRITE, &p_lock)) != 0)
 			goto stop;
-		if ((ret = memp_fget(dbp->mpf, &pgno, 0, &parent)) != 0)
+		if ((ret = memp_fget(edbp->mpf, &pgno, 0, &parent)) != 0)
 			goto stop;
 
 		if (NUM_ENT(parent) != 1 ||
@@ -517,21 +517,21 @@ release:	(void)__bam_stkrel(dbc, 0);
 
 		/* Lock the child page. */
 		if ((ret =
-		    __bam_lget(dbc, 0, pgno, DB_LOCK_WRITE, &c_lock)) != 0)
+		    __bam_lget(edbc, 0, pgno, DB_LOCK_WRITE, &c_lock)) != 0)
 			goto stop;
-		if ((ret = memp_fget(dbp->mpf, &pgno, 0, &child)) != 0)
+		if ((ret = memp_fget(edbp->mpf, &pgno, 0, &child)) != 0)
 			goto stop;
 
 		/* Log the change. */
-		if (DB_LOGGING(dbc)) {
+		if (DB_LOGGING(edbc)) {
 			memset(&a, 0, sizeof(a));
 			a.data = child;
-			a.size = dbp->pgsize;
+			a.size = edbp->pgsize;
 			memset(&b, 0, sizeof(b));
 			b.data = P_ENTRY(parent, 0);
 			b.size = BINTERNAL_SIZE(((BINTERNAL *)b.data)->len);
-			__bam_rsplit_log(dbp->dbenv->lg_info, dbc->txn,
-			   &child->lsn, 0, dbp->log_fileid, child->pgno, &a,
+			__bam_rsplit_log(edbp->edbenv->lg_info, edbc->txn,
+			   &child->lsn, 0, edbp->log_fileid, child->pgno, &a,
 			   RE_NREC(parent), &b, &parent->lsn);
 		}
 
@@ -549,40 +549,40 @@ release:	(void)__bam_stkrel(dbc, 0);
 		 */
 		COMPQUIET(rcnt, 0);
 		if (TYPE(child) == P_IRECNO ||
-		    (TYPE(child) == P_IBTREE && F_ISSET(dbp, DB_BT_RECNUM)))
+		    (TYPE(child) == P_IBTREE && F_ISSET(edbp, DB_BT_RECNUM)))
 			rcnt = RE_NREC(parent);
-		memcpy(parent, child, dbp->pgsize);
+		memcpy(parent, child, edbp->pgsize);
 		parent->pgno = PGNO_ROOT;
 		if (TYPE(child) == P_IRECNO ||
-		    (TYPE(child) == P_IBTREE && F_ISSET(dbp, DB_BT_RECNUM)))
+		    (TYPE(child) == P_IBTREE && F_ISSET(edbp, DB_BT_RECNUM)))
 			RE_NREC_SET(parent, rcnt);
 
 		/* Mark the pages dirty. */
-		memp_fset(dbp->mpf, parent, DB_MPOOL_DIRTY);
-		memp_fset(dbp->mpf, child, DB_MPOOL_DIRTY);
+		memp_fset(edbp->mpf, parent, DB_MPOOL_DIRTY);
+		memp_fset(edbp->mpf, child, DB_MPOOL_DIRTY);
 
 		/* Adjust the cursors. */
-		__bam_ca_rsplit(dbp, child->pgno, PGNO_ROOT);
+		__bam_ca_rsplit(edbp, child->pgno, PGNO_ROOT);
 
 		/*
 		 * Free the page copied onto the root page and discard its
 		 * lock.  (The call to __bam_free() discards our reference
 		 * to the page.)
 		 */
-		(void)__bam_free(dbc, child);
+		(void)__bam_free(edbc, child);
 		child = NULL;
 
 		if (0) {
 stop:			done = 1;
 		}
 		if (p_lock != LOCK_INVALID)
-			(void)__BT_TLPUT(dbc, p_lock);
+			(void)__BT_TLPUT(edbc, p_lock);
 		if (parent != NULL)
-			memp_fput(dbp->mpf, parent, 0);
+			memp_fput(edbp->mpf, parent, 0);
 		if (c_lock != LOCK_INVALID)
-			(void)__BT_TLPUT(dbc, c_lock);
+			(void)__BT_TLPUT(edbc, c_lock);
 		if (child != NULL)
-			memp_fput(dbp->mpf, child, 0);
+			memp_fput(edbp->mpf, child, 0);
 	}
 
 	return (0);

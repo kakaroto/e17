@@ -15,7 +15,7 @@
  * The name of the transaction shared memory region is DEFAULT_TXN_FILE and
  * the region is always created group RW of the group owning the directory.
  */
-#define	DEFAULT_TXN_FILE	"__db_txn.share"
+#define	DEFAULT_TXN_FILE	"__edb_txn.share"
 /* TXN_MINIMUM = (DB_LOCK_MAXID + 1) but this makes compilers complain. */
 #define TXN_MINIMUM		0x80000000
 #define	TXN_INVALID           	0xffffffff /* Maximum number of txn ids. */
@@ -68,15 +68,15 @@ typedef struct __txn_detail {
  * references to the log and lock managers as well as the state that keeps
  * track of the shared memory region.
  */
-struct __db_txnmgr {
+struct __edb_txnmgr {
 /* These fields need to be protected for multi-threaded support. */
-	db_mutex_t	*mutexp;	/* Synchronization. */
+	edb_mutex_t	*mutexp;	/* Synchronization. */
 					/* list of active transactions */
-	TAILQ_HEAD(_chain, __db_txn)	txn_chain;
+	TAILQ_HEAD(_chain, __edb_txn)	txn_chain;
 
 /* These fields are not protected. */
 	REGINFO		reginfo;	/* Region information. */
-	DB_ENV		*dbenv;		/* Environment. */
+	DB_ENV		*edbenv;		/* Environment. */
 	int (*recover)			/* Recovery dispatch routine */
 	    __P((DB_LOG *, DBT *, DB_LSN *, int, void *));
 	u_int32_t	 flags;		/* DB_TXN_NOSYNC, DB_THREAD */
@@ -90,7 +90,7 @@ struct __db_txnmgr {
  * pool of shalloc'd memory which is used to hold TXN_DETAIL structures
  * and thread mutexes (which are dynamically allocated).
  */
-struct __db_txnregion {
+struct __edb_txnregion {
 	RLAYOUT		hdr;		/* Shared memory region header. */
 	u_int32_t	magic;		/* transaction magic number */
 	u_int32_t	version;	/* version number */
@@ -118,15 +118,15 @@ struct __db_txnregion {
 /* Macros to lock/unlock the region and threads. */
 #define	LOCK_TXNTHREAD(tmgrp)						\
 	if (F_ISSET(tmgrp, DB_THREAD))					\
-		(void)__db_mutex_lock((tmgrp)->mutexp, -1)
+		(void)__edb_mutex_lock((tmgrp)->mutexp, -1)
 #define	UNLOCK_TXNTHREAD(tmgrp)						\
 	if (F_ISSET(tmgrp, DB_THREAD))					\
-		(void)__db_mutex_unlock((tmgrp)->mutexp, -1)
+		(void)__edb_mutex_unlock((tmgrp)->mutexp, -1)
 
 #define	LOCK_TXNREGION(tmgrp)						\
-	(void)__db_mutex_lock(&(tmgrp)->region->hdr.lock, (tmgrp)->reginfo.fd)
+	(void)__edb_mutex_lock(&(tmgrp)->region->hdr.lock, (tmgrp)->reginfo.fd)
 #define	UNLOCK_TXNREGION(tmgrp)						\
-	(void)__db_mutex_unlock(&(tmgrp)->region->hdr.lock, (tmgrp)->reginfo.fd)
+	(void)__edb_mutex_unlock(&(tmgrp)->region->hdr.lock, (tmgrp)->reginfo.fd)
 
 /* Check for region catastrophic shutdown. */
 #define	TXN_PANIC_CHECK(tmgrp) {					\

@@ -22,35 +22,35 @@ struct __log_persist;	typedef struct __log_persist LOGP;
 #define	MAXLFNAME	2000000000	/* Maximum log file name. */
 #endif
 					/* Default log name. */
-#define DB_DEFAULT_LOG_FILE	"__db_log.share"
+#define DB_DEFAULT_LOG_FILE	"__edb_log.share"
 
 #define	DEFAULT_MAX	(10 * MEGABYTE)	/* 10 Mb. */
 
 /* Macros to lock/unlock the region and threads. */
-#define	LOCK_LOGTHREAD(dblp)						\
-	if (F_ISSET(dblp, DB_AM_THREAD))				\
-		(void)__db_mutex_lock((dblp)->mutexp, -1)
-#define	UNLOCK_LOGTHREAD(dblp)						\
-	if (F_ISSET(dblp, DB_AM_THREAD))				\
-		(void)__db_mutex_unlock((dblp)->mutexp, -1);
-#define	LOCK_LOGREGION(dblp)						\
-	(void)__db_mutex_lock(&((RLAYOUT *)(dblp)->lp)->lock,		\
-	    (dblp)->reginfo.fd)
-#define	UNLOCK_LOGREGION(dblp)						\
-	(void)__db_mutex_unlock(&((RLAYOUT *)(dblp)->lp)->lock,		\
-	    (dblp)->reginfo.fd)
+#define	LOCK_LOGTHREAD(edblp)						\
+	if (F_ISSET(edblp, DB_AM_THREAD))				\
+		(void)__edb_mutex_lock((edblp)->mutexp, -1)
+#define	UNLOCK_LOGTHREAD(edblp)						\
+	if (F_ISSET(edblp, DB_AM_THREAD))				\
+		(void)__edb_mutex_unlock((edblp)->mutexp, -1);
+#define	LOCK_LOGREGION(edblp)						\
+	(void)__edb_mutex_lock(&((RLAYOUT *)(edblp)->lp)->lock,		\
+	    (edblp)->reginfo.fd)
+#define	UNLOCK_LOGREGION(edblp)						\
+	(void)__edb_mutex_unlock(&((RLAYOUT *)(edblp)->lp)->lock,		\
+	    (edblp)->reginfo.fd)
 
 /* Check for region catastrophic shutdown. */
-#define	LOG_PANIC_CHECK(dblp) {						\
-	if ((dblp)->lp->rlayout.panic)					\
+#define	LOG_PANIC_CHECK(edblp) {						\
+	if ((edblp)->lp->rlayout.panic)					\
 		return (DB_RUNRECOVERY);				\
 }
 
 /*
  * The per-process table that maps log file-id's to DB structures.
  */
-typedef	struct __db_entry {
-	DB	 *dbp;			/* Associated DB structure. */
+typedef	struct __edb_entry {
+	DB	 *edbp;			/* Associated DB structure. */
 	char 	 *name;			/* File name. */
 	u_int32_t refcount;		/* Reference counted. */
 	int	  deleted;		/* File was not found during open. */
@@ -60,13 +60,13 @@ typedef	struct __db_entry {
  * DB_LOG
  *	Per-process log structure.
  */
-struct __db_log {
+struct __edb_log {
 /* These fields need to be protected for multi-threaded support. */
-	db_mutex_t	*mutexp;	/* Mutex for thread protection. */
+	edb_mutex_t	*mutexp;	/* Mutex for thread protection. */
 
-	DB_ENTRY *dbentry;		/* Recovery file-id mapping. */
+	DB_ENTRY *edbentry;		/* Recovery file-id mapping. */
 #define	DB_GROW_SIZE	64
-	u_int32_t dbentry_cnt;		/* Entries.  Grows by DB_GROW_SIZE. */
+	u_int32_t edbentry_cnt;		/* Entries.  Grows by DB_GROW_SIZE. */
 
 /*
  * These fields are always accessed while the region lock is held, so they do
@@ -78,7 +78,7 @@ struct __db_log {
 	int	  lfd;			/* Log file descriptor. */
 
 	DB_LSN	  c_lsn;		/* Cursor: current LSN. */
-	DBT	  c_dbt;		/* Cursor: return DBT structure. */
+	DBT	  c_edbt;		/* Cursor: return DBT structure. */
 	int	  c_fd;			/* Cursor: file descriptor. */
 	u_int32_t c_off;		/* Cursor: previous record offset. */
 	u_int32_t c_len;		/* Cursor: current record length. */
@@ -86,7 +86,7 @@ struct __db_log {
 /* These fields are not protected. */
 	LOG	 *lp;			/* Address of the shared LOG. */
 
-	DB_ENV	 *dbenv;		/* Reference to error information. */
+	DB_ENV	 *edbenv;		/* Reference to error information. */
 	REGINFO	  reginfo;		/* Region information. */
 
 	void     *addr;			/* Address of shalloc() region. */

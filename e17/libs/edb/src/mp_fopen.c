@@ -17,23 +17,23 @@ static const char sccsid[] = "@(#)mp_fopen.c	10.60 (Sleepycat) 1/1/99";
 #include <string.h>
 #endif
 
-#include "db_int.h"
+#include "edb_int.h"
 #include "shqueue.h"
-#include "db_shash.h"
+#include "edb_shash.h"
 #include "mp.h"
 #include "common_ext.h"
 
 static int __memp_mf_close __P((DB_MPOOL *, DB_MPOOLFILE *));
 static int __memp_mf_open __P((DB_MPOOL *,
-    const char *, size_t, db_pgno_t, DB_MPOOL_FINFO *, MPOOLFILE **));
+    const char *, size_t, edb_pgno_t, DB_MPOOL_FINFO *, MPOOLFILE **));
 
 /*
  * memp_fopen --
  *	Open a backing file for the memory pool.
  */
 int
-memp_fopen(dbmp, path, flags, mode, pagesize, finfop, retp)
-	DB_MPOOL *dbmp;
+memp_fopen(edbmp, path, flags, mode, pagesize, finfop, retp)
+	DB_MPOOL *edbmp;
 	const char *path;
 	u_int32_t flags;
 	int mode;
@@ -43,22 +43,22 @@ memp_fopen(dbmp, path, flags, mode, pagesize, finfop, retp)
 {
 	int ret;
 
-	MP_PANIC_CHECK(dbmp);
+	MP_PANIC_CHECK(edbmp);
 
 	/* Validate arguments. */
-	if ((ret = __db_fchk(dbmp->dbenv,
+	if ((ret = __edb_fchk(edbmp->edbenv,
 	    "memp_fopen", flags, DB_CREATE | DB_NOMMAP | DB_RDONLY)) != 0)
 		return (ret);
 
 	/* Require a non-zero pagesize. */
 	if (pagesize == 0) {
-		__db_err(dbmp->dbenv, "memp_fopen: pagesize not specified");
+		__edb_err(edbmp->edbenv, "memp_fopen: pagesize not specified");
 		return (EINVAL);
 	}
 	if (finfop != NULL && finfop->clear_len > pagesize)
 		return (EINVAL);
 
-	return (__memp_fopen(dbmp,
+	return (__memp_fopen(edbmp,
 	    NULL, path, flags, mode, pagesize, 1, finfop, retp));
 }
 
@@ -70,8 +70,8 @@ memp_fopen(dbmp, path, flags, mode, pagesize, finfop, retp)
  * PUBLIC:    u_int32_t, int, size_t, int, DB_MPOOL_FINFO *, DB_MPOOLFILE **));
  */
 int
-__memp_fopen(dbmp, mfp, path, flags, mode, pagesize, needlock, finfop, retp)
-	DB_MPOOL *dbmp;
+__memp_fopen(edbmp, mfp, path, flags, mode, pagesize, needlock, finfop, retp)
+	DB_MPOOL *edbmp;
 	MPOOLFILE *mfp;
 	const char *path;
 	u_int32_t flags;
@@ -80,17 +80,17 @@ __memp_fopen(dbmp, mfp, path, flags, mode, pagesize, needlock, finfop, retp)
 	DB_MPOOL_FINFO *finfop;
 	DB_MPOOLFILE **retp;
 {
-	DB_ENV *dbenv;
-	DB_MPOOLFILE *dbmfp;
+	DB_ENV *edbenv;
+	DB_MPOOLFILE *edbmfp;
 	DB_MPOOL_FINFO finfo;
-	db_pgno_t last_pgno;
+	edb_pgno_t last_pgno;
 	size_t maxmap;
 	u_int32_t mbytes, bytes;
 	int ret;
-	u_int8_t idbuf[DB_FILE_ID_LEN];
+	u_int8_t iedbuf[DB_FILE_ID_LEN];
 	char *rpath;
 
-	dbenv = dbmp->dbenv;
+	edbenv = edbmp->edbenv;
 	ret = 0;
 	rpath = NULL;
 
@@ -119,17 +119,17 @@ __memp_fopen(dbmp, mfp, path, flags, mode, pagesize, needlock, finfop, retp)
 	}
 
 	/* Allocate and initialize the per-process structure. */
-	if ((ret = __os_calloc(1, sizeof(DB_MPOOLFILE), &dbmfp)) != 0)
+	if ((ret = __os_calloc(1, sizeof(DB_MPOOLFILE), &edbmfp)) != 0)
 		return (ret);
-	dbmfp->dbmp = dbmp;
-	dbmfp->fd = -1;
-	dbmfp->ref = 1;
+	edbmfp->edbmp = edbmp;
+	edbmfp->fd = -1;
+	edbmfp->ref = 1;
 	if (LF_ISSET(DB_RDONLY))
-		F_SET(dbmfp, MP_READONLY);
+		F_SET(edbmfp, MP_READONLY);
 
 	if (path == NULL) {
 		if (LF_ISSET(DB_RDONLY)) {
-			__db_err(dbenv,
+			__edb_err(edbenv,
 			    "memp_fopen: temporary files can't be readonly");
 			ret = EINVAL;
 			goto err;
@@ -137,13 +137,13 @@ __memp_fopen(dbmp, mfp, path, flags, mode, pagesize, needlock, finfop, retp)
 		last_pgno = 0;
 	} else {
 		/* Get the real name for this file and open it. */
-		if ((ret = __db_appname(dbenv,
+		if ((ret = __edb_appname(edbenv,
 		    DB_APP_DATA, NULL, path, 0, NULL, &rpath)) != 0)
 			goto err;
-		if ((ret = __db_open(rpath,
+		if ((ret = __edb_open(rpath,
 		   LF_ISSET(DB_CREATE | DB_RDONLY),
-		   DB_CREATE | DB_RDONLY, mode, &dbmfp->fd)) != 0) {
-			__db_err(dbenv, "%s: %s", rpath, strerror(ret));
+		   DB_CREATE | DB_RDONLY, mode, &edbmfp->fd)) != 0) {
+			__edb_err(edbenv, "%s: %s", rpath, strerror(ret));
 			goto err;
 		}
 
@@ -161,14 +161,14 @@ __memp_fopen(dbmp, mfp, path, flags, mode, pagesize, needlock, finfop, retp)
 		 * offsets are 64-bits, and they pay us a lot of money.
 		 */
 		if ((ret = __os_ioinfo(rpath,
-		    dbmfp->fd, &mbytes, &bytes, NULL)) != 0) {
-			__db_err(dbenv, "%s: %s", rpath, strerror(ret));
+		    edbmfp->fd, &mbytes, &bytes, NULL)) != 0) {
+			__edb_err(edbenv, "%s: %s", rpath, strerror(ret));
 			goto err;
 		}
 
 		/* Page sizes have to be a power-of-two, ignore mbytes. */
 		if (bytes % pagesize != 0) {
-			__db_err(dbenv,
+			__edb_err(edbenv,
 			    "%s: file size not a multiple of the pagesize",
 			    rpath);
 			ret = EINVAL;
@@ -188,9 +188,9 @@ __memp_fopen(dbmp, mfp, path, flags, mode, pagesize, needlock, finfop, retp)
 		 * other process joining the party.
 		 */
 		if (finfop->fileid == NULL) {
-			if ((ret = __os_fileid(dbenv, rpath, 0, idbuf)) != 0)
+			if ((ret = __os_fileid(edbenv, rpath, 0, iedbuf)) != 0)
 				goto err;
-			finfop->fileid = idbuf;
+			finfop->fileid = iedbuf;
 		}
 	}
 
@@ -200,26 +200,26 @@ __memp_fopen(dbmp, mfp, path, flags, mode, pagesize, needlock, finfop, retp)
 	 * for the per-process thread lock.
 	 */
 	if (needlock)
-		LOCKREGION(dbmp);
+		LOCKREGION(edbmp);
 
 	if (mfp == NULL)
-		ret = __memp_mf_open(dbmp,
+		ret = __memp_mf_open(edbmp,
 		    path, pagesize, last_pgno, finfop, &mfp);
 	else {
 		++mfp->ref;
 		ret = 0;
 	}
 	if (ret == 0 &&
-	    F_ISSET(dbmp, MP_LOCKHANDLE) && (ret =
-	    __memp_alloc(dbmp, sizeof(db_mutex_t), NULL, &dbmfp->mutexp)) == 0)
-		LOCKINIT(dbmp, dbmfp->mutexp);
+	    F_ISSET(edbmp, MP_LOCKHANDLE) && (ret =
+	    __memp_alloc(edbmp, sizeof(edb_mutex_t), NULL, &edbmfp->mutexp)) == 0)
+		LOCKINIT(edbmp, edbmfp->mutexp);
 
 	if (needlock)
-		UNLOCKREGION(dbmp);
+		UNLOCKREGION(edbmp);
 	if (ret != 0)
 		goto err;
 
-	dbmfp->mfp = mfp;
+	edbmfp->mfp = mfp;
 
 	/*
 	 * If a file:
@@ -244,7 +244,7 @@ __memp_fopen(dbmp, mfp, path, flags, mode, pagesize, needlock, finfop, retp)
 	 */
 #define	DB_MAXMMAPSIZE	(10 * 1024 * 1024)	/* 10 Mb. */
 	if (F_ISSET(mfp, MP_CAN_MMAP)) {
-		if (!F_ISSET(dbmfp, MP_READONLY))
+		if (!F_ISSET(edbmfp, MP_READONLY))
 			F_CLR(mfp, MP_CAN_MMAP);
 		if (path == NULL)
 			F_CLR(mfp, MP_CAN_MMAP);
@@ -252,29 +252,29 @@ __memp_fopen(dbmp, mfp, path, flags, mode, pagesize, needlock, finfop, retp)
 			F_CLR(mfp, MP_CAN_MMAP);
 		if (LF_ISSET(DB_NOMMAP))
 			F_CLR(mfp, MP_CAN_MMAP);
-		maxmap = dbenv == NULL || dbenv->mp_mmapsize == 0 ?
-		    DB_MAXMMAPSIZE : dbenv->mp_mmapsize;
+		maxmap = edbenv == NULL || edbenv->mp_mmapsize == 0 ?
+		    DB_MAXMMAPSIZE : edbenv->mp_mmapsize;
 		if (mbytes > maxmap / MEGABYTE ||
 		    (mbytes == maxmap / MEGABYTE && bytes >= maxmap % MEGABYTE))
 			F_CLR(mfp, MP_CAN_MMAP);
 	}
-	dbmfp->addr = NULL;
+	edbmfp->addr = NULL;
 	if (F_ISSET(mfp, MP_CAN_MMAP)) {
-		dbmfp->len = (size_t)mbytes * MEGABYTE + bytes;
-		if (__db_mapfile(rpath,
-		    dbmfp->fd, dbmfp->len, 1, &dbmfp->addr) != 0) {
-			dbmfp->addr = NULL;
+		edbmfp->len = (size_t)mbytes * MEGABYTE + bytes;
+		if (__edb_mapfile(rpath,
+		    edbmfp->fd, edbmfp->len, 1, &edbmfp->addr) != 0) {
+			edbmfp->addr = NULL;
 			F_CLR(mfp, MP_CAN_MMAP);
 		}
 	}
 	if (rpath != NULL)
 		__os_freestr(rpath);
 
-	LOCKHANDLE(dbmp, dbmp->mutexp);
-	TAILQ_INSERT_TAIL(&dbmp->dbmfq, dbmfp, q);
-	UNLOCKHANDLE(dbmp, dbmp->mutexp);
+	LOCKHANDLE(edbmp, edbmp->mutexp);
+	TAILQ_INSERT_TAIL(&edbmp->edbmfq, edbmfp, q);
+	UNLOCKHANDLE(edbmp, edbmp->mutexp);
 
-	*retp = dbmfp;
+	*retp = edbmfp;
 	return (0);
 
 err:	/*
@@ -283,10 +283,10 @@ err:	/*
 	 */
 	if (rpath != NULL)
 		__os_freestr(rpath);
-	if (dbmfp->fd != -1)
-		(void)__os_close(dbmfp->fd);
-	if (dbmfp != NULL)
-		__os_free(dbmfp, sizeof(DB_MPOOLFILE));
+	if (edbmfp->fd != -1)
+		(void)__os_close(edbmfp->fd);
+	if (edbmfp != NULL)
+		__os_free(edbmfp, sizeof(DB_MPOOLFILE));
 	return (ret);
 }
 
@@ -295,11 +295,11 @@ err:	/*
  *	Open an MPOOLFILE.
  */
 static int
-__memp_mf_open(dbmp, path, pagesize, last_pgno, finfop, retp)
-	DB_MPOOL *dbmp;
+__memp_mf_open(edbmp, path, pagesize, last_pgno, finfop, retp)
+	DB_MPOOL *edbmp;
 	const char *path;
 	size_t pagesize;
-	db_pgno_t last_pgno;
+	edb_pgno_t last_pgno;
 	DB_MPOOL_FINFO *finfop;
 	MPOOLFILE **retp;
 {
@@ -314,16 +314,16 @@ __memp_mf_open(dbmp, path, pagesize, last_pgno, finfop, retp)
 	 * Temporary files can't match previous files.
 	 */
 	if (!ISTEMPORARY)
-		for (mfp = SH_TAILQ_FIRST(&dbmp->mp->mpfq, __mpoolfile);
+		for (mfp = SH_TAILQ_FIRST(&edbmp->mp->mpfq, __mpoolfile);
 		    mfp != NULL; mfp = SH_TAILQ_NEXT(mfp, q, __mpoolfile)) {
 			if (F_ISSET(mfp, MP_TEMP))
 				continue;
 			if (!memcmp(finfop->fileid,
-			    R_ADDR(dbmp, mfp->fileid_off), DB_FILE_ID_LEN)) {
+			    R_ADDR(edbmp, mfp->fileid_off), DB_FILE_ID_LEN)) {
 				if (finfop->clear_len != mfp->clear_len ||
 				    finfop->ftype != mfp->ftype ||
 				    pagesize != mfp->stat.st_pagesize) {
-					__db_err(dbmp->dbenv,
+					__edb_err(edbmp->edbenv,
 			    "%s: ftype, clear length or pagesize changed",
 					    path);
 					return (EINVAL);
@@ -337,7 +337,7 @@ __memp_mf_open(dbmp, path, pagesize, last_pgno, finfop, retp)
 		}
 
 	/* Allocate a new MPOOLFILE. */
-	if ((ret = __memp_alloc(dbmp, sizeof(MPOOLFILE), NULL, &mfp)) != 0)
+	if ((ret = __memp_alloc(edbmp, sizeof(MPOOLFILE), NULL, &mfp)) != 0)
 		return (ret);
 	*retp = mfp;
 
@@ -360,13 +360,13 @@ __memp_mf_open(dbmp, path, pagesize, last_pgno, finfop, retp)
 		F_SET(mfp, MP_TEMP);
 	else {
 		/* Copy the file path into shared memory. */
-		if ((ret = __memp_alloc(dbmp,
+		if ((ret = __memp_alloc(edbmp,
 		    strlen(path) + 1, &mfp->path_off, &p)) != 0)
 			goto err;
 		memcpy(p, path, strlen(path) + 1);
 
 		/* Copy the file identification string into shared memory. */
-		if ((ret = __memp_alloc(dbmp,
+		if ((ret = __memp_alloc(edbmp,
 		    DB_FILE_ID_LEN, &mfp->fileid_off, &p)) != 0)
 			goto err;
 		memcpy(p, finfop->fileid, DB_FILE_ID_LEN);
@@ -379,7 +379,7 @@ __memp_mf_open(dbmp, path, pagesize, last_pgno, finfop, retp)
 		mfp->pgcookie_len = 0;
 		mfp->pgcookie_off = 0;
 	} else {
-		if ((ret = __memp_alloc(dbmp,
+		if ((ret = __memp_alloc(edbmp,
 		    finfop->pgcookie->size, &mfp->pgcookie_off, &p)) != 0)
 			goto err;
 		memcpy(p, finfop->pgcookie->data, finfop->pgcookie->size);
@@ -387,17 +387,17 @@ __memp_mf_open(dbmp, path, pagesize, last_pgno, finfop, retp)
 	}
 
 	/* Prepend the MPOOLFILE to the list of MPOOLFILE's. */
-	SH_TAILQ_INSERT_HEAD(&dbmp->mp->mpfq, mfp, q, __mpoolfile);
+	SH_TAILQ_INSERT_HEAD(&edbmp->mp->mpfq, mfp, q, __mpoolfile);
 
 	if (0) {
 err:		if (mfp->path_off != 0)
-			__db_shalloc_free(dbmp->addr,
-			    R_ADDR(dbmp, mfp->path_off));
+			__edb_shalloc_free(edbmp->addr,
+			    R_ADDR(edbmp, mfp->path_off));
 		if (mfp->fileid_off != 0)
-			__db_shalloc_free(dbmp->addr,
-			    R_ADDR(dbmp, mfp->fileid_off));
+			__edb_shalloc_free(edbmp->addr,
+			    R_ADDR(edbmp, mfp->fileid_off));
 		if (mfp != NULL)
-			__db_shalloc_free(dbmp->addr, mfp);
+			__edb_shalloc_free(edbmp->addr, mfp);
 		mfp = NULL;
 	}
 	return (0);
@@ -408,19 +408,19 @@ err:		if (mfp->path_off != 0)
  *	Close a backing file for the memory pool.
  */
 int
-memp_fclose(dbmfp)
-	DB_MPOOLFILE *dbmfp;
+memp_fclose(edbmfp)
+	DB_MPOOLFILE *edbmfp;
 {
-	DB_MPOOL *dbmp;
+	DB_MPOOL *edbmp;
 	int ret, t_ret;
 
-	dbmp = dbmfp->dbmp;
+	edbmp = edbmfp->edbmp;
 	ret = 0;
 
-	MP_PANIC_CHECK(dbmp);
+	MP_PANIC_CHECK(edbmp);
 
 	for (;;) {
-		LOCKHANDLE(dbmp, dbmp->mutexp);
+		LOCKHANDLE(edbmp, edbmp->mutexp);
 
 		/*
 		 * We have to reference count DB_MPOOLFILE structures as other
@@ -444,47 +444,47 @@ memp_fclose(dbmfp)
 		 * reference holder and remove the DB_MPOOLFILE structure from
 		 * the list, so nobody else can even find it.
 		 */
-		if (dbmfp->ref == 1) {
-			TAILQ_REMOVE(&dbmp->dbmfq, dbmfp, q);
+		if (edbmfp->ref == 1) {
+			TAILQ_REMOVE(&edbmp->edbmfq, edbmfp, q);
 			break;
 		}
-		UNLOCKHANDLE(dbmp, dbmp->mutexp);
+		UNLOCKHANDLE(edbmp, edbmp->mutexp);
 
 		(void)__os_sleep(1, 0);
 	}
-	UNLOCKHANDLE(dbmp, dbmp->mutexp);
+	UNLOCKHANDLE(edbmp, edbmp->mutexp);
 
 	/* Complain if pinned blocks never returned. */
-	if (dbmfp->pinref != 0)
-		__db_err(dbmp->dbenv, "%s: close: %lu blocks left pinned",
-		    __memp_fn(dbmfp), (u_long)dbmfp->pinref);
+	if (edbmfp->pinref != 0)
+		__edb_err(edbmp->edbenv, "%s: close: %lu blocks left pinned",
+		    __memp_fn(edbmfp), (u_long)edbmfp->pinref);
 
 	/* Close the underlying MPOOLFILE. */
-	(void)__memp_mf_close(dbmp, dbmfp);
+	(void)__memp_mf_close(edbmp, edbmfp);
 
 	/* Discard any mmap information. */
-	if (dbmfp->addr != NULL &&
-	    (ret = __db_unmapfile(dbmfp->addr, dbmfp->len)) != 0)
-		__db_err(dbmp->dbenv,
-		    "%s: %s", __memp_fn(dbmfp), strerror(ret));
+	if (edbmfp->addr != NULL &&
+	    (ret = __edb_unmapfile(edbmfp->addr, edbmfp->len)) != 0)
+		__edb_err(edbmp->edbenv,
+		    "%s: %s", __memp_fn(edbmfp), strerror(ret));
 
 	/* Close the file; temporary files may not yet have been created. */
-	if (dbmfp->fd != -1 && (t_ret = __os_close(dbmfp->fd)) != 0) {
-		__db_err(dbmp->dbenv,
-		    "%s: %s", __memp_fn(dbmfp), strerror(t_ret));
+	if (edbmfp->fd != -1 && (t_ret = __os_close(edbmfp->fd)) != 0) {
+		__edb_err(edbmp->edbenv,
+		    "%s: %s", __memp_fn(edbmfp), strerror(t_ret));
 		if (ret != 0)
 			t_ret = ret;
 	}
 
 	/* Free memory. */
-	if (dbmfp->mutexp != NULL) {
-		LOCKREGION(dbmp);
-		__db_shalloc_free(dbmp->addr, dbmfp->mutexp);
-		UNLOCKREGION(dbmp);
+	if (edbmfp->mutexp != NULL) {
+		LOCKREGION(edbmp);
+		__edb_shalloc_free(edbmp->addr, edbmfp->mutexp);
+		UNLOCKREGION(edbmp);
 	}
 
 	/* Discard the DB_MPOOLFILE structure. */
-	__os_free(dbmfp, sizeof(DB_MPOOLFILE));
+	__os_free(edbmfp, sizeof(DB_MPOOLFILE));
 
 	return (ret);
 }
@@ -494,19 +494,19 @@ memp_fclose(dbmfp)
  *	Close down an MPOOLFILE.
  */
 static int
-__memp_mf_close(dbmp, dbmfp)
-	DB_MPOOL *dbmp;
-	DB_MPOOLFILE *dbmfp;
+__memp_mf_close(edbmp, edbmfp)
+	DB_MPOOL *edbmp;
+	DB_MPOOLFILE *edbmfp;
 {
 	BH *bhp, *nbhp;
 	MPOOL *mp;
 	MPOOLFILE *mfp;
 	size_t mf_offset;
 
-	mp = dbmp->mp;
-	mfp = dbmfp->mfp;
+	mp = edbmp->mp;
+	mfp = edbmfp->mfp;
 
-	LOCKREGION(dbmp);
+	LOCKREGION(edbmp);
 
 	/* If more than a single reference, simply decrement. */
 	if (mfp->ref > 1) {
@@ -520,16 +520,16 @@ __memp_mf_close(dbmp, dbmfp)
 	 * fairly expensive to reintegrate the buffers back into the region for
 	 * no purpose.
 	 */
-	mf_offset = R_OFFSET(dbmp, mfp);
+	mf_offset = R_OFFSET(edbmp, mfp);
 	for (bhp = SH_TAILQ_FIRST(&mp->bhq, __bh); bhp != NULL; bhp = nbhp) {
 		nbhp = SH_TAILQ_NEXT(bhp, q, __bh);
 
 #ifdef DEBUG_NO_DIRTY
 		/* Complain if we find any blocks that were left dirty. */
 		if (F_ISSET(bhp, BH_DIRTY))
-			__db_err(dbmp->dbenv,
+			__edb_err(edbmp->edbenv,
 			    "%s: close: pgno %lu left dirty; ref %lu",
-			    __memp_fn(dbmfp),
+			    __memp_fn(edbmfp),
 			    (u_long)bhp->pgno, (u_long)bhp->ref);
 #endif
 
@@ -538,7 +538,7 @@ __memp_mf_close(dbmp, dbmfp)
 				++mp->stat.st_page_clean;
 				--mp->stat.st_page_dirty;
 			}
-			__memp_bhfree(dbmp, mfp, bhp, 0);
+			__memp_bhfree(edbmp, mfp, bhp, 0);
 			SH_TAILQ_INSERT_HEAD(&mp->bhfq, bhp, q, __bh);
 		}
 	}
@@ -548,13 +548,13 @@ __memp_mf_close(dbmp, dbmfp)
 
 	/* Free the space. */
 	if (mfp->path_off != 0)
-		__db_shalloc_free(dbmp->addr, R_ADDR(dbmp, mfp->path_off));
+		__edb_shalloc_free(edbmp->addr, R_ADDR(edbmp, mfp->path_off));
 	if (mfp->fileid_off != 0)
-		__db_shalloc_free(dbmp->addr, R_ADDR(dbmp, mfp->fileid_off));
+		__edb_shalloc_free(edbmp->addr, R_ADDR(edbmp, mfp->fileid_off));
 	if (mfp->pgcookie_off != 0)
-		__db_shalloc_free(dbmp->addr, R_ADDR(dbmp, mfp->pgcookie_off));
-	__db_shalloc_free(dbmp->addr, mfp);
+		__edb_shalloc_free(edbmp->addr, R_ADDR(edbmp, mfp->pgcookie_off));
+	__edb_shalloc_free(edbmp->addr, mfp);
 
-ret1:	UNLOCKREGION(dbmp);
+ret1:	UNLOCKREGION(edbmp);
 	return (0);
 }

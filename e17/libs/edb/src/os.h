@@ -16,9 +16,9 @@
 typedef struct __io {
 	int	    fd_io;		/* I/O file descriptor. */
 	int	    fd_lock;		/* Locking file descriptor. */
-	db_mutex_t *mutexp;		/* Mutex to lock. */
+	edb_mutex_t *mutexp;		/* Mutex to lock. */
 	size_t	    pagesize;		/* Page size. */
-	db_pgno_t   pgno;		/* Page number. */
+	edb_pgno_t   pgno;		/* Page number. */
 	u_int8_t   *buf;		/* Buffer. */
 	size_t	    bytes;		/* Bytes read/written. */
 } DB_IO;

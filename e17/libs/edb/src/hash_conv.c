@@ -14,9 +14,9 @@ static const char sccsid[] = "@(#)hash_conv.c	10.5 (Sleepycat) 4/10/98";
 #include <sys/types.h>
 #endif
 
-#include "db_int.h"
-#include "db_page.h"
-#include "db_swap.h"
+#include "edb_int.h"
+#include "edb_page.h"
+#include "edb_swap.h"
 #include "hash.h"
 
 /*
@@ -24,11 +24,11 @@ static const char sccsid[] = "@(#)hash_conv.c	10.5 (Sleepycat) 4/10/98";
  *	Convert host-specific page layout from the host-independent format
  *	stored on disk.
  *
- * PUBLIC: int __ham_pgin __P((db_pgno_t, void *, DBT *));
+ * PUBLIC: int __ham_pgin __P((edb_pgno_t, void *, DBT *));
  */
 int
 __ham_pgin(pg, pp, cookie)
-	db_pgno_t pg;
+	edb_pgno_t pg;
 	void *pp;
 	DBT *cookie;
 {
@@ -41,7 +41,7 @@ __ham_pgin(pg, pp, cookie)
 		M_32_SWAP(tpgno);
 
 	if (pg != PGNO_METADATA && pg != tpgno) {
-		P_INIT(pp, pginfo->db_pagesize,
+		P_INIT(pp, pginfo->edb_pagesize,
 		    pg, PGNO_INVALID, PGNO_INVALID, 0, P_HASH);
 		return (0);
 	}
@@ -49,7 +49,7 @@ __ham_pgin(pg, pp, cookie)
 	if (!pginfo->needswap)
 		return (0);
 	return (pg == PGNO_METADATA ?
-	    __ham_mswap(pp) : __db_pgin(pg, pginfo->db_pagesize, pp));
+	    __ham_mswap(pp) : __edb_pgin(pg, pginfo->edb_pagesize, pp));
 }
 
 /*
@@ -57,11 +57,11 @@ __ham_pgin(pg, pp, cookie)
  *	Convert host-specific page layout to the host-independent format
  *	stored on disk.
  *
- * PUBLIC: int __ham_pgout __P((db_pgno_t, void *, DBT *));
+ * PUBLIC: int __ham_pgout __P((edb_pgno_t, void *, DBT *));
  */
 int
 __ham_pgout(pg, pp, cookie)
-	db_pgno_t pg;
+	edb_pgno_t pg;
 	void *pp;
 	DBT *cookie;
 {
@@ -71,7 +71,7 @@ __ham_pgout(pg, pp, cookie)
 	if (!pginfo->needswap)
 		return (0);
 	return (pg == PGNO_METADATA ?
-	    __ham_mswap(pp) : __db_pgout(pg, pginfo->db_pagesize, pp));
+	    __ham_mswap(pp) : __edb_pgout(pg, pginfo->edb_pagesize, pp));
 }
 
 /*

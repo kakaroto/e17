@@ -20,17 +20,17 @@ static const char sccsid[] = "@(#)os_open.c	10.33 (Sleepycat) 10/12/98";
 #include <unistd.h>
 #endif
 
-#include "db_int.h"
+#include "edb_int.h"
 #include "os_jump.h"
 
 /*
- * __db_open --
+ * __edb_open --
  *	Open a file descriptor.
  *
- * PUBLIC: int __db_open __P((const char *, u_int32_t, u_int32_t, int, int *));
+ * PUBLIC: int __edb_open __P((const char *, u_int32_t, u_int32_t, int, int *));
  */
 int
-__db_open(name, arg_flags, ok_flags, mode, fdp)
+__edb_open(name, arg_flags, ok_flags, mode, fdp)
 	const char *name;
 	u_int32_t arg_flags, ok_flags;
 	int mode, *fdp;
@@ -130,8 +130,8 @@ __os_open(name, flags, mode, fdp)
 	const char *name;
 	int flags, mode, *fdp;
 {
-	*fdp = __db_jump.j_open != NULL ?
-	    __db_jump.j_open(name, flags, mode) : open(name, flags, mode);
+	*fdp = __edb_jump.j_open != NULL ?
+	    __edb_jump.j_open(name, flags, mode) : open(name, flags, mode);
 	return (*fdp == -1 ? errno : 0);
 }
 
@@ -147,6 +147,6 @@ __os_close(fd)
 {
 	int ret;
 
-	ret = __db_jump.j_close != NULL ? __db_jump.j_close(fd) : close(fd);
+	ret = __edb_jump.j_close != NULL ? __edb_jump.j_close(fd) : close(fd);
 	return (ret == 0 ? 0 : errno);
 }

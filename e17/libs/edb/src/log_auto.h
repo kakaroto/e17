@@ -1,4 +1,4 @@
-/* Do not edit: automatically built by dist/db_gen.sh. */
+/* Do not edit: automatically built by dist/edb_gen.sh. */
 #ifndef log_AUTO_H
 #define log_AUTO_H
 

@@ -56,8 +56,8 @@ static const char sccsid[] = "@(#)bt_compare.c	10.14 (Sleepycat) 10/9/98";
 #include <string.h>
 #endif
 
-#include "db_int.h"
-#include "db_page.h"
+#include "edb_int.h"
+#include "edb_page.h"
 #include "btree.h"
 
 /*
@@ -68,9 +68,9 @@ static const char sccsid[] = "@(#)bt_compare.c	10.14 (Sleepycat) 10/9/98";
  * PUBLIC:    PAGE *, u_int32_t, int (*)(const DBT *, const DBT *)));
  */
 int
-__bam_cmp(dbp, dbt, h, indx, func)
-	DB *dbp;
-	const DBT *dbt;
+__bam_cmp(edbp, edbt, h, indx, func)
+	DB *edbp;
+	const DBT *edbt;
 	PAGE *h;
 	u_int32_t indx;
 	int (*func)__P((const DBT *, const DBT *));
@@ -78,17 +78,17 @@ __bam_cmp(dbp, dbt, h, indx, func)
 	BINTERNAL *bi;
 	BKEYDATA *bk;
 	BOVERFLOW *bo;
-	DBT pg_dbt;
+	DBT pg_edbt;
 	int ret;
 
 	/*
 	 * Returns:
-	 *	< 0 if dbt is < page record
-	 *	= 0 if dbt is = page record
-	 *	> 0 if dbt is > page record
+	 *	< 0 if edbt is < page record
+	 *	= 0 if edbt is = page record
+	 *	> 0 if edbt is > page record
 	 *
 	 * !!!
-	 * We do not clear the pg_dbt DBT even though it's likely to contain
+	 * We do not clear the pg_edbt DBT even though it's likely to contain
 	 * random bits.  That should be okay, because the app's comparison
 	 * routine had better not be looking at fields other than data/size.
 	 * We don't clear it because we go through this path a lot and it's
@@ -99,9 +99,9 @@ __bam_cmp(dbp, dbt, h, indx, func)
 		if (B_TYPE(bk->type) == B_OVERFLOW)
 			bo = (BOVERFLOW *)bk;
 		else {
-			pg_dbt.data = bk->data;
-			pg_dbt.size = bk->len;
-			return (func(dbt, &pg_dbt));
+			pg_edbt.data = bk->data;
+			pg_edbt.size = bk->len;
+			return (func(edbt, &pg_edbt));
 		}
 	} else {
 		/*
@@ -118,9 +118,9 @@ __bam_cmp(dbp, dbt, h, indx, func)
 		if (B_TYPE(bi->type) == B_OVERFLOW)
 			bo = (BOVERFLOW *)(bi->data);
 		else {
-			pg_dbt.data = bi->data;
-			pg_dbt.size = bi->len;
-			return (func(dbt, &pg_dbt));
+			pg_edbt.data = bi->data;
+			pg_edbt.size = bi->len;
+			return (func(edbt, &pg_edbt));
 		}
 	}
 
@@ -128,11 +128,11 @@ __bam_cmp(dbp, dbt, h, indx, func)
 	 * Overflow.
 	 *
 	 * XXX
-	 * We ignore __db_moff() errors, because we have no way of returning
+	 * We ignore __edb_moff() errors, because we have no way of returning
 	 * them.
 	 */
-	(void) __db_moff(dbp,
-	    dbt, bo->pgno, bo->tlen, func == __bam_defcmp ? NULL : func, &ret);
+	(void) __edb_moff(edbp,
+	    edbt, bo->pgno, bo->tlen, func == __bam_defcmp ? NULL : func, &ret);
 	return (ret);
 }
 

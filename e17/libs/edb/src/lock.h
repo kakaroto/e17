@@ -7,9 +7,9 @@
  *	@(#)lock.h	10.17 (Sleepycat) 1/3/99
  */
 
-typedef struct __db_lockobj	DB_LOCKOBJ;
+typedef struct __edb_lockobj	DB_LOCKOBJ;
 
-#define DB_DEFAULT_LOCK_FILE	"__db_lock.share"
+#define DB_DEFAULT_LOCK_FILE	"__edb_lock.share"
 
 #ifndef DB_LOCK_DEFAULT_N
 #define DB_LOCK_DEFAULT_N	5000	/* Default # of locks in region. */
@@ -33,11 +33,11 @@ typedef struct __db_lockobj	DB_LOCKOBJ;
  *	The DB_LOCKREGION structure (sizeof(DB_LOCKREGION)).
  *	The conflict matrix of nmodes * nmodes bytes (nmodes * nmodes).
  *	The hash table for object lookup (hashsize * sizeof(DB_OBJ *)).
- *	The locks themselves (maxlocks * sizeof(struct __db_lock).
+ *	The locks themselves (maxlocks * sizeof(struct __edb_lock).
  *	The objects being locked (maxlocks * sizeof(DB_OBJ)).
  *	String space to represent the DBTs that are the objects being locked.
  */
-struct __db_lockregion {
+struct __edb_lockregion {
 	RLAYOUT		hdr;		/* Shared region header. */
 	u_int32_t	magic;		/* lock magic number */
 	u_int32_t	version;	/* version number */
@@ -63,22 +63,22 @@ struct __db_lockregion {
 
 /* Macros to lock/unlock the region. */
 #define	LOCK_LOCKREGION(lt)						\
-	(void)__db_mutex_lock(&(lt)->region->hdr.lock, (lt)->reginfo.fd)
+	(void)__edb_mutex_lock(&(lt)->region->hdr.lock, (lt)->reginfo.fd)
 #define	UNLOCK_LOCKREGION(lt)						\
-	(void)__db_mutex_unlock(&(lt)->region->hdr.lock, (lt)->reginfo.fd)
+	(void)__edb_mutex_unlock(&(lt)->region->hdr.lock, (lt)->reginfo.fd)
 
 /*
  * Since we will be keeping DBTs in shared memory, we need the equivalent
  * of a DBT that will work in shared memory.
  */
-typedef struct __sh_dbt {
+typedef struct __sh_edbt {
 	u_int32_t size;
 	ssize_t off;
 } SH_DBT;
 
 #define SH_DBT_PTR(p)	((void *)(((u_int8_t *)(p)) + (p)->off))
 
-struct __db_lockobj {
+struct __edb_lockobj {
 	SH_DBT	lockobj;		/* Identifies object locked. */
 	SH_TAILQ_ENTRY links;		/* Links for free list. */
 	union {
@@ -86,7 +86,7 @@ struct __db_lockobj {
 		u_int32_t	_dd_id;		/* Deadlock detector id. */
 	} wlinks;
 	union {
-		SH_LIST_HEAD(_held) _heldby;	/* Locks held by this locker. */
+		SH_LIST_HEAD(_held) _heledby;	/* Locks held by this locker. */
 		SH_TAILQ_HEAD(_hold) _holders;	/* List of held locks. */
 	} dlinks;
 #define	DB_LOCK_OBJTYPE		1
@@ -95,20 +95,20 @@ struct __db_lockobj {
 					 * hold typical DB lock structures
 					 * so that we do not have to
 					 * allocate them from shalloc. */
-	u_int8_t objdata[sizeof(struct __db_ilock)];
+	u_int8_t objdata[sizeof(struct __edb_ilock)];
 	u_int8_t type;			/* Real object or locker id. */
 };
 
 #define dd_id	wlinks._dd_id
 #define	waiters	wlinks._waiters
 #define	holders	dlinks._holders
-#define	heldby	dlinks._heldby
+#define	heledby	dlinks._heledby
 
 /*
  * The lock table is the per-process cookie returned from a lock_open call.
  */
-struct __db_locktab {
-	DB_ENV		*dbenv;		/* Environment. */
+struct __edb_locktab {
+	DB_ENV		*edbenv;		/* Environment. */
 	REGINFO		 reginfo;	/* Region information. */
 	DB_LOCKREGION	*region;	/* Address of shared memory region. */
 	DB_HASHTAB 	*hashtab; 	/* Beginning of hash table. */
@@ -126,23 +126,23 @@ struct __db_locktab {
  */
 typedef enum {
 	DB_LOCK_MEM, DB_LOCK_OBJ, DB_LOCK_LOCK
-} db_resource_t;
+} edb_resource_t;
 
-struct __db_lock {
+struct __edb_lock {
 	/*
 	 * Wait on mutex to wait on lock.  You reference your own mutex with
 	 * ID 0 and others reference your mutex with ID 1.
 	 */
-	db_mutex_t	mutex;
+	edb_mutex_t	mutex;
 
 	u_int32_t	holder;		/* Who holds this lock. */
 	SH_TAILQ_ENTRY	links;		/* Free or holder/waiter list. */
 	SH_LIST_ENTRY	locker_links;	/* List of locks held by a locker. */
 	u_int32_t	refcount;	/* Reference count the lock. */
-	db_lockmode_t	mode;		/* What sort of lock. */
+	edb_lockmode_t	mode;		/* What sort of lock. */
 	ssize_t		obj;		/* Relative offset of object struct. */
 	size_t		txnoff;		/* Offset of holding transaction. */
-	db_status_t	status;		/* Status of this lock. */
+	edb_status_t	status;		/* Status of this lock. */
 };
 
 /*
@@ -164,7 +164,7 @@ struct __db_lock {
  * regular pointers.  Always use the macros below.
  */
 #define OFFSET_TO_LOCK(lt, off)	\
-	((struct __db_lock *)((u_int8_t *)((lt)->region) + (off)))
+	((struct __edb_lock *)((u_int8_t *)((lt)->region) + (off)))
 #define LOCK_TO_OFFSET(lt, lock) \
 	((size_t)((u_int8_t *)(lock) - (u_int8_t *)lt->region))
 #define OFFSET_TO_OBJ(lt, off)	\
@@ -190,7 +190,7 @@ struct __db_lock {
 #define LOCK_REGION_SIZE(M, N, H)					\
 	(ALIGN(LOCK_HEADER_SIZE(M) +					\
 	(H) * sizeof(DB_HASHTAB), MUTEX_ALIGNMENT) +			\
-	(N) * ALIGN(sizeof(struct __db_lock), MUTEX_ALIGNMENT) +	\
+	(N) * ALIGN(sizeof(struct __edb_lock), MUTEX_ALIGNMENT) +	\
 	ALIGN((N) * sizeof(DB_LOCKOBJ), sizeof(size_t)) +		\
 	ALIGN(STRING_SIZE(N), sizeof(size_t)))
 

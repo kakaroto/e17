@@ -15,7 +15,7 @@ static const char sccsid[] = "@(#)os_abs.c	10.9 (Sleepycat) 7/21/98";
 #include <sys/types.h>
 #endif
 
-#include "db_int.h"
+#include "edb_int.h"
 
 /*
  * __os_abspath --

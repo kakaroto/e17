@@ -34,7 +34,7 @@ static const char sccsid[] = "@(#)os_dir.c	10.19 (Sleepycat) 10/12/98";
 #include <errno.h>
 #endif
 
-#include "db_int.h"
+#include "edb_int.h"
 #include "os_jump.h"
 
 /*
@@ -54,8 +54,8 @@ __os_dirlist(dir, namesp, cntp)
 	int arraysz, cnt, ret;
 	char **names;
 
-	if (__db_jump.j_dirlist != NULL)
-		return (__db_jump.j_dirlist(dir, namesp, cntp));
+	if (__edb_jump.j_dirlist != NULL)
+		return (__edb_jump.j_dirlist(dir, namesp, cntp));
 
 	if ((dirp = opendir(dir)) == NULL)
 		return (errno);
@@ -92,8 +92,8 @@ __os_dirfree(names, cnt)
 	char **names;
 	int cnt;
 {
-	if (__db_jump.j_dirfree != NULL)
-		__db_jump.j_dirfree(names, cnt);
+	if (__edb_jump.j_dirfree != NULL)
+		__edb_jump.j_dirfree(names, cnt);
 
 	while (cnt > 0)
 		__os_free(names[--cnt], 0);

@@ -19,7 +19,7 @@ static const char sccsid[] = "@(#)os_fsync.c	10.7 (Sleepycat) 10/12/98";
 #include <unistd.h>
 #endif
 
-#include "db_int.h"
+#include "edb_int.h"
 #include "os_jump.h"
 
 #ifdef __hp3000s900
@@ -54,6 +54,6 @@ __os_fsync(fd)
 {
 	int ret;
 
-	ret = __db_jump.j_fsync != NULL ?  __db_jump.j_fsync(fd) : fsync(fd);
+	ret = __edb_jump.j_fsync != NULL ?  __edb_jump.j_fsync(fd) : fsync(fd);
 	return (ret == 0 ? 0 : errno);
 }

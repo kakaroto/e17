@@ -17,9 +17,9 @@ static const char sccsid[] = "@(#)mp_region.c	10.35 (Sleepycat) 12/11/98";
 #include <string.h>
 #endif
 
-#include "db_int.h"
+#include "edb_int.h"
 #include "shqueue.h"
-#include "db_shash.h"
+#include "edb_shash.h"
 #include "mp.h"
 #include "common_ext.h"
 
@@ -30,16 +30,16 @@ static const char sccsid[] = "@(#)mp_region.c	10.35 (Sleepycat) 12/11/98";
  * PUBLIC: int __memp_reg_alloc __P((DB_MPOOL *, size_t, size_t *, void *));
  */
 int
-__memp_reg_alloc(dbmp, len, offsetp, retp)
-	DB_MPOOL *dbmp;
+__memp_reg_alloc(edbmp, len, offsetp, retp)
+	DB_MPOOL *edbmp;
 	size_t len, *offsetp;
 	void *retp;
 {
 	int ret;
 
-	LOCKREGION(dbmp);
-	ret = __memp_alloc(dbmp, len, offsetp, retp);
-	UNLOCKREGION(dbmp);
+	LOCKREGION(edbmp);
+	ret = __memp_alloc(edbmp, len, offsetp, retp);
+	UNLOCKREGION(edbmp);
 	return (ret);
 }
 
@@ -50,8 +50,8 @@ __memp_reg_alloc(dbmp, len, offsetp, retp)
  * PUBLIC: int __memp_alloc __P((DB_MPOOL *, size_t, size_t *, void *));
  */
 int
-__memp_alloc(dbmp, len, offsetp, retp)
-	DB_MPOOL *dbmp;
+__memp_alloc(edbmp, len, offsetp, retp)
+	DB_MPOOL *edbmp;
 	size_t len, *offsetp;
 	void *retp;
 {
@@ -62,17 +62,17 @@ __memp_alloc(dbmp, len, offsetp, retp)
 	int nomore, restart, ret, wrote;
 	void *p;
 
-	mp = dbmp->mp;
+	mp = edbmp->mp;
 
 	nomore = 0;
-alloc:	if ((ret = __db_shalloc(dbmp->addr, len, MUTEX_ALIGNMENT, &p)) == 0) {
+alloc:	if ((ret = __edb_shalloc(edbmp->addr, len, MUTEX_ALIGNMENT, &p)) == 0) {
 		if (offsetp != NULL)
-			*offsetp = R_OFFSET(dbmp, p);
+			*offsetp = R_OFFSET(edbmp, p);
 		*(void **)retp = p;
 		return (0);
 	}
 	if (nomore) {
-		__db_err(dbmp->dbenv,
+		__edb_err(edbmp->edbenv,
 	    "Unable to allocate %lu bytes from mpool shared region: %s\n",
 		    (u_long)len, strerror(ret));
 		return (ret);
@@ -83,10 +83,10 @@ alloc:	if ((ret = __db_shalloc(dbmp->addr, len, MUTEX_ALIGNMENT, &p)) == 0) {
 	    SH_TAILQ_FIRST(&mp->bhfq, __bh); bhp != NULL; bhp = nbhp) {
 		nbhp = SH_TAILQ_NEXT(bhp, q, __bh);
 
-		if (__db_shsizeof(bhp) == len) {
+		if (__edb_shsizeof(bhp) == len) {
 			SH_TAILQ_REMOVE(&mp->bhfq, bhp, q, __bh);
 			if (offsetp != NULL)
-				*offsetp = R_OFFSET(dbmp, bhp);
+				*offsetp = R_OFFSET(edbmp, bhp);
 			*(void **)retp = bhp;
 			return (0);
 		}
@@ -99,7 +99,7 @@ alloc:	if ((ret = __db_shalloc(dbmp->addr, len, MUTEX_ALIGNMENT, &p)) == 0) {
 		nbhp = SH_TAILQ_NEXT(bhp, q, __bh);
 
 		SH_TAILQ_REMOVE(&mp->bhfq, bhp, q, __bh);
-		__db_shalloc_free(dbmp->addr, bhp);
+		__edb_shalloc_free(edbmp->addr, bhp);
 		--mp->stat.st_page_clean;
 
 		/*
@@ -107,7 +107,7 @@ alloc:	if ((ret = __db_shalloc(dbmp->addr, len, MUTEX_ALIGNMENT, &p)) == 0) {
 		 * will have to coalesce memory to satisfy the request, don't
 		 * try until it's likely (possible?) that we'll succeed.
 		 */
-		total += fsize = __db_shsizeof(bhp);
+		total += fsize = __edb_shsizeof(bhp);
 		if (fsize >= len || total >= 3 * len)
 			goto alloc;
 	}
@@ -123,7 +123,7 @@ retry:	/* Find a buffer we can flush; pure LRU. */
 			continue;
 
 		/* Find the associated MPOOLFILE. */
-		mfp = R_ADDR(dbmp, bhp->mf_offset);
+		mfp = R_ADDR(edbmp, bhp->mf_offset);
 
 		/*
 		 * Write the page if it's dirty.
@@ -138,7 +138,7 @@ retry:	/* Find a buffer we can flush; pure LRU. */
 		 */
 		if (F_ISSET(bhp, BH_DIRTY)) {
 			++bhp->ref;
-			if ((ret = __memp_bhwrite(dbmp,
+			if ((ret = __memp_bhwrite(edbmp,
 			    mfp, bhp, &restart, &wrote)) != 0)
 				return (ret);
 			--bhp->ref;
@@ -165,18 +165,18 @@ retry:	/* Find a buffer we can flush; pure LRU. */
 		 * Check to see if the buffer is the size we're looking for.
 		 * If it is, simply reuse it.
 		 */
-		total += fsize = __db_shsizeof(bhp);
+		total += fsize = __edb_shsizeof(bhp);
 		if (fsize == len) {
-			__memp_bhfree(dbmp, mfp, bhp, 0);
+			__memp_bhfree(edbmp, mfp, bhp, 0);
 
 			if (offsetp != NULL)
-				*offsetp = R_OFFSET(dbmp, bhp);
+				*offsetp = R_OFFSET(edbmp, bhp);
 			*(void **)retp = bhp;
 			return (0);
 		}
 
 		/* Free the buffer. */
-		__memp_bhfree(dbmp, mfp, bhp, 1);
+		__memp_bhfree(edbmp, mfp, bhp, 1);
 
 		/*
 		 * Retry as soon as we've freed up sufficient space.  If we
@@ -202,8 +202,8 @@ retry:	/* Find a buffer we can flush; pure LRU. */
  * PUBLIC:    __P((DB_MPOOL *, const char *, size_t, int, int, u_int32_t));
  */
 int
-__memp_ropen(dbmp, path, cachesize, mode, is_private, flags)
-	DB_MPOOL *dbmp;
+__memp_ropen(edbmp, path, cachesize, mode, is_private, flags)
+	DB_MPOOL *edbmp;
 	const char *path;
 	size_t cachesize;
 	int mode, is_private;
@@ -240,34 +240,34 @@ __memp_ropen(dbmp, path, cachesize, mode, is_private, flags)
 	 * If it's a private mpool, use malloc, it's a lot faster than
 	 * instantiating a region.
 	 */
-	dbmp->reginfo.dbenv = dbmp->dbenv;
-	dbmp->reginfo.appname = DB_APP_NONE;
+	edbmp->reginfo.edbenv = edbmp->edbenv;
+	edbmp->reginfo.appname = DB_APP_NONE;
 	if (path == NULL)
-		dbmp->reginfo.path = NULL;
+		edbmp->reginfo.path = NULL;
 	else
-		if ((ret = __os_strdup(path, &dbmp->reginfo.path)) != 0)
+		if ((ret = __os_strdup(path, &edbmp->reginfo.path)) != 0)
 			return (ret);
-	dbmp->reginfo.file = DB_DEFAULT_MPOOL_FILE;
-	dbmp->reginfo.mode = mode;
-	dbmp->reginfo.size = rlen;
-	dbmp->reginfo.dbflags = flags;
-	dbmp->reginfo.flags = 0;
+	edbmp->reginfo.file = DB_DEFAULT_MPOOL_FILE;
+	edbmp->reginfo.mode = mode;
+	edbmp->reginfo.size = rlen;
+	edbmp->reginfo.edbflags = flags;
+	edbmp->reginfo.flags = 0;
 	if (defcache)
-		F_SET(&dbmp->reginfo, REGION_SIZEDEF);
+		F_SET(&edbmp->reginfo, REGION_SIZEDEF);
 
 	/*
 	 * If we're creating a temporary region, don't use any standard
 	 * naming.
 	 */
 	if (is_private) {
-		dbmp->reginfo.appname = DB_APP_TMP;
-		dbmp->reginfo.file = NULL;
-		F_SET(&dbmp->reginfo, REGION_PRIVATE);
+		edbmp->reginfo.appname = DB_APP_TMP;
+		edbmp->reginfo.file = NULL;
+		F_SET(&edbmp->reginfo, REGION_PRIVATE);
 	}
 
-	if ((ret = __db_rattach(&dbmp->reginfo)) != 0) {
-		if (dbmp->reginfo.path != NULL)
-			__os_freestr(dbmp->reginfo.path);
+	if ((ret = __edb_rattach(&edbmp->reginfo)) != 0) {
+		if (edbmp->reginfo.path != NULL)
+			__os_freestr(edbmp->reginfo.path);
 		return (ret);
 	}
 
@@ -275,17 +275,17 @@ __memp_ropen(dbmp, path, cachesize, mode, is_private, flags)
 	 * The MPOOL structure is first in the region, the rest of the region
 	 * is free space.
 	 */
-	dbmp->mp = dbmp->reginfo.addr;
-	dbmp->addr = (u_int8_t *)dbmp->mp + sizeof(MPOOL);
+	edbmp->mp = edbmp->reginfo.addr;
+	edbmp->addr = (u_int8_t *)edbmp->mp + sizeof(MPOOL);
 
 	/* Initialize a created region. */
-	if (F_ISSET(&dbmp->reginfo, REGION_CREATED)) {
-		mp = dbmp->mp;
+	if (F_ISSET(&edbmp->reginfo, REGION_CREATED)) {
+		mp = edbmp->mp;
 		SH_TAILQ_INIT(&mp->bhq);
 		SH_TAILQ_INIT(&mp->bhfq);
 		SH_TAILQ_INIT(&mp->mpfq);
 
-		__db_shalloc_init(dbmp->addr, rlen - sizeof(MPOOL));
+		__edb_shalloc_init(edbmp->addr, rlen - sizeof(MPOOL));
 
 		/*
 		 * Assume we want to keep the hash chains with under 10 pages
@@ -295,15 +295,15 @@ __memp_ropen(dbmp, path, cachesize, mode, is_private, flags)
 		 * be short.
 		 */
 		mp->htab_buckets =
-		    __db_tablesize((cachesize / (1 * 1024)) / 10);
+		    __edb_tablesize((cachesize / (1 * 1024)) / 10);
 
 		/* Allocate hash table space and initialize it. */
-		if ((ret = __db_shalloc(dbmp->addr,
+		if ((ret = __edb_shalloc(edbmp->addr,
 		    mp->htab_buckets * sizeof(DB_HASHTAB),
-		    0, &dbmp->htab)) != 0)
+		    0, &edbmp->htab)) != 0)
 			goto err;
-		__db_hashinit(dbmp->htab, mp->htab_buckets);
-		mp->htab = R_OFFSET(dbmp, dbmp->htab);
+		__edb_hashinit(edbmp->htab, mp->htab_buckets);
+		mp->htab = R_OFFSET(edbmp, edbmp->htab);
 
 		ZERO_LSN(mp->lsn);
 		mp->lsn_cnt = 0;
@@ -315,17 +315,17 @@ __memp_ropen(dbmp, path, cachesize, mode, is_private, flags)
 	}
 
 	/* Get the local hash table address. */
-	dbmp->htab = R_ADDR(dbmp, dbmp->mp->htab);
+	edbmp->htab = R_ADDR(edbmp, edbmp->mp->htab);
 
-	UNLOCKREGION(dbmp);
+	UNLOCKREGION(edbmp);
 	return (0);
 
-err:	UNLOCKREGION(dbmp);
-	(void)__db_rdetach(&dbmp->reginfo);
-	if (F_ISSET(&dbmp->reginfo, REGION_CREATED))
-		(void)memp_unlink(path, 1, dbmp->dbenv);
+err:	UNLOCKREGION(edbmp);
+	(void)__edb_rdetach(&edbmp->reginfo);
+	if (F_ISSET(&edbmp->reginfo, REGION_CREATED))
+		(void)memp_unlink(path, 1, edbmp->edbenv);
 
-	if (dbmp->reginfo.path != NULL)
-		__os_freestr(dbmp->reginfo.path);
+	if (edbmp->reginfo.path != NULL)
+		__os_freestr(edbmp->reginfo.path);
 	return (ret);
 }

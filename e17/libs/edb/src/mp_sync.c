@@ -17,9 +17,9 @@ static const char sccsid[] = "@(#)mp_sync.c	10.31 (Sleepycat) 12/11/98";
 #include <stdlib.h>
 #endif
 
-#include "db_int.h"
+#include "edb_int.h"
 #include "shqueue.h"
-#include "db_shash.h"
+#include "edb_shash.h"
 #include "mp.h"
 #include "common_ext.h"
 
@@ -31,23 +31,23 @@ static int __memp_fsync __P((DB_MPOOLFILE *));
  *	Mpool sync function.
  */
 int
-memp_sync(dbmp, lsnp)
-	DB_MPOOL *dbmp;
+memp_sync(edbmp, lsnp)
+	DB_MPOOL *edbmp;
 	DB_LSN *lsnp;
 {
 	BH *bhp, **bharray;
-	DB_ENV *dbenv;
+	DB_ENV *edbenv;
 	MPOOL *mp;
 	MPOOLFILE *mfp;
 	int ar_cnt, nalloc, next, maxpin, ret, wrote;
 
-	MP_PANIC_CHECK(dbmp);
+	MP_PANIC_CHECK(edbmp);
 
-	dbenv = dbmp->dbenv;
-	mp = dbmp->mp;
+	edbenv = edbmp->edbenv;
+	mp = edbmp->mp;
 
-	if (dbenv->lg_info == NULL) {
-		__db_err(dbenv, "memp_sync: requires logging");
+	if (edbenv->lg_info == NULL) {
+		__edb_err(edbenv, "memp_sync: requires logging");
 		return (EINVAL);
 	}
 
@@ -59,14 +59,14 @@ memp_sync(dbmp, lsnp)
 	 * good-size block of memory to hold buffer pointers, we don't want
 	 * to run out.
 	 */
-	LOCKREGION(dbmp);
+	LOCKREGION(edbmp);
 	nalloc = mp->stat.st_page_dirty + mp->stat.st_page_dirty / 2 + 10;
-	UNLOCKREGION(dbmp);
+	UNLOCKREGION(edbmp);
 
 	if ((ret = __os_malloc(nalloc * sizeof(BH *), NULL, &bharray)) != 0)
 		return (ret);
 
-	LOCKREGION(dbmp);
+	LOCKREGION(edbmp);
 
 	/*
 	 * If the application is asking about a previous call to memp_sync(),
@@ -106,7 +106,7 @@ memp_sync(dbmp, lsnp)
 	 */
 	mp->lsn = *lsnp;
 	mp->lsn_cnt = 0;
-	for (mfp = SH_TAILQ_FIRST(&dbmp->mp->mpfq, __mpoolfile);
+	for (mfp = SH_TAILQ_FIRST(&edbmp->mp->mpfq, __mpoolfile);
 	    mfp != NULL; mfp = SH_TAILQ_NEXT(mfp, q, __mpoolfile))
 		mfp->lsn_cnt = 0;
 
@@ -135,7 +135,7 @@ memp_sync(dbmp, lsnp)
 
 			++mp->lsn_cnt;
 
-			mfp = R_ADDR(dbmp, bhp->mf_offset);
+			mfp = R_ADDR(edbmp, bhp->mf_offset);
 			++mfp->lsn_cnt;
 
 			/*
@@ -172,12 +172,12 @@ memp_sync(dbmp, lsnp)
 		goto done;
 	}
 
-	UNLOCKREGION(dbmp);
+	UNLOCKREGION(edbmp);
 
 	/* Sort the buffers we're going to write. */
 	qsort(bharray, ar_cnt, sizeof(BH *), __bhcmp);
 
-	LOCKREGION(dbmp);
+	LOCKREGION(edbmp);
 
 	/* Walk the array, writing buffers. */
 	for (next = 0; next < ar_cnt; ++next) {
@@ -194,8 +194,8 @@ memp_sync(dbmp, lsnp)
 		}
 
 		/* Write the buffer. */
-		mfp = R_ADDR(dbmp, bharray[next]->mf_offset);
-		ret = __memp_bhwrite(dbmp, mfp, bharray[next], NULL, &wrote);
+		mfp = R_ADDR(edbmp, bharray[next]->mf_offset);
+		ret = __memp_bhwrite(edbmp, mfp, bharray[next], NULL, &wrote);
 
 		/* Release the buffer. */
 		--bharray[next]->ref;
@@ -208,8 +208,8 @@ memp_sync(dbmp, lsnp)
 			 * Be understanding, but firm, on this point.
 			 */
 			if (ret == 0) {
-				__db_err(dbenv, "%s: unable to flush page: %lu",
-				    __memp_fns(dbmp, mfp),
+				__edb_err(edbenv, "%s: unable to flush page: %lu",
+				    __memp_fns(edbmp, mfp),
 				    (u_long)bharray[next]->pgno);
 				ret = EPERM;
 			}
@@ -231,14 +231,14 @@ err:		/*
 		 *	BH_WRITE flag (the scheduled for writing flag)
 		 */
 		mp->lsn_cnt = 0;
-		for (mfp = SH_TAILQ_FIRST(&dbmp->mp->mpfq, __mpoolfile);
+		for (mfp = SH_TAILQ_FIRST(&edbmp->mp->mpfq, __mpoolfile);
 		    mfp != NULL; mfp = SH_TAILQ_NEXT(mfp, q, __mpoolfile))
 			mfp->lsn_cnt = 0;
 		for (bhp = SH_TAILQ_FIRST(&mp->bhq, __bh);
 		    bhp != NULL; bhp = SH_TAILQ_NEXT(bhp, q, __bh))
 			F_CLR(bhp, BH_WRITE);
 	}
-	UNLOCKREGION(dbmp);
+	UNLOCKREGION(edbmp);
 	__os_free(bharray, nalloc * sizeof(BH *));
 	return (ret);
 }
@@ -248,31 +248,31 @@ err:		/*
  *	Mpool file sync function.
  */
 int
-memp_fsync(dbmfp)
-	DB_MPOOLFILE *dbmfp;
+memp_fsync(edbmfp)
+	DB_MPOOLFILE *edbmfp;
 {
-	DB_MPOOL *dbmp;
+	DB_MPOOL *edbmp;
 	int is_tmp;
 
-	dbmp = dbmfp->dbmp;
+	edbmp = edbmfp->edbmp;
 
-	MP_PANIC_CHECK(dbmp);
+	MP_PANIC_CHECK(edbmp);
 
 	/*
 	 * If this handle doesn't have a file descriptor that's open for
 	 * writing, or if the file is a temporary, there's no reason to
 	 * proceed further.
 	 */
-	if (F_ISSET(dbmfp, MP_READONLY))
+	if (F_ISSET(edbmfp, MP_READONLY))
 		return (0);
 
-	LOCKREGION(dbmp);
-	is_tmp = F_ISSET(dbmfp->mfp, MP_TEMP);
-	UNLOCKREGION(dbmp);
+	LOCKREGION(edbmp);
+	is_tmp = F_ISSET(edbmfp->mfp, MP_TEMP);
+	UNLOCKREGION(edbmp);
 	if (is_tmp)
 		return (0);
 
-	return (__memp_fsync(dbmfp));
+	return (__memp_fsync(edbmfp));
 }
 
 /*
@@ -282,8 +282,8 @@ memp_fsync(dbmfp)
  * PUBLIC: int __mp_xxx_fd __P((DB_MPOOLFILE *, int *));
  */
 int
-__mp_xxx_fd(dbmfp, fdp)
-	DB_MPOOLFILE *dbmfp;
+__mp_xxx_fd(edbmfp, fdp)
+	DB_MPOOLFILE *edbmfp;
 	int *fdp;
 {
 	int ret;
@@ -302,9 +302,9 @@ __mp_xxx_fd(dbmfp, fdp)
 	 * because we want to write to the backing file regardless so that
 	 * we get a file descriptor to return.
 	 */
-	ret = dbmfp->fd == -1 ? __memp_fsync(dbmfp) : 0;
+	ret = edbmfp->fd == -1 ? __memp_fsync(edbmfp) : 0;
 
-	return ((*fdp = dbmfp->fd) == -1 ? ENOENT : ret);
+	return ((*fdp = edbmfp->fd) == -1 ? ENOENT : ret);
 }
 
 /*
@@ -312,19 +312,19 @@ __mp_xxx_fd(dbmfp, fdp)
  *	Mpool file internal sync function.
  */
 static int
-__memp_fsync(dbmfp)
-	DB_MPOOLFILE *dbmfp;
+__memp_fsync(edbmfp)
+	DB_MPOOLFILE *edbmfp;
 {
 	BH *bhp, **bharray;
-	DB_MPOOL *dbmp;
+	DB_MPOOL *edbmp;
 	MPOOL *mp;
 	size_t mf_offset;
 	int ar_cnt, incomplete, nalloc, next, ret, wrote;
 
 	ret = 0;
-	dbmp = dbmfp->dbmp;
-	mp = dbmp->mp;
-	mf_offset = R_OFFSET(dbmp, dbmfp->mfp);
+	edbmp = edbmfp->edbmp;
+	mp = edbmp->mp;
+	mf_offset = R_OFFSET(edbmp, edbmfp->mfp);
 
 	/*
 	 * We try and write the buffers in page order: it should reduce seeks
@@ -334,14 +334,14 @@ __memp_fsync(dbmfp)
 	 * good-size block of memory to hold buffer pointers, we don't want
 	 * to run out.
 	 */
-	LOCKREGION(dbmp);
+	LOCKREGION(edbmp);
 	nalloc = mp->stat.st_page_dirty + mp->stat.st_page_dirty / 2 + 10;
-	UNLOCKREGION(dbmp);
+	UNLOCKREGION(edbmp);
 
 	if ((ret = __os_malloc(nalloc * sizeof(BH *), NULL, &bharray)) != 0)
 		return (ret);
 
-	LOCKREGION(dbmp);
+	LOCKREGION(edbmp);
 
 	/*
 	 * Walk the LRU list of buffer headers, and get a list of buffers to
@@ -373,13 +373,13 @@ __memp_fsync(dbmfp)
 		}
 	}
 
-	UNLOCKREGION(dbmp);
+	UNLOCKREGION(edbmp);
 
 	/* Sort the buffers we're going to write. */
 	if (ar_cnt != 0)
 		qsort(bharray, ar_cnt, sizeof(BH *), __bhcmp);
 
-	LOCKREGION(dbmp);
+	LOCKREGION(edbmp);
 
 	/* Walk the array, writing buffers. */
 	for (next = 0; next < ar_cnt; ++next) {
@@ -397,7 +397,7 @@ __memp_fsync(dbmfp)
 		}
 
 		/* Write the buffer. */
-		ret = __memp_pgwrite(dbmfp, bharray[next], NULL, &wrote);
+		ret = __memp_pgwrite(edbmfp, bharray[next], NULL, &wrote);
 
 		/* Release the buffer. */
 		--bharray[next]->ref;
@@ -417,7 +417,7 @@ __memp_fsync(dbmfp)
 			incomplete = 1;
 	}
 
-err:	UNLOCKREGION(dbmp);
+err:	UNLOCKREGION(edbmp);
 
 	__os_free(bharray, nalloc * sizeof(BH *));
 
@@ -430,7 +430,7 @@ err:	UNLOCKREGION(dbmp);
 	 * issues.
 	 */
 	if (ret == 0)
-		return (incomplete ? DB_INCOMPLETE : __os_fsync(dbmfp->fd));
+		return (incomplete ? DB_INCOMPLETE : __os_fsync(edbmfp->fd));
 	return (ret);
 }
 
@@ -439,27 +439,27 @@ err:	UNLOCKREGION(dbmp);
  *	Keep a specified percentage of the buffers clean.
  */
 int
-memp_trickle(dbmp, pct, nwrotep)
-	DB_MPOOL *dbmp;
+memp_trickle(edbmp, pct, nwrotep)
+	DB_MPOOL *edbmp;
 	int pct, *nwrotep;
 {
 	BH *bhp;
 	MPOOL *mp;
 	MPOOLFILE *mfp;
-	db_pgno_t pgno;
+	edb_pgno_t pgno;
 	u_long total;
 	int ret, wrote;
 
-	MP_PANIC_CHECK(dbmp);
+	MP_PANIC_CHECK(edbmp);
 
-	mp = dbmp->mp;
+	mp = edbmp->mp;
 	if (nwrotep != NULL)
 		*nwrotep = 0;
 
 	if (pct < 1 || pct > 100)
 		return (EINVAL);
 
-	LOCKREGION(dbmp);
+	LOCKREGION(edbmp);
 
 	/*
 	 * If there are sufficient clean buffers, or no buffers or no dirty
@@ -474,7 +474,7 @@ memp_trickle(dbmp, pct, nwrotep)
 loop:	total = mp->stat.st_page_clean + mp->stat.st_page_dirty;
 	if (total == 0 || mp->stat.st_page_dirty == 0 ||
 	    (mp->stat.st_page_clean * 100) / total >= (u_long)pct) {
-		UNLOCKREGION(dbmp);
+		UNLOCKREGION(edbmp);
 		return (0);
 	}
 
@@ -485,7 +485,7 @@ loop:	total = mp->stat.st_page_clean + mp->stat.st_page_dirty;
 		    !F_ISSET(bhp, BH_DIRTY) || F_ISSET(bhp, BH_LOCKED))
 			continue;
 
-		mfp = R_ADDR(dbmp, bhp->mf_offset);
+		mfp = R_ADDR(edbmp, bhp->mf_offset);
 
 		/*
 		 * We can't write to temporary files -- see the comment in
@@ -495,7 +495,7 @@ loop:	total = mp->stat.st_page_clean + mp->stat.st_page_dirty;
 			continue;
 
 		pgno = bhp->pgno;
-		if ((ret = __memp_bhwrite(dbmp, mfp, bhp, NULL, &wrote)) != 0)
+		if ((ret = __memp_bhwrite(edbmp, mfp, bhp, NULL, &wrote)) != 0)
 			goto err;
 
 		/*
@@ -504,8 +504,8 @@ loop:	total = mp->stat.st_page_clean + mp->stat.st_page_dirty;
 		 * but firm, on this point.
 		 */
 		if (!wrote) {
-			__db_err(dbmp->dbenv, "%s: unable to flush page: %lu",
-			    __memp_fns(dbmp, mfp), (u_long)pgno);
+			__edb_err(edbmp->edbenv, "%s: unable to flush page: %lu",
+			    __memp_fns(edbmp, mfp), (u_long)pgno);
 			ret = EPERM;
 			goto err;
 		}
@@ -519,7 +519,7 @@ loop:	total = mp->stat.st_page_clean + mp->stat.st_page_dirty;
 	/* No more buffers to write. */
 	ret = 0;
 
-err:	UNLOCKREGION(dbmp);
+err:	UNLOCKREGION(edbmp);
 	return (ret);
 }
 

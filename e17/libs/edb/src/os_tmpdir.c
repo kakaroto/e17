@@ -18,7 +18,7 @@ static const char sccsid[] = "@(#)os_tmpdir.c	10.3 (Sleepycat) 10/13/98";
 #include <stdlib.h>
 #endif
 
-#include "db_int.h"
+#include "edb_int.h"
 #include "common_ext.h"
 
 #ifdef macintosh
@@ -35,8 +35,8 @@ static const char sccsid[] = "@(#)os_tmpdir.c	10.3 (Sleepycat) 10/13/98";
  * PUBLIC: int __os_tmpdir __P((DB_ENV *, u_int32_t));
  */
 int
-__os_tmpdir(dbenv, flags)
-	DB_ENV *dbenv;
+__os_tmpdir(edbenv, flags)
+	DB_ENV *edbenv;
 	u_int32_t flags;
 {
 	/*
@@ -68,23 +68,23 @@ __os_tmpdir(dbenv, flags)
 #endif
 	{
 		if ((p = getenv("TMPDIR")) != NULL && p[0] == '\0') {
-			__db_err(dbenv, "illegal TMPDIR environment variable");
+			__edb_err(edbenv, "illegal TMPDIR environment variable");
 			return (EINVAL);
 		}
 		/* Windows */
 		if (p == NULL && (p = getenv("TEMP")) != NULL && p[0] == '\0') {
-			__db_err(dbenv, "illegal TEMP environment variable");
+			__edb_err(edbenv, "illegal TEMP environment variable");
 			return (EINVAL);
 		}
 		/* Windows */
 		if (p == NULL && (p = getenv("TMP")) != NULL && p[0] == '\0') {
-			__db_err(dbenv, "illegal TMP environment variable");
+			__edb_err(edbenv, "illegal TMP environment variable");
 			return (EINVAL);
 		}
 		/* Macintosh */
 		if (p == NULL &&
 		    (p = getenv("TempFolder")) != NULL && p[0] == '\0') {
-			__db_err(dbenv,
+			__edb_err(edbenv,
 			    "illegal TempFolder environment variable");
 			return (EINVAL);
 		}
@@ -109,5 +109,5 @@ __os_tmpdir(dbenv, flags)
 	if (p == NULL)
 		return (0);
 
-	return (__os_strdup(p, &dbenv->db_tmp_dir));
+	return (__os_strdup(p, &edbenv->edb_tmp_dir));
 }

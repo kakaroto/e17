@@ -63,12 +63,12 @@ struct __recno;		typedef struct __recno RECNO;
  * locks associated with walking the tree.  Distinguish between the two so that
  * we don't tie up the internal pages of the tree longer than necessary.
  */
-#define	__BT_LPUT(dbc, lock)						\
-	(F_ISSET((dbc)->dbp, DB_AM_LOCKING) ?				\
-	    lock_put((dbc)->dbp->dbenv->lk_info, lock) : 0)
-#define	__BT_TLPUT(dbc, lock)						\
-	(F_ISSET((dbc)->dbp, DB_AM_LOCKING) && (dbc)->txn == NULL ?	\
-	    lock_put((dbc)->dbp->dbenv->lk_info, lock) : 0)
+#define	__BT_LPUT(edbc, lock)						\
+	(F_ISSET((edbc)->edbp, DB_AM_LOCKING) ?				\
+	    lock_put((edbc)->edbp->edbenv->lk_info, lock) : 0)
+#define	__BT_TLPUT(edbc, lock)						\
+	(F_ISSET((edbc)->edbp, DB_AM_LOCKING) && (edbc)->txn == NULL ?	\
+	    lock_put((edbc)->edbp->edbenv->lk_info, lock) : 0)
 
 /*
  * Flags to __bam_search() and __bam_rsearch().
@@ -122,7 +122,7 @@ struct __recno;		typedef struct __recno RECNO;
  */
 struct __epg {
 	PAGE	 *page;			/* The page. */
-	db_indx_t indx;			/* The index on the page. */
+	edb_indx_t indx;			/* The index on the page. */
 	DB_LOCK	  lock;			/* The page's lock. */
 };
 
@@ -172,7 +172,7 @@ typedef enum {
 
 /* Btree/Recno cursor. */
 struct __cursor {
-	DBC		*dbc;		/* Enclosing DBC. */
+	DBC		*edbc;		/* Enclosing DBC. */
 
 	/* Per-thread information: shared by btree/recno. */
 	EPG		*sp;		/* Stack pointer. */
@@ -183,17 +183,17 @@ struct __cursor {
 	/* Per-thread information: btree private. */
 	PAGE		*page;		/* Cursor page. */
 
-	db_pgno_t	 pgno;		/* Page. */
-	db_indx_t	 indx;		/* Page item ref'd by the cursor. */
+	edb_pgno_t	 pgno;		/* Page. */
+	edb_indx_t	 indx;		/* Page item ref'd by the cursor. */
 
-	db_pgno_t	 dpgno;		/* Duplicate page. */
-	db_indx_t	 dindx;		/* Page item ref'd by the cursor. */
+	edb_pgno_t	 dpgno;		/* Duplicate page. */
+	edb_indx_t	 dindx;		/* Page item ref'd by the cursor. */
 
 	DB_LOCK		 lock;		/* Cursor read lock. */
-	db_lockmode_t	 mode;		/* Lock mode. */
+	edb_lockmode_t	 mode;		/* Lock mode. */
 
 	/* Per-thread information: recno private. */
-	db_recno_t	 recno;		/* Current record number. */
+	edb_recno_t	 recno;		/* Current record number. */
 
 	/*
 	 * Btree:
@@ -225,13 +225,13 @@ struct __recno {
 
 	char		*re_source;	/* Source file name. */
 	int		 re_fd;		/* Source file descriptor */
-	db_recno_t	 re_last;	/* Last record number read. */
+	edb_recno_t	 re_last;	/* Last record number read. */
 	void		*re_cmap;	/* Current point in mapped space. */
 	void		*re_smap;	/* Start of mapped space. */
 	void		*re_emap;	/* End of mapped space. */
 	size_t		 re_msize;	/* Size of mapped region. */
 					/* Recno input function. */
-	int (*re_irec) __P((DBC *, db_recno_t));
+	int (*re_irec) __P((DBC *, edb_recno_t));
 
 #define	RECNO_EOF	0x0001		/* EOF on backing source file. */
 #define	RECNO_MODIFIED	0x0002		/* Tree was modified. */
@@ -242,22 +242,22 @@ struct __recno {
  * The in-memory, per-tree btree data structure.
  */
 struct __btree {
-	db_pgno_t	 bt_lpgno;	/* Last insert location. */
+	edb_pgno_t	 bt_lpgno;	/* Last insert location. */
 
-	db_indx_t 	 bt_maxkey;	/* Maximum keys per page. */
-	db_indx_t 	 bt_minkey;	/* Minimum keys per page. */
+	edb_indx_t 	 bt_maxkey;	/* Maximum keys per page. */
+	edb_indx_t 	 bt_minkey;	/* Minimum keys per page. */
 
 	int (*bt_compare)		/* Comparison function. */
 	    __P((const DBT *, const DBT *));
 	size_t(*bt_prefix)		/* Prefix function. */
 	    __P((const DBT *, const DBT *));
 
-	db_indx_t	 bt_ovflsize;	/* Maximum key/data on-page size. */
+	edb_indx_t	 bt_ovflsize;	/* Maximum key/data on-page size. */
 
 	RECNO		*recno;		/* Private recno structure. */
 };
 
 #include "btree_auto.h"
 #include "btree_ext.h"
-#include "db_am.h"
+#include "edb_am.h"
 #include "common_ext.h"

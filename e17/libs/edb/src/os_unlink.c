@@ -18,7 +18,7 @@ static const char sccsid[] = "@(#)os_unlink.c	10.7 (Sleepycat) 10/12/98";
 #include <unistd.h>
 #endif
 
-#include "db_int.h"
+#include "edb_int.h"
 #include "os_jump.h"
 
 /*
@@ -33,7 +33,7 @@ __os_unlink(path)
 {
 	int ret;
 
-	ret = __db_jump.j_unlink != NULL ?
-	    __db_jump.j_unlink(path) : unlink(path);
+	ret = __edb_jump.j_unlink != NULL ?
+	    __edb_jump.j_unlink(path) : unlink(path);
 	return (ret == -1 ? errno : 0);
 }

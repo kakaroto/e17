@@ -21,7 +21,7 @@ static const char sccsid[] = "@(#)mutex.c	10.52 (Sleepycat) 11/8/98";
 #include <unistd.h>
 #endif
 
-#include "db_int.h"
+#include "edb_int.h"
 
 #ifdef HAVE_SPINLOCKS
 
@@ -130,14 +130,14 @@ static const char sccsid[] = "@(#)mutex.c	10.52 (Sleepycat) 11/8/98";
 #endif /* HAVE_SPINLOCKS */
 
 /*
- * __db_mutex_init --
+ * __edb_mutex_init --
  *	Initialize a DB mutex structure.
  *
- * PUBLIC: int __db_mutex_init __P((db_mutex_t *, u_int32_t));
+ * PUBLIC: int __edb_mutex_init __P((edb_mutex_t *, u_int32_t));
  */
 int
-__db_mutex_init(mp, off)
-	db_mutex_t *mp;
+__edb_mutex_init(mp, off)
+	edb_mutex_t *mp;
 	u_int32_t off;
 {
 #ifdef DIAGNOSTIC
@@ -148,7 +148,7 @@ __db_mutex_init(mp, off)
 		abort();
 	}
 #endif
-	memset(mp, 0, sizeof(db_mutex_t));
+	memset(mp, 0, sizeof(edb_mutex_t));
 
 #ifdef HAVE_SPINLOCKS
 	COMPQUIET(off, 0);
@@ -170,14 +170,14 @@ __db_mutex_init(mp, off)
 #define	SECOND		(MS(1000))	/* A second's worth of micro-seconds. */
 
 /*
- * __db_mutex_lock
+ * __edb_mutex_lock
  *	Lock on a mutex, logically blocking if necessary.
  *
- * PUBLIC: int __db_mutex_lock __P((db_mutex_t *, int));
+ * PUBLIC: int __edb_mutex_lock __P((edb_mutex_t *, int));
  */
 int
-__db_mutex_lock(mp, fd)
-	db_mutex_t *mp;
+__edb_mutex_lock(mp, fd)
+	edb_mutex_t *mp;
 	int fd;
 {
 	u_long usecs;
@@ -189,7 +189,7 @@ __db_mutex_lock(mp, fd)
 	int locked;
 #endif
 
-	if (!DB_GLOBAL(db_mutexlocks))
+	if (!DB_GLOBAL(edb_mutexlocks))
 		return (0);
 
 #ifdef HAVE_SPINLOCKS
@@ -202,7 +202,7 @@ __db_mutex_lock(mp, fd)
 #ifdef DIAGNOSTIC
 				if (mp->pid != 0) {
 					(void)fprintf(stderr,
-		    "MUTEX ERROR: __db_mutex_lock: lock currently locked\n");
+		    "MUTEX ERROR: __edb_mutex_lock: lock currently locked\n");
 					abort();
 				}
 				mp->pid = getpid();
@@ -272,23 +272,23 @@ __db_mutex_lock(mp, fd)
 }
 
 /*
- * __db_mutex_unlock --
+ * __edb_mutex_unlock --
  *	Release a lock.
  *
- * PUBLIC: int __db_mutex_unlock __P((db_mutex_t *, int));
+ * PUBLIC: int __edb_mutex_unlock __P((edb_mutex_t *, int));
  */
 int
-__db_mutex_unlock(mp, fd)
-	db_mutex_t *mp;
+__edb_mutex_unlock(mp, fd)
+	edb_mutex_t *mp;
 	int fd;
 {
-	if (!DB_GLOBAL(db_mutexlocks))
+	if (!DB_GLOBAL(edb_mutexlocks))
 		return (0);
 
 #ifdef DIAGNOSTIC
 	if (mp->pid == 0) {
 		(void)fprintf(stderr,
-	    "MUTEX ERROR: __db_mutex_unlock: lock already unlocked\n");
+	    "MUTEX ERROR: __edb_mutex_unlock: lock already unlocked\n");
 		abort();
 	}
 #endif

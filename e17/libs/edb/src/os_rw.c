@@ -18,7 +18,7 @@ static const char sccsid[] = "@(#)os_rw.c	10.11 (Sleepycat) 10/12/98";
 #include <unistd.h>
 #endif
 
-#include "db_int.h"
+#include "edb_int.h"
 #include "os_jump.h"
 
 /*
@@ -28,8 +28,8 @@ static const char sccsid[] = "@(#)os_rw.c	10.11 (Sleepycat) 10/12/98";
  * PUBLIC: int __os_io __P((DB_IO *, int, ssize_t *));
  */
 int
-__os_io(db_iop, op, niop)
-	DB_IO *db_iop;
+__os_io(edb_iop, op, niop)
+	DB_IO *edb_iop;
 	int op;
 	ssize_t *niop;
 {
@@ -38,41 +38,41 @@ __os_io(db_iop, op, niop)
 #ifdef HAVE_PREAD
 	switch (op) {
 	case DB_IO_READ:
-		if (__db_jump.j_read != NULL)
+		if (__edb_jump.j_read != NULL)
 			goto slow;
-		*niop = pread(db_iop->fd_io, db_iop->buf,
-		    db_iop->bytes, (off_t)db_iop->pgno * db_iop->pagesize);
+		*niop = pread(edb_iop->fd_io, edb_iop->buf,
+		    edb_iop->bytes, (off_t)edb_iop->pgno * edb_iop->pagesize);
 		break;
 	case DB_IO_WRITE:
-		if (__db_jump.j_write != NULL)
+		if (__edb_jump.j_write != NULL)
 			goto slow;
-		*niop = pwrite(db_iop->fd_io, db_iop->buf,
-		    db_iop->bytes, (off_t)db_iop->pgno * db_iop->pagesize);
+		*niop = pwrite(edb_iop->fd_io, edb_iop->buf,
+		    edb_iop->bytes, (off_t)edb_iop->pgno * edb_iop->pagesize);
 		break;
 	}
-	if (*niop == db_iop->bytes)
+	if (*niop == edb_iop->bytes)
 		return (0);
 slow:
 #endif
-	if (db_iop->mutexp != NULL)
-		(void)__db_mutex_lock(db_iop->mutexp, db_iop->fd_lock);
+	if (edb_iop->mutexp != NULL)
+		(void)__edb_mutex_lock(edb_iop->mutexp, edb_iop->fd_lock);
 
-	if ((ret = __os_seek(db_iop->fd_io,
-	    db_iop->pagesize, db_iop->pgno, 0, 0, SEEK_SET)) != 0)
+	if ((ret = __os_seek(edb_iop->fd_io,
+	    edb_iop->pagesize, edb_iop->pgno, 0, 0, SEEK_SET)) != 0)
 		goto err;
 	switch (op) {
 	case DB_IO_READ:
 		ret =
-		    __os_read(db_iop->fd_io, db_iop->buf, db_iop->bytes, niop);
+		    __os_read(edb_iop->fd_io, edb_iop->buf, edb_iop->bytes, niop);
 		break;
 	case DB_IO_WRITE:
 		ret =
-		    __os_write(db_iop->fd_io, db_iop->buf, db_iop->bytes, niop);
+		    __os_write(edb_iop->fd_io, edb_iop->buf, edb_iop->bytes, niop);
 		break;
 	}
 
-err:	if (db_iop->mutexp != NULL)
-		(void)__db_mutex_unlock(db_iop->mutexp, db_iop->fd_lock);
+err:	if (edb_iop->mutexp != NULL)
+		(void)__edb_mutex_unlock(edb_iop->mutexp, edb_iop->fd_lock);
 
 	return (ret);
 
@@ -97,8 +97,8 @@ __os_read(fd, addr, len, nrp)
 
 	for (taddr = addr,
 	    offset = 0; offset < len; taddr += nr, offset += nr) {
-		if ((nr = __db_jump.j_read != NULL ?
-		    __db_jump.j_read(fd, taddr, len - offset) :
+		if ((nr = __edb_jump.j_read != NULL ?
+		    __edb_jump.j_read(fd, taddr, len - offset) :
 		    read(fd, taddr, len - offset)) < 0)
 			return (errno);
 		if (nr == 0)
@@ -127,8 +127,8 @@ __os_write(fd, addr, len, nwp)
 
 	for (taddr = addr,
 	    offset = 0; offset < len; taddr += nw, offset += nw)
-		if ((nw = __db_jump.j_write != NULL ?
-		    __db_jump.j_write(fd, taddr, len - offset) :
+		if ((nw = __edb_jump.j_write != NULL ?
+		    __edb_jump.j_write(fd, taddr, len - offset) :
 		    write(fd, taddr, len - offset)) < 0)
 			return (errno);
 	*nwp = len;

@@ -55,15 +55,15 @@ static const char sccsid[] = "@(#)txn.c	10.66 (Sleepycat) 1/3/99";
 #include <time.h>
 #endif
 
-#include "db_int.h"
+#include "edb_int.h"
 #include "shqueue.h"
-#include "db_page.h"
-#include "db_shash.h"
+#include "edb_page.h"
+#include "edb_shash.h"
 #include "txn.h"
-#include "db_dispatch.h"
+#include "edb_dispatch.h"
 #include "lock.h"
 #include "log.h"
-#include "db_am.h"
+#include "edb_am.h"
 #include "common_ext.h"
 
 static int  __txn_begin __P((DB_TXN *));
@@ -77,8 +77,8 @@ static int  __txn_validate_region __P((DB_TXNMGR *));
 
 /*
  * This file contains the top level routines of the transaction library.
- * It assumes that a lock manager and log manager that conform to the db_log(3)
- * and db_lock(3) interfaces exist.
+ * It assumes that a lock manager and log manager that conform to the edb_log(3)
+ * and edb_lock(3) interfaces exist.
  *
  * Initialize a transaction region in shared memory.
  * Return 0 on success, errno on failure.
@@ -105,18 +105,18 @@ __txn_init(txn_region)
 	ZERO_LSN(txn_region->last_ckp);
 	ZERO_LSN(txn_region->pending_ckp);
 	SH_TAILQ_INIT(&txn_region->active_txn);
-	__db_shalloc_init((void *)&txn_region[1],
+	__edb_shalloc_init((void *)&txn_region[1],
 	    TXN_REGION_SIZE(txn_region->maxtxns) - sizeof(DB_TXNREGION));
 
 	return (0);
 }
 
 int
-txn_open(path, flags, mode, dbenv, mgrpp)
+txn_open(path, flags, mode, edbenv, mgrpp)
 	const char *path;
 	u_int32_t flags;
 	int mode;
-	DB_ENV *dbenv;
+	DB_ENV *edbenv;
 	DB_TXNMGR **mgrpp;
 {
 	DB_TXNMGR *tmgrp;
@@ -124,17 +124,17 @@ txn_open(path, flags, mode, dbenv, mgrpp)
 	int ret;
 
 	/* Validate arguments. */
-	if (dbenv == NULL)
+	if (edbenv == NULL)
 		return (EINVAL);
 #ifdef HAVE_SPINLOCKS
 #define	OKFLAGS	(DB_CREATE | DB_THREAD | DB_TXN_NOSYNC)
 #else
 #define	OKFLAGS	(DB_CREATE | DB_TXN_NOSYNC)
 #endif
-	if ((ret = __db_fchk(dbenv, "txn_open", flags, OKFLAGS)) != 0)
+	if ((ret = __edb_fchk(edbenv, "txn_open", flags, OKFLAGS)) != 0)
 		return (ret);
 
-	maxtxns = dbenv->tx_max != 0 ? dbenv->tx_max : 20;
+	maxtxns = edbenv->tx_max != 0 ? edbenv->tx_max : 20;
 
 	/* Now, create the transaction manager structure and set its fields. */
 	if ((ret = __os_calloc(1, sizeof(DB_TXNMGR), &tmgrp)) != 0)
@@ -142,14 +142,14 @@ txn_open(path, flags, mode, dbenv, mgrpp)
 
 	/* Initialize the transaction manager structure. */
 	tmgrp->mutexp = NULL;
-	tmgrp->dbenv = dbenv;
+	tmgrp->edbenv = edbenv;
 	tmgrp->recover =
-	    dbenv->tx_recover == NULL ? __db_dispatch : dbenv->tx_recover;
+	    edbenv->tx_recover == NULL ? __edb_dispatch : edbenv->tx_recover;
 	tmgrp->flags = LF_ISSET(DB_TXN_NOSYNC | DB_THREAD);
 	TAILQ_INIT(&tmgrp->txn_chain);
 
 	/* Join/create the txn region. */
-	tmgrp->reginfo.dbenv = dbenv;
+	tmgrp->reginfo.edbenv = edbenv;
 	tmgrp->reginfo.appname = DB_APP_NONE;
 	if (path == NULL)
 		tmgrp->reginfo.path = NULL;
@@ -159,11 +159,11 @@ txn_open(path, flags, mode, dbenv, mgrpp)
 	tmgrp->reginfo.file = DEFAULT_TXN_FILE;
 	tmgrp->reginfo.mode = mode;
 	tmgrp->reginfo.size = TXN_REGION_SIZE(maxtxns);
-	tmgrp->reginfo.dbflags = flags;
+	tmgrp->reginfo.edbflags = flags;
 	tmgrp->reginfo.addr = NULL;
 	tmgrp->reginfo.fd = -1;
-	tmgrp->reginfo.flags = dbenv->tx_max == 0 ? REGION_SIZEDEF : 0;
-	if ((ret = __db_rattach(&tmgrp->reginfo)) != 0)
+	tmgrp->reginfo.flags = edbenv->tx_max == 0 ? REGION_SIZEDEF : 0;
+	if ((ret = __edb_rattach(&tmgrp->reginfo)) != 0)
 		goto err;
 
 	/* Fill in region-related fields. */
@@ -177,20 +177,20 @@ txn_open(path, flags, mode, dbenv, mgrpp)
 
 	} else if (tmgrp->region->magic != DB_TXNMAGIC) {
 		/* Check if valid region. */
-		__db_err(dbenv, "txn_open: Bad magic number");
+		__edb_err(edbenv, "txn_open: Bad magic number");
 		ret = EINVAL;
 		goto err;
 	}
 
 	if (LF_ISSET(DB_THREAD)) {
-		if ((ret = __db_shalloc(tmgrp->mem, sizeof(db_mutex_t),
+		if ((ret = __edb_shalloc(tmgrp->mem, sizeof(edb_mutex_t),
 		    MUTEX_ALIGNMENT, &tmgrp->mutexp)) == 0)
 			/*
 			 * Since we only get here if threading is turned on, we
 			 * know that we have spinlocks, so the offset is going
 			 * to be ignored.  We put 0 here as a valid placeholder.
 			 */
-			__db_mutex_init(tmgrp->mutexp, 0);
+			__edb_mutex_init(tmgrp->mutexp, 0);
 		if (ret != 0)
 			goto err;
 	}
@@ -201,12 +201,12 @@ txn_open(path, flags, mode, dbenv, mgrpp)
 
 err:	if (tmgrp->reginfo.addr != NULL) {
 		if (tmgrp->mutexp != NULL)
-			__db_shalloc_free(tmgrp->mem, tmgrp->mutexp);
+			__edb_shalloc_free(tmgrp->mem, tmgrp->mutexp);
 
 		UNLOCK_TXNREGION(tmgrp);
-		(void)__db_rdetach(&tmgrp->reginfo);
+		(void)__edb_rdetach(&tmgrp->reginfo);
 		if (F_ISSET(&tmgrp->reginfo, REGION_CREATED))
-			(void)txn_unlink(path, 1, dbenv);
+			(void)txn_unlink(path, 1, edbenv);
 	}
 
 	if (tmgrp->reginfo.path != NULL)
@@ -222,11 +222,11 @@ err:	if (tmgrp->reginfo.addr != NULL) {
  * PUBLIC: void __txn_panic __P((DB_ENV *));
  */
 void
-__txn_panic(dbenv)
-	DB_ENV *dbenv;
+__txn_panic(edbenv)
+	DB_ENV *edbenv;
 {
-	if (dbenv->tx_info != NULL)
-		dbenv->tx_info->region->hdr.panic = 1;
+	if (edbenv->tx_info != NULL)
+		edbenv->tx_info->region->hdr.panic = 1;
 }
 
 /*
@@ -273,15 +273,15 @@ txn_begin(tmgrp, parent, txnpp)
  * PUBLIC: int __txn_xa_begin __P((DB_ENV *, DB_TXN *));
  */
 int
-__txn_xa_begin(dbenv, txn)
-	DB_ENV *dbenv;
+__txn_xa_begin(edbenv, txn)
+	DB_ENV *edbenv;
 	DB_TXN *txn;
 {
-	TXN_PANIC_CHECK(dbenv->tx_info);
+	TXN_PANIC_CHECK(edbenv->tx_info);
 
 	memset(txn, 0, sizeof(DB_TXN));
 
-	txn->mgrp = dbenv->tx_info;
+	txn->mgrp = edbenv->tx_info;
 
 	return (__txn_begin(txn));
 }
@@ -308,15 +308,15 @@ __txn_begin(txn)
 	 * transaction structure, so we can know where to take checkpoints.
 	 */
 	mgr = txn->mgrp;
-	if (mgr->dbenv->lg_info != NULL && (ret =
-	    log_put(mgr->dbenv->lg_info, &begin_lsn, NULL, DB_CURLSN)) != 0)
+	if (mgr->edbenv->lg_info != NULL && (ret =
+	    log_put(mgr->edbenv->lg_info, &begin_lsn, NULL, DB_CURLSN)) != 0)
 		goto err2;
 
 	LOCK_TXNREGION(mgr);
 
 	/* Make sure that last_txnid is not going to wrap around. */
 	if (mgr->region->last_txnid == TXN_INVALID) {
-		__db_err(mgr->dbenv, "txn_begin: %s  %s",
+		__edb_err(mgr->edbenv, "txn_begin: %s  %s",
 		    "Transaction ID wrapping.",
 		    "Snapshot your database and start a new log.");
 		ret = EINVAL;
@@ -327,9 +327,9 @@ __txn_begin(txn)
 		goto err1;
 
 	/* Allocate a new transaction detail structure. */
-	if ((ret = __db_shalloc(mgr->mem, sizeof(TXN_DETAIL), 0, &td)) != 0
+	if ((ret = __edb_shalloc(mgr->mem, sizeof(TXN_DETAIL), 0, &td)) != 0
 	    && ret == ENOMEM && (ret = __txn_grow_region(mgr)) == 0)
-	    	ret = __db_shalloc(mgr->mem, sizeof(TXN_DETAIL), 0, &td);
+	    	ret = __edb_shalloc(mgr->mem, sizeof(TXN_DETAIL), 0, &td);
 	if (ret != 0)
 		goto err1;
 
@@ -393,7 +393,7 @@ txn_commit(txnp)
 	 * since if its parent aborts, it will abort too and its parent
 	 * (or ultimate ancestor) will write synchronously.
 	 */
-	if ((logp = mgr->dbenv->lg_info) != NULL &&
+	if ((logp = mgr->edbenv->lg_info) != NULL &&
 	    !IS_ZERO_LSN(txnp->last_lsn)) {
 		if (txnp->parent == NULL)
 	    		ret = __txn_regop_log(logp, txnp, &txnp->last_lsn,
@@ -439,7 +439,7 @@ txn_abort(txnp)
 		txn_abort(kids);
 
 	if ((ret = __txn_undo(txnp)) != 0) {
-		__db_err(txnp->mgrp->dbenv,
+		__edb_err(txnp->mgrp->edbenv,
 		    "txn_abort: Log undo failed %s", strerror(ret));
 		return (ret);
 	}
@@ -455,14 +455,14 @@ txn_prepare(txnp)
 	DB_TXN *txnp;
 {
 	DBT xid;
-	DB_ENV *dbenv;
+	DB_ENV *edbenv;
 	TXN_DETAIL *td;
 	int ret;
 
 	if ((ret = __txn_check_running(txnp, &td)) != 0)
 		return (ret);
 
-	dbenv = txnp->mgrp->dbenv;
+	edbenv = txnp->mgrp->edbenv;
 	memset(&xid, 0, sizeof(xid));
 	xid.data = td->xid;
 	/*
@@ -475,11 +475,11 @@ txn_prepare(txnp)
 	xid.size =
 	    td->xa_status != TXN_XA_ENDED && td->xa_status != TXN_XA_SUSPENDED ?
 	    0 : sizeof(td->xid);
-	if (dbenv->lg_info != NULL &&
-	    (ret = __txn_xa_regop_log(dbenv->lg_info, txnp, &txnp->last_lsn,
+	if (edbenv->lg_info != NULL &&
+	    (ret = __txn_xa_regop_log(edbenv->lg_info, txnp, &txnp->last_lsn,
 	    F_ISSET(txnp->mgrp, DB_TXN_NOSYNC) ? 0 : DB_FLUSH, TXN_PREPARE,
 	    &xid, td->format, td->gtrid, td->bqual, &td->begin_lsn)) != 0) {
-		__db_err(dbenv,
+		__edb_err(edbenv,
 		    "txn_prepare: log_write failed %s\n", strerror(ret));
 		return (ret);
 	}
@@ -528,17 +528,17 @@ txn_close(tmgrp)
 				ret = t_ret;
 		}
 
-	if (tmgrp->dbenv->lg_info &&
-	    (t_ret = log_flush(tmgrp->dbenv->lg_info, NULL)) != 0 && ret == 0)
+	if (tmgrp->edbenv->lg_info &&
+	    (t_ret = log_flush(tmgrp->edbenv->lg_info, NULL)) != 0 && ret == 0)
 		ret = t_ret;
 
 	if (tmgrp->mutexp != NULL) {
 		LOCK_TXNREGION(tmgrp);
-		__db_shalloc_free(tmgrp->mem, tmgrp->mutexp);
+		__edb_shalloc_free(tmgrp->mem, tmgrp->mutexp);
 		UNLOCK_TXNREGION(tmgrp);
 	}
 
-	if ((t_ret = __db_rdetach(&tmgrp->reginfo)) != 0 && ret == 0)
+	if ((t_ret = __edb_rdetach(&tmgrp->reginfo)) != 0 && ret == 0)
 		ret = t_ret;
 
 	if (tmgrp->reginfo.path != NULL)
@@ -553,21 +553,21 @@ txn_close(tmgrp)
  *	Remove the transaction region.
  */
 int
-txn_unlink(path, force, dbenv)
+txn_unlink(path, force, edbenv)
 	const char *path;
 	int force;
-	DB_ENV *dbenv;
+	DB_ENV *edbenv;
 {
 	REGINFO reginfo;
 	int ret;
 
 	memset(&reginfo, 0, sizeof(reginfo));
-	reginfo.dbenv = dbenv;
+	reginfo.edbenv = edbenv;
 	reginfo.appname = DB_APP_NONE;
 	if (path != NULL && (ret = __os_strdup(path, &reginfo.path)) != 0)
 		return (ret);
 	reginfo.file = DEFAULT_TXN_FILE;
-	ret = __db_runlink(&reginfo, force);
+	ret = __edb_runlink(&reginfo, force);
 	if (reginfo.path != NULL)
 		__os_freestr(reginfo.path);
 	return (ret);
@@ -619,11 +619,11 @@ __txn_end(txnp, is_commit)
 	request.op = txnp->parent == NULL ||
 	    is_commit == 0 ? DB_LOCK_PUT_ALL : DB_LOCK_INHERIT;
 
-	if (mgr->dbenv->lk_info) {
+	if (mgr->edbenv->lk_info) {
 		ret =
-		    lock_tvec(mgr->dbenv->lk_info, txnp, 0, &request, 1, NULL);
+		    lock_tvec(mgr->edbenv->lk_info, txnp, 0, &request, 1, NULL);
 		if (ret != 0 && (ret != DB_LOCK_DEADLOCK || is_commit)) {
-			__db_err(mgr->dbenv, "%s: release locks failed %s",
+			__edb_err(mgr->edbenv, "%s: release locks failed %s",
 			    is_commit ? "txn_commit" : "txn_abort",
 			    strerror(ret));
 			return (ret);
@@ -643,7 +643,7 @@ __txn_end(txnp, is_commit)
 		SH_TAILQ_REMOVE(&mgr->region->active_txn,
 		    tp, links, __txn_detail);
 
-		__db_shalloc_free(mgr->mem, tp);
+		__edb_shalloc_free(mgr->mem, tp);
 	} else
 		tp->status = is_commit ? TXN_COMMITTED : TXN_ABORTED;
 
@@ -684,14 +684,14 @@ static int
 __txn_undo(txnp)
 	DB_TXN *txnp;
 {
-	DBT rdbt;
+	DBT redbt;
 	DB_LOG *logp;
 	DB_LSN key_lsn;
 	DB_TXNMGR *mgr;
 	int ret;
 
 	mgr = txnp->mgrp;
-	logp = mgr->dbenv->lg_info;
+	logp = mgr->edbenv->lg_info;
 	if (logp == NULL)
 		return (0);
 
@@ -700,9 +700,9 @@ __txn_undo(txnp)
 	 * recovery turn out to be a performance issue, we can do the
 	 * allocation here and use DB_DBT_USERMEM.
 	 */
-	memset(&rdbt, 0, sizeof(rdbt));
+	memset(&redbt, 0, sizeof(redbt));
 	if (F_ISSET(logp, DB_AM_THREAD))
-		F_SET(&rdbt, DB_DBT_MALLOC);
+		F_SET(&redbt, DB_DBT_MALLOC);
 
 	key_lsn = txnp->last_lsn;		/* structure assignment */
 	for (ret = 0; ret == 0 && !IS_ZERO_LSN(key_lsn);) {
@@ -710,12 +710,12 @@ __txn_undo(txnp)
 		 * The dispatch routine returns the lsn of the record
 		 * before the current one in the key_lsn argument.
 		 */
-		if ((ret = log_get(logp, &key_lsn, &rdbt, DB_SET)) == 0) {
+		if ((ret = log_get(logp, &key_lsn, &redbt, DB_SET)) == 0) {
 			ret =
-			    mgr->recover(logp, &rdbt, &key_lsn, TXN_UNDO, NULL);
-			if (F_ISSET(logp, DB_AM_THREAD) && rdbt.data != NULL) {
-				__os_free(rdbt.data, rdbt.size);
-				rdbt.data = NULL;
+			    mgr->recover(logp, &redbt, &key_lsn, TXN_UNDO, NULL);
+			if (F_ISSET(logp, DB_AM_THREAD) && redbt.data != NULL) {
+				__os_free(redbt.data, redbt.size);
+				redbt.data = NULL;
 			}
 		}
 		if (ret != 0)
@@ -740,7 +740,7 @@ txn_checkpoint(mgr, kbytes, minutes)
 	const DB_TXNMGR *mgr;
 	u_int32_t kbytes, minutes;
 {
-	DB_LOG *dblp;
+	DB_LOG *edblp;
 	DB_LSN ckp_lsn, sync_lsn, last_ckp;
 	TXN_DETAIL *txnp;
 	time_t last_ckp_time, now;
@@ -765,13 +765,13 @@ txn_checkpoint(mgr, kbytes, minutes)
 	}
 
 	if (kbytes != 0) {
-		dblp = mgr->dbenv->lg_info;
-		LOCK_LOGREGION(dblp);
+		edblp = mgr->edbenv->lg_info;
+		LOCK_LOGREGION(edblp);
 		kbytes_written =
-		    dblp->lp->stat.st_wc_mbytes * 1024 +
-		    dblp->lp->stat.st_wc_bytes / 1024;
-		ckp_lsn = dblp->lp->lsn;
-		UNLOCK_LOGREGION(dblp);
+		    edblp->lp->stat.st_wc_mbytes * 1024 +
+		    edblp->lp->stat.st_wc_bytes / 1024;
+		ckp_lsn = edblp->lp->lsn;
+		UNLOCK_LOGREGION(edblp);
 		if (kbytes_written >= (u_int32_t)kbytes)
 			goto do_ckp;
 	}
@@ -785,10 +785,10 @@ txn_checkpoint(mgr, kbytes, minutes)
 
 do_ckp:
 	if (IS_ZERO_LSN(ckp_lsn)) {
-		dblp = mgr->dbenv->lg_info;
-		LOCK_LOGREGION(dblp);
-		ckp_lsn = dblp->lp->lsn;
-		UNLOCK_LOGREGION(dblp);
+		edblp = mgr->edbenv->lg_info;
+		LOCK_LOGREGION(edblp);
+		ckp_lsn = edblp->lp->lsn;
+		UNLOCK_LOGREGION(edblp);
 	}
 
 	/*
@@ -822,27 +822,27 @@ do_ckp:
 	 * the actual ckp_lsn, pass it a temp instead.
 	 */
 	sync_lsn = ckp_lsn;
-	if (mgr->dbenv->mp_info != NULL &&
-	    (ret = memp_sync(mgr->dbenv->mp_info, &sync_lsn)) != 0) {
+	if (mgr->edbenv->mp_info != NULL &&
+	    (ret = memp_sync(mgr->edbenv->mp_info, &sync_lsn)) != 0) {
 		/*
 		 * ret == DB_INCOMPLETE means that there are still buffers to
 		 * flush, the checkpoint is not complete.  Wait and try again.
 		 */
 		if (ret > 0)
-			__db_err(mgr->dbenv,
+			__edb_err(mgr->edbenv,
 			    "txn_checkpoint: system failure in memp_sync %s\n",
 			    strerror(ret));
 		return (ret);
 	}
-	if (mgr->dbenv->lg_info != NULL) {
+	if (mgr->edbenv->lg_info != NULL) {
 		LOCK_TXNREGION(mgr);
 		last_ckp = mgr->region->last_ckp;
 		ZERO_LSN(mgr->region->pending_ckp);
 		UNLOCK_TXNREGION(mgr);
 
-		if ((ret = __txn_ckp_log(mgr->dbenv->lg_info,
+		if ((ret = __txn_ckp_log(mgr->edbenv->lg_info,
 		   NULL, &ckp_lsn, DB_CHECKPOINT, &ckp_lsn, &last_ckp)) != 0) {
-			__db_err(mgr->dbenv,
+			__edb_err(mgr->edbenv,
 			    "txn_checkpoint: log failed at LSN [%ld %ld] %s\n",
 			    (long)ckp_lsn.file, (long)ckp_lsn.offset,
 			    strerror(ret));
@@ -872,7 +872,7 @@ __txn_validate_region(tp)
 		return (0);
 
 	/* Detach/reattach the region. */
-	if ((ret = __db_rreattach(&tp->reginfo, tp->region->hdr.size)) != 0)
+	if ((ret = __edb_rreattach(&tp->reginfo, tp->region->hdr.size)) != 0)
 		return (ret);
 
 	/* Reset region information. */
@@ -897,7 +897,7 @@ __txn_grow_region(tp)
 	    (u_int8_t *)tp->mutexp - (u_int8_t *)tp->region : 0;
 
 	oldsize = tp->reginfo.size;
-	if ((ret = __db_rgrow(&tp->reginfo, oldsize + incr)) != 0)
+	if ((ret = __edb_rgrow(&tp->reginfo, oldsize + incr)) != 0)
 		return (ret);
 	tp->region = tp->reginfo.addr;
 
@@ -905,11 +905,11 @@ __txn_grow_region(tp)
 	curaddr = (u_int8_t *)tp->region + oldsize;
 	tp->mem = &tp->region[1];
 	tp->mutexp = mutex_offset != 0 ?
-	    (db_mutex_t *)((u_int8_t *)tp->region + mutex_offset) : NULL;
+	    (edb_mutex_t *)((u_int8_t *)tp->region + mutex_offset) : NULL;
 
 	*((size_t *)curaddr) = incr - sizeof(size_t);
 	curaddr += sizeof(size_t);
-	__db_shalloc_free(tp->mem, curaddr);
+	__edb_shalloc_free(tp->mem, curaddr);
 
 	tp->region->maxtxns = 2 * oldmax;
 
@@ -917,10 +917,10 @@ __txn_grow_region(tp)
 }
 
 int
-txn_stat(mgr, statp, db_malloc)
+txn_stat(mgr, statp, edb_malloc)
 	DB_TXNMGR *mgr;
 	DB_TXN_STAT **statp;
-	void *(*db_malloc) __P((size_t));
+	void *(*edb_malloc) __P((size_t));
 {
 	DB_TXN_STAT *stats;
 	TXN_DETAIL *txnp;
@@ -940,7 +940,7 @@ txn_stat(mgr, statp, db_malloc)
 	 * that have been created since we unlocked the region.
 	 */
 	nbytes = sizeof(DB_TXN_STAT) + sizeof(DB_TXN_ACTIVE) * (nactive + 200);
-	if ((ret = __os_malloc(nbytes, db_malloc, &stats)) != 0)
+	if ((ret = __os_malloc(nbytes, edb_malloc, &stats)) != 0)
 		return (ret);
 
 	LOCK_TXNREGION(mgr);
@@ -1002,7 +1002,7 @@ __txn_freekids(txnp)
 		SH_TAILQ_REMOVE(&mgr->region->active_txn,
 		    tp, links, __txn_detail);
 
-		__db_shalloc_free(mgr->mem, tp);
+		__edb_shalloc_free(mgr->mem, tp);
 		UNLOCK_TXNREGION(mgr);
 
 		/* Now remove from its parent. */

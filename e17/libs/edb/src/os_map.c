@@ -26,7 +26,7 @@ static const char sccsid[] = "@(#)os_map.c	10.24 (Sleepycat) 10/12/98";
 #include <string.h>
 #endif
 
-#include "db_int.h"
+#include "edb_int.h"
 #include "os_jump.h"
 #include "common_ext.h"
 
@@ -38,13 +38,13 @@ static int __os_shmget __P((REGINFO *));
 #endif
 
 /*
- * __db_mapanon_ok --
+ * __edb_mapanon_ok --
  *	Return if this OS can support anonymous memory regions.
  *
- * PUBLIC: int __db_mapanon_ok __P((int));
+ * PUBLIC: int __edb_mapanon_ok __P((int));
  */
 int
-__db_mapanon_ok(need_names)
+__edb_mapanon_ok(need_names)
 	int need_names;
 {
 	int ret;
@@ -84,13 +84,13 @@ __db_mapanon_ok(need_names)
 }
 
 /*
- * __db_mapinit --
+ * __edb_mapinit --
  *	Return if shared regions need to be initialized.
  *
- * PUBLIC: int __db_mapinit __P((void));
+ * PUBLIC: int __edb_mapinit __P((void));
  */
 int
-__db_mapinit()
+__edb_mapinit()
 {
 	/*
 	 * Historically, some systems required that all of the bytes of the
@@ -106,13 +106,13 @@ __db_mapinit()
 }
 
 /*
- * __db_mapregion --
+ * __edb_mapregion --
  *	Attach to a shared memory region.
  *
- * PUBLIC: int __db_mapregion __P((char *, REGINFO *));
+ * PUBLIC: int __edb_mapregion __P((char *, REGINFO *));
  */
 int
-__db_mapregion(path, infop)
+__edb_mapregion(path, infop)
 	char *path;
 	REGINFO *infop;
 {
@@ -122,9 +122,9 @@ __db_mapregion(path, infop)
 	ret = EINVAL;
 
 	/* If the user replaces the map call, call through their interface. */
-	if (__db_jump.j_map != NULL) {
+	if (__edb_jump.j_map != NULL) {
 		F_SET(infop, REGION_HOLDINGSYS);
-		return (__db_jump.j_map(path, infop->fd, infop->size,
+		return (__edb_jump.j_map(path, infop->fd, infop->size,
 		    1, F_ISSET(infop, REGION_ANONYMOUS), 0, &infop->addr));
 	}
 
@@ -178,7 +178,7 @@ __db_mapregion(path, infop)
 			called = 1;
 
 			if (!F_ISSET(infop, REGION_CREATED)) {
-				__db_err(infop->dbenv,
+				__edb_err(infop->edbenv,
 			    "cannot join region in unnamed anonymous memory");
 				return (EINVAL);
 			}
@@ -216,13 +216,13 @@ __db_mapregion(path, infop)
 }
 
 /*
- * __db_unmapregion --
+ * __edb_unmapregion --
  *	Detach from the shared memory region.
  *
- * PUBLIC: int __db_unmapregion __P((REGINFO *));
+ * PUBLIC: int __edb_unmapregion __P((REGINFO *));
  */
 int
-__db_unmapregion(infop)
+__edb_unmapregion(infop)
 	REGINFO *infop;
 {
 	int called, ret;
@@ -230,8 +230,8 @@ __db_unmapregion(infop)
 	called = 0;
 	ret = EINVAL;
 
-	if (__db_jump.j_unmap != NULL)
-		return (__db_jump.j_unmap(infop->addr, infop->size));
+	if (__edb_jump.j_unmap != NULL)
+		return (__edb_jump.j_unmap(infop->addr, infop->size));
 
 #ifdef HAVE_SHMGET
 	if (infop->segid != INVALID_SEGID) {
@@ -249,13 +249,13 @@ __db_unmapregion(infop)
 }
 
 /*
- * __db_unlinkregion --
+ * __edb_unlinkregion --
  *	Remove the shared memory region.
  *
- * PUBLIC: int __db_unlinkregion __P((char *, REGINFO *));
+ * PUBLIC: int __edb_unlinkregion __P((char *, REGINFO *));
  */
 int
-__db_unlinkregion(name, infop)
+__edb_unlinkregion(name, infop)
 	char *name;
 	REGINFO *infop;
 {
@@ -264,8 +264,8 @@ __db_unlinkregion(name, infop)
 	called = 0;
 	ret = EINVAL;
 
-	if (__db_jump.j_runlink != NULL)
-		return (__db_jump.j_runlink(name));
+	if (__edb_jump.j_runlink != NULL)
+		return (__edb_jump.j_runlink(name));
 
 #ifdef HAVE_SHMGET
 	if (infop->segid != INVALID_SEGID) {
@@ -284,20 +284,20 @@ __db_unlinkregion(name, infop)
 }
 
 /*
- * __db_mapfile --
+ * __edb_mapfile --
  *	Map in a shared memory file.
  *
- * PUBLIC: int __db_mapfile __P((char *, int, size_t, int, void **));
+ * PUBLIC: int __edb_mapfile __P((char *, int, size_t, int, void **));
  */
 int
-__db_mapfile(path, fd, len, is_rdonly, addr)
+__edb_mapfile(path, fd, len, is_rdonly, addr)
 	char *path;
 	int fd, is_rdonly;
 	size_t len;
 	void **addr;
 {
-	if (__db_jump.j_map != NULL)
-		return (__db_jump.j_map(path, fd, len, 0, 0, is_rdonly, addr));
+	if (__edb_jump.j_map != NULL)
+		return (__edb_jump.j_map(path, fd, len, 0, 0, is_rdonly, addr));
 
 #ifdef HAVE_MMAP
 	return (__os_map(path, fd, len, 0, 0, is_rdonly, addr));
@@ -307,18 +307,18 @@ __db_mapfile(path, fd, len, is_rdonly, addr)
 }
 
 /*
- * __db_unmapfile --
+ * __edb_unmapfile --
  *	Unmap the shared memory file.
  *
- * PUBLIC: int __db_unmapfile __P((void *, size_t));
+ * PUBLIC: int __edb_unmapfile __P((void *, size_t));
  */
 int
-__db_unmapfile(addr, len)
+__edb_unmapfile(addr, len)
 	void *addr;
 	size_t len;
 {
-	if (__db_jump.j_unmap != NULL)
-		return (__db_jump.j_unmap(addr, len));
+	if (__edb_jump.j_unmap != NULL)
+		return (__edb_jump.j_unmap(addr, len));
 
 #ifdef HAVE_MMAP
 	return (munmap(addr, len) ? errno : 0);

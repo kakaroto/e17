@@ -19,9 +19,9 @@ static const char sccsid[] = "@(#)lock_region.c	10.21 (Sleepycat) 10/19/98";
 #include <string.h>
 #endif
 
-#include "db_int.h"
+#include "edb_int.h"
 #include "shqueue.h"
-#include "db_shash.h"
+#include "edb_shash.h"
 #include "lock.h"
 #include "common_ext.h"
 
@@ -30,16 +30,16 @@ static u_int32_t __lock_count_objs __P((DB_LOCKREGION *));
 static void	 __lock_dump_locker __P((DB_LOCKTAB *, DB_LOCKOBJ *, FILE *));
 static void	 __lock_dump_object __P((DB_LOCKTAB *, DB_LOCKOBJ *, FILE *));
 static const char *
-		 __lock_dump_status __P((db_status_t));
+		 __lock_dump_status __P((edb_status_t));
 static void	 __lock_reset_region __P((DB_LOCKTAB *));
 static int	 __lock_tabinit __P((DB_ENV *, DB_LOCKREGION *));
 
 int
-lock_open(path, flags, mode, dbenv, ltp)
+lock_open(path, flags, mode, edbenv, ltp)
 	const char *path;
 	u_int32_t flags;
 	int mode;
-	DB_ENV *dbenv;
+	DB_ENV *edbenv;
 	DB_LOCKTAB **ltp;
 {
 	DB_LOCKTAB *lt;
@@ -52,31 +52,31 @@ lock_open(path, flags, mode, dbenv, ltp)
 #else
 #define	OKFLAGS	(DB_CREATE)
 #endif
-	if ((ret = __db_fchk(dbenv, "lock_open", flags, OKFLAGS)) != 0)
+	if ((ret = __edb_fchk(edbenv, "lock_open", flags, OKFLAGS)) != 0)
 		return (ret);
 
 	/* Create the lock table structure. */
 	if ((ret = __os_calloc(1, sizeof(DB_LOCKTAB), &lt)) != 0)
 		return (ret);
-	lt->dbenv = dbenv;
+	lt->edbenv = edbenv;
 
 	/* Grab the values that we need to compute the region size. */
 	lock_modes = DB_LOCK_RW_N;
 	maxlocks = DB_LOCK_DEFAULT_N;
 	regflags = REGION_SIZEDEF;
-	if (dbenv != NULL) {
-		if (dbenv->lk_modes != 0) {
-			lock_modes = dbenv->lk_modes;
+	if (edbenv != NULL) {
+		if (edbenv->lk_modes != 0) {
+			lock_modes = edbenv->lk_modes;
 			regflags = 0;
 		}
-		if (dbenv->lk_max != 0) {
-			maxlocks = dbenv->lk_max;
+		if (edbenv->lk_max != 0) {
+			maxlocks = edbenv->lk_max;
 			regflags = 0;
 		}
 	}
 
 	/* Join/create the lock region. */
-	lt->reginfo.dbenv = dbenv;
+	lt->reginfo.edbenv = edbenv;
 	lt->reginfo.appname = DB_APP_NONE;
 	if (path == NULL)
 		lt->reginfo.path = NULL;
@@ -86,13 +86,13 @@ lock_open(path, flags, mode, dbenv, ltp)
 	lt->reginfo.file = DB_DEFAULT_LOCK_FILE;
 	lt->reginfo.mode = mode;
 	lt->reginfo.size =
-	    LOCK_REGION_SIZE(lock_modes, maxlocks, __db_tablesize(maxlocks));
-	lt->reginfo.dbflags = flags;
+	    LOCK_REGION_SIZE(lock_modes, maxlocks, __edb_tablesize(maxlocks));
+	lt->reginfo.edbflags = flags;
 	lt->reginfo.addr = NULL;
 	lt->reginfo.fd = -1;
 	lt->reginfo.flags = regflags;
 
-	if ((ret = __db_rattach(&lt->reginfo)) != 0)
+	if ((ret = __edb_rattach(&lt->reginfo)) != 0)
 		goto err;
 
 	/* Now set up the pointer to the region. */
@@ -102,12 +102,12 @@ lock_open(path, flags, mode, dbenv, ltp)
 	if (F_ISSET(&lt->reginfo, REGION_CREATED)) {
 		lt->region->maxlocks = maxlocks;
 		lt->region->nmodes = lock_modes;
-		if ((ret = __lock_tabinit(dbenv, lt->region)) != 0)
+		if ((ret = __lock_tabinit(edbenv, lt->region)) != 0)
 			goto err;
 	} else {
 		/* Check for an unexpected region. */
 		if (lt->region->magic != DB_LOCKMAGIC) {
-			__db_err(dbenv,
+			__edb_err(edbenv,
 			    "lock_open: %s: bad magic number", path);
 			ret = EINVAL;
 			goto err;
@@ -115,17 +115,17 @@ lock_open(path, flags, mode, dbenv, ltp)
 	}
 
 	/* Check for automatic deadlock detection. */
-	if (dbenv != NULL && dbenv->lk_detect != DB_LOCK_NORUN) {
+	if (edbenv != NULL && edbenv->lk_detect != DB_LOCK_NORUN) {
 		if (lt->region->detect != DB_LOCK_NORUN &&
-		    dbenv->lk_detect != DB_LOCK_DEFAULT &&
-		    lt->region->detect != dbenv->lk_detect) {
-			__db_err(dbenv,
+		    edbenv->lk_detect != DB_LOCK_DEFAULT &&
+		    lt->region->detect != edbenv->lk_detect) {
+			__edb_err(edbenv,
 		    "lock_open: incompatible deadlock detector mode");
 			ret = EINVAL;
 			goto err;
 		}
 		if (lt->region->detect == DB_LOCK_NORUN)
-			lt->region->detect = dbenv->lk_detect;
+			lt->region->detect = edbenv->lk_detect;
 	}
 
 	/* Set up remaining pointers into region. */
@@ -140,9 +140,9 @@ lock_open(path, flags, mode, dbenv, ltp)
 
 err:	if (lt->reginfo.addr != NULL) {
 		UNLOCK_LOCKREGION(lt);
-		(void)__db_rdetach(&lt->reginfo);
+		(void)__edb_rdetach(&lt->reginfo);
 		if (F_ISSET(&lt->reginfo, REGION_CREATED))
-			(void)lock_unlink(path, 1, dbenv);
+			(void)lock_unlink(path, 1, edbenv);
 	}
 
 	if (lt->reginfo.path != NULL)
@@ -158,11 +158,11 @@ err:	if (lt->reginfo.addr != NULL) {
  * PUBLIC: void __lock_panic __P((DB_ENV *));
  */
 void
-__lock_panic(dbenv)
-	DB_ENV *dbenv;
+__lock_panic(edbenv)
+	DB_ENV *edbenv;
 {
-	if (dbenv->lk_info != NULL)
-		dbenv->lk_info->region->hdr.panic = 1;
+	if (edbenv->lk_info != NULL)
+		edbenv->lk_info->region->hdr.panic = 1;
 }
 
 
@@ -171,11 +171,11 @@ __lock_panic(dbenv)
  *	Initialize the lock region.
  */
 static int
-__lock_tabinit(dbenv, lrp)
-	DB_ENV *dbenv;
+__lock_tabinit(edbenv, lrp)
+	DB_ENV *edbenv;
 	DB_LOCKREGION *lrp;
 {
-	struct __db_lock *lp;
+	struct __edb_lock *lp;
 	struct lock_header *tq_head;
 	struct obj_header *obj_head;
 	DB_LOCKOBJ *op;
@@ -183,10 +183,10 @@ __lock_tabinit(dbenv, lrp)
 	const u_int8_t *conflicts;
 	u_int8_t *curaddr;
 
-	conflicts = dbenv == NULL || dbenv->lk_conflicts == NULL ?
-	    db_rw_conflicts : dbenv->lk_conflicts;
+	conflicts = edbenv == NULL || edbenv->lk_conflicts == NULL ?
+	    edb_rw_conflicts : edbenv->lk_conflicts;
 
-	lrp->table_size = __db_tablesize(lrp->maxlocks);
+	lrp->table_size = __edb_tablesize(lrp->maxlocks);
 	lrp->magic = DB_LOCKMAGIC;
 	lrp->version = DB_LOCKVERSION;
 	lrp->id = 0;
@@ -223,7 +223,7 @@ __lock_tabinit(dbenv, lrp)
 	curaddr = (u_int8_t *)ALIGNP(curaddr, LOCK_HASH_ALIGN);
 	lrp->hash_off = curaddr - (u_int8_t *)lrp;
 	nelements = lrp->table_size;
-	__db_hashinit(curaddr, nelements);
+	__edb_hashinit(curaddr, nelements);
 	curaddr += nelements * sizeof(DB_HASHTAB);
 
 	/*
@@ -236,10 +236,10 @@ __lock_tabinit(dbenv, lrp)
 	SH_TAILQ_INIT(tq_head);
 
 	for (i = 0; i++ < lrp->maxlocks;
-	    curaddr += ALIGN(sizeof(struct __db_lock), MUTEX_ALIGNMENT)) {
-		lp = (struct __db_lock *)curaddr;
+	    curaddr += ALIGN(sizeof(struct __edb_lock), MUTEX_ALIGNMENT)) {
+		lp = (struct __edb_lock *)curaddr;
 		lp->status = DB_LSTAT_FREE;
-		SH_TAILQ_INSERT_HEAD(tq_head, lp, links, __db_lock);
+		SH_TAILQ_INSERT_HEAD(tq_head, lp, links, __edb_lock);
 	}
 
 	/* Initialize objects onto a free list.  */
@@ -248,7 +248,7 @@ __lock_tabinit(dbenv, lrp)
 
 	for (i = 0; i++ < lrp->maxlocks; curaddr += sizeof(DB_LOCKOBJ)) {
 		op = (DB_LOCKOBJ *)curaddr;
-		SH_TAILQ_INSERT_HEAD(obj_head, op, links, __db_lockobj);
+		SH_TAILQ_INSERT_HEAD(obj_head, op, links, __edb_lockobj);
 	}
 
 	/*
@@ -258,7 +258,7 @@ __lock_tabinit(dbenv, lrp)
 	 */
 	curaddr = (u_int8_t *)ALIGNP(curaddr, sizeof(size_t));
 	lrp->mem_off = curaddr - (u_int8_t *)lrp;
-	__db_shalloc_init(curaddr, lrp->mem_bytes);
+	__edb_shalloc_init(curaddr, lrp->mem_bytes);
 	return (0);
 }
 
@@ -270,7 +270,7 @@ lock_close(lt)
 
 	LOCK_PANIC_CHECK(lt);
 
-	if ((ret = __db_rdetach(&lt->reginfo)) != 0)
+	if ((ret = __edb_rdetach(&lt->reginfo)) != 0)
 		return (ret);
 
 	if (lt->reginfo.path != NULL)
@@ -281,21 +281,21 @@ lock_close(lt)
 }
 
 int
-lock_unlink(path, force, dbenv)
+lock_unlink(path, force, edbenv)
 	const char *path;
 	int force;
-	DB_ENV *dbenv;
+	DB_ENV *edbenv;
 {
 	REGINFO reginfo;
 	int ret;
 
 	memset(&reginfo, 0, sizeof(reginfo));
-	reginfo.dbenv = dbenv;
+	reginfo.edbenv = edbenv;
 	reginfo.appname = DB_APP_NONE;
 	if (path != NULL && (ret = __os_strdup(path, &reginfo.path)) != 0)
 		return (ret);
 	reginfo.file = DB_DEFAULT_LOCK_FILE;
-	ret = __db_runlink(&reginfo, force);
+	ret = __edb_runlink(&reginfo, force);
 	if (reginfo.path != NULL)
 		__os_freestr(reginfo.path);
 	return (ret);
@@ -318,7 +318,7 @@ __lock_validate_region(lt)
 		return (0);
 
 	/* Detach/reattach the region. */
-	if ((ret = __db_rreattach(&lt->reginfo, lt->region->hdr.size)) != 0)
+	if ((ret = __edb_rreattach(&lt->reginfo, lt->region->hdr.size)) != 0)
 		return (ret);
 
 	/* Reset region information. */
@@ -340,7 +340,7 @@ __lock_grow_region(lt, which, howmuch)
 	int which;
 	size_t howmuch;
 {
-	struct __db_lock *newl;
+	struct __edb_lock *newl;
 	struct lock_header *lock_head;
 	struct obj_header *obj_head;
 	DB_LOCKOBJ *op;
@@ -356,7 +356,7 @@ __lock_grow_region(lt, which, howmuch)
 	incr = lrp->increment;
 
 	/* Figure out how much of each sort of space we have. */
-	usedmem = lrp->mem_bytes - __db_shalloc_count(lt->mem);
+	usedmem = lrp->mem_bytes - __edb_shalloc_count(lt->mem);
 	usedobjs = lrp->numobjs - __lock_count_objs(lrp);
 	usedlocks = lrp->maxlocks - __lock_count_locks(lrp);
 
@@ -366,19 +366,19 @@ __lock_grow_region(lt, which, howmuch)
 	 * new space up according to this ratio.
 	 */
 	used = usedmem +
-	    usedlocks * ALIGN(sizeof(struct __db_lock), MUTEX_ALIGNMENT) +
+	    usedlocks * ALIGN(sizeof(struct __edb_lock), MUTEX_ALIGNMENT) +
 	    usedobjs * sizeof(DB_LOCKOBJ);
 
 	lock_ratio = usedlocks *
-	    ALIGN(sizeof(struct __db_lock), MUTEX_ALIGNMENT) / (float)used;
+	    ALIGN(sizeof(struct __edb_lock), MUTEX_ALIGNMENT) / (float)used;
 	obj_ratio = usedobjs * sizeof(DB_LOCKOBJ) / (float)used;
 
 	newlocks = (u_int32_t)(lock_ratio *
-	    incr / ALIGN(sizeof(struct __db_lock), MUTEX_ALIGNMENT));
+	    incr / ALIGN(sizeof(struct __edb_lock), MUTEX_ALIGNMENT));
 	newobjs = (u_int32_t)(obj_ratio * incr / sizeof(DB_LOCKOBJ));
 	newmem = incr -
 	    (newobjs * sizeof(DB_LOCKOBJ) +
-	    newlocks * ALIGN(sizeof(struct __db_lock), MUTEX_ALIGNMENT));
+	    newlocks * ALIGN(sizeof(struct __edb_lock), MUTEX_ALIGNMENT));
 
 	/*
 	 * Make sure we allocate enough memory for the object being
@@ -388,7 +388,7 @@ __lock_grow_region(lt, which, howmuch)
 	case DB_LOCK_LOCK:
 		if (newlocks == 0) {
 			newlocks = 10;
-			incr += newlocks * sizeof(struct __db_lock);
+			incr += newlocks * sizeof(struct __edb_lock);
 		}
 		break;
 	case DB_LOCK_OBJ:
@@ -417,11 +417,11 @@ __lock_grow_region(lt, which, howmuch)
 	 */
 	incr += ALIGN(oldsize, MUTEX_ALIGNMENT) - oldsize;
 
-	__db_err(lt->dbenv,
+	__edb_err(lt->edbenv,
 	    "Growing lock region: %lu locks %lu objs %lu bytes",
 	    (u_long)newlocks, (u_long)newobjs, (u_long)newmem);
 
-	if ((ret = __db_rgrow(&lt->reginfo, oldsize + incr)) != 0)
+	if ((ret = __edb_rgrow(&lt->reginfo, oldsize + incr)) != 0)
 		return (ret);
 	lt->region = lt->reginfo.addr;
 	__lock_reset_region(lt);
@@ -439,21 +439,21 @@ __lock_grow_region(lt, which, howmuch)
 	/* Put new locks onto the free list. */
 	lock_head = &lrp->free_locks;
 	for (i = 0; i++ < newlocks;
-	    curaddr += ALIGN(sizeof(struct __db_lock), MUTEX_ALIGNMENT)) {
-		newl = (struct __db_lock *)curaddr;
-		SH_TAILQ_INSERT_HEAD(lock_head, newl, links, __db_lock);
+	    curaddr += ALIGN(sizeof(struct __edb_lock), MUTEX_ALIGNMENT)) {
+		newl = (struct __edb_lock *)curaddr;
+		SH_TAILQ_INSERT_HEAD(lock_head, newl, links, __edb_lock);
 	}
 
 	/* Put new objects onto the free list.  */
 	obj_head = &lrp->free_objs;
 	for (i = 0; i++ < newobjs; curaddr += sizeof(DB_LOCKOBJ)) {
 		op = (DB_LOCKOBJ *)curaddr;
-		SH_TAILQ_INSERT_HEAD(obj_head, op, links, __db_lockobj);
+		SH_TAILQ_INSERT_HEAD(obj_head, op, links, __edb_lockobj);
 	}
 
 	*((size_t *)curaddr) = newmem - sizeof(size_t);
 	curaddr += sizeof(size_t);
-	__db_shalloc_free(lt->mem, curaddr);
+	__edb_shalloc_free(lt->mem, curaddr);
 
 	return (0);
 }
@@ -473,10 +473,10 @@ __lock_reset_region(lt)
  *	Return LOCK statistics.
  */
 int
-lock_stat(lt, gspp, db_malloc)
+lock_stat(lt, gspp, edb_malloc)
 	DB_LOCKTAB *lt;
 	DB_LOCK_STAT **gspp;
-	void *(*db_malloc) __P((size_t));
+	void *(*edb_malloc) __P((size_t));
 {
 	DB_LOCKREGION *rp;
 	int ret;
@@ -485,7 +485,7 @@ lock_stat(lt, gspp, db_malloc)
 
 	LOCK_PANIC_CHECK(lt);
 
-	if ((ret = __os_malloc(sizeof(**gspp), db_malloc, gspp)) != 0)
+	if ((ret = __os_malloc(sizeof(**gspp), edb_malloc, gspp)) != 0)
 		return (ret);
 
 	/* Copy out the global statistics. */
@@ -516,13 +516,13 @@ static u_int32_t
 __lock_count_locks(lrp)
 	DB_LOCKREGION *lrp;
 {
-	struct __db_lock *newl;
+	struct __edb_lock *newl;
 	u_int32_t count;
 
 	count = 0;
-	for (newl = SH_TAILQ_FIRST(&lrp->free_locks, __db_lock);
+	for (newl = SH_TAILQ_FIRST(&lrp->free_locks, __edb_lock);
 	    newl != NULL;
-	    newl = SH_TAILQ_NEXT(newl, links, __db_lock))
+	    newl = SH_TAILQ_NEXT(newl, links, __edb_lock))
 		count++;
 
 	return (count);
@@ -536,9 +536,9 @@ __lock_count_objs(lrp)
 	u_int32_t count;
 
 	count = 0;
-	for (obj = SH_TAILQ_FIRST(&lrp->free_objs, __db_lockobj);
+	for (obj = SH_TAILQ_FIRST(&lrp->free_objs, __edb_lockobj);
 	    obj != NULL;
-	    obj = SH_TAILQ_NEXT(obj, links, __db_lockobj))
+	    obj = SH_TAILQ_NEXT(obj, links, __edb_lockobj))
 		count++;
 
 	return (count);
@@ -562,7 +562,7 @@ __lock_dump_region(lt, area, fp)
 	char *area;
 	FILE *fp;
 {
-	struct __db_lock *lp;
+	struct __edb_lock *lp;
 	DB_LOCKOBJ *op;
 	DB_LOCKREGION *lrp;
 	u_int32_t flags, i, j;
@@ -619,9 +619,9 @@ __lock_dump_region(lt, area, fp)
 		fprintf(fp, "%s\nLock hash buckets\n", DB_LINE);
 		for (i = 0; i < lrp->table_size; i++) {
 			label = 1;
-			for (op = SH_TAILQ_FIRST(&lt->hashtab[i], __db_lockobj);
+			for (op = SH_TAILQ_FIRST(&lt->hashtab[i], __edb_lockobj);
 			    op != NULL;
-			    op = SH_TAILQ_NEXT(op, links, __db_lockobj)) {
+			    op = SH_TAILQ_NEXT(op, links, __edb_lockobj)) {
 				if (LF_ISSET(LOCK_DUMP_LOCKERS) &&
 				    op->type == DB_LOCK_LOCKER) {
 					if (label) {
@@ -646,22 +646,22 @@ __lock_dump_region(lt, area, fp)
 
 	if (LF_ISSET(LOCK_DUMP_FREE)) {
 		fprintf(fp, "%s\nLock free list\n", DB_LINE);
-		for (lp = SH_TAILQ_FIRST(&lrp->free_locks, __db_lock);
+		for (lp = SH_TAILQ_FIRST(&lrp->free_locks, __edb_lock);
 		    lp != NULL;
-		    lp = SH_TAILQ_NEXT(lp, links, __db_lock))
+		    lp = SH_TAILQ_NEXT(lp, links, __edb_lock))
 			fprintf(fp, "0x%lx: %lu\t%lu\t%s\t0x%lx\n", (u_long)lp,
 			    (u_long)lp->holder, (u_long)lp->mode,
 			    __lock_dump_status(lp->status), (u_long)lp->obj);
 
 		fprintf(fp, "%s\nObject free list\n", DB_LINE);
-		for (op = SH_TAILQ_FIRST(&lrp->free_objs, __db_lockobj);
+		for (op = SH_TAILQ_FIRST(&lrp->free_objs, __edb_lockobj);
 		    op != NULL;
-		    op = SH_TAILQ_NEXT(op, links, __db_lockobj))
+		    op = SH_TAILQ_NEXT(op, links, __edb_lockobj))
 			fprintf(fp, "0x%lx\n", (u_long)op);
 	}
 
 	if (LF_ISSET(LOCK_DUMP_MEM))
-		__db_shalloc_dump(lt->mem, fp);
+		__edb_shalloc_dump(lt->mem, fp);
 }
 
 static void
@@ -670,7 +670,7 @@ __lock_dump_locker(lt, op, fp)
 	DB_LOCKOBJ *op;
 	FILE *fp;
 {
-	struct __db_lock *lp;
+	struct __edb_lock *lp;
 	u_int32_t locker;
 	void *ptr;
 
@@ -678,12 +678,12 @@ __lock_dump_locker(lt, op, fp)
 	memcpy(&locker, ptr, sizeof(u_int32_t));
 	fprintf(fp, "L %lx", (u_long)locker);
 
-	lp = SH_LIST_FIRST(&op->heldby, __db_lock);
+	lp = SH_LIST_FIRST(&op->heledby, __edb_lock);
 	if (lp == NULL) {
 		fprintf(fp, "\n");
 		return;
 	}
-	for (; lp != NULL; lp = SH_LIST_NEXT(lp, locker_links, __db_lock))
+	for (; lp != NULL; lp = SH_LIST_NEXT(lp, locker_links, __edb_lock))
 		__lock_printlock(lt, lp, 0);
 }
 
@@ -693,7 +693,7 @@ __lock_dump_object(lt, op, fp)
 	DB_LOCKOBJ *op;
 	FILE *fp;
 {
-	struct __db_lock *lp;
+	struct __edb_lock *lp;
 	u_int32_t j;
 	u_int8_t *ptr;
 	u_int ch;
@@ -707,21 +707,21 @@ __lock_dump_object(lt, op, fp)
 
 	fprintf(fp, "H:");
 	for (lp =
-	    SH_TAILQ_FIRST(&op->holders, __db_lock);
+	    SH_TAILQ_FIRST(&op->holders, __edb_lock);
 	    lp != NULL;
-	    lp = SH_TAILQ_NEXT(lp, links, __db_lock))
+	    lp = SH_TAILQ_NEXT(lp, links, __edb_lock))
 		__lock_printlock(lt, lp, 0);
-	lp = SH_TAILQ_FIRST(&op->waiters, __db_lock);
+	lp = SH_TAILQ_FIRST(&op->waiters, __edb_lock);
 	if (lp != NULL) {
 		fprintf(fp, "\nW:");
-		for (; lp != NULL; lp = SH_TAILQ_NEXT(lp, links, __db_lock))
+		for (; lp != NULL; lp = SH_TAILQ_NEXT(lp, links, __edb_lock))
 			__lock_printlock(lt, lp, 0);
 	}
 }
 
 static const char *
 __lock_dump_status(status)
-	db_status_t status;
+	edb_status_t status;
 {
 	switch (status) {
 	case DB_LSTAT_ABORTED:

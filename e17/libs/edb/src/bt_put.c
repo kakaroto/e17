@@ -57,8 +57,8 @@ static const char sccsid[] = "@(#)bt_put.c	10.54 (Sleepycat) 12/6/98";
 #include <string.h>
 #endif
 
-#include "db_int.h"
-#include "db_page.h"
+#include "edb_int.h"
+#include "edb_page.h"
 #include "btree.h"
 
 static int __bam_fixed __P((DBC *, DBT *));
@@ -73,29 +73,29 @@ static u_int32_t __bam_partsize __P((DBT *, PAGE *, u_int32_t));
  *	Insert an item into the tree.
  *
  * PUBLIC: int __bam_iitem __P((DBC *,
- * PUBLIC:    PAGE **, db_indx_t *, DBT *, DBT *, u_int32_t, u_int32_t));
+ * PUBLIC:    PAGE **, edb_indx_t *, DBT *, DBT *, u_int32_t, u_int32_t));
  */
 int
-__bam_iitem(dbc, hp, indxp, key, data, op, flags)
-	DBC *dbc;
+__bam_iitem(edbc, hp, indxp, key, data, op, flags)
+	DBC *edbc;
 	PAGE **hp;
-	db_indx_t *indxp;
+	edb_indx_t *indxp;
 	DBT *key, *data;
 	u_int32_t op, flags;
 {
 	BTREE *t;
 	BKEYDATA *bk;
-	DB *dbp;
-	DBT tdbt;
+	DB *edbp;
+	DBT tedbt;
 	PAGE *h;
-	db_indx_t indx, nbytes;
+	edb_indx_t indx, nbytes;
 	u_int32_t data_size, have_bytes, need_bytes, needed;
 	int bigkey, bigdata, dupadjust, replace, ret;
 
 	COMPQUIET(bk, NULL);
 
-	dbp = dbc->dbp;
-	t = dbp->internal;
+	edbp = edbc->edbp;
+	t = edbp->internal;
 	h = *hp;
 	indx = *indxp;
 	dupadjust = replace = 0;
@@ -124,25 +124,25 @@ __bam_iitem(dbc, hp, indxp, key, data, op, flags)
 				nbytes = BOVERFLOW_SIZE;
 				break;
 			default:
-				return (__db_pgfmt(dbp, h->pgno));
+				return (__edb_pgfmt(edbp, h->pgno));
 			}
-			if ((ret = __db_ditem(dbc, *hp, *indxp, nbytes)) != 0)
+			if ((ret = __edb_ditem(edbc, *hp, *indxp, nbytes)) != 0)
 				return (ret);
 		}
 
 		/* Put the new/replacement item onto the page. */
-		if ((ret = __db_dput(dbc, data, hp, indxp, __bam_new)) != 0)
+		if ((ret = __edb_dput(edbc, data, hp, indxp, __bam_new)) != 0)
 			return (ret);
 
 		goto done;
 	}
 
 	/* Handle fixed-length records: build the real record. */
-	if (F_ISSET(dbp, DB_RE_FIXEDLEN) && data->size != t->recno->re_len) {
-		tdbt = *data;
-		if ((ret = __bam_fixed(dbc, &tdbt)) != 0)
+	if (F_ISSET(edbp, DB_RE_FIXEDLEN) && data->size != t->recno->re_len) {
+		tedbt = *data;
+		if ((ret = __bam_fixed(edbc, &tedbt)) != 0)
 			return (ret);
-		data = &tdbt;
+		data = &tedbt;
 	}
 
 	/*
@@ -181,7 +181,7 @@ __bam_iitem(dbc, hp, indxp, key, data, op, flags)
 			need_bytes = 0;
 		} else {
 			have_bytes = 0;
-			need_bytes = sizeof(db_indx_t);
+			need_bytes = sizeof(edb_indx_t);
 		}
 		if (bigdata)
 			need_bytes += BOVERFLOW_PSIZE;
@@ -206,11 +206,11 @@ __bam_iitem(dbc, hp, indxp, key, data, op, flags)
 
 	/* Handle partial puts: build the real record. */
 	if (F_ISSET(data, DB_DBT_PARTIAL)) {
-		tdbt = *data;
-		if ((ret = __bam_partial(dbc,
-		    &tdbt, h, indx, data_size, flags)) != 0)
+		tedbt = *data;
+		if ((ret = __bam_partial(edbc,
+		    &tedbt, h, indx, data_size, flags)) != 0)
 			return (ret);
-		data = &tdbt;
+		data = &tedbt;
 	}
 
 	/*
@@ -237,10 +237,10 @@ __bam_iitem(dbc, hp, indxp, key, data, op, flags)
 
 		/* Add the key. */
 		if (bigkey) {
-			if ((ret = __bam_ovput(dbc, h, indx, key)) != 0)
+			if ((ret = __bam_ovput(edbc, h, indx, key)) != 0)
 				return (ret);
 		} else
-			if ((ret = __db_pitem(dbc, h, indx,
+			if ((ret = __edb_pitem(edbc, h, indx,
 			    BKEYDATA_SIZE(key->size), NULL, key)) != 0)
 				return (ret);
 		++indx;
@@ -252,7 +252,7 @@ __bam_iitem(dbc, hp, indxp, key, data, op, flags)
 				 * Adjust the cursor and copy in the key for
 				 * the duplicate.
 				 */
-				if ((ret = __bam_adjindx(dbc,
+				if ((ret = __bam_adjindx(edbc,
 				    h, indx + P_INDX, indx, 1)) != 0)
 					return (ret);
 
@@ -262,7 +262,7 @@ __bam_iitem(dbc, hp, indxp, key, data, op, flags)
 				*indxp += 2;
 			} else {
 				++indx;
-				__bam_ca_di(dbp, h->pgno, indx, 1);
+				__bam_ca_di(edbp, h->pgno, indx, 1);
 
 				*indxp += 1;
 			}
@@ -274,13 +274,13 @@ __bam_iitem(dbc, hp, indxp, key, data, op, flags)
 				 * the duplicate.
 				 */
 				if ((ret =
-				    __bam_adjindx(dbc, h, indx, indx, 1)) != 0)
+				    __bam_adjindx(edbc, h, indx, indx, 1)) != 0)
 					return (ret);
 
 				++indx;
 				dupadjust = 1;
 			} else
-				__bam_ca_di(dbp, h->pgno, indx, 1);
+				__bam_ca_di(edbp, h->pgno, indx, 1);
 			break;
 		case DB_CURRENT:
 			if (TYPE(h) == P_LBTREE)
@@ -293,7 +293,7 @@ __bam_iitem(dbc, hp, indxp, key, data, op, flags)
 			 * delete and then re-add the item.
 			 */
 			if (bigdata || B_TYPE(bk->type) != B_KEYDATA) {
-				if ((ret = __bam_ditem(dbc, h, indx)) != 0)
+				if ((ret = __bam_ditem(edbc, h, indx)) != 0)
 					return (ret);
 				break;
 			}
@@ -308,7 +308,7 @@ __bam_iitem(dbc, hp, indxp, key, data, op, flags)
 
 	/* Add the data. */
 	if (bigdata) {
-		if ((ret = __bam_ovput(dbc, h, indx, data)) != 0)
+		if ((ret = __bam_ovput(edbc, h, indx, data)) != 0)
 			return (ret);
 	} else {
 		BKEYDATA __bk;
@@ -319,18 +319,18 @@ __bam_iitem(dbc, hp, indxp, key, data, op, flags)
 			__bk.len = data->size;
 			__hdr.data = &__bk;
 			__hdr.size = SSZA(BKEYDATA, data);
-			ret = __db_pitem(dbc, h, indx,
+			ret = __edb_pitem(edbc, h, indx,
 			    BKEYDATA_SIZE(data->size), &__hdr, data);
 		} else if (replace)
-			ret = __bam_ritem(dbc, h, indx, data);
+			ret = __bam_ritem(edbc, h, indx, data);
 		else
-			ret = __db_pitem(dbc, h, indx,
+			ret = __edb_pitem(edbc, h, indx,
 			    BKEYDATA_SIZE(data->size), NULL, data);
 		if (ret != 0)
 			return (ret);
 	}
 
-	if ((ret = memp_fset(dbp->mpf, h, DB_MPOOL_DIRTY)) != 0)
+	if ((ret = memp_fset(edbp->mpf, h, DB_MPOOL_DIRTY)) != 0)
 		return (ret);
 
 	/*
@@ -338,9 +338,9 @@ __bam_iitem(dbc, hp, indxp, key, data, op, flags)
 	 * that set of duplicates takes up at least 25% of the space.  If it
 	 * does, move it off onto its own page.
 	 */
-	if (dupadjust && P_FREESPACE(h) <= dbp->pgsize / 2) {
+	if (dupadjust && P_FREESPACE(h) <= edbp->pgsize / 2) {
 		--indx;
-		if ((ret = __bam_ndup(dbc, h, indx)) != 0)
+		if ((ret = __bam_ndup(edbc, h, indx)) != 0)
 			return (ret);
 	}
 
@@ -353,8 +353,8 @@ __bam_iitem(dbc, hp, indxp, key, data, op, flags)
 	 */
 done:	if (LF_ISSET(BI_DOINCR) ||
 	    (op != DB_CURRENT &&
-	    (F_ISSET(dbp, DB_BT_RECNUM) || dbp->type == DB_RECNO)))
-		if ((ret = __bam_adjust(dbc, 1)) != 0)
+	    (F_ISSET(edbp, DB_BT_RECNUM) || edbp->type == DB_RECNO)))
+		if ((ret = __bam_adjust(edbc, 1)) != 0)
 			return (ret);
 
 	/* If we've modified a recno file, set the flag */
@@ -422,7 +422,7 @@ __bam_partsize(data, h, indx)
 	memset(&__hdr, 0, sizeof(__hdr));				\
 	__hdr.data = &bo;						\
 	__hdr.size = BOVERFLOW_SIZE;					\
-	if ((ret = __db_pitem(dbc,					\
+	if ((ret = __edb_pitem(edbc,					\
 	    h, indx, BOVERFLOW_SIZE, &__hdr, NULL)) != 0)		\
 		return (ret);						\
 } while (0)
@@ -432,8 +432,8 @@ __bam_partsize(data, h, indx)
  *	Build an overflow item and put it on the page.
  */
 static int
-__bam_ovput(dbc, h, indx, item)
-	DBC *dbc;
+__bam_ovput(edbc, h, indx, item)
+	DBC *edbc;
 	PAGE *h;
 	u_int32_t indx;
 	DBT *item;
@@ -444,7 +444,7 @@ __bam_ovput(dbc, h, indx, item)
 	UMRW(bo.unused1);
 	B_TSET(bo.type, B_OVERFLOW, 0);
 	UMRW(bo.unused2);
-	if ((ret = __db_poff(dbc, item, &bo.pgno, __bam_new)) != 0)
+	if ((ret = __edb_poff(edbc, item, &bo.pgno, __bam_new)) != 0)
 		return (ret);
 	bo.tlen = item->size;
 
@@ -460,21 +460,21 @@ __bam_ovput(dbc, h, indx, item)
  * PUBLIC: int __bam_ritem __P((DBC *, PAGE *, u_int32_t, DBT *));
  */
 int
-__bam_ritem(dbc, h, indx, data)
-	DBC *dbc;
+__bam_ritem(edbc, h, indx, data)
+	DBC *edbc;
 	PAGE *h;
 	u_int32_t indx;
 	DBT *data;
 {
 	BKEYDATA *bk;
-	DB *dbp;
+	DB *edbp;
 	DBT orig, repl;
-	db_indx_t cnt, lo, ln, min, off, prefix, suffix;
+	edb_indx_t cnt, lo, ln, min, off, prefix, suffix;
 	int32_t nbytes;
 	int ret;
 	u_int8_t *p, *t;
 
-	dbp = dbc->dbp;
+	edbp = edbc->edbp;
 
 	/*
 	 * Replace a single item onto a page.  The logic figuring out where
@@ -484,7 +484,7 @@ __bam_ritem(dbc, h, indx, data)
 	bk = GET_BKEYDATA(h, indx);
 
 	/* Log the change. */
-	if (DB_LOGGING(dbc)) {
+	if (DB_LOGGING(edbc)) {
 		/*
 		 * We might as well check to see if the two data items share
 		 * a common prefix and suffix -- it can save us a lot of log
@@ -508,8 +508,8 @@ __bam_ritem(dbc, h, indx, data)
 		orig.size = bk->len - (prefix + suffix);
 		repl.data = (u_int8_t *)data->data + prefix;
 		repl.size = data->size - (prefix + suffix);
-		if ((ret = __bam_repl_log(dbp->dbenv->lg_info, dbc->txn,
-		    &LSN(h), 0, dbp->log_fileid, PGNO(h), &LSN(h),
+		if ((ret = __bam_repl_log(edbp->edbenv->lg_info, edbc->txn,
+		    &LSN(h), 0, edbp->log_fileid, PGNO(h), &LSN(h),
 		    (u_int32_t)indx, (u_int32_t)B_DISSET(bk->type),
 		    &orig, &repl, (u_int32_t)prefix, (u_int32_t)suffix)) != 0)
 			return (ret);
@@ -564,20 +564,20 @@ __bam_ritem(dbc, h, indx, data)
  *	If it should, create it.
  */
 static int
-__bam_ndup(dbc, h, indx)
-	DBC *dbc;
+__bam_ndup(edbc, h, indx)
+	DBC *edbc;
 	PAGE *h;
 	u_int32_t indx;
 {
 	BKEYDATA *bk;
 	BOVERFLOW bo;
-	DB *dbp;
+	DB *edbp;
 	DBT hdr;
 	PAGE *cp;
-	db_indx_t cnt, cpindx, first, sz;
+	edb_indx_t cnt, cpindx, first, sz;
 	int ret;
 
-	dbp = dbc->dbp;
+	edbp = edbc->edbp;
 
 	while (indx > 0 && h->inp[indx] == h->inp[indx - P_INDX])
 		indx -= P_INDX;
@@ -597,11 +597,11 @@ __bam_ndup(dbc, h, indx)
 	 * them off.  The choice of 25% is a WAG, but it has to be small enough
 	 * that we can always split regardless of the presence of duplicates.
 	 */
-	if (sz < dbp->pgsize / 4)
+	if (sz < edbp->pgsize / 4)
 		return (0);
 
 	/* Get a new page. */
-	if ((ret = __bam_new(dbc, P_DUPLICATE, &cp)) != 0)
+	if ((ret = __bam_new(edbc, P_DUPLICATE, &cp)) != 0)
 		return (ret);
 
 	/*
@@ -617,26 +617,26 @@ __bam_ndup(dbc, h, indx)
 		hdr.size = B_TYPE(bk->type) == B_KEYDATA ?
 		    BKEYDATA_SIZE(bk->len) : BOVERFLOW_SIZE;
 		if ((ret =
-		    __db_pitem(dbc, cp, cpindx, hdr.size, &hdr, NULL)) != 0)
+		    __edb_pitem(edbc, cp, cpindx, hdr.size, &hdr, NULL)) != 0)
 			goto err;
 
 		/*
 		 * Move cursors referencing the old entry to the new entry.
-		 * Done after the page put because __db_pitem() adjusts
+		 * Done after the page put because __edb_pitem() adjusts
 		 * cursors on the new page, and before the delete because
-		 * __db_ditem adjusts cursors on the old page.
+		 * __edb_ditem adjusts cursors on the old page.
 		 */
-		__bam_ca_dup(dbp,
+		__bam_ca_dup(edbp,
 		    PGNO(h), first, indx - O_INDX, PGNO(cp), cpindx);
 
 		/* Delete the data item. */
-		if ((ret = __db_ditem(dbc, h, indx, hdr.size)) != 0)
+		if ((ret = __edb_ditem(edbc, h, indx, hdr.size)) != 0)
 			goto err;
 
 		/* Delete all but the first reference to the key. */
 		if (--cnt == 0)
 			break;
-		if ((ret = __bam_adjindx(dbc, h, indx, first, 0)) != 0)
+		if ((ret = __bam_adjindx(edbc, h, indx, first, 0)) != 0)
 			goto err;
 	}
 
@@ -649,9 +649,9 @@ __bam_ndup(dbc, h, indx)
 
 	OVPUT(h, indx, bo);
 
-	return (memp_fput(dbp->mpf, cp, DB_MPOOL_DIRTY));
+	return (memp_fput(edbp->mpf, cp, DB_MPOOL_DIRTY));
 
-err:	(void)__bam_free(dbc, cp);
+err:	(void)__bam_free(edbc, cp);
 	return (ret);
 }
 
@@ -660,22 +660,22 @@ err:	(void)__bam_free(dbc, cp);
  *	Build the real record for a fixed length put.
  */
 static int
-__bam_fixed(dbc, dbt)
-	DBC *dbc;
-	DBT *dbt;
+__bam_fixed(edbc, edbt)
+	DBC *edbc;
+	DBT *edbt;
 {
-	DB *dbp;
+	DB *edbp;
 	RECNO *rp;
 	int ret;
 
-	dbp = dbc->dbp;
-	rp = ((BTREE *)dbp->internal)->recno;
+	edbp = edbc->edbp;
+	rp = ((BTREE *)edbp->internal)->recno;
 
 	/*
 	 * If database contains fixed-length records, and the record is long,
 	 * return EINVAL.
 	 */
-	if (dbt->size > rp->re_len)
+	if (edbt->size > rp->re_len)
 		return (EINVAL);
 
 	/*
@@ -683,27 +683,27 @@ __bam_fixed(dbc, dbt)
 	 * short.  Pad it out.  We use the record data return memory, it's
 	 * only a short-term use.
 	 */
-	if (dbc->rdata.ulen < rp->re_len) {
-		 if ((ret = __os_realloc(&dbc->rdata.data, rp->re_len)) != 0) {
-			dbc->rdata.ulen = 0;
-			dbc->rdata.data = NULL;
+	if (edbc->rdata.ulen < rp->re_len) {
+		 if ((ret = __os_realloc(&edbc->rdata.data, rp->re_len)) != 0) {
+			edbc->rdata.ulen = 0;
+			edbc->rdata.data = NULL;
 			return (ret);
 		}
-		dbc->rdata.ulen = rp->re_len;
+		edbc->rdata.ulen = rp->re_len;
 	}
-	memcpy(dbc->rdata.data, dbt->data, dbt->size);
-	memset((u_int8_t *)dbc->rdata.data + dbt->size,
-	    rp->re_pad, rp->re_len - dbt->size);
+	memcpy(edbc->rdata.data, edbt->data, edbt->size);
+	memset((u_int8_t *)edbc->rdata.data + edbt->size,
+	    rp->re_pad, rp->re_len - edbt->size);
 
 	/*
 	 * Clean up our flags and other information just in case, and
 	 * change the caller's DBT to reference our created record.
 	 */
-	dbc->rdata.size = rp->re_len;
-	dbc->rdata.dlen = 0;
-	dbc->rdata.doff = 0;
-	dbc->rdata.flags = 0;
-	*dbt = dbc->rdata;
+	edbc->rdata.size = rp->re_len;
+	edbc->rdata.dlen = 0;
+	edbc->rdata.doff = 0;
+	edbc->rdata.flags = 0;
+	*edbt = edbc->rdata;
 
 	return (0);
 }
@@ -713,15 +713,15 @@ __bam_fixed(dbc, dbt)
  *	Build the real record for a partial put.
  */
 static int
-__bam_partial(dbc, dbt, h, indx, nbytes, flags)
-	DBC *dbc;
-	DBT *dbt;
+__bam_partial(edbc, edbt, h, indx, nbytes, flags)
+	DBC *edbc;
+	DBT *edbt;
 	PAGE *h;
 	u_int32_t indx, nbytes, flags;
 {
 	BKEYDATA *bk, tbk;
 	BOVERFLOW *bo;
-	DB *dbp;
+	DB *edbp;
 	DBT copy;
 	u_int32_t len, tlen;
 	u_int8_t *p;
@@ -729,23 +729,23 @@ __bam_partial(dbc, dbt, h, indx, nbytes, flags)
 
 	COMPQUIET(bo, NULL);
 
-	dbp = dbc->dbp;
+	edbp = edbc->edbp;
 
 	/* We use the record data return memory, it's only a short-term use. */
-	if (dbc->rdata.ulen < nbytes) {
-		 if ((ret = __os_realloc(&dbc->rdata.data, nbytes)) != 0) {
-			dbc->rdata.ulen = 0;
-			dbc->rdata.data = NULL;
+	if (edbc->rdata.ulen < nbytes) {
+		 if ((ret = __os_realloc(&edbc->rdata.data, nbytes)) != 0) {
+			edbc->rdata.ulen = 0;
+			edbc->rdata.data = NULL;
 			return (ret);
 		}
-		dbc->rdata.ulen = nbytes;
+		edbc->rdata.ulen = nbytes;
 	}
 
 	/*
 	 * We use nul bytes for any part of the record that isn't specified;
 	 * get it over with.
 	 */
-	memset(dbc->rdata.data, 0, nbytes);
+	memset(edbc->rdata.data, 0, nbytes);
 
 	/*
 	 * In the next clauses, we need to do three things: a) set p to point
@@ -754,8 +754,8 @@ __bam_partial(dbc, dbt, h, indx, nbytes, flags)
 	 * the user, and c) copy any valid data from an existing record.
 	 */
 	if (LF_ISSET(BI_NEWKEY)) {
-		tlen = dbt->doff;
-		p = (u_int8_t *)dbc->rdata.data + dbt->doff;
+		tlen = edbt->doff;
+		p = (u_int8_t *)edbc->rdata.data + edbt->doff;
 		goto ucopy;
 	}
 
@@ -774,13 +774,13 @@ __bam_partial(dbc, dbt, h, indx, nbytes, flags)
 		 * in the current record rather than allocate a separate copy.
 		 */
 		memset(&copy, 0, sizeof(copy));
-		if ((ret = __db_goff(dbp, &copy, bo->tlen,
-		    bo->pgno, &dbc->rdata.data, &dbc->rdata.ulen)) != 0)
+		if ((ret = __edb_goff(edbp, &copy, bo->tlen,
+		    bo->pgno, &edbc->rdata.data, &edbc->rdata.ulen)) != 0)
 			return (ret);
 
 		/* Skip any leading data from the original record. */
-		tlen = dbt->doff;
-		p = (u_int8_t *)dbc->rdata.data + dbt->doff;
+		tlen = edbt->doff;
+		p = (u_int8_t *)edbc->rdata.data + edbt->doff;
 
 		/*
 		 * Copy in any trailing data from the original record.
@@ -793,23 +793,23 @@ __bam_partial(dbc, dbt, h, indx, nbytes, flags)
 		 *
 		 * Use memmove(), the regions may overlap.
 		 */
-		if (bo->tlen > dbt->doff + dbt->dlen) {
-			len = bo->tlen - (dbt->doff + dbt->dlen);
-			if (dbt->dlen != dbt->size)
-				memmove(p + dbt->size, p + dbt->dlen, len);
+		if (bo->tlen > edbt->doff + edbt->dlen) {
+			len = bo->tlen - (edbt->doff + edbt->dlen);
+			if (edbt->dlen != edbt->size)
+				memmove(p + edbt->size, p + edbt->dlen, len);
 			tlen += len;
 		}
 	} else {
 		/* Copy in any leading data from the original record. */
-		memcpy(dbc->rdata.data,
-		    bk->data, dbt->doff > bk->len ? bk->len : dbt->doff);
-		tlen = dbt->doff;
-		p = (u_int8_t *)dbc->rdata.data + dbt->doff;
+		memcpy(edbc->rdata.data,
+		    bk->data, edbt->doff > bk->len ? bk->len : edbt->doff);
+		tlen = edbt->doff;
+		p = (u_int8_t *)edbc->rdata.data + edbt->doff;
 
 		/* Copy in any trailing data from the original record. */
-		len = dbt->doff + dbt->dlen;
+		len = edbt->doff + edbt->dlen;
 		if (bk->len > len) {
-			memcpy(p + dbt->size, bk->data + len, bk->len - len);
+			memcpy(p + edbt->size, bk->data + len, bk->len - len);
 			tlen += bk->len - len;
 		}
 	}
@@ -818,14 +818,14 @@ ucopy:	/*
 	 * Copy in the application provided data -- p and tlen must have been
 	 * initialized above.
 	 */
-	memcpy(p, dbt->data, dbt->size);
-	tlen += dbt->size;
+	memcpy(p, edbt->data, edbt->size);
+	tlen += edbt->size;
 
 	/* Set the DBT to reference our new record. */
-	dbc->rdata.size = tlen;
-	dbc->rdata.dlen = 0;
-	dbc->rdata.doff = 0;
-	dbc->rdata.flags = 0;
-	*dbt = dbc->rdata;
+	edbc->rdata.size = tlen;
+	edbc->rdata.dlen = 0;
+	edbc->rdata.doff = 0;
+	edbc->rdata.flags = 0;
+	*edbt = edbc->rdata;
 	return (0);
 }

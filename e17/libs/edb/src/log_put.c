@@ -20,9 +20,9 @@ static const char sccsid[] = "@(#)log_put.c	10.44 (Sleepycat) 11/3/98";
 #include <unistd.h>
 #endif
 
-#include "db_int.h"
+#include "edb_int.h"
 #include "shqueue.h"
-#include "db_page.h"
+#include "edb_page.h"
 #include "log.h"
 #include "hash.h"
 #include "clib_ext.h"
@@ -39,24 +39,24 @@ static int __log_write __P((DB_LOG *, void *, u_int32_t));
  *	Write a log record.
  */
 int
-log_put(dblp, lsn, dbt, flags)
-	DB_LOG *dblp;
+log_put(edblp, lsn, edbt, flags)
+	DB_LOG *edblp;
 	DB_LSN *lsn;
-	const DBT *dbt;
+	const DBT *edbt;
 	u_int32_t flags;
 {
 	int ret;
 
-	LOG_PANIC_CHECK(dblp);
+	LOG_PANIC_CHECK(edblp);
 
 	/* Validate arguments. */
 	if (flags != 0 && flags != DB_CHECKPOINT &&
 	    flags != DB_CURLSN && flags != DB_FLUSH)
-		return (__db_ferr(dblp->dbenv, "log_put", 0));
+		return (__edb_ferr(edblp->edbenv, "log_put", 0));
 
-	LOCK_LOGREGION(dblp);
-	ret = __log_put(dblp, lsn, dbt, flags);
-	UNLOCK_LOGREGION(dblp);
+	LOCK_LOGREGION(edblp);
+	ret = __log_put(edblp, lsn, edbt, flags);
+	UNLOCK_LOGREGION(edblp);
 	return (ret);
 }
 
@@ -67,20 +67,20 @@ log_put(dblp, lsn, dbt, flags)
  * PUBLIC: int __log_put __P((DB_LOG *, DB_LSN *, const DBT *, u_int32_t));
  */
 int
-__log_put(dblp, lsn, dbt, flags)
-	DB_LOG *dblp;
+__log_put(edblp, lsn, edbt, flags)
+	DB_LOG *edblp;
 	DB_LSN *lsn;
-	const DBT *dbt;
+	const DBT *edbt;
 	u_int32_t flags;
 {
-	DBT fid_dbt, t;
+	DBT fid_edbt, t;
 	DB_LSN r_unused;
 	FNAME *fnp;
 	LOG *lp;
 	u_int32_t lastoff;
 	int ret;
 
-	lp = dblp->lp;
+	lp = edblp->lp;
 
 	/*
 	 * If the application just wants to know where we are, fill in
@@ -94,16 +94,16 @@ __log_put(dblp, lsn, dbt, flags)
 	}
 
 	/* If this information won't fit in the file, swap files. */
-	if (lp->lsn.offset + sizeof(HDR) + dbt->size > lp->persist.lg_max) {
+	if (lp->lsn.offset + sizeof(HDR) + edbt->size > lp->persist.lg_max) {
 		if (sizeof(HDR) +
-		    sizeof(LOGP) + dbt->size > lp->persist.lg_max) {
-			__db_err(dblp->dbenv,
+		    sizeof(LOGP) + edbt->size > lp->persist.lg_max) {
+			__edb_err(edblp->edbenv,
 			    "log_put: record larger than maximum file size");
 			return (EINVAL);
 		}
 
 		/* Flush the log. */
-		if ((ret = __log_flush(dblp, NULL)) != 0)
+		if ((ret = __log_flush(edblp, NULL)) != 0)
 			return (ret);
 
 		/*
@@ -133,7 +133,7 @@ __log_put(dblp, lsn, dbt, flags)
 	if (lp->lsn.offset == 0) {
 		t.data = &lp->persist;
 		t.size = sizeof(LOGP);
-		if ((ret = __log_putr(dblp, lsn,
+		if ((ret = __log_putr(edblp, lsn,
 		    &t, lastoff == 0 ? 0 : lastoff - lp->len)) != 0)
 			return (ret);
 
@@ -143,7 +143,7 @@ __log_put(dblp, lsn, dbt, flags)
 	}
 
 	/* Write the application's log record. */
-	if ((ret = __log_putr(dblp, lsn, dbt, lp->lsn.offset - lp->len)) != 0)
+	if ((ret = __log_putr(edblp, lsn, edbt, lp->lsn.offset - lp->len)) != 0)
 		return (ret);
 
 	/*
@@ -155,18 +155,18 @@ __log_put(dblp, lsn, dbt, flags)
 	if (flags == DB_CHECKPOINT) {
 		lp->chkpt_lsn = *lsn;
 
-		for (fnp = SH_TAILQ_FIRST(&dblp->lp->fq, __fname);
+		for (fnp = SH_TAILQ_FIRST(&edblp->lp->fq, __fname);
 		    fnp != NULL; fnp = SH_TAILQ_NEXT(fnp, q, __fname)) {
 			if (fnp->ref == 0)	/* Entry not in use. */
 				continue;
 			memset(&t, 0, sizeof(t));
-			t.data = R_ADDR(dblp, fnp->name_off);
+			t.data = R_ADDR(edblp, fnp->name_off);
 			t.size = strlen(t.data) + 1;
-			memset(&fid_dbt, 0, sizeof(fid_dbt));
-			fid_dbt.data = fnp->ufid;
-			fid_dbt.size = DB_FILE_ID_LEN;
-			if ((ret = __log_register_log(dblp, NULL, &r_unused, 0,
-			    LOG_CHECKPOINT, &t, &fid_dbt, fnp->id, fnp->s_type))
+			memset(&fid_edbt, 0, sizeof(fid_edbt));
+			fid_edbt.data = fnp->ufid;
+			fid_edbt.size = DB_FILE_ID_LEN;
+			if ((ret = __log_register_log(edblp, NULL, &r_unused, 0,
+			    LOG_CHECKPOINT, &t, &fid_edbt, fnp->id, fnp->s_type))
 			    != 0)
 				return (ret);
 		}
@@ -178,7 +178,7 @@ __log_put(dblp, lsn, dbt, flags)
 	 *	Sync the log to disk.
 	 */
 	if (flags == DB_FLUSH || flags == DB_CHECKPOINT)
-		if ((ret = __log_flush(dblp, NULL)) != 0)
+		if ((ret = __log_flush(edblp, NULL)) != 0)
 			return (ret);
 
 	/*
@@ -198,17 +198,17 @@ __log_put(dblp, lsn, dbt, flags)
  *	Actually put a record into the log.
  */
 static int
-__log_putr(dblp, lsn, dbt, prev)
-	DB_LOG *dblp;
+__log_putr(edblp, lsn, edbt, prev)
+	DB_LOG *edblp;
 	DB_LSN *lsn;
-	const DBT *dbt;
+	const DBT *edbt;
 	u_int32_t prev;
 {
 	HDR hdr;
 	LOG *lp;
 	int ret;
 
-	lp = dblp->lp;
+	lp = edblp->lp;
 
 	/*
 	 * Initialize the header.  If we just switched files, lsn.offset will
@@ -216,18 +216,18 @@ __log_putr(dblp, lsn, dbt, prev)
 	 * in the previous file.  Fortunately, prev holds the value we want.
 	 */
 	hdr.prev = prev;
-	hdr.len = sizeof(HDR) + dbt->size;
-	hdr.cksum = __ham_func4(dbt->data, dbt->size);
+	hdr.len = sizeof(HDR) + edbt->size;
+	hdr.cksum = __ham_func4(edbt->data, edbt->size);
 
-	if ((ret = __log_fill(dblp, lsn, &hdr, sizeof(HDR))) != 0)
+	if ((ret = __log_fill(edblp, lsn, &hdr, sizeof(HDR))) != 0)
 		return (ret);
 	lp->len = sizeof(HDR);
 	lp->lsn.offset += sizeof(HDR);
 
-	if ((ret = __log_fill(dblp, lsn, dbt->data, dbt->size)) != 0)
+	if ((ret = __log_fill(edblp, lsn, edbt->data, edbt->size)) != 0)
 		return (ret);
-	lp->len += dbt->size;
-	lp->lsn.offset += dbt->size;
+	lp->len += edbt->size;
+	lp->lsn.offset += edbt->size;
 	return (0);
 }
 
@@ -236,17 +236,17 @@ __log_putr(dblp, lsn, dbt, prev)
  *	Write all records less than or equal to the specified LSN.
  */
 int
-log_flush(dblp, lsn)
-	DB_LOG *dblp;
+log_flush(edblp, lsn)
+	DB_LOG *edblp;
 	const DB_LSN *lsn;
 {
 	int ret;
 
-	LOG_PANIC_CHECK(dblp);
+	LOG_PANIC_CHECK(edblp);
 
-	LOCK_LOGREGION(dblp);
-	ret = __log_flush(dblp, lsn);
-	UNLOCK_LOGREGION(dblp);
+	LOCK_LOGREGION(edblp);
+	ret = __log_flush(edblp, lsn);
+	UNLOCK_LOGREGION(edblp);
 	return (ret);
 }
 
@@ -256,8 +256,8 @@ log_flush(dblp, lsn)
  *	version.
  */
 static int
-__log_flush(dblp, lsn)
-	DB_LOG *dblp;
+__log_flush(edblp, lsn)
+	DB_LOG *edblp;
 	const DB_LSN *lsn;
 {
 	DB_LSN t_lsn;
@@ -265,7 +265,7 @@ __log_flush(dblp, lsn)
 	int current, ret;
 
 	ret = 0;
-	lp = dblp->lp;
+	lp = edblp->lp;
 
 	/*
 	 * If no LSN specified, flush the entire log by setting the flush LSN
@@ -280,7 +280,7 @@ __log_flush(dblp, lsn)
 		if (lsn->file > lp->lsn.file ||
 		    (lsn->file == lp->lsn.file &&
 		    lsn->offset > lp->lsn.offset - lp->len)) {
-			__db_err(dblp->dbenv,
+			__edb_err(edblp->edbenv,
 			    "log_flush: LSN past current end-of-log");
 			return (EINVAL);
 		}
@@ -301,7 +301,7 @@ __log_flush(dblp, lsn)
 	 */
 	current = 0;
 	if (lp->b_off != 0 && log_compare(lsn, &lp->f_lsn) >= 0) {
-		if ((ret = __log_write(dblp, lp->buf, lp->b_off)) != 0)
+		if ((ret = __log_write(edblp, lp->buf, lp->b_off)) != 0)
 			return (ret);
 
 		lp->b_off = 0;
@@ -312,13 +312,13 @@ __log_flush(dblp, lsn)
 	 * It's possible that this thread may never have written to this log
 	 * file.  Acquire a file descriptor if we don't already have one.
 	 */
-	if (dblp->lfname != dblp->lp->lsn.file)
-		if ((ret = __log_newfd(dblp)) != 0)
+	if (edblp->lfname != edblp->lp->lsn.file)
+		if ((ret = __log_newfd(edblp)) != 0)
 			return (ret);
 
 	/* Sync all writes to disk. */
-	if ((ret = __os_fsync(dblp->lfd)) != 0) {
-		__db_panic(dblp->dbenv, ret);
+	if ((ret = __os_fsync(edblp->lfd)) != 0) {
+		__edb_panic(edblp->edbenv, ret);
 		return (ret);
 	}
 	++lp->stat.st_scount;
@@ -352,8 +352,8 @@ __log_flush(dblp, lsn)
  *	Write information into the log.
  */
 static int
-__log_fill(dblp, lsn, addr, len)
-	DB_LOG *dblp;
+__log_fill(edblp, lsn, addr, len)
+	DB_LOG *edblp;
 	DB_LSN *lsn;
 	void *addr;
 	u_int32_t len;
@@ -364,7 +364,7 @@ __log_fill(dblp, lsn, addr, len)
 	int ret;
 
 	/* Copy out the data. */
-	for (lp = dblp->lp; len > 0;) {
+	for (lp = edblp->lp; len > 0;) {
 		/*
 		 * If we're beginning a new buffer, note the user LSN to which
 		 * the first byte of the buffer belongs.  We have to know this
@@ -380,7 +380,7 @@ __log_fill(dblp, lsn, addr, len)
 		 */
 		if (lp->b_off == 0 && len >= sizeof(lp->buf)) {
 			nrec = len / sizeof(lp->buf);
-			if ((ret = __log_write(dblp,
+			if ((ret = __log_write(edblp,
 			    addr, nrec * sizeof(lp->buf))) != 0)
 				return (ret);
 			addr = (u_int8_t *)addr + nrec * sizeof(lp->buf);
@@ -399,7 +399,7 @@ __log_fill(dblp, lsn, addr, len)
 		/* If we fill the buffer, flush it. */
 		if (lp->b_off == sizeof(lp->buf)) {
 			if ((ret =
-			    __log_write(dblp, lp->buf, sizeof(lp->buf))) != 0)
+			    __log_write(edblp, lp->buf, sizeof(lp->buf))) != 0)
 				return (ret);
 			lp->b_off = 0;
 		}
@@ -412,8 +412,8 @@ __log_fill(dblp, lsn, addr, len)
  *	Write the log buffer to disk.
  */
 static int
-__log_write(dblp, addr, len)
-	DB_LOG *dblp;
+__log_write(edblp, addr, len)
+	DB_LOG *edblp;
 	void *addr;
 	u_int32_t len;
 {
@@ -425,18 +425,18 @@ __log_write(dblp, addr, len)
 	 * If we haven't opened the log file yet or the current one
 	 * has changed, acquire a new log file.
 	 */
-	lp = dblp->lp;
-	if (dblp->lfd == -1 || dblp->lfname != lp->lsn.file)
-		if ((ret = __log_newfd(dblp)) != 0)
+	lp = edblp->lp;
+	if (edblp->lfd == -1 || edblp->lfname != lp->lsn.file)
+		if ((ret = __log_newfd(edblp)) != 0)
 			return (ret);
 
 	/*
 	 * Seek to the offset in the file (someone may have written it
 	 * since we last did).
 	 */
-	if ((ret = __os_seek(dblp->lfd, 0, 0, lp->w_off, 0, SEEK_SET)) != 0 ||
-	    (ret = __os_write(dblp->lfd, addr, len, &nw)) != 0) {
-		__db_panic(dblp->dbenv, ret);
+	if ((ret = __os_seek(edblp->lfd, 0, 0, lp->w_off, 0, SEEK_SET)) != 0 ||
+	    (ret = __os_write(edblp->lfd, addr, len, &nw)) != 0) {
+		__edb_panic(edblp->edbenv, ret);
 		return (ret);
 	}
 	if (nw != (int32_t)len)
@@ -464,8 +464,8 @@ __log_write(dblp, addr, len)
  *	Map a DB_LSN to a file name.
  */
 int
-log_file(dblp, lsn, namep, len)
-	DB_LOG *dblp;
+log_file(edblp, lsn, namep, len)
+	DB_LOG *edblp;
 	const DB_LSN *lsn;
 	char *namep;
 	size_t len;
@@ -473,11 +473,11 @@ log_file(dblp, lsn, namep, len)
 	int ret;
 	char *name;
 
-	LOG_PANIC_CHECK(dblp);
+	LOG_PANIC_CHECK(edblp);
 
-	LOCK_LOGREGION(dblp);
-	ret = __log_name(dblp, lsn->file, &name, NULL, 0);
-	UNLOCK_LOGREGION(dblp);
+	LOCK_LOGREGION(edblp);
+	ret = __log_name(edblp, lsn->file, &name, NULL, 0);
+	UNLOCK_LOGREGION(edblp);
 	if (ret != 0)
 		return (ret);
 
@@ -497,23 +497,23 @@ log_file(dblp, lsn, namep, len)
  *	Acquire a file descriptor for the current log file.
  */
 static int
-__log_newfd(dblp)
-	DB_LOG *dblp;
+__log_newfd(edblp)
+	DB_LOG *edblp;
 {
 	int ret;
 	char *name;
 
 	/* Close any previous file descriptor. */
-	if (dblp->lfd != -1) {
-		(void)__os_close(dblp->lfd);
-		dblp->lfd = -1;
+	if (edblp->lfd != -1) {
+		(void)__os_close(edblp->lfd);
+		edblp->lfd = -1;
 	}
 
 	/* Get the path of the new file and open it. */
-	dblp->lfname = dblp->lp->lsn.file;
-	if ((ret = __log_name(dblp,
-	    dblp->lfname, &name, &dblp->lfd, DB_CREATE | DB_SEQUENTIAL)) != 0)
-		__db_err(dblp->dbenv, "log_put: %s: %s", name, strerror(ret));
+	edblp->lfname = edblp->lp->lsn.file;
+	if ((ret = __log_name(edblp,
+	    edblp->lfname, &name, &edblp->lfd, DB_CREATE | DB_SEQUENTIAL)) != 0)
+		__edb_err(edblp->edbenv, "log_put: %s: %s", name, strerror(ret));
 
 	__os_freestr(name);
 	return (ret);
@@ -526,8 +526,8 @@ __log_newfd(dblp)
  * PUBLIC: int __log_name __P((DB_LOG *, u_int32_t, char **, int *, u_int32_t));
  */
 int
-__log_name(dblp, filenumber, namep, fdp, flags)
-	DB_LOG *dblp;
+__log_name(edblp, filenumber, namep, fdp, flags)
+	DB_LOG *edblp;
 	u_int32_t filenumber, flags;
 	char **namep;
 	int *fdp;
@@ -555,13 +555,13 @@ __log_name(dblp, filenumber, namep, fdp, flags)
 	 * file, return regardless.
 	 */
 	(void)snprintf(new, sizeof(new), LFNAME, filenumber);
-	if ((ret = __db_appname(dblp->dbenv,
-	    DB_APP_LOG, dblp->dir, new, 0, NULL, namep)) != 0 || fdp == NULL)
+	if ((ret = __edb_appname(edblp->edbenv,
+	    DB_APP_LOG, edblp->dir, new, 0, NULL, namep)) != 0 || fdp == NULL)
 		return (ret);
 
 	/* Open the new-style file -- if we succeed, we're done. */
-	if ((ret = __db_open(*namep,
-	    flags, flags, dblp->lp->persist.mode, fdp)) == 0)
+	if ((ret = __edb_open(*namep,
+	    flags, flags, edblp->lp->persist.mode, fdp)) == 0)
 		return (0);
 
 	/*
@@ -573,8 +573,8 @@ __log_name(dblp, filenumber, namep, fdp, flags)
 
 	/* Create an old-style file name. */
 	(void)snprintf(old, sizeof(old), LFNAME_V1, filenumber);
-	if ((ret = __db_appname(dblp->dbenv,
-	    DB_APP_LOG, dblp->dir, old, 0, NULL, &oname)) != 0)
+	if ((ret = __edb_appname(edblp->edbenv,
+	    DB_APP_LOG, edblp->dir, old, 0, NULL, &oname)) != 0)
 		goto err;
 
 	/*
@@ -582,8 +582,8 @@ __log_name(dblp, filenumber, namep, fdp, flags)
 	 * space allocated for the new-style name and return the old-style
 	 * name to the caller.
 	 */
-	if ((ret = __db_open(oname,
-	    flags, flags, dblp->lp->persist.mode, fdp)) == 0) {
+	if ((ret = __edb_open(oname,
+	    flags, flags, edblp->lp->persist.mode, fdp)) == 0) {
 		__os_freestr(*namep);
 		*namep = oname;
 		return (0);

@@ -55,14 +55,14 @@ static const char sccsid[] = "@(#)bt_split.c	10.33 (Sleepycat) 10/13/98";
 #include <string.h>
 #endif
 
-#include "db_int.h"
-#include "db_page.h"
+#include "edb_int.h"
+#include "edb_page.h"
 #include "btree.h"
 
 static int __bam_broot __P((DBC *, PAGE *, PAGE *, PAGE *));
 static int __bam_page __P((DBC *, EPG *, EPG *));
 static int __bam_pinsert __P((DBC *, EPG *, PAGE *, PAGE *));
-static int __bam_psplit __P((DBC *, EPG *, PAGE *, PAGE *, db_indx_t *));
+static int __bam_psplit __P((DBC *, EPG *, PAGE *, PAGE *, edb_indx_t *));
 static int __bam_root __P((DBC *, EPG *));
 static int __ram_root __P((DBC *, PAGE *, PAGE *, PAGE *));
 
@@ -73,18 +73,18 @@ static int __ram_root __P((DBC *, PAGE *, PAGE *, PAGE *));
  * PUBLIC: int __bam_split __P((DBC *, void *));
  */
 int
-__bam_split(dbc, arg)
-	DBC *dbc;
+__bam_split(edbc, arg)
+	DBC *edbc;
 	void *arg;
 {
 	BTREE *t;
 	CURSOR *cp;
-	DB *dbp;
+	DB *edbp;
 	enum { UP, DOWN } dir;
 	int exact, level, ret;
 
-	dbp = dbc->dbp;
-	cp = dbc->internal;
+	edbp = edbc->edbp;
+	cp = edbc->internal;
 
 	/*
 	 * The locking protocol we use to avoid deadlock to acquire locks by
@@ -113,15 +113,15 @@ __bam_split(dbc, arg)
 	 * split.  This would be an easy change for this code, but I have no
 	 * numbers that indicate it's worthwhile.
 	 */
-	t = dbp->internal;
+	t = edbp->internal;
 	for (dir = UP, level = LEAFLEVEL;; dir == UP ? ++level : --level) {
 		/*
 		 * Acquire a page and its parent, locked.
 		 */
-		if ((ret = (dbp->type == DB_BTREE ?
-		    __bam_search(dbc, arg, S_WRPAIR, level, NULL, &exact) :
-		    __bam_rsearch(dbc,
-		        (db_recno_t *)arg, S_WRPAIR, level, &exact))) != 0)
+		if ((ret = (edbp->type == DB_BTREE ?
+		    __bam_search(edbc, arg, S_WRPAIR, level, NULL, &exact) :
+		    __bam_rsearch(edbc,
+		        (edb_recno_t *)arg, S_WRPAIR, level, &exact))) != 0)
 			return (ret);
 
 		/*
@@ -131,13 +131,13 @@ __bam_split(dbc, arg)
 		 * is no longer necessary.
 		 */
 		if (t->bt_ovflsize * 2 <=
-		    (db_indx_t)P_FREESPACE(cp->csp[0].page)) {
-			__bam_stkrel(dbc, 1);
+		    (edb_indx_t)P_FREESPACE(cp->csp[0].page)) {
+			__bam_stkrel(edbc, 1);
 			return (0);
 		}
 		ret = cp->csp[0].page->pgno == PGNO_ROOT ?
-		    __bam_root(dbc, &cp->csp[0]) :
-		    __bam_page(dbc, &cp->csp[-1], &cp->csp[0]);
+		    __bam_root(edbc, &cp->csp[0]) :
+		    __bam_page(edbc, &cp->csp[-1], &cp->csp[0]);
 		BT_STK_CLR(cp);
 
 		switch (ret) {
@@ -172,16 +172,16 @@ __bam_split(dbc, arg)
  *	Split the root page of a btree.
  */
 static int
-__bam_root(dbc, cp)
-	DBC *dbc;
+__bam_root(edbc, cp)
+	DBC *edbc;
 	EPG *cp;
 {
-	DB *dbp;
+	DB *edbp;
 	PAGE *lp, *rp;
-	db_indx_t split;
+	edb_indx_t split;
 	int ret;
 
-	dbp = dbc->dbp;
+	edbp = edbc->edbp;
 
 	/* Yeah, right. */
 	if (cp->page->level >= MAXBTREELEVEL) {
@@ -191,30 +191,30 @@ __bam_root(dbc, cp)
 
 	/* Create new left and right pages for the split. */
 	lp = rp = NULL;
-	if ((ret = __bam_new(dbc, TYPE(cp->page), &lp)) != 0 ||
-	    (ret = __bam_new(dbc, TYPE(cp->page), &rp)) != 0)
+	if ((ret = __bam_new(edbc, TYPE(cp->page), &lp)) != 0 ||
+	    (ret = __bam_new(edbc, TYPE(cp->page), &rp)) != 0)
 		goto err;
-	P_INIT(lp, dbp->pgsize, lp->pgno,
+	P_INIT(lp, edbp->pgsize, lp->pgno,
 	    PGNO_INVALID, ISINTERNAL(cp->page) ? PGNO_INVALID : rp->pgno,
 	    cp->page->level, TYPE(cp->page));
-	P_INIT(rp, dbp->pgsize, rp->pgno,
+	P_INIT(rp, edbp->pgsize, rp->pgno,
 	    ISINTERNAL(cp->page) ?  PGNO_INVALID : lp->pgno, PGNO_INVALID,
 	    cp->page->level, TYPE(cp->page));
 
 	/* Split the page. */
-	if ((ret = __bam_psplit(dbc, cp, lp, rp, &split)) != 0)
+	if ((ret = __bam_psplit(edbc, cp, lp, rp, &split)) != 0)
 		goto err;
 
 	/* Log the change. */
-	if (DB_LOGGING(dbc)) {
+	if (DB_LOGGING(edbc)) {
 		DBT __a;
 		DB_LSN __lsn;
 		memset(&__a, 0, sizeof(__a));
 		__a.data = cp->page;
-		__a.size = dbp->pgsize;
+		__a.size = edbp->pgsize;
 		ZERO_LSN(__lsn);
-		if ((ret = __bam_split_log(dbp->dbenv->lg_info, dbc->txn,
-		    &LSN(cp->page), 0, dbp->log_fileid, PGNO(lp), &LSN(lp),
+		if ((ret = __bam_split_log(edbp->edbenv->lg_info, edbc->txn,
+		    &LSN(cp->page), 0, edbp->log_fileid, PGNO(lp), &LSN(lp),
 		    PGNO(rp), &LSN(rp), (u_int32_t)NUM_ENT(lp), 0, &__lsn,
 		    &__a)) != 0)
 			goto err;
@@ -222,28 +222,28 @@ __bam_root(dbc, cp)
 	}
 
 	/* Clean up the new root page. */
-	if ((ret = (dbp->type == DB_RECNO ?
-	    __ram_root(dbc, cp->page, lp, rp) :
-	    __bam_broot(dbc, cp->page, lp, rp))) != 0)
+	if ((ret = (edbp->type == DB_RECNO ?
+	    __ram_root(edbc, cp->page, lp, rp) :
+	    __bam_broot(edbc, cp->page, lp, rp))) != 0)
 		goto err;
 
 	/* Adjust any cursors.  Do it last so we don't have to undo it. */
-	__bam_ca_split(dbp, cp->page->pgno, lp->pgno, rp->pgno, split, 1);
+	__bam_ca_split(edbp, cp->page->pgno, lp->pgno, rp->pgno, split, 1);
 
 	/* Success -- write the real pages back to the store. */
-	(void)memp_fput(dbp->mpf, cp->page, DB_MPOOL_DIRTY);
-	(void)__BT_TLPUT(dbc, cp->lock);
-	(void)memp_fput(dbp->mpf, lp, DB_MPOOL_DIRTY);
-	(void)memp_fput(dbp->mpf, rp, DB_MPOOL_DIRTY);
+	(void)memp_fput(edbp->mpf, cp->page, DB_MPOOL_DIRTY);
+	(void)__BT_TLPUT(edbc, cp->lock);
+	(void)memp_fput(edbp->mpf, lp, DB_MPOOL_DIRTY);
+	(void)memp_fput(edbp->mpf, rp, DB_MPOOL_DIRTY);
 
 	return (0);
 
 err:	if (lp != NULL)
-		(void)__bam_free(dbc, lp);
+		(void)__bam_free(edbc, lp);
 	if (rp != NULL)
-		(void)__bam_free(dbc, rp);
-	(void)memp_fput(dbp->mpf, cp->page, 0);
-	(void)__BT_TLPUT(dbc, cp->lock);
+		(void)__bam_free(edbc, rp);
+	(void)memp_fput(edbp->mpf, cp->page, 0);
+	(void)__BT_TLPUT(edbc, cp->lock);
 	return (ret);
 }
 
@@ -252,32 +252,32 @@ err:	if (lp != NULL)
  *	Split the non-root page of a btree.
  */
 static int
-__bam_page(dbc, pp, cp)
-	DBC *dbc;
+__bam_page(edbc, pp, cp)
+	DBC *edbc;
 	EPG *pp, *cp;
 {
-	DB *dbp;
+	DB *edbp;
 	DB_LOCK tplock;
 	PAGE *lp, *rp, *tp;
-	db_indx_t split;
+	edb_indx_t split;
 	int ret;
 
-	dbp = dbc->dbp;
+	edbp = edbc->edbp;
 	lp = rp = tp = NULL;
 	ret = -1;
 
 	/* Create new right page for the split. */
-	if ((ret = __bam_new(dbc, TYPE(cp->page), &rp)) != 0)
+	if ((ret = __bam_new(edbc, TYPE(cp->page), &rp)) != 0)
 		goto err;
-	P_INIT(rp, dbp->pgsize, rp->pgno,
+	P_INIT(rp, edbp->pgsize, rp->pgno,
 	    ISINTERNAL(cp->page) ? PGNO_INVALID : cp->page->pgno,
 	    ISINTERNAL(cp->page) ? PGNO_INVALID : cp->page->next_pgno,
 	    cp->page->level, TYPE(cp->page));
 
 	/* Create new left page for the split. */
-	if ((ret = __os_malloc(dbp->pgsize, NULL, &lp)) != 0)
+	if ((ret = __os_malloc(edbp->pgsize, NULL, &lp)) != 0)
 		goto err;
-	P_INIT(lp, dbp->pgsize, cp->page->pgno,
+	P_INIT(lp, edbp->pgsize, cp->page->pgno,
 	    ISINTERNAL(cp->page) ?  PGNO_INVALID : cp->page->prev_pgno,
 	    ISINTERNAL(cp->page) ?  PGNO_INVALID : rp->pgno,
 	    cp->page->level, TYPE(cp->page));
@@ -293,7 +293,7 @@ __bam_page(dbc, pp, cp)
 	 * change, we swap the original and the allocated left page after the
 	 * split.
 	 */
-	if ((ret = __bam_psplit(dbc, cp, lp, rp, &split)) != 0)
+	if ((ret = __bam_psplit(edbc, cp, lp, rp, &split)) != 0)
 		goto err;
 
 	/*
@@ -310,28 +310,28 @@ __bam_page(dbc, pp, cp)
 	 * the page we're splitting.
 	 */
 	if (TYPE(cp->page) == P_LBTREE && rp->next_pgno != PGNO_INVALID) {
-		if ((ret = __bam_lget(dbc,
+		if ((ret = __bam_lget(edbc,
 		    0, rp->next_pgno, DB_LOCK_WRITE, &tplock)) != 0)
 			goto err;
-		if ((ret = memp_fget(dbp->mpf, &rp->next_pgno, 0, &tp)) != 0)
+		if ((ret = memp_fget(edbp->mpf, &rp->next_pgno, 0, &tp)) != 0)
 			goto err;
 	}
 
 	/* Insert the new pages into the parent page. */
-	if ((ret = __bam_pinsert(dbc, pp, lp, rp)) != 0)
+	if ((ret = __bam_pinsert(edbc, pp, lp, rp)) != 0)
 		goto err;
 
 	/* Log the change. */
-	if (DB_LOGGING(dbc)) {
+	if (DB_LOGGING(edbc)) {
 		DBT __a;
 		DB_LSN __lsn;
 		memset(&__a, 0, sizeof(__a));
 		__a.data = cp->page;
-		__a.size = dbp->pgsize;
+		__a.size = edbp->pgsize;
 		if (tp == NULL)
 			ZERO_LSN(__lsn);
-		if ((ret = __bam_split_log(dbp->dbenv->lg_info, dbc->txn,
-		    &cp->page->lsn, 0, dbp->log_fileid, PGNO(cp->page),
+		if ((ret = __bam_split_log(edbp->edbenv->lg_info, edbc->txn,
+		    &cp->page->lsn, 0, edbp->log_fileid, PGNO(cp->page),
 		    &LSN(cp->page), PGNO(rp), &LSN(rp), (u_int32_t)NUM_ENT(lp),
 		    tp == NULL ? 0 : PGNO(tp),
 		    tp == NULL ? &__lsn : &LSN(tp), &__a)) != 0)
@@ -345,8 +345,8 @@ __bam_page(dbc, pp, cp)
 	/* Copy the allocated page into place. */
 	memcpy(cp->page, lp, LOFFSET(lp));
 	memcpy((u_int8_t *)cp->page + HOFFSET(lp),
-	    (u_int8_t *)lp + HOFFSET(lp), dbp->pgsize - HOFFSET(lp));
-	__os_free(lp, dbp->pgsize);
+	    (u_int8_t *)lp + HOFFSET(lp), edbp->pgsize - HOFFSET(lp));
+	__os_free(lp, edbp->pgsize);
 	lp = NULL;
 
 	/* Finish the next-page link. */
@@ -354,41 +354,41 @@ __bam_page(dbc, pp, cp)
 		tp->prev_pgno = rp->pgno;
 
 	/* Adjust any cursors.  Do so last so we don't have to undo it. */
-	__bam_ca_split(dbp, cp->page->pgno, cp->page->pgno, rp->pgno, split, 0);
+	__bam_ca_split(edbp, cp->page->pgno, cp->page->pgno, rp->pgno, split, 0);
 
 	/* Success -- write the real pages back to the store. */
-	(void)memp_fput(dbp->mpf, pp->page, DB_MPOOL_DIRTY);
-	(void)__BT_TLPUT(dbc, pp->lock);
-	(void)memp_fput(dbp->mpf, cp->page, DB_MPOOL_DIRTY);
-	(void)__BT_TLPUT(dbc, cp->lock);
-	(void)memp_fput(dbp->mpf, rp, DB_MPOOL_DIRTY);
+	(void)memp_fput(edbp->mpf, pp->page, DB_MPOOL_DIRTY);
+	(void)__BT_TLPUT(edbc, pp->lock);
+	(void)memp_fput(edbp->mpf, cp->page, DB_MPOOL_DIRTY);
+	(void)__BT_TLPUT(edbc, cp->lock);
+	(void)memp_fput(edbp->mpf, rp, DB_MPOOL_DIRTY);
 	if (tp != NULL) {
-		(void)memp_fput(dbp->mpf, tp, DB_MPOOL_DIRTY);
-		(void)__BT_TLPUT(dbc, tplock);
+		(void)memp_fput(edbp->mpf, tp, DB_MPOOL_DIRTY);
+		(void)__BT_TLPUT(edbc, tplock);
 	}
 	return (0);
 
 err:	if (lp != NULL)
-		__os_free(lp, dbp->pgsize);
+		__os_free(lp, edbp->pgsize);
 	if (rp != NULL)
-		(void)__bam_free(dbc, rp);
+		(void)__bam_free(edbc, rp);
 	if (tp != NULL) {
-		(void)memp_fput(dbp->mpf, tp, 0);
+		(void)memp_fput(edbp->mpf, tp, 0);
 		if (ret == DB_NEEDSPLIT)
-			(void)__BT_LPUT(dbc, tplock);
+			(void)__BT_LPUT(edbc, tplock);
 		else
-			(void)__BT_TLPUT(dbc, tplock);
+			(void)__BT_TLPUT(edbc, tplock);
 	}
-	(void)memp_fput(dbp->mpf, pp->page, 0);
+	(void)memp_fput(edbp->mpf, pp->page, 0);
 	if (ret == DB_NEEDSPLIT)
-		(void)__BT_LPUT(dbc, pp->lock);
+		(void)__BT_LPUT(edbc, pp->lock);
 	else
-		(void)__BT_TLPUT(dbc, pp->lock);
-	(void)memp_fput(dbp->mpf, cp->page, 0);
+		(void)__BT_TLPUT(edbc, pp->lock);
+	(void)memp_fput(edbp->mpf, cp->page, 0);
 	if (ret == DB_NEEDSPLIT)
-		(void)__BT_LPUT(dbc, cp->lock);
+		(void)__BT_LPUT(edbc, cp->lock);
 	else
-		(void)__BT_TLPUT(dbc, cp->lock);
+		(void)__BT_TLPUT(edbc, cp->lock);
 	return (ret);
 }
 
@@ -397,24 +397,24 @@ err:	if (lp != NULL)
  *	Fix up the btree root page after it has been split.
  */
 static int
-__bam_broot(dbc, rootp, lp, rp)
-	DBC *dbc;
+__bam_broot(edbc, rootp, lp, rp)
+	DBC *edbc;
 	PAGE *rootp, *lp, *rp;
 {
 	BINTERNAL bi, *child_bi;
 	BKEYDATA *child_bk;
-	DB *dbp;
+	DB *edbp;
 	DBT hdr, data;
 	int ret;
 
-	dbp = dbc->dbp;
+	edbp = edbc->edbp;
 
 	/*
 	 * If the root page was a leaf page, change it into an internal page.
 	 * We copy the key we split on (but not the key's data, in the case of
 	 * a leaf page) to the new root page.
 	 */
-	P_INIT(rootp, dbp->pgsize,
+	P_INIT(rootp, edbp->pgsize,
 	    PGNO_ROOT, PGNO_INVALID, PGNO_INVALID, lp->level + 1, P_IBTREE);
 
 	memset(&data, 0, sizeof(data));
@@ -428,14 +428,14 @@ __bam_broot(dbc, rootp, lp, rp)
 	bi.len = 0;
 	B_TSET(bi.type, B_KEYDATA, 0);
 	bi.pgno = lp->pgno;
-	if (F_ISSET(dbp, DB_BT_RECNUM)) {
+	if (F_ISSET(edbp, DB_BT_RECNUM)) {
 		bi.nrecs = __bam_total(lp);
 		RE_NREC_SET(rootp, bi.nrecs);
 	}
 	hdr.data = &bi;
 	hdr.size = SSZA(BINTERNAL, data);
 	if ((ret =
-	    __db_pitem(dbc, rootp, 0, BINTERNAL_SIZE(0), &hdr, NULL)) != 0)
+	    __edb_pitem(edbc, rootp, 0, BINTERNAL_SIZE(0), &hdr, NULL)) != 0)
 		return (ret);
 
 	switch (TYPE(rp)) {
@@ -446,7 +446,7 @@ __bam_broot(dbc, rootp, lp, rp)
 		bi.len = child_bi->len;
 		B_TSET(bi.type, child_bi->type, 0);
 		bi.pgno = rp->pgno;
-		if (F_ISSET(dbp, DB_BT_RECNUM)) {
+		if (F_ISSET(edbp, DB_BT_RECNUM)) {
 			bi.nrecs = __bam_total(rp);
 			RE_NREC_ADJ(rootp, bi.nrecs);
 		}
@@ -454,13 +454,13 @@ __bam_broot(dbc, rootp, lp, rp)
 		hdr.size = SSZA(BINTERNAL, data);
 		data.data = child_bi->data;
 		data.size = child_bi->len;
-		if ((ret = __db_pitem(dbc, rootp, 1,
+		if ((ret = __edb_pitem(edbc, rootp, 1,
 		    BINTERNAL_SIZE(child_bi->len), &hdr, &data)) != 0)
 			return (ret);
 
 		/* Increment the overflow ref count. */
 		if (B_TYPE(child_bi->type) == B_OVERFLOW)
-			if ((ret = __db_ovref(dbc,
+			if ((ret = __edb_ovref(edbc,
 			    ((BOVERFLOW *)(child_bi->data))->pgno, 1)) != 0)
 				return (ret);
 		break;
@@ -472,7 +472,7 @@ __bam_broot(dbc, rootp, lp, rp)
 			bi.len = child_bk->len;
 			B_TSET(bi.type, child_bk->type, 0);
 			bi.pgno = rp->pgno;
-			if (F_ISSET(dbp, DB_BT_RECNUM)) {
+			if (F_ISSET(edbp, DB_BT_RECNUM)) {
 				bi.nrecs = __bam_total(rp);
 				RE_NREC_ADJ(rootp, bi.nrecs);
 			}
@@ -480,7 +480,7 @@ __bam_broot(dbc, rootp, lp, rp)
 			hdr.size = SSZA(BINTERNAL, data);
 			data.data = child_bk->data;
 			data.size = child_bk->len;
-			if ((ret = __db_pitem(dbc, rootp, 1,
+			if ((ret = __edb_pitem(edbc, rootp, 1,
 			    BINTERNAL_SIZE(child_bk->len), &hdr, &data)) != 0)
 				return (ret);
 			break;
@@ -489,7 +489,7 @@ __bam_broot(dbc, rootp, lp, rp)
 			bi.len = BOVERFLOW_SIZE;
 			B_TSET(bi.type, child_bk->type, 0);
 			bi.pgno = rp->pgno;
-			if (F_ISSET(dbp, DB_BT_RECNUM)) {
+			if (F_ISSET(edbp, DB_BT_RECNUM)) {
 				bi.nrecs = __bam_total(rp);
 				RE_NREC_ADJ(rootp, bi.nrecs);
 			}
@@ -497,22 +497,22 @@ __bam_broot(dbc, rootp, lp, rp)
 			hdr.size = SSZA(BINTERNAL, data);
 			data.data = child_bk;
 			data.size = BOVERFLOW_SIZE;
-			if ((ret = __db_pitem(dbc, rootp, 1,
+			if ((ret = __edb_pitem(edbc, rootp, 1,
 			    BINTERNAL_SIZE(BOVERFLOW_SIZE), &hdr, &data)) != 0)
 				return (ret);
 
 			/* Increment the overflow ref count. */
 			if (B_TYPE(child_bk->type) == B_OVERFLOW)
-				if ((ret = __db_ovref(dbc,
+				if ((ret = __edb_ovref(edbc,
 				    ((BOVERFLOW *)child_bk)->pgno, 1)) != 0)
 					return (ret);
 			break;
 		default:
-			return (__db_pgfmt(dbp, rp->pgno));
+			return (__edb_pgfmt(edbp, rp->pgno));
 		}
 		break;
 	default:
-		return (__db_pgfmt(dbp, rp->pgno));
+		return (__edb_pgfmt(edbp, rp->pgno));
 	}
 	return (0);
 }
@@ -522,19 +522,19 @@ __bam_broot(dbc, rootp, lp, rp)
  *	Fix up the recno root page after it has been split.
  */
 static int
-__ram_root(dbc, rootp, lp, rp)
-	DBC *dbc;
+__ram_root(edbc, rootp, lp, rp)
+	DBC *edbc;
 	PAGE *rootp, *lp, *rp;
 {
-	DB *dbp;
+	DB *edbp;
 	DBT hdr;
 	RINTERNAL ri;
 	int ret;
 
-	dbp = dbc->dbp;
+	edbp = edbc->edbp;
 
 	/* Initialize the page. */
-	P_INIT(rootp, dbp->pgsize,
+	P_INIT(rootp, edbp->pgsize,
 	    PGNO_ROOT, PGNO_INVALID, PGNO_INVALID, lp->level + 1, P_IRECNO);
 
 	/* Initialize the header. */
@@ -545,12 +545,12 @@ __ram_root(dbc, rootp, lp, rp)
 	/* Insert the left and right keys, set the header information. */
 	ri.pgno = lp->pgno;
 	ri.nrecs = __bam_total(lp);
-	if ((ret = __db_pitem(dbc, rootp, 0, RINTERNAL_SIZE, &hdr, NULL)) != 0)
+	if ((ret = __edb_pitem(edbc, rootp, 0, RINTERNAL_SIZE, &hdr, NULL)) != 0)
 		return (ret);
 	RE_NREC_SET(rootp, ri.nrecs);
 	ri.pgno = rp->pgno;
 	ri.nrecs = __bam_total(rp);
-	if ((ret = __db_pitem(dbc, rootp, 1, RINTERNAL_SIZE, &hdr, NULL)) != 0)
+	if ((ret = __edb_pitem(edbc, rootp, 1, RINTERNAL_SIZE, &hdr, NULL)) != 0)
 		return (ret);
 	RE_NREC_ADJ(rootp, ri.nrecs);
 	return (0);
@@ -561,29 +561,29 @@ __ram_root(dbc, rootp, lp, rp)
  *	Insert a new key into a parent page, completing the split.
  */
 static int
-__bam_pinsert(dbc, parent, lchild, rchild)
-	DBC *dbc;
+__bam_pinsert(edbc, parent, lchild, rchild)
+	DBC *edbc;
 	EPG *parent;
 	PAGE *lchild, *rchild;
 {
 	BINTERNAL bi, *child_bi;
 	BKEYDATA *child_bk, *tmp_bk;
 	BTREE *t;
-	DB *dbp;
+	DB *edbp;
 	DBT a, b, hdr, data;
 	PAGE *ppage;
 	RINTERNAL ri;
-	db_indx_t off;
-	db_recno_t nrecs;
+	edb_indx_t off;
+	edb_recno_t nrecs;
 	u_int32_t n, nbytes, nksize;
 	int ret;
 
-	dbp = dbc->dbp;
-	t = dbp->internal;
+	edbp = edbc->edbp;
+	t = edbp->internal;
 	ppage = parent->page;
 
 	/* If handling record numbers, count records split to the right page. */
-	nrecs = dbp->type == DB_RECNO || F_ISSET(dbp, DB_BT_RECNUM) ?
+	nrecs = edbp->type == DB_RECNO || F_ISSET(edbp, DB_BT_RECNUM) ?
 	    __bam_total(rchild) : 0;
 
 	/*
@@ -633,13 +633,13 @@ __bam_pinsert(dbc, parent, lchild, rchild)
 		memset(&data, 0, sizeof(data));
 		data.data = child_bi->data;
 		data.size = child_bi->len;
-		if ((ret = __db_pitem(dbc, ppage, off,
+		if ((ret = __edb_pitem(edbc, ppage, off,
 		    BINTERNAL_SIZE(child_bi->len), &hdr, &data)) != 0)
 			return (ret);
 
 		/* Increment the overflow ref count. */
 		if (B_TYPE(child_bi->type) == B_OVERFLOW)
-			if ((ret = __db_ovref(dbc,
+			if ((ret = __edb_ovref(edbc,
 			    ((BOVERFLOW *)(child_bi->data))->pgno, 1)) != 0)
 				return (ret);
 		break;
@@ -682,7 +682,7 @@ noprefix:			nksize = child_bk->len;
 			memset(&data, 0, sizeof(data));
 			data.data = child_bk->data;
 			data.size = nksize;
-			if ((ret = __db_pitem(dbc, ppage, off,
+			if ((ret = __edb_pitem(edbc, ppage, off,
 			    BINTERNAL_SIZE(nksize), &hdr, &data)) != 0)
 				return (ret);
 			break;
@@ -704,18 +704,18 @@ noprefix:			nksize = child_bk->len;
 			memset(&data, 0, sizeof(data));
 			data.data = child_bk;
 			data.size = BOVERFLOW_SIZE;
-			if ((ret = __db_pitem(dbc, ppage, off,
+			if ((ret = __edb_pitem(edbc, ppage, off,
 			    BINTERNAL_SIZE(BOVERFLOW_SIZE), &hdr, &data)) != 0)
 				return (ret);
 
 			/* Increment the overflow ref count. */
 			if (B_TYPE(child_bk->type) == B_OVERFLOW)
-				if ((ret = __db_ovref(dbc,
+				if ((ret = __edb_ovref(edbc,
 				    ((BOVERFLOW *)child_bk)->pgno, 1)) != 0)
 					return (ret);
 			break;
 		default:
-			return (__db_pgfmt(dbp, rchild->pgno));
+			return (__edb_pgfmt(edbp, rchild->pgno));
 		}
 		break;
 	case P_IRECNO:
@@ -731,26 +731,26 @@ noprefix:			nksize = child_bk->len;
 		hdr.size = RINTERNAL_SIZE;
 		ri.pgno = rchild->pgno;
 		ri.nrecs = nrecs;
-		if ((ret = __db_pitem(dbc,
+		if ((ret = __edb_pitem(edbc,
 		    ppage, off, RINTERNAL_SIZE, &hdr, NULL)) != 0)
 			return (ret);
 		break;
 	default:
-		return (__db_pgfmt(dbp, rchild->pgno));
+		return (__edb_pgfmt(edbp, rchild->pgno));
 	}
 
 	/* Adjust the parent page's left page record count. */
-	if (dbp->type == DB_RECNO || F_ISSET(dbp, DB_BT_RECNUM)) {
+	if (edbp->type == DB_RECNO || F_ISSET(edbp, DB_BT_RECNUM)) {
 		/* Log the change. */
-		if (DB_LOGGING(dbc) &&
-		    (ret = __bam_cadjust_log(dbp->dbenv->lg_info,
-		    dbc->txn, &LSN(ppage), 0, dbp->log_fileid,
+		if (DB_LOGGING(edbc) &&
+		    (ret = __bam_cadjust_log(edbp->edbenv->lg_info,
+		    edbc->txn, &LSN(ppage), 0, edbp->log_fileid,
 		    PGNO(ppage), &LSN(ppage), (u_int32_t)parent->indx,
 		    -(int32_t)nrecs, (int32_t)0)) != 0)
 			return (ret);
 
 		/* Update the left page count. */
-		if (dbp->type == DB_RECNO)
+		if (edbp->type == DB_RECNO)
 			GET_RINTERNAL(ppage, parent->indx)->nrecs -= nrecs;
 		else
 			GET_BINTERNAL(ppage, parent->indx)->nrecs -= nrecs;
@@ -764,18 +764,18 @@ noprefix:			nksize = child_bk->len;
  *	Do the real work of splitting the page.
  */
 static int
-__bam_psplit(dbc, cp, lp, rp, splitret)
-	DBC *dbc;
+__bam_psplit(edbc, cp, lp, rp, splitret)
+	DBC *edbc;
 	EPG *cp;
 	PAGE *lp, *rp;
-	db_indx_t *splitret;
+	edb_indx_t *splitret;
 {
-	DB *dbp;
+	DB *edbp;
 	PAGE *pp;
-	db_indx_t half, nbytes, off, splitp, top;
+	edb_indx_t half, nbytes, off, splitp, top;
 	int adjust, cnt, isbigkey, ret;
 
-	dbp = dbc->dbp;
+	edbp = edbc->edbp;
 	pp = cp->page;
 	adjust = TYPE(pp) == P_LBTREE ? P_INDX : O_INDX;
 
@@ -819,7 +819,7 @@ __bam_psplit(dbc, cp, lp, rp, splitret)
 	 * need more space soon anyway.
 	 */
 	top = NUM_ENT(pp) - adjust;
-	half = (dbp->pgsize - HOFFSET(pp)) / 2;
+	half = (edbp->pgsize - HOFFSET(pp)) / 2;
 	for (nbytes = 0, off = 0; off < top && nbytes < half; ++off)
 		switch (TYPE(pp)) {
 		case P_IBTREE:
@@ -850,7 +850,7 @@ __bam_psplit(dbc, cp, lp, rp, splitret)
 			nbytes += BKEYDATA_SIZE(GET_BKEYDATA(pp, off)->len);
 			break;
 		default:
-			return (__db_pgfmt(dbp, pp->pgno));
+			return (__edb_pgfmt(edbp, pp->pgno));
 		}
 sort:	splitp = off;
 
@@ -867,14 +867,14 @@ sort:	splitp = off;
 	if (isbigkey)
 		for (cnt = 1; cnt <= 3; ++cnt) {
 			off = splitp + cnt * adjust;
-			if (off < (db_indx_t)NUM_ENT(pp) &&
+			if (off < (edb_indx_t)NUM_ENT(pp) &&
 			    ((TYPE(pp) == P_IBTREE &&
 			    B_TYPE(GET_BINTERNAL(pp,off)->type) == B_KEYDATA) ||
 			    B_TYPE(GET_BKEYDATA(pp, off)->type) == B_KEYDATA)) {
 				splitp = off;
 				break;
 			}
-			if (splitp <= (db_indx_t)(cnt * adjust))
+			if (splitp <= (edb_indx_t)(cnt * adjust))
 				continue;
 			off = splitp - cnt * adjust;
 			if (TYPE(pp) == P_IBTREE ?
@@ -891,7 +891,7 @@ sort:	splitp = off;
 	 * because that's the point where we push it off onto a duplicate
 	 * page set.  So, this loop can't be unbounded.
 	 */
-	if (F_ISSET(dbp, DB_AM_DUP) && TYPE(pp) == P_LBTREE &&
+	if (F_ISSET(edbp, DB_AM_DUP) && TYPE(pp) == P_LBTREE &&
 	    pp->inp[splitp] == pp->inp[splitp - adjust])
 		for (cnt = 1;; ++cnt) {
 			off = splitp + cnt * adjust;
@@ -900,7 +900,7 @@ sort:	splitp = off;
 				splitp = off;
 				break;
 			}
-			if (splitp <= (db_indx_t)(cnt * adjust))
+			if (splitp <= (edb_indx_t)(cnt * adjust))
 				continue;
 			off = splitp - cnt * adjust;
 			if (pp->inp[splitp] != pp->inp[off]) {
@@ -911,9 +911,9 @@ sort:	splitp = off;
 
 
 	/* We're going to split at splitp. */
-	if ((ret = __bam_copy(dbp, pp, lp, 0, splitp)) != 0)
+	if ((ret = __bam_copy(edbp, pp, lp, 0, splitp)) != 0)
 		return (ret);
-	if ((ret = __bam_copy(dbp, pp, rp, splitp, NUM_ENT(pp))) != 0)
+	if ((ret = __bam_copy(edbp, pp, rp, splitp, NUM_ENT(pp))) != 0)
 		return (ret);
 
 	*splitret = splitp;
@@ -927,12 +927,12 @@ sort:	splitp = off;
  * PUBLIC: int __bam_copy __P((DB *, PAGE *, PAGE *, u_int32_t, u_int32_t));
  */
 int
-__bam_copy(dbp, pp, cp, nxt, stop)
-	DB *dbp;
+__bam_copy(edbp, pp, cp, nxt, stop)
+	DB *edbp;
 	PAGE *pp, *cp;
 	u_int32_t nxt, stop;
 {
-	db_indx_t nbytes, off;
+	edb_indx_t nbytes, off;
 
 	/*
 	 * Copy the rest of the data to the right page.  Nxt is the next
@@ -969,7 +969,7 @@ __bam_copy(dbp, pp, cp, nxt, stop)
 			nbytes = RINTERNAL_SIZE;
 			break;
 		default:
-			return (__db_pgfmt(dbp, pp->pgno));
+			return (__edb_pgfmt(edbp, pp->pgno));
 		}
 		cp->inp[off] = HOFFSET(cp) -= nbytes;
 		memcpy(P_ENTRY(cp, off), P_ENTRY(pp, nxt), nbytes);

@@ -18,9 +18,9 @@ static const char sccsid[] = "@(#)lock_deadlock.c	10.37 (Sleepycat) 10/4/98";
 #include <string.h>
 #endif
 
-#include "db_int.h"
+#include "edb_int.h"
 #include "shqueue.h"
-#include "db_shash.h"
+#include "edb_shash.h"
 #include "lock.h"
 #include "common_ext.h"
 
@@ -46,7 +46,7 @@ typedef struct {
 	int		valid;
 	u_int32_t	id;
 	DB_LOCK		last_lock;
-	db_pgno_t	pgno;
+	edb_pgno_t	pgno;
 } locker_info;
 
 static int  __dd_abort __P((DB_ENV *, locker_info *));
@@ -64,7 +64,7 @@ lock_detect(lt, flags, atype)
 	DB_LOCKTAB *lt;
 	u_int32_t flags, atype;
 {
-	DB_ENV *dbenv;
+	DB_ENV *edbenv;
 	locker_info *idmap;
 	u_int32_t *bitmap, *deadlock, i, killid, nentries, nlockers;
 	int do_pass, ret;
@@ -73,15 +73,15 @@ lock_detect(lt, flags, atype)
 
 	/* Validate arguments. */
 	if ((ret =
-	    __db_fchk(lt->dbenv, "lock_detect", flags, DB_LOCK_CONFLICT)) != 0)
+	    __edb_fchk(lt->edbenv, "lock_detect", flags, DB_LOCK_CONFLICT)) != 0)
 		return (ret);
 
 	/* Check if a detector run is necessary. */
-	dbenv = lt->dbenv;
+	edbenv = lt->edbenv;
 	if (LF_ISSET(DB_LOCK_CONFLICT)) {
 		/* Make a pass every time a lock waits. */
 		LOCK_LOCKREGION(lt);
-		do_pass = dbenv->lk_info->region->need_dd != 0;
+		do_pass = edbenv->lk_info->region->need_dd != 0;
 		UNLOCK_LOCKREGION(lt);
 
 		if (!do_pass)
@@ -89,14 +89,14 @@ lock_detect(lt, flags, atype)
 	}
 
 	/* Build the waits-for bitmap. */
-	if ((ret = __dd_build(dbenv, &bitmap, &nlockers, &idmap)) != 0)
+	if ((ret = __dd_build(edbenv, &bitmap, &nlockers, &idmap)) != 0)
 		return (ret);
 
 	if (nlockers == 0)
 		return (0);
 #ifdef DIAGNOSTIC
-	if (dbenv->db_verbose != 0)
-		__dd_debug(dbenv, idmap, bitmap, nlockers);
+	if (edbenv->edb_verbose != 0)
+		__dd_debug(edbenv, idmap, bitmap, nlockers);
 #endif
 	/* Find a deadlock. */
 	deadlock = __dd_find(bitmap, idmap, nlockers);
@@ -116,7 +116,7 @@ lock_detect(lt, flags, atype)
 					killid = i;
 
 			if (killid == BAD_KILLID) {
-				__db_err(dbenv,
+				__edb_err(edbenv,
 				    "warning: could not find locker to abort");
 				break;
 			}
@@ -149,7 +149,7 @@ lock_detect(lt, flags, atype)
 					killid = i;
 
 			if (killid == BAD_KILLID) {
-				__db_err(dbenv,
+				__edb_err(edbenv,
 				    "warning: could not find locker to abort");
 				break;
 			}
@@ -168,13 +168,13 @@ lock_detect(lt, flags, atype)
 		}
 
 		/* Kill the locker with lockid idmap[killid]. */
-		if (dbenv->db_verbose != 0 && killid != BAD_KILLID)
-			__db_err(dbenv, "Aborting locker %lx",
+		if (edbenv->edb_verbose != 0 && killid != BAD_KILLID)
+			__edb_err(edbenv, "Aborting locker %lx",
 			    (u_long)idmap[killid].id);
 
 		if (killid != BAD_KILLID &&
-		    (ret = __dd_abort(dbenv, &idmap[killid])) != 0)
-			__db_err(dbenv,
+		    (ret = __dd_abort(edbenv, &idmap[killid])) != 0)
+			__edb_err(edbenv,
 			    "warning: unable to abort locker %lx",
 			    (u_long)idmap[killid].id);
 	}
@@ -189,12 +189,12 @@ lock_detect(lt, flags, atype)
  * Utilities
  */
 static int
-__dd_build(dbenv, bmp, nlockers, idmap)
-	DB_ENV *dbenv;
+__dd_build(edbenv, bmp, nlockers, idmap)
+	DB_ENV *edbenv;
 	u_int32_t **bmp, *nlockers;
 	locker_info **idmap;
 {
-	struct __db_lock *lp;
+	struct __edb_lock *lp;
 	DB_LOCKTAB *lt;
 	DB_LOCKOBJ *op, *lo, *lockerp;
 	u_int8_t *pptr;
@@ -202,7 +202,7 @@ __dd_build(dbenv, bmp, nlockers, idmap)
 	u_int32_t *bitmap, count, *entryp, i, id, nentries, *tmpmap;
 	int is_first, ret;
 
-	lt = dbenv->lk_info;
+	lt = edbenv->lk_info;
 
 	/*
 	 * We'll check how many lockers there are, add a few more in for
@@ -220,8 +220,8 @@ retry:	count = lt->region->nlockers;
 		return (0);
 	}
 
-	if (dbenv->db_verbose)
-		__db_err(dbenv, "%lu lockers", (u_long)count);
+	if (edbenv->edb_verbose)
+		__edb_err(edbenv, "%lu lockers", (u_long)count);
 
 	count += 10;
 	nentries = ALIGN(count, 32) / 32;
@@ -266,8 +266,8 @@ retry:	count = lt->region->nlockers;
 	 * actual locker.
 	 */
 	for (id = 0, i = 0; i < lt->region->table_size; i++)
-		for (op = SH_TAILQ_FIRST(&lt->hashtab[i], __db_lockobj);
-		    op != NULL; op = SH_TAILQ_NEXT(op, links, __db_lockobj))
+		for (op = SH_TAILQ_FIRST(&lt->hashtab[i], __edb_lockobj);
+		    op != NULL; op = SH_TAILQ_NEXT(op, links, __edb_lockobj))
 			if (op->type == DB_LOCK_LOCKER)
 				op->dd_id = id++;
 	/*
@@ -276,8 +276,8 @@ retry:	count = lt->region->nlockers;
 	 * for each waiter/holder combination.
 	 */
 	for (i = 0; i < lt->region->table_size; i++) {
-		for (op = SH_TAILQ_FIRST(&lt->hashtab[i], __db_lockobj);
-		    op != NULL; op = SH_TAILQ_NEXT(op, links, __db_lockobj)) {
+		for (op = SH_TAILQ_FIRST(&lt->hashtab[i], __edb_lockobj);
+		    op != NULL; op = SH_TAILQ_NEXT(op, links, __edb_lockobj)) {
 			if (op->type != DB_LOCK_OBJTYPE)
 				continue;
 			CLEAR_MAP(tmpmap, nentries);
@@ -286,12 +286,12 @@ retry:	count = lt->region->nlockers;
 			 * First we go through and create a bit map that
 			 * represents all the holders of this object.
 			 */
-			for (lp = SH_TAILQ_FIRST(&op->holders, __db_lock);
+			for (lp = SH_TAILQ_FIRST(&op->holders, __edb_lock);
 			    lp != NULL;
-			    lp = SH_TAILQ_NEXT(lp, links, __db_lock)) {
+			    lp = SH_TAILQ_NEXT(lp, links, __edb_lock)) {
 				if (__lock_getobj(lt, lp->holder,
 				    NULL, DB_LOCK_LOCKER, &lockerp) != 0) {
-					__db_err(dbenv,
+					__edb_err(edbenv,
 					    "warning unable to find object");
 					continue;
 				}
@@ -311,13 +311,13 @@ retry:	count = lt->region->nlockers;
 			 * equal to the map of holders we set up above.
 			 */
 			for (is_first = 1,
-			    lp = SH_TAILQ_FIRST(&op->waiters, __db_lock);
+			    lp = SH_TAILQ_FIRST(&op->waiters, __edb_lock);
 			    lp != NULL;
 			    is_first = 0,
-			    lp = SH_TAILQ_NEXT(lp, links, __db_lock)) {
+			    lp = SH_TAILQ_NEXT(lp, links, __edb_lock)) {
 				if (__lock_getobj(lt, lp->holder,
 				    NULL, DB_LOCK_LOCKER, &lockerp) != 0) {
-					__db_err(dbenv,
+					__edb_err(edbenv,
 					    "warning unable to find object");
 					continue;
 				}
@@ -352,18 +352,18 @@ retry:	count = lt->region->nlockers;
 			continue;
 		if (__lock_getobj(lt,
 		    id_array[id].id, NULL, DB_LOCK_LOCKER, &lockerp) != 0) {
-			__db_err(dbenv,
+			__edb_err(edbenv,
 			    "No locks for locker %lu", (u_long)id_array[id].id);
 			continue;
 		}
-		lp = SH_LIST_FIRST(&lockerp->heldby, __db_lock);
+		lp = SH_LIST_FIRST(&lockerp->heledby, __edb_lock);
 		if (lp != NULL) {
 			id_array[id].last_lock = LOCK_TO_OFFSET(lt, lp);
 			lo = (DB_LOCKOBJ *)((u_int8_t *)lp + lp->obj);
 			pptr = SH_DBT_PTR(&lo->lockobj);
-			if (lo->lockobj.size >= sizeof(db_pgno_t))
+			if (lo->lockobj.size >= sizeof(edb_pgno_t))
 				memcpy(&id_array[id].pgno, pptr,
-				    sizeof(db_pgno_t));
+				    sizeof(edb_pgno_t));
 			else
 				id_array[id].pgno = 0;
 		}
@@ -413,16 +413,16 @@ __dd_find(bmp, idmap, nlockers)
 }
 
 static int
-__dd_abort(dbenv, info)
-	DB_ENV *dbenv;
+__dd_abort(edbenv, info)
+	DB_ENV *edbenv;
 	locker_info *info;
 {
-	struct __db_lock *lockp;
+	struct __edb_lock *lockp;
 	DB_LOCKTAB *lt;
 	DB_LOCKOBJ *lockerp, *sh_obj;
 	int ret;
 
-	lt = dbenv->lk_info;
+	lt = edbenv->lk_info;
 	LOCK_LOCKREGION(lt);
 
 	/* Find the locker's last lock. */
@@ -430,7 +430,7 @@ __dd_abort(dbenv, info)
 	    __lock_getobj(lt, info->id, NULL, DB_LOCK_LOCKER, &lockerp)) != 0)
 		goto out;
 
-	lockp = SH_LIST_FIRST(&lockerp->heldby, __db_lock);
+	lockp = SH_LIST_FIRST(&lockerp->heledby, __edb_lock);
 
 	/*
 	 * It's possible that this locker was already aborted.
@@ -438,10 +438,10 @@ __dd_abort(dbenv, info)
 	 * locker from the hash table.
 	 */
 	if (lockp == NULL) {
-		HASHREMOVE_EL(lt->hashtab, __db_lockobj,
+		HASHREMOVE_EL(lt->hashtab, __edb_lockobj,
 		    links, lockerp, lt->region->table_size, __lock_lhash);
 		SH_TAILQ_INSERT_HEAD(&lt->region->free_objs,
-		    lockerp, links, __db_lockobj);
+		    lockerp, links, __edb_lockobj);
 		lt->region->nlockers--;
 		goto out;
 	} else if (LOCK_TO_OFFSET(lt, lockp) != info->last_lock ||
@@ -451,10 +451,10 @@ __dd_abort(dbenv, info)
 	/* Abort lock, take it off list, and wake up this lock. */
 	lockp->status = DB_LSTAT_ABORTED;
 	lt->region->ndeadlocks++;
-	SH_LIST_REMOVE(lockp, locker_links, __db_lock);
+	SH_LIST_REMOVE(lockp, locker_links, __edb_lock);
 	sh_obj = (DB_LOCKOBJ *)((u_int8_t *)lockp + lockp->obj);
-	SH_TAILQ_REMOVE(&sh_obj->waiters, lockp, links, __db_lock);
-        (void)__db_mutex_unlock(&lockp->mutex, lt->reginfo.fd);
+	SH_TAILQ_REMOVE(&sh_obj->waiters, lockp, links, __edb_lock);
+        (void)__edb_mutex_unlock(&lockp->mutex, lt->reginfo.fd);
 
 	ret = 0;
 
@@ -464,8 +464,8 @@ out:	UNLOCK_LOCKREGION(lt);
 
 #ifdef DIAGNOSTIC
 static void
-__dd_debug(dbenv, idmap, bitmap, nlockers)
-	DB_ENV *dbenv;
+__dd_debug(edbenv, idmap, bitmap, nlockers)
+	DB_ENV *edbenv;
 	locker_info *idmap;
 	u_int32_t *bitmap, nlockers;
 {
@@ -473,8 +473,8 @@ __dd_debug(dbenv, idmap, bitmap, nlockers)
 	int ret;
 	char *msgbuf;
 
-	__db_err(dbenv, "Waitsfor array");
-	__db_err(dbenv, "waiter\twaiting on");
+	__edb_err(edbenv, "Waitsfor array");
+	__edb_err(edbenv, "waiter\twaiting on");
 
 	/* Allocate space to print 10 bytes per item waited on. */
 #undef	MSGBUF_LEN
@@ -494,7 +494,7 @@ __dd_debug(dbenv, idmap, bitmap, nlockers)
 				    (u_long)idmap[j].id);
 		(void)sprintf(msgbuf,
 		    "%s %lu", msgbuf, (u_long)idmap[i].last_lock);
-		__db_err(dbenv, msgbuf);
+		__edb_err(edbenv, msgbuf);
 	}
 
 	__os_free(msgbuf, MSGBUF_LEN);

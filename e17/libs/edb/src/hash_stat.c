@@ -17,8 +17,8 @@ static const char sccsid[] = "@(#)hash_stat.c	10.12 (Sleepycat) 12/19/98";
 #include <errno.h>
 #endif
 
-#include "db_int.h"
-#include "db_page.h"
+#include "edb_int.h"
+#include "edb_page.h"
 #include "hash.h"
 
 /*
@@ -28,17 +28,17 @@ static const char sccsid[] = "@(#)hash_stat.c	10.12 (Sleepycat) 12/19/98";
  * PUBLIC: int __ham_stat __P((DB *, void *, void *(*)(size_t), u_int32_t));
  */
 int
-__ham_stat(dbp, spp, db_malloc, flags)
-	DB *dbp;
+__ham_stat(edbp, spp, edb_malloc, flags)
+	DB *edbp;
 	void *spp;
-	void *(*db_malloc) __P((size_t));
+	void *(*edb_malloc) __P((size_t));
 	u_int32_t flags;
 {
 	COMPQUIET(spp, NULL);
-	COMPQUIET(db_malloc, NULL);
+	COMPQUIET(edb_malloc, NULL);
 	COMPQUIET(flags, 0);
 
-	DB_PANIC_CHECK(dbp);
+	DB_PANIC_CHECK(edbp);
 
-	return (__db_eopnotsup(dbp->dbenv));
+	return (__edb_eopnotsup(edbp->edbenv));
 }

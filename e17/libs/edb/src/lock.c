@@ -18,25 +18,25 @@ static const char sccsid[] = "@(#)lock.c	10.61 (Sleepycat) 1/3/99";
 #include <string.h>
 #endif
 
-#include "db_int.h"
+#include "edb_int.h"
 #include "shqueue.h"
-#include "db_page.h"
-#include "db_shash.h"
+#include "edb_page.h"
+#include "edb_shash.h"
 #include "lock.h"
-#include "db_am.h"
+#include "edb_am.h"
 #include "txn_auto.h"
 #include "txn_ext.h"
 #include "common_ext.h"
 
-static void __lock_checklocker __P((DB_LOCKTAB *, struct __db_lock *, int));
+static void __lock_checklocker __P((DB_LOCKTAB *, struct __edb_lock *, int));
 static void __lock_freeobj __P((DB_LOCKTAB *, DB_LOCKOBJ *));
 static int  __lock_get_internal __P((DB_LOCKTAB *, u_int32_t, DB_TXN *,
-    u_int32_t, const DBT *, db_lockmode_t, struct __db_lock **));
+    u_int32_t, const DBT *, edb_lockmode_t, struct __edb_lock **));
 static int  __lock_is_parent __P((u_int32_t, DB_TXN *));
 static int  __lock_promote __P((DB_LOCKTAB *, DB_LOCKOBJ *));
-static int  __lock_put_internal __P((DB_LOCKTAB *, struct __db_lock *, int));
+static int  __lock_put_internal __P((DB_LOCKTAB *, struct __edb_lock *, int));
 static void __lock_remove_waiter
-    __P((DB_LOCKTAB *, DB_LOCKOBJ *, struct __db_lock *, db_status_t));
+    __P((DB_LOCKTAB *, DB_LOCKOBJ *, struct __edb_lock *, edb_status_t));
 static int  __lock_vec_internal __P((DB_LOCKTAB *, u_int32_t, DB_TXN *,
 	    u_int32_t, DB_LOCKREQ *, int, DB_LOCKREQ **elistp));
 
@@ -91,7 +91,7 @@ __lock_vec_internal(lt, locker, txn, flags, list, nlist, elistp)
 	int nlist;
 	DB_LOCKREQ *list, **elistp;
 {
-	struct __db_lock *lp;
+	struct __edb_lock *lp;
 	DB_LOCKOBJ *sh_obj, *sh_locker, *sh_parent;
 	int i, ret, run_dd;
 
@@ -99,7 +99,7 @@ __lock_vec_internal(lt, locker, txn, flags, list, nlist, elistp)
 
 	/* Validate arguments. */
 	if ((ret =
-	    __db_fchk(lt->dbenv, "lock_vec", flags, DB_LOCK_NOWAIT)) != 0)
+	    __edb_fchk(lt->edbenv, "lock_vec", flags, DB_LOCK_NOWAIT)) != 0)
 		return (ret);
 
 	LOCK_LOCKREGION(lt);
@@ -139,12 +139,12 @@ __lock_vec_internal(lt, locker, txn, flags, list, nlist, elistp)
 			 * the locks from the locker's list and put them on the
 			 * parent's list.
 			 */
-			for (lp = SH_LIST_FIRST(&sh_locker->heldby, __db_lock);
+			for (lp = SH_LIST_FIRST(&sh_locker->heledby, __edb_lock);
 			    lp != NULL;
-			    lp = SH_LIST_FIRST(&sh_locker->heldby, __db_lock)) {
-				SH_LIST_REMOVE(lp, locker_links, __db_lock);
-				SH_LIST_INSERT_HEAD(&sh_parent->heldby, lp,
-				    locker_links, __db_lock);
+			    lp = SH_LIST_FIRST(&sh_locker->heledby, __edb_lock)) {
+				SH_LIST_REMOVE(lp, locker_links, __edb_lock);
+				SH_LIST_INSERT_HEAD(&sh_parent->heledby, lp,
+				    locker_links, __edb_lock);
 				lp->holder = txn->parent->txnid;
 			}
 			__lock_freeobj(lt, sh_locker);
@@ -167,9 +167,9 @@ __lock_vec_internal(lt, locker, txn, flags, list, nlist, elistp)
 			    NULL, DB_LOCK_LOCKER, &sh_locker)) != 0)
 				break;
 
-			for (lp = SH_LIST_FIRST(&sh_locker->heldby, __db_lock);
+			for (lp = SH_LIST_FIRST(&sh_locker->heledby, __edb_lock);
 			    lp != NULL;
-			    lp = SH_LIST_FIRST(&sh_locker->heldby, __db_lock)) {
+			    lp = SH_LIST_FIRST(&sh_locker->heledby, __edb_lock)) {
 				if ((ret = __lock_put_internal(lt, lp, 1)) != 0)
 					break;
 			}
@@ -179,7 +179,7 @@ __lock_vec_internal(lt, locker, txn, flags, list, nlist, elistp)
 		case DB_LOCK_PUT_OBJ:
 
 			/* Look up the object in the hash table. */
-			HASHLOOKUP(lt->hashtab, __db_lockobj, links,
+			HASHLOOKUP(lt->hashtab, __edb_lockobj, links,
 			    list[i].obj, sh_obj, lt->region->table_size,
 			    __lock_ohash, __lock_cmp);
 			if (sh_obj == NULL) {
@@ -192,26 +192,26 @@ __lock_vec_internal(lt, locker, txn, flags, list, nlist, elistp)
 			 * lockers first, all the waiters get awakened
 			 * needlessly.
 			 */
-			for (lp = SH_TAILQ_FIRST(&sh_obj->waiters, __db_lock);
+			for (lp = SH_TAILQ_FIRST(&sh_obj->waiters, __edb_lock);
 			    lp != NULL;
-			    lp = SH_TAILQ_FIRST(&sh_obj->waiters, __db_lock)) {
+			    lp = SH_TAILQ_FIRST(&sh_obj->waiters, __edb_lock)) {
 				lt->region->nreleases += lp->refcount;
 				__lock_remove_waiter(lt, sh_obj, lp,
 				    DB_LSTAT_NOGRANT);
 				__lock_checklocker(lt, lp, 1);
 			}
 
-			for (lp = SH_TAILQ_FIRST(&sh_obj->holders, __db_lock);
+			for (lp = SH_TAILQ_FIRST(&sh_obj->holders, __edb_lock);
 			    lp != NULL;
-			    lp = SH_TAILQ_FIRST(&sh_obj->holders, __db_lock)) {
+			    lp = SH_TAILQ_FIRST(&sh_obj->holders, __edb_lock)) {
 
 				lt->region->nreleases += lp->refcount;
-				SH_LIST_REMOVE(lp, locker_links, __db_lock);
+				SH_LIST_REMOVE(lp, locker_links, __edb_lock);
 				SH_TAILQ_REMOVE(&sh_obj->holders, lp, links,
-				    __db_lock);
+				    __edb_lock);
 				lp->status = DB_LSTAT_FREE;
 				SH_TAILQ_INSERT_HEAD(&lt->region->free_locks,
-				    lp, links, __db_lock);
+				    lp, links, __edb_lock);
 			}
 
 			/* Now free the object. */
@@ -224,9 +224,9 @@ __lock_vec_internal(lt, locker, txn, flags, list, nlist, elistp)
 			    NULL, DB_LOCK_LOCKER, &sh_locker)) != 0)
 				break;
 
-			for (lp = SH_LIST_FIRST(&sh_locker->heldby, __db_lock);
+			for (lp = SH_LIST_FIRST(&sh_locker->heledby, __edb_lock);
 			    lp != NULL;
-			    lp = SH_LIST_NEXT(lp, locker_links, __db_lock)) {
+			    lp = SH_LIST_NEXT(lp, locker_links, __edb_lock)) {
 				__lock_printlock(lt, lp, 1);
 				ret = EINVAL;
 			}
@@ -263,16 +263,16 @@ lock_get(lt, locker, flags, obj, lock_mode, lock)
 	DB_LOCKTAB *lt;
 	u_int32_t locker, flags;
 	const DBT *obj;
-	db_lockmode_t lock_mode;
+	edb_lockmode_t lock_mode;
 	DB_LOCK *lock;
 {
-	struct __db_lock *lockp;
+	struct __edb_lock *lockp;
 	int ret;
 
 	LOCK_PANIC_CHECK(lt);
 
 	/* Validate arguments. */
-	if ((ret = __db_fchk(lt->dbenv,
+	if ((ret = __edb_fchk(lt->edbenv,
 	    "lock_get", flags, DB_LOCK_NOWAIT | DB_LOCK_UPGRADE)) != 0)
 		return (ret);
 
@@ -300,16 +300,16 @@ lock_tget(lt, txn, flags, obj, lock_mode, lock)
 	DB_TXN *txn;
 	u_int32_t flags;
 	const DBT *obj;
-	db_lockmode_t lock_mode;
+	edb_lockmode_t lock_mode;
 	DB_LOCK *lock;
 {
-	struct __db_lock *lockp;
+	struct __edb_lock *lockp;
 	int ret;
 
 	LOCK_PANIC_CHECK(lt);
 
 	/* Validate arguments. */
-	if ((ret = __db_fchk(lt->dbenv,
+	if ((ret = __edb_fchk(lt->edbenv,
 	    "lock_get", flags, DB_LOCK_NOWAIT | DB_LOCK_UPGRADE)) != 0)
 		return (ret);
 
@@ -335,7 +335,7 @@ lock_put(lt, lock)
 	DB_LOCKTAB *lt;
 	DB_LOCK lock;
 {
-	struct __db_lock *lockp;
+	struct __edb_lock *lockp;
 	int ret, run_dd;
 
 	LOCK_PANIC_CHECK(lt);
@@ -368,7 +368,7 @@ lock_put(lt, lock)
 static int
 __lock_put_internal(lt, lockp, do_all)
 	DB_LOCKTAB *lt;
-	struct __db_lock *lockp;
+	struct __edb_lock *lockp;
 	int do_all;
 {
 	DB_LOCKOBJ *sh_obj;
@@ -376,7 +376,7 @@ __lock_put_internal(lt, lockp, do_all)
 
 	if (lockp->refcount == 0 || (lockp->status != DB_LSTAT_HELD &&
 	    lockp->status != DB_LSTAT_WAITING) || lockp->obj == 0) {
-		__db_err(lt->dbenv, "lock_put: invalid lock %lu",
+		__edb_err(lt->edbenv, "lock_put: invalid lock %lu",
 		    (u_long)((u_int8_t *)lockp - (u_int8_t *)lt->region));
 		return (EINVAL);
 	}
@@ -394,31 +394,31 @@ __lock_put_internal(lt, lockp, do_all)
 	sh_obj = (DB_LOCKOBJ *)((u_int8_t *)lockp + lockp->obj);
 
 	/* Remove lock from locker list. */
-	SH_LIST_REMOVE(lockp, locker_links, __db_lock);
+	SH_LIST_REMOVE(lockp, locker_links, __edb_lock);
 
 	/* Remove this lock from its holders/waitlist. */
 	if (lockp->status != DB_LSTAT_HELD)
 		__lock_remove_waiter(lt, sh_obj, lockp, DB_LSTAT_FREE);
 	else
-		SH_TAILQ_REMOVE(&sh_obj->holders, lockp, links, __db_lock);
+		SH_TAILQ_REMOVE(&sh_obj->holders, lockp, links, __edb_lock);
 
 	state_changed = __lock_promote(lt, sh_obj);
 
 	/* Check if object should be reclaimed. */
-	if (SH_TAILQ_FIRST(&sh_obj->holders, __db_lock) == NULL) {
-		HASHREMOVE_EL(lt->hashtab, __db_lockobj,
+	if (SH_TAILQ_FIRST(&sh_obj->holders, __edb_lock) == NULL) {
+		HASHREMOVE_EL(lt->hashtab, __edb_lockobj,
 		    links, sh_obj, lt->region->table_size, __lock_lhash);
 		if (sh_obj->lockobj.size > sizeof(sh_obj->objdata))
-			__db_shalloc_free(lt->mem,
+			__edb_shalloc_free(lt->mem,
 			    SH_DBT_PTR(&sh_obj->lockobj));
 		SH_TAILQ_INSERT_HEAD(&lt->region->free_objs, sh_obj, links,
-		    __db_lockobj);
+		    __edb_lockobj);
 		state_changed = 1;
 	}
 
 	/* Free lock. */
 	lockp->status = DB_LSTAT_FREE;
-	SH_TAILQ_INSERT_HEAD(&lt->region->free_locks, lockp, links, __db_lock);
+	SH_TAILQ_INSERT_HEAD(&lt->region->free_locks, lockp, links, __edb_lock);
 
 	/*
 	 * If we did not promote anyone; we need to run the deadlock
@@ -436,10 +436,10 @@ __lock_get_internal(lt, locker, txn, flags, obj, lock_mode, lockp)
 	u_int32_t locker, flags;
 	DB_TXN *txn;
 	const DBT *obj;
-	db_lockmode_t lock_mode;
-	struct __db_lock **lockp;
+	edb_lockmode_t lock_mode;
+	struct __edb_lock **lockp;
 {
-	struct __db_lock *newl, *lp;
+	struct __edb_lock *newl, *lp;
 	DB_LOCKOBJ *sh_obj, *sh_locker;
 	DB_LOCKREGION *lrp;
 	size_t newl_off;
@@ -452,22 +452,22 @@ __lock_get_internal(lt, locker, txn, flags, obj, lock_mode, lockp)
 	 */
 	lrp = lt->region;
 	if ((u_int32_t)lock_mode >= lrp->nmodes) {
-		__db_err(lt->dbenv,
+		__edb_err(lt->edbenv,
 		    "lock_get: invalid lock mode %lu\n", (u_long)lock_mode);
 		return (EINVAL);
 	}
 
 	/* Allocate a new lock.  Optimize for the common case of a grant. */
-	if ((newl = SH_TAILQ_FIRST(&lrp->free_locks, __db_lock)) == NULL) {
+	if ((newl = SH_TAILQ_FIRST(&lrp->free_locks, __edb_lock)) == NULL) {
 		if ((ret = __lock_grow_region(lt, DB_LOCK_LOCK, 0)) != 0)
 			return (ret);
 		lrp = lt->region;
-		newl = SH_TAILQ_FIRST(&lrp->free_locks, __db_lock);
+		newl = SH_TAILQ_FIRST(&lrp->free_locks, __edb_lock);
 	}
 	newl_off = LOCK_TO_OFFSET(lt, newl);
 
 	/* Optimize for common case of granting a lock. */
-	SH_TAILQ_REMOVE(&lrp->free_locks, newl, links, __db_lock);
+	SH_TAILQ_REMOVE(&lrp->free_locks, newl, links, __edb_lock);
 
 	newl->mode = lock_mode;
 	newl->status = DB_LSTAT_HELD;
@@ -505,9 +505,9 @@ __lock_get_internal(lt, locker, txn, flags, obj, lock_mode, lockp)
 	 * front of the list.
 	 */
 	ihold = 0;
-	for (lp = SH_TAILQ_FIRST(&sh_obj->holders, __db_lock);
+	for (lp = SH_TAILQ_FIRST(&sh_obj->holders, __edb_lock);
 	    lp != NULL;
-	    lp = SH_TAILQ_NEXT(lp, links, __db_lock)) {
+	    lp = SH_TAILQ_NEXT(lp, links, __edb_lock)) {
 		if (locker == lp->holder ||
 		    __lock_is_parent(lp->holder, txn)) {
 			if (lp->mode == lock_mode &&
@@ -522,7 +522,7 @@ __lock_get_internal(lt, locker, txn, flags, obj, lock_mode, lockp)
 				lp->refcount++;
 				*lockp = lp;
 				SH_TAILQ_INSERT_HEAD(&lrp->free_locks,
-				    newl, links, __db_lock);
+				    newl, links, __edb_lock);
 				return (0);
 			} else
 				ihold = 1;
@@ -541,14 +541,14 @@ __lock_get_internal(lt, locker, txn, flags, obj, lock_mode, lockp)
 			goto upgrade;
 
 		/* There was a conflict, wait. */
-		SH_TAILQ_INSERT_HEAD(&sh_obj->waiters, newl, links, __db_lock);
+		SH_TAILQ_INSERT_HEAD(&sh_obj->waiters, newl, links, __edb_lock);
 		goto wait;
 	}
 
 	if (lp == NULL && !ihold)
-		for (lp = SH_TAILQ_FIRST(&sh_obj->waiters, __db_lock);
+		for (lp = SH_TAILQ_FIRST(&sh_obj->waiters, __edb_lock);
 		    lp != NULL;
-		    lp = SH_TAILQ_NEXT(lp, links, __db_lock)) {
+		    lp = SH_TAILQ_NEXT(lp, links, __edb_lock)) {
 			if (CONFLICTS(lt, lp->mode, lock_mode) &&
 			    locker != lp->holder)
 				break;
@@ -560,7 +560,7 @@ __lock_get_internal(lt, locker, txn, flags, obj, lock_mode, lockp)
 	else {
 		/* Free the lock and return an error. */
 		newl->status = DB_LSTAT_FREE;
-		SH_TAILQ_INSERT_HEAD(&lrp->free_locks, newl, links, __db_lock);
+		SH_TAILQ_INSERT_HEAD(&lrp->free_locks, newl, links, __edb_lock);
 		return (DB_LOCK_NOTGRANTED);
 	}
 
@@ -572,10 +572,10 @@ __lock_get_internal(lt, locker, txn, flags, obj, lock_mode, lockp)
 	if ((ret =
 	    __lock_getobj(lt, locker, NULL, DB_LOCK_LOCKER, &sh_locker)) != 0)
 		return (ret);
-	no_dd = SH_LIST_FIRST(&sh_locker->heldby, __db_lock) == NULL;
+	no_dd = SH_LIST_FIRST(&sh_locker->heledby, __edb_lock) == NULL;
 
 	lrp = lt->region;
-	SH_LIST_INSERT_HEAD(&sh_locker->heldby, newl, locker_links, __db_lock);
+	SH_LIST_INSERT_HEAD(&sh_locker->heledby, newl, locker_links, __edb_lock);
 
 	if (lp != NULL) {
 		/*
@@ -583,9 +583,9 @@ __lock_get_internal(lt, locker, txn, flags, obj, lock_mode, lockp)
 		 * set.  That way the current process will block when it tries
 		 * to get it and the waking process will release it.
 		 */
-wait:		(void)__db_mutex_init(&newl->mutex,
+wait:		(void)__edb_mutex_init(&newl->mutex,
 		    MUTEX_LOCK_OFFSET(lt->region, &newl->mutex));
-		(void)__db_mutex_lock(&newl->mutex, lt->reginfo.fd);
+		(void)__edb_mutex_lock(&newl->mutex, lt->reginfo.fd);
 
 		newl->status = DB_LSTAT_WAITING;
 		lrp->nconflicts++;
@@ -606,7 +606,7 @@ wait:		(void)__db_mutex_init(&newl->mutex,
 		if (lrp->detect != DB_LOCK_NORUN && !no_dd)
 			(void)lock_detect(lt, 0, lrp->detect);
 
-		(void)__db_mutex_lock(&newl->mutex, lt->reginfo.fd);
+		(void)__edb_mutex_lock(&newl->mutex, lt->reginfo.fd);
 
 		LOCK_LOCKREGION(lt);
 		if (newl->status != DB_LSTAT_PENDING) {
@@ -619,7 +619,7 @@ wait:		(void)__db_mutex_init(&newl->mutex,
 			/* Return to free list. */
 			__lock_checklocker(lt, newl, 0);
 			SH_TAILQ_INSERT_HEAD(&lrp->free_locks, newl, links,
-			    __db_lock);
+			    __edb_lock);
 			switch (newl->status) {
 				case DB_LSTAT_ABORTED:
 					ret = DB_LOCK_DEADLOCK;
@@ -640,7 +640,7 @@ wait:		(void)__db_mutex_init(&newl->mutex,
 			 * lock, we've got to remove it here.
 			 */
 			SH_TAILQ_REMOVE(&sh_obj->holders,
-			    newl, links, __db_lock);
+			    newl, links, __edb_lock);
 			goto upgrade;
 		} else
 			newl->status = DB_LSTAT_HELD;
@@ -656,7 +656,7 @@ upgrade:
 	 */
 	(*lockp)->mode = lock_mode;
 	newl->status = DB_LSTAT_FREE;
-	SH_TAILQ_INSERT_HEAD(&lrp->free_locks, newl, links, __db_lock);
+	SH_TAILQ_INSERT_HEAD(&lrp->free_locks, newl, links, __edb_lock);
 	return (0);
 }
 
@@ -664,30 +664,30 @@ upgrade:
  * __lock_is_locked --
  *
  * PUBLIC: int __lock_is_locked
- * PUBLIC:    __P((DB_LOCKTAB *, u_int32_t, DBT *, db_lockmode_t));
+ * PUBLIC:    __P((DB_LOCKTAB *, u_int32_t, DBT *, edb_lockmode_t));
  */
 int
-__lock_is_locked(lt, locker, dbt, mode)
+__lock_is_locked(lt, locker, edbt, mode)
 	DB_LOCKTAB *lt;
 	u_int32_t locker;
-	DBT *dbt;
-	db_lockmode_t mode;
+	DBT *edbt;
+	edb_lockmode_t mode;
 {
-	struct __db_lock *lp;
+	struct __edb_lock *lp;
 	DB_LOCKOBJ *sh_obj;
 	DB_LOCKREGION *lrp;
 
 	lrp = lt->region;
 
 	/* Look up the object in the hash table. */
-	HASHLOOKUP(lt->hashtab, __db_lockobj, links,
-	    dbt, sh_obj, lrp->table_size, __lock_ohash, __lock_cmp);
+	HASHLOOKUP(lt->hashtab, __edb_lockobj, links,
+	    edbt, sh_obj, lrp->table_size, __lock_ohash, __lock_cmp);
 	if (sh_obj == NULL)
 		return (0);
 
-	for (lp = SH_TAILQ_FIRST(&sh_obj->holders, __db_lock);
+	for (lp = SH_TAILQ_FIRST(&sh_obj->holders, __edb_lock);
 	    lp != NULL;
-	    lp = SH_TAILQ_FIRST(&sh_obj->holders, __db_lock)) {
+	    lp = SH_TAILQ_FIRST(&sh_obj->holders, __edb_lock)) {
 		if (lp->holder == locker && lp->mode == mode)
 			return (1);
 	}
@@ -698,16 +698,16 @@ __lock_is_locked(lt, locker, dbt, mode)
 /*
  * __lock_printlock --
  *
- * PUBLIC: void __lock_printlock __P((DB_LOCKTAB *, struct __db_lock *, int));
+ * PUBLIC: void __lock_printlock __P((DB_LOCKTAB *, struct __edb_lock *, int));
  */
 void
 __lock_printlock(lt, lp, ispgno)
 	DB_LOCKTAB *lt;
-	struct __db_lock *lp;
+	struct __edb_lock *lp;
 	int ispgno;
 {
 	DB_LOCKOBJ *lockobj;
-	db_pgno_t pgno;
+	edb_pgno_t pgno;
 	size_t obj;
 	u_int8_t *ptr;
 	const char *mode, *status;
@@ -768,12 +768,12 @@ __lock_printlock(lt, lp, ispgno)
 	ptr = SH_DBT_PTR(&lockobj->lockobj);
 	if (ispgno) {
 		/* Assume this is a DBT lock. */
-		memcpy(&pgno, ptr, sizeof(db_pgno_t));
+		memcpy(&pgno, ptr, sizeof(edb_pgno_t));
 		printf("page %lu\n", (u_long)pgno);
 	} else {
 		obj = (u_int8_t *)lp + lp->obj - (u_int8_t *)lt->region;
 		printf("0x%lx ", (u_long)obj);
-		__db_pr(ptr, lockobj->lockobj.size);
+		__edb_pr(ptr, lockobj->lockobj.size);
 		printf("\n");
 	}
 }
@@ -783,10 +783,10 @@ __lock_printlock(lt, lp, ispgno)
  * PUBLIC:     u_int32_t, const DBT *, u_int32_t type, DB_LOCKOBJ **));
  */
 int
-__lock_getobj(lt, locker, dbt, type, objp)
+__lock_getobj(lt, locker, edbt, type, objp)
 	DB_LOCKTAB *lt;
 	u_int32_t locker, type;
-	const DBT *dbt;
+	const DBT *edbt;
 	DB_LOCKOBJ **objp;
 {
 	DB_LOCKREGION *lrp;
@@ -799,11 +799,11 @@ __lock_getobj(lt, locker, dbt, type, objp)
 
 	/* Look up the object in the hash table. */
 	if (type == DB_LOCK_OBJTYPE) {
-		HASHLOOKUP(lt->hashtab, __db_lockobj, links, dbt, sh_obj,
+		HASHLOOKUP(lt->hashtab, __edb_lockobj, links, edbt, sh_obj,
 		    lrp->table_size, __lock_ohash, __lock_cmp);
-		obj_size = dbt->size;
+		obj_size = edbt->size;
 	} else {
-		HASHLOOKUP(lt->hashtab, __db_lockobj, links, locker,
+		HASHLOOKUP(lt->hashtab, __edb_lockobj, links, locker,
 		    sh_obj, lrp->table_size, __lock_locker_hash,
 		    __lock_locker_cmp);
 		obj_size = sizeof(locker);
@@ -816,11 +816,11 @@ __lock_getobj(lt, locker, dbt, type, objp)
 	if (sh_obj == NULL) {
 		/* Create new object and then insert it into hash table. */
 		if ((sh_obj =
-		    SH_TAILQ_FIRST(&lrp->free_objs, __db_lockobj)) == NULL) {
+		    SH_TAILQ_FIRST(&lrp->free_objs, __edb_lockobj)) == NULL) {
 			if ((ret = __lock_grow_region(lt, DB_LOCK_OBJ, 0)) != 0)
 				return (ret);
 			lrp = lt->region;
-			sh_obj = SH_TAILQ_FIRST(&lrp->free_objs, __db_lockobj);
+			sh_obj = SH_TAILQ_FIRST(&lrp->free_objs, __edb_lockobj);
 		}
 
 		/*
@@ -831,33 +831,33 @@ __lock_getobj(lt, locker, dbt, type, objp)
 			p = sh_obj->objdata;
 		else
 			if ((ret =
-			    __db_shalloc(lt->mem, obj_size, 0, &p)) != 0) {
+			    __edb_shalloc(lt->mem, obj_size, 0, &p)) != 0) {
 				if ((ret = __lock_grow_region(lt,
 				    DB_LOCK_MEM, obj_size)) != 0)
 					return (ret);
 				lrp = lt->region;
 				/* Reacquire the head of the list. */
 				sh_obj = SH_TAILQ_FIRST(&lrp->free_objs,
-				    __db_lockobj);
-				(void)__db_shalloc(lt->mem, obj_size, 0, &p);
+				    __edb_lockobj);
+				(void)__edb_shalloc(lt->mem, obj_size, 0, &p);
 			}
 
-		src = type == DB_LOCK_OBJTYPE ? dbt->data : (void *)&locker;
+		src = type == DB_LOCK_OBJTYPE ? edbt->data : (void *)&locker;
 		memcpy(p, src, obj_size);
 
 		sh_obj->type = type;
-		SH_TAILQ_REMOVE(&lrp->free_objs, sh_obj, links, __db_lockobj);
+		SH_TAILQ_REMOVE(&lrp->free_objs, sh_obj, links, __edb_lockobj);
 
 		SH_TAILQ_INIT(&sh_obj->waiters);
 		if (type == DB_LOCK_LOCKER)
-			SH_LIST_INIT(&sh_obj->heldby);
+			SH_LIST_INIT(&sh_obj->heledby);
 		else
 			SH_TAILQ_INIT(&sh_obj->holders);
 		sh_obj->lockobj.size = obj_size;
 		sh_obj->lockobj.off = SH_PTR_TO_OFF(&sh_obj->lockobj, p);
 
 		HASHINSERT(lt->hashtab,
-		    __db_lockobj, links, sh_obj, lrp->table_size, __lock_lhash);
+		    __edb_lockobj, links, sh_obj, lrp->table_size, __lock_lhash);
 
 		if (type == DB_LOCK_LOCKER)
 			lrp->nlockers++;
@@ -878,30 +878,30 @@ static void
 __lock_remove_waiter(lt, sh_obj, lockp, status)
 	DB_LOCKTAB *lt;
 	DB_LOCKOBJ *sh_obj;
-	struct __db_lock *lockp;
-	db_status_t status;
+	struct __edb_lock *lockp;
+	edb_status_t status;
 {
-	SH_TAILQ_REMOVE(&sh_obj->waiters, lockp, links, __db_lock);
+	SH_TAILQ_REMOVE(&sh_obj->waiters, lockp, links, __edb_lock);
 	lockp->status = status;
 
 	/* Wake whoever is waiting on this lock. */
-	(void)__db_mutex_unlock(&lockp->mutex, lt->reginfo.fd);
+	(void)__edb_mutex_unlock(&lockp->mutex, lt->reginfo.fd);
 }
 
 static void
 __lock_checklocker(lt, lockp, do_remove)
 	DB_LOCKTAB *lt;
-	struct __db_lock *lockp;
+	struct __edb_lock *lockp;
 	int do_remove;
 {
 	DB_LOCKOBJ *sh_locker;
 
 	if (do_remove)
-		SH_LIST_REMOVE(lockp, locker_links, __db_lock);
+		SH_LIST_REMOVE(lockp, locker_links, __edb_lock);
 
 	/* if the locker list is NULL, free up the object. */
 	if (__lock_getobj(lt, lockp->holder, NULL, DB_LOCK_LOCKER, &sh_locker)
-	    == 0 && SH_LIST_FIRST(&sh_locker->heldby, __db_lock) == NULL) {
+	    == 0 && SH_LIST_FIRST(&sh_locker->heledby, __edb_lock) == NULL) {
 		__lock_freeobj(lt, sh_locker);
 		    lt->region->nlockers--;
 	}
@@ -913,10 +913,10 @@ __lock_freeobj(lt, obj)
 	DB_LOCKOBJ *obj;
 {
 	HASHREMOVE_EL(lt->hashtab,
-	    __db_lockobj, links, obj, lt->region->table_size, __lock_lhash);
+	    __edb_lockobj, links, obj, lt->region->table_size, __lock_lhash);
 	if (obj->lockobj.size > sizeof(obj->objdata))
-		__db_shalloc_free(lt->mem, SH_DBT_PTR(&obj->lockobj));
-	SH_TAILQ_INSERT_HEAD(&lt->region->free_objs, obj, links, __db_lockobj);
+		__edb_shalloc_free(lt->mem, SH_DBT_PTR(&obj->lockobj));
+	SH_TAILQ_INSERT_HEAD(&lt->region->free_objs, obj, links, __edb_lockobj);
 }
 
 /*
@@ -925,16 +925,16 @@ __lock_freeobj(lt, obj)
  * back to iwrite locks.
  *
  * PUBLIC: int __lock_downgrade __P((DB_LOCKTAB *,
- * PUBLIC:     DB_LOCK, db_lockmode_t, u_int32_t));
+ * PUBLIC:     DB_LOCK, edb_lockmode_t, u_int32_t));
  */
 int
 __lock_downgrade(lt, lock, new_mode, flags)
 	DB_LOCKTAB *lt;
 	DB_LOCK lock;
-	db_lockmode_t new_mode;
+	edb_lockmode_t new_mode;
 	u_int32_t flags;
 {
-	struct __db_lock *lockp;
+	struct __edb_lock *lockp;
 	DB_LOCKOBJ *obj;
 	int ret;
 
@@ -968,7 +968,7 @@ __lock_promote(lt, obj)
 	DB_LOCKTAB *lt;
 	DB_LOCKOBJ *obj;
 {
-	struct __db_lock *lp_w, *lp_h, *next_waiter;
+	struct __edb_lock *lp_w, *lp_h, *next_waiter;
 	int state_changed, waiter_is_txn;
 
 	/*
@@ -983,20 +983,20 @@ __lock_promote(lt, obj)
 	 * During promotion, we look for state changes so we can return
 	 * this information to the caller.
 	 */
-	for (lp_w = SH_TAILQ_FIRST(&obj->waiters, __db_lock),
+	for (lp_w = SH_TAILQ_FIRST(&obj->waiters, __edb_lock),
 	    state_changed = lp_w == NULL;
 	    lp_w != NULL;
 	    lp_w = next_waiter) {
 		waiter_is_txn = TXN_IS_HOLDING(lp_w);
-		next_waiter = SH_TAILQ_NEXT(lp_w, links, __db_lock);
-		for (lp_h = SH_TAILQ_FIRST(&obj->holders, __db_lock);
+		next_waiter = SH_TAILQ_NEXT(lp_w, links, __edb_lock);
+		for (lp_h = SH_TAILQ_FIRST(&obj->holders, __edb_lock);
 		    lp_h != NULL;
-		    lp_h = SH_TAILQ_NEXT(lp_h, links, __db_lock)) {
+		    lp_h = SH_TAILQ_NEXT(lp_h, links, __edb_lock)) {
 			if (CONFLICTS(lt, lp_h->mode, lp_w->mode) &&
 			    lp_h->holder != lp_w->holder &&
 			    !(waiter_is_txn &&
 			    TXN_IS_HOLDING(lp_h) &&
-			    __txn_is_ancestor(lt->dbenv->tx_info,
+			    __txn_is_ancestor(lt->edbenv->tx_info,
 			        lp_h->txnoff, lp_w->txnoff)))
 				break;
 		}
@@ -1004,12 +1004,12 @@ __lock_promote(lt, obj)
 			break;
 
 		/* No conflict, promote the waiting lock. */
-		SH_TAILQ_REMOVE(&obj->waiters, lp_w, links, __db_lock);
+		SH_TAILQ_REMOVE(&obj->waiters, lp_w, links, __edb_lock);
 		lp_w->status = DB_LSTAT_PENDING;
 		SH_TAILQ_INSERT_TAIL(&obj->holders, lp_w, links);
 
 		/* Wake up waiter. */
-		(void)__db_mutex_unlock(&lp_w->mutex, lt->reginfo.fd);
+		(void)__edb_mutex_unlock(&lp_w->mutex, lt->reginfo.fd);
 		state_changed = 1;
 	}
 

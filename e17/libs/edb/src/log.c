@@ -20,10 +20,10 @@ static const char sccsid[] = "@(#)log.c	10.63 (Sleepycat) 10/10/98";
 #include <unistd.h>
 #endif
 
-#include "db_int.h"
+#include "edb_int.h"
 #include "shqueue.h"
 #include "log.h"
-#include "db_dispatch.h"
+#include "edb_dispatch.h"
 #include "txn.h"
 #include "txn_auto.h"
 #include "common_ext.h"
@@ -35,14 +35,14 @@ static int __log_recover __P((DB_LOG *));
  *	Initialize and/or join a log.
  */
 int
-log_open(path, flags, mode, dbenv, lpp)
+log_open(path, flags, mode, edbenv, lpp)
 	const char *path;
 	u_int32_t flags;
 	int mode;
-	DB_ENV *dbenv;
+	DB_ENV *edbenv;
 	DB_LOG **lpp;
 {
-	DB_LOG *dblp;
+	DB_LOG *edblp;
 	LOG *lp;
 	int ret;
 
@@ -52,20 +52,20 @@ log_open(path, flags, mode, dbenv, lpp)
 #else
 #define	OKFLAGS	(DB_CREATE)
 #endif
-	if ((ret = __db_fchk(dbenv, "log_open", flags, OKFLAGS)) != 0)
+	if ((ret = __edb_fchk(edbenv, "log_open", flags, OKFLAGS)) != 0)
 		return (ret);
 
 	/* Create and initialize the DB_LOG structure. */
-	if ((ret = __os_calloc(1, sizeof(DB_LOG), &dblp)) != 0)
+	if ((ret = __os_calloc(1, sizeof(DB_LOG), &edblp)) != 0)
 		return (ret);
 
-	if (path != NULL && (ret = __os_strdup(path, &dblp->dir)) != 0)
+	if (path != NULL && (ret = __os_strdup(path, &edblp->dir)) != 0)
 		goto err;
 
-	dblp->dbenv = dbenv;
-	dblp->lfd = -1;
-	ZERO_LSN(dblp->c_lsn);
-	dblp->c_fd = -1;
+	edblp->edbenv = edbenv;
+	edblp->lfd = -1;
+	ZERO_LSN(edblp->c_lsn);
+	edblp->c_fd = -1;
 
 	/*
 	 * The log region isn't fixed size because we store the registered
@@ -75,35 +75,35 @@ log_open(path, flags, mode, dbenv, lpp)
 #define	DEF_LOG_SIZE	(30 * 1024)
 
 	/* Map in the region. */
-	dblp->reginfo.dbenv = dbenv;
-	dblp->reginfo.appname = DB_APP_LOG;
+	edblp->reginfo.edbenv = edbenv;
+	edblp->reginfo.appname = DB_APP_LOG;
 	if (path == NULL)
-		dblp->reginfo.path = NULL;
+		edblp->reginfo.path = NULL;
 	else
-		if ((ret = __os_strdup(path, &dblp->reginfo.path)) != 0)
+		if ((ret = __os_strdup(path, &edblp->reginfo.path)) != 0)
 			goto err;
-	dblp->reginfo.file = DB_DEFAULT_LOG_FILE;
-	dblp->reginfo.mode = mode;
-	dblp->reginfo.size = DEF_LOG_SIZE;
-	dblp->reginfo.dbflags = flags;
-	dblp->reginfo.flags = REGION_SIZEDEF;
-	if ((ret = __db_rattach(&dblp->reginfo)) != 0)
+	edblp->reginfo.file = DB_DEFAULT_LOG_FILE;
+	edblp->reginfo.mode = mode;
+	edblp->reginfo.size = DEF_LOG_SIZE;
+	edblp->reginfo.edbflags = flags;
+	edblp->reginfo.flags = REGION_SIZEDEF;
+	if ((ret = __edb_rattach(&edblp->reginfo)) != 0)
 		goto err;
 
 	/*
 	 * The LOG structure is first in the region, the rest of the region
 	 * is free space.
 	 */
-	dblp->lp = dblp->reginfo.addr;
-	dblp->addr = (u_int8_t *)dblp->lp + sizeof(LOG);
+	edblp->lp = edblp->reginfo.addr;
+	edblp->addr = (u_int8_t *)edblp->lp + sizeof(LOG);
 
 	/* Initialize a created region. */
-	if (F_ISSET(&dblp->reginfo, REGION_CREATED)) {
-		__db_shalloc_init(dblp->addr, DEF_LOG_SIZE - sizeof(LOG));
+	if (F_ISSET(&edblp->reginfo, REGION_CREATED)) {
+		__edb_shalloc_init(edblp->addr, DEF_LOG_SIZE - sizeof(LOG));
 
 		/* Initialize the LOG structure. */
-		lp = dblp->lp;
-		lp->persist.lg_max = dbenv == NULL ? 0 : dbenv->lg_max;
+		lp = edblp->lp;
+		lp->persist.lg_max = edbenv == NULL ? 0 : edbenv->lg_max;
 		if (lp->persist.lg_max == 0)
 			lp->persist.lg_max = DEFAULT_MAX;
 		lp->persist.magic = DB_LOGMAGIC;
@@ -118,40 +118,40 @@ log_open(path, flags, mode, dbenv, lpp)
 
 	/* Initialize thread information, mutex. */
 	if (LF_ISSET(DB_THREAD)) {
-		F_SET(dblp, DB_AM_THREAD);
-		if ((ret = __db_shalloc(dblp->addr,
-		    sizeof(db_mutex_t), MUTEX_ALIGNMENT, &dblp->mutexp)) != 0)
+		F_SET(edblp, DB_AM_THREAD);
+		if ((ret = __edb_shalloc(edblp->addr,
+		    sizeof(edb_mutex_t), MUTEX_ALIGNMENT, &edblp->mutexp)) != 0)
 			goto err;
-		(void)__db_mutex_init(dblp->mutexp, 0);
+		(void)__edb_mutex_init(edblp->mutexp, 0);
 	}
 
 	/*
 	 * If doing recovery, try and recover any previous log files before
 	 * releasing the lock.
 	 */
-	if (F_ISSET(&dblp->reginfo, REGION_CREATED) &&
-	    (ret = __log_recover(dblp)) != 0)
+	if (F_ISSET(&edblp->reginfo, REGION_CREATED) &&
+	    (ret = __log_recover(edblp)) != 0)
 		goto err;
 
-	UNLOCK_LOGREGION(dblp);
-	*lpp = dblp;
+	UNLOCK_LOGREGION(edblp);
+	*lpp = edblp;
 	return (0);
 
-err:	if (dblp->reginfo.addr != NULL) {
-		if (dblp->mutexp != NULL)
-			__db_shalloc_free(dblp->addr, dblp->mutexp);
+err:	if (edblp->reginfo.addr != NULL) {
+		if (edblp->mutexp != NULL)
+			__edb_shalloc_free(edblp->addr, edblp->mutexp);
 
-		UNLOCK_LOGREGION(dblp);
-		(void)__db_rdetach(&dblp->reginfo);
-		if (F_ISSET(&dblp->reginfo, REGION_CREATED))
-			(void)log_unlink(path, 1, dbenv);
+		UNLOCK_LOGREGION(edblp);
+		(void)__edb_rdetach(&edblp->reginfo);
+		if (F_ISSET(&edblp->reginfo, REGION_CREATED))
+			(void)log_unlink(path, 1, edbenv);
 	}
 
-	if (dblp->reginfo.path != NULL)
-		__os_freestr(dblp->reginfo.path);
-	if (dblp->dir != NULL)
-		__os_freestr(dblp->dir);
-	__os_free(dblp, sizeof(*dblp));
+	if (edblp->reginfo.path != NULL)
+		__os_freestr(edblp->reginfo.path);
+	if (edblp->dir != NULL)
+		__os_freestr(edblp->dir);
+	__os_free(edblp, sizeof(*edblp));
 	return (ret);
 }
 
@@ -162,11 +162,11 @@ err:	if (dblp->reginfo.addr != NULL) {
  * PUBLIC: void __log_panic __P((DB_ENV *));
  */
 void
-__log_panic(dbenv)
-	DB_ENV *dbenv;
+__log_panic(edbenv)
+	DB_ENV *edbenv;
 {
-	if (dbenv->lg_info != NULL)
-		dbenv->lg_info->lp->rlayout.panic = 1;
+	if (edbenv->lg_info != NULL)
+		edbenv->lg_info->lp->rlayout.panic = 1;
 }
 
 /*
@@ -174,22 +174,22 @@ __log_panic(dbenv)
  *	Recover a log.
  */
 static int
-__log_recover(dblp)
-	DB_LOG *dblp;
+__log_recover(edblp)
+	DB_LOG *edblp;
 {
-	DBT dbt;
+	DBT edbt;
 	DB_LSN lsn;
 	LOG *lp;
 	u_int32_t chk;
 	int cnt, found_checkpoint, ret;
 
-	lp = dblp->lp;
+	lp = edblp->lp;
 
 	/*
 	 * Find a log file.  If none exist, we simply return, leaving
 	 * everything initialized to a new log.
 	 */
-	if ((ret = __log_find(dblp, 0, &cnt)) != 0)
+	if ((ret = __log_find(edblp, 0, &cnt)) != 0)
 		return (ret);
 	if (cnt == 0)
 		return (0);
@@ -206,8 +206,8 @@ __log_recover(dblp)
 	lsn.offset = 0;
 
 	/* Set the cursor.  Shouldn't fail, leave error messages on. */
-	memset(&dbt, 0, sizeof(dbt));
-	if ((ret = __log_get(dblp, &lsn, &dbt, DB_SET, 0)) != 0)
+	memset(&edbt, 0, sizeof(edbt));
+	if ((ret = __log_get(edblp, &lsn, &edbt, DB_SET, 0)) != 0)
 		return (ret);
 
 	/*
@@ -215,10 +215,10 @@ __log_recover(dblp)
 	 * at some point, so turn off error messages.
 	 */
 	found_checkpoint = 0;
-	while (__log_get(dblp, &lsn, &dbt, DB_NEXT, 1) == 0) {
-		if (dbt.size < sizeof(u_int32_t))
+	while (__log_get(edblp, &lsn, &edbt, DB_NEXT, 1) == 0) {
+		if (edbt.size < sizeof(u_int32_t))
 			continue;
-		memcpy(&chk, dbt.data, sizeof(u_int32_t));
+		memcpy(&chk, edbt.data, sizeof(u_int32_t));
 		if (chk == DB_txn_ckp) {
 			lp->chkpt_lsn = lsn;
 			found_checkpoint = 1;
@@ -231,10 +231,10 @@ __log_recover(dblp)
 	 * record on disk.
 	 */
 	lp->lsn = lp->s_lsn = lsn;
-	lp->lsn.offset += dblp->c_len;
+	lp->lsn.offset += edblp->c_len;
 
 	/* Set up the current buffer information, too. */
-	lp->len = dblp->c_len;
+	lp->len = edblp->c_len;
 	lp->b_off = 0;
 	lp->w_off = lp->lsn.offset;
 
@@ -247,17 +247,17 @@ __log_recover(dblp)
 		lsn.offset = 0;
 
 		/* Set the cursor.  Shouldn't fail, leave error messages on. */
-		if ((ret = __log_get(dblp, &lsn, &dbt, DB_SET, 0)) != 0)
+		if ((ret = __log_get(edblp, &lsn, &edbt, DB_SET, 0)) != 0)
 			return (ret);
 
 		/*
 		 * Read to the end of the file, saving checkpoints.  Shouldn't
 		 * fail, leave error messages on.
 		 */
-		while (__log_get(dblp, &lsn, &dbt, DB_NEXT, 0) == 0) {
-			if (dbt.size < sizeof(u_int32_t))
+		while (__log_get(edblp, &lsn, &edbt, DB_NEXT, 0) == 0) {
+			if (edbt.size < sizeof(u_int32_t))
 				continue;
-			memcpy(&chk, dbt.data, sizeof(u_int32_t));
+			memcpy(&chk, edbt.data, sizeof(u_int32_t));
 			if (chk == DB_txn_ckp) {
 				lp->chkpt_lsn = lsn;
 				found_checkpoint = 1;
@@ -268,7 +268,7 @@ __log_recover(dblp)
 	 * Reset the cursor lsn to the beginning of the log, so that an
 	 * initial call to DB_NEXT does the right thing.
 	 */
-	ZERO_LSN(dblp->c_lsn);
+	ZERO_LSN(edblp->c_lsn);
 
 	/* If we never find a checkpoint, that's okay, just 0 it out. */
 	if (!found_checkpoint)
@@ -279,7 +279,7 @@ __log_recover(dblp)
 	 * The test suite explicitly looks for this string -- don't change
 	 * it here unless you also change it there.
 	 */
-	__db_err(dblp->dbenv,
+	__edb_err(edblp->edbenv,
 	    "Finding last valid log LSN: file: %lu offset %lu",
 	    (u_long)lp->lsn.file, (u_long)lp->lsn.offset);
 
@@ -295,8 +295,8 @@ __log_recover(dblp)
  * PUBLIC: int __log_find __P((DB_LOG *, int, int *));
  */
 int
-__log_find(dblp, find_first, valp)
-	DB_LOG *dblp;
+__log_find(edblp, find_first, valp)
+	DB_LOG *edblp;
 	int find_first, *valp;
 {
 	u_int32_t clv, logval;
@@ -307,9 +307,9 @@ __log_find(dblp, find_first, valp)
 	*valp = 0;
 
 	/* Find the directory name. */
-	if ((ret = __log_name(dblp, 1, &p, NULL, 0)) != 0)
+	if ((ret = __log_name(edblp, 1, &p, NULL, 0)) != 0)
 		return (ret);
-	if ((q = __db_rpath(p)) == NULL)
+	if ((q = __edb_rpath(p)) == NULL)
 		dir = PATH_DOT;
 	else {
 		*q = '\0';
@@ -320,7 +320,7 @@ __log_find(dblp, find_first, valp)
 	ret = __os_dirlist(dir, &names, &fcnt);
 	__os_freestr(p);
 	if (ret != 0) {
-		__db_err(dblp->dbenv, "%s: %s", dir, strerror(ret));
+		__edb_err(edblp->edbenv, "%s: %s", dir, strerror(ret));
 		return (ret);
 	}
 
@@ -343,7 +343,7 @@ __log_find(dblp, find_first, valp)
 			if (logval != 0 && clv < logval)
 				continue;
 
-		if (__log_valid(dblp, clv, 1) == 0)
+		if (__log_valid(edblp, clv, 1) == 0)
 			logval = clv;
 	}
 
@@ -362,8 +362,8 @@ __log_find(dblp, find_first, valp)
  * PUBLIC: int __log_valid __P((DB_LOG *, u_int32_t, int));
  */
 int
-__log_valid(dblp, number, set_persist)
-	DB_LOG *dblp;
+__log_valid(edblp, number, set_persist)
+	DB_LOG *edblp;
 	u_int32_t number;
 	int set_persist;
 {
@@ -373,7 +373,7 @@ __log_valid(dblp, number, set_persist)
 	int fd, ret;
 
 	/* Try to open the log file. */
-	if ((ret = __log_name(dblp,
+	if ((ret = __log_name(edblp,
 	    number, &fname, &fd, DB_RDONLY | DB_SEQUENTIAL)) != 0) {
 		__os_freestr(fname);
 		return (ret);
@@ -388,7 +388,7 @@ __log_valid(dblp, number, set_persist)
 
 		(void)__os_close(fd);
 
-		__db_err(dblp->dbenv,
+		__edb_err(edblp->edbenv,
 		    "Ignoring log file: %s: %s", fname, strerror(ret));
 		goto err;
 	}
@@ -396,14 +396,14 @@ __log_valid(dblp, number, set_persist)
 
 	/* Validate the header. */
 	if (persist.magic != DB_LOGMAGIC) {
-		__db_err(dblp->dbenv,
+		__edb_err(edblp->edbenv,
 		    "Ignoring log file: %s: magic number %lx, not %lx",
 		    fname, (u_long)persist.magic, (u_long)DB_LOGMAGIC);
 		ret = EINVAL;
 		goto err;
 	}
 	if (persist.version < DB_LOGOLDVER || persist.version > DB_LOGVERSION) {
-		__db_err(dblp->dbenv,
+		__edb_err(edblp->edbenv,
 		    "Ignoring log file: %s: unsupported log version %lu",
 		    fname, (u_long)persist.version);
 		ret = EINVAL;
@@ -415,8 +415,8 @@ __log_valid(dblp, number, set_persist)
 	 * information based on the headers.
 	 */
 	if (set_persist) {
-		dblp->lp->persist.lg_max = persist.lg_max;
-		dblp->lp->persist.mode = persist.mode;
+		edblp->lp->persist.lg_max = persist.lg_max;
+		edblp->lp->persist.mode = persist.mode;
 	}
 	ret = 0;
 
@@ -429,49 +429,49 @@ err:	__os_freestr(fname);
  *	Close a log.
  */
 int
-log_close(dblp)
-	DB_LOG *dblp;
+log_close(edblp)
+	DB_LOG *edblp;
 {
 	u_int32_t i;
 	int ret, t_ret;
 
-	LOG_PANIC_CHECK(dblp);
+	LOG_PANIC_CHECK(edblp);
 
 	/* We may have opened files as part of XA; if so, close them. */
-	__log_close_files(dblp);
+	__log_close_files(edblp);
 
 	/* Discard the per-thread pointer. */
-	if (dblp->mutexp != NULL) {
-		LOCK_LOGREGION(dblp);
-		__db_shalloc_free(dblp->addr, dblp->mutexp);
-		UNLOCK_LOGREGION(dblp);
+	if (edblp->mutexp != NULL) {
+		LOCK_LOGREGION(edblp);
+		__edb_shalloc_free(edblp->addr, edblp->mutexp);
+		UNLOCK_LOGREGION(edblp);
 	}
 
 	/* Close the region. */
-	ret = __db_rdetach(&dblp->reginfo);
+	ret = __edb_rdetach(&edblp->reginfo);
 
 	/* Close open files, release allocated memory. */
-	if (dblp->lfd != -1 && (t_ret = __os_close(dblp->lfd)) != 0 && ret == 0)
+	if (edblp->lfd != -1 && (t_ret = __os_close(edblp->lfd)) != 0 && ret == 0)
 		ret = t_ret;
-	if (dblp->c_dbt.data != NULL)
-		__os_free(dblp->c_dbt.data, dblp->c_dbt.ulen);
-	if (dblp->c_fd != -1 &&
-	    (t_ret = __os_close(dblp->c_fd)) != 0 && ret == 0)
+	if (edblp->c_edbt.data != NULL)
+		__os_free(edblp->c_edbt.data, edblp->c_edbt.ulen);
+	if (edblp->c_fd != -1 &&
+	    (t_ret = __os_close(edblp->c_fd)) != 0 && ret == 0)
 		ret = t_ret;
-	if (dblp->dbentry != NULL) {
-		for (i = 0; i < dblp->dbentry_cnt; i++)
-			if (dblp->dbentry[i].name != NULL)
-				__os_freestr(dblp->dbentry[i].name);
-		__os_free(dblp->dbentry,
-		    (dblp->dbentry_cnt * sizeof(DB_ENTRY)));
+	if (edblp->edbentry != NULL) {
+		for (i = 0; i < edblp->edbentry_cnt; i++)
+			if (edblp->edbentry[i].name != NULL)
+				__os_freestr(edblp->edbentry[i].name);
+		__os_free(edblp->edbentry,
+		    (edblp->edbentry_cnt * sizeof(DB_ENTRY)));
 	}
 
-	if (dblp->dir != NULL)
-		__os_freestr(dblp->dir);
+	if (edblp->dir != NULL)
+		__os_freestr(edblp->dir);
 
-	if (dblp->reginfo.path != NULL)
-		__os_freestr(dblp->reginfo.path);
-	__os_free(dblp, sizeof(*dblp));
+	if (edblp->reginfo.path != NULL)
+		__os_freestr(edblp->reginfo.path);
+	__os_free(edblp, sizeof(*edblp));
 
 	return (ret);
 }
@@ -481,21 +481,21 @@ log_close(dblp)
  *	Exit a log.
  */
 int
-log_unlink(path, force, dbenv)
+log_unlink(path, force, edbenv)
 	const char *path;
 	int force;
-	DB_ENV *dbenv;
+	DB_ENV *edbenv;
 {
 	REGINFO reginfo;
 	int ret;
 
 	memset(&reginfo, 0, sizeof(reginfo));
-	reginfo.dbenv = dbenv;
+	reginfo.edbenv = edbenv;
 	reginfo.appname = DB_APP_LOG;
 	if (path != NULL && (ret = __os_strdup(path, &reginfo.path)) != 0)
 		return (ret);
 	reginfo.file = DB_DEFAULT_LOG_FILE;
-	ret = __db_runlink(&reginfo, force);
+	ret = __edb_runlink(&reginfo, force);
 	if (reginfo.path != NULL)
 		__os_freestr(reginfo.path);
 	return (ret);
@@ -506,24 +506,24 @@ log_unlink(path, force, dbenv)
  *	Return LOG statistics.
  */
 int
-log_stat(dblp, gspp, db_malloc)
-	DB_LOG *dblp;
+log_stat(edblp, gspp, edb_malloc)
+	DB_LOG *edblp;
 	DB_LOG_STAT **gspp;
-	void *(*db_malloc) __P((size_t));
+	void *(*edb_malloc) __P((size_t));
 {
 	LOG *lp;
 	int ret;
 
 	*gspp = NULL;
-	lp = dblp->lp;
+	lp = edblp->lp;
 
-	LOG_PANIC_CHECK(dblp);
+	LOG_PANIC_CHECK(edblp);
 
-	if ((ret = __os_malloc(sizeof(**gspp), db_malloc, gspp)) != 0)
+	if ((ret = __os_malloc(sizeof(**gspp), edb_malloc, gspp)) != 0)
 		return (ret);
 
 	/* Copy out the global statistics. */
-	LOCK_LOGREGION(dblp);
+	LOCK_LOGREGION(edblp);
 	**gspp = lp->stat;
 
 	(*gspp)->st_magic = lp->persist.magic;
@@ -540,7 +540,7 @@ log_stat(dblp, gspp, db_malloc)
 	(*gspp)->st_refcnt = lp->rlayout.refcnt;
 	(*gspp)->st_regsize = lp->rlayout.size;
 
-	UNLOCK_LOGREGION(dblp);
+	UNLOCK_LOGREGION(edblp);
 
 	return (0);
 }

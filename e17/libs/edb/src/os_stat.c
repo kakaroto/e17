@@ -18,7 +18,7 @@ static const char sccsid[] = "@(#)os_stat.c	10.18 (Sleepycat) 10/12/98";
 #include <errno.h>
 #endif
 
-#include "db_int.h"
+#include "edb_int.h"
 #include "os_jump.h"
 
 /*
@@ -34,8 +34,8 @@ __os_exists(path, isdirp)
 {
 	struct stat sb;
 
-	if (__db_jump.j_exists != NULL)
-		return (__db_jump.j_exists(path, isdirp));
+	if (__edb_jump.j_exists != NULL)
+		return (__edb_jump.j_exists(path, isdirp));
 
 	if (stat(path, &sb) != 0)
 		return (errno);
@@ -69,8 +69,8 @@ __os_ioinfo(path, fd, mbytesp, bytesp, iosizep)
 {
 	struct stat sb;
 
-	if (__db_jump.j_ioinfo != NULL)
-		return (__db_jump.j_ioinfo(path, fd, mbytesp, bytesp, iosizep));
+	if (__edb_jump.j_ioinfo != NULL)
+		return (__edb_jump.j_ioinfo(path, fd, mbytesp, bytesp, iosizep));
 
 	if (fstat(fd, &sb) == -1)
 		return (errno);

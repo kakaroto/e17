@@ -57,9 +57,9 @@ static const char sccsid[] = "@(#)hash_rec.c	10.22 (Sleepycat) 10/21/98";
 #include <string.h>
 #endif
 
-#include "db_int.h"
+#include "edb_int.h"
 #include "shqueue.h"
-#include "db_page.h"
+#include "edb_page.h"
 #include "hash.h"
 #include "btree.h"
 #include "log.h"
@@ -72,16 +72,16 @@ static const char sccsid[] = "@(#)hash_rec.c	10.22 (Sleepycat) 10/21/98";
  * PUBLIC:     __P((DB_LOG *, DBT *, DB_LSN *, int, void *));
  */
 int
-__ham_insdel_recover(logp, dbtp, lsnp, redo, info)
+__ham_insdel_recover(logp, edbtp, lsnp, redo, info)
 	DB_LOG *logp;
-	DBT *dbtp;
+	DBT *edbtp;
 	DB_LSN *lsnp;
 	int redo;
 	void *info;
 {
 	__ham_insdel_args *argp;
-	DB *file_dbp;
-	DBC *dbc;
+	DB *file_edbp;
+	DBC *edbc;
 	HASH_CURSOR *hcp;
 	DB_MPOOLFILE *mpf;
 	PAGE *pagep;
@@ -92,7 +92,7 @@ __ham_insdel_recover(logp, dbtp, lsnp, redo, info)
 	hcp = NULL;
 	REC_PRINT(__ham_insdel_print);
 	REC_INTRO(__ham_insdel_read);
-	hcp = (HASH_CURSOR *)dbc->internal;
+	hcp = (HASH_CURSOR *)edbc->internal;
 
 	ret = memp_fget(mpf, &argp->pgno, 0, &pagep);
 	if (ret != 0)
@@ -109,7 +109,7 @@ __ham_insdel_recover(logp, dbtp, lsnp, redo, info)
 			goto out;
 
 
-	GET_META(file_dbp, hcp, ret);
+	GET_META(file_edbp, hcp, ret);
 	if (ret != 0)
 		goto out;
 	getmeta = 1;
@@ -121,7 +121,7 @@ __ham_insdel_recover(logp, dbtp, lsnp, redo, info)
 	 * redo a delete/undo a put: delete the item from the page.
 	 * redo a put/undo a delete: add the item to the page.
 	 * If we are undoing a delete, then the information logged is the
-	 * entire entry off the page, not just the data of a dbt.  In
+	 * entire entry off the page, not just the data of a edbt.  In
 	 * this case, we want to copy it back onto the page verbatim.
 	 * We do this by calling __putitem with the type H_OFFPAGE instead
 	 * of H_KEYDATA.
@@ -149,18 +149,18 @@ __ham_insdel_recover(logp, dbtp, lsnp, redo, info)
 			    argp->ndx, &argp->key, &argp->data);
 
 		LSN(pagep) = redo ? *lsnp : argp->pagelsn;
-		if ((ret = __ham_put_page(file_dbp, pagep, 1)) != 0)
+		if ((ret = __ham_put_page(file_edbp, pagep, 1)) != 0)
 			goto out;
 
 	} else if ((op == DELPAIR && cmp_p == 0 && redo)
 	    || (op == PUTPAIR && cmp_n == 0 && !redo)) {
 		/* Need to undo a put or redo a delete. */
-		__ham_dpair(file_dbp, pagep, argp->ndx);
+		__ham_dpair(file_edbp, pagep, argp->ndx);
 		LSN(pagep) = redo ? *lsnp : argp->pagelsn;
-		if ((ret = __ham_put_page(file_dbp, (PAGE *)pagep, 1)) != 0)
+		if ((ret = __ham_put_page(file_edbp, (PAGE *)pagep, 1)) != 0)
 			goto out;
 	} else
-		if ((ret = __ham_put_page(file_dbp, (PAGE *)pagep, 0)) != 0)
+		if ((ret = __ham_put_page(file_edbp, (PAGE *)pagep, 0)) != 0)
 			goto out;
 
 	/* Return the previous LSN. */
@@ -168,7 +168,7 @@ done:	*lsnp = argp->prev_lsn;
 	ret = 0;
 
 out:	if (getmeta)
-		RELEASE_META(file_dbp, hcp);
+		RELEASE_META(file_edbp, hcp);
 	REC_CLOSE;
 }
 
@@ -181,16 +181,16 @@ out:	if (getmeta)
  * PUBLIC:     __P((DB_LOG *, DBT *, DB_LSN *, int, void *));
  */
 int
-__ham_newpage_recover(logp, dbtp, lsnp, redo, info)
+__ham_newpage_recover(logp, edbtp, lsnp, redo, info)
 	DB_LOG *logp;
-	DBT *dbtp;
+	DBT *edbtp;
 	DB_LSN *lsnp;
 	int redo;
 	void *info;
 {
 	__ham_newpage_args *argp;
-	DB *file_dbp;
-	DBC *dbc;
+	DB *file_edbp;
+	DBC *edbc;
 	HASH_CURSOR *hcp;
 	DB_MPOOLFILE *mpf;
 	PAGE *pagep;
@@ -200,7 +200,7 @@ __ham_newpage_recover(logp, dbtp, lsnp, redo, info)
 	hcp = NULL;
 	REC_PRINT(__ham_newpage_print);
 	REC_INTRO(__ham_newpage_read);
-	hcp = (HASH_CURSOR *)dbc->internal;
+	hcp = (HASH_CURSOR *)edbc->internal;
 
 	ret = memp_fget(mpf, &argp->new_pgno, 0, &pagep);
 	if (ret != 0)
@@ -217,7 +217,7 @@ __ham_newpage_recover(logp, dbtp, lsnp, redo, info)
 		    DB_MPOOL_CREATE, &pagep)) != 0)
 			goto out;
 
-	GET_META(file_dbp, (HASH_CURSOR *)dbc->internal, ret);
+	GET_META(file_edbp, (HASH_CURSOR *)edbc->internal, ret);
 	if (ret != 0)
 		goto out;
 	getmeta = 1;
@@ -235,7 +235,7 @@ __ham_newpage_recover(logp, dbtp, lsnp, redo, info)
 	if ((cmp_p == 0 && redo && argp->opcode == PUTOVFL) ||
 	    (cmp_n == 0 && !redo && argp->opcode == DELOVFL)) {
 		/* Redo a create new page or undo a delete new page. */
-		P_INIT(pagep, file_dbp->pgsize, argp->new_pgno,
+		P_INIT(pagep, file_edbp->pgsize, argp->new_pgno,
 		    argp->prev_pgno, argp->next_pgno, 0, P_HASH);
 		change = 1;
 	} else if ((cmp_p == 0 && redo && argp->opcode == DELOVFL) ||
@@ -248,11 +248,11 @@ __ham_newpage_recover(logp, dbtp, lsnp, redo, info)
 	}
 
 	if (!change) {
-		if ((ret = __ham_put_page(file_dbp, (PAGE *)pagep, 0)) != 0)
+		if ((ret = __ham_put_page(file_edbp, (PAGE *)pagep, 0)) != 0)
 			goto out;
 	} else {
 		LSN(pagep) = redo ? *lsnp : argp->pagelsn;
-		if ((ret = __ham_put_page(file_dbp, (PAGE *)pagep, 1)) != 0)
+		if ((ret = __ham_put_page(file_edbp, (PAGE *)pagep, 1)) != 0)
 			goto out;
 	}
 
@@ -293,12 +293,12 @@ ppage:	if (argp->prev_pgno != PGNO_INVALID) {
 
 		if (!change) {
 			if ((ret =
-			    __ham_put_page(file_dbp, (PAGE *)pagep, 0)) != 0)
+			    __ham_put_page(file_edbp, (PAGE *)pagep, 0)) != 0)
 				goto out;
 		} else {
 			LSN(pagep) = redo ? *lsnp : argp->prevlsn;
 			if ((ret =
-			    __ham_put_page(file_dbp, (PAGE *)pagep, 1)) != 0)
+			    __ham_put_page(file_edbp, (PAGE *)pagep, 1)) != 0)
 				goto out;
 		}
 	}
@@ -339,12 +339,12 @@ npage:	if (argp->next_pgno != PGNO_INVALID) {
 
 		if (!change) {
 			if ((ret =
-			    __ham_put_page(file_dbp, (PAGE *)pagep, 0)) != 0)
+			    __ham_put_page(file_edbp, (PAGE *)pagep, 0)) != 0)
 				goto out;
 		} else {
 			LSN(pagep) = redo ? *lsnp : argp->nextlsn;
 			if ((ret =
-			    __ham_put_page(file_dbp, (PAGE *)pagep, 1)) != 0)
+			    __ham_put_page(file_edbp, (PAGE *)pagep, 1)) != 0)
 				goto out;
 		}
 	}
@@ -352,7 +352,7 @@ done:	*lsnp = argp->prev_lsn;
 	ret = 0;
 
 out:	if (getmeta)
-		RELEASE_META(file_dbp, hcp);
+		RELEASE_META(file_edbp, hcp);
 	REC_CLOSE;
 }
 
@@ -367,19 +367,19 @@ out:	if (getmeta)
  * PUBLIC:    __P((DB_LOG *, DBT *, DB_LSN *, int, void *));
  */
 int
-__ham_replace_recover(logp, dbtp, lsnp, redo, info)
+__ham_replace_recover(logp, edbtp, lsnp, redo, info)
 	DB_LOG *logp;
-	DBT *dbtp;
+	DBT *edbtp;
 	DB_LSN *lsnp;
 	int redo;
 	void *info;
 {
 	__ham_replace_args *argp;
-	DB *file_dbp;
-	DBC *dbc;
+	DB *file_edbp;
+	DBC *edbc;
 	HASH_CURSOR *hcp;
 	DB_MPOOLFILE *mpf;
-	DBT dbt;
+	DBT edbt;
 	PAGE *pagep;
 	int32_t grow;
 	int change, cmp_n, cmp_p, getmeta, ret;
@@ -389,7 +389,7 @@ __ham_replace_recover(logp, dbtp, lsnp, redo, info)
 	hcp = NULL;
 	REC_PRINT(__ham_replace_print);
 	REC_INTRO(__ham_replace_read);
-	hcp = (HASH_CURSOR *)dbc->internal;
+	hcp = (HASH_CURSOR *)edbc->internal;
 
 	ret = memp_fget(mpf, &argp->pgno, 0, &pagep);
 	if (ret != 0)
@@ -405,7 +405,7 @@ __ham_replace_recover(logp, dbtp, lsnp, redo, info)
 		    DB_MPOOL_CREATE, &pagep)) != 0)
 			goto out;
 
-	GET_META(file_dbp, (HASH_CURSOR *)dbc->internal, ret);
+	GET_META(file_edbp, (HASH_CURSOR *)edbc->internal, ret);
 	if (ret != 0)
 		goto out;
 	getmeta = 1;
@@ -416,15 +416,15 @@ __ham_replace_recover(logp, dbtp, lsnp, redo, info)
 	if (cmp_p == 0 && redo) {
 		change = 1;
 		/* Reapply the change as specified. */
-		dbt.data = argp->newitem.data;
-		dbt.size = argp->newitem.size;
+		edbt.data = argp->newitem.data;
+		edbt.size = argp->newitem.size;
 		grow = argp->newitem.size - argp->olditem.size;
 		LSN(pagep) = *lsnp;
 	} else if (cmp_n == 0 && !redo) {
 		change = 1;
 		/* Undo the already applied change. */
-		dbt.data = argp->olditem.data;
-		dbt.size = argp->olditem.size;
+		edbt.data = argp->olditem.data;
+		edbt.size = argp->olditem.size;
 		grow = argp->olditem.size - argp->newitem.size;
 		LSN(pagep) = argp->pagelsn;
 	} else {
@@ -434,7 +434,7 @@ __ham_replace_recover(logp, dbtp, lsnp, redo, info)
 
 	if (change) {
 		__ham_onpage_replace(pagep,
-		    file_dbp->pgsize, argp->ndx, argp->off, grow, &dbt);
+		    file_edbp->pgsize, argp->ndx, argp->off, grow, &edbt);
 		if (argp->makedup) {
 			hk = P_ENTRY(pagep, argp->ndx);
 			if (redo)
@@ -444,14 +444,14 @@ __ham_replace_recover(logp, dbtp, lsnp, redo, info)
 		}
 	}
 
-	if ((ret = __ham_put_page(file_dbp, pagep, change)) != 0)
+	if ((ret = __ham_put_page(file_edbp, pagep, change)) != 0)
 		goto out;
 
 done:	*lsnp = argp->prev_lsn;
 	ret = 0;
 
 out:	if (getmeta)
-		RELEASE_META(file_dbp, hcp);
+		RELEASE_META(file_edbp, hcp);
 	REC_CLOSE;
 }
 
@@ -464,16 +464,16 @@ out:	if (getmeta)
  * PUBLIC:    __P((DB_LOG *, DBT *, DB_LSN *, int, void *));
  */
 int
-__ham_newpgno_recover(logp, dbtp, lsnp, redo, info)
+__ham_newpgno_recover(logp, edbtp, lsnp, redo, info)
 	DB_LOG *logp;
-	DBT *dbtp;
+	DBT *edbtp;
 	DB_LSN *lsnp;
 	int redo;
 	void *info;
 {
 	__ham_newpgno_args *argp;
-	DB *file_dbp;
-	DBC *dbc;
+	DB *file_edbp;
+	DBC *edbc;
 	HASH_CURSOR *hcp;
 	DB_MPOOLFILE *mpf;
 	PAGE *pagep;
@@ -483,9 +483,9 @@ __ham_newpgno_recover(logp, dbtp, lsnp, redo, info)
 	hcp = NULL;
 	REC_PRINT(__ham_newpgno_print);
 	REC_INTRO(__ham_newpgno_read);
-	hcp = (HASH_CURSOR *)dbc->internal;
+	hcp = (HASH_CURSOR *)edbc->internal;
 
-	GET_META(file_dbp, (HASH_CURSOR *)dbc->internal, ret);
+	GET_META(file_edbp, (HASH_CURSOR *)edbc->internal, ret);
 	if (ret != 0)
 		goto out;
 	getmeta = 1;
@@ -548,12 +548,12 @@ __ham_newpgno_recover(logp, dbtp, lsnp, redo, info)
 	change = 0;
 	if (cmp_p == 0 && redo && argp->opcode == ALLOCPGNO) {
 		/* Need to redo an allocation. */
-		P_INIT(pagep, file_dbp->pgsize, argp->pgno, PGNO_INVALID,
+		P_INIT(pagep, file_edbp->pgsize, argp->pgno, PGNO_INVALID,
 		    PGNO_INVALID, 0, argp->new_type);
 		change = 1;
 	} else if (cmp_n == 0 && !redo && argp->opcode == DELPGNO) {
 		/* Undoing a delete. */
-		P_INIT(pagep, file_dbp->pgsize, argp->pgno, PGNO_INVALID,
+		P_INIT(pagep, file_edbp->pgsize, argp->pgno, PGNO_INVALID,
 		    argp->old_pgno, 0, argp->old_type);
 		change = 1;
 	} else if ((cmp_p == 0 && redo && argp->opcode == DELPGNO) ||
@@ -566,14 +566,14 @@ __ham_newpgno_recover(logp, dbtp, lsnp, redo, info)
 	if (change)
 		LSN(pagep) = redo ? *lsnp : argp->pagelsn;
 
-	if ((ret = __ham_put_page(file_dbp, pagep, change)) != 0)
+	if ((ret = __ham_put_page(file_edbp, pagep, change)) != 0)
 		goto out;
 
 done:	*lsnp = argp->prev_lsn;
 	ret = 0;
 
 out:	if (getmeta)
-		RELEASE_META(file_dbp, hcp);
+		RELEASE_META(file_edbp, hcp);
 	REC_CLOSE;
 
 }
@@ -587,16 +587,16 @@ out:	if (getmeta)
  * PUBLIC:    __P((DB_LOG *, DBT *, DB_LSN *, int, void *));
  */
 int
-__ham_splitmeta_recover(logp, dbtp, lsnp, redo, info)
+__ham_splitmeta_recover(logp, edbtp, lsnp, redo, info)
 	DB_LOG *logp;
-	DBT *dbtp;
+	DBT *edbtp;
 	DB_LSN *lsnp;
 	int redo;
 	void *info;
 {
 	__ham_splitmeta_args *argp;
-	DB *file_dbp;
-	DBC *dbc;
+	DB *file_edbp;
+	DBC *edbc;
 	HASH_CURSOR *hcp;
 	DB_MPOOLFILE *mpf;
 	int change, cmp_n, cmp_p, getmeta, ret;
@@ -606,9 +606,9 @@ __ham_splitmeta_recover(logp, dbtp, lsnp, redo, info)
 	hcp = NULL;
 	REC_PRINT(__ham_splitmeta_print);
 	REC_INTRO(__ham_splitmeta_read);
-	hcp = (HASH_CURSOR *)dbc->internal;
+	hcp = (HASH_CURSOR *)edbc->internal;
 
-	GET_META(file_dbp, (HASH_CURSOR *)dbc->internal, ret);
+	GET_META(file_edbp, (HASH_CURSOR *)edbc->internal, ret);
 	if (ret != 0)
 		goto out;
 	getmeta = 1;
@@ -625,7 +625,7 @@ __ham_splitmeta_recover(logp, dbtp, lsnp, redo, info)
 	if (cmp_p == 0 && redo) {
 		/* Need to redo the split information. */
 		hcp->hdr->max_bucket = argp->bucket + 1;
-		pow = __db_log2(hcp->hdr->max_bucket + 1);
+		pow = __edb_log2(hcp->hdr->max_bucket + 1);
 		if (pow > hcp->hdr->ovfl_point) {
 			hcp->hdr->spares[pow] =
 				hcp->hdr->spares[hcp->hdr->ovfl_point];
@@ -642,7 +642,7 @@ __ham_splitmeta_recover(logp, dbtp, lsnp, redo, info)
 		hcp->hdr->max_bucket = argp->bucket;
 		hcp->hdr->ovfl_point = argp->ovflpoint;
 		hcp->hdr->spares[hcp->hdr->ovfl_point] = argp->spares;
-		pow = 1 << __db_log2(hcp->hdr->max_bucket + 1);
+		pow = 1 << __edb_log2(hcp->hdr->max_bucket + 1);
 		hcp->hdr->high_mask = pow - 1;
 		hcp->hdr->low_mask = (pow >> 1) - 1;
 		change = 1;
@@ -656,7 +656,7 @@ done:	*lsnp = argp->prev_lsn;
 	ret = 0;
 
 out:	if (getmeta)
-		RELEASE_META(file_dbp, hcp);
+		RELEASE_META(file_edbp, hcp);
 	REC_CLOSE;
 }
 
@@ -667,16 +667,16 @@ out:	if (getmeta)
  * PUBLIC:    __P((DB_LOG *, DBT *, DB_LSN *, int, void *));
  */
 int
-__ham_splitdata_recover(logp, dbtp, lsnp, redo, info)
+__ham_splitdata_recover(logp, edbtp, lsnp, redo, info)
 	DB_LOG *logp;
-	DBT *dbtp;
+	DBT *edbtp;
 	DB_LSN *lsnp;
 	int redo;
 	void *info;
 {
 	__ham_splitdata_args *argp;
-	DB *file_dbp;
-	DBC *dbc;
+	DB *file_edbp;
+	DBC *edbc;
 	HASH_CURSOR *hcp;
 	DB_MPOOLFILE *mpf;
 	PAGE *pagep;
@@ -686,7 +686,7 @@ __ham_splitdata_recover(logp, dbtp, lsnp, redo, info)
 	hcp = NULL;
 	REC_PRINT(__ham_splitdata_print);
 	REC_INTRO(__ham_splitdata_read);
-	hcp = (HASH_CURSOR *)dbc->internal;
+	hcp = (HASH_CURSOR *)edbc->internal;
 
 	ret = memp_fget(mpf, &argp->pgno, 0, &pagep);
 	if (ret != 0)
@@ -702,7 +702,7 @@ __ham_splitdata_recover(logp, dbtp, lsnp, redo, info)
 		    DB_MPOOL_CREATE, &pagep)) != 0)
 			goto out;
 
-	GET_META(file_dbp, (HASH_CURSOR *)dbc->internal, ret);
+	GET_META(file_edbp, (HASH_CURSOR *)edbc->internal, ret);
 	if (ret != 0)
 		goto out;
 	getmeta = 1;
@@ -734,19 +734,19 @@ __ham_splitdata_recover(logp, dbtp, lsnp, redo, info)
 			memcpy(pagep, argp->pageimage.data,
 			    argp->pageimage.size);
 		} else
-			P_INIT(pagep, file_dbp->pgsize, argp->pgno,
+			P_INIT(pagep, file_edbp->pgsize, argp->pgno,
 			    PGNO_INVALID, PGNO_INVALID, 0, P_HASH);
 		LSN(pagep) = argp->pagelsn;
 		change = 1;
 	}
-	if ((ret = __ham_put_page(file_dbp, pagep, change)) != 0)
+	if ((ret = __ham_put_page(file_edbp, pagep, change)) != 0)
 		goto out;
 
 done:	*lsnp = argp->prev_lsn;
 	ret = 0;
 
 out:	if (getmeta)
-		RELEASE_META(file_dbp, hcp);
+		RELEASE_META(file_edbp, hcp);
 	REC_CLOSE;
 }
 
@@ -758,29 +758,29 @@ out:	if (getmeta)
  * PUBLIC:     __P((DB_LOG *, DBT *, DB_LSN *, int, void *));
  */
 int
-__ham_ovfl_recover(logp, dbtp, lsnp, redo, info)
+__ham_ovfl_recover(logp, edbtp, lsnp, redo, info)
 	DB_LOG *logp;
-	DBT *dbtp;
+	DBT *edbtp;
 	DB_LSN *lsnp;
 	int redo;
 	void *info;
 {
 	__ham_ovfl_args *argp;
-	DB *file_dbp;
-	DBC *dbc;
+	DB *file_edbp;
+	DBC *edbc;
 	HASH_CURSOR *hcp;
 	DB_MPOOLFILE *mpf;
 	PAGE *pagep;
-	db_pgno_t max_pgno, pgno;
+	edb_pgno_t max_pgno, pgno;
 	int cmp_n, cmp_p, getmeta, ret;
 
 	getmeta = 0;
 	hcp = NULL;
 	REC_PRINT(__ham_ovfl_print);
 	REC_INTRO(__ham_ovfl_read);
-	hcp = (HASH_CURSOR *)dbc->internal;
+	hcp = (HASH_CURSOR *)edbc->internal;
 
-	GET_META(file_dbp, (HASH_CURSOR *)dbc->internal, ret);
+	GET_META(file_edbp, (HASH_CURSOR *)edbc->internal, ret);
 	if (ret != 0)
 		goto out;
 	getmeta = 1;
@@ -815,16 +815,16 @@ __ham_ovfl_recover(logp, dbtp, lsnp, redo, info)
 		}
 		if (redo && log_compare((const DB_LSN *)lsnp,
 		    (const DB_LSN *)&LSN(pagep)) > 0) {
-			P_INIT(pagep, file_dbp->pgsize, pgno, PGNO_INVALID,
+			P_INIT(pagep, file_edbp->pgsize, pgno, PGNO_INVALID,
 			    pgno == max_pgno ? argp->free_pgno : pgno + 1,
 			    0, P_HASH);
 			LSN(pagep) = *lsnp;
-			ret = __ham_put_page(file_dbp, pagep, 1);
+			ret = __ham_put_page(file_edbp, pagep, 1);
 		} else if (!redo) {
 			ZERO_LSN(pagep->lsn);
-			ret = __ham_put_page(file_dbp, pagep, 1);
+			ret = __ham_put_page(file_edbp, pagep, 1);
 		} else
-			ret = __ham_put_page(file_dbp, pagep, 0);
+			ret = __ham_put_page(file_edbp, pagep, 0);
 		if (ret)
 			goto out;
 	}
@@ -833,7 +833,7 @@ done:	*lsnp = argp->prev_lsn;
 	ret = 0;
 
 out:	if (getmeta)
-		RELEASE_META(file_dbp, hcp);
+		RELEASE_META(file_edbp, hcp);
 	REC_CLOSE;
 }
 
@@ -845,16 +845,16 @@ out:	if (getmeta)
  * PUBLIC:   __P((DB_LOG *, DBT *, DB_LSN *, int, void *));
  */
 int
-__ham_copypage_recover(logp, dbtp, lsnp, redo, info)
+__ham_copypage_recover(logp, edbtp, lsnp, redo, info)
 	DB_LOG *logp;
-	DBT *dbtp;
+	DBT *edbtp;
 	DB_LSN *lsnp;
 	int redo;
 	void *info;
 {
 	__ham_copypage_args *argp;
-	DB *file_dbp;
-	DBC *dbc;
+	DB *file_edbp;
+	DBC *edbc;
 	HASH_CURSOR *hcp;
 	DB_MPOOLFILE *mpf;
 	PAGE *pagep;
@@ -864,9 +864,9 @@ __ham_copypage_recover(logp, dbtp, lsnp, redo, info)
 	hcp = NULL;
 	REC_PRINT(__ham_copypage_print);
 	REC_INTRO(__ham_copypage_read);
-	hcp = (HASH_CURSOR *)dbc->internal;
+	hcp = (HASH_CURSOR *)edbc->internal;
 
-	GET_META(file_dbp, (HASH_CURSOR *)dbc->internal, ret);
+	GET_META(file_edbp, (HASH_CURSOR *)edbc->internal, ret);
 	if (ret != 0)
 		goto out;
 	getmeta = 1;
@@ -972,6 +972,6 @@ done:	*lsnp = argp->prev_lsn;
 	ret = 0;
 
 out:	if (getmeta)
-		RELEASE_META(file_dbp, hcp);
+		RELEASE_META(file_edbp, hcp);
 	REC_CLOSE;
 }

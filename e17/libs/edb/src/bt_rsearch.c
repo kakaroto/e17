@@ -51,36 +51,36 @@ static const char sccsid[] = "@(#)bt_rsearch.c	10.21 (Sleepycat) 12/2/98";
 #include <sys/types.h>
 #endif
 
-#include "db_int.h"
-#include "db_page.h"
+#include "edb_int.h"
+#include "edb_page.h"
 #include "btree.h"
 
 /*
  * __bam_rsearch --
  *	Search a btree for a record number.
  *
- * PUBLIC: int __bam_rsearch __P((DBC *, db_recno_t *, u_int32_t, int, int *));
+ * PUBLIC: int __bam_rsearch __P((DBC *, edb_recno_t *, u_int32_t, int, int *));
  */
 int
-__bam_rsearch(dbc, recnop, flags, stop, exactp)
-	DBC *dbc;
-	db_recno_t *recnop;
+__bam_rsearch(edbc, recnop, flags, stop, exactp)
+	DBC *edbc;
+	edb_recno_t *recnop;
 	u_int32_t flags;
 	int stop, *exactp;
 {
 	BINTERNAL *bi;
 	CURSOR *cp;
-	DB *dbp;
+	DB *edbp;
 	DB_LOCK lock;
 	PAGE *h;
 	RINTERNAL *ri;
-	db_indx_t indx, top;
-	db_pgno_t pg;
-	db_recno_t i, recno, total;
+	edb_indx_t indx, top;
+	edb_pgno_t pg;
+	edb_recno_t i, recno, total;
 	int ret, stack;
 
-	dbp = dbc->dbp;
-	cp = dbc->internal;
+	edbp = edbc->edbp;
+	cp = edbc->internal;
 
 	BT_STK_CLR(cp);
 
@@ -101,11 +101,11 @@ __bam_rsearch(dbc, recnop, flags, stop, exactp)
 	 */
 	pg = PGNO_ROOT;
 	stack = LF_ISSET(S_STACK);
-	if ((ret = __bam_lget(dbc,
+	if ((ret = __bam_lget(edbc,
 	    0, pg, stack ? DB_LOCK_WRITE : DB_LOCK_READ, &lock)) != 0)
 		return (ret);
-	if ((ret = memp_fget(dbp->mpf, &pg, 0, &h)) != 0) {
-		(void)__BT_LPUT(dbc, lock);
+	if ((ret = memp_fget(edbp->mpf, &pg, 0, &h)) != 0) {
+		(void)__BT_LPUT(edbc, lock);
 		return (ret);
 	}
 
@@ -120,12 +120,12 @@ __bam_rsearch(dbc, recnop, flags, stop, exactp)
 	if (!stack &&
 	    ((LF_ISSET(S_PARENT) && (u_int8_t)(stop + 1) >= h->level) ||
 	    (LF_ISSET(S_WRITE) && h->level == LEAFLEVEL))) {
-		(void)memp_fput(dbp->mpf, h, 0);
-		(void)__BT_LPUT(dbc, lock);
-		if ((ret = __bam_lget(dbc, 0, pg, DB_LOCK_WRITE, &lock)) != 0)
+		(void)memp_fput(edbp->mpf, h, 0);
+		(void)__BT_LPUT(edbc, lock);
+		if ((ret = __bam_lget(edbc, 0, pg, DB_LOCK_WRITE, &lock)) != 0)
 			return (ret);
-		if ((ret = memp_fget(dbp->mpf, &pg, 0, &h)) != 0) {
-			(void)__BT_LPUT(dbc, lock);
+		if ((ret = memp_fget(edbp->mpf, &pg, 0, &h)) != 0) {
+			(void)__BT_LPUT(edbc, lock);
 			return (ret);
 		}
 		stack = 1;
@@ -154,8 +154,8 @@ __bam_rsearch(dbc, recnop, flags, stop, exactp)
 		else {
 			*exactp = 0;
 			if (!LF_ISSET(S_PAST_EOF) || recno > total + 1) {
-				(void)memp_fput(dbp->mpf, h, 0);
-				(void)__BT_LPUT(dbc, lock);
+				(void)memp_fput(edbp->mpf, h, 0);
+				(void)__BT_LPUT(edbc, lock);
 				return (DB_NOTFOUND);
 			}
 		}
@@ -178,7 +178,7 @@ __bam_rsearch(dbc, recnop, flags, stop, exactp)
 			 * not exist if there are enough deleted records in the
 			 * page.
 			 */
-			if (recno <= (db_recno_t)NUM_ENT(h) / P_INDX)
+			if (recno <= (edb_recno_t)NUM_ENT(h) / P_INDX)
 				for (i = recno - 1;; --i) {
 					if (B_DISSET(GET_BKEYDATA(h,
 					    i * P_INDX + O_INDX)->type))
@@ -186,10 +186,10 @@ __bam_rsearch(dbc, recnop, flags, stop, exactp)
 					if (i == 0)
 						break;
 				}
-			if (recno > (db_recno_t)NUM_ENT(h) / P_INDX) {
+			if (recno > (edb_recno_t)NUM_ENT(h) / P_INDX) {
 				*exactp = 0;
 				if (!LF_ISSET(S_PAST_EOF) || recno >
-				    (db_recno_t)(NUM_ENT(h) / P_INDX + 1)) {
+				    (edb_recno_t)(NUM_ENT(h) / P_INDX + 1)) {
 					ret = DB_NOTFOUND;
 					goto err;
 				}
@@ -226,7 +226,7 @@ __bam_rsearch(dbc, recnop, flags, stop, exactp)
 			pg = ri->pgno;
 			break;
 		default:
-			return (__db_pgfmt(dbp, h->pgno));
+			return (__edb_pgfmt(edbp, h->pgno));
 		}
 		--indx;
 
@@ -241,7 +241,7 @@ __bam_rsearch(dbc, recnop, flags, stop, exactp)
 				goto err;
 
 			if ((ret =
-			    __bam_lget(dbc, 0, pg, DB_LOCK_WRITE, &lock)) != 0)
+			    __bam_lget(edbc, 0, pg, DB_LOCK_WRITE, &lock)) != 0)
 				goto err;
 		} else {
 			/*
@@ -254,21 +254,21 @@ __bam_rsearch(dbc, recnop, flags, stop, exactp)
 			    (h->level - 1) == LEAFLEVEL)
 				stack = 1;
 
-			(void)memp_fput(dbp->mpf, h, 0);
+			(void)memp_fput(edbp->mpf, h, 0);
 
 			if ((ret =
-			    __bam_lget(dbc, 1, pg, stack && LF_ISSET(S_WRITE) ?
+			    __bam_lget(edbc, 1, pg, stack && LF_ISSET(S_WRITE) ?
 			    DB_LOCK_WRITE : DB_LOCK_READ, &lock)) != 0)
 				goto err;
 		}
 
-		if ((ret = memp_fget(dbp->mpf, &pg, 0, &h)) != 0)
+		if ((ret = memp_fget(edbp->mpf, &pg, 0, &h)) != 0)
 			goto err;
 	}
 	/* NOTREACHED */
 
 err:	BT_STK_POP(cp);
-	__bam_stkrel(dbc, 0);
+	__bam_stkrel(edbc, 0);
 	return (ret);
 }
 
@@ -279,26 +279,26 @@ err:	BT_STK_POP(cp);
  * PUBLIC: int __bam_adjust __P((DBC *, int32_t));
  */
 int
-__bam_adjust(dbc, adjust)
-	DBC *dbc;
+__bam_adjust(edbc, adjust)
+	DBC *edbc;
 	int32_t adjust;
 {
 	CURSOR *cp;
-	DB *dbp;
+	DB *edbp;
 	EPG *epg;
 	PAGE *h;
 	int ret;
 
-	dbp = dbc->dbp;
-	cp = dbc->internal;
+	edbp = edbc->edbp;
+	cp = edbc->internal;
 
 	/* Update the record counts for the tree. */
 	for (epg = cp->sp; epg <= cp->csp; ++epg) {
 		h = epg->page;
 		if (TYPE(h) == P_IBTREE || TYPE(h) == P_IRECNO) {
-			if (DB_LOGGING(dbc) &&
-			    (ret = __bam_cadjust_log(dbp->dbenv->lg_info,
-			    dbc->txn, &LSN(h), 0, dbp->log_fileid,
+			if (DB_LOGGING(edbc) &&
+			    (ret = __bam_cadjust_log(edbp->edbenv->lg_info,
+			    edbc->txn, &LSN(h), 0, edbp->log_fileid,
 			    PGNO(h), &LSN(h), (u_int32_t)epg->indx,
 			    adjust, 1)) != 0)
 				return (ret);
@@ -311,7 +311,7 @@ __bam_adjust(dbc, adjust)
 			if (PGNO(h) == PGNO_ROOT)
 				RE_NREC_ADJ(h, adjust);
 
-			if ((ret = memp_fset(dbp->mpf, h, DB_MPOOL_DIRTY)) != 0)
+			if ((ret = memp_fset(edbp->mpf, h, DB_MPOOL_DIRTY)) != 0)
 				return (ret);
 		}
 	}
@@ -322,31 +322,31 @@ __bam_adjust(dbc, adjust)
  * __bam_nrecs --
  *	Return the number of records in the tree.
  *
- * PUBLIC: int __bam_nrecs __P((DBC *, db_recno_t *));
+ * PUBLIC: int __bam_nrecs __P((DBC *, edb_recno_t *));
  */
 int
-__bam_nrecs(dbc, rep)
-	DBC *dbc;
-	db_recno_t *rep;
+__bam_nrecs(edbc, rep)
+	DBC *edbc;
+	edb_recno_t *rep;
 {
-	DB *dbp;
+	DB *edbp;
 	DB_LOCK lock;
 	PAGE *h;
-	db_pgno_t pgno;
+	edb_pgno_t pgno;
 	int ret;
 
-	dbp = dbc->dbp;
+	edbp = edbc->edbp;
 
 	pgno = PGNO_ROOT;
-	if ((ret = __bam_lget(dbc, 0, pgno, DB_LOCK_READ, &lock)) != 0)
+	if ((ret = __bam_lget(edbc, 0, pgno, DB_LOCK_READ, &lock)) != 0)
 		return (ret);
-	if ((ret = memp_fget(dbp->mpf, &pgno, 0, &h)) != 0)
+	if ((ret = memp_fget(edbp->mpf, &pgno, 0, &h)) != 0)
 		return (ret);
 
 	*rep = RE_NREC(h);
 
-	(void)memp_fput(dbp->mpf, h, 0);
-	(void)__BT_TLPUT(dbc, lock);
+	(void)memp_fput(edbp->mpf, h, 0);
+	(void)__BT_TLPUT(edbc, lock);
 
 	return (0);
 }
@@ -355,14 +355,14 @@ __bam_nrecs(dbc, rep)
  * __bam_total --
  *	Return the number of records below a page.
  *
- * PUBLIC: db_recno_t __bam_total __P((PAGE *));
+ * PUBLIC: edb_recno_t __bam_total __P((PAGE *));
  */
-db_recno_t
+edb_recno_t
 __bam_total(h)
 	PAGE *h;
 {
-	db_recno_t nrecs;
-	db_indx_t indx, top;
+	edb_recno_t nrecs;
+	edb_indx_t indx, top;
 
 	nrecs = 0;
 	top = NUM_ENT(h);

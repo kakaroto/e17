@@ -49,11 +49,11 @@ static const char sccsid[] = "@(#)txn_rec.c	10.15 (Sleepycat) 1/3/99";
 #include <errno.h>
 #endif
 
-#include "db_int.h"
-#include "db_page.h"
+#include "edb_int.h"
+#include "edb_page.h"
 #include "shqueue.h"
 #include "txn.h"
-#include "db_am.h"
+#include "edb_am.h"
 #include "log.h"
 #include "common_ext.h"
 
@@ -68,9 +68,9 @@ static int __txn_restore_txn __P((DB_ENV *, DB_LSN *, __txn_xa_regop_args *));
  * These records are only ever written for commits.
  */
 int
-__txn_regop_recover(logp, dbtp, lsnp, redo, info)
+__txn_regop_recover(logp, edbtp, lsnp, redo, info)
 	DB_LOG *logp;
-	DBT *dbtp;
+	DBT *edbtp;
 	DB_LSN *lsnp;
 	int redo;
 	void *info;
@@ -79,19 +79,19 @@ __txn_regop_recover(logp, dbtp, lsnp, redo, info)
 	int ret;
 
 #ifdef DEBUG_RECOVER
-	(void)__txn_regop_print(logp, dbtp, lsnp, redo, info);
+	(void)__txn_regop_print(logp, edbtp, lsnp, redo, info);
 #endif
 	COMPQUIET(redo, 0);
 	COMPQUIET(logp, NULL);
 
-	if ((ret = __txn_regop_read(dbtp->data, &argp)) != 0)
+	if ((ret = __txn_regop_read(edbtp->data, &argp)) != 0)
 		return (ret);
 
 	if (argp->opcode != TXN_COMMIT)
 		ret = EINVAL;
 	else
-		if (__db_txnlist_find(info, argp->txnid->txnid) == DB_NOTFOUND)
-			ret = __db_txnlist_add(info, argp->txnid->txnid);
+		if (__edb_txnlist_find(info, argp->txnid->txnid) == DB_NOTFOUND)
+			ret = __edb_txnlist_add(info, argp->txnid->txnid);
 
 	if (ret == 0)
 		*lsnp = argp->prev_lsn;
@@ -107,9 +107,9 @@ __txn_regop_recover(logp, dbtp, lsnp, redo, info)
  * These records are only ever written for prepares.
  */
 int
-__txn_xa_regop_recover(logp, dbtp, lsnp, redo, info)
+__txn_xa_regop_recover(logp, edbtp, lsnp, redo, info)
 	DB_LOG *logp;
-	DBT *dbtp;
+	DBT *edbtp;
 	DB_LSN *lsnp;
 	int redo;
 	void *info;
@@ -118,12 +118,12 @@ __txn_xa_regop_recover(logp, dbtp, lsnp, redo, info)
 	int ret;
 
 #ifdef DEBUG_RECOVER
-	(void)__txn_xa_regop_print(logp, dbtp, lsnp, redo, info);
+	(void)__txn_xa_regop_print(logp, edbtp, lsnp, redo, info);
 #endif
 	COMPQUIET(redo, 0);
 	COMPQUIET(logp, NULL);
 
-	if ((ret = __txn_xa_regop_read(dbtp->data, &argp)) != 0)
+	if ((ret = __txn_xa_regop_read(edbtp->data, &argp)) != 0)
 		return (ret);
 
 	if (argp->opcode != TXN_PREPARE)
@@ -131,7 +131,7 @@ __txn_xa_regop_recover(logp, dbtp, lsnp, redo, info)
 	else {
 		/*
 		 * Whether we are in XA or not, we need to call
-		 * __db_txnlist_find so that we update the maxid.
+		 * __edb_txnlist_find so that we update the maxid.
 		 * If this is an XA transaction, then we treat
 		 * prepares like commits so that we roll forward to
 		 * a point where we can handle commit/abort calls
@@ -139,7 +139,7 @@ __txn_xa_regop_recover(logp, dbtp, lsnp, redo, info)
 		 * is treated like a No-op; we only care about the
 		 * commit.
 		 */
-		ret = __db_txnlist_find(info, argp->txnid->txnid);
+		ret = __edb_txnlist_find(info, argp->txnid->txnid);
 		if (IS_XA_TXN(argp) && ret == DB_NOTFOUND) {
 			/*
 			 * This is an XA prepared, but not yet committed
@@ -149,9 +149,9 @@ __txn_xa_regop_recover(logp, dbtp, lsnp, redo, info)
 			 * internal state so it can be properly aborted
 			 * or recovered.
 			 */
-			ret = __db_txnlist_add(info, argp->txnid->txnid);
+			ret = __edb_txnlist_add(info, argp->txnid->txnid);
 			if (ret == 0)
-				ret = __txn_restore_txn(logp->dbenv,
+				ret = __txn_restore_txn(logp->edbenv,
 				    lsnp, argp);
 		}
 	}
@@ -167,9 +167,9 @@ __txn_xa_regop_recover(logp, dbtp, lsnp, redo, info)
  * PUBLIC: int __txn_ckp_recover __P((DB_LOG *, DBT *, DB_LSN *, int, void *));
  */
 int
-__txn_ckp_recover(logp, dbtp, lsnp, redo, info)
+__txn_ckp_recover(logp, edbtp, lsnp, redo, info)
 	DB_LOG *logp;
-	DBT *dbtp;
+	DBT *edbtp;
 	DB_LSN *lsnp;
 	int redo;
 	void *info;
@@ -178,11 +178,11 @@ __txn_ckp_recover(logp, dbtp, lsnp, redo, info)
 	int ret;
 
 #ifdef DEBUG_RECOVER
-	__txn_ckp_print(logp, dbtp, lsnp, redo, info);
+	__txn_ckp_print(logp, edbtp, lsnp, redo, info);
 #endif
 	COMPQUIET(logp, NULL);
 
-	if ((ret = __txn_ckp_read(dbtp->data, &argp)) != 0)
+	if ((ret = __txn_ckp_read(edbtp->data, &argp)) != 0)
 		return (ret);
 
 	/*
@@ -193,7 +193,7 @@ __txn_ckp_recover(logp, dbtp, lsnp, redo, info)
 	 */
 	if (argp->ckp_lsn.file == lsnp->file &&
 	    argp->ckp_lsn.offset == lsnp->offset)
-		__db_txnlist_gen(info, redo ? -1 : 1);
+		__edb_txnlist_gen(info, redo ? -1 : 1);
 
 	*lsnp = argp->last_ckp;
 	__os_free(argp, 0);
@@ -208,9 +208,9 @@ __txn_ckp_recover(logp, dbtp, lsnp, redo, info)
  * PUBLIC:    __P((DB_LOG *, DBT *, DB_LSN *, int, void *));
  */
 int
-__txn_child_recover(logp, dbtp, lsnp, redo, info)
+__txn_child_recover(logp, edbtp, lsnp, redo, info)
 	DB_LOG *logp;
-	DBT *dbtp;
+	DBT *edbtp;
 	DB_LSN *lsnp;
 	int redo;
 	void *info;
@@ -219,12 +219,12 @@ __txn_child_recover(logp, dbtp, lsnp, redo, info)
 	int ret;
 
 #ifdef DEBUG_RECOVER
-	(void)__txn_child_print(logp, dbtp, lsnp, redo, info);
+	(void)__txn_child_print(logp, edbtp, lsnp, redo, info);
 #endif
 	COMPQUIET(redo, 0);
 	COMPQUIET(logp, NULL);
 
-	if ((ret = __txn_child_read(dbtp->data, &argp)) != 0)
+	if ((ret = __txn_child_read(edbtp->data, &argp)) != 0)
 		return (ret);
 
 	/*
@@ -235,9 +235,9 @@ __txn_child_recover(logp, dbtp, lsnp, redo, info)
 	if (argp->opcode != TXN_COMMIT)
 		ret = EINVAL;
 	else
-		if (__db_txnlist_find(info, argp->parent) == 0 &&
-		    __db_txnlist_find(info, argp->txnid->txnid) == DB_NOTFOUND)
-			ret = __db_txnlist_add(info, argp->txnid->txnid);
+		if (__edb_txnlist_find(info, argp->parent) == 0 &&
+		    __edb_txnlist_find(info, argp->txnid->txnid) == DB_NOTFOUND)
+			ret = __edb_txnlist_add(info, argp->txnid->txnid);
 
 	if (ret == 0)
 		*lsnp = argp->prev_lsn;
@@ -257,8 +257,8 @@ __txn_child_recover(logp, dbtp, lsnp, redo, info)
  * argp is the perpare record (in an appropriate structure)
  */
 static int
-__txn_restore_txn(dbenv, lsnp, argp)
-	DB_ENV *dbenv;
+__txn_restore_txn(edbenv, lsnp, argp)
+	DB_ENV *edbenv;
 	DB_LSN *lsnp;
 	__txn_xa_regop_args *argp;
 {
@@ -269,11 +269,11 @@ __txn_restore_txn(dbenv, lsnp, argp)
 	if (argp->xid.size == 0)
 		return(0);
 
-	mgr = dbenv->tx_info;
+	mgr = edbenv->tx_info;
 	LOCK_TXNREGION(mgr);
 
 	/* Allocate a new transaction detail structure. */
-	if ((ret = __db_shalloc(mgr->mem, sizeof(TXN_DETAIL), 0, &td)) != 0)
+	if ((ret = __edb_shalloc(mgr->mem, sizeof(TXN_DETAIL), 0, &td)) != 0)
 		return (ret);
 
 	/* Place transaction on active transaction list. */

@@ -17,8 +17,8 @@ static const char sccsid[] = "@(#)bt_curadj.c	10.69 (Sleepycat) 12/2/98";
 #include <stdlib.h>
 #endif
 
-#include "db_int.h"
-#include "db_page.h"
+#include "edb_int.h"
+#include "edb_page.h"
 #include "btree.h"
 
 #ifdef DEBUG
@@ -29,25 +29,25 @@ static const char sccsid[] = "@(#)bt_curadj.c	10.69 (Sleepycat) 12/2/98";
  * PUBLIC: int __bam_cprint __P((DB *));
  */
 int
-__bam_cprint(dbp)
-	DB *dbp;
+__bam_cprint(edbp)
+	DB *edbp;
 {
 	CURSOR *cp;
-	DBC *dbc;
+	DBC *edbc;
 
-	DB_THREAD_LOCK(dbp);
-	for (dbc = TAILQ_FIRST(&dbp->active_queue);
-	    dbc != NULL; dbc = TAILQ_NEXT(dbc, links)) {
-		cp = (CURSOR *)dbc->internal;
+	DB_THREAD_LOCK(edbp);
+	for (edbc = TAILQ_FIRST(&edbp->active_queue);
+	    edbc != NULL; edbc = TAILQ_NEXT(edbc, links)) {
+		cp = (CURSOR *)edbc->internal;
 		fprintf(stderr,
 	    "%#0x->%#0x: page: %lu index: %lu dpage %lu dindex: %lu recno: %lu",
-		    (u_int)dbc, (u_int)cp, (u_long)cp->pgno, (u_long)cp->indx,
+		    (u_int)edbc, (u_int)cp, (u_long)cp->pgno, (u_long)cp->indx,
 		    (u_long)cp->dpgno, (u_long)cp->dindx, (u_long)cp->recno);
 		if (F_ISSET(cp, C_DELETED))
 			fprintf(stderr, " (deleted)");
 		fprintf(stderr, "\n");
 	}
-	DB_THREAD_UNLOCK(dbp);
+	DB_THREAD_UNLOCK(edbp);
 
 	return (0);
 }
@@ -58,21 +58,21 @@ __bam_cprint(dbp)
  *	Update the cursors when items are deleted and when already deleted
  *	items are overwritten.  Return the number of relevant cursors found.
  *
- * PUBLIC: int __bam_ca_delete __P((DB *, db_pgno_t, u_int32_t, int));
+ * PUBLIC: int __bam_ca_delete __P((DB *, edb_pgno_t, u_int32_t, int));
  */
 int
-__bam_ca_delete(dbp, pgno, indx, delete)
-	DB *dbp;
-	db_pgno_t pgno;
+__bam_ca_delete(edbp, pgno, indx, delete)
+	DB *edbp;
+	edb_pgno_t pgno;
 	u_int32_t indx;
 	int delete;
 {
-	DBC *dbc;
+	DBC *edbc;
 	CURSOR *cp;
 	int count;		/* !!!: Has to contain max number of cursors. */
 
 	/* Recno is responsible for its own adjustments. */
-	if (dbp->type == DB_RECNO)
+	if (edbp->type == DB_RECNO)
 		return (0);
 
 	/*
@@ -86,10 +86,10 @@ __bam_ca_delete(dbp, pgno, indx, delete)
 	 * locks on the same page, but, cursors within a thread must be single
 	 * threaded, so all we're locking here is the cursor linked list.
 	 */
-	DB_THREAD_LOCK(dbp);
-	for (count = 0, dbc = TAILQ_FIRST(&dbp->active_queue);
-	    dbc != NULL; dbc = TAILQ_NEXT(dbc, links)) {
-		cp = (CURSOR *)dbc->internal;
+	DB_THREAD_LOCK(edbp);
+	for (count = 0, edbc = TAILQ_FIRST(&edbp->active_queue);
+	    edbc != NULL; edbc = TAILQ_NEXT(edbc, links)) {
+		cp = (CURSOR *)edbc->internal;
 
 		if ((cp->pgno == pgno && cp->indx == indx) ||
 		    (cp->dpgno == pgno && cp->dindx == indx)) {
@@ -100,7 +100,7 @@ __bam_ca_delete(dbp, pgno, indx, delete)
 			++count;
 		}
 	}
-	DB_THREAD_UNLOCK(dbp);
+	DB_THREAD_UNLOCK(edbp);
 
 	return (count);
 }
@@ -109,35 +109,35 @@ __bam_ca_delete(dbp, pgno, indx, delete)
  * __bam_ca_di --
  *	Adjust the cursors during a delete or insert.
  *
- * PUBLIC: void __bam_ca_di __P((DB *, db_pgno_t, u_int32_t, int));
+ * PUBLIC: void __bam_ca_di __P((DB *, edb_pgno_t, u_int32_t, int));
  */
 void
-__bam_ca_di(dbp, pgno, indx, adjust)
-	DB *dbp;
-	db_pgno_t pgno;
+__bam_ca_di(edbp, pgno, indx, adjust)
+	DB *edbp;
+	edb_pgno_t pgno;
 	u_int32_t indx;
 	int adjust;
 {
 	CURSOR *cp;
-	DBC *dbc;
+	DBC *edbc;
 
 	/* Recno is responsible for its own adjustments. */
-	if (dbp->type == DB_RECNO)
+	if (edbp->type == DB_RECNO)
 		return;
 
 	/*
 	 * Adjust the cursors.  See the comment in __bam_ca_delete().
 	 */
-	DB_THREAD_LOCK(dbp);
-	for (dbc = TAILQ_FIRST(&dbp->active_queue);
-	    dbc != NULL; dbc = TAILQ_NEXT(dbc, links)) {
-		cp = (CURSOR *)dbc->internal;
+	DB_THREAD_LOCK(edbp);
+	for (edbc = TAILQ_FIRST(&edbp->active_queue);
+	    edbc != NULL; edbc = TAILQ_NEXT(edbc, links)) {
+		cp = (CURSOR *)edbc->internal;
 		if (cp->pgno == pgno && cp->indx >= indx)
 			cp->indx += adjust;
 		if (cp->dpgno == pgno && cp->dindx >= indx)
 			cp->dindx += adjust;
 	}
-	DB_THREAD_UNLOCK(dbp);
+	DB_THREAD_UNLOCK(edbp);
 }
 
 /*
@@ -146,28 +146,28 @@ __bam_ca_di(dbp, pgno, indx, adjust)
  *	page.
  *
  * PUBLIC: void __bam_ca_dup __P((DB *,
- * PUBLIC:    db_pgno_t, u_int32_t, u_int32_t, db_pgno_t, u_int32_t));
+ * PUBLIC:    edb_pgno_t, u_int32_t, u_int32_t, edb_pgno_t, u_int32_t));
  */
 void
-__bam_ca_dup(dbp, fpgno, first, fi, tpgno, ti)
-	DB *dbp;
-	db_pgno_t fpgno, tpgno;
+__bam_ca_dup(edbp, fpgno, first, fi, tpgno, ti)
+	DB *edbp;
+	edb_pgno_t fpgno, tpgno;
 	u_int32_t first, fi, ti;
 {
 	CURSOR *cp;
-	DBC *dbc;
+	DBC *edbc;
 
 	/* Recno is responsible for its own adjustments. */
-	if (dbp->type == DB_RECNO)
+	if (edbp->type == DB_RECNO)
 		return;
 
 	/*
 	 * Adjust the cursors.  See the comment in __bam_ca_delete().
 	 */
-	DB_THREAD_LOCK(dbp);
-	for (dbc = TAILQ_FIRST(&dbp->active_queue);
-	    dbc != NULL; dbc = TAILQ_NEXT(dbc, links)) {
-		cp = (CURSOR *)dbc->internal;
+	DB_THREAD_LOCK(edbp);
+	for (edbc = TAILQ_FIRST(&edbp->active_queue);
+	    edbc != NULL; edbc = TAILQ_NEXT(edbc, links)) {
+		cp = (CURSOR *)edbc->internal;
 		/*
 		 * Ignore matching entries that have already been moved,
 		 * we move from the same location on the leaf page more
@@ -180,38 +180,38 @@ __bam_ca_dup(dbp, fpgno, first, fi, tpgno, ti)
 			cp->dindx = ti;
 		}
 	}
-	DB_THREAD_UNLOCK(dbp);
+	DB_THREAD_UNLOCK(edbp);
 }
 
 /*
  * __bam_ca_rsplit --
  *	Adjust the cursors when doing reverse splits.
  *
- * PUBLIC: void __bam_ca_rsplit __P((DB *, db_pgno_t, db_pgno_t));
+ * PUBLIC: void __bam_ca_rsplit __P((DB *, edb_pgno_t, edb_pgno_t));
  */
 void
-__bam_ca_rsplit(dbp, fpgno, tpgno)
-	DB *dbp;
-	db_pgno_t fpgno, tpgno;
+__bam_ca_rsplit(edbp, fpgno, tpgno)
+	DB *edbp;
+	edb_pgno_t fpgno, tpgno;
 {
 	CURSOR *cp;
-	DBC *dbc;
+	DBC *edbc;
 
 	/* Recno is responsible for its own adjustments. */
-	if (dbp->type == DB_RECNO)
+	if (edbp->type == DB_RECNO)
 		return;
 
 	/*
 	 * Adjust the cursors.  See the comment in __bam_ca_delete().
 	 */
-	DB_THREAD_LOCK(dbp);
-	for (dbc = TAILQ_FIRST(&dbp->active_queue);
-	    dbc != NULL; dbc = TAILQ_NEXT(dbc, links)) {
-		cp = (CURSOR *)dbc->internal;
+	DB_THREAD_LOCK(edbp);
+	for (edbc = TAILQ_FIRST(&edbp->active_queue);
+	    edbc != NULL; edbc = TAILQ_NEXT(edbc, links)) {
+		cp = (CURSOR *)edbc->internal;
 		if (cp->pgno == fpgno)
 			cp->pgno = tpgno;
 	}
-	DB_THREAD_UNLOCK(dbp);
+	DB_THREAD_UNLOCK(edbp);
 }
 
 /*
@@ -219,20 +219,20 @@ __bam_ca_rsplit(dbp, fpgno, tpgno)
  *	Adjust the cursors when splitting a page.
  *
  * PUBLIC: void __bam_ca_split __P((DB *,
- * PUBLIC:    db_pgno_t, db_pgno_t, db_pgno_t, u_int32_t, int));
+ * PUBLIC:    edb_pgno_t, edb_pgno_t, edb_pgno_t, u_int32_t, int));
  */
 void
-__bam_ca_split(dbp, ppgno, lpgno, rpgno, split_indx, cleft)
-	DB *dbp;
-	db_pgno_t ppgno, lpgno, rpgno;
+__bam_ca_split(edbp, ppgno, lpgno, rpgno, split_indx, cleft)
+	DB *edbp;
+	edb_pgno_t ppgno, lpgno, rpgno;
 	u_int32_t split_indx;
 	int cleft;
 {
-	DBC *dbc;
+	DBC *edbc;
 	CURSOR *cp;
 
 	/* Recno is responsible for its own adjustments. */
-	if (dbp->type == DB_RECNO)
+	if (edbp->type == DB_RECNO)
 		return;
 
 	/*
@@ -245,10 +245,10 @@ __bam_ca_split(dbp, ppgno, lpgno, rpgno, split_indx, cleft)
 	 * the cursor is on the right page, it is decremented by the number of
 	 * records split to the left page.
 	 */
-	DB_THREAD_LOCK(dbp);
-	for (dbc = TAILQ_FIRST(&dbp->active_queue);
-	    dbc != NULL; dbc = TAILQ_NEXT(dbc, links)) {
-		cp = (CURSOR *)dbc->internal;
+	DB_THREAD_LOCK(edbp);
+	for (edbc = TAILQ_FIRST(&edbp->active_queue);
+	    edbc != NULL; edbc = TAILQ_NEXT(edbc, links)) {
+		cp = (CURSOR *)edbc->internal;
 		if (cp->pgno == ppgno)
 			if (cp->indx < split_indx) {
 				if (cleft)
@@ -266,5 +266,5 @@ __bam_ca_split(dbp, ppgno, lpgno, rpgno, split_indx, cleft)
 				cp->dindx -= split_indx;
 			}
 	}
-	DB_THREAD_UNLOCK(dbp);
+	DB_THREAD_UNLOCK(edbp);
 }

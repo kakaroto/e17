@@ -8,12 +8,12 @@
  */
 
 struct __bh;		typedef struct __bh BH;
-struct __db_mpreg;	typedef struct __db_mpreg DB_MPREG;
+struct __edb_mpreg;	typedef struct __edb_mpreg DB_MPREG;
 struct __mpool;		typedef struct __mpool MPOOL;
 struct __mpoolfile;	typedef struct __mpoolfile MPOOLFILE;
 
 					/* Default mpool name. */
-#define	DB_DEFAULT_MPOOL_FILE	"__db_mpool.share"
+#define	DB_DEFAULT_MPOOL_FILE	"__edb_mpool.share"
 
 /*
  * We default to 256K (32 8K pages) if the user doesn't specify, and
@@ -78,37 +78,37 @@ struct __mpoolfile;	typedef struct __mpoolfile MPOOLFILE;
  * reacquired when a region lock is reacquired because they couldn't have been
  * closed/discarded and because they never move in memory.
  */
-#define	LOCKINIT(dbmp, mutexp)						\
-	if (F_ISSET(dbmp, MP_LOCKHANDLE | MP_LOCKREGION))		\
-		(void)__db_mutex_init(mutexp,				\
-		    MUTEX_LOCK_OFFSET((dbmp)->reginfo.addr, mutexp))
+#define	LOCKINIT(edbmp, mutexp)						\
+	if (F_ISSET(edbmp, MP_LOCKHANDLE | MP_LOCKREGION))		\
+		(void)__edb_mutex_init(mutexp,				\
+		    MUTEX_LOCK_OFFSET((edbmp)->reginfo.addr, mutexp))
 
-#define	LOCKHANDLE(dbmp, mutexp)					\
-	if (F_ISSET(dbmp, MP_LOCKHANDLE))				\
-		(void)__db_mutex_lock(mutexp, (dbmp)->reginfo.fd)
-#define	UNLOCKHANDLE(dbmp, mutexp)					\
-	if (F_ISSET(dbmp, MP_LOCKHANDLE))				\
-		(void)__db_mutex_unlock(mutexp, (dbmp)->reginfo.fd)
+#define	LOCKHANDLE(edbmp, mutexp)					\
+	if (F_ISSET(edbmp, MP_LOCKHANDLE))				\
+		(void)__edb_mutex_lock(mutexp, (edbmp)->reginfo.fd)
+#define	UNLOCKHANDLE(edbmp, mutexp)					\
+	if (F_ISSET(edbmp, MP_LOCKHANDLE))				\
+		(void)__edb_mutex_unlock(mutexp, (edbmp)->reginfo.fd)
 
-#define	LOCKREGION(dbmp)						\
-	if (F_ISSET(dbmp, MP_LOCKREGION))				\
-		(void)__db_mutex_lock(&((RLAYOUT *)(dbmp)->mp)->lock,	\
-		    (dbmp)->reginfo.fd)
-#define	UNLOCKREGION(dbmp)						\
-	if (F_ISSET(dbmp, MP_LOCKREGION))				\
-		(void)__db_mutex_unlock(&((RLAYOUT *)(dbmp)->mp)->lock,	\
-		(dbmp)->reginfo.fd)
+#define	LOCKREGION(edbmp)						\
+	if (F_ISSET(edbmp, MP_LOCKREGION))				\
+		(void)__edb_mutex_lock(&((RLAYOUT *)(edbmp)->mp)->lock,	\
+		    (edbmp)->reginfo.fd)
+#define	UNLOCKREGION(edbmp)						\
+	if (F_ISSET(edbmp, MP_LOCKREGION))				\
+		(void)__edb_mutex_unlock(&((RLAYOUT *)(edbmp)->mp)->lock,	\
+		(edbmp)->reginfo.fd)
 
-#define	LOCKBUFFER(dbmp, bhp)						\
-	if (F_ISSET(dbmp, MP_LOCKREGION))				\
-		(void)__db_mutex_lock(&(bhp)->mutex, (dbmp)->reginfo.fd)
-#define	UNLOCKBUFFER(dbmp, bhp)						\
-	if (F_ISSET(dbmp, MP_LOCKREGION))				\
-		(void)__db_mutex_unlock(&(bhp)->mutex, (dbmp)->reginfo.fd)
+#define	LOCKBUFFER(edbmp, bhp)						\
+	if (F_ISSET(edbmp, MP_LOCKREGION))				\
+		(void)__edb_mutex_lock(&(bhp)->mutex, (edbmp)->reginfo.fd)
+#define	UNLOCKBUFFER(edbmp, bhp)						\
+	if (F_ISSET(edbmp, MP_LOCKREGION))				\
+		(void)__edb_mutex_unlock(&(bhp)->mutex, (edbmp)->reginfo.fd)
 
 /* Check for region catastrophic shutdown. */
-#define	MP_PANIC_CHECK(dbmp) {						\
-	if ((dbmp)->mp->rlayout.panic)					\
+#define	MP_PANIC_CHECK(edbmp) {						\
+	if ((edbmp)->mp->rlayout.panic)					\
 		return (DB_RUNRECOVERY);				\
 }
 
@@ -116,18 +116,18 @@ struct __mpoolfile;	typedef struct __mpoolfile MPOOLFILE;
  * DB_MPOOL --
  *	Per-process memory pool structure.
  */
-struct __db_mpool {
+struct __edb_mpool {
 /* These fields need to be protected for multi-threaded support. */
-	db_mutex_t	*mutexp;	/* Structure lock. */
+	edb_mutex_t	*mutexp;	/* Structure lock. */
 
 					/* List of pgin/pgout routines. */
-	LIST_HEAD(__db_mpregh, __db_mpreg) dbregq;
+	LIST_HEAD(__edb_mpregh, __edb_mpreg) edbregq;
 
 					/* List of DB_MPOOLFILE's. */
-	TAILQ_HEAD(__db_mpoolfileh, __db_mpoolfile) dbmfq;
+	TAILQ_HEAD(__edb_mpoolfileh, __edb_mpoolfile) edbmfq;
 
 /* These fields are not protected. */
-	DB_ENV     *dbenv;		/* Reference to error information. */
+	DB_ENV     *edbenv;		/* Reference to error information. */
 	REGINFO	    reginfo;		/* Region information. */
 
 	MPOOL	   *mp;			/* Address of the shared MPOOL. */
@@ -145,22 +145,22 @@ struct __db_mpool {
  * DB_MPREG --
  *	DB_MPOOL registry of pgin/pgout functions.
  */
-struct __db_mpreg {
-	LIST_ENTRY(__db_mpreg) q;	/* Linked list. */
+struct __edb_mpreg {
+	LIST_ENTRY(__edb_mpreg) q;	/* Linked list. */
 
 	int ftype;			/* File type. */
 					/* Pgin, pgout routines. */
-	int (DB_CALLBACK *pgin) __P((db_pgno_t, void *, DBT *));
-	int (DB_CALLBACK *pgout) __P((db_pgno_t, void *, DBT *));
+	int (DB_CALLBACK *pgin) __P((edb_pgno_t, void *, DBT *));
+	int (DB_CALLBACK *pgout) __P((edb_pgno_t, void *, DBT *));
 };
 
 /*
  * DB_MPOOLFILE --
  *	Per-process DB_MPOOLFILE information.
  */
-struct __db_mpoolfile {
+struct __edb_mpoolfile {
 /* These fields need to be protected for multi-threaded support. */
-	db_mutex_t	*mutexp;	/* Structure lock. */
+	edb_mutex_t	*mutexp;	/* Structure lock. */
 
 	int	   fd;			/* Underlying file descriptor. */
 
@@ -179,9 +179,9 @@ struct __db_mpoolfile {
 	u_int32_t pinref;		/* Pinned block reference count. */
 
 /* These fields are not protected. */
-	TAILQ_ENTRY(__db_mpoolfile) q;	/* Linked list of DB_MPOOLFILE's. */
+	TAILQ_ENTRY(__edb_mpoolfile) q;	/* Linked list of DB_MPOOLFILE's. */
 
-	DB_MPOOL  *dbmp;		/* Overlying DB_MPOOL. */
+	DB_MPOOL  *edbmp;		/* Overlying DB_MPOOL. */
 	MPOOLFILE *mfp;			/* Underlying MPOOLFILE. */
 
 	void	  *addr;		/* Address of mmap'd region. */
@@ -253,8 +253,8 @@ struct __mpoolfile {
 
 	u_int32_t lsn_cnt;		/* Checkpoint buffers left to write. */
 
-	db_pgno_t last_pgno;		/* Last page in the file. */
-	db_pgno_t orig_last_pgno;	/* Original last page in the file. */
+	edb_pgno_t last_pgno;		/* Last page in the file. */
+	edb_pgno_t orig_last_pgno;	/* Original last page in the file. */
 
 #define	MP_CAN_MMAP	0x01		/* If the file can be mmap'd. */
 #define	MP_TEMP		0x02		/* Backing file is a temporary. */
@@ -268,7 +268,7 @@ struct __mpoolfile {
  *	Buffer header.
  */
 struct __bh {
-	db_mutex_t	mutex;		/* Structure lock. */
+	edb_mutex_t	mutex;		/* Structure lock. */
 
 	u_int16_t	ref;		/* Reference count. */
 
@@ -283,14 +283,14 @@ struct __bh {
 	SH_TAILQ_ENTRY	q;		/* LRU queue. */
 	SH_TAILQ_ENTRY	hq;		/* MPOOL hash bucket queue. */
 
-	db_pgno_t pgno;			/* Underlying MPOOLFILE page number. */
+	edb_pgno_t pgno;			/* Underlying MPOOLFILE page number. */
 	size_t	  mf_offset;		/* Associated MPOOLFILE offset. */
 
 	/*
 	 * !!!
 	 * This array must be size_t aligned -- the DB access methods put PAGE
 	 * and other structures into it, and expect to be able to access them
-	 * directly.  (We guarantee size_t alignment in the db_mpool(3) manual
+	 * directly.  (We guarantee size_t alignment in the edb_mpool(3) manual
 	 * page as well.)
 	 */
 	u_int8_t   buf[1];		/* Variable length data. */

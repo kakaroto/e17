@@ -18,9 +18,9 @@ static const char sccsid[] = "@(#)mp_bh.c	10.45 (Sleepycat) 11/25/98";
 #include <unistd.h>
 #endif
 
-#include "db_int.h"
+#include "edb_int.h"
 #include "shqueue.h"
-#include "db_shash.h"
+#include "edb_shash.h"
 #include "mp.h"
 #include "common_ext.h"
 
@@ -34,13 +34,13 @@ static int __memp_upgrade __P((DB_MPOOL *, DB_MPOOLFILE *, MPOOLFILE *));
  * PUBLIC:     __P((DB_MPOOL *, MPOOLFILE *, BH *, int *, int *));
  */
 int
-__memp_bhwrite(dbmp, mfp, bhp, restartp, wrotep)
-	DB_MPOOL *dbmp;
+__memp_bhwrite(edbmp, mfp, bhp, restartp, wrotep)
+	DB_MPOOL *edbmp;
 	MPOOLFILE *mfp;
 	BH *bhp;
 	int *restartp, *wrotep;
 {
-	DB_MPOOLFILE *dbmfp;
+	DB_MPOOLFILE *edbmfp;
 	DB_MPREG *mpreg;
 	int incremented, ret;
 
@@ -56,13 +56,13 @@ __memp_bhwrite(dbmp, mfp, bhp, restartp, wrotep)
 	 * If we find a descriptor on the file that's not open for writing, we
 	 * try and upgrade it to make it writeable.  If that fails, we're done.
 	 */
-	LOCKHANDLE(dbmp, dbmp->mutexp);
-	for (dbmfp = TAILQ_FIRST(&dbmp->dbmfq);
-	    dbmfp != NULL; dbmfp = TAILQ_NEXT(dbmfp, q))
-		if (dbmfp->mfp == mfp) {
-			if (F_ISSET(dbmfp, MP_READONLY) &&
-			    __memp_upgrade(dbmp, dbmfp, mfp)) {
-				UNLOCKHANDLE(dbmp, dbmp->mutexp);
+	LOCKHANDLE(edbmp, edbmp->mutexp);
+	for (edbmfp = TAILQ_FIRST(&edbmp->edbmfq);
+	    edbmfp != NULL; edbmfp = TAILQ_NEXT(edbmfp, q))
+		if (edbmfp->mfp == mfp) {
+			if (F_ISSET(edbmfp, MP_READONLY) &&
+			    __memp_upgrade(edbmp, edbmfp, mfp)) {
+				UNLOCKHANDLE(edbmp, edbmp->mutexp);
 				return (0);
 			}
 
@@ -70,12 +70,12 @@ __memp_bhwrite(dbmp, mfp, bhp, restartp, wrotep)
 			 * Increment the reference count -- see the comment in
 			 * memp_fclose().
 			 */
-			++dbmfp->ref;
+			++edbmfp->ref;
 			incremented = 1;
 			break;
 		}
-	UNLOCKHANDLE(dbmp, dbmp->mutexp);
-	if (dbmfp != NULL)
+	UNLOCKHANDLE(edbmp, edbmp->mutexp);
+	if (edbmfp != NULL)
 		goto found;
 
 	/*
@@ -85,12 +85,12 @@ __memp_bhwrite(dbmp, mfp, bhp, restartp, wrotep)
 	 * nothing we can do.
 	 */
 	if (mfp->ftype != 0) {
-		LOCKHANDLE(dbmp, dbmp->mutexp);
-		for (mpreg = LIST_FIRST(&dbmp->dbregq);
+		LOCKHANDLE(edbmp, edbmp->mutexp);
+		for (mpreg = LIST_FIRST(&edbmp->edbregq);
 		    mpreg != NULL; mpreg = LIST_NEXT(mpreg, q))
 			if (mpreg->ftype == mfp->ftype)
 				break;
-		UNLOCKHANDLE(dbmp, dbmp->mutexp);
+		UNLOCKHANDLE(edbmp, edbmp->mutexp);
 		if (mpreg == NULL)
 			return (0);
 	}
@@ -122,16 +122,16 @@ __memp_bhwrite(dbmp, mfp, bhp, restartp, wrotep)
 	if (F_ISSET(mfp, MP_TEMP))
 		return (0);
 
-	if (__memp_fopen(dbmp, mfp, R_ADDR(dbmp, mfp->path_off),
-	    0, 0, mfp->stat.st_pagesize, 0, NULL, &dbmfp) != 0)
+	if (__memp_fopen(edbmp, mfp, R_ADDR(edbmp, mfp->path_off),
+	    0, 0, mfp->stat.st_pagesize, 0, NULL, &edbmfp) != 0)
 		return (0);
 
-found:	ret = __memp_pgwrite(dbmfp, bhp, restartp, wrotep);
+found:	ret = __memp_pgwrite(edbmfp, bhp, restartp, wrotep);
 
 	if (incremented) {
-		LOCKHANDLE(dbmp, dbmp->mutexp);
-		--dbmfp->ref;
-		UNLOCKHANDLE(dbmp, dbmp->mutexp);
+		LOCKHANDLE(edbmp, edbmp->mutexp);
+		--edbmfp->ref;
+		UNLOCKHANDLE(edbmp, edbmp->mutexp);
 	}
 
 	return (ret);
@@ -144,32 +144,32 @@ found:	ret = __memp_pgwrite(dbmfp, bhp, restartp, wrotep);
  * PUBLIC: int __memp_pgread __P((DB_MPOOLFILE *, BH *, int));
  */
 int
-__memp_pgread(dbmfp, bhp, can_create)
-	DB_MPOOLFILE *dbmfp;
+__memp_pgread(edbmfp, bhp, can_create)
+	DB_MPOOLFILE *edbmfp;
 	BH *bhp;
 	int can_create;
 {
-	DB_IO db_io;
-	DB_MPOOL *dbmp;
+	DB_IO edb_io;
+	DB_MPOOL *edbmp;
 	MPOOLFILE *mfp;
 	size_t len, pagesize;
 	ssize_t nr;
 	int created, ret;
 
-	dbmp = dbmfp->dbmp;
-	mfp = dbmfp->mfp;
+	edbmp = edbmfp->edbmp;
+	mfp = edbmfp->mfp;
 	pagesize = mfp->stat.st_pagesize;
 
 	F_SET(bhp, BH_LOCKED | BH_TRASH);
-	LOCKBUFFER(dbmp, bhp);
-	UNLOCKREGION(dbmp);
+	LOCKBUFFER(edbmp, bhp);
+	UNLOCKREGION(edbmp);
 
 	/*
 	 * Temporary files may not yet have been created.  We don't create
 	 * them now, we create them when the pages have to be flushed.
 	 */
 	nr = 0;
-	if (dbmfp->fd == -1)
+	if (edbmfp->fd == -1)
 		ret = 0;
 	else {
 		/*
@@ -177,15 +177,15 @@ __memp_pgread(dbmfp, bhp, can_create)
 		 * Assume that the page doesn't exist, and that we'll create it
 		 * when we write it out.
 		 */
-		db_io.fd_io = dbmfp->fd;
-		db_io.fd_lock = dbmp->reginfo.fd;
-		db_io.mutexp =
-		    F_ISSET(dbmp, MP_LOCKHANDLE) ? dbmfp->mutexp : NULL;
-		db_io.pagesize = db_io.bytes = pagesize;
-		db_io.pgno = bhp->pgno;
-		db_io.buf = bhp->buf;
+		edb_io.fd_io = edbmfp->fd;
+		edb_io.fd_lock = edbmp->reginfo.fd;
+		edb_io.mutexp =
+		    F_ISSET(edbmp, MP_LOCKHANDLE) ? edbmfp->mutexp : NULL;
+		edb_io.pagesize = edb_io.bytes = pagesize;
+		edb_io.pgno = bhp->pgno;
+		edb_io.buf = bhp->buf;
 
-		ret = __os_io(&db_io, DB_IO_READ, &nr);
+		ret = __os_io(&edb_io, DB_IO_READ, &nr);
 	}
 
 	created = 0;
@@ -196,9 +196,9 @@ __memp_pgread(dbmfp, bhp, can_create)
 			/* If we had a short read, ret may be 0. */
 			if (ret == 0)
 				ret = EIO;
-			__db_err(dbmp->dbenv,
+			__edb_err(edbmp->edbenv,
 			    "%s: page %lu doesn't exist, create flag not set",
-			    __memp_fn(dbmfp), (u_long)bhp->pgno);
+			    __memp_fn(edbmfp), (u_long)bhp->pgno);
 			goto err;
 		}
 
@@ -215,16 +215,16 @@ __memp_pgread(dbmfp, bhp, can_create)
 		if (nr > (ssize_t)len)
 			len = nr;
 		if (len < pagesize)
-			memset(bhp->buf + len, 0xdb, pagesize - len);
+			memset(bhp->buf + len, 0xedb, pagesize - len);
 #endif
 	}
 
 	/* Call any pgin function. */
-	ret = mfp->ftype == 0 ? 0 : __memp_pg(dbmfp, bhp, 1);
+	ret = mfp->ftype == 0 ? 0 : __memp_pg(edbmfp, bhp, 1);
 
 	/* Unlock the buffer and reacquire the region lock. */
-err:	UNLOCKBUFFER(dbmp, bhp);
-	LOCKREGION(dbmp);
+err:	UNLOCKBUFFER(edbmp, bhp);
+	LOCKREGION(edbmp);
 
 	/*
 	 * If no errors occurred, the data is now valid, clear the BH_TRASH
@@ -236,10 +236,10 @@ err:	UNLOCKBUFFER(dbmp, bhp);
 
 		/* Update the statistics. */
 		if (created) {
-			++dbmp->mp->stat.st_page_create;
+			++edbmp->mp->stat.st_page_create;
 			++mfp->stat.st_page_create;
 		} else {
-			++dbmp->mp->stat.st_page_in;
+			++edbmp->mp->stat.st_page_in;
 			++mfp->stat.st_page_in;
 		}
 	}
@@ -254,26 +254,26 @@ err:	UNLOCKBUFFER(dbmp, bhp);
  * PUBLIC: int __memp_pgwrite __P((DB_MPOOLFILE *, BH *, int *, int *));
  */
 int
-__memp_pgwrite(dbmfp, bhp, restartp, wrotep)
-	DB_MPOOLFILE *dbmfp;
+__memp_pgwrite(edbmfp, bhp, restartp, wrotep)
+	DB_MPOOLFILE *edbmfp;
 	BH *bhp;
 	int *restartp, *wrotep;
 {
-	DB_ENV *dbenv;
-	DB_IO db_io;
+	DB_ENV *edbenv;
+	DB_IO edb_io;
 	DB_LOG *lg_info;
 	DB_LSN lsn;
-	DB_MPOOL *dbmp;
+	DB_MPOOL *edbmp;
 	MPOOL *mp;
 	MPOOLFILE *mfp;
 	ssize_t nw;
 	int callpgin, dosync, ret, syncfail;
 	const char *fail;
 
-	dbmp = dbmfp->dbmp;
-	dbenv = dbmp->dbenv;
-	mp = dbmp->mp;
-	mfp = dbmfp->mfp;
+	edbmp = edbmfp->edbmp;
+	edbenv = edbmp->edbenv;
+	mp = edbmp->mp;
+	mfp = edbmfp->mfp;
 
 	if (restartp != NULL)
 		*restartp = 0;
@@ -291,7 +291,7 @@ __memp_pgwrite(dbmfp, bhp, restartp, wrotep)
 		return (0);
 	}
 
-	LOCKBUFFER(dbmp, bhp);
+	LOCKBUFFER(edbmp, bhp);
 
 	/*
 	 * If there were two writers, we may have just been waiting while the
@@ -299,7 +299,7 @@ __memp_pgwrite(dbmfp, bhp, restartp, wrotep)
 	 * more time.
 	 */
 	if (!F_ISSET(bhp, BH_DIRTY)) {
-		UNLOCKBUFFER(dbmp, bhp);
+		UNLOCKBUFFER(edbmp, bhp);
 
 		if (wrotep != NULL)
 			*wrotep = 1;
@@ -307,13 +307,13 @@ __memp_pgwrite(dbmfp, bhp, restartp, wrotep)
 	}
 
 	F_SET(bhp, BH_LOCKED);
-	UNLOCKREGION(dbmp);
+	UNLOCKREGION(edbmp);
 
 	if (restartp != NULL)
 		*restartp = 1;
 
 	/* Copy the LSN off the page if we're going to need it. */
-	lg_info = dbenv->lg_info;
+	lg_info = edbenv->lg_info;
 	if (lg_info != NULL || F_ISSET(bhp, BH_WRITE))
 		memcpy(&lsn, bhp->buf + mfp->lsn_off, sizeof(DB_LSN));
 
@@ -330,33 +330,33 @@ __memp_pgwrite(dbmfp, bhp, restartp, wrotep)
 		ret = 0;
 	else {
 		callpgin = 1;
-		if ((ret = __memp_pg(dbmfp, bhp, 0)) != 0)
+		if ((ret = __memp_pg(edbmfp, bhp, 0)) != 0)
 			goto err;
 	}
 
 	/* Temporary files may not yet have been created. */
-	if (dbmfp->fd == -1) {
-		LOCKHANDLE(dbmp, dbmfp->mutexp);
-		if (dbmfp->fd == -1 && ((ret = __db_appname(dbenv,
+	if (edbmfp->fd == -1) {
+		LOCKHANDLE(edbmp, edbmfp->mutexp);
+		if (edbmfp->fd == -1 && ((ret = __edb_appname(edbenv,
 		    DB_APP_TMP, NULL, NULL, DB_CREATE | DB_EXCL | DB_TEMPORARY,
-		    &dbmfp->fd, NULL)) != 0 || dbmfp->fd == -1)) {
-			UNLOCKHANDLE(dbmp, dbmfp->mutexp);
-			__db_err(dbenv,
+		    &edbmfp->fd, NULL)) != 0 || edbmfp->fd == -1)) {
+			UNLOCKHANDLE(edbmp, edbmfp->mutexp);
+			__edb_err(edbenv,
 			    "unable to create temporary backing file");
 			goto err;
 		}
-		UNLOCKHANDLE(dbmp, dbmfp->mutexp);
+		UNLOCKHANDLE(edbmp, edbmfp->mutexp);
 	}
 
 	/* Write the page. */
-	db_io.fd_io = dbmfp->fd;
-	db_io.fd_lock = dbmp->reginfo.fd;
-	db_io.mutexp = F_ISSET(dbmp, MP_LOCKHANDLE) ? dbmfp->mutexp : NULL;
-	db_io.pagesize = db_io.bytes = mfp->stat.st_pagesize;
-	db_io.pgno = bhp->pgno;
-	db_io.buf = bhp->buf;
-	if ((ret = __os_io(&db_io, DB_IO_WRITE, &nw)) != 0) {
-		__db_panic(dbenv, ret);
+	edb_io.fd_io = edbmfp->fd;
+	edb_io.fd_lock = edbmp->reginfo.fd;
+	edb_io.mutexp = F_ISSET(edbmp, MP_LOCKHANDLE) ? edbmfp->mutexp : NULL;
+	edb_io.pagesize = edb_io.bytes = mfp->stat.st_pagesize;
+	edb_io.pgno = bhp->pgno;
+	edb_io.buf = bhp->buf;
+	if ((ret = __os_io(&edb_io, DB_IO_WRITE, &nw)) != 0) {
+		__edb_panic(edbenv, ret);
 		fail = "write";
 		goto syserr;
 	}
@@ -370,8 +370,8 @@ __memp_pgwrite(dbmfp, bhp, restartp, wrotep)
 		*wrotep = 1;
 
 	/* Unlock the buffer and reacquire the region lock. */
-	UNLOCKBUFFER(dbmp, bhp);
-	LOCKREGION(dbmp);
+	UNLOCKBUFFER(edbmp, bhp);
+	LOCKREGION(edbmp);
 
 	/*
 	 * Clean up the flags based on a successful write.
@@ -421,21 +421,21 @@ __memp_pgwrite(dbmfp, bhp, restartp, wrotep)
 	 * to fail.  That should be unlikely, and fixing it would be difficult.
 	 */
 	if (dosync) {
-		UNLOCKREGION(dbmp);
-		syncfail = __os_fsync(dbmfp->fd) != 0;
-		LOCKREGION(dbmp);
+		UNLOCKREGION(edbmp);
+		syncfail = __os_fsync(edbmfp->fd) != 0;
+		LOCKREGION(edbmp);
 		if (syncfail)
 			F_SET(mp, MP_LSN_RETRY);
 	}
 
 	return (0);
 
-syserr:	__db_err(dbenv, "%s: %s failed for page %lu",
-	    __memp_fn(dbmfp), fail, (u_long)bhp->pgno);
+syserr:	__edb_err(edbenv, "%s: %s failed for page %lu",
+	    __memp_fn(edbmfp), fail, (u_long)bhp->pgno);
 
 err:	/* Unlock the buffer and reacquire the region lock. */
-	UNLOCKBUFFER(dbmp, bhp);
-	LOCKREGION(dbmp);
+	UNLOCKBUFFER(edbmp, bhp);
+	LOCKREGION(edbmp);
 
 	/*
 	 * Clean up the flags based on a failure.
@@ -457,55 +457,55 @@ err:	/* Unlock the buffer and reacquire the region lock. */
  * PUBLIC: int __memp_pg __P((DB_MPOOLFILE *, BH *, int));
  */
 int
-__memp_pg(dbmfp, bhp, is_pgin)
-	DB_MPOOLFILE *dbmfp;
+__memp_pg(edbmfp, bhp, is_pgin)
+	DB_MPOOLFILE *edbmfp;
 	BH *bhp;
 	int is_pgin;
 {
-	DBT dbt, *dbtp;
-	DB_MPOOL *dbmp;
+	DBT edbt, *edbtp;
+	DB_MPOOL *edbmp;
 	DB_MPREG *mpreg;
 	MPOOLFILE *mfp;
 	int ftype, ret;
 
-	dbmp = dbmfp->dbmp;
-	mfp = dbmfp->mfp;
+	edbmp = edbmfp->edbmp;
+	mfp = edbmfp->mfp;
 
-	LOCKHANDLE(dbmp, dbmp->mutexp);
+	LOCKHANDLE(edbmp, edbmp->mutexp);
 
 	ftype = mfp->ftype;
-	for (mpreg = LIST_FIRST(&dbmp->dbregq);
+	for (mpreg = LIST_FIRST(&edbmp->edbregq);
 	    mpreg != NULL; mpreg = LIST_NEXT(mpreg, q)) {
 		if (ftype != mpreg->ftype)
 			continue;
 		if (mfp->pgcookie_len == 0)
-			dbtp = NULL;
+			edbtp = NULL;
 		else {
-			dbt.size = mfp->pgcookie_len;
-			dbt.data = R_ADDR(dbmp, mfp->pgcookie_off);
-			dbtp = &dbt;
+			edbt.size = mfp->pgcookie_len;
+			edbt.data = R_ADDR(edbmp, mfp->pgcookie_off);
+			edbtp = &edbt;
 		}
-		UNLOCKHANDLE(dbmp, dbmp->mutexp);
+		UNLOCKHANDLE(edbmp, edbmp->mutexp);
 
 		if (is_pgin) {
 			if (mpreg->pgin != NULL && (ret =
-			    mpreg->pgin(bhp->pgno, bhp->buf, dbtp)) != 0)
+			    mpreg->pgin(bhp->pgno, bhp->buf, edbtp)) != 0)
 				goto err;
 		} else
 			if (mpreg->pgout != NULL && (ret =
-			    mpreg->pgout(bhp->pgno, bhp->buf, dbtp)) != 0)
+			    mpreg->pgout(bhp->pgno, bhp->buf, edbtp)) != 0)
 				goto err;
 		break;
 	}
 
 	if (mpreg == NULL)
-		UNLOCKHANDLE(dbmp, dbmp->mutexp);
+		UNLOCKHANDLE(edbmp, edbmp->mutexp);
 
 	return (0);
 
-err:	UNLOCKHANDLE(dbmp, dbmp->mutexp);
-	__db_err(dbmp->dbenv, "%s: %s failed for page %lu",
-	    __memp_fn(dbmfp), is_pgin ? "pgin" : "pgout", (u_long)bhp->pgno);
+err:	UNLOCKHANDLE(edbmp, edbmp->mutexp);
+	__edb_err(edbmp->edbenv, "%s: %s failed for page %lu",
+	    __memp_fn(edbmfp), is_pgin ? "pgin" : "pgout", (u_long)bhp->pgno);
 	return (ret);
 }
 
@@ -516,8 +516,8 @@ err:	UNLOCKHANDLE(dbmp, dbmp->mutexp);
  * PUBLIC: void __memp_bhfree __P((DB_MPOOL *, MPOOLFILE *, BH *, int));
  */
 void
-__memp_bhfree(dbmp, mfp, bhp, free_mem)
-	DB_MPOOL *dbmp;
+__memp_bhfree(edbmp, mfp, bhp, free_mem)
+	DB_MPOOL *edbmp;
 	MPOOLFILE *mfp;
 	BH *bhp;
 	int free_mem;
@@ -525,19 +525,19 @@ __memp_bhfree(dbmp, mfp, bhp, free_mem)
 	size_t off;
 
 	/* Delete the buffer header from the hash bucket queue. */
-	off = BUCKET(dbmp->mp, R_OFFSET(dbmp, mfp), bhp->pgno);
-	SH_TAILQ_REMOVE(&dbmp->htab[off], bhp, hq, __bh);
+	off = BUCKET(edbmp->mp, R_OFFSET(edbmp, mfp), bhp->pgno);
+	SH_TAILQ_REMOVE(&edbmp->htab[off], bhp, hq, __bh);
 
 	/* Delete the buffer header from the LRU queue. */
-	SH_TAILQ_REMOVE(&dbmp->mp->bhq, bhp, q, __bh);
+	SH_TAILQ_REMOVE(&edbmp->mp->bhq, bhp, q, __bh);
 
 	/*
 	 * If we're not reusing it immediately, free the buffer header
 	 * and data for real.
 	 */
 	if (free_mem) {
-		__db_shalloc_free(dbmp->addr, bhp);
-		--dbmp->mp->stat.st_page_clean;
+		__edb_shalloc_free(edbmp->addr, bhp);
+		--edbmp->mp->stat.st_page_clean;
 	}
 }
 
@@ -546,9 +546,9 @@ __memp_bhfree(dbmp, mfp, bhp, free_mem)
  *	Upgrade a file descriptor from readonly to readwrite.
  */
 static int
-__memp_upgrade(dbmp, dbmfp, mfp)
-	DB_MPOOL *dbmp;
-	DB_MPOOLFILE *dbmfp;
+__memp_upgrade(edbmp, edbmfp, mfp)
+	DB_MPOOL *edbmp;
+	DB_MPOOLFILE *edbmfp;
 	MPOOLFILE *mfp;
 {
 	int fd, ret;
@@ -560,11 +560,11 @@ __memp_upgrade(dbmp, dbmfp, mfp)
 	 */
 
 	/* Check to see if we've already upgraded. */
-	if (F_ISSET(dbmfp, MP_UPGRADE))
+	if (F_ISSET(edbmfp, MP_UPGRADE))
 		return (0);
 
 	/* Check to see if we've already failed. */
-	if (F_ISSET(dbmfp, MP_UPGRADE_FAIL))
+	if (F_ISSET(edbmfp, MP_UPGRADE_FAIL))
 		return (1);
 
 	/*
@@ -572,17 +572,17 @@ __memp_upgrade(dbmp, dbmfp, mfp)
 	 * We know we have a valid pathname for the file because it's the only
 	 * way we could have gotten a file descriptor of any kind.
 	 */
-	if ((ret = __db_appname(dbmp->dbenv, DB_APP_DATA,
-	    NULL, R_ADDR(dbmp, mfp->path_off), 0, NULL, &rpath)) != 0)
+	if ((ret = __edb_appname(edbmp->edbenv, DB_APP_DATA,
+	    NULL, R_ADDR(edbmp, mfp->path_off), 0, NULL, &rpath)) != 0)
 		return (ret);
-	if (__db_open(rpath, 0, 0, 0, &fd) != 0) {
-		F_SET(dbmfp, MP_UPGRADE_FAIL);
+	if (__edb_open(rpath, 0, 0, 0, &fd) != 0) {
+		F_SET(edbmfp, MP_UPGRADE_FAIL);
 		ret = 1;
 	} else {
 		/* Swap the descriptors and set the upgrade flag. */
-		(void)__os_close(dbmfp->fd);
-		dbmfp->fd = fd;
-		F_SET(dbmfp, MP_UPGRADE);
+		(void)__os_close(edbmfp->fd);
+		edbmfp->fd = fd;
+		F_SET(edbmfp, MP_UPGRADE);
 		ret = 0;
 	}
 	__os_freestr(rpath);

@@ -1,4 +1,4 @@
-/* Do not edit: automatically built by dist/db_gen.sh. */
+/* Do not edit: automatically built by dist/edb_gen.sh. */
 #ifndef txn_AUTO_H
 #define txn_AUTO_H
 

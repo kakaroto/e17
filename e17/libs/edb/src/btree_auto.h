@@ -1,4 +1,4 @@
-/* Do not edit: automatically built by dist/db_gen.sh. */
+/* Do not edit: automatically built by dist/edb_gen.sh. */
 #ifndef bam_AUTO_H
 #define bam_AUTO_H
 
@@ -11,9 +11,9 @@ typedef struct _bam_pg_alloc_args {
 	u_int32_t	fileid;
 	DB_LSN 	meta_lsn;
 	DB_LSN 	page_lsn;
-	db_pgno_t	pgno;
+	edb_pgno_t	pgno;
 	u_int32_t	ptype;
-	db_pgno_t	next;
+	edb_pgno_t	next;
 } __bam_pg_alloc_args;
 
 
@@ -24,10 +24,10 @@ typedef struct _bam_pg_free_args {
 	DB_TXN *txnid;
 	DB_LSN prev_lsn;
 	u_int32_t	fileid;
-	db_pgno_t	pgno;
+	edb_pgno_t	pgno;
 	DB_LSN 	meta_lsn;
 	DBT	header;
-	db_pgno_t	next;
+	edb_pgno_t	next;
 } __bam_pg_free_args;
 
 
@@ -38,12 +38,12 @@ typedef struct _bam_split_args {
 	DB_TXN *txnid;
 	DB_LSN prev_lsn;
 	u_int32_t	fileid;
-	db_pgno_t	left;
+	edb_pgno_t	left;
 	DB_LSN 	llsn;
-	db_pgno_t	right;
+	edb_pgno_t	right;
 	DB_LSN 	rlsn;
 	u_int32_t	indx;
-	db_pgno_t	npgno;
+	edb_pgno_t	npgno;
 	DB_LSN 	nlsn;
 	DBT	pg;
 } __bam_split_args;
@@ -56,9 +56,9 @@ typedef struct _bam_rsplit_args {
 	DB_TXN *txnid;
 	DB_LSN prev_lsn;
 	u_int32_t	fileid;
-	db_pgno_t	pgno;
-	DBT	pgdbt;
-	db_pgno_t	nrec;
+	edb_pgno_t	pgno;
+	DBT	pgedbt;
+	edb_pgno_t	nrec;
 	DBT	rootent;
 	DB_LSN 	rootlsn;
 } __bam_rsplit_args;
@@ -71,7 +71,7 @@ typedef struct _bam_adj_args {
 	DB_TXN *txnid;
 	DB_LSN prev_lsn;
 	u_int32_t	fileid;
-	db_pgno_t	pgno;
+	edb_pgno_t	pgno;
 	DB_LSN 	lsn;
 	u_int32_t	indx;
 	u_int32_t	indx_copy;
@@ -86,7 +86,7 @@ typedef struct _bam_cadjust_args {
 	DB_TXN *txnid;
 	DB_LSN prev_lsn;
 	u_int32_t	fileid;
-	db_pgno_t	pgno;
+	edb_pgno_t	pgno;
 	DB_LSN 	lsn;
 	u_int32_t	indx;
 	int32_t	adjust;
@@ -101,7 +101,7 @@ typedef struct _bam_cdel_args {
 	DB_TXN *txnid;
 	DB_LSN prev_lsn;
 	u_int32_t	fileid;
-	db_pgno_t	pgno;
+	edb_pgno_t	pgno;
 	DB_LSN 	lsn;
 	u_int32_t	indx;
 } __bam_cdel_args;
@@ -114,7 +114,7 @@ typedef struct _bam_repl_args {
 	DB_TXN *txnid;
 	DB_LSN prev_lsn;
 	u_int32_t	fileid;
-	db_pgno_t	pgno;
+	edb_pgno_t	pgno;
 	DB_LSN 	lsn;
 	u_int32_t	indx;
 	u_int32_t	isdeleted;

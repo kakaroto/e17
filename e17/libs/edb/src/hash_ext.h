@@ -5,20 +5,20 @@ int __ham_open __P((DB *, DB_INFO *));
 int __ham_close __P((DB *));
 int __ham_c_init __P((DBC *));
 u_int32_t __ham_call_hash __P((HASH_CURSOR *, u_int8_t *, int32_t));
-int __ham_init_dbt __P((DBT *, u_int32_t, void **, u_int32_t *));
+int __ham_init_edbt __P((DBT *, u_int32_t, void **, u_int32_t *));
 void __ham_c_update
-   __P((HASH_CURSOR *, db_pgno_t, u_int32_t, int, int));
+   __P((HASH_CURSOR *, edb_pgno_t, u_int32_t, int, int));
 int __ham_insdel_log
     __P((DB_LOG *, DB_TXN *, DB_LSN *, u_int32_t,
-    u_int32_t, u_int32_t, db_pgno_t, u_int32_t,
+    u_int32_t, u_int32_t, edb_pgno_t, u_int32_t,
     DB_LSN *, const DBT *, const DBT *));
 int __ham_insdel_print
    __P((DB_LOG *, DBT *, DB_LSN *, int, void *));
 int __ham_insdel_read __P((void *, __ham_insdel_args **));
 int __ham_newpage_log
     __P((DB_LOG *, DB_TXN *, DB_LSN *, u_int32_t,
-    u_int32_t, u_int32_t, db_pgno_t, DB_LSN *,
-    db_pgno_t, DB_LSN *, db_pgno_t, DB_LSN *));
+    u_int32_t, u_int32_t, edb_pgno_t, DB_LSN *,
+    edb_pgno_t, DB_LSN *, edb_pgno_t, DB_LSN *));
 int __ham_newpage_print
    __P((DB_LOG *, DBT *, DB_LSN *, int, void *));
 int __ham_newpage_read __P((void *, __ham_newpage_args **));
@@ -31,60 +31,60 @@ int __ham_splitmeta_print
 int __ham_splitmeta_read __P((void *, __ham_splitmeta_args **));
 int __ham_splitdata_log
     __P((DB_LOG *, DB_TXN *, DB_LSN *, u_int32_t,
-    u_int32_t, u_int32_t, db_pgno_t, const DBT *,
+    u_int32_t, u_int32_t, edb_pgno_t, const DBT *,
     DB_LSN *));
 int __ham_splitdata_print
    __P((DB_LOG *, DBT *, DB_LSN *, int, void *));
 int __ham_splitdata_read __P((void *, __ham_splitdata_args **));
 int __ham_replace_log
     __P((DB_LOG *, DB_TXN *, DB_LSN *, u_int32_t,
-    u_int32_t, db_pgno_t, u_int32_t, DB_LSN *,
+    u_int32_t, edb_pgno_t, u_int32_t, DB_LSN *,
     int32_t, const DBT *, const DBT *, u_int32_t));
 int __ham_replace_print
    __P((DB_LOG *, DBT *, DB_LSN *, int, void *));
 int __ham_replace_read __P((void *, __ham_replace_args **));
 int __ham_newpgno_log
     __P((DB_LOG *, DB_TXN *, DB_LSN *, u_int32_t,
-    u_int32_t, u_int32_t, db_pgno_t, db_pgno_t,
-    u_int32_t, db_pgno_t, u_int32_t, DB_LSN *,
+    u_int32_t, u_int32_t, edb_pgno_t, edb_pgno_t,
+    u_int32_t, edb_pgno_t, u_int32_t, DB_LSN *,
     DB_LSN *));
 int __ham_newpgno_print
    __P((DB_LOG *, DBT *, DB_LSN *, int, void *));
 int __ham_newpgno_read __P((void *, __ham_newpgno_args **));
 int __ham_ovfl_log
     __P((DB_LOG *, DB_TXN *, DB_LSN *, u_int32_t,
-    u_int32_t, db_pgno_t, u_int32_t, db_pgno_t,
+    u_int32_t, edb_pgno_t, u_int32_t, edb_pgno_t,
     u_int32_t, DB_LSN *));
 int __ham_ovfl_print
    __P((DB_LOG *, DBT *, DB_LSN *, int, void *));
 int __ham_ovfl_read __P((void *, __ham_ovfl_args **));
 int __ham_copypage_log
     __P((DB_LOG *, DB_TXN *, DB_LSN *, u_int32_t,
-    u_int32_t, db_pgno_t, DB_LSN *, db_pgno_t,
-    DB_LSN *, db_pgno_t, DB_LSN *, const DBT *));
+    u_int32_t, edb_pgno_t, DB_LSN *, edb_pgno_t,
+    DB_LSN *, edb_pgno_t, DB_LSN *, const DBT *));
 int __ham_copypage_print
    __P((DB_LOG *, DBT *, DB_LSN *, int, void *));
 int __ham_copypage_read __P((void *, __ham_copypage_args **));
 int __ham_init_print __P((DB_ENV *));
 int __ham_init_recover __P((DB_ENV *));
-int __ham_pgin __P((db_pgno_t, void *, DBT *));
-int __ham_pgout __P((db_pgno_t, void *, DBT *));
+int __ham_pgin __P((edb_pgno_t, void *, DBT *));
+int __ham_pgout __P((edb_pgno_t, void *, DBT *));
 int __ham_mswap __P((void *));
 int __ham_add_dup __P((DBC *, DBT *, u_int32_t));
-void __ham_move_offpage __P((DBC *, PAGE *, u_int32_t, db_pgno_t));
+void __ham_move_offpage __P((DBC *, PAGE *, u_int32_t, edb_pgno_t));
 void __ham_dsearch __P((DBC *, DBT *, u_int32_t *, int *));
 u_int32_t __ham_func2 __P((const void *, u_int32_t));
 u_int32_t __ham_func3 __P((const void *, u_int32_t));
 u_int32_t __ham_func4 __P((const void *, u_int32_t));
 u_int32_t __ham_func5 __P((const void *, u_int32_t));
-int __ham_item __P((DBC *, db_lockmode_t));
+int __ham_item __P((DBC *, edb_lockmode_t));
 int __ham_item_reset __P((DBC *));
 void __ham_item_init __P((HASH_CURSOR *));
 int __ham_item_done __P((DBC *, int));
-int __ham_item_last __P((DBC *, db_lockmode_t));
-int __ham_item_first __P((DBC *, db_lockmode_t));
-int __ham_item_prev __P((DBC *, db_lockmode_t));
-int __ham_item_next __P((DBC *, db_lockmode_t));
+int __ham_item_last __P((DBC *, edb_lockmode_t));
+int __ham_item_first __P((DBC *, edb_lockmode_t));
+int __ham_item_prev __P((DBC *, edb_lockmode_t));
+int __ham_item_next __P((DBC *, edb_lockmode_t));
 void __ham_putitem __P((PAGE *p, const DBT *, int));
 void __ham_reputpair
    __P((PAGE *p, u_int32_t, u_int32_t, const DBT *, const DBT *));
@@ -100,15 +100,15 @@ int __ham_new_page __P((DB *, u_int32_t, u_int32_t, PAGE **));
 int __ham_del_page __P((DBC *, PAGE *));
 int __ham_put_page __P((DB *, PAGE *, int32_t));
 int __ham_dirty_page __P((DB *, PAGE *));
-int __ham_get_page __P((DB *, db_pgno_t, PAGE **));
+int __ham_get_page __P((DB *, edb_pgno_t, PAGE **));
 int __ham_overflow_page
     __P((DBC *, u_int32_t, PAGE **));
 #ifdef DEBUG
-db_pgno_t __bucket_to_page __P((HASH_CURSOR *, db_pgno_t));
+edb_pgno_t __bucket_to_page __P((HASH_CURSOR *, edb_pgno_t));
 #endif
 void __ham_init_ovflpages __P((DBC *));
-int __ham_get_cpage __P((DBC *, db_lockmode_t));
-int __ham_next_cpage __P((DBC *, db_pgno_t, int, u_int32_t));
+int __ham_get_cpage __P((DBC *, edb_lockmode_t));
+int __ham_next_cpage __P((DBC *, edb_pgno_t, int, u_int32_t));
 void __ham_dpair __P((DB *, PAGE *, u_int32_t));
 int __ham_insdel_recover
     __P((DB_LOG *, DBT *, DB_LSN *, int, void *));

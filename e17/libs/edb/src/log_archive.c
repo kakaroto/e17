@@ -20,8 +20,8 @@ static const char sccsid[] = "@(#)log_archive.c	10.44 (Sleepycat) 10/9/98";
 #include <unistd.h>
 #endif
 
-#include "db_int.h"
-#include "db_dispatch.h"
+#include "edb_int.h"
+#include "edb_dispatch.h"
 #include "shqueue.h"
 #include "log.h"
 #include "common_ext.h"
@@ -34,14 +34,14 @@ static int __usermem __P((char ***, void *(*)(size_t)));
 
 /*
  * log_archive --
- *	Supporting function for db_archive(1).
+ *	Supporting function for edb_archive(1).
  */
 int
-log_archive(dblp, listp, flags, db_malloc)
-	DB_LOG *dblp;
+log_archive(edblp, listp, flags, edb_malloc)
+	DB_LOG *edblp;
 	char ***listp;
 	u_int32_t flags;
-	void *(*db_malloc) __P((size_t));
+	void *(*edb_malloc) __P((size_t));
 {
 	DBT rec;
 	DB_LSN stable_lsn;
@@ -52,15 +52,15 @@ log_archive(dblp, listp, flags, db_malloc)
 	name = NULL;
 	COMPQUIET(fnum, 0);
 
-	LOG_PANIC_CHECK(dblp);
+	LOG_PANIC_CHECK(edblp);
 
 #define	OKFLAGS	(DB_ARCH_ABS | DB_ARCH_DATA | DB_ARCH_LOG)
 	if (flags != 0) {
 		if ((ret =
-		    __db_fchk(dblp->dbenv, "log_archive", flags, OKFLAGS)) != 0)
+		    __edb_fchk(edblp->edbenv, "log_archive", flags, OKFLAGS)) != 0)
 			return (ret);
 		if ((ret =
-		    __db_fcchk(dblp->dbenv,
+		    __edb_fcchk(edblp->edbenv,
 		        "log_archive", flags, DB_ARCH_DATA, DB_ARCH_LOG)) != 0)
 			return (ret);
 	}
@@ -79,19 +79,19 @@ log_archive(dblp, listp, flags, db_malloc)
 
 	switch (LF_ISSET(~DB_ARCH_ABS)) {
 	case DB_ARCH_DATA:
-		return (__build_data(dblp, pref, listp, db_malloc));
+		return (__build_data(edblp, pref, listp, edb_malloc));
 	case DB_ARCH_LOG:
 		memset(&rec, 0, sizeof(rec));
-		if (F_ISSET(dblp, DB_AM_THREAD))
+		if (F_ISSET(edblp, DB_AM_THREAD))
 			F_SET(&rec, DB_DBT_MALLOC);
-		if ((ret = log_get(dblp, &stable_lsn, &rec, DB_LAST)) != 0)
+		if ((ret = log_get(edblp, &stable_lsn, &rec, DB_LAST)) != 0)
 			return (ret);
-		if (F_ISSET(dblp, DB_AM_THREAD))
+		if (F_ISSET(edblp, DB_AM_THREAD))
 			__os_free(rec.data, rec.size);
 		fnum = stable_lsn.file;
 		break;
 	case 0:
-		if ((ret = __log_findckp(dblp, &stable_lsn)) != 0) {
+		if ((ret = __log_findckp(edblp, &stable_lsn)) != 0) {
 			/*
 			 * A return of DB_NOTFOUND means that we didn't find
 			 * any records in the log (so we are not going to be
@@ -116,7 +116,7 @@ log_archive(dblp, listp, flags, db_malloc)
 
 	/* Build an array of the file names. */
 	for (n = 0; fnum > 0; --fnum) {
-		if ((ret = __log_name(dblp, fnum, &name, NULL, 0)) != 0)
+		if ((ret = __log_name(edblp, fnum, &name, NULL, 0)) != 0)
 			goto err;
 		if (__os_exists(name, NULL) != 0) {
 			__os_freestr(name);
@@ -135,7 +135,7 @@ log_archive(dblp, listp, flags, db_malloc)
 			if ((ret = __absname(pref, name, &array[n])) != 0)
 				goto err;
 			__os_freestr(name);
-		} else if ((p = __db_rpath(name)) != NULL) {
+		} else if ((p = __edb_rpath(name)) != NULL) {
 			if ((ret = __os_strdup(p + 1, &array[n])) != 0)
 				goto err;
 			__os_freestr(name);
@@ -157,7 +157,7 @@ log_archive(dblp, listp, flags, db_malloc)
 	qsort(array, (size_t)n, sizeof(char *), __cmpfunc);
 
 	/* Rework the memory. */
-	if ((ret = __usermem(&array, db_malloc)) != 0)
+	if ((ret = __usermem(&array, edb_malloc)) != 0)
 		goto err;
 
 	*listp = array;
@@ -178,10 +178,10 @@ err:	if (array != NULL) {
  *	Build a list of datafiles for return.
  */
 static int
-__build_data(dblp, pref, listp, db_malloc)
-	DB_LOG *dblp;
+__build_data(edblp, pref, listp, edb_malloc)
+	DB_LOG *edblp;
 	char *pref, ***listp;
-	void *(*db_malloc) __P((size_t));
+	void *(*edb_malloc) __P((size_t));
 {
 	DBT rec;
 	DB_LSN lsn;
@@ -197,19 +197,19 @@ __build_data(dblp, pref, listp, db_malloc)
 	array[0] = NULL;
 
 	memset(&rec, 0, sizeof(rec));
-	if (F_ISSET(dblp, DB_AM_THREAD))
+	if (F_ISSET(edblp, DB_AM_THREAD))
 		F_SET(&rec, DB_DBT_MALLOC);
-	for (n = 0, ret = log_get(dblp, &lsn, &rec, DB_FIRST);
-	    ret == 0; ret = log_get(dblp, &lsn, &rec, DB_NEXT)) {
+	for (n = 0, ret = log_get(edblp, &lsn, &rec, DB_FIRST);
+	    ret == 0; ret = log_get(edblp, &lsn, &rec, DB_NEXT)) {
 		if (rec.size < sizeof(rectype)) {
 			ret = EINVAL;
-			__db_err(dblp->dbenv, "log_archive: bad log record");
+			__edb_err(edblp->edbenv, "log_archive: bad log record");
 			goto lg_free;
 		}
 
 		memcpy(&rectype, rec.data, sizeof(rectype));
 		if (rectype != DB_log_register) {
-			if (F_ISSET(dblp, DB_AM_THREAD)) {
+			if (F_ISSET(edblp, DB_AM_THREAD)) {
 				__os_free(rec.data, rec.size);
 				rec.data = NULL;
 			}
@@ -217,7 +217,7 @@ __build_data(dblp, pref, listp, db_malloc)
 		}
 		if ((ret = __log_register_read(rec.data, &argp)) != 0) {
 			ret = EINVAL;
-			__db_err(dblp->dbenv,
+			__edb_err(edblp->edbenv,
 			    "log_archive: unable to read log record");
 			goto lg_free;
 		}
@@ -238,7 +238,7 @@ lg_free:		if (F_ISSET(&rec, DB_DBT_MALLOC) && rec.data != NULL)
 		array[++n] = NULL;
 		__os_free(argp, 0);
 
-		if (F_ISSET(dblp, DB_AM_THREAD)) {
+		if (F_ISSET(edblp, DB_AM_THREAD)) {
 			__os_free(rec.data, rec.size);
 			rec.data = NULL;
 		}
@@ -275,7 +275,7 @@ lg_free:		if (F_ISSET(&rec, DB_DBT_MALLOC) && rec.data != NULL)
 		}
 
 		/* Get the real name. */
-		if ((ret = __db_appname(dblp->dbenv,
+		if ((ret = __edb_appname(edblp->edbenv,
 		    DB_APP_DATA, NULL, array[last], 0, NULL, &real_name)) != 0)
 			goto err2;
 
@@ -295,7 +295,7 @@ lg_free:		if (F_ISSET(&rec, DB_DBT_MALLOC) && rec.data != NULL)
 			__os_freestr(real_name);
 			if (ret != 0)
 				goto err2;
-		} else if ((p = __db_rpath(real_name)) != NULL) {
+		} else if ((p = __edb_rpath(real_name)) != NULL) {
 			ret = __os_strdup(p + 1, &array[last]);
 			__os_freestr(real_name);
 			if (ret != 0)
@@ -309,7 +309,7 @@ lg_free:		if (F_ISSET(&rec, DB_DBT_MALLOC) && rec.data != NULL)
 	array[last] = NULL;
 
 	/* Rework the memory. */
-	if ((ret = __usermem(&array, db_malloc)) != 0)
+	if ((ret = __usermem(&array, edb_malloc)) != 0)
 		goto err1;
 
 	*listp = array;
@@ -371,9 +371,9 @@ __absname(pref, name, newnamep)
  *	If the user has their own malloc routine, use it.
  */
 static int
-__usermem(listp, db_malloc)
+__usermem(listp, edb_malloc)
 	char ***listp;
-	void *(*db_malloc) __P((size_t));
+	void *(*edb_malloc) __P((size_t));
 {
 	size_t len;
 	int ret;
@@ -385,7 +385,7 @@ __usermem(listp, db_malloc)
 	len += sizeof(char *);
 
 	/* Allocate it and set up the pointers. */
-	if ((ret = __os_malloc(len, db_malloc, &array)) != 0)
+	if ((ret = __os_malloc(len, edb_malloc, &array)) != 0)
 		return (ret);
 
 	strp = (char *)(array + (orig - *listp) + 1);

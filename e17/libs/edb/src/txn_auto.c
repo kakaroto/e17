@@ -1,4 +1,4 @@
-/* Do not edit: automatically built by dist/db_gen.sh. */
+/* Do not edit: automatically built by dist/edb_gen.sh. */
 #include "config.h"
 
 #ifndef NO_SYSTEM_INCLUDES
@@ -9,11 +9,11 @@
 #include <string.h>
 #endif
 
-#include "db_int.h"
-#include "db_page.h"
-#include "db_dispatch.h"
+#include "edb_int.h"
+#include "edb_page.h"
+#include "edb_dispatch.h"
 #include "txn.h"
-#include "db_am.h"
+#include "edb_am.h"
 /*
  * PUBLIC: int __txn_regop_log
  * PUBLIC:     __P((DB_LOG *, DB_TXN *, DB_LSN *, u_int32_t,
@@ -70,9 +70,9 @@ int __txn_regop_log(logp, txnid, ret_lsnp, flags,
  * PUBLIC:    __P((DB_LOG *, DBT *, DB_LSN *, int, void *));
  */
 int
-__txn_regop_print(notused1, dbtp, lsnp, notused2, notused3)
+__txn_regop_print(notused1, edbtp, lsnp, notused2, notused3)
 	DB_LOG *notused1;
-	DBT *dbtp;
+	DBT *edbtp;
 	DB_LSN *lsnp;
 	int notused2;
 	void *notused3;
@@ -88,7 +88,7 @@ __txn_regop_print(notused1, dbtp, lsnp, notused2, notused3)
 	notused2 = 0;
 	notused3 = NULL;
 
-	if ((ret = __txn_regop_read(dbtp->data, &argp)) != 0)
+	if ((ret = __txn_regop_read(edbtp->data, &argp)) != 0)
 		return (ret);
 	printf("[%lu][%lu]txn_regop: rec: %lu txnid %lx prevlsn [%lu][%lu]\n",
 	    (u_long)lsnp->file,
@@ -199,9 +199,9 @@ int __txn_ckp_log(logp, txnid, ret_lsnp, flags,
  * PUBLIC:    __P((DB_LOG *, DBT *, DB_LSN *, int, void *));
  */
 int
-__txn_ckp_print(notused1, dbtp, lsnp, notused2, notused3)
+__txn_ckp_print(notused1, edbtp, lsnp, notused2, notused3)
 	DB_LOG *notused1;
-	DBT *dbtp;
+	DBT *edbtp;
 	DB_LSN *lsnp;
 	int notused2;
 	void *notused3;
@@ -217,7 +217,7 @@ __txn_ckp_print(notused1, dbtp, lsnp, notused2, notused3)
 	notused2 = 0;
 	notused3 = NULL;
 
-	if ((ret = __txn_ckp_read(dbtp->data, &argp)) != 0)
+	if ((ret = __txn_ckp_read(edbtp->data, &argp)) != 0)
 		return (ret);
 	printf("[%lu][%lu]txn_ckp: rec: %lu txnid %lx prevlsn [%lu][%lu]\n",
 	    (u_long)lsnp->file,
@@ -356,9 +356,9 @@ int __txn_xa_regop_log(logp, txnid, ret_lsnp, flags,
  * PUBLIC:    __P((DB_LOG *, DBT *, DB_LSN *, int, void *));
  */
 int
-__txn_xa_regop_print(notused1, dbtp, lsnp, notused2, notused3)
+__txn_xa_regop_print(notused1, edbtp, lsnp, notused2, notused3)
 	DB_LOG *notused1;
-	DBT *dbtp;
+	DBT *edbtp;
 	DB_LSN *lsnp;
 	int notused2;
 	void *notused3;
@@ -374,7 +374,7 @@ __txn_xa_regop_print(notused1, dbtp, lsnp, notused2, notused3)
 	notused2 = 0;
 	notused3 = NULL;
 
-	if ((ret = __txn_xa_regop_read(dbtp->data, &argp)) != 0)
+	if ((ret = __txn_xa_regop_read(edbtp->data, &argp)) != 0)
 		return (ret);
 	printf("[%lu][%lu]txn_xa_regop: rec: %lu txnid %lx prevlsn [%lu][%lu]\n",
 	    (u_long)lsnp->file,
@@ -505,9 +505,9 @@ int __txn_child_log(logp, txnid, ret_lsnp, flags,
  * PUBLIC:    __P((DB_LOG *, DBT *, DB_LSN *, int, void *));
  */
 int
-__txn_child_print(notused1, dbtp, lsnp, notused2, notused3)
+__txn_child_print(notused1, edbtp, lsnp, notused2, notused3)
 	DB_LOG *notused1;
-	DBT *dbtp;
+	DBT *edbtp;
 	DB_LSN *lsnp;
 	int notused2;
 	void *notused3;
@@ -523,7 +523,7 @@ __txn_child_print(notused1, dbtp, lsnp, notused2, notused3)
 	notused2 = 0;
 	notused3 = NULL;
 
-	if ((ret = __txn_child_read(dbtp->data, &argp)) != 0)
+	if ((ret = __txn_child_read(edbtp->data, &argp)) != 0)
 		return (ret);
 	printf("[%lu][%lu]txn_child: rec: %lu txnid %lx prevlsn [%lu][%lu]\n",
 	    (u_long)lsnp->file,
@@ -575,21 +575,21 @@ __txn_child_read(recbuf, argpp)
  * PUBLIC: int __txn_init_print __P((DB_ENV *));
  */
 int
-__txn_init_print(dbenv)
-	DB_ENV *dbenv;
+__txn_init_print(edbenv)
+	DB_ENV *edbenv;
 {
 	int ret;
 
-	if ((ret = __db_add_recovery(dbenv,
+	if ((ret = __edb_add_recovery(edbenv,
 	    __txn_regop_print, DB_txn_regop)) != 0)
 		return (ret);
-	if ((ret = __db_add_recovery(dbenv,
+	if ((ret = __edb_add_recovery(edbenv,
 	    __txn_ckp_print, DB_txn_ckp)) != 0)
 		return (ret);
-	if ((ret = __db_add_recovery(dbenv,
+	if ((ret = __edb_add_recovery(edbenv,
 	    __txn_xa_regop_print, DB_txn_xa_regop)) != 0)
 		return (ret);
-	if ((ret = __db_add_recovery(dbenv,
+	if ((ret = __edb_add_recovery(edbenv,
 	    __txn_child_print, DB_txn_child)) != 0)
 		return (ret);
 	return (0);
@@ -599,21 +599,21 @@ __txn_init_print(dbenv)
  * PUBLIC: int __txn_init_recover __P((DB_ENV *));
  */
 int
-__txn_init_recover(dbenv)
-	DB_ENV *dbenv;
+__txn_init_recover(edbenv)
+	DB_ENV *edbenv;
 {
 	int ret;
 
-	if ((ret = __db_add_recovery(dbenv,
+	if ((ret = __edb_add_recovery(edbenv,
 	    __txn_regop_recover, DB_txn_regop)) != 0)
 		return (ret);
-	if ((ret = __db_add_recovery(dbenv,
+	if ((ret = __edb_add_recovery(edbenv,
 	    __txn_ckp_recover, DB_txn_ckp)) != 0)
 		return (ret);
-	if ((ret = __db_add_recovery(dbenv,
+	if ((ret = __edb_add_recovery(edbenv,
 	    __txn_xa_regop_recover, DB_txn_xa_regop)) != 0)
 		return (ret);
-	if ((ret = __db_add_recovery(dbenv,
+	if ((ret = __edb_add_recovery(edbenv,
 	    __txn_child_recover, DB_txn_child)) != 0)
 		return (ret);
 	return (0);

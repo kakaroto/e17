@@ -2,12 +2,12 @@
 #ifndef _lock_ext_h_
 #define _lock_ext_h_
 int __lock_is_locked
-   __P((DB_LOCKTAB *, u_int32_t, DBT *, db_lockmode_t));
-void __lock_printlock __P((DB_LOCKTAB *, struct __db_lock *, int));
+   __P((DB_LOCKTAB *, u_int32_t, DBT *, edb_lockmode_t));
+void __lock_printlock __P((DB_LOCKTAB *, struct __edb_lock *, int));
 int __lock_getobj  __P((DB_LOCKTAB *,
     u_int32_t, const DBT *, u_int32_t type, DB_LOCKOBJ **));
 int __lock_downgrade __P((DB_LOCKTAB *,
-    DB_LOCK, db_lockmode_t, u_int32_t));
+    DB_LOCK, edb_lockmode_t, u_int32_t));
 void __lock_panic __P((DB_ENV *));
 int __lock_validate_region __P((DB_LOCKTAB *));
 int __lock_grow_region __P((DB_LOCKTAB *, int, size_t));

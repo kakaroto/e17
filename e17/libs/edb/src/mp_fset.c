@@ -16,9 +16,9 @@ static const char sccsid[] = "@(#)mp_fset.c	10.16 (Sleepycat) 9/27/98";
 #include <errno.h>
 #endif
 
-#include "db_int.h"
+#include "edb_int.h"
 #include "shqueue.h"
-#include "db_shash.h"
+#include "edb_shash.h"
 #include "mp.h"
 #include "common_ext.h"
 
@@ -27,43 +27,43 @@ static const char sccsid[] = "@(#)mp_fset.c	10.16 (Sleepycat) 9/27/98";
  *	Mpool page set-flag routine.
  */
 int
-memp_fset(dbmfp, pgaddr, flags)
-	DB_MPOOLFILE *dbmfp;
+memp_fset(edbmfp, pgaddr, flags)
+	DB_MPOOLFILE *edbmfp;
 	void *pgaddr;
 	u_int32_t flags;
 {
 	BH *bhp;
-	DB_MPOOL *dbmp;
+	DB_MPOOL *edbmp;
 	MPOOL *mp;
 	int ret;
 
-	dbmp = dbmfp->dbmp;
-	mp = dbmp->mp;
+	edbmp = edbmfp->edbmp;
+	mp = edbmp->mp;
 
-	MP_PANIC_CHECK(dbmp);
+	MP_PANIC_CHECK(edbmp);
 
 	/* Validate arguments. */
 	if (flags == 0)
-		return (__db_ferr(dbmp->dbenv, "memp_fset", 1));
+		return (__edb_ferr(edbmp->edbenv, "memp_fset", 1));
 
-	if ((ret = __db_fchk(dbmp->dbenv, "memp_fset", flags,
+	if ((ret = __edb_fchk(edbmp->edbenv, "memp_fset", flags,
 	    DB_MPOOL_DIRTY | DB_MPOOL_CLEAN | DB_MPOOL_DISCARD)) != 0)
 		return (ret);
-	if ((ret = __db_fcchk(dbmp->dbenv, "memp_fset",
+	if ((ret = __edb_fcchk(edbmp->edbenv, "memp_fset",
 	    flags, DB_MPOOL_CLEAN, DB_MPOOL_DIRTY)) != 0)
 		return (ret);
 
-	if (LF_ISSET(DB_MPOOL_DIRTY) && F_ISSET(dbmfp, MP_READONLY)) {
-		__db_err(dbmp->dbenv,
+	if (LF_ISSET(DB_MPOOL_DIRTY) && F_ISSET(edbmfp, MP_READONLY)) {
+		__edb_err(edbmp->edbenv,
 		    "%s: dirty flag set for readonly file page",
-		    __memp_fn(dbmfp));
+		    __memp_fn(edbmfp));
 		return (EACCES);
 	}
 
 	/* Convert the page address to a buffer header. */
 	bhp = (BH *)((u_int8_t *)pgaddr - SSZA(BH, buf));
 
-	LOCKREGION(dbmp);
+	LOCKREGION(edbmp);
 
 	if (LF_ISSET(DB_MPOOL_CLEAN) && F_ISSET(bhp, BH_DIRTY)) {
 		++mp->stat.st_page_clean;
@@ -78,6 +78,6 @@ memp_fset(dbmfp, pgaddr, flags)
 	if (LF_ISSET(DB_MPOOL_DISCARD))
 		F_SET(bhp, BH_DISCARD);
 
-	UNLOCKREGION(dbmp);
+	UNLOCKREGION(edbmp);
 	return (0);
 }

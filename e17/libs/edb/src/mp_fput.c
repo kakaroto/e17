@@ -16,9 +16,9 @@ static const char sccsid[] = "@(#)mp_fput.c	10.24 (Sleepycat) 9/27/98";
 #include <errno.h>
 #endif
 
-#include "db_int.h"
+#include "edb_int.h"
 #include "shqueue.h"
-#include "db_shash.h"
+#include "edb_shash.h"
 #include "mp.h"
 #include "common_ext.h"
 
@@ -27,47 +27,47 @@ static const char sccsid[] = "@(#)mp_fput.c	10.24 (Sleepycat) 9/27/98";
  *	Mpool file put function.
  */
 int
-memp_fput(dbmfp, pgaddr, flags)
-	DB_MPOOLFILE *dbmfp;
+memp_fput(edbmfp, pgaddr, flags)
+	DB_MPOOLFILE *edbmfp;
 	void *pgaddr;
 	u_int32_t flags;
 {
 	BH *bhp;
-	DB_MPOOL *dbmp;
+	DB_MPOOL *edbmp;
 	MPOOL *mp;
 	int wrote, ret;
 
-	dbmp = dbmfp->dbmp;
-	mp = dbmp->mp;
+	edbmp = edbmfp->edbmp;
+	mp = edbmp->mp;
 
-	MP_PANIC_CHECK(dbmp);
+	MP_PANIC_CHECK(edbmp);
 
 	/* Validate arguments. */
 	if (flags) {
-		if ((ret = __db_fchk(dbmp->dbenv, "memp_fput", flags,
+		if ((ret = __edb_fchk(edbmp->edbenv, "memp_fput", flags,
 		    DB_MPOOL_CLEAN | DB_MPOOL_DIRTY | DB_MPOOL_DISCARD)) != 0)
 			return (ret);
-		if ((ret = __db_fcchk(dbmp->dbenv, "memp_fput",
+		if ((ret = __edb_fcchk(edbmp->edbenv, "memp_fput",
 		    flags, DB_MPOOL_CLEAN, DB_MPOOL_DIRTY)) != 0)
 			return (ret);
 
-		if (LF_ISSET(DB_MPOOL_DIRTY) && F_ISSET(dbmfp, MP_READONLY)) {
-			__db_err(dbmp->dbenv,
+		if (LF_ISSET(DB_MPOOL_DIRTY) && F_ISSET(edbmfp, MP_READONLY)) {
+			__edb_err(edbmp->edbenv,
 			    "%s: dirty flag set for readonly file page",
-			    __memp_fn(dbmfp));
+			    __memp_fn(edbmfp));
 			return (EACCES);
 		}
 	}
 
-	LOCKREGION(dbmp);
+	LOCKREGION(edbmp);
 
 	/* Decrement the pinned reference count. */
-	if (dbmfp->pinref == 0)
-		__db_err(dbmp->dbenv,
+	if (edbmfp->pinref == 0)
+		__edb_err(edbmp->edbenv,
 		    "%s: put: more blocks returned than retrieved",
-		    __memp_fn(dbmfp));
+		    __memp_fn(edbmfp));
 	else
-		--dbmfp->pinref;
+		--edbmfp->pinref;
 
 	/*
 	 * If we're mapping the file, there's nothing to do.  Because we can
@@ -75,9 +75,9 @@ memp_fput(dbmfp, pgaddr, flags)
 	 * to see if the address we gave the application was part of the map
 	 * region.
 	 */
-	if (dbmfp->addr != NULL && pgaddr >= dbmfp->addr &&
-	    (u_int8_t *)pgaddr <= (u_int8_t *)dbmfp->addr + dbmfp->len) {
-		UNLOCKREGION(dbmp);
+	if (edbmfp->addr != NULL && pgaddr >= edbmfp->addr &&
+	    (u_int8_t *)pgaddr <= (u_int8_t *)edbmfp->addr + edbmfp->len) {
+		UNLOCKREGION(edbmp);
 		return (0);
 	}
 
@@ -103,9 +103,9 @@ memp_fput(dbmfp, pgaddr, flags)
 	 * application returns a page twice.
 	 */
 	if (bhp->ref == 0) {
-		__db_err(dbmp->dbenv, "%s: page %lu: unpinned page returned",
-		    __memp_fn(dbmfp), (u_long)bhp->pgno);
-		UNLOCKREGION(dbmp);
+		__edb_err(edbmp->edbenv, "%s: page %lu: unpinned page returned",
+		    __memp_fn(edbmfp), (u_long)bhp->pgno);
+		UNLOCKREGION(edbmp);
 		return (EINVAL);
 	}
 
@@ -115,7 +115,7 @@ memp_fput(dbmfp, pgaddr, flags)
 	 * chain.  The rest gets done at last reference close.
 	 */
 	if (--bhp->ref > 0) {
-		UNLOCKREGION(dbmp);
+		UNLOCKREGION(edbmp);
 		return (0);
 	}
 
@@ -136,16 +136,16 @@ memp_fput(dbmfp, pgaddr, flags)
 	 */
 	if (F_ISSET(bhp, BH_WRITE))
 		if (F_ISSET(bhp, BH_DIRTY)) {
-			if (__memp_bhwrite(dbmp,
-			    dbmfp->mfp, bhp, NULL, &wrote) != 0 || !wrote)
+			if (__memp_bhwrite(edbmp,
+			    edbmfp->mfp, bhp, NULL, &wrote) != 0 || !wrote)
 				F_SET(mp, MP_LSN_RETRY);
 		} else {
 			F_CLR(bhp, BH_WRITE);
 
-			--dbmfp->mfp->lsn_cnt;
+			--edbmfp->mfp->lsn_cnt;
 			--mp->lsn_cnt;
 		}
 
-	UNLOCKREGION(dbmp);
+	UNLOCKREGION(edbmp);
 	return (0);
 }

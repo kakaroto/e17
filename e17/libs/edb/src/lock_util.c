@@ -17,10 +17,10 @@ static const char sccsid[] = "@(#)lock_util.c	10.10 (Sleepycat) 9/20/98";
 #include <string.h>
 #endif
 
-#include "db_int.h"
+#include "edb_int.h"
 #include "shqueue.h"
-#include "db_page.h"
-#include "db_shash.h"
+#include "edb_page.h"
+#include "edb_shash.h"
 #include "hash.h"
 #include "lock.h"
 
@@ -35,8 +35,8 @@ static const char sccsid[] = "@(#)lock_util.c	10.10 (Sleepycat) 9/20/98";
  * PUBLIC: int __lock_cmp __P((const DBT *, DB_LOCKOBJ *));
  */
 int
-__lock_cmp(dbt, lock_obj)
-	const DBT *dbt;
+__lock_cmp(edbt, lock_obj)
+	const DBT *edbt;
 	DB_LOCKOBJ *lock_obj;
 {
 	void *obj_data;
@@ -45,8 +45,8 @@ __lock_cmp(dbt, lock_obj)
 		return (0);
 
 	obj_data = SH_DBT_PTR(&lock_obj->lockobj);
-	return (dbt->size == lock_obj->lockobj.size &&
-		memcmp(dbt->data, obj_data, dbt->size) == 0);
+	return (edbt->size == lock_obj->lockobj.size &&
+		memcmp(edbt->data, obj_data, edbt->size) == 0);
 }
 
 /*
@@ -104,13 +104,13 @@ __lock_locker_cmp(locker, lock_obj)
  * PUBLIC: u_int32_t __lock_ohash __P((const DBT *));
  */
 u_int32_t
-__lock_ohash(dbt)
-	const DBT *dbt;
+__lock_ohash(edbt)
+	const DBT *edbt;
 {
-	if (dbt->size == sizeof(DB_LOCK_ILOCK))
-		FAST_HASH(dbt->data);
+	if (edbt->size == sizeof(DB_LOCK_ILOCK))
+		FAST_HASH(edbt->data);
 
-	return (__ham_func5(dbt->data, dbt->size));
+	return (__ham_func5(edbt->data, edbt->size));
 }
 
 /*

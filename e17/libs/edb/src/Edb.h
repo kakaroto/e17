@@ -63,55 +63,55 @@ char              **e_db_dump_multi_field(char *file, char *file2, int *num_ret)
 char              **e_db_dump_key_list(char *file, int *num_ret);
 
 /* conveience macros to make setting and getting values form a db easy */ 
-#define E_DB_INT_SET(db, key, val) \
-{ E_DB_File *__db; \
-__db = e_db_open(db); \
-if (__db) { \
-e_db_int_set(__db, key, val); \
-e_db_close(__db); \
+#define E_DB_INT_SET(edb, key, val) \
+{ E_DB_File *__edb; \
+__edb = e_db_open(edb); \
+if (__edb) { \
+e_db_int_set(__edb, key, val); \
+e_db_close(__edb); \
 }}
-#define E_DB_STR_SET(db, key, str) \
-{ E_DB_File *__db; \
-__db = e_db_open(db); \
-if (__db) { \
-e_db_str_set(__db, key, str); \
-e_db_close(__db); \
+#define E_DB_STR_SET(edb, key, str) \
+{ E_DB_File *__edb; \
+__edb = e_db_open(edb); \
+if (__edb) { \
+e_db_str_set(__edb, key, str); \
+e_db_close(__edb); \
 }}
-#define E_DB_FLOAT_SET(db, key, flt) \
-{ E_DB_File *__db; \
-__db = e_db_open(db); \
-if (__db) { \
-e_db_float_set(__db, key, flt); \
-e_db_close(__db); \
+#define E_DB_FLOAT_SET(edb, key, flt) \
+{ E_DB_File *__edb; \
+__edb = e_db_open(edb); \
+if (__edb) { \
+e_db_float_set(__edb, key, flt); \
+e_db_close(__edb); \
 }}
-#define E_DB_INT_GET(db, key, val, ok) \
-{ E_DB_File *__db; \
-__db = e_db_open_read(db); \
-if (__db) { \
-ok = e_db_int_get(__db, key, &val); \
-e_db_close(__db); \
+#define E_DB_INT_GET(edb, key, val, ok) \
+{ E_DB_File *__edb; \
+__edb = e_db_open_read(edb); \
+if (__edb) { \
+ok = e_db_int_get(__edb, key, &val); \
+e_db_close(__edb); \
 }}
-#define E_DB_STR_GET(db, key, str, ok) \
-{ E_DB_File *__db; \
-__db = e_db_open_read(db); \
-if (__db) { \
-str = e_db_str_get(__db, key); \
+#define E_DB_STR_GET(edb, key, str, ok) \
+{ E_DB_File *__edb; \
+__edb = e_db_open_read(edb); \
+if (__edb) { \
+str = e_db_str_get(__edb, key); \
 ok = (int)str; \
-e_db_close(__db); \
+e_db_close(__edb); \
 }}
-#define E_DB_FLOAT_GET(db, key, flt, ok) \
-{ E_DB_File *__db; \
-__db = e_db_open_read(db); \
-if (__db) { \
-ok = e_db_float_get(__db, key, &flt); \
-e_db_close(__db); \
+#define E_DB_FLOAT_GET(edb, key, flt, ok) \
+{ E_DB_File *__edb; \
+__edb = e_db_open_read(edb); \
+if (__edb) { \
+ok = e_db_float_get(__edb, key, &flt); \
+e_db_close(__edb); \
 }}
-#define E_DB_DEL(db, key) \
-{ E_DB_File *__db; \
-__db = e_db_open(db); \
-if (__db) { \
-e_db_data_del(__db, key); \
-e_db_close(__db); \
+#define E_DB_DEL(edb, key) \
+{ E_DB_File *__edb; \
+__edb = e_db_open(edb); \
+if (__edb) { \
+e_db_data_del(__edb, key); \
+e_db_close(__edb); \
 }}
 #define E_DB_FLUSH e_db_runtime_flush();
 

@@ -18,8 +18,8 @@ static const char sccsid[] = "@(#)bt_stat.c	10.27 (Sleepycat) 11/25/98";
 #include <string.h>
 #endif
 
-#include "db_int.h"
-#include "db_page.h"
+#include "edb_int.h"
+#include "edb_page.h"
 #include "btree.h"
 
 /*
@@ -29,62 +29,62 @@ static const char sccsid[] = "@(#)bt_stat.c	10.27 (Sleepycat) 11/25/98";
  * PUBLIC: int __bam_stat __P((DB *, void *, void *(*)(size_t), u_int32_t));
  */
 int
-__bam_stat(dbp, spp, db_malloc, flags)
-	DB *dbp;
+__bam_stat(edbp, spp, edb_malloc, flags)
+	DB *edbp;
 	void *spp;
-	void *(*db_malloc) __P((size_t));
+	void *(*edb_malloc) __P((size_t));
 	u_int32_t flags;
 {
 	BTMETA *meta;
 	BTREE *t;
-	DBC *dbc;
+	DBC *edbc;
 	DB_BTREE_STAT *sp;
 	DB_LOCK lock;
 	PAGE *h;
-	db_pgno_t lastpgno, pgno;
+	edb_pgno_t lastpgno, pgno;
 	int ret, t_ret;
 
-	DB_PANIC_CHECK(dbp);
+	DB_PANIC_CHECK(edbp);
 
 	/* Check for invalid flags. */
-	if ((ret = __db_statchk(dbp, flags)) != 0)
+	if ((ret = __edb_statchk(edbp, flags)) != 0)
 		return (ret);
 
-	if ((ret = dbp->cursor(dbp, NULL, &dbc, 0)) != 0)
+	if ((ret = edbp->cursor(edbp, NULL, &edbc, 0)) != 0)
 		return (ret);
 
-	DEBUG_LWRITE(dbc, NULL, "bam_stat", NULL, NULL, flags);
+	DEBUG_LWRITE(edbc, NULL, "bam_stat", NULL, NULL, flags);
 
-	t = dbp->internal;
+	t = edbp->internal;
 
 	if (spp == NULL)
 		return (0);
 
 	/* Allocate and clear the structure. */
-	if ((ret = __os_malloc(sizeof(*sp), db_malloc, &sp)) != 0)
+	if ((ret = __os_malloc(sizeof(*sp), edb_malloc, &sp)) != 0)
 		goto err;
 	memset(sp, 0, sizeof(*sp));
 
 	/* If the app just wants the record count, make it fast. */
 	if (flags == DB_RECORDCOUNT) {
 		pgno = PGNO_ROOT;
-		if ((ret = __bam_lget(dbc, 0, pgno, DB_LOCK_READ, &lock)) != 0)
+		if ((ret = __bam_lget(edbc, 0, pgno, DB_LOCK_READ, &lock)) != 0)
 			goto err;
-		if ((ret = memp_fget(dbp->mpf, &pgno, 0, (PAGE **)&h)) != 0)
+		if ((ret = memp_fget(edbp->mpf, &pgno, 0, (PAGE **)&h)) != 0)
 			goto err;
 
 		sp->bt_nrecs = RE_NREC(h);
 
-		(void)memp_fput(dbp->mpf, h, 0);
-		(void)__BT_LPUT(dbc, lock);
+		(void)memp_fput(edbp->mpf, h, 0);
+		(void)__BT_LPUT(edbc, lock);
 		goto done;
 	}
 
 	/* Get the meta-data page. */
 	pgno = PGNO_METADATA;
-	if ((ret = __bam_lget(dbc, 0, pgno, DB_LOCK_READ, &lock)) != 0)
+	if ((ret = __bam_lget(edbc, 0, pgno, DB_LOCK_READ, &lock)) != 0)
 		goto err;
-	if ((ret = memp_fget(dbp->mpf, &pgno, 0, (PAGE **)&meta)) != 0)
+	if ((ret = memp_fget(edbp->mpf, &pgno, 0, (PAGE **)&meta)) != 0)
 		goto err;
 
 	/* Translate the metadata flags. */
@@ -106,36 +106,36 @@ __bam_stat(dbp, spp, db_malloc, flags)
 	sp->bt_version = meta->version;
 
 	/* Get the page size from the DB. */
-	sp->bt_pagesize = dbp->pgsize;
+	sp->bt_pagesize = edbp->pgsize;
 
 	/* Walk the free list, counting pages. */
 	for (sp->bt_free = 0, pgno = meta->free; pgno != PGNO_INVALID;) {
 		++sp->bt_free;
 
-		if ((ret = memp_fget(dbp->mpf, &pgno, 0, &h)) != 0) {
-			(void)memp_fput(dbp->mpf, meta, 0);
-			(void)__BT_TLPUT(dbc, lock);
+		if ((ret = memp_fget(edbp->mpf, &pgno, 0, &h)) != 0) {
+			(void)memp_fput(edbp->mpf, meta, 0);
+			(void)__BT_TLPUT(edbc, lock);
 			goto err;
 		}
 		pgno = h->next_pgno;
-		(void)memp_fput(dbp->mpf, h, 0);
+		(void)memp_fput(edbp->mpf, h, 0);
 	}
 
 	/* Discard the meta-data page. */
-	(void)memp_fput(dbp->mpf, meta, 0);
-	(void)__BT_TLPUT(dbc, lock);
+	(void)memp_fput(edbp->mpf, meta, 0);
+	(void)__BT_TLPUT(edbc, lock);
 
 	/* Determine the last page of the database. */
-	if ((ret = memp_fget(dbp->mpf, &lastpgno, DB_MPOOL_LAST, &h)) != 0)
+	if ((ret = memp_fget(edbp->mpf, &lastpgno, DB_MPOOL_LAST, &h)) != 0)
 		goto err;
-	(void)memp_fput(dbp->mpf, h, 0);
+	(void)memp_fput(edbp->mpf, h, 0);
 
 	/* Get the root page. */
 	pgno = PGNO_ROOT;
-	if ((ret = __bam_lget(dbc, 0, PGNO_ROOT, DB_LOCK_READ, &lock)) != 0)
+	if ((ret = __bam_lget(edbc, 0, PGNO_ROOT, DB_LOCK_READ, &lock)) != 0)
 		goto err;
-	if ((ret = memp_fget(dbp->mpf, &pgno, 0, &h)) != 0) {
-		(void)__BT_LPUT(dbc, lock);
+	if ((ret = memp_fget(edbp->mpf, &pgno, 0, &h)) != 0) {
+		(void)__BT_LPUT(edbc, lock);
 		goto err;
 	}
 
@@ -171,20 +171,20 @@ __bam_stat(dbp, spp, db_malloc, flags)
 			/* XXX MARGO: sp->bt_over_pgfree; */
 			break;
 		default:
-			(void)memp_fput(dbp->mpf, h, 0);
-			(void)__BT_LPUT(dbc, lock);
-			return (__db_pgfmt(dbp, pgno));
+			(void)memp_fput(edbp->mpf, h, 0);
+			(void)__BT_LPUT(edbc, lock);
+			return (__edb_pgfmt(edbp, pgno));
 		}
 
-		(void)memp_fput(dbp->mpf, h, 0);
-		(void)__BT_LPUT(dbc, lock);
+		(void)memp_fput(edbp->mpf, h, 0);
+		(void)__BT_LPUT(edbc, lock);
 
 		if (++pgno > lastpgno)
 			break;
-		if (__bam_lget(dbc, 0, pgno, DB_LOCK_READ, &lock))
+		if (__bam_lget(edbc, 0, pgno, DB_LOCK_READ, &lock))
 			break;
-		if (memp_fget(dbp->mpf, &pgno, 0, &h) != 0) {
-			(void)__BT_LPUT(dbc, lock);
+		if (memp_fget(edbp->mpf, &pgno, 0, &h) != 0) {
+			(void)__BT_LPUT(edbc, lock);
 			break;
 		}
 	}
@@ -192,7 +192,7 @@ __bam_stat(dbp, spp, db_malloc, flags)
 done:	*(DB_BTREE_STAT **)spp = sp;
 	ret = 0;
 
-err:	if ((t_ret = dbc->c_close(dbc)) != 0 && ret == 0)
+err:	if ((t_ret = edbc->c_close(edbc)) != 0 && ret == 0)
 		ret = t_ret;
 	return (ret);
 }

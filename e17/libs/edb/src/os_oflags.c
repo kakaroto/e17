@@ -18,19 +18,19 @@ static const char sccsid[] = "@(#)os_oflags.c	10.6 (Sleepycat) 4/19/98";
 #include <fcntl.h>
 #endif
 
-#include "db_int.h"
+#include "edb_int.h"
 
 /*
- * __db_oflags --
+ * __edb_oflags --
  *	Convert open(2) flags to DB flags.
  *
- * PUBLIC: u_int32_t __db_oflags __P((int));
+ * PUBLIC: u_int32_t __edb_oflags __P((int));
  */
 u_int32_t
-__db_oflags(oflags)
+__edb_oflags(oflags)
 	int oflags;
 {
-	u_int32_t dbflags;
+	u_int32_t edbflags;
 
 	/*
 	 * XXX
@@ -38,24 +38,24 @@ __db_oflags(oflags)
 	 * science as most POSIX implementations don't have a flag value
 	 * for O_RDONLY, it's simply the lack of a write flag.
 	 */
-	dbflags = 0;
+	edbflags = 0;
 	if (oflags & O_CREAT)
-		dbflags |= DB_CREATE;
+		edbflags |= DB_CREATE;
 	if (!(oflags & (O_RDWR | O_WRONLY)) || oflags & O_RDONLY)
-		dbflags |= DB_RDONLY;
+		edbflags |= DB_RDONLY;
 	if (oflags & O_TRUNC)
-		dbflags |= DB_TRUNCATE;
-	return (dbflags);
+		edbflags |= DB_TRUNCATE;
+	return (edbflags);
 }
 
 /*
- * __db_omode --
+ * __edb_omode --
  *	Convert a permission string to the correct open(2) flags.
  *
- * PUBLIC: int __db_omode __P((const char *));
+ * PUBLIC: int __edb_omode __P((const char *));
  */
 int
-__db_omode(perm)
+__edb_omode(perm)
 	const char *perm;
 {
 	int mode;

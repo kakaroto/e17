@@ -48,29 +48,29 @@
 
 /* Cursor structure definitions. */
 typedef struct cursor_t {
-	DBC		*dbc;
+	DBC		*edbc;
 
 	/* Per-thread information */
 	DB_LOCK hlock;			/* Metadata page lock. */
 	HASHHDR *hdr;			/* Pointer to meta-data page. */
 	PAGE *split_buf;		/* Temporary buffer for splits. */
-	struct __db_h_stat stats;	/* Hash statistics. */
+	struct __edb_h_stat stats;	/* Hash statistics. */
 
 	/* Hash cursor information */
-	db_pgno_t	bucket;		/* Bucket we are traversing. */
-	db_pgno_t	lbucket;	/* Bucket for which we are locked. */
+	edb_pgno_t	bucket;		/* Bucket we are traversing. */
+	edb_pgno_t	lbucket;	/* Bucket for which we are locked. */
 	DB_LOCK		lock;		/* Lock held on the current bucket. */
 	PAGE		*pagep;		/* The current page. */
-	db_pgno_t	pgno;		/* Current page number. */
-	db_indx_t	bndx;		/* Index within the current page. */
+	edb_pgno_t	pgno;		/* Current page number. */
+	edb_indx_t	bndx;		/* Index within the current page. */
 	PAGE		*dpagep;	/* Duplicate page pointer. */
-	db_pgno_t	dpgno;		/* Duplicate page number. */
-	db_indx_t	dndx;		/* Index within a duplicate set. */
-	db_indx_t	dup_off;	/* Offset within a duplicate set. */
-	db_indx_t	dup_len;	/* Length of current duplicate. */
-	db_indx_t	dup_tlen;	/* Total length of duplicate entry. */
+	edb_pgno_t	dpgno;		/* Duplicate page number. */
+	edb_indx_t	dndx;		/* Index within a duplicate set. */
+	edb_indx_t	dup_off;	/* Offset within a duplicate set. */
+	edb_indx_t	dup_len;	/* Length of current duplicate. */
+	edb_indx_t	dup_tlen;	/* Total length of duplicate entry. */
 	u_int32_t	seek_size;	/* Number of bytes we need for add. */
-	db_pgno_t	seek_found_page;/* Page on which we can insert. */
+	edb_pgno_t	seek_found_page;/* Page on which we can insert. */
 
 #define	H_DELETED	0x0001		/* Cursor item is deleted. */
 #define	H_DUPONLY	0x0002		/* Dups only; do not change key. */
@@ -92,13 +92,13 @@ typedef struct cursor_t {
 
 #define	RESTORE_CURSOR(D, ORIG, COPY, RET) {				\
 	if ((RET) == 0) {						\
-		if ((ORIG)->dbc->txn == NULL &&				\
+		if ((ORIG)->edbc->txn == NULL &&				\
 		    (COPY)->lock != 0 && (ORIG)->lock != (COPY)->lock)	\
-			(void)lock_put((D)->dbenv->lk_info, (COPY)->lock); \
+			(void)lock_put((D)->edbenv->lk_info, (COPY)->lock); \
 	} else {							\
-		if ((ORIG)->dbc->txn == NULL &&				\
+		if ((ORIG)->edbc->txn == NULL &&				\
 		    (ORIG)->lock != 0 && (ORIG)->lock != (COPY)->lock)	\
-			(void)lock_put((D)->dbenv->lk_info, (ORIG)->lock); \
+			(void)lock_put((D)->edbenv->lk_info, (ORIG)->lock); \
 		*ORIG = *COPY;						\
 	}								\
 }
@@ -108,16 +108,16 @@ typedef struct cursor_t {
  */
 #define	GET_META(D, I, R) {						\
 	if (F_ISSET(D, DB_AM_LOCKING) &&				\
-	    !F_ISSET((I)->dbc, DBC_RECOVER)) {				\
-		(I)->dbc->lock.pgno = BUCKET_INVALID;			\
-		(R) = lock_get((D)->dbenv->lk_info, (I)->dbc->locker, 	\
-		    0, &(I)->dbc->lock_dbt, DB_LOCK_READ, &(I)->hlock);	\
+	    !F_ISSET((I)->edbc, DBC_RECOVER)) {				\
+		(I)->edbc->lock.pgno = BUCKET_INVALID;			\
+		(R) = lock_get((D)->edbenv->lk_info, (I)->edbc->locker, 	\
+		    0, &(I)->edbc->lock_edbt, DB_LOCK_READ, &(I)->hlock);	\
 		(R) = (R) < 0 ? EAGAIN : (R);				\
 	}								\
 	if ((R) == 0 && 						\
 	    ((R) = __ham_get_page(D, 0, (PAGE **)&((I)->hdr))) != 0 &&  \
 	    (I)->hlock != LOCK_INVALID) {				\
-		(void)lock_put((D)->dbenv->lk_info, (I)->hlock);	\
+		(void)lock_put((D)->edbenv->lk_info, (I)->hlock);	\
 		(I)->hlock = LOCK_INVALID;				\
 	}								\
 }
@@ -127,22 +127,22 @@ typedef struct cursor_t {
 		(void)__ham_put_page(D, (PAGE *)(I)->hdr,		\
 		    F_ISSET(I, H_DIRTY) ? 1 : 0);			\
 	(I)->hdr = NULL;						\
-	if (!F_ISSET((I)->dbc, DBC_RECOVER) &&				\
-	    (I)->dbc->txn == NULL && (I)->hlock)			\
-		(void)lock_put((D)->dbenv->lk_info, (I)->hlock);	\
+	if (!F_ISSET((I)->edbc, DBC_RECOVER) &&				\
+	    (I)->edbc->txn == NULL && (I)->hlock)			\
+		(void)lock_put((D)->edbenv->lk_info, (I)->hlock);	\
 	(I)->hlock = LOCK_INVALID;					\
 	F_CLR(I, H_DIRTY);						\
 }
 
 #define	DIRTY_META(D, I, R) {						\
 	if (F_ISSET(D, DB_AM_LOCKING) &&				\
-	    !F_ISSET((I)->dbc, DBC_RECOVER)) {				\
+	    !F_ISSET((I)->edbc, DBC_RECOVER)) {				\
 		DB_LOCK _tmp;						\
-		(I)->dbc->lock.pgno = BUCKET_INVALID;			\
-	    	if (((R) = lock_get((D)->dbenv->lk_info,		\
-	    	    (I)->dbc->locker, 0, &(I)->dbc->lock_dbt,		\
+		(I)->edbc->lock.pgno = BUCKET_INVALID;			\
+	    	if (((R) = lock_get((D)->edbenv->lk_info,		\
+	    	    (I)->edbc->locker, 0, &(I)->edbc->lock_edbt,		\
 	    	    DB_LOCK_WRITE, &_tmp)) == 0)			\
-			(R) = lock_put((D)->dbenv->lk_info, (I)->hlock);\
+			(R) = lock_put((D)->edbenv->lk_info, (I)->hlock);\
 		else if ((R) < 0)					\
 			(R) = EAGAIN;					\
 		(I)->hlock = _tmp;					\
@@ -160,7 +160,7 @@ typedef struct cursor_t {
  * we've allocated at each point to calculate bucket to page number mapping.
  */
 #define	BUCKET_TO_PAGE(I, B) \
-	((B) + 1 + ((B) ? (I)->hdr->spares[__db_log2((B)+1)-1] : 0))
+	((B) + 1 + ((B) ? (I)->hdr->spares[__edb_log2((B)+1)-1] : 0))
 
 #define	PGNO_OF(I, S, O) (BUCKET_TO_PAGE((I), (1 << (S)) - 1) + (O))
 
@@ -175,7 +175,7 @@ typedef struct cursor_t {
 #define	BUCKET_INVALID	0xFFFFFFFF
 
 /* On page duplicates are stored as a string of size-data-size triples. */
-#define	DUP_SIZE(len)	((len) + 2 * sizeof(db_indx_t))
+#define	DUP_SIZE(len)	((len) + 2 * sizeof(edb_indx_t))
 
 /* Log messages types (these are subtypes within a record type) */
 #define	PAIR_KEYMASK		0x1
@@ -195,5 +195,5 @@ typedef struct cursor_t {
 
 #include "hash_auto.h"
 #include "hash_ext.h"
-#include "db_am.h"
+#include "edb_am.h"
 #include "common_ext.h"

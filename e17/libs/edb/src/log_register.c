@@ -17,7 +17,7 @@ static const char sccsid[] = "@(#)log_register.c	10.22 (Sleepycat) 9/27/98";
 #include <string.h>
 #endif
 
-#include "db_int.h"
+#include "edb_int.h"
 #include "shqueue.h"
 #include "log.h"
 #include "common_ext.h"
@@ -27,14 +27,14 @@ static const char sccsid[] = "@(#)log_register.c	10.22 (Sleepycat) 9/27/98";
  *	Register a file name.
  */
 int
-log_register(dblp, dbp, name, type, idp)
-	DB_LOG *dblp;
-	DB *dbp;
+log_register(edblp, edbp, name, type, idp)
+	DB_LOG *edblp;
+	DB *edbp;
 	const char *name;
 	DBTYPE type;
 	u_int32_t *idp;
 {
-	DBT fid_dbt, r_name;
+	DBT fid_edbt, r_name;
 	DB_LSN r_unused;
 	FNAME *fnp, *reuse_fnp;
 	size_t len;
@@ -47,20 +47,20 @@ log_register(dblp, dbp, name, type, idp)
 	fullname = NULL;
 	fnp = namep = reuse_fnp = NULL;
 
-	LOG_PANIC_CHECK(dblp);
+	LOG_PANIC_CHECK(edblp);
 
 	/* Check the arguments. */
 	if (type != DB_BTREE && type != DB_HASH && type != DB_RECNO) {
-		__db_err(dblp->dbenv, "log_register: unknown DB file type");
+		__edb_err(edblp->edbenv, "log_register: unknown DB file type");
 		return (EINVAL);
 	}
 
 	/* Get the log file id. */
-	if ((ret = __db_appname(dblp->dbenv,
+	if ((ret = __edb_appname(edblp->edbenv,
 	    DB_APP_DATA, NULL, name, 0, NULL, &fullname)) != 0)
 		return (ret);
 
-	LOCK_LOGREGION(dblp);
+	LOCK_LOGREGION(edblp);
 
 	/*
 	 * See if we've already got this file in the log, finding the
@@ -68,14 +68,14 @@ log_register(dblp, dbp, name, type, idp)
 	 * find an available fid, we'll use it, else we'll have to allocate
 	 * one after the maximum that we found).
 	 */
-	for (maxid = 0, fnp = SH_TAILQ_FIRST(&dblp->lp->fq, __fname);
+	for (maxid = 0, fnp = SH_TAILQ_FIRST(&edblp->lp->fq, __fname);
 	    fnp != NULL; fnp = SH_TAILQ_NEXT(fnp, q, __fname)) {
 		if (fnp->ref == 0) {		/* Entry is not in use. */
 			if (reuse_fnp == NULL)
 				reuse_fnp = fnp;
 			continue;
 		}
-		if (!memcmp(dbp->fileid, fnp->ufid, DB_FILE_ID_LEN)) {
+		if (!memcmp(edbp->fileid, fnp->ufid, DB_FILE_ID_LEN)) {
 			++fnp->ref;
 			goto found;
 		}
@@ -87,37 +87,37 @@ log_register(dblp, dbp, name, type, idp)
 
 	if (reuse_fnp != NULL)		/* Reuse existing one. */
 		fnp = reuse_fnp;
-	else if ((ret = __db_shalloc(dblp->addr, sizeof(FNAME), 0, &fnp)) != 0)
+	else if ((ret = __edb_shalloc(edblp->addr, sizeof(FNAME), 0, &fnp)) != 0)
 		goto err;
 	else				/* Allocate a new one. */
 		fnp->id = maxid;
 
 	fnp->ref = 1;
 	fnp->s_type = type;
-	memcpy(fnp->ufid, dbp->fileid, DB_FILE_ID_LEN);
+	memcpy(fnp->ufid, edbp->fileid, DB_FILE_ID_LEN);
 
 	len = strlen(name) + 1;
-	if ((ret = __db_shalloc(dblp->addr, len, 0, &namep)) != 0)
+	if ((ret = __edb_shalloc(edblp->addr, len, 0, &namep)) != 0)
 		goto err;
-	fnp->name_off = R_OFFSET(dblp, namep);
+	fnp->name_off = R_OFFSET(edblp, namep);
 	memcpy(namep, name, len);
 
 	/* Only do the insert if we allocated a new fnp. */
 	if (reuse_fnp == NULL)
-		SH_TAILQ_INSERT_HEAD(&dblp->lp->fq, fnp, q, __fname);
+		SH_TAILQ_INSERT_HEAD(&edblp->lp->fq, fnp, q, __fname);
 	inserted = 1;
 
 found:	/* Log the registry. */
-	if (!F_ISSET(dblp, DBC_RECOVER)) {
+	if (!F_ISSET(edblp, DBC_RECOVER)) {
 		r_name.data = (void *)name;		/* XXX: Yuck! */
 		r_name.size = strlen(name) + 1;
-		memset(&fid_dbt, 0, sizeof(fid_dbt));
-		fid_dbt.data = dbp->fileid;
-		fid_dbt.size = DB_FILE_ID_LEN;
-		if ((ret = __log_register_log(dblp, NULL, &r_unused,
-		    0, LOG_OPEN, &r_name, &fid_dbt, fnp->id, type)) != 0)
+		memset(&fid_edbt, 0, sizeof(fid_edbt));
+		fid_edbt.data = edbp->fileid;
+		fid_edbt.size = DB_FILE_ID_LEN;
+		if ((ret = __log_register_log(edblp, NULL, &r_unused,
+		    0, LOG_OPEN, &r_name, &fid_edbt, fnp->id, type)) != 0)
 			goto err;
-		if ((ret = __log_add_logid(dblp, dbp, name, fnp->id)) != 0)
+		if ((ret = __log_add_logid(edblp, edbp, name, fnp->id)) != 0)
 			goto err;
 	}
 
@@ -127,16 +127,16 @@ err:		/*
 		 * We should grow the region.
 		 */
 		if (inserted)
-			SH_TAILQ_REMOVE(&dblp->lp->fq, fnp, q, __fname);
+			SH_TAILQ_REMOVE(&edblp->lp->fq, fnp, q, __fname);
 		if (namep != NULL)
-			__db_shalloc_free(dblp->addr, namep);
+			__edb_shalloc_free(edblp->addr, namep);
 		if (fnp != NULL)
-			__db_shalloc_free(dblp->addr, fnp);
+			__edb_shalloc_free(edblp->addr, fnp);
 	}
 
 	if (idp != NULL)
 		*idp = fnp->id;
-	UNLOCK_LOGREGION(dblp);
+	UNLOCK_LOGREGION(edblp);
 
 	if (fullname != NULL)
 		__os_freestr(fullname);
@@ -149,41 +149,41 @@ err:		/*
  *	Discard a registered file name.
  */
 int
-log_unregister(dblp, fid)
-	DB_LOG *dblp;
+log_unregister(edblp, fid)
+	DB_LOG *edblp;
 	u_int32_t fid;
 {
-	DBT fid_dbt, r_name;
+	DBT fid_edbt, r_name;
 	DB_LSN r_unused;
 	FNAME *fnp;
 	int ret;
 
-	LOG_PANIC_CHECK(dblp);
+	LOG_PANIC_CHECK(edblp);
 
 	ret = 0;
-	LOCK_LOGREGION(dblp);
+	LOCK_LOGREGION(edblp);
 
 	/* Find the entry in the log. */
-	for (fnp = SH_TAILQ_FIRST(&dblp->lp->fq, __fname);
+	for (fnp = SH_TAILQ_FIRST(&edblp->lp->fq, __fname);
 	    fnp != NULL; fnp = SH_TAILQ_NEXT(fnp, q, __fname))
 		if (fid == fnp->id)
 			break;
 	if (fnp == NULL) {
-		__db_err(dblp->dbenv, "log_unregister: non-existent file id");
+		__edb_err(edblp->edbenv, "log_unregister: non-existent file id");
 		ret = EINVAL;
 		goto ret1;
 	}
 
 	/* Unlog the registry. */
-	if (!F_ISSET(dblp, DBC_RECOVER)) {
+	if (!F_ISSET(edblp, DBC_RECOVER)) {
 		memset(&r_name, 0, sizeof(r_name));
-		r_name.data = R_ADDR(dblp, fnp->name_off);
+		r_name.data = R_ADDR(edblp, fnp->name_off);
 		r_name.size = strlen(r_name.data) + 1;
-		memset(&fid_dbt, 0, sizeof(fid_dbt));
-		fid_dbt.data = fnp->ufid;
-		fid_dbt.size = DB_FILE_ID_LEN;
-		if ((ret = __log_register_log(dblp, NULL, &r_unused,
-		    0, LOG_CLOSE, &r_name, &fid_dbt, fid, fnp->s_type)) != 0)
+		memset(&fid_edbt, 0, sizeof(fid_edbt));
+		fid_edbt.data = fnp->ufid;
+		fid_edbt.size = DB_FILE_ID_LEN;
+		if ((ret = __log_register_log(edblp, NULL, &r_unused,
+		    0, LOG_CLOSE, &r_name, &fid_edbt, fid, fnp->s_type)) != 0)
 			goto ret1;
 	}
 
@@ -193,16 +193,16 @@ log_unregister(dblp, fid)
 	 */
 	--fnp->ref;
 	if (fnp->ref == 0)
-		__db_shalloc_free(dblp->addr, R_ADDR(dblp, fnp->name_off));
+		__edb_shalloc_free(edblp->addr, R_ADDR(edblp, fnp->name_off));
 
 	/*
 	 * Remove from the process local table.  If this operation is taking
 	 * place during recovery, then the logid was never added to the table,
 	 * so do not remove it.
 	 */
-	if (!F_ISSET(dblp, DBC_RECOVER))
-		__log_rem_logid(dblp, fid);
+	if (!F_ISSET(edblp, DBC_RECOVER))
+		__log_rem_logid(edblp, fid);
 
-ret1:	UNLOCK_LOGREGION(dblp);
+ret1:	UNLOCK_LOGREGION(edblp);
 	return (ret);
 }

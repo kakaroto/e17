@@ -20,7 +20,7 @@ static const char sccsid[] = "@(#)os_fid.c	10.12 (Sleepycat) 7/21/98";
 #include <time.h>
 #endif
 
-#include "db_int.h"
+#include "edb_int.h"
 #include "common_ext.h"
 
 /*
@@ -30,8 +30,8 @@ static const char sccsid[] = "@(#)os_fid.c	10.12 (Sleepycat) 7/21/98";
  * PUBLIC: int __os_fileid __P((DB_ENV *, const char *, int, u_int8_t *));
  */
 int
-__os_fileid(dbenv, fname, timestamp, fidp)
-	DB_ENV *dbenv;
+__os_fileid(edbenv, fname, timestamp, fidp)
+	DB_ENV *edbenv;
 	const char *fname;
 	int timestamp;
 	u_int8_t *fidp;
@@ -51,7 +51,7 @@ __os_fileid(dbenv, fname, timestamp, fidp)
 
 	/* On UNIX, use a dev/inode pair. */
 	if (stat(fname, &sb)) {
-		__db_err(dbenv, "%s: %s", fname, strerror(errno));
+		__edb_err(edbenv, "%s: %s", fname, strerror(errno));
 		return (errno);
 	}
 

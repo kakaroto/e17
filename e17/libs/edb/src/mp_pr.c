@@ -19,13 +19,13 @@ static const char sccsid[] = "@(#)mp_pr.c	10.30 (Sleepycat) 10/1/98";
 #include <unistd.h>
 #endif
 
-#include "db_int.h"
-#include "db_page.h"
+#include "edb_int.h"
+#include "edb_page.h"
 #include "shqueue.h"
-#include "db_shash.h"
+#include "edb_shash.h"
 #include "mp.h"
-#include "db_auto.h"
-#include "db_ext.h"
+#include "edb_auto.h"
+#include "edb_ext.h"
 #include "common_ext.h"
 
 static void __memp_pbh __P((DB_MPOOL *, BH *, size_t *, FILE *));
@@ -35,11 +35,11 @@ static void __memp_pbh __P((DB_MPOOL *, BH *, size_t *, FILE *));
  *	Display MPOOL statistics.
  */
 int
-memp_stat(dbmp, gspp, fspp, db_malloc)
-	DB_MPOOL *dbmp;
+memp_stat(edbmp, gspp, fspp, edb_malloc)
+	DB_MPOOL *edbmp;
 	DB_MPOOL_STAT **gspp;
 	DB_MPOOL_FSTAT ***fspp;
-	void *(*db_malloc) __P((size_t));
+	void *(*edb_malloc) __P((size_t));
 {
 	DB_MPOOL_FSTAT **tfsp;
 	MPOOLFILE *mfp;
@@ -47,63 +47,63 @@ memp_stat(dbmp, gspp, fspp, db_malloc)
 	int ret;
 	char *name;
 
-	MP_PANIC_CHECK(dbmp);
+	MP_PANIC_CHECK(edbmp);
 
 	/* Allocate space for the global statistics. */
 	if (gspp != NULL) {
 		*gspp = NULL;
 
-		if ((ret = __os_malloc(sizeof(**gspp), db_malloc, gspp)) != 0)
+		if ((ret = __os_malloc(sizeof(**gspp), edb_malloc, gspp)) != 0)
 			return (ret);
 
-		LOCKREGION(dbmp);
+		LOCKREGION(edbmp);
 
 		/* Copy out the global statistics. */
-		**gspp = dbmp->mp->stat;
-		(*gspp)->st_hash_buckets = dbmp->mp->htab_buckets;
+		**gspp = edbmp->mp->stat;
+		(*gspp)->st_hash_buckets = edbmp->mp->htab_buckets;
 		(*gspp)->st_region_wait =
-		    dbmp->mp->rlayout.lock.mutex_set_wait;
+		    edbmp->mp->rlayout.lock.mutex_set_wait;
 		(*gspp)->st_region_nowait =
-		    dbmp->mp->rlayout.lock.mutex_set_nowait;
-		(*gspp)->st_refcnt = dbmp->mp->rlayout.refcnt;
-		(*gspp)->st_regsize = dbmp->mp->rlayout.size;
+		    edbmp->mp->rlayout.lock.mutex_set_nowait;
+		(*gspp)->st_refcnt = edbmp->mp->rlayout.refcnt;
+		(*gspp)->st_regsize = edbmp->mp->rlayout.size;
 
-		UNLOCKREGION(dbmp);
+		UNLOCKREGION(edbmp);
 	}
 
 	if (fspp != NULL) {
 		*fspp = NULL;
 
-		LOCKREGION(dbmp);
+		LOCKREGION(edbmp);
 
 		/* Count the MPOOLFILE structures. */
 		for (len = 0,
-		    mfp = SH_TAILQ_FIRST(&dbmp->mp->mpfq, __mpoolfile);
+		    mfp = SH_TAILQ_FIRST(&edbmp->mp->mpfq, __mpoolfile);
 		    mfp != NULL;
 		    ++len, mfp = SH_TAILQ_NEXT(mfp, q, __mpoolfile))
 			;
 
-		UNLOCKREGION(dbmp);
+		UNLOCKREGION(edbmp);
 
 		if (len == 0)
 			return (0);
 
 		/* Allocate space for the pointers. */
 		len = (len + 1) * sizeof(DB_MPOOL_FSTAT *);
-		if ((ret = __os_malloc(len, db_malloc, fspp)) != 0)
+		if ((ret = __os_malloc(len, edb_malloc, fspp)) != 0)
 			return (ret);
 
-		LOCKREGION(dbmp);
+		LOCKREGION(edbmp);
 
 		/* Build each individual entry. */
 		for (tfsp = *fspp,
-		    mfp = SH_TAILQ_FIRST(&dbmp->mp->mpfq, __mpoolfile);
+		    mfp = SH_TAILQ_FIRST(&edbmp->mp->mpfq, __mpoolfile);
 		    mfp != NULL;
 		    ++tfsp, mfp = SH_TAILQ_NEXT(mfp, q, __mpoolfile)) {
-			name = __memp_fns(dbmp, mfp);
+			name = __memp_fns(edbmp, mfp);
 			nlen = strlen(name);
 			len = sizeof(DB_MPOOL_FSTAT) + nlen + 1;
-			if ((ret = __os_malloc(len, db_malloc, tfsp)) != 0)
+			if ((ret = __os_malloc(len, edb_malloc, tfsp)) != 0)
 				return (ret);
 			**tfsp = mfp->stat;
 			(*tfsp)->file_name = (char *)
@@ -112,7 +112,7 @@ memp_stat(dbmp, gspp, fspp, db_malloc)
 		}
 		*tfsp = NULL;
 
-		UNLOCKREGION(dbmp);
+		UNLOCKREGION(edbmp);
 	}
 	return (0);
 }
@@ -124,10 +124,10 @@ memp_stat(dbmp, gspp, fspp, db_malloc)
  * PUBLIC: char * __memp_fn __P((DB_MPOOLFILE *));
  */
 char *
-__memp_fn(dbmfp)
-	DB_MPOOLFILE *dbmfp;
+__memp_fn(edbmfp)
+	DB_MPOOLFILE *edbmfp;
 {
-	return (__memp_fns(dbmfp->dbmp, dbmfp->mfp));
+	return (__memp_fns(edbmfp->edbmp, edbmfp->mfp));
 }
 
 /*
@@ -138,14 +138,14 @@ __memp_fn(dbmfp)
  *
  */
 char *
-__memp_fns(dbmp, mfp)
-	DB_MPOOL *dbmp;
+__memp_fns(edbmp, mfp)
+	DB_MPOOL *edbmp;
 	MPOOLFILE *mfp;
 {
 	if (mfp->path_off == 0)
 		return ((char *)"temporary");
 
-	return ((char *)R_ADDR(dbmp, mfp->path_off));
+	return ((char *)R_ADDR(edbmp, mfp->path_off));
 }
 
 #define	FMAP_ENTRIES	200			/* Files we map. */
@@ -163,14 +163,14 @@ __memp_fns(dbmp, mfp)
  * PUBLIC: void __memp_dump_region __P((DB_MPOOL *, char *, FILE *));
  */
 void
-__memp_dump_region(dbmp, area, fp)
-	DB_MPOOL *dbmp;
+__memp_dump_region(edbmp, area, fp)
+	DB_MPOOL *edbmp;
 	char *area;
 	FILE *fp;
 {
 	BH *bhp;
 	DB_HASHTAB *htabp;
-	DB_MPOOLFILE *dbmfp;
+	DB_MPOOLFILE *edbmfp;
 	MPOOL *mp;
 	MPOOLFILE *mfp;
 	size_t bucket, fmap[FMAP_ENTRIES + 1];
@@ -197,33 +197,33 @@ __memp_dump_region(dbmp, area, fp)
 			break;
 		}
 
-	LOCKREGION(dbmp);
+	LOCKREGION(edbmp);
 
-	mp = dbmp->mp;
+	mp = edbmp->mp;
 
 	/* Display MPOOL structures. */
 	(void)fprintf(fp, "%s\nPool (region addr 0x%lx, alloc addr 0x%lx)\n",
-	    DB_LINE, (u_long)dbmp->reginfo.addr, (u_long)dbmp->addr);
+	    DB_LINE, (u_long)edbmp->reginfo.addr, (u_long)edbmp->addr);
 
 	/* Display the MPOOLFILE structures. */
 	cnt = 0;
-	for (mfp = SH_TAILQ_FIRST(&dbmp->mp->mpfq, __mpoolfile);
+	for (mfp = SH_TAILQ_FIRST(&edbmp->mp->mpfq, __mpoolfile);
 	    mfp != NULL; mfp = SH_TAILQ_NEXT(mfp, q, __mpoolfile), ++cnt) {
 		(void)fprintf(fp, "file #%d: %s: refs %lu, type %ld, %s\n",
-		    cnt + 1, __memp_fns(dbmp, mfp), (u_long)mfp->ref,
+		    cnt + 1, __memp_fns(edbmp, mfp), (u_long)mfp->ref,
 		    (long)mfp->ftype,
 		    F_ISSET(mfp, MP_CAN_MMAP) ? "mmap" : "read/write");
 		    if (cnt < FMAP_ENTRIES)
-			fmap[cnt] = R_OFFSET(dbmp, mfp);
+			fmap[cnt] = R_OFFSET(edbmp, mfp);
 	}
 
-	for (dbmfp = TAILQ_FIRST(&dbmp->dbmfq);
-	    dbmfp != NULL; dbmfp = TAILQ_NEXT(dbmfp, q), ++cnt) {
+	for (edbmfp = TAILQ_FIRST(&edbmp->edbmfq);
+	    edbmfp != NULL; edbmfp = TAILQ_NEXT(edbmfp, q), ++cnt) {
 		(void)fprintf(fp, "file #%d: %s: fd: %d: per-process, %s\n",
-		    cnt + 1, __memp_fn(dbmfp), dbmfp->fd,
-		    F_ISSET(dbmfp, MP_READONLY) ? "readonly" : "read/write");
+		    cnt + 1, __memp_fn(edbmfp), edbmfp->fd,
+		    F_ISSET(edbmfp, MP_READONLY) ? "readonly" : "read/write");
 		    if (cnt < FMAP_ENTRIES)
-			fmap[cnt] = R_OFFSET(dbmp, mfp);
+			fmap[cnt] = R_OFFSET(edbmp, mfp);
 	}
 	if (cnt < FMAP_ENTRIES)
 		fmap[cnt] = INVALID;
@@ -235,13 +235,13 @@ __memp_dump_region(dbmp, area, fp)
 		(void)fprintf(fp,
 	    "%s\nBH hash table (%lu hash slots)\npageno, file, ref, address\n",
 		    DB_LINE, (u_long)mp->htab_buckets);
-		for (htabp = dbmp->htab,
+		for (htabp = edbmp->htab,
 		    bucket = 0; bucket < mp->htab_buckets; ++htabp, ++bucket) {
-			if (SH_TAILQ_FIRST(&dbmp->htab[bucket], __bh) != NULL)
+			if (SH_TAILQ_FIRST(&edbmp->htab[bucket], __bh) != NULL)
 				(void)fprintf(fp, "%lu:\n", (u_long)bucket);
-			for (bhp = SH_TAILQ_FIRST(&dbmp->htab[bucket], __bh);
+			for (bhp = SH_TAILQ_FIRST(&edbmp->htab[bucket], __bh);
 			    bhp != NULL; bhp = SH_TAILQ_NEXT(bhp, hq, __bh))
-				__memp_pbh(dbmp, bhp, fmap, fp);
+				__memp_pbh(edbmp, bhp, fmap, fp);
 		}
 	}
 
@@ -249,15 +249,15 @@ __memp_dump_region(dbmp, area, fp)
 	if (LF_ISSET(MPOOL_DUMP_LRU)) {
 		(void)fprintf(fp, "%s\nBH LRU list\n", DB_LINE);
 		(void)fprintf(fp, "pageno, file, ref, address\n");
-		for (bhp = SH_TAILQ_FIRST(&dbmp->mp->bhq, __bh);
+		for (bhp = SH_TAILQ_FIRST(&edbmp->mp->bhq, __bh);
 		    bhp != NULL; bhp = SH_TAILQ_NEXT(bhp, q, __bh))
-			__memp_pbh(dbmp, bhp, fmap, fp);
+			__memp_pbh(edbmp, bhp, fmap, fp);
 	}
 
 	if (LF_ISSET(MPOOL_DUMP_MEM))
-		__db_shalloc_dump(dbmp->addr, fp);
+		__edb_shalloc_dump(edbmp->addr, fp);
 
-	UNLOCKREGION(dbmp);
+	UNLOCKREGION(edbmp);
 
 	/* Flush in case we're debugging. */
 	(void)fflush(fp);
@@ -268,8 +268,8 @@ __memp_dump_region(dbmp, area, fp)
  *	Display a BH structure.
  */
 static void
-__memp_pbh(dbmp, bhp, fmap, fp)
-	DB_MPOOL *dbmp;
+__memp_pbh(edbmp, bhp, fmap, fp)
+	DB_MPOOL *edbmp;
 	BH *bhp;
 	size_t *fmap;
 	FILE *fp;
@@ -292,13 +292,13 @@ __memp_pbh(dbmp, bhp, fmap, fp)
 	if (fmap[i] == INVALID)
 		(void)fprintf(fp, "  %4lu, %lu, %2lu, %lu",
 		    (u_long)bhp->pgno, (u_long)bhp->mf_offset,
-		    (u_long)bhp->ref, (u_long)R_OFFSET(dbmp, bhp));
+		    (u_long)bhp->ref, (u_long)R_OFFSET(edbmp, bhp));
 	else
 		(void)fprintf(fp, "  %4lu,   #%d,  %2lu, %lu",
 		    (u_long)bhp->pgno, i + 1,
-		    (u_long)bhp->ref, (u_long)R_OFFSET(dbmp, bhp));
+		    (u_long)bhp->ref, (u_long)R_OFFSET(edbmp, bhp));
 
-	__db_prflags(bhp->flags, fn, fp);
+	__edb_prflags(bhp->flags, fn, fp);
 
 	(void)fprintf(fp, "\n");
 }

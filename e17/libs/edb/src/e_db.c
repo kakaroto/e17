@@ -11,7 +11,7 @@
 #include <netinet/in.h>
 
 #define DB_DBM_HSEARCH 1
-#include "db.h"
+#include "edb.h"
 
 #define NEW(dat, num) malloc(sizeof(dat) * (num))
 #define FREE(dat) {if (dat) {free(dat); dat = NULL; } else {printf("eek - NULL free\n");sleep(30); } }
@@ -26,18 +26,18 @@ typedef struct _e_db_file _E_DB_File;
 struct _e_db_file
 {
    char               *file;
-   DBM                *dbf;
+   DBM                *edbf;
    char                writeable;
    int                 references;
    _E_DB_File         *next;
 };
 
 static _E_DB_File  *_e_db_find(char *file, char writeable);
-static void         _e_db_close(E_DB_File * db);
+static void         _e_db_close(E_DB_File * edb);
 
-static _E_DB_File  *dbs = NULL;
-static int          max_db_count = 32;
-static double       last_db_call = 0.0;
+static _E_DB_File  *edbs = NULL;
+static int          max_edb_count = 32;
+static double       last_edb_call = 0.0;
 static int          flush_pending = 0;
 
 /* internal routines */
@@ -56,14 +56,14 @@ static _E_DB_File  *
 _e_db_find(char *file, char writeable)
 {
    _E_DB_File         *ptr;
-   static int          db_init = 0;
+   static int          edb_init = 0;
 
-   if (!db_init)
+   if (!edb_init)
      {
 	atexit(e_db_flush);
-	db_init = 1;
+	edb_init = 1;
      }
-   for (ptr = dbs; ptr; ptr = ptr->next)
+   for (ptr = edbs; ptr; ptr = ptr->next)
      {
 	if ((!strcmp(file, ptr->file)) &&
 	    ((!writeable) || (ptr->writeable)))
@@ -74,19 +74,19 @@ _e_db_find(char *file, char writeable)
      }
    if (writeable)
      {
-	_E_DB_File         *dbf;
+	_E_DB_File         *edbf;
 
-	dbf = dbs;
-	while (dbf)
+	edbf = edbs;
+	while (edbf)
 	  {
-	     _E_DB_File         *dbf2;
+	     _E_DB_File         *edbf2;
 
-	     dbf2 = dbf;
-	     dbf = dbf->next;
-	     if ((!strcmp(file, dbf2->file)) && (dbf2->references == 0))
+	     edbf2 = edbf;
+	     edbf = edbf->next;
+	     if ((!strcmp(file, edbf2->file)) && (edbf2->references == 0))
 	       {
-		  dbf2->references = -1;
-		  _e_db_close((E_DB_File *) dbf2);
+		  edbf2->references = -1;
+		  _e_db_close((E_DB_File *) edbf2);
 	       }
 	  }
      }
@@ -95,30 +95,30 @@ _e_db_find(char *file, char writeable)
 
 
 static void
-_e_db_close(E_DB_File * db)
+_e_db_close(E_DB_File * edb)
 {
-   _E_DB_File         *dbf;
+   _E_DB_File         *edbf;
 
-   dbf = (_E_DB_File *) db;
-   if (dbf->references > 0)
-      dbf->references--;
-   if (dbf->references < 0)
+   edbf = (_E_DB_File *) edb;
+   if (edbf->references > 0)
+      edbf->references--;
+   if (edbf->references < 0)
      {
 	_E_DB_File         *ptr, *pptr;
 
 	pptr = NULL;
-	for (ptr = dbs; ptr; ptr = ptr->next)
+	for (ptr = edbs; ptr; ptr = ptr->next)
 	  {
-	     if (ptr == dbf)
+	     if (ptr == edbf)
 	       {
 		  if (pptr)
 		     pptr->next = ptr->next;
 		  else
-		     dbs = ptr->next;
+		     edbs = ptr->next;
 
-		  IF_FREE(dbf->file);
-		  dbm_close(dbf->dbf);
-		  FREE(dbf);
+		  IF_FREE(edbf->file);
+		  edbm_close(edbf->edbf);
+		  FREE(edbf);
 		  return;
 	       }
 	     pptr = ptr;
@@ -131,33 +131,33 @@ _e_db_close(E_DB_File * db)
 E_DB_File          *
 e_db_open(char *file)
 {
-   _E_DB_File         *dbf;
-   DBM                *db = NULL;
-   int                 dbs_count = 0;
+   _E_DB_File         *edbf;
+   DBM                *edb = NULL;
+   int                 edbs_count = 0;
 
-   dbf = _e_db_find(file, 1);
-   if (dbf)
-      return (E_DB_File *) dbf;
-   for (dbf = dbs; dbf; dbf = dbf->next)
+   edbf = _e_db_find(file, 1);
+   if (edbf)
+      return (E_DB_File *) edbf;
+   for (edbf = edbs; edbf; edbf = edbf->next)
      {
-	if (dbf->references == 0)
-	   dbs_count++;
+	if (edbf->references == 0)
+	   edbs_count++;
      }
-   while (dbs_count > max_db_count)
+   while (edbs_count > max_edb_count)
      {
-	_E_DB_File         *dbf_last;
+	_E_DB_File         *edbf_last;
 
-	dbf_last = NULL;
-	for (dbf = dbs; dbf; dbf = dbf->next)
+	edbf_last = NULL;
+	for (edbf = edbs; edbf; edbf = edbf->next)
 	  {
-	     if (dbf->references == 0)
-		dbf_last = dbf;
+	     if (edbf->references == 0)
+		edbf_last = edbf;
 	  }
-	if (dbf_last)
+	if (edbf_last)
 	  {
-	     dbf_last->references = -1;
-	     _e_db_close((E_DB_File *) dbf_last);
-	     dbs_count--;
+	     edbf_last->references = -1;
+	     _e_db_close((E_DB_File *) edbf_last);
+	     edbs_count--;
 	  }
      }
    {
@@ -174,22 +174,22 @@ e_db_open(char *file)
 	       (newfile[newfilelen - 1] == 'b'))
 	      newfile[newfilelen - 3] = 0;
 	   
-	   db = dbm_open(newfile, O_RDWR | O_CREAT, 0664);
+	   edb = edbm_open(newfile, O_RDWR | O_CREAT, 0664);
 	   FREE(newfile);
 	}
    }
-   if (db)
+   if (edb)
      {
-	dbf = NEW(_E_DB_File, 1);
-	dbf->file = strdup(file);
-	dbf->dbf = db;
-	dbf->writeable = 1;
-	dbf->references = 1;
-	dbf->next = dbs;
-	dbs = dbf;
-	last_db_call = _e_get_time();
+	edbf = NEW(_E_DB_File, 1);
+	edbf->file = strdup(file);
+	edbf->edbf = edb;
+	edbf->writeable = 1;
+	edbf->references = 1;
+	edbf->next = edbs;
+	edbs = edbf;
+	last_edb_call = _e_get_time();
 	flush_pending = 1;
-	return (E_DB_File *) dbf;
+	return (E_DB_File *) edbf;
      }
    return NULL;
 }
@@ -197,37 +197,37 @@ e_db_open(char *file)
 E_DB_File          *
 e_db_open_read(char *file)
 {
-   _E_DB_File         *dbf;
-   DBM                *db = NULL;
-   int                 dbs_count = 0;
+   _E_DB_File         *edbf;
+   DBM                *edb = NULL;
+   int                 edbs_count = 0;
 
-   dbf = _e_db_find(file, 0);
-   if (dbf)
-      return (E_DB_File *) dbf;
-   dbf = _e_db_find(file, 1);
-   if (dbf)
-      return (E_DB_File *) dbf;
+   edbf = _e_db_find(file, 0);
+   if (edbf)
+      return (E_DB_File *) edbf;
+   edbf = _e_db_find(file, 1);
+   if (edbf)
+      return (E_DB_File *) edbf;
 
-   for (dbf = dbs; dbf; dbf = dbf->next)
+   for (edbf = edbs; edbf; edbf = edbf->next)
      {
-	if (dbf->references == 0)
-	   dbs_count++;
+	if (edbf->references == 0)
+	   edbs_count++;
      }
-   while (dbs_count > max_db_count)
+   while (edbs_count > max_edb_count)
      {
-	_E_DB_File         *dbf_last;
+	_E_DB_File         *edbf_last;
 
-	dbf_last = NULL;
-	for (dbf = dbs; dbf; dbf = dbf->next)
+	edbf_last = NULL;
+	for (edbf = edbs; edbf; edbf = edbf->next)
 	  {
-	     if (dbf->references == 0)
-		dbf_last = dbf;
+	     if (edbf->references == 0)
+		edbf_last = edbf;
 	  }
-	if (dbf_last)
+	if (edbf_last)
 	  {
-	     dbf_last->references = -1;
-	     _e_db_close((E_DB_File *) dbf_last);
-	     dbs_count--;
+	     edbf_last->references = -1;
+	     _e_db_close((E_DB_File *) edbf_last);
+	     edbs_count--;
 	  }
      }
    {
@@ -244,22 +244,22 @@ e_db_open_read(char *file)
 	       (newfile[newfilelen - 1] == 'b'))
 	      newfile[newfilelen - 3] = 0;
 
-	   db = dbm_open(newfile, O_RDONLY, 0664);
+	   edb = edbm_open(newfile, O_RDONLY, 0664);
 	   FREE(newfile);
 	}
    }
-   if (db)
+   if (edb)
      {
-	dbf = NEW(_E_DB_File, 1);
-	dbf->file = strdup(file);
-	dbf->dbf = db;
-	dbf->writeable = 0;
-	dbf->references = 1;
-	dbf->next = dbs;
-	dbs = dbf;
-	last_db_call = _e_get_time();
+	edbf = NEW(_E_DB_File, 1);
+	edbf->file = strdup(file);
+	edbf->edbf = edb;
+	edbf->writeable = 0;
+	edbf->references = 1;
+	edbf->next = edbs;
+	edbs = edbf;
+	last_edb_call = _e_get_time();
 	flush_pending = 1;
-	return (E_DB_File *) dbf;
+	return (E_DB_File *) edbf;
      }
    return NULL;
 }
@@ -267,36 +267,36 @@ e_db_open_read(char *file)
 int
 e_db_usage(void)
 {
-   _E_DB_File *dbf;
-   int dbs_count = 0;
+   _E_DB_File *edbf;
+   int edbs_count = 0;
    
-   for (dbf = dbs; dbf; dbf = dbf->next)
-      dbs_count++;
-   return dbs_count;
+   for (edbf = edbs; edbf; edbf = edbf->next)
+      edbs_count++;
+   return edbs_count;
 }
 
 void
-e_db_close(E_DB_File * db)
+e_db_close(E_DB_File * edb)
 {
-   _e_db_close(db);
+   _e_db_close(edb);
 }
 
 void
 e_db_flush(void)
 {
-   _E_DB_File         *dbf;
+   _E_DB_File         *edbf;
 
-   dbf = dbs;
-   while (dbf)
+   edbf = edbs;
+   while (edbf)
      {
-	_E_DB_File         *dbf2;
+	_E_DB_File         *edbf2;
 
-	dbf2 = dbf;
-	dbf = dbf->next;
-	if (dbf2->references == 0)
+	edbf2 = edbf;
+	edbf = edbf->next;
+	if (edbf2->references == 0)
 	  {
-	     dbf2->references = -1;
-	     _e_db_close((E_DB_File *) dbf2);
+	     edbf2->references = -1;
+	     _e_db_close((E_DB_File *) edbf2);
 	  }
      }
 }
@@ -309,7 +309,7 @@ e_db_runtime_flush(void)
    if (!flush_pending)
       return 0;
    now = _e_get_time();
-   if (now - last_db_call > 0.5)
+   if (now - last_edb_call > 0.5)
      {
 	e_db_flush();
 	flush_pending = 0;
@@ -319,17 +319,17 @@ e_db_runtime_flush(void)
 }
 
 void               *
-e_db_data_get(E_DB_File * db, char *key, int *size_ret)
+e_db_data_get(E_DB_File * edb, char *key, int *size_ret)
 {
-   _E_DB_File         *dbf;
+   _E_DB_File         *edbf;
    datum               dkey, ret;
 
-   dbf = (_E_DB_File *) db;
+   edbf = (_E_DB_File *) edb;
    dkey.dptr = key;
    dkey.dsize = strlen(key);
    ret.dptr = NULL;
-   ret = dbm_fetch(dbf->dbf, dkey);
-   last_db_call = _e_get_time();
+   ret = edbm_fetch(edbf->edbf, dkey);
+   last_edb_call = _e_get_time();
    flush_pending = 1;
    if (ret.dptr)
      {
@@ -348,33 +348,33 @@ e_db_data_get(E_DB_File * db, char *key, int *size_ret)
 }
 
 void
-e_db_data_set(E_DB_File * db, char *key, void *data, int size)
+e_db_data_set(E_DB_File * edb, char *key, void *data, int size)
 {
-   _E_DB_File         *dbf;
+   _E_DB_File         *edbf;
    datum               dkey, dat;
 
-   dbf = (_E_DB_File *) db;
+   edbf = (_E_DB_File *) edb;
    dkey.dptr = key;
    dkey.dsize = strlen(key);
    dat.dptr = data;
    dat.dsize = size;
-   dbm_store(dbf->dbf, dkey, dat, DBM_REPLACE);
-   last_db_call = _e_get_time();
+   edbm_store(edbf->edbf, dkey, dat, DBM_REPLACE);
+   last_edb_call = _e_get_time();
    flush_pending = 1;
 }
 
 void
-e_db_data_del(E_DB_File * db, char *key)
+e_db_data_del(E_DB_File * edb, char *key)
 {
    char               *key2;
-   _E_DB_File         *dbf;
+   _E_DB_File         *edbf;
    datum               dkey;
    int                 len;
 
-   dbf = (_E_DB_File *) db;
+   edbf = (_E_DB_File *) edb;
    dkey.dptr = key;
    dkey.dsize = len = strlen(key);
-   dbm_delete(dbf->dbf, dkey);
+   edbm_delete(edbf->edbf, dkey);
    
    key2 = malloc(strlen(key) + 2);
    if (!key2) return;
@@ -382,31 +382,31 @@ e_db_data_del(E_DB_File * db, char *key)
    strcpy(&(key2[1]), key);
    dkey.dptr = key2;
    dkey.dsize = len + 1;
-   dbm_delete(dbf->dbf, dkey);
+   edbm_delete(edbf->edbf, dkey);
    free(key2);
    
-   last_db_call = _e_get_time();
+   last_edb_call = _e_get_time();
    flush_pending = 1;
 }
 
 void
-e_db_int_set(E_DB_File * db, char *key, int val)
+e_db_int_set(E_DB_File * edb, char *key, int val)
 {
    int                 v;
 
    v = htonl(val);
-   e_db_data_set(db, key, &v, sizeof(int));
-   e_db_type_set(db, key, "int");
+   e_db_data_set(edb, key, &v, sizeof(int));
+   e_db_type_set(edb, key, "int");
 }
 
 int
-e_db_int_get(E_DB_File * db, char *key, int *val)
+e_db_int_get(E_DB_File * edb, char *key, int *val)
 {
    int                *dat;
    int                 size;
    int                 v;
 
-   dat = e_db_data_get(db, key, &size);
+   dat = e_db_data_get(edb, key, &size);
    if (!dat)
       return 0;
    v = ntohl(*dat);
@@ -416,23 +416,23 @@ e_db_int_get(E_DB_File * db, char *key, int *val)
 }
 
 void
-e_db_float_set(E_DB_File * db, char *key, float val)
+e_db_float_set(E_DB_File * edb, char *key, float val)
 {
    char                buf[256];
 
    sprintf(buf, "%f", val);
-   e_db_str_set(db, key, buf);
-   e_db_type_set(db, key, "float");
+   e_db_str_set(edb, key, buf);
+   e_db_type_set(edb, key, "float");
    return;
    val = 0.0;
 }
 
 int
-e_db_float_get(E_DB_File * db, char *key, float *val)
+e_db_float_get(E_DB_File * edb, char *key, float *val)
 {
    char               *dat;
 
-   dat = e_db_str_get(db, key);
+   dat = e_db_str_get(edb, key);
    if (!dat)
       return 0;
    *val = atof(dat);
@@ -441,19 +441,19 @@ e_db_float_get(E_DB_File * db, char *key, float *val)
 }
 
 void
-e_db_str_set(E_DB_File * db, char *key, char *str)
+e_db_str_set(E_DB_File * edb, char *key, char *str)
 {
-   e_db_data_set(db, key, str, strlen(str));
-   e_db_type_set(db, key, "str");
+   e_db_data_set(edb, key, str, strlen(str));
+   e_db_type_set(edb, key, "str");
 }
 
 char               *
-e_db_str_get(E_DB_File * db, char *key)
+e_db_str_get(E_DB_File * edb, char *key)
 {
    char               *dat, *s;
    int                 size;
 
-   dat = e_db_data_get(db, key, &size);
+   dat = e_db_data_get(edb, key, &size);
    if (!dat)
       return NULL;
    s = NEW(char, size + 1);
@@ -465,45 +465,45 @@ e_db_str_get(E_DB_File * db, char *key)
 }
 
 void
-e_db_type_set(E_DB_File * db, char *key, char *type)
+e_db_type_set(E_DB_File * edb, char *key, char *type)
 {
    char               *key2;
-   _E_DB_File         *dbf;
+   _E_DB_File         *edbf;
    datum               dkey, dat;
    
    key2 = malloc(strlen(key) + 2);
    if (!key2) return;
    key2[0] = 0;
    strcpy(&(key2[1]), key);
-   dbf = (_E_DB_File *) db;
+   edbf = (_E_DB_File *) edb;
    dkey.dptr = key2;
    dkey.dsize = strlen(key) + 1;
    dat.dptr = type;
    dat.dsize = strlen(type);
-   dbm_store(dbf->dbf, dkey, dat, DBM_REPLACE);
+   edbm_store(edbf->edbf, dkey, dat, DBM_REPLACE);
    free(key2);
-   last_db_call = _e_get_time();
+   last_edb_call = _e_get_time();
    flush_pending = 1;
 }
 
 char *
-e_db_type_get(E_DB_File * db, char *key)
+e_db_type_get(E_DB_File * edb, char *key)
 {
    char               *key2;
-   _E_DB_File         *dbf;
+   _E_DB_File         *edbf;
    datum               dkey, ret;
 
    key2 = malloc(strlen(key) + 2);
    if (!key2) return NULL;
    key2[0] = 0;
    strcpy(&(key2[1]), key);
-   dbf = (_E_DB_File *) db;
+   edbf = (_E_DB_File *) edb;
    dkey.dptr = key2;
    dkey.dsize = strlen(key) + 1;
    ret.dptr = NULL;
-   ret = dbm_fetch(dbf->dbf, dkey);
+   ret = edbm_fetch(edbf->edbf, dkey);
    free(key2);
-   last_db_call = _e_get_time();
+   last_edb_call = _e_get_time();
    flush_pending = 1;
    if (ret.dptr)
      {
@@ -523,19 +523,19 @@ e_db_type_get(E_DB_File * db, char *key)
 char              **
 e_db_dump_multi_field(char *file, char *file2, int *num_ret)
 {
-   E_DB_File          *db1 = NULL, *db2 = NULL;
-   _E_DB_File         *dbf1, *dbf2;
+   E_DB_File          *edb1 = NULL, *edb2 = NULL;
+   _E_DB_File         *edbf1, *edbf2;
    datum               ret, key;
    char              **list = NULL;
 
    *num_ret = 0;
 
-   db1 = e_db_open_read(file);
-   dbf1 = db1;
+   edb1 = e_db_open_read(file);
+   edbf1 = edb1;
    /* load prioirty database in first */
-   if (dbf1)
+   if (edbf1)
      {
-	key = dbm_firstkey(dbf1->dbf);
+	key = edbm_firstkey(edbf1->edbf);
 	while (key.dptr)
 	  {
 	     if (*((char *)(key.dptr)) != 0)
@@ -551,7 +551,7 @@ e_db_dump_multi_field(char *file, char *file2, int *num_ret)
 		  MEMCPY(key.dptr, list[*num_ret - 1], char, key.dsize);
 		  
 		  list[*num_ret - 1][key.dsize] = 0;
-		  ret = dbm_fetch(dbf1->dbf, key);
+		  ret = edbm_fetch(edbf1->edbf, key);
 		  (*num_ret)++;
 		  REALLOC_PTR(list, *num_ret);
 		  list[*num_ret - 1] = NEW(char, ret.dsize + 1);
@@ -559,23 +559,23 @@ e_db_dump_multi_field(char *file, char *file2, int *num_ret)
 		  
 		  list[*num_ret - 1][ret.dsize] = 0;
 	       }
-	     key = dbm_nextkey(dbf1->dbf);
+	     key = edbm_nextkey(edbf1->edbf);
 	  }
-	e_db_close(db1);
+	e_db_close(edb1);
      }
    /* go through database 2 and if the keys dont exist alreayd in list - add */
    if (file2)
      {
-	db2 = e_db_open_read(file2);
-	dbf2 = db2;
+	edb2 = e_db_open_read(file2);
+	edbf2 = edb2;
      }
    else
-      dbf2 = NULL;
-   if (dbf2)
+      edbf2 = NULL;
+   if (edbf2)
      {
 	int                 i;
 
-	key = dbm_firstkey(dbf2->dbf);
+	key = edbm_firstkey(edbf2->edbf);
 	while (key.dptr)
 	  {
 	     char               *s;
@@ -605,7 +605,7 @@ e_db_dump_multi_field(char *file, char *file2, int *num_ret)
 		       MEMCPY(key.dptr, list[*num_ret - 1], char, key.dsize);
 		       
 		       list[*num_ret - 1][key.dsize] = 0;
-		       ret = dbm_fetch(dbf1->dbf, key);
+		       ret = edbm_fetch(edbf1->edbf, key);
 		       (*num_ret)++;
 		       REALLOC_PTR(list, *num_ret);
 		       list[*num_ret - 1] = NEW(char, ret.dsize + 1);
@@ -615,11 +615,11 @@ e_db_dump_multi_field(char *file, char *file2, int *num_ret)
 		    }
 		  FREE(s);
 	       }
-	     key = dbm_nextkey(dbf1->dbf);
+	     key = edbm_nextkey(edbf1->edbf);
 	  }
-	e_db_close(db2);
+	e_db_close(edb2);
      }
-   last_db_call = _e_get_time();
+   last_edb_call = _e_get_time();
    flush_pending = 1;
    return list;
 }
@@ -627,18 +627,18 @@ e_db_dump_multi_field(char *file, char *file2, int *num_ret)
 char              **
 e_db_dump_key_list(char *file, int *num_ret)
 {
-   E_DB_File          *db;
-   _E_DB_File         *dbf;
+   E_DB_File          *edb;
+   _E_DB_File         *edbf;
    datum               key;
    char              **list = NULL;
 
    *num_ret = 0;
 
-   db = e_db_open_read(file);
-   dbf = db;
-   if (dbf)
+   edb = e_db_open_read(file);
+   edbf = edb;
+   if (edbf)
      {
-	key = dbm_firstkey(dbf->dbf);
+	key = edbm_firstkey(edbf->edbf);
 	while (key.dptr)
 	  {
 	     if (*((char *)(key.dptr)) != 0)
@@ -655,11 +655,11 @@ e_db_dump_key_list(char *file, int *num_ret)
 		  
 		  list[*num_ret - 1][key.dsize] = 0;
 	       }
-	     key = dbm_nextkey(dbf->dbf);
+	     key = edbm_nextkey(edbf->edbf);
 	  }
-	e_db_close(db);
+	e_db_close(edb);
      }
-   last_db_call = _e_get_time();
+   last_edb_call = _e_get_time();
    flush_pending = 1;
    return list;
 }

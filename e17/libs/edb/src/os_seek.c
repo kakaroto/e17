@@ -18,28 +18,28 @@ static const char sccsid[] = "@(#)os_seek.c	10.11 (Sleepycat) 10/12/98";
 #include <unistd.h>
 #endif
 
-#include "db_int.h"
+#include "edb_int.h"
 #include "os_jump.h"
 
 /*
  * __os_seek --
  *	Seek to a page/byte offset in the file.
  *
- * PUBLIC: int __os_seek __P((int, size_t, db_pgno_t, u_int32_t, int, int));
+ * PUBLIC: int __os_seek __P((int, size_t, edb_pgno_t, u_int32_t, int, int));
  */
 int
 __os_seek(fd, pgsize, pageno, relative, isrewind, whence)
 	int fd;
 	size_t pgsize;
-	db_pgno_t pageno;
+	edb_pgno_t pageno;
 	u_int32_t relative;
 	int isrewind, whence;
 {
 	off_t offset;
 	int ret;
 
-	if (__db_jump.j_seek != NULL)
-		ret = __db_jump.j_seek(fd,
+	if (__edb_jump.j_seek != NULL)
+		ret = __edb_jump.j_seek(fd,
 		    pgsize, pageno, relative, isrewind, whence);
 	else {
 		offset = (off_t)pgsize * pageno + relative;

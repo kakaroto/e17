@@ -54,8 +54,8 @@ static const char sccsid[] = "@(#)hash_func.c	10.8 (Sleepycat) 4/10/98";
 #include <sys/types.h>
 #endif
 
-#include "db_int.h"
-#include "db_page.h"
+#include "edb_int.h"
+#include "edb_page.h"
 #include "hash.h"
 
 /*
@@ -88,7 +88,7 @@ __ham_func2(key, len)
 
 /*
  * __ham_func3 --
- *	Ozan Yigit's original sdbm hash.
+ *	Ozan Yigit's original sedbm hash.
  *
  * Ugly, but fast.  Break the string up into 8 byte units.  On the first time
  * through the loop get the "leftover bytes" (strlen % 8).  On every other

@@ -18,7 +18,7 @@ static const char sccsid[] = "@(#)log_findckp.c	10.17 (Sleepycat) 9/17/98";
 #include <string.h>
 #endif
 
-#include "db_int.h"
+#include "edb_int.h"
 #include "shqueue.h"
 #include "log.h"
 #include "txn.h"
@@ -63,7 +63,7 @@ __log_findckp(lp, lsnp)
 	__txn_ckp_args *ckp_args;
 	int ret, verbose;
 
-	verbose = lp->dbenv != NULL && lp->dbenv->db_verbose != 0;
+	verbose = lp->edbenv != NULL && lp->edbenv->edb_verbose != 0;
 
 	/*
 	 * Need to find the appropriate point from which to begin
@@ -95,12 +95,12 @@ __log_findckp(lp, lsnp)
 		if (IS_ZERO_LSN(ckp_lsn))
 			ckp_lsn = ckp_args->ckp_lsn;
 		if (verbose) {
-			__db_err(lp->dbenv, "Checkpoint at: [%lu][%lu]",
+			__edb_err(lp->edbenv, "Checkpoint at: [%lu][%lu]",
 			    (u_long)last_ckp.file, (u_long)last_ckp.offset);
-			__db_err(lp->dbenv, "Checkpoint LSN: [%lu][%lu]",
+			__edb_err(lp->edbenv, "Checkpoint LSN: [%lu][%lu]",
 			    (u_long)ckp_args->ckp_lsn.file,
 			    (u_long)ckp_args->ckp_lsn.offset);
-			__db_err(lp->dbenv, "Previous checkpoint: [%lu][%lu]",
+			__edb_err(lp->edbenv, "Previous checkpoint: [%lu][%lu]",
 			    (u_long)ckp_args->last_ckp.file,
 			    (u_long)ckp_args->last_ckp.offset);
 		}

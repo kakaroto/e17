@@ -21,7 +21,7 @@ static const char sccsid[] = "@(#)os_spin.c	10.10 (Sleepycat) 10/12/98";
 #include <unistd.h>
 #endif
 
-#include "db_int.h"
+#include "edb_int.h"
 #include "os_jump.h"
 
 #if defined(HAVE_PSTAT_GETDYNAMIC)
@@ -71,24 +71,24 @@ __os_spin()
 	 * it can be expensive (e.g., requiring multiple filesystem accesses
 	 * under Debian Linux).
 	 */
-	if (DB_GLOBAL(db_tsl_spins) != 0)
-		return (DB_GLOBAL(db_tsl_spins));
+	if (DB_GLOBAL(edb_tsl_spins) != 0)
+		return (DB_GLOBAL(edb_tsl_spins));
 
-	DB_GLOBAL(db_tsl_spins) = 1;
+	DB_GLOBAL(edb_tsl_spins) = 1;
 #if defined(HAVE_PSTAT_GETDYNAMIC)
-	DB_GLOBAL(db_tsl_spins) = __os_pstat_getdynamic();
+	DB_GLOBAL(edb_tsl_spins) = __os_pstat_getdynamic();
 #endif
 #if defined(HAVE_SYSCONF) && defined(_SC_NPROCESSORS_ONLN)
-	DB_GLOBAL(db_tsl_spins) = __os_sysconf();
+	DB_GLOBAL(edb_tsl_spins) = __os_sysconf();
 #endif
 
 	/*
 	 * Spin 50 times per processor, we have anecdotal evidence that this
 	 * is a reasonable value.
 	 */
-	DB_GLOBAL(db_tsl_spins) *= 50;
+	DB_GLOBAL(edb_tsl_spins) *= 50;
 
-	return (DB_GLOBAL(db_tsl_spins));
+	return (DB_GLOBAL(edb_tsl_spins));
 }
 
 /*
@@ -101,7 +101,7 @@ void
 __os_yield(usecs)
 	u_long usecs;
 {
-	if (__db_jump.j_yield != NULL && __db_jump.j_yield() == 0)
+	if (__edb_jump.j_yield != NULL && __edb_jump.j_yield() == 0)
 		return;
 	__os_sleep(0, usecs);
 }

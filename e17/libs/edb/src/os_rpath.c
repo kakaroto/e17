@@ -15,16 +15,16 @@ static const char sccsid[] = "@(#)os_rpath.c	10.3 (Sleepycat) 4/10/98";
 #include <string.h>
 #endif
 
-#include "db_int.h"
+#include "edb_int.h"
 
 /*
- * __db_rpath --
+ * __edb_rpath --
  *	Return the last path separator in the path or NULL if none found.
  *
- * PUBLIC: char *__db_rpath __P((const char *));
+ * PUBLIC: char *__edb_rpath __P((const char *));
  */
 char *
-__db_rpath(path)
+__edb_rpath(path)
 	const char *path;
 {
 	const char *s, *last;

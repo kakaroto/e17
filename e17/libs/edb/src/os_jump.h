@@ -8,7 +8,7 @@
  */
 
 /* Calls which can be replaced by the application. */
-struct __db_jumptab {
+struct __edb_jumptab {
 	int	(*j_close) __P((int));			/* DB_FUNC_CLOSE */
 	void	(*j_dirfree) __P((char **, int));	/* DB_FUNC_DIRFREE */
 	int	(*j_dirlist)				/* DB_FUNC_DIRLIST */
@@ -28,7 +28,7 @@ struct __db_jumptab {
 	void   *(*j_realloc) __P((void *, size_t));	/* DB_FUNC_REALLOC */
 	int	(*j_runlink) __P((char *));		/* DB_FUNC_RUNLINK */
 	int	(*j_seek)				/* DB_FUNC_SEEK */
-		    __P((int, size_t, db_pgno_t, u_int32_t, int, int));
+		    __P((int, size_t, edb_pgno_t, u_int32_t, int, int));
 	int	(*j_sleep) __P((u_long, u_long));	/* DB_FUNC_SLEEP */
 	int	(*j_unlink) __P((const char *));	/* DB_FUNC_UNLINK */
 	int	(*j_unmap) __P((void *, size_t));	/* DB_FUNC_UNMAP */
@@ -37,4 +37,4 @@ struct __db_jumptab {
 	int	(*j_yield) __P((void));			/* DB_FUNC_YIELD */
 };
 
-extern struct __db_jumptab __db_jump;
+extern struct __edb_jumptab __edb_jump;

@@ -57,8 +57,8 @@ static const char sccsid[] = "@(#)bt_search.c	10.25 (Sleepycat) 12/16/98";
 #include <string.h>
 #endif
 
-#include "db_int.h"
-#include "db_page.h"
+#include "edb_int.h"
+#include "edb_page.h"
 #include "btree.h"
 
 /*
@@ -66,29 +66,29 @@ static const char sccsid[] = "@(#)bt_search.c	10.25 (Sleepycat) 12/16/98";
  *	Search a btree for a key.
  *
  * PUBLIC: int __bam_search __P((DBC *,
- * PUBLIC:     const DBT *, u_int32_t, int, db_recno_t *, int *));
+ * PUBLIC:     const DBT *, u_int32_t, int, edb_recno_t *, int *));
  */
 int
-__bam_search(dbc, key, flags, stop, recnop, exactp)
-	DBC *dbc;
+__bam_search(edbc, key, flags, stop, recnop, exactp)
+	DBC *edbc;
 	const DBT *key;
 	u_int32_t flags;
 	int stop, *exactp;
-	db_recno_t *recnop;
+	edb_recno_t *recnop;
 {
 	BTREE *t;
 	CURSOR *cp;
-	DB *dbp;
+	DB *edbp;
 	DB_LOCK lock;
 	PAGE *h;
-	db_indx_t base, i, indx, lim;
-	db_pgno_t pg;
-	db_recno_t recno;
+	edb_indx_t base, i, indx, lim;
+	edb_pgno_t pg;
+	edb_recno_t recno;
 	int cmp, jump, ret, stack;
 
-	dbp = dbc->dbp;
-	cp = dbc->internal;
-	t = dbp->internal;
+	edbp = edbc->edbp;
+	cp = edbc->internal;
+	t = edbp->internal;
 	recno = 0;
 
 	BT_STK_CLR(cp);
@@ -110,12 +110,12 @@ __bam_search(dbc, key, flags, stop, recnop, exactp)
 	 * Retrieve the root page.
 	 */
 	pg = PGNO_ROOT;
-	stack = F_ISSET(dbp, DB_BT_RECNUM) && LF_ISSET(S_STACK);
-	if ((ret = __bam_lget(dbc,
+	stack = F_ISSET(edbp, DB_BT_RECNUM) && LF_ISSET(S_STACK);
+	if ((ret = __bam_lget(edbc,
 	    0, pg, stack ? DB_LOCK_WRITE : DB_LOCK_READ, &lock)) != 0)
 		return (ret);
-	if ((ret = memp_fget(dbp->mpf, &pg, 0, &h)) != 0) {
-		(void)__BT_LPUT(dbc, lock);
+	if ((ret = memp_fget(edbp->mpf, &pg, 0, &h)) != 0) {
+		(void)__BT_LPUT(edbc, lock);
 		return (ret);
 	}
 
@@ -130,12 +130,12 @@ __bam_search(dbc, key, flags, stop, recnop, exactp)
 	if (!stack &&
 	    ((LF_ISSET(S_PARENT) && (u_int8_t)(stop + 1) >= h->level) ||
 	    (LF_ISSET(S_WRITE) && h->level == LEAFLEVEL))) {
-		(void)memp_fput(dbp->mpf, h, 0);
-		(void)__BT_LPUT(dbc, lock);
-		if ((ret = __bam_lget(dbc, 0, pg, DB_LOCK_WRITE, &lock)) != 0)
+		(void)memp_fput(edbp->mpf, h, 0);
+		(void)__BT_LPUT(edbc, lock);
+		if ((ret = __bam_lget(edbc, 0, pg, DB_LOCK_WRITE, &lock)) != 0)
 			return (ret);
-		if ((ret = memp_fget(dbp->mpf, &pg, 0, &h)) != 0) {
-			(void)__BT_LPUT(dbc, lock);
+		if ((ret = memp_fget(edbp->mpf, &pg, 0, &h)) != 0) {
+			(void)__BT_LPUT(edbc, lock);
 			return (ret);
 		}
 		stack = 1;
@@ -151,10 +151,10 @@ __bam_search(dbc, key, flags, stop, recnop, exactp)
 		 */
 		jump = TYPE(h) == P_LBTREE ? P_INDX : O_INDX;
 		for (base = 0,
-		    lim = NUM_ENT(h) / (db_indx_t)jump; lim != 0; lim >>= 1) {
+		    lim = NUM_ENT(h) / (edb_indx_t)jump; lim != 0; lim >>= 1) {
 			indx = base + ((lim >> 1) * jump);
 			if ((cmp =
-			    __bam_cmp(dbp, key, h, indx, t->bt_compare)) == 0) {
+			    __bam_cmp(edbp, key, h, indx, t->bt_compare)) == 0) {
 				if (TYPE(h) == P_LBTREE)
 					goto match;
 				goto next;
@@ -218,7 +218,7 @@ next:		pg = GET_BINTERNAL(h, indx)->pgno;
 				goto err;
 
 			if ((ret =
-			    __bam_lget(dbc, 0, pg, DB_LOCK_WRITE, &lock)) != 0)
+			    __bam_lget(edbc, 0, pg, DB_LOCK_WRITE, &lock)) != 0)
 				goto err;
 		} else {
 			/*
@@ -231,14 +231,14 @@ next:		pg = GET_BINTERNAL(h, indx)->pgno;
 			    (h->level - 1) == LEAFLEVEL)
 				stack = 1;
 
-			(void)memp_fput(dbp->mpf, h, 0);
+			(void)memp_fput(edbp->mpf, h, 0);
 
 			if ((ret =
-			    __bam_lget(dbc, 1, pg, stack && LF_ISSET(S_WRITE) ?
+			    __bam_lget(edbc, 1, pg, stack && LF_ISSET(S_WRITE) ?
 			    DB_LOCK_WRITE : DB_LOCK_READ, &lock)) != 0)
 				goto err;
 		}
-		if ((ret = memp_fget(dbp->mpf, &pg, 0, &h)) != 0)
+		if ((ret = memp_fget(edbp->mpf, &pg, 0, &h)) != 0)
 			goto err;
 	}
 	/* NOTREACHED */
@@ -262,7 +262,7 @@ match:	*exactp = 1;
 	 * single leaf page.
 	 */
 	if (LF_ISSET(S_DUPLAST))
-		while (indx < (db_indx_t)(NUM_ENT(h) - P_INDX) &&
+		while (indx < (edb_indx_t)(NUM_ENT(h) - P_INDX) &&
 		    h->inp[indx] == h->inp[indx + P_INDX])
 			indx += P_INDX;
 	else
@@ -282,7 +282,7 @@ match:	*exactp = 1;
 				indx -= P_INDX;
 		else
 			while (B_DISSET(GET_BKEYDATA(h, indx + O_INDX)->type) &&
-			    indx < (db_indx_t)(NUM_ENT(h) - P_INDX) &&
+			    indx < (edb_indx_t)(NUM_ENT(h) - P_INDX) &&
 			    h->inp[indx] == h->inp[indx + P_INDX])
 				indx += P_INDX;
 
@@ -294,13 +294,13 @@ match:	*exactp = 1;
 	return (ret);
 
 notfound:
-	(void)memp_fput(dbp->mpf, h, 0);
-	(void)__BT_LPUT(dbc, lock);
+	(void)memp_fput(edbp->mpf, h, 0);
+	(void)__BT_LPUT(edbc, lock);
 	ret = DB_NOTFOUND;
 
 err:	if (cp->csp > cp->sp) {
 		BT_STK_POP(cp);
-		__bam_stkrel(dbc, 0);
+		__bam_stkrel(edbc, 0);
 	}
 	return (ret);
 }
@@ -312,26 +312,26 @@ err:	if (cp->csp > cp->sp) {
  * PUBLIC: int __bam_stkrel __P((DBC *, int));
  */
 int
-__bam_stkrel(dbc, nolocks)
-	DBC *dbc;
+__bam_stkrel(edbc, nolocks)
+	DBC *edbc;
 	int nolocks;
 {
 	CURSOR *cp;
-	DB *dbp;
+	DB *edbp;
 	EPG *epg;
 
-	dbp = dbc->dbp;
-	cp = dbc->internal;
+	edbp = edbc->edbp;
+	cp = edbc->internal;
 
 	/* Release inner pages first. */
 	for (epg = cp->sp; epg <= cp->csp; ++epg) {
 		if (epg->page != NULL)
-			(void)memp_fput(dbp->mpf, epg->page, 0);
+			(void)memp_fput(edbp->mpf, epg->page, 0);
 		if (epg->lock != LOCK_INVALID)
 			if (nolocks)
-				(void)__BT_LPUT(dbc, epg->lock);
+				(void)__BT_LPUT(edbc, epg->lock);
 			else
-				(void)__BT_TLPUT(dbc, epg->lock);
+				(void)__BT_TLPUT(edbc, epg->lock);
 	}
 
 	/* Clear the stack, all pages have been released. */
