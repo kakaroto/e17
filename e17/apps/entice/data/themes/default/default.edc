@@ -1,0 +1,1692 @@
+images
+{
+   image, "bg.png" LOSSY 95;
+   image, "logo.png" LOSSY 80;
+   image, "panel.png" LOSSY 95;
+   image, "list_arrow_u_1.png" LOSSY 95;
+   image, "list_arrow_u_2.png" LOSSY 95;
+   image, "list_arrow_d_1.png" LOSSY 95;
+   image, "list_arrow_d_2.png" LOSSY 95;
+   image, "bt_prev_1.png" LOSSY 95;
+   image, "bt_next_1.png" LOSSY 95;
+   image, "bt_zoom_normal_1.png" LOSSY 95;
+   image, "bt_zoom_out_1.png" LOSSY 95;
+   image, "bt_zoom_in_1.png" LOSSY 95;
+   image, "bt_expand_1.png" LOSSY 95;
+   image, "bt_full_1.png" LOSSY 95;
+   image, "bt_delete_1.png" LOSSY 95;
+   image, "bt_close_1.png" LOSSY 95;
+   image, "bt_prev_2.png" LOSSY 95;
+   image, "bt_next_2.png" LOSSY 95;
+   image, "bt_zoom_normal_2.png" LOSSY 95;
+   image, "bt_zoom_out_2.png" LOSSY 95;
+   image, "bt_zoom_in_2.png" LOSSY 95;
+   image, "bt_expand_2.png" LOSSY 95;
+   image, "bt_full_2.png" LOSSY 95;
+   image, "bt_delete_2.png" LOSSY 95;
+   image, "bt_close_2.png" LOSSY 95;
+   image, "arrow_l.png" LOSSY 95;
+   image, "arrow_r.png" LOSSY 95;
+   image, "arrow_t.png" LOSSY 95;
+   image, "arrow_b.png" LOSSY 95;
+   image, "preview_bg.png" LOSSY 95;
+}
+collections
+{
+    group
+    {
+	name, "Entice";
+	parts
+	{
+	    part
+	    {
+		name, "bg";
+		type, IMAGE;
+		mouse_events, 1;
+		description
+		{
+		    state, "default" 0.0;
+		    visible, 1;
+		    rel1
+		    {
+			relative, 0.0 0.0;
+			offset, 0 0;
+		    }
+		    rel2
+		    {
+			relative, 1.0 1.0;
+			offset, 0 0;
+		    }
+		    image 
+		    {
+			normal, "bg.png";
+		    }
+		    fill
+		    {
+			smooth, 0;
+			size {
+			    relative, 0.0 0.0;
+			    offset, 128 128;
+			}
+		    }
+		}
+	    }
+	    part
+	    {
+		name, "EnticeImage";
+		type, IMAGE;
+		mouse_events, 1;
+		description
+		{
+		    state, "default" 0.0;
+		    visible, 1;
+		    rel1
+		    {
+			relative, 0.0 0.0;
+			offset, 100 75;
+			to, "bg";
+		    }
+		    rel2
+		    {
+			relative, 1.0 1.0;
+			offset, -20 -40;
+			to, "bg";
+		    }
+		    color, 255 255 255 255;
+		}
+		description
+		{
+		    state, "logo" 0.0;
+		    visible, 1;
+		    rel1
+		    {
+			relative, 0.5 0.5;
+			offset, -128 -93;
+			to, "bg";
+		    }
+		    rel2
+		    {
+			relative, 0.5 0.5;
+			offset, 128 93;
+			to, "bg";
+		    }
+		    color, 255 255 255 255;
+		    image
+		    {
+			normal, "logo.png";
+		    }
+		    fill
+			{
+			    smooth, 0;
+			    size
+			    {
+				relative, 0.0 0.0;
+				offset, 256 186;
+			    }
+			}
+		}
+		description
+		{
+		    state, "loading" 0.0;
+		    visible, 1;
+		    rel1
+		    {
+			relative, 0.0 1.0;
+			offset, 0 0;
+			to, "bg";
+		    }
+		    rel2
+		    {
+			relative, 0.0 1.0;
+			offset, 0 0;
+			to, "bg";
+		    }
+		    color, 255 255 255 0;
+		}
+	    }
+	    part
+	    {
+		name, "EnticeImageScroller";
+		type, IMAGE;
+		mouse_events, 1;
+		description
+		{
+		    state, "default" 0.0;
+		    visible, 1;
+		    rel1
+		    {
+			relative, 1.0 1.0;
+			offset, -70 -70;
+			to, "bg";
+		    }
+		    rel2
+		    {
+			relative, 1.0 1.0;
+			offset, -10 -10;
+			to, "bg";
+		    }
+		}
+	    }
+	    part
+	    {
+		name, "ButtonScrollWest";
+		type, IMAGE;
+		mouse_events, 1;
+		description
+		{
+		    state, "default" 0.0;
+		    visible, 1;
+		    rel1
+		    {
+			relative, 0.0 0.5;
+			offset, -16 -8;
+			to, "EnticeImage";
+		    }
+		    rel2
+		    {
+			relative, 0.0 0.5;
+			offset, 0 8;
+			to, "EnticeImage";
+		    }
+		    image
+		    {
+			normal, "arrow_l.png";
+		    }
+		    color, 255 255 255 255;
+		}
+		description
+		{
+		    state, "visible" 0.0;
+		    visible, 1;
+		    rel1
+		    {
+			relative, 0.0 0.5;
+			offset, -16 -8;
+			to, "EnticeImage";
+		    }
+		    rel2
+		    {
+			relative, 0.0 0.5;
+			offset, 0 8;
+			to, "EnticeImage";
+		    }
+		    image
+		    {
+			normal, "arrow_l.png";
+		    }
+		    color, 255 255 255 0;
+		}
+	    }
+	    part
+	    {
+		name, "ButtonScrollEast";
+		type, IMAGE;
+		mouse_events, 1;
+		description
+		{
+		    state, "default" 0.0;
+		    visible, 1;
+		    rel1
+		    {
+			relative, 1.0 0.5;
+			offset, 0 -8;
+			to, "EnticeImage";
+		    }
+		    rel2
+		    {
+			relative, 1.0 0.5;
+			offset, 16 8;
+			to, "EnticeImage";
+		    }
+		    image
+		    {
+			normal, "arrow_r.png";
+		    }
+		    color, 255 255 255 255;
+		}
+		description
+		{
+		    state, "visible" 0.0;
+		    visible, 1;
+		    rel1
+		    {
+			relative, 1.0 0.5;
+			offset, 0 -8;
+			to, "EnticeImage";
+		    }
+		    rel2
+		    {
+			relative, 1.0 0.5;
+			offset, 16 8;
+			to, "EnticeImage";
+		    }
+		    image
+		    {
+			normal, "arrow_r.png";
+		    }
+		    color, 255 255 255 0;
+		}
+	    }
+	    part
+	    {
+		name, "ButtonScrollNorth";
+		type, IMAGE;
+		mouse_events, 1;
+		description
+		{
+		    state, "default" 0.0;
+		    visible, 1;
+		    rel1
+		    {
+			relative, 0.5 0.0;
+			offset, -8 -16;
+			to, "EnticeImage";
+		    }
+		    rel2
+		    {
+			relative, 0.5 0.0;
+			offset, 8 0;
+			to, "EnticeImage";
+		    }
+		    image
+		    {
+			normal, "arrow_t.png";
+		    }
+		    color, 255 255 255 255;
+		}
+		description
+		{
+		    state, "visible" 0.0;
+		    visible, 1;
+		    rel1
+		    {
+			relative, 0.5 1.0;
+			offset, -8 0;
+			to, "EnticeImage";
+		    }
+		    rel2
+		    {
+			relative, 0.5 1.0;
+			offset, 8 16;
+			to, "EnticeImage";
+		    }
+		    image
+		    {
+			normal, "arrow_t.png";
+		    }
+		    color, 255 255 255 0;
+		}
+	    }
+	    part
+	    {
+		name, "ButtonScrollSouth";
+		type, IMAGE;
+		mouse_events, 1;
+		description
+		{
+		    state, "default" 0.0;
+		    visible, 1;
+		    rel1
+		    {
+			relative, 0.5 1.0;
+			offset, -8 0;
+			to, "EnticeImage";
+		    }
+		    rel2
+		    {
+			relative, 0.5 1.0;
+			offset, 8 16;
+			to, "EnticeImage";
+		    }
+		    image
+		    {
+			normal, "arrow_b.png";
+		    }
+		    color, 255 255 255 255;
+		}
+		description
+		{
+		    state, "visible" 0.0;
+		    visible, 1;
+		    rel1
+		    {
+			relative, 0.5 1.0;
+			offset, -8 0;
+			to, "EnticeImage";
+		    }
+		    rel2
+		    {
+			relative, 0.5 1.0;
+			offset, 8 16;
+			to, "EnticeImage";
+		    }
+		    image
+		    {
+			normal, "arrow_b.png";
+		    }
+		    color, 255 255 255 0;
+		}
+	    }
+	    part
+	    {
+		name, "PanelClip";
+		type, RECT;
+		mouse_events, 1;
+		description
+		{
+		    state, "default" 0.0;
+		    visible, 1;
+		    rel1
+		    {
+			relative, 0.0 0.0;
+			offset, 0 0;
+			to, "bg";
+		    }
+		    rel2
+		    {
+			relative, 0.0 1.0;
+			offset, 64 0;
+			to, "bg";
+		    }
+		    color, 255 255 255 255;
+		}
+	    }
+	    part
+	    {
+		name, "PanelMouseArea";
+		type, RECT;
+		mouse_events, 1;
+		description
+		{
+		    state, "default" 0.0;
+		    visible, 1;
+		    rel1
+		    {
+			relative, 0.0 0.0;
+			offset, 0 0;
+			to, "bg";
+		    }
+		    rel2
+		    {
+			relative, 0.0 1.0;
+			offset, 66 0;
+			to, "bg";
+		    }
+		    color, 255 255 255 0;
+		}
+	    }
+	    part
+	    {
+		name, "ButtonMouseArea";
+		type, RECT;
+		mouse_events, 1;
+		description
+		{
+		    state, "default" 0.0;
+		    visible, 1;
+		    rel1
+		    {
+			relative, 1.0 0.0;
+			offset, -320 0;
+			to, "bg";
+		    }
+		    rel2
+		    {
+			relative, 1.0 0.0;
+			offset, 0 54;
+			to, "bg";
+		    }
+		    color, 255 255 255 0;
+		}
+	    }
+	    part
+	    {
+		name, "Panel";
+		type, IMAGE;
+		mouse_events, 1;
+		clip_to, "PanelClip";
+		description
+		{
+		    state, "default" 0.0;
+		    visible, 1;
+		    rel1
+		    {
+			relative, 0.0 0.0;
+			offset, 0 0;
+			to, "PanelClip";
+		    }
+		    rel2
+		    {
+			relative, 0.0 1.0;
+			offset, 0 0;
+			to, "PanelClip";
+		    }
+		    image 
+		    {
+			normal, "panel.png";
+		    }
+		}
+		description
+		{
+		    state, "visible" 0.0;
+		    visible, 1;
+		    rel1
+		    {
+			relative, 0.0 0.0;
+			offset, 0 0;
+			to, "PanelClip";
+		    }
+		    rel2
+		    {
+			relative, 1.0 1.0;
+			offset, 0 0;
+			to, "PanelClip";
+		    }
+		    image 
+		    {
+			normal, "panel.png";
+		    }
+		}
+	    }
+	    part
+	    {
+		name, "ScrollUp";
+		type, IMAGE;
+		mouse_events, 1;
+		clip_to, "PanelClip";
+		description
+		{
+		    state, "default" 0.0;
+		    visible, 1;
+		    rel1
+		    {
+			relative, 0.0 0.0;
+			offset, 0 0;
+			to, "Panel";
+		    }
+		    rel2
+		    {
+			relative, 1.0 0.0;
+			offset, 0 32;
+			to, "Panel";
+		    }
+		    image 
+		    {
+			normal, "list_arrow_u_1.png";
+		    }
+		}
+		description
+		{
+		    state, "selected" 0.0;
+		    visible, 1;
+		    rel1
+		    {
+			relative, 0.0 0.0;
+			offset, 0 0;
+			to, "Panel";
+		    }
+		    rel2
+		    {
+			relative, 1.0 0.0;
+			offset, 0 32;
+			to, "Panel";
+		    }
+		    image 
+		    {
+			normal, "list_arrow_u_2.png";
+		    }
+		}
+	    }
+	    part
+	    {
+		name, "ScrollDown";
+		type, IMAGE;
+		mouse_events, 1;
+		clip_to, "PanelClip";
+		description
+		{
+		    state, "default" 0.0;
+		    visible, 1;
+		    rel1
+		    {
+			relative, 0.0 1.0;
+			offset, 0 -32;
+			to, "Panel";
+		    }
+		    rel2
+		    {
+			relative, 1.0 1.0;
+			offset, 0 0;
+			to, "Panel";
+		    }
+		    image 
+		    {
+			normal, "list_arrow_d_1.png";
+		    }
+		}
+		description
+		{
+		    state, "selected" 0.0;
+		    visible, 1;
+		    rel1
+		    {
+			relative, 0.0 1.0;
+			offset, 0 -32;
+			to, "Panel";
+		    }
+		    rel2
+		    {
+			relative, 1.0 1.0;
+			offset, 0 0;
+			to, "Panel";
+		    }
+		    image 
+		    {
+			normal, "list_arrow_d_2.png";
+		    }
+		}
+	    }
+	    part
+	    {
+		name, "Buttons";
+		type, RECT;
+		mouse_events, 1;
+		description
+		{
+		    state, "default" 0.0;
+		    visible, 1;
+		    rel1
+		    {
+			relative, 1.0 0.0;
+			offset, 0 0;
+			to, "ButtonMouseArea";
+		    }
+		    rel2
+		    {
+			relative, 1.0 1.0;
+			offset, 0 0;
+			to, "ButtonMouseArea";
+		    }
+		    color, 0 0 0 0;
+		}
+		description
+		{
+		    state, "visible" 0.0;
+		    visible, 1;
+		    rel1
+		    {
+			relative, 0.0 0.0;
+			offset, 0 0;
+			to, "ButtonMouseArea";
+		    }
+		    rel2
+		    {
+			relative, 1.0 1.0;
+			offset, 0 0;
+			to, "ButtonMouseArea";
+		    }
+		    color, 255 255 255 255;
+		}
+	    }
+	    part
+	    {
+		name, "ButtonPrevImage";
+		type, IMAGE;
+		mouse_events, 1;
+		clip_to, "Buttons";
+		description
+		{
+		    state, "default" 0.0;
+		    visible, 1;
+		    rel1
+		    {
+			relative, 0.0 0.5;
+			offset,  3 -16;
+			to, "ButtonMouseArea";
+		    }
+		    rel2
+		    {
+			relative, 0.0 0.5;
+			offset,  35 16;
+			to, "ButtonMouseArea";
+		    }
+		    image
+		    {
+			normal, "bt_prev_1.png";
+		    }
+		}
+		description
+		{
+		    state, "clicked" 0.0;
+		    visible, 1;
+		    rel1
+		    {
+			relative, 0.0 0.5;
+			offset,  3 -16;
+			to, "ButtonMouseArea";
+		    }
+		    rel2
+		    {
+			relative, 0.0 0.5;
+			offset,  35 16;
+			to, "ButtonMouseArea";
+		    }
+		    image
+		    {
+			normal, "bt_prev_2.png";
+		    }
+		}
+	    }
+	    part
+	    {
+		name, "ButtonNextImage";
+		type, IMAGE;
+		mouse_events, 1;
+		clip_to, "Buttons";
+		description
+		{
+		    state, "default" 0.0;
+		    visible, 1;
+		    rel1
+		    {
+			relative, 1.0 0.0;
+			offset, 3 0;
+			to, "ButtonPrevImage";
+		    }
+		    rel2
+		    {
+			relative, 1.0 1.0;
+			offset,  35 0;
+			to, "ButtonPrevImage";
+		    }
+		    image
+		    {
+			normal, "bt_next_1.png";
+		    }
+		}
+		description
+		{
+		    state, "clicked" 0.0;
+		    visible, 1;
+		    rel1
+		    {
+			relative, 1.0 0.0;
+			offset, 3 0;
+			to, "ButtonPrevImage";
+		    }
+		    rel2
+		    {
+			relative, 1.0 1.0;
+			offset,  35 0;
+			to, "ButtonPrevImage";
+		    }
+		    image
+		    {
+			normal, "bt_next_2.png";
+		    }
+		}
+	    }
+	    part
+	    {
+		name, "ButtonZoomNormal";
+		type, IMAGE;
+		mouse_events, 1;
+		clip_to, "Buttons";
+		description
+		{
+		    state, "default" 0.0;
+		    visible, 1;
+		    rel1
+		    {
+			relative, 1.0 0.0;
+			offset, 3 0;
+			to, "ButtonNextImage";
+		    }
+		    rel2
+		    {
+			relative, 1.0 1.0;
+			offset,  35 0;
+			to, "ButtonNextImage";
+		    }
+		    image
+		    {
+			normal, "bt_zoom_normal_1.png";
+		    }
+		}
+		description
+		{
+		    state, "clicked" 0.0;
+		    visible, 1;
+		    rel1
+		    {
+			relative, 1.0 0.0;
+			offset, 3 0;
+			to, "ButtonNextImage";
+		    }
+		    rel2
+		    {
+			relative, 1.0 1.0;
+			offset,  35 0;
+			to, "ButtonNextImage";
+		    }
+		    image
+		    {
+			normal, "bt_zoom_normal_2.png";
+		    }
+		}
+	    }
+	    part
+	    {
+		name, "ButtonZoomIn";
+		type, IMAGE;
+		mouse_events, 1;
+		clip_to, "Buttons";
+		description
+		{
+		    state, "default" 0.0;
+		    visible, 1;
+		    rel1
+		    {
+			relative, 1.0 0.0;
+			offset, 3 0;
+			to, "ButtonZoomNormal";
+		    }
+		    rel2
+		    {
+			relative, 1.0 1.0;
+			offset,  35 0;
+			to, "ButtonZoomNormal";
+		    }
+		    image
+		    {
+			normal, "bt_zoom_in_1.png";
+		    }
+		}
+		description
+		{
+		    state, "clicked" 0.0;
+		    visible, 1;
+		    rel1
+		    {
+			relative, 1.0 0.0;
+			offset, 3 0;
+			to, "ButtonZoomNormal";
+		    }
+		    rel2
+		    {
+			relative, 1.0 1.0;
+			offset,  35 0;
+			to, "ButtonZoomNormal";
+		    }
+		    image
+		    {
+			normal, "bt_zoom_in_2.png";
+		    }
+		}
+	    }
+	    part
+	    {
+		name, "ButtonZoomOut";
+		type, IMAGE;
+		mouse_events, 1;
+		clip_to, "Buttons";
+		description
+		{
+		    state, "default" 0.0;
+		    visible, 1;
+		    rel1
+		    {
+			relative, 1.0 0.0;
+			offset, 3 0;
+			to, "ButtonZoomIn";
+		    }
+		    rel2
+		    {
+			relative, 1.0 1.0;
+			offset,  35 0;
+			to, "ButtonZoomIn";
+		    }
+		    image
+		    {
+			normal, "bt_zoom_out_1.png";
+		    }
+		}
+		description
+		{
+		    state, "clicked" 0.0;
+		    visible, 1;
+		    rel1
+		    {
+			relative, 1.0 0.0;
+			offset, 3 0;
+			to, "ButtonZoomIn";
+		    }
+		    rel2
+		    {
+			relative, 1.0 1.0;
+			offset,  35 0;
+			to, "ButtonZoomIn";
+		    }
+		    image
+		    {
+			normal, "bt_zoom_out_2.png";
+		    }
+		}
+	    }
+	    part
+	    {
+		name, "ButtonExpandImage";
+		type, IMAGE;
+		mouse_events, 1;
+		clip_to, "Buttons";
+		description
+		{
+		    state, "default" 0.0;
+		    visible, 1;
+		    rel1
+		    {
+			relative, 1.0 0.0;
+			offset, 3 0;
+			to, "ButtonZoomOut";
+		    }
+		    rel2
+		    {
+			relative, 1.0 1.0;
+			offset,  35 0;
+			to, "ButtonZoomOut";
+		    }
+		    image
+		    {
+			normal, "bt_expand_1.png";
+		    }
+		}
+		description
+		{
+		    state, "clicked" 0.0;
+		    visible, 1;
+		    rel1
+		    {
+			relative, 1.0 0.0;
+			offset, 3 0;
+			to, "ButtonZoomOut";
+		    }
+		    rel2
+		    {
+			relative, 1.0 1.0;
+			offset,  35 0;
+			to, "ButtonZoomOut";
+		    }
+		    image
+		    {
+			normal, "bt_expand_2.png";
+		    }
+		}
+	    }
+	    part
+	    {
+		name, "ButtonFullScreen";
+		type, IMAGE;
+		mouse_events, 1;
+		clip_to, "Buttons";
+		description
+		{
+		    state, "default" 0.0;
+		    visible, 1;
+		    rel1
+		    {
+			relative, 1.0 0.0;
+			offset, 3 0;
+			to, "ButtonExpandImage";
+		    }
+		    rel2
+		    {
+			relative, 1.0 1.0;
+			offset,  35 0;
+			to, "ButtonExpandImage";
+		    }
+		    image
+		    {
+			normal, "bt_full_1.png";
+		    }
+		}
+		description
+		{
+		    state, "clicked" 0.0;
+		    visible, 1;
+		    rel1
+		    {
+			relative, 1.0 0.0;
+			offset, 3 0;
+			to, "ButtonExpandImage";
+		    }
+		    rel2
+		    {
+			relative, 1.0 1.0;
+			offset,  35 0;
+			to, "ButtonExpandImage";
+		    }
+		    image
+		    {
+			normal, "bt_full_2.png";
+		    }
+		}
+	    }
+	    part
+	    {
+		name, "ButtonDeleteImage";
+		type, IMAGE;
+		mouse_events, 1;
+		clip_to, "Buttons";
+		description
+		{
+		    state, "default" 0.0;
+		    visible, 1;
+		    rel1
+		    {
+			relative, 1.0 0.0;
+			offset, 3 0;
+			to, "ButtonFullScreen";
+		    }
+		    rel2
+		    {
+			relative, 1.0 1.0;
+			offset,  35 0;
+			to, "ButtonFullScreen";
+		    }
+		    image
+		    {
+			normal, "bt_delete_1.png";
+		    }
+		}
+		description
+		{
+		    state, "clicked" 0.0;
+		    visible, 1;
+		    rel1
+		    {
+			relative, 1.0 0.0;
+			offset, 3 0;
+			to, "ButtonFullScreen";
+		    }
+		    rel2
+		    {
+			relative, 1.0 1.0;
+			offset,  35 0;
+			to, "ButtonFullScreen";
+		    }
+		    image
+		    {
+			normal, "bt_delete_2.png";
+		    }
+		}
+	    }
+	    part
+	    {
+		name, "ButtonExit";
+		type, IMAGE;
+		mouse_events, 1;
+		clip_to, "Buttons";
+		description
+		{
+		    state, "default" 0.0;
+		    visible, 1;
+		    rel1
+		    {
+			relative, 1.0 0.0;
+			offset, 3 0;
+			to, "ButtonDeleteImage";
+		    }
+		    rel2
+		    {
+			relative, 1.0 1.0;
+			offset,  35 0;
+			to, "ButtonDeleteImage";
+		    }
+		    image
+		    {
+			normal, "bt_close_1.png";
+		    }
+		}
+		description
+		{
+		    state, "clicked" 0.0;
+		    visible, 1;
+		    rel1
+		    {
+			relative, 1.0 0.0;
+			offset, 3 0;
+			to, "ButtonDeleteImage";
+		    }
+		    rel2
+		    {
+			relative, 1.0 1.0;
+			offset,  35 0;
+			to, "ButtonDeleteImage";
+		    }
+		    image
+		    {
+			normal, "bt_close_2.png";
+		    }
+		}
+	    }
+	    part
+	    {
+		name, "EnticeThumbnailArea";
+		type, RECT;
+		mouse_events, 0;
+		description
+		{
+		    state, "default" 0.0;
+		    visible, 1;
+		    rel1
+		    {
+			relative, 0.0 0.0;
+			offset, 4 40;
+			to, "Panel";
+		    }
+		    rel2
+		    {
+			relative, 1.0 1.0;
+			offset, -15 -40;
+			to, "Panel";
+		    }
+		    color, 0 0 0 0;
+		}
+		description
+		{
+		    state, "visible" 0.0;
+		    visible, 1;
+		    rel1
+		    {
+			relative, 0.0 0.0;
+			offset, 4 40;
+			to, "Panel";
+		    }
+		    rel2
+		    {
+			relative, 1.0 1.0;
+			offset, -15 -40;
+			to, "Panel";
+		    }
+		    color, 0 0 0 0;
+		}
+	    }
+	    part
+	    {
+		name, "EnticeFileName";
+		type, TEXT;
+		effect, SOFT_SHADOW;
+		mouse_events, 0;
+		description
+		{
+		    state, "default" 0.0;
+		    visible, 1;
+		    rel1
+		    {
+			relative, 1.0 0.0;
+			offset, 15 10;
+			to_y, "Buttons";
+			to_x, "EnticeThumbnailArea";
+		    }
+		    rel2
+		    {
+			relative, 0.0 1.0;
+			offset, -15 0;
+			to, "Buttons";
+		    }
+		    color, 100 100 100 255;
+		    color3, 229 229 229 255;
+		    text
+		    {
+			text, "Welcome to Entice";
+			font, "Vera";
+			size, 16;
+			fit, 0 0;
+			align, 1.0, 0.5;
+		    }
+		}
+	    }
+	    part
+	    {
+		name, "EnticeFileDimensions";
+		type, TEXT;
+		effect, SOFT_SHADOW;
+		mouse_events, 0;
+		description
+		{
+		    state, "default" 0.0;
+		    visible, 1;
+		    rel1
+		    {
+			relative, 0.0 1.0;
+			offset, 0 0;
+			to, "EnticeFileName";
+		    }
+		    rel2
+		    {
+			relative, 1.0 1.0;
+			offset, 0 15;
+			to, "EnticeFileName";
+		    }
+		    color, 100 100 100 255;
+		    color3, 229 229 229 255;
+		    text
+		    {
+			text, "";
+			font, "Vera";
+			size, 12;
+			fit, 0 0;
+			align, 1.0, 0.5;
+		    }
+		}
+	    }
+	    part
+	    {
+		name, "EnticeImagePreview";
+		type, IMAGE;
+		mouse_events, 0;
+		description
+		{
+		    state, "default" 0.0;
+		    visible, 1;
+		    rel1
+		    {
+			relative, 0.0 0.9;
+			offset, -200 0;
+			to, "Panel";
+		    }
+		    rel2
+		    {
+			relative, 0.0 0.9;
+			offset, -100 0;
+			to, "Panel";
+		    }
+		}
+		description
+		{
+		    state, "visible" 0.0;
+		    visible, 1;
+		    rel1
+		    {
+			relative, 1.0 0.75;
+			offset, 0 -96;
+			to, "Panel";
+		    }
+		    rel2
+		    {
+			relative, 1.0 0.75;
+			offset, 192 96;
+			to, "Panel";
+		    }
+		}
+	    }
+	}
+	programs
+	{
+	    program
+	    {
+		name, 	"ShowPanel";
+		signal, "mouse,in";
+		source, "PanelMouseArea";
+		action, STATE_SET "visible" 0.0;
+		transition, ACCELERATE 0.3;
+		target, "Panel";
+		target, "EnticeThumbnailArea";
+	    }
+	    program
+	    {
+		name, 	"ShowButtons";
+		signal, "mouse,in";
+		source, "ButtonMouseArea";
+		action, STATE_SET "visible" 0.0;
+		transition, ACCELERATE 0.4;
+		target, "Buttons";
+	    }
+	    program
+	    {
+		name, 	"HidePanel";
+		signal, "mouse,in";
+		source, "bg";
+		action, STATE_SET "default" 0.0;
+		transition, DECELERATE 0.75;
+		target, "Panel";
+		target, "EnticeThumbnailArea";
+		target, "Buttons";
+	    }
+	    program
+	    {
+		name, 	"JustImage";
+		signal, "mouse,in";
+		source, "bg";
+		action, STATE_SET "default" 0.0;
+		transition, LINEAR 0.15;
+		target, "EnticeImagePreview";
+	    }
+	    program
+	    {
+		name, 	"ThumbScrollUpUp";
+		signal, "mouse,up,1";
+		source, "ScrollUp";
+		action, STATE_SET "default" 0.0;
+		transition, SINUSOIDAL 0.25;
+		target, "ScrollUp";
+	    }
+	    program
+	    {
+		name, 	"ThumbScrollUpDown";
+		signal, "mouse,down,1";
+		source, "ScrollUp";
+		action, STATE_SET "selected" 0.0;
+		transition, LINEAR 0.0;
+		target, "ScrollUp";
+	    }
+	    program
+	    {
+		name, 	"ThumbScrollDownUp";
+		signal, "mouse,up,1";
+		source, "ScrollDown";
+		action, STATE_SET "default" 0.0;
+		transition, SINUSOIDAL 0.25;
+		target, "ScrollDown";
+	    }
+	    program
+	    {
+		name, 	"ThumbScrollDownDown";
+		signal, "mouse,down,1";
+		source, "ScrollDown";
+		action, STATE_SET "selected" 0.0;
+		transition, LINEAR 0.0;
+		target, "ScrollDown";
+	    }
+	    program
+	    {
+		name, "ThumbScrollDownStop";
+		signal, "mouse,up,1";
+		source, "ScrollDown";
+		action, SIGNAL_EMIT "EnticeThumbsScrollStop" "";
+	    }
+	    program
+	    {
+		name, "ThumbScrollDownStart";
+		signal, "mouse,down,1";
+		source, "ScrollDown";
+		action, SIGNAL_EMIT "EnticeThumbsScrollPrevStart" "";
+	    }
+	    program
+	    {
+		name, "ThumbScrollUpStop";
+		signal, "mouse,up,1";
+		source, "ScrollUp";
+		action, SIGNAL_EMIT "EnticeThumbsScrollStop" "";
+	    }
+	    program
+	    {
+		name, "ThumbScrollUpStart";
+		signal, "mouse,down,1";
+		source, "ScrollUp";
+		action, SIGNAL_EMIT "EnticeThumbsScrollNextStart" "";
+	    }
+	    /* Entice Signals We need to emit */
+	    program
+	    {
+		name, "NextImageRequest";
+		signal, "mouse,clicked,1";
+		source, "ButtonNextImage";
+		action, SIGNAL_EMIT "EnticeImageNext" "";
+	    }
+	    program
+	    {
+		name, "PrevImageRequest";
+		signal, "mouse,clicked,1";
+		source, "ButtonPrevImage";
+		action, SIGNAL_EMIT "EnticeImagePrev" "";
+	    }
+	    program
+	    {
+		name, "ZoomNormalRequest";
+		signal, "mouse,clicked,1";
+		source, "ButtonZoomNormal";
+		action, SIGNAL_EMIT "EnticeZoomDefault" "";
+	    }
+	    program
+	    {
+		name,   "ZoomInRequest";
+		signal, "mouse,clicked,1";
+		source, "ButtonZoomIn";
+		action, SIGNAL_EMIT "EnticeZoomIn" "";
+	    }
+	    program
+	    {
+		name,   "ZoomOutRequest";
+		signal, "mouse,clicked,1";
+		source, "ButtonZoomOut";
+		action, SIGNAL_EMIT "EnticeZoomOut" "";
+	    }
+	    program
+	    {
+		name,   "ExpandRequest";
+		signal, "mouse,clicked,1";
+		source, "ButtonExpandImage";
+		action, SIGNAL_EMIT "EnticeZoomFit" "";
+	    }
+	    program
+	    {
+		name,   "FullscreenRequest";
+		signal, "mouse,clicked,1";
+		source, "ButtonFullScreen";
+		action, SIGNAL_EMIT "EnticeFullScreen" "";
+	    }
+	    program
+	    {
+		name, "DeleteImageRequest";
+		signal, "mouse,clicked,1";
+		source, "ButtonDeleteImage";
+		action, SIGNAL_EMIT "EnticeDeleteCurrent" "";
+	    }
+	    program
+	    {
+		name,   "ExitRequest";
+		signal, "mouse,clicked,1";
+		source, "ButtonExit";
+		action, SIGNAL_EMIT "EnticeQuit" "";
+	    }
+	    /* just for looks */
+	    program
+	    {
+		name, "ButtonClicked";
+		signal, "mouse,down,1";
+		source, "ButtonDeleteImage";
+		action, STATE_SET "clicked" 0.0;
+		transition, LINEAR 0.0;
+		target, "ButtonDeleteImage";
+	    }
+	    program
+	    {
+		name, "ButtonUnClicked";
+		signal, "mouse,up,1";
+		source, "ButtonDeleteImage";
+		action, STATE_SET "default" 0.0;
+		transition, DECELERATE 0.25;
+		target, "ButtonDeleteImage";
+	    }
+	    program
+	    {
+		name, "ZoomInButtonClicked";
+		signal, "mouse,clicked,1";
+		source, "ButtonZoomIn";
+		action, STATE_SET "clicked" 0.0;
+		transition, LINEAR 0.0;
+		target, "ButtonZoomIn";
+		after, "ZoomInButtonUnClicked";
+	    }
+	    program
+	    {
+		name, "ZoomInButtonUnClicked";
+		signal, "";
+		source, "ButtonZoomIn";
+		action, STATE_SET "default" 0.0;
+		transition, DECELERATE 0.25;
+		target, "ButtonZoomIn";
+	    }
+	    program
+	    {
+		name, "ZoomOutButtonClicked";
+		signal, "mouse,clicked,1";
+		source, "ButtonZoomOut";
+		action, STATE_SET "clicked" 0.0;
+		transition, LINEAR 0.0;
+		target, "ButtonZoomOut";
+		after, "ZoomOutButtonUnClicked";
+	    }
+	    program
+	    {
+		name, "ZoomOutButtonUnClicked";
+		signal, "";
+		source, "ButtonZoomOut";
+		action, STATE_SET "default" 0.0;
+		transition, DECELERATE 0.25;
+		target, "ButtonZoomOut";
+	    }
+	    program
+	    {
+		name, "ZoomNormalButtonClicked";
+		signal, "mouse,clicked,1";
+		source, "ButtonZoomNormal";
+		action, STATE_SET "clicked" 0.0;
+		transition, LINEAR 0.0;
+		target, "ButtonZoomNormal";
+		after, "ZoomNormalButtonUnClicked";
+	    }
+	    program
+	    {
+		name, "ZoomNormalButtonUnClicked";
+		signal, "";
+		source, "ButtonZoomNormal";
+		action, STATE_SET "default" 0.0;
+		transition, DECELERATE 0.25;
+		target, "ButtonZoomNormal";
+	    }
+	    program
+	    {
+		name, "NextImageButtonClicked";
+		signal, "mouse,clicked,1";
+		source, "ButtonNextImage";
+		action, STATE_SET "clicked" 0.0;
+		transition, LINEAR 0.0;
+		target, "ButtonNextImage";
+		after, "NextImageButtonUnClicked";
+	    }
+	    program
+	    {
+		name, "NextImageButtonUnClicked";
+		signal, "";
+		source, "ButtonNextImage";
+		action, STATE_SET "default" 0.0;
+		transition, DECELERATE 0.25;
+		target, "ButtonNextImage";
+	    }
+	    program
+	    {
+		name, "PrevImageButtonClicked";
+		signal, "mouse,clicked,1";
+		source, "ButtonPrevImage";
+		action, STATE_SET "clicked" 0.0;
+		transition, LINEAR 0.0;
+		target, "ButtonPrevImage";
+		after, "PrevImageButtonUnClicked";
+	    }
+	    program
+	    {
+		name, "PrevImageButtonUnClicked";
+		signal, "";
+		source, "ButtonPrevImage";
+		action, STATE_SET "default" 0.0;
+		transition, DECELERATE 0.25;
+		target, "ButtonPrevImage";
+	    }
+	    program
+	    {
+		name, "ExpandImageButtonClicked";
+		signal, "mouse,clicked,1";
+		source, "ButtonExpandImage";
+		action, STATE_SET "clicked" 0.0;
+		transition, LINEAR 0.0;
+		target, "ButtonExpandImage";
+		after, "ExpandImageButtonUnClicked";
+	    }
+	    program
+	    {
+		name, "ExpandImageButtonUnClicked";
+		signal, "";
+		source, "ButtonExpandImage";
+		action, STATE_SET "default" 0.0;
+		transition, DECELERATE 0.25;
+		target, "ButtonExpandImage";
+	    }
+	    program
+	    {
+		name,   "StopPanning";
+		signal, "mouse,up,1";
+		source, "ButtonScroll*";
+		action, SIGNAL_EMIT "EnticeImageScrollStop" "";
+	    }
+	    program
+	    {
+		name, "Eastwardly";
+		signal, "mouse,down,1";
+		source, "ButtonScrollEast";
+		action, SIGNAL_EMIT "EnticeImageScrollEastStart" "";
+	    }
+	    program
+	    {
+		name, "Westwardly";
+		signal, "mouse,down,1";
+		source, "ButtonScrollWest";
+		action, SIGNAL_EMIT "EnticeImageScrollWestStart" "";
+	    }
+	    program
+	    {
+		name, "Northernly";	// i don't think that's a word
+		signal, "mouse,down,1";
+		source, "ButtonScrollNorth";
+		action, SIGNAL_EMIT "EnticeImageScrollNorthStart" "";
+	    }
+	    program
+	    {
+		name, "Southernly";
+		signal, "mouse,down,1";
+		source, "ButtonScrollSouth";
+		action, SIGNAL_EMIT "EnticeImageScrollSouthStart" "";
+	    }
+	    program
+	    {
+		name, "IncomingImage";
+		signal, "EnticeImageDisplay";
+		source, "";
+		action, STATE_SET "loading" 0.0;
+		transition, LINEAR 0.0;
+		target, "EnticeImage";
+		after, "IncomingImageShow";
+	    }
+	    program
+	    {
+		name, "IncomingImageShow";
+		signal, "";
+		source, "";
+		action, STATE_SET "default" 0.0;
+		transition, DECELERATE 0.2;
+		target, "EnticeImage";
+		target, "EnticeImagePreview";
+	    }
+	    program
+	    {
+		name, "ShowLogo";
+		signal, "show";
+		source, "";
+		action, STATE_SET "logo" 0.0;
+		transition, LINEAR 0.0;
+		target, "EnticeImage";
+	    }
+	    program
+	    {
+		name, "ShowPreview";
+		signal, "EnticeImagePreviewShow";
+		source, "";
+		action, STATE_SET "default" 0.0;
+		transition, ACCELERATE 0.1;
+		target, "EnticeImagePreview";
+		after, "ShowPreviewAfter";
+	    }
+	    program
+	    {
+		name, "ShowPreviewAfter";
+		signal, "";
+		source, "";
+		action, STATE_SET "visible" 0.0;
+		transition, ACCELERATE 0.25;
+		target, "EnticeImagePreview";
+	    }
+	}
+    }
+    group
+    {
+	name, "EnticeThumb";
+	parts
+	{
+	    part
+	    {
+		name, "EnticeThumb"
+		type, IMAGE;
+		mouse_events, 1;
+		description
+		{
+		    state, "default" 0.0;
+		    visible, 1;
+		    rel1
+		    {
+			relative, 0.0 0.0;
+			offset, 0 0;
+		    }
+		    rel2
+		    {
+			relative, 1.0 1.0;
+			offset, 0 0;
+		    }
+		}
+	    }
+	}
+	programs
+	{
+	    program
+	    {
+		name, "ShowThumb";
+		signal, "mouse,in";
+		source, "EnticeThumb";
+		in, 	0.23 0.35;
+		action, SIGNAL_EMIT "EnticeThumbPreview" "";
+	    }
+	    program
+	    {
+		name, "StopThumb";
+		signal, "mouse,out";
+		source, "EnticeThumb";
+		action, ACTION_STOP;
+		target, "ShowThumb";
+	    }
+	    program
+	    {
+		name, "SelectThumb";
+		signal, "mouse,up,1";
+		source, "EnticeThumb";
+		action, SIGNAL_EMIT "EnticeThumbLoad" "";
+	    }
+	}
+    }
+    group
+    {
+	name, "EnticeScroller";
+	parts
+	{
+	    part
+	    {
+		name, "EnticeImagePosition";
+		type, RECT;
+		mouse_events, 0;
+		description
+		{
+		    state, "default" 0.0;
+		    visible, 1;
+		    rel1
+		    {
+			relative, 0.0 0.0;
+			offset, 0 0;
+		    }
+		    rel2
+		    {
+			relative, 1.0 1.0;
+			offset, 0 0;
+		    }
+		}
+	    }
+	}
+}
