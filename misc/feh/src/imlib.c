@@ -42,7 +42,6 @@ int depth;
 Atom wmDeleteWindow;
 XContext xid_context = 0;
 Window root = 0;
-winwidget progwin = NULL;
 
 /* Xinerama support */
 #ifdef HAVE_LIBXINERAMA

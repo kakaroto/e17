@@ -27,6 +27,9 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 #include "debug.h"
 #include "options.h"
 
+static char *feh_user_name = NULL;
+static char *feh_tmp_dir = NULL;
+
 /* eprintf: print error message and exit */
 void
 eprintf(char *fmt, ...)
@@ -218,4 +221,31 @@ char *ereadfile(char *path) {
   fclose(fp);
 
   return estrdup(buffer);  
+}
+
+char *feh_get_tmp_dir(void) {
+  char *tmp;
+  if (feh_tmp_dir)
+    return feh_tmp_dir;
+  tmp = getenv("TMPDIR");
+  if (!tmp)
+    tmp = getenv("TMP");
+  if (!tmp)
+    tmp = getenv("TEMP");
+  if (!tmp)
+    tmp = "/tmp";
+  feh_tmp_dir = estrdup(tmp);
+  return feh_tmp_dir;
+}
+
+char *feh_get_user_name(void) {
+    struct passwd *pw = NULL;
+
+    if (feh_user_name)
+      return feh_user_name;
+    setpwent ();
+    pw = getpwuid (getuid ());
+    endpwent ();
+    feh_user_name = estrdup(pw->pw_name);
+    return feh_user_name;
 }

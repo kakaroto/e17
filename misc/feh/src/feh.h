@@ -45,8 +45,11 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 #include <unistd.h>
 #include <ctype.h>
 #include <sys/stat.h>
+#include <pwd.h>
 #include <sys/types.h>
 #include <sys/time.h>
+#include <sys/socket.h>
+#include <sys/un.h>
 #include <errno.h>
 #include <dirent.h>
 #include <stdarg.h>
@@ -59,6 +62,7 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
 #include "structs.h"
 #include "menu.h"
+#include "ipc.h"
 
 #include "utils.h"
 #include "getopt.h"
@@ -160,7 +164,6 @@ extern int xinerama_screen;
 /* Thumbnail sizes */
 extern int cmdargc;
 extern char **cmdargv;
-extern winwidget progwin;
 extern Window root;
 extern XContext xid_context;
 extern Screen *scr;

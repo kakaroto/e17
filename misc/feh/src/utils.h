@@ -39,6 +39,8 @@ char *estrjoin(const char *separator, ...);
 char *stroflen(char, int);
 char *feh_unique_filename(char *path, char *basename);
 char *ereadfile(char *path);
+char *feh_get_tmpdir(void);
+char *feh_get_user_name(void);
 
 #define ESTRAPPEND(a,b) \
   {\

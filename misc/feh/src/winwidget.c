@@ -698,7 +698,6 @@ winwidget_loadimage(winwidget winwid,
 {
   D_ENTER(4);
   D(4, ("filename %s\n", file->filename));
-  progwin = winwid;
   D_RETURN(4, feh_load_image(&(winwid->im), file));
 }
 

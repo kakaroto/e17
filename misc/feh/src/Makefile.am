@@ -15,7 +15,7 @@ options.c options.h winwidget.c winwidget.h menu.c menu.h structs.h \
 filelist.c filelist.h multiwindow.c imlib.c index.c slideshow.c \
 utils.c utils.h keyevents.c timers.c timers.h list.c collage.c debug.h \
 events.c events.h support.c support.h \
-thumbnail.c thumbnail.h 
+thumbnail.c thumbnail.h ipc.c
 feh_LDADD         = -lX11 @IMLIB_LIBS@ @GIBLIB_LIBS@
 
 images_DATA = about.png menubg_default.png menubg_sky.png \

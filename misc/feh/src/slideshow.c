@@ -107,6 +107,7 @@ feh_reload_image(winwidget w, int resize)
 {
    char *title, *new_title;
    int len;
+   Imlib_Image tmp;
 
    D_ENTER(4);
 
@@ -116,7 +117,6 @@ feh_reload_image(winwidget w, int resize)
       D_RETURN_(4);
    }
 
-   winwidget_free_image(w);
    free(FEH_FILE(w->file->data)->caption);
    FEH_FILE(w->file->data)->caption = NULL;
 
@@ -126,30 +126,38 @@ feh_reload_image(winwidget w, int resize)
    title = estrdup(w->name);
    winwidget_rename(w, new_title);
 
-   if ((winwidget_loadimage(w, FEH_FILE(w->file->data))) != 0)
-   {
-      w->mode = MODE_NORMAL;
-      if ((w->im_w != gib_imlib_image_get_width(w->im))
-          || (w->im_h != gib_imlib_image_get_height(w->im)))
-         w->had_resize = 1;
-      if (w->has_rotated)
-      {
-         Imlib_Image temp;
+   /* if the image has changed in dimensions - we gotta resize */
+   if ((feh_load_image(&tmp, FEH_FILE(w->file->data))) == 0) {
+     weprintf("Couldn't reload image. Is it still there?");
+   }
 
-         temp = gib_imlib_create_rotated_image(w->im, 0.0);
-         w->im_w = gib_imlib_image_get_width(temp);
-         w->im_h = gib_imlib_image_get_height(temp);
-         gib_imlib_free_image_and_decache(temp);
-      }
-      else
-      {
-         w->im_w = gib_imlib_image_get_width(w->im);
-         w->im_h = gib_imlib_image_get_height(w->im);
-      }
-      winwidget_render_image(w, resize, 1);
+   if ((gib_imlib_image_get_width(w->im) != gib_imlib_image_get_width(tmp)) || (gib_imlib_image_get_height(w->im) != gib_imlib_image_get_height(tmp))) {
+     resize = 1;
+     winwidget_reset_image(w);
+   }
+
+   winwidget_free_image(w);
+   w->im = tmp;
+
+   w->mode = MODE_NORMAL;
+   if ((w->im_w != gib_imlib_image_get_width(w->im))
+       || (w->im_h != gib_imlib_image_get_height(w->im)))
+       w->had_resize = 1;
+   if (w->has_rotated)
+   {
+       Imlib_Image temp;
+
+       temp = gib_imlib_create_rotated_image(w->im, 0.0);
+       w->im_w = gib_imlib_image_get_width(temp);
+       w->im_h = gib_imlib_image_get_height(temp);
+       gib_imlib_free_image_and_decache(temp);
    }
    else
-      weprintf("Couldn't reload image. Is it still there?");
+   {
+       w->im_w = gib_imlib_image_get_width(w->im);
+       w->im_h = gib_imlib_image_get_height(w->im);
+   }
+   winwidget_render_image(w, resize, 1);
 
    winwidget_rename(w, title);
    free(title);
