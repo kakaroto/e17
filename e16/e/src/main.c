@@ -204,7 +204,6 @@ main(int argc, char **argv)
      {
 	for (i = 0; i < num; i++)
 	  {
-	     printf("%i / %i: %s\n", i, num, lst[i]->name);
 	     if ((!lst[i]->internal) && (lst[i]->default_show))
 		SimpleShowButton(lst[i]);
 	  }
