@@ -1,0 +1,1644 @@
+images
+{
+    image, "e.png"	LOSSY 80;
+    image, "e_logo.png"		LOSSY 80;
+    image, "e_logo_bg.jpg"		LOSSY 80;
+    image, "menu.png"		LOSSY 80;
+    image, "default.png"		LOSSY 80;
+    image, "gnome.png"		LOSSY 80;
+    image, "kde.png"		LOSSY 80;
+    image, "blackbox.png"		LOSSY 80;
+    image, "failsafe.png"		LOSSY 80;
+}
+collections
+{
+    group
+    {
+	name, "main";
+	parts
+	{
+	    part
+	    {
+		name, "base";
+		type, RECT;
+		mouse_events, 0;
+		description
+		{
+		    state, "default" 0.0;
+		    visible, 1;
+		    rel1
+		    {
+			relative, 0.0 0.0;
+			offset, 0 0;
+		    }
+		    rel2
+		    {
+			relative, 1.0 1.0;
+			offset, 0 0;
+		    }
+		    color, 100 100 100 255;
+		}
+	    }
+	    part
+	    {
+		name, "bg";
+		type, IMAGE;
+		mouse_events, 0;
+		description
+		{
+		    state, "default" 0.0;
+		    visible, 1;
+		    rel1
+		    {
+			relative, 0.0 0.0;
+			offset, 0 0;
+		    }
+		    rel2
+		    {
+			relative, 1.0 1.0;
+			offset, 0 0;
+		    }
+		    image
+		    {
+			normal, "e_logo_bg.jpg";
+		    }
+		}
+		description
+		{
+		    state, "postauth" 0.0;
+		    visible, 1;
+		    color, 255 255 255 0;
+		    rel1
+		    {
+			relative, 0.0 0.0;
+			offset, 0 0;
+		    }
+		    rel2
+		    {
+			relative, 1.0 1.0;
+			offset, 0 0;
+		    }
+		    image
+		    {
+			normal, "e_logo_bg.jpg";
+		    }
+		}
+	    }
+	    part
+	    {
+		name, "EntranceUserMessage";
+		type,	TEXT;
+		mouse_events, 0;
+		effect, SOFT_SHADOW;
+		description
+		{
+		    state, "default" 0.0;
+		    visible, 1;
+		    rel1
+		    {
+			relative, 0.5 0.8;
+			offset, -100 0;
+		    }
+		    rel2
+		    {
+			relative, 0.5 0.8;
+			offset, 100 70;
+		    }
+		    color, 100 100 100 255;
+		    color3, 229 229 229 255;
+		    text
+		    {
+			text, "Enter Username:";
+			font, "orbit";
+			size, 16;
+			fit,  0 0;
+			align, 0.5 0.5;
+		    }
+		}
+		description
+		{
+		    state, "hidden" 0.0;
+		    visible, 1;
+		    rel1
+		    {
+			relative, 0.5 0.8;
+			offset, -100 0;
+		    }
+		    rel2
+		    {
+			relative, 0.5 0.8;
+			offset, 100 70;
+		    }
+		    color, 100 100 100 0;
+		    color3, 229 229 229 0;
+		    text
+		    {
+			text, "Enter Username:";
+			font, "orbit";
+			size, 16;
+			fit,  0 0;
+			align, 0.5 0.5;
+		    }
+		}
+	    }
+	    part
+	    {
+		name, "EntrancePassMessage";
+		type,	TEXT;
+		mouse_events, 0;
+		effect, SOFT_SHADOW;
+		description
+		{
+		    state, "default" 0.0;
+		    visible, 1;
+		    rel1
+		    {
+			relative, 0.5 0.8;
+			offset, -100 0;
+		    }
+		    rel2
+		    {
+			relative, 0.5 0.8;
+			offset, 100 70;
+		    }
+		    color, 100 100 100 255;
+		    color3, 229 229 229 255;
+		    text
+		    {
+			text, "Password:";
+			font, "orbit";
+			size, 16;
+			fit,  0 0;
+			align, 0.5 0.5;
+		    }
+		}
+		description
+		{
+		    state, "hidden" 0.0;
+		    visible, 1;
+		    rel1
+		    {
+			relative, 0.5 0.8;
+			offset, -100 0;
+		    }
+		    rel2
+		    {
+			relative, 0.5 0.8;
+			offset, 100 70;
+		    }
+		    color, 100 100 100 0;
+		    color3, 229 229 229 0;
+		    text
+		    {
+			text, "Password:";
+			font, "orbit";
+			size, 16;
+			fit,  0 0;
+			align, 0.5 0.5;
+		    }
+		}
+	    }
+	    part
+	    {
+		name, "EntranceErrorUser";
+		type,	TEXT;
+		mouse_events, 0;
+		effect, SOFT_SHADOW;
+		description
+		{
+		    state, "default" 0.0;
+		    visible, 1;
+		    rel1
+		    {
+			relative, 0.0 0.0;
+			offset, -30 -35;
+			to, "EntranceUserMessage";
+		    }
+		    rel2
+		    {
+			relative, 1.0 0.0;
+			offset, 30 5;
+			to, "EntranceUserMessage";
+		    }
+		    color, 100 100 100 0;
+		    color3, 229 229 229 0;
+		    text
+		    {
+			text, "User Unknown";
+			font, "orbit";
+			size, 16;
+			fit,  0 0;
+			align, 0.5 0.5;
+		    }
+		}
+		description
+		{
+		    state, "visible" 0.0;
+		    visible, 1;
+		    rel1
+		    {
+			relative, 0.0 0.0;
+			offset, -30 -35;
+			to, "EntranceUserMessage";
+		    }
+		    rel2
+		    {
+			relative, 1.0 0.0;
+			offset, 30 5;
+			to, "EntranceUserMessage";
+		    }
+		    color, 100 100 100 255;
+		    color3, 229 229 229 255;
+		    text
+		    {
+			text, "User Unknown";
+			font, "orbit";
+			size, 16;
+			fit,  0 0;
+			align, 0.5 0.5;
+		    }
+		}
+	    }
+	    part
+	    {
+		name, "EntranceErrorPass";
+		type,	TEXT;
+		mouse_events, 0;
+		effect, SOFT_SHADOW;
+		description
+		{
+		    state, "default" 0.0;
+		    visible, 1;
+		    rel1
+		    {
+			relative, 0.0 0.0;
+			offset, -30 -35;
+			to, "EntrancePassMessage";
+		    }
+		    rel2
+		    {
+			relative, 1.0 0.0;
+			offset, 30 5;
+			to, "EntrancePassMessage";
+		    }
+		    color, 100 100 100 0;
+		    color3, 229 229 229 0;
+		    text
+		    {
+			text, "Authentication Failed.";
+			font, "orbit";
+			size, 16;
+			fit,  0 0;
+			align, 0.5 0.5;
+		    }
+		}
+		description
+		{
+		    state, "visible" 0.0;
+		    visible, 1;
+		    rel1
+		    {
+			relative, 0.0 0.0;
+			offset, -30 -35;
+			to, "EntrancePassMessage";
+		    }
+		    rel2
+		    {
+			relative, 1.0 0.0;
+			offset, 30 5;
+			to, "EntrancePassMessage";
+		    }
+		    color, 100 100 100 255;
+		    color3, 229 229 229 255;
+		    text
+		    {
+			text, "Authentication Failed.";
+			font, "orbit";
+			size, 16;
+			fit,  0 0;
+			align, 0.5 0.5;
+		    }
+		}
+	    }
+	    part
+	    {
+		name, "EntranceUserEntry";
+		type,	TEXT;
+		mouse_events, 0;
+		effect, SOFT_SHADOW;
+		description
+		{
+		    state, "default" 0.0;
+		    visible, 1;
+		    rel1
+		    {
+			relative, 0.0 0.0;
+			offset, 10 0;
+			to, "EntranceUserEntryArea";
+		    }
+		    rel2
+		    {
+			relative, 1.0 1.0;
+			offset, 0 0;
+			to, "EntranceUserEntryArea";
+		    }
+		    color, 100 100 100 255;
+		    color3, 229 229 229 255;
+		    text
+		    {
+			text, "";
+			font, "orbit";
+			size, 16;
+			fit,  0 0;
+			align, 0.5 0.5;
+		    }
+		}
+		description
+		{
+		    state, "hidden" 0.0;
+		    visible, 1;
+		    rel1
+		    {
+			relative, 0.0 0.0;
+			offset, 10 0;
+			to, "EntranceUserEntryArea";
+		    }
+		    rel2
+		    {
+			relative, 1.0 1.0;
+			offset, 0 0;
+			to, "EntranceUserEntryArea";
+		    }
+		    color, 100 100 100 0;
+		    color3, 229 229 229 0;
+		    text
+		    {
+			text, "";
+			font, "orbit";
+			size, 16;
+			fit,  0 0;
+			align, 0.5 0.5;
+		    }
+		}
+	    }
+	    part
+	    {
+		name, "EntrancePassEntry";
+		type,	TEXT;
+		mouse_events, 0;
+		effect, SOFT_SHADOW;
+		description
+		{
+		    state, "default" 0.0;
+		    visible, 1;
+		    color, 100 100 100 255;
+		    color3, 229 229 229 255;
+		    rel1
+		    {
+			relative, 0.0 0.0;
+			offset, 10 0;
+			to, "EntrancePassEntryArea";
+		    }
+		    rel2
+		    {
+			relative, 1.0 1.0;
+			offset, 0 0;
+			to, "EntrancePassEntryArea";
+		    }
+		    text
+		    {
+			text, "";
+			font, "orbit";
+			size, 16;
+			fit,  0 0;
+			align, 0.5 0.5;
+		    }
+		}
+		description
+		{
+		    state, "hidden" 0.0;
+		    visible, 1;
+		    color, 100 100 100 0;
+		    color3, 229 229 229 0;
+		    rel1
+		    {
+			relative, 0.0 0.0;
+			offset, 10 0;
+			to, "EntrancePassEntryArea";
+		    }
+		    rel2
+		    {
+			relative, 1.0 1.0;
+			offset, 0 0;
+			to, "EntrancePassEntryArea";
+		    }
+		    text
+		    {
+			text, "";
+			font, "orbit";
+			size, 16;
+			fit,  0 0;
+			align, 0.5 0.5;
+		    }
+		}
+	    }
+	    part
+	    {
+		name, "EntranceUserEntryArea";
+		type, RECT;
+		mouse_events, 1;
+		description
+		{
+		    state, "default" 0.0;
+		    visible, 1;
+		    rel1
+		    {
+			relative, 0.0 1.0;
+			offset, 0 0;
+			to, "EntranceUserMessage";
+		    }
+		    rel2
+		    {
+			relative, 1.0 1.0;
+			offset, 0 30;
+			to, "EntranceUserMessage";
+		    }
+		    color, 100 100 100 0;
+		}
+		description
+		{
+		    state, "hidden" 0.0;
+		    visible, 1;
+		    rel1
+		    {
+			relative, 0.0 1.0;
+			offset, 0 0;
+			to, "EntranceUserMessage";
+		    }
+		    rel2
+		    {
+			relative, 1.0 1.0;
+			offset, 0 30;
+			to, "EntranceUserMessage";
+		    }
+		    color, 100 100 100 0;
+		}
+	    }
+	    part
+	    {
+		name, "EntrancePassEntryArea";
+		type, RECT;
+		mouse_events, 1;
+		description
+		{
+		    state, "default" 0.0;
+		    visible, 1;
+		    rel1
+		    {
+			relative, 0.0 1.0;
+			offset, 0 0;
+			to, "EntrancePassMessage";
+		    }
+		    rel2
+		    {
+			relative, 1.0 1.0;
+			offset, 0 30;
+			to, "EntrancePassMessage";
+		    }
+		    color, 100 100 100 0;
+		}
+		description
+		{
+		    state, "hidden" 0.0;
+		    visible, 0;
+		    rel1
+		    {
+			relative, 0.0 1.0;
+			offset, 0 0;
+			to, "EntrancePassMessage";
+		    }
+		    rel2
+		    {
+			relative, 1.0 1.0;
+			offset, 0 30;
+			to, "EntrancePassMessage";
+		    }
+		    color, 100 100 100 0;
+		}
+	    }
+	    part
+	    {
+		name, "EntranceHostname";
+		type,	TEXT;
+		mouse_events, 0;
+		effect, SOFT_SHADOW;
+		description
+		{
+		    state, "default" 0.0;
+		    visible, 1;
+		    color, 100 100 100 192;
+		    color3, 227 227 227 64;
+		    rel1
+		    {
+			relative, 0.0 0.0;
+			offset, 10 30;
+			to, "bg";
+		    }
+		    rel2
+		    {
+			relative, 0.0 0.0;
+			offset, 300 70;
+			to, "bg";
+		    }
+		    text
+		    {
+			text, "";
+			font, "orbit";
+			size, 16;
+			fit, 1 1;
+			align, 0.0 0.5;
+		    }
+		}
+		description
+		{
+		    state, "hidden" 0.0;
+		    visible, 1;
+		    color, 100 100 100 0;
+		    color3, 227 227 227 0;
+		    rel1
+		    {
+			relative, 0.0 0.0;
+			offset, 10 30;
+			to, "bg";
+		    }
+		    rel2
+		    {
+			relative, 0.0 0.0;
+			offset, 300 70;
+			to, "bg";
+		    }
+		    text
+		    {
+			text, "";
+			font, "orbit";
+			size, 16;
+			fit, 1 1;
+			align, 0.0 0.5;
+		    }
+		}
+	    }
+	    part
+	    {
+		name, "EntranceDate";
+		type,	TEXT;
+		mouse_events, 0;
+		effect, SOFT_SHADOW;
+		description
+		{
+		    state, "default" 0.0;
+		    visible, 1;
+		    rel1
+		    {
+			relative, 0.0 1.0;
+			offset, 0 5;
+			to, "EntranceTime";
+		    }
+		    rel2
+		    {
+			relative, 1.0 1.0;
+			offset, 0 35;
+			to, "EntranceTime";
+		    }
+		    color, 100 100 100 192;
+		    color3, 227 227 227 192;
+		    text
+		    {
+			text, "Date";
+			font, "orbit";
+			size, 18;
+			fit,  1 1;
+			align, 1.0 0.5;
+		    }
+		}
+		description
+		{
+		    state, "hidden" 0.0;
+		    visible, 1;
+		    rel1
+		    {
+			relative, 0.0 1.0;
+			offset, 0 5;
+			to, "EntranceTime";
+		    }
+		    rel2
+		    {
+			relative, 1.0 1.0;
+			offset, 0 35;
+			to, "EntranceTime";
+		    }
+		    color, 100 100 100 0;
+		    color3, 227 227 227 0;
+		    text
+		    {
+			text, "Date";
+			font, "orbit";
+			size, 18;
+			fit,  1 1;
+			align, 1.0 0.5;
+		    }
+		}
+	    }
+	    part
+	    {
+		name, "EntranceTime";
+		type,	TEXT;
+		mouse_events, 0;
+		effect, SOFT_SHADOW;
+		description
+		{
+		    state, "default" 0.0;
+		    visible, 1;
+		    color, 100 100 100 192;
+		    color3, 227 227 227 192;
+		    rel1
+		    {
+			relative, 1.0 1.0;
+			offset, -300 -70;
+			to, "bg";
+		    }
+		    rel2
+		    {
+			relative, 1.0 1.0;
+			offset, -10 -40;
+			to, "bg";
+		    }
+		    text
+		    {
+			text, "Time";
+			font, "orbit";
+			size, 18;
+			fit,  1 1;
+			align, 1.0 0.5;
+		    }
+		}
+		description
+		{
+		    state, "hidden" 0.0;
+		    visible, 1;
+		    color, 100 100 100 0;
+		    color3, 227 227 227 0;
+		    rel1
+		    {
+			relative, 1.0 1.0;
+			offset, -300 -70;
+			to, "bg";
+		    }
+		    rel2
+		    {
+			relative, 1.0 1.0;
+			offset, -10 -40;
+			to, "bg";
+		    }
+		    text
+		    {
+			text, "Time";
+			font, "orbit";
+			size, 18;
+			fit,  1 1;
+			align, 1.0 0.5;
+		    }
+		}
+	    }
+	    part
+	    {
+		name, "EntranceSessionMenu";
+		type,	IMAGE;
+		mouse_events, 1;
+		description
+		{
+		    state, "default" 0.0;
+		    visible, 1;
+		    rel1
+		    {
+			relative, 1.0 1.0;
+			offset, 0 0;
+			to, "bg";
+		    }
+		    rel2
+		    {
+			relative, 1.0 1.0;
+			offset, 0 0;
+			to, "bg";
+		    }
+		    image
+		    {
+			normal, "menu.png";
+		    }
+		}
+		description
+		{
+		    state, "default" 0.5;
+		    visible, 1;
+		    rel1
+		    {
+			relative, 0.5 0.75;
+			offset, 0 0;
+			to, "bg";
+		    }
+		    rel2
+		    {
+			relative, 0.5 0.75;
+			offset, 0 0;
+			to, "bg";
+		    }
+		    image
+		    {
+			normal, "menu.png";
+		    }
+		}
+		description
+		{
+		    state, "default" 1.0;
+		    visible, 1;
+		    rel1
+		    {
+			relative, 0.0 0.5;
+			offset, 20 -150;
+			to, "bg";
+		    }
+		    rel2
+		    {
+			relative, 0.0 0.5;
+			offset, 200 150;
+			to, "bg";
+		    }
+		    image
+		    {
+			normal, "menu.png";
+		    }
+		}
+	    }
+	    part
+	    {
+		name, "EntranceSessionIcon";
+		type, IMAGE;
+		mouse_events, 0;
+		description
+		{
+		    state, "default" 0.0;
+		    visible, 1;
+		    rel1
+		    {
+			relative, 0.0 1.0;
+			offset, 20 -53;
+			to, "bg";
+		    }
+		    rel2
+		    {
+			relative, 0.0 1.0;
+			offset, 68 -5;
+			to, "bg";
+		    }
+		    image
+		    {
+			normal, "default.png";
+		    }
+		}
+		description
+		{
+		    state, "SessionEnlightenment" 0.0;
+		    visible, 1;
+		    rel1
+		    {
+			relative, 0.0 1.0;
+			offset, 20 -53;
+			to, "bg";
+		    }
+		    rel2
+		    {
+			relative, 0.0 1.0;
+			offset, 68 -5;
+			to, "bg";
+		    }
+		    image
+		    {
+			normal, "e.png";
+		    }
+		}
+		description
+		{
+		    state, "SessionBlackbox" 0.0;
+		    visible, 1;
+		    rel1
+		    {
+			relative, 0.0 1.0;
+			offset, 20 -53;
+			to, "bg";
+		    }
+		    rel2
+		    {
+			relative, 0.0 1.0;
+			offset, 68 -5;
+			to, "bg";
+		    }
+		    image
+		    {
+			normal, "blackbox.png";
+		    }
+		}
+		description
+		{
+		    state, "SessionKDE" 0.0;
+		    visible, 1;
+		    rel1
+		    {
+			relative, 0.0 1.0;
+			offset, 20 -53;
+			to, "bg";
+		    }
+		    rel2
+		    {
+			relative, 0.0 1.0;
+			offset, 68 -5;
+			to, "bg";
+		    }
+		    image
+		    {
+			normal, "kde.png";
+		    }
+		}
+		description
+		{
+		    state, "SessionGnome" 0.0;
+		    visible, 1;
+		    rel1
+		    {
+			relative, 0.0 1.0;
+			offset, 20 -53;
+			to, "bg";
+		    }
+		    rel2
+		    {
+			relative, 0.0 1.0;
+			offset, 68 -5;
+			to, "bg";
+		    }
+		    image
+		    {
+			normal, "gnome.png";
+		    }
+		}
+		description
+		{
+		    state, "SessionFailsafe" 0.0;
+		    visible, 1;
+		    rel1
+		    {
+			relative, 0.0 1.0;
+			offset, 20 -53;
+			to, "bg";
+		    }
+		    rel2
+		    {
+			relative, 0.0 1.0;
+			offset, 68 -5;
+			to, "bg";
+		    }
+		    image
+		    {
+			normal, "failsafe.png";
+		    }
+		}
+	    }
+	    part
+	    {
+		name, "EntranceSession";
+		type,	TEXT;
+		mouse_events, 1;
+		effect, SOFT_SHADOW;
+		description
+		{
+		    state, "default" 0.0;
+		    visible, 1;
+		    rel1
+		    {
+			relative, 1.0 0.5;
+			offset, 5 -20;
+			to, "EntranceSessionIcon";
+		    }
+		    rel2
+		    {
+			relative, 1.0 0.5;
+			offset, 400 20;
+			to, "EntranceSessionIcon";
+		    }
+		    color, 100 100 100 192;
+		    color3, 227 227 227 192;
+		    text
+		    {
+			text, "Default";
+			font, "orbit";
+			size, 20;
+			fit,  0 0;
+			align, 0.0 0.0;
+		    }
+		}
+		description
+		{
+		    state, "SessionEnlightenment" 0.0;
+		    visible, 1;
+		    rel1
+		    {
+			relative, 1.0 0.5;
+			offset, 5 -20;
+			to, "EntranceSessionIcon";
+		    }
+		    rel2
+		    {
+			relative, 1.0 0.5;
+			offset, 400 20;
+			to, "EntranceSessionIcon";
+		    }
+		    color, 100 100 100 192;
+		    color3, 227 227 227 192;
+		    text
+		    {
+			text, "Enlightenment";
+			font, "orbit";
+			size, 20;
+			fit,  0 0;
+			align, 0.0 0.0;
+		    }
+		}
+		description
+		{
+		    state, "SessionGnome" 0.0;
+		    visible, 1;
+		    rel1
+		    {
+			relative, 1.0 0.5;
+			offset, 5 -20;
+			to, "EntranceSessionIcon";
+		    }
+		    rel2
+		    {
+			relative, 1.0 0.5;
+			offset, 400 20;
+			to, "EntranceSessionIcon";
+		    }
+		    color, 100 100 100 192;
+		    color3, 227 227 227 192;
+		    text
+		    {
+			text, "Gnome";
+			font, "orbit";
+			size, 20;
+			fit,  0 0;
+			align, 0.0 0.5;
+		    }
+		}
+		description
+		{
+		    state, "SessionKDE" 0.0;
+		    visible, 1;
+		    rel1
+		    {
+			relative, 1.0 0.5;
+			offset, 5 -20;
+			to, "EntranceSessionIcon";
+		    }
+		    rel2
+		    {
+			relative, 1.0 0.5;
+			offset, 400 20;
+			to, "EntranceSessionIcon";
+		    }
+		    color, 100 100 100 192;
+		    color3, 227 227 227 192;
+		    text
+		    {
+			text, "KDE";
+			font, "orbit";
+			size, 20;
+			fit,  0 0;
+			align, 0.0 0.5;
+		    }
+		}
+		description
+		{
+		    state, "SessionBlackbox" 0.0;
+		    visible, 1;
+		    rel1
+		    {
+			relative, 1.0 0.5;
+			offset, 5 -20;
+			to, "EntranceSessionIcon";
+		    }
+		    rel2
+		    {
+			relative, 1.0 0.5;
+			offset, 400 20;
+			to, "EntranceSessionIcon";
+		    }
+		    color, 100 100 100 192;
+		    color3, 227 227 227 192;
+		    text
+		    {
+			text, "Blackbox";
+			font, "orbit";
+			size, 20;
+			fit,  0 0;
+			align, 0.0 0.5;
+		    }
+		}
+		description
+		{
+		    state, "SessionFailsafe" 0.0;
+		    visible, 1;
+		    rel1
+		    {
+			relative, 1.0 0.5;
+			offset, 5 -20;
+			to, "EntranceSessionIcon";
+		    }
+		    rel2
+		    {
+			relative, 1.0 0.5;
+			offset, 400 20;
+			to, "EntranceSessionIcon";
+		    }
+		    color, 100 100 100 192;
+		    color3, 227 227 227 192;
+		    text
+		    {
+			text, "Failsafe";
+			font, "orbit";
+			size, 20;
+			fit,  0 0;
+			align, 0.0 0.5;
+		    }
+		}
+	    }
+	    part 
+	    {
+		name, "SessionEnlightenment";
+		type, TEXT
+		mouse_events, 1
+		effect, SOFT_SHADOW;
+		description 
+		{
+		    state, "default" 0.0;
+		    visible, 0;
+		    rel1 { relative, 0.0 0.0; offset, 20 40; to, "EntranceSessionMenu"; }
+		    rel2 { relative, 1.0 0.0; offset, 0 70; to, "EntranceSessionMenu"; }
+		    color, 100 100 100 192;
+		    color3, 0 0 0 192;
+		    text 
+		    { 
+			text, "Enlightenment"; 
+			font, "orbit"; 
+			size, "18"; 
+			fit, 0 0;
+			align, 0.0 0.5; 
+		    }
+		}
+		description 
+		{
+		    state, "visible" 0.0;
+		    visible, 1;
+		    color, 100 100 100 192;
+		    color3, 227 227 227 192;
+		    rel1 { relative, 0.0 0.0; offset, 20 40; to, "EntranceSessionMenu"; }
+		    rel2 { relative, 1.0 0.0; offset, 0 70; to, "EntranceSessionMenu"; }
+		    text 
+		    { 
+			text, "Enlightenment"; 
+			font, "orbit"; 
+			size, "18"; 
+			fit, 0 0;
+			align, 0.0 0.5; 
+		    }
+		}
+	    }
+	    part 
+	    {
+		name, "SessionGnome";
+		type, TEXT
+		mouse_events, 1
+		effect, SOFT_SHADOW;
+		description 
+		{
+		    state, "default" 0.0;
+		    visible, 0;
+		    rel1 { 
+			relative, 0.0 1.0; 
+			offset, 0 10; 
+			to, "SessionEnlightenment"; 
+		    }
+		    rel2 { 
+			relative, 1.0 1.0; 
+			offset, 0 40; 
+			to, "SessionEnlightenment"; 
+		    }
+		    color, 100 100 100 192;
+		    color3, 0 0 0 192;
+		    text 
+		    { 
+			text, "Gnome"; 
+			font, "orbit"; 
+			size, "18"; 
+			fit, 0 0;
+			align, 0.0 0.5; 
+		    }
+		}
+		description 
+		{
+		    state, "visible" 0.0;
+		    visible, 1;
+		    rel1 { 
+			relative, 0.0 1.0; 
+			offset, 0 10; 
+			to, "SessionEnlightenment"; 
+		    }
+		    rel2 { 
+			relative, 1.0 1.0; 
+			offset, 0 40; 
+			to, "SessionEnlightenment"; 
+		    }
+		    color, 100 100 100 192;
+		    color3, 227 227 227 192;
+		    text 
+		    { 
+			text, "Gnome"; 
+			font, "orbit"; 
+			size, "18"; 
+			fit, 0 0;
+			align, 0.0 0.5; 
+		    }
+		}
+	    }
+	    part 
+	    {
+		name, "SessionKDE";
+		type, TEXT
+		mouse_events, 1
+		effect, SOFT_SHADOW;
+		description 
+		{
+		    state, "default" 0.0;
+		    visible, 0;
+		    rel1 { 
+			relative, 0.0 1.0; 
+			offset, 0 10; 
+			to, "SessionGnome"; 
+		    }
+		    rel2 { 
+			relative, 1.0 1.0; 
+			offset, 0 40; 
+			to, "SessionGnome"; 
+		    }
+		    color, 100 100 100 192;
+		    color3, 0 0 0 192;
+		    text 
+		    { 
+			text, "KDE"; 
+			font, "orbit"; 
+			size, "18"; 
+			fit, 0 0;
+			align, 0.0 0.5; 
+		    }
+		}
+		description 
+		{
+		    state, "visible" 0.0;
+		    visible, 1;
+		    rel1 { 
+			relative, 0.0 1.0; 
+			offset, 0 10; 
+			to, "SessionGnome"; 
+		    }
+		    rel2 { 
+			relative, 1.0 1.0; 
+			offset, 0 40; 
+			to, "SessionGnome"; 
+		    }
+		    color, 100 100 100 192;
+		    color3, 227 227 227 192;
+		    text 
+		    { 
+			text, "KDE"; 
+			font, "orbit"; 
+			size, "18"; 
+			fit, 0 0;
+			align, 0.0 0.5; 
+		    }
+		}
+	    }
+	    part 
+	    {
+		name, "SessionBlackbox";
+		type, TEXT
+		mouse_events, 1
+		effect, SOFT_SHADOW;
+		description 
+		{
+		    state, "default" 0.0;
+		    visible, 0;
+		    rel1 { 
+			relative, 0.0 1.0; 
+			offset, 0 10; 
+			to, "SessionKDE"; 
+		    }
+		    rel2 { 
+			relative, 1.0 1.0; 
+			offset, 0 40; 
+			to, "SessionKDE"; 
+		    }
+		    color, 100 100 100 192;
+		    color3, 0 0 0 192;
+		    text 
+		    { 
+			text, "Blackbox"; 
+			font, "orbit"; 
+			size, "18"; 
+			fit, 0 0;
+			align, 0.0 0.5; 
+		    }
+		}
+		description 
+		{
+		    state, "visible" 0.0;
+		    visible, 1;
+		    rel1 { 
+			relative, 0.0 1.0; 
+			offset, 0 10; 
+			to, "SessionKDE"; 
+		    }
+		    rel2 { 
+			relative, 1.0 1.0; 
+			offset, 0 40; 
+			to, "SessionKDE"; 
+		    }
+		    color, 100 100 100 192;
+		    color3, 227 227 227 192;
+		    text 
+		    { 
+			text, "Blackbox"; 
+			font, "orbit"; 
+			size, "18"; 
+			fit, 0 0;
+			align, 0.0 0.5; 
+		    }
+		}
+	    }
+	    part 
+	    {
+		name, "SessionDefault";
+		type, TEXT
+		mouse_events, 1
+		effect, SOFT_SHADOW;
+		description 
+		{
+		    state, "default" 0.0;
+		    visible, 0;
+		    rel1 { 
+			relative, 0.0 1.0; 
+			offset, 0 10; 
+			to, "SessionBlackbox"; 
+		    }
+		    rel2 { 
+			relative, 1.0 1.0; 
+			offset, 0 40; 
+			to, "SessionBlackbox"; 
+		    }
+		    color, 100 100 100 192;
+		    color3, 0 0 0 192;
+		    text 
+		    { 
+			text, "Default"; 
+			font, "orbit"; 
+			size, "18"; 
+			fit, 0 0;
+			align, 0.0 0.5; 
+		    }
+		}
+		description 
+		{
+		    state, "visible" 0.0;
+		    visible, 1;
+		    rel1 { 
+			relative, 0.0 1.0; 
+			offset, 0 10; 
+			to, "SessionBlackbox"; 
+		    }
+		    rel2 { 
+			relative, 1.0 1.0; 
+			offset, 0 40; 
+			to, "SessionBlackbox"; 
+		    }
+		    color, 100 100 100 192;
+		    color3, 227 227 227 192;
+		    text 
+		    { 
+			text, "Default"; 
+			font, "orbit"; 
+			size, "18"; 
+			fit, 0 0;
+			align, 0.0 0.5; 
+		    }
+		}
+	    }
+	    part 
+	    {
+		name, "SessionFailsafe";
+		type, TEXT
+		mouse_events, 1
+		effect, SOFT_SHADOW;
+		description 
+		{
+		    state, "default" 0.0;
+		    visible, 0;
+		    rel1 { 
+			relative, 0.0 1.0; 
+			offset, 0 10; 
+			to, "SessionDefault"; 
+		    }
+		    rel2 { 
+			relative, 1.0 1.0; 
+			offset, 0 40; 
+			to, "SessionDefault"; 
+		    }
+		    color, 100 100 100 192;
+		    color3, 0 0 0 192;
+		    text 
+		    { 
+			text, "Failsafe"; 
+			font, "orbit"; 
+			size, "18"; 
+			fit, 0 0;
+			align, 0.0 0.5; 
+		    }
+		}
+		description 
+		{
+		    state, "visible" 0.0;
+		    visible, 1;
+		    rel1 { 
+			relative, 0.0 1.0; 
+			offset, 0 10; 
+			to, "SessionDefault"; 
+		    }
+		    rel2 { 
+			relative, 1.0 1.0; 
+			offset, 0 40; 
+			to, "SessionDefault"; 
+		    }
+		    color, 100 100 100 192;
+		    color3, 227 227 227 192;
+		    text 
+		    { 
+			text, "Failsafe"; 
+			font, "orbit"; 
+			size, "18"; 
+			fit, 0 0;
+			align, 0.0 0.5; 
+		    }
+		}
+	    }
+	}
+	programs
+	{
+	    // later we could add a post authorization animation here =)
+	    program
+	    {
+		name,	"EntranceAuth";
+		signal,	"EntranceUserAuthSuccess";
+		source,	"";
+		action, STATE_SET "postauth" 0.0;
+		target, "bg";
+		transition, SINUSOIDAL 1.5;
+		after, "EntranceEnd";
+	    }
+	    program
+	    {
+		name,	"EntranceAuthToo";
+		signal,	"EntranceUserAuthSuccess";
+		source,	"";
+		action, STATE_SET "hidden" 0.0;
+		target, "EntranceHostname";
+		target, "EntranceDate";
+		target, "EntranceTime";
+		target, "EntrancePassMessage";
+		target, "EntrancePassEntry";
+		target, "EntrancePassEntryArea";
+		target, "EntranceUserMessage";
+		target, "EntranceUserEntry";
+		target, "EntranceUserEntryArea";
+		transition, SINUSOIDAL 0.5;
+	    }
+	    program
+	    {
+		name,   "EntranceEnd";
+		signal, "";
+		source, "";
+		action,	SIGNAL_EMIT "EntranceUserAuthSuccessDone" "";
+	    }
+	    program
+	    {
+		// when the user is unknown to the system
+		name,	"DisplayErrorUser";
+		signal,	"EntranceUserFail";
+		source, "";
+		action, STATE_SET "visible" 0.0;
+		target, "EntranceErrorUser";
+		transition, SINUSOIDAL 1.0;
+		after,  "ErrorHide";
+	    }
+	    program
+	    {
+		// when the user's password failed
+		name,	"DisplayErrorPass";
+		signal,	"EntranceUserAuthFail";
+		source, "";
+		action, STATE_SET "visible" 0.0;
+		target, "EntranceErrorPass";
+		transition, SINUSOIDAL 1.0;
+		after,  "ErrorHide";
+	    }
+	    program
+	    {
+		// callback to hide our error messages after a time
+		name,	"ErrorHide";
+		signal,	"";
+		source, "";
+		action, STATE_SET "default" 0.0;
+		target, "EntranceErrorPass";
+		target, "EntranceErrorUser";
+		transition, DECELERATE 2.0;
+	    }
+	    program
+	    {
+		name,  "Setup";
+		signal, "show";
+		source, "";
+		action, SIGNAL_EMIT "In" "EntranceUserEntry";
+	    }
+	    program
+	    {
+		name,  "Setup2";
+		signal, "show";
+		source, "";
+		action, STATE_SET "hidden" 0.0;
+		target, "EntrancePassMessage";
+		target, "EntrancePassEntry";
+		target, "EntrancePassEntryArea";
+	    }
+	    program
+	    {
+		name, "ToPass";
+		signal, "EntranceUserAuth";
+		source, "";
+		action, STATE_SET "hidden" 0.0;
+		target, "EntranceUserMessage";
+		target, "EntranceUserEntry";
+		target, "EntranceUserEntryArea";
+		transition, SINUSOIDAL 1.0;
+		after, "ToPassAfter";
+	    }
+	    program
+	    {
+		name, "ToPassAfter";
+		signal, "";
+		source, "";
+		action, STATE_SET "default" 0.0;
+		transition, SINUSOIDAL 1.0;
+		target, "EntrancePassMessage";
+		target, "EntrancePassEntry";
+		target, "EntrancePassEntryArea";
+	    }
+	    program
+	    {
+		// when the user is unknown to the system
+		name,	"ToUser";
+		signal,	"EntranceUserAuthFail";
+		source, "";
+		action, STATE_SET "hidden" 0.0;
+		target, "EntrancePassMessage";
+		target, "EntrancePassEntry";
+		target, "EntrancePassEntryArea";
+		transition, SINUSOIDAL 1.0;
+		after, "ToUserAfter";
+	    }
+	    program
+	    {
+		// when the user is unknown to the system
+		name,	"ToUserAfter";
+		signal,	"";
+		source, "";
+		action, STATE_SET "default" 0.0;
+		target, "EntranceUserMessage";
+		target, "EntranceUserEntry";
+		target, "EntranceUserEntryArea";
+		transition, SINUSOIDAL 1.0;
+	    }
+	    program
+	    {
+		name,  "ShowSessionChooser";
+		signal, "mouse,up,1";
+		source, "EntranceSession";
+		action, STATE_SET "default" 1.0;
+		target, "EntranceSessionMenu";
+		transition, SINUSOIDAL 0.75;
+	    }
+	    program
+	    {
+		name,  "ShowSessions";
+		signal, "mouse,up,1";
+		source, "EntranceSession";
+		action, STATE_SET "visible" 0.0;
+		target, "SessionEnlightenment";
+		target, "SessionBlackbox";
+		target, "SessionKDE";
+		target, "SessionGnome";
+		target, "SessionDefault";
+		target, "SessionFailsafe";
+		transition, SINUSOIDAL 1.5;
+	    }
+	    program
+	    {
+		name, "SelectSession";
+		signal, "mouse,up,1";
+		source, "Session*";
+		action, STATE_SET "default" 0.0;
+		target, "SessionEnlightenment";
+		target, "SessionBlackbox";
+		target, "SessionKDE";
+		target, "SessionGnome";
+		target, "SessionDefault";
+		target, "SessionFailsafe";
+		target, "EntranceSessionMenu";
+		transition, SINUSOIDAL 0.5;
+	    }
+	    program
+	    {
+		name, "SelectSessionKDE";
+		signal, "mouse,up,1";
+		source, "SessionKDE";
+		action, STATE_SET "SessionKDE" 0.0;
+		target, "EntranceSession";
+		target, "EntranceSessionIcon";
+		transition, SINUSOIDAL 1.0;
+	    }
+	    program
+	    {
+		name, "SelectSessionGnome";
+		signal, "mouse,up,1";
+		source, "SessionGnome";
+		action, STATE_SET "SessionGnome" 0.0;
+		target, "EntranceSession";
+		target, "EntranceSessionIcon";
+		transition, SINUSOIDAL 1.0;
+	    }
+	    program
+	    {
+		name, "SelectSessionBlackbox";
+		signal, "mouse,up,1";
+		source, "SessionBlackbox";
+		action, STATE_SET "SessionBlackbox" 0.0;
+		target, "EntranceSession";
+		target, "EntranceSessionIcon";
+		transition, SINUSOIDAL 1.0;
+	    }
+	    program
+	    {
+		name, "SelectSessionEnlightenment";
+		signal, "mouse,up,1";
+		source, "SessionEnlightenment";
+		action, STATE_SET "SessionEnlightenment" 0.0;
+		target, "EntranceSession";
+		target, "EntranceSessionIcon";
+		transition, SINUSOIDAL 1.0;
+	    }
+	    program
+	    {
+		name, "SelectSessionDefault";
+		signal, "mouse,up,1";
+		source, "SessionDefault";
+		action, STATE_SET "default" 0.0;
+		target, "EntranceSession";
+		target, "EntranceSessionIcon";
+		transition, SINUSOIDAL 1.0;
+	    }
+	    program
+	    {
+		name, "SelectSessionFailsafe";
+		signal, "mouse,up,1";
+		source, "SessionFailsafe";
+		action, STATE_SET "SessionFailsafe" 0.0;
+		target, "EntranceSession";
+		target, "EntranceSessionIcon";
+		transition, SINUSOIDAL 1.0;
+	    }
+	}
+    }
+}
