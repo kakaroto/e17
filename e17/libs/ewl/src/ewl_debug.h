@@ -1,10 +1,4 @@
 
-/*\
-|*|
-|*| Macros used to print debugging information.
-|*|
-\*/
-
 #ifndef __EWL_DEBUG_H__
 #define __EWL_DEBUG_H__
 
