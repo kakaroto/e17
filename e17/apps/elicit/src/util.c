@@ -26,7 +26,6 @@ elicit_action_color_get(int *r, int *g, int *b)
   imlib_context_set_image(im);
   imlib_image_query_pixel(0, 0, &col);
 
-  //printf("(%d, %d, %d)\n", col.red, col.green, col.blue);
   //evas_object_color_set(swatch.obj, col.red, col.green, col.blue, 255);
   /* set the color values */
   if (r) *r = col.red;
@@ -57,7 +56,6 @@ elicit_action_shoot(Evas_Object *shot, int w, int h)
 
   XQueryPointer(ecore_x_display_get(), RootWindow(ecore_x_display_get(),0), &tr, &tr, &tr, &tr, &px, &py, &tr);
 
-  printf("shooting (%d x %d)!\n", w, h);
   x = px - .5 * w;
   y = py - .5 * h;
 
@@ -145,7 +143,6 @@ elicit_color_rgb_to_hsv(int rr, int gg, int bb, double *hh, double *ss, double *
    if (ss) *ss = s;
    if (vv) *vv = v;
 
-   //printf("%i %i %i %f %f %f\n", r, g, b, hue, saturation, value);
 }
 
 void

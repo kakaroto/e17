@@ -35,7 +35,6 @@ void elicit_cb_pick(void *data, Evas_Object *o, const char *sig, const char *src
 
   if (!strcmp(sig, "elicit,pick,start"))
   {
-    printf("pick!\n");
     el->flags.picking = 1;
   }
   else if (!strcmp(sig, "elicit,pick,stop"))
@@ -64,7 +63,6 @@ void elicit_cb_shoot(void *data, Evas_Object *o, const char *sig, const char *sr
 
   if (!strcmp(sig, "elicit,shoot,start"))
   {
-    printf("shoot!\n");
     el->flags.shooting = 1;
   }
   else if (!strcmp(sig, "elicit,shoot,stop"))
@@ -79,10 +77,8 @@ void elicit_cb_shoot(void *data, Evas_Object *o, const char *sig, const char *sr
       double x, y, w, h;
 
       evas_object_geometry_get(el->shot, NULL, NULL, &sw, &sh);
-      printf("sw/h: %.2f, %.2f\n", sw, sh);
       w = sw * (1 / el->zoom);
       h = sh * (1 / el->zoom);
-      printf("w/h: %.2f, %.2f\n", w, h);
       elicit_action_shoot(el->shot, (int)w, (int)h);
     }
   }
