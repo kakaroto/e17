@@ -1,3 +1,9 @@
+Sun Oct 20 14:49:46 2002 EDT, Paul Duncan <pabs@pablotron.org>
+  
+  * New beveled, off-white background image for menus.  I made it the
+    default after consulting with the boss (eg Sue Gilbert).  Tom thinks
+    it's okay too.
+
 Sun Oct 20 05:48:40 2002 EDT  Paul Duncan <pabs@pablotron.org>
   
   * Added Xinerama support.  Currently defaults to fullscreen on the

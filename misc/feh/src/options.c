@@ -55,7 +55,7 @@ init_parse_options(int argc, char **argv)
    opt.thumb_h = 60;
    opt.menu_font = estrdup(DEFAULT_MENU_FONT);
    opt.font = estrdup(DEFAULT_FONT);
-   opt.menu_bg = estrdup(PREFIX "/share/feh/images/menubg.png");
+   opt.menu_bg = estrdup(PREFIX "/share/feh/images/menubg_default.png");
    opt.menu_style = estrdup(PREFIX "/share/feh/fonts/menu.style");
    opt.next_button = 1;
    opt.zoom_button = 2;
@@ -1075,6 +1075,7 @@ feh_create_default_config(char *rcfile)
            "aluminium --menu-bg " PREFIX "/share/feh/images/menubg_aluminium.png\n"
            "wood --menu-bg " PREFIX "/share/feh/images/menubg_wood.png\n"
            "aqua --menu-bg " PREFIX "/share/feh/images/menubg_aqua.png\n"
+           "sky --menu-bg " PREFIX "/share/feh/images/menubg_sky.png\n"
            "orange --menu-bg " PREFIX "/share/feh/images/menubg_orange.png\n"
            "light --menu-bg " PREFIX "/share/feh/images/menubg_light.png\n"
            "black --menu-bg " PREFIX "/share/feh/images/menubg_black.png --menu-style " PREFIX "/share/feh/fonts/black.style\n"

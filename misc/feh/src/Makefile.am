@@ -18,7 +18,8 @@ events.c events.h support.c support.h \
 thumbnail.c thumbnail.h 
 feh_LDADD         = -lX11 @IMLIB_LIBS@ @GIBLIB_LIBS@
 
-images_DATA = about.png menubg.png menubg_chrome.png menubg_brushed.png \
+images_DATA = about.png menubg_default.png menubg_sky.png \
+menubg_chrome.png menubg_brushed.png \
 menubg_pastel.png menubg_aluminium.png menubg_aqua.png \
 menubg_wood.png menubg_britney.png menubg_black.png
 
