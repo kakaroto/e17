@@ -80,20 +80,20 @@ int main(int argc, char ** argv) {
     float j;
     char *str;
 
-    if (ecore_config_init("foo") != 0) {
+    if (ecore_config_init("foo") != ECORE_CONFIG_ERR_SUCC) {
         printf("Cannot init Ecore_Config");
         return 1;
     }
 
-    ecore_config_default_int("/int_example", 1);
-    ecore_config_default_string("/this/is/a/string/example", "String");
-    ecore_config_default_float("/float/example", 2.22);
+    ecore_config_int_default("/int_example", 1);
+    ecore_config_string_default("/this/is/a/string/example", "String");
+    ecore_config_float_default("/float/example", 2.22);
 
     ecore_config_load();
 
-    i = ecore_config_get_int("/int_example");
-    str = ecore_config_get_string("/this/is/a/string/example");
-    j = ecore_config_get_float("/float/example");
+    i = ecore_config_int_get("/int_example");
+    str = ecore_config_string_get("/this/is/a/string/example");
+    j = ecore_config_float_get("/float/example");
 
     printf("str is (%s)\n", str);
     printf("i is (%d)\n", i);
@@ -114,14 +114,14 @@ your configuration database. The directory and file name are: ~/.e/apps/PROGRAM_
 
 <para>
 For each configuration variable you are getting from Ecore_Config, you can assign a default value in the case
-that the user does not have a config.db file. The defaults are assigned with the ecore_config_default_* where *
+that the user does not have a config.db file. The defaults are assigned with the ecore_config_*_default where *
 is one of the Ecore_Config types. The first parameter is the key under which this is to be accessed. These keys
 must be unique over your program. The value passed is of the type appropriated for this call.
 </para>
 
 <para>
 The ecore_config_load call will read the values from the config.db file into Ecore_Config. After which we can
-access the files with the ecore_config_get_* methods (again * is the type of data desired). These routines
+access the files with the ecore_config_*_get methods (again * is the type of data desired). These routines
 take the key name for this item and return the value associated with that key. Each function returns a type
 that corresponds to the function call name.
 </para>
