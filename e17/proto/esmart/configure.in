@@ -17,12 +17,12 @@ dnl Use -Wall if we have gcc.
 dnl Set PACKAGE_DATA_DIR in config.h.
 if test "x${datadir}" = 'x${prefix}/share'; then
   if test "x${prefix}" = "xNONE"; then
-    AC_DEFINE_UNQUOTED(PACKAGE_DATA_DIR, "${ac_default_prefix}/share/${PACKAGE}")
+    AC_DEFINE_UNQUOTED(PACKAGE_DATA_DIR, "${ac_default_prefix}/share/${PACKAGE}", [Shared data directory])
   else
-    AC_DEFINE_UNQUOTED(PACKAGE_DATA_DIR, "${prefix}/share/${PACKAGE}")
+    AC_DEFINE_UNQUOTED(PACKAGE_DATA_DIR, "${prefix}/share/${PACKAGE}", [Shared data directory])
   fi
 else
-  AC_DEFINE_UNQUOTED(PACKAGE_DATA_DIR, "${datadir}/${PACKAGE}")
+  AC_DEFINE_UNQUOTED(PACKAGE_DATA_DIR, "${datadir}/${PACKAGE}", [Shared data directory])
 fi
 
 if test "x${libdir}" = 'x${prefix}/share'; then
@@ -36,7 +36,7 @@ else
 fi
 #FIXME: remove this and get it working correctly
 container_plugin_dir="/usr/local/lib/esmart/layout"
-AC_DEFINE_UNQUOTED(CONTAINER_PLUGIN_DIR, "${container_plugin_dir}")
+AC_DEFINE_UNQUOTED(CONTAINER_PLUGIN_DIR, "${container_plugin_dir}", [Container Plugin Directory])
 AC_SUBST(container_plugin_dir)
 
 changequote(,)dnl
