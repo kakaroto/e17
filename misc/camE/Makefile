@@ -16,7 +16,7 @@ INSTALL_DIR=mkdir -p
 
 PROGS=camE
 
-OBJS=webcam.o ftp.o parseconfig.o
+OBJS=webcam.o ftp.o parseconfig.o imlib_wrap.o geist_list.o
 
 ##########################################################################
 

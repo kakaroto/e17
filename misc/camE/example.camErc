@@ -51,6 +51,8 @@ title_b = 0
 title_a = 255
 # font for title text. fontname/size
 title_font = arial/8
+# fancy font styles
+# title_style = /path/to/title.style
 # color/transparency of message text
 text_r = 255
 text_g = 255
@@ -58,6 +60,8 @@ text_b = 0
 text_a = 255
 # font for message text. fontname/size
 text_font = arial/8
+# fancy font styles
+# text_style = /path/to/text.style
 # color/transparency of rectangle behind text
 # make it 0,0,0,0 to disable.
 bg_a = 0

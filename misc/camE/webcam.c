@@ -17,6 +17,8 @@
 #include <sys/ioctl.h>
 #include <X11/Xlib.h>
 #include <Imlib2.h>
+#include "geist_list.h"
+#include "imlib_wrap.h"
 
 #include <asm/types.h>
 #include "videodev.h"
@@ -68,6 +70,10 @@ char *grab_archive = NULL;
 char *grab_blockfile = NULL;
 char *grab_postprocess = NULL;
 char *title_text = NULL;
+font_style *title_style = NULL;
+font_style *text_style = NULL;
+char *title_style_file = NULL;
+char *text_style_file = NULL;
 
 /* these work for v4l only, not v4l2 */
 int grab_input = 0;
@@ -226,20 +232,20 @@ add_time_text(Imlib_Image image, char *message, int width, int height)
    if (line[len - 1] == '\n')
       line[--len] = '\0';
 
-   imlib_context_set_image(image);
    if (title_text)
    {
       title_fn = imlib_load_font(title_font);
       if (title_fn)
       {
-         imlib_context_set_font(title_fn);
-         imlib_get_text_size(title_line, &w, &h);
+         imlib_wrap_get_text_size(title_fn, title_line, title_style, &w, &h,
+                                  IMLIB_TEXT_TO_RIGHT);
          x = width - w - 2;
          y = 2;
-         imlib_context_set_color(bg_r, bg_g, bg_b, bg_a);
-         imlib_image_fill_rectangle(x - 2, y - 1, w + 4, h + 2);
-         imlib_context_set_color(title_r, title_g, title_b, title_a);
-         imlib_text_draw(x, y, title_line);
+         imlib_wrap_image_fill_rectangle(image, x - 2, y - 1, w + 4, h + 2,
+                                         bg_r, bg_g, bg_b, bg_a);
+         imlib_wrap_text_draw(image, title_fn, title_style, x, y, title_line,
+                              IMLIB_TEXT_TO_RIGHT, title_r, title_g, title_b,
+                              title_a);
       }
    }
 
@@ -248,14 +254,14 @@ add_time_text(Imlib_Image image, char *message, int width, int height)
       text_fn = imlib_load_font(text_font);
       if (text_fn)
       {
-         imlib_context_set_font(text_fn);
-         imlib_get_text_size(line, &w, &h);
+         imlib_wrap_get_text_size(text_fn, line, text_style, &w, &h, IMLIB_TEXT_TO_RIGHT);
          x = 2;
          y = height - h - 2;
-         imlib_context_set_color(bg_r, bg_g, bg_b, bg_a);
-         imlib_image_fill_rectangle(x - 2, y - 1, w + 4, h + 2);
-         imlib_context_set_color(text_r, text_g, text_b, text_a);
-         imlib_text_draw(x, y, line);
+         imlib_wrap_image_fill_rectangle(image, x - 2, y - 1, w + 4, h + 2,
+                                         bg_r, bg_g, bg_b, bg_a);
+         imlib_wrap_text_draw(image, text_fn, text_style, x, y, line,
+                              IMLIB_TEXT_TO_RIGHT, text_r, text_g, text_b,
+                              text_a);
       }
    }
 }
@@ -311,7 +317,6 @@ archive_jpeg(Imlib_Image im)
    time_t t;
    struct tm *tm;
    struct stat st;
-   char *tmp;
 
    if (grab_archive)
    {
@@ -324,11 +329,7 @@ archive_jpeg(Imlib_Image im)
                   grab_archive, date, num++);
       }
       while (stat(buffer, &st) == 0);
-      imlib_context_set_image(im);
-      tmp = strrchr(buffer, '.');
-      if (tmp)
-         imlib_image_set_format(tmp + 1);
-      imlib_save_image(buffer);
+      imlib_wrap_save_image(im, buffer);
    }
 }
 
@@ -365,7 +366,6 @@ main(int argc, char *argv[])
    char filename[100];
    int width, height, i;
    struct stat st;
-   char *tmp;
 
    /* read config */
    sprintf(filename, "%s/%s", getenv("HOME"), ".camErc");
@@ -424,6 +424,10 @@ main(int argc, char *argv[])
       text_font = val;
    if (NULL != (val = cfg_get_str("grab", "temp_file")))
       temp_file = val;
+   if (NULL != (val = cfg_get_str("grab", "title_style")))
+      title_style_file = val;
+   if (NULL != (val = cfg_get_str("grab", "text_style")))
+      text_style_file = val;
    if (-1 != (i = cfg_get_int("grab", "width")))
       grab_width = i;
    if (-1 != (i = cfg_get_int("grab", "height")))
@@ -482,6 +486,10 @@ main(int argc, char *argv[])
    imlib_add_path_to_font_path(ttf_dir);
    imlib_add_path_to_font_path(".");
    imlib_context_set_operation(IMLIB_OP_COPY);
+   if(title_style_file)
+      title_style = font_style_new_from_ascii(title_style_file);
+   if(text_style_file)
+      text_style = font_style_new_from_ascii(text_style_file);
 
    if (ftp_do)
    {
@@ -523,10 +531,7 @@ main(int argc, char *argv[])
             system(action_post_shot);
          }
          add_time_text(image, get_message(), width, height);
-         tmp = strrchr(temp_file, '.');
-         if (tmp)
-            imlib_image_set_format(tmp + 1);
-         imlib_save_image(temp_file);
+         imlib_wrap_save_image(image, temp_file);
          do_postprocess(temp_file);
          archive_jpeg(image);
          if (ftp_do)
@@ -550,8 +555,7 @@ main(int argc, char *argv[])
             log("running post upload action");
             system(action_post_upload);
          }
-         imlib_context_set_image(image);
-         imlib_free_image_and_decache();
+         imlib_wrap_free_image_and_decache(image);
          log("sleeping");
       }
       if (grab_delay > 0)
