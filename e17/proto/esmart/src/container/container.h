@@ -144,6 +144,9 @@ void e_container_scroll_start(Evas_Object *container, double velocity);
 void e_container_scroll_stop(Evas_Object *container);
 void e_container_scroll(Evas_Object *container, int val);
 
+void e_container_scroll_offset_set(Evas_Object *container, int val);
+int  e_container_scroll_offset_get(Evas_Object *container);
+
 /* callbacks */
 void e_container_callback_order_change_set(Evas_Object *obj, 
                                            void (*func)(void *data),

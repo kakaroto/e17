@@ -226,20 +226,26 @@ void
 _container_resize(Evas_Object *obj, double w, double h)
 {
   Container *data;
+  double old_length;
   
   data = evas_object_smart_data_get(obj);
 
   if (w == data->w && h == data->h) return;
 
+  old_length = e_container_elements_length_get(obj);
+
   evas_object_resize(data->clipper, w, h);
   evas_object_resize(data->grabber, w, h);
 
-  data->scroll_offset = 0;
+//  data->scroll_offset = 0;
+
+  
 
   data->w = w;
   data->h = h;
 
   _container_elements_fix(data);
+  _container_scale_scroll(data, old_length);
 }
 
 void

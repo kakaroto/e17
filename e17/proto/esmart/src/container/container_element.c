@@ -81,14 +81,18 @@ void e_container_element_remove(Evas_Object *container, Evas_Object *element)
 {
   Container *cont;
   Container_Element *el;
+  int old_length;
   
   cont = _container_fetch(container);
   if (!cont) return;
+
+  old_length = e_container_elements_length_get(container);
 
   el = evas_object_data_get(element, "Container_Element");
   cont->elements = evas_list_remove(cont->elements, el);
 
   _container_elements_fix(cont);
+  _container_scale_scroll(cont, old_length);
 }
 
 Evas_List *e_container_elements_get(Evas_Object *container)
