@@ -623,9 +623,10 @@ PagerShow(Pager * p)
 	     if (sn->use_wh)
 		ResizeEwin(ewin, sn->w, sn->h);
 	  }
-	/* no snapshots ? first time ? make a row on the top left */
+	/* no snapshots ? first time ? make a row on the bottom left up */
 	else
-	   MoveEwin(ewin, 0, p->desktop * ewin->h);
+	   MoveEwin(ewin, 0, 
+		    root.h - ((mode.numdesktops - p->desktop) * ewin->h));
 	DesktopAddEwinToTop(ewin);
 	RestackEwin(ewin);
 	/* force a redraw & resize */

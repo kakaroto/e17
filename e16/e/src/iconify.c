@@ -329,7 +329,7 @@ ShowIconbox(Iconbox * ib)
 		MoveEwin(ewin, sn->x, sn->y);
 	  }
 	else
-	   MoveEwin(ewin, 0, 0);
+	   MoveEwin(ewin, root.w - (ewin->w), root.h - (ewin->h));
 	DesktopAddEwinToTop(ewin);
 	RestackEwin(ewin);
 	ShowEwin(ewin);
