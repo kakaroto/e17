@@ -13,6 +13,7 @@ typedef void * Imlib_Image;
 typedef void * Imlib_Color_Modifier;
 typedef void * Imlib_Updates;
 typedef void * Imlib_Font;
+typedef void * Imlib_Color_Range;
 typedef struct _imlib_border Imlib_Border;
 typedef struct _imlib_color Imlib_Color;
 typedef struct _imlib_rectangle Imlib_Rectangle;
@@ -348,10 +349,8 @@ void imlib_image_copy_rect(Imlib_Image image, int x, int y,
 			     int width, int height, int new_x,
 			     int new_y);
 
-# if 0
 /* need to add arbitary rotation */
 /* polygon fills */
-
 
 Imlib_Color_Range imlib_create_color_range(void);
 void imlib_free_color_range(Imlib_Color_Range color_range);
@@ -361,8 +360,10 @@ void imlib_add_color_to_color_range(Imlib_Color_Range color_range,
 void imlib_image_fill_color_range_rectangle(Imlib_Image image, int x, int y, 
 					    int width, int height,
 					    Imlib_Color_Range color_range,
-					    double angle, double spread,
+					    double angle,
 					    Imlib_Operation operation);
+
+# if 0
 /* FIXME: have to figure out generic saving mechanism that lets savers have */
 /* options like quality, color , compression etc. */
 

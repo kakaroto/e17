@@ -296,19 +296,27 @@ int main (int argc, char **argv)
 	       }
 #endif
 	       {
-		  void *rg = NULL;;
+		  Imlib_Color_Range rg = NULL;
 		  
 		  if (!rg)
 		    {
-		       rg = __imlib_CreateRange();
-		       __imlib_AddRangeColor(rg, 255, 255, 255, 255, 0);
-		       __imlib_AddRangeColor(rg, 255, 255, 160, 200, 1);
-		       __imlib_AddRangeColor(rg, 255, 160, 120, 140, 1);
-		       __imlib_AddRangeColor(rg, 100, 80, 100, 80, 1);
-		       __imlib_AddRangeColor(rg, 32, 48, 80, 0, 1);
+		       Imlib_Color cl;
+		       
+		       rg = imlib_create_color_range();
+		       cl.red = 255; cl.green = 255; cl.blue = 255; cl.alpha = 255;
+		       imlib_add_color_to_color_range(rg, &cl, 0);
+		       cl.red = 255; cl.green = 255; cl.blue = 160; cl.alpha = 200;
+		       imlib_add_color_to_color_range(rg, &cl, 1);
+		       cl.red = 255; cl.green = 160; cl.blue = 120; cl.alpha = 140;
+		       imlib_add_color_to_color_range(rg, &cl, 1);
+		       cl.red = 100; cl.green = 80; cl.blue = 100; cl.alpha = 80;
+		       imlib_add_color_to_color_range(rg, &cl, 1);
+		       cl.red = 32; cl.green = 48; cl.blue = 80; cl.alpha = 0;
+		       imlib_add_color_to_color_range(rg, &cl, 1);
 		    }
-		  __imlib_DrawGradient(im, 30, 30, 256, 256, rg, (double)x,
-				       IMLIB_OP_COPY);
+		  imlib_image_fill_color_range_rectangle(im, 30, 30, 256, 256, 
+							 rg, (double)x,
+							 IMLIB_OP_COPY);
 		  up = imlib_update_append_rect(up, 40, 40, 256, 256);
 	       }
 	     if (fon)

@@ -20,6 +20,7 @@
 #include "api.h"
 #include <freetype.h>
 #include "font.h"
+#include "grad.h"
 
 #define   CAST_IMAGE(im, image) (im) = (ImlibImage *)(image)
 
@@ -280,6 +281,11 @@ imlib_image_set_format(Imlib_Image image, char *format)
    if (im->format)
       free(im->format);
    im->format = strdup(format);
+   if (!(im->flags & F_FORMAT_IRRELEVANT))
+     {
+	__imlib_DirtyImage(im);
+	__imlib_DirtyPixmapsForImage(im);
+     }
 }
 
 void
@@ -404,18 +410,6 @@ imlib_render_pixmaps_for_whole_image_at_size(Imlib_Image image, Display *display
 				 create_dithered_mask,
 				 color_modifier);
 }
-
-void 
-imlib_free_pixmap_and_mask(Display *display, Pixmap pixmap)
-{
-   ImlibImagePixmap *ip;
-   
-   ip = __imlib_FindCachedImagePixmapByID(display, pixmap);
-   if (ip)
-      ip->references--;
-   __imlib_CleanupImagePixmapCache();
-}
-
 
 void 
 imlib_render_image_on_drawable(Imlib_Image image, Display *display,
@@ -1453,4 +1447,37 @@ imlib_image_copy_rect(Imlib_Image image, int x, int y, int width, int height,
    
    CAST_IMAGE(im, image);
    __imlib_copy_image_data(im, x, y, width, height, new_x, new_y);
+}
+
+Imlib_Color_Range imlib_create_color_range(void)
+{
+   return (Imlib_Color_Range)__imlib_CreateRange();
+}
+
+void 
+imlib_free_color_range(Imlib_Color_Range color_range)
+{
+   __imlib_FreeRange((ImlibRange *)color_range);
+}
+
+void 
+imlib_add_color_to_color_range(Imlib_Color_Range color_range,
+			       Imlib_Color *color,
+			       int distance_away)
+{
+   __imlib_AddRangeColor((ImlibRange *)color_range,
+			 color->red, color->green, color->blue, color->alpha,
+			 distance_away);
+}
+
+void 
+imlib_image_fill_color_range_rectangle(Imlib_Image image, int x, int y,
+				       int width, int height,
+				       Imlib_Color_Range color_range,
+				       double angle,
+				       Imlib_Operation operation)
+{
+   __imlib_DrawGradient((ImlibImage *)image, x, y, width, height,
+			(ImlibRange *)color_range, angle,
+			(ImlibOp)operation);
 }
