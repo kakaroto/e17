@@ -16,7 +16,7 @@
 /**
  * @def EWL_OBJECT_MIN_SIZE The maximum possible size any object can receive.
  */
-#define EWL_OBJECT_MAX_SIZE (2147483647)
+#define EWL_OBJECT_MAX_SIZE (INT_MAX)
 
 /**
  * The base class inherited by all widgets. Provides methods for size and
