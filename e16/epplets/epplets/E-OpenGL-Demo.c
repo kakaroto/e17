@@ -194,7 +194,7 @@ draw_rotating(void)
 		glLightfv(GL_LIGHT0, GL_POSITION, light_position);
 
 	glPushMatrix();
-	glRotatef(gSpin, .5, 1, .5); 
+	glRotatef(gSpin, 1, 1, .1); 
 	glCallList(gObjectList);
 	glPopMatrix();
 
@@ -221,7 +221,8 @@ cb_close(void *data)
 	cx = (GLXContext *)data;
 	Epplet_unremember();
 	Esync();
-	Epplet_unbind_GL(*cx);
+	if(cx != NULL)
+		Epplet_unbind_GL(*cx);
 	exit(0);
 }
 
@@ -379,7 +380,12 @@ main(int argc, char **argv)
 	
 	load_conf();
 
-	cx = Epplet_bind_double_GL(da, 1, 1, 1, 0, 0, 8, 0, 0, 0, 0, 0);
+	cx = Epplet_default_bind_GL(da);
+	/* This could also be done as: 
+	cx = Epplet_bind_double_GL(da, 1, 1, 1, 0, 0, 8, 0, 0, 0, 0, 0); */
+
+	if(cx == NULL)
+		cb_close(NULL);
 
 	/* To properly center the viewport, -2, -2 isntead of 0, 0 must be used.
 	Why? I have no freak'n idea. For some reason in Ortho everything is

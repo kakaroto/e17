@@ -541,6 +541,13 @@ GLXContext          Epplet_bind_single_GL(Epplet_gadget da, int red,
 	int stencil, int accum_red, int accum_green, int accum_blue,
 	int accum_alpha);
 
+/* This is the "quick" way to define and bind a "good enough" context.
+	 The idea here is that this context should give you a basic RGB
+	 double buffer with minimal depth buffer, and NO other buffers. Its very
+	 basic, but its good enough for simple rendering with light sources
+	 and basic texture mapping. */
+GLXContext					Epplet_default_bind_GL(Epplet_gadget da);
+
 /* Destroy (unbind) a glx context. */
 void                Epplet_unbind_GL(GLXContext cx);
 

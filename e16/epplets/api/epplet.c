@@ -5019,6 +5019,12 @@ Epplet_bind_single_GL(Epplet_gadget da, int red, int green, int blue,
    return cx;
 }
 
+GLXContext
+Epplet_default_bind_GL(Epplet_gadget da)
+{
+	return Epplet_bind_double_GL(da, 1, 1, 1, 0, 0, 8, 0, 0, 0, 0, 0);
+}
+
 void
 Epplet_unbind_GL(GLXContext cx)
 {

@@ -1883,3 +1883,11 @@ Altered the api so that you can define ALL the nitty gritty GLX stuf like
 accumulation buffers for red, green, blue, alpha channels, depth buffers,
 stencil buffers, ect. I'll Add default easier to use calls next.
 
+-------------------------------------------------------------------------------
+
+Tue Jan 25 15:55:11 CST 2000
+(thebard)
+
+Added Epplet_default_bind_GL, a quick and dirty default binding for people
+to use if the new Epplet_bind_double_GL confuses the hell out of em and they
+dont need Epplet_bind_double_GL various buffer settings.
