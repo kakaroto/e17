@@ -6,7 +6,7 @@ collections {
   group {
     name, "Main";
     min, 32 32;
-    max, 1024 768;
+    max, 256 256;
 
     parts {
       part {
@@ -23,7 +23,7 @@ collections {
           }
           rel2 {
             relative, 1.0 1.0;
-            offset, -1 -1;
+            offset, 0 0;
           }
           image {
             normal, "blank.png";
@@ -42,11 +42,11 @@ collections {
           color, 255 255 255 0;
           rel1 {
             relative, 0.0 0.0;
-            offset, 5 5;
+            offset, 9 9;
           }
           rel2 {
             relative, 1.0 1.0;
-            offset, -5 -5;
+            offset, -9 -9;
           } 
         }
       }
