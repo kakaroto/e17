@@ -25,6 +25,8 @@
 static void         ReverseTimeout(int val, void *data);
 static void         AutoraiseTimeout(int val, void *data);
 
+static int          new_desk_focus_nesting = 0;
+
 /* Mostly stolen from the temporary 'ToolTipTimeout' */
 static void
 AutoraiseTimeout(int val, void *data)
@@ -363,8 +365,11 @@ BeginNewDeskFocus(void)
    EWin               *ewin, **lst;
    int                 i, j, num;
 
+   if (new_desk_focus_nesting++)
+      return;
+
    /* we are about to flip desktops or areas - disable enter and leave events
-    * temproarily */
+    * temporarily */
 
    lst = (EWin **) ListItemType(&num, LIST_TYPE_EWIN);
    if (lst)
@@ -405,6 +410,7 @@ BeginNewDeskFocus(void)
 	  }
 	Efree(lst);
      }
+
    for (i = 0; i < ENLIGHTENMENT_CONF_NUM_DESKTOPS; i++)
       XSelectInput(disp, desks.desk[i].win,
 		   PropertyChangeMask | SubstructureRedirectMask |
@@ -419,7 +425,10 @@ NewDeskFocus(void)
 
    EDBUG(4, "NewDeskFocus");
 
-   /* we flipped - re-enable ener and leave events */
+   if (--new_desk_focus_nesting)
+      return;
+
+   /* we flipped - re-enable enter and leave events */
    lst = (EWin **) ListItemType(&num, LIST_TYPE_EWIN);
    if (lst)
      {
@@ -469,6 +478,7 @@ NewDeskFocus(void)
 	  }
 	Efree(lst);
      }
+
    for (i = 0; i < ENLIGHTENMENT_CONF_NUM_DESKTOPS; i++)
       XSelectInput(disp, desks.desk[i].win,
 		   SubstructureNotifyMask | ButtonPressMask |
@@ -476,6 +486,7 @@ NewDeskFocus(void)
 		   ButtonMotionMask | PropertyChangeMask |
 		   SubstructureRedirectMask | KeyPressMask | KeyReleaseMask |
 		   PointerMotionMask);
+
    if ((mode.focusmode == FOCUS_POINTER) || (mode.focusmode == FOCUS_SLOPPY))
      {
 	ewin = GetEwinPointerInClient();
@@ -508,6 +519,7 @@ NewDeskFocus(void)
 	     Efree(lst);
 	  }
      }
+
    EDBUG_RETURN_;
 }
 

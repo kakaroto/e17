@@ -1492,8 +1492,9 @@ GotoDesktop(int num)
 			 mode.ewin->y + desks.desk[mode.ewin->desktop].y);
 	  }
      }
+
    FocusToEWin(NULL);
-   ICCCM_Cmap(NULL);
+   BeginNewDeskFocus();
 
    if (num > 0)
      {
@@ -1577,9 +1578,12 @@ GotoDesktop(int num)
 	       }
 	  }
      }
+
+   NewDeskFocus();
    RedrawPagersForDesktop(num, 3);
    ForceUpdatePagersForDesktop(num);
    HandleDrawQueue();
+
    EDBUG_RETURN_;
 }
 
