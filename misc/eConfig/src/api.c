@@ -93,6 +93,7 @@ eConfigUnloadData(char *loc)
 	 * You should use this function instead of freeing the data you retreived
 	 * by hand.  This way everything works with the caching system properly
 	 * The function takes the same key (loc) that you used for eConfigGetData
+	 * This function is exported by eConfig.
 	 */
 
 	eConfigData *cur_data;
@@ -124,6 +125,14 @@ eConfigUnloadData(char *loc)
 int
 eConfigStoreData(char *loc, void *data, unsigned long length, char *path)
 {
+
+	/* This function will store the *data at key *loc of length length into
+	 * the theme at *path.  it will create the datapath if necessary, as well
+	 * as test and store the data.  It returns an 0 on failure and a 1 on
+	 * success.
+	 * FIXME: this function isn't doing anything right now.
+	 * This function is exported by eConfig.
+	 */
 
 	if(!loc)
 		return 0;
