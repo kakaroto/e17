@@ -12,6 +12,7 @@ char txt[4096];
 
 double down_x, down_y;
 double ox, oy;
+double offset;
 
 void
 mouse_down (void *_data, Evas _e, Evas_Object _o, int _b, int _x, int _y)
@@ -46,7 +47,7 @@ mouse_up (void *_data, Evas _e, Evas_Object _o, int _b, int _x, int _y)
    evas_move(_e, _o, ox + x - down_x, oy + y - down_y);
    evas_get_geometry(_e, _o, NULL, NULL, &w, &h); 
    
-   etox_obstacle_set(et, ob, ox + x - down_x, oy + y - down_y, w, h);
+   etox_obstacle_set(et, ob, ox + x - down_x - offset, oy + y - down_y, w, h);
 }
 
 void
@@ -121,12 +122,21 @@ main(int argc, char *argv[])
   evas_lower(e, o[0]);
   evas_show(e, o[0]);
 
+  /* 
+   * This is the space between the left and right border of the
+   * window and the etox. It's important to keep this var around,
+   * because etox obstacles are specified against the topleft
+   * corner of the etox, *not* the evas..
+   */
+  offset = 10;
+
   ec = etox_color_new();
   etox_color_set_member(ec, "fg", 240, 240, 240, 255);
   etox_color_set_member(ec, "ol", 10, 10, 10, 255);
   etox_color_set_member(ec, "sh", 20, 20, 20, 100);
 
-  et = etox_new_all(e, "Test Etox", 10, 0, win_w - 20, win_h,
+  et = etox_new_all(e, "Test Etox", offset, 0, 
+                    win_w - (offset * 2), win_h,
 		    "nationff", 10, "sh_ol.style", ec,
 		    ETOX_ALIGN_CENTER, ETOX_ALIGN_BOTTOM,
 		    255, 0);
@@ -134,7 +144,7 @@ main(int argc, char *argv[])
   x = 60, y = 320;
   o[1] = evas_add_image_from_file(e, IMGDIR"evas_test_image_0.png");
   evas_get_image_size(e, o[1], &w, &h);
-  ob[0] = etox_obstacle_add(et, x, y, w, h);
+  ob[0] = etox_obstacle_add(et, x - offset, y, w, h);
   evas_move(e, o[1], x, y); 
   evas_raise(e, o[1]);
   evas_show(e, o[1]);
@@ -145,7 +155,7 @@ main(int argc, char *argv[])
   x = 200, y = 60;
   o[2] = evas_add_image_from_file(e, IMGDIR"evas_test_image_1.png");
   evas_get_image_size(e, o[2], &w, &h);
-  ob[1] = etox_obstacle_add(et, x, y, w, h);
+  ob[1] = etox_obstacle_add(et, x - offset, y, w, h);
   evas_move(e, o[2], x, y); 
   evas_raise(e, o[2]);  
   evas_show(e, o[2]); 
@@ -156,7 +166,7 @@ main(int argc, char *argv[])
   x = 400, y = 100;
   o[3] = evas_add_image_from_file(e, IMGDIR"evas_test_image_2.png");
   evas_get_image_size(e, o[3], &w, &h);
-  ob[2] = etox_obstacle_add(et, x, y, w, h);
+  ob[2] = etox_obstacle_add(et, x - offset, y, w, h);
   evas_move(e, o[3], x, y); 
   evas_raise(e, o[3]);   
   evas_show(e, o[3]);  
