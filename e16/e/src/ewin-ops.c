@@ -698,6 +698,10 @@ EwinInstantUnShade(EWin * ewin)
 	break;
      }
 
+   /* Reset gravity */
+   att.win_gravity = NorthWestGravity;
+   EChangeWindowAttributes(ewin->client.win, CWWinGravity, &att);
+
    ewin->shaded = 0;
    MoveResizeEwin(ewin, EoGetX(ewin), EoGetY(ewin), ewin->client.w,
 		  ewin->client.h);
@@ -1131,6 +1135,10 @@ EwinUnShade(EWin * ewin)
 	EoSetY(ewin, d);
 	break;
      }
+
+   /* Reset gravity */
+   att.win_gravity = NorthWestGravity;
+   EChangeWindowAttributes(ewin->client.win, CWWinGravity, &att);
 
    MoveResizeEwin(ewin, EoGetX(ewin), EoGetY(ewin), ewin->client.w,
 		  ewin->client.h);
