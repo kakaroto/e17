@@ -5,6 +5,7 @@
 #include <X11/Xlib.h>
 #include "image.h"
 #include "file.h"
+#include "loaderpath.h"
 
 static ImlibImage        *images = NULL;
 static ImlibImagePixmap  *pixmaps = NULL;
@@ -340,27 +341,56 @@ __imlib_CleanupImagePixmapCache()
      }
 }
 
+#define LOADERS_UNINITIALISED -4444
+
+static void
+LTDL_Init(void)
+{
+  static int errors = LOADERS_UNINITIALISED;
+    
+
+  /* Do this only once! */
+  if (errors = LOADERS_UNINITIALISED)
+    {
+      errors = lt_dlinit();
+
+      /* Initialise libltdl's memory management. */
+      lt_dlmalloc = malloc;
+      lt_dlfree = free;
+    }
+
+  /* Failing ltdl initialisation makes continuing somewhat futile... */
+  if (errors != 0)
+    {
+      const char *dlerror = lt_dlerror();
+      fprintf(stderr, "ERROR: failed to initialise ltdl: %s\n", dlerror);
+      exit(1);
+    }
+}
+
 ImlibLoader *
 __imlib_ProduceLoader(char *file)
 {
    ImlibLoader *l;
    void (*l_formats)(ImlibLoader *l) ;
    
+   LTDL_Init();
+   
    l = malloc(sizeof(ImlibLoader));
    l->num_formats = 0;
    l->formats = NULL;
-   l->handle = dlopen(file, RTLD_NOW);
+   l->handle = lt_dlopenext(file);
    if (!l->handle)
      {
 	free(l);
 	return NULL;
      }
-   l->load = dlsym(l->handle, "load");
-   l->save = dlsym(l->handle, "save");
-   l_formats = dlsym(l->handle, "formats");
+   l->load = lt_dlsym(l->handle, "load");
+   l->save = lt_dlsym(l->handle, "save");
+   l_formats = lt_dlsym(l->handle, "formats");
    if ((!(l->load)) || (!(l->save)) || (!(l_formats)))
      {
-	dlclose(l->handle);
+	lt_dlclose(l->handle);
 	free(l);
 	return NULL;
      }
@@ -378,7 +408,7 @@ __imlib_ListLoaders(int *num_ret)
    
    *num_ret = 0;
    home = __imlib_FileHomeDir(getuid());
-   sprintf(s, "%s/.loaders/image/", home);
+   sprintf(s, "%s/" USER_LOADERS_PATH "/image", home);
    l = __imlib_FileDir(s, &num);
    if (num > 0)
      {
@@ -386,13 +416,13 @@ __imlib_ListLoaders(int *num_ret)
 	list = malloc(sizeof(char *) * *num_ret);
 	for (i = 0; i < num; i++)
 	  {
-	     sprintf(s, "%s/.loaders/image/%s", home, l[i]);
+	     sprintf(s, "%s/" USER_LOADERS_PATH "/image/%s", home, l[i]);
 	     list[i] = strdup(s);
 	  }
 	pi = i;	
 	__imlib_FileFreeDirList(l, num);
      }
-   sprintf(s, "/usr/lib/loaders/image/");
+   sprintf(s, SYS_LOADERS_PATH "/image");
    l = __imlib_FileDir(s, &num);
    if (num > 0)
      {
@@ -400,7 +430,7 @@ __imlib_ListLoaders(int *num_ret)
 	list = realloc(list, sizeof(char *) * *num_ret);
 	for (i = 0; i < num; i++)
 	  {
-	     sprintf(s, "/usr/lib/loaders/image/%s", l[i]);
+	     sprintf(s, SYS_LOADERS_PATH "/image/%s", l[i]);
 	     list[pi + i] = strdup(s);
 	  }
 	__imlib_FileFreeDirList(l, num);

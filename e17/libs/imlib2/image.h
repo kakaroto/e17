@@ -1,6 +1,8 @@
 #ifndef __IMAGE
 # define __IMAGE 1
 
+#include "ltdl.h"		/* for lt_dlhandle definition */
+
 typedef enum   _iflags                  ImlibImageFlags;
 typedef struct _imlibimage              ImlibImage;
 typedef struct _imlibimagepixmap        ImlibImagePixmap;
@@ -58,7 +60,7 @@ struct _imlibloader
    char         *file;
    int           num_formats;
    char        **formats;
-   void         *handle;
+   lt_dlhandle   handle;
    char        (*load)(ImlibImage *im,
 		       void (*progress)(ImlibImage *im, char percent,
 					int update_x, int update_y,

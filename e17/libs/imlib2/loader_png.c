@@ -1,3 +1,14 @@
+#ifdef HAVE_CONFIG_H
+#  include <config.h>
+#endif
+
+/* Some architectures require non-text files be opened in binary mode. */
+#ifdef USE_FOPEN_BINARY
+#  define FOPEN_BINARY_FLAG "b"
+#else
+#  define FOPEN_BINARY_FLAG
+#endif
+
 #include "common.h"
 #include <string.h>
 #include <X11/Xlib.h>
@@ -6,7 +17,7 @@
 #include "image.h"
 #include <png.h>
 
-/* this is a quick sample png loader module... nioce and small isnt it? */
+/* this is a quick sample png loader module... nice and small isnt it? */
 
 /* PNG stuff */
 #define PNG_BYTES_TO_CHECK 4
@@ -81,7 +92,7 @@ RGBA_Load(char *file, int *w, int *h)
   FILE *f;
   DATA32 *data;
 
-  f = fopen(file, "r");
+  f = fopen(file, "r" FOPEN_BINARY_FLAG);
   data = (DATA32 *)_load_PNG(w, h, f);
   fclose(f);
   return data;
