@@ -56,7 +56,9 @@ e_login_session_init(E_Login_Session e)
    Display *disp;
    Window win, ewin;
    Evas *evas;
-   int iw, ih;
+   Evas_List *l;
+   Evas_Object *li;
+   int iw, ih, ix, iy;
 
    if (!e)
       exit(1);
@@ -140,6 +142,66 @@ e_login_session_init(E_Login_Session e)
    evas_object_image_fill_set(e->pointer, 0.0, 0.0, (double) iw, (double) ih);
    evas_object_layer_set(e->pointer, 2000);
    evas_object_show(e->pointer);
+
+   /* Session list background image */
+   e->listbg = evas_object_image_add(evas);
+   evas_object_image_file_set(e->listbg,
+                              PACKAGE_DATA_DIR "/data/images/parch.png",
+                              NULL);
+   evas_object_image_size_get(e->listbg, &iw, &ih);
+   evas_object_resize(e->listbg, iw, ih);
+   evas_object_image_fill_set(e->listbg, 0.0, 0.0, (double) iw, (double) ih);
+   evas_object_layer_set(e->listbg, 1);
+   evas_object_move(e->listbg, 280.0, 40.0);
+   evas_object_show(e->listbg);
+
+   /* Session list heading */
+   e->listhead = evas_object_text_add(evas);
+   evas_object_text_font_set(e->listhead, "notepad.ttf", 21.0);
+   evas_object_text_text_set(e->listhead, "Select Session");
+   evas_object_layer_set(e->listhead, 2);
+   evas_object_color_set(e->listhead, 90, 60, 25, 255);
+   evas_object_move(e->listhead, 300.0, 80.0);
+   evas_object_show(e->listhead);
+
+   /* Build session list */
+   ix = 334;
+   iy = 120;
+
+   e->listitems = NULL;
+   for (l = e->config->sessions; l && iy <= 330; l = l->next)
+   {
+      li = evas_object_text_add(evas);
+      evas_object_text_font_set(li, "notepad.ttf", 16.0);
+      evas_object_text_text_set(li, (char *) evas_list_data(l));
+      evas_object_layer_set(li, 5);
+      evas_object_color_set(li, 0, 0, 0, 255);
+      evas_object_move(li, (double) ix, (double) iy);
+      evas_object_show(li);
+      e->listitems = evas_list_append(e->listitems, li);
+      iy += 30;
+   }
+
+   /* Bullet */
+   e->bullet = evas_object_image_add(evas);
+   evas_object_image_file_set(e->bullet,
+                              PACKAGE_DATA_DIR "/data/images/bullet.png",
+                              NULL);
+   evas_object_image_size_get(e->bullet, &iw, &ih);
+   evas_object_resize(e->bullet, iw, ih);
+   evas_object_image_fill_set(e->bullet, 0.0, 0.0, (double) iw, (double) ih);
+   evas_object_layer_set(e->bullet, 5);
+   evas_object_move(e->bullet, 300, 120);
+   evas_object_show(e->bullet);
+
+   /* Set default session to first in list (for now) */ ;
+   l = e->config->sessions;
+   if (l)
+      e->session = evas_list_data(l);
+   else
+      e->session = NULL;
+
+   e->session_index = 0;
 
    e->evas = evas;
    e->ewin = ewin;

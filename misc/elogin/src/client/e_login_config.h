@@ -38,6 +38,7 @@ struct _E_Login_Config
    }
    place;
    Evas_List users;
+   Evas_List *sessions;
 };
 
 typedef struct _E_Login_Config *E_Login_Config;

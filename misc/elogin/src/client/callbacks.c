@@ -8,6 +8,39 @@ extern void show_error_description(char *);
 
 static void elogin_start_x(E_Login_Session e);
 
+void
+elogin_select_next_session(E_Login_Session e)
+{
+   elogin_select_session(e, e->session_index + 1);
+}
+
+void
+elogin_select_prev_session(E_Login_Session e)
+{
+   elogin_select_session(e, e->session_index - 1);
+}
+
+void
+elogin_select_session(E_Login_Session e, int index)
+{
+   int ix, iy;
+
+   /* Force within list bounds/wraparound */
+   if (index >= evas_list_count(e->listitems))
+      index = 0;
+   else if (index < 0)
+      index = evas_list_count(e->listitems) - 1;
+
+   /* Update bullet position */
+   ix = 300;
+   iy = 120 + (index * 30);
+   evas_object_move(e->bullet, ix, iy);
+
+   /* Update current session */
+   e->session_index = index;
+   e->session = evas_list_nth(e->config->sessions, index);
+}
+
 int
 elogin_return_key_cb(E_Login_Session e, char *buffer)
 {
@@ -64,7 +97,11 @@ elogin_start_x(E_Login_Session e)
 #if X_TESTING
    snprintf(buf, PATH_MAX, "/usr/X11R6/bin/xterm");
 #else
-   snprintf(buf, PATH_MAX, "%s/.xinitrc", e->auth->pam.pw->pw_dir);
+/*   snprintf(buf, PATH_MAX, "%s/.xinitrc", e->auth->pam.pw->pw_dir); */
+   if (e->session)
+      snprintf(buf, PATH_MAX, "/etc/X11/Xsession %s", e->session);
+   else
+      snprintf(buf, PATH_MAX, "/etc/X11/Xsession");
 #endif
 
    ecore_sync();
@@ -76,7 +113,9 @@ elogin_start_x(E_Login_Session e)
       exit(1);
    }
    if (initgroups(e->auth->pam.pw->pw_name, e->auth->pam.pw->pw_gid))
-      fprintf(stderr, "Unable to initialize group\n");
+      fprintf(stderr,
+              "Unable to initialize group (is elogin running as root?)\n");
+
    if (setgid(e->auth->pam.pw->pw_gid))
       fprintf(stderr, "Unable to set group id\n");
    if (setuid(e->auth->pam.pw->pw_uid))

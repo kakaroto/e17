@@ -19,10 +19,30 @@ e_login_config_new(void)
 static void
 e_login_config_populate(E_Login_Config e, E_DB_File * db)
 {
-   char *str;
+   char *str = NULL;
+   Evas_List *l = NULL;
+   int i = 0, num_session = 0;
 
    if ((!e) || (!db))
       return;
+
+   if (e_db_int_get(db, "/elogin/session/count", &num_session))
+   {
+	for(i = 0; i < num_session; i++)
+	{
+	    char buf[PATH_MAX];
+	    snprintf(buf, PATH_MAX, "/elogin/session/%d", i);
+	    if((str = e_db_str_get(db, buf)))
+	    {
+		l = evas_list_append(l, str);
+	    }
+	}
+	e->sessions = l;
+   }
+   else
+   {
+      fprintf(stderr, "Warning: No sessions found, using default\n");
+   }
 
    if ((str = e_db_str_get(db, "/elogin/bg")))
       e->bg = str;
