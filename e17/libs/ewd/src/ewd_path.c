@@ -56,9 +56,11 @@ ewd_path_group_del(int group_id)
 	if (!group)
 		return;
 
-	ewd_list_for_each(group->paths,
-			  EWD_FOR_EACH(free));
-	ewd_list_destroy(group->paths);
+	if (group->paths) {
+		ewd_list_for_each(group->paths,
+				  EWD_FOR_EACH(free));
+		ewd_list_destroy(group->paths);
+	}
 
 	free(group->name);
 	free(group);
