@@ -480,7 +480,7 @@ efsd_initialize(void)
   signal(SIGIO,     efsd_cleanup_signal_callback);
   signal(SIGIOT,    efsd_cleanup_signal_callback);
   signal(SIGQUIT,   efsd_cleanup_signal_callback);
-  //  signal(SIGSEGV,   efsd_cleanup_signal_callback);
+  signal(SIGSEGV,   efsd_cleanup_signal_callback);
   signal(SIGSTKFLT, efsd_cleanup_signal_callback);
   signal(SIGSYS,    efsd_cleanup_signal_callback);
   signal(SIGTERM,   efsd_cleanup_signal_callback);
