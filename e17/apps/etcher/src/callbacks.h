@@ -137,3 +137,15 @@ gboolean
 on_view_leave_notify_event             (GtkWidget       *widget,
                                         GdkEventCrossing *event,
                                         gpointer         user_data);
+
+void
+on_software_clicked                    (GtkButton       *button,
+                                        gpointer         user_data);
+
+void
+on_button2_clicked                     (GtkButton       *button,
+                                        gpointer         user_data);
+
+void
+on_3d_hardware_clicked                 (GtkButton       *button,
+                                        gpointer         user_data);

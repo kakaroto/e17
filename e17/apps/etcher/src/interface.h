@@ -4,3 +4,4 @@
 
 GtkWidget* create_main (void);
 GtkWidget* create_filesel (void);
+GtkWidget* create_render_method (void);

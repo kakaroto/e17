@@ -13,7 +13,10 @@
 
 extern GtkWidget *main_win;
 
-static Evas view_evas = NULL;
+Evas view_evas = NULL;
+gint render_method = 0;
+
+static int new_evas = 1;
 static Evas_Object o_logo = NULL;
 static Evas_Object o_handle1 = NULL, o_handle2, o_handle3, o_handle4, o_edge1, o_edge2, o_edge3, o_edge4, o_backing, o_pointer = NULL;
 static double backing_x, backing_y, backing_w, backing_h;
@@ -404,14 +407,12 @@ on_view_expose_event                   (GtkWidget       *widget,
                                         GdkEventExpose  *event,
                                         gpointer         user_data)
 {
-   if (!view_evas)
+   if (new_evas)
      {
 	Evas_Object o_bg;
 	int w, h;
 	
-	view_evas = evas_new();
-	
-	evas_set_output_method(view_evas, RENDER_METHOD_ALPHA_SOFTWARE);
+	new_evas = 0;
 	evas_set_output(view_evas, 
 			GDK_WINDOW_XDISPLAY(widget->window), 
 			GDK_WINDOW_XWINDOW(widget->window), 
@@ -645,5 +646,30 @@ on_filesel_delete_event                (GtkWidget       *widget,
 {
 
   return FALSE;
+}
+
+
+void
+on_software_clicked                    (GtkButton       *button,
+                                        gpointer         user_data)
+{
+   GtkWidget *top;
+   
+   top = gtk_widget_get_toplevel(GTK_WIDGET(button));
+   render_method = 0;
+   gtk_widget_destroy(top);
+   gtk_main_quit();
+}
+
+void
+on_3d_hardware_clicked                 (GtkButton       *button,
+                                        gpointer         user_data)
+{
+   GtkWidget *top;
+   
+   top = gtk_widget_get_toplevel(GTK_WIDGET(button));
+   render_method = 1;
+   gtk_widget_destroy(top);
+   gtk_main_quit();
 }
 
