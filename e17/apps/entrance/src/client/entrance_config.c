@@ -67,15 +67,20 @@ entrance_config_populate(Entrance_Config * e, E_DB_File * db)
       e->after.string = str;
    else
       e->after.string = strdup("");
+
+   /* Use a boring default if there's no config for date/time */
    if ((str = e_db_str_get(db, "/entrance/date_format")))
       e->date.string = str;
    else
-      e->date.string = strdup("%A %B %e, %Y");
+      /* e->date.string = strdup("%A %B %e, %Y"); */
+      e->date.string = strdup("%x");
 
    if ((str = e_db_str_get(db, "/entrance/time_format")))
       e->time.string = str;
    else
-      e->time.string = strdup("%l:%M:%S %p");
+      /* e->time.string = strdup("%l:%M:%S %p"); */
+      e->time.string = strdup("%X");
+
    if (e_db_int_get(db, "/entrance/autologin/mode", &e->autologin.mode))
    {
       if (e->autologin.mode > 0)
