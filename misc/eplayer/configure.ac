@@ -118,6 +118,13 @@ data/themes/iio/collections/Makefile
 data/themes/iio/fonts/Makefile
 data/themes/iio/img/Makefile
 data/themes/iio/programs/Makefile
+data/themes/winter/Makefile
+data/themes/winter/groups/Makefile
+data/themes/winter/macros/Makefile
+data/themes/winter/images/Makefile
+data/themes/winter/img/Makefile
+data/themes/winter/parts/Makefile
+data/themes/winter/programs/Makefile
 etc/Makefile
 m4/Makefile
 src/Makefile
