@@ -2,10 +2,6 @@
 #include <stdio.h>
 #include <Ewl.h>
 
-#include "ewl_dialog.h"
-#include "ewl_stock.h"
-#include "ewl_filedialog_stock.h"
-
 #include "ewler.h"
 #include "form.h"
 #include "widgets.h"
@@ -48,23 +44,28 @@ static void
 __open_form_cb( Ewl_Widget *w, void *ev_data, void *user_data )
 {
 	char *filename = ev_data;
+	Ewl_Widget *window = user_data;
 
 	if( filename ) {
 		ewler_open_file( filename );
-		ewl_widget_destroy( w );
+		ewl_widget_destroy( window );
 	}
 }
 
 static void
 __open_form( Ewl_Widget *w, void *ev_data, void *user_data )
 {
-	Ewl_Widget *dialog;
+	Ewl_Widget *window, *dialog;
 
-	dialog = ewl_filedialog_stock_new( EWL_FILEDIALOG_TYPE_OPEN );
+	window = ewl_window_new();
+	ewl_widget_show( window );
+
+	dialog = ewl_filedialog_new( EWL_FILEDIALOG_TYPE_OPEN );
+	ewl_container_append_child( EWL_CONTAINER(window), dialog );
 	ewl_callback_append( dialog, EWL_CALLBACK_VALUE_CHANGED,
-											 __open_form_cb, NULL );
-	ewl_callback_append( dialog, EWL_CALLBACK_DELETE_WINDOW,
-											 __destroy_dialog, dialog );
+											 __open_form_cb, window );
+	ewl_callback_append( window, EWL_CALLBACK_DELETE_WINDOW,
+											 __destroy_dialog, window );
 	ewl_widget_show( dialog );
 }
 
@@ -192,7 +193,7 @@ tool_get_name( void )
 void
 tool_set_name( Ewl_Widget *w, void *ev_data, void *user_data )
 {
-	active_tool = ewl_button_get_label( EWL_TEXT(w) );
+	active_tool = ewl_button_get_label( EWL_BUTTON(w) );
 }
 
 void
@@ -231,11 +232,12 @@ add_tools_with_parent( const char *parent, Ewl_Widget *prow )
 														 tool_set_name, NULL );
 			} else
 				text[0] = ewl_text_new( class );
-			ewl_object_set_fill_policy( text[0], EWL_FLAG_FILL_NONE );
+			ewl_object_set_fill_policy( EWL_OBJECT(text[0]), EWL_FLAG_FILL_NONE );
 			ewl_widget_show( text[0] );
 
 			row = ewl_tree_add_row( EWL_TREE(tool_tree), EWL_ROW(prow), text );
 			ewl_object_set_fill_policy( EWL_OBJECT(row->parent), EWL_FLAG_FILL_FILL );
+			ewl_tree_set_row_expand( EWL_ROW(row), EWL_TREE_NODE_EXPANDED );
 
 			add_tools_with_parent( class, row );
 			ewl_widget_show( row );

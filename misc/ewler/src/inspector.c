@@ -151,7 +151,47 @@ __inspector_entry_changed( Ewl_Widget *w, void *ev_data, void *user_data )
 			break;
 	}
 
+	widget_changed( active_widget );
 	inspector_update();
+}
+
+static void
+__inspector_combo_changed( Ewl_Widget *w, void *ev_data, void *user_data )
+{
+	Widget_Data_Elem *data = user_data;
+	char *text;
+	int value;
+	Ewl_Object *active_object = EWL_OBJECT(active_widget);
+
+	text = ewl_combo_get_selected( EWL_COMBO(w) );
+
+	if( data->type->w.w_type != WIDGET_ENUM_TYPE )
+		return;
+
+	value = (int) ecore_hash_get( data->type->w_enum.map, text );
+
+	if( data->type->w.set ) {
+		data->type->w.set( EWL_OBJECT(active_widget), value );
+	}
+
+	ewl_object_set_fill_policy( EWL_OBJECT(active_widget->parent),
+															ewl_object_get_fill_policy(active_object) );
+	ewl_object_set_alignment( EWL_OBJECT(active_widget->parent),
+														ewl_object_get_alignment(active_object) );
+	widget_changed( active_widget );
+}
+
+static Ewl_Widget *t_combo;
+
+static void
+__populate_combo_cb( void *val )
+{
+	Ecore_Hash_Node *node = val;
+	Ewl_Widget *text;
+
+	text = ewl_menu_item_new( NULL, node->key );
+	ewl_container_append_child( EWL_CONTAINER(t_combo), text );
+	ewl_widget_show( text );
 }
 
 static void
@@ -164,7 +204,23 @@ __populate_tree( void *val )
 	row_elems[0] = ewl_text_new( data->type->w.name );
 	ewl_widget_show( row_elems[0] );
 
-	if( data->type->w.w_type != WIDGET_STRUCT_TYPE ) {
+	if( data->type->w.w_type == WIDGET_ENUM_TYPE ) {
+		char *enum_val;
+
+		enum_val = ecore_hash_get( data->type->w_enum.map_rev,
+															 (void *) data->w_enum.value );
+		row_elems[1] = t_combo = ewl_combo_new( enum_val );
+
+		ecore_hash_for_each_node( data->type->w_enum.map, __populate_combo_cb );
+
+		ewl_callback_append( EWL_WIDGET(row_elems[1]), EWL_CALLBACK_DESELECT,
+												 __inspector_combo_changed, data );
+		ewl_callback_append( EWL_WIDGET(row_elems[1]), EWL_CALLBACK_VALUE_CHANGED,
+												 __inspector_combo_changed, data );
+
+		ewl_widget_show( row_elems[1] );
+		ewl_widget_set_data( row_elems[1], "get", data );
+	} else if( data->type->w.w_type != WIDGET_STRUCT_TYPE ) {
 		row_elems[1] = ewl_entry_new( NULL );
 
 		ewl_callback_append( EWL_WIDGET(row_elems[1]), EWL_CALLBACK_DESELECT,
@@ -261,7 +317,7 @@ inspector_update( void )
 void
 inspector_reset( void )
 {
-	Ewl_Widget *s, *w;
+	Ewl_Widget *s, *w = NULL;
 	Ecore_List *info;
 
 	if( !active_form ) {
@@ -271,14 +327,20 @@ inspector_reset( void )
 
 	s = ecore_list_goto_first( active_form->selected );
 
-	if( s && ewler_selected_get(EWLER_SELECTED(s)) == active_widget ) {
+	if( s == active_form->overlay ) {
+		w = s;
+	} else if( s ) {
+		w = ewler_selected_get(EWLER_SELECTED(s));
+	}
+
+	if( w == active_widget ) {
 		inspector_update();
 		return;
 	}
 
 	ewl_container_reset( EWL_CONTAINER(inspector_tree) );
 	
-	if( (w = ewler_selected_get(EWLER_SELECTED(s))) ) {
+	if( w ) {
 		info = widget_get_info(w);
 		active_widget = w;
 

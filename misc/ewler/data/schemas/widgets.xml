@@ -30,7 +30,29 @@
 			<elem type="int" get="ewl_object_top_insets" index="2">t</elem>
 			<elem type="int" get="ewl_object_bottom_insets" index="3">b</elem>
 		</elem>
-		<elem type="unsigned int" get="ewl_object_get_flags">flags</elem>
+		<elem type="struct">flags
+			<elem type="enum" get="ewl_object_get_fill_policy" set="ewl_object_set_fill_policy">fill_policy
+				<elem type="enum_val" value="0x0000" id="EWL_FLAG_FILL_NONE"></elem>
+				<elem type="enum_val" value="0x1000" id="EWL_FLAG_FILL_HSHRINK"></elem>
+				<elem type="enum_val" value="0x2000" id="EWL_FLAG_FILL_VSHRINK"></elem>
+				<elem type="enum_val" value="0x3000" id="EWL_FLAG_FILL_SHRINK"></elem>
+				<elem type="enum_val" value="0x4000" id="EWL_FLAG_FILL_HFILL"></elem>
+				<elem type="enum_val" value="0x8000" id="EWL_FLAG_FILL_VFILL"></elem>
+				<elem type="enum_val" value="0xC000" id="EWL_FLAG_FILL_FILL"></elem>
+				<elem type="enum_val" value="0xF000" id="EWL_FLAG_FILL_ALL"></elem>
+			</elem>
+			<elem type="enum" get="ewl_object_get_alignment" set="ewl_object_set_alignment">alignment
+				<elem type="enum_val" value="0x0" id="EWL_FLAG_ALIGN_CENTER"></elem>
+				<elem type="enum_val" value="0x1" id="EWL_FLAG_ALIGN_LEFT"></elem>
+				<elem type="enum_val" value="0x2" id="EWL_FLAG_ALIGN_RIGHT"></elem>
+				<elem type="enum_val" value="0x4" id="EWL_FLAG_ALIGN_TOP"></elem>
+				<elem type="enum_val" value="0x8" id="EWL_FLAG_ALIGN_BOTTOM"></elem>
+				<elem type="enum_val" value="0x5" id="EWL_FLAG_ALIGN_LEFT|EWL_FLAG_ALIGN_TOP"></elem>
+				<elem type="enum_val" value="0x6" id="EWL_FLAG_ALIGN_RIGHT|EWL_FLAG_ALIGN_TOP"></elem>
+				<elem type="enum_val" value="0x9" id="EWL_FLAG_ALIGN_LEFT|EWL_FLAG_ALIGN_BOTTOM"></elem>
+				<elem type="enum_val" value="0xa" id="EWL_FLAG_ALIGN_RIGHT|EWL_FLAG_ALIGN_BOTTOM"></elem>
+			</elem>
+		</elem>
 	</class>
 	<class name="Ewl_Widget" super="Ewl_Object">
 		<elem type="Ewl_Widget *" set="ewl_widget_set_parent">parent</elem>
@@ -50,6 +72,10 @@
 	</class>
 	<class name="Ewl_Box" super="Ewl_Container" ctor="ewl_box_new" nargs="0">
 		<elem type="int">spacing</elem>
+		<elem type="enum" get="ewl_box_get_orientation" set="ewl_box_set_orientation" default="0">orientation
+			<elem type="enum_val" value="0" id="EWL_ORIENTATION_HORIZONTAL"></elem>
+			<elem type="enum_val" value="1" id="EWL_ORIENTATION_VERTICAL"></elem>
+		</elem>
 		<elem type="unsigned int">homogeneous</elem>
 	</class>
 	<class name="Ewl_Button" super="Ewl_Box" ctor="ewl_button_new" nargs="1">
@@ -99,5 +125,37 @@
 	</class>
 	<class name="Ewl_Combo" super="Ewl_Box" ctor="ewl_combo_new" nargs="1">
 		<elem type="string" set="ewl_combo_set_selected" get="ewl_combo_get_selected">selected</elem>
+	</class>
+	<class name="Ewl_Check" super="Ewl_Widget" ctor="ewl_check_new" nargs="0">
+		<elem type="int" set="ewl_check_set_checked" get="ewl_check_is_checked">checked</elem>
+	</class>
+	<class name="Ewl_Filedialog" super="Ewl_Box" ctor="ewl_filedialog_new" nargs="1">
+		<elem type="string" set="ewl_filedialog_set_directory">directory</elem>
+	</class>
+	<class name="Ewl_Fileselector" super="Ewl_Box" ctor="ewl_fileselector_new" nargs="0">
+		<elem type="string" set="ewl_fileselector_set_directory" get="ewl_fileselector_get_directory">directory</elem>
+	</class>
+	<class name="Ewl_Image" super="Ewl_Image" ctor="ewl_image_new" nargs="2">
+		<elem type="string" set="ewl_image_set_file">file</elem>
+		<elem type="int" set="ewl_image_set_proportional" default="0">proportional</elem>
+	</class>
+	<class name="Ewl_Menu_Item" super="Ewl_Container">
+	</class>
+	<class name="Ewl_Menu_Base" super="Ewl_Menu_Item">
+	</class>
+	<class name="Ewl_Imenu" super="Ewl_Menu_Base" ctor="ewl_imenu_new" nargs="2">
+	</class>
+	<class name="Ewl_Password" super="Ewl_Entry" ctor="ewl_password_new" nargs="1">
+		<elem type="string" set="ewl_password_set_text" get="ewl_password_get_text">text</elem>
+		<elem type="int" set="ewl_password-set_obscure" get="ewl_password_get_obscure">obscure</elem>
+	</class>
+	<class name="Ewl_Progressbar" super="Ewl_Container" ctor="ewl_progressbar_new" nargs="0">
+		<elem type="string" set="ewl_progress_bar_set_label">label</elem>
+		<elem type="string" set="ewl_progress_bar_set_custom_label">custom_label</elem>
+	</class>
+	<class name="Ewl_CheckButton" super="Ewl_Button" ctor="ewl_checkbutton_new" nargs="1">
+		<elem type="int" set="ewl_check_set_checked" get="ewl_check_is_checked">checked</elem>
+	</class>
+	<class name="Ewl_RadioButton" super="Ewl_CheckButton" ctor="ewl_radiobutton_new" nargs="1">
 	</class>
 </classes>

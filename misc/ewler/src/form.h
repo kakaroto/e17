@@ -7,6 +7,7 @@ typedef struct Ewler_Form Ewler_Form;
 struct Ewler_Form {
 	Ewl_Widget *window;
 	Ewl_Widget *overlay;
+	Ewl_Widget *selector;
 	Ecore_List *selected;
 	Ecore_Hash *elements, *elements_rev;
 	Ewl_Widget *popup;
@@ -15,6 +16,8 @@ struct Ewler_Form {
 	int dirty;
 	int cnt;
 };
+
+typedef void (*Ewler_Form_Key_Cb)( Ewler_Form *form );
 
 void ewler_forms_init( void );
 void ewler_forms_close( void );

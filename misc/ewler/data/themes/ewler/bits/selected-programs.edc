@@ -1,5 +1,35 @@
 	programs {	
 		program {
+			name, "deselect";
+			signal, "deselect";
+			source, "EWL";
+			action, STATE_SET "deselect" 0.0;
+			target, "bg";
+			target, "top_left";
+			target, "top_middle";
+			target, "top_right";
+			target, "middle_right";
+			target, "bottom_right";
+			target, "bottom_middle";
+			target, "bottom_left";
+			target, "middle_left";
+		}
+		program {
+			name, "default";
+			signal, "default";
+			source, "EWL";
+			action, STATE_SET "default" 0.0;
+			target, "bg";
+			target, "top_left";
+			target, "top_middle";
+			target, "top_right";
+			target, "middle_right";
+			target, "bottom_right";
+			target, "bottom_middle";
+			target, "bottom_left";
+			target, "middle_left";
+		}
+		program {
 			name, "top_left_down";
 			signal, "mouse,down,1";
 			source, "top_left";

@@ -1,9 +1,5 @@
 #include <Ewl.h>
 
-#include "ewl_dialog.h"
-#include "ewl_stock.h"
-#include "ewl_filedialog_stock.h"
-
 #include "ewler.h"
 #include "project.h"
 
@@ -206,12 +202,16 @@ __open_project_cb( Ewl_Widget *w, void *ev_data, void *user_data )
 void
 project_open_dialog( void )
 {
-	Ewl_Widget *dialog;
+	Ewl_Widget *window, *dialog;
 
-	dialog = ewl_filedialog_stock_new( EWL_FILEDIALOG_TYPE_OPEN );
+	window = ewl_window_new();
+	ewl_widget_show( window );
+
+	dialog = ewl_filedialog_new( EWL_FILEDIALOG_TYPE_OPEN );
+	ewl_container_append_child( EWL_CONTAINER(window), dialog );
 	ewl_callback_append( dialog, EWL_CALLBACK_VALUE_CHANGED,
 											 __open_project_cb, NULL );
-	ewl_callback_append( dialog, EWL_CALLBACK_DELETE_WINDOW,
+	ewl_callback_append( window, EWL_CALLBACK_DELETE_WINDOW,
 											 __destroy_window, NULL );
 	ewl_widget_show( dialog );
 }

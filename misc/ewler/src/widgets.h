@@ -5,6 +5,7 @@
 #define WIDGET_STRING_TYPE	2
 #define WIDGET_POINTER_TYPE	3
 #define WIDGET_STRUCT_TYPE	4
+#define WIDGET_ENUM_TYPE		5
 
 /* elem flags */
 #define ELEM_NO_MODIFY			0x01
@@ -44,6 +45,13 @@ struct Widget_Struct_Elem {
 	Ecore_Hash *members;
 };
 
+struct Widget_Enum_Elem {
+	WIDGET_TYPE_BASE;
+	Ecore_Hash *map;
+	Ecore_Hash *map_rev;
+	int default_value;
+};
+
 union Widget_Type_Elem {
 	struct {
 		WIDGET_TYPE_BASE;
@@ -52,6 +60,7 @@ union Widget_Type_Elem {
 	struct Widget_String_Elem w_str;
 	struct Widget_Pointer_Elem w_ptr;
 	struct Widget_Struct_Elem w_struct;
+	struct Widget_Enum_Elem w_enum;
 };
 
 /* The actual structures used to store widget info */
@@ -77,12 +86,18 @@ struct Widget_Struct_Data_Elem {
 	Ecore_List *members;
 };
 
+struct Widget_Enum_Data_Elem {
+	Widget_Type_Elem *type;
+	int value;
+};
+
 union Widget_Data_Elem {
 	Widget_Type_Elem *type;
 	struct Widget_Integer_Data_Elem w_int;
 	struct Widget_String_Data_Elem w_str;
 	struct Widget_Pointer_Data_Elem w_ptr;
 	struct Widget_Struct_Data_Elem w_struct;
+	struct Widget_Enum_Data_Elem w_enum;
 };
 
 typedef Ewl_Widget *(*Ewler_Ctor)();

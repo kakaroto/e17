@@ -262,6 +262,12 @@ __copy_w_info( void *val )
 			lvl--;
 			c_info = t_info;
 			break;
+		case WIDGET_ENUM_TYPE:
+			if( elem->type->w.get )
+				elem->w_enum.value = elem->type->w.get( EWL_OBJECT(c_widget) );
+			else
+				elem->w_enum.value = elem->type->w_enum.default_value;
+			break;
 	}
 
 	ecore_list_prepend( c_info, elem );
@@ -292,6 +298,10 @@ __update_elem_from_widget( void *val )
 			break;
 		case WIDGET_STRUCT_TYPE:
 			ecore_list_for_each( data->w_struct.members, __update_elem_from_widget );
+			break;
+		case WIDGET_ENUM_TYPE:
+			if( data->type->w.get )
+				data->w_enum.value = data->type->w.get( EWL_OBJECT(c_widget) );
 			break;
 	}
 }
@@ -493,6 +503,12 @@ elem_new( const char *type, xmlTextReaderPtr reader )
 		elem->w_struct.w_type = WIDGET_STRUCT_TYPE;
 		elem->w_struct.members =
 			ecore_hash_new( ecore_str_hash, ecore_str_compare );
+	} else if( !strcmp( type, "enum" ) ) {
+		elem->w_enum.w_type = WIDGET_ENUM_TYPE;
+		elem->w_enum.map = ecore_hash_new( ecore_str_hash, ecore_str_compare );
+		elem->w_enum.map_rev = ecore_hash_new( ecore_direct_hash, ecore_direct_compare );
+	} else if( !strcmp( type, "enum_val" ) ) {
+		FREE(elem);
 	} else if( type[len-1] == '*' && strpbrk( type, " \t" ) ) {
 		elem->w_ptr.w_type = WIDGET_POINTER_TYPE;
 
@@ -516,6 +532,7 @@ process( xmlTextReaderPtr reader, void *dl_handle )
 	static int class_visible;
 	static Ecore_Hash *class, *elem_hash;
 	static Widget_Type_Elem *elem, *last_elem = NULL;
+	Widget_Type_Elem *e;
 	static void *ctor;
 	int token;
 
@@ -576,7 +593,28 @@ process( xmlTextReaderPtr reader, void *dl_handle )
 				case XML_READER_TYPE_ELEMENT:
 					xml_attr = xmlTextReaderGetAttribute( reader, "type" );
 
-					elem = elem_new( xml_attr, reader );
+					e = elem_new( xml_attr, reader );
+					if( !e ) {
+						if( !strcmp( xml_attr, "enum_val" ) ) {
+							int value;
+							char *id;
+
+							xml_attr = xmlTextReaderGetAttribute( reader, "value" );
+							value = strtol( xml_attr, NULL, 0 );
+
+							xml_attr = xmlTextReaderGetAttribute( reader, "id" );
+							id = strdup( xml_attr );
+
+							ecore_hash_set( elem->w_enum.map, id, (void *) value );
+							ecore_hash_set( elem->w_enum.map_rev, (void *) value, id );
+						}
+						last_elem = elem;
+						elem = NULL;
+						break;
+					}
+
+					elem = e;
+
 					elem->w.parent = last_elem;
 					last_elem = elem;
 
@@ -608,13 +646,15 @@ process( xmlTextReaderPtr reader, void *dl_handle )
 						elem_hash = elem->w_struct.members;
 					break;
 				case XML_READER_TYPE_END_ELEMENT:
-					last_elem = elem->w.parent;
-					if( elem->w.w_type == WIDGET_STRUCT_TYPE && last_elem )
-						elem_hash = last_elem->w_struct.members;
-					else if( elem->w.w_type == WIDGET_STRUCT_TYPE )
-						elem_hash = class;
+					if( elem ) {
+						last_elem = elem->w.parent;
+						if( elem->w.w_type == WIDGET_STRUCT_TYPE && last_elem )
+							elem_hash = last_elem->w_struct.members;
+						else if( elem->w.w_type == WIDGET_STRUCT_TYPE )
+							elem_hash = class;
 
-					ecore_hash_set( elem_hash, elem->w.name, elem );
+						ecore_hash_set( elem_hash, elem->w.name, elem );
+					}
 
 					elem = last_elem;
 					break;

@@ -5,10 +5,6 @@
  */
 #include <Ewl.h>
 
-#include "ewl_stock.h"
-#include "ewl_dialog.h"
-#include "ewl_filedialog_stock.h"
-
 #include "ewler.h"
 #include "widgets.h"
 #include "form.h"
@@ -16,9 +12,12 @@
 #include "project.h"
 #include "inspector.h"
 #include "selected.h"
+#include "layout.h"
 
 Ecore_List *forms;
 static int widget_selected = 0;
+static int widget_created = 0;
+static Ecore_Hash *key_bindings = NULL;
 Ewl_Widget *widget_container = NULL;
 
 static struct {
@@ -50,7 +49,7 @@ __free_elements_rev_cb( void *val )
 static void
 __destroy_form( Ewl_Widget *w, void *ev_data, void *user_data )
 {
-	Ewler_Form *form = EWLER_FORM(user_data);
+	Ewler_Form *form = user_data;
 
 	if( form->dirty ) {
 		/* manufacture save/ok/cancel dialog */
@@ -71,6 +70,17 @@ __destroy_form( Ewl_Widget *w, void *ev_data, void *user_data )
 }
 
 static void
+__destroy_popup( Ewl_Widget *w, void *ev_data, void *user_data )
+{
+	Ewler_Form *form = user_data;
+
+	if( form->popup ) {
+		ewl_widget_destroy( form->popup );
+		form->popup = NULL;
+	}
+}
+
+static void
 __mouse_down_widget( Ewl_Widget *w, void *ev_data, void *user_data )
 {
 	Ewler_Form *form = EWLER_FORM(user_data);
@@ -78,25 +88,29 @@ __mouse_down_widget( Ewl_Widget *w, void *ev_data, void *user_data )
 	Ewler_Ctor tool_ctor;
 
 	tool_ctor = widget_get_ctor( tool_get_name() );
-	if( tool_ctor && widget_is_type( w, "Ewl_Container" ) ) {
-		widget_container = w;
-	} else if( !widget_selected ) {
-		/* check for shift down */
-		if( ev->modifiers != EWL_KEY_MODIFIER_SHIFT &&
-				ev->modifiers != EWL_KEY_MODIFIER_CTRL )
-			form_selected_clear( form );
+	if( ev->button == 1 ) {
+		if( tool_ctor && widget_is_type( w, "Ewl_Container" ) ) {
+			widget_container = w;
+			dragging.active = 0;
+		} else if( !widget_selected ) {
+			/* check for shift down */
+			if( ev->modifiers != EWL_KEY_MODIFIER_SHIFT &&
+					ev->modifiers != EWL_KEY_MODIFIER_CTRL )
+				form_selected_clear( form );
 
-		form_selected_append( form, w );
+			form_selected_append( form, w->parent );
 
-		dragging.ox = ev->x;
-		dragging.oy = ev->y;
-		dragging.active = 1;
+			dragging.ox = ev->x;
+			dragging.oy = ev->y;
+			dragging.active = 1;
 
-		widget_selected = 1;
-	}
-	if( form->popup ) {
-		ewl_widget_destroy(form->popup);
-		form->popup = NULL;
+			widget_selected = 1;
+		}
+
+		if( form->popup ) {
+			ewl_widget_destroy(form->popup);
+			form->popup = NULL;
+		}
 	}
 }
 
@@ -140,10 +154,15 @@ __mouse_up_widget( Ewl_Widget *w, void *ev_data, void *user_data )
 		ecore_list_goto_first( form->selected );
 
 		while( (c_s = ecore_list_next( form->selected )) ) {
+			Ewl_Widget *c_w = ewler_selected_get( EWLER_SELECTED(c_s) );
 			ewl_object_request_position(EWL_OBJECT(c_s),
 																	CURRENT_X(c_s) - dx,
 																	CURRENT_Y(c_s) - dy);
-			widget_changed(ewler_selected_get(EWLER_SELECTED(c_s)));
+			ewl_object_set_fill_policy( EWL_OBJECT(c_s),
+																	ewl_object_get_fill_policy(EWL_OBJECT(c_w)) );
+			ewl_object_set_alignment( EWL_OBJECT(c_s),
+																ewl_object_get_alignment(EWL_OBJECT(c_w)) );
+			widget_changed(c_w);
 		}
 		dragging.active = 0;
 	}
@@ -167,7 +186,8 @@ __mouse_move_form( Ewl_Widget *w, void *ev_data, void *user_data )
 	ecore_list_goto_first( form->selected );
 
 	while( (c_s = ecore_list_next( form->selected )) )
-		ewl_callback_call_with_event_data(c_s, EWL_CALLBACK_MOUSE_MOVE, ev_data);
+		if( c_s != form->overlay )
+			ewl_callback_call_with_event_data(c_s, EWL_CALLBACK_MOUSE_MOVE, ev_data);
 }
 
 static void
@@ -190,6 +210,7 @@ __mouse_down_form( Ewl_Widget *w, void *ev_data, void *user_data )
 				tool_ctor = widget_get_ctor( tool_get_name() );
 				if( tool_ctor ) {
 					char *widget_name;
+					Ewl_Widget *s;
 
 					if( !widget_container )
 						widget_container = form->overlay;
@@ -217,14 +238,18 @@ __mouse_down_form( Ewl_Widget *w, void *ev_data, void *user_data )
 					ewl_container_append_child( EWL_CONTAINER(widget_container), nw );
 					ewl_widget_show( nw );
 
+					s = ewler_selected_new( nw );
+					ewl_widget_show( s );
+
 					form_selected_clear( form );
 
-					form_selected_append( form, nw );
+					form_selected_append( form, s );
 
 					form_set_dirty( form );
 
 					ecore_hash_set( form->elements, widget_name, nw );
 					ecore_hash_set( form->elements_rev, nw, widget_name );
+					widget_created = 1;
 				} else {
 					form_selected_clear( form );
 					form_selected_append( form, form->overlay );
@@ -243,17 +268,51 @@ __mouse_down_form( Ewl_Widget *w, void *ev_data, void *user_data )
 			ewl_callback_call(form->popup, EWL_CALLBACK_SELECT);
 
 			menu_item = ewl_menu_item_new(NULL, "Lay Out Horizontally");
+			ewl_callback_append( menu_item, EWL_CALLBACK_SELECT,
+													 layout_horizontal_cb, form );
+			ewl_callback_append( menu_item, EWL_CALLBACK_SELECT,
+													 __destroy_popup, form );
 			ewl_container_append_child(EWL_CONTAINER(form->popup), menu_item);
 			ewl_widget_show(menu_item);
 
 			menu_item = ewl_menu_item_new(NULL, "Lay Out Vertically");
+			ewl_callback_append( menu_item, EWL_CALLBACK_SELECT,
+													 layout_vertical_cb, form );
+			ewl_callback_append( menu_item, EWL_CALLBACK_SELECT,
+													 __destroy_popup, form );
 			ewl_container_append_child(EWL_CONTAINER(form->popup), menu_item);
+			ewl_widget_show(menu_item);
+
+			menu_item = EWL_WIDGET(ewl_menu_separator_new());
+			ewl_container_append_child(EWL_CONTAINER(form->popup), menu_item);
+			ewl_widget_show(menu_item);
+
+			menu_item = ewl_menu_item_new(NULL, "Edit Callbacks");
+			ewl_container_append_child(EWL_CONTAINER(form->popup), menu_item);
+			ewl_callback_append( menu_item, EWL_CALLBACK_SELECT,
+													 __destroy_popup, form );
+#if 0
+			ewl_callback_append( menu_item, EWL_CALLBACK_SELECT,
+													 callbacks_show, NULL );
+#endif
+
 			ewl_widget_show(menu_item);
 			break;
 	}
 
 	widget_container = w;
 	widget_selected = 0;
+}
+
+static void
+__key_down_form( Ewl_Widget *w, void *ev_data, void *user_data )
+{
+	Ewler_Form *form = user_data;
+	Ewl_Event_Key_Down *ev = ev_data;
+	Ewler_Form_Key_Cb key_cb = ecore_hash_get( key_bindings, ev->keyname );
+
+	if( key_cb )
+		key_cb( form );
 }
 
 void
@@ -266,6 +325,18 @@ void
 form_clear_widget_selected( void )
 {
 	widget_selected = 0;
+}
+
+int
+form_widget_created( void )
+{
+	return widget_created;
+}
+
+void
+form_clear_widget_created( void )
+{
+	widget_created = 0;
 }
 
 void
@@ -286,11 +357,16 @@ void
 form_add_widget( Ewler_Form *form, char *name, Ewl_Widget *w )
 {
 	ewl_callback_del_type( w, EWL_CALLBACK_CLICKED );
+	ewl_callback_del_type( w, EWL_CALLBACK_MOUSE_DOWN );
+	ewl_callback_del_type( w, EWL_CALLBACK_MOUSE_UP );
+	ewl_callback_del_type( w, EWL_CALLBACK_MOUSE_MOVE );
 
 	ewl_callback_append( w, EWL_CALLBACK_MOUSE_DOWN,
 											 __mouse_down_widget, form );
 	ewl_callback_append( w, EWL_CALLBACK_FOCUS_IN,
 											 __mouse_in_form, form );
+
+	ewl_object_set_fill_policy( EWL_OBJECT(w), EWL_FLAG_FILL_NONE );
 
 	ecore_hash_set( form->elements, name, w );
 	ecore_hash_set( form->elements_rev, w, name );
@@ -336,9 +412,18 @@ form_new( void )
 											 __mouse_in_form, form );
 	ewl_callback_append( form->overlay, EWL_CALLBACK_MOUSE_MOVE,
 											 __mouse_move_widget, form );
+	ewl_callback_append( form->overlay, EWL_CALLBACK_KEY_DOWN,
+											 __key_down_form, form );
 	ewl_container_append_child( EWL_CONTAINER(form->window), form->overlay );
 	ewl_widget_set_data( form->overlay, "unsizable", (void *) 1 );
 	ewl_widget_show( form->overlay );
+
+#if 0
+	form->selector = ewler_selected_new( form->overlay );
+	ewl_callback_call( form->selector, EWL_CALLBACK_DESELECT );
+	ewl_object_set_preferred_size( EWL_OBJECT(form->selector), 800, 600 );
+	ewl_widget_show( form->selector );
+#endif
 
 	form->selected = ecore_list_new();
 	form->elements = ecore_hash_new( ecore_str_hash, ecore_str_compare );
@@ -386,12 +471,16 @@ form_save_file( Ewler_Form *form, int save_as )
 
 	if( form ) {
 		if( !form->has_been_saved || save_as ) {
-			Ewl_Widget *dialog;
+			Ewl_Widget *window, *dialog;
 
-			dialog = ewl_filedialog_stock_new( EWL_FILEDIALOG_TYPE_SAVE );
+			window = ewl_window_new();
+			ewl_widget_show( window );
+
+			dialog = ewl_filedialog_new( EWL_FILEDIALOG_TYPE_SAVE );
+			ewl_container_append_child( EWL_CONTAINER(window), dialog );
 			ewl_callback_append( dialog, EWL_CALLBACK_VALUE_CHANGED,
 													 __save_form_cb, form );
-			ewl_callback_append( dialog, EWL_CALLBACK_DELETE_WINDOW,
+			ewl_callback_append( window, EWL_CALLBACK_DELETE_WINDOW,
 													 __destroy_window, NULL );
 			ewl_widget_show( dialog );
 		} else {
@@ -427,6 +516,8 @@ form_open_file( char *filename )
 	form->elements_rev =
 		ecore_hash_new( ecore_direct_hash, ecore_direct_compare );
 
+	form->popup = NULL;
+
 	if( form_file_read( form ) ) {
 		/* add support for more verbose errors from form_file */
 		ewler_error_dialog( "Error opening form '%s'", form->filename );
@@ -435,8 +526,15 @@ form_open_file( char *filename )
 		return;
 	}
 
+	ewl_widget_set_data( form->overlay, "unsizable", (void *) 1 );
+	ewl_object_set_fill_policy( EWL_OBJECT(form->overlay), EWL_FLAG_FILL_FILL );
+
+	ewl_widget_set_appearance(form->overlay, "background");
+	ewl_theme_data_set_str(form->overlay, "/background/file",
+												 PACKAGE_DATA_DIR"/themes/ewler.eet");
+	ewl_theme_data_set_str(form->overlay, "/background/group", "background");
+
 	ewl_container_append_child( EWL_CONTAINER(form->window), form->overlay );
-	ewl_widget_set_appearance( form->overlay, "entry" );
 
 	ewl_callback_del_type( form->overlay, EWL_CALLBACK_MOUSE_DOWN );
 	ewl_callback_del_type( form->overlay, EWL_CALLBACK_MOUSE_UP );
@@ -444,8 +542,12 @@ form_open_file( char *filename )
 
 	ewl_callback_append( form->overlay, EWL_CALLBACK_MOUSE_DOWN,
 											 __mouse_down_form, form );
+	ewl_callback_append( form->overlay, EWL_CALLBACK_MOUSE_MOVE,
+											 __mouse_move_form, form );
 	ewl_callback_append( form->overlay, EWL_CALLBACK_FOCUS_IN,
 											 __mouse_in_form, form );
+	ewl_callback_append( form->overlay, EWL_CALLBACK_MOUSE_MOVE,
+											 __mouse_move_widget, form );
 
 	form->selected = ecore_list_new();
 	form->has_been_saved = 1;
@@ -462,25 +564,34 @@ form_selected_clear( Ewler_Form *form )
 	ecore_list_goto_first( form->selected );
 
 	while( (s = ecore_list_remove(form->selected)) ) {
+		if( s == form->overlay )
+			continue;
+
+		ewl_callback_del(s, EWL_CALLBACK_MOUSE_MOVE,
+										 __mouse_move_widget);
+		ewl_callback_del(ewler_selected_get(EWLER_SELECTED(s)),
+										 EWL_CALLBACK_MOUSE_UP,
+										 __mouse_up_widget);
 		ewl_callback_call(s, EWL_CALLBACK_DESELECT);
-		ewl_widget_destroy( s );
 	}
 }
 
 void
-form_selected_append( Ewler_Form *form, Ewl_Widget *w )
+form_selected_append( Ewler_Form *form, Ewl_Widget *s )
 {
-	Ewl_Widget *s;
-	
-	s = ewler_selected_new( w );
-	ewl_callback_append(s, EWL_CALLBACK_MOUSE_MOVE,
-											__mouse_move_widget, form);
-	ewl_callback_append(w, EWL_CALLBACK_MOUSE_UP,
-											__mouse_up_widget, form);
-	ewl_widget_show(s);
+	if( s != form->overlay ) {
+		ewl_callback_call( s, EWL_CALLBACK_SELECT );
+		ewl_callback_append(s, EWL_CALLBACK_MOUSE_MOVE,
+												__mouse_move_widget, form);
+		ewl_callback_append(ewler_selected_get(EWLER_SELECTED(s)),
+												EWL_CALLBACK_MOUSE_UP,
+												__mouse_up_widget, form);
+	}
 
-	ecore_list_append( form->selected, s );
-	inspector_reset();
+	if( ecore_list_goto( form->selected, s ) == NULL ) {
+		ecore_list_append( form->selected, s );
+		inspector_reset();
+	}
 }
 
 void
@@ -517,7 +628,57 @@ ewler_forms_close( void )
 }
 
 void
+__form_delete( Ewler_Form *form )
+{
+}
+
+void
+__form_select_up( Ewler_Form *form )
+{
+	Ewl_Widget *s = ecore_list_goto_first( form->selected );
+
+	if( !s || s == form->overlay ) {
+		return;
+	} else {
+		form_selected_clear( form );
+		if( (s = s->parent) == form->overlay )
+			form_selected_append( form, s );
+		else if( (s = s->parent) )
+			form_selected_append( form, s );
+	}
+}
+
+void
+__form_select_down( Ewler_Form *form )
+{
+	Ewl_Widget *s = ecore_list_goto_first( form->selected );
+
+	if( !s ) 
+		return;
+
+	if(s != form->overlay) {
+		s = ewler_selected_get( EWLER_SELECTED(s) );
+		if( widget_is_type(s, "Ewl_Container") &&
+				!ecore_list_is_empty( EWL_CONTAINER(s)->children ) ) {
+			s = ecore_list_goto_first( EWL_CONTAINER(s)->children );
+			form_selected_clear( form );
+			form_selected_append( form, s );
+		}
+	} else if( !ecore_list_is_empty( EWL_CONTAINER(s)->children ) ) {
+		s = ecore_list_goto_first( EWL_CONTAINER(s)->children );
+		form_selected_clear( form );
+		form_selected_append( form, s );
+	}
+}
+
+void
 ewler_forms_init( void )
 {
 	forms = ecore_list_new();
+
+	key_bindings = ecore_hash_new( ecore_str_hash, ecore_str_compare );
+
+	ecore_hash_set( key_bindings, "Delete", __form_delete );
+	ecore_hash_set( key_bindings, "Up", __form_select_up );
+	ecore_hash_set( key_bindings, "Down", __form_select_down );
 }
