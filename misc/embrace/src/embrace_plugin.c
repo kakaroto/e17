@@ -36,7 +36,7 @@ EmbracePlugin *embrace_plugin_new (const char *path)
 	if (!(ep = calloc (1, sizeof (EmbracePlugin))))
 		return NULL;
 
-	if (!(ep->handle = lt_dlopenext (path))) {
+	if (!(ep->handle = lt_dlopen (path))) {
 		fprintf (stderr, "Cannot load plugin '%s': %s\n",
 		         path, lt_dlerror ());
 		embrace_plugin_free (ep);

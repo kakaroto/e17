@@ -1,5 +1,13 @@
 $Id$
 
+2004-04-22 Tilman Sauerbeck <tilman -at- code-monkey.de>
+        * src/main.c, src/embrace.c, src/embrace_plugin.c:
+          Don't use dl_foreachfile() to load the plugins. We now
+          iterate over the files in the plugin directories manually,
+          since dl_foreachfile() caused some nasty problems when run
+          under Valgrind resp. it didn't seem to work well on some
+          systems.
+
 2004-04-18 Tilman Sauerbeck <tilman -at- code-monkey.de>
         * src/plugins/imap/imap.c: Ported the recent fixes for POP3
           to the IMAP plugin

@@ -128,30 +128,64 @@ static EmbracePlugin *find_plugin (Embrace *e, const char *name)
 	return NULL;
 }
 
-static int load_plugin (const char *file, lt_ptr udata)
+static void load_plugin (Embrace *e, const char *file)
 {
-	Embrace *e = udata;
 	EmbracePlugin *ep;
 
+	assert (e);
+	assert (file);
+
 	if (!(ep = embrace_plugin_new (file)))
-		return 0;
+		return;
 
 	/* only add this plugin if it hasn't been added yet */
-	if (find_plugin (e, ep->name)) {
+	if (find_plugin (e, ep->name))
 		embrace_plugin_free (ep);
-		return 0;
+	else
+		e->plugins = evas_list_append (e->plugins, ep);
+}
+
+static void load_plugins (Embrace *e, const char *path)
+{
+	DIR *dir;
+	struct dirent *entry;
+	char buf[PATH_MAX + 1];
+	int len;
+
+	assert (e);
+	assert (path);
+
+	if (!(dir = opendir (path)))
+		return;
+
+	while ((entry = readdir (dir))) {
+		if (!strcmp (entry->d_name, ".")
+		    || !strcmp (entry->d_name, ".."))
+			continue;
+
+		if ((len = strlen (entry->d_name)) < 4)
+			continue;
+
+		if (!strcmp (&entry->d_name[len - 3], ".la")) {
+			snprintf (buf, sizeof (buf), "%s/%s", path, entry->d_name);
+			load_plugin (e, buf);
+		}
 	}
 
-	e->plugins = evas_list_append (e->plugins, ep);
-
-	return 0;
+	closedir (dir);
 }
 
 static bool embrace_load_plugins (Embrace *e)
 {
+	char path[PATH_MAX + 1];
+
 	assert (e);
 
-	lt_dlforeachfile (NULL, load_plugin, e);
+	snprintf (path, sizeof (path), "%s/.e/apps/" PACKAGE "/plugins",
+	          getenv ("HOME"));
+
+	load_plugins (e, path);
+	load_plugins (e, PLUGIN_DIR);
 
 	return (evas_list_count (e->plugins) > 0);
 }

@@ -38,8 +38,6 @@
 
 static bool init ()
 {
-	char path[PATH_MAX * 2 + 2];
-
 	ecore_init ();
 	ecore_evas_init ();
 	edje_init ();
@@ -47,16 +45,6 @@ static bool init ()
 
 	if (lt_dlinit ()) {
 		fprintf (stderr, "Cannot initialize LTDL!\n");
-		return false;
-	}
-
-	/* set plugin search path */
-	snprintf (path, sizeof (path), "%s/.e/apps/" PACKAGE "/plugins:"
-	                               PLUGIN_DIR, getenv ("HOME"));
-
-	if (lt_dlsetsearchpath (path)) {
-		fprintf (stderr, "Cannot set LTDL search path to '%s'!\n",
-		         path);
 		return false;
 	}
 
