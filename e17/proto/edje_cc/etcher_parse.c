@@ -38,13 +38,19 @@ etcher_parse_image(char *name, Etcher_Image_Type type, double value)
 }
 
 void
-etcher_parse_data(char *key, char *value)
+etcher_parse_data(char *key, char *value, int val)
 {
   Etcher_Data *data;
 
   data = (Etcher_Data *)calloc(1, sizeof(Etcher_Data));
   data->key = (char *)strdup(key);
-  data->value = (char *)strdup(value);
+
+  if (value)
+    data->value = (char *)strdup(value);
+  else {
+    data->value = NULL;
+	data->int_value = val;
+  }
 
   etcher_file->data = evas_list_append(etcher_file->data, data);
   return;
@@ -65,7 +71,7 @@ etcher_parse_group()
 }
 
 void
-etcher_parse_group_data(char *key, char *value)
+etcher_parse_group_data(char *key, char *value, int val)
 {
   Etcher_Group *group;
   Etcher_Data *data;
@@ -74,7 +80,13 @@ etcher_parse_group_data(char *key, char *value)
 
   data = (Etcher_Data *)calloc(1, sizeof(Etcher_Data));
   data->key = (char *)strdup(key);
-  data->value = (char *)strdup(value);
+
+  if (value)
+    data->value = (char *)strdup(value);
+  else {
+    data->value = NULL;
+	data->int_value = val;
+  }
 
   etcher_file->data = evas_list_append(etcher_file->data, data);
 

@@ -96,6 +96,7 @@ struct _Etcher_Data
 {
   char *key;
   char *value;
+  int int_value;
 };
 
 struct _Etcher_Image

@@ -158,8 +158,12 @@ etcher_file_output(Etcher_File *etcher_file, char *path)
     Etcher_Data *data = l->data;
     if (data)
     {
+      if (data->value)
         etcher_out_data(out, "item", "\"%s\" \"%s\"",
                 data->key, data->value);
+      else
+        etcher_out_data(out, "item", "\"%s\" %d",
+                data->key, data->int_value);
     }
   }
   etcher_out_end(out);
@@ -202,8 +206,13 @@ _etcher_output_group(Etcher_Group *group, FILE *out)
       Etcher_Data *data = l->data;
       if (data)
       {
+        if (data->value)
           etcher_out_data(out, "item", "\"%s\" \"%s\"",
-                  data->key, data->value);
+                    data->key, data->value);
+        else
+          etcher_out_data(out, "item", "\"%s\" %d",
+                    data->key, data->int_value);
+		
       }
     }
     etcher_out_end(out);

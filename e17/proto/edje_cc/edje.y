@@ -118,14 +118,27 @@ data_statement: /* empty */
 	| item data_statement
 	;
 
-item: ITEM  COLON STRING STRING SEMICOLON {
+item: ITEM COLON STRING STRING SEMICOLON {
                 switch (section)
                 {
                   case BASE:
-                    etcher_parse_data($3, $4);
+                    etcher_parse_data($3, $4, 0);
                     break;
                   case GROUP:
-                    etcher_parse_group_data($3, $4);
+                    etcher_parse_group_data($3, $4, 0);
+                    break;
+                  default:
+                    break;
+                }
+	}
+	| ITEM COLON STRING exp SEMICOLON {
+                switch (section)
+                {
+                  case BASE:
+                    etcher_parse_data($3, NULL, (int)$4);
+                    break;
+                  case GROUP:
+                    etcher_parse_group_data($3, NULL, (int)$4);
                     break;
                   default:
                     break;
