@@ -3,7 +3,8 @@
 #define __EWL_MACROS_H
 
 #define DPRINT(lvl, format, args...) { \
-	if (lvl) { \
+	extern Ewl_Options ewl_options; \
+	if (ewl_options.debug_level > lvl) { \
 		fprintf(stderr, " -- "); \
 		fprintf(stderr, format, args); \
 		fprintf(stderr, "\n"); \

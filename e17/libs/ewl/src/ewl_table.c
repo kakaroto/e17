@@ -132,6 +132,9 @@ ewl_table_set_homogeneous(Ewl_Widget * widget,
 	CHECK_PARAM_POINTER("widget", widget);
 
 	EWL_TABLE(widget)->homogeneous = homogeneous;
+
+	ewl_widget_configure(widget);
+	ewl_widget_configure(widget->parent);
 }
 
 void
@@ -141,6 +144,9 @@ ewl_table_set_col_spacing(Ewl_Widget * widget,
 	CHECK_PARAM_POINTER("widget", widget);
 
 	EWL_TABLE(widget)->col_spacing = col_spacing;
+
+	ewl_widget_configure(widget);
+	ewl_widget_configure(widget->parent);
 }
 
 void
@@ -150,6 +156,9 @@ ewl_table_set_row_spacing(Ewl_Widget * widget,
 	CHECK_PARAM_POINTER("widget", widget);
 
 	EWL_TABLE(widget)->row_spacing = row_spacing;
+
+	ewl_widget_configure(widget);
+	ewl_widget_configure(widget->parent);
 }
 
 
@@ -210,23 +219,45 @@ ewl_table_configure(Ewl_Widget * widget, void * func_data)
 	x = EWL_OBJECT(widget)->request.x + l;
 	y = EWL_OBJECT(widget)->request.y + t;
 
+	for (col=0;col<EWL_TABLE(widget)->columns;col++)
+	 {
+		max_col_w[col] = 0;
+	 }
+
+	for (row=0;row<EWL_TABLE(widget)->rows;row++)
+	 {
+		max_row_h[row] = 0;
+	 }
+
 	/* Really really incomplete atm */
 	for (row=0;row<EWL_TABLE(widget)->rows;row++)
 	 {
-	 max_row_h[row] = 0;
 	  for (col=0;col<EWL_TABLE(widget)->columns;col++)
 	   {
-	   max_col_w[col] = 0;
 		while ((child = ewd_list_next(widget->container.children)) != NULL)
 		 {
 		  if (child->start_col == col && child->start_row == row)
 		   {
-			if (EWL_OBJECT(child->child)->current.w > max_col_w[col])
+			if (EWL_OBJECT(child->child)->current.w > max_col_w[col]) {
 			 max_col_w[col] = EWL_OBJECT(child->child)->current.w;
+			 row = 0;
+			 col = 0;
+			 EWL_OBJECT(child->child)->request.x = x -
+			 	(EWL_OBJECT(child->child)->current.w / 2) +
+				(max_col_w[col] / 2);
+			 EWL_OBJECT(child->child)->request.y = y;
+			 x = EWL_OBJECT(widget)->request.x + l;
+			 y = EWL_OBJECT(widget)->request.y + t;
+			 total_h = 0;
+			 total_w = 0;
+			 total_w2 = 0;
+			}
 			if (EWL_OBJECT(child->child)->current.h > max_row_h[row])
 			 max_row_h[row] = EWL_OBJECT(child->child)->current.h;
 
-			 EWL_OBJECT(child->child)->request.x = x;
+			 EWL_OBJECT(child->child)->request.x = x -
+			 	(EWL_OBJECT(child->child)->current.w / 2) +
+				(max_col_w[col] / 2);
 			 EWL_OBJECT(child->child)->request.y = y;
 		   }
 		 }

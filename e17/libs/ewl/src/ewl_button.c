@@ -160,9 +160,11 @@ ewl_button_configure(Ewl_Widget * widget, void * func_data)
 		EWL_OBJECT(widget)->request.h = h;
 	}
 
-	ebits_move(widget->ebits_object,
-		EWL_OBJECT(widget)->request.x, EWL_OBJECT(widget)->request.y);
+	if (widget->ebits_object)
+		ebits_move(widget->ebits_object,
+			EWL_OBJECT(widget)->request.x, EWL_OBJECT(widget)->request.y);
 
+	if (widget->ebits_object)
 	ebits_resize(widget->ebits_object,
 		EWL_OBJECT(widget)->request.w, EWL_OBJECT(widget)->request.h);
 

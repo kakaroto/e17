@@ -41,7 +41,7 @@ ewl_text_new()
 
 	ewl_text_init(EWL_WIDGET(text));
 
-	text->font = strdup("borzoib.ttf");
+	text->font = strdup("borzoib");
 	text->font_size = 15;
 	text->text = strdup("");
 	text->color.r = 0;

@@ -70,7 +70,8 @@ ewl_window_realize(Ewl_Widget * widget, void * func_data)
 
 	window = EWL_WINDOW(widget);
 
-	window->window = e_window_new(0, 0, 0, 256, 256);
+	window->window = e_window_new(0, 0, 0, EWL_OBJECT(widget)->current.w,
+											EWL_OBJECT(widget)->current.h);
 	e_window_set_events(window->window, XEV_CONFIGURE);
 	e_window_set_name_class(window->window, "EWL", "EWL!");
 
@@ -78,11 +79,11 @@ ewl_window_realize(Ewl_Widget * widget, void * func_data)
 
 	EWL_WIDGET(window)->evas = evas_new_all(e_display_get(),
 			window->window, 0, 0,
-			256, 256,
+			EWL_OBJECT(widget)->current.w, EWL_OBJECT(widget)->current.h,
 			ewl_prefs_render_method_get(),
 			216,
-			1024 * 1024 * 1,
-			1024 * 1024 * 16,
+			1024 * 1024 * 2,
+			1024 * 1024 * 5,
 			ewl_theme_font_path());
 
 	widget->evas_window = evas_get_window(widget->evas);
@@ -127,12 +128,13 @@ static void
 ewl_window_configure(Ewl_Widget * widget, void * func_data)
 {
 	Ewl_Widget * child;
-	int x, y, l, r, t, b;
+	int x, y, l = 0, r = 0, t = 0, b = 0;
 
 	CHECK_PARAM_POINTER("widget", widget);
 
-	ebits_resize(widget->ebits_object,
-			EWL_OBJECT(widget)->request.w, EWL_OBJECT(widget)->request.h);
+	if (widget->ebits_object)
+		ebits_resize(widget->ebits_object,
+				EWL_OBJECT(widget)->request.w, EWL_OBJECT(widget)->request.h);
 
 	EWL_OBJECT(widget)->request.x = 0;
 	EWL_OBJECT(widget)->request.y = 0;
@@ -151,7 +153,8 @@ ewl_window_configure(Ewl_Widget * widget, void * func_data)
 
 	ewd_list_goto_first(widget->container.children);
 
-	ebits_get_insets(widget->ebits_object, &l, &r, &t, &b);
+	if (widget->ebits_object);
+		ebits_get_insets(widget->ebits_object, &l, &r, &t, &b);
 
 	x = l;
 	y = t;
