@@ -1098,8 +1098,6 @@ void etox_layout(Etox * et)
 		if ((et->context->flags & ETOX_SOFT_WRAP) && (line->w > et->w))
 				etox_line_wrap(et, line);
 
-		etox_print_lines(et);
-
 		l = l->next;
 		y += line->h;
 	}
