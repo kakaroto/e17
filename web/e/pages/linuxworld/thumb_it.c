@@ -9,6 +9,7 @@
 #include <sys/param.h>
 
 #define THUMB_HEIGHT 120
+#define THUMB_WIDTH 500
 
 int main(int argc, char *argv[]){
 
@@ -38,11 +39,11 @@ int main(int argc, char *argv[]){
 
 		snprintf(filename, sizeof(filename), "tn_%s", argv[i]);
 		
-		ratio = h / THUMB_HEIGHT;
-		w = w / ratio;
+		ratio = w / THUMB_WIDTH;
+		h = h / ratio;
 		//printf("Aspected: %d x %d\n", w, THUMB_HEIGHT);
 		
-        	epeg_decode_size_set(image, w, THUMB_HEIGHT);
+        	epeg_decode_size_set(image, THUMB_WIDTH, h);
         	epeg_file_output_set(image, filename);
         	epeg_encode(image);
         	epeg_close(image);
