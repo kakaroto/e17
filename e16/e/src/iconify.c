@@ -546,6 +546,8 @@ IconboxEwinMoveResize(EWin * ewin, int resize __UNUSED__)
       return;
    call_depth++;
 
+   RememberImportantInfoForEwin(ewin);
+
    if (!Conf.theme.transparency &&
        ib->w == ewin->client.w && ib->h == ewin->client.h)
       goto done;
@@ -602,8 +604,6 @@ IconboxShow(Iconbox * ib)
    HintsSetWindowName(ib->win, "Iconbox");
    HintsSetWindowClass(ib->win, ib->name, "Enlightenment_IconBox");
 
-   MatchToSnapInfoIconbox(ib);
-
    ewin = AddInternalToFamily(ib->win, "ICONBOX", EWIN_TYPE_ICONBOX, ib,
 			      IconboxEwinInit);
    if (ewin)
@@ -615,7 +615,6 @@ IconboxShow(Iconbox * ib)
 
 	IB_Reconfigure(ib);
 	sn = FindSnapshot(ewin);
-	ConformEwinToDesktop(ewin);
 
 	w = ewin->client.w;
 	h = ewin->client.h;
@@ -623,7 +622,7 @@ IconboxShow(Iconbox * ib)
 	ewin->client.h = 1;
 	if (sn)
 	  {
-	     ResizeEwin(ewin, w, h);
+	     MoveResizeEwin(ewin, ewin->x, ewin->y, w, h);
 	  }
 	else
 	  {
@@ -2082,7 +2081,6 @@ IconboxRedraw(Iconbox * ib)
 	EResizeWindow(disp, ib->win, w, h);
 	EFreePixmap(disp, ib->pmap);
 	ib->pmap = ECreatePixmap(disp, ib->icon_win, w, h, VRoot.depth);
-	RememberImportantInfoForEwins(ib->ewin);
 	ib->force_update = 0;
      }
 

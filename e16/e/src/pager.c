@@ -235,6 +235,8 @@ PagerEwinMoveResize(EWin * ewin, int resize)
    if (!Conf.pagers.enable || !p)
       return;
 
+   RememberImportantInfoForEwin(ewin);
+
    w = ewin->client.w;
    h = ewin->client.h;
    if ((w == p->w) && (h == p->h))
@@ -334,8 +336,6 @@ PagerShow(Pager * p)
    pq = Mode.queue_up;
    Mode.queue_up = 0;
 
-   MatchToSnapInfoPager(p);
-
    ewin = AddInternalToFamily(p->win, (p->border_name) ? p->border_name :
 			      "PAGER", EWIN_TYPE_PAGER, p, PagerEwinInit);
    if (ewin)
@@ -344,11 +344,9 @@ PagerShow(Pager * p)
 	Snapshot           *sn;
 	double              aspect;
 
-#if 1				/* Do we need this? */
 	ewin->client.event_mask |=
 	   ButtonPressMask | ButtonReleaseMask | PointerMotionMask;
 	XSelectInput(disp, p->win, ewin->client.event_mask);
-#endif
 
 	aspect = ((double)VRoot.w) / ((double)VRoot.h);
 	GetAreaSize(&ax, &ay);
@@ -384,9 +382,6 @@ PagerShow(Pager * p)
 
 	/* show the pager ewin */
 	ShowEwin(ewin);
-	if (((sn) && (sn->use_sticky) && (sn->sticky)) || (!sn))
-	   EwinStick(ewin);
-	RememberImportantInfoForEwin(ewin);
 	if (Conf.pagers.snap)
 	  {
 	     Esnprintf(s, sizeof(s), "__.%x", (unsigned)p->win);

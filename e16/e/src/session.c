@@ -236,7 +236,7 @@ SaveWindowStates(void)
 		  y = desks.desk[ewin->desktop].current_area_y * VRoot.h;
 	       }
 	     fprintf(f, "[CLIENT] %i %i %i %i %i %i %i %i %i\n",
-		     ewin->x + x, ewin->y + y, ewin->client.w,
+		     ewin->client.x + x, ewin->client.y + y, ewin->client.w,
 		     ewin->client.h, ewin->desktop, ewin->iconified,
 		     ewin->shaded, ewin->sticky, ewin->layer);
 	     if (ewin->session_id)
@@ -418,6 +418,10 @@ MatchEwinToSM(EWin * ewin)
 				    ewin->client.y, ewin->client.w,
 				    ewin->client.h);
 	       }
+	     if (EventDebug(EDBUG_TYPE_SNAPS))
+		Eprintf("Snap get sess  %#lx: %4d+%4d %4dx%4d: %s\n",
+			ewin->client.win, ewin->client.x, ewin->client.y,
+			ewin->client.w, ewin->client.h, EwinGetTitle(ewin));
 	     break;
 	  }
      }

@@ -629,10 +629,17 @@ SnapshotEwinLocation(EWin * ewin)
    if (!sn)
       return;
    sn->use_xy = 1;
-   sn->x = ewin->x;
-   sn->y = ewin->y;
+   sn->x = ewin->client.x;
+   sn->y = ewin->client.y;
    sn->area_x = ewin->area_x;
    sn->area_y = ewin->area_y;
+   if (!ewin->sticky)
+     {
+	sn->x +=
+	   ((desks.desk[ewin->desktop].current_area_x - sn->area_x) * VRoot.w);
+	sn->y +=
+	   ((desks.desk[ewin->desktop].current_area_y - sn->area_y) * VRoot.h);
+     }
 }
 
 void
@@ -1146,64 +1153,65 @@ MatchEwinToSnapInfo(EWin * ewin)
    ewin->snap = sn;
    sn->used = 1;
    ListChangeItemID(LIST_TYPE_SNAPSHOT, ewin->snap, 1);
-   if (sn->use_desktop)
-      ewin->desktop = sn->desktop;
+
+   if (sn->use_sticky)
+      ewin->sticky = sn->sticky;
+
+   if (sn->use_desktop && !ewin->sticky)
+      ewin->desktop = DESKTOPS_WRAP_NUM(sn->desktop);
+   else
+      ewin->desktop = desks.current;
+
    if (sn->use_wh)
      {
 	ewin->client.w = sn->w;
 	ewin->client.h = sn->h;
      }
+
    if (sn->use_xy)
      {
 	ewin->client.already_placed = 1;
 	ewin->client.x = sn->x;
 	ewin->client.y = sn->y;
-	if ((!((sn->use_sticky) && (sn->sticky))) && (!ewin->sticky))
+	ewin->area_x = sn->area_x;
+	ewin->area_y = sn->area_y;
+	if (!ewin->sticky)
 	  {
-	     if (sn->use_desktop)
-	       {
-		  ewin->client.x +=
-		     ((sn->area_x - desks.desk[ewin->desktop].current_area_x) *
-		      VRoot.w);
-		  ewin->client.y +=
-		     ((sn->area_y - desks.desk[ewin->desktop].current_area_y) *
-		      VRoot.h);
-	       }
-	     else
-	       {
-		  ewin->client.x +=
-		     ((sn->area_x - desks.desk[desks.current].current_area_x) *
-		      VRoot.w);
-		  ewin->client.y +=
-		     ((sn->area_y - desks.desk[desks.current].current_area_y) *
-		      VRoot.h);
-	       }
+	     ewin->client.x +=
+		((sn->area_x - desks.desk[ewin->desktop].current_area_x) *
+		 VRoot.w);
+	     ewin->client.y +=
+		((sn->area_y - desks.desk[ewin->desktop].current_area_y) *
+		 VRoot.h);
 	  }
-	ewin->x = ewin->client.x;
-	ewin->y = ewin->client.y;
 	EMoveResizeWindow(disp, ewin->client.win, ewin->client.x,
 			  ewin->client.y, ewin->client.w, ewin->client.h);
      }
+
    if (sn->use_layer)
       ewin->layer = sn->layer;
-   if (sn->use_sticky)
-      ewin->sticky = sn->sticky;
+
    if (sn->use_skiplists)
      {
 	ewin->skipfocus = sn->skipfocus;
 	ewin->skiptask = sn->skiptask;
 	ewin->skipwinlist = sn->skipwinlist;
      }
+
    if (sn->use_neverfocus)
       ewin->neverfocus = sn->neverfocus;
+
    if (sn->use_shade)
       ewin->shaded = sn->shade;
+
    if (sn->iclass_name)
      {
 	/* FIXME: fill this in */
      }
+
    if (sn->border_name)
       EwinSetBorderByName(ewin, sn->border_name, 0);
+
    if (sn->groups)
      {
 	for (i = 0; i < sn->num_groups; i++)
@@ -1224,6 +1232,11 @@ MatchEwinToSnapInfo(EWin * ewin)
 		AddEwinToGroup(ewin, g);
 	  }
      }
+
+   if (EventDebug(EDBUG_TYPE_SNAPS))
+      Eprintf("Snap get snap  %#lx: %4d+%4d %4dx%4d: %s\n",
+	      ewin->client.win, ewin->client.x, ewin->client.y,
+	      ewin->client.w, ewin->client.h, EwinGetTitle(ewin));
 }
 
 /* make a client window conform to snapshot info */
@@ -1242,66 +1255,14 @@ UnmatchEwinToSnapInfo(EWin * ewin)
 }
 
 void
-MatchToSnapInfoPager(Pager * p)
-{
-   XClassHint          hint;
-   char                buf[1024];
-   Snapshot           *sn = NULL;
-   Window              win = PagerGetWin(p);
-
-   if ((!XGetClassHint(disp, win, &hint)))
-      return;
-
-   if ((hint.res_name) && (hint.res_class))
-     {
-	Esnprintf(buf, sizeof(buf), "%s.%s", hint.res_name, hint.res_class);
-	sn = FindItem(buf, 0, LIST_FINDBY_BOTH, LIST_TYPE_SNAPSHOT);
-     }
-   if (hint.res_name)
-      XFree(hint.res_name);
-   if (hint.res_class)
-      XFree(hint.res_class);
-   if (!sn)
-      return;
-   if (sn->use_xy)
-      EMoveWindow(disp, win, sn->x, sn->y);
-   if (sn->use_wh)
-      EResizeWindow(disp, win, sn->w, sn->h);
-}
-
-void
-MatchToSnapInfoIconbox(Iconbox * ib)
-{
-   XClassHint          hint;
-   char                buf[1024];
-   Snapshot           *sn = NULL;
-   Window              win = IconboxGetWin(ib);
-
-   if ((!XGetClassHint(disp, win, &hint)))
-      return;
-
-   if ((hint.res_name) && (hint.res_class))
-     {
-	Esnprintf(buf, sizeof(buf), "%s.%s", hint.res_name, hint.res_class);
-	sn = FindItem(buf, 0, LIST_FINDBY_BOTH, LIST_TYPE_SNAPSHOT);
-     }
-   if (hint.res_name)
-      XFree(hint.res_name);
-   if (hint.res_class)
-      XFree(hint.res_class);
-   if (!sn)
-      return;
-   if (sn->use_xy)
-      EMoveWindow(disp, win, sn->x, sn->y);
-   if (sn->use_wh)
-      EResizeWindow(disp, win, sn->w, sn->h);
-}
-
-void
 RememberImportantInfoForEwin(EWin * ewin)
 {
    if ((ewin->pager) || (ewin->ibox))
      {
+	if (EventDebug(EDBUG_TYPE_SNAPS))
+	   Eprintf("RememberImportantInfoForEwin  %#lx %s\n",
+		   ewin->client.win, EwinGetTitle(ewin));
+
 	SnapshotEwinBorder(ewin);
 	SnapshotEwinDesktop(ewin);
 	SnapshotEwinSize(ewin);
@@ -1313,20 +1274,5 @@ RememberImportantInfoForEwin(EWin * ewin)
 	SnapshotEwinSkipLists(ewin);
 	SnapshotEwinNeverFocus(ewin);
 	SaveSnapInfo();
-     }
-}
-
-void
-RememberImportantInfoForEwins(EWin * ewin)
-{
-   int                 i, num;
-   EWin              **gwins;
-
-   gwins = ListWinGroupMembersForEwin(ewin, ACTION_MOVE, Mode.nogroup, &num);
-   if (gwins)
-     {
-	for (i = 0; i < num; i++)
-	   RememberImportantInfoForEwin(gwins[i]);
-	Efree(gwins);
      }
 }

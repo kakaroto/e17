@@ -356,8 +356,8 @@ ICCCM_Configure(EWin * ewin)
    ev.xconfigure.display = disp;
    ev.xconfigure.event = ewin->client.win;
    ev.xconfigure.window = ewin->client.win;
-   ev.xconfigure.x = desks.desk[d].x + ewin->x + ewin->border->border.left;
-   ev.xconfigure.y = desks.desk[d].y + ewin->y + ewin->border->border.top;
+   ev.xconfigure.x = desks.desk[d].x + ewin->client.x;
+   ev.xconfigure.y = desks.desk[d].y + ewin->client.y;
    ev.xconfigure.width = ewin->client.w;
    ev.xconfigure.height = ewin->client.h;
    ev.xconfigure.border_width = 0;
@@ -395,12 +395,6 @@ ICCCM_Adopt(EWin * ewin)
    c[0] = (ewin->client.start_iconified) ? IconicState : NormalState;
    XChangeProperty(disp, win, E_XA_WM_STATE, E_XA_WM_STATE, 32, PropModeReplace,
 		   (unsigned char *)c, 2);
-   ewin->x = ewin->client.x;
-   ewin->y = ewin->client.y;
-   ewin->w = ewin->client.w +
-      ewin->border->border.left + ewin->border->border.right;
-   ewin->h = ewin->client.h +
-      ewin->border->border.top + ewin->border->border.bottom;
 
    EDBUG_RETURN_;
 }
@@ -538,6 +532,7 @@ ICCCM_GetGeoms(EWin * ewin, Atom atom_change)
    ewin->client.w = w;
    ewin->client.h = h;
    ewin->client.bw = bw;
+
    if (XGetWMNormalHints(disp, ewin->client.win, &hint, &mask))
      {
 	if (!(ewin->client.already_placed))
@@ -589,6 +584,7 @@ ICCCM_GetGeoms(EWin * ewin, Atom atom_change)
 	     ewin->client.y = 0;
 	     ewin->client.already_placed = 0;
 	  }
+
 	if (hint.flags & PMinSize)
 	  {
 	     ewin->client.width.min = hint.min_width;
@@ -599,6 +595,7 @@ ICCCM_GetGeoms(EWin * ewin, Atom atom_change)
 	     ewin->client.width.min = 0;
 	     ewin->client.height.min = 0;
 	  }
+
 	if (hint.flags & PMaxSize)
 	  {
 	     ewin->client.width.max = hint.max_width;
@@ -613,6 +610,7 @@ ICCCM_GetGeoms(EWin * ewin, Atom atom_change)
 	     ewin->client.width.max = 65535;
 	     ewin->client.height.max = 65535;
 	  }
+
 	if (hint.flags & PResizeInc)
 	  {
 	     ewin->client.w_inc = hint.width_inc;
@@ -627,6 +625,7 @@ ICCCM_GetGeoms(EWin * ewin, Atom atom_change)
 	     ewin->client.w_inc = 1;
 	     ewin->client.h_inc = 1;
 	  }
+
 	if (hint.flags & PAspect)
 	  {
 	     if ((hint.min_aspect.y > 0.0) && (hint.min_aspect.x > 0.0))
@@ -653,6 +652,7 @@ ICCCM_GetGeoms(EWin * ewin, Atom atom_change)
 	     ewin->client.aspect_min = 0.0;
 	     ewin->client.aspect_max = 65535.0;
 	  }
+
 	if (hint.flags & PBaseSize)
 	  {
 	     ewin->client.base_w = hint.base_width;
@@ -663,27 +663,24 @@ ICCCM_GetGeoms(EWin * ewin, Atom atom_change)
 	     ewin->client.base_w = ewin->client.width.min;
 	     ewin->client.base_h = ewin->client.height.min;
 	  }
+
 	if (ewin->client.width.min < ewin->client.base_w)
 	   ewin->client.width.min = ewin->client.base_w;
 	if (ewin->client.height.min < ewin->client.base_h)
 	   ewin->client.height.min = ewin->client.base_h;
      }
-   if (ewin->client.width.min == 0)
-     {
-	if (ewin->internal)
-	  {
-	     ewin->client.width.min = w;
-	     ewin->client.height.min = h;
-	     ewin->client.width.max = w;
-	     ewin->client.height.max = h;
-	  }
-     }
+
    ewin->client.no_resize_h = 0;
    ewin->client.no_resize_v = 0;
    if (ewin->client.width.min == ewin->client.width.max)
       ewin->client.no_resize_h = 1;
    if (ewin->client.height.min == ewin->client.height.max)
       ewin->client.no_resize_v = 1;
+
+   if (EventDebug(EDBUG_TYPE_SNAPS))
+      Eprintf("Snap get icccm %#lx: %4d+%4d %4dx%4d: %s\n",
+	      ewin->client.win, ewin->client.x, ewin->client.y,
+	      ewin->client.w, ewin->client.h, EwinGetTitle(ewin));
 
    EDBUG_RETURN_;
 }
@@ -1070,8 +1067,8 @@ ICCCM_SetEInfo(EWin * ewin)
       aa = XInternAtom(disp, "ENL_INTERNAL_DATA_BORDER", False);
    c[0] = ewin->desktop;
    c[1] = ewin->sticky;
-   c[2] = ewin->x;
-   c[3] = ewin->y;
+   c[2] = ewin->client.x;
+   c[3] = ewin->client.y;
    c[4] = ewin->iconified;
    if (ewin->iconified)
       ICCCM_DeIconify(ewin);
@@ -1083,6 +1080,10 @@ ICCCM_SetEInfo(EWin * ewin)
    XChangeProperty(disp, ewin->client.win, aa, XA_STRING, 8, PropModeReplace,
 		   (unsigned char *)ewin->border->name,
 		   strlen(ewin->border->name) + 1);
+   if (EventDebug(EDBUG_TYPE_SNAPS))
+      Eprintf("Snap set einf  %#lx: %4d+%4d %4dx%4d: %s\n",
+	      ewin->client.win, ewin->client.x, ewin->client.y,
+	      ewin->client.w, ewin->client.h, EwinGetTitle(ewin));
    EDBUG_RETURN_;
 }
 
@@ -1117,7 +1118,7 @@ ICCCM_GetMainEInfo(void)
 
    a = XInternAtom(disp, "ENL_INTERNAL_AREA_DATA", False);
    puc = NULL;
-   XGetWindowProperty(disp, VRoot.win, a, 0, 10, False, XA_CARDINAL, &a2,
+   XGetWindowProperty(disp, VRoot.win, a, 0, 0xffff, False, XA_CARDINAL, &a2,
 		      &dummy, &lnum, &ldummy, &puc);
    c = (CARD32 *) puc;
    num = (int)lnum;
@@ -1136,7 +1137,7 @@ ICCCM_GetMainEInfo(void)
 
    a = XInternAtom(disp, "ENL_INTERNAL_DESK_DATA", False);
    puc = NULL;
-   XGetWindowProperty(disp, VRoot.win, a, 0, 10, False, XA_CARDINAL, &a2,
+   XGetWindowProperty(disp, VRoot.win, a, 0, 1, False, XA_CARDINAL, &a2,
 		      &dummy, &lnum, &ldummy, &puc);
    c = (CARD32 *) puc;
    num = (int)lnum;
@@ -1200,6 +1201,10 @@ ICCCM_GetEInfo(EWin * ewin)
 	if ((num > 0) && (str))
 	   EwinSetBorderByName(ewin, str, 0);
 	XFree(str);
+	if (EventDebug(EDBUG_TYPE_SNAPS))
+	   Eprintf("Snap get einf  %#lx: %4d+%4d %4dx%4d: %s\n",
+		   ewin->client.win, ewin->client.x, ewin->client.y,
+		   ewin->client.w, ewin->client.h, EwinGetTitle(ewin));
      }
    EDBUG_RETURN(0);
 }

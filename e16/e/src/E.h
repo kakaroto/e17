@@ -1789,9 +1789,7 @@ void                EwinBorderUpdateState(EWin * ewin);
 void                EwinEventDestroy(EWin * ewin);
 void                EwinEventMap(EWin * ewin);
 void                EwinEventUnmap(EWin * ewin);
-void                EwinSetArea(EWin * ewin, int ax, int ay);
 void                MoveEwinToArea(EWin * ewin, int ax, int ay);
-void                SetEwinToCurrentArea(EWin * ewin);
 int                 EwinGetDesk(const EWin * ewin);
 const char         *EwinGetTitle(const EWin * ewin);
 const char         *EwinGetIconName(const EWin * ewin);
@@ -2065,6 +2063,7 @@ void                EdgeHandleMotion(XEvent * ev);
 #define EDBUG_TYPE_RAISELOWER	132
 #define EDBUG_TYPE_MOVERESIZE	133
 #define EDBUG_TYPE_SESSION   	134
+#define EDBUG_TYPE_SNAPS     	135
 int                 EventDebug(unsigned int type);
 #else
 #define             EventDebug(type) 0
@@ -2537,8 +2536,6 @@ void                SetSMUserThemePath(const char *path);
 char               *GetSMFile(void);
 char               *GetGenericSMFile(void);
 void                MatchEwinToSM(EWin * ewin);
-void                MatchToSnapInfoPager(Pager * p);
-void                MatchToSnapInfoIconbox(Iconbox * ib);
 void                SaveSession(int shutdown);
 void                autosave(void);
 int                 EExit(int exitcode);
@@ -2616,7 +2613,6 @@ void                LoadSnapInfo(void);
 void                MatchEwinToSnapInfo(EWin * ewin);
 void                UnmatchEwinToSnapInfo(EWin * ewin);
 void                RememberImportantInfoForEwin(EWin * ewin);
-void                RememberImportantInfoForEwins(EWin * ewin);
 
 /* sound.c */
 SoundClass         *SclassCreate(const char *name, const char *file);

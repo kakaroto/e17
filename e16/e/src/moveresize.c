@@ -159,7 +159,6 @@ ActionMoveEnd(EWin * ewin)
 	FX_Pause();
 	UngrabX();
      }
-   RememberImportantInfoForEwins(ewin);
    if (wasresize)
       ForceUpdatePagersForDesktop(desks.current);
    Efree(gwins);
@@ -358,7 +357,6 @@ ActionResizeEnd(EWin * ewin)
 	UngrabX();
      }
    ForceUpdatePagersForDesktop(desks.current);
-   RememberImportantInfoForEwin(ewin);
 
    EwinUpdateAfterMoveResize(ewin, 1);
 

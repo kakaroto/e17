@@ -670,6 +670,7 @@ AddInternalToFamily(Window win, const char *bname, int type, void *ptr,
    ICCCM_Configure(ewin);
    EwinBorderDraw(ewin, 1, 1);
 
+   DetermineEwinArea(ewin);
    UngrabX();
 
    EDBUG_RETURN(ewin);
@@ -1121,6 +1122,17 @@ HonorIclass(char *s, int id)
    EDBUG_RETURN_;
 }
 
+static void
+EwinGetSize(EWin * ewin)
+{
+   ewin->x = ewin->client.x - ewin->border->border.left;
+   ewin->y = ewin->client.y - ewin->border->border.top;
+   ewin->w = ewin->client.w +
+      ewin->border->border.left + ewin->border->border.right;
+   ewin->h = ewin->client.h +
+      ewin->border->border.top + ewin->border->border.bottom;
+}
+
 static EWin        *
 Adopt(Window win)
 {
@@ -1151,6 +1163,8 @@ Adopt(Window win)
 
    ICCCM_MatchSize(ewin);
    ICCCM_Adopt(ewin);
+
+   EwinGetSize(ewin);
    EwinEventsConfigure(ewin, 0);
 
    UngrabX();
@@ -1189,11 +1203,13 @@ AdoptInternal(Window win, Border * border, int type)
 	ewin->skipfocus = 1;
 	break;
      case EWIN_TYPE_ICONBOX:
+	ewin->sticky = 1;
 	ewin->skiptask = 1;
 	ewin->skip_ext_pager = 1;
 	ewin->skipfocus = 1;
 	break;
      case EWIN_TYPE_PAGER:
+	ewin->sticky = 1;
 	ewin->skiptask = 1;
 	ewin->skip_ext_pager = 1;
 	ewin->skipfocus = 1;
@@ -1205,6 +1221,15 @@ AdoptInternal(Window win, Border * border, int type)
    ICCCM_GetInfo(ewin, 0);
    ICCCM_GetShapeInfo(ewin);
    ICCCM_GetGeoms(ewin, 0);
+   switch (type)
+     {
+     case EWIN_TYPE_DIALOG:
+     case EWIN_TYPE_MENU:
+	ewin->client.width.min = ewin->client.width.max = ewin->client.w;
+	ewin->client.height.min = ewin->client.height.max = ewin->client.h;
+	ewin->client.no_resize_h = ewin->client.no_resize_v = 1;
+	break;
+     }
    MatchEwinToSnapInfo(ewin);
 
    if (!ewin->border)
@@ -1213,6 +1238,8 @@ AdoptInternal(Window win, Border * border, int type)
 
    ICCCM_MatchSize(ewin);
    ICCCM_Adopt(ewin);
+
+   EwinGetSize(ewin);
    EwinEventsConfigure(ewin, 0);
 
    UngrabX();
@@ -1714,7 +1741,7 @@ EwinUpdateAfterMoveResize(EWin * ewin, int resize)
 }
 
 void
-EwinFixPosition(EWin * ewin __UNUSED__)
+EwinFixPosition(EWin * ewin)
 {
    int                 x, y;
 
@@ -1734,10 +1761,6 @@ EwinFixPosition(EWin * ewin __UNUSED__)
 
    if (x != ewin->x || y != ewin->y)
       MoveEwin(ewin, x, y);
-
-#if 0
-   RememberImportantInfoForEwin(ewin);
-#endif
 }
 
 #define MR_FLAGS_MOVE   1
@@ -1804,6 +1827,8 @@ doMoveResizeEwin(EWin * ewin, int x, int y, int w, int h, int flags)
 	   move = 1;
 	ewin->x = x;
 	ewin->y = y;
+	ewin->client.x += dx;
+	ewin->client.y += dy;
      }
 
    if (flags & MR_FLAGS_RESIZE)
@@ -2121,8 +2146,6 @@ ShowEwin(EWin * ewin)
 
    if (ewin->win)
       EMapWindow(disp, ewin->win);
-
-   SetEwinToCurrentArea(ewin);
 
    if (Mode.mode == MODE_NONE)
      {
@@ -3147,7 +3170,7 @@ EwinSetFullscreen(EWin * ewin, int on)
    HintsSetWindowState(ewin);
 }
 
-void
+static void
 EwinSetArea(EWin * ewin, int ax, int ay)
 {
    if (ax == ewin->area_x && ay == ewin->area_y)
@@ -3184,15 +3207,7 @@ MoveEwinToArea(EWin * ewin, int ax, int ay)
    AreaFix(&ax, &ay);
    MoveEwin(ewin, ewin->x + (VRoot.w * (ax - ewin->area_x)),
 	    ewin->y + (VRoot.h * (ay - ewin->area_y)));
-   EwinSetArea(ewin, ax, ay);
    EDBUG_RETURN_;
-}
-
-void
-SetEwinToCurrentArea(EWin * ewin)
-{
-   EwinSetArea(ewin, desks.desk[ewin->desktop].current_area_x,
-	       desks.desk[ewin->desktop].current_area_y);
 }
 
 int

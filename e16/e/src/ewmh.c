@@ -881,7 +881,6 @@ EWMH_ProcessClientMessage(XClientMessageEvent * event)
 		ewin->toggle = 0;
 
 	     func(ewin, "available");
-	     RememberImportantInfoForEwin(ewin);
 	     EWMH_SetWindowState(ewin);
 	  }
 	else if (atom == _NET_WM_STATE_FULLSCREEN)
