@@ -326,6 +326,8 @@ __ewl_button_configure(Ewl_Widget * w, void *event_data, void *user_data)
 	ewl_object_set_current_geometry(EWL_OBJECT(w), req_x, req_y, req_w,
 					req_h);
 
+	printf("x%i y%i w%i h%i\n", req_x, req_y, req_w, req_h);
+
 	ewd_list_goto_first(EWL_CONTAINER(w)->children);
 	t = ewd_list_current(EWL_CONTAINER(w)->children);
 
@@ -450,9 +452,10 @@ __ewl_button_theme_update(Ewl_Widget * w, void *event_data, void *user_data)
 							w->evas);
 				      ebits_set_layer(w->ebits_object,
 						      EWL_OBJECT(w)->layer);
-				      ebits_set_clip(w->ebits_object,
-						     w->fx_clip_box);
 
+/*				      ebits_set_clip(w->ebits_object,
+						     w->fx_clip_box);
+*/
 				      ebits_show(w->ebits_object);
 			      }
 		    }

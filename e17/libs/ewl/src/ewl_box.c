@@ -830,29 +830,25 @@ __ewl_vbox_layout_children(Ewl_Widget * w)
 	if (w->ebits_object)
 		ebits_get_insets(w->ebits_object, &l, &r, &t, &b);
 
-	x = REQUEST_Y(w) + t;
+	x = REQUEST_X(w) + l;
 
 	ewd_list_goto_first(EWL_CONTAINER(w)->children);
 
 	while ((c = ewd_list_next(EWL_CONTAINER(w)->children)) != NULL)
 	  {
 		  if (c->alignment == EWL_ALIGNMENT_LEFT)
-		    {
-			    REQUEST_Y(c->widget) = REQUEST_Y(w) + t;
-		    }
+			  REQUEST_Y(c->widget) = REQUEST_Y(w) + t;
 		  else if (c->alignment == EWL_ALIGNMENT_CENTER)
 		    {
 			    REQUEST_Y(c->widget) = REQUEST_Y(w);
 			    REQUEST_Y(c->widget) +=
-				    (REQUEST_Y(w) / 2) -
-				    REQUEST_Y(c->widget) - t - b;
+				    (REQUEST_H(w) / 2) -
+				    (REQUEST_H(c->widget) / 2);
 		    }
 		  else if (c->alignment == EWL_ALIGNMENT_RIGHT)
-		    {
-			    REQUEST_Y(c->widget) =
-				    (REQUEST_Y(w) + REQUEST_H(w)) -
-				    REQUEST_H(c->widget) - r;
-		    }
+			  REQUEST_Y(c->widget) =
+				  (REQUEST_Y(w) + REQUEST_H(w)) -
+				  REQUEST_H(c->widget) - r;
 
 		  REQUEST_X(c->widget) = x;
 		  x += REQUEST_W(c->widget);
