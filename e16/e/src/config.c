@@ -2452,13 +2452,13 @@ Config_ImageClass(FILE * ConfigFile)
    /* This function will load an ImageClass off disk */
 
    char                s[FILEPATH_LEN_MAX];
-   char                s1[FILEPATH_LEN_MAX];
    char                s2[FILEPATH_LEN_MAX];
    int                 i1;
    ImageClass         *ic = 0;
    ImageState         *ICToRead = 0;
    ColorModifierClass *cm = 0;
    int                 fields;;
+   int                 l, r, t, b;
 
    while (GetLine(s, sizeof(s), ConfigFile))
      {
@@ -2476,10 +2476,9 @@ Config_ImageClass(FILE * ConfigFile)
 	else if (i1 != CONFIG_INVALID)
 	  {
 	     if (fields != 2)
-	       {
-		  Alert(_("CONFIG: missing required data in \"%s\"\n"), s);
-	       }
+		Alert(_("CONFIG: missing required data in \"%s\"\n"), s);
 	  }
+
 	switch (i1)
 	  {
 	  case CONFIG_CLOSE:
@@ -2488,18 +2487,14 @@ Config_ImageClass(FILE * ConfigFile)
 	     return;
 	  case ICLASS_LRTB:
 	     {
-		char                s3[FILEPATH_LEN_MAX];
-		char                s4[FILEPATH_LEN_MAX];
-		char                s5[FILEPATH_LEN_MAX];
-
 		ICToRead->border = Emalloc(sizeof(Imlib_Border));
 
-		sscanf(s, "%4000s %4000s %4000s %4000s %4000s", s1, s2, s3,
-		       s4, s5);
-		ICToRead->border->left = atoi(s2);
-		ICToRead->border->right = atoi(s3);
-		ICToRead->border->top = atoi(s4);
-		ICToRead->border->bottom = atoi(s5);
+		l = r = t = b = 0;
+		sscanf(s, "%*s %i %i %i %i", &l, &r, &t, &b);
+		ICToRead->border->left = l;
+		ICToRead->border->right = r;
+		ICToRead->border->top = t;
+		ICToRead->border->bottom = b;
 		/* Hmmm... imlib2 works better with this */
 		ICToRead->border->right++;
 		ICToRead->border->bottom++;
@@ -2544,16 +2539,12 @@ Config_ImageClass(FILE * ConfigFile)
 	     break;
 	  case ICLASS_PADDING:
 	     {
-		char                s3[FILEPATH_LEN_MAX];
-		char                s4[FILEPATH_LEN_MAX];
-		char                s5[FILEPATH_LEN_MAX];
-
-		sscanf(s, "%4000s %4000s %4000s %4000s %4000s", s1, s2, s3,
-		       s4, s5);
-		ic->padding.left = atoi(s2);
-		ic->padding.right = atoi(s3);
-		ic->padding.top = atoi(s4);
-		ic->padding.bottom = atoi(s5);
+		l = r = t = b = 0;
+		sscanf(s, "%*s %i %i %i %i", &l, &r, &t, &b);
+		ic->padding.left = l;
+		ic->padding.right = r;
+		ic->padding.top = t;
+		ic->padding.bottom = b;
 	     }
 	     break;
 	  case CONFIG_CLASSNAME:

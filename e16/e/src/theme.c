@@ -92,7 +92,7 @@ append_merge_dir(char *dir, char ***list, int *count)
    char                s[FILEPATH_LEN_MAX], ss[FILEPATH_LEN_MAX];
    char              **str = NULL, *def = NULL;
    char                already, *tmp, *tmp2;
-   int                 i, j, num;
+   int                 i, j, num, len;
 
    str = E_ls(dir, &num);
    if (!str)
@@ -120,8 +120,11 @@ append_merge_dir(char *dir, char ***list, int *count)
 
 	if (!strcmp(str[i], "DEFAULT"))
 	  {
-	     if (readlink(ss, s, sizeof(s)) > 0)
+	     memset(s, 0, sizeof(s));
+	     len = readlink(ss, s, sizeof(s) - 1);
+	     if (len > 0)
 	       {
+		  s[len] = '\0';	/* Redundant due to memset */
 		  if (s[0] == '/')
 		     def = Estrdup(s);
 		  else
