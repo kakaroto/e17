@@ -13,6 +13,7 @@
 #include <unistd.h>
 #include <errno.h>
 #include <fcntl.h>
+#include <time.h>
 #include <sys/time.h>
 #include <sys/mman.h>
 #include <sys/ioctl.h>
