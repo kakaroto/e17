@@ -182,7 +182,7 @@ typedef enum
 */
 struct _Layer
 {  
-  char           visible;               /* controls visibility            */
+  int            visible;               /* controls visibility            */
   int            width, height;		/* size of drawable               */
   int            bpp;                   /* depth                          */
   int            offset_x, offset_y;	/* offset of layer in image       */
