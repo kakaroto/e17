@@ -122,45 +122,52 @@ __ewl_checkbutton_configure(Ewl_Widget * w, void *ev_data, void *user_data)
 	b = EWL_BUTTON(w);
 	cb = EWL_CHECKBUTTON(w);
 
-	if (b->label_object) {
-		if (MINIMUM_H(b->label_object) > CURRENT_H(w)) {
-			REQUEST_Y(b->label_object) = CURRENT_Y(w) + 17;
-			MINIMUM_H(w) = MINIMUM_H(b->label_object);
-			MAXIMUM_H(w) = MINIMUM_H(b->label_object);
-		} else {
-			REQUEST_Y(b->label_object) = CURRENT_Y(w);
-			REQUEST_Y(b->label_object) +=
-			    (CURRENT_H(w) / 2) -
-			    (CURRENT_H(b->label_object) / 2);
-			MINIMUM_H(w) = 17;
-			MAXIMUM_H(w) = 17;
-		}
+	if (b->label_object)
+	  {
+		  if (MINIMUM_H(b->label_object) > CURRENT_H(w))
+		    {
+			    REQUEST_Y(b->label_object) = CURRENT_Y(w) + 17;
+			    MINIMUM_H(w) = MINIMUM_H(b->label_object);
+			    MAXIMUM_H(w) = MINIMUM_H(b->label_object);
+		    }
+		  else
+		    {
+			    REQUEST_Y(b->label_object) = CURRENT_Y(w);
+			    REQUEST_Y(b->label_object) +=
+				    (CURRENT_H(w) / 2) -
+				    (CURRENT_H(b->label_object) / 2);
+			    MINIMUM_H(w) = 17;
+			    MAXIMUM_H(w) = 17;
+		    }
 
-		MINIMUM_W(w) = 17 + CURRENT_W(b->label_object);
-		MAXIMUM_W(w) = 17 + CURRENT_W(b->label_object);
+		  MINIMUM_W(w) = 17 + CURRENT_W(b->label_object);
+		  MAXIMUM_W(w) = 17 + CURRENT_W(b->label_object);
 
-		if (cb->label_position == EWL_POSITION_LEFT)
-			REQUEST_X(b->label_object) = REQUEST_X(w);
-		else
-			REQUEST_X(b->label_object) = CURRENT_X(w) + 17;
+		  if (cb->label_position == EWL_POSITION_LEFT)
+			  REQUEST_X(b->label_object) = REQUEST_X(w);
+		  else
+			  REQUEST_X(b->label_object) = CURRENT_X(w) + 17;
 
-		ewl_widget_configure(b->label_object);
+		  ewl_widget_configure(b->label_object);
 
-		if (w->ebits_object) {
-			if (cb->label_position == EWL_POSITION_LEFT)
-				ebits_move(w->ebits_object,
-					   REQUEST_X(w) +
-					   CURRENT_W(b->label_object),
-					   REQUEST_Y(w));
-			else
-				ebits_move(w->ebits_object, REQUEST_X(w),
-					   REQUEST_Y(w));
+		  if (w->ebits_object)
+		    {
+			    if (cb->label_position == EWL_POSITION_LEFT)
+				    ebits_move(w->ebits_object,
+					       REQUEST_X(w) +
+					       CURRENT_W(b->label_object),
+					       REQUEST_Y(w));
+			    else
+				    ebits_move(w->ebits_object, REQUEST_X(w),
+					       REQUEST_Y(w));
 
-		}
-	} else {
-		MAXIMUM_W(w) = 17;
-		MAXIMUM_H(w) = 17;
-	}
+		    }
+	  }
+	else
+	  {
+		  MAXIMUM_W(w) = 17;
+		  MAXIMUM_H(w) = 17;
+	  }
 
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
@@ -196,21 +203,21 @@ __ewl_checkbutton_update_check(Ewl_Widget * w)
 
 	cb = EWL_CHECKBUTTON(w);
 
-	if (w->ebits_object) {
-		if (cb->checked)
-			ebits_set_named_bit_state(w->ebits_object, "Check",
-						  "clicked");
-		else
-			ebits_set_named_bit_state(w->ebits_object, "Check",
-						  "normal");
-	}
+	if (w->ebits_object)
+	  {
+		  if (cb->checked)
+			  ebits_set_named_bit_state(w->ebits_object, "Check",
+						    "clicked");
+		  else
+			  ebits_set_named_bit_state(w->ebits_object, "Check",
+						    "normal");
+	  }
 
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
 
 void
-__ewl_checkbutton_theme_update(Ewl_Widget * w, void *ev_data,
-			       void *user_data)
+__ewl_checkbutton_theme_update(Ewl_Widget * w, void *ev_data, void *user_data)
 {
 	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR("w", w);

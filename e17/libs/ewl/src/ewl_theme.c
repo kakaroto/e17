@@ -159,27 +159,29 @@ ewl_theme_init(void)
 		str = strdup("default");
 
 	home = getenv("HOME");
-	if (!home) {
-		DERROR("Environment variable HOME not defined\n"
-		       "Try export HOME=/home/user in a bash like environemnt or\n"
-		       "setenv HOME=/home/user in a sh like environment.\n");
-		return -1;
-	}
+	if (!home)
+	  {
+		  DERROR("Environment variable HOME not defined\n"
+			 "Try export HOME=/home/user in a bash like environemnt or\n"
+			 "setenv HOME=/home/user in a sh like environment.\n");
+		  return -1;
+	  }
 
 	snprintf(theme_path, PATH_LEN, "%s/.e/ewl/themes/%s", home, str);
 
-	if (((stat(theme_path, &st)) == -1) || !S_ISDIR(st.st_mode)) {
+	if (((stat(theme_path, &st)) == -1) || !S_ISDIR(st.st_mode))
+	  {
 
-		/*
-		 * Theme dir is ok, now get the specified theme's path 
-		 */
-		snprintf(theme_path, PATH_LEN, PACKAGE_DATA_DIR
-			 "/themes/%s", str);
-		stat(theme_path, &st);
+		  /*
+		   * Theme dir is ok, now get the specified theme's path 
+		   */
+		  snprintf(theme_path, PATH_LEN, PACKAGE_DATA_DIR
+			   "/themes/%s", str);
+		  stat(theme_path, &st);
 
-		if (!S_ISDIR(st.st_mode))
-			DERROR("No theme dir =( exiting....");
-	}
+		  if (!S_ISDIR(st.st_mode))
+			  DERROR("No theme dir =( exiting....");
+	  }
 
 	IF_FREE(str);
 
@@ -237,12 +239,13 @@ ewl_theme_font_path()
 	/*
 	 * No font path specified yet, so build it up 
 	 */
-	if (!font_path) {
-		font_path = NEW(char, PATH_LEN);
+	if (!font_path)
+	  {
+		  font_path = NEW(char, PATH_LEN);
 
-		snprintf(font_path, PATH_LEN, "%s/appearance/fonts",
-			 theme_path);
-	}
+		  snprintf(font_path, PATH_LEN, "%s/appearance/fonts",
+			   theme_path);
+	  }
 
 	return font_path;
 }
@@ -264,11 +267,13 @@ ewl_theme_image_get(Ewl_Widget * w, char *k)
 	if (!data)
 		DRETURN_PTR(NULL, DLEVEL_STABLE);
 
-	if (!strncmp(data, "/appearance", 11)) {
-		path = NEW(char, PATH_LEN);
+	if (!strncmp(data, "/appearance", 11))
+	  {
+		  path = NEW(char, PATH_LEN);
 
-		snprintf(path, PATH_LEN, "%s%s", theme_path, data);
-	} else			/* Absolute path given, so return it */
+		  snprintf(path, PATH_LEN, "%s%s", theme_path, data);
+	  }
+	else			/* Absolute path given, so return it */
 		path = strdup(data);
 
 	if (((stat(path, &st)) == -1) || !S_ISREG(st.st_mode))
@@ -369,10 +374,11 @@ ewl_theme_data_set_defaults(void)
 	char *str, *str2;
 	int i;
 
-	for (i = 0; theme_keys[i]; i++) {
-		str = theme_keys[i];
-		str2 = theme_keys[++i];
+	for (i = 0; theme_keys[i]; i++)
+	  {
+		  str = theme_keys[i];
+		  str2 = theme_keys[++i];
 
-		ewd_hash_set(def_theme_data, str, str2);
-	}
+		  ewd_hash_set(def_theme_data, str, str2);
+	  }
 }

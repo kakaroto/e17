@@ -6,7 +6,8 @@ typedef struct _ewl_table Ewl_Table;
 
 #define EWL_TABLE(table) ((Ewl_Table *) table)
 
-struct _ewl_table {
+struct _ewl_table
+{
 	Ewl_Container container;
 	Ebits_Object ebits_bg;
 	unsigned int columns;
@@ -24,7 +25,8 @@ typedef struct _ewl_table_child Ewl_Table_Child;
 
 #define EWL_TABLE_CHILD(child) ((Ewl_Table_Child *) child)
 
-struct _ewl_table_child {
+struct _ewl_table_child
+{
 	unsigned int start_col;
 	unsigned int end_col;
 	unsigned int start_row;
@@ -75,4 +77,4 @@ void ewl_table_get_row_geometry(Ewl_Table * t,
 				unsigned int r,
 				int *x, int *y, int *w, int *h);
 
-#endif				/* __EWL_TABLE_H__ */
+#endif /* __EWL_TABLE_H__ */

@@ -140,8 +140,7 @@ ewl_object_request_h(Ewl_Object * o, int h)
 }
 
 void
-ewl_object_requested_geometry(Ewl_Object * o, int *x, int *y, int *w,
-			      int *h)
+ewl_object_requested_geometry(Ewl_Object * o, int *x, int *y, int *w, int *h)
 {
 	DCHECK_PARAM_PTR("o", o);
 

@@ -7,8 +7,7 @@ void __create_seeker_test_window(Ewl_Widget * w, void *ev_data,
 
 
 void
-__destroy_seeker_test_window(Ewl_Widget * w, void *ev_data,
-			     void *user_data)
+__destroy_seeker_test_window(Ewl_Widget * w, void *ev_data, void *user_data)
 {
 	ewl_widget_destroy_recursive(w);
 
@@ -39,7 +38,7 @@ __create_seeker_test_window(Ewl_Widget * w, void *ev_data, void *user_data)
 
 	main_vbox = ewl_vbox_new();
 	ewl_container_append_child(EWL_CONTAINER(seeker_win), main_vbox);
-	ewl_box_set_spacing(main_vbox, 10);
+	ewl_box_set_spacing(EWL_BOX(main_vbox), 10);
 	ewl_widget_show(main_vbox);
 
 	seeker = ewl_hseeker_new();

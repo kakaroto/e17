@@ -7,15 +7,13 @@ extern Ewl_Widget *last_key;
 extern Ewl_Widget *last_focused;
 extern Ewl_Widget *dnd_widget;
 
-static void __ewl_widget_show(Ewl_Widget * w, void *ev_data,
-			      void *user_data);
-static void __ewl_widget_hide(Ewl_Widget * w, void *ev_data,
-			      void *user_data);
+static void __ewl_widget_show(Ewl_Widget * w, void *ev_data, void *user_data);
+static void __ewl_widget_hide(Ewl_Widget * w, void *ev_data, void *user_data);
 static void __ewl_widget_realize(Ewl_Widget * w, void *ev_data,
 				 void *user_data);
 void
- __ewl_widget_configure_ebits_object(Ewl_Widget * w, void *ev_data,
-				     void *user_data);
+__ewl_widget_configure_ebits_object(Ewl_Widget * w, void *ev_data,
+				    void *user_data);
 void __ewl_widget_configure_fx_clip_box(Ewl_Widget * w, void *ev_data,
 					void *user_data);
 static void __ewl_widget_destroy(Ewl_Widget * w, void *ev_data,
@@ -301,22 +299,24 @@ __ewl_widget_destroy(Ewl_Widget * w, void *ev_data, void *data)
 	 * Destroy the ebits object that gives the widget it's
 	 * appearance
 	 */
-	if (w->ebits_object) {
-		ebits_hide(w->ebits_object);
-		ebits_unset_clip(w->ebits_object);
-		ebits_free(w->ebits_object);
-		w->ebits_object = NULL;
-	}
+	if (w->ebits_object)
+	  {
+		  ebits_hide(w->ebits_object);
+		  ebits_unset_clip(w->ebits_object);
+		  ebits_free(w->ebits_object);
+		  w->ebits_object = NULL;
+	  }
 
 	/*
 	 * Destroy the fx_clip_box of the widget
 	 */
-	if (w->fx_clip_box) {
-		evas_hide(w->evas, w->fx_clip_box);
-		evas_unset_clip(w->evas, w->fx_clip_box);
-		evas_del_object(w->evas, w->fx_clip_box);
-		w->fx_clip_box = NULL;
-	}
+	if (w->fx_clip_box)
+	  {
+		  evas_hide(w->evas, w->fx_clip_box);
+		  evas_unset_clip(w->evas, w->fx_clip_box);
+		  evas_del_object(w->evas, w->fx_clip_box);
+		  w->fx_clip_box = NULL;
+	  }
 
 	/*
 	 * Free up appearance related information
@@ -413,10 +413,11 @@ __ewl_widget_configure_ebits_object(Ewl_Widget * w, void *ev_data,
 	/*
 	 * Move the base ebits object to the correct size and position
 	 */
-	if (w->ebits_object) {
-		ebits_move(w->ebits_object, CURRENT_X(w), CURRENT_Y(w));
-		ebits_resize(w->ebits_object, CURRENT_W(w), CURRENT_H(w));
-	}
+	if (w->ebits_object)
+	  {
+		  ebits_move(w->ebits_object, CURRENT_X(w), CURRENT_Y(w));
+		  ebits_resize(w->ebits_object, CURRENT_W(w), CURRENT_H(w));
+	  }
 
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
@@ -430,12 +431,13 @@ __ewl_widget_configure_fx_clip_box(Ewl_Widget * w, void *ev_data,
 
 	ewl_object_apply_requested(w);
 
-	if (w->fx_clip_box) {
-		evas_move(w->evas, w->fx_clip_box, CURRENT_X(w),
-			  CURRENT_Y(w));
-		evas_resize(w->evas, w->fx_clip_box, CURRENT_W(w),
-			    CURRENT_H(w));
-	}
+	if (w->fx_clip_box)
+	  {
+		  evas_move(w->evas, w->fx_clip_box, CURRENT_X(w),
+			    CURRENT_Y(w));
+		  evas_resize(w->evas, w->fx_clip_box, CURRENT_W(w),
+			      CURRENT_H(w));
+	  }
 
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
@@ -460,12 +462,13 @@ __ewl_widget_theme_update(Ewl_Widget * w, void *ev_data, void *user_data)
 	/*
 	 * Destroy old image (if any) 
 	 */
-	if (w->ebits_object) {
-		ebits_hide(w->ebits_object);
-		ebits_unset_clip(w->ebits_object);
-		ebits_free(w->ebits_object);
-		w->ebits_object = NULL;
-	}
+	if (w->ebits_object)
+	  {
+		  ebits_hide(w->ebits_object);
+		  ebits_unset_clip(w->ebits_object);
+		  ebits_free(w->ebits_object);
+		  w->ebits_object = NULL;
+	  }
 
 	/*
 	 * Calculate the length of the base key string, then allocate the
@@ -481,10 +484,11 @@ __ewl_widget_theme_update(Ewl_Widget * w, void *ev_data, void *user_data)
 	 */
 	visible = ewl_theme_data_get(w, key);
 
-	if (!visible || !strncasecmp(visible, "no", 2)) {
-		FREE(key);
-		DRETURN(DLEVEL_STABLE);
-	}
+	if (!visible || !strncasecmp(visible, "no", 2))
+	  {
+		  FREE(key);
+		  DRETURN(DLEVEL_STABLE);
+	  }
 
 	/*
 	 * Retrieve the path to the ebits file that will be loaded
@@ -494,10 +498,11 @@ __ewl_widget_theme_update(Ewl_Widget * w, void *ev_data, void *user_data)
 
 	i = ewl_theme_image_get(w, key);
 
-	if (!i) {
-		FREE(key);
-		DRETURN(DLEVEL_STABLE);
-	}
+	if (!i)
+	  {
+		  FREE(key);
+		  DRETURN(DLEVEL_STABLE);
+	  }
 
 	/*
 	 * Load the ebits object
@@ -507,13 +512,14 @@ __ewl_widget_theme_update(Ewl_Widget * w, void *ev_data, void *user_data)
 	/*
 	 * Set up the ebits object on the widgets evas
 	 */
-	if (w->ebits_object) {
-		ebits_add_to_evas(w->ebits_object, w->evas);
-		ebits_set_layer(w->ebits_object, LAYER(w));
-		if (w->fx_clip_box)
-			ebits_set_clip(w->ebits_object, w->fx_clip_box);
-		ebits_show(w->ebits_object);
-	}
+	if (w->ebits_object)
+	  {
+		  ebits_add_to_evas(w->ebits_object, w->evas);
+		  ebits_set_layer(w->ebits_object, LAYER(w));
+		  if (w->fx_clip_box)
+			  ebits_set_clip(w->ebits_object, w->fx_clip_box);
+		  ebits_show(w->ebits_object);
+	  }
 
 	FREE(key);
 
@@ -529,9 +535,10 @@ __ewl_widget_reparent(Ewl_Widget * w, void *ev_data, void *user_data)
 	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR("w", w);
 
-	if (!w->parent) {
-		DRETURN(DLEVEL_STABLE);
-	}
+	if (!w->parent)
+	  {
+		  DRETURN(DLEVEL_STABLE);
+	  }
 
 	/*
 	 * Grab the evas settings from the parent and set up the clip box

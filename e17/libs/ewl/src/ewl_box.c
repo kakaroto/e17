@@ -194,33 +194,35 @@ __ewl_vbox_configure_normal(Ewl_Widget * w, int *rh)
 
 	ewd_list_goto_first(EWL_CONTAINER(w)->children);
 
-	while ((c = ewd_list_next(EWL_CONTAINER(w)->children)) != NULL) {
-		if (EWL_OBJECT(c)->fill & EWL_FILL_POLICY_FILL) {
-			if (!f)
-				f = ewd_list_new();
+	while ((c = ewd_list_next(EWL_CONTAINER(w)->children)) != NULL)
+	  {
+		  if (EWL_OBJECT(c)->fill & EWL_FILL_POLICY_FILL)
+		    {
+			    if (!f)
+				    f = ewd_list_new();
 
-			ewd_list_append(f, c);
+			    ewd_list_append(f, c);
 
-			continue;
-		}
+			    continue;
+		    }
 
-		if (MAXIMUM_W(c) && MAXIMUM_W(c) < CURRENT_W(c))
-			REQUEST_W(c) = MAXIMUM_W(c);
-		else if (MINIMUM_W(c) && MINIMUM_W(c) > CURRENT_W(c))
-			REQUEST_W(c) = MINIMUM_W(c);
-		else
-			REQUEST_W(c) = CURRENT_W(c);
+		  if (MAXIMUM_W(c) && MAXIMUM_W(c) < CURRENT_W(c))
+			  REQUEST_W(c) = MAXIMUM_W(c);
+		  else if (MINIMUM_W(c) && MINIMUM_W(c) > CURRENT_W(c))
+			  REQUEST_W(c) = MINIMUM_W(c);
+		  else
+			  REQUEST_W(c) = CURRENT_W(c);
 
-		if (MAXIMUM_H(c) && MAXIMUM_H(c) < CURRENT_H(c))
-			REQUEST_H(c) = MAXIMUM_H(c);
-		else if (MINIMUM_H(c) && MINIMUM_H(c) > CURRENT_H(c))
-			REQUEST_H(c) = MINIMUM_H(c);
-		else
-			REQUEST_H(c) = CURRENT_H(c);
+		  if (MAXIMUM_H(c) && MAXIMUM_H(c) < CURRENT_H(c))
+			  REQUEST_H(c) = MAXIMUM_H(c);
+		  else if (MINIMUM_H(c) && MINIMUM_H(c) > CURRENT_H(c))
+			  REQUEST_H(c) = MINIMUM_H(c);
+		  else
+			  REQUEST_H(c) = CURRENT_H(c);
 
-		*rh -= REQUEST_H(c) + box->spacing;
-		*rh -= c->object.padd.t + c->object.padd.b;
-	}
+		  *rh -= REQUEST_H(c) + box->spacing;
+		  *rh -= c->object.padd.t + c->object.padd.b;
+	  }
 
 	return f;
 
@@ -249,47 +251,49 @@ __ewl_vbox_configure_fillers(Ewl_Widget * w, Ewd_List * f, int rh)
 
 	nh = (rh - (rchildren - 1) * b->spacing) / children;
 
-	if (children > 1) {
-		ewd_list_goto_first(f);
+	if (children > 1)
+	  {
+		  ewd_list_goto_first(f);
 
-		while ((c = ewd_list_next(f)) != NULL) {
-			if (MAXIMUM_H(c) && MAXIMUM_H(c) < nh)
-				nfh += MAXIMUM_H(c);
-			else if (MINIMUM_H(c) && MINIMUM_H(c) > nh)
-				nfh -= MINIMUM_H(c);
-			else
-				continue;
+		  while ((c = ewd_list_next(f)) != NULL)
+		    {
+			    if (MAXIMUM_H(c) && MAXIMUM_H(c) < nh)
+				    nfh += MAXIMUM_H(c);
+			    else if (MINIMUM_H(c) && MINIMUM_H(c) > nh)
+				    nfh -= MINIMUM_H(c);
+			    else
+				    continue;
 
-			--children;
-		}
+			    --children;
+		    }
 
-	}
+	  }
 
 	if (children)
-		nh = ((rh - nfh) -
-		      (rchildren - 1) * b->spacing) / children;
+		nh = ((rh - nfh) - (rchildren - 1) * b->spacing) / children;
 
 	ewd_list_goto_first(f);
 
-	while ((c = ewd_list_next(f)) != NULL) {
-		if (MAXIMUM_W(c) && MAXIMUM_W(c) < REQUEST_W(w) - ll - rr)
-			REQUEST_W(c) = MAXIMUM_W(c);
-		else if (MINIMUM_W(c)
-			 && MINIMUM_W(c) > REQUEST_W(w) - ll - rr)
-			REQUEST_W(c) = MINIMUM_W(c);
-		else
-			REQUEST_W(c) =
-			    REQUEST_W(w) - ll - rr - c->object.padd.l -
-			    c->object.padd.r;
+	while ((c = ewd_list_next(f)) != NULL)
+	  {
+		  if (MAXIMUM_W(c) && MAXIMUM_W(c) < REQUEST_W(w) - ll - rr)
+			  REQUEST_W(c) = MAXIMUM_W(c);
+		  else if (MINIMUM_W(c)
+			   && MINIMUM_W(c) > REQUEST_W(w) - ll - rr)
+			  REQUEST_W(c) = MINIMUM_W(c);
+		  else
+			  REQUEST_W(c) =
+				  REQUEST_W(w) - ll - rr - c->object.padd.l -
+				  c->object.padd.r;
 
-		if (MAXIMUM_H(c) && MAXIMUM_H(c) < nh)
-			REQUEST_H(c) = MAXIMUM_H(c);
-		else if (MINIMUM_H(c) && MINIMUM_H(c) > nh)
-			REQUEST_H(c) = MINIMUM_H(c);
-		else
-			REQUEST_H(c) =
-			    nh - c->object.padd.t - c->object.padd.b;
-	}
+		  if (MAXIMUM_H(c) && MAXIMUM_H(c) < nh)
+			  REQUEST_H(c) = MAXIMUM_H(c);
+		  else if (MINIMUM_H(c) && MINIMUM_H(c) > nh)
+			  REQUEST_H(c) = MINIMUM_H(c);
+		  else
+			  REQUEST_H(c) =
+				  nh - c->object.padd.t - c->object.padd.b;
+	  }
 
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
@@ -317,44 +321,47 @@ __ewl_vbox_layout_children(Ewl_Widget * w)
 
 	ewd_list_goto_first(EWL_CONTAINER(w)->children);
 
-	while ((c = ewd_list_next(EWL_CONTAINER(w)->children)) != NULL) {
-		/*
-		 * If the child is bigger then the box, align it left 
-		 */
-		if (REQUEST_W(c) > REQUEST_W(w) - l - r)
-			REQUEST_X(c) = REQUEST_X(w) + l + c->object.padd.l;
-		/*
-		 * Left alignment 
-		 */
-		else if (EWL_OBJECT(c)->align & EWL_ALIGNMENT_LEFT)
-			REQUEST_X(c) = REQUEST_X(w) + l + c->object.padd.l;
-		/*
-		 * Right 
-		 */
-		else if (EWL_OBJECT(c)->align & EWL_ALIGNMENT_RIGHT) {
-			REQUEST_X(c) =
-			    REQUEST_X(w) + REQUEST_W(w) - l +
-			    c->object.padd.l;
-			REQUEST_X(c) -= REQUEST_W(c);
-		}
-		/*
-		 * Center
-		 */
-		else {
-			REQUEST_X(c) = REQUEST_X(w) + c->object.padd.l;
-			REQUEST_X(c) += (REQUEST_W(w) / 2) -
-			    (REQUEST_W(c) / 2);
-		}
+	while ((c = ewd_list_next(EWL_CONTAINER(w)->children)) != NULL)
+	  {
+		  /*
+		   * If the child is bigger then the box, align it left 
+		   */
+		  if (REQUEST_W(c) > REQUEST_W(w) - l - r)
+			  REQUEST_X(c) = REQUEST_X(w) + l + c->object.padd.l;
+		  /*
+		   * Left alignment 
+		   */
+		  else if (EWL_OBJECT(c)->align & EWL_ALIGNMENT_LEFT)
+			  REQUEST_X(c) = REQUEST_X(w) + l + c->object.padd.l;
+		  /*
+		   * Right 
+		   */
+		  else if (EWL_OBJECT(c)->align & EWL_ALIGNMENT_RIGHT)
+		    {
+			    REQUEST_X(c) =
+				    REQUEST_X(w) + REQUEST_W(w) - l +
+				    c->object.padd.l;
+			    REQUEST_X(c) -= REQUEST_W(c);
+		    }
+		  /*
+		   * Center
+		   */
+		  else
+		    {
+			    REQUEST_X(c) = REQUEST_X(w) + c->object.padd.l;
+			    REQUEST_X(c) += (REQUEST_W(w) / 2) -
+				    (REQUEST_W(c) / 2);
+		    }
 
-		REQUEST_Y(c) = y + c->object.padd.t;
-		/*
-		 * Update y so the next child comes beneath it 
-		 */
-		y = REQUEST_Y(c) + REQUEST_H(c) + box->spacing +
-		    c->object.padd.b;
+		  REQUEST_Y(c) = y + c->object.padd.t;
+		  /*
+		   * Update y so the next child comes beneath it 
+		   */
+		  y = REQUEST_Y(c) + REQUEST_H(c) + box->spacing +
+			  c->object.padd.b;
 
-		ewl_widget_configure(c);
-	}
+		  ewl_widget_configure(c);
+	  }
 
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
@@ -400,33 +407,35 @@ __ewl_hbox_configure_normal(Ewl_Widget * w, int *rw)
 
 	ewd_list_goto_first(EWL_CONTAINER(w)->children);
 
-	while ((c = ewd_list_next(EWL_CONTAINER(w)->children)) != NULL) {
-		if (EWL_OBJECT(c)->fill & EWL_FILL_POLICY_FILL) {
-			if (!f)
-				f = ewd_list_new();
+	while ((c = ewd_list_next(EWL_CONTAINER(w)->children)) != NULL)
+	  {
+		  if (EWL_OBJECT(c)->fill & EWL_FILL_POLICY_FILL)
+		    {
+			    if (!f)
+				    f = ewd_list_new();
 
-			ewd_list_append(f, c);
+			    ewd_list_append(f, c);
 
-			continue;
-		}
+			    continue;
+		    }
 
-		if (MAXIMUM_H(c) < REQUEST_H(w) - tt - bb)
-			REQUEST_H(c) = MAXIMUM_H(c);
-		else if (MINIMUM_H(c) > REQUEST_H(w))
-			REQUEST_H(c) = MINIMUM_H(c);
-		else
-			REQUEST_H(c) = CURRENT_H(c);
+		  if (MAXIMUM_H(c) < REQUEST_H(w) - tt - bb)
+			  REQUEST_H(c) = MAXIMUM_H(c);
+		  else if (MINIMUM_H(c) > REQUEST_H(w))
+			  REQUEST_H(c) = MINIMUM_H(c);
+		  else
+			  REQUEST_H(c) = CURRENT_H(c);
 
-		if (MAXIMUM_W(c) < CURRENT_W(c))
-			REQUEST_W(c) = MAXIMUM_W(c);
-		else if (MINIMUM_W(c) > CURRENT_W(c))
-			REQUEST_W(c) = MINIMUM_W(c);
-		else
-			REQUEST_W(c) = CURRENT_W(c);
+		  if (MAXIMUM_W(c) < CURRENT_W(c))
+			  REQUEST_W(c) = MAXIMUM_W(c);
+		  else if (MINIMUM_W(c) > CURRENT_W(c))
+			  REQUEST_W(c) = MINIMUM_W(c);
+		  else
+			  REQUEST_W(c) = CURRENT_W(c);
 
-		*rw -= REQUEST_W(c) + box->spacing;
-		*rw -= c->object.padd.l + c->object.padd.r;
-	}
+		  *rw -= REQUEST_W(c) + box->spacing;
+		  *rw -= c->object.padd.l + c->object.padd.r;
+	  }
 
 	return f;
 
@@ -455,47 +464,49 @@ __ewl_hbox_configure_fillers(Ewl_Widget * w, Ewd_List * f, int rw)
 
 	nw = (rw - (rchildren - 1) * b->spacing) / children;
 
-	if (children > 1) {
-		ewd_list_goto_first(f);
+	if (children > 1)
+	  {
+		  ewd_list_goto_first(f);
 
-		while ((c = ewd_list_next(f)) != NULL) {
-			if (MAXIMUM_W(c) && MAXIMUM_W(c) < nw)
-				nfw += MAXIMUM_W(c);
-			else if (MINIMUM_W(c) && MINIMUM_W(c) > nw)
-				nfw -= MINIMUM_W(c);
-			else
-				continue;
+		  while ((c = ewd_list_next(f)) != NULL)
+		    {
+			    if (MAXIMUM_W(c) && MAXIMUM_W(c) < nw)
+				    nfw += MAXIMUM_W(c);
+			    else if (MINIMUM_W(c) && MINIMUM_W(c) > nw)
+				    nfw -= MINIMUM_W(c);
+			    else
+				    continue;
 
-			--children;
-		}
+			    --children;
+		    }
 
-	}
+	  }
 
 	if (children)
-		nw = ((rw - nfw) -
-		      (rchildren - 1) * b->spacing) / children;
+		nw = ((rw - nfw) - (rchildren - 1) * b->spacing) / children;
 
 	ewd_list_goto_first(f);
 
-	while ((c = ewd_list_next(f)) != NULL) {
-		if (MAXIMUM_H(c) && MAXIMUM_H(c) < REQUEST_H(w) - tt - bb)
-			REQUEST_H(c) = MAXIMUM_H(c);
-		else if (MINIMUM_H(c)
-			 && MINIMUM_H(c) > REQUEST_W(w) - ll - rr)
-			REQUEST_H(c) = MINIMUM_H(w);
-		else
-			REQUEST_H(c) =
-			    REQUEST_H(w) - ll - rr - c->object.padd.t -
-			    c->object.padd.b;
+	while ((c = ewd_list_next(f)) != NULL)
+	  {
+		  if (MAXIMUM_H(c) && MAXIMUM_H(c) < REQUEST_H(w) - tt - bb)
+			  REQUEST_H(c) = MAXIMUM_H(c);
+		  else if (MINIMUM_H(c)
+			   && MINIMUM_H(c) > REQUEST_W(w) - ll - rr)
+			  REQUEST_H(c) = MINIMUM_H(w);
+		  else
+			  REQUEST_H(c) =
+				  REQUEST_H(w) - ll - rr - c->object.padd.t -
+				  c->object.padd.b;
 
-		if (MAXIMUM_W(c) && MAXIMUM_W(c) < nw)
-			REQUEST_W(c) = MAXIMUM_W(c);
-		else if (MINIMUM_W(c) && MINIMUM_W(c) > nw)
-			REQUEST_W(c) = MINIMUM_W(c);
-		else
-			REQUEST_W(c) =
-			    nw - c->object.padd.l - c->object.padd.r;
-	}
+		  if (MAXIMUM_W(c) && MAXIMUM_W(c) < nw)
+			  REQUEST_W(c) = MAXIMUM_W(c);
+		  else if (MINIMUM_W(c) && MINIMUM_W(c) > nw)
+			  REQUEST_W(c) = MINIMUM_W(c);
+		  else
+			  REQUEST_W(c) =
+				  nw - c->object.padd.l - c->object.padd.r;
+	  }
 
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
@@ -523,39 +534,43 @@ __ewl_hbox_layout_children(Ewl_Widget * w)
 
 	ewd_list_goto_first(EWL_CONTAINER(w)->children);
 
-	while ((c = ewd_list_next(EWL_CONTAINER(w)->children)) != NULL) {
-		/*
-		 * If the child is bigger then the box, align it to the TOP 
-		 */
-		if (REQUEST_H(c) > REQUEST_H(w) - t - b)
-			REQUEST_Y(c) = REQUEST_Y(w) + t + c->object.padd.t;
-		else if (EWL_OBJECT(c)->align & EWL_ALIGNMENT_TOP)
-			REQUEST_Y(c) = REQUEST_Y(w) + t + c->object.padd.t;
-		/*
-		 * Bottom 
-		 */
-		else if (EWL_OBJECT(c)->align & EWL_ALIGNMENT_BOTTOM) {
-			REQUEST_Y(c) = REQUEST_Y(w) + REQUEST_H(w) - l - r;
-			REQUEST_Y(c) -= REQUEST_H(c);
-			REQUEST_Y(c) += c->object.padd.b;
-		}
-		/*
-		 * Center or unknown 
-		 */
-		else {
-			REQUEST_Y(c) = REQUEST_Y(w);
-			REQUEST_Y(c) += (REQUEST_H(w) / 2) -
-			    (REQUEST_H(c) / 2);
-			REQUEST_Y(c) += c->object.padd.t;
-		}
+	while ((c = ewd_list_next(EWL_CONTAINER(w)->children)) != NULL)
+	  {
+		  /*
+		   * If the child is bigger then the box, align it to the TOP 
+		   */
+		  if (REQUEST_H(c) > REQUEST_H(w) - t - b)
+			  REQUEST_Y(c) = REQUEST_Y(w) + t + c->object.padd.t;
+		  else if (EWL_OBJECT(c)->align & EWL_ALIGNMENT_TOP)
+			  REQUEST_Y(c) = REQUEST_Y(w) + t + c->object.padd.t;
+		  /*
+		   * Bottom 
+		   */
+		  else if (EWL_OBJECT(c)->align & EWL_ALIGNMENT_BOTTOM)
+		    {
+			    REQUEST_Y(c) =
+				    REQUEST_Y(w) + REQUEST_H(w) - l - r;
+			    REQUEST_Y(c) -= REQUEST_H(c);
+			    REQUEST_Y(c) += c->object.padd.b;
+		    }
+		  /*
+		   * Center or unknown 
+		   */
+		  else
+		    {
+			    REQUEST_Y(c) = REQUEST_Y(w);
+			    REQUEST_Y(c) += (REQUEST_H(w) / 2) -
+				    (REQUEST_H(c) / 2);
+			    REQUEST_Y(c) += c->object.padd.t;
+		    }
 
-		REQUEST_X(c) = x + c->object.padd.l;
+		  REQUEST_X(c) = x + c->object.padd.l;
 
-		x = REQUEST_X(c) + REQUEST_W(c) + box->spacing;
-		x += c->object.padd.r;
+		  x = REQUEST_X(c) + REQUEST_W(c) + box->spacing;
+		  x += c->object.padd.r;
 
-		ewl_widget_configure(c);
-	}
+		  ewl_widget_configure(c);
+	  }
 
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }

@@ -160,44 +160,47 @@ __ewl_seeker_init(Ewl_Seeker * s, Ewl_Orientation orientation)
 	 * Initialize the widget fields and set appropriate orientation and
 	 * type
 	 */
-	if (orientation == EWL_ORIENTATION_HORIZONTAL) {
+	if (orientation == EWL_ORIENTATION_HORIZONTAL)
+	  {
 
-		ewl_container_init(EWL_CONTAINER(w),
-				   "/appearance/seeker/horizontal");
+		  ewl_container_init(EWL_CONTAINER(w),
+				     "/appearance/seeker/horizontal");
 
-		/*
-		 * Set up the minimum sizes for the seeker background and drag
-		 * button
-		 */
-		ewl_object_set_minimum_size(EWL_OBJECT(w), 100, 15);
-		ewl_object_set_maximum_size(EWL_OBJECT(w), MAXIMUM_W(w),
-					    15);
-		ewl_object_set_minimum_size(EWL_OBJECT(drag_button), 5, 5);
+		  /*
+		   * Set up the minimum sizes for the seeker background and drag
+		   * button
+		   */
+		  ewl_object_set_minimum_size(EWL_OBJECT(w), 100, 15);
+		  ewl_object_set_maximum_size(EWL_OBJECT(w), MAXIMUM_W(w),
+					      15);
+		  ewl_object_set_minimum_size(EWL_OBJECT(drag_button), 5, 5);
 
-		/*
-		 * Override the buttons default appearance
-		 */
-		ewl_widget_set_appearance(drag_button,
-					  "/appearance/seeker/horizontal/dragbar");
-	} else {
-		ewl_container_init(EWL_CONTAINER(w),
-				   "/appearance/seeker/vertical");
+		  /*
+		   * Override the buttons default appearance
+		   */
+		  ewl_widget_set_appearance(drag_button,
+					    "/appearance/seeker/horizontal/dragbar");
+	  }
+	else
+	  {
+		  ewl_container_init(EWL_CONTAINER(w),
+				     "/appearance/seeker/vertical");
 
-		/*
-		 * Set up the minimum sizes for the seeker background and drag
-		 * button
-		 */
-		ewl_object_set_minimum_size(EWL_OBJECT(w), 15, 100);
-		ewl_object_set_maximum_size(EWL_OBJECT(w), 15,
-					    MAXIMUM_H(w));
-		ewl_object_set_minimum_size(EWL_OBJECT(drag_button), 5, 5);
+		  /*
+		   * Set up the minimum sizes for the seeker background and drag
+		   * button
+		   */
+		  ewl_object_set_minimum_size(EWL_OBJECT(w), 15, 100);
+		  ewl_object_set_maximum_size(EWL_OBJECT(w), 15,
+					      MAXIMUM_H(w));
+		  ewl_object_set_minimum_size(EWL_OBJECT(drag_button), 5, 5);
 
-		/*
-		 * Override the buttons default appearance
-		 */
-		ewl_widget_set_appearance(drag_button,
-					  "/appearance/seeker/vertical/dragbar");
-	}
+		  /*
+		   * Override the buttons default appearance
+		   */
+		  ewl_widget_set_appearance(drag_button,
+					    "/appearance/seeker/vertical/dragbar");
+	  }
 
 	ewl_object_set_fill_policy(EWL_OBJECT(w), EWL_FILL_POLICY_FILL);
 
@@ -393,8 +396,7 @@ __ewl_seeker_position_to_value(Ewl_Widget * w, int in_x, int in_y)
 					&height);
 
 	if (EWL_WIDGET(s)->ebits_object)
-		ebits_get_insets(EWL_WIDGET(s)->ebits_object, &l, &r, &t,
-				 &b);
+		ebits_get_insets(EWL_WIDGET(s)->ebits_object, &l, &r, &t, &b);
 
 	/*
 	 * Adjust the width and height to fit within the insets of the bit
@@ -408,67 +410,69 @@ __ewl_seeker_position_to_value(Ewl_Widget * w, int in_x, int in_y)
 	 * The direction of the drag_button move depends on the orientation of the
 	 * parent seeker.
 	 */
-	if (s->orientation == EWL_ORIENTATION_HORIZONTAL) {
+	if (s->orientation == EWL_ORIENTATION_HORIZONTAL)
+	  {
 
-		/*
-		 * Use the current x value along with the starting drag
-		 * position to determine the new position
-		 */
-		req_x = in_x - s->dragstart;
+		  /*
+		   * Use the current x value along with the starting drag
+		   * position to determine the new position
+		   */
+		  req_x = in_x - s->dragstart;
 
-		/*
-		 * Check the boundaries to make sure we're not off the end of
-		 * the bar
-		 */
-		if (req_x < x)
-			req_x = x;
+		  /*
+		   * Check the boundaries to make sure we're not off the end of
+		   * the bar
+		   */
+		  if (req_x < x)
+			  req_x = x;
 
-		if (req_x + height > x + width)
-			req_x = x + width - height;
+		  if (req_x + height > x + width)
+			  req_x = x + width - height;
 
-		/*
-		 * Calculate the new value for the seeker
-		 */
-		val =
-		    (double) (req_x - x) / (double) (width - CURRENT_W(w));
+		  /*
+		   * Calculate the new value for the seeker
+		   */
+		  val = (double) (req_x - x) / (double) (width -
+							 CURRENT_W(w));
 
-		/*
-		 * Adjust the values for assigning geometry to the object
-		 */
-		x = req_x;
-		width = height;
+		  /*
+		   * Adjust the values for assigning geometry to the object
+		   */
+		  x = req_x;
+		  width = height;
 
-	} else {
+	  }
+	else
+	  {
 
-		/*
-		 * Use the current y value along with the starting drag
-		 * position to determine the new position
-		 */
-		req_y = in_y - s->dragstart;
+		  /*
+		   * Use the current y value along with the starting drag
+		   * position to determine the new position
+		   */
+		  req_y = in_y - s->dragstart;
 
-		/*
-		 * Check the boundaries to make sure we're not off the end of
-		 * the bar
-		 */
-		if (req_y < y)
-			req_y = y;
+		  /*
+		   * Check the boundaries to make sure we're not off the end of
+		   * the bar
+		   */
+		  if (req_y < y)
+			  req_y = y;
 
-		if (req_y + width > y + height)
-			req_y = y + height - width;
+		  if (req_y + width > y + height)
+			  req_y = y + height - width;
 
-		/*
-		 * Calculate the new value for the seeker
-		 */
-		val =
-		    (double) (req_y - y) / (double) (height -
-						     CURRENT_H(w));
+		  /*
+		   * Calculate the new value for the seeker
+		   */
+		  val = (double) (req_y - y) / (double) (height -
+							 CURRENT_H(w));
 
-		/*
-		 * Adjust the values for assigning geometry to the object
-		 */
-		y = req_y;
-		height = width;
-	}
+		  /*
+		   * Adjust the values for assigning geometry to the object
+		   */
+		  y = req_y;
+		  height = width;
+	  }
 
 	/*
 	 * Calculate the new value and determine if the VALUE_CHANGED callback
@@ -481,8 +485,7 @@ __ewl_seeker_position_to_value(Ewl_Widget * w, int in_x, int in_y)
 		s->value = s->range;
 
 	if (old_val != s->value)
-		ewl_callback_call(EWL_WIDGET(s),
-				  EWL_CALLBACK_VALUE_CHANGED);
+		ewl_callback_call(EWL_WIDGET(s), EWL_CALLBACK_VALUE_CHANGED);
 
 	ewl_object_request_geometry(EWL_OBJECT(w), x, y, width, height);
 }
@@ -501,8 +504,7 @@ __ewl_seeker_value_to_position(Ewl_Widget * w, double val)
 					&height);
 
 	if (EWL_WIDGET(s)->ebits_object)
-		ebits_get_insets(EWL_WIDGET(s)->ebits_object, &l, &r, &t,
-				 &b);
+		ebits_get_insets(EWL_WIDGET(s)->ebits_object, &l, &r, &t, &b);
 
 	/*
 	 * Adjust the width and height to fit within the insets of the bit
@@ -516,50 +518,53 @@ __ewl_seeker_value_to_position(Ewl_Widget * w, double val)
 	 * The direction of the drag_button move depends on the orientation of the
 	 * parent seeker.
 	 */
-	if (s->orientation == EWL_ORIENTATION_HORIZONTAL) {
+	if (s->orientation == EWL_ORIENTATION_HORIZONTAL)
+	  {
 
-		/*
-		 * Use the current value along with the range to determine the
-		 * new position
-		 */
-		req_x = x + (int) (floor((double) (width - CURRENT_W(w)) *
-					 (s->value / s->range)));
+		  /*
+		   * Use the current value along with the range to determine the
+		   * new position
+		   */
+		  req_x = x + (int) (floor((double) (width - CURRENT_W(w)) *
+					   (s->value / s->range)));
 
-		/*
-		 * Check the boundaries to make sure we're not off the end of
-		 * the bar
-		 */
-		if (req_x + height > x + width)
-			req_x = x + width - height;
+		  /*
+		   * Check the boundaries to make sure we're not off the end of
+		   * the bar
+		   */
+		  if (req_x + height > x + width)
+			  req_x = x + width - height;
 
-		if (req_x > x)
-			x = req_x;
+		  if (req_x > x)
+			  x = req_x;
 
-		width = height;
+		  width = height;
 
-	} else {
+	  }
+	else
+	  {
 
-		/*
-		 * Use the current value along with the range to determine the
-		 * new position
-		 */
-		req_y = y + height - (int) (floor((double)
-						  (height - CURRENT_H(w)) *
-						  (s->value / s->range))) -
-		    CURRENT_H(w);
+		  /*
+		   * Use the current value along with the range to determine the
+		   * new position
+		   */
+		  req_y = y + height - (int) (floor((double)
+						    (height - CURRENT_H(w)) *
+						    (s->value / s->range))) -
+			  CURRENT_H(w);
 
-		/*
-		 * Check the boundaries to make sure we're not off the end of
-		 * the bar
-		 */
-		if (req_y + width > y + height)
-			req_y = y + height - width;
+		  /*
+		   * Check the boundaries to make sure we're not off the end of
+		   * the bar
+		   */
+		  if (req_y + width > y + height)
+			  req_y = y + height - width;
 
-		if (req_y > y)
-			y = req_y;
+		  if (req_y > y)
+			  y = req_y;
 
-		height = width;
-	}
+		  height = width;
+	  }
 
 	ewl_object_request_geometry(EWL_OBJECT(w), x, y, width, height);
 }
@@ -632,8 +637,7 @@ __ewl_seeker_focus_out(Ewl_Widget * w, void *event_data, void *user_data)
 }
 
 static void
-__ewl_seeker_theme_update(Ewl_Widget * w, void *event_data,
-			  void *user_data)
+__ewl_seeker_theme_update(Ewl_Widget * w, void *event_data, void *user_data)
 {
 	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR("w", w);

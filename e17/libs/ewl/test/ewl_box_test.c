@@ -2,8 +2,7 @@
 
 static Ewl_Widget *box_button = NULL;
 
-void __create_box_test_window(Ewl_Widget * w, void *ev_data,
-			      void *user_data);
+void __create_box_test_window(Ewl_Widget * w, void *ev_data, void *user_data);
 
 void
 __destroy_box_test_window(Ewl_Widget * w, void *ev_data, void *user_data)
@@ -25,21 +24,24 @@ __toggle_child_fill_policy(Ewl_Widget * w, void *ev_data, void *user_data)
 
 	f = ewl_object_get_fill_policy(EWL_OBJECT(w));
 
-	if (f == EWL_FILL_POLICY_NORMAL) {
-		ewl_object_set_fill_policy(EWL_OBJECT(w),
-					   EWL_FILL_POLICY_FILL);
-		ewl_object_set_minimum_size(EWL_OBJECT(w), 100, 17);
-		ewl_object_set_maximum_size(EWL_OBJECT(w), 1 << 30,
-					    1 << 30);
-		ewl_button_set_label(w, "Fill");
-		ewl_widget_configure(w->parent);
-	} else {
-		ewl_object_set_fill_policy(EWL_OBJECT(w),
-					   EWL_FILL_POLICY_NORMAL);
-		ewl_object_set_custom_size(EWL_OBJECT(w), 100, 17);
-		ewl_button_set_label(w, "Normal");
-		ewl_widget_configure(w->parent);
-	}
+	if (f == EWL_FILL_POLICY_NORMAL)
+	  {
+		  ewl_object_set_fill_policy(EWL_OBJECT(w),
+					     EWL_FILL_POLICY_FILL);
+		  ewl_object_set_minimum_size(EWL_OBJECT(w), 100, 17);
+		  ewl_object_set_maximum_size(EWL_OBJECT(w), 1 << 30,
+					      1 << 30);
+		  ewl_button_set_label(EWL_BUTTON(w), "Fill");
+		  ewl_widget_configure(w->parent);
+	  }
+	else
+	  {
+		  ewl_object_set_fill_policy(EWL_OBJECT(w),
+					     EWL_FILL_POLICY_NORMAL);
+		  ewl_object_set_custom_size(EWL_OBJECT(w), 100, 17);
+		  ewl_button_set_label(EWL_BUTTON(w), "Normal");
+		  ewl_widget_configure(w->parent);
+	  }
 
 	return;
 	ev_data = NULL;
@@ -55,18 +57,23 @@ __toggle_child_horizontal_align(Ewl_Widget * w, void *ev_data,
 
 	a = ewl_object_get_alignment(EWL_OBJECT(w));
 
-	if (a == EWL_ALIGNMENT_LEFT) {
-		a = EWL_ALIGNMENT_CENTER;
-		snprintf(l, 10, "Center");
-	} else if (a == EWL_ALIGNMENT_CENTER) {
-		a = EWL_ALIGNMENT_RIGHT;
-		snprintf(l, 10, "Right");
-	} else if (a == EWL_ALIGNMENT_RIGHT) {
-		a = EWL_ALIGNMENT_LEFT;
-		snprintf(l, 10, "Left");
-	}
+	if (a == EWL_ALIGNMENT_LEFT)
+	  {
+		  a = EWL_ALIGNMENT_CENTER;
+		  snprintf(l, 10, "Center");
+	  }
+	else if (a == EWL_ALIGNMENT_CENTER)
+	  {
+		  a = EWL_ALIGNMENT_RIGHT;
+		  snprintf(l, 10, "Right");
+	  }
+	else if (a == EWL_ALIGNMENT_RIGHT)
+	  {
+		  a = EWL_ALIGNMENT_LEFT;
+		  snprintf(l, 10, "Left");
+	  }
 
-	ewl_button_set_label(w, l);
+	ewl_button_set_label(EWL_BUTTON(w), l);
 
 	ewl_object_set_alignment(EWL_OBJECT(w), a);
 
@@ -79,26 +86,30 @@ __toggle_child_horizontal_align(Ewl_Widget * w, void *ev_data,
 }
 
 void
-__toggle_child_vertical_align(Ewl_Widget * w, void *ev_data,
-			      void *user_data)
+__toggle_child_vertical_align(Ewl_Widget * w, void *ev_data, void *user_data)
 {
 	Ewl_Alignment a;
 	char l[10];
 
 	a = ewl_object_get_alignment(EWL_OBJECT(w));
 
-	if (a == EWL_ALIGNMENT_TOP) {
-		a = EWL_ALIGNMENT_CENTER;
-		snprintf(l, 10, "Center");
-	} else if (a == EWL_ALIGNMENT_CENTER) {
-		a = EWL_ALIGNMENT_BOTTOM;
-		snprintf(l, 10, "Bottom");
-	} else if (a == EWL_ALIGNMENT_BOTTOM) {
-		a = EWL_ALIGNMENT_TOP;
-		snprintf(l, 10, "Top");
-	}
+	if (a == EWL_ALIGNMENT_TOP)
+	  {
+		  a = EWL_ALIGNMENT_CENTER;
+		  snprintf(l, 10, "Center");
+	  }
+	else if (a == EWL_ALIGNMENT_CENTER)
+	  {
+		  a = EWL_ALIGNMENT_BOTTOM;
+		  snprintf(l, 10, "Bottom");
+	  }
+	else if (a == EWL_ALIGNMENT_BOTTOM)
+	  {
+		  a = EWL_ALIGNMENT_TOP;
+		  snprintf(l, 10, "Top");
+	  }
 
-	ewl_button_set_label(w, l);
+	ewl_button_set_label(EWL_BUTTON(w), l);
 
 	ewl_object_set_alignment(EWL_OBJECT(w), a);
 
@@ -120,8 +131,7 @@ __create_box_test_window(Ewl_Widget * w, void *ev_data, void *user_data)
 	Ewl_Widget *hbox[3];
 	Ewl_Widget *hbox_button[2][3];
 
-	ewl_callback_del(w, EWL_CALLBACK_CLICKED,
-			 __create_box_test_window);
+	ewl_callback_del(w, EWL_CALLBACK_CLICKED, __create_box_test_window);
 
 	box_button = w;
 
@@ -145,8 +155,7 @@ __create_box_test_window(Ewl_Widget * w, void *ev_data, void *user_data)
 	ewl_widget_show(vbox[0]);
 
 	vbox_button[0][0] = ewl_button_new("Left");
-	ewl_container_append_child(EWL_CONTAINER(vbox[0]),
-				   vbox_button[0][0]);
+	ewl_container_append_child(EWL_CONTAINER(vbox[0]), vbox_button[0][0]);
 	ewl_object_set_custom_size(vbox_button[0][0], 100, 17);
 	ewl_object_set_alignment(EWL_OBJECT(vbox_button[0][0]),
 				 EWL_ALIGNMENT_LEFT);
@@ -155,8 +164,7 @@ __create_box_test_window(Ewl_Widget * w, void *ev_data, void *user_data)
 	ewl_widget_show(vbox_button[0][0]);
 
 	vbox_button[0][1] = ewl_button_new("Center");
-	ewl_container_append_child(EWL_CONTAINER(vbox[0]),
-				   vbox_button[0][1]);
+	ewl_container_append_child(EWL_CONTAINER(vbox[0]), vbox_button[0][1]);
 	ewl_object_set_custom_size(vbox_button[0][1], 100, 17);
 	ewl_object_set_alignment(EWL_OBJECT(vbox_button[0][1]),
 				 EWL_ALIGNMENT_CENTER);
@@ -165,8 +173,7 @@ __create_box_test_window(Ewl_Widget * w, void *ev_data, void *user_data)
 	ewl_widget_show(vbox_button[0][1]);
 
 	vbox_button[0][2] = ewl_button_new("Right");
-	ewl_container_append_child(EWL_CONTAINER(vbox[0]),
-				   vbox_button[0][2]);
+	ewl_container_append_child(EWL_CONTAINER(vbox[0]), vbox_button[0][2]);
 	ewl_object_set_custom_size(vbox_button[0][2], 100, 17);
 	ewl_object_set_alignment(EWL_OBJECT(vbox_button[0][2]),
 				 EWL_ALIGNMENT_RIGHT);
@@ -181,8 +188,7 @@ __create_box_test_window(Ewl_Widget * w, void *ev_data, void *user_data)
 	ewl_widget_show(vbox[1]);
 
 	vbox_button[1][0] = ewl_button_new("Normal");
-	ewl_container_append_child(EWL_CONTAINER(vbox[1]),
-				   vbox_button[1][0]);
+	ewl_container_append_child(EWL_CONTAINER(vbox[1]), vbox_button[1][0]);
 	ewl_object_set_custom_size(vbox_button[1][0], 100, 17);
 	ewl_object_set_fill_policy(EWL_OBJECT(vbox_button[1][0]),
 				   EWL_FILL_POLICY_NORMAL);
@@ -191,8 +197,7 @@ __create_box_test_window(Ewl_Widget * w, void *ev_data, void *user_data)
 	ewl_widget_show(vbox_button[1][0]);
 
 	vbox_button[1][1] = ewl_button_new("Fill");
-	ewl_container_append_child(EWL_CONTAINER(vbox[1]),
-				   vbox_button[1][1]);
+	ewl_container_append_child(EWL_CONTAINER(vbox[1]), vbox_button[1][1]);
 	ewl_object_set_fill_policy(EWL_OBJECT(vbox_button[1][1]),
 				   EWL_FILL_POLICY_FILL);
 	ewl_callback_append(vbox_button[1][1], EWL_CALLBACK_CLICKED,
@@ -200,8 +205,7 @@ __create_box_test_window(Ewl_Widget * w, void *ev_data, void *user_data)
 	ewl_widget_show(vbox_button[1][1]);
 
 	vbox_button[1][2] = ewl_button_new("Normal");
-	ewl_container_append_child(EWL_CONTAINER(vbox[1]),
-				   vbox_button[1][2]);
+	ewl_container_append_child(EWL_CONTAINER(vbox[1]), vbox_button[1][2]);
 	ewl_object_set_custom_size(vbox_button[1][2], 100, 17);
 	ewl_object_set_fill_policy(EWL_OBJECT(vbox_button[1][2]),
 				   EWL_FILL_POLICY_NORMAL);
@@ -216,8 +220,7 @@ __create_box_test_window(Ewl_Widget * w, void *ev_data, void *user_data)
 	ewl_widget_show(hbox[1]);
 
 	hbox_button[0][0] = ewl_button_new("Top");
-	ewl_container_append_child(EWL_CONTAINER(hbox[1]),
-				   hbox_button[0][0]);
+	ewl_container_append_child(EWL_CONTAINER(hbox[1]), hbox_button[0][0]);
 	ewl_object_set_custom_size(hbox_button[0][0], 100, 17);
 	ewl_object_set_alignment(EWL_OBJECT(hbox_button[0][0]),
 				 EWL_ALIGNMENT_TOP);
@@ -226,8 +229,7 @@ __create_box_test_window(Ewl_Widget * w, void *ev_data, void *user_data)
 	ewl_widget_show(hbox_button[0][0]);
 
 	hbox_button[0][1] = ewl_button_new("Center");
-	ewl_container_append_child(EWL_CONTAINER(hbox[1]),
-				   hbox_button[0][1]);
+	ewl_container_append_child(EWL_CONTAINER(hbox[1]), hbox_button[0][1]);
 	ewl_object_set_custom_size(hbox_button[0][1], 100, 17);
 	ewl_object_set_alignment(EWL_OBJECT(hbox_button[0][1]),
 				 EWL_ALIGNMENT_CENTER);
@@ -236,8 +238,7 @@ __create_box_test_window(Ewl_Widget * w, void *ev_data, void *user_data)
 	ewl_widget_show(hbox_button[0][1]);
 
 	hbox_button[0][2] = ewl_button_new("Bottom");
-	ewl_container_append_child(EWL_CONTAINER(hbox[1]),
-				   hbox_button[0][2]);
+	ewl_container_append_child(EWL_CONTAINER(hbox[1]), hbox_button[0][2]);
 	ewl_object_set_custom_size(hbox_button[0][2], 100, 17);
 	ewl_object_set_alignment(EWL_OBJECT(hbox_button[0][2]),
 				 EWL_ALIGNMENT_BOTTOM);
@@ -252,8 +253,7 @@ __create_box_test_window(Ewl_Widget * w, void *ev_data, void *user_data)
 	ewl_widget_show(hbox[2]);
 
 	hbox_button[1][0] = ewl_button_new("Normal");
-	ewl_container_append_child(EWL_CONTAINER(hbox[2]),
-				   hbox_button[1][0]);
+	ewl_container_append_child(EWL_CONTAINER(hbox[2]), hbox_button[1][0]);
 	ewl_object_set_custom_size(hbox_button[1][0], 100, 17);
 	ewl_object_set_fill_policy(EWL_OBJECT(hbox_button[1][0]),
 				   EWL_FILL_POLICY_NORMAL);
@@ -262,8 +262,7 @@ __create_box_test_window(Ewl_Widget * w, void *ev_data, void *user_data)
 	ewl_widget_show(hbox_button[1][0]);
 
 	hbox_button[1][1] = ewl_button_new("Fill");
-	ewl_container_append_child(EWL_CONTAINER(hbox[2]),
-				   hbox_button[1][1]);
+	ewl_container_append_child(EWL_CONTAINER(hbox[2]), hbox_button[1][1]);
 	ewl_object_set_fill_policy(EWL_OBJECT(hbox_button[1][1]),
 				   EWL_FILL_POLICY_FILL);
 	ewl_callback_append(hbox_button[1][1], EWL_CALLBACK_CLICKED,
@@ -271,8 +270,7 @@ __create_box_test_window(Ewl_Widget * w, void *ev_data, void *user_data)
 	ewl_widget_show(hbox_button[1][1]);
 
 	hbox_button[1][2] = ewl_button_new("Normal");
-	ewl_container_append_child(EWL_CONTAINER(hbox[2]),
-				   hbox_button[1][2]);
+	ewl_container_append_child(EWL_CONTAINER(hbox[2]), hbox_button[1][2]);
 	ewl_object_set_custom_size(hbox_button[1][2], 100, 17);
 	ewl_object_set_fill_policy(EWL_OBJECT(hbox_button[1][2]),
 				   EWL_FILL_POLICY_NORMAL);

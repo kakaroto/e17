@@ -114,4 +114,4 @@
 	  } \
 }
 
-#endif				/* __EWL_DEBUG_H__ */
+#endif /* __EWL_DEBUG_H__ */

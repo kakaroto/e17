@@ -8,7 +8,8 @@
  */
 typedef struct _ewl_window Ewl_Window;
 
-struct _ewl_window {
+struct _ewl_window
+{
 	Ewl_Container widget;
 	Window window;
 	Evas_Object bg_rect;
@@ -30,4 +31,4 @@ char *ewl_window_get_title(Ewl_Widget * widget);
 void ewl_window_set_borderless(Ewl_Widget * w);
 void ewl_window_move(Ewl_Widget * w, int x, int y);
 
-#endif				/* __EWL_WINDOW_H__ */
+#endif /* __EWL_WINDOW_H__ */

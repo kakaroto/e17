@@ -52,19 +52,22 @@ ewl_radiobutton_set_chain(Ewl_Widget * w, Ewl_Widget * c)
 	/*
 	 * If a chain doesnt exist, create one 
 	 */
-	if (!crb->chain) {
-		crb->chain = ewd_list_new();
+	if (!crb->chain)
+	  {
+		  crb->chain = ewd_list_new();
 
-		rb->chain = crb->chain;
+		  rb->chain = crb->chain;
 
-		ewd_list_append(crb->chain, w);
-		ewd_list_append(crb->chain, c);
-	} else {
-		rb->chain = crb->chain;
+		  ewd_list_append(crb->chain, w);
+		  ewd_list_append(crb->chain, c);
+	  }
+	else
+	  {
+		  rb->chain = crb->chain;
 
-		if (!ewd_list_goto(crb->chain, w))
-			ewd_list_append(crb->chain, w);
-	}
+		  if (!ewd_list_goto(crb->chain, w))
+			  ewd_list_append(crb->chain, w);
+	  }
 
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
@@ -126,8 +129,7 @@ ewl_radiobutton_init(Ewl_RadioButton * rb, char *label)
 	ewl_checkbutton_init(cb, label);
 	ewl_widget_set_appearance(w, "/appearance/button/radio");
 
-	ewl_callback_del(w, EWL_CALLBACK_CLICKED,
-			 __ewl_checkbutton_clicked);
+	ewl_callback_del(w, EWL_CALLBACK_CLICKED, __ewl_checkbutton_clicked);
 	ewl_callback_append(w, EWL_CALLBACK_MOUSE_DOWN,
 			    __ewl_radiobutton_mouse_down, NULL);
 	ewl_callback_append(w, EWL_CALLBACK_REALIZE,
@@ -137,8 +139,7 @@ ewl_radiobutton_init(Ewl_RadioButton * rb, char *label)
 }
 
 void
-__ewl_radiobutton_mouse_down(Ewl_Widget * w, void *ev_data,
-			     void *user_data)
+__ewl_radiobutton_mouse_down(Ewl_Widget * w, void *ev_data, void *user_data)
 {
 	Ewl_CheckButton *cb;
 	Ewl_RadioButton *rb;
@@ -151,17 +152,19 @@ __ewl_radiobutton_mouse_down(Ewl_Widget * w, void *ev_data,
 	rb = EWL_RADIOBUTTON(w);
 	oc = cb->checked;
 
-	if (rb->chain && !ewd_list_is_empty(rb->chain)) {
-		Ewl_CheckButton *c;
+	if (rb->chain && !ewd_list_is_empty(rb->chain))
+	  {
+		  Ewl_CheckButton *c;
 
-		ewd_list_goto_first(rb->chain);
+		  ewd_list_goto_first(rb->chain);
 
-		while ((c = ewd_list_next(rb->chain)) != NULL) {
-			c->checked = 0;
+		  while ((c = ewd_list_next(rb->chain)) != NULL)
+		    {
+			    c->checked = 0;
 
-			__ewl_radiobutton_update_check(EWL_WIDGET(c));
-		}
-	}
+			    __ewl_radiobutton_update_check(EWL_WIDGET(c));
+		    }
+	  }
 
 	cb->checked = 1;
 
@@ -183,14 +186,15 @@ __ewl_radiobutton_update_check(Ewl_Widget * w)
 
 	cb = EWL_CHECKBUTTON(w);
 
-	if (w->ebits_object) {
-		if (cb->checked)
-			ebits_set_named_bit_state(w->ebits_object, "Check",
-						  "clicked");
-		else
-			ebits_set_named_bit_state(w->ebits_object, "Check",
-						  "normal");
-	}
+	if (w->ebits_object)
+	  {
+		  if (cb->checked)
+			  ebits_set_named_bit_state(w->ebits_object, "Check",
+						    "clicked");
+		  else
+			  ebits_set_named_bit_state(w->ebits_object, "Check",
+						    "normal");
+	  }
 
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }

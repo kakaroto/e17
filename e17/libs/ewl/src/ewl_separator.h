@@ -6,7 +6,8 @@ typedef struct _ewl_separator Ewl_Separator;
 
 #define EWL_SEPARATOR(separator) ((Ewl_Separator *) separator)
 
-struct _ewl_separator {
+struct _ewl_separator
+{
 	Ewl_Widget widget;
 	Ewl_Orientation orientation;
 };
@@ -17,4 +18,4 @@ struct _ewl_separator {
 Ewl_Widget *ewl_separator_new(Ewl_Orientation o);
 
 
-#endif				/* __EWL_SEPARATOR_H__ */
+#endif /* __EWL_SEPARATOR_H__ */

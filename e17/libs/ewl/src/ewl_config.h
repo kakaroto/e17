@@ -4,23 +4,32 @@
 
 typedef struct _ewl_config Ewl_Config;
 
-struct _ewl_config {
-	struct {
+struct _ewl_config
+{
+	struct
+	{
 		int enable;
 		int level;
-	} debug;
-	struct {
+	}
+	debug;
+	struct
+	{
 		int font_cache;
 		int image_cache;
 		char *render_method;
-	} evas;
-	struct {
+	}
+	evas;
+	struct
+	{
 		float max_fps;
 		float timeout;
-	} fx;
-	struct {
+	}
+	fx;
+	struct
+	{
 		char *name;
-	} theme;
+	}
+	theme;
 };
 
 Ewl_Config ewl_config;
@@ -36,4 +45,4 @@ Evas_Render_Method ewl_config_get_render_method();
 void ewl_config_reread_and_apply(void);
 
 
-#endif				/* __EWL_CONFIG_H__ */
+#endif /* __EWL_CONFIG_H__ */

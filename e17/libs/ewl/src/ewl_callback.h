@@ -16,7 +16,8 @@ typedef struct _ewl_callback Ewl_Callback;
 
 typedef void (*Ewl_Cb_Func) (Ewl_Widget * widget, void *event_data,
 			     void *user_data);
-struct _ewl_callback {
+struct _ewl_callback
+{
 	Ewl_Widget *widget;
 	Ewl_Callback_Type type;
 	Ewl_Cb_Func func;
@@ -39,4 +40,4 @@ void ewl_callback_set_user_data(Ewl_Widget * w, Ewl_Callback_Type type,
 void ewl_callback_del_type(Ewl_Widget * w, Ewl_Callback_Type t);
 void ewl_callback_del(Ewl_Widget * w, Ewl_Callback_Type t, Ewl_Cb_Func f);
 
-#endif				/* __EWL_CALLBACK_H__ */
+#endif /* __EWL_CALLBACK_H__ */

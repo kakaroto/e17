@@ -8,15 +8,12 @@ void __ewl_entry_focus_in(Ewl_Widget * w, void *ev_data, void *user_data);
 void __ewl_entry_focus_out(Ewl_Widget * w, void *ev_data, void *user_data);
 void __ewl_entry_key_down(Ewl_Widget * w, void *ev_data, void *user_data);
 void __ewl_entry_key_up(Ewl_Widget * w, void *ev_data, void *user_data);
-void __ewl_entry_mouse_down(Ewl_Widget * w, void *ev_data,
-			    void *user_data);
+void __ewl_entry_mouse_down(Ewl_Widget * w, void *ev_data, void *user_data);
 void __ewl_entry_mouse_up(Ewl_Widget * w, void *ev_data, void *user_data);
-void __ewl_entry_mouse_move(Ewl_Widget * w, void *ev_data,
-			    void *user_data);
+void __ewl_entry_mouse_move(Ewl_Widget * w, void *ev_data, void *user_data);
 void __ewl_entry_select(Ewl_Widget * w, void *ev_data, void *user_data);
 void __ewl_entry_deselect(Ewl_Widget * w, void *ev_data, void *user_data);
-void __ewl_entry_theme_update(Ewl_Widget * w, void *ev_data,
-			      void *user_data);
+void __ewl_entry_theme_update(Ewl_Widget * w, void *ev_data, void *user_data);
 void __ewl_entry_move_cursor_to_left(Ewl_Widget * w);
 void __ewl_entry_move_cursor_to_right(Ewl_Widget * w);
 void __ewl_entry_move_cursor_to_home(Ewl_Widget * w);
@@ -26,8 +23,8 @@ void __ewl_entry_delete_to_left(Ewl_Widget * w);
 void __ewl_entry_delete_to_right(Ewl_Widget * w);
 
 void
- __ewl_entry_update_selected_region(Ewl_Widget * w, void *user_data,
-				    void *ev_data);
+__ewl_entry_update_selected_region(Ewl_Widget * w, void *user_data,
+				   void *ev_data);
 
 Ewl_Widget *
 ewl_entry_new(void)
@@ -113,16 +110,14 @@ ewl_entry_init(Ewl_Entry * e)
 			    __ewl_entry_focus_out, NULL);
 	ewl_callback_append(w, EWL_CALLBACK_KEY_DOWN,
 			    __ewl_entry_key_down, NULL);
-	ewl_callback_append(w, EWL_CALLBACK_KEY_UP, __ewl_entry_key_up,
-			    NULL);
+	ewl_callback_append(w, EWL_CALLBACK_KEY_UP, __ewl_entry_key_up, NULL);
 	ewl_callback_append(w, EWL_CALLBACK_MOUSE_DOWN,
 			    __ewl_entry_mouse_down, NULL);
 	ewl_callback_append(w, EWL_CALLBACK_MOUSE_UP, __ewl_entry_mouse_up,
 			    NULL);
 	ewl_callback_append(w, EWL_CALLBACK_MOUSE_MOVE,
 			    __ewl_entry_mouse_move, NULL);
-	ewl_callback_append(w, EWL_CALLBACK_SELECT, __ewl_entry_select,
-			    NULL);
+	ewl_callback_append(w, EWL_CALLBACK_SELECT, __ewl_entry_select, NULL);
 	ewl_callback_append(w, EWL_CALLBACK_DESELECT, __ewl_entry_deselect,
 			    NULL);
 	ewl_callback_append(w, EWL_CALLBACK_THEME_UPDATE,
@@ -147,13 +142,14 @@ __ewl_entry_realize(Ewl_Widget * w, void *ev_data, void *user_data)
 
 /*	ewl_widget_realize(e->selection);*/
 
-	if (w->ebits_object) {
-		int ww, hh;
+	if (w->ebits_object)
+	  {
+		  int ww, hh;
 
-		ebits_get_max_size(w->ebits_object, &ww, &hh);
+		  ebits_get_max_size(w->ebits_object, &ww, &hh);
 
-		ewl_object_set_maximum_size(EWL_OBJECT(w), ww, hh);
-	}
+		  ewl_object_set_maximum_size(EWL_OBJECT(w), ww, hh);
+	  }
 
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
@@ -304,14 +300,16 @@ __ewl_entry_mouse_down(Ewl_Widget * w, void *ev_data, void *user_data)
 
 	if (ev->x < CURRENT_X(e->text))
 		ewl_cursor_set_position(e->cursor, 1);
-	else if (ev->x > CURRENT_X(e->text) + CURRENT_W(e->text)) {
-		char *str;
+	else if (ev->x > CURRENT_X(e->text) + CURRENT_W(e->text))
+	  {
+		  char *str;
 
-		str = ewl_entry_get_text(w);
+		  str = ewl_entry_get_text(w);
 
-		if (str)
-			index = strlen(str) + 1;
-	} else
+		  if (str)
+			  index = strlen(str) + 1;
+	  }
+	else
 		ewl_text_get_index_at(e->text, (double) (ev->x),
 				      (double) (ev->y), &index);
 
@@ -416,13 +414,10 @@ __ewl_entry_theme_update(Ewl_Widget * w, void *ev_data, void *user_data)
 
 	e = EWL_ENTRY(w);
 
-	font =
-	    ewl_theme_data_get(w, "/appearance/entry/default/text/font");
-	size =
-	    (int) ewl_theme_data_get(w,
-				     "/appearance/entry/default/text/font_size");
-	style =
-	    ewl_theme_data_get(w, "/appearance/entry/default/text/style");
+	font = ewl_theme_data_get(w, "/appearance/entry/default/text/font");
+	size = (int) ewl_theme_data_get(w,
+					"/appearance/entry/default/text/font_size");
+	style = ewl_theme_data_get(w, "/appearance/entry/default/text/style");
 
 	if (font)
 		ewl_text_set_font(e->text, font);
@@ -513,10 +508,11 @@ __ewl_entry_move_cursor_to_end(Ewl_Widget * w)
 	e = EWL_ENTRY(w);
 	s = ewl_entry_get_text(w);
 
-	if (s) {
-		l = strlen(s);
-		FREE(s);
-	}
+	if (s)
+	  {
+		  l = strlen(s);
+		  FREE(s);
+	  }
 
 	ewl_cursor_set_position(e->cursor, ++l);
 	ewl_widget_configure(w);

@@ -8,12 +8,11 @@ static Ewl_Widget *spinner[4];
 void __create_spinner_test_window(Ewl_Widget * w, void *ev_data,
 				  void *user_data);
 void
- __spinner_main_window_configure(Ewl_Widget * w, void *ev_data,
-				 void *user_data);
+__spinner_main_window_configure(Ewl_Widget * w, void *ev_data,
+				void *user_data);
 
 void
-__destroy_spinner_test_window(Ewl_Widget * w, void *ev_data,
-			      void *user_data)
+__destroy_spinner_test_window(Ewl_Widget * w, void *ev_data, void *user_data)
 {
 	ewl_widget_destroy_recursive(w);
 
@@ -91,8 +90,7 @@ __spinner_main_window_configure(Ewl_Widget * w, void *ev_data,
 }
 
 void
-__create_spinner_test_window(Ewl_Widget * w, void *ev_data,
-			     void *user_data)
+__create_spinner_test_window(Ewl_Widget * w, void *ev_data, void *user_data)
 {
 	Ewl_Widget *spinner_win;
 	Ewl_Widget *main_vbox;
@@ -119,7 +117,7 @@ __create_spinner_test_window(Ewl_Widget * w, void *ev_data,
 
 	main_vbox = ewl_vbox_new();
 	ewl_container_append_child(EWL_CONTAINER(spinner_win), main_vbox);
-	ewl_box_set_spacing(main_vbox, 10);
+	ewl_box_set_spacing(EWL_BOX(main_vbox), 10);
 	ewl_widget_show(main_vbox);
 
 	ewl_object_get_current_geometry(EWL_OBJECT(tmp_win), &xx, &yy, &ww,

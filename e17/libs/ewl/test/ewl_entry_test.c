@@ -59,8 +59,7 @@ __create_entry_test_window(Ewl_Widget * w, void *ev_data, void *user_data)
 	Ewl_Widget *button_hbox;
 	Ewl_Widget *button[2];
 
-	ewl_callback_del(w, EWL_CALLBACK_CLICKED,
-			 __create_entry_test_window);
+	ewl_callback_del(w, EWL_CALLBACK_CLICKED, __create_entry_test_window);
 
 	entry_button = w;
 
@@ -73,7 +72,7 @@ __create_entry_test_window(Ewl_Widget * w, void *ev_data, void *user_data)
 
 	main_vbox = ewl_vbox_new();
 	ewl_container_append_child(EWL_CONTAINER(entry_win), main_vbox);
-	ewl_box_set_spacing(main_vbox, 10);
+	ewl_box_set_spacing(EWL_BOX(main_vbox), 10);
 	ewl_widget_show(main_vbox);
 
 	entry[0] = ewl_entry_new();
@@ -91,7 +90,7 @@ __create_entry_test_window(Ewl_Widget * w, void *ev_data, void *user_data)
 	ewl_object_set_alignment(EWL_OBJECT(button_hbox),
 				 EWL_ALIGNMENT_CENTER);
 	ewl_container_append_child(EWL_CONTAINER(main_vbox), button_hbox);
-	ewl_box_set_spacing(button_hbox, 5);
+	ewl_box_set_spacing(EWL_BOX(button_hbox), 5);
 	ewl_widget_show(button_hbox);
 
 	button[0] = ewl_button_new("Fetch text");

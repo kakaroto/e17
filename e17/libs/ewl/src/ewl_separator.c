@@ -50,13 +50,14 @@ __ewl_separator_realize(Ewl_Widget * w, void *ev_data, void *user_data)
 	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR("w", w);
 
-	if (w->ebits_object) {
-		int ww, hh;
+	if (w->ebits_object)
+	  {
+		  int ww, hh;
 
-		ebits_get_max_size(w->ebits_object, &ww, &hh);
+		  ebits_get_max_size(w->ebits_object, &ww, &hh);
 
-		ewl_object_set_maximum_size(EWL_OBJECT(w), ww, hh);
-	}
+		  ewl_object_set_maximum_size(EWL_OBJECT(w), ww, hh);
+	  }
 
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }

@@ -100,8 +100,7 @@ ewl_container_prepend_child(Ewl_Container * pc, Ewl_Widget * child)
 }
 
 void
-ewl_container_insert_child(Ewl_Container * pc, Ewl_Widget * child,
-			   int index)
+ewl_container_insert_child(Ewl_Container * pc, Ewl_Widget * child, int index)
 {
 	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR("pc", pc);
@@ -162,12 +161,13 @@ ewl_container_get_child_at(Ewl_Container * widget, int x, int y)
 	ewd_list_goto_first(widget->children);
 
 	while ((child =
-		ewd_list_next(EWL_CONTAINER(widget)->children)) != NULL) {
-		if (x >= CURRENT_X(child) && y >= CURRENT_Y(child)
-		    && CURRENT_X(child) + CURRENT_W(child) >= x
-		    && CURRENT_Y(child) + CURRENT_H(child) >= y)
-			DRETURN_PTR(child, DLEVEL_STABLE);
-	}
+		ewd_list_next(EWL_CONTAINER(widget)->children)) != NULL)
+	  {
+		  if (x >= CURRENT_X(child) && y >= CURRENT_Y(child)
+		      && CURRENT_X(child) + CURRENT_W(child) >= x
+		      && CURRENT_Y(child) + CURRENT_H(child) >= y)
+			  DRETURN_PTR(child, DLEVEL_STABLE);
+	  }
 
 	DRETURN_PTR(NULL, DLEVEL_STABLE);
 }
@@ -208,14 +208,14 @@ ewl_container_get_child_at_recursive(Ewl_Container * widget, int x, int y)
 	 * found.
 	 */
 	while ((child2 =
-		ewl_container_get_child_at(EWL_CONTAINER(child), x, y))) {
-		if (child2->recursive)
-			child =
-			    ewl_container_get_child_at(EWL_CONTAINER
-						       (child), x, y);
-		else
-			DRETURN_PTR(child2, DLEVEL_STABLE);
-	}
+		ewl_container_get_child_at(EWL_CONTAINER(child), x, y)))
+	  {
+		  if (child2->recursive)
+			  child = ewl_container_get_child_at(EWL_CONTAINER
+							     (child), x, y);
+		  else
+			  DRETURN_PTR(child2, DLEVEL_STABLE);
+	  }
 
 	DRETURN_PTR((child ? child : NULL), DLEVEL_STABLE);
 }
@@ -236,10 +236,11 @@ __ewl_container_reparent(Ewl_Widget * w, void *event_data, void *user_data)
 	old = EWL_CONTAINER(w)->children;
 	EWL_CONTAINER(w)->children = ewd_list_new();
 
-	while ((child = ewd_list_remove_first(old)) != NULL) {
-		ewl_container_append_child(EWL_CONTAINER(w), child);
-		ewl_widget_reparent(child);
-	}
+	while ((child = ewd_list_remove_first(old)) != NULL)
+	  {
+		  ewl_container_append_child(EWL_CONTAINER(w), child);
+		  ewl_widget_reparent(child);
+	  }
 
 	ewd_list_destroy(old);
 }
@@ -288,34 +289,35 @@ __ewl_container_realize(Ewl_Widget * w, void *event_data, void *user_data)
 	 * realize any of them that should be visible.
 	 */
 	ewd_list_goto_first(c->children);
-	while ((child = ewd_list_next(c->children)) != NULL) {
-		ewl_widget_reparent(child);
-		ewl_widget_realize(child);
-	}
+	while ((child = ewd_list_next(c->children)) != NULL)
+	  {
+		  ewl_widget_reparent(child);
+		  ewl_widget_realize(child);
+	  }
 
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
 
 void
-__ewl_container_configure(Ewl_Widget * w, void *event_data,
-			  void *user_data)
+__ewl_container_configure(Ewl_Widget * w, void *event_data, void *user_data)
 {
 	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR("w", w);
 
-	if (EWL_CONTAINER(w)->clip_box) {
-		int ll = 0, rr = 0, tt = 0, bb = 0;
+	if (EWL_CONTAINER(w)->clip_box)
+	  {
+		  int ll = 0, rr = 0, tt = 0, bb = 0;
 
-		if (w->ebits_object)
-			ebits_get_insets(w->ebits_object, &ll, &rr, &tt,
-					 &bb);
+		  if (w->ebits_object)
+			  ebits_get_insets(w->ebits_object, &ll, &rr, &tt,
+					   &bb);
 
-		evas_move(w->evas, EWL_CONTAINER(w)->clip_box,
-			  CURRENT_X(w) + ll, CURRENT_Y(w) + tt);
-		evas_resize(w->evas, EWL_CONTAINER(w)->clip_box,
-			    CURRENT_W(w) - (ll + rr),
-			    CURRENT_H(w) - (tt + bb));
-	}
+		  evas_move(w->evas, EWL_CONTAINER(w)->clip_box,
+			    CURRENT_X(w) + ll, CURRENT_Y(w) + tt);
+		  evas_resize(w->evas, EWL_CONTAINER(w)->clip_box,
+			      CURRENT_W(w) - (ll + rr),
+			      CURRENT_H(w) - (tt + bb));
+	  }
 
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
@@ -326,19 +328,21 @@ __ewl_container_destroy(Ewl_Widget * w, void *event_data, void *user_data)
 	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR("w", w);
 
-	if (EWL_CONTAINER(w)->clip_box) {
-		evas_hide(w->evas, EWL_CONTAINER(w)->clip_box);
-		evas_unset_clip(w->evas, EWL_CONTAINER(w)->clip_box);
-		evas_del_object(w->evas, EWL_CONTAINER(w)->clip_box);
+	if (EWL_CONTAINER(w)->clip_box)
+	  {
+		  evas_hide(w->evas, EWL_CONTAINER(w)->clip_box);
+		  evas_unset_clip(w->evas, EWL_CONTAINER(w)->clip_box);
+		  evas_del_object(w->evas, EWL_CONTAINER(w)->clip_box);
 
-		EWL_CONTAINER(w)->clip_box = NULL;
-	}
+		  EWL_CONTAINER(w)->clip_box = NULL;
+	  }
 
-	if (EWL_CONTAINER(w)->children) {
-		ewd_list_clear(EWL_CONTAINER(w)->children);
-		ewd_list_destroy(EWL_CONTAINER(w)->children);
-		EWL_CONTAINER(w)->children = NULL;
-	}
+	if (EWL_CONTAINER(w)->children)
+	  {
+		  ewd_list_clear(EWL_CONTAINER(w)->children);
+		  ewd_list_destroy(EWL_CONTAINER(w)->children);
+		  EWL_CONTAINER(w)->children = NULL;
+	  }
 
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }

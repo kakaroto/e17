@@ -5,8 +5,7 @@ Ewl_Widget *button[11];
 
 void __close_main_widow(Ewl_Widget * w, void *ev_data, void *user_data);
 
-void __create_box_test_window(Ewl_Widget * w, void *ev_data,
-			      void *user_data);
+void __create_box_test_window(Ewl_Widget * w, void *ev_data, void *user_data);
 
 void __create_button_test_window(Ewl_Widget * w, void *ev_data,
 				 void *user_data);
@@ -41,6 +40,8 @@ __close_main_widow(Ewl_Widget * w, void *ev_data, void *user_data)
 
 	exit(1);
 
+	return;
+	w = NULL;
 	ev_data = NULL;
 	user_data = NULL;
 }
@@ -64,15 +65,14 @@ main(int argc, char **argv)
 	ewl_widget_show(main_win);
 
 	main_hbox = ewl_hbox_new();
-	ewl_box_set_spacing(main_hbox, 5);
+	ewl_box_set_spacing(EWL_BOX(main_hbox), 5);
 	ewl_container_append_child(EWL_CONTAINER(main_win), main_hbox);
 	ewl_theme_data_set(main_hbox,
-			   "/appearance/box/horizontal/base/visible",
-			   "no");
+			   "/appearance/box/horizontal/base/visible", "no");
 	ewl_widget_show(main_hbox);
 
 	vbox = ewl_vbox_new();
-	ewl_box_set_spacing(vbox, 5);
+	ewl_box_set_spacing(EWL_BOX(vbox), 5);
 	ewl_object_set_padding(EWL_OBJECT(vbox), 0, 0, 10, 0);
 	ewl_container_append_child(EWL_CONTAINER(main_hbox), vbox);
 	ewl_theme_data_set(vbox,
@@ -151,10 +151,11 @@ main(int argc, char **argv)
 
 	ewl_widget_show(button[9]);
 
-	for (i = 0; i < 10; i++) {
-		ewl_object_set_alignment(EWL_OBJECT(button[i]),
-					 EWL_ALIGNMENT_CENTER);
-	}
+	for (i = 0; i < 10; i++)
+	  {
+		  ewl_object_set_alignment(EWL_OBJECT(button[i]),
+					   EWL_ALIGNMENT_CENTER);
+	  }
 	ewl_main();
 
 	return 1;

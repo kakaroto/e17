@@ -8,8 +8,7 @@ static void __ewl_spinner_configure(Ewl_Widget * widget, void *ev_data,
 				    void *user_data);
 static void __ewl_spinner_key_down(Ewl_Widget * widget, void *ev_data,
 				   void *user_data);
-void __ewl_spinner_deselect(Ewl_Widget * w, void *ev_data,
-			    void *user_data);
+void __ewl_spinner_deselect(Ewl_Widget * w, void *ev_data, void *user_data);
 
 static void __ewl_spinner_set_value(Ewl_Widget * widget, double value);
 static double __ewl_spinner_get_value(Ewl_Widget * widget);
@@ -207,13 +206,13 @@ __ewl_spinner_configure(Ewl_Widget * w, void *ev_data, void *user_data)
 	REQUEST_W(s->entry) = CURRENT_W(w) - 12;
 
 	REQUEST_X(s->button_increase) = REQUEST_X(s->entry) +
-	    REQUEST_W(s->entry) + 2;
+		REQUEST_W(s->entry) + 2;
 	REQUEST_Y(s->button_increase) = REQUEST_Y(s->entry);
 	REQUEST_W(s->button_increase) = 10;
 	REQUEST_H(s->button_increase) = 10;
 
 	REQUEST_X(s->button_decrease) = REQUEST_X(s->entry) +
-	    REQUEST_W(s->entry) + 2;
+		REQUEST_W(s->entry) + 2;
 	REQUEST_Y(s->button_decrease) = REQUEST_Y(s->entry) + 10;
 	REQUEST_W(s->button_decrease) = 10;
 	REQUEST_H(s->button_decrease) = 10;
@@ -283,11 +282,13 @@ __ewl_spinner_deselect(Ewl_Widget * w, void *ev_data, void *user_data)
 
 	str = ewl_entry_get_text(s->entry);
 
-	if (str && strlen(str)) {
-		val = atoi(str);
+	if (str && strlen(str))
+	  {
+		  val = atoi(str);
 
-		__ewl_spinner_set_value(EWL_WIDGET(s), (double) (val));
-	} else if (str)
+		  __ewl_spinner_set_value(EWL_WIDGET(s), (double) (val));
+	  }
+	else if (str)
 		FREE(str);
 
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
@@ -396,8 +397,7 @@ __ewl_spinner_set_max_val(Ewl_Widget * w, double val)
 }
 
 static void
-__ewl_spinner_increase_value(Ewl_Widget * w, void *ev_data,
-			     void *user_data)
+__ewl_spinner_increase_value(Ewl_Widget * w, void *ev_data, void *user_data)
 {
 	Ewl_Spinner *s;
 
@@ -414,8 +414,7 @@ __ewl_spinner_increase_value(Ewl_Widget * w, void *ev_data,
 }
 
 static void
-__ewl_spinner_decrease_value(Ewl_Widget * w, void *ev_data,
-			     void *user_data)
+__ewl_spinner_decrease_value(Ewl_Widget * w, void *ev_data, void *user_data)
 {
 	Ewl_Spinner *s;
 

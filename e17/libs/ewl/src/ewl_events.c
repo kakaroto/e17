@@ -154,8 +154,7 @@ ewl_ev_key_down(Eevent * _ev)
 	 */
 	if (last_selected)
 		ewl_callback_call_with_event_data(last_selected,
-						  EWL_CALLBACK_KEY_DOWN,
-						  ev);
+						  EWL_CALLBACK_KEY_DOWN, ev);
 	last_key = last_selected;
 
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
@@ -204,38 +203,41 @@ ewl_ev_mouse_down(Eevent * _ev)
 	if (!window)
 		DRETURN(DLEVEL_STABLE);
 
-	widget =
-	    ewl_container_get_child_at_recursive(EWL_CONTAINER(window),
-						 ev->x, ev->y);
+	widget = ewl_container_get_child_at_recursive(EWL_CONTAINER(window),
+						      ev->x, ev->y);
 
 	/*
 	 * Determine whether this widget has already been selected, if not,
 	 * deselect the previously selected widget and notify it of the
 	 * change. Then select the new widget and notify it of the selection.
 	 */
-	if (widget != last_selected) {
-		if (last_selected) {
-			last_selected->state &= ~EWL_STATE_SELECTED;
-			ewl_callback_call(last_selected,
-					  EWL_CALLBACK_DESELECT);
-		}
+	if (widget != last_selected)
+	  {
+		  if (last_selected)
+		    {
+			    last_selected->state &= ~EWL_STATE_SELECTED;
+			    ewl_callback_call(last_selected,
+					      EWL_CALLBACK_DESELECT);
+		    }
 
-		if (widget) {
-			widget->state |= EWL_STATE_SELECTED;
-			ewl_callback_call(widget, EWL_CALLBACK_SELECT);
-		}
-	}
+		  if (widget)
+		    {
+			    widget->state |= EWL_STATE_SELECTED;
+			    ewl_callback_call(widget, EWL_CALLBACK_SELECT);
+		    }
+	  }
 
 	/*
 	 * While the mouse is down the widget has a pressed state, the widget
 	 * is notified in this change of state.
 	 */
-	if (widget) {
-		widget->state |= EWL_STATE_PRESSED;
-		ewl_callback_call_with_event_data(widget,
-						  EWL_CALLBACK_MOUSE_DOWN,
-						  ev);
-	}
+	if (widget)
+	  {
+		  widget->state |= EWL_STATE_PRESSED;
+		  ewl_callback_call_with_event_data(widget,
+						    EWL_CALLBACK_MOUSE_DOWN,
+						    ev);
+	  }
 
 	/*
 	 * Save the newly selected widget for further reference
@@ -259,12 +261,13 @@ ewl_ev_mouse_up(Eevent * _ev)
 	if (!window)
 		DRETURN(DLEVEL_STABLE);
 
-	if (last_selected) {
-		last_selected->state &= ~EWL_STATE_PRESSED;
-		ewl_callback_call_with_event_data(last_selected,
-						  EWL_CALLBACK_MOUSE_UP,
-						  ev);
-	}
+	if (last_selected)
+	  {
+		  last_selected->state &= ~EWL_STATE_PRESSED;
+		  ewl_callback_call_with_event_data(last_selected,
+						    EWL_CALLBACK_MOUSE_UP,
+						    ev);
+	  }
 
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
@@ -284,24 +287,25 @@ ewl_ev_mouse_move(Eevent * _ev)
 	if (!window)
 		DRETURN(DLEVEL_STABLE);
 
-	widget =
-	    ewl_container_get_child_at_recursive(EWL_CONTAINER(window),
-						 ev->x, ev->y);
+	widget = ewl_container_get_child_at_recursive(EWL_CONTAINER(window),
+						      ev->x, ev->y);
 
-	if (widget) {
-		widget->state |= EWL_STATE_HILITED;
-		if (last_focused != widget)
-			ewl_callback_call(widget, EWL_CALLBACK_FOCUS_IN);
+	if (widget)
+	  {
+		  widget->state |= EWL_STATE_HILITED;
+		  if (last_focused != widget)
+			  ewl_callback_call(widget, EWL_CALLBACK_FOCUS_IN);
 
-		ewl_callback_call_with_event_data(widget,
-						  EWL_CALLBACK_MOUSE_MOVE,
-						  ev);
-	}
+		  ewl_callback_call_with_event_data(widget,
+						    EWL_CALLBACK_MOUSE_MOVE,
+						    ev);
+	  }
 
-	if (last_focused != widget && last_focused) {
-		last_focused->state &= ~EWL_STATE_HILITED;
-		ewl_callback_call(last_focused, EWL_CALLBACK_FOCUS_OUT);
-	}
+	if (last_focused != widget && last_focused)
+	  {
+		  last_focused->state &= ~EWL_STATE_HILITED;
+		  ewl_callback_call(last_focused, EWL_CALLBACK_FOCUS_OUT);
+	  }
 
 	if (last_focused && last_focused->state & EWL_STATE_DND)
 		dnd_widget = last_focused;

@@ -42,25 +42,26 @@ ewl_fx_add(Ewl_Widget * widget, Ewl_FX_Type type,
 
 	snprintf(timer->name, 64, "%p%i", timer->widget, timer->type);
 
-	switch (timer->type) {
-	case EWL_FX_TYPE_FADE_IN:
-		timer->start_val =
-		    (int) ewl_config.fx.timeout %
-		    (int) ewl_config.fx.max_fps;
-		timer->increase = timer->start_val;
-		break;
-	case EWL_FX_TYPE_FADE_OUT:
-		timer->start_val = 255;
-		timer->increase =
-		    (int) ewl_config.fx.timeout %
-		    (int) ewl_config.fx.max_fps;
-		break;
-	case EWL_FX_TYPE_GLOW:
-		timer->start_val = 5;
-		break;
-	default:
-		break;
-	}
+	switch (timer->type)
+	  {
+	  case EWL_FX_TYPE_FADE_IN:
+		  timer->start_val =
+			  (int) ewl_config.fx.timeout %
+			  (int) ewl_config.fx.max_fps;
+		  timer->increase = timer->start_val;
+		  break;
+	  case EWL_FX_TYPE_FADE_OUT:
+		  timer->start_val = 255;
+		  timer->increase =
+			  (int) ewl_config.fx.timeout %
+			  (int) ewl_config.fx.max_fps;
+		  break;
+	  case EWL_FX_TYPE_GLOW:
+		  timer->start_val = 5;
+		  break;
+	  default:
+		  break;
+	  }
 
 
 	if (timer->type == EWL_FX_TYPE_FADE_IN)
@@ -93,29 +94,34 @@ ewl_fx_handle_fade_in(int val, void *data)
 	timer = data;
 	widget = timer->widget;
 
-	evas_set_color(widget->evas, widget->fx_clip_box, 255, 255, 255,
-		       val);
+	evas_set_color(widget->evas, widget->fx_clip_box, 255, 255, 255, val);
 
 	e_del_event_timer(timer->name);
 
-	if (val < 255) {
-		e_add_event_timer(timer->name,
-				  timer->timeout,
-				  ewl_fx_handle_fade_in,
-				  val + timer->increase, timer);
-	} else {
-		timer->repeat--;
-		if (timer->repeat > 0) {
-			e_add_event_timer(timer->name,
-					  timer->timeout,
-					  ewl_fx_handle_fade_in,
-					  timer->start_val, timer);
-		} else {
-			if (timer->func)
-				timer->func(timer->widget,
-					    timer->func_data);
-		}
-	}
+	if (val < 255)
+	  {
+		  e_add_event_timer(timer->name,
+				    timer->timeout,
+				    ewl_fx_handle_fade_in,
+				    val + timer->increase, timer);
+	  }
+	else
+	  {
+		  timer->repeat--;
+		  if (timer->repeat > 0)
+		    {
+			    e_add_event_timer(timer->name,
+					      timer->timeout,
+					      ewl_fx_handle_fade_in,
+					      timer->start_val, timer);
+		    }
+		  else
+		    {
+			    if (timer->func)
+				    timer->func(timer->widget,
+						timer->func_data);
+		    }
+	  }
 }
 
 static void
@@ -129,29 +135,34 @@ ewl_fx_handle_fade_out(int val, void *data)
 	timer = data;
 	widget = timer->widget;
 
-	evas_set_color(widget->evas, widget->fx_clip_box, 255, 255, 255,
-		       val);
+	evas_set_color(widget->evas, widget->fx_clip_box, 255, 255, 255, val);
 
 	e_del_event_timer(timer->name);
 
-	if (val > 0) {
-		e_add_event_timer(timer->name,
-				  timer->timeout,
-				  ewl_fx_handle_fade_out,
-				  val - timer->increase, timer);
-	} else {
-		timer->repeat--;
-		if (timer->repeat > 0) {
-			e_add_event_timer(timer->name,
-					  timer->timeout,
-					  ewl_fx_handle_fade_out,
-					  timer->start_val, timer);
-		} else {
-			if (timer->func)
-				timer->func(timer->widget,
-					    timer->func_data);
-		}
-	}
+	if (val > 0)
+	  {
+		  e_add_event_timer(timer->name,
+				    timer->timeout,
+				    ewl_fx_handle_fade_out,
+				    val - timer->increase, timer);
+	  }
+	else
+	  {
+		  timer->repeat--;
+		  if (timer->repeat > 0)
+		    {
+			    e_add_event_timer(timer->name,
+					      timer->timeout,
+					      ewl_fx_handle_fade_out,
+					      timer->start_val, timer);
+		    }
+		  else
+		    {
+			    if (timer->func)
+				    timer->func(timer->widget,
+						timer->func_data);
+		    }
+	  }
 }
 
 static void
@@ -165,35 +176,39 @@ ewl_fx_handle_glow(int val, void *data)
 	timer = data;
 	widget = timer->widget;
 
-	evas_set_color(widget->evas, widget->fx_clip_box, 255, 255, 255,
-		       val);
+	evas_set_color(widget->evas, widget->fx_clip_box, 255, 255, 255, val);
 
 	e_del_event_timer(timer->name);
 
-	if (timer->start_val == 5 && val < 255) {
-		e_add_event_timer(timer->name,
-				  timer->timeout, ewl_fx_handle_glow,
-				  val + 5, timer);
-	} else if (timer->start_val == 255 && val > 5) {
-		e_add_event_timer(timer->name,
-				  timer->timeout, ewl_fx_handle_glow,
-				  val - 5, timer);
+	if (timer->start_val == 5 && val < 255)
+	  {
+		  e_add_event_timer(timer->name,
+				    timer->timeout, ewl_fx_handle_glow,
+				    val + 5, timer);
+	  }
+	else if (timer->start_val == 255 && val > 5)
+	  {
+		  e_add_event_timer(timer->name,
+				    timer->timeout, ewl_fx_handle_glow,
+				    val - 5, timer);
 
-	}
+	  }
 
-	if (timer->start_val == 255 && val == 5) {
-		timer->start_val = 5;
-		e_add_event_timer(timer->name,
-				  timer->timeout,
-				  ewl_fx_handle_glow, timer->start_val,
-				  timer);
-	}
+	if (timer->start_val == 255 && val == 5)
+	  {
+		  timer->start_val = 5;
+		  e_add_event_timer(timer->name,
+				    timer->timeout,
+				    ewl_fx_handle_glow, timer->start_val,
+				    timer);
+	  }
 
-	if (timer->start_val == 5 && val == 255) {
-		timer->start_val = 255;
-		e_add_event_timer(timer->name,
-				  timer->timeout,
-				  ewl_fx_handle_glow, timer->start_val,
-				  timer);
-	}
+	if (timer->start_val == 5 && val == 255)
+	  {
+		  timer->start_val = 255;
+		  e_add_event_timer(timer->name,
+				    timer->timeout,
+				    ewl_fx_handle_glow, timer->start_val,
+				    timer);
+	  }
 }

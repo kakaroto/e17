@@ -22,7 +22,8 @@
 #define _GETOPT_H 1
 
 #ifdef	__cplusplus
-extern "C" {
+extern "C"
+{
 #endif
 
 /* For communication from `getopt' to the caller.
@@ -77,7 +78,8 @@ extern "C" {
    one).  For long options that have a zero `flag' field, `getopt'
    returns the contents of the `val' field.  */
 
-	struct option {
+	struct option
+	{
 #if defined (__STDC__) && __STDC__
 		const char *name;
 #else
@@ -104,8 +106,7 @@ extern "C" {
 /* Many other libraries have conflicting prototypes for getopt, with
    differences in the consts, in stdlib.h.  To avoid compilation
    errors, only prototype getopt for the GNU C library.  */
-	extern int getopt(int argc, char *const *argv,
-			  const char *shortopts);
+	extern int getopt(int argc, char *const *argv, const char *shortopts);
 #else				/* not __GNU_LIBRARY__ */
 #ifndef __cplusplus
 
@@ -117,8 +118,7 @@ extern "C" {
 	extern int getopt_long(int argc,
 			       char *const *argv,
 			       const char *shortopts,
-			       const struct option *longopts,
-			       int *longind);
+			       const struct option *longopts, int *longind);
 	extern int getopt_long_only(int argc, char *const *argv,
 				    const char *shortopts,
 				    const struct option *longopts,

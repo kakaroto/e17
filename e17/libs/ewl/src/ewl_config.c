@@ -19,10 +19,12 @@ ewl_config_init(void)
 {
 	memset(&ewl_config, 0, sizeof(Ewl_Config));
 
-	if ((open_user_config()) != -1) {
-		close_config();
-		return 1;
-	} else
+	if ((open_user_config()) != -1)
+	  {
+		  close_config();
+		  return 1;
+	  }
+	else
 		create_user_config();
 
 	return 1;
@@ -36,10 +38,11 @@ create_user_config(void)
 
 	home = getenv("HOME");
 
-	if (!home) {
-		DWARNING("Failed to fetch environment variable HOME\n");
-		return -1;
-	}
+	if (!home)
+	  {
+		  DWARNING("Failed to fetch environment variable HOME\n");
+		  return -1;
+	  }
 
 	snprintf(pe, 1024, "%s/.e", home);
 	mkdir(pe, 0755);
@@ -68,10 +71,11 @@ open_user_config(void)
 
 	home = getenv("HOME");
 
-	if (!home) {
-		DWARNING("Failed to fetch environment variable HOME\n");
-		return -1;
-	}
+	if (!home)
+	  {
+		  DWARNING("Failed to fetch environment variable HOME\n");
+		  return -1;
+	  }
 
 	snprintf(path, 256, "%s/.e/ewl/config/system.db", home);
 
@@ -136,11 +140,12 @@ ewl_config_get_str(char *k)
 {
 	char *ret = NULL;
 
-	if ((open_user_config()) != -1) {
-		ret = e_db_str_get(config_db, k);
+	if ((open_user_config()) != -1)
+	  {
+		  ret = e_db_str_get(config_db, k);
 
-		close_config();
-	}
+		  close_config();
+	  }
 
 	return ret;
 }
@@ -150,11 +155,12 @@ ewl_config_get_int(char *k, int *v)
 {
 	int ret = -1;
 
-	if ((open_user_config()) != -1) {
-		ret = e_db_int_get(config_db, k, v);
+	if ((open_user_config()) != -1)
+	  {
+		  ret = e_db_int_get(config_db, k, v);
 
-		close_config();
-	}
+		  close_config();
+	  }
 
 	return ret;
 }
@@ -164,11 +170,12 @@ ewl_config_get_float(char *k, float *v)
 {
 	int ret = -1;
 
-	if ((open_user_config()) != -1) {
-		ret = e_db_float_get(config_db, k, v);
+	if ((open_user_config()) != -1)
+	  {
+		  ret = e_db_float_get(config_db, k, v);
 
-		close_config();
-	}
+		  close_config();
+	  }
 
 	return ret;
 }
@@ -181,16 +188,17 @@ ewl_config_get_render_method()
 
 	str = ewl_config_get_str("/evas/render_method");
 
-	if (str) {
-		if (!strncasecmp(str, "software", 8))
-			method = RENDER_METHOD_ALPHA_SOFTWARE;
-		else if (!strncasecmp(str, "hardware", 8))
-			method = RENDER_METHOD_3D_HARDWARE;
-		else if (!strncasecmp(str, "x11", 3))
-			method = RENDER_METHOD_BASIC_HARDWARE;
+	if (str)
+	  {
+		  if (!strncasecmp(str, "software", 8))
+			  method = RENDER_METHOD_ALPHA_SOFTWARE;
+		  else if (!strncasecmp(str, "hardware", 8))
+			  method = RENDER_METHOD_3D_HARDWARE;
+		  else if (!strncasecmp(str, "x11", 3))
+			  method = RENDER_METHOD_BASIC_HARDWARE;
 
-		FREE(str);
-	}
+		  FREE(str);
+	  }
 
 	return method;
 }
@@ -211,32 +219,37 @@ ewl_config_reread_and_apply(void)
 	ewl_config_get_float("/fx/timeout", &nc.fx.timeout);
 	nc.theme.name = ewl_config_get_str("/theme/name");
 
-	if (ewl_window_list && !ewd_list_is_empty(ewl_window_list)) {
-		Ewl_Widget *w;
+	if (ewl_window_list && !ewd_list_is_empty(ewl_window_list))
+	  {
+		  Ewl_Widget *w;
 
-		ewd_list_goto_first(ewl_window_list);
+		  ewd_list_goto_first(ewl_window_list);
 
-		while ((w = ewd_list_next(ewl_window_list)) != NULL) {
-			if (!w->evas)
-				continue;
+		  while ((w = ewd_list_next(ewl_window_list)) != NULL)
+		    {
+			    if (!w->evas)
+				    continue;
 
-			if (nc.evas.font_cache) {
-				evas_flush_font_cache(w->evas);
-				evas_set_font_cache(w->evas,
-						    nc.evas.font_cache);
-			}
+			    if (nc.evas.font_cache)
+			      {
+				      evas_flush_font_cache(w->evas);
+				      evas_set_font_cache(w->evas,
+							  nc.evas.font_cache);
+			      }
 
-			if (nc.evas.image_cache) {
-				evas_flush_image_cache(w->evas);
-				evas_set_image_cache(w->evas,
-						     nc.evas.image_cache);
-			}
+			    if (nc.evas.image_cache)
+			      {
+				      evas_flush_image_cache(w->evas);
+				      evas_set_image_cache(w->evas,
+							   nc.evas.
+							   image_cache);
+			      }
 
-			evas_set_output_method(w->evas,
-					       ewl_config_get_render_method
-					       ());
-		}
-	}
+			    evas_set_output_method(w->evas,
+						   ewl_config_get_render_method
+						   ());
+		    }
+	  }
 
 	IF_FREE(ewl_config.evas.render_method);
 	IF_FREE(ewl_config.theme.name);

@@ -11,7 +11,8 @@ typedef struct _ewl_button Ewl_Button;
 
 #define EWL_BUTTON(button) ((Ewl_Button *) button)
 
-struct _ewl_button {
+struct _ewl_button
+{
 	Ewl_Box box;
 
 	char *label;
@@ -21,4 +22,4 @@ struct _ewl_button {
 Ewl_Widget *ewl_button_new(char *l);
 void ewl_button_set_label(Ewl_Button * b, char *l);
 
-#endif				/* __EWL_BUTTON_H__ */
+#endif /* __EWL_BUTTON_H__ */

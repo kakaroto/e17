@@ -125,10 +125,11 @@ ewl_table_detach(Ewl_Table * t, unsigned int c, unsigned int r)
 
 	child = ewl_widget_get_data(w, (void *) t);
 
-	if (child) {
-		ewl_widget_del_data(w, (void *) t);
-		FREE(child);
-	}
+	if (child)
+	  {
+		  ewl_widget_del_data(w, (void *) t);
+		  FREE(child);
+	  }
 
 	DLEAVE_FUNCTION(DLEVEL_TESTING);
 }
@@ -312,14 +313,15 @@ ewl_table_get_child(Ewl_Table * t, unsigned int c, unsigned int r)
 
 	ewd_list_goto_first(EWL_CONTAINER(t)->children);
 
-	while ((w = ewd_list_next(EWL_CONTAINER(t)->children)) != NULL) {
-		child = ewl_widget_get_data(w, (void *) t);
+	while ((w = ewd_list_next(EWL_CONTAINER(t)->children)) != NULL)
+	  {
+		  child = ewl_widget_get_data(w, (void *) t);
 
-		if (child && child->start_col <= c &&
-		    child->end_col >= c && child->start_row <= r &&
-		    child->end_row >= r)
-			DRETURN_PTR(w, DLEVEL_STABLE);
-	}
+		  if (child && child->start_col <= c &&
+		      child->end_col >= c && child->start_row <= r &&
+		      child->end_row >= r)
+			  DRETURN_PTR(w, DLEVEL_STABLE);
+	  }
 
 	DRETURN_PTR(NULL, DLEVEL_STABLE);
 }
@@ -341,6 +343,7 @@ ewl_table_get_row_geometry(Ewl_Table * t, unsigned int r, int *x, int *y,
 			   int *w, int *h)
 {
 	int i, width = 0;
+
 	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR("t", t);
 
@@ -470,8 +473,7 @@ __ewl_table_configure(Ewl_Widget * w, void *ev_data, void *user_data)
 	 */
 	fillers = __ewl_table_fill_normal(EWL_TABLE(w), &rem_w, &rem_h);
 	if (fillers)
-		__ewl_table_fill_fillers(EWL_TABLE(w), rem_w, rem_h,
-					 fillers);
+		__ewl_table_fill_fillers(EWL_TABLE(w), rem_w, rem_h, fillers);
 
 	__ewl_table_layout_children(EWL_TABLE(w));
 
@@ -483,8 +485,7 @@ __ewl_table_configure(Ewl_Widget * w, void *ev_data, void *user_data)
  * to indicate space used
  */
 void
-__ewl_table_normal_span(Ewl_Table * w, Ewl_Widget * c, int *rem_w,
-			int *rem_h)
+__ewl_table_normal_span(Ewl_Table * w, Ewl_Widget * c, int *rem_w, int *rem_h)
 {
 	int i;
 	int col_span = 1;
@@ -495,8 +496,7 @@ __ewl_table_normal_span(Ewl_Table * w, Ewl_Widget * c, int *rem_w,
 	Ewl_Table_Child *child;
 
 	DENTER_FUNCTION(DLEVEL_STABLE);
-	ewl_object_requested_geometry(EWL_OBJECT(c), &x, &y, &req_w,
-				      &req_h);
+	ewl_object_requested_geometry(EWL_OBJECT(c), &x, &y, &req_w, &req_h);
 	used_w += req_w;
 	used_h += req_h;
 
@@ -510,25 +510,28 @@ __ewl_table_normal_span(Ewl_Table * w, Ewl_Widget * c, int *rem_w,
 	 * Split up the size of the child between the col's
 	 * it spans 
 	 */
-	for (i = child->start_col - 1; i < child->end_col; i++) {
-		/*
-		 * Only assign the column this width if another child doesn't
-		 * need more.
-		 */
-		if (req_w / col_span > w->col_w[i]) {
-			w->col_w[i] = req_w / col_span;
-			*rem_w -= (req_w / col_span) + w->col_spacing;
-		}
-	}
+	for (i = child->start_col - 1; i < child->end_col; i++)
+	  {
+		  /*
+		   * Only assign the column this width if another child doesn't
+		   * need more.
+		   */
+		  if (req_w / col_span > w->col_w[i])
+		    {
+			    w->col_w[i] = req_w / col_span;
+			    *rem_w -= (req_w / col_span) + w->col_spacing;
+		    }
+	  }
 
 	/*
 	 * The child may have been shorted some of the width it needs, if so
 	 * tack it on the end
 	 */
-	if ((req_w % col_span) + (req_w / col_span) > w->col_w[i - 1]) {
-		w->col_w[i - 1] += req_w % col_span;
-		*rem_w -= req_w % col_span;
-	}
+	if ((req_w % col_span) + (req_w / col_span) > w->col_w[i - 1])
+	  {
+		  w->col_w[i - 1] += req_w % col_span;
+		  *rem_w -= req_w % col_span;
+	  }
 
 	row_span += child->start_row - child->end_row;
 
@@ -536,25 +539,28 @@ __ewl_table_normal_span(Ewl_Table * w, Ewl_Widget * c, int *rem_w,
 	 * Split up the size of the child between the row's it
 	 * * spans 
 	 */
-	for (i = child->start_row - 1; i < child->end_row; i++) {
-		/*
-		 * Only assign the row this height if another child doesn't
-		 * need more.
-		 */
-		if (req_h > w->row_h[i]) {
-			w->row_h[i] = req_h / row_span;
-			*rem_h -= (req_h / row_span) + w->row_spacing;
-		}
-	}
+	for (i = child->start_row - 1; i < child->end_row; i++)
+	  {
+		  /*
+		   * Only assign the row this height if another child doesn't
+		   * need more.
+		   */
+		  if (req_h > w->row_h[i])
+		    {
+			    w->row_h[i] = req_h / row_span;
+			    *rem_h -= (req_h / row_span) + w->row_spacing;
+		    }
+	  }
 
 	/*
 	 * The child has been shorted some of the height it needs, so tack it
 	 * on the end.
 	 */
-	if ((req_w % row_span) + (req_h / row_span) > w->row_h[i - 1]) {
-		w->row_h[i - 1] += req_h % row_span;
-		*rem_h -= req_h % row_span;
-	}
+	if ((req_w % row_span) + (req_h / row_span) > w->row_h[i - 1])
+	  {
+		  w->row_h[i - 1] += req_h % row_span;
+		  *rem_h -= req_h % row_span;
+	  }
 
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
@@ -587,22 +593,26 @@ __ewl_table_fill_normal(Ewl_Table * w, int *rem_w, int *rem_h)
 	 * * add any filler children to the list of fillers that will be
 	 * * returned 
 	 */
-	while ((c = ewd_list_next(EWL_CONTAINER(w)->children)) != NULL) {
+	while ((c = ewd_list_next(EWL_CONTAINER(w)->children)) != NULL)
+	  {
 
-		/*
-		 * Normal children are given their requested space, otherwise
-		 * we add them to the list of children to assign the remaining
-		 * space.
-		 */
-		if (EWL_OBJECT(c)->fill == EWL_FILL_POLICY_NORMAL) {
-			__ewl_table_normal_span(EWL_TABLE(w), c, rem_w,
-						rem_h);
-		} else {
-			if (!fillers)
-				fillers = ewd_list_new();
-			ewd_list_append(fillers, c);
-		}
-	}
+		  /*
+		   * Normal children are given their requested space, otherwise
+		   * we add them to the list of children to assign the remaining
+		   * space.
+		   */
+		  if (EWL_OBJECT(c)->fill == EWL_FILL_POLICY_NORMAL)
+		    {
+			    __ewl_table_normal_span(EWL_TABLE(w), c, rem_w,
+						    rem_h);
+		    }
+		  else
+		    {
+			    if (!fillers)
+				    fillers = ewd_list_new();
+			    ewd_list_append(fillers, c);
+		    }
+	  }
 
 	DRETURN_PTR(fillers, DLEVEL_STABLE);
 }
@@ -626,75 +636,78 @@ __ewl_table_fill_fillers(Ewl_Table * t, int rem_w, int rem_h, Ewd_List * l)
 	 */
 	num = ewd_list_nodes(l);
 	ewd_list_goto_first(l);
-	for (c = ewd_list_next(l); c; c = ewd_list_next(l)) {
-		int i, x = 0, y = 0, cols, rows, req_w, req_h;
+	for (c = ewd_list_next(l); c; c = ewd_list_next(l))
+	  {
+		  int i, x = 0, y = 0, cols, rows, req_w, req_h;
 
-		child = ewl_widget_get_data(c, (void *) t);
-		if (!child)
-			continue;
+		  child = ewl_widget_get_data(c, (void *) t);
+		  if (!child)
+			  continue;
 
-		/*
-		 * Determine the number of rows and columns this item uses 
-		 */
-		cols = child->end_col - child->start_col + 1;
-		rows = child->end_row - child->start_row + 1;
-		ewl_object_requested_geometry(EWL_OBJECT(c),
-					      &x, &y, &req_w, &req_h);
+		  /*
+		   * Determine the number of rows and columns this item uses 
+		   */
+		  cols = child->end_col - child->start_col + 1;
+		  rows = child->end_row - child->start_row + 1;
+		  ewl_object_requested_geometry(EWL_OBJECT(c),
+						&x, &y, &req_w, &req_h);
 
-		/*
-		 * Sum the width values from the column width table
-		 */
-		for (i = child->start_col - 1; i < child->end_col; i++)
-			req_w += t->col_w[i] + t->col_spacing;
+		  /*
+		   * Sum the width values from the column width table
+		   */
+		  for (i = child->start_col - 1; i < child->end_col; i++)
+			  req_w += t->col_w[i] + t->col_spacing;
 
-		/*
-		 * If the minimum width of the widget is greater than the
-		 * assigned width, then increase the size of all the columns
-		 * it crosses.
-		 */
-		if (MINIMUM_W(child) < req_w) {
-			double increment = (double) req_w;
+		  /*
+		   * If the minimum width of the widget is greater than the
+		   * assigned width, then increase the size of all the columns
+		   * it crosses.
+		   */
+		  if (MINIMUM_W(child) < req_w)
+		    {
+			    double increment = (double) req_w;
 
-			increment /= (double) (child->end_col -
-					       child->start_col + 1);
+			    increment /= (double) (child->end_col -
+						   child->start_col + 1);
 
-			/*
-			 * Add the correction factor onto all columns that
-			 * the child crosses
-			 */
-			for (i = child->start_col - 1; i < child->end_col;
-			     i++)
-				t->col_w[i] +=
-				    (int) floor(increment + 0.5);
-		}
+			    /*
+			     * Add the correction factor onto all columns that
+			     * the child crosses
+			     */
+			    for (i = child->start_col - 1; i < child->end_col;
+				 i++)
+				    t->col_w[i] +=
+					    (int) floor(increment + 0.5);
+		    }
 
-		/*
-		 * Sum the height values from the row height table
-		 */
-		for (i = child->start_row - 1; i < child->end_row; i++)
-			req_h += t->row_h[i] + t->row_spacing;
+		  /*
+		   * Sum the height values from the row height table
+		   */
+		  for (i = child->start_row - 1; i < child->end_row; i++)
+			  req_h += t->row_h[i] + t->row_spacing;
 
-		/*
-		 * If the minimum width of the widget is greater than the
-		 * assigned width, then increase the size of all the columns
-		 * it crosses.
-		 */
-		if (MINIMUM_H(child) < req_h) {
-			double increment = (double) req_h;
+		  /*
+		   * If the minimum width of the widget is greater than the
+		   * assigned width, then increase the size of all the columns
+		   * it crosses.
+		   */
+		  if (MINIMUM_H(child) < req_h)
+		    {
+			    double increment = (double) req_h;
 
-			increment /= (double) (child->end_row -
-					       child->start_row + 1);
+			    increment /= (double) (child->end_row -
+						   child->start_row + 1);
 
-			/*
-			 * Add the correction factor onto all rows this
-			 * child crosses
-			 */
-			for (i = child->start_row - 1; i < child->end_row;
-			     i++)
-				t->row_h[i] +=
-				    (int) floor(increment + 0.5);
-		}
-	}
+			    /*
+			     * Add the correction factor onto all rows this
+			     * child crosses
+			     */
+			    for (i = child->start_row - 1; i < child->end_row;
+				 i++)
+				    t->row_h[i] +=
+					    (int) floor(increment + 0.5);
+		    }
+	  }
 
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
@@ -728,50 +741,51 @@ __ewl_table_layout_children(Ewl_Table * w)
 	 * Loop through the children and determine their starting offsets
 	 */
 	ewd_list_goto_first(EWL_CONTAINER(w)->children);
-	while ((child = ewd_list_next(EWL_CONTAINER(w)->children))) {
-		Ewl_Table_Child *c =
-		    ewl_widget_get_data(child, (void *) w);
+	while ((child = ewd_list_next(EWL_CONTAINER(w)->children)))
+	  {
+		  Ewl_Table_Child *c = ewl_widget_get_data(child, (void *) w);
 
-		/*
-		 * Ok, now that we have offset tables put each child at its
-		 * required offset. Fillers get resized to fill the whole
-		 * area available.
-		 */
-		if (ewl_object_get_fill_policy(EWL_OBJECT(w)) ==
-		    EWL_FILL_POLICY_NORMAL)
-			ewl_object_request_geometry(EWL_OBJECT(child),
-						    w->x_offsets[c->
-								 start_col
-								 - 1],
-						    w->y_offsets[c->
-								 start_row
-								 - 1],
-						    CURRENT_W(child),
-						    CURRENT_H(child));
-		else {
-			int i, wide = 0, high = 0;
+		  /*
+		   * Ok, now that we have offset tables put each child at its
+		   * required offset. Fillers get resized to fill the whole
+		   * area available.
+		   */
+		  if (ewl_object_get_fill_policy(EWL_OBJECT(w)) ==
+		      EWL_FILL_POLICY_NORMAL)
+			  ewl_object_request_geometry(EWL_OBJECT(child),
+						      w->x_offsets[c->
+								   start_col
+								   - 1],
+						      w->y_offsets[c->
+								   start_row
+								   - 1],
+						      CURRENT_W(child),
+						      CURRENT_H(child));
+		  else
+		    {
+			    int i, wide = 0, high = 0;
 
-			for (i = c->start_col - 1; i < c->end_col; i++)
-				wide += w->col_w[i];
+			    for (i = c->start_col - 1; i < c->end_col; i++)
+				    wide += w->col_w[i];
 
-			for (i = c->start_row - 1; i < c->end_row; i++)
-				high += w->row_h[i];
+			    for (i = c->start_row - 1; i < c->end_row; i++)
+				    high += w->row_h[i];
 
-			ewl_object_request_geometry(EWL_OBJECT(child),
-						    w->x_offsets[c->
-								 start_col
-								 - 1],
-						    w->y_offsets[c->
-								 start_row
-								 - 1],
-						    wide, high);
-		}
-		printf("Placed child %p at (%d, %d) dim %dx%d\n", child,
-		       REQUEST_X(child), REQUEST_Y(child),
-		       REQUEST_W(child), REQUEST_H(child));
+			    ewl_object_request_geometry(EWL_OBJECT(child),
+							w->x_offsets[c->
+								     start_col
+								     - 1],
+							w->y_offsets[c->
+								     start_row
+								     - 1],
+							wide, high);
+		    }
+		  printf("Placed child %p at (%d, %d) dim %dx%d\n", child,
+			 REQUEST_X(child), REQUEST_Y(child),
+			 REQUEST_W(child), REQUEST_H(child));
 
-		ewl_widget_configure(child);
-	}
+		  ewl_widget_configure(child);
+	  }
 
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }

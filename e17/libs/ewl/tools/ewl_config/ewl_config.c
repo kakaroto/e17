@@ -93,7 +93,7 @@ main(int argc, char **argv)
 	ewl_widget_show(e_conf.main_win);
 
 	e_conf.main_vbox = ewl_vbox_new();
-	ewl_box_set_spacing(e_conf.main_vbox, 10);
+	ewl_box_set_spacing(EWL_BOX(e_conf.main_vbox), 10);
 	ewl_container_append_child(EWL_CONTAINER(e_conf.main_win),
 				   e_conf.main_vbox);
 	ewl_widget_show(e_conf.main_vbox);
@@ -104,7 +104,7 @@ main(int argc, char **argv)
 	ewl_widget_show(e_conf.notebook);
 
 	e_conf.button_hbox = ewl_hbox_new();
-	ewl_box_set_spacing(e_conf.button_hbox, 5);
+	ewl_box_set_spacing(EWL_BOX(e_conf.button_hbox), 5);
 	ewl_object_set_padding(EWL_OBJECT(e_conf.button_hbox), 0, 0, 0, 10);
 	ewl_object_set_custom_size(EWL_OBJECT(e_conf.button_hbox), 415, 17);
 	ewl_object_set_alignment(EWL_OBJECT(e_conf.button_hbox),
@@ -157,8 +157,8 @@ main(int argc, char **argv)
 	ewl_widget_show(e_conf.page_evas_label);
 
 	e_conf.page_evas = ewl_vbox_new();
+	ewl_box_set_spacing(EWL_BOX(e_conf.page_evas), 5);
 	ewl_object_set_padding(EWL_OBJECT(e_conf.page_evas), 10, 5, 5, 0);
-	ewl_box_set_spacing(e_conf.page_evas, 5);
 	ewl_widget_show(e_conf.page_evas);
 
 	e_conf.render_method_label = ewl_text_new();
@@ -195,8 +195,8 @@ main(int argc, char **argv)
 	ewl_widget_show(e_conf.font_cache_label);
 
 	e_conf.font_cache = ewl_spinner_new();
-	ewl_spinner_set_min_val(e_conf.font_cache, (1024 * 1024 * 0.5));
-	ewl_spinner_set_max_val(e_conf.font_cache, (1024 * 1024 * 250));
+	ewl_spinner_set_min_val(e_conf.font_cache, (1024 * 0.5));
+	ewl_spinner_set_max_val(e_conf.font_cache, (1024 * 250));
 	ewl_spinner_set_digits(e_conf.font_cache, 0);
 	ewl_spinner_set_step(e_conf.font_cache, 1);
 	ewl_container_append_child(EWL_CONTAINER(e_conf.page_evas),
@@ -210,8 +210,8 @@ main(int argc, char **argv)
 	ewl_widget_show(e_conf.image_cache_label);
 
 	e_conf.image_cache = ewl_spinner_new();
-	ewl_spinner_set_min_val(e_conf.image_cache, (1024 * 1024 * 0.5));
-	ewl_spinner_set_max_val(e_conf.image_cache, (1024 * 1024 * 250));
+	ewl_spinner_set_min_val(e_conf.image_cache, (1024 * 0.5));
+	ewl_spinner_set_max_val(e_conf.image_cache, (1024 * 250));
 	ewl_spinner_set_digits(e_conf.image_cache, 0);
 	ewl_spinner_set_step(e_conf.image_cache, 1);
 	ewl_container_append_child(EWL_CONTAINER(e_conf.page_evas),
@@ -230,7 +230,7 @@ main(int argc, char **argv)
 
 	e_conf.page_debug = ewl_vbox_new();
 	ewl_object_set_padding(EWL_OBJECT(e_conf.page_debug), 10, 5, 5, 0);
-	ewl_box_set_spacing(e_conf.page_debug, 5);
+	ewl_box_set_spacing(EWL_BOX(e_conf.page_debug), 5);
 	ewl_widget_show(e_conf.page_debug);
 
 	e_conf.enable_debug = ewl_checkbutton_new("Enable Debug ?");
@@ -265,12 +265,12 @@ main(int argc, char **argv)
 
 	e_conf.page_fx = ewl_vbox_new();
 	ewl_object_set_padding(EWL_OBJECT(e_conf.page_fx), 10, 5, 5, 0);
-	ewl_box_set_spacing(e_conf.page_fx, 5);
+	ewl_box_set_spacing(EWL_BOX(e_conf.page_fx), 5);
 	ewl_widget_show(e_conf.page_fx);
 
 
 	e_conf.max_fps_label = ewl_text_new();
-	ewl_text_set_text(e_conf.max_fps_label, "Max FPS");
+	ewl_text_set_text(e_conf.max_fps_label, "Maximum Frames Per Second");
 	ewl_container_append_child(EWL_CONTAINER(e_conf.page_fx),
 				   e_conf.max_fps_label);
 	ewl_widget_show(e_conf.max_fps_label);
@@ -281,7 +281,7 @@ main(int argc, char **argv)
 	ewl_widget_show(e_conf.max_fps);
 
 	e_conf.timeout_label = ewl_text_new();
-	ewl_text_set_text(e_conf.timeout_label, "FX Timeout");
+	ewl_text_set_text(e_conf.timeout_label, "FX Length (Seconds)");
 	ewl_container_append_child(EWL_CONTAINER(e_conf.page_fx),
 				   e_conf.timeout_label);
 	ewl_widget_show(e_conf.timeout_label);
@@ -302,7 +302,7 @@ main(int argc, char **argv)
 
 	e_conf.page_theme = ewl_vbox_new();
 	ewl_object_set_padding(EWL_OBJECT(e_conf.page_theme), 10, 5, 5, 0);
-	ewl_box_set_spacing(e_conf.page_theme, 5);
+	ewl_box_set_spacing(EWL_BOX(e_conf.page_theme), 5);
 	ewl_widget_show(e_conf.page_theme);
 
 
@@ -353,7 +353,7 @@ ewl_config_read_config(Ewl_Config * conf)
 	conf->evas.render_method = ewl_config_get_str("/evas/render_method");
 
 	if (!conf->evas.render_method)
-		conf->evas.render_method = strdup("default");
+		conf->evas.render_method = strdup("software");
 
 	if (!ewl_config_get_int("/evas/font_cache", &conf->evas.font_cache))
 		conf->evas.font_cache = 1024 * 1024 * 2;
@@ -400,9 +400,9 @@ ewl_set_settings(Ewl_Config * c)
 		ewl_radiobutton_set_checked(e_conf.render_method_software, 1);
 
 	ewl_spinner_set_value(e_conf.font_cache,
-			      (double) (c->evas.font_cache));
+			      (double) (c->evas.font_cache) / 1024);
 	ewl_spinner_set_value(e_conf.image_cache,
-			      (double) (c->evas.image_cache));
+			      (double) (c->evas.image_cache) / 1024);
 
 	ewl_checkbutton_set_checked(e_conf.enable_debug, c->debug.enable);
 	ewl_spinner_set_value(e_conf.debug_level, (double) (c->debug.level));
@@ -428,9 +428,10 @@ ewl_get_settings(void)
 	else if (ewl_radiobutton_is_checked(e_conf.render_method_x11))
 		c->evas.render_method = strdup("x11");
 
-	c->evas.font_cache = (int) (ewl_spinner_get_value(e_conf.font_cache));
+	c->evas.font_cache =
+		(int) (ewl_spinner_get_value(e_conf.font_cache)) * 1024;
 	c->evas.image_cache =
-		(int) (ewl_spinner_get_value(e_conf.image_cache));
+		(int) (ewl_spinner_get_value(e_conf.image_cache)) * 1024;
 
 	if (ewl_checkbutton_is_checked(e_conf.enable_debug))
 		c->debug.enable = 1;
@@ -583,7 +584,7 @@ ewl_config_create_confirm_dialog(void)
 	ewl_widget_show(confirm.text);
 
 	confirm.button_hbox = ewl_hbox_new();
-	ewl_box_set_spacing(confirm.button_hbox, 5);
+	ewl_box_set_spacing(EWL_BOX(confirm.button_hbox), 5);
 	ewl_object_set_custom_size(EWL_OBJECT(confirm.button_hbox), 340, 17);
 	ewl_object_set_padding(EWL_OBJECT(confirm.button_hbox), 0, 0, 20, 20);
 	ewl_object_set_alignment(EWL_OBJECT(confirm.button_hbox),

@@ -159,15 +159,16 @@ __ewl_text_configure(Ewl_Widget * w, void *ev_data, void *user_data)
 
 	t = EWL_TEXT(w);
 
-	if (t->tox) {
-		double xx, yy, ww, hh;
+	if (t->tox)
+	  {
+		  double xx, yy, ww, hh;
 
-		etox_move(t->tox, CURRENT_X(t), CURRENT_Y(t));
-		etox_resize(t->tox, START_W, START_H);
-		etox_get_actual_geometry(t->tox, &xx, &yy, &ww, &hh);
-		etox_resize(t->tox, ww, hh);
-		ewl_object_set_custom_size(EWL_OBJECT(w), ww, hh);
-	}
+		  etox_move(t->tox, CURRENT_X(t), CURRENT_Y(t));
+		  etox_resize(t->tox, START_W, START_H);
+		  etox_get_actual_geometry(t->tox, &xx, &yy, &ww, &hh);
+		  etox_resize(t->tox, ww, hh);
+		  ewl_object_set_custom_size(EWL_OBJECT(w), ww, hh);
+	  }
 
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
@@ -190,16 +191,17 @@ ewl_text_set_text(Ewl_Widget * w, char *text)
 	else
 		t->text = strdup(text);
 
-	if (t->tox) {
-		double xx, yy, ww, hh;
+	if (t->tox)
+	  {
+		  double xx, yy, ww, hh;
 
-		etox_resize(t->tox, START_W, START_H);
-		etox_set_text(t->tox, ET_TEXT(t->text), ET_END);
-		etox_get_actual_geometry(t->tox, &xx, &yy, &ww, &hh);
-		etox_resize(t->tox, ww, hh);
-		ewl_object_set_custom_size(EWL_OBJECT(t), ww, hh);
-		ewl_widget_configure(EWL_WIDGET(t));
-	}
+		  etox_resize(t->tox, START_W, START_H);
+		  etox_set_text(t->tox, ET_TEXT(t->text), ET_END);
+		  etox_get_actual_geometry(t->tox, &xx, &yy, &ww, &hh);
+		  etox_resize(t->tox, ww, hh);
+		  ewl_object_set_custom_size(EWL_OBJECT(t), ww, hh);
+		  ewl_widget_configure(EWL_WIDGET(t));
+	  }
 
 	IF_FREE(ot);
 
@@ -355,8 +357,7 @@ ewl_text_get_text_geometry(Ewl_Widget * w, double *xx, double *yy,
 
 void
 ewl_text_get_letter_geometry(Ewl_Widget * w, int i,
-			     double *xx, double *yy, double *ww,
-			     double *hh)
+			     double *xx, double *yy, double *ww, double *hh)
 {
 	Ewl_Text *t;
 
