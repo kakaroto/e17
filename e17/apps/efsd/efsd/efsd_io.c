@@ -963,7 +963,7 @@ efsd_io_write_option(int sockfd, EfsdOption *eo)
 
   if ((n = write_data(sockfd, &msg)) < 0)
     {
-      perror("Error writing event:");
+      perror("Error writing option:");
       D_RETURN_(-1);
     }
 

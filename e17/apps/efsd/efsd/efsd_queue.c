@@ -39,6 +39,7 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 #include <signal.h>
 
 #include <efsd_debug.h>
+#include <efsd_globals.h>
 #include <efsd_macros.h>
 #include <efsd_io.h>
 #include <efsd_misc.h>
@@ -46,10 +47,9 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 #include <efsd_types.h>
 #include <efsd_queue.h>
 
-
 typedef struct efsd_queue_item
 {
-  int          sockfd;
+  int          client;
   EfsdEvent   *ee;
 }
 EfsdQueueItem;
@@ -57,19 +57,19 @@ EfsdQueueItem;
 EfsdList *queue      = NULL;
 EfsdList *queue_last = NULL;
 
-static EfsdQueueItem *queue_item_new(int sockfd, EfsdEvent *ee);
+static EfsdQueueItem *queue_item_new(int client, EfsdEvent *ee);
 static void           queue_item_free(EfsdQueueItem *eqi);
 
 
 static EfsdQueueItem *
-queue_item_new(int sockfd, EfsdEvent *ee)
+queue_item_new(int client, EfsdEvent *ee)
 {
   EfsdQueueItem *result;
 
   D_ENTER;
 
   result = NEW(EfsdQueueItem);
-  result->sockfd = sockfd;
+  result->client = client;
   result->ee = ee;
   
   D_RETURN_(result);
@@ -110,9 +110,19 @@ efsd_queue_process(void)
     {
       eqi = efsd_list_data(queue);
 
-      if (efsd_io_write_event(eqi->sockfd, eqi->ee) < 0)
+      if (efsd_io_write_event(clientfd[eqi->client], eqi->ee) < 0)
 	{
-	  D_RETURN_(done);
+	  if (errno == EPIPE)
+	    {
+	      D(("Client %i died -- closing connection\n", eqi->client));
+	      efsd_misc_close_connection(eqi->client);
+	      queue = efsd_list_remove(queue, queue, (EfsdFunc)queue_item_free);
+	      done++;
+	    }
+	  else
+	    {
+	      D_RETURN_(done);
+	    }
 	}
 
       D(("One queue item processed.\n"));

@@ -38,5 +38,6 @@ void   efsd_slashify(char *path);
 
 void    efsd_misc_check_dir(void);
 void    efsd_misc_remove_socket_file(void);
+int     efsd_misc_close_connection(int client);
 
 #endif

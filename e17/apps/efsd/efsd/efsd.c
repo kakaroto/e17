@@ -78,7 +78,6 @@ static void   efsd_cleanup_signal_callback(int signal);
 static void   efsd_cleanup(void);
 static void   efsd_daemonize(void);
 static void   efsd_check_options(int argc, char**argv);
-static int    efsd_close_connection(int client);
 
 
 static void 
@@ -162,7 +161,7 @@ efsd_handle_client_command(EfsdCommand *command, int client)
       break;
     case EFSD_CMD_CLOSE:
       D(("Handling CLOSE\n"));
-      result = efsd_close_connection(client);
+      result = efsd_misc_close_connection(client);
       break;
     default:
     }
@@ -275,8 +274,16 @@ efsd_handle_fam_events(void)
 		    ee.efsd_filechange_event.id = efr->id;
 		    if (efsd_io_write_event(clientfd[efr->client], &ee) < 0)
 		      {
-			efsd_queue_add_event(clientfd[efr->client], &ee);
-			D(("write() error when writing FAM event.\n"));
+			if (errno == EPIPE)
+			  {
+			    D(("Client %i died -- closing connection.\n", efr->client));
+			    efsd_misc_close_connection(efr->client);
+			  }
+			else
+			  {
+			    efsd_queue_add_event(clientfd[efr->client], &ee);
+			    D(("write() error when writing FAM event.\n"));
+			  }
 		      }
 
 		    if (famev.code == FAMExists)
@@ -321,8 +328,16 @@ efsd_handle_fam_events(void)
 		    
 			if (efsd_io_write_event(clientfd[efr->client], &ee) < 0)
 			  {
-			    efsd_queue_add_event(clientfd[efr->client], &ee);
-			    D(("write() error when writing FAM event.\n"));
+			    if (errno == EPIPE)
+			      {
+				D(("Client %i died -- closing connection.\n", efr->client));
+				efsd_misc_close_connection(efr->client);
+			      }
+			    else
+			      {
+				efsd_queue_add_event(clientfd[efr->client], &ee);
+				D(("write() error when writing FAM event.\n"));
+			      }
 			  }
 		      }
 		  }
@@ -459,7 +474,7 @@ efsd_handle_connections(void)
 		}
 	      else
 		{
-		  efsd_close_connection(i);
+		  efsd_misc_close_connection(i);
 		}
 	      D(("Done.\n"));
 	      efsd_cmd_cleanup(&ecmd);
@@ -660,25 +675,6 @@ efsd_check_options(int argc, char**argv)
 	}	  
     }
   D_RETURN;
-}
-
-
-static int
-efsd_close_connection(int client)
-{
-  D_ENTER;
-  D(("Closing connection %i\n", client));
-
-  if (clientfd[client] < 0)
-    {
-      D(("Connection already closed ???\n"));
-      D_RETURN_(-1);
-    }
-
-  efsd_fam_cleanup_client(client);
-  close(clientfd[client]);
-  clientfd[client] = -1;
-  D_RETURN_(0);
 }
 
 

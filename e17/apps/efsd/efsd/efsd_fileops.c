@@ -39,18 +39,17 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 #include <signal.h>
 
 #include <efsd_common.h>
-#include <efsd_macros.h>
 #include <efsd_debug.h>
 #include <efsd_fam.h>
 #include <efsd_fileops.h>
+#include <efsd_globals.h>
 #include <efsd_io.h>
+#include <efsd_macros.h>
 #include <efsd_magic.h>
 #include <efsd_misc.h>
 #include <efsd_queue.h>
 #include <efsd_types.h>
 
-extern FAMConnection  famcon;
-extern int            clientfd[EFSD_CLIENTS];
 
 static mode_t         default_mode = (S_IRUSR | S_IWUSR | S_IXUSR | S_IRGRP |
 				      S_IXGRP | S_IROTH | S_IXOTH);
@@ -82,7 +81,11 @@ send_reply(EfsdCommand *cmd, EfsdStatus status, int errorcode,
 
   if (efsd_io_write_event(sockfd, &ee) < 0)
     {
-      efsd_queue_add_event(sockfd, &ee);
+      if (errno == EPIPE)
+	efsd_misc_close_connection(client);
+      else
+	efsd_queue_add_event(sockfd, &ee);
+
       D_RETURN_(-1);
     }
 

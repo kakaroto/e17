@@ -40,10 +40,12 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 #include <malloc.h>
 #endif
 
-#include <efsd_debug.h>
-#include <efsd_misc.h>
 #include <efsd_common.h>
+#include <efsd_debug.h>
+#include <efsd_fam.h>
+#include <efsd_globals.h>
 #include <efsd_macros.h>
+#include <efsd_misc.h>
 
 static mode_t         default_mode = (S_IRUSR | S_IWUSR | S_IXUSR | S_IRGRP |
 				      S_IXGRP | S_IROTH | S_IXOTH);
@@ -279,6 +281,25 @@ efsd_misc_remove_socket_file(void)
     }
 
   D_RETURN;
+}
+
+
+int
+efsd_misc_close_connection(int client)
+{
+  D_ENTER;
+  D(("Closing connection %i\n", client));
+
+  if (clientfd[client] < 0)
+    {
+      D(("Connection already closed ???\n"));
+      D_RETURN_(-1);
+    }
+
+  efsd_fam_cleanup_client(client);
+  close(clientfd[client]);
+  clientfd[client] = -1;
+  D_RETURN_(0);
 }
 
 

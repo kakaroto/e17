@@ -22,6 +22,7 @@ efsd_SOURCES = \
 	efsd_fam.c \
 	efsd_fileops.h \
 	efsd_fileops.c \
+	efsd_globals.h \
 	efsd_io.h \
 	efsd_io.c \
 	efsd_magic.c \
