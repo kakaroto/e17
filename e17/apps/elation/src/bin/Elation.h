@@ -47,7 +47,19 @@ enum {
      ELATION_ACT_NEXT,
      ELATION_ACT_PREV,
      ELATION_ACT_SELECT,
-     ELATION_ACT_EXIT
+     ELATION_ACT_EXIT,
+     ELATION_ACT_UP,
+     ELATION_ACT_DOWN,
+     ELATION_ACT_LEFT,
+     ELATION_ACT_RIGHT,
+     ELATION_ACT_MENU,
+     ELATION_ACT_INFO,
+     ELATION_ACT_INPUT,
+     ELATION_ACT_PLAY,
+     ELATION_ACT_PAUSE,
+     ELATION_ACT_STOP,
+     ELATION_ACT_REC,
+     ELATION_ACT_SKIP
 };
 
 Elation_Module *elation_module_open(Elation_Info *info, Elation_Module *parent, char *name);

@@ -10,12 +10,19 @@ elation_module_open(Elation_Info *info, Elation_Module *parent, char *name)
    void *handle;
    char buf[4096];
    
-   snprintf(buf, sizeof(buf), "%s/%s.so", PACKAGE_LIB_DIR"/elation", name);
+   snprintf(buf, sizeof(buf), "%s/elation_%s.so", PACKAGE_LIB_DIR"/elation", name);
    handle = dlopen(buf, RTLD_NOW | RTLD_LOCAL);
-   if (!handle) return NULL;
+   if (!handle)
+     {
+	printf("ERROR loading: %s\n"
+	       "ERROR:\n"
+	       "%s\n", buf, dlerror());
+	return NULL;
+     }
    init = dlsym(handle, "init");
    if (!init)
      {
+	printf("no init!\n");
 	dlclose(handle);
 	return NULL;
      }

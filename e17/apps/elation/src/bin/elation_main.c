@@ -35,6 +35,7 @@ int
 main_start(int argc, char **argv)
 {
    int mode = 0;
+   int fullscreen = 0;
    
    if (!ecore_init()) return -1;
    ecore_app_args_set(argc, (const char **)argv);
@@ -63,18 +64,28 @@ main_start(int argc, char **argv)
 		    }
 		  i++;
 	       }
-             else if (!strcmp(argv[i], "-gl"))
+             else if ((!strcmp(argv[i], "-gl")) ||
+		      (!strcmp(argv[i], "-opengl")) ||
+		      (!strcmp(argv[i], "--opengl")))
                {
 		  mode = 1;
                }
-             else if (!strcmp(argv[i], "-fb"))
+             else if ((!strcmp(argv[i], "-fb")) ||
+		      (!strcmp(argv[i], "-framebuffer")) ||
+		      (!strcmp(argv[i], "--framebuffer")))
                {
 		  mode = 2;
                }
+	     else if ((!strcmp(argv[i], "-f")) ||
+		      (!strcmp(argv[i], "-fullscreen")) ||
+		      (!strcmp(argv[i], "--fullscreen")))
+	       {
+		  fullscreen = 1;
+	       }
           }
      }
    if (mode == 0)
-     ecore_evas = ecore_evas_software_x11_new(NULL, 0,  0, 0, startw, starth);
+     ecore_evas = ecore_evas_software_x11_new(NULL, 0, 0, 0, startw, starth);
    else if (mode == 1)
      ecore_evas = ecore_evas_gl_x11_new(NULL, 0, 0, 0, startw, starth);
    else if (mode == 2)
@@ -85,10 +96,12 @@ main_start(int argc, char **argv)
    ecore_evas = ecore_evas_fb_new(NULL, 270,  startw, starth);
 #endif
    if (!ecore_evas) return -1;
+   ecore_evas_title_set(ecore_evas, "Elation Media Manager");
+   ecore_evas_name_class_set(ecore_evas, "elation", "Elation");
+   if (fullscreen) ecore_evas_fullscreen_set(ecore_evas, 1);
    ecore_evas_callback_delete_request_set(ecore_evas, main_delete_request);
    ecore_evas_callback_resize_set(ecore_evas, main_resize);
-   ecore_evas_title_set(ecore_evas, "Elation");
-   ecore_evas_name_class_set(ecore_evas, "elation", "main");
+   ecore_evas_cursor_set(ecore_evas, "", 99999, 0, 0);
    ecore_evas_show(ecore_evas);
    evas = ecore_evas_get(ecore_evas);
    evas_image_cache_set(evas, 8 * 1024 * 1024);
@@ -140,14 +153,17 @@ void
 bg_setup(void)
 {
    Evas_Object *o;
+   Evas_Coord w, h;
 
    o = edje_object_add(evas);
    o_bg = o;
    edje_object_file_set(o, PACKAGE_DATA_DIR"/data/theme.eet", "background");
    evas_object_move(o, 0, 0);
-   evas_object_resize(o, startw, starth);
    evas_object_layer_set(o, -999);
    evas_object_show(o);   
+   
+   evas_output_viewport_get(evas, NULL, NULL, &w, &h);
+   bg_resize(w, h);
 }
 
 void
@@ -162,14 +178,17 @@ void
 menu_setup(void)
 {
    Elation_Module *em;
+   Evas_Coord w, h;
    
-   em = elation_module_open(&elation_info, NULL, "menu");
+   em = elation_module_open(&elation_info, NULL, "dvd");
    em_menu = em;
    if (em)
      {
 	em->show(em);
 	em->focus(em);
      }
+   evas_output_viewport_get(evas, NULL, NULL, &w, &h);
+   menu_resize(w, h);
 }
 
 void
