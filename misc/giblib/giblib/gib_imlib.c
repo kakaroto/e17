@@ -406,8 +406,7 @@ gib_imlib_get_text_size(Imlib_Font fn, char *text, gib_style * s, int *w,
    }
 }
 
-Imlib_Image
-gib_imlib_clone_image(Imlib_Image im)
+Imlib_Image gib_imlib_clone_image(Imlib_Image im)
 {
    imlib_context_set_image(im);
    return imlib_clone_image();
@@ -458,9 +457,9 @@ gib_imlib_blend_image_onto_image_with_rotation(Imlib_Image dest_image,
    dh = 0;
 }
 
-Imlib_Image
-gib_imlib_create_cropped_scaled_image(Imlib_Image im, int sx, int sy, int sw,
-                                      int sh, int dw, int dh, char alias)
+Imlib_Image gib_imlib_create_cropped_scaled_image(Imlib_Image im, int sx,
+                                                  int sy, int sw, int sh,
+                                                  int dw, int dh, char alias)
 {
    imlib_context_set_image(im);
    imlib_context_set_anti_alias(alias);
@@ -531,8 +530,7 @@ gib_imlib_image_draw_line(Imlib_Image im, int x1, int y1, int x2, int y2,
    imlib_image_draw_line(x1, y1, x2, y2, make_updates);
 }
 
-Imlib_Image
-gib_imlib_create_rotated_image(Imlib_Image im, double angle)
+Imlib_Image gib_imlib_create_rotated_image(Imlib_Image im, double angle)
 {
    imlib_context_set_image(im);
    return (imlib_create_rotated_image(angle));
@@ -567,4 +565,14 @@ gib_imlib_line_clip_and_draw(Imlib_Image dest, int x0, int y0, int x1, int y1,
    imlib_context_set_cliprect(cx, cy, cw, ch);
    gib_imlib_image_draw_line(dest, x0, y0, x1, y1, 0, r, g, b, a);
    imlib_context_set_cliprect(0, 0, 0, 0);
+}
+
+Imlib_Image
+gib_imlib_create_image_from_drawable(Drawable d, Pixmap mask, int x, int y,
+                                     int width, int height,
+                                     char need_to_grab_x)
+{
+   imlib_context_set_drawable(d);
+   return imlib_create_image_from_drawable(mask, x, y, width, height,
+                                           need_to_grab_x);
 }
