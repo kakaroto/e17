@@ -182,7 +182,8 @@ void __ewl_entry_configure(Ewl_Widget * w, void *ev_data, void *user_data)
 	str = EWL_TEXT(e->text)->text;
 	c_spos = ewl_cursor_get_start_position(EWL_CURSOR(e->cursor));
 
-	if (str && (l = strlen(str)) && c_spos > l) {
+	l = ewl_text_get_length(EWL_TEXT(e->text));
+	if (str && l && c_spos > l) {
 		xx += ewl_object_get_current_w(EWL_OBJECT(e->text));
 		ww = 5;
 	} else {
@@ -252,15 +253,11 @@ void __ewl_entry_mouse_down(Ewl_Widget * w, void *ev_data, void *user_data)
 	ev = ev_data;
 	e = EWL_ENTRY(w);
 
+	len = ewl_text_get_length(EWL_TEXT(e->text));
 	if (ev->x < CURRENT_X(e->text))
 		index = 0;
 	else if (ev->x > CURRENT_X(e->text) + CURRENT_W(e->text)) {
-		char           *str;
-
-		str = ewl_entry_get_text(EWL_ENTRY(w));
-
-		if (str)
-			len = index = strlen(str);
+		index = len;
 	} else
 		index = ewl_text_get_index_at(EWL_TEXT(e->text), ev->x,
 					      CURRENT_Y(e->text) +
@@ -268,7 +265,11 @@ void __ewl_entry_mouse_down(Ewl_Widget * w, void *ev_data, void *user_data)
 
 	index++;
 	ewl_cursor_set_position(EWL_CURSOR(e->cursor), index, index);
-	e->base_click = index;
+
+	if (index > len)
+		e->base_click = len;
+	else
+		e->base_click = index;
 
 	ewl_widget_configure(w);
 
