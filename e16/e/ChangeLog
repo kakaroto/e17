@@ -2864,3 +2864,14 @@ Enable using names in some IPC window info functions.
 Fix a few GC leaks.
 Let fixedpos window attribute not imply sticky.
 Simplify stick/unstick (fixes raise problem during unstick).
+
+-------------------------------------------------------------------------------
+
+Mon May 31 22:46:00 CEST 2004
+(Kim)
+
+Trivial prototype cleanup (EExit()).
+Introduced a new event handler registration/dispatching engine (not used yet).
+Don't zoom on desktop type (layer 0) windows in pager.
+Clean up hint handling at startup.
+Initial fullscreen window state handling.
