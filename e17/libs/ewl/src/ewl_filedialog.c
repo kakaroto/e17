@@ -1,12 +1,21 @@
 #include <Ewl.h>
 
+#include <stdio.h>
+#include <stdlib.h>
+#include <sys/stat.h>
+#include <dirent.h>
+#include <string.h>
+
+#include "ewl_fileselector.h"
+#include "ewl_filedialog.h"
+
 
 /**
  * @param type: type of dialog to display
  * @return Returns a new filedialog in success, NULL on failure.
  * @brief Create a new filedialog
  */
-Ewl_Widget     *ewl_filedialog_new(Ewl_Filedialog_Type type)
+Ewl_Widget *ewl_filedialog_new()
 {
 	Ewl_Filedialog *fd;
 
@@ -16,11 +25,10 @@ Ewl_Widget     *ewl_filedialog_new(Ewl_Filedialog_Type type)
 	if (!fd)
 		DRETURN_PTR(NULL, DLEVEL_STABLE);
 
-	ewl_filedialog_init(fd, type);
+	ewl_filedialog_init(fd);
 
 	DRETURN_PTR(EWL_WIDGET(fd), DLEVEL_STABLE);
 }
-
 
 /**
  * @param fd: the filedialog
@@ -28,128 +36,63 @@ Ewl_Widget     *ewl_filedialog_new(Ewl_Filedialog_Type type)
  * @return Returns no value.
  * @brief Initialize a new filedialog
  */
-void
-ewl_filedialog_init(Ewl_Filedialog * fd, Ewl_Filedialog_Type type)
+void ewl_filedialog_init(Ewl_Filedialog * fd)
 {
-	Ewl_Widget     *w;
-	Ewl_Widget     *hbox;
-	Ewl_Widget     *vbox;
-	
+	Ewl_Widget *w;
+	Ewl_Widget *button;
+
 	DENTER_FUNCTION(DLEVEL_STABLE);
-	DCHECK_PARAM_PTR ("fd", fd);
+	DCHECK_PARAM_PTR("fd", fd);
 
 	w = EWL_WIDGET(fd);
 
-	/*
-	 * Initialize the widget to have the necessary box and filedialog
-	 * attributes.
-	 */
-	ewl_box_init(EWL_BOX(w), EWL_ORIENTATION_VERTICAL);
-	ewl_object_fill_policy_set(EWL_OBJECT(w), EWL_FLAG_FILL_SHRINK |
-						  EWL_FLAG_FILL_FILL);
-	ewl_widget_appearance_set(EWL_WIDGET (w), "filedialog");
-	fd->type = type;
+	ewl_dialog_init(EWL_DIALOG(w), EWL_POSITION_BOTTOM);
+	ewl_widget_appearance_set(w, "window");
+	ewl_object_fill_policy_set(EWL_OBJECT(w), EWL_FLAG_FILL_ALL);
 
-	/*
-	 * Setup the internally used layout and display widgets.
-	 */
-	vbox = ewl_vbox_new ();
-	ewl_widget_internal_set(vbox, TRUE);
-	ewl_object_fill_policy_set(EWL_OBJECT(vbox), EWL_FLAG_FILL_SHRINK |
-						     EWL_FLAG_FILL_FILL);
-	ewl_container_child_append(EWL_CONTAINER(fd), vbox);
-	ewl_widget_show (vbox);
+	/* the file selector */
 
-	fd->path_label = ewl_text_new ("");
-	ewl_widget_internal_set(fd->path_label, TRUE);
-	ewl_container_child_append(EWL_CONTAINER(vbox), fd->path_label);
-	ewl_object_padding_set(EWL_OBJECT(fd->path_label), 2, 2, 2, 2);
-	ewl_widget_show (fd->path_label);
+	fd->fs = ewl_fileselector_new();
+	if (fd->fs) {
+		char *tmp = getenv("HOME");
+		ewl_fileselector_configure_cb(EWL_FILESELECTOR(fd->fs), (tmp ? tmp : "/"));
+		ewl_dialog_widget_add(EWL_DIALOG(fd), fd->fs);
+		ewl_widget_show(fd->fs);
+	}
 
-	hbox = ewl_hbox_new();
-	ewl_box_homogeneous_set(EWL_BOX(hbox), FALSE);
-	ewl_widget_internal_set(hbox, TRUE);
-	ewl_container_child_append(EWL_CONTAINER(vbox), hbox);
-	ewl_widget_show (hbox);
+	/* Buttons */
 
-	/*
-	 * This box will be redirected to, to allow users to pack additional
-	 * buttons and widgets inside the filedialog.
-	 */
-	/*
-	fd->decor_box = ewl_vbox_new();
-	ewl_widget_internal_set(fd->decor_box, TRUE);
-	ewl_object_fill_policy_set(EWL_OBJECT(fd->decor_box),
-			EWL_FLAG_FILL_VFILL);
-	ewl_box_set_spacing(EWL_BOX(fd->decor_box), 4);
-	ewl_object_set_padding(EWL_OBJECT(fd->decor_box), 10, 10, 10, 10);
-	ewl_object_alignment_set(EWL_OBJECT(fd->decor_box), EWL_FLAG_ALIGN_RIGHT);
-	ewl_container_child_append(EWL_CONTAINER(hbox), fd->decor_box);
-	ewl_widget_show(fd->decor_box);
-	*/
+	button = ewl_button_stock_with_id_new(EWL_STOCK_OPEN,
+					 EWL_RESPONSE_OPEN);
+	ewl_container_child_append(EWL_CONTAINER(fd), button);
+	ewl_widget_show(button);
 
-	/*
-	 * Display the lists of directories and files.
-	 */
-	fd->selector = ewl_fileselector_new();
-	ewl_widget_internal_set(fd->selector, TRUE);
-	ewl_container_child_append(EWL_CONTAINER(hbox), fd->selector);
-	ewl_callback_append (EWL_WIDGET (fd->selector),
-			EWL_CALLBACK_VALUE_CHANGED,
-			ewl_filedialog_change_labels_cb, fd);
-	ewl_widget_show(fd->selector);
-
-	/*
-	 * Here we provide an entry for typing in filenames, and buttons for
-	 * accepting or canceling the selection.
-	 */
-	fd->button_box = ewl_hbox_new();
-	ewl_widget_internal_set(fd->button_box, TRUE);
-	ewl_object_fill_policy_set(EWL_OBJECT(fd->button_box),
-			EWL_FLAG_FILL_HFILL | EWL_FLAG_FILL_HSHRINK);
-	ewl_box_spacing_set(EWL_BOX(fd->button_box), 4);
-	ewl_object_padding_set(EWL_OBJECT(fd->button_box), 10, 10, 10, 10);
-	ewl_object_alignment_set(EWL_OBJECT(fd->button_box), EWL_FLAG_ALIGN_RIGHT);
-	ewl_container_child_append(EWL_CONTAINER(vbox), fd->button_box);
-	ewl_widget_show(fd->button_box);
-
-	fd->entry = ewl_entry_new ("");
-	ewl_widget_internal_set(fd->entry, TRUE);
-	ewl_container_child_append(EWL_CONTAINER(fd->button_box), fd->entry);
-	ewl_callback_append (fd->entry, EWL_CALLBACK_VALUE_CHANGED,
-			ewl_filedialog_change_path_cb, fd);
-	ewl_widget_show (fd->entry);
-
-
-	if (type == EWL_FILEDIALOG_TYPE_OPEN)
-		fd->ok = ewl_button_new("Open");
-	else
-		fd->ok = ewl_button_new("Save");
-	ewl_widget_internal_set(fd->ok, TRUE);
-	ewl_object_fill_policy_set(EWL_OBJECT(fd->ok), EWL_FLAG_FILL_NONE);
-	ewl_callback_append(fd->ok, EWL_CALLBACK_CLICKED, ewl_filedialog_ok_cb,
-			    fd);
-	ewl_container_child_append(EWL_CONTAINER(fd->button_box), fd->ok);
-	ewl_widget_show(fd->ok);
-
-	fd->cancel = ewl_button_new("Cancel");
-	ewl_widget_internal_set(fd->cancel, TRUE);
-	ewl_object_fill_policy_set(EWL_OBJECT(fd->cancel), EWL_FLAG_FILL_NONE);
-	ewl_callback_append(fd->cancel, EWL_CALLBACK_CLICKED,
-				    ewl_filedialog_cancel_cb, fd);
-	ewl_container_child_append(EWL_CONTAINER(fd->button_box), fd->cancel);
-	ewl_widget_show(fd->cancel);
-
-	/*
-	 * Redirect incoming widgets to the decoration box to allow for
-	 * special purpose widgets along the left side.
-	 */
-	/*
-	ewl_container_set_redirect(EWL_CONTAINER(fd),
-				   EWL_CONTAINER(fd->decor_box));
-				   */
+	button = ewl_button_stock_with_id_new(EWL_STOCK_CANCEL,
+					 EWL_RESPONSE_CANCEL);
+	ewl_container_child_append(EWL_CONTAINER(fd), button);
+	ewl_widget_show(button);
 
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
+}
+
+/**
+ * @param fd: the filedialog
+ * @return Returns the current path of filedialog
+ * @brief Retrieve the current filedialog path
+ */
+char *ewl_filedialog_path_get(Ewl_Filedialog * fd)
+{
+	return EWL_FILESELECTOR(fd->fs)->path;
+}
+
+/**
+ * @param fd: the filedialog
+ * @return Returns the selected filename including its path
+ * @brief Retrieve the selected filename
+ */
+char *ewl_filedialog_file_get(Ewl_Filedialog * fd)
+{
+	return EWL_FILESELECTOR(fd->fs)->file;
 }
 
 /**
@@ -158,98 +101,33 @@ ewl_filedialog_init(Ewl_Filedialog * fd, Ewl_Filedialog_Type type)
  * @return Returns no value.
  * @brief Changes the current path of a filedialog.
  */
-void ewl_filedialog_set_directory(Ewl_Filedialog *fd, char *path)
+void ewl_filedialog_path_set(Ewl_Filedialog * fd, char *path)
 {
-	struct stat          statbuf;
-	Ewl_Fileselector *fs = EWL_FILESELECTOR (fd->selector);
-	int i;
-
-	DENTER_FUNCTION(DLEVEL_STABLE);
-	DCHECK_PARAM_PTR("fd", fd);
-	DCHECK_PARAM_PTR("path", path);
-
-	i = stat (path, &statbuf);
-	if (!i && S_ISDIR(statbuf.st_mode)) {
-		ewl_fileselector_set_directory (EWL_FILESELECTOR (fs), path);
-	}
-
-	DLEAVE_FUNCTION(DLEVEL_STABLE);
+	ewl_fileselector_path_set(EWL_FILESELECTOR(fd->fs), path);
 }
 
-void ewl_filedialog_change_labels_cb (Ewl_Widget * w, void *ev_data, 
-		void *user_data) 
+/*
+ * Internally used callback, override at your own risk.
+ */
+void ewl_filedialog_click_cb(Ewl_Widget * w, void *ev_data, Ewl_Filedialog * fd)
 {
-	char *path, *ptr = NULL;
-	char str[PATH_MAX + 50];
-	Ewl_Filedialog *fd = user_data; 
+	char *str = NULL;
 
-	DENTER_FUNCTION(DLEVEL_STABLE);
-
-	if (!ev_data) {
-		path = ewl_fileselector_get_path (EWL_FILESELECTOR (fd->selector));
-
-		snprintf (str, sizeof (str), "Current dir: %s", path);
-		free(path);
-		ewl_text_text_set (EWL_TEXT (fd->path_label), str);
- 
-		path = ewl_fileselector_get_filename(EWL_FILESELECTOR(fd->selector));
-		if (!path) return;
-		ptr = strrchr(path, '/');
-		/* if we have a file */
-		if (ptr)
+	switch (EWL_BUTTON_STOCK(w)->response_id) {
+	case (EWL_RESPONSE_OK):
 		{
-		  ptr++;
-		  ewl_entry_set_text (EWL_ENTRY(fd->entry), ptr);
+			str = ewl_fileselector_file_get(EWL_FILESELECTOR(fd->fs));
+			free(str);
+			ewl_widget_destroy(EWL_WIDGET(fd));
+
+			break;
 		}
-		/* if we just changed dirs, then clear it out */
-		else
-		  ewl_entry_set_text (EWL_ENTRY(fd->entry), "");
-		free(path);
+	case (EWL_RESPONSE_CANCEL):
+		{
+			ewl_widget_destroy(EWL_WIDGET(fd));
+			break;
+		}
 	}
-	else {
-		ewl_filedialog_ok_cb(w, NULL, fd);
-	}
-
-	DLEAVE_FUNCTION(DLEVEL_STABLE);
-}
-
-
-void
-ewl_filedialog_change_path_cb(Ewl_Widget * w, void *ev_data, void *user_data)
-{
-	char *dir;
-	Ewl_Filedialog *fd = user_data;
-
-	DENTER_FUNCTION(DLEVEL_STABLE);
-
-	dir = ewl_entry_get_text (EWL_ENTRY (w));
-	if (dir)
-		ewl_filedialog_set_directory(fd, dir);
-
-	DLEAVE_FUNCTION(DLEVEL_STABLE);
-}
-
-void
-ewl_filedialog_ok_cb(Ewl_Widget * w, void *ev_data, void *user_data)
-{
-	char *path1, *path2;
-	char tmp[PATH_MAX];
-	Ewl_Filedialog *fd = user_data;
-
-	path1 = ewl_fileselector_get_path(EWL_FILESELECTOR(fd->selector));
-	path2 = ewl_entry_get_text(EWL_ENTRY(fd->entry));
-	snprintf(tmp, PATH_MAX, "%s/%s", path1, path2);
-	free(path1);
-	free(path2);
-	path1 = strdup(tmp);
 	ewl_callback_call_with_event_data(EWL_WIDGET(fd),
-					  EWL_CALLBACK_VALUE_CHANGED, path1);
-	free(path1);
-}
-
-void
-ewl_filedialog_cancel_cb(Ewl_Widget *w, void *ev_data, void *user_data)
-{
-	Ewl_Widget *fd = user_data;
-	ewl_callback_call(fd, EWL_CALLBACK_VALUE_CHANGED);
+					  EWL_CALLBACK_VALUE_CHANGED, str);
 }

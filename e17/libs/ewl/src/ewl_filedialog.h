@@ -1,6 +1,10 @@
 #ifndef __EWL_FILEDIALOG_H__
 #define __EWL_FILEDIALOG_H__
 
+#ifdef __cplusplus
+extern "C" {
+#endif /* __cplusplus */
+
 /**
  * @defgroup Ewl_Filedialog Filedialog: A Dialog For Picking Files
  *
@@ -41,36 +45,32 @@ typedef struct Ewl_Filedialog Ewl_Filedialog;
  */
 struct Ewl_Filedialog
 {
-	Ewl_Box        box;          /**< the box container */
-	Ewl_Filedialog_Type type;    /**< define what type of filedialog */
-	
-	Ewl_Widget     *selector;    /**< Ewl_Fileselector */
-	Ewl_Widget     *path_label;  /**< label to display current path */
-	Ewl_Widget     *entry;       /**< entry for manual input or current selected */
-	
-	Ewl_Widget     *decor_box;   /**< box to hold additional widgets */
-	Ewl_Widget     *button_box;  /**< box to hold the buttons */
-
-	Ewl_Widget     *ok;          /**< open/save button */
-	Ewl_Widget     *cancel;      /**< cancel button */
+	Ewl_Dialog     dialog; /**< the dialog containing the fileselector */
+	Ewl_Widget    *fs;     /**< Ewl_Fileselector */
 };
 
 
-Ewl_Widget *ewl_filedialog_new (Ewl_Filedialog_Type type);
-void ewl_filedialog_init (Ewl_Filedialog * fd, Ewl_Filedialog_Type type);
-void ewl_filedialog_set_directory(Ewl_Filedialog *fd, char *path);
+Ewl_Widget *ewl_filedialog_new      ();
+
+void        ewl_filedialog_init     (Ewl_Filedialog *fd);
+char       *ewl_filedialog_path_get (Ewl_Filedialog *fd);
+char       *ewl_filedialog_file_get (Ewl_Filedialog *fd);
+void        ewl_filedialog_path_set (Ewl_Filedialog *fd,
+			     char   *path);
 
 /*
- * Internally used callback, override at your own risk.
+ * Internally used callbacks, override at your own risk.
  */
-void ewl_filedialog_change_labels_cb (Ewl_Widget * w, void *ev_data, void *user_data);
-void ewl_filedialog_change_path_cb (Ewl_Widget * w, void *ev_data, void *user_data);
-void ewl_filedialog_ok_cb(Ewl_Widget * w, void *ev_data, void *user_data);
-void ewl_filedialog_cancel_cb(Ewl_Widget * w, void *ev_data, void *user_data);
+void ewl_filedialog_click_cb (Ewl_Widget *w, void *ev_data, Ewl_Filedialog *fd);
 
 
 /**
  * @}
  */
 
-#endif /* __EWL_FILEDIALOG_H__ */
+#ifdef __cplusplus
+}
+#endif /* __cplusplus */
+
+
+#endif /* __EWL_FS_H__ */

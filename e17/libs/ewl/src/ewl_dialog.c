@@ -61,10 +61,12 @@ int ewl_dialog_init(Ewl_Dialog * dialog, Ewl_Position pos)
 
 	if (box) {
 		ewl_container_child_append(EWL_CONTAINER(dialog), box);
+		ewl_object_fill_policy_set(EWL_OBJECT(box), EWL_FLAG_FILL_ALL);
 		ewl_widget_show(box);
 	}
 
 	dialog->vbox = ewl_vbox_new();
+	ewl_object_fill_policy_set(EWL_OBJECT(dialog->vbox), EWL_FLAG_FILL_ALL);
 	if (dialog->vbox) {
 		ewl_container_child_append(EWL_CONTAINER(box),
 					   dialog->vbox);
@@ -226,26 +228,26 @@ void ewl_dialog_widget_add(Ewl_Dialog * dialog, Ewl_Widget * w)
 	switch (dialog->position) {
 	case EWL_POSITION_LEFT:
 		{
-			ewl_container_child_append(EWL_CONTAINER
-						   (dialog->vbox), w);
+			ewl_container_child_append(EWL_CONTAINER(dialog->vbox),
+						   w);
 			break;
 		}
 	case EWL_POSITION_TOP:
 		{
-			ewl_container_child_append(EWL_CONTAINER
-						   (dialog->vbox), w);
+			ewl_container_child_append(EWL_CONTAINER(dialog->vbox),
+						   w);
 			break;
 		}
 	case EWL_POSITION_RIGHT:
 		{
-			ewl_container_child_prepend(EWL_CONTAINER
-						    (dialog->vbox), w);
+			ewl_container_child_prepend(EWL_CONTAINER(dialog->vbox),
+						    w);
 			break;
 		}
 	default:
 		{
-			ewl_container_child_prepend(EWL_CONTAINER
-						    (dialog->vbox), w);
+			ewl_container_child_prepend(EWL_CONTAINER(dialog->vbox),
+						    w);
 			break;
 		}
 	}

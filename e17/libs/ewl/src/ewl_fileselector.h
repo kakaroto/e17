@@ -20,6 +20,34 @@
  * @themekey /fileselector/group
  */
 
+
+#include <sys/stat.h>
+
+#ifdef __cplusplus
+extern "C" {
+#endif /* __cplusplus */
+
+
+/* Private: data for a file */
+
+typedef struct Ewl_Fileselector_Data Ewl_Fileselector_Data;
+
+struct Ewl_Fileselector_Data
+{
+  char  *name; /* name of the file */
+  off_t  size; /* size of the file (bytes) */
+  time_t time; /* last modification */
+  mode_t mode; /* mode of the file (permissions) */
+};
+
+Ewl_Fileselector_Data *ewl_fileselector_data_new(const char *name, off_t  size,
+				       time_t time, mode_t mode);
+void  ewl_fileselector_data_free (Ewl_Fileselector_Data *d);
+
+
+
+  /* The File Selector */
+
 /**
  * The Ewl_Fileselector provides a fileselector
  */
@@ -37,42 +65,40 @@ typedef struct Ewl_Fileselector Ewl_Fileselector;
  */
 struct Ewl_Fileselector
 {
-	Ewl_Box         box;   /* the vbox containing the trees */
-	Ewl_Widget     *dirs;	 /* directory table */
-	Ewl_Widget     *files; /* file table */
-
-	char           *path;  /* current fileselector path */
-	char           *item;  /* current selected item in the fileselector */
+  Ewl_Box        box;         /* the box containing the widgets */
+  Ewl_Widget    *list_dirs;   /* directory table */
+  Ewl_Widget    *list_files;  /* file table */
+  Ewl_Widget    *entry_dir;
+  Ewl_Widget    *entry_file;
+  Ewl_Widget    *entry_filter;
+  
+  char          *path;  /* current fileselector path */
+  char          *file;  /* current selected item in the fileselector */
 };
 
 
 Ewl_Widget *ewl_fileselector_new();
 
-void ewl_fileselector_init(Ewl_Fileselector * fs);
-void ewl_fileselector_set_directory(Ewl_Fileselector * fs, char *path);
-
-char *ewl_fileselector_get_filename (Ewl_Fileselector *fs);
-char *ewl_fileselector_get_path (Ewl_Fileselector *fs);
-
+void ewl_fileselector_init(Ewl_Fileselector *fs);
+char *ewl_fileselector_path_get(Ewl_Fileselector *fs);
+char *ewl_fileselector_file_get(Ewl_Fileselector *fs);
+void ewl_fileselector_path_set(Ewl_Fileselector *fs, char   *path);
 
 /*
  * Internally used callbacks, override at your own risk.
  */
-void ewl_fileselector_realize_cb(Ewl_Widget * w, void *ev_data,
-		void *user_data);
-void ewl_fileselector_configure_cb(Ewl_Widget * w, void *ev_data,
-		void *user_data);
-void ewl_fileselector_file_clicked_cb(Ewl_Widget * w, void *ev_data, 
-		void *user_data);
-void ewl_fileselector_file_open_cb(Ewl_Widget * w, void *ev_data,
-		void *user_data);
-void ewl_fileselector_directory_clicked_single_cb(Ewl_Widget * w, 
-		void *ev_data, void *user_data);
-void ewl_fileselector_directory_clicked_cb(Ewl_Widget * w, void *ev_data, 
-		void *user_data);
 
-/**
- * @}
- */
+void ewl_fileselector_select_file_cb(Ewl_Widget *w, void *ev_data, Ewl_Fileselector *fs);
+void ewl_fileselector_select_dir_cb(Ewl_Widget *w, void *ev_data, Ewl_Fileselector *fs);
+void ewl_fileselector_go_up_cb(Ewl_Widget *w, void *ev_data, Ewl_Fileselector *fs);
+void ewl_fileselector_go_home_cb(Ewl_Widget *w, void *ev_data, Ewl_Fileselector *fs);
+void ewl_fileselector_configure_cb(Ewl_Fileselector *fs, char *path);
 
-#endif				/* __EWL_FILESELECTOR_H__ */
+void ewl_fileselector_filter_cb(Ewl_Widget *entry, void *ev_data, void *user_data);
+
+#ifdef __cplusplus
+}
+#endif /* __cplusplus */
+
+
+#endif /* __EWL_FILESELECTOR_H__ */

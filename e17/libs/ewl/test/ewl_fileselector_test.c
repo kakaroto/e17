@@ -56,7 +56,7 @@ __file_clicked(Ewl_Widget * w, void *ev_data, void *user_data)
 	Ewl_Fileselector *fs;
 	
 	printf("file clicked: %s\n", 
-			ewl_fileselector_get_filename (EWL_FILESELECTOR (fs)));
+			ewl_fileselector_file_get (EWL_FILESELECTOR (fs)));
 
 	return;
 	w = NULL;

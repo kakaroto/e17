@@ -75,7 +75,7 @@ void goto_home(Ewl_Widget *w, void *ev_data, void *user_data)
 
 	home = getenv("HOME");
 	if (home)
-		ewl_filedialog_set_directory(fd, home);
+		ewl_filedialog_path_set(fd, home);
 
     return;
     w = NULL;
