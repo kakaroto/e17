@@ -402,11 +402,6 @@ efsd_listdir(EfsdConnection *ec, char *dirname,
     }
 
   result = file_cmd(ec, EFSD_CMD_LISTDIR, dirname, num_options, ops);
-  
-  for (i = 0; i < j; i++)
-    efsd_option_cleanup(&(ops[i]));
-
-  FREE(ops);
   va_end (ap);
 
   D_RETURN_(result);

@@ -486,11 +486,11 @@ fill_file_cmd(struct iovec *iov, EfsdCommand *ec)
   iov[n].iov_len    = sizeof(int);
 
   len_index++;
-  
+  n++;
+
   /* Fill in options, if they exist */
   if (ec->efsd_file_cmd.num_options > 0)
     {
-      n++;
 
       for (i = 0; i < ec->efsd_file_cmd.num_options; i++)
 	{
@@ -498,7 +498,7 @@ fill_file_cmd(struct iovec *iov, EfsdCommand *ec)
 	}
     }
 
-  D_RETURN_(n+1);
+  D_RETURN_(n);
 }
 
 
@@ -528,19 +528,18 @@ fill_2file_cmd(struct iovec *iov, EfsdCommand *ec)
   iov[n].iov_len    = sizeof(int);
 
   len_index += 2;
-
+  n++;
+      
   /* Fill in options, if they exist */
   if (ec->efsd_2file_cmd.num_options > 0)
     {
-      n++;
-
       for (i = 0; i < ec->efsd_2file_cmd.num_options; i++)
 	{
 	  n += fill_option(&iov[n], &(ec->efsd_2file_cmd.options[i]));
 	}
     }
 
-  D_RETURN_(n+1);
+  D_RETURN_(n);
 }
 
 
