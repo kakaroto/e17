@@ -35,9 +35,10 @@
 
 int main()
 {
-        int i = 0;
+        int i = 1;
 	FILE *dict;
 	char buffer[WORDLEN];
+	char *oldbuffer = NULL;
 	clock_t sys_use, user_use;
 	struct tms start_buf, end_buf;
         HASH_TABLE *hash;
@@ -55,16 +56,23 @@ int main()
 	HASH_FREE_KEY(hash, free);
 
 	while (fgets(buffer, WORDLEN, dict)) {
+		int value;
+		char *temp;
 
-		HASH_SET(hash, strdup(buffer), (void *)1);
-		if (!HASH_GET(hash, buffer))
+		temp = strdup(buffer);
+		HASH_SET(hash, temp, (void *)i);
+
+		value = HASH_GET(hash, oldbuffer);
+		if (oldbuffer && (!value || value != i - 1))
 			fprintf(stderr, "Set failed\n");
 
+		oldbuffer = temp;
+
 		if (i % 10 == 0) {
-			HASH_REMOVE(hash, buffer);
-			if (HASH_GET(hash, buffer))
+			HASH_REMOVE(hash, temp);
+			if (HASH_GET(hash, temp))
 				fprintf(stderr, "Delete failed\n");;
-			HASH_SET(hash, strdup(buffer), (void *)1);
+			HASH_SET(hash, temp, (void *)i);
 		}
                 i++;
         }
