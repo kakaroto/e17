@@ -192,11 +192,11 @@ main()
 {
   new Float:value = randf();
   
-  if (value > 0.5)
+  if (value &gt; 0.5)
     {
        new i;
        
-       for (i = 0; i < 20; i++)
+       for (i = 0; i &lt; 20; i++)
          {
 	    printf("value = %f, i = %i\n", value, i);
 	 }
@@ -213,7 +213,7 @@ main()
 recurse(val)
 {
    printf("recurse... val = %i\n", val);
-   if (val >= 10) return val;
+   if (val &gt;= 10) return val;
    return recurse(val + 1);
 }
 </pre>
@@ -270,10 +270,10 @@ menus, no handling of aspect ratio change etc, but it works). This is all of
 </p><p>
 <div class=fragment>
 <pre>
-#include <Evas.h>
-#include <Ecore.h>
-#include <Ecore_Evas.h>
-#include <Emotion.h>
+#include &lt;Evas.h&gt;
+#include &lt;Ecore.h&gt;
+#include &lt;Ecore_Evas.h&gt;
+#include &lt;Emotion.h&gt;
 
 Evas_Object *video;
 
