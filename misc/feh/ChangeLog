@@ -1,3 +1,10 @@
+Fri Mar 17 19:22:18 2000  Tom Gilbert  <gilbertt@btinternet.com>
+
+	* List modes can now sort by image info using -S, --sort. Allowed
+	sort modes are width, height, pixels, size, format, name,
+	filename. Default sort mode is none (ie order specified/read).
+	* eg. feh -lSpixels * to see the highest resolution images...
+
 Fri Mar 17 18:04:03 2000  Tom Gilbert  <gilbertt@btinternet.com>
 
 	* Added -L, --longlist to allow for more detailed listings. Lists

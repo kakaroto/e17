@@ -26,6 +26,11 @@ extern int errno;
 
 static int feh_cmp_name (feh_file_info * info1, feh_file_info * info2);
 static int feh_cmp_filename (feh_file_info * info1, feh_file_info * info2);
+static int feh_cmp_width (feh_file_info * info1, feh_file_info * info2);
+static int feh_cmp_height (feh_file_info * info1, feh_file_info * info2);
+static int feh_cmp_pixels (feh_file_info * info1, feh_file_info * info2);
+static int feh_cmp_size (feh_file_info * info1, feh_file_info * info2);
+static int feh_cmp_format (feh_file_info * info1, feh_file_info * info2);
 
 void
 init_list_mode (void)
@@ -60,11 +65,36 @@ init_list_mode (void)
   if (opt.verbose)
     fprintf (stdout, "\n");
 
-  /* By default sort by filename/name */
-  if(opt.longlist)
-	info_list = feh_list_sort (info_list, feh_cmp_filename);
-  else
-	info_list = feh_list_sort (info_list, feh_cmp_name);
+  D(("sort mode requested is: %d\n", opt.sort));
+  switch (opt.sort)
+    {
+      /* By default don't sort */
+    case SORT_NONE:
+      break;
+    case SORT_NAME:
+      info_list = feh_list_sort (info_list, feh_cmp_name);
+      break;
+    case SORT_FILENAME:
+      info_list = feh_list_sort (info_list, feh_cmp_filename);
+      break;
+    case SORT_WIDTH:
+      info_list = feh_list_sort (info_list, feh_cmp_width);
+      break;
+    case SORT_HEIGHT:
+      info_list = feh_list_sort (info_list, feh_cmp_height);
+      break;
+    case SORT_PIXELS:
+      info_list = feh_list_sort (info_list, feh_cmp_pixels);
+      break;
+    case SORT_SIZE:
+      info_list = feh_list_sort (info_list, feh_cmp_size);
+      break;
+    case SORT_FORMAT:
+      info_list = feh_list_sort (info_list, feh_cmp_format);
+      break;
+    default:
+      break;
+    }
 
   if (opt.longlist)
     printf
@@ -223,8 +253,8 @@ feh_filelinfo_reverse (feh_file_info * list)
 {
   feh_file_info *last;
 
-  D(("In feh_filelinfo_reverse\n"));
-  
+  D (("In feh_filelinfo_reverse\n"));
+
   last = NULL;
   while (list)
     {
@@ -321,13 +351,47 @@ feh_list_sort_merge (feh_file_info * l1,
 static int
 feh_cmp_filename (feh_file_info * info1, feh_file_info * info2)
 {
-    D(("In feh_cmp_filename\n"));
+  D (("In feh_cmp_filename\n"));
   return strcmp (info1->filename, info2->filename);
 }
 
 static int
 feh_cmp_name (feh_file_info * info1, feh_file_info * info2)
 {
-    D(("In feh_cmp_name\n"));
+  D (("In feh_cmp_name\n"));
   return strcmp (info1->name, info2->name);
+}
+
+static int
+feh_cmp_width (feh_file_info * info1, feh_file_info * info2)
+{
+  D (("In feh_cmp_width\n"));
+  return (info1->width - info2->width);
+}
+
+static int
+feh_cmp_height (feh_file_info * info1, feh_file_info * info2)
+{
+  D (("In feh_cmp_height\n"));
+  return (info1->height - info2->height);
+}
+
+static int
+feh_cmp_pixels (feh_file_info * info1, feh_file_info * info2)
+{
+  D (("In feh_cmp_pixels\n"));
+  return (info1->pixels - info2->pixels);
+}
+static int
+feh_cmp_size (feh_file_info * info1, feh_file_info * info2)
+{
+  D (("In feh_cmp_size\n"));
+  return (info1->size - info2->size);
+}
+
+static int
+feh_cmp_format (feh_file_info * info1, feh_file_info * info2)
+{
+  D (("In feh_cmp_format\n"));
+  return strcmp (info1->format, info2->format);
 }

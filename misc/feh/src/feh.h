@@ -111,6 +111,10 @@ enum slide_change
 enum filelist_recuse
 { FILELIST_FIRST, FILELIST_CONTINUE, FILELIST_LAST };
 
+enum sort_type
+{ SORT_NONE, SORT_NAME, SORT_FILENAME, SORT_WIDTH, SORT_HEIGHT, SORT_PIXELS,
+    SORT_SIZE, SORT_FORMAT };
+
 struct __winwidget
 {
   Window win;
@@ -180,6 +184,7 @@ typedef struct cmdlineoptions
   int limit_h;
   int slideshow_delay;
   int reload;
+  int sort;
 }
 fehoptions;
 
@@ -229,7 +234,7 @@ char *feh_http_load_image (char *url);
 void add_file_to_rm_filelist (char *file);
 void delete_rm_files (void);
 int feh_load_image_char (Imlib_Image ** im, char *filename);
-void feh_draw_filename(winwidget w);
+void feh_draw_filename (winwidget w);
 
 
 feh_file filelist_addtofront (feh_file root, feh_file newfile);

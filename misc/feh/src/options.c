@@ -25,7 +25,7 @@ static void check_options (void);
 void
 init_parse_options (int argc, char **argv)
 {
-  static char stropts[] = "a:AbBcdD:f:FhH:iklLmo:O:PqrR:stTvVwW:xy:z:";
+  static char stropts[] = "a:AbBcdD:f:FhH:iklLmo:O:PqrR:sS:tTvVwW:xy:z:";
   static struct option lopts[] = {
     /* actions and macros */
     {"help", 0, 0, 'h'},
@@ -62,6 +62,7 @@ init_parse_options (int argc, char **argv)
     {"slideshow-delay", 1, 0, 'D'},
     {"reload", 1, 0, 'R'},
     {"alpha", 1, 0, 'a'},
+    {"sort", 1, 0, 'S'},
     {0, 0, 0, 0}
   };
   int optch = 0, cmdx = 0;
@@ -104,7 +105,7 @@ init_parse_options (int argc, char **argv)
 	  opt.list = 1;
 	  break;
 	case 'L':
-	  opt.longlist=1;
+	  opt.longlist = 1;
 	  break;
 	case 't':
 	  opt.thumbs = 1;
@@ -144,6 +145,31 @@ init_parse_options (int argc, char **argv)
 	  break;
 	case 'A':
 	  opt.aspect = 0;
+	  break;
+	case 'S':
+	  if (!strcasecmp (optarg, "name"))
+	    opt.sort = SORT_NAME;
+	  else if (!strcasecmp (optarg, "filename"))
+	      opt.sort = SORT_FILENAME;
+	  else if (!strcasecmp (optarg, "width"))
+	    opt.sort = SORT_WIDTH;
+	  else if (!strcasecmp (optarg, "height"))
+	    opt.sort = SORT_HEIGHT;
+	  else if (!strcasecmp (optarg, "pixels"))
+	    opt.sort = SORT_PIXELS;
+	  else if (!strcasecmp (optarg, "size"))
+	    opt.sort = SORT_SIZE;
+	  else if (!strcasecmp (optarg, "format"))
+	    opt.sort = SORT_FORMAT;
+	  else if (!strcasecmp (optarg, "pixles"))
+	    opt.sort = SORT_PIXELS;
+	  else
+	    {
+	      weprintf
+		("Unrecognised sort mode \"%s\". Defaulting to sort by filename",
+		 optarg);
+	      opt.sort = SORT_FILENAME;
+	    }
 	  break;
 	case 'B':
 	  opt.full_screen = 1;
@@ -258,6 +284,12 @@ check_options (void)
 		"   list mode disabled.");
       opt.list = 0;
     }
+
+  if ((opt.sort != SORT_NONE) && (!(opt.list || opt.longlist)))
+    {
+      weprintf ("You can only sort in list mode. Ignoring sort parameter");
+      opt.sort = SORT_NONE;
+    }
 }
 
 void
@@ -319,6 +351,9 @@ show_usage (void)
 	   "  -l, --list                Don't display info. Analyse them and display an\n"
 	   "                            'ls' style listing. Useful in scripts hunt out\n"
 	   "                            images of a certain size/resolution/type etc\n"
+	   "  -S, --sort SORT_TYPE      In list mode, the output may be sorted according\n"
+	   "                            to image parameters. Allowed sort types are:\n"
+	   "                            name, filename, width, height, pixels, size, format\n"
 	   "  -m, --montage             Enable montage mode. Montage mode creates a new\n"
 	   "                            image consisting of a grid of thumbnails of the\n"
 	   "                            images specified using FILE... When montage mode\n"
