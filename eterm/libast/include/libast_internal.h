@@ -91,9 +91,9 @@ typedef struct ptr_t_struct {
     /** The pointer's size, in bytes.  The pointer's size, in bytes. */
     size_t size;
     /** Filename.  The file which last (re)allocated the pointer. */
-    char file[LIBAST_FNAME_LEN + 1];
+    spif_char_t file[LIBAST_FNAME_LEN + 1];
     /** Line number.  The line number where the pointer was last (re)allocated. */
-    unsigned long line;
+    spif_uint32_t line;
 } ptr_t;
 /**
  * Pointer list structure.
@@ -107,7 +107,7 @@ typedef struct ptr_t_struct {
  */
 typedef struct memrec_t_struct {
     /** Pointer count.  The number of pointers being tracked. */
-    unsigned long cnt;
+    size_t cnt;
     /** Pointer list.  The list of tracked pointers. */
     ptr_t *ptrs;
 } memrec_t;

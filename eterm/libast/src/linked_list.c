@@ -264,15 +264,16 @@ spif_linked_list_item_show(spif_linked_list_item_t self, spif_charptr_t name, sp
     }
 
     memset(tmp, ' ', indent);
-    snprintf(tmp + indent, sizeof(tmp) - indent, "(spif_linked_list_item_t) %s (%9p -> %9p):  ",
-             name, self, self->next);
+    snprintf(SPIF_CAST_C(char *) tmp + indent, sizeof(tmp) - indent,
+             "(spif_linked_list_item_t) %s (%9p -> %9p):  ",
+             name, SPIF_CAST(ptr) self, SPIF_CAST(ptr) self->next);
     if (SPIF_STR_ISNULL(buff)) {
         buff = spif_str_new_from_ptr(tmp);
     } else {
         spif_str_append_from_ptr(buff, tmp);
     }
     if (SPIF_LINKED_LIST_ITEM_ISNULL(self->data)) {
-        spif_str_append_from_ptr(buff, SPIF_NULLSTR_TYPE(obj) "\n");
+        spif_str_append_from_ptr(buff, SPIF_CAST(charptr) SPIF_NULLSTR_TYPE(obj) "\n");
     } else {
         buff = SPIF_OBJ_SHOW(self->data, buff, 0);
     }
@@ -307,8 +308,8 @@ spif_linked_list_item_type(spif_linked_list_item_t self)
     return SPIF_OBJ_CLASSNAME(self);
 }
 
-SPIF_DEFINE_PROPERTY_FUNC(linked_list_item, obj, data);
-SPIF_DEFINE_PROPERTY_FUNC_NONOBJ(linked_list_item, linked_list_item, next);
+SPIF_DEFINE_PROPERTY_FUNC(linked_list_item, obj, data)
+SPIF_DEFINE_PROPERTY_FUNC_NONOBJ(linked_list_item, linked_list_item, next)
 
 
 static spif_linked_list_t
@@ -431,27 +432,29 @@ spif_linked_list_show(spif_linked_list_t self, spif_charptr_t name, spif_str_t b
     }
 
     memset(tmp, ' ', indent);
-    snprintf(tmp + indent, sizeof(tmp) - indent, "(spif_linked_list_t) %s:  %10p {\n", name, self);
+    snprintf(SPIF_CAST_C(char *) tmp + indent, sizeof(tmp) - indent,
+             "(spif_linked_list_t) %s:  %10p {\n", name, SPIF_CAST(ptr) self);
     if (SPIF_STR_ISNULL(buff)) {
         buff = spif_str_new_from_ptr(tmp);
     } else {
         spif_str_append_from_ptr(buff, tmp);
     }
 
-    snprintf(tmp + indent, sizeof(tmp) - indent, "  len:  %lu\n", SPIF_CAST_C(unsigned long) self->len);
+    snprintf(SPIF_CAST_C(char *) tmp + indent, sizeof(tmp) - indent, "  len:  %lu\n",
+             SPIF_CAST_C(unsigned long) self->len);
     spif_str_append_from_ptr(buff, tmp);
 
     if (SPIF_LINKED_LIST_ITEM_ISNULL(self->head)) {
-        spif_str_append_from_ptr(buff, SPIF_NULLSTR_TYPE(obj) "\n");
+        spif_str_append_from_ptr(buff, SPIF_CAST(charptr) SPIF_NULLSTR_TYPE(obj) "\n");
     } else {
         for (current = self->head, i = 0; current; current = current->next, i++) {
-            sprintf(tmp, "item %d", i);
+            sprintf(SPIF_CAST_C(char *) tmp, "item %d", i);
             buff = spif_linked_list_item_show(current, tmp, buff, indent + 2);
         }
     }
 
     memset(tmp, ' ', indent);
-    snprintf(tmp + indent, sizeof(tmp) - indent, "}\n");
+    snprintf(SPIF_CAST_C(char *) tmp + indent, sizeof(tmp) - indent, "}\n");
     spif_str_append_from_ptr(buff, tmp);
     return buff;
 }
@@ -959,8 +962,8 @@ spif_linked_list_to_array(spif_linked_list_t self)
     return tmp;
 }
 
-SPIF_DEFINE_PROPERTY_FUNC_NONOBJ(linked_list, listidx, len);
-SPIF_DEFINE_PROPERTY_FUNC_NONOBJ(linked_list, linked_list_item, head);
+SPIF_DEFINE_PROPERTY_FUNC_NONOBJ(linked_list, listidx, len)
+SPIF_DEFINE_PROPERTY_FUNC_NONOBJ(linked_list, linked_list_item, head)
 
 
 static spif_linked_list_iterator_t
@@ -1021,17 +1024,19 @@ spif_linked_list_iterator_show(spif_linked_list_iterator_t self, spif_charptr_t 
     }
 
     memset(tmp, ' ', indent);
-    snprintf(tmp + indent, sizeof(tmp) - indent, "(spif_linked_list_iterator_t) %s:  %10p {\n", name, self);
+    snprintf(SPIF_CAST_C(char *) tmp + indent, sizeof(tmp) - indent,
+             "(spif_linked_list_iterator_t) %s:  %10p {\n",
+             name, SPIF_CAST(ptr) self);
     if (SPIF_STR_ISNULL(buff)) {
         buff = spif_str_new_from_ptr(tmp);
     } else {
         spif_str_append_from_ptr(buff, tmp);
     }
 
-    buff = spif_linked_list_show(self->subject, "subject", buff, indent + 2);
-    buff = spif_linked_list_item_show(self->current, "current", buff, indent + 2);
+    buff = spif_linked_list_show(self->subject, SPIF_CAST(charptr) "subject", buff, indent + 2);
+    buff = spif_linked_list_item_show(self->current, SPIF_CAST(charptr) "current", buff, indent + 2);
 
-    snprintf(tmp + indent, sizeof(tmp) - indent, "}\n");
+    snprintf(SPIF_CAST_C(char *) tmp + indent, sizeof(tmp) - indent, "}\n");
     spif_str_append_from_ptr(buff, tmp);
     return buff;
 }
@@ -1090,5 +1095,5 @@ spif_linked_list_iterator_next(spif_linked_list_iterator_t self)
     return tmp;
 }
 
-SPIF_DEFINE_PROPERTY_FUNC(linked_list_iterator, linked_list, subject);
-SPIF_DEFINE_PROPERTY_FUNC_NONOBJ(linked_list_iterator, linked_list_item, current);
+SPIF_DEFINE_PROPERTY_FUNC(linked_list_iterator, linked_list, subject)
+SPIF_DEFINE_PROPERTY_FUNC_NONOBJ(linked_list_iterator, linked_list_item, current)

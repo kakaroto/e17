@@ -49,7 +49,7 @@ static const char cvs_ident[] = "$Id$";
  * some built-in functions.  This variable must be set using the
  * libast_set_program_name() function.
  */
-char *libast_program_name = PACKAGE;
+spif_charptr_t libast_program_name = SPIF_CAST(charptr) PACKAGE;
 /**
  * Program version.
  *
@@ -58,7 +58,7 @@ char *libast_program_name = PACKAGE;
  * number checking and some built-in functions.  This variable must be
  * set using the libast_set_program_version() function.
  */
-char *libast_program_version = VERSION;
+spif_charptr_t libast_program_version = SPIF_CAST(charptr) VERSION;
 
 /**
  * Sets the program name.
@@ -75,17 +75,17 @@ void
 libast_set_program_name(const char *progname)
 {
     if (libast_program_name) {
-        if (!strcmp(libast_program_name, progname)) {
+        if (!strcmp(SPIF_CAST_C(char *) libast_program_name, progname)) {
             return;
         }
-        if (strcmp(libast_program_name, PACKAGE)) {
+        if (strcmp(SPIF_CAST_C(char *) libast_program_name, PACKAGE)) {
             FREE(libast_program_name);
         }
     }
     if (progname) {
-        libast_program_name = STRDUP(progname);
+        libast_program_name = SPIF_CAST(charptr) STRDUP(progname);
     } else {
-        libast_program_name = PACKAGE;
+        libast_program_name = SPIF_CAST(charptr) PACKAGE;
     }
 }
 
@@ -104,17 +104,17 @@ void
 libast_set_program_version(const char *progversion)
 {
     if (libast_program_version) {
-        if (!strcmp(libast_program_version, progversion)) {
+        if (!strcmp(SPIF_CAST_C(char *) libast_program_version, progversion)) {
             return;
         }
-        if (strcmp(libast_program_version, VERSION)) {
+        if (strcmp(SPIF_CAST_C(char *) libast_program_version, VERSION)) {
             FREE(libast_program_version);
         }
     }
     if (progversion) {
-        libast_program_version = STRDUP(progversion);
+        libast_program_version = SPIF_CAST(charptr) STRDUP(progversion);
     } else {
-        libast_program_version = VERSION;
+        libast_program_version = SPIF_CAST(charptr) VERSION;
     }
 }
 

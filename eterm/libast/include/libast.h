@@ -1095,17 +1095,17 @@ extern int re_exec();
  * @ingroup DOXGRP_MEM
  */
 #if (DEBUG >= DEBUG_MEM)
-# define MALLOC(sz)                             spifmem_malloc(__FILE__, __LINE__, (sz))
-# define CALLOC(type,n)                         spifmem_calloc(__FILE__, __LINE__, (n), (sizeof(type)))
-# define REALLOC(mem,sz)                        spifmem_realloc(#mem, __FILE__, __LINE__, (mem), (sz))
-# define FREE(ptr)                              do { spifmem_free(#ptr, __FILE__, __LINE__, (ptr)); (ptr) = NULL; } while (0)
-# define STRDUP(s)                              spifmem_strdup(#s, __FILE__, __LINE__, (char *) (s))
+# define MALLOC(sz)                             spifmem_malloc(SPIF_CAST(charptr) __FILE__, __LINE__, (sz))
+# define CALLOC(type,n)                         spifmem_calloc(SPIF_CAST(charptr) __FILE__, __LINE__, (n), (sizeof(type)))
+# define REALLOC(mem,sz)                        spifmem_realloc(SPIF_CAST(charptr) #mem, SPIF_CAST(charptr) __FILE__, __LINE__, (mem), (sz))
+# define FREE(ptr)                              do { spifmem_free(SPIF_CAST(charptr) #ptr, SPIF_CAST(charptr) __FILE__, __LINE__, (ptr)); (ptr) = NULL; } while (0)
+# define STRDUP(s)                              spifmem_strdup(SPIF_CAST(charptr) #s, SPIF_CAST(charptr) __FILE__, __LINE__, SPIF_CAST(charptr) (s))
 # define MALLOC_DUMP()                          spifmem_dump_mem_tables()
-# define X_CREATE_PIXMAP(d, win, w, h, depth)   spifmem_x_create_pixmap(__FILE__, __LINE__, (d), (win), (w), (h), (depth))
-# define X_FREE_PIXMAP(d, p)                    spifmem_x_free_pixmap(#p, __FILE__, __LINE__, (d), (p))
+# define X_CREATE_PIXMAP(d, win, w, h, depth)   spifmem_x_create_pixmap(SPIF_CAST(charptr) __FILE__, __LINE__, (d), (win), (w), (h), (depth))
+# define X_FREE_PIXMAP(d, p)                    spifmem_x_free_pixmap(SPIF_CAST(charptr) #p, SPIF_CAST(charptr) __FILE__, __LINE__, (d), (p))
 # if LIBAST_IMLIB2_SUPPORT
-#  define IMLIB_REGISTER_PIXMAP(p)              spifmem_imlib_register_pixmap(#p, __FILE__, __LINE__, (p))
-#  define IMLIB_FREE_PIXMAP(p)                  spifmem_imlib_free_pixmap(#p, __FILE__, __LINE__, (p))
+#  define IMLIB_REGISTER_PIXMAP(p)              spifmem_imlib_register_pixmap(SPIF_CAST(charptr) #p, SPIF_CAST(charptr) __FILE__, __LINE__, (p))
+#  define IMLIB_FREE_PIXMAP(p)                  spifmem_imlib_free_pixmap(SPIF_CAST(charptr) #p, SPIF_CAST(charptr) __FILE__, __LINE__, (p))
 # else
 #  define IMLIB_REGISTER_PIXMAP(p)              NOP
 #  define IMLIB_FREE_PIXMAP(p)                  NOP
@@ -2671,22 +2671,28 @@ extern unsigned int DEBUG_LEVEL;
 
 /* mem.c */
 extern void spifmem_init(void);
-extern void *spifmem_malloc(const char *, unsigned long, size_t);
-extern void *spifmem_realloc(const char *, const char *, unsigned long, void *, size_t);
-extern void *spifmem_calloc(const char *, unsigned long, size_t, size_t);
-extern void spifmem_free(const char *, const char *, unsigned long, void *);
-extern char *spifmem_strdup(const char *, const char *, unsigned long, const char *);
+extern void *spifmem_malloc(const spif_charptr_t, unsigned long, size_t);
+extern void *spifmem_realloc(const spif_charptr_t, const spif_charptr_t, unsigned long, void *, size_t);
+extern void *spifmem_calloc(const spif_charptr_t, unsigned long, size_t, size_t);
+extern void spifmem_free(const spif_charptr_t, const spif_charptr_t, unsigned long, void *);
+extern spif_charptr_t spifmem_strdup(const spif_charptr_t, const spif_charptr_t,
+                                     unsigned long, const spif_charptr_t);
 extern void spifmem_dump_mem_tables(void);
 #if LIBAST_X11_SUPPORT
-extern Pixmap spifmem_x_create_pixmap(const char *, unsigned long, Display *, Drawable, unsigned int, unsigned int, unsigned int);
-extern void spifmem_x_free_pixmap(const char *, const char *, unsigned long, Display *, Pixmap);
+extern Pixmap spifmem_x_create_pixmap(const spif_charptr_t, unsigned long, Display *,
+                                      Drawable, unsigned int, unsigned int, unsigned int);
+extern void spifmem_x_free_pixmap(const spif_charptr_t, const spif_charptr_t,
+                                  unsigned long, Display *, Pixmap);
 # if LIBAST_IMLIB2_SUPPORT
-extern void spifmem_imlib_register_pixmap(const char *var, const char *filename, unsigned long line, Pixmap p);
-extern void spifmem_imlib_free_pixmap(const char *var, const char *filename, unsigned long line, Pixmap p);
+extern void spifmem_imlib_register_pixmap(const spif_charptr_t var, const spif_charptr_t filename,
+                                          unsigned long line, Pixmap p);
+extern void spifmem_imlib_free_pixmap(const spif_charptr_t var, const spif_charptr_t filename,
+                                      unsigned long line, Pixmap p);
 # endif
 extern void spifmem_dump_pixmap_tables(void);
-extern GC spifmem_x_create_gc(const char *, unsigned long, Display *, Drawable, unsigned long, XGCValues *);
-extern void spifmem_x_free_gc(const char *, const char *, unsigned long, Display *, GC);
+extern GC spifmem_x_create_gc(const spif_charptr_t, unsigned long, Display *, Drawable,
+                              unsigned long, XGCValues *);
+extern void spifmem_x_free_gc(const spif_charptr_t, const spif_charptr_t, unsigned long, Display *, GC);
 extern void spifmem_dump_gc_tables(void);
 #endif
 extern void spiftool_free_array(void *, size_t);

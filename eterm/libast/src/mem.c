@@ -40,10 +40,10 @@ static const char cvs_ident[] = "$Id$";
 
 #include "libast_internal.h"
 
-static void memrec_add_var(memrec_t *, const char *, unsigned long, void *, size_t);
+static void memrec_add_var(memrec_t *, const spif_charptr_t, unsigned long, void *, size_t);
 static ptr_t *memrec_find_var(memrec_t *, const void *);
-static void memrec_rem_var(memrec_t *, const char *, const char *, unsigned long, const void *);
-static void memrec_chg_var(memrec_t *, const char *, const char *, unsigned long, const void *, void *, size_t);
+static void memrec_rem_var(memrec_t *, const spif_charptr_t, const spif_charptr_t, unsigned long, const void *);
+static void memrec_chg_var(memrec_t *, const spif_charptr_t, const spif_charptr_t, unsigned long, const void *, void *, size_t);
 static void memrec_dump_pointers(memrec_t *);
 static void memrec_dump_resources(memrec_t *);
 
@@ -142,7 +142,7 @@ spifmem_init(void)
  * @ingroup DOXGRP_MEM
  */
 static void
-memrec_add_var(memrec_t *memrec, const char *filename, unsigned long line, void *ptr, size_t size)
+memrec_add_var(memrec_t *memrec, const spif_charptr_t filename, unsigned long line, void *ptr, size_t size)
 {
     register ptr_t *p;
 
@@ -211,7 +211,7 @@ memrec_find_var(memrec_t *memrec, const void *ptr)
  * @ingroup DOXGRP_MEM
  */
 static void
-memrec_rem_var(memrec_t *memrec, const char *var, const char *filename, unsigned long line, const void *ptr)
+memrec_rem_var(memrec_t *memrec, const spif_charptr_t var, const spif_charptr_t filename, unsigned long line, const void *ptr)
 {
     register ptr_t *p;
 
@@ -252,7 +252,7 @@ memrec_rem_var(memrec_t *memrec, const char *var, const char *filename, unsigned
  * @ingroup DOXGRP_MEM
  */
 static void
-memrec_chg_var(memrec_t *memrec, const char *var, const char *filename, unsigned long line, const void *oldp, void *newp, size_t size)
+memrec_chg_var(memrec_t *memrec, const spif_charptr_t var, const spif_charptr_t filename, unsigned long line, const void *oldp, void *newp, size_t size)
 {
     register ptr_t *p;
 
@@ -290,10 +290,10 @@ memrec_dump_pointers(memrec_t *memrec)
     register ptr_t *p;
     unsigned long i, j, k, l, total = 0;
     unsigned long len;
-    unsigned char buff[9];
+    spif_char_t buff[9];
 
     ASSERT(memrec != NULL);
-    fprintf(LIBAST_DEBUG_FD, "PTR:  %lu pointers stored.\n", memrec->cnt);
+    fprintf(LIBAST_DEBUG_FD, "PTR:  %lu pointers stored.\n", SPIF_CAST_C(unsigned long) memrec->cnt);
     fprintf(LIBAST_DEBUG_FD,
             "PTR:   Pointer |       Filename       |  Line  |  Address |  Size  | Offset  | 00 01 02 03 04 05 06 07 |  ASCII  \n");
     fprintf(LIBAST_DEBUG_FD,
@@ -304,12 +304,14 @@ memrec_dump_pointers(memrec_t *memrec)
 
     /* First, dump the contents of the memrec->ptrs[] array. */
     for (p = memrec->ptrs, j = 0; j < len; j += 8) {
-        fprintf(LIBAST_DEBUG_FD, "PTR:   %07lu | %20s | %6lu | %10p | %06lu | %07x | ", (unsigned long) 0, "", (unsigned long) 0,
-                memrec->ptrs, (unsigned long) (sizeof(ptr_t) * memrec->cnt), (unsigned int) j);
+        fprintf(LIBAST_DEBUG_FD, "PTR:   %07lu | %20s | %6lu | %10p | %06lu | %07x | ",
+                (unsigned long) 0, "", (unsigned long) 0,
+                SPIF_CAST(ptr) memrec->ptrs,
+                (unsigned long) (sizeof(ptr_t) * memrec->cnt), (unsigned int) j);
         /* l is the number of characters we're going to output */
         l = ((len - j < 8) ? (len - j) : (8));
         /* Copy l bytes (up to 8) from memrec->ptrs[] (p) to buffer */
-        memcpy(buff, ((char *) p) + j, l);
+        memcpy(buff, ((spif_charptr_t) p) + j, l);
         buff[l] = 0;
         for (k = 0; k < l; k++) {
             fprintf(LIBAST_DEBUG_FD, "%02x ", buff[k]);
@@ -319,7 +321,7 @@ memrec_dump_pointers(memrec_t *memrec)
             fprintf(LIBAST_DEBUG_FD, "   ");
         }
         /* Finally, print the printable ASCII string for those l bytes */
-        fprintf(LIBAST_DEBUG_FD, "| %-8s\n", spiftool_safe_str((char *) buff, l));
+        fprintf(LIBAST_DEBUG_FD, "| %-8s\n", spiftool_safe_str((spif_charptr_t) buff, l));
         /* Flush after every line in case we crash */
         fflush(LIBAST_DEBUG_FD);
     }
@@ -329,12 +331,13 @@ memrec_dump_pointers(memrec_t *memrec)
         /* Add this pointer's size to our total */
         total += p->size;
         for (j = 0; j < p->size; j += 8) {
-            fprintf(LIBAST_DEBUG_FD, "PTR:   %07lu | %20s | %6lu | %10p | %06lu | %07x | ", i + 1, NONULL(p->file), p->line, p->ptr,
-                    (unsigned long) p->size, (unsigned int) j);
+            fprintf(LIBAST_DEBUG_FD, "PTR:   %07lu | %20s | %6lu | %10p | %06lu | %07x | ",
+                    i + 1, NONULL(p->file), SPIF_CAST_C(unsigned long) p->line,
+                    p->ptr, SPIF_CAST_C(unsigned long) p->size, SPIF_CAST_C(unsigned) j);
             /* l is the number of characters we're going to output */
             l = ((p->size - j < 8) ? (p->size - j) : (8));
             /* Copy l bytes (up to 8) from p->ptr to buffer */
-            memcpy(buff, ((char *) p->ptr) + j, l);
+            memcpy(buff, ((spif_charptr_t) p->ptr) + j, l);
             buff[l] = 0;
             for (k = 0; k < l; k++) {
                 fprintf(LIBAST_DEBUG_FD, "%02x ", buff[k]);
@@ -344,7 +347,7 @@ memrec_dump_pointers(memrec_t *memrec)
                 fprintf(LIBAST_DEBUG_FD, "   ");
             }
             /* Finally, print the printable ASCII string for those l bytes */
-            fprintf(LIBAST_DEBUG_FD, "| %-8s\n", spiftool_safe_str((char *) buff, l));
+            fprintf(LIBAST_DEBUG_FD, "| %-8s\n", spiftool_safe_str(buff, l));
             /* Flush after every line in case we crash */
             fflush(LIBAST_DEBUG_FD);
         }
@@ -374,7 +377,8 @@ memrec_dump_resources(memrec_t *memrec)
 
     ASSERT(memrec != NULL);
     len = memrec->cnt;
-    fprintf(LIBAST_DEBUG_FD, "RES:  %lu resources stored.\n", memrec->cnt);
+    fprintf(LIBAST_DEBUG_FD, "RES:  %lu resources stored.\n",
+            SPIF_CAST_C(unsigned long) memrec->cnt);
     fprintf(LIBAST_DEBUG_FD, "RES:   Index | Resource ID |       Filename       |  Line  |  Size  \n");
     fprintf(LIBAST_DEBUG_FD, "RES:  -------+-------------+----------------------+--------+--------\n");
     fflush(LIBAST_DEBUG_FD);
@@ -382,11 +386,13 @@ memrec_dump_resources(memrec_t *memrec)
     for (p = memrec->ptrs, i = 0, total = 0; i < len; i++, p++) {
         total += p->size;
         fprintf(LIBAST_DEBUG_FD, "RES:   %5lu |  0x%08lx | %20s | %6lu | %6lu\n",
-                i, (unsigned long) p->ptr, NONULL(p->file), p->line, (unsigned long) p->size);
+                i, SPIF_CAST_C(unsigned long) p->ptr, NONULL(p->file),
+                SPIF_CAST_C(unsigned long) p->line,
+                SPIF_CAST_C(unsigned long) p->size);
         /* Flush after every line in case we crash */
         fflush(LIBAST_DEBUG_FD);
     }
-    fprintf(LIBAST_DEBUG_FD, "RES:  Total size: %lu bytes\n", total);
+    fprintf(LIBAST_DEBUG_FD, "RES:  Total size: %lu bytes\n", SPIF_CAST_C(unsigned long) total);
     fflush(LIBAST_DEBUG_FD);
 }
 
@@ -411,7 +417,7 @@ memrec_dump_resources(memrec_t *memrec)
  * @ingroup DOXGRP_MEM
  */
 void *
-spifmem_malloc(const char *filename, unsigned long line, size_t size)
+spifmem_malloc(const spif_charptr_t filename, unsigned long line, size_t size)
 {
     void *temp;
 
@@ -427,7 +433,7 @@ spifmem_malloc(const char *filename, unsigned long line, size_t size)
     temp = (void *) malloc(size);
     ASSERT_RVAL(!SPIF_PTR_ISNULL(temp), SPIF_NULL_TYPE(ptr));
     if (DEBUG_LEVEL >= DEBUG_MEM) {
-        memrec_add_var(&malloc_rec, NONULL(filename), line, temp, size);
+        memrec_add_var(&malloc_rec, SPIF_CAST(charptr) NONULL(filename), line, temp, size);
     }
     return (temp);
 }
@@ -453,7 +459,7 @@ spifmem_malloc(const char *filename, unsigned long line, size_t size)
  * @ingroup DOXGRP_MEM
  */
 void *
-spifmem_realloc(const char *var, const char *filename, unsigned long line, void *ptr, size_t size)
+spifmem_realloc(const spif_charptr_t var, const spif_charptr_t filename, unsigned long line, void *ptr, size_t size)
 {
     void *temp;
 
@@ -474,7 +480,7 @@ spifmem_realloc(const char *var, const char *filename, unsigned long line, void 
         temp = (void *) realloc(ptr, size);
         ASSERT_RVAL(!SPIF_PTR_ISNULL(temp), SPIF_NULL_TYPE(ptr));
         if (DEBUG_LEVEL >= DEBUG_MEM) {
-            memrec_chg_var(&malloc_rec, var, NONULL(filename), line, ptr, temp, size);
+            memrec_chg_var(&malloc_rec, var, SPIF_CAST(charptr) NONULL(filename), line, ptr, temp, size);
         }
     }
     return (temp);
@@ -501,7 +507,7 @@ spifmem_realloc(const char *var, const char *filename, unsigned long line, void 
  * @ingroup DOXGRP_MEM
  */
 void *
-spifmem_calloc(const char *filename, unsigned long line, size_t count, size_t size)
+spifmem_calloc(const spif_charptr_t filename, unsigned long line, size_t count, size_t size)
 {
     void *temp;
 
@@ -516,7 +522,7 @@ spifmem_calloc(const char *filename, unsigned long line, size_t count, size_t si
     temp = (void *) calloc(count, size);
     ASSERT_RVAL(!SPIF_PTR_ISNULL(temp), SPIF_NULL_TYPE(ptr));
     if (DEBUG_LEVEL >= DEBUG_MEM) {
-        memrec_add_var(&malloc_rec, NONULL(filename), line, temp, size * count);
+        memrec_add_var(&malloc_rec, SPIF_CAST(charptr) NONULL(filename), line, temp, size * count);
     }
     return (temp);
 }
@@ -538,7 +544,7 @@ spifmem_calloc(const char *filename, unsigned long line, size_t count, size_t si
  * @ingroup DOXGRP_MEM
  */
 void
-spifmem_free(const char *var, const char *filename, unsigned long line, void *ptr)
+spifmem_free(const spif_charptr_t var, const spif_charptr_t filename, unsigned long line, void *ptr)
 {
 #if MALLOC_CALL_DEBUG
     ++free_count;
@@ -550,7 +556,7 @@ spifmem_free(const char *var, const char *filename, unsigned long line, void *pt
     D_MEM(("Variable %s (%10p) at %s:%lu\n", var, ptr, NONULL(filename), line));
     if (ptr) {
         if (DEBUG_LEVEL >= DEBUG_MEM) {
-            memrec_rem_var(&malloc_rec, var, NONULL(filename), line, ptr);
+            memrec_rem_var(&malloc_rec, var, SPIF_CAST(charptr) NONULL(filename), line, ptr);
         }
         free(ptr);
     } else {
@@ -575,20 +581,20 @@ spifmem_free(const char *var, const char *filename, unsigned long line, void *pt
  * @see @link DOXGRP_MEM Memory Management Subsystem @endlink, STRDUP()
  * @ingroup DOXGRP_MEM
  */
-char *
-spifmem_strdup(const char *var, const char *filename, unsigned long line, const char *str)
+spif_charptr_t 
+spifmem_strdup(const spif_charptr_t var, const spif_charptr_t filename, unsigned long line, const spif_charptr_t str)
 {
-    register char *newstr;
+    register spif_charptr_t newstr;
     register size_t len;
 
-    ASSERT_RVAL(!SPIF_PTR_ISNULL(str), SPIF_NULL_TYPE_C(char *));
+    ASSERT_RVAL(!SPIF_PTR_ISNULL(str), SPIF_NULL_TYPE_C(spif_charptr_t));
     USE_VAR(var);
     D_MEM(("Variable %s (%10p) at %s:%lu\n", var, str, NONULL(filename), line));
 
-    len = strlen(str) + 1;      /* Copy NUL byte also */
-    newstr = (char *) spifmem_malloc(NONULL(filename), line, len);
+    len = strlen(SPIF_CAST_C(char *) str) + 1;      /* Copy NUL byte also */
+    newstr = SPIF_CAST(charptr) spifmem_malloc(SPIF_CAST(charptr) NONULL(filename), line, len);
     ASSERT_RVAL(!SPIF_PTR_ISNULL(newstr), SPIF_NULL_TYPE(ptr));
-    strcpy(newstr, str);
+    strcpy(SPIF_CAST_C(char *) newstr, SPIF_CAST_C(char *) str);
     return (newstr);
 }
 
@@ -634,7 +640,7 @@ spifmem_dump_mem_tables(void)
  * @ingroup DOXGRP_MEM
  */
 Pixmap
-spifmem_x_create_pixmap(const char *filename, unsigned long line, Display * d, Drawable win, unsigned int w, unsigned int h,
+spifmem_x_create_pixmap(const spif_charptr_t filename, unsigned long line, Display * d, Drawable win, unsigned int w, unsigned int h,
                        unsigned int depth)
 {
     Pixmap p;
@@ -644,7 +650,7 @@ spifmem_x_create_pixmap(const char *filename, unsigned long line, Display * d, D
     p = XCreatePixmap(d, win, w, h, depth);
     ASSERT_RVAL(p != None, None);
     if (DEBUG_LEVEL >= DEBUG_MEM) {
-        memrec_add_var(&pixmap_rec, NONULL(filename), line, (void *) p, w * h * (depth / 8));
+        memrec_add_var(&pixmap_rec, SPIF_CAST(charptr) NONULL(filename), line, (void *) p, w * h * (depth / 8));
     }
     return (p);
 }
@@ -667,12 +673,12 @@ spifmem_x_create_pixmap(const char *filename, unsigned long line, Display * d, D
  * @ingroup DOXGRP_MEM
  */
 void
-spifmem_x_free_pixmap(const char *var, const char *filename, unsigned long line, Display * d, Pixmap p)
+spifmem_x_free_pixmap(const spif_charptr_t var, const spif_charptr_t filename, unsigned long line, Display * d, Pixmap p)
 {
     D_MEM(("Freeing pixmap %s (0x%08x) at %s:%lu\n", var, p, NONULL(filename), line));
     if (p) {
         if (DEBUG_LEVEL >= DEBUG_MEM) {
-            memrec_rem_var(&pixmap_rec, var, NONULL(filename), line, (void *) p);
+            memrec_rem_var(&pixmap_rec, var, SPIF_CAST(charptr) NONULL(filename), line, (void *) p);
         }
         XFreePixmap(d, p);
     } else {
@@ -698,14 +704,14 @@ spifmem_x_free_pixmap(const char *var, const char *filename, unsigned long line,
  * @ingroup DOXGRP_MEM
  */
 void
-spifmem_imlib_register_pixmap(const char *var, const char *filename, unsigned long line, Pixmap p)
+spifmem_imlib_register_pixmap(const spif_charptr_t var, const spif_charptr_t filename, unsigned long line, Pixmap p)
 {
     USE_VAR(var);
     D_MEM(("Registering pixmap %s (0x%08x) created by Imlib2 at %s:%lu\n", var, p, NONULL(filename), line));
     if (p) {
         if (DEBUG_LEVEL >= DEBUG_MEM) {
             if (!memrec_find_var(&pixmap_rec, (void *) p)) {
-                memrec_add_var(&pixmap_rec, NONULL(filename), line, (void *) p, 1);
+                memrec_add_var(&pixmap_rec, SPIF_CAST(charptr) NONULL(filename), line, (void *) p, 1);
             } else {
                 D_MEM(("Pixmap 0x%08x already registered.\n"));
             }
@@ -733,12 +739,12 @@ spifmem_imlib_register_pixmap(const char *var, const char *filename, unsigned lo
  * @ingroup DOXGRP_MEM
  */
 void
-spifmem_imlib_free_pixmap(const char *var, const char *filename, unsigned long line, Pixmap p)
+spifmem_imlib_free_pixmap(const spif_charptr_t var, const spif_charptr_t filename, unsigned long line, Pixmap p)
 {
     D_MEM(("Freeing pixmap %s (0x%08x) at %s:%lu using Imlib2\n", var, p, NONULL(filename), line));
     if (p) {
         if (DEBUG_LEVEL >= DEBUG_MEM) {
-            memrec_rem_var(&pixmap_rec, var, NONULL(filename), line, (void *) p);
+            memrec_rem_var(&pixmap_rec, var, SPIF_CAST(charptr) NONULL(filename), line, (void *) p);
         }
         imlib_free_pixmap_and_mask(p);
     } else {
@@ -788,7 +794,7 @@ spifmem_dump_pixmap_tables(void)
  * @ingroup DOXGRP_MEM
  */
 GC
-spifmem_x_create_gc(const char *filename, unsigned long line, Display * d, Drawable win, unsigned long mask, XGCValues * gcv)
+spifmem_x_create_gc(const spif_charptr_t filename, unsigned long line, Display * d, Drawable win, unsigned long mask, XGCValues * gcv)
 {
     GC gc;
 
@@ -797,7 +803,7 @@ spifmem_x_create_gc(const char *filename, unsigned long line, Display * d, Drawa
     gc = XCreateGC(d, win, mask, gcv);
     ASSERT_RVAL(gc != None, None);
     if (DEBUG_LEVEL >= DEBUG_MEM) {
-        memrec_add_var(&gc_rec, NONULL(filename), line, (void *) gc, sizeof(XGCValues));
+        memrec_add_var(&gc_rec, SPIF_CAST(charptr) NONULL(filename), line, (void *) gc, sizeof(XGCValues));
     }
     return (gc);
 }
@@ -820,12 +826,12 @@ spifmem_x_create_gc(const char *filename, unsigned long line, Display * d, Drawa
  * @ingroup DOXGRP_MEM
  */
 void
-spifmem_x_free_gc(const char *var, const char *filename, unsigned long line, Display * d, GC gc)
+spifmem_x_free_gc(const spif_charptr_t var, const spif_charptr_t filename, unsigned long line, Display * d, GC gc)
 {
     D_MEM(("spifmem_x_free_gc() called for variable %s (0x%08x) at %s:%lu\n", var, gc, NONULL(filename), line));
     if (gc) {
         if (DEBUG_LEVEL >= DEBUG_MEM) {
-            memrec_rem_var(&gc_rec, var, NONULL(filename), line, (void *) gc);
+            memrec_rem_var(&gc_rec, var, SPIF_CAST(charptr) NONULL(filename), line, (void *) gc);
         }
         XFreeGC(d, gc);
     } else {

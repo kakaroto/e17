@@ -249,7 +249,9 @@ spif_obj_show(spif_obj_t self, spif_charptr_t name, spif_str_t buff, size_t inde
     }
 
     memset(tmp, ' ', indent);
-    snprintf(tmp + indent, sizeof(tmp) - indent, "(spif_obj_t) %s:  %10p \"%s\"\n", name, self, SPIF_OBJ_CLASSNAME(self));
+    snprintf(SPIF_CAST_C(char *) tmp + indent, sizeof(tmp) - indent,
+             "(spif_obj_t) %s:  %10p \"%s\"\n",
+             name, SPIF_CAST(ptr) self, SPIF_OBJ_CLASSNAME(self));
     if (SPIF_STR_ISNULL(buff)) {
         buff = spif_str_new_from_ptr(tmp);
     } else {
@@ -388,7 +390,7 @@ spif_bool_t
 spif_obj_set_class(spif_obj_t self, spif_class_t cls)
 {
     ASSERT_RVAL(!SPIF_OBJ_ISNULL(self), FALSE);
-    SPIF_OBJ_CLASS(self) = cls;
+    SPIF_OBJ(self)->cls = cls;
     return TRUE;
 }
 
