@@ -440,7 +440,7 @@ save_url (char *url)
 static void
 reset_string (void *data)
 {
-  display_string("E-UrlWatch");
+  display_string ("E-UrlWatch");
   return;
   data = NULL;
 }
@@ -452,33 +452,33 @@ scroll_string (void *data)
   static int back = 0;
   static int pause = 0;
 
-  if(dtext.len > 19)
-  {
-  if (dtext.pos > (dtext.len - 19))
+  if (dtext.len > 19)
     {
-      dtext.pos = dtext.len - 19;
-      back = 1;
-      pause = 1;
+      if (dtext.pos > (dtext.len - 19))
+	{
+	  dtext.pos = dtext.len - 19;
+	  back = 1;
+	  pause = 1;
+	}
+      else if (dtext.pos == 0)
+	{
+	  back = 0;
+	  pause = 1;
+	}
+
+      Esnprintf (buf, sizeof (buf), "%s", dtext.str + dtext.pos);
+
+      if (!back)
+	dtext.pos += 1;
+      else
+	dtext.pos -= 1;
+
+      Epplet_change_label (lbl_url, buf);
     }
-  else if (dtext.pos == 0)
+  else
     {
-      back = 0;
-      pause = 1;
-    }
-  
-  Esnprintf (buf, sizeof (buf), "%s", dtext.str + dtext.pos);
-
-  if (!back)
-    dtext.pos += 1;
-  else
-    dtext.pos -= 1;
-
-  Epplet_change_label (lbl_url, buf);
-  }
-  else
-  {
       Epplet_change_label (lbl_url, dtext.str);
-  }
+    }
 
   if (pause)
     {
@@ -586,7 +586,7 @@ create_epplet_layout (void)
 					    NULL, cb_close, NULL));
   Epplet_gadget_show (btn_help =
 		      Epplet_create_button (NULL, NULL,
-					    18, 2, 0, 0,
+					    82, 2, 0, 0,
 					    "HELP", 0, NULL, cb_help, NULL));
   Epplet_gadget_show (btn_www =
 		      Epplet_create_button ("WWW", NULL,
@@ -660,7 +660,7 @@ create_epplet_layout (void)
 			  cb_cloak_delay, (void *) (&(cloak_delays[9])));
   Epplet_add_popup_entry (ctimer_p, "2 mins", NULL,
 			  cb_cloak_delay, (void *) (&(cloak_delays[10])));
-  Epplet_gadget_show (btn_conf =
+/*  Epplet_gadget_show (btn_conf =
 		      Epplet_create_popupbutton (NULL,
 						 NULL, 34,
 						 2, 12, 12, "CONFIGURE", p));
@@ -670,6 +670,7 @@ create_epplet_layout (void)
 						 "/epplet_data/E-ScreenShoot_minitime.png",
 						 50, 2,
 						 12, 12, NULL, ctimer_p));
+ */
   da = Epplet_create_drawingarea (2, 2, 44, 44);
   win = Epplet_get_drawingarea_window (da);
   buf = Epplet_make_rgb_buf (40, 40);
