@@ -23,8 +23,8 @@ Description: Enlightened help program
 
 Package: enlightenment-nosound
 Architecture: any
-Depends: enlightenment-docs, ${shlibs:Depends}
-Recommends: enlightenment-theme, esound, enlightenment-dox
+Depends: enlightenment-docs, enlightenment-dox, ${shlibs:Depends}
+Recommends: enlightenment-theme, esound
 Conflicts: enlightenment, enlightenment-theme (<< 0.15.0-1)
 Replaces: enlightenment
 Description: The Enlightenment Window Manager
@@ -36,8 +36,8 @@ Description: The Enlightenment Window Manager
 
 Package: enlightenment
 Architecture: any
-Depends: ${shlibs:Depends}, enlightenment-docs
-Recommends: enlightenment-theme, enlightenment-dox
+Depends: ${shlibs:Depends}, enlightenment-docs, enlightenment-dox
+Recommends: enlightenment-theme
 Conflicts: enlightenment-nosound, enlightenment-theme (<< 0.15.0-1)
 Replaces: enlightenment-nosound
 Description: The Enlightenment Window Manager
