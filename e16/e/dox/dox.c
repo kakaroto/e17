@@ -256,10 +256,17 @@ main(int argc, char **argv)
 	else
 	   docdir = strdup(argv[i]);
      }
-   s = malloc(strlen(docdir) + strlen(docfile) + 2);
+   s = malloc(strlen(docdir) + strlen(docfile) + 2 + 3);
    strcpy(s, docdir);
    strcat(s, "/");
    strcat(s, docfile);
+   
+   if (getenv("LANG")) 
+     {
+	strncat(s. ".");
+	strncat(s, getenv("LANG"), 2);
+     }
+   
 #ifndef __EMX__
    f = fopen(s, "r");
 #else
@@ -267,8 +274,19 @@ main(int argc, char **argv)
 #endif
    if (!f)
      {
-	printf("Edoc_dir %s does not contain a %s file\n", docdir, docfile);
-	exit(1);
+	strcpy(s, docdir);
+	strcat(s, "/");
+	strcat(s, docfile);
+#ifndef __EMX__
+	f = fopen(s, "r");
+#else
+	f = fopen(s, "rt");
+#endif
+	if(!f)
+	  {
+	     printf("Edoc_dir %s does not contain a %s file\n", docdir, docfile);
+	     exit(1);
+	  }
      }
    Esetenv("DISPLAY", DisplayString(disp), 1);
    Esetenv("E_DATADIR", ENLIGHTENMENT_ROOT, 1);
