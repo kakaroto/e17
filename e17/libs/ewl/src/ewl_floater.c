@@ -17,11 +17,11 @@ extern void     __ewl_widget_reparent(Ewl_Widget * parent, void *ev_data,
 				      void *user_data);
 
 /**
- * ewl_floater_new - allocate a new floater widget
- * @parent: the parent widget to follow if desired
+ * @param parent: the parent widget to follow if desired
+ * @return Returns NULL on failure, or the new floater widget on success.
+ * @brief Allocate a new floater widget
  *
- * Returns NULL on failure, or a pointer to the newly allocated floater
- * widget on success. The @parent widget should be either a widget to follow
+ * The @a parent widget should be either a widget to follow
  * relative too, or a window for absolute positioning.
  */
 Ewl_Widget     *ewl_floater_new(Ewl_Widget * parent)
@@ -44,12 +44,12 @@ Ewl_Widget     *ewl_floater_new(Ewl_Widget * parent)
 
 
 /**
- * ewl_floater_init - initialize a floater to default values
- * @f: the floater widget
- * @parent: the parent widget, we need this to get the evas and clip_box
+ * @param f: the floater widget
+ * @param parent: the parent widget, we need this to get the evas and clip_box
+ * @return Returns no value.
+ * @brief Initialize a floater to default values
  * 
- * Returns no value. Sets the fields and callbacks of the floater @f to their
- * defaults.
+ * Sets the fields and callbacks of the floater @a f to their defaults.
  */
 void ewl_floater_init(Ewl_Floater * f, Ewl_Widget * parent)
 {
@@ -112,12 +112,11 @@ void ewl_floater_init(Ewl_Floater * f, Ewl_Widget * parent)
 }
 
 /**
- * ewl_floater_set_position - set the start x/y position of the floater
- * @f: Ewl_Floater * - the floater widget
- * @x: int - start x coordinate from the top
- * @y: int - start y coordinate from the top
- *
- * Returns no value
+ * @param f: Ewl_Floater * - the floater widget
+ * @param x: int - start x coordinate from the top
+ * @param y: int - start y coordinate from the top
+ * @return Returns no value
+ * @brief Set the start x/y position of the floater
  */
 void ewl_floater_set_position(Ewl_Floater * f, int x, int y)
 {
@@ -141,12 +140,13 @@ void ewl_floater_set_position(Ewl_Floater * f, int x, int y)
 }
 
 /**
- * ewl_floater_set_relative - set a floater positioned relative to a widget
- * @f: the floater to change positioning relation
- * @w: the widget to position the floater relative
+ * @param f: the floater to change positioning relation
+ * @param w: the widget to position the floater relative
+ * @return Returns no value.
+ * @brief Set a floater positioned relative to a widget
  *
- * Returns no value. Sets the floater @f to be positioned relative to the
- * position of the widget @w.
+ * Sets the floater @a f to be positioned relative to the
+ * position of the widget @a w.
  */
 void ewl_floater_set_relative(Ewl_Floater * f, Ewl_Widget * w)
 {
