@@ -1,0 +1,25 @@
+<bookinfo>
+ <title>The EWL book</title>
+ <authorgroup>
+  <author>
+   <firstname>dan</firstname>
+   <surname>sinclair</surname>
+   <othername>'dj2'</othername>
+  </author>
+ </authorgroup>
+
+ <revhistory>
+  <revision>
+   <revnumber>v0.1</revnumber>
+   <date>July 07, 2004</date>
+   <revremark>Initial document</revremark>
+  </revision>
+ </revhistory>
+
+ <abstract>
+  <para>This book is an tutorial on the use of the EWL 
+(Enlightened Widget Library).</para>
+ </abstract>
+</bookinfo>
+
+

@@ -1,0 +1,28 @@
+<chapter id="ch-Contributing">
+<title>Contributing</title>
+
+<para>
+If you found this document useful, but lacking in some fashion, please consider
+contributing back to the document itself. This document is available under an
+open license and any submissions are greatly appreciated. Any submissions
+can be sent to 
+<literal><ulink url="mailto:zero@perplexity.org">zero@perplexity.org</ulink></literal>.
+</para>
+
+<para>
+Note that any contributions to this document need to be licensed under
+the Creative Commons NonCommercial-ShareAlike 1.0 License, which is what
+this document uses.</para>
+
+<para>
+If you wish to contribute to the EWL or another part of the EFL, take a look at the 
+<literal><ulink url="http://www.enlightenment.org">www.enlightenment.org</ulink></literal>
+website, all the information on accessing CVS and the mailing lists can be found there.
+</para>
+
+<para>Thank you.</para>
+
+</chapter>
+
+
+

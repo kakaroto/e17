@@ -1,0 +1,30 @@
+The EWL book
+------------
+Author
+------
+dan 'dj2' sinclair <zero@perplexity.org>
+
+About
+-----
+This book is an attempt to document the EWL. It is setup in
+the same vein as the GTK+ tutorial.
+
+Feedback
+--------
+If you have any feedback on this book, needed content, confusing
+content, whatever, let me know and I'll see what can be 
+done.
+
+Generating
+----------
+Doing a simple make should hopefully build the documents for
+you, you can generate a PDF, HTML or TXT document as 
+desired.
+
+Contributing
+------------
+This sucker is written in DocBook, so it helps a bit to know that,
+but even if you don't, you can always send the submission to me
+and I can fix it up. Send stuff to zero@perplexity.org.
+
+
