@@ -1856,3 +1856,50 @@ imlib_image_remove_and_free_attached_data_value(Imlib_Image image, char *key)
    t = __imlib_RemoveTag(im, key);
    __imlib_FreeTag(im, t);
 }
+
+void
+imlib_save_image(Imlib_Image image, char *filename)
+{
+   ImlibImage *im;
+      
+   CAST_IMAGE(im, image);
+   __imlib_SaveImage(im, filename, NULL, 0, NULL);
+}
+
+void
+imlib_save_image_with_progress_callback(Imlib_Image image, char *filename,
+					Imlib_Internal_Progress_Function progress_function,
+					char progress_granulatiy)
+{
+   ImlibImage *im;
+      
+   CAST_IMAGE(im, image);
+   __imlib_SaveImage(im, filename, progress_function, 
+		     progress_granulatiy, NULL);
+}
+
+void
+imlib_save_image_with_error_return(Imlib_Image image, char *filename,
+				   Imlib_Load_Error *error_return)
+{
+   ImlibImage *im;
+      
+   CAST_IMAGE(im, image);
+   __imlib_SaveImage(im, filename, NULL, 0, error_return);
+}
+
+void
+imlib_save_image_with_progress_callback_and_error_return(Imlib_Image image, 
+							 char *filename,
+							 Imlib_Internal_Progress_Function progress_function,
+							 char progress_granulatiy,
+							 Imlib_Load_Error *error_return)
+{
+   ImlibImage *im;
+      
+   CAST_IMAGE(im, image);
+   __imlib_SaveImage(im, filename,progress_function, 
+		     progress_granulatiy, error_return);
+}
+
+

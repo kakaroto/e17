@@ -1116,3 +1116,75 @@ __imlib_DirtyImage(ImlibImage *im)
    __imlib_DirtyPixmapsForImage(im);
 }
 
+void
+__imlib_SaveImage(ImlibImage *im, char *file,
+		  void (*progress)(ImlibImage *im, char percent,
+				   int update_x, int update_y,
+				   int update_w, int update_h),
+		  char progress_granularity,
+		  ImlibLoadError *er)
+{
+   ImlibLoader *l;
+   ImlibLoadError e;
+
+   if (!im->file)
+     {
+	if (*er)
+	   *er = LOAD_ERROR_FILE_DOES_NOT_EXIST;
+	return;
+     }
+   /* fidn the laoder for the format - if its null use the extension */
+   l = __imlib_FindBestLoaderForFileFormat(file, im->format);
+   /* no loader - abort */
+   if (!l) 
+     {
+	if (er)
+	   *er = LOAD_ERROR_NO_LOADER_FOR_FILE_FORMAT;
+	return;
+     }
+   /* no saver function in loader - abort */
+   if (!l->save)
+     {
+	if (er)
+	   *er = LOAD_ERROR_NO_LOADER_FOR_FILE_FORMAT;
+	return;
+     }
+   /* if they want an error returned - assume none by default */
+   if (*er)
+      *er = LOAD_ERROR_NONE;
+   if (im->file)
+      free(im->file);
+   
+   e = l->save(im, progress, progress_granularity);
+   
+   if ((er) && (e == 0))
+     {
+	*er = LOAD_ERROR_UNKNOWN;
+	if (errno == EEXIST)
+	   *er = LOAD_ERROR_FILE_DOES_NOT_EXIST;
+	else if (errno == EISDIR)
+	   *er = LOAD_ERROR_FILE_IS_DIRECTORY;
+	else if (errno == EISDIR)
+	   *er = LOAD_ERROR_FILE_IS_DIRECTORY;
+	else if (errno == EACCES)
+	   *er = LOAD_ERROR_PERMISSION_DENIED_TO_WRITE;
+	else if (errno == ENAMETOOLONG)
+	   *er = LOAD_ERROR_PATH_TOO_LONG;
+	else if (errno == ENOENT)
+	   *er = LOAD_ERROR_PATH_COMPONENT_NON_EXISTANT;
+	else if (errno == ENOTDIR)
+	   *er = LOAD_ERROR_PATH_COMPONENT_NOT_DIRECTORY;
+	else if (errno == EFAULT)
+	   *er = LOAD_ERROR_PATH_POINTS_OUTSIDE_ADDRESS_SPACE;
+	else if (errno == ELOOP)
+	   *er = LOAD_ERROR_TOO_MANY_SYMBOLIC_LINKS;
+	else if (errno == ENOMEM)
+	   *er = LOAD_ERROR_OUT_OF_MEMORY;
+	else if (errno == EMFILE)
+	   *er = LOAD_ERROR_OUT_OF_FILE_DESCRIPTORS;
+	else if (errno == ENOSPC)
+	   *er = LOAD_ERROR_OUT_OF_DISK_SPACE;
+	else if (errno == EROFS)
+	   *er = LOAD_ERROR_PERMISSION_DENIED_TO_WRITE;
+     }
+}

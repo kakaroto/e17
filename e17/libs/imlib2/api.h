@@ -48,6 +48,8 @@ enum _imlib_load_error
    IMLIB_LOAD_ERROR_TOO_MANY_SYMBOLIC_LINKS,
    IMLIB_LOAD_ERROR_OUT_OF_MEMORY,
    IMLIB_LOAD_ERROR_OUT_OF_FILE_DESCRIPTORS,
+   IMLIB_LOAD_ERROR_PERMISSION_DENIED_TO_WRITE,
+   IMLIB_LOAD_ERROR_OUT_OF_DISK_SPACE,
    IMLIB_LOAD_ERROR_UNKNOWN
 };
 
@@ -373,13 +375,20 @@ int  imlib_image_get_attached_value(Imlib_Image image, char *key);
 void imlib_image_remove_attached_data_value(Imlib_Image image, char *key);
 void imlib_image_remove_and_free_attached_data_value(Imlib_Image image, char *key);
 
-# if 0
-/* image saving functions */
 void imlib_save_image(Imlib_Image image, char *filename);
+void imlib_save_image_with_progress_callback(Imlib_Image image, char *filename,
+					     Imlib_Progress_Function progress_function,
+					     char progress_granulatiy);
+void imlib_save_image_with_error_return(Imlib_Image image, char *filename,
+					Imlib_Load_Error *error_return);
+void imlib_save_image_with_progress_callback_and_error_return(Imlib_Image image,
+							      char *filename,
+							      Imlib_Progress_Function progress_function,
+							      char progress_granulatiy,
+							      Imlib_Load_Error *error_return);
 
 /* FIXME: */
 /* need to add arbitary rotation routines */
 /* need to add polygon fill code */
-#endif
 
 #endif

@@ -23,6 +23,8 @@ enum _load_error
    LOAD_ERROR_TOO_MANY_SYMBOLIC_LINKS,
    LOAD_ERROR_OUT_OF_MEMORY,
    LOAD_ERROR_OUT_OF_FILE_DESCRIPTORS,
+   LOAD_ERROR_PERMISSION_DENIED_TO_WRITE,
+   LOAD_ERROR_OUT_OF_DISK_SPACE,   
    LOAD_ERROR_UNKNOWN
 };
 
@@ -159,6 +161,12 @@ void              __imlib_FreePixmap(Display *d, Pixmap p);
 void              __imlib_FlushCache(void);
 void              __imlib_DirtyPixmapsForImage(ImlibImage *im);
 void              __imlib_DirtyImage(ImlibImage *im);
+void              __imlib_SaveImage(ImlibImage *im, char *file,
+		                    void (*progress)(ImlibImage *im, char percent,
+						     int update_x, int update_y,
+						     int update_w, int update_h),
+		                    char progress_granularity,
+		                    ImlibLoadError *er);
 
 # define IMAGE_HAS_ALPHA(im) ((im)->flags & F_HAS_ALPHA)
 # define IMAGE_IS_UNLOADED(im) ((im)->flags & F_UNLOADED)
