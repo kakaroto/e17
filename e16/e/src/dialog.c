@@ -5,7 +5,7 @@ static TextClass   *d_tc_default = NULL;
 static void         DialogRealizeTClassDefault(void);
 static void         DialogRealizeIClassDefault(void);
 
-static void 
+static void
 DialogRealizeTClassDefault(void)
 {
    if (!d_tc_default)
@@ -20,7 +20,7 @@ DialogRealizeTClassDefault(void)
      }
 }
 
-static void 
+static void
 DialogRealizeIClassDefault(void)
 {
    if (!d_ic_default)
@@ -144,7 +144,7 @@ DialogRealizeIClassDefault(void)
    IclassPopulate(d_ic_default);
 }
 
-void 
+void
 DialogBindKey(Dialog * d, char *key, void (*func) (int val, void *data),
 	      int val, void *data)
 {
@@ -202,7 +202,7 @@ CreateDialog(char *name)
    return d;
 }
 
-void 
+void
 FreeDButton(DButton * db)
 {
    if (db->text)
@@ -214,7 +214,7 @@ FreeDButton(DButton * db)
    Efree(db);
 }
 
-void 
+void
 FreeDialog(Dialog * d)
 {
    int                 i;
@@ -240,7 +240,7 @@ FreeDialog(Dialog * d)
    Efree(d);
 }
 
-void 
+void
 DialogRestart(int val, void *data)
 {
    doExit("restart");
@@ -248,7 +248,7 @@ DialogRestart(int val, void *data)
    data = NULL;
 }
 
-void 
+void
 DialogQuit(int val, void *data)
 {
    doExit("error");
@@ -256,7 +256,7 @@ DialogQuit(int val, void *data)
    data = NULL;
 }
 
-void 
+void
 DialogAlert(char *fmt,...)
 {
    char                text[10240];
@@ -269,7 +269,7 @@ DialogAlert(char *fmt,...)
    Alert(text);
 }
 
-void 
+void
 DialogAlertOK(char *fmt,...)
 {
    char                text[10240];
@@ -283,7 +283,7 @@ DialogAlertOK(char *fmt,...)
    RESET_ALERT;
 }
 
-void 
+void
 DialogSetParamText(Dialog * d, char *fmt,...)
 {
    char                text[10240];
@@ -295,7 +295,7 @@ DialogSetParamText(Dialog * d, char *fmt,...)
    DialogSetText(d, text);
 }
 
-void 
+void
 DialogSetText(Dialog * d, char *text)
 {
    int                 w, h;
@@ -311,7 +311,7 @@ DialogSetText(Dialog * d, char *text)
    d->h = h + d->iclass->padding.top + d->iclass->padding.bottom;
 }
 
-void 
+void
 DialogSetTitle(Dialog * d, char *title)
 {
    if (d->title)
@@ -319,7 +319,7 @@ DialogSetTitle(Dialog * d, char *title)
    d->title = duplicate(title);
 }
 
-void 
+void
 DialogSetExitFunction(Dialog * d, void (*func) (int val, void *data),
 		      int val, void *data)
 {
@@ -328,7 +328,7 @@ DialogSetExitFunction(Dialog * d, void (*func) (int val, void *data),
    d->exit_data = data;
 }
 
-void 
+void
 DialogAddButton(Dialog * d, char *text, void (*func) (int val, void *data),
 		char close)
 {
@@ -378,7 +378,7 @@ DialogAddButton(Dialog * d, char *text, void (*func) (int val, void *data),
 		ButtonPressMask | ButtonReleaseMask | ExposureMask);
 }
 
-void 
+void
 DialogDrawButton(Dialog * d, int bnum)
 {
    int                 state;
@@ -405,7 +405,7 @@ DialogDrawButton(Dialog * d, int bnum)
 	       d->button[bnum]->text);
 }
 
-void 
+void
 DialogActivateButton(Window win, int inclick)
 {
    Dialog             *d;
@@ -433,7 +433,7 @@ DialogActivateButton(Window win, int inclick)
       DialogClose(d);
 }
 
-void 
+void
 DialogDraw(Dialog * d)
 {
    if ((!d->tclass) || (!d->iclass))
@@ -451,7 +451,7 @@ DialogDraw(Dialog * d)
      }
 }
 
-void 
+void
 DialogDrawArea(Dialog * d, int x, int y, int w, int h)
 {
    if ((!d->tclass) || (!d->iclass))
@@ -469,7 +469,7 @@ DialogDrawArea(Dialog * d, int x, int y, int w, int h)
      }
 }
 
-void 
+void
 DialogRedraw(Dialog * d)
 {
    int                 i;
@@ -481,7 +481,7 @@ DialogRedraw(Dialog * d)
    DialogDraw(d);
 }
 
-void 
+void
 ShowDialog(Dialog * d)
 {
    char                pq;
@@ -605,7 +605,7 @@ ShowDialog(Dialog * d)
    DialogRedraw(d);
 }
 
-void 
+void
 DialogClose(Dialog * d)
 {
    EWin               *ewin;
@@ -806,7 +806,7 @@ DialogAddItem(DItem * dii, int type)
    return di;
 }
 
-void 
+void
 DialogItemSetCallback(DItem * di, void (*func) (int val, void *data),
 		      int val, char *data)
 {
@@ -815,7 +815,7 @@ DialogItemSetCallback(DItem * di, void (*func) (int val, void *data),
    di->data = data;
 }
 
-void 
+void
 DialogItemSetClass(DItem * di, ImageClass * iclass, TextClass * tclass)
 {
    if (di->iclass)
@@ -831,7 +831,7 @@ DialogItemSetClass(DItem * di, ImageClass * iclass, TextClass * tclass)
       di->tclass->ref_count++;
 }
 
-void 
+void
 DialogItemSetPadding(DItem * di, int left, int right, int top, int bottom)
 {
    di->padding.left = left;
@@ -840,33 +840,33 @@ DialogItemSetPadding(DItem * di, int left, int right, int top, int bottom)
    di->padding.bottom = bottom;
 }
 
-void 
+void
 DialogItemSetFill(DItem * di, char fill_h, char fill_v)
 {
    di->fill_h = fill_h;
    di->fill_v = fill_v;
 }
 
-void 
+void
 DialogItemSetAlign(DItem * di, int align_h, int align_v)
 {
    di->align_h = align_h;
    di->align_v = align_v;
 }
 
-void 
+void
 DialogItemSetRowSpan(DItem * di, int row_span)
 {
    di->row_span = row_span;
 }
 
-void 
+void
 DialogItemSetColSpan(DItem * di, int col_span)
 {
    di->col_span = col_span;
 }
 
-void 
+void
 DialogRealizeItem(Dialog * d, DItem * di)
 {
    char               *def = NULL;
@@ -1408,7 +1408,7 @@ DialogRealizeItem(Dialog * d, DItem * di)
      }
 }
 
-void 
+void
 MoveTableBy(Dialog * d, DItem * di, int dx, int dy)
 {
    int                 i;
@@ -1470,7 +1470,7 @@ MoveTableBy(Dialog * d, DItem * di, int dx, int dy)
  ((x + w) > xx) && \
  ((y + h) > yy))
 
-void 
+void
 DialogDrawItems(Dialog * d, DItem * di, int x, int y, int w, int h)
 {
    int                 state;
@@ -1659,7 +1659,7 @@ DialogDrawItems(Dialog * d, DItem * di, int x, int y, int w, int h)
      }
 }
 
-void 
+void
 DialogItemsRealize(Dialog * d)
 {
    char                pq;
@@ -1675,7 +1675,7 @@ DialogItemsRealize(Dialog * d)
    d->h = d->item->h + d->iclass->padding.top + d->iclass->padding.bottom;
 }
 
-void 
+void
 DialogItemButtonSetText(DItem * di, char *text)
 {
    if (di->item.button.text)
@@ -1683,7 +1683,7 @@ DialogItemButtonSetText(DItem * di, char *text)
    di->item.button.text = duplicate(text);
 }
 
-void 
+void
 DialogItemCheckButtonSetText(DItem * di, char *text)
 {
    if (di->item.check_button.text)
@@ -1691,7 +1691,7 @@ DialogItemCheckButtonSetText(DItem * di, char *text)
    di->item.check_button.text = duplicate(text);
 }
 
-void 
+void
 DialogItemTextSetText(DItem * di, char *text)
 {
    if (di->item.text.text)
@@ -1699,7 +1699,7 @@ DialogItemTextSetText(DItem * di, char *text)
    di->item.text.text = duplicate(text);
 }
 
-void 
+void
 DialogItemRadioButtonSetText(DItem * di, char *text)
 {
    if (di->item.check_button.text)
@@ -1707,7 +1707,7 @@ DialogItemRadioButtonSetText(DItem * di, char *text)
    di->item.check_button.text = duplicate(text);
 }
 
-void 
+void
 DialogItemRadioButtonSetFirst(DItem * di, DItem * first)
 {
    di->item.radio_button.first = first;
@@ -1718,7 +1718,7 @@ DialogItemRadioButtonSetFirst(DItem * di, DItem * first)
    first->item.radio_button.next = di;
 }
 
-void 
+void
 DialogItemRadioButtonGroupSetValPtr(DItem * di, int *val_ptr)
 {
    while (di)
@@ -1730,25 +1730,25 @@ DialogItemRadioButtonGroupSetValPtr(DItem * di, int *val_ptr)
      }
 }
 
-void 
+void
 DialogItemRadioButtonGroupSetVal(DItem * di, int val)
 {
    di->item.radio_button.val = val;
 }
 
-void 
+void
 DialogItemCheckButtonSetState(DItem * di, char onoff)
 {
    di->item.check_button.onoff = onoff;
 }
 
-void 
+void
 DialogItemCheckButtonSetPtr(DItem * di, char *onoff_ptr)
 {
    di->item.check_button.onoff_ptr = onoff_ptr;
 }
 
-void 
+void
 DialogItemTableSetOptions(DItem * di, int num_columns, char border,
 			  char homogenous_h, char homogenous_v)
 {
@@ -1758,13 +1758,13 @@ DialogItemTableSetOptions(DItem * di, int num_columns, char border,
    di->item.table.homogenous_v = homogenous_v;
 }
 
-void 
+void
 DialogItemSeparatorSetOrientation(DItem * di, char horizontal)
 {
    di->item.separator.horizontal = horizontal;
 }
 
-void 
+void
 DialogItemImageSetFile(DItem * di, char *image)
 {
    if (di->item.image.image)
@@ -1774,7 +1774,7 @@ DialogItemImageSetFile(DItem * di, char *image)
    di->fill_v = 0;
 }
 
-void 
+void
 DialogItemSliderSetVal(DItem * di, int val)
 {
    di->item.slider.val = val;
@@ -1788,7 +1788,7 @@ DialogItemSliderSetVal(DItem * di, int val)
      }
 }
 
-void 
+void
 DialogItemSliderSetBounds(DItem * di, int lower, int upper)
 {
    if (lower < upper)
@@ -1805,37 +1805,37 @@ DialogItemSliderSetBounds(DItem * di, int lower, int upper)
       di->item.slider.upper = di->item.slider.lower + 1;
 }
 
-void 
+void
 DialogItemSliderSetUnits(DItem * di, int units)
 {
    di->item.slider.unit = units;
 }
 
-void 
+void
 DialogItemSliderSetJump(DItem * di, int jump)
 {
    di->item.slider.jump = jump;
 }
 
-void 
+void
 DialogItemSliderSetMinLength(DItem * di, int min)
 {
    di->item.slider.min_length = min;
 }
 
-void 
+void
 DialogItemSliderSetValPtr(DItem * di, int *val_ptr)
 {
    di->item.slider.val_ptr = val_ptr;
 }
 
-void 
+void
 DialogItemSliderSetOrientation(DItem * di, char horizontal)
 {
    di->item.slider.horizontal = horizontal;
 }
 
-void 
+void
 DialogItemAreaSetSize(DItem * di, int w, int h)
 {
    di->item.area.w = w;
@@ -1848,20 +1848,20 @@ DialogItemAreaGetWindow(DItem * di)
    return di->item.area.area_win;
 }
 
-void 
+void
 DialogItemAreaGetSize(DItem * di, int *w, int *h)
 {
    *w = di->item.area.w;
    *h = di->item.area.h;
 }
 
-void 
+void
 DialogItemAreaSetEventFunc(DItem * di, void (*func) (int val, void *data))
 {
    di->item.area.event_func = func;
 }
 
-void 
+void
 DialogFreeItem(DItem * di)
 {
    if (di->type == DITEM_TABLE)
