@@ -1,3 +1,8 @@
+Sat Aug 19 16:07:29 2000  Paul Duncan  <pabs@pablotron.org>
+
+	* added multiple key loading to cam.  also updated the
+	documentation and chnaged the version number to 0.3.
+
 Fri Aug  4 12:09:29 2000  Tom Gilbert  <gilbertt@linuxbrit.co.uk>
 
 	* Sweet patch from Eric, changes window title to "Reloading:

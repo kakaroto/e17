@@ -8,7 +8,7 @@ $bp =    $ENV{HOME}."/.cam_bookmarks";
 $feh =   "feh";
 $title = "%cCAM";
 # additional feh cmdline options
-$PRE=    " -Cwebcam -1 0 -0 1 ";
+$PRE=    "-q -w -Cwebcam -1 0 -0 1 ";
 $POST=   ""; 
 #############################################
 #############################################
@@ -40,6 +40,11 @@ if ($key =~ /\-a/ or $key =~ /\-\-add/)	{
 	exit 0;
 }
 
+if ($key=~/-k/i||$key=~/--keep-images/i||$key=~/--save-pr0n/i)	{
+	$PRE.=" -k ";
+	$key = shift @ARGV;
+}
+
 # load bookmarks
 open BMF, "$bp" or die "Couldn't open bookmarks file \"$bp\".";
 foreach (<BMF>)	{
@@ -60,34 +65,54 @@ if ($key =~ /-l/ or $key =~ /--list/) {
 	exit 0;
 }
 
-$url = $bms{$key};
-unless ($url)	{
-	print "Coudln't find URL key $key.\n";
-	exit(-1);
+# main loop
+LOOP: {
+	do {
+		$title = "";
+		$url = $bms{$key};
+		unless ($url)	{
+			print "Coudln't find URL key $key.\n";
+			exit(-1); # (should jump to next LOOP, but oh well)
+		}
+		$url =~ s/^(.*?),(.*)$/$2/;
+		$ref = $1;
+		
+		if ($title)
+		{
+			$title =~ s/\%c/$key/g;
+			$title =~ s/\%\%/\%/g;
+			$PRE = " --title \"$title\" " . $PRE;
+		}
+	
+		$cmd = "$feh $PRE -R $ref $url $POST";
+		print "$cmd\n" if ($DEBUG);
+		FORK: {
+			if ($pid = fork) {
+				# parent
+			} elsif (defined $pid) {
+				# child
+				exec "$cmd";      # to remove perl interpreter from memory
+				exit(-1);         # just in case the exec fails
+			} elsif ( $! =~ /No more process/) {
+				sleep 5;
+				redo FORK;
+			} else {
+				# wtf?
+				die "Unrecoverable fork() error: $!\n";
+			}
+		}
+	} while ($key = shift @ARGV);
 }
-$url =~ s/^(.*?),(.*)$/$2/;
-$ref = $1;
-
-if ($title)
-{
-	$title =~ s/\%c/$key/g;
-	$title =~ s/\%\%/\%/g;
-	$PRE = " --title \"$title\" " . $PRE;
-}
-
-$cmd = "$feh $PRE -R $ref $url $POST";
-print "$cmd\n" if ($DEBUG);
-exec "$cmd";					# to remove perl interpreter from memory
 
 sub print_usage_and_exit()	{
 	print <<END_USAGE;
-Cam 0.2 by Paul Duncan <pabs\@pablotron.org>
+Cam 0.3 by Paul Duncan <pabs\@pablotron.org>
 Description:
   A convenient webcam wrapper for feh.
 
 Usage:
-  cam <key>
-    Load the url specified by key.
+  cam <keys>
+    Load the urls specified by the given keys.
     key : a url key stored in the bookmarks file (\"$bp\").
   cam <-a|--add> key url refresh
     Add a key to the bookmarks file.
@@ -96,8 +121,10 @@ Usage:
     refresh : refresh, in seconds (ex 120)
   cam <-l|--list>
     List each url key in the bookmarks file (\"$bp\").
-  cam [-f|--full-screen] options
+  cam [-f|--full-screen] keys
     Start feh in full-screen mode (aka -g and --giblets-mom \"viewing\" mode).
+  cam [-k|--keep-images] keys
+    Keep the images in /tmp/ (aka --save-pr0n).
   cam [-v|--verbose] options
     Start feh in verbose mode (feh -V).
   cam <-h|-?|--help>

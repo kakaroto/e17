@@ -1,6 +1,6 @@
-Cam 0.2 README
+Cam 0.3 README
 ==============
-This document was last updated on 20000624-1053-PDT.
+This document was last updated on 20000819-1605-PDT.
 Please see the file COPYING for licensing information.
 
 Description
@@ -15,8 +15,9 @@ All webcam images are the property of their respective owners.  If you
 enjoy the cam, you should check out the page too!  The initial list of
 cam bookmarks (in the cam_bookmarks file) is a combination of webcams
 scoured from the #E People Page (http://bma.debian.net/~bma/e-irc/),
-and my favorite webcams from the Stile Project's cam pages
-(http://www.stileproject.com).
+my favorite webcams from the Stile Project's cam pages
+(http://www.stileproject.com/), and a additional #e people cams that
+have come online since cam's original release (0.1).
 
 Installation
 ============
