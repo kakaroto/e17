@@ -285,7 +285,7 @@ EWMH_SetClientList(void)
      {
 	wl = Emalloc(num * sizeof(Ecore_X_Window));
 	for (i = 0; i < num; i++)
-	   wl[i] = lst[i]->client.win;
+	   wl[i] = lst[num - i - 1]->client.win;
 	ecore_x_netwm_client_list_set(VRoot.win, num, wl);
 	Efree(wl);
      }
