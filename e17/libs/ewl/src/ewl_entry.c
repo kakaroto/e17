@@ -174,7 +174,9 @@ void __ewl_entry_configure(Ewl_Widget * w, void *ev_data, void *user_data)
 	 * First position the text.
 	 * FIXME: This needs to be scrollable
 	 */
-	ewl_object_request_position(EWL_OBJECT(e->text), xx, yy);
+	ewl_object_request_geometry(EWL_OBJECT(e->text), xx, yy,
+			ewl_object_get_preferred_w(EWL_OBJECT(e->text)),
+			ewl_object_get_preferred_h(EWL_OBJECT(e->text)));
 
 	/*
 	 * Now position the cursor based on the current position in the text.

@@ -40,6 +40,62 @@ Ewl_Widget     *ewl_notebook_new(void)
 }
 
 /**
+ * ewl_notebook_init - initialize a notebook to default values and callbacks
+ * @n: the notebook to initialize
+ *
+ * Returns no value. Sets the fields and callbacks of @n to their defaults.
+ */
+void ewl_notebook_init(Ewl_Notebook * n)
+{
+	Ewl_Widget     *w;
+
+	DENTER_FUNCTION(DLEVEL_STABLE);
+	DCHECK_PARAM_PTR("n", n);
+
+	w = EWL_WIDGET(n);
+
+	/*
+	 * Initialize the container portion of the notebook and set the fill
+	 * policy to fill the area available.
+	 */
+	ewl_container_init(EWL_CONTAINER(w), "notebook", NULL, NULL, NULL);
+
+	ewl_object_set_fill_policy(EWL_OBJECT(w), EWL_FILL_POLICY_FILL);
+
+	/*
+	 * Create the box to hold tabs and make the box fill the area of the
+	 * notebook.
+	 */
+	n->tab_box = ewl_hbox_new();
+	ewl_widget_set_appearance(n->tab_box, "tab_box");
+	ewl_object_set_fill_policy(EWL_OBJECT(n->tab_box),
+				   EWL_FILL_POLICY_FILL);
+	ewl_widget_show(n->tab_box);
+	ewl_container_append_child(EWL_CONTAINER(n), n->tab_box);
+
+	/*
+	 * Attach the necessary callbacks for the notebook
+	 */
+	ewl_callback_append(w, EWL_CALLBACK_REALIZE, __ewl_notebook_realize,
+			    NULL);
+	ewl_callback_append(w, EWL_CALLBACK_CONFIGURE, __ewl_notebook_configure,
+			    NULL);
+	ewl_callback_prepend(w, EWL_CALLBACK_DESTROY, __ewl_notebook_destroy,
+			     NULL);
+	ewl_callback_del(w, EWL_CALLBACK_CONFIGURE,
+			 __ewl_container_configure_clip_box);
+
+	/*
+	 * Create a list to keep track of the pages in the notebook and set
+	 * the default position of the tabs.
+	 */
+	n->pages = ewd_list_new();
+	n->tabs_position = EWL_POSITION_TOP;
+
+	DLEAVE_FUNCTION(DLEVEL_STABLE);
+}
+
+/**
  * ewl_notebook_append_page - append a page to the notebook
  * @n: the notebook to append the page
  * @t: the tab of the new page added
@@ -507,60 +563,6 @@ void ewl_notebook_set_flags(Ewl_Notebook * n, Ewl_Notebook_Flags flags)
 
 	if (n->flags & EWL_NOTEBOOK_FLAG_TABS_HIDDEN)
 		ewl_widget_hide(n->tab_box);
-
-	DLEAVE_FUNCTION(DLEVEL_STABLE);
-}
-
-/**
- * ewl_notebook_init - initialize a notebook to default values and callbacks
- * @n: the notebook to initialize
- *
- * Returns no value. Sets the fields and callbacks of @n to their defaults.
- */
-void ewl_notebook_init(Ewl_Notebook * n)
-{
-	Ewl_Widget     *w;
-
-	DENTER_FUNCTION(DLEVEL_STABLE);
-	DCHECK_PARAM_PTR("n", n);
-
-	w = EWL_WIDGET(n);
-
-	/*
-	 * Initialize the container portion of the notebook and set the fill
-	 * policy to fill the area available.
-	 */
-	ewl_container_init(EWL_CONTAINER(w), "/notebook", NULL, NULL, NULL);
-
-	ewl_object_set_fill_policy(EWL_OBJECT(w), EWL_FILL_POLICY_FILL);
-
-	/*
-	 * Create the box to hold tabs and make the box fill the area of the
-	 * notebook.
-	 */
-	n->tab_box = ewl_hbox_new();
-	ewl_widget_set_appearance(n->tab_box, "/notebook/tab_box");
-	ewl_object_set_fill_policy(EWL_OBJECT(n->tab_box),
-				   EWL_FILL_POLICY_FILL);
-
-	/*
-	 * Attach the necessary callbacks for the notebook
-	 */
-	ewl_callback_append(w, EWL_CALLBACK_REALIZE, __ewl_notebook_realize,
-			    NULL);
-	ewl_callback_append(w, EWL_CALLBACK_CONFIGURE, __ewl_notebook_configure,
-			    NULL);
-	ewl_callback_prepend(w, EWL_CALLBACK_DESTROY, __ewl_notebook_destroy,
-			     NULL);
-	ewl_callback_del(w, EWL_CALLBACK_CONFIGURE,
-			 __ewl_container_configure_clip_box);
-
-	/*
-	 * Create a list to keep track of the pages in the notebook and set
-	 * the default position of the tabs.
-	 */
-	n->pages = ewd_list_new();
-	n->tabs_position = EWL_POSITION_TOP;
 
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
