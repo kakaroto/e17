@@ -7,6 +7,7 @@
 		target, "user_list_border";
 		transition, DECELERATE 0.5;
 	    }
+#if 0
 	    program {
 		name, "user_selected";
 		signal, "UserSelected";
@@ -16,6 +17,7 @@
 		target, "user_list_clip";
 		transition, DECELERATE 0.75;
 	    }
+#endif
 	    program {
 		name, "user_unselected";
 		signal, "UserUnSelected";

@@ -155,7 +155,7 @@
 		    text
 		    {
 			text, "Doesn't Matter";
-			font, "luxisr";
+			font, "Edje.LuxiBoldItalic";
 			size, 14;
 			align, 1.0 0.5;
 			fit, 0 0;
@@ -184,7 +184,7 @@
 		    text
 		    {
 			text, "Doesn't Matter";
-			font, "luxisr";
+			font, "Edje.LuxiBoldItalic";
 			size, 14;
 			align, 1.0 0.5;
 			fit, 0 0;

@@ -169,10 +169,10 @@
 		    visible, 1;
 		    rel1 {
 			relative, 1.0 0.5;
-			offset, -245 -SESSION_LIST_HEIGHT;
+			offset, -250 -SESSION_LIST_HEIGHT;
 		    } rel2 {
 			relative, 1.0 0.5;
-			offset, -25 SESSION_LIST_HEIGHT;
+			offset, -30 SESSION_LIST_HEIGHT;
 		    }
 		    border, 25 80 20 20;
 		    image 
@@ -262,7 +262,7 @@
 		    color3, 0 0 0 128;
 		    text {
 			text, "Sessions";
-			font, "luxisr";
+			font, "Edje.LuxiBoldItalic";
 			size, 8;
 			fit, 0 0;
 			align, 0.0 0.5;

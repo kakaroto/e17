@@ -7,12 +7,12 @@
 		    visible, 1;
 		    rel1 {
 			relative, 1.0 0.0;
-			offset, 2 2;
+			offset, 0 2;
 			to_x, "session_description";
 			to_y, "bottom_bar";
 		    } rel2 {
 			relative, 1.0 1.0;
-			offset, 52 -4;
+			offset, 50 -4;
 			to_x, "session_description";
 			to_y, "bottom_bar";
 		    }
@@ -31,12 +31,12 @@
 		    visible, 1;
 		    rel1 {
 			relative, 1.0 0.0;
-			offset, 2 2;
+			offset, 0 2;
 			to_x, "session_description";
 			to_y, "bottom_bar";
 		    } rel2 {
 			relative, 1.0 1.0;
-			offset, 52 -4;
+			offset, 50 -4;
 			to_x, "session_description";
 			to_y, "bottom_bar";
 		    }
@@ -94,8 +94,8 @@
 		    color2, 0 0 0 0;
 		    text {
 			text, "Shut Down";
-			font, "Vera";
-			size, 12;
+			font, "Edje.LuxiBoldItalic";
+			size, 14;
 			fit, 0 0;
 			align, 0.0 0.5;
 		    }
@@ -109,15 +109,15 @@
 			to, "power_button";
 		    } rel2 {
 			relative, 1.0 0.5;
-			offset, 96 18;
+			offset, 106 18;
 			to, "power_button";
 		    }
 		    color, 255 255 255 255;
 		    color2, 0 0 0 192;
 		    text {
 			text, "Shut Down";
-			font, "Vera";
-			size, 12;
+			font, "Edje.LuxiBoldItalic";
+			size, 14;
 			fit, 0 0;
 			align, 0.0 0.5;
 		    }

@@ -207,7 +207,7 @@
           color2, 255 255 255 64;
 		    text {
 			text, "Users";
-			font, "VeraBd";
+			font, "Edje.LuxiBoldItalic";
 			size, 8;
 			fit, 0 0;
 			align, 0.5 0.5;

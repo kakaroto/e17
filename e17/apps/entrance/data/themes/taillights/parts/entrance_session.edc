@@ -47,7 +47,7 @@
 			to_y, "bottom_bar";
 		    } rel2 {
 			relative, 0.0 1.0;
-			offset, 68 -2;
+			offset, 63 -2;
 			to_y, "bottom_bar";
 		    }
 		    image
@@ -69,7 +69,7 @@
 			to_y, "bottom_bar";
 		    } rel2 {
 			relative, 0.0 1.0;
-			offset, 68 -2;
+			offset, 63 -2;
 			to_y, "bottom_bar";
 		    }
 		    image
@@ -91,7 +91,7 @@
 			to_y, "bottom_bar";
 		    } rel2 {
 			relative, 0.0 1.0;
-			offset, 68 -2;
+			offset, 63 -2;
 			to_y, "bottom_bar";
 		    }
 		    image
@@ -135,11 +135,11 @@
 		    visible, 1;
 		    rel1 {
 			relative, 1.0 0.0;
-			offset, -200 2;
+			offset, -197 2;
 			to, "entrance_session_button";
 		    } rel2 {
 			relative, 1.0 1.0;
-			offset, 0 -2;
+			offset, 3 -2;
 			to, "entrance_session_button";
 		    }
 		    color, 255 255 255 0;
@@ -186,8 +186,8 @@
 		    color2, 0 0 0 0;
 		    text {
 			text, "";
-			font, "Vera";
-			size, 12;
+			font, "Edje.LuxiItalic";
+			size, 14;
 			fit, 0 0;
 			align, 0.0 0.5;
 		    }
@@ -197,19 +197,19 @@
 		    visible, 1;
 		    rel1 {
 			relative, 1.0 0.5;
-			offset, 2 -18;
+			offset, 0 -18;
 			to, "entrance_session_button";
 		    } rel2 {
 			relative, 1.0 0.5;
-			offset, 146 18;
+			offset, 165 18;
 			to, "entrance_session_button";
 		    }
 		    color, 255 255 255 255;
 		    color2, 0 0 0 192;
 		    text {
 			text, "Session Chooser";
-			font, "Vera";
-			size, 12;
+			font, "Edje.LuxiBoldItalic";
+			size, 14;
 			fit, 0 0;
 			align, 0.0 0.5;
 		    }

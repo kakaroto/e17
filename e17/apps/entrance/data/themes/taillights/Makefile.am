@@ -1,13 +1,15 @@
-EET = taillights.eet
-SCRIPT = build_theme.sh
+EXTRA_DIST= taillights.edc images.edc
+SUBDIRS = parts programs fonts images
+DB = taillights.eet
+CC = edje_cc
+INCLUDES = -v -id ./images -fd ./fonts
 
-CLEANFILES = $(EET)
-EXTRA_DIST = $(SCRIPT)
+CLEANFILES = $(DB)
 
-defaultdir = $(pkgdatadir)/themes
-default_DATA = $(EET)
+taillightsdir = $(pkgdatadir)/themes
+taillights_DATA = $(DB)
 
-all: $(EET)
+all: $(DB)
 
-$(EET): $(SCRIPT)
-		sh $<
+$(DB): taillights.edc
+	$(CC) $(INCLUDES) taillights.edc $@

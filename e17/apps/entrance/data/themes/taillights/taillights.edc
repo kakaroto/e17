@@ -13,6 +13,10 @@
  * include our image { } block elsewhere
  */
 #include "images/images.edc"
+/**
+ * include our fonts { } block elsewhere
+ */
+#include "fonts/fonts.edc"
 
 collections {
     group {
@@ -182,8 +186,8 @@ collections {
     group
     {
 	name, "Session";
-	min, 200 50;
-	max, 200 50;
+	min, 210 50;
+	max, 210 50;
 	parts
 	{
 /**
