@@ -74,6 +74,34 @@ main(int argc, char **argv)
 	free(stuff);
      }
    printf("now we have added . to the directory list\n");
+   {
+      char               *bg1 = NULL;
+      char               *bg2 = NULL;
+
+      econf_get_string(bg1, "bg1");
+      econf_get_string(bg2, "bg2");
+      printf("%s bg1\n%s bg2\n", bg1, bg2);
+   }
+
+   {
+      char              **keys;
+      unsigned long       i, num;
+
+      keys = eConfigGetKeys("bg*", &num);
+
+      if (keys)
+	{
+	   for (i = 0; i < num; i++)
+	     {
+		printf("key %u : %s\n", i, keys[i]);
+	     }
+	   for (i = 0; i < num; i++)
+	     {
+		free(keys[i]);
+	     }
+	   free(keys);
+	}
+   }
 
    return 0;
 }

@@ -1,0 +1,9 @@
+Wed Dec 15 16:59:37 PST 1999
+(Mandrake)
+
+revamped the test app.  it now shows off quite a few different bits.
+There's a minor bug in either the appendtofattable code or in the key
+returning code.  I will figure that out in a little bit.  the fat/data list is
+x86 dependant until I redo the data format ever-so-slightly.  But eConfig is
+probably good enough at this point to start building minor apps with.  expect
+there to be some more convenience wrappers shortly.
