@@ -52,8 +52,14 @@ int __increment_progress(void *data)
 
 void __destroy_progressbar_test_window(Ewl_Widget * w, void *ev_data, void *user_data)
 {
-	if (progress_timer)
-		ecore_timer_del(progress_timer);
+	int i;
+
+	for (i = 0; i < 3; i++) {
+		if (progress_timer[i]) {
+			ecore_timer_del(progress_timer[i]);
+			progress_timer[i] = NULL;
+		}
+	}
 	ewl_widget_destroy(w);
 	ewl_callback_append(progressbar_button, EWL_CALLBACK_CLICKED,
 			__create_progressbar_test_window, NULL);
