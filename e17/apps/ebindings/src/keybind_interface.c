@@ -69,8 +69,9 @@ gchar *action_str[] = {
    "Window_Snap",
    "Window_Zoom",
    "Desktop",
+   "Desktop_Relative",
    "Window_Next"
-      /* count is 22 currently */
+      /* count is 23 currently */
       /* based on options in e_action_init in actions.c in e17/e/src */
 };
 
@@ -389,7 +390,7 @@ keybind_clist_row_select(GtkWidget * w, gint row, gint column,
       /* setup the specified key */
 
       gtk_clist_get_text(GTK_CLIST(w), row, 2, &temp);
-      if ((!strcmp("Execute", temp)) || (!strcmp("Desktop", temp)))
+      if ((!strcmp("Execute", temp)) || (!strcmp("Desktop", temp)) || (!strcmp("Desktop_Relative",temp)))
       {
          gtk_entry_set_editable(GTK_ENTRY(k_entry.p), TRUE);
          gtk_clist_get_text(GTK_CLIST(w), row, 3, &params);
@@ -417,7 +418,7 @@ keybind_clist_row_select(GtkWidget * w, gint row, gint column,
 
       gtk_clist_get_text(GTK_CLIST(w), row, 0, &temp);
 
-      if ((!strcmp("Execute", temp)) || (!strcmp("Desktop", temp)))
+      if ((!strcmp("Execute", temp)) || (!strcmp("Desktop", temp)) || (!strcmp("Desktop_Relative",temp)))
       {
          gtk_entry_set_editable(GTK_ENTRY(k_entry.p), TRUE);
       }
@@ -470,7 +471,7 @@ keybind_save_button_clicked(GtkWidget * w, gpointer data)
       tmp = NULL;
 
       gtk_clist_get_text(GTK_CLIST(k_entry.list), i, 3, &tmp);
-      if ((!strcmp("Execute", e->action)) || (!strcmp("Desktop", e->action)))
+      if ((!strcmp("Execute", e->action)) || (!strcmp("Desktop", e->action)) || (!strcmp("Desktop_Relative", e->action)))
       {
          if (tmp)
             e->params = strdup(tmp);

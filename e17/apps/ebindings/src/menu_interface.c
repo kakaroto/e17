@@ -816,7 +816,7 @@ populate_menu_ctree_recursive(Ewd_List * l, GtkWidget * tree,
         case E_MENU_SEPARATOR:
            fields[3] = g_strdup("Separator");
            g_free(fields[0]);
-           fields[0] = g_strdup("-(SEPERATOR)-");
+           fields[0] = g_strdup("-(SEPARATOR)-");
            break;
         case E_MENU_EXECUTABLE:
            fields[3] = g_strdup("Executable");

@@ -79,8 +79,9 @@ static gchar *e_action_str[] = {
    "Window_Snap",
    "Window_Zoom",
    "Desktop",
+   "Desktop_Relative",
    "Window_Next",
-   /* count is 19 currently */
+   /* count is 20 currently */
    /* based on options in e_action_init in actions.c in e17/e/src */
 };
 static gchar *ebits_hot_spots[] = {
