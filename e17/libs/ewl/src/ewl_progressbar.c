@@ -47,7 +47,7 @@ void ewl_progressbar_init(Ewl_Progressbar * p)
 	if (!p->bar)
 		DRETURN(DLEVEL_STABLE);
 
-	ewl_widget_init(p->bar, "bar");
+	ewl_widget_init(p->bar, "progressbar_bar");
 	ewl_container_child_append(EWL_CONTAINER(p), p->bar);
 	ewl_widget_show(p->bar);
 
