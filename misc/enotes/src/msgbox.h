@@ -22,10 +22,7 @@
 #include "config.h"
 
 typedef struct {
-	Ecore_Evas     *win;
-	Evas           *evas;
-	Evas_Object    *eo;
-	Ewl_Widget     *emb;
+	Ewl_Widget     *win;
 	Ewl_Widget     *vbox;
 	Ewl_Widget     *hbox;
 	Ewl_Widget     *okbtn;
@@ -42,7 +39,6 @@ void            msgbox_manual(char *title, char *content, int x, int y,
 /* Callbacks */
 void            msgbox_okbtn_clicked(Ewl_Widget * widget, void *ev_data,
 				     void *data);
-void            msgbox_resize(Ecore_Evas * ee);
-void            msgbox_close(Ecore_Evas * ee);
+void            msgbox_close(MsgBox *p);
 
 #endif

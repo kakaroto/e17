@@ -50,11 +50,13 @@ setup_settings_win(Settings * s)
 	/* Setup the Window */
 	s->win = ewl_window_new();
 	ewl_window_title_set((Ewl_Window *) s->win, "E-Notes Settings");
+	ewl_object_fill_policy_set((Ewl_Object*)s->win, EWL_FLAG_FILL_ALL);
+	ewl_object_size_request((Ewl_Object*)s->win, 400,350);
 	ewl_widget_show(s->win);
 
 	s->vbox = ewl_vbox_new();
 	ewl_container_child_append((Ewl_Container *) s->win, s->vbox);
-	ewl_object_fill_policy_set((Ewl_Object *) s->vbox, EWL_FLAG_FILL_ALL);
+	ewl_object_fill_policy_set((Ewl_Object*)s->vbox, EWL_FLAG_FILL_ALL);
 	ewl_widget_show(s->vbox);
 
 	ewl_callback_append(s->win, EWL_CALLBACK_CONFIGURE, settings_move_embed,
@@ -73,7 +75,8 @@ setup_settings_win(Settings * s)
 
 	s->hbox = ewl_hbox_new();
 	ewl_container_child_append((Ewl_Container *) s->vbox, s->hbox);
-	ewl_object_fill_policy_set((Ewl_Object *) s->hbox, EWL_FLAG_FILL_HFILL);
+	ewl_object_fill_policy_set ((Ewl_Object*) s->hbox, EWL_FLAG_FILL_VSHRINK);
+	ewl_object_fill_policy_set ((Ewl_Object*) s->hbox, EWL_FLAG_FILL_HFILL);
 	ewl_widget_show(s->hbox);
 
 	settings_setup_button(s->hbox, &(s->savebtn), "Save.");

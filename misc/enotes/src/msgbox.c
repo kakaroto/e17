@@ -39,37 +39,15 @@ msgbox(char *title, char *content)
 void
 msgbox_manual(char *title, char *content, int x, int y, int width, int height)
 {
-	MsgBox          msgbox;
-	MsgBox         *mb = &msgbox;
+	MsgBox         *mb = malloc(sizeof(MsgBox));
 
 	/* Setup the Window */
-	mb->win = ecore_evas_software_x11_new(NULL, 0, x, y, width, height);
-	ecore_evas_title_set(mb->win, title);
-	ecore_evas_show(mb->win);
-
-	/* Setup the Canvas, Render-Method */
-	mb->evas = ecore_evas_get(mb->win);
-	evas_output_method_set(mb->evas,
-			       evas_render_method_lookup(main_config->
-							 render_method));
-
-	/* Setup the EWL Widgets */
-	mb->emb = ewl_embed_new();
-	ewl_object_fill_policy_set((Ewl_Object *) mb->emb, EWL_FLAG_FILL_FILL);
-	ewl_widget_appearance_set(mb->emb, "window");
-	ewl_widget_show(mb->emb);
-
-	mb->eo = ewl_embed_evas_set((Ewl_Embed *) mb->emb, mb->evas, (void *)
-				    ecore_evas_software_x11_window_get(mb->
-								       win));
-	evas_object_name_set(mb->eo, "eo");
-	evas_object_layer_set(mb->eo, 0);
-	evas_object_move(mb->eo, 0, 0);
-	evas_object_resize(mb->eo, width, height);
-	evas_object_show(mb->eo);
+	mb->win=ewl_window_new();
+	ewl_window_title_set((Ewl_Window*)mb->win, title);
+	ewl_widget_show(mb->win);
 
 	mb->vbox = ewl_vbox_new();
-	ewl_container_child_append((Ewl_Container *) mb->emb, mb->vbox);
+	ewl_container_child_append((Ewl_Container *) mb->win, mb->vbox);
 	ewl_object_fill_policy_set((Ewl_Object *) mb->vbox, EWL_FLAG_FILL_FILL);
 	ewl_widget_show(mb->vbox);
 
@@ -86,14 +64,11 @@ msgbox_manual(char *title, char *content, int x, int y, int width, int height)
 	ewl_container_child_append((Ewl_Container *) mb->hbox, mb->okbtn);
 	ewl_widget_show(mb->okbtn);
 
-	/* Ecore Callbacks */
-	ecore_evas_callback_resize_set(mb->win, msgbox_resize);
-	ecore_evas_callback_delete_request_set(mb->win, msgbox_close);
-	ecore_evas_callback_destroy_set(mb->win, msgbox_close);
-
 	/* EWL Callbacks */
-	ewl_callback_append(mb->okbtn, EWL_CALLBACK_MOUSE_DOWN,
-			    (void *) msgbox_okbtn_clicked, mb->win);
+	ewl_callback_append(mb->okbtn, EWL_CALLBACK_CLICKED,
+			    (void *) msgbox_okbtn_clicked, mb);
+	ewl_callback_append(mb->win, EWL_CALLBACK_DELETE_WINDOW,
+			    (void *) msgbox_okbtn_clicked, mb);
 
 	return;
 }
@@ -102,42 +77,27 @@ msgbox_manual(char *title, char *content, int x, int y, int width, int height)
 /* Callbacks */
 
 /**
- * @param ee: The Ecore_Evas which has been resized.
- * @brief: Ecore callback for window resize, resizes the ewl embed object
- *         to compensate.
- */
-void
-msgbox_resize(Ecore_Evas * ee)
-{
-	int             x, y, w, h;
-
-	ecore_evas_geometry_get(ee, &x, &y, &w, &h);
-	evas_object_resize(evas_object_name_find(ecore_evas_get(ee), "eo"),
-			   w, h);
-	return;
-}
-
-/**
- * @param ee: The Ecore_Evas window which the wm has requested be closed.
+ * @param p: The Msgbox to be destroyed.
  * @brief: Closes the msgbox window ee.
  */
 void
-msgbox_close(Ecore_Evas * ee)
+msgbox_close(MsgBox *p)
 {
-	ecore_evas_free(ee);
+	ewl_widget_destroy(p->win);
+	free(p);
 	return;
 }
 
 /**
  * @param widget: The Ewl_Widget of the ok button which was clicked.
  * @param ev_data: Event data, not used.
- * @param data: The msgbox Ecore_Evas supplied when the callback was set.
+ * @param data: The msgbox supplied when the callback was set.
  * @brief: Ewl callback on the ok button being clicked.
  *         Closes the Ecore_Evas window (data) via msgbox_close.
  */
 void
 msgbox_okbtn_clicked(Ewl_Widget * widget, void *ev_data, void *data)
 {
-	msgbox_close((Ecore_Evas *) data);
+	msgbox_close((MsgBox *) data);
 	return;
 }
