@@ -1,11 +1,13 @@
 dnl Process this file with autoconf to create configure.
 
-AC_INIT
-AC_CONFIG_SRCDIR([src/loader_xcf.c])
-AM_INIT_AUTOMAKE(imlib2_loaders, 0.0.1)
+AC_INIT(src/loader_xcf.c)
+AM_INIT_AUTOMAKE(imlib2_loaders, 1.0.4)
 AM_CONFIG_HEADER(config.h)
 
 AC_C_BIGENDIAN	      
+
+AC_LIBLTDL_CONVENIENCE
+AC_CONFIG_SUBDIRS(libltdl)
 
 AC_PROG_CC
 AM_PROG_CC_STDC
@@ -129,13 +131,12 @@ AC_SUBST(imlib2_libs)
 AC_SUBST(edb_includes)
 AC_SUBST(edb_libs)
 
-AC_CONFIG_FILES([
+AC_OUTPUT([
 Makefile
 src/Makefile
 debian/Makefile
 imlib2_loaders.spec
 ])
-AC_OUTPUT
 
 echo -e "\nBuild summary:"
 echo    "------------------------"
