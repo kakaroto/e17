@@ -102,3 +102,26 @@ yet though...
 
 -------------------------------------------------------------------------------
 
+Fri Feb 11 17:51:24 CST 2000
+(dphase)
+
+Woooooo.... EE2 was giving me illegal instructions last night... scary...
+turned out to be one of my CFLAGS....  anyway, the window resize should work
+now...  before if you opened an image and then opened an image smaller than
+the current image the window would not resize -- now it does.  its the
+weekend now so expect the following things to be complete by sunday:
+
+checkerboard background
+image browser
+ability to accept wildcards
+
+-------------------------------------------------------------------------------
+
+Fri Feb 11 18:19:03 CST 2000
+(dphase)
+
+sometimes you should compile before commiting.... typos and other screw ups
+now fixed...
+
+-------------------------------------------------------------------------------
+

@@ -20,7 +20,9 @@
 
 /* functions */
 void LoadImage(char *imagetoload);
-void DrawChecks(char image_w, char image_h);
+
+void DrawChecks(void);
+void Checks(int image_h, int image_w);
 
 void CloseWindow(GtkWidget *widget, gpointer data);
 void CloseFileSel(GtkWidget *widget, gpointer data);

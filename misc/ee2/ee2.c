@@ -218,7 +218,7 @@ void LoadImage(char *imagetoload)
 }
 
 
-void DrawChecks(char image_w, char image_h)
+void DrawChecks(void)
 {
 	/* renders the checkerboard scratch pad a la gimp */
 	bg = imlib_create_image(CHECKS, CHECKS);
@@ -239,7 +239,7 @@ void DrawChecks(char image_w, char image_h)
 	}
 }
 
-void Checks(void)
+void Checks(int image_w, int image_h)
 {
 }
 
@@ -262,7 +262,7 @@ void FileOpen(GtkWidget *widget, GtkFileSelection *fs)
 	gtk_widget_hide(area);
 	LoadImage(imagefile);
 	imlib_context_set_image(im);
-	DrawChecks(imgw, imgh);
+	DrawChecks();
 	imlib_context_set_image(im);
 	imgw = imlib_image_get_width();
 	imgh = imlib_image_get_height();
@@ -396,7 +396,7 @@ gboolean a_config(GtkWidget *widget,
 	
 	if(im){
 		imlib_context_set_image(im);
-		DrawChecks(imgw, imgh);
+		DrawChecks();
 		imlib_context_set_image(im);
 	}
 	
