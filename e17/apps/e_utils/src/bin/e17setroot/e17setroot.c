@@ -19,7 +19,9 @@
  * implement -g (get current bg)
  */
 
-int e_bg_type;
+static int e_bg_type;
+static int e_bg_no_load = 0;
+static char *e_bg_img_file = NULL;
 
 enum E_Bg_Types
 {
@@ -28,6 +30,7 @@ enum E_Bg_Types
      E_BG_CENTER = 3,
      E_BG_FIT = 4,
      E_BG_GET = 5,
+     E_BG_NO_LOAD = 6,
 };
 typedef enum E_Bg_Types E_Bg_Types;
 
@@ -46,48 +49,36 @@ static int _e_bg_bg_get(void *data, int type, void *event) {
 /* parse command line options */
 void _e_bg_bg_parseargs(int argc, char **argv) {
    int c;
-   int digit_optind = 0;
 
-   int this_option_optind = optind ? optind : 1;
-   int option_index = 0;
-   static char *options = "t:s:c:f:gh";
+   static char *options = "tscfghn";
    static struct option long_options[] = {
-	{"tile",   1, 0, E_BG_TILE},
-	{"scale",  1, 0, E_BG_SCALE},
-	{"center", 1, 0, E_BG_CENTER},
-	{"fit",    1, 0, E_BG_FIT},
+	{"tile",   0, 0, E_BG_TILE},
+	{"scale",  0, 0, E_BG_SCALE},
+	{"center", 0, 0, E_BG_CENTER},
+	{"fit",    0, 0, E_BG_FIT},
 	{"get",    0, 0, E_BG_GET},
+	{"noload", 0, 0, E_BG_NO_LOAD},
 	{0,        0, 0, 0}
    };
 
-   while((c = getopt_long (argc, argv, options, long_options, &option_index))
-	 != -1) {
+   while((c = getopt_long (argc, argv, options, long_options, NULL)) != -1) {
       switch (c) {
-	 
 	 /* tile */
        case E_BG_TILE:	   
        case 't':	    
-	 //long_options[option_index].name
-	 //optarg
 	 e_bg_type = E_BG_TILE;
-	 _e_bg_bg_eet_gen(optarg);
-	 return;
 	 break;
 
 	 /* scale */
        case E_BG_SCALE:
        case 's':
 	 e_bg_type = E_BG_SCALE;
-	 _e_bg_bg_eet_gen(optarg);
-	 return;	 
 	 break;
 	 
 	 /* center */
        case E_BG_CENTER:
        case 'c':
 	 e_bg_type = E_BG_CENTER;
-	 _e_bg_bg_eet_gen(optarg);
-	 return;	 
 	 break;
 	 
 	 /* fit */
@@ -98,30 +89,24 @@ void _e_bg_bg_parseargs(int argc, char **argv) {
 	 /* get current bg */
        case E_BG_GET:
        case 'g':
-	 ecore_event_handler_add(E_RESPONSE_BACKGROUND_GET, _e_bg_bg_get, NULL);
-	 e_background_get();
-	 ecore_main_loop_begin();
-	 return;
+         e_bg_type = E_BG_GET;
 	 break;
 	 
+       case E_BG_NO_LOAD:
+       case 'n':
+	 e_bg_no_load = 1;
+	 break;
+
 	 /* show help screen */
        case 'h':
-	 _e_bg_bg_help();
-	 break;
-	 
-	 /* show help screen */
        default:
 	 _e_bg_bg_help();
-	 return;	 
 	 break;
       }
    }
-   
-   if (optind < argc) {
-      /* add some sort of fix to detect fake / nonexistant images? */
-      _e_bg_bg_eet_gen(argv[optind]);      
-   }
-   
+
+   if (optind < argc)
+        e_bg_img_file = argv[optind];
 }
 
 /* return dir from a full path filename */
@@ -209,6 +194,9 @@ void _e_bg_bg_eet_gen(char *filename) {
    Engrave_Part *part;
    Engrave_Part_State *ps;
 
+   /* make sure we got a file name */
+   if (!filename) return;
+
    if (strcmp(filename + strlen(filename) - 4, ".eet") == 0) {
       _e_bg_bg_set(filename);
       ecore_main_loop_quit();
@@ -268,14 +256,14 @@ void _e_bg_bg_eet_gen(char *filename) {
     case E_BG_TILE:
       /* FIXME: This is a temp until dj2 fixes engrave */
       //engrave_part_state_max_size_set(ps, w, h);
-      engrave_part_state_fill_size_relative_set(ps, 0.1, 0.1);
+      engrave_part_state_fill_size_relative_set(ps, 0.0, 0.0);
       engrave_part_state_fill_size_offset_set(ps, w, h);
       break;
       
     default:
       /* FIXME: This is a temp until dj2 fixes engrave */
       //engrave_part_state_max_size_set(ps, w, h);
-      engrave_part_state_fill_size_relative_set(ps, 0.1, 0.1);
+      engrave_part_state_fill_size_relative_set(ps, 0.0, 0.0);
       engrave_part_state_fill_size_offset_set(ps, w, h);
       break;
    }
@@ -285,11 +273,13 @@ void _e_bg_bg_eet_gen(char *filename) {
    engrave_eet_output(eet, eet_file);
    engrave_file_free(eet);
 
-   /* set the background */
-   if (!_e_bg_bg_set(eet_file)) {
-      ecore_main_loop_quit();
+   /* don't do anything more if we're not loading the image */
+   if (e_bg_no_load)
       return;
-   }
+
+   /* set the background */
+   if (!_e_bg_bg_set(eet_file)) 
+      return;
 
    /* If we're using pseudo-trans for eterm, then this will help */
    esetroot = malloc(strlen("Esetroot ") + strlen(filename) + 1);
@@ -297,22 +287,31 @@ void _e_bg_bg_eet_gen(char *filename) {
    strcat(esetroot, filename);
    system(esetroot);
    free(esetroot);
-   ecore_main_loop_quit();
 }
 
 int main(int argc, char **argv)
 {
-   if (!e_init(":0.0")) {
-      printf("Can't connect to enlightenment, perhaps we are not on :0.0!\n");
-      return 0;
-   }
-   
-   ecore_init();
-   
    _e_bg_bg_parseargs(argc, argv);
-   
-   e_shutdown();
-   ecore_shutdown();
+
+   if (!e_bg_no_load) {
+      if (!e_init(":0.0")) {
+         printf("Can't connect to enlightenment, perhaps we are not on :0.0!\n");
+         return 0;
+      }
+   }
+
+   if (e_bg_type == E_BG_GET) {
+      ecore_init();
+      ecore_event_handler_add(E_RESPONSE_BACKGROUND_GET, _e_bg_bg_get, NULL);
+      e_background_get();
+      ecore_main_loop_begin();
+      ecore_shutdown();
+   } else
+      _e_bg_bg_eet_gen(e_bg_img_file);
+  
+   if (!e_bg_no_load)
+      e_shutdown();
 
    return 0;
 }
+
