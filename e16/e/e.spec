@@ -1,9 +1,7 @@
-# This is actually a CVS snapshot as of 20020904 at 20:00 EDT
-
 Summary: The Enlightenment window manager.
 Name: enlightenment
 Version: 0.16.6
-Release: 0.1
+Release: 0.2
 Copyright: BSD
 Group: User Interface/Desktops
 Source: ftp://ftp.enlightenment.org/pub/enlightenment/enlightenment-%{version}.tar.gz
@@ -35,15 +33,7 @@ This package will install the Enlightenment window manager.
 %setup
 
 %build
-# Optimize that damned code all the way
-if [ ! -z "`echo -n ${RPM_OPT_FLAGS} | grep pentium`" ]; then
-  if [ ! -z "`which pgcc`" ]; then
-    CC="pgcc"
-  fi
-  CFLAGS="${RPM_OPT_FLAGS}"
-else
-  CFLAGS="${RPM_OPT_FLAGS}"
-fi
+CFLAGS="${RPM_OPT_FLAGS}"
 export CFLAGS
 if [ ! -f configure ]; then
   ./autogen.sh --prefix=%{_prefix} --bindir=%{_bindir} --datadir=%{_datadir} --mandir=%{_mandir} --enable-fsstd --enable-upgrade=no
