@@ -246,7 +246,6 @@ static bool pop3_load_config (MailBox *mb, E_DB_File *edb,
 	}
 
 	mailbox_property_set (mb, "host", str);
-	free (str);
 
 	/* read port */
 	snprintf (key, sizeof (key), "%s/port", root);
@@ -265,7 +264,6 @@ static bool pop3_load_config (MailBox *mb, E_DB_File *edb,
 	}
 	
 	mailbox_property_set (mb, "user", str);
-	free (str);
 
 	/* read password */
 	snprintf (key, sizeof (key), "%s/pass", root);
@@ -276,7 +274,6 @@ static bool pop3_load_config (MailBox *mb, E_DB_File *edb,
 	}
 	
 	mailbox_property_set (mb, "pass", str);
-	free (str);
 
 	return true;
 }

@@ -125,9 +125,7 @@ bool mailbox_load_config (MailBox *mb, E_DB_File *edb, char *key)
 	assert (mb);
 	assert (edb);
 	assert (key);
-
-	if (!mb->plugin)
-		return false;
+	assert (mb->plugin);
 
 	if (!EMBRACE_PLUGIN(mb->plugin)->load_config)
 		return true;

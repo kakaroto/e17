@@ -5,9 +5,6 @@ $Id$
           server.
         * src/plugins/maildir/maildir.c: Added timer-based checking
           to support systems that don't have dnotify.
-        * src/plugins/pop3/pop3.c, src/plugins/imap/imap.c:
-          Fixed memleaks caused by not freeing the result of
-          e_db_str_get().
         * src/embrace.c, src/plugins/pop3/pop3.c,
           src/plugins/imap/imap.c, src/plugins/mbox/mbox.c,
           src/plugins/maildir/maildir.c:
