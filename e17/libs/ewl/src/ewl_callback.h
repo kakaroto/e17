@@ -37,6 +37,26 @@ struct _ewl_callback {
 	int             id;
 };
 
+#define EWL_CALLBACK_NOTIFY_MASK (0x3)
+#define EWL_CALLBACK_LIST_POINTER(w, t) \
+		(void *)((unsigned int)(w->callbacks[t]) & \
+					~EWL_CALLBACK_NOTIFY_MASK)
+#define EWL_CALLBACK_FLAGS(w, t) \
+		((unsigned int)(w->callbacks[t]) & \
+					EWL_CALLBACK_NOTIFY_MASK)
+#define EWL_CALLBACK_FLAG_INTERCEPT(w, t) \
+		((unsigned int)w->callbacks[t] = \
+			 (unsigned int)EWL_CALLBACK_LIST_POINTER(w, t) | \
+			 EWL_CALLBACK_NOTIFY_INTERCEPT)
+#define EWL_CALLBACK_FLAG_NOTIFY(w, t) \
+		((unsigned int)w->callbacks[t] = \
+			 (unsigned int)EWL_CALLBACK_LIST_POINTER(w, t) | \
+			 EWL_CALLBACK_NOTIFY_NOTIFY)
+#define EWL_CALLBACK_LIST_ASSIGN(w, t, l) \
+		(unsigned int)w->callbacks[t] = (unsigned int)l | \
+			((unsigned int)w->callbacks[t] & \
+			 EWL_CALLBACK_NOTIFY_MASK)
+
 void            ewl_callbacks_init();
 void            ewl_callbacks_deinit();
 int             ewl_callback_append(Ewl_Widget * widget, Ewl_Callback_Type type,

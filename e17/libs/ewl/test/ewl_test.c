@@ -60,6 +60,18 @@ void            __create_selectionbar_test_window(Ewl_Widget * w,
 						   void *user_data);
 
 void
+__focus_tree_test_window(Ewl_Widget *w, void *ev_data, void *user_data)
+{
+	printf("Button focus IN\n");
+}
+
+void
+__unfocus_tree_test_window(Ewl_Widget *w, void *ev_data, void *user_data)
+{
+	printf("Button focus OUT\n");
+}
+
+void
 __close_main_window(Ewl_Widget * w, void *ev_data, void *user_data)
 {
 	int x, y, width, height;
@@ -254,6 +266,10 @@ main(int argc, char **argv)
 	 * Create the button for the text area test and add it to the box.
 	 */
 	button[i] = ewl_button_new("Ewl_Tree");
+	ewl_callback_append(button[i], EWL_CALLBACK_FOCUS_IN,
+			    __focus_tree_test_window, NULL);
+	ewl_callback_append(button[i], EWL_CALLBACK_FOCUS_OUT,
+			    __unfocus_tree_test_window, NULL);
 	ewl_callback_append(button[i], EWL_CALLBACK_CLICKED,
 			    __create_tree_test_window, NULL);
 	i++;

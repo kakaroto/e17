@@ -562,10 +562,10 @@ void __ewl_widget_destroy(Ewl_Widget * w, void *ev_data, void *data)
 	 * the remaining callbacks. This preserves the list of the destroy
 	 * type so we don't get a segfault.
 	 */
-	destroy_cbs = w->callbacks[EWL_CALLBACK_DESTROY];
-	w->callbacks[EWL_CALLBACK_DESTROY] = NULL;
+	destroy_cbs = EWL_CALLBACK_LIST_POINTER(w, EWL_CALLBACK_DESTROY);
+	EWL_CALLBACK_LIST_ASSIGN(w, EWL_CALLBACK_DESTROY, NULL);
 	ewl_callback_clear(w);
-	w->callbacks[EWL_CALLBACK_DESTROY] = destroy_cbs;
+	EWL_CALLBACK_LIST_ASSIGN(w, EWL_CALLBACK_DESTROY, destroy_cbs);
 
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }

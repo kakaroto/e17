@@ -75,6 +75,10 @@ void            ewl_container_remove_child(Ewl_Container * parent,
 void            ewl_container_resize_child(Ewl_Widget * w, int size,
 					   Ewl_Orientation o);
 void            ewl_container_reset(Ewl_Container * c);
+void            ewl_container_notify_callback(Ewl_Container *c,
+					      Ewl_Callback_Type t);
+void            ewl_container_intercept_callback(Ewl_Container *c,
+					      Ewl_Callback_Type t);
 Ewl_Widget     *ewl_container_get_child_at(Ewl_Container * widget, int x,
 					   int y);
 Ewl_Widget     *ewl_container_get_child_at_recursive(Ewl_Container * widget,

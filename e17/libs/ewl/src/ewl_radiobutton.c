@@ -6,9 +6,10 @@ void            ewl_radiobutton_init(Ewl_RadioButton * cb, char *label);
 
 void            __ewl_radiobutton_clicked(Ewl_Widget * w, void *ev_data,
 					  void *user_data);
-
+/*
 void            __ewl_checkbutton_clicked(Ewl_Widget * w, void *ev_data,
 					  void *user_data);
+					  */
 void            __ewl_checkbutton_mouse_down(Ewl_Widget * w, void *ev_data,
 					     void *user_data);
 
@@ -95,8 +96,9 @@ void ewl_radiobutton_init(Ewl_RadioButton * rb, char *label)
 	ewl_checkbutton_init(cb, label);
 	ewl_widget_set_appearance(w, "radiobutton");
 	ewl_widget_set_appearance(cb->check, "radio");
-
+/*
 	ewl_callback_del(w, EWL_CALLBACK_CLICKED, __ewl_checkbutton_clicked);
+	*/
 	ewl_callback_append(w, EWL_CALLBACK_CLICKED,
 			    __ewl_radiobutton_clicked, NULL);
 

@@ -45,6 +45,19 @@ enum _ewl_callback_type
 };
 
 /*
+ * Flags for the callbacks to indicate interception or notification of the
+ * parent.
+ */
+typedef enum _ewl_event_notify Ewl_Event_Notify;
+
+enum _ewl_event_notify
+{
+	EWL_CALLBACK_NOTIFY_NONE = 0,
+	EWL_CALLBACK_NOTIFY_NOTIFY = 1,
+	EWL_CALLBACK_NOTIFY_INTERCEPT = 2
+};
+
+/*
  * The orientation enum is used in a few widgets to specify whether the widget
  * should be laid out in a horizontal or vertical fashion.
  */

@@ -434,6 +434,44 @@ void ewl_container_reset(Ewl_Container * c)
 }
 
 /**
+ * ewl_container_intercept_callback - receive a callback in place of children
+ * @c: the container to intercept the callback
+ * @t: the type of callback to intercept
+ *
+ * Returns no value. Marks the callbacks of type @t that are directed to
+ * children to be triggered on the container @c, and not propagated to the
+ * receiving child.
+ */
+void ewl_container_intercept_callback(Ewl_Container *c, Ewl_Callback_Type t)
+{
+	DENTER_FUNCTION(DLEVEL_STABLE);
+	DCHECK_PARAM_PTR("c", c);
+
+	EWL_CALLBACK_FLAG_INTERCEPT(EWL_WIDGET(c), t);
+
+	DLEAVE_FUNCTION(DLEVEL_STABLE);
+}
+
+/**
+ * ewl_container_notify_callback - receive a callback of a child
+ * @c: the container to notify the callback
+ * @t: the type of callback to notify
+ *
+ * Returns no value. Marks the callbacks of type @t that are directed to
+ * children to be triggered on the container @c, and propagated to the
+ * receiving child.
+ */
+void ewl_container_notify_callback(Ewl_Container *c, Ewl_Callback_Type t)
+{
+	DENTER_FUNCTION(DLEVEL_STABLE);
+	DCHECK_PARAM_PTR("c", c);
+
+	EWL_CALLBACK_FLAG_NOTIFY(EWL_WIDGET(c), t);
+
+	DLEAVE_FUNCTION(DLEVEL_STABLE);
+}
+
+/**
  * ewl_container_prefer_largest - set preferred size to widest child
  * @c: the container to change preferred size
  *

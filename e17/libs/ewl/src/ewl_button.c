@@ -46,7 +46,19 @@ void ewl_button_init(Ewl_Button * b, char *label)
 	 * the coordinate->object mapping from searching below the button
 	 * class.
 	 */
+	/*
 	w->recursive = FALSE;
+	*/
+	ewl_container_notify_callback(EWL_CONTAINER(b),
+			EWL_CALLBACK_MOUSE_DOWN);
+	ewl_container_notify_callback(EWL_CONTAINER(b),
+			EWL_CALLBACK_MOUSE_UP);
+	ewl_container_notify_callback(EWL_CONTAINER(b),
+			EWL_CALLBACK_MOUSE_MOVE);
+	ewl_container_notify_callback(EWL_CONTAINER(b),
+			EWL_CALLBACK_CLICKED);
+	ewl_container_notify_callback(EWL_CONTAINER(b),
+			EWL_CALLBACK_FOCUS_IN);
 
 	/*
 	 * Create and setup the label for the button if it's desired.

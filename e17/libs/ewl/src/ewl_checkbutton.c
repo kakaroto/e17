@@ -1,9 +1,10 @@
 
 #include <Ewl.h>
 
-
+/*
 void            __ewl_checkbutton_clicked(Ewl_Widget * w, void *ev_data,
 					  void *user_data);
+*/
 
 /**
  * ewl_checkbutton_new - allocate and initialize a new check button
@@ -50,9 +51,10 @@ void ewl_checkbutton_init(Ewl_CheckButton * cb, char *label)
 	RECURSIVE(b) = FALSE;
 
 	ewl_object_set_fill_policy(EWL_OBJECT(w), EWL_FILL_POLICY_NONE);
-
+/*
 	ewl_callback_append(w, EWL_CALLBACK_CLICKED,
 			    __ewl_checkbutton_clicked, NULL);
+			    */
 
 	cb->label_position = EWL_POSITION_RIGHT;
 
@@ -112,6 +114,7 @@ void ewl_checkbutton_set_label_position(Ewl_Widget * w, Ewl_Position p)
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
 
+/*
 void __ewl_checkbutton_clicked(Ewl_Widget * w, void *ev_data, void *user_data)
 {
 	Ewl_CheckButton *cb;
@@ -127,3 +130,4 @@ void __ewl_checkbutton_clicked(Ewl_Widget * w, void *ev_data, void *user_data)
 
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
+*/
