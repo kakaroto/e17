@@ -127,16 +127,6 @@ int main (int argc, char **argv)
 	     rottest = 1;
 	     interactive = 0;
 	  }
-	else if (!strcmp(argv[i], "-rotatetest2"))
-	  {
-	     rottest = 2;
-	     interactive = 0;
-	  }
-	else if (!strcmp(argv[i], "-rotatetest3"))
-	  {
-	     rottest = 3;
-	     interactive = 0;
-	  }
 	else
 	   file = argv[i];
      }
@@ -221,97 +211,48 @@ int main (int argc, char **argv)
 	     pixels += (w * h);	     
 	  }
      }
-   else if (rottest == 1)
+   else if (rottest)
      {
-	Imlib_Image rotim;
-	double ang;
-	int x, y;
+	int w, h, i;
 	
-	rotim = imlib_create_rotated_image_test(ang);
-	imlib_context_set_image(rotim);
-	x = imlib_image_get_width();
-	y = imlib_image_get_height();
-	printf("rotating %dx%d cutout\n", x, y);
-	x = (w - x) / 2;
-	y = (h - y) / 2;
-	imlib_free_image_and_decache();
 	imlib_context_set_image(im);
 	imlib_render_image_on_drawable(0, 0);
 	
-	for (ang = 0.0; ang < 6.2831853; ang += 0.031415927) {
-	   imlib_context_set_image(im);
-	   rotim = imlib_create_rotated_image_test(ang);
-	   imlib_context_set_image(rotim);
-	   imlib_context_set_blend(0);
-	   imlib_render_image_on_drawable(x, y);
-	   pixels += imlib_image_get_width() * imlib_image_get_height();
-	   imlib_free_image_and_decache();
-	}
-     }
-   else if (rottest == 2)
-     {
-	Imlib_Image rotim, im2;
-	double ang;
-	int x, y;
+	w = imlib_image_get_width();
+	h = imlib_image_get_height();
+	printf("rotating inside %dx%d frame\n", w, h);
 	
-	rotim = imlib_create_rotated_image_test2(ang);
-	imlib_context_set_image(rotim);
-	x = imlib_image_get_width();
-	y = imlib_image_get_height();
-	printf("rotating inside %dx%d frame\n", x, y);
-	if (!root)
-	   XResizeWindow(disp, win, x, y);
-	imlib_free_image_and_decache();
-	imlib_context_set_image(im);
-	im2 = imlib_create_cropped_scaled_image(0, 0, w, h, x, y);
-	
-	for (ang = 0.0; ang < 6.2831853; ang += 0.031415927) {
-	   imlib_context_set_image(im);
-	   im2 = imlib_create_cropped_scaled_image(0, 0, w, h, x, y);
-	   rotim = imlib_create_rotated_image_test2(ang);
-	   imlib_context_set_blend(1);
-	   imlib_context_set_image(im2);
-	   imlib_blend_image_onto_image(rotim, 0, 0, 0,
-					x, y, 0, 0, x, y);
-	   imlib_context_set_blend(0);
+	imlib_context_set_blend(1);
+	imlib_context_set_image(imlib_create_image(w, h));
+	for (i = h; (i -= 10) >= 0; ) {
+	   imlib_blend_image_onto_image(im, 0, 0, 0, w, h, 0, 0, w, h);
+	   imlib_blend_image_onto_image_at_angle(im, 0, 0, 0, w, h,
+						 0, h - i, w, i);
 	   imlib_render_image_on_drawable(0, 0);
-	   imlib_context_set_image(rotim);
-	   pixels += imlib_image_get_width() * imlib_image_get_height();
-	   imlib_free_image_and_decache();
+	   pixels += w * h;
 	}
-	
-     }
-   else if (rottest == 3)
-     {
-	Imlib_Image rotim, im2;
-	double ang;
-	int x, y;
-	
-	rotim = imlib_create_rotated_image_test3(ang);
-	imlib_context_set_image(rotim);
-	x = imlib_image_get_width();
-	y = imlib_image_get_height();
-	printf("rotating inside %dx%d frame\n", x, y);
-	if (!root)
-	   XResizeWindow(disp, win, x, y);
-	imlib_free_image_and_decache();
-	imlib_context_set_image(im);
-	im2 = imlib_create_cropped_scaled_image(0, 0, w, h, x, y);
-	
-	for (ang = 0.0; ang < 6.2831853; ang += 0.031415927) {
-	   imlib_context_set_image(im);
-	   rotim = imlib_create_rotated_image_test3(ang);
-	   imlib_context_set_blend(1);
-	   imlib_context_set_image(im2);
-	   imlib_blend_image_onto_image(rotim, 0, 0, 0,
-					x, y, 0, 0, x, y);
-	   imlib_context_set_blend(0);
+	for (i = w; (i -= 10) >= 0; ) {
+	   imlib_blend_image_onto_image(im, 0, 0, 0, w, h, 0, 0, w, h);
+	   imlib_blend_image_onto_image_at_angle(im, 0, 0, 0, w, h,
+						 w - i, h, i, 0);
 	   imlib_render_image_on_drawable(0, 0);
-	   
-	   imlib_context_set_image(rotim);
-	   pixels += imlib_image_get_width() * imlib_image_get_height();
-	   imlib_free_image_and_decache();
+	   pixels += w * h;
 	}
+	for (i = h; (i -= 10) >= 0; ) {
+	   imlib_blend_image_onto_image(im, 0, 0, 0, w, h, 0, 0, w, h);
+	   imlib_blend_image_onto_image_at_angle(im, 0, 0, 0, w, h,
+						 w, i, 0, h - i);
+	   imlib_render_image_on_drawable(0, 0);
+	   pixels += w * h;
+	}
+	for (i = w; (i -= 10) >= 0; ) {
+	   imlib_blend_image_onto_image(im, 0, 0, 0, w, h, 0, 0, w, h);
+	   imlib_blend_image_onto_image_at_angle(im, 0, 0, 0, w, h,
+						 i, 0, w - i, h);
+	   imlib_render_image_on_drawable(0, 0);
+	   pixels += w * h;
+	}
+	imlib_free_image();
      }
    else if (interactive)
      {
@@ -414,12 +355,12 @@ int main (int argc, char **argv)
 		  Imlib_Image rotim;
 		  double s, c;
 		  int x1, y1, x2, y2, w, h;
-
+		  
 		  w = imlib_image_get_width();
 		  h = imlib_image_get_height();
 		  s = sin(6.2831853 * (double)y / (double)h);
 		  c = cos(6.2831853 * (double)y / (double)h);
-
+		  
 		  x1 = (w - w * c + h * s) / 2;
 		  y1 = (h - h * c - w * s) / 2;
 		  x2 = (w + w * c - h * s) / 2;
@@ -427,13 +368,14 @@ int main (int argc, char **argv)
 		  
 		  imlib_context_set_blend(1);
 		  imlib_blend_image_onto_image_at_angle(im_bg, 0,
-						0, 0,
-						imlib_image_get_width(),
-						imlib_image_get_height(),
-					       x1, y1, x2, y2);
+							0, 0,
+							imlib_image_get_width(),
+							imlib_image_get_height(),
+							x1, y1, x2, y2);
 		  up = imlib_update_append_rect(up, 0, 0,
 						imlib_image_get_width(),
 						imlib_image_get_height());
+		  
 	       }
 	       {
 		  Imlib_Updates uu;
