@@ -584,7 +584,9 @@ efsd_initialize(void)
 #ifndef __EMX__
   signal(SIGIO,     efsd_cleanup_signal_callback);
   signal(SIGIOT,    efsd_cleanup_signal_callback);
+#if defined(__linux__)
   signal(SIGSTKFLT, efsd_cleanup_signal_callback);
+#endif
   signal(SIGVTALRM, efsd_cleanup_signal_callback);
   signal(SIGXCPU,   efsd_cleanup_signal_callback);
   signal(SIGXFSZ,   efsd_cleanup_signal_callback);

@@ -30,7 +30,11 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 #include <stdio.h>
 #include <sys/types.h>
 #include <sys/param.h>
+#if defined(__FreeBSD__)
+#include <sys/mount.h>
+#else
 #include <sys/statfs.h>
+#endif
 #include <sys/un.h>
 #include <netinet/in.h>
 #include <string.h>
