@@ -192,6 +192,9 @@ feh_parse_environment_options(void)
    if ((opts = getenv("FEH_OPTIONS")) == NULL)
       D_RETURN_;
 
+   weprintf("The FEH_OPTIONS configuration method is depreciated and will soon die.\n"
+      "Use the .fehrc configuration file instead.");
+
    /* We definitely have some options to parse */
    feh_parse_options_from_string(opts);
    D_RETURN_;
@@ -682,13 +685,13 @@ void
 show_usage(void)
 {
    fprintf(stdout,
-           "Usage : " PACKAGE " [OPTION]... FILE...\n"
-           "  Where FILE is an imlib 2 readable image file.\n"
+           "Usage : " PACKAGE " [OPTIONS]... FILES...\n"
+           "  Where a FILE is an imlib 2 readable image file or a directory.\n"
            "  Multiple files are supported.\n"
            "  Urls are supported. They must begin with http:// or ftp://and you must have\n"
-           "  wgetinstalled to download the files for viewing.\n"
-           "  Options can also be defined in the environment variable FEH_OPTIONS\n"
-           "  or in the feh configuration file. See man feh for more details\n"
+           "  wget installed to download the files for viewing.\n"
+           "  Options can also be defined in the in the feh configuration file. See \n"
+           "  man feh for more details\n"
            "  -h, --help                display this help and exit\n"
            "  -v, --version             output version information and exit\n"
            "  -V, --verbose             output useful information, progress bars, etc\n"
@@ -889,8 +892,8 @@ show_usage(void)
            " closes the application\n" "\n"
            "See 'man feh' for more detailed information\n" "\n"
            "This program is free software see the man page for licensing info.\n"
-           "Copyright Tom Gilbert, 1999\n"
-           "Email bugs to <gilbertt@btinternet.com>\n");
+           "Copyright Tom Gilbert, 1999, 2000\n"
+           "Email bugs to <gilbertt@linuxbrit.co.uk>\n");
    exit(0);
 }
 

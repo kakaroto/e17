@@ -1,3 +1,8 @@
+Fri Jun 23 17:15:07 2000  Tom Gilbert  <gilbertt@linuxbrit.co.uk>
+
+	* Depreciated the FEH_OPTIONS envrionment variable in favour of
+	the configuration file themes.
+
 Fri Jun 23 14:46:21 2000  Tom Gilbert  <gilbertt@linuxbrit.co.uk>
 
 	* Mwahahaha. Asynchronous events for index, thumbnails and

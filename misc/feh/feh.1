@@ -64,9 +64,8 @@ also has the ability to load files over http or ftp, simply specify the url
 on the commandline.
 .PP
 .B feh
-can read options from the commandline, from the enironment variable
-.B FEH_OPTIONS,
-or from a config file. The syntax is the same in each case. See
+can read options from the commandline, or from a config file. The syntax
+is the same in each case. See
 .B CONFIG FILE SYNTAX
 for details about using themes defined in a config file.
 These methods may be used in conjunction. Options in
@@ -284,8 +283,10 @@ image height
 .br
 .B %t
 image format
-.B \n
-newline
+.br
+.nf
+\\n newline
+.fi
 .br
 Eg. feh -A "mv %f ~/images/%n" *
 .SH MONTAGE MODE OPTIONS
