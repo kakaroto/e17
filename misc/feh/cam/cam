@@ -8,7 +8,7 @@ $bp =    $ENV{HOME}."/.cam_bookmarks";
 $feh =   "feh";
 $title = "%cCAM";
 # additional feh cmdline options
-$PRE=    "-q -w -Cwebcam -1 0 -0 1 ";
+$PRE=    " -q -w -Cwebcam -1 0 -0 1 ";
 $POST=   ""; 
 #############################################
 #############################################
