@@ -117,7 +117,7 @@ esmart_file_dialog_new (Evas * e, const char *edje_file)
 		      container = esmart_container_new (e);
 		      esmart_container_direction_set (container, 1);
 		      esmart_container_fill_policy_set (container,
-						   CONTAINER_FILL_POLICY_FILL_X);
+							CONTAINER_FILL_POLICY_FILL_X);
 		      if ((str = edje_object_data_get (data->edje,
 						       "e,fd,container,files,direction")))
 			{
@@ -125,7 +125,7 @@ esmart_file_dialog_new (Evas * e, const char *edje_file)
 			    {
 			      esmart_container_direction_set (container, 0);
 			      esmart_container_fill_policy_set (container,
-							   CONTAINER_FILL_POLICY_FILL_Y);
+								CONTAINER_FILL_POLICY_FILL_Y);
 			    }
 			}
 		      if ((str = edje_object_data_get (data->edje,
@@ -147,7 +147,7 @@ esmart_file_dialog_new (Evas * e, const char *edje_file)
 		      container = esmart_container_new (e);
 		      esmart_container_direction_set (container, 1);
 		      esmart_container_fill_policy_set (container,
-						   CONTAINER_FILL_POLICY_FILL_X);
+							CONTAINER_FILL_POLICY_FILL_X);
 		      if ((str = edje_object_data_get (data->edje,
 						       "e,fd,container,directory,direction")))
 			{
@@ -155,7 +155,7 @@ esmart_file_dialog_new (Evas * e, const char *edje_file)
 			    {
 			      esmart_container_direction_set (container, 0);
 			      esmart_container_fill_policy_set (container,
-							   CONTAINER_FILL_POLICY_FILL_Y);
+								CONTAINER_FILL_POLICY_FILL_Y);
 			    }
 			}
 		      if ((str = edje_object_data_get (data->edje,
@@ -494,14 +494,16 @@ _esmart_file_dialog_directory_cb (void *data, Evas_Object * o,
 		      if (__esmart_file_dialog_directory_set_test (obj, buf))
 			return;
 
-		      fddata->selections =
-			evas_list_free (fddata->selections);
 		      if ((part = edje_object_data_get (fddata->edje,
 							"e,fd,entry")))
 			{
 			  edje_object_part_text_set (fddata->edje, part, txt);
 			}
+		      fddata->selections =
+			evas_list_append (fddata->selections, txt);
 		      fddata->func (fddata->fdata, obj, FILE_OK);
+		      fddata->selections =
+			evas_list_free (fddata->selections);
 		    }
 		}
 	      else if ((!strcmp (emission, "e,fd,directory,selected")))
@@ -555,9 +557,14 @@ _esmart_file_dialog_file_cb (void *data, Evas_Object * o,
 	  else if (!strcmp ("e,fd,file,load", emission))
 	    {
 	      fprintf (stderr, "Load Request: %s\n", txt);
+	      fddata->selections = evas_list_append (fddata->selections, txt);
+	      fddata->func (fddata->fdata, obj, FILE_OK);
+	      fddata->selections = evas_list_free (fddata->selections);
 	    }
 	}
+#if 0
       fprintf (stderr, "%s\n", emission);
+#endif
     }
 }
 static void
@@ -778,7 +785,8 @@ _esmart_file_dialog_object_move (Evas_Object * o, Evas_Coord x, Evas_Coord y)
 }
 
 void
-_esmart_file_dialog_object_resize (Evas_Object * o, Evas_Coord w, Evas_Coord h)
+_esmart_file_dialog_object_resize (Evas_Object * o, Evas_Coord w,
+				   Evas_Coord h)
 {
   Esmart_File_Dialog *data;
 
@@ -959,8 +967,9 @@ _esmart_file_dialog_object_show (Evas_Object * o)
 									  di->
 									  d_name)))
 			    {
-			      esmart_container_element_append (data->directories,
-							  obj);
+			      esmart_container_element_append (data->
+							       directories,
+							       obj);
 			    }
 			}
 		    }
@@ -972,7 +981,8 @@ _esmart_file_dialog_object_show (Evas_Object * o)
 									   di->
 									   d_name)))
 			    {
-			      esmart_container_element_append (data->files, obj);
+			      esmart_container_element_append (data->files,
+							       obj);
 			    }
 			}
 		    }
