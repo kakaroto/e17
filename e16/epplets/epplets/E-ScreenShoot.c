@@ -57,12 +57,19 @@ save_config (void)
   sprintf (buf, "%.1f", opt.cloak_delay);
   Epplet_modify_config ("CLOAK_DELAY", buf);
   sprintf (buf, "%.1f", opt.draw_interval);
-  Epplet_modify_config ("RAND_DELAY", buf);
-  sprintf (buf, "%.1f", opt.rand_delay);
   Epplet_modify_config ("DRAW_INTERVAL", buf);
+  sprintf (buf, "%.1f", opt.rand_delay);
+  Epplet_modify_config ("RAND_DELAY", buf);
   sprintf (buf, "%d", opt.do_cloak);
   Epplet_modify_config ("DO_CLOAK", buf);
-  sprintf (buf, "%d", opt.cloak_anim);
+  if (opt.rand_cloak)
+    {
+      strcpy (buf, "15");
+    }
+  else
+    {
+      sprintf (buf, "%d", opt.cloak_anim);
+    }
   Epplet_modify_config ("CLOAK_ANIM", buf);
   sprintf (buf, "%d", opt.frame);
   Epplet_modify_config ("WM_FRAME", buf);
