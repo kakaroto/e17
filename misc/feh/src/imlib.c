@@ -225,7 +225,7 @@ int
 progressive_load_cb(Imlib_Image im, char percent, int update_x, int update_y,
                     int update_w, int update_h)
 {
-   int new = 0, dest_x = 0, dest_y = 0;
+   int dest_x = 0, dest_y = 0;
 
    D_ENTER;
    if (!progwin)
@@ -236,29 +236,32 @@ progressive_load_cb(Imlib_Image im, char percent, int update_x, int update_y,
 
    /* Is this the first progress return for a new image? */
    /* If so, we have some stuff to set up... */
-   if (progwin->im_w == 0)
+   if (percent == PROGRESS_GRANULARITY)
    {
-      progwin->w = progwin->im_w = feh_imlib_image_get_width(im);
-      progwin->h = progwin->im_h = feh_imlib_image_get_height(im);
-      progwin->had_resize = 1;
+      progwin->im_w = feh_imlib_image_get_width(im);
+      progwin->im_h = feh_imlib_image_get_height(im);
+      progwin->zoom_percent = 100;
+      progwin->im_x = 0;
+      progwin->im_y = 0;
       /* do we need to create a window for the image? */
       if (!progwin->win)
       {
-         winwidget_create_window(progwin, progwin->w, progwin->h);
-         new = 1;
+         winwidget_create_window(progwin, progwin->im_w, progwin->im_h);
+         winwidget_show(progwin);
       }
-
+      else if (!opt.full_screen)
+      {
+         winwidget_clear_background(progwin);
+         winwidget_resize(progwin, progwin->im_w, progwin->im_h);
+      }
+         
       winwidget_setup_pixmaps(progwin);
 
       if (!opt.full_screen)
-      {
          feh_draw_checks(progwin);
-         if (!new)
-            winwidget_resize(progwin, progwin->w, progwin->h);
-      }
+      
       XSetWindowBackgroundPixmap(disp, progwin->win, progwin->bg_pmap);
-      if (new)
-         winwidget_show(progwin);
+      
       if (opt.full_screen)
          XClearArea(disp, progwin->win, 0, 0, scr->width, scr->height, False);
       else

@@ -68,6 +68,11 @@ typedef struct _mwmhints
 }
 MWMHints;
 
+enum win_type
+{
+   WIN_TYPE_UNSET, WIN_TYPE_SLIDESHOW, WIN_TYPE_SINGLE, WIN_TYPE_ABOUT
+};
+
 struct __winwidget
 {
    Window win;
@@ -75,7 +80,7 @@ struct __winwidget
    int h;
    int im_w;
    int im_h;
-   unsigned char type;
+   enum win_type type;
    unsigned char had_resize;
    Imlib_Image im;
    GC gc;
@@ -84,15 +89,18 @@ struct __winwidget
    feh_file *file;
 
    /* Stuff for zooming */
-   unsigned char zoom_mode;
-   int zx;
+   unsigned char mode;
+   int zx;                      /* TODO KILL THESE */
    int zy;
    double zoom;
-};
 
-enum win_type
-{
-   WIN_TYPE_UNSET, WIN_TYPE_SLIDESHOW, WIN_TYPE_SINGLE, WIN_TYPE_ABOUT
+   /* New stuff */
+   int im_x;                    /* image offset from window top left */
+   int im_y;                    /* image offset from window top left */
+   int zoom_percent;            /* From 0 (not visible) to 100 (actual size)
+                                   all the way up to INT_MAX (ouch) */
+   int click_offset_x;
+   int click_offset_y;
 };
 
 int winwidget_loadimage(winwidget winwid, feh_file * filename);
@@ -100,7 +108,7 @@ void winwidget_show(winwidget winwid);
 void winwidget_hide(winwidget winwid);
 void winwidget_destroy_all(void);
 void winwidget_free_image(winwidget w);
-void winwidget_render_image(winwidget winwid, int resize);
+void winwidget_render_image(winwidget winwid, int resize, int alias);
 void winwidget_resize(winwidget winwid, int w, int h);
 void winwidget_setup_pixmaps(winwidget winwid);
 void winwidget_update_title(winwidget ret);
@@ -112,6 +120,8 @@ winwidget winwidget_create_from_image(Imlib_Image im, char *name, char type);
 void winwidget_rename(winwidget winwid, char *newname);
 void winwidget_destroy(winwidget winwid);
 void winwidget_create_window(winwidget ret, int w, int h);
+void winwidget_clear_background(winwidget w);
+Pixmap feh_create_checks(void);
 
 extern int window_num;          /* For window list */
 extern winwidget *windows;      /* List of windows to loop though */

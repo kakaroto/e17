@@ -34,6 +34,7 @@
 #include <stdio.h>
 #include <string.h>
 #include <stdlib.h>
+#include <limits.h>
 #include <unistd.h>
 #include <sys/stat.h>
 #include <sys/types.h>
@@ -61,10 +62,15 @@
 # define __attribute__(x)
 #endif
 
+#define PERCENT(x) ((double) (x) / 100)
+
+enum mode_type
+{ MODE_NORMAL = 0, MODE_PAN, MODE_ZOOM };
 
 enum slide_change
 { SLIDE_NEXT, SLIDE_PREV, SLIDE_FIRST, SLIDE_LAST, SLIDE_JUMP_FWD,
-      SLIDE_JUMP_BACK };
+   SLIDE_JUMP_BACK
+};
 enum direction
 { FORWARD, BACK };
 
@@ -116,7 +122,6 @@ extern Atom wmDeleteWindow;
 extern int cmdargc;
 extern char **cmdargv;
 extern winwidget progwin;
-extern Imlib_Image checks;
 extern Window root;
 extern XContext xid_context;
 extern Screen *scr;

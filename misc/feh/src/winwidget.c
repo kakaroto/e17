@@ -54,18 +54,22 @@ winwidget_allocate(void)
    ret->type = WIN_TYPE_UNSET;
 
    /* Zoom stuff */
-   ret->zoom_mode = 0;
+   ret->mode = MODE_NORMAL;
    ret->zx = 0;
    ret->zy = 0;
    ret->zoom = 1.0;
 
    ret->gc = None;
 
+   /* New stuff */
+   ret->im_x = 0;
+   ret->im_y = 0;
+   ret->zoom_percent = 100;
+
    D_RETURN(ret);
 }
 
-winwidget
-winwidget_create_from_image(Imlib_Image im, char *name, char type)
+winwidget winwidget_create_from_image(Imlib_Image im, char *name, char type)
 {
    winwidget ret = NULL;
 
@@ -87,13 +91,12 @@ winwidget_create_from_image(Imlib_Image im, char *name, char type)
       ret->name = estrdup(PACKAGE);
 
    winwidget_create_window(ret, ret->w, ret->h);
-   winwidget_render_image(ret, 1);
+   winwidget_render_image(ret, 1, 0);
 
    D_RETURN(ret);
 }
 
-winwidget
-winwidget_create_from_file(feh_file * file, char *name, char type)
+winwidget winwidget_create_from_file(feh_file * file, char *name, char type)
 {
    winwidget ret = NULL;
 
@@ -132,7 +135,7 @@ winwidget_create_from_file(feh_file * file, char *name, char type)
         ("image is %dx%d pixels, format %s\n", ret->w, ret->h,
          feh_imlib_image_format(ret->im)));
       winwidget_create_window(ret, ret->w, ret->h);
-      winwidget_render_image(ret, 1);
+      winwidget_render_image(ret, 1, 0);
    }
 
    D_RETURN(ret);
@@ -153,6 +156,16 @@ winwidget_create_window(winwidget ret, int w, int h)
       w = scr->width;
       h = scr->height;
    }
+   else
+   {
+      if (w > scr->width)
+         w = scr->width;
+      if (h > scr->height)
+         h = scr->height;
+   }
+
+   ret->w = w;
+   ret->h = h;
 
    attr.backing_store = NotUseful;
    attr.override_redirect = False;
@@ -216,21 +229,6 @@ winwidget_create_window(winwidget ret, int w, int h)
       xsz.y = 0;
       XSetWMNormalHints(disp, ret->win, &xsz);
    }
-#if 0
-   else
-   {
-      XSizeHints xsz;
-
-      xsz.flags = PSize | PMinSize | PMaxSize;
-      xsz.width = w;
-      xsz.height = h;
-      xsz.min_width = w;
-      xsz.max_width = w;
-      xsz.min_height = h;
-      xsz.max_height = h;
-      XSetWMNormalHints(disp, ret->win, &xsz);
-   }
-#endif
 
    /* set the icon name property */
    XSetIconName(disp, ret->win, "feh");
@@ -291,27 +289,25 @@ winwidget_setup_pixmaps(winwidget winwid)
 }
 
 void
-winwidget_render_image(winwidget winwid, int resize)
+winwidget_render_image(winwidget winwid, int resize, int alias)
 {
    int x = 0, y = 0;
    int www, hhh;
    int need_resize = 0;
-   int diff_size = 0;
 
    D_ENTER;
 
-   diff_size = ((winwid->w != winwid->im_w) || (winwid->h != winwid->im_h));
-
-   if (!opt.full_screen && resize && diff_size)
+   if (!opt.full_screen && resize)
    {
-      winwid->w = winwid->im_w;
-      winwid->h = winwid->im_h;
-      need_resize = 1;
+      winwidget_clear_background(winwid);
+      winwidget_resize(winwid, winwid->im_w, winwid->im_h);
    }
+
    winwidget_setup_pixmaps(winwid);
 
    if (!opt.full_screen
-       && (feh_imlib_image_has_alpha(winwid->im) || diff_size))
+       && ((feh_imlib_image_has_alpha(winwid->im))
+           || (winwid->im_x || winwid->im_y)))
       feh_draw_checks(winwid);
 
    if (opt.full_screen)
@@ -350,7 +346,7 @@ winwidget_render_image(winwidget winwid, int resize)
                                                     winwid->im, x, y, www,
                                                     hhh, 1,
                                                     feh_imlib_image_has_alpha
-                                                    (winwid->im), 0);
+                                                    (winwid->im), alias);
       }
       else
       {
@@ -358,26 +354,24 @@ winwidget_render_image(winwidget winwid, int resize)
          y = (scr->height - winwid->im_h) >> 1;
          feh_imlib_render_image_on_drawable(winwid->bg_pmap, winwid->im, x, y,
                                             1,
-                                            feh_imlib_image_has_alpha(winwid->
-                                                                      im), 0);
+                                            feh_imlib_image_has_alpha
+                                            (winwid->im), alias);
       }
    }
    else
    {
-      /* This centers the image in window, but is pointless right now, as zooming 
-         doesn't ;-) */
-      /*
-         if ((winwid->h > winwid->im_h) || (winwid->w > winwid->im_w))
-         {
-         x = (winwid->w - winwid->im_w) >> 1;
-         y = (winwid->h - winwid->im_h) >> 1;
-         }
-       */
       /* resize window if the image size has changed */
       D(("rendering image normally\n"));
-      feh_imlib_render_image_on_drawable(winwid->bg_pmap, winwid->im, x, y, 1,
-                                         feh_imlib_image_has_alpha(winwid->
-                                                                   im), 0);
+      feh_imlib_render_image_on_drawable_at_size(winwid->bg_pmap, winwid->im,
+                                                 winwid->im_x, winwid->im_y,
+                                                 winwid->im_w *
+                                                 PERCENT(winwid->
+                                                         zoom_percent),
+                                                 winwid->im_h *
+                                                 PERCENT(winwid->
+                                                         zoom_percent), 1,
+                                                 feh_imlib_image_has_alpha
+                                                 (winwid->im), alias);
    }
    if (need_resize)
       winwidget_resize(winwid, winwid->im_w, winwid->im_h);
@@ -387,22 +381,16 @@ winwidget_render_image(winwidget winwid, int resize)
    D_RETURN_;
 }
 
-void
-feh_draw_checks(winwidget win)
+Pixmap
+feh_create_checks(void)
 {
-   static Imlib_Image checks = NULL;
    static Pixmap checks_pmap = None;
-   static GC gc = None;
+   Imlib_Image checks = NULL;
 
    D_ENTER;
-
-   if (opt.full_screen)
-      D_RETURN_;
-
-   if (!checks)
+   if (checks_pmap == None)
    {
       int onoff, x, y;
-      XGCValues gcval;
 
       checks = imlib_create_image(16, 16);
 
@@ -426,15 +414,35 @@ feh_draw_checks(winwidget win)
                onoff = 0;
          }
       }
-      checks_pmap = XCreatePixmap(disp, win->win, 16, 16, depth);
+      checks_pmap = XCreatePixmap(disp, root, 16, 16, depth);
       feh_imlib_render_image_on_drawable(checks_pmap, checks, 0, 0, 1, 0, 0);
+   }
+   D_RETURN(checks_pmap);
+}
 
-      gcval.tile = checks_pmap;
+void
+winwidget_clear_background(winwidget w)
+{
+   D_ENTER;
+   XSetWindowBackgroundPixmap(disp, w->win, feh_create_checks());
+   D_RETURN_;
+}
+
+void
+feh_draw_checks(winwidget win)
+{
+   static GC gc = None;
+   XGCValues gcval;
+
+   D_ENTER;
+
+   if (gc == None)
+   {
+      gcval.tile = feh_create_checks();
       gcval.fill_style = FillTiled;
       gc = XCreateGC(disp, win->win, GCTile | GCFillStyle, &gcval);
    }
    XFillRectangle(disp, win->bg_pmap, gc, 0, 0, win->w, win->h);
-
    D_RETURN_;
 }
 
@@ -495,12 +503,18 @@ void
 winwidget_resize(winwidget winwid, int w, int h)
 {
    D_ENTER;
-   if (!winwid)
-      D_RETURN_;
-   XResizeWindow(disp, winwid->win, w, h);
-   winwid->w = w;
-   winwid->h = h;
-   winwid->had_resize = 1;
+   if (winwid && ((winwid->w != w) || (winwid->h != h)))
+   {
+      D(("Really doing a resize\n"));
+      XResizeWindow(disp, winwid->win, w, h);
+      winwid->w = w;
+      winwid->h = h;
+      winwid->had_resize = 1;
+   }
+   else
+   {
+      D(("No resize actually needed\n"));
+   }
    D_RETURN_;
 }
 
@@ -554,8 +568,7 @@ winwidget_unregister(winwidget win)
    D_RETURN_;
 }
 
-winwidget
-winwidget_get_from_window(Window win)
+winwidget winwidget_get_from_window(Window win)
 {
    winwidget ret = NULL;
 
@@ -579,6 +592,7 @@ winwidget_free_image(winwidget w)
 {
    if (w->im)
       feh_imlib_free_image_and_decache(w->im);
+   w->im = NULL;
    w->im_w = 0;
    w->im_h = 0;
 }

@@ -124,8 +124,8 @@ feh_main_iteration(int block)
 
    /* Timers */
    ft = first_timer;
-   /* Don't do timers if we're zooming */
-   if (ft && !opt.zoom_mode)
+   /* Don't do timers if we're zooming/panning */
+   if (ft && (opt.mode == MODE_NORMAL))
    {
       D(("There are timers in the queue\n"));
       if (ft->just_added)

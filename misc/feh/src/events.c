@@ -94,25 +94,24 @@ feh_event_handle_ButtonPress(XEvent * ev)
         break;
      case 2:
         D(("Button 2 Press event\n"));
-        if (!opt.full_screen)
+        winwid = winwidget_get_from_window(ev->xbutton.window);
+        if (winwid != NULL)
         {
-           winwid = winwidget_get_from_window(ev->xbutton.window);
-           if (winwid != NULL)
+           if (ev->xbutton.state & ControlMask)
            {
-              D(("Enabling zoom mode\n"));
-              opt.zoom_mode = 1;
-              winwid->zoom_mode = 1;
-              winwid->zoom = 1.0;
-              winwidget_render_image(winwid, 0);
-              winwid->zx = ev->xbutton.x;
-              winwid->zy = ev->xbutton.y;
-              if (winwid->zx > winwid->im_w)
-                 winwid->zx = winwid->im_w;
-              if (winwid->zy > winwid->im_h)
-                 winwid->zy = winwid->im_h;
-              if (opt.draw_filename)
-                 feh_draw_filename(winwid);
+              D(("Zoom mode baby!\n"));
+              opt.mode = MODE_ZOOM;
+              winwid->mode = MODE_ZOOM;
            }
+           else
+           {
+              D(("Pan mode baby!\n"));
+              opt.mode = MODE_PAN;
+              winwid->mode = MODE_PAN;
+           }
+           D(("click offset is %d,%d\n", ev->xbutton.x, ev->xbutton.y));
+           winwid->click_offset_x = ev->xbutton.x - winwid->im_x;
+           winwid->click_offset_y = ev->xbutton.y - winwid->im_y;
         }
         break;
      case 3:
@@ -120,12 +119,12 @@ feh_event_handle_ButtonPress(XEvent * ev)
         winwid = winwidget_get_from_window(ev->xbutton.window);
         if (winwid != NULL)
         {
-           int x, y, b;
-           unsigned int c;
-           Window r;
-
            if (!opt.no_menus)
            {
+              int x, y, b;
+              unsigned int c;
+              Window r;
+
               if (!menu_main)
                  feh_menu_init();
               if (winwid->type == WIN_TYPE_ABOUT)
@@ -202,17 +201,12 @@ feh_event_handle_ButtonRelease(XEvent * ev)
         break;
      case 2:
         D(("Button 2 Release event\n"));
-        if (!opt.full_screen)
+        winwid = winwidget_get_from_window(ev->xbutton.window);
+        if (winwid != NULL)
         {
-           winwid = winwidget_get_from_window(ev->xbutton.window);
-           if (winwid != NULL)
-           {
-              winwid->zoom_mode = 0;
-              opt.zoom_mode = 0;
-              feh_smooth_image(winwid);
-              if (opt.draw_filename)
-                 feh_draw_filename(winwid);
-           }
+           D(("Disabling Pan/Zoom mode baby!\n"));
+           opt.mode = MODE_NORMAL;
+           winwid->mode = MODE_NORMAL;
         }
         break;
      case 3:
@@ -248,7 +242,7 @@ feh_event_handle_ConfigureNotify(XEvent * ev)
             w->w = ev->xconfigure.width;
             w->h = ev->xconfigure.height;
             w->had_resize = 1;
-            winwidget_render_image(w, 0);
+            winwidget_render_image(w, 0, 0);
          }
       }
    }
@@ -327,68 +321,20 @@ feh_event_handle_MotionNotify(XEvent * ev)
          }
       }
    }
-   else if (opt.zoom_mode)
+   else if (opt.mode == MODE_ZOOM)
    {
       while (XCheckTypedWindowEvent
              (disp, ev->xmotion.window, MotionNotify, ev));
-      /* If zoom mode is set, then a window needs zooming, 'cos button 2 
-         is pressed */
+      printf("ZOOM - IMPLEMENT ME BITCH!\n");
+   }
+   else if (opt.mode == MODE_PAN)
+   {
+      while (XCheckTypedWindowEvent
+             (disp, ev->xmotion.window, MotionNotify, ev));
       winwid = winwidget_get_from_window(ev->xmotion.window);
-      if (winwid != NULL)
-      {
-         if (winwid->zoom_mode)
-         {
-            int sx, sy, sw, sh, dx, dy, dw, dh;
-
-            winwid->zoom =
-               ((double) ev->xmotion.x - (double) winwid->zx) / 32.0;
-            if (winwid->zoom < 0)
-               winwid->zoom =
-                  1.0 + ((winwid->zoom * 32.0) / ((double) (winwid->zx + 1)));
-            else
-               winwid->zoom += 1.0;
-            if (winwid->zoom < 0.0001)
-               winwid->zoom = 0.0001;
-            if (winwid->zoom > 1.0)
-            {
-               dx = 0;
-               dy = 0;
-               dw = winwid->w;
-               dh = winwid->h;
-
-               sx = winwid->zx - (winwid->zx / winwid->zoom);
-               sy = winwid->zy - (winwid->zy / winwid->zoom);
-               sw = winwid->w / winwid->zoom;
-               sh = winwid->h / winwid->zoom;
-               if (feh_imlib_image_has_alpha(winwid->im)
-                   || ((winwid->w > winwid->im_w)
-                       || (winwid->h > winwid->im_h)))
-                  feh_draw_checks(winwid);
-            }
-            else
-            {
-               dx = winwid->zx - (winwid->zx * winwid->zoom);
-               dy = winwid->zy - (winwid->zy * winwid->zoom);
-               dw = winwid->w * winwid->zoom;
-               dh = winwid->h * winwid->zoom;
-
-               sx = 0;
-               sy = 0;
-               sw = winwid->w;
-               sh = winwid->h;
-               feh_draw_checks(winwid);
-            }
-            feh_imlib_render_image_part_on_drawable_at_size(winwid->bg_pmap,
-                                                            winwid->im, sx,
-                                                            sy, sw, sh, dx,
-                                                            dy, dw, dh, 0,
-                                                            feh_imlib_image_has_alpha
-                                                            (winwid->im), 0);
-            XSetWindowBackgroundPixmap(disp, winwid->win, winwid->bg_pmap);
-            XClearWindow(disp, winwid->win);
-            XFlush(disp);
-         }
-      }
+      winwid->im_x = ev->xmotion.x - winwid->click_offset_x;
+      winwid->im_y = ev->xmotion.y - winwid->click_offset_y;
+      winwidget_render_image(winwid, 0, 0);
    }
    else
    {
@@ -408,7 +354,7 @@ feh_event_handle_MotionNotify(XEvent * ev)
                                &ev->xmotion.x, &ev->xmotion.y);
             temp = winwid->im;
             winwid->im = im2;
-            winwidget_render_image(winwid, 0);
+            winwidget_render_image(winwid, 0, 0);
             winwid->im = temp;
             feh_imlib_free_image_and_decache(im2);
          }

@@ -57,7 +57,6 @@ struct __fehoptions
    unsigned char preload;
    unsigned char loadables;
    unsigned char unloadables;
-   unsigned char zoom_mode;
    unsigned char reverse;
    unsigned char no_menus;
 
@@ -79,6 +78,8 @@ struct __fehoptions
    int reload;
    int sort;
    unsigned char adjust_reload;
+
+   unsigned char mode;
 };
 
 void init_parse_options(int argc, char **argv);
