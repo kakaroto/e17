@@ -58,8 +58,8 @@ A.  The following command will enable GL acceleration for EWL-based
 applications:
 
   ewldbtool $HOME/.ewl/preferences render/mode 3D_Hardware
-    
-Which brings me to the next question...
+  Note: The key, or "render/mode" portion of the command _is_ case-
+  sensitive, while the "3D_Hardware" portion is not.
 
 Q.  Where's the documentation for EWL?
 A.  Well, you can see the documentation shell in the doc/ directory,

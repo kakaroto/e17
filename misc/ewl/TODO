@@ -2,11 +2,6 @@ EWL 0.2 TODO
 ============
 - ewlbutton needs to be a subclass of EWlBox, so we can pack a label
   and image into it.
-- faster rendering -- rightn ow it rerenders on every EXPOSE -- that's
-  slow as hell.
-   - this should be moved to evas ASAP (well as soon as it's API is finalised)
-- fix layout -- borked badly atm.
-- KainX: kainx doesn't like imlib specific drawing api -- he's right.
 - db caching -- right now the db shit is reloaded every time a 
   query is made -- could be a lot faster by leaving htem open and
   then flushing later.

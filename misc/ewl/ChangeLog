@@ -1051,3 +1051,8 @@ data with the ewl_theme_* functionsi, and connect default callbacks.
 Again, DO NOT CALL ewl_widget_get_theme() from your _init() handlers.
 All of the toher code has changed to reflect this.
 
+-----
+20000906-1701-PDT, pabs
+
+- cleaned up TODO and README a bit.
+
