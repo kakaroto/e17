@@ -280,7 +280,7 @@ setup_note(Evas_List ** note, int x, int y, int width, int height,
 	
 	ewl_widget_show(p->pane);
 
-	p->content = ewl_entry_new("");
+	p->content = ewl_entry_multiline_new("");
 	ewl_container_child_append((Ewl_Container *) p->pane, p->content);
 
 	ewl_theme_data_str_set(p->content,"/entry/group","none");
