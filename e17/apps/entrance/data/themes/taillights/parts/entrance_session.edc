@@ -186,7 +186,7 @@
 		    color2, 0 0 0 0;
 		    text {
 			text, "";
-			font, "Edje.LuxiItalic";
+			font, "Edje.Luxi";
 			size, 14;
 			fit, 0 0;
 			align, 0.0 0.5;
@@ -201,14 +201,14 @@
 			to, "entrance_session_button";
 		    } rel2 {
 			relative, 1.0 0.5;
-			offset, 165 18;
+			offset, 65 18;
 			to, "entrance_session_button";
 		    }
 		    color, 255 255 255 255;
 		    color2, 0 0 0 192;
 		    text {
-			text, "Session Chooser";
-			font, "Edje.LuxiBoldItalic";
+			text, "Select";
+			font, "Edje.LuxiBold";
 			size, 14;
 			fit, 0 0;
 			align, 0.0 0.5;

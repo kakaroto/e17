@@ -94,7 +94,7 @@
 		    color2, 0 0 0 0;
 		    text {
 			text, "Shut Down";
-			font, "Edje.LuxiBoldItalic";
+			font, "Edje.Luxi";
 			size, 14;
 			fit, 0 0;
 			align, 0.0 0.5;
@@ -116,7 +116,7 @@
 		    color2, 0 0 0 192;
 		    text {
 			text, "Shut Down";
-			font, "Edje.LuxiBoldItalic";
+			font, "Edje.Luxi";
 			size, 14;
 			fit, 0 0;
 			align, 0.0 0.5;

@@ -153,7 +153,7 @@
 		    text
 		    {
 			text, "Doesn't Matter";
-			font, "Edje.LuxiBoldItalic";
+			font, "Edje.LuxiBold";
 			size, 15;
 			align, 0.5 1.0;
 			fit, 0 0;
@@ -181,7 +181,7 @@
 		    text
 		    {
 			text, "Doesn't Matter";
-			font, "Edje.LuxiBoldItalic";
+			font, "Edje.LuxiBold";
 			size, 15;
 			align, 0.5 1.0;
 			fit, 0 0;

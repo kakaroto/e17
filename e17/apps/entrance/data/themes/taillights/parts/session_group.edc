@@ -76,7 +76,7 @@
 		    rel2
 		    {
 			relative, 1.0 1.0;
-			offset, -51 0;
+			offset, -55 0;
 		    }
 		    color, 192 192 192 64;
 		}
@@ -92,7 +92,7 @@
 		    rel2
 		    {
 			relative, 1.0 1.0;
-			offset, -53 0;
+			offset, -55 0;
 		    }
 		    color, 192 192 192 192;
 		}
@@ -144,7 +144,7 @@
 		    rel2
 		    {
 			relative, 1.0 1.0;
-			offset, 45 -6;
+			offset, 45 0;
 			to, "EntranceSessionTitle";
 		    }
 		    color, 255 255 255 0;
@@ -156,13 +156,13 @@
 		    rel1
 		    {
 			relative, 1.0 0.0;
-			offset, 0 1;
+			offset, 5 6;
 			to, "EntranceSessionTitle";
 		    }
 		    rel2
 		    {
 			relative, 1.0 1.0;
-			offset, 49 -1;
+			offset, 45 0;
 			to, "EntranceSessionTitle";
 		    }
 		    color, 255 255 255 0;
@@ -173,7 +173,7 @@
 		name, "EntranceSessionTitle";
 		type, TEXT;
 		mouse_events, 0;
-		effect, OUTLINE_SOFT_SHADOW;
+		effect, OUTLINE_SHADOW;
 		clip_to, "base_clip";
 		description
 		{
@@ -197,7 +197,7 @@
 		    text
 		    {
 			text, "Doesn't Matter";
-			font, "Edje.LuxiBoldItalic";
+			font, "Edje.LuxiBold";
 			size, 14;
 			align, 1.0 0.5;
 			fit, 0 0;
@@ -225,7 +225,7 @@
 		    text
 		    {
 			text, "Doesn't Matter";
-			font, "Edje.LuxiBoldItalic";
+			font, "Edje.LuxiBold";
 			size, 14;
 			align, 1.0 0.5;
 			fit, 0 0;

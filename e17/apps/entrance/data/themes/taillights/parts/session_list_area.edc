@@ -28,7 +28,7 @@
 			offset, 10 10;
 			to, "session_list_border";
 		    }
-		    color, 255 255 255 32;
+		    color, 255 255 255 128;
 		}
 		description {
 		    state, "visible" 1.0;
@@ -262,7 +262,7 @@
 		    color3, 0 0 0 128;
 		    text {
 			text, "Sessions";
-			font, "Edje.LuxiBoldItalic";
+			font, "Edje.LuxiBold";
 			size, 8;
 			fit, 0 0;
 			align, 0.0 0.5;

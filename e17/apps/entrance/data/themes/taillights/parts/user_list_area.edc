@@ -29,7 +29,7 @@
 			offset, 10 10;
 			to, "user_list_border";
 		    }
-		    color, 255 255 255 32;
+		    color, 255 255 255 128;
 		}
 		description {
 		    state, "visible" 1.0;
@@ -207,7 +207,7 @@
           color2, 255 255 255 64;
 		    text {
 			text, "Users";
-			font, "Edje.LuxiBoldItalic";
+			font, "Edje.LuxiBold";
 			size, 8;
 			fit, 0 0;
 			align, 0.5 0.5;

@@ -31,7 +31,7 @@
 			offset, 10 10;
 			to, "login_border";
 		    }
-		    color, 255 255 255 64;
+		    color, 255 255 255 128;
 		}
 		description {
 		    state, "visible" 1.0;
@@ -202,7 +202,7 @@
 		    color2, 0 0 0 128;
 		    text {
 			text, "";
-			font, "Edje.LuxiBoldItalic";
+			font, "Edje.LuxiBold";
 			size, 9;
 			fit, 0 0;
 			align, 0.0 0.0;
@@ -439,7 +439,7 @@
 		name, "login_pass_description";
 		type, TEXT;
 		mouse_events, 0;
-		effect, OUTLINE_SOFT_SHADOW;
+		effect, OUTLINE_SHADOW;
 		clip_to, "login_entry_pass_clip";
 		description {
 		    state, "default" 0.0;
@@ -458,7 +458,7 @@
 		    color3, 96 96 96 192;
 		    text {
 			text, "Enter your password:";
-			font, "Edje.LuxiBoldItalic";
+			font, "Edje.LuxiBold";
 			size, 14;
 			fit, 0 0;
 			align, 0.5 0.5;
@@ -469,7 +469,7 @@
 		name, "login_user_description";
 		type, TEXT;
 		mouse_events, 0;
-		effect, OUTLINE_SOFT_SHADOW;
+		effect, OUTLINE_SHADOW;
 		clip_to, "login_entry_user_clip";
 		description {
 		    state, "default" 0.0;
@@ -484,11 +484,11 @@
 			to, "login_entry";
 		    }
 		    color, 255 255 255 255;
-		    color2, 0 0 0 128;
+		    color2, 0 0 0 192;
 		    color3, 96 96 96 192;
 		    text {
 			text, "Enter your username:";
-			font, "Edje.LuxiBoldItalic";
+			font, "Edje.LuxiBold";
 			size, 14;
 			fit, 0 0;
 			align, 0.5 0.5;
@@ -499,7 +499,7 @@
 		name, "EntranceUserEntry";
 		type, TEXT;
 		mouse_events, 0;
-		effect, OUTLINE_SOFT_SHADOW;
+		effect, SHADOW;
 		clip_to, "login_entry_user_clip";
 		description {
 		    state, "default" 0.0;
@@ -513,12 +513,11 @@
 			offset, -10 -5;
 			to, "login_entry";
 		    }
-		    color3, 0 0 0 255;
-		    color2, 192 192 192 255;
-		    color, 255 255 255 255;
+		    color, 0 0 0 255;
+		    color3, 0 0 0 64;
 		    text {
 			text, "";
-			font, "Edje.LuxiItalic";
+			font, "Edje.Luxi";
 			size, 14;
 			fit, 0 0;
 			align, 0.0 0.5;
@@ -529,7 +528,7 @@
 		name, "EntrancePassEntry";
 		type, TEXT;
 		mouse_events, 0;
-		effect, OUTLINE_SOFT_SHADOW;
+		effect, SHADOW;
 		clip_to, "login_entry_pass_clip";
 		description {
 		    state, "default" 0.0;
@@ -543,12 +542,11 @@
 			offset, -20 -5;
 			to, "login_entry";
 		    }
-		    color3, 0 0 0 255;
-		    color2, 192 192 192 255;
-		    color, 255 255 255 255;
+		    color, 0 0 0 255;
+		    color3, 0 0 0 64;
 		    text {
 			text, "";
-			font, "Edje.LuxiItalic";
+			font, "Edje.Luxi";
 			size, 14;
 			fit, 0 0;
 			align, 0.0 0.5;
