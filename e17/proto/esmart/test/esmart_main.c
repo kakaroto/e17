@@ -16,6 +16,7 @@
 #include "E_Thumb.h"
 #include "container.h"
 #include "X11_Trans.h"
+#include "../src/config.h"
 
 static void
 window_del_cb(Ecore_Evas *ee)
@@ -95,6 +96,8 @@ main(int argc, char *argv[])
     Ecore_Evas *ee = NULL;
     Evas_Object *o = NULL;
     Evas_Object *cont = NULL;
+    Evas_Object *image = NULL;
+    int iw, ih;
 
     ecore_init();
     ecore_app_args_set(argc, (const char**)argv);
@@ -123,6 +126,15 @@ main(int argc, char *argv[])
 	evas_object_layer_set(o, -6);
 	evas_object_color_set(o, 255, 255, 255, 0);
 	evas_object_name_set(o, "background");
+
+   image = evas_object_image_add(evas);
+   evas_object_image_file_set(image, PACKAGE_DATA_DIR"/esmart.png", NULL);
+   evas_object_image_size_get(image, &iw, &ih);
+   evas_object_resize(image, iw, ih);
+   evas_object_image_fill_set(image, 0.0, 0.0, (Evas_Coord) iw, (Evas_Coord) ih);
+   evas_object_layer_set(image, 1000);
+   evas_object_show(image);
+   
 	
 	evas_object_show(o);
 
