@@ -21,7 +21,7 @@ will be triggered when the specified event happens.
 </para>
 
 <para>
-This tutorial is an attempt to familarize the user with the different
+This tutorial is an attempt to familiarize the user with the different
 aspects of the EWL system. The tutorial will probably never completely
 document all aspects of EWL as the system continues to grow. A good
 understanding of C programming is assumed throughout the tutorial.
@@ -29,7 +29,7 @@ understanding of C programming is assumed throughout the tutorial.
 
 <para>
 If you have any troubles with either this tutoral, or using EWL
-in general, any feedback is grealy appreciated as it would help improve either
+in general, any feedback is greatly appreciated as it would help improve either
 the tutorial or EWL itself. Please see <link linkend="ch-Contributing">Contributing</link>
 section for more information.
 </para>

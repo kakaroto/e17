@@ -841,7 +841,7 @@ library.
 </programlisting>
 </example>
 Creating the basic video object is no harder then creating the object and
-showning it (assuming you've appended it to whatever container it is being
+showing it (assuming you've appended it to whatever container it is being
 placed into). We hook the two callbacks
 <literal>EWL_CALLBACK_REALIZE</literal> and
 <literal>EWL_CALLBACK_VALUE_CHANGED</literal>. We hook in the realize

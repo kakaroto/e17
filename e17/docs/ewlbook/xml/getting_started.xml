@@ -355,7 +355,7 @@ as the destroy callback, and all other EWL callbacks that we will be registering
 
 <para>
 The text that has been entered is retrieved with a call to 
-<function>ewl_entry_get_text()</function> passing the text widget from which
+<function>ewl_entry_get_text()</function> passing the entry widget from which
 we want to retrieve the text. This will return a pointer to the text string, 
 it is the applications responsibility to free this pointer.
 </para>
