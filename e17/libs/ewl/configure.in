@@ -136,8 +136,8 @@ AC_PATH_GENERIC(estyle,, [
 estyle_libs=`estyle-config --libs`
 estyle_cflags=`estyle-config --cflags`
 
-CFLAGS="$CFLAGS $etox_cflags"
-LIBS="$LIBS $etox_libs"
+CFLAGS="$CFLAGS $estyle_cflags"
+LIBS="$LIBS $estyle_libs"
 
 AC_ARG_WITH(etox,
         [  --with-etox=DIR          use etox in <DIR>],
