@@ -198,6 +198,17 @@ fi
 AC_DEFINE_UNQUOTED(EROOT, "$EROOT")
 AC_DEFINE_UNQUOTED(EBIN, "$EBIN")
 
+# Should we install E-Mixer?
+# Probably not ;-) But we may as well check!
+P_MIXER=
+AC_CHECK_HEADERS(linux/soundcard.h,[P_MIXER=mixer],[
+   AC_CHECK_HEADERS(machine/soundcard.h, [P_MIXER=mixer],[
+      AC_CHECK_HEADERS(sys/soundcard.h, [P_MIXER=mixer]) ]) ])
+AM_CONDITIONAL(EPPLET_MIXER, test "$P_MIXER" = "mixer")
+if test "$P_MIXER" != "mixer"; then
+AC_MSG_WARN([*** \`E-Mixer' applet will not be built ***])
+fi
+
 CFLAGS=${CFLAGS--O}
 LDFLAGS=${LDFLAGS--O}
 LIBS="$LIBS $GRLIBS"

@@ -309,8 +309,16 @@ a space for improved readability.
 
 -------------------------------------------------------------------------------
 
-Fri Nov  9 23:31:01 GMT 1999
+Tue Nov  9 23:31:01 GMT 1999
 (gilbertt)
 
 Added some more goofy text to the banner cloak-animation, tidied up some
 bits and bobs... I forget what else ;-)
+
+-------------------------------------------------------------------------------
+
+Wed Nov 10 19:13:17 GMT 1999
+(gilbertt)
+
+Added E-Mixer. Probably b0rked the configure.in and Makefile.am, but it
+compiles on my box (tm).
