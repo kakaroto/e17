@@ -425,7 +425,9 @@ etox_get_char_geometry_at_position(Etox e, double x, double y,
 {
   Etox_Object obj = NULL;
   Etox_Object_Bit obj_bit = NULL;
+  Etox_Object_String obj_str = NULL;
   double my_x = 0.0, my_y = 0.0;
+  int index = 0;
 
   if (!e || !e->etox_objects.list || ewd_list_is_empty(e->etox_objects.list))
     return -2;
@@ -453,15 +455,19 @@ etox_get_char_geometry_at_position(Etox e, double x, double y,
                   my_x = x - obj_bit->x;
                   my_y = y - obj_bit->y; 
 
-                  return _etox_object_bit_get_char_geometry_at_position(e, 
-                                                                        obj_bit,
-                                                                        my_x, 
-                                                                        my_y,
-                                                                        char_x,
-                                                                        char_y,
-                                                                        char_w,
-                                                                        char_h);
+                  index += _etox_object_bit_get_char_geometry_at_position(e, 
+                                                                          obj_bit,
+                                                                          my_x, 
+                                                                          my_y,
+                                                                          char_x,
+                                                                          char_y,
+                                                                          char_w,
+                                                                          char_h);
+                  return index;
                 }
+
+              obj_str = (Etox_Object_String) obj_bit->body;
+              index += strlen(obj_str->str);
             }
       }
 

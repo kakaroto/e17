@@ -36,7 +36,9 @@ _etox_object_free(Etox_Object obj)
   if (!obj)
     return;
 
-  IF_FREE(obj);
+  if (obj->bits)
+    ewd_list_destroy(obj->bits);
+  FREE(obj);
 }
 
 int
@@ -192,8 +194,6 @@ _etox_object_bit_get_char_geometry_at(Etox e,
   Evas_Object ev_obj;
   Etox_Object_String obj_str = NULL;
 
-  /* FIXME: this func needs rethinking.. */
-
   if ( !e || !obj_bit || (obj_bit->type != ETOX_OBJECT_BIT_TYPE_STRING) ||
        ( (!obj_bit->evas_objects_list.fg || 
           ewd_list_is_empty(obj_bit->evas_objects_list.fg)) && 
@@ -257,8 +257,6 @@ _etox_object_bit_get_char_geometry_at_position(Etox e,
   Evas_Object ev_obj = NULL;
   Etox_Object_String obj_str = NULL;
   int index = -2;
-
-  /* FIXME: this func needs rethinking.. */
 
   if ( !e || !obj_bit || (obj_bit->type != ETOX_OBJECT_BIT_TYPE_STRING) ||
        ( (!obj_bit->evas_objects_list.fg ||

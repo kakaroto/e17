@@ -1,4 +1,3 @@
-
 #include "Etox_private.h"
 #include "Etox.h"
 
@@ -292,8 +291,11 @@ __create_etox_object(Etox e, double *x, double *y)
 
   obj = _etox_object_new(e, *x, *y);
 
+  D_PRINT("xx Creating %p: -----\n", obj);
+
   if (!e->obstacles || ewd_list_is_empty(e->obstacles))
     {
+      D_PRINT("xx No obstacles..\n");
       obj->w = e->w;
       /* move to next line if no obstacles */
       *x = 0.0;
@@ -301,6 +303,7 @@ __create_etox_object(Etox e, double *x, double *y)
     }
   else
     {
+      D_PRINT("xx Obstacles..\n");
       /* create list that contains all obstacles at the current height */
       ewd_list_goto_first(e->obstacles);
       while ((obst = (Etox_Obstacle) ewd_list_next(e->obstacles)))
@@ -327,9 +330,11 @@ __create_etox_object(Etox e, double *x, double *y)
       if (!obst_list || ewd_list_is_empty(obst_list))
         {
           /* Yay! No obstacles at current height.. */
+          D_PRINT("xx No obstacles at current height..\n");
           obj->w = e->w;
           *x = 0.0;
           *y += e->etox_objects.h + e->padding;  
+          D_PRINT("xx obj->w = %f\n", obj->w);
           return obj;
         }
       
@@ -342,33 +347,40 @@ __create_etox_object(Etox e, double *x, double *y)
       if (obst && (ET_X_TO_EV(obj->x) < obst->x))
         {
           /* we're at the left of the first obstacle */
+          D_PRINT("xx At the left of first obstacle..\n");
           obj->w = EV_X_TO_ET(obst->x) - obj->x;
           *x = EV_X_TO_ET(obst->x) + obst->w;
         }
       else
         {
           /* we're either in or at the right of the first obstacle */ 
+          D_PRINT("xx At the right of or in first obstacle..\n");
+
           if ((i = __check_if_in_obstacle_from_sort(e, sort, obj->x)) >= 0)
             {
               /* move the x-coord 'cause we're in an obstacle */
               do
                 {
+                  D_PRINT("xx In an obstacle..\n");
                   obst = (Etox_Obstacle) _etox_sort_get_data(sort, i);
                   obj->x = EV_X_TO_ET(obst->x) + obst->w;
                   /* check if there are obstacles at the right of the x-coord */
                   if ((obst = (Etox_Obstacle) _etox_sort_get_data(sort, i + 1)))
                     {
+                      D_PRINT("xx Obstacle(s) at the right..\n");
                       obj->w = EV_X_TO_ET(obst->x) - obj->x;
                       *x = EV_X_TO_ET(obst->x) + obst->w;
                     }
                   else
                     {
+                      D_PRINT("xx No obstacles at the right..\n");
                       obj->w = e->w - obj->x;
                       *x = 0.0;
                       *y += e->etox_objects.h + e->padding;
                     }
                 } while ((i = __check_if_in_obstacle_from_sort(e, sort, obj->x))
                          >= 0);
+              D_PRINT("xx Moving on..\n");
             }
           else
             {
@@ -377,27 +389,32 @@ __create_etox_object(Etox e, double *x, double *y)
               switch(_etox_sort_get_size(sort))
               {
               case 0:  /* there's only one obstacle */
+                D_PRINT("xx There's only one obstacle\n");
                 obj->w = e->w - obj->x;
                 *x = 0.0;
                 *y += e->etox_objects.h + e->padding;
                 break;
               case 1:  /* there are 2 obstacles.. */
+                D_PRINT("xx There are 2 obstacles..\n");
                 obst = (Etox_Obstacle) _etox_sort_get_data(sort, 1);
                 if (ET_X_TO_EV(obj->x) < obst->x)
                   {
                     /* were at the left of the last obst */
+                    D_PRINT("xx We're at the left of last obstacle\n");
                     obj->w = EV_X_TO_ET(obst->x) - obj->x;
                     *x = EV_X_TO_ET(obst->x) + obst->w;
                   }
                 else
                   {
                     /* were at the right of the last obst */
+                    D_PRINT("xx We're at the right of last obstacle\n");
                     obj->w = e->w - obj->x;
                     *x = 0.0;
                     *y += e->etox_objects.h + e->padding;
                   }
                 break;
               default:  /* there are at least 3 obstacles.. */
+                D_PRINT("xx There are at least 3 obstacles..\n");
                 /* check all obstacles exept the first and the last */
                 for (i = 1; i < _etox_sort_get_size(sort); i++)
                   {
@@ -429,9 +446,12 @@ __create_etox_object(Etox e, double *x, double *y)
             }
         }
    
+
+      D_PRINT("xx Checking if still in etox.. %f >= %f ?\n", obj->x, e->w);
       /* move to next line anyway if we're out of the etox */
       if (obj->x >= e->w)
         {
+          D_PRINT("xx Out of the etox..\n");
           obj->x = 0.0;
           obj->y += e->etox_objects.h + e->padding;
           obj->w = e->w;
@@ -443,6 +463,10 @@ __create_etox_object(Etox e, double *x, double *y)
       _etox_sort_free(sort);
       ewd_list_destroy(obst_list);  
     }
+
+  D_PRINT("xx obj->w = %f\n", obj->w);
+
+  D_PRINT("xx Created %p: -----\n", obj); 
 
   return obj;
 }
@@ -509,6 +533,8 @@ __add_as_many_bits_as_possible_from_list(Etox e, Etox_Object obj,
                     p = strdup(q);
                   } while (my_w > w);
 
+                D_PRINT("* Fits: '%s'\n", q); 
+
                 if (q && strlen(q))
                   {
                     _etox_object_bit_free(obj_bit);
@@ -522,6 +548,9 @@ __add_as_many_bits_as_possible_from_list(Etox e, Etox_Object obj,
                                                                       style),
                                               ETOX_OBJECT_BIT_TYPE_STRING);
                     _etox_object_add_bit(obj, obj_bit);
+                    D_PRINT("* Type = %d\n", obj_bit->type);
+                    D_PRINT("* Added %p (%s) (body: %p)\n", obj_bit, q,
+                            obj_bit->body);
 
                     IF_FREE(p);
                     p = etox_str_chop_off_beginning_string(r, q);
@@ -582,6 +611,15 @@ __add_as_many_bits_as_possible_from_list(Etox e, Etox_Object obj,
 
           break;
         }
+#ifdef DEBUG
+      else
+        {
+          Etox_Object_String d_str;
+          d_str = obj_bit->body;
+          D_PRINT("* Type = %d\n", obj_bit->type);  
+          D_PRINT("* Added %p (%s) (2)\n", obj_bit, d_str->str);
+        }
+#endif
     }
 
   return todo;
@@ -621,8 +659,11 @@ _etox_create_etox_objects(Etox e)
         break;
       ewd_list_append(e->etox_objects.list, obj);
 
+      D_PRINT("* Adding to %p: -------\n", obj);
+
       if (todo)
         {
+          D_PRINT("TODO: %d bit(s) todo\n", ewd_list_nodes(todo));
           l = __add_as_many_bits_as_possible_from_list(e, obj, todo);
           ewd_list_destroy(todo);
           todo = l;
@@ -650,11 +691,16 @@ __create_evas_objects(Etox e, Etox_Object obj)
   if (!e || !obj || !obj->bits)
     return;
 
+  D_PRINT("__create_evas_objects(): (obj = %p)\n", obj);
+
+  D_PRINT("------ ALIGNING %p ------\n", obj);
   _etox_align_etox_object(e, obj);
+  D_PRINT("-------------------------\n");
 
   ewd_list_goto_first(obj->bits);
   while ((bit = (Etox_Object_Bit) ewd_list_next(obj->bits)))
     {
+      D_PRINT(" bit->type = %d\n", bit->type);
       switch (bit->type)
         {
         case ETOX_OBJECT_BIT_TYPE_STRING:
@@ -665,8 +711,14 @@ __create_evas_objects(Etox e, Etox_Object obj)
 	    {                                    
               ev_obj = evas_add_text(e->evas, string->font->name,
                                      string->font->size, string->str);
+              D_PRINT(" Adding evas '%s'\n", string->str);
               evas_stack_above(e->evas, ev_obj, prev);
               prev = ev_obj;
+              if (!e->evas_objects.list)
+                {
+                  e->evas_objects.list = ewd_list_new();
+                  ewd_list_set_free_cb(e->evas_objects.list, NULL);
+                }
 	      ewd_list_append(e->evas_objects.list, ev_obj);
 
 	      evas_move(e->evas, ev_obj,
@@ -719,6 +771,12 @@ __create_evas_objects(Etox e, Etox_Object obj)
           tab = (Etox_Object_Tab) bit->body;
           ev_obj = evas_add_text(e->evas, tab->font->name,
                                  tab->font->size, "    ");
+          D_PRINT(" Adding evas '%s'\n", "    ");
+          if (!e->evas_objects.list)
+            {
+              e->evas_objects.list = ewd_list_new();
+              ewd_list_set_free_cb(e->evas_objects.list, NULL);
+            }
           ewd_list_append(e->evas_objects.list, ev_obj);
           if (!bit->evas_objects_list.fg)
             {
@@ -737,21 +795,51 @@ void
 _etox_create_evas_objects(Etox e)
 {
   Etox_Object et_obj;
+  Etox_Object_Bit et_obj_bit;
   Evas_Object ev_obj;
 
   if (!e || !e->etox_objects.list || ewd_list_is_empty(e->etox_objects.list))
     return;
 
+  D_PRINT("_etox_create_evas_objects():\n");
+
   if (e->evas_objects.list)
-    {                   
+    { 
       ewd_list_goto_first(e->evas_objects.list);
       while ((ev_obj = (Evas_Object) ewd_list_next(e->evas_objects.list)))
         evas_del_object(e->evas, ev_obj);
       ewd_list_destroy(e->evas_objects.list);
-    } 
+      e->evas_objects.list = NULL;
 
-  e->evas_objects.list = ewd_list_new();
-  ewd_list_set_free_cb(e->evas_objects.list, NULL);
+      ewd_list_goto_first(e->etox_objects.list);
+      while ((et_obj = (Etox_Object) ewd_list_next(e->etox_objects.list)))
+        {
+          if (!et_obj->bits)
+            continue;
+          ewd_list_goto_first(et_obj->bits);
+          while ((et_obj_bit = (Etox_Object_Bit) ewd_list_next(et_obj->bits)))
+            {
+              if (et_obj_bit->evas_objects_list.fg)
+                {
+                  D_PRINT("detroying et_obj_bit->evas_objects_list.fg\n");
+                  ewd_list_destroy(et_obj_bit->evas_objects_list.fg);
+                  et_obj_bit->evas_objects_list.fg = NULL;
+                }
+              if (et_obj_bit->evas_objects_list.sh)
+                {
+                  D_PRINT("detroying et_obj_bit->evas_objects_list.sh\n");
+                  ewd_list_destroy(et_obj_bit->evas_objects_list.sh);
+                  et_obj_bit->evas_objects_list.sh = NULL;
+                }
+              if (et_obj_bit->evas_objects_list.ol)
+                {
+                  D_PRINT("detroying et_obj_bit->evas_objects_list.ol\n");
+                  ewd_list_destroy(et_obj_bit->evas_objects_list.ol);
+                  et_obj_bit->evas_objects_list.ol = NULL;
+                }
+            }
+        }
+    } 
 
   ewd_list_goto_first(e->etox_objects.list);
   while ((et_obj = (Etox_Object) ewd_list_next(e->etox_objects.list)))
@@ -759,6 +847,7 @@ _etox_create_evas_objects(Etox e)
       /* little optimisation.. */
       if (!et_obj->bits)
         continue;
+      D_PRINT("Creating evas objects.. (%p)\n", et_obj);
       __create_evas_objects(e, et_obj);
     }
 }

@@ -1,7 +1,6 @@
 #include "Etox_private.h"
 #include "Etox.h"
 
-static Ewd_List *style_list = NULL;
 static Ewd_List *path_list = NULL;
 
 void
