@@ -428,7 +428,7 @@ do_shot (void *data)
 		  import_buf, beep_buf, frame_buf, "-quality", qual_buf,
 		  "$SCRTEMP", script_buf, view_buf, ")&", NULL);
 
-  printf ("%s\n", sys);
+  /* printf ("%s\n", sys); */
   system (sys);
   free (sys);
   free (script_buf);
