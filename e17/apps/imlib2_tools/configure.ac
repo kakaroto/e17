@@ -34,14 +34,14 @@ AC_ARG_WITH(imlib2,
 
 AC_CHECK_LIB(Imlib2, imlib_context_set_display, 
 	[ imlib2_libs=`${imlib2_path}imlib2-config --libs`;
-		CFLAGS="$CFLAGS `${imlib2_path}imlib2-config --cflags`"],
+		CFLAGS="$CFLAGS `${imlib2_path}imlib2-config --libs --cflags`"],
 	AC_MSG_ERROR(
 	""
 	"**********************************************************************"
 	"* imlib2_convert requres Imlib2. Available from"
 	"* http://enlightenment.org/ and mirrors."
 	"**********************************************************************"
-	)
+	), `${imlib2_path}imlib2-config --libs`
 )
 
 AC_SUBST(imlib2_libs)

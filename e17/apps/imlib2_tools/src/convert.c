@@ -1538,7 +1538,7 @@ static Imlib_Image image_monochrome(Imlib_Image image,
 static Imlib_Image image_colourise(Imlib_Image image,
 		const char *colourise, const char *fill)
 {
-	int r = 255;
+	int r = 0;
 	int g = 0;
 	int b = 0;
 	int rr;
@@ -1720,9 +1720,9 @@ int main(int argc, char **argv)
 		fprintf(stderr, "Could not convert image to monochrome\n");
 		return(-1);
 	}
-
+#if 0 /* this just makes the image red.. well now it doesnt.. */
 	image = image_colourise(image, NULL, NULL);
-
+#endif
 	/* save the image */
 	imlib_save_image(opt->dest);
 
