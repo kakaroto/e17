@@ -2964,3 +2964,13 @@ Handle struts, optionally ignore.
 Read the WM_COMMAND property for all group members.
 Fix a number of menu drawing issues.
 Don't unshade while iconified (caused un-deiconifiable windows).
+
+-------------------------------------------------------------------------------
+
+Mon Jul  5 23:28:51 CEST 2004
+(Kim)
+
+Allow _MOTIF_WM_HINTS to have only 4 elements (fixes blender, possibly others).
+Fix potential problem with initially sticky windows.
+Selective Transparency - A few tweaks (Jaron Omega <jaron@sock-stream.net>).
+Install display manager session file and startup script.

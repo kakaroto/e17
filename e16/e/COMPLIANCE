@@ -73,7 +73,7 @@ Application Window Properties
 [ ] _NET_WM_ALLOWED_ACTIONS
     The property is not set but the actions are supported as shown under
     _NET_WM_STATE.
-[ ] _NET_WM_STRUT
+[+] _NET_WM_STRUT
 [ ] _NET_WM_STRUT_PARTIAL
 [ ] _NET_WM_ICON_GEOMETRY
 [ ] _NET_WM_ICON

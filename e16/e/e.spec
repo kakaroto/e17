@@ -1,7 +1,7 @@
 Summary:	The Enlightenment window manager.
 Name:		enlightenment
 Version:	0.16.7
-Release:	0.99.4.2
+Release:	0.99.5
 License:	BSD
 Group:		User Interface/Desktops
 Source0:	http://prdownloads.sourceforge.net/enlightenment/%{name}-%{version}.tar.gz
@@ -54,6 +54,7 @@ rm -rf $RPM_BUILD_ROOT
 %{_datadir}/locale/*/LC_MESSAGES/enlightenment.mo
 %{_bindir}/*
 %{_mandir}/man1/*
+%{_sysconfdir}/X11/dm/Sessions/*
 
 %changelog
 
