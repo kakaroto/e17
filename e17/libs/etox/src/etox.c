@@ -192,97 +192,21 @@ static void etox_hide(Evas_Object * obj)
  */
 void etox_append_text(Evas_Object * obj, char *text)
 {
-	Etox *et;
-	Evas_List *lines = NULL;
-	Etox_Line *end = NULL, *start;
+	char *text2;
 
 	CHECK_PARAM_POINTER("obj", obj);
 	CHECK_PARAM_POINTER("text", text);
 
-     {
-	char *text2;
-	
 	text2 = etox_get_text(obj);
-	if (text2)
-	  {
-	     text2 = realloc(text2, strlen(text2) + strlen(text) + 1);
-	     strcat(text2, text);
-	  }
-	else
+	if (text2) {
+		text2 = realloc(text2, strlen(text2) + strlen(text) + 1);
+		strcat(text2, text);
+
+	} else
 	  text2 = strdup(text);
+
 	etox_set_text(obj, text2);
 	free(text2);
-	return;
-     }
-#if 0   
-	et = evas_object_smart_data_get(obj);
-
-	/*
-	 * Break the incoming text into lines, and merge the first line of the
-	 * new text with the last line of the old text. Duplicate text to avoid
-	 * read-only memory segv's when parsing.
-	 */
-	text = strdup(text);
-
-	lines = _etox_break_text(et, text);
-	FREE(text);
-
-	if (!lines)
-		return;
-
-	/*
-	 * Merge the last line of the existing text with the first line of the
-	 * new text.
-	 */
-	if (et->lines) {
-		Evas_List *l;
-
-		l = evas_list_last(et->lines);
-		end = l->data;
-		start = lines->data;
-		lines = evas_list_remove(lines, start);
-
-		/*
-		 * Need to adjust the length, height, and width of the line to
-		 * reflect the text that was added.
-		 */
-		et->length -= end->length;
-		et->h -= end->h;
-		etox_line_merge_append(end, start);
-		etox_line_minimize(end);
-		etox_line_free(start);
-		if (lines)
-			end->length++;
-		et->length += end->length;
-		et->h += end->h;
-		if (end->w > et->tw)
-			et->tw = end->w;
-	}
-
-	/*
-	 * Now add the remaining lines to the end of the line list.
-	 */
-	while (lines) {
-		start = lines->data;
-
-		if (start->w > et->tw)
-			et->tw = start->w;
-
-		et->h += start->h;
-		et->length += start->length;
-		et->lines = evas_list_append(et->lines, start);
-		lines = evas_list_remove(lines, start);
-		if (start->w > et->tw)
-			et->tw = start->w;
-	}
-
-	/*
-	 * Layout the lines on the etox starting at the newly added text.
-	 */
-	etox_layout(et);
-	if (et->lines && evas_object_visible_get(obj))
-		evas_object_show(et->clip);
-#endif   
 }
 
 /**
@@ -295,88 +219,20 @@ void etox_append_text(Evas_Object * obj, char *text)
  */
 void etox_prepend_text(Evas_Object * obj, char *text)
 {
-	Etox *et;
-	Evas_List *lines = NULL;
-	Etox_Line *end = NULL, *start;
+	char *text2, *text3;
 
 	CHECK_PARAM_POINTER("obj", obj);
 	CHECK_PARAM_POINTER("text", text);
 
-	et = evas_object_smart_data_get(obj);
-
-	/*
-	 * Break the incoming text into lines, and merge the first line of the
-	 * new text with the last line of the old text. Duplicate text to avoid
-	 * read-only memory segv's when parsing.
-	 */
-	if (text) {
-		text = strdup(text);
+	text2 = strdup(text);
+	text3 = etox_get_text(obj);
+	if (text3) {
+		text2 = realloc(text2, strlen(text2) + strlen(text3) + 1);
+		strcat(text2, text3);
+		free(text3);
 	}
-	else {
-		text = strdup("");
-	}
-
-	lines = _etox_break_text(et, text);
-	FREE(text);
-
-	if (!lines)
-		return;
-
-	/*
-	 * Merge the first line of the existing text with the last line of the
-	 * new text.
-	 */
-	if (et->lines) {
-		Evas_List *l;
-
-		l = evas_list_last(lines);
-		start = l->data;
-		lines = evas_list_remove(lines, start);
-		end = et->lines->data;
-
-		/*
-		 * Need to adjust the height and length of the line to reflect
-		 * the text that was added.
-		 */
-		et->length -= end->length;
-		et->h -= end->h;
-		etox_line_merge_prepend(start, end);
-		etox_line_minimize(end);
-		etox_line_free(start);
-		if (et->lines->next)
-			start->length++;
-		et->length += end->length;
-		et->h += end->h;
-		if (end->w > et->tw)
-			et->tw = end->w;
-	}
-
-	/*
-	 * Now add the remaining lines to the end of the line list.
-	 */
-	while (lines) {
-		Evas_List *l;
-
-		l = evas_list_last(lines);
-		end = l->data;
-
-		if (end->w > et->tw)
-			et->tw = end->w;
-
-		et->h += end->h;
-		et->length += end->length;
-		et->lines = evas_list_prepend(et->lines, end);
-		lines = evas_list_remove(lines, end);
-		if (end->w > et->tw)
-			et->tw = end->w;
-	}
-
-	/*
-	 * Layout the lines on the etox.
-	 */
-	etox_layout(et);
-	if (et->lines && evas_object_visible_get(obj))
-		evas_object_show(et->clip);
+	etox_set_text(obj, text2);
+	free(text2);
 }
 
 /**
@@ -390,11 +246,8 @@ void etox_prepend_text(Evas_Object * obj, char *text)
  */
 void etox_insert_text(Evas_Object * obj, char *text, int index)
 {
-	int len;
+	char *text2;
 	Etox *et;
-	Evas_Object *bit;
-	Evas_List *lines = NULL, *ll;
-	Etox_Line *start, *end, *temp;
 
 	CHECK_PARAM_POINTER("obj", obj);
 	CHECK_PARAM_POINTER("text", text);
@@ -410,78 +263,24 @@ void etox_insert_text(Evas_Object * obj, char *text, int index)
 		return;
 	}
 
-	/*
-	 * Break the incoming text into lines, and merge the first line of the
-	 * new text with the last line of the old text. Duplicate text to avoid
-	 * read-only memory segv's when parsing.
-	 */
-	if (text) {
-		text = strdup(text);
-	}
-	else {
-		text = strdup("");
-	}
+	text2 = etox_get_text(obj);
+	if (text2) {
+		int len, len2;
+		len = strlen(text);
+		len2 = strlen(text2);
+		char *tmp;
 
-	lines = _etox_break_text(et, text);
-	FREE(text);
+		text2 = realloc(text2, len2 + len + 1);
+		tmp = text2 + index;
+		memmove(text2 + index + len, tmp, strlen(tmp));
+		memmove(text2 + index, text, len);
+		text2[len + len2] = '\0';
 
-	if (!lines)
-		return;
+	} else
+		text2 = strdup(text);
 
-	start = etox_index_to_line(et, &index);
-	bit = etox_line_index_to_bit(start, &index);
-	etox_line_split(start, bit, index);
-
-	/*
-	 * Setup the merger betweeen the beginning of the existing text and the
-	 * beginning of the added text.
-	 */
-	temp = lines->data;
-	lines = evas_list_remove(lines, temp);
-	len = start->length;
-	etox_line_merge_append(start, temp);
-	etox_line_minimize(start);
-	etox_line_free(temp);
-	et->length += start->length - len;
-	if (start->w > et->tw)
-		et->tw = start->w;
-
-	/*
-	 * Now merge the end of the added text with the remainder of the
-	 * existing text.
-	 */
-	if (lines) {
-		ll = evas_list_last(lines);
-		temp = ll->data;
-		lines = evas_list_remove(lines, temp);
-		ll = evas_list_find_list(et->lines, start);
-		end = ll->next->data;
-		len = temp->length;
-		etox_line_merge_prepend(temp, end);
-		etox_line_minimize(end);
-		et->length += temp->length - len;
-		if (end->w > et->tw)
-			et->tw = end->w;
-		etox_line_free(temp);
-	}
-
-	/*
-	 * Now add the remaining lines to the end of the line list.
-	 */
-	while (lines) {
-		end = lines->data;
-		et->h += end->h;
-		et->length += end->length;
-		et->lines = evas_list_append_relative(et->lines, end, start);
-		lines = evas_list_remove(lines, end);
-		if (end->w > et->tw)
-			et->tw = end->w;
-		start = end;
-	}
-
-	etox_layout(et);
-	if (et->lines && evas_object_visible_get(obj))
-		evas_object_show(et->clip);
+	etox_set_text(obj, text2);
+	free(text2);
 }
 
 /**
@@ -495,126 +294,25 @@ void etox_insert_text(Evas_Object * obj, char *text, int index)
  */
 void etox_delete_text(Evas_Object * obj, unsigned int index, unsigned int len)
 {
-	Etox *et;
-	Etox_Line *start, *idx, *end;
-	Evas_Object *bit;
-	Evas_List *ll;
-	int orig_index = index;
+	char *text2;
 
 	CHECK_PARAM_POINTER("obj", obj);
 
-	et = evas_object_smart_data_get(obj);
+	text2 = etox_get_text(obj);
+	if (text2) {
+		int len2;
+		char *tmp;
 
-	/*
-	 * If the line containing the index cannot be located, there is
-	 * nothing useful to be done.
-	 */
-	start = etox_index_to_line(et, &index);
-	if (!start) return;
+		len2 = strlen(text2);
+		tmp = text2 + index + len;
+		memmove(text2 + index, tmp, strlen(tmp));
+		text2[len2 - len] = '\0';
 
-	/*
-	 * Break the line at the found character in preparation for removing
-	 * the characters in the split section. The lines between will be
-	 * deleted.
-	 */
-	bit = etox_line_index_to_bit(start, &index);
-	etox_line_split(start, bit, index);
+	} else
+		text2 = strdup("");
 
-	/*
-	 * Locate the next character's line, this was newly created when
-	 * breaking the text.
-	 */
-	index = orig_index + 1;
-	idx = etox_index_to_line(et, &index);
-	if (!idx) return;
-
-	/*
-	 * Find the last bit in the selection, if the length goes off the end
-	 * of the etox, this will be NULL, and the loop will remove the
-	 * remaining text in the etox.
-	 */
-	index = orig_index + len;
-	end = etox_index_to_line(et, &index);
-	if (end) {
-		bit = etox_line_index_to_bit(end, &index);
-		if (bit)
-			etox_line_split(end, bit, index);
-	}
-
-	index = orig_index + len + 1;
-	end = etox_index_to_line(et, &index);
-
-	ll = evas_list_find_list(et->lines, idx);
-
-	/*
-	 * Remove all lines until the end of the selected text is reached.
-	 */
-	while (idx && idx != end) {
-		int len;
-		idx = ll->data;
-		ll = ll->next;
-		et->lines = evas_list_remove(et->lines, idx);
-		len = idx->length;
-		etox_line_free(idx);
-		et->length -= len;
-	}
-
-	if (start && end)
-		etox_line_merge_append(start, end);
-
-	/*
-	if (idx->length == len) {
-	*/
-		/*
-		 * Remove the last bit
-		 */
-/*
-		etox_line_remove(idx, bit);
-		evas_list_remove(et->lines, idx);
-		etox_line_free(idx);
-		et->length -= len;
-	}
-	else if (idx->length > len) {
-		Etox_Line *end = NULL;
-		Evas_Object *b2; 
-
-		index = len;
-		b2 = etox_line_index_to_bit(idx, &index);
-		etox_line_split(idx, b2, index);
-
-		index = orig_index + len + 1;
-		end = etox_index_to_line(et, &index);
-
-		etox_line_merge_append(start, end);
-
-		et->length -= len;
-
-		evas_list_remove(et->lines, idx);
-		evas_list_remove(et->lines, end);
-
-		etox_line_free(idx);
-		etox_line_free(end);
-
-	}
-	else {
-		etox_line_remove(idx, bit);
-		evas_list_remove(et->lines, idx);
-		etox_line_free(idx);
-		et->length -= len;
-		*/
-
-		/* FIXME */
-/*
-		printf("WARNING: etox_delete_text, this isn't finished\n");
-	}
-	*/
-	etox_line_minimize(start);
-
-	etox_layout(et);
-	if (et->lines && evas_object_visible_get(obj))
-		evas_object_show(et->clip);
-	else
-		evas_object_hide(et->clip);
+	etox_set_text(obj, text2);
+	free(text2);
 }
 
 /**
