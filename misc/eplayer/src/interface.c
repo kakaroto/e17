@@ -51,6 +51,7 @@ static void cb_ee_resize(Ecore_Evas *ee) {
 
 int ui_init(ePlayer *player) {
 	int zero = 0;
+	char buf[PATH_MAX];
 	
 	debug(DEBUG_LEVEL_INFO, "Starting setup\n");
 
@@ -91,6 +92,11 @@ int ui_init(ePlayer *player) {
 	ecore_evas_show(player->gui.ee);
 
 	player->gui.evas = ecore_evas_get(player->gui.ee);
+
+	snprintf(buf, sizeof(buf),
+	         "%s/.e/apps/" PACKAGE "/" "fonts/\0",
+	         getenv("HOME"));
+	evas_font_path_append(player->gui.evas, buf);
 	evas_font_path_append(player->gui.evas, DATA_DIR "/fonts");
 
 	if (!ui_init_edje(player, "eplayer"))
