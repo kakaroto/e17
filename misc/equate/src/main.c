@@ -86,7 +86,7 @@ main(int argc, char *argv[], char *env[])
    if (conf_srv = ecore_config_init("equate")) {
       props = ecore_config_bundle_new(conf_srv, "settings");
       /* this controls our defaults */
-      ecore_config_default_int(props, "/settings/mode", BASIC, 0, 3, 1);
+      ecore_config_default_int_bound(props, "/settings/mode", BASIC, 0, 3, 1);
       ecore_config_default_string(props, "/settings/theme", "equate");
 
 
