@@ -43,6 +43,7 @@ __imlib_RenderImage(Display *d, ImlibImage *im,
    int      *xapoints = NULL;
    int       scw, sch;
    int       psx, psy, psw, psh;
+   int       actual_depth = 0;
    char      xup = 0, yup = 0;
    char      shm = 0;
    
@@ -117,6 +118,10 @@ __imlib_RenderImage(Display *d, ImlibImage *im,
 	  }
      }
    ct = __imlib_GetContext(d, v, cm, depth);
+   actual_depth = depth;
+   if (depth == 16)
+      actual_depth = __imlib_XActualDepth(d, v);
+   
    __imlib_RGBASetupContext(ct);
    if ((blend) && (IMAGE_HAS_ALPHA(im)))
      {
@@ -245,7 +250,7 @@ __imlib_RenderImage(Display *d, ImlibImage *im,
 	/* once scaled... convert chunk to bit depth into XImage bufer */
 	/* NB - the order here may be random - but I chose it to select most */
 	/* common depths first */
-	if (depth == 16)
+	if (actual_depth == 16)
 	  {
 	     if (hiq)
 		__imlib_RGBA_to_RGB565_dither(pointer, jump, 
@@ -259,21 +264,21 @@ __imlib_RenderImage(Display *d, ImlibImage *im,
 					    dw, hh, dx, dy + y); 
 	  }
 	/* FIXME: need to handle different RGB ordering */
-	else if (depth == 24)
+	else if (actual_depth == 24)
 	  {
 	     __imlib_RGBA_to_RGB888_fast(pointer, jump, 
 					 ((DATA8 *)xim->data) + (y * xim->bytes_per_line),
 					 xim->bytes_per_line - (dw * 3),
 					 dw, hh, dx, dy + y); 
 	  }
-	else if (depth == 32)
+	else if (actual_depth == 32)
 	  {
 	     __imlib_RGBA_to_RGB8888_fast(pointer, jump, 
 					  ((DATA32 *)xim->data) + (y * (xim->bytes_per_line / sizeof(DATA32))),
 					  (xim->bytes_per_line / sizeof(DATA32)) - dw,
 					  dw, hh, dx, dy + y); 
 	  }
-	else if (depth == 8)
+	else if (actual_depth == 8)
 	  {
 	     switch (ct->palette_type)
 	       {
@@ -365,7 +370,7 @@ __imlib_RenderImage(Display *d, ImlibImage *im,
 		  break;
 	       }
 	  }
-	else if (depth == 15)
+	else if (actual_depth == 15)
 	  {
 	     if (hiq)
 		__imlib_RGBA_to_RGB555_dither(pointer, jump, 
