@@ -16,10 +16,9 @@
 /* TODO: 
  * make Esetroot respect our options
  * add empty -s -t -c flags that will take current bg and apply option
- * implement -g (get current bg)
  */
 
-static int e_bg_type;
+static int e_bg_type = 0;
 static int e_bg_no_load = 0;
 static char *e_bg_img_file = NULL;
 
@@ -36,13 +35,20 @@ typedef enum E_Bg_Types E_Bg_Types;
 
 
 void _e_bg_bg_help() { 
+   printf("e17setroot - Manipulate Enlightenment DR17's background\n");
    printf("Usage: e17setroot <imagename> | <eet>\n");
+   printf(" -t | --tile  <imagename>   Tile the suppied image.\n");
+   printf(" -c | --center <imagename>  Center the supplied image.\n");
+   printf(" -s | --scale <imagename>   Scale the supplied image to the screen.\n");
+   printf(" -n | --noload <imagename>  Create .eet without setting it.\n");
+   printf(" -g | --get                 Get current E17 background.\n");
+   printf(" -h                         Show this help screen.\n");
 }
 
 static int _e_bg_bg_get(void *data, int type, void *event) {   
    E_Response_Background_Get *bg;   
    bg = event;   
-   printf("Bg: %s\n", bg->data);
+   printf("Current bg file: %s\n", bg->data);
    ecore_main_loop_quit();      
 }
 
@@ -306,9 +312,11 @@ int main(int argc, char **argv)
       e_background_get();
       ecore_main_loop_begin();
       ecore_shutdown();
+   } else if(!e_bg_type) {
+      _e_bg_bg_help();
    } else
-      _e_bg_bg_eet_gen(e_bg_img_file);
-  
+     _e_bg_bg_eet_gen(e_bg_img_file);
+   
    if (!e_bg_no_load)
       e_shutdown();
 
