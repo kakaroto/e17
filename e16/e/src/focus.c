@@ -448,7 +448,7 @@ FocusNewDesk(void)
 				  PointerMotionMask);
 	       }
 
-	     if (mode.mode == MODE_DESKSWITCH)
+	     if (mode.mode == MODE_DESKSWITCH && ewin->sticky && ewin->visible)
 		EwinRefresh(ewin);
 	  }
 	Efree(lst);
