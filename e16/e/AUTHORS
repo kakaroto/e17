@@ -81,10 +81,14 @@ Brent A. Nelson <brent@astro.ufl.edu>
 		private colormap patch for 8bpp 
 
 Graham A MacDonald <graham@34southpark.freeserve.co.uk>
-        patch to fix groups segfault bug
+       		patch to fix groups segfault bug
 
 Martin Tyler <mtx@boo.org>
-	groups menu feature patch
-	
+		groups menu feature patch
+
+Jesse Michael <jessem@revlabs.com>
+		pointing out buffer overflow segfault problems in the IPC
+		interface.
+		
 And others whose names we probably forgot to add (email us and we'll put you
 in here)
