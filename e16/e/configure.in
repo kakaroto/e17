@@ -105,8 +105,8 @@ echo "Sound support has been turned off, per the --enable-sound=no"
 echo "passed to your configure line."
 fi
 
-AM_PATH_IMLIB(1.9.5, , [
-echo "ERROR: Enlightenment needs a system with Imlib 1.9.5 or higher"
+AM_PATH_IMLIB(1.9.8, , [
+echo "ERROR: Enlightenment needs a system with Imlib 1.9.8 or higher"
 echo "You can obtain it from:"
 echo "ftp://ftp.enlightenment.org/pub/enlightenment/"
 echo "ftp://www.rasterman.com/pub/enlightenment/"
