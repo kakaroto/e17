@@ -153,7 +153,7 @@ create_window (void)
   gtk_object_set_data_full (GTK_OBJECT (window), "scrolledwindow1", scrolledwindow1,
                             (GtkDestroyNotify) gtk_widget_unref);
   gtk_widget_show (scrolledwindow1);
-  gtk_paned_pack1 (GTK_PANED (hpaned1), scrolledwindow1, FALSE, FALSE);
+  gtk_paned_pack1 (GTK_PANED (hpaned1), scrolledwindow1, TRUE, FALSE);
   gtk_scrolled_window_set_policy (GTK_SCROLLED_WINDOW (scrolledwindow1), GTK_POLICY_AUTOMATIC, GTK_POLICY_AUTOMATIC);
 
   list = gtk_clist_new (3);
@@ -196,7 +196,7 @@ create_window (void)
   gtk_object_set_data_full (GTK_OBJECT (window), "vbox2", vbox2,
                             (GtkDestroyNotify) gtk_widget_unref);
   gtk_widget_show (vbox2);
-  gtk_paned_pack2 (GTK_PANED (hpaned1), vbox2, TRUE, TRUE);
+  gtk_paned_pack2 (GTK_PANED (hpaned1), vbox2, FALSE, FALSE);
 
   hbox2 = gtk_hbox_new (FALSE, 0);
   gtk_widget_ref (hbox2);
@@ -368,7 +368,7 @@ create_window (void)
   gtk_object_set_data_full (GTK_OBJECT (window), "hbuttonbox2", hbuttonbox2,
                             (GtkDestroyNotify) gtk_widget_unref);
   gtk_widget_show (hbuttonbox2);
-  gtk_box_pack_start (GTK_BOX (vbox1), hbuttonbox2, TRUE, TRUE, 0);
+  gtk_box_pack_start (GTK_BOX (vbox1), hbuttonbox2, FALSE, TRUE, 0);
   gtk_button_box_set_layout (GTK_BUTTON_BOX (hbuttonbox2), GTK_BUTTONBOX_END);
   gtk_button_box_set_spacing (GTK_BUTTON_BOX (hbuttonbox2), 10);
 
