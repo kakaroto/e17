@@ -28,6 +28,7 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 #include <unistd.h>
 #include <stdio.h>
 #include <stdlib.h>
+#include <string.h>
 #include <sys/types.h>
 #include <sys/stat.h>
 #include <fcntl.h>
@@ -611,6 +612,25 @@ efsd_fs_mv(char *src_path, char *dst_path, EfsdFsOps ops)
   if (!src_path || src_path[0] == '\0' ||
       !dst_path || dst_path[0] == '\0')
     D_RETURN_(-1);
+
+  efsd_misc_remove_trailing_slashes(src_path);
+  efsd_misc_remove_trailing_slashes(dst_path);
+
+  if (efsd_misc_file_exists(dst_path))
+    {
+      if ((efsd_misc_files_identical(src_path, dst_path) == TRUE) ||
+	  (strstr(dst_path, src_path) == dst_path))
+	{
+	  D(("Cannot move %s to %s -- doing nothing.\n",
+	    src_path, dst_path));
+	  
+	  if (ops & EFSD_FS_OP_FORCE)
+	    D_RETURN_(0);
+	  
+	  D_RETURN_(-1);
+	}
+
+    }
 
   D(("Moving %s to %s, rec [%s], force [%s]\n", src_path, dst_path,
      (ops & EFSD_FS_OP_RECURSIVE) ? "X" : " ",
