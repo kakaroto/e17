@@ -371,7 +371,7 @@ reboot_cb(void *data, Evas_Object *o, const char *emission, const char *source)
 {
     if(session->config->reboot.allow)
     {
-	execl("/bin/sh", "/bin/sh", "-c", "/sbin/shutdown" "-r", "now", "This system is going down for reboot NOW!", NULL);
+	execl("/bin/sh", "/bin/sh", "-c", "/sbin/shutdown -r now \"This system is going down for reboot NOW!\"", NULL);
     }
 }
 
@@ -390,7 +390,7 @@ shutdown_cb(void *data, Evas_Object *o, const char *emission, const char *source
 {
     if(session->config->halt.allow)
     {
-	execl("/bin/sh", "/bin/sh", "-c", "/sbin/shutdown" "-h", "now", "This system is being shut down NOW!", NULL);
+	execl("/bin/sh", "/bin/sh", "-c", "/sbin/shutdown -h now \"This system is being shut down NOW!\"", NULL);
     }
 }
 
