@@ -8,7 +8,7 @@ typedef struct _ewl_text Ewl_Text;
 
 struct _ewl_text {
 	Ewl_Widget      widget;
-	Estyle         *estyle;
+	Evas_Object         *estyle;
 
 	char           *text;
 	char           *font;

@@ -814,22 +814,21 @@ void __ewl_widget_theme_update(Ewl_Widget * w, void *ev_data, void *user_data)
 		 * Propagate minimum sizes from the bit theme to the widget.
 		 */
 		edje_object_size_min_get(w->theme_object, &width, &height);
+		i_l = (unsigned int)(width);
+		i_t = (unsigned int)(height);
 
 		if (i_l && MINIMUM_W(w) == EWL_OBJECT_MIN_SIZE)
-			ewl_object_set_minimum_w(EWL_OBJECT(w),
-					(unsigned int)(width));
+			ewl_object_set_minimum_w(EWL_OBJECT(w), i_l);
 
 		if (i_t && MINIMUM_H(w) == EWL_OBJECT_MIN_SIZE)
-			ewl_object_set_minimum_h(EWL_OBJECT(w),
-					(unsigned int)(height));
+			ewl_object_set_minimum_h(EWL_OBJECT(w), i_t);
 
 		/*
 		 * Propagate maximum sizes from the bit theme to the widget.
 		 */
-		/*
-		 * FIXME: More edje growing pains
-		ebits_get_max_size(w->theme_object, &i_l, &i_t);
-		*/
+		edje_object_size_max_get(w->theme_object, &width, &height);
+		i_l = (unsigned int)(width);
+		i_t = (unsigned int)(height);
 
 		if (i_l && MAXIMUM_W(w) == EWL_OBJECT_MAX_SIZE)
 			ewl_object_set_maximum_w(EWL_OBJECT(w), i_l);

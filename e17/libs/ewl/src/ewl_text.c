@@ -283,7 +283,7 @@ ewl_text_set_color(Ewl_Text * t, int r, int g, int b, int a)
 	w = EWL_WIDGET(t);
 
 	if (t->estyle)
-		estyle_set_color(t->estyle, r, g, b, a);
+		evas_object_color_set(t->estyle, r, g, b, a);
 
 	t->r = r;
 	t->g = g;
@@ -382,6 +382,7 @@ ewl_text_set_style(Ewl_Text * t, char *s)
 void
 ewl_text_get_text_geometry(Ewl_Text * t, int *xx, int *yy, int *ww, int *hh)
 {
+	double ex, ey, ew, eh;
 	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR("t", t);
 
@@ -389,8 +390,13 @@ ewl_text_get_text_geometry(Ewl_Text * t, int *xx, int *yy, int *ww, int *hh)
 	 * Need to check if the estyle has been created yet, it may won't be if
 	 * the widget has not yet been realized.
 	 */
-	if (t->estyle)
-		estyle_geometry(t->estyle, xx, yy, ww, hh);
+	if (t->estyle) {
+		evas_object_geometry_get(t->estyle, &ex, &ey, &ew, &eh);
+		*xx = (int)(ex);
+		*yy = (int)(ey);
+		*ww = (int)(ew);
+		*hh = (int)(eh);
+	}
 	else {
 		*xx = CURRENT_X(t);
 		*yy = CURRENT_Y(t);
@@ -431,6 +437,7 @@ void
 ewl_text_get_letter_geometry(Ewl_Text * t, int i, int *xx, int *yy,
 			     int *ww, int *hh)
 {
+	double ex = 0, ey = 0, ew = 0, eh = 0;
 	Ewl_Widget     *w;
 
 	DENTER_FUNCTION(DLEVEL_STABLE);
@@ -438,14 +445,18 @@ ewl_text_get_letter_geometry(Ewl_Text * t, int i, int *xx, int *yy,
 
 	w = EWL_WIDGET(t);
 
-	if (t->estyle)
-		estyle_text_at(t->estyle, i, xx, yy, ww, hh);
-	else {
-		*xx = 0;
-		*yy = 0;
-		*ww = 0;
-		*hh = 0;
+	if (t->estyle) {
+		estyle_text_at(t->estyle, i, &ex, &ey, &ew, &eh);
 	}
+
+	if (xx)
+		*xx = (int)(ex);
+	if (yy)
+		*yy = (int)(ey);
+	if (ww)
+		*ww = (int)(ew);
+	if (hh)
+		*hh = (int)(eh);
 
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
@@ -467,6 +478,7 @@ int
 ewl_text_get_letter_geometry_at(Ewl_Text * t, int x, int y,
 				int *tx, int *ty, int *tw, int *th)
 {
+	double ex = 0, ey = 0, ew = 0, eh = 0;
 	int             i = 0;
 	Ewl_Widget     *w;
 
@@ -476,14 +488,19 @@ ewl_text_get_letter_geometry_at(Ewl_Text * t, int x, int y,
 	w = EWL_WIDGET(t);
 
 
-	if (t->estyle)
-		i = estyle_text_at_position(t->estyle, x, y, tx, ty, tw, th);
-	else {
-		*tx = 0;
-		*ty = 0;
-		*tw = 0;
-		*th = 0;
+	if (t->estyle) {
+		i = estyle_text_at_position(t->estyle, (double)x, (double)y,
+				&ex, &ey, &ew, &eh);
 	}
+
+	if (tx)
+		*tx = (int)(ex);
+	if (ty)
+		*ty = (int)(ey);
+	if (tw)
+		*tw = (int)(ew);
+	if (th)
+		*th = (int)(eh);
 
 	DRETURN_INT(i, DLEVEL_STABLE);
 }
@@ -561,7 +578,7 @@ __ewl_text_destroy(Ewl_Widget * w, void *ev_data, void *user_data)
 	t = EWL_TEXT(w);
 
 	if (t->estyle)
-		estyle_free(t->estyle);
+		evas_object_del(t->estyle);
 
 	IF_FREE(t->text);
 	IF_FREE(t->font);
@@ -580,7 +597,7 @@ __ewl_text_configure(Ewl_Widget * w, void *ev_data, void *user_data)
 	t = EWL_TEXT(w);
 
 	if (t->estyle)
-		estyle_move(t->estyle, CURRENT_X(t), CURRENT_Y(t));
+		evas_object_move(t->estyle, CURRENT_X(t), CURRENT_Y(t));
 
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
@@ -639,14 +656,14 @@ __ewl_text_theme_update(Ewl_Widget * w, void *ev_data, void *user_data)
 	/*
 	 * Set move it into the correct position.
 	 */
-	estyle_set_color(t->estyle, t->r, t->g, t->b, t->a);
+	evas_object_color_set(t->estyle, t->r, t->g, t->b, t->a);
 
 	/*
 	 * Adjust the clip box for the estyle and then display it.
 	 */
-	estyle_set_clip(t->estyle, w->fx_clip_box);
-	estyle_set_layer(t->estyle, LAYER(w));
-	estyle_show(t->estyle);
+	evas_object_clip_set(t->estyle, w->fx_clip_box);
+	evas_object_layer_set(t->estyle, LAYER(w));
+	evas_object_show(t->estyle);
 
 	__ewl_text_update_size(t);
 
@@ -667,8 +684,8 @@ __ewl_text_reparent(Ewl_Widget * w, void *ev_data, void *user_data)
 		DRETURN(DLEVEL_STABLE);
 
 
-	estyle_set_clip(t->estyle, w->fx_clip_box);
-	estyle_set_layer(t->estyle, LAYER(w));
+	evas_object_clip_set(t->estyle, w->fx_clip_box);
+	evas_object_layer_set(t->estyle, LAYER(w));
 
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
@@ -676,15 +693,16 @@ __ewl_text_reparent(Ewl_Widget * w, void *ev_data, void *user_data)
 void
 __ewl_text_update_size(Ewl_Text * t)
 {
-	int             x, y, width, height;
+	double          x, y, width, height;
 
 	/*
 	 * Adjust the properties of the widget to indicate the size of the text.
 	 */
-	estyle_geometry(t->estyle, &x, &y, &width, &height);
+	evas_object_geometry_get(t->estyle, &x, &y, &width, &height);
 
 	/*
 	 * Set the preferred size to the size of the estyle
 	 */
-	ewl_object_set_preferred_size(EWL_OBJECT(t), width, height);
+	ewl_object_set_preferred_size(EWL_OBJECT(t), (unsigned int)(width),
+			(unsigned int)(height));
 }

@@ -60,13 +60,6 @@ void ewl_init(int argc, char **argv)
 
 	ewl_callbacks_init();
 
-	/*
-	if (!ewl_fx_init()) {
-		DERROR("Could not init fx data. Exiting....");
-		exit(-1);
-	}
-	*/
-
 	if (!ewl_theme_init()) {
 		DERROR("Could not init theme data. Exiting....");
 		exit(-1);

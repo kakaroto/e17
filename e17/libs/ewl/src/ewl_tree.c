@@ -464,9 +464,8 @@ void ewl_tree_node_expand(Ewl_Tree_Node *node)
 	ewd_list_goto_first(EWL_CONTAINER(node)->children);
 	ewd_list_next(EWL_CONTAINER(node)->children);
 
-	while ((w = ewd_list_next(EWL_CONTAINER(node)->children))) {
+	while ((w = ewd_list_next(EWL_CONTAINER(node)->children)))
 		ewl_widget_show(w);
-	}
 
 	__ewl_tree_node_theme_update(EWL_WIDGET(node), NULL, NULL);
 
