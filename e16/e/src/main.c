@@ -234,8 +234,6 @@ main(int argc, char **argv)
    if (!init_win_ext)
       SpawnSnappedCmds();
    desks.current = 0;
-   /* test the gnome pager stuff */
-   HandlePager();
    /* Set up the internal pagers */
    IB_Setup();
    if (mode.show_pagers)

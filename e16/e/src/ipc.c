@@ -963,7 +963,6 @@ IPC_Background(char *params, Client * c)
 	else
 	  {
 	     /* delete background */
-
 	     bg = (Background *) FindItem(name, 0, LIST_FINDBY_NAME, LIST_TYPE_BACKGROUND);
 
 	     if (bg)
@@ -983,23 +982,35 @@ IPC_Background(char *params, Client * c)
    else
      {
 	/* show all backgrounds */
-
 	Background        **lst;
 	char                buf2[FILEPATH_LEN_MAX];
+	char               *buf3 = NULL;
 	int                 num, i;
 
 	buf2[0] = 0;
-
 	lst = (Background **) ListItemType(&num, LIST_TYPE_BACKGROUND);
-
-	for (i = 0; i < num; i++)
-	  {
-	     buf2[0] = 0;
-	     Esnprintf(buf2, sizeof(buf2), "%s\n", lst[i]->name);
-	     strcat(buf, buf2);
-	  }
 	if (lst)
-	   Efree(lst);
+	  {
+	     for (i = 0; i < num; i++)
+	       {
+		  buf2[0] = 0;
+		  Esnprintf(buf2, sizeof(buf2), "%s\n", lst[i]->name);
+		  if (buf3)
+		     buf3 = realloc(buf3, strlen(buf3) + strlen(buf2) + 1);
+		  else
+		    {
+		       buf3 = malloc(strlen(buf2) + 1);
+		       buf3[0] = 0;
+		    }
+		  strcat(buf3, buf2);
+	       }
+	     if (buf3)
+	       {
+		  CommsSend(c, buf3);
+		  Efree(buf3);
+	       }
+	     Efree(lst);
+	  }
      }
 
    if (buf[0])
@@ -1558,11 +1569,9 @@ void
 IPC_ListClassMembers(char *params, Client * c)
 {
 
-   char                buf[FILEPATH_LEN_MAX];
+   char               *buf = NULL;
    char                buf2[FILEPATH_LEN_MAX];
    int                 num, i;
-
-   buf[0] = 0;
 
    if (params)
      {
@@ -1576,6 +1585,13 @@ IPC_ListClassMembers(char *params, Client * c)
 	       {
 		  buf2[0] = 0;
 		  Esnprintf(buf2, sizeof(buf2), "%s\n", lst[i]->name);
+		  if (buf)
+		     buf = realloc(buf, strlen(buf) + strlen(buf2) + 1);
+		  else
+		    {
+		       buf = malloc(strlen(buf2) + 1);
+		       buf[0] = 0;
+		    }
 		  strcat(buf, buf2);
 	       }
 	     if (lst)
@@ -1590,6 +1606,13 @@ IPC_ListClassMembers(char *params, Client * c)
 	       {
 		  buf2[0] = 0;
 		  Esnprintf(buf2, sizeof(buf2), "%s\n", lst[i]->name);
+		  if (buf)
+		     buf = realloc(buf, strlen(buf) + strlen(buf2) + 1);
+		  else
+		    {
+		       buf = malloc(strlen(buf2) + 1);
+		       buf[0] = 0;
+		    }
 		  strcat(buf, buf2);
 	       }
 	     if (lst)
@@ -1604,6 +1627,13 @@ IPC_ListClassMembers(char *params, Client * c)
 	       {
 		  buf2[0] = 0;
 		  Esnprintf(buf2, sizeof(buf2), "%s\n", lst[i]->name);
+		  if (buf)
+		     buf = realloc(buf, strlen(buf) + strlen(buf2) + 1);
+		  else
+		    {
+		       buf = malloc(strlen(buf2) + 1);
+		       buf[0] = 0;
+		    }
 		  strcat(buf, buf2);
 	       }
 	     if (lst)
@@ -1618,6 +1648,13 @@ IPC_ListClassMembers(char *params, Client * c)
 	       {
 		  buf2[0] = 0;
 		  Esnprintf(buf2, sizeof(buf2), "%s\n", lst[i]->name);
+		  if (buf)
+		     buf = realloc(buf, strlen(buf) + strlen(buf2) + 1);
+		  else
+		    {
+		       buf = malloc(strlen(buf2) + 1);
+		       buf[0] = 0;
+		    }
 		  strcat(buf, buf2);
 	       }
 	     if (lst)
@@ -1632,6 +1669,13 @@ IPC_ListClassMembers(char *params, Client * c)
 	       {
 		  buf2[0] = 0;
 		  Esnprintf(buf2, sizeof(buf2), "%s\n", lst[i]->name);
+		  if (buf)
+		     buf = realloc(buf, strlen(buf) + strlen(buf2) + 1);
+		  else
+		    {
+		       buf = malloc(strlen(buf2) + 1);
+		       buf[0] = 0;
+		    }
 		  strcat(buf, buf2);
 	       }
 	     if (lst)
@@ -1646,6 +1690,13 @@ IPC_ListClassMembers(char *params, Client * c)
 	       {
 		  buf2[0] = 0;
 		  Esnprintf(buf2, sizeof(buf2), "%s\n", lst[i]->name);
+		  if (buf)
+		     buf = realloc(buf, strlen(buf) + strlen(buf2) + 1);
+		  else
+		    {
+		       buf = malloc(strlen(buf2) + 1);
+		       buf[0] = 0;
+		    }
 		  strcat(buf, buf2);
 	       }
 	     if (lst)
@@ -1660,6 +1711,13 @@ IPC_ListClassMembers(char *params, Client * c)
 	       {
 		  buf2[0] = 0;
 		  Esnprintf(buf2, sizeof(buf2), "%s\n", lst[i]->name);
+		  if (buf)
+		     buf = realloc(buf, strlen(buf) + strlen(buf2) + 1);
+		  else
+		    {
+		       buf = malloc(strlen(buf2) + 1);
+		       buf[0] = 0;
+		    }
 		  strcat(buf, buf2);
 	       }
 	     if (lst)
@@ -1674,26 +1732,29 @@ IPC_ListClassMembers(char *params, Client * c)
 	       {
 		  buf2[0] = 0;
 		  Esnprintf(buf2, sizeof(buf2), "%s\n", lst[i]->name);
+		  if (buf)
+		     buf = realloc(buf, strlen(buf) + strlen(buf2) + 1);
+		  else
+		    {
+		       buf = malloc(strlen(buf2) + 1);
+		       buf[0] = 0;
+		    }
 		  strcat(buf, buf2);
 	       }
 	     if (lst)
 		Efree(lst);
 	  }
 	else
-	  {
-	     Esnprintf(buf, sizeof(buf), "Error: unknown class selected\n");
-	  }
+	   CommsSend(c, "Error: unknown class selected\n");
      }
    else
+      CommsSend(c, "Error: no class selected\n");
+   if (buf)
      {
-	Esnprintf(buf, sizeof(buf), "Error: no class selected\n");
+	CommsSend(c, buf);
+	Efree(buf);
      }
-
-   if (buf[0])
-      CommsSend(c, buf);
-
    return;
-
 }
 
 void
@@ -1709,9 +1770,7 @@ IPC_DialogOK(char *params, Client * c)
 	DIALOG_OK("Message", params);
      }
    else
-     {
-	Esnprintf(buf, sizeof(buf), "Error: No text for dialog specified\n");
-     }
+      Esnprintf(buf, sizeof(buf), "Error: No text for dialog specified\n");
 
    if (buf[0])
       CommsSend(c, buf);
@@ -4422,7 +4481,7 @@ IPC_ReloadMenus(char *params, Client * c)
 	for (i = 0; i < ENLIGHTENMENT_CONF_NUM_DESKTOPS; i++)
 	   if (m == task_menu[i])
 	      not_task = 0;
-	if ((m != desk_menu) && not_task)
+	if ((m != desk_menu) && (m != group_menu) && not_task)
 	   DestroyMenu(m);
      }
 

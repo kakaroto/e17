@@ -536,6 +536,11 @@ spawnMenu(void *params)
 	AUDIO_PLAY("SOUND_MENU_SHOW");
 	ShowAllTaskMenu();
      }
+   else if (!strcmp(s, "groupmenu"))
+     {
+	AUDIO_PLAY("SOUND_MENU_SHOW");
+	ShowGroupMenu();
+     }
    else if (!strcmp(s, "named"))
      {
 	m = FindItem(s2, 0, LIST_FINDBY_NAME, LIST_TYPE_MENU);
@@ -615,86 +620,89 @@ execApplication(void *params)
 	     execl(sh, sh, "-c", (char *)real_exec, NULL);
 	     exit(0);
 	  }
-	path = pathtofile(exe);
-	if (!path)
+	if (!mode.startup)
 	  {
-	     /* absolute path */
-	     if (((char *)exe)[0] == '/')
-		DialogAlertOK("There was an error running the program:\n"
-			      "%s\n"
-			      "This program could not be executed.\n"
-			      "This is because the file does not exist.\n",
-			      (char *)exe);
-	     /* relative path */
-	     else
-		DialogAlertOK("There was an error running the program:\n"
-			      "%s\n"
-			      "This program could not be executed.\n"
-			      "This is most probably because this program "
-			      "is not in the\n"
-			      "path for your shell which is %s. I suggest "
-			      "you read "
-			      "the manual\n"
-			      "page for that shell and read up how to "
-			      "change or add "
-			      "to your\n"
-			      "execution path.\n",
-			      (char *)exe, sh);
-	  }
-	else
-	   /* it is a node on the filing sys */
-	  {
-	     /* it's a file */
-	     if (isfile((char *)path))
+	     path = pathtofile(exe);
+	     if (!path)
 	       {
-		  /* can execute it */
-		  if (canexec((char *)path))
+		  /* absolute path */
+		  if (((char *)exe)[0] == '/')
 		     DialogAlertOK("There was an error running the program:\n"
 				   "%s\n"
 				   "This program could not be executed.\n"
-				   "I am unsure as to why you could not "
-				   "do this. "
-				   "The file exists,\n"
-				   "is a file, and you are allowed to "
-				   "execute it. I "
-				   "suggest you look\n"
-				   "into this.\n",
-				   (char *)path);
-		  /* not executable file */
+				 "This is because the file does not exist.\n",
+				   (char *)exe);
+		  /* relative path */
 		  else
 		     DialogAlertOK("There was an error running the program:\n"
 				   "%s\n"
 				   "This program could not be executed.\n"
-				   "This is because the file exists, is a"
-				   " file, but "
-				   "you are unable\n"
-				   "to execute it because you do not "
-				   "have execute "
-				   "access to this file.\n",
-				   (char *)path);
+				 "This is most probably because this program "
+				   "is not in the\n"
+				 "path for your shell which is %s. I suggest "
+				   "you read "
+				   "the manual\n"
+				   "page for that shell and read up how to "
+				   "change or add "
+				   "to your\n"
+				   "execution path.\n",
+				   (char *)exe, sh);
 	       }
-	     /* it's not a file */
 	     else
+		/* it is a node on the filing sys */
 	       {
-		  /* its a dir */
-		  if (isdir((char *)path))
-		     DialogAlertOK("There was an error running the program:\n"
-				   "%s\n"
-				   "This program could not be executed.\n"
-				   "This is because the file is infact "
-				   "a directory.\n",
-				   (char *)path);
-		  /* its not a file or a dir */
+		  /* it's a file */
+		  if (isfile((char *)path))
+		    {
+		       /* can execute it */
+		       if (canexec((char *)path))
+			  DialogAlertOK("There was an error running the program:\n"
+					"%s\n"
+					"This program could not be executed.\n"
+					"I am unsure as to why you could not "
+					"do this. "
+					"The file exists,\n"
+					"is a file, and you are allowed to "
+					"execute it. I "
+					"suggest you look\n"
+					"into this.\n",
+					(char *)path);
+		       /* not executable file */
+		       else
+			  DialogAlertOK("There was an error running the program:\n"
+					"%s\n"
+					"This program could not be executed.\n"
+					"This is because the file exists, is a"
+					" file, but "
+					"you are unable\n"
+					"to execute it because you do not "
+					"have execute "
+					"access to this file.\n",
+					(char *)path);
+		    }
+		  /* it's not a file */
 		  else
-		     DialogAlertOK("There was an error running the program:\n"
-				   "%s\n"
-				   "This program could not be executed.\n"
-				   "This is because the file is not a "
-				   "regular file.\n",
-				   (char *)path);
+		    {
+		       /* its a dir */
+		       if (isdir((char *)path))
+			  DialogAlertOK("There was an error running the program:\n"
+					"%s\n"
+					"This program could not be executed.\n"
+					"This is because the file is infact "
+					"a directory.\n",
+					(char *)path);
+		       /* its not a file or a dir */
+		       else
+			  DialogAlertOK("There was an error running the program:\n"
+					"%s\n"
+					"This program could not be executed.\n"
+					"This is because the file is not a "
+					"regular file.\n",
+					(char *)path);
+		    }
+		  if (path)
+		     Efree(path);
 	       }
-	     if (path)
-		Efree(path);
 	  }
 	exit(100);
      }

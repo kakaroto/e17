@@ -2400,6 +2400,9 @@ void                ShowMenuMasker(Menu * m);
 void                HideMenuMasker(void);
 void                RepackMenu(Menu * m);
 void                EmptyMenu(Menu * m);
+Menu               *CreateMenuFromGroups(char *name, MenuStyle * ms);
+Menu               *RefreshGroupMenu(Menu * m);
+void                ShowGroupMenu(void);
 
 void                SetNewAreaSize(int ax, int ay);
 void                GetCurrentArea(int *ax, int *ay);
@@ -2803,6 +2806,7 @@ extern char         just_flipped;
 extern Menu        *all_task_menu;
 extern Menu        *task_menu[ENLIGHTENMENT_CONF_NUM_DESKTOPS];
 extern Menu        *desk_menu;
+extern Menu        *group_menu;
 extern char         no_overwrite;
 extern Window       external_pager_window;
 extern char         clickmenu;

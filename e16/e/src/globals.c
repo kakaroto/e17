@@ -32,6 +32,7 @@ char                just_flipped = 0;
 Menu               *all_task_menu = NULL;
 Menu               *task_menu[ENLIGHTENMENT_CONF_NUM_DESKTOPS];
 Menu               *desk_menu = NULL;
+Menu               *group_menu = NULL;
 char                no_overwrite = 0;
 Window              external_pager_window = 0;
 char                clickmenu = 0;

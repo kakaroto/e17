@@ -1144,3 +1144,15 @@ Wed Sep  1 18:08:53 PDT 1999
 (Raster)
 
 fix minor problem introduced by fixing other shape bug.. :)
+
+-------------------------------------------------------------------------------
+
+Thu Sep  2 09:44:46 PDT 1999
+(Raster)
+
+added group menu (shit middle button on root) patch - nice :)
+fixed some buffer overflow problems in the ipc.c code that cause segfaults.
+fixed alert box form trying to run commands it cant find form rememberd states
+on startup
+fixed group null setting.
+I flimmed.

@@ -1036,7 +1036,6 @@ HandleProperty(XEvent * ev)
    EWin               *ewin;
    char                title[10240];
    int                 desktop;
-   static Atom         pga = 0;
 
    EDBUG(5, "HandleProperty");
    win = ev->xproperty.window;
@@ -1068,13 +1067,6 @@ HandleProperty(XEvent * ev)
 		CalcEwinSizes(ewin);
 	     }
 	UngrabX();
-     }
-   else if (win == root.win)
-     {
-	if (!pga)
-	   pga = XInternAtom(disp, "_GNOME_PAGER_ACTIVE", False);
-	if (ev->xproperty.atom == pga)
-	   HandlePager();
      }
    EDBUG_RETURN_;
 }
@@ -1232,17 +1224,17 @@ HandleConfigureRequest(XEvent * ev)
 		       w, h);
 	if (mode.mode == MODE_MOVE)
 	   ICCCM_Configure(ewin);
-	  {
-	     char pshaped;
-	     
-	     pshaped = ewin->client.shaped;    
-	     ICCCM_GetShapeInfo(ewin);
-	     if (pshaped != ewin->client.shaped)
-	       {
-		  SyncBorderToEwin(ewin);
-		  PropagateShapes(ewin->win);
-	       }
-	  }
+	{
+	   char                pshaped;
+
+	   pshaped = ewin->client.shaped;
+	   ICCCM_GetShapeInfo(ewin);
+	   if (pshaped != ewin->client.shaped)
+	     {
+		SyncBorderToEwin(ewin);
+		PropagateShapes(ewin->win);
+	     }
+	}
 	ReZoom(ewin);
      }
    else
@@ -1274,17 +1266,17 @@ HandleResizeRequest(XEvent * ev)
 	w = ev->xresizerequest.width;
 	h = ev->xresizerequest.height;
 	ResizeEwin(ewin, w, h);
-	  {
-	     char pshaped;
-	     
-	     pshaped = ewin->client.shaped;    
-	     ICCCM_GetShapeInfo(ewin);
-	     if (pshaped != ewin->client.shaped)
-	       {
-		  SyncBorderToEwin(ewin);
-		  PropagateShapes(ewin->win);
-	       }
-	  }
+	{
+	   char                pshaped;
+
+	   pshaped = ewin->client.shaped;
+	   ICCCM_GetShapeInfo(ewin);
+	   if (pshaped != ewin->client.shaped)
+	     {
+		SyncBorderToEwin(ewin);
+		PropagateShapes(ewin->win);
+	     }
+	}
 	ReZoom(ewin);
      }
    else

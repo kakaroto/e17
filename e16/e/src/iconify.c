@@ -152,30 +152,6 @@ ShowIcons(void)
 void
 HandlePager(void)
 {
-   Window             *w1, *w2;
-   int                 size;
-   static Atom         pga = 0;
-
-   if (!pga)
-      pga = XInternAtom(disp, "_GNOME_PAGER_ACTIVE", False);
-   external_pager_window = 0;
-   w1 = (Window *) AtomGet(root.win, pga, XA_WINDOW, &size);
-   if (w1)
-     {
-	if (WinExists(*w1))
-	  {
-	     w2 = (Window *) AtomGet(*w1, pga, XA_WINDOW, &size);
-	     if (w2)
-	       {
-		  XSelectInput(disp, *w2, StructureNotifyMask |
-			       SubstructureNotifyMask);
-		  external_pager_window = *w2;
-		  HideIcons();
-		  Efree(w2);
-	       }
-	  }
-	Efree(w1);
-     }
 }
 
 Iconbox            *

@@ -2,6 +2,7 @@
 
 static MenuStyle   *task_menu_style = NULL;
 static MenuStyle   *desk_menu_style = NULL;
+static MenuStyle   *group_menu_style = NULL;
 
 static void         FileMenuUpdate(int val, void *data);
 static void         FillFlatFileMenu(Menu * m, MenuStyle * ms, char *name, char *file, Menu * parent);
@@ -1876,4 +1877,126 @@ HideMenuMasker(void)
    if (mode.menu_cover_win)
       EDestroyWindow(disp, mode.menu_cover_win);
    mode.menu_cover_win = 0;
+}
+
+Menu               *
+CreateMenuFromGroups(char *name, MenuStyle * ms)
+{
+   Menu               *m, *mm;
+   Group             **lst;
+   int                 i, j, num;
+   char                s[256];
+   MenuItem           *mi;
+
+   EDBUG(5, "CreateMenuFromEWins");
+   m = CreateMenu();
+   m->name = duplicate(name);
+   m->style = ms;
+   lst = (Group **) ListItemType(&num, LIST_TYPE_GROUP);
+   if (lst)
+     {
+	for (i = 0; i < num; i++)
+	  {
+	     mm = CreateMenu();
+	     mm->name = duplicate("__SUBMENUGROUP_E");
+	     mm->style = ms;
+	     Esnprintf(s, sizeof(s), "%i", lst[i]->members[0]->client.win);
+	     mi = CreateMenuItem("Show/Hide this group", NULL, ACTION_SHOW_HIDE_GROUP, s, NULL);
+	     AddItemToMenu(mm, mi);
+	     mi = CreateMenuItem("Iconify this group", NULL, ACTION_ICONIFY, s, NULL);
+	     AddItemToMenu(mm, mi);
+
+	     for (j = 0; j < lst[i]->num_members; j++)
+	       {
+		  Esnprintf(s, sizeof(s), "%i", lst[i]->members[j]->client.win);
+		  mi = CreateMenuItem(lst[i]->members[j]->client.title, NULL, ACTION_FOCUS_SET, s, NULL);
+		  AddItemToMenu(mm, mi);
+	       }
+	     mm->parent = m;
+	     Esnprintf(s, sizeof(s), "Group %i", i);
+	     mi = CreateMenuItem(s, NULL, 0, NULL, mm);
+	     AddItemToMenu(m, mi);
+	  }
+	Efree(lst);
+     }
+   EDBUG_RETURN(m);
+}
+
+Menu               *
+RefreshGroupMenu(Menu * m)
+{
+   char                was = 0;
+   int                 lx = 0, ly = 0;
+   EWin               *ewin;
+
+   EDBUG(5, "RefreshGroupMenu");
+   if (m)
+     {
+	ewin = FindEwinByMenu(m);
+	if ((m->win) && (ewin))
+	  {
+	     lx = ewin->x;
+	     ly = ewin->y;
+	     was = 1;
+	  }
+	DestroyMenu(m);
+     }
+   m = NULL;
+   if (!group_menu_style)
+     {
+	EDBUG_RETURN(NULL);
+     }
+   m = CreateMenuFromGroups("MENU", group_menu_style);
+   if ((was) && (m))
+     {
+	ShowMenu(m, 1);
+	ewin = FindEwinByMenu(m);
+	if (ewin)
+	  {
+	     MoveEwin(ewin, lx, ly);
+	     ShowEwin(ewin);
+	  }
+	mode.cur_menu[0] = m;
+	mode.cur_menu_depth = 1;
+	ShowMenuMasker(m);
+     }
+   EDBUG_RETURN(m);
+}
+
+void
+ShowGroupMenu(void)
+{
+   static MenuStyle   *ms = NULL;
+   static Menu        *m = NULL;
+
+   EDBUG(5, "ShowGroupMenu");
+   XUngrabPointer(disp, CurrentTime);
+   if (!group_menu_style)
+     {
+	ms = FindItem("GROUP_MENU", 0, LIST_FINDBY_NAME, LIST_TYPE_MENU_STYLE);
+	if (!ms)
+	   ms = FindItem("DEFAULT", 0, LIST_FINDBY_NAME, LIST_TYPE_MENU_STYLE);
+	if (!ms)
+	   EDBUG_RETURN_;
+     }
+   group_menu_style = ms;
+   mode.cur_menu_mode = 1;
+   m = NULL;
+   m = RefreshGroupMenu(group_menu);
+   group_menu = m;
+   if (m)
+     {
+	if (!FindEwinByMenu(m))
+	   ShowMenu(m, 0);
+	mode.cur_menu[0] = m;
+	mode.cur_menu_depth = 1;
+	ShowMenuMasker(m);
+     }
+   else
+     {
+	mode.cur_menu[0] = NULL;
+	mode.cur_menu_depth = 0;
+	HideMenuMasker();
+     }
+   EDBUG_RETURN_;
 }
