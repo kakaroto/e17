@@ -19,6 +19,7 @@ imlib2.spec \
 demo/Makefile.am \
 demo/Makefile.in \
 demo/view.c \
+demo/imconvert.c \
 test/Makefile.am \
 test/Makefile.in \
 test/main.c \
