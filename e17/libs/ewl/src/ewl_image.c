@@ -5,8 +5,12 @@ static Ewl_Image_Type  ewl_image_get_type(const char *i);
 
 /**
  * @param i: the path to the image to be displayed by the image widget
+ * @param k: the key for the data in the image or edje
  * @return Returns a pointer to a new image widget on success, NULL on failure.
  * @brief Load an image widget with specified image contents
+ *
+ * The @a k parameter is primarily used for loading edje groups or keyed data
+ * in an image.
  */
 Ewl_Widget     *ewl_image_new(char *i, char *k)
 {
