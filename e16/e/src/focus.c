@@ -28,14 +28,14 @@ static int          new_desk_focus_nesting = 0;
 static void
 AutoraiseTimeout(int val, void *data)
 {
-   EWin               *found_ewin;
+   EWin               *ewin;
 
    if (conf.focus.mode == MODE_FOCUS_CLICK)
       return;
-   found_ewin = FindItem("", val, LIST_FINDBY_ID, LIST_TYPE_EWIN);
-   if (found_ewin)
-      RaiseEwin(found_ewin);
-   data = NULL;
+
+   ewin = FindItem("", val, LIST_FINDBY_ID, LIST_TYPE_EWIN);
+   if (ewin)
+      RaiseEwin(ewin);
 }
 
 static void
@@ -46,8 +46,6 @@ ReverseTimeout(int val, void *data)
    ewin = RemoveItem("EWIN", val, LIST_FINDBY_ID, LIST_TYPE_EWIN);
    if (ewin)
       AddItem(ewin, "EWIN", ewin->client.win, LIST_TYPE_EWIN);
-   val = 0;
-   data = NULL;
 }
 
 static void
@@ -484,3 +482,123 @@ FocusToNone(void)
    EDBUG_RETURN_;
 }
 #endif
+
+void
+HandleFocusWindowIn(Window win)
+{
+   EWin               *ewin;
+
+   EDBUG(5, "HandleFocusWindowIn");
+   ewin = FindItem(NULL, win, LIST_FINDBY_ID, LIST_TYPE_EWIN);
+   if (!ewin)
+      ewin = FindEwinByBase(win);
+   if (ewin != mode.focuswin)
+     {
+	if (mode.focuswin)
+	  {
+	     mode.focuswin->active = 0;
+	     DrawEwin(mode.focuswin);
+	     if (conf.focus.mode == MODE_FOCUS_CLICK)
+		XGrabButton(disp, AnyButton, AnyModifier,
+			    mode.focuswin->win_container, False,
+			    ButtonPressMask, GrabModeSync, GrabModeAsync, None,
+			    None);
+	  }
+	mode.focuswin = ewin;
+	if ((ewin) && (!ewin->menu))
+	  {
+	     mode.realfocuswin = ewin;
+	     if (!mode.cur_menu_mode)
+		mode.context_ewin = ewin;
+	  }
+	if (mode.focuswin)
+	  {
+	     mode.focuswin->active = 1;
+	     DrawEwin(mode.focuswin);
+	     if (conf.focus.mode == MODE_FOCUS_CLICK)
+	       {
+		  XUngrabButton(disp, AnyButton, AnyModifier,
+				mode.focuswin->win_container);
+		  GrabButtonGrabs(mode.focuswin);
+	       }
+	  }
+     }
+   EDBUG_RETURN_;
+}
+
+void
+HandleFocusWindow(Window win)
+{
+   EWin               *found_ewin;
+
+   EDBUG(5, "HandleFocusWindow");
+   if (win == 0)
+      FocusToEWin(NULL, FOCUS_SET);
+   else
+     {
+	found_ewin = FindEwinByChildren(win);
+	if (!found_ewin)
+	   found_ewin = FindEwinByBase(win);
+	if (conf.focus.mode == MODE_FOCUS_CLICK)
+	   mode.mouse_over_win = found_ewin;
+	else if (conf.focus.mode == MODE_FOCUS_SLOPPY)
+	  {
+	     if (!found_ewin)
+		ICCCM_Cmap(NULL);
+	     else if (!(found_ewin->focusclick))
+		FocusToEWin(found_ewin, FOCUS_SET);
+	     mode.mouse_over_win = found_ewin;
+	  }
+	else if (conf.focus.mode == MODE_FOCUS_POINTER)
+	  {
+	     if (!found_ewin)
+		found_ewin = GetEwinPointerInClient();
+	     FocusToEWin(found_ewin, FOCUS_SET);
+	     mode.mouse_over_win = found_ewin;
+	  }
+     }
+   EDBUG_RETURN_;
+}
+
+/*
+ * Focus event handlers
+ */
+
+void
+FocusHandleEnter(XEvent * ev)
+{
+   /*
+    * multi screen handling -- root windows receive
+    * enter / leave notify
+    */
+   if (ev->xany.window == root.win)
+     {
+	if (!mode.focuswin || conf.focus.mode == MODE_FOCUS_POINTER)
+	   HandleFocusWindow(0);
+     }
+   else
+     {
+	HandleFocusWindow(ev->xcrossing.window);
+     }
+}
+
+void
+FocusHandleLeave(XEvent * ev)
+{
+   /*
+    * If we are leaving the root window, we are switching
+    * screens on a multi screen system - need to unfocus
+    * to allow other desk to grab focus...
+    */
+   if (ev->xcrossing.window == root.win)
+     {
+	if (ev->xcrossing.mode == NotifyNormal
+	    && ev->xcrossing.detail != NotifyInferior && mode.focuswin)
+	   HandleFocusWindow(0);
+	else
+	   HandleFocusWindow(ev->xcrossing.window);
+     }
+/* THIS caused the "emacs focus bug" ? */
+/*      else */
+/*      HandleFocusWindow(ev->xcrossing.window); */
+}

@@ -220,23 +220,7 @@ static void
 HEnterNotify(XEvent * ev)
 {
    EDBUG(7, "HEnterNotify");
-   if (mode.mode == MODE_NONE)
-     {
-	/*
-	 * multi screen handling -- root windows receive
-	 * enter / leave notify
-	 */
-	if (ev->xany.window == root.win)
-	  {
-	     if (!mode.focuswin || conf.focus.mode == MODE_FOCUS_POINTER)
-		HandleFocusWindow(root.focuswin);
-	  }
-	else
-	  {
-	     HandleMouseIn(ev);
-	     HandleFocusWindow(ev->xcrossing.window);
-	  }
-     }
+   HandleMouseIn(ev);
    EDBUG_RETURN_;
 }
 
@@ -244,27 +228,7 @@ static void
 HLeaveNotify(XEvent * ev)
 {
    EDBUG(7, "HLeaveNotify");
-   if (mode.mode == MODE_NONE)
-     {
-	HandleMouseOut(ev);
-
-	/*
-	 * If we are leaving the root window, we are switching
-	 * screens on a multi screen system - need to unfocus
-	 * to allow other desk to grab focus...
-	 */
-	if (ev->xcrossing.window == root.win)
-	  {
-	     if (ev->xcrossing.mode == NotifyNormal
-		 && ev->xcrossing.detail != NotifyInferior && mode.focuswin)
-		HandleFocusWindow(root.focuswin);
-	     else
-		HandleFocusWindow(ev->xcrossing.window);
-	  }
-/* THIS caused the "emacs focus bug" ? */
-/*      else */
-/*      HandleFocusWindow(ev->xcrossing.window); */
-     }
+   HandleMouseOut(ev);
    EDBUG_RETURN_;
 }
 
@@ -272,8 +236,7 @@ static void
 HFocusIn(XEvent * ev)
 {
    EDBUG(7, "HFocusIn");
-   if (ev->xfocus.detail != NotifyPointer)
-      HandleFocusWindowIn(ev->xfocus.window);
+   HandleFocusIn(ev);
    EDBUG_RETURN_;
 }
 
@@ -281,19 +244,7 @@ static void
 HFocusOut(XEvent * ev)
 {
    EDBUG(7, "HFocusOut");
-   if (ev->xfocus.detail == NotifyNonlinear)
-     {
-	Window              rt, ch;
-	int                 d;
-	unsigned int        ud;
-
-	XQueryPointer(disp, root.win, &rt, &ch, &d, &d, &d, &d, &ud);
-	if (rt != root.win)
-	  {
-/*           fprintf(stderr, "HandleFocusWindowIn\n"); */
-	     HandleFocusWindowIn(0);
-	  }
-     }
+   HandleFocusOut(ev);
    EDBUG_RETURN_;
 }
 

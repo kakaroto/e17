@@ -692,7 +692,6 @@ typedef struct _root
    Colormap            cmap;
    int                 scr;
    int                 w, h;
-   Window              focuswin;
 }
 Root;
 
@@ -1872,6 +1871,7 @@ void                FocusToEWin(EWin * ewin, int why);
 void                FocusHandleFocusIn(Window win);
 void                FocusHandleFocusOut(Window win);
 void                FocusHandleEnter(XEvent * ev);
+void                FocusHandleLeave(XEvent * ev);
 void                FocusHandleClick(Window win);
 void                FocusNewDeskBegin(void);
 void                FocusNewDesk(void);
@@ -2004,6 +2004,8 @@ void                TclassApply(ImageClass * iclass, Window win, int w, int h,
 void                HandleClientMessage(XEvent * ev);
 void                HandleFocusWindowIn(Window win);
 void                HandleFocusWindow(Window win);
+void                HandleFocusIn(XEvent * ev);
+void                HandleFocusOut(XEvent * ev);
 void                HandleChildShapeChange(XEvent * ev);
 void                HandleMotion(XEvent * ev);
 void                HandleDestroy(XEvent * ev);

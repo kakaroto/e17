@@ -114,80 +114,28 @@ HandleClientMessage(XEvent * ev)
 }
 
 void
-HandleFocusWindowIn(Window win)
+HandleFocusIn(XEvent * ev)
 {
-   EWin               *ewin;
-
-   EDBUG(5, "HandleFocusWindowIn");
-   ewin = FindItem(NULL, win, LIST_FINDBY_ID, LIST_TYPE_EWIN);
-   if (!ewin)
-      ewin = FindEwinByBase(win);
-   if (ewin != mode.focuswin)
-     {
-	if (mode.focuswin)
-	  {
-	     mode.focuswin->active = 0;
-	     DrawEwin(mode.focuswin);
-	     if (conf.focus.mode == MODE_FOCUS_CLICK)
-		XGrabButton(disp, AnyButton, AnyModifier,
-			    mode.focuswin->win_container, False,
-			    ButtonPressMask, GrabModeSync, GrabModeAsync, None,
-			    None);
-	  }
-	mode.focuswin = ewin;
-	if ((ewin) && (!ewin->menu))
-	  {
-	     mode.realfocuswin = ewin;
-	     if (!mode.cur_menu_mode)
-		mode.context_ewin = ewin;
-	  }
-	if (mode.focuswin)
-	  {
-	     mode.focuswin->active = 1;
-	     DrawEwin(mode.focuswin);
-	     if (conf.focus.mode == MODE_FOCUS_CLICK)
-	       {
-		  XUngrabButton(disp, AnyButton, AnyModifier,
-				mode.focuswin->win_container);
-		  GrabButtonGrabs(mode.focuswin);
-	       }
-	  }
-     }
-   EDBUG_RETURN_;
+   if (ev->xfocus.detail != NotifyPointer)
+      HandleFocusWindowIn(ev->xfocus.window);
 }
 
 void
-HandleFocusWindow(Window win)
+HandleFocusOut(XEvent * ev)
 {
-   EWin               *found_ewin;
-
-   EDBUG(5, "HandleFocusWindow");
-   if (root.focuswin == win)
-      FocusToEWin(NULL, FOCUS_SET);
-   else
+   if (ev->xfocus.detail == NotifyNonlinear)
      {
-	found_ewin = FindEwinByChildren(win);
-	if (!found_ewin)
-	   found_ewin = FindEwinByBase(win);
-	if (conf.focus.mode == MODE_FOCUS_CLICK)
-	   mode.mouse_over_win = found_ewin;
-	else if (conf.focus.mode == MODE_FOCUS_SLOPPY)
+	Window              rt, ch;
+	int                 d;
+	unsigned int        ud;
+
+	XQueryPointer(disp, root.win, &rt, &ch, &d, &d, &d, &d, &ud);
+	if (rt != root.win)
 	  {
-	     if (!found_ewin)
-		ICCCM_Cmap(NULL);
-	     else if (!(found_ewin->focusclick))
-		FocusToEWin(found_ewin, FOCUS_SET);
-	     mode.mouse_over_win = found_ewin;
-	  }
-	else if (conf.focus.mode == MODE_FOCUS_POINTER)
-	  {
-	     if (!found_ewin)
-		found_ewin = GetEwinPointerInClient();
-	     FocusToEWin(found_ewin, FOCUS_SET);
-	     mode.mouse_over_win = found_ewin;
+/*           fprintf(stderr, "HandleFocusWindowIn\n"); */
+	     HandleFocusWindowIn(0);
 	  }
      }
-   EDBUG_RETURN_;
 }
 
 void
@@ -1037,6 +985,8 @@ HandleMouseIn(XEvent * ev)
       goto exit;
 
  exit:
+   FocusHandleEnter(ev);
+
    EDBUG_RETURN_;
 }
 
@@ -1073,5 +1023,7 @@ HandleMouseOut(XEvent * ev)
       goto exit;
 
  exit:
+   FocusHandleLeave(ev);
+
    EDBUG_RETURN_;
 }

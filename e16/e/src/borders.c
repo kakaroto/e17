@@ -2079,23 +2079,26 @@ ShowEwin(EWin * ewin)
 
    if (ewin->visible)
       EDBUG_RETURN_;
+   ewin->visible = 1;
+
    if (ewin->client.win)
      {
 	if (ewin->shaded)
 	   EMoveResizeWindow(disp, ewin->win_container, -30, -30, 1, 1);
 	EMapWindow(disp, ewin->client.win);
      }
+
    if (ewin->win)
-     {
-	EMapWindow(disp, ewin->win);
-     }
-   ewin->visible = 1;
+      EMapWindow(disp, ewin->win);
+
    SetEwinToCurrentArea(ewin);
+
    if (mode.mode == MODE_NONE)
      {
 	PagerEwinOutsideAreaUpdate(ewin);
 	ForceUpdatePagersForDesktop(ewin->desktop);
      }
+
    EDBUG_RETURN_;
 }
 
@@ -2103,18 +2106,23 @@ void
 HideEwin(EWin * ewin)
 {
    EDBUG(3, "HideEwin");
+
    if (!ewin->visible)
       EDBUG_RETURN_;
+   ewin->visible = 0;
+
    if (GetZoomEWin() == ewin)
       Zoom(NULL);
+
    if (ewin->win)
       EUnmapWindow(disp, ewin->win);
-   ewin->visible = 0;
+
    if (mode.mode == MODE_NONE)
      {
 	PagerEwinOutsideAreaUpdate(ewin);
 	ForceUpdatePagersForDesktop(ewin->desktop);
      }
+
    EDBUG_RETURN_;
 }
 

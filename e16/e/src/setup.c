@@ -297,7 +297,6 @@ SetupX()
 #endif
    root.w = DisplayWidth(disp, root.scr);
    root.h = DisplayHeight(disp, root.scr);
-   root.focuswin = ECreateFocusWindow(root.win, -100, -100, 5, 5);
 
    /* just in case - set them up again */
    /* set up an error handler for then E would normally have fatal X errors */
@@ -409,6 +408,7 @@ SetupX()
    conf.focus.raise_on_next_focus = 1;
    conf.focus.raise_after_next_focus = 1;
    conf.focus.warp_on_next_focus = 0;
+   conf.focus.warp_after_next_focus = 0;
    conf.group_config.iconify = 1;
    conf.group_config.kill = 0;
    conf.group_config.move = 1;
