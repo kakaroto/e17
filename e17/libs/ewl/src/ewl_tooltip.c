@@ -76,7 +76,7 @@ int ewl_tooltip_init (Ewl_Tooltip *t, Ewl_Widget *parent)
  * @return Returns no value.
  * @brief Change the text displayed in the tooltip.
  */
-void ewl_tooltip_set_text (Ewl_Tooltip *t, char *text)
+void ewl_tooltip_text_set (Ewl_Tooltip *t, char *text)
 {
 	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR("t", t);
@@ -92,7 +92,7 @@ void ewl_tooltip_set_text (Ewl_Tooltip *t, char *text)
  * @return Returns no value.
  * @brief Changes the delay value on the tooltip.
  */
-void ewl_tooltip_set_delay (Ewl_Tooltip *t, double delay)
+void ewl_tooltip_delay_set (Ewl_Tooltip *t, double delay)
 {
 	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR("t", t);

@@ -27,8 +27,8 @@ struct _ewl_tooltip {
 
 Ewl_Widget *ewl_tooltip_new (Ewl_Widget *parent);
 int ewl_tooltip_init (Ewl_Tooltip *t, Ewl_Widget *parent);
-void ewl_tooltip_set_text (Ewl_Tooltip *t, char *text);
-void ewl_tooltip_set_delay (Ewl_Tooltip *t, double delay);
+void ewl_tooltip_text_set (Ewl_Tooltip *t, char *text);
+void ewl_tooltip_delay_set (Ewl_Tooltip *t, double delay);
 
 /*
  * Internally used callbacks, override at your own risk.

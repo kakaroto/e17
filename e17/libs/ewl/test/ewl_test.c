@@ -185,10 +185,10 @@ main(int argc, char **argv)
 		
 		/* Add the tooltips */
 		tooltip = ewl_tooltip_new (prow[i]);
-		ewl_tooltip_set_delay (EWL_TOOLTIP (tooltip), 1.5);
+		ewl_tooltip_delay_set (EWL_TOOLTIP (tooltip), 1.5);
 		ewl_container_append_child (EWL_CONTAINER (main_win),
 					    tooltip);
-		ewl_tooltip_set_text (EWL_TOOLTIP (tooltip), tooltips[i]);
+		ewl_tooltip_text_set (EWL_TOOLTIP (tooltip), tooltips[i]);
 
 		for (j = 1; j < argc; j++) {
 			if (!strcasecmp(argv[j], tests[i].name))
