@@ -1,27 +1,23 @@
 Summary: Enlightenment Database Access Library
 Name: edb
 Version: 1.0.5
-Release: 1
+Release: 2
 Copyright: BSD
 Group: System Environment/Libraries
 URL: http://www.enlightenment.org/pages/edb.html
-Packager: Mark Bainter <mark-e@cymry.org>
+Packager: Michael Jennings <mej@eterm.org>
 Vendor: The Enlightenment Development Team (http://www.enlightenment.org/)
 Source: ftp://ftp.enlightenment.org/enlightenment/e17/libs/%{name}-%{version}.tar.gz
-BuildRoot: /var/tmp/%{name}-root
-BuildRequires: zlib-devel
-BuildRequires: ncurses-devel
-BuildRequires: gtk-devel
-Requires: zlib
+BuildRoot: %{_tmppath}/%{name}-%{version}-root
 
 %description
-
-Edb is a database abstraction layer to Berkeley Databases. Edb contains the
-source for DB 2.7.7, thus freezing the database format on disk, making sure it
-will never become incompatible (as is a habit of the DB interface in libc). Edb
-wraps this with a convenience and optimization API layer, making database
-access easy, fast and consistent. It handles typing of information in the
-database and much more.
+Edb is a database abstraction layer to Berkeley Databases. Edb
+contains the source for DB 2.7.7, thus freezing the database format on
+disk, making sure it will never become incompatible (as is a habit of
+the DB interface in libc). Edb wraps this with a convenience and
+optimization API layer, making database access easy, fast and
+consistent. It handles typing of information in the database and much
+more.
 
 %package devel
 Summary: Edb headers, static libraries, documentation and test programs
@@ -43,7 +39,6 @@ A command-line db editor for Edb
 Summary: Edb command-line editor
 Group: System Environment/Libraries
 Requires: %{name} = %{version}
-Requires: gtk
 
 %description gtk_ed
 A GTK+ gui db editor for Edb
@@ -52,7 +47,6 @@ A GTK+ gui db editor for Edb
 Summary: Edb command-line editor
 Group: System Environment/Libraries
 Requires: %{name} = %{version}
-Requires: ncurses
 
 %description vt_ed
 A curses db editor for Edb
@@ -69,10 +63,10 @@ then
 else
   ./autogen.sh --prefix=%{_prefix} --bindir=%{_bindir} --libdir=%{_libdir} --includedir=%{_includedir}
 fi
-make
+%{__make} %{?_smp_mflags} %{?mflags}
 
 %install
-make DESTDIR=$RPM_BUILD_ROOT install
+%{__make} %{?mflags_install} DESTDIR=$RPM_BUILD_ROOT install
 
 %post
 /sbin/ldconfig
@@ -84,33 +78,29 @@ make DESTDIR=$RPM_BUILD_ROOT install
 rm -rf $RPM_BUILD_ROOT
 
 %files
-%defattr(-,root,root)
-%attr(755,root,root) %{_libdir}/libedb.so.*
+%defattr(-, root, root)
+%doc AUTHORS COPYING README src/LICENSE
+%{_libdir}/libedb.so.*
 %{_libdir}/libedb.la
 
 %files devel
-%attr(755,root,root) %{_libdir}/libedb.so
-%attr(755,root,root) %{_libdir}/libedb.a
-%attr(755,root,root) %{_bindir}/edb-config
-%{_prefix}/lib/pkgconfig/edb.pc
+%defattr(-, root, root)
+%{_libdir}/libedb.so
+%{_libdir}/libedb.a
+%{_bindir}/edb-config
+%{_libdir}/pkgconfig/edb.pc
 %{_includedir}/Edb*
-%doc AUTHORS
-%doc COPYING
-%doc README
-%doc src/LICENSE
 
 %files ed
+%defattr(-, root, root)
 %{_bindir}/edb_ed
 
 %files gtk_ed
+%defattr(-, root, root)
 %{_bindir}/edb_gtk_ed
 
 %files vt_ed
+%defattr(-, root, root)
 %{_bindir}/edb_vt_ed
 
 %changelog
-* Sat Aug 11 2001 Mark Bainter <mark-e@cymry.org>
-- Made package relocatable.
-- Corrected Web and FTP URLs.
-- Took out the (wrong) email address for the development team.
-- Expended the package descriptions
