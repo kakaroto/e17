@@ -46,7 +46,8 @@ EwinListShow(const char *txt, EWinList * ewl)
    for (i = 0; i < ewl->nwins; i++)
      {
 	ewin = ewl->list[i];
-	printf(" %2d: %#lx %d %s\n", i, ewin->client.win, ewin->layer,
+	printf(" %2d: %#10lx %#10lx %d %d %s\n", i, ewin->win, ewin->client.win,
+	       ewin->desktop, (ewin->floating) ? 999 : ewin->layer,
 	       EwinGetTitle(ewin));
      }
 }
