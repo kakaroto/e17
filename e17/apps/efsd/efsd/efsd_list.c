@@ -29,6 +29,14 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 #include <stdio.h>
 #include <stdlib.h>
 
+#ifdef DEBUG
+#undef DEBUG
+#endif
+
+#ifdef DEBUG_NEST
+#undef DEBUG_NEST
+#endif
+
 #include <efsd_macros.h>
 #include <efsd_debug.h>
 #include <efsd_misc.h>

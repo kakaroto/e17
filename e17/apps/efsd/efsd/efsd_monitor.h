@@ -72,7 +72,7 @@ typedef struct efsd_monitor
 
   /* Which clients monitor this file,
      and with what command id.
-     list<EfsdFamRequest*>.
+     list<EfsdMonitorRequest*>.
   */
   EfsdList             *clients;
 
@@ -118,6 +118,10 @@ EfsdMonitor;
 void             efsd_monitor_init(void);
 void             efsd_monitor_cleanup(void);
 
+EfsdMonitorRequest *efsd_monitor_request_new(int client, EfsdFileCmd *cmd);
+void                efsd_monitor_request_free(EfsdMonitorRequest *emr);
+
+
 /* This one frees the monitor and removes it from
    the list of registered monitors.
 */
@@ -141,7 +145,7 @@ EfsdMonitor     *efsd_monitored(char *filename, int dir_mode);
 /* Check for all monitors if they are requested by CLIENT
    and in that case release those requests.
 */
-int              efsd_monitor_cleanup_client(int client);
+void             efsd_monitor_cleanup_client(int client);
 
 /* Checks all monitoring requests for a particular monitor
    and removes those requests that are no longer valid.

@@ -160,7 +160,7 @@
           </listitem>
 	  <listitem>
 	    <para>
-              Edb, the Enlightenment Database, based on BerkeleyDB. It's available on
+              Edb, the Enlightenment Database, based on Berkeley DB. It's available on
               Enlightenment's SourceForge 
               <ulink url="http://prdownloads.sourceforge.net/enlightenment">download page</ulink>.
             </para>
@@ -381,7 +381,7 @@ if ( (id = efsd_makedir(ec, "foo/bar")) < 0)
 	  get the &efsd; connection file descriptor using
 	  <link linkend="API-efsd-get-connection-fd"><function>efsd_get_connection_fd()</function></link>,
 	  then to use <function>select()</function> on the file descriptor to
-	  find out when it becomes writeable, and then flush the queue.
+	  find out when it becomes writable, and then flush the queue.
 	</para>
       </section>
       
@@ -545,25 +545,57 @@ while (efsd_wait_event(ec, &amp;ee) >= 0)
 	 the concept.	 
 	</para>
 
-        <mediaobject>
-          <imageobject>
-            <imagedata fileref="figures/efsd-event.eps" format="eps">
-          </imageobject>
-          <imageobject>
-            <imagedata fileref="figures/efsd-event.gif" format="gif">
-          </imageobject>
-          <textobject>
-            <phrase>Image of EfsdEvent structure</phrase>
-          </textobject>
-          <caption>
-            <para>The <classname>EfsdEvent</classname> Union.</para>
-          </caption>
-        </mediaobject>
+	  <programlisting>  
++---------------------------------------------------------+
+| EfsdEvent                                               |
+|                                                         |
+|  +---------------------------------------------------+  |
+|  | EfsdEventType                               type; |  |
+|  +---------------------------------------------------+  |
+|                                                         |
+|  +---------------------------------------------------+  |
+|  | EfsdFileChangeEvent         efsd_filechange_event |  |
+|  |                                                   |  |
+|  |   EfsdEventType                             type; |  |
+|  |   EfsdCmdId                                   id; |  |
+|  |   EfsdFilechangeType                  changetype; |  |
+|  |   char *                                    file; |  |
+|  |                                                   |  |
+|  +---------------------------------------------------+  |
+|                                                         |
+|  +---------------------------------------------------+  |
+|  | EfsdMetadataChangeEvent     efsd_metachange_event |  |
+|  |                                                   |  |
+|  |   EfsdEventType                             type; |  |
+|  |   EfsdCmdId                                   id; |  |
+|  |   char *                                     key; |  |
+|  |   char *                                    file; |  |
+|  |   EfsdDatatype                          datatype; |  |
+|  |   int                                   data_len; |  |
+|  |   void *                                    data; |  |
+|  |                                                   |  |
+|  +---------------------------------------------------+  |
+|                                                         |
+|  +---------------------------------------------------+  |
+|  | EfsdReplyEvent                   efsd_reply_event |  |
+|  |                                                   |  |
+|  |   EfsdEventType                             type; |  |
+|  |   EfsdCommand                            command; |  |
+|  |   int                                  errorcode; |  |
+|  |   int                                   data_len; |  |
+|  |   void *                                    data; |  |
+|  |                                                   |  |
+|  +---------------------------------------------------+  |
+|                                                         |
++---------------------------------------------------------+
+
+	  </programlisting>  
 
 	<para>
 	The <classname>EfsdEvent.type</classname> field can be used to determine the kind of event, either
-	<constant>EFSD_EVENT_FILECHANGE</constant> or <constant>EFSD_EVENT_REPLY</constant>.
-	In the former case, <classname>EfsdEvent.efsd_filechange_event.id</classname> contains
+	<constant>EFSD_EVENT_FILECHANGE</constant>, <constant>EFSD_EVENT_METADATA_CHANGE</constant>
+	or <constant>EFSD_EVENT_REPLY</constant>.
+	In the first case, <classname>EfsdEvent.efsd_filechange_event.id</classname> contains
 	the command ID that caused this filechange event to be generated <footnote><para>
         Recall that you get the command ID whenever you issue an &efsd; command.</para></footnote>.
 	<classname>EfsdEvent.efsd_filechange_event.changetype</classname> describes the type
@@ -625,19 +657,50 @@ while (efsd_wait_event(ec, &amp;ee) >= 0)
 	    </listitem>
 	  </itemizedlist>
 
-	Finally, <classname>EfsdEvent.file</classname> contains the canonical name of
-	the file on which the event is reported.
+	Finally, <classname>EfsdEvent.efsd_filechange_event.file</classname> contains
+	the canonical name of the file on which the event is reported.
+	</para>
+
+	<para>
+	When <classname>EfsdEvent.type</classname> is <constant>EFSD_EVENT_METADATA_CHANGE</constant>,
+	you're dealing with a metadata change event. The meaning of the structure entries
+	is then as follows: <classname>EfsdEvent.efsd_metachange_event.id</classname> is
+	the command ID that was associated with the &efsd; command that requested the
+	monitoring, <classname>EfsdEvent.efsd_metachange_event.key</classname> and
+        <classname>EfsdEvent.efsd_metachange_event.file</classname> are the filename
+	that has the given metadata and the key of the metadata entry itself.
+        <classname>EfsdEvent.efsd_metachange_event.datatype</classname> is the type of the
+	metadata entry and is one of 
+
+	  <itemizedlist mark="opencircle">
+	    <listitem>
+	      <para><constant>EFSD_INT</constant>: integer data.</para>
+	    </listitem>
+	    <listitem>
+	      <para><constant>EFSD_FLOAT</constant>: floating-point data.</para>
+	    </listitem>
+	    <listitem>
+	      <para><constant>EFSD_STRING</constant>: character string data.</para>
+	    </listitem>
+	    <listitem>
+	      <para><constant>EFSD_RAW</constant>: raw binary data.</para>
+	    </listitem>
+	  </itemizedlist>
+	    
+        Finally, <classname>EfsdEvent.efsd_metachange_event.data_len</classname> and
+        <classname>EfsdEvent.efsd_metachange_event.data</classname> contain the length
+	of the changed metadata item and a pointer to the data itself.
 	</para>
 
 	<para>
 	When <classname>EfsdEvent.type</classname> is <constant>EFSD_EVENT_REPLY</constant>,
-	<classname>EfsdEvent.command</classname> contains the command that caused this
-	reply event, <classname>EfsdEvent.errorcode</classname> is the result (a value of 0
+	<classname>EfsdEvent.efsd_reply_event.command</classname> contains the command that caused this
+	reply event, <classname>EfsdEvent.efsd_reply_event.errorcode</classname> is the result (a value of 0
 	means the operation was completed successfully, otherwise the field contains the
 	value of the <function>errno</function> variable and can be processed using
 	<function>strerror</function> etc) of the command,
-	<classname>EfsdEvent.data_len</classname> is the length of any received binary data
-	in bytes, and <classname>EfsdEvent.data</classname> is a pointer to the data itself.	
+	<classname>EfsdEvent.efsd_reply_event.data_len</classname> is the length of any received binary data
+	in bytes, and <classname>EfsdEvent.efsd_reply_event.data</classname> is a pointer to the data itself.	
 	</para>
 
         </section>
@@ -784,6 +847,52 @@ while (efsd_wait_event(ec, &amp;ee) >= 0)
 	  </para>
       </section>
 
+      <section id="metamon">
+        <title id="metamon.title">Monitoring Metadata</title>
+        <para>
+      	  In some occasions it's useful to know when a file's metadata changes. Therefore,
+	  &efsd; also provides an API to monitor metadata. The monitoring does not rely
+	  on the metadata database file to change on disk, because that would be bad for
+	  at least two reasons --
+
+	  <itemizedlist mark="opencircle">
+	    <listitem>
+	      <para>
+		Metadata is not written to disk immediately. Therefore in most cases, the
+		notification about changed metadata would arrive later than necessary.
+              </para>
+	    </listitem>
+	    <listitem>
+	      <para>
+		&efsd; itself is the instance that manages setting and retrieving metadata,
+		therefore it is easier to send out metadata change notifications
+		directly when they happen, namely, when a client's metadata setting
+		request is processed.
+              </para>
+	    </listitem>
+	  </itemizedlist>
+
+	  The functions responsible for metadata monitoring are simple to use, there is
+	  <link linkend="API-efsd-start-monitor-metadata"><function>efsd_start_monitor_metadata</function></link>
+	  to start monitoring a metadata entry, and
+	  <link linkend="API-efsd-stop-monitor-metadata"><function>efsd_stop_monitor_metadata</function></link>
+	  to stop the monitoring. You can monitor metadata entries that do not exist yet.
+	  If a metadata item that is monitored gets changed by a a client, all clients
+	  monitoring that metadata entry receive &efsd; events of type 
+	  <constant>EFSD_EVENT_METADATA_CHANGE</constant> that contain details about
+	  the filename and the metadata that changed, along with the new metadata.
+	  See the section on <link linkend="eventtypes">event types</link> for details.
+
+	  <note>
+	    <title>You can use the convenience functions <function>efsd_metadata_...()</function>
+	      for accessing the data in the metadata change events. Make sure to duplicate
+	      pointers and data when you need to keep them around, because you just get
+	      pointers into the structure.
+	    <para></para>
+	  </note>
+	</para>
+      </section>
+
       <section id="filetypes">
         <title id="filetypes.title">Handling Filetypes</title>
         <para>
@@ -928,6 +1037,45 @@ while (efsd_wait_event(ec, &amp;ee) >= 0)
 	  </itemizedlist>
 
 	  </para>
+      </section>
+
+      <section>
+        <title>Convenience Functions for Accessing Data in <classname>EfsdEvents</classname></title>
+	  <para>
+	  Walking through the structs of the <classname>EfsdEvent</classname> union
+	  can be cumbersome, so there are a few helper functions that will return
+	  entries that exits in all the event types, depending on the type of the
+	  event. These are:
+
+	  <itemizedlist mark="opencircle">
+	    <listitem>
+	      <para>
+               <link linkend="API-efsd-event-filename"><function>efsd_event_filename()</function></link>
+		returns the filename in an event. For filechange events, it returns
+		the name of the file that changed, for metadata change events, it's
+		the name of the file whose metadata changed, and for reply events, it's
+		the filename that was affected by the command.
+              </para>
+	    </listitem>
+	    <listitem>
+	      <para>
+               <link linkend="API-efsd-event-id"><function>efsd_event_id()</function></link>
+		returns the command ID in an event.
+              </para>
+	    </listitem>
+	    <listitem>
+	      <para>
+               <link linkend="API-efsd-event-data"><function>efsd_event_data()</function></link>
+		returns any data items returned in an event. For metadata change events,
+		it returns a pointer to the changed metadata, for reply events, a pointer
+		to <classname>EfsdEvent.efsd_reply_event.data</classname>, and NULL otherwise.
+              </para>
+	    </listitem>
+	  </itemizedlist>
+
+	  In any case, you just get a pointer into the structure, so you don't need to
+	  free anything here.
+	</para>
       </section>
 
       <section id="options">
@@ -2545,10 +2693,10 @@ if ( (id = efsd_start_monitor_dir(ec, "/some/dir", ops)) < 0)
 
 <refentry>
 <refmeta>
-<refentrytitle><phrase id="API-efsd-reply-filename">efsd_reply_filename</phrase></refentrytitle>
+<refentrytitle><phrase id="API-efsd-event-filename">efsd_event_filename</phrase></refentrytitle>
 </refmeta>
 <refnamediv>
- <refname>efsd_reply_filename</refname>
+ <refname>efsd_event_filename</refname>
  <refpurpose>
       returns filename contained in an event.
  </refpurpose>
@@ -2556,7 +2704,7 @@ if ( (id = efsd_start_monitor_dir(ec, "/some/dir", ops)) < 0)
 <refsynopsisdiv>
  <title>Synopsis</title>
   <funcsynopsis>
-   <funcdef>char          * <function>efsd_reply_filename </function></funcdef>
+   <funcdef>char          * <function>efsd_event_filename </function></funcdef>
    <paramdef>EfsdEvent * <parameter>ee</parameter></paramdef>
   </funcsynopsis>
 </refsynopsisdiv>
@@ -2576,21 +2724,21 @@ if ( (id = efsd_start_monitor_dir(ec, "/some/dir", ops)) < 0)
 <refsect1>
  <title>Description</title>
  <para>
-   Convenience function to access the filenames in reply or
-   filechange events. If the event is a reply event and the
+   Convenience function to access the filenames in received
+   events. If the event is a reply event and the
    contained command is an efsd_file_cmd, it returns the first file
-   (efsd_file_cmd.files[0]). Returns <constant>NULL</constant> if no file could be
-   found.
+   (efsd_file_cmd.files[0]). For filechange events, it returns
+   efsd_filechange_event.file. Returns <constant>NULL</constant> otherwise.
  </para>
 </refsect1>
 </refentry>
 
 <refentry>
 <refmeta>
-<refentrytitle><phrase id="API-efsd-reply-id">efsd_reply_id</phrase></refentrytitle>
+<refentrytitle><phrase id="API-efsd-event-id">efsd_event_id</phrase></refentrytitle>
 </refmeta>
 <refnamediv>
- <refname>efsd_reply_id</refname>
+ <refname>efsd_event_id</refname>
  <refpurpose>
       returns command id contained in an event.
  </refpurpose>
@@ -2598,7 +2746,7 @@ if ( (id = efsd_start_monitor_dir(ec, "/some/dir", ops)) < 0)
 <refsynopsisdiv>
  <title>Synopsis</title>
   <funcsynopsis>
-   <funcdef>EfsdCmdId <function>efsd_reply_id </function></funcdef>
+   <funcdef>EfsdCmdId <function>efsd_event_id </function></funcdef>
    <paramdef>EfsdEvent * <parameter>ee</parameter></paramdef>
   </funcsynopsis>
 </refsynopsisdiv>
@@ -2618,26 +2766,26 @@ if ( (id = efsd_start_monitor_dir(ec, "/some/dir", ops)) < 0)
 <refsect1>
  <title>Description</title>
  <para>
-   Convenience function to access the command ID in reply or
-   filechange events. Returns -1 if no ID is contained in the event.
+   Convenience function to access the command ID in received
+   events. Returns -1 if no ID is contained in the event.
  </para>
 </refsect1>
 </refentry>
 
 <refentry>
 <refmeta>
-<refentrytitle><phrase id="API-efsd-reply-data">efsd_reply_data</phrase></refentrytitle>
+<refentrytitle><phrase id="API-efsd-event-data">efsd_event_data</phrase></refentrytitle>
 </refmeta>
 <refnamediv>
- <refname>efsd_reply_data</refname>
+ <refname>efsd_event_data</refname>
  <refpurpose>
-      returns data contained in a reply event
+      returns data contained in a event
  </refpurpose>
 </refnamediv>
 <refsynopsisdiv>
  <title>Synopsis</title>
   <funcsynopsis>
-   <funcdef>void          * <function>efsd_reply_data </function></funcdef>
+   <funcdef>void          * <function>efsd_event_data </function></funcdef>
    <paramdef>EfsdEvent * <parameter>ee</parameter></paramdef>
   </funcsynopsis>
 </refsynopsisdiv>
@@ -2657,8 +2805,9 @@ if ( (id = efsd_start_monitor_dir(ec, "/some/dir", ops)) < 0)
 <refsect1>
  <title>Description</title>
  <para>
-   Convenience function access the data returned in a reply
-   event. Returns NULL if an error occured.
+   Convenience function access the data returned in a received
+   event. Returns NULL if the event does not contain any
+   returned data, or if the command is not applicable.
  </para>
 </refsect1>
 </refentry>
@@ -2801,6 +2950,122 @@ if ( (id = efsd_start_monitor_dir(ec, "/some/dir", ops)) < 0)
    Clients receive a <constant>EFSD_FILE_ACKNOWLEDGE</constant> event as a reply, which
    guarantees that no further file change events for this file will
    be sent to the client that requested the monitoring to be stopped.
+ </para>
+</refsect1>
+</refentry>
+
+<refentry>
+<refmeta>
+<refentrytitle><phrase id="API-efsd-start-monitor-metadata">efsd_start_monitor_metadata</phrase></refentrytitle>
+</refmeta>
+<refnamediv>
+ <refname>efsd_start_monitor_metadata</refname>
+ <refpurpose>
+      starts monitoring metadata.
+ </refpurpose>
+</refnamediv>
+<refsynopsisdiv>
+ <title>Synopsis</title>
+  <funcsynopsis>
+   <funcdef>EfsdCmdId <function>efsd_start_monitor_metadata </function></funcdef>
+   <paramdef>EfsdConnection * <parameter>ec</parameter></paramdef>
+   <paramdef>char * <parameter>filename</parameter></paramdef>
+   <paramdef>char * <parameter>key</parameter></paramdef>
+  </funcsynopsis>
+</refsynopsisdiv>
+<refsect1>
+ <title>Arguments</title>
+ <variablelist>
+  <varlistentry>
+   <term><parameter>ec</parameter></term>
+   <listitem>
+    <para>
+      The Efsd connection.
+    </para>
+   </listitem>
+  </varlistentry>
+  <varlistentry>
+   <term><parameter>filename</parameter></term>
+   <listitem>
+    <para>
+      The file with metadata entries to be monitored.
+    </para>
+   </listitem>
+  </varlistentry>
+  <varlistentry>
+   <term><parameter>key</parameter></term>
+   <listitem>
+    <para>
+      The key of the metadata item that is to be monitored.
+    </para>
+   </listitem>
+  </varlistentry>
+ </variablelist>
+</refsect1>
+<refsect1>
+ <title>Description</title>
+ <para>
+   This command requests monitoring of the metadata associated
+   to the given <parameter>key</parameter> on the given <parameter>filename</parameter>. The client issuing
+   this command will receive events of type <constant>EFSD_EVENT_METADATA_CHANGE</constant>
+   when the specified metadata entry changes.
+ </para>
+</refsect1>
+</refentry>
+
+<refentry>
+<refmeta>
+<refentrytitle><phrase id="API-efsd-stop-monitor-metadata">efsd_stop_monitor_metadata</phrase></refentrytitle>
+</refmeta>
+<refnamediv>
+ <refname>efsd_stop_monitor_metadata</refname>
+ <refpurpose>
+      stops monitoring metadata.
+ </refpurpose>
+</refnamediv>
+<refsynopsisdiv>
+ <title>Synopsis</title>
+  <funcsynopsis>
+   <funcdef>EfsdCmdId <function>efsd_stop_monitor_metadata </function></funcdef>
+   <paramdef>EfsdConnection * <parameter>ec</parameter></paramdef>
+   <paramdef>char * <parameter>filename</parameter></paramdef>
+   <paramdef>char * <parameter>key</parameter></paramdef>
+  </funcsynopsis>
+</refsynopsisdiv>
+<refsect1>
+ <title>Arguments</title>
+ <variablelist>
+  <varlistentry>
+   <term><parameter>ec</parameter></term>
+   <listitem>
+    <para>
+      The Efsd connection.
+    </para>
+   </listitem>
+  </varlistentry>
+  <varlistentry>
+   <term><parameter>filename</parameter></term>
+   <listitem>
+    <para>
+      The file with a metadata entry that is monitored.
+    </para>
+   </listitem>
+  </varlistentry>
+  <varlistentry>
+   <term><parameter>key</parameter></term>
+   <listitem>
+    <para>
+      The key of the metadata item that no longer needs to be monitored.
+    </para>
+   </listitem>
+  </varlistentry>
+ </variablelist>
+</refsect1>
+<refsect1>
+ <title>Description</title>
+ <para>
+   This command stops monitoring of the metadata associated
+   to the given <parameter>key</parameter> on the given <parameter>filename</parameter>.
  </para>
 </refsect1>
 </refentry>
@@ -3582,7 +3847,7 @@ if ( (id = efsd_start_monitor_dir(ec, "/some/dir", ops)) < 0)
 	      </row>
 	      <row>
 		<entry><filename>efsd_dynarray.[ch]</filename></entry>
-		<entry>A dynamic array of charachter strings that can
+		<entry>A dynamic array of character strings that can
 		  be sorted, inserted into etc.</entry>
 	      </row>
 	      <row>
@@ -3698,6 +3963,663 @@ if ( (id = efsd_start_monitor_dir(ec, "/some/dir", ops)) < 0)
       </para>
     </section>
 
+    <section id="efsd-code-docs">
+      <title id="efsd-code-docs.title">&efsd; Code Documentation</title>
+<refentry>
+<refmeta>
+<refentrytitle><phrase id="API-efsd-meta-set">efsd_meta_set</phrase></refentrytitle>
+</refmeta>
+<refnamediv>
+ <refname>efsd_meta_set</refname>
+ <refpurpose>
+      Metadata setting function.
+ </refpurpose>
+</refnamediv>
+<refsynopsisdiv>
+ <title>Synopsis</title>
+  <funcsynopsis>
+   <funcdef>int <function>efsd_meta_set </function></funcdef>
+   <paramdef>EfsdCommand * <parameter>ec</parameter></paramdef>
+  </funcsynopsis>
+</refsynopsisdiv>
+<refsect1>
+ <title>Arguments</title>
+ <variablelist>
+  <varlistentry>
+   <term><parameter>ec</parameter></term>
+   <listitem>
+    <para>
+                 Efsd command
+    </para>
+   </listitem>
+  </varlistentry>
+ </variablelist>
+</refsect1>
+<refsect1>
+ <title>Description</title>
+ <para>
+   This function is called when a client wants to set metadata
+   on a file.
+ </para>
+</refsect1>
+</refentry>
+
+<refentry>
+<refmeta>
+<refentrytitle><phrase id="API-efsd-meta-get">efsd_meta_get</phrase></refentrytitle>
+</refmeta>
+<refnamediv>
+ <refname>efsd_meta_get</refname>
+ <refpurpose>
+      Metadata retrieval function.
+ </refpurpose>
+</refnamediv>
+<refsynopsisdiv>
+ <title>Synopsis</title>
+  <funcsynopsis>
+   <funcdef>void       * <function>efsd_meta_get </function></funcdef>
+   <paramdef>EfsdCommand * <parameter>ec</parameter></paramdef>
+   <paramdef>int * <parameter>data_len</parameter></paramdef>
+  </funcsynopsis>
+</refsynopsisdiv>
+<refsect1>
+ <title>Arguments</title>
+ <variablelist>
+  <varlistentry>
+   <term><parameter>ec</parameter></term>
+   <listitem>
+    <para>
+                 Efsd command
+    </para>
+   </listitem>
+  </varlistentry>
+  <varlistentry>
+   <term><parameter>data_len</parameter></term>
+   <listitem>
+    <para>
+           Result pointer that receives the length of the metadata chunk.
+    </para>
+   </listitem>
+  </varlistentry>
+ </variablelist>
+</refsect1>
+<refsect1>
+ <title>Description</title>
+ <para>
+   This function is called when a client wants to retrieve
+   metadata associated with a file.
+ </para>
+</refsect1>
+</refentry>
+
+<refentry>
+<refmeta>
+<refentrytitle><phrase id="API-efsd-meta-copy-data">efsd_meta_copy_data</phrase></refentrytitle>
+</refmeta>
+<refnamediv>
+ <refname>efsd_meta_copy_data</refname>
+ <refpurpose>
+      Copies metadata from one file to another.
+ </refpurpose>
+</refnamediv>
+<refsynopsisdiv>
+ <title>Synopsis</title>
+  <funcsynopsis>
+   <funcdef>int <function>efsd_meta_copy_data </function></funcdef>
+   <paramdef>char * <parameter>from_file</parameter></paramdef>
+   <paramdef>char * <parameter>to_file</parameter></paramdef>
+  </funcsynopsis>
+</refsynopsisdiv>
+<refsect1>
+ <title>Arguments</title>
+ <variablelist>
+  <varlistentry>
+   <term><parameter>from_file</parameter></term>
+   <listitem>
+    <para>
+         The file from which to copy the metadata
+    </para>
+   </listitem>
+  </varlistentry>
+  <varlistentry>
+   <term><parameter>to_file</parameter></term>
+   <listitem>
+    <para>
+           The file to which to add the metadata
+    </para>
+   </listitem>
+  </varlistentry>
+ </variablelist>
+</refsect1>
+<refsect1>
+ <title>Description</title>
+ <para>
+   This function copies metadata from one file to another, as
+   it is needed for example after copying files.
+ </para>
+</refsect1>
+</refentry>
+
+<refentry>
+<refmeta>
+<refentrytitle><phrase id="API-efsd-meta-move-data">efsd_meta_move_data</phrase></refentrytitle>
+</refmeta>
+<refnamediv>
+ <refname>efsd_meta_move_data</refname>
+ <refpurpose>
+      Moves metadata from one file to another.
+ </refpurpose>
+</refnamediv>
+<refsynopsisdiv>
+ <title>Synopsis</title>
+  <funcsynopsis>
+   <funcdef>int <function>efsd_meta_move_data </function></funcdef>
+   <paramdef>char * <parameter>from_file</parameter></paramdef>
+   <paramdef>char * <parameter>to_file</parameter></paramdef>
+  </funcsynopsis>
+</refsynopsisdiv>
+<refsect1>
+ <title>Arguments</title>
+ <variablelist>
+  <varlistentry>
+   <term><parameter>from_file</parameter></term>
+   <listitem>
+    <para>
+         The file from which to take the metadata
+    </para>
+   </listitem>
+  </varlistentry>
+  <varlistentry>
+   <term><parameter>to_file</parameter></term>
+   <listitem>
+    <para>
+           The file to which to add the metadata
+    </para>
+   </listitem>
+  </varlistentry>
+ </variablelist>
+</refsect1>
+<refsect1>
+ <title>Description</title>
+ <para>
+   This function moves metadata from one file to another, as
+   it is needed for example after moving files.
+ </para>
+</refsect1>
+</refentry>
+
+<refentry>
+<refmeta>
+<refentrytitle><phrase id="API-efsd-meta-remove-data">efsd_meta_remove_data</phrase></refentrytitle>
+</refmeta>
+<refnamediv>
+ <refname>efsd_meta_remove_data</refname>
+ <refpurpose>
+      Removes metadata for a file.
+ </refpurpose>
+</refnamediv>
+<refsynopsisdiv>
+ <title>Synopsis</title>
+  <funcsynopsis>
+   <funcdef>int <function>efsd_meta_remove_data </function></funcdef>
+   <paramdef>char * <parameter>file</parameter></paramdef>
+  </funcsynopsis>
+</refsynopsisdiv>
+<refsect1>
+ <title>Arguments</title>
+ <variablelist>
+  <varlistentry>
+   <term><parameter>file</parameter></term>
+   <listitem>
+    <para>
+        The file whose metadata needs to be removed.
+    </para>
+   </listitem>
+  </varlistentry>
+ </variablelist>
+</refsect1>
+<refsect1>
+ <title>Description</title>
+ <para>
+   This function removes all metadata associated with a file.
+ </para>
+</refsect1>
+</refentry>
+
+<refentry>
+<refmeta>
+<refentrytitle><phrase id="API-efsd-meta-dir-cleanup">efsd_meta_dir_cleanup</phrase></refentrytitle>
+</refmeta>
+<refnamediv>
+ <refname>efsd_meta_dir_cleanup</refname>
+ <refpurpose>
+      Cleans up empty directories.
+ </refpurpose>
+</refnamediv>
+<refsynopsisdiv>
+ <title>Synopsis</title>
+  <funcsynopsis>
+   <funcdef>void <function>efsd_meta_dir_cleanup </function></funcdef>
+   <paramdef>char * <parameter>dir</parameter></paramdef>
+  </funcsynopsis>
+</refsynopsisdiv>
+<refsect1>
+ <title>Arguments</title>
+ <variablelist>
+  <varlistentry>
+   <term><parameter>dir</parameter></term>
+   <listitem>
+    <para>
+      Directory to clean up.
+    </para>
+   </listitem>
+  </varlistentry>
+ </variablelist>
+</refsect1>
+<refsect1>
+ <title>Description</title>
+ <para>
+   This function checks whether the given file contains
+   any real files (files other than <quote>.</quote>, <quote>..</quote> and the metadata
+   directory), and if not, removes the metadata directory.
+ </para>
+</refsect1>
+</refentry>
+
+<refentry>
+<refmeta>
+<refentrytitle><phrase id="API-efsd-meta-idle">efsd_meta_idle</phrase></refentrytitle>
+</refmeta>
+<refnamediv>
+ <refname>efsd_meta_idle</refname>
+ <refpurpose>
+      Idlehandler for metadata module
+ </refpurpose>
+</refnamediv>
+<refsynopsisdiv>
+ <title>Synopsis</title>
+  <funcsynopsis>
+   <funcdef>void <function>efsd_meta_idle </function></funcdef>
+   <paramdef> <parameter>void</parameter></paramdef>
+  </funcsynopsis>
+</refsynopsisdiv>
+<refsect1>
+ <title>Arguments</title>
+ <variablelist>
+  <varlistentry>
+   <term><parameter>void</parameter></term>
+   <listitem>
+    <para>
+    </para>
+   </listitem>
+  </varlistentry>
+ </variablelist>
+</refsect1>
+<refsect1>
+ <title>Description</title>
+ <para>
+   </para><para>
+
+   This function is an idlehandler that tries to flush
+   the metadata db settings to disk.
+ </para>
+</refsect1>
+</refentry>
+
+<refentry>
+<refmeta>
+<refentrytitle><phrase id="API-efsd-meta-get-file-info">efsd_meta_get_file_info</phrase></refentrytitle>
+</refmeta>
+<refnamediv>
+ <refname>efsd_meta_get_file_info</refname>
+ <refpurpose>
+      Returns info about metadata for a file
+ </refpurpose>
+</refnamediv>
+<refsynopsisdiv>
+ <title>Synopsis</title>
+  <funcsynopsis>
+   <funcdef>int <function>efsd_meta_get_file_info </function></funcdef>
+   <paramdef>char * <parameter>filename</parameter></paramdef>
+   <paramdef>char * <parameter>dbfile</parameter></paramdef>
+   <paramdef>int <parameter>db_len</parameter></paramdef>
+   <paramdef>char * <parameter>key</parameter></paramdef>
+   <paramdef>int <parameter>key_len</parameter></paramdef>
+   <paramdef>int <parameter>create</parameter></paramdef>
+  </funcsynopsis>
+</refsynopsisdiv>
+<refsect1>
+ <title>Arguments</title>
+ <variablelist>
+  <varlistentry>
+   <term><parameter>filename</parameter></term>
+   <listitem>
+    <para>
+         The full path name of the file.
+    </para>
+   </listitem>
+  </varlistentry>
+  <varlistentry>
+   <term><parameter>dbfile</parameter></term>
+   <listitem>
+    <para>
+           Result pointer to location of db file for <parameter>filename</parameter>.
+    </para>
+   </listitem>
+  </varlistentry>
+  <varlistentry>
+   <term><parameter>db_len</parameter></term>
+   <listitem>
+    <para>
+           Length of string to write result into.
+    </para>
+   </listitem>
+  </varlistentry>
+  <varlistentry>
+   <term><parameter>key</parameter></term>
+   <listitem>
+    <para>
+              Result pointer to metadata key prefix for <parameter>filename</parameter>.
+    </para>
+   </listitem>
+  </varlistentry>
+  <varlistentry>
+   <term><parameter>key_len</parameter></term>
+   <listitem>
+    <para>
+          Length of string to write result into.
+    </para>
+   </listitem>
+  </varlistentry>
+  <varlistentry>
+   <term><parameter>create</parameter></term>
+   <listitem>
+    <para>
+           Flag which causes the metadata directory to be created if it doesn't exist yet.
+    </para>
+   </listitem>
+  </varlistentry>
+ </variablelist>
+</refsect1>
+<refsect1>
+ <title>Description</title>
+ <para>
+   This is a helper function that looks at the given
+   filename and returns the location of the metadata
+   db file and the key prefix that depends on the location
+   of the file (it can be just the file name or the full
+   path).
+   </para><para>
+
+   Returns TRUE if operation was successfull, FALSE otherwise.
+ </para>
+</refsect1>
+</refentry>
+
+<refentry>
+<refmeta>
+<refentrytitle><phrase id="API-efsd-meta-monitor-init">efsd_meta_monitor_init</phrase></refentrytitle>
+</refmeta>
+<refnamediv>
+ <refname>efsd_meta_monitor_init</refname>
+ <refpurpose>
+      Initializer function.
+ </refpurpose>
+</refnamediv>
+<refsynopsisdiv>
+ <title>Synopsis</title>
+  <funcsynopsis>
+   <funcdef>void <function>efsd_meta_monitor_init </function></funcdef>
+   <paramdef> <parameter>void</parameter></paramdef>
+  </funcsynopsis>
+</refsynopsisdiv>
+<refsect1>
+ <title>Arguments</title>
+ <variablelist>
+  <varlistentry>
+   <term><parameter>void</parameter></term>
+   <listitem>
+    <para>
+    </para>
+   </listitem>
+  </varlistentry>
+ </variablelist>
+</refsect1>
+<refsect1>
+ <title>Description</title>
+ <para>
+   </para><para>
+
+   This function sets up everything necessary to monitor
+   metadata entries.
+ </para>
+</refsect1>
+</refentry>
+
+<refentry>
+<refmeta>
+<refentrytitle><phrase id="API-efsd-meta-monitor-add">efsd_meta_monitor_add</phrase></refentrytitle>
+</refmeta>
+<refnamediv>
+ <refname>efsd_meta_monitor_add</refname>
+ <refpurpose>
+      Adds a client to a metadata monitor.
+ </refpurpose>
+</refnamediv>
+<refsynopsisdiv>
+ <title>Synopsis</title>
+  <funcsynopsis>
+   <funcdef>int <function>efsd_meta_monitor_add </function></funcdef>
+   <paramdef>EfsdCommand * <parameter>cmd</parameter></paramdef>
+   <paramdef>int <parameter>client</parameter></paramdef>
+  </funcsynopsis>
+</refsynopsisdiv>
+<refsect1>
+ <title>Arguments</title>
+ <variablelist>
+  <varlistentry>
+   <term><parameter>cmd</parameter></term>
+   <listitem>
+    <para>
+             EfsdCommand that contains the request.
+    </para>
+   </listitem>
+  </varlistentry>
+  <varlistentry>
+   <term><parameter>client</parameter></term>
+   <listitem>
+    <para>
+          Client which requested the monitor.
+    </para>
+   </listitem>
+  </varlistentry>
+ </variablelist>
+</refsect1>
+<refsect1>
+ <title>Description</title>
+ <para>
+   This function established metadata monitoring for a given
+   client. The file and key are stored in the commnd. If no
+   monitor for the file/key combination exists yet, it is
+   created, otherwise the client is simply added to the monitor.
+   </para><para>
+
+   Returns TRUE when successful, FALSE otherwise.
+ </para>
+</refsect1>
+</refentry>
+
+<refentry>
+<refmeta>
+<refentrytitle><phrase id="API-efsd-meta-monitor-del">efsd_meta_monitor_del</phrase></refentrytitle>
+</refmeta>
+<refnamediv>
+ <refname>efsd_meta_monitor_del</refname>
+ <refpurpose>
+      Removes a client to a metadata monitor.
+ </refpurpose>
+</refnamediv>
+<refsynopsisdiv>
+ <title>Synopsis</title>
+  <funcsynopsis>
+   <funcdef>int <function>efsd_meta_monitor_del </function></funcdef>
+   <paramdef>EfsdCommand * <parameter>cmd</parameter></paramdef>
+   <paramdef>int <parameter>client</parameter></paramdef>
+  </funcsynopsis>
+</refsynopsisdiv>
+<refsect1>
+ <title>Arguments</title>
+ <variablelist>
+  <varlistentry>
+   <term><parameter>cmd</parameter></term>
+   <listitem>
+    <para>
+             EfsdCommand that contains the request.
+    </para>
+   </listitem>
+  </varlistentry>
+  <varlistentry>
+   <term><parameter>client</parameter></term>
+   <listitem>
+    <para>
+          Client which requested the monitoring stop.
+    </para>
+   </listitem>
+  </varlistentry>
+ </variablelist>
+</refsect1>
+<refsect1>
+ <title>Description</title>
+ <para>
+   This function stops metadata monitoring for a given
+   client and file/key. The file and key are stored in the commnd.
+   If no monitor for the file/key combination exists, the
+   function simply returns, otherwise the client is removed
+   from the monitor.
+   </para><para>
+
+   Returns TRUE when successful, FALSE otherwise.
+ </para>
+</refsect1>
+</refentry>
+
+<refentry>
+<refmeta>
+<refentrytitle><phrase id="API-efsd-meta-monitor-notify">efsd_meta_monitor_notify</phrase></refentrytitle>
+</refmeta>
+<refnamediv>
+ <refname>efsd_meta_monitor_notify</refname>
+ <refpurpose>
+      Reports changed metadata.
+ </refpurpose>
+</refnamediv>
+<refsynopsisdiv>
+ <title>Synopsis</title>
+  <funcsynopsis>
+   <funcdef>void <function>efsd_meta_monitor_notify </function></funcdef>
+   <paramdef>char * <parameter>file</parameter></paramdef>
+   <paramdef>char * <parameter>key</parameter></paramdef>
+   <paramdef>EfsdDatatype <parameter>type</parameter></paramdef>
+   <paramdef>int <parameter>data_len</parameter></paramdef>
+   <paramdef>void * <parameter>data</parameter></paramdef>
+  </funcsynopsis>
+</refsynopsisdiv>
+<refsect1>
+ <title>Arguments</title>
+ <variablelist>
+  <varlistentry>
+   <term><parameter>file</parameter></term>
+   <listitem>
+    <para>
+            The file whose metadata changed.
+    </para>
+   </listitem>
+  </varlistentry>
+  <varlistentry>
+   <term><parameter>key</parameter></term>
+   <listitem>
+    <para>
+             The metadata that changed.
+    </para>
+   </listitem>
+  </varlistentry>
+  <varlistentry>
+   <term><parameter>type</parameter></term>
+   <listitem>
+    <para>
+            The type of the modified data.
+    </para>
+   </listitem>
+  </varlistentry>
+  <varlistentry>
+   <term><parameter>data_len</parameter></term>
+   <listitem>
+    <para>
+        The length of the new metadata.
+    </para>
+   </listitem>
+  </varlistentry>
+  <varlistentry>
+   <term><parameter>data</parameter></term>
+   <listitem>
+    <para>
+            The new metadata.
+    </para>
+   </listitem>
+  </varlistentry>
+ </variablelist>
+</refsect1>
+<refsect1>
+ <title>Description</title>
+ <para>
+   This function is called when a metadata entry changed,
+   and causes metadata change events to be sent to all
+   monitoring clients.
+ </para>
+</refsect1>
+</refentry>
+
+<refentry>
+<refmeta>
+<refentrytitle><phrase id="API-efsd-meta-monitor-cleanup-client">efsd_meta_monitor_cleanup_client</phrase></refentrytitle>
+</refmeta>
+<refnamediv>
+ <refname>efsd_meta_monitor_cleanup_client</refname>
+ <refpurpose>
+      Remove all monitors for a client.
+ </refpurpose>
+</refnamediv>
+<refsynopsisdiv>
+ <title>Synopsis</title>
+  <funcsynopsis>
+   <funcdef>void <function>efsd_meta_monitor_cleanup_client </function></funcdef>
+   <paramdef>int <parameter>client</parameter></paramdef>
+  </funcsynopsis>
+</refsynopsisdiv>
+<refsect1>
+ <title>Arguments</title>
+ <variablelist>
+  <varlistentry>
+   <term><parameter>client</parameter></term>
+   <listitem>
+    <para>
+            The client that no longer exists.
+    </para>
+   </listitem>
+  </varlistentry>
+ </variablelist>
+</refsect1>
+<refsect1>
+ <title>Description</title>
+ <para>
+   This function is called when the connection to a client ends.
+   It cleans up all monitors that this client had still registered.
+ </para>
+</refsect1>
+</refentry>
+
+    </section>
+
 <!--
 
     <section id="efsd-ipc">
@@ -3757,7 +4679,7 @@ if ( (id = efsd_start_monitor_dir(ec, "/some/dir", ops)) < 0)
     </para>
     <para>
       Besides being useful for testing &efsd; commands, &efsdsh; is also great for testing &efsd;'s
-      behaviour when handling multiple clients - just launch a bunch of &efsdsh;s and watch how
+      behavior when handling multiple clients - just launch a bunch of &efsdsh;s and watch how
       file monitoring requests are answered in a few of them etc.
     </para>
     <para>

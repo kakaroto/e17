@@ -60,6 +60,10 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 #undef DEBUG
 #endif
 
+#ifdef DEBUG_NEST
+#undef DEBUG_NEST
+#endif
+
 #include <efsd.h>
 #include <efsd_debug.h>
 #include <efsd_lock.h>

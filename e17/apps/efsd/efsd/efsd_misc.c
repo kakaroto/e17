@@ -34,6 +34,7 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 #include <string.h>
 #include <stdlib.h>
 #include <errno.h>
+#include <pwd.h>
 
 #ifdef __EMX__
 #include <stdlib.h>
@@ -112,6 +113,39 @@ efsd_misc_file_writeable(char *filename)
   else
     {
       if (st.st_mode & S_IWOTH)
+	D_RETURN_(TRUE);
+    }
+
+  D_RETURN_(FALSE);
+}
+
+
+int
+efsd_misc_file_readable(char *filename)
+{
+  struct stat st;
+
+  D_ENTER;
+
+  if (!filename)
+    D_RETURN_(FALSE);
+
+  if (!efsd_stat(filename, &st))
+    D_RETURN_(FALSE);
+
+  if (st.st_uid == geteuid())
+    {
+      if (st.st_mode & S_IRUSR)
+	D_RETURN_(TRUE);
+     }
+  else if (st.st_gid == getgid())
+    {
+      if (st.st_mode & S_IRGRP)
+	D_RETURN_(TRUE);
+    }
+  else
+    {
+      if (st.st_mode & S_IROTH)
 	D_RETURN_(TRUE);
     }
 
@@ -460,27 +494,25 @@ efsd_misc_get_path_only(const char *filename, char *path, int size)
 void    
 efsd_misc_create_efsd_dir(void)
 {
-  char *dir = NULL;
-  char  s[MAXPATHLEN];
+  struct passwd *pw = NULL;
+  char           dir[MAXPATHLEN];
+  char           s[MAXPATHLEN];
 
   D_ENTER;
 
-  dir = getenv("HOME");
+  if ( (pw = getpwuid(geteuid())))
+    {
+      snprintf(dir, MAXPATHLEN, "%s/.e", pw->pw_dir);
+    }
+  else
+    {
+      snprintf(dir, MAXPATHLEN, "/tmp/.efsd_%u", geteuid());
+    }
 
-  /* I'm not using getenv("TMPDIR") --
-   * I don't see TMPDIR on Linux, FreeBSD
-   * or Solaris here...
-   */
+  if (!efsd_misc_file_is_dir(dir))
+    efsd_misc_mkdir(dir);
 
-  if (!dir)
-    dir = "/tmp";
-
-  snprintf(s, sizeof(s), "%s/.e", dir);
-
-  if (!efsd_misc_file_is_dir(s))
-    efsd_misc_mkdir(s);
-
-  snprintf(s, sizeof(s), "%s/.e/efsd", dir);
+  snprintf(s, sizeof(s), "%s/efsd", dir);
 
   if (!efsd_misc_file_is_dir(s))
     efsd_misc_mkdir(s);

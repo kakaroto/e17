@@ -67,10 +67,6 @@ static EfsdMonitor        *monitor_new(EfsdCommand *com, int client,
 static void                monitor_free(EfsdMonitor *m);
 
 
-static EfsdMonitorRequest *monitor_request_new(int client, EfsdFileCmd *cmd);
-
-static void                monitor_request_free(EfsdMonitorRequest *emr);
-
 /* Increment use count for file monitor, or start
    new monitor if file is not monitored yet.
  */
@@ -191,7 +187,7 @@ monitor_new(EfsdCommand *com, int client, int dir_mode, int is_temporary, int is
   m->clients    = NULL;
   m->files      = efsd_dca_new();
 
-  emr = monitor_request_new(client, &com->efsd_file_cmd);
+  emr = efsd_monitor_request_new(client, &com->efsd_file_cmd);
   
   m->clients = efsd_list_prepend(m->clients, emr);				   
 
@@ -237,7 +233,7 @@ monitor_free(EfsdMonitor *m)
   FREE(m->filename);
   FREE(m->fam_req);
 
-  efsd_list_free(m->clients, (EfsdFunc)monitor_request_free);
+  efsd_list_free(m->clients, (EfsdFunc)efsd_monitor_request_free);
   efsd_dca_free(m->files);
 
 #if USE_THREADS
@@ -246,54 +242,6 @@ monitor_free(EfsdMonitor *m)
 
   FREE(m);
 
-  D_RETURN;
-}
-
-
-static EfsdMonitorRequest *
-monitor_request_new(int client, EfsdFileCmd *cmd)
-{
-  EfsdMonitorRequest   *emr;
-  
-  D_ENTER;
-
-  emr = NEW(EfsdMonitorRequest);
-  memset(emr, 0, sizeof(EfsdMonitorRequest));
-
-  emr->client      = client;
-  emr->id          = cmd->id;
-
-  /* Unhook (not free) the options  from the command, so
-     that they don't get freed in the normal command
-     cleanup. They will get cleaned up when we see the
-     acknowledge event and the EfsdMonitorRequest is freed.
-  */
-     
-  if (cmd->num_options > 0)
-    {
-      emr->num_options = cmd->num_options;
-      emr->options     = cmd->options;
-      cmd->num_options = 0;
-      cmd->options = NULL;
-    }
-
-  D_RETURN_(emr);
-}
-
-
-static void             
-monitor_request_free(EfsdMonitorRequest *emr)
-{
-  int i;
-
-  D_ENTER;
-
-  for (i = 0; i < emr->num_options; i++)
-    efsd_option_cleanup(&emr->options[i]);
-  
-  FREE(emr->options);
-  FREE(emr);
-  
   D_RETURN;
 }
 
@@ -340,6 +288,54 @@ monitor_hash_item_free(EfsdHashItem *it)
 
   it->data = NULL;
   FREE(it);
+  
+  D_RETURN;
+}
+
+
+EfsdMonitorRequest *
+efsd_monitor_request_new(int client, EfsdFileCmd *cmd)
+{
+  EfsdMonitorRequest   *emr;
+  
+  D_ENTER;
+
+  emr = NEW(EfsdMonitorRequest);
+  memset(emr, 0, sizeof(EfsdMonitorRequest));
+
+  emr->client      = client;
+  emr->id          = cmd->id;
+
+  /* Unhook (not free) the options  from the command, so
+     that they don't get freed in the normal command
+     cleanup. They will get cleaned up when we see the
+     acknowledge event and the EfsdMonitorRequest is freed.
+  */
+     
+  if (cmd->num_options > 0)
+    {
+      emr->num_options = cmd->num_options;
+      emr->options     = cmd->options;
+      cmd->num_options = 0;
+      cmd->options = NULL;
+    }
+
+  D_RETURN_(emr);
+}
+
+
+void             
+efsd_monitor_request_free(EfsdMonitorRequest *emr)
+{
+  int i;
+
+  D_ENTER;
+
+  for (i = 0; i < emr->num_options; i++)
+    efsd_option_cleanup(&emr->options[i]);
+  
+  FREE(emr->options);
+  FREE(emr);
   
   D_RETURN;
 }
@@ -453,7 +449,7 @@ monitor_add_client(EfsdMonitor *m, EfsdCommand *com, int client)
 	m->filename, m->internal_use_count, m->client_use_count);
     }
   
-  emr = monitor_request_new(client, &com->efsd_file_cmd);  
+  emr = efsd_monitor_request_new(client, &com->efsd_file_cmd);  
   m->clients = efsd_list_prepend(m->clients, emr);
   
   UNLOCK(&m->use_count_mutex);
@@ -575,7 +571,7 @@ monitor_remove_client(EfsdCommand *com, int client, int dir_mode)
 		  if (!m->is_receiving_exist_events)
 		    {
 		      m->clients = efsd_list_remove(m->clients, l2,
-						    (EfsdFunc)monitor_request_free);
+						    (EfsdFunc)efsd_monitor_request_free);
 		    }
 		  else
 		    {
@@ -592,7 +588,7 @@ monitor_remove_client(EfsdCommand *com, int client, int dir_mode)
 	      if (!m->is_receiving_exist_events)
 		{
 		  m->clients = efsd_list_remove(m->clients, l2,
-						(EfsdFunc)monitor_request_free);
+						(EfsdFunc)efsd_monitor_request_free);
 		}
 	      else
 		{
@@ -830,7 +826,7 @@ efsd_monitor_remove(EfsdMonitor *m)
 }
 
 
-int          
+void
 efsd_monitor_cleanup_client(int client)
 {
   EfsdList         *l;
@@ -862,7 +858,7 @@ efsd_monitor_cleanup_client(int client)
 	client, m->filename, m->internal_use_count, m->client_use_count);
 
       D("Removing client %i from monitor for %s\n", client, m->filename);
-      m->clients = efsd_list_remove(m->clients, l, (EfsdFunc)monitor_request_free);
+      m->clients = efsd_list_remove(m->clients, l, (EfsdFunc)efsd_monitor_request_free);
 
       if (m->client_use_count == 0 && m->internal_use_count == 0)
 	{
@@ -877,7 +873,7 @@ efsd_monitor_cleanup_client(int client)
   efsd_lock_release_read_access(monitors_lock);
   efsd_hash_it_free(it);
 
-  D_RETURN_(FALSE);
+  D_RETURN;
 }
 
 
@@ -900,7 +896,7 @@ efsd_monitor_cleanup_requests(EfsdMonitor *m)
 	{
 	  LOCK(&m->use_count_mutex);
 	  m->clients = efsd_list_remove(m->clients, l,
-					(EfsdFunc)monitor_request_free);
+					(EfsdFunc)efsd_monitor_request_free);
 	  UNLOCK(&m->use_count_mutex);
 	}
     }  

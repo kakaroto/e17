@@ -234,12 +234,20 @@ void handle_efsd_event(EfsdEvent *ee)
 	  printf("Startmon event for dir %i\n", 
 		 ee->efsd_reply_event.command.efsd_file_cmd.id);
 	  break;
+	case EFSD_CMD_STARTMON_META:
+	  printf("Startmon event for metadata %i\n", 
+		 ee->efsd_reply_event.command.efsd_file_cmd.id);
+	  break;
 	case EFSD_CMD_STOPMON_FILE:
 	  printf("Stopmon event for file %i\n", 
 		 ee->efsd_reply_event.command.efsd_file_cmd.id);
 	  break;
 	case EFSD_CMD_STOPMON_DIR:
 	  printf("Stopmon event for dir %i\n", 
+		 ee->efsd_reply_event.command.efsd_file_cmd.id);
+	  break;
+	case EFSD_CMD_STOPMON_META:
+	  printf("Stopmon event for metadata %i\n", 
 		 ee->efsd_reply_event.command.efsd_file_cmd.id);
 	  break;
 	case EFSD_CMD_STAT:
@@ -307,6 +315,46 @@ void handle_efsd_event(EfsdEvent *ee)
 	}
       
       break;
+    case EFSD_EVENT_METADATA_CHANGE:
+      {
+	printf("Metadata change event %i on %s, key %s\n",
+	       ee->efsd_metachange_event.id,
+	       ee->efsd_metachange_event.file,
+	       ee->efsd_metachange_event.key);
+
+	switch (efsd_metadata_get_type(ee))
+	  {
+	  case EFSD_INT:
+	    {
+	      int val;
+	      
+	      efsd_metadata_get_int(ee, &val);
+	      printf("File: %s, key: %s --> val: %i\n",
+		     efsd_metadata_get_file(ee),
+		     efsd_metadata_get_key(ee),
+		     val);
+	    }
+	    break;
+	  case EFSD_FLOAT:
+	    {
+	      float val;
+	      
+	      efsd_metadata_get_float(ee, &val);
+	      printf("File: %s, key: %s --> val: %f\n",
+		     efsd_metadata_get_file(ee),
+		     efsd_metadata_get_key(ee),
+		     val);
+	    }
+	    break;
+	  case EFSD_STRING:
+	    printf("File: %s, key: %s --> val: %s\n",
+		   efsd_metadata_get_file(ee),
+		   efsd_metadata_get_key(ee),
+		   efsd_metadata_get_str(ee));
+	    break;
+	  default:
+	  }
+      }
     default:
     }
   
@@ -340,8 +388,10 @@ print_help(void)
 	 "ls <file>                           Shows directory contents\n"
 	 "mon_file <file>                     Starts monitoring file\n"
 	 "mon_dir <file>                      Starts monitoring dir\n"
+	 "mon_meta <file> <key>               Starts monitoring metadata\n"
 	 "stopmon_file <file>                 Stops monitoring file\n"
 	 "stopmon_dir <file>                  Stops monitoring dir\n"
+	 "stopmon_meta <file> <key>           Stops monitoring metadata\n"
 	 "gettype <file>                      Returns file type of file\n"
 	 "getstat <file>                      Returns result of stat on file.\n"
 	 "getlstat <file>                     Returns result of lstat on file.\n"
@@ -697,6 +747,30 @@ command_line(EfsdConnection *ec)
 		{
 		  if ((id = efsd_stop_monitor(ec, tok, FALSE)) < 0)
 		    printf("Couldn't issue stopmon_file command.\n");
+		}
+	    }
+	  else if (!strcmp(tok, "mon_meta"))
+	    {
+	      char *file;
+	      char *key;
+
+	      if ((file = strtok(NULL, " \t\n")) &&
+		  (key = strtok(NULL, " \t\n")))
+		{
+		  if ((id = efsd_start_monitor_metadata(ec, file, key)) < 0)
+		    printf("Couldn't issue mon_meta command.\n");		    
+		}
+	    }
+	  else if (!strcmp(tok, "stopmon_meta"))
+	    {
+	      char *file;
+	      char *key;
+
+	      if ((file = strtok(NULL, " \t\n")) &&
+		  (key = strtok(NULL, " \t\n")))
+		{
+		  if ((id = efsd_stop_monitor_metadata(ec, file, key)) < 0)
+		    printf("Couldn't issue mon_meta command.\n");		    
 		}
 	    }
 	  else

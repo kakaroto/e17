@@ -38,6 +38,8 @@ int  efsd_command_get_metadata(EfsdCommand *cmd, int client);
 int  efsd_command_listdir(EfsdCommand *cmd, int client);
 int  efsd_command_start_monitor(EfsdCommand *cmd, int client, int dir_mode);
 int  efsd_command_stop_monitor(EfsdCommand *cmd, int client, int dir_mode);
+int  efsd_command_start_monitor_metadata(EfsdCommand *cmd, int client);
+int  efsd_command_stop_monitor_metadata(EfsdCommand *cmd, int client);
 int  efsd_command_stat(EfsdCommand *cmd, int client, char use_lstat);
 int  efsd_command_readlink(EfsdCommand *cmd, int client);
 int  efsd_command_get_filetype(EfsdCommand *cmd, int client);

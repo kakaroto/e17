@@ -25,15 +25,18 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 #ifndef __efsd_misc_h
 #define __efsd_misc_h
 
+
+/* These do the obvious ... */
 int    efsd_misc_file_exists(char *filename);
 int    efsd_misc_file_is_dir(char *filename);
+int    efsd_misc_file_readable(char *filename);
 int    efsd_misc_file_writeable(char *filename);
 int    efsd_misc_file_execable(char *filename);
 int    efsd_misc_file_is_dotfile(char *filename);
 
 /* Checks if file paths are identical after making
    them chanonic -- returns < 0 on error, FALSE
-   if files differ, TRUE otherwise.
+   if files differ, TRUE otherwise. Not an inode check.
 */
 int    efsd_misc_files_identical(char *file1, char *file2);
 
@@ -43,8 +46,14 @@ int    efsd_misc_files_identical(char *file1, char *file2);
 */
 int    efsd_misc_remove(char *filename);
 
+/* Wrapper to rename() that updates the stat cache
+   and handles metadata properly. Returns TRUE on
+   success, FALSE otherwise.
+*/
 int    efsd_misc_rename(char *file1, char *file2);
 
+/* Simple mkdir wrapper.
+ */
 int    efsd_misc_mkdir(char *filename);
 void   efsd_misc_remove_trailing_slashes(char *path);
 int    efsd_misc_is_absolute_path(char *path);

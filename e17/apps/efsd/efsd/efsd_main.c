@@ -58,6 +58,7 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 #include <efsd_macros.h>
 #include <efsd_main.h>
 #include <efsd_meta.h>
+#include <efsd_meta_monitor.h>
 #include <efsd_misc.h>
 #include <efsd_event_queue.h>
 #include <efsd_types.h>
@@ -257,6 +258,10 @@ main_handle_client_command(void *data)
       D("Handling STARTMON_DIR\n");
       efsd_command_start_monitor(command, client, TRUE);
       break;
+    case EFSD_CMD_STARTMON_META:
+      D("Handling STARTMON_META\n");
+      efsd_command_start_monitor_metadata(command, client);
+      break;
     case EFSD_CMD_STOPMON_FILE:
       D("Handling STOPMON_FILE\n");
       efsd_command_stop_monitor(command, client, FALSE);
@@ -264,6 +269,10 @@ main_handle_client_command(void *data)
     case EFSD_CMD_STOPMON_DIR:
       D("Handling STOPMON_DIR\n");
       efsd_command_stop_monitor(command, client, TRUE);
+      break;
+    case EFSD_CMD_STOPMON_META:
+      D("Handling STOPMON_META\n");
+      efsd_command_stop_monitor_metadata(command, client);
       break;
     case EFSD_CMD_STAT:
       D("Handling STAT on %s\n", command->efsd_file_cmd.files[0]);
@@ -659,7 +668,8 @@ main_handle_connections(void)
   fd_set         *fdwset_ptr = NULL;
   char            have_fam_thread = FALSE;
   struct timeval  tv;
-   
+  int             rebuild_fdset = FALSE;
+
   D_ENTER;
 
   ev_q = efsd_queue_new();
@@ -711,7 +721,8 @@ main_handle_connections(void)
 
   for ( ; ; )
     {
-      can_accept = 0;
+      rebuild_fdset = FALSE;
+      can_accept = FALSE;
       FD_ZERO(&fdrset);
       FD_ZERO(&fdwset);
       fdwset_ptr = NULL;
@@ -736,7 +747,7 @@ main_handle_connections(void)
 		fdsize = clientfd[i];
 	    }
 	  else
-	    can_accept = 1;
+	    can_accept = TRUE;
 	}
 
       /* listen for new connections */
@@ -774,13 +785,21 @@ main_handle_connections(void)
 	    }
 	  else
 	    {
-	      fprintf(stderr, __FUNCTION__ ": select error -- exiting.\n");
-	      exit(-1);
+	      D("Select error: %s.\n", strerror(errno));
+
+	      /* FIXME -- if we get a bad descriptor here, we need to close
+		 that connection properly and rebuild the fdset. */
+
+	      rebuild_fdset = TRUE;
 	    }
 	  tv.tv_sec  = 1;
 	  tv.tv_usec = 0;
 	}
       
+      /* If something went wrong with the select, start over. */
+      if (rebuild_fdset)
+	continue;
+
       /* if we timed out - ie 0 fd's available */
       if (n == 0)
 	efsd_meta_idle();
@@ -816,7 +835,6 @@ main_handle_connections(void)
 		}
 	      else
 		{
-		  efsd_main_close_connection(i);
 		  efsd_cmd_free(ecmd);
 		}
 	    }
@@ -1001,7 +1019,7 @@ main_cleanup(void)
 	{
 	  D("Cleaning up client %i, fd %i\n", i, clientfd[i]);
 	  close(clientfd[i]);
-	  clientfd[i] = 0;
+	  clientfd[i] = -1;
 	}
     }
   
@@ -1184,17 +1202,18 @@ int
 efsd_main_close_connection(int client)
 {
   D_ENTER;
-  D("Closing connection %i\n", client);
 
   if (clientfd[client] < 0)
     {
-      D("Connection already closed ???\n");
       D_RETURN_(-1);
     }
 
+  D("Closing connection %i\n", client);
   efsd_monitor_cleanup_client(client);
+  efsd_meta_monitor_cleanup_client(client);
   close(clientfd[client]);
   clientfd[client] = -1;
+
   D_RETURN_(0);
 }
 
@@ -1210,6 +1229,7 @@ main(int argc, char **argv)
   efsd_monitor_init();
   efsd_stat_init();
   efsd_meta_init();
+  efsd_meta_monitor_init();
   efsd_filetype_init();
 
   main_initialize(argv[0]);

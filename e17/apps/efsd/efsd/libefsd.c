@@ -74,21 +74,26 @@ struct efsd_options
 };
 
 
-static int       send_command(EfsdConnection *ec, EfsdCommand *com);
-static EfsdCmdId get_next_id(void);
+static char     *libefsd_get_full_path(char *file);
+static int       libefsd_send_command(EfsdConnection *ec, EfsdCommand *com);
+static EfsdCmdId libefsd_get_next_id(void);
 
-static EfsdCmdId file_cmd(EfsdConnection *ec, EfsdCommandType type,
-			  int num_files, char **files,
-			  int num_options, EfsdOption *ops);
+static EfsdCmdId libefsd_file_cmd_absolute(EfsdConnection *ec, EfsdCommandType type,
+					   int num_files, char **files,
+					   int num_options, EfsdOption *ops);
 
-static EfsdCmdId set_metadata_internal(EfsdConnection *ec, char *key, char *filename,
-				       EfsdDatatype datatype, int data_len, void *data);
+static EfsdCmdId libefsd_file_cmd(EfsdConnection *ec, EfsdCommandType type,
+				  int num_files, char **files,
+				  int num_options, EfsdOption *ops);
 
-static void      cmd_queue_add_command(EfsdConnection *ec, EfsdCommand *com);
-static void      cmd_queue_process(EfsdConnection *ec);
+static EfsdCmdId libefsd_set_metadata_internal(EfsdConnection *ec, char *key, char *filename,
+					       EfsdDatatype datatype, int data_len, void *data);
+
+static void      libefsd_cmd_queue_add_command(EfsdConnection *ec, EfsdCommand *com);
+static void      libefsd_cmd_queue_process(EfsdConnection *ec);
 
 static char*
-get_full_path(char *file)
+libefsd_get_full_path(char *file)
 {
   char  cwd[MAXPATHLEN];
   char *result = NULL;
@@ -124,7 +129,7 @@ get_full_path(char *file)
 
 
 static int
-send_command(EfsdConnection *ec, EfsdCommand *com)
+libefsd_send_command(EfsdConnection *ec, EfsdCommand *com)
 {
   D_ENTER;
 
@@ -133,8 +138,8 @@ send_command(EfsdConnection *ec, EfsdCommand *com)
 
   if (!efsd_queue_empty(ec->cmd_q))
     {
-      cmd_queue_add_command(ec, com);
-      cmd_queue_process(ec);
+      libefsd_cmd_queue_add_command(ec, com);
+      libefsd_cmd_queue_process(ec);
     }
   else
     {
@@ -145,7 +150,7 @@ send_command(EfsdConnection *ec, EfsdCommand *com)
 	      D_RETURN_(-1);	  
 	    }
 	  
-	  cmd_queue_add_command(ec, com);
+	  libefsd_cmd_queue_add_command(ec, com);
 	}
     }
   
@@ -154,7 +159,7 @@ send_command(EfsdConnection *ec, EfsdCommand *com)
 
 
 static EfsdCmdId 
-get_next_id(void)
+libefsd_get_next_id(void)
 {
   static EfsdCmdId id_counter = 0;
 
@@ -163,32 +168,24 @@ get_next_id(void)
 }
 
 
-static EfsdCmdId 
-file_cmd(EfsdConnection *ec, EfsdCommandType type,
-	 int num_files, char **files,
-	 int num_options, EfsdOption *ops)
+static EfsdCmdId
+libefsd_file_cmd_absolute(EfsdConnection *ec, EfsdCommandType type,
+			  int num_files, char **files,
+			  int num_options, EfsdOption *ops)
 {
   char         **full_files = NULL;
   int            i, used_files;
-  EfsdCommand    cmd;
   EfsdCmdId      id;
 
   D_ENTER;
 
-  if (!ec || !files)
-    D_RETURN_(-1);
-
-  memset(&cmd, 0, sizeof(EfsdCommand));
-
-  cmd.type = type;
-  cmd.efsd_file_cmd.id = get_next_id();
-
+  /* Array gets freed in efsd_cmd_cleanup() ... */
   full_files = malloc(sizeof(char*) * num_files);
 
   /* Hook in full paths of all given files, if possible. */
   for (i = 0, used_files = 0; i < num_files; i++)
     {
-      full_files[used_files] = get_full_path(files[i]);
+      full_files[used_files] = libefsd_get_full_path(files[i]);
       if (full_files[used_files])
 	used_files++;
     }
@@ -202,13 +199,35 @@ file_cmd(EfsdConnection *ec, EfsdCommandType type,
 	  FREE(full_files);
 	  D_RETURN_(-1);
 	}
-
+      
       full_files = realloc(full_files, sizeof(char*) * used_files);
-      num_files = used_files;
     }
 
+  id = libefsd_file_cmd(ec, type, used_files, full_files, num_options, ops);
+
+  D_RETURN_(id);
+}
+
+
+static EfsdCmdId 
+libefsd_file_cmd(EfsdConnection *ec, EfsdCommandType type,
+		 int num_files, char **files,
+		 int num_options, EfsdOption *ops)
+{
+  EfsdCommand    cmd;
+  EfsdCmdId      id;
+
+  D_ENTER;
+
+  if (!ec || !files)
+    D_RETURN_(-1);
+
+  memset(&cmd, 0, sizeof(EfsdCommand));
+
+  cmd.type = type;
+  cmd.efsd_file_cmd.id = libefsd_get_next_id();
   cmd.efsd_file_cmd.num_files = num_files;
-  cmd.efsd_file_cmd.files = full_files; 
+  cmd.efsd_file_cmd.files = files; 
 
   /* Hook in any options: */
   if ((num_options > 0) && (ops))
@@ -218,7 +237,7 @@ file_cmd(EfsdConnection *ec, EfsdCommandType type,
     }
 
   /* And send it! */
-  if (send_command(ec, &cmd) < 0)
+  if (libefsd_send_command(ec, &cmd) < 0)
     {
       efsd_cmd_cleanup(&cmd);
       D_RETURN_(-1);
@@ -231,8 +250,8 @@ file_cmd(EfsdConnection *ec, EfsdCommandType type,
 
 
 static EfsdCmdId      
-set_metadata_internal(EfsdConnection *ec, char *key, char *filename,
-		      EfsdDatatype datatype, int data_len, void *data)
+libefsd_set_metadata_internal(EfsdConnection *ec, char *key, char *filename,
+			      EfsdDatatype datatype, int data_len, void *data)
 {
   EfsdCommand  cmd;
   EfsdCmdId    id;
@@ -245,12 +264,12 @@ set_metadata_internal(EfsdConnection *ec, char *key, char *filename,
 
   memset(&cmd, 0, sizeof(EfsdCommand));
   cmd.type = EFSD_CMD_SETMETA;
-  cmd.efsd_set_metadata_cmd.id = get_next_id();
+  cmd.efsd_set_metadata_cmd.id = libefsd_get_next_id();
   cmd.efsd_set_metadata_cmd.datatype = datatype;
   cmd.efsd_set_metadata_cmd.data_len = data_len;
   cmd.efsd_set_metadata_cmd.data = data;
   cmd.efsd_set_metadata_cmd.key = strdup(key);
-  cmd.efsd_set_metadata_cmd.file = get_full_path(filename);
+  cmd.efsd_set_metadata_cmd.file = libefsd_get_full_path(filename);
 
   if (!cmd.efsd_set_metadata_cmd.file)
     goto error_return;
@@ -265,7 +284,7 @@ set_metadata_internal(EfsdConnection *ec, char *key, char *filename,
     }
   */
   
-  if (send_command(ec, &cmd) < 0)
+  if (libefsd_send_command(ec, &cmd) < 0)
     goto error_return;
 
   id = cmd.efsd_set_metadata_cmd.id;
@@ -279,7 +298,7 @@ set_metadata_internal(EfsdConnection *ec, char *key, char *filename,
 
 
 static void      
-cmd_queue_add_command(EfsdConnection *ec, EfsdCommand *com)
+libefsd_cmd_queue_add_command(EfsdConnection *ec, EfsdCommand *com)
 {
   EfsdCommand *com_copy;
 
@@ -297,7 +316,7 @@ cmd_queue_add_command(EfsdConnection *ec, EfsdCommand *com)
 
 
 static void      
-cmd_queue_process(EfsdConnection *ec)
+libefsd_cmd_queue_process(EfsdConnection *ec)
 {
   EfsdCommand *cmd;
 
@@ -329,7 +348,8 @@ cmd_queue_process(EfsdConnection *ec)
 /* Efsd API starts here --------------------------------------------- */
 
 
-EfsdConnection * efsd_open(void)
+EfsdConnection *
+efsd_open(void)
 {
   struct sockaddr_un    cli_sun;
   EfsdConnection       *ec;
@@ -374,7 +394,8 @@ EfsdConnection * efsd_open(void)
 }
 
 
-int efsd_get_connection_fd(EfsdConnection *ec)
+int 
+efsd_get_connection_fd(EfsdConnection *ec)
 {
   D_ENTER;
 
@@ -385,7 +406,8 @@ int efsd_get_connection_fd(EfsdConnection *ec)
 }
 
 
-int efsd_close(EfsdConnection *ec)
+int 
+efsd_close(EfsdConnection *ec)
 {
   EfsdCommand cmd;
 
@@ -397,7 +419,7 @@ int efsd_close(EfsdConnection *ec)
   memset(&cmd, 0, sizeof(EfsdCommand));
   cmd.type = EFSD_CMD_CLOSE;
 
-  if (send_command(ec, &cmd) < 0)
+  if (libefsd_send_command(ec, &cmd) < 0)
     {
       D_RETURN_(-1);
     }
@@ -490,7 +512,7 @@ efsd_flush(EfsdConnection *ec)
   if (!ec)
     D_RETURN_(-1);
 
-  cmd_queue_process(ec);
+  libefsd_cmd_queue_process(ec);
 
   D_RETURN_(efsd_queue_empty(ec->cmd_q));
 }
@@ -505,9 +527,9 @@ efsd_remove(EfsdConnection *ec, int num_files, char **files, EfsdOptions *ops)
   D_ENTER;
 
   if (ops)
-    result = file_cmd(ec, EFSD_CMD_REMOVE, num_files, files, ops->num_used, ops->ops);
+    result = libefsd_file_cmd_absolute(ec, EFSD_CMD_REMOVE, num_files, files, ops->num_used, ops->ops);
   else
-    result = file_cmd(ec, EFSD_CMD_REMOVE, num_files, files, 0, NULL);
+    result = libefsd_file_cmd_absolute(ec, EFSD_CMD_REMOVE, num_files, files, 0, NULL);
 
   FREE(ops);
   
@@ -523,9 +545,9 @@ efsd_move(EfsdConnection *ec, int num_files, char **files, EfsdOptions *ops)
   D_ENTER;
 
   if (ops)
-    result = file_cmd(ec, EFSD_CMD_MOVE, num_files, files, ops->num_used, ops->ops);
+    result = libefsd_file_cmd_absolute(ec, EFSD_CMD_MOVE, num_files, files, ops->num_used, ops->ops);
   else
-    result = file_cmd(ec, EFSD_CMD_MOVE, num_files, files, 0, NULL);
+    result = libefsd_file_cmd_absolute(ec, EFSD_CMD_MOVE, num_files, files, 0, NULL);
 
   FREE(ops);
   
@@ -541,9 +563,9 @@ efsd_copy(EfsdConnection *ec, int num_files, char **files, EfsdOptions *ops)
   D_ENTER;
 
   if (ops)
-    result = file_cmd(ec, EFSD_CMD_COPY, num_files, files, ops->num_used, ops->ops);
+    result = libefsd_file_cmd_absolute(ec, EFSD_CMD_COPY, num_files, files, ops->num_used, ops->ops);
   else
-    result = file_cmd(ec, EFSD_CMD_COPY, num_files, files, 0, NULL);
+    result = libefsd_file_cmd_absolute(ec, EFSD_CMD_COPY, num_files, files, 0, NULL);
 
   FREE(ops);
   
@@ -560,7 +582,7 @@ efsd_symlink(EfsdConnection *ec, char *from_file, char *to_file)
   D_ENTER;
 
   files[0] = from_file; files[1] = to_file;
-  result = file_cmd(ec, EFSD_CMD_SYMLINK, 2, files, 0, NULL);
+  result = libefsd_file_cmd_absolute(ec, EFSD_CMD_SYMLINK, 2, files, 0, NULL);
 
   D_RETURN_(result);
 }
@@ -575,9 +597,9 @@ efsd_listdir(EfsdConnection *ec, char *dirname,
   D_ENTER;
 
   if (ops)
-    result = file_cmd(ec, EFSD_CMD_LISTDIR, 1, &dirname, ops->num_used, ops->ops);
+    result = libefsd_file_cmd_absolute(ec, EFSD_CMD_LISTDIR, 1, &dirname, ops->num_used, ops->ops);
   else
-    result = file_cmd(ec, EFSD_CMD_LISTDIR, 1, &dirname, 0, NULL);
+    result = libefsd_file_cmd_absolute(ec, EFSD_CMD_LISTDIR, 1, &dirname, 0, NULL);
 
   FREE(ops);
   
@@ -589,7 +611,7 @@ EfsdCmdId
 efsd_makedir(EfsdConnection *ec, char *dirname)
 {
   D_ENTER;
-  D_RETURN_(file_cmd(ec, EFSD_CMD_MAKEDIR, 1, &dirname, 0, NULL));
+  D_RETURN_(libefsd_file_cmd_absolute(ec, EFSD_CMD_MAKEDIR, 1, &dirname, 0, NULL));
 }
 
 
@@ -606,14 +628,14 @@ efsd_chmod(EfsdConnection *ec, char *filename,  mode_t mode)
 
   memset(&cmd, 0, sizeof(EfsdCommand));
   cmd.type = EFSD_CMD_CHMOD;
-  cmd.efsd_chmod_cmd.id = get_next_id();
+  cmd.efsd_chmod_cmd.id = libefsd_get_next_id();
   cmd.efsd_chmod_cmd.mode = mode;
-  cmd.efsd_chmod_cmd.file = get_full_path(filename);
+  cmd.efsd_chmod_cmd.file = libefsd_get_full_path(filename);
 
   if (!cmd.efsd_chmod_cmd.file)
     goto error_return;
 
-  if (send_command(ec, &cmd) < 0)
+  if (libefsd_send_command(ec, &cmd) < 0)
     goto error_return;
 
   id = cmd.efsd_chmod_cmd.id;
@@ -634,8 +656,8 @@ efsd_set_metadata_raw(EfsdConnection *ec, char *key, char *filename,
 
   D_ENTER;
 
-  id = set_metadata_internal(ec, key, filename, datatype,
-			     datalength, data);
+  id = libefsd_set_metadata_internal(ec, key, filename, datatype,
+				     datalength, data);
 
   D_RETURN_(id);
 }
@@ -649,8 +671,8 @@ efsd_set_metadata_int(EfsdConnection *ec, char *key,
 
   D_ENTER;
 
-  id = set_metadata_internal(ec, key, filename, EFSD_INT,
-			     sizeof(int), &val);
+  id = libefsd_set_metadata_internal(ec, key, filename, EFSD_INT,
+				     sizeof(int), &val);
 
   D_RETURN_(id);
 }
@@ -664,8 +686,8 @@ efsd_set_metadata_float(EfsdConnection *ec, char *key,
 
   D_ENTER;
 
-  id = set_metadata_internal(ec, key, filename, EFSD_FLOAT,
-			     sizeof(float), &val);
+  id = libefsd_set_metadata_internal(ec, key, filename, EFSD_FLOAT,
+				     sizeof(float), &val);
 
   D_RETURN_(id);
 }
@@ -679,8 +701,8 @@ efsd_set_metadata_str(EfsdConnection *ec, char *key,
 
   D_ENTER;
 
-  id = set_metadata_internal(ec, key, filename, EFSD_STRING,
-			     strlen(val) + 1, val);
+  id = libefsd_set_metadata_internal(ec, key, filename, EFSD_STRING,
+				     strlen(val) + 1, val);
 
   D_RETURN_(id);
 }
@@ -701,10 +723,10 @@ efsd_get_metadata(EfsdConnection *ec, char *key, char *filename,
 
   memset(&cmd, 0, sizeof(EfsdCommand));
   cmd.type = EFSD_CMD_GETMETA;
-  cmd.efsd_get_metadata_cmd.id = get_next_id();
+  cmd.efsd_get_metadata_cmd.id = libefsd_get_next_id();
   cmd.efsd_get_metadata_cmd.datatype = datatype;
   cmd.efsd_get_metadata_cmd.key = strdup(key);
-  cmd.efsd_get_metadata_cmd.file = get_full_path(filename);
+  cmd.efsd_get_metadata_cmd.file = libefsd_get_full_path(filename);
 
   if (!cmd.efsd_get_metadata_cmd.file)
     goto error_return;
@@ -719,7 +741,7 @@ efsd_get_metadata(EfsdConnection *ec, char *key, char *filename,
     }
   */
 
-  if (send_command(ec, &cmd) < 0)
+  if (libefsd_send_command(ec, &cmd) < 0)
     goto error_return;
 
   id = cmd.efsd_get_metadata_cmd.id;
@@ -737,15 +759,22 @@ efsd_metadata_get_type(EfsdEvent *ee)
 {
   D_ENTER;
   
-  if ((ee->type != EFSD_EVENT_REPLY)         ||
-      (ee->efsd_reply_event.command.type !=
-       EFSD_CMD_GETMETA))
+  if (!ee)
+    D_RETURN_(0);
+
+  if ((ee->type == EFSD_EVENT_REPLY) &&
+      (ee->efsd_reply_event.command.type == EFSD_CMD_GETMETA))
     {
-      D_RETURN_(0);
+      D_RETURN_(ee->efsd_reply_event.command.
+		efsd_get_metadata_cmd.datatype);
     }
 
-  D_RETURN_(ee->efsd_reply_event.command.
-	    efsd_get_metadata_cmd.datatype);
+  if (ee->type == EFSD_EVENT_METADATA_CHANGE)
+    {
+      D_RETURN_(ee->efsd_metachange_event.datatype);
+    }
+
+  D_RETURN_(0);
 }
 
 
@@ -754,19 +783,26 @@ efsd_metadata_get_int(EfsdEvent *ee, int *val)
 {
   D_ENTER;
   
-  if ((!val)                                 ||
-      (ee->type != EFSD_EVENT_REPLY)         ||
-      (ee->efsd_reply_event.command.type !=
-       EFSD_CMD_GETMETA)                     ||
+  if (!val || !ee)
+    D_RETURN_(0);
+
+  if ((ee->type == EFSD_EVENT_REPLY) &&
+      (ee->efsd_reply_event.command.type == EFSD_CMD_GETMETA) &&
       (ee->efsd_reply_event.command.
-       efsd_get_metadata_cmd.datatype != EFSD_INT)
-      )
+       efsd_get_metadata_cmd.datatype == EFSD_INT))
     {
-      D_RETURN_(0);
+      *val = *((int*)ee->efsd_reply_event.data);
+      D_RETURN_(1);
     }
 
-  *val = *((int*)ee->efsd_reply_event.data);
-  D_RETURN_(1);
+  if ((ee->type == EFSD_EVENT_METADATA_CHANGE) &&
+      (ee->efsd_metachange_event.datatype == EFSD_INT))
+    {
+      *val = *((int*)ee->efsd_metachange_event.data);
+      D_RETURN_(1);
+    }
+
+  D_RETURN_(0);
 }
 
 
@@ -775,19 +811,26 @@ efsd_metadata_get_float(EfsdEvent *ee, float *val)
 {
   D_ENTER;
   
-  if ((!val)                                 ||
-      (ee->type != EFSD_EVENT_REPLY)         ||
-      (ee->efsd_reply_event.command.type !=
-       EFSD_CMD_GETMETA)                     ||
+  if (!val || !ee)
+    D_RETURN_(0);
+
+  if ((ee->type == EFSD_EVENT_REPLY) &&
+      (ee->efsd_reply_event.command.type == EFSD_CMD_GETMETA) &&
       (ee->efsd_reply_event.command.
-       efsd_get_metadata_cmd.datatype != EFSD_FLOAT)
-      )
+       efsd_get_metadata_cmd.datatype == EFSD_FLOAT))
     {
-      D_RETURN_(0);
+      *val = *((float*)ee->efsd_reply_event.data);
+      D_RETURN_(1);
     }
 
-  *val = *((float*)ee->efsd_reply_event.data);
-  D_RETURN_(1);
+  if ((ee->type == EFSD_EVENT_METADATA_CHANGE) &&
+      (ee->efsd_metachange_event.datatype == EFSD_FLOAT))
+    {
+      *val = *((float*)ee->efsd_metachange_event.data);
+      D_RETURN_(1);
+    }
+
+  D_RETURN_(0);
 }
 
 
@@ -796,50 +839,54 @@ efsd_metadata_get_str(EfsdEvent *ee)
 {
   D_ENTER;
   
-  if ((ee->type != EFSD_EVENT_REPLY)         ||
-      (ee->efsd_reply_event.command.type !=
-       EFSD_CMD_GETMETA)                     ||
-      (ee->efsd_reply_event.command.
-       efsd_get_metadata_cmd.datatype != EFSD_STRING)
-      )
-    {
-      D_RETURN_(NULL);
-    }
+  if (!ee)
+    D_RETURN_(NULL);
 
-  D_RETURN_(strdup((char*)ee->efsd_reply_event.data));
+  if ((ee->type == EFSD_EVENT_REPLY) &&
+      (ee->efsd_reply_event.command.type == EFSD_CMD_GETMETA) &&
+      (ee->efsd_reply_event.command.
+       efsd_get_metadata_cmd.datatype == EFSD_STRING))
+    {
+      D_RETURN_((char*)ee->efsd_reply_event.data);
+    }
+  
+  if ((ee->type == EFSD_EVENT_METADATA_CHANGE) &&
+      (ee->efsd_metachange_event.datatype == EFSD_STRING))
+    {
+      D_RETURN_((char*)ee->efsd_metachange_event.data);
+    }  
+
+  D_RETURN_(NULL);
 }
 
 
 void          *
 efsd_metadata_get_raw(EfsdEvent *ee, int *data_len)
 {
-  void *result;
-
   D_ENTER;
   
-  if ((ee->type != EFSD_EVENT_REPLY)         ||
-      (ee->efsd_reply_event.command.type !=
-       EFSD_CMD_GETMETA)                     ||
+  if (!ee || !data_len)
+    D_RETURN_(NULL);
+
+  if ((ee->type == EFSD_EVENT_REPLY) &&
+      (ee->efsd_reply_event.command.type == EFSD_CMD_GETMETA) &&
       (ee->efsd_reply_event.command.
-       efsd_get_metadata_cmd.datatype != EFSD_FLOAT)
-      )
-    {
-      D_RETURN_(NULL);
-    }
-  
-  if (data_len)
+       efsd_get_metadata_cmd.datatype == EFSD_RAW))
     {
       *data_len = ee->efsd_reply_event.data_len;
+
+      D_RETURN_(ee->efsd_reply_event.data);
     }
   
-  if ((result = malloc(ee->efsd_reply_event.data_len)) == NULL)
+  if ((ee->type == EFSD_EVENT_METADATA_CHANGE) &&
+      (ee->efsd_metachange_event.datatype == EFSD_RAW))
     {
-      D_RETURN_(NULL);
-    }
+      *data_len = ee->efsd_metachange_event.data_len;
 
-  memcpy(result, ee->efsd_reply_event.data, ee->efsd_reply_event.data_len);
-
-  D_RETURN_(result);
+      D_RETURN_(ee->efsd_metachange_event.data);
+    }    
+  
+  D_RETURN_(NULL);
 }
 
 
@@ -848,14 +895,18 @@ efsd_metadata_get_key(EfsdEvent *ee)
 {
   D_ENTER;
   
-  if ((ee->type != EFSD_EVENT_REPLY) ||
-      (ee->efsd_reply_event.command.type !=
-       EFSD_CMD_GETMETA))
+  if ((ee->type == EFSD_EVENT_REPLY) &&
+      (ee->efsd_reply_event.command.type == EFSD_CMD_GETMETA))
     {
-      D_RETURN_(NULL);
+      D_RETURN_((char*)ee->efsd_reply_event.command.efsd_get_metadata_cmd.key);
     }
   
-  D_RETURN_(ee->efsd_reply_event.command.efsd_get_metadata_cmd.key);
+  if (ee->type == EFSD_EVENT_METADATA_CHANGE)
+    {
+      D_RETURN_((char*)ee->efsd_metachange_event.key);
+    }
+
+  D_RETURN_(NULL);
 }
 
 
@@ -864,14 +915,18 @@ efsd_metadata_get_file(EfsdEvent *ee)
 {
   D_ENTER;
   
-  if ((ee->type != EFSD_EVENT_REPLY) ||
-      (ee->efsd_reply_event.command.type !=
-       EFSD_CMD_GETMETA))
+  if ((ee->type == EFSD_EVENT_REPLY) &&
+      (ee->efsd_reply_event.command.type == EFSD_CMD_GETMETA))
     {
-      D_RETURN_(NULL);
+      D_RETURN_((char*)ee->efsd_reply_event.command.efsd_get_metadata_cmd.file);
+    }
+
+  if (ee->type == EFSD_EVENT_METADATA_CHANGE)
+    {
+      D_RETURN_((char*)ee->efsd_metachange_event.file);
     }
   
-  D_RETURN_(ee->efsd_reply_event.command.efsd_get_metadata_cmd.file);
+  D_RETURN_(NULL);
 }
 
 
@@ -897,9 +952,9 @@ efsd_start_monitor(EfsdConnection *ec, char *filename, EfsdOptions *ops, int dir
     type = EFSD_CMD_STARTMON_FILE;
 
   if (ops)
-    result = file_cmd(ec, type, 1, &filename, ops->num_used, ops->ops);
+    result = libefsd_file_cmd_absolute(ec, type, 1, &filename, ops->num_used, ops->ops);
   else
-    result = file_cmd(ec, type, 1, &filename, 0, NULL);
+    result = libefsd_file_cmd_absolute(ec, type, 1, &filename, 0, NULL);
   
   FREE(ops);
 
@@ -919,7 +974,43 @@ efsd_stop_monitor(EfsdConnection *ec, char *filename, int dir_mode)
   else
     type = EFSD_CMD_STOPMON_FILE;
 
-  D_RETURN_(file_cmd(ec, type, 1, &filename, 0, NULL));
+  D_RETURN_(libefsd_file_cmd_absolute(ec, type, 1, &filename, 0, NULL));
+}
+
+
+EfsdCmdId      
+efsd_start_monitor_metadata(EfsdConnection *ec, char *filename, char *key)
+{
+  char **file_key_pair = NULL;
+
+  D_ENTER;
+
+  if (!filename || !*filename || !key || !*key)
+    D_RETURN_(-1);
+
+  file_key_pair = malloc(sizeof(char*) * 2);
+  file_key_pair[0] = libefsd_get_full_path(filename);
+  file_key_pair[1] = strdup(key);
+
+  D_RETURN_(libefsd_file_cmd(ec, EFSD_CMD_STARTMON_META, 2, file_key_pair, 0, NULL));
+}
+
+
+EfsdCmdId      
+efsd_stop_monitor_metadata(EfsdConnection *ec, char *filename, char *key)
+{
+  char **file_key_pair = NULL;
+
+  D_ENTER;
+
+  if (!filename || !*filename || !key || !*key)
+    D_RETURN_(-1);
+
+  file_key_pair = malloc(sizeof(char*) * 2);
+  file_key_pair[0] = libefsd_get_full_path(filename);
+  file_key_pair[1] = strdup(key);
+
+  D_RETURN_(libefsd_file_cmd(ec, EFSD_CMD_STOPMON_META, 2, file_key_pair, 0, NULL));
 }
 
 
@@ -927,7 +1018,7 @@ EfsdCmdId
 efsd_stat(EfsdConnection *ec, char *filename)
 {
   D_ENTER;
-  D_RETURN_(file_cmd(ec, EFSD_CMD_STAT, 1, &filename, 0, NULL));
+  D_RETURN_(libefsd_file_cmd_absolute(ec, EFSD_CMD_STAT, 1, &filename, 0, NULL));
 }
 
 
@@ -935,7 +1026,7 @@ EfsdCmdId
 efsd_lstat(EfsdConnection *ec, char *filename)
 {
   D_ENTER;
-  D_RETURN_(file_cmd(ec, EFSD_CMD_LSTAT, 1, &filename, 0, NULL));
+  D_RETURN_(libefsd_file_cmd_absolute(ec, EFSD_CMD_LSTAT, 1, &filename, 0, NULL));
 }
 
 
@@ -943,7 +1034,7 @@ EfsdCmdId
 efsd_readlink(EfsdConnection *ec, char *filename)
 {
   D_ENTER;
-  D_RETURN_(file_cmd(ec, EFSD_CMD_READLINK, 1, &filename, 0, NULL));
+  D_RETURN_(libefsd_file_cmd_absolute(ec, EFSD_CMD_READLINK, 1, &filename, 0, NULL));
 }
 
 
@@ -951,7 +1042,7 @@ EfsdCmdId
 efsd_get_filetype(EfsdConnection *ec, char *filename)
 {
   D_ENTER;
-  D_RETURN_(file_cmd(ec, EFSD_CMD_GETFILETYPE, 1, &filename, 0, NULL));
+  D_RETURN_(libefsd_file_cmd_absolute(ec, EFSD_CMD_GETFILETYPE, 1, &filename, 0, NULL));
 }
 
 
@@ -1107,7 +1198,7 @@ efsd_op_sort(void)
 
 
 char          *
-efsd_reply_filename(EfsdEvent *ee)
+efsd_event_filename(EfsdEvent *ee)
 {
   D_ENTER;
 
@@ -1116,6 +1207,9 @@ efsd_reply_filename(EfsdEvent *ee)
 
   if (ee->type == EFSD_EVENT_FILECHANGE)
     D_RETURN_(ee->efsd_filechange_event.file);
+
+  if (ee->type == EFSD_EVENT_METADATA_CHANGE)
+    D_RETURN_(ee->efsd_metachange_event.file);
 
   switch (ee->efsd_reply_event.command.type)
     {
@@ -1153,7 +1247,7 @@ efsd_reply_filename(EfsdEvent *ee)
 
 
 EfsdCmdId      
-efsd_reply_id(EfsdEvent *ee)
+efsd_event_id(EfsdEvent *ee)
 {
   D_ENTER;
 
@@ -1162,6 +1256,9 @@ efsd_reply_id(EfsdEvent *ee)
 
   if (ee->type == EFSD_EVENT_FILECHANGE)
     D_RETURN_(ee->efsd_filechange_event.id);
+
+  if (ee->type == EFSD_EVENT_METADATA_CHANGE)
+    D_RETURN_(ee->efsd_metachange_event.id);
 
   switch (ee->efsd_reply_event.command.type)
     {
@@ -1199,16 +1296,24 @@ efsd_reply_id(EfsdEvent *ee)
 
 
 void          *
-efsd_reply_data(EfsdEvent *ee)
+efsd_event_data(EfsdEvent *ee)
 {
   D_ENTER;
 
   if (!ee)
     D_RETURN_(NULL);
-  
-  if (ee->type != EFSD_EVENT_REPLY)
-    D_RETURN_(NULL);
 
-  D_RETURN_(ee->efsd_reply_event.data);
+  switch (ee->type)
+    {
+    case EFSD_EVENT_REPLY:
+      D_RETURN_(ee->efsd_reply_event.data);
+      break;
+    case EFSD_EVENT_METADATA_CHANGE:
+      D_RETURN_(ee->efsd_metachange_event.data);
+      break;
+    default:
+    }
+
+  D_RETURN_(NULL);
 }
 

@@ -36,28 +36,30 @@ typedef int EfsdCmdId;
 
 typedef enum efsd_filechange_type
 {
-  EFSD_FILE_CHANGED     = 1,
-  EFSD_FILE_DELETED     = 2,
-  EFSD_FILE_START_EXEC  = 3,
-  EFSD_FILE_STOP_EXEC   = 4,
-  EFSD_FILE_CREATED     = 5,
-  EFSD_FILE_MOVED       = 6,
-  EFSD_FILE_ACKNOWLEDGE = 7,
-  EFSD_FILE_EXISTS      = 8,
-  EFSD_FILE_END_EXISTS  = 9
+  EFSD_FILE_CHANGED          = 1,
+  EFSD_FILE_DELETED          = 2,
+  EFSD_FILE_START_EXEC       = 3,
+  EFSD_FILE_STOP_EXEC        = 4,
+  EFSD_FILE_CREATED          = 5,
+  EFSD_FILE_MOVED            = 6,
+  EFSD_FILE_ACKNOWLEDGE      = 7,
+  EFSD_FILE_EXISTS           = 8,
+  EFSD_FILE_END_EXISTS       = 9,
+  EFSD_FILE_METADATA_CHANGED = 10
 }
 EfsdFilechangeType;
 
 typedef enum efsd_event_type
 {
   EFSD_EVENT_FILECHANGE,
+  EFSD_EVENT_METADATA_CHANGE,
   EFSD_EVENT_REPLY
 }
 EfsdEventType;
 
 typedef enum efsd_command_type
 {
-  EFSD_CMD_REMOVE, 
+  EFSD_CMD_REMOVE,
   EFSD_CMD_MOVE, 
   EFSD_CMD_COPY, 
   EFSD_CMD_SYMLINK,
@@ -68,8 +70,10 @@ typedef enum efsd_command_type
   EFSD_CMD_GETMETA, 
   EFSD_CMD_STARTMON_FILE,
   EFSD_CMD_STARTMON_DIR,
+  EFSD_CMD_STARTMON_META,
   EFSD_CMD_STOPMON_FILE, 
   EFSD_CMD_STOPMON_DIR, 
+  EFSD_CMD_STOPMON_META,
   EFSD_CMD_STAT, 
   EFSD_CMD_LSTAT, 
   EFSD_CMD_READLINK, 
@@ -206,6 +210,21 @@ typedef struct efsd_filechange_event
 EfsdFileChangeEvent;
 
 
+/* Metadata change event.
+ */
+typedef struct efsd_metachange_event
+{
+  EfsdEventType       type;
+  EfsdCmdId           id;
+  char               *key;
+  char               *file;
+  EfsdDatatype        datatype;
+  int                 data_len;
+  void               *data;
+}
+EfsdMetadataChangeEvent;
+
+
 /* General reply to commands, contains
    entire command as well
 */
@@ -230,9 +249,10 @@ EfsdReplyEvent;
 /* General event structure */
 typedef union efsd_event
 {
-  EfsdEventType       type;
-  EfsdFileChangeEvent efsd_filechange_event;
-  EfsdReplyEvent      efsd_reply_event;
+  EfsdEventType           type;
+  EfsdFileChangeEvent     efsd_filechange_event;
+  EfsdMetadataChangeEvent efsd_metachange_event;
+  EfsdReplyEvent          efsd_reply_event;
 }
 EfsdEvent;
 

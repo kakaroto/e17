@@ -460,36 +460,37 @@ char          *efsd_metadata_get_file(EfsdEvent *ee);
 
 
 /**
- * efsd_reply_filename - returns filename contained in an event.
+ * efsd_event_filename - returns filename contained in an event.
  * @ee: The EfsdEvent.
  * 
- * Convenience function to access the filenames in reply or
- * filechange events. If the event is a reply event and the
+ * Convenience function to access the filenames in received
+ * events. If the event is a reply event and the
  * contained command is an efsd_file_cmd, it returns the first file
- * (efsd_file_cmd.files[0]). Returns %NULL if no file could be
- * found.
+ * (efsd_file_cmd.files[0]). For filechange events, it returns
+ * efsd_filechange_event.file. Returns %NULL otherwise.
  */
-char          *efsd_reply_filename(EfsdEvent *ee);
+char          *efsd_event_filename(EfsdEvent *ee);
 
 
 /**
- * efsd_reply_id - returns command id contained in an event.
+ * efsd_event_id - returns command id contained in an event.
  * @ee: The EfsdEvent.
  * 
- * Convenience function to access the command ID in reply or
- * filechange events. Returns -1 if no ID is contained in the event.
+ * Convenience function to access the command ID in received
+ * events. Returns -1 if no ID is contained in the event.
  */
-EfsdCmdId      efsd_reply_id(EfsdEvent *ee);
+EfsdCmdId      efsd_event_id(EfsdEvent *ee);
 
 
 /**
- * efsd_reply_data - returns data contained in a reply event
+ * efsd_event_data - returns data contained in a event
  * @ee: The EfsdEvent.
  *
- * Convenience function access the data returned in a reply
- * event. Returns NULL if an error occured.
+ * Convenience function access the data returned in a received
+ * event. Returns NULL if the event does not contain any
+ * returned data, or if the command is not applicable.
  */
-void          *efsd_reply_data(EfsdEvent *ee);
+void          *efsd_event_data(EfsdEvent *ee);
 
 
 /**
@@ -533,6 +534,31 @@ EfsdCmdId      efsd_start_monitor(EfsdConnection *ec, char *filename,
  * be sent to the client that requested the monitoring to be stopped.
  */
 EfsdCmdId      efsd_stop_monitor(EfsdConnection *ec, char *filename, int dir_mode);
+
+
+/**
+ * efsd_start_monitor_metadata - starts monitoring metadata.
+ * @ec: The Efsd connection.
+ * @filename: The file with metadata entries to be monitored.
+ * @key: The key of the metadata item that is to be monitored.
+ *
+ * This command requests monitoring of the metadata associated
+ * to the given @key on the given @filename. The client issuing
+ * this command will receive events of type %EFSD_EVENT_METADATA_CHANGE
+ * when the specified metadata entry changes.
+ */
+EfsdCmdId      efsd_start_monitor_metadata(EfsdConnection *ec, char *filename, char *key);
+
+/**
+ * efsd_stop_monitor_metadata - stops monitoring metadata.
+ * @ec: The Efsd connection.
+ * @filename: The file with a metadata entry that is monitored.
+ * @key: The key of the metadata item that no longer needs to be monitored.
+ *
+ * This command stops monitoring of the metadata associated
+ * to the given @key on the given @filename.
+ */
+EfsdCmdId      efsd_stop_monitor_metadata(EfsdConnection *ec, char *filename, char *key);
 
 /**
  * efsd_stat - returns the result of stat() on a file.

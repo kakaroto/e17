@@ -96,4 +96,26 @@ void        efsd_meta_dir_cleanup(char *dir);
  */
 void        efsd_meta_idle(void);
 
+
+/**
+ * efsd_meta_get_file_info - Returns info about metadata for a file
+ * @filename:    The full path name of the file.
+ * @dbfile:      Result pointer to location of db file for @filename.
+ * @db_len:      Length of string to write result into.
+ * @key:         Result pointer to metadata key prefix for @filename.
+ * @key_len:     Length of string to write result into.
+ * @create:      Flag which causes the metadata directory to be created if it doesn't exist yet.
+ *
+ * This is a helper function that looks at the given
+ * filename and returns the location of the metadata
+ * db file and the key prefix that depends on the location
+ * of the file (it can be just the file name or the full
+ * path).
+ *
+ * Returns TRUE if operation was successfull, FALSE otherwise.
+ */
+int         efsd_meta_get_file_info(char *filename,
+				    char *dbfile, int db_len,
+				    char *key, int key_len, int create);
+
 #endif

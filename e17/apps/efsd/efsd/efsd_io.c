@@ -82,6 +82,7 @@ static int     read_chmod_cmd(int sockfd, EfsdCommand *cmd);
 static int     read_set_metadata_cmd(int sockfd, EfsdCommand *cmd);
 static int     read_get_metadata_cmd(int sockfd, EfsdCommand *cmd);
 static int     read_filechange_event(int sockfd, EfsdEvent *ee);
+static int     read_metadata_change_event(int sockfd, EfsdEvent *ee);
 static int     read_reply_event(int sockfd, EfsdEvent *ee);
 static int     read_getmeta_op(int sockfd, EfsdOption *eo);
 
@@ -91,6 +92,7 @@ static void    fill_set_metadata_cmd(EfsdIOV *iov, EfsdCommand *ec);
 static void    fill_get_metadata_cmd(EfsdIOV *iov, EfsdCommand *ec);
 static void    fill_close_cmd(EfsdIOV *iov, EfsdCommand *ec);
 static void    fill_filechange_event(EfsdIOV *iov, EfsdEvent *ee);
+static void    fill_metadata_change_event(EfsdIOV *iov, EfsdEvent *ee);
 static void    fill_reply_event(EfsdIOV *iov, EfsdEvent *ee);
 static void    fill_event(EfsdIOV *iov, EfsdEvent *ee);
 static void    fill_command(EfsdIOV *iov, EfsdCommand *ec);
@@ -109,7 +111,10 @@ read_data(int sockfd, void *dest, int size)
   D_ENTER;
 
   if (sockfd < 0)
-    D_RETURN_(-1);
+    {
+      D("Socket < 0 ???\n");
+      D_RETURN_(-1);
+    }
 
   tv.tv_sec  = 1;
   tv.tv_usec = 0;
@@ -387,6 +392,53 @@ read_filechange_event(int sockfd, EfsdEvent *ee)
 
 
 static int     
+read_metadata_change_event(int sockfd, EfsdEvent *ee)
+{
+  int count, count2;
+   
+  D_ENTER;
+
+  if ((count = read_int(sockfd, &(ee->efsd_metachange_event.id))) < 0)
+    D_RETURN_(-1);
+  count2 = count;
+
+  if ((count = read_string(sockfd, &(ee->efsd_metachange_event.key))) < 0)
+    D_RETURN_(-1);
+  count2 += count;
+
+  if ((count = read_string(sockfd, &(ee->efsd_metachange_event.file))) < 0)
+    D_RETURN_(-1);
+  count2 += count;
+
+  if ((count = read_int(sockfd, (int*)&(ee->efsd_metachange_event.datatype))) < 0)
+    D_RETURN_(-1);
+  count2 += count;
+
+  if ((count = read_int(sockfd, (int*)&(ee->efsd_metachange_event.data_len))) < 0)
+    D_RETURN_(-1);
+  count2 += count;
+
+  if (ee->efsd_metachange_event.data_len > 0)
+    {
+      ee->efsd_metachange_event.data =
+	malloc(ee->efsd_metachange_event.data_len);
+      
+      if ((count = read_data(sockfd, (ee->efsd_metachange_event.data),
+			     ee->efsd_metachange_event.data_len)) < 0)
+	D_RETURN_(-1);
+      count2 += count;
+    }
+  else
+    {
+      ee->efsd_metachange_event.data_len = 0;
+      ee->efsd_metachange_event.data = NULL;
+    }
+
+  D_RETURN_(count2);
+}
+
+
+static int     
 read_reply_event(int sockfd, EfsdEvent *ee)
 {
   int count = 0, count2;
@@ -614,6 +666,46 @@ fill_filechange_event(EfsdIOV *iov, EfsdEvent *ee)
 }
 
 
+static void
+fill_metadata_change_event(EfsdIOV *iov, EfsdEvent *ee)
+{
+  D_ENTER;
+
+  iov->dat[iov->d]   = strlen(ee->efsd_metachange_event.key) + 1;
+  iov->dat[iov->d+1] = strlen(ee->efsd_metachange_event.file) + 1;
+
+  iov->vec[iov->v].iov_base = &ee->type;
+  iov->vec[iov->v].iov_len  = sizeof(EfsdEventType);
+
+  iov->vec[++iov->v].iov_base = &ee->efsd_metachange_event.id;
+  iov->vec[iov->v].iov_len    = sizeof(EfsdCmdId);
+
+  iov->vec[++iov->v].iov_base = &(iov->dat[iov->d]);
+  iov->vec[iov->v].iov_len    = sizeof(int);
+  iov->vec[++iov->v].iov_base = ee->efsd_metachange_event.key;
+  iov->vec[iov->v].iov_len    = iov->dat[iov->d];
+
+  iov->vec[++iov->v].iov_base = &(iov->dat[iov->d+1]);
+  iov->vec[iov->v].iov_len    = sizeof(int);
+  iov->vec[++iov->v].iov_base = ee->efsd_metachange_event.file;
+  iov->vec[iov->v].iov_len    = iov->dat[iov->d+1];
+
+  iov->vec[++iov->v].iov_base = &ee->efsd_metachange_event.datatype;
+  iov->vec[iov->v].iov_len    = sizeof(int);
+
+  iov->vec[++iov->v].iov_base = &ee->efsd_metachange_event.data_len;
+  iov->vec[iov->v].iov_len    = sizeof(int);
+
+  iov->vec[++iov->v].iov_base = ee->efsd_metachange_event.data;
+  iov->vec[iov->v].iov_len    = ee->efsd_metachange_event.data_len;
+
+  iov->d += 2;
+  iov->v++;
+
+  D_RETURN;
+}
+
+
 static void    
 fill_reply_event(EfsdIOV *iov, EfsdEvent *ee)
 {
@@ -625,7 +717,7 @@ fill_reply_event(EfsdIOV *iov, EfsdEvent *ee)
 
   fill_command(iov, &ee->efsd_reply_event.command);
 
-  iov->vec[iov->v].iov_base = &ee->efsd_reply_event.errorcode;
+  iov->vec[iov->v].iov_base   = &ee->efsd_reply_event.errorcode;
   iov->vec[iov->v].iov_len    = sizeof(int);
   iov->vec[++iov->v].iov_base = &ee->efsd_reply_event.data_len;
   iov->vec[iov->v].iov_len    = sizeof(int);
@@ -648,6 +740,9 @@ fill_event(EfsdIOV *iov, EfsdEvent *ee)
     {
     case EFSD_EVENT_FILECHANGE:
       fill_filechange_event(iov, ee);
+      break;
+    case EFSD_EVENT_METADATA_CHANGE:
+      fill_metadata_change_event(iov, ee);
       break;
     case EFSD_EVENT_REPLY:
       fill_reply_event(iov, ee);
@@ -672,8 +767,10 @@ fill_command(EfsdIOV *iov, EfsdCommand *ec)
     case EFSD_CMD_LISTDIR:
     case EFSD_CMD_STARTMON_FILE:
     case EFSD_CMD_STARTMON_DIR:
+    case EFSD_CMD_STARTMON_META:
     case EFSD_CMD_STOPMON_FILE:
     case EFSD_CMD_STOPMON_DIR:
+    case EFSD_CMD_STOPMON_META:
     case EFSD_CMD_STAT:
     case EFSD_CMD_LSTAT:
     case EFSD_CMD_READLINK:
@@ -795,8 +892,10 @@ efsd_io_read_command(int sockfd, EfsdCommand *ec)
 	case EFSD_CMD_LISTDIR:
 	case EFSD_CMD_STARTMON_FILE:
 	case EFSD_CMD_STARTMON_DIR:
+	case EFSD_CMD_STARTMON_META:
 	case EFSD_CMD_STOPMON_FILE:
 	case EFSD_CMD_STOPMON_DIR:
+	case EFSD_CMD_STOPMON_META:
 	case EFSD_CMD_STAT:
 	case EFSD_CMD_LSTAT:
 	case EFSD_CMD_READLINK:
@@ -874,6 +973,9 @@ efsd_io_read_event(int sockfd, EfsdEvent *ee)
 	{
 	case EFSD_EVENT_FILECHANGE:
 	  result = read_filechange_event(sockfd, ee);    
+	  break;
+	case EFSD_EVENT_METADATA_CHANGE:
+	  result = read_metadata_change_event(sockfd, ee);    
 	  break;
 	case EFSD_EVENT_REPLY:
 	  result = read_reply_event(sockfd, ee);    

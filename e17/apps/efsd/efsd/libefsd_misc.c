@@ -34,6 +34,7 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 #include <string.h>
 #include <stdlib.h>
 #include <errno.h>
+#include <pwd.h>
 
 #ifdef __EMX__
 #include <stdlib.h>
@@ -88,31 +89,22 @@ efsd_misc_file_exists(char *filename)
 char *
 misc_get_user_dir(void)
 {
-  char         *dir = NULL;
-  static char  s[4096] = "\0";
-  
+  static char    s[4096] = "\0";
+  struct passwd *pw = NULL;
+
   D_ENTER;
 
   if (s[0] != '\0')
     D_RETURN_(s);
 
-  dir = getenv("HOME");
-
-  /* I'm not using getenv("TMPDIR") --
-   * I don't see TMPDIR on Linux, FreeBSD
-   * or Solaris here...
-   */
-
-  /* FIXME -- I need to properly handle the case
-     where I cannot determine the home directory.
-     This will break if multiple users run E on the
-     same machine:
-  */
-
-  if (!dir)
-    dir = "/tmp";
-
-  snprintf(s, sizeof(s), "%s/.e/efsd", dir);
+  if ( (pw = getpwuid(geteuid())))
+    {
+      snprintf(s, MAXPATHLEN, "%s/.e/efsd", pw->pw_dir);
+    }
+  else
+    {
+      snprintf(s, MAXPATHLEN, "/tmp/.e_%u/efsd", geteuid());
+    }
 
   D_RETURN_(s);
 }

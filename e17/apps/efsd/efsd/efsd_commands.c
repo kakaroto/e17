@@ -48,10 +48,12 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 #include <efsd_filetype.h>
 #include <efsd_main.h>
 #include <efsd_meta.h>
+#include <efsd_meta_monitor.h>
 #include <efsd_misc.h>
 #include <efsd_event_queue.h>
 #include <efsd_statcache.h>
 #include <efsd_types.h>
+#include <efsd_meta_monitor.h>
 
 
 static void
@@ -378,6 +380,36 @@ efsd_command_stop_monitor(EfsdCommand *cmd, int client, int dir_mode)
   D_ENTER;
 
   if (efsd_monitor_stop(cmd, client, dir_mode) < 0)
+    {
+      errno_check(__LINE__, __FUNCTION__);
+      D_RETURN_(send_reply(cmd, errno, 0, NULL, client));
+    }
+
+  D_RETURN_(send_reply(cmd, 0, 0, NULL, client));
+}
+
+
+int  
+efsd_command_start_monitor_metadata(EfsdCommand *cmd, int client)
+{
+  D_ENTER;
+
+  if (!efsd_meta_monitor_add(cmd, client))
+    {
+      errno_check(__LINE__, __FUNCTION__);
+      D_RETURN_(send_reply(cmd, errno, 0, NULL, client));
+    }
+
+  D_RETURN_(send_reply(cmd, 0, 0, NULL, client));
+}
+
+
+int  
+efsd_command_stop_monitor_metadata(EfsdCommand *cmd, int client)
+{
+  D_ENTER;
+
+  if (!efsd_meta_monitor_del(cmd, client))
     {
       errno_check(__LINE__, __FUNCTION__);
       D_RETURN_(send_reply(cmd, errno, 0, NULL, client));

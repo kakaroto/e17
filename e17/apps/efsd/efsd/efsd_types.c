@@ -74,8 +74,10 @@ efsd_cmd_duplicate(EfsdCommand *ec_src, EfsdCommand *ec_dst)
     case EFSD_CMD_CHMOD:
     case EFSD_CMD_STARTMON_FILE:
     case EFSD_CMD_STARTMON_DIR:
+    case EFSD_CMD_STARTMON_META:
     case EFSD_CMD_STOPMON_FILE:
     case EFSD_CMD_STOPMON_DIR:
+    case EFSD_CMD_STOPMON_META:
     case EFSD_CMD_LISTDIR:
     case EFSD_CMD_STAT:
     case EFSD_CMD_LSTAT:
@@ -148,11 +150,24 @@ efsd_event_duplicate(EfsdEvent *ee_src, EfsdEvent *ee_dst)
   switch (ee_src->type)
     {
     case EFSD_EVENT_FILECHANGE:
-      ee_dst->efsd_filechange_event.file = strdup(ee_src->efsd_filechange_event.file);
+      ee_dst->efsd_filechange_event.file =
+	strdup(ee_src->efsd_filechange_event.file);
+      break;
+    case EFSD_EVENT_METADATA_CHANGE:
+      ee_dst->efsd_metachange_event.file =
+	strdup(ee_src->efsd_metachange_event.file);
+
+      ee_dst->efsd_metachange_event.key =
+	strdup(ee_src->efsd_metachange_event.key);
+
+      d = malloc(sizeof(char) * ee_src->efsd_metachange_event.data_len);
+      memcpy(d, ee_src->efsd_metachange_event.data, ee_src->efsd_metachange_event.data_len);
+      ee_dst->efsd_metachange_event.data = d;      
       break;
     case EFSD_EVENT_REPLY:
       efsd_cmd_duplicate(&(ee_src->efsd_reply_event.command),
 			 &(ee_dst->efsd_reply_event.command));
+
       d = malloc(sizeof(char) * ee_src->efsd_reply_event.data_len);
       memcpy(d, ee_src->efsd_reply_event.data, ee_src->efsd_reply_event.data_len);
       ee_dst->efsd_reply_event.data = d;
@@ -194,13 +209,15 @@ efsd_cmd_cleanup(EfsdCommand *ec)
     case EFSD_CMD_MAKEDIR:
     case EFSD_CMD_STOPMON_FILE:
     case EFSD_CMD_STOPMON_DIR:
+    case EFSD_CMD_STOPMON_META:
+    case EFSD_CMD_STARTMON_DIR:
+    case EFSD_CMD_STARTMON_FILE:
+    case EFSD_CMD_STARTMON_META:
     case EFSD_CMD_STAT:
     case EFSD_CMD_LSTAT:
     case EFSD_CMD_GETFILETYPE:
     case EFSD_CMD_READLINK:
     case EFSD_CMD_LISTDIR:
-    case EFSD_CMD_STARTMON_DIR:
-    case EFSD_CMD_STARTMON_FILE:
     case EFSD_CMD_COPY:
     case EFSD_CMD_MOVE:
     case EFSD_CMD_SYMLINK:
@@ -259,8 +276,13 @@ efsd_event_cleanup(EfsdEvent *ev)
   switch (ev->type)
     {
     case EFSD_EVENT_REPLY:
-      FREE(ev->efsd_reply_event.data);
+      FREE(ev->efsd_reply_event.data);      
       efsd_cmd_cleanup(&ev->efsd_reply_event.command);
+      break;
+    case EFSD_EVENT_METADATA_CHANGE:
+      FREE(ev->efsd_metachange_event.data);
+      FREE(ev->efsd_metachange_event.key);
+      FREE(ev->efsd_metachange_event.file);
       break;
     case EFSD_EVENT_FILECHANGE:
       FREE(ev->efsd_filechange_event.file);

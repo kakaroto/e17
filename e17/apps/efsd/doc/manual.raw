@@ -160,7 +160,7 @@
           </listitem>
 	  <listitem>
 	    <para>
-              Edb, the Enlightenment Database, based on BerkeleyDB. It's available on
+              Edb, the Enlightenment Database, based on Berkeley DB. It's available on
               Enlightenment's SourceForge 
               <ulink url="http://prdownloads.sourceforge.net/enlightenment">download page</ulink>.
             </para>
@@ -381,7 +381,7 @@ if ( (id = efsd_makedir(ec, "foo/bar")) < 0)
 	  get the &efsd; connection file descriptor using
 	  <link linkend="API-efsd-get-connection-fd"><function>efsd_get_connection_fd()</function></link>,
 	  then to use <function>select()</function> on the file descriptor to
-	  find out when it becomes writeable, and then flush the queue.
+	  find out when it becomes writable, and then flush the queue.
 	</para>
       </section>
       
@@ -545,25 +545,57 @@ while (efsd_wait_event(ec, &amp;ee) >= 0)
 	 the concept.	 
 	</para>
 
-        <mediaobject>
-          <imageobject>
-            <imagedata fileref="figures/efsd-event.eps" format="eps">
-          </imageobject>
-          <imageobject>
-            <imagedata fileref="figures/efsd-event.gif" format="gif">
-          </imageobject>
-          <textobject>
-            <phrase>Image of EfsdEvent structure</phrase>
-          </textobject>
-          <caption>
-            <para>The <classname>EfsdEvent</classname> Union.</para>
-          </caption>
-        </mediaobject>
+	  <programlisting>  
++---------------------------------------------------------+
+| EfsdEvent                                               |
+|                                                         |
+|  +---------------------------------------------------+  |
+|  | EfsdEventType                               type; |  |
+|  +---------------------------------------------------+  |
+|                                                         |
+|  +---------------------------------------------------+  |
+|  | EfsdFileChangeEvent         efsd_filechange_event |  |
+|  |                                                   |  |
+|  |   EfsdEventType                             type; |  |
+|  |   EfsdCmdId                                   id; |  |
+|  |   EfsdFilechangeType                  changetype; |  |
+|  |   char *                                    file; |  |
+|  |                                                   |  |
+|  +---------------------------------------------------+  |
+|                                                         |
+|  +---------------------------------------------------+  |
+|  | EfsdMetadataChangeEvent     efsd_metachange_event |  |
+|  |                                                   |  |
+|  |   EfsdEventType                             type; |  |
+|  |   EfsdCmdId                                   id; |  |
+|  |   char *                                     key; |  |
+|  |   char *                                    file; |  |
+|  |   EfsdDatatype                          datatype; |  |
+|  |   int                                   data_len; |  |
+|  |   void *                                    data; |  |
+|  |                                                   |  |
+|  +---------------------------------------------------+  |
+|                                                         |
+|  +---------------------------------------------------+  |
+|  | EfsdReplyEvent                   efsd_reply_event |  |
+|  |                                                   |  |
+|  |   EfsdEventType                             type; |  |
+|  |   EfsdCommand                            command; |  |
+|  |   int                                  errorcode; |  |
+|  |   int                                   data_len; |  |
+|  |   void *                                    data; |  |
+|  |                                                   |  |
+|  +---------------------------------------------------+  |
+|                                                         |
++---------------------------------------------------------+
+
+	  </programlisting>  
 
 	<para>
 	The <classname>EfsdEvent.type</classname> field can be used to determine the kind of event, either
-	<constant>EFSD_EVENT_FILECHANGE</constant> or <constant>EFSD_EVENT_REPLY</constant>.
-	In the former case, <classname>EfsdEvent.efsd_filechange_event.id</classname> contains
+	<constant>EFSD_EVENT_FILECHANGE</constant>, <constant>EFSD_EVENT_METADATA_CHANGE</constant>
+	or <constant>EFSD_EVENT_REPLY</constant>.
+	In the first case, <classname>EfsdEvent.efsd_filechange_event.id</classname> contains
 	the command ID that caused this filechange event to be generated <footnote><para>
         Recall that you get the command ID whenever you issue an &efsd; command.</para></footnote>.
 	<classname>EfsdEvent.efsd_filechange_event.changetype</classname> describes the type
@@ -625,19 +657,50 @@ while (efsd_wait_event(ec, &amp;ee) >= 0)
 	    </listitem>
 	  </itemizedlist>
 
-	Finally, <classname>EfsdEvent.file</classname> contains the canonical name of
-	the file on which the event is reported.
+	Finally, <classname>EfsdEvent.efsd_filechange_event.file</classname> contains
+	the canonical name of the file on which the event is reported.
+	</para>
+
+	<para>
+	When <classname>EfsdEvent.type</classname> is <constant>EFSD_EVENT_METADATA_CHANGE</constant>,
+	you're dealing with a metadata change event. The meaning of the structure entries
+	is then as follows: <classname>EfsdEvent.efsd_metachange_event.id</classname> is
+	the command ID that was associated with the &efsd; command that requested the
+	monitoring, <classname>EfsdEvent.efsd_metachange_event.key</classname> and
+        <classname>EfsdEvent.efsd_metachange_event.file</classname> are the filename
+	that has the given metadata and the key of the metadata entry itself.
+        <classname>EfsdEvent.efsd_metachange_event.datatype</classname> is the type of the
+	metadata entry and is one of 
+
+	  <itemizedlist mark="opencircle">
+	    <listitem>
+	      <para><constant>EFSD_INT</constant>: integer data.</para>
+	    </listitem>
+	    <listitem>
+	      <para><constant>EFSD_FLOAT</constant>: floating-point data.</para>
+	    </listitem>
+	    <listitem>
+	      <para><constant>EFSD_STRING</constant>: character string data.</para>
+	    </listitem>
+	    <listitem>
+	      <para><constant>EFSD_RAW</constant>: raw binary data.</para>
+	    </listitem>
+	  </itemizedlist>
+	    
+        Finally, <classname>EfsdEvent.efsd_metachange_event.data_len</classname> and
+        <classname>EfsdEvent.efsd_metachange_event.data</classname> contain the length
+	of the changed metadata item and a pointer to the data itself.
 	</para>
 
 	<para>
 	When <classname>EfsdEvent.type</classname> is <constant>EFSD_EVENT_REPLY</constant>,
-	<classname>EfsdEvent.command</classname> contains the command that caused this
-	reply event, <classname>EfsdEvent.errorcode</classname> is the result (a value of 0
+	<classname>EfsdEvent.efsd_reply_event.command</classname> contains the command that caused this
+	reply event, <classname>EfsdEvent.efsd_reply_event.errorcode</classname> is the result (a value of 0
 	means the operation was completed successfully, otherwise the field contains the
 	value of the <function>errno</function> variable and can be processed using
 	<function>strerror</function> etc) of the command,
-	<classname>EfsdEvent.data_len</classname> is the length of any received binary data
-	in bytes, and <classname>EfsdEvent.data</classname> is a pointer to the data itself.	
+	<classname>EfsdEvent.efsd_reply_event.data_len</classname> is the length of any received binary data
+	in bytes, and <classname>EfsdEvent.efsd_reply_event.data</classname> is a pointer to the data itself.	
 	</para>
 
         </section>
@@ -784,6 +847,52 @@ while (efsd_wait_event(ec, &amp;ee) >= 0)
 	  </para>
       </section>
 
+      <section id="metamon">
+        <title id="metamon.title">Monitoring Metadata</title>
+        <para>
+      	  In some occasions it's useful to know when a file's metadata changes. Therefore,
+	  &efsd; also provides an API to monitor metadata. The monitoring does not rely
+	  on the metadata database file to change on disk, because that would be bad for
+	  at least two reasons --
+
+	  <itemizedlist mark="opencircle">
+	    <listitem>
+	      <para>
+		Metadata is not written to disk immediately. Therefore in most cases, the
+		notification about changed metadata would arrive later than necessary.
+              </para>
+	    </listitem>
+	    <listitem>
+	      <para>
+		&efsd; itself is the instance that manages setting and retrieving metadata,
+		therefore it is easier to send out metadata change notifications
+		directly when they happen, namely, when a client's metadata setting
+		request is processed.
+              </para>
+	    </listitem>
+	  </itemizedlist>
+
+	  The functions responsible for metadata monitoring are simple to use, there is
+	  <link linkend="API-efsd-start-monitor-metadata"><function>efsd_start_monitor_metadata</function></link>
+	  to start monitoring a metadata entry, and
+	  <link linkend="API-efsd-stop-monitor-metadata"><function>efsd_stop_monitor_metadata</function></link>
+	  to stop the monitoring. You can monitor metadata entries that do not exist yet.
+	  If a metadata item that is monitored gets changed by a a client, all clients
+	  monitoring that metadata entry receive &efsd; events of type 
+	  <constant>EFSD_EVENT_METADATA_CHANGE</constant> that contain details about
+	  the filename and the metadata that changed, along with the new metadata.
+	  See the section on <link linkend="eventtypes">event types</link> for details.
+
+	  <note>
+	    <title>You can use the convenience functions <function>efsd_metadata_...()</function>
+	      for accessing the data in the metadata change events. Make sure to duplicate
+	      pointers and data when you need to keep them around, because you just get
+	      pointers into the structure.
+	    <para></para>
+	  </note>
+	</para>
+      </section>
+
       <section id="filetypes">
         <title id="filetypes.title">Handling Filetypes</title>
         <para>
@@ -928,6 +1037,45 @@ while (efsd_wait_event(ec, &amp;ee) >= 0)
 	  </itemizedlist>
 
 	  </para>
+      </section>
+
+      <section>
+        <title>Convenience Functions for Accessing Data in <classname>EfsdEvents</classname></title>
+	  <para>
+	  Walking through the structs of the <classname>EfsdEvent</classname> union
+	  can be cumbersome, so there are a few helper functions that will return
+	  entries that exits in all the event types, depending on the type of the
+	  event. These are:
+
+	  <itemizedlist mark="opencircle">
+	    <listitem>
+	      <para>
+               <link linkend="API-efsd-event-filename"><function>efsd_event_filename()</function></link>
+		returns the filename in an event. For filechange events, it returns
+		the name of the file that changed, for metadata change events, it's
+		the name of the file whose metadata changed, and for reply events, it's
+		the filename that was affected by the command.
+              </para>
+	    </listitem>
+	    <listitem>
+	      <para>
+               <link linkend="API-efsd-event-id"><function>efsd_event_id()</function></link>
+		returns the command ID in an event.
+              </para>
+	    </listitem>
+	    <listitem>
+	      <para>
+               <link linkend="API-efsd-event-data"><function>efsd_event_data()</function></link>
+		returns any data items returned in an event. For metadata change events,
+		it returns a pointer to the changed metadata, for reply events, a pointer
+		to <classname>EfsdEvent.efsd_reply_event.data</classname>, and NULL otherwise.
+              </para>
+	    </listitem>
+	  </itemizedlist>
+
+	  In any case, you just get a pointer into the structure, so you don't need to
+	  free anything here.
+	</para>
       </section>
 
       <section id="options">
@@ -1182,7 +1330,7 @@ if ( (id = efsd_start_monitor_dir(ec, "/some/dir", ops)) < 0)
 	      </row>
 	      <row>
 		<entry><filename>efsd_dynarray.[ch]</filename></entry>
-		<entry>A dynamic array of charachter strings that can
+		<entry>A dynamic array of character strings that can
 		  be sorted, inserted into etc.</entry>
 	      </row>
 	      <row>
@@ -1298,6 +1446,12 @@ if ( (id = efsd_start_monitor_dir(ec, "/some/dir", ops)) < 0)
       </para>
     </section>
 
+    <section id="efsd-code-docs">
+      <title id="efsd-code-docs.title">&efsd; Code Documentation</title>
+!Iefsd/efsd_meta.h
+!Iefsd/efsd_meta_monitor.h
+    </section>
+
 <!--
 
     <section id="efsd-ipc">
@@ -1357,7 +1511,7 @@ if ( (id = efsd_start_monitor_dir(ec, "/some/dir", ops)) < 0)
     </para>
     <para>
       Besides being useful for testing &efsd; commands, &efsdsh; is also great for testing &efsd;'s
-      behaviour when handling multiple clients - just launch a bunch of &efsdsh;s and watch how
+      behavior when handling multiple clients - just launch a bunch of &efsdsh;s and watch how
       file monitoring requests are answered in a few of them etc.
     </para>
     <para>

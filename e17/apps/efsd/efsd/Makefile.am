@@ -32,6 +32,7 @@ efsd_SOURCES = 					\
 	efsd_main.h efsd_main.c 		\
 	efsd_macros.h 				\
 	efsd_meta.c efsd_meta.h 		\
+	efsd_meta_monitor.c efsd_meta_monitor.h \
 	efsd_monitor.h efsd_monitor.c 		\
 	efsd_queue.h efsd_queue.c 		\
 	efsd_list.h efsd_list.c 		\
