@@ -481,7 +481,7 @@ geist_parse_image_xml(xmlDocPtr doc, xmlNsPtr ns, xmlNodePtr cur)
       ret = geist_image_new_from_file(0, 0, filename);
       if (ret)
       {
-         GEIST_IMAGE(ret)->opacity = opacity;
+         GEIST_IMAGE(ret)->image_mods[A] = opacity;
       }
       xmlFree(filename);
    }
@@ -626,7 +626,7 @@ geist_save_image_xml(geist_image * img, xmlNodePtr parent, xmlNsPtr ns)
 {
    D_ENTER(3);
 
-   geist_xml_write_int(parent, "Opacity", img->opacity);
+   geist_xml_write_int(parent, "Opacity", img->image_mods[A]);
    xmlNewTextChild(parent, ns, "Filename", img->filename);
 
    D_RETURN_(3);

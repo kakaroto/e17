@@ -6,6 +6,12 @@
 
 #define GEIST_IMAGE(O) ((geist_image *) O)
 #define FULL_OPACITY 100
+#define FULL_COLOR 100
+
+#define R 0
+#define G 1
+#define B 2
+#define A 3
 
 struct __geist_image
 {
@@ -13,9 +19,9 @@ struct __geist_image
    char *filename;
    Imlib_Image im, orig_im;
    struct {
-      int opacity;
+      int image_mods[4];
    } last;
-   int opacity;
+   int image_mods[4];
 };
 
 geist_object *geist_image_new(void);
@@ -31,7 +37,7 @@ Imlib_Image geist_image_get_rendered_image(geist_object * obj);
 geist_object *geist_image_duplicate(geist_object * obj);
 void geist_image_resize(geist_object * obj, int x, int y);
 GtkWidget * geist_image_display_props(geist_object *obj);
-void geist_image_change_opacity(geist_object * obj, int p);
+void geist_image_change_image_mods(geist_object * obj, int p[]);
 void geist_image_apply_image_mods(geist_object * obj);
 void geist_image_update_sizemode(geist_object * obj);
 void geist_image_update_positioning(geist_object *obj);
