@@ -55,5 +55,6 @@ void geist_line_change_from_to(geist_line * line, int start_x, int start_y,
                           int end_x, int end_y);
 unsigned char
 geist_line_click_is_selection(geist_object * obj, int x, int y);
+Imlib_Updates geist_line_get_updates(geist_object * obj);
 
 #endif

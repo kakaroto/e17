@@ -37,6 +37,7 @@ geist_object_init(geist_object * obj)
    obj->check_resize_click = geist_object_int_check_resize_click;
    obj->get_resize_box_coords = geist_object_int_get_resize_box_coords;
    obj->click_is_selection = geist_object_int_click_is_selection;
+   obj->get_updates = geist_object_int_get_updates;
    obj->name = estrdup("Untitled Object");
 
    D_RETURN_(5);
@@ -777,12 +778,22 @@ geist_object_int_get_rendered_area(geist_object * obj, int *x, int *y, int *w,
    D_RETURN_(3);
 }
 
-
-
 void
 geist_object_dirty(geist_object * obj)
 {
+   D_ENTER(3);
+
+   GEIST_OBJECT_DOC(obj)->up = imlib_updates_append_updates(GEIST_OBJECT_DOC(obj)->up, obj->get_updates(obj));
+   geist_object_dirty_selection(obj);
+
+   D_RETURN_(3);
+}
+
+Imlib_Updates
+geist_object_int_get_updates(geist_object * obj)
+{
    int x, y, w, h;
+   Imlib_Updates up;
 
    D_ENTER(5);
 
@@ -790,11 +801,9 @@ geist_object_dirty(geist_object * obj)
 
    D(5, ("adding dirty rect %d,%d %dx%d\n", x, y, w, h));
 
-   GEIST_OBJECT_DOC(obj)->up =
-      imlib_update_append_rect(GEIST_OBJECT_DOC(obj)->up, x - 1, y - 1, w + 2,
+   up = imlib_update_append_rect(NULL, x - 1, y - 1, w + 2,
                                h + 2);
-   geist_object_dirty_selection(obj);
-   D_RETURN_(5);
+   D_RETURN(5, up);
 }
 
 void

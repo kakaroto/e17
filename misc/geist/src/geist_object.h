@@ -110,7 +110,7 @@ struct __geist_object
    void (*get_resize_box_coords) (geist_object * obj, int resize, int *x,
                                   int *y);
    unsigned char (*click_is_selection) (geist_object * obj, int x, int y);
-
+     Imlib_Updates(*get_updates) (geist_object * obj);
 };
 
 /* allocation functions */
@@ -194,6 +194,7 @@ unsigned char geist_object_click_is_selection(geist_object * obj, int x,
 unsigned char geist_object_int_click_is_selection(geist_object * obj, int x,
 
                                                   int y);
+Imlib_Updates geist_object_int_get_updates(geist_object * obj);
 
 #define geist_object_set_state(o, s) (o->state |=  s)
 #define geist_object_unset_state(o, s) (o->state &= ~(s))

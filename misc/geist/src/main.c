@@ -22,6 +22,7 @@ main(int argc, char *argv[])
 {
    GtkWidget *obj_win;
    geist_document *doc;
+   geist_object *obj;
 
    opt.debug_level = 5;
    D_ENTER(3);
@@ -34,8 +35,8 @@ main(int argc, char *argv[])
 
    obj_win = geist_create_object_list();
 
-   doc = geist_document_new(500,500);
-   geist_document_rename(doc,"Test Document");
+   doc = geist_document_new(500, 500);
+   geist_document_rename(doc, "Test Document");
    geist_gtk_new_document_page(doc);
 
    doc->bg_fill->r = 155;
@@ -45,10 +46,11 @@ main(int argc, char *argv[])
 
    gtk_clist_freeze(GTK_CLIST(obj_list));
 
-   geist_document_add_object(doc,
-                             geist_image_new_from_file(0, 0,
-                                                       PREFIX
-                                                       "/share/geist/images/laet.jpg"));
+   obj =
+      geist_image_new_from_file(0, 0, PREFIX "/share/geist/images/laet.jpg");
+   geist_image_change_opacity(obj, 60);
+   if(obj)
+       geist_document_add_object(doc,obj);
    geist_document_add_object(doc,
                              geist_text_new_with_text(0, 405, "20thcent", 16,
                                                       "Some pr0n - I have to.",
@@ -96,11 +98,11 @@ main(int argc, char *argv[])
                              geist_rect_new_of_size(25, 175, 200, 300, 50,
                                                     255, 255, 0));
    geist_document_add_object(doc,
-                             geist_line_new_from_to(5, 5, 200, 200, 255,
-                                                    0, 0, 0));
+                             geist_line_new_from_to(5, 5, 200, 200, 255, 0, 0,
+                                                    0));
    geist_document_add_object(doc,
-                             geist_line_new_from_to(5, 200, 200, 5, 255,
-                                                    0, 0, 0));
+                             geist_line_new_from_to(5, 200, 200, 5, 255, 0, 0,
+                                                    0));
 
    geist_document_render_full(doc, 1);
 
