@@ -107,75 +107,39 @@ AC_ARG_ENABLE(xcf,
  fi
 ])
 
-AC_ARG_WITH(imlib2-config,
-[  --with-imlib2-config=IMLIB2_CONFIG    use imlib2-config specified ],
-[
-  PROG_CONFIG=$withval;
-  echo "using "$PROG_CONFIG" for imlib2-config";
-],[
- PROG="imlib2-config";
- AC_PATH_PROG(PROG_CONFIG, $PROG, "", $PATH)
+AC_ARG_WITH(imlib2-config, [  --with-imlib2-config=IMLIB2_CONFIG    use imlib2-config specified ],
+[ IMLIB2_CONFIG=$withval;
+  echo "using "$IMLIB2_CONFIG" for imlib2-config"; ],
+[ if test -z "$IMLIB2_CONFIG"; then
+    AC_PATH_PROG(IMLIB2_CONFIG, "imlib2-config", "", $PATH)
+  fi
 ])
-if test -n "$IMLIB2_CONFIG"; then
-  PROG_CONFIG=$IMLIB2_CONFIG;
-fi
-if test -z "$PROG_CONFIG"; then
-  echo $PROG " is not in your \$PATH. Please ensure it is.";
-  echo "You may need to install the library and/or development packages";
-  echo "that contain this configure-script.";
-  echo "FATAL ERROR. ABORT.";
-  exit -1;
-fi
-my_includes=`$PROG_CONFIG --cflags`
+my_includes=`$IMLIB2_CONFIG --cflags`
+
+AC_ARG_WITH(edb-config, [  --with-edb-config=EDB_CONFIG    use edb-config specified ],
+[ EDB_CONFIG=$withval;
+  echo "using "$EDB_CONFIG" for edb-config"; ],
+[ if test -z "$EDB_CONFIG"; then
+    AC_PATH_PROG(EDB_CONFIG, "edb-config", "", $PATH)
+  fi
+])
+EDB_CFLAGS=`$EDB_CONFIG --cflags`
+EDB_LIBS=`$EDB_CONFIG --libs`
+
+
+AC_ARG_WITH(eet-config, [  --with-eet-config=EET_CONFIG    use eet-config specified ],
+[ EET_CONFIG=$withval;
+  echo "using "$EET_CONFIG" for eet-config"; ],
+[ if test -z "$EET_CONFIG"; then
+    AC_PATH_PROG(EET_CONFIG, "eet-config", "", $PATH)
+  fi
+])
+EET_CFLAGS=`$EET_CONFIG --cflags`
+EET_LIBS=`$EET_CONFIG --libs`
+
 AC_SUBST(my_includes)
-
-
-AC_ARG_WITH(edb-config,
-[  --with-edb-config=EDB_CONFIG    use edb-config specified ],
-[
-  PROG_CONFIG=$withval;
-  echo "using "$PROG_CONFIG" for edb-config";
-],[
- PROG="edb-config";
- AC_PATH_PROG(PROG_CONFIG, $PROG, "", $PATH)
-])
-if test -n "$EDB_CONFIG"; then
-  PROG_CONFIG=$EDB_CONFIG;
-fi
-if test -z "$PROG_CONFIG"; then
-  echo $PROG " is not in your \$PATH. Please ensure it is.";
-  echo "You may need to install the library and/or development packages";
-  echo "that contain this configure-script.";
-  echo "FATAL ERROR. ABORT.";
-  exit -1;
-fi
-EDB_CFLAGS=`$PROG_CONFIG --cflags`
-EDB_LIBS=`$PROG_CONFIG --libs`
 AC_SUBST(EDB_CFLAGS)
 AC_SUBST(EDB_LIBS)
-
-
-AC_ARG_WITH(eet-config,
-[  --with-eet-config=EET_CONFIG    use eet-config specified ],
-[
-  PROG_CONFIG=$withval;
-  echo "using "$PROG_CONFIG" for eet-config";
-],[
- PROG="eet-config";
- AC_PATH_PROG(PROG_CONFIG, $PROG, "", $PATH)
-])
-if test -n "$EET_CONFIG"; then
-  PROG_CONFIG=$EET_CONFIG;
-fi
-if test -z "$PROG_CONFIG"; then
-  echo $PROG " is not in your \$PATH. Please ensure it is.";
-  echo "You may need to install the library and/or development packages";
-  echo "that contain this configure-script.";
-  echo "FATAL ERROR. ABORT.";
-  exit -1;
-fi
-EET_CFLAGS=`$PROG_CONFIG --cflags`
-EET_LIBS=`$PROG_CONFIG --libs`
 AC_SUBST(EET_CFLAGS)
 AC_SUBST(EET_LIBS)
 
