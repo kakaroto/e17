@@ -41,6 +41,9 @@ s/\n{3,}/\n\n/g;
 
 print;
 
+print "\n\n\n\n=head1 FOR MORE INFORMATION\n\n\n";
+print "Please see our web site at http://www.enlightenment.org\n";
+
 sub undermunge {
     local $_ = shift;
     s/_/ /g;
