@@ -1,8 +1,23 @@
-This is the basis for the new configuration engine.
-There are a couple of minor portability issues here that I have to take care
-of since the fat table's binaryness has issues currently.
+Welcome to eConfig 0.0.1 - this is a library that is supposed to abstractify
+out the configuration interface from the application in a major way.  You give
+it paths to save/load data from, and you tell it to save and load data.  It
+should take care of finding the proper path to get the data from, finding the
+correct data, sorting the searchpath order, etc.  This library is originally
+intended for the configuration system for 0.17 and beyond of enlightenment.
+You should be able to multiple apps running off the same configuration paths
+and have eConfig also take care of all the locking.  Also it should mark data
+as dirty and reload it from disk as soon as someone modifies the data on the
+disk you have access to.  We really had some issues with the old configuration
+system that weren't going to be solved by any trivial fixes to the old system,
+so as always when the code outlived its usefulness we clobbered it and started
+over.  
 
+to compile:
+./autogen.sh (with any parameters you need to use)
+make
+make test (to run the test applications)
 
-I'm going to play some 0.17 games for a while in here.
+Please watch the TODO list if you want to help out - patches are always
+accepted. 
 
 		--Mandrake
