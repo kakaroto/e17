@@ -2601,3 +2601,12 @@ Fri Mar 26 23:07:27 CET 2004
 Use new static stacking list whereever possible.
 Use unwrapped libc malloc/realloc/free by default.
 Fix bottom border when shaded, remove redundant window stacking.
+
+-------------------------------------------------------------------------------
+
+Wed Mar 31 21:58:20 CEST 2004
+(Kim)
+
+Simplify alert (GSOD) code. Less intensive use of macros.
+Set DISPLAY env var early. Fixes a problem with multihead and early alerts.
+Various trivial fixups.
