@@ -3363,3 +3363,14 @@ Sat Oct  9 20:35:22 PDT 1999
 removing Ganymede and adding BlueSteel for release (sorry Christian - don't
 have enough time to fix all of ganymede myself for epplets - we'll put it back
 in CVS and remove BlueSteel later)
+
+-------------------------------------------------------------------------------
+
+Sun Oct 10 00:37:18 PDT 1999
+(Mandrake)
+
+since I've been mucking with ShinyMetal I thought I would put up a changelog
+entry for it.  - I've redone a lot of this theme from the ground up.  it still
+has a ways to go - a little more eterm autotheme tinkering as well as redoing
+the epplet config (which I just copied straight from brushed metal)
+
