@@ -68,6 +68,31 @@ do
 	##  echo "**Warning**: No such directory \`$k'.  Ignored."
         fi
       done
+
+      #if grep "^AM_GNOME_GETTEXT" $CONFIGURE >/dev/null; then
+	#echo "Creating $dr/aclocal.m4 ..."
+	#test -r $dr/aclocal.m4 || touch $dr/aclocal.m4
+	#echo "Running gettextize...  Ignore non-fatal messages."
+	#./setup-gettext
+	#echo "Making $dr/aclocal.m4 writable ..."
+	#test -r $dr/aclocal.m4 && chmod u+w $dr/aclocal.m4
+      #fi
+
+      #intltool
+      (grep "^AC_PROG_INTLTOOL" $CONFIGURE >/dev/null) && {
+      (intltoolize --version) < /dev/null > /dev/null 2>&1 || {
+       echo
+       echo "**Error**: You must have \`intltoolize' installed" \
+            "to compile $PKG_NAME."
+       DIE=1
+       }
+      }
+       
+      if grep "^AC_PROG_INTLTOOL" $CONFIGURE >/dev/null; then
+       echo "Running intltoolize..."
+        intltoolize --copy --force --automake
+      fi
+       
       if grep "^AM_GNU_GETTEXT" $CONFIGURE >/dev/null; then
 	if grep "sed.*POTFILES" $CONFIGURE >/dev/null; then
 	  : do nothing -- we still have an old unmodified $CONFIGURE
@@ -80,25 +105,7 @@ do
 	  test -r $dr/aclocal.m4 && chmod u+w $dr/aclocal.m4
         fi
       fi
-      if grep "^AM_GNOME_GETTEXT" $CONFIGURE >/dev/null; then
-	echo "Creating $dr/aclocal.m4 ..."
-	test -r $dr/aclocal.m4 || touch $dr/aclocal.m4
-	echo "Running gettextize...  Ignore non-fatal messages."
-	./setup-gettext
-	echo "Making $dr/aclocal.m4 writable ..."
-	test -r $dr/aclocal.m4 && chmod u+w $dr/aclocal.m4
-      fi
-
-      #intltool
-      (grep "^AC_PROG_INTLTOOL" $CONFIGURE >/dev/null) && {
-      (intltoolize --version) < /dev/null > /dev/null 2>&1 || {
-       echo
-       echo "**Error**: You must have \`intltoolize' installed" \
-            "to compile $PKG_NAME."
-       DIE=1
-       }
-      }
-        
+       
       (grep "^AM_PROG_LIBTOOL" $CONFIGURE >/dev/null) && {
         (libtool --version) < /dev/null > /dev/null 2>&1 || {
           echo
@@ -107,12 +114,6 @@ do
           DIE=1
         }
       }
-
-
-      if grep "^AC_PROG_INTLTOOL" $CONFIGURE >/dev/null; then
-       echo "Running intltoolize..."
-        intltoolize --copy --force --automake
-      fi
 
       if grep "^AM_PROG_LIBTOOL" $CONFIGURE >/dev/null; then
         if test -z "$NO_LIBTOOLIZE" ; then
