@@ -542,11 +542,11 @@ gboolean obj_del_cb(GtkWidget * widget, gpointer * data)
    for (l = list; l; l = l->next)
    {
       obj = GEIST_OBJECT(l->data);
-      geist_document_remove_object(doc, obj);
-      geist_object_free(obj);
       gtk_clist_remove(GTK_CLIST(obj_list),
                        gtk_clist_find_row_from_data(GTK_CLIST(obj_list),
                                                     obj));
+      geist_document_remove_object(doc, obj);
+      geist_object_free(obj);
    }
    geist_list_free(list);
    geist_document_render_updates(doc);
