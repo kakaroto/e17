@@ -133,6 +133,11 @@ menus_init(void)
 	gtk_signal_connect_object(GTK_OBJECT(item), "activate",
 									  GTK_SIGNAL_FUNC(browser_show), (gpointer) NULL);
 	gtk_widget_show(item);
+	item = gtk_menu_item_new_with_label("WebCam Viewer");
+	gtk_menu_append(GTK_MENU(menu), item);
+	gtk_signal_connect_object(GTK_OBJECT(item), "activate",
+														GTK_SIGNAL_FUNC(webcam_show), (gpointer) NULL);
+	gtk_widget_show(item);
 	item = gtk_menu_item_new_with_label("View");
 	gtk_widget_show(item);
 	gtk_menu_item_set_submenu(GTK_MENU_ITEM(item), menu);

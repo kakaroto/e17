@@ -36,8 +36,10 @@ ee2_init(int argc, char **argv)
   MainWindow = gtk_window_new(GTK_WINDOW_TOPLEVEL);
   gtk_window_set_policy(GTK_WINDOW(MainWindow), 1, 1, 1);
   gtk_window_set_title(GTK_WINDOW(MainWindow), "Electric Eyes 2");
-  gtk_signal_connect(GTK_OBJECT(MainWindow), "delete_event", GTK_SIGNAL_FUNC(CloseWindow), NULL);
-  gtk_signal_connect(GTK_OBJECT(MainWindow), "destroy", GTK_SIGNAL_FUNC(CloseWindow), NULL);
+  gtk_signal_connect(GTK_OBJECT(MainWindow), "delete_event",
+										 GTK_SIGNAL_FUNC(CloseWindow), NULL);
+  gtk_signal_connect(GTK_OBJECT(MainWindow), "destroy",
+										 GTK_SIGNAL_FUNC(CloseWindow), NULL);
 
   /* The event box that contains the image's drawing area */
   EventBox = gtk_event_box_new();
@@ -66,6 +68,7 @@ ee2_init(int argc, char **argv)
 
   about_init();
   browser_init();
+	webcam_init();
   menus_init();
 
   if (argc == 2) {
@@ -165,6 +168,7 @@ FileOpen(GtkWidget * widget, GtkFileSelection * fs)
   imagefile = gtk_file_selection_get_filename(GTK_FILE_SELECTION(fs));
   sprintf(currentimage, "%s", imagefile);
   gtk_widget_hide(FileSel);
+	AddList(imagefile);
   LoadImage(imagefile);
   DrawImage(im, 0, 0);
 }

@@ -43,6 +43,11 @@ void about_hide(void);
 void browser_init(void);
 void browser_show(void);
 void browser_hide(void);
+
+void webcam_init(void);
+void webcam_show(void);
+void webcam_hide(void);
+
 void AddList(char *foo);
 
 void menus_init(void);
