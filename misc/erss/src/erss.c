@@ -1,7 +1,6 @@
 #include "erss.h"
 #include "parse.h"
 #include "parse_config.h"
-#include "tooltip.h"
 
 Evas *evas = NULL;
 Ecore_Evas *ee = NULL;
@@ -451,7 +450,6 @@ int main (int argc, char * const argv[])
 	int got_rc_file = FALSE;
 	char config_file[PATH_MAX];
 	char theme_file[PATH_MAX];
-   XWindowChanges xwc;
 
 	struct stat statbuf;
 

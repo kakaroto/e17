@@ -83,14 +83,14 @@ void erss_parse_story (xmlDocPtr doc, xmlNodePtr cur)
 				str = xmlNodeListGetString(doc, cur->xmlChildrenNode, 1);
 
 				tt = erss_tooltip_new (str);
-		
+
 				if (item->obj) {
 					evas_object_event_callback_add (item->obj,
 							EVAS_CALLBACK_MOUSE_IN, erss_tooltip_mouse_in, tt);
 					evas_object_event_callback_add (item->obj,
 							EVAS_CALLBACK_MOUSE_OUT, erss_tooltip_mouse_out, tt);
 				}
-				
+
 				xmlFree (str);
 			}
 		}

@@ -3,6 +3,32 @@
 #include "parse_config.h"
 #include "tooltip.h"
 
+char *erss_tooltip_clean (char *description) {
+	/* remove potential tags. not using libXML here, contents may not
+	   be well-formed...  */
+
+	char *p;
+
+	if((description==NULL)||(*description=='\0')||((description=strdup(description))==NULL))
+		return NULL;
+
+	p=description;
+	while(*p) {
+	  if(*p=='<') {
+	    char *p2=p;
+	    do {
+	      p2++;
+	    } while(*p2&&(*p2!='>'));
+	    if(*p2)
+	      memmove(p,p2+1,strlen(p2));
+	    else
+	      *p='\0'; }
+	  else
+	    p++; }
+
+	return description;
+}
+
 void erss_window_move_tooltip (Ecore_Evas * ee)
 {
 	int x, y, w, h;
@@ -19,6 +45,10 @@ Erss_Tooltip *erss_tooltip_new (char *description)
 	Erss_Tooltip *tt;
 	int x, y, w, h;
 	double ew, eh;
+	char *text = erss_tooltip_clean(description);
+
+	if(text == NULL)
+		return NULL;
 	
 	tt = malloc (sizeof (Erss_Tooltip));
 	memset (tt, 0, sizeof (Erss_Tooltip));
@@ -59,7 +89,7 @@ Erss_Tooltip *erss_tooltip_new (char *description)
 	etox_set_word_wrap(tt->etox, 1);
 	etox_set_alpha(tt->etox, 255);
 	evas_object_layer_set(tt->etox, 1000);
-	etox_set_text (tt->etox, description);
+	etox_set_text (tt->etox, text);
 	evas_object_show (tt->etox);
 	evas_object_geometry_get(tt->etox, NULL, NULL, &ew, &eh);
 
@@ -74,6 +104,8 @@ Erss_Tooltip *erss_tooltip_new (char *description)
 	ecore_evas_callback_move_set (tt->ee, erss_window_move_tooltip);
 	ecore_evas_callback_resize_set(tt->ee, erss_window_resize);
 	ecore_evas_resize(tt->ee, ew + 10, eh + 10);
+
+	free(text);
 
 	return tt;
 }
