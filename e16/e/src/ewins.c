@@ -1375,6 +1375,13 @@ FloatEwinAt(EWin * ewin, int x, int y)
 
    if (EoIsFloating(ewin))
      {
+	/* Reparenting to root moves the desktop-relative coordinates */
+	dx = DeskGetX(EoGetDesk(ewin));
+	dy = DeskGetY(EoGetDesk(ewin));
+	ewin->shape_x += dx;
+	ewin->shape_y += dy;
+	ewin->req_x += dx;
+	ewin->req_y += dy;
 	EoSetFloating(ewin, 2);
      }
    else

@@ -882,7 +882,7 @@ DrawEwinShape(EWin * ewin, int md, int x, int y, int w, int h, char firstlast)
 {
    static GC           gc = 0;
    XGCValues           gcv;
-   int                 x1, y1, w1, h1, i, j, pw, ph;
+   int                 x1, y1, w1, h1, i, j, pw, ph, dx, dy;
    static Pixmap       b1 = 0, b2 = 0, b3 = 0;
    static Font         font = 0;
    int                 bpp;
@@ -957,14 +957,22 @@ DrawEwinShape(EWin * ewin, int md, int x, int y, int w, int h, char firstlast)
 	if (!b3)
 	   b3 = XCreateBitmapFromData(disp, VRoot.win, gray3_bits, gray3_width,
 				      gray3_height);
-	x1 = ewin->shape_x;
-	y1 = ewin->shape_y;
+
+	dx = DeskGetX(EoGetDesk(ewin));
+	dy = DeskGetY(EoGetDesk(ewin));
+	x1 = ewin->shape_x + dx;
+	y1 = ewin->shape_y + dy;
+
 	w1 = EoGetW(ewin) - (ewin->border->border.left +
 			     ewin->border->border.right);
 	h1 = EoGetH(ewin) - (ewin->border->border.top +
 			     ewin->border->border.bottom);
+
 	ewin->shape_x = x;
 	ewin->shape_y = y;
+	x += dx;
+	y += dy;
+
 	if ((w != ewin->client.w) || (h != ewin->client.h))
 	  {
 	     ewin->client.w = w;
@@ -1207,7 +1215,7 @@ DrawEwinShape(EWin * ewin, int md, int x, int y, int w, int h, char firstlast)
 	       }
 	     else if (firstlast == 1)
 	       {
-		  int                 dx, dy, wt, ht;
+		  int                 wt, ht;
 		  int                 adx, ady;
 
 		  dx = x - x1;

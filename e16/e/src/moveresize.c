@@ -31,7 +31,7 @@ int
 ActionMoveStart(EWin * ewin, int grab, char constrained, int nogroup)
 {
    EWin              **gwins;
-   int                 i, num;
+   int                 i, num, dx, dy;
 
    if (!ewin || ewin->fixedpos)
       return 0;
@@ -58,10 +58,13 @@ ActionMoveStart(EWin * ewin, int grab, char constrained, int nogroup)
 
    Mode.mode = MODE_MOVE_PENDING;
    Mode.constrained = constrained;
-   Mode.start_x = Mode.x;
-   Mode.start_y = Mode.y;
-   Mode.win_x = EoGetX(ewin);
-   Mode.win_y = EoGetY(ewin);
+
+   dx = DeskGetX(EoGetDesk(ewin));
+   dy = DeskGetY(EoGetDesk(ewin));
+   Mode.start_x = Mode.x + dx;
+   Mode.start_y = Mode.y + dy;
+   Mode.win_x = EoGetX(ewin) + dx;
+   Mode.win_y = EoGetY(ewin) + dy;
    Mode.win_w = ewin->client.w;
    Mode.win_h = ewin->client.h;
 
@@ -70,9 +73,6 @@ ActionMoveStart(EWin * ewin, int grab, char constrained, int nogroup)
    for (i = 0; i < num; i++)
      {
 	FloatEwinAt(gwins[i], EoGetX(gwins[i]), EoGetY(gwins[i]));
-	/* This shouldn't be necessary ... will figure it out some other time */
-	gwins[i]->shape_x = EoGetX(gwins[i]);
-	gwins[i]->shape_y = EoGetY(gwins[i]);
      }
    Efree(gwins);
    move_swapcoord_x = EoGetX(ewin);
@@ -514,7 +514,7 @@ ActionMoveHandleMotion(void)
 	ewin1 = gwins[i];
 
 	/* if its opaque move mode check to see if we have to float */
-	/* the window aboe all desktops (reparent to root) */
+	/* the window above all desktops (reparent to root) */
 	if (Conf.movres.mode_move == 0)
 	   DetermineEwinFloat(ewin1, ndx, ndy);
 
