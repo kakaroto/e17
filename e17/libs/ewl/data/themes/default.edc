@@ -23,10 +23,12 @@ data {
 	item, "/button/label/style" "none";
 	item, "/button/stock_apply/group" "stock_apply";
 	item, "/button/stock_cancel/group" "stock_cancel";
+	item, "/button/stock_fastforward/group" "stock_fastforward";
 	item, "/button/stock_ok/group" "stock_ok";
 	item, "/button/stock_open/group" "stock_open";
 	item, "/button/stock_pause/group" "stock_pause";
 	item, "/button/stock_play/group" "stock_play";
+	item, "/button/stock_rewind/group" "stock_rewind";
 	item, "/button/stock_save/group" "stock_save";
 	item, "/button/stock_stop/group" "stock_stop";
 	item, "/button/text/font" "Vera";
