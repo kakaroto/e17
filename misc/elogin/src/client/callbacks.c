@@ -57,6 +57,7 @@ static void
 elogin_start_x(E_Login_Auth e)
 {
    char buf[PATH_MAX];
+   int tmp;
 
    e_login_auth_setup_environment(e);
 #if X_TESTING
@@ -67,12 +68,18 @@ elogin_start_x(E_Login_Auth e)
 
    ecore_sync();
    XCloseDisplay(ecore_display_get());
-   if (initgroups(e->pam.pw->pw_name, e->pam.pw->pw_gid))
-      fprintf(stderr, "Unable to initialize group\n");
-   if (setgid(e->pam.pw->pw_gid))
+   /* Tell PAM that session has begun */
+   if ((tmp = pam_open_session(e->pam.handle, 0)) != PAM_SUCCESS)
+   {
+      fprintf(stderr, "Unable to open PAM session. Aborting.\n");
+      exit(1);
+   }
+   if ((setgid(e->pam.pw->pw_gid)) < 0)
       fprintf(stderr, "Unable to set group id\n");
-   if (setuid(e->pam.pw->pw_uid))
+   if ((setuid(e->pam.pw->pw_uid)) < 0)
       fprintf(stderr, "Unable to set user id\n");
+   if ((initgroups(e->pam.pw->pw_name, e->pam.pw->pw_gid) < 0))
+      fprintf(stderr, "Unable to initialize group\n");
 
    e_login_auth_free(e);
    execl("/bin/sh", "/bin/sh", "-c", buf, NULL);

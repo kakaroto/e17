@@ -156,7 +156,7 @@ e_key_down(Ecore_Event * ev)
       {
          if (typebuffer.index >= USER_PASS_MAX)
             return;
-         typebuffer.buf[typebuffer.index++] = *e->key;
+         typebuffer.buf[typebuffer.index++] = *e->compose;
       }
    }
    else

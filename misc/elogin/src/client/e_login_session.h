@@ -31,7 +31,7 @@ struct _E_Login_Session
 
 typedef struct _E_Login_Session *E_Login_Session;
 
-E_Login_Session e_login_session_new();
+E_Login_Session e_login_session_new(void);
 void e_login_session_free(E_Login_Session e);
 
 void e_login_session_init(E_Login_Session e);
@@ -41,5 +41,4 @@ void e_login_session_reset_user(E_Login_Session e);
 
 #define X_TESTING 0             /* set to 1 if you wanna run inside a window
                                    in X */
-
 #endif

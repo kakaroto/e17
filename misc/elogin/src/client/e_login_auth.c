@@ -1,13 +1,77 @@
 #include"e_login_auth.h"
 
+
+static struct passwd *
+_struct_passwd_dup(struct passwd *pwent)
+{
+   struct passwd *result = NULL;
+
+   if (pwent)
+   {
+
+      result = (struct passwd *) malloc(sizeof(struct passwd));
+      memset(result, 0, sizeof(struct passwd));
+      if (pwent->pw_name)
+         result->pw_name = strdup(pwent->pw_name);
+      if (pwent->pw_passwd)
+         result->pw_passwd = strdup(pwent->pw_passwd);
+      if (pwent->pw_gecos)
+         result->pw_gecos = strdup(pwent->pw_gecos);
+      if (pwent->pw_shell)
+         result->pw_shell = strdup(pwent->pw_shell);
+      if (pwent->pw_dir)
+         result->pw_dir = strdup(pwent->pw_dir);
+
+      result->pw_uid = pwent->pw_uid;
+      result->pw_gid = pwent->pw_gid;
+
+   }
+
+   return (result);
+}
+
+static void *
+_struct_passwd_free(struct passwd *pwent)
+{
+   if (pwent)
+   {
+      if (pwent->pw_name)
+         free(pwent->pw_name);
+      if (pwent->pw_passwd)
+         free(pwent->pw_passwd);
+      if (pwent->pw_gecos)
+         free(pwent->pw_gecos);
+      if (pwent->pw_shell)
+         free(pwent->pw_shell);
+      if (pwent->pw_dir)
+         free(pwent->pw_dir);
+      free(pwent);
+   }
+   return (NULL);
+}
+
+static char *
+_e_login_auth_get_running_username(void)
+{
+   char *result;
+   struct passwd *pwent = NULL;
+
+   pwent = getpwuid(getuid());
+   result = strdup(pwent->pw_name);
+   return (result);
+}
+
+/* PAM Conversation function */
 static int
 _e_login_auth_pam_conv(int num_msg, const struct pam_message **msg,
                        struct pam_response **resp, void *appdata_ptr)
 {
    int replies = 0;
+   E_Login_Auth e = appdata_ptr;
    struct pam_response *reply = NULL;
 
-   reply = (struct pam_response *) malloc(sizeof(struct pam_response));
+   reply =
+      (struct pam_response *) malloc(sizeof(struct pam_response) * num_msg);
 
    if (!reply)
       return PAM_CONV_ERR;
@@ -18,16 +82,17 @@ _e_login_auth_pam_conv(int num_msg, const struct pam_message **msg,
       {
         case PAM_PROMPT_ECHO_ON:
            reply[replies].resp_retcode = PAM_SUCCESS;
-           reply[replies].resp = (char *) strdup(appdata_ptr);
+           reply[replies].resp = (char *) strdup(e->user);
            break;
         case PAM_PROMPT_ECHO_OFF:
            reply[replies].resp_retcode = PAM_SUCCESS;
-           reply[replies].resp = (char *) strdup(appdata_ptr);
+           reply[replies].resp = (char *) strdup(e->pass);
            break;
         case PAM_ERROR_MSG:
         case PAM_TEXT_INFO:
            reply[replies].resp_retcode = PAM_SUCCESS;
            reply[replies].resp = NULL;
+           printf("PAM: %s\n", msg[replies]->msg);
            break;
         default:
            free(reply);
@@ -49,7 +114,6 @@ e_login_auth_new(void)
 
    e = (E_Login_Auth) malloc(sizeof(struct _E_Login_Auth));
    memset(e, 0, sizeof(struct _E_Login_Auth));
-   e->pam.conv.conv = &_e_login_auth_pam_conv;
    e->env = (char **) malloc(sizeof(char *) * 2);
    e->env[0] = 0;
    return (e);
@@ -67,9 +131,68 @@ e_login_auth_free(E_Login_Auth e)
       pam_end(e->pam.handle, PAM_SUCCESS);
       e->pam.handle = NULL;
    }
-   if (e->pam.pw)
-      e->pam.pw = NULL;
+   e->pam.pw = _struct_passwd_free(e->pam.pw);
+   memset(e->pass, 0, sizeof(e->pass));
    free(e);
+}
+
+/*
+ * e_login_auth_initialize - initialize PAM session, structures etc.
+ * This function will call pam_start() and set the conversation
+ * function and others.
+ */
+int
+e_login_auth_initialize(E_Login_Auth e)
+{
+   int result = 0;
+   int pamerr;
+
+   /* Initialize pam_conv */
+   e->pam.conv.conv = _e_login_auth_pam_conv;
+   e->pam.conv.appdata_ptr = e;
+   e->pam.handle = NULL;
+
+   if ((pamerr =
+        pam_start("elogin", e->user, &(e->pam.conv),
+                  &(e->pam.handle))) != PAM_SUCCESS)
+   {
+      fprintf(stderr, "PAM: %s\n", pam_strerror(e->pam.handle, pamerr));
+      result = ERROR_NO_PAM_INIT;
+      return result;
+   }
+
+   /* Set TTY to current DISPLAY variable */
+   if ((pamerr =
+        pam_set_item(e->pam.handle, PAM_TTY,
+                     getenv("DISPLAY"))) != PAM_SUCCESS)
+   {
+      fprintf(stderr, "Error: Unable to configure PAM_TTY.\n");
+      result = ERROR_PAM_SET;
+      return result;
+   }
+
+   /* Set requesting user */
+   if ((pamerr =
+        pam_set_item(e->pam.handle, PAM_RUSER,
+                     _e_login_auth_get_running_username())) != PAM_SUCCESS)
+   {
+      fprintf(stderr, "Error: Unable to configure PAM_RUSER.\n");
+      result = ERROR_PAM_SET;
+      return result;
+   }
+
+   /* Set hostname of requesting user */
+   /* This is set to localhost statically for now. Should be changed in the
+      future if we include XDMCP support. */
+   if ((pamerr =
+        pam_set_item(e->pam.handle, PAM_RHOST, "localhost")) != PAM_SUCCESS)
+   {
+      fprintf(stderr, "Error: Unable to configure PAM_RHOST.\n");
+      result = ERROR_PAM_SET;
+      return result;
+   }
+
+   return E_SUCCESS;
 }
 
 /*
@@ -83,26 +206,47 @@ e_login_auth_cmp(E_Login_Auth e)
    int result = 0;
    int pamerr;
 
-   if (e->pam.conv.appdata_ptr)
-      free(e->pam.conv.appdata_ptr);
-   e->pam.conv.appdata_ptr = (char *) strdup(e->pass);
-
-   if ((pamerr =
-        pam_start("elogin", e->user, &e->pam.conv,
-                  &e->pam.handle)) != PAM_SUCCESS)
+   if (e_login_auth_initialize(e) != E_SUCCESS)
    {
-      fprintf(stderr,
-              "Can not find /etc/pam.d/elogin !! Did you do a make install ?\n");
-      result = ERROR_NO_PAM_INIT;
+      return ERROR_NO_PAM_INIT;
    }
+
    if ((pamerr = pam_authenticate(e->pam.handle, 0)) == PAM_SUCCESS)
    {
-      result = AUTH_SUCCESS;
+      pamerr = pam_acct_mgmt(e->pam.handle, 0);
+      if (pamerr != PAM_SUCCESS)
+         result = ERROR_NO_PERMS;
+      else
+      {
+         pamerr = pam_setcred(e->pam.handle, 0);
+         if (pamerr == PAM_SUCCESS)
+         {
+            result = AUTH_SUCCESS;
+         }
+         else
+         {
+            fprintf(stderr, "PAM: %s\n", pam_strerror(e->pam.handle, pamerr));
+            switch (pamerr)
+            {
+              case PAM_CRED_UNAVAIL:
+                 result = ERROR_BAD_CRED;
+                 break;
+              case PAM_CRED_EXPIRED:
+                 result = ERROR_CRED_EXPIRED;
+                 break;
+              default:
+                 result = ERROR_BAD_CRED;
+                 break;
+            }
+         }
+      }
    }
    else
    {
       result = ERROR_BAD_PASS;
+      return result;
    }
+   printf("PAM: %s\n", pam_strerror(e->pam.handle, pamerr));	// debug
    return (result);
 }
 
@@ -128,18 +272,18 @@ e_login_auth_set_user(E_Login_Auth e, char *str)
 
    if (str)
    {
+      struct passwd *pwent;
+
+      memset(e->pass, 0, sizeof(e->pass));
       snprintf(e->user, PATH_MAX, "%s", str);
-      if (e->pam.pw)
+      e->pam.pw = _struct_passwd_free(e->pam.pw);
+      if ((pwent = getpwnam(e->user)))
       {
-         free(e->pam.pw);
-         e->pam.pw = NULL;
+         e->pam.pw = _struct_passwd_dup(pwent);
+         result = 0;
       }
-      if ((e->pam.pw = getpwnam(e->user)))
-         endpwent();
       else
-      {
          result = 1;
-      }
    }
    return (result);
 }
@@ -154,7 +298,7 @@ e_login_auth_setup_environment(E_Login_Auth e)
 {
    extern char **environ;
    int size;
-   char *mail;
+   char *mail, buf[PATH_MAX];
 
    environ = e->env;
    setenv("TERM", "vt100", 0);  // TERM=linux?
@@ -162,7 +306,8 @@ e_login_auth_setup_environment(E_Login_Auth e)
    setenv("SHELL", e->pam.pw->pw_shell, 1);
    setenv("USER", e->pam.pw->pw_name, 1);
    setenv("LOGNAME", e->pam.pw->pw_name, 1);
-   setenv("DISPLAY", ":0.0", 1);
+   snprintf(buf, PATH_MAX, "%s", getenv("DISPLAY"));
+   setenv("DISPLAY", buf, 1);
 
    size = (strlen(_PATH_MAILDIR) + strlen(e->pam.pw->pw_name) + 2);
    mail = (char *) malloc(sizeof(char) * size);
@@ -183,7 +328,7 @@ main(int argc, char *argv[])
    int i;
 
    if (argc < 3)
-      exit();
+      exit(1);
 
 #if LOOPTEST
    for (i = 0; i < 60; i++)
