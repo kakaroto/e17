@@ -3,3 +3,4 @@ Makefile
 .deps
 .libs
 ewl_test
+ewl_embed_test
