@@ -56,9 +56,14 @@
 
 #include "esd.h"
 
+/* BSDI has this functionality, but not define :() */
+#if defined(RTLD_NEXT)
 #define REAL_LIBC RTLD_NEXT
+#else
+#define REAL_LIBC ((void *) -1L)
+#endif
 
-#ifdef __FreeBSD__
+#if defined(__FreeBSD__) || defined(__bsdi__)
 typedef unsigned long request_t;
 #else
 typedef int request_t;
@@ -145,7 +150,8 @@ mix_init (int *esd, int *player)
     
   if (*player < 0)
     {
-      if (all_info = esd_get_all_info (*esd))
+      all_info = esd_get_all_info (*esd);
+      if (all_info)
 	{
 	  for (player_info = all_info->player_list; player_info;
 	       player_info = player_info->next)
@@ -317,10 +323,12 @@ mixctl (int fd, request_t request, void *argp)
       if (player > 0)
 	{
 	  esd_info_t *all_info;
-	  esd_player_info_t *player_info;
 
-	  if (all_info = esd_get_all_info (esd))
+	  all_info  = esd_get_all_info (esd);
+	  if (all_info)
 	    {
+	      esd_player_info_t *player_info;
+
 	      for (player_info = all_info->player_list; player_info;
 		   player_info = player_info->next)
 		if (player_info->source_id == player)
@@ -379,12 +387,15 @@ ioctl (int fd, request_t request, ...)
   argp = va_arg (args, void *);
   va_end (args);
 
-  if (fd != sndfd && fd != mixfd)
-    return (*func) (fd, request, argp);
-  else if (fd == sndfd)
+  if (fd == sndfd)
     return dspctl (fd, request, argp);
-  else if (use_mixer)
-    return mixctl (fd, request, argp);
+  else if (fd == mixfd) {
+    if(use_mixer)
+      return mixctl (fd, request, argp);
+  } else { /* (fd != sndfd && fd != mixfd) */
+        return (*func) (fd, request, argp); 
+      }
+  return 0;
 }
 
 int

@@ -77,7 +77,7 @@ libesd will automaticall spawn esd if it's not available when an esd using
 application opens a connection to esd. By default the command issued is:
 esd -terminate -nobeeps -as 2
 BUT
-if you wish to use different options 6you can set the 
+if you wish to use different options, you can set the 
 ESD_SPAWN_OPTIONS
 environment variable that will contain the options passed to esd.
 for example - if I:

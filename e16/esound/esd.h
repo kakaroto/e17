@@ -157,8 +157,8 @@ int esd_filter_stream( esd_format_t format, int rate,
 		       const char *host, const char *name );
 
 /* cache a sample in the server returns sample id, < 0 = error */
-int esd_sample_cache( int esd, esd_format_t format, int rate, 
-		      int length, const char *name );
+int esd_sample_cache( int esd, esd_format_t format, const int rate, 
+		      const int length, const char *name );
 int esd_confirm_sample_cache( int esd );
 
 /* get the sample id for an already-cached sample */

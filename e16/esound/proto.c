@@ -206,7 +206,7 @@ int esd_proto_connect( esd_client_t *client )
 
     if ( esd_validate_source( client, client->proto_data, 0 ) )
     {
-	ok = esd_check_endian( client, (int*)(client->proto_data + ESD_KEY_LEN) );
+	ok = esd_check_endian( client, (unsigned int*)(client->proto_data + ESD_KEY_LEN) );
     } else {
 	ok = 0;
     }

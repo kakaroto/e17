@@ -1,6 +1,8 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <unistd.h>
+#include <ctype.h>
+#include <string.h>
 
 #define LINEBUF_SIZE 1024
 int esd_no_spawn=1; /* If we can't find even the system config file,
@@ -63,7 +65,8 @@ static void
 esd_config_read_file(FILE *fh)
 {
   char aline[LINEBUF_SIZE];
-  char *key, *value, *start, i;
+  char *key, *value, *start;
+  int i;
 
   while(fgets(aline, sizeof(aline), fh))
     {
@@ -88,7 +91,9 @@ esd_config_read_file(FILE *fh)
 	}
 
       key = strtok(aline, "=");
+      if(!key) continue;
       value = strtok(NULL, "=");
+      if(!value) value = "";
 
       if(!strcasecmp(key, "auto_spawn"))
 	{

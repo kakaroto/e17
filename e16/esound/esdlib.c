@@ -28,8 +28,8 @@ static void dummy_signal(int signum);
 
 /* dummy handler */
 static void dummy_signal(int signum) {
-      signal( signum, dummy_signal);
-      return;
+    signal( signum, dummy_signal);
+    return;
 }
 
 /* from esd_config.c */
@@ -105,9 +105,9 @@ int esd_set_socket_buffers( int sock, int src_format,
  */
 int esd_get_latency(int esd)
 {
-  int lag = 0;
-  int proto = ESD_PROTO_LATENCY;
-  void (*phandler)(int);
+    int lag = 0;
+    int proto = ESD_PROTO_LATENCY;
+    void (*phandler)(int);
 
 /* this is unavoidable - incase ESD "dissapears" (ie the socket conn dies) */
 /* we need to catch SIGPIPE to avoid the default handler form giving us */
@@ -115,28 +115,28 @@ int esd_get_latency(int esd)
     phandler = signal( SIGPIPE, dummy_signal );    /* for closed esd conns */
     /* send the necessary information */
     if ( write( esd, &proto, sizeof(proto) ) != sizeof(proto) ) {
-      signal( SIGPIPE, phandler ); 
-      return -1;
+	signal( SIGPIPE, phandler ); 
+	return -1;
     }
 
     /* get the latency back from the server */
     if ( read( esd, &lag, sizeof(lag) ) != sizeof(lag) ) {
-      signal( SIGPIPE, phandler ); 
-      return -1;
+	signal( SIGPIPE, phandler ); 
+	return -1;
     }
 
     /* diagnostic info */
     /*
-    if ( getenv( "ESDBG" ) )
-	printf( "esound getting latency\n" );
+      if ( getenv( "ESDBG" ) )
+      printf( "esound getting latency\n" );
     */
 
     /* return the sample id to the client */
     signal( SIGPIPE, phandler ); 
   
-  lag += ESD_BUF_SIZE * 2;
+    lag += ESD_BUF_SIZE * 2;
   
-  return lag;
+    return lag;
 }
 
 /**
@@ -223,16 +223,16 @@ int esd_send_auth( int sock )
     /* read auth reply. esd will reply 1 as an int for yes and 0 for no */
     /* then close the connection */
     if ( sizeof(reply) != read( sock, &reply, sizeof(reply) ) ) {
-      /* read ok failed */
-      retval = 0;
-      goto exit_fd;
+	/* read ok failed */
+	retval = 0;
+	goto exit_fd;
     }
     /* we got a reply and it's no - so esd will close the socket now */
     /* on us anyway... time to return invalid auth... */
     if (reply == 0) {
-      /* auth failed */
-      retval = 0;
-      goto exit_fd;
+	/* auth failed */
+	retval = 0;
+	goto exit_fd;
     }
   
   
@@ -271,16 +271,16 @@ int esd_lock( int esd ) {
     phandler = signal( SIGPIPE, dummy_signal );    /* for closed esd conns */
     /* diagnostic info */
     /*
-    if ( getenv( "ESDBG" ) )
-        printf( "esound locking\n" );
+      if ( getenv( "ESDBG" ) )
+      printf( "esound locking\n" );
     */
 
     write( esd, &proto, sizeof(proto) );
     esd_send_auth( esd );
 
     if ( read( esd, &ok, sizeof(ok) ) != sizeof(ok) ) {
-      signal( SIGPIPE, phandler ); 
-      return -1;
+	signal( SIGPIPE, phandler ); 
+	return -1;
     }
 
     signal( SIGPIPE, phandler ); 
@@ -310,16 +310,16 @@ int esd_unlock( int esd ){
     phandler = signal( SIGPIPE, dummy_signal );    /* for closed esd conns */
     /* diagnostic info */
     /*
-    if ( getenv( "ESDBG" ) )
-	printf( "esound unlocking\n" );
+      if ( getenv( "ESDBG" ) )
+      printf( "esound unlocking\n" );
     */
 
     write( esd, &proto, sizeof(proto) );
     esd_send_auth( esd );
 
     if ( read( esd, &ok, sizeof(ok) ) != sizeof(ok) ) {
-      signal( SIGPIPE, phandler ); 
-      return -1;
+	signal( SIGPIPE, phandler ); 
+	return -1;
     }
 
     signal( SIGPIPE, phandler ); 
@@ -350,16 +350,16 @@ int esd_standby( int esd )
     phandler = signal( SIGPIPE, dummy_signal );    /* for closed esd conns */
     /* diagnostic info */
     /*
-    if ( getenv( "ESDBG" ) )
-	printf( "esound standing by\n" );
+      if ( getenv( "ESDBG" ) )
+      printf( "esound standing by\n" );
     */
 
     write( esd, &proto, sizeof(proto) );
     esd_send_auth( esd );
 
     if ( read( esd, &ok, sizeof(ok) ) != sizeof(ok) ) {
-      signal( SIGPIPE, phandler ); 
-      return -1;
+	signal( SIGPIPE, phandler ); 
+	return -1;
     }
 
     signal( SIGPIPE, phandler ); 
@@ -389,16 +389,16 @@ int esd_resume( int esd )
     phandler = signal( SIGPIPE, dummy_signal );    /* for closed esd conns */
     /* diagnostic info */
     /*
-    if ( getenv( "ESDBG" ) )
-	printf( "esound resuming\n" );
+      if ( getenv( "ESDBG" ) )
+      printf( "esound resuming\n" );
     */
 
     write( esd, &proto, sizeof(proto) );
     esd_send_auth( esd );
 
     if ( read( esd, &ok, sizeof(ok) ) != sizeof(ok) ) {
-      signal( SIGPIPE, phandler ); 
-      return -1;
+	signal( SIGPIPE, phandler ); 
+	return -1;
     }
 
     signal( SIGPIPE, phandler ); 
@@ -419,88 +419,88 @@ int esd_resume( int esd )
 static int
 esd_connect_tcpip(const char *host)
 {
-  const char *espeaker = NULL;
-  struct hostent *he;
-  struct sockaddr_in socket_addr;
-  int socket_out = -1;
-  int curstate = 1;
-  char default_host[] = "0.0.0.0";
-  char connect_host[64];
-  int port = ESD_DEFAULT_PORT;
-  unsigned int host_div = 0;
+    const char *espeaker = NULL;
+    struct hostent *he;
+    struct sockaddr_in socket_addr;
+    int socket_out = -1;
+    int curstate = 1;
+    char default_host[] = "0.0.0.0";
+    char connect_host[64];
+    int port = ESD_DEFAULT_PORT;
+    unsigned int host_div = 0;
   
-  /* see if we have a remote speaker to play to */
-  espeaker = host;
-  if ( espeaker != NULL ) {
-    /* split the espeaker host into host:port */
-    host_div = strcspn( espeaker, ":" );
+    /* see if we have a remote speaker to play to */
+    espeaker = host;
+    if ( espeaker != NULL ) {
+	/* split the espeaker host into host:port */
+	host_div = strcspn( espeaker, ":" );
     
-    /* get host */
-    if ( host_div ) {
-      strncpy( connect_host, espeaker, host_div );
-      connect_host[ host_div ] = '\0';
-    } else {
-      strcpy( connect_host, default_host );
+	/* get host */
+	if ( host_div ) {
+	    strncpy( connect_host, espeaker, host_div );
+	    connect_host[ host_div ] = '\0';
+	} else {
+	    strcpy( connect_host, default_host );
+	}
+    
+	/* Resolving the host name */
+	if ( ( he = gethostbyname( connect_host ) ) == NULL ) {
+	    fprintf( stderr, "Can\'t resolve host name \"%s\"!\n", 
+		     connect_host);
+	    return(-1);
+	}
+	memcpy( (struct in_addr *) &socket_addr.sin_addr, he->h_addr,
+		sizeof( struct in_addr ) );
+    
+	/* get port */
+	if ( host_div != strlen( espeaker ) )
+	    port = atoi( espeaker + host_div + 1 );
+	if ( !port ) 
+	    port = ESD_DEFAULT_PORT;
+	/* printf( "(remote) host is %s : %d\n", connect_host, port ); */
+    } else if( !inet_aton( default_host, &socket_addr.sin_addr ) ) {
+	fprintf( stderr, "couldn't convert %s to inet address\n", 
+		 default_host );
+	return -1;
     }
-    
-    /* Resolving the host name */
-    if ( ( he = gethostbyname( connect_host ) ) == NULL ) {
-      fprintf( stderr, "Can\'t resolve host name \"%s\"!\n", 
-	      connect_host);
-      return(-1);
-    }
-    memcpy( (struct in_addr *) &socket_addr.sin_addr, he->h_addr,
-	   sizeof( struct in_addr ) );
-    
-    /* get port */
-    if ( host_div != strlen( espeaker ) )
-      port = atoi( espeaker + host_div + 1 );
-    if ( !port ) 
-      port = ESD_DEFAULT_PORT;
-    /* printf( "(remote) host is %s : %d\n", connect_host, port ); */
-  } else if( !inet_aton( default_host, &socket_addr.sin_addr ) ) {
-    fprintf( stderr, "couldn't convert %s to inet address\n", 
-	    default_host );
-    return -1;
-  }
   
-  /* create the socket, and set for non-blocking */
-  socket_out = socket( AF_INET, SOCK_STREAM, 0 );
-  if ( socket_out < 0 ) 
+    /* create the socket, and set for non-blocking */
+    socket_out = socket( AF_INET, SOCK_STREAM, 0 );
+    if ( socket_out < 0 ) 
     {
-      fprintf(stderr,"Unable to create TCP socket\n");
-      goto error_out;
+	fprintf(stderr,"Unable to create TCP socket\n");
+	goto error_out;
     }
   
-  /* this was borrowed blindly from the Tcl socket stuff */
-  if ( fcntl( socket_out, F_SETFD, FD_CLOEXEC ) < 0 )
+    /* this was borrowed blindly from the Tcl socket stuff */
+    if ( fcntl( socket_out, F_SETFD, FD_CLOEXEC ) < 0 )
     {
-      fprintf(stderr,"Unable to set socket to non-blocking\n");
-      goto error_out;
+	fprintf(stderr,"Unable to set socket to non-blocking\n");
+	goto error_out;
     }
 
-  if ( setsockopt( socket_out, SOL_SOCKET, SO_REUSEADDR,
-		  &curstate, sizeof(curstate) ) < 0 ) 
+    if ( setsockopt( socket_out, SOL_SOCKET, SO_REUSEADDR,
+		     &curstate, sizeof(curstate) ) < 0 ) 
     {
-      fprintf(stderr,"Unable to set for a fresh socket\n");
-      goto error_out;
+	fprintf(stderr,"Unable to set for a fresh socket\n");
+	goto error_out;
     }
   
-  /* set the connect information */
-  socket_addr.sin_family = AF_INET;
-  socket_addr.sin_port = htons( port );
+    /* set the connect information */
+    socket_addr.sin_family = AF_INET;
+    socket_addr.sin_port = htons( port );
   
-  if ( connect( socket_out,
-	       (struct sockaddr *) &socket_addr,
-	       sizeof(struct sockaddr_in) ) < 0 )
-    goto error_out;
+    if ( connect( socket_out,
+		  (struct sockaddr *) &socket_addr,
+		  sizeof(struct sockaddr_in) ) < 0 )
+	goto error_out;
 
-  return socket_out;
+    return socket_out;
 
  error_out:
-  if(socket_out >= 0)
-    close(socket_out);
-  return -1;
+    if( socket_out >= 0 )
+	close( socket_out );
+    return -1;
 }
 
 /**
@@ -516,45 +516,59 @@ esd_connect_tcpip(const char *host)
 static int
 esd_connect_unix(const char *host)
 {
-  struct sockaddr_un socket_unix;
-  int socket_out = -1;
-  int curstate = 1;
+    struct sockaddr_un socket_unix;
+    int socket_out = -1;
+    int curstate = 1;
   
-  /* create the socket, and set for non-blocking */
-  socket_out = socket( AF_UNIX, SOCK_STREAM, 0 );
-  if ( socket_out < 0 ) 
+    /* create the socket, and set for non-blocking */
+    socket_out = socket( AF_UNIX, SOCK_STREAM, 0 );
+    if ( socket_out < 0 ) 
     {
-      fprintf(stderr,"Unable to create socket\n");
-      goto error_out;
+	fprintf(stderr,"Unable to create socket\n");
+	goto error_out;
     }
   
-  /* this was borrowed blindly from the Tcl socket stuff */
-  if ( fcntl( socket_out, F_SETFD, FD_CLOEXEC ) < 0 )
+    /* this was borrowed blindly from the Tcl socket stuff */
+    if ( fcntl( socket_out, F_SETFD, FD_CLOEXEC ) < 0 )
     {
-      fprintf(stderr,"Unable to set socket to close-on-exec\n");
-      goto error_out;
+	fprintf(stderr,"Unable to set socket to close-on-exec\n");
+	goto error_out;
     }
-  if ( setsockopt( socket_out, SOL_SOCKET, SO_REUSEADDR,
-		  &curstate, sizeof(curstate) ) < 0 ) 
+    if ( setsockopt( socket_out, SOL_SOCKET, SO_REUSEADDR,
+		     &curstate, sizeof(curstate) ) < 0 ) 
     {
-      fprintf(stderr,"Unable to set for a fresh socket\n");
-      goto error_out;
+	fprintf(stderr,"Unable to set for a fresh socket\n");
+	goto error_out;
     }
   
-  /* set the connect information */
-  socket_unix.sun_family = AF_UNIX;
-  strncpy(socket_unix.sun_path, ESD_UNIX_SOCKET_NAME, sizeof(socket_unix.sun_path));
+    /* set the connect information */
+    socket_unix.sun_family = AF_UNIX;
+    strncpy(socket_unix.sun_path, ESD_UNIX_SOCKET_NAME, sizeof(socket_unix.sun_path));
   
-  if ( connect( socket_out,
-	       (struct sockaddr *) &socket_unix, SUN_LEN(&socket_unix) ) < 0 )
-    goto error_out;
+    if ( connect( socket_out,
+		  (struct sockaddr *) &socket_unix, SUN_LEN(&socket_unix) ) < 0 )
+	goto error_out;
   
-  return socket_out;
+    return socket_out;
 
  error_out:
-  if(socket_out >= 0)
-    close(socket_out);
-  return -1;
+    if(socket_out >= 0)
+	close(socket_out);
+    return -1;
+}
+
+static int got_sigusr1 = 0, got_sigalrm = 0;
+static void
+esd_handle_sig(int signum)
+{
+    switch(signum) {
+    case SIGUSR1:
+	got_sigusr1++;
+	break;
+    case SIGALRM:
+	got_sigalrm++;
+	break;
+    }
 }
 
 /**
@@ -582,88 +596,124 @@ esd_connect_unix(const char *host)
  * Return Value: -1 on error, else a socket number connected and authorized
  * to ESD.
  */
+#define min(a,b) ( ( (a)<(b) ) ? (a) : (b) )
 int esd_open_sound( const char *host )
 {
-  int connect_count;
-  int socket_out = -1;
-  char use_unix = 0;
+    int connect_count;
+    int socket_out = -1;
+    int len;
+    char use_unix = 0;
+    char display_host[ 256 ];
+    char *display;
 
-  if (! host) host = getenv("ESPEAKER");
+    if ( !host ) host = getenv("ESPEAKER");
 
-  if (! host) {
-    if (access(ESD_UNIX_SOCKET_NAME, R_OK | W_OK) == -1)
-      use_unix = 0;
-    else
-      use_unix = 1;
-  }
-
-  if (use_unix)
-    socket_out = esd_connect_unix (NULL);
-  if (socket_out >= 0) goto finish_connect;
-
-  socket_out = esd_connect_tcpip (host);
-  if (socket_out >= 0) goto finish_connect;
-
-  /* Connections failed, period. Since nobody gave us a remote esd to use, let's try spawning one. */
-  if(! host) {
-    int childpid;
-
-    esd_config_read();
-
-    if (esd_no_spawn) goto finish_connect;
-
-    childpid = fork();
-    if(!childpid) {
-      /* child process */
-      if(!fork()) {
-	/* child of child process */
-	char *cmd;
-
-	setsid();
-	cmd = malloc(sizeof("esd ") + esd_spawn_options?strlen(esd_spawn_options):0);
-
-	sprintf(cmd, "esd %s", esd_spawn_options?esd_spawn_options:"");
-
-	execl("/bin/sh", "/bin/sh", "-c", cmd, NULL);
-	perror("execl");
-	_exit(1);
-      } else
-	_exit(0);
-
-      /* children end here */
-    } else {
-      int estat;
-      waitpid(childpid, &estat, 0);
+    display = getenv( "DISPLAY" );
+    if ( !host && display ) {
+	/* no espeaker specified, but the app should be directed to a
+	   remote display, so try routing the default port over there
+	   and see if we strike gold */
+	len = strcspn( display, ":" );
+	if ( len ) {
+	    len = min( len, 256 ); 
+	    strncpy( display_host, display, len );
+	    display_host[ len ] = '\0';
+	    host = display_host;
+	}
     }
 
-    /* Wait for for spawning to happen.  Time taken is system and load
-     * dependent, so read from config file.
-     */
-    for(connect_count = 0; connect_count < esd_spawn_wait_ms; connect_count++) {
-#if defined(HAVE_NANOSLEEP) && !defined(HAVE_USLEEP)
-      struct timespec timewait;
-#endif
-    
-      socket_out = esd_connect_unix(host);
-      if (socket_out >= 0) break;
-
-#if defined(HAVE_USLEEP)
-      usleep(1000);
-#elif defined(HAVE_NANOSLEEP)
-      timewait.tv_sec = 0;
-      timewait.tv_nsec = 1000000;
-      nanosleep(&timewait, NULL);
-#endif
+    if ( !host ) {
+	if ( access( ESD_UNIX_SOCKET_NAME, R_OK | W_OK ) == -1 )
+	    use_unix = 0;
+	else
+	    use_unix = 1;
     }
-  }
+    if ( use_unix )
+	socket_out = esd_connect_unix( NULL );
+    if ( socket_out >= 0 ) goto finish_connect;
+
+    socket_out = esd_connect_tcpip( host );
+    if ( socket_out >= 0 ) goto finish_connect;
+
+    /* Connections failed, period. Since nobody gave us a remote esd
+       to use, let's try spawning one. */
+    /* ebm - I think this is an Inherently Bad Idea, but will leave it
+       alone until I can get a good look at it */
+    if(! host) {
+	int childpid, mypid;
+	struct sigaction sa, sa_orig;
+	struct sigaction sa_alarm, sa_orig_alarm;
+
+	esd_config_read();
+
+	if (esd_no_spawn) goto finish_connect;
+
+	/* All this hackery so we can stop thrashing around if esd startup fails */
+	/* there's something inherently flaky about this, and if
+	   there's no audio device, Bad Things Happen */
+
+	mypid = getpid();
+	memset(&sa, '\0', sizeof(sa));
+	memset(&sa_alarm, '\0', sizeof(sa));
+	sa.sa_handler = esd_handle_sig;
+	sa_alarm.sa_handler = esd_handle_sig;
+	sigaction(SIGUSR1, &sa, &sa_orig);
+	alarm(0);
+	sigaction(SIGALRM, &sa_alarm, &sa_orig_alarm);
+
+	childpid = fork();
+	if(!childpid) {
+	    /* child process */
+	    if(!fork()) {
+		/* child of child process */
+		char *cmd;
+
+		setsid();
+		cmd = malloc(sizeof("esd ") + esd_spawn_options?strlen(esd_spawn_options):0);
+
+		sprintf(cmd, "esd %s -spawnpid %d", esd_spawn_options?esd_spawn_options:"", mypid);
+
+		execl("/bin/sh", "/bin/sh", "-c", cmd, NULL);
+		perror("execl");
+		_exit(1);
+	    } else
+		_exit(0);
+
+	    /* children end here */
+	} else {
+	    int estat;
+
+	    waitpid(childpid, &estat, 0);
+	}
+
+	/* Wait for for spawning to happen.  Time taken is system and load
+	 * dependent, so read from config file.
+	 */
+	for(connect_count = 0; connect_count < esd_spawn_wait_ms; connect_count++) {
+	    alarm(10);
+	    pause(); /* Until we either get USR1 (esd startup failed), USR2 (esd startup OK), or ALRM (timeout) */
+	    alarm(0);
+
+	    if(got_sigusr1) {
+		socket_out = esd_connect_unix(host);
+		if (socket_out < 0)
+		    socket_out = esd_connect_tcpip(host);
+		if (socket_out >= 0) break;
+	    } else if(got_sigalrm)
+		break;
+	}
+
+	sigaction(SIGUSR1, &sa_orig, NULL);
+	sigaction(SIGALRM, &sa_orig_alarm, NULL);
+    }
 
  finish_connect:
-  if (socket_out >= 0
-      && !esd_send_auth (socket_out)) {
-    close(socket_out); socket_out = -1;
-  }
+    if (socket_out >= 0
+	&& !esd_send_auth (socket_out)) {
+	close(socket_out); socket_out = -1;
+    }
 
-  return socket_out;
+    return socket_out;
 }
 
 /**
@@ -682,7 +732,7 @@ int esd_open_sound( const char *host )
  * any data sent to the socket will be played by the ESD.
  */
 int esd_play_stream( esd_format_t format, int rate, 
-		    const char *host, const char *name )
+		     const char *host, const char *name )
 {
     int sock;
     int proto = ESD_PROTO_STREAM_PLAY;
@@ -706,21 +756,21 @@ int esd_play_stream( esd_format_t format, int rate,
     phandler = signal( SIGPIPE, dummy_signal );    /* for closed esd conns */
     /* send the audio format information */
     if ( write( sock, &proto, sizeof(proto) ) != sizeof(proto) ) {
-      signal( SIGPIPE, phandler );
-      return -1;
-      }
+	signal( SIGPIPE, phandler );
+	return -1;
+    }
     if ( write( sock, &format, sizeof(format) ) != sizeof(format) ) {
-      signal( SIGPIPE, phandler );
-      return -1;
-      }
+	signal( SIGPIPE, phandler );
+	return -1;
+    }
     if( write( sock, &rate, sizeof(rate) ) != sizeof(rate) ) {
-      signal( SIGPIPE, phandler );
-      return -1;
-      }
+	signal( SIGPIPE, phandler );
+	return -1;
+    }
     if( write( sock, name_buf, ESD_NAME_MAX ) != ESD_NAME_MAX ) {
-      signal( SIGPIPE, phandler );
-      return -1;
-      }
+	signal( SIGPIPE, phandler );
+	return -1;
+    }
 
     /* Reduce buffers on sockets to the minimum needed */
     esd_set_socket_buffers( sock, format, rate, 44100 );
@@ -730,12 +780,12 @@ int esd_play_stream( esd_format_t format, int rate,
     
     /* diagnostic info */
     /*
-    if ( getenv( "ESDBG" ) )
-	printf( "esound playing stream\n" );
+      if ( getenv( "ESDBG" ) )
+      printf( "esound playing stream\n" );
     */
 
-  signal( SIGPIPE, phandler );
-  return sock;
+    signal( SIGPIPE, phandler );
+    return sock;
 }
 
 /**
@@ -774,8 +824,8 @@ int esd_play_stream_fallback( esd_format_t format, int rate,
 
     /* diagnostic info */
     /*
-    if ( getenv( "ESDBG" ) )
-	printf( "esound playing stream fallback\n" );
+      if ( getenv( "ESDBG" ) )
+      printf( "esound playing stream fallback\n" );
     */
 
     /* we either got it, or we didn't */
@@ -820,20 +870,20 @@ int esd_monitor_stream( esd_format_t format, int rate,
     phandler = signal( SIGPIPE, dummy_signal );    /* for closed esd conns */
     /* send the audio format information */
     if ( write( sock, &proto, sizeof(proto) ) != sizeof(proto) ) {
-      signal( SIGPIPE, phandler ); 
-      return -1;
+	signal( SIGPIPE, phandler ); 
+	return -1;
     }
     if ( write( sock, &format, sizeof(format) ) != sizeof(format) ) {
-      signal( SIGPIPE, phandler ); 
-      return -1;
+	signal( SIGPIPE, phandler ); 
+	return -1;
     }
     if( write( sock, &rate, sizeof(rate) ) != sizeof(rate) ) {
-      signal( SIGPIPE, phandler ); 
-      return -1;
+	signal( SIGPIPE, phandler ); 
+	return -1;
     }
     if( write( sock, name_buf, ESD_NAME_MAX ) != ESD_NAME_MAX ) {
-      signal( SIGPIPE, phandler ); 
-      return -1;
+	signal( SIGPIPE, phandler ); 
+	return -1;
     }
 
     /* Reduce buffers on sockets to the minimum needed */
@@ -844,8 +894,8 @@ int esd_monitor_stream( esd_format_t format, int rate,
     
     /* diagnostic info */
     /*
-    if ( getenv( "ESDBG" ) )
-	printf( "esound monitoring stream\n" );
+      if ( getenv( "ESDBG" ) )
+      printf( "esound monitoring stream\n" );
     */
 
     signal( SIGPIPE, phandler ); 
@@ -901,20 +951,20 @@ int esd_filter_stream( esd_format_t format, int rate,
     phandler = signal( SIGPIPE, dummy_signal );    /* for closed esd conns */
     /* send the audio format information */
     if ( write( sock, &proto, sizeof(proto) ) != sizeof(proto) ) {
-      signal( SIGPIPE, phandler ); 
-      return -1;
+	signal( SIGPIPE, phandler ); 
+	return -1;
     }
     if ( write( sock, &format, sizeof(format) ) != sizeof(format) ) {
-      signal( SIGPIPE, phandler ); 
-      return -1;
+	signal( SIGPIPE, phandler ); 
+	return -1;
     }
     if( write( sock, &rate, sizeof(rate) ) != sizeof(rate) ) {
-      signal( SIGPIPE, phandler ); 
-      return -1;
+	signal( SIGPIPE, phandler ); 
+	return -1;
     }
     if( write( sock, name_buf, ESD_NAME_MAX ) != ESD_NAME_MAX ) {
-      signal( SIGPIPE, phandler ); 
-      return -1;
+	signal( SIGPIPE, phandler ); 
+	return -1;
     }
 
     /* Reduce buffers on sockets to the minimum needed */
@@ -925,8 +975,8 @@ int esd_filter_stream( esd_format_t format, int rate,
     
     /* diagnostic info */
     /*
-    if ( getenv( "ESDBG" ) )
-	printf( "esound filterng stream\n" );
+      if ( getenv( "ESDBG" ) )
+      printf( "esound filterng stream\n" );
     */
 
     signal( SIGPIPE, phandler ); 
@@ -971,20 +1021,20 @@ int esd_record_stream( esd_format_t format, int rate,
     phandler = signal( SIGPIPE, dummy_signal );    /* for closed esd conns */
     /* send the audio format information */
     if ( write( sock, &proto, sizeof(proto) ) != sizeof(proto) ) {
-      signal( SIGPIPE, phandler ); 
-      return -1;
+	signal( SIGPIPE, phandler ); 
+	return -1;
     }
     if ( write( sock, &format, sizeof(format) ) != sizeof(format) ) {
-      signal( SIGPIPE, phandler ); 
-      return -1;
+	signal( SIGPIPE, phandler ); 
+	return -1;
     }
     if( write( sock, &rate, sizeof(rate) ) != sizeof(rate) ) {
-      signal( SIGPIPE, phandler ); 
-      return -1;
+	signal( SIGPIPE, phandler ); 
+	return -1;
     }
     if( write( sock, name_buf, ESD_NAME_MAX ) != ESD_NAME_MAX ) {
-      signal( SIGPIPE, phandler ); 
-      return -1;
+	signal( SIGPIPE, phandler ); 
+	return -1;
     }
 
     /* Reduce buffers on sockets to the minimum needed */
@@ -995,8 +1045,8 @@ int esd_record_stream( esd_format_t format, int rate,
     
     /* diagnostic info */
     /*
-    if ( getenv( "ESDBG" ) )
-	printf( "esound recording stream\n" );
+      if ( getenv( "ESDBG" ) )
+      printf( "esound recording stream\n" );
     */
 
     signal( SIGPIPE, phandler ); 
@@ -1042,8 +1092,8 @@ int esd_record_stream_fallback( esd_format_t format, int rate,
 
     /* diagnostic info */
     /*
-    if ( getenv( "ESDBG" ) )
-	printf( "esound recording stream fallback\n" );
+      if ( getenv( "ESDBG" ) )
+      printf( "esound recording stream fallback\n" );
     */
 
     /* we either got it, or we didn't */
@@ -1052,7 +1102,7 @@ int esd_record_stream_fallback( esd_format_t format, int rate,
 
 /*******************************************************************/
 /* cache a sample in the server returns sample id, <= 0 is error */
-int esd_sample_cache( int esd, esd_format_t format, int rate, 
+int esd_sample_cache( int esd, esd_format_t format, const int rate, 
 		      const int size, const char *name )
 {
     int id = 0;
@@ -1066,7 +1116,7 @@ int esd_sample_cache( int esd, esd_format_t format, int rate,
     else
 	name_buf[ 0 ] = '\0';
     /* printf( "caching sample: %s (%d) - %ld bytes\n", 
-	    name_buf, esd, size ); */
+       name_buf, esd, size ); */
 
 /* this is unavoidable - incase ESD "dissapears" (ie the socket conn dies) */
 /* we need to catch SIGPIPE to avoid the default handler form giving us */
@@ -1074,25 +1124,25 @@ int esd_sample_cache( int esd, esd_format_t format, int rate,
     phandler = signal( SIGPIPE, dummy_signal );    /* for closed esd conns */
     /* send the necessary information */
     if ( write( esd, &proto, sizeof(proto) ) != sizeof(proto) ) {
-      signal( SIGPIPE, phandler ); 
-      return -1;
+	signal( SIGPIPE, phandler ); 
+	return -1;
     }
 
     if ( write( esd, &format, sizeof(format) ) != sizeof(format) ) {
-      signal( SIGPIPE, phandler ); 
-      return -1;
+	signal( SIGPIPE, phandler ); 
+	return -1;
     }
     if ( write( esd, &rate, sizeof(rate) ) != sizeof(rate) ) {
-      signal( SIGPIPE, phandler ); 
-      return -1;
+	signal( SIGPIPE, phandler ); 
+	return -1;
     }
     if ( write( esd, &size, sizeof(size) ) != sizeof(size) ) {
-      signal( SIGPIPE, phandler ); 
-      return -1;
+	signal( SIGPIPE, phandler ); 
+	return -1;
     }
     if ( write( esd, name_buf, ESD_NAME_MAX ) != ESD_NAME_MAX ) {
-      signal( SIGPIPE, phandler ); 
-      return -1;
+	signal( SIGPIPE, phandler ); 
+	return -1;
     }
 
     /* flush the socket */
@@ -1100,14 +1150,14 @@ int esd_sample_cache( int esd, esd_format_t format, int rate,
 
     /* get the sample id back from the server */
     if ( read( esd, &id, sizeof(id) ) != sizeof(id) ) {
-      signal( SIGPIPE, phandler ); 
-      return -1;
+	signal( SIGPIPE, phandler ); 
+	return -1;
     }
 
     /* diagnostic info */
     /*
-    if ( getenv( "ESDBG" ) )
-	printf( "esound caching sample\n" );
+      if ( getenv( "ESDBG" ) )
+      printf( "esound caching sample\n" );
     */
 
     /* return the sample id to the client */
@@ -1129,14 +1179,14 @@ int esd_confirm_sample_cache( int esd )
     phandler = signal( SIGPIPE, dummy_signal );    /* for closed esd conns */
     /* get the sample id back from the server */
     if ( read( esd, &id, sizeof(id) ) != sizeof(id) ) {
-      signal( SIGPIPE, phandler ); 
-      return -1;
+	signal( SIGPIPE, phandler ); 
+	return -1;
     }
 
     /* diagnostic info */
     /*
-    if ( getenv( "ESDBG" ) )
-	printf( "esound confirming cached sample\n" );
+      if ( getenv( "ESDBG" ) )
+      printf( "esound confirming cached sample\n" );
     */
 
     /* return the sample id to the client */
@@ -1158,8 +1208,8 @@ int esd_sample_getid( int esd, const char *name)
 /* a bad day - ignore the SIGPIPE, then make sure to cathc all errors */
     phandler = signal( SIGPIPE, dummy_signal );    /* for closed esd conns */
     if ( write( esd, &proto, sizeof(proto) ) != sizeof(proto) ) {
-      signal( SIGPIPE, phandler ); 
-      return -1;
+	signal( SIGPIPE, phandler ); 
+	return -1;
     }
 
     /* prepare the name buffer */
@@ -1169,8 +1219,8 @@ int esd_sample_getid( int esd, const char *name)
 	namebuf[ 0 ] = '\0';
 
     if ( write( esd, namebuf, ESD_NAME_MAX ) != ESD_NAME_MAX ) {
-      signal( SIGPIPE, phandler ); 
-      return -1;
+	signal( SIGPIPE, phandler ); 
+	return -1;
     }
 
     /* flush the socket */
@@ -1178,15 +1228,15 @@ int esd_sample_getid( int esd, const char *name)
 
     /* get the sample id back from the server */
     if ( read( esd, &id, sizeof(id) ) != sizeof(id) ) {
-      signal( SIGPIPE, phandler ); 
-      return -1;
+	signal( SIGPIPE, phandler ); 
+	return -1;
     }
 
     /* diagnostic info */
     /*
-    if ( getenv( "ESDBG" ) )
-	printf( "esound getting cached sample id: \'%s\' = %d\n",
-		name, id );
+      if ( getenv( "ESDBG" ) )
+      printf( "esound getting cached sample id: \'%s\' = %d\n",
+      name, id );
     */
     
     /* return the sample id to the client */
@@ -1210,25 +1260,25 @@ int esd_sample_free( int esd, int sample )
     phandler = signal( SIGPIPE, dummy_signal );    /* for closed esd conns */
     /* send the necessary information */
     if ( write( esd, &proto, sizeof(proto) ) != sizeof(proto) ) {
-      signal( SIGPIPE, phandler ); 
-      return -1;
+	signal( SIGPIPE, phandler ); 
+	return -1;
     }
     if ( write( esd, &sample, sizeof(sample) ) != sizeof(sample) ) {
-      signal( SIGPIPE, phandler ); 
-      return -1;
+	signal( SIGPIPE, phandler ); 
+	return -1;
     }
     /* fsync( esd ); */
 
     /* get the sample id back from the server */
     if ( read( esd, &id, sizeof(id) ) != sizeof(id) ) {
-      signal( SIGPIPE, phandler ); 
-      return -1;
+	signal( SIGPIPE, phandler ); 
+	return -1;
     }
 
     /* diagnostic info */
     /*
-    if ( getenv( "ESDBG" ) )
-        printf( "esound freeing sample\n" );
+      if ( getenv( "ESDBG" ) )
+      printf( "esound freeing sample\n" );
     */
 
     /* return the id to the client (0 = error, 1 = ok) */
@@ -1252,25 +1302,25 @@ int esd_sample_play( int esd, int sample )
     phandler = signal( SIGPIPE, dummy_signal );    /* for closed esd conns */
     /* send the necessary information */
     if ( write( esd, &proto, sizeof(proto) ) != sizeof(proto) ) {
-      signal( SIGPIPE, phandler ); 
-      return -1;
+	signal( SIGPIPE, phandler ); 
+	return -1;
     }
     if ( write( esd, &sample, sizeof(sample) ) != sizeof(sample) ) {
-      signal( SIGPIPE, phandler ); 
-      return -1;
+	signal( SIGPIPE, phandler ); 
+	return -1;
     }
     /* fsync( esd ); */
 
     /* get the sample id back from the server */
     if ( read( esd, &is_ok, sizeof(is_ok) ) != sizeof(is_ok) ) {
-      signal( SIGPIPE, phandler ); 
-      return -1;
+	signal( SIGPIPE, phandler ); 
+	return -1;
     }
 
     /* diagnostic info */
     /*
-    if ( getenv( "ESDBG" ) )
-	printf( "esound playing sample\n" );
+      if ( getenv( "ESDBG" ) )
+      printf( "esound playing sample\n" );
     */
 
     /* return the id to the client (0 = error, 1 = ok) */
@@ -1295,25 +1345,25 @@ int esd_sample_loop( int esd, int sample )
     phandler = signal( SIGPIPE, dummy_signal );    /* for closed esd conns */
     /* send the necessary information */
     if ( write( esd, &proto, sizeof(proto) ) != sizeof(proto) ) {
-      signal( SIGPIPE, phandler ); 
-      return -1;
+	signal( SIGPIPE, phandler ); 
+	return -1;
     }
     if ( write( esd, &sample, sizeof(sample) ) != sizeof(sample) ) {
-      signal( SIGPIPE, phandler ); 
-      return -1;
+	signal( SIGPIPE, phandler ); 
+	return -1;
     }
     /* fsync( esd ); */
 
     /* get the sample id back from the server */
     if ( read( esd, &is_ok, sizeof(is_ok) ) != sizeof(is_ok) ) {
-      signal( SIGPIPE, phandler ); 
-      return -1;
+	signal( SIGPIPE, phandler ); 
+	return -1;
     }
 
     /* diagnostic info */
     /*
-    if ( getenv( "ESDBG" ) )
-	printf( "esound looping sample\n" );
+      if ( getenv( "ESDBG" ) )
+      printf( "esound looping sample\n" );
     */
 
     /* return the id to the client (0 = error, 1 = ok) */
@@ -1337,25 +1387,25 @@ int esd_sample_stop( int esd, int sample )
     phandler = signal( SIGPIPE, dummy_signal );    /* for closed esd conns */
     /* send the necessary information */
     if ( write( esd, &proto, sizeof(proto) ) != sizeof(proto) ) {
-      signal( SIGPIPE, phandler ); 
-      return -1;
+	signal( SIGPIPE, phandler ); 
+	return -1;
     }
     if ( write( esd, &sample, sizeof(sample) ) != sizeof(sample) ) {
-      signal( SIGPIPE, phandler ); 
-      return -1;
+	signal( SIGPIPE, phandler ); 
+	return -1;
     }
     /* fsync( esd ); */
 
     /* get the sample id back from the server */
     if ( read( esd, &is_ok, sizeof(is_ok) ) != sizeof(is_ok) ) {
-      signal( SIGPIPE, phandler ); 
-      return -1;
+	signal( SIGPIPE, phandler ); 
+	return -1;
     }
 
     /* diagnostic info */
     /*
-    if ( getenv( "ESDBG" ) )
-	printf( "esound stopping sample\n" );
+      if ( getenv( "ESDBG" ) )
+      printf( "esound stopping sample\n" );
     */
 
     /* return the id to the client (0 = error, 1 = ok) */

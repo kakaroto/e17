@@ -38,7 +38,7 @@ int esd_audio_open()
     if ((afd = open(device, mode, 0)) == -1)
     {   /* Opening device failed */
         perror(device);
-        return( -1 );
+        return( -2 );
     }
 
     /* TODO: check that this is allowable */

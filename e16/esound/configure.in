@@ -4,11 +4,11 @@ AC_INIT(esd.h)
 
 ESD_MAJOR_VERSION=0
 ESD_MINOR_VERSION=2
-ESD_MICRO_VERSION=12
+ESD_MICRO_VERSION=13
 ESD_VERSION=$ESD_MAJOR_VERSION.$ESD_MINOR_VERSION.$ESD_MICRO_VERSION
 
 dnl set version info for libesd.so to package rev - $MAJOR + $MINOR : $MICRO : $MINOR
-ESD_VERSION_INFO=2:10:2
+ESD_VERSION_INFO=2:13:2
 
 AC_SUBST(ESD_MAJOR_VERSION)
 AC_SUBST(ESD_MINOR_VERSION)
@@ -41,6 +41,7 @@ AC_C_CONST
 
 dnl Check for system libs needed
 
+AC_CHECK_FUNCS(setenv putenv)
 AC_CHECK_FUNC(connect,,[AC_CHECK_LIB(socket,connect)])
 AC_CHECK_FUNC(gethostbyname,,[AC_CHECK_LIB(nsl,gethostbyname)])
 AC_CHECK_FUNC(nanosleep,,[AC_CHECK_LIB(posix4,nanosleep)])
@@ -64,7 +65,7 @@ AC_TRY_COMPILE([
     #include<sys/types.h>
     #include<netinet/in.h>],
     [unsigned long ul = INADDR_LOOPBACK;],,
-    [AC_DEFINE(INADDR_LOOPBACK, (u_long)0x7f000001)])
+    [AC_DEFINE(INADDR_LOOPBACK, (u_int32_t)0x7f000001)])
     
 
 dnl Check if SUN_LEN exists
@@ -266,12 +267,13 @@ int deny_severity = LOG_WARNING;],
    LIBS="$esound_save_LIBS"
 fi
 
-dnl build the esddsp wrapper for Linux/FreeBSD only
+dnl build the esddsp wrapper for systems, 
+dnl that support LD_PRELOAD and RTLD_NEXT only
 dsp_ok=no ESDDSP= LIBESDDSP= DL_LIB=
 
 AC_MSG_CHECKING([if your platform supports esddsp])
 case "$host_os" in
-  linux* | freebsd* )
+  linux* | freebsd* | bsdi4* )
     dsp_ok=yes
     ;;
 esac

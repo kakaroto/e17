@@ -41,11 +41,11 @@ enum esd_client_state {
 typedef int esd_client_state_t;
 
 /* mix functions control how the player data is combined */
-typedef int mix_func_t( void *player, int length );
-typedef int translate_func_t( void *dest_buf, int dest_len, 
-			      int dest_rate, esd_format_t dest_format, 
-			      void *source_data, int src_len, 
-			      int src_rate, esd_format_t src_format );
+typedef int (*mix_func_t)( void *player, int length );
+typedef int (*translate_func_t)( void *dest_buf, int dest_len, 
+				 int dest_rate, esd_format_t dest_format, 
+				 void *source_data, int src_len, 
+				 int src_rate, esd_format_t src_format );
 /* NOTE: in heavy flux! */
 
 /* a client is what contacts the server, and makes requests of daemon */
@@ -82,8 +82,8 @@ typedef struct esd_player {
     int last_pos;		/* track read position for samples */
     char name[ ESD_NAME_MAX ];	/* name of stream for remote control */
 
-    mix_func_t *mix_func;	/* mixes data into the combined buffer */
-    translate_func_t *translate_func;	/* copies data between players */
+    mix_func_t mix_func;	/* mixes data into the combined buffer */
+    translate_func_t translate_func;	/* copies data between players */
 } esd_player_t;
 
 /* TODO?: typedef esd_player_t esd_recorder_t, and monitor? */
@@ -143,7 +143,7 @@ int wait_for_clients_and_data( int listen );
 
 /* filter.c - things with which to handle filters */
 extern esd_player_t *esd_filter_list;
-extern translate_func_t *esd_first_filter_func;
+extern translate_func_t esd_first_filter_func;
 
 void erase_filter( esd_player_t *filter );
 
@@ -187,9 +187,9 @@ int play_sample( int sample_id, int loop );
 int stop_sample( int sample_id );
 
 /* mix.c - deal with mixing signals, and format conversion */
-mix_func_t *get_mix_func( esd_player_t *player );
-translate_func_t *get_translate_func( esd_format_t src_fmt, int src_rate,
-				      esd_format_t dst_fmt, int dst_rate );
+mix_func_t get_mix_func( esd_player_t *player );
+translate_func_t get_translate_func( esd_format_t src_fmt, int src_rate,
+				     esd_format_t dst_fmt, int dst_rate );
 
 int refresh_mix_funcs();
 int mix_players( void *mixed, int length );

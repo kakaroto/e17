@@ -6,7 +6,7 @@
 /* ESD_BUF_SIZE is the maximum possible number of samples */
 signed int mixed_buffer[ ESD_BUF_SIZE ];
 
-/* prototype for compiler */;
+/* prototype for compiler */
 int mix_and_copy( void *dest_buf, int dest_len, 
 		  int dest_rate, esd_format_t dest_format, 
 		  void *source_data, int src_len, 
@@ -36,12 +36,12 @@ int mix_mono_16s_to_stereo_32s( esd_player_t *player, int length );
 int mix_stereo_16s_to_stereo_32s( esd_player_t *player, int length );
 
 void clip_mix_to_output_16s( signed short *output, int length );
-void clip_mix_to_output_8u( signed char *output, int length );
+void clip_mix_to_output_8u( unsigned char *output, int length );
 
 /* TODO: straighten out the mix algorithm comment annotations */
 /* TOTO: i don't think we're in kansas anymore... */
 
-mix_func_t *get_mix_func( esd_player_t *player )
+mix_func_t get_mix_func( esd_player_t *player )
 {
     switch ( player->format & ESD_MASK_BITS )
     {
@@ -49,31 +49,30 @@ mix_func_t *get_mix_func( esd_player_t *player )
 	if ( ( player->format & ESD_MASK_CHAN ) == ESD_MONO )
 	    if ( ( player->left_vol_scale == ESD_VOLUME_BASE )
 		 && ( player->right_vol_scale == ESD_VOLUME_BASE ) )
-		return mix_mono_8u_to_stereo_32s_sv;
+		return (mix_func_t)&mix_mono_8u_to_stereo_32s_sv;
 	    else
-		return mix_mono_8u_to_stereo_32s;
+		return (mix_func_t)&mix_mono_8u_to_stereo_32s;
 	else if ( ( player->format & ESD_MASK_CHAN ) == ESD_STEREO )
 	    if ( ( player->left_vol_scale == ESD_VOLUME_BASE )
 		 && ( player->right_vol_scale == ESD_VOLUME_BASE ) )
-		return mix_stereo_8u_to_stereo_32s_sv;
+		return (mix_func_t)&mix_stereo_8u_to_stereo_32s_sv;
 	    else
-		return mix_stereo_8u_to_stereo_32s;
+		return (mix_func_t)&mix_stereo_8u_to_stereo_32s;
 	else
 	    return NULL;
     case ESD_BITS16:
 	if ( ( player->format & ESD_MASK_CHAN ) == ESD_MONO )
 	    if ( ( player->left_vol_scale == ESD_VOLUME_BASE )
 		 && ( player->right_vol_scale == ESD_VOLUME_BASE ) )
-		return mix_mono_16s_to_stereo_32s_sv;
+		return (mix_func_t)&mix_mono_16s_to_stereo_32s_sv;
 	    else
-		return mix_mono_16s_to_stereo_32s;
+		return (mix_func_t)&mix_mono_16s_to_stereo_32s;
 	else if ( ( player->format & ESD_MASK_CHAN ) == ESD_STEREO )
 	    if ( ( player->left_vol_scale == ESD_VOLUME_BASE )
 		 && ( player->right_vol_scale == ESD_VOLUME_BASE ) )
-		return mix_stereo_16s_to_stereo_32s_sv;
+		return (mix_func_t)&mix_stereo_16s_to_stereo_32s_sv;
 	    else {
-printf( "mix_stereo_16s_to_stereo_32s\n" );
-		return mix_stereo_16s_to_stereo_32s;
+		return (mix_func_t)&mix_stereo_16s_to_stereo_32s;
 	    }
 	else
 	    return NULL;
@@ -82,19 +81,19 @@ printf( "mix_stereo_16s_to_stereo_32s\n" );
     }
 }
 
-translate_func_t *get_translate_func( esd_format_t src_fmt, int src_rate, 
-				      esd_format_t dst_fmt, int dst_rate )
+translate_func_t get_translate_func( esd_format_t src_fmt, int src_rate, 
+				     esd_format_t dst_fmt, int dst_rate )
 {
     if ( ( src_fmt & ESD_MASK_CHAN ) == ESD_MONO ) {
 	if ( (src_fmt & ESD_MASK_BITS) == ESD_BITS16 ) 
-	    return mix_from_mono_16s;
+	    return (translate_func_t)&mix_from_mono_16s;
 	else
-	    return mix_from_mono_8u;
+	    return (translate_func_t)&mix_from_mono_8u;
     } else {
 	if ( (src_fmt & ESD_MASK_BITS) == ESD_BITS16 ) 
-	    return mix_from_stereo_16s;
+	    return (translate_func_t)&mix_from_stereo_16s;
 	else
-	    return mix_from_stereo_8u;
+	    return (translate_func_t)&mix_from_stereo_8u;
     }
     
     return 0;
@@ -853,7 +852,7 @@ void clip_mix_to_output_16s( signed short *output, int length )
 
 /*******************************************************************/
 /* takes mixed data, and clips data to the output buffer */
-void clip_mix_to_output_8u( signed char *output, int length )
+void clip_mix_to_output_8u( unsigned char *output, int length )
 {
     signed int *mixed = mixed_buffer;
     signed int *end = mixed_buffer + length/sizeof(signed short);

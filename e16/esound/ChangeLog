@@ -1,6 +1,40 @@
+1999-09-03  Yo Ric Dude  <ericmit@ix.netcom.com>
+
+	* audio_alsa.c: evil macro hacks to map the new alsa names, 
+	SND_PCM_OPEN_CAPTURE and snd_pcm_capture_format, to the old names, 
+	SND_PCM_OPEN_RECORD and snd_pcm_record_format.  Why alsa doesn't
+	do this itself...
+
+	* esdlib.c: (esd_open_sound): if no ESPEAKER is set, but DISPLAY
+ 	is, try to connect to the default port on that host. Thanks to
+ 	Charles Galambos <ees1cg@ee.surrey.ac.uk>.
+
+1999-08-20  Elliot Lee  <sopwith@redhat.com>
+	* *.c, esd-server.h: Fix warnings, bump version to 0.2.13.
+
+1999-08-19  Kjartan Maraas  <kmaraas@online.no>
+
+	* mix.c: (clip_mix_to_output_8u): Change *output to unsigned int
+	from signed int.
+	
+Sun Aug  8 00:56:41 1999 1999 Timur Bakeyev <mc@bat.ru>
+
+	* configure.in: Add bsdi4 as a system, that supports esddsp.
+	INADDR_LOOPBACK - u_long changed to u_int32_t.
+
+1999-07-11  Raja R Harinath  <harinath@cs.umn.edu>
+
+	* acconfig.h (SUN_LEN): Add @BOTTOM@ section and move this
+	definition there.
+
+	* configure.in (setenv, putenv): Add checks.
+	* esdplay.c (main): Use `putenv' as a fallback if `setenv' isn't
+	available. 
+	Reported by "Brandon S. Allbery" <allbery@ece.cmu.edu>.
+	
 1999-06-30 Scott Heavner  <sdh@po.cwru.edu>
 
-	* configure.in/acconfig.h: Change SUN_LEN test to use AC_TRY_LINK.
+	* configure.in, acconfig.h: Change SUN_LEN test to use AC_TRY_LINK.
 	Then change it more.  Are #ifdef's allowed in acconfig.h?  Seems
 	like cheating, but it works here (autoconf v2.13).  The previous
 	incarnation was using AC_DEFINE to setup a macro and wasn't
@@ -8,13 +42,12 @@
 
 Mon Jun 28 18:34:10 1999 Timur Bakeyev <mc@bat.ru>
 
-    * acconfig.h, configure.in: Fix checkes against INADDR_LOOPBACK and SUN_LEN.
-    
-    * esd.h: Fix problem with mkdir() - if directory name containes "/" as a last
-    symbol, it'll not be created...
-    
-    * esd.c,esdlib.c: Introduced usage of SUN_LEN instead of direct calculation.
-    Move inline defenition of SUN_LEN to config.h.
+	* acconfig.h, configure.in: Fix checkes against INADDR_LOOPBACK
+	and SUN_LEN.
+	* esd.h: Fix problem with mkdir() - if directory name containes
+	"/" as a last symbol, it'll not be created.
+	* esd.c, esdlib.c: Introduced usage of SUN_LEN instead of direct
+	calculation. Move inline defenition of SUN_LEN to config.h.
 
 1999-06-22  Richard Boulton <rjb37@cam.ac.uk>
 
@@ -47,18 +80,19 @@ Wed Jun 16 12:52:02 1999 Timur Bakeyev <mc@bat.ru>
 	allows to change name in one place only.
 
 	* esd.c, esdlib.c: Fix a bug with domain sockets, when passing plain 
-	strlen() of the socket name to bind() caused it's trancation to "socke" :(
-	Changed to sizeof(struct sockaddr_un).
+	strlen() of the socket name to bind() caused it's trancation to
+	"socke" :(   Changed to sizeof(struct sockaddr_un).
 	
 	* esdsample.c: Fix a coredump, when no parameters specified.
 
 1999-06-14  Elliot Lee  <sopwith@redhat.com>
 
-	* esdlib.c: Fix bug #1276 - don't try to auto-spawn if $ESPEAKER is set.
+	* esdlib.c: Fix bug #1276 - don't try to auto-spawn if $ESPEAKER
+	is set.
 
 Tue Jun  8 18:13:22 1999  John Ellis  <johne@bellatlantic.net>
 
-	* esdmgr.c esd_get_all_info(): Fix memory leaks: player_info and
+	* esdmgr.c (esd_get_all_info): Fix memory leaks: player_info and
 	sample_info were not being freed after the do .. while loops.
 
 Tue Jun  8 17:00:54 1999 Timur Bakeyev <mc@bat.ru>
@@ -943,12 +977,12 @@ Wed Sep 23 13:05:11 CDT 1998  mej <mej@mw.3com.com>
 
 	* audio.c: added reference to config.h.
 
-	* Makefile.in,aclocal.m4,config.h.in,configure,COPYING,INSTALL,
-	config.guess,config.sub,install-sh,ltconfig,ltmain.sh,missing,
+	* Makefile.in, aclocal.m4, config.h.in, configure, COPYING, INSTALL,
+	config.guess, config.sub, install-sh, ltconfig, ltmain.sh, missing,
 	mkinstalldirs: removed from cvs tree, since they are added by
 	aclocal/auto*.
 
-	* autogen.sh,HACKING: readme and script for generating files listed
+	* autogen.sh, HACKING: readme and script for generating files listed
 	above.
 
 1998-05-27  Raja R Harinath  <harinath@cs.umn.edu>

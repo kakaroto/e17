@@ -2,7 +2,7 @@
 
 esd_player_t *esd_filter_list = NULL;
 
-translate_func_t *esd_first_filter_func;
+translate_func_t esd_first_filter_func;
 
 /*******************************************************************/
 /* send the filter's buffer to it's associated socket, erase if EOF */

@@ -18,8 +18,7 @@ EXTRA_DIST = \
 	test-script 	\
 	test.wav 	\
 	getopt.h 	\
-	TODO		\
-	$(SPEC_FILE)
+	TODO
 
 lib_LTLIBRARIES = libesd.la @LIBESDDSP@
 
@@ -125,3 +124,9 @@ rpm: $(PACKAGE)-$(VERSION).tar.gz
 	cp $(PACKAGE)-$(VERSION).tar.gz /usr/src/redhat/SOURCES
 	rpm -ba $(SPEC_FILE)
 
+dist-hook: esound.spec
+	cp $(SPEC_FILE) $(distdir)
+	mkdir $(distdir)/docs
+	cp $(srcdir)/docs/esound.sgml $(distdir)/docs
+
+CLEANFILES=esound.spec

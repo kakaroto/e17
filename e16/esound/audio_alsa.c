@@ -3,6 +3,9 @@
 */
 #include "esd.h"
 
+/* debugging messages for audio device */
+static int driver_trace = 0;
+
 #if defined(DRIVER_NEWALSA)
 #  include <sys/asoundlib.h>
 #else
@@ -17,6 +20,15 @@ void *handle;
 #endif
 #ifndef ALSADEVICE
 #  define ALSADEVICE 0
+#endif
+
+/* some identifiers changed names */
+#ifndef SND_PCM_OPEN_RECORD
+#define SND_PCM_OPEN_RECORD SND_PCM_OPEN_CAPTURE
+#endif
+
+#ifndef snd_pcm_record_format
+#define snd_pcm_record_format snd_pcm_capture_format
 #endif
 
 #define ARCH_esd_audio_open

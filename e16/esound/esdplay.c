@@ -53,9 +53,8 @@ play_file (const char *filename)
 
   afSetVirtualByteOrder (in_file, AF_DEFAULT_TRACK, AF_BYTEORDER_LITTLEENDIAN);
 
-  /*  printf ("frames: %i channels: %i rate: %f format: %i width: %i\n",
-   *	  frame_count, in_channels, in_rate, in_format, in_width);
-   */
+  printf ("frames: %i channels: %i rate: %f format: %i width: %i\n",
+    frame_count, in_channels, in_rate, in_format, in_width);
 
   /* convert audiofile parameters to EsounD parameters */
 
@@ -142,8 +141,6 @@ main (int argc, char *argv[])
 {
   int option_index = 0, c = 0;
 
-  char *server = NULL;
-
   struct option opts[] = {
     { "server", required_argument, NULL, 's' },
     { "help", no_argument, NULL, 'h' },
@@ -166,7 +163,23 @@ main (int argc, char *argv[])
       switch (c)
 	{
 	case 's':
-	  server = strdup (optarg);
+#ifdef HAVE_SETENV
+	  setenv("ESPEAKER", optarg, 1);
+#else
+#ifdef HAVE_PUTENV
+	  {
+	    /* The following malloc is correct, and does take into
+               account the trailing \0 too.  */
+	    char *espeaker_env = malloc (strlen (optarg) + sizeof "ESPEAKER=");
+	    if (espeaker_env)
+	      {
+		strcpy (espeaker_env, "ESPEAKER=");
+		strcat (espeaker_env, optarg);
+		putenv (espeaker_env);
+	      }
+	  }
+#endif
+#endif
 	  break;
 
 	case 'h':

@@ -2,6 +2,7 @@
 #include <stdio.h>
 #include <unistd.h>
 #include <string.h>
+#include <stdlib.h>
 
 /*******************************************************************/
 /* esdfile.c - audiofile wrappers for sane handling of files */
@@ -63,9 +64,9 @@ int esd_play_file( const char *name_prefix, const char *filename, int fallback )
     /* TODO: should this be set to the native endian order of the playing machine? */
     afSetVirtualByteOrder( in_file, AF_DEFAULT_TRACK, AF_BYTEORDER_LITTLEENDIAN );
 
-    /*  printf ("frames: %i channels: %i rate: %f format: %i width: %i\n",
-     *	        frame_count, in_channels, in_rate, in_format, in_width);
-     */
+    if(getenv("ESDBG"))
+    printf ("frames: %i channels: %i rate: %f format: %i width: %i\n",
+    	        frame_count, in_channels, in_rate, in_format, in_width);
 
     /* convert audiofile parameters to EsounD parameters */
     if ( in_width == 8 )

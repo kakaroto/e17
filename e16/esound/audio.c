@@ -17,9 +17,6 @@ char *esd_audio_device = NULL; /* aux device spec: /dev/dsp2, lineout, etc. */
 /* the audio device, /dev/dsp, file descriptor */
 static int esd_audio_fd = -1;
 
-/* debugging messages for audio devices */
-static int driver_trace = 0;
-
 /*******************************************************************/
 /* returns audio_fd for use by main prog - platform dependent */
 
