@@ -18,3 +18,8 @@ mkinstalldirs
 stamp-h
 stamp-h.in
 config.status
+autom4te.cache
+ewl-config.h.in
+ewl-config
+ewl-config.h
+stamp-h1
