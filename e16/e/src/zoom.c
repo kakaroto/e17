@@ -45,7 +45,7 @@ static void
 FillStdVidModes(void)
 {
    XF86VidModeGetAllModeLines(disp, root.scr, &std_vid_modes_num,
-                              &std_vid_modes);
+			      &std_vid_modes);
 }
 
 static XF86VidModeModeInfo *
@@ -56,18 +56,18 @@ FindMode(int w, int h)
 
    for (i = 0; i < std_vid_modes_num; i++)
      {
-        int                 close = 0x7fffffff;
+	int                 close = 0x7fffffff;
 
-        if ((std_vid_modes[i]->hdisplay >= w)
-            && (std_vid_modes[i]->vdisplay >= h))
-           close =
-               ((std_vid_modes[i]->hdisplay - w) +
-                (std_vid_modes[i]->vdisplay - h));
-        if (close < closest)
-          {
-             closest = close;
-             chosen = std_vid_modes[i];
-          }
+	if ((std_vid_modes[i]->hdisplay >= w)
+	    && (std_vid_modes[i]->vdisplay >= h))
+	   close =
+	      ((std_vid_modes[i]->hdisplay - w) +
+	       (std_vid_modes[i]->vdisplay - h));
+	if (close < closest)
+	  {
+	     closest = close;
+	     chosen = std_vid_modes[i];
+	  }
      }
    return chosen;
 }
@@ -80,9 +80,9 @@ GetModeJumpCount(XF86VidModeModeInfo * new)
    next = 0;
    for (i = 0; i < std_vid_modes_num; i++)
      {
-        if ((new->hdisplay == std_vid_modes[i]->hdisplay)
-            && (new->vdisplay == std_vid_modes[i]->vdisplay))
-           next = i;
+	if ((new->hdisplay == std_vid_modes[i]->hdisplay)
+	    && (new->vdisplay == std_vid_modes[i]->vdisplay))
+	   next = i;
      }
    return next;
 }
@@ -96,30 +96,30 @@ SwitchRes(char inout, int x, int y, int w, int h)
 
    if (inout)
      {
-        if (!XF86VidModeGetModeLine(disp, root.scr, &dotclock, &curmode))
-           return 0;
-        mode = FindMode(w, h);
-        if (mode)
-          {
-             jump = GetModeJumpCount(mode);
-             XWarpPointer(disp, None, root.win, 0, 0, 0, 0, x, y);
-             XF86VidModeSetViewPort(disp, root.scr, x, y);
-             XF86VidModeLockModeSwitch(disp, root.scr, 0);
-             for (i = 0; i < jump; i++)
-                XF86VidModeSwitchMode(disp, root.scr, 1);
-             std_vid_mode_cur = jump;
-             XF86VidModeLockModeSwitch(disp, root.scr, 1);
-          }
-        else
-           return 0;
+	if (!XF86VidModeGetModeLine(disp, root.scr, &dotclock, &curmode))
+	   return 0;
+	mode = FindMode(w, h);
+	if (mode)
+	  {
+	     jump = GetModeJumpCount(mode);
+	     XWarpPointer(disp, None, root.win, 0, 0, 0, 0, x, y);
+	     XF86VidModeSetViewPort(disp, root.scr, x, y);
+	     XF86VidModeLockModeSwitch(disp, root.scr, 0);
+	     for (i = 0; i < jump; i++)
+		XF86VidModeSwitchMode(disp, root.scr, 1);
+	     std_vid_mode_cur = jump;
+	     XF86VidModeLockModeSwitch(disp, root.scr, 1);
+	  }
+	else
+	   return 0;
      }
    else
      {
-        XF86VidModeLockModeSwitch(disp, root.scr, 0);
-        for (i = 0; i < (std_vid_modes_num - std_vid_mode_cur); i++)
-           XF86VidModeSwitchMode(disp, root.scr, 1);
-        XF86VidModeSetViewPort(disp, root.scr, x, y);
-        std_vid_mode_cur = 0;
+	XF86VidModeLockModeSwitch(disp, root.scr, 0);
+	for (i = 0; i < (std_vid_modes_num - std_vid_mode_cur); i++)
+	   XF86VidModeSwitchMode(disp, root.scr, 1);
+	XF86VidModeSetViewPort(disp, root.scr, x, y);
+	std_vid_mode_cur = 0;
      }
    return 1;
 }
@@ -146,8 +146,8 @@ ReZoom(EWin * ewin)
 {
    if ((InZoom()) && (ewin != zoom_last_ewin))
      {
-        Zoom(NULL);
-        Zoom(ewin);
+	Zoom(NULL);
+	Zoom(ewin);
      }
 }
 
@@ -170,9 +170,9 @@ ZoomInit(void)
 {
    if (XHasDGA())
      {
-        FillStdVidModes();
-        if (std_vid_modes_num > 1)
-           zoom_can = 1;
+	FillStdVidModes();
+	if (std_vid_modes_num > 1)
+	   zoom_can = 1;
      }
 }
 
@@ -183,28 +183,28 @@ Zoom(EWin * ewin)
       return;
    if (!ewin)
      {
-        if (zoom_last_ewin)
-          {
+	if (zoom_last_ewin)
+	  {
 /*           XUngrabPointer(disp, CurrentTime); */
-             MoveEwin(zoom_last_ewin, zoom_last_x, zoom_last_y);
-             ICCCM_Configure(zoom_last_ewin);
-             XDestroyWindow(disp, zoom_mask_1);
-             XDestroyWindow(disp, zoom_mask_2);
-             SwitchRes(0, 0, 0, 0, 0);
-             XSync(disp, False);
-          }
-        zoom_last_ewin = NULL;
-        return;
+	     MoveEwin(zoom_last_ewin, zoom_last_x, zoom_last_y);
+	     ICCCM_Configure(zoom_last_ewin);
+	     XDestroyWindow(disp, zoom_mask_1);
+	     XDestroyWindow(disp, zoom_mask_2);
+	     SwitchRes(0, 0, 0, 0, 0);
+	     XSync(disp, False);
+	  }
+	zoom_last_ewin = NULL;
+	return;
      }
    if (SwitchRes(1, 0, 0, ewin->client.w, ewin->client.h))
      {
-        zoom_last_ewin = ewin;
-        zoom_last_x = ewin->x;
-        zoom_last_y = ewin->y;
-        RaiseEwin(ewin);
-        MoveEwin(ewin, -ewin->border->border.left, -ewin->border->border.top);
-        ICCCM_Configure(ewin);
-        FocusToEWin(ewin);
+	zoom_last_ewin = ewin;
+	zoom_last_x = ewin->x;
+	zoom_last_y = ewin->y;
+	RaiseEwin(ewin);
+	MoveEwin(ewin, -ewin->border->border.left, -ewin->border->border.top);
+	ICCCM_Configure(ewin);
+	FocusToEWin(ewin);
 /*      XGrabPointer(disp, ewin->client.win, False, 0,
  * ButtonPressMask | ButtonReleaseMask |
  * PointerMotionMask | ButtonMotionMask |
@@ -212,19 +212,19 @@ Zoom(EWin * ewin)
  * GrabModeAsync, GrabModeAsync, None, 
  * ewin->client.win, None, 
  * CurrentTime); */
-        zoom_mask_1 =
-            ECreateWindow(root.win, ewin->client.w, 0, root.w, root.h, 0);
-        zoom_mask_2 =
-            ECreateWindow(root.win, 0, ewin->client.h, root.w, root.h, 0);
-        XSetWindowBackgroundPixmap(disp, zoom_mask_1, None);
-        XSetWindowBackgroundPixmap(disp, zoom_mask_2, None);
-        XSetWindowBackground(disp, zoom_mask_1, BlackPixel(disp, root.scr));
-        XSetWindowBackground(disp, zoom_mask_2, BlackPixel(disp, root.scr));
-        XRaiseWindow(disp, zoom_mask_1);
-        XRaiseWindow(disp, zoom_mask_2);
-        XMapWindow(disp, zoom_mask_1);
-        XMapWindow(disp, zoom_mask_2);
-        XSync(disp, False);
+	zoom_mask_1 =
+	   ECreateWindow(root.win, ewin->client.w, 0, root.w, root.h, 0);
+	zoom_mask_2 =
+	   ECreateWindow(root.win, 0, ewin->client.h, root.w, root.h, 0);
+	XSetWindowBackgroundPixmap(disp, zoom_mask_1, None);
+	XSetWindowBackgroundPixmap(disp, zoom_mask_2, None);
+	XSetWindowBackground(disp, zoom_mask_1, BlackPixel(disp, root.scr));
+	XSetWindowBackground(disp, zoom_mask_2, BlackPixel(disp, root.scr));
+	XRaiseWindow(disp, zoom_mask_1);
+	XRaiseWindow(disp, zoom_mask_2);
+	XMapWindow(disp, zoom_mask_1);
+	XMapWindow(disp, zoom_mask_2);
+	XSync(disp, False);
      }
 }
 #else

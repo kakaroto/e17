@@ -582,7 +582,7 @@ IPC_ConfigPanel(char *params, Client * c)
 {
    int                 i = 0;
    char                param[256], buf[FILEPATH_LEN_MAX],
-       buf2[FILEPATH_LEN_MAX];
+      buf2[FILEPATH_LEN_MAX];
    static char        *cfg_panels[] = {
 /* I just hardcoded this list form actions.c:doConfigure() -- perhaps
  * this should be tad more dynamic?? - pabs */
@@ -612,26 +612,26 @@ IPC_ConfigPanel(char *params, Client * c)
    param[0] = 0;
    if (params)
      {
-        word(params, 1, param);
-        if (!strcmp(param, "?"))
-          {
-             for (i = 0; cfg_panels[i]; i += 2)
-               {
-                  Esnprintf(buf2, sizeof(buf2), "%s : %s\n", cfg_panels[i],
-                            cfg_panels[i + 1]);
-                  strcat(buf, buf2);
-               }
-             if (strlen(buf))
-                CommsSend(c, buf);
-          }
-        else
-          {
-             doConfigure(params);
-          }
+	word(params, 1, param);
+	if (!strcmp(param, "?"))
+	  {
+	     for (i = 0; cfg_panels[i]; i += 2)
+	       {
+		  Esnprintf(buf2, sizeof(buf2), "%s : %s\n", cfg_panels[i],
+			    cfg_panels[i + 1]);
+		  strcat(buf, buf2);
+	       }
+	     if (strlen(buf))
+		CommsSend(c, buf);
+	  }
+	else
+	  {
+	     doConfigure(params);
+	  }
      }
    else
      {
-        CommsSend(c, "Error: no panel specified");
+	CommsSend(c, "Error: no panel specified");
 
      }
 }
@@ -644,30 +644,30 @@ IPC_Xinerama(char *params, Client * c)
 #ifdef HAS_XINERAMA
    if (xinerama_active)
      {
-        XineramaScreenInfo *screens;
-        int                 num, i;
-        char                stufftosend[4096];
+	XineramaScreenInfo *screens;
+	int                 num, i;
+	char                stufftosend[4096];
 
-        screens = XineramaQueryScreens(disp, &num);
+	screens = XineramaQueryScreens(disp, &num);
 
-        strcpy(stufftosend, "");
-        for (i = 0; i < num; i++)
-          {
-             char                s[1024];
+	strcpy(stufftosend, "");
+	for (i = 0; i < num; i++)
+	  {
+	     char                s[1024];
 
-             sprintf(s,
-                     "Head %d\nscreen # %d\nx origin: %d\ny origin: %d\n"
-                     "width: %d\nheight: %d\n\n", i, screens[i].screen_number,
-                     screens[i].x_org, screens[i].y_org, screens[i].width,
-                     screens[i].height);
-             strcat(stufftosend, s);
-          }
-        CommsSend(c, stufftosend);
-        XFree(screens);
+	     sprintf(s,
+		     "Head %d\nscreen # %d\nx origin: %d\ny origin: %d\n"
+		     "width: %d\nheight: %d\n\n", i, screens[i].screen_number,
+		     screens[i].x_org, screens[i].y_org, screens[i].width,
+		     screens[i].height);
+	     strcat(stufftosend, s);
+	  }
+	CommsSend(c, stufftosend);
+	XFree(screens);
      }
    else
      {
-        CommsSend(c, "Xinerama is not active on your system");
+	CommsSend(c, "Xinerama is not active on your system");
      }
 #else
    CommsSend(c, "Xinerama is disabled on your system");
@@ -695,53 +695,53 @@ IPC_Remember(char *params, Client * c)
 
    if (params)
      {
-        Window              win = 0;
-        EWin               *ewin;
+	Window              win = 0;
+	EWin               *ewin;
 
-        sscanf(params, "%8x", (int *)&win);
-        ewin = FindItem(NULL, (int)win, LIST_FINDBY_ID, LIST_TYPE_EWIN);
-        if (ewin)
-          {
-             params = atword(params, 2);
-             word(params, 1, param);
-             while (params)
-               {
-                  if (!strcmp((char *)param, "all"))
-                    {
-                       SnapshotEwinAll(ewin);
-                       break;
-                    }
-                  else if (!strcmp((char *)param, "none"))
-                     UnsnapshotEwin(ewin);
-                  else if (!strcmp((char *)param, "border"))
-                     SnapshotEwinBorder(ewin);
-                  else if (!strcmp((char *)param, "desktop"))
-                     SnapshotEwinDesktop(ewin);
-                  else if (!strcmp((char *)param, "size"))
-                     SnapshotEwinSize(ewin);
-                  else if (!strcmp((char *)param, "location"))
-                     SnapshotEwinLocation(ewin);
-                  else if (!strcmp((char *)param, "layer"))
-                     SnapshotEwinLayer(ewin);
-                  else if (!strcmp((char *)param, "sticky"))
-                     SnapshotEwinSticky(ewin);
-                  else if (!strcmp((char *)param, "icon"))
-                     SnapshotEwinIcon(ewin);
-                  else if (!strcmp((char *)param, "shade"))
-                     SnapshotEwinShade(ewin);
-                  else if (!strcmp((char *)param, "group"))
-                     SnapshotEwinGroups(ewin, 1);
-                  else if (!strcmp((char *)param, "command"))
-                     SnapshotEwinCmd(ewin);
-                  else if (!strcmp((char *)param, "dialog"))
-                     SnapshotEwinDialog(ewin);
-                  params = atword(params, 2);
-                  word(params, 1, param);
-               }
-             SaveSnapInfo();
-          }
-        else
-           Esnprintf(buf, sizeof(buf), "Error: no window found");
+	sscanf(params, "%8x", (int *)&win);
+	ewin = FindItem(NULL, (int)win, LIST_FINDBY_ID, LIST_TYPE_EWIN);
+	if (ewin)
+	  {
+	     params = atword(params, 2);
+	     word(params, 1, param);
+	     while (params)
+	       {
+		  if (!strcmp((char *)param, "all"))
+		    {
+		       SnapshotEwinAll(ewin);
+		       break;
+		    }
+		  else if (!strcmp((char *)param, "none"))
+		     UnsnapshotEwin(ewin);
+		  else if (!strcmp((char *)param, "border"))
+		     SnapshotEwinBorder(ewin);
+		  else if (!strcmp((char *)param, "desktop"))
+		     SnapshotEwinDesktop(ewin);
+		  else if (!strcmp((char *)param, "size"))
+		     SnapshotEwinSize(ewin);
+		  else if (!strcmp((char *)param, "location"))
+		     SnapshotEwinLocation(ewin);
+		  else if (!strcmp((char *)param, "layer"))
+		     SnapshotEwinLayer(ewin);
+		  else if (!strcmp((char *)param, "sticky"))
+		     SnapshotEwinSticky(ewin);
+		  else if (!strcmp((char *)param, "icon"))
+		     SnapshotEwinIcon(ewin);
+		  else if (!strcmp((char *)param, "shade"))
+		     SnapshotEwinShade(ewin);
+		  else if (!strcmp((char *)param, "group"))
+		     SnapshotEwinGroups(ewin, 1);
+		  else if (!strcmp((char *)param, "command"))
+		     SnapshotEwinCmd(ewin);
+		  else if (!strcmp((char *)param, "dialog"))
+		     SnapshotEwinDialog(ewin);
+		  params = atword(params, 2);
+		  word(params, 1, param);
+	       }
+	     SaveSnapInfo();
+	  }
+	else
+	   Esnprintf(buf, sizeof(buf), "Error: no window found");
      }
    else
       Esnprintf(buf, sizeof(buf), "Error: no parameters");
@@ -762,31 +762,31 @@ IPC_KDE(char *params, Client * c)
 
    if (params)
      {
-        if (!strcmp(params, "on"))
-          {
-             if (!mode.kde_support)
-                KDE_Init();
-          }
-        else if (!strcmp(params, "off"))
-          {
-             if (mode.kde_support)
-                KDE_Shutdown();
-          }
-        else if (!strcmp(params, "?"))
-          {
-             if (mode.kde_support)
-               {
-                  Esnprintf(buf, sizeof(buf), "kde: active");
-               }
-             else
-               {
-                  Esnprintf(buf, sizeof(buf), "kde: inactive");
-               }
-          }
-        else
-          {
-             Esnprintf(buf, sizeof(buf), "Error: unknown state specified");
-          }
+	if (!strcmp(params, "on"))
+	  {
+	     if (!mode.kde_support)
+		KDE_Init();
+	  }
+	else if (!strcmp(params, "off"))
+	  {
+	     if (mode.kde_support)
+		KDE_Shutdown();
+	  }
+	else if (!strcmp(params, "?"))
+	  {
+	     if (mode.kde_support)
+	       {
+		  Esnprintf(buf, sizeof(buf), "kde: active");
+	       }
+	     else
+	       {
+		  Esnprintf(buf, sizeof(buf), "kde: inactive");
+	       }
+	  }
+	else
+	  {
+	     Esnprintf(buf, sizeof(buf), "Error: unknown state specified");
+	  }
      }
    else
       Esnprintf(buf, sizeof(buf), "Error: no state specified");
@@ -807,70 +807,70 @@ IPC_Modules(char *params, Client * c)
 
    if (params)
      {
-        char                param1[FILEPATH_LEN_MAX];
-        char                param2[FILEPATH_LEN_MAX];
-        char                param3[FILEPATH_LEN_MAX];
+	char                param1[FILEPATH_LEN_MAX];
+	char                param2[FILEPATH_LEN_MAX];
+	char                param3[FILEPATH_LEN_MAX];
 
-        param1[0] = 0;
-        param2[0] = 0;
-        param3[0] = 0;
+	param1[0] = 0;
+	param2[0] = 0;
+	param3[0] = 0;
 
-        word(params, 1, param1);
-        word(params, 2, param2);
-        word(params, 3, param3);
-        if (!strcmp(param1, "load"))
-          {
-             if (!param2[0])
-               {
-                  Esnprintf(buf, sizeof(buf), "Error: no module specified");
-               }
-             else
-               {
-                  int                 returncode = 0;
+	word(params, 1, param1);
+	word(params, 2, param2);
+	word(params, 3, param3);
+	if (!strcmp(param1, "load"))
+	  {
+	     if (!param2[0])
+	       {
+		  Esnprintf(buf, sizeof(buf), "Error: no module specified");
+	       }
+	     else
+	       {
+		  int                 returncode = 0;
 
-                  if ((returncode = LoadModule(param2)))
-                    {
-                       strcat(buf, ModuleErrorCodeToString(returncode));
-                    }
-               }
-          }
-        else if (!strcmp(param1, "unload"))
-          {
-             if (!param2[0])
-               {
-                  Esnprintf(buf, sizeof(buf), "Error: no module specified");
-               }
-             else
-               {
-                  int                 returncode = 0;
+		  if ((returncode = LoadModule(param2)))
+		    {
+		       strcat(buf, ModuleErrorCodeToString(returncode));
+		    }
+	       }
+	  }
+	else if (!strcmp(param1, "unload"))
+	  {
+	     if (!param2[0])
+	       {
+		  Esnprintf(buf, sizeof(buf), "Error: no module specified");
+	       }
+	     else
+	       {
+		  int                 returncode = 0;
 
-                  if ((returncode = UnloadModule(param2)))
-                    {
-                       strcat(buf, ModuleErrorCodeToString(returncode));
-                       if (!buf[0])
-                         {
-                            Esnprintf(buf, sizeof(buf), "");
-                         }
-                    }
-               }
-          }
-        else if (!strcmp(param1, "list"))
-          {
-             strcat(buf, ModuleListAsString());
-             if (!buf[0])
-               {
-                  Esnprintf(buf, sizeof(buf), "no modules loaded");
-               }
-          }
-        else
-          {
-             Esnprintf(buf, sizeof(buf),
-                       "Error: unknown module operation specified");
-          }
+		  if ((returncode = UnloadModule(param2)))
+		    {
+		       strcat(buf, ModuleErrorCodeToString(returncode));
+		       if (!buf[0])
+			 {
+			    Esnprintf(buf, sizeof(buf), "");
+			 }
+		    }
+	       }
+	  }
+	else if (!strcmp(param1, "list"))
+	  {
+	     strcat(buf, ModuleListAsString());
+	     if (!buf[0])
+	       {
+		  Esnprintf(buf, sizeof(buf), "no modules loaded");
+	       }
+	  }
+	else
+	  {
+	     Esnprintf(buf, sizeof(buf),
+		       "Error: unknown module operation specified");
+	  }
      }
    else
      {
-        Esnprintf(buf, sizeof(buf), "Error: no module operation specified");
+	Esnprintf(buf, sizeof(buf), "Error: no module operation specified");
      }
 
    if (buf[0])
@@ -889,139 +889,139 @@ IPC_DockConfig(char *params, Client * c)
 
    if (params)
      {
-        char                param1[FILEPATH_LEN_MAX];
-        char                param2[FILEPATH_LEN_MAX];
-        char                param3[FILEPATH_LEN_MAX];
+	char                param1[FILEPATH_LEN_MAX];
+	char                param2[FILEPATH_LEN_MAX];
+	char                param3[FILEPATH_LEN_MAX];
 
-        param1[0] = 0;
-        param2[0] = 0;
-        param3[0] = 0;
+	param1[0] = 0;
+	param2[0] = 0;
+	param3[0] = 0;
 
-        word(params, 1, param1);
-        word(params, 2, param2);
+	word(params, 1, param1);
+	word(params, 2, param2);
 
-        if (!strcmp(param1, "start_pos"))
-          {
-             if (param2[0])
-               {
-                  if (!strcmp(param2, "?"))
-                    {
-                       Esnprintf(buf, sizeof(buf), "dock_startposition: %d %d",
-                                 mode.dockstartx, mode.dockstarty);
-                    }
-                  else
-                    {
-                       word(params, 3, param3);
-                       if (param3[0])
-                         {
-                            mode.dockstartx = atoi(param2);
-                            mode.dockstarty = atoi(param3);
-                         }
-                       else
-                         {
-                            Esnprintf(buf, sizeof(buf),
-                                      "Error: no y coordinate");
+	if (!strcmp(param1, "start_pos"))
+	  {
+	     if (param2[0])
+	       {
+		  if (!strcmp(param2, "?"))
+		    {
+		       Esnprintf(buf, sizeof(buf), "dock_startposition: %d %d",
+				 mode.dockstartx, mode.dockstarty);
+		    }
+		  else
+		    {
+		       word(params, 3, param3);
+		       if (param3[0])
+			 {
+			    mode.dockstartx = atoi(param2);
+			    mode.dockstarty = atoi(param3);
+			 }
+		       else
+			 {
+			    Esnprintf(buf, sizeof(buf),
+				      "Error: no y coordinate");
 
-                         }
-                    }
-               }
-             else
-               {
-                  Esnprintf(buf, sizeof(buf), "Error: no operation specified");
-               }
-          }
-        else if (!strcmp(param1, "direction"))
-          {
-             if (param2[0])
-               {
-                  if (!strcmp(param2, "?"))
-                    {
-                       if (mode.dockdirmode == DOCK_LEFT)
-                         {
-                            Esnprintf(buf, sizeof(buf), "dock_dir: left");
-                         }
-                       else if (mode.dockdirmode == DOCK_RIGHT)
-                         {
-                            Esnprintf(buf, sizeof(buf), "dock_dir: right");
-                         }
-                       else if (mode.dockdirmode == DOCK_UP)
-                         {
-                            Esnprintf(buf, sizeof(buf), "dock_dir: up");
-                         }
-                       else if (mode.dockdirmode == DOCK_DOWN)
-                         {
-                            Esnprintf(buf, sizeof(buf), "dock_dir: down");
-                         }
-                       else
-                         {
-                            Esnprintf(buf, sizeof(buf),
-                                      "Error: I have NO " "idea what direction "
-                                      "this thing is going");
-                         }
-                    }
-                  else if (!strcmp(param2, "left"))
-                    {
-                       mode.dockdirmode = DOCK_LEFT;
-                    }
-                  else if (!strcmp(param2, "right"))
-                    {
-                       mode.dockdirmode = DOCK_RIGHT;
-                    }
-                  else if (!strcmp(param2, "up"))
-                    {
-                       mode.dockdirmode = DOCK_UP;
-                    }
-                  else if (!strcmp(param2, "down"))
-                    {
-                       mode.dockdirmode = DOCK_DOWN;
-                    }
-                  else
-                    {
-                       Esnprintf(buf, sizeof(buf),
-                                 "Error: unknown direction " "specified");
-                    }
-               }
-             else
-               {
-                  Esnprintf(buf, sizeof(buf), "Error: no operation specified");
-               }
-          }
-        else if (!strcmp(param1, "support"))
-          {
-             if (param2[0])
-               {
-                  if (!strcmp(param2, "?"))
-                    {
-                       Esnprintf(buf, sizeof(buf), "dockapp support: %s",
-                                 (mode.dockapp_support) ? "enabled" :
-                                 "disabled");
-                    }
-                  else if ((!strcmp(param2, "on"))
-                           || (!strcmp(param2, "enable")))
-                    {
-                       mode.dockapp_support = 1;
-                       Esnprintf(buf, sizeof(buf), "dockapp support: enabled");
-                    }
-                  else if ((!strcmp(param2, "off"))
-                           || (!strcmp(param2, "disable")))
-                    {
-                       mode.dockapp_support = 0;
-                       Esnprintf(buf, sizeof(buf), "dockapp support: disabled");
-                    }
-               }
-             else
-               {
-                  Esnprintf(buf, sizeof(buf), "Error: no operation specified");
-               }
-          }
-        else
-          {
-             Esnprintf(buf, sizeof(buf), "Error: unknown mode");
-          }
+			 }
+		    }
+	       }
+	     else
+	       {
+		  Esnprintf(buf, sizeof(buf), "Error: no operation specified");
+	       }
+	  }
+	else if (!strcmp(param1, "direction"))
+	  {
+	     if (param2[0])
+	       {
+		  if (!strcmp(param2, "?"))
+		    {
+		       if (mode.dockdirmode == DOCK_LEFT)
+			 {
+			    Esnprintf(buf, sizeof(buf), "dock_dir: left");
+			 }
+		       else if (mode.dockdirmode == DOCK_RIGHT)
+			 {
+			    Esnprintf(buf, sizeof(buf), "dock_dir: right");
+			 }
+		       else if (mode.dockdirmode == DOCK_UP)
+			 {
+			    Esnprintf(buf, sizeof(buf), "dock_dir: up");
+			 }
+		       else if (mode.dockdirmode == DOCK_DOWN)
+			 {
+			    Esnprintf(buf, sizeof(buf), "dock_dir: down");
+			 }
+		       else
+			 {
+			    Esnprintf(buf, sizeof(buf),
+				      "Error: I have NO " "idea what direction "
+				      "this thing is going");
+			 }
+		    }
+		  else if (!strcmp(param2, "left"))
+		    {
+		       mode.dockdirmode = DOCK_LEFT;
+		    }
+		  else if (!strcmp(param2, "right"))
+		    {
+		       mode.dockdirmode = DOCK_RIGHT;
+		    }
+		  else if (!strcmp(param2, "up"))
+		    {
+		       mode.dockdirmode = DOCK_UP;
+		    }
+		  else if (!strcmp(param2, "down"))
+		    {
+		       mode.dockdirmode = DOCK_DOWN;
+		    }
+		  else
+		    {
+		       Esnprintf(buf, sizeof(buf),
+				 "Error: unknown direction " "specified");
+		    }
+	       }
+	     else
+	       {
+		  Esnprintf(buf, sizeof(buf), "Error: no operation specified");
+	       }
+	  }
+	else if (!strcmp(param1, "support"))
+	  {
+	     if (param2[0])
+	       {
+		  if (!strcmp(param2, "?"))
+		    {
+		       Esnprintf(buf, sizeof(buf), "dockapp support: %s",
+				 (mode.dockapp_support) ? "enabled" :
+				 "disabled");
+		    }
+		  else if ((!strcmp(param2, "on"))
+			   || (!strcmp(param2, "enable")))
+		    {
+		       mode.dockapp_support = 1;
+		       Esnprintf(buf, sizeof(buf), "dockapp support: enabled");
+		    }
+		  else if ((!strcmp(param2, "off"))
+			   || (!strcmp(param2, "disable")))
+		    {
+		       mode.dockapp_support = 0;
+		       Esnprintf(buf, sizeof(buf), "dockapp support: disabled");
+		    }
+	       }
+	     else
+	       {
+		  Esnprintf(buf, sizeof(buf), "Error: no operation specified");
+	       }
+	  }
+	else
+	  {
+	     Esnprintf(buf, sizeof(buf), "Error: unknown mode");
+	  }
      }
    else
      {
-        Esnprintf(buf, sizeof(buf), "Error: no mode given");
+	Esnprintf(buf, sizeof(buf), "Error: no mode given");
      }
 
    if (buf[0])
@@ -1041,18 +1041,18 @@ IPC_GeneralInfo(char *params, Client * c)
 
    if (params)
      {
-        if (!strcmp(params, "screen_size"))
-          {
-             Esnprintf(buf, sizeof(buf), "screen_size: %d %d", root.w, root.h);
-          }
-        else
-          {
-             Esnprintf(buf, sizeof(buf), "Error: unknown info requested");
-          }
+	if (!strcmp(params, "screen_size"))
+	  {
+	     Esnprintf(buf, sizeof(buf), "screen_size: %d %d", root.w, root.h);
+	  }
+	else
+	  {
+	     Esnprintf(buf, sizeof(buf), "Error: unknown info requested");
+	  }
      }
    else
      {
-        Esnprintf(buf, sizeof(buf), "Error: no info requested");
+	Esnprintf(buf, sizeof(buf), "Error: no info requested");
      }
 
    if (buf[0])
@@ -1072,56 +1072,56 @@ IPC_Button(char *params, Client * c)
 
    if (params)
      {
-        char                param1[FILEPATH_LEN_MAX];
-        char                param2[FILEPATH_LEN_MAX];
-        char                param3[FILEPATH_LEN_MAX];
+	char                param1[FILEPATH_LEN_MAX];
+	char                param2[FILEPATH_LEN_MAX];
+	char                param3[FILEPATH_LEN_MAX];
 
-        param1[0] = 0;
-        param2[0] = 0;
-        param3[0] = 0;
+	param1[0] = 0;
+	param2[0] = 0;
+	param3[0] = 0;
 
-        word(params, 1, param1);
-        word(params, 2, param2);
-        if (param2[0])
-          {
-             if (!strcmp(param2, "create"))
-               {
-               }
-             else if (!strcmp(param2, "delete"))
-               {
-                  Button             *b;
+	word(params, 1, param1);
+	word(params, 2, param2);
+	if (param2[0])
+	  {
+	     if (!strcmp(param2, "create"))
+	       {
+	       }
+	     else if (!strcmp(param2, "delete"))
+	       {
+		  Button             *b;
 
-                  b = (Button *) FindItem(param1, 0, LIST_FINDBY_NAME,
-                                          LIST_TYPE_BUTTON);
-                  if (b)
-                     DestroyButton(b);
-               }
-             else if (!strcmp(param2, "modify"))
-               {
-               }
-             else if (!strcmp(param2, "ref_count"))
-               {
-                  Button             *b;
+		  b = (Button *) FindItem(param1, 0, LIST_FINDBY_NAME,
+					  LIST_TYPE_BUTTON);
+		  if (b)
+		     DestroyButton(b);
+	       }
+	     else if (!strcmp(param2, "modify"))
+	       {
+	       }
+	     else if (!strcmp(param2, "ref_count"))
+	       {
+		  Button             *b;
 
-                  b = (Button *) FindItem(param1, 0, LIST_FINDBY_NAME,
-                                          LIST_TYPE_BUTTON);
-                  if (b)
-                     Esnprintf(buf, sizeof(buf), "%u references remain",
-                               b->ref_count);
-               }
-             else
-               {
-                  Esnprintf(buf, sizeof(buf), "Error: no cursor specified");
-               }
-          }
-        else
-          {
-             Esnprintf(buf, sizeof(buf), "Error: unknown operation specified");
-          }
+		  b = (Button *) FindItem(param1, 0, LIST_FINDBY_NAME,
+					  LIST_TYPE_BUTTON);
+		  if (b)
+		     Esnprintf(buf, sizeof(buf), "%u references remain",
+			       b->ref_count);
+	       }
+	     else
+	       {
+		  Esnprintf(buf, sizeof(buf), "Error: no cursor specified");
+	       }
+	  }
+	else
+	  {
+	     Esnprintf(buf, sizeof(buf), "Error: unknown operation specified");
+	  }
      }
    else
      {
-        Esnprintf(buf, sizeof(buf), "Error: no operation specified");
+	Esnprintf(buf, sizeof(buf), "Error: no operation specified");
      }
 
    if (buf[0])
@@ -1150,195 +1150,195 @@ IPC_Background(char *params, Client * c)
 
    if (params)
      {
-        if (type[0])
-          {
-             if (!strcmp(type, "?"))
-               {
-                  /* query background values */
+	if (type[0])
+	  {
+	     if (!strcmp(type, "?"))
+	       {
+		  /* query background values */
 
-                  bg = (Background *) FindItem(name, 0, LIST_FINDBY_NAME,
-                                               LIST_TYPE_BACKGROUND);
+		  bg = (Background *) FindItem(name, 0, LIST_FINDBY_NAME,
+					       LIST_TYPE_BACKGROUND);
 
-                  if (bg)
-                    {
-                       Esnprintf(buf, sizeof(buf),
-                                 "%s ref_count %u\n" " bg.solid\t %i %i %i \n"
-                                 " bg.file\t %s \ttop.file\t %s \n"
-                                 " bg.tile\t %i \n"
-                                 " bg.keep_aspect\t %i \ttop.keep_aspect\t %i \n"
-                                 " bg.xjust\t %i \ttop.xjust\t %i \n"
-                                 " bg.yjust\t %i \ttop.yjust\t %i \n"
-                                 " bg.xperc\t %i \ttop.xperc\t %i \n"
-                                 " bg.yperc\t %i \ttop.yperc\t %i \n", bg->name,
-                                 bg->ref_count, bg->bg.solid.r, bg->bg.solid.g,
-                                 bg->bg.solid.b, bg->bg.file, bg->top.file,
-                                 bg->bg.tile, bg->bg.keep_aspect,
-                                 bg->top.keep_aspect, bg->bg.xjust,
-                                 bg->top.xjust, bg->bg.yjust, bg->top.yjust,
-                                 bg->bg.xperc, bg->top.xperc, bg->bg.yperc,
-                                 bg->top.yperc);
-                    }
-                  else
-                     Esnprintf(buf, sizeof(buf),
-                               "Error: background '%s' does not exist.", name);
-               }
-             else
-               {
-                  /* create / modify background */
+		  if (bg)
+		    {
+		       Esnprintf(buf, sizeof(buf),
+				 "%s ref_count %u\n" " bg.solid\t %i %i %i \n"
+				 " bg.file\t %s \ttop.file\t %s \n"
+				 " bg.tile\t %i \n"
+				 " bg.keep_aspect\t %i \ttop.keep_aspect\t %i \n"
+				 " bg.xjust\t %i \ttop.xjust\t %i \n"
+				 " bg.yjust\t %i \ttop.yjust\t %i \n"
+				 " bg.xperc\t %i \ttop.xperc\t %i \n"
+				 " bg.yperc\t %i \ttop.yperc\t %i \n", bg->name,
+				 bg->ref_count, bg->bg.solid.r, bg->bg.solid.g,
+				 bg->bg.solid.b, bg->bg.file, bg->top.file,
+				 bg->bg.tile, bg->bg.keep_aspect,
+				 bg->top.keep_aspect, bg->bg.xjust,
+				 bg->top.xjust, bg->bg.yjust, bg->top.yjust,
+				 bg->bg.xperc, bg->top.xperc, bg->bg.yperc,
+				 bg->top.yperc);
+		    }
+		  else
+		     Esnprintf(buf, sizeof(buf),
+			       "Error: background '%s' does not exist.", name);
+	       }
+	     else
+	       {
+		  /* create / modify background */
 
-                  bg = (Background *) FindItem(name, 0, LIST_FINDBY_NAME,
-                                               LIST_TYPE_BACKGROUND);
+		  bg = (Background *) FindItem(name, 0, LIST_FINDBY_NAME,
+					       LIST_TYPE_BACKGROUND);
 
-                  if (!bg)
-                    {
-                       bg = CreateDesktopBG(strdup(name), NULL, NULL, 0, 0, 0,
-                                            0, 0, 0, NULL, 0, 0, 0, 0, 0);
-                       AddItem(bg, bg->name, 0, LIST_TYPE_BACKGROUND);
-                    }
-                  if (!bg)
-                     Esnprintf(buf, sizeof(buf),
-                               "Error: could not create background '%s'.",
-                               name);
-                  else
-                    {
-                       word(params, 3, valu);
-                       if (!strcmp(type, "bg.solid"))
-                         {
-                            char                R[3], G[3], B[3];
+		  if (!bg)
+		    {
+		       bg = CreateDesktopBG(strdup(name), NULL, NULL, 0, 0, 0,
+					    0, 0, 0, NULL, 0, 0, 0, 0, 0);
+		       AddItem(bg, bg->name, 0, LIST_TYPE_BACKGROUND);
+		    }
+		  if (!bg)
+		     Esnprintf(buf, sizeof(buf),
+			       "Error: could not create background '%s'.",
+			       name);
+		  else
+		    {
+		       word(params, 3, valu);
+		       if (!strcmp(type, "bg.solid"))
+			 {
+			    char                R[3], G[3], B[3];
 
-                            R[0] = 0;
-                            G[0] = 0;
-                            B[0] = 0;
+			    R[0] = 0;
+			    G[0] = 0;
+			    B[0] = 0;
 
-                            word(params, 3, R);
-                            word(params, 4, G);
-                            word(params, 5, B);
+			    word(params, 3, R);
+			    word(params, 4, G);
+			    word(params, 5, B);
 
-                            bg->bg.solid.r = atoi(R);
-                            bg->bg.solid.g = atoi(G);
-                            bg->bg.solid.b = atoi(B);
-                         }
-                       else if (!strcmp(type, "bg.file"))
-                         {
-                            if (bg->bg.file)
-                               Efree(bg->bg.file);
-                            bg->bg.file = strdup(valu);
-                         }
-                       else if (!strcmp(type, "bg.tile"))
-                         {
-                            bg->bg.tile = atoi(valu);
-                         }
-                       else if (!strcmp(type, "bg.keep_aspect"))
-                         {
-                            bg->bg.keep_aspect = atoi(valu);
-                         }
-                       else if (!strcmp(type, "bg.xjust"))
-                         {
-                            bg->bg.xjust = atoi(valu);
-                         }
-                       else if (!strcmp(type, "bg.yjust"))
-                         {
-                            bg->bg.yjust = atoi(valu);
-                         }
-                       else if (!strcmp(type, "bg.xperc"))
-                         {
-                            bg->bg.xperc = atoi(valu);
-                         }
-                       else if (!strcmp(type, "bg.yperc"))
-                         {
-                            bg->bg.yperc = atoi(valu);
-                         }
-                       else if (!strcmp(type, "top.file"))
-                         {
-                            if (bg->top.file)
-                               Efree(bg->top.file);
-                            bg->top.file = strdup(valu);
-                         }
-                       else if (!strcmp(type, "top.keep_aspect"))
-                         {
-                            bg->top.keep_aspect = atoi(valu);
-                         }
-                       else if (!strcmp(type, "top.xjust"))
-                         {
-                            bg->top.xjust = atoi(valu);
-                         }
-                       else if (!strcmp(type, "top.yjust"))
-                         {
-                            bg->top.yjust = atoi(valu);
-                         }
-                       else if (!strcmp(type, "top.xperc"))
-                         {
-                            bg->top.xperc = atoi(valu);
-                         }
-                       else if (!strcmp(type, "top.yperc"))
-                         {
-                            bg->top.yperc = atoi(valu);
-                         }
-                       else
-                         {
-                            Esnprintf(buf, sizeof(buf),
-                                      "Error: unknown background value type '%s'.",
-                                      type);
-                         }
-                    }
-               }
-          }
-        else
-          {
-             /* delete background */
-             bg = (Background *) FindItem(name, 0, LIST_FINDBY_NAME,
-                                          LIST_TYPE_BACKGROUND);
+			    bg->bg.solid.r = atoi(R);
+			    bg->bg.solid.g = atoi(G);
+			    bg->bg.solid.b = atoi(B);
+			 }
+		       else if (!strcmp(type, "bg.file"))
+			 {
+			    if (bg->bg.file)
+			       Efree(bg->bg.file);
+			    bg->bg.file = strdup(valu);
+			 }
+		       else if (!strcmp(type, "bg.tile"))
+			 {
+			    bg->bg.tile = atoi(valu);
+			 }
+		       else if (!strcmp(type, "bg.keep_aspect"))
+			 {
+			    bg->bg.keep_aspect = atoi(valu);
+			 }
+		       else if (!strcmp(type, "bg.xjust"))
+			 {
+			    bg->bg.xjust = atoi(valu);
+			 }
+		       else if (!strcmp(type, "bg.yjust"))
+			 {
+			    bg->bg.yjust = atoi(valu);
+			 }
+		       else if (!strcmp(type, "bg.xperc"))
+			 {
+			    bg->bg.xperc = atoi(valu);
+			 }
+		       else if (!strcmp(type, "bg.yperc"))
+			 {
+			    bg->bg.yperc = atoi(valu);
+			 }
+		       else if (!strcmp(type, "top.file"))
+			 {
+			    if (bg->top.file)
+			       Efree(bg->top.file);
+			    bg->top.file = strdup(valu);
+			 }
+		       else if (!strcmp(type, "top.keep_aspect"))
+			 {
+			    bg->top.keep_aspect = atoi(valu);
+			 }
+		       else if (!strcmp(type, "top.xjust"))
+			 {
+			    bg->top.xjust = atoi(valu);
+			 }
+		       else if (!strcmp(type, "top.yjust"))
+			 {
+			    bg->top.yjust = atoi(valu);
+			 }
+		       else if (!strcmp(type, "top.xperc"))
+			 {
+			    bg->top.xperc = atoi(valu);
+			 }
+		       else if (!strcmp(type, "top.yperc"))
+			 {
+			    bg->top.yperc = atoi(valu);
+			 }
+		       else
+			 {
+			    Esnprintf(buf, sizeof(buf),
+				      "Error: unknown background value type '%s'.",
+				      type);
+			 }
+		    }
+	       }
+	  }
+	else
+	  {
+	     /* delete background */
+	     bg = (Background *) FindItem(name, 0, LIST_FINDBY_NAME,
+					  LIST_TYPE_BACKGROUND);
 
-             if (bg)
-               {
-                  if (bg->ref_count == 0)
-                    {
-                       RemoveItem(name, 0, LIST_FINDBY_NAME,
-                                  LIST_TYPE_BACKGROUND);
-                       FreeDesktopBG(bg);
-                    }
-                  else
-                     Esnprintf(buf, sizeof(buf),
-                               "Error: ref_count for background '%s' is %u.",
-                               name, bg->ref_count);
-               }
-             else
-                Esnprintf(buf, sizeof(buf),
-                          "Error: background '%s' does not exist.", name);
-          }
+	     if (bg)
+	       {
+		  if (bg->ref_count == 0)
+		    {
+		       RemoveItem(name, 0, LIST_FINDBY_NAME,
+				  LIST_TYPE_BACKGROUND);
+		       FreeDesktopBG(bg);
+		    }
+		  else
+		     Esnprintf(buf, sizeof(buf),
+			       "Error: ref_count for background '%s' is %u.",
+			       name, bg->ref_count);
+	       }
+	     else
+		Esnprintf(buf, sizeof(buf),
+			  "Error: background '%s' does not exist.", name);
+	  }
      }
    else
      {
-        /* show all backgrounds */
-        Background        **lst;
-        char                buf2[FILEPATH_LEN_MAX];
-        char               *buf3 = NULL;
-        int                 num, i;
+	/* show all backgrounds */
+	Background        **lst;
+	char                buf2[FILEPATH_LEN_MAX];
+	char               *buf3 = NULL;
+	int                 num, i;
 
-        buf2[0] = 0;
-        lst = (Background **) ListItemType(&num, LIST_TYPE_BACKGROUND);
-        if (lst)
-          {
-             for (i = 0; i < num; i++)
-               {
-                  buf2[0] = 0;
-                  Esnprintf(buf2, sizeof(buf2), "%s\n", lst[i]->name);
-                  if (buf3)
-                     buf3 = realloc(buf3, strlen(buf3) + strlen(buf2) + 1);
-                  else
-                    {
-                       buf3 = malloc(strlen(buf2) + 1);
-                       buf3[0] = 0;
-                    }
-                  strcat(buf3, buf2);
-               }
-             if (buf3)
-               {
-                  CommsSend(c, buf3);
-                  Efree(buf3);
-               }
-             Efree(lst);
-          }
+	buf2[0] = 0;
+	lst = (Background **) ListItemType(&num, LIST_TYPE_BACKGROUND);
+	if (lst)
+	  {
+	     for (i = 0; i < num; i++)
+	       {
+		  buf2[0] = 0;
+		  Esnprintf(buf2, sizeof(buf2), "%s\n", lst[i]->name);
+		  if (buf3)
+		     buf3 = realloc(buf3, strlen(buf3) + strlen(buf2) + 1);
+		  else
+		    {
+		       buf3 = malloc(strlen(buf2) + 1);
+		       buf3[0] = 0;
+		    }
+		  strcat(buf3, buf2);
+	       }
+	     if (buf3)
+	       {
+		  CommsSend(c, buf3);
+		  Efree(buf3);
+	       }
+	     Efree(lst);
+	  }
      }
 
    if (buf[0])
@@ -1357,56 +1357,56 @@ IPC_Border(char *params, Client * c)
 
    if (params)
      {
-        char                param1[FILEPATH_LEN_MAX];
-        char                param2[FILEPATH_LEN_MAX];
-        char                param3[FILEPATH_LEN_MAX];
+	char                param1[FILEPATH_LEN_MAX];
+	char                param2[FILEPATH_LEN_MAX];
+	char                param3[FILEPATH_LEN_MAX];
 
-        param1[0] = 0;
-        param2[0] = 0;
-        param3[0] = 0;
+	param1[0] = 0;
+	param2[0] = 0;
+	param3[0] = 0;
 
-        word(params, 1, param1);
-        word(params, 2, param2);
-        if (param2[0])
-          {
-             if (!strcmp(param2, "create"))
-               {
-               }
-             else if (!strcmp(param2, "delete"))
-               {
-                  Border             *b;
+	word(params, 1, param1);
+	word(params, 2, param2);
+	if (param2[0])
+	  {
+	     if (!strcmp(param2, "create"))
+	       {
+	       }
+	     else if (!strcmp(param2, "delete"))
+	       {
+		  Border             *b;
 
-                  b = (Border *) FindItem(param1, 0, LIST_FINDBY_NAME,
-                                          LIST_TYPE_BORDER);
-                  if (b)
-                     FreeBorder(b);
-               }
-             else if (!strcmp(param2, "modify"))
-               {
-               }
-             else if (!strcmp(param2, "ref_count"))
-               {
-                  Border             *b;
+		  b = (Border *) FindItem(param1, 0, LIST_FINDBY_NAME,
+					  LIST_TYPE_BORDER);
+		  if (b)
+		     FreeBorder(b);
+	       }
+	     else if (!strcmp(param2, "modify"))
+	       {
+	       }
+	     else if (!strcmp(param2, "ref_count"))
+	       {
+		  Border             *b;
 
-                  b = (Border *) FindItem(param1, 0, LIST_FINDBY_NAME,
-                                          LIST_TYPE_BORDER);
-                  if (b)
-                     Esnprintf(buf, sizeof(buf), "%u references remain",
-                               b->ref_count);
-               }
-             else
-               {
-                  Esnprintf(buf, sizeof(buf), "Error: no cursor specified");
-               }
-          }
-        else
-          {
-             Esnprintf(buf, sizeof(buf), "Error: unknown operation specified");
-          }
+		  b = (Border *) FindItem(param1, 0, LIST_FINDBY_NAME,
+					  LIST_TYPE_BORDER);
+		  if (b)
+		     Esnprintf(buf, sizeof(buf), "%u references remain",
+			       b->ref_count);
+	       }
+	     else
+	       {
+		  Esnprintf(buf, sizeof(buf), "Error: no cursor specified");
+	       }
+	  }
+	else
+	  {
+	     Esnprintf(buf, sizeof(buf), "Error: unknown operation specified");
+	  }
      }
    else
      {
-        Esnprintf(buf, sizeof(buf), "Error: no operation specified");
+	Esnprintf(buf, sizeof(buf), "Error: no operation specified");
      }
 
    if (buf[0])
@@ -1425,56 +1425,56 @@ IPC_Cursor(char *params, Client * c)
 
    if (params)
      {
-        char                param1[FILEPATH_LEN_MAX];
-        char                param2[FILEPATH_LEN_MAX];
-        char                param3[FILEPATH_LEN_MAX];
+	char                param1[FILEPATH_LEN_MAX];
+	char                param2[FILEPATH_LEN_MAX];
+	char                param3[FILEPATH_LEN_MAX];
 
-        param1[0] = 0;
-        param2[0] = 0;
-        param3[0] = 0;
+	param1[0] = 0;
+	param2[0] = 0;
+	param3[0] = 0;
 
-        word(params, 1, param1);
-        word(params, 2, param2);
-        if (param2[0])
-          {
-             if (!strcmp(param2, "create"))
-               {
-               }
-             else if (!strcmp(param2, "delete"))
-               {
-                  ECursor            *ec;
+	word(params, 1, param1);
+	word(params, 2, param2);
+	if (param2[0])
+	  {
+	     if (!strcmp(param2, "create"))
+	       {
+	       }
+	     else if (!strcmp(param2, "delete"))
+	       {
+		  ECursor            *ec;
 
-                  ec = (ECursor *) FindItem(param1, 0, LIST_FINDBY_NAME,
-                                            LIST_TYPE_ECURSOR);
-                  if (ec)
-                     FreeECursor(ec);
-               }
-             else if (!strcmp(param2, "modify"))
-               {
-               }
-             else if (!strcmp(param2, "ref_count"))
-               {
-                  ECursor            *ec;
+		  ec = (ECursor *) FindItem(param1, 0, LIST_FINDBY_NAME,
+					    LIST_TYPE_ECURSOR);
+		  if (ec)
+		     FreeECursor(ec);
+	       }
+	     else if (!strcmp(param2, "modify"))
+	       {
+	       }
+	     else if (!strcmp(param2, "ref_count"))
+	       {
+		  ECursor            *ec;
 
-                  ec = (ECursor *) FindItem(param1, 0, LIST_FINDBY_NAME,
-                                            LIST_TYPE_ECURSOR);
-                  if (ec)
-                     Esnprintf(buf, sizeof(buf), "%u references remain",
-                               ec->ref_count);
-               }
-             else
-               {
-                  Esnprintf(buf, sizeof(buf), "Error: no cursor specified");
-               }
-          }
-        else
-          {
-             Esnprintf(buf, sizeof(buf), "Error: unknown operation specified");
-          }
+		  ec = (ECursor *) FindItem(param1, 0, LIST_FINDBY_NAME,
+					    LIST_TYPE_ECURSOR);
+		  if (ec)
+		     Esnprintf(buf, sizeof(buf), "%u references remain",
+			       ec->ref_count);
+	       }
+	     else
+	       {
+		  Esnprintf(buf, sizeof(buf), "Error: no cursor specified");
+	       }
+	  }
+	else
+	  {
+	     Esnprintf(buf, sizeof(buf), "Error: unknown operation specified");
+	  }
      }
    else
      {
-        Esnprintf(buf, sizeof(buf), "Error: no operation specified");
+	Esnprintf(buf, sizeof(buf), "Error: no operation specified");
      }
 
    if (buf[0])
@@ -1493,131 +1493,131 @@ IPC_TextClass(char *params, Client * c)
 
    if (params)
      {
-        char                param1[FILEPATH_LEN_MAX];
-        char                param2[FILEPATH_LEN_MAX];
-        char                param3[FILEPATH_LEN_MAX];
+	char                param1[FILEPATH_LEN_MAX];
+	char                param2[FILEPATH_LEN_MAX];
+	char                param3[FILEPATH_LEN_MAX];
 
-        param1[0] = 0;
-        param2[0] = 0;
-        param3[0] = 0;
+	param1[0] = 0;
+	param2[0] = 0;
+	param3[0] = 0;
 
-        word(params, 1, param1);
-        word(params, 2, param2);
-        if (param2[0])
-          {
-             if (!strcmp(param2, "create"))
-               {
-               }
-             else if (!strcmp(param2, "delete"))
-               {
-                  TextClass          *t;
+	word(params, 1, param1);
+	word(params, 2, param2);
+	if (param2[0])
+	  {
+	     if (!strcmp(param2, "create"))
+	       {
+	       }
+	     else if (!strcmp(param2, "delete"))
+	       {
+		  TextClass          *t;
 
-                  t = (TextClass *) FindItem(param1, 0, LIST_FINDBY_NAME,
-                                             LIST_TYPE_TCLASS);
-                  if (t)
-                     DeleteTclass(t);
-               }
-             else if (!strcmp(param2, "modify"))
-               {
-               }
-             else if (!strcmp(param2, "apply"))
-               {
-                  TextClass          *t;
+		  t = (TextClass *) FindItem(param1, 0, LIST_FINDBY_NAME,
+					     LIST_TYPE_TCLASS);
+		  if (t)
+		     DeleteTclass(t);
+	       }
+	     else if (!strcmp(param2, "modify"))
+	       {
+	       }
+	     else if (!strcmp(param2, "apply"))
+	       {
+		  TextClass          *t;
 
-                  t = (TextClass *) FindItem(param1, 0, LIST_FINDBY_NAME,
-                                             LIST_TYPE_TCLASS);
-                  if (t)
-                    {
-                       int                 state;
-                       int                 x, y;
-                       char               *txt;
-                       Window              win;
+		  t = (TextClass *) FindItem(param1, 0, LIST_FINDBY_NAME,
+					     LIST_TYPE_TCLASS);
+		  if (t)
+		    {
+		       int                 state;
+		       int                 x, y;
+		       char               *txt;
+		       Window              win;
 
-                       word(params, 3, param3);
-                       win = (Window) strtol(param3, (char **)NULL, 0);
-                       word(params, 4, param3);
-                       x = atoi(param3);
-                       word(params, 5, param3);
-                       y = atoi(param3);
-                       word(params, 6, param3);
-                       state = STATE_NORMAL;
-                       if (!strcmp(param3, "normal"))
-                          state = STATE_NORMAL;
-                       else if (!strcmp(param3, "hilited"))
-                          state = STATE_HILITED;
-                       else if (!strcmp(param3, "clicked"))
-                          state = STATE_CLICKED;
-                       else if (!strcmp(param3, "disabled"))
-                          state = STATE_DISABLED;
-                       txt = atword(params, 7);
-                       pq = queue_up;
-                       queue_up = 0;
-                       if (txt)
-                          TextDraw(t, win, 0, 0, state, txt, x, y, 99999, 99999,
-                                   17, 0);
-                       queue_up = pq;
-                    }
-               }
-             else if (!strcmp(param2, "query_size"))
-               {
-                  TextClass          *t;
+		       word(params, 3, param3);
+		       win = (Window) strtol(param3, (char **)NULL, 0);
+		       word(params, 4, param3);
+		       x = atoi(param3);
+		       word(params, 5, param3);
+		       y = atoi(param3);
+		       word(params, 6, param3);
+		       state = STATE_NORMAL;
+		       if (!strcmp(param3, "normal"))
+			  state = STATE_NORMAL;
+		       else if (!strcmp(param3, "hilited"))
+			  state = STATE_HILITED;
+		       else if (!strcmp(param3, "clicked"))
+			  state = STATE_CLICKED;
+		       else if (!strcmp(param3, "disabled"))
+			  state = STATE_DISABLED;
+		       txt = atword(params, 7);
+		       pq = queue_up;
+		       queue_up = 0;
+		       if (txt)
+			  TextDraw(t, win, 0, 0, state, txt, x, y, 99999, 99999,
+				   17, 0);
+		       queue_up = pq;
+		    }
+	       }
+	     else if (!strcmp(param2, "query_size"))
+	       {
+		  TextClass          *t;
 
-                  t = (TextClass *) FindItem(param1, 0, LIST_FINDBY_NAME,
-                                             LIST_TYPE_TCLASS);
-                  if (t)
-                    {
-                       int                 w, h;
-                       char               *txt;
+		  t = (TextClass *) FindItem(param1, 0, LIST_FINDBY_NAME,
+					     LIST_TYPE_TCLASS);
+		  if (t)
+		    {
+		       int                 w, h;
+		       char               *txt;
 
-                       txt = atword(params, 3);
-                       if (txt)
-                         {
-                            TextSize(t, 0, 0, STATE_NORMAL, txt, &w, &h, 17);
-                            Esnprintf(buf, sizeof(buf), "%i %i", w, h);
-                         }
-                       else
-                          Esnprintf(buf, sizeof(buf), "0 0");
-                    }
-                  else
-                     Esnprintf(buf, sizeof(buf), "TextClass %s not found",
-                               param1);
-               }
-             else if (!strcmp(param2, "query"))
-               {
-                  TextClass          *t;
+		       txt = atword(params, 3);
+		       if (txt)
+			 {
+			    TextSize(t, 0, 0, STATE_NORMAL, txt, &w, &h, 17);
+			    Esnprintf(buf, sizeof(buf), "%i %i", w, h);
+			 }
+		       else
+			  Esnprintf(buf, sizeof(buf), "0 0");
+		    }
+		  else
+		     Esnprintf(buf, sizeof(buf), "TextClass %s not found",
+			       param1);
+	       }
+	     else if (!strcmp(param2, "query"))
+	       {
+		  TextClass          *t;
 
-                  t = (TextClass *) FindItem(param1, 0, LIST_FINDBY_NAME,
-                                             LIST_TYPE_TCLASS);
-                  if (t)
-                     Esnprintf(buf, sizeof(buf), "TextClass %s found", t->name);
-                  else
-                     Esnprintf(buf, sizeof(buf), "TextClass %s not found",
-                               param1);
-               }
-             else if (!strcmp(param2, "ref_count"))
-               {
-                  TextClass          *t;
+		  t = (TextClass *) FindItem(param1, 0, LIST_FINDBY_NAME,
+					     LIST_TYPE_TCLASS);
+		  if (t)
+		     Esnprintf(buf, sizeof(buf), "TextClass %s found", t->name);
+		  else
+		     Esnprintf(buf, sizeof(buf), "TextClass %s not found",
+			       param1);
+	       }
+	     else if (!strcmp(param2, "ref_count"))
+	       {
+		  TextClass          *t;
 
-                  t = (TextClass *) FindItem(param1, 0, LIST_FINDBY_NAME,
-                                             LIST_TYPE_TCLASS);
-                  if (t)
-                     Esnprintf(buf, sizeof(buf), "%u references remain.",
-                               t->ref_count);
-               }
-             else
-               {
-                  Esnprintf(buf, sizeof(buf),
-                            "Error: unknown operation specified");
-               }
-          }
-        else
-          {
-             Esnprintf(buf, sizeof(buf), "Error: no class specified");
-          }
+		  t = (TextClass *) FindItem(param1, 0, LIST_FINDBY_NAME,
+					     LIST_TYPE_TCLASS);
+		  if (t)
+		     Esnprintf(buf, sizeof(buf), "%u references remain.",
+			       t->ref_count);
+	       }
+	     else
+	       {
+		  Esnprintf(buf, sizeof(buf),
+			    "Error: unknown operation specified");
+	       }
+	  }
+	else
+	  {
+	     Esnprintf(buf, sizeof(buf), "Error: no class specified");
+	  }
      }
    else
      {
-        Esnprintf(buf, sizeof(buf), "Error: no operation specified");
+	Esnprintf(buf, sizeof(buf), "Error: no operation specified");
      }
 
    if (buf[0])
@@ -1636,59 +1636,59 @@ IPC_ColorModifierClass(char *params, Client * c)
 
    if (params)
      {
-        char                param1[FILEPATH_LEN_MAX];
-        char                param2[FILEPATH_LEN_MAX];
-        char                param3[FILEPATH_LEN_MAX];
+	char                param1[FILEPATH_LEN_MAX];
+	char                param2[FILEPATH_LEN_MAX];
+	char                param3[FILEPATH_LEN_MAX];
 
-        param1[0] = 0;
-        param2[0] = 0;
-        param3[0] = 0;
+	param1[0] = 0;
+	param2[0] = 0;
+	param3[0] = 0;
 
-        word(params, 1, param1);
-        word(params, 2, param2);
-        if (param2[0])
-          {
-             if (!strcmp(param1, "create"))
-               {
-               }
-             else if (!strcmp(param2, "delete"))
-               {
-                  ColorModifierClass *cm;
+	word(params, 1, param1);
+	word(params, 2, param2);
+	if (param2[0])
+	  {
+	     if (!strcmp(param1, "create"))
+	       {
+	       }
+	     else if (!strcmp(param2, "delete"))
+	       {
+		  ColorModifierClass *cm;
 
-                  cm = (ColorModifierClass *) FindItem(param1, 0,
-                                                       LIST_FINDBY_NAME,
-                                                       LIST_TYPE_COLORMODIFIER);
-                  if (cm)
-                     FreeCMClass(cm);
-               }
-             else if (!strcmp(param2, "modify"))
-               {
-               }
-             else if (!strcmp(param2, "ref_count"))
-               {
-                  ColorModifierClass *cm;
+		  cm = (ColorModifierClass *) FindItem(param1, 0,
+						       LIST_FINDBY_NAME,
+						       LIST_TYPE_COLORMODIFIER);
+		  if (cm)
+		     FreeCMClass(cm);
+	       }
+	     else if (!strcmp(param2, "modify"))
+	       {
+	       }
+	     else if (!strcmp(param2, "ref_count"))
+	       {
+		  ColorModifierClass *cm;
 
-                  cm = (ColorModifierClass *) FindItem(param1, 0,
-                                                       LIST_FINDBY_NAME,
-                                                       LIST_TYPE_COLORMODIFIER);
-                  if (cm)
-                     Esnprintf(buf, sizeof(buf), "%u references remain.",
-                               cm->ref_count);
-               }
-             else
-               {
-                  Esnprintf(buf, sizeof(buf),
-                            "Error: unknown operation specified");
-               }
-          }
-        else
-          {
-             Esnprintf(buf, sizeof(buf), "Error: no class specified");
-          }
+		  cm = (ColorModifierClass *) FindItem(param1, 0,
+						       LIST_FINDBY_NAME,
+						       LIST_TYPE_COLORMODIFIER);
+		  if (cm)
+		     Esnprintf(buf, sizeof(buf), "%u references remain.",
+			       cm->ref_count);
+	       }
+	     else
+	       {
+		  Esnprintf(buf, sizeof(buf),
+			    "Error: unknown operation specified");
+	       }
+	  }
+	else
+	  {
+	     Esnprintf(buf, sizeof(buf), "Error: no class specified");
+	  }
      }
    else
      {
-        Esnprintf(buf, sizeof(buf), "Error: no operation specified");
+	Esnprintf(buf, sizeof(buf), "Error: no operation specified");
      }
 
    if (buf[0])
@@ -1707,57 +1707,57 @@ IPC_ActionClass(char *params, Client * c)
 
    if (params)
      {
-        char                param1[FILEPATH_LEN_MAX];
-        char                param2[FILEPATH_LEN_MAX];
-        char                param3[FILEPATH_LEN_MAX];
+	char                param1[FILEPATH_LEN_MAX];
+	char                param2[FILEPATH_LEN_MAX];
+	char                param3[FILEPATH_LEN_MAX];
 
-        param1[0] = 0;
-        param2[0] = 0;
-        param3[0] = 0;
+	param1[0] = 0;
+	param2[0] = 0;
+	param3[0] = 0;
 
-        word(params, 1, param1);
-        word(params, 2, param2);
-        if (param2[0])
-          {
-             if (!strcmp(param1, "create"))
-               {
-               }
-             else if (!strcmp(param2, "delete"))
-               {
-                  ActionClass        *a;
+	word(params, 1, param1);
+	word(params, 2, param2);
+	if (param2[0])
+	  {
+	     if (!strcmp(param1, "create"))
+	       {
+	       }
+	     else if (!strcmp(param2, "delete"))
+	       {
+		  ActionClass        *a;
 
-                  a = (ActionClass *) FindItem(param1, 0, LIST_FINDBY_NAME,
-                                               LIST_TYPE_ACLASS);
-                  if (a)
-                     RemoveActionClass(a);
-               }
-             else if (!strcmp(param2, "modify"))
-               {
-               }
-             else if (!strcmp(param2, "ref_count"))
-               {
-                  ActionClass        *a;
+		  a = (ActionClass *) FindItem(param1, 0, LIST_FINDBY_NAME,
+					       LIST_TYPE_ACLASS);
+		  if (a)
+		     RemoveActionClass(a);
+	       }
+	     else if (!strcmp(param2, "modify"))
+	       {
+	       }
+	     else if (!strcmp(param2, "ref_count"))
+	       {
+		  ActionClass        *a;
 
-                  a = (ActionClass *) FindItem(param1, 0, LIST_FINDBY_NAME,
-                                               LIST_TYPE_ACLASS);
-                  if (a)
-                     Esnprintf(buf, sizeof(buf), "%u references remain.",
-                               a->ref_count);
-               }
-             else
-               {
-                  Esnprintf(buf, sizeof(buf),
-                            "Error: unknown operation specified");
-               }
-          }
-        else
-          {
-             Esnprintf(buf, sizeof(buf), "Error: no class specified");
-          }
+		  a = (ActionClass *) FindItem(param1, 0, LIST_FINDBY_NAME,
+					       LIST_TYPE_ACLASS);
+		  if (a)
+		     Esnprintf(buf, sizeof(buf), "%u references remain.",
+			       a->ref_count);
+	       }
+	     else
+	       {
+		  Esnprintf(buf, sizeof(buf),
+			    "Error: unknown operation specified");
+	       }
+	  }
+	else
+	  {
+	     Esnprintf(buf, sizeof(buf), "Error: no class specified");
+	  }
      }
    else
      {
-        Esnprintf(buf, sizeof(buf), "Error: no operation specified");
+	Esnprintf(buf, sizeof(buf), "Error: no operation specified");
      }
 
    if (buf[0])
@@ -1776,210 +1776,210 @@ IPC_ImageClass(char *params, Client * c)
 
    if (params)
      {
-        char                param1[FILEPATH_LEN_MAX];
-        char                param2[FILEPATH_LEN_MAX];
-        char                param3[FILEPATH_LEN_MAX];
+	char                param1[FILEPATH_LEN_MAX];
+	char                param2[FILEPATH_LEN_MAX];
+	char                param3[FILEPATH_LEN_MAX];
 
-        param1[0] = 0;
-        param2[0] = 0;
-        param3[0] = 0;
+	param1[0] = 0;
+	param2[0] = 0;
+	param3[0] = 0;
 
-        word(params, 1, param1);
-        word(params, 2, param2);
-        if (param2[0])
-          {
-             if (!strcmp(param1, "create"))
-               {
-               }
-             else if (!strcmp(param2, "delete"))
-               {
-                  ImageClass         *i;
+	word(params, 1, param1);
+	word(params, 2, param2);
+	if (param2[0])
+	  {
+	     if (!strcmp(param1, "create"))
+	       {
+	       }
+	     else if (!strcmp(param2, "delete"))
+	       {
+		  ImageClass         *i;
 
-                  i = (ImageClass *) FindItem(param1, 0, LIST_FINDBY_NAME,
-                                              LIST_TYPE_ICLASS);
-                  if (i)
-                     FreeImageClass(i);
-               }
-             else if (!strcmp(param2, "modify"))
-               {
-               }
-             else if (!strcmp(param2, "free_pixmap"))
-               {
-                  Pixmap              p;
+		  i = (ImageClass *) FindItem(param1, 0, LIST_FINDBY_NAME,
+					      LIST_TYPE_ICLASS);
+		  if (i)
+		     FreeImageClass(i);
+	       }
+	     else if (!strcmp(param2, "modify"))
+	       {
+	       }
+	     else if (!strcmp(param2, "free_pixmap"))
+	       {
+		  Pixmap              p;
 
-                  word(params, 3, param3);
-                  p = (Pixmap) strtol(param3, (char **)NULL, 0);
-                  Imlib_free_pixmap(id, p);
-               }
-             else if (!strcmp(param2, "get_padding"))
-               {
-                  ImageClass         *iclass;
+		  word(params, 3, param3);
+		  p = (Pixmap) strtol(param3, (char **)NULL, 0);
+		  Imlib_free_pixmap(id, p);
+	       }
+	     else if (!strcmp(param2, "get_padding"))
+	       {
+		  ImageClass         *iclass;
 
-                  iclass =
-                      (ImageClass *) FindItem(param1, 0, LIST_FINDBY_NAME,
-                                              LIST_TYPE_ICLASS);
-                  if (iclass)
-                     Esnprintf(buf, sizeof(buf), "%i %i %i %i",
-                               iclass->padding.left, iclass->padding.right,
-                               iclass->padding.top, iclass->padding.bottom);
-                  else
-                     Esnprintf(buf, sizeof(buf),
-                               "Error: Imageclass does not exist");
-               }
-             else if (!strcmp(param2, "get_image_size"))
-               {
-                  ImageClass         *iclass;
+		  iclass =
+		     (ImageClass *) FindItem(param1, 0, LIST_FINDBY_NAME,
+					     LIST_TYPE_ICLASS);
+		  if (iclass)
+		     Esnprintf(buf, sizeof(buf), "%i %i %i %i",
+			       iclass->padding.left, iclass->padding.right,
+			       iclass->padding.top, iclass->padding.bottom);
+		  else
+		     Esnprintf(buf, sizeof(buf),
+			       "Error: Imageclass does not exist");
+	       }
+	     else if (!strcmp(param2, "get_image_size"))
+	       {
+		  ImageClass         *iclass;
 
-                  iclass =
-                      (ImageClass *) FindItem(param1, 0, LIST_FINDBY_NAME,
-                                              LIST_TYPE_ICLASS);
-                  if (iclass)
-                    {
-                       ImlibImage         *im = NULL;
+		  iclass =
+		     (ImageClass *) FindItem(param1, 0, LIST_FINDBY_NAME,
+					     LIST_TYPE_ICLASS);
+		  if (iclass)
+		    {
+		       ImlibImage         *im = NULL;
 
-                       if (iclass->norm.normal->im_file)
-                         {
-                            if (!iclass->norm.normal->real_file)
-                               iclass->norm.normal->real_file =
-                                   FindFile(iclass->norm.normal->im_file);
-                            if (iclass->norm.normal->real_file)
-                               im = Imlib_load_image(id,
-                                                     iclass->norm.
-                                                     normal->real_file);
-                            if (im)
-                              {
-                                 Esnprintf(buf, sizeof(buf), "%i %i",
-                                           im->rgb_width, im->rgb_height);
-                                 Imlib_destroy_image(id, im);
-                              }
-                            else
-                               Esnprintf(buf, sizeof(buf),
-                                         "Error: Image does not exist");
-                         }
-                       else
-                          Esnprintf(buf, sizeof(buf),
-                                    "Error: Image does not exist");
-                    }
-                  else
-                     Esnprintf(buf, sizeof(buf),
-                               "Error: Imageclass does not exist");
-               }
-             else if (!strcmp(param2, "apply"))
-               {
-                  ImageClass         *iclass;
+		       if (iclass->norm.normal->im_file)
+			 {
+			    if (!iclass->norm.normal->real_file)
+			       iclass->norm.normal->real_file =
+				  FindFile(iclass->norm.normal->im_file);
+			    if (iclass->norm.normal->real_file)
+			       im = Imlib_load_image(id,
+						     iclass->norm.
+						     normal->real_file);
+			    if (im)
+			      {
+				 Esnprintf(buf, sizeof(buf), "%i %i",
+					   im->rgb_width, im->rgb_height);
+				 Imlib_destroy_image(id, im);
+			      }
+			    else
+			       Esnprintf(buf, sizeof(buf),
+					 "Error: Image does not exist");
+			 }
+		       else
+			  Esnprintf(buf, sizeof(buf),
+				    "Error: Image does not exist");
+		    }
+		  else
+		     Esnprintf(buf, sizeof(buf),
+			       "Error: Imageclass does not exist");
+	       }
+	     else if (!strcmp(param2, "apply"))
+	       {
+		  ImageClass         *iclass;
 
-                  iclass =
-                      (ImageClass *) FindItem(param1, 0, LIST_FINDBY_NAME,
-                                              LIST_TYPE_ICLASS);
-                  if (iclass)
-                    {
-                       Window              win;
-                       char               *winptr, *hptr, state[20];
-                       int                 st, w = -1, h = -1;
+		  iclass =
+		     (ImageClass *) FindItem(param1, 0, LIST_FINDBY_NAME,
+					     LIST_TYPE_ICLASS);
+		  if (iclass)
+		    {
+		       Window              win;
+		       char               *winptr, *hptr, state[20];
+		       int                 st, w = -1, h = -1;
 
-                       winptr = atword(params, 3);
-                       word(params, 4, state);
-                       win = (Window) strtol(winptr, (char **)NULL, 0);
-                       if (!strcmp(state, "hilited"))
-                          st = STATE_HILITED;
-                       else if (!strcmp(state, "clicked"))
-                          st = STATE_CLICKED;
-                       else if (!strcmp(state, "disabled"))
-                          st = STATE_DISABLED;
-                       else
-                          st = STATE_NORMAL;
-                       if ((hptr = atword(params, 6)))
-                         {
-                            w = (int)strtol(atword(params, 5), (char **)NULL,
-                                            0);
-                            h = (int)strtol(hptr, (char **)NULL, 0);
-                         }
-                       pq = queue_up;
-                       queue_up = 0;
-                       IclassApply(iclass, win, w, h, 0, 0, st, 0);
-                       queue_up = pq;
-                    }
-               }
-             else if (!strcmp(param2, "apply_copy"))
-               {
-                  ImageClass         *iclass;
-                  Pixmap              pmap = 0, mask = 0;
+		       winptr = atword(params, 3);
+		       word(params, 4, state);
+		       win = (Window) strtol(winptr, (char **)NULL, 0);
+		       if (!strcmp(state, "hilited"))
+			  st = STATE_HILITED;
+		       else if (!strcmp(state, "clicked"))
+			  st = STATE_CLICKED;
+		       else if (!strcmp(state, "disabled"))
+			  st = STATE_DISABLED;
+		       else
+			  st = STATE_NORMAL;
+		       if ((hptr = atword(params, 6)))
+			 {
+			    w = (int)strtol(atword(params, 5), (char **)NULL,
+					    0);
+			    h = (int)strtol(hptr, (char **)NULL, 0);
+			 }
+		       pq = queue_up;
+		       queue_up = 0;
+		       IclassApply(iclass, win, w, h, 0, 0, st, 0);
+		       queue_up = pq;
+		    }
+	       }
+	     else if (!strcmp(param2, "apply_copy"))
+	       {
+		  ImageClass         *iclass;
+		  Pixmap              pmap = 0, mask = 0;
 
-                  iclass =
-                      (ImageClass *) FindItem(param1, 0, LIST_FINDBY_NAME,
-                                              LIST_TYPE_ICLASS);
-                  if (iclass)
-                    {
-                       Window              win;
-                       char               *winptr, *hptr, state[20];
-                       int                 st, w = -1, h = -1;
+		  iclass =
+		     (ImageClass *) FindItem(param1, 0, LIST_FINDBY_NAME,
+					     LIST_TYPE_ICLASS);
+		  if (iclass)
+		    {
+		       Window              win;
+		       char               *winptr, *hptr, state[20];
+		       int                 st, w = -1, h = -1;
 
-                       winptr = atword(params, 3);
-                       word(params, 4, state);
-                       win = (Window) strtol(winptr, (char **)NULL, 0);
-                       if (!strcmp(state, "hilited"))
-                          st = STATE_HILITED;
-                       else if (!strcmp(state, "clicked"))
-                          st = STATE_CLICKED;
-                       else if (!strcmp(state, "disabled"))
-                          st = STATE_DISABLED;
-                       else
-                          st = STATE_NORMAL;
-                       if (!(hptr = atword(params, 6)))
-                          Esnprintf(buf, sizeof(buf),
-                                    "Error:  missing width and/or height");
-                       else
-                         {
-                            w = (int)strtol(atword(params, 5), (char **)NULL,
-                                            0);
-                            h = (int)strtol(hptr, (char **)NULL, 0);
-                            pq = queue_up;
-                            queue_up = 0;
-                            IclassApplyCopy(iclass, win, w, h, 0, 0, st, &pmap,
-                                            &mask);
-                            queue_up = pq;
-                            Esnprintf(buf, sizeof(buf), "0x%08x 0x%08x", pmap,
-                                      mask);
-                         }
-                    }
-               }
-             else if (!strcmp(param2, "ref_count"))
-               {
-                  ImageClass         *i;
+		       winptr = atword(params, 3);
+		       word(params, 4, state);
+		       win = (Window) strtol(winptr, (char **)NULL, 0);
+		       if (!strcmp(state, "hilited"))
+			  st = STATE_HILITED;
+		       else if (!strcmp(state, "clicked"))
+			  st = STATE_CLICKED;
+		       else if (!strcmp(state, "disabled"))
+			  st = STATE_DISABLED;
+		       else
+			  st = STATE_NORMAL;
+		       if (!(hptr = atword(params, 6)))
+			  Esnprintf(buf, sizeof(buf),
+				    "Error:  missing width and/or height");
+		       else
+			 {
+			    w = (int)strtol(atword(params, 5), (char **)NULL,
+					    0);
+			    h = (int)strtol(hptr, (char **)NULL, 0);
+			    pq = queue_up;
+			    queue_up = 0;
+			    IclassApplyCopy(iclass, win, w, h, 0, 0, st, &pmap,
+					    &mask);
+			    queue_up = pq;
+			    Esnprintf(buf, sizeof(buf), "0x%08x 0x%08x", pmap,
+				      mask);
+			 }
+		    }
+	       }
+	     else if (!strcmp(param2, "ref_count"))
+	       {
+		  ImageClass         *i;
 
-                  i = (ImageClass *) FindItem(param1, 0, LIST_FINDBY_NAME,
-                                              LIST_TYPE_ICLASS);
-                  if (i)
-                     Esnprintf(buf, sizeof(buf), "%u references remain",
-                               i->ref_count);
-               }
-             else if (!strcmp(param2, "query"))
-               {
-                  ImageClass         *i;
+		  i = (ImageClass *) FindItem(param1, 0, LIST_FINDBY_NAME,
+					      LIST_TYPE_ICLASS);
+		  if (i)
+		     Esnprintf(buf, sizeof(buf), "%u references remain",
+			       i->ref_count);
+	       }
+	     else if (!strcmp(param2, "query"))
+	       {
+		  ImageClass         *i;
 
-                  i = (ImageClass *) FindItem(param1, 0, LIST_FINDBY_NAME,
-                                              LIST_TYPE_ICLASS);
-                  if (i)
-                     Esnprintf(buf, sizeof(buf), "ImageClass %s found",
-                               i->name);
-                  else
-                     Esnprintf(buf, sizeof(buf), "ImageClass %s not found",
-                               param1);
-               }
-             else
-               {
-                  Esnprintf(buf, sizeof(buf),
-                            "Error: unknown operation specified");
-               }
-          }
-        else
-          {
-             Esnprintf(buf, sizeof(buf), "Error: no class specified");
-          }
+		  i = (ImageClass *) FindItem(param1, 0, LIST_FINDBY_NAME,
+					      LIST_TYPE_ICLASS);
+		  if (i)
+		     Esnprintf(buf, sizeof(buf), "ImageClass %s found",
+			       i->name);
+		  else
+		     Esnprintf(buf, sizeof(buf), "ImageClass %s not found",
+			       param1);
+	       }
+	     else
+	       {
+		  Esnprintf(buf, sizeof(buf),
+			    "Error: unknown operation specified");
+	       }
+	  }
+	else
+	  {
+	     Esnprintf(buf, sizeof(buf), "Error: no class specified");
+	  }
      }
    else
      {
-        Esnprintf(buf, sizeof(buf), "Error: no operation specified");
+	Esnprintf(buf, sizeof(buf), "Error: no operation specified");
      }
 
    if (buf[0])
@@ -1998,53 +1998,53 @@ IPC_SoundClass(char *params, Client * c)
 
    if (params)
      {
-        char                param1[FILEPATH_LEN_MAX];
-        char                param2[FILEPATH_LEN_MAX];
-        char                param3[FILEPATH_LEN_MAX];
-        SoundClass         *sc;
+	char                param1[FILEPATH_LEN_MAX];
+	char                param2[FILEPATH_LEN_MAX];
+	char                param3[FILEPATH_LEN_MAX];
+	SoundClass         *sc;
 
-        param1[0] = 0;
-        param2[0] = 0;
-        param3[0] = 0;
+	param1[0] = 0;
+	param2[0] = 0;
+	param3[0] = 0;
 
-        word(params, 1, param1);
-        word(params, 2, param2);
-        if (param2[0])
-          {
-             if (!strcmp(param1, "create"))
-               {
-                  word(params, 3, param3);
-                  if (param3[0])
-                    {
-                       sc = CreateSoundClass(param1, param2);
-                       if (sc)
-                          AddItem(sc, sc->name, 0, LIST_TYPE_SCLASS);
-                    }
-                  else
-                    {
-                       Esnprintf(buf, sizeof(buf), "Error: no file specified");
-                    }
-               }
-             else if (!strcmp(param1, "delete"))
-               {
-                  DestroySclass(RemoveItem
-                                (param2, 0, LIST_FINDBY_NAME,
-                                 LIST_TYPE_SCLASS));
-               }
-             else
-               {
-                  Esnprintf(buf, sizeof(buf),
-                            "Error: unknown operation specified");
-               }
-          }
-        else
-          {
-             Esnprintf(buf, sizeof(buf), "Error: no class specified");
-          }
+	word(params, 1, param1);
+	word(params, 2, param2);
+	if (param2[0])
+	  {
+	     if (!strcmp(param1, "create"))
+	       {
+		  word(params, 3, param3);
+		  if (param3[0])
+		    {
+		       sc = CreateSoundClass(param1, param2);
+		       if (sc)
+			  AddItem(sc, sc->name, 0, LIST_TYPE_SCLASS);
+		    }
+		  else
+		    {
+		       Esnprintf(buf, sizeof(buf), "Error: no file specified");
+		    }
+	       }
+	     else if (!strcmp(param1, "delete"))
+	       {
+		  DestroySclass(RemoveItem
+				(param2, 0, LIST_FINDBY_NAME,
+				 LIST_TYPE_SCLASS));
+	       }
+	     else
+	       {
+		  Esnprintf(buf, sizeof(buf),
+			    "Error: unknown operation specified");
+	       }
+	  }
+	else
+	  {
+	     Esnprintf(buf, sizeof(buf), "Error: no class specified");
+	  }
      }
    else
      {
-        Esnprintf(buf, sizeof(buf), "Error: no operation specified");
+	Esnprintf(buf, sizeof(buf), "Error: no operation specified");
      }
 
    if (buf[0])
@@ -2062,17 +2062,17 @@ IPC_PlaySoundClass(char *params, Client * c)
 
    if (params)
      {
-        SoundClass         *soundtoplay;
+	SoundClass         *soundtoplay;
 
-        soundtoplay = FindItem(params, 0, LIST_FINDBY_NAME, LIST_TYPE_SCLASS);
-        if (soundtoplay)
-           ApplySclass(soundtoplay);
-        else
-           Esnprintf(buf, sizeof(buf), "Error: unknown soundclass selected");
+	soundtoplay = FindItem(params, 0, LIST_FINDBY_NAME, LIST_TYPE_SCLASS);
+	if (soundtoplay)
+	   ApplySclass(soundtoplay);
+	else
+	   Esnprintf(buf, sizeof(buf), "Error: unknown soundclass selected");
      }
    else
      {
-        Esnprintf(buf, sizeof(buf), "Error: no soundclass selected");
+	Esnprintf(buf, sizeof(buf), "Error: no soundclass selected");
      }
 
    if (buf[0])
@@ -2092,184 +2092,184 @@ IPC_ListClassMembers(char *params, Client * c)
 
    if (params)
      {
-        if (!strcmp(params, "backgrounds"))
-          {
+	if (!strcmp(params, "backgrounds"))
+	  {
 
-             Background        **lst;
+	     Background        **lst;
 
-             lst = (Background **) ListItemType(&num, LIST_TYPE_BACKGROUND);
-             for (i = 0; i < num; i++)
-               {
-                  buf2[0] = 0;
-                  Esnprintf(buf2, sizeof(buf2), "%s\n", lst[i]->name);
-                  if (buf)
-                     buf = realloc(buf, strlen(buf) + strlen(buf2) + 1);
-                  else
-                    {
-                       buf = malloc(strlen(buf2) + 1);
-                       buf[0] = 0;
-                    }
-                  strcat(buf, buf2);
-               }
-             if (lst)
-                Efree(lst);
-          }
-        else if (!strcmp(params, "actions"))
-          {
-             ActionClass       **lst;
+	     lst = (Background **) ListItemType(&num, LIST_TYPE_BACKGROUND);
+	     for (i = 0; i < num; i++)
+	       {
+		  buf2[0] = 0;
+		  Esnprintf(buf2, sizeof(buf2), "%s\n", lst[i]->name);
+		  if (buf)
+		     buf = realloc(buf, strlen(buf) + strlen(buf2) + 1);
+		  else
+		    {
+		       buf = malloc(strlen(buf2) + 1);
+		       buf[0] = 0;
+		    }
+		  strcat(buf, buf2);
+	       }
+	     if (lst)
+		Efree(lst);
+	  }
+	else if (!strcmp(params, "actions"))
+	  {
+	     ActionClass       **lst;
 
-             lst = (ActionClass **) ListItemType(&num, LIST_TYPE_ACLASS);
-             for (i = 0; i < num; i++)
-               {
-                  buf2[0] = 0;
-                  Esnprintf(buf2, sizeof(buf2), "%s\n", lst[i]->name);
-                  if (buf)
-                     buf = realloc(buf, strlen(buf) + strlen(buf2) + 1);
-                  else
-                    {
-                       buf = malloc(strlen(buf2) + 1);
-                       buf[0] = 0;
-                    }
-                  strcat(buf, buf2);
-               }
-             if (lst)
-                Efree(lst);
-          }
-        else if (!strcmp(params, "sounds"))
-          {
-             SoundClass        **lst;
+	     lst = (ActionClass **) ListItemType(&num, LIST_TYPE_ACLASS);
+	     for (i = 0; i < num; i++)
+	       {
+		  buf2[0] = 0;
+		  Esnprintf(buf2, sizeof(buf2), "%s\n", lst[i]->name);
+		  if (buf)
+		     buf = realloc(buf, strlen(buf) + strlen(buf2) + 1);
+		  else
+		    {
+		       buf = malloc(strlen(buf2) + 1);
+		       buf[0] = 0;
+		    }
+		  strcat(buf, buf2);
+	       }
+	     if (lst)
+		Efree(lst);
+	  }
+	else if (!strcmp(params, "sounds"))
+	  {
+	     SoundClass        **lst;
 
-             lst = (SoundClass **) ListItemType(&num, LIST_TYPE_SCLASS);
-             for (i = 0; i < num; i++)
-               {
-                  buf2[0] = 0;
-                  Esnprintf(buf2, sizeof(buf2), "%s\n", lst[i]->name);
-                  if (buf)
-                     buf = realloc(buf, strlen(buf) + strlen(buf2) + 1);
-                  else
-                    {
-                       buf = malloc(strlen(buf2) + 1);
-                       buf[0] = 0;
-                    }
-                  strcat(buf, buf2);
-               }
-             if (lst)
-                Efree(lst);
-          }
-        else if (!strcmp(params, "cursors"))
-          {
-             ECursor           **lst;
+	     lst = (SoundClass **) ListItemType(&num, LIST_TYPE_SCLASS);
+	     for (i = 0; i < num; i++)
+	       {
+		  buf2[0] = 0;
+		  Esnprintf(buf2, sizeof(buf2), "%s\n", lst[i]->name);
+		  if (buf)
+		     buf = realloc(buf, strlen(buf) + strlen(buf2) + 1);
+		  else
+		    {
+		       buf = malloc(strlen(buf2) + 1);
+		       buf[0] = 0;
+		    }
+		  strcat(buf, buf2);
+	       }
+	     if (lst)
+		Efree(lst);
+	  }
+	else if (!strcmp(params, "cursors"))
+	  {
+	     ECursor           **lst;
 
-             lst = (ECursor **) ListItemType(&num, LIST_TYPE_ECURSOR);
-             for (i = 0; i < num; i++)
-               {
-                  buf2[0] = 0;
-                  Esnprintf(buf2, sizeof(buf2), "%s\n", lst[i]->name);
-                  if (buf)
-                     buf = realloc(buf, strlen(buf) + strlen(buf2) + 1);
-                  else
-                    {
-                       buf = malloc(strlen(buf2) + 1);
-                       buf[0] = 0;
-                    }
-                  strcat(buf, buf2);
-               }
-             if (lst)
-                Efree(lst);
-          }
-        else if (!strcmp(params, "borders"))
-          {
-             Border            **lst;
+	     lst = (ECursor **) ListItemType(&num, LIST_TYPE_ECURSOR);
+	     for (i = 0; i < num; i++)
+	       {
+		  buf2[0] = 0;
+		  Esnprintf(buf2, sizeof(buf2), "%s\n", lst[i]->name);
+		  if (buf)
+		     buf = realloc(buf, strlen(buf) + strlen(buf2) + 1);
+		  else
+		    {
+		       buf = malloc(strlen(buf2) + 1);
+		       buf[0] = 0;
+		    }
+		  strcat(buf, buf2);
+	       }
+	     if (lst)
+		Efree(lst);
+	  }
+	else if (!strcmp(params, "borders"))
+	  {
+	     Border            **lst;
 
-             lst = (Border **) ListItemType(&num, LIST_TYPE_BORDER);
-             for (i = 0; i < num; i++)
-               {
-                  buf2[0] = 0;
-                  Esnprintf(buf2, sizeof(buf2), "%s\n", lst[i]->name);
-                  if (buf)
-                     buf = realloc(buf, strlen(buf) + strlen(buf2) + 1);
-                  else
-                    {
-                       buf = malloc(strlen(buf2) + 1);
-                       buf[0] = 0;
-                    }
-                  strcat(buf, buf2);
-               }
-             if (lst)
-                Efree(lst);
-          }
-        else if (!strcmp(params, "text"))
-          {
-             TextClass         **lst;
+	     lst = (Border **) ListItemType(&num, LIST_TYPE_BORDER);
+	     for (i = 0; i < num; i++)
+	       {
+		  buf2[0] = 0;
+		  Esnprintf(buf2, sizeof(buf2), "%s\n", lst[i]->name);
+		  if (buf)
+		     buf = realloc(buf, strlen(buf) + strlen(buf2) + 1);
+		  else
+		    {
+		       buf = malloc(strlen(buf2) + 1);
+		       buf[0] = 0;
+		    }
+		  strcat(buf, buf2);
+	       }
+	     if (lst)
+		Efree(lst);
+	  }
+	else if (!strcmp(params, "text"))
+	  {
+	     TextClass         **lst;
 
-             lst = (TextClass **) ListItemType(&num, LIST_TYPE_TCLASS);
-             for (i = 0; i < num; i++)
-               {
-                  buf2[0] = 0;
-                  Esnprintf(buf2, sizeof(buf2), "%s\n", lst[i]->name);
-                  if (buf)
-                     buf = realloc(buf, strlen(buf) + strlen(buf2) + 1);
-                  else
-                    {
-                       buf = malloc(strlen(buf2) + 1);
-                       buf[0] = 0;
-                    }
-                  strcat(buf, buf2);
-               }
-             if (lst)
-                Efree(lst);
-          }
-        else if (!strcmp(params, "images"))
-          {
-             ImageClass        **lst;
+	     lst = (TextClass **) ListItemType(&num, LIST_TYPE_TCLASS);
+	     for (i = 0; i < num; i++)
+	       {
+		  buf2[0] = 0;
+		  Esnprintf(buf2, sizeof(buf2), "%s\n", lst[i]->name);
+		  if (buf)
+		     buf = realloc(buf, strlen(buf) + strlen(buf2) + 1);
+		  else
+		    {
+		       buf = malloc(strlen(buf2) + 1);
+		       buf[0] = 0;
+		    }
+		  strcat(buf, buf2);
+	       }
+	     if (lst)
+		Efree(lst);
+	  }
+	else if (!strcmp(params, "images"))
+	  {
+	     ImageClass        **lst;
 
-             lst = (ImageClass **) ListItemType(&num, LIST_TYPE_ICLASS);
-             for (i = 0; i < num; i++)
-               {
-                  buf2[0] = 0;
-                  Esnprintf(buf2, sizeof(buf2), "%s\n", lst[i]->name);
-                  if (buf)
-                     buf = realloc(buf, strlen(buf) + strlen(buf2) + 1);
-                  else
-                    {
-                       buf = malloc(strlen(buf2) + 1);
-                       buf[0] = 0;
-                    }
-                  strcat(buf, buf2);
-               }
-             if (lst)
-                Efree(lst);
-          }
-        else if (!strcmp(params, "buttons"))
-          {
-             Button            **lst;
+	     lst = (ImageClass **) ListItemType(&num, LIST_TYPE_ICLASS);
+	     for (i = 0; i < num; i++)
+	       {
+		  buf2[0] = 0;
+		  Esnprintf(buf2, sizeof(buf2), "%s\n", lst[i]->name);
+		  if (buf)
+		     buf = realloc(buf, strlen(buf) + strlen(buf2) + 1);
+		  else
+		    {
+		       buf = malloc(strlen(buf2) + 1);
+		       buf[0] = 0;
+		    }
+		  strcat(buf, buf2);
+	       }
+	     if (lst)
+		Efree(lst);
+	  }
+	else if (!strcmp(params, "buttons"))
+	  {
+	     Button            **lst;
 
-             lst = (Button **) ListItemType(&num, LIST_TYPE_BUTTON);
-             for (i = 0; i < num; i++)
-               {
-                  buf2[0] = 0;
-                  Esnprintf(buf2, sizeof(buf2), "%s\n", lst[i]->name);
-                  if (buf)
-                     buf = realloc(buf, strlen(buf) + strlen(buf2) + 1);
-                  else
-                    {
-                       buf = malloc(strlen(buf2) + 1);
-                       buf[0] = 0;
-                    }
-                  strcat(buf, buf2);
-               }
-             if (lst)
-                Efree(lst);
-          }
-        else
-           CommsSend(c, "Error: unknown class selected");
+	     lst = (Button **) ListItemType(&num, LIST_TYPE_BUTTON);
+	     for (i = 0; i < num; i++)
+	       {
+		  buf2[0] = 0;
+		  Esnprintf(buf2, sizeof(buf2), "%s\n", lst[i]->name);
+		  if (buf)
+		     buf = realloc(buf, strlen(buf) + strlen(buf2) + 1);
+		  else
+		    {
+		       buf = malloc(strlen(buf2) + 1);
+		       buf[0] = 0;
+		    }
+		  strcat(buf, buf2);
+	       }
+	     if (lst)
+		Efree(lst);
+	  }
+	else
+	   CommsSend(c, "Error: unknown class selected");
      }
    else
       CommsSend(c, "Error: no class selected");
    if (buf)
      {
-        CommsSend(c, buf);
-        Efree(buf);
+	CommsSend(c, buf);
+	Efree(buf);
      }
    return;
 }
@@ -2284,7 +2284,7 @@ IPC_DialogOK(char *params, Client * c)
 
    if (params)
      {
-        DIALOG_OK(_("Message"), params);
+	DIALOG_OK(_("Message"), params);
      }
    else
       Esnprintf(buf, sizeof(buf), "Error: No text for dialog specified");
@@ -2305,34 +2305,34 @@ IPC_SetFocus(char *params, Client * c)
 
    if (params)
      {
-        EWin               *my_focused_win;
+	EWin               *my_focused_win;
 
-        if (!strcmp(params, "?"))
-          {
-             my_focused_win = GetFocusEwin();
-             if (my_focused_win)
-               {
-                  Esnprintf(buf, sizeof(buf), "focused: %8x",
-                            my_focused_win->client.win);
-               }
-             else
-               {
-                  Esnprintf(buf, sizeof(buf), "focused: none");
-               }
-          }
-        else
-          {
-             unsigned int        win;
+	if (!strcmp(params, "?"))
+	  {
+	     my_focused_win = GetFocusEwin();
+	     if (my_focused_win)
+	       {
+		  Esnprintf(buf, sizeof(buf), "focused: %8x",
+			    my_focused_win->client.win);
+	       }
+	     else
+	       {
+		  Esnprintf(buf, sizeof(buf), "focused: none");
+	       }
+	  }
+	else
+	  {
+	     unsigned int        win;
 
-             sscanf(params, "%8x", &win);
-             my_focused_win = FindEwinByChildren(win);
-             if (my_focused_win)
-                FocusToEWin(my_focused_win);
-          }
+	     sscanf(params, "%8x", &win);
+	     my_focused_win = FindEwinByChildren(win);
+	     if (my_focused_win)
+		FocusToEWin(my_focused_win);
+	  }
      }
    else
      {
-        Esnprintf(buf, sizeof(buf), "Error: no window selected");
+	Esnprintf(buf, sizeof(buf), "Error: no window selected");
      }
 
    if (buf[0])
@@ -2352,377 +2352,377 @@ IPC_AdvancedFocus(char *params, Client * c)
 
    if (params)
      {
-        char                param1[FILEPATH_LEN_MAX];
-        char                param2[FILEPATH_LEN_MAX];
+	char                param1[FILEPATH_LEN_MAX];
+	char                param2[FILEPATH_LEN_MAX];
 
-        param1[0] = 0;
-        param2[0] = 0;
-        word(params, 1, param1);
-        word(params, 2, param2);
-        if (!strcmp(param1, "new_window_focus"))
-          {
-             if (!strcmp(param2, "on"))
-               {
-                  mode.all_new_windows_get_focus = 1;
-               }
-             else if (!strcmp(param2, "off"))
-               {
-                  mode.all_new_windows_get_focus = 0;
-               }
-             else if (!strcmp(param2, "?"))
-               {
-                  if (mode.all_new_windows_get_focus)
-                    {
-                       Esnprintf(buf, sizeof(buf), "new_window_focus: on");
-                    }
-                  else
-                    {
-                       Esnprintf(buf, sizeof(buf), "new_window_focus: off");
-                    }
-               }
-             else
-               {
-                  Esnprintf(buf, sizeof(buf), "Error: unknown mode selected");
-               }
-          }
-        else if (!strcmp(param1, "focus_list"))
-          {
-             if (!strcmp(param2, "on"))
-               {
-                  mode.display_warp = 1;
-               }
-             else if (!strcmp(param2, "off"))
-               {
-                  mode.display_warp = 0;
-               }
-             else if (!strcmp(param2, "?"))
-               {
-                  if (mode.display_warp)
-                    {
-                       Esnprintf(buf, sizeof(buf), "focus_list: on");
-                    }
-                  else
-                    {
-                       Esnprintf(buf, sizeof(buf), "focus_list: off");
-                    }
-               }
-             else
-               {
-                  Esnprintf(buf, sizeof(buf), "Error: unknown mode selected");
-               }
-          }
-        else if (!strcmp(param1, "new_popup_window_focus"))
-          {
-             if (!strcmp(param2, "on"))
-               {
-                  mode.new_transients_get_focus = 1;
-               }
-             else if (!strcmp(param2, "off"))
-               {
-                  mode.new_transients_get_focus = 0;
-               }
-             else if (!strcmp(param2, "?"))
-               {
-                  if (mode.new_transients_get_focus)
-                    {
-                       Esnprintf(buf, sizeof(buf),
-                                 "new_popup_window_focus: on");
-                    }
-                  else
-                    {
-                       Esnprintf(buf, sizeof(buf),
-                                 "new_popup_window_focus: off");
-                    }
-               }
-             else
-               {
-                  Esnprintf(buf, sizeof(buf), "Error: unknown mode selected");
-               }
-          }
-        else if (!strcmp(param1, "new_popup_of_owner_focus"))
-          {
-             if (!strcmp(param2, "on"))
-               {
-                  mode.new_transients_get_focus_if_group_focused = 1;
-               }
-             else if (!strcmp(param2, "off"))
-               {
-                  mode.new_transients_get_focus_if_group_focused = 0;
-               }
-             else if (!strcmp(param2, "?"))
-               {
-                  if (mode.new_transients_get_focus_if_group_focused)
-                    {
-                       Esnprintf(buf, sizeof(buf),
-                                 "new_popup_of_owner_focus: on");
-                    }
-                  else
-                    {
-                       Esnprintf(buf, sizeof(buf),
-                                 "new_popup_of_owner_focus: off");
-                    }
-               }
-             else
-               {
-                  Esnprintf(buf, sizeof(buf), "Error: unknown mode selected");
-               }
-          }
-        else if (!strcmp(param1, "raise_on_keyboard_focus_switch"))
-          {
-             if (!strcmp(param2, "on"))
-               {
-                  mode.raise_on_next_focus = 1;
-               }
-             else if (!strcmp(param2, "off"))
-               {
-                  mode.raise_on_next_focus = 0;
-               }
-             else if (!strcmp(param2, "?"))
-               {
-                  if (mode.raise_on_next_focus)
-                    {
-                       Esnprintf(buf, sizeof(buf),
-                                 "raise_on_keyboard_focus_switch: on");
-                    }
-                  else
-                    {
-                       Esnprintf(buf, sizeof(buf),
-                                 "raise_on_keyboard_focus_switch: off");
-                    }
-               }
-             else
-               {
-                  Esnprintf(buf, sizeof(buf), "Error: unknown mode selected");
-               }
-          }
-        else if (!strcmp(param1, "raise_after_keyboard_focus_switch"))
-          {
-             if (!strcmp(param2, "on"))
-               {
-                  mode.raise_after_next_focus = 1;
-               }
-             else if (!strcmp(param2, "off"))
-               {
-                  mode.raise_after_next_focus = 0;
-               }
-             else if (!strcmp(param2, "?"))
-               {
-                  if (mode.raise_after_next_focus)
-                    {
-                       Esnprintf(buf, sizeof(buf),
-                                 "raise_after_keyboard_focus_switch: on");
-                    }
-                  else
-                    {
-                       Esnprintf(buf, sizeof(buf),
-                                 "raise_after_keyboard_focus_switch: off");
-                    }
-               }
-             else
-               {
-                  Esnprintf(buf, sizeof(buf), "Error: unknown mode selected");
-               }
-          }
-        else if (!strcmp(param1, "display_warp"))
-          {
-             if (!strcmp(param2, "on"))
-               {
-                  mode.display_warp = 1;
-               }
-             else if (!strcmp(param2, "off"))
-               {
-                  mode.display_warp = 0;
-               }
-             else if (!strcmp(param2, "?"))
-               {
-                  if (mode.display_warp)
-                    {
-                       Esnprintf(buf, sizeof(buf), "display_warp: on");
-                    }
-                  else
-                    {
-                       Esnprintf(buf, sizeof(buf), "display_warp: off");
-                    }
-               }
-             else
-               {
-                  Esnprintf(buf, sizeof(buf), "Error: unknown mode selected");
-               }
-          }
-        else if (!strcmp(param1, "pointer_to_keyboard_focus_window"))
-          {
-             if (!strcmp(param2, "on"))
-               {
-                  mode.warp_on_next_focus = 1;
-               }
-             else if (!strcmp(param2, "off"))
-               {
-                  mode.warp_on_next_focus = 0;
-               }
-             else if (!strcmp(param2, "?"))
-               {
-                  if (mode.warp_on_next_focus)
-                    {
-                       Esnprintf(buf, sizeof(buf),
-                                 "pointer_to_keyboard_focus_window: on");
-                    }
-                  else
-                    {
-                       Esnprintf(buf, sizeof(buf),
-                                 "pointer_to_keyboard_focus_window: off");
-                    }
-               }
-             else
-               {
-                  Esnprintf(buf, sizeof(buf), "Error: unknown mode selected");
-               }
-          }
-        else if (!strcmp(param1, "pointer_after_keyboard_focus_window"))
-          {
-             if (!strcmp(param2, "on"))
-               {
-                  mode.warp_after_next_focus = 1;
-               }
-             else if (!strcmp(param2, "off"))
-               {
-                  mode.warp_after_next_focus = 0;
-               }
-             else if (!strcmp(param2, "?"))
-               {
-                  if (mode.warp_after_next_focus)
-                    {
-                       Esnprintf(buf, sizeof(buf),
-                                 "pointer_after_keyboard_focus_window: on");
-                    }
-                  else
-                    {
-                       Esnprintf(buf, sizeof(buf),
-                                 "pointer_after_keyboard_focus_window: off");
-                    }
-               }
-             else
-               {
-                  Esnprintf(buf, sizeof(buf), "Error: unknown mode selected");
-               }
-          }
-        else if (!strcmp(param1, "transients_follow_leader"))
-          {
-             if (!strcmp(param2, "on"))
-               {
-                  mode.transientsfollowleader = 1;
-               }
-             else if (!strcmp(param2, "off"))
-               {
-                  mode.transientsfollowleader = 0;
-               }
-             else if (!strcmp(param2, "?"))
-               {
-                  if (mode.transientsfollowleader)
-                    {
-                       Esnprintf(buf, sizeof(buf),
-                                 "transients_follow_leader: on");
-                    }
-                  else
-                    {
-                       Esnprintf(buf, sizeof(buf),
-                                 "transients_follow_leader: off");
-                    }
-               }
-             else
-               {
-                  Esnprintf(buf, sizeof(buf), "Error: unknown mode selected");
-               }
-          }
-        else if (!strcmp(param1, "switch_to_popup_location"))
-          {
-             if (!strcmp(param2, "on"))
-               {
-                  mode.switchfortransientmap = 1;
-               }
-             else if (!strcmp(param2, "off"))
-               {
-                  mode.switchfortransientmap = 0;
-               }
-             else if (!strcmp(param2, "?"))
-               {
-                  if (mode.switchfortransientmap)
-                    {
-                       Esnprintf(buf, sizeof(buf),
-                                 "switch_to_popup_location: on");
-                    }
-                  else
-                    {
-                       Esnprintf(buf, sizeof(buf),
-                                 "switch_to_popup_location: off");
-                    }
-               }
-             else
-               {
-                  Esnprintf(buf, sizeof(buf), "Error: unknown mode selected");
-               }
-          }
-        else if (!strcmp(param1, "manual_placement"))
-          {
-             if (!strcmp(param2, "on"))
-               {
-                  mode.manual_placement = 1;
-               }
-             else if (!strcmp(param2, "off"))
-               {
-                  mode.manual_placement = 0;
-               }
-             else if (!strcmp(param2, "?"))
-               {
-                  if (mode.manual_placement)
-                    {
-                       Esnprintf(buf, sizeof(buf), "manual_placement: on");
-                    }
-                  else
-                    {
-                       Esnprintf(buf, sizeof(buf), "manual_placement: off");
-                    }
-               }
-             else
-               {
-                  Esnprintf(buf, sizeof(buf), "Error: unknown mode selected");
-               }
-          }
-        else if (!strcmp(param1, "manual_placement_mouse_pointer"))
-          {
-             if (!strcmp(param2, "on"))
-               {
-                  mode.manual_placement_mouse_pointer = 1;
-               }
-             else if (!strcmp(param2, "off"))
-               {
-                  mode.manual_placement_mouse_pointer = 0;
-               }
-             else if (!strcmp(param2, "?"))
-               {
-                  if (mode.manual_placement_mouse_pointer)
-                    {
-                       Esnprintf(buf, sizeof(buf),
-                                 "manual_placement_mouse_pointer: on");
-                    }
-                  else
-                    {
-                       Esnprintf(buf, sizeof(buf),
-                                 "manual_placement_mouse_pointer: off");
-                    }
-               }
-             else
-               {
-                  Esnprintf(buf, sizeof(buf), "Error: unknown mode selected");
-               }
-          }
-        else
-          {
-             Esnprintf(buf, sizeof(buf), "Error: unknown mode selected");
-          }
+	param1[0] = 0;
+	param2[0] = 0;
+	word(params, 1, param1);
+	word(params, 2, param2);
+	if (!strcmp(param1, "new_window_focus"))
+	  {
+	     if (!strcmp(param2, "on"))
+	       {
+		  mode.all_new_windows_get_focus = 1;
+	       }
+	     else if (!strcmp(param2, "off"))
+	       {
+		  mode.all_new_windows_get_focus = 0;
+	       }
+	     else if (!strcmp(param2, "?"))
+	       {
+		  if (mode.all_new_windows_get_focus)
+		    {
+		       Esnprintf(buf, sizeof(buf), "new_window_focus: on");
+		    }
+		  else
+		    {
+		       Esnprintf(buf, sizeof(buf), "new_window_focus: off");
+		    }
+	       }
+	     else
+	       {
+		  Esnprintf(buf, sizeof(buf), "Error: unknown mode selected");
+	       }
+	  }
+	else if (!strcmp(param1, "focus_list"))
+	  {
+	     if (!strcmp(param2, "on"))
+	       {
+		  mode.display_warp = 1;
+	       }
+	     else if (!strcmp(param2, "off"))
+	       {
+		  mode.display_warp = 0;
+	       }
+	     else if (!strcmp(param2, "?"))
+	       {
+		  if (mode.display_warp)
+		    {
+		       Esnprintf(buf, sizeof(buf), "focus_list: on");
+		    }
+		  else
+		    {
+		       Esnprintf(buf, sizeof(buf), "focus_list: off");
+		    }
+	       }
+	     else
+	       {
+		  Esnprintf(buf, sizeof(buf), "Error: unknown mode selected");
+	       }
+	  }
+	else if (!strcmp(param1, "new_popup_window_focus"))
+	  {
+	     if (!strcmp(param2, "on"))
+	       {
+		  mode.new_transients_get_focus = 1;
+	       }
+	     else if (!strcmp(param2, "off"))
+	       {
+		  mode.new_transients_get_focus = 0;
+	       }
+	     else if (!strcmp(param2, "?"))
+	       {
+		  if (mode.new_transients_get_focus)
+		    {
+		       Esnprintf(buf, sizeof(buf),
+				 "new_popup_window_focus: on");
+		    }
+		  else
+		    {
+		       Esnprintf(buf, sizeof(buf),
+				 "new_popup_window_focus: off");
+		    }
+	       }
+	     else
+	       {
+		  Esnprintf(buf, sizeof(buf), "Error: unknown mode selected");
+	       }
+	  }
+	else if (!strcmp(param1, "new_popup_of_owner_focus"))
+	  {
+	     if (!strcmp(param2, "on"))
+	       {
+		  mode.new_transients_get_focus_if_group_focused = 1;
+	       }
+	     else if (!strcmp(param2, "off"))
+	       {
+		  mode.new_transients_get_focus_if_group_focused = 0;
+	       }
+	     else if (!strcmp(param2, "?"))
+	       {
+		  if (mode.new_transients_get_focus_if_group_focused)
+		    {
+		       Esnprintf(buf, sizeof(buf),
+				 "new_popup_of_owner_focus: on");
+		    }
+		  else
+		    {
+		       Esnprintf(buf, sizeof(buf),
+				 "new_popup_of_owner_focus: off");
+		    }
+	       }
+	     else
+	       {
+		  Esnprintf(buf, sizeof(buf), "Error: unknown mode selected");
+	       }
+	  }
+	else if (!strcmp(param1, "raise_on_keyboard_focus_switch"))
+	  {
+	     if (!strcmp(param2, "on"))
+	       {
+		  mode.raise_on_next_focus = 1;
+	       }
+	     else if (!strcmp(param2, "off"))
+	       {
+		  mode.raise_on_next_focus = 0;
+	       }
+	     else if (!strcmp(param2, "?"))
+	       {
+		  if (mode.raise_on_next_focus)
+		    {
+		       Esnprintf(buf, sizeof(buf),
+				 "raise_on_keyboard_focus_switch: on");
+		    }
+		  else
+		    {
+		       Esnprintf(buf, sizeof(buf),
+				 "raise_on_keyboard_focus_switch: off");
+		    }
+	       }
+	     else
+	       {
+		  Esnprintf(buf, sizeof(buf), "Error: unknown mode selected");
+	       }
+	  }
+	else if (!strcmp(param1, "raise_after_keyboard_focus_switch"))
+	  {
+	     if (!strcmp(param2, "on"))
+	       {
+		  mode.raise_after_next_focus = 1;
+	       }
+	     else if (!strcmp(param2, "off"))
+	       {
+		  mode.raise_after_next_focus = 0;
+	       }
+	     else if (!strcmp(param2, "?"))
+	       {
+		  if (mode.raise_after_next_focus)
+		    {
+		       Esnprintf(buf, sizeof(buf),
+				 "raise_after_keyboard_focus_switch: on");
+		    }
+		  else
+		    {
+		       Esnprintf(buf, sizeof(buf),
+				 "raise_after_keyboard_focus_switch: off");
+		    }
+	       }
+	     else
+	       {
+		  Esnprintf(buf, sizeof(buf), "Error: unknown mode selected");
+	       }
+	  }
+	else if (!strcmp(param1, "display_warp"))
+	  {
+	     if (!strcmp(param2, "on"))
+	       {
+		  mode.display_warp = 1;
+	       }
+	     else if (!strcmp(param2, "off"))
+	       {
+		  mode.display_warp = 0;
+	       }
+	     else if (!strcmp(param2, "?"))
+	       {
+		  if (mode.display_warp)
+		    {
+		       Esnprintf(buf, sizeof(buf), "display_warp: on");
+		    }
+		  else
+		    {
+		       Esnprintf(buf, sizeof(buf), "display_warp: off");
+		    }
+	       }
+	     else
+	       {
+		  Esnprintf(buf, sizeof(buf), "Error: unknown mode selected");
+	       }
+	  }
+	else if (!strcmp(param1, "pointer_to_keyboard_focus_window"))
+	  {
+	     if (!strcmp(param2, "on"))
+	       {
+		  mode.warp_on_next_focus = 1;
+	       }
+	     else if (!strcmp(param2, "off"))
+	       {
+		  mode.warp_on_next_focus = 0;
+	       }
+	     else if (!strcmp(param2, "?"))
+	       {
+		  if (mode.warp_on_next_focus)
+		    {
+		       Esnprintf(buf, sizeof(buf),
+				 "pointer_to_keyboard_focus_window: on");
+		    }
+		  else
+		    {
+		       Esnprintf(buf, sizeof(buf),
+				 "pointer_to_keyboard_focus_window: off");
+		    }
+	       }
+	     else
+	       {
+		  Esnprintf(buf, sizeof(buf), "Error: unknown mode selected");
+	       }
+	  }
+	else if (!strcmp(param1, "pointer_after_keyboard_focus_window"))
+	  {
+	     if (!strcmp(param2, "on"))
+	       {
+		  mode.warp_after_next_focus = 1;
+	       }
+	     else if (!strcmp(param2, "off"))
+	       {
+		  mode.warp_after_next_focus = 0;
+	       }
+	     else if (!strcmp(param2, "?"))
+	       {
+		  if (mode.warp_after_next_focus)
+		    {
+		       Esnprintf(buf, sizeof(buf),
+				 "pointer_after_keyboard_focus_window: on");
+		    }
+		  else
+		    {
+		       Esnprintf(buf, sizeof(buf),
+				 "pointer_after_keyboard_focus_window: off");
+		    }
+	       }
+	     else
+	       {
+		  Esnprintf(buf, sizeof(buf), "Error: unknown mode selected");
+	       }
+	  }
+	else if (!strcmp(param1, "transients_follow_leader"))
+	  {
+	     if (!strcmp(param2, "on"))
+	       {
+		  mode.transientsfollowleader = 1;
+	       }
+	     else if (!strcmp(param2, "off"))
+	       {
+		  mode.transientsfollowleader = 0;
+	       }
+	     else if (!strcmp(param2, "?"))
+	       {
+		  if (mode.transientsfollowleader)
+		    {
+		       Esnprintf(buf, sizeof(buf),
+				 "transients_follow_leader: on");
+		    }
+		  else
+		    {
+		       Esnprintf(buf, sizeof(buf),
+				 "transients_follow_leader: off");
+		    }
+	       }
+	     else
+	       {
+		  Esnprintf(buf, sizeof(buf), "Error: unknown mode selected");
+	       }
+	  }
+	else if (!strcmp(param1, "switch_to_popup_location"))
+	  {
+	     if (!strcmp(param2, "on"))
+	       {
+		  mode.switchfortransientmap = 1;
+	       }
+	     else if (!strcmp(param2, "off"))
+	       {
+		  mode.switchfortransientmap = 0;
+	       }
+	     else if (!strcmp(param2, "?"))
+	       {
+		  if (mode.switchfortransientmap)
+		    {
+		       Esnprintf(buf, sizeof(buf),
+				 "switch_to_popup_location: on");
+		    }
+		  else
+		    {
+		       Esnprintf(buf, sizeof(buf),
+				 "switch_to_popup_location: off");
+		    }
+	       }
+	     else
+	       {
+		  Esnprintf(buf, sizeof(buf), "Error: unknown mode selected");
+	       }
+	  }
+	else if (!strcmp(param1, "manual_placement"))
+	  {
+	     if (!strcmp(param2, "on"))
+	       {
+		  mode.manual_placement = 1;
+	       }
+	     else if (!strcmp(param2, "off"))
+	       {
+		  mode.manual_placement = 0;
+	       }
+	     else if (!strcmp(param2, "?"))
+	       {
+		  if (mode.manual_placement)
+		    {
+		       Esnprintf(buf, sizeof(buf), "manual_placement: on");
+		    }
+		  else
+		    {
+		       Esnprintf(buf, sizeof(buf), "manual_placement: off");
+		    }
+	       }
+	     else
+	       {
+		  Esnprintf(buf, sizeof(buf), "Error: unknown mode selected");
+	       }
+	  }
+	else if (!strcmp(param1, "manual_placement_mouse_pointer"))
+	  {
+	     if (!strcmp(param2, "on"))
+	       {
+		  mode.manual_placement_mouse_pointer = 1;
+	       }
+	     else if (!strcmp(param2, "off"))
+	       {
+		  mode.manual_placement_mouse_pointer = 0;
+	       }
+	     else if (!strcmp(param2, "?"))
+	       {
+		  if (mode.manual_placement_mouse_pointer)
+		    {
+		       Esnprintf(buf, sizeof(buf),
+				 "manual_placement_mouse_pointer: on");
+		    }
+		  else
+		    {
+		       Esnprintf(buf, sizeof(buf),
+				 "manual_placement_mouse_pointer: off");
+		    }
+	       }
+	     else
+	       {
+		  Esnprintf(buf, sizeof(buf), "Error: unknown mode selected");
+	       }
+	  }
+	else
+	  {
+	     Esnprintf(buf, sizeof(buf), "Error: unknown mode selected");
+	  }
      }
    else
      {
-        Esnprintf(buf, sizeof(buf), "Error: no mode selected");
+	Esnprintf(buf, sizeof(buf), "Error: no mode selected");
      }
 
    if (buf[0])
@@ -2744,66 +2744,66 @@ IPC_InternalList(char *params, Client * c)
 
    if (params)
      {
-        EWin              **lst;
-        int                 num, i;
+	EWin              **lst;
+	int                 num, i;
 
-        lst = (EWin **) ListItemType(&num, LIST_TYPE_EWIN);
-        if (!strcmp(params, "pagers"))
-          {
-             for (i = 0; i < num; i++)
-               {
-                  if (lst[i]->pager)
-                    {
-                       Esnprintf(buf2, sizeof(buf2), "%8x\n",
-                                 lst[i]->client.win);
-                       strcat(buf, buf2);
-                    }
-               }
-          }
-        else if (!strcmp(params, "menus"))
-          {
-             for (i = 0; i < num; i++)
-               {
-                  if (lst[i]->menu)
-                    {
-                       Esnprintf(buf2, sizeof(buf2), "%8x\n",
-                                 lst[i]->client.win);
-                       strcat(buf, buf2);
-                    }
-               }
-          }
-        else if (!strcmp(params, "dialogs"))
-          {
-             for (i = 0; i < num; i++)
-               {
-                  if (lst[i]->dialog)
-                    {
-                       Esnprintf(buf2, sizeof(buf2), "%8x\n",
-                                 lst[i]->client.win);
-                       strcat(buf, buf2);
-                    }
-               }
-          }
-        else if (!strcmp(params, "internal_ewin"))
-          {
-             for (i = 0; i < num; i++)
-               {
-                  if (lst[i]->internal)
-                    {
-                       Esnprintf(buf2, sizeof(buf2), "%8x\n",
-                                 lst[i]->client.win);
-                       strcat(buf, buf2);
-                    }
-               }
-          }
-        else
-          {
-             Esnprintf(buf, sizeof(buf),
-                       "Error: unknown internal list specified");
-          }
+	lst = (EWin **) ListItemType(&num, LIST_TYPE_EWIN);
+	if (!strcmp(params, "pagers"))
+	  {
+	     for (i = 0; i < num; i++)
+	       {
+		  if (lst[i]->pager)
+		    {
+		       Esnprintf(buf2, sizeof(buf2), "%8x\n",
+				 lst[i]->client.win);
+		       strcat(buf, buf2);
+		    }
+	       }
+	  }
+	else if (!strcmp(params, "menus"))
+	  {
+	     for (i = 0; i < num; i++)
+	       {
+		  if (lst[i]->menu)
+		    {
+		       Esnprintf(buf2, sizeof(buf2), "%8x\n",
+				 lst[i]->client.win);
+		       strcat(buf, buf2);
+		    }
+	       }
+	  }
+	else if (!strcmp(params, "dialogs"))
+	  {
+	     for (i = 0; i < num; i++)
+	       {
+		  if (lst[i]->dialog)
+		    {
+		       Esnprintf(buf2, sizeof(buf2), "%8x\n",
+				 lst[i]->client.win);
+		       strcat(buf, buf2);
+		    }
+	       }
+	  }
+	else if (!strcmp(params, "internal_ewin"))
+	  {
+	     for (i = 0; i < num; i++)
+	       {
+		  if (lst[i]->internal)
+		    {
+		       Esnprintf(buf2, sizeof(buf2), "%8x\n",
+				 lst[i]->client.win);
+		       strcat(buf, buf2);
+		    }
+	       }
+	  }
+	else
+	  {
+	     Esnprintf(buf, sizeof(buf),
+		       "Error: unknown internal list specified");
+	  }
 
-        if (lst)
-           Efree(lst);
+	if (lst)
+	   Efree(lst);
      }
    if (buf[0])
       CommsSend(c, buf);
@@ -2828,215 +2828,215 @@ IPC_Pager(char *params, Client * c)
 
    if (params)
      {
-        word(params, 1, param1);
-        if (!strcmp(param1, "on"))
-          {
-             EnableAllPagers();
-          }
-        else if (!strcmp(param1, "off"))
-          {
-             DisableAllPagers();
-          }
-        else if (!strcmp(param1, "?"))
-          {
-             if (mode.show_pagers)
-               {
-                  Esnprintf(buf, sizeof(buf), "pager: on");
-               }
-             else
-               {
-                  Esnprintf(buf, sizeof(buf), "pager: off");
-               }
-          }
-        else if (!strcmp(param1, "hiq"))
-          {
-             word(params, 2, param2);
-             if (!strcmp(param2, "?"))
-               {
-                  if (mode.pager_hiq)
-                    {
-                       Esnprintf(buf, sizeof(buf), "pager_hiq: on");
-                    }
-                  else
-                    {
-                       Esnprintf(buf, sizeof(buf), "pager_hiq: off");
-                    }
-               }
-             else if (!strcmp(param2, "on"))
-               {
-                  PagerSetHiQ(1);
-               }
-             else if (!strcmp(param2, "off"))
-               {
-                  PagerSetHiQ(0);
-               }
-             else
-               {
-                  Esnprintf(buf, sizeof(buf), "Error: unknown mode selected");
+	word(params, 1, param1);
+	if (!strcmp(param1, "on"))
+	  {
+	     EnableAllPagers();
+	  }
+	else if (!strcmp(param1, "off"))
+	  {
+	     DisableAllPagers();
+	  }
+	else if (!strcmp(param1, "?"))
+	  {
+	     if (mode.show_pagers)
+	       {
+		  Esnprintf(buf, sizeof(buf), "pager: on");
+	       }
+	     else
+	       {
+		  Esnprintf(buf, sizeof(buf), "pager: off");
+	       }
+	  }
+	else if (!strcmp(param1, "hiq"))
+	  {
+	     word(params, 2, param2);
+	     if (!strcmp(param2, "?"))
+	       {
+		  if (mode.pager_hiq)
+		    {
+		       Esnprintf(buf, sizeof(buf), "pager_hiq: on");
+		    }
+		  else
+		    {
+		       Esnprintf(buf, sizeof(buf), "pager_hiq: off");
+		    }
+	       }
+	     else if (!strcmp(param2, "on"))
+	       {
+		  PagerSetHiQ(1);
+	       }
+	     else if (!strcmp(param2, "off"))
+	       {
+		  PagerSetHiQ(0);
+	       }
+	     else
+	       {
+		  Esnprintf(buf, sizeof(buf), "Error: unknown mode selected");
 
-               }
-          }
-        else if (!strcmp(param1, "zoom"))
-          {
-             word(params, 2, param2);
-             if (param2[0])
-               {
-                  if (!strcmp(param2, "on"))
-                    {
-                       mode.pager_zoom = 1;
-                    }
-                  else if (!strcmp(param2, "off"))
-                    {
-                       mode.pager_zoom = 0;
-                    }
-                  else if (!strcmp(param2, "?"))
-                    {
-                       if (mode.pager_zoom)
-                         {
-                            CommsSend(c, "pager_zoom: on");
-                         }
-                       else
-                         {
-                            CommsSend(c, "pager_zoom: off");
-                         }
-                    }
-                  else
-                    {
-                       Esnprintf(buf, sizeof(buf),
-                                 "Error: unknown mode selected");
-                    }
-               }
-             else
-               {
-                  Esnprintf(buf, sizeof(buf), "Error: no mode selected");
-               }
-          }
-        else if (!strcmp(param1, "title"))
-          {
-             word(params, 2, param2);
-             if (param2[0])
-               {
-                  if (!strcmp(param2, "on"))
-                    {
-                       mode.pager_title = 1;
-                    }
-                  else if (!strcmp(param2, "off"))
-                    {
-                       mode.pager_title = 0;
-                    }
-                  else if (!strcmp(param2, "?"))
-                    {
-                       if (mode.pager_title)
-                         {
-                            CommsSend(c, "pager_title: on");
-                         }
-                       else
-                         {
-                            CommsSend(c, "pager_title: off");
-                         }
-                    }
-                  else
-                    {
-                       Esnprintf(buf, sizeof(buf), "Error: no mode selected");
-                    }
-               }
-          }
-        else if (!strcmp(param1, "scanrate"))
-          {
-             word(params, 2, param2);
-             if (param2[0])
-               {
-                  if (!strcmp(param2, "?"))
-                    {
-                       Esnprintf(buf, sizeof(buf), "pager_scanrate: %d",
-                                 mode.pager_scanspeed);
-                    }
-                  else
-                    {
-                       mode.pager_scanspeed = atoi(param2);
-                    }
-               }
-             else
-               {
-                  Esnprintf(buf, sizeof(buf), "Error: no scanrate specified.");
-               }
-          }
-        else if (!strcmp(param1, "snap"))
-          {
-             word(params, 2, param2);
-             if (!strcmp(param2, "?"))
-               {
-                  if (mode.pager_hiq)
-                    {
-                       Esnprintf(buf, sizeof(buf), "pager_snap: on");
-                    }
-                  else
-                    {
-                       Esnprintf(buf, sizeof(buf), "pager_snap: off");
-                    }
-               }
-             else if (!strcmp(param2, "on"))
-               {
-                  PagerSetSnap(1);
-               }
-             else if (!strcmp(param2, "off"))
-               {
-                  PagerSetSnap(0);
-               }
-          }
-        else if (!strcmp(param1, "desk"))
-          {
-             char                param3[FILEPATH_LEN_MAX];
+	       }
+	  }
+	else if (!strcmp(param1, "zoom"))
+	  {
+	     word(params, 2, param2);
+	     if (param2[0])
+	       {
+		  if (!strcmp(param2, "on"))
+		    {
+		       mode.pager_zoom = 1;
+		    }
+		  else if (!strcmp(param2, "off"))
+		    {
+		       mode.pager_zoom = 0;
+		    }
+		  else if (!strcmp(param2, "?"))
+		    {
+		       if (mode.pager_zoom)
+			 {
+			    CommsSend(c, "pager_zoom: on");
+			 }
+		       else
+			 {
+			    CommsSend(c, "pager_zoom: off");
+			 }
+		    }
+		  else
+		    {
+		       Esnprintf(buf, sizeof(buf),
+				 "Error: unknown mode selected");
+		    }
+	       }
+	     else
+	       {
+		  Esnprintf(buf, sizeof(buf), "Error: no mode selected");
+	       }
+	  }
+	else if (!strcmp(param1, "title"))
+	  {
+	     word(params, 2, param2);
+	     if (param2[0])
+	       {
+		  if (!strcmp(param2, "on"))
+		    {
+		       mode.pager_title = 1;
+		    }
+		  else if (!strcmp(param2, "off"))
+		    {
+		       mode.pager_title = 0;
+		    }
+		  else if (!strcmp(param2, "?"))
+		    {
+		       if (mode.pager_title)
+			 {
+			    CommsSend(c, "pager_title: on");
+			 }
+		       else
+			 {
+			    CommsSend(c, "pager_title: off");
+			 }
+		    }
+		  else
+		    {
+		       Esnprintf(buf, sizeof(buf), "Error: no mode selected");
+		    }
+	       }
+	  }
+	else if (!strcmp(param1, "scanrate"))
+	  {
+	     word(params, 2, param2);
+	     if (param2[0])
+	       {
+		  if (!strcmp(param2, "?"))
+		    {
+		       Esnprintf(buf, sizeof(buf), "pager_scanrate: %d",
+				 mode.pager_scanspeed);
+		    }
+		  else
+		    {
+		       mode.pager_scanspeed = atoi(param2);
+		    }
+	       }
+	     else
+	       {
+		  Esnprintf(buf, sizeof(buf), "Error: no scanrate specified.");
+	       }
+	  }
+	else if (!strcmp(param1, "snap"))
+	  {
+	     word(params, 2, param2);
+	     if (!strcmp(param2, "?"))
+	       {
+		  if (mode.pager_hiq)
+		    {
+		       Esnprintf(buf, sizeof(buf), "pager_snap: on");
+		    }
+		  else
+		    {
+		       Esnprintf(buf, sizeof(buf), "pager_snap: off");
+		    }
+	       }
+	     else if (!strcmp(param2, "on"))
+	       {
+		  PagerSetSnap(1);
+	       }
+	     else if (!strcmp(param2, "off"))
+	       {
+		  PagerSetSnap(0);
+	       }
+	  }
+	else if (!strcmp(param1, "desk"))
+	  {
+	     char                param3[FILEPATH_LEN_MAX];
 
-             param3[0] = 0;
+	     param3[0] = 0;
 
-             word(params, 2, param2);
-             word(params, 3, param3);
-             if (param3[0])
-               {
-                  if (!strcmp(param3, "on"))
-                    {
-                       EnableSinglePagerForDesktop(atoi(param2));
-                    }
-                  else if (!strcmp(param3, "new"))
-                    {
-                       NewPagerForDesktop(atoi(param2));
-                    }
-                  else if (!strcmp(param3, "off"))
-                    {
-                       DisablePagersForDesktop(atoi(param2));
-                    }
-                  else if (!strcmp(param3, "?"))
-                    {
-                       Esnprintf(buf, sizeof(buf), "Desk %s: %i pagers", param2,
-                                 PagerForDesktop(atoi(param2)));
-                    }
-                  else
-                    {
-                       Esnprintf(buf, sizeof(buf),
-                                 "Error: unknown mode specified");
-                    }
-               }
-             else
-               {
-                  if (param2[0])
-                    {
-                       Esnprintf(buf, sizeof(buf), "Error: no mode specified");
-                    }
-                  else
-                    {
-                       Esnprintf(buf, sizeof(buf), "Error: no desk specified");
-                    }
-               }
-          }
-        else
-          {
-             Esnprintf(buf, sizeof(buf), "Error: unknown mode specified");
-          }
+	     word(params, 2, param2);
+	     word(params, 3, param3);
+	     if (param3[0])
+	       {
+		  if (!strcmp(param3, "on"))
+		    {
+		       EnableSinglePagerForDesktop(atoi(param2));
+		    }
+		  else if (!strcmp(param3, "new"))
+		    {
+		       NewPagerForDesktop(atoi(param2));
+		    }
+		  else if (!strcmp(param3, "off"))
+		    {
+		       DisablePagersForDesktop(atoi(param2));
+		    }
+		  else if (!strcmp(param3, "?"))
+		    {
+		       Esnprintf(buf, sizeof(buf), "Desk %s: %i pagers", param2,
+				 PagerForDesktop(atoi(param2)));
+		    }
+		  else
+		    {
+		       Esnprintf(buf, sizeof(buf),
+				 "Error: unknown mode specified");
+		    }
+	       }
+	     else
+	       {
+		  if (param2[0])
+		    {
+		       Esnprintf(buf, sizeof(buf), "Error: no mode specified");
+		    }
+		  else
+		    {
+		       Esnprintf(buf, sizeof(buf), "Error: no desk specified");
+		    }
+	       }
+	  }
+	else
+	  {
+	     Esnprintf(buf, sizeof(buf), "Error: unknown mode specified");
+	  }
      }
    else
      {
-        Esnprintf(buf, sizeof(buf), "Error: no mode specified");
+	Esnprintf(buf, sizeof(buf), "Error: no mode specified");
      }
 
    if (buf[0])
@@ -3056,58 +3056,58 @@ IPC_MoveMode(char *params, Client * c)
 
    if (params)
      {
-        if (!strcmp(params, "opaque"))
-          {
-             mode.movemode = 0;
-          }
-        else if (!strcmp(params, "lined"))
-          {
-             mode.movemode = 1;
-          }
-        else if (!strcmp(params, "box"))
-          {
-             mode.movemode = 2;
-          }
-        else if (!strcmp(params, "shaded"))
-          {
-             mode.movemode = 3;
-          }
-        else if (!strcmp(params, "semi-solid"))
-          {
-             mode.movemode = 4;
-          }
-        else if (!strcmp(params, "translucent"))
-          {
-             mode.movemode = 5;
-          }
-        else if (!strcmp(params, "?"))
-          {
-             if (mode.movemode)
-               {
-                  if (mode.movemode == 1)
-                     Esnprintf(buf, sizeof(buf), "movemode: lined");
-                  else if (mode.movemode == 2)
-                     Esnprintf(buf, sizeof(buf), "movemode: box");
-                  else if (mode.movemode == 3)
-                     Esnprintf(buf, sizeof(buf), "movemode: shaded");
-                  else if (mode.movemode == 4)
-                     Esnprintf(buf, sizeof(buf), "movemode: semi-solid");
-                  else if (mode.movemode == 5)
-                     Esnprintf(buf, sizeof(buf), "movemode: translucent");
-               }
-             else
-               {
-                  Esnprintf(buf, sizeof(buf), "movemode: opaque");
-               }
-          }
-        else
-          {
-             Esnprintf(buf, sizeof(buf), "Error: unknown mode specified");
-          }
+	if (!strcmp(params, "opaque"))
+	  {
+	     mode.movemode = 0;
+	  }
+	else if (!strcmp(params, "lined"))
+	  {
+	     mode.movemode = 1;
+	  }
+	else if (!strcmp(params, "box"))
+	  {
+	     mode.movemode = 2;
+	  }
+	else if (!strcmp(params, "shaded"))
+	  {
+	     mode.movemode = 3;
+	  }
+	else if (!strcmp(params, "semi-solid"))
+	  {
+	     mode.movemode = 4;
+	  }
+	else if (!strcmp(params, "translucent"))
+	  {
+	     mode.movemode = 5;
+	  }
+	else if (!strcmp(params, "?"))
+	  {
+	     if (mode.movemode)
+	       {
+		  if (mode.movemode == 1)
+		     Esnprintf(buf, sizeof(buf), "movemode: lined");
+		  else if (mode.movemode == 2)
+		     Esnprintf(buf, sizeof(buf), "movemode: box");
+		  else if (mode.movemode == 3)
+		     Esnprintf(buf, sizeof(buf), "movemode: shaded");
+		  else if (mode.movemode == 4)
+		     Esnprintf(buf, sizeof(buf), "movemode: semi-solid");
+		  else if (mode.movemode == 5)
+		     Esnprintf(buf, sizeof(buf), "movemode: translucent");
+	       }
+	     else
+	       {
+		  Esnprintf(buf, sizeof(buf), "movemode: opaque");
+	       }
+	  }
+	else
+	  {
+	     Esnprintf(buf, sizeof(buf), "Error: unknown mode specified");
+	  }
      }
    else
      {
-        Esnprintf(buf, sizeof(buf), "Error: no mode specified");
+	Esnprintf(buf, sizeof(buf), "Error: no mode specified");
      }
 
    if (buf[0])
@@ -3127,52 +3127,52 @@ IPC_ResizeMode(char *params, Client * c)
 
    if (params)
      {
-        if (!strcmp(params, "opaque"))
-          {
-             mode.resizemode = 0;
-          }
-        else if (!strcmp(params, "lined"))
-          {
-             mode.resizemode = 1;
-          }
-        else if (!strcmp(params, "box"))
-          {
-             mode.resizemode = 2;
-          }
-        else if (!strcmp(params, "shaded"))
-          {
-             mode.resizemode = 3;
-          }
-        else if (!strcmp(params, "semi-solid"))
-          {
-             mode.resizemode = 4;
-          }
-        else if (!strcmp(params, "?"))
-          {
-             if (mode.resizemode)
-               {
-                  if (mode.resizemode == 1)
-                     Esnprintf(buf, sizeof(buf), "resizemode: lined");
-                  else if (mode.resizemode == 2)
-                     Esnprintf(buf, sizeof(buf), "resizemode: box");
-                  else if (mode.resizemode == 3)
-                     Esnprintf(buf, sizeof(buf), "resizemode: shaded");
-                  else if (mode.resizemode == 4)
-                     Esnprintf(buf, sizeof(buf), "resizemode: semi-solid");
-               }
-             else
-               {
-                  Esnprintf(buf, sizeof(buf), "resizemode: opaque");
-               }
-          }
-        else
-          {
-             Esnprintf(buf, sizeof(buf), "Error: unknown mode specified");
-          }
+	if (!strcmp(params, "opaque"))
+	  {
+	     mode.resizemode = 0;
+	  }
+	else if (!strcmp(params, "lined"))
+	  {
+	     mode.resizemode = 1;
+	  }
+	else if (!strcmp(params, "box"))
+	  {
+	     mode.resizemode = 2;
+	  }
+	else if (!strcmp(params, "shaded"))
+	  {
+	     mode.resizemode = 3;
+	  }
+	else if (!strcmp(params, "semi-solid"))
+	  {
+	     mode.resizemode = 4;
+	  }
+	else if (!strcmp(params, "?"))
+	  {
+	     if (mode.resizemode)
+	       {
+		  if (mode.resizemode == 1)
+		     Esnprintf(buf, sizeof(buf), "resizemode: lined");
+		  else if (mode.resizemode == 2)
+		     Esnprintf(buf, sizeof(buf), "resizemode: box");
+		  else if (mode.resizemode == 3)
+		     Esnprintf(buf, sizeof(buf), "resizemode: shaded");
+		  else if (mode.resizemode == 4)
+		     Esnprintf(buf, sizeof(buf), "resizemode: semi-solid");
+	       }
+	     else
+	       {
+		  Esnprintf(buf, sizeof(buf), "resizemode: opaque");
+	       }
+	  }
+	else
+	  {
+	     Esnprintf(buf, sizeof(buf), "Error: unknown mode specified");
+	  }
      }
    else
      {
-        Esnprintf(buf, sizeof(buf), "Error: no mode specified");
+	Esnprintf(buf, sizeof(buf), "Error: no mode specified");
      }
 
    if (buf[0])
@@ -3192,40 +3192,40 @@ IPC_GeomInfoMode(char *params, Client * c)
 
    if (params)
      {
-        if (!strcmp(params, "never"))
-          {
-             mode.geominfomode = 0;
-          }
-        else if (!strcmp(params, "center"))
-          {
-             mode.geominfomode = 1;
-          }
-        else if (!strcmp(params, "corner"))
-          {
-             mode.geominfomode = 2;
-          }
-        else if (!strcmp(params, "?"))
-          {
-             if (mode.geominfomode)
-               {
-                  if (mode.geominfomode == 1)
-                     Esnprintf(buf, sizeof(buf), "geominfomode: center");
-                  else if (mode.geominfomode == 2)
-                     Esnprintf(buf, sizeof(buf), "geominfomode: corner");
-               }
-             else
-               {
-                  Esnprintf(buf, sizeof(buf), "geominfomode: never");
-               }
-          }
-        else
-          {
-             Esnprintf(buf, sizeof(buf), "Error: unknown mode specified");
-          }
+	if (!strcmp(params, "never"))
+	  {
+	     mode.geominfomode = 0;
+	  }
+	else if (!strcmp(params, "center"))
+	  {
+	     mode.geominfomode = 1;
+	  }
+	else if (!strcmp(params, "corner"))
+	  {
+	     mode.geominfomode = 2;
+	  }
+	else if (!strcmp(params, "?"))
+	  {
+	     if (mode.geominfomode)
+	       {
+		  if (mode.geominfomode == 1)
+		     Esnprintf(buf, sizeof(buf), "geominfomode: center");
+		  else if (mode.geominfomode == 2)
+		     Esnprintf(buf, sizeof(buf), "geominfomode: corner");
+	       }
+	     else
+	       {
+		  Esnprintf(buf, sizeof(buf), "geominfomode: never");
+	       }
+	  }
+	else
+	  {
+	     Esnprintf(buf, sizeof(buf), "Error: unknown mode specified");
+	  }
      }
    else
      {
-        Esnprintf(buf, sizeof(buf), "Error: no mode specified");
+	Esnprintf(buf, sizeof(buf), "Error: no mode specified");
      }
 
    if (buf[0])
@@ -3246,463 +3246,463 @@ IPC_FX(char *params, Client * c)
    if (params)
      {
 
-        char                word1[FILEPATH_LEN_MAX];
-        char                word2[FILEPATH_LEN_MAX];
+	char                word1[FILEPATH_LEN_MAX];
+	char                word2[FILEPATH_LEN_MAX];
 
-        word(params, 1, word1);
-        if (!strcmp(word1, "ripples"))
-          {
-             word(params, 2, word2);
-             if (!strcmp(word2, "on"))
-               {
-                  if (!FX_IsOn("ripples"))
-                     FX_Activate("ripples");
-               }
-             else if (!strcmp(word2, "off"))
-               {
-                  if (FX_IsOn("ripples"))
-                     FX_Deactivate("ripples");
-               }
-             else if (!strcmp(word2, "?"))
-               {
-                  if (FX_IsOn("ripples"))
-                     Esnprintf(buf, sizeof(buf), "ripples: on");
-                  else
-                     Esnprintf(buf, sizeof(buf), "ripples: off");
-               }
-             else
-               {
-                  Esnprintf(buf, sizeof(buf), "Error: unknown mode specified");
-               }
-          }
-        else if (!strcmp(word1, "deskslide"))
-          {
-             word(params, 2, word2);
-             if (!strcmp(word2, "on"))
-               {
-                  desks.slidein = 1;
-               }
-             else if (!strcmp(word2, "off"))
-               {
-                  desks.slidein = 0;
-               }
-             else if (!strcmp(word2, "?"))
-               {
-                  if (desks.slidein)
-                     Esnprintf(buf, sizeof(buf), "deskslide: on");
-                  else
-                     Esnprintf(buf, sizeof(buf), "deskslide: off");
-               }
-             else
-               {
-                  Esnprintf(buf, sizeof(buf), "Error: unknown mode specified");
-               }
-          }
-        else if (!strcmp(word1, "mapslide"))
-          {
-             word(params, 2, word2);
-             if (!strcmp(word2, "on"))
-               {
-                  mode.mapslide = 1;
-               }
-             else if (!strcmp(word2, "off"))
-               {
-                  mode.mapslide = 0;
-               }
-             else if (!strcmp(word2, "?"))
-               {
-                  if (mode.mapslide)
-                     Esnprintf(buf, sizeof(buf), "mapslide: on");
-                  else
-                     Esnprintf(buf, sizeof(buf), "mapslide: off");
-               }
-             else
-               {
-                  Esnprintf(buf, sizeof(buf), "Error: unknown mode specified");
-               }
-          }
-        else if (!strcmp(word1, "raindrops"))
-          {
-             word(params, 2, word2);
-             if (!strcmp(word2, "on"))
-               {
-                  if (!FX_IsOn("raindrops"))
-                     FX_Activate("raindrops");
-               }
-             else if (!strcmp(word2, "off"))
-               {
-                  if (FX_IsOn("raindrops"))
-                     FX_Deactivate("raindrops");
-               }
-             else if (!strcmp(word2, "?"))
-               {
-                  if (FX_IsOn("raindrops"))
-                     Esnprintf(buf, sizeof(buf), "raindrops: on");
-                  else
-                     Esnprintf(buf, sizeof(buf), "raindrops: off");
-               }
-             else
-               {
-                  Esnprintf(buf, sizeof(buf), "Error: unknown mode specified");
-               }
-          }
-        else if (!strcmp(word1, "menu_animate"))
-          {
-             word(params, 2, word2);
-             if (!strcmp(word2, "on"))
-               {
-                  mode.menuslide = 1;
-               }
-             else if (!strcmp(word2, "off"))
-               {
-                  mode.menuslide = 0;
-               }
-             else if (!strcmp(word2, "?"))
-               {
-                  if (mode.menuslide)
-                     Esnprintf(buf, sizeof(buf), "menu_animate: on");
-                  else
-                     Esnprintf(buf, sizeof(buf), "menu_animate: off");
-               }
-             else
-               {
-                  Esnprintf(buf, sizeof(buf), "Error: unknown mode specified");
-               }
-          }
-        else if (!strcmp(word1, "waves"))
-          {
-             word(params, 2, word2);
-             if (!strcmp(word2, "on"))
-               {
-                  if (!FX_IsOn("waves"))
-                     FX_Activate("waves");
-               }
-             else if (!strcmp(word2, "off"))
-               {
-                  if (FX_IsOn("waves"))
-                     FX_Deactivate("waves");
-               }
-             else if (!strcmp(word2, "?"))
-               {
-                  if (FX_IsOn("waves"))
-                     Esnprintf(buf, sizeof(buf), "waves: on");
-                  else
-                     Esnprintf(buf, sizeof(buf), "waves: off");
-               }
-             else
-               {
-                  Esnprintf(buf, sizeof(buf), "Error: unknown mode specified");
-               }
-          }
-        else if (!strcmp(word1, "animate_win_shading"))
-          {
-             word(params, 2, word2);
-             if (!strcmp(word2, "on"))
-               {
-                  mode.animate_shading = 1;
-               }
-             else if (!strcmp(word2, "off"))
-               {
-                  mode.animate_shading = 0;
-               }
-             else if (!strcmp(word2, "?"))
-               {
-                  if (mode.animate_shading)
-                     Esnprintf(buf, sizeof(buf), "animate_win_shading: on");
-                  else
-                     Esnprintf(buf, sizeof(buf), "animate_win_shading: off");
-               }
-             else
-               {
-                  Esnprintf(buf, sizeof(buf), "Error: unknown mode specified");
-               }
-          }
-        else if (!strcmp(word1, "window_shade_speed"))
-          {
-             word(params, 2, word2);
-             if (!strcmp(word2, "?"))
-               {
-                  if (mode.animate_shading)
-                    {
-                       Esnprintf(buf, sizeof(buf), "shadespeed: %d seconds",
-                                 mode.shadespeed);
-                    }
-                  else
-                    {
-                       Esnprintf(buf, sizeof(buf), "shadespeed: off");
-                    }
-               }
-             else
-               {
-                  mode.shadespeed = atoi(word2);
-               }
-          }
-        else if (!strcmp(word1, "dragbar"))
-          {
+	word(params, 1, word1);
+	if (!strcmp(word1, "ripples"))
+	  {
+	     word(params, 2, word2);
+	     if (!strcmp(word2, "on"))
+	       {
+		  if (!FX_IsOn("ripples"))
+		     FX_Activate("ripples");
+	       }
+	     else if (!strcmp(word2, "off"))
+	       {
+		  if (FX_IsOn("ripples"))
+		     FX_Deactivate("ripples");
+	       }
+	     else if (!strcmp(word2, "?"))
+	       {
+		  if (FX_IsOn("ripples"))
+		     Esnprintf(buf, sizeof(buf), "ripples: on");
+		  else
+		     Esnprintf(buf, sizeof(buf), "ripples: off");
+	       }
+	     else
+	       {
+		  Esnprintf(buf, sizeof(buf), "Error: unknown mode specified");
+	       }
+	  }
+	else if (!strcmp(word1, "deskslide"))
+	  {
+	     word(params, 2, word2);
+	     if (!strcmp(word2, "on"))
+	       {
+		  desks.slidein = 1;
+	       }
+	     else if (!strcmp(word2, "off"))
+	       {
+		  desks.slidein = 0;
+	       }
+	     else if (!strcmp(word2, "?"))
+	       {
+		  if (desks.slidein)
+		     Esnprintf(buf, sizeof(buf), "deskslide: on");
+		  else
+		     Esnprintf(buf, sizeof(buf), "deskslide: off");
+	       }
+	     else
+	       {
+		  Esnprintf(buf, sizeof(buf), "Error: unknown mode specified");
+	       }
+	  }
+	else if (!strcmp(word1, "mapslide"))
+	  {
+	     word(params, 2, word2);
+	     if (!strcmp(word2, "on"))
+	       {
+		  mode.mapslide = 1;
+	       }
+	     else if (!strcmp(word2, "off"))
+	       {
+		  mode.mapslide = 0;
+	       }
+	     else if (!strcmp(word2, "?"))
+	       {
+		  if (mode.mapslide)
+		     Esnprintf(buf, sizeof(buf), "mapslide: on");
+		  else
+		     Esnprintf(buf, sizeof(buf), "mapslide: off");
+	       }
+	     else
+	       {
+		  Esnprintf(buf, sizeof(buf), "Error: unknown mode specified");
+	       }
+	  }
+	else if (!strcmp(word1, "raindrops"))
+	  {
+	     word(params, 2, word2);
+	     if (!strcmp(word2, "on"))
+	       {
+		  if (!FX_IsOn("raindrops"))
+		     FX_Activate("raindrops");
+	       }
+	     else if (!strcmp(word2, "off"))
+	       {
+		  if (FX_IsOn("raindrops"))
+		     FX_Deactivate("raindrops");
+	       }
+	     else if (!strcmp(word2, "?"))
+	       {
+		  if (FX_IsOn("raindrops"))
+		     Esnprintf(buf, sizeof(buf), "raindrops: on");
+		  else
+		     Esnprintf(buf, sizeof(buf), "raindrops: off");
+	       }
+	     else
+	       {
+		  Esnprintf(buf, sizeof(buf), "Error: unknown mode specified");
+	       }
+	  }
+	else if (!strcmp(word1, "menu_animate"))
+	  {
+	     word(params, 2, word2);
+	     if (!strcmp(word2, "on"))
+	       {
+		  mode.menuslide = 1;
+	       }
+	     else if (!strcmp(word2, "off"))
+	       {
+		  mode.menuslide = 0;
+	       }
+	     else if (!strcmp(word2, "?"))
+	       {
+		  if (mode.menuslide)
+		     Esnprintf(buf, sizeof(buf), "menu_animate: on");
+		  else
+		     Esnprintf(buf, sizeof(buf), "menu_animate: off");
+	       }
+	     else
+	       {
+		  Esnprintf(buf, sizeof(buf), "Error: unknown mode specified");
+	       }
+	  }
+	else if (!strcmp(word1, "waves"))
+	  {
+	     word(params, 2, word2);
+	     if (!strcmp(word2, "on"))
+	       {
+		  if (!FX_IsOn("waves"))
+		     FX_Activate("waves");
+	       }
+	     else if (!strcmp(word2, "off"))
+	       {
+		  if (FX_IsOn("waves"))
+		     FX_Deactivate("waves");
+	       }
+	     else if (!strcmp(word2, "?"))
+	       {
+		  if (FX_IsOn("waves"))
+		     Esnprintf(buf, sizeof(buf), "waves: on");
+		  else
+		     Esnprintf(buf, sizeof(buf), "waves: off");
+	       }
+	     else
+	       {
+		  Esnprintf(buf, sizeof(buf), "Error: unknown mode specified");
+	       }
+	  }
+	else if (!strcmp(word1, "animate_win_shading"))
+	  {
+	     word(params, 2, word2);
+	     if (!strcmp(word2, "on"))
+	       {
+		  mode.animate_shading = 1;
+	       }
+	     else if (!strcmp(word2, "off"))
+	       {
+		  mode.animate_shading = 0;
+	       }
+	     else if (!strcmp(word2, "?"))
+	       {
+		  if (mode.animate_shading)
+		     Esnprintf(buf, sizeof(buf), "animate_win_shading: on");
+		  else
+		     Esnprintf(buf, sizeof(buf), "animate_win_shading: off");
+	       }
+	     else
+	       {
+		  Esnprintf(buf, sizeof(buf), "Error: unknown mode specified");
+	       }
+	  }
+	else if (!strcmp(word1, "window_shade_speed"))
+	  {
+	     word(params, 2, word2);
+	     if (!strcmp(word2, "?"))
+	       {
+		  if (mode.animate_shading)
+		    {
+		       Esnprintf(buf, sizeof(buf), "shadespeed: %d seconds",
+				 mode.shadespeed);
+		    }
+		  else
+		    {
+		       Esnprintf(buf, sizeof(buf), "shadespeed: off");
+		    }
+	       }
+	     else
+	       {
+		  mode.shadespeed = atoi(word2);
+	       }
+	  }
+	else if (!strcmp(word1, "dragbar"))
+	  {
 
-             char                move;
+	     char                move;
 
-             word(params, 2, word2);
-             move = 0;
-             if (!strcmp(word2, "off"))
-               {
-                  desks.dragbar_width = 0;
-                  move = 1;
-               }
-             else if (!strcmp(word2, "on"))
-               {
-                  desks.dragbar_width = 16;
-                  move = 1;
-               }
-             else if (!strcmp(word2, "bottom"))
-               {
-                  desks.dragbar_width = 16;
-                  desks.dragdir = 3;
-                  move = 1;
-               }
-             else if (!strcmp(word2, "right"))
-               {
-                  desks.dragbar_width = 16;
-                  desks.dragdir = 1;
-                  move = 1;
-               }
-             else if (!strcmp(word2, "left"))
-               {
-                  desks.dragbar_width = 16;
-                  desks.dragdir = 0;
-                  move = 1;
-               }
-             else if (!strcmp(word2, "top"))
-               {
-                  desks.dragbar_width = 16;
-                  desks.dragdir = 2;
-                  move = 1;
-               }
-             else if (!strcmp(word2, "?"))
-               {
-                  if (desks.dragbar_width)
-                    {
-                       if (desks.dragdir == 1)
-                         {
-                            Esnprintf(buf, sizeof(buf), "Dragbar: right");
-                         }
-                       else if (desks.dragdir == 2)
-                         {
-                            Esnprintf(buf, sizeof(buf), "Dragbar: top");
-                         }
-                       else if (desks.dragdir == 3)
-                         {
-                            Esnprintf(buf, sizeof(buf), "Dragbar: bottom");
-                         }
-                       else
-                         {
-                            Esnprintf(buf, sizeof(buf), "Dragbar: left");
-                         }
-                    }
-                  else
-                    {
-                       Esnprintf(buf, sizeof(buf), "Dragbar: off");
-                    }
-               }
-             else
-               {
-                  Esnprintf(buf, sizeof(buf), "Error: unknown mode specified");
-               }
+	     word(params, 2, word2);
+	     move = 0;
+	     if (!strcmp(word2, "off"))
+	       {
+		  desks.dragbar_width = 0;
+		  move = 1;
+	       }
+	     else if (!strcmp(word2, "on"))
+	       {
+		  desks.dragbar_width = 16;
+		  move = 1;
+	       }
+	     else if (!strcmp(word2, "bottom"))
+	       {
+		  desks.dragbar_width = 16;
+		  desks.dragdir = 3;
+		  move = 1;
+	       }
+	     else if (!strcmp(word2, "right"))
+	       {
+		  desks.dragbar_width = 16;
+		  desks.dragdir = 1;
+		  move = 1;
+	       }
+	     else if (!strcmp(word2, "left"))
+	       {
+		  desks.dragbar_width = 16;
+		  desks.dragdir = 0;
+		  move = 1;
+	       }
+	     else if (!strcmp(word2, "top"))
+	       {
+		  desks.dragbar_width = 16;
+		  desks.dragdir = 2;
+		  move = 1;
+	       }
+	     else if (!strcmp(word2, "?"))
+	       {
+		  if (desks.dragbar_width)
+		    {
+		       if (desks.dragdir == 1)
+			 {
+			    Esnprintf(buf, sizeof(buf), "Dragbar: right");
+			 }
+		       else if (desks.dragdir == 2)
+			 {
+			    Esnprintf(buf, sizeof(buf), "Dragbar: top");
+			 }
+		       else if (desks.dragdir == 3)
+			 {
+			    Esnprintf(buf, sizeof(buf), "Dragbar: bottom");
+			 }
+		       else
+			 {
+			    Esnprintf(buf, sizeof(buf), "Dragbar: left");
+			 }
+		    }
+		  else
+		    {
+		       Esnprintf(buf, sizeof(buf), "Dragbar: off");
+		    }
+	       }
+	     else
+	       {
+		  Esnprintf(buf, sizeof(buf), "Error: unknown mode specified");
+	       }
 
-             if (move)
-               {
+	     if (move)
+	       {
 
-                  Button             *b;
-                  int                 i;
+		  Button             *b;
+		  int                 i;
 
-                  GotoDesktop(desks.current);
-                  for (i = 0; i < ENLIGHTENMENT_CONF_NUM_DESKTOPS; i++)
-                     MoveDesktop(i, 0, 0);
-                  while ((b =
-                          RemoveItem("_DESKTOP_DRAG_CONTROL", 0,
-                                     LIST_FINDBY_NAME, LIST_TYPE_BUTTON)))
-                     DestroyButton(b);
-                  while ((b =
-                          RemoveItem("_DESKTOP_DESKRAY_DRAG_CONTROL", 0,
-                                     LIST_FINDBY_NAME, LIST_TYPE_BUTTON)))
-                     DestroyButton(b);
-                  InitDesktopControls();
-                  ShowDesktopControls();
-               }
-          }
-        else if (!strcmp(word1, "tooltips"))
-          {
-             word(params, 2, word2);
-             if (!strcmp(word2, "off"))
-               {
-                  mode.tooltips = 0;
-               }
-             else if (!strcmp(word2, "on"))
-               {
-                  mode.tooltips = 1;
-               }
-             else if (!strcmp(word2, "?"))
-               {
-                  if (mode.tooltips)
-                    {
-                       Esnprintf(buf, sizeof(buf), "tooltips: %f seconds",
-                                 mode.tiptime);
-                    }
-                  else
-                    {
-                       Esnprintf(buf, sizeof(buf), "tooltips: off");
-                    }
-               }
-             else
-               {
-                  mode.tiptime = atof(word2);
-                  if (!mode.tiptime)
-                     mode.tooltips = 0;
-                  else
-                     mode.tooltips = 1;
-               }
-          }
-        else if (!strcmp(word1, "edge_resistance"))
-          {
-             word(params, 2, word2);
-             if (word2[0])
-               {
-                  if (!strcmp(word2, "off"))
-                    {
-                       mode.edge_flip_resistance = -1;
-                    }
-                  else if (!strcmp(word2, "?"))
-                    {
-                       if (mode.edge_flip_resistance >= 0)
-                         {
-                            Esnprintf(buf, sizeof(buf),
-                                      "edge_resistance: %d / 100 seconds",
-                                      mode.edge_flip_resistance);
-                         }
-                       else
-                         {
-                            Esnprintf(buf, sizeof(buf), "edge_resistance: off");
-                         }
-                    }
-                  else
-                    {
-                       mode.edge_flip_resistance = atoi(word2);
-                    }
-               }
-             else
-               {
-                  Esnprintf(buf, sizeof(buf), "Error: no time given");
-               }
-          }
-        else if (!strcmp(word1, "edge_snap_distance"))
-          {
-             word(params, 2, word2);
-             if (word2[0])
-               {
-                  if (!strcmp(word2, "?"))
-                    {
-                       Esnprintf(buf, sizeof(buf), "edge_snap_distance: %d",
-                                 mode.edge_snap_dist);
-                    }
-                  else
-                    {
-                       mode.edge_snap_dist = atoi(word2);
-                    }
-               }
-             else
-               {
-                  Esnprintf(buf, sizeof(buf), "Error: no pixel distance given");
-               }
-          }
-        else if (!strcmp(word1, "autoraise"))
-          {
-             word(params, 2, word2);
-             if (!strcmp(word2, "off"))
-               {
-                  mode.autoraise = 0;
-               }
-             else if (!strcmp(word2, "on"))
-               {
-                  mode.autoraise = 1;
-               }
-             else if (!strcmp(word2, "?"))
-               {
-                  if (mode.autoraise)
-                    {
-                       Esnprintf(buf, sizeof(buf), "autoraise: %f seconds",
-                                 mode.autoraisetime);
-                    }
-                  else
-                    {
-                       Esnprintf(buf, sizeof(buf), "autoraise: off");
-                    }
-               }
-             else
-               {
-                  mode.autoraisetime = atof(word2);
-                  if (!mode.autoraisetime)
-                     mode.autoraise = 0;
-                  else
-                     mode.autoraise = 1;
-               }
-          }
-        else if (!strcmp(word1, "audio"))
-          {
-             word(params, 2, word2);
-             if (!strcmp(word2, "on"))
-               {
-                  if (!mode.sound)
-                    {
-                       mode.sound = 1;
-                       SoundInit();
-                    }
-               }
-             else if (!strcmp(word2, "off"))
-               {
-                  if (mode.sound)
-                    {
+		  GotoDesktop(desks.current);
+		  for (i = 0; i < ENLIGHTENMENT_CONF_NUM_DESKTOPS; i++)
+		     MoveDesktop(i, 0, 0);
+		  while ((b =
+			  RemoveItem("_DESKTOP_DRAG_CONTROL", 0,
+				     LIST_FINDBY_NAME, LIST_TYPE_BUTTON)))
+		     DestroyButton(b);
+		  while ((b =
+			  RemoveItem("_DESKTOP_DESKRAY_DRAG_CONTROL", 0,
+				     LIST_FINDBY_NAME, LIST_TYPE_BUTTON)))
+		     DestroyButton(b);
+		  InitDesktopControls();
+		  ShowDesktopControls();
+	       }
+	  }
+	else if (!strcmp(word1, "tooltips"))
+	  {
+	     word(params, 2, word2);
+	     if (!strcmp(word2, "off"))
+	       {
+		  mode.tooltips = 0;
+	       }
+	     else if (!strcmp(word2, "on"))
+	       {
+		  mode.tooltips = 1;
+	       }
+	     else if (!strcmp(word2, "?"))
+	       {
+		  if (mode.tooltips)
+		    {
+		       Esnprintf(buf, sizeof(buf), "tooltips: %f seconds",
+				 mode.tiptime);
+		    }
+		  else
+		    {
+		       Esnprintf(buf, sizeof(buf), "tooltips: off");
+		    }
+	       }
+	     else
+	       {
+		  mode.tiptime = atof(word2);
+		  if (!mode.tiptime)
+		     mode.tooltips = 0;
+		  else
+		     mode.tooltips = 1;
+	       }
+	  }
+	else if (!strcmp(word1, "edge_resistance"))
+	  {
+	     word(params, 2, word2);
+	     if (word2[0])
+	       {
+		  if (!strcmp(word2, "off"))
+		    {
+		       mode.edge_flip_resistance = -1;
+		    }
+		  else if (!strcmp(word2, "?"))
+		    {
+		       if (mode.edge_flip_resistance >= 0)
+			 {
+			    Esnprintf(buf, sizeof(buf),
+				      "edge_resistance: %d / 100 seconds",
+				      mode.edge_flip_resistance);
+			 }
+		       else
+			 {
+			    Esnprintf(buf, sizeof(buf), "edge_resistance: off");
+			 }
+		    }
+		  else
+		    {
+		       mode.edge_flip_resistance = atoi(word2);
+		    }
+	       }
+	     else
+	       {
+		  Esnprintf(buf, sizeof(buf), "Error: no time given");
+	       }
+	  }
+	else if (!strcmp(word1, "edge_snap_distance"))
+	  {
+	     word(params, 2, word2);
+	     if (word2[0])
+	       {
+		  if (!strcmp(word2, "?"))
+		    {
+		       Esnprintf(buf, sizeof(buf), "edge_snap_distance: %d",
+				 mode.edge_snap_dist);
+		    }
+		  else
+		    {
+		       mode.edge_snap_dist = atoi(word2);
+		    }
+	       }
+	     else
+	       {
+		  Esnprintf(buf, sizeof(buf), "Error: no pixel distance given");
+	       }
+	  }
+	else if (!strcmp(word1, "autoraise"))
+	  {
+	     word(params, 2, word2);
+	     if (!strcmp(word2, "off"))
+	       {
+		  mode.autoraise = 0;
+	       }
+	     else if (!strcmp(word2, "on"))
+	       {
+		  mode.autoraise = 1;
+	       }
+	     else if (!strcmp(word2, "?"))
+	       {
+		  if (mode.autoraise)
+		    {
+		       Esnprintf(buf, sizeof(buf), "autoraise: %f seconds",
+				 mode.autoraisetime);
+		    }
+		  else
+		    {
+		       Esnprintf(buf, sizeof(buf), "autoraise: off");
+		    }
+	       }
+	     else
+	       {
+		  mode.autoraisetime = atof(word2);
+		  if (!mode.autoraisetime)
+		     mode.autoraise = 0;
+		  else
+		     mode.autoraise = 1;
+	       }
+	  }
+	else if (!strcmp(word1, "audio"))
+	  {
+	     word(params, 2, word2);
+	     if (!strcmp(word2, "on"))
+	       {
+		  if (!mode.sound)
+		    {
+		       mode.sound = 1;
+		       SoundInit();
+		    }
+	       }
+	     else if (!strcmp(word2, "off"))
+	       {
+		  if (mode.sound)
+		    {
 
-                       SoundClass        **lst;
-                       int                 num, i;
+		       SoundClass        **lst;
+		       int                 num, i;
 
-                       mode.sound = 0;
+		       mode.sound = 0;
 
-                       lst =
-                           (SoundClass **) ListItemType(&num, LIST_TYPE_SCLASS);
-                       if (lst)
-                         {
-                            for (i = 0; i < num; i++)
-                              {
-                                 if (lst[i]->sample)
-                                    DestroySample(lst[i]->sample);
-                                 lst[i]->sample = NULL;
-                              }
-                            Efree(lst);
-                         }
-                       close(sound_fd);
-                       sound_fd = -1;
-                    }
-               }
-             else if (!strcmp(word2, "?"))
-               {
-                  if (mode.sound)
-                     Esnprintf(buf, sizeof(buf), "audio: on");
-                  else
-                     Esnprintf(buf, sizeof(buf), "audio: off");
-               }
-             else
-               {
-                  Esnprintf(buf, sizeof(buf), "Error: unknown mode specified");
-               }
-          }
-        else
-          {
-             Esnprintf(buf, sizeof(buf), "Error: unknown effect specified");
-          }
+		       lst =
+			  (SoundClass **) ListItemType(&num, LIST_TYPE_SCLASS);
+		       if (lst)
+			 {
+			    for (i = 0; i < num; i++)
+			      {
+				 if (lst[i]->sample)
+				    DestroySample(lst[i]->sample);
+				 lst[i]->sample = NULL;
+			      }
+			    Efree(lst);
+			 }
+		       close(sound_fd);
+		       sound_fd = -1;
+		    }
+	       }
+	     else if (!strcmp(word2, "?"))
+	       {
+		  if (mode.sound)
+		     Esnprintf(buf, sizeof(buf), "audio: on");
+		  else
+		     Esnprintf(buf, sizeof(buf), "audio: off");
+	       }
+	     else
+	       {
+		  Esnprintf(buf, sizeof(buf), "Error: unknown mode specified");
+	       }
+	  }
+	else
+	  {
+	     Esnprintf(buf, sizeof(buf), "Error: unknown effect specified");
+	  }
      }
    else
      {
-        Esnprintf(buf, sizeof(buf), "Error: no effect specified");
+	Esnprintf(buf, sizeof(buf), "Error: no effect specified");
      }
 
    if (buf[0])
@@ -3722,41 +3722,41 @@ IPC_ActiveNetwork(char *params, Client * c)
    if (params)
      {
 #ifdef AUTOUPGRADE
-        if (!strcmp(params, "on"))
-          {
-             if (!mode.activenetwork)
-               {
-                  mode.activenetwork = 1;
-                  DoIn("MOTD_CHECK", 5.0, CheckForNewMOTD, 0, NULL);
-               }
-          }
-        else if (!strcmp(params, "off"))
-          {
-             if (mode.activenetwork)
-               {
-                  mode.activenetwork = 0;
-                  RemoveTimerEvent("MOTD_CHECK");
-                  RemoveTimerEvent("UPDATE_CHECK");
-               }
-             else if (!strcmp(params, "?"))
-               {
-                  if (mode.activenetwork)
-                    {
-                       Esnprintf(buf, sizeof(buf), "Active network: on");
-                    }
-                  else
-                    {
-                       Esnprintf(buf, sizeof(buf), "Active network: off");
-                    }
-               }
-             else
-               {
-                  Esnprintf(buf, sizeof(buf), "Error: unknown state.");
-               }
-          }
+	if (!strcmp(params, "on"))
+	  {
+	     if (!mode.activenetwork)
+	       {
+		  mode.activenetwork = 1;
+		  DoIn("MOTD_CHECK", 5.0, CheckForNewMOTD, 0, NULL);
+	       }
+	  }
+	else if (!strcmp(params, "off"))
+	  {
+	     if (mode.activenetwork)
+	       {
+		  mode.activenetwork = 0;
+		  RemoveTimerEvent("MOTD_CHECK");
+		  RemoveTimerEvent("UPDATE_CHECK");
+	       }
+	     else if (!strcmp(params, "?"))
+	       {
+		  if (mode.activenetwork)
+		    {
+		       Esnprintf(buf, sizeof(buf), "Active network: on");
+		    }
+		  else
+		    {
+		       Esnprintf(buf, sizeof(buf), "Active network: off");
+		    }
+	       }
+	     else
+	       {
+		  Esnprintf(buf, sizeof(buf), "Error: unknown state.");
+	       }
+	  }
 #else
-        Esnprintf(buf, sizeof(buf),
-                  "Active Network not compiled into this version of E");
+	Esnprintf(buf, sizeof(buf),
+		  "Active Network not compiled into this version of E");
 #endif
      }
    else
@@ -3773,11 +3773,11 @@ IPC_ButtonShow(char *params, Client * c)
    c = NULL;
    if (params)
      {
-        doHideShowButton(params);
+	doHideShowButton(params);
      }
    else
      {
-        doHideShowButton(NULL);
+	doHideShowButton(NULL);
      }
    return;
 }
@@ -3795,43 +3795,43 @@ IPC_WinList(char *params, Client * c)
    lst = (EWin **) ListItemType(&num, LIST_TYPE_EWIN);
    if (lst)
      {
-        for (i = 0; i < num; i++)
-          {
-             if (!lst[i]->client.title)
-                lst[i]->client.title = none;
-             if (params)
-               {
-                  Esnprintf(buf, sizeof(buf),
-                            "%8x : %s :: %d : %d %d : %d %d\n",
-                            lst[i]->client.win, lst[i]->client.title,
-                            lst[i]->desktop, lst[i]->area_x, lst[i]->area_y,
-                            lst[i]->x, lst[i]->y);
-               }
-             else
-               {
-                  Esnprintf(buf, sizeof(buf), "%8x : %s\n", lst[i]->client.win,
-                            lst[i]->client.title);
-               }
-             if (!ret)
-               {
-                  ret = Emalloc(strlen(buf) + 1);
-                  ret[0] = 0;
-               }
-             else
-               {
-                  ret = Erealloc(ret, strlen(ret) + strlen(buf) + 1);
-               }
-             strcat(ret, buf);
-          }
+	for (i = 0; i < num; i++)
+	  {
+	     if (!lst[i]->client.title)
+		lst[i]->client.title = none;
+	     if (params)
+	       {
+		  Esnprintf(buf, sizeof(buf),
+			    "%8x : %s :: %d : %d %d : %d %d\n",
+			    lst[i]->client.win, lst[i]->client.title,
+			    lst[i]->desktop, lst[i]->area_x, lst[i]->area_y,
+			    lst[i]->x, lst[i]->y);
+	       }
+	     else
+	       {
+		  Esnprintf(buf, sizeof(buf), "%8x : %s\n", lst[i]->client.win,
+			    lst[i]->client.title);
+	       }
+	     if (!ret)
+	       {
+		  ret = Emalloc(strlen(buf) + 1);
+		  ret[0] = 0;
+	       }
+	     else
+	       {
+		  ret = Erealloc(ret, strlen(ret) + strlen(buf) + 1);
+	       }
+	     strcat(ret, buf);
+	  }
      }
    if (ret)
      {
-        CommsSend(c, ret);
-        Efree(ret);
+	CommsSend(c, ret);
+	Efree(ret);
      }
    else
      {
-        CommsSend(c, "");
+	CommsSend(c, "");
      }
    if (lst)
       Efree(lst);
@@ -3852,61 +3852,61 @@ IPC_GotoArea(char *params, Client * c)
 
    if (!params)
      {
-        Esnprintf(buf, sizeof(buf), "Error: no area specified");
+	Esnprintf(buf, sizeof(buf), "Error: no area specified");
      }
    else
      {
-        int                 a, b;
+	int                 a, b;
 
-        word(params, 1, param1);
-        if (!strcmp(param1, "next"))
-          {
-             GetCurrentArea(&a, &b);
-             word(params, 2, param2);
-             if ((param2[0]) && (!strcmp(param2, "horiz")))
-               {
-                  a++;
-               }
-             else if ((param2[0]) && (!strcmp(param2, "vert")))
-               {
-                  b++;
-               }
-             else
-               {
-                  a++;
-                  b++;
-               }
-             SetCurrentArea(a, b);
-          }
-        else if (!strcmp(param1, "prev"))
-          {
-             GetCurrentArea(&a, &b);
-             word(params, 2, param2);
-             if ((param2[0]) && (!strcmp(param2, "horiz")))
-               {
-                  a--;
-               }
-             else if ((param2[0]) && (!strcmp(param2, "vert")))
-               {
-                  b--;
-               }
-             else
-               {
-                  a--;
-                  b--;
-               }
-             SetCurrentArea(a, b);
-          }
-        else if (!strcmp(param1, "?"))
-          {
-             GetCurrentArea(&a, &b);
-             Esnprintf(buf, sizeof(buf), "Current Area: %d %d", a, b);
-          }
-        else
-          {
-             sscanf(params, "%i %i", &a, &b);
-             SetCurrentArea(a, b);
-          }
+	word(params, 1, param1);
+	if (!strcmp(param1, "next"))
+	  {
+	     GetCurrentArea(&a, &b);
+	     word(params, 2, param2);
+	     if ((param2[0]) && (!strcmp(param2, "horiz")))
+	       {
+		  a++;
+	       }
+	     else if ((param2[0]) && (!strcmp(param2, "vert")))
+	       {
+		  b++;
+	       }
+	     else
+	       {
+		  a++;
+		  b++;
+	       }
+	     SetCurrentArea(a, b);
+	  }
+	else if (!strcmp(param1, "prev"))
+	  {
+	     GetCurrentArea(&a, &b);
+	     word(params, 2, param2);
+	     if ((param2[0]) && (!strcmp(param2, "horiz")))
+	       {
+		  a--;
+	       }
+	     else if ((param2[0]) && (!strcmp(param2, "vert")))
+	       {
+		  b--;
+	       }
+	     else
+	       {
+		  a--;
+		  b--;
+	       }
+	     SetCurrentArea(a, b);
+	  }
+	else if (!strcmp(param1, "?"))
+	  {
+	     GetCurrentArea(&a, &b);
+	     Esnprintf(buf, sizeof(buf), "Current Area: %d %d", a, b);
+	  }
+	else
+	  {
+	     sscanf(params, "%i %i", &a, &b);
+	     SetCurrentArea(a, b);
+	  }
      }
 
    if (buf[0])
@@ -3926,480 +3926,480 @@ IPC_WinOps(char *params, Client * c)
    if (params)
      {
 
-        char                windowid[FILEPATH_LEN_MAX];
-        char                operation[FILEPATH_LEN_MAX];
-        char                param1[FILEPATH_LEN_MAX];
-        unsigned int        win;
+	char                windowid[FILEPATH_LEN_MAX];
+	char                operation[FILEPATH_LEN_MAX];
+	char                param1[FILEPATH_LEN_MAX];
+	unsigned int        win;
 
-        windowid[0] = 0;
-        operation[0] = 0;
-        param1[0] = 0;
-        word(params, 1, windowid);
-        if (!strcmp(windowid, "current"))
-          {
-             EWin               *ewin;
+	windowid[0] = 0;
+	operation[0] = 0;
+	param1[0] = 0;
+	word(params, 1, windowid);
+	if (!strcmp(windowid, "current"))
+	  {
+	     EWin               *ewin;
 
-             ewin = GetFocusEwin();
-             if (ewin)
-               {
-                  win = ewin->client.win;
-               }
-             else
-               {
-                  return;
-               }
-          }
-        else
-          {
-             sscanf(windowid, "%8x", &win);
-          }
-        word(params, 2, operation);
-        if (!operation[0])
-          {
-             Esnprintf(buf, sizeof(buf), "Error: no operation specified");
-          }
-        else
-          {
-             EWin               *ewin;
+	     ewin = GetFocusEwin();
+	     if (ewin)
+	       {
+		  win = ewin->client.win;
+	       }
+	     else
+	       {
+		  return;
+	       }
+	  }
+	else
+	  {
+	     sscanf(windowid, "%8x", &win);
+	  }
+	word(params, 2, operation);
+	if (!operation[0])
+	  {
+	     Esnprintf(buf, sizeof(buf), "Error: no operation specified");
+	  }
+	else
+	  {
+	     EWin               *ewin;
 
-             ewin = FindEwinByChildren(win);
-             if (!ewin)
-               {
-                  Esnprintf(buf, sizeof(buf), "Error: no such window: %8x",
-                            win);
-               }
-             else
-               {
-                  if (!strcmp(operation, "close"))
-                    {
-                       ICCCM_Delete(ewin);
-                       ApplySclass(FindItem
-                                   ("SOUND_WINDOW_CLOSE", 0, LIST_FINDBY_NAME,
-                                    LIST_TYPE_SCLASS));
-                    }
-                  else if (!strcmp(operation, "annihiliate"))
-                    {
-                       EDestroyWindow(disp, ewin->client.win);
-                       ApplySclass(FindItem
-                                   ("SOUND_WINDOW_CLOSE", 0, LIST_FINDBY_NAME,
-                                    LIST_TYPE_SCLASS));
-                    }
-                  else if (!strcmp(operation, "iconify"))
-                    {
-                       word(params, 3, param1);
-                       if (param1[0])
-                         {
-                            if (!strcmp(param1, "on"))
-                              {
-                                 if (!ewin->iconified)
-                                    IconifyEwin(ewin);
-                              }
-                            else if (!strcmp(param1, "off"))
-                              {
-                                 if (ewin->iconified)
-                                    DeIconifyEwin(ewin);
-                              }
-                            else if (!strcmp(param1, "?"))
-                              {
-                                 if (ewin->iconified)
-                                    Esnprintf(buf, sizeof(buf),
-                                              "window iconified: yes");
-                                 else
-                                    Esnprintf(buf, sizeof(buf),
-                                              "window iconified: no");
-                              }
-                            else
-                              {
-                                 Esnprintf(buf, sizeof(buf),
-                                           "Error: unknown mode specified");
-                              }
-                         }
-                       else
-                         {
-                            if (ewin->iconified)
-                               DeIconifyEwin(ewin);
-                            else
-                               IconifyEwin(ewin);
-                         }
-                    }
-                  else if (!strcmp(operation, "shade"))
-                    {
-                       word(params, 3, param1);
-                       if (param1[0])
-                         {
-                            if (!strcmp(param1, "on"))
-                              {
-                                 if (!ewin->shaded)
-                                    ShadeEwin(ewin);
-                              }
-                            else if (!strcmp(param1, "off"))
-                              {
-                                 if (ewin->shaded)
-                                    UnShadeEwin(ewin);
-                              }
-                            else if (!strcmp(param1, "?"))
-                              {
-                                 if (ewin->shaded)
-                                    Esnprintf(buf, sizeof(buf),
-                                              "window shaded: yes");
-                                 else
-                                    Esnprintf(buf, sizeof(buf),
-                                              "window shaded: no");
-                              }
-                            else
-                              {
-                                 Esnprintf(buf, sizeof(buf),
-                                           "Error: unknown mode specified");
-                              }
-                         }
-                       else
-                         {
-                            if (ewin->shaded)
-                               UnShadeEwin(ewin);
-                            else
-                               ShadeEwin(ewin);
-                         }
-                    }
-                  else if (!strcmp(operation, "stick"))
-                    {
-                       word(params, 3, param1);
-                       if (param1[0])
-                         {
-                            if (!strcmp(param1, "on"))
-                              {
-                                 if (!ewin->sticky)
-                                    MakeWindowSticky(ewin);
-                              }
-                            else if (!strcmp(param1, "off"))
-                              {
-                                 if (ewin->sticky)
-                                    MakeWindowUnSticky(ewin);
-                              }
-                            else if (!strcmp(param1, "?"))
-                              {
-                                 if (ewin->sticky)
-                                    Esnprintf(buf, sizeof(buf),
-                                              "window sticky: yes");
-                                 else
-                                    Esnprintf(buf, sizeof(buf),
-                                              "window sticky: no");
-                              }
-                            else
-                              {
-                                 Esnprintf(buf, sizeof(buf),
-                                           "Error: unknown mode specified");
-                              }
-                         }
-                       else
-                         {
-                            if (ewin->sticky)
-                               MakeWindowUnSticky(ewin);
-                            else
-                               MakeWindowSticky(ewin);
-                         }
-                    }
-                  else if (!strcmp(operation, "title"))
-                    {
-                       char               *ptr = strstr(params, "title");
+	     ewin = FindEwinByChildren(win);
+	     if (!ewin)
+	       {
+		  Esnprintf(buf, sizeof(buf), "Error: no such window: %8x",
+			    win);
+	       }
+	     else
+	       {
+		  if (!strcmp(operation, "close"))
+		    {
+		       ICCCM_Delete(ewin);
+		       ApplySclass(FindItem
+				   ("SOUND_WINDOW_CLOSE", 0, LIST_FINDBY_NAME,
+				    LIST_TYPE_SCLASS));
+		    }
+		  else if (!strcmp(operation, "annihiliate"))
+		    {
+		       EDestroyWindow(disp, ewin->client.win);
+		       ApplySclass(FindItem
+				   ("SOUND_WINDOW_CLOSE", 0, LIST_FINDBY_NAME,
+				    LIST_TYPE_SCLASS));
+		    }
+		  else if (!strcmp(operation, "iconify"))
+		    {
+		       word(params, 3, param1);
+		       if (param1[0])
+			 {
+			    if (!strcmp(param1, "on"))
+			      {
+				 if (!ewin->iconified)
+				    IconifyEwin(ewin);
+			      }
+			    else if (!strcmp(param1, "off"))
+			      {
+				 if (ewin->iconified)
+				    DeIconifyEwin(ewin);
+			      }
+			    else if (!strcmp(param1, "?"))
+			      {
+				 if (ewin->iconified)
+				    Esnprintf(buf, sizeof(buf),
+					      "window iconified: yes");
+				 else
+				    Esnprintf(buf, sizeof(buf),
+					      "window iconified: no");
+			      }
+			    else
+			      {
+				 Esnprintf(buf, sizeof(buf),
+					   "Error: unknown mode specified");
+			      }
+			 }
+		       else
+			 {
+			    if (ewin->iconified)
+			       DeIconifyEwin(ewin);
+			    else
+			       IconifyEwin(ewin);
+			 }
+		    }
+		  else if (!strcmp(operation, "shade"))
+		    {
+		       word(params, 3, param1);
+		       if (param1[0])
+			 {
+			    if (!strcmp(param1, "on"))
+			      {
+				 if (!ewin->shaded)
+				    ShadeEwin(ewin);
+			      }
+			    else if (!strcmp(param1, "off"))
+			      {
+				 if (ewin->shaded)
+				    UnShadeEwin(ewin);
+			      }
+			    else if (!strcmp(param1, "?"))
+			      {
+				 if (ewin->shaded)
+				    Esnprintf(buf, sizeof(buf),
+					      "window shaded: yes");
+				 else
+				    Esnprintf(buf, sizeof(buf),
+					      "window shaded: no");
+			      }
+			    else
+			      {
+				 Esnprintf(buf, sizeof(buf),
+					   "Error: unknown mode specified");
+			      }
+			 }
+		       else
+			 {
+			    if (ewin->shaded)
+			       UnShadeEwin(ewin);
+			    else
+			       ShadeEwin(ewin);
+			 }
+		    }
+		  else if (!strcmp(operation, "stick"))
+		    {
+		       word(params, 3, param1);
+		       if (param1[0])
+			 {
+			    if (!strcmp(param1, "on"))
+			      {
+				 if (!ewin->sticky)
+				    MakeWindowSticky(ewin);
+			      }
+			    else if (!strcmp(param1, "off"))
+			      {
+				 if (ewin->sticky)
+				    MakeWindowUnSticky(ewin);
+			      }
+			    else if (!strcmp(param1, "?"))
+			      {
+				 if (ewin->sticky)
+				    Esnprintf(buf, sizeof(buf),
+					      "window sticky: yes");
+				 else
+				    Esnprintf(buf, sizeof(buf),
+					      "window sticky: no");
+			      }
+			    else
+			      {
+				 Esnprintf(buf, sizeof(buf),
+					   "Error: unknown mode specified");
+			      }
+			 }
+		       else
+			 {
+			    if (ewin->sticky)
+			       MakeWindowUnSticky(ewin);
+			    else
+			       MakeWindowSticky(ewin);
+			 }
+		    }
+		  else if (!strcmp(operation, "title"))
+		    {
+		       char               *ptr = strstr(params, "title");
 
-                       if (ptr)
-                          ptr += strlen("title");
-                       if (ptr)
-                         {
-                            while (*ptr == ' ')
-                               ptr++;
-                            if (strlen(ptr))
-                              {
-                                 if (!strncmp(ptr, "?", 1))
-                                   {
-                                      /* return the window title */
-                                      Esnprintf(buf, sizeof(buf),
-                                                "window title: %s",
-                                                ewin->client.title);
-                                   }
-                                 else
-                                   {
-                                      /* set the new title */
-                                      if (ewin->client.title)
-                                         Efree(ewin->client.title);
-                                      ewin->client.title =
-                                          Emalloc((strlen(ptr) + 1) *
-                                                  sizeof(char));
+		       if (ptr)
+			  ptr += strlen("title");
+		       if (ptr)
+			 {
+			    while (*ptr == ' ')
+			       ptr++;
+			    if (strlen(ptr))
+			      {
+				 if (!strncmp(ptr, "?", 1))
+				   {
+				      /* return the window title */
+				      Esnprintf(buf, sizeof(buf),
+						"window title: %s",
+						ewin->client.title);
+				   }
+				 else
+				   {
+				      /* set the new title */
+				      if (ewin->client.title)
+					 Efree(ewin->client.title);
+				      ewin->client.title =
+					 Emalloc((strlen(ptr) + 1) *
+						 sizeof(char));
 
-                                      strcpy(ewin->client.title, ptr);
-                                      XStoreName(disp, ewin->client.win,
-                                                 ewin->client.title);
-                                      DrawEwin(ewin);
-                                   }
-                              }
-                            else
-                              {
-                                 /* error */
-                                 Esnprintf(buf, sizeof(buf),
-                                           "Error: no title specified");
-                              }
-                         }
-                    }
-                  else if (!strcmp(operation, "toggle_width"))
-                    {
-                       word(params, 3, param1);
-                       MaxWidth(ewin, param1);
-                    }
-                  else if (!strcmp(operation, "toggle_height"))
-                    {
-                       word(params, 3, param1);
-                       MaxHeight(ewin, param1);
-                    }
-                  else if (!strcmp(operation, "toggle_size"))
-                    {
-                       word(params, 3, param1);
-                       MaxSize(ewin, param1);
-                    }
-                  else if (!strcmp(operation, "raise"))
-                    {
-                       RaiseEwin(ewin);
-                    }
-                  else if (!strcmp(operation, "lower"))
-                    {
-                       LowerEwin(ewin);
-                    }
-                  else if (!strcmp(operation, "layer"))
-                    {
-                       word(params, 3, param1);
-                       ewin->layer = atoi(param1);
-                       RaiseEwin(ewin);
-                       RememberImportantInfoForEwin(ewin);
-                    }
-                  else if (!strcmp(operation, "border"))
-                    {
-                       Border             *b;
+				      strcpy(ewin->client.title, ptr);
+				      XStoreName(disp, ewin->client.win,
+						 ewin->client.title);
+				      DrawEwin(ewin);
+				   }
+			      }
+			    else
+			      {
+				 /* error */
+				 Esnprintf(buf, sizeof(buf),
+					   "Error: no title specified");
+			      }
+			 }
+		    }
+		  else if (!strcmp(operation, "toggle_width"))
+		    {
+		       word(params, 3, param1);
+		       MaxWidth(ewin, param1);
+		    }
+		  else if (!strcmp(operation, "toggle_height"))
+		    {
+		       word(params, 3, param1);
+		       MaxHeight(ewin, param1);
+		    }
+		  else if (!strcmp(operation, "toggle_size"))
+		    {
+		       word(params, 3, param1);
+		       MaxSize(ewin, param1);
+		    }
+		  else if (!strcmp(operation, "raise"))
+		    {
+		       RaiseEwin(ewin);
+		    }
+		  else if (!strcmp(operation, "lower"))
+		    {
+		       LowerEwin(ewin);
+		    }
+		  else if (!strcmp(operation, "layer"))
+		    {
+		       word(params, 3, param1);
+		       ewin->layer = atoi(param1);
+		       RaiseEwin(ewin);
+		       RememberImportantInfoForEwin(ewin);
+		    }
+		  else if (!strcmp(operation, "border"))
+		    {
+		       Border             *b;
 
-                       word(params, 3, param1);
-                       if (param1[0])
-                         {
-                            if (!strcmp(param1, "?"))
-                              {
-                                 if (ewin->border)
-                                   {
-                                      if (ewin->border->name)
-                                        {
-                                           Esnprintf(buf, sizeof(buf),
-                                                     "window border: %s",
-                                                     ewin->border->name);
-                                        }
-                                   }
-                              }
-                            else
-                              {
-                                 b = (Border *) FindItem(param1, 0,
-                                                         LIST_FINDBY_NAME,
-                                                         LIST_TYPE_BORDER);
-                                 if ((b) && (b != ewin->border))
-                                   {
-                                      ewin->border_new = 1;
-                                      SetEwinToBorder(ewin, b);
-                                      ICCCM_MatchSize(ewin);
-                                      MoveResizeEwin(ewin, ewin->x, ewin->y,
-                                                     ewin->client.w,
-                                                     ewin->client.h);
-                                   }
-                              }
-                         }
-                       else
-                         {
-                            Esnprintf(buf, sizeof(buf),
-                                      "Error: no border specified");
-                         }
-                    }
-                  else if (!strcmp(operation, "desk"))
-                    {
-                       word(params, 3, param1);
-                       if (param1[0])
-                         {
-                            if (!strcmp(param1, "next"))
-                              {
-                                 DesktopRemoveEwin(ewin);
-                                 MoveEwinToDesktop(ewin, ewin->desktop + 1);
-                                 RaiseEwin(ewin);
-                                 ICCCM_Configure(ewin);
-                                 ewin->sticky = 0;
-                              }
-                            else if (!strcmp(param1, "prev"))
-                              {
-                                 DesktopRemoveEwin(ewin);
-                                 MoveEwinToDesktop(ewin, ewin->desktop - 1);
-                                 RaiseEwin(ewin);
-                                 ICCCM_Configure(ewin);
-                                 ewin->sticky = 0;
-                              }
-                            else if (!strcmp(param1, "?"))
-                              {
-                                 Esnprintf(buf, sizeof(buf), "window desk: %d",
-                                           ewin->desktop);
-                              }
-                            else
-                              {
-                                 DesktopRemoveEwin(ewin);
-                                 MoveEwinToDesktop(ewin, atoi(param1));
-                                 RaiseEwin(ewin);
-                                 ICCCM_Configure(ewin);
-                                 ewin->sticky = 0;
-                              }
-                         }
-                       else
-                         {
-                            Esnprintf(buf, sizeof(buf),
-                                      "Error: no desktop supplied");
-                         }
-                    }
-                  else if (!strcmp(operation, "area"))
-                    {
-                       int                 a, b;
+		       word(params, 3, param1);
+		       if (param1[0])
+			 {
+			    if (!strcmp(param1, "?"))
+			      {
+				 if (ewin->border)
+				   {
+				      if (ewin->border->name)
+					{
+					   Esnprintf(buf, sizeof(buf),
+						     "window border: %s",
+						     ewin->border->name);
+					}
+				   }
+			      }
+			    else
+			      {
+				 b = (Border *) FindItem(param1, 0,
+							 LIST_FINDBY_NAME,
+							 LIST_TYPE_BORDER);
+				 if ((b) && (b != ewin->border))
+				   {
+				      ewin->border_new = 1;
+				      SetEwinToBorder(ewin, b);
+				      ICCCM_MatchSize(ewin);
+				      MoveResizeEwin(ewin, ewin->x, ewin->y,
+						     ewin->client.w,
+						     ewin->client.h);
+				   }
+			      }
+			 }
+		       else
+			 {
+			    Esnprintf(buf, sizeof(buf),
+				      "Error: no border specified");
+			 }
+		    }
+		  else if (!strcmp(operation, "desk"))
+		    {
+		       word(params, 3, param1);
+		       if (param1[0])
+			 {
+			    if (!strcmp(param1, "next"))
+			      {
+				 DesktopRemoveEwin(ewin);
+				 MoveEwinToDesktop(ewin, ewin->desktop + 1);
+				 RaiseEwin(ewin);
+				 ICCCM_Configure(ewin);
+				 ewin->sticky = 0;
+			      }
+			    else if (!strcmp(param1, "prev"))
+			      {
+				 DesktopRemoveEwin(ewin);
+				 MoveEwinToDesktop(ewin, ewin->desktop - 1);
+				 RaiseEwin(ewin);
+				 ICCCM_Configure(ewin);
+				 ewin->sticky = 0;
+			      }
+			    else if (!strcmp(param1, "?"))
+			      {
+				 Esnprintf(buf, sizeof(buf), "window desk: %d",
+					   ewin->desktop);
+			      }
+			    else
+			      {
+				 DesktopRemoveEwin(ewin);
+				 MoveEwinToDesktop(ewin, atoi(param1));
+				 RaiseEwin(ewin);
+				 ICCCM_Configure(ewin);
+				 ewin->sticky = 0;
+			      }
+			 }
+		       else
+			 {
+			    Esnprintf(buf, sizeof(buf),
+				      "Error: no desktop supplied");
+			 }
+		    }
+		  else if (!strcmp(operation, "area"))
+		    {
+		       int                 a, b;
 
-                       word(params, 3, param1);
-                       if (param1[0])
-                         {
-                            if (!strcmp(param1, "?"))
-                              {
-                                 Esnprintf(buf, sizeof(buf),
-                                           "window area: %d %d", ewin->area_x,
-                                           ewin->area_y);
-                              }
-                            else
-                              {
-                                 sscanf(params, "%*s %*s %i %i", &a, &b);
-                                 MoveEwinToArea(ewin, a, b);
-                              }
-                         }
-                       else
-                         {
-                            Esnprintf(buf, sizeof(buf),
-                                      "Error: no area supplied");
-                         }
-                    }
-                  else if (!strcmp(operation, "raise"))
-                    {
-                       RaiseEwin(ewin);
-                    }
-                  else if (!strcmp(operation, "lower"))
-                    {
-                       LowerEwin(ewin);
-                    }
-                  else if (!strcmp(operation, "move"))
-                    {
-                       int                 a, b;
+		       word(params, 3, param1);
+		       if (param1[0])
+			 {
+			    if (!strcmp(param1, "?"))
+			      {
+				 Esnprintf(buf, sizeof(buf),
+					   "window area: %d %d", ewin->area_x,
+					   ewin->area_y);
+			      }
+			    else
+			      {
+				 sscanf(params, "%*s %*s %i %i", &a, &b);
+				 MoveEwinToArea(ewin, a, b);
+			      }
+			 }
+		       else
+			 {
+			    Esnprintf(buf, sizeof(buf),
+				      "Error: no area supplied");
+			 }
+		    }
+		  else if (!strcmp(operation, "raise"))
+		    {
+		       RaiseEwin(ewin);
+		    }
+		  else if (!strcmp(operation, "lower"))
+		    {
+		       LowerEwin(ewin);
+		    }
+		  else if (!strcmp(operation, "move"))
+		    {
+		       int                 a, b;
 
-                       word(params, 3, param1);
-                       if (param1[0])
-                         {
-                            if (!strcmp(param1, "?"))
-                              {
-                                 Esnprintf(buf, sizeof(buf),
-                                           "window location: %d %d", ewin->x,
-                                           ewin->y);
-                              }
-                            else if (!strcmp(param1, "??"))
-                              {
-                                 Esnprintf(buf, sizeof(buf),
-                                           "client location: %d %d",
-                                           ewin->x + ewin->border->border.left,
-                                           ewin->y + ewin->border->border.top);
-                              }
-                            else
-                              {
-                                 sscanf(params, "%*s %*s %i %i", &a, &b);
-                                 MoveResizeEwin(ewin, a, b, ewin->client.w,
-                                                ewin->client.h);
-                              }
-                         }
-                       else
-                         {
-                            Esnprintf(buf, sizeof(buf),
-                                      "Error: no coords supplied");
-                         }
-                    }
-                  else if (!strcmp(operation, "resize"))
-                    {
-                       int                 a, b;
+		       word(params, 3, param1);
+		       if (param1[0])
+			 {
+			    if (!strcmp(param1, "?"))
+			      {
+				 Esnprintf(buf, sizeof(buf),
+					   "window location: %d %d", ewin->x,
+					   ewin->y);
+			      }
+			    else if (!strcmp(param1, "??"))
+			      {
+				 Esnprintf(buf, sizeof(buf),
+					   "client location: %d %d",
+					   ewin->x + ewin->border->border.left,
+					   ewin->y + ewin->border->border.top);
+			      }
+			    else
+			      {
+				 sscanf(params, "%*s %*s %i %i", &a, &b);
+				 MoveResizeEwin(ewin, a, b, ewin->client.w,
+						ewin->client.h);
+			      }
+			 }
+		       else
+			 {
+			    Esnprintf(buf, sizeof(buf),
+				      "Error: no coords supplied");
+			 }
+		    }
+		  else if (!strcmp(operation, "resize"))
+		    {
+		       int                 a, b;
 
-                       word(params, 3, param1);
-                       if (param1[0])
-                         {
-                            if (!strcmp(param1, "?"))
-                              {
-                                 Esnprintf(buf, sizeof(buf),
-                                           "window size: %d %d", ewin->client.w,
-                                           ewin->client.h);
-                              }
-                            else if (!strcmp(param1, "??"))
-                              {
-                                 Esnprintf(buf, sizeof(buf),
-                                           "frame size: %d %d", ewin->w,
-                                           ewin->h);
-                              }
-                            else
-                              {
-                                 sscanf(params, "%*s %*s %i %i", &a, &b);
-                                 MoveResizeEwin(ewin, ewin->x, ewin->y, a, b);
-                              }
-                         }
-                    }
-                  else if (!strcmp(operation, "move_relative"))
-                    {
-                       int                 a, b;
+		       word(params, 3, param1);
+		       if (param1[0])
+			 {
+			    if (!strcmp(param1, "?"))
+			      {
+				 Esnprintf(buf, sizeof(buf),
+					   "window size: %d %d", ewin->client.w,
+					   ewin->client.h);
+			      }
+			    else if (!strcmp(param1, "??"))
+			      {
+				 Esnprintf(buf, sizeof(buf),
+					   "frame size: %d %d", ewin->w,
+					   ewin->h);
+			      }
+			    else
+			      {
+				 sscanf(params, "%*s %*s %i %i", &a, &b);
+				 MoveResizeEwin(ewin, ewin->x, ewin->y, a, b);
+			      }
+			 }
+		    }
+		  else if (!strcmp(operation, "move_relative"))
+		    {
+		       int                 a, b;
 
-                       word(params, 3, param1);
-                       if (param1[0])
-                         {
-                            sscanf(params, "%*s %*s %i %i", &a, &b);
-                            a += ewin->x;
-                            b += ewin->y;
-                            MoveResizeEwin(ewin, a, b, ewin->client.w,
-                                           ewin->client.h);
-                         }
-                    }
-                  else if (!strcmp(operation, "resize_relative"))
-                    {
-                       int                 a, b;
+		       word(params, 3, param1);
+		       if (param1[0])
+			 {
+			    sscanf(params, "%*s %*s %i %i", &a, &b);
+			    a += ewin->x;
+			    b += ewin->y;
+			    MoveResizeEwin(ewin, a, b, ewin->client.w,
+					   ewin->client.h);
+			 }
+		    }
+		  else if (!strcmp(operation, "resize_relative"))
+		    {
+		       int                 a, b;
 
-                       word(params, 3, param1);
-                       if (param1[0])
-                         {
-                            sscanf(params, "%*s %*s %i %i", &a, &b);
-                            a += ewin->client.w;
-                            b += ewin->client.h;
-                            MoveResizeEwin(ewin, ewin->x, ewin->y, a, b);
-                         }
-                    }
-                  else if (!strcmp(operation, "focus"))
-                    {
-                       word(params, 3, param1);
-                       if (!strcmp(param1, "?"))
-                         {
-                            if (ewin == GetFocusEwin())
-                              {
-                                 Esnprintf(buf, sizeof(buf), "focused: yes");
-                              }
-                            else
-                              {
-                                 Esnprintf(buf, sizeof(buf), "focused: no");
-                              }
-                         }
-                       else
-                         {
-                            FocusToEWin(ewin);
-                         }
-                    }
-                  else
-                    {
-                       Esnprintf(buf, sizeof(buf), "Error: unknown operation");
-                    }
-               }
-          }
+		       word(params, 3, param1);
+		       if (param1[0])
+			 {
+			    sscanf(params, "%*s %*s %i %i", &a, &b);
+			    a += ewin->client.w;
+			    b += ewin->client.h;
+			    MoveResizeEwin(ewin, ewin->x, ewin->y, a, b);
+			 }
+		    }
+		  else if (!strcmp(operation, "focus"))
+		    {
+		       word(params, 3, param1);
+		       if (!strcmp(param1, "?"))
+			 {
+			    if (ewin == GetFocusEwin())
+			      {
+				 Esnprintf(buf, sizeof(buf), "focused: yes");
+			      }
+			    else
+			      {
+				 Esnprintf(buf, sizeof(buf), "focused: no");
+			      }
+			 }
+		       else
+			 {
+			    FocusToEWin(ewin);
+			 }
+		    }
+		  else
+		    {
+		       Esnprintf(buf, sizeof(buf), "Error: unknown operation");
+		    }
+	       }
+	  }
      }
    else
      {
-        Esnprintf(buf, sizeof(buf), "Error: no window specified");
+	Esnprintf(buf, sizeof(buf), "Error: no window specified");
      }
 
    if (buf[0])
@@ -4418,25 +4418,25 @@ IPC_NumAreas(char *params, Client * c)
    buf[0] = 0;
    if (params)
      {
-        if (!strcmp(params, "?"))
-          {
-             int                 ax, ay;
+	if (!strcmp(params, "?"))
+	  {
+	     int                 ax, ay;
 
-             GetAreaSize(&ax, &ay);
-             Esnprintf(buf, sizeof(buf), "Number of Areas: %d %d", ax, ay);
-          }
-        else
-          {
-             char                ax[128], ay[128];
+	     GetAreaSize(&ax, &ay);
+	     Esnprintf(buf, sizeof(buf), "Number of Areas: %d %d", ax, ay);
+	  }
+	else
+	  {
+	     char                ax[128], ay[128];
 
-             word(params, 1, ax);
-             word(params, 2, ay);
-             SetNewAreaSize(atoi(ax), atoi(ay));
-          }
+	     word(params, 1, ax);
+	     word(params, 2, ay);
+	     SetNewAreaSize(atoi(ax), atoi(ay));
+	  }
      }
    else
      {
-        Esnprintf(buf, sizeof(buf), "Error: number of areas not given");
+	Esnprintf(buf, sizeof(buf), "Error: number of areas not given");
      }
 
    if (buf[0])
@@ -4455,19 +4455,19 @@ IPC_NumDesks(char *params, Client * c)
    buf[0] = 0;
    if (params)
      {
-        if (!strcmp(params, "?"))
-          {
-             Esnprintf(buf, sizeof(buf), "Number of Desks: %d",
-                       mode.numdesktops);
-          }
-        else
-          {
-             ChangeNumberOfDesktops(atoi(params));
-          }
+	if (!strcmp(params, "?"))
+	  {
+	     Esnprintf(buf, sizeof(buf), "Number of Desks: %d",
+		       mode.numdesktops);
+	  }
+	else
+	  {
+	     ChangeNumberOfDesktops(atoi(params));
+	  }
      }
    else
      {
-        Esnprintf(buf, sizeof(buf), "Error: number of desks not given");
+	Esnprintf(buf, sizeof(buf), "Error: number of desks not given");
      }
 
    if (buf[0])
@@ -4486,59 +4486,59 @@ IPC_FocusMode(char *params, Client * c)
    buf[0] = 0;
    if (params)
      {
-        if (!strcmp(params, "click"))
-          {
-             mode.focusmode = 2;
-             mode.click_focus_grabbed = 1;
-          }
-        else if (!strcmp(params, "pointer"))
-          {
-             mode.focusmode = 0;
-          }
-        else if (!strcmp(params, "sloppy"))
-          {
-             mode.focusmode = 1;
-          }
-        else if (!strcmp(params, "clicknograb"))
-          {
-             mode.focusmode = 2;
-             mode.click_focus_grabbed = 0;
-          }
-        else if (!strcmp(params, "?"))
-          {
-             Esnprintf(buf, sizeof(buf), "Focus Mode: ");
-             if (mode.focusmode == 2)
-               {
-                  if (mode.click_focus_grabbed)
-                    {
-                       strcat(buf, "click");
-                    }
-                  else
-                    {
-                       strcat(buf, "clicknograb");
-                    }
-               }
-             else if (mode.focusmode == 1)
-               {
-                  strcat(buf, "sloppy");
-               }
-             else if (mode.focusmode == 0)
-               {
-                  strcat(buf, "pointer");
-               }
-             else
-               {
-                  strcat(buf, "unknown");
-               }
-          }
-        else
-          {
-             Esnprintf(buf, sizeof(buf), "Error: unknown focus type");
-          }
+	if (!strcmp(params, "click"))
+	  {
+	     mode.focusmode = 2;
+	     mode.click_focus_grabbed = 1;
+	  }
+	else if (!strcmp(params, "pointer"))
+	  {
+	     mode.focusmode = 0;
+	  }
+	else if (!strcmp(params, "sloppy"))
+	  {
+	     mode.focusmode = 1;
+	  }
+	else if (!strcmp(params, "clicknograb"))
+	  {
+	     mode.focusmode = 2;
+	     mode.click_focus_grabbed = 0;
+	  }
+	else if (!strcmp(params, "?"))
+	  {
+	     Esnprintf(buf, sizeof(buf), "Focus Mode: ");
+	     if (mode.focusmode == 2)
+	       {
+		  if (mode.click_focus_grabbed)
+		    {
+		       strcat(buf, "click");
+		    }
+		  else
+		    {
+		       strcat(buf, "clicknograb");
+		    }
+	       }
+	     else if (mode.focusmode == 1)
+	       {
+		  strcat(buf, "sloppy");
+	       }
+	     else if (mode.focusmode == 0)
+	       {
+		  strcat(buf, "pointer");
+	       }
+	     else
+	       {
+		  strcat(buf, "unknown");
+	       }
+	  }
+	else
+	  {
+	     Esnprintf(buf, sizeof(buf), "Error: unknown focus type");
+	  }
      }
    else
      {
-        Esnprintf(buf, sizeof(buf), "Error: no focus type given");
+	Esnprintf(buf, sizeof(buf), "Error: no focus type given");
      }
 
    if (buf[0])
@@ -4557,33 +4557,33 @@ IPC_ShowIcons(char *params, Client * c)
    buf[0] = 0;
    if (params)
      {
-        if (!strcmp(params, "on"))
-          {
-             mode.showicons = 1;
-             ShowIcons();
-          }
-        else if (!strcmp(params, "off"))
-          {
-             mode.showicons = 0;
-             HideIcons();
-          }
-        else if (!strcmp(params, "?"))
-          {
-             Esnprintf(buf, sizeof(buf), "Icons: ");
-             if (mode.showicons)
-                strcat(buf, "on");
-             else
-                strcat(buf, "off");
-          }
-        else
-          {
-             Esnprintf(buf, sizeof(buf), "Error: unknown icon statee: %s",
-                       params);
-          }
+	if (!strcmp(params, "on"))
+	  {
+	     mode.showicons = 1;
+	     ShowIcons();
+	  }
+	else if (!strcmp(params, "off"))
+	  {
+	     mode.showicons = 0;
+	     HideIcons();
+	  }
+	else if (!strcmp(params, "?"))
+	  {
+	     Esnprintf(buf, sizeof(buf), "Icons: ");
+	     if (mode.showicons)
+		strcat(buf, "on");
+	     else
+		strcat(buf, "off");
+	  }
+	else
+	  {
+	     Esnprintf(buf, sizeof(buf), "Error: unknown icon statee: %s",
+		       params);
+	  }
      }
    else
      {
-        Esnprintf(buf, sizeof(buf), "Error: no icon state specified");
+	Esnprintf(buf, sizeof(buf), "Error: no icon state specified");
      }
 
    if (buf[0])
@@ -4601,26 +4601,26 @@ IPC_GotoDesktop(char *params, Client * c)
    buf[0] = 0;
    if (!params)
      {
-        Esnprintf(buf, sizeof(buf), "Error: no desktop selected");
+	Esnprintf(buf, sizeof(buf), "Error: no desktop selected");
      }
    else
      {
-        if (!strcmp(params, "next"))
-          {
-             doNextDesktop(NULL);
-          }
-        else if (!strcmp(params, "prev"))
-          {
-             doPrevDesktop(NULL);
-          }
-        else if (!strcmp(params, "?"))
-          {
-             Esnprintf(buf, sizeof(buf), "Current Desktop: %d", desks.current);
-          }
-        else
-          {
-             GotoDesktop(atoi(params));
-          }
+	if (!strcmp(params, "next"))
+	  {
+	     doNextDesktop(NULL);
+	  }
+	else if (!strcmp(params, "prev"))
+	  {
+	     doPrevDesktop(NULL);
+	  }
+	else if (!strcmp(params, "?"))
+	  {
+	     Esnprintf(buf, sizeof(buf), "Current Desktop: %d", desks.current);
+	  }
+	else
+	  {
+	     GotoDesktop(atoi(params));
+	  }
      }
 
    if (buf[0])
@@ -4640,17 +4640,17 @@ IPC_ListThemes(char *params, Client * c)
    list = ListThemes(&num);
    for (i = 0; i < num; i++)
      {
-        if (buf)
-          {
-             buf = Erealloc(buf, strlen(buf) + strlen(list[i]) + 2);
-          }
-        else
-          {
-             buf = Emalloc(strlen(list[i]) + 2);
-             buf[0] = 0;
-          }
-        strcat(buf, list[i]);
-        strcat(buf, "\n");
+	if (buf)
+	  {
+	     buf = Erealloc(buf, strlen(buf) + strlen(list[i]) + 2);
+	  }
+	else
+	  {
+	     buf = Emalloc(strlen(list[i]) + 2);
+	     buf[0] = 0;
+	  }
+	strcat(buf, list[i]);
+	strcat(buf, "\n");
      }
 
    if (list)
@@ -4658,12 +4658,12 @@ IPC_ListThemes(char *params, Client * c)
 
    if (buf)
      {
-        CommsSend(c, buf);
-        Efree(buf);
+	CommsSend(c, buf);
+	Efree(buf);
      }
    else
      {
-        CommsSend(c, "");
+	CommsSend(c, "");
      }
 
    return;
@@ -4680,18 +4680,18 @@ IPC_SMFile(char *params, Client * c)
 
    if (params)
      {
-        if (!strcmp(params, "?"))
-          {
-             Esnprintf(buf, sizeof(buf), GetSMFile());
-          }
-        else
-          {
-             SetSMFile(params);
-          }
+	if (!strcmp(params, "?"))
+	  {
+	     Esnprintf(buf, sizeof(buf), GetSMFile());
+	  }
+	else
+	  {
+	     SetSMFile(params);
+	  }
      }
    else
      {
-        Esnprintf(buf, sizeof(buf), "Error: no file prefix specified");
+	Esnprintf(buf, sizeof(buf), "Error: no file prefix specified");
      }
 
    if (buf[0])
@@ -4736,14 +4736,14 @@ IPC_RestartWM(char *params, Client * c)
 
    if (params)
      {
-        Esnprintf(buf, sizeof(buf), "restart_wm %s", params);
-        params = NULL;
-        doExit(buf);
+	Esnprintf(buf, sizeof(buf), "restart_wm %s", params);
+	params = NULL;
+	doExit(buf);
      }
    else
      {
-        Esnprintf(buf, sizeof(buf), "Error: no window manager specified");
-        CommsSend(c, buf);
+	Esnprintf(buf, sizeof(buf), "Error: no window manager specified");
+	CommsSend(c, buf);
      }
 
    return;
@@ -4758,14 +4758,14 @@ IPC_RestartTheme(char *params, Client * c)
 
    if (params)
      {
-        Esnprintf(buf, sizeof(buf), "restart_theme %s", params);
-        params = NULL;
-        doExit(buf);
+	Esnprintf(buf, sizeof(buf), "restart_theme %s", params);
+	params = NULL;
+	doExit(buf);
      }
    else
      {
-        Esnprintf(buf, sizeof(buf), "Error: no theme specified");
-        CommsSend(c, buf);
+	Esnprintf(buf, sizeof(buf), "Error: no theme specified");
+	CommsSend(c, buf);
      }
    return;
 }
@@ -4797,24 +4797,24 @@ IPC_DefaultTheme(char *params, Client * c)
 
    if (!strcmp(params, "?"))
      {
-        Esnprintf(buf, sizeof(buf), "%s", GetDefaultTheme());
+	Esnprintf(buf, sizeof(buf), "%s", GetDefaultTheme());
      }
    else
      {
-        if (exists(params))
-          {
-             char                restartcommand[FILEPATH_LEN_MAX];
+	if (exists(params))
+	  {
+	     char                restartcommand[FILEPATH_LEN_MAX];
 
-             SetDefaultTheme(params);
-             Esnprintf(restartcommand, sizeof(restartcommand),
-                       "restart_theme %s", params);
-             doExit(restartcommand);
-          }
-        else
-          {
-             Esnprintf(buf, sizeof(buf), "Could not find theme: %s",
-                       GetDefaultTheme());
-          }
+	     SetDefaultTheme(params);
+	     Esnprintf(restartcommand, sizeof(restartcommand),
+		       "restart_theme %s", params);
+	     doExit(restartcommand);
+	  }
+	else
+	  {
+	     Esnprintf(buf, sizeof(buf), "Could not find theme: %s",
+		       GetDefaultTheme());
+	  }
      }
 
    if (buf[0])
@@ -4853,22 +4853,22 @@ IPC_AutoSave(char *params, Client * c)
 
    if (!strcmp(params, "?"))
      {
-        if (mode.autosave)
-           Esnprintf(buf, sizeof(buf), "Autosave : on");
-        else
-           Esnprintf(buf, sizeof(buf), "Autosave : off");
+	if (mode.autosave)
+	   Esnprintf(buf, sizeof(buf), "Autosave : on");
+	else
+	   Esnprintf(buf, sizeof(buf), "Autosave : off");
      }
    else if (!strcmp(params, "on"))
      {
-        mode.autosave = 1;
+	mode.autosave = 1;
      }
    else if (!strcmp(params, "off"))
      {
-        mode.autosave = 0;
+	mode.autosave = 0;
      }
    else
      {
-        Esnprintf(buf, sizeof(buf), "Unknown autosave state: %s", params);
+	Esnprintf(buf, sizeof(buf), "Unknown autosave state: %s", params);
      }
    if (buf[0])
       CommsSend(c, buf);
@@ -4894,80 +4894,80 @@ IPC_Help(char *params, Client * c)
 
    if (!params)
      {
-        strcat(buf, _("\ncommands currently available:\n"));
-        strcat(buf,
-               _("use \"help all\" for descriptions of each command\n"
-                 "use \"help <command>\" for an individual description\n\n"));
+	strcat(buf, _("\ncommands currently available:\n"));
+	strcat(buf,
+	       _("use \"help all\" for descriptions of each command\n"
+		 "use \"help <command>\" for an individual description\n\n"));
 
-        commandname_list = Emalloc(numIPC * sizeof(char *));
+	commandname_list = Emalloc(numIPC * sizeof(char *));
 
-        for (i = 0; i < numIPC; i++)
-           commandname_list[i] = IPCArray[i].commandname;
+	for (i = 0; i < numIPC; i++)
+	   commandname_list[i] = IPCArray[i].commandname;
 
-        Quicksort((void **)commandname_list, 0, numIPC - 1,
-                  (int (*)(void *, void *))&strcmp);
+	Quicksort((void **)commandname_list, 0, numIPC - 1,
+		  (int (*)(void *, void *))&strcmp);
 
-        i = 0;
-        while (i < numIPC)
-          {
-             for (j = 0; j < 3; j++)
-               {
-                  strcat(buf2, commandname_list[i]);
+	i = 0;
+	while (i < numIPC)
+	  {
+	     for (j = 0; j < 3; j++)
+	       {
+		  strcat(buf2, commandname_list[i]);
 
-                  /* suggest some parens here */
-                  for (k = 0; k < (3 - strlen(commandname_list[i]) / 8); k++)
-                     strcat(buf2, "\t");
+		  /* suggest some parens here */
+		  for (k = 0; k < (3 - strlen(commandname_list[i]) / 8); k++)
+		     strcat(buf2, "\t");
 
-                  if (++i >= numIPC)
-                     break;
-               }
+		  if (++i >= numIPC)
+		     break;
+	       }
 
-             strcat(buf, buf2);
-             strcat(buf, "\n");
-             buf2[0] = 0;
-          }
+	     strcat(buf, buf2);
+	     strcat(buf, "\n");
+	     buf2[0] = 0;
+	  }
 
-        Efree(commandname_list);
+	Efree(commandname_list);
      }
    else
      {
-        if (!strcmp(params, "all"))
-          {
-             strcat(buf, _("\ncommands currently available:\n"));
-             strcat(buf,
-                    _("use \"help <command>\" "
-                      "for an individual description\n"));
-             strcat(buf, _("<command> : <description>\n"));
-             for (i = 0; i < numIPC; i++)
-               {
-                  strcat(buf, IPCArray[i].commandname);
-                  strcat(buf, " : ");
-                  strcat(buf, IPCArray[i].help_text);
-                  strcat(buf, "\n");
-               }
-          }
-        else
-          {
-             int                 found = 0;
+	if (!strcmp(params, "all"))
+	  {
+	     strcat(buf, _("\ncommands currently available:\n"));
+	     strcat(buf,
+		    _("use \"help <command>\" "
+		      "for an individual description\n"));
+	     strcat(buf, _("<command> : <description>\n"));
+	     for (i = 0; i < numIPC; i++)
+	       {
+		  strcat(buf, IPCArray[i].commandname);
+		  strcat(buf, " : ");
+		  strcat(buf, IPCArray[i].help_text);
+		  strcat(buf, "\n");
+	       }
+	  }
+	else
+	  {
+	     int                 found = 0;
 
-             for (i = 0; i < numIPC; i++)
-               {
-                  if (!strcmp(IPCArray[i].commandname, params))
-                    {
-                       found = 1;
-                       strcat(buf, " : ");
-                       strcat(buf, IPCArray[i].commandname);
-                       strcat(buf, "\n--------------------------------\n");
-                       strcat(buf, IPCArray[i].help_text);
-                       strcat(buf, "\n");
-                       if (IPCArray[i].extended_help_text)
-                         {
-                            strcat(buf, IPCArray[i].extended_help_text);
-                            strcat(buf, "\n");
-                         }
-                    }
-               }
-          }
+	     for (i = 0; i < numIPC; i++)
+	       {
+		  if (!strcmp(IPCArray[i].commandname, params))
+		    {
+		       found = 1;
+		       strcat(buf, " : ");
+		       strcat(buf, IPCArray[i].commandname);
+		       strcat(buf, "\n--------------------------------\n");
+		       strcat(buf, IPCArray[i].help_text);
+		       strcat(buf, "\n");
+		       if (IPCArray[i].extended_help_text)
+			 {
+			    strcat(buf, IPCArray[i].extended_help_text);
+			    strcat(buf, "\n");
+			 }
+		    }
+	       }
+	  }
      }
 
    if (buf)
@@ -4984,46 +4984,46 @@ IPC_Copyright(char *params, Client * c)
 
    params = NULL;
    Esnprintf(buf, sizeof(buf),
-             "Copyright (C) 2000 Carsten Haitzler and Geoff Harrison,\n"
-             "with various contributors (Isaac Richards, Sung-Hyun Nam, "
-             "Kimball Thurston,\n"
-             "Michael Kellen, Frederic Devernay, Felix Bellaby, "
-             "Michael Jennings,\n"
-             "Christian Kreibich, Peter Kjellerstedt, Troy Pesola, Owen Taylor, "
-             "Stalyn,\n" "Knut Neumann, Nathan Heagy, Simon Forman, "
-             "Brent Nelson,\n"
-             "Martin Tyler, Graham MacDonald, Jessse Michael, "
-             "Paul Duncan, Daniel Erat,\n"
-             "Tom Gilbert, Peter Alm, Ben Frantzdale, "
-             "Hallvar Helleseth, Kameran Kashani,\n"
-             "Carl Strasen, David Mason, Tom Christiansen, and others\n"
-             "-- please see the AUTHORS file for a complete listing)\n\n"
-             "Permission is hereby granted, free of charge, to "
-             "any person obtaining a copy\n"
-             "of this software and associated documentation files "
-             "(the \"Software\"), to\n"
-             "deal in the Software without restriction, including "
-             "without limitation the\n"
-             "rights to use, copy, modify, merge, publish, distribute, "
-             "sub-license, and/or\n"
-             "sell copies of the Software, and to permit persons to "
-             "whom the Software is\n"
-             "furnished to do so, subject to the following conditions:\n\n"
-             "The above copyright notice and this permission notice "
-             "shall be included in\n"
-             "all copies or substantial portions of the Software.\n\n"
-             "THE SOFTWARE IS PROVIDED \"AS IS\", WITHOUT WARRANTY OF "
-             "ANY KIND, EXPRESS OR\n"
-             "IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF "
-             "MERCHANTABILITY,\n"
-             "FITNESS FOR A PARTICULAR PURPOSE AND NON-INFRINGEMENT. "
-             "IN NO EVENT SHALL\n"
-             "THE AUTHORS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER "
-             "LIABILITY, WHETHER\n"
-             "IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, "
-             "OUT OF OR IN\n"
-             "CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS "
-             "IN THE SOFTWARE.\n");
+	     "Copyright (C) 2000 Carsten Haitzler and Geoff Harrison,\n"
+	     "with various contributors (Isaac Richards, Sung-Hyun Nam, "
+	     "Kimball Thurston,\n"
+	     "Michael Kellen, Frederic Devernay, Felix Bellaby, "
+	     "Michael Jennings,\n"
+	     "Christian Kreibich, Peter Kjellerstedt, Troy Pesola, Owen Taylor, "
+	     "Stalyn,\n" "Knut Neumann, Nathan Heagy, Simon Forman, "
+	     "Brent Nelson,\n"
+	     "Martin Tyler, Graham MacDonald, Jessse Michael, "
+	     "Paul Duncan, Daniel Erat,\n"
+	     "Tom Gilbert, Peter Alm, Ben Frantzdale, "
+	     "Hallvar Helleseth, Kameran Kashani,\n"
+	     "Carl Strasen, David Mason, Tom Christiansen, and others\n"
+	     "-- please see the AUTHORS file for a complete listing)\n\n"
+	     "Permission is hereby granted, free of charge, to "
+	     "any person obtaining a copy\n"
+	     "of this software and associated documentation files "
+	     "(the \"Software\"), to\n"
+	     "deal in the Software without restriction, including "
+	     "without limitation the\n"
+	     "rights to use, copy, modify, merge, publish, distribute, "
+	     "sub-license, and/or\n"
+	     "sell copies of the Software, and to permit persons to "
+	     "whom the Software is\n"
+	     "furnished to do so, subject to the following conditions:\n\n"
+	     "The above copyright notice and this permission notice "
+	     "shall be included in\n"
+	     "all copies or substantial portions of the Software.\n\n"
+	     "THE SOFTWARE IS PROVIDED \"AS IS\", WITHOUT WARRANTY OF "
+	     "ANY KIND, EXPRESS OR\n"
+	     "IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF "
+	     "MERCHANTABILITY,\n"
+	     "FITNESS FOR A PARTICULAR PURPOSE AND NON-INFRINGEMENT. "
+	     "IN NO EVENT SHALL\n"
+	     "THE AUTHORS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER "
+	     "LIABILITY, WHETHER\n"
+	     "IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, "
+	     "OUT OF OR IN\n"
+	     "CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS "
+	     "IN THE SOFTWARE.\n");
 
    if (buf)
       CommsSend(c, buf);
@@ -5043,8 +5043,8 @@ IPC_Version(char *params, Client * c)
    buf[0] = 0;
 
    Esnprintf(buf, sizeof(buf),
-             _("Enlightenment Version : %s\n" "code is current to    : %s\n"),
-             ENLIGHTENMENT_VERSION, E_CHECKOUT_DATE);
+	     _("Enlightenment Version : %s\n" "code is current to    : %s\n"),
+	     ENLIGHTENMENT_VERSION, E_CHECKOUT_DATE);
 
    if (buf)
       CommsSend(c, buf);
@@ -5073,19 +5073,19 @@ HandleIPC(char *params, Client * c)
    word(params, 1, w);
    for (i = 0; i < numIPC; i++)
      {
-        if (!strcmp(w, IPCArray[i].commandname))
-          {
-             word(params, 2, w);
-             if (w)
-               {
-                  IPCArray[i].func(atword(params, 2), c);
-               }
-             else
-               {
-                  IPCArray[i].func(NULL, c);
-               }
-             return 1;
-          }
+	if (!strcmp(w, IPCArray[i].commandname))
+	  {
+	     word(params, 2, w);
+	     if (w)
+	       {
+		  IPCArray[i].func(atword(params, 2), c);
+	       }
+	     else
+	       {
+		  IPCArray[i].func(NULL, c);
+	       }
+	     return 1;
+	  }
      }
 
    return 0;
@@ -5131,28 +5131,28 @@ IPC_ReloadMenus(char *params, Client * c)
    /* Free all menustyles first (gulp) */
    do
      {
-        found_one = 0;
-        menus = (Menu **) ListItemType(&num, LIST_TYPE_MENU);
-        for (i = 0; i < num; i++)
-          {
-             menu = menus[i];
-             not_task = 1;
-             for (j = 0; j < ENLIGHTENMENT_CONF_NUM_DESKTOPS; j++)
-                if (menu == task_menu[j])
-                   not_task = 0;
-             if ((menu != desk_menu) && (menu != group_menu) && not_task)
-               {
-                  DestroyMenu(menu);
-                  /* Destroying a menu may result in sub-menus being
-                   * destroyed too, so we have to re-find all menus
-                   * afterwards. Inefficient yes, but it works...
-                   */
-                  found_one = 1;
-                  break;
-               }
-          }
-        if (menus)
-           Efree(menus);
+	found_one = 0;
+	menus = (Menu **) ListItemType(&num, LIST_TYPE_MENU);
+	for (i = 0; i < num; i++)
+	  {
+	     menu = menus[i];
+	     not_task = 1;
+	     for (j = 0; j < ENLIGHTENMENT_CONF_NUM_DESKTOPS; j++)
+		if (menu == task_menu[j])
+		   not_task = 0;
+	     if ((menu != desk_menu) && (menu != group_menu) && not_task)
+	       {
+		  DestroyMenu(menu);
+		  /* Destroying a menu may result in sub-menus being
+		   * destroyed too, so we have to re-find all menus
+		   * afterwards. Inefficient yes, but it works...
+		   */
+		  found_one = 1;
+		  break;
+	       }
+	  }
+	if (menus)
+	   Efree(menus);
      }
    while (found_one);
 
@@ -5176,62 +5176,62 @@ IPC_GroupInfo(char *params, Client * c)
 
    if (params)
      {
-        Group              *group;
-        char                groupid[FILEPATH_LEN_MAX];
-        int                 index;
+	Group              *group;
+	char                groupid[FILEPATH_LEN_MAX];
+	int                 index;
 
-        groupid[0] = 0;
-        word(params, 1, groupid);
-        sscanf(groupid, "%d", &index);
+	groupid[0] = 0;
+	word(params, 1, groupid);
+	sscanf(groupid, "%d", &index);
 
-        group = FindItem(NULL, index, LIST_FINDBY_ID, LIST_TYPE_GROUP);
+	group = FindItem(NULL, index, LIST_FINDBY_ID, LIST_TYPE_GROUP);
 
-        if (!group)
-          {
-             Esnprintf(buf, sizeof(buf), "Error: no such group: %d", index);
-             CommsSend(c, buf);
-             return;
-          }
-        groups = (Group **) Emalloc(sizeof(Group **));
+	if (!group)
+	  {
+	     Esnprintf(buf, sizeof(buf), "Error: no such group: %d", index);
+	     CommsSend(c, buf);
+	     return;
+	  }
+	groups = (Group **) Emalloc(sizeof(Group **));
 
-        if (!groups)
-          {
-             Esnprintf(buf, sizeof(buf), "Error: no memory");
-             CommsSend(c, buf);
-             return;
-          }
-        groups[0] = group;
-        num_groups = 1;
+	if (!groups)
+	  {
+	     Esnprintf(buf, sizeof(buf), "Error: no memory");
+	     CommsSend(c, buf);
+	     return;
+	  }
+	groups[0] = group;
+	num_groups = 1;
      }
    else
      {
-        groups = (Group **) ListItemType(&num_groups, LIST_TYPE_GROUP);
+	groups = (Group **) ListItemType(&num_groups, LIST_TYPE_GROUP);
 
-        Esnprintf(buf, sizeof(buf), "Number of groups: %d", num_groups);
+	Esnprintf(buf, sizeof(buf), "Number of groups: %d", num_groups);
      }
 
    for (i = 0; i < num_groups; i++)
      {
-        for (j = 0; j < groups[i]->num_members; j++)
-          {
-             Esnprintf(tmp, sizeof(tmp), "%d", groups[i]->index);
-             strcat(buf, tmp);
-             strcat(buf, ": ");
-             strcat(buf, groups[i]->members[j]->client.title);
-             strcat(buf, "\n");
-          }
-        Esnprintf(buf2, sizeof(buf2),
-                  "        index: %d\n" "  num_members: %d\n"
-                  "      iconify: %d\n" "         kill: %d\n"
-                  "         move: %d\n" "        raise: %d\n"
-                  "   set_border: %d\n" "        stick: %d\n"
-                  "        shade: %d\n", "       mirror: %d\n",
-                  groups[i]->index, groups[i]->num_members,
-                  groups[i]->cfg.iconify, groups[i]->cfg.kill,
-                  groups[i]->cfg.move, groups[i]->cfg.raise,
-                  groups[i]->cfg.set_border, groups[i]->cfg.stick,
-                  groups[i]->cfg.shade, groups[i]->cfg.mirror);
-        strcat(buf, buf2);
+	for (j = 0; j < groups[i]->num_members; j++)
+	  {
+	     Esnprintf(tmp, sizeof(tmp), "%d", groups[i]->index);
+	     strcat(buf, tmp);
+	     strcat(buf, ": ");
+	     strcat(buf, groups[i]->members[j]->client.title);
+	     strcat(buf, "\n");
+	  }
+	Esnprintf(buf2, sizeof(buf2),
+		  "        index: %d\n" "  num_members: %d\n"
+		  "      iconify: %d\n" "         kill: %d\n"
+		  "         move: %d\n" "        raise: %d\n"
+		  "   set_border: %d\n" "        stick: %d\n"
+		  "        shade: %d\n", "       mirror: %d\n",
+		  groups[i]->index, groups[i]->num_members,
+		  groups[i]->cfg.iconify, groups[i]->cfg.kill,
+		  groups[i]->cfg.move, groups[i]->cfg.raise,
+		  groups[i]->cfg.set_border, groups[i]->cfg.stick,
+		  groups[i]->cfg.shade, groups[i]->cfg.mirror);
+	strcat(buf, buf2);
      }
 
    if (groups)
@@ -5256,101 +5256,101 @@ IPC_GroupOps(char *params, Client * c)
    buf[0] = 0;
    if (params)
      {
-        char                windowid[FILEPATH_LEN_MAX];
-        char                operation[FILEPATH_LEN_MAX];
-        char                param1[FILEPATH_LEN_MAX];
-        unsigned int        win;
+	char                windowid[FILEPATH_LEN_MAX];
+	char                operation[FILEPATH_LEN_MAX];
+	char                param1[FILEPATH_LEN_MAX];
+	unsigned int        win;
 
-        windowid[0] = 0;
-        operation[0] = 0;
-        param1[0] = 0;
-        word(params, 1, windowid);
-        sscanf(windowid, "%8x", &win);
-        word(params, 2, operation);
+	windowid[0] = 0;
+	operation[0] = 0;
+	param1[0] = 0;
+	word(params, 1, windowid);
+	sscanf(windowid, "%8x", &win);
+	word(params, 2, operation);
 
-        if (!operation[0])
-          {
-             Esnprintf(buf, sizeof(buf), "Error: no operation specified");
-          }
-        else
-          {
-             EWin               *ewin;
+	if (!operation[0])
+	  {
+	     Esnprintf(buf, sizeof(buf), "Error: no operation specified");
+	  }
+	else
+	  {
+	     EWin               *ewin;
 
-             ewin = FindEwinByChildren(win);
-             if (!ewin)
-               {
-                  Esnprintf(buf, sizeof(buf), "Error: no such window: %8x",
-                            win);
-               }
-             else
-               {
-                  if (!strcmp(operation, "start"))
-                    {
-                       BuildWindowGroup(&ewin, 1);
-                       Esnprintf(buf, sizeof(buf), "start %8x", win);
-                    }
-                  else if (!strcmp(operation, "add"))
-                    {
-                       groupid[0] = 0;
-                       word(params, 3, groupid);
+	     ewin = FindEwinByChildren(win);
+	     if (!ewin)
+	       {
+		  Esnprintf(buf, sizeof(buf), "Error: no such window: %8x",
+			    win);
+	       }
+	     else
+	       {
+		  if (!strcmp(operation, "start"))
+		    {
+		       BuildWindowGroup(&ewin, 1);
+		       Esnprintf(buf, sizeof(buf), "start %8x", win);
+		    }
+		  else if (!strcmp(operation, "add"))
+		    {
+		       groupid[0] = 0;
+		       word(params, 3, groupid);
 
-                       if (groupid[0])
-                         {
-                            sscanf(groupid, "%d", &index);
-                            group =
-                                FindItem(NULL, index, LIST_FINDBY_ID,
-                                         LIST_TYPE_GROUP);
-                         }
-                       AddEwinToGroup(ewin, group);
-                       Esnprintf(buf, sizeof(buf), "add %8x", win);
-                    }
-                  else if (!strcmp(operation, "remove"))
-                    {
-                       groupid[0] = 0;
-                       word(params, 3, groupid);
+		       if (groupid[0])
+			 {
+			    sscanf(groupid, "%d", &index);
+			    group =
+			       FindItem(NULL, index, LIST_FINDBY_ID,
+					LIST_TYPE_GROUP);
+			 }
+		       AddEwinToGroup(ewin, group);
+		       Esnprintf(buf, sizeof(buf), "add %8x", win);
+		    }
+		  else if (!strcmp(operation, "remove"))
+		    {
+		       groupid[0] = 0;
+		       word(params, 3, groupid);
 
-                       if (groupid[0])
-                         {
-                            sscanf(groupid, "%d", &index);
-                            group =
-                                FindItem(NULL, index, LIST_FINDBY_ID,
-                                         LIST_TYPE_GROUP);
-                         }
-                       RemoveEwinFromGroup(ewin, group);
-                       Esnprintf(buf, sizeof(buf), "remove %8x", win);
-                    }
-                  else if (!strcmp(operation, "break"))
-                    {
-                       groupid[0] = 0;
-                       word(params, 3, groupid);
+		       if (groupid[0])
+			 {
+			    sscanf(groupid, "%d", &index);
+			    group =
+			       FindItem(NULL, index, LIST_FINDBY_ID,
+					LIST_TYPE_GROUP);
+			 }
+		       RemoveEwinFromGroup(ewin, group);
+		       Esnprintf(buf, sizeof(buf), "remove %8x", win);
+		    }
+		  else if (!strcmp(operation, "break"))
+		    {
+		       groupid[0] = 0;
+		       word(params, 3, groupid);
 
-                       if (groupid[0])
-                         {
-                            sscanf(groupid, "%d", &index);
-                            group =
-                                FindItem(NULL, index, LIST_FINDBY_ID,
-                                         LIST_TYPE_GROUP);
-                         }
-                       BreakWindowGroup(ewin, group);
-                       Esnprintf(buf, sizeof(buf), "break %8x", win);
-                    }
-                  else if (!strcmp(operation, "showhide"))
-                    {
-                       doShowHideGroup(windowid);
-                       Esnprintf(buf, sizeof(buf), "showhide %8x", win);
-                    }
-                  else
-                    {
-                       Esnprintf(buf, sizeof(buf),
-                                 "Error: no such operation: %s", operation);
+		       if (groupid[0])
+			 {
+			    sscanf(groupid, "%d", &index);
+			    group =
+			       FindItem(NULL, index, LIST_FINDBY_ID,
+					LIST_TYPE_GROUP);
+			 }
+		       BreakWindowGroup(ewin, group);
+		       Esnprintf(buf, sizeof(buf), "break %8x", win);
+		    }
+		  else if (!strcmp(operation, "showhide"))
+		    {
+		       doShowHideGroup(windowid);
+		       Esnprintf(buf, sizeof(buf), "showhide %8x", win);
+		    }
+		  else
+		    {
+		       Esnprintf(buf, sizeof(buf),
+				 "Error: no such operation: %s", operation);
 
-                    }
-               }
-          }
+		    }
+	       }
+	  }
      }
    else
      {
-        Esnprintf(buf, sizeof(buf), "Error: no window specified");
+	Esnprintf(buf, sizeof(buf), "Error: no window specified");
      }
 
    if (buf)
@@ -5370,134 +5370,134 @@ IPC_Group(char *params, Client * c)
    if (params)
      {
 
-        char                groupid[FILEPATH_LEN_MAX];
-        char                operation[FILEPATH_LEN_MAX];
-        char                param1[FILEPATH_LEN_MAX];
-        int                 index;
+	char                groupid[FILEPATH_LEN_MAX];
+	char                operation[FILEPATH_LEN_MAX];
+	char                param1[FILEPATH_LEN_MAX];
+	int                 index;
 
-        groupid[0] = 0;
-        operation[0] = 0;
-        param1[0] = 0;
-        word(params, 1, groupid);
-        sscanf(groupid, "%d", &index);
-        word(params, 2, operation);
+	groupid[0] = 0;
+	operation[0] = 0;
+	param1[0] = 0;
+	word(params, 1, groupid);
+	sscanf(groupid, "%d", &index);
+	word(params, 2, operation);
 
-        if (!operation[0])
-          {
-             Esnprintf(buf, sizeof(buf), "Error: no operation specified");
-          }
-        else
-          {
-             Group              *group;
-             int                 onoff = -1;
+	if (!operation[0])
+	  {
+	     Esnprintf(buf, sizeof(buf), "Error: no operation specified");
+	  }
+	else
+	  {
+	     Group              *group;
+	     int                 onoff = -1;
 
-             group = FindItem(NULL, index, LIST_FINDBY_ID, LIST_TYPE_GROUP);
+	     group = FindItem(NULL, index, LIST_FINDBY_ID, LIST_TYPE_GROUP);
 
-             if (!group)
-               {
-                  Esnprintf(buf, sizeof(buf), "Error: no such group: %d",
-                            index);
-               }
-             else
-               {
-                  word(params, 3, param1);
-                  if (param1[0])
-                    {
-                       if (!strcmp(param1, "on"))
-                          onoff = 1;
-                       else if (!strcmp(param1, "off"))
-                          onoff = 0;
+	     if (!group)
+	       {
+		  Esnprintf(buf, sizeof(buf), "Error: no such group: %d",
+			    index);
+	       }
+	     else
+	       {
+		  word(params, 3, param1);
+		  if (param1[0])
+		    {
+		       if (!strcmp(param1, "on"))
+			  onoff = 1;
+		       else if (!strcmp(param1, "off"))
+			  onoff = 0;
 
-                       if (onoff == -1 && strcmp(param1, "?"))
-                         {
-                            Esnprintf(buf, sizeof(buf),
-                                      "Error: unknown mode specified");
-                         }
-                       else if (!strcmp(operation, "num_members"))
-                         {
-                            Esnprintf(buf, sizeof(buf), "num_members: %d",
-                                      group->num_members);
-                            onoff = -1;
-                         }
-                       else if (!strcmp(operation, "iconify"))
-                         {
-                            if (onoff >= 0)
-                               group->cfg.iconify = onoff;
-                            else
-                               onoff = group->cfg.iconify;
-                         }
-                       else if (!strcmp(operation, "kill"))
-                         {
-                            if (onoff >= 0)
-                               group->cfg.kill = onoff;
-                            else
-                               onoff = group->cfg.kill;
-                         }
-                       else if (!strcmp(operation, "move"))
-                         {
-                            if (onoff >= 0)
-                               group->cfg.move = onoff;
-                            else
-                               onoff = group->cfg.move;
-                         }
-                       else if (!strcmp(operation, "raise"))
-                         {
-                            if (onoff >= 0)
-                               group->cfg.raise = onoff;
-                            else
-                               onoff = group->cfg.raise;
-                         }
-                       else if (!strcmp(operation, "set_border"))
-                         {
-                            if (onoff >= 0)
-                               group->cfg.set_border = onoff;
-                            else
-                               onoff = group->cfg.set_border;
-                         }
-                       else if (!strcmp(operation, "stick"))
-                         {
-                            if (onoff >= 0)
-                               group->cfg.stick = onoff;
-                            else
-                               onoff = group->cfg.stick;
-                         }
-                       else if (!strcmp(operation, "shade"))
-                         {
-                            if (onoff >= 0)
-                               group->cfg.shade = onoff;
-                            else
-                               onoff = group->cfg.shade;
-                         }
-                       else if (!strcmp(operation, "mirror"))
-                         {
-                            if (onoff >= 0)
-                               group->cfg.mirror = onoff;
-                            else
-                               onoff = group->cfg.mirror;
-                         }
-                       else
-                         {
-                            Esnprintf(buf, sizeof(buf),
-                                      "Error: no such operation: %s",
-                                      operation);
-                            onoff = -1;
-                         }
-                    }
-                  else
-                    {
-                       Esnprintf(buf, sizeof(buf), "Error: no mode specified");
-                    }
-               }
+		       if (onoff == -1 && strcmp(param1, "?"))
+			 {
+			    Esnprintf(buf, sizeof(buf),
+				      "Error: unknown mode specified");
+			 }
+		       else if (!strcmp(operation, "num_members"))
+			 {
+			    Esnprintf(buf, sizeof(buf), "num_members: %d",
+				      group->num_members);
+			    onoff = -1;
+			 }
+		       else if (!strcmp(operation, "iconify"))
+			 {
+			    if (onoff >= 0)
+			       group->cfg.iconify = onoff;
+			    else
+			       onoff = group->cfg.iconify;
+			 }
+		       else if (!strcmp(operation, "kill"))
+			 {
+			    if (onoff >= 0)
+			       group->cfg.kill = onoff;
+			    else
+			       onoff = group->cfg.kill;
+			 }
+		       else if (!strcmp(operation, "move"))
+			 {
+			    if (onoff >= 0)
+			       group->cfg.move = onoff;
+			    else
+			       onoff = group->cfg.move;
+			 }
+		       else if (!strcmp(operation, "raise"))
+			 {
+			    if (onoff >= 0)
+			       group->cfg.raise = onoff;
+			    else
+			       onoff = group->cfg.raise;
+			 }
+		       else if (!strcmp(operation, "set_border"))
+			 {
+			    if (onoff >= 0)
+			       group->cfg.set_border = onoff;
+			    else
+			       onoff = group->cfg.set_border;
+			 }
+		       else if (!strcmp(operation, "stick"))
+			 {
+			    if (onoff >= 0)
+			       group->cfg.stick = onoff;
+			    else
+			       onoff = group->cfg.stick;
+			 }
+		       else if (!strcmp(operation, "shade"))
+			 {
+			    if (onoff >= 0)
+			       group->cfg.shade = onoff;
+			    else
+			       onoff = group->cfg.shade;
+			 }
+		       else if (!strcmp(operation, "mirror"))
+			 {
+			    if (onoff >= 0)
+			       group->cfg.mirror = onoff;
+			    else
+			       onoff = group->cfg.mirror;
+			 }
+		       else
+			 {
+			    Esnprintf(buf, sizeof(buf),
+				      "Error: no such operation: %s",
+				      operation);
+			    onoff = -1;
+			 }
+		    }
+		  else
+		    {
+		       Esnprintf(buf, sizeof(buf), "Error: no mode specified");
+		    }
+	       }
 
-             if (onoff == 1)
-                Esnprintf(buf, sizeof(buf), "%s: on", operation);
-             else if (onoff == 0)
-                Esnprintf(buf, sizeof(buf), "%s: off", operation);
-          }
+	     if (onoff == 1)
+		Esnprintf(buf, sizeof(buf), "%s: on", operation);
+	     else if (onoff == 0)
+		Esnprintf(buf, sizeof(buf), "%s: off", operation);
+	  }
      }
    else
      {
-        Esnprintf(buf, sizeof(buf), "Error: no group specified");
+	Esnprintf(buf, sizeof(buf), "Error: no group specified");
      }
 
    if (buf)
@@ -5521,20 +5521,19 @@ IPC_RememberList(char *params, Client * c)
 {
    Snapshot          **lst;
    int                 i, j, num, f;
-   char                buf[FILEPATH_LEN_MAX * 2],       /* hope 2x doesn't break anything */
+   char                buf[FILEPATH_LEN_MAX * 2],	/* hope 2x doesn't break anything */
     
-       
-       
-       
-       
-       
-       
-       
-       
-       
-       
-       
-       
+      
+      
+      
+      
+      
+      
+      
+      
+      
+      
+      
              buf2[FILEPATH_LEN_MAX], fullstr[FILEPATH_LEN_MAX], nstr[] = "null";
 
    buf[0] = 0;
@@ -5545,105 +5544,105 @@ IPC_RememberList(char *params, Client * c)
 
    if (params)
      {
-        word(params, 1, fullstr);
-        if (fullstr && !strncmp(fullstr, "full", 5))
-          {
-             f++;
-          }
+	word(params, 1, fullstr);
+	if (fullstr && !strncmp(fullstr, "full", 5))
+	  {
+	     f++;
+	  }
      }
 
    lst = (Snapshot **) ListItemType(&num, LIST_TYPE_SNAPSHOT);
    if (!num)
      {
-        Esnprintf(buf, sizeof(buf), "Error: no remembered windows\n");
+	Esnprintf(buf, sizeof(buf), "Error: no remembered windows\n");
      }
    else
      {
-        if (f)
-          {
-             for (i = 0; i < num; i++)
-               {
-                  if (!lst[i] || (lst[i] && !lst[i]->used))
-                     j++;
-               }
-             Esnprintf(buf, sizeof(buf), "Number of remembered windows: %d\n",
-                       num - j);
-          }
-        /* strncat(buf, buf2, sizeof(buf)); */
-        for (i = 0; i < num; i++)
-          {
-             if (lst[i] && lst[i]->used)
-               {
-                  if (!f)
-                    {
-                       Esnprintf(buf2, sizeof(buf2), "%s\n",
-                                 lst[i]->name ? lst[i]->name : nstr);
-                    }
-                  else
-                    {
-                       Esnprintf(buf2, sizeof(buf2),
-                                 "             Name: %s\n"
-                                 "     Window Title: %s\n"
-                                 "      Window Name: %s\n"
-                                 "     Window Class: %s\n"
-                                 "      Border Name: %s\n"
-                                 /*"             Used: %s\n" */
-                                 "      use_desktop: %d\n"
-                                 "          desktop: %d\n"
-                                 "      area (x, y): %d, %d\n"
-                                 "           use_wh: %d\n"
-                                 "           (w, h): %d, %d\n"
-                                 "           use_xy: %d\n"
-                                 "           (x, y): %d, %d\n"
-                                 "        use_layer: %d\n"
-                                 "            layer: %d\n"
-                                 "       use_sticky: %d\n"
-                                 "           sticky: %d\n"
-                                 "        use_shade: %d\n"
-                                 "            shade: %d\n"
-                                 "      use_command: %d\n"
-                                 "          command: %s\n"
-                                 "  use_skipwinlist: %d\n"
-                                 "      skipwinlist: %d\n"
-                                 "    use_skiplists: %d\n"
-                                 "         skiptask: %d\n"
-                                 "        skipfocus: %d\n"
-                                 "   use_neverfocus: %d\n"
-                                 "       neverfocus: %d\n",
-                                 lst[i]->name ? lst[i]->name : nstr,
-                                 lst[i]->win_title ? lst[i]->win_title : nstr,
-                                 lst[i]->win_name ? lst[i]->win_name : nstr,
-                                 lst[i]->win_class ? lst[i]->win_class : nstr,
-                                 lst[i]->
-                                 border_name ? lst[i]->border_name : nstr,
-                                 /*lst[i]->used?"yes":"no", */
-                                 lst[i]->use_desktop, lst[i]->desktop,
-                                 lst[i]->area_x, lst[i]->area_y, lst[i]->use_wh,
-                                 lst[i]->w, lst[i]->h, lst[i]->use_xy,
-                                 lst[i]->x, lst[i]->y, lst[i]->use_layer,
-                                 lst[i]->layer, lst[i]->use_sticky,
-                                 lst[i]->sticky, lst[i]->use_shade,
-                                 lst[i]->shade, lst[i]->use_cmd,
-                                 lst[i]->cmd ? lst[i]->cmd : nstr,
-                                 lst[i]->use_skipwinlist, lst[i]->skipwinlist,
-                                 lst[i]->use_skiplists, lst[i]->skiptask,
-                                 lst[i]->skipfocus, lst[i]->use_neverfocus,
-                                 lst[i]->neverfocus);
-                    }
-               }
-             else
-               {
-                  /* null snapshot or unused: argh hot grits, hot grits!!! :) */
-                  buf2[0] = 0;
-               }
+	if (f)
+	  {
+	     for (i = 0; i < num; i++)
+	       {
+		  if (!lst[i] || (lst[i] && !lst[i]->used))
+		     j++;
+	       }
+	     Esnprintf(buf, sizeof(buf), "Number of remembered windows: %d\n",
+		       num - j);
+	  }
+	/* strncat(buf, buf2, sizeof(buf)); */
+	for (i = 0; i < num; i++)
+	  {
+	     if (lst[i] && lst[i]->used)
+	       {
+		  if (!f)
+		    {
+		       Esnprintf(buf2, sizeof(buf2), "%s\n",
+				 lst[i]->name ? lst[i]->name : nstr);
+		    }
+		  else
+		    {
+		       Esnprintf(buf2, sizeof(buf2),
+				 "             Name: %s\n"
+				 "     Window Title: %s\n"
+				 "      Window Name: %s\n"
+				 "     Window Class: %s\n"
+				 "      Border Name: %s\n"
+				 /*"             Used: %s\n" */
+				 "      use_desktop: %d\n"
+				 "          desktop: %d\n"
+				 "      area (x, y): %d, %d\n"
+				 "           use_wh: %d\n"
+				 "           (w, h): %d, %d\n"
+				 "           use_xy: %d\n"
+				 "           (x, y): %d, %d\n"
+				 "        use_layer: %d\n"
+				 "            layer: %d\n"
+				 "       use_sticky: %d\n"
+				 "           sticky: %d\n"
+				 "        use_shade: %d\n"
+				 "            shade: %d\n"
+				 "      use_command: %d\n"
+				 "          command: %s\n"
+				 "  use_skipwinlist: %d\n"
+				 "      skipwinlist: %d\n"
+				 "    use_skiplists: %d\n"
+				 "         skiptask: %d\n"
+				 "        skipfocus: %d\n"
+				 "   use_neverfocus: %d\n"
+				 "       neverfocus: %d\n",
+				 lst[i]->name ? lst[i]->name : nstr,
+				 lst[i]->win_title ? lst[i]->win_title : nstr,
+				 lst[i]->win_name ? lst[i]->win_name : nstr,
+				 lst[i]->win_class ? lst[i]->win_class : nstr,
+				 lst[i]->
+				 border_name ? lst[i]->border_name : nstr,
+				 /*lst[i]->used?"yes":"no", */
+				 lst[i]->use_desktop, lst[i]->desktop,
+				 lst[i]->area_x, lst[i]->area_y, lst[i]->use_wh,
+				 lst[i]->w, lst[i]->h, lst[i]->use_xy,
+				 lst[i]->x, lst[i]->y, lst[i]->use_layer,
+				 lst[i]->layer, lst[i]->use_sticky,
+				 lst[i]->sticky, lst[i]->use_shade,
+				 lst[i]->shade, lst[i]->use_cmd,
+				 lst[i]->cmd ? lst[i]->cmd : nstr,
+				 lst[i]->use_skipwinlist, lst[i]->skipwinlist,
+				 lst[i]->use_skiplists, lst[i]->skiptask,
+				 lst[i]->skipfocus, lst[i]->use_neverfocus,
+				 lst[i]->neverfocus);
+		    }
+	       }
+	     else
+	       {
+		  /* null snapshot or unused: argh hot grits, hot grits!!! :) */
+		  buf2[0] = 0;
+	       }
 
-             if (strlen(buf) + strlen(buf2) > sizeof(buf))
-               {
-                  CommsSend(c, buf);
-                  buf[0] = 0;
-               }
-             strncat(buf, buf2, sizeof(buf));
-          }
+	     if (strlen(buf) + strlen(buf2) > sizeof(buf))
+	       {
+		  CommsSend(c, buf);
+		  buf[0] = 0;
+	       }
+	     strncat(buf, buf2, sizeof(buf));
+	  }
      }
 
    if (buf)

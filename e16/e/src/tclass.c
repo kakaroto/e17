@@ -35,11 +35,11 @@ CreateTclass()
    t->name = NULL;
    t->norm.normal = t->norm.hilited = t->norm.clicked = t->norm.disabled = NULL;
    t->active.normal = t->active.hilited = t->active.clicked =
-       t->active.disabled = NULL;
+      t->active.disabled = NULL;
    t->sticky.normal = t->sticky.hilited = t->sticky.clicked =
-       t->sticky.disabled = NULL;
+      t->sticky.disabled = NULL;
    t->sticky_active.normal = t->sticky_active.hilited =
-       t->sticky_active.clicked = t->sticky_active.disabled = NULL;
+      t->sticky_active.clicked = t->sticky_active.disabled = NULL;
    t->justification = 512;
    t->ref_count = 0;
    EDBUG_RETURN(t);
@@ -59,15 +59,15 @@ FreeTextState(TextState * ts)
       XFreeFont(disp, ts->xfont);
    if (ts->efont)
      {
-        for (i = 0; i < ts->efont->num_glyph; i++)
-          {
-             Efree(ts->efont->glyphs_cached[i]->bitmap);
-             Efree(ts->efont->glyphs_cached[i]);
-             TT_Done_Glyph(ts->efont->glyphs[i]);
-          }
-        Efree(ts->efont->glyphs_cached);
-        Efree(ts->efont->glyphs);
-        Efree(ts->efont);
+	for (i = 0; i < ts->efont->num_glyph; i++)
+	  {
+	     Efree(ts->efont->glyphs_cached[i]->bitmap);
+	     Efree(ts->efont->glyphs_cached[i]);
+	     TT_Done_Glyph(ts->efont->glyphs[i]);
+	  }
+	Efree(ts->efont->glyphs_cached);
+	Efree(ts->efont->glyphs);
+	Efree(ts->efont);
      }
    Efree(ts);
 
@@ -81,12 +81,12 @@ DeleteTclass(TextClass * t)
 
    if (t->ref_count > 0)
      {
-        char                stuff[255];
+	char                stuff[255];
 
-        Esnprintf(stuff, sizeof(stuff), _("%u references remain\n"),
-                  t->ref_count);
-        DIALOG_OK(_("TextClass Error!"), stuff);
-        EDBUG_RETURN_;
+	Esnprintf(stuff, sizeof(stuff), _("%u references remain\n"),
+		  t->ref_count);
+	DIALOG_OK(_("TextClass Error!"), stuff);
+	EDBUG_RETURN_;
      }
    if (t->name)
       Efree(t->name);
@@ -204,7 +204,7 @@ TclassPopulate(TextClass * tclass)
 
 void
 TclassApply(ImageClass * iclass, Window win, int w, int h, int active,
-            int sticky, int state, char expose, TextClass * tclass, char *text)
+	    int sticky, int state, char expose, TextClass * tclass, char *text)
 {
 
    EDBUG(4, "TclassApply");
@@ -214,45 +214,45 @@ TclassApply(ImageClass * iclass, Window win, int w, int h, int active,
 
    if (queue_up)
      {
-        DrawQueue          *dq;
+	DrawQueue          *dq;
 
-        dq = Emalloc(sizeof(DrawQueue));
-        dq->win = win;
-        dq->iclass = iclass;
-        if (dq->iclass)
-           dq->iclass->ref_count++;
-        dq->w = w;
-        dq->h = h;
-        dq->active = active;
-        dq->sticky = sticky;
-        dq->state = state;
-        dq->expose = expose;
-        dq->tclass = tclass;
-        if (dq->tclass)
-           dq->tclass->ref_count++;
-        if (text)
-           dq->text = duplicate(text);
-        else
-           dq->text = NULL;
-        dq->w = w;
-        dq->shape_propagate = 0;
-        dq->pager = NULL;
-        dq->redraw_pager = NULL;
-        dq->d = NULL;
-        dq->di = NULL;
-        dq->x = 0;
-        dq->y = 0;
-        AddItem(dq, "DRAW", dq->win, LIST_TYPE_DRAW);
-        EDBUG_RETURN_;
+	dq = Emalloc(sizeof(DrawQueue));
+	dq->win = win;
+	dq->iclass = iclass;
+	if (dq->iclass)
+	   dq->iclass->ref_count++;
+	dq->w = w;
+	dq->h = h;
+	dq->active = active;
+	dq->sticky = sticky;
+	dq->state = state;
+	dq->expose = expose;
+	dq->tclass = tclass;
+	if (dq->tclass)
+	   dq->tclass->ref_count++;
+	if (text)
+	   dq->text = duplicate(text);
+	else
+	   dq->text = NULL;
+	dq->w = w;
+	dq->shape_propagate = 0;
+	dq->pager = NULL;
+	dq->redraw_pager = NULL;
+	dq->d = NULL;
+	dq->di = NULL;
+	dq->x = 0;
+	dq->y = 0;
+	AddItem(dq, "DRAW", dq->win, LIST_TYPE_DRAW);
+	EDBUG_RETURN_;
      }
    XClearWindow(disp, win);
 
    TextDraw(tclass, win, active, sticky, state, text, iclass->padding.left,
-            iclass->padding.top,
-            w - (iclass->padding.left + iclass->padding.right),
-            h - (iclass->padding.top + iclass->padding.bottom),
-            h - (iclass->padding.top + iclass->padding.bottom),
-            tclass->justification);
+	    iclass->padding.top,
+	    w - (iclass->padding.left + iclass->padding.right),
+	    h - (iclass->padding.top + iclass->padding.bottom),
+	    h - (iclass->padding.top + iclass->padding.bottom),
+	    tclass->justification);
 
    EDBUG_RETURN_;
 

@@ -155,21 +155,21 @@ atom_list_set(Atom * atoms, int size, int *count, Atom atom, int set)
    /* Check if atom is in list or not (+get index) */
    for (i = 0; i < n; i++)
       if (atoms[i] == atom)
-         break;
+	 break;
    in_list = i < n;
 
    if (set && !in_list)
      {
-        /* Add it (if space left) */
-        if (n < size)
-           atoms[n++] = atom;
-        *count = n;
+	/* Add it (if space left) */
+	if (n < size)
+	   atoms[n++] = atom;
+	*count = n;
      }
    else if (!set && in_list)
      {
-        /* Remove it */
-        atoms[i] = atoms[--n];
-        *count = n;
+	/* Remove it */
+	atoms[i] = atoms[--n];
+	*count = n;
      }
 }
 
@@ -184,7 +184,7 @@ winlist_rindex(Window * wl, int len, Window win)
 
    for (i = len - 1; i >= 0; i--)
       if (win == wl[i])
-         break;
+	 break;
    return i;
 }
 
@@ -195,7 +195,7 @@ winlist_rindex(Window * wl, int len, Window win)
 void
 EWMH_Init(void)
 {
-   Window              win;     /* Should be elsewhere ? */
+   Window              win;	/* Should be elsewhere ? */
    Atom                atom_list[64];
    int                 atom_count;
 
@@ -337,13 +337,13 @@ EWMH_SetDesktopViewport(void)
    p_coord = Emalloc(n_coord * sizeof(CARD32));
    if (p_coord)
      {
-        for (i = 0; i < mode.numdesktops; i++)
-          {
-             p_coord[2 * i] = desks.desk[i].current_area_x * root.w;
-             p_coord[2 * i + 1] = desks.desk[i].current_area_y * root.h;
-          }
-        _ATOM_SET_CARD32(_NET_DESKTOP_VIEWPORT, root.win, p_coord, n_coord);
-        Efree(p_coord);
+	for (i = 0; i < mode.numdesktops; i++)
+	  {
+	     p_coord[2 * i] = desks.desk[i].current_area_x * root.w;
+	     p_coord[2 * i + 1] = desks.desk[i].current_area_y * root.h;
+	  }
+	_ATOM_SET_CARD32(_NET_DESKTOP_VIEWPORT, root.win, p_coord, n_coord);
+	Efree(p_coord);
      }
    EDBUG_RETURN_;
 }
@@ -366,15 +366,15 @@ EWMH_SetClientList(void)
    nwin = 0;
    if (lst)
      {
-        wl = Emalloc(sizeof(Window) * num);
-        for (i = 0; i < num; i++)
-          {
-             EWin               *ewin = lst[i];
+	wl = Emalloc(sizeof(Window) * num);
+	for (i = 0; i < num; i++)
+	  {
+	     EWin               *ewin = lst[i];
 
-             if (ewin->iconified == 4)
-                continue;
-             wl[nwin++] = ewin->client.win;
-          }
+	     if (ewin->iconified == 4)
+		continue;
+	     wl[nwin++] = ewin->client.win;
+	  }
      }
    _ATOM_SET_WINDOW(_NET_CLIENT_LIST, root.win, wl, nwin);
    if (lst)
@@ -388,15 +388,15 @@ EWMH_SetClientList(void)
    lst = desks.desk[desks.current].list;
    for (i = j = 0; i < num; i++)
      {
-        Window              win = lst[i]->client.win;
+	Window              win = lst[i]->client.win;
 
-        k = winlist_rindex(wl, nwin - j, win);
-        if (k < 0)
-           continue;
-        /* Swap 'em */
-        wl[k] = wl[nwin - 1 - j];
-        wl[nwin - 1 - j] = win;
-        j++;
+	k = winlist_rindex(wl, nwin - j, win);
+	if (k < 0)
+	   continue;
+	/* Swap 'em */
+	wl[k] = wl[nwin - 1 - j];
+	wl[nwin - 1 - j] = win;
+	j++;
      }
    _ATOM_SET_WINDOW(_NET_CLIENT_LIST_STACKING, root.win, wl, nwin);
    if (wl)
@@ -414,8 +414,8 @@ EWMH_SetActiveWindow(const EWin * ewin)
    win = (ewin) ? ewin->client.win : None;
    if (win != win_last_set)
      {
-        _ATOM_SET_WINDOW(_NET_ACTIVE_WINDOW, root.win, &win, 1);
-        win_last_set = win;
+	_ATOM_SET_WINDOW(_NET_ACTIVE_WINDOW, root.win, &win, 1);
+	win_last_set = win;
      }
    EDBUG_RETURN_;
 }
@@ -448,23 +448,23 @@ EWMH_SetWindowState(const EWin * ewin)
    EDBUG(6, "EWMH_SetWindowState");
    atom_count = 0;
    atom_list_set(atom_list, len, &atom_count, _NET_WM_STATE_STICKY,
-                 ewin->sticky);
+		 ewin->sticky);
    atom_list_set(atom_list, len, &atom_count, _NET_WM_STATE_SHADED,
-                 ewin->shaded);
+		 ewin->shaded);
    atom_list_set(atom_list, len, &atom_count, _NET_WM_STATE_SKIP_TASKBAR,
-                 ewin->skiptask);
+		 ewin->skiptask);
    atom_list_set(atom_list, len, &atom_count, _NET_WM_STATE_HIDDEN,
-                 ewin->iconified);
+		 ewin->iconified);
    atom_list_set(atom_list, len, &atom_count, _NET_WM_STATE_MAXIMIZED_VERT,
-                 ewin->ewmh_flags & NET_WM_FLAG_MAXIMIZED_VERT);
+		 ewin->ewmh_flags & NET_WM_FLAG_MAXIMIZED_VERT);
    atom_list_set(atom_list, len, &atom_count, _NET_WM_STATE_MAXIMIZED_HORZ,
-                 ewin->ewmh_flags & NET_WM_FLAG_MAXIMIZED_HORZ);
+		 ewin->ewmh_flags & NET_WM_FLAG_MAXIMIZED_HORZ);
    atom_list_set(atom_list, len, &atom_count, _NET_WM_STATE_SKIP_PAGER,
-                 ewin->skip_ext_pager);
+		 ewin->skip_ext_pager);
    atom_list_set(atom_list, len, &atom_count, _NET_WM_STATE_ABOVE,
-                 ewin->layer >= 6);
+		 ewin->layer >= 6);
    atom_list_set(atom_list, len, &atom_count, _NET_WM_STATE_BELOW,
-                 ewin->layer <= 2);
+		 ewin->layer <= 2);
    _ATOM_SET_ATOM(_NET_WM_STATE, ewin->client.win, atom_list, atom_count);
    EDBUG_RETURN_;
 }
@@ -487,14 +487,14 @@ EWMH_GetWindowDesktop(EWin * ewin)
 
    if ((unsigned)val[0] == 0xFFFFFFFF)
      {
-        /* It is possible to distinguish between "sticky" and "on all desktops". */
-        /* E doesn't */
-        ewin->sticky = 1;
+	/* It is possible to distinguish between "sticky" and "on all desktops". */
+	/* E doesn't */
+	ewin->sticky = 1;
      }
    else
      {
-        ewin->desktop = val[0];
-        ewin->sticky = 0;
+	ewin->desktop = val[0];
+	ewin->sticky = 0;
      }
    Efree(val);
 
@@ -514,31 +514,31 @@ EWMH_GetWindowState(EWin * ewin)
 
    n_atoms = 0;
    p_atoms = AtomGet(ewin->client.win, _NET_WM_STATE, XA_ATOM, &n_atoms);
-   n_atoms /= sizeof(Atom);     /* Silly */
+   n_atoms /= sizeof(Atom);	/* Silly */
    if (!p_atoms)
       goto exit;
 
    for (i = 0; i < n_atoms; i++)
      {
-        atom = p_atoms[i];
-        if (atom == _NET_WM_STATE_STICKY)
-           ewin->sticky = 1;
-        else if (atom == _NET_WM_STATE_SHADED)
-           ewin->shaded = 1;
-        else if (atom == _NET_WM_STATE_SKIP_TASKBAR)
-           ewin->skiptask = 1;
-        else if (atom == _NET_WM_STATE_SKIP_PAGER)
-           ewin->skip_ext_pager = 1;
-        else if (atom == _NET_WM_STATE_HIDDEN)
-           ewin->iconified = 1;
-        else if (atom == _NET_WM_STATE_MAXIMIZED_VERT)
-           ewin->ewmh_flags |= NET_WM_FLAG_MAXIMIZED_VERT;
-        else if (atom == _NET_WM_STATE_MAXIMIZED_HORZ)
-           ewin->ewmh_flags |= NET_WM_FLAG_MAXIMIZED_HORZ;
-        else if (atom == _NET_WM_STATE_ABOVE)
-           ewin->layer = 6;
-        else if (atom == _NET_WM_STATE_BELOW)
-           ewin->layer = 2;
+	atom = p_atoms[i];
+	if (atom == _NET_WM_STATE_STICKY)
+	   ewin->sticky = 1;
+	else if (atom == _NET_WM_STATE_SHADED)
+	   ewin->shaded = 1;
+	else if (atom == _NET_WM_STATE_SKIP_TASKBAR)
+	   ewin->skiptask = 1;
+	else if (atom == _NET_WM_STATE_SKIP_PAGER)
+	   ewin->skip_ext_pager = 1;
+	else if (atom == _NET_WM_STATE_HIDDEN)
+	   ewin->iconified = 1;
+	else if (atom == _NET_WM_STATE_MAXIMIZED_VERT)
+	   ewin->ewmh_flags |= NET_WM_FLAG_MAXIMIZED_VERT;
+	else if (atom == _NET_WM_STATE_MAXIMIZED_HORZ)
+	   ewin->ewmh_flags |= NET_WM_FLAG_MAXIMIZED_HORZ;
+	else if (atom == _NET_WM_STATE_ABOVE)
+	   ewin->layer = 6;
+	else if (atom == _NET_WM_STATE_BELOW)
+	   ewin->layer = 2;
      }
    Efree(p_atoms);
 
@@ -556,39 +556,39 @@ EWMH_GetWindowType(EWin * ewin)
 
    n_atoms = 0;
    p_atoms = AtomGet(ewin->client.win, _NET_WM_WINDOW_TYPE, XA_ATOM, &n_atoms);
-   n_atoms /= sizeof(Atom);     /* Silly */
+   n_atoms /= sizeof(Atom);	/* Silly */
    if (!p_atoms)
       goto exit;
 
    atom = p_atoms[0];
    if (atom == _NET_WM_WINDOW_TYPE_DESKTOP)
      {
-        Border             *b;
+	Border             *b;
 
-        ewin->layer = 0;
-        ewin->sticky = 1;
-        ewin->focusclick = 1;
-        ewin->neverraise = 1;
-        ewin->skipfocus = 1;
-        b = (Border *) FindItem("BORDERLESS", 0, LIST_FINDBY_NAME,
-                                LIST_TYPE_BORDER);
-        ewin->border_new = 1;
-        SetEwinToBorder(ewin, b);
+	ewin->layer = 0;
+	ewin->sticky = 1;
+	ewin->focusclick = 1;
+	ewin->neverraise = 1;
+	ewin->skipfocus = 1;
+	b = (Border *) FindItem("BORDERLESS", 0, LIST_FINDBY_NAME,
+				LIST_TYPE_BORDER);
+	ewin->border_new = 1;
+	SetEwinToBorder(ewin, b);
      }
    else if (atom == _NET_WM_WINDOW_TYPE_DOCK)
      {
-        ewin->skiptask = 1;
-        ewin->skipwinlist = 1;
-        ewin->skipfocus = 1;
-        ewin->never_use_area = 1;
+	ewin->skiptask = 1;
+	ewin->skipwinlist = 1;
+	ewin->skipfocus = 1;
+	ewin->never_use_area = 1;
      }
    else if (atom == _NET_WM_WINDOW_TYPE_UTILITY)
      {
-        /* Epplets hit this */
-        ewin->skiptask = 1;
-        ewin->skipwinlist = 1;
-        ewin->skipfocus = 1;
-        ewin->never_use_area = 1;
+	/* Epplets hit this */
+	ewin->skiptask = 1;
+	ewin->skipwinlist = 1;
+	ewin->skipfocus = 1;
+	ewin->never_use_area = 1;
      }
 #if 0
    else if (atom == _NET_WM_WINDOW_TYPE_TOOLBAR)
@@ -638,15 +638,15 @@ do_set(int is_set, int action)
 {
    switch (action)
      {
-       case _NET_WM_STATE_REMOVE:
-          return 0;
-          break;
-       case _NET_WM_STATE_ADD:
-          return 1;
-          break;
-       case _NET_WM_STATE_TOGGLE:
-          return !is_set;
-          break;
+     case _NET_WM_STATE_REMOVE:
+	return 0;
+	break;
+     case _NET_WM_STATE_ADD:
+	return 1;
+	break;
+     case _NET_WM_STATE_TOGGLE:
+	return !is_set;
+	break;
      }
    return -1;
 }
@@ -660,9 +660,9 @@ EWMH_ProcessClientMessage(XClientMessageEvent * event)
    char               *name = XGetAtomName(disp, event->message_type);
 
    printf
-       ("EWMH_ProcessClientMessage: ev_type=%s(%d) ev_win=%#x data[0-3]= %08x %08x %08x %08x\n",
-        name, event->message_type, event->window, event->data.l[0],
-        event->data.l[1], event->data.l[2], event->data.l[3]);
+      ("EWMH_ProcessClientMessage: ev_type=%s(%d) ev_win=%#x data[0-3]= %08x %08x %08x %08x\n",
+       name, event->message_type, event->window, event->data.l[0],
+       event->data.l[1], event->data.l[2], event->data.l[3]);
    XFree(name);
 #endif
    EDBUG(6, "EWMH_ProcessClientMessage");
@@ -672,11 +672,11 @@ EWMH_ProcessClientMessage(XClientMessageEvent * event)
     */
    if (event->message_type == _NET_CURRENT_DESKTOP)
      {
-        GotoDesktop(event->data.l[0]);
+	GotoDesktop(event->data.l[0]);
      }
    else if (event->message_type == _NET_DESKTOP_VIEWPORT)
      {
-        SetCurrentArea(event->data.l[0] / root.w, event->data.l[1] / root.h);
+	SetCurrentArea(event->data.l[0] / root.w, event->data.l[1] / root.h);
      }
 
    /*
@@ -688,156 +688,156 @@ EWMH_ProcessClientMessage(XClientMessageEvent * event)
 
    if (event->message_type == _NET_ACTIVE_WINDOW)
      {
-        if (ewin->iconified)
-          {
-             DeIconifyEwin(ewin);
-          }
-        else
-          {
-             RaiseEwin(ewin);
-             if (ewin->shaded)
-                UnShadeEwin(ewin);
-             FocusToEWin(ewin);
-          }
+	if (ewin->iconified)
+	  {
+	     DeIconifyEwin(ewin);
+	  }
+	else
+	  {
+	     RaiseEwin(ewin);
+	     if (ewin->shaded)
+		UnShadeEwin(ewin);
+	     FocusToEWin(ewin);
+	  }
      }
    else if (event->message_type == _NET_CLOSE_WINDOW)
      {
-        KillEwin(ewin);
+	KillEwin(ewin);
      }
    else if (event->message_type == _NET_WM_DESKTOP)
      {
-        if ((unsigned)event->data.l[0] == 0xFFFFFFFF)
-          {
-             if (!ewin->sticky)
-                MakeWindowSticky(ewin);
-          }
-        else
-          {
-             if (ewin->sticky)
-                MakeWindowUnSticky(ewin);
-             else
-                MoveEwinToDesktop(ewin, event->data.l[0]);
-          }
+	if ((unsigned)event->data.l[0] == 0xFFFFFFFF)
+	  {
+	     if (!ewin->sticky)
+		MakeWindowSticky(ewin);
+	  }
+	else
+	  {
+	     if (ewin->sticky)
+		MakeWindowUnSticky(ewin);
+	     else
+		MoveEwinToDesktop(ewin, event->data.l[0]);
+	  }
      }
    else if (event->message_type == _NET_WM_STATE)
      {
-        /*
-         * It is assumed(!) that only the MAXIMIZE H/V ones can be set
-         * in one message.
-         */
-        int                 action;
-        Atom                atom, atom2;
+	/*
+	 * It is assumed(!) that only the MAXIMIZE H/V ones can be set
+	 * in one message.
+	 */
+	int                 action;
+	Atom                atom, atom2;
 
-        action = event->data.l[0];
-        atom = event->data.l[1];
-        atom2 = event->data.l[2];
-        if (atom == _NET_WM_STATE_STICKY)
-          {
-             action = do_set(ewin->sticky, action);
-             if (action)
-                MakeWindowSticky(ewin);
-             else
-                MakeWindowUnSticky(ewin);
-             ewin->sticky = action;
-          }
-        else if (atom == _NET_WM_STATE_SHADED)
-          {
-             action = do_set(ewin->shaded, action);
-             if (action)
-                ShadeEwin(ewin);
-             else
-                UnShadeEwin(ewin);
-             ewin->shaded = action;
-          }
-        else if (atom == _NET_WM_STATE_SKIP_TASKBAR)
-          {
-             action = do_set(ewin->skiptask, action);
-             ewin->skiptask = action;
-             /* Set _NET_WM_STATE ? */
-          }
-        else if (atom == _NET_WM_STATE_SKIP_PAGER)
-          {
-             action = do_set(ewin->skip_ext_pager, action);
-             ewin->skip_ext_pager = action;
-             /* Set _NET_WM_STATE ? */
-          }
-        else if (atom == _NET_WM_STATE_MAXIMIZED_VERT ||
-                 atom == _NET_WM_STATE_MAXIMIZED_HORZ)
-          {
-             void                (*func) (EWin *, char *);
-             int                 maskbits;
+	action = event->data.l[0];
+	atom = event->data.l[1];
+	atom2 = event->data.l[2];
+	if (atom == _NET_WM_STATE_STICKY)
+	  {
+	     action = do_set(ewin->sticky, action);
+	     if (action)
+		MakeWindowSticky(ewin);
+	     else
+		MakeWindowUnSticky(ewin);
+	     ewin->sticky = action;
+	  }
+	else if (atom == _NET_WM_STATE_SHADED)
+	  {
+	     action = do_set(ewin->shaded, action);
+	     if (action)
+		ShadeEwin(ewin);
+	     else
+		UnShadeEwin(ewin);
+	     ewin->shaded = action;
+	  }
+	else if (atom == _NET_WM_STATE_SKIP_TASKBAR)
+	  {
+	     action = do_set(ewin->skiptask, action);
+	     ewin->skiptask = action;
+	     /* Set _NET_WM_STATE ? */
+	  }
+	else if (atom == _NET_WM_STATE_SKIP_PAGER)
+	  {
+	     action = do_set(ewin->skip_ext_pager, action);
+	     ewin->skip_ext_pager = action;
+	     /* Set _NET_WM_STATE ? */
+	  }
+	else if (atom == _NET_WM_STATE_MAXIMIZED_VERT ||
+		 atom == _NET_WM_STATE_MAXIMIZED_HORZ)
+	  {
+	     void                (*func) (EWin *, char *);
+	     int                 maskbits;
 
-             if (atom2 == _NET_WM_STATE_MAXIMIZED_VERT || atom2 == _NET_WM_STATE_MAXIMIZED_HORZ)        /* (ok - ok) */
-               {
-                  func = MaxSize;
-                  maskbits = NET_WM_FLAG_MAXIMIZED_VERT |
-                      NET_WM_FLAG_MAXIMIZED_HORZ;
-               }
-             else if (atom == _NET_WM_STATE_MAXIMIZED_VERT)
-               {
-                  func = MaxHeight;
-                  maskbits = NET_WM_FLAG_MAXIMIZED_VERT;
-               }
-             else
-               {
-                  func = MaxWidth;
-                  maskbits = NET_WM_FLAG_MAXIMIZED_HORZ;
-               }
+	     if (atom2 == _NET_WM_STATE_MAXIMIZED_VERT || atom2 == _NET_WM_STATE_MAXIMIZED_HORZ)	/* (ok - ok) */
+	       {
+		  func = MaxSize;
+		  maskbits = NET_WM_FLAG_MAXIMIZED_VERT |
+		     NET_WM_FLAG_MAXIMIZED_HORZ;
+	       }
+	     else if (atom == _NET_WM_STATE_MAXIMIZED_VERT)
+	       {
+		  func = MaxHeight;
+		  maskbits = NET_WM_FLAG_MAXIMIZED_VERT;
+	       }
+	     else
+	       {
+		  func = MaxWidth;
+		  maskbits = NET_WM_FLAG_MAXIMIZED_HORZ;
+	       }
 
-             if (ewin->ewmh_flags & maskbits)
-               {
-                  if (action != _NET_WM_STATE_ADD)
-                    {
-                       ewin->ewmh_flags &= ~maskbits;
-                       ewin->toggle = 1;
-                    }
-               }
-             else
-               {
-                  if (action != _NET_WM_STATE_REMOVE)
-                    {
-                       ewin->ewmh_flags |= maskbits;
-                       ewin->toggle = 0;
-                    }
-               }
-             func(ewin, "available");
-             RememberImportantInfoForEwin(ewin);
-             EWMH_SetWindowState(ewin);
-             ewin->toggle = 0;
-          }
-#if 0                           /* Not yet implemented */
-        else if (atom == _NET_WM_STATE_FULLSCREEN)
-          {
-          }
+	     if (ewin->ewmh_flags & maskbits)
+	       {
+		  if (action != _NET_WM_STATE_ADD)
+		    {
+		       ewin->ewmh_flags &= ~maskbits;
+		       ewin->toggle = 1;
+		    }
+	       }
+	     else
+	       {
+		  if (action != _NET_WM_STATE_REMOVE)
+		    {
+		       ewin->ewmh_flags |= maskbits;
+		       ewin->toggle = 0;
+		    }
+	       }
+	     func(ewin, "available");
+	     RememberImportantInfoForEwin(ewin);
+	     EWMH_SetWindowState(ewin);
+	     ewin->toggle = 0;
+	  }
+#if 0				/* Not yet implemented */
+	else if (atom == _NET_WM_STATE_FULLSCREEN)
+	  {
+	  }
 #endif
-        else if (atom == _NET_WM_STATE_ABOVE)
-          {
-             action = do_set(ewin->layer >= 6, action);
-             if (action)
-                doSetLayer("6");
-             else
-                doSetLayer("4");
-          }
-        else if (atom == _NET_WM_STATE_BELOW)
-          {
-             action = do_set(ewin->layer <= 2, action);
-             if (action)
-                doSetLayer("2");
-             else
-                doSetLayer("4");
-          }
+	else if (atom == _NET_WM_STATE_ABOVE)
+	  {
+	     action = do_set(ewin->layer >= 6, action);
+	     if (action)
+		doSetLayer("6");
+	     else
+		doSetLayer("4");
+	  }
+	else if (atom == _NET_WM_STATE_BELOW)
+	  {
+	     action = do_set(ewin->layer <= 2, action);
+	     if (action)
+		doSetLayer("2");
+	     else
+		doSetLayer("4");
+	  }
      }
    else if (event->message_type == _NET_WM_MOVERESIZE)
      {
-        switch (event->data.l[2])
-          {
-            case _NET_WM_MOVERESIZE_SIZE_KEYBOARD:
-               doResize(NULL);
-               break;
-            case _NET_WM_MOVERESIZE_MOVE_KEYBOARD:
-               doMove(NULL);
-               break;
-          }
+	switch (event->data.l[2])
+	  {
+	  case _NET_WM_MOVERESIZE_SIZE_KEYBOARD:
+	     doResize(NULL);
+	     break;
+	  case _NET_WM_MOVERESIZE_MOVE_KEYBOARD:
+	     doMove(NULL);
+	     break;
+	  }
      }
 
  exit:
@@ -854,7 +854,7 @@ EWMH_ProcessPropertyChange(EWin * ewin, Atom atom_change)
    char               *name = XGetAtomName(disp, atom_change);
 
    printf("EWMH_ProcessPropertyChange: Atom=%s(%d) id=%#x\n",
-          name, atom_change, (ewin) ? ewin->client.win : 0);
+	  name, atom_change, (ewin) ? ewin->client.win : 0);
    XFree(name);
 #endif
    EDBUG(6, "EWMH_ProcessPropertyChange");

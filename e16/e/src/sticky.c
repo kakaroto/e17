@@ -32,7 +32,7 @@ MakeWindowUnSticky(EWin * ewin)
    if (!ewin)
       EDBUG_RETURN_;
 
-   ewin->sticky = 2;            /* Grrr: we are "unsticking" (hack to get the desktop right) */
+   ewin->sticky = 2;		/* Grrr: we are "unsticking" (hack to get the desktop right) */
    ewin->desktop = desks.current;
    FloatEwinAt(ewin, ewin->x, ewin->y);
    DrawEwinShape(ewin, 0, ewin->x, ewin->y, ewin->client.w, ewin->client.h, 0);
@@ -44,7 +44,7 @@ MakeWindowUnSticky(EWin * ewin)
    HintsSetWindowState(ewin);
 
    ApplySclass(FindItem
-               ("SOUND_WINDOW_UNSTICK", 0, LIST_FINDBY_NAME, LIST_TYPE_SCLASS));
+	       ("SOUND_WINDOW_UNSTICK", 0, LIST_FINDBY_NAME, LIST_TYPE_SCLASS));
 
    EDBUG_RETURN_;
 }
@@ -63,11 +63,11 @@ MakeWindowSticky(EWin * ewin)
    _COORD_MODULO(y, ewin->y, root.h);
    if (x != ewin->x || y != ewin->y)
      {
-        ewin->x = x;
-        ewin->y = y;
-        FloatEwinAt(ewin, ewin->x, ewin->y);
-        DrawEwinShape(ewin, 0, ewin->x, ewin->y, ewin->client.w, ewin->client.h,
-                      0);
+	ewin->x = x;
+	ewin->y = y;
+	FloatEwinAt(ewin, ewin->x, ewin->y);
+	DrawEwinShape(ewin, 0, ewin->x, ewin->y, ewin->client.w, ewin->client.h,
+		      0);
      }
    MoveEwinToDesktopAt(ewin, desks.current, ewin->x, ewin->y);
    RaiseEwin(ewin);
@@ -76,7 +76,7 @@ MakeWindowSticky(EWin * ewin)
    HintsSetWindowState(ewin);
 
    ApplySclass(FindItem
-               ("SOUND_WINDOW_STICK", 0, LIST_FINDBY_NAME, LIST_TYPE_SCLASS));
+	       ("SOUND_WINDOW_STICK", 0, LIST_FINDBY_NAME, LIST_TYPE_SCLASS));
 
    EDBUG_RETURN_;
 }

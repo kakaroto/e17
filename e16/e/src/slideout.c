@@ -24,7 +24,7 @@
 
 void
 SlideWindowSizeTo(Window win, int fx, int fy, int tx, int ty, int fw, int fh,
-                  int tw, int th, int speed)
+		  int tw, int th, int speed)
 {
    int                 k, spd, x, y, min, w, h;
    struct timeval      timev1, timev2;
@@ -37,25 +37,25 @@ SlideWindowSizeTo(Window win, int fx, int fy, int tx, int ty, int fw, int fh,
    GrabX();
    for (k = 0; k <= 1024; k += spd)
      {
-        gettimeofday(&timev1, NULL);
-        x = ((fx * (1024 - k)) + (tx * k)) >> 10;
-        y = ((fy * (1024 - k)) + (ty * k)) >> 10;
-        w = ((fw * (1024 - k)) + (tw * k)) >> 10;
-        h = ((fh * (1024 - k)) + (th * k)) >> 10;
-        EMoveResizeWindow(disp, win, x, y, w, h);
-        XSync(disp, False);
-        gettimeofday(&timev2, NULL);
-        dsec = timev2.tv_sec - timev1.tv_sec;
-        dusec = timev2.tv_usec - timev1.tv_usec;
-        if (dusec < 0)
-          {
-             dsec--;
-             dusec += 1000000;
-          }
-        tm = (double)dsec + (((double)dusec) / 1000000);
-        spd = (int)((double)speed * tm);
-        if (spd < min)
-           spd = min;
+	gettimeofday(&timev1, NULL);
+	x = ((fx * (1024 - k)) + (tx * k)) >> 10;
+	y = ((fy * (1024 - k)) + (ty * k)) >> 10;
+	w = ((fw * (1024 - k)) + (tw * k)) >> 10;
+	h = ((fh * (1024 - k)) + (th * k)) >> 10;
+	EMoveResizeWindow(disp, win, x, y, w, h);
+	XSync(disp, False);
+	gettimeofday(&timev2, NULL);
+	dsec = timev2.tv_sec - timev1.tv_sec;
+	dusec = timev2.tv_usec - timev1.tv_usec;
+	if (dusec < 0)
+	  {
+	     dsec--;
+	     dusec += 1000000;
+	  }
+	tm = (double)dsec + (((double)dusec) / 1000000);
+	spd = (int)((double)speed * tm);
+	if (spd < min)
+	   spd = min;
      }
    EMoveResizeWindow(disp, win, tx, ty, tw, th);
    UngrabX();
@@ -108,124 +108,120 @@ ShowSlideout(Slideout * s, Window win)
    yy = 0;
    switch (s->direction)
      {
-       case 2:
-          xx = x + ((w - s->w) >> 1);
-          yy = y - s->h;
-          if ((yy < 0) && (s->h < root.h))
-            {
-               pdir = s->direction;
-               s->direction = 1;
-               ShowSlideout(s, win);
-               s->direction = pdir;
-               EDBUG_RETURN_;
-            }
-          break;
-       case 3:
-          xx = x + ((w - s->w) >> 1);
-          yy = y + h;
-          if (((yy + s->h) > root.h) && (s->h < root.h))
-            {
-               pdir = s->direction;
-               s->direction = 0;
-               ShowSlideout(s, win);
-               s->direction = pdir;
-               EDBUG_RETURN_;
-            }
-          break;
-       case 0:
-          xx = x - s->w;
-          yy = y + ((h - s->h) >> 1);
-          if ((xx < 0) && (s->w < root.w))
-            {
-               pdir = s->direction;
-               s->direction = 1;
-               ShowSlideout(s, win);
-               s->direction = pdir;
-               EDBUG_RETURN_;
-            }
-          break;
-       case 1:
-          xx = x + w;
-          yy = y + ((h - s->h) >> 1);
-          if (((xx + s->w) > root.w) && (s->w < root.w))
-            {
-               pdir = s->direction;
-               s->direction = 0;
-               ShowSlideout(s, win);
-               s->direction = pdir;
-               EDBUG_RETURN_;
-            }
-          break;
-       default:
-          break;
+     case 2:
+	xx = x + ((w - s->w) >> 1);
+	yy = y - s->h;
+	if ((yy < 0) && (s->h < root.h))
+	  {
+	     pdir = s->direction;
+	     s->direction = 1;
+	     ShowSlideout(s, win);
+	     s->direction = pdir;
+	     EDBUG_RETURN_;
+	  }
+	break;
+     case 3:
+	xx = x + ((w - s->w) >> 1);
+	yy = y + h;
+	if (((yy + s->h) > root.h) && (s->h < root.h))
+	  {
+	     pdir = s->direction;
+	     s->direction = 0;
+	     ShowSlideout(s, win);
+	     s->direction = pdir;
+	     EDBUG_RETURN_;
+	  }
+	break;
+     case 0:
+	xx = x - s->w;
+	yy = y + ((h - s->h) >> 1);
+	if ((xx < 0) && (s->w < root.w))
+	  {
+	     pdir = s->direction;
+	     s->direction = 1;
+	     ShowSlideout(s, win);
+	     s->direction = pdir;
+	     EDBUG_RETURN_;
+	  }
+	break;
+     case 1:
+	xx = x + w;
+	yy = y + ((h - s->h) >> 1);
+	if (((xx + s->w) > root.w) && (s->w < root.w))
+	  {
+	     pdir = s->direction;
+	     s->direction = 0;
+	     ShowSlideout(s, win);
+	     s->direction = pdir;
+	     EDBUG_RETURN_;
+	  }
+	break;
+     default:
+	break;
      }
 
    if ((mode.ewin) && (!mode.ewin->sticky) && (!mode.ewin->floating))
      {
-        xx -= desks.desk[DESKTOPS_WRAP_NUM(mode.ewin->desktop)].x;
-        yy -= desks.desk[DESKTOPS_WRAP_NUM(mode.ewin->desktop)].y;
-        EReparentWindow(disp, s->win,
-                        desks.desk[DESKTOPS_WRAP_NUM(mode.ewin->desktop)].win,
-                        xx, yy);
+	xx -= desks.desk[DESKTOPS_WRAP_NUM(mode.ewin->desktop)].x;
+	yy -= desks.desk[DESKTOPS_WRAP_NUM(mode.ewin->desktop)].y;
+	EReparentWindow(disp, s->win,
+			desks.desk[DESKTOPS_WRAP_NUM(mode.ewin->desktop)].win,
+			xx, yy);
      }
    else
       EReparentWindow(disp, s->win, root.win, xx, yy);
    switch (s->direction)
      {
-       case 0:
-          att.win_gravity = SouthEastGravity;
-          XChangeWindowAttributes(disp, s->win, CWWinGravity, &att);
-          att.win_gravity = NorthWestGravity;
-          for (i = 0; i < s->num_buttons; i++)
-             XChangeWindowAttributes(disp, s->button[i]->win, CWWinGravity,
-                                     &att);
-          EMoveResizeWindow(disp, s->win, xx, yy, 1, 1);
-          XSync(disp, False);
-          EMapRaised(disp, s->win);
-          SlideWindowSizeTo(s->win, xx + s->w, yy, xx, yy, 0, s->h, s->w, s->h,
-                            mode.slidespeedmap);
-          break;
-       case 1:
-          att.win_gravity = NorthWestGravity;
-          XChangeWindowAttributes(disp, s->win, CWWinGravity, &att);
-          att.win_gravity = SouthEastGravity;
-          for (i = 0; i < s->num_buttons; i++)
-             XChangeWindowAttributes(disp, s->button[i]->win, CWWinGravity,
-                                     &att);
-          EMoveResizeWindow(disp, s->win, xx, yy, 1, 1);
-          XSync(disp, False);
-          EMapRaised(disp, s->win);
-          SlideWindowSizeTo(s->win, xx, yy, xx, yy, 0, s->h, s->w, s->h,
-                            mode.slidespeedmap);
-          break;
-       case 2:
-          att.win_gravity = SouthEastGravity;
-          XChangeWindowAttributes(disp, s->win, CWWinGravity, &att);
-          att.win_gravity = NorthWestGravity;
-          for (i = 0; i < s->num_buttons; i++)
-             XChangeWindowAttributes(disp, s->button[i]->win, CWWinGravity,
-                                     &att);
-          EMoveResizeWindow(disp, s->win, xx, yy, 1, 1);
-          XSync(disp, False);
-          EMapRaised(disp, s->win);
-          SlideWindowSizeTo(s->win, xx, yy + s->h, xx, yy, s->w, 0, s->w, s->h,
-                            mode.slidespeedmap);
-          break;
-       case 3:
-          att.win_gravity = NorthWestGravity;
-          XChangeWindowAttributes(disp, s->win, CWWinGravity, &att);
-          att.win_gravity = SouthEastGravity;
-          for (i = 0; i < s->num_buttons; i++)
-             XChangeWindowAttributes(disp, s->button[i]->win, CWWinGravity,
-                                     &att);
-          EMoveResizeWindow(disp, s->win, xx, yy, 1, 1);
-          XSync(disp, False);
-          EMapRaised(disp, s->win);
-          SlideWindowSizeTo(s->win, xx, yy, xx, yy, s->w, 0, s->w, s->h,
-                            mode.slidespeedmap);
-          break;
-       default:
-          break;
+     case 0:
+	att.win_gravity = SouthEastGravity;
+	XChangeWindowAttributes(disp, s->win, CWWinGravity, &att);
+	att.win_gravity = NorthWestGravity;
+	for (i = 0; i < s->num_buttons; i++)
+	   XChangeWindowAttributes(disp, s->button[i]->win, CWWinGravity, &att);
+	EMoveResizeWindow(disp, s->win, xx, yy, 1, 1);
+	XSync(disp, False);
+	EMapRaised(disp, s->win);
+	SlideWindowSizeTo(s->win, xx + s->w, yy, xx, yy, 0, s->h, s->w, s->h,
+			  mode.slidespeedmap);
+	break;
+     case 1:
+	att.win_gravity = NorthWestGravity;
+	XChangeWindowAttributes(disp, s->win, CWWinGravity, &att);
+	att.win_gravity = SouthEastGravity;
+	for (i = 0; i < s->num_buttons; i++)
+	   XChangeWindowAttributes(disp, s->button[i]->win, CWWinGravity, &att);
+	EMoveResizeWindow(disp, s->win, xx, yy, 1, 1);
+	XSync(disp, False);
+	EMapRaised(disp, s->win);
+	SlideWindowSizeTo(s->win, xx, yy, xx, yy, 0, s->h, s->w, s->h,
+			  mode.slidespeedmap);
+	break;
+     case 2:
+	att.win_gravity = SouthEastGravity;
+	XChangeWindowAttributes(disp, s->win, CWWinGravity, &att);
+	att.win_gravity = NorthWestGravity;
+	for (i = 0; i < s->num_buttons; i++)
+	   XChangeWindowAttributes(disp, s->button[i]->win, CWWinGravity, &att);
+	EMoveResizeWindow(disp, s->win, xx, yy, 1, 1);
+	XSync(disp, False);
+	EMapRaised(disp, s->win);
+	SlideWindowSizeTo(s->win, xx, yy + s->h, xx, yy, s->w, 0, s->w, s->h,
+			  mode.slidespeedmap);
+	break;
+     case 3:
+	att.win_gravity = NorthWestGravity;
+	XChangeWindowAttributes(disp, s->win, CWWinGravity, &att);
+	att.win_gravity = SouthEastGravity;
+	for (i = 0; i < s->num_buttons; i++)
+	   XChangeWindowAttributes(disp, s->button[i]->win, CWWinGravity, &att);
+	EMoveResizeWindow(disp, s->win, xx, yy, 1, 1);
+	XSync(disp, False);
+	EMapRaised(disp, s->win);
+	SlideWindowSizeTo(s->win, xx, yy, xx, yy, s->w, 0, s->w, s->h,
+			  mode.slidespeedmap);
+	break;
+     default:
+	break;
      }
    s->from_win = win;
    mode.slideout = s;
@@ -267,23 +263,23 @@ CalcSlideoutSize(Slideout * s)
    y = 0;
    for (i = 0; i < s->num_buttons; i++)
      {
-        switch (s->direction)
-          {
-            case 2:
-            case 3:
-               if (s->button[i]->w > mx)
-                  mx = s->button[i]->w;
-               my += s->button[i]->h;
-               break;
-            case 0:
-            case 1:
-               if (s->button[i]->h > my)
-                  my = s->button[i]->h;
-               mx += s->button[i]->w;
-               break;
-            default:
-               break;
-          }
+	switch (s->direction)
+	  {
+	  case 2:
+	  case 3:
+	     if (s->button[i]->w > mx)
+		mx = s->button[i]->w;
+	     my += s->button[i]->h;
+	     break;
+	  case 0:
+	  case 1:
+	     if (s->button[i]->h > my)
+		my = s->button[i]->h;
+	     mx += s->button[i]->w;
+	     break;
+	  default:
+	     break;
+	  }
      }
    EResizeWindow(disp, s->win, mx, my);
    s->w = mx;
@@ -291,31 +287,31 @@ CalcSlideoutSize(Slideout * s)
 
    for (i = 0; i < s->num_buttons; i++)
      {
-        switch (s->direction)
-          {
-            case 2:
-               y += s->button[i]->h;
-               EMoveWindow(disp, s->button[i]->win,
-                           (s->w - s->button[i]->w) >> 1, s->h - y);
-               break;
-            case 3:
-               EMoveWindow(disp, s->button[i]->win,
-                           (s->w - s->button[i]->w) >> 1, y);
-               y += s->button[i]->h;
-               break;
-            case 0:
-               x += s->button[i]->w;
-               EMoveWindow(disp, s->button[i]->win, s->w - x,
-                           (s->h - s->button[i]->h) >> 1);
-               break;
-            case 1:
-               EMoveWindow(disp, s->button[i]->win, x,
-                           (s->h - s->button[i]->h) >> 1);
-               x += s->button[i]->w;
-               break;
-            default:
-               break;
-          }
+	switch (s->direction)
+	  {
+	  case 2:
+	     y += s->button[i]->h;
+	     EMoveWindow(disp, s->button[i]->win,
+			 (s->w - s->button[i]->w) >> 1, s->h - y);
+	     break;
+	  case 3:
+	     EMoveWindow(disp, s->button[i]->win,
+			 (s->w - s->button[i]->w) >> 1, y);
+	     y += s->button[i]->h;
+	     break;
+	  case 0:
+	     x += s->button[i]->w;
+	     EMoveWindow(disp, s->button[i]->win, s->w - x,
+			 (s->h - s->button[i]->h) >> 1);
+	     break;
+	  case 1:
+	     EMoveWindow(disp, s->button[i]->win, x,
+			 (s->h - s->button[i]->h) >> 1);
+	     x += s->button[i]->w;
+	     break;
+	  default:
+	     break;
+	  }
      }
    PropagateShapes(s->win);
 

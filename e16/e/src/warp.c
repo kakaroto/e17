@@ -63,10 +63,10 @@ WarpFocusInitEvents(void)
    if (XkbQueryExtension
        (disp, &xkbOpCode, &xkbEventBase, &xkbErrorBase, &xkbMajor, &xkbMinor))
      {
-        xkbEventNumber = xkbEventBase + XkbEventCode;
-        XkbSelectEventDetails(disp, XkbUseCoreKbd, XkbStateNotify,
-                              XkbAllStateComponentsMask,
-                              XkbAllStateComponentsMask);
+	xkbEventNumber = xkbEventBase + XkbEventCode;
+	XkbSelectEventDetails(disp, XkbUseCoreKbd, XkbStateNotify,
+			      XkbAllStateComponentsMask,
+			      XkbAllStateComponentsMask);
      }
    else
       mode.display_warp = -1;
@@ -80,36 +80,36 @@ WarpFocusHandleEvent(XEvent * ev)
 #ifdef WITH_TARTY_WARP
    if ((!mode.display_warp) || (xkbEventNumber < 0))
      {
-        EDBUG_RETURN(0);
+	EDBUG_RETURN(0);
      }
    if (ev->type == xkbEventNumber)
      {
-        XkbEvent           *xev;
+	XkbEvent           *xev;
 
-        xev = (XkbEvent *) ev;
-        if (xev->any.xkb_type == XkbStateNotify)
-          {
-             XkbStateNotifyEvent *sn;
-             KeySym              keySym;
+	xev = (XkbEvent *) ev;
+	if (xev->any.xkb_type == XkbStateNotify)
+	  {
+	     XkbStateNotifyEvent *sn;
+	     KeySym              keySym;
 
-             sn = &xev->state;
-             keySym = XKeycodeToKeysym(disp, sn->keycode, 0);
-             if ((keySym == XK_Alt_L) || (keySym == XK_Alt_R)
-                 || (keySym == XK_Shift_L) || (keySym == XK_Shift_R)
-                 || (keySym == XK_Control_L) || (keySym == XK_Control_R)
-                 || (keySym == XK_Meta_L) || (keySym == XK_Meta_R)
-                 || (keySym == XK_Super_L) || (keySym == XK_Super_R)
-                 || (keySym == XK_Hyper_L) || (keySym == XK_Hyper_R))
-               {
-                  int                 newAltPressed;
+	     sn = &xev->state;
+	     keySym = XKeycodeToKeysym(disp, sn->keycode, 0);
+	     if ((keySym == XK_Alt_L) || (keySym == XK_Alt_R)
+		 || (keySym == XK_Shift_L) || (keySym == XK_Shift_R)
+		 || (keySym == XK_Control_L) || (keySym == XK_Control_R)
+		 || (keySym == XK_Meta_L) || (keySym == XK_Meta_R)
+		 || (keySym == XK_Super_L) || (keySym == XK_Super_R)
+		 || (keySym == XK_Hyper_L) || (keySym == XK_Hyper_R))
+	       {
+		  int                 newAltPressed;
 
-                  newAltPressed = (sn->event_type == KeyPress);
-                  if ((warpFocusAltPressed) && (!newAltPressed))
-                     WarpFocusFinish();
-                  warpFocusAltPressed = newAltPressed;
-               }
-          }
-        EDBUG_RETURN(1);
+		  newAltPressed = (sn->event_type == KeyPress);
+		  if ((warpFocusAltPressed) && (!newAltPressed))
+		     WarpFocusFinish();
+		  warpFocusAltPressed = newAltPressed;
+	       }
+	  }
+	EDBUG_RETURN(1);
      }
 #endif
    EDBUG_RETURN(0);
@@ -124,60 +124,60 @@ WarpFocus(int delta)
    EDBUG(5, "WarpFocus");
    if ((!mode.display_warp) || (xkbEventNumber < 0))
      {
-        EDBUG_RETURN_;
+	EDBUG_RETURN_;
      }
    lst = (EWin **) ListItemType(&num, LIST_TYPE_WARP_RING);
    if (!lst)
      {
-        lst0 = (EWin **) ListItemType(&num0, LIST_TYPE_EWIN);
-        num = 0;
-        lst = NULL;
-        if (lst0)
-          {
-             for (i = num0 - 1; i >= 0; --i)
-               {
-                  ewin = lst0[i];
-                  if (((ewin->sticky) || (ewin->desktop == desks.current))
-                      && (ewin->x + ewin->w > 0) && (ewin->x < root.w)
-                      && (ewin->y + ewin->h > 0) && (ewin->y < root.h)
-                      && (!ewin->skipfocus) && !(ewin->shaded
-                                                 && !mode.warpshaded)
-                      && (!ewin->menu) && (!ewin->pager) && !(ewin->sticky
-                                                              && !mode.
-                                                              warpsticky)
-                      && (!ewin->ibox) && !(ewin->iconified
-                                            && !mode.warpiconified)
-                      /*&& (ewin->client.mwm_decor_title) &&
-                       * (ewin->client.mwm_decor_border) */
-                      )
-                     AddItem(ewin, "", 0, LIST_TYPE_WARP_RING);
-               }
-          }
-        MoveItemToListBottom(mode.focuswin, LIST_TYPE_WARP_RING);
-        lst = (EWin **) ListItemType(&num, LIST_TYPE_WARP_RING);
-        warpFocusIndex = num - 1;
+	lst0 = (EWin **) ListItemType(&num0, LIST_TYPE_EWIN);
+	num = 0;
+	lst = NULL;
+	if (lst0)
+	  {
+	     for (i = num0 - 1; i >= 0; --i)
+	       {
+		  ewin = lst0[i];
+		  if (((ewin->sticky) || (ewin->desktop == desks.current))
+		      && (ewin->x + ewin->w > 0) && (ewin->x < root.w)
+		      && (ewin->y + ewin->h > 0) && (ewin->y < root.h)
+		      && (!ewin->skipfocus) && !(ewin->shaded
+						 && !mode.warpshaded)
+		      && (!ewin->menu) && (!ewin->pager) && !(ewin->sticky
+							      && !mode.
+							      warpsticky)
+		      && (!ewin->ibox) && !(ewin->iconified
+					    && !mode.warpiconified)
+		      /*&& (ewin->client.mwm_decor_title) &&
+		       * (ewin->client.mwm_decor_border) */
+		     )
+		     AddItem(ewin, "", 0, LIST_TYPE_WARP_RING);
+	       }
+	  }
+	MoveItemToListBottom(mode.focuswin, LIST_TYPE_WARP_RING);
+	lst = (EWin **) ListItemType(&num, LIST_TYPE_WARP_RING);
+	warpFocusIndex = num - 1;
      }
    ewin = NULL;
    if (lst)
      {
-        warpFocusIndex = (warpFocusIndex + num + delta) % num;
-        ewin = lst[warpFocusIndex];
-        if (!FindItem((char *)ewin, 0, LIST_FINDBY_POINTER, LIST_TYPE_EWIN))
-           ewin = NULL;
-        if (ewin)
-          {
-             if (mode.raise_on_next_focus)
-                RaiseEwin(ewin);
-             if (mode.warp_on_next_focus && !ewin->iconified)
-                XWarpPointer(disp, None, ewin->win, 0, 0, 0, 0, ewin->w / 2,
-                             ewin->h / 2);
-             /* if (mode.focusmode == FOCUS_CLICK) */
-             /* FocusToEWin(ewin); */
-             if (mode.warpfocused && !ewin->iconified)
-                FocusToEWin(ewin);
-          }
-        WarpFocusShowTitle(ewin);
-        Efree(lst);
+	warpFocusIndex = (warpFocusIndex + num + delta) % num;
+	ewin = lst[warpFocusIndex];
+	if (!FindItem((char *)ewin, 0, LIST_FINDBY_POINTER, LIST_TYPE_EWIN))
+	   ewin = NULL;
+	if (ewin)
+	  {
+	     if (mode.raise_on_next_focus)
+		RaiseEwin(ewin);
+	     if (mode.warp_on_next_focus && !ewin->iconified)
+		XWarpPointer(disp, None, ewin->win, 0, 0, 0, 0, ewin->w / 2,
+			     ewin->h / 2);
+	     /* if (mode.focusmode == FOCUS_CLICK) */
+	     /* FocusToEWin(ewin); */
+	     if (mode.warpfocused && !ewin->iconified)
+		FocusToEWin(ewin);
+	  }
+	WarpFocusShowTitle(ewin);
+	Efree(lst);
      }
    EDBUG_RETURN_;
 }
@@ -192,27 +192,27 @@ WarpFocusFinish(void)
    lst = (EWin **) ListItemType(&num, LIST_TYPE_WARP_RING);
    if (lst)
      {
-        ewin = lst[warpFocusIndex];
+	ewin = lst[warpFocusIndex];
 
-        WarpFocusHideTitle();
-        if (!FindItem((char *)ewin, 0, LIST_FINDBY_POINTER, LIST_TYPE_EWIN))
-           ewin = NULL;
-        if (ewin)
-          {
-             if (mode.warpiconified && ewin->iconified)
-                DeIconifyEwin(ewin);
-             FocusToEWin(ewin);
-             if (mode.warp_after_next_focus || mode.warp_on_next_focus)
-               {
-                  XWarpPointer(disp, None, ewin->win, 0, 0, 0, 0, ewin->w / 2,
-                               ewin->h / 2);
-               }
-             if (mode.raise_after_next_focus)
-                RaiseEwin(ewin);
-          }
-        /*printf ("Raise: %s\n", ewin->client.title); */
-        Efree(lst);
-        while (RemoveItem("", 0, LIST_FINDBY_NONE, LIST_TYPE_WARP_RING));
+	WarpFocusHideTitle();
+	if (!FindItem((char *)ewin, 0, LIST_FINDBY_POINTER, LIST_TYPE_EWIN))
+	   ewin = NULL;
+	if (ewin)
+	  {
+	     if (mode.warpiconified && ewin->iconified)
+		DeIconifyEwin(ewin);
+	     FocusToEWin(ewin);
+	     if (mode.warp_after_next_focus || mode.warp_on_next_focus)
+	       {
+		  XWarpPointer(disp, None, ewin->win, 0, 0, 0, 0, ewin->w / 2,
+			       ewin->h / 2);
+	       }
+	     if (mode.raise_after_next_focus)
+		RaiseEwin(ewin);
+	  }
+	/*printf ("Raise: %s\n", ewin->client.title); */
+	Efree(lst);
+	while (RemoveItem("", 0, LIST_FINDBY_NONE, LIST_TYPE_WARP_RING));
      }
    EDBUG_RETURN_;
 }
@@ -242,75 +242,75 @@ WarpFocusShowTitle(EWin * ewin)
    XRaiseWindow(disp, warpFocusTitleWindow);
    if (!warpFocusTitleShowing)
      {
-        EWin              **lst;
+	EWin              **lst;
 
-        w = 0;
-        h = 0;
-        lst = (EWin **) ListItemType(&num, LIST_TYPE_WARP_RING);
-        if (lst)
-          {
-             for (i = 0; i < num; i++)
-               {
-                  warptitles_num++;
-                  warptitles =
-                      Erealloc(warptitles, (sizeof(Window) * warptitles_num));
-                  warptitles_ewin =
-                      Erealloc(warptitles_ewin,
-                               (sizeof(EWin *) * warptitles_num));
-                  warptitles[warptitles_num - 1] =
-                      ECreateWindow(warpFocusTitleWindow, 0, 0, 1, 1, 0);
-                  EMapWindow(disp, warptitles[warptitles_num - 1]);
-                  warptitles_ewin[warptitles_num - 1] = lst[i];
-                  TextSize(tc, 0, 0, 0, lst[i]->client.title, &ww, &hh, 17);
-                  if (ww > w)
-                     w = ww;
-                  if (hh > h)
-                     h = hh;
-               }
-             Efree(lst);
-          }
-        w += (ic->padding.left + ic->padding.right);
-        h += (ic->padding.top + ic->padding.bottom);
-        GetPointerScreenGeometry(&x, &y, &ww, &hh);
-        x += (ww - w) / 2;
-        y += (hh - h * warptitles_num) / 2;
-        mw = w;
-        mh = h;
-        EMoveResizeWindow(disp, warpFocusTitleWindow, x, y, w,
-                          (h * warptitles_num));
-        for (i = 0; i < warptitles_num; i++)
-          {
-             EMoveResizeWindow(disp, warptitles[i], 0, (h * i), mw, mh);
-             if (ewin == warptitles_ewin[i])
-                IclassApply(ic, warptitles[i], mw, mh, 0, 0, STATE_CLICKED, 0);
-             else
-                IclassApply(ic, warptitles[i], mw, mh, 0, 0, STATE_NORMAL, 0);
-          }
-        PropagateShapes(warpFocusTitleWindow);
-        EMapWindow(disp, warpFocusTitleWindow);
+	w = 0;
+	h = 0;
+	lst = (EWin **) ListItemType(&num, LIST_TYPE_WARP_RING);
+	if (lst)
+	  {
+	     for (i = 0; i < num; i++)
+	       {
+		  warptitles_num++;
+		  warptitles =
+		     Erealloc(warptitles, (sizeof(Window) * warptitles_num));
+		  warptitles_ewin =
+		     Erealloc(warptitles_ewin,
+			      (sizeof(EWin *) * warptitles_num));
+		  warptitles[warptitles_num - 1] =
+		     ECreateWindow(warpFocusTitleWindow, 0, 0, 1, 1, 0);
+		  EMapWindow(disp, warptitles[warptitles_num - 1]);
+		  warptitles_ewin[warptitles_num - 1] = lst[i];
+		  TextSize(tc, 0, 0, 0, lst[i]->client.title, &ww, &hh, 17);
+		  if (ww > w)
+		     w = ww;
+		  if (hh > h)
+		     h = hh;
+	       }
+	     Efree(lst);
+	  }
+	w += (ic->padding.left + ic->padding.right);
+	h += (ic->padding.top + ic->padding.bottom);
+	GetPointerScreenGeometry(&x, &y, &ww, &hh);
+	x += (ww - w) / 2;
+	y += (hh - h * warptitles_num) / 2;
+	mw = w;
+	mh = h;
+	EMoveResizeWindow(disp, warpFocusTitleWindow, x, y, w,
+			  (h * warptitles_num));
+	for (i = 0; i < warptitles_num; i++)
+	  {
+	     EMoveResizeWindow(disp, warptitles[i], 0, (h * i), mw, mh);
+	     if (ewin == warptitles_ewin[i])
+		IclassApply(ic, warptitles[i], mw, mh, 0, 0, STATE_CLICKED, 0);
+	     else
+		IclassApply(ic, warptitles[i], mw, mh, 0, 0, STATE_NORMAL, 0);
+	  }
+	PropagateShapes(warpFocusTitleWindow);
+	EMapWindow(disp, warpFocusTitleWindow);
      }
    for (i = 0; i < warptitles_num; i++)
      {
-        if (!FindItem
-            ((char *)warptitles_ewin[i], 0, LIST_FINDBY_POINTER,
-             LIST_TYPE_EWIN))
-           warptitles_ewin[i] = NULL;
-        if (warptitles_ewin[i])
-          {
-             if (ewin == warptitles_ewin[i])
-               {
-                  IclassApply(ic, warptitles[i], mw, mh, 0, 0, STATE_CLICKED,
-                              0);
-                  TclassApply(ic, warptitles[i], mw, mh, 0, 0, STATE_CLICKED, 0,
-                              tc, warptitles_ewin[i]->client.title);
-               }
-             else
-               {
-                  IclassApply(ic, warptitles[i], mw, mh, 0, 0, STATE_NORMAL, 0);
-                  TclassApply(ic, warptitles[i], mw, mh, 0, 0, STATE_NORMAL, 0,
-                              tc, warptitles_ewin[i]->client.title);
-               }
-          }
+	if (!FindItem
+	    ((char *)warptitles_ewin[i], 0, LIST_FINDBY_POINTER,
+	     LIST_TYPE_EWIN))
+	   warptitles_ewin[i] = NULL;
+	if (warptitles_ewin[i])
+	  {
+	     if (ewin == warptitles_ewin[i])
+	       {
+		  IclassApply(ic, warptitles[i], mw, mh, 0, 0, STATE_CLICKED,
+			      0);
+		  TclassApply(ic, warptitles[i], mw, mh, 0, 0, STATE_CLICKED, 0,
+			      tc, warptitles_ewin[i]->client.title);
+	       }
+	     else
+	       {
+		  IclassApply(ic, warptitles[i], mw, mh, 0, 0, STATE_NORMAL, 0);
+		  TclassApply(ic, warptitles[i], mw, mh, 0, 0, STATE_NORMAL, 0,
+			      tc, warptitles_ewin[i]->client.title);
+	       }
+	  }
      }
    PropagateShapes(warpFocusTitleWindow);
    queue_up = pq;
@@ -325,9 +325,9 @@ WarpFocusHideTitle(void)
 
    if (warpFocusTitleWindow)
      {
-        EUnmapWindow(disp, warpFocusTitleWindow);
-        for (i = 0; i < warptitles_num; i++)
-           EDestroyWindow(disp, warptitles[i]);
+	EUnmapWindow(disp, warpFocusTitleWindow);
+	for (i = 0; i < warptitles_num; i++)
+	   EDestroyWindow(disp, warptitles[i]);
      }
    if (warptitles)
       Efree(warptitles);

@@ -22,7 +22,7 @@
  */
 #include "E.h"
 #ifdef __EMX__
-#include <io.h>                 /* for EMX select() */
+#include <io.h>			/* for EMX select() */
 #endif
 #ifdef HAVE_LIBXTST
 #include <X11/extensions/XTest.h>
@@ -58,124 +58,124 @@ SC_Main(void)
 
    for (;;)
      {
-        if (XCheckWindowEvent
-            (sc_disp, sc_window,
-             PropertyChangeMask | PointerMotionMask | ButtonPressMask |
-             ButtonReleaseMask, &ev))
-          {
-             switch (ev.type)
-               {
-                 case KeyPress:
-                    printf("EV: KeyPress:\n");
-                    break;
-                 case KeyRelease:
-                    printf("EV: KeyRelease:\n");
-                    break;
-                 case ButtonPress:
-                    printf("EV: ButtonPress:\n");
-                    break;
-                 case ButtonRelease:
-                    printf("EV: ButtonRelease:\n");
-                    break;
-                 case MotionNotify:
-                    printf("EV: MotionNotify:\n");
-                    break;
-                 case PropertyNotify:
-                    {
-                       static Atom         a_wait = 0;
-                       static Atom         a_hotspot = 0;
-                       int                 format_ret;
-                       unsigned long       bytes_after, num_ret;
-                       Atom                aa;
-                       CARD32             *retval;
+	if (XCheckWindowEvent
+	    (sc_disp, sc_window,
+	     PropertyChangeMask | PointerMotionMask | ButtonPressMask |
+	     ButtonReleaseMask, &ev))
+	  {
+	     switch (ev.type)
+	       {
+	       case KeyPress:
+		  printf("EV: KeyPress:\n");
+		  break;
+	       case KeyRelease:
+		  printf("EV: KeyRelease:\n");
+		  break;
+	       case ButtonPress:
+		  printf("EV: ButtonPress:\n");
+		  break;
+	       case ButtonRelease:
+		  printf("EV: ButtonRelease:\n");
+		  break;
+	       case MotionNotify:
+		  printf("EV: MotionNotify:\n");
+		  break;
+	       case PropertyNotify:
+		  {
+		     static Atom         a_wait = 0;
+		     static Atom         a_hotspot = 0;
+		     int                 format_ret;
+		     unsigned long       bytes_after, num_ret;
+		     Atom                aa;
+		     CARD32             *retval;
 
-                       if (!a_wait)
-                          a_wait = XInternAtom(sc_disp, "ENL_SC_WAIT", False);
-                       if (!a_hotspot)
-                          a_hotspot =
-                              XInternAtom(sc_disp, "ENL_SC_HOTSPOT", False);
-                       if (ev.xproperty.atom == a_wait)
-                         {
-                            retval = NULL;
-                            XGetWindowProperty(sc_disp, sc_window,
-                                               ev.xproperty.atom, 0, 0x7fffffff,
-                                               False, XA_CARDINAL, &aa,
-                                               &format_ret, &num_ret,
-                                               &bytes_after,
-                                               (unsigned char **)(&retval));
-                            if (retval)
-                              {
-                                 wait_mode = (char)(*retval);
-                                 XFree(retval);
-                              }
-                         }
-                       else if (ev.xproperty.atom == a_hotspot)
-                         {
-                            retval = NULL;
-                            XGetWindowProperty(sc_disp, sc_window,
-                                               ev.xproperty.atom, 0, 0x7fffffff,
-                                               False, XA_CARDINAL, &aa,
-                                               &format_ret, &num_ret,
-                                               &bytes_after,
-                                               (unsigned char **)(&retval));
-                            if (retval)
-                              {
-                                 hot_x = retval[0];
-                                 hot_y = retval[1];
-                                 XFree(retval);
-                              }
-                         }
-                    }
-                 default:
-                    printf("EV: ???\n");
-                    break;
-               }
-          }
-        if (wait_mode)
-          {
-             char                s[1024], *f;
-             ImlibImage         *im;
-             Pixmap              pmap, mask;
+		     if (!a_wait)
+			a_wait = XInternAtom(sc_disp, "ENL_SC_WAIT", False);
+		     if (!a_hotspot)
+			a_hotspot =
+			   XInternAtom(sc_disp, "ENL_SC_HOTSPOT", False);
+		     if (ev.xproperty.atom == a_wait)
+		       {
+			  retval = NULL;
+			  XGetWindowProperty(sc_disp, sc_window,
+					     ev.xproperty.atom, 0, 0x7fffffff,
+					     False, XA_CARDINAL, &aa,
+					     &format_ret, &num_ret,
+					     &bytes_after,
+					     (unsigned char **)(&retval));
+			  if (retval)
+			    {
+			       wait_mode = (char)(*retval);
+			       XFree(retval);
+			    }
+		       }
+		     else if (ev.xproperty.atom == a_hotspot)
+		       {
+			  retval = NULL;
+			  XGetWindowProperty(sc_disp, sc_window,
+					     ev.xproperty.atom, 0, 0x7fffffff,
+					     False, XA_CARDINAL, &aa,
+					     &format_ret, &num_ret,
+					     &bytes_after,
+					     (unsigned char **)(&retval));
+			  if (retval)
+			    {
+			       hot_x = retval[0];
+			       hot_y = retval[1];
+			       XFree(retval);
+			    }
+		       }
+		  }
+	       default:
+		  printf("EV: ???\n");
+		  break;
+	       }
+	  }
+	if (wait_mode)
+	  {
+	     char                s[1024], *f;
+	     ImlibImage         *im;
+	     Pixmap              pmap, mask;
 
-             Esnprintf(s, sizeof(s), "pix/wait%i.png", wait_count);
-             wait_count++;
-             if (wait_count > 12)
-                wait_count = 1;
-             f = FindFile(s);
-             im = NULL;
-             if (f)
-                im = Imlib_load_image(imd, f);
-             if (f)
-                Efree(f);
-             if (im)
-               {
-                  Imlib_render(imd, im, im->rgb_width, im->rgb_height);
-                  pmap = Imlib_move_image(imd, im);
-                  mask = Imlib_move_mask(imd, im);
-                  EShapeCombineMask(sc_disp, sc_window, ShapeBounding, 0, 0,
-                                    mask, ShapeSet);
-                  ESetWindowBackgroundPixmap(sc_disp, sc_window, pmap);
-                  Imlib_free_pixmap(imd, pmap);
-                  XClearWindow(sc_disp, sc_window);
-                  EResizeWindow(sc_disp, sc_window, im->rgb_width,
-                                im->rgb_height);
-                  Imlib_destroy_image(imd, im);
-               }
-          }
-        {
-           Window              dw;
-           int                 dd, x, y;
-           unsigned int        mm;
+	     Esnprintf(s, sizeof(s), "pix/wait%i.png", wait_count);
+	     wait_count++;
+	     if (wait_count > 12)
+		wait_count = 1;
+	     f = FindFile(s);
+	     im = NULL;
+	     if (f)
+		im = Imlib_load_image(imd, f);
+	     if (f)
+		Efree(f);
+	     if (im)
+	       {
+		  Imlib_render(imd, im, im->rgb_width, im->rgb_height);
+		  pmap = Imlib_move_image(imd, im);
+		  mask = Imlib_move_mask(imd, im);
+		  EShapeCombineMask(sc_disp, sc_window, ShapeBounding, 0, 0,
+				    mask, ShapeSet);
+		  ESetWindowBackgroundPixmap(sc_disp, sc_window, pmap);
+		  Imlib_free_pixmap(imd, pmap);
+		  XClearWindow(sc_disp, sc_window);
+		  EResizeWindow(sc_disp, sc_window, im->rgb_width,
+				im->rgb_height);
+		  Imlib_destroy_image(imd, im);
+	       }
+	  }
+	{
+	   Window              dw;
+	   int                 dd, x, y;
+	   unsigned int        mm;
 
-           XQueryPointer(sc_disp, root.win, &dw, &dw, &dd, &dd, &x, &y, &mm);
-           EMoveWindow(sc_disp, sc_window, x - hot_x, y - hot_y);
-           EMapRaised(sc_disp, sc_window);
-           sc_x = x;
-           sc_y = y;
-        }
-        tv.tv_sec = 0;
-        tv.tv_usec = 1000000 / update_time;
-        select(0, NULL, NULL, NULL, &tv);
+	   XQueryPointer(sc_disp, root.win, &dw, &dw, &dd, &dd, &x, &y, &mm);
+	   EMoveWindow(sc_disp, sc_window, x - hot_x, y - hot_y);
+	   EMapRaised(sc_disp, sc_window);
+	   sc_x = x;
+	   sc_y = y;
+	}
+	tv.tv_sec = 0;
+	tv.tv_usec = 1000000 / update_time;
+	select(0, NULL, NULL, NULL, &tv);
      }
 }
 
@@ -200,20 +200,20 @@ SC_Init(void)
    XSync(disp, False);
    if (fork())
      {
-        UngrabX();
-        for (;;)
-          {
-             retval = NULL;
-             XGetWindowProperty(disp, root.win, sc_atom, 0, 0x7fffffff, True,
-                                XA_CARDINAL, &aa, &format_ret, &num_ret,
-                                &bytes_after, (unsigned char **)(&retval));
-             if (retval)
-                break;
-          }
-        sc_window = *retval;
-        fflush(stdout);
-        XFree(retval);
-        return;
+	UngrabX();
+	for (;;)
+	  {
+	     retval = NULL;
+	     XGetWindowProperty(disp, root.win, sc_atom, 0, 0x7fffffff, True,
+				XA_CARDINAL, &aa, &format_ret, &num_ret,
+				&bytes_after, (unsigned char **)(&retval));
+	     if (retval)
+		break;
+	  }
+	sc_window = *retval;
+	fflush(stdout);
+	XFree(retval);
+	return;
      }
    XSetErrorHandler((XErrorHandler) NULL);
    XSetIOErrorHandler((XIOErrorHandler) NULL);
@@ -241,8 +241,8 @@ SC_Init(void)
       int                 test_event_base, test_error_base, test_v1, test_v2;
 
       if (XTestQueryExtension
-          (sc_disp, &test_event_base, &test_error_base, &test_v1, &test_v2))
-         XTestGrabControl(sc_disp, True);
+	  (sc_disp, &test_event_base, &test_error_base, &test_v1, &test_v2))
+	 XTestGrabControl(sc_disp, True);
    }
 #endif
    printf("sc going\n");
@@ -254,17 +254,17 @@ SC_Init(void)
    attr.background_pixel = 0;
    attr.save_under = True;
    sc_window =
-       XCreateWindow(sc_disp, root.win, 0, 0, 32, 32, 0, root.depth,
-                     InputOutput, root.vis,
-                     CWOverrideRedirect | CWSaveUnder | CWBackingStore |
-                     CWColormap | CWBackPixel | CWBorderPixel, &attr);
+      XCreateWindow(sc_disp, root.win, 0, 0, 32, 32, 0, root.depth,
+		    InputOutput, root.vis,
+		    CWOverrideRedirect | CWSaveUnder | CWBackingStore |
+		    CWColormap | CWBackPixel | CWBorderPixel, &attr);
    XSelectInput(sc_disp, sc_window,
-                PropertyChangeMask | PointerMotionMask | ButtonPressMask |
-                ButtonReleaseMask);
+		PropertyChangeMask | PointerMotionMask | ButtonPressMask |
+		ButtonReleaseMask);
    sc_atom = XInternAtom(disp, "ENLIGHTENMENT_SOFT_CURSOR", False);
    val = sc_window;
    XChangeProperty(sc_disp, root.win, sc_atom, XA_CARDINAL, 32,
-                   PropModeReplace, (unsigned char *)&val, 1);
+		   PropModeReplace, (unsigned char *)&val, 1);
    pmap = ECreatePixmap(sc_disp, sc_window, 16, 16, 1);
    mask = ECreatePixmap(sc_disp, sc_window, 16, 16, 1);
    gc = XCreateGC(sc_disp, pmap, 0, &gcv);
@@ -279,9 +279,9 @@ SC_Init(void)
    EMapRaised(sc_disp, sc_window);
 
    XGrabPointer(sc_disp, sc_window, True,
-                ButtonPressMask | ButtonReleaseMask | PointerMotionMask |
-                ButtonMotionMask, GrabModeAsync, GrabModeAsync, None, cs,
-                CurrentTime);
+		ButtonPressMask | ButtonReleaseMask | PointerMotionMask |
+		ButtonMotionMask, GrabModeAsync, GrabModeAsync, None, cs,
+		CurrentTime);
    XUngrabServer(sc_disp);
    SC_Main();
    exit(0);
@@ -299,7 +299,7 @@ SC_SetWait(void)
       a = XInternAtom(disp, "ENL_SC_WAIT", False);
    val = 1;
    XChangeProperty(disp, sc_window, a, XA_CARDINAL, 32, PropModeReplace,
-                   (unsigned char *)&val, 1);
+		   (unsigned char *)&val, 1);
 }
 
 void
@@ -312,7 +312,7 @@ SC_Normal(void)
       a = XInternAtom(disp, "ENL_SC_WAIT", False);
    val = 0;
    XChangeProperty(disp, sc_window, a, XA_CARDINAL, 32, PropModeReplace,
-                   (unsigned char *)&val, 1);
+		   (unsigned char *)&val, 1);
 }
 
 void
@@ -326,7 +326,7 @@ SC_SetHotspot(int x, int y)
    val[0] = x;
    val[1] = y;
    XChangeProperty(disp, sc_window, a, XA_CARDINAL, 32, PropModeReplace,
-                   (unsigned char *)&val, 2);
+		   (unsigned char *)&val, 2);
 }
 
 void
@@ -338,17 +338,17 @@ SC_SetImage(char *file)
    im = ELoadImage(file);
    if (im)
      {
-        Imlib_render(id, im, im->rgb_width, im->rgb_height);
-        pmap = Imlib_move_image(id, im);
-        mask = Imlib_move_mask(id, im);
-        if (pmap)
-          {
-             ESetWindowBackgroundPixmap(disp, sc_window, pmap);
-             EShapeCombineMask(disp, sc_window, ShapeBounding, 0, 0, mask,
-                               ShapeSet);
-          }
-        Imlib_free_pixmap(id, pmap);
-        Imlib_destroy_image(id, im);
+	Imlib_render(id, im, im->rgb_width, im->rgb_height);
+	pmap = Imlib_move_image(id, im);
+	mask = Imlib_move_mask(id, im);
+	if (pmap)
+	  {
+	     ESetWindowBackgroundPixmap(disp, sc_window, pmap);
+	     EShapeCombineMask(disp, sc_window, ShapeBounding, 0, 0, mask,
+			       ShapeSet);
+	  }
+	Imlib_free_pixmap(id, pmap);
+	Imlib_destroy_image(id, im);
      }
 }
 
@@ -357,8 +357,8 @@ SC_Kill(void)
 {
    if (sc_window)
      {
-        XKillClient(disp, sc_window);
-        XSync(disp, False);
-        sc_window = 0;
+	XKillClient(disp, sc_window);
+	XSync(disp, False);
+	sc_window = 0;
      }
 }

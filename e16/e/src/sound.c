@@ -50,27 +50,27 @@ LoadWav(char *file)
    find = FindFile(file);
    if (!find)
      {
-        DIALOG_PARAM_OK(_("Error finding sound file"));
-        DIALOG_PARAM        _("Warning!  Enlightenment was unable "
-                              "to load the\nfollowing sound file:\n%s\n"
-                              "Enlightenment will continue to operate, but you\n"
-                              "may wish to check your configuration settings.\n"),
-            file DIALOG_PARAM_END;
+	DIALOG_PARAM_OK(_("Error finding sound file"));
+	DIALOG_PARAM        _("Warning!  Enlightenment was unable "
+			      "to load the\nfollowing sound file:\n%s\n"
+			      "Enlightenment will continue to operate, but you\n"
+			      "may wish to check your configuration settings.\n"),
+	   file DIALOG_PARAM_END;
 
-        EDBUG_RETURN(NULL);
+	EDBUG_RETURN(NULL);
      }
    in_file = afOpenFile(find, "r", NULL);
    if (!in_file)
      {
-        Efree(find);
-        EDBUG_RETURN(NULL);
+	Efree(find);
+	EDBUG_RETURN(NULL);
      }
    s = Emalloc(sizeof(Sample));
    if (!s)
      {
-        Efree(find);
-        afCloseFile(in_file);
-        EDBUG_RETURN(NULL);
+	Efree(find);
+	afCloseFile(in_file);
+	EDBUG_RETURN(NULL);
      }
 
    frame_count = afGetFrameCount(in_file, AF_DEFAULT_TRACK);
@@ -126,26 +126,26 @@ SoundPlay(Sample * s)
       EDBUG_RETURN_;
    if (!s->id)
      {
-        if (sound_fd >= 0)
-          {
-             if (s->data)
-               {
-                  size = s->samples;
-                  s->id = esd_sample_getid(sound_fd, s->file);
-                  if (s->id < 0)
-                    {
-                       s->id =
-                           esd_sample_cache(sound_fd, s->format, s->rate, size,
-                                            s->file);
-                       write(sound_fd, s->data, size);
-                       confirm = esd_confirm_sample_cache(sound_fd);
-                       if (confirm != s->id)
-                          s->id = 0;
-                    }
-                  Efree(s->data);
-                  s->data = NULL;
-               }
-          }
+	if (sound_fd >= 0)
+	  {
+	     if (s->data)
+	       {
+		  size = s->samples;
+		  s->id = esd_sample_getid(sound_fd, s->file);
+		  if (s->id < 0)
+		    {
+		       s->id =
+			  esd_sample_cache(sound_fd, s->format, s->rate, size,
+					   s->file);
+		       write(sound_fd, s->data, size);
+		       confirm = esd_confirm_sample_cache(sound_fd);
+		       if (confirm != s->id)
+			  s->id = 0;
+		    }
+		  Efree(s->data);
+		  s->data = NULL;
+	       }
+	  }
      }
    if (s->id > 0)
       esd_sample_play(sound_fd, s->id);
@@ -185,12 +185,12 @@ ApplySclass(SoundClass * sclass)
 #ifdef HAVE_LIBESD
    if ((!sclass->sample) && (mode.sound))
      {
-        f = FindFile(sclass->file);
-        if (f)
-          {
-             sclass->sample = LoadWav(f);
-             Efree(f);
-          }
+	f = FindFile(sclass->file);
+	if (f)
+	  {
+	     sclass->sample = LoadWav(f);
+	     Efree(f);
+	  }
      }
    if ((mode.sound) && (sclass->sample))
       SoundPlay(sclass->sample);
@@ -211,7 +211,7 @@ DestroySample(Sample * s)
 /*      Why the hell is this symbol not in esd? */
 /*      it's in esd.h - evil evil evil */
 /*      esd_sample_kill(sound_fd,s->id); */
-        esd_sample_free(sound_fd, s->id);
+	esd_sample_free(sound_fd, s->id);
      }
 #endif
    if (s->data)
@@ -259,13 +259,13 @@ SoundInit()
       sound_fd = fd;
    else
      {
-        ASSIGN_ALERT(_("Error initialising sound"), _("OK"), " ", " ");
-        Alert(_
-              ("Audio was enabled for Enlightenment but there was an error\n"
-               "communicating with the audio server (Esound). Audio will\n"
-               "now be disabled.\n"));
-        RESET_ALERT;
-        mode.sound = 0;
+	ASSIGN_ALERT(_("Error initialising sound"), _("OK"), " ", " ");
+	Alert(_
+	      ("Audio was enabled for Enlightenment but there was an error\n"
+	       "communicating with the audio server (Esound). Audio will\n"
+	       "now be disabled.\n"));
+	RESET_ALERT;
+	mode.sound = 0;
      }
    EDBUG_RETURN_;
 #else
@@ -283,19 +283,19 @@ SoundExit()
    EDBUG(6, "SoundExit");
    if (sound_fd >= 0)
      {
-        lst = (SoundClass **) ListItemType(&num, LIST_TYPE_SCLASS);
-        if (lst)
-          {
-             for (i = 0; i < num; i++)
-               {
-                  if (lst[i]->sample)
-                     DestroySample(lst[i]->sample);
-                  lst[i]->sample = NULL;
-               }
-             Efree(lst);
-          }
-        close(sound_fd);
-        sound_fd = -1;
+	lst = (SoundClass **) ListItemType(&num, LIST_TYPE_SCLASS);
+	if (lst)
+	  {
+	     for (i = 0; i < num; i++)
+	       {
+		  if (lst[i]->sample)
+		     DestroySample(lst[i]->sample);
+		  lst[i]->sample = NULL;
+	       }
+	     Efree(lst);
+	  }
+	close(sound_fd);
+	sound_fd = -1;
      }
    EDBUG_RETURN_;
 }

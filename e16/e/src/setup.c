@@ -46,65 +46,65 @@ MapUnmap(int start)
    EDBUG(6, "MapUnmap");
    switch (start)
      {
-       case 0:
-          XQueryTree(disp, root.win, &rt, &par, &wlist, &num);
-          if (wlist)
-            {
-               for (i = 0; i < (int)num; i++)
-                 {
-                    if ((init_win_ext) && (init_win_ext == wlist[i]))
-                      {
-                         wlist[i] = 0;
-                      }
-                    else
-                      {
-                         XGetWindowAttributes(disp, wlist[i], &attr);
-                         if (attr.map_state == IsUnmapped)
-                           {
-                              wlist[i] = 0;
-                           }
-                         else
-                           {
-                              EUnmapWindow(disp, wlist[i]);
-                           }
-                      }
-                 }
-            }
-          break;
-       case 1:
-          if (wlist)
-            {
-               for (i = 0; i < (int)num; i++)
-                 {
-                    if (wlist[i])
-                      {
-                         if (XGetWindowAttributes(disp, wlist[i], &attr))
-                           {
-                              if (attr.override_redirect)
-                                {
-                                   if (init_win1)
-                                     {
-                                        XRaiseWindow(disp, init_win1);
-                                        XRaiseWindow(disp, init_win2);
-                                     }
-                                   if (init_win_ext)
-                                      XRaiseWindow(disp, init_win_ext);
-                                   ShowEdgeWindows();
-                                   RaiseProgressbars();
-                                   EMapWindow(disp, wlist[i]);
-                                }
-                              else
-                                {
-                                   AddToFamily(wlist[i]);
-                                }
-                           }
-                      }
-                 }
-               XFree(wlist);
-            }
-          break;
-       default:
-          break;
+     case 0:
+	XQueryTree(disp, root.win, &rt, &par, &wlist, &num);
+	if (wlist)
+	  {
+	     for (i = 0; i < (int)num; i++)
+	       {
+		  if ((init_win_ext) && (init_win_ext == wlist[i]))
+		    {
+		       wlist[i] = 0;
+		    }
+		  else
+		    {
+		       XGetWindowAttributes(disp, wlist[i], &attr);
+		       if (attr.map_state == IsUnmapped)
+			 {
+			    wlist[i] = 0;
+			 }
+		       else
+			 {
+			    EUnmapWindow(disp, wlist[i]);
+			 }
+		    }
+	       }
+	  }
+	break;
+     case 1:
+	if (wlist)
+	  {
+	     for (i = 0; i < (int)num; i++)
+	       {
+		  if (wlist[i])
+		    {
+		       if (XGetWindowAttributes(disp, wlist[i], &attr))
+			 {
+			    if (attr.override_redirect)
+			      {
+				 if (init_win1)
+				   {
+				      XRaiseWindow(disp, init_win1);
+				      XRaiseWindow(disp, init_win2);
+				   }
+				 if (init_win_ext)
+				    XRaiseWindow(disp, init_win_ext);
+				 ShowEdgeWindows();
+				 RaiseProgressbars();
+				 EMapWindow(disp, wlist[i]);
+			      }
+			    else
+			      {
+				 AddToFamily(wlist[i]);
+			      }
+			 }
+		    }
+	       }
+	     XFree(wlist);
+	  }
+	break;
+     default:
+	break;
      }
    EDBUG_RETURN_;
 }
@@ -218,18 +218,18 @@ SetupX()
    /* if cannot connect to display */
    if (!disp)
      {
-        Alert(_
-              ("Enlightenment cannot connect to the display nominated by\n"
-               "your shell's DISPLAY environment variable. You may set this\n"
-               "variable to indicate which display name Enlightenment is to\n"
-               "connect to. It may be that you do not have an Xserver already\n"
-               "running to serve that Display connection, or that you do not\n"
-               "have permission to connect to that display. Please make sure\n"
-               "all is correct before trying again. Run an Xserver by running\n"
-               "xdm or startx first, or contact your local system\n"
-               "administrator, or Xserver vendor, or read the X, xdm and\n"
-               "startx manual pages before proceeding.\n"));
-        EExit((void *)1);
+	Alert(_
+	      ("Enlightenment cannot connect to the display nominated by\n"
+	       "your shell's DISPLAY environment variable. You may set this\n"
+	       "variable to indicate which display name Enlightenment is to\n"
+	       "connect to. It may be that you do not have an Xserver already\n"
+	       "running to serve that Display connection, or that you do not\n"
+	       "have permission to connect to that display. Please make sure\n"
+	       "all is correct before trying again. Run an Xserver by running\n"
+	       "xdm or startx first, or contact your local system\n"
+	       "administrator, or Xserver vendor, or read the X, xdm and\n"
+	       "startx manual pages before proceeding.\n"));
+	EExit((void *)1);
      }
    root.scr = DefaultScreen(disp);
    display_screens = ScreenCount(disp);
@@ -237,50 +237,50 @@ SetupX()
    /* Start up on multiple heads, if appropriate */
    if ((display_screens > 1) && (!single_screen_mode))
      {
-        int                 i;
-        char                subdisplay[255];
-        char               *dispstr;
+	int                 i;
+	char                subdisplay[255];
+	char               *dispstr;
 
-        dispstr = DisplayString(disp);
+	dispstr = DisplayString(disp);
 
-        strcpy(subdisplay, DisplayString(disp));
+	strcpy(subdisplay, DisplayString(disp));
 
-        for (i = 0; i < display_screens; i++)
-          {
-             pid_t               pid;
+	for (i = 0; i < display_screens; i++)
+	  {
+	     pid_t               pid;
 
-             if (i != root.scr)
-               {
-                  pid = fork();
-                  if (pid)
-                    {
-                       child_count++;
-                       e_children =
-                           Erealloc(e_children, sizeof(pid_t) * child_count);
-                       e_children[child_count - 1] = pid;
-                    }
-                  else
-                    {
+	     if (i != root.scr)
+	       {
+		  pid = fork();
+		  if (pid)
+		    {
+		       child_count++;
+		       e_children =
+			  Erealloc(e_children, sizeof(pid_t) * child_count);
+		       e_children[child_count - 1] = pid;
+		    }
+		  else
+		    {
 #ifdef SIGSTOP
-                       kill(getpid(), SIGSTOP);
+		       kill(getpid(), SIGSTOP);
 #endif
-                       /* Find the point to concatenate the screen onto */
-                       dispstr = strchr(subdisplay, ':');
-                       if (NULL != dispstr)
-                         {
-                            dispstr = strchr(dispstr, '.');
-                            if (NULL != dispstr)
-                               *dispstr = '\0';
-                         }
-                       Esnprintf(subdisplay + strlen(subdisplay), 10, ".%d", i);
-                       dstr = duplicate(subdisplay);
-                       disp = XOpenDisplay(dstr);
-                       root.scr = i;
-                       /* Terminate the loop as I am the child process... */
-                       break;
-                    }
-               }
-          }
+		       /* Find the point to concatenate the screen onto */
+		       dispstr = strchr(subdisplay, ':');
+		       if (NULL != dispstr)
+			 {
+			    dispstr = strchr(dispstr, '.');
+			    if (NULL != dispstr)
+			       *dispstr = '\0';
+			 }
+		       Esnprintf(subdisplay + strlen(subdisplay), 10, ".%d", i);
+		       dstr = duplicate(subdisplay);
+		       disp = XOpenDisplay(dstr);
+		       root.scr = i;
+		       /* Terminate the loop as I am the child process... */
+		       break;
+		    }
+	       }
+	  }
      }
    /* set up an error handler for then E would normally have fatal X errors */
    XSetErrorHandler((XErrorHandler) EHandleXError);
@@ -289,16 +289,16 @@ SetupX()
    /* Check for the Shape Extension */
    if (!XShapeQueryExtension(disp, &shape_event_base, &shape_error_base))
      {
-        ASSIGN_ALERT(_("X server setup error"), "", "",
-                     _("Quit Enlightenment"));
-        Alert(_
-              ("FATAL ERROR:\n" "\n"
-               "This Xserver does not support the Shape extension.\n"
-               "This is required for Enlightenment to run.\n" "\n"
-               "Your Xserver probably is too old or mis-configured.\n" "\n"
-               "Exiting.\n"));
-        RESET_ALERT;
-        EExit((void *)1);
+	ASSIGN_ALERT(_("X server setup error"), "", "",
+		     _("Quit Enlightenment"));
+	Alert(_
+	      ("FATAL ERROR:\n" "\n"
+	       "This Xserver does not support the Shape extension.\n"
+	       "This is required for Enlightenment to run.\n" "\n"
+	       "Your Xserver probably is too old or mis-configured.\n" "\n"
+	       "Exiting.\n"));
+	RESET_ALERT;
+	EExit((void *)1);
      }
    /* check for the XTEST extension */
 /*
@@ -322,26 +322,26 @@ SetupX()
    id = Imlib_init(disp);
    if (!id)
      {
-        ASSIGN_ALERT(_("Imlib initialisation error"), "", "",
-                     _("Quit Enlightenment"));
-        Alert(_
-              ("FATAL ERROR:\n" "\n"
-               "Enlightenment is unable to initialise Imlib.\n" "\n"
-               "This is unusual. Unable to continue.\n" "Exiting.\n"));
-        RESET_ALERT;
-        EExit((void *)1);
+	ASSIGN_ALERT(_("Imlib initialisation error"), "", "",
+		     _("Quit Enlightenment"));
+	Alert(_
+	      ("FATAL ERROR:\n" "\n"
+	       "Enlightenment is unable to initialise Imlib.\n" "\n"
+	       "This is unusual. Unable to continue.\n" "Exiting.\n"));
+	RESET_ALERT;
+	EExit((void *)1);
      }
    fd = Fnlib_init(id);
    if (!fd)
      {
-        ASSIGN_ALERT(_("X server setup error"), "", "",
-                     _("Quit Enlightenment"));
-        Alert(_
-              ("FATAL ERROR:\n" "\n"
-               "Enlightenment is unable to initialise Fnlib.\n" "\n"
-               "This is unusual. Unable to continue.\n" "Exiting.\n"));
-        RESET_ALERT;
-        EExit((void *)1);
+	ASSIGN_ALERT(_("X server setup error"), "", "",
+		     _("Quit Enlightenment"));
+	Alert(_
+	      ("FATAL ERROR:\n" "\n"
+	       "Enlightenment is unable to initialise Fnlib.\n" "\n"
+	       "This is unusual. Unable to continue.\n" "Exiting.\n"));
+	RESET_ALERT;
+	EExit((void *)1);
      }
    root.win = id->x.root;
    root.vis = Imlib_get_visual(id);
@@ -353,11 +353,11 @@ SetupX()
    /* warn, if necessary about visual problems */
    if (DefaultVisual(disp, root.scr) != root.vis)
      {
-        ImlibInitParams     p;
+	ImlibInitParams     p;
 
-        p.flags = PARAMS_VISUALID;
-        p.visualid = XVisualIDFromVisual(DefaultVisual(disp, root.scr));
-        ird = Imlib_init_with_params(disp, &p);
+	p.flags = PARAMS_VISUALID;
+	p.visualid = XVisualIDFromVisual(DefaultVisual(disp, root.scr));
+	ird = Imlib_init_with_params(disp, &p);
      }
    else
       ird = NULL;
@@ -369,11 +369,11 @@ SetupX()
    /* slect all the root window events to start managing */
    mode.xselect = 1;
    XSelectInput(disp, root.win,
-                ButtonPressMask | ButtonReleaseMask | EnterWindowMask |
-                LeaveWindowMask | ButtonMotionMask | PropertyChangeMask |
-                SubstructureRedirectMask | KeyPressMask | KeyReleaseMask |
-                PointerMotionMask | ResizeRedirectMask |
-                SubstructureNotifyMask);
+		ButtonPressMask | ButtonReleaseMask | EnterWindowMask |
+		LeaveWindowMask | ButtonMotionMask | PropertyChangeMask |
+		SubstructureRedirectMask | KeyPressMask | KeyReleaseMask |
+		PointerMotionMask | ResizeRedirectMask |
+		SubstructureNotifyMask);
    XSync(disp, False);
    mode.xselect = 0;
    /* Init XKB to pick up release of alt modifier */
@@ -383,16 +383,16 @@ SetupX()
    /* warn, if necessary about X version problems */
    if (ProtocolVersion(disp) != 11)
      {
-        ASSIGN_ALERT(_("X server version error"), _("Ignore this error"), "",
-                     _("Quit Enlightenment"));
-        Alert(_
-              ("WARNING:\n"
-               "This is not an X11 Xserver. It in fact talks the X%i protocol.\n"
-               "This may mean Enlightenment will either not function, or\n"
-               "function incorrectly. If it is later than X11, then your\n"
-               "server is one the author of Enlightenment neither have\n"
-               "access to, nor have heard of.\n"), ProtocolVersion(disp));
-        RESET_ALERT;
+	ASSIGN_ALERT(_("X server version error"), _("Ignore this error"), "",
+		     _("Quit Enlightenment"));
+	Alert(_
+	      ("WARNING:\n"
+	       "This is not an X11 Xserver. It in fact talks the X%i protocol.\n"
+	       "This may mean Enlightenment will either not function, or\n"
+	       "function incorrectly. If it is later than X11, then your\n"
+	       "server is one the author of Enlightenment neither have\n"
+	       "access to, nor have heard of.\n"), ProtocolVersion(disp));
+	RESET_ALERT;
      }
    /* now we'll set the locale */
    setlocale(LC_ALL, "");
@@ -419,23 +419,23 @@ SetupX()
       KeyCode             nl, sl;
       int                 i;
       int                 masks[8] = {
-         ShiftMask, LockMask, ControlMask, Mod1Mask, Mod2Mask, Mod3Mask,
-         Mod4Mask, Mod5Mask
+	 ShiftMask, LockMask, ControlMask, Mod1Mask, Mod2Mask, Mod3Mask,
+	 Mod4Mask, Mod5Mask
       };
 
       mod = XGetModifierMapping(disp);
       nl = XKeysymToKeycode(disp, XK_Num_Lock);
       sl = XKeysymToKeycode(disp, XK_Scroll_Lock);
       if ((mod) && (mod->max_keypermod > 0))
-        {
-           for (i = 0; i < (8 * mod->max_keypermod); i++)
-             {
-                if ((nl) && (mod->modifiermap[i] == nl))
-                   numlock_mask = masks[i / mod->max_keypermod];
-                else if ((sl) && (mod->modifiermap[i] == sl))
-                   scrollock_mask = masks[i / mod->max_keypermod];
-             }
-        }
+	{
+	   for (i = 0; i < (8 * mod->max_keypermod); i++)
+	     {
+		if ((nl) && (mod->modifiermap[i] == nl))
+		   numlock_mask = masks[i / mod->max_keypermod];
+		else if ((sl) && (mod->modifiermap[i] == sl))
+		   scrollock_mask = masks[i / mod->max_keypermod];
+	     }
+	}
       mask_mod_combos[0] = 0;
       mask_mod_combos[1] = LockMask;
       mask_mod_combos[2] = numlock_mask;
@@ -446,7 +446,7 @@ SetupX()
       mask_mod_combos[7] = LockMask | numlock_mask | scrollock_mask;
 
       if (mod)
-         XFree(mod);
+	 XFree(mod);
    }
    /* Now we're going to set a bunch of default settings in E - in case we
     * don't ever get to load a config file for some odd reason.
@@ -620,35 +620,35 @@ ChkDir(char *d)
 {
    if (!isdir(d))
      {
-        Alert(_
-              ("The directory %s is apparently not a directory\n"
-               "This is a fatal condition.\n" "Please remove this file\n"), d);
-        EExit((void *)1);
+	Alert(_
+	      ("The directory %s is apparently not a directory\n"
+	       "This is a fatal condition.\n" "Please remove this file\n"), d);
+	EExit((void *)1);
      }
    if (!canexec(d))
      {
-        Alert(_
-              ("Do not have execute access to %s\n"
-               "This is a fatal condition.\n"
-               "Please check the ownership and permissions of this\n"
-               "directory and take steps to rectify this.\n"), d);
-        EExit((void *)1);
+	Alert(_
+	      ("Do not have execute access to %s\n"
+	       "This is a fatal condition.\n"
+	       "Please check the ownership and permissions of this\n"
+	       "directory and take steps to rectify this.\n"), d);
+	EExit((void *)1);
      }
    if (!canread(d))
      {
-        Alert(_
-              ("Do not have read access to %s\n" "This is a fatal condition.\n"
-               "Please check the ownership and permissions of this\n"
-               "directory and take steps to rectify this.\n"), d);
-        EExit((void *)1);
+	Alert(_
+	      ("Do not have read access to %s\n" "This is a fatal condition.\n"
+	       "Please check the ownership and permissions of this\n"
+	       "directory and take steps to rectify this.\n"), d);
+	EExit((void *)1);
      }
    if (!canwrite(d))
      {
-        Alert(_
-              ("Do not have write access to %s\n" "This is a fatal condition.\n"
-               "Please check the ownership and permissions of this\n"
-               "directory and take steps to rectify this.\n"), d);
-        EExit((void *)1);
+	Alert(_
+	      ("Do not have write access to %s\n" "This is a fatal condition.\n"
+	       "Please check the ownership and permissions of this\n"
+	       "directory and take steps to rectify this.\n"), d);
+	EExit((void *)1);
      }
 }
 
@@ -662,19 +662,19 @@ SetupDirs()
    home = homedir(getuid());
    if (home)
      {
-        ChkDir(home);
-        Efree(home);
+	ChkDir(home);
+	Efree(home);
      }
    if (exists(s))
      {
-        if (!isdir(s))
-          {
-             Esnprintf(ss, sizeof(ss), "%s.old", UserEDir());
-             mv(s, ss);
-             md(s);
-          }
-        else
-           ChkDir(UserEDir());
+	if (!isdir(s))
+	  {
+	     Esnprintf(ss, sizeof(ss), "%s.old", UserEDir());
+	     mv(s, ss);
+	     md(s);
+	  }
+	else
+	   ChkDir(UserEDir());
      }
    else
       md(s);
@@ -764,22 +764,22 @@ MakeExtInitWin(void)
    XSync(disp, False);
    if (fork())
      {
-        UngrabX();
-        for (;;)
-          {
-             retval = NULL;
-             XGetWindowProperty(disp, root.win, a, 0, 0x7fffffff, True,
-                                XA_CARDINAL, &aa, &format_ret, &num_ret,
-                                &bytes_after, (unsigned char **)(&retval));
-             XSync(disp, False);
-             if (retval)
-                break;
-          }
-        win = *retval;
-        fflush(stdout);
-        XFree(retval);
+	UngrabX();
+	for (;;)
+	  {
+	     retval = NULL;
+	     XGetWindowProperty(disp, root.win, a, 0, 0x7fffffff, True,
+				XA_CARDINAL, &aa, &format_ret, &num_ret,
+				&bytes_after, (unsigned char **)(&retval));
+	     XSync(disp, False);
+	     if (retval)
+		break;
+	  }
+	win = *retval;
+	fflush(stdout);
+	XFree(retval);
 
-        return win;
+	return win;
      }
    /* on solairs connection stays up - close */
    XSetErrorHandler((XErrorHandler) NULL);
@@ -813,10 +813,10 @@ MakeExtInitWin(void)
    attr.background_pixel = 0;
    attr.save_under = True;
    win =
-       XCreateWindow(d2, root.win, 0, 0, root.w, root.h, 0, root.depth,
-                     InputOutput, root.vis,
-                     CWOverrideRedirect | CWSaveUnder | CWBackingStore |
-                     CWColormap | CWBackPixel | CWBorderPixel, &attr);
+      XCreateWindow(d2, root.win, 0, 0, root.w, root.h, 0, root.depth,
+		    InputOutput, root.vis,
+		    CWOverrideRedirect | CWSaveUnder | CWBackingStore |
+		    CWColormap | CWBackPixel | CWBorderPixel, &attr);
    pmap = ECreatePixmap(d2, win, root.w, root.h, root.depth);
    gcv.subwindow_mode = IncludeInferiors;
    gc = XCreateGC(d2, win, GCSubwindowMode, &gcv);
@@ -828,100 +828,100 @@ MakeExtInitWin(void)
    val = win;
    a = XInternAtom(d2, "ENLIGHTENMENT_RESTART_SCREEN", False);
    XChangeProperty(d2, root.win, a, XA_CARDINAL, 32, PropModeReplace,
-                   (unsigned char *)&val, 1);
+		   (unsigned char *)&val, 1);
    XSelectInput(d2, win, StructureNotifyMask);
    XUngrabServer(d2);
    XSync(d2, False);
 
    if (!imd)
      {
-        i = 0;
-        for (;;)
-          {
-             Cursor              cs = 0;
-             struct timeval      tv;
+	i = 0;
+	for (;;)
+	  {
+	     Cursor              cs = 0;
+	     struct timeval      tv;
 
-             cs = XCreateFontCursor(d2, i);
-             XDefineCursor(d2, win, cs);
-             XSync(d2, False);
-             tv.tv_sec = 0;
-             tv.tv_usec = 50000;
-             select(0, NULL, NULL, NULL, &tv);
-             XFreeCursor(d2, cs);
-             i += 2;
-             if (i >= XC_num_glyphs)
-                i = 0;
-          }
+	     cs = XCreateFontCursor(d2, i);
+	     XDefineCursor(d2, win, cs);
+	     XSync(d2, False);
+	     tv.tv_sec = 0;
+	     tv.tv_usec = 50000;
+	     select(0, NULL, NULL, NULL, &tv);
+	     XFreeCursor(d2, cs);
+	     i += 2;
+	     if (i >= XC_num_glyphs)
+		i = 0;
+	  }
      }
    else
      {
-        Window              w2, ww;
-        char               *f, s[1024];
-        Pixmap              pmap, mask;
-        ImlibImage         *im;
-        struct timeval      tv;
-        int                 dd, x, y;
-        unsigned int        mm;
-        Cursor              cs = 0;
-        XColor              cl;
-        GC                  gc;
-        XGCValues           gcv;
+	Window              w2, ww;
+	char               *f, s[1024];
+	Pixmap              pmap, mask;
+	ImlibImage         *im;
+	struct timeval      tv;
+	int                 dd, x, y;
+	unsigned int        mm;
+	Cursor              cs = 0;
+	XColor              cl;
+	GC                  gc;
+	XGCValues           gcv;
 
-        w2 = XCreateWindow(d2, win, 0, 0, 32, 32, 0, root.depth, InputOutput,
-                           root.vis,
-                           CWOverrideRedirect | CWBackingStore | CWColormap |
-                           CWBackPixel | CWBorderPixel, &attr);
-        pmap = ECreatePixmap(d2, w2, 16, 16, 1);
-        gc = XCreateGC(d2, pmap, 0, &gcv);
-        XSetForeground(d2, gc, 0);
-        XFillRectangle(d2, pmap, gc, 0, 0, 16, 16);
-        mask = ECreatePixmap(d2, w2, 16, 16, 1);
-        gc = XCreateGC(d2, mask, 0, &gcv);
-        XSetForeground(d2, gc, 0);
-        XFillRectangle(d2, mask, gc, 0, 0, 16, 16);
-        cs = XCreatePixmapCursor(d2, pmap, mask, &cl, &cl, 0, 0);
-        XDefineCursor(d2, win, cs);
-        XDefineCursor(d2, w2, cs);
-        i = 1;
-        for (;;)
-          {
+	w2 = XCreateWindow(d2, win, 0, 0, 32, 32, 0, root.depth, InputOutput,
+			   root.vis,
+			   CWOverrideRedirect | CWBackingStore | CWColormap |
+			   CWBackPixel | CWBorderPixel, &attr);
+	pmap = ECreatePixmap(d2, w2, 16, 16, 1);
+	gc = XCreateGC(d2, pmap, 0, &gcv);
+	XSetForeground(d2, gc, 0);
+	XFillRectangle(d2, pmap, gc, 0, 0, 16, 16);
+	mask = ECreatePixmap(d2, w2, 16, 16, 1);
+	gc = XCreateGC(d2, mask, 0, &gcv);
+	XSetForeground(d2, gc, 0);
+	XFillRectangle(d2, mask, gc, 0, 0, 16, 16);
+	cs = XCreatePixmapCursor(d2, pmap, mask, &cl, &cl, 0, 0);
+	XDefineCursor(d2, win, cs);
+	XDefineCursor(d2, w2, cs);
+	i = 1;
+	for (;;)
+	  {
 
-             i++;
-             if (i > 12)
-                i = 1;
+	     i++;
+	     if (i > 12)
+		i = 1;
 
-             Esnprintf(s, sizeof(s), "pix/wait%i.png", i);
+	     Esnprintf(s, sizeof(s), "pix/wait%i.png", i);
 
-             f = FindFile(s);
-             im = NULL;
-             if (f)
-                im = Imlib_load_image(imd, f);
+	     f = FindFile(s);
+	     im = NULL;
+	     if (f)
+		im = Imlib_load_image(imd, f);
 
-             if (f)
-                Efree(f);
+	     if (f)
+		Efree(f);
 
-             if (im)
-               {
-                  Imlib_render(imd, im, im->rgb_width, im->rgb_height);
-                  pmap = Imlib_move_image(imd, im);
-                  mask = Imlib_move_mask(imd, im);
-                  Imlib_destroy_image(imd, im);
-                  EShapeCombineMask(d2, w2, ShapeBounding, 0, 0, mask,
-                                    ShapeSet);
-                  ESetWindowBackgroundPixmap(d2, w2, pmap);
-                  Imlib_free_pixmap(imd, pmap);
-                  XClearWindow(d2, w2);
-                  XQueryPointer(d2, win, &ww, &ww, &dd, &dd, &x, &y, &mm);
-                  EMoveResizeWindow(d2, w2, x - (im->rgb_width / 2),
-                                    y - (im->rgb_height / 2), im->rgb_width,
-                                    im->rgb_height);
-                  EMapWindow(d2, w2);
-               }
-             tv.tv_sec = 0;
-             tv.tv_usec = 50000;
-             select(0, NULL, NULL, NULL, &tv);
-             XSync(d2, False);
-          }
+	     if (im)
+	       {
+		  Imlib_render(imd, im, im->rgb_width, im->rgb_height);
+		  pmap = Imlib_move_image(imd, im);
+		  mask = Imlib_move_mask(imd, im);
+		  Imlib_destroy_image(imd, im);
+		  EShapeCombineMask(d2, w2, ShapeBounding, 0, 0, mask,
+				    ShapeSet);
+		  ESetWindowBackgroundPixmap(d2, w2, pmap);
+		  Imlib_free_pixmap(imd, pmap);
+		  XClearWindow(d2, w2);
+		  XQueryPointer(d2, win, &ww, &ww, &dd, &dd, &x, &y, &mm);
+		  EMoveResizeWindow(d2, w2, x - (im->rgb_width / 2),
+				    y - (im->rgb_height / 2), im->rgb_width,
+				    im->rgb_height);
+		  EMapWindow(d2, w2);
+	       }
+	     tv.tv_sec = 0;
+	     tv.tv_usec = 50000;
+	     select(0, NULL, NULL, NULL, &tv);
+	     XSync(d2, False);
+	  }
      }
 /*    {
  * XEvent              ev;
@@ -947,23 +947,23 @@ SetupUserInitialization(void)
    Esnprintf(file, sizeof(file), "%s/.initialized", UserEDir());
    if (isfile(file))
      {
-        mode.firsttime = 0;
+	mode.firsttime = 0;
      }
    else
      {
-        mode.firsttime = 1;
-        f = fopen(file, "w");
-        fprintf(f, "Congratulations, you have run enlightenment before.\n");
-        fprintf(f, "Removing this file and the *.menu files in this\n");
-        fprintf(f, "directory will cause enlightenment to regenerate them\n");
-        fprintf(f, "and run the documentation browser.\n");
-        fclose(f);
-        if (fork())
-           EDBUG_RETURN_;
-        Esnprintf(file, sizeof(file), "exec %s/e_gen_menu", ENLIGHTENMENT_BIN);
-        execl(usershell(getuid()), usershell(getuid()), "-c", (char *)file,
-              NULL);
-        exit(0);
+	mode.firsttime = 1;
+	f = fopen(file, "w");
+	fprintf(f, "Congratulations, you have run enlightenment before.\n");
+	fprintf(f, "Removing this file and the *.menu files in this\n");
+	fprintf(f, "directory will cause enlightenment to regenerate them\n");
+	fprintf(f, "and run the documentation browser.\n");
+	fclose(f);
+	if (fork())
+	   EDBUG_RETURN_;
+	Esnprintf(file, sizeof(file), "exec %s/e_gen_menu", ENLIGHTENMENT_BIN);
+	execl(usershell(getuid()), usershell(getuid()), "-c", (char *)file,
+	      NULL);
+	exit(0);
 
      }
 

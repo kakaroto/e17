@@ -48,66 +48,66 @@ AddEToFile(char *file)
       EDBUG_RETURN(0);
 
    Esnprintf(tmp, 2048, "%s/estrt_%i",
-             (getenv("TMPDIR") == NULL) ? "/tmp" : getenv("TMPDIR"),
-             time(NULL));
+	     (getenv("TMPDIR") == NULL) ? "/tmp" : getenv("TMPDIR"),
+	     time(NULL));
    f1 = fopen(file, "r");
    if (!f1)
       EDBUG_RETURN(0);
    f2 = fopen(tmp, "w");
    if (!f2)
      {
-        fclose(f1);
-        EDBUG_RETURN(0);
+	fclose(f1);
+	EDBUG_RETURN(0);
      }
    while (fgets(s, 2048, f1))
      {
-        s1 = strstr(s, "enlightenment");
-        if (s1)
-          {
-             s2 = strstr(s, "#");
-             if (((!s2) || (s1 < s2)) && (!foundwm))
-                hase = 1;
-          }
-        for (i = 0; i < wmnum; i++)
-          {
-             s1 = strstr(s, wms[i]);
-             if (s1)
-               {
-                  s2 = strstr(s, "#");
-                  if ((!s2) || (s1 < s2))
-                    {
-                       fprintf(f2, "#%s", s);
-                       fprintf(f2,
-                               "\n# Enlightenment inserted Execution string here\n");
-                       fprintf(f2, "exec %s/enlightenment\n\n",
-                               ENLIGHTENMENT_BIN);
-                       foundwm = 1;
-                       i = wmnum + 1;
-                    }
-               }
-          }
-        if (i <= wmnum)
-           fprintf(f2, "%s", s);
+	s1 = strstr(s, "enlightenment");
+	if (s1)
+	  {
+	     s2 = strstr(s, "#");
+	     if (((!s2) || (s1 < s2)) && (!foundwm))
+		hase = 1;
+	  }
+	for (i = 0; i < wmnum; i++)
+	  {
+	     s1 = strstr(s, wms[i]);
+	     if (s1)
+	       {
+		  s2 = strstr(s, "#");
+		  if ((!s2) || (s1 < s2))
+		    {
+		       fprintf(f2, "#%s", s);
+		       fprintf(f2,
+			       "\n# Enlightenment inserted Execution string here\n");
+		       fprintf(f2, "exec %s/enlightenment\n\n",
+			       ENLIGHTENMENT_BIN);
+		       foundwm = 1;
+		       i = wmnum + 1;
+		    }
+	       }
+	  }
+	if (i <= wmnum)
+	   fprintf(f2, "%s", s);
      }
    fclose(f1);
    fclose(f2);
    if (!foundwm)
      {
-        f1 = fopen(file, "r");
-        if (!f1)
-           EDBUG_RETURN(0);
-        f2 = fopen(tmp, "w");
-        if (!f2)
-          {
-             fclose(f1);
-             EDBUG_RETURN(0);
-          }
-        fprintf(f2, "\n# Enlightenment inserted Execution string here\n");
-        fprintf(f2, "exec %s/enlightenment\n\n", ENLIGHTENMENT_BIN);
-        while (fgets(s, 2048, f1))
-           fprintf(f2, "%s", s);
-        fclose(f1);
-        fclose(f2);
+	f1 = fopen(file, "r");
+	if (!f1)
+	   EDBUG_RETURN(0);
+	f2 = fopen(tmp, "w");
+	if (!f2)
+	  {
+	     fclose(f1);
+	     EDBUG_RETURN(0);
+	  }
+	fprintf(f2, "\n# Enlightenment inserted Execution string here\n");
+	fprintf(f2, "exec %s/enlightenment\n\n", ENLIGHTENMENT_BIN);
+	while (fgets(s, 2048, f1))
+	   fprintf(f2, "%s", s);
+	fclose(f1);
+	fclose(f2);
      }
    if (!hase)
       cp(tmp, file);
@@ -150,12 +150,12 @@ AddE()
    val |= AddEToFile(s);
    if (!val)
      {
-        Esnprintf(s, 1024, "%s/.xsession", h);
-        CreateEFile(s);
-        Esnprintf(s, 1024, "%s/.xinitrc", h);
-        CreateEFile(s);
-        Esnprintf(s, 1024, "%s/.Xclients", h);
-        CreateEFile(s);
+	Esnprintf(s, 1024, "%s/.xsession", h);
+	CreateEFile(s);
+	Esnprintf(s, 1024, "%s/.xinitrc", h);
+	CreateEFile(s);
+	Esnprintf(s, 1024, "%s/.Xclients", h);
+	CreateEFile(s);
      }
    if (h)
       Efree(h);
@@ -168,7 +168,7 @@ CreateStartupDisplay(char start)
 {
    static Window       w1, w2, win1, win2, b1, b2;
    static Background  *bg = NULL;
-   static Background  *bg_sideways = NULL;      /* currently used to determine if the startup screen should slide sideways */
+   static Background  *bg_sideways = NULL;	/* currently used to determine if the startup screen should slide sideways */
    static ImageClass  *ic = NULL;
    char                pq;
 
@@ -177,117 +177,117 @@ CreateStartupDisplay(char start)
       EDBUG_RETURN_;
    if (start)
      {
-        bg_sideways =
-            (Background *) FindItem("STARTUP_BACKGROUND_SIDEWAYS", 0,
-                                    LIST_FINDBY_NAME, LIST_TYPE_BACKGROUND);
-        ic = (ImageClass *) FindItem("STARTUP_BAR", 0, LIST_FINDBY_NAME,
-                                     LIST_TYPE_ICLASS);
-        if (!ic)
-           ic = (ImageClass *) FindItem("DESKTOP_DRAGBUTTON_HORIZ", 0,
-                                        LIST_FINDBY_NAME, LIST_TYPE_ICLASS);
-        bg = (Background *) FindItem("STARTUP_BACKGROUND", 0, LIST_FINDBY_NAME,
-                                     LIST_TYPE_BACKGROUND);
-        if ((!ic) || (!bg))
-           EDBUG_RETURN_;
+	bg_sideways =
+	   (Background *) FindItem("STARTUP_BACKGROUND_SIDEWAYS", 0,
+				   LIST_FINDBY_NAME, LIST_TYPE_BACKGROUND);
+	ic = (ImageClass *) FindItem("STARTUP_BAR", 0, LIST_FINDBY_NAME,
+				     LIST_TYPE_ICLASS);
+	if (!ic)
+	   ic = (ImageClass *) FindItem("DESKTOP_DRAGBUTTON_HORIZ", 0,
+					LIST_FINDBY_NAME, LIST_TYPE_ICLASS);
+	bg = (Background *) FindItem("STARTUP_BACKGROUND", 0, LIST_FINDBY_NAME,
+				     LIST_TYPE_BACKGROUND);
+	if ((!ic) || (!bg))
+	   EDBUG_RETURN_;
 
-        if (bg_sideways)
-          {
-             w1 = ECreateWindow(root.win, (root.w / 2), 0, root.w, root.h, 1);
-             w2 = ECreateWindow(root.win, -(root.w / 2), 0, root.w, root.h, 1);
-             win1 = ECreateWindow(w1, -(root.w / 2), 0, root.w, root.h, 0);
-             win2 = ECreateWindow(w2, (root.w / 2), 0, root.w, root.h, 0);
-          }
-        else
-          {
-             w1 = ECreateWindow(root.win, 0, -(root.h / 2), root.w, root.h, 1);
-             w2 = ECreateWindow(root.win, 0, (root.h / 2), root.w, root.h, 1);
-             win1 = ECreateWindow(w1, 0, (root.h / 2), root.w, root.h, 0);
-             win2 = ECreateWindow(w2, 0, -(root.h / 2), root.w, root.h, 0);
-          }
+	if (bg_sideways)
+	  {
+	     w1 = ECreateWindow(root.win, (root.w / 2), 0, root.w, root.h, 1);
+	     w2 = ECreateWindow(root.win, -(root.w / 2), 0, root.w, root.h, 1);
+	     win1 = ECreateWindow(w1, -(root.w / 2), 0, root.w, root.h, 0);
+	     win2 = ECreateWindow(w2, (root.w / 2), 0, root.w, root.h, 0);
+	  }
+	else
+	  {
+	     w1 = ECreateWindow(root.win, 0, -(root.h / 2), root.w, root.h, 1);
+	     w2 = ECreateWindow(root.win, 0, (root.h / 2), root.w, root.h, 1);
+	     win1 = ECreateWindow(w1, 0, (root.h / 2), root.w, root.h, 0);
+	     win2 = ECreateWindow(w2, 0, -(root.h / 2), root.w, root.h, 0);
+	  }
 
-        EMapWindow(disp, win1);
-        EMapWindow(disp, win2);
+	EMapWindow(disp, win1);
+	EMapWindow(disp, win2);
 
-        b1 = ECreateWindow(w1, 0, root.h - desks.dragbar_width, root.w,
-                           desks.dragbar_width, 0);
-        b2 = ECreateWindow(w2, 0, 0, root.w, desks.dragbar_width, 0);
-        EMapRaised(disp, b1);
-        EMapRaised(disp, b2);
+	b1 = ECreateWindow(w1, 0, root.h - desks.dragbar_width, root.w,
+			   desks.dragbar_width, 0);
+	b2 = ECreateWindow(w2, 0, 0, root.w, desks.dragbar_width, 0);
+	EMapRaised(disp, b1);
+	EMapRaised(disp, b2);
 
-        pq = queue_up;
-        queue_up = 0;
-        IclassApply(ic, b1, root.w, desks.dragbar_width, 0, 0, 0, 0);
-        IclassApply(ic, b2, root.w, desks.dragbar_width, 0, 0, 0, 0);
-        queue_up = pq;
-        SetBackgroundTo(id, win1, bg, 1);
-        SetBackgroundTo(id, win2, bg, 1);
-        if (bg->pmap)
-           Imlib_free_pixmap(id, bg->pmap);
-        bg->pmap = 0;
-        init_win1 = w1;
-        init_win2 = w2;
-        StackDesktops();
-        EMapWindow(disp, w1);
-        EMapWindow(disp, w2);
+	pq = queue_up;
+	queue_up = 0;
+	IclassApply(ic, b1, root.w, desks.dragbar_width, 0, 0, 0, 0);
+	IclassApply(ic, b2, root.w, desks.dragbar_width, 0, 0, 0, 0);
+	queue_up = pq;
+	SetBackgroundTo(id, win1, bg, 1);
+	SetBackgroundTo(id, win2, bg, 1);
+	if (bg->pmap)
+	   Imlib_free_pixmap(id, bg->pmap);
+	bg->pmap = 0;
+	init_win1 = w1;
+	init_win2 = w2;
+	StackDesktops();
+	EMapWindow(disp, w1);
+	EMapWindow(disp, w2);
      }
    else
      {
-        int                 k, spd, x, y, xOffset, yOffset, ty, fy;
-        int                 min, speed;
+	int                 k, spd, x, y, xOffset, yOffset, ty, fy;
+	int                 min, speed;
 
-        /* we have this many so that we save on lines o code - eAndroid */
-        struct timeval      timev1, timev2;
-        int                 dsec, dusec;
-        double              tm;
+	/* we have this many so that we save on lines o code - eAndroid */
+	struct timeval      timev1, timev2;
+	int                 dsec, dusec;
+	double              tm;
 
-        if ((!ic) || (!bg))
-           EDBUG_RETURN_;
+	if ((!ic) || (!bg))
+	   EDBUG_RETURN_;
 
-        speed = mode.slidespeedcleanup / 2;
-        spd = 16;
-        min = 2;
-        fy = 0;
+	speed = mode.slidespeedcleanup / 2;
+	spd = 16;
+	min = 2;
+	fy = 0;
 
-        for (k = 0; k <= 1024; k += spd)
-          {
-             if (bg_sideways)
-               {                /* so we can have two different slide methods */
-                  ty = (root.w / 2);
-                  xOffset = ((fy * (1024 - k)) + (ty * k)) >> 10;
-                  x = ty;
-                  yOffset = 0;
-                  y = 0;
-               }
-             else
-               {
-                  ty = (root.h / 2);
-                  xOffset = 0;
-                  x = 0;
-                  yOffset = ((fy * (1024 - k)) + (ty * k)) >> 10;
-                  y = ty;
-               }
-             gettimeofday(&timev1, NULL);
-             EMoveWindow(disp, w1, x + xOffset, -y - yOffset);
-             EMoveWindow(disp, w2, -x - xOffset, y + yOffset);
-             XSync(disp, False);
-             gettimeofday(&timev2, NULL);
-             dsec = timev2.tv_sec - timev1.tv_sec;
-             dusec = timev2.tv_usec - timev1.tv_usec;
-             if (dusec < 0)
-               {
-                  dsec--;
-                  dusec += 1000000;
-               }
-             tm = (double)dsec + (((double)dusec) / 1000000);
-             spd = (int)((double)speed * tm);
-             if (spd < min)
-                spd = min;
-          }
+	for (k = 0; k <= 1024; k += spd)
+	  {
+	     if (bg_sideways)
+	       {		/* so we can have two different slide methods */
+		  ty = (root.w / 2);
+		  xOffset = ((fy * (1024 - k)) + (ty * k)) >> 10;
+		  x = ty;
+		  yOffset = 0;
+		  y = 0;
+	       }
+	     else
+	       {
+		  ty = (root.h / 2);
+		  xOffset = 0;
+		  x = 0;
+		  yOffset = ((fy * (1024 - k)) + (ty * k)) >> 10;
+		  y = ty;
+	       }
+	     gettimeofday(&timev1, NULL);
+	     EMoveWindow(disp, w1, x + xOffset, -y - yOffset);
+	     EMoveWindow(disp, w2, -x - xOffset, y + yOffset);
+	     XSync(disp, False);
+	     gettimeofday(&timev2, NULL);
+	     dsec = timev2.tv_sec - timev1.tv_sec;
+	     dusec = timev2.tv_usec - timev1.tv_usec;
+	     if (dusec < 0)
+	       {
+		  dsec--;
+		  dusec += 1000000;
+	       }
+	     tm = (double)dsec + (((double)dusec) / 1000000);
+	     spd = (int)((double)speed * tm);
+	     if (spd < min)
+		spd = min;
+	  }
 
-        EDestroyWindow(disp, w1);
-        EDestroyWindow(disp, w2);
-        init_win1 = 0;
-        init_win2 = 0;
+	EDestroyWindow(disp, w1);
+	EDestroyWindow(disp, w2);
+	init_win1 = 0;
+	init_win2 = 0;
      }
    EDBUG_RETURN_;
 }

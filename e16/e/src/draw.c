@@ -45,196 +45,196 @@ HandleDrawQueue()
    /* end of the draw list array if there are no previous entries for that */
    /* draw type and that window in the array */
    while ((dq =
-           (DrawQueue *) RemoveItem(NULL, 0, LIST_FINDBY_NONE, LIST_TYPE_DRAW)))
+	   (DrawQueue *) RemoveItem(NULL, 0, LIST_FINDBY_NONE, LIST_TYPE_DRAW)))
      {
-        already = 0;
-        if (dq->shape_propagate)
-          {
-             for (i = 0; i < num; i++)
-               {
-                  if ((lst[i]->win == dq->win) && (lst[i]->shape_propagate))
-                    {
-                       already = 1;
-                       i = num;
-                    }
-               }
-          }
-        else if (dq->text)
-          {
-             for (i = 0; i < num; i++)
-               {
-                  if ((lst[i]->win == dq->win) && (lst[i]->text))
-                    {
-                       already = 1;
-                       i = num;
-                    }
-               }
-          }
-        else if (dq->iclass)
-          {
-             for (i = 0; i < num; i++)
-               {
-                  if ((lst[i]->win == dq->win) && (!lst[i]->shape_propagate)
-                      && (!lst[i]->text))
-                    {
-                       already = 1;
-                       i = num;
-                    }
-               }
-          }
-        else if (dq->pager)
-          {
-             for (i = 0; i < num; i++)
-               {
-                  if ((lst[i]->win == dq->win) && (lst[i]->pager))
-                    {
-                       already = 1;
-                       i = num;
-                    }
-               }
-          }
-        else if (dq->d)
-          {
-             for (i = 0; i < num; i++)
-               {
-                  if ((lst[i]->d == dq->d) && (dq->d->item) &&
-                      /*(dq->d->item == dq->di) && */ (lst[i]->di == dq->di))
-                    {
-                       if (dq->x < lst[i]->x)
-                         {
-                            lst[i]->w += (lst[i]->x - dq->x);
-                            lst[i]->x = dq->x;
-                         }
-                       if ((lst[i]->x + lst[i]->w) < (dq->x + dq->w))
-                          lst[i]->w +=
-                              (dq->x + dq->w) - (lst[i]->x + lst[i]->w);
-                       if (dq->y < lst[i]->y)
-                         {
-                            lst[i]->h += (lst[i]->y - dq->y);
-                            lst[i]->y = dq->y;
-                         }
-                       if ((lst[i]->y + lst[i]->h) < (dq->y + dq->h))
-                          lst[i]->h +=
-                              (dq->y + dq->h) - (lst[i]->y + lst[i]->h);
-                       already = 1;
-                       i = num;
-                    }
-               }
-          }
-        else if (dq->redraw_pager)
-          {
-             for (i = 0; i < num; i++)
-               {
-                  if ((lst[i]->win == dq->win) && (lst[i]->redraw_pager))
-                    {
-                       switch (lst[i]->newbg)
-                         {
-                           case 0:
-                              if (dq->newbg == 1)
-                                 lst[i]->newbg = 1;
-                              else if (dq->newbg == 2)
-                                 lst[i]->newbg = 1;
-                              break;
-                           case 1:
-                              break;
-                           case 2:
-                              if (dq->newbg == 1)
-                                 lst[i]->newbg = 1;
-                              else if (dq->newbg == 0)
-                                 lst[i]->newbg = 1;
-                              break;
-                           case 3:
-                              if (dq->newbg == 1)
-                                 lst[i]->newbg = 1;
-                              else if (dq->newbg == 0)
-                                 lst[i]->newbg = 0;
-                              else if (dq->newbg == 2)
-                                 lst[i]->newbg = 2;
-                              break;
-                           default:
-                              break;
-                         }
-                       already = 1;
-                       i = num;
-                    }
-               }
-          }
-        if (already)
-          {
-             if (dq)
-               {
-                  if (dq->iclass)
-                     dq->iclass->ref_count--;
-                  if (dq->tclass)
-                     dq->tclass->ref_count--;
-                  if (dq->text)
-                     Efree(dq->text);
-                  Efree(dq);
-               }
-          }
-        else
-          {
-             num++;
-             lst = Erealloc(lst, num * sizeof(DrawQueue *));
-             lst[num - 1] = dq;
-          }
+	already = 0;
+	if (dq->shape_propagate)
+	  {
+	     for (i = 0; i < num; i++)
+	       {
+		  if ((lst[i]->win == dq->win) && (lst[i]->shape_propagate))
+		    {
+		       already = 1;
+		       i = num;
+		    }
+	       }
+	  }
+	else if (dq->text)
+	  {
+	     for (i = 0; i < num; i++)
+	       {
+		  if ((lst[i]->win == dq->win) && (lst[i]->text))
+		    {
+		       already = 1;
+		       i = num;
+		    }
+	       }
+	  }
+	else if (dq->iclass)
+	  {
+	     for (i = 0; i < num; i++)
+	       {
+		  if ((lst[i]->win == dq->win) && (!lst[i]->shape_propagate)
+		      && (!lst[i]->text))
+		    {
+		       already = 1;
+		       i = num;
+		    }
+	       }
+	  }
+	else if (dq->pager)
+	  {
+	     for (i = 0; i < num; i++)
+	       {
+		  if ((lst[i]->win == dq->win) && (lst[i]->pager))
+		    {
+		       already = 1;
+		       i = num;
+		    }
+	       }
+	  }
+	else if (dq->d)
+	  {
+	     for (i = 0; i < num; i++)
+	       {
+		  if ((lst[i]->d == dq->d) && (dq->d->item) &&
+		      /*(dq->d->item == dq->di) && */ (lst[i]->di == dq->di))
+		    {
+		       if (dq->x < lst[i]->x)
+			 {
+			    lst[i]->w += (lst[i]->x - dq->x);
+			    lst[i]->x = dq->x;
+			 }
+		       if ((lst[i]->x + lst[i]->w) < (dq->x + dq->w))
+			  lst[i]->w +=
+			     (dq->x + dq->w) - (lst[i]->x + lst[i]->w);
+		       if (dq->y < lst[i]->y)
+			 {
+			    lst[i]->h += (lst[i]->y - dq->y);
+			    lst[i]->y = dq->y;
+			 }
+		       if ((lst[i]->y + lst[i]->h) < (dq->y + dq->h))
+			  lst[i]->h +=
+			     (dq->y + dq->h) - (lst[i]->y + lst[i]->h);
+		       already = 1;
+		       i = num;
+		    }
+	       }
+	  }
+	else if (dq->redraw_pager)
+	  {
+	     for (i = 0; i < num; i++)
+	       {
+		  if ((lst[i]->win == dq->win) && (lst[i]->redraw_pager))
+		    {
+		       switch (lst[i]->newbg)
+			 {
+			 case 0:
+			    if (dq->newbg == 1)
+			       lst[i]->newbg = 1;
+			    else if (dq->newbg == 2)
+			       lst[i]->newbg = 1;
+			    break;
+			 case 1:
+			    break;
+			 case 2:
+			    if (dq->newbg == 1)
+			       lst[i]->newbg = 1;
+			    else if (dq->newbg == 0)
+			       lst[i]->newbg = 1;
+			    break;
+			 case 3:
+			    if (dq->newbg == 1)
+			       lst[i]->newbg = 1;
+			    else if (dq->newbg == 0)
+			       lst[i]->newbg = 0;
+			    else if (dq->newbg == 2)
+			       lst[i]->newbg = 2;
+			    break;
+			 default:
+			    break;
+			 }
+		       already = 1;
+		       i = num;
+		    }
+	       }
+	  }
+	if (already)
+	  {
+	     if (dq)
+	       {
+		  if (dq->iclass)
+		     dq->iclass->ref_count--;
+		  if (dq->tclass)
+		     dq->tclass->ref_count--;
+		  if (dq->text)
+		     Efree(dq->text);
+		  Efree(dq);
+	       }
+	  }
+	else
+	  {
+	     num++;
+	     lst = Erealloc(lst, num * sizeof(DrawQueue *));
+	     lst[num - 1] = dq;
+	  }
      }
    /* go thru the list in chronological order (ie reverse) and do the draws */
    if (lst)
      {
-        for (i = num - 1; i >= 0; i--)
-          {
-             if (lst[i]->shape_propagate)
-               {
-                  PropagateShapes(lst[i]->win);
+	for (i = num - 1; i >= 0; i--)
+	  {
+	     if (lst[i]->shape_propagate)
+	       {
+		  PropagateShapes(lst[i]->win);
 /*            printf("S %x\n", lst[i]->win); */
-               }
-             else if (lst[i]->text)
-               {
-                  TclassApply(lst[i]->iclass, lst[i]->win, lst[i]->w, lst[i]->h,
-                              lst[i]->active, lst[i]->sticky, lst[i]->state,
-                              lst[i]->expose, lst[i]->tclass, lst[i]->text);
-                  Efree(lst[i]->text);
+	       }
+	     else if (lst[i]->text)
+	       {
+		  TclassApply(lst[i]->iclass, lst[i]->win, lst[i]->w, lst[i]->h,
+			      lst[i]->active, lst[i]->sticky, lst[i]->state,
+			      lst[i]->expose, lst[i]->tclass, lst[i]->text);
+		  Efree(lst[i]->text);
 /*            printf("T %x\n", lst[i]->win); */
-               }
-             else if (lst[i]->iclass)
-               {
-                  IclassApply(lst[i]->iclass, lst[i]->win, lst[i]->w, lst[i]->h,
-                              lst[i]->active, lst[i]->sticky, lst[i]->state, 0);
+	       }
+	     else if (lst[i]->iclass)
+	       {
+		  IclassApply(lst[i]->iclass, lst[i]->win, lst[i]->w, lst[i]->h,
+			      lst[i]->active, lst[i]->sticky, lst[i]->state, 0);
 /*            printf("I %x\n", lst[i]->win); */
-               }
-             else if (lst[i]->pager)
-               {
-                  if (FindItem
-                      ((char *)(lst[i]->pager), 0, LIST_FINDBY_POINTER,
-                       LIST_TYPE_PAGER))
-                     PagerForceUpdate(lst[i]->pager);
+	       }
+	     else if (lst[i]->pager)
+	       {
+		  if (FindItem
+		      ((char *)(lst[i]->pager), 0, LIST_FINDBY_POINTER,
+		       LIST_TYPE_PAGER))
+		     PagerForceUpdate(lst[i]->pager);
 /*            printf("P %x\n", lst[i]->win); */
-               }
-             else if (lst[i]->d)
-               {
-                  if (FindItem
-                      ((char *)(lst[i]->d), 0, LIST_FINDBY_POINTER,
-                       LIST_TYPE_DIALOG))
-                     DialogDrawItems(lst[i]->d, lst[i]->di, lst[i]->x,
-                                     lst[i]->y, lst[i]->w, lst[i]->h);
+	       }
+	     else if (lst[i]->d)
+	       {
+		  if (FindItem
+		      ((char *)(lst[i]->d), 0, LIST_FINDBY_POINTER,
+		       LIST_TYPE_DIALOG))
+		     DialogDrawItems(lst[i]->d, lst[i]->di, lst[i]->x,
+				     lst[i]->y, lst[i]->w, lst[i]->h);
 /*            printf("D %x\n", lst[i]->d->ewin->client.win); */
-               }
-             else if (lst[i]->redraw_pager)
-               {
-                  if (FindItem
-                      ((char *)(lst[i]->redraw_pager), 0, LIST_FINDBY_POINTER,
-                       LIST_TYPE_PAGER))
-                     PagerRedraw(lst[i]->redraw_pager, lst[i]->newbg);
+	       }
+	     else if (lst[i]->redraw_pager)
+	       {
+		  if (FindItem
+		      ((char *)(lst[i]->redraw_pager), 0, LIST_FINDBY_POINTER,
+		       LIST_TYPE_PAGER))
+		     PagerRedraw(lst[i]->redraw_pager, lst[i]->newbg);
 /*            printf("p %x\n", lst[i]->win); */
-               }
-             if (lst[i]->iclass)
-                lst[i]->iclass->ref_count--;
-             if (lst[i]->tclass)
-                lst[i]->tclass->ref_count--;
-             Efree(lst[i]);
-          }
-        Efree(lst);
+	       }
+	     if (lst[i]->iclass)
+		lst[i]->iclass->ref_count--;
+	     if (lst[i]->tclass)
+		lst[i]->tclass->ref_count--;
+	     Efree(lst[i]);
+	  }
+	Efree(lst);
      }
    queue_up = p_queue;
    EDBUG_RETURN_;
@@ -300,64 +300,64 @@ ECreatePixImg(Window win, int w, int h)
    pi->shminfo = Emalloc(sizeof(XShmSegmentInfo));
    if (!pi->shminfo)
      {
-        Efree(pi);
-        return NULL;
+	Efree(pi);
+	return NULL;
      }
    pi->xim =
-       XShmCreateImage(disp, root.vis, root.depth, ZPixmap, NULL, pi->shminfo,
-                       w, h);
+      XShmCreateImage(disp, root.vis, root.depth, ZPixmap, NULL, pi->shminfo,
+		      w, h);
    if (!pi->xim)
      {
-        Efree(pi->shminfo);
-        Efree(pi);
-        return NULL;
+	Efree(pi->shminfo);
+	Efree(pi);
+	return NULL;
      }
    pi->shminfo->shmid =
-       shmget(IPC_PRIVATE, pi->xim->bytes_per_line * pi->xim->height,
-              IPC_CREAT | 0666);
+      shmget(IPC_PRIVATE, pi->xim->bytes_per_line * pi->xim->height,
+	     IPC_CREAT | 0666);
    if (pi->shminfo->shmid < 0)
      {
-        XDestroyImage(pi->xim);
-        Efree(pi->shminfo);
-        Efree(pi);
-        return NULL;
+	XDestroyImage(pi->xim);
+	Efree(pi->shminfo);
+	Efree(pi);
+	return NULL;
      }
    pi->shminfo->shmaddr = pi->xim->data = shmat(pi->shminfo->shmid, 0, 0);
    if (!pi->shminfo->shmaddr)
      {
-        shmctl(pi->shminfo->shmid, IPC_RMID, 0);
-        XDestroyImage(pi->xim);
-        Efree(pi->shminfo);
-        Efree(pi);
-        return NULL;
+	shmctl(pi->shminfo->shmid, IPC_RMID, 0);
+	XDestroyImage(pi->xim);
+	Efree(pi->shminfo);
+	Efree(pi);
+	return NULL;
      }
    pi->shminfo->readOnly = False;
    XShmAttach(disp, pi->shminfo);
    pi->pmap =
-       XShmCreatePixmap(disp, win, pi->shminfo->shmaddr, pi->shminfo, w, h,
-                        root.depth);
+      XShmCreatePixmap(disp, win, pi->shminfo->shmaddr, pi->shminfo, w, h,
+		       root.depth);
    if (!pi->pmap)
      {
-        XShmDetach(disp, pi->shminfo);
-        shmdt(pi->shminfo->shmaddr);
-        shmctl(pi->shminfo->shmid, IPC_RMID, 0);
-        XDestroyImage(pi->xim);
-        Efree(pi->shminfo);
-        Efree(pi);
-        return NULL;
+	XShmDetach(disp, pi->shminfo);
+	shmdt(pi->shminfo->shmaddr);
+	shmctl(pi->shminfo->shmid, IPC_RMID, 0);
+	XDestroyImage(pi->xim);
+	Efree(pi->shminfo);
+	Efree(pi);
+	return NULL;
      }
    gcv.subwindow_mode = IncludeInferiors;
    pi->gc = XCreateGC(disp, win, GCSubwindowMode, &gcv);
    if (!pi->gc)
      {
-        XShmDetach(disp, pi->shminfo);
-        shmdt(pi->shminfo->shmaddr);
-        shmctl(pi->shminfo->shmid, IPC_RMID, 0);
-        XDestroyImage(pi->xim);
-        Efree(pi->shminfo);
-        XFreePixmap(disp, pi->pmap);
-        Efree(pi);
-        return NULL;
+	XShmDetach(disp, pi->shminfo);
+	shmdt(pi->shminfo->shmaddr);
+	shmctl(pi->shminfo->shmid, IPC_RMID, 0);
+	XDestroyImage(pi->xim);
+	Efree(pi->shminfo);
+	XFreePixmap(disp, pi->pmap);
+	Efree(pi);
+	return NULL;
      }
    return pi;
 }
@@ -390,39 +390,39 @@ EBlendRemoveShape(EWin * ewin, Pixmap pmap, int x, int y)
 
    if (!ewin)
      {
-        if (rl)
-           XFree(rl);
-        if (gc)
-           XFreeGC(disp, gc);
-        if (gcm)
-           XFreeGC(disp, gcm);
-        if (mask)
-           EFreePixmap(disp, mask);
-        mask = 0;
-        gc = 0;
-        gcm = 0;
-        rl = NULL;
-        return;
+	if (rl)
+	   XFree(rl);
+	if (gc)
+	   XFreeGC(disp, gc);
+	if (gcm)
+	   XFreeGC(disp, gcm);
+	if (mask)
+	   EFreePixmap(disp, mask);
+	mask = 0;
+	gc = 0;
+	gcm = 0;
+	rl = NULL;
+	return;
      }
 
    w = ewin->w;
    h = ewin->h;
    if (!rl)
      {
-        rl = EShapeGetRectangles(disp, ewin->win, ShapeBounding, &rn, &ord);
-        if (rn < 1)
-           return;
-        else if (rn == 1)
-          {
-             if ((rl[0].x == 0) && (rl[0].y == 0) && (rl[0].width == ewin->w)
-                 && (rl[0].height == ewin->h))
-               {
-                  if (rl)
-                     XFree(rl);
-                  rl = NULL;
-                  return;
-               }
-          }
+	rl = EShapeGetRectangles(disp, ewin->win, ShapeBounding, &rn, &ord);
+	if (rn < 1)
+	   return;
+	else if (rn == 1)
+	  {
+	     if ((rl[0].x == 0) && (rl[0].y == 0) && (rl[0].width == ewin->w)
+		 && (rl[0].height == ewin->h))
+	       {
+		  if (rl)
+		     XFree(rl);
+		  rl = NULL;
+		  return;
+	       }
+	  }
      }
    if (!mask)
       mask = ECreatePixmap(disp, root.win, w, h, 1);
@@ -430,15 +430,15 @@ EBlendRemoveShape(EWin * ewin, Pixmap pmap, int x, int y)
       gcm = XCreateGC(disp, mask, 0, &gcv);
    if (!gc)
      {
-        gcv.subwindow_mode = IncludeInferiors;
-        gc = XCreateGC(disp, root.win, GCSubwindowMode, &gcv);
-        XSetForeground(disp, gcm, 1);
-        XFillRectangle(disp, mask, gcm, 0, 0, w, h);
-        XSetForeground(disp, gcm, 0);
-        for (i = 0; i < rn; i++)
-           XFillRectangle(disp, mask, gcm, rl[i].x, rl[i].y, rl[i].width,
-                          rl[i].height);
-        XSetClipMask(disp, gc, mask);
+	gcv.subwindow_mode = IncludeInferiors;
+	gc = XCreateGC(disp, root.win, GCSubwindowMode, &gcv);
+	XSetForeground(disp, gcm, 1);
+	XFillRectangle(disp, mask, gcm, 0, 0, w, h);
+	XSetForeground(disp, gcm, 0);
+	for (i = 0; i < rn; i++)
+	   XFillRectangle(disp, mask, gcm, rl[i].x, rl[i].y, rl[i].width,
+			  rl[i].height);
+	XSetClipMask(disp, gc, mask);
      }
    XSetClipOrigin(disp, gc, x, y);
    XCopyArea(disp, pmap, root.win, gc, x, y, w, h, x, y);
@@ -446,7 +446,7 @@ EBlendRemoveShape(EWin * ewin, Pixmap pmap, int x, int y)
 
 void
 EBlendPixImg(EWin * ewin, PixImg * s1, PixImg * s2, PixImg * dst, int x, int y,
-             int w, int h)
+	     int w, int h)
 {
    int                 ox, oy;
    int                 i, j;
@@ -457,26 +457,26 @@ EBlendPixImg(EWin * ewin, PixImg * s1, PixImg * s2, PixImg * dst, int x, int y,
 
    if (!s1)
      {
-        if (gc)
-           XFreeGC(disp, gc);
-        if (rl > (XRectangle *) 1)
-           XFree(rl);
-        gc = 0;
-        rl = NULL;
-        return;
+	if (gc)
+	   XFreeGC(disp, gc);
+	if (rl > (XRectangle *) 1)
+	   XFree(rl);
+	gc = 0;
+	rl = NULL;
+	return;
      }
    if (!gc)
      {
-        gcv.subwindow_mode = IncludeInferiors;
-        gc = XCreateGC(disp, root.win, GCSubwindowMode, &gcv);
+	gcv.subwindow_mode = IncludeInferiors;
+	gc = XCreateGC(disp, root.win, GCSubwindowMode, &gcv);
      }
    if (!rl)
      {
-        rl = EShapeGetRectangles(disp, ewin->win, ShapeBounding, &rn, &ord);
-        if (rl)
-           XSetClipRectangles(disp, gc, x, y, rl, rn, ord);
-        if (!rl)
-           rl = (XRectangle *) 1;
+	rl = EShapeGetRectangles(disp, ewin->win, ShapeBounding, &rn, &ord);
+	if (rl)
+	   XSetClipRectangles(disp, gc, x, y, rl, rn, ord);
+	if (!rl)
+	   rl = (XRectangle *) 1;
      }
    else
       XSetClipOrigin(disp, gc, x, y);
@@ -488,389 +488,384 @@ EBlendPixImg(EWin * ewin, PixImg * s1, PixImg * s2, PixImg * dst, int x, int y,
       w -= ((x + w) - root.w);
    if (x < 0)
      {
-        ox = -x;
-        w -= ox;
-        x = 0;
+	ox = -x;
+	w -= ox;
+	x = 0;
      }
    if (y + h > root.h)
       h -= ((y + h) - root.h);
    if (y < 0)
      {
-        oy = -y;
-        h -= oy;
-        y = 0;
+	oy = -y;
+	h -= oy;
+	y = 0;
      }
    if ((w <= 0) || (h <= 0))
       return;
    XSync(disp, False);
    if (dst)
      {
-        switch (dst->xim->bits_per_pixel)
-          {
-            case 32:
-               for (j = 0; j < h; j++)
-                 {
-                    unsigned int       *ptr1, *ptr2, *ptr3;
+	switch (dst->xim->bits_per_pixel)
+	  {
+	  case 32:
+	     for (j = 0; j < h; j++)
+	       {
+		  unsigned int       *ptr1, *ptr2, *ptr3;
 
-                    ptr1 =
-                        (unsigned int *)(s1->xim->data +
-                                         ((x) *
-                                          ((s1->xim->bits_per_pixel) >> 3)) +
-                                         ((j + y) * s1->xim->bytes_per_line));
-                    ptr2 =
-                        (unsigned int *)(s2->xim->data +
-                                         ((ox) *
-                                          ((s2->xim->bits_per_pixel) >> 3)) +
-                                         ((j + oy) * s2->xim->bytes_per_line));
-                    ptr3 =
-                        (unsigned int *)(dst->xim->data +
-                                         ((ox) *
-                                          ((dst->xim->bits_per_pixel) >> 3)) +
-                                         ((j + oy) * dst->xim->bytes_per_line));
-                    for (i = 0; i < w; i++)
-                      {
-                         unsigned int        p1, p2;
+		  ptr1 =
+		     (unsigned int *)(s1->xim->data +
+				      ((x) *
+				       ((s1->xim->bits_per_pixel) >> 3)) +
+				      ((j + y) * s1->xim->bytes_per_line));
+		  ptr2 =
+		     (unsigned int *)(s2->xim->data +
+				      ((ox) *
+				       ((s2->xim->bits_per_pixel) >> 3)) +
+				      ((j + oy) * s2->xim->bytes_per_line));
+		  ptr3 =
+		     (unsigned int *)(dst->xim->data +
+				      ((ox) *
+				       ((dst->xim->bits_per_pixel) >> 3)) +
+				      ((j + oy) * dst->xim->bytes_per_line));
+		  for (i = 0; i < w; i++)
+		    {
+		       unsigned int        p1, p2;
 
-                         p1 = *ptr1++;
-                         p2 = *ptr2++;
-                         *ptr3++ =
-                             ((p1 >> 1) & 0x7f7f7f7f) +
-                             ((p2 >> 1) & 0x7f7f7f7f) + (p1 & p2 & 0x01010101);
-                      }
-                 }
-               break;
-            case 24:
-               for (j = 0; j < h; j++)
-                 {
-                    for (i = 0; i < w; i++)
-                      {
-                         unsigned int        p1, p2;
+		       p1 = *ptr1++;
+		       p2 = *ptr2++;
+		       *ptr3++ =
+			  ((p1 >> 1) & 0x7f7f7f7f) +
+			  ((p2 >> 1) & 0x7f7f7f7f) + (p1 & p2 & 0x01010101);
+		    }
+	       }
+	     break;
+	  case 24:
+	     for (j = 0; j < h; j++)
+	       {
+		  for (i = 0; i < w; i++)
+		    {
+		       unsigned int        p1, p2;
 
-                         p1 = XGetPixel(s1->xim, (i + x), (j + y));
-                         p2 = XGetPixel(s2->xim, (i + ox), (j + oy));
-                         XPutPixel(dst->xim, (i + ox), (j + oy),
-                                   (((p1 >> 1) & 0x7f7f7f7f) +
-                                    ((p2 >> 1) & 0x7f7f7f7f) +
-                                    (p1 & p2 & 0x01010101)));
-                      }
-                 }
-               break;
-            case 16:
-               if (id->x.render_depth != 15)
-                 {
-                    for (j = 0; j < h; j++)
-                      {
-                         unsigned int       *ptr1, *ptr2, *ptr3;
+		       p1 = XGetPixel(s1->xim, (i + x), (j + y));
+		       p2 = XGetPixel(s2->xim, (i + ox), (j + oy));
+		       XPutPixel(dst->xim, (i + ox), (j + oy),
+				 (((p1 >> 1) & 0x7f7f7f7f) +
+				  ((p2 >> 1) & 0x7f7f7f7f) +
+				  (p1 & p2 & 0x01010101)));
+		    }
+	       }
+	     break;
+	  case 16:
+	     if (id->x.render_depth != 15)
+	       {
+		  for (j = 0; j < h; j++)
+		    {
+		       unsigned int       *ptr1, *ptr2, *ptr3;
 
-                         ptr1 =
-                             (unsigned int *)(s1->xim->data +
-                                              ((x) *
-                                               ((s1->xim->
-                                                 bits_per_pixel) >> 3)) + ((j +
-                                                                            y) *
-                                                                           s1->
-                                                                           xim->
-                                                                           bytes_per_line));
-                         ptr2 =
-                             (unsigned int *)(s2->xim->data +
-                                              ((ox) *
-                                               ((s2->xim->
-                                                 bits_per_pixel) >> 3)) + ((j +
-                                                                            oy)
-                                                                           *
-                                                                           s2->
-                                                                           xim->
-                                                                           bytes_per_line));
-                         ptr3 =
-                             (unsigned int *)(dst->xim->data +
-                                              ((ox) *
-                                               ((dst->xim->
-                                                 bits_per_pixel) >> 3)) + ((j +
-                                                                            oy)
-                                                                           *
-                                                                           dst->
-                                                                           xim->
-                                                                           bytes_per_line));
-                         if (!(w & 0x1))
-                           {
-                              for (i = 0; i < w; i += 2)
-                                {
-                                   unsigned int        p1, p2;
+		       ptr1 =
+			  (unsigned int *)(s1->xim->data +
+					   ((x) *
+					    ((s1->xim->
+					      bits_per_pixel) >> 3)) + ((j +
+									 y) *
+									s1->
+									xim->
+									bytes_per_line));
+		       ptr2 =
+			  (unsigned int *)(s2->xim->data +
+					   ((ox) *
+					    ((s2->xim->
+					      bits_per_pixel) >> 3)) + ((j +
+									 oy)
+									*
+									s2->
+									xim->
+									bytes_per_line));
+		       ptr3 =
+			  (unsigned int *)(dst->xim->data +
+					   ((ox) *
+					    ((dst->xim->
+					      bits_per_pixel) >> 3)) + ((j +
+									 oy)
+									*
+									dst->
+									xim->
+									bytes_per_line));
+		       if (!(w & 0x1))
+			 {
+			    for (i = 0; i < w; i += 2)
+			      {
+				 unsigned int        p1, p2;
 
-                                   p1 = *ptr1++;
-                                   p2 = *ptr2++;
-                                   *ptr3++ =
-                                       ((p1 >> 1) &
-                                        ((0x78 << 8) | (0x7c << 3) | (0x78 >> 3)
-                                         | (0x78 << 24) | (0x7c << 19) | (0x78
-                                                                          <<
-                                                                          13)))
-                                       +
-                                       ((p2 >> 1) &
-                                        ((0x78 << 8) | (0x7c << 3) | (0x78 >> 3)
-                                         | (0x78 << 24) | (0x7c << 19) | (0x78
-                                                                          <<
-                                                                          13)))
-                                       +
-                                       (p1 & p2 &
-                                        ((0x1 << 11) | (0x1 << 5) | (0x1) |
-                                         (0x1 << 27) | (0x1 << 21) | (0x1 <<
-                                                                      16)));
-                                }
-                           }
-                         else
-                           {
-                              for (i = 0; i < (w - 1); i += 2)
-                                {
-                                   unsigned int        p1, p2;
+				 p1 = *ptr1++;
+				 p2 = *ptr2++;
+				 *ptr3++ =
+				    ((p1 >> 1) &
+				     ((0x78 << 8) | (0x7c << 3) | (0x78 >> 3)
+				      | (0x78 << 24) | (0x7c << 19) | (0x78
+								       <<
+								       13)))
+				    +
+				    ((p2 >> 1) &
+				     ((0x78 << 8) | (0x7c << 3) | (0x78 >> 3)
+				      | (0x78 << 24) | (0x7c << 19) | (0x78
+								       <<
+								       13)))
+				    +
+				    (p1 & p2 &
+				     ((0x1 << 11) | (0x1 << 5) | (0x1) |
+				      (0x1 << 27) | (0x1 << 21) | (0x1 << 16)));
+			      }
+			 }
+		       else
+			 {
+			    for (i = 0; i < (w - 1); i += 2)
+			      {
+				 unsigned int        p1, p2;
 
-                                   p1 = *ptr1++;
-                                   p2 = *ptr2++;
-                                   *ptr3++ =
-                                       ((p1 >> 1) &
-                                        ((0x78 << 8) | (0x7c << 3) | (0x78 >> 3)
-                                         | (0x78 << 24) | (0x7c << 19) | (0x78
-                                                                          <<
-                                                                          13)))
-                                       +
-                                       ((p2 >> 1) &
-                                        ((0x78 << 8) | (0x7c << 3) | (0x78 >> 3)
-                                         | (0x78 << 24) | (0x7c << 19) | (0x78
-                                                                          <<
-                                                                          13)))
-                                       +
-                                       (p1 & p2 &
-                                        ((0x1 << 11) | (0x1 << 5) | (0x1) |
-                                         (0x1 << 27) | (0x1 << 21) | (0x1 <<
-                                                                      16)));
-                                }
-                              {
-                                 unsigned short     *pptr1, *pptr2, *pptr3;
-                                 unsigned short      pp1, pp2;
+				 p1 = *ptr1++;
+				 p2 = *ptr2++;
+				 *ptr3++ =
+				    ((p1 >> 1) &
+				     ((0x78 << 8) | (0x7c << 3) | (0x78 >> 3)
+				      | (0x78 << 24) | (0x7c << 19) | (0x78
+								       <<
+								       13)))
+				    +
+				    ((p2 >> 1) &
+				     ((0x78 << 8) | (0x7c << 3) | (0x78 >> 3)
+				      | (0x78 << 24) | (0x7c << 19) | (0x78
+								       <<
+								       13)))
+				    +
+				    (p1 & p2 &
+				     ((0x1 << 11) | (0x1 << 5) | (0x1) |
+				      (0x1 << 27) | (0x1 << 21) | (0x1 << 16)));
+			      }
+			    {
+			       unsigned short     *pptr1, *pptr2, *pptr3;
+			       unsigned short      pp1, pp2;
 
-                                 pptr1 = (unsigned short *)ptr1;
-                                 pptr2 = (unsigned short *)ptr2;
-                                 pptr3 = (unsigned short *)ptr3;
-                                 pp1 = *pptr1;
-                                 pp2 = *pptr2;
-                                 *pptr3 =
-                                     ((pp1 >> 1) &
-                                      ((0x78 << 8) | (0x7c << 3) | (0x78 >> 3)))
-                                     +
-                                     ((pp2 >> 1) &
-                                      ((0x78 << 8) | (0x7c << 3) | (0x78 >> 3)))
-                                     +
-                                     (pp1 & pp2 &
-                                      ((0x1 << 11) | (0x1 << 5) | (0x1)));
-                              }
-                           }
-                      }
-                 }
-               else
-                 {
-                    for (j = 0; j < h; j++)
-                      {
-                         unsigned int       *ptr1, *ptr2, *ptr3;
+			       pptr1 = (unsigned short *)ptr1;
+			       pptr2 = (unsigned short *)ptr2;
+			       pptr3 = (unsigned short *)ptr3;
+			       pp1 = *pptr1;
+			       pp2 = *pptr2;
+			       *pptr3 =
+				  ((pp1 >> 1) &
+				   ((0x78 << 8) | (0x7c << 3) | (0x78 >> 3)))
+				  +
+				  ((pp2 >> 1) &
+				   ((0x78 << 8) | (0x7c << 3) | (0x78 >> 3)))
+				  +
+				  (pp1 & pp2 &
+				   ((0x1 << 11) | (0x1 << 5) | (0x1)));
+			    }
+			 }
+		    }
+	       }
+	     else
+	       {
+		  for (j = 0; j < h; j++)
+		    {
+		       unsigned int       *ptr1, *ptr2, *ptr3;
 
-                         ptr1 =
-                             (unsigned int *)(s1->xim->data +
-                                              ((x) *
-                                               ((s1->xim->
-                                                 bits_per_pixel) >> 3)) + ((j +
-                                                                            y) *
-                                                                           s1->
-                                                                           xim->
-                                                                           bytes_per_line));
-                         ptr2 =
-                             (unsigned int *)(s2->xim->data +
-                                              ((ox) *
-                                               ((s2->xim->
-                                                 bits_per_pixel) >> 3)) + ((j +
-                                                                            oy)
-                                                                           *
-                                                                           s2->
-                                                                           xim->
-                                                                           bytes_per_line));
-                         ptr3 =
-                             (unsigned int *)(dst->xim->data +
-                                              ((ox) *
-                                               ((dst->xim->
-                                                 bits_per_pixel) >> 3)) + ((j +
-                                                                            oy)
-                                                                           *
-                                                                           dst->
-                                                                           xim->
-                                                                           bytes_per_line));
-                         if (!(w & 0x1))
-                           {
-                              for (i = 0; i < w; i += 2)
-                                {
-                                   unsigned int        p1, p2;
+		       ptr1 =
+			  (unsigned int *)(s1->xim->data +
+					   ((x) *
+					    ((s1->xim->
+					      bits_per_pixel) >> 3)) + ((j +
+									 y) *
+									s1->
+									xim->
+									bytes_per_line));
+		       ptr2 =
+			  (unsigned int *)(s2->xim->data +
+					   ((ox) *
+					    ((s2->xim->
+					      bits_per_pixel) >> 3)) + ((j +
+									 oy)
+									*
+									s2->
+									xim->
+									bytes_per_line));
+		       ptr3 =
+			  (unsigned int *)(dst->xim->data +
+					   ((ox) *
+					    ((dst->xim->
+					      bits_per_pixel) >> 3)) + ((j +
+									 oy)
+									*
+									dst->
+									xim->
+									bytes_per_line));
+		       if (!(w & 0x1))
+			 {
+			    for (i = 0; i < w; i += 2)
+			      {
+				 unsigned int        p1, p2;
 
-                                   p1 = *ptr1++;
-                                   p2 = *ptr2++;
-                                   *ptr3++ =
-                                       ((p1 >> 1) &
-                                        ((0x78 << 7) | (0x78 << 2) | (0x78 >> 3)
-                                         | (0x78 << 23) | (0x78 << 18) | (0x78
-                                                                          <<
-                                                                          13)))
-                                       +
-                                       ((p2 >> 1) &
-                                        ((0x78 << 7) | (0x78 << 2) | (0x78 >> 3)
-                                         | (0x78 << 23) | (0x78 << 18) | (0x78
-                                                                          <<
-                                                                          13)))
-                                       +
-                                       (p1 & p2 &
-                                        ((0x1 << 10) | (0x1 << 5) | (0x1) |
-                                         (0x1 << 26) | (0x1 << 20) | (0x1 <<
-                                                                      16)));
-                                }
-                           }
-                         else
-                           {
-                              for (i = 0; i < (w - 1); i += 2)
-                                {
-                                   unsigned int        p1, p2;
+				 p1 = *ptr1++;
+				 p2 = *ptr2++;
+				 *ptr3++ =
+				    ((p1 >> 1) &
+				     ((0x78 << 7) | (0x78 << 2) | (0x78 >> 3)
+				      | (0x78 << 23) | (0x78 << 18) | (0x78
+								       <<
+								       13)))
+				    +
+				    ((p2 >> 1) &
+				     ((0x78 << 7) | (0x78 << 2) | (0x78 >> 3)
+				      | (0x78 << 23) | (0x78 << 18) | (0x78
+								       <<
+								       13)))
+				    +
+				    (p1 & p2 &
+				     ((0x1 << 10) | (0x1 << 5) | (0x1) |
+				      (0x1 << 26) | (0x1 << 20) | (0x1 << 16)));
+			      }
+			 }
+		       else
+			 {
+			    for (i = 0; i < (w - 1); i += 2)
+			      {
+				 unsigned int        p1, p2;
 
-                                   p1 = *ptr1++;
-                                   p2 = *ptr2++;
-                                   *ptr3++ =
-                                       ((p1 >> 1) &
-                                        ((0x78 << 7) | (0x78 << 2) | (0x78 >> 3)
-                                         | (0x78 << 23) | (0x78 << 18) | (0x78
-                                                                          <<
-                                                                          13)))
-                                       +
-                                       ((p2 >> 1) &
-                                        ((0x78 << 7) | (0x78 << 2) | (0x78 >> 3)
-                                         | (0x78 << 23) | (0x78 << 18) | (0x78
-                                                                          <<
-                                                                          13)))
-                                       +
-                                       (p1 & p2 &
-                                        ((0x1 << 10) | (0x1 << 5) | (0x1) |
-                                         (0x1 << 26) | (0x1 << 20) | (0x1 <<
-                                                                      16)));
-                                }
-                              {
-                                 unsigned short     *pptr1, *pptr2, *pptr3;
-                                 unsigned short      pp1, pp2;
+				 p1 = *ptr1++;
+				 p2 = *ptr2++;
+				 *ptr3++ =
+				    ((p1 >> 1) &
+				     ((0x78 << 7) | (0x78 << 2) | (0x78 >> 3)
+				      | (0x78 << 23) | (0x78 << 18) | (0x78
+								       <<
+								       13)))
+				    +
+				    ((p2 >> 1) &
+				     ((0x78 << 7) | (0x78 << 2) | (0x78 >> 3)
+				      | (0x78 << 23) | (0x78 << 18) | (0x78
+								       <<
+								       13)))
+				    +
+				    (p1 & p2 &
+				     ((0x1 << 10) | (0x1 << 5) | (0x1) |
+				      (0x1 << 26) | (0x1 << 20) | (0x1 << 16)));
+			      }
+			    {
+			       unsigned short     *pptr1, *pptr2, *pptr3;
+			       unsigned short      pp1, pp2;
 
-                                 pptr1 = (unsigned short *)ptr1;
-                                 pptr2 = (unsigned short *)ptr2;
-                                 pptr3 = (unsigned short *)ptr3;
-                                 pp1 = *pptr1;
-                                 pp2 = *pptr2;
-                                 *pptr3++ =
-                                     ((pp1 >> 1) &
-                                      ((0x78 << 7) | (0x78 << 2) | (0x78 >> 3)))
-                                     +
-                                     ((pp2 >> 1) &
-                                      ((0x78 << 7) | (0x78 << 2) | (0x78 >> 3)))
-                                     +
-                                     (pp1 & pp2 &
-                                      ((0x1 << 10) | (0x1 << 5) | (0x1)));
-                              }
-                           }
-                      }
-                 }
-               break;
-            default:
-               for (j = 0; j < h; j++)
-                 {
-                    unsigned char      *ptr1, *ptr2, *ptr3;
+			       pptr1 = (unsigned short *)ptr1;
+			       pptr2 = (unsigned short *)ptr2;
+			       pptr3 = (unsigned short *)ptr3;
+			       pp1 = *pptr1;
+			       pp2 = *pptr2;
+			       *pptr3++ =
+				  ((pp1 >> 1) &
+				   ((0x78 << 7) | (0x78 << 2) | (0x78 >> 3)))
+				  +
+				  ((pp2 >> 1) &
+				   ((0x78 << 7) | (0x78 << 2) | (0x78 >> 3)))
+				  +
+				  (pp1 & pp2 &
+				   ((0x1 << 10) | (0x1 << 5) | (0x1)));
+			    }
+			 }
+		    }
+	       }
+	     break;
+	  default:
+	     for (j = 0; j < h; j++)
+	       {
+		  unsigned char      *ptr1, *ptr2, *ptr3;
 
-                    ptr1 =
-                        (unsigned char *)(s1->xim->data +
-                                          ((x) *
-                                           ((s1->xim->bits_per_pixel) >> 3)) +
-                                          ((j + y) * s1->xim->bytes_per_line));
-                    ptr2 =
-                        (unsigned char *)(s2->xim->data +
-                                          ((ox) *
-                                           ((s2->xim->bits_per_pixel) >> 3)) +
-                                          ((j + oy) * s2->xim->bytes_per_line));
-                    ptr3 =
-                        (unsigned char *)(dst->xim->data +
-                                          ((ox) *
-                                           ((dst->xim->bits_per_pixel) >> 3)) +
-                                          ((j +
-                                            oy) * dst->xim->bytes_per_line));
-                    if (!(w & 0x1))
-                      {
-                         if (j & 0x1)
-                           {
-                              ptr2++;
-                              for (i = 0; i < w; i += 2)
-                                {
-                                   unsigned char       p1;
+		  ptr1 =
+		     (unsigned char *)(s1->xim->data +
+				       ((x) *
+					((s1->xim->bits_per_pixel) >> 3)) +
+				       ((j + y) * s1->xim->bytes_per_line));
+		  ptr2 =
+		     (unsigned char *)(s2->xim->data +
+				       ((ox) *
+					((s2->xim->bits_per_pixel) >> 3)) +
+				       ((j + oy) * s2->xim->bytes_per_line));
+		  ptr3 =
+		     (unsigned char *)(dst->xim->data +
+				       ((ox) *
+					((dst->xim->bits_per_pixel) >> 3)) +
+				       ((j + oy) * dst->xim->bytes_per_line));
+		  if (!(w & 0x1))
+		    {
+		       if (j & 0x1)
+			 {
+			    ptr2++;
+			    for (i = 0; i < w; i += 2)
+			      {
+				 unsigned char       p1;
 
-                                   p1 = *ptr1;
-                                   ptr1 += 2;
-                                   *ptr3++ = p1;
-                                   p1 = *ptr2;
-                                   ptr2 += 2;
-                                   *ptr3++ = p1;
-                                }
-                           }
-                         else
-                           {
-                              ptr1++;
-                              for (i = 0; i < w; i += 2)
-                                {
-                                   unsigned char       p1;
+				 p1 = *ptr1;
+				 ptr1 += 2;
+				 *ptr3++ = p1;
+				 p1 = *ptr2;
+				 ptr2 += 2;
+				 *ptr3++ = p1;
+			      }
+			 }
+		       else
+			 {
+			    ptr1++;
+			    for (i = 0; i < w; i += 2)
+			      {
+				 unsigned char       p1;
 
-                                   p1 = *ptr2;
-                                   ptr2 += 2;
-                                   *ptr3++ = p1;
-                                   p1 = *ptr1;
-                                   ptr1 += 2;
-                                   *ptr3++ = p1;
-                                }
-                           }
-                      }
-                    else
-                      {
-                         if (j & 0x1)
-                           {
-                              ptr2++;
-                              for (i = 0; i < (w - 1); i += 2)
-                                {
-                                   unsigned char       p1;
+				 p1 = *ptr2;
+				 ptr2 += 2;
+				 *ptr3++ = p1;
+				 p1 = *ptr1;
+				 ptr1 += 2;
+				 *ptr3++ = p1;
+			      }
+			 }
+		    }
+		  else
+		    {
+		       if (j & 0x1)
+			 {
+			    ptr2++;
+			    for (i = 0; i < (w - 1); i += 2)
+			      {
+				 unsigned char       p1;
 
-                                   p1 = *ptr1;
-                                   ptr1 += 2;
-                                   *ptr3++ = p1;
-                                   p1 = *ptr2;
-                                   ptr2 += 2;
-                                   *ptr3++ = p1;
-                                }
-                              *ptr3 = *ptr1;
-                           }
-                         else
-                           {
-                              ptr1++;
-                              for (i = 0; i < (w - 1); i += 2)
-                                {
-                                   unsigned char       p1;
+				 p1 = *ptr1;
+				 ptr1 += 2;
+				 *ptr3++ = p1;
+				 p1 = *ptr2;
+				 ptr2 += 2;
+				 *ptr3++ = p1;
+			      }
+			    *ptr3 = *ptr1;
+			 }
+		       else
+			 {
+			    ptr1++;
+			    for (i = 0; i < (w - 1); i += 2)
+			      {
+				 unsigned char       p1;
 
-                                   p1 = *ptr2;
-                                   ptr2 += 2;
-                                   *ptr3++ = p1;
-                                   p1 = *ptr1;
-                                   ptr1 += 2;
-                                   *ptr3++ = p1;
-                                }
-                              *ptr3 = *ptr2;
-                           }
-                      }
-                 }
-               break;
-          }
+				 p1 = *ptr2;
+				 ptr2 += 2;
+				 *ptr3++ = p1;
+				 p1 = *ptr1;
+				 ptr1 += 2;
+				 *ptr3++ = p1;
+			      }
+			    *ptr3 = *ptr2;
+			 }
+		    }
+	       }
+	     break;
+	  }
 /* workaround since XCopyArea doesnt always work with shared pixmaps */
-        XShmPutImage(disp, root.win, gc, dst->xim, ox, oy, x, y, w, h, False);
+	XShmPutImage(disp, root.win, gc, dst->xim, ox, oy, x, y, w, h, False);
 /*      XCopyArea(disp, dst->pmap, root.win, gc, ox, oy, w, h, x, y); */
      }
 /* I dont believe it - you cannot do this to a shared pixmaps to the screen */
@@ -897,43 +892,43 @@ DrawEwinShape(EWin * ewin, int md, int x, int y, int w, int h, char firstlast)
 
    for (i = 0; i < ewin->num_groups; i++)
      {
-        check_move |= ewin->groups[i]->cfg.move;
-        if (check_move)
-           break;
+	check_move |= ewin->groups[i]->cfg.move;
+	if (check_move)
+	   break;
      }
 
    if ((mode.mode == MODE_RESIZE) || (mode.mode == MODE_RESIZE_H)
        || (mode.mode == MODE_RESIZE_V))
      {
-        w1 = ewin->client.w;
-        h1 = ewin->client.h;
-        ewin->client.w = w;
-        ewin->client.h = h;
-        ICCCM_MatchSize(ewin);
-        i = (x - ewin->x) / ewin->client.w_inc;
-        j = (y - ewin->y) / ewin->client.h_inc;
-        x = ewin->x + (i * ewin->client.w_inc);
-        y = ewin->y + (j * ewin->client.h_inc);
-        ewin->client.w = w1;
-        ewin->client.h = h1;
+	w1 = ewin->client.w;
+	h1 = ewin->client.h;
+	ewin->client.w = w;
+	ewin->client.h = h;
+	ICCCM_MatchSize(ewin);
+	i = (x - ewin->x) / ewin->client.w_inc;
+	j = (y - ewin->y) / ewin->client.h_inc;
+	x = ewin->x + (i * ewin->client.w_inc);
+	y = ewin->y + (j * ewin->client.h_inc);
+	ewin->client.w = w1;
+	ewin->client.h = h1;
      }
    if ((md == 5)
        && ((mode.mode == MODE_RESIZE) || (mode.mode == MODE_RESIZE_H)
-           || (mode.mode == MODE_RESIZE_V) || (ewin->groups && check_move)))
+	   || (mode.mode == MODE_RESIZE_V) || (ewin->groups && check_move)))
       md = 0;
    if (md == 5)
      {
-        if (id->x.depth <= 8)
-           bpp = 1;
-        else if (id->x.depth <= 16)
-           bpp = 2;
-        else if (id->x.depth <= 24)
-           bpp = 3;
-        else
-           bpp = 4;
-        if ((ird) || ((id->max_shm) && ((bpp * w * h) > id->max_shm))
-            || ((!id->x.shm) || (!id->x.shmp)))
-           md = 0;
+	if (id->x.depth <= 8)
+	   bpp = 1;
+	else if (id->x.depth <= 16)
+	   bpp = 2;
+	else if (id->x.depth <= 24)
+	   bpp = 3;
+	else
+	   bpp = 4;
+	if ((ird) || ((id->max_shm) && ((bpp * w * h) > id->max_shm))
+	    || ((!id->x.shm) || (!id->x.shmp)))
+	   md = 0;
      }
    pw = w;
    ph = h;
@@ -941,69 +936,63 @@ DrawEwinShape(EWin * ewin, int md, int x, int y, int w, int h, char firstlast)
    queue_up = 0;
    switch (md)
      {
-       case 0:
-          MoveResizeEwin(ewin, x, y, w, h);
-          if (mode.mode != MODE_NONE)
-             SetCoords(ewin->x, ewin->y,
-                       (ewin->client.w -
-                        ewin->client.base_w) / ewin->client.w_inc,
-                       (ewin->client.h -
-                        ewin->client.base_h) / ewin->client.h_inc);
-          break;
-       case 1:
-       case 2:
-       case 3:
-       case 4:
-       case 5:
-          if (!b1)
-             b1 = XCreateBitmapFromData(disp, root.win, flipped_gray_bits,
-                                        flipped_gray_width,
-                                        flipped_gray_height);
-          if (!b2)
-             b2 = XCreateBitmapFromData(disp, root.win, gray_bits, gray_width,
-                                        gray_height);
-          if (!b3)
-             b3 = XCreateBitmapFromData(disp, root.win, gray3_bits, gray3_width,
-                                        gray3_height);
-          x1 = ewin->x + desks.desk[ewin->desktop].x;
-          y1 = ewin->y + desks.desk[ewin->desktop].y;
-          w1 = ewin->w - (ewin->border->border.left +
-                          ewin->border->border.right);
-          h1 = ewin->h - (ewin->border->border.top +
-                          ewin->border->border.bottom);
-          ewin->x = x;
-          ewin->y = y;
-          ewin->reqx = x;
-          ewin->reqy = y;
-          x = ewin->x + desks.desk[ewin->desktop].x;
-          y = ewin->y + desks.desk[ewin->desktop].y;
-          if ((w != ewin->client.w) || (h != ewin->client.h))
-            {
-               ewin->client.w = w;
-               ewin->client.h = h;
-               ICCCM_MatchSize(ewin);
-               ewin->w =
-                   ewin->client.w + ewin->border->border.left +
-                   ewin->border->border.right;
-               ewin->h =
-                   ewin->client.h + ewin->border->border.top +
-                   ewin->border->border.bottom;
-            }
-          w = ewin->w - (ewin->border->border.left +
-                         ewin->border->border.right);
-          h = ewin->h - (ewin->border->border.top +
-                         ewin->border->border.bottom);
-          if (!gc)
-            {
-               gcv.function = GXxor;
-               gcv.foreground = WhitePixel(disp, root.scr);
-               if (gcv.foreground == 0)
-                  gcv.foreground = BlackPixel(disp, root.scr);
-               gcv.subwindow_mode = IncludeInferiors;
-               gc = XCreateGC(disp, root.win,
-                              GCFunction | GCForeground | GCSubwindowMode,
-                              &gcv);
-            }
+     case 0:
+	MoveResizeEwin(ewin, x, y, w, h);
+	if (mode.mode != MODE_NONE)
+	   SetCoords(ewin->x, ewin->y,
+		     (ewin->client.w -
+		      ewin->client.base_w) / ewin->client.w_inc,
+		     (ewin->client.h -
+		      ewin->client.base_h) / ewin->client.h_inc);
+	break;
+     case 1:
+     case 2:
+     case 3:
+     case 4:
+     case 5:
+	if (!b1)
+	   b1 = XCreateBitmapFromData(disp, root.win, flipped_gray_bits,
+				      flipped_gray_width, flipped_gray_height);
+	if (!b2)
+	   b2 = XCreateBitmapFromData(disp, root.win, gray_bits, gray_width,
+				      gray_height);
+	if (!b3)
+	   b3 = XCreateBitmapFromData(disp, root.win, gray3_bits, gray3_width,
+				      gray3_height);
+	x1 = ewin->x + desks.desk[ewin->desktop].x;
+	y1 = ewin->y + desks.desk[ewin->desktop].y;
+	w1 = ewin->w - (ewin->border->border.left + ewin->border->border.right);
+	h1 = ewin->h - (ewin->border->border.top + ewin->border->border.bottom);
+	ewin->x = x;
+	ewin->y = y;
+	ewin->reqx = x;
+	ewin->reqy = y;
+	x = ewin->x + desks.desk[ewin->desktop].x;
+	y = ewin->y + desks.desk[ewin->desktop].y;
+	if ((w != ewin->client.w) || (h != ewin->client.h))
+	  {
+	     ewin->client.w = w;
+	     ewin->client.h = h;
+	     ICCCM_MatchSize(ewin);
+	     ewin->w =
+		ewin->client.w + ewin->border->border.left +
+		ewin->border->border.right;
+	     ewin->h =
+		ewin->client.h + ewin->border->border.top +
+		ewin->border->border.bottom;
+	  }
+	w = ewin->w - (ewin->border->border.left + ewin->border->border.right);
+	h = ewin->h - (ewin->border->border.top + ewin->border->border.bottom);
+	if (!gc)
+	  {
+	     gcv.function = GXxor;
+	     gcv.foreground = WhitePixel(disp, root.scr);
+	     if (gcv.foreground == 0)
+		gcv.foreground = BlackPixel(disp, root.scr);
+	     gcv.subwindow_mode = IncludeInferiors;
+	     gc = XCreateGC(disp, root.win,
+			    GCFunction | GCForeground | GCSubwindowMode, &gcv);
+	  }
 #define DRAW_H_ARROW(x1, x2, y1) \
       if (((x2) - (x1)) >= 12) \
         { \
@@ -1120,244 +1109,241 @@ DrawEwinShape(EWin * ewin, int md, int x, int y, int w, int h, char firstlast)
                      ewin->border->border.right, \
                      dd + ewin->border->border.top + \
                      ewin->border->border.bottom);
-          if (md == 1)
-            {
-               if (firstlast > 0)
-                 {
-                    DO_DRAW_MODE_1(x1, y1, w1, h1);
-                 }
-               if ((mode.mode != MODE_NONE)
-                   && (!ewin->groups || (ewin->groups && !check_move)))
-                  SetCoords(ewin->x, ewin->y,
-                            (ewin->client.w -
-                             ewin->client.base_w) / ewin->client.w_inc,
-                            (ewin->client.h -
-                             ewin->client.base_h) / ewin->client.h_inc);
-               if (firstlast < 2)
-                 {
-                    DO_DRAW_MODE_1(x, y, w, h);
-                 }
-            }
-          else if (md == 2)
-            {
-               if (firstlast > 0)
-                 {
-                    DO_DRAW_MODE_2(x1, y1, w1, h1);
-                 }
-               if ((mode.mode != MODE_NONE)
-                   && (!ewin->groups || (ewin->groups && !check_move)))
-                  SetCoords(ewin->x, ewin->y,
-                            (ewin->client.w -
-                             ewin->client.base_w) / ewin->client.w_inc,
-                            (ewin->client.h -
-                             ewin->client.base_h) / ewin->client.h_inc);
-               if (firstlast < 2)
-                 {
-                    DO_DRAW_MODE_2(x, y, w, h);
-                 }
-            }
-          else if (md == 3)
-            {
-               if (firstlast > 0)
-                 {
-                    DO_DRAW_MODE_3(x1, y1, w1, h1);
-                 }
-               if ((mode.mode != MODE_NONE)
-                   && (!ewin->groups || (ewin->groups && !check_move)))
-                  SetCoords(ewin->x, ewin->y,
-                            (ewin->client.w -
-                             ewin->client.base_w) / ewin->client.w_inc,
-                            (ewin->client.h -
-                             ewin->client.base_h) / ewin->client.h_inc);
-               if (firstlast < 2)
-                 {
-                    DO_DRAW_MODE_3(x, y, w, h);
-                 }
-            }
-          else if (md == 4)
-            {
-               if (firstlast > 0)
-                 {
-                    DO_DRAW_MODE_4(x1, y1, w1, h1);
-                 }
-               if (firstlast < 2)
-                  if ((mode.mode != MODE_NONE)
-                      && (!ewin->groups || (ewin->groups && !check_move)))
-                     SetCoords(ewin->x, ewin->y,
-                               (ewin->client.w -
-                                ewin->client.base_w) / ewin->client.w_inc,
-                               (ewin->client.h -
-                                ewin->client.base_h) / ewin->client.h_inc);
-               if (firstlast < 2)
-                 {
-                    DO_DRAW_MODE_4(x, y, w, h);
-                 }
-            }
-          else if (md == 5)
-            {
-               static PixImg      *ewin_pi = NULL;
-               static PixImg      *root_pi = NULL;
-               static PixImg      *draw_pi = NULL;
+	if (md == 1)
+	  {
+	     if (firstlast > 0)
+	       {
+		  DO_DRAW_MODE_1(x1, y1, w1, h1);
+	       }
+	     if ((mode.mode != MODE_NONE)
+		 && (!ewin->groups || (ewin->groups && !check_move)))
+		SetCoords(ewin->x, ewin->y,
+			  (ewin->client.w -
+			   ewin->client.base_w) / ewin->client.w_inc,
+			  (ewin->client.h -
+			   ewin->client.base_h) / ewin->client.h_inc);
+	     if (firstlast < 2)
+	       {
+		  DO_DRAW_MODE_1(x, y, w, h);
+	       }
+	  }
+	else if (md == 2)
+	  {
+	     if (firstlast > 0)
+	       {
+		  DO_DRAW_MODE_2(x1, y1, w1, h1);
+	       }
+	     if ((mode.mode != MODE_NONE)
+		 && (!ewin->groups || (ewin->groups && !check_move)))
+		SetCoords(ewin->x, ewin->y,
+			  (ewin->client.w -
+			   ewin->client.base_w) / ewin->client.w_inc,
+			  (ewin->client.h -
+			   ewin->client.base_h) / ewin->client.h_inc);
+	     if (firstlast < 2)
+	       {
+		  DO_DRAW_MODE_2(x, y, w, h);
+	       }
+	  }
+	else if (md == 3)
+	  {
+	     if (firstlast > 0)
+	       {
+		  DO_DRAW_MODE_3(x1, y1, w1, h1);
+	       }
+	     if ((mode.mode != MODE_NONE)
+		 && (!ewin->groups || (ewin->groups && !check_move)))
+		SetCoords(ewin->x, ewin->y,
+			  (ewin->client.w -
+			   ewin->client.base_w) / ewin->client.w_inc,
+			  (ewin->client.h -
+			   ewin->client.base_h) / ewin->client.h_inc);
+	     if (firstlast < 2)
+	       {
+		  DO_DRAW_MODE_3(x, y, w, h);
+	       }
+	  }
+	else if (md == 4)
+	  {
+	     if (firstlast > 0)
+	       {
+		  DO_DRAW_MODE_4(x1, y1, w1, h1);
+	       }
+	     if (firstlast < 2)
+		if ((mode.mode != MODE_NONE)
+		    && (!ewin->groups || (ewin->groups && !check_move)))
+		   SetCoords(ewin->x, ewin->y,
+			     (ewin->client.w -
+			      ewin->client.base_w) / ewin->client.w_inc,
+			     (ewin->client.h -
+			      ewin->client.base_h) / ewin->client.h_inc);
+	     if (firstlast < 2)
+	       {
+		  DO_DRAW_MODE_4(x, y, w, h);
+	       }
+	  }
+	else if (md == 5)
+	  {
+	     static PixImg      *ewin_pi = NULL;
+	     static PixImg      *root_pi = NULL;
+	     static PixImg      *draw_pi = NULL;
 
-               if (firstlast == 0)
-                 {
-                    XGCValues           gcv;
-                    GC                  gc;
+	     if (firstlast == 0)
+	       {
+		  XGCValues           gcv;
+		  GC                  gc;
 
-                    if (ewin_pi)
-                       EDestroyPixImg(ewin_pi);
-                    if (root_pi)
-                       EDestroyPixImg(root_pi);
-                    if (draw_pi)
-                       EDestroyPixImg(draw_pi);
-                    EBlendRemoveShape(NULL, 0, 0, 0);
-                    EBlendPixImg(NULL, NULL, NULL, NULL, 0, 0, 0, 0);
-                    ewin_pi = NULL;
-                    root_pi = NULL;
-                    draw_pi = NULL;
-                    root_pi = ECreatePixImg(root.win, root.w, root.h);
-                    ewin_pi = ECreatePixImg(root.win, ewin->w, ewin->h);
-                    draw_pi = ECreatePixImg(root.win, ewin->w, ewin->h);
-                    if ((!root_pi) || (!ewin_pi) || (!draw_pi))
-                      {
-                         mode.movemode = 0;
-                         UngrabX();
-                         DrawEwinShape(ewin, mode.movemode, x, y, w, h,
-                                       firstlast);
-                         EDBUG_RETURN_;
-                      }
-                    EFillPixmap(root.win, root_pi->pmap, x1, y1, ewin->w,
-                                ewin->h);
-                    gc = XCreateGC(disp, root_pi->pmap, 0, &gcv);
-                    XCopyArea(disp, root_pi->pmap, ewin_pi->pmap, gc, x1, y1,
-                              ewin->w, ewin->h, 0, 0);
-                    XFreeGC(disp, gc);
-                    EBlendPixImg(ewin, root_pi, ewin_pi, draw_pi, x, y, ewin->w,
-                                 ewin->h);
-                 }
-               else if (firstlast == 1)
-                 {
-                    int                 dx, dy, wt, ht;
-                    int                 adx, ady;
+		  if (ewin_pi)
+		     EDestroyPixImg(ewin_pi);
+		  if (root_pi)
+		     EDestroyPixImg(root_pi);
+		  if (draw_pi)
+		     EDestroyPixImg(draw_pi);
+		  EBlendRemoveShape(NULL, 0, 0, 0);
+		  EBlendPixImg(NULL, NULL, NULL, NULL, 0, 0, 0, 0);
+		  ewin_pi = NULL;
+		  root_pi = NULL;
+		  draw_pi = NULL;
+		  root_pi = ECreatePixImg(root.win, root.w, root.h);
+		  ewin_pi = ECreatePixImg(root.win, ewin->w, ewin->h);
+		  draw_pi = ECreatePixImg(root.win, ewin->w, ewin->h);
+		  if ((!root_pi) || (!ewin_pi) || (!draw_pi))
+		    {
+		       mode.movemode = 0;
+		       UngrabX();
+		       DrawEwinShape(ewin, mode.movemode, x, y, w, h,
+				     firstlast);
+		       EDBUG_RETURN_;
+		    }
+		  EFillPixmap(root.win, root_pi->pmap, x1, y1, ewin->w,
+			      ewin->h);
+		  gc = XCreateGC(disp, root_pi->pmap, 0, &gcv);
+		  XCopyArea(disp, root_pi->pmap, ewin_pi->pmap, gc, x1, y1,
+			    ewin->w, ewin->h, 0, 0);
+		  XFreeGC(disp, gc);
+		  EBlendPixImg(ewin, root_pi, ewin_pi, draw_pi, x, y, ewin->w,
+			       ewin->h);
+	       }
+	     else if (firstlast == 1)
+	       {
+		  int                 dx, dy, wt, ht;
+		  int                 adx, ady;
 
-                    dx = x - x1;
-                    dy = y - y1;
-                    if (dx < 0)
-                       adx = -dx;
-                    else
-                       adx = dx;
-                    if (dy < 0)
-                       ady = -dy;
-                    else
-                       ady = dy;
-                    wt = ewin->w;
-                    ht = ewin->h;
-                    if ((adx <= wt) && (ady <= ht))
-                      {
-                         if (dx < 0)
-                            EFillPixmap(root.win, root_pi->pmap, x, y, -dx, ht);
-                         else if (dx > 0)
-                            EFillPixmap(root.win, root_pi->pmap, x + wt - dx, y,
-                                        dx, ht);
-                         if (dy < 0)
-                            EFillPixmap(root.win, root_pi->pmap, x, y, wt, -dy);
-                         else if (dy > 0)
-                            EFillPixmap(root.win, root_pi->pmap, x, y + ht - dy,
-                                        wt, dy);
-                      }
-                    else
-                       EFillPixmap(root.win, root_pi->pmap, x, y, wt, ht);
-                    if ((adx <= wt) && (ady <= ht))
-                      {
-                         EBlendPixImg(ewin, root_pi, ewin_pi, draw_pi, x, y,
-                                      ewin->w, ewin->h);
-                         if (dx > 0)
-                            EPastePixmap(root.win, root_pi->pmap, x1, y1, dx,
-                                         ht);
-                         else if (dx < 0)
-                            EPastePixmap(root.win, root_pi->pmap, x1 + wt + dx,
-                                         y1, -dx, ht);
-                         if (dy > 0)
-                            EPastePixmap(root.win, root_pi->pmap, x1, y1, wt,
-                                         dy);
-                         else if (dy < 0)
-                            EPastePixmap(root.win, root_pi->pmap, x1,
-                                         y1 + ht + dy, wt, -dy);
-                      }
-                    else
-                      {
-                         EPastePixmap(root.win, root_pi->pmap, x1, y1, wt, ht);
-                         EBlendPixImg(ewin, root_pi, ewin_pi, draw_pi, x, y,
-                                      ewin->w, ewin->h);
-                      }
-                    EBlendRemoveShape(ewin, root_pi->pmap, x, y);
-                 }
-               else if (firstlast == 2)
-                 {
-                    EPastePixmap(root.win, root_pi->pmap, x1, y1, ewin->w,
-                                 ewin->h);
-                    if (ewin_pi)
-                       EDestroyPixImg(ewin_pi);
-                    if (root_pi)
-                       EDestroyPixImg(root_pi);
-                    if (draw_pi)
-                       EDestroyPixImg(draw_pi);
-                    EBlendRemoveShape(NULL, 0, 0, 0);
-                    EBlendPixImg(NULL, NULL, NULL, NULL, 0, 0, 0, 0);
-                    ewin_pi = NULL;
-                    root_pi = NULL;
-                    draw_pi = NULL;
-                 }
-               else if (firstlast == 3)
-                 {
-                    EPastePixmap(root.win, root_pi->pmap, x, y, ewin->w,
-                                 ewin->h);
-                    if (root_pi)
-                       EDestroyPixImg(root_pi);
-                    root_pi->pmap = 0;
-                 }
-               else if (firstlast == 4)
-                 {
-                    int                 wt, ht;
+		  dx = x - x1;
+		  dy = y - y1;
+		  if (dx < 0)
+		     adx = -dx;
+		  else
+		     adx = dx;
+		  if (dy < 0)
+		     ady = -dy;
+		  else
+		     ady = dy;
+		  wt = ewin->w;
+		  ht = ewin->h;
+		  if ((adx <= wt) && (ady <= ht))
+		    {
+		       if (dx < 0)
+			  EFillPixmap(root.win, root_pi->pmap, x, y, -dx, ht);
+		       else if (dx > 0)
+			  EFillPixmap(root.win, root_pi->pmap, x + wt - dx, y,
+				      dx, ht);
+		       if (dy < 0)
+			  EFillPixmap(root.win, root_pi->pmap, x, y, wt, -dy);
+		       else if (dy > 0)
+			  EFillPixmap(root.win, root_pi->pmap, x, y + ht - dy,
+				      wt, dy);
+		    }
+		  else
+		     EFillPixmap(root.win, root_pi->pmap, x, y, wt, ht);
+		  if ((adx <= wt) && (ady <= ht))
+		    {
+		       EBlendPixImg(ewin, root_pi, ewin_pi, draw_pi, x, y,
+				    ewin->w, ewin->h);
+		       if (dx > 0)
+			  EPastePixmap(root.win, root_pi->pmap, x1, y1, dx, ht);
+		       else if (dx < 0)
+			  EPastePixmap(root.win, root_pi->pmap, x1 + wt + dx,
+				       y1, -dx, ht);
+		       if (dy > 0)
+			  EPastePixmap(root.win, root_pi->pmap, x1, y1, wt, dy);
+		       else if (dy < 0)
+			  EPastePixmap(root.win, root_pi->pmap, x1,
+				       y1 + ht + dy, wt, -dy);
+		    }
+		  else
+		    {
+		       EPastePixmap(root.win, root_pi->pmap, x1, y1, wt, ht);
+		       EBlendPixImg(ewin, root_pi, ewin_pi, draw_pi, x, y,
+				    ewin->w, ewin->h);
+		    }
+		  EBlendRemoveShape(ewin, root_pi->pmap, x, y);
+	       }
+	     else if (firstlast == 2)
+	       {
+		  EPastePixmap(root.win, root_pi->pmap, x1, y1, ewin->w,
+			       ewin->h);
+		  if (ewin_pi)
+		     EDestroyPixImg(ewin_pi);
+		  if (root_pi)
+		     EDestroyPixImg(root_pi);
+		  if (draw_pi)
+		     EDestroyPixImg(draw_pi);
+		  EBlendRemoveShape(NULL, 0, 0, 0);
+		  EBlendPixImg(NULL, NULL, NULL, NULL, 0, 0, 0, 0);
+		  ewin_pi = NULL;
+		  root_pi = NULL;
+		  draw_pi = NULL;
+	       }
+	     else if (firstlast == 3)
+	       {
+		  EPastePixmap(root.win, root_pi->pmap, x, y, ewin->w, ewin->h);
+		  if (root_pi)
+		     EDestroyPixImg(root_pi);
+		  root_pi->pmap = 0;
+	       }
+	     else if (firstlast == 4)
+	       {
+		  int                 wt, ht;
 
-                    wt = ewin->w;
-                    ht = ewin->h;
-                    root_pi = ECreatePixImg(root.win, root.w, root.h);
-                    EFillPixmap(root.win, root_pi->pmap, x, y, wt, ht);
-                    EBlendPixImg(ewin, root_pi, ewin_pi, draw_pi, x, y, ewin->w,
-                                 ewin->h);
-                 }
-               else if (firstlast == 5)
-                 {
-                    if (root_pi)
-                       EDestroyPixImg(root_pi);
-                    root_pi->pmap = 0;
-                 }
-               if (mode.mode != MODE_NONE)
-                  SetCoords(ewin->x, ewin->y,
-                            (ewin->client.w -
-                             ewin->client.base_w) / ewin->client.w_inc,
-                            (ewin->client.h -
-                             ewin->client.base_h) / ewin->client.h_inc);
-            }
-          if (firstlast == 2)
-            {
-               /* If we're moving a group, don't do this,
-                * otherwise we have a lot of garbage onscreen */
-               if (!ewin->floating || !ewin->groups
-                   || (ewin->groups && !check_move))
-                 {
-                    if (ewin->shaded)
-                       MoveEwin(ewin, ewin->x, ewin->y);
-                    else
-                       MoveResizeEwin(ewin, ewin->x, ewin->y, pw, ph);
-                 }
-               XFreeGC(disp, gc);
-               gc = 0;
-            }
-          break;
-       default:
-          break;
+		  wt = ewin->w;
+		  ht = ewin->h;
+		  root_pi = ECreatePixImg(root.win, root.w, root.h);
+		  EFillPixmap(root.win, root_pi->pmap, x, y, wt, ht);
+		  EBlendPixImg(ewin, root_pi, ewin_pi, draw_pi, x, y, ewin->w,
+			       ewin->h);
+	       }
+	     else if (firstlast == 5)
+	       {
+		  if (root_pi)
+		     EDestroyPixImg(root_pi);
+		  root_pi->pmap = 0;
+	       }
+	     if (mode.mode != MODE_NONE)
+		SetCoords(ewin->x, ewin->y,
+			  (ewin->client.w -
+			   ewin->client.base_w) / ewin->client.w_inc,
+			  (ewin->client.h -
+			   ewin->client.base_h) / ewin->client.h_inc);
+	  }
+	if (firstlast == 2)
+	  {
+	     /* If we're moving a group, don't do this,
+	      * otherwise we have a lot of garbage onscreen */
+	     if (!ewin->floating || !ewin->groups
+		 || (ewin->groups && !check_move))
+	       {
+		  if (ewin->shaded)
+		     MoveEwin(ewin, ewin->x, ewin->y);
+		  else
+		     MoveResizeEwin(ewin, ewin->x, ewin->y, pw, ph);
+	       }
+	     XFreeGC(disp, gc);
+	     gc = 0;
+	  }
+	break;
+     default:
+	break;
      }
    queue_up = pq;
    EDBUG_RETURN_;
@@ -1381,15 +1367,15 @@ ELoadImageImlibData(ImlibData * imd, char *file)
       EDBUG_RETURN(NULL);
    if (file[0] == '/')
      {
-        EDBUG_RETURN(Imlib_load_image(imd, file));
+	EDBUG_RETURN(Imlib_load_image(imd, file));
      }
    else
       f = FindFile(file);
    if (f)
      {
-        im = Imlib_load_image(imd, f);
-        Efree(f);
-        EDBUG_RETURN(im);
+	im = Imlib_load_image(imd, f);
+	Efree(f);
+	EDBUG_RETURN(im);
      }
    EDBUG_RETURN(NULL);
 }
@@ -1407,28 +1393,28 @@ PropagateShapes(Window win)
    EDBUG(6, "PropagateShapes");
    if (queue_up)
      {
-        DrawQueue          *dq;
+	DrawQueue          *dq;
 
-        dq = Emalloc(sizeof(DrawQueue));
-        dq->win = win;
-        dq->iclass = NULL;
-        dq->w = 0;
-        dq->h = 0;
-        dq->active = 0;
-        dq->sticky = 0;
-        dq->state = 0;
-        dq->expose = 0;
-        dq->tclass = NULL;
-        dq->text = NULL;
-        dq->shape_propagate = 1;
-        dq->pager = NULL;
-        dq->redraw_pager = NULL;
-        dq->d = NULL;
-        dq->di = NULL;
-        dq->x = 0;
-        dq->y = 0;
-        AddItem(dq, "DRAW", dq->win, LIST_TYPE_DRAW);
-        EDBUG_RETURN_;
+	dq = Emalloc(sizeof(DrawQueue));
+	dq->win = win;
+	dq->iclass = NULL;
+	dq->w = 0;
+	dq->h = 0;
+	dq->active = 0;
+	dq->sticky = 0;
+	dq->state = 0;
+	dq->expose = 0;
+	dq->tclass = NULL;
+	dq->text = NULL;
+	dq->shape_propagate = 1;
+	dq->pager = NULL;
+	dq->redraw_pager = NULL;
+	dq->d = NULL;
+	dq->di = NULL;
+	dq->x = 0;
+	dq->y = 0;
+	AddItem(dq, "DRAW", dq->win, LIST_TYPE_DRAW);
+	EDBUG_RETURN_;
      }
    EGetGeometry(disp, win, &rt, &x, &y, &w, &h, &d, &d);
    if ((w <= 0) || (h <= 0))
@@ -1440,78 +1426,78 @@ PropagateShapes(Window win)
    XQueryTree(disp, win, &rt, &par, &list, (unsigned int *)&num);
    if (list)
      {
-        /* go through all child windows and create/inset spans */
-        for (i = 0; i < num; i++)
-          {
-             XGetWindowAttributes(disp, list[i], &att);
-             x = att.x;
-             y = att.y;
-             w = att.width;
-             h = att.height;
-             if ((att.class == InputOutput) && (att.map_state != IsUnmapped))
-               {
-                  rl = NULL;
-                  rl = EShapeGetRectangles(disp, list[i], ShapeBounding, &rn,
-                                           &ord);
-                  if (rl)
-                    {
-                       num_rects += rn;
-                       if (rn > 0)
-                         {
-                            rects =
-                                Erealloc(rects, num_rects * sizeof(XRectangle));
-                            /* go through all clip rects in thsi window's shape */
-                            for (k = 0; k < rn; k++)
-                              {
-                                 /* for each clip rect, add it to the rect list */
-                                 rects[num_rects - rn + k].x = x + rl[k].x;
-                                 rects[num_rects - rn + k].y = y + rl[k].y;
-                                 rects[num_rects - rn + k].width = rl[k].width;
-                                 rects[num_rects - rn + k].height =
-                                     rl[k].height;
-                              }
-                         }
-                       Efree(rl);
-                    }
-                  else
-                    {
-                       num_rects++;
-                       rects = Erealloc(rects, num_rects * sizeof(XRectangle));
+	/* go through all child windows and create/inset spans */
+	for (i = 0; i < num; i++)
+	  {
+	     XGetWindowAttributes(disp, list[i], &att);
+	     x = att.x;
+	     y = att.y;
+	     w = att.width;
+	     h = att.height;
+	     if ((att.class == InputOutput) && (att.map_state != IsUnmapped))
+	       {
+		  rl = NULL;
+		  rl = EShapeGetRectangles(disp, list[i], ShapeBounding, &rn,
+					   &ord);
+		  if (rl)
+		    {
+		       num_rects += rn;
+		       if (rn > 0)
+			 {
+			    rects =
+			       Erealloc(rects, num_rects * sizeof(XRectangle));
+			    /* go through all clip rects in thsi window's shape */
+			    for (k = 0; k < rn; k++)
+			      {
+				 /* for each clip rect, add it to the rect list */
+				 rects[num_rects - rn + k].x = x + rl[k].x;
+				 rects[num_rects - rn + k].y = y + rl[k].y;
+				 rects[num_rects - rn + k].width = rl[k].width;
+				 rects[num_rects - rn + k].height =
+				    rl[k].height;
+			      }
+			 }
+		       Efree(rl);
+		    }
+		  else
+		    {
+		       num_rects++;
+		       rects = Erealloc(rects, num_rects * sizeof(XRectangle));
 
-                       rects[num_rects - 1].x = x;
-                       rects[num_rects - 1].y = y;
-                       rects[num_rects - 1].width = w;
-                       rects[num_rects - 1].height = h;
-                    }
-               }
-          }
-        /* set the rects as the shape mask */
-        if (rects)
-          {
-             EShapeCombineRectangles(disp, win, ShapeBounding, 0, 0, rects,
-                                     num_rects, ShapeSet, Unsorted);
-             Efree(rects);
-             rl = NULL;
-             rl = EShapeGetRectangles(disp, win, ShapeBounding, &rn, &ord);
-             if (rl)
-               {
-                  if (rn < 1)
-                     EShapeCombineMask(disp, win, ShapeBounding, 0, 0, None,
-                                       ShapeSet);
-                  else if (rn == 1)
-                    {
-                       if ((rl[0].x == 0) && (rl[0].y == 0)
-                           && (rl[0].width == ww) && (rl[0].height == hh))
-                          EShapeCombineMask(disp, win, ShapeBounding, 0, 0,
-                                            None, ShapeSet);
-                    }
-                  Efree(rl);
-               }
-             else
-                EShapeCombineMask(disp, win, ShapeBounding, 0, 0, None,
-                                  ShapeSet);
-          }
-        XFree(list);
+		       rects[num_rects - 1].x = x;
+		       rects[num_rects - 1].y = y;
+		       rects[num_rects - 1].width = w;
+		       rects[num_rects - 1].height = h;
+		    }
+	       }
+	  }
+	/* set the rects as the shape mask */
+	if (rects)
+	  {
+	     EShapeCombineRectangles(disp, win, ShapeBounding, 0, 0, rects,
+				     num_rects, ShapeSet, Unsorted);
+	     Efree(rects);
+	     rl = NULL;
+	     rl = EShapeGetRectangles(disp, win, ShapeBounding, &rn, &ord);
+	     if (rl)
+	       {
+		  if (rn < 1)
+		     EShapeCombineMask(disp, win, ShapeBounding, 0, 0, None,
+				       ShapeSet);
+		  else if (rn == 1)
+		    {
+		       if ((rl[0].x == 0) && (rl[0].y == 0)
+			   && (rl[0].width == ww) && (rl[0].height == hh))
+			  EShapeCombineMask(disp, win, ShapeBounding, 0, 0,
+					    None, ShapeSet);
+		    }
+		  Efree(rl);
+	       }
+	     else
+		EShapeCombineMask(disp, win, ShapeBounding, 0, 0, None,
+				  ShapeSet);
+	  }
+	XFree(list);
      }
    EDBUG_RETURN_;
 }

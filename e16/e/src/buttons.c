@@ -24,10 +24,10 @@
 
 Button             *
 CreateButton(char *name, ImageClass * iclass, ActionClass * aclass,
-             TextClass * tclass, char *label, char ontop, int flags,
-             int minw, int maxw, int minh, int maxh, int xo, int yo,
-             int xa, int xr, int ya, int yr, int xsr, int xsa, int ysr,
-             int ysa, char simg, int desk, char sticky)
+	     TextClass * tclass, char *label, char ontop, int flags,
+	     int minw, int maxw, int minh, int maxh, int xo, int yo,
+	     int xa, int xr, int ya, int yr, int xsr, int xsa, int ysr,
+	     int ysa, char simg, int desk, char sticky)
 {
    Button             *b;
 
@@ -41,7 +41,7 @@ CreateButton(char *name, ImageClass * iclass, ActionClass * aclass,
    b->iclass = iclass;
    if (!b->iclass)
       b->iclass =
-          FindItem("__FALLBACK_ICLASS", 0, LIST_FINDBY_NAME, LIST_TYPE_ICLASS);
+	 FindItem("__FALLBACK_ICLASS", 0, LIST_FINDBY_NAME, LIST_TYPE_ICLASS);
    if (b->iclass)
       b->iclass->ref_count++;
 
@@ -53,9 +53,8 @@ CreateButton(char *name, ImageClass * iclass, ActionClass * aclass,
 
    if ((!b->tclass) && (b->label))
      {
-        b->tclass =
-            FindItem("__FALLBACK_TCLASS", 0, LIST_FINDBY_NAME,
-                     LIST_TYPE_TCLASS);
+	b->tclass =
+	   FindItem("__FALLBACK_TCLASS", 0, LIST_FINDBY_NAME, LIST_TYPE_TCLASS);
      }
    if (b->tclass)
       b->tclass->ref_count++;
@@ -90,12 +89,12 @@ CreateButton(char *name, ImageClass * iclass, ActionClass * aclass,
    b->used = 0;
    b->left = 0;
    b->win =
-       ECreateWindow(desks.desk[desk % ENLIGHTENMENT_CONF_NUM_DESKTOPS].win,
-                     -100, -100, 50, 50, 0);
+      ECreateWindow(desks.desk[desk % ENLIGHTENMENT_CONF_NUM_DESKTOPS].win,
+		    -100, -100, 50, 50, 0);
    XSelectInput(disp, b->win,
-                ExposureMask | KeyPressMask | KeyReleaseMask | ButtonPressMask
-                | ButtonReleaseMask | EnterWindowMask | LeaveWindowMask |
-                PointerMotionMask);
+		ExposureMask | KeyPressMask | KeyReleaseMask | ButtonPressMask
+		| ButtonReleaseMask | EnterWindowMask | LeaveWindowMask |
+		PointerMotionMask);
    b->x = -1;
    b->y = -1;
    b->w = -1;
@@ -122,13 +121,13 @@ DestroyButton(Button * b)
 
    if (b->ref_count > 0)
      {
-        char                stuff[255];
+	char                stuff[255];
 
-        Esnprintf(stuff, sizeof(stuff), _("%u references remain\n"),
-                  b->ref_count);
-        DIALOG_OK(_("Button Error!"), stuff);
+	Esnprintf(stuff, sizeof(stuff), _("%u references remain\n"),
+		  b->ref_count);
+	DIALOG_OK(_("Button Error!"), stuff);
 
-        EDBUG_RETURN_;
+	EDBUG_RETURN_;
      }
 
    while (RemoveItemByPtr(b, LIST_TYPE_BUTTON));
@@ -169,35 +168,35 @@ CalcButton(Button * b)
    h = 32;
    if (b->geom.size_from_image)
      {
-        if ((b->iclass) && (b->iclass->norm.normal->im_file))
-          {
-             im = ELoadImage(b->iclass->norm.normal->im_file);
-             if (im)
-               {
-                  w = im->rgb_width;
-                  h = im->rgb_height;
-                  Imlib_destroy_image(id, im);
-               }
-             else
-               {
-                  w = 32;
-                  h = 32;
-               }
-          }
-        else
-          {
-             if (!b->iclass)
-                b->iclass =
-                    FindItem("__FALLBACK_ICLASS", 0, LIST_FINDBY_NAME,
-                             LIST_TYPE_ICLASS);
-             w = 32;
-             h = 32;
-          }
+	if ((b->iclass) && (b->iclass->norm.normal->im_file))
+	  {
+	     im = ELoadImage(b->iclass->norm.normal->im_file);
+	     if (im)
+	       {
+		  w = im->rgb_width;
+		  h = im->rgb_height;
+		  Imlib_destroy_image(id, im);
+	       }
+	     else
+	       {
+		  w = 32;
+		  h = 32;
+	       }
+	  }
+	else
+	  {
+	     if (!b->iclass)
+		b->iclass =
+		   FindItem("__FALLBACK_ICLASS", 0, LIST_FINDBY_NAME,
+			    LIST_TYPE_ICLASS);
+	     w = 32;
+	     h = 32;
+	  }
      }
    else
      {
-        w = ((b->geom.xsizerel * root.w) >> 10) + b->geom.xsizeabs;
-        h = ((b->geom.ysizerel * root.h) >> 10) + b->geom.ysizeabs;
+	w = ((b->geom.xsizerel * root.w) >> 10) + b->geom.xsizeabs;
+	h = ((b->geom.ysizerel * root.h) >> 10) + b->geom.ysizeabs;
      }
    if (w > b->geom.width.max)
       w = b->geom.width.max;
@@ -243,8 +242,8 @@ SimpleShowButton(Button * b)
    b->visible = 1;
    if (init_win1)
      {
-        XRaiseWindow(disp, init_win1);
-        XRaiseWindow(disp, init_win2);
+	XRaiseWindow(disp, init_win1);
+	XRaiseWindow(disp, init_win2);
      }
    if (init_win_ext)
       XRaiseWindow(disp, init_win_ext);
@@ -275,15 +274,15 @@ ShowButton(Button * b)
 
    if ((move) && (resize))
      {
-        EMoveResizeWindow(disp, b->win, b->x, b->y, b->w, b->h);
+	EMoveResizeWindow(disp, b->win, b->x, b->y, b->w, b->h);
      }
    else if (move)
      {
-        EMoveWindow(disp, b->win, b->x, b->y);
+	EMoveWindow(disp, b->win, b->x, b->y);
      }
    else if (resize)
      {
-        EResizeWindow(disp, b->win, b->w, b->h);
+	EResizeWindow(disp, b->win, b->w, b->h);
      }
    if (b->sticky)
       XRaiseWindow(disp, b->win);
@@ -307,15 +306,15 @@ MoveButtonToDesktop(Button * b, int num)
 
    if (b->sticky)
      {
-        b->desktop = 0;
-        EReparentWindow(disp, b->win, desks.desk[0].win, b->x, b->y);
-        XRaiseWindow(disp, b->win);
+	b->desktop = 0;
+	EReparentWindow(disp, b->win, desks.desk[0].win, b->x, b->y);
+	XRaiseWindow(disp, b->win);
      }
    else
      {
-        b->desktop = num;
-        EReparentWindow(disp, b->win, desks.desk[DESKTOPS_WRAP_NUM(num)].win,
-                        b->x, b->y);
+	b->desktop = num;
+	EReparentWindow(disp, b->win, desks.desk[DESKTOPS_WRAP_NUM(num)].win,
+			b->x, b->y);
      }
    StackDesktops();
 
@@ -342,7 +341,7 @@ DrawButton(Button * b)
 
    if (b->label)
       TclassApply(b->iclass, b->win, b->w, b->h, 0, 0, b->state, 0, b->tclass,
-                  b->label);
+		  b->label);
    EDBUG_RETURN_;
 }
 
@@ -374,15 +373,15 @@ MovebuttonToCoord(Button * b, int x, int y)
    absy = y - ry;
    if (!(b->flags & FLAG_FIXED_HORIZ))
      {
-        b->geom.xorigin = 0;
-        b->geom.xabs = absx;
-        b->geom.xrel = relx;
+	b->geom.xorigin = 0;
+	b->geom.xabs = absx;
+	b->geom.xrel = relx;
      }
    if (!(b->flags & FLAG_FIXED_VERT))
      {
-        b->geom.yorigin = 0;
-        b->geom.yabs = absy;
-        b->geom.yrel = rely;
+	b->geom.yorigin = 0;
+	b->geom.yabs = absy;
+	b->geom.yrel = rely;
      }
    CalcButton(b);
    move = 0;
@@ -418,15 +417,15 @@ EmbedWindowIntoButton(Button * ButtonToUse, Window WindowToEmbed)
    ButtonToUse->inside_win = WindowToEmbed;
    GetWinWH(WindowToEmbed, &w, &h);
    EMoveWindow(disp, ButtonToUse->inside_win, (ButtonToUse->w - w) >> 1,
-               (ButtonToUse->h - h) >> 1);
+	       (ButtonToUse->h - h) >> 1);
    ButtonToUse->event_win = ECreateEventWindow(ButtonToUse->win, 0, 0, w, h);
 
    XSelectInput(disp, ButtonToUse->event_win,
-                ButtonPressMask | ButtonReleaseMask | EnterWindowMask |
-                LeaveWindowMask | ButtonMotionMask);
+		ButtonPressMask | ButtonReleaseMask | EnterWindowMask |
+		LeaveWindowMask | ButtonMotionMask);
 
    EMoveWindow(disp, ButtonToUse->event_win, (ButtonToUse->w - w) >> 1,
-               (ButtonToUse->h - h) >> 1);
+	       (ButtonToUse->h - h) >> 1);
    EMapRaised(disp, ButtonToUse->event_win);
 
    EDBUG_RETURN(0);
@@ -443,37 +442,37 @@ FindEmptySpotForButton(Button * bt, char *listname, char dirtomove)
    blst = (Button **) ListItemTypeName(&num, LIST_TYPE_BUTTON, listname);
    if (blst)
      {
-        for (i = 0; i < num; i++)
-          {
-             for (j = 0; j < num; j++)
-               {
-                  if ((bt->x + bt->w) <= blst[j]->x
-                      || bt->x >= (blst[j]->x + blst[j]->w))
-                    {
-                       done = 1;
-                    }
-                  else
-                    {
-                       if ((bt->y + bt->h) <= blst[j]->y
-                           || bt->y > (blst[j]->y + blst[j]->h))
-                          done = 1;
-                       else
-                          done = 0;
-                    }
-                  if (!done)
-                    {
-                       if (dirtomove == ICON_RIGHT)
-                          bt->x += bt->w;
-                       else if (dirtomove == ICON_LEFT)
-                          bt->x -= bt->w;
-                       else if (dirtomove == ICON_DOWN)
-                          bt->y += bt->h;
-                       else if (dirtomove == ICON_UP)
-                          bt->y -= bt->h;
-                    }
-               }
-          }
-        Efree(blst);
+	for (i = 0; i < num; i++)
+	  {
+	     for (j = 0; j < num; j++)
+	       {
+		  if ((bt->x + bt->w) <= blst[j]->x
+		      || bt->x >= (blst[j]->x + blst[j]->w))
+		    {
+		       done = 1;
+		    }
+		  else
+		    {
+		       if ((bt->y + bt->h) <= blst[j]->y
+			   || bt->y > (blst[j]->y + blst[j]->h))
+			  done = 1;
+		       else
+			  done = 0;
+		    }
+		  if (!done)
+		    {
+		       if (dirtomove == ICON_RIGHT)
+			  bt->x += bt->w;
+		       else if (dirtomove == ICON_LEFT)
+			  bt->x -= bt->w;
+		       else if (dirtomove == ICON_DOWN)
+			  bt->y += bt->h;
+		       else if (dirtomove == ICON_UP)
+			  bt->y -= bt->h;
+		    }
+	       }
+	  }
+	Efree(blst);
      }
    MovebuttonToCoord(bt, bt->x, bt->y);
    EDBUG_RETURN_;

@@ -39,7 +39,7 @@ FileExtension(char *file)
    p = strrchr(file, '.');
    if (p != NULL)
      {
-        EDBUG_RETURN(p + 1);
+	EDBUG_RETURN(p + 1);
      }
    EDBUG_RETURN("");
 }
@@ -90,16 +90,16 @@ mkdirs(char *s)
    ii = 0;
    while (s[i])
      {
-        ss[ii++] = s[i];
-        ss[ii] = 0;
-        if (s[i] == '/')
-          {
-             if (!exists(ss))
-                md(ss);
-             else if (!isdir(ss))
-                return;
-          }
-        i++;
+	ss[ii++] = s[i];
+	ss[ii] = 0;
+	if (s[i] == '/')
+	  {
+	     if (!exists(ss))
+		md(ss);
+	     else if (!isdir(ss))
+		return;
+	  }
+	i++;
      }
 }
 
@@ -148,16 +148,16 @@ ls(char *dir, int *num)
    dirp = opendir(dir);
    if (!dirp)
      {
-        *num = 0;
-        EDBUG_RETURN(NULL);
+	*num = 0;
+	EDBUG_RETURN(NULL);
      }
    /* count # of entries in dir (worst case) */
    for (dirlen = 0; (dp = readdir(dirp)) != NULL; dirlen++);
    if (!dirlen)
      {
-        closedir(dirp);
-        *num = dirlen;
-        EDBUG_RETURN(NULL);
+	closedir(dirp);
+	*num = dirlen;
+	EDBUG_RETURN(NULL);
      }
    names = (char **)Emalloc(dirlen * sizeof(char *));
 
@@ -167,36 +167,36 @@ ls(char *dir, int *num)
    rewinddir(dirp);
    for (i = 0; i < dirlen;)
      {
-        dp = readdir(dirp);
-        if (!dp)
-           break;
-        if ((strcmp(dp->d_name, ".")) && (strcmp(dp->d_name, "..")))
-          {
-             names[i] = duplicate(dp->d_name);
-             i++;
-          }
+	dp = readdir(dirp);
+	if (!dp)
+	   break;
+	if ((strcmp(dp->d_name, ".")) && (strcmp(dp->d_name, "..")))
+	  {
+	     names[i] = duplicate(dp->d_name);
+	     i++;
+	  }
      }
 
    if (i < dirlen)
-      dirlen = i;               /* dir got shorter... */
+      dirlen = i;		/* dir got shorter... */
    closedir(dirp);
    *num = dirlen;
    /* do a simple bubble sort here to alphanumberic it */
    while (!done)
      {
-        done = 1;
-        for (i = 0; i < dirlen - 1; i++)
-          {
-             if (strcmp(names[i], names[i + 1]) > 0)
-               {
-                  char               *tmp;
+	done = 1;
+	for (i = 0; i < dirlen - 1; i++)
+	  {
+	     if (strcmp(names[i], names[i + 1]) > 0)
+	       {
+		  char               *tmp;
 
-                  tmp = names[i];
-                  names[i] = names[i + 1];
-                  names[i + 1] = tmp;
-                  done = 0;
-               }
-          }
+		  tmp = names[i];
+		  names[i] = names[i + 1];
+		  names[i + 1] = tmp;
+		  done = 0;
+	       }
+	  }
      }
    EDBUG_RETURN(names);
 }
@@ -209,7 +209,7 @@ freestrlist(char **l, int num)
       EDBUG_RETURN_;
    while (num--)
       if (l[num])
-         Efree(l[num]);
+	 Efree(l[num]);
    Efree(l);
    EDBUG_RETURN_;
 }
@@ -253,8 +253,8 @@ cp(char *s, char *ss)
    ff = fopen(ss, "w");
    if (!ff)
      {
-        fclose(f);
-        EDBUG_RETURN_;
+	fclose(f);
+	EDBUG_RETURN_;
      }
    while (fread(buf, 1, 1, f))
       fwrite(buf, 1, 1, ff);
@@ -275,7 +275,7 @@ moddate(char *s)
       EDBUG_RETURN(0);
    if (st.st_mtime > st.st_ctime)
      {
-        EDBUG_RETURN(st.st_mtime);
+	EDBUG_RETURN(st.st_mtime);
      }
    else
       EDBUG_RETURN(st.st_ctime);
@@ -404,10 +404,10 @@ username(int uid)
    pwd = getpwuid(uid);
    if (pwd)
      {
-        s = duplicate(pwd->pw_name);
-        if (uid == usr_uid)
-           usr_s = duplicate(s);
-        EDBUG_RETURN(s);
+	s = duplicate(pwd->pw_name);
+	if (uid == usr_uid)
+	   usr_s = duplicate(s);
+	EDBUG_RETURN(s);
      }
 #else
    if ((s = getenv("USER")) != NULL)
@@ -431,15 +431,15 @@ homedir(int uid)
       usr_uid = getuid();
    if ((uid == usr_uid) && (usr_s))
      {
-        EDBUG_RETURN(duplicate(usr_s));
+	EDBUG_RETURN(duplicate(usr_s));
      }
    pwd = getpwuid(uid);
    if (pwd)
      {
-        s = duplicate(pwd->pw_dir);
-        if (uid == usr_uid)
-           usr_s = duplicate(s);
-        EDBUG_RETURN(s);
+	s = duplicate(pwd->pw_dir);
+	if (uid == usr_uid)
+	   usr_s = duplicate(s);
+	EDBUG_RETURN(s);
      }
 #else
    if ((s = getenv("HOME")) != NULL)
@@ -448,7 +448,7 @@ homedir(int uid)
       EDBUG_RETURN(_fnslashify(duplicate(s)));
 #endif
    EDBUG_RETURN(duplicate
-                ((getenv("TMPDIR") == NULL) ? "/tmp" : getenv("TMPDIR")));
+		((getenv("TMPDIR") == NULL) ? "/tmp" : getenv("TMPDIR")));
 }
 
 char               *
@@ -468,16 +468,16 @@ usershell(int uid)
    pwd = getpwuid(uid);
    if (pwd)
      {
-        if (!pwd->pw_shell)
-           EDBUG_RETURN(duplicate("/bin/sh"));
-        if (strlen(pwd->pw_shell) < 1)
-           EDBUG_RETURN(duplicate("/bin/sh"));
-        if (!(canexec(pwd->pw_shell)))
-           EDBUG_RETURN(duplicate("/bin/sh"));
-        s = duplicate(pwd->pw_shell);
-        if (uid == usr_uid)
-           usr_s = duplicate(s);
-        EDBUG_RETURN(s);
+	if (!pwd->pw_shell)
+	   EDBUG_RETURN(duplicate("/bin/sh"));
+	if (strlen(pwd->pw_shell) < 1)
+	   EDBUG_RETURN(duplicate("/bin/sh"));
+	if (!(canexec(pwd->pw_shell)))
+	   EDBUG_RETURN(duplicate("/bin/sh"));
+	s = duplicate(pwd->pw_shell);
+	if (uid == usr_uid)
+	   usr_s = duplicate(s);
+	EDBUG_RETURN(s);
      }
    EDBUG_RETURN(duplicate("/bin/sh"));
 #else
@@ -498,16 +498,16 @@ atword(char *s, int num)
 
    while (s[i])
      {
-        if ((s[i] != ' ') && (s[i] != '\t'))
-          {
-             if (i == 0)
-                cnt++;
-             else if ((s[i - 1] == ' ') || (s[i - 1] == '\t'))
-                cnt++;
-             if (cnt == num)
-                EDBUG_RETURN(&s[i]);
-          }
-        i++;
+	if ((s[i] != ' ') && (s[i] != '\t'))
+	  {
+	     if (i == 0)
+		cnt++;
+	     else if ((s[i - 1] == ' ') || (s[i - 1] == '\t'))
+		cnt++;
+	     if (cnt == num)
+		EDBUG_RETURN(&s[i]);
+	  }
+	i++;
      }
    EDBUG_RETURN(NULL);
 }
@@ -523,9 +523,9 @@ atchar(char *s, char c)
    i = 0;
    while (s[i] != 0)
      {
-        if (s[i] == c)
-           EDBUG_RETURN(&s[i]);
-        i++;
+	if (s[i] == c)
+	   EDBUG_RETURN(&s[i]);
+	i++;
      }
    EDBUG_RETURN(NULL);
 }
@@ -549,8 +549,8 @@ getword(char *s, int num)
       EDBUG_RETURN(NULL);
    if (num <= 0)
      {
-        *wd = 0;
-        EDBUG_RETURN(NULL);
+	*wd = 0;
+	EDBUG_RETURN(NULL);
      }
    cnt = 0;
    i = 0;
@@ -561,41 +561,41 @@ getword(char *s, int num)
 
    while (s[i])
      {
-        if ((cnt == num) && ((s[i] == ' ') || (s[i] == '\t')))
-          {
-             finish = &s[i];
-             break;
-          }
-        if ((s[i] != ' ') && (s[i] != '\t'))
-          {
-             if (i == 0)
-               {
-                  cnt++;
-                  if (cnt == num)
-                     start = &s[i];
-               }
-             else if ((s[i - 1] == ' ') || (s[i - 1] == '\t'))
-               {
-                  cnt++;
-                  if (cnt == num)
-                     start = &s[i];
-               }
-          }
-        i++;
+	if ((cnt == num) && ((s[i] == ' ') || (s[i] == '\t')))
+	  {
+	     finish = &s[i];
+	     break;
+	  }
+	if ((s[i] != ' ') && (s[i] != '\t'))
+	  {
+	     if (i == 0)
+	       {
+		  cnt++;
+		  if (cnt == num)
+		     start = &s[i];
+	       }
+	     else if ((s[i - 1] == ' ') || (s[i - 1] == '\t'))
+	       {
+		  cnt++;
+		  if (cnt == num)
+		     start = &s[i];
+	       }
+	  }
+	i++;
      }
    if (cnt == num)
      {
-        if ((start) && (finish))
-          {
-             for (ss = start; ss < finish; ss++)
-                *wd++ = *ss;
-          }
-        else if (start)
-          {
-             for (ss = start; *ss != 0; ss++)
-                *wd++ = *ss;
-          }
-        *wd = 0;
+	if ((start) && (finish))
+	  {
+	     for (ss = start; ss < finish; ss++)
+		*wd++ = *ss;
+	  }
+	else if (start)
+	  {
+	     for (ss = start; *ss != 0; ss++)
+		*wd++ = *ss;
+	  }
+	*wd = 0;
      }
    EDBUG_RETURN(wd);
 }
@@ -613,8 +613,8 @@ word(char *s, int num, char *wd)
       EDBUG_RETURN_;
    if (num <= 0)
      {
-        *wd = 0;
-        EDBUG_RETURN_;
+	*wd = 0;
+	EDBUG_RETURN_;
      }
    cnt = 0;
    i = 0;
@@ -625,41 +625,41 @@ word(char *s, int num, char *wd)
 
    while (s[i])
      {
-        if ((cnt == num) && ((s[i] == ' ') || (s[i] == '\t')))
-          {
-             finish = &s[i];
-             break;
-          }
-        if ((s[i] != ' ') && (s[i] != '\t'))
-          {
-             if (i == 0)
-               {
-                  cnt++;
-                  if (cnt == num)
-                     start = &s[i];
-               }
-             else if ((s[i - 1] == ' ') || (s[i - 1] == '\t'))
-               {
-                  cnt++;
-                  if (cnt == num)
-                     start = &s[i];
-               }
-          }
-        i++;
+	if ((cnt == num) && ((s[i] == ' ') || (s[i] == '\t')))
+	  {
+	     finish = &s[i];
+	     break;
+	  }
+	if ((s[i] != ' ') && (s[i] != '\t'))
+	  {
+	     if (i == 0)
+	       {
+		  cnt++;
+		  if (cnt == num)
+		     start = &s[i];
+	       }
+	     else if ((s[i - 1] == ' ') || (s[i - 1] == '\t'))
+	       {
+		  cnt++;
+		  if (cnt == num)
+		     start = &s[i];
+	       }
+	  }
+	i++;
      }
    if (cnt == num)
      {
-        if ((start) && (finish))
-          {
-             for (ss = start; ss < finish; ss++)
-                *wd++ = *ss;
-          }
-        else if (start)
-          {
-             for (ss = start; *ss != 0; ss++)
-                *wd++ = *ss;
-          }
-        *wd = 0;
+	if ((start) && (finish))
+	  {
+	     for (ss = start; ss < finish; ss++)
+		*wd++ = *ss;
+	  }
+	else if (start)
+	  {
+	     for (ss = start; *ss != 0; ss++)
+		*wd++ = *ss;
+	  }
+	*wd = 0;
      }
    EDBUG_RETURN_;
 }
@@ -695,45 +695,45 @@ fword(char *s, int num, char *wd)
    end = NULL;
    while ((*cur) && (count < num))
      {
-        if (inword)
-          {
-             if (inquote)
-               {
-                  if (*cur == '"')
-                    {
-                       inquote = 0;
-                       inword = 0;
-                       end = cur;
-                       count++;
-                    }
-               }
-             else
-               {
-                  if (isspace(*cur))
-                    {
-                       end = cur;
-                       inword = 0;
-                       count++;
-                    }
-               }
-          }
-        else
-          {
-             if (!isspace(*cur))
-               {
-                  if (*cur == '"')
-                    {
-                       inquote = 1;
-                       start = cur + 1;
-                    }
-                  else
-                     start = cur;
-                  inword = 1;
-               }
-          }
-        if (count == num)
-           break;
-        cur++;
+	if (inword)
+	  {
+	     if (inquote)
+	       {
+		  if (*cur == '"')
+		    {
+		       inquote = 0;
+		       inword = 0;
+		       end = cur;
+		       count++;
+		    }
+	       }
+	     else
+	       {
+		  if (isspace(*cur))
+		    {
+		       end = cur;
+		       inword = 0;
+		       count++;
+		    }
+	       }
+	  }
+	else
+	  {
+	     if (!isspace(*cur))
+	       {
+		  if (*cur == '"')
+		    {
+		       inquote = 1;
+		       start = cur + 1;
+		    }
+		  else
+		     start = cur;
+		  inword = 1;
+	       }
+	  }
+	if (count == num)
+	   break;
+	cur++;
      }
    if (!start)
       EDBUG_RETURN_;
@@ -746,8 +746,8 @@ fword(char *s, int num, char *wd)
       len = 4000;
    if (len > 0)
      {
-        strncpy(wd, start, len);
-        wd[len] = 0;
+	strncpy(wd, start, len);
+	wd[len] = 0;
      }
    EDBUG_RETURN_;
 }
@@ -762,9 +762,9 @@ field(char *s, int field)
    fword(s, field + 1, buf);
    if (buf[0])
      {
-        if ((!strcmp(buf, "NULL")) || (!strcmp(buf, "(null)")))
-           EDBUG_RETURN(NULL);
-        EDBUG_RETURN(duplicate(buf));
+	if ((!strcmp(buf, "NULL")) || (!strcmp(buf, "(null)")))
+	   EDBUG_RETURN(NULL);
+	EDBUG_RETURN(duplicate(buf));
      }
    EDBUG_RETURN(NULL);
 }
@@ -779,12 +779,12 @@ fillfield(char *s, int field, char *buf)
    fword(s, field + 1, buf);
    if (buf[0])
      {
-        if ((!strcmp(buf, "NULL")) || (!strcmp(buf, "(null)")))
-          {
-             buf[0] = 0;
-             EDBUG_RETURN(0);
-          }
-        EDBUG_RETURN(1);
+	if ((!strcmp(buf, "NULL")) || (!strcmp(buf, "(null)")))
+	  {
+	     buf[0] = 0;
+	     EDBUG_RETURN(0);
+	  }
+	EDBUG_RETURN(1);
      }
    EDBUG_RETURN(0);
 }
@@ -840,10 +840,10 @@ fileof(char *s)
    p2 = -1;
    for (i = strlen(s) - 1; i >= 0; i--)
      {
-        if ((s[i] == '.') && (p2 < 0) && (p1 < 0))
-           p2 = i - 1;
-        if ((s[i] == '/') && (p1 < 0))
-           p1 = i + 1;
+	if ((s[i] == '.') && (p2 < 0) && (p1 < 0))
+	   p2 = i - 1;
+	if ((s[i] == '/') && (p1 < 0))
+	   p1 = i + 1;
      }
    if (p2 < 0)
       p2 = strlen(s) - 1;
@@ -868,8 +868,8 @@ fullfileof(char *s)
    p1 = -1;
    for (i = strlen(s) - 1; i >= 0; i--)
      {
-        if ((s[i] == '/') && (p1 < 0))
-           p1 = i + 1;
+	if ((s[i] == '/') && (p1 < 0))
+	   p1 = i + 1;
      }
    if (p1 < 0)
       p1 = 0;
@@ -894,36 +894,36 @@ pathtoexec(char *file)
    if (_fnisabs(file))
 #endif
      {
-        if (canexec(file))
-           EDBUG_RETURN(duplicate(file));
+	if (canexec(file))
+	   EDBUG_RETURN(duplicate(file));
 #ifdef __EMX__
-        len = strlen(file);
-        s = Emalloc(len + 5);
-        strcpy(s, file);
-        strcat(s, ".cmd");
-        if (canexec(s))
-           EDBUG_RETURN(s);
-        strcpy(s + len, ".exe");
-        if (canexec(s))
-           EDBUG_RETURN(s);
-        Efree(s);
-        if (file[0] != '/' && file[0] != '\\')
-           EDBUG_RETURN(NULL);
-        file = __XOS2RedirRoot(file);
-        if (canexec(file))
-           EDBUG_RETURN(duplicate(file));
-        len = strlen(file);
-        s = Emalloc(len + 5);
-        strcpy(s, file);
-        strcat(s, ".cmd");
-        if (canexec(s))
-           EDBUG_RETURN(s);
-        strcpy(s + len, ".exe");
-        if (canexec(s))
-           EDBUG_RETURN(s);
-        Efree(s);
+	len = strlen(file);
+	s = Emalloc(len + 5);
+	strcpy(s, file);
+	strcat(s, ".cmd");
+	if (canexec(s))
+	   EDBUG_RETURN(s);
+	strcpy(s + len, ".exe");
+	if (canexec(s))
+	   EDBUG_RETURN(s);
+	Efree(s);
+	if (file[0] != '/' && file[0] != '\\')
+	   EDBUG_RETURN(NULL);
+	file = __XOS2RedirRoot(file);
+	if (canexec(file))
+	   EDBUG_RETURN(duplicate(file));
+	len = strlen(file);
+	s = Emalloc(len + 5);
+	strcpy(s, file);
+	strcat(s, ".cmd");
+	if (canexec(s))
+	   EDBUG_RETURN(s);
+	strcpy(s + len, ".exe");
+	if (canexec(s))
+	   EDBUG_RETURN(s);
+	Efree(s);
 #endif
-        EDBUG_RETURN(NULL);
+	EDBUG_RETURN(NULL);
      }
    p = getenv("PATH");
    if (!p)
@@ -940,58 +940,58 @@ pathtoexec(char *file)
    while ((ep = strchr(cp, ';')))
 #endif
      {
-        len = ep - cp;
-        s = Emalloc(len + 1);
-        if (s)
-          {
-             strncpy(s, cp, len);
-             s[len] = 0;
-             s = Erealloc(s, len + 2 + exelen);
+	len = ep - cp;
+	s = Emalloc(len + 1);
+	if (s)
+	  {
+	     strncpy(s, cp, len);
+	     s[len] = 0;
+	     s = Erealloc(s, len + 2 + exelen);
 #ifdef __EMX__
-             if (s[len - 1] != '/')
+	     if (s[len - 1] != '/')
 #endif
-                strcat(s, "/");
-             strcat(s, file);
-             if (canexec(s))
+		strcat(s, "/");
+	     strcat(s, file);
+	     if (canexec(s))
 #ifndef __EMX__
-                EDBUG_RETURN(s);
+		EDBUG_RETURN(s);
 #else
-               {
-                  free(p);
-                  EDBUG_RETURN(s);
-               }
-             strcat(s, ".cmd");
-             if (canexec(s))
-               {
-                  free(p);
-                  EDBUG_RETURN(s);
-               }
-             strcpy(s + strlen(s) - 3, "exe");
-             if (canexec(s))
-               {
-                  free(p);
-                  EDBUG_RETURN(s);
-               }
+	       {
+		  free(p);
+		  EDBUG_RETURN(s);
+	       }
+	     strcat(s, ".cmd");
+	     if (canexec(s))
+	       {
+		  free(p);
+		  EDBUG_RETURN(s);
+	       }
+	     strcpy(s + strlen(s) - 3, "exe");
+	     if (canexec(s))
+	       {
+		  free(p);
+		  EDBUG_RETURN(s);
+	       }
 #endif
-             Efree(s);
-          }
-        cp = ep + 1;
+	     Efree(s);
+	  }
+	cp = ep + 1;
      }
    len = strlen(cp);
    s = Emalloc(len + 1);
    if (s)
      {
-        strncpy(s, cp, len);
-        s[len] = 0;
-        s = Erealloc(s, len + 2 + exelen);
+	strncpy(s, cp, len);
+	s[len] = 0;
+	s = Erealloc(s, len + 2 + exelen);
 #ifdef __EMX__
-        if (s[len - 1] != '/')
+	if (s[len - 1] != '/')
 #endif
-           strcat(s, "/");
-        strcat(s, file);
-        if (canexec(s))
-           EDBUG_RETURN(s);
-        Efree(s);
+	   strcat(s, "/");
+	strcat(s, file);
+	if (canexec(s))
+	   EDBUG_RETURN(s);
+	Efree(s);
      }
    EDBUG_RETURN(NULL);
 }
@@ -1010,8 +1010,8 @@ pathtofile(char *file)
    if (_fnisabs(file))
 #endif
      {
-        if (exists(file))
-           EDBUG_RETURN(duplicate(file));
+	if (exists(file))
+	   EDBUG_RETURN(duplicate(file));
      }
    p = getenv("PATH");
    if (!p)
@@ -1027,53 +1027,53 @@ pathtofile(char *file)
    while ((ep = strchr(cp, ';')))
 #endif
      {
-        len = ep - cp;
-        s = Emalloc(len + 1);
-        if (s)
-          {
-             strncpy(s, cp, len);
-             s[len] = 0;
-             s = Erealloc(s, len + 2 + exelen);
+	len = ep - cp;
+	s = Emalloc(len + 1);
+	if (s)
+	  {
+	     strncpy(s, cp, len);
+	     s[len] = 0;
+	     s = Erealloc(s, len + 2 + exelen);
 #ifdef __EMX__
-             if (s[len - 1] != '/')
+	     if (s[len - 1] != '/')
 #endif
-                strcat(s, "/");
-             strcat(s, file);
-             if (exists(s))
+		strcat(s, "/");
+	     strcat(s, file);
+	     if (exists(s))
 #ifndef __EMX__
-                EDBUG_RETURN(s);
+		EDBUG_RETURN(s);
 #else
-               {
-                  free(p);
-                  EDBUG_RETURN(s);
-               }
+	       {
+		  free(p);
+		  EDBUG_RETURN(s);
+	       }
 #endif
-             Efree(s);
-          }
-        cp = ep + 1;
+	     Efree(s);
+	  }
+	cp = ep + 1;
      }
    len = strlen(cp);
    s = Emalloc(len + 1);
    if (s)
      {
-        strncpy(s, cp, len);
-        s[len] = 0;
-        s = Erealloc(s, len + 2 + exelen);
+	strncpy(s, cp, len);
+	s[len] = 0;
+	s = Erealloc(s, len + 2 + exelen);
 #ifdef __EMX__
-        if (s[len - 1] != '/')
+	if (s[len - 1] != '/')
 #endif
-           strcat(s, "/");
-        strcat(s, file);
-        if (exists(s))
+	   strcat(s, "/");
+	strcat(s, file);
+	if (exists(s))
 #ifndef __EMX__
-           EDBUG_RETURN(s);
+	   EDBUG_RETURN(s);
 #else
-          {
-             free(p);
-             EDBUG_RETURN(s);
-          }
+	  {
+	     free(p);
+	     EDBUG_RETURN(s);
+	  }
 #endif
-        Efree(s);
+	Efree(s);
      }
 #ifdef __EMX__
    free(p);
@@ -1092,25 +1092,25 @@ findLocalizedFile(char *fname)
       return 0;
 
    tmp = strdup(fname);
-   lang = strdup(lang);         /* lang may be in static space, thus it must
-                                 * * * be duplicated before we change it below */
+   lang = strdup(lang);		/* lang may be in static space, thus it must
+				 * * * be duplicated before we change it below */
    p[0] = lang + strlen(lang);
    p[1] = strchr(lang, '.');
    p[2] = strchr(lang, '_');
 
    for (i = 0; i < 3; i++)
      {
-        if (p[i] == NULL)
-           continue;
+	if (p[i] == NULL)
+	   continue;
 
-        *p[i] = '\0';
-        sprintf(fname, "%s.%s", tmp, lang);
-        if (isfile(fname))
-          {
-             free(tmp);
-             free(lang);
-             return 1;
-          }
+	*p[i] = '\0';
+	sprintf(fname, "%s.%s", tmp, lang);
+	if (isfile(fname))
+	  {
+	     free(tmp);
+	     free(lang);
+	     return 1;
+	  }
      }
    strcpy(fname, tmp);
    free(tmp);

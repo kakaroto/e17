@@ -54,9 +54,9 @@ RefreshScreen(void)
    attr.backing_store = NotUseful;
 
    win =
-       XCreateWindow(disp, root.win, 0, 0, root.w, root.h, 0, CopyFromParent,
-                     CopyFromParent, CopyFromParent,
-                     CWBackingStore | CWSaveUnder, &attr);
+      XCreateWindow(disp, root.win, 0, 0, root.w, root.h, 0, CopyFromParent,
+		    CopyFromParent, CopyFromParent,
+		    CWBackingStore | CWSaveUnder, &attr);
    XMapRaised(disp, win);
    XDestroyWindow(disp, win);
    XFlush(disp);
@@ -72,58 +72,58 @@ GrabButtonGrabs(EWin * ewin)
    Action             *a;
 
    ac = (ActionClass *) FindItem("BUTTONBINDINGS", 0, LIST_FINDBY_NAME,
-                                 LIST_TYPE_ACLASS);
+				 LIST_TYPE_ACLASS);
 
    if (ac)
      {
-        ac->ref_count++;
-        for (j = 0; j < ac->num; j++)
-          {
-             a = ac->list[j];
-             if ((a)
-                 && ((a->event == EVENT_MOUSE_DOWN)
-                     || (a->event == EVENT_MOUSE_UP)))
-               {
-                  unsigned int        mod, button, mask;
-                  int                 i;
+	ac->ref_count++;
+	for (j = 0; j < ac->num; j++)
+	  {
+	     a = ac->list[j];
+	     if ((a)
+		 && ((a->event == EVENT_MOUSE_DOWN)
+		     || (a->event == EVENT_MOUSE_UP)))
+	       {
+		  unsigned int        mod, button, mask;
+		  int                 i;
 
-                  mod = 0;
-                  button = 0;
-                  if (a->anymodifier)
-                     mod = AnyModifier;
-                  else
-                     mod = a->modifiers;
-                  if (a->anybutton)
-                     button = AnyButton;
-                  else
-                     button = a->button;
-                  mask = ButtonPressMask | ButtonReleaseMask;
-                  if (mod == AnyModifier)
-                    {
-                       if ((ewin->pager) && (ewin->pager->hi_win))
-                          XGrabButton(disp, button, mod, ewin->pager->hi_win,
-                                      False, mask, GrabModeSync, GrabModeAsync,
-                                      None, None);
-                       XGrabButton(disp, button, mod, ewin->win, False, mask,
-                                   GrabModeSync, GrabModeAsync, None, None);
-                    }
-                  else
-                    {
-                       for (i = 0; i < 8; i++)
-                         {
-                            if ((ewin->pager) && (ewin->pager->hi_win))
-                               XGrabButton(disp, button,
-                                           mod | mask_mod_combos[i],
-                                           ewin->pager->hi_win, False, mask,
-                                           GrabModeSync, GrabModeAsync, None,
-                                           None);
-                            XGrabButton(disp, button, mod | mask_mod_combos[i],
-                                        ewin->win, False, mask, GrabModeSync,
-                                        GrabModeAsync, None, None);
-                         }
-                    }
-               }
-          }
+		  mod = 0;
+		  button = 0;
+		  if (a->anymodifier)
+		     mod = AnyModifier;
+		  else
+		     mod = a->modifiers;
+		  if (a->anybutton)
+		     button = AnyButton;
+		  else
+		     button = a->button;
+		  mask = ButtonPressMask | ButtonReleaseMask;
+		  if (mod == AnyModifier)
+		    {
+		       if ((ewin->pager) && (ewin->pager->hi_win))
+			  XGrabButton(disp, button, mod, ewin->pager->hi_win,
+				      False, mask, GrabModeSync, GrabModeAsync,
+				      None, None);
+		       XGrabButton(disp, button, mod, ewin->win, False, mask,
+				   GrabModeSync, GrabModeAsync, None, None);
+		    }
+		  else
+		    {
+		       for (i = 0; i < 8; i++)
+			 {
+			    if ((ewin->pager) && (ewin->pager->hi_win))
+			       XGrabButton(disp, button,
+					   mod | mask_mod_combos[i],
+					   ewin->pager->hi_win, False, mask,
+					   GrabModeSync, GrabModeAsync, None,
+					   None);
+			    XGrabButton(disp, button, mod | mask_mod_combos[i],
+					ewin->win, False, mask, GrabModeSync,
+					GrabModeAsync, None, None);
+			 }
+		    }
+	       }
+	  }
      }
 }
 
@@ -135,58 +135,58 @@ UnGrabButtonGrabs(EWin * ewin)
    Action             *a;
 
    ac = (ActionClass *) FindItem("BUTTONBINDINGS", 0, LIST_FINDBY_NAME,
-                                 LIST_TYPE_ACLASS);
+				 LIST_TYPE_ACLASS);
 
    if (ac)
      {
-        ac->ref_count--;
-        for (j = 0; j < ac->num; j++)
-          {
-             a = ac->list[j];
-             if ((a)
-                 && ((a->event == EVENT_MOUSE_DOWN)
-                     || (a->event == EVENT_MOUSE_UP)))
-               {
-                  unsigned int        mod, button;
+	ac->ref_count--;
+	for (j = 0; j < ac->num; j++)
+	  {
+	     a = ac->list[j];
+	     if ((a)
+		 && ((a->event == EVENT_MOUSE_DOWN)
+		     || (a->event == EVENT_MOUSE_UP)))
+	       {
+		  unsigned int        mod, button;
 
-                  mod = 0;
-                  button = 0;
-                  if (a->anymodifier)
-                     mod = AnyModifier;
-                  else
-                     mod = a->modifiers;
-                  if (a->anybutton)
-                     button = AnyButton;
-                  else
-                     button = a->button;
-                  if (mod == AnyModifier)
-                    {
-                       if ((ewin->pager) && (ewin->pager->hi_win))
-                          XUngrabButton(disp, button, mod, ewin->pager->hi_win);
-                       XUngrabButton(disp, button, mod, ewin->win);
-                    }
-                  else
-                    {
-                       int                 i;
+		  mod = 0;
+		  button = 0;
+		  if (a->anymodifier)
+		     mod = AnyModifier;
+		  else
+		     mod = a->modifiers;
+		  if (a->anybutton)
+		     button = AnyButton;
+		  else
+		     button = a->button;
+		  if (mod == AnyModifier)
+		    {
+		       if ((ewin->pager) && (ewin->pager->hi_win))
+			  XUngrabButton(disp, button, mod, ewin->pager->hi_win);
+		       XUngrabButton(disp, button, mod, ewin->win);
+		    }
+		  else
+		    {
+		       int                 i;
 
-                       for (i = 0; i < 8; i++)
-                         {
-                            if ((ewin->pager) && (ewin->pager->hi_win))
-                               XUngrabButton(disp, button,
-                                             mod | mask_mod_combos[i],
-                                             ewin->pager->hi_win);
-                            XUngrabButton(disp, button,
-                                          mod | mask_mod_combos[i], ewin->win);
-                         }
-                    }
-               }
-          }
+		       for (i = 0; i < 8; i++)
+			 {
+			    if ((ewin->pager) && (ewin->pager->hi_win))
+			       XUngrabButton(disp, button,
+					     mod | mask_mod_combos[i],
+					     ewin->pager->hi_win);
+			    XUngrabButton(disp, button,
+					  mod | mask_mod_combos[i], ewin->win);
+			 }
+		    }
+	       }
+	  }
      }
 }
 
 Action             *
 CreateAction(char event, char anymod, int mod, int anybut, int but,
-             char anykey, char *key, char *tooltipstring)
+	     char anykey, char *key, char *tooltipstring)
 {
    Action             *act;
 
@@ -223,11 +223,11 @@ RemoveActionType(ActionType * ActionTypeToRemove)
    ptr = ActionTypeToRemove;
    while (ptr)
      {
-        if (ptr->params)
-           Efree(ptr->params);
-        pp = ptr;
-        ptr = ptr->Next;
-        Efree(pp);
+	if (ptr->params)
+	   Efree(ptr->params);
+	pp = ptr;
+	ptr = ptr->Next;
+	Efree(pp);
      }
 
    EDBUG_RETURN_;
@@ -268,12 +268,12 @@ RemoveActionClass(ActionClass * ActionClassToRemove)
 
    if (ActionClassToRemove->ref_count > 0)
      {
-        char                stuff[255];
+	char                stuff[255];
 
-        Esnprintf(stuff, sizeof(stuff), _("%u references remain\n"),
-                  ActionClassToRemove->ref_count);
-        DIALOG_OK(_("ActionClass Error!"), stuff);
-        EDBUG_RETURN_;
+	Esnprintf(stuff, sizeof(stuff), _("%u references remain\n"),
+		  ActionClassToRemove->ref_count);
+	DIALOG_OK(_("ActionClass Error!"), stuff);
+	EDBUG_RETURN_;
      }
    while (RemoveItemByPtr(ActionClassToRemove, LIST_TYPE_ACLASS));
 
@@ -304,17 +304,17 @@ AddToAction(Action * act, int id, void *params)
    at->params = params;
    if (!act->action)
      {
-        act->action = at;
+	act->action = at;
      }
    else
      {
-        ptr = act->action;
-        while (ptr)
-          {
-             pptr = ptr;
-             ptr = ptr->Next;
-          }
-        pptr->Next = at;
+	ptr = act->action;
+	while (ptr)
+	  {
+	     pptr = ptr;
+	     ptr = ptr->Next;
+	  }
+	pptr->Next = at;
      }
    EDBUG_RETURN_;
 }
@@ -344,131 +344,131 @@ EventAclass(XEvent * ev, ActionClass * a)
    reset_ewin = key = type = button = modifiers = mouse = 0;
    if (!mode.ewin)
      {
-        mode.ewin = mode.focuswin;
-        if (!mode.ewin)
-           mode.ewin = mode.mouse_over_win;
-        reset_ewin = 1;
+	mode.ewin = mode.focuswin;
+	if (!mode.ewin)
+	   mode.ewin = mode.mouse_over_win;
+	reset_ewin = 1;
      }
    {
       EWin               *ewin;
 
       ewin = GetEwin();
       if ((mode.movemode == 0) && (ewin) && (mode.mode == MODE_MOVE))
-         DetermineEwinFloat(ewin, 0, 0);
+	 DetermineEwinFloat(ewin, 0, 0);
    }
 
    mask =
-       (ShiftMask | ControlMask | Mod1Mask | Mod2Mask | Mod3Mask | Mod4Mask |
-        Mod5Mask) & (~(numlock_mask | scrollock_mask | LockMask));
+      (ShiftMask | ControlMask | Mod1Mask | Mod2Mask | Mod3Mask | Mod4Mask |
+       Mod5Mask) & (~(numlock_mask | scrollock_mask | LockMask));
 
    switch (ev->type)
      {
-       case KeyPress:
-          type = EVENT_KEY_DOWN;
-          key = ev->xkey.keycode;
-          modifiers = ev->xbutton.state & mask;
-          mouse = 0;
-          break;
-       case KeyRelease:
-          type = EVENT_KEY_UP;
-          key = ev->xkey.keycode;
-          modifiers = ev->xbutton.state & mask;
-          mouse = 0;
-          break;
-       case ButtonPress:
-          if (ev->xbutton.time == 0)
-             type = EVENT_DOUBLE_DOWN;
-          else
-             type = EVENT_MOUSE_DOWN;
-          button = ev->xbutton.button;
-          modifiers = ev->xbutton.state & mask;
-          mouse = 1;
-          break;
-       case ButtonRelease:
-          type = EVENT_MOUSE_UP;
-          button = ev->xbutton.button;
-          modifiers = ev->xbutton.state & mask;
-          mouse = 1;
-          break;
-       case EnterNotify:
-          type = EVENT_MOUSE_ENTER;
-          button = -1;
-          modifiers = ev->xcrossing.state & mask;
-          mouse = 1;
-          break;
-       case LeaveNotify:
-          type = EVENT_MOUSE_LEAVE;
-          button = -1;
-          modifiers = ev->xcrossing.state & mask;
-          mouse = 1;
-          break;
-       default:
-          break;
+     case KeyPress:
+	type = EVENT_KEY_DOWN;
+	key = ev->xkey.keycode;
+	modifiers = ev->xbutton.state & mask;
+	mouse = 0;
+	break;
+     case KeyRelease:
+	type = EVENT_KEY_UP;
+	key = ev->xkey.keycode;
+	modifiers = ev->xbutton.state & mask;
+	mouse = 0;
+	break;
+     case ButtonPress:
+	if (ev->xbutton.time == 0)
+	   type = EVENT_DOUBLE_DOWN;
+	else
+	   type = EVENT_MOUSE_DOWN;
+	button = ev->xbutton.button;
+	modifiers = ev->xbutton.state & mask;
+	mouse = 1;
+	break;
+     case ButtonRelease:
+	type = EVENT_MOUSE_UP;
+	button = ev->xbutton.button;
+	modifiers = ev->xbutton.state & mask;
+	mouse = 1;
+	break;
+     case EnterNotify:
+	type = EVENT_MOUSE_ENTER;
+	button = -1;
+	modifiers = ev->xcrossing.state & mask;
+	mouse = 1;
+	break;
+     case LeaveNotify:
+	type = EVENT_MOUSE_LEAVE;
+	button = -1;
+	modifiers = ev->xcrossing.state & mask;
+	mouse = 1;
+	break;
+     default:
+	break;
      }
 
    mode.adestroy = 0;
 
    for (i = 0; i < a->num; i++)
      {
-        if (!mode.adestroy)
-          {
-             act = a->list[i];
-             ok = 0;
-             if ((act->event == type) && (act->action))
-               {
-                  if (mouse)
-                    {
-                       if (button < 0)
-                         {
-                            if (act->anymodifier)
-                               ok = 1;
-                            else if (act->modifiers == modifiers)
-                               ok = 1;
-                         }
-                       else
-                         {
-                            if (act->anymodifier)
-                              {
-                                 if (act->anybutton)
-                                    ok = 1;
-                                 else if (act->button == button)
-                                    ok = 1;
-                              }
-                            else if (act->modifiers == modifiers)
-                              {
-                                 if (act->anybutton)
-                                    ok = 1;
-                                 else if (act->button == button)
-                                    ok = 1;
-                              }
-                         }
-                    }
-                  else
-                    {
-                       if (act->anymodifier)
-                         {
-                            if (act->anykey)
-                               ok = 1;
-                            else if (act->key == key)
-                               ok = 1;
-                         }
-                       else if (act->modifiers == modifiers)
-                         {
-                            if (act->anykey)
-                               ok = 1;
-                            else if (act->key == key)
-                               ok = 1;
-                         }
-                    }
-                  if (ok)
-                    {
-                       handleAction(act->action);
-                       val = 1;
-                    }
-               }
-          }
-        if (mode.adestroy)
-           break;
+	if (!mode.adestroy)
+	  {
+	     act = a->list[i];
+	     ok = 0;
+	     if ((act->event == type) && (act->action))
+	       {
+		  if (mouse)
+		    {
+		       if (button < 0)
+			 {
+			    if (act->anymodifier)
+			       ok = 1;
+			    else if (act->modifiers == modifiers)
+			       ok = 1;
+			 }
+		       else
+			 {
+			    if (act->anymodifier)
+			      {
+				 if (act->anybutton)
+				    ok = 1;
+				 else if (act->button == button)
+				    ok = 1;
+			      }
+			    else if (act->modifiers == modifiers)
+			      {
+				 if (act->anybutton)
+				    ok = 1;
+				 else if (act->button == button)
+				    ok = 1;
+			      }
+			 }
+		    }
+		  else
+		    {
+		       if (act->anymodifier)
+			 {
+			    if (act->anykey)
+			       ok = 1;
+			    else if (act->key == key)
+			       ok = 1;
+			 }
+		       else if (act->modifiers == modifiers)
+			 {
+			    if (act->anykey)
+			       ok = 1;
+			    else if (act->key == key)
+			       ok = 1;
+			 }
+		    }
+		  if (ok)
+		    {
+		       handleAction(act->action);
+		       val = 1;
+		    }
+	       }
+	  }
+	if (mode.adestroy)
+	   break;
      }
    if (reset_ewin)
       mode.ewin = NULL;
@@ -501,7 +501,7 @@ handleAction(ActionType * Action)
     */
    if (!error)
       if (Action->Next)
-         error = handleAction(Action->Next);
+	 error = handleAction(Action->Next);
    EDBUG_RETURN(error);
 }
 
@@ -527,73 +527,73 @@ spawnMenu(void *params)
    ewin = mode.ewin = GetFocusEwin();
    for (i = 0; i < mode.numdesktops; i++)
      {
-        if (mode.context_win == desks.desk[i].win)
-          {
-             desk_click = 1;
-             break;
-          }
+	if (mode.context_win == desks.desk[i].win)
+	  {
+	     desk_click = 1;
+	     break;
+	  }
      }
    if (!desk_click)
      {
-        if ((ewin) && (ewin->win != mode.context_win) && (mode.context_win))
-          {
-             EGetGeometry(disp, mode.context_win, &dw, &di, &di, &w, &h, &d,
-                          &d);
-             XTranslateCoordinates(disp, mode.context_win, root.win, 0, 0, &x,
-                                   &y, &dw);
+	if ((ewin) && (ewin->win != mode.context_win) && (mode.context_win))
+	  {
+	     EGetGeometry(disp, mode.context_win, &dw, &di, &di, &w, &h, &d,
+			  &d);
+	     XTranslateCoordinates(disp, mode.context_win, root.win, 0, 0, &x,
+				   &y, &dw);
 
-             if (w >= h)
-                mode.y = -(y + h);
-             else
-                mode.x = -(x + w);
-             mode.context_w = w;
-             mode.context_h = h;
-          }
+	     if (w >= h)
+		mode.y = -(y + h);
+	     else
+		mode.x = -(x + w);
+	     mode.context_w = w;
+	     mode.context_h = h;
+	  }
      }
    if (mode.button)
       clickmenu = 1;
    if (!strcmp(s, "deskmenu"))
      {
-        AUDIO_PLAY("SOUND_MENU_SHOW");
-        ShowDeskMenu();
+	AUDIO_PLAY("SOUND_MENU_SHOW");
+	ShowDeskMenu();
      }
    else if (!strcmp(s, "taskmenu"))
      {
-        AUDIO_PLAY("SOUND_MENU_SHOW");
-        ShowAllTaskMenu();
+	AUDIO_PLAY("SOUND_MENU_SHOW");
+	ShowAllTaskMenu();
      }
    else if (!strcmp(s, "groupmenu"))
      {
-        AUDIO_PLAY("SOUND_MENU_SHOW");
-        ShowGroupMenu();
+	AUDIO_PLAY("SOUND_MENU_SHOW");
+	ShowGroupMenu();
      }
    else if (!strcmp(s, "named"))
      {
-        m = FindItem(s2, 0, LIST_FINDBY_NAME, LIST_TYPE_MENU);
-        if (m)
-          {
-             AUDIO_PLAY("SOUND_MENU_SHOW");
-             mode.cur_menu_mode = 1;
-             XUngrabPointer(disp, CurrentTime);
-             if (!FindEwinByMenu(m))
-                ShowMenu(m, 0);
-             mode.cur_menu[0] = m;
-             mode.cur_menu_depth = 1;
-             ShowMenuMasker(m);
-             m->ref_count++;
-          }
-        else
-          {
-             mode.cur_menu[0] = NULL;
-             mode.cur_menu_depth = 0;
-             HideMenuMasker();
-          }
+	m = FindItem(s2, 0, LIST_FINDBY_NAME, LIST_TYPE_MENU);
+	if (m)
+	  {
+	     AUDIO_PLAY("SOUND_MENU_SHOW");
+	     mode.cur_menu_mode = 1;
+	     XUngrabPointer(disp, CurrentTime);
+	     if (!FindEwinByMenu(m))
+		ShowMenu(m, 0);
+	     mode.cur_menu[0] = m;
+	     mode.cur_menu_depth = 1;
+	     ShowMenuMasker(m);
+	     m->ref_count++;
+	  }
+	else
+	  {
+	     mode.cur_menu[0] = NULL;
+	     mode.cur_menu_depth = 0;
+	     HideMenuMasker();
+	  }
      }
    if (((ewin) && (ewin->win == mode.context_win))
        || (ewin = FindEwinByChildren(mode.context_win)))
      {
-        if ((ewin) && (mode.cur_menu_depth > 0) && (mode.cur_menu[0]))
-           ewin->shownmenu = mode.cur_menu[0]->win;
+	if ((ewin) && (mode.cur_menu_depth > 0) && (mode.cur_menu[0]))
+	   ewin->shownmenu = mode.cur_menu[0]->win;
      }
    params = NULL;
    if (mode.cur_menu_depth == 0)
@@ -635,115 +635,115 @@ runApp(char *exe, char *params)
    /* Close all file descriptors except the std 3 */
    for (fd = 3; fd < 1024; fd++)
      {
-        close(fd);
+	close(fd);
      }
 #endif
    sh = usershell(getuid());
    if (exe)
      {
-        path = pathtoexec(exe);
-        if (path)
-          {
-             Efree(path);
-             real_exec = (char *)Emalloc(strlen(params) + 6);
-             sprintf(real_exec, "exec %s", params);
+	path = pathtoexec(exe);
+	if (path)
+	  {
+	     Efree(path);
+	     real_exec = (char *)Emalloc(strlen(params) + 6);
+	     sprintf(real_exec, "exec %s", params);
 #ifndef __EMX__
-             execl(sh, sh, "-c", (char *)real_exec, NULL);
-             exit(0);
+	     execl(sh, sh, "-c", (char *)real_exec, NULL);
+	     exit(0);
 #else
-             spawnl(P_NOWAIT, sh, sh, "-c", (char *)real_exec, NULL);
-             EDBUG_RETURN(0);
+	     spawnl(P_NOWAIT, sh, sh, "-c", (char *)real_exec, NULL);
+	     EDBUG_RETURN(0);
 #endif
-          }
-        if (!mode.startup)
-          {
-             path = pathtofile(exe);
-             if (!path)
-               {
-                  /* absolute path */
+	  }
+	if (!mode.startup)
+	  {
+	     path = pathtofile(exe);
+	     if (!path)
+	       {
+		  /* absolute path */
 #ifndef __EMX__
-                  if (((char *)exe)[0] == '/')
+		  if (((char *)exe)[0] == '/')
 #else
-                  if (_fnisabs((char *)exe))
+		  if (_fnisabs((char *)exe))
 #endif
-                     DialogAlertOK(_
-                                   ("There was an error running the program:\n"
-                                    "%s\n"
-                                    "This program could not be executed.\n"
-                                    "This is because the file does not exist.\n"),
-                                   (char *)exe);
-                  /* relative path */
-                  else
-                     DialogAlertOK(_
-                                   ("There was an error running the program:\n"
-                                    "%s\n"
-                                    "This program could not be executed.\n"
-                                    "This is most probably because this "
-                                    "program is not in the\n"
-                                    "path for your shell which is %s. "
-                                    "I suggest you read the manual\n"
-                                    "page for that shell and read up how to "
-                                    "change or add to your\n"
-                                    "execution path.\n"), (char *)exe, sh);
-               }
-             else
-                /* it is a node on the filing sys */
-               {
-                  /* it's a file */
-                  if (isfile((char *)path))
-                    {
-                       /* can execute it */
-                       if (canexec((char *)path))
-                          DialogAlertOK(_
-                                        ("There was an error running the program:\n"
-                                         "%s\n"
-                                         "This program could not be executed.\n"
-                                         "I am unsure as to why you could not "
-                                         "do this. The file exists,\n"
-                                         "is a file, and you are allowed to "
-                                         "execute it. I suggest you look\n"
-                                         "into this.\n"), (char *)path);
-                       /* not executable file */
-                       else
-                          DialogAlertOK(_
-                                        ("There was an error running the program:\n"
-                                         "%s\n"
-                                         "This program could not be executed.\n"
-                                         "This is because the file exists, is a "
-                                         "file, but you are unable\n"
-                                         "to execute it because you do not "
-                                         "have execute "
-                                         "access to this file.\n"),
-                                        (char *)path);
-                    }
-                  /* it's not a file */
-                  else
-                    {
-                       /* its a dir */
-                       if (isdir((char *)path))
-                          DialogAlertOK(_
-                                        ("There was an error running the program:\n"
-                                         "%s\n"
-                                         "This program could not be executed.\n"
-                                         "This is because the file is in fact "
-                                         "a directory.\n"), (char *)path);
-                       /* its not a file or a dir */
-                       else
-                          DialogAlertOK(_
-                                        ("There was an error running the program:\n"
-                                         "%s\n"
-                                         "This program could not be executed.\n"
-                                         "This is because the file is not a "
-                                         "regular file.\n"), (char *)path);
-                    }
-                  if (path)
-                     Efree(path);
-               }
-          }
+		     DialogAlertOK(_
+				   ("There was an error running the program:\n"
+				    "%s\n"
+				    "This program could not be executed.\n"
+				    "This is because the file does not exist.\n"),
+				   (char *)exe);
+		  /* relative path */
+		  else
+		     DialogAlertOK(_
+				   ("There was an error running the program:\n"
+				    "%s\n"
+				    "This program could not be executed.\n"
+				    "This is most probably because this "
+				    "program is not in the\n"
+				    "path for your shell which is %s. "
+				    "I suggest you read the manual\n"
+				    "page for that shell and read up how to "
+				    "change or add to your\n"
+				    "execution path.\n"), (char *)exe, sh);
+	       }
+	     else
+		/* it is a node on the filing sys */
+	       {
+		  /* it's a file */
+		  if (isfile((char *)path))
+		    {
+		       /* can execute it */
+		       if (canexec((char *)path))
+			  DialogAlertOK(_
+					("There was an error running the program:\n"
+					 "%s\n"
+					 "This program could not be executed.\n"
+					 "I am unsure as to why you could not "
+					 "do this. The file exists,\n"
+					 "is a file, and you are allowed to "
+					 "execute it. I suggest you look\n"
+					 "into this.\n"), (char *)path);
+		       /* not executable file */
+		       else
+			  DialogAlertOK(_
+					("There was an error running the program:\n"
+					 "%s\n"
+					 "This program could not be executed.\n"
+					 "This is because the file exists, is a "
+					 "file, but you are unable\n"
+					 "to execute it because you do not "
+					 "have execute "
+					 "access to this file.\n"),
+					(char *)path);
+		    }
+		  /* it's not a file */
+		  else
+		    {
+		       /* its a dir */
+		       if (isdir((char *)path))
+			  DialogAlertOK(_
+					("There was an error running the program:\n"
+					 "%s\n"
+					 "This program could not be executed.\n"
+					 "This is because the file is in fact "
+					 "a directory.\n"), (char *)path);
+		       /* its not a file or a dir */
+		       else
+			  DialogAlertOK(_
+					("There was an error running the program:\n"
+					 "%s\n"
+					 "This program could not be executed.\n"
+					 "This is because the file is not a "
+					 "regular file.\n"), (char *)path);
+		    }
+		  if (path)
+		     Efree(path);
+	       }
+	  }
 #ifndef __EMX__
-        exit(100);
+	exit(100);
 #else
-        EDBUG_RETURN(0);
+	EDBUG_RETURN(0);
 #endif
      }
    real_exec = (char *)Emalloc(strlen(params) + 6);
@@ -775,33 +775,33 @@ execApplication(void *params)
    strcat(exe, "echo \"");
    for (i = 0; i < l; i++)
      {
-        if (ss[i] == '"')
-           strcat(exe, "\\\"");
-        else
-          {
-             char                ch[2];
+	if (ss[i] == '"')
+	   strcat(exe, "\\\"");
+	else
+	  {
+	     char                ch[2];
 
-             ch[0] = ss[i];
-             ch[1] = 0;
-             strcat(exe, ch);
-          }
+	     ch[0] = ss[i];
+	     ch[1] = 0;
+	     strcat(exe, ch);
+	  }
      }
    strcat(exe, "\"");
    f = popen(exe, "r");
    if (f)
      {
-        int                 n;
+	int                 n;
 
-        n = fread(s, 1, FILEPATH_LEN_MAX, f);
-        /* True64 bug workaround */
-        if (n == 0)
-           fread(s, 1, FILEPATH_LEN_MAX, f);
-        s[FILEPATH_LEN_MAX - 1] = 0;
-        l = strlen(s);
-        s[l - 1] = 0;
-        sscanf(s, "%4000s", exe);
-        pclose(f);
-        runApp(exe, s);
+	n = fread(s, 1, FILEPATH_LEN_MAX, f);
+	/* True64 bug workaround */
+	if (n == 0)
+	   fread(s, 1, FILEPATH_LEN_MAX, f);
+	s[FILEPATH_LEN_MAX - 1] = 0;
+	l = strlen(s);
+	s[l - 1] = 0;
+	sscanf(s, "%4000s", exe);
+	pclose(f);
+	runApp(exe, s);
      }
    EDBUG_RETURN(0);
 }
@@ -826,12 +826,12 @@ alert(void *params)
       EDBUG_RETURN(1);
    while (pp[i])
      {
-        if ((pp[i - 1] == '\\') && (((char *)params)[i] == 'n'))
-          {
-             pp[i - 1] = ' ';
-             pp[i] = '\n';
-          }
-        i++;
+	if ((pp[i - 1] == '\\') && (((char *)params)[i] == 'n'))
+	  {
+	     pp[i - 1] = ' ';
+	     pp[i] = '\n';
+	  }
+	i++;
      }
    DialogAlertOK(pp);
    Efree(pp);
@@ -873,8 +873,8 @@ doResize(void *params)
       EDBUG_RETURN(0);
    if (mode.resizemode > 0)
      {
-        FX_Pause();
-        GrabX();
+	FX_Pause();
+	GrabX();
      }
    queue_up = 0;
    AUDIO_PLAY("SOUND_RESIZE_START");
@@ -901,7 +901,7 @@ doResize(void *params)
    mode.win_h = ewin->client.h;
    mode.firstlast = 0;
    DrawEwinShape(ewin, mode.resizemode, ewin->x, ewin->y, ewin->client.w,
-                 ewin->client.h, mode.firstlast);
+		 ewin->client.h, mode.firstlast);
    mode.firstlast = 1;
    params = NULL;
    EDBUG_RETURN(0);
@@ -928,8 +928,8 @@ doResizeH(void *params)
       EDBUG_RETURN(0);
    if (mode.resizemode > 0)
      {
-        FX_Pause();
-        GrabX();
+	FX_Pause();
+	GrabX();
      }
    queue_up = 0;
    AUDIO_PLAY("SOUND_RESIZE_START");
@@ -950,7 +950,7 @@ doResizeH(void *params)
    mode.win_h = ewin->client.h;
    mode.firstlast = 0;
    DrawEwinShape(ewin, mode.resizemode, ewin->x, ewin->y, ewin->client.w,
-                 ewin->client.h, mode.firstlast);
+		 ewin->client.h, mode.firstlast);
    mode.firstlast = 1;
    params = NULL;
    EDBUG_RETURN(0);
@@ -977,8 +977,8 @@ doResizeV(void *params)
       EDBUG_RETURN(0);
    if (mode.resizemode > 0)
      {
-        FX_Pause();
-        GrabX();
+	FX_Pause();
+	GrabX();
      }
    queue_up = 0;
    AUDIO_PLAY("SOUND_RESIZE_START");
@@ -999,7 +999,7 @@ doResizeV(void *params)
    mode.win_h = ewin->client.h;
    mode.firstlast = 0;
    DrawEwinShape(ewin, mode.resizemode, ewin->x, ewin->y, ewin->client.w,
-                 ewin->client.h, mode.firstlast);
+		 ewin->client.h, mode.firstlast);
    mode.firstlast = 1;
    params = NULL;
    EDBUG_RETURN(0);
@@ -1017,10 +1017,10 @@ doResizeEnd(void *params)
    AUDIO_PLAY("SOUND_RESIZE_STOP");
    if (!ewin)
      {
-        if (mode.resizemode > 0)
-           UngrabX();
-        ForceUpdatePagersForDesktop(desks.current);
-        EDBUG_RETURN(0);
+	if (mode.resizemode > 0)
+	   UngrabX();
+	ForceUpdatePagersForDesktop(desks.current);
+	EDBUG_RETURN(0);
      }
    queue_up = 1;
    mode.mode = MODE_NONE;
@@ -1029,7 +1029,7 @@ doResizeEnd(void *params)
    mode.noewin = 0;
    mode.firstlast = 2;
    DrawEwinShape(ewin, mode.resizemode, ewin->x, ewin->y, ewin->client.w,
-                 ewin->client.h, mode.firstlast);
+		 ewin->client.h, mode.firstlast);
    for (i = 0; i < ewin->border->num_winparts; i++)
       ewin->bits[i].no_expose = 1;
    ICCCM_Configure(ewin);
@@ -1037,8 +1037,8 @@ doResizeEnd(void *params)
    XSync(disp, False);
    if (mode.resizemode > 0)
      {
-        FX_Pause();
-        UngrabX();
+	FX_Pause();
+	UngrabX();
      }
    mode.firstlast = 0;
    params = NULL;
@@ -1078,8 +1078,8 @@ doMoveImpl(void *params, char constrained)
       mode.movemode = 0;
    if (mode.movemode > 0)
      {
-        FX_Pause();
-        GrabX();
+	FX_Pause();
+	GrabX();
      }
    UnGrabTheButtons();
    GrabConfineThePointer(root.win);
@@ -1098,14 +1098,14 @@ doMoveImpl(void *params, char constrained)
    yo = desks.desk[ewin->desktop].y;
 
    gwins = ListWinGroupMembersForEwin(ewin, ACTION_MOVE, mode.nogroup
-                                      || mode.swapmovemode, &num);
+				      || mode.swapmovemode, &num);
    for (i = 0; i < num; i++)
      {
-        FloatEwinAt(gwins[i], gwins[i]->x, gwins[i]->y);
-        if (!mode.moveresize_pending_ewin)
-           DrawEwinShape(gwins[i], mode.movemode, gwins[i]->x, gwins[i]->y,
-                         gwins[i]->client.w, gwins[i]->client.h,
-                         mode.firstlast);
+	FloatEwinAt(gwins[i], gwins[i]->x, gwins[i]->y);
+	if (!mode.moveresize_pending_ewin)
+	   DrawEwinShape(gwins[i], mode.movemode, gwins[i]->x, gwins[i]->y,
+			 gwins[i]->client.w, gwins[i]->client.h,
+			 mode.firstlast);
      }
    Efree(gwins);
    mode.firstlast = 1;
@@ -1161,12 +1161,12 @@ doMoveEnd(void *params)
    AUDIO_PLAY("SOUND_MOVE_STOP");
    if (!ewin)
      {
-        if (mode.movemode > 0)
-           UngrabX();
-        if (!mode.moveresize_pending_ewin)
-           ForceUpdatePagersForDesktop(desks.current);
-        mode.movemode = real_move_mode;
-        EDBUG_RETURN(0);
+	if (mode.movemode > 0)
+	   UngrabX();
+	if (!mode.moveresize_pending_ewin)
+	   ForceUpdatePagersForDesktop(desks.current);
+	mode.movemode = real_move_mode;
+	EDBUG_RETURN(0);
      }
    mode.mode = MODE_NONE;
    if (mode.noewin)
@@ -1176,62 +1176,62 @@ doMoveEnd(void *params)
    d = DesktopAt(mode.x, mode.y);
 
    gwins = ListWinGroupMembersForEwin(ewin, ACTION_MOVE, mode.nogroup
-                                      || mode.swapmovemode, &num);
+				      || mode.swapmovemode, &num);
 
    if (!mode.moveresize_pending_ewin)
      {
-        wasresize = 1;
-        for (i = 0; i < num; i++)
-           DrawEwinShape(gwins[i], mode.movemode, gwins[i]->x, gwins[i]->y,
-                         gwins[i]->client.w, gwins[i]->client.h,
-                         mode.firstlast);
-        for (i = 0; i < num; i++)
-           MoveEwin(gwins[i], gwins[i]->x, gwins[i]->y);
+	wasresize = 1;
+	for (i = 0; i < num; i++)
+	   DrawEwinShape(gwins[i], mode.movemode, gwins[i]->x, gwins[i]->y,
+			 gwins[i]->client.w, gwins[i]->client.h,
+			 mode.firstlast);
+	for (i = 0; i < num; i++)
+	   MoveEwin(gwins[i], gwins[i]->x, gwins[i]->y);
      }
    mode.moveresize_pending_ewin = NULL;
    for (i = 0; i < num; i++)
      {
-        if ((gwins[i]->floating) || (mode.movemode > 0))
-          {
-             if (gwins[i]->floating)
-                MoveEwinToDesktopAt(gwins[i], d,
-                                    gwins[i]->x - (desks.desk[d].x -
-                                                   desks.
-                                                   desk[gwins[i]->desktop].x),
-                                    gwins[i]->y - (desks.desk[d].y -
-                                                   desks.
-                                                   desk[gwins[i]->desktop].y));
-             else
-                MoveEwinToDesktopAt(gwins[i], d, gwins[i]->x, gwins[i]->y);
-             gwins[i]->floating = 0;
-          }
-        if ((mode.movemode > 0) && (gwins[i]->has_transients))
-          {
-             EWin              **lst;
-             int                 j, num2;
-             int                 dx, dy;
+	if ((gwins[i]->floating) || (mode.movemode > 0))
+	  {
+	     if (gwins[i]->floating)
+		MoveEwinToDesktopAt(gwins[i], d,
+				    gwins[i]->x - (desks.desk[d].x -
+						   desks.
+						   desk[gwins[i]->desktop].x),
+				    gwins[i]->y - (desks.desk[d].y -
+						   desks.
+						   desk[gwins[i]->desktop].y));
+	     else
+		MoveEwinToDesktopAt(gwins[i], d, gwins[i]->x, gwins[i]->y);
+	     gwins[i]->floating = 0;
+	  }
+	if ((mode.movemode > 0) && (gwins[i]->has_transients))
+	  {
+	     EWin              **lst;
+	     int                 j, num2;
+	     int                 dx, dy;
 
-             dx = ewin->x - start_move_x;
-             dy = ewin->y - start_move_y;
+	     dx = ewin->x - start_move_x;
+	     dy = ewin->y - start_move_y;
 
-             lst = ListTransientsFor(gwins[i]->client.win, &num2);
-             if (lst)
-               {
-                  for (j = 0; j < num2; j++)
-                     MoveEwin(lst[j], lst[j]->x + dx, lst[j]->y + dy);
-                  Efree(lst);
-               }
-          }
-        RaiseEwin(gwins[i]);
-        ICCCM_Configure(gwins[i]);
+	     lst = ListTransientsFor(gwins[i]->client.win, &num2);
+	     if (lst)
+	       {
+		  for (j = 0; j < num2; j++)
+		     MoveEwin(lst[j], lst[j]->x + dx, lst[j]->y + dy);
+		  Efree(lst);
+	       }
+	  }
+	RaiseEwin(gwins[i]);
+	ICCCM_Configure(gwins[i]);
      }
    mode.firstlast = 0;
    HideCoords();
    XSync(disp, False);
    if (mode.movemode > 0)
      {
-        FX_Pause();
-        UngrabX();
+	FX_Pause();
+	UngrabX();
      }
    RememberImportantInfoForEwins(ewin);
    if (wasresize)
@@ -1257,7 +1257,7 @@ doRaise(void *params)
       EDBUG_RETURN(0);
    if (params)
       ewin =
-          FindItem(NULL, atoi((char *)params), LIST_FINDBY_ID, LIST_TYPE_EWIN);
+	 FindItem(NULL, atoi((char *)params), LIST_FINDBY_ID, LIST_TYPE_EWIN);
    else
       ewin = GetFocusEwin();
    if (!ewin)
@@ -1296,7 +1296,7 @@ doLower(void *params)
       EDBUG_RETURN(0);
    if (params)
       ewin =
-          FindItem(NULL, atoi((char *)params), LIST_FINDBY_ID, LIST_TYPE_EWIN);
+	 FindItem(NULL, atoi((char *)params), LIST_FINDBY_ID, LIST_TYPE_EWIN);
    else
       ewin = GetFocusEwin();
 
@@ -1350,213 +1350,213 @@ doCleanup(void *params)
 
    if (params)
      {
-        if (!strcmp("order", type))
-          {
-             method = ARRANGE_VERBATIM;
-          }
-        else if (!strcmp("place", type))
-          {
-             method = ARRANGE_BY_POSITION;
-          }
+	if (!strcmp("order", type))
+	  {
+	     method = ARRANGE_VERBATIM;
+	  }
+	else if (!strcmp("place", type))
+	  {
+	     method = ARRANGE_BY_POSITION;
+	  }
      }
    lst = ListItemType(&num, LIST_TYPE_EWIN);
    if (lst)
      {
-        fixed = NULL;
-        floating = Emalloc(sizeof(RectBox) * num);
-        ret = Emalloc(sizeof(RectBox) * (num));
-        j = 0;
-        k = 0;
-        for (i = 0; i < num; i++)
-          {
-             if ((((EWin *) lst[i])->desktop == desks.current)
-                 && (!((EWin *) lst[i])->sticky)
-                 && (!((EWin *) lst[i])->floating)
-                 && (!((EWin *) lst[i])->iconified)
-                 && (!((EWin *) lst[i])->ignorearrange)
-                 && (!((EWin *) lst[i])->menu)
-                 && (((EWin *) lst[i])->area_x ==
-                     desks.desk[((EWin *) lst[i])->desktop].current_area_x)
-                 && (((EWin *) lst[i])->area_y ==
-                     desks.desk[((EWin *) lst[i])->desktop].current_area_y))
-               {
-                  floating[j].data = lst[i];
-                  floating[j].x = ((EWin *) lst[i])->x;
-                  floating[j].y = ((EWin *) lst[i])->y;
-                  floating[j].w = ((EWin *) lst[i])->w;
-                  floating[j].p = ((EWin *) lst[i])->layer;
-                  floating[j++].h = ((EWin *) lst[i])->h;
-               }
-             else if (((((EWin *) lst[i])->desktop == desks.current)
-                       || (((EWin *) lst[i])->sticky))
-                      && (((EWin *) lst[i])->layer != 4)
-                      && (((EWin *) lst[i])->layer != 0)
-                      && (!((EWin *) lst[i])->menu))
-               {
-                  fixed = Erealloc(fixed, sizeof(RectBox) * (k + 1));
-                  fixed[k].data = lst[i];
-                  fixed[k].x = ((EWin *) lst[i])->x;
-                  fixed[k].y = ((EWin *) lst[i])->y;
-                  fixed[k].w = ((EWin *) lst[i])->w;
-                  fixed[k].h = ((EWin *) lst[i])->h;
-                  if (fixed[k].x < 0)
-                    {
-                       fixed[k].x += fixed[k].w;
-                       fixed[k].x = 0;
-                    }
-                  if ((fixed[k].x + fixed[k].w) > root.w)
-                     fixed[k].w = root.w - fixed[k].x;
-                  if (fixed[k].y < 0)
-                    {
-                       fixed[k].y += fixed[k].h;
-                       fixed[k].y = 0;
-                    }
-                  if ((fixed[k].y + fixed[k].h) > root.h)
-                     fixed[k].h = root.h - fixed[k].y;
-                  if ((fixed[k].w > 0) && (fixed[k].h > 0))
-                    {
-                       if (!((EWin *) lst[i])->never_use_area)
-                          fixed[k].p = ((EWin *) lst[i])->layer;
-                       else
-                          fixed[k].p = 99;
-                       k++;
-                    }
-               }
-          }
+	fixed = NULL;
+	floating = Emalloc(sizeof(RectBox) * num);
+	ret = Emalloc(sizeof(RectBox) * (num));
+	j = 0;
+	k = 0;
+	for (i = 0; i < num; i++)
+	  {
+	     if ((((EWin *) lst[i])->desktop == desks.current)
+		 && (!((EWin *) lst[i])->sticky)
+		 && (!((EWin *) lst[i])->floating)
+		 && (!((EWin *) lst[i])->iconified)
+		 && (!((EWin *) lst[i])->ignorearrange)
+		 && (!((EWin *) lst[i])->menu)
+		 && (((EWin *) lst[i])->area_x ==
+		     desks.desk[((EWin *) lst[i])->desktop].current_area_x)
+		 && (((EWin *) lst[i])->area_y ==
+		     desks.desk[((EWin *) lst[i])->desktop].current_area_y))
+	       {
+		  floating[j].data = lst[i];
+		  floating[j].x = ((EWin *) lst[i])->x;
+		  floating[j].y = ((EWin *) lst[i])->y;
+		  floating[j].w = ((EWin *) lst[i])->w;
+		  floating[j].p = ((EWin *) lst[i])->layer;
+		  floating[j++].h = ((EWin *) lst[i])->h;
+	       }
+	     else if (((((EWin *) lst[i])->desktop == desks.current)
+		       || (((EWin *) lst[i])->sticky))
+		      && (((EWin *) lst[i])->layer != 4)
+		      && (((EWin *) lst[i])->layer != 0)
+		      && (!((EWin *) lst[i])->menu))
+	       {
+		  fixed = Erealloc(fixed, sizeof(RectBox) * (k + 1));
+		  fixed[k].data = lst[i];
+		  fixed[k].x = ((EWin *) lst[i])->x;
+		  fixed[k].y = ((EWin *) lst[i])->y;
+		  fixed[k].w = ((EWin *) lst[i])->w;
+		  fixed[k].h = ((EWin *) lst[i])->h;
+		  if (fixed[k].x < 0)
+		    {
+		       fixed[k].x += fixed[k].w;
+		       fixed[k].x = 0;
+		    }
+		  if ((fixed[k].x + fixed[k].w) > root.w)
+		     fixed[k].w = root.w - fixed[k].x;
+		  if (fixed[k].y < 0)
+		    {
+		       fixed[k].y += fixed[k].h;
+		       fixed[k].y = 0;
+		    }
+		  if ((fixed[k].y + fixed[k].h) > root.h)
+		     fixed[k].h = root.h - fixed[k].y;
+		  if ((fixed[k].w > 0) && (fixed[k].h > 0))
+		    {
+		       if (!((EWin *) lst[i])->never_use_area)
+			  fixed[k].p = ((EWin *) lst[i])->layer;
+		       else
+			  fixed[k].p = 99;
+		       k++;
+		    }
+	       }
+	  }
 
-        blst = (Button **) ListItemType(&num, LIST_TYPE_BUTTON);
-        if (blst)
-          {
-             fixed = Erealloc(fixed, sizeof(RectBox) * (num + k));
-             ret = Erealloc(ret, sizeof(RectBox) * ((num + j) + 1 + k));
-             for (i = 0; i < num; i++)
-               {
-                  Button             *b = blst[i];
+	blst = (Button **) ListItemType(&num, LIST_TYPE_BUTTON);
+	if (blst)
+	  {
+	     fixed = Erealloc(fixed, sizeof(RectBox) * (num + k));
+	     ret = Erealloc(ret, sizeof(RectBox) * ((num + j) + 1 + k));
+	     for (i = 0; i < num; i++)
+	       {
+		  Button             *b = blst[i];
 
-                  if (!b->visible || b->internal)
-                     continue;
-                  if (!b->sticky && (b->desktop != desks.current))
-                     continue;
+		  if (!b->visible || b->internal)
+		     continue;
+		  if (!b->sticky && (b->desktop != desks.current))
+		     continue;
 
-                  fixed[k].data = NULL;
-                  fixed[k].x = blst[i]->x;
-                  fixed[k].y = blst[i]->y;
-                  fixed[k].w = blst[i]->w;
-                  fixed[k].h = blst[i]->h;
-                  if (fixed[k].x < 0)
-                    {
-                       fixed[k].x += fixed[k].w;
-                       fixed[k].x = 0;
-                    }
-                  if ((fixed[k].x + fixed[k].w) > root.w)
-                     fixed[k].w = root.w - fixed[k].x;
-                  if (fixed[k].y < 0)
-                    {
-                       fixed[k].y += fixed[k].h;
-                       fixed[k].y = 0;
-                    }
-                  if ((fixed[k].y + fixed[k].h) > root.h)
-                     fixed[k].h = root.h - fixed[k].y;
-                  if ((fixed[k].w <= 0) || (fixed[k].h <= 0))
-                     continue;
+		  fixed[k].data = NULL;
+		  fixed[k].x = blst[i]->x;
+		  fixed[k].y = blst[i]->y;
+		  fixed[k].w = blst[i]->w;
+		  fixed[k].h = blst[i]->h;
+		  if (fixed[k].x < 0)
+		    {
+		       fixed[k].x += fixed[k].w;
+		       fixed[k].x = 0;
+		    }
+		  if ((fixed[k].x + fixed[k].w) > root.w)
+		     fixed[k].w = root.w - fixed[k].x;
+		  if (fixed[k].y < 0)
+		    {
+		       fixed[k].y += fixed[k].h;
+		       fixed[k].y = 0;
+		    }
+		  if ((fixed[k].y + fixed[k].h) > root.h)
+		     fixed[k].h = root.h - fixed[k].y;
+		  if ((fixed[k].w <= 0) || (fixed[k].h <= 0))
+		     continue;
 
-                  if (blst[i]->sticky)
-                     fixed[k].p = 50;
-                  else
-                     fixed[k].p = 0;
-                  k++;
-               }
-             Efree(blst);
-          }
+		  if (blst[i]->sticky)
+		     fixed[k].p = 50;
+		  else
+		     fixed[k].p = 0;
+		  k++;
+	       }
+	     Efree(blst);
+	  }
 #if ENABLE_KDE
-        if (mode.kde_support)
-          {
-             fixed = Erealloc(fixed, sizeof(RectBox) * (k + 2));
-             ret = Erealloc(ret, sizeof(RectBox) * ((num + j) + 1 + k + 2));
+	if (mode.kde_support)
+	  {
+	     fixed = Erealloc(fixed, sizeof(RectBox) * (k + 2));
+	     ret = Erealloc(ret, sizeof(RectBox) * ((num + j) + 1 + k + 2));
 
-             fixed[k].data = NULL;
-             fixed[k].p = 50;
-             fixed[k].x = 0;
-             fixed[k].y = 0;
-             if (mode.kde_y1 == 0)
-               {
-                  fixed[k].w = mode.kde_x1;
-               }
-             else
-               {
-                  fixed[k].w = root.w;
-               }
-             if (mode.kde_x1 == 0)
-               {
-                  fixed[k].h = mode.kde_y1;
-               }
-             else
-               {
-                  fixed[k].h = root.h;
-               }
-             k++;
+	     fixed[k].data = NULL;
+	     fixed[k].p = 50;
+	     fixed[k].x = 0;
+	     fixed[k].y = 0;
+	     if (mode.kde_y1 == 0)
+	       {
+		  fixed[k].w = mode.kde_x1;
+	       }
+	     else
+	       {
+		  fixed[k].w = root.w;
+	       }
+	     if (mode.kde_x1 == 0)
+	       {
+		  fixed[k].h = mode.kde_y1;
+	       }
+	     else
+	       {
+		  fixed[k].h = root.h;
+	       }
+	     k++;
 
-             fixed[k].data = NULL;
-             if ((mode.kde_x2 == root.w) && (mode.kde_y2 < root.h))
-                fixed[k].x = 0;
-             else
-                fixed[k].x = mode.kde_x2;
-             fixed[k].w = mode.kde_x2 - root.w;
-             if (mode.kde_x2 < root.w)
-               {
-                  fixed[k].y = 0;
-                  fixed[k].h = root.h;
-               }
-             else
-               {
-                  fixed[k].y = mode.kde_y2;
-                  fixed[k].h = mode.kde_y2 - root.h;
-               }
-             fixed[k].p = 50;
-             k++;
+	     fixed[k].data = NULL;
+	     if ((mode.kde_x2 == root.w) && (mode.kde_y2 < root.h))
+		fixed[k].x = 0;
+	     else
+		fixed[k].x = mode.kde_x2;
+	     fixed[k].w = mode.kde_x2 - root.w;
+	     if (mode.kde_x2 < root.w)
+	       {
+		  fixed[k].y = 0;
+		  fixed[k].h = root.h;
+	       }
+	     else
+	       {
+		  fixed[k].y = mode.kde_y2;
+		  fixed[k].h = mode.kde_y2 - root.h;
+	       }
+	     fixed[k].p = 50;
+	     k++;
 
-          }
+	  }
 #endif
-        ArrangeRects(fixed, k, floating, j, ret, 0, 0, root.w, root.h, method,
-                     0);
-        for (i = 0; i < (j + k); i++)
-          {
-             if (ret[i].data)
-               {
-                  if (doslide)
-                    {
-                       ewin = (EWin *) ret[i].data;
-                       if (ewin)
-                         {
-                            if ((ewin->x != ret[i].x) || (ewin->y != ret[i].y))
-                              {
-                                 SlideEwinTo(ewin, ewin->x, ewin->y, ret[i].x,
-                                             ret[i].y, speed);
-                                 ICCCM_Configure(ewin);
-                              }
-                         }
-                    }
-                  else
-                    {
-                       ewin = (EWin *) ret[i].data;
-                       if (ewin)
-                         {
-                            if ((ewin->x != ret[i].x) || (ewin->y != ret[i].y))
-                               MoveEwin((EWin *) ret[i].data, ret[i].x,
-                                        ret[i].y);
-                         }
-                    }
-               }
-          }
+	ArrangeRects(fixed, k, floating, j, ret, 0, 0, root.w, root.h, method,
+		     0);
+	for (i = 0; i < (j + k); i++)
+	  {
+	     if (ret[i].data)
+	       {
+		  if (doslide)
+		    {
+		       ewin = (EWin *) ret[i].data;
+		       if (ewin)
+			 {
+			    if ((ewin->x != ret[i].x) || (ewin->y != ret[i].y))
+			      {
+				 SlideEwinTo(ewin, ewin->x, ewin->y, ret[i].x,
+					     ret[i].y, speed);
+				 ICCCM_Configure(ewin);
+			      }
+			 }
+		    }
+		  else
+		    {
+		       ewin = (EWin *) ret[i].data;
+		       if (ewin)
+			 {
+			    if ((ewin->x != ret[i].x) || (ewin->y != ret[i].y))
+			       MoveEwin((EWin *) ret[i].data, ret[i].x,
+					ret[i].y);
+			 }
+		    }
+	       }
+	  }
 
-        if (fixed)
-           Efree(fixed);
-        if (ret)
-           Efree(ret);
-        if (floating)
-           Efree(floating);
-        if (lst)
-           Efree(lst);
+	if (fixed)
+	   Efree(fixed);
+	if (ret)
+	   Efree(ret);
+	if (floating)
+	   Efree(floating);
+	if (lst)
+	   Efree(lst);
      }
    EDBUG_RETURN(0);
 }
@@ -1569,13 +1569,12 @@ doKill(void *params)
    EDBUG(6, "doKill");
    if (params)
      {
-        ewin =
-            FindItem(NULL, atoi((char *)params), LIST_FINDBY_ID,
-                     LIST_TYPE_EWIN);
+	ewin =
+	   FindItem(NULL, atoi((char *)params), LIST_FINDBY_ID, LIST_TYPE_EWIN);
      }
    else
      {
-        ewin = GetFocusEwin();
+	ewin = GetFocusEwin();
      }
 
    KillEwin(ewin);
@@ -1603,7 +1602,7 @@ doKillNasty(void *params)
 
    if (params)
       ewin =
-          FindItem(NULL, atoi((char *)params), LIST_FINDBY_ID, LIST_TYPE_EWIN);
+	 FindItem(NULL, atoi((char *)params), LIST_FINDBY_ID, LIST_TYPE_EWIN);
    else
       ewin = GetFocusEwin();
    if (!ewin)
@@ -1626,7 +1625,7 @@ doNextDesktop(void *params)
    GotoDesktop(desks.current + 1);
    if (desks.current != pd)
      {
-        AUDIO_PLAY("SOUND_DESKTOP_SHUT");
+	AUDIO_PLAY("SOUND_DESKTOP_SHUT");
      }
    params = NULL;
    EDBUG_RETURN(0);
@@ -1644,7 +1643,7 @@ doPrevDesktop(void *params)
    GotoDesktop(desks.current - 1);
    if (desks.current != pd)
      {
-        AUDIO_PLAY("SOUND_DESKTOP_SHUT");
+	AUDIO_PLAY("SOUND_DESKTOP_SHUT");
      }
    params = NULL;
    EDBUG_RETURN(0);
@@ -1735,7 +1734,7 @@ doStick(void *params)
       EDBUG_RETURN(0);
    if (params)
       ewin =
-          FindItem(NULL, atoi((char *)params), LIST_FINDBY_ID, LIST_TYPE_EWIN);
+	 FindItem(NULL, atoi((char *)params), LIST_FINDBY_ID, LIST_TYPE_EWIN);
    else
       ewin = GetFocusEwin();
    if (!ewin)
@@ -1746,15 +1745,15 @@ doStick(void *params)
 
    for (i = 0; i < num; i++)
      {
-        curr_group = EwinsInGroup(ewin, gwins[i]);
-        if (gwins[i]->sticky
-            && ((curr_group && !curr_group->cfg.mirror) || sticky))
-           MakeWindowUnSticky(gwins[i]);
-        else if (!gwins[i]->sticky
-                 && ((curr_group && !curr_group->cfg.mirror) || !sticky))
-           MakeWindowSticky(gwins[i]);
-        params = NULL;
-        RememberImportantInfoForEwin(gwins[i]);
+	curr_group = EwinsInGroup(ewin, gwins[i]);
+	if (gwins[i]->sticky
+	    && ((curr_group && !curr_group->cfg.mirror) || sticky))
+	   MakeWindowUnSticky(gwins[i]);
+	else if (!gwins[i]->sticky
+		 && ((curr_group && !curr_group->cfg.mirror) || !sticky))
+	   MakeWindowSticky(gwins[i]);
+	params = NULL;
+	RememberImportantInfoForEwin(gwins[i]);
      }
    Efree(gwins);
    EDBUG_RETURN(0);
@@ -1783,7 +1782,7 @@ doSkipLists(void *params)
       EDBUG_RETURN(0);
    if (params)
       ewin =
-          FindItem(NULL, atoi((char *)params), LIST_FINDBY_ID, LIST_TYPE_EWIN);
+	 FindItem(NULL, atoi((char *)params), LIST_FINDBY_ID, LIST_TYPE_EWIN);
    else
       ewin = GetFocusEwin();
    if (!ewin)
@@ -1814,7 +1813,7 @@ doSkipTask(void *params)
       EDBUG_RETURN(0);
    if (params)
       ewin =
-          FindItem(NULL, atoi((char *)params), LIST_FINDBY_ID, LIST_TYPE_EWIN);
+	 FindItem(NULL, atoi((char *)params), LIST_FINDBY_ID, LIST_TYPE_EWIN);
    else
       ewin = GetFocusEwin();
    if (!ewin)
@@ -1843,7 +1842,7 @@ doSkipFocus(void *params)
       EDBUG_RETURN(0);
    if (params)
       ewin =
-          FindItem(NULL, atoi((char *)params), LIST_FINDBY_ID, LIST_TYPE_EWIN);
+	 FindItem(NULL, atoi((char *)params), LIST_FINDBY_ID, LIST_TYPE_EWIN);
    else
       ewin = GetFocusEwin();
    if (!ewin)
@@ -1871,7 +1870,7 @@ doSkipWinList(void *params)
       EDBUG_RETURN(0);
    if (params)
       ewin =
-          FindItem(NULL, atoi((char *)params), LIST_FINDBY_ID, LIST_TYPE_EWIN);
+	 FindItem(NULL, atoi((char *)params), LIST_FINDBY_ID, LIST_TYPE_EWIN);
    else
       ewin = GetFocusEwin();
    if (!ewin)
@@ -1898,7 +1897,7 @@ doNeverFocus(void *params)
       EDBUG_RETURN(0);
    if (params)
       ewin =
-          FindItem(NULL, atoi((char *)params), LIST_FINDBY_ID, LIST_TYPE_EWIN);
+	 FindItem(NULL, atoi((char *)params), LIST_FINDBY_ID, LIST_TYPE_EWIN);
    else
       ewin = GetFocusEwin();
    if (!ewin)
@@ -1931,7 +1930,7 @@ doInplaceDesktop(void *params)
    GotoDesktop(d);
    if (desks.current != pd)
      {
-        AUDIO_PLAY("SOUND_DESKTOP_SHUT");
+	AUDIO_PLAY("SOUND_DESKTOP_SHUT");
      }
    EDBUG_RETURN(0);
 }
@@ -1953,8 +1952,8 @@ doDragButtonStart(void *params)
    button = mode.button;
    if (button->flags & FLAG_FIXED)
      {
-        mode.button = NULL;
-        EDBUG_RETURN(0);
+	mode.button = NULL;
+	EDBUG_RETURN(0);
      }
    if (!button)
       EDBUG_RETURN(0);
@@ -1988,10 +1987,10 @@ doDragButtonEnd(void *params)
    UnGrabTheButtons();
    if (!mode.button_move_pending)
      {
-        d = DesktopAt(mode.x, mode.y);
-        MoveButtonToDesktop(button, d);
-        MovebuttonToCoord(button, button->x - desks.desk[button->desktop].x,
-                          button->y - desks.desk[button->desktop].y);
+	d = DesktopAt(mode.x, mode.y);
+	MoveButtonToDesktop(button, d);
+	MovebuttonToCoord(button, button->x - desks.desk[button->desktop].x,
+			  button->y - desks.desk[button->desktop].y);
      }
    else
       mode.button_move_pending = 0;
@@ -2007,21 +2006,21 @@ doFocusModeSet(void *params)
    EDBUG(6, "doFocusModeSet");
    if (params)
      {
-        if (!strcmp("pointer", (char *)params))
-           mode.focusmode = FOCUS_POINTER;
-        else if (!strcmp("sloppy", (char *)params))
-           mode.focusmode = FOCUS_SLOPPY;
-        else if (!strcmp("click", (char *)params))
-           mode.focusmode = FOCUS_CLICK;
+	if (!strcmp("pointer", (char *)params))
+	   mode.focusmode = FOCUS_POINTER;
+	else if (!strcmp("sloppy", (char *)params))
+	   mode.focusmode = FOCUS_SLOPPY;
+	else if (!strcmp("click", (char *)params))
+	   mode.focusmode = FOCUS_CLICK;
      }
    else
      {
-        if (mode.focusmode == FOCUS_POINTER)
-           mode.focusmode = FOCUS_SLOPPY;
-        else if (mode.focusmode == FOCUS_SLOPPY)
-           mode.focusmode = FOCUS_CLICK;
-        else if (mode.focusmode == FOCUS_CLICK)
-           mode.focusmode = FOCUS_POINTER;
+	if (mode.focusmode == FOCUS_POINTER)
+	   mode.focusmode = FOCUS_SLOPPY;
+	else if (mode.focusmode == FOCUS_SLOPPY)
+	   mode.focusmode = FOCUS_CLICK;
+	else if (mode.focusmode == FOCUS_CLICK)
+	   mode.focusmode = FOCUS_POINTER;
      }
    FixFocus();
    autosave();
@@ -2037,13 +2036,13 @@ doMoveModeSet(void *params)
       EDBUG_RETURN(0);
    if (params)
      {
-        mode.movemode = atoi((char *)params);
+	mode.movemode = atoi((char *)params);
      }
    else
      {
-        mode.movemode++;
-        if (mode.movemode > 5)
-           mode.movemode = 0;
+	mode.movemode++;
+	if (mode.movemode > 5)
+	   mode.movemode = 0;
      }
    if ((ird) && (mode.movemode == 5))
       mode.movemode = 3;
@@ -2060,13 +2059,13 @@ doResizeModeSet(void *params)
       EDBUG_RETURN(0);
    if (params)
      {
-        mode.resizemode = atoi((char *)params);
+	mode.resizemode = atoi((char *)params);
      }
    else
      {
-        mode.resizemode++;
-        if (mode.resizemode > 4)
-           mode.resizemode = 0;
+	mode.resizemode++;
+	if (mode.resizemode > 4)
+	   mode.resizemode = 0;
      }
    if (mode.resizemode == 5)
       mode.resizemode = 3;
@@ -2080,13 +2079,13 @@ doSlideModeSet(void *params)
    EDBUG(6, "doSlideModeSet");
    if (params)
      {
-        mode.slidemode = atoi((char *)params);
+	mode.slidemode = atoi((char *)params);
      }
    else
      {
-        mode.slidemode++;
-        if (mode.slidemode > 4)
-           mode.slidemode = 0;
+	mode.slidemode++;
+	if (mode.slidemode > 4)
+	   mode.slidemode = 0;
      }
    autosave();
    EDBUG_RETURN(0);
@@ -2098,14 +2097,14 @@ doCleanupSlideSet(void *params)
    EDBUG(6, "doCleanupSlideSet");
    if (params)
      {
-        mode.cleanupslide = atoi((char *)params);
+	mode.cleanupslide = atoi((char *)params);
      }
    else
      {
-        if (mode.cleanupslide)
-           mode.cleanupslide = 0;
-        else
-           mode.cleanupslide = 1;
+	if (mode.cleanupslide)
+	   mode.cleanupslide = 0;
+	else
+	   mode.cleanupslide = 1;
      }
    autosave();
    EDBUG_RETURN(0);
@@ -2119,10 +2118,10 @@ doMapSlideSet(void *params)
       mode.mapslide = atoi((char *)params);
    else
      {
-        if (mode.mapslide)
-           mode.mapslide = 0;
-        else
-           mode.mapslide = 1;
+	if (mode.mapslide)
+	   mode.mapslide = 0;
+	else
+	   mode.mapslide = 1;
      }
    autosave();
    EDBUG_RETURN(0);
@@ -2141,31 +2140,31 @@ doSoundSet(void *params)
       mode.sound = atoi((char *)params);
    else
      {
-        if (mode.sound)
-           mode.sound = 0;
-        else
-           mode.sound = 1;
+	if (mode.sound)
+	   mode.sound = 0;
+	else
+	   mode.sound = 1;
      }
    if (mode.sound != snd)
      {
-        if (!mode.sound)
-          {
-             lst = (SoundClass **) ListItemType(&num, LIST_TYPE_SCLASS);
-             if (lst)
-               {
-                  for (i = 0; i < num; i++)
-                    {
-                       if (lst[i]->sample)
-                          DestroySample(lst[i]->sample);
-                       lst[i]->sample = NULL;
-                    }
-                  Efree(lst);
-               }
-             close(sound_fd);
-             sound_fd = -1;
-          }
-        else
-           SoundInit();
+	if (!mode.sound)
+	  {
+	     lst = (SoundClass **) ListItemType(&num, LIST_TYPE_SCLASS);
+	     if (lst)
+	       {
+		  for (i = 0; i < num; i++)
+		    {
+		       if (lst[i]->sample)
+			  DestroySample(lst[i]->sample);
+		       lst[i]->sample = NULL;
+		    }
+		  Efree(lst);
+	       }
+	     close(sound_fd);
+	     sound_fd = -1;
+	  }
+	else
+	   SoundInit();
      }
    autosave();
    EDBUG_RETURN(0);
@@ -2224,25 +2223,25 @@ doDragdirSet(void *params)
       desks.dragdir = atoi((char *)params);
    else
      {
-        desks.dragdir++;
-        if (desks.dragdir > 3)
-           desks.dragdir = 0;
+	desks.dragdir++;
+	if (desks.dragdir > 3)
+	   desks.dragdir = 0;
      }
    if (pd != desks.dragdir)
      {
-        GotoDesktop(desks.current);
-        for (i = 0; i < ENLIGHTENMENT_CONF_NUM_DESKTOPS; i++)
-           MoveDesktop(i, 0, 0);
-        while ((b =
-                RemoveItem("_DESKTOP_DRAG_CONTROL", 0, LIST_FINDBY_NAME,
-                           LIST_TYPE_BUTTON)))
-           DestroyButton(b);
-        while ((b =
-                RemoveItem("_DESKTOP_DESKRAY_DRAG_CONTROL", 0, LIST_FINDBY_NAME,
-                           LIST_TYPE_BUTTON)))
-           DestroyButton(b);
-        InitDesktopControls();
-        ShowDesktopControls();
+	GotoDesktop(desks.current);
+	for (i = 0; i < ENLIGHTENMENT_CONF_NUM_DESKTOPS; i++)
+	   MoveDesktop(i, 0, 0);
+	while ((b =
+		RemoveItem("_DESKTOP_DRAG_CONTROL", 0, LIST_FINDBY_NAME,
+			   LIST_TYPE_BUTTON)))
+	   DestroyButton(b);
+	while ((b =
+		RemoveItem("_DESKTOP_DESKRAY_DRAG_CONTROL", 0, LIST_FINDBY_NAME,
+			   LIST_TYPE_BUTTON)))
+	   DestroyButton(b);
+	InitDesktopControls();
+	ShowDesktopControls();
      }
    autosave();
    EDBUG_RETURN(0);
@@ -2260,18 +2259,18 @@ doDragbarOrderSet(void *params)
       desks.dragbar_ordering = atoi((char *)params);
    else
      {
-        desks.dragbar_ordering++;
-        if (desks.dragbar_ordering > 5)
-           desks.dragbar_ordering = 0;
+	desks.dragbar_ordering++;
+	if (desks.dragbar_ordering > 5)
+	   desks.dragbar_ordering = 0;
      }
    if (pd != desks.dragbar_ordering)
      {
-        while ((b =
-                RemoveItem("_DESKTOP_DRAG_CONTROL", 0, LIST_FINDBY_NAME,
-                           LIST_TYPE_BUTTON)))
-           DestroyButton(b);
-        InitDesktopControls();
-        ShowDesktopControls();
+	while ((b =
+		RemoveItem("_DESKTOP_DRAG_CONTROL", 0, LIST_FINDBY_NAME,
+			   LIST_TYPE_BUTTON)))
+	   DestroyButton(b);
+	InitDesktopControls();
+	ShowDesktopControls();
      }
    autosave();
    EDBUG_RETURN(0);
@@ -2289,12 +2288,12 @@ doDragbarWidthSet(void *params)
       desks.dragbar_width = atoi((char *)params);
    if (pd != desks.dragbar_width)
      {
-        while ((b =
-                RemoveItem("_DESKTOP_DRAG_CONTROL", 0, LIST_FINDBY_NAME,
-                           LIST_TYPE_BUTTON)))
-           DestroyButton(b);
-        InitDesktopControls();
-        ShowDesktopControls();
+	while ((b =
+		RemoveItem("_DESKTOP_DRAG_CONTROL", 0, LIST_FINDBY_NAME,
+			   LIST_TYPE_BUTTON)))
+	   DestroyButton(b);
+	InitDesktopControls();
+	ShowDesktopControls();
      }
    autosave();
    EDBUG_RETURN(0);
@@ -2312,12 +2311,12 @@ doDragbarLengthSet(void *params)
       desks.dragbar_length = atoi((char *)params);
    if (pd != desks.dragbar_length)
      {
-        while ((b =
-                RemoveItem("_DESKTOP_DRAG_CONTROL", 0, LIST_FINDBY_NAME,
-                           LIST_TYPE_BUTTON)))
-           DestroyButton(b);
-        InitDesktopControls();
-        ShowDesktopControls();
+	while ((b =
+		RemoveItem("_DESKTOP_DRAG_CONTROL", 0, LIST_FINDBY_NAME,
+			   LIST_TYPE_BUTTON)))
+	   DestroyButton(b);
+	InitDesktopControls();
+	ShowDesktopControls();
      }
    autosave();
    EDBUG_RETURN(0);
@@ -2331,10 +2330,10 @@ doDeskSlideSet(void *params)
       desks.slidein = atoi((char *)params);
    else
      {
-        if (desks.slidein)
-           desks.slidein = 0;
-        else
-           desks.slidein = 1;
+	if (desks.slidein)
+	   desks.slidein = 0;
+	else
+	   desks.slidein = 1;
      }
    autosave();
    EDBUG_RETURN(0);
@@ -2358,10 +2357,10 @@ doHiQualityBgSet(void *params)
       desks.hiqualitybg = atoi((char *)params);
    else
      {
-        if (desks.hiqualitybg)
-           desks.hiqualitybg = 0;
-        else
-           desks.hiqualitybg = 1;
+	if (desks.hiqualitybg)
+	   desks.hiqualitybg = 0;
+	else
+	   desks.hiqualitybg = 1;
      }
    autosave();
    EDBUG_RETURN(0);
@@ -2409,29 +2408,29 @@ doDeskray(void *params)
       EDBUG_RETURN(0);
    if (params)
      {
-        if (!atoi((char *)params))
-          {
-             HideDesktopTabs();
-             mode.deskmode = MODE_NONE;
-          }
-        else
-          {
-             mode.deskmode = MODE_DESKRAY;
-             ShowDesktopTabs();
-          }
+	if (!atoi((char *)params))
+	  {
+	     HideDesktopTabs();
+	     mode.deskmode = MODE_NONE;
+	  }
+	else
+	  {
+	     mode.deskmode = MODE_DESKRAY;
+	     ShowDesktopTabs();
+	  }
      }
    else
      {
-        if (mode.deskmode == MODE_DESKRAY)
-          {
-             HideDesktopTabs();
-             mode.deskmode = MODE_NONE;
-          }
-        else
-          {
-             mode.deskmode = MODE_DESKRAY;
-             ShowDesktopTabs();
-          }
+	if (mode.deskmode == MODE_DESKRAY)
+	  {
+	     HideDesktopTabs();
+	     mode.deskmode = MODE_NONE;
+	  }
+	else
+	  {
+	     mode.deskmode = MODE_DESKRAY;
+	     ShowDesktopTabs();
+	  }
      }
    EDBUG_RETURN(0);
 }
@@ -2444,10 +2443,10 @@ doAutosaveSet(void *params)
       mode.autosave = atoi((char *)params);
    else
      {
-        if (mode.autosave)
-           mode.autosave = 0;
-        else
-           mode.autosave = 1;
+	if (mode.autosave)
+	   mode.autosave = 0;
+	else
+	   mode.autosave = 1;
      }
    EDBUG_RETURN(0);
 }
@@ -2471,129 +2470,129 @@ doHideShowButton(void *params)
 
    if (params)
      {
-        sscanf((char *)params, "%1000s", s);
-        if (!strcmp(s, "button"))
-          {
-             sscanf((char *)params, "%*s %1000s", s);
-             b = (Button *) FindItem(s, 0, LIST_FINDBY_NAME, LIST_TYPE_BUTTON);
-             if ((b) && (!b->used))
-               {
-                  if (b->visible)
-                    {
-                       HideButton(b);
-                    }
-                  else
-                    {
-                       ShowButton(b);
-                    }
-               }
-          }
-        else if (!strcmp(s, "buttons"))
-          {
-             ss = atword((char *)params, 2);
-             if (ss)
-               {
-                  lst = (Button **) ListItemType(&num, LIST_TYPE_BUTTON);
-                  if (lst)
-                    {
-                       for (i = 0; i < num; i++)
-                         {
-                            if (matchregexp(ss, lst[i]->name))
-                              {
-                                 if ((strcmp
-                                      (lst[i]->name,
-                                       "_DESKTOP_DESKRAY_DRAG_CONTROL")
-                                      && (!lst[i]->used)))
-                                   {
-                                      if (!(lst[i]->visible))
-                                        {
-                                           ShowButton(lst[i]);
-                                        }
-                                      else
-                                        {
-                                           HideButton(lst[i]);
-                                        }
-                                   }
-                              }
-                         }
-                    }
-               }
-          }
-        else if (!strcmp(s, "all_buttons_except"))
-          {
-             ss = atword((char *)params, 2);
-             if (ss)
-               {
-                  lst = (Button **) ListItemTypeID(&num, LIST_TYPE_BUTTON, 0);
-                  if (lst)
-                    {
-                       for (i = 0; i < num; i++)
-                         {
-                            if (!matchregexp(ss, lst[i]->name))
-                              {
-                                 if ((strcmp
-                                      (lst[i]->name,
-                                       "_DESKTOP_DESKRAY_DRAG_CONTROL")
-                                      && (!lst[i]->used)))
-                                   {
-                                      if (!(lst[i]->visible))
-                                        {
-                                           ShowButton(lst[i]);
-                                        }
-                                      else
-                                        {
-                                           HideButton(lst[i]);
-                                        }
-                                   }
-                              }
-                         }
-                    }
-               }
-          }
-        else if (!strcmp(s, "all"))
-          {
-             lst = (Button **) ListItemType(&num, LIST_TYPE_BUTTON);
-             if (lst)
-               {
-                  for (i = 0; i < num; i++)
-                    {
-                       if ((strcmp
-                            (lst[i]->name, "_DESKTOP_DESKRAY_DRAG_CONTROL")
-                            && (!lst[i]->used)))
-                         {
-                            if (!(lst[i]->visible))
-                              {
-                                 ShowButton(lst[i]);
-                              }
-                            else
-                              {
-                                 HideButton(lst[i]);
-                              }
-                         }
-                    }
-               }
-          }
+	sscanf((char *)params, "%1000s", s);
+	if (!strcmp(s, "button"))
+	  {
+	     sscanf((char *)params, "%*s %1000s", s);
+	     b = (Button *) FindItem(s, 0, LIST_FINDBY_NAME, LIST_TYPE_BUTTON);
+	     if ((b) && (!b->used))
+	       {
+		  if (b->visible)
+		    {
+		       HideButton(b);
+		    }
+		  else
+		    {
+		       ShowButton(b);
+		    }
+	       }
+	  }
+	else if (!strcmp(s, "buttons"))
+	  {
+	     ss = atword((char *)params, 2);
+	     if (ss)
+	       {
+		  lst = (Button **) ListItemType(&num, LIST_TYPE_BUTTON);
+		  if (lst)
+		    {
+		       for (i = 0; i < num; i++)
+			 {
+			    if (matchregexp(ss, lst[i]->name))
+			      {
+				 if ((strcmp
+				      (lst[i]->name,
+				       "_DESKTOP_DESKRAY_DRAG_CONTROL")
+				      && (!lst[i]->used)))
+				   {
+				      if (!(lst[i]->visible))
+					{
+					   ShowButton(lst[i]);
+					}
+				      else
+					{
+					   HideButton(lst[i]);
+					}
+				   }
+			      }
+			 }
+		    }
+	       }
+	  }
+	else if (!strcmp(s, "all_buttons_except"))
+	  {
+	     ss = atword((char *)params, 2);
+	     if (ss)
+	       {
+		  lst = (Button **) ListItemTypeID(&num, LIST_TYPE_BUTTON, 0);
+		  if (lst)
+		    {
+		       for (i = 0; i < num; i++)
+			 {
+			    if (!matchregexp(ss, lst[i]->name))
+			      {
+				 if ((strcmp
+				      (lst[i]->name,
+				       "_DESKTOP_DESKRAY_DRAG_CONTROL")
+				      && (!lst[i]->used)))
+				   {
+				      if (!(lst[i]->visible))
+					{
+					   ShowButton(lst[i]);
+					}
+				      else
+					{
+					   HideButton(lst[i]);
+					}
+				   }
+			      }
+			 }
+		    }
+	       }
+	  }
+	else if (!strcmp(s, "all"))
+	  {
+	     lst = (Button **) ListItemType(&num, LIST_TYPE_BUTTON);
+	     if (lst)
+	       {
+		  for (i = 0; i < num; i++)
+		    {
+		       if ((strcmp
+			    (lst[i]->name, "_DESKTOP_DESKRAY_DRAG_CONTROL")
+			    && (!lst[i]->used)))
+			 {
+			    if (!(lst[i]->visible))
+			      {
+				 ShowButton(lst[i]);
+			      }
+			    else
+			      {
+				 HideButton(lst[i]);
+			      }
+			 }
+		    }
+	       }
+	  }
      }
    else
      {
-        lst = (Button **) ListItemTypeID(&num, LIST_TYPE_BUTTON, 0);
-        if (lst)
-          {
-             for (i = 0; i < num; i++)
-               {
-                  if (!lst[i]->used)
-                    {
-                       if (!(lst[i]->visible))
-                         {
-                            ShowButton(lst[i]);
-                         }
-                       else
-                         {
-                            HideButton(lst[i]);
-                         }
-                    }
-               }
-          }
+	lst = (Button **) ListItemTypeID(&num, LIST_TYPE_BUTTON, 0);
+	if (lst)
+	  {
+	     for (i = 0; i < num; i++)
+	       {
+		  if (!lst[i]->used)
+		    {
+		       if (!(lst[i]->visible))
+			 {
+			    ShowButton(lst[i]);
+			 }
+		       else
+			 {
+			    HideButton(lst[i]);
+			 }
+		    }
+	       }
+	  }
      }
    autosave();
 
@@ -2614,14 +2613,14 @@ doIconifyWindow(void *params)
 
    if (params)
      {
-        windowid = (char *)params;
-        ewin =
-            FindItem("ICON", atoi(windowid), LIST_FINDBY_BOTH,
-                     LIST_TYPE_ICONIFIEDS);
-        if (!ewin)
-           ewin =
-               FindItem(NULL, atoi((char *)params), LIST_FINDBY_ID,
-                        LIST_TYPE_EWIN);
+	windowid = (char *)params;
+	ewin =
+	   FindItem("ICON", atoi(windowid), LIST_FINDBY_BOTH,
+		    LIST_TYPE_ICONIFIEDS);
+	if (!ewin)
+	   ewin =
+	      FindItem(NULL, atoi((char *)params), LIST_FINDBY_ID,
+		       LIST_TYPE_EWIN);
      }
    else
       ewin = GetFocusEwin();
@@ -2634,17 +2633,17 @@ doIconifyWindow(void *params)
 
    for (i = 0; i < num; i++)
      {
-        curr_group = EwinsInGroup(ewin, gwins[i]);
-        if (gwins[i]->iconified
-            && ((curr_group && !curr_group->cfg.mirror) || iconified))
-          {
-             DeIconifyEwin(gwins[i]);
-          }
-        else if (!gwins[i]->iconified
-                 && ((curr_group && !curr_group->cfg.mirror) || !iconified))
-          {
-             IconifyEwin(gwins[i]);
-          }
+	curr_group = EwinsInGroup(ewin, gwins[i]);
+	if (gwins[i]->iconified
+	    && ((curr_group && !curr_group->cfg.mirror) || iconified))
+	  {
+	     DeIconifyEwin(gwins[i]);
+	  }
+	else if (!gwins[i]->iconified
+		 && ((curr_group && !curr_group->cfg.mirror) || !iconified))
+	  {
+	     IconifyEwin(gwins[i]);
+	  }
      }
    Efree(gwins);
    EDBUG_RETURN(0);
@@ -2675,9 +2674,9 @@ doSlideout(void *params)
    s = FindItem((char *)params, 0, LIST_FINDBY_NAME, LIST_TYPE_SLIDEOUT);
    if (s)
      {
-        AUDIO_PLAY("SOUND_SLIDEOUT_SHOW");
-        ShowSlideout(s, mode.context_win);
-        s->ref_count++;
+	AUDIO_PLAY("SOUND_SLIDEOUT_SHOW");
+	ShowSlideout(s, mode.context_win);
+	s->ref_count++;
      }
    EDBUG_RETURN(0);
 }
@@ -2706,13 +2705,13 @@ doScrollWindows(void *params)
 
    if ((lst) && (num > 0))
      {
-        for (i = 0; i < num; i++)
-          {
-             if ((lst[i]->desktop == desks.current) && (!lst[i]->sticky)
-                 && (!lst[i]->floating) && (!lst[i]->fixedpos))
-                MoveEwin(lst[i], lst[i]->x + x, lst[i]->y + y);
-          }
-        Efree(lst);
+	for (i = 0; i < num; i++)
+	  {
+	     if ((lst[i]->desktop == desks.current) && (!lst[i]->sticky)
+		 && (!lst[i]->floating) && (!lst[i]->fixedpos))
+		MoveEwin(lst[i], lst[i]->x + x, lst[i]->y + y);
+	  }
+	Efree(lst);
      }
    EDBUG_RETURN(0);
 }
@@ -2731,7 +2730,7 @@ doShade(void *params)
       EDBUG_RETURN(0);
    if (params)
       ewin =
-          FindItem(NULL, atoi((char *)params), LIST_FINDBY_ID, LIST_TYPE_EWIN);
+	 FindItem(NULL, atoi((char *)params), LIST_FINDBY_ID, LIST_TYPE_EWIN);
    else
       ewin = GetFocusEwin();
 
@@ -2742,21 +2741,21 @@ doShade(void *params)
    shaded = ewin->shaded;
    for (i = 0; i < num; i++)
      {
-        curr_group = EwinsInGroup(ewin, gwins[i]);
-        if (gwins[i]->shaded
-            && ((curr_group && !curr_group->cfg.mirror) || shaded))
-          {
-             AUDIO_PLAY("SOUND_UNSHADE");
-             UnShadeEwin(gwins[i]);
-          }
-        else if (!gwins[i]->shaded
-                 && ((curr_group && !curr_group->cfg.mirror) || !shaded))
-          {
-             AUDIO_PLAY("SOUND_SHADE");
-             ShadeEwin(gwins[i]);
-          }
-        params = NULL;
-        RememberImportantInfoForEwin(gwins[i]);
+	curr_group = EwinsInGroup(ewin, gwins[i]);
+	if (gwins[i]->shaded
+	    && ((curr_group && !curr_group->cfg.mirror) || shaded))
+	  {
+	     AUDIO_PLAY("SOUND_UNSHADE");
+	     UnShadeEwin(gwins[i]);
+	  }
+	else if (!gwins[i]->shaded
+		 && ((curr_group && !curr_group->cfg.mirror) || !shaded))
+	  {
+	     AUDIO_PLAY("SOUND_SHADE");
+	     ShadeEwin(gwins[i]);
+	  }
+	params = NULL;
+	RememberImportantInfoForEwin(gwins[i]);
      }
    Efree(gwins);
    EDBUG_RETURN(0);
@@ -2784,10 +2783,10 @@ doMaxH(void *params)
    ewin = GetFocusEwin();
    if (ewin)
      {
-        if (ewin->shaded)
-           EDBUG_RETURN(0);
-        MaxHeight(ewin, (char *)params);
-        RememberImportantInfoForEwin(ewin);
+	if (ewin->shaded)
+	   EDBUG_RETURN(0);
+	MaxHeight(ewin, (char *)params);
+	RememberImportantInfoForEwin(ewin);
      }
    EDBUG_RETURN(0);
 }
@@ -2803,10 +2802,10 @@ doMaxW(void *params)
    ewin = GetFocusEwin();
    if (ewin)
      {
-        if (ewin->shaded)
-           EDBUG_RETURN(0);
-        MaxWidth(ewin, (char *)params);
-        RememberImportantInfoForEwin(ewin);
+	if (ewin->shaded)
+	   EDBUG_RETURN(0);
+	MaxWidth(ewin, (char *)params);
+	RememberImportantInfoForEwin(ewin);
      }
    EDBUG_RETURN(0);
 }
@@ -2822,10 +2821,10 @@ doMax(void *params)
    ewin = GetFocusEwin();
    if (ewin)
      {
-        if (ewin->shaded)
-           EDBUG_RETURN(0);
-        MaxSize(ewin, (char *)params);
-        RememberImportantInfoForEwin(ewin);
+	if (ewin->shaded)
+	   EDBUG_RETURN(0);
+	MaxSize(ewin, (char *)params);
+	RememberImportantInfoForEwin(ewin);
      }
    EDBUG_RETURN(0);
 }
@@ -2934,9 +2933,9 @@ doToolTipSet(void *params)
       mode.tooltips = atoi((char *)params);
    else
      {
-        mode.tooltips++;
-        if (mode.tooltips > 1)
-           mode.tooltips = 0;
+	mode.tooltips++;
+	if (mode.tooltips > 1)
+	   mode.tooltips = 0;
      }
    autosave();
    EDBUG_RETURN(0);
@@ -2976,16 +2975,16 @@ doFocusSet(void *params)
    ewin = (EWin *) FindItem(NULL, win, LIST_FINDBY_ID, LIST_TYPE_EWIN);
    if (ewin)
      {
-        if (ewin->iconified)
-           DeIconifyEwin(ewin);
-        GotoDesktop(ewin->desktop);
-        SetCurrentArea(ewin->area_x, ewin->area_y);
-        if (mode.raise_on_next_focus || mode.raise_after_next_focus)
-           RaiseEwin(ewin);
-        if (mode.warp_on_next_focus)
-           XWarpPointer(disp, None, ewin->win, 0, 0, 0, 0, ewin->w / 2,
-                        ewin->h / 2);
-        FocusToEWin(ewin);
+	if (ewin->iconified)
+	   DeIconifyEwin(ewin);
+	GotoDesktop(ewin->desktop);
+	SetCurrentArea(ewin->area_x, ewin->area_y);
+	if (mode.raise_on_next_focus || mode.raise_after_next_focus)
+	   RaiseEwin(ewin);
+	if (mode.warp_on_next_focus)
+	   XWarpPointer(disp, None, ewin->win, 0, 0, 0, 0, ewin->w / 2,
+			ewin->h / 2);
+	FocusToEWin(ewin);
      }
    EDBUG_RETURN(0);
 }
@@ -3011,22 +3010,22 @@ doBackgroundSet(void *params)
 
    if (desks.desk[desk].bg != bg)
      {
-        char                pq;
+	char                pq;
 
-        if (desks.desk[desk].bg)
-           desks.desk[desk].bg->last_viewed = 0;
-        view = desks.desk[desk].viewable;
-        desks.desk[desk].viewable = 0;
-        DesktopAccounting();
-        desks.desk[desk].viewable = view;
-        BGSettingsGoTo(bg);
-        pq = queue_up;
-        queue_up = 0;
-        SetDesktopBg(desk, bg);
-        RefreshDesktop(desk);
-        RedrawPagersForDesktop(desk, 2);
-        ForceUpdatePagersForDesktop(desk);
-        queue_up = pq;
+	if (desks.desk[desk].bg)
+	   desks.desk[desk].bg->last_viewed = 0;
+	view = desks.desk[desk].viewable;
+	desks.desk[desk].viewable = 0;
+	DesktopAccounting();
+	desks.desk[desk].viewable = view;
+	BGSettingsGoTo(bg);
+	pq = queue_up;
+	queue_up = 0;
+	SetDesktopBg(desk, bg);
+	RefreshDesktop(desk);
+	RedrawPagersForDesktop(desk, 2);
+	ForceUpdatePagersForDesktop(desk);
+	queue_up = pq;
      }
    autosave();
 
@@ -3104,11 +3103,11 @@ doSetLayer(void *params)
    l = atoi((char *)params);
    if (ewin->layer > l)
      {
-        AUDIO_PLAY("SOUND_WINDOW_CHANGE_LAYER_DOWN");
+	AUDIO_PLAY("SOUND_WINDOW_CHANGE_LAYER_DOWN");
      }
    else if (ewin->layer < l)
      {
-        AUDIO_PLAY("SOUND_WINDOW_CHANGE_LAYER_UP");
+	AUDIO_PLAY("SOUND_WINDOW_CHANGE_LAYER_UP");
      }
    ewin->layer = l;
    RaiseEwin(ewin);
@@ -3126,8 +3125,8 @@ doWarpPointer(void *params)
 
    if (params)
      {
-        sscanf((char *)params, "%i %i", &dx, &dy);
-        XWarpPointer(disp, None, None, 0, 0, 0, 0, dx, dy);
+	sscanf((char *)params, "%i %i", &dx, &dy);
+	XWarpPointer(disp, None, None, 0, 0, 0, 0, dx, dy);
      }
    EDBUG_RETURN(0);
 }
@@ -3147,8 +3146,8 @@ doMoveWinToArea(void *params)
 
    if (params)
      {
-        sscanf((char *)params, "%i %i", &dx, &dy);
-        MoveEwinToArea(ewin, dx, dy);
+	sscanf((char *)params, "%i %i", &dx, &dy);
+	MoveEwinToArea(ewin, dx, dy);
      }
    RememberImportantInfoForEwin(ewin);
    EDBUG_RETURN(0);
@@ -3169,10 +3168,10 @@ doMoveWinByArea(void *params)
 
    if (params)
      {
-        sscanf((char *)params, "%i %i", &dx, &dy);
-        dx = ewin->area_x + dx;
-        dy = ewin->area_y + dy;
-        MoveEwinToArea(ewin, dx, dy);
+	sscanf((char *)params, "%i %i", &dx, &dy);
+	dx = ewin->area_x + dx;
+	dy = ewin->area_y + dy;
+	MoveEwinToArea(ewin, dx, dy);
      }
    RememberImportantInfoForEwin(ewin);
    EDBUG_RETURN(0);
@@ -3198,8 +3197,8 @@ doSetWinBorder(void *params)
       EDBUG_RETURN(0);
 
    gwins =
-       ListWinGroupMembersForEwin(ewin, ACTION_SET_WINDOW_BORDER, mode.nogroup,
-                                  &num);
+      ListWinGroupMembersForEwin(ewin, ACTION_SET_WINDOW_BORDER, mode.nogroup,
+				 &num);
 
    sscanf((char *)params, "%1000s", buf);
    b = (Border *) FindItem(buf, 0, LIST_FINDBY_NAME, LIST_TYPE_BORDER);
@@ -3208,38 +3207,38 @@ doSetWinBorder(void *params)
    has_shaded = 0;
    for (i = 0; i < num; i++)
      {
-        if (gwins[i]->shaded)
-          {
-             has_shaded = 1;
-             break;
-          }
+	if (gwins[i]->shaded)
+	  {
+	     has_shaded = 1;
+	     break;
+	  }
      }
    if (has_shaded)
      {
-        if ((b->border.left == 0) && (b->border.right == 0)
-            && (b->border.top == 0) && (b->border.bottom == 0))
-           EDBUG_RETURN(0);
+	if ((b->border.left == 0) && (b->border.right == 0)
+	    && (b->border.top == 0) && (b->border.bottom == 0))
+	   EDBUG_RETURN(0);
      }
    for (i = 0; i < num; i++)
      {
-        if (b != gwins[i]->border)
-          {
-             gwins[i]->border_new = 1;
-             AUDIO_PLAY("SOUND_WINDOW_BORDER_CHANGE");
-             shadechange = 0;
-             if (gwins[i]->shaded)
-               {
-                  shadechange = 1;
-                  InstantUnShadeEwin(gwins[i]);
-               }
-             SetEwinToBorder(gwins[i], b);
-             if (shadechange)
-                InstantShadeEwin(gwins[i]);
-             ICCCM_MatchSize(gwins[i]);
-             MoveResizeEwin(gwins[i], gwins[i]->x, gwins[i]->y,
-                            gwins[i]->client.w, gwins[i]->client.h);
-          }
-        RememberImportantInfoForEwin(gwins[i]);
+	if (b != gwins[i]->border)
+	  {
+	     gwins[i]->border_new = 1;
+	     AUDIO_PLAY("SOUND_WINDOW_BORDER_CHANGE");
+	     shadechange = 0;
+	     if (gwins[i]->shaded)
+	       {
+		  shadechange = 1;
+		  InstantUnShadeEwin(gwins[i]);
+	       }
+	     SetEwinToBorder(gwins[i], b);
+	     if (shadechange)
+		InstantShadeEwin(gwins[i]);
+	     ICCCM_MatchSize(gwins[i]);
+	     MoveResizeEwin(gwins[i], gwins[i]->x, gwins[i]->y,
+			    gwins[i]->client.w, gwins[i]->client.h);
+	  }
+	RememberImportantInfoForEwin(gwins[i]);
      }
    Efree(gwins);
    EDBUG_RETURN(0);
@@ -3266,8 +3265,8 @@ doLinearAreaSet(void *params)
       EDBUG_RETURN(0);
    if (params)
      {
-        sscanf((char *)params, "%i", &da);
-        SetCurrentLinearArea(da);
+	sscanf((char *)params, "%i", &da);
+	SetCurrentLinearArea(da);
      }
    EDBUG_RETURN(0);
 }
@@ -3282,8 +3281,8 @@ doLinearAreaMoveBy(void *params)
       EDBUG_RETURN(0);
    if (params)
      {
-        sscanf((char *)params, "%i", &da);
-        MoveCurrentLinearAreaBy(da);
+	sscanf((char *)params, "%i", &da);
+	MoveCurrentLinearAreaBy(da);
      }
    EDBUG_RETURN(0);
 }
@@ -3298,17 +3297,17 @@ doAbout(void *params)
    if (InZoom())
       EDBUG_RETURN(0);
    if ((d =
-        FindItem("ABOUT_ENLIGHTENMENT", 0, LIST_FINDBY_NAME, LIST_TYPE_DIALOG)))
+	FindItem("ABOUT_ENLIGHTENMENT", 0, LIST_FINDBY_NAME, LIST_TYPE_DIALOG)))
      {
-        ShowDialog(d);
-        EDBUG_RETURN(0);
+	ShowDialog(d);
+	EDBUG_RETURN(0);
      }
    d = CreateDialog("ABOUT_ENLIGHTENMENT");
    {
       char                stuff[255];
 
       Esnprintf(stuff, sizeof(stuff), _("About Enlightenment %s"),
-                ENLIGHTENMENT_VERSION);
+		ENLIGHTENMENT_VERSION);
       DialogSetTitle(d, stuff);
    }
 
@@ -3323,20 +3322,20 @@ doAbout(void *params)
    DialogItemSetPadding(di, 2, 2, 2, 2);
    DialogItemSetFill(di, 1, 0);
    DialogItemTextSetText(di,
-                         _("Welcome to the " ENLIGHTENMENT_VERSION " version\n"
-                           "of the Enlightenment "
-                           "window manager.\n Enlightenment is still under "
-                           "development, but\n"
-                           "we have tried to iron out all the bugs "
-                           "that\nwe can find. If "
-                           "you find a bug in the software,\n please do "
-                           "not hesitate to send "
-                           "in a bug report.\nSee \"Help\" for information "
-                           "on joining the\n" "mailing list.\n" "\n"
-                           "This code last updated on:\n" E_CHECKOUT_DATE "\n"
-                           "\n" "Good luck. We hope you enjoy the software.\n"
-                           "\n" "The Rasterman - raster@rasterman.com\n"
-                           "Mandrake - mandrake@mandrake.net\n"));
+			 _("Welcome to the " ENLIGHTENMENT_VERSION " version\n"
+			   "of the Enlightenment "
+			   "window manager.\n Enlightenment is still under "
+			   "development, but\n"
+			   "we have tried to iron out all the bugs "
+			   "that\nwe can find. If "
+			   "you find a bug in the software,\n please do "
+			   "not hesitate to send "
+			   "in a bug report.\nSee \"Help\" for information "
+			   "on joining the\n" "mailing list.\n" "\n"
+			   "This code last updated on:\n" E_CHECKOUT_DATE "\n"
+			   "\n" "Good luck. We hope you enjoy the software.\n"
+			   "\n" "The Rasterman - raster@rasterman.com\n"
+			   "Mandrake - mandrake@mandrake.net\n"));
 
    DialogAddButton(d, _("OK"), NULL, 1);
    ShowDialog(d);
@@ -3371,8 +3370,8 @@ doMoveWinToLinearArea(void *params)
       EDBUG_RETURN(0);
    if (params)
      {
-        sscanf((char *)params, "%i", &da);
-        MoveEwinToLinearArea(ewin, da);
+	sscanf((char *)params, "%i", &da);
+	MoveEwinToLinearArea(ewin, da);
      }
    RememberImportantInfoForEwin(ewin);
    EDBUG_RETURN(0);
@@ -3392,8 +3391,8 @@ doMoveWinByLinearArea(void *params)
       EDBUG_RETURN(0);
    if (params)
      {
-        sscanf((char *)params, "%i", &da);
-        MoveEwinLinearAreaBy(ewin, da);
+	sscanf((char *)params, "%i", &da);
+	MoveEwinLinearAreaBy(ewin, da);
      }
    RememberImportantInfoForEwin(ewin);
    EDBUG_RETURN(0);
@@ -3405,10 +3404,10 @@ doSetPagerHiq(void *params)
    EDBUG(6, "doSetPagerHiq");
    if (params)
      {
-        char                num;
+	char                num;
 
-        num = atoi(params);
-        PagerSetHiQ(num);
+	num = atoi(params);
+	PagerSetHiQ(num);
      }
    autosave();
    EDBUG_RETURN(0);
@@ -3420,10 +3419,10 @@ doSetPagerSnap(void *params)
    EDBUG(6, "doSetPagerSnap");
    if (params)
      {
-        char                num;
+	char                num;
 
-        num = atoi((char *)params);
-        PagerSetSnap(num);
+	num = atoi((char *)params);
+	PagerSetSnap(num);
      }
    autosave();
    EDBUG_RETURN(0);
@@ -3440,78 +3439,79 @@ doConfigure(void *params)
    sscanf((char *)params, "%1000s", s);
    if (params)
      {
-        if (!strcmp(s, "pager"))
-           SettingsPager();
-        else if (!strcmp(s, "focus"))
-           SettingsFocus();
-        else if (!strcmp(s, "moveresize"))
-           SettingsMoveResize();
-        else if (!strcmp(s, "desktops"))
-           SettingsDesktops();
-        else if (!strcmp(s, "area"))
-           SettingsArea();
-        else if (!strcmp(s, "placement"))
-           SettingsPlacement();
-        else if (!strcmp(s, "icons"))
-           SettingsIcons();
-        else if (!strcmp(s, "autoraise"))
-           SettingsAutoRaise();
-        else if (!strcmp(s, "tooltips"))
-           SettingsTooltips();
+	if (!strcmp(s, "pager"))
+	   SettingsPager();
+	else if (!strcmp(s, "focus"))
+	   SettingsFocus();
+	else if (!strcmp(s, "moveresize"))
+	   SettingsMoveResize();
+	else if (!strcmp(s, "desktops"))
+	   SettingsDesktops();
+	else if (!strcmp(s, "area"))
+	   SettingsArea();
+	else if (!strcmp(s, "placement"))
+	   SettingsPlacement();
+	else if (!strcmp(s, "icons"))
+	   SettingsIcons();
+	else if (!strcmp(s, "autoraise"))
+	   SettingsAutoRaise();
+	else if (!strcmp(s, "tooltips"))
+	   SettingsTooltips();
 #if ENABLE_KDE
-        else if (!strcmp(s, "kde"))
-           SettingsKDE();
+	else if (!strcmp(s, "kde"))
+	   SettingsKDE();
 #endif
-        else if (!strcmp(s, "audio"))
-           SettingsAudio();
-        else if (!strcmp(s, "fx"))
-           SettingsSpecialFX();
-        else if (!strcmp(s, "bg"))
-           SettingsBackground(desks.desk[desks.current].bg);
-        else if (!strcmp(s, "iconbox"))
-          {
-             sscanf((char *)params, "%*s %1000s", s);
-             SettingsIconbox(s);
-          }
-        else if (!strcmp(s, "group"))
-          {
-             EWin               *ewin = GetFocusEwin();
+	else if (!strcmp(s, "audio"))
+	   SettingsAudio();
+	else if (!strcmp(s, "fx"))
+	   SettingsSpecialFX();
+	else if (!strcmp(s, "bg"))
+	   SettingsBackground(desks.desk[desks.current].bg);
+	else if (!strcmp(s, "iconbox"))
+	  {
+	     sscanf((char *)params, "%*s %1000s", s);
+	     SettingsIconbox(s);
+	  }
+	else if (!strcmp(s, "group"))
+	  {
+	     EWin               *ewin = GetFocusEwin();
 
-             if (ewin)
-               {
-                  SettingsGroups(ewin);
-               }
-          }
-        else if (!strcmp(s, "group_defaults"))
-          {
-             SettingsDefaultGroupControl();
-          }
-        else if (!strcmp(s, "group_membership"))
-          {
-             EWin               *ewin = GetFocusEwin();
+	     if (ewin)
+	       {
+		  SettingsGroups(ewin);
+	       }
+	  }
+	else if (!strcmp(s, "group_defaults"))
+	  {
+	     SettingsDefaultGroupControl();
+	  }
+	else if (!strcmp(s, "group_membership"))
+	  {
+	     EWin               *ewin = GetFocusEwin();
 
-             if (ewin)
-               {
-                  ChooseGroupDialog(ewin,
-                                    _
-                                    ("  Pick the group the window will belong to:  \n"),
-                                    GROUP_SELECT_ALL_EXCEPT_EWIN,
-                                    ACTION_ADD_TO_GROUP);
-               }
-          }
-        else if (!strcmp(s, "remember"))
-          {
-             SettingsRemember();
-          }
-        else if (!strcmp(s, "miscellaneous"))
-          {
-             SettingsMiscellaneous();
-          }
+	     if (ewin)
+	       {
+		  ChooseGroupDialog(ewin,
+				    _
+				    ("  Pick the group the window will belong to:  \n"),
+				    GROUP_SELECT_ALL_EXCEPT_EWIN,
+				    ACTION_ADD_TO_GROUP);
+	       }
+	  }
+	else if (!strcmp(s, "remember"))
+	  {
+	     SettingsRemember();
+	  }
+	else if (!strcmp(s, "miscellaneous"))
+	  {
+	     SettingsMiscellaneous();
+	  }
      }
    EDBUG_RETURN(0);
 }
 
-struct _keyset {
+struct _keyset
+{
    char               *sym;
    int                 state;
    char               *ch;
@@ -3623,44 +3623,44 @@ doInsertKeys(void *params)
    EDBUG(6, "doInsertKeys");
    if (params)
      {
-        Window              win = 0;
-        int                 i, rev;
-        char               *s;
-        XKeyEvent           ev;
+	Window              win = 0;
+	int                 i, rev;
+	char               *s;
+	XKeyEvent           ev;
 
-        s = (char *)params;
-        XGetInputFocus(disp, &win, &rev);
-        if (win)
-          {
-             AUDIO_PLAY("SOUND_INSERT_KEYS");
-             ev.window = win;
-             for (i = 0; i < (int)strlen(s); i++)
-               {
-                  int                 j;
+	s = (char *)params;
+	XGetInputFocus(disp, &win, &rev);
+	if (win)
+	  {
+	     AUDIO_PLAY("SOUND_INSERT_KEYS");
+	     ev.window = win;
+	     for (i = 0; i < (int)strlen(s); i++)
+	       {
+		  int                 j;
 
-                  ev.x = mode.x;
-                  ev.y = mode.y;
-                  ev.x_root = mode.x;
-                  ev.y_root = mode.y;
-                  for (j = 0; j < (int)(sizeof(ks) / sizeof(struct _keyset));
-                       j++)
-                    {
-                       if (!strncmp(ks[j].ch, &(s[i]), strlen(ks[j].ch)))
-                         {
-                            i += (strlen(ks[j].ch) - 1);
-                            ev.keycode =
-                                XKeysymToKeycode(disp,
-                                                 XStringToKeysym(ks[j].sym));
-                            ev.state = ks[j].state;
-                            ev.type = KeyPress;
-                            XSendEvent(disp, win, False, 0, (XEvent *) & ev);
-                            ev.type = KeyRelease;
-                            XSendEvent(disp, win, False, 0, (XEvent *) & ev);
-                            j = 0x7fffffff;
-                         }
-                    }
-               }
-          }
+		  ev.x = mode.x;
+		  ev.y = mode.y;
+		  ev.x_root = mode.x;
+		  ev.y_root = mode.y;
+		  for (j = 0; j < (int)(sizeof(ks) / sizeof(struct _keyset));
+		       j++)
+		    {
+		       if (!strncmp(ks[j].ch, &(s[i]), strlen(ks[j].ch)))
+			 {
+			    i += (strlen(ks[j].ch) - 1);
+			    ev.keycode =
+			       XKeysymToKeycode(disp,
+						XStringToKeysym(ks[j].sym));
+			    ev.state = ks[j].state;
+			    ev.type = KeyPress;
+			    XSendEvent(disp, win, False, 0, (XEvent *) & ev);
+			    ev.type = KeyRelease;
+			    XSendEvent(disp, win, False, 0, (XEvent *) & ev);
+			    j = 0x7fffffff;
+			 }
+		    }
+	       }
+	  }
      }
    EDBUG_RETURN(0);
 }
@@ -3673,25 +3673,25 @@ doCreateIconbox(void *params)
       EDBUG_RETURN(0);
    if (params)
      {
-        Iconbox            *ib;
+	Iconbox            *ib;
 
-        AUDIO_PLAY("SOUND_NEW_ICONBOX");
-        ib = CreateIconbox(params);
-        ShowIconbox(ib);
+	AUDIO_PLAY("SOUND_NEW_ICONBOX");
+	ib = CreateIconbox(params);
+	ShowIconbox(ib);
      }
    else
      {
-        Iconbox            *ib, **ibl;
-        int                 num = 0;
-        char                s[64];
+	Iconbox            *ib, **ibl;
+	int                 num = 0;
+	char                s[64];
 
-        ibl = ListAllIconboxes(&num);
-        if (ibl)
-           Efree(ibl);
-        Esnprintf(s, sizeof(s), "_IB_%i", num);
-        AUDIO_PLAY("SOUND_NEW_ICONBOX");
-        ib = CreateIconbox(s);
-        ShowIconbox(ib);
+	ibl = ListAllIconboxes(&num);
+	if (ibl)
+	   Efree(ibl);
+	Esnprintf(s, sizeof(s), "_IB_%i", num);
+	AUDIO_PLAY("SOUND_NEW_ICONBOX");
+	ib = CreateIconbox(s);
+	ShowIconbox(ib);
      }
    autosave();
    EDBUG_RETURN(0);
@@ -3704,11 +3704,11 @@ FindEwinInList(EWin * ewin, EWin ** gwins, int num)
 
    if (ewin && gwins)
      {
-        for (i = 0; i < num; i++)
-          {
-             if (ewin == gwins[i])
-                return 1;
-          }
+	for (i = 0; i < num; i++)
+	  {
+	     if (ewin == gwins[i])
+		return 1;
+	  }
      }
    return 0;
 }
@@ -3726,47 +3726,47 @@ doRaiseLower(void *params)
 
    if (params)
       ewin =
-          FindItem(NULL, atoi((char *)params), LIST_FINDBY_ID, LIST_TYPE_EWIN);
+	 FindItem(NULL, atoi((char *)params), LIST_FINDBY_ID, LIST_TYPE_EWIN);
    else
       ewin = GetFocusEwin();
    if (!ewin)
       EDBUG_RETURN(0);
 
    gwins =
-       ListWinGroupMembersForEwin(ewin, ACTION_RAISE_LOWER, mode.nogroup, &num);
+      ListWinGroupMembersForEwin(ewin, ACTION_RAISE_LOWER, mode.nogroup, &num);
    for (j = 0; j < num; j++)
      {
-        ewin = gwins[j];
-        if (desks.desk[ewin->desktop].list)
-          {
-             for (i = 0; i < desks.desk[ewin->desktop].num - 1; i++)
-               {
-                  if (desks.desk[ewin->desktop].list[i]->layer == ewin->layer
-                      && (desks.desk[ewin->desktop].list[i] == ewin
-                          || !FindEwinInList(desks.desk[ewin->desktop].list[i],
-                                             gwins, num)))
-                    {
-                       if (desks.desk[ewin->desktop].list[i] != ewin)
-                          raise = 1;
+	ewin = gwins[j];
+	if (desks.desk[ewin->desktop].list)
+	  {
+	     for (i = 0; i < desks.desk[ewin->desktop].num - 1; i++)
+	       {
+		  if (desks.desk[ewin->desktop].list[i]->layer == ewin->layer
+		      && (desks.desk[ewin->desktop].list[i] == ewin
+			  || !FindEwinInList(desks.desk[ewin->desktop].list[i],
+					     gwins, num)))
+		    {
+		       if (desks.desk[ewin->desktop].list[i] != ewin)
+			  raise = 1;
 
-                       j = num;
-                       break;
-                    }
-               }
-          }
+		       j = num;
+		       break;
+		    }
+	       }
+	  }
      }
 
    if (!raise)
      {
-        AUDIO_PLAY("SOUND_LOWER");
-        for (j = 0; j < num; j++)
-           LowerEwin(gwins[j]);
+	AUDIO_PLAY("SOUND_LOWER");
+	for (j = 0; j < num; j++)
+	   LowerEwin(gwins[j]);
      }
    else
      {
-        AUDIO_PLAY("SOUND_RAISE");
-        for (j = 0; j < num; j++)
-           RaiseEwin(gwins[j]);
+	AUDIO_PLAY("SOUND_RAISE");
+	for (j = 0; j < num; j++)
+	   RaiseEwin(gwins[j]);
      }
 
    Efree(gwins);
@@ -3795,7 +3795,7 @@ doShowHideGroup(void *params)
       EDBUG_RETURN(0);
    if (params)
       ewin =
-          FindItem(NULL, atoi((char *)params), LIST_FINDBY_ID, LIST_TYPE_EWIN);
+	 FindItem(NULL, atoi((char *)params), LIST_FINDBY_ID, LIST_TYPE_EWIN);
    else
       ewin = GetFocusEwin();
 
@@ -3816,7 +3816,7 @@ doStartGroup(void *params)
       EDBUG_RETURN(0);
    if (params)
       ewin =
-          FindItem(NULL, atoi((char *)params), LIST_FINDBY_ID, LIST_TYPE_EWIN);
+	 FindItem(NULL, atoi((char *)params), LIST_FINDBY_ID, LIST_TYPE_EWIN);
    else
       ewin = GetFocusEwin();
 
@@ -3839,7 +3839,7 @@ doAddToGroup(void *params)
       EDBUG_RETURN(0);
    if (params)
       ewin =
-          FindItem(NULL, atoi((char *)params), LIST_FINDBY_ID, LIST_TYPE_EWIN);
+	 FindItem(NULL, atoi((char *)params), LIST_FINDBY_ID, LIST_TYPE_EWIN);
    else
       ewin = GetFocusEwin();
 
@@ -3847,14 +3847,14 @@ doAddToGroup(void *params)
       EDBUG_RETURN(0);
    if (!current_group)
      {
-        ChooseGroupDialog(ewin,
-                          _("\n  There's no current group at the moment.  \n"
-                            "  The current group is the last one you created,  \n"
-                            "  and it exists until you create a new one or break  \n"
-                            "  the latest one.  \n\n"
-                            "  Pick another group that the window will belong to here:  \n\n"),
-                          GROUP_SELECT_ALL_EXCEPT_EWIN, ACTION_ADD_TO_GROUP);
-        EDBUG_RETURN(0);
+	ChooseGroupDialog(ewin,
+			  _("\n  There's no current group at the moment.  \n"
+			    "  The current group is the last one you created,  \n"
+			    "  and it exists until you create a new one or break  \n"
+			    "  the latest one.  \n\n"
+			    "  Pick another group that the window will belong to here:  \n\n"),
+			  GROUP_SELECT_ALL_EXCEPT_EWIN, ACTION_ADD_TO_GROUP);
+	EDBUG_RETURN(0);
      }
    else
       AddEwinToGroup(ewin, current_group);
@@ -3873,7 +3873,7 @@ doRemoveFromGroup(void *params)
       EDBUG_RETURN(0);
    if (params)
       ewin =
-          FindItem(NULL, atoi((char *)params), LIST_FINDBY_ID, LIST_TYPE_EWIN);
+	 FindItem(NULL, atoi((char *)params), LIST_FINDBY_ID, LIST_TYPE_EWIN);
    else
       ewin = GetFocusEwin();
 
@@ -3881,8 +3881,8 @@ doRemoveFromGroup(void *params)
       EDBUG_RETURN(0);
 
    ChooseGroupDialog(ewin,
-                     _("   Select the group to remove the window from.  "),
-                     GROUP_SELECT_EWIN_ONLY, ACTION_REMOVE_FROM_GROUP);
+		     _("   Select the group to remove the window from.  "),
+		     GROUP_SELECT_EWIN_ONLY, ACTION_REMOVE_FROM_GROUP);
 
    SaveGroups();
    EDBUG_RETURN(0);
@@ -3898,7 +3898,7 @@ doBreakGroup(void *params)
       EDBUG_RETURN(0);
    if (params)
       ewin =
-          FindItem(NULL, atoi((char *)params), LIST_FINDBY_ID, LIST_TYPE_EWIN);
+	 FindItem(NULL, atoi((char *)params), LIST_FINDBY_ID, LIST_TYPE_EWIN);
    else
       ewin = GetFocusEwin();
 
@@ -3906,7 +3906,7 @@ doBreakGroup(void *params)
       EDBUG_RETURN(0);
 
    ChooseGroupDialog(ewin, _("  Select the group to break  "),
-                     GROUP_SELECT_EWIN_ONLY, ACTION_BREAK_GROUP);
+		     GROUP_SELECT_EWIN_ONLY, ACTION_BREAK_GROUP);
 
    SaveGroups();
    EDBUG_RETURN(0);
@@ -3926,28 +3926,28 @@ doZoom(void *params)
    Esnprintf(s, sizeof(s), "%s/.zoom_warn", UserEDir());
    if (!exists(s))
      {
-        FILE               *f;
+	FILE               *f;
 
-        f = fopen(s, "w");
-        if (f)
-          {
-             fprintf(f,
-                     _
-                     ("You have been warned about the dangers of Zoom mode\n"));
-             fclose(f);
-          }
-        DIALOG_OK(_("Warning !!!"),
-                  _("This feature is heavily reliant on a feature of your\n"
-                    "X Server called the Vid Mode Extension. This feature exists\n"
-                    "in XFree86 Servers, but is not a heavily used part of the\n"
-                    "Server and thus isn't tested much.\n\n"
-                    "It is possible your X Server does not deal well with being\n"
-                    "asked to switch modes quickly and it may hang, glitch,\n"
-                    "display artefacts or perhaps simply refuse to work.\n\n"
-                    "This is a warning and will only be displayed this one time.\n"
-                    "If your Server does not behave well then you will probably\n"
-                    "have to avoid using this feature.\n"));
-        EDBUG_RETURN(0);
+	f = fopen(s, "w");
+	if (f)
+	  {
+	     fprintf(f,
+		     _
+		     ("You have been warned about the dangers of Zoom mode\n"));
+	     fclose(f);
+	  }
+	DIALOG_OK(_("Warning !!!"),
+		  _("This feature is heavily reliant on a feature of your\n"
+		    "X Server called the Vid Mode Extension. This feature exists\n"
+		    "in XFree86 Servers, but is not a heavily used part of the\n"
+		    "Server and thus isn't tested much.\n\n"
+		    "It is possible your X Server does not deal well with being\n"
+		    "asked to switch modes quickly and it may hang, glitch,\n"
+		    "display artefacts or perhaps simply refuse to work.\n\n"
+		    "This is a warning and will only be displayed this one time.\n"
+		    "If your Server does not behave well then you will probably\n"
+		    "have to avoid using this feature.\n"));
+	EDBUG_RETURN(0);
      }
    ewin = GetFocusEwin();
 
@@ -3987,42 +3987,42 @@ initFunctionArray(void)
    ActionFunctions[ACTION_DESKTOP_DRAG] = (int (*)(void *))(doDragDesktop);
    ActionFunctions[ACTION_STICK] = (int (*)(void *))(doStick);
    ActionFunctions[ACTION_DESKTOP_INPLACE] =
-       (int (*)(void *))(doInplaceDesktop);
+      (int (*)(void *))(doInplaceDesktop);
    ActionFunctions[ACTION_DRAG_BUTTON] = (int (*)(void *))(doDragButtonStart);
    ActionFunctions[ACTION_FOCUSMODE_SET] = (int (*)(void *))(doFocusModeSet);
    ActionFunctions[ACTION_MOVEMODE_SET] = (int (*)(void *))(doMoveModeSet);
    ActionFunctions[ACTION_RESIZEMODE_SET] = (int (*)(void *))(doResizeModeSet);
    ActionFunctions[ACTION_SLIDEMODE_SET] = (int (*)(void *))(doSlideModeSet);
    ActionFunctions[ACTION_CLEANUPSILDE_SET] =
-       (int (*)(void *))(doCleanupSlideSet);
+      (int (*)(void *))(doCleanupSlideSet);
    ActionFunctions[ACTION_MAPSLIDE_SET] = (int (*)(void *))(doMapSlideSet);
    ActionFunctions[ACTION_SOUND_SET] = (int (*)(void *))(doSoundSet);
    ActionFunctions[ACTION_BUTTONMOVE_RESIST_SET] =
-       (int (*)(void *))(doButtonMoveResistSet);
+      (int (*)(void *))(doButtonMoveResistSet);
    ActionFunctions[ACTION_DESKTOPBG_TIMEOUT_SET] =
-       (int (*)(void *))(doDesktopBgTimeoutSet);
+      (int (*)(void *))(doDesktopBgTimeoutSet);
    ActionFunctions[ACTION_MAPSLIDE_SPEED_SET] =
-       (int (*)(void *))(doMapSlideSpeedSet);
+      (int (*)(void *))(doMapSlideSpeedSet);
    ActionFunctions[ACTION_CLEANUPSLIDE_SPEED_SET] =
-       (int (*)(void *))(doCleanupSlideSpeedSet);
+      (int (*)(void *))(doCleanupSlideSpeedSet);
    ActionFunctions[ACTION_DRAGDIR_SET] = (int (*)(void *))(doDragdirSet);
    ActionFunctions[ACTION_DRAGBAR_ORDER_SET] =
-       (int (*)(void *))(doDragbarOrderSet);
+      (int (*)(void *))(doDragbarOrderSet);
    ActionFunctions[ACTION_DRAGBAR_WIDTH_SET] =
-       (int (*)(void *))(doDragbarWidthSet);
+      (int (*)(void *))(doDragbarWidthSet);
    ActionFunctions[ACTION_DRAGBAR_LENGTH_SET] =
-       (int (*)(void *))(doDragbarLengthSet);
+      (int (*)(void *))(doDragbarLengthSet);
    ActionFunctions[ACTION_DESKSLIDE_SET] = (int (*)(void *))(doDeskSlideSet);
    ActionFunctions[ACTION_DESKSLIDE_SPEED_SET] =
-       (int (*)(void *))(doDeskSlideSpeedSet);
+      (int (*)(void *))(doDeskSlideSpeedSet);
    ActionFunctions[ACTION_HIQUALITYBG_SET] =
-       (int (*)(void *))(doHiQualityBgSet);
+      (int (*)(void *))(doHiQualityBgSet);
    ActionFunctions[ACTION_PLAYSOUNDCLASS] = (int (*)(void *))(doPlaySoundClass);
    ActionFunctions[ACTION_GOTO_DESK] = (int (*)(void *))(doGotoDesktop);
    ActionFunctions[ACTION_DESKRAY] = (int (*)(void *))(doDeskray);
    ActionFunctions[ACTION_AUTOSAVE_SET] = (int (*)(void *))(doAutosaveSet);
    ActionFunctions[ACTION_HIDESHOW_BUTTON] =
-       (int (*)(void *))(doHideShowButton);
+      (int (*)(void *))(doHideShowButton);
    ActionFunctions[ACTION_ICONIFY] = (int (*)(void *))(doIconifyWindow);
    ActionFunctions[ACTION_SLIDEOUT] = (int (*)(void *))(doSlideout);
    ActionFunctions[ACTION_SCROLL_WINDOWS] = (int (*)(void *))(doScrollWindows);
@@ -4031,12 +4031,12 @@ initFunctionArray(void)
    ActionFunctions[ACTION_MAX_WIDTH] = (int (*)(void *))(doMaxW);
    ActionFunctions[ACTION_MAX_SIZE] = (int (*)(void *))(doMax);
    ActionFunctions[ACTION_SEND_TO_NEXT_DESK] =
-       (int (*)(void *))(doSendToNextDesk);
+      (int (*)(void *))(doSendToNextDesk);
    ActionFunctions[ACTION_SEND_TO_PREV_DESK] =
-       (int (*)(void *))(doSendToPrevDesk);
+      (int (*)(void *))(doSendToPrevDesk);
    ActionFunctions[ACTION_SNAPSHOT] = (int (*)(void *))(doSnapshot);
    ActionFunctions[ACTION_SCROLL_CONTAINER] =
-       (int (*)(void *))(doScrollContainer);
+      (int (*)(void *))(doScrollContainer);
    ActionFunctions[ACTION_TOOLTIP_SET] = (int (*)(void *))(doToolTipSet);
    ActionFunctions[ACTION_FOCUS_NEXT] = (int (*)(void *))(doFocusNext);
    ActionFunctions[ACTION_FOCUS_PREV] = (int (*)(void *))(doFocusPrev);
@@ -4048,39 +4048,39 @@ initFunctionArray(void)
    ActionFunctions[ACTION_SET_LAYER] = (int (*)(void *))(doSetLayer);
    ActionFunctions[ACTION_WARP_POINTER] = (int (*)(void *))(doWarpPointer);
    ActionFunctions[ACTION_MOVE_WINDOW_TO_AREA] =
-       (int (*)(void *))(doMoveWinToArea);
+      (int (*)(void *))(doMoveWinToArea);
    ActionFunctions[ACTION_MOVE_WINDOW_BY_AREA] =
-       (int (*)(void *))(doMoveWinByArea);
+      (int (*)(void *))(doMoveWinByArea);
    ActionFunctions[ACTION_SET_WINDOW_BORDER] =
-       (int (*)(void *))(doSetWinBorder);
+      (int (*)(void *))(doSetWinBorder);
    ActionFunctions[ACTION_LINEAR_AREA_SET] = (int (*)(void *))(doLinearAreaSet);
    ActionFunctions[ACTION_LINEAR_MOVE_BY] =
-       (int (*)(void *))(doLinearAreaMoveBy);
+      (int (*)(void *))(doLinearAreaMoveBy);
    ActionFunctions[ACTION_ABOUT] = (int (*)(void *))(doAbout);
    ActionFunctions[ACTION_FX] = (int (*)(void *))(doFX);
    ActionFunctions[ACTION_MOVE_WINDOW_TO_LINEAR_AREA] =
-       (int (*)(void *))(doMoveWinToLinearArea);
+      (int (*)(void *))(doMoveWinToLinearArea);
    ActionFunctions[ACTION_MOVE_WINDOW_BY_LINEAR_AREA] =
-       (int (*)(void *))(doMoveWinByArea);
+      (int (*)(void *))(doMoveWinByArea);
    ActionFunctions[ACTION_SET_PAGER_HIQ] = (int (*)(void *))(doSetPagerHiq);
    ActionFunctions[ACTION_SET_PAGER_SNAP] = (int (*)(void *))(doSetPagerSnap);
    ActionFunctions[ACTION_CONFIG] = (int (*)(void *))(doConfigure);
    ActionFunctions[ACTION_MOVE_CONSTRAINED] =
-       (int (*)(void *))(doMoveConstrained);
+      (int (*)(void *))(doMoveConstrained);
    ActionFunctions[ACTION_INSERT_KEYS] = (int (*)(void *))(doInsertKeys);
    ActionFunctions[ACTION_START_GROUP] = (int (*)(void *))(doStartGroup);
    ActionFunctions[ACTION_ADD_TO_GROUP] = (int (*)(void *))(doAddToGroup);
    ActionFunctions[ACTION_REMOVE_FROM_GROUP] =
-       (int (*)(void *))(doRemoveFromGroup);
+      (int (*)(void *))(doRemoveFromGroup);
    ActionFunctions[ACTION_BREAK_GROUP] = (int (*)(void *))(doBreakGroup);
    ActionFunctions[ACTION_SHOW_HIDE_GROUP] = (int (*)(void *))(doShowHideGroup);
    ActionFunctions[ACTION_CREATE_ICONBOX] = (int (*)(void *))(doCreateIconbox);
    ActionFunctions[ACTION_RAISE_LOWER] = (int (*)(void *))(doRaiseLower);
    ActionFunctions[ACTION_ZOOM] = (int (*)(void *))(doZoom);
    ActionFunctions[ACTION_SET_WINDOW_BORDER_NG] =
-       (int (*)(void *))(doSetWinBorderNoGroup);
+      (int (*)(void *))(doSetWinBorderNoGroup);
    ActionFunctions[ACTION_ICONIFY_NG] =
-       (int (*)(void *))(doIconifyWindowNoGroup);
+      (int (*)(void *))(doIconifyWindowNoGroup);
    ActionFunctions[ACTION_KILL_NG] = (int (*)(void *))(doKillNoGroup);
    ActionFunctions[ACTION_MOVE_NG] = (int (*)(void *))(doMoveNoGroup);
    ActionFunctions[ACTION_RAISE_NG] = (int (*)(void *))(doRaiseNoGroup);
@@ -4088,7 +4088,7 @@ initFunctionArray(void)
    ActionFunctions[ACTION_STICK_NG] = (int (*)(void *))(doStickNoGroup);
    ActionFunctions[ACTION_SHADE_NG] = (int (*)(void *))(doShadeNoGroup);
    ActionFunctions[ACTION_RAISE_LOWER_NG] =
-       (int (*)(void *))(doRaiseLowerNoGroup);
+      (int (*)(void *))(doRaiseLowerNoGroup);
    ActionFunctions[ACTION_SKIPFOCUS] = (int (*)(void *))(doSkipFocus);
    ActionFunctions[ACTION_SKIPTASK] = (int (*)(void *))(doSkipTask);
    ActionFunctions[ACTION_SKIPWINLIST] = (int (*)(void *))(doSkipWinList);

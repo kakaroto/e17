@@ -30,11 +30,13 @@
  * http stuff in the same place
  */
 
-typedef struct conn_data_tag {
+typedef struct conn_data_tag
+{
    int                 read_sock;
    int                 write_sock;
    ghttp_request      *req;
-} conn_data;
+}
+conn_data;
 
 #endif
 
@@ -62,23 +64,23 @@ GetNetText(char *URL)
    if (ghttp_set_uri(l_conn_data.req, URL) < 0)
      {
 
-        /* invalid URI */
+	/* invalid URI */
 
-        if (l_conn_data.req)
-           ghttp_request_destroy(l_conn_data.req);
+	if (l_conn_data.req)
+	   ghttp_request_destroy(l_conn_data.req);
 
-        return NULL;
+	return NULL;
      }
 
    if (ghttp_prepare(l_conn_data.req) < 0)
      {
 
-        /* failed prep */
+	/* failed prep */
 
-        if (l_conn_data.req)
-           ghttp_request_destroy(l_conn_data.req);
+	if (l_conn_data.req)
+	   ghttp_request_destroy(l_conn_data.req);
 
-        return NULL;
+	return NULL;
      }
 
    /* set up some defaults */
@@ -89,25 +91,25 @@ GetNetText(char *URL)
    if (ghttp_process(l_conn_data.req) < 0)
      {
 
-        /* failed to process request */
+	/* failed to process request */
 
-        if (l_conn_data.req)
-           ghttp_request_destroy(l_conn_data.req);
+	if (l_conn_data.req)
+	   ghttp_request_destroy(l_conn_data.req);
 
-        return NULL;
+	return NULL;
      }
 
    while ((l_status = ghttp_process(l_conn_data.req)) != ghttp_done)
      {
-        l_cur_stat = ghttp_get_status(l_conn_data.req);
-        if (l_status == ghttp_error)
-          {
-             /* there was an error somewhere in here */
-             if (l_conn_data.req)
-                ghttp_request_destroy(l_conn_data.req);
+	l_cur_stat = ghttp_get_status(l_conn_data.req);
+	if (l_status == ghttp_error)
+	  {
+	     /* there was an error somewhere in here */
+	     if (l_conn_data.req)
+		ghttp_request_destroy(l_conn_data.req);
 
-             return NULL;
-          }
+	     return NULL;
+	  }
      }
 
    Data = duplicate(ghttp_get_body(l_conn_data.req));
@@ -147,23 +149,23 @@ GetNetFileDate(char *URL)
    if (ghttp_set_uri(l_conn_data.req, URL) < 0)
      {
 
-        /* invalid URI */
+	/* invalid URI */
 
-        if (l_conn_data.req)
-           ghttp_request_destroy(l_conn_data.req);
+	if (l_conn_data.req)
+	   ghttp_request_destroy(l_conn_data.req);
 
-        return 0;
+	return 0;
      }
 
    if (ghttp_prepare(l_conn_data.req) < 0)
      {
 
-        /* failed prep */
+	/* failed prep */
 
-        if (l_conn_data.req)
-           ghttp_request_destroy(l_conn_data.req);
+	if (l_conn_data.req)
+	   ghttp_request_destroy(l_conn_data.req);
 
-        return 0;
+	return 0;
      }
 
    /* set up some defaults */
@@ -175,25 +177,25 @@ GetNetFileDate(char *URL)
    if (ghttp_process(l_conn_data.req) < 0)
      {
 
-        /* failed to process request */
+	/* failed to process request */
 
-        if (l_conn_data.req)
-           ghttp_request_destroy(l_conn_data.req);
+	if (l_conn_data.req)
+	   ghttp_request_destroy(l_conn_data.req);
 
-        return 0;
+	return 0;
      }
 
    while ((l_status = ghttp_process(l_conn_data.req)) != ghttp_done)
      {
-        l_cur_stat = ghttp_get_status(l_conn_data.req);
-        if (l_status == ghttp_error)
-          {
-             /* there was an error somewhere in here */
-             if (l_conn_data.req)
-                ghttp_request_destroy(l_conn_data.req);
+	l_cur_stat = ghttp_get_status(l_conn_data.req);
+	if (l_status == ghttp_error)
+	  {
+	     /* there was an error somewhere in here */
+	     if (l_conn_data.req)
+		ghttp_request_destroy(l_conn_data.req);
 
-             return 0;
-          }
+	     return 0;
+	  }
      }
 
    /* somehow right here we have to get the date out of the header.
@@ -242,23 +244,23 @@ SaveNetFile(char *URL, char *pathtosave)
    if (ghttp_set_uri(l_conn_data.req, URL) < 0)
      {
 
-        /* invalid URI */
+	/* invalid URI */
 
-        if (l_conn_data.req)
-           ghttp_request_destroy(l_conn_data.req);
+	if (l_conn_data.req)
+	   ghttp_request_destroy(l_conn_data.req);
 
-        return 0;
+	return 0;
      }
 
    if (ghttp_prepare(l_conn_data.req) < 0)
      {
 
-        /* failed prep */
+	/* failed prep */
 
-        if (l_conn_data.req)
-           ghttp_request_destroy(l_conn_data.req);
+	if (l_conn_data.req)
+	   ghttp_request_destroy(l_conn_data.req);
 
-        return 0;
+	return 0;
      }
 
    /* set up some defaults */
@@ -269,25 +271,25 @@ SaveNetFile(char *URL, char *pathtosave)
    if (ghttp_process(l_conn_data.req) < 0)
      {
 
-        /* failed to process request */
+	/* failed to process request */
 
-        if (l_conn_data.req)
-           ghttp_request_destroy(l_conn_data.req);
+	if (l_conn_data.req)
+	   ghttp_request_destroy(l_conn_data.req);
 
-        return 0;
+	return 0;
      }
 
    while ((l_status = ghttp_process(l_conn_data.req)) != ghttp_done)
      {
-        l_cur_stat = ghttp_get_status(l_conn_data.req);
-        if (l_status == ghttp_error)
-          {
-             /* there was an error somewhere in here */
-             if (l_conn_data.req)
-                ghttp_request_destroy(l_conn_data.req);
+	l_cur_stat = ghttp_get_status(l_conn_data.req);
+	if (l_status == ghttp_error)
+	  {
+	     /* there was an error somewhere in here */
+	     if (l_conn_data.req)
+		ghttp_request_destroy(l_conn_data.req);
 
-             return 0;
-          }
+	     return 0;
+	  }
      }
 
    if (l_conn_data.req)

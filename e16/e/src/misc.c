@@ -45,88 +45,88 @@ BlumFlimFrub(void)
 
 #endif
    char               *docs[4] =
-       { "E-docs/MAIN", "E-docs/Edoc_bg.png", "E-docs/E_logo.png" };
+      { "E-docs/MAIN", "E-docs/Edoc_bg.png", "E-docs/E_logo.png" };
    char               *thms[1] = { "themes/DEFAULT/epplets/epplets.cfg" };
 
    for (i = 0; i < 3; i++)
      {
 #ifndef __EMX__
-        Esnprintf(s, sizeof(s), "%s/%s", ENLIGHTENMENT_BIN, bins[i]);
+	Esnprintf(s, sizeof(s), "%s/%s", ENLIGHTENMENT_BIN, bins[i]);
 #else
-        Esnprintf(s, sizeof(s), "%s/%s", __XOS2RedirRoot(ENLIGHTENMENT_BIN),
-                  bins[i]);
+	Esnprintf(s, sizeof(s), "%s/%s", __XOS2RedirRoot(ENLIGHTENMENT_BIN),
+		  bins[i]);
 #endif
-        if (!exists(s))
-          {
-             Alert(_
-                   ("!!!!!!!! ERROR ERROR ERROR ERROR !!!!!!!!\n" "\n"
-                    "Enlightenment's utility executable cannot be found at:\n"
-                    "\n" "%s\n"
-                    "This is a fatal error and Enlightenment will cease to run.\n"
-                    "Please rectify this situation and ensure it is installed\n"
-                    "correctly.\n" "\n"
-                    "The reason this could be missing is due to badly created\n"
-                    "packages, someone manually deleting that program or perhaps\n"
-                    "an error in installing Enlightenment.\n"), s);
-             EExit(NULL);
-          }
-        if (!canexec(s))
-          {
-             Alert(_
-                   ("!!!!!!!! ERROR ERROR ERROR ERROR !!!!!!!!\n" "\n"
-                    "Enlightenment's dox executable is not able to be executed:\n"
-                    "\n" "%s\n"
-                    "This is a fatal error and Enlightenment will cease to run.\n"
-                    "Please rectify this situation and ensure dox is installed\n"
-                    "correctly.\n"), s);
-             EExit(NULL);
-          }
-        Esnprintf(s, sizeof(s), "%s/dox", ENLIGHTENMENT_BIN);
+	if (!exists(s))
+	  {
+	     Alert(_
+		   ("!!!!!!!! ERROR ERROR ERROR ERROR !!!!!!!!\n" "\n"
+		    "Enlightenment's utility executable cannot be found at:\n"
+		    "\n" "%s\n"
+		    "This is a fatal error and Enlightenment will cease to run.\n"
+		    "Please rectify this situation and ensure it is installed\n"
+		    "correctly.\n" "\n"
+		    "The reason this could be missing is due to badly created\n"
+		    "packages, someone manually deleting that program or perhaps\n"
+		    "an error in installing Enlightenment.\n"), s);
+	     EExit(NULL);
+	  }
+	if (!canexec(s))
+	  {
+	     Alert(_
+		   ("!!!!!!!! ERROR ERROR ERROR ERROR !!!!!!!!\n" "\n"
+		    "Enlightenment's dox executable is not able to be executed:\n"
+		    "\n" "%s\n"
+		    "This is a fatal error and Enlightenment will cease to run.\n"
+		    "Please rectify this situation and ensure dox is installed\n"
+		    "correctly.\n"), s);
+	     EExit(NULL);
+	  }
+	Esnprintf(s, sizeof(s), "%s/dox", ENLIGHTENMENT_BIN);
      }
    for (i = 0; i < 3; i++)
      {
 #ifndef __EMX__
-        Esnprintf(s, sizeof(s), "%s/%s", ENLIGHTENMENT_ROOT, docs[i]);
+	Esnprintf(s, sizeof(s), "%s/%s", ENLIGHTENMENT_ROOT, docs[i]);
 #else
-        Esnprintf(s, sizeof(s), "%s/%s", __XOS2RedirRoot(ENLIGHTENMENT_ROOT),
-                  docs[i]);
+	Esnprintf(s, sizeof(s), "%s/%s", __XOS2RedirRoot(ENLIGHTENMENT_ROOT),
+		  docs[i]);
 #endif
-        if (!exists(s))
-          {
-             Alert(_
-                   ("!!!!!!!! ERROR ERROR ERROR ERROR !!!!!!!!\n" "\n"
-                    "Enlightenment's documentation is not present or correctly installed\n"
-                    "\n"
-                    "This is a fatal error and Enlightenment will cease to run.\n"
-                    "Please rectify this situation and ensure it is installed\n"
-                    "correctly.\n" "\n"
-                    "The reason this could be missing is due to badly created\n"
-                    "packages, someone manually deleting those files or perhaps\n"
-                    "an error in installing Enlightenment.\n"));
-             EExit(NULL);
-          }
+	if (!exists(s))
+	  {
+	     Alert(_
+		   ("!!!!!!!! ERROR ERROR ERROR ERROR !!!!!!!!\n" "\n"
+		    "Enlightenment's documentation is not present or correctly installed\n"
+		    "\n"
+		    "This is a fatal error and Enlightenment will cease to run.\n"
+		    "Please rectify this situation and ensure it is installed\n"
+		    "correctly.\n" "\n"
+		    "The reason this could be missing is due to badly created\n"
+		    "packages, someone manually deleting those files or perhaps\n"
+		    "an error in installing Enlightenment.\n"));
+	     EExit(NULL);
+	  }
      }
    for (i = 0; i < 1; i++)
      {
 #ifndef __EMX__
-        Esnprintf(s, sizeof(s), "%s/%s", ENLIGHTENMENT_ROOT, thms[i]);
+	Esnprintf(s, sizeof(s), "%s/%s", ENLIGHTENMENT_ROOT, thms[i]);
 #else
-        Esnprintf(s, sizeof(s), "%s/%s", __XOS2RedirRoot(ENLIGHTENMENT_ROOT),
-                  thms[i]);
+	Esnprintf(s, sizeof(s), "%s/%s", __XOS2RedirRoot(ENLIGHTENMENT_ROOT),
+		  thms[i]);
 #endif
-        if (!exists(s))
-          {
-             Alert(_
-                   ("!!!!!!!! ERROR ERROR ERROR ERROR !!!!!!!!\n" "\n"
-                    "Enlightenment's DEFAULT installed theme is missing or inadequately\n"
-                    "configured to be a useful DEFAULT theme.\n" "\n"
-                    "This is a fatal error and Enlightenment will cease to run.\n"
-                    "Please rectify this situation and ensure it is installed\n"
-                    "correctly. The DEFAULT theme Enlightenment comes with normally\n"
-                    "is BrushedMetal-Tigert and this theme is adequate for a DEFAULT\n"
-                    "theme.\n"));
-             EExit(NULL);
-          }
+	if (!exists(s))
+	  {
+	     Alert(_
+		   ("!!!!!!!! ERROR ERROR ERROR ERROR !!!!!!!!\n" "\n"
+		    "Enlightenment's DEFAULT installed theme is missing or inadequately\n"
+		    "configured to be a useful DEFAULT theme.\n" "\n"
+		    "This is a fatal error and Enlightenment will cease to run.\n"
+		    "Please rectify this situation and ensure it is installed\n"
+		    "correctly. The DEFAULT theme Enlightenment comes with normally\n"
+		    "is BrushedMetal-Tigert and this theme is adequate for a DEFAULT\n"
+		    "theme.\n"));
+	     EExit(NULL);
+	  }
      }
 }
 
@@ -178,17 +178,17 @@ EExit(void *code)
 
    if (disp)
      {
-        UngrabX();
-        UnGrabTheButtons();
+	UngrabX();
+	UnGrabTheButtons();
 
-        /* This mechanism is only needed when the SM is unavailable: */
-        SetEInfoOnAll();
+	/* This mechanism is only needed when the SM is unavailable: */
+	SetEInfoOnAll();
 
-        /* XSetInputFocus(disp, None, RevertToParent, CurrentTime); */
-        /* I think this is a better way to release the grabs: (felix) */
-        XSetInputFocus(disp, PointerRoot, RevertToPointerRoot, CurrentTime);
-        XSelectInput(disp, root.win, 0);
-        XCloseDisplay(disp);
+	/* XSetInputFocus(disp, None, RevertToParent, CurrentTime); */
+	/* I think this is a better way to release the grabs: (felix) */
+	XSetInputFocus(disp, PointerRoot, RevertToPointerRoot, CurrentTime);
+	XSelectInput(disp, root.win, 0);
+	XCloseDisplay(disp);
      }
    XSetErrorHandler((XErrorHandler) NULL);
    XSetIOErrorHandler((XIOErrorHandler) NULL);
@@ -212,23 +212,23 @@ EExit(void *code)
 
    if (master_pid == getpid())
      {
-        int                 i;
+	int                 i;
 
-        exitcode = (long)code;
-        SoundExit();
-        if (mustdel)
-          {
-             char                sss[FILEPATH_LEN_MAX];
+	exitcode = (long)code;
+	SoundExit();
+	if (mustdel)
+	  {
+	     char                sss[FILEPATH_LEN_MAX];
 
 #ifndef __EMX__
-             Esnprintf(sss, sizeof(sss), "/bin/rm -rf %s", themepath);
+	     Esnprintf(sss, sizeof(sss), "/bin/rm -rf %s", themepath);
 #else
-             Esnprintf(sss, sizeof(sss), "rm.exe -rf %s", themepath);
+	     Esnprintf(sss, sizeof(sss), "rm.exe -rf %s", themepath);
 #endif
-             system(sss);
-          }
-        for (i = 0; i < child_count; i++)
-           kill(e_children[i], SIGINT);
+	     system(sss);
+	  }
+	for (i = 0; i < child_count; i++)
+	   kill(e_children[i], SIGINT);
      }
    SaveSnapInfo();
 
@@ -245,27 +245,27 @@ ShowEdgeWindows(void)
 
    if (mode.edge_flip_resistance <= 0)
      {
-        HideEdgeWindows();
-        return;
+	HideEdgeWindows();
+	return;
      }
    if (!w1)
      {
-        w1 = ECreateEventWindow(root.win, 0, 0, 1, root.h);
-        w2 = ECreateEventWindow(root.win, root.w - 1, 0, 1, root.h);
-        w3 = ECreateEventWindow(root.win, 0, 0, root.w, 1);
-        w4 = ECreateEventWindow(root.win, 0, root.h - 1, root.w, 1);
-        XSelectInput(disp, w1,
-                     EnterWindowMask | LeaveWindowMask | PointerMotionMask |
-                     ButtonPressMask | ButtonReleaseMask);
-        XSelectInput(disp, w2,
-                     EnterWindowMask | LeaveWindowMask | PointerMotionMask |
-                     ButtonPressMask | ButtonReleaseMask);
-        XSelectInput(disp, w3,
-                     EnterWindowMask | LeaveWindowMask | PointerMotionMask |
-                     ButtonPressMask | ButtonReleaseMask);
-        XSelectInput(disp, w4,
-                     EnterWindowMask | LeaveWindowMask | PointerMotionMask |
-                     ButtonPressMask | ButtonReleaseMask);
+	w1 = ECreateEventWindow(root.win, 0, 0, 1, root.h);
+	w2 = ECreateEventWindow(root.win, root.w - 1, 0, 1, root.h);
+	w3 = ECreateEventWindow(root.win, 0, 0, root.w, 1);
+	w4 = ECreateEventWindow(root.win, 0, root.h - 1, root.w, 1);
+	XSelectInput(disp, w1,
+		     EnterWindowMask | LeaveWindowMask | PointerMotionMask |
+		     ButtonPressMask | ButtonReleaseMask);
+	XSelectInput(disp, w2,
+		     EnterWindowMask | LeaveWindowMask | PointerMotionMask |
+		     ButtonPressMask | ButtonReleaseMask);
+	XSelectInput(disp, w3,
+		     EnterWindowMask | LeaveWindowMask | PointerMotionMask |
+		     ButtonPressMask | ButtonReleaseMask);
+	XSelectInput(disp, w4,
+		     EnterWindowMask | LeaveWindowMask | PointerMotionMask |
+		     ButtonPressMask | ButtonReleaseMask);
      }
    GetCurrentArea(&cx, &cy);
    GetAreaSize(&ax, &ay);
@@ -293,10 +293,10 @@ HideEdgeWindows(void)
 {
    if (w1)
      {
-        EUnmapWindow(disp, w1);
-        EUnmapWindow(disp, w2);
-        EUnmapWindow(disp, w3);
-        EUnmapWindow(disp, w4);
+	EUnmapWindow(disp, w1);
+	EUnmapWindow(disp, w2);
+	EUnmapWindow(disp, w3);
+	EUnmapWindow(disp, w4);
      }
 }
 
@@ -325,7 +325,7 @@ EdgeHandleEnter(XEvent * ev)
    if (dir < 0)
       return;
    DoIn("EDGE_TIMEOUT", ((double)mode.edge_flip_resistance) / 100.0,
-        EdgeTimeout, dir, NULL);
+	EdgeTimeout, dir, NULL);
 }
 
 void
@@ -360,12 +360,12 @@ EdgeHandleMotion(XEvent * ev)
 
    if ((lastdir != dir) && (mode.edge_flip_resistance))
      {
-        if (dir < 0)
-           RemoveTimerEvent("EDGE_TIMEOUT");
-        else
-           DoIn("EDGE_TIMEOUT", ((double)mode.edge_flip_resistance) / 100.0,
-                EdgeTimeout, dir, NULL);
-        lastdir = dir;
+	if (dir < 0)
+	   RemoveTimerEvent("EDGE_TIMEOUT");
+	else
+	   DoIn("EDGE_TIMEOUT", ((double)mode.edge_flip_resistance) / 100.0,
+		EdgeTimeout, dir, NULL);
+	lastdir = dir;
      }
 }
 
@@ -389,32 +389,32 @@ EdgeTimeout(int val, void *data)
    day = 0;
    switch (val)
      {
-       case 0:
-          if (ax == 0 && !mode.area_wraparound)
-             return;
-          dx = root.w - 2;
-          dax = -1;
-          break;
-       case 1:
-          if (ax == (aw - 1) && !mode.area_wraparound)
-             return;
-          dx = -(root.w - 2);
-          dax = 1;
-          break;
-       case 2:
-          if (ay == 0 && !mode.area_wraparound)
-             return;
-          dy = root.h - 2;
-          day = -1;
-          break;
-       case 3:
-          if (ay == (ah - 1) && !mode.area_wraparound)
-             return;
-          dy = -(root.h - 2);
-          day = 1;
-          break;
-       default:
-          break;
+     case 0:
+	if (ax == 0 && !mode.area_wraparound)
+	   return;
+	dx = root.w - 2;
+	dax = -1;
+	break;
+     case 1:
+	if (ax == (aw - 1) && !mode.area_wraparound)
+	   return;
+	dx = -(root.w - 2);
+	dax = 1;
+	break;
+     case 2:
+	if (ay == 0 && !mode.area_wraparound)
+	   return;
+	dy = root.h - 2;
+	day = -1;
+	break;
+     case 3:
+	if (ay == (ah - 1) && !mode.area_wraparound)
+	   return;
+	dy = -(root.h - 2);
+	day = 1;
+	break;
+     default:
+	break;
      }
    mode.flipp = 1;
    MoveCurrentAreaBy(dax, day);
@@ -437,94 +437,94 @@ SanitiseThemeDir(char *dir)
    Esnprintf(s, sizeof(s), "%s/%s", dir, "borders.cfg");
    if (!isfile(s))
      {
-        badreason = _("Theme does not contain a borders.cfg file\n");
-        return 0;
+	badreason = _("Theme does not contain a borders.cfg file\n");
+	return 0;
      }
    Esnprintf(s, sizeof(s), "%s/%s", dir, "buttons.cfg");
    if (!isfile(s))
      {
-        badreason = _("Theme does not contain a buttons.cfg file\n");
-        return 0;
+	badreason = _("Theme does not contain a buttons.cfg file\n");
+	return 0;
      }
    Esnprintf(s, sizeof(s), "%s/%s", dir, "colormodifiers.cfg");
    if (!isfile(s))
      {
-        badreason = _("Theme does not contain a colormodifiers.cfg file\n");
-        return 0;
+	badreason = _("Theme does not contain a colormodifiers.cfg file\n");
+	return 0;
      }
    Esnprintf(s, sizeof(s), "%s/%s", dir, "cursors.cfg");
    if (!isfile(s))
      {
-        badreason = _("Theme does not contain a cursors.cfg file\n");
-        return 0;
+	badreason = _("Theme does not contain a cursors.cfg file\n");
+	return 0;
      }
    Esnprintf(s, sizeof(s), "%s/%s", dir, "desktops.cfg");
    if (!isfile(s))
      {
-        badreason = _("Theme does not contain a desktops.cfg file\n");
-        return 0;
+	badreason = _("Theme does not contain a desktops.cfg file\n");
+	return 0;
      }
    Esnprintf(s, sizeof(s), "%s/%s", dir, "imageclasses.cfg");
    if (!isfile(s))
      {
-        badreason = _("Theme does not contain a imageclasses.cfg file\n");
-        return 0;
+	badreason = _("Theme does not contain a imageclasses.cfg file\n");
+	return 0;
      }
    Esnprintf(s, sizeof(s), "%s/%s", dir, "init.cfg");
    if (!isfile(s))
      {
-        badreason = _("Theme does not contain a init.cfg file\n");
-        return 0;
+	badreason = _("Theme does not contain a init.cfg file\n");
+	return 0;
      }
    Esnprintf(s, sizeof(s), "%s/%s", dir, "menustyles.cfg");
    if (!isfile(s))
      {
-        badreason = _("Theme does not contain a menustyles.cfg file\n");
-        return 0;
+	badreason = _("Theme does not contain a menustyles.cfg file\n");
+	return 0;
      }
    Esnprintf(s, sizeof(s), "%s/%s", dir, "slideouts.cfg");
    if (!isfile(s))
      {
-        badreason = _("Theme does not contain a slideouts.cfg file\n");
-        return 0;
+	badreason = _("Theme does not contain a slideouts.cfg file\n");
+	return 0;
      }
-#ifndef __EMX__                 /* OS/2 Team will compile ESound after XMMS project */
+#ifndef __EMX__			/* OS/2 Team will compile ESound after XMMS project */
    Esnprintf(s, sizeof(s), "%s/%s", dir, "sound.cfg");
    if (!isfile(s))
      {
-        badreason = _("Theme does not contain a sound.cfg file\n");
-        return 0;
+	badreason = _("Theme does not contain a sound.cfg file\n");
+	return 0;
      }
 #endif
    Esnprintf(s, sizeof(s), "%s/%s", dir, "tooltips.cfg");
    if (!isfile(s))
      {
-        badreason = _("Theme does not contain a tooltips.cfg file\n");
-        return 0;
+	badreason = _("Theme does not contain a tooltips.cfg file\n");
+	return 0;
      }
    Esnprintf(s, sizeof(s), "%s/%s", dir, "windowmatches.cfg");
    if (!isfile(s))
      {
-        badreason = _("Theme does not contain a windowmatches.cfg file\n");
-        return 0;
+	badreason = _("Theme does not contain a windowmatches.cfg file\n");
+	return 0;
      }
    Esnprintf(s, sizeof(s), "%s/%s", dir, "menus.cfg");
    if (isfile(s))
      {
-        badreason = _("Theme contains a menus.cfg file\n");
-        return 0;
+	badreason = _("Theme contains a menus.cfg file\n");
+	return 0;
      }
    Esnprintf(s, sizeof(s), "%s/%s", dir, "control.cfg");
    if (isfile(s))
      {
-        badreason = _("Theme contains a control.cfg file\n");
-        return 0;
+	badreason = _("Theme contains a control.cfg file\n");
+	return 0;
      }
    Esnprintf(s, sizeof(s), "%s/%s", dir, "keybindings.cfg");
    if (isfile(s))
      {
-        badreason = _("Theme contains a keybindings.cfg file\n");
-        return 0;
+	badreason = _("Theme contains a keybindings.cfg file\n");
+	return 0;
      }
    return 1;
 }
@@ -555,44 +555,44 @@ Quicksort(void **a, int l, int r, int (*CompareFunc) (void *d1, void *d2))
    if (r > l)
      {
 
-        m = (r + l) / 2 + 1;
-        if (CompareFunc(a[l], a[r]) > 0)
-          {
-             t = a[l];
-             a[l] = a[r];
-             a[r] = t;
-          }
-        if (CompareFunc(a[l], a[m]) > 0)
-          {
-             t = a[l];
-             a[l] = a[m];
-             a[m] = t;
-          }
-        if (CompareFunc(a[r], a[m]) > 0)
-          {
-             t = a[r];
-             a[r] = a[m];
-             a[m] = t;
-          }
+	m = (r + l) / 2 + 1;
+	if (CompareFunc(a[l], a[r]) > 0)
+	  {
+	     t = a[l];
+	     a[l] = a[r];
+	     a[r] = t;
+	  }
+	if (CompareFunc(a[l], a[m]) > 0)
+	  {
+	     t = a[l];
+	     a[l] = a[m];
+	     a[m] = t;
+	  }
+	if (CompareFunc(a[r], a[m]) > 0)
+	  {
+	     t = a[r];
+	     a[r] = a[m];
+	     a[m] = t;
+	  }
 
-        v = a[r];
-        i = l - 1;
-        j = r;
+	v = a[r];
+	i = l - 1;
+	j = r;
 
-        for (;;)
-          {
-             while (CompareFunc(a[++i], v) < 0);
-             while (CompareFunc(a[--j], v) > 0);
-             if (i >= j)
-                break;
-             t = a[i];
-             a[i] = a[j];
-             a[j] = t;
-          }
-        t = a[i];
-        a[i] = a[r];
-        a[r] = t;
-        Quicksort(a, l, i - 1, CompareFunc);
-        Quicksort(a, i + 1, r, CompareFunc);
+	for (;;)
+	  {
+	     while (CompareFunc(a[++i], v) < 0);
+	     while (CompareFunc(a[--j], v) > 0);
+	     if (i >= j)
+		break;
+	     t = a[i];
+	     a[i] = a[j];
+	     a[j] = t;
+	  }
+	t = a[i];
+	a[i] = a[r];
+	a[r] = t;
+	Quicksort(a, l, i - 1, CompareFunc);
+	Quicksort(a, i + 1, r, CompareFunc);
      }
 }

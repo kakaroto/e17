@@ -37,39 +37,39 @@ AtomGet(Window win, Atom to_get, Atom type, int *size)
    retval = NULL;
    length = 0x7fffffff;
    XGetWindowProperty(disp, win, to_get, 0, length, False, type, &type_ret,
-                      &format_ret, &num_ret, &bytes_after, &retval);
+		      &format_ret, &num_ret, &bytes_after, &retval);
    if ((retval) && (num_ret > 0) && (format_ret > 0))
      {
-        if (format_ret == 32)
-          {
-             int                 i;
+	if (format_ret == 32)
+	  {
+	     int                 i;
 
-             *size = num_ret * sizeof(unsigned long);
+	     *size = num_ret * sizeof(unsigned long);
 
-             data = Emalloc(*size);
-             for (i = 0; i < (int)num_ret; i++)
-                ((unsigned long *)data)[i] = ((unsigned long *)retval)[i];
-          }
-        else if (format_ret == 16)
-          {
-             int                 i;
+	     data = Emalloc(*size);
+	     for (i = 0; i < (int)num_ret; i++)
+		((unsigned long *)data)[i] = ((unsigned long *)retval)[i];
+	  }
+	else if (format_ret == 16)
+	  {
+	     int                 i;
 
-             *size = num_ret * sizeof(unsigned short);
+	     *size = num_ret * sizeof(unsigned short);
 
-             data = Emalloc(*size);
-             for (i = 0; i < (int)num_ret; i++)
-                ((unsigned short *)data)[i] = ((unsigned short *)retval)[i];
-          }
-        else
-          {
-             /* format_ret == 8 */
-             *size = num_ret;
-             data = Emalloc(num_ret);
-             if (data)
-                memcpy(data, retval, num_ret);
-          }
-        XFree(retval);
-        EDBUG_RETURN(data);
+	     data = Emalloc(*size);
+	     for (i = 0; i < (int)num_ret; i++)
+		((unsigned short *)data)[i] = ((unsigned short *)retval)[i];
+	  }
+	else
+	  {
+	     /* format_ret == 8 */
+	     *size = num_ret;
+	     data = Emalloc(num_ret);
+	     if (data)
+		memcpy(data, retval, num_ret);
+	  }
+	XFree(retval);
+	EDBUG_RETURN(data);
      }
    EDBUG_RETURN(NULL);
 
@@ -82,7 +82,7 @@ setSimpleHint(Window win, Atom atom, long value)
    EDBUG(5, "setSimpleHint");
 
    XChangeProperty(disp, win, atom, atom, 32, PropModeReplace,
-                   (unsigned char *)&value, 1);
+		   (unsigned char *)&value, 1);
 
    EDBUG_RETURN_;
 
@@ -105,14 +105,14 @@ getSimpleHint(Window win, Atom atom)
 
    if (XGetWindowProperty
        (disp, win, atom, 0, 1, False, atom, &type_ret, &fmt_ret, &nitems_ret,
-        &bytes_after_ret, (unsigned char **)&data) != Success || !data)
+	&bytes_after_ret, (unsigned char **)&data) != Success || !data)
      {
-        EDBUG_RETURN(NULL);
+	EDBUG_RETURN(NULL);
      }
    if (atom != AnyPropertyType && atom != type_ret)
      {
-        XFree(data);
-        EDBUG_RETURN(NULL);
+	XFree(data);
+	EDBUG_RETURN(NULL);
      }
    EDBUG_RETURN((long *)data);
 
