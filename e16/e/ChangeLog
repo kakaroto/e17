@@ -2080,3 +2080,14 @@ Sun Aug 10 17:26:18 CEST 2003
 (Kim)
 
 Fixed focus list not always being closed when it should be.
+
+-------------------------------------------------------------------------------
+
+Thu Aug 14 23:56:03 CEST 2003
+(Kim)
+
+Polish config files collected into config.pl (like the Japanese ones).
+Removed various config file variants (*.{rh,kde,nokde,gmc,nogmc}.cfg).
+Removed "./" from config.ja (avoid ignoring error in "make distckeck").
+
+Added BUGS to RPM docs.

@@ -1,7 +1,7 @@
 Summary: The Enlightenment window manager.
 Name: enlightenment
 Version: 0.16.6
-Release: 0.33
+Release: 0.34
 Copyright: BSD
 Group: User Interface/Desktops
 Source: ftp://ftp.enlightenment.org/pub/enlightenment/enlightenment-%{version}.tar.gz
@@ -52,7 +52,7 @@ rm -rf $RPM_BUILD_ROOT
 
 %files
 %defattr(-, root, root)
-%doc AUTHORS COPYING INSTALL README FAQ
+%doc AUTHORS BUGS COPYING INSTALL README FAQ
 %{_datadir}/enlightenment/*
 %{_datadir}/locale/*/LC_MESSAGES/enlightenment.mo
 %{_bindir}/*
