@@ -48,6 +48,8 @@ void ewl_image_init(Ewl_Image * i, char *path, char *key)
 	ewl_widget_init(w, "image");
 	ewl_widget_inherit(w, "image");
 
+	ewl_object_fill_policy_set(EWL_OBJECT(w), EWL_FLAG_FILL_NONE);
+
 	/*
 	 * Append necessary callbacks.
 	 */
@@ -282,6 +284,7 @@ void ewl_image_realize_cb(Ewl_Widget * w, void *ev_data, void *user_data)
 {
 	Ewl_Image      *i;
 	Ewl_Embed      *emb;
+	int             width, height;
 
 	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR("w", w);
@@ -300,7 +303,7 @@ void ewl_image_realize_cb(Ewl_Widget * w, void *ev_data, void *user_data)
 
 		if (i->path)
 			edje_object_file_set(i->image, i->path, i->key);
-
+		evas_object_image_size_get(i->image, &i->ow, &i->oh);
 	} else {
 		i->image = evas_object_image_add(emb->evas);
 		if (!i->image)
@@ -308,28 +311,31 @@ void ewl_image_realize_cb(Ewl_Widget * w, void *ev_data, void *user_data)
 
 		if (i->path)
 			evas_object_image_file_set(i->image, i->path, i->key);
+		edje_object_size_min_get(i->image, &i->ow, &i->oh);
 	}
 
 	evas_object_layer_set(i->image, ewl_widget_layer_sum_get(w));
 	if (w->fx_clip_box)
 		evas_object_clip_set(i->image, w->fx_clip_box);
-	evas_object_image_size_get(i->image, &i->ow, &i->oh);
 	evas_object_pass_events_set(i->image, TRUE);
 	evas_object_show(i->image);
 
 	if (!i->ow)
-		i->ow = 256;
+		i->ow = 1;
 	if (!i->oh)
-		i->oh = 256;
+		i->oh = 1;
 
-	if (!ewl_object_preferred_inner_w_get(EWL_OBJECT(i))) {
+	width = ewl_object_preferred_inner_w_get(EWL_OBJECT(i));
+	height = ewl_object_preferred_inner_h_get(EWL_OBJECT(i));
+
+	if ((width > EWL_OBJECT_MIN_SIZE) && (height > EWL_OBJECT_MIN_SIZE)) {
+		ewl_image_scale_to(i, width, height);
+	}
+	else {
 		ewl_object_preferred_inner_w_set(EWL_OBJECT(i), i->ow);
 		ewl_object_preferred_inner_h_set(EWL_OBJECT(i), i->oh);
 		ewl_image_scale(i, i->sw, i->sh);
 	}
-	else
-		ewl_image_scale_to(i, ewl_object_preferred_inner_w_get(EWL_OBJECT(i)),
-				ewl_object_preferred_inner_h_get(EWL_OBJECT(i)));
 
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
