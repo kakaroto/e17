@@ -32,6 +32,20 @@
 /* Check to see if a pointer references a string object. */
 #define SPIF_OBJ_IS_STR(obj)         (SPIF_OBJ_IS_TYPE(obj, str))
 
+/* Check for NULL str object */
+#define SPIF_STR_ISNULL(s)           SPIF_OBJ_ISNULL(SPIF_OBJ(s))
+
+#define SPIF_STR_NEW(type)           SPIF_STR((SPIF_CLASS(SPIF_CLASS_VAR(type)))->noo())
+#define SPIF_STR_INIT(obj)           SPIF_OBJ_INIT(obj)
+#define SPIF_STR_DONE(obj)           SPIF_OBJ_DONE(obj)
+#define SPIF_STR_DEL(obj)            SPIF_OBJ_DEL(obj)
+#define SPIF_STR_SHOW(obj, b, i)     SPIF_OBJ_SHOW(obj, b, i)
+#define SPIF_STR_COMP(o1, o2)        SPIF_OBJ_COMP(o1, o2)
+#define SPIF_STR_DUP(obj)            SPIF_OBJ_DUP(obj)
+#define SPIF_STR_TYPE(obj)           SPIF_OBJ_TYPE(obj)
+
+
+
 /* Types for the string object. */
 typedef struct spif_str_t_struct *spif_str_t;
 typedef struct spif_str_t_struct spif_const_str_t;
@@ -43,7 +57,7 @@ struct spif_str_t_struct {
   size_t mem, len;
 };
 
-extern spif_const_class_t SPIF_CLASS_VAR(str);
+extern spif_class_t SPIF_CLASS_VAR(str);
 extern spif_str_t spif_str_new(void);
 extern spif_str_t spif_str_new_from_ptr(spif_charptr_t);
 extern spif_str_t spif_str_new_from_buff(spif_charptr_t, size_t);
@@ -83,7 +97,7 @@ extern size_t spif_str_get_size(spif_str_t);
 extern spif_bool_t spif_str_set_size(spif_str_t, size_t);
 extern size_t spif_str_get_len(spif_str_t);
 extern spif_bool_t spif_str_set_len(spif_str_t, size_t);
-extern spif_bool_t spif_str_show(spif_str_t, spif_charptr_t);
+extern spif_str_t spif_str_show(spif_str_t, spif_charptr_t, spif_str_t, size_t);
 extern spif_classname_t spif_str_type(spif_str_t);
 
 #endif /* _LIBAST_STR_H_ */

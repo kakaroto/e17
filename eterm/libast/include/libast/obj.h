@@ -29,33 +29,33 @@
  */
 
 /* Macros to construct object types from the basenames of the types (obj, str, etc.) */
-#define SPIF_TYPE(type)              spif_ ## type ## _t
-#define SPIF_CONST_TYPE(type)        spif_const_ ## type ## _t
+#define SPIF_TYPE(type)                  spif_ ## type ## _t
+#define SPIF_CONST_TYPE(type)            spif_const_ ## type ## _t
 
 /* Typecast macros */
-#define SPIF_CAST_C(type)            (type)
-#define SPIF_CONST_CAST_C(type)      (const type)
-#define SPIF_CAST(type)              (SPIF_TYPE(type))
-#define SPIF_CONST_CAST(type)        (const SPIF_TYPE(type))
+#define SPIF_CAST_C(type)                (type)
+#define SPIF_CONST_CAST_C(type)          (const type)
+#define SPIF_CAST(type)                  (SPIF_TYPE(type))
+#define SPIF_CONST_CAST(type)            (const SPIF_TYPE(type))
 
 /* Converts a type (such as "obj") to the name of its classname variable. */
-#define SPIF_CLASSNAME_TYPE(type)    ((spif_classname_t) (spif_ ## type ## _classname))
+#define SPIF_CLASSNAME_TYPE(type)        ((spif_classname_t) (spif_ ## type ## _classname))
 
 /* Cast the NULL pointer to a particular object type. */
-#define SPIF_NULL_TYPE(type)         (SPIF_CAST(type) (NULL))
+#define SPIF_NULL_TYPE(type)             (SPIF_CAST(type) (NULL))
 
 /* Converts a type (such as "obj") to a string denoting a NULL object of that type. */
-#define SPIF_NULLSTR_TYPE(type)      ("{ ((spif_" #type "_t) NULL) }")
+#define SPIF_NULLSTR_TYPE(type)          ("{ ((spif_" #type "_t) NULL) }")
 
 /* Our own version of the sizeof() operator since objects are actually pointers. */
-#define SPIF_SIZEOF_TYPE(type)       (sizeof(SPIF_CONST_TYPE(type)))
+#define SPIF_SIZEOF_TYPE(type)           (sizeof(SPIF_CONST_TYPE(type)))
 
 
 /* Cast an arbitrary object pointer to a pointer to a nullobj.  Coincidentally,
    a nullobj *is* an arbitrary object pointer.  Even moreso than an obj. :-) */
-#define SPIF_NULLOBJ(obj)            ((spif_nullobj_t) (obj))
+#define SPIF_NULLOBJ(obj)                ((spif_nullobj_t) (obj))
 
-
+/* Typecase macros for classes */
 #define SPIF_CLASS(cls)                  ((SPIF_TYPE(class)) (cls))
 #define SPIF_CONST_CLASS(cls)            ((SPIF_CONST_TYPE(class)) (cls))
 
@@ -88,20 +88,28 @@
 #define SPIF_OBJ_CLASS(obj)              (SPIF_CLASS(SPIF_OBJ(obj)->cls))
 
 /* Get the classname...very cool. */
-#define SPIF_OBJ_CLASSNAME(obj)          (SPIF_CAST(classname) (obj))
+#define SPIF_OBJ_CLASSNAME(obj)          (SPIF_CAST(classname) SPIF_OBJ_CLASS(obj))
 
 /* Call a method on an instance of an implementation class */
-#define SPIF_OBJ_CALL_METHOD(obj, meth)  (SPIF_OBJ_CLASS(obj)->(meth))
+#define SPIF_OBJ_CALL_METHOD(obj, meth)  SPIF_OBJ_CLASS(obj)->meth
 
 /* Calls to the basic functions. */
-#define SPIF_OBJ_NEW()                   (SPIF_CLASS(SPIF_CLASS_VAR(obj)))->(noo)()
-#define SPIF_OBJ_INIT(obj)               ((SPIF_OBJ_CALL_METHOD((obj), (init)))(obj))
-#define SPIF_OBJ_DONE(obj)               ((SPIF_OBJ_CALL_METHOD((obj), (done)))(obj))
-#define SPIF_OBJ_DEL(obj)                ((SPIF_OBJ_CALL_METHOD((obj), (del)))(obj))
-#define SPIF_OBJ_SHOW(obj)               ((SPIF_OBJ_CALL_METHOD((obj), (show)))(obj, #obj))
-#define SPIF_OBJ_COMP(o1, o2)            ((SPIF_OBJ_CALL_METHOD((o1),  (comp)))(o1, o2))
-#define SPIF_OBJ_DUP(obj)                ((SPIF_OBJ_CALL_METHOD((obj), (del)))(obj))
-#define SPIF_OBJ_TYPE(obj)               ((SPIF_OBJ_CALL_METHOD((obj), (del)))(obj))
+#define SPIF_OBJ_NEW()                   SPIF_CAST(obj) (SPIF_CLASS(SPIF_CLASS_VAR(obj)))->(noo)()
+#define SPIF_OBJ_INIT(o)                 SPIF_CAST(bool) (SPIF_OBJ_CALL_METHOD((o), init)(o))
+#define SPIF_OBJ_DONE(o)                 SPIF_CAST(bool) (SPIF_OBJ_CALL_METHOD((o), done)(o))
+#define SPIF_OBJ_DEL(o)                  SPIF_CAST(bool) (SPIF_OBJ_CALL_METHOD((o), del)(o))
+#define SPIF_OBJ_SHOW(o, b, i)           SPIF_CAST(str) (SPIF_OBJ_CALL_METHOD((o), show)(o, #o, b, i))
+#define SPIF_OBJ_COMP(o1, o2)            SPIF_CAST(cmp) (SPIF_OBJ_CALL_METHOD((o1),  comp)(o1, o2))
+#define SPIF_OBJ_DUP(o)                  SPIF_CAST(obj) (SPIF_OBJ_CALL_METHOD((o), dup)(o))
+#define SPIF_OBJ_TYPE(o)                 SPIF_CAST(classname) (SPIF_OBJ_CALL_METHOD((o), type)(o))
+
+/* Convenience macro */
+#define SPIF_SHOW(o, fd)                 do { \
+                                           spif_str_t tmp__; \
+                                           tmp__ = SPIF_OBJ_SHOW(o, SPIF_NULL_TYPE(str), 0); \
+                                           fprintf(fd, "%s\n", SPIF_STR_STR(tmp__)); \
+                                           spif_str_del(tmp__); \
+                                         } while (0)
 
 
 
@@ -124,7 +132,7 @@ typedef struct spif_class_t_struct spif_const_class_t;
 
 /* Generic function pointers. */
 typedef spif_obj_t (*spif_newfunc_t)(void);
-typedef spif_bool_t (*spif_memberfunc_t)(spif_obj_t);
+typedef spif_bool_t (*spif_memberfunc_t)(spif_obj_t, ...);
 typedef void * (*spif_func_t)();
 
 
@@ -151,7 +159,10 @@ struct spif_obj_t_struct {
   spif_class_t cls;
 };
 
-extern spif_const_class_t SPIF_CLASS_VAR(obj);
+/* We need typedef's from here... */
+#include <libast/str.h>
+
+extern spif_class_t SPIF_CLASS_VAR(obj);
 extern spif_nullobj_t spif_nullobj_new(void);
 extern spif_bool_t spif_nullobj_del(spif_nullobj_t);
 extern spif_bool_t spif_nullobj_init(spif_nullobj_t);
@@ -162,7 +173,7 @@ extern spif_bool_t spif_obj_init(spif_obj_t);
 extern spif_bool_t spif_obj_done(spif_obj_t);
 extern spif_class_t spif_obj_get_class(spif_obj_t);
 extern spif_bool_t spif_obj_set_class(spif_obj_t, spif_class_t);
-extern spif_bool_t spif_obj_show(spif_obj_t, spif_charptr_t);
+extern spif_str_t spif_obj_show(spif_obj_t, spif_charptr_t, spif_str_t, size_t);
 extern spif_cmp_t spif_obj_comp(spif_obj_t, spif_obj_t);
 extern spif_obj_t spif_obj_dup(spif_obj_t);
 extern spif_classname_t spif_obj_type(spif_obj_t);

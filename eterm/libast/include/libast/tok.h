@@ -26,7 +26,6 @@
 
 /* Cast an arbitrary object pointer to a tok. */
 #define SPIF_TOK(obj)                ((spif_tok_t) (obj))
-#define SPIF_TOK_SHOW(obj)           (spif_tok_show((obj), #obj))
 
 /* Check to see if a pointer references a tokenizer object. */
 #define SPIF_OBJ_IS_TOK(obj)         (SPIF_OBJ_IS_TYPE(obj, tok))
@@ -43,7 +42,7 @@ struct spif_tok_t_struct {
   spif_str_t sep;
 };
 
-extern spif_const_class_t SPIF_CLASS_VAR(tok);
+extern spif_class_t SPIF_CLASS_VAR(tok);
 extern spif_tok_t spif_tok_new(void);
 extern spif_tok_t spif_tok_new_from_ptr(spif_charptr_t);
 extern spif_tok_t spif_tok_new_from_fp(FILE *);
@@ -55,7 +54,7 @@ extern spif_bool_t spif_tok_init_from_fp(spif_tok_t, FILE *);
 extern spif_bool_t spif_tok_init_from_fd(spif_tok_t, int);
 extern spif_bool_t spif_tok_done(spif_tok_t);
 extern spif_bool_t spif_tok_eval(spif_tok_t);
-extern spif_bool_t spif_tok_show(spif_tok_t, spif_charptr_t);
+extern spif_str_t spif_tok_show(spif_tok_t, spif_charptr_t, spif_str_t, size_t);
 extern spif_cmp_t spif_tok_comp(spif_tok_t, spif_tok_t);
 extern spif_tok_t spif_tok_dup(spif_tok_t);
 extern spif_classname_t spif_tok_type(spif_tok_t);

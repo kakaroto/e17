@@ -29,13 +29,11 @@
  */
 
 /* Standard typecast macros.... */
-#define SPIF_LINKED_LIST(obj)                      ((spif_linked_list_t) (obj))
+#define SPIF_LINKED_LIST_ITEM(obj)                 (SPIF_CAST(linked_list_item) (obj))
+#define SPIF_LINKED_LIST(obj)                      (SPIF_CAST(linked_list) (obj))
 
-/* Access the implementation class member of an object. */
-#define SPIF_LINKED_LIST_IFCLASS(obj)              (SPIF_IFCLASS_VAR(list, linked_list))
-
-/* Call a method on an instance of an implementation class */
-#define SPIF_LINKED_LIST_CALL_METHOD(obj, meth)    (SPIF_LINKED_LIST_IFCLASS(obj)->(meth))
+#define SPIF_LINKED_LIST_ITEM_ISNULL(o)            (SPIF_LINKED_LIST_ITEM(o) == SPIF_NULL_TYPE(linked_list_item))
+#define SPIF_OBJ_IS_LINKED_LIST_ITEM(o)            (SPIF_OBJ_IS_TYPE((o), linked_list_item))
 
 typedef struct spif_linked_list_item_t_struct *spif_linked_list_item_t;
 typedef struct spif_linked_list_item_t_struct spif_const_linked_list_item_t;
@@ -55,4 +53,5 @@ struct spif_linked_list_t_struct {
   spif_linked_list_item_t head;
 };
 
+extern spif_listclass_t SPIF_CLASS_VAR(linked_list);
 #endif /* _LIBAST_LINKED_LIST_H_ */

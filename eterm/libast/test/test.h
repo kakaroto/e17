@@ -24,6 +24,7 @@
 #ifndef _LIBAST_TEST_H_
 #  define _LIBAST_TEST_H_
 
+#  define TEST_NOTICE(s)                       printf("%s\n", s)
 #  define TEST_BEGIN(s)                        do {tnum = 1; printf("Testing " s "...");} while (0)
 #  define TEST_PASS()                          printf("passed (%hu).\n", tnum - 1)
 #  define TEST_FAIL(t)                         do {printf("failed (%s: %d) (%hu).\n", #t, (t), tnum); return 1;} while (0)

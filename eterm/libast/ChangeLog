@@ -159,3 +159,8 @@ Thu Apr  4 22:24:36 2002                        Michael Jennings (mej)
 
 Oops...
 ----------------------------------------------------------------------
+Thu Apr 11 18:03:46 2002                        Michael Jennings (mej)
+
+The list interface is complete (for now) as is its first
+implementation:  the linked_list class.  Unit tests are also in.
+----------------------------------------------------------------------

@@ -39,6 +39,7 @@ int test_snprintf(void);
 int test_obj(void);
 int test_str(void);
 int test_tok(void);
+int test_list(void);
 
 int
 test_macros(void)
@@ -211,17 +212,17 @@ test_obj(void)
     spif_obj_t testobj;
     spif_class_t cls;
 
-    TEST_BEGIN("spif_obj_new");
+    TEST_BEGIN("spif_obj_new() function");
     testobj = spif_obj_new();
     TEST_FAIL_IF(SPIF_OBJ_ISNULL(testobj));
     TEST_PASS();
 
-    TEST_BEGIN("spif_obj_get_classname");
+    TEST_BEGIN("spif_obj_get_classname() function");
     cls = spif_obj_get_class(testobj);
-    TEST_FAIL_IF(cls != &SPIF_CLASS_VAR(obj));
+    TEST_FAIL_IF(cls != SPIF_CLASS_VAR(obj));
     TEST_PASS();
 
-    TEST_BEGIN("spif_obj_del");
+    TEST_BEGIN("spif_obj_del() function");
     TEST_FAIL_IF(spif_obj_del(testobj) != TRUE);
     TEST_PASS();
 
@@ -241,21 +242,21 @@ test_str(void)
     int fd, mypipe[2];
     spif_charptr_t foo;
 
-    TEST_BEGIN("spif_str_new");
+    TEST_BEGIN("spif_str_new() function");
     teststr = spif_str_new();
     TEST_FAIL_IF(SPIF_OBJ_ISNULL(teststr));
     TEST_PASS();
 
-    TEST_BEGIN("spif_obj_get_classname");
+    TEST_BEGIN("spif_obj_get_classname() function");
     cls = spif_obj_get_class(SPIF_OBJ(teststr));
-    TEST_FAIL_IF(cls != &SPIF_CLASS_VAR(str));
+    TEST_FAIL_IF(cls != SPIF_CLASS_VAR(str));
     TEST_PASS();
 
-    TEST_BEGIN("spif_str_del");
+    TEST_BEGIN("spif_str_del() function");
     TEST_FAIL_IF(spif_str_del(teststr) != TRUE);
     TEST_PASS();
 
-    TEST_BEGIN("spif_str_new_from_ptr");
+    TEST_BEGIN("spif_str_new_from_ptr() function");
     teststr = spif_str_new_from_ptr(tmp);
     TEST_FAIL_IF(spif_str_cmp_with_ptr(teststr, tmp));
     TEST_FAIL_IF(spif_str_get_size(teststr) != sizeof(tmp));
@@ -263,7 +264,7 @@ test_str(void)
     spif_str_del(teststr);
     TEST_PASS();
 
-    TEST_BEGIN("spif_str_new_from_buff");
+    TEST_BEGIN("spif_str_new_from_buff() function");
     teststr = spif_str_new_from_buff(buff, sizeof(buff));
     TEST_FAIL_IF(spif_str_casecmp_with_ptr(teststr, buff));
     TEST_FAIL_IF(spif_str_get_size(teststr) != sizeof(buff));
@@ -271,7 +272,7 @@ test_str(void)
     spif_str_del(teststr);
     TEST_PASS();
 
-    TEST_BEGIN("spif_str_new_from_fp");
+    TEST_BEGIN("spif_str_new_from_fp() function");
     pipe(mypipe);
     fd = mypipe[0];
     fp = fdopen(fd, "r");
@@ -291,7 +292,7 @@ test_str(void)
     fclose(fp);
     TEST_PASS();
 
-    TEST_BEGIN("spif_str_new_from_fd");
+    TEST_BEGIN("spif_str_new_from_fd() function");
     pipe(mypipe);
     fd = mypipe[0];
     write(mypipe[1], tmp2, sizeof(tmp2) - 1);
@@ -304,7 +305,7 @@ test_str(void)
     close(fd);
     TEST_PASS();
 
-    TEST_BEGIN("spif_str_dup");
+    TEST_BEGIN("spif_str_dup() function");
     teststr = spif_str_new_from_ptr(tmp);
     TEST_FAIL_IF(strcmp(SPIF_STR_STR(teststr), tmp));
     TEST_FAIL_IF(spif_str_get_size(teststr) != sizeof(tmp));
@@ -323,27 +324,27 @@ test_str(void)
     spif_str_del(test2str);
     TEST_PASS();
 
-    TEST_BEGIN("spif_str_index");
+    TEST_BEGIN("spif_str_index() function");
     teststr = spif_str_new_from_ptr(tmp2);
     TEST_FAIL_IF(spif_str_index(teststr, '#') != 7);
     TEST_PASS();
 
-    TEST_BEGIN("spif_str_rindex");
+    TEST_BEGIN("spif_str_rindex() function");
     TEST_FAIL_IF(spif_str_rindex(teststr, '#') != 17);
     TEST_PASS();
 
-    TEST_BEGIN("spif_str_find");
+    TEST_BEGIN("spif_str_find() function");
     test2str = spif_str_new_from_ptr("ring");
     TEST_FAIL_IF(spif_str_find(teststr, test2str) != 2);
     spif_str_del(test2str);
     TEST_PASS();
 
-    TEST_BEGIN("spif_str_find_from_ptr");
+    TEST_BEGIN("spif_str_find_from_ptr() function");
     TEST_FAIL_IF(spif_str_find_from_ptr(teststr, "in") != 3);
     spif_str_del(teststr);
     TEST_PASS();
 
-    TEST_BEGIN("spif_str_substr");
+    TEST_BEGIN("spif_str_substr() function");
     teststr = spif_str_new_from_ptr(tmp);
     test2str = spif_str_substr(teststr, 2, 5);
     TEST_FAIL_IF(spif_str_cmp_with_ptr(test2str, "is is"));
@@ -358,7 +359,7 @@ test_str(void)
     spif_str_del(teststr);
     TEST_PASS();
 
-    TEST_BEGIN("spif_str_substr_to_ptr");
+    TEST_BEGIN("spif_str_substr_to_ptr() function");
     teststr = spif_str_new_from_ptr(tmp);
     foo = spif_str_substr_to_ptr(teststr, 2, 5);
     TEST_FAIL_IF(foo == NULL);
@@ -371,7 +372,7 @@ test_str(void)
     spif_str_del(teststr);
     TEST_PASS();
 
-    TEST_BEGIN("spif_str_to_num");
+    TEST_BEGIN("spif_str_to_num() function");
     teststr = spif_str_new_from_ptr("11001001");
     TEST_FAIL_IF(spif_str_to_num(teststr, 2) != 201);
     TEST_FAIL_IF(spif_str_to_num(teststr, 10) != 11001001);
@@ -387,7 +388,7 @@ test_str(void)
     spif_str_del(teststr);
     TEST_PASS();
 
-    TEST_BEGIN("spif_str_to_float");
+    TEST_BEGIN("spif_str_to_float() function");
     teststr = spif_str_new_from_ptr("3.1415");
     TEST_FAIL_IF(spif_str_to_float(teststr) != 3.1415);
     spif_str_del(teststr);
@@ -396,7 +397,7 @@ test_str(void)
     spif_str_del(teststr);
     TEST_PASS();
 
-    TEST_BEGIN("spif_str_append");
+    TEST_BEGIN("spif_str_append() function");
     teststr = spif_str_new_from_ptr("copy");
     test2str = spif_str_new_from_ptr("cat");
     spif_str_append(teststr, test2str);
@@ -406,7 +407,7 @@ test_str(void)
     spif_str_del(test2str);
     TEST_PASS();
 
-    TEST_BEGIN("spif_str_append_from_ptr");
+    TEST_BEGIN("spif_str_append_from_ptr() function");
     spif_str_append_from_ptr(teststr, "crime");
     TEST_FAIL_IF(spif_str_cmp_with_ptr(teststr, "copycatcrime"));
     TEST_FAIL_IF(spif_str_get_size(teststr) != 13);
@@ -414,7 +415,7 @@ test_str(void)
     spif_str_del(teststr);
     TEST_PASS();
 
-    TEST_BEGIN("spif_str_trim");
+    TEST_BEGIN("spif_str_trim() function");
     teststr = spif_str_new_from_ptr("  \n \r\f       \t    testing 1 2 3    \v\r \n");
     spif_str_trim(teststr);
     TEST_FAIL_IF(spif_str_cmp_with_ptr(teststr, "testing 1 2 3"));
@@ -423,7 +424,7 @@ test_str(void)
     spif_str_del(teststr);
     TEST_PASS();
 
-    TEST_BEGIN("spif_str_splice");
+    TEST_BEGIN("spif_str_splice() function");
     teststr = spif_str_new_from_ptr(tmp);
     test2str = spif_str_new_from_ptr("lots of fun");
     spif_str_splice(teststr, 8, 6, test2str);
@@ -434,7 +435,7 @@ test_str(void)
     spif_str_del(teststr);
     TEST_PASS();
 
-    TEST_BEGIN("spif_str_splice_from_ptr");
+    TEST_BEGIN("spif_str_splice_from_ptr() function");
     teststr = spif_str_new_from_ptr(tmp);
     spif_str_splice_from_ptr(teststr, 8, 0, "not ");
     TEST_FAIL_IF(spif_str_cmp_with_ptr(teststr, "this is not a test"));
@@ -443,7 +444,7 @@ test_str(void)
     spif_str_del(teststr);
     TEST_PASS();
 
-    TEST_BEGIN("spif_str_reverse");
+    TEST_BEGIN("spif_str_reverse() function");
     teststr = spif_str_new_from_buff(buff, sizeof(buff));
     spif_str_reverse(teststr);
     TEST_FAIL_IF(spif_str_cmp_with_ptr(teststr, "edcba"));
@@ -467,21 +468,21 @@ test_tok(void)
     signed char tmp4[] = "\"there shouldn't be\"\' any problems at\'\"\"\'\'\' \'\"all parsing this\"";
     spif_charptr_t foo;
 
-    TEST_BEGIN("spif_tok_new");
+    TEST_BEGIN("spif_tok_new() function");
     testtok = spif_tok_new();
     TEST_FAIL_IF(SPIF_OBJ_ISNULL(testtok));
     TEST_PASS();
 
-    TEST_BEGIN("spif_obj_get_classname");
+    TEST_BEGIN("spif_obj_get_classname() function");
     cls = spif_obj_get_class(SPIF_OBJ(testtok));
-    TEST_FAIL_IF(cls != &SPIF_CLASS_VAR(tok));
+    TEST_FAIL_IF(cls != SPIF_CLASS_VAR(tok));
     TEST_PASS();
 
-    TEST_BEGIN("spif_tok_del");
+    TEST_BEGIN("spif_tok_del() function");
     TEST_FAIL_IF(spif_tok_del(testtok) != TRUE);
     TEST_PASS();
 
-    TEST_BEGIN("spif_tok_new_from_ptr");
+    TEST_BEGIN("spif_tok_new_from_ptr() function");
     testtok = spif_tok_new_from_ptr(tmp);
     TEST_FAIL_IF(spif_str_cmp_with_ptr(SPIF_STR(testtok), tmp));
     spif_tok_del(testtok);
@@ -490,6 +491,196 @@ test_tok(void)
 
 
     TEST_PASSED("spif_tok_t");
+    return 0;
+}
+
+int
+test_list(void)
+{
+    unsigned short i;
+    spif_list_t list;
+    spif_str_t s;
+
+    for (i = 0; i < 1; i++) {
+        if (i == 0) {
+            TEST_NOTICE("Testing list interface class, linked_list instance:");
+            list = SPIF_LIST_NEW(linked_list);
+        } else if (i == 1) {
+        } else if (i == 2) {
+        } else if (i == 3) {
+        }
+
+        TEST_BEGIN("SPIF_LIST_APPEND() and SPIF_LIST_PREPEND() macros");
+        SPIF_LIST_APPEND(list, spif_str_new_from_ptr("1"));
+        SPIF_LIST_APPEND(list, spif_str_new_from_ptr("2"));
+        SPIF_LIST_APPEND(list, spif_str_new_from_ptr("3"));
+        SPIF_LIST_APPEND(list, spif_str_new_from_ptr("4"));
+        SPIF_LIST_APPEND(list, spif_str_new_from_ptr("5"));
+        SPIF_LIST_PREPEND(list, spif_str_new_from_ptr("0"));
+
+        s = spif_str_new_from_ptr("0");
+        TEST_FAIL_IF(SPIF_LIST_INDEX(list, s) != 0);
+        spif_str_done(s);
+        spif_str_init_from_ptr(s, "1");
+        TEST_FAIL_IF(SPIF_LIST_INDEX(list, s) != 1);
+        spif_str_done(s);
+        spif_str_init_from_ptr(s, "2");
+        TEST_FAIL_IF(SPIF_LIST_INDEX(list, s) != 2);
+        spif_str_done(s);
+        spif_str_init_from_ptr(s, "3");
+        TEST_FAIL_IF(SPIF_LIST_INDEX(list, s) != 3);
+        spif_str_done(s);
+        spif_str_init_from_ptr(s, "4");
+        TEST_FAIL_IF(SPIF_LIST_INDEX(list, s) != 4);
+        spif_str_done(s);
+        spif_str_init_from_ptr(s, "5");
+        TEST_FAIL_IF(SPIF_LIST_INDEX(list, s) != 5);
+        spif_str_del(s);
+        TEST_PASS();
+
+        TEST_BEGIN("SPIF_LIST_CONTAINS() macro");
+        s = spif_str_new_from_ptr("0");
+        TEST_FAIL_IF(!SPIF_LIST_CONTAINS(list, s));
+        spif_str_done(s);
+        spif_str_init_from_ptr(s, "3");
+        TEST_FAIL_IF(!SPIF_LIST_CONTAINS(list, s));
+        spif_str_done(s);
+        spif_str_init_from_ptr(s, "5");
+        TEST_FAIL_IF(!SPIF_LIST_CONTAINS(list, s));
+        spif_str_del(s);
+        TEST_PASS();
+
+        TEST_BEGIN("SPIF_LIST_COUNT() macro");
+        TEST_FAIL_IF(SPIF_LIST_COUNT(list) != 6);
+        TEST_PASS();
+
+        TEST_BEGIN("SPIF_LIST_GET() macro");
+        s = spif_str_new_from_ptr("2");
+        TEST_FAIL_IF(SPIF_STR_COMP(s, SPIF_STR(SPIF_LIST_GET(list, 2))) != SPIF_CMP_EQUAL);
+        spif_str_done(s);
+        spif_str_init_from_ptr(s, "4");
+        TEST_FAIL_IF(SPIF_STR_COMP(s, SPIF_STR(SPIF_LIST_GET(list, 4))) != SPIF_CMP_EQUAL);
+        spif_str_done(s);
+        spif_str_init_from_ptr(s, "6");
+        TEST_FAIL_IF(!SPIF_STR_ISNULL(SPIF_STR(SPIF_LIST_GET(list, 6))));
+        spif_str_del(s);
+        TEST_PASS();
+
+        TEST_BEGIN("SPIF_LIST_INDEX() macro");
+        s = spif_str_new_from_ptr("4");
+        TEST_FAIL_IF(SPIF_LIST_INDEX(list, s) != 4);
+        spif_str_done(s);
+        spif_str_init_from_ptr(s, "1");
+        TEST_FAIL_IF(SPIF_LIST_INDEX(list, s) != 1);
+        spif_str_done(s);
+        spif_str_init_from_ptr(s, "Q");
+        TEST_FAIL_IF(SPIF_LIST_INDEX(list, s) != ((size_t) -1));
+        spif_str_del(s);
+        TEST_PASS();
+
+        TEST_BEGIN("SPIF_LIST_INSERT() macro");
+        SPIF_LIST_INSERT(list, spif_str_new_from_ptr("2.5"));
+        SPIF_LIST_INSERT(list, spif_str_new_from_ptr("4.5"));
+        TEST_FAIL_IF(SPIF_LIST_COUNT(list) != 8);
+        s = spif_str_new_from_ptr("0");
+        TEST_FAIL_IF(SPIF_LIST_INDEX(list, s) != 0);
+        spif_str_done(s);
+        spif_str_init_from_ptr(s, "2.5");
+        TEST_FAIL_IF(SPIF_LIST_INDEX(list, s) != 3);
+        spif_str_done(s);
+        spif_str_init_from_ptr(s, "3");
+        TEST_FAIL_IF(SPIF_LIST_INDEX(list, s) != 4);
+        spif_str_done(s);
+        spif_str_init_from_ptr(s, "4.5");
+        TEST_FAIL_IF(SPIF_LIST_INDEX(list, s) != 6);
+        spif_str_done(s);
+        spif_str_init_from_ptr(s, "5");
+        TEST_FAIL_IF(SPIF_LIST_INDEX(list, s) != 7);
+        spif_str_del(s);
+        TEST_PASS();
+
+        TEST_BEGIN("SPIF_LIST_INSERT_AT() macro");
+        SPIF_LIST_INSERT_AT(list, spif_str_new_from_ptr("MOO"), 0);
+        SPIF_LIST_INSERT_AT(list, spif_str_new_from_ptr("GRIN"), 4);
+        TEST_FAIL_IF(SPIF_LIST_COUNT(list) != 10);
+        s = spif_str_new_from_ptr("MOO");
+        TEST_FAIL_IF(SPIF_LIST_INDEX(list, s) != 0);
+        spif_str_done(s);
+        spif_str_init_from_ptr(s, "0");
+        TEST_FAIL_IF(SPIF_LIST_INDEX(list, s) != 1);
+        spif_str_done(s);
+        spif_str_init_from_ptr(s, "1");
+        TEST_FAIL_IF(SPIF_LIST_INDEX(list, s) != 2);
+        spif_str_done(s);
+        spif_str_init_from_ptr(s, "GRIN");
+        TEST_FAIL_IF(SPIF_LIST_INDEX(list, s) != 4);
+        spif_str_done(s);
+        spif_str_init_from_ptr(s, "5");
+        TEST_FAIL_IF(SPIF_LIST_INDEX(list, s) != 9);
+        spif_str_del(s);
+        TEST_PASS();
+
+        TEST_BEGIN("SPIF_LIST_REMOVE() macro");
+        s = spif_str_new_from_ptr("MOO");
+        TEST_FAIL_IF(SPIF_OBJ_ISNULL(SPIF_LIST_REMOVE(list, s)));
+        spif_str_done(s);
+        spif_str_init_from_ptr(s, "GRIN");
+        TEST_FAIL_IF(SPIF_OBJ_ISNULL(SPIF_LIST_REMOVE(list, s)));
+        spif_str_del(s);
+
+        s = spif_str_new_from_ptr("0");
+        TEST_FAIL_IF(SPIF_LIST_INDEX(list, s) != 0);
+        spif_str_done(s);
+        spif_str_init_from_ptr(s, "2.5");
+        TEST_FAIL_IF(SPIF_LIST_INDEX(list, s) != 3);
+        spif_str_done(s);
+        spif_str_init_from_ptr(s, "3");
+        TEST_FAIL_IF(SPIF_LIST_INDEX(list, s) != 4);
+        spif_str_done(s);
+        spif_str_init_from_ptr(s, "4.5");
+        TEST_FAIL_IF(SPIF_LIST_INDEX(list, s) != 6);
+        spif_str_done(s);
+        spif_str_init_from_ptr(s, "5");
+        TEST_FAIL_IF(SPIF_LIST_INDEX(list, s) != 7);
+        spif_str_del(s);
+        TEST_PASS();
+
+        TEST_BEGIN("SPIF_LIST_REMOVE_AT() macro");
+        SPIF_LIST_REMOVE_AT(list, 6);
+        SPIF_LIST_REMOVE_AT(list, 3);
+
+        s = spif_str_new_from_ptr("0");
+        TEST_FAIL_IF(SPIF_LIST_INDEX(list, s) != 0);
+        spif_str_done(s);
+        spif_str_init_from_ptr(s, "1");
+        TEST_FAIL_IF(SPIF_LIST_INDEX(list, s) != 1);
+        spif_str_done(s);
+        spif_str_init_from_ptr(s, "2");
+        TEST_FAIL_IF(SPIF_LIST_INDEX(list, s) != 2);
+        spif_str_done(s);
+        spif_str_init_from_ptr(s, "3");
+        TEST_FAIL_IF(SPIF_LIST_INDEX(list, s) != 3);
+        spif_str_done(s);
+        spif_str_init_from_ptr(s, "4");
+        TEST_FAIL_IF(SPIF_LIST_INDEX(list, s) != 4);
+        spif_str_done(s);
+        spif_str_init_from_ptr(s, "5");
+        TEST_FAIL_IF(SPIF_LIST_INDEX(list, s) != 5);
+        spif_str_del(s);
+        TEST_PASS();
+
+        SPIF_SHOW(list, stdout);
+
+        if (i == 0) {
+            TEST_PASSED("linked_list");
+        } else if (i == 1) {
+        } else if (i == 2) {
+        } else if (i == 3) {
+        }
+    }
+
+
+    TEST_PASSED("list interface class");
     return 0;
 }
 
@@ -520,6 +711,9 @@ main(int argc, char *argv[])
         return ret;
     }
     if ((ret = test_tok()) != 0) {
+        return ret;
+    }
+    if ((ret = test_list()) != 0) {
         return ret;
     }
 

@@ -30,7 +30,7 @@ static const char cvs_ident[] = "$Id$";
 #include <libast_internal.h>
 
 /* *INDENT-OFF* */
-spif_const_class_t SPIF_CLASS_VAR(obj) = {
+static spif_const_class_t o_class = {
     SPIF_DECL_CLASSNAME(obj),
     (spif_newfunc_t) spif_obj_new,
     (spif_memberfunc_t) spif_obj_init,
@@ -41,6 +41,7 @@ spif_const_class_t SPIF_CLASS_VAR(obj) = {
     (spif_func_t) spif_obj_dup,
     (spif_func_t) spif_obj_type
 };
+spif_class_t SPIF_CLASS_VAR(obj) = &o_class;
 /* *INDENT-ON* */
 
 spif_nullobj_t
@@ -95,7 +96,7 @@ spif_obj_del(spif_obj_t self)
 spif_bool_t
 spif_obj_init(spif_obj_t self)
 {
-    spif_obj_set_class(self, &(SPIF_CLASS_VAR(obj)));
+    spif_obj_set_class(self, SPIF_CLASS_VAR(obj));
     return TRUE;
 }
 
@@ -122,11 +123,19 @@ spif_obj_set_class(spif_obj_t self, spif_class_t cls)
     return TRUE;
 }
 
-spif_bool_t
-spif_obj_show(spif_obj_t self, spif_charptr_t name)
+spif_str_t
+spif_obj_show(spif_obj_t self, spif_charptr_t name, spif_str_t buff, size_t indent)
 {
-    printf("%s:  (spif_obj_t) { \"%s\" }\n", name, SPIF_OBJ_CLASSNAME(self));
-    return TRUE;
+    char tmp[4096];
+
+    memset(tmp, ' ', indent);
+    snprintf(tmp + indent, sizeof(tmp) - indent, "(spif_obj_t) %s:  (spif_obj_t) { \"%s\" }\n", name, SPIF_OBJ_CLASSNAME(self));
+    if (SPIF_STR_ISNULL(buff)) {
+        buff = spif_str_new_from_ptr(tmp);
+    } else {
+        spif_str_append_from_ptr(buff, tmp);
+    }
+    return buff;
 }
 
 spif_cmp_t
@@ -148,5 +157,5 @@ spif_obj_dup(spif_obj_t self)
 spif_classname_t
 spif_obj_type(spif_obj_t self)
 {
-    return (SPIF_CAST(classname) (self));
+    return SPIF_OBJ_CLASSNAME(self);
 }

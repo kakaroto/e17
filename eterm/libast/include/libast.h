@@ -75,7 +75,6 @@
 
 #include <libast/types.h>
 #include <libast/obj.h>
-#include <libast/if.h>
 #include <libast/str.h>
 #include <libast/tok.h>
 
@@ -104,12 +103,12 @@
 # define UPPER_BOUND(current, other)    (((current) > (other)) ? ((current) = (other)) : (current))
 # define BOUND(val, min, max)           (((val) < (min)) ? ((val) = (min)) : (((val) > (max)) ? ((val) = (max)) : (val)))
 #endif
-#define AT_LEAST(current, other)       LOWER_BOUND(current, other)
-#define MAX_IT(current, other)         LOWER_BOUND(current, other)
-#define AT_MOST(current, other)        UPPER_BOUND(current, other)
-#define MIN_IT(current, other)         UPPER_BOUND(current, other)
-#define CONTAIN(val, min, max)         BOUND(val, min, max)
-#define SWAP_IT(one, two, tmp)         do {(tmp) = (one); (one) = (two); (two) = (tmp);} while (0)
+#define AT_LEAST(current, other)        LOWER_BOUND(current, other)
+#define MAX_IT(current, other)          LOWER_BOUND(current, other)
+#define AT_MOST(current, other)         UPPER_BOUND(current, other)
+#define MIN_IT(current, other)          UPPER_BOUND(current, other)
+#define CONTAIN(val, min, max)          BOUND(val, min, max)
+#define SWAP_IT(one, two, tmp)          do {(tmp) = (one); (one) = (two); (two) = (tmp);} while (0)
 
 /****************************** DEBUGGING GOOP ********************************/
 #ifndef LIBAST_DEBUG_FD
