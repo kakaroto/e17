@@ -1,7 +1,7 @@
 #include "engage.h"
 #include "config.h"
 #include <Ecore_X.h>
-#include <Esmart/Esmart_Trans.h>
+#include <Esmart/Esmart_Trans_X11.h>
 
 #include <X11/Xatom.h>
 #include <X11/Xutil.h>

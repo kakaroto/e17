@@ -22,5 +22,6 @@ window.c \
 userconfig.c
 
 
-engage_LDADD = @evas_libs@ @edje_libs@ @ecore_libs@ @esmart_libs@ @imlib2_libs@
+engage_LDADD = @evas_libs@ @edje_libs@ @ecore_libs@ @imlib2_libs@ \
+					@esmart_libs@ -lesmart_trans_x11 
 
