@@ -1,5 +1,9 @@
 #include "images.edc"
 
+data {
+    item, "container_layout" "entice";
+}
+
 collections
 {
     group
