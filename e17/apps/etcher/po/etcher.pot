@@ -6,7 +6,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
-"POT-Creation-Date: 2000-09-16 12:37-0700\n"
+"POT-Creation-Date: 2000-09-20 10:37-0700\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -520,36 +520,36 @@ msgstr ""
 msgid "Preview"
 msgstr ""
 
-#: src/interface.c:2551
+#: src/interface.c:2552
 msgid "The image used to tile in the background"
 msgstr ""
 
-#: src/interface.c:2553
+#: src/interface.c:2554
 msgid "Select Grid Image"
 msgstr ""
 
-#: src/interface.c:2559
+#: src/interface.c:2560
 msgid "Select an Image file to tile as a background patterm"
 msgstr ""
 
-#: src/interface.c:2561
+#: src/interface.c:2562
 msgid "Select Tint Color"
 msgstr ""
 
-#: src/interface.c:2580
+#: src/interface.c:2581
 msgid "OK"
 msgstr ""
 
-#: src/interface.c:2588
+#: src/interface.c:2589
 msgid "Cancel"
 msgstr ""
 
-#: src/support.c:121
+#: src/support.c:118
 #, c-format
 msgid "Couldn't find pixmap file: %s"
 msgstr ""
 
-#: src/support.c:130
+#: src/support.c:127
 #, c-format
 msgid "Error loading pixmap file: %s"
 msgstr ""

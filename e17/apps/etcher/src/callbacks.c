@@ -71,6 +71,12 @@ static gint view_scroll_logo(gpointer data);
 static gint view_scroll_info(gpointer data);
 gint view_configure_handles(gpointer data);
 
+gboolean
+on_pref_da_expose_event2                (GtkWidget       *widget,
+					 GdkEventExpose  *event,
+					 gpointer         user_data);
+
+
 #define GET_SPIN(name, val) w = gtk_object_get_data(GTK_OBJECT(main_win), name); selected_state->description->val = gtk_spin_button_get_value_as_float(GTK_SPIN_BUTTON(w));
 #define GET_ENTRY(name, val) w = gtk_object_get_data(GTK_OBJECT(main_win), name); if (selected_state->description->val) free(selected_state->description->val); if (!strcmp(gtk_entry_get_text(GTK_ENTRY(w)), "")) selected_state->description->val = NULL; else selected_state->description->val = strdup(gtk_entry_get_text(GTK_ENTRY(w)));
 #define GET_ALL_SPIN(name, val) w = gtk_object_get_data(GTK_OBJECT(main_win), name); bits->description->val = gtk_spin_button_get_value_as_float(GTK_SPIN_BUTTON(w));
@@ -2289,5 +2295,15 @@ on_gridimage_changed                   (GtkEditable     *editable,
                                         gpointer         user_data)
 {
   pref_gridimage_changed(editable, user_data);
+}
+
+
+gboolean
+on_pref_da_expose_event                (GtkWidget       *widget,
+                                        GdkEventExpose  *event,
+                                        gpointer         user_data)
+{
+   on_pref_da_expose_event2(widget, event, user_data);
+   return FALSE;
 }
 

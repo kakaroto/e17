@@ -210,3 +210,8 @@ on_selectimage_clicked                 (GtkButton       *button,
 void
 on_gridimage_changed                   (GtkEditable     *editable,
                                         gpointer         user_data);
+
+gboolean
+on_pref_da_expose_event                (GtkWidget       *widget,
+                                        GdkEventExpose  *event,
+                                        gpointer         user_data);

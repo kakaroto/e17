@@ -13,6 +13,10 @@
 if (current_idle) gtk_idle_remove(current_idle);\
 current_idle = gtk_idle_add(view_redraw, NULL);
 
+#define QUEUE_PREF_DRAW \
+if (pref_idle) gtk_idle_remove(pref_idle);\
+pref_idle = gtk_idle_add(view_pref_redraw, NULL);
+
 extern gint       render_method;
 extern gint       zoom_method;
 extern GtkWidget *main_win;
@@ -34,90 +38,79 @@ DATA8  colors_old[3];
 char   etcher_config[4096];
 char  *grid_image_file = NULL;
 char  *grid_image_file_old = NULL;
+Evas   pref_evas = NULL;
+Evas_Object o_pref_image = NULL;
+gint   pref_idle = 0;
+gint   new_pref_evas = 1;
 
 static void pref_update_preview(void);
 static void pref_colors_ok(GtkWidget *widget, gpointer data);
 static void pref_colors_cancel(GtkWidget *widget,  gpointer data);
 gint view_redraw(gpointer data);
 
+gint
+view_pref_redraw(gpointer data)
+{
+   evas_render(pref_evas);
+   pref_idle = 0;
+   return FALSE;
+}
+
 static void 
 pref_update_preview(void)
 {
-   static Pixmap pm;
-   static gboolean first = TRUE;
-   static Imlib_Image grid_im = NULL;
-   static Imlib_Color_Modifier colormod = NULL;
-   static int w, h;
-   
-   DATA8 rt[256], gt[256], bt[256], at[256];
-   Imlib_Image im;
-   int ww, hh, i, x, y, d;
-   
-   GtkWidget * wid;
-   
-   if (grid_image_file)
-      free(grid_image_file);
-   grid_image_file = NULL;
-   
-   grid_image_file = strdup(gtk_entry_get_text(GTK_ENTRY(gtk_object_get_data(GTK_OBJECT(pref_dialog), "entry1"))));
-   
-   grid_im = imlib_load_image(grid_image_file);
-   
-   if (!grid_im)
-      return;
-   
-   if (first)
+   if (!new_pref_evas)
      {
-	first = FALSE;
+	if (grid_image_file)
+	   free(grid_image_file);
+	grid_image_file = NULL;
 	
-	wid = gtk_object_get_data(GTK_OBJECT(pref_dialog), "pref_da");
-	d = imlib_get_visual_depth(imlib_context_get_display(), imlib_context_get_visual());
-	colormod = imlib_create_color_modifier();
-	
-	w  = wid->allocation.width;
-	h  = wid->allocation.height;
-	
-	pm = XCreatePixmap(imlib_context_get_display(), win, w, h, d);
+	grid_image_file = strdup(gtk_entry_get_text(GTK_ENTRY(gtk_object_get_data(GTK_OBJECT(pref_dialog), "entry1"))));
+	evas_set_image_file(pref_evas, o_pref_image, grid_image_file);
+	evas_move(pref_evas, o_pref_image, 0, 0);
+	evas_resize(pref_evas, o_pref_image, 99999, 99999);
+	evas_set_color(pref_evas, o_pref_image, colors[0], colors[1], colors[2], 255);
+	QUEUE_PREF_DRAW;
      }
-   
-   imlib_context_set_image(grid_im);      
-   ww = imlib_image_get_width();
-   hh = imlib_image_get_height();	
-   
-   imlib_context_set_image(grid_im);
-   imlib_context_set_drawable(pm);    
-   imlib_context_set_color_modifier(colormod);   
-   imlib_get_color_modifier_tables(rt, gt, bt, at);
-   
-   im = imlib_clone_image();
-   imlib_context_set_image(im);
-   
-   for (i = 0; i<256; i++)
-     {
-	rt[i] = (DATA8)(i * ((double)colors[0] / 256));
-	gt[i] = (DATA8)(i * ((double)colors[1] / 256));
-	bt[i] = (DATA8)(i * ((double)colors[2] / 256));
-	at[i] = 255;
-     }
-   
-   imlib_set_color_modifier_tables(rt, gt, bt, at);
-   imlib_apply_color_modifier();
-   
-   x = y = 0;
-   do {
-      do {
-	 imlib_render_image_on_drawable(x, y);	  
-	 x += ww;
-      } while (x < w);    
-      x = 0;
-      y += hh;
-   } while (y < h);
-   
-   XSetWindowBackgroundPixmap(imlib_context_get_display(), win, pm);
-   XClearWindow(imlib_context_get_display(), win);
-   imlib_free_image();
 }
 
+gboolean
+on_pref_da_expose_event2                (GtkWidget       *widget,
+					 GdkEventExpose  *event,
+					 gpointer         user_data)
+{
+   if (new_pref_evas)
+     {
+	char *file;
+	
+	new_pref_evas = 0;
+        evas_set_output(pref_evas,
+			GDK_WINDOW_XDISPLAY(widget->window),
+			GDK_WINDOW_XWINDOW(widget->window),
+			GDK_VISUAL_XVISUAL(gtk_widget_get_visual(widget)),
+			GDK_COLORMAP_XCOLORMAP(gtk_widget_get_colormap(widget)));
+	evas_set_output_size(pref_evas,
+			     widget->allocation.width,
+			     widget->allocation.height);
+	evas_set_output_viewport(pref_evas,
+				 0, 0,
+				 widget->allocation.width,
+				 widget->allocation.height);
+        evas_set_image_cache(pref_evas, 8 * 1024 * 1024);
+	gdk_window_set_back_pixmap(widget->window, NULL, FALSE);
+	file = gtk_entry_get_text(GTK_ENTRY(gtk_object_get_data(GTK_OBJECT(pref_dialog), "entry1")));
+	o_pref_image = evas_add_image_from_file(pref_evas, file);
+	evas_show(pref_evas, o_pref_image);
+	pref_update_preview();
+     }
+   evas_update_rect(pref_evas,
+		    event->area.x,
+		    event->area.y,
+		    event->area.width,
+		    event->area.height);
+   QUEUE_PREF_DRAW;
+   return FALSE;
+}
 
 static void
 pref_colors_ok(GtkWidget *widget, gpointer data)
@@ -202,7 +195,36 @@ pref_preferences1_activate               (GtkMenuItem     *menuitem,
    char * s = NULL;
    
    if (!pref_dialog)
-      pref_dialog = create_preferences();
+     {
+	GdkVisual *gdk_pref_vis;
+	GdkColormap *gdk_pref_cmap;
+	
+	pref_evas = evas_new();
+	evas_set_output_method(pref_evas, RENDER_METHOD_ALPHA_SOFTWARE);
+	  {
+	     Visual *vis;
+	     Colormap cmap;
+	     
+	     vis = evas_get_optimal_visual(pref_evas, GDK_WINDOW_XDISPLAY(GDK_ROOT_PARENT()));
+	     gdk_pref_vis = gdkx_visual_get(XVisualIDFromVisual(vis));
+	     cmap = evas_get_optimal_colormap(pref_evas, GDK_WINDOW_XDISPLAY(GDK_ROOT_PARENT()));
+	     gdk_pref_cmap = gdkx_colormap_get(cmap);
+	     /* workaround for bug in gdk - well oversight in api */
+	     ((GdkColormapPrivate *)gdk_pref_cmap)->visual = gdk_pref_vis;
+	  }
+	
+	/*******/
+	gtk_widget_push_visual(gdk_pref_vis);
+	gtk_widget_push_colormap(gdk_pref_cmap);
+	/*******/
+	
+	pref_dialog = create_preferences();
+	
+	/*******/
+	gtk_widget_pop_visual();
+	gtk_widget_pop_colormap();
+	/*******/
+     }
    
    if (render_method == 0)
      {

@@ -2265,7 +2265,7 @@ create_render_method (void)
   GtkWidget *dialog_action_area1;
   GtkWidget *hbuttonbox2;
   GtkWidget *software;
-  GtkWidget *_3d_hardware;
+  GtkWidget *_d_hardware;
 
   render_method = gtk_dialog_new ();
   gtk_object_set_data (GTK_OBJECT (render_method), "render_method", render_method);
@@ -2317,18 +2317,18 @@ create_render_method (void)
   gtk_container_add (GTK_CONTAINER (hbuttonbox2), software);
   GTK_WIDGET_SET_FLAGS (software, GTK_CAN_DEFAULT);
 
-  _3d_hardware = gtk_button_new_with_label (_("3D Hardware"));
-  gtk_widget_ref (_3d_hardware);
-  gtk_object_set_data_full (GTK_OBJECT (render_method), "_3d_hardware", _3d_hardware,
+  _d_hardware = gtk_button_new_with_label (_("3D Hardware"));
+  gtk_widget_ref (_d_hardware);
+  gtk_object_set_data_full (GTK_OBJECT (render_method), "_d_hardware", _d_hardware,
                             (GtkDestroyNotify) gtk_widget_unref);
-  gtk_widget_show (_3d_hardware);
-  gtk_container_add (GTK_CONTAINER (hbuttonbox2), _3d_hardware);
-  GTK_WIDGET_SET_FLAGS (_3d_hardware, GTK_CAN_DEFAULT);
+  gtk_widget_show (_d_hardware);
+  gtk_container_add (GTK_CONTAINER (hbuttonbox2), _d_hardware);
+  GTK_WIDGET_SET_FLAGS (_d_hardware, GTK_CAN_DEFAULT);
 
   gtk_signal_connect (GTK_OBJECT (software), "clicked",
                       GTK_SIGNAL_FUNC (on_software_clicked),
                       NULL);
-  gtk_signal_connect (GTK_OBJECT (_3d_hardware), "clicked",
+  gtk_signal_connect (GTK_OBJECT (_d_hardware), "clicked",
                       GTK_SIGNAL_FUNC (on_3d_hardware_clicked),
                       NULL);
 
@@ -2541,6 +2541,7 @@ create_preferences (void)
   gtk_widget_show (pref_da);
   gtk_container_add (GTK_CONTAINER (frame11), pref_da);
   gtk_widget_set_usize (pref_da, -2, 80);
+  gtk_widget_set_events (pref_da, GDK_EXPOSURE_MASK);
 
   entry1 = gtk_entry_new ();
   gtk_widget_ref (entry1);
@@ -2595,6 +2596,9 @@ create_preferences (void)
 
   gtk_signal_connect (GTK_OBJECT (preferences), "delete_event",
                       GTK_SIGNAL_FUNC (on_preferences_delete_event),
+                      NULL);
+  gtk_signal_connect (GTK_OBJECT (pref_da), "expose_event",
+                      GTK_SIGNAL_FUNC (on_pref_da_expose_event),
                       NULL);
   gtk_signal_connect (GTK_OBJECT (entry1), "changed",
                       GTK_SIGNAL_FUNC (on_gridimage_changed),
