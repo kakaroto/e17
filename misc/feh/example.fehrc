@@ -21,7 +21,7 @@
 # feh -rV
 
 # Multiple options can of course be used. They should all be on one line
-# imagemap -rVq -W 400 -H 300 --thumb-width 40 --thumb-height 30
+# imagemap -rV --quiet -W 400 -H 300 --thumb-width 40 --thumb-height 30
 
 # ================================================
 # Here I set some useful themes for you to try out
@@ -29,14 +29,20 @@
 
 # Webcam mode, simply specify the url(s).
 # e.g. feh -Cwebcam http://cam1 http://cam2
-webcam -wkR30
+webcam --multiwindow --keep-http --reload 30
 
 # Create an index of the current directory. This version uses . as the
 # current dir, so you don't even need any commandline arguments.
 mkindex -iVO index.jpg .
 
+# More ambitious version...
+imgidx -iVO .fehindex.jpg --limit-width 1200 --thumb-width 90 --thumb-height 90 .
+
 # Show a presentation
-present -F -Sname
+present --fullscreen --sort name
+
+# Booth mode ;-)
+booth --fullscreen --slideshow-delay 20
 
 # Screw xscreensaver, use feh =)
-screensave -F --randomize -D5
+screensave --fullscreen --randomize --slideshow-delay 5

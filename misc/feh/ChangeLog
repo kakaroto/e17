@@ -1,3 +1,31 @@
+Tue May  9 22:04:37 2000  Tom Gilbert  <gilbertt@btinternet.com>
+
+	* Now --filelist is -f, relegating -font to -e. *shrug*.
+
+Tue May  9 21:57:14 2000  Tom Gilbert  <gilbertt@btinternet.com>
+
+	* Now --theme is -t instead of -C (duh).
+
+Tue May  9 21:35:34 2000  Tom Gilbert  <gilbertt@btinternet.com>
+
+	* Now --action is A, and --ignoreaspect is X.
+
+Tue May  9 21:30:59 2000  Tom Gilbert  <gilbertt@btinternet.com>
+
+	* Now randomize is -z, which makes a little more sense.
+
+Tue May  9 21:15:57 2000  Tom Gilbert  <gilbertt@btinternet.com>
+
+	* Swapped -g and -c so that --collage gets the -c it fits, and
+	randomize gets -g. I need to rework all these short options,
+	they're a mess right now. Sorry if I break anyone's configs doing
+	this :-(
+
+Tue May  9 21:09:15 2000  Tom Gilbert  <gilbertt@btinternet.com>
+
+	* Removed -B, --booth, as it's just a combo of options now doable
+	in the config file. I stuck it in the example config instead...
+
 Mon May  8 22:38:11 2000  Tom Gilbert  <gilbertt@btinternet.com>
 
 	* Don't apply colormods to each whole image. First scale it to

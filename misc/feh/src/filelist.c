@@ -412,6 +412,7 @@ add_file_to_filelist_recursively(char *origpath, unsigned char level)
    {
       struct dirent *de;
       DIR *dir;
+
       D(("It is a directory\n"));
 
       if ((dir = opendir(path)) == NULL)

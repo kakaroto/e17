@@ -55,8 +55,7 @@ winwidget_allocate(void)
    D_RETURN(ret);
 }
 
-winwidget
-winwidget_create_from_image(Imlib_Image * im, char *name)
+winwidget winwidget_create_from_image(Imlib_Image * im, char *name)
 {
    winwidget ret = NULL;
 
@@ -83,8 +82,7 @@ winwidget_create_from_image(Imlib_Image * im, char *name)
    D_RETURN(ret);
 }
 
-winwidget
-winwidget_create_from_file(feh_file * file, char *name)
+winwidget winwidget_create_from_file(feh_file * file, char *name)
 {
    winwidget ret = NULL;
 
@@ -392,20 +390,18 @@ winwidget_show(winwidget winwid)
    D_RETURN_;
 }
 
-void winwidget_resize(winwidget winwid, int w, int h)
+void
+winwidget_resize(winwidget winwid, int w, int h)
 {
 /*   XEvent ev; */
-   
-    D_ENTER;
-    if(!winwid)
-          D_RETURN_;
-    XResizeWindow(disp, winwid->win, w, h);
-    /* wait for the window to resize 
-    D(("Waiting for window to resize\n"));
-    XMaskEvent(disp, StructureNotifyMask, &ev);
-    D(("Window resized\n"));
-    */
-    D_RETURN_;
+
+   D_ENTER;
+   if (!winwid)
+      D_RETURN_;
+   XResizeWindow(disp, winwid->win, w, h);
+   /* wait for the window to resize D(("Waiting for window to resize\n"));
+      XMaskEvent(disp, StructureNotifyMask, &ev); D(("Window resized\n")); */
+   D_RETURN_;
 }
 
 void
@@ -459,8 +455,7 @@ winwidget_unregister(winwidget win)
    D_RETURN_;
 }
 
-winwidget
-winwidget_get_from_window(Window win)
+winwidget winwidget_get_from_window(Window win)
 {
    winwidget ret = NULL;
 

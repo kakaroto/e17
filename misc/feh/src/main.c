@@ -103,7 +103,7 @@ feh_main_iteration(int block)
       if (window_num == 0)
          D_RETURN(0);
    }
-   XFlush(disp); 
+   XFlush(disp);
 
    FD_ZERO(&fdset);
    FD_SET(xfd, &fdset);
@@ -411,15 +411,16 @@ feh_smooth_image(winwidget w)
    D_RETURN_;
 }
 
-void feh_clean_exit(void)
+void
+feh_clean_exit(void)
 {
-    D_ENTER;
+   D_ENTER;
 
-    if (!opt.keep_http)
-          delete_rm_files();
+   if (!opt.keep_http)
+      delete_rm_files();
 
-    if(opt.filelistfile)
-          feh_write_filelist(filelist, opt.filelistfile);
-    
-    D_RETURN_;
+   if (opt.filelistfile)
+      feh_write_filelist(filelist, opt.filelistfile);
+
+   D_RETURN_;
 }

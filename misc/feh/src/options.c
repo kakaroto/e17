@@ -217,54 +217,53 @@ static void
 feh_parse_option_array(int argc, char **argv)
 {
    static char stropts[] =
-      "a:Ab:BcC:dD:e:f:FghH:iIklLmno:O:pPqrR:sS:tTuUvVwW:xX:y:z:";
+
+      "a:A:b:BcdD:e:f:Fg:hH:iIklLmno:O:pPqrR:sS:t:T:uUvVwW:xXy:z";
    static struct option lopts[] = {
       /* actions */
-      {"help", 0, 0, 'h'},
-      {"version", 0, 0, 'v'},
+      {"help", 0, 0, 'h'},                  /* okay */
+      {"version", 0, 0, 'v'},               /* okay */
       /* toggles */
-      {"booth", 0, 0, 'B'},
-      {"montage", 0, 0, 'm'},
-      {"collage", 0, 0, 'g'},
-      {"index", 0, 0, 'i'},
-      {"fullindex", 0, 0, 'I'},
-      {"thumbs", 0, 0, 't'},
-      {"verbose", 0, 0, 'V'},
-      {"borderless", 0, 0, 'x'},
-      {"keep-http", 0, 0, 'k'},
-      {"stretch", 0, 0, 's'},
-      {"multiwindow", 0, 0, 'w'},
-      {"recursive", 0, 0, 'r'},
-      {"randomize", 0, 0, 'c'},
+      {"montage", 0, 0, 'm'},               /* okay */
+      {"collage", 0, 0, 'c'},               /* okay */
+      {"index", 0, 0, 'i'},                 /* okay */
+      {"fullindex", 0, 0, 'I'},             /* okay */
+      {"verbose", 0, 0, 'V'},               /* okay */
+      {"borderless", 0, 0, 'x'},            /* okay */
+      {"keep-http", 0, 0, 'k'},             /* okay */
+      {"stretch", 0, 0, 's'},               /* okay */
+      {"multiwindow", 0, 0, 'w'},           /* okay */
+      {"recursive", 0, 0, 'r'},             /* okay */
+      {"randomize", 0, 0, 'z'},             /* okay */
+      {"list", 0, 0, 'l'},                  /* okay */
+      {"longlist", 0, 0, 'L'},              /* okay */
+      {"quiet", 0, 0, 'q'},                 /* okay */
+      {"loadables", 0, 0, 'U'},             /* okay */
+      {"unloadables", 0, 0, 'u'},           /* okay */
       {"full-screen", 0, 0, 'F'},
-      {"noprogressive", 0, 0, 'P'},
-      {"ignoreaspect", 0, 0, 'A'},
+      {"no-progressive", 0, 0, 'P'},
+      {"ignore-aspect", 0, 0, 'X'},
       {"draw_filename", 0, 0, 'd'},
-      {"list", 0, 0, 'l'},
-      {"longlist", 0, 0, 'L'},
-      {"quiet", 0, 0, 'q'},
       {"preload", 0, 0, 'p'},
-      {"loadables", 0, 0, 'U'},
-      {"unloadables", 0, 0, 'u'},
       {"reverse", 0, 0, 'n'},
       /* options with values */
-      {"output", 1, 0, 'o'},
-      {"action", 1, 0, 'X'},
-      {"output-only", 1, 0, 'O'},
-      {"font", 1, 0, 'f'},
+      {"output", 1, 0, 'o'},                /* okay */
+      {"output-only", 1, 0, 'O'},           /* okay */
+      {"action", 1, 0, 'A'},                /* okay */
+      {"limit-width", 1, 0, 'W'},           /* okay */
+      {"limit-height", 1, 0, 'H'},          /* okay */
+      {"reload", 1, 0, 'R'},                /* okay */
+      {"alpha", 1, 0, 'a'},                 /* okay */
+      {"sort", 1, 0, 'S'},                  /* okay */
+      {"theme", 1, 0, 't'},                 /* okay */
+      {"filelist", 1, 0, 'f'},              /* okay */
+      {"thumb-width", 1, 0, 'y'},
+      {"thumb-height", 1, 0, 'g'},
+      {"slideshow-delay", 1, 0, 'D'},
+      {"font", 1, 0, 'e'},
       {"title-font", 1, 0, 'T'},
       {"bg", 1, 0, 'b'},
-      {"limit-width", 1, 0, 'W'},
-      {"limit-height", 1, 0, 'H'},
-      {"thumb-width", 1, 0, 'y'},
-      {"thumb-height", 1, 0, 'z'},
-      {"slideshow-delay", 1, 0, 'D'},
-      {"reload", 1, 0, 'R'},
-      {"alpha", 1, 0, 'a'},
-      {"sort", 1, 0, 'S'},
-      {"config", 1, 0, 'C'},
       {"fontpath", 1, 0, '='},
-      {"filelist", 1, 0, 'e'},
       {0, 0, 0, 0}
    };
    int optch = 0, cmdx = 0;
@@ -288,7 +287,7 @@ feh_parse_option_array(int argc, char **argv)
         case 'm':
            opt.montage = 1;
            break;
-        case 'g':
+        case 'c':
            opt.collage = 1;
            break;
         case 'i':
@@ -308,9 +307,6 @@ feh_parse_option_array(int argc, char **argv)
            break;
         case 'L':
            opt.longlist = 1;
-           break;
-        case 't':
-           opt.thumbs = 1;
            break;
         case 'n':
            opt.reverse = 1;
@@ -336,7 +332,7 @@ feh_parse_option_array(int argc, char **argv)
         case 'r':
            opt.recursive = 1;
            break;
-        case 'c':
+        case 'z':
            opt.randomize = 1;
            break;
         case 'd':
@@ -357,7 +353,7 @@ feh_parse_option_array(int argc, char **argv)
         case 'P':
            opt.progressive = 0;
            break;
-        case 'A':
+        case 'X':
            opt.aspect = 0;
            break;
         case 'S':
@@ -385,10 +381,6 @@ feh_parse_option_array(int argc, char **argv)
               opt.sort = SORT_FILENAME;
            }
            break;
-        case 'B':
-           opt.full_screen = 1;
-           opt.slideshow_delay = 20;
-           break;
         case 'o':
            opt.output = 1;
            opt.output_file = estrdup(optarg);
@@ -398,13 +390,13 @@ feh_parse_option_array(int argc, char **argv)
            opt.output_file = estrdup(optarg);
            opt.display = 0;
            break;
-        case 'C':
+        case 't':
            theme = estrdup(optarg);
            break;
         case '=':
            opt.fontpath = estrdup(optarg);
            break;
-        case 'f':
+        case 'e':
            opt.font = estrdup(optarg);
            break;
         case 'T':
@@ -414,7 +406,7 @@ feh_parse_option_array(int argc, char **argv)
            opt.bg = 1;
            opt.bg_file = estrdup(optarg);
            break;
-        case 'X':
+        case 'A':
            opt.action = estrdup(optarg);
            break;
         case 'W':
@@ -426,7 +418,7 @@ feh_parse_option_array(int argc, char **argv)
         case 'y':
            opt.thumb_w = atoi(optarg);
            break;
-        case 'z':
+        case 'g':
            opt.thumb_h = atoi(optarg);
            break;
         case 'D':
@@ -439,7 +431,7 @@ feh_parse_option_array(int argc, char **argv)
            opt.alpha = 1;
            opt.alpha_level = 255 - atoi(optarg);
            break;
-        case 'e':
+        case 'f':
            opt.filelistfile = estrdup(optarg);
            break;
         default:
@@ -554,13 +546,13 @@ show_usage(void)
            "                            Verbose and quiet modes are not mutually exclusive,\n"
            "                            the first controls informational messages, the\n"
            "                            second only errors.\n"
-           "  -C THEME                  Load options from config file with name THEME\n"
+           "  -t, --theme THEME         Load options from config file with name THEME\n"
            "                            see man feh for more info\n"
            "  -r, --recursive           Recursively expand any directories in FILE to\n"
            "                            the content of those directories. (Take it easy)\n"
-           "  -c, --randomize           When viewing multiple files in a slideshow,\n"
+           "  -z, --randomize           When viewing multiple files in a slideshow,\n"
            "                            randomise the file list before displaying\n"
-           "  -e, --filelist FILE       This option is similar to the playlists used by\n"
+           "  -f, --filelist FILE       This option is similar to the playlists used by\n"
            "                            music software. If FILE exists, it will be read\n"
            "                            for a list of files to load, in the order they\n"
            "                            appear. The format is a list of image filenames,\n"
@@ -584,7 +576,7 @@ show_usage(void)
            "                            instead of opening multiple files in slideshow\n"
            "                            mode, multiple windows will be opened.\n"
            "  -x, --borderless          Create borderless windows\n"
-           "  -P, --noprogressive       Disable progressive loading and display of images\n"
+           "  -P, --no-progressive       Disable progressive loading and display of images\n"
            "  -d, --draw-filename       Draw the filename at the top-left of the image\n"
            "  -D, --slideshow-delay NUM For slideshow mode, specifies time delay (seconds)\n"
            "                            between automatically changing slides.\n"
@@ -612,7 +604,7 @@ show_usage(void)
            "  -n, --reverse             Reverse the sort order. Use this to invert the order\n"
            "                            of the filelist. Eg to sort in reverse width order,\n"
            "                            use -nSwidth\n"
-           "  -X, --action ACTION       Specify a string as an action to perform when the\n"
+           "  -A, --action ACTION       Specify a string as an action to perform when the\n"
            "                            enter key is pressed in slideshow or multiwindow\n"
            "                            modes. The action will be executed in a shell. Use\n"
            "                            %%f to refer to the image filename, and %%n to refer\n"
@@ -625,7 +617,7 @@ show_usage(void)
            "                            images specified using FILE... When montage mode\n"
            "                            is selected, certain other options become\n"
            "                            available. See MONTAGE MODE OPTIONS\n"
-           "  -g, --collage             Same as montage mode, but the thumbnails are\n"
+           "  -c, --collage             Same as montage mode, but the thumbnails are\n"
            "                            distributed randomly. You must specify width and\n"
            "                            height or supply a background image or both\n"
            "  -i, --index               Enable Index mode. Index mode is similar to\n"
@@ -636,11 +628,8 @@ show_usage(void)
            "                            OPTIONS\n"
            "  -I, --fullindex           Same as index mode, but below each thumbnail you\n"
            "                            get image name, size and dimensions\n"
-           "  -B, --booth               Combines some options suitable for a nice\n"
-           "                            booth display mode. A fullscreen slideshow\n"
-           "                            with a slide change every 20 seconds...\n"
            " MONTAGE MODE OPTIONS\n"
-           "  -A, --ignoreaspect        By default, the montage thumbnails will retain\n"
+           "  -X, --ignore-aspect        By default, the montage thumbnails will retain\n"
            "                            their aspect ratios, while fitting in --thumb-width\n"
            "                            and --thumb-height. This option will force them to\n"
            "                            be the size set by --thumb-width and --thumb-height\n"
@@ -650,9 +639,9 @@ show_usage(void)
            "                            thumbnail size, it will not be enlarged. If this\n"
            "                            option is set, the image will be scaled up to fit\n"
            "                            the thumnail size. (Aspect ratio will be maintained\n"
-           "                            unless --ignoreaspect is specified)\n"
+           "                            unless --ignore-aspect is specified)\n"
            "  -y, --thumb-width NUM     Set thumbnail width in pixels\n"
-           "  -z, --thumb-height NUM    Set thumbnail height in pixels\n"
+           "  -g, --thumb-height NUM    Set thumbnail height in pixels\n"
            "                            Thumbnails default to 20x20 pixels\n"
            "  -W, --limit-width NUM     Limit the width of the montage in pixels\n"
            "  -H, --limit-height NUM    Limit the height of the montage in pixels\n"
@@ -672,7 +661,7 @@ show_usage(void)
            "  -O FILE                   Just save the created montage to FILE\n"
            "                            WITHOUT displaying it (use in scripts)\n"
            " INDEX MODE OPTIONS\n"
-           "  -f FONT                   Use FONT to print the information under each\n"
+           "  -e FONT                   Use FONT to print the information under each\n"
            "                            thumbnail. FONT should be defined in the form\n"
            "                            fontname/size(points). eg -f myfont/12\n"
            "     --fontpath PATH        Specify an extra directory to look in for fonts\n"

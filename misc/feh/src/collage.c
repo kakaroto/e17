@@ -157,6 +157,7 @@ init_collage_mode(void)
          {
             Imlib_Color_Modifier cm;
             DATA8 atab[256];
+
             D(("Applying alpha options\n"));
 
             cm = imlib_create_color_modifier();
@@ -171,8 +172,8 @@ init_collage_mode(void)
          }
          imlib_context_set_image(im_main);
 
-         imlib_blend_image_onto_image(im_thumb, 0, 0, 0, www, hhh, xxx, yyy, www,
-                                      hhh);
+         imlib_blend_image_onto_image(im_thumb, 0, 0, 0, www, hhh, xxx, yyy,
+                                      www, hhh);
          imlib_context_set_image(im_thumb);
          imlib_free_image_and_decache();
       }
@@ -205,7 +206,8 @@ init_collage_mode(void)
 
    if (opt.display)
    {
-      winwid = winwidget_create_from_image(im_main, PACKAGE " [collage mode]");
+      winwid =
+         winwidget_create_from_image(im_main, PACKAGE " [collage mode]");
       winwidget_show(winwid);
    }
    else

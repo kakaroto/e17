@@ -351,7 +351,7 @@ init_index_mode(void)
          imlib_context_set_image(im_temp);
          im_thumb = imlib_create_cropped_scaled_image(0, 0, ww, hh, www, hhh);
          imlib_free_image_and_decache();
-         
+
          if (opt.alpha && opt.alpha_level)
          {
             Imlib_Color_Modifier cm;
@@ -437,8 +437,8 @@ init_index_mode(void)
          }
 
          /* Draw now */
-         imlib_blend_image_onto_image(im_thumb, 0, 0, 0, www, hhh, xxx, yyy, www,
-                                      hhh);
+         imlib_blend_image_onto_image(im_thumb, 0, 0, 0, www, hhh, xxx, yyy,
+                                      www, hhh);
 
          imlib_context_set_image(im_thumb);
          imlib_free_image_and_decache();

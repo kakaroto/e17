@@ -186,7 +186,6 @@ feh_load_image(Imlib_Image ** im, feh_file * file)
                        file->filename);
            break;
         case IMLIB_LOAD_ERROR_PATH_POINTS_OUTSIDE_ADDRESS_SPACE:
-           /* wtf? :) */
            if (!opt.quiet)
               weprintf("%s - Path points outside address space",
                        file->filename);

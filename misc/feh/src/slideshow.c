@@ -169,10 +169,10 @@ slideshow_change_image(winwidget winwid, int change)
       switch (change)
       {
         case SLIDE_NEXT:
-            current_file = filelist_jump(filelist, current_file, FORWARD, 1);
+           current_file = filelist_jump(filelist, current_file, FORWARD, 1);
            break;
         case SLIDE_PREV:
-            current_file = filelist_jump(filelist, current_file, BACK, 1);
+           current_file = filelist_jump(filelist, current_file, BACK, 1);
            break;
         case SLIDE_JUMP_FWD:
            if (file_num < 5)

@@ -61,8 +61,8 @@ handle_keypress_event(XEvent * ev, Window win)
            slideshow_change_image(winwid, SLIDE_JUMP_FWD);
         break;
      case XK_Delete:
-        /* Holding ctrl gets you a filesystem deletion and removal from the
-         * filelist. Just DEL gets you filelist removal only. */
+        /* Holding ctrl gets you a filesystem deletion and removal from the * 
+           filelist. Just DEL gets you filelist removal only. */
         if (opt.slideshow)
         {
            feh_file *doomed;

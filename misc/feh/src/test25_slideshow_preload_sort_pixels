@@ -11,5 +11,5 @@ echo "There is no caching, so HUGE slideshows should not create"
 echo "any extra overhead"
 echo "The list should be pixels sorted"
 echo ""
-$FEH $1 -VSpixels testimages/*.jpg
+$FEH $1 -V --sort pixels testimages/*.jpg
 echo ""

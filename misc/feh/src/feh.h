@@ -289,6 +289,7 @@ feh_file *filelist_last(feh_file * file);
 feh_file *filelist_first(feh_file * file);
 feh_file *filelist_join(feh_file * root, feh_file * newfile);
 feh_file *filelist_jump(feh_file * list, feh_file * file, int direction,
+
                         int num);
 feh_file *feh_file_rm_and_free(feh_file * list, feh_file * file);
 int filelist_num(feh_file * list, feh_file * file);
@@ -300,6 +301,7 @@ void feh_file_info_free(feh_file_info * info);
 int feh_file_info_load(feh_file * file);
 feh_file *feh_list_sort(feh_file * list, feh_compare_fn cmp);
 feh_file *feh_list_sort_merge(feh_file * l1, feh_file * l2,
+
                               feh_compare_fn cmp);
 int feh_write_filelist(feh_file * list, char *filename);
 feh_file *feh_read_filelist(char *filename);
