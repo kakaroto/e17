@@ -23,132 +23,129 @@
 #include "E.h"
 #include <time.h>
 
-Window              init_win1 = None;
-Window              init_win2 = None;
+static Window       init_win1 = None;
+static Window       init_win2 = None;
+static char         bg_sideways = 0;
 
 void
-StartupWindowsCreate(int start)
+StartupWindowsCreate(void)
 {
-   static Window       w1, w2, win1, win2, b1, b2;
-   static Background  *bg = NULL;
-   static Background  *bg_sideways = NULL;	/* currently used to determine if the startup screen should slide sideways */
-   static ImageClass  *ic = NULL;
+   Window              w1, w2, win1, win2, b1, b2;
+   Background         *bg;
+   ImageClass         *ic;
+   EObj               *eo;
    char                pq;
 
    if (!Conf.startup.animate)
       return;
 
-   if (start)
+   /* Acting only as boolean? */
+   if (FindItem
+       ("STARTUP_BACKGROUND_SIDEWAYS", 0, LIST_FINDBY_NAME,
+	LIST_TYPE_BACKGROUND))
+      bg_sideways = 1;
+
+   ic = ImageclassFind("STARTUP_BAR", 0);
+   if (!ic)
+      ic = ImageclassFind("DESKTOP_DRAGBUTTON_HORIZ", 0);
+   bg = FindItem("STARTUP_BACKGROUND", 0, LIST_FINDBY_NAME,
+		 LIST_TYPE_BACKGROUND);
+   if (!ic || !bg)
+      return;
+
+   if (bg_sideways)
      {
-	bg_sideways = FindItem("STARTUP_BACKGROUND_SIDEWAYS", 0,
-			       LIST_FINDBY_NAME, LIST_TYPE_BACKGROUND);
-	ic = ImageclassFind("STARTUP_BAR", 0);
-	if (!ic)
-	   ic = ImageclassFind("DESKTOP_DRAGBUTTON_HORIZ", 0);
-	bg =
-	   FindItem("STARTUP_BACKGROUND", 0, LIST_FINDBY_NAME,
-		    LIST_TYPE_BACKGROUND);
-	if ((!ic) || (!bg))
-	   return;
-
-	if (bg_sideways)
-	  {
-	     w1 =
-		ECreateWindow(VRoot.win, (VRoot.w / 2), 0, VRoot.w, VRoot.h, 1);
-	     w2 =
-		ECreateWindow(VRoot.win, -(VRoot.w / 2), 0, VRoot.w, VRoot.h,
-			      1);
-	     win1 = ECreateWindow(w1, -(VRoot.w / 2), 0, VRoot.w, VRoot.h, 0);
-	     win2 = ECreateWindow(w2, (VRoot.w / 2), 0, VRoot.w, VRoot.h, 0);
-	  }
-	else
-	  {
-	     w1 =
-		ECreateWindow(VRoot.win, 0, -(VRoot.h / 2), VRoot.w, VRoot.h,
-			      1);
-	     w2 =
-		ECreateWindow(VRoot.win, 0, (VRoot.h / 2), VRoot.w, VRoot.h, 1);
-	     win1 = ECreateWindow(w1, 0, (VRoot.h / 2), VRoot.w, VRoot.h, 0);
-	     win2 = ECreateWindow(w2, 0, -(VRoot.h / 2), VRoot.w, VRoot.h, 0);
-	  }
-
-	EMapWindow(win1);
-	EMapWindow(win2);
-
-	b1 = ECreateWindow(w1, 0, VRoot.h - Conf.desks.dragbar_width, VRoot.w,
-			   Conf.desks.dragbar_width, 0);
-	b2 = ECreateWindow(w2, 0, 0, VRoot.w, Conf.desks.dragbar_width, 0);
-	EMapRaised(b1);
-	EMapRaised(b2);
-
-	pq = Mode.queue_up;
-	Mode.queue_up = 0;
-	ImageclassApply(ic, b1, VRoot.w, Conf.desks.dragbar_width, 0, 0, 0, 0,
-			ST_UNKNWN);
-	ImageclassApply(ic, b2, VRoot.w, Conf.desks.dragbar_width, 0, 0, 0, 0,
-			ST_UNKNWN);
-	Mode.queue_up = pq;
-	BackgroundApply(bg, win1, 1);
-	BackgroundApply(bg, win2, 1);
-	BackgroundImagesFree(bg, 1);
-	init_win1 = w1;
-	init_win2 = w2;
-	EMapRaised(w1);
-	EMapRaised(w2);
+	w1 = ECreateWindow(VRoot.win, (VRoot.w / 2), 0, VRoot.w, VRoot.h, 1);
+	w2 = ECreateWindow(VRoot.win, -(VRoot.w / 2), 0, VRoot.w, VRoot.h, 1);
+	win1 = ECreateWindow(w1, -(VRoot.w / 2), 0, VRoot.w, VRoot.h, 0);
+	win2 = ECreateWindow(w2, (VRoot.w / 2), 0, VRoot.w, VRoot.h, 0);
      }
    else
      {
-	int                 k, x, y, xOffset, yOffset, ty, fy;
-
-	if ((!ic) || (!bg))
-	   return;
-
-	fy = 0;
-
-	ETimedLoopInit(0, 1024, Conf.slidespeedcleanup / 2);
-	for (k = 0; k <= 1024;)
-	  {
-	     if (bg_sideways)
-	       {		/* so we can have two different slide methods */
-		  ty = (VRoot.w / 2);
-		  xOffset = ((fy * (1024 - k)) + (ty * k)) >> 10;
-		  x = ty;
-		  yOffset = 0;
-		  y = 0;
-	       }
-	     else
-	       {
-		  ty = (VRoot.h / 2);
-		  xOffset = 0;
-		  x = 0;
-		  yOffset = ((fy * (1024 - k)) + (ty * k)) >> 10;
-		  y = ty;
-	       }
-
-	     EMoveWindow(w1, x + xOffset, -y - yOffset);
-	     EMoveWindow(w2, -x - xOffset, y + yOffset);
-	     ecore_x_sync();
-
-	     k = ETimedLoopNext();
-	  }
-
-	EDestroyWindow(w1);
-	EDestroyWindow(w2);
-	init_win1 = 0;
-	init_win2 = 0;
-
-	BackgroundDestroyByName("STARTUP_BACKGROUND_SIDEWAYS");
-	BackgroundDestroyByName("STARTUP_BACKGROUND");
+	w1 = ECreateWindow(VRoot.win, 0, -(VRoot.h / 2), VRoot.w, VRoot.h, 1);
+	w2 = ECreateWindow(VRoot.win, 0, (VRoot.h / 2), VRoot.w, VRoot.h, 1);
+	win1 = ECreateWindow(w1, 0, (VRoot.h / 2), VRoot.w, VRoot.h, 0);
+	win2 = ECreateWindow(w2, 0, -(VRoot.h / 2), VRoot.w, VRoot.h, 0);
      }
+
+   EMapWindow(win1);
+   EMapWindow(win2);
+
+   b1 = ECreateWindow(w1, 0, VRoot.h - Conf.desks.dragbar_width, VRoot.w,
+		      Conf.desks.dragbar_width, 0);
+   b2 = ECreateWindow(w2, 0, 0, VRoot.w, Conf.desks.dragbar_width, 0);
+   EMapRaised(b1);
+   EMapRaised(b2);
+
+   pq = Mode.queue_up;
+   Mode.queue_up = 0;
+   ImageclassApply(ic, b1, VRoot.w, Conf.desks.dragbar_width, 0, 0, 0, 0,
+		   ST_UNKNWN);
+   ImageclassApply(ic, b2, VRoot.w, Conf.desks.dragbar_width, 0, 0, 0, 0,
+		   ST_UNKNWN);
+   Mode.queue_up = pq;
+
+   BackgroundApply(bg, win1, 1);
+   BackgroundApply(bg, win2, 1);
+   BackgroundImagesFree(bg, 1);
+
+   init_win1 = w1;
+   init_win2 = w2;
+   EMapRaised(w1);
+   EMapRaised(w2);
+
+   eo = EobjRegister(w1, EOBJ_TYPE_OTHER);
+   EobjSetFloating(eo, 1);
+   EobjListStackRaise(eo);
+   eo = EobjRegister(w2, EOBJ_TYPE_OTHER);
+   EobjSetFloating(eo, 1);
+   EobjListStackRaise(eo);
 }
 
-/* FIXME - should be handled via object stack */
 void
-StartupWindowsRaise(void)
+StartupWindowsOpen(void)
 {
-   if (init_win1)
+   int                 k, x, y, xOffset, yOffset, ty, fy;
+
+   if (init_win1 == None || init_win2 == None)
+      return;
+
+   fy = 0;
+
+   ETimedLoopInit(0, 1024, Conf.slidespeedcleanup / 2);
+   for (k = 0; k <= 1024;)
      {
-	ERaiseWindow(init_win1);
-	ERaiseWindow(init_win2);
+	if (bg_sideways)
+	  {			/* so we can have two different slide methods */
+	     ty = (VRoot.w / 2);
+	     xOffset = ((fy * (1024 - k)) + (ty * k)) >> 10;
+	     x = ty;
+	     yOffset = 0;
+	     y = 0;
+	  }
+	else
+	  {
+	     ty = (VRoot.h / 2);
+	     xOffset = 0;
+	     x = 0;
+	     yOffset = ((fy * (1024 - k)) + (ty * k)) >> 10;
+	     y = ty;
+	  }
+
+	EMoveWindow(init_win1, x + xOffset, -y - yOffset);
+	EMoveWindow(init_win2, -x - xOffset, y + yOffset);
+	ecore_x_sync();
+
+	k = ETimedLoopNext();
      }
+
+   EobjUnregister(init_win1);
+   EobjUnregister(init_win2);
+   EDestroyWindow(init_win1);
+   EDestroyWindow(init_win2);
+   init_win1 = None;
+   init_win2 = None;
+
+   BackgroundDestroyByName("STARTUP_BACKGROUND_SIDEWAYS");
+   BackgroundDestroyByName("STARTUP_BACKGROUND");
 }

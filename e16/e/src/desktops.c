@@ -1358,11 +1358,6 @@ StackDesktop(int desk)
 	  {
 	     _APPEND_TO_WIN_LIST(init_win_ext);
 	  }
-	if (init_win1)
-	  {
-	     _APPEND_TO_WIN_LIST(init_win1);
-	     _APPEND_TO_WIN_LIST(init_win2);
-	  }
      }
 #endif
 

@@ -256,9 +256,6 @@ main(int argc, char **argv)
      }
 #endif
 
-   if (!Mode.wm.restart)
-      StartupWindowsCreate(0);
-
    /* sync just to make sure */
    ecore_x_sync();
    Mode.queue_up = DRAW_QUEUE_ENABLE;
@@ -279,6 +276,9 @@ main(int argc, char **argv)
 
    RunInitPrograms();
    SpawnSnappedCmds();
+
+   if (!Mode.wm.restart)
+      StartupWindowsOpen();
 
    Conf.startup.firsttime = 0;
    Mode.wm.save_ok = 1;

@@ -87,7 +87,6 @@ MapUnmap(int start)
 				 if (init_win_ext)
 				    XRaiseWindow(disp, init_win_ext);
 #endif
-				 StartupWindowsRaise();
 				 ProgressbarsRaise();
 				 XMapWindow(disp, wlist[i]);
 			      }

@@ -2098,8 +2098,8 @@ EWin               *EwinListStackGetTop(void);
 #define EwinListFocusLower(ewin) EobjListFocusLower(&(ewin->o))
 
 /* startup.c */
-void                StartupWindowsCreate(int start);
-void                StartupWindowsRaise(void);
+void                StartupWindowsCreate(void);
+void                StartupWindowsOpen(void);
 
 /* tclass.c */
 int                 TextclassConfigLoad(FILE * fs);
@@ -2325,8 +2325,6 @@ extern RealRoot     RRoot;
 extern VirtRoot     VRoot;
 extern EConf        Conf;
 extern EMode        Mode;
-extern Window       init_win1;
-extern Window       init_win2;
 extern Window       init_win_ext;
 
 #define FILEPATH_LEN_MAX 4096

@@ -527,7 +527,7 @@ ThemeConfigLoad(void)
 	if (!Mode.wm.restart)
 	  {
 	     if (i == 2)
-		StartupWindowsCreate(1);
+		StartupWindowsCreate();
 
 	     if ((i > 1) && (!p))
 	       {

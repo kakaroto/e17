@@ -910,10 +910,6 @@ AddInternalToFamily(Window win, const char *bname, int type, void *ptr,
    EwinConformToDesktop(ewin);
    EwinDetermineArea(ewin);
 
-#if 1				/* FIXME - Handle via object stack */
-   StartupWindowsRaise();
-#endif
-
    ecore_x_ungrab();
 
    return ewin;
