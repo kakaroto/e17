@@ -10,7 +10,8 @@
 
 /* defines */
 #define NOT_RUNNING 0
-#define RUNNING 1
+#define LAUNCHING 1
+#define RUNNING 2
 
 /* structs */
 typedef struct _Spawner_Display Spawner_Display;
@@ -20,7 +21,6 @@ struct _Spawner_Display
    Display *display;
    char *name;
    char *xprog;
-   char *xargs;
    int pid;
    int attempts;
    int status;
