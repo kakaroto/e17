@@ -33,23 +33,26 @@ void term_tcanvas_glyph_push(Term *term, char c) {
       term->tcanvas->cur_col = 0;
       term->tcanvas->cur_row++;
    }
-
+   
    if(term->tcanvas->cur_row > term->tcanvas->scroll_region_end) {
 
       printf("Scrolling: cur_row=%d, scr_end=%d\n", term->tcanvas->cur_row,term->tcanvas->scroll_region_end);
       /* we're exhausting the entire scrollback */
       if(term->tcanvas->cur_row > 
 	 (term->tcanvas->rows-1) * term->tcanvas->scroll_size) {
-	 printf("Reached end of scroll buffer\n");
+	 printf("Reached end of scroll buffer\n");	 
 	 term->tcanvas->scroll_region_start++;
 	 term->tcanvas->cur_row = 0;
 	 term->tcanvas->scroll_region_end = 1;	 
       } else {
 	 /* we're simply at the end of the display, we have scrollback */
 	 printf("Reached end of display buffer\n");
-	 term->tcanvas->scroll_region_start++;
-	 term->tcanvas->scroll_region_end++;      
+	 term_clear_area(term, 1, 1, 80, 24);
+	 term->tcanvas->scroll_region_start = 0;
+	 term->tcanvas->scroll_region_end = 23;      
 	 term->tcanvas->cur_row = term->tcanvas->scroll_region_end;
+	 term->tcanvas->cur_row = 0;
+	 term->tcanvas->cur_col = 0;
        }
       
       if(term->tcanvas->scroll_region_start > 
