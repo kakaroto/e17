@@ -1,5 +1,6 @@
 images {
    image, "entry-base.png" LOSSY 98;
+   image, "button-over.png" LOSSY 98;
 }
 
 collections {
@@ -36,17 +37,17 @@ collections {
       programs {
       }
    }
+
    group {
       name, "cursor";
       parts {
 	 part {
 	    name,          "background";
-	    type,          RECT;
 	    mouse_events,  0;
 	    description {
 	       state,    "default" 0.0;
 	       color_class,   "highlight";
-	       color,  0 0 0 255;
+	       color,  255 255 255 128;
 	       border, 3 3 3 3;
 	       rel1 {
 		  relative, 0.0  0.0;
@@ -57,10 +58,23 @@ collections {
 		  offset,   -1   -1;
 	       }
 	       image {
-		  normal, "entry-base.png";
+		  normal, "button-over.png";
 	       }
 	    }
 	 }
       }
     }
+
+   group {
+      name, "text";
+      data {
+          item, "inset/left" "5";
+          item, "inset/right" "5";
+          item, "inset/top" "2";
+          item, "inset/bottom" "2";
+      }
+      parts {
+      }
+    }
+
 }
