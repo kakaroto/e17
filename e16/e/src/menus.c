@@ -987,16 +987,25 @@ MenuCreateFromDirectory(const char *name, MenuStyle * ms, const char *dir)
 		       Background         *bg;
 		       char                ok = 1;
 		       char                s2[4096], s3[512];
+		       char                stmp[4096];
 
+		       word(s, 2, s2);
+		       Esnprintf(ss, sizeof(ss), "%s/%s", dir, s2);
 		       word(s, 3, s3);
 		       bg = (Background *) FindItem(s3, 0, LIST_FINDBY_NAME,
 						    LIST_TYPE_BACKGROUND);
+		       Esnprintf(stmp, sizeof(stmp), "%s/cached/img/%s",
+				 EDirUserCache(), s3);
+		       if (bg && (!exists(stmp) || moddate(stmp) < moddate(ss)))
+			 {
+			    /* The thumbnail is gone or outdated - regererate */
+			    BackgroundDestroy(bg);
+			    bg = NULL;
+			 }
 		       if (!bg)
 			 {
 			    Imlib_Image        *im;
 
-			    word(s, 2, s2);
-			    Esnprintf(ss, sizeof(ss), "%s/%s", dir, s2);
 			    im = imlib_load_image(ss);
 			    if (im)
 			      {
@@ -1010,8 +1019,6 @@ MenuCreateFromDirectory(const char *name, MenuStyle * ms, const char *dir)
 				 int                 maxw = 48, maxh = 48;
 				 int                 justx = 512, justy = 512;
 
-				 Esnprintf(s2, sizeof(s2), "%s/cached/img/%s",
-					   EDirUserCache(), s3);
 				 imlib_context_set_image(im);
 				 width = imlib_image_get_width();
 				 height = imlib_image_get_height();
@@ -1035,7 +1042,7 @@ MenuCreateFromDirectory(const char *name, MenuStyle * ms, const char *dir)
 				 imlib_free_image_and_decache();
 				 imlib_context_set_image(im2);
 				 imlib_image_set_format("ppm");
-				 imlib_save_image(s2);
+				 imlib_save_image(stmp);
 				 imlib_free_image_and_decache();
 
 				 scr_asp = (VRoot.w << 16) / VRoot.h;
@@ -1098,13 +1105,10 @@ MenuCreateFromDirectory(const char *name, MenuStyle * ms, const char *dir)
 		       if (ok)
 			 {
 			    ImageClass         *ic = NULL;
-			    char                stmp[4096];
 
 			    ic = CreateIclass();
 			    ic->name = Estrdup("`");
 			    ic->norm.normal = CreateImageState();
-			    Esnprintf(stmp, sizeof(stmp), "%s/cached/img/%s",
-				      EDirUserCache(), s3);
 			    ic->norm.normal->im_file = Estrdup(stmp);
 			    ic->norm.normal->unloadable = 1;
 			    IclassPopulate(ic);
