@@ -128,12 +128,12 @@ AM_CONDITIONAL(BUILD_MMX, test x$mmx = xyes)
 AC_ARG_WITH(freetype-config, [  --with-freetype-config=FREETYPE_CONFIG    use freetype-config specified ],
 [ FREETYPE_CONFIG=$withval;
   echo "using "$FREETYPE_CONFIG" for freetype-config"; ],
-[ if test -n "$FREETYPE_CONFIG"; then
+[ if test -z "$FREETYPE_CONFIG"; then
     AC_PATH_PROG(FREETYPE_CONFIG, "freetype-config", "", $PATH)
   fi
 ])
-freetype_cflags=`$PROG_CONFIG --cflags`
-freetype_libs=`$PROG_CONFIG --libs`
+freetype_cflags=`$FREETYPE_CONFIG --cflags`
+freetype_libs=`$FREETYPE_CONFIG --libs`
 
 x11=no
 AC_ARG_ENABLE(x11,[  --disable-x11           attempt to build with X11 support [default=yes]],
