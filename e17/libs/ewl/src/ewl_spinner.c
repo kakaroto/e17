@@ -35,10 +35,8 @@ static void     __ewl_entry_delete_to_right(Ewl_Widget * w);
 
 
 /**
- * ewl_spinner_new - allocate a new spinner widget
- *
- * Returns a pointer to a newly allocated spinner widget on success, NULL on
- * failure.
+ * @return Returns a new spinner widget on success, NULL on failure.
+ * @brief Allocate a new spinner widget
  */
 Ewl_Widget     *ewl_spinner_new()
 {
@@ -57,11 +55,11 @@ Ewl_Widget     *ewl_spinner_new()
 }
 
 /**
- * ewl_spinner_init - initialize a spinner to default values and callbacks
- * @s: the spinner to initialize
+ * @param s: the spinner to initialize
+ * @return Returns no value.
+ * @brief Initialize a spinner to default values and callbacks
  *
- * Returns no value. Sets the fields and callbacks of the spinner @s their
- * default values.
+ * Sets the fields and callbacks of the spinner @a s their default values.
  */
 void ewl_spinner_init(Ewl_Spinner * s)
 {
@@ -122,11 +120,12 @@ void ewl_spinner_init(Ewl_Spinner * s)
 }
 
 /**
- * ewl_spinner_set_value - set the current value of a spinner widget
- * @s: the spinner widget to set the current value
- * @value: the value to set for the spinner @s
+ * @param s: the spinner widget to set the current value
+ * @param value: the value to set for the spinner @a s
+ * @return Returns no value.
+ * @brief Set the current value of a spinner widget
  *
- * Returns no value. Sets the current value of the spinner @s to @value.
+ * Sets the current value of the spinner @a s to @a value.
  */
 void ewl_spinner_set_value(Ewl_Spinner * s, double value)
 {
@@ -139,10 +138,9 @@ void ewl_spinner_set_value(Ewl_Spinner * s, double value)
 }
 
 /**
- * ewl_spinner_get_value - get the current value of a spinner widget
- * @s: the spinner widget to retrieve the value
- *
- * Returns the current value of the spinner @s on success, -1.0 on failure.
+ * @param s: the spinner widget to retrieve the value
+ * @return Returns the current value in @a s on success, -1.0 on failure.
+ * @brief Get the current value of a spinner widget
  */
 double ewl_spinner_get_value(Ewl_Spinner * s)
 {
@@ -152,11 +150,12 @@ double ewl_spinner_get_value(Ewl_Spinner * s)
 }
 
 /**
- * ewl_spinner_set_digits - set the number of digits displayed by a spinner
- * @s: the widget to change the number of digits displayed
- * @digits: the number of digits to display for the spinner @s
+ * @param s: the widget to change the number of digits displayed
+ * @param digits: the number of digits to display for the spinner @a s
+ * @return Returns no value.
+ * @brief Set the number of digits displayed by a spinner
  *
- * Returns no value. Changes the digits displayed by @s to @digits.
+ * Changes the digits displayed by @a s to @a digits.
  */
 void ewl_spinner_set_digits(Ewl_Spinner * s, int digits)
 {
@@ -166,11 +165,12 @@ void ewl_spinner_set_digits(Ewl_Spinner * s, int digits)
 }
 
 /**
- * ewl_spinner_set_min_val - set the minimum value possible for a spinner
- * @s: the spinner to change the minimum possible value
- * @val: the new minimum possible value for @s
+ * @param s: the spinner to change the minimum possible value
+ * @param val: the new minimum possible value for @a s
+ * @return Returns no value.
+ * @brief Set the minimum value possible for a spinner
  *
- * Returns no value. Sets the smallest value that @s can obtain to @val.
+ * Sets the smallest value that @a s can obtain to @a val.
  */
 void ewl_spinner_set_min_val(Ewl_Spinner * s, double val)
 {
@@ -180,11 +180,12 @@ void ewl_spinner_set_min_val(Ewl_Spinner * s, double val)
 }
 
 /**
- * ewl_spinner_set_max_val - set the maximum value possible for a spinner
- * @s: the spinner to change the maximum possible value
- * @val: the new maximum possible value for @s
+ * @param s: the spinner to change the maximum possible value
+ * @param val: the new maximum possible value for @a s
+ * @return Returns no value.
+ * @brief Set the maximum value possible for a spinner
  *
- * Returns no value. Sets the largest value that @s can obtain to @val.
+ * Sets the largest value that @a s can obtain to @a val.
  */
 void ewl_spinner_set_max_val(Ewl_Spinner * s, double val)
 {
@@ -194,12 +195,13 @@ void ewl_spinner_set_max_val(Ewl_Spinner * s, double val)
 }
 
 /**
- * ewl_spinner_set_step - set the increment between each click of the spinner
- * @s: the spinner to change increment step
- * @step: the new increment between clicks of the spinner @s
+ * @param s: the spinner to change increment step
+ * @param step: the new increment between clicks of the spinner @a s
+ * @brief Returns no value.
+ * @brief Set the increment between each click of the spinner
  *
- * Returns no value. Changes the increment that @s changes by with each click
- * of it's spinner buttons to @step.
+ * Changes the increment that @a s changes by with each click of it's spinner
+ * buttons to @a step.
  */
 void ewl_spinner_set_step(Ewl_Spinner * s, double step)
 {

@@ -17,12 +17,11 @@ void            __collapse_menu_and_title_animator(int val, void *ev_data);
 void            __ewl_menu_start(Ewl_Widget * w);
 
 /**
- * ewl_menu_new - create a new internal menu
- * @image: the image icon to use for this menu
- * @title: the text to place in the menu
+ * @param image: the image icon to use for this menu
+ * @param title: the text to place in the menu
+ * @brief Create a new internal menu
  *
- * Returns a pointer to a newly allocated menu on success, NULL on
- * failure.
+ * @return Returns a new menu on success, NULL on failure.
  */
 Ewl_Widget     *ewl_menu_new(char *image, char *title)
 {
@@ -43,12 +42,11 @@ Ewl_Widget     *ewl_menu_new(char *image, char *title)
 
 
 /**
- * ewl_menu_init - initialize an internal menu to starting values
- * @menu: the menu to initialize
- * @follows: the widget the menu will follow
- * @type: the menu type
- *
- * Returns nothing.
+ * @param menu: the menu to initialize
+ * @param image: the path to the icon image
+ * @param title: the text label to be displayed
+ * @return Returns no value.
+ * @brief Initialize an internal menu to starting values
  */
 void ewl_menu_init(Ewl_Menu * menu, char *image, char *title)
 {
