@@ -50,6 +50,8 @@
 
    group {
       name, "cursor";
+      min, 1 99;
+      max, 2 99;
       parts {
 	 part {
 	    name,          "background";
