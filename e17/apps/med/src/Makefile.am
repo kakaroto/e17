@@ -7,7 +7,7 @@ bin_PROGRAMS = med
 
 med_SOURCES = \
 	config.c entry.c \
-	evaswin.c \
+	evaswin.c file.c object.c \
 	extras.c med.c \
 	menu.c menubuild.c \
 	menuedit.c util.c \
