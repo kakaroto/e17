@@ -1,7 +1,5 @@
 Still left TODO
 
-* Image rotation - rotate image 90 degrees left/right, rotate image 180
-		    degrees
 * Save Routine - for modified images, shouldn't be an option unless image
 		    has been modified(i.e. rotated)
 		    Add an "EnticeImageModified" Signal
@@ -17,8 +15,6 @@ Still left TODO
   EnticeScroller
 
 * Hook in delete callbacks, should be pretty easy
-
-* Slideshow options, perhaps best done as an application argument ?
 
 * Trash Can ? Somehow i missed this functionality in the old version
 
