@@ -600,7 +600,9 @@ EWMH_GetWindowType(EWin * ewin)
 
 	ewin->layer = 0;
 	ewin->sticky = 1;
+#if 0 /* Should be configurable
 	ewin->focusclick = 1;
+#endif
 	ewin->neverraise = 1;
 	ewin->skipfocus = 1;
 	ewin->fixedpos = 1;
