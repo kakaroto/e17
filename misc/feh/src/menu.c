@@ -41,7 +41,9 @@ static void feh_menu_cb_exit(feh_menu * m, feh_menu_item * i, void *data);
 static void feh_menu_cb_reload(feh_menu * m, feh_menu_item * i, void *data);
 static void feh_menu_cb_remove(feh_menu * m, feh_menu_item * i, void *data);
 static void feh_menu_cb_delete(feh_menu * m, feh_menu_item * i, void *data);
-static void feh_menu_cb_background_set (feh_menu * m, feh_menu_item * i, void *data);
+static void feh_menu_cb_background_set(feh_menu * m, feh_menu_item * i,
+
+                                       void *data);
 
 /* FIXME if someone can tell me which option is causing indent to be
    braindead here, I will buy them a beer */
@@ -653,8 +655,8 @@ feh_menu_draw_item(feh_menu * m, feh_menu_item * i, Imlib_Image im, int ox,
             feh_imlib_blend_image_onto_image(im, im2, 0, 0, 0, iw, ih,
                                              i->x + i->icon_x - ox,
                                              i->y + FEH_MENUITEM_PAD_TOP +
-                                             (((i->
-                                                h - FEH_MENUITEM_PAD_TOP -
+                                             (((i->h
+                                                - FEH_MENUITEM_PAD_TOP -
                                                 FEH_MENUITEM_PAD_BOTTOM) -
                                                oh) / 2) - oy, ow, oh, 1, 1,
                                              1);
@@ -669,8 +671,8 @@ feh_menu_draw_item(feh_menu * m, feh_menu_item * i, Imlib_Image im, int ox,
             D(("selected item\n"));
             feh_menu_draw_submenu_at(i->x + i->sub_x,
                                      i->y + FEH_MENUITEM_PAD_TOP +
-                                     ((i->
-                                       h - FEH_MENUITEM_PAD_TOP -
+                                     ((i->h
+                                       - FEH_MENUITEM_PAD_TOP -
                                        FEH_MENUITEM_PAD_BOTTOM -
                                        FEH_MENU_SUBMENU_H) / 2),
                                      FEH_MENU_SUBMENU_W, FEH_MENU_SUBMENU_H,
@@ -681,8 +683,8 @@ feh_menu_draw_item(feh_menu * m, feh_menu_item * i, Imlib_Image im, int ox,
             D(("unselected item\n"));
             feh_menu_draw_submenu_at(i->x + i->sub_x,
                                      i->y + FEH_MENUITEM_PAD_TOP +
-                                     ((i->
-                                       h - FEH_MENUITEM_PAD_TOP -
+                                     ((i->h
+                                       - FEH_MENUITEM_PAD_TOP -
                                        FEH_MENUITEM_PAD_BOTTOM -
                                        FEH_MENU_SUBMENU_H) / 2),
                                      FEH_MENU_SUBMENU_W, FEH_MENU_SUBMENU_H,
@@ -964,17 +966,21 @@ feh_menu_init(void)
    menu_bg->name = estrdup("BACKGROUND");
    feh_menu_add_entry(menu_bg, "Set", NULL, NULL, feh_menu_cb_background_set,
                       NULL, NULL);
-   
+
    D_RETURN_;
 }
 
 static void
-feh_menu_cb_background_set (feh_menu * m, feh_menu_item * i, void *data)
+feh_menu_cb_background_set(feh_menu * m, feh_menu_item * i, void *data)
 {
+   char *path;
+
    D_ENTER;
 
-   feh_set_bg(m->fehwin->file->filename, 0, 0, 1);
-   
+   path = feh_absolute_path(m->fehwin->file->filename);
+   feh_set_bg(path, 0, 0, 1);
+   free(path);
+
    D_RETURN_;
 }
 

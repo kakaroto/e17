@@ -364,30 +364,10 @@ add_file_to_filelist_recursively(char *origpath, unsigned char level)
       }
       else if (opt.filelistfile && (path[0] != '/'))
       {
-         char cwd[PATH_MAX];
-         char fullpath[PATH_MAX];
-         char temp[PATH_MAX];
+         char *newpath = feh_absolute_path(path);
 
-         /* This path is not relative. We're gonna convert it, so that a
-            filelist file can be saved anywhere and feh will still find the
-            images */
-         D(("Need to convert filename %s to an absolute form\n", path));
-         /* I SHOULD be able to just use a simple realpath() here, but dumb * 
-            old Solaris's realpath doesn't return an absolute path if the
-            path you give it is relative. Linux and BSD get this right... */
-         getcwd(cwd, sizeof(cwd));
-         snprintf(temp, sizeof(temp), "%s/%s", cwd, path);
-         if (realpath(temp, fullpath) != NULL)
-         {
-            free(path);
-            path = estrdup(fullpath);
-         }
-         else
-         {
-            free(path);
-            path = estrdup(temp);
-         }
-         D(("Converted path to %s\n", path));
+         free(path);
+         path = newpath;
       }
    }
 
@@ -823,4 +803,34 @@ feh_read_filelist(char *filename)
    fclose(fp);
 
    D_RETURN(list);
+}
+
+char *
+feh_absolute_path(char *path)
+{
+   char cwd[PATH_MAX];
+   char fullpath[PATH_MAX];
+   char temp[PATH_MAX];
+   char *ret;
+   D_ENTER;
+
+   /* This path is not relative. We're gonna convert it, so that a
+      filelist file can be saved anywhere and feh will still find the
+      images */
+   D(("Need to convert %s to an absolute form\n", path));
+   /* I SHOULD be able to just use a simple realpath() here, but dumb * 
+      old Solaris's realpath doesn't return an absolute path if the
+      path you give it is relative. Linux and BSD get this right... */
+   getcwd(cwd, sizeof(cwd));
+   snprintf(temp, sizeof(temp), "%s/%s", cwd, path);
+   if (realpath(temp, fullpath) != NULL)
+   {
+      ret = estrdup(fullpath);
+   }
+   else
+   {
+      ret = estrdup(temp);
+   }
+   D(("Converted path to %s\n", path));
+   D_RETURN(ret);
 }

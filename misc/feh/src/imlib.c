@@ -458,14 +458,15 @@ feh_display_status(char stat)
 void
 feh_set_bg(char *fil, int scaled, int desktop, int set)
 {
-      
    FILE *eesh;
    char buf[1024];
    char bgname[20];
    int num = (int) rand();
- 
+
+   D_ENTER;
    D(("Set Background\n"));
 
+   D(("Setting bg %s\n", fil));
    snprintf(bgname, sizeof(bgname), "FEHBG_%d", num);
    sprintf(buf, "%s/eesh",
            getenv("EBIN") ? getenv("EBIN") : PREFIX "/enlightenment/bin");
@@ -496,5 +497,5 @@ feh_set_bg(char *fil, int scaled, int desktop, int set)
    }
 
    pclose(eesh);
+   D_RETURN_;
 }
-

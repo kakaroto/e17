@@ -94,6 +94,7 @@ void add_file_to_rm_filelist(char *file);
 void delete_rm_files(void);
 void add_file_to_filelist_recursively(char *origpath, unsigned char level);
 void feh_prepare_filelist(void);
+char *feh_absolute_path(char *path);
 
 extern feh_file *filelist;
 extern feh_file *current_file;
