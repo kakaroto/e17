@@ -229,7 +229,7 @@ MenuShow(Menu * m, char noshow)
 		  if (Mode.context_win == ewin99->bits[i99].win)
 		    {
 		       ewin99->bits[i99].state = STATE_NORMAL;
-		       BorderWinpartChange(ewin99, i99);
+		       BorderWinpartChange(ewin99, i99, 0);
 		       i99 = ewin99->border->num_winparts;
 		    }
 	       }
@@ -386,7 +386,7 @@ MenuShow(Menu * m, char noshow)
 		if (Mode.context_win == ewin99->bits[i99].win)
 		  {
 		     ewin99->bits[i99].state = STATE_NORMAL;
-		     BorderWinpartChange(ewin99, i99);
+		     BorderWinpartChange(ewin99, i99, 0);
 		     i99 = ewin99->border->num_winparts;
 		  }
 	     }

@@ -855,6 +855,7 @@ typedef struct _ewinbit
    char                expose;
    char                no_expose;
    char                left;
+   ImageState         *is;
 }
 EWinBit;
 
@@ -1784,7 +1785,7 @@ EWin               *AddInternalToFamily(Window win, const char *bname, int type,
 void                HonorIclass(char *s, int id);
 void                EwinWithdraw(EWin * ewin);
 void                SyncBorderToEwin(EWin * ewin);
-void                BorderWinpartChange(EWin * ewin, int i);
+void                BorderWinpartChange(EWin * ewin, int i, int force);
 void                EwinBorderUpdateInfo(EWin * ewin);
 void                EwinBorderUpdateState(EWin * ewin);
 void                EwinEventDestroy(EWin * ewin);
@@ -2336,6 +2337,8 @@ void                FreeImageClass(ImageClass * i);
 ImageState         *CreateImageState(void);
 void                ImageStatePopulate(ImageState * is);
 void                ImageStateRealize(ImageState * is);
+ImageState         *IclassGetImageState(ImageClass * iclass, int state,
+					int active, int sticky);
 void                IclassPopulate(ImageClass * iclass);
 int                 IclassIsTransparent(ImageClass * iclass);
 void                IclassApply(ImageClass * iclass, Window win, int w, int h,

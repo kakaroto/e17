@@ -727,44 +727,6 @@ SyncBorderToEwin(EWin * ewin)
    EDBUG_RETURN_;
 }
 
-static int
-BorderWinpartChangeContents(EWin * ewin, int i)
-{
-   int                 ret = 0;
-   const char         *title;
-
-   EDBUG(3, "BorderWinpartChangeContents");
-   ret = 1;
-   switch (ewin->border->part[i].flags)
-     {
-     case FLAG_TITLE:
-	title = EwinGetTitle(ewin);
-	if (title)
-	   TclassApply(ewin->border->part[i].iclass, ewin->bits[i].win,
-		       ewin->bits[i].w, ewin->bits[i].h, ewin->active,
-		       ewin->sticky, ewin->bits[i].state, ewin->bits[i].expose,
-		       ewin->border->part[i].tclass, title);
-	break;
-     case FLAG_MINIICON:
-	break;
-     default:
-	break;
-     }
-   EDBUG_RETURN(ret);
-}
-
-void
-EwinBorderUpdateInfo(EWin * ewin)
-{
-   int                 i;
-
-   for (i = 0; i < ewin->border->num_winparts; i++)
-     {
-	if (ewin->border->part[i].flags == FLAG_TITLE)
-	   BorderWinpartChangeContents(ewin, i);
-     }
-}
-
 void
 EwinBorderUpdateState(EWin * ewin)
 {
@@ -795,23 +757,39 @@ BorderWinpartRealise(EWin * ewin, int i)
 }
 
 static void
-BorderWinpartITclassApply(EWin * ewin, int i)
+BorderWinpartITclassApply(EWin * ewin, int i, int force)
 {
    EWinBit            *ewb = &ewin->bits[i];
+   ImageState         *is;
    const char         *title;
+
+   if (ewb->win == None)
+      return;
+
+   is = IclassGetImageState(ewin->border->part[i].iclass, ewin->bits[i].state,
+			    ewin->active, ewin->sticky);
+   if (!force && ewin->bits[i].is == is)
+      return;
+   ewin->bits[i].is = is;
 
    IclassApply(ewin->border->part[i].iclass, ewb->win,
 	       ewb->w, ewb->h, ewin->active,
 	       ewin->sticky, ewb->state, ewb->expose, ST_BORDER);
 
-   if (ewin->border->part[i].flags == FLAG_TITLE)
+   switch (ewin->border->part[i].flags)
      {
+     case FLAG_TITLE:
 	title = EwinGetTitle(ewin);
 	if (title)
 	   TclassApply(ewin->border->part[i].iclass, ewb->win,
 		       ewb->w, ewb->h, ewin->active,
 		       ewin->sticky, ewb->state, ewb->expose,
 		       ewin->border->part[i].tclass, title);
+	break;
+     case FLAG_MINIICON:
+	break;
+     default:
+	break;
      }
 }
 
@@ -840,7 +818,7 @@ BorderWinpartDraw(EWin * ewin, int i)
 
    if ((resize) || (ewb->expose))
      {
-	BorderWinpartITclassApply(ewin, i);
+	BorderWinpartITclassApply(ewin, i, 1);
 	ewb->expose = 0;
 	ret = 1;
      }
@@ -849,13 +827,11 @@ BorderWinpartDraw(EWin * ewin, int i)
 }
 
 void
-BorderWinpartChange(EWin * ewin, int i)
+BorderWinpartChange(EWin * ewin, int i, int force)
 {
    EDBUG(3, "BorderWinpartChange");
 
-   BorderWinpartITclassApply(ewin, i);
-   if (ewin->bits[i].win)
-      BorderWinpartChangeContents(ewin, i);
+   BorderWinpartITclassApply(ewin, i, force);
 
    if (!ewin->shapedone || ewin->border->changes_shape)
       PropagateShapes(ewin->win);
@@ -879,7 +855,7 @@ EwinBorderDraw(EWin * ewin, int do_shape, int queue_off)
       Mode.queue_up = 0;
 
    for (i = 0; i < ewin->border->num_winparts; i++)
-      BorderWinpartITclassApply(ewin, i);
+      BorderWinpartITclassApply(ewin, i, do_shape);
 
    if (do_shape || !ewin->shapedone || ewin->border->changes_shape)
       PropagateShapes(ewin->win);
@@ -889,6 +865,18 @@ EwinBorderDraw(EWin * ewin, int do_shape, int queue_off)
       Mode.queue_up = pq;
 
    EDBUG_RETURN_;
+}
+
+void
+EwinBorderUpdateInfo(EWin * ewin)
+{
+   int                 i;
+
+   for (i = 0; i < ewin->border->num_winparts; i++)
+     {
+	if (ewin->border->part[i].flags == FLAG_TITLE)
+	   BorderWinpartITclassApply(ewin, i, 1);
+     }
 }
 
 static void
@@ -1679,6 +1667,7 @@ EwinSetBorderTo(EWin * ewin, Border * b)
 	     ewin->bits[i].expose = 0;
 	     ewin->bits[i].no_expose = 0;
 	     ewin->bits[i].left = 0;
+	     ewin->bits[i].is = NULL;
 	  }
      }
 
@@ -3476,7 +3465,7 @@ BorderWinpartEventMouseDown(XEvent * ev, EWin * ewin, int j)
    GrabThePointer(ewin->bits[j].win);
 
    ewin->bits[j].state = STATE_CLICKED;
-   BorderWinpartChange(ewin, j);
+   BorderWinpartChange(ewin, j, 0);
 
    if (ewin->border->part[j].aclass)
       EventAclass(ev, ewin, ewin->border->part[j].aclass);
@@ -3492,7 +3481,7 @@ BorderWinpartEventMouseUp(XEvent * ev, EWin * ewin, int j)
    else
       ewin->bits[j].state = STATE_NORMAL;
    ewin->bits[j].left = 0;
-   BorderWinpartChange(ewin, j);
+   BorderWinpartChange(ewin, j, 0);
 
    win2 = WindowAtXY(ev->xbutton.x_root, ev->xbutton.y_root);
    if (win2 == Mode.context_win && (ewin->border->part[j].aclass))
@@ -3507,7 +3496,7 @@ BorderWinpartEventEnter(XEvent * ev, EWin * ewin, int j)
    else
      {
 	ewin->bits[j].state = STATE_HILITED;
-	BorderWinpartChange(ewin, j);
+	BorderWinpartChange(ewin, j, 0);
 	if (ewin->border->part[j].aclass)
 	   EventAclass(ev, ewin, ewin->border->part[j].aclass);
      }
@@ -3521,7 +3510,7 @@ BorderWinpartEventLeave(XEvent * ev, EWin * ewin, int j)
    else
      {
 	ewin->bits[j].state = STATE_NORMAL;
-	BorderWinpartChange(ewin, j);
+	BorderWinpartChange(ewin, j, 0);
 	if (ewin->border->part[j].aclass)
 	   EventAclass(ev, ewin, ewin->border->part[j].aclass);
      }
@@ -3532,7 +3521,7 @@ BorderWinpartEventLeave2(XEvent * ev, EWin * ewin, int j)
 {
    ewin->bits[j].left = 0;
    ewin->bits[j].state = STATE_NORMAL;
-   BorderWinpartChange(ewin, j);
+   BorderWinpartChange(ewin, j, 0);
    return;
    ev = NULL;
 }

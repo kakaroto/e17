@@ -362,8 +362,8 @@ IclassGetImageState1(ImageStateArray * pisa, int state)
    return is;
 }
 
-static ImageState  *
-IclassGetImageState2(ImageClass * iclass, int state, int active, int sticky)
+ImageState         *
+IclassGetImageState(ImageClass * iclass, int state, int active, int sticky)
 {
    ImageState         *is;
 
@@ -813,7 +813,7 @@ IclassApply(ImageClass * iclass, Window win, int w, int h, int active,
    if (iclass->external)
       EDBUG_RETURN_;
 
-   is = IclassGetImageState2(iclass, state, active, sticky);
+   is = IclassGetImageState(iclass, state, active, sticky);
    if (!is)
       EDBUG_RETURN_;
 
@@ -876,7 +876,7 @@ IclassApplyCopy(ImageClass * iclass, Window win, int w, int h, int active,
    if (iclass->external)
       EDBUG_RETURN_;
 
-   is = IclassGetImageState2(iclass, state, active, sticky);
+   is = IclassGetImageState(iclass, state, active, sticky);
    if (!is)
       EDBUG_RETURN_;
 
