@@ -13,8 +13,9 @@ static Ewd_List *__add_as_many_bits_as_possible_from_list(Etox e,
                                                           Etox_Object obj, 
                                                           Ewd_List *list);
 
-/* _etox_create_evas_objects() helper funcs */
-static void __create_evas_objects(Etox e, Etox_Object obj);
+static void __etox_free_evas_objects(Etox e);
+static void __etox_string_create_individual_evas_objects(Etox e, 
+                                                        Etox_Object_Bit bit);
 
 
 static int
@@ -362,7 +363,6 @@ __create_etox_object(Etox e, double *x, double *y)
 	 if (inside)
 	 {
 	    /* inside, try again with new coordinates */
-            printf("recures\n");
 	    return __create_etox_object(e, x, y);   	 
 	 }
 	 else
@@ -383,8 +383,6 @@ static Ewd_List *
 __add_as_many_bits_as_possible_from_list(Etox e, Etox_Object obj, 
                                          Ewd_List *list)
 {
-  /* FIXME: this func is _too long_ :)  -redalb */
-
   /*  Adds as many bits (Etox_Object_Bit) as possible from
    *  list to obj and returns the list of bits it couldn't add..
    *  The bits that could be added will be removed from list..
@@ -587,177 +585,185 @@ _etox_create_etox_objects(Etox e)
   _etox_create_evas_objects(e);
 }
 
+static void
+__etox_free_evas_objects(Etox e)
+{
+   Evas_Object ev_obj;
+   Etox_Object et_obj;
+   Etox_Object_Bit et_obj_bit;
+   
+   if (!e->evas_objects.list)
+      return;
+
+   ewd_list_goto_first(e->evas_objects.list);
+   while ((ev_obj = (Evas_Object) ewd_list_next(e->evas_objects.list)))
+      evas_del_object(e->evas, ev_obj);
+   ewd_list_destroy(e->evas_objects.list);
+   e->evas_objects.list = NULL;
+
+   if (!e->etox_objects.list)
+      return;
+   
+   ewd_list_goto_first(e->etox_objects.list);
+   while ((et_obj = (Etox_Object) ewd_list_next(e->etox_objects.list)))
+   {
+      if (!et_obj->bits)
+	 continue;
+      ewd_list_goto_first(et_obj->bits);
+      while ((et_obj_bit = (Etox_Object_Bit) ewd_list_next(et_obj->bits)))
+      {
+	 if (et_obj_bit->evas_objects_list.fg)
+	 {
+	    D_PRINT("detroying et_obj_bit->evas_objects_list.fg\n");
+	    ewd_list_destroy(et_obj_bit->evas_objects_list.fg);
+	    et_obj_bit->evas_objects_list.fg = NULL;
+	 }
+	 if (et_obj_bit->evas_objects_list.sh)
+	 {
+	    D_PRINT("detroying et_obj_bit->evas_objects_list.sh\n");
+	    ewd_list_destroy(et_obj_bit->evas_objects_list.sh);
+	    et_obj_bit->evas_objects_list.sh = NULL;
+	 }
+	 if (et_obj_bit->evas_objects_list.ol)
+	 {
+	    D_PRINT("detroying et_obj_bit->evas_objects_list.ol\n");
+	    ewd_list_destroy(et_obj_bit->evas_objects_list.ol);
+	    et_obj_bit->evas_objects_list.ol = NULL;
+	 }
+      }
+   } 
+}
 
 static void
-__create_evas_objects(Etox e, Etox_Object obj)
+__etox_string_create_individual_evas_objects(Etox e, Etox_Object_Bit bit)
 {
-  Evas_Object ev_obj, prev = NULL;
-  Etox_Style_Bit style_bit;
-  Etox_Color_Bit cb;
-  Etox_Object_Bit bit;
-  Etox_Object_String string;
-  Etox_Object_Tab tab;
+   Etox_Style_Bit style_bit;
+   Etox_Color_Bit cb;
+   Evas_Object ev_obj, prev=NULL;
+   Etox_Object_String string;
+	      
+   string = (Etox_Object_String) bit->body;
 
-  if (!e || !obj || !obj->bits)
-    return;
+   ewd_list_goto_first(string->style->bits);
+   while ((style_bit = (Etox_Style_Bit) 
+	    ewd_list_next(string->style->bits)))
+   {                                    
+      ev_obj = evas_add_text(e->evas, string->font->name,
+	    string->font->size, string->str);
+      D_PRINT(" Adding evas '%s'\n", string->str);
+      evas_stack_above(e->evas, ev_obj, prev);
+      prev = ev_obj;
+      if (!e->evas_objects.list)
+      {
+	 e->evas_objects.list = ewd_list_new();
+	 ewd_list_set_free_cb(e->evas_objects.list, NULL);
+      }
+      ewd_list_append(e->evas_objects.list, ev_obj);
 
-  D_PRINT("__create_evas_objects(): (obj = %p)\n", obj);
+      evas_move(e->evas, ev_obj,
+	    ET_X_TO_EV(bit->x) + style_bit->x,
+	    ET_Y_TO_EV(bit->y) + style_bit->y);
 
-  D_PRINT("------ ALIGNING %p ------\n", obj);
-  _etox_align_etox_object(e, obj);
-  D_PRINT("-------------------------\n");
+      switch (style_bit->type)                
+      {
+	 case ETOX_STYLE_TYPE_FOREGROUND:
+	 default:
+	    if ((cb = _etox_color_get_bit(string->color, "fg")))
+	       evas_set_color(e->evas, ev_obj, cb->r, cb->g, cb->b,
+		     ((style_bit->a * e->a * cb->a) / 65025));
+	    if (!bit->evas_objects_list.fg)
+	    {
+	       bit->evas_objects_list.fg = ewd_list_new();
+	       ewd_list_set_free_cb(bit->evas_objects_list.fg, NULL);
+	    }
+	    ewd_list_append(bit->evas_objects_list.fg, ev_obj);
+	    break;
+	 case ETOX_STYLE_TYPE_SHADOW:
+	    if ((cb = _etox_color_get_bit(string->color, "sh")))
+	       evas_set_color(e->evas, ev_obj, cb->r, cb->g, cb->b,
+		     ((style_bit->a * e->a * cb->a) / 65025));
+	    if (!bit->evas_objects_list.sh)
+	    {
+	       bit->evas_objects_list.sh = ewd_list_new();
+	       ewd_list_set_free_cb(bit->evas_objects_list.sh, NULL);
+	    }
+	    ewd_list_append(bit->evas_objects_list.sh, ev_obj);
+	    break;
+	 case ETOX_STYLE_TYPE_OUTLINE:
+	    if ((cb = _etox_color_get_bit(string->color, "ol")))
+	       evas_set_color(e->evas, ev_obj, cb->r, cb->g, cb->b,
+		     ((style_bit->a * e->a * cb->a) / 65025));
+	    if (!bit->evas_objects_list.ol)
+	    {
+	       bit->evas_objects_list.ol = ewd_list_new();
+	       ewd_list_set_free_cb(bit->evas_objects_list.ol, NULL);
+	    }
+	    ewd_list_append(bit->evas_objects_list.ol, ev_obj);
+	    break;
+      }
+   }
 
-  ewd_list_goto_first(obj->bits);
-  while ((bit = (Etox_Object_Bit) ewd_list_next(obj->bits)))
-    {
-      D_PRINT(" bit->type = %d\n", bit->type);
-      switch (bit->type)
-        {
-        case ETOX_OBJECT_BIT_TYPE_STRING:
-          string = (Etox_Object_String) bit->body;
-          ewd_list_goto_first(string->style->bits);
-          while ((style_bit = (Etox_Style_Bit) 
-	          ewd_list_next(string->style->bits)))
-	    {                                    
-              ev_obj = evas_add_text(e->evas, string->font->name,
-                                     string->font->size, string->str);
-              D_PRINT(" Adding evas '%s'\n", string->str);
-              evas_stack_above(e->evas, ev_obj, prev);
-              prev = ev_obj;
-              if (!e->evas_objects.list)
-                {
-                  e->evas_objects.list = ewd_list_new();
-                  ewd_list_set_free_cb(e->evas_objects.list, NULL);
-                }
-	      ewd_list_append(e->evas_objects.list, ev_obj);
-
-	      evas_move(e->evas, ev_obj,
-		        ET_X_TO_EV(bit->x) + style_bit->x,
-		        ET_Y_TO_EV(bit->y) + style_bit->y);
-              
-  	      switch (style_bit->type)                
-	        {
-	        case ETOX_STYLE_TYPE_FOREGROUND:
-	        default:
-	          if ((cb = _etox_color_get_bit(string->color, "fg")))
-  		    evas_set_color(e->evas, ev_obj, cb->r, cb->g, cb->b,
-		                   ((style_bit->a * e->a * cb->a) / 65025));
-                  if (!bit->evas_objects_list.fg)
-                    {
-                      bit->evas_objects_list.fg = ewd_list_new();
-                      ewd_list_set_free_cb(bit->evas_objects_list.fg, NULL);
-                    }
-                  ewd_list_append(bit->evas_objects_list.fg, ev_obj);
-	          break;
-	        case ETOX_STYLE_TYPE_SHADOW:
-	          if ((cb = _etox_color_get_bit(string->color, "sh")))
-		    evas_set_color(e->evas, ev_obj, cb->r, cb->g, cb->b,
-		                   ((style_bit->a * e->a * cb->a) / 65025));
-                  if (!bit->evas_objects_list.sh)
-                    {
-                      bit->evas_objects_list.sh = ewd_list_new();
-                      ewd_list_set_free_cb(bit->evas_objects_list.sh, NULL);
-                    }
-                  ewd_list_append(bit->evas_objects_list.sh, ev_obj);
-	          break;
-	        case ETOX_STYLE_TYPE_OUTLINE:
-	          if ((cb = _etox_color_get_bit(string->color, "ol")))
-		  evas_set_color(e->evas, ev_obj, cb->r, cb->g, cb->b,
-		                 ((style_bit->a * e->a * cb->a) / 65025));
-                  if (!bit->evas_objects_list.ol)
-                    {
-                      bit->evas_objects_list.ol = ewd_list_new();
-                      ewd_list_set_free_cb(bit->evas_objects_list.ol, NULL);
-                    }
-                  ewd_list_append(bit->evas_objects_list.ol, ev_obj);
-	          break;
-	        }
-            }
-          break;
-        case ETOX_OBJECT_BIT_TYPE_NEWLINE:
-        default:
-          break;
-        case ETOX_OBJECT_BIT_TYPE_TAB:
-          tab = (Etox_Object_Tab) bit->body;
-          ev_obj = evas_add_text(e->evas, tab->font->name,
-                                 tab->font->size, "    ");
-          D_PRINT(" Adding evas '%s'\n", "    ");
-          if (!e->evas_objects.list)
-            {
-              e->evas_objects.list = ewd_list_new();
-              ewd_list_set_free_cb(e->evas_objects.list, NULL);
-            }
-          ewd_list_append(e->evas_objects.list, ev_obj);
-          if (!bit->evas_objects_list.fg)
-            {
-              bit->evas_objects_list.fg = ewd_list_new();
-              ewd_list_set_free_cb(bit->evas_objects_list.fg, NULL);
-            }
-          ewd_list_append(bit->evas_objects_list.fg, ev_obj);
-          evas_move(e->evas, ev_obj,
-                    ET_X_TO_EV(bit->x), ET_Y_TO_EV(bit->y));          
-          break;
-	}         
-    }                                                  
 }
+
 
 void
 _etox_create_evas_objects(Etox e)
 {
-  Etox_Object et_obj;
-  Etox_Object_Bit et_obj_bit;
   Evas_Object ev_obj;
+  Etox_Object_Tab tab;
+  Etox_Object obj;
+  Etox_Object_Bit bit;
 
   if (!e || !e->etox_objects.list || ewd_list_is_empty(e->etox_objects.list))
     return;
 
-  D_PRINT("_etox_create_evas_objects():\n");
-
-  if (e->evas_objects.list)
-    { 
-      ewd_list_goto_first(e->evas_objects.list);
-      while ((ev_obj = (Evas_Object) ewd_list_next(e->evas_objects.list)))
-        evas_del_object(e->evas, ev_obj);
-      ewd_list_destroy(e->evas_objects.list);
-      e->evas_objects.list = NULL;
-
-      ewd_list_goto_first(e->etox_objects.list);
-      while ((et_obj = (Etox_Object) ewd_list_next(e->etox_objects.list)))
-        {
-          if (!et_obj->bits)
-            continue;
-          ewd_list_goto_first(et_obj->bits);
-          while ((et_obj_bit = (Etox_Object_Bit) ewd_list_next(et_obj->bits)))
-            {
-              if (et_obj_bit->evas_objects_list.fg)
-                {
-                  D_PRINT("detroying et_obj_bit->evas_objects_list.fg\n");
-                  ewd_list_destroy(et_obj_bit->evas_objects_list.fg);
-                  et_obj_bit->evas_objects_list.fg = NULL;
-                }
-              if (et_obj_bit->evas_objects_list.sh)
-                {
-                  D_PRINT("detroying et_obj_bit->evas_objects_list.sh\n");
-                  ewd_list_destroy(et_obj_bit->evas_objects_list.sh);
-                  et_obj_bit->evas_objects_list.sh = NULL;
-                }
-              if (et_obj_bit->evas_objects_list.ol)
-                {
-                  D_PRINT("detroying et_obj_bit->evas_objects_list.ol\n");
-                  ewd_list_destroy(et_obj_bit->evas_objects_list.ol);
-                  et_obj_bit->evas_objects_list.ol = NULL;
-                }
-            }
-        }
-    } 
-
+  __etox_free_evas_objects(e);
+  
   ewd_list_goto_first(e->etox_objects.list);
-  while ((et_obj = (Etox_Object) ewd_list_next(e->etox_objects.list)))
-    {
-      /* little optimisation.. */
-      if (!et_obj->bits)
-        continue;
-      D_PRINT("Creating evas objects.. (%p)\n", et_obj);
-      __create_evas_objects(e, et_obj);
-    }
+  while ((obj = (Etox_Object) ewd_list_next(e->etox_objects.list)))
+  {
+     D_PRINT("Creating evas objects.. (%p)\n", et_obj);
+
+     D_PRINT("------ ALIGNING %p ------\n", obj);
+     _etox_align_etox_object(e, obj);
+     D_PRINT("-------------------------\n");
+     if (!obj->bits)
+	continue;
+
+     ewd_list_goto_first(obj->bits);
+     while ((bit = (Etox_Object_Bit) ewd_list_next(obj->bits)))
+     {
+	D_PRINT(" bit->type = %d\n", bit->type);
+	switch (bit->type)
+	{
+	   case ETOX_OBJECT_BIT_TYPE_STRING:
+	      __etox_string_create_individual_evas_objects(e, bit);
+	      break;
+	   case ETOX_OBJECT_BIT_TYPE_NEWLINE:
+	   default:
+	      break;
+	   case ETOX_OBJECT_BIT_TYPE_TAB:
+	      tab = (Etox_Object_Tab) bit->body;
+	      ev_obj = evas_add_text(e->evas, tab->font->name,
+		    tab->font->size, "    ");
+	      D_PRINT(" Adding evas '%s'\n", "    ");
+	      if (!e->evas_objects.list)
+	      {
+		 e->evas_objects.list = ewd_list_new();
+		 ewd_list_set_free_cb(e->evas_objects.list, NULL);
+	      }
+	      ewd_list_append(e->evas_objects.list, ev_obj);
+	      if (!bit->evas_objects_list.fg)
+	      {
+		 bit->evas_objects_list.fg = ewd_list_new();
+		 ewd_list_set_free_cb(bit->evas_objects_list.fg, NULL);
+	      }
+	      ewd_list_append(bit->evas_objects_list.fg, ev_obj);
+	      evas_move(e->evas, ev_obj,
+		    ET_X_TO_EV(bit->x), ET_Y_TO_EV(bit->y));          
+	      break;
+	}         
+     }            
+  }
 }
+
