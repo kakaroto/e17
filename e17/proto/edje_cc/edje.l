@@ -7,11 +7,24 @@
     int lnum = 1;
     int col = 0;
     static int comment = 0, cpp_comment = 0;
+    static int script_level = 0;
+    char *script;
 
-    #define COMMENT_START() BEGIN(c_comment); comment++; 
+    #define COMMENT_START() BEGIN(SC_COMMENT); comment++; 
     #define COMMENT_END()   comment--; \
                             if (comment <= 0) { comment = 0; BEGIN(INITIAL); }
     #define CPP_COMMENT()   comment = 1; cpp_comment = 1;
+
+    #define SCRIPT_START()  BEGIN(SC_SCRIPT); /* FIXME initialize script */
+    #define SCRIPT_END()    BEGIN(INITIAL); /* FIXME return script */
+    #define SCRIPT_PIECE()  ; /* FIXME add piece to script */
+    #define SCRIPT_NEW_LINE() lnum ++; SCRIPT_PIECE(); 
+    #define SCRIPT_OPEN_BRACE() script_level++; \
+                                if (script_level > 1) SCRIPT_PIECE();
+    #define SCRIPT_CLOSE_BRACE() script_level--;\
+                                 if (script_level > 0) { SCRIPT_PIECE();}\
+                                 else {script_level = 0; SCRIPT_END();}\
+                                   
 
     #define WHITE_SPACE()   col += yyleng;
 
@@ -49,7 +62,8 @@ exponent_part [eE][-+]?[0-9]+
 fractional_constant ([0-9]*"."[0-9]+)|([0-9]+".")
 floating_constant ((({start_part}{fractional_constant}{exponent_part}?)|({start_part}[0-9]+{exponent_part}))[FfLl]?)|({start_part}[0-9][0-9]*)
 
-%x c_comment
+%x SC_COMMENT
+%x SC_SCRIPT
 
 %%
 ACCELERATE			{ KEYWORD_RETURN(ACCELERATE); }
@@ -103,7 +117,6 @@ rel1				{ KEYWORD_RETURN(REL1); }
 rel2				{ KEYWORD_RETURN(REL2); }
 relative			{ KEYWORD_RETURN(RELATIVE); }
 repeat_events		{ KEYWORD_RETURN(REPEAT_EVENTS); }
-script				{ KEYWORD_RETURN(SCRIPT); }
 signal				{ KEYWORD_RETURN(SIGNAL); }
 SIGNAL_EMIT			{ KEYWORD_RETURN(SIGNAL_EMIT); }
 SINUSOIDAL			{ KEYWORD_RETURN(SINUSOIDAL); }
@@ -140,16 +153,22 @@ y					{ KEYWORD_RETURN(Y); }
 
 "/*"                { COMMENT_START(); }
 
-<c_comment>{
-  "/*"           { COMMENT_START(); }
-  \n             { NEW_LINE(); }
+<SC_COMMENT>{
+  "/*"              { COMMENT_START(); }
+  \n                { NEW_LINE(); }
 
-  "*/"           { COMMENT_END(); }
+  "*/"              { COMMENT_END(); }
   .
 }
 
+script              { SCRIPT_START(); }
 
-
+<SC_SCRIPT>{
+  [^\{\}\n]*        { SCRIPT_PIECE(); }
+  \n                { SCRIPT_NEW_LINE(); }
+  \{                { SCRIPT_OPEN_BRACE(); }
+  \}                { SCRIPT_CLOSE_BRACE(); }
+}
 .                   { CHAR_RETURN(); }
 
 
