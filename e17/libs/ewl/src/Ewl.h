@@ -329,7 +329,7 @@ extern"C" {
 #include <ewl_embed.h>
 #include <ewl_window.h>
 
-#include <ewl_textarea.h>
+#include <ewl_text.h>
 #include <ewl_entry.h>
 
 #include <ewl_password.h>

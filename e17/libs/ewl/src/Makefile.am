@@ -47,7 +47,7 @@ EWLHEADERS = \
 	ewl_spacer.h \
 	ewl_spectrum.h \
 	ewl_spinner.h \
-	ewl_textarea.h \
+	ewl_text.h \
 	ewl_table.h \
 	ewl_tree.h \
 	ewl_tooltip.h \
@@ -95,7 +95,7 @@ libewl_la_SOURCES = \
 	ewl_spectrum.c \
 	ewl_spinner.c \
 	ewl_table.c \
-	ewl_textarea.c \
+	ewl_text.c \
 	ewl_theme.c \
 	ewl_tree.c \
 	ewl_tooltip.c \

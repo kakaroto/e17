@@ -56,6 +56,7 @@ void ewl_entry_move_cursor_to_end(Ewl_Entry * e);
 void ewl_entry_insert_text(Ewl_Entry * e, char *s);
 void ewl_entry_delete_to_left(Ewl_Entry * e);
 void ewl_entry_delete_to_right(Ewl_Entry * e);
+void ewl_entry_delete_to_word_begin(Ewl_Entry * e);
 
 /*
  * Internally used callbacks, override at your own risk.

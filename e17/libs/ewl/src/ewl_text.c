@@ -1,683 +1,752 @@
-
 #include <Ewl.h>
-#include <Etox.h>
+
+static void ewl_text_ops_apply(Ewl_Text *ta);
+static void ewl_text_op_free(void *data);
+static Ewl_Text_Op *ewl_text_op_relevant_find(Ewl_Text *ta,
+					      Ewl_Text_Op_Type type);
+static void ewl_text_update_size(Ewl_Text * ta);
+
+/*
+ * Private functions for applying operations to the text at realize time.
+ */
+static Ewl_Text_Op *ewl_text_op_color_new(Ewl_Text *ta, int r, int g, int b,
+					  int a);
+static void ewl_text_op_color_apply(Ewl_Text *ta, Ewl_Text_Op *op);
+
+static Ewl_Text_Op *ewl_text_op_font_new(Ewl_Text *ta, char *font, int size);
+static void ewl_text_op_font_apply(Ewl_Text *ta, Ewl_Text_Op *op);
+static void ewl_text_op_font_free(void *op);
+
+static Ewl_Text_Op *ewl_text_op_style_new(Ewl_Text *ta, char *style);
+static void ewl_text_op_style_apply(Ewl_Text *ta, Ewl_Text_Op *op);
+static void ewl_text_op_style_free(void *op);
+
+static Ewl_Text_Op * ewl_text_op_align_new(Ewl_Text *ta, unsigned int align);
+static void ewl_text_op_align_apply(Ewl_Text *ta, Ewl_Text_Op *op);
 
 /**
- * @param text: the text to display
- * @return Returns a pointer a new text widget on success, NULL on failure.
- * @brief Allocate a new text widget
+ * @param text: the initial text of the text
+ * @return Returns a pointer to a new text on success, NULL on failure.
+ * @brief Allocate a new text area widget
+ *
+ * Sets the text initially to @a text if not NULL.
  */
-Ewl_Widget *
-ewl_text_new(char *text)
+Ewl_Widget     *ewl_text_new(char *text)
 {
-	Ewl_Text       *t;
+	Ewl_Text   *ta;
 
 	DENTER_FUNCTION(DLEVEL_STABLE);
 
-	t = NEW(Ewl_Text, 1);
-	if (!t)
+	ta = NEW(Ewl_Text, 1);
+	if (!ta)
 		DRETURN_PTR(NULL, DLEVEL_STABLE);
 
-	ewl_text_init(t, text);
+	ewl_text_init(ta, text);
 
-	DRETURN_PTR(EWL_WIDGET(t), DLEVEL_STABLE);
+	DRETURN_PTR(EWL_WIDGET(ta), DLEVEL_STABLE);
 }
 
 /**
- * @param t: the text widget to initialize to default values and callbacks
- * @param text: the text to display
+ * @param ta: the text area to be initialized
+ * @param text: the text to be displayed initially in the text area
  * @return Returns no value.
- * @brief Initialize a text widget to default values and callbacks
+ * @brief Initialize the fields and callbacks of a text area
  *
- * Sets the fields and callbacks of the text widget @a t to their defaults.
+ * Sets the internal fields and callbacks of a text area to their defaults.
  */
-void
-ewl_text_init(Ewl_Text * t, char *text)
-{
-	Ewl_Widget     *w;
-
-	DENTER_FUNCTION(DLEVEL_STABLE);
-	DCHECK_PARAM_PTR("t", t);
-
-	w = EWL_WIDGET(t);
-
-	ewl_widget_init(w, "text");
-	ewl_object_set_fill_policy(EWL_OBJECT(w), EWL_FLAG_FILL_NONE);
-
-	t->text = (text ? strdup(text) : strdup(""));
-	t->length = strlen(t->text);
-	t->align = EWL_FLAG_ALIGN_TOP | EWL_FLAG_ALIGN_LEFT;
-
-	/*
-	 * Set up appropriate callbacks for specific events
-	 */
-	ewl_callback_append(w, EWL_CALLBACK_REALIZE, ewl_text_realize_cb, NULL);
-	ewl_callback_prepend(w, EWL_CALLBACK_UNREALIZE, ewl_text_unrealize_cb,
-			NULL);
-	ewl_callback_append(w, EWL_CALLBACK_CONFIGURE, ewl_text_configure_cb,
-			    NULL);
-	ewl_callback_append(w, EWL_CALLBACK_REPARENT, ewl_text_reparent_cb,
-			    NULL);
-
-	t->r = 255;
-	t->g = 255;
-	t->b = 255;
-	t->a = 255;
-
-	DLEAVE_FUNCTION(DLEVEL_STABLE);
-}
-
-/**
- * @param t: the text widget to set the text
- * @param text: the new text for the text widget @a t
- * @return Returns no value.
- * @brief Set the text of a text widget
- *
- * Sets the text of the text widget @a t to @a text.
- */
-void
-ewl_text_set_text(Ewl_Text * t, char *text)
+void ewl_text_init(Ewl_Text * ta, char *text)
 {
 	Ewl_Widget *w;
-	char *evdata = NULL;
 
 	DENTER_FUNCTION(DLEVEL_STABLE);
-	DCHECK_PARAM_PTR("t", t);
+	DCHECK_PARAM_PTR("ta", ta);
 
-	w = EWL_WIDGET(t);
+	w = EWL_WIDGET(ta);
 
-	if ((text == t->text) || (text && t->text && !strcmp(t->text, text)))
-		DRETURN(DLEVEL_STABLE);
+	ewl_widget_init(EWL_WIDGET(w), "text");
+	ewl_object_set_fill_policy(EWL_OBJECT(w), EWL_FLAG_FILL_NONE);
 
-	IF_FREE(t->text);
+	ewl_callback_append(w, EWL_CALLBACK_REALIZE, ewl_text_realize_cb,
+			    NULL);
+	ewl_callback_append(w, EWL_CALLBACK_UNREALIZE,
+			    ewl_text_unrealize_cb, NULL);
+	ewl_callback_append(w, EWL_CALLBACK_DESTROY,
+			    ewl_text_destroy_cb, NULL);
+	ewl_callback_append(w, EWL_CALLBACK_REPARENT, ewl_text_reparent_cb,
+			    NULL);
+	ewl_callback_append(w, EWL_CALLBACK_CONFIGURE,
+			    ewl_text_configure_cb, NULL);
 
-	/*
-	 * Set the text to the value that was passed in, or an empty string if
-	 * NULL was passed in.
-	 */
-	if (text == NULL)
-		t->text = strdup("");
-	else
-		t->text = strdup(text);
+	ta->ops = ecore_dlist_new();
+	ta->applied = ecore_dlist_new();
 
-	/*
-	 * Update the etox if it's been realized at this point.
-	 */
-	if (t->etox) {
-		Evas_Coord x, y, width, height;
+	ecore_dlist_set_free_cb(ta->ops, ewl_text_op_free);
+	ecore_dlist_set_free_cb(ta->applied, ewl_text_op_free);
 
-		etox_set_text(t->etox, t->text);
-		t->length = etox_get_length(t->etox);
-		evas_object_geometry_get(t->etox, &x, &y, &width, &height);
-		ewl_object_set_preferred_size(EWL_OBJECT(t),
-					      (int)(width), (int)(height));
-	}
-	else
-		t->length = strlen(t->text);
-
-	evdata = strdup(t->text);
-	ewl_callback_call_with_event_data(w, EWL_CALLBACK_VALUE_CHANGED,
-					  evdata);
-	FREE(evdata);
+	if (text)
+		ewl_text_text_set(ta, text);
 
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
 
 /**
- * @param t: the text widget to retrieve the text
- * @return Returns a copy of text in @a t on success, NULL on failure.
- * @brief Retrieve the text of a text widget
- */
-char *
-ewl_text_get_text(Ewl_Text * t)
-{
-	Ewl_Widget     *w;
-
-	DENTER_FUNCTION(DLEVEL_STABLE);
-	DCHECK_PARAM_PTR_RET("t", t, NULL);
-
-	w = EWL_WIDGET(t);
-
-	DRETURN_PTR(t->text ? strdup(t->text) : NULL, DLEVEL_STABLE);
-}
-
-/**
- * @param t: the text widget to set the font
- * @param f: the name of the font to use for the text widget
+ * @param ta: the text area widget to set the text
+ * @param text: the text to set in the text area widget @a ta
  * @return Returns no value.
- * @brief Set the font of a text widget
+ * @brief Set the text of a text area widget
  *
- * Sets the name of the font for text widget @a t to @a f and
- * updates the display to use that font.
+ * Sets the text of the text area widget @a ta to a copy of the contents of
+ * @a text.
  */
-void
-ewl_text_set_font(Ewl_Text * t, char *f)
+void ewl_text_text_set(Ewl_Text * ta, char *text)
 {
-	Ewl_Widget     *w;
-
 	DENTER_FUNCTION(DLEVEL_STABLE);
-	DCHECK_PARAM_PTR("t", t);
-	DCHECK_PARAM_PTR("f", f);
+	DCHECK_PARAM_PTR("ta", ta);
 
-	w = EWL_WIDGET(t);
-
-	IF_FREE(t->font);
-
-	t->font = strdup(f);
-	t->overrides |= EWL_TEXT_OVERRIDE_FONT;
-
-	/*
-	 * Change the font for the etox.
-	 */
-	if (t->etox) {
-		Evas_Coord x, y, width, height;
-
+	if (text) {
 		/*
-		 * Change the font and then update the size of the widget
+		 * Keep a copy of the text for quick access and for creating
+		 * the etox when needed.
 		 */
-		etox_context_set_font(t->context, t->font, t->font_size);
-		etox_set_text(t->etox, t->text);
-		evas_object_geometry_get(t->etox, &x, &y, &width, &height);
-		ewl_object_set_preferred_size(EWL_OBJECT(t),
-					      (int)(width), (int)(height));
-	}
-
-	ewl_widget_configure(w);
-
-	DLEAVE_FUNCTION(DLEVEL_STABLE);
-}
-
-/**
- * @param t: the text widget to get the font
- * @return Returns a copy of the font used by @a t on success, NULL on failure.
- * @brief Retrieve the font used by a text widget
- */
-char *
-ewl_text_get_font(Ewl_Text * t)
-{
-	Ewl_Widget     *w;
-
-	DENTER_FUNCTION(DLEVEL_STABLE);
-	DCHECK_PARAM_PTR_RET("t", t, NULL);
-
-	w = EWL_WIDGET(t);
-
-	DRETURN_PTR(t->font ? strdup(t->font) : NULL, DLEVEL_STABLE);
-}
-
-/**
- * @param t: the text widget to set the font size
- * @param s: the font size to use for the text widget
- * @return Returns no value.
- * @brief Set the font size of a text widget
- *
- * Sets the font size for text widget @a t to @a s.
- */
-void
-ewl_text_set_font_size(Ewl_Text * t, int s)
-{
-	Ewl_Widget     *w;
-
-	DENTER_FUNCTION(DLEVEL_STABLE);
-	DCHECK_PARAM_PTR("t", t);
-
-	w = EWL_WIDGET(t);
-
-	t->font_size = s;
-	t->overrides |= EWL_TEXT_OVERRIDE_SIZE;
-
-	/*
-	 * Change the font for the etox.
-	 */
-	if (t->etox) {
-		Evas_Coord x, y, width, height;
-
-		/*
-		 * Change the font and then update the size of the widget
-		 */
-		etox_context_set_font(t->context, t->font, t->font_size);
-		evas_object_geometry_get(t->estyle, &x, &y, &width, &height);
-		ewl_object_set_preferred_size(EWL_OBJECT(t),
-					      (int)(width), (int)(height));
-	}
-
-	ewl_widget_configure(w);
-
-	DLEAVE_FUNCTION(DLEVEL_STABLE);
-}
-
-/**
- * @param t: the text widget to retrieve the font size
- * @return Returns the font size of the text widget on success, 0 on failure.
- * @brief Retrieve the font size of a text widget
- */
-int
-ewl_text_get_font_size(Ewl_Text * t)
-{
-	Ewl_Widget     *w;
-
-	DENTER_FUNCTION(DLEVEL_STABLE);
-	DCHECK_PARAM_PTR_RET("t", t, 0);
-
-	w = EWL_WIDGET(t);
-
-	DRETURN_INT(t->font_size, DLEVEL_STABLE);
-}
-
-/**
- * @param t: the text widget to set the color
- * @param r: the red value for the color
- * @param g: the green value for the color
- * @param b: the blue value for the color
- * @param a: the alpha value for the color
- * @return Returns no value.
- * @brief Set the color of the text for a text widget
- *
- * Sets the color of the text in the text widget @a t to the new color values
- * specified.
- */
-void
-ewl_text_set_color(Ewl_Text * t, int r, int g, int b, int a)
-{
-	Ewl_Widget     *w;
-
-	DENTER_FUNCTION(DLEVEL_STABLE);
-	DCHECK_PARAM_PTR("t", t);
-
-	w = EWL_WIDGET(t);
-
-	if (t->estyle)
-		evas_object_color_set(t->estyle, r, g, b, a);
-
-	t->r = r;
-	t->g = g;
-	t->b = b;
-	t->a = a;
-	t->overrides |= EWL_TEXT_OVERRIDE_COLOR;
-
-	ewl_widget_configure(w);
-
-	DLEAVE_FUNCTION(DLEVEL_STABLE);
-}
-
-/**
- * @param t: the text widget to get the color
- * @param r: a pointer to the integer to store the red value
- * @param g: a pointer to the integer to store the green value
- * @param b: a pointer to the integer to store the blue value
- * @param a: a pointer to the integer to store the alpha value
- * @return Returns no value.
- * @brief Get the color of the text in a text widget
- *
- * Stores the color values into any non-NULL color pointers.
- */
-void
-ewl_text_get_color(Ewl_Text * t, int *r, int *g, int *b, int *a)
-{
-	Ewl_Widget     *w;
-
-	DENTER_FUNCTION(DLEVEL_STABLE);
-	DCHECK_PARAM_PTR("t", t);
-
-	w = EWL_WIDGET(t);
-
-	if (!r)
-		*r = t->r;
-
-	if (!g)
-		*g = t->g;
-
-	if (!b)
-		*b = t->b;
-
-	if (!a)
-		*a = t->a;
-
-	DLEAVE_FUNCTION(DLEVEL_STABLE);
-}
-
-/**
- * @param t: the text widget to set the text style
- * @param s: the name of the style to be set for the text
- * @brief Set the text style for a text widget
- *
- * @return Returns no value.
- * Changes the text style of the text widget @a t to the style identified by the
- * name @a s.
- */
-void
-ewl_text_set_style(Ewl_Text * t, char *s)
-{
-	Ewl_Widget     *w;
-
-	DENTER_FUNCTION(DLEVEL_STABLE);
-	DCHECK_PARAM_PTR("t", t);
-
-	w = EWL_WIDGET(t);
-	t->style = strdup(s);
-
-	/*
-	 * Change the font for the estyle.
-	 */
-	if (t->estyle) {
-		Evas_Coord x, y, width, height;
-
-		/*
-		 * Change the font and then update the size of the widget
-		 */
-		estyle_set_style(t->estyle, t->style);
-		evas_object_geometry_get(t->estyle, &x, &y, &width, &height);
-		ewl_object_set_preferred_size(EWL_OBJECT(t),
-					      (int)(width), (int)(height));
-	}
-	t->overrides |= EWL_TEXT_OVERRIDE_STYLE;
-
-	ewl_widget_configure(w);
-
-	DLEAVE_FUNCTION(DLEVEL_STABLE);
-}
-
-/**
- * @param t: the text widget to retrieve geometry
- * @param xx: a pointer to an integer to store the x coordinate
- * @param yy: a pointer to an integer to store the y coordinate
- * @param ww: a pointer to an integer to store the width
- * @param hh: a pointer to an integer to store the height
- * @return Returns no value.
- * @brief Retrieve the geometry of a text widget
- *
- * Stores the position and size of the text in the text
- * widget @a t into the integers pointed to by @a xx, @a yy, @a ww, and @a hh
- * respectively.
- */
-void
-ewl_text_get_text_geometry(Ewl_Text * t, int *xx, int *yy, int *ww, int *hh)
-{
-	Evas_Coord ex, ey, ew, eh;
-	DENTER_FUNCTION(DLEVEL_STABLE);
-	DCHECK_PARAM_PTR("t", t);
-
-	/*
-	 * Need to check if the estyle has been created yet, it may won't be if
-	 * the widget has not yet been realized.
-	 */
-	if (t->estyle) {
-		evas_object_geometry_get(t->estyle, &ex, &ey, &ew, &eh);
-		*xx = (int)(ex);
-		*yy = (int)(ey);
-		*ww = (int)(ew);
-		*hh = (int)(eh);
+		ta->text = strdup(text);
+		ta->length = strlen(text);
 	}
 	else {
-		*xx = CURRENT_X(t);
-		*yy = CURRENT_Y(t);
-		*ww = CURRENT_W(t);
-		*hh = CURRENT_H(t);
-	}
-
-	DLEAVE_FUNCTION(DLEVEL_STABLE);
-}
-
-/**
- * @brief Retrieve the length of the text in the widget
- * @param t: the text widget to retrieve text length
- *
- * Returns the length of the text enclosed in the widget @a t.
- */
-inline int ewl_text_get_length(Ewl_Text *t)
-{
-	DENTER_FUNCTION(DLEVEL_STABLE);
-	DCHECK_PARAM_PTR_RET("t", t, 0);
-
-	DRETURN_INT(t->length, DLEVEL_STABLE);
-}
-
-/**
- * @param t: the widget that holds the text to retrieve a letters geometry
- * @param i: the index of the letter in the text to retrieve geometry
- * @param xx: a pointer to an integer to store the x coordinate of the letter
- * @param yy: a pointer to an integer to store the y coordinate of the letter
- * @param ww: a pointer to an integer to store the width of the letter
- * @param hh: a pointer to an integer to store the height of the letter
- * @return Returns no value.
- * @brief Retrieve the geomtry of a specific letter
- *
- * Stores the geometry of the letter at index @a i of the text
- * widget @a t into @a xx, @a yy, @a ww, and @a hh respectively.
- */
-void
-ewl_text_get_letter_geometry(Ewl_Text * t, int i, int *xx, int *yy,
-			     int *ww, int *hh)
-{
-	Evas_Coord ex = 0, ey = 0, ew = 0, eh = 0;
-	Ewl_Widget     *w;
-
-	DENTER_FUNCTION(DLEVEL_STABLE);
-	DCHECK_PARAM_PTR("t", t);
-
-	w = EWL_WIDGET(t);
-
-	if (t->estyle) {
-		estyle_text_at(t->estyle, i, &ex, &ey, &ew, &eh);
-	}
-
-	if (xx)
-		*xx = (int)(ex);
-	if (yy)
-		*yy = (int)(ey);
-	if (ww)
-		*ww = (int)(ew);
-	if (hh)
-		*hh = (int)(eh);
-
-	DLEAVE_FUNCTION(DLEVEL_STABLE);
-}
-
-/**
- * @param t: the text widget to get the letter geometry by coordinates
- * @param x: the x coordinate to check for letter geometry
- * @param y: the y coordinate to check for letter geometry
- * @param tx: the x coordinate of the letter that intersects @a x, @a y
- * @param ty: the y coordinate of the letter that intersects @a x, @a y
- * @param tw: the width of the letter that intersects @a x, @a y
- * @param th: the height of the letter that intersects @a x, @a y
- * @brief Get the letter geometry at coordinates
- *
- * @return Returns no value.
- * Stores the geometry of a letter at specified coordinates
- * @a x, @a y of text widget @a t into @a tx, @a ty, @a tw, and @a th.
- */
-int
-ewl_text_get_letter_geometry_at(Ewl_Text * t, int x, int y,
-				int *tx, int *ty, int *tw, int *th)
-{
-	Evas_Coord ex = 0, ey = 0, ew = 0, eh = 0;
-	int             i = 0;
-	Ewl_Widget     *w;
-
-	DENTER_FUNCTION(DLEVEL_STABLE);
-	DCHECK_PARAM_PTR_RET("t", t, 0);
-
-	w = EWL_WIDGET(t);
-
-
-	if (t->estyle) {
-		i = estyle_text_at_position(t->estyle, (Evas_Coord)(x),
-				(Evas_Coord)(y), &ex, &ey, &ew, &eh);
-	}
-
-	if (tx)
-		*tx = (int)(ex);
-	if (ty)
-		*ty = (int)(ey);
-	if (tw)
-		*tw = (int)(ew);
-	if (th)
-		*th = (int)(eh);
-
-	DRETURN_INT(i, DLEVEL_STABLE);
-}
-
-/**
- * @param t: the text widget to change text alignment
- * @param a: the new alignment for the text in @a t
- * @return Returns no value.
- * @brief Set the alignment of the text in a text widget
- *
- * Changes the alignment of the text in @a t to @a a.
- */
-void
-ewl_text_set_alignment(Ewl_Text * t, unsigned int a)
-{
-	DENTER_FUNCTION(DLEVEL_STABLE);
-	DCHECK_PARAM_PTR("t", t);
-
-	ewl_object_set_alignment(EWL_OBJECT(t), a);
-
-	ewl_widget_configure(EWL_WIDGET(t));
-
-	DLEAVE_FUNCTION(DLEVEL_STABLE);
-}
-
-/**
- * @param t: the text widget to find the letter index by coordinates
- * @param x: the x coordinate to check for the letter index
- * @param y: the y coordinate to check for the letter index
- * @return Returns the index of the letter at the coordinates.
- * @brief Get the index of the letter at coordinates
- */
-int
-ewl_text_get_index_at(Ewl_Text * t, int x, int y)
-{
-	Ewl_Widget     *w;
-
-	DENTER_FUNCTION(DLEVEL_STABLE);
-	DCHECK_PARAM_PTR_RET("t", t, 0);
-
-	w = EWL_WIDGET(t);
-
-	DRETURN_INT(t->
-		    estyle ? estyle_text_at_position(t->estyle,
-						     (Evas_Coord)(x),
-						     (Evas_Coord)(y),
-						     NULL, NULL, NULL, NULL) :
-		    0, DLEVEL_STABLE);
-}
-
-void
-ewl_text_realize_cb(Ewl_Widget * w, void *ev_data, void *user_data)
-{
-	Ewl_Text       *t;
-	Ewl_Embed      *emb;
-	Evas_Coord      x, y, width, height;
-
-
-	DENTER_FUNCTION(DLEVEL_STABLE);
-	DCHECK_PARAM_PTR("w", w);
-
-	t = EWL_TEXT(w);
-	emb = ewl_embed_find_by_widget(w);
-	t->estyle = estyle_new(emb->evas, t->text, t->style);
-
-	/*
-	 * Set the correct font and size.
-	 */
-	if (!t->font) {
-		/*
-		 * Setup the default font.
-		 */
-		t->font = ewl_theme_data_get_str(w, "font");
-		t->font_size = ewl_theme_data_get_int(w, "font_size");
-	}
-
-	estyle_set_font(t->estyle, t->font, t->font_size);
-
-	if (!t->style)
-		t->style = ewl_theme_data_get_str(w, "style");
-
-	estyle_set_style(t->estyle, t->style);
-
-	if (!(t->overrides & EWL_TEXT_OVERRIDE_COLOR)) {
-		t->r = ewl_theme_data_get_int(w, "color/r");
-		t->g = ewl_theme_data_get_int(w, "color/g");
-		t->b = ewl_theme_data_get_int(w, "color/b");
-		t->a = ewl_theme_data_get_int(w, "color/a");
+		ta->text = NULL;
+		ta->length = 0;
 	}
 
 	/*
-	 * Set move it into the correct position.
+	 * Update the etox and the sizing of the text widget.
 	 */
-	evas_object_color_set(t->estyle, t->r, t->g, t->b, t->a);
-
-	/*
-	 * Adjust the clip box for the estyle and then display it.
-	 */
-	if (w->fx_clip_box)
-		evas_object_clip_set(t->estyle, w->fx_clip_box);
-	evas_object_layer_set(t->estyle, ewl_widget_get_layer_sum(w));
-	evas_object_show(t->estyle);
-
-	evas_object_geometry_get(t->estyle, &x, &y, &width, &height);
-	ewl_object_set_preferred_size(EWL_OBJECT(t), (int)(width),
-				      (int)(height));
-
-	DLEAVE_FUNCTION(DLEVEL_STABLE);
-}
-
-void
-ewl_text_unrealize_cb(Ewl_Widget * w, void *ev_data, void *user_data)
-{
-	Ewl_Text       *t;
-
-	DENTER_FUNCTION(DLEVEL_STABLE);
-	DCHECK_PARAM_PTR("w", w);
-
-	t = EWL_TEXT(w);
-
-	if (t->estyle) {
-		ewl_evas_object_destroy(t->estyle);
-		t->estyle = NULL;
+	if (ta->etox) {
+		etox_set_text(ta->etox, text);
+		ewl_text_update_size(ta);
 	}
 
-	IF_FREE(t->text);
-	IF_FREE(t->font);
+	DLEAVE_FUNCTION(DLEVEL_STABLE);
+}
+
+/**
+ * @param ta: the text widget to retrieve text contents
+ * @return Returns a copy of the text in @a ta on success, NULL on failure.
+ * @brief Retrieve the text of a text widget
+ */
+char *ewl_text_text_get(Ewl_Text * ta)
+{
+	char *txt = NULL;
+
+	DENTER_FUNCTION(DLEVEL_STABLE);
+	DCHECK_PARAM_PTR_RET("ta", ta, NULL);
+
+	if (ta->etox)
+		txt = etox_get_text(ta->etox);
+	else if (ta->text)
+		txt = strdup(ta->text);
+
+	DRETURN_PTR(txt, DLEVEL_STABLE);
+}
+
+/**
+ * @param ta: the text widget to retrieve length
+ * @return Returns the length of the text contained in the widget.
+ * @brief Retrieve the length of the text displayed by the text widget.
+ */
+int ewl_text_length_get(Ewl_Text *ta)
+{
+	DENTER_FUNCTION(DLEVEL_STABLE);
+	DCHECK_PARAM_PTR_RET("ta", ta, 0);
+
+	DRETURN_INT(ta->length, DLEVEL_STABLE);
+}
+
+/**
+ * @param ta: the text widget to change color
+ * @param r: the new red value
+ * @param g: the new green value
+ * @param b: the new blue value
+ * @param a: the new alpha value
+ * @brief Changes the currently applied color of the text to specified values
+ * @return Returns no value.
+ */
+void ewl_text_color_set(Ewl_Text *ta, int r, int g, int b, int a)
+{
+	Ewl_Text_Op *op;
+
+	DENTER_FUNCTION(DLEVEL_STABLE);
+	DCHECK_PARAM_PTR("ta", ta);
+
+	op = ewl_text_op_color_new(ta, r, g, b, a);
+	ecore_dlist_append(ta->ops, op);
+	if (REALIZED(ta))
+		ewl_text_ops_apply(ta);
 
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
 
-void
-ewl_text_configure_cb(Ewl_Widget * w, void *ev_data, void *user_data)
+/**
+ * @param ta: the text widget to change font
+ * @param font: the name of the font
+ * @param size: the size of the font
+ * @brief Changes the currently applied font of the text to specified values
+ * @return Returns no value.
+ */
+void ewl_text_font_set(Ewl_Text *ta, char *font, int size)
 {
-	Ewl_Text       *t;
+	Ewl_Text_Op *op;
 
 	DENTER_FUNCTION(DLEVEL_STABLE);
-	DCHECK_PARAM_PTR("w", w);
+	DCHECK_PARAM_PTR("ta", ta);
 
-	t = EWL_TEXT(w);
-
-	if (t->estyle)
-		evas_object_move(t->estyle, CURRENT_X(t), CURRENT_Y(t));
+	op = ewl_text_op_font_new(ta, font, size);
+	ecore_dlist_append(ta->ops, op);
+	if (REALIZED(ta))
+		ewl_text_ops_apply(ta);
 
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
 
-void
-ewl_text_reparent_cb(Ewl_Widget * w, void *ev_data, void *user_data)
+/**
+ * @param ta: the text widget to change font
+ * @param font: the name of the font
+ * @param size: the size of the font
+ * @brief Changes the currently applied font of the text to specified values
+ * @return Returns no value.
+ */
+char *ewl_text_font_get(Ewl_Text *ta)
 {
-	Ewl_Text       *t;
+	Ewl_Text_Op *op;
+	Ewl_Text_Op_Font *opf;
+	char *font = NULL;
 
 	DENTER_FUNCTION(DLEVEL_STABLE);
-	DCHECK_PARAM_PTR("w", w);
+	DCHECK_PARAM_PTR_RET("ta", ta, NULL);
 
-	t = EWL_TEXT(w);
+	op = ewl_text_op_relevant_find(ta, EWL_TEXT_OP_TYPE_FONT_SET);
+	opf = (Ewl_Text_Op_Font *)op;
+	if (opf && opf->font) {
+		font = strdup(opf->font);
+	}
 
-	if (!t->estyle)
+	DRETURN_PTR(font, DLEVEL_STABLE);
+}
+
+/**
+ * @param ta: the text widget to change style
+ * @param style: the name of the style
+ * @brief Changes the currently applied style of the text to specified values
+ * @return Returns no value.
+ */
+void ewl_text_style_set(Ewl_Text *ta, char *style)
+{
+	Ewl_Text_Op *op;
+
+	DENTER_FUNCTION(DLEVEL_STABLE);
+	DCHECK_PARAM_PTR("ta", ta);
+
+	op = ewl_text_op_style_new(ta, style);
+	ecore_dlist_append(ta->ops, op);
+	if (REALIZED(ta))
+		ewl_text_ops_apply(ta);
+
+	DLEAVE_FUNCTION(DLEVEL_STABLE);
+}
+
+/**
+ * @param ta: the text widget to get the current style
+ * @brief Retrieves the currently used text style from a text widget.
+ * @return Returns the currently used text style.
+ */
+char *ewl_text_style_get(Ewl_Text *ta)
+{
+	Ewl_Text_Op *op;
+	Ewl_Text_Op_Style *ops;
+	char *style = NULL;
+
+	DENTER_FUNCTION(DLEVEL_STABLE);
+	DCHECK_PARAM_PTR_RET("ta", ta, NULL);
+
+	op = ewl_text_op_relevant_find(ta, EWL_TEXT_OP_TYPE_FONT_SET);
+	ops = (Ewl_Text_Op_Style *)op;
+	if (ops && ops->style) {
+		style = strdup(ops->style);
+	}
+
+	DRETURN_PTR(style, DLEVEL_STABLE);
+}
+
+/**
+ * @param ta: the text widget to change alignment
+ * @param align: the new alignment of the text widget
+ * @brief Changes the currently applied alignment of the text to specified value
+ * @return Returns no value.
+ */
+void ewl_text_align_set(Ewl_Text *ta, unsigned int align)
+{
+	Ewl_Text_Op *op;
+
+	DENTER_FUNCTION(DLEVEL_STABLE);
+	DCHECK_PARAM_PTR("ta", ta);
+
+	op = ewl_text_op_align_new(ta, align);
+	ecore_dlist_append(ta->ops, op);
+	if (REALIZED(ta))
+		ewl_text_ops_apply(ta);
+
+	DLEAVE_FUNCTION(DLEVEL_STABLE);
+}
+
+/**
+ * @param ta: the text widget to get the current alignment
+ * @brief Retrieves the currently used text alignment from a text widget.
+ * @return Returns the currently used text alignment.
+ */
+unsigned int ewl_text_align_get(Ewl_Text *ta)
+{
+	unsigned int align = 0;
+	Ewl_Text_Op *op;
+	Ewl_Text_Op_Align *opa;
+
+	DENTER_FUNCTION(DLEVEL_STABLE);
+	DCHECK_PARAM_PTR_RET("ta", ta, NULL);
+
+	op = ewl_text_op_relevant_find(ta, EWL_TEXT_OP_TYPE_FONT_SET);
+	opa = (Ewl_Text_Op_Align *)op;
+	if (opa) {
+		align = opa->align;
+	}
+
+	DRETURN_INT(align, DLEVEL_STABLE);
+}
+
+static Ewl_Text_Op *
+ewl_text_op_relevant_find(Ewl_Text *ta, Ewl_Text_Op_Type type)
+{
+	Ecore_DList *l;
+	void *(*traverse)(Ecore_DList *l);
+	Ewl_Text_Op *op = NULL;
+
+	DENTER_FUNCTION(DLEVEL_STABLE);
+
+	if (REALIZED(ta)) {
+		l = ta->applied;
+		ecore_dlist_goto_first(l);
+		traverse = ecore_dlist_next;
+	}
+	else {
+		l = ta->ops;
+		ecore_dlist_goto_last(l);
+		traverse = ecore_dlist_previous;
+	}
+
+	while ((op = traverse(ta->ops)))
+		if (op->type == type)
+			break;
+
+	DRETURN_PTR(op, DLEVEL_STABLE);
+}
+
+/**
+ * @param ta: the text widget to map a coordinate to a character index
+ * @param x: the x coordinate over the desired character
+ * @param y: the y coordinate over the desired character
+ * @brief Finds the index of the character under the specified coordinates
+ * @return Returns the index of the found character on success, 0 otherwise.
+ */
+int ewl_text_coord_index_map(Ewl_Text *ta, int x, int y)
+{
+	int index;
+	DENTER_FUNCTION(DLEVEL_STABLE);
+	DCHECK_PARAM_PTR_RET("ta", ta, 0);
+
+	if (!ta->etox)
+		DRETURN_INT(0, DLEVEL_STABLE);
+
+	index = etox_coord_to_index(ta->etox, (Evas_Coord)(x), (Evas_Coord)(y));
+	DRETURN_INT(index, DLEVEL_STABLE);
+}
+
+/**
+ * @param ta: the text widget to map index to character geometry
+ * @param index: character index to be mapped
+ * @param x: pointer to store determined character x coordinate
+ * @param y: pointer to store determined character y coordinate
+ * @param w: pointer to store determined character width
+ * @param h: pointer to store determined character height
+ * @return Returns no value.
+ * @brief Maps a character index to a set of coordinates and sizes.
+ *
+ * Any of the coordinate parameters may be NULL, they will be ignored. If the
+ * index fails to map successfully, the values at the locations pointed to by
+ * the coordinate pointers will not be altered. This function can only succeed
+ * after the text widget has been realized.
+ */
+void ewl_text_index_geometry_map(Ewl_Text *ta, int index, int *x, int *y,
+				 int *w, int *h)
+{
+	Evas_Coord tx, ty, tw, th;
+
+	DENTER_FUNCTION(DLEVEL_STABLE);
+	if (!ta->etox)
 		DRETURN(DLEVEL_STABLE);
 
+	etox_index_to_geometry(ta->etox, index, &tx, &ty, &tw, &th);
+	if (x)
+		*x = (int)(tx);
+	if (y)
+		*y = (int)(ty);
+	if (w)
+		*w = (int)(tw);
+	if (h)
+		*h = (int)(th);
+
+	DLEAVE_FUNCTION(DLEVEL_STABLE);
+}
+
+void ewl_text_realize_cb(Ewl_Widget * w, void *ev_data, void *user_data)
+{
+	char      *tmp;
+	Ewl_Text  *ta;
+	Ewl_Embed *emb;
+	int r, g, b, a;
+
+	DENTER_FUNCTION(DLEVEL_STABLE);
+	DCHECK_PARAM_PTR("w", w);
+
+	ta = EWL_TEXT(w);
+
+	/*
+	 * Find the embed so we know which evas to draw onto.
+	 */
+	emb = ewl_embed_find_by_widget(w);
+
+	/*
+	 * Create the etox
+	 */
+	ta->etox = etox_new(emb->evas);
+	ta->context = etox_get_context(ta->etox);
+
+	tmp = ewl_theme_data_get_str(w, "font");
+	etox_context_set_font(ta->context, tmp,
+			      ewl_theme_data_get_int(w, "font_size"));
+	IF_FREE(tmp);
+
+	tmp = ewl_theme_data_get_str(w, "style");
+	etox_context_set_style(ta->context, tmp);
+	IF_FREE(tmp);
+
+	r = ewl_theme_data_get_int(w, "color/r");
+	g = ewl_theme_data_get_int(w, "color/g");
+	b = ewl_theme_data_get_int(w, "color/b");
+	a = ewl_theme_data_get_int(w, "color/a");
+	etox_context_set_color(ta->context, r, g, b, a);
 
 	if (w->fx_clip_box)
-		evas_object_clip_set(t->estyle, w->fx_clip_box);
-	evas_object_layer_set(t->estyle, ewl_widget_get_layer_sum(w));
+		evas_object_clip_set(ta->etox, w->fx_clip_box);
+
+	/*
+	 * Now set the text and display it.
+	 */
+	etox_set_text(ta->etox, ta->text);
+	evas_object_show(ta->etox);
+
+	ewl_text_ops_apply(ta);
+
+	/*
+	 * Update the size of the text
+	 */
+	ewl_text_update_size(ta);
+
+	DLEAVE_FUNCTION(DLEVEL_STABLE);
+}
+
+static void ewl_text_ops_apply(Ewl_Text *ta)
+{
+	Ewl_Text_Op *op;
+
+	while ((op = ecore_dlist_remove_first(ta->ops))) {
+		op->apply(ta, op);
+		ecore_dlist_append(ta->applied, op);
+	}
+}
+
+static void ewl_text_op_free(void *data)
+{
+	Ewl_Text_Op *op = data;
+	if (op->free)
+		op->free(op);
+	else
+		FREE(op)
+}
+
+void ewl_text_unrealize_cb(Ewl_Widget * w, void *ev_data, void *user_data)
+{
+	Ewl_Text   *ta;
+
+	DENTER_FUNCTION(DLEVEL_STABLE);
+	DCHECK_PARAM_PTR("w", w);
+
+	ta = EWL_TEXT(w);
+
+	evas_object_clip_unset(ta->etox);
+	evas_object_del(ta->etox);
+
+	DLEAVE_FUNCTION(DLEVEL_STABLE);
+}
+
+void ewl_text_destroy_cb(Ewl_Widget * w, void *ev_data, void *user_data)
+{
+	Ewl_Text   *ta;
+
+	DENTER_FUNCTION(DLEVEL_STABLE);
+	DCHECK_PARAM_PTR("w", w);
+
+	ta = EWL_TEXT(w);
+	ecore_dlist_destroy(ta->ops);
+	ta->ops = NULL;
+
+	ecore_dlist_destroy(ta->applied);
+	ta->applied = NULL;
+
+	DLEAVE_FUNCTION(DLEVEL_STABLE);
+}
+
+void ewl_text_reparent_cb(Ewl_Widget * w, void *ev_data, void *user_data)
+{
+	Ewl_Text *ta;
+
+	DENTER_FUNCTION(DLEVEL_STABLE);
+
+	ta = EWL_TEXT(w);
+	if (ta->etox)
+		evas_object_layer_set(ta->etox, ewl_widget_get_layer_sum(w));
+
+	DLEAVE_FUNCTION(DLEVEL_STABLE);
+}
+
+void ewl_text_configure_cb(Ewl_Widget * w, void *ev_data, void *user_data)
+{
+	Ewl_Text   *ta;
+
+	DENTER_FUNCTION(DLEVEL_STABLE);
+	DCHECK_PARAM_PTR("w", w);
+
+	ta = EWL_TEXT(w);
+
+	/*
+	 * Update the etox position and size.
+	 */
+	if (ta->etox) {
+		evas_object_move(ta->etox, CURRENT_X(w), CURRENT_Y(w));
+		evas_object_layer_set(ta->etox, ewl_widget_get_layer_sum(w));
+	}
+
+	DLEAVE_FUNCTION(DLEVEL_STABLE);
+}
+
+/*
+ * Set the size of the text area to the size of the etox.
+ */
+static void ewl_text_update_size(Ewl_Text * ta)
+{
+	Evas_Coord x, y, width, height;
+
+	/*
+	 * Adjust the properties of the widget to indicate the size of the text.
+	 */
+	evas_object_geometry_get(ta->etox, &x, &y, &width, &height);
+	if (!width)
+		width = 1;
+	if (!height)
+		height = 1;
+
+	/*
+	 * Set the preferred size to the size of the etox and request that
+	 * size for the widget.
+	 */
+	ewl_object_set_preferred_size(EWL_OBJECT(ta), (int)(width),
+				      (int)(height));
+}
+
+static Ewl_Text_Op *
+ewl_text_op_color_new(Ewl_Text *ta, int r, int g, int b, int a)
+{
+	Ewl_Text_Op *op;
+	Ewl_Text_Op_Color *opc;
+
+	DENTER_FUNCTION(DLEVEL_STABLE);
+
+	op = NEW(Ewl_Text_Op_Color, 1);
+	if (op) {
+		opc = (Ewl_Text_Op_Color *)op;
+		op->type = EWL_TEXT_OP_TYPE_COLOR_SET;
+		op->apply = ewl_text_op_color_apply;
+		op->free = free;
+		opc->r = r;
+		opc->g = g;
+		opc->b = b;
+		opc->a = a;
+	}
+
+	DRETURN_PTR(op, DLEVEL_STABLE);
+}
+
+static void
+ewl_text_op_color_apply(Ewl_Text *ta, Ewl_Text_Op *op)
+{
+	int or, og, ob, oa;
+	Ewl_Text_Op_Color *opc = (Ewl_Text_Op_Color *)op;
+
+	DENTER_FUNCTION(DLEVEL_STABLE);
+
+	etox_context_get_color(ta->context, &or, &og, &ob, &oa);
+	etox_context_set_color(ta->context, opc->r, opc->g, opc->b, opc->a);
+
+	/*
+	 * Store the previous values for undoing.
+	 */
+	opc->r = or;
+	opc->g = og;
+	opc->b = ob;
+	opc->a = oa;
+
+	DLEAVE_FUNCTION(DLEVEL_STABLE);
+}
+
+static Ewl_Text_Op *
+ewl_text_op_font_new(Ewl_Text *ta, char *font, int size)
+{
+	Ewl_Text_Op *op;
+	Ewl_Text_Op_Font *opf;
+
+	DENTER_FUNCTION(DLEVEL_STABLE);
+
+	op = NEW(Ewl_Text_Op_Font, 1);
+	if (op) {
+		opf = (Ewl_Text_Op_Font *)op;
+		op->type = EWL_TEXT_OP_TYPE_FONT_SET;
+		op->apply = ewl_text_op_font_apply;
+		op->free = ewl_text_op_font_free;
+		opf->font = strdup(font);
+		opf->size = size;
+	}
+
+	DRETURN_PTR(op, DLEVEL_STABLE);
+}
+
+static void
+ewl_text_op_font_apply(Ewl_Text *ta, Ewl_Text_Op *op)
+{
+	char *of;
+	int size;
+	Ewl_Text_Op_Font *opf = (Ewl_Text_Op_Font *)op;
+
+	DENTER_FUNCTION(DLEVEL_STABLE);
+
+	of = etox_context_get_font(ta->context, &size);
+
+	etox_context_set_font(ta->context, opf->font, opf->size);
+
+	FREE(opf->font);
+	opf->font = of;
+	opf->size = size;
+
+	DLEAVE_FUNCTION(DLEVEL_STABLE);
+}
+
+static void
+ewl_text_op_font_free(void *op)
+{
+	Ewl_Text_Op_Font *opf = (Ewl_Text_Op_Font *)op;
+	DENTER_FUNCTION(DLEVEL_STABLE);
+
+	FREE(opf->font);
+	FREE(opf);
+
+	DLEAVE_FUNCTION(DLEVEL_STABLE);
+}
+
+static Ewl_Text_Op *
+ewl_text_op_style_new(Ewl_Text *ta, char *style)
+{
+	Ewl_Text_Op *op;
+	Ewl_Text_Op_Style *ops;
+
+	DENTER_FUNCTION(DLEVEL_STABLE);
+
+	op = NEW(Ewl_Text_Op_Style, 1);
+	if (op) {
+		ops = (Ewl_Text_Op_Style *)op;
+		op->type = EWL_TEXT_OP_TYPE_STYLE_SET;
+		op->apply = ewl_text_op_style_apply;
+		op->free = ewl_text_op_style_free;
+		ops->style = strdup(style);
+	}
+
+	DRETURN_PTR(op, DLEVEL_STABLE);
+}
+
+static void
+ewl_text_op_style_apply(Ewl_Text *ta, Ewl_Text_Op *op)
+{
+	char *style;
+	Ewl_Text_Op_Style *ops = (Ewl_Text_Op_Style *)op;
+
+	DENTER_FUNCTION(DLEVEL_STABLE);
+
+	style = etox_context_get_style(ta->context);
+	etox_context_set_style(ta->context, ops->style);
+
+	FREE(ops->style);
+	ops->style = style;
+
+	DLEAVE_FUNCTION(DLEVEL_STABLE);
+}
+
+static void
+ewl_text_op_style_free(void *op)
+{
+	Ewl_Text_Op_Style *ops = (Ewl_Text_Op_Style *)op;
+	DENTER_FUNCTION(DLEVEL_STABLE);
+
+	FREE(ops->style);
+	FREE(ops);
+
+	DLEAVE_FUNCTION(DLEVEL_STABLE);
+}
+
+static Ewl_Text_Op *
+ewl_text_op_align_new(Ewl_Text *ta, unsigned int align)
+{
+	Ewl_Text_Op *op;
+	Ewl_Text_Op_Align *opa;
+
+	DENTER_FUNCTION(DLEVEL_STABLE);
+
+	op = NEW(Ewl_Text_Op_Align, 1);
+	if (op) {
+		opa = (Ewl_Text_Op_Align *)op;
+		op->type = EWL_TEXT_OP_TYPE_ALIGN_SET;
+		op->apply = ewl_text_op_align_apply;
+		op->free = free;
+		opa->align = align;
+	}
+
+	DRETURN_PTR(op, DLEVEL_STABLE);
+}
+
+static void
+ewl_text_op_align_apply(Ewl_Text *ta, Ewl_Text_Op *op)
+{
+	unsigned int align;
+	Ewl_Text_Op_Align *opa = (Ewl_Text_Op_Align *)op;
+
+	DENTER_FUNCTION(DLEVEL_STABLE);
+
+	align = etox_context_get_align(ta->context);
+	etox_context_set_align(ta->context, opa->align);
+
+	opa->align = align;
 
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }

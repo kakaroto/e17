@@ -299,6 +299,11 @@ void ewl_entry_key_down_cb(Ewl_Widget * w, void *ev_data, void *user_data)
 		ewl_entry_delete_to_left(e);
 	else if (!strcmp(ev->keyname, "Delete"))
 		ewl_entry_delete_to_right(e);
+	else if (((!strcmp(ev->keyname, "w")) && 
+		  (ev->modifiers & EWL_KEY_MODIFIER_CTRL)) ||
+		 ((!strcmp(ev->keyname, "W")) && 
+		  (ev->modifiers & EWL_KEY_MODIFIER_CTRL)))
+		ewl_entry_delete_to_word_begin(e);
 	else if (!strcmp(ev->keyname, "Return") || !strcmp(ev->keyname,
 				"KP_Return") || !strcmp(ev->keyname, "Enter")
 				|| !strcmp(ev->keyname, "KP_Enter")) {
@@ -720,7 +725,7 @@ void ewl_entry_delete_to_right(Ewl_Entry * e)
 	if (!s)
 		DRETURN(DLEVEL_STABLE);
 
-	if (!strlen(s) || ep == strlen(s) + 1)
+	if (!strlen(s) || sp == strlen(s) + 1)
 		DRETURN(DLEVEL_STABLE);
 
 	strcpy(&(s[sp - 1]), &(s[ep]));
@@ -729,6 +734,40 @@ void ewl_entry_delete_to_right(Ewl_Entry * e)
 	FREE(s);
 
 	ewl_cursor_set_base(EWL_CURSOR(e->cursor), sp);
+	ewl_widget_configure(EWL_WIDGET(e));
+
+	DLEAVE_FUNCTION(DLEVEL_STABLE);
+}
+
+void
+ewl_entry_delete_to_word_begin(Ewl_Entry * e)
+{
+	char           *s;
+	int             bp, index;
+
+	DENTER_FUNCTION(DLEVEL_STABLE);
+	DCHECK_PARAM_PTR("e", e);
+
+	s = ewl_entry_get_text(e);
+	if (!s)
+		DRETURN(DLEVEL_STABLE);
+
+	bp = ewl_cursor_get_base_position(EWL_CURSOR(e->cursor));
+	index = bp-2;
+	
+	while ((index-->0) && (s[index] == ' ')){}
+	if (index < 0)
+		index = 0;
+	while ((index-->0) && (s[index] != ' ')){}
+	index++;
+	strcpy(&(s[index]), &(s[bp]));
+	ewl_entry_set_text(e, s);
+
+	FREE(s);
+
+	if (index <= 0) 
+	  index = 1;
+	ewl_cursor_set_base(EWL_CURSOR(e->cursor), index);
 	ewl_widget_configure(EWL_WIDGET(e));
 
 	DLEAVE_FUNCTION(DLEVEL_STABLE);

@@ -42,6 +42,8 @@ data {
 	item, "/spacer/group" "spacer";
 	item, "/spinner/button_decrement/group" "vscroll-mini-down";
 	item, "/spinner/button_increment/group" "vscroll-mini-up";
+	item, "/spinner/acceleration" "5";
+	item, "/spinner/velocity" "5";
 	item, "/text/font" "Vera";
 	item, "/text/style" "none";
 	item, "/textarea/group" "textarea";
