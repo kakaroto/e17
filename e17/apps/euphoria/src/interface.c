@@ -119,8 +119,7 @@ bool ui_init(Euphoria *e) {
 	}
 
 	ecore_evas_title_set(e->gui.ee, "Euphoria");
-	ecore_evas_name_class_set(e->gui.ee, "ecore_test",
-	                          "test_evas");
+	ecore_evas_name_class_set(e->gui.ee, "euphoria", "Euphoria");
 	ecore_evas_borderless_set(e->gui.ee, 1);
 	ecore_evas_shaped_set(e->gui.ee, 1);
 
