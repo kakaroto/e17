@@ -48,8 +48,8 @@ AC_CHECK_LIB(Xinerama,XineramaQueryScreens,, [CFLAGS="$CFLAGS -I/usr/X11R6/inclu
 AC_SUBST(HAVE_XINERAMA)
 AC_SUBST(XINERAMA_LIBS)
 
-AC_CHECK_FUNC(getopt_long,,[AC_LIBOBJ="$AC_LIBOBJ getopt.o getopt1.o"])
-AC_SUBST(AC_LIBOBJ)
+dnl AC_CHECK_FUNC(getopt_long,,[AC_LIBOBJ="$AC_LIBOBJ getopt.o getopt1.o"])
+dnl AC_SUBST(AC_LIBOBJ)
 
 echo "checking for pr0n.... found"
 

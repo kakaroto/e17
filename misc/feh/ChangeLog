@@ -1,3 +1,7 @@
+Thu Dec 19 23:09:19 GMT 2002  Tom Gilbert <tom@linuxbrit.co.uk>
+
+  * Fixed bug - segv when last image in slideshow is deleted.
+
 Thu Dec 05 16:04:24 GMT 2002  Tom Gilbert <tom@linuxbrit.co.uk>
 
   * Released 1.2.3

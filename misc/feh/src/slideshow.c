@@ -468,6 +468,7 @@ feh_filelist_image_remove(winwidget winwid, char do_delete)
       {
          /* No more images. Game over ;-) */
          winwidget_destroy(winwid);
+         return;
       }
       s = slideshow_create_name(FEH_FILE(winwid->file->data));
       winwidget_rename(winwid, s);
