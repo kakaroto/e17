@@ -321,6 +321,8 @@ int ewl_window_init(Ewl_Window * w)
 	 * Override the default configure callbacks since the window
 	 * has special needs for placement.
 	 */
+	ewl_callback_del(EWL_WIDGET(w), EWL_CALLBACK_CONFIGURE,
+			ewl_overlay_configure_cb);
 	ewl_callback_prepend(EWL_WIDGET(w), EWL_CALLBACK_CONFIGURE,
 			     ewl_window_configure_cb, NULL);
 
@@ -433,6 +435,7 @@ void ewl_window_realize_cb(Ewl_Widget * w, void *ev_data, void *user_data)
 		fbinfo->info.rotation = 0;
 		evas_engine_info_set(evas, (Evas_Engine_Info *)fbinfo);
 		printf("Using the fb engine\n");
+		ewl_object_request_geometry(EWL_OBJECT(w), 0, 0, 240, 320);
 	}
 	else
 #endif
@@ -571,6 +574,7 @@ void ewl_window_destroy_cb(Ewl_Widget * w, void *ev_data, void *user_data)
 void ewl_window_configure_cb(Ewl_Widget * w, void *ev_data, void *user_data)
 {
 	Ewl_Window     *win;
+	Ewl_Object     *child;
 	int             width, height;
 
 	DENTER_FUNCTION(DLEVEL_STABLE);
@@ -629,6 +633,21 @@ void ewl_window_configure_cb(Ewl_Widget * w, void *ev_data, void *user_data)
 				 ewl_object_get_current_x(EWL_OBJECT(w)),
 				 ewl_object_get_current_y(EWL_OBJECT(w)),
 				 width, height);
+
+	/*
+	 * Configure each of the child widgets.
+	 */
+	ecore_list_goto_first(EWL_CONTAINER(w)->children);
+	while ((child = ecore_list_next(EWL_CONTAINER(w)->children))) {
+		/*
+		 * Try to give the child the full size of the window from it's
+		 * base position. The object will constrict it based on the
+		 * fill policy. Don't add the TOP and LEFT insets since
+		 * they've already been accounted for.
+		 */
+		ewl_object_place(child, CURRENT_X(w), CURRENT_Y(w),
+				 CURRENT_W(w), CURRENT_H(w));
+	}
 
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
