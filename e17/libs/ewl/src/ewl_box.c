@@ -157,7 +157,7 @@ ewl_box_set_homogeneous(Ewl_Widget * w, unsigned int homogeneous)
 
 void
 ewl_box_append_child(Ewl_Widget * w, Ewl_Widget * c, Ewl_Fill_Policy p,
-		     Ewl_Alignment a)
+		     Ewl_Alignment a, int x_padding, int y_padding)
 {
 	Ewl_Box_Child *child;
 
@@ -170,6 +170,8 @@ ewl_box_append_child(Ewl_Widget * w, Ewl_Widget * c, Ewl_Fill_Policy p,
 	child->widget = c;
 	child->alignment = a;
 	child->fill_policy = p;
+	child->x_padding = x_padding;
+	child->y_padding = y_padding;
 
 	c->evas = w->evas, c->evas_window = w->evas_window;
 	c->parent = w;
@@ -183,7 +185,7 @@ ewl_box_append_child(Ewl_Widget * w, Ewl_Widget * c, Ewl_Fill_Policy p,
 
 void
 ewl_box_prepend_child(Ewl_Widget * w, Ewl_Widget * c, Ewl_Fill_Policy p,
-		      Ewl_Alignment a)
+		      Ewl_Alignment a, int x_padding, int y_padding)
 {
 	Ewl_Box_Child *child;
 
@@ -196,6 +198,8 @@ ewl_box_prepend_child(Ewl_Widget * w, Ewl_Widget * c, Ewl_Fill_Policy p,
 	child->widget = c;
 	child->alignment = a;
 	child->fill_policy = p;
+	child->x_padding = x_padding;
+	child->y_padding = y_padding;
 
 	c->evas = w->evas, c->evas_window = w->evas_window;
 	c->parent = w;
@@ -291,7 +295,7 @@ __ewl_box_destroy(Ewl_Widget * w, void *ev_data, void *user_data)
 	evas_unset_clip(w->evas, EWL_CONTAINER(w)->clip_box);
 	evas_del_object(w->evas, EWL_CONTAINER(w)->clip_box);
 
-	ewl_callback_del_all(w);
+	ewl_callback_clear(w);
 
 	ewl_theme_deinit_widget(w);
 
@@ -505,7 +509,7 @@ static Ewd_List *
 __ewl_hbox_configure_normal(Ewl_Widget * w, int *rh)
 {
 	Ewd_List *f = NULL;
-	Ewl_Table_Child *c;
+	Ewl_Box_Child *c;
 	int l = 0, r = 0, t = 0, b = 0;
 
 	DENTER_FUNCTION;
@@ -548,7 +552,7 @@ __ewl_hbox_configure_normal(Ewl_Widget * w, int *rh)
 		  else
 			  REQUEST_H(cw) = CURRENT_H(cw);
 
-		  *rh -= REQUEST_H(cw);
+		  *rh -= REQUEST_H(cw) - c->y_padding;
 	  }
 
 	return f;
@@ -590,7 +594,7 @@ __ewl_hbox_configure_fillers(Ewl_Widget * w, Ewd_List * f, int rh)
 static void
 __ewl_hbox_layout_children(Ewl_Widget * w)
 {
-	Ewl_Table_Child *c;
+	Ewl_Box_Child *c;
 	int y, l = 0, r = 0, t = 0, b = 0;
 
 	DENTER_FUNCTION;
@@ -607,24 +611,26 @@ __ewl_hbox_layout_children(Ewl_Widget * w)
 	  {
 		  if (c->alignment == EWL_ALIGNMENT_LEFT)
 		    {
-			    REQUEST_X(c->widget) = REQUEST_X(w) + l;
+			    REQUEST_X(c->widget) =
+				    REQUEST_X(w) + l + c->x_padding;
 		    }
 		  else if (c->alignment == EWL_ALIGNMENT_CENTER)
 		    {
 			    REQUEST_X(c->widget) = REQUEST_X(w);
 			    REQUEST_X(c->widget) +=
 				    (REQUEST_W(w) / 2) -
-				    (REQUEST_W(c->widget) - l - r) / 2;
+				    (REQUEST_W(c->widget) - l - r) / 2 +
+				    c->x_padding;
 		    }
 		  else if (c->alignment == EWL_ALIGNMENT_RIGHT)
 		    {
 			    REQUEST_X(c->widget) =
 				    (REQUEST_X(w) + REQUEST_W(w)) -
-				    REQUEST_W(c->widget) - r;
+				    REQUEST_W(c->widget) - r + c->x_padding;
 		    }
 
-		  REQUEST_Y(c->widget) = y;
-		  y += REQUEST_H(c->widget);
+		  REQUEST_Y(c->widget) = y + c->y_padding;
+		  y += REQUEST_H(c->widget) + c->y_padding;
 
 		  ewl_widget_configure(c->widget);
 	  }
@@ -733,7 +739,7 @@ static Ewd_List *
 __ewl_vbox_configure_normal(Ewl_Widget * w, int *rw)
 {
 	Ewd_List *f = NULL;
-	Ewl_Table_Child *c;
+	Ewl_Box_Child *c;
 	int l = 0, r = 0, t = 0, b = 0;
 
 	DENTER_FUNCTION;
@@ -776,7 +782,7 @@ __ewl_vbox_configure_normal(Ewl_Widget * w, int *rw)
 		  else
 			  REQUEST_W(cw) = CURRENT_W(cw);
 
-		  *rw -= REQUEST_W(cw);
+		  *rw -= REQUEST_W(cw) + c->x_padding;
 	  }
 
 	return f;
@@ -821,7 +827,7 @@ __ewl_vbox_configure_fillers(Ewl_Widget * w, Ewd_List * f, int rw)
 static void
 __ewl_vbox_layout_children(Ewl_Widget * w)
 {
-	Ewl_Table_Child *c;
+	Ewl_Box_Child *c;
 	int x, l = 0, r = 0, t = 0, b = 0;
 
 	DENTER_FUNCTION;
@@ -837,21 +843,22 @@ __ewl_vbox_layout_children(Ewl_Widget * w)
 	while ((c = ewd_list_next(EWL_CONTAINER(w)->children)) != NULL)
 	  {
 		  if (c->alignment == EWL_ALIGNMENT_LEFT)
-			  REQUEST_Y(c->widget) = REQUEST_Y(w) + t;
+			  REQUEST_Y(c->widget) =
+				  REQUEST_Y(w) + t + c->y_padding;
 		  else if (c->alignment == EWL_ALIGNMENT_CENTER)
 		    {
 			    REQUEST_Y(c->widget) = REQUEST_Y(w);
 			    REQUEST_Y(c->widget) +=
 				    (REQUEST_H(w) / 2) -
-				    (REQUEST_H(c->widget) / 2);
+				    (REQUEST_H(c->widget) / 2) + c->y_padding;
 		    }
 		  else if (c->alignment == EWL_ALIGNMENT_RIGHT)
 			  REQUEST_Y(c->widget) =
 				  (REQUEST_Y(w) + REQUEST_H(w)) -
-				  REQUEST_H(c->widget) - r;
+				  REQUEST_H(c->widget) - r + c->y_padding;
 
-		  REQUEST_X(c->widget) = x;
-		  x += REQUEST_W(c->widget);
+		  REQUEST_X(c->widget) = x + c->x_padding;
+		  x += REQUEST_W(c->widget) + c->x_padding;
 
 		  ewl_widget_configure(c->widget);
 	  }

@@ -281,7 +281,7 @@ __ewl_seeker_destroy(Ewl_Widget * w, void *event_data, void *user_data)
 	DENTER_FUNCTION;
 	DCHECK_PARAM_PTR("w", w);
 
-	ewl_callback_del_all(w);
+	ewl_callback_clear(w);
 
 	ewl_theme_deinit_widget(w);
 

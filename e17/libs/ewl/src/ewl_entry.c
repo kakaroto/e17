@@ -200,7 +200,7 @@ ewl_entry_destroy(Ewl_Widget * widget, void *event_data, void *user_data)
 	evas_unset_clip(widget->evas, EWL_CONTAINER(widget)->clip_box);
 	evas_del_object(widget->evas, EWL_CONTAINER(widget)->clip_box);
 
-	ewl_callback_del_all(widget);
+	ewl_callback_clear(widget);
 
 	ewl_theme_deinit_widget(widget);
 

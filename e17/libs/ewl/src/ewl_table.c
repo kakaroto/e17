@@ -424,7 +424,7 @@ __ewl_table_destroy(Ewl_Widget * w, void *event_data, void *user_data)
 	IF_FREE(EWL_TABLE(w)->row_h);
 	IF_FREE(EWL_TABLE(w)->custom_col_w);
 
-	ewl_callback_del_all(w);
+	ewl_callback_clear(w);
 
 	ewl_theme_deinit_widget(w);
 

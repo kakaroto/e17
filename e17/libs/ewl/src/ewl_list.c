@@ -241,7 +241,7 @@ __ewl_list_destroy(Ewl_Widget * widget, void *event_data, void *user_data)
 
 	ewl_theme_deinit_widget(widget);
 
-	ewl_callback_del_all(widget);
+	ewl_callback_clear(widget);
 
 	FREE(widget);
 }

@@ -146,14 +146,13 @@ ewl_theme_init(void)
 	home = getenv("HOME");
 	if (!home)
 	  {
-		DERROR("Environment variable HOME not defined\n"
-		       "Try export HOME=/home/user in a bash like environemnt or\n"
-		       "setenv HOME=/home/user in a sh like environment.\n");
-		return -1;
+		  DERROR("Environment variable HOME not defined\n"
+			 "Try export HOME=/home/user in a bash like environemnt or\n"
+			 "setenv HOME=/home/user in a sh like environment.\n");
+		  return -1;
 	  }
 
-	snprintf(theme_path, PATH_LEN, "%s/.e/ewl/themes/%s", home,
-		 str);
+	snprintf(theme_path, PATH_LEN, "%s/.e/ewl/themes/%s", home, str);
 
 	/*
 	 * Check the users theme dir to make sure it exists and is a dir 
@@ -166,7 +165,7 @@ ewl_theme_init(void)
 		   * Theme dir is ok, now get the specified theme's path 
 		   */
 		  snprintf(theme_path, PATH_LEN, PACKAGE_DATA_DIR
-		  		"/themes/%s", str);
+			   "/themes/%s", str);
 		  stat(theme_path, &st);
 
 		  if (!S_ISDIR(st.st_mode))

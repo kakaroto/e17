@@ -180,7 +180,7 @@ __ewl_window_destroy(Ewl_Widget * w, void *event_data, void *user_data)
 	if (ewd_list_goto(ewl_window_list, w))
 		ewd_list_remove(ewl_window_list);
 
-	ewl_callback_del_all(w);
+	ewl_callback_clear(w);
 
 	ewl_theme_deinit_widget(w);
 

@@ -79,7 +79,6 @@
 #define DERROR(str) \
 { \
 	fprintf(stderr, (str)); \
-	exit(-1); \
 }
 
 #define DWARNING(str) \

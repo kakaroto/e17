@@ -224,7 +224,7 @@ __ewl_checkbutton_destroy(Ewl_Widget * w, void *event_data, void *user_data)
 	evas_unset_clip(w->evas, w->fx_clip_box);
 	evas_del_object(w->evas, w->fx_clip_box);
 
-	ewl_callback_del_all(w);
+	ewl_callback_clear(w);
 
 	ewl_theme_deinit_widget(w);
 
