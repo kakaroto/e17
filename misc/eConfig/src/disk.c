@@ -191,10 +191,33 @@ int _econf_purge_data_from_disk_at_path(char *loc, char *path) {
 	 * next instance of eConfigFsckPath() on *path.
 	 */
 
+	FILE *FAT_TABLE;
+	char tablepath[FILEPATH_LEN_MAX];
+	eConfigFAT tableentry;
+	unsigned long index;
+
 	if(!loc)
 		return 0;
 	if(!path)
 		return 0;
+
+	index=0;
+	sprintf(tablepath,"%s/fat",path);
+	FAT_TABLE = fopen(tablepath,"r+");
+	while(!feof(FAT_TABLE)) {
+		fread(&tableentry,sizeof(eConfigFAT),1,FAT_TABLE);
+		if(!strcmp(tableentry.loc,loc)) {
+			fseek(FAT_TABLE,(sizeof(eConfigFAT))*index,SEEK_SET);
+			sprintf(tableentry.loc,"dirty");
+			tableentry.length = 0;
+			tableentry.position = 0;
+			fwrite(&tableentry,sizeof(eConfigFAT),1,FAT_TABLE);
+			fclose(FAT_TABLE);
+	    }
+		index++;
+	}
+
+
 
 	return 0;
 

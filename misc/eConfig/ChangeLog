@@ -101,3 +101,10 @@ A little bit of work here and there.  the API is coming together nicely.  Need
 to rethink a minor bit of work in _econf_save_data_to_disk -- it needs local
 and global tags, etc.  I need to clean some of that up.
 
+-------------------------------------------------------------------------------
+
+Sun Oct 31 18:59:05 PST 1999
+(Mandrake)
+
+internal API is cleaning up now.  I think I've figured out how to resolve my
+problem
