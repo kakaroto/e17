@@ -905,7 +905,8 @@ ftp_upload(char *local,
   CURLcode ret;
   struct stat st;
   static struct curl_slist *post_commands = NULL;
-  char *passwd_string, *url_string;
+  static char *passwd_string = NULL;
+  static char *url_string = NULL;
 
   infile = fopen(local, "r");
 
@@ -928,14 +929,16 @@ ftp_upload(char *local,
     curl_handle = curl_easy_init();
     connections++;
 
+    if (passwd_string)
+      free(passwd_string);
     passwd_string = gib_strjoin(":", ftp_user, ftp_pass, NULL);
     curl_easy_setopt(curl_handle, CURLOPT_USERPWD, passwd_string);
-    free(passwd_string);
 
     /* set URL to save to */
+    if (url_string)
+      free(url_string);
     url_string = gib_strjoin("/", "ftp:/", ftp_host, ftp_dir, tmp, NULL);
     curl_easy_setopt(curl_handle, CURLOPT_URL, url_string);
-    free(url_string);
 
     /* no progress meter please */
     curl_easy_setopt(curl_handle, CURLOPT_NOPROGRESS, 1);
