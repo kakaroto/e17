@@ -8,8 +8,15 @@
 #include <sys/wait.h>
 #include <X11/Xlib.h>
 #include <limits.h>
+#include <getopt.h>
 
-/* defines */
+#define X_SERVER "/usr/X11R6/bin/X -terminate -ac -quiet"
+/* #define X_SERVER "/usr/X11R6/bin/Xnest -terminate -geometry 640x480 -ac -full :1" */
+#define X_DISP "localhost:0"
+#define ELOGIN "/usr/local/bin/elogin"
+#define PIDFILE "/var/run/elogind.pid"
+
+/* display->status possible values */
 #define NOT_RUNNING 0
 #define LAUNCHING 1
 #define RUNNING 2
@@ -19,10 +26,14 @@ typedef struct _Spawner_Display Spawner_Display;
 
 struct _Spawner_Display
 {
-  Display *display;
-  char *name;
-  char *xprog;
-  int pid;
-  int attempts;
-  int status;
+   Display *display;
+   char *name;                  /* the name of the x display */
+   char *xprog;                 /* the X execution string */
+   int attempts;
+   int status;
+   struct
+   {
+      pid_t x, client;
+   }
+   pid;
 };
