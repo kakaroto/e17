@@ -75,7 +75,7 @@ static void apply_cb(void *data);
 static void cancel_cb(void *data);
 static void config_cb(void *data);
 static void process_conf(void);
-extern int mbox_folder_count(char *, int);
+extern int mail_folder_count(char *, int);
 
 static void
 display_count(void)
@@ -102,7 +102,7 @@ static void
 mailcheck_cb(void *data)
 {
   D(("mailcheck_cb() called.\n"));
-  if ((mbox_folder_count(folder_path, 0)) != 0) {
+  if ((mail_folder_count(folder_path, 0)) != 0) {
     if (new_cnt != 0) {
       if (new_cnt == 7 && total_cnt == 9) {
         Epplet_gadget_hide(nomail);

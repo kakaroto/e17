@@ -33,6 +33,7 @@
 #include <time.h>
 #include <utime.h>
 #include <malloc.h>
+#include <limits.h>
 
 #define ISSPACE(c) isspace((unsigned char) c)
 #define SKIPWS(c) while (*(c) && isspace((unsigned char) *(c))) c++;
@@ -392,6 +393,32 @@ parse_mime_header(FILE *fp)
  * Return 0 on no change/failure, 1 on change
  */
 int
+mail_folder_count(char *path, int force)
+{
+  struct stat s;
+
+  D(("mail_folder_count(%s, %d) called.\n", NONULL(path), force));
+
+  if (stat(path, &s) != 0) {
+    D((" -> Unable to stat mailbox.\n"));
+    file_size = 0;
+    file_mtime = 0;
+    return 0;
+  }
+
+  if (S_ISDIR(s.st_mode)) {
+     /* Assume maildir */
+     return maildir_folder_count(path, force);
+  } else {
+     /* Assume mbox */
+     return mbox_folder_count(path, force);
+  }
+}
+
+/*
+ * Return 0 on no change/failure, 1 on change
+ */
+int
 mbox_folder_count(char *path, int force)
 {
   FILE *fp;
@@ -462,5 +489,109 @@ mbox_folder_count(char *path, int force)
 
   ebiff_utimes(path, t);
   D((" -> Mailbox check complete.  Found %lu new messages of %lu total.\n", new_cnt, total_cnt));
+  return 1;
+}
+
+/* Counts the number of messages (files) in a directory, not including "." and
+ * ".." entries.
+ * Returns the count of messages dir, or ULONG_MAX on error
+ */
+unsigned long
+maildir_count_dir(char *dir) {
+  DIR *dp;
+  struct dirent* dent;
+  unsigned long count = 0;
+
+  dp = opendir(dir);
+
+  if (! dp) {
+     D((" -> Unable to opendir %s.\n", dir));
+     return ULONG_MAX;
+  }
+
+  while ((dent = readdir (dp)) != NULL)
+    count++;
+
+  /* Discard . and .. - maybe we should check each file name as we read them?
+   * That would be slower, however :-( */
+  count -= 2;
+
+  closedir (dp);
+
+  return count;
+}
+
+/*
+ * Return 0 on no change/failure, 1 on change
+ */
+int
+maildir_folder_count(char *path, int force)
+{
+  char *curdir, *newdir;
+  time_t last_update;
+  unsigned long new_msgs, old_msgs;
+  struct stat s;
+  struct timeval t[2];
+
+  D(("maildir_folder_count(%s, %d) called.\n", NONULL(path), force));
+
+  if (path == NULL)
+    return 0;
+
+  if (stat(path, &s) != 0) {
+    D((" -> Unable to stat maildir.\n"));
+    file_size = 0;
+    file_mtime = 0;
+    return 0;
+  }
+
+  last_update = s.st_mtime;
+
+  curdir = (char *) malloc(strlen(path) + 5);
+  if (!curdir) {
+    D((" -> Unable to allocate memory.\n"));
+    return 0;
+  }
+  newdir = (char *) malloc(strlen(path) + 5);
+  if (!newdir) {
+    D((" -> Unable to allocate memory.\n"));
+    free (curdir);
+    return 0;
+  }
+
+  sprintf(curdir, "%s/cur", path);
+  sprintf(newdir, "%s/new", path);
+
+  if (stat(curdir, &s) != 0) {
+    D((" -> Unable to stat cur directory - is this a maildir?\n"));
+    return 0;
+  }
+  if (s.st_mtime > last_update) 
+    last_update = s.st_mtime;
+
+  if (stat(newdir, &s) != 0) {
+    D((" -> Unable to stat new directory - is this a maildir?\n"));
+    return 0;
+  }
+  if (s.st_mtime > last_update) 
+    last_update = s.st_mtime;
+
+  if (!force && (last_update == file_mtime)) {
+    D((" -> Mailbox unchanged.\n"));
+    return 0;
+  }
+
+  old_msgs = maildir_count_dir(curdir);
+  if (old_msgs == ULONG_MAX)
+     return 0;
+
+  new_msgs = maildir_count_dir(newdir);
+  if (new_msgs == ULONG_MAX)
+     return 0;
+
+  new_cnt = new_msgs;
+  total_cnt = new_msgs + old_msgs;
+  file_mtime = last_update;
+
   return 1;
 }
