@@ -101,15 +101,16 @@ AC_ARG_ENABLE(mmx,[  --disable-mmx           attempt compiling using mmx assembl
   fi
 ],
 [
-if test x$target_os = xlinux-gnu; then
+if test x$target_os = xlinux-gnu -o x$target_os = xlinux; then
   if test x$target_cpu = x$host_cpu; then
     mmx=`cat /proc/cpuinfo | grep mmx`
     if test -n "$mmx"; then
       mmx=yes
+      echo "You appear to be compiling on a "$target_cpu/$target_os" system; using MMX."
     fi
   else
     echo ""
-    echo "You are cross-compiling on a "$host_cpu" machine for a "$target_os" machine."
+    echo "You are cross-compiling on a "$host_cpu" machine for a "$target_cpu/$target_os" machine."
     echo "If this target supports mmx, please enable mmx with --enable-mmx as a"
     echo "configure option."
     echo ""
@@ -117,6 +118,7 @@ if test x$target_os = xlinux-gnu; then
 else
   echo ""
   echo "You are not running Linux - This script cannot auto-detect mmx assembly."
+  echo "(You appear to be running $target_os.)"
   echo "You will have to enable the mmx assembly (which gives anywhere from 10%"
   echo "to 300% speedups) by adding --enable-mmx on the configure command-line."
   echo ""
@@ -400,6 +402,9 @@ echo "  TIFF....................: $tiff_ok"
 echo "  GIF.....................: $gif_ok"
 echo "  ZLIB....................: $zlib_ok"
 echo "  BZIP2...................: $bz2_ok"
+echo
+echo
+echo "Use MMX for extra speed...: $mmx"
 echo
 echo
 echo "Installation Path.........: $prefix"

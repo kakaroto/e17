@@ -10,7 +10,7 @@ Packager: %{?_packager:%{_packager}}%{!?_packager:Michael Jennings <mej@eterm.or
 Vendor: %{?_vendorinfo:%{_vendorinfo}}%{!?_vendorinfo:The Enlightenment Project (http://www.enlightenment.org/)}
 Distribution: %{?_distribution:%{_distribution}}%{!?_distribution:%{_vendor}}
 #BuildSuggests: xorg-x11-devel
-BuildRequires: freetype-devel XFree86-devel
+BuildRequires: freetype2-devel XFree86-devel
 Requires: %{name}-loader_jpeg = %{version}
 Requires: %{name}-loader_png = %{version}
 Requires: %{name}-loader_argb = %{version}
@@ -26,7 +26,7 @@ rendering and blending, dynamic binary filters, scripting, and more.
 Summary: Imlib2 headers, static libraries and documentation
 Group: System Environment/Libraries
 Requires: %{name} = %{version}
-Requires: freetype-devel >= 2
+Requires: freetype2-devel >= 2
 %description devel
 Headers, static libraries and documentation for Imlib2.
 
@@ -117,7 +117,7 @@ gz compressed image loader/saver for Imlib2
 %setup -q
 
 %build
-%{configure} --prefix=%{_prefix}
+%{configure} --prefix=%{_prefix} $RPM_CONFIGURE_OPTS
 %{__make} %{?_smp_mflags} %{?mflags}
 
 %install
