@@ -6,4 +6,9 @@ Makefile*
 *.c
 *.h
 *.in
+*.y
+*.sin
 VERSION
+ChangeLog
+config.charset
+locale.alias
