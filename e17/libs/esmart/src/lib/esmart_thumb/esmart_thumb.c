@@ -137,24 +137,41 @@ esmart_thumb_evas_object_get (Evas_Object * o)
       if ((e = (Esmart_Thumb *) evas_object_smart_data_get (o)))
 	{
 	  Imlib_Image tmp = NULL;
+	  int iw = 0, ih = 0;
 
-	  tmp = imlib_load_image_immediately_without_cache (e->e->src);
-	  if (tmp)
+	  if (!e->info)
+	    e->info = epsilon_info_get (e->e);
+	  result = evas_object_image_add (evas_object_evas_get (o));
+
+	  evas_object_image_file_set (result, e->e->src, NULL);
+
+	  switch (evas_object_image_load_error_get (result))
 	    {
-	      if (!e->info)
-		e->info = epsilon_info_get (e->e);
-	      imlib_context_set_image (tmp);
-
-	      result = evas_object_image_add (evas_object_evas_get (o));
+	    case EVAS_LOAD_ERROR_NONE:
+	      evas_object_image_size_get (result, &iw, &ih);
 	      if (e->info->w == 0)
-		e->info->w = imlib_image_get_width ();
+		e->info->w = iw;
 	      if (e->info->h == 0)
-		e->info->h = imlib_image_get_height ();
-	      evas_object_image_size_set (result, e->info->w, e->info->h);
-	      evas_object_image_alpha_set (result, imlib_image_has_alpha ());
-	      evas_object_image_data_copy_set (result,
-					       imlib_image_get_data ());
-	      imlib_free_image_and_decache ();
+		e->info->h = ih;
+	      break;
+	    default:
+	      tmp = imlib_load_image_immediately_without_cache (e->e->src);
+	      if (tmp)
+		{
+		  imlib_context_set_image (tmp);
+
+		  if (e->info->w == 0)
+		    e->info->w = imlib_image_get_width ();
+		  if (e->info->h == 0)
+		    e->info->h = imlib_image_get_height ();
+		  evas_object_image_alpha_set (result,
+					       imlib_image_has_alpha ());
+		  evas_object_image_size_set (result, e->info->w, e->info->h);
+		  evas_object_image_data_copy_set (result,
+						   imlib_image_get_data ());
+		  imlib_free_image_and_decache ();
+		}
+	      break;
 	    }
 	}
     }
