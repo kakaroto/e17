@@ -60,11 +60,12 @@ ewler_selected_init(Ewler_Selected *s, Ewl_Widget *w)
 	ewl_theme_data_set_str(sw, "/selected/file",
 												 PACKAGE_DATA_DIR"/themes/ewler.eet");
 	ewl_theme_data_set_str(sw, "/selected/group", "selected");
+	ewl_object_set_insets(EWL_OBJECT(s), 4, 4, 4, 4);
 
 	ewl_container_insert_child(parent, sw, index);
 	ewl_container_append_child(EWL_CONTAINER(s), w);
 	ewl_object_request_geometry(EWL_OBJECT(s),
-															CURRENT_X(w) - 4, CURRENT_Y(w) - 4,
+															CURRENT_X(w) - 8, CURRENT_Y(w) - 8,
 															CURRENT_W(w) + 8, CURRENT_H(w) + 8);
 	ewl_object_set_fill_policy(EWL_OBJECT(s), EWL_FLAG_FILL_NONE);
 	ewl_widget_set_layer(sw, ewl_widget_get_layer(s->selected) + 1);
@@ -150,7 +151,7 @@ ewler_selected_deselect_cb(Ewl_Widget *w, void *ev_data, void *user_data)
 	ewl_object_get_current_geometry(EWL_OBJECT(s), &x, &y, &width, &height);
 	ewl_container_insert_child(EWL_CONTAINER(w->parent), s->selected, s->index);
 	ewl_object_request_geometry(EWL_OBJECT(s->selected),
-															x + 4, y + 4, width - 8, height - 8);
+															x + 8, y + 8, width - 8, height - 8);
 
 	s->selected = NULL;
 	s->index = -1;

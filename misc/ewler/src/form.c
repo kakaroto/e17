@@ -106,7 +106,8 @@ __mouse_move_widget( Ewl_Widget *w, void *ev_data, void *user_data )
 
 		while( (c_s = ecore_list_next(form->selected)) ) {
 			ewl_object_request_position(EWL_OBJECT(c_s),
-																	ev->x - dragging.x, ev->y - dragging.y);
+																	ev->x - dragging.x - 8,
+																	ev->y - dragging.y - 8);
 		}
 	}
 }
@@ -123,7 +124,8 @@ __mouse_up_widget( Ewl_Widget *w, void *ev_data, void *user_data )
 
 		while( (c_s = ecore_list_next( form->selected )) ) {
 			ewl_object_request_position(EWL_OBJECT(c_s),
-																	ev->x - dragging.x, ev->y - dragging.y);
+																	ev->x - dragging.x - 8,
+																	ev->y - dragging.y - 8);
 			widget_changed(ewler_selected_get(EWLER_SELECTED(c_s)));
 		}
 		dragging.x = dragging.y = 0;
