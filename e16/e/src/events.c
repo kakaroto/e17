@@ -27,6 +27,10 @@
 #include <X11/extensions/Xrandr.h>
 #endif
 
+#if ENABLE_DEBUG_EVENTS
+static const char  *EventName(unsigned int type);
+#endif
+
 static int          event_base_shape = 0;
 static int          error_base_shape = 0;
 
@@ -92,107 +96,6 @@ EventsInit(void)
 	XRRSelectInput(disp, root.win, RRScreenChangeNotifyMask);
      }
 #endif
-}
-
-static char        *
-NukeBoringevents(XEvent * ev, int num)
-{
-   char               *ok;
-   int                 i, j;
-   int /*first, */     last;
-
-   if (!num)
-      return NULL;
-
-   ok = Emalloc(num * sizeof(char));
-
-   for (i = 0; i < num; i++)
-     {
-/*      DebugEvent(&(ev[i])); */
-	ok[i] = 1;
-     }
-   /* get rid of all but the last motion event */
-   last = -1;
-   for (i = 0; i < num; i++)
-     {
-	if (ev[i].type == MotionNotify)
-	  {
-	     ok[i] = 0;
-	     last = i;
-	  }
-     }
-   if ((last >= 0) && (!throw_move_events_away))
-      ok[last] = 1;
-   throw_move_events_away = 0;
-   /* compress all shapenotify events for a window and onyl take the last one */
-   /* as beign valid */
-   for (i = 0; i < num; i++)
-     {
-	if (ev[i].type == event_base_shape + ShapeNotify)
-	  {
-	     Window              win;
-
-	     last = i;
-	     win = ev[i].xany.window;
-	     for (j = i; j < num; j++)
-	       {
-		  if ((ev[j].type == event_base_shape + ShapeNotify)
-		      && (ev[j].xany.window == win))
-		    {
-		       ok[j] = 0;
-		       last = j;
-		    }
-	       }
-	     ok[last] = 1;
-	  }
-     }
-   /* FIXME: add maprequest compression */
-   /* FIXME: add configurerequest compression */
-   /* FIXME: add resizerequest compression */
-   return ok;
-}
-
-static void
-EventsCompress(XEvent * ev)
-{
-   XEvent              event;
-   int                 i;
-   int                 xa, ya, xb, yb;
-
-   switch (ev->type)
-     {
-     case Expose:
-	i = 0;
-	xa = ev->xexpose.x;
-	xb = xa + ev->xexpose.width;
-	ya = ev->xexpose.y;
-	yb = ya + ev->xexpose.height;
-	while (XCheckTypedWindowEvent(ev->xexpose.display, ev->xexpose.window,
-				      Expose, &event))
-	  {
-	     i++;
-	     if (xa > event.xexpose.x)
-		xa = event.xexpose.x;
-	     if (xb < event.xexpose.x + event.xexpose.width)
-		xb = event.xexpose.x + event.xexpose.width;
-	     if (ya > event.xexpose.y)
-		ya = event.xexpose.y;
-	     if (yb < event.xexpose.y + event.xexpose.height)
-		yb = event.xexpose.y + event.xexpose.height;
-	  }
-	if (i)
-	  {
-	     ev->xexpose.x = xa;
-	     ev->xexpose.width = xb - xa;
-	     ev->xexpose.y = ya;
-	     ev->xexpose.height = yb - ya;
-	  }
-	if (EventDebug(EDBUG_TYPE_COMPRESSION))
-	   printf("EventsCompress Expose %#lx n=%4d x=%4d-%4d y=%4d-%4d\n",
-		  ev->xexpose.window, i, xa, xb, ya, yb);
-	break;
-     }
-
 }
 
 static void
@@ -368,35 +271,141 @@ CheckEvent(void)
    EDBUG_RETURN_;
 }
 
+static void
+EventsCompress(XEvent * evq, int count)
+{
+   XEvent             *ev, *ev2;
+   int                 i, j, n;
+   int                 xa, ya, xb, yb;
+
+   /* Debug - should be taken out */
+   if (EventDebug(EDBUG_TYPE_COMPRESSION))
+      for (i = 0; i < count; i++)
+	 printf("EventsCompress-1 %3d t=%s w=%#lx\n", i, EventName(evq[i].type),
+		evq[i].xany.window);
+
+   /* Loop through event list, starting with latest */
+   for (i = count - 1; i > 0; i--)
+     {
+	ev = evq + i;
+
+	switch (ev->type)
+	  {
+	  case 0:
+	     /* Already thrown away */
+	     break;
+
+	  case MotionNotify:
+	     if (throw_move_events_away)	/* Discard all motion events */
+		j = i;
+	     else		/* Discard all but last motion event */
+		j = i - 1;
+	     n = 0;
+	     for (; j >= 0; j--)
+	       {
+		  ev2 = evq + j;
+		  if (ev2->type == ev->type)
+		    {
+		       n++;
+		       ev2->type = 0;
+		    }
+	       }
+	     if (n && EventDebug(EDBUG_TYPE_COMPRESSION))
+		printf("EventsCompress MotionNotify %#lx n=%4d x,y = %d,%d\n",
+		       ev->xmotion.window, n, ev->xmotion.x, ev->xmotion.y);
+	     break;
+
+	  case Expose:
+	     n = 0;
+	     xa = ev->xexpose.x;
+	     xb = xa + ev->xexpose.width;
+	     ya = ev->xexpose.y;
+	     yb = ya + ev->xexpose.height;
+	     for (j = i - 1; j >= 0; j--)
+	       {
+		  ev2 = evq + j;
+		  if (ev2->type == ev->type &&
+		      ev2->xexpose.window == ev->xexpose.window)
+		    {
+		       n++;
+		       ev2->type = 0;
+		       if (xa > ev2->xexpose.x)
+			  xa = ev2->xexpose.x;
+		       if (xb < ev2->xexpose.x + ev2->xexpose.width)
+			  xb = ev2->xexpose.x + ev2->xexpose.width;
+		       if (ya > ev2->xexpose.y)
+			  ya = ev2->xexpose.y;
+		       if (yb < ev2->xexpose.y + ev2->xexpose.height)
+			  yb = ev2->xexpose.y + ev2->xexpose.height;
+		    }
+	       }
+	     if (n)
+	       {
+		  ev->xexpose.x = xa;
+		  ev->xexpose.width = xb - xa;
+		  ev->xexpose.y = ya;
+		  ev->xexpose.height = yb - ya;
+	       }
+	     if (EventDebug(EDBUG_TYPE_COMPRESSION))
+		printf("EventsCompress Expose %#lx n=%4d x=%4d-%4d y=%4d-%4d\n",
+		       ev->xexpose.window, n, xa, xb, ya, yb);
+	     break;
+
+	  default:
+	     if (ev->type == event_base_shape + ShapeNotify)
+	       {
+		  n = 0;
+		  for (j = i - 1; j >= 0; j--)
+		    {
+		       ev2 = evq + j;
+		       if (ev2->type == ev->type &&
+			   ev2->xany.window == ev->xany.window)
+			 {
+			    n++;
+			    ev2->type = 0;
+			 }
+		    }
+		  if (n && EventDebug(EDBUG_TYPE_COMPRESSION))
+		     printf("EventsCompress ShapeNotify %#lx n=%4d\n",
+			    ev->xmotion.window, n);
+	       }
+	     break;
+	  }
+     }
+
+   /* Debug - should be taken out */
+   if (EventDebug(EDBUG_TYPE_COMPRESSION))
+      for (i = 0; i < count; i++)
+	 printf("EventsCompress-2 %3d t=%s w=%#lx\n", i, EventName(evq[i].type),
+		evq[i].xany.window);
+}
+
 static int
 EventsProcess(XEvent ** evq_ptr, int *evq_siz)
 {
-   int                 i, count;
-   char               *ok;
+   int                 i, n, count;
    XEvent             *evq = *evq_ptr;
    int                 qsz = *evq_siz;
 
-   for (count = 0; XPending(disp); count++)
+   /* Fetch the entire event queue */
+   for (i = count = 0; (n = XPending(disp)) > 0;)
      {
-	if (count >= qsz)
+	count += n;
+	if (count > qsz)
 	  {
-	     qsz += 16;
+	     qsz = count;
 	     evq = Erealloc(evq, sizeof(XEvent) * qsz);
 	  }
-	XNextEvent(disp, evq + count);
-	EventsCompress(evq + count);
+	for (; i < count; i++)
+	   XNextEvent(disp, evq + i);
      }
 
-   /* remove multiple extraneous events here */
-   ok = NukeBoringevents(evq, count);
-   if (ok)
+   EventsCompress(evq, count);
+
+   for (i = 0; i < count; i++)
      {
-	for (i = 0; i < count; i++)
-	  {
-	     if (ok[i])
-		HandleEvent(&(evq[i]));
-	  }
-	Efree(ok);
+	if (evq[i].type)
+	   HandleEvent(evq + i);
      }
 
    *evq_ptr = evq;
@@ -421,15 +430,14 @@ EventsProcess(XEvent ** evq_ptr, int *evq_siz)
 #define DBUG_STACKCHECK
 #endif
 
-  /* This is the primary event loop.  Everything that is going to happen in the
-   * window manager has to start here at some point.  This is where all the
-   * events from the X server are interpreted, timer events are inserted, etc
-   */
-
+/*
+ * This is the primary event loop.  Everything that is going to happen in the
+ * window manager has to start here at some point.  This is where all the
+ * events from the X server are interpreted, timer events are inserted, etc
+ */
 void
 WaitEvent(void)
 {
-/*  XEvent              ev; */
    fd_set              fdset;
    struct timeval      tval;
    static struct timeval tval_last = { 0, 0 };
