@@ -1,0 +1,16 @@
+Source: xfonts-nexus
+Build-Depends: xutils, debhelper
+Section: x11
+Priority: optional
+Maintainer: Simon Horman <horms@vergenet.net>
+Standards-Version: 3.5.2
+
+Package: xfonts-nexus
+Architecture: any
+Depends: xbase-clients
+Replaces: xfont-nexus
+Provides: xfont-nexus
+Conflicts: xfont-nexus
+Description: Nexus font for X
+ A sans-sereif, fixed with font with iso8859 encoding.
+ Only available as 10 point with medium weight.

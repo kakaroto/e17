@@ -1,0 +1,12 @@
+#! /bin/sh
+
+#DEBHELPER#
+
+if test -d /usr/X11R6/lib/X11/fonts/misc; then
+	( cd /usr/X11R6/lib/X11/fonts/misc ; /usr/X11R6/bin/mkfontdir )
+	update-fonts-alias misc
+fi
+
+exit 0
+
+

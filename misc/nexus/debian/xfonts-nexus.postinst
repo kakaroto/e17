@@ -1,0 +1,15 @@
+#! /bin/sh
+
+#DEBHELPER#
+
+if [ "$1" = "configure" ]; then
+    ( cd /usr/X11R6/lib/X11/fonts/misc ; /usr/X11R6/bin/mkfontdir )
+    update-fonts-alias misc
+    if [ -d /usr/doc -a ! -e /usr/doc/nexus-font -a -d /usr/share/doc/nexus-font ]; then
+      ln -sf ../share/doc/nexus-font /usr/doc/nexus-font
+    fi
+fi
+
+exit 0
+
+
