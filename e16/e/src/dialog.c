@@ -1454,6 +1454,31 @@ DialogDrawItems(Dialog * d, DItem * di, int x, int y, int w, int h)
 {
    int                 state;
 
+   if (queue_up)
+     {
+	DrawQueue          *dq;
+
+	dq = Emalloc(sizeof(DrawQueue));
+	dq->win = 0;
+	dq->iclass = NULL;
+	dq->w = w;
+	dq->h = h;
+	dq->active = 0;
+	dq->sticky = 0;
+	dq->state = 0;
+	dq->expose = 0;
+	dq->tclass = NULL;
+	dq->text = NULL;
+	dq->shape_propagate = 0;
+	dq->pager = NULL;
+	dq->redraw_pager = NULL;
+	dq->d = d;
+	dq->di = di;
+	dq->x = x;
+	dq->y = y;
+	AddItem(dq, "DRAW", 0, LIST_TYPE_DRAW);
+	EDBUG_RETURN_;
+     }
    if (di->type == DITEM_TABLE)
      {
 	int                 i;

@@ -214,6 +214,10 @@ TclassApply(ImageClass * iclass, Window win, int w, int h, int active,
 	dq->shape_propagate = 0;
 	dq->pager = NULL;
 	dq->redraw_pager = NULL;
+	dq->d = NULL;
+	dq->di = NULL;
+	dq->x = 0;
+	dq->y = 0;
 	AddItem(dq, "DRAW", dq->win, LIST_TYPE_DRAW);
 	EDBUG_RETURN_;
      }

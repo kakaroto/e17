@@ -72,6 +72,34 @@ HandleDrawQueue()
 		    }
 	       }
 	  }
+	else if (dq->d)
+	  {
+	     for (i = 0; i < num; i++)
+	       {
+		  if ((lst[i]->d == dq->d) && (dq->d->item) &&
+		      (dq->d->item == dq->di))
+		    {
+		       if (dq->x < lst[i]->x)
+			 {
+			    lst[i]->w += (lst[i]->x - dq->x);
+			    lst[i]->x = dq->x;
+			 }
+		       if ((lst[i]->x + lst[i]->w) < (dq->x + dq->w))
+			  lst[i]->w += (dq->x + dq->w) -
+			     (lst[i]->x + lst[i]->w);
+		       if (dq->y < lst[i]->y)
+			 {
+			    lst[i]->h += (lst[i]->y - dq->y);
+			    lst[i]->y = dq->y;
+			 }
+		       if ((lst[i]->y + lst[i]->h) < (dq->y + dq->h))
+			  lst[i]->h += (dq->y + dq->h) -
+			     (lst[i]->y + lst[i]->h);
+		       already = 1;
+		       i = num;
+		    }
+	       }
+	  }
 	else if (dq->redraw_pager)
 	  {
 	     for (i = 0; i < num; i++)
@@ -159,6 +187,14 @@ HandleDrawQueue()
 			       LIST_FINDBY_POINTER, LIST_TYPE_PAGER))
 		     PagerForceUpdate(lst[i]->pager);
 /*            printf("P %x\n", lst[i]->win); */
+	       }
+	     else if (lst[i]->d)
+	       {
+		  if (FindItem((char *)(lst[i]->d), 0,
+			       LIST_FINDBY_POINTER, LIST_TYPE_DIALOG))
+		     DialogDrawItems(lst[i]->d, lst[i]->di, lst[i]->x,
+				     lst[i]->y, lst[i]->w, lst[i]->h);
+/*            printf("D %x\n", lst[i]->d->ewin->client.win); */
 	       }
 	     else if (lst[i]->redraw_pager)
 	       {
@@ -688,7 +724,7 @@ DrawEwinShape(EWin * ewin, int md, int x, int y, int w, int h, char firstlast)
    static Pixmap       b1 = 0, b2 = 0, b3 = 0;
    static Font         font = 0;
    int                 bpp;
-   char                str[32];
+   char                str[32], pq;
 
    EDBUG(4, "DrawEwinShape");
    if ((mode.mode == MODE_RESIZE) ||
@@ -730,6 +766,8 @@ DrawEwinShape(EWin * ewin, int md, int x, int y, int w, int h, char firstlast)
      }
    pw = w;
    ph = h;
+   pq = queue_up;
+   queue_up = 0;
    switch (md)
      {
      case 0:
@@ -1106,6 +1144,7 @@ DrawEwinShape(EWin * ewin, int md, int x, int y, int w, int h, char firstlast)
      default:
 	break;
      }
+   queue_up = pq;
    EDBUG_RETURN_;
 }
 
@@ -1169,6 +1208,10 @@ PropagateShapes(Window win)
 	dq->shape_propagate = 1;
 	dq->pager = NULL;
 	dq->redraw_pager = NULL;
+	dq->d = NULL;
+	dq->di = NULL;
+	dq->x = 0;
+	dq->y = 0;
 	AddItem(dq, "DRAW", dq->win, LIST_TYPE_DRAW);
 	EDBUG_RETURN_;
      }

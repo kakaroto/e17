@@ -947,7 +947,7 @@ SettingsArea(void)
    DialogItemSetFill(di, 1, 0);
    DialogItemSetColSpan(di, 3);
    DialogItemTextSetText(di, "Resistance at edge of screen:\n");
-   
+
    di = slider = DialogAddItem(table, DITEM_SLIDER);
    DialogItemSliderSetMinLength(di, 10);
    DialogItemSetColSpan(di, 3);
@@ -3392,7 +3392,7 @@ CB_ConfigureGroup(int val, void *data)
 	     tmp_group->set_border = tmp_group_set_border;
 	     tmp_group->stick = tmp_group_stick;
 	     tmp_group->shade = tmp_group_shade;
-         tmp_group->mirror = tmp_group_mirror;
+	     tmp_group->mirror = tmp_group_mirror;
 	  }
      }
    autosave();

@@ -820,27 +820,21 @@ doResize(void *params)
      }
    queue_up = 0;
    AUDIO_PLAY("SOUND_RESIZE_START");
+   UnGrabTheButtons();
+   GrabConfineThePointer(root.win);
    mode.mode = MODE_RESIZE;
    x = mode.x - ewin->x;
    y = mode.y - ewin->y;
    w = ewin->w >> 1;
    h = ewin->h >> 1;
    if ((x < w) && (y < h))
-     {
-	mode.resize_detail = 0;
-     }
+      mode.resize_detail = 0;
    if ((x >= w) && (y < h))
-     {
-	mode.resize_detail = 1;
-     }
+      mode.resize_detail = 1;
    if ((x < w) && (y >= h))
-     {
-	mode.resize_detail = 2;
-     }
+      mode.resize_detail = 2;
    if ((x >= w) && (y >= h))
-     {
-	mode.resize_detail = 3;
-     }
+      mode.resize_detail = 3;
    mode.start_x = mode.x;
    mode.start_y = mode.y;
    mode.win_x = ewin->x;
@@ -879,17 +873,15 @@ doResizeH(void *params)
      }
    queue_up = 0;
    AUDIO_PLAY("SOUND_RESIZE_START");
+   UnGrabTheButtons();
+   GrabConfineThePointer(root.win);
    mode.mode = MODE_RESIZE_H;
    x = mode.x - ewin->x;
    w = ewin->w >> 1;
    if (x < w)
-     {
-	mode.resize_detail = 0;
-     }
+      mode.resize_detail = 0;
    else
-     {
-	mode.resize_detail = 1;
-     }
+      mode.resize_detail = 1;
    mode.start_x = mode.x;
    mode.start_y = mode.y;
    mode.win_x = ewin->x;
@@ -928,17 +920,15 @@ doResizeV(void *params)
      }
    queue_up = 0;
    AUDIO_PLAY("SOUND_RESIZE_START");
+   UnGrabTheButtons();
+   GrabConfineThePointer(root.win);
    mode.mode = MODE_RESIZE_V;
    y = mode.y - ewin->y;
    h = ewin->h >> 1;
    if (y < h)
-     {
-	mode.resize_detail = 0;
-     }
+      mode.resize_detail = 0;
    else
-     {
-	mode.resize_detail = 1;
-     }
+      mode.resize_detail = 1;
    mode.start_x = mode.x;
    mode.start_y = mode.y;
    mode.win_x = ewin->x;
@@ -961,6 +951,7 @@ doResizeEnd(void *params)
 
    EDBUG(0, "doResizeEnd");
    ewin = GetFocusEwin();
+   UnGrabTheButtons();
    AUDIO_PLAY("SOUND_RESIZE_STOP");
    if (!ewin)
      {
@@ -1026,7 +1017,8 @@ doMoveImpl(void *params, char constrained)
 	FX_Pause();
 	GrabX();
      }
-/*  GrabThePointer(root.win); */
+   UnGrabTheButtons();
+   GrabConfineThePointer(root.win);
    AUDIO_PLAY("SOUND_MOVE_START");
    mode.mode = MODE_MOVE;
    mode.constrained = constrained;

@@ -1137,7 +1137,7 @@ ICCCM_SetEInfo(EWin * ewin)
    XChangeProperty(disp, ewin->client.win, a, XA_CARDINAL, 32, PropModeReplace,
 		   (unsigned char *)c, 9);
    XChangeProperty(disp, ewin->client.win, aa, XA_STRING, 8, PropModeReplace,
-		   (unsigned char *)ewin->border->name, 
+		   (unsigned char *)ewin->border->name,
 		   strlen(ewin->border->name) + 1);
    EDBUG_RETURN_;
 }
@@ -1244,13 +1244,13 @@ ICCCM_GetEInfo(EWin * ewin)
 		  ewin->client.h = c[7];
 	       }
 	     XGetWindowProperty(disp, ewin->client.win, aa, 0, 0xffff, True, XA_STRING,
-				&a2, &dummy, &lnum, &ldummy, (unsigned char **)&str);
+			 &a2, &dummy, &lnum, &ldummy, (unsigned char **)&str);
 	     num = (int)lnum;
-	     
+
 	     if ((num > 0) && (str))
 	       {
 		  Border             *b = NULL;
-		  
+
 		  b = (Border *) FindItem(str, 0,
 					  LIST_FINDBY_NAME,
 					  LIST_TYPE_BORDER);

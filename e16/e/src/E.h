@@ -1171,20 +1171,6 @@ typedef struct _IPCstruct
   }
 IPCStruct;
 
-typedef struct _drawqueue
-  {
-     Window              win;
-     ImageClass         *iclass;
-     int                 w, h, active, sticky, state, expose;
-     TextClass          *tclass;
-     char               *text;
-     char                shape_propagate;
-     Pager              *pager;
-     Pager              *redraw_pager;
-     char                newbg;
-  }
-DrawQueue;
-
 typedef struct _tooltip
   {
      char               *name;
@@ -1597,6 +1583,23 @@ struct _pager
      EWin               *hi_ewin;
   };
 
+typedef struct _drawqueue
+  {
+     Window              win;
+     ImageClass         *iclass;
+     int                 w, h, active, sticky, state, expose;
+     TextClass          *tclass;
+     char               *text;
+     char                shape_propagate;
+     Pager              *pager;
+     Pager              *redraw_pager;
+     char                newbg;
+     Dialog             *d;
+     DItem              *di;
+     int                 x, y;
+  }
+DrawQueue;
+
 void                Efont_extents(Efont * f, char *text,
 				  int *font_ascent_return,
 				  int *font_descent_return, int *width_return,
@@ -1989,6 +1992,7 @@ int                 initFunctionArray(void);
 void                GrabActionKey(Action * a);
 void                UnGrabActionKey(Action * a);
 void                GrabTheButtons(Window win);
+int                 GrabConfineThePointer(Window win);
 int                 GrabThePointer(Window win);
 void                UnGrabTheButtons(void);
 

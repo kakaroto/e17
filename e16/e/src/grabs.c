@@ -81,6 +81,23 @@ GrabThePointer(Window win)
    EDBUG_RETURN(ret);
 }
 
+int
+GrabConfineThePointer(Window win)
+{
+   int                 ret;
+
+   EDBUG(4, "GrabThePointer");
+   if (mode.click_focus_grabbed)
+      EDBUG_RETURN(1);
+   ret = XGrabPointer(disp, win, True, ButtonPressMask | ButtonReleaseMask |
+		      PointerMotionMask | ButtonMotionMask |
+		      EnterWindowMask | LeaveWindowMask, GrabModeAsync,
+		      GrabModeAsync, win, None, CurrentTime);
+   grab_window = win;
+   mode.click_focus_grabbed = 1;
+   EDBUG_RETURN(ret);
+}
+
 void
 UnGrabTheButtons()
 {

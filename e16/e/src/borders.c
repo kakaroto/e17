@@ -870,7 +870,7 @@ SyncBorderToEwin(EWin * ewin)
    EDBUG(4, "SyncBorderToEwin");
    b = ewin->border;
    ICCCM_GetShapeInfo(ewin);
-/*   SetEwinBorder(ewin);*/
+/*   SetEwinBorder(ewin); */
    SetEwinToBorder(ewin, ewin->border);
    if (b != ewin->border)
      {
@@ -1236,7 +1236,7 @@ Adopt(Window win)
    b = ewin->border;
    ewin->border = NULL;
    ewin->border_new = 1;
-   
+
    SetEwinToBorder(ewin, b);
    ICCCM_MatchSize(ewin);
    ICCCM_Adopt(ewin, win);
@@ -1265,16 +1265,16 @@ AdoptInternal(Window win, Border * border)
    ICCCM_GetInfo(ewin, 0);
    ICCCM_GetShapeInfo(ewin);
    ICCCM_GetGeoms(ewin, 0);
-   
+
    MatchEwinToSnapInfo(ewin);
    if (!ewin->border)
       ewin->border = border;
-   
+
    b = ewin->border;
    ewin->border = NULL;
    ewin->border_new = 1;
    SetEwinToBorder(ewin, b);
-   
+
    ICCCM_MatchSize(ewin);
    ICCCM_Adopt(ewin, win);
    UngrabX();

@@ -1252,3 +1252,11 @@ Fri Sep  3 16:33:31 PDT 1999
 (Raster)
 
 ok - i forgot if i edited something....
+
+-------------------------------------------------------------------------------
+
+Sat Sep  4 00:35:38 PDT 1999
+(Raster)
+
+draw queue for handling expoes on dialogs.. more efficient drawing for dialogs
+AND now no drawing bugs in non opaque move and resize modes :)
