@@ -191,16 +191,17 @@ _container_stack_above(Evas_Object *obj, Evas_Object *above)
   
   data = evas_object_smart_data_get(obj);
 
+  evas_object_stack_above(data->grabber, above);
+  evas_object_stack_above(data->clipper, above);
+
   for (l = data->elements; l; l = l->next)
   {
     Container_Element *el = l->data;
 
-    evas_object_stack_above(el->obj, above);
     evas_object_stack_above(el->grabber, above);
+    evas_object_stack_above(el->obj, above);
   }
   
-  evas_object_stack_above(data->clipper, above);
-  evas_object_stack_above(data->grabber, above);
 }
 
 void
