@@ -21,7 +21,6 @@
  * CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 #include "E.h"
-#include <sys/time.h>
 
 static int          area_w = 3;
 static int          area_h = 3;
@@ -186,10 +185,7 @@ MoveCurrentLinearAreaBy(int a)
 void
 SlideWindowsBy(Window * win, int num, int dx, int dy, int speed)
 {
-   int                 i, k, spd, x, y, min;
-   struct timeval      timev1, timev2;
-   int                 dsec, dusec;
-   double              tm;
+   int                 i, k, x, y;
    struct _xy
    {
       int                 x, y;
@@ -199,16 +195,14 @@ SlideWindowsBy(Window * win, int num, int dx, int dy, int speed)
    if (num < 1)
       EDBUG_RETURN_;
 
-   spd = 16;
-   min = 2;
    xy = Emalloc(sizeof(struct _xy) * num);
 
    for (i = 0; i < num; i++)
       GetWinXY(win[i], &(xy[i].x), &(xy[i].y));
 
-   for (k = 0; k <= 1024; k += spd)
+   ETimedLoopInit(0, 1024, speed);
+   for (k = 0; k <= 1024;)
      {
-	gettimeofday(&timev1, NULL);
 	for (i = 0; i < num; i++)
 	  {
 	     x = ((xy[i].x * (1024 - k)) + ((xy[i].x + dx) * k)) >> 10;
@@ -216,18 +210,8 @@ SlideWindowsBy(Window * win, int num, int dx, int dy, int speed)
 	     EMoveWindow(disp, win[i], x, y);
 	  }
 	XSync(disp, False);
-	gettimeofday(&timev2, NULL);
-	dsec = timev2.tv_sec - timev1.tv_sec;
-	dusec = timev2.tv_usec - timev1.tv_usec;
-	if (dusec < 0)
-	  {
-	     dsec--;
-	     dusec += 1000000;
-	  }
-	tm = (double)dsec + (((double)dusec) / 1000000);
-	spd = (int)((double)speed * tm);
-	if (spd < min)
-	   spd = min;
+
+	k = ETimedLoopNext();
      }
 
    for (i = 0; i < num; i++)

@@ -184,15 +184,11 @@ GetContextEwin(void)
 void
 SlideEwinTo(EWin * ewin, int fx, int fy, int tx, int ty, int speed)
 {
-   int                 k, spd, x, y, min, tmpx, tmpy, tmpw, tmph;
-   struct timeval      timev1, timev2;
-   int                 dsec, dusec;
-   double              tm;
+   int                 k, x, y, tmpx, tmpy;
    char                firstlast;
 
    EDBUG(3, "SlideEwinTo");
-   spd = 16;
-   min = 2;
+
    firstlast = 0;
    Mode.doingslide = 1;
    SoundPlay("SOUND_WINDOW_SLIDE");
@@ -200,42 +196,33 @@ SlideEwinTo(EWin * ewin, int fx, int fy, int tx, int ty, int speed)
    if (Conf.slidemode > 0)
       GrabX();
 
-   for (k = 0; k <= 1024; k += spd)
+   ETimedLoopInit(0, 1024, speed);
+   for (k = 0; k <= 1024;)
      {
-	gettimeofday(&timev1, NULL);
 	x = ((fx * (1024 - k)) + (tx * k)) >> 10;
 	y = ((fy * (1024 - k)) + (ty * k)) >> 10;
 	tmpx = x;
 	tmpy = y;
-	tmpw = ewin->client.w;
-	tmph = ewin->client.h;
 	if (Conf.slidemode == 0)
 	   EMoveWindow(disp, ewin->win, tmpx, tmpy);
 	else
-	   DrawEwinShape(ewin, Conf.slidemode, tmpx, tmpy, tmpw, tmph,
-			 firstlast);
+	   DrawEwinShape(ewin, Conf.slidemode, tmpx, tmpy,
+			 ewin->client.w, ewin->client.h, firstlast);
 	if (firstlast == 0)
 	   firstlast = 1;
 	XSync(disp, False);
-	gettimeofday(&timev2, NULL);
-	dsec = timev2.tv_sec - timev1.tv_sec;
-	dusec = timev2.tv_usec - timev1.tv_usec;
-	if (dusec < 0)
-	  {
-	     dsec--;
-	     dusec += 1000000;
-	  }
-	tm = (double)dsec + (((double)dusec) / 1000000);
-	spd = (int)((double)speed * tm);
-	if (spd < min)
-	   spd = min;
+
+	k = ETimedLoopNext();
      }
    DrawEwinShape(ewin, Conf.slidemode, x, y, ewin->client.w, ewin->client.h, 2);
    MoveEwin(ewin, tx, ty);
    Mode.doingslide = 0;
+
    if (Conf.slidemode > 0)
       UngrabX();
+
    SoundPlay("SOUND_WINDOW_SLIDE_END");
+
    EDBUG_RETURN_;
 }
 
@@ -243,11 +230,7 @@ void
 SlideEwinsTo(EWin ** ewin, int *fx, int *fy, int *tx, int *ty, int num_wins,
 	     int speed)
 {
-   int                 k, spd, *x = NULL, *y =
-      NULL, min, tmpx, tmpy, tmpw, tmph, i;
-   struct timeval      timev1, timev2;
-   int                 dsec, dusec;
-   double              tm;
+   int                 k, *x = NULL, *y = NULL, tmpx, tmpy, tmpw, tmph, i;
    char                firstlast;
 
    EDBUG(3, "SlideEwinsTo");
@@ -257,48 +240,38 @@ SlideEwinsTo(EWin ** ewin, int *fx, int *fy, int *tx, int *ty, int num_wins,
 	x = Emalloc(sizeof(int) * num_wins);
 	y = Emalloc(sizeof(int) * num_wins);
      }
-   spd = 16;
-   min = 2;
+
    firstlast = 0;
    Mode.doingslide = 1;
    SoundPlay("SOUND_WINDOW_SLIDE");
+
    if (Conf.slidemode > 0)
       GrabX();
-   for (k = 0; k <= 1024; k += spd)
+
+   ETimedLoopInit(0, 1024, speed);
+   for (k = 0; k <= 1024;)
      {
 	for (i = 0; i < num_wins; i++)
 	  {
-	     if (ewin[i])
-	       {
-		  gettimeofday(&timev1, NULL);
-		  x[i] = ((fx[i] * (1024 - k)) + (tx[i] * k)) >> 10;
-		  y[i] = ((fy[i] * (1024 - k)) + (ty[i] * k)) >> 10;
-		  tmpx = x[i];
-		  tmpy = y[i];
-		  tmpw = ewin[i]->client.w;
-		  tmph = ewin[i]->client.h;
-		  if (ewin[i]->menu)
-		     EMoveWindow(disp, ewin[i]->win, tmpx, tmpy);
-		  else
-		     DrawEwinShape(ewin[i], 0, tmpx, tmpy, tmpw, tmph,
-				   firstlast);
-		  if (firstlast == 0)
-		     firstlast = 1;
-		  XSync(disp, False);
-		  gettimeofday(&timev2, NULL);
-		  dsec = timev2.tv_sec - timev1.tv_sec;
-		  dusec = timev2.tv_usec - timev1.tv_usec;
-		  if (dusec < 0)
-		    {
-		       dsec--;
-		       dusec += 1000000;
-		    }
-		  tm = (double)dsec + (((double)dusec) / 1000000);
-		  spd = (int)((double)speed * tm);
-		  if (spd < min)
-		     spd = min;
-	       }
+	     if (!ewin[i])
+		continue;
+
+	     x[i] = ((fx[i] * (1024 - k)) + (tx[i] * k)) >> 10;
+	     y[i] = ((fy[i] * (1024 - k)) + (ty[i] * k)) >> 10;
+	     tmpx = x[i];
+	     tmpy = y[i];
+	     tmpw = ewin[i]->client.w;
+	     tmph = ewin[i]->client.h;
+	     if (ewin[i]->menu)
+		EMoveWindow(disp, ewin[i]->win, tmpx, tmpy);
+	     else
+		DrawEwinShape(ewin[i], 0, tmpx, tmpy, tmpw, tmph, firstlast);
+	     if (firstlast == 0)
+		firstlast = 1;
+	     XSync(disp, False);
 	  }
+	/* We may loop faster here than originally intended */
+	k = ETimedLoopNext();
      }
 
    for (i = 0; i < num_wins; i++)
@@ -314,11 +287,14 @@ SlideEwinsTo(EWin ** ewin, int *fx, int *fy, int *tx, int *ty, int num_wins,
    Mode.doingslide = 0;
    if (Conf.slidemode > 0)
       UngrabX();
+
    SoundPlay("SOUND_WINDOW_SLIDE_END");
+
    if (x)
       Efree(x);
    if (y)
       Efree(y);
+
    EDBUG_RETURN_;
 }
 
@@ -2694,11 +2670,7 @@ void
 EwinShade(EWin * ewin)
 {
    XSetWindowAttributes att;
-   int                 i, j, speed, a, b, c, d, ww, hh;
-   int                 k, spd, min;
-   struct timeval      timev1, timev2;
-   int                 dsec, dusec;
-   double              tm;
+   int                 i, j, k, speed, a, b, c, d, ww, hh;
    char                pq;
 
    EDBUG(4, "EwinShade");
@@ -2717,8 +2689,6 @@ EwinShade(EWin * ewin)
    Mode.queue_up = 0;
 
    speed = Conf.shadespeed;
-   spd = 32;
-   min = 2;
 
    GrabX();
 
@@ -2730,43 +2700,35 @@ EwinShade(EWin * ewin)
 	MinShadeSize(ewin, &b, &d);
 	a = ewin->w;
 	if ((Conf.animate_shading) || (ewin->menu))
-	   for (k = 0; k <= 1024; k += spd)
-	     {
-		gettimeofday(&timev1, NULL);
-		i = ((a * (1024 - k)) + (b * k)) >> 10;
-		ewin->w = i;
-		if (ewin->w < 1)
-		   ewin->w = 1;
-		ww = ewin->w - ewin->border->border.left -
-		   ewin->border->border.right;
-		if (ww < 1)
-		   ww = 1;
-		hh = ewin->client.h;
-		EMoveResizeWindow(disp, ewin->win_container,
-				  ewin->border->border.left,
-				  ewin->border->border.top, ww, hh);
-		EMoveResizeWindow(disp, ewin->win, ewin->x, ewin->y, ewin->w,
-				  ewin->h);
-		CalcEwinSizes(ewin);
-		if (ewin->client.shaped)
-		   EShapeCombineShape(disp, ewin->win_container,
-				      ShapeBounding, -(ewin->client.w - ww),
-				      0, ewin->client.win, ShapeBounding,
-				      ShapeSet);
-		EwinPropagateShapes(ewin);
-		gettimeofday(&timev2, NULL);
-		dsec = timev2.tv_sec - timev1.tv_sec;
-		dusec = timev2.tv_usec - timev1.tv_usec;
-		if (dusec < 0)
-		  {
-		     dsec--;
-		     dusec += 1000000;
-		  }
-		tm = (double)dsec + (((double)dusec) / 1000000);
-		spd = (int)((double)speed * tm);
-		if (spd < min)
-		   spd = min;
-	     }
+	  {
+	     ETimedLoopInit(0, 1024, speed);
+	     for (k = 0; k <= 1024;)
+	       {
+		  i = ((a * (1024 - k)) + (b * k)) >> 10;
+		  ewin->w = i;
+		  if (ewin->w < 1)
+		     ewin->w = 1;
+		  ww = ewin->w - ewin->border->border.left -
+		     ewin->border->border.right;
+		  if (ww < 1)
+		     ww = 1;
+		  hh = ewin->client.h;
+		  EMoveResizeWindow(disp, ewin->win_container,
+				    ewin->border->border.left,
+				    ewin->border->border.top, ww, hh);
+		  EMoveResizeWindow(disp, ewin->win, ewin->x, ewin->y, ewin->w,
+				    ewin->h);
+		  CalcEwinSizes(ewin);
+		  if (ewin->client.shaped)
+		     EShapeCombineShape(disp, ewin->win_container,
+					ShapeBounding, -(ewin->client.w - ww),
+					0, ewin->client.win, ShapeBounding,
+					ShapeSet);
+		  EwinPropagateShapes(ewin);
+
+		  k = ETimedLoopNext();
+	       }
+	  }
 	ewin->shaded = 2;
 	ewin->w = b;
 	EMoveResizeWindow(disp, ewin->win_container, -30, -30, 1, 1);
@@ -2782,44 +2744,36 @@ EwinShade(EWin * ewin)
 	c = ewin->x;
 	d = ewin->x + ewin->w - b;
 	if ((Conf.animate_shading) || (ewin->menu))
-	   for (k = 0; k <= 1024; k += spd)
-	     {
-		gettimeofday(&timev1, NULL);
-		i = ((a * (1024 - k)) + (b * k)) >> 10;
-		j = ((c * (1024 - k)) + (d * k)) >> 10;
-		ewin->w = i;
-		ewin->x = j;
-		if (ewin->w < 1)
-		   ewin->w = 1;
-		ww = ewin->w - ewin->border->border.left -
-		   ewin->border->border.right;
-		if (ww < 1)
-		   ww = 1;
-		hh = ewin->client.h;
-		EMoveResizeWindow(disp, ewin->win_container,
-				  ewin->border->border.left,
-				  ewin->border->border.top, ww, hh);
-		EMoveResizeWindow(disp, ewin->win, ewin->x, ewin->y, ewin->w,
-				  ewin->h);
-		CalcEwinSizes(ewin);
-		if (ewin->client.shaped)
-		   EShapeCombineShape(disp, ewin->win_container,
-				      ShapeBounding, 0, 0, ewin->client.win,
-				      ShapeBounding, ShapeSet);
-		EwinPropagateShapes(ewin);
-		gettimeofday(&timev2, NULL);
-		dsec = timev2.tv_sec - timev1.tv_sec;
-		dusec = timev2.tv_usec - timev1.tv_usec;
-		if (dusec < 0)
-		  {
-		     dsec--;
-		     dusec += 1000000;
-		  }
-		tm = (double)dsec + (((double)dusec) / 1000000);
-		spd = (int)((double)speed * tm);
-		if (spd < min)
-		   spd = min;
-	     }
+	  {
+	     ETimedLoopInit(0, 1024, speed);
+	     for (k = 0; k <= 1024;)
+	       {
+		  i = ((a * (1024 - k)) + (b * k)) >> 10;
+		  j = ((c * (1024 - k)) + (d * k)) >> 10;
+		  ewin->w = i;
+		  ewin->x = j;
+		  if (ewin->w < 1)
+		     ewin->w = 1;
+		  ww = ewin->w - ewin->border->border.left -
+		     ewin->border->border.right;
+		  if (ww < 1)
+		     ww = 1;
+		  hh = ewin->client.h;
+		  EMoveResizeWindow(disp, ewin->win_container,
+				    ewin->border->border.left,
+				    ewin->border->border.top, ww, hh);
+		  EMoveResizeWindow(disp, ewin->win, ewin->x, ewin->y, ewin->w,
+				    ewin->h);
+		  CalcEwinSizes(ewin);
+		  if (ewin->client.shaped)
+		     EShapeCombineShape(disp, ewin->win_container,
+					ShapeBounding, 0, 0, ewin->client.win,
+					ShapeBounding, ShapeSet);
+		  EwinPropagateShapes(ewin);
+
+		  k = ETimedLoopNext();
+	       }
+	  }
 	ewin->shaded = 2;
 	ewin->w = b;
 	ewin->x = d;
@@ -2835,44 +2789,36 @@ EwinShade(EWin * ewin)
 	MinShadeSize(ewin, &b, &d);
 	b = d;
 	if ((Conf.animate_shading) || (ewin->menu))
-	   for (k = 0; k <= 1024; k += spd)
-	     {
-		gettimeofday(&timev1, NULL);
-		i = ((a * (1024 - k)) + (b * k)) >> 10;
-		ewin->h = i;
-		if (ewin->h < 1)
-		   ewin->h = 1;
-		hh = ewin->h - ewin->border->border.top -
-		   ewin->border->border.bottom;
-		if (hh < 1)
-		   hh = 1;
-		ww = ewin->client.w;
-		EMoveResizeWindow(disp, ewin->win_container,
-				  ewin->border->border.left,
-				  ewin->border->border.top, ww, hh);
-		EMoveResizeWindow(disp, ewin->win, ewin->x, ewin->y, ewin->w,
-				  ewin->h);
-		CalcEwinSizes(ewin);
-		if (ewin->client.shaped)
-		   EShapeCombineShape(disp, ewin->win_container,
-				      ShapeBounding, 0,
-				      -(ewin->client.h - hh),
-				      ewin->client.win, ShapeBounding,
-				      ShapeSet);
-		EwinPropagateShapes(ewin);
-		gettimeofday(&timev2, NULL);
-		dsec = timev2.tv_sec - timev1.tv_sec;
-		dusec = timev2.tv_usec - timev1.tv_usec;
-		if (dusec < 0)
-		  {
-		     dsec--;
-		     dusec += 1000000;
-		  }
-		tm = (double)dsec + (((double)dusec) / 1000000);
-		spd = (int)((double)speed * tm);
-		if (spd < min)
-		   spd = min;
-	     }
+	  {
+	     ETimedLoopInit(0, 1024, speed);
+	     for (k = 0; k <= 1024;)
+	       {
+		  i = ((a * (1024 - k)) + (b * k)) >> 10;
+		  ewin->h = i;
+		  if (ewin->h < 1)
+		     ewin->h = 1;
+		  hh = ewin->h - ewin->border->border.top -
+		     ewin->border->border.bottom;
+		  if (hh < 1)
+		     hh = 1;
+		  ww = ewin->client.w;
+		  EMoveResizeWindow(disp, ewin->win_container,
+				    ewin->border->border.left,
+				    ewin->border->border.top, ww, hh);
+		  EMoveResizeWindow(disp, ewin->win, ewin->x, ewin->y, ewin->w,
+				    ewin->h);
+		  CalcEwinSizes(ewin);
+		  if (ewin->client.shaped)
+		     EShapeCombineShape(disp, ewin->win_container,
+					ShapeBounding, 0,
+					-(ewin->client.h - hh),
+					ewin->client.win, ShapeBounding,
+					ShapeSet);
+		  EwinPropagateShapes(ewin);
+
+		  k = ETimedLoopNext();
+	       }
+	  }
 	ewin->shaded = 2;
 	ewin->h = b;
 	EMoveResizeWindow(disp, ewin->win_container, -30, -30, 1, 1);
@@ -2889,44 +2835,35 @@ EwinShade(EWin * ewin)
 	c = ewin->y;
 	d = ewin->y + ewin->h - b;
 	if ((Conf.animate_shading) || (ewin->menu))
-	   for (k = 0; k <= 1024; k += spd)
-	     {
-		gettimeofday(&timev1, NULL);
-		i = ((a * (1024 - k)) + (b * k)) >> 10;
-		j = ((c * (1024 - k)) + (d * k)) >> 10;
-		ewin->h = i;
-		ewin->y = j;
-		if (ewin->h < 1)
-		   ewin->h = 1;
-		hh = ewin->h - ewin->border->border.top -
-		   ewin->border->border.bottom;
-		if (hh < 1)
-		   hh = 1;
-		ww = ewin->client.w;
-		EMoveResizeWindow(disp, ewin->win_container,
-				  ewin->border->border.left,
-				  ewin->border->border.top, ww, hh);
-		EMoveResizeWindow(disp, ewin->win, ewin->x, ewin->y, ewin->w,
-				  ewin->h);
-		CalcEwinSizes(ewin);
-		if (ewin->client.shaped)
-		   EShapeCombineShape(disp, ewin->win_container,
-				      ShapeBounding, 0, 0, ewin->client.win,
-				      ShapeBounding, ShapeSet);
-		EwinPropagateShapes(ewin);
-		gettimeofday(&timev2, NULL);
-		dsec = timev2.tv_sec - timev1.tv_sec;
-		dusec = timev2.tv_usec - timev1.tv_usec;
-		if (dusec < 0)
-		  {
-		     dsec--;
-		     dusec += 1000000;
-		  }
-		tm = (double)dsec + (((double)dusec) / 1000000);
-		spd = (int)((double)speed * tm);
-		if (spd < min)
-		   spd = min;
-	     }
+	  {
+	     ETimedLoopInit(0, 1024, speed);
+	     for (k = 0; k <= 1024;)
+	       {
+		  i = ((a * (1024 - k)) + (b * k)) >> 10;
+		  j = ((c * (1024 - k)) + (d * k)) >> 10;
+		  ewin->h = i;
+		  ewin->y = j;
+		  if (ewin->h < 1)
+		     ewin->h = 1;
+		  hh = ewin->h - ewin->border->border.top -
+		     ewin->border->border.bottom;
+		  if (hh < 1)
+		     hh = 1;
+		  ww = ewin->client.w;
+		  EMoveResizeWindow(disp, ewin->win_container,
+				    ewin->border->border.left,
+				    ewin->border->border.top, ww, hh);
+		  EMoveResizeWindow(disp, ewin->win, ewin->x, ewin->y, ewin->w,
+				    ewin->h);
+		  CalcEwinSizes(ewin);
+		  if (ewin->client.shaped)
+		     EShapeCombineShape(disp, ewin->win_container,
+					ShapeBounding, 0, 0, ewin->client.win,
+					ShapeBounding, ShapeSet);
+		  EwinPropagateShapes(ewin);
+		  k = ETimedLoopNext();
+	       }
+	  }
 	ewin->shaded = 2;
 	ewin->h = b;
 	ewin->y = d;
@@ -2963,14 +2900,11 @@ void
 EwinUnShade(EWin * ewin)
 {
    XSetWindowAttributes att;
-   int                 i, j, speed, a, b, c, d;
-   int                 k, spd, min;
-   struct timeval      timev1, timev2;
-   int                 dsec, dusec;
-   double              tm;
+   int                 i, j, k, speed, a, b, c, d;
    char                pq;
 
    EDBUG(4, "EwinUnShade");
+
    if (GetZoomEWin() == ewin)
       EDBUG_RETURN_;
    if (!ewin->shaded || ewin->iconified)
@@ -2980,8 +2914,6 @@ EwinUnShade(EWin * ewin)
    Mode.queue_up = 0;
 
    speed = Conf.shadespeed;
-   spd = 32;
-   min = 2;
 
    GrabX();
 
@@ -3002,41 +2934,33 @@ EwinUnShade(EWin * ewin)
 	EMapWindow(disp, ewin->client.win);
 	EMapWindow(disp, ewin->win_container);
 	if ((Conf.animate_shading) || (ewin->menu))
-	   for (k = 0; k <= 1024; k += spd)
-	     {
-		gettimeofday(&timev1, NULL);
-		i = ((a * (1024 - k)) + (b * k)) >> 10;
-		ewin->w = i;
-		EMoveResizeWindow(disp, ewin->win_container,
-				  ewin->border->border.left,
-				  ewin->border->border.top,
-				  ewin->w - ewin->border->border.left -
-				  ewin->border->border.right, ewin->client.h);
-		EMoveResizeWindow(disp, ewin->win, ewin->x, ewin->y, ewin->w,
-				  ewin->h);
-		CalcEwinSizes(ewin);
-		if (ewin->client.shaped)
-		   EShapeCombineShape(disp, ewin->win_container,
-				      ShapeBounding,
-				      -(ewin->client.w -
-					(ewin->w - ewin->border->border.left -
-					 ewin->border->border.right)), 0,
-				      ewin->client.win, ShapeBounding,
-				      ShapeSet);
-		EwinPropagateShapes(ewin);
-		gettimeofday(&timev2, NULL);
-		dsec = timev2.tv_sec - timev1.tv_sec;
-		dusec = timev2.tv_usec - timev1.tv_usec;
-		if (dusec < 0)
-		  {
-		     dsec--;
-		     dusec += 1000000;
-		  }
-		tm = (double)dsec + (((double)dusec) / 1000000);
-		spd = (int)((double)speed * tm);
-		if (spd < min)
-		   spd = min;
-	     }
+	  {
+	     ETimedLoopInit(0, 1024, speed);
+	     for (k = 0; k <= 1024;)
+	       {
+		  i = ((a * (1024 - k)) + (b * k)) >> 10;
+		  ewin->w = i;
+		  EMoveResizeWindow(disp, ewin->win_container,
+				    ewin->border->border.left,
+				    ewin->border->border.top,
+				    ewin->w - ewin->border->border.left -
+				    ewin->border->border.right, ewin->client.h);
+		  EMoveResizeWindow(disp, ewin->win, ewin->x, ewin->y, ewin->w,
+				    ewin->h);
+		  CalcEwinSizes(ewin);
+		  if (ewin->client.shaped)
+		     EShapeCombineShape(disp, ewin->win_container,
+					ShapeBounding,
+					-(ewin->client.w -
+					  (ewin->w - ewin->border->border.left -
+					   ewin->border->border.right)), 0,
+					ewin->client.win, ShapeBounding,
+					ShapeSet);
+		  EwinPropagateShapes(ewin);
+
+		  k = ETimedLoopNext();
+	       }
+	  }
 	ewin->w = b;
 	MoveResizeEwin(ewin, ewin->x, ewin->y, ewin->client.w, ewin->client.h);
 	XSync(disp, False);
@@ -3059,39 +2983,31 @@ EwinUnShade(EWin * ewin)
 	EMapWindow(disp, ewin->client.win);
 	EMapWindow(disp, ewin->win_container);
 	if ((Conf.animate_shading) || (ewin->menu))
-	   for (k = 0; k <= 1024; k += spd)
-	     {
-		gettimeofday(&timev1, NULL);
-		i = ((a * (1024 - k)) + (b * k)) >> 10;
-		j = ((c * (1024 - k)) + (d * k)) >> 10;
-		ewin->w = i;
-		ewin->x = j;
-		EMoveResizeWindow(disp, ewin->win_container,
-				  ewin->border->border.left,
-				  ewin->border->border.top,
-				  ewin->w - ewin->border->border.left -
-				  ewin->border->border.right, ewin->client.h);
-		EMoveResizeWindow(disp, ewin->win, ewin->x, ewin->y, ewin->w,
-				  ewin->h);
-		CalcEwinSizes(ewin);
-		if (ewin->client.shaped)
-		   EShapeCombineShape(disp, ewin->win_container,
-				      ShapeBounding, 0, 0, ewin->client.win,
-				      ShapeBounding, ShapeSet);
-		EwinPropagateShapes(ewin);
-		gettimeofday(&timev2, NULL);
-		dsec = timev2.tv_sec - timev1.tv_sec;
-		dusec = timev2.tv_usec - timev1.tv_usec;
-		if (dusec < 0)
-		  {
-		     dsec--;
-		     dusec += 1000000;
-		  }
-		tm = (double)dsec + (((double)dusec) / 1000000);
-		spd = (int)((double)speed * tm);
-		if (spd < min)
-		   spd = min;
-	     }
+	  {
+	     ETimedLoopInit(0, 1024, speed);
+	     for (k = 0; k <= 1024;)
+	       {
+		  i = ((a * (1024 - k)) + (b * k)) >> 10;
+		  j = ((c * (1024 - k)) + (d * k)) >> 10;
+		  ewin->w = i;
+		  ewin->x = j;
+		  EMoveResizeWindow(disp, ewin->win_container,
+				    ewin->border->border.left,
+				    ewin->border->border.top,
+				    ewin->w - ewin->border->border.left -
+				    ewin->border->border.right, ewin->client.h);
+		  EMoveResizeWindow(disp, ewin->win, ewin->x, ewin->y, ewin->w,
+				    ewin->h);
+		  CalcEwinSizes(ewin);
+		  if (ewin->client.shaped)
+		     EShapeCombineShape(disp, ewin->win_container,
+					ShapeBounding, 0, 0, ewin->client.win,
+					ShapeBounding, ShapeSet);
+		  EwinPropagateShapes(ewin);
+
+		  k = ETimedLoopNext();
+	       }
+	  }
 	ewin->w = b;
 	ewin->x = d;
 	MoveResizeEwin(ewin, ewin->x, ewin->y, ewin->client.w, ewin->client.h);
@@ -3112,41 +3028,33 @@ EwinUnShade(EWin * ewin)
 	EMapWindow(disp, ewin->client.win);
 	EMapWindow(disp, ewin->win_container);
 	if ((Conf.animate_shading) || (ewin->menu))
-	   for (k = 0; k <= 1024; k += spd)
-	     {
-		gettimeofday(&timev1, NULL);
-		i = ((a * (1024 - k)) + (b * k)) >> 10;
-		ewin->h = i;
-		EMoveResizeWindow(disp, ewin->win_container,
-				  ewin->border->border.left,
-				  ewin->border->border.top, ewin->client.w,
-				  ewin->h - ewin->border->border.top -
-				  ewin->border->border.bottom);
-		EMoveResizeWindow(disp, ewin->win, ewin->x, ewin->y, ewin->w,
-				  ewin->h);
-		CalcEwinSizes(ewin);
-		if (ewin->client.shaped)
-		   EShapeCombineShape(disp, ewin->win_container,
-				      ShapeBounding, 0,
-				      -(ewin->client.h -
-					(ewin->h - ewin->border->border.top -
-					 ewin->border->border.bottom)),
-				      ewin->client.win, ShapeBounding,
-				      ShapeSet);
-		EwinPropagateShapes(ewin);
-		gettimeofday(&timev2, NULL);
-		dsec = timev2.tv_sec - timev1.tv_sec;
-		dusec = timev2.tv_usec - timev1.tv_usec;
-		if (dusec < 0)
-		  {
-		     dsec--;
-		     dusec += 1000000;
-		  }
-		tm = (double)dsec + (((double)dusec) / 1000000);
-		spd = (int)((double)speed * tm);
-		if (spd < min)
-		   spd = min;
-	     }
+	  {
+	     ETimedLoopInit(0, 1024, speed);
+	     for (k = 0; k <= 1024;)
+	       {
+		  i = ((a * (1024 - k)) + (b * k)) >> 10;
+		  ewin->h = i;
+		  EMoveResizeWindow(disp, ewin->win_container,
+				    ewin->border->border.left,
+				    ewin->border->border.top, ewin->client.w,
+				    ewin->h - ewin->border->border.top -
+				    ewin->border->border.bottom);
+		  EMoveResizeWindow(disp, ewin->win, ewin->x, ewin->y, ewin->w,
+				    ewin->h);
+		  CalcEwinSizes(ewin);
+		  if (ewin->client.shaped)
+		     EShapeCombineShape(disp, ewin->win_container,
+					ShapeBounding, 0,
+					-(ewin->client.h -
+					  (ewin->h - ewin->border->border.top -
+					   ewin->border->border.bottom)),
+					ewin->client.win, ShapeBounding,
+					ShapeSet);
+		  EwinPropagateShapes(ewin);
+
+		  k = ETimedLoopNext();
+	       }
+	  }
 	ewin->h = b;
 	MoveResizeEwin(ewin, ewin->x, ewin->y, ewin->client.w, ewin->client.h);
 	XSync(disp, False);
@@ -3169,39 +3077,31 @@ EwinUnShade(EWin * ewin)
 	EMapWindow(disp, ewin->client.win);
 	EMapWindow(disp, ewin->win_container);
 	if ((Conf.animate_shading) || (ewin->menu))
-	   for (k = 0; k <= 1024; k += spd)
-	     {
-		gettimeofday(&timev1, NULL);
-		i = ((a * (1024 - k)) + (b * k)) >> 10;
-		j = ((c * (1024 - k)) + (d * k)) >> 10;
-		ewin->h = i;
-		ewin->y = j;
-		EMoveResizeWindow(disp, ewin->win_container,
-				  ewin->border->border.left,
-				  ewin->border->border.top, ewin->client.w,
-				  ewin->h - ewin->border->border.top -
-				  ewin->border->border.bottom);
-		EMoveResizeWindow(disp, ewin->win, ewin->x, ewin->y, ewin->w,
-				  ewin->h);
-		CalcEwinSizes(ewin);
-		if (ewin->client.shaped)
-		   EShapeCombineShape(disp, ewin->win_container,
-				      ShapeBounding, 0, 0, ewin->client.win,
-				      ShapeBounding, ShapeSet);
-		EwinPropagateShapes(ewin);
-		gettimeofday(&timev2, NULL);
-		dsec = timev2.tv_sec - timev1.tv_sec;
-		dusec = timev2.tv_usec - timev1.tv_usec;
-		if (dusec < 0)
-		  {
-		     dsec--;
-		     dusec += 1000000;
-		  }
-		tm = (double)dsec + (((double)dusec) / 1000000);
-		spd = (int)((double)speed * tm);
-		if (spd < min)
-		   spd = min;
-	     }
+	  {
+	     ETimedLoopInit(0, 1024, speed);
+	     for (k = 0; k <= 1024;)
+	       {
+		  i = ((a * (1024 - k)) + (b * k)) >> 10;
+		  j = ((c * (1024 - k)) + (d * k)) >> 10;
+		  ewin->h = i;
+		  ewin->y = j;
+		  EMoveResizeWindow(disp, ewin->win_container,
+				    ewin->border->border.left,
+				    ewin->border->border.top, ewin->client.w,
+				    ewin->h - ewin->border->border.top -
+				    ewin->border->border.bottom);
+		  EMoveResizeWindow(disp, ewin->win, ewin->x, ewin->y, ewin->w,
+				    ewin->h);
+		  CalcEwinSizes(ewin);
+		  if (ewin->client.shaped)
+		     EShapeCombineShape(disp, ewin->win_container,
+					ShapeBounding, 0, 0, ewin->client.win,
+					ShapeBounding, ShapeSet);
+		  EwinPropagateShapes(ewin);
+
+		  k = ETimedLoopNext();
+	       }
+	  }
 	ewin->h = b;
 	ewin->y = d;
 	MoveResizeEwin(ewin, ewin->x, ewin->y, ewin->client.w, ewin->client.h);

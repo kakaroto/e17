@@ -21,6 +21,7 @@
  * CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 #include "E.h"
+#include <sys/time.h>
 
 static char        *userDir = NULL;
 static char        *cacheDir = NULL;
@@ -180,6 +181,61 @@ Quicksort(void **a, int l, int r, int (*CompareFunc) (void *d1, void *d2))
      }
 }
 
+/*
+ * Stuff to make loops for animated effects.
+ */
+struct timeval      etl_tv_last;
+static int          etl_speed;
+static int          etl_k1, etl_k2, etl_ki;
+static double       etl_k;
+
+void
+ETimedLoopInit(int k1, int k2, int speed)
+{
+   etl_k1 = k1;
+   etl_k2 = k2;
+   etl_speed = speed;
+
+   etl_k = 1.0 * etl_k1;
+   gettimeofday(&etl_tv_last, NULL);
+}
+
+int
+ETimedLoopNext(void)
+{
+   struct timeval      tv;
+   int                 dsec, dusec;
+   double              spd, tm;
+
+   etl_ki++;			/* Increment iteration count */
+
+   /* Find elapsed time since loop start */
+   gettimeofday(&tv, NULL);
+   dsec = tv.tv_sec - etl_tv_last.tv_sec;
+   dusec = tv.tv_usec - etl_tv_last.tv_usec;
+   etl_tv_last.tv_sec = tv.tv_sec;
+   etl_tv_last.tv_usec = tv.tv_usec;
+   if (dusec < 0)
+     {
+	dsec--;
+	dusec += 1000000;
+     }
+   tm = (double)dsec + (((double)dusec) / 1000000);
+
+   spd = ((double)etl_speed * tm);
+   if (spd < 0.001)		/* More or less arbitrary limit */
+      spd = 0.001;
+#if 0
+   Eprintf("SlideEwinTo k=%4f tm=%.3f spd=%f\n", etl_k, 1e3 * tm, spd);
+#endif
+   etl_k += spd;
+
+   return (int)etl_k;
+}
+
+/*
+ * Debug/error message printing.
+ */
 void
 Eprintf(const char *fmt, ...)
 {

@@ -2391,6 +2391,8 @@ void                EDirUserCacheSet(const char *d);
 char               *EDirUserCache(void);
 void                Quicksort(void **a, int l, int r,
 			      int (*CompareFunc) (void *d1, void *d2));
+void                ETimedLoopInit(int k1, int k2, int speed);
+int                 ETimedLoopNext(void);
 void __PRINTF__     Eprintf(const char *fmt, ...);
 
 /* moveresize.c */

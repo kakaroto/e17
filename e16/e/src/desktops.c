@@ -23,7 +23,6 @@
 #define DECLARE_STRUCT_BUTTON
 #include "E.h"
 #include <time.h>
-#include <sys/time.h>
 
 #define EDESK_EVENT_MASK \
   (KeyPressMask | KeyReleaseMask | ButtonPressMask | ButtonReleaseMask | \
@@ -188,37 +187,25 @@ MoveToDeskBottom(int num)
 void
 SlideWindowTo(Window win, int fx, int fy, int tx, int ty, int speed)
 {
-   int                 k, spd, x, y, min;
-   struct timeval      timev1, timev2;
-   int                 dsec, dusec;
-   double              tm;
+   int                 k, x, y;
 
    EDBUG(5, "SlideWindowTo");
-   spd = 16;
-   min = 2;
+
    GrabX();
-   for (k = 0; k <= 1024; k += spd)
+
+   ETimedLoopInit(0, 1024, speed);
+   for (k = 0; k <= 1024;)
      {
-	gettimeofday(&timev1, NULL);
 	x = ((fx * (1024 - k)) + (tx * k)) >> 10;
 	y = ((fy * (1024 - k)) + (ty * k)) >> 10;
 	EMoveWindow(disp, win, x, y);
 	XSync(disp, False);
-	gettimeofday(&timev2, NULL);
-	dsec = timev2.tv_sec - timev1.tv_sec;
-	dusec = timev2.tv_usec - timev1.tv_usec;
-	if (dusec < 0)
-	  {
-	     dsec--;
-	     dusec += 1000000;
-	  }
-	tm = (double)dsec + (((double)dusec) / 1000000);
-	spd = (int)((double)speed * tm);
-	if (spd < min)
-	   spd = min;
+
+	k = ETimedLoopNext();
      }
    EMoveWindow(disp, win, tx, ty);
    UngrabX();
+
    EDBUG_RETURN_;
 }
 

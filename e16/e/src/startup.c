@@ -21,7 +21,6 @@
  * CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 #include "E.h"
-#include <sys/time.h>
 #include <time.h>
 
 static int
@@ -234,23 +233,15 @@ CreateStartupDisplay(char start)
      }
    else
      {
-	int                 k, spd, x, y, xOffset, yOffset, ty, fy;
-	int                 min, speed;
-
-	/* we have this many so that we save on lines o code - eAndroid */
-	struct timeval      timev1, timev2;
-	int                 dsec, dusec;
-	double              tm;
+	int                 k, x, y, xOffset, yOffset, ty, fy;
 
 	if ((!ic) || (!bg))
 	   EDBUG_RETURN_;
 
-	speed = Conf.slidespeedcleanup / 2;
-	spd = 16;
-	min = 2;
 	fy = 0;
 
-	for (k = 0; k <= 1024; k += spd)
+	ETimedLoopInit(0, 1024, Conf.slidespeedcleanup / 2);
+	for (k = 0; k <= 1024;)
 	  {
 	     if (bg_sideways)
 	       {		/* so we can have two different slide methods */
@@ -268,22 +259,12 @@ CreateStartupDisplay(char start)
 		  yOffset = ((fy * (1024 - k)) + (ty * k)) >> 10;
 		  y = ty;
 	       }
-	     gettimeofday(&timev1, NULL);
+
 	     EMoveWindow(disp, w1, x + xOffset, -y - yOffset);
 	     EMoveWindow(disp, w2, -x - xOffset, y + yOffset);
 	     XSync(disp, False);
-	     gettimeofday(&timev2, NULL);
-	     dsec = timev2.tv_sec - timev1.tv_sec;
-	     dusec = timev2.tv_usec - timev1.tv_usec;
-	     if (dusec < 0)
-	       {
-		  dsec--;
-		  dusec += 1000000;
-	       }
-	     tm = (double)dsec + (((double)dusec) / 1000000);
-	     spd = (int)((double)speed * tm);
-	     if (spd < min)
-		spd = min;
+
+	     k = ETimedLoopNext();
 	  }
 
 	EDestroyWindow(disp, w1);

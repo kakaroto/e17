@@ -22,7 +22,6 @@
  */
 #define DECLARE_STRUCT_BUTTON
 #include "E.h"
-#include <sys/time.h>
 
 struct _slideout
 {
@@ -42,39 +41,27 @@ void
 SlideWindowSizeTo(Window win, int fx, int fy, int tx, int ty, int fw, int fh,
 		  int tw, int th, int speed)
 {
-   int                 k, spd, x, y, min, w, h;
-   struct timeval      timev1, timev2;
-   int                 dsec, dusec;
-   double              tm;
+   int                 k, x, y, w, h;
 
    EDBUG(5, "SlideWindowTo");
-   spd = 16;
-   min = 2;
+
    GrabX();
-   for (k = 0; k <= 1024; k += spd)
+
+   ETimedLoopInit(0, 1024, speed);
+   for (k = 0; k <= 1024;)
      {
-	gettimeofday(&timev1, NULL);
 	x = ((fx * (1024 - k)) + (tx * k)) >> 10;
 	y = ((fy * (1024 - k)) + (ty * k)) >> 10;
 	w = ((fw * (1024 - k)) + (tw * k)) >> 10;
 	h = ((fh * (1024 - k)) + (th * k)) >> 10;
 	EMoveResizeWindow(disp, win, x, y, w, h);
 	XSync(disp, False);
-	gettimeofday(&timev2, NULL);
-	dsec = timev2.tv_sec - timev1.tv_sec;
-	dusec = timev2.tv_usec - timev1.tv_usec;
-	if (dusec < 0)
-	  {
-	     dsec--;
-	     dusec += 1000000;
-	  }
-	tm = (double)dsec + (((double)dusec) / 1000000);
-	spd = (int)((double)speed * tm);
-	if (spd < min)
-	   spd = min;
+
+	k = ETimedLoopNext();
      }
    EMoveResizeWindow(disp, win, tx, ty, tw, th);
    UngrabX();
+
    EDBUG_RETURN_;
 }
 
