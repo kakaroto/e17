@@ -4319,3 +4319,11 @@ list options into one winop: "Skip Window Lists", and one remember option.
 The actions are still defined to do stuff individually, but users have no
 need of that sort of granularity. Much nicer now :)
 
+
+-------------------------------------------------------------------------------
+
+Mon Feb 28 19:39:46 GMT 2000
+(gilbertt)
+
+64-bit fixes from Bob Arendt <rdarendt@cwcom.net>
+

@@ -570,7 +570,7 @@ IPC_Remember(char *params, Client * c)
 
    if (params)
      {
-	Window              win;
+	Window              win = 0;
 	EWin               *ewin;
 
 	sscanf(params, "%8x", (int *)&win);

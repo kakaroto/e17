@@ -62,6 +62,7 @@ CommsFindCommsWindow()
 			   &ar, &format, &num, &after, &s);
 	if (s)
 	  {
+	     comms_win = 0;
 	     sscanf((char *)s, "%*s %x", (unsigned int *)&comms_win);
 	     XFree(s);
 	  }
@@ -235,7 +236,7 @@ CommsGet(Client ** c, XEvent * ev)
 {
    char                s[13], s2[9], *msg, st[32];
    int                 i;
-   Window              win;
+   Window              win = 0;
    Client             *cl;
    Atom                a = 0;
 
@@ -446,6 +447,7 @@ HandleComms(XEvent * ev)
 	else if (!strcmp(w, "pixmap"))
 	  {
 	     word(s, 3, w);
+	     c->pmap = 0;
 	     sscanf(w, "%x", (int *)&c->pmap);
 	  }
 	else
@@ -1227,7 +1229,7 @@ HandleComms(XEvent * ev)
      }
    else if (!strcmp(w, "draw_bg_to"))
      {
-	Window              win;
+	Window              win = 0;
 	Background         *bg;
 
 	sscanf(s, "%*s %x %1000s", (unsigned int *)&win, w);
