@@ -12,4 +12,4 @@ entranced_SOURCES = \
 entranced_LDADD = @x_libs@ -lXau @ecore_libs@ @edb_libs@
 
 install-data-hook:
-	chmod 700 @localstatedir@
+	chmod 700 $(DESTDIR)@localstatedir@
