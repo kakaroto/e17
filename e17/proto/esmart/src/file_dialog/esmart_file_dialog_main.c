@@ -1,5 +1,12 @@
 /**
- * Corey Donohoe might've written this, http://www.atmos.org
+ * esmart_file_dialog_main.c
+ * A file dialog available to evas programmers in the form of a smart
+ * object.  
+ *
+ * $ esmart_file_dialog_test 
+ * to see it in action w/ default theme
+ * $ esmart_file_dialog_test /path/to/my_custom/theme.eet 
+ * to test a custom theme you've written for it
  */
 #include <Ecore.h>
 #include <Edje.h>
@@ -7,11 +14,17 @@
 #include <limits.h>
 #include "File_Dialog.h"
 
+/**
+ * the callback signal the file dialog calls when events happen
+ * @param data a pointer to the ecore_evas window
+ * @param efd the esmart_file_dialog smart object
+ * @param type the event type that the file dialog dispatched
+ */
 void
 file_dialog_cb (void *data, Evas_Object * efd, int type)
 {
   Evas_List *l = NULL;
-  Ecore_Evas *ee = (Ecore_Evas*)data;
+  Ecore_Evas *ee = (Ecore_Evas *) data;
 
   switch (type)
     {
@@ -27,22 +40,26 @@ file_dialog_cb (void *data, Evas_Object * efd, int type)
       fprintf (stderr, "OK Clicked\n");
       break;
     case FILE_DELETE:
-      /* FIXME: */
+      /* FIXME: selectionslist should be one or more directories to delete */
       fprintf (stderr, "Delete Clicked\n");
       break;
     case FILE_NEW:
-      /* FIXME */
+      /* FIXME I guess this should be DIR_NEW, selections list should be of
+       * length 1, the name of the new directory to make
+       */
       fprintf (stderr, "New Clicked\n");
       break;
     case FILE_RENAME:
-      /* Think this through */
+      /* FIXME selection list should be of length two, the first is the
+       * current file we'd like to rename to the second
+       */
       fprintf (stderr, "Rename Clicked\n");
       break;
     case DIR_CHANGED:
       fprintf (stderr, "Directory Changed %s\n",
-      esmart_file_dialog_current_directory_get(efd));
-	ecore_evas_title_set(ee,
-	esmart_file_dialog_current_directory_get(efd));
+	       esmart_file_dialog_current_directory_get (efd));
+      ecore_evas_title_set (ee,
+			    esmart_file_dialog_current_directory_get (efd));
       break;
     default:
       fprintf (stderr, "Unknown file dialog type, %d\n", type);
@@ -103,6 +120,7 @@ int
 main (int argc, const char *argv[])
 {
   Evas *evas = NULL;
+  char buf[PATH_MAX];
   Ecore_Evas *e = NULL;
   Evas_Object *o = NULL;
   Evas_Object *bg = NULL;
@@ -133,7 +151,11 @@ main (int argc, const char *argv[])
       evas_object_name_set (bg, "bg");
       evas_object_show (bg);
 
-      if ((efd = esmart_file_dialog_new (evas, "../data/default/fd.eet")))
+      if (argv[1])
+	snprintf (buf, PATH_MAX, "%s", argv[1]);
+      else
+	snprintf (buf, PATH_MAX, "%s", PACKAGE_DATA_DIR "/fd.eet");
+      if ((efd = esmart_file_dialog_new (evas, buf)))
 	{
 	  evas_object_move (efd, 0, 0);
 	  esmart_file_dialog_callback_add (efd, file_dialog_cb, e);
@@ -161,10 +183,13 @@ main (int argc, const char *argv[])
 	      ecore_evas_size_max_set (e, (int) w, (int) h);
 	    }
 	  evas_object_show (efd);
+	  ecore_evas_show (e);
+	  ecore_main_loop_begin ();
 	}
-      ecore_evas_show (e);
-
     }
-  ecore_main_loop_begin ();
+  edje_shutdown ();
+  ecore_evas_shutdown ();
+  ecore_shutdown ();
+
   return (0);
 }
