@@ -1431,12 +1431,12 @@ EwinCreate(Window win)
    att.do_not_propagate_mask = ButtonPressMask | ButtonReleaseMask;
    XChangeWindowAttributes(disp, ewin->win,
 			   CWEventMask | CWDontPropagate, &att);
+   ewin->client.win = win;
    FocusEwinSetGrabs(ewin);
    GrabButtonGrabs(ewin);
    EwinListAdd(&EwinListStack, ewin, 0);
    EwinListAdd(&EwinListFocus, ewin, 0);
 
-   ewin->client.win = win;
    ewin->client.event_mask = EWIN_CLIENT_EVENT_MASK;
    AddItem(ewin, "EWIN", win, LIST_TYPE_EWIN);
 
