@@ -655,7 +655,7 @@ MenuAddItem(Menu * m, MenuItem * item)
 static void
 MenuRealize(Menu * m)
 {
-   int                 i, maxh = 0, maxw = 0;
+   int                 i, maxh, maxw, nmaxy;
    int                 maxx1, maxx2, w, h, x, y, r, mmw, mmh;
    unsigned int        iw, ih;
    Imlib_Image        *im;
@@ -675,7 +675,7 @@ MenuRealize(Menu * m)
 	HintsSetWindowName(m->win, m->title);
      }
 
-   maxh = 0;
+   maxh = maxw = 0;
    maxx1 = 0;
    maxx2 = 0;
    has_i = 0;
@@ -729,6 +729,7 @@ MenuRealize(Menu * m)
 		m->items[i]->icon_iclass = NULL;
 	  }
      }
+
    if (((has_i) && (has_s)) || ((!has_i) && (!has_s)))
      {
 	if (m->style->item_iclass->padding.top >
@@ -770,12 +771,16 @@ MenuRealize(Menu * m)
 	maxw += m->style->sub_iclass->padding.right;
      }
 
-   r = 0;
    mmw = 0;
    mmh = 0;
    pq = Mode.queue_up;
    Mode.queue_up = 0;
 
+   nmaxy = 3 * VRoot.h / (4 * maxh + 1);
+   if (m->style->maxy && nmaxy > m->style->maxy)
+      nmaxy = m->style->maxy;
+
+   r = 0;
    x = 0;
    y = 0;
    for (i = 0; i < m->num; i++)
@@ -820,13 +825,13 @@ MenuRealize(Menu * m)
 	   mmw = x + maxw;
 	if (y + maxh > mmh)
 	   mmh = y + maxh;
-	if ((m->style->maxx) || (m->style->maxy))
+	if ((m->style->maxx) || (nmaxy))
 	  {
-	     if (m->style->maxy)
+	     if (nmaxy)
 	       {
 		  y += maxh;
 		  r++;
-		  if (r >= m->style->maxy)
+		  if (r >= nmaxy)
 		    {
 		       r = 0;
 		       x += maxw;
@@ -1599,8 +1604,8 @@ MenusSetEvents(int on)
 static void
 SubmenuShowTimeout(int val __UNUSED__, void *dat)
 {
-   int                 mx, my, xo, yo;
-   unsigned int        mw, mh;
+   int                 mx, my, my2, xo, yo;
+   unsigned int        mw;
    Menu               *m;
    MenuItem           *mi;
    EWin               *ewin2, *ewin;
@@ -1625,11 +1630,15 @@ SubmenuShowTimeout(int val __UNUSED__, void *dat)
    if (!ewin2)
       return;
 
-   EGetGeometry(mi->win, NULL, &mx, &my, &mw, &mh, NULL, NULL);
+   EGetGeometry(mi->win, NULL, &mx, &my, &mw, NULL, NULL, NULL);
+   my2 = 0;
+   if (mi->child->num > 0 && mi->child->items[0])
+      EGetGeometry(mi->child->items[0]->win, NULL, NULL, &my2, NULL, NULL, NULL,
+		   NULL);
 
    /* Sub-menu offsets relative to parent menu origin */
    xo = ewin->border->border.left + mx + mw;
-   yo = ewin->border->border.top + my - ewin2->border->border.top;
+   yo = ewin->border->border.top + my - (ewin2->border->border.top + my2);
 
    if (Conf.menus.onscreen)
      {
