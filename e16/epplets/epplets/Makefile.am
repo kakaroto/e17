@@ -211,13 +211,15 @@ install-data-hook:
 	@for i in `echo $(bin_PROGRAMS) | sed 's/\.epplet//g'`; do \
 	  if test -d $${i}-data ; then \
 	    $(mkinstalldirs) $(DESTDIR)$(EROOT)/epplet_data/$$i ; \
-	    echo $(INSTALL_DATA) $${i}-data/[^C][^V][^S]* $(DESTDIR)$(EROOT)/epplet_data/$$i/ ; \
-	    $(INSTALL_DATA) $${i}-data/[^C][^V][^S]* $(DESTDIR)$(EROOT)/epplet_data/$$i/ ; \
+	    data=`echo $$i-data/* | sed s#$$i-data/CVS##`;\
+	    echo $(INSTALL_DATA) $$data $(DESTDIR)$(EROOT)/epplet_data/$$i/ ; \
+	    $(INSTALL_DATA) $$data $(DESTDIR)$(EROOT)/epplet_data/$$i/ ; \
 	  fi ; \
 	  if test -d $${i}.ABOUT ; then \
 	    $(mkinstalldirs) $(DESTDIR)$(EROOT)/epplet_data/$$i/$${i}.ABOUT ; \
-	    echo $(INSTALL_DATA) $${i}.ABOUT/[^C][^V][^S]* $(DESTDIR)$(EROOT)/epplet_data/$$i/$${i}.ABOUT/ ; \
-	    $(INSTALL_DATA) $${i}.ABOUT/[^C][^V][^S]* $(DESTDIR)$(EROOT)/epplet_data/$$i/$${i}.ABOUT/ ; \
+	    ABOUT=`echo $$i.ABOUT/* | sed s#$$i.ABOUT/CVS##`;\
+	    echo $(INSTALL_DATA) $$ABOUT $(DESTDIR)$(EROOT)/epplet_data/$$i/$${i}.ABOUT/ ; \
+	    $(INSTALL_DATA) $$ABOUT $(DESTDIR)$(EROOT)/epplet_data/$$i/$${i}.ABOUT/ ; \
 	  fi ; \
 	  if test -f icons/$${i}.icon ; then \
 	    echo $(INSTALL_DATA) $(srcdir)/icons/$${i}.icon $(DESTDIR)$(EROOT)/epplet_icons/ ; \
