@@ -7,10 +7,10 @@ THEDIR="`pwd`"
 cd "$srcdir"
 DIE=0
 
-autoheader
 aclocal
-automake --foreign --add-missing
 autoconf
+autoheader
+automake --foreign --add-missing
 
 if test -z "$*"; then
         echo "I am going to run ./configure with no arguments - if you wish "

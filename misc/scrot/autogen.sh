@@ -8,10 +8,10 @@ cd "$srcdir"
 DIE=0
 
 set -x
-autoheader
 aclocal
-automake --foreign --add-missing
 autoconf
+autoheader
+automake --foreign --add-missing
 
 if test -z "$*"; then
         echo "I am going to run ./configure with no arguments - if you wish "
