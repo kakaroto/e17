@@ -75,8 +75,6 @@ if (function) { \
 #define EWD_THREAD_CREATE(function, args)
 #define EWD_DESTROY_LOCKS(structure)
 
-#define EWD_THREAD_CREATE(function, arg)
-
 #define EWD_NO_THREADS(function, arg) if (function) function(arg);
 
 #endif /* HAVE_PTHREADS_H */
