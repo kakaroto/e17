@@ -107,6 +107,7 @@ entice_init(Ecore_Evas * ee)
       evas_object_name_set(o, "EnticeEdje");
       evas_object_move(o, 0, 0);
       evas_object_resize(o, w, h);
+      evas_object_layer_set(o, 0);
       hookup_edje_signals(o);
       evas_object_show(o);
       e->edje = o;
@@ -122,6 +123,7 @@ entice_init(Ecore_Evas * ee)
       e_container_spacing_set(e->container, 4);
       e_container_move_button_set(e->container, 2);
       e_container_layout_plugin_set(e->container, "entice");
+      evas_object_layer_set(e->container, 0);
       evas_object_color_set(e->container, 255, 255, 255, 255);
 
       if (edje_object_part_exists(e->edje, "EnticeThumbnailArea"))
@@ -331,6 +333,8 @@ entice_file_add(const char *file)
             if (edje_object_file_set
                 (edje, entice_config_theme_get(), "EnticeThumb"))
             {
+               evas_object_layer_set(o, 0);
+               evas_object_layer_set(edje, 0);
                if (edje_object_part_exists(edje, "EnticeThumb"))
                {
                   entice->thumb.list =
