@@ -49,7 +49,6 @@ winwidget_allocate (void)
   ret->zx = 0;
   ret->zy = 0;
   ret->zoom = 1.0;
-  ret->timeout = 0;
 
   ret->gc = None;
 

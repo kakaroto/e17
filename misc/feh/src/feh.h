@@ -199,11 +199,10 @@ struct __winwidget
   feh_file *file;
 
   /* Stuff for zooming */
-  int zoom_mode;
+  unsigned char zoom_mode;
   int zx;
   int zy;
   double zoom;
-  int timeout;
 
   /* hoss - rectangle drawing stuff */
   int rectangle_drawing_mode;
@@ -247,7 +246,6 @@ typedef struct cmdlineoptions
   unsigned char preload;
   unsigned char loadables;
   unsigned char unloadables;
-  unsigned char timeout;
   unsigned char zoom_mode;
 
   char *output_file;
@@ -270,7 +268,7 @@ fehoptions;
 
 void show_usage (void);
 void show_version (void);
-void main_loop (void);
+int feh_main_iteration (int block);
 void feh_handle_event (XEvent * ev);
 void feh_smooth_image (winwidget w);
 void init_x_and_imlib (void);

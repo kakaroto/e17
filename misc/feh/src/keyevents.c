@@ -37,7 +37,7 @@ handle_keypress_event (XEvent * ev, Window win)
 
   winwid = winwidget_get_from_window (win);
   if (winwid == NULL)
-        D_RETURN_;
+    D_RETURN_;
 
   kev = (XKeyEvent *) ev;
   len =
@@ -56,9 +56,9 @@ handle_keypress_event (XEvent * ev, Window win)
     case XK_Delete:
       /* I could do with some confirmation here */
       /* How about holding ctrl? */
-      if (opt.slideshow)
+      if (kev->state & ControlMask)
 	{
-	  if (kev->state & ControlMask)
+	  if (opt.slideshow)
 	    {
 	      feh_file *doomed;
 	      doomed = current_file;
@@ -68,6 +68,11 @@ handle_keypress_event (XEvent * ev, Window win)
 		free (winwid->name);
 	      winwid->name = slideshow_create_name (winwid->file->filename);
 	      winwidget_update_title (winwid);
+	    }
+	  else if (opt.multiwindow)
+	    {
+	      filelist = feh_file_rm_and_free (filelist, winwid->file);
+	      winwidget_destroy (winwid);
 	    }
 	}
       break;
@@ -101,7 +106,7 @@ handle_keypress_event (XEvent * ev, Window win)
     }
 
   if (len <= 0 || len > (int) sizeof (kbuf))
-        D_RETURN_;
+    D_RETURN_;
 
   kbuf[len] = '\0';
 

@@ -291,6 +291,7 @@ progressive_load_cb (Imlib_Image im, char percent, int update_x, int update_y,
   XClearArea (disp, progwin->win, dest_x + update_x, dest_y + update_y,
 	      update_w, update_h, False);
   XFlush (disp);
+
   D_RETURN(1);
   percent = 0;
 }
