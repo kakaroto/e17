@@ -312,8 +312,6 @@ int _ewd_dlist_goto_index(Ewd_DList *list, int index)
 {
 	int i, increment;
 
-	printf("Index is %d\n", index);
-
 	if (!list)
 		return FALSE;
 
@@ -336,7 +334,6 @@ int _ewd_dlist_goto_index(Ewd_DList *list, int index)
 			_ewd_list_next(list);
 		else
 			_ewd_dlist_previous(list);
-		printf("i == %d\n", i);
 	}
 
 	return TRUE;
