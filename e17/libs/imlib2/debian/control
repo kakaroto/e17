@@ -1,4 +1,4 @@
-Source: libimlib2
+Source: imlib2
 Section: libs
 Priority: optional
 Maintainer: Laurence J. Lane <ljlane@debian.org>
