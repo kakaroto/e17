@@ -8,7 +8,7 @@
 #include <assert.h>
 #include <conio.h>
 #include <ctype.h>
-#include <io.h>
+#include <sys/io.h>
 #include <limits.h>
 #include <stdio.h>
 #include <stdlib.h>

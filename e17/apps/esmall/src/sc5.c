@@ -5,7 +5,7 @@
  *  This file may be freely used. No warranties of any kind.
  */
 #include <assert.h>
-#include <io.h>
+#include <sys/io.h>
 #include <stdio.h>
 #include <stdlib.h>
 #include <stdarg.h>     /* ANSI standardized variable argument list functions */
