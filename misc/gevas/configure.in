@@ -1,29 +1,24 @@
-dnl Process this file with autoconf to produce a configure script.
-
-AC_INIT(testgevas.c)
-AM_INIT_AUTOMAKE(testgevas, 1.0)
+AC_INIT(src/gevas.h)
 AM_CONFIG_HEADER(config.h)
-
-AC_ISC_POSIX
-AC_PROG_CC
-AM_PROG_CC_STDC
-AC_HEADER_STDC
-
-AM_WITH_DMALLOC
+AM_INIT_AUTOMAKE(gevas, 0.1.0)
 
 AM_PATH_GTK(1.2.0, ,
             AC_MSG_ERROR(Cannot find GTK: Is gtk-config in path?))
 
 
-dnl Use -Wall if we have gcc.
-changequote(,)dnl
-if test "x$GCC" = "xyes"; then
-  case " $CFLAGS " in
-  *[\ \	]-Wall[\ \	]*) ;;
-  *) CFLAGS="$CFLAGS -Wall" ;;
-  esac
+AC_C_BIGENDIAN
+AC_PROG_CC
+AM_PROG_CC_STDC
+AM_WITH_DMALLOC
+AC_C_CONST
+AM_ENABLE_SHARED
+AM_PROG_LIBTOOL
+if test X"$enable_shared" = Xyes; then
+  DLLDFLAGS=-export-dynamic
+  AC_SUBST(DLLDFLAGS)
 fi
-changequote([,])dnl
+AC_PROG_INSTALL
+AC_PROG_MAKE_SET
 
 dnl Set PACKAGE_DATA_DIR in config.h.
 if test "x${datadir}" = 'x${prefix}/share'; then
@@ -40,13 +35,15 @@ evas_cflags=`evas-config --cflags`
 evas_libs=`evas-config --libs`
 edb_cflags=`edb-config --cflags`
 edb_libs=`edb-config --libs`
+gtk_cflags=`gtk-config --cflags`
 
+AC_SUBST(CFLAGS)
+AC_SUBST(CPPFLAGS)
+AC_SUBST(LDFLAGS)
 AC_SUBST(evas_cflags)
 AC_SUBST(evas_libs)
 AC_SUBST(edb_cflags)
 AC_SUBST(edb_libs)
+AC_SUBST(gtk_cflags)
 
-AC_OUTPUT([
-Makefile
-])
-
+AC_OUTPUT([Makefile src/Makefile demo/Makefile])

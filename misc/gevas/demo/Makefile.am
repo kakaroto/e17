@@ -20,11 +20,16 @@ andover.ttf
 EXTRA_DIST = $(PIXMAPS) $(FONTS)
 pkgdata_DATA = $(PIXMAPS) $(FONTS)
 
+TESTS = testgevas
 
 bin_PROGRAMS = testgevas
 
 testgevas_SOURCES = \
 	testgevas.c
 
-testgevas_LDADD = @evas_libs@ @edb_libs@  -lgevas -lm @GTK_LIBS@ $(INTLLIBS)
+INCLUDES = -I$(srcdir) -I../src -I.. -I. -I$(topdir)/src @gtk_cflags@
+
+testgevas_LDADD = @evas_libs@ @edb_libs@  ../src/libgevas.la -lm @GTK_LIBS@ 
+
+# $(INTLLIBS)
 
