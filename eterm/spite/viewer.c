@@ -37,7 +37,7 @@ int
 main(int argc, char *argv[])
 {
   gtk_init (&argc, &argv);
-
+  create_contexts();
   window = gtk_window_new(GTK_WINDOW_TOPLEVEL);
   GTK_WIDGET_SET_FLAGS(window, GTK_CAN_FOCUS);
   GTK_WIDGET_SET_FLAGS(window, GTK_CAN_DEFAULT);
@@ -75,9 +75,9 @@ main(int argc, char *argv[])
   col_fore_entry = gtk_entry_new_with_max_length(25);
   gtk_widget_show(col_fore_entry);
   gtk_table_attach_defaults(GTK_TABLE(pagetable), col_fore_entry, 1, 2, 0, 1);
-  gtk_signal_connect_after(GTK_OBJECT(col_fore_entry), "changed",
-			   GTK_SIGNAL_FUNC(col_entry_changed), "fore");
-    
+  gtk_signal_connect(GTK_OBJECT(col_fore_entry), "changed",
+			   GTK_SIGNAL_FUNC(col_entry_changed), col_fore_entry);
+
   label = gtk_label_new("background color:");
   gtk_widget_show(label);
   gtk_table_attach_defaults(GTK_TABLE(pagetable), label, 0, 1, 1, 2);
@@ -113,7 +113,8 @@ main(int argc, char *argv[])
   gtk_table_attach_defaults(GTK_TABLE(pagetable), col_point_entry, 1, 2, 4, 5);
   gtk_signal_connect_after(GTK_OBJECT(col_point_entry), "changed",
 			   GTK_SIGNAL_FUNC(col_entry_changed), "point");
-  
+
+
   col_vid_btn = gtk_radio_button_new_with_label (NULL, "video normal");
   gtk_widget_show(col_vid_btn);
   gtk_table_attach_defaults(GTK_TABLE (pagetable), col_vid_btn, 0, 1, 5, 6);
@@ -228,7 +229,6 @@ main(int argc, char *argv[])
   atr_f0_def_btn = gtk_radio_button_new_with_label (NULL, "default");
   gtk_widget_show(atr_f0_def_btn);
   gtk_table_attach_defaults(GTK_TABLE (frametable), atr_f0_def_btn, 2, 3, 0, 1);
-  gtk_toggle_button_set_active (GTK_TOGGLE_BUTTON (atr_f0_def_btn), TRUE);
   group = gtk_radio_button_group (GTK_RADIO_BUTTON (atr_f0_def_btn));
 
   label = gtk_label_new("font 1:");
@@ -564,8 +564,8 @@ main(int argc, char *argv[])
   gtk_widget_show (button);
 
   gtk_widget_show(window);
+  set_defaults();
 
-  create_contexts();
   gtk_main();
   return (0);
 }

@@ -38,7 +38,7 @@ GtkWidget *images_cbox, *im_states_cbox, *im_file_entry, *im_modes_cbox, *im_ima
 GtkWidget *im_auto_btn;
 GList *images, *im_states, *im_modes;
 
-extern void col_entry_changed(GtkWidget *, gpointer);
+extern void col_entry_changed(GtkWidget *, GtkWidget *entry);
 extern void atr_entry_changed(GtkWidget *, gpointer);
 extern void misc_entry_changed(GtkWidget *, gpointer);
 extern void button_handler(GtkWidget *, gpointer);
@@ -47,3 +47,4 @@ extern void create_dialog(void);
 extern void save_theme(char *);
 extern void get_toggles(void);
 extern void get_radio(void);
+extern void set_defaults(void);

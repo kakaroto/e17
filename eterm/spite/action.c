@@ -28,7 +28,7 @@
 #include "eterm.h"
 
 extern void
-col_entry_changed(GtkWidget *widget, gpointer data)
+col_entry_changed(GtkWidget *widget, GtkWidget *entry)
 {
     color->foreground = gtk_entry_get_text (GTK_ENTRY (col_fore_entry));
     color->background = gtk_entry_get_text (GTK_ENTRY (col_back_entry));
@@ -303,3 +303,29 @@ create_dialog(void)
   gtk_widget_show (dialog_window);  
 }
 
+void
+set_defaults(void)
+{
+  gtk_entry_set_text(GTK_ENTRY (col_fore_entry), "white");
+  gtk_entry_set_text(GTK_ENTRY (col_back_entry), "black");
+  gtk_entry_set_text(GTK_ENTRY (col_curs_entry), "#FFFF00");
+  gtk_entry_set_text(GTK_ENTRY (col_curstext_entry), "#880000");
+  gtk_entry_set_text(GTK_ENTRY (col_point_entry), "white");
+  gtk_entry_set_text(GTK_ENTRY (atr_name_entry), "%appname()");
+  gtk_toggle_button_set_active (GTK_TOGGLE_BUTTON (atr_f2_def_btn), TRUE);
+  gtk_entry_set_text(GTK_ENTRY (atr_font0_entry), "5x7");
+  gtk_entry_set_text(GTK_ENTRY (atr_font1_entry), "6x10");
+  gtk_entry_set_text(GTK_ENTRY (atr_font2_entry), "fixed");
+  gtk_entry_set_text(GTK_ENTRY (atr_font3_entry), "8x13");
+  gtk_entry_set_text(GTK_ENTRY (atr_font4_entry), "9x15");
+  gtk_entry_set_text(GTK_ENTRY (atr_font5_entry), "10x20");
+  gtk_entry_set_text(GTK_ENTRY (atr_font6_entry), "12x24");
+  gtk_toggle_button_set_active (GTK_TOGGLE_BUTTON (tog_map_alert), TRUE);
+  gtk_toggle_button_set_active (GTK_TOGGLE_BUTTON (tog_login_shell), TRUE);
+  gtk_toggle_button_set_active (GTK_TOGGLE_BUTTON (tog_scrollbar), TRUE);
+  gtk_toggle_button_set_active (GTK_TOGGLE_BUTTON (tog_utmp_logging), TRUE);
+  gtk_toggle_button_set_active (GTK_TOGGLE_BUTTON (tog_home_on_output), TRUE);
+  gtk_toggle_button_set_active (GTK_TOGGLE_BUTTON (tog_home_on_input), TRUE);
+  gtk_toggle_button_set_active (GTK_TOGGLE_BUTTON (tog_scrollbar_right), TRUE);
+
+}
