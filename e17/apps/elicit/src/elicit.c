@@ -131,7 +131,7 @@ setup(int argc, char **argv, Elicit *el)
 void
 elicit_ui_theme_set(Elicit *el, char *theme, char *group)
 {
-  double mw, mh;
+  Evas_Coord mw, mh;
 
   /* set the theme */
   if (!edje_object_file_set(el->gui, elicit_theme_find(theme), group))

@@ -55,7 +55,7 @@ elicit_util_shoot(Evas_Object *shot, int w, int h)
   int px, py;
   int dw, dh;
   int tr;
-  double sw, sh;
+  Evas_Coord sw, sh;
   Window dummy;
 
   XQueryPointer(ecore_x_display_get(), RootWindow(ecore_x_display_get(),0), &dummy, &dummy, &tr, &tr, &px, &py, &tr);
