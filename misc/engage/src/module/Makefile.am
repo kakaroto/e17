@@ -13,7 +13,7 @@ INCLUDES               = -I. \
 			 -I$(top_srcdir) \
 			 -I$(includedir) \
 			 @e_cflags@
-pkgdir                 = $(libdir)/engage/module
+pkgdir                 = @e_modules@/engage/$(MODULE_ARCH)
 pkg_LTLIBRARIES        = module.la
 module_la_SOURCES      = e_mod_main.c \
 		         e_mod_main.h

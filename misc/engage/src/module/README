@@ -4,7 +4,7 @@ in the sexiest window manager out there :)
 To use it compile as before (you must have e17 installed when you run
 ./configure (or ./autogen.sh) then with e17 running type:
 
-enlightenment_remote -module-load $PREFIX/lib/engage/module/module.so
+enlightenment_remote -module-load engage
 
 then you should (from the e17 module menu) disable ibar and enable engage.
 

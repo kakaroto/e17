@@ -4,6 +4,9 @@ dnl Process this file with autoconf to produce a configure script.
 rm -f config.cache
 
 AC_INIT(configure.in)
+AC_CANONICAL_BUILD
+AC_CANONICAL_HOST
+AC_CANONICAL_TARGET
 AM_INIT_AUTOMAKE(engage, 0.0.9)
 AM_CONFIG_HEADER(config.h)
 
@@ -14,6 +17,10 @@ AC_HEADER_STDC
 AC_C_CONST
 AM_ENABLE_SHARED
 AM_PROG_LIBTOOL
+
+MODULE_ARCH="$target_os-$target_cpu"
+AC_SUBST(MODULE_ARCH)
+AC_DEFINE_UNQUOTED(MODULE_ARCH, "$MODULE_ARCH", "Module architecture")
 
 AC_CHECK_FUNCS(fmemopen)
 AC_CHECK_FUNCS(open_memstream)
@@ -149,8 +156,10 @@ AC_PATH_GENERIC(enlightenment, 16.999, [
 AM_CONDITIONAL(HAVE_E17, test x$have_e17 = xtrue)
 e_libs=`enlightenment-config --libs`
 e_cflags=`enlightenment-config --cflags`
+e_modules=`enlightenment-config --module-dir`
 AC_SUBST(e_libs)
 AC_SUBST(e_cflags)
+AC_SUBST(e_modules)
 
 dnl Set PACKAGE_SOURCE_DIR in config.h.
 #packagesrcdir=`cd $srcdir && pwd`
