@@ -38,7 +38,10 @@ gevasgrad.h \
 gevasimage.h \
 gevasobj.h \
 gevastext.h \
-gevastwin.h
+gevastwin.h \
+gevasevh_selectable.h \
+gevasevh_group_selector.h
+
 
 libgevas_la_SOURCES   = \
 gevas.c \
@@ -54,7 +57,9 @@ gevasgrad.c \
 gevasimage.c \
 gevasobj.c \
 gevastext.c \
-gevastwin.c 
+gevastwin.c \
+gevasevh_selectable.c \
+gevasevh_group_selector.c
 
 libgevas_la_LIBADD       = $(LIBS_ALL)  @GTK_LIBS@
 libgevas_la_DEPENDENCIES = $(top_builddir)/config.h

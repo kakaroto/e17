@@ -151,6 +151,8 @@ struct _GtkgEvasClass {
 
 /** protected **/
 
+//	void gevas_
+
 	guint gevas_get_type(void);
 	GtkWidget *gevas_new(void);
 

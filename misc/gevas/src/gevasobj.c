@@ -192,6 +192,10 @@ void _gevasobj_set_layer(GtkgEvasObj * object, int l)
 {
 	evas_set_layer(EVAS(object), EVASO(object), l);
 }
+int _gevasobj_get_layer(GtkgEvasObj * object)
+{
+	return evas_get_layer(EVAS(object), EVASO(object));
+}
 void _gevasobj_set_layer_store(GtkgEvasObj * object, int l, int store)
 {
 	evas_set_layer_store(EVAS(object), l, store);
@@ -238,11 +242,13 @@ void _gevasobj_get_location(GtkgEvasObj * object, double *x, double *y)
 void _gevasobj_show(GtkgEvasObj * object)
 {
 	evas_show(EVAS(object), EVASO(object));
+	gevasobj_queue_redraw(object);
 }
 
 void _gevasobj_hide(GtkgEvasObj * object)
 {
 	evas_hide(EVAS(object), EVASO(object));
+	gevasobj_queue_redraw(object);
 }
 void _gevasobj_get_color(GtkgEvasObj * object, int *r, int *g, int *b, int *a)
 {
@@ -344,6 +350,7 @@ static void gevasobj_class_init(GtkgEvasObjClass * klass)
 	klass->set_angle = _gevasobj_set_angle;
 	klass->set_zoom_scale = _gevasobj_set_zoom_scale;
 	klass->set_layer = _gevasobj_set_layer;
+	klass->get_layer = _gevasobj_get_layer;
 	klass->set_layer_store = _gevasobj_set_layer_store;
 	klass->raise = _gevasobj_raise;
 	klass->lower = _gevasobj_lower;
@@ -448,6 +455,10 @@ void gevasobj_set_zoom_scale(GtkgEvasObj * object, int scale)
 void gevasobj_set_layer(GtkgEvasObj * object, int l)
 {
 	VTAB->set_layer(object, l);
+}
+int gevasobj_get_layer(GtkgEvasObj * object)
+{
+	return VTAB->get_layer(object);
 }
 void gevasobj_set_layer_store(GtkgEvasObj * object, int l, int store)
 {

@@ -38,6 +38,8 @@
 #include "gevasevh_popup.h"
 #include "gevasevh_obj_changer.h"
 #include "gevasevh_clicks.h"
+#include "gevasevh_group_selector.h"
+#include "gevasevh_selectable.h"
 #include "gevastwin.h"
 
 #include "gevasgrad.h"
@@ -52,6 +54,9 @@ static int raptor_w, raptor_h;
 Evas_Object menu_raptor = 0;
 GtkWidget *wtoy;
 GtkWidget *gevas;				/* needed for the Evas_Object raw callback :( */
+
+GtkObject *evh_selector = 0;
+
 
 /** gevas gtk+ callbacks **/
 static gboolean gtk_mouse_raw_cb(GtkObject * object, gpointer data)
@@ -284,6 +289,34 @@ static gint cleanup_evas_raw_cb(GtkObject * o, gpointer data)
 	return FALSE;
 }
 
+void setup_bg(GtkWidget * gevas)
+{
+	int w, h;
+	GtkgEvasImage *gevas_image;
+	GtkObject *evh;
+
+	gevas_image = gevasimage_new();
+	gevasobj_set_gevas(gevas_image, gevas);
+	printf(" Trying to load bg.png from %s\n",PACKAGE_DATA_DIR "/bg.png");
+	printf(" please note that if the image is not at the location, this will\n");
+	printf(" quitely fail and look really bad!\n");
+
+	gevasimage_set_image_name(gevas_image, PACKAGE_DATA_DIR "/bg.png");
+	gevasimage_get_image_size(gevas_image, &w, &h);
+	gevasimage_set_image_fill( gevas_image, 0,0,w,h);
+	gevasobj_move(GTK_GEVASOBJ(gevas_image), 0, 0);
+	gevasobj_set_layer(GTK_GEVASOBJ(gevas_image), -9999);
+	gevasobj_resize(GTK_GEVASOBJ(gevas_image), 9999,9999);
+	gevasobj_show(GTK_GEVASOBJ(gevas_image));
+
+
+	/** Make this a group_selector **/
+	evh_selector = evh = gevasevh_group_selector_new();
+	gevasevh_group_selector_set_object( (GtkgEvasEvHGroupSelector*)evh, 
+		GTK_GEVASOBJ(gevas_image));
+	gevasobj_add_evhandler(GTK_GEVASOBJ(gevas_image), evh);
+
+}
 
 
 void setup_raptor(GtkWidget * gevas)
@@ -312,6 +345,8 @@ void setup_raptor(GtkWidget * gevas)
 	gevasobj_move(GTK_GEVASOBJ(gevas_image), 20, 20);
 	gevasobj_set_layer(GTK_GEVASOBJ(gevas_image), 0);
 	gevasobj_show(GTK_GEVASOBJ(gevas_image));
+
+	
 
 	/** This event handler does nothing, it doesn't/shouldn't be added **/
 	evh = gevasevh_new();
@@ -407,6 +442,30 @@ void setup_menu_raptor(GtkWidget * gevas)
 }
 
 
+/** lets make this object also selectable **/
+void make_selectable( GtkgEvasObj* object )
+{
+	GtkgEvasObj *ct;
+	GtkObject *evh = gevasevh_selectable_new();
+
+	gevasobj_add_evhandler(object, evh);
+	gevasevh_selectable_set_normal_gevasobj( evh, object );
+
+	ct = (GtkgEvasObj*)gevasgrad_new(gevasobj_get_gevas(
+		GTK_OBJECT(object)));
+
+	gevasgrad_add_color(ct, 255, 0, 255, 255, 8);
+	gevasgrad_add_color(ct, 255, 255, 0, 200, 8);
+	gevasgrad_add_color(ct, 255, 0, 0, 150, 8);
+	gevasgrad_add_color(ct, 0, 0, 0, 0, 8);
+	gevasgrad_seal(ct);
+	gevasobj_resize( ct, 200,100);
+	gevasobj_set_layer(ct, 9999);
+
+	gevasevh_selectable_set_selected_gevasobj( evh, ct );
+	gevasevh_selectable_set_selector( evh, evh_selector );
+}
+
 void make_text(GtkWidget * gevas)
 {
 	GtkgEvasObj *t1, *t2, *t3, *t4, *t5, *ct;
@@ -432,6 +491,8 @@ void make_text(GtkWidget * gevas)
 	gtk_signal_connect(GTK_OBJECT(evh_dclick), "dclick",
 					   GTK_SIGNAL_FUNC(gtk_dclick_cb), ct);
 
+	make_selectable( ct );
+
 	ct = t2 =
 		(GtkgEvasObj *) gevastext_new_full(GTK_GEVAS(gevas), "andover", 70,
 										   "Evas");
@@ -440,6 +501,7 @@ void make_text(GtkWidget * gevas)
 	gevasobj_show(ct);
 	gevasobj_set_color(ct, 140, 255, 140, 255);
 	gevasobj_add_evhandler(ct, evh);
+	make_selectable( ct );
 
 	ct = t3 =
 		(GtkgEvasObj *) gevastext_new_full(GTK_GEVAS(gevas), "andover", 90,
@@ -452,6 +514,7 @@ void make_text(GtkWidget * gevas)
 	gevasobj_add_evhandler(ct, evh);
 	evh = gevasevh_alpha_new();
 	gevasobj_add_evhandler(ct, evh);
+	make_selectable( ct );
 
 	/** lets do some funky mouse over action **/
 
@@ -486,6 +549,7 @@ void make_draw_icon(GtkWidget * gevas)
 	GtkgEvasObj *ct;
 	GtkObject *evh_changer;
 	GtkObject *evh_drag;
+	GtkObject *evh;
 
 	/** The handlers will let the user drag the image around **/
 	/** we can happily use the same object for all 3 texts  **/
@@ -603,7 +667,9 @@ int main(int argc, char *argv[])
 /* realizing the gevas here stuffs things...
   gtk_widget_realize(GTK_WIDGET(gevas)); */
 
-	gevas_set_checked_bg(gevas, 1);
+//	gevas_set_checked_bg(gevas, 1);
+
+
 /*	gevas_set_render_mode( gevas, RENDER_METHOD_3D_HARDWARE ); */
 	gevas_set_render_mode(gevas, RENDER_METHOD_ALPHA_SOFTWARE);
 	gevas_set_size_request_x(gevas, 200);
@@ -628,6 +694,7 @@ int main(int argc, char *argv[])
 	gevas_add_fontpath(gevas, PACKAGE_DATA_DIR);
 	printf("added a font path to %s\n", PACKAGE_DATA_DIR);
 
+	setup_bg(gevas);
 	setup_raptor(gevas);
 	setup_menu_raptor(gevas);
 	make_text(gevas);

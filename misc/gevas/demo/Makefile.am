@@ -12,7 +12,8 @@ drawer_open.png \
 drawer_open_socks.png \
 raptor.png \
 raptor2.jpg \
-cd.png
+cd.png \
+bg.png
 
 FONTS = \
 andover.ttf

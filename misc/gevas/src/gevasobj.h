@@ -78,6 +78,7 @@ extern "C" {
 		void (*set_angle) (GtkgEvasObj * object, double angle);
 		void (*set_zoom_scale) (GtkgEvasObj * object, int scale);
 		void (*set_layer) (GtkgEvasObj * object, int l);
+		int  (*get_layer) (GtkgEvasObj * object);
 		void (*set_layer_store) (GtkgEvasObj * object, int l, int store);
 		void (*raise) (GtkgEvasObj * object);
 		void (*lower) (GtkgEvasObj * object);
@@ -113,7 +114,7 @@ extern "C" {
 
 	Evas_Object gevasobj_get_evasobj(GtkObject * object);
 
-	GtkgEvas *gevasobj_get_gevas(GtkObject * object);
+	GtkgEvas *gevasobj_get_gevas(GtkObject* object);
 
 	Evas gevasobj_get_evas(GtkObject * object);
 
@@ -121,11 +122,13 @@ extern "C" {
 	void gevasobj_remove_evhandler(GtkgEvasObj * object, GtkObject * h);
 
 /** evas wrappers (public access) **/
+
 	void gevasobj_set_color(GtkgEvasObj * object, int r, int g, int b, int a);
 	void gevasobj_set_alpha(GtkgEvasObj * object, int a);
 	void gevasobj_set_angle(GtkgEvasObj * object, double angle);
 	void gevasobj_set_zoom_scale(GtkgEvasObj * object, int scale);
 	void gevasobj_set_layer(GtkgEvasObj * object, int l);
+	int  gevasobj_get_layer(GtkgEvasObj * object);
 	void gevasobj_set_layer_store(GtkgEvasObj * object, int l, int store);
 	void gevasobj_raise(GtkgEvasObj * object);
 	void gevasobj_lower(GtkgEvasObj * object);
