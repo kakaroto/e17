@@ -69,9 +69,9 @@ iconbar_path_set(Evas_Object *obj, char *path)
   evas_object_resize(ib->cont, 20, 200);
   evas_object_show(ib->cont);
   if((layout = edje_file_data_get(buf, "container_layout")))
-    e_container_layout_plugin_set(ib->cont, layout);
+    esmart_container_layout_plugin_set(ib->cont, layout);
   edje_object_part_swallow(ib->gui, "icons", ib->cont); //was clip
-  e_container_callback_order_change_set(ib->cont, write_out_order, ib);
+  esmart_container_callback_order_change_set(ib->cont, write_out_order, ib);
 
   edje_object_signal_callback_add(ib->gui, "mouse,*", "*", cb_iconbar, ib);
   edje_object_signal_callback_add(ib->gui, "scroll,*", "*", cb_iconbar, ib);
@@ -170,7 +170,7 @@ iconbar_icons_load(Iconbar *ib)
       Icon *ic = evas_list_data(l);
 
       printf("append icon: %s\n", ic->file);
-      e_container_element_append(ib->cont, ic->image);
+      esmart_container_element_append(ib->cont, ic->image);
     }
 
     evas_list_free(icons);
@@ -188,7 +188,7 @@ write_out_order(void *data)
     
   if((ib = (Iconbar*)data))
   {
-	for (l = e_container_elements_get(ib->cont); l; l = l->next)
+	for (l = esmart_container_elements_get(ib->cont); l; l = l->next)
 	{
 	    Evas_Object *obj = l->data;
 	    Icon *ic = evas_object_data_get(obj, "Icon");
@@ -215,19 +215,19 @@ cb_iconbar(void *data, Evas_Object *o, const char *sig, const char *src)
   ib = (Iconbar *)data;
   if (!strcmp(sig, "scroll,1,start"))
   {
-      e_container_scroll_start(ib->cont, -1);
+      esmart_container_scroll_start(ib->cont, -1);
   }
   else if (!strcmp(sig, "scroll,2,start"))
   {
-      e_container_scroll_start(ib->cont, 1);
+      esmart_container_scroll_start(ib->cont, 1);
   }
   else if (!strcmp(sig, "scroll,1,stop"))
   {
-      e_container_scroll_stop(ib->cont);
+      esmart_container_scroll_stop(ib->cont);
   }
   else if (!strcmp(sig, "scroll,2,stop"))
   {
-      e_container_scroll_stop(ib->cont);
+      esmart_container_scroll_stop(ib->cont);
   }
   if (!strcmp(sig, "mouse,clicked,1"))
   {

@@ -63,13 +63,13 @@ iconbar_add(Evas_Object *o)
   
   evas = evas_object_evas_get(o);
 
-  ib->cont = e_container_new(evas);
-  e_container_direction_set(ib->cont, 1);
-  e_container_spacing_set(ib->cont, 5);
-  e_container_alignment_set(ib->cont, CONTAINER_ALIGN_CENTER);
-  e_container_fill_policy_set(ib->cont, CONTAINER_FILL_POLICY_FILL_X |
+  ib->cont = esmart_container_new(evas);
+  esmart_container_direction_set(ib->cont, 1);
+  esmart_container_spacing_set(ib->cont, 5);
+  esmart_container_alignment_set(ib->cont, CONTAINER_ALIGN_CENTER);
+  esmart_container_fill_policy_set(ib->cont, CONTAINER_FILL_POLICY_FILL_X |
                                         CONTAINER_FILL_POLICY_KEEP_ASPECT);
-  e_container_move_button_set(ib->cont, 2);
+  esmart_container_move_button_set(ib->cont, 2);
 }
 
 
@@ -83,7 +83,7 @@ iconbar_del(Evas_Object *o)
   /* FIXME free everything up!! */
   
 
-  for (l = e_container_elements_get(ib->cont); l; l = l->next)
+  for (l = esmart_container_elements_get(ib->cont); l; l = l->next)
   {
     Icon *ic = evas_object_data_get(l->data, "Icon");
     iconbar_icon_free(ic);
@@ -174,17 +174,17 @@ iconbar_resize(Evas_Object *o, double w, double h)
 
   if (w > h)
   {
-    e_container_direction_set(ib->cont, 0);
-    e_container_fill_policy_set(ib->cont, CONTAINER_FILL_POLICY_FILL_Y |
+    esmart_container_direction_set(ib->cont, 0);
+    esmart_container_fill_policy_set(ib->cont, CONTAINER_FILL_POLICY_FILL_Y |
                                           CONTAINER_FILL_POLICY_KEEP_ASPECT);
-    e_container_padding_set(ib->cont, 5, 5, 11, 11);
+    esmart_container_padding_set(ib->cont, 5, 5, 11, 11);
   }
   else
   {
-    e_container_direction_set(ib->cont, 1);
-    e_container_fill_policy_set(ib->cont, CONTAINER_FILL_POLICY_FILL_X |
+    esmart_container_direction_set(ib->cont, 1);
+    esmart_container_fill_policy_set(ib->cont, CONTAINER_FILL_POLICY_FILL_X |
                                           CONTAINER_FILL_POLICY_KEEP_ASPECT);
-    e_container_padding_set(ib->cont, 11, 11, 5, 5);
+    esmart_container_padding_set(ib->cont, 11, 11, 5, 5);
   }
 
 }
