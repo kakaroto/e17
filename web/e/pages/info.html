@@ -155,17 +155,30 @@ icon box and the pagers. Sorry for the inconvenience.
 <p align="center">Efsd</p>
 
 <p><table width="100%"><tr><td class="newstitle">
+I heard Efsd needs FAM. What's that? What's Imon?
+</td></tr></table><table width="100%"><tr><td class="newsbody">
+FAM is the File Alteration Monitor, a server which reports
+file modification events to clients. Imon is a Linux kernel patch
+to improve performance, using it is highly recommended.
+Read more about it at <a href="http://oss.sgi.com/projects/fam">SGI</a>.
+</td></tr></table>
+
+<p><table width="100%"><tr><td class="newstitle">
 Can I run Efsd without FAM? Do I need Imon?
 </td></tr></table><table width="100%"><tr><td class="newsbody">
-At the moment, FAM is necessary to run Efsd. Imon is a kernel patch
-to improve performance, using it is highly recommended. You can get
-both FAM and Imon at <a href="http://oss.sgi.com">SGI</a>.
+At the moment, FAM is necessary to run Efsd. You can get
+both FAM and Imon at <a href="http://oss.sgi.com/projects/fam">SGI</a>. If the
+server is down, we have a local copy of FAM's sources up on our
+SourceForge <a href="http://sourceforge.net/project/showfiles.php?group_id=2">files page</a>.
+This version also fixes an annoying compilation bug.
 </td></tr></table>
 
 <p><table width="100%"><tr><td class="newstitle">
 I can't compile FAM. It dies with a "`NULL' undeclared (first use this function)" message.
 </td></tr></table><table width="100%"><tr><td class="newsbody">
-Add the line "#include &lt;stdlib.h&gt;" to BTree.h.
+Add the line "#include &lt;stdlib.h&gt;" to BTree.h. Alternatively, you can download
+our copy which has this problem fixed on our SourceForge
+<a href="http://sourceforge.net/project/showfiles.php?group_id=2">files page</a>.
 </td></tr></table>
 
 <p><table width="100%"><tr><td class="newstitle">
