@@ -651,6 +651,7 @@ AM_CONDITIONAL(EDB_GTK_ED, test "$gtk_ok" = yes)
 
 AC_OUTPUT([
 Makefile
+edb.pc
 src/Makefile
 tools/Makefile
 tools/edb_gtk_ed/Makefile
