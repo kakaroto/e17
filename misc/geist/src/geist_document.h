@@ -6,6 +6,7 @@
 #include "geist_object.h"
 #include "layers.h"
 #include "geist_imlib.h"
+#include "geist_gtk.h"
 
 
 struct __geist_document
@@ -16,6 +17,7 @@ struct __geist_document
    int h;
    Imlib_Image im;
    Pixmap pmap;
+   Imlib_Updates up;
 };
 
 geist_document *geist_document_new(int w, int h);
@@ -29,5 +31,7 @@ void geist_document_add_layer(geist_document * doc);
 geist_object *geist_document_find_clicked_object(geist_document * doc, int x,
 
                                                  int y);
+void
+geist_document_render_updates(geist_document *d);
 
 #endif

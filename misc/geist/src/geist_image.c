@@ -135,13 +135,13 @@ geist_image_render_partial(geist_object * obj, Imlib_Image dest, int x, int y,
       sx = 0;
    if(sy < 0)
       sy = 0;
-   sw = w - sx;
-   sh = w - sy;
+   sw = x + w - obj->x;
+   sh = y + h - obj->y;
    
    dx = x;
    dy = y;
-   dw = w;
-   dh = h;
+   dw = sw;
+   dh = sh;
 
    D(3, ("Rendering image area:\nsx: %d\tsy: %d\nsw: %d\tsh: %d\ndx: %d\tdy: %d\ndw: %d\tdh: %d\n", sx, sy, sw, sh, dx, dy, dw, dh));
 

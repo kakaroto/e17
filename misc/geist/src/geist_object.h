@@ -15,6 +15,8 @@ struct __geist_object
    int h;
    int x;
    int y;
+   int clicked_x;
+   int clicked_y;
    int visible;
    long int state;
    enum

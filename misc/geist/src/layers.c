@@ -40,7 +40,6 @@ geist_layer_render(geist_layer * layer, Imlib_Image dest)
 
    D_ENTER(3);
 
-
    if (layer->visible)
    {
       D(3, ("rendering layer %p\n", layer));
@@ -123,6 +122,7 @@ void geist_layer_raise_object(geist_document *doc, geist_object * obj)
          ob = (geist_object *)ll->data;
          if(ob == obj)
          {
+            D(4, ("Found object - popping to end of list\n"));
             lay->objects = geist_list_pop_to_end(lay->objects, ll);
             D_RETURN_(4);
          }

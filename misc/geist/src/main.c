@@ -6,11 +6,11 @@
 #include "utils.h"
 #include "geist.h"
 #include "main.h"
+#include "geist_document.h"
 #include "geist_object.h"
 #include "geist_image.h"
 #include "geist_gtk.h"
 #include "layers.h"
-#include "geist_document.h"
 
 int call_level = 0;
 GtkWidget *mainwin, *darea, *evbox, *scrollwin, *viewport;
@@ -28,6 +28,7 @@ gboolean configure_cb(GtkWidget * widget, GdkEventConfigure * event,
 gint evbox_buttonpress_cb(GtkWidget * widget, GdkEventButton * event);
 gint evbox_buttonrelease_cb(GtkWidget * widget, GdkEventButton * event);
 gint evbox_mousemove_cb(GtkWidget * widget, GdkEventMotion * event);
+void idle_draw_cb(GtkWidget * widget, gpointer * data);
 
 int
 main(int argc, char *argv[])
@@ -99,26 +100,26 @@ main(int argc, char *argv[])
                              geist_image_new_from_file(275, 145,
                                                        "testimages/bulb.png"));
 
-
    geist_document_render(doc);
    gtk_window_set_default_size(GTK_WINDOW(mainwin), doc->w, doc->h);
    gtk_widget_set_usize(darea, doc->w, doc->h);
 
    geist_document_render_to_gtk_window(doc, darea);
+
    gtk_main();
    D_RETURN(3, 0);
 }
 
-gboolean
-mainwin_delete_cb(GtkWidget * widget, GdkEvent * event, gpointer user_data)
+gboolean mainwin_delete_cb(GtkWidget * widget, GdkEvent * event,
+                           gpointer user_data)
 {
    D_ENTER(3);
    gtk_exit(0);
    D_RETURN(3, FALSE);
 }
 
-gboolean
-mainwin_destroy_cb(GtkWidget * widget, GdkEvent * event, gpointer user_data)
+gboolean mainwin_destroy_cb(GtkWidget * widget, GdkEvent * event,
+                            gpointer user_data)
 {
    D_ENTER(3);
    gtk_exit(0);
@@ -126,8 +127,9 @@ mainwin_destroy_cb(GtkWidget * widget, GdkEvent * event, gpointer user_data)
 }
 
 
-gboolean configure_cb(GtkWidget * widget, GdkEventConfigure * event,
-                      gpointer user_data)
+gboolean
+configure_cb(GtkWidget * widget, GdkEventConfigure * event,
+             gpointer user_data)
 {
    D_ENTER(3);
 
@@ -136,7 +138,8 @@ gboolean configure_cb(GtkWidget * widget, GdkEventConfigure * event,
    D_RETURN(3, TRUE);
 }
 
-gint evbox_buttonpress_cb(GtkWidget * widget, GdkEventButton * event)
+gint
+evbox_buttonpress_cb(GtkWidget * widget, GdkEventButton * event)
 {
    geist_object *obj;
 
@@ -147,19 +150,23 @@ gint evbox_buttonpress_cb(GtkWidget * widget, GdkEventButton * event)
       obj = geist_document_find_clicked_object(doc, event->x, event->y);
       if (!obj)
          D_RETURN(5, 1);
+      obj->clicked_x = event->x - obj->x;
+      obj->clicked_y = event->y - obj->y;
       D(2, ("setting object state SELECTED\n"));
       geist_object_set_state(obj, SELECTED);
       D(2, ("setting object state DRAG\n"));
       geist_object_set_state(obj, DRAG);
       gtk_object_set_data_full(GTK_OBJECT(mainwin), "drag", obj, NULL);
-      geist_object_raise(doc, obj);
+      /* geist_object_raise(doc, obj); */
+      doc->up =
+         imlib_update_append_rect(doc->up, obj->x, obj->y, obj->w, obj->h);
+      geist_document_render_updates(doc);
    }
 
    D_RETURN(5, 1);
 }
 
-gint
-evbox_buttonrelease_cb(GtkWidget * widget, GdkEventButton * event)
+gint evbox_buttonrelease_cb(GtkWidget * widget, GdkEventButton * event)
 {
    geist_object *obj;
 
@@ -171,11 +178,15 @@ evbox_buttonrelease_cb(GtkWidget * widget, GdkEventButton * event)
    D(2, ("unsetting object state DRAG\n"));
    geist_object_unset_state(obj, DRAG);
    gtk_object_set_data_full(GTK_OBJECT(mainwin), "drag", NULL, NULL);
+   doc->up =
+      imlib_update_append_rect(doc->up, obj->x, obj->y, obj->w, obj->h);
+      geist_document_render_updates(doc);
 
    D_RETURN(5, 1);
 }
 
-gint evbox_mousemove_cb(GtkWidget * widget, GdkEventMotion * event)
+gint
+evbox_mousemove_cb(GtkWidget * widget, GdkEventMotion * event)
 {
    geist_object *obj;
 
@@ -185,11 +196,13 @@ gint evbox_mousemove_cb(GtkWidget * widget, GdkEventMotion * event)
    if (obj)
    {
       D(5, ("moving object to %f, %f\n", event->x, event->y));
-      geist_document_render_partial(doc, obj->x, obj->y, obj->w, obj->h);
-      obj->x = event->x;
-      obj->y = event->y;
-      geist_document_render_partial(doc, obj->x, obj->y, obj->w, obj->h);
-      geist_document_render_to_gtk_window(doc, darea);
+      doc->up =
+         imlib_update_append_rect(doc->up, obj->x, obj->y, obj->w, obj->h);
+      obj->x = event->x - obj->clicked_x;
+      obj->y = event->y - obj->clicked_y;
+      doc->up =
+         imlib_update_append_rect(doc->up, obj->x, obj->y, obj->w, obj->h);
+      geist_document_render_updates(doc);
    }
 
    D_RETURN(5, 1);

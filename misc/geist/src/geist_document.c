@@ -124,3 +124,19 @@ geist_document_find_clicked_object(geist_document * doc, int x, int y)
    D_RETURN(3, ret);
 
 }
+
+void
+geist_document_render_updates(geist_document *d)
+{
+   Imlib_Updates u;
+   D_ENTER(3);
+
+   if (d && d->up)
+   {
+      geist_document_render(d);
+      geist_document_render_to_gtk_window(d, darea);
+      imlib_updates_free(d->up);
+      d->up = NULL;
+   }
+   D_RETURN_(3);
+}

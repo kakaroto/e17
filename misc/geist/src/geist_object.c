@@ -78,6 +78,9 @@ void geist_object_render(geist_object *obj, Imlib_Image dest)
 {  
    D_ENTER(5);
 
+   if(!obj)
+      D_RETURN_(5);
+
    obj->render(obj, dest);
    
    D_RETURN_(5);
