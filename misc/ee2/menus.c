@@ -94,7 +94,18 @@ menus_init(void)
   gtk_widget_set_sensitive(item, FALSE);
   gtk_menu_append(GTK_MENU(menu), item);
   gtk_widget_show(item);
-  item = gtk_menu_item_new_with_label("Flip Horizontally");
+	
+	item = gtk_menu_item_new_with_label("Sphere Map");
+	gtk_menu_append(GTK_MENU(menu), item);
+	gtk_signal_connect_object(GTK_OBJECT(item), "activate",
+														GTK_SIGNAL_FUNC(sphere_map_image), NULL);
+	gtk_widget_show(item);
+		
+	item = gtk_menu_item_new();  /* Separator */
+	gtk_widget_set_sensitive(item, FALSE);
+	gtk_menu_append(GTK_MENU(menu), item);
+	gtk_widget_show(item);
+	  item = gtk_menu_item_new_with_label("Flip Horizontally");
   gtk_menu_append(GTK_MENU(menu), item);
   gtk_signal_connect_object(GTK_OBJECT(item), "activate",
 														GTK_SIGNAL_FUNC(imagemenu_cb), (gpointer) 6);

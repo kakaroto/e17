@@ -263,3 +263,23 @@ No need to use two variables when one will do.
 
 -------------------------------------------------------------------------------
 
+Tue Mar 7 11:27:16 CST 2000
+(dphase)
+
+Hrmmmmmmmmmmmm.... first commit in a couple of days... main thing is that I
+am sticking this in so i can do some hacking at work....
+
+Ok, load up a square image and go to image->sphere map -- it will map the
+image into a sphere.... very cool.  working on some caching stuff and the
+way ee will create its directories... everything will be in your home dir
+under .ee2/cache, i think that this is fair enough.  it was either that or
+do .ee2 directories all over the place, which i dont have a problem with,
+but i would have gotten a lot of shit about it...
+
+many thanks to Nolan Goodnight for the texture mapping code, he's also
+working on some more stuff for it which will be full of goody good goodness.
+now, it back to work...  should have the keybindings for the main window
+done today... later for now...
+
+-------------------------------------------------------------------------------
+

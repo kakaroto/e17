@@ -1,6 +1,6 @@
 /* EE2 file cruft */
 
-#include "file.h"
+#include "ee2.h"
 
 void
 GetFileStats(char *file1)

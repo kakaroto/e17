@@ -17,6 +17,7 @@
 #include <gdk/gdkprivate.h>
 #include <gdk/gdk.h>
 #include <gtk/gtk.h>
+#include <math.h>
 
 #include "config.h"
 #include "file.h"
@@ -36,6 +37,19 @@ extern Imlib_Image *im, *bimg, *bg;
 extern int imgw, imgh, winw, winh;
 extern char currentimage[];
 
+char cache[255];
+
+/* struct for nolan's mapping code */
+typedef struct pixel_data
+{
+	int mappedx;
+	int mappedy;
+} mapped_pixels;
+
+/* more texture mapping stuff */
+mapped_pixels *calc_mapping(int im_width, int im_height, int x, int y);
+void sphere_map_image(GtkWidget *widget, GdkEvent *event, gpointer data);
+
 /* functions */
 void about_init(void);
 void about_show(void);
@@ -48,6 +62,9 @@ void browser_hide(void);
 void webcam_init(void);
 void webcam_show(void);
 void webcam_hide(void);
+
+void check_cache(void);
+int check_cache_file(char *cache_file);
 
 void AddList(char *foo);
 
