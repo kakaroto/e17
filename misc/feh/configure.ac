@@ -1,6 +1,8 @@
 dnl Process this file with autoconf to create configure.
 
-AC_INIT(src/main.c)
+AC_INIT
+AC_CONFIG_SRCDIR([src/main.c])
+AC_CONFIG_HEADERS([config.h])
 AM_INIT_AUTOMAKE(feh, 0.9.9)
 
 AC_PROG_CC
@@ -33,12 +35,13 @@ AC_SUBST(LIBOBJS)
 
 echo "checking for pr0n.... found"
 
-AC_OUTPUT(Makefile \
+AC_CONFIG_FILES([Makefile \
 feh.spec \
 cam/Makefile \
 src/Makefile \
 src/ttfonts/Makefile \
-)
+])
+AC_OUTPUT
 
 echo ""
 echo "If you have used an earlier version of feh,"
