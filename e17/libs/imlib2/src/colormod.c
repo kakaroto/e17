@@ -88,9 +88,10 @@ __imlib_DataCmodApply(DATA32 *data, int w, int h, int jump,
      {
 	for (x = 0; x < w; x++)
 	  {
-	     READ_RGBA(p, r, g, b, a);
-	     CMOD_APPLY_RGBA(cm, r, g, b, a);
-	     WRITE_RGBA(p, r, g, b, a);
+	     R_VAL(p) = R_CMOD(cm, R_VAL(p));
+	     G_VAL(p) = R_CMOD(cm, G_VAL(p));
+	     B_VAL(p) = R_CMOD(cm, B_VAL(p));
+	     A_VAL(p) = R_CMOD(cm, A_VAL(p));
 	     p++;
 	  }
 	p += jump;

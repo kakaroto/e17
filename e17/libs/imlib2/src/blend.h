@@ -1,36 +1,50 @@
 #ifndef __BLEND
 #define __BLEND 1
 
+#ifndef WORDS_BIGENDIAN
+
+#define A_VAL(p) ((DATA8 *)(p))[3]
+#define R_VAL(p) ((DATA8 *)(p))[2]
+#define G_VAL(p) ((DATA8 *)(p))[1]
+#define B_VAL(p) ((DATA8 *)(p))[0]
+
+#else
+
+#define A_VAL(p) ((DATA8 *)(p))[0]
+#define R_VAL(p) ((DATA8 *)(p))[1]
+#define G_VAL(p) ((DATA8 *)(p))[2]
+#define B_VAL(p) ((DATA8 *)(p))[3]
+
+#endif
+
 /* FIXME: endian dependant */
 #define READ_RGB(p, r, g, b)  \
-   (r) = ((DATA8 *)p)[2]; \
-   (g) = ((DATA8 *)p)[1]; \
-   (b) = ((DATA8 *)p)[0];
+   (r) = R_VAL(p); \
+   (g) = G_VAL(p); \
+   (b) = B_VAL(p);
 
 #define READ_ALPHA(p, a) \
-   (a) = ((DATA8 *)p)[3];
+   (a) = A_VAL(p);
 
 #define READ_RGBA(p, r, g, b, a) \
-   (a) = ((DATA8 *)p)[3]; \
-   (r) = ((DATA8 *)p)[2]; \
-   (g) = ((DATA8 *)p)[1]; \
-   (b) = ((DATA8 *)p)[0];
+   (r) = R_VAL(p); \
+   (g) = G_VAL(p); \
+   (b) = B_VAL(p); \
+   (a) = A_VAL(p);
 
 #define WRITE_RGB(p, r, g, b) \
-   ((DATA8 *)p)[2] = r; \
-   ((DATA8 *)p)[1] = g; \
-   ((DATA8 *)p)[0] = b;
+   R_VAL(p) = (r); \
+   G_VAL(p) = (g); \
+   B_VAL(p) = (b);
 
 #define WRITE_RGB_PRESERVE_ALPHA(p, r, g, b) \
-   ((DATA8 *)p)[2] = r; \
-   ((DATA8 *)p)[1] = g; \
-   ((DATA8 *)p)[0] = b;
+   WRITE_RGB(p, r, g, b)
 
 #define WRITE_RGBA(p, r, g, b, a) \
-   ((DATA8 *)p)[3] = a; \
-   ((DATA8 *)p)[2] = r; \
-   ((DATA8 *)p)[1] = g; \
-   ((DATA8 *)p)[0] = b;
+   R_VAL(p) = (r); \
+   G_VAL(p) = (g); \
+   B_VAL(p) = (b); \
+   A_VAL(p) = (a);
 
 
 /*
@@ -252,9 +266,6 @@
  * (-256, 512), and thus must be saturated at 0 and 255 (from above and below).
  */
 
-/*
-nc = (((a) * ((cc) - (c))) + (c)) >> 8;
-*/
 #define BLEND_COLOR(a, nc, c, cc) \
 tmp = ((c) - (cc)) * (a); \
 nc = (cc) + ((tmp + (tmp >> 8) + 0x80) >> 8);
@@ -284,35 +295,27 @@ tmp = (cc) + (((c) - 127) << 1); \
 SATURATE_BOTH(nc, tmp);
 
 #define BLEND(r1, g1, b1, a1, dest) \
-READ_RGBA(dest, rr, gg, bb, aa); \
-BLEND_COLOR(a1, nr, r1, rr); \
-BLEND_COLOR(a1, ng, g1, gg); \
-BLEND_COLOR(a1, nb, b1, bb); \
-SATURATE_UPPER(na, (a1) + aa); \
-WRITE_RGBA(dest, nr, ng, nb, na);
+BLEND_COLOR(a1, R_VAL(dest), r1, R_VAL(dest)); \
+BLEND_COLOR(a1, G_VAL(dest), g1, G_VAL(dest)); \
+BLEND_COLOR(a1, B_VAL(dest), b1, B_VAL(dest)); \
+SATURATE_UPPER(A_VAL(dest), (a1) + A_VAL(dest));
 
 #define BLEND_ADD(r1, g1, b1, a1, dest) \
-READ_RGBA(dest, rr, gg, bb, aa); \
-ADD_COLOR_WITH_ALPHA(a1, nr, r1, rr); \
-ADD_COLOR_WITH_ALPHA(a1, ng, g1, gg); \
-ADD_COLOR_WITH_ALPHA(a1, nb, b1, bb); \
-SATURATE_UPPER(na, (a1) + aa); \
-WRITE_RGBA(dest, nr, ng, nb, na);
+ADD_COLOR_WITH_ALPHA(a1, R_VAL(dest), r1, R_VAL(dest)); \
+ADD_COLOR_WITH_ALPHA(a1, G_VAL(dest), g1, G_VAL(dest)); \
+ADD_COLOR_WITH_ALPHA(a1, B_VAL(dest), b1, B_VAL(dest)); \
+SATURATE_UPPER(A_VAL(dest), (a1) + A_VAL(dest));
 
 #define BLEND_SUB(r1, g1, b1, a1, dest) \
-READ_RGBA(dest, rr, gg, bb, aa); \
-SUB_COLOR_WITH_ALPHA(a1, nr, r1, rr); \
-SUB_COLOR_WITH_ALPHA(a1, ng, g1, gg); \
-SUB_COLOR_WITH_ALPHA(a1, nb, b1, bb); \
-SATURATE_UPPER(na, (a1) + aa); \
-WRITE_RGBA(dest, nr, ng, nb, na);
+SUB_COLOR_WITH_ALPHA(a1, R_VAL(dest), r1, R_VAL(dest)); \
+SUB_COLOR_WITH_ALPHA(a1, G_VAL(dest), g1, G_VAL(dest)); \
+SUB_COLOR_WITH_ALPHA(a1, B_VAL(dest), b1, B_VAL(dest)); \
+SATURATE_UPPER(A_VAL(dest), (a1) + A_VAL(dest));
 
 #define BLEND_RE(r1, g1, b1, a1, dest) \
-READ_RGBA(dest, rr, gg, bb, aa); \
-RESHADE_COLOR_WITH_ALPHA(a1, nr, r1, rr); \
-RESHADE_COLOR_WITH_ALPHA(a1, ng, g1, gg); \
-RESHADE_COLOR_WITH_ALPHA(a1, nb, b1, bb); \
-WRITE_RGBA(dest, nr, ng, nb, na);
+RESHADE_COLOR_WITH_ALPHA(a1, R_VAL(dest), r1, R_VAL(dest)); \
+RESHADE_COLOR_WITH_ALPHA(a1, G_VAL(dest), g1, G_VAL(dest)); \
+RESHADE_COLOR_WITH_ALPHA(a1, B_VAL(dest), b1, B_VAL(dest));
 
 enum _imlibop
 {

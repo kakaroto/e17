@@ -2,7 +2,6 @@
 #define __ROTATE 1
 
 #include <X11/Xlib.h>
-#include <endian.h>
 #include "image.h"
 #include "colormod.h"
 #include "blend.h"
@@ -24,25 +23,5 @@ void __imlib_BlendImageToImageAtAngle(ImlibImage *im_src, ImlibImage *im_dst,
 				      int ddx, int ddy, int ddw, int ddh,
 				      ImlibColorModifier *cm, ImlibOp op);
 
-
-/*\ bigendian and littleendian byte-from-int macro's \*/
-#if __BYTE_ORDER == __LITTLE_ENDIAN
-# define R_VAL(x) (*(((DATA8 *)&(x))+(0)))
-# define G_VAL(x) (*(((DATA8 *)&(x))+(1)))
-# define B_VAL(x) (*(((DATA8 *)&(x))+(2)))
-# define A_VAL(x) (*(((DATA8 *)&(x))+(3)))
-#elif __BYTE_ORDER == __BIG_ENDIAN
-# define A_VAL(x) (*(((DATA8 *)&(x))+(0)))
-# define B_VAL(x) (*(((DATA8 *)&(x))+(1)))
-# define G_VAL(x) (*(((DATA8 *)&(x))+(2)))
-# define R_VAL(x) (*(((DATA8 *)&(x))+(3)))
-#elif __BYTE_ORDER == __PDP_ENDIAN
-# define B_VAL(x) (*(((DATA8 *)&(x))+(0)))
-# define A_VAL(x) (*(((DATA8 *)&(x))+(1)))
-# define R_VAL(x) (*(((DATA8 *)&(x))+(2)))
-# define G_VAL(x) (*(((DATA8 *)&(x))+(3)))
-#else
-#error Unknown byte endianness.
-#endif
 
 #endif
