@@ -305,7 +305,7 @@ feh_imlib_save_image(Imlib_Image im, char *file)
    imlib_context_set_image(im);
    tmp = strrchr(file, '.');
    if (tmp)
-      imlib_set_format(tmp + 1);
+      imlib_image_set_format(tmp + 1);
    imlib_save_image(file);
 }
 
