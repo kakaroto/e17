@@ -130,7 +130,7 @@ browser_sel(GtkWidget *clist, gint row, gint column,
     DrawImage(im, 0, 0);
   }
   if(im){
-    if(imlib_image_has_alpha())
+    /*if(imlib_image_has_alpha())
       sprintf(alp, "YES");
     else
       sprintf(alp, "NO");
@@ -142,7 +142,7 @@ browser_sel(GtkWidget *clist, gint row, gint column,
 	    imlib_image_get_height(),
 	    EFile.Size,
 	    (ctime(&EFile.ModTime)),
-	    alp);
+	    alp);*/
     /*gtk_label_set_text(GTK_LABEL(infol), lblt);*/
     prev_draw(im, area2->allocation.width, area2->allocation.height);
     /* the below is the thumbnail, disregard now, though it works */

@@ -203,6 +203,7 @@ mod_init(void)
 	blm_init();
 	am_init();
 	brite_init();
+	scale_init();
 	fx_init();
 }
 
