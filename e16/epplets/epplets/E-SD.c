@@ -323,11 +323,14 @@ esd_timer (void *data)
   register short val_l = 0, val_r = 0;
   unsigned short bigl = 0, bigr = 0;
   int count, i;
-  short aubuf[2048] = { 0 };
+  short aubuf[8192] = { 0 };
   FD_ZERO (&rfds);
   FD_SET (esd.fd, &rfds);
   tv.tv_sec = 0;
   tv.tv_usec = 0;
+
+  /* tv is basically 0, so this should be a non-blocking select() */
+  /* It should immediately return whether there is anything in the stream */
   retval = select (esd.fd + 1, &rfds, NULL, NULL, &tv);
 
   if (retval)
@@ -338,7 +341,7 @@ esd_timer (void *data)
 	  printf ("WARNING: Couldn't read EsounD monitor stream!\n");
 	  return;
 	}
-      for (i = 1; i < nsamp;)
+      for (i = 0; i < count;)
 	{
 	  val_r = abs (aubuf[i++]);
 	  val_l = abs (aubuf[i++]);
@@ -544,7 +547,7 @@ main (int argc, char **argv)
   else
     esd.standby = 1;
 
-  nsamp = 2048;
+  nsamp = 4096;
 /*
   last_is_full = 1;	    
   pos = 0;
