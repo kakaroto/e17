@@ -72,6 +72,7 @@ m10001000: .byte   0,   0,   0,   1,   0,   0,   0,   1
 m000V0V0V: .byte 127,   0, 127,   0, 127,   0,   0,   0
 mI0000000: .byte   0,   0,   0,   0,   0,   0,   0,  64
 m0VVV0VVV: .byte 127, 127, 127,   0, 127, 127, 127,   0
+c1: .word 0x1, 0x1, 0x1, 0x1
 
 /*\ MMX register use:
 |*| %mm1 = Source value
@@ -135,6 +136,7 @@ __imlib_mmx_blend_rgba_to_rgb:
 	ENTER
 
 	pxor %mm4, %mm4
+	movq c1, %mm5
 
 	LOOP_START
 1:
@@ -167,9 +169,10 @@ __imlib_mmx_blend_rgba_to_rgb:
 	punpcklbw %mm4, %mm1
 	punpcklbw %mm4, %mm2
 
-	/*\ d = d + (a * (s - d)) \*/
+	/*\ d = d + (a * ((s - d) + 0.5)) \*/
 	psubw %mm2, %mm1
 	psllw $1, %mm1
+	paddw %mm5, %mm1	/*\ Roundoff \*/
 	pmulhw %mm3, %mm1
 	paddw %mm1, %mm2
 
@@ -229,6 +232,7 @@ __imlib_mmx_blend_rgba_to_rgba:
 	pxor %mm4, %mm4
 	movq m0X000000, %mm5
 	movq m00XXXXXX, %mm6
+	movq c1, %mm7
 
 	LOOP_START
 1:
@@ -254,9 +258,10 @@ __imlib_mmx_blend_rgba_to_rgba:
 	movq %mm1, %mm0
 	pand %mm5, %mm0
 
-	/*\ d = d + (a * (s - d)) \*/
+	/*\ d = d + (a * ((s - d) + 0.5)) \*/
 	psubw %mm2, %mm1
 	psllw $1, %mm1
+	paddw %mm7, %mm1	/*\ Roundoff \*/
 	pmulhw %mm3, %mm1
 
 	/*\ Replace alpha channel with separated out version in mm0 and add \*/

@@ -48,6 +48,7 @@ __imlib_RenderImage(Display *d, ImlibImage *im,
    int       actual_depth = 0;
    char      xup = 0, yup = 0;
    char      shm = 0, bgr = 0;
+   ImlibRGBAFunction rgbaer, masker;
    
    /* dont do anything if we have a 0 widht or height image to render */
    if ((dw <= 0) || (dh <= 0))
@@ -201,6 +202,9 @@ __imlib_RenderImage(Display *d, ImlibImage *im,
    if (dh > sh)
       yup = 1;
    /* scale in LINESIZE Y chunks and convert to depth*/
+   /*\ Get rgba and mask functions for XImage rendering \*/
+   rgbaer = __imlib_GetRGBAFunction(actual_depth, bgr, hiq, ct->palette_type);
+   if (m) masker = __imlib_GetMaskFunction(hiq);
    for (y = 0; y < dh; y += LINESIZE)
      {
 	hh = LINESIZE;
@@ -264,200 +268,13 @@ __imlib_RenderImage(Display *d, ImlibImage *im,
 	     jump = 0;
 	  }
 	/* once scaled... convert chunk to bit depth into XImage bufer */
-	/* NB - the order here may be random - but I chose it to select most */
-	/* common depths first */
-	if (actual_depth == 16)
-	  {
-	     if (bgr)
-	       {
-		  if (hiq)
-		     __imlib_RGBA_to_BGR565_dither(pointer, jump, 
-						   ((DATA16 *)xim->data) + (y * (xim->bytes_per_line / sizeof(DATA16))),
-						   (xim->bytes_per_line / sizeof(DATA16)) - dw,
-						   dw, hh, dx, dy + y); 
-		  else
-		     __imlib_RGBA_to_BGR565_fast(pointer, jump, 
-						 ((DATA16 *)xim->data) + (y * (xim->bytes_per_line / sizeof(DATA16))),
-						 (xim->bytes_per_line / sizeof(DATA16)) - dw,
-						 dw, hh, dx, dy + y); 
-	       }
-	     else
-	       {
-		  if (hiq)
-		     __imlib_RGBA_to_RGB565_dither(pointer, jump, 
-						   ((DATA16 *)xim->data) + (y * (xim->bytes_per_line / sizeof(DATA16))),
-						   (xim->bytes_per_line / sizeof(DATA16)) - dw,
-						   dw, hh, dx, dy + y); 
-		  else
-		     __imlib_RGBA_to_RGB565_fast(pointer, jump, 
-						 ((DATA16 *)xim->data) + (y * (xim->bytes_per_line / sizeof(DATA16))),
-						 (xim->bytes_per_line / sizeof(DATA16)) - dw,
-						 dw, hh, dx, dy + y); 
-	       }
-	  }
-	/* FIXME: need to handle different RGB ordering */
-	else if (actual_depth == 24)
-	  {
-	     if (bgr)
-		__imlib_RGBA_to_BGR888_fast(pointer, jump, 
-					    ((DATA8 *)xim->data) + (y * xim->bytes_per_line),
-					    xim->bytes_per_line - (dw * 3),
-					    dw, hh, dx, dy + y); 
-	     else
-		__imlib_RGBA_to_RGB888_fast(pointer, jump, 
-					    ((DATA8 *)xim->data) + (y * xim->bytes_per_line),
-					    xim->bytes_per_line - (dw * 3),
-					    dw, hh, dx, dy + y); 
-	  }
-	else if (actual_depth == 32)
-	  {
-	     if (bgr)
-		__imlib_RGBA_to_BGR8888_fast(pointer, jump, 
-					     ((DATA32 *)xim->data) + (y * (xim->bytes_per_line / sizeof(DATA32))),
-					     (xim->bytes_per_line / sizeof(DATA32)) - dw,
-					     dw, hh, dx, dy + y); 
-	     else
-		__imlib_RGBA_to_RGB8888_fast(pointer, jump, 
-					     ((DATA32 *)xim->data) + (y * (xim->bytes_per_line / sizeof(DATA32))),
-					     (xim->bytes_per_line / sizeof(DATA32)) - dw,
-					     dw, hh, dx, dy + y); 
-	  }
-	else if (actual_depth == 8)
-	  {
-	     switch (ct->palette_type)
-	       {
-	       case 0:
-		  if (hiq)
-		     __imlib_RGBA_to_RGB332_dither(pointer, jump, 
-						   ((DATA8 *)xim->data) + (y * (xim->bytes_per_line / sizeof(DATA8))),
-						   (xim->bytes_per_line / sizeof(DATA8)) - dw,
-						   dw, hh, dx, dy + y); 
-		  else
-		     __imlib_RGBA_to_RGB332_fast(pointer, jump, 
-						 ((DATA8 *)xim->data) + (y * (xim->bytes_per_line / sizeof(DATA8))),
-						 (xim->bytes_per_line / sizeof(DATA8)) - dw,
-						 dw, hh, dx, dy + y); 
-		  break;
-	       case 1:
-		  if (hiq)
-		     __imlib_RGBA_to_RGB232_dither(pointer, jump, 
-						   ((DATA8 *)xim->data) + (y * (xim->bytes_per_line / sizeof(DATA8))),
-						   (xim->bytes_per_line / sizeof(DATA8)) - dw,
-						   dw, hh, dx, dy + y); 
-		  else
-		     __imlib_RGBA_to_RGB232_fast(pointer, jump, 
-						 ((DATA8 *)xim->data) + (y * (xim->bytes_per_line / sizeof(DATA8))),
-						 (xim->bytes_per_line / sizeof(DATA8)) - dw,
-						 dw, hh, dx, dy + y); 
-		  break;
-	       case 2:
-		  if (hiq)
-		     __imlib_RGBA_to_RGB222_dither(pointer, jump, 
-						   ((DATA8 *)xim->data) + (y * (xim->bytes_per_line / sizeof(DATA8))),
-						   (xim->bytes_per_line / sizeof(DATA8)) - dw,
-						   dw, hh, dx, dy + y); 
-		  else
-		     __imlib_RGBA_to_RGB222_fast(pointer, jump, 
-						 ((DATA8 *)xim->data) + (y * (xim->bytes_per_line / sizeof(DATA8))),
-						 (xim->bytes_per_line / sizeof(DATA8)) - dw,
-						 dw, hh, dx, dy + y); 
-		  break;
-	       case 3:
-		  if (hiq)
-		     __imlib_RGBA_to_RGB221_dither(pointer, jump, 
-						   ((DATA8 *)xim->data) + (y * (xim->bytes_per_line / sizeof(DATA8))),
-						   (xim->bytes_per_line / sizeof(DATA8)) - dw,
-						   dw, hh, dx, dy + y); 
-		  else
-		     __imlib_RGBA_to_RGB221_fast(pointer, jump, 
-						 ((DATA8 *)xim->data) + (y * (xim->bytes_per_line / sizeof(DATA8))),
-						 (xim->bytes_per_line / sizeof(DATA8)) - dw,
-						 dw, hh, dx, dy + y); 
-		  break;
-	       case 4:
-		  if (hiq)
-		     __imlib_RGBA_to_RGB121_dither(pointer, jump, 
-						   ((DATA8 *)xim->data) + (y * (xim->bytes_per_line / sizeof(DATA8))),
-						   (xim->bytes_per_line / sizeof(DATA8)) - dw,
-						   dw, hh, dx, dy + y); 
-		  else
-		     __imlib_RGBA_to_RGB121_fast(pointer, jump, 
-						 ((DATA8 *)xim->data) + (y * (xim->bytes_per_line / sizeof(DATA8))),
-						 (xim->bytes_per_line / sizeof(DATA8)) - dw,
-						 dw, hh, dx, dy + y); 
-		  break;
-	       case 5:
-		  if (hiq)
-		     __imlib_RGBA_to_RGB111_dither(pointer, jump, 
-						   ((DATA8 *)xim->data) + (y * (xim->bytes_per_line / sizeof(DATA8))),
-						   (xim->bytes_per_line / sizeof(DATA8)) - dw,
-						   dw, hh, dx, dy + y); 
-		  else
-		     __imlib_RGBA_to_RGB111_fast(pointer, jump, 
-						 ((DATA8 *)xim->data) + (y * (xim->bytes_per_line / sizeof(DATA8))),
-						 (xim->bytes_per_line / sizeof(DATA8)) - dw,
-						 dw, hh, dx, dy + y); 
-		  break;
-	       case 6:
-		  if (hiq)
-		     __imlib_RGBA_to_RGB1_dither(pointer, jump, 
-						 ((DATA8 *)xim->data) + (y * (xim->bytes_per_line / sizeof(DATA8))),
-						 (xim->bytes_per_line / sizeof(DATA8)) - dw,
-						 dw, hh, dx, dy + y); 
-		  else
-		     __imlib_RGBA_to_RGB1_fast(pointer, jump, 
-					       ((DATA8 *)xim->data) + (y * (xim->bytes_per_line / sizeof(DATA8))),
-					       (xim->bytes_per_line / sizeof(DATA8)) - dw,
-					       dw, hh, dx, dy + y); 
-		  break;
-	       default:
-		  break;
-	       }
-	  }
-	else if (actual_depth == 15)
-	  {
-	     if (bgr)
-	       {
-		  if (hiq)
-		     __imlib_RGBA_to_BGR555_dither(pointer, jump, 
-						   ((DATA16 *)xim->data) + (y * (xim->bytes_per_line / sizeof(DATA16))),
-						   (xim->bytes_per_line / sizeof(DATA16)) - dw,
-						   dw, hh, dx, dy + y); 
-		  else
-		     __imlib_RGBA_to_BGR555_fast(pointer, jump, 
-						 ((DATA16 *)xim->data) + (y * (xim->bytes_per_line / sizeof(DATA16))),
-						 (xim->bytes_per_line / sizeof(DATA16)) - dw,
-						 dw, hh, dx, dy + y); 
-	       }
-	     else
-	       {
-		  if (hiq)
-		     __imlib_RGBA_to_RGB555_dither(pointer, jump, 
-						   ((DATA16 *)xim->data) + (y * (xim->bytes_per_line / sizeof(DATA16))),
-						   (xim->bytes_per_line / sizeof(DATA16)) - dw,
-						   dw, hh, dx, dy + y); 
-		  else
-		     __imlib_RGBA_to_RGB555_fast(pointer, jump, 
-						 ((DATA16 *)xim->data) + (y * (xim->bytes_per_line / sizeof(DATA16))),
-						 (xim->bytes_per_line / sizeof(DATA16)) - dw,
-						 dw, hh, dx, dy + y); 
-	       }
-	  }
+        rgbaer(pointer, jump,
+	       ((DATA8 *)xim->data) + (y * (xim->bytes_per_line)),
+	       xim->bytes_per_line, dw, hh, dx, dy + y);
 	if (m)
-	  {
-	     memset(((DATA8 *)mxim->data) + (y * (mxim->bytes_per_line)),
-		    0x0, mxim->bytes_per_line * hh);
-	     if (dither_mask)
-		__imlib_RGBA_to_A1_dither(pointer, jump, 
-					  ((DATA8 *)mxim->data) + (y * (mxim->bytes_per_line)),
-					  (mxim->bytes_per_line) - (dw >> 3),
-					  dw, hh, dx, dy + y); 
-	     else
-		__imlib_RGBA_to_A1_fast(pointer, jump, 
-					((DATA8 *)mxim->data) + (y * (mxim->bytes_per_line)),
-					(mxim->bytes_per_line) - (dw >> 3),
-					dw, hh, dx, dy + y); 
-	  }
+	   masker(pointer, jump,
+		  ((DATA8 *)mxim->data) + (y * (mxim->bytes_per_line)),
+		  mxim->bytes_per_line, dw, hh, dx, dy + y);
 	h -= LINESIZE;
      }
    /* free up our buffers and poit tables */
