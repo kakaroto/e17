@@ -43,7 +43,7 @@ main(int argc, char **argv)
      {
 	unsigned int *pixels;
 
-	epeg_decode_colorspace_set(im, EPEG_ARGB32);
+/*	epeg_decode_colorspace_set(im, EPEG_ARGB32); */
 	pixels = epeg_pixels_get(im, 0, 0, 128, 96);
 	if (pixels)
 	  {
