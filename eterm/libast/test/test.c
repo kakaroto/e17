@@ -23,7 +23,7 @@
 
 static const char cvs_ident[] = "$Id$";
 
-#ifdef HAVE_CONFIG_H
+#if defined(HAVE_CONFIG_H) && (HAVE_CONFIG_H != 0)
 # include <config.h>
 #endif
 
@@ -103,7 +103,7 @@ int
 test_strings(void)
 {
     char *s1, *s2, *s3, *s4;
-#ifdef HAVE_REGEX_H
+#if HAVE_REGEX_H
     regex_t *r = NULL;
 #endif
     char **slist;
@@ -153,7 +153,7 @@ test_strings(void)
     FREE(s4);
     TEST_PASS();
 
-#ifdef HAVE_REGEX_H
+#if HAVE_REGEX_H
     TEST_BEGIN("regexp_match() function");
     TEST_FAIL_IF(!regexp_match("One particular string", "part"));
     TEST_FAIL_IF(regexp_match("Some other strange string", "^[A-Za-z]+$"));
@@ -1311,7 +1311,7 @@ test_socket(void)
 int
 test_regexp(void)
 {
-#ifdef LIBAST_REGEXP_SUPPORT_PCRE
+#if LIBAST_REGEXP_SUPPORT_PCRE
     {
         spif_charptr_t regexp_list[] = {
             "cdefg",

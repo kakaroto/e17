@@ -23,7 +23,7 @@
 
 static const char cvs_ident[] = "$Id$";
 
-#ifdef HAVE_CONFIG_H
+#if defined(HAVE_CONFIG_H) && (HAVE_CONFIG_H != 0)
 # include <config.h>
 #endif
 
@@ -177,7 +177,7 @@ spif_regexp_compile(spif_regexp_t self)
     if (self->data != SPIF_NULL_TYPE(ptr)) {
         FREE(self->data);
     }
-#ifdef LIBAST_REGEXP_SUPPORT_PCRE
+#if LIBAST_REGEXP_SUPPORT_PCRE
     {
         const char *errptr;
         int erroffset;
@@ -189,7 +189,7 @@ spif_regexp_compile(spif_regexp_t self)
         }
         return TRUE;
     }
-#elif defined(LIBAST_REGEXP_SUPPORT_POSIX)
+#elif (LIBAST_REGEXP_SUPPORT_POSIX)
     {
         char buff[256];
         int errcode;
@@ -203,7 +203,7 @@ spif_regexp_compile(spif_regexp_t self)
         }
         return TRUE;
     }
-#elif defined(LIBAST_REGEXP_SUPPORT_BSD)
+#elif (LIBAST_REGEXP_SUPPORT_BSD)
     return TRUE;
 #endif
     ASSERT_NOTREACHED_RVAL(FALSE);
@@ -212,7 +212,7 @@ spif_regexp_compile(spif_regexp_t self)
 spif_bool_t
 spif_regexp_matches_str(spif_regexp_t self, spif_str_t subject)
 {
-#ifdef LIBAST_REGEXP_SUPPORT_PCRE
+#if LIBAST_REGEXP_SUPPORT_PCRE
     {
         int rc;
 
@@ -227,7 +227,7 @@ spif_regexp_matches_str(spif_regexp_t self, spif_str_t subject)
             return FALSE;
         }
     }
-#elif defined(LIBAST_REGEXP_SUPPORT_POSIX)
+#elif (LIBAST_REGEXP_SUPPORT_POSIX)
     {
         int rc;
         char errbuf[256];
@@ -244,7 +244,7 @@ spif_regexp_matches_str(spif_regexp_t self, spif_str_t subject)
             return FALSE;
         }
     }
-#elif defined(LIBAST_REGEXP_SUPPORT_BSD)
+#elif (LIBAST_REGEXP_SUPPORT_BSD)
     {
         spif_charptr_t err;
 
@@ -261,7 +261,7 @@ spif_regexp_matches_str(spif_regexp_t self, spif_str_t subject)
 spif_bool_t
 spif_regexp_matches_ptr(spif_regexp_t self, spif_charptr_t subject)
 {
-#ifdef LIBAST_REGEXP_SUPPORT_PCRE
+#if LIBAST_REGEXP_SUPPORT_PCRE
     {
         int rc;
 
@@ -276,7 +276,7 @@ spif_regexp_matches_ptr(spif_regexp_t self, spif_charptr_t subject)
             return FALSE;
         }
     }
-#elif defined(LIBAST_REGEXP_SUPPORT_POSIX)
+#elif (LIBAST_REGEXP_SUPPORT_POSIX)
     {
         int rc;
         char errbuf[256];
@@ -293,7 +293,7 @@ spif_regexp_matches_ptr(spif_regexp_t self, spif_charptr_t subject)
             return FALSE;
         }
     }
-#elif defined(LIBAST_REGEXP_SUPPORT_BSD)
+#elif (LIBAST_REGEXP_SUPPORT_BSD)
     {
         spif_charptr_t err;
 
@@ -318,16 +318,16 @@ spif_regexp_set_flags(spif_regexp_t self, spif_charptr_t flagstr)
 {
     spif_charptr_t p;
 
-#ifdef LIBAST_REGEXP_SUPPORT_PCRE
+#if LIBAST_REGEXP_SUPPORT_PCRE
     self->flags = 0;
-#elif defined(LIBAST_REGEXP_SUPPORT_POSIX)
+#elif (LIBAST_REGEXP_SUPPORT_POSIX)
     self->flags = REG_EXTENDED | REG_NEWLINE;
 #endif
 
     REQUIRE_RVAL(flagstr != SPIF_NULL_TYPE(charptr), FALSE);
     for (p = flagstr; *p; p++) {
         switch (*p) {
-#ifdef LIBAST_REGEXP_SUPPORT_PCRE
+#if LIBAST_REGEXP_SUPPORT_PCRE
             case 'i':  self->flags |= PCRE_CASELESS; break;
             case 'm':  self->flags |= PCRE_MULTILINE; break;
             case 's':  self->flags |= PCRE_DOTALL; break;
@@ -337,7 +337,7 @@ spif_regexp_set_flags(spif_regexp_t self, spif_charptr_t flagstr)
             case '^':  self->flags |= PCRE_NOTBOL; break;
             case '$':  self->flags |= PCRE_NOTEOL; break;
             case 'E':  self->flags |= PCRE_NOTEMPTY; break;
-#elif defined(LIBAST_REGEXP_SUPPORT_POSIX)
+#elif (LIBAST_REGEXP_SUPPORT_POSIX)
             case 'b':  self->flags &= ~REG_EXTENDED; break;
             case 'i':  self->flags |= REG_ICASE; break;
             case 'n':  self->flags |= REG_NOSUB; break;

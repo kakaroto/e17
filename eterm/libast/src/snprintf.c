@@ -1,10 +1,12 @@
-#ifdef HAVE_CONFIG_H
+#if defined(HAVE_CONFIG_H) && (HAVE_CONFIG_H != 0)
 # include <config.h>
 #endif
 
 #include <errno.h>
-#ifdef HAVE_STDARG_H
+#if defined(HAVE_STDARG_H) && (HAVE_STDARG_H != 0)
 # include <stdarg.h>
+#else
+# undef HAVE_STDARG_H
 #endif
 
 static const char cvs_ident[] = "$Id$";
@@ -19,7 +21,7 @@ static const char cvs_ident[] = "$Id$";
  * junk....
  */
 
-#if !defined(HAVE_SNPRINTF) || (HAVE_SNPRINTF_BUG == 1)
+#if !(HAVE_SNPRINTF) || (HAVE_SNPRINTF_BUG == 1)
 
 #define VA_LOCAL_DECL va_list ap
 #define VA_START(f) va_start(ap, f)

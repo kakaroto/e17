@@ -38,7 +38,7 @@ AC_SUBST(LDFLAGS)
 AC_SUBST(LIBS)
 
 basedir=.
-AM_CONFIG_HEADER(config.h)
+AM_CONFIG_HEADER(config.h include/libast/sysdefs.h)
 AC_OUTPUT(${srcdir}/include/libast/types.h Makefile include/Makefile \
           include/libast/Makefile src/Makefile test/Makefile \
           libast-config)

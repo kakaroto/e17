@@ -37,22 +37,7 @@
 #ifndef _LIBAST_H_
 #define _LIBAST_H_
 
-/* This GNU goop has to go before the system headers */
-#ifdef __GNUC__
-# ifndef __USE_GNU
-#  define __USE_GNU
-# endif
-# ifndef _GNU_SOURCE
-#  define _GNU_SOURCE
-# endif
-# ifndef _BSD_SOURCE
-#  define _BSD_SOURCE
-# endif
-# ifndef _XOPEN_SOURCE
-/* FIXME -- Do some systems still need this? */
-/* #  define _XOPEN_SOURCE */
-# endif
-#endif
+#include <libast/sysdefs.h>
 
 #include <stdio.h>
 #include <stdlib.h>
@@ -68,12 +53,12 @@
 #include <signal.h>
 #include <limits.h>
 #include <math.h>
-#ifdef TIME_WITH_SYS_TIME
+#if TIME_WITH_SYS_TIME
 # include <sys/time.h>
 #endif
-#ifdef WITH_DMALLOC
+#if WITH_DMALLOC
 # include <dmalloc.h>
-#elif defined(HAVE_MALLOC_H)
+#elif HAVE_MALLOC_H
 # include <malloc.h>
 #endif
 
@@ -86,26 +71,26 @@
 #include <netinet/tcp.h>
 #include <netinet/udp.h>
 
-#ifdef LIBAST_X11_SUPPORT
+#if LIBAST_X11_SUPPORT
 # include <X11/Xatom.h>
 # include <X11/X.h>
 # include <X11/Intrinsic.h>
-# ifdef LIBAST_IMLIB2_SUPPORT
+# if LIBAST_IMLIB2_SUPPORT
 #  include <Imlib2.h>
 # endif
 #endif
 
-#ifdef LIBAST_REGEXP_SUPPORT_PCRE
-#  ifdef HAVE_PCRE_H
+#if LIBAST_REGEXP_SUPPORT_PCRE
+#  if HAVE_PCRE_H
 #    include <pcre.h>
 #  elif HAVE_PCRE_PCRE_H
 #    include <pcre/pcre.h>
 #  endif
-#elif defined(LIBAST_REGEXP_SUPPORT_POSIX) || defined(LIBAST_REGEXP_SUPPORT_BSD)
-#  ifdef HAVE_REGEX_H
+#elif LIBAST_REGEXP_SUPPORT_POSIX || LIBAST_REGEXP_SUPPORT_BSD
+#  if HAVE_REGEX_H
 #    include <regex.h>
 #  endif
-#  ifdef LIBAST_REGEXP_SUPPORT_BSD
+#  if LIBAST_REGEXP_SUPPORT_BSD
 extern char *re_comp();
 extern int re_exec();
 #  endif
@@ -1112,7 +1097,7 @@ extern int re_exec();
 # define MALLOC_DUMP()                          libast_dump_mem_tables()
 # define X_CREATE_PIXMAP(d, win, w, h, depth)   libast_x_create_pixmap(__FILE__, __LINE__, (d), (win), (w), (h), (depth))
 # define X_FREE_PIXMAP(d, p)                    libast_x_free_pixmap(#p, __FILE__, __LINE__, (d), (p))
-# ifdef HAVE_LIBIMLIB2
+# if LIBAST_IMLIB2_SUPPORT
 #  define IMLIB_REGISTER_PIXMAP(p)              libast_imlib_register_pixmap(#p, __FILE__, __LINE__, (p))
 #  define IMLIB_FREE_PIXMAP(p)                  libast_imlib_free_pixmap(#p, __FILE__, __LINE__, (p))
 # else
@@ -1136,7 +1121,7 @@ extern int re_exec();
 # define MALLOC_DUMP()                          NOP
 # define X_CREATE_PIXMAP(d, win, w, h, depth)   XCreatePixmap((d), (win), (w), (h), (depth))
 # define X_FREE_PIXMAP(d, p)                    XFreePixmap((d), (p))
-# ifdef HAVE_LIBIMLIB2
+# ifdef LIBAST_IMLIB2_SUPPORT
 #  define IMLIB_REGISTER_PIXMAP(p)              NOP
 #  define IMLIB_FREE_PIXMAP(p)                  imlib_free_pixmap_and_mask(p)
 # else
@@ -2608,10 +2593,10 @@ extern void *libast_calloc(const char *, unsigned long, size_t, size_t);
 extern void libast_free(const char *, const char *, unsigned long, void *);
 extern char *libast_strdup(const char *, const char *, unsigned long, const char *);
 extern void libast_dump_mem_tables(void);
-#ifdef LIBAST_X11_SUPPORT
+#if LIBAST_X11_SUPPORT
 extern Pixmap libast_x_create_pixmap(const char *, unsigned long, Display *, Drawable, unsigned int, unsigned int, unsigned int);
 extern void libast_x_free_pixmap(const char *, const char *, unsigned long, Display *, Pixmap);
-# ifdef LIBAST_IMLIB2_SUPPORT
+# if LIBAST_IMLIB2_SUPPORT
 extern void libast_imlib_register_pixmap(const char *var, const char *filename, unsigned long line, Pixmap p);
 extern void libast_imlib_free_pixmap(const char *var, const char *filename, unsigned long line, Pixmap p);
 # endif
@@ -2629,7 +2614,7 @@ extern int libast_temp_file(char *, size_t);
 extern char *left_str(const char *, unsigned long);
 extern char *mid_str(const char *, unsigned long, unsigned long);
 extern char *right_str(const char *, unsigned long);
-#if defined(LIBAST_REGEXP_SUPPORT_POSIX) && defined(HAVE_REGEX_H)
+#if LIBAST_REGEXP_SUPPORT_POSIX && HAVE_REGEX_H
 extern spif_bool_t regexp_match(const char *, const char *);
 extern spif_bool_t regexp_match_r(const char *str, const char *pattern, regex_t **rexp);
 #endif
@@ -2643,16 +2628,16 @@ extern char *chomp(char *);
 extern char *strip_whitespace(char *);
 extern char *downcase_str(char *);
 extern char *upcase_str(char *);
-#ifndef HAVE_STRCASESTR
+#if !(HAVE_STRCASESTR)
 extern char *strcasestr(const char *, const char *);
 #endif
-#ifndef HAVE_STRCASECHR
+#if !(HAVE_STRCASECHR)
 extern char *strcasechr(const char *, const char);
 #endif
-#ifndef HAVE_STRCASEPBRK
+#if !(HAVE_STRCASEPBRK)
 extern char *strcasepbrk(const char *, const char *);
 #endif
-#ifndef HAVE_STRREV
+#if !(HAVE_STRREV)
 extern char *strrev(char *);
 #endif
 #if !(HAVE_STRSEP)
@@ -2664,16 +2649,16 @@ extern char *file_garbage_collect(char *, size_t);
 extern char *condense_whitespace(char *);
 extern void hex_dump(void *, size_t);
 extern spif_cmp_t version_compare(const char *, const char *);
-#ifndef HAVE_MEMMEM
+#if !(HAVE_MEMMEM)
 extern void *memmem(const void *, size_t, const void *, size_t);
 #endif
-#ifndef HAVE_STRNLEN
+#if !(HAVE_STRNLEN)
 extern size_t strnlen(const char *, size_t);
 #endif
-#ifndef HAVE_USLEEP
+#if !(HAVE_USLEEP)
 extern void usleep(unsigned long);
 #endif
-#ifndef HAVE_SNPRINTF
+#if !(HAVE_SNPRINTF)
 extern int vsnprintf(char *str, size_t count, const char *fmt, va_list args);
 extern int snprintf(char *str, size_t count, const char *fmt, ...);
 #endif

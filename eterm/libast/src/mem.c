@@ -35,7 +35,7 @@
 
 static const char cvs_ident[] = "$Id$";
 
-#ifdef HAVE_CONFIG_H
+#if defined(HAVE_CONFIG_H) && (HAVE_CONFIG_H != 0)
 # include <config.h>
 #endif
 
@@ -48,7 +48,7 @@ static void memrec_chg_var(memrec_t *, const char *, const char *, unsigned long
 static void memrec_dump_pointers(memrec_t *);
 static void memrec_dump_resources(memrec_t *);
 
-#ifdef MALLOC_CALL_DEBUG
+#if MALLOC_CALL_DEBUG
 /*@{*/
 /**
  * @name Memory Management Call Tracking
@@ -412,7 +412,7 @@ libast_malloc(const char *filename, unsigned long line, size_t size)
 {
     void *temp;
 
-#ifdef MALLOC_CALL_DEBUG
+#if MALLOC_CALL_DEBUG
     ++malloc_count;
     if (!(malloc_count % MALLOC_MOD)) {
         fprintf(LIBAST_DEBUG_FD, "Calls to malloc(): %d\n", malloc_count);
@@ -454,7 +454,7 @@ libast_realloc(const char *var, const char *filename, unsigned long line, void *
 {
     void *temp;
 
-#ifdef MALLOC_CALL_DEBUG
+#if MALLOC_CALL_DEBUG
     ++realloc_count;
     if (!(realloc_count % REALLOC_MOD)) {
         D_MEM(("Calls to realloc(): %d\n", realloc_count));
@@ -499,7 +499,7 @@ libast_calloc(const char *filename, unsigned long line, size_t count, size_t siz
 {
     void *temp;
 
-#ifdef MALLOC_CALL_DEBUG
+#if MALLOC_CALL_DEBUG
     ++calloc_count;
     if (!(calloc_count % CALLOC_MOD)) {
         fprintf(LIBAST_DEBUG_FD, "Calls to calloc(): %d\n", calloc_count);
@@ -534,7 +534,7 @@ libast_calloc(const char *filename, unsigned long line, size_t count, size_t siz
 void
 libast_free(const char *var, const char *filename, unsigned long line, void *ptr)
 {
-#ifdef MALLOC_CALL_DEBUG
+#if MALLOC_CALL_DEBUG
     ++free_count;
     if (!(free_count % FREE_MOD)) {
         fprintf(LIBAST_DEBUG_FD, "Calls to free(): %d\n", free_count);
@@ -599,7 +599,7 @@ libast_dump_mem_tables(void)
     memrec_dump_pointers(&malloc_rec);
 }
 
-#ifdef LIBAST_X11_SUPPORT
+#if LIBAST_X11_SUPPORT
 
 /******************** PIXMAP ALLOCATION INTERFACE ********************/
 
@@ -671,7 +671,7 @@ libast_x_free_pixmap(const char *var, const char *filename, unsigned long line, 
     }
 }
 
-# ifdef LIBAST_IMLIB2_SUPPORT
+# if LIBAST_IMLIB2_SUPPORT
 /**
  * Register a pixmap for tracking.
  *

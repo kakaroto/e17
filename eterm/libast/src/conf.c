@@ -33,7 +33,7 @@
 
 static const char cvs_ident[] = "$Id$";
 
-#ifdef HAVE_CONFIG_H
+#if defined(HAVE_CONFIG_H) && (HAVE_CONFIG_H != 0)
 # include <config.h>
 #endif
 
@@ -595,7 +595,7 @@ shell_expand(char *s)
               }
               break;
           case '`':
-#ifdef ALLOW_BACKQUOTE_EXEC
+#if ALLOW_BACKQUOTE_EXEC
               D_CONF(("Backquotes detected.  Evaluating expression.\n"));
               if (!in_single) {
                   Command = (char *) MALLOC(CONFIG_BUFF);

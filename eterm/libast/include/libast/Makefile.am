@@ -2,7 +2,7 @@
 
 EXTRA_HEADERS = \
     array.h avl_tree.h dlinked_list.h iterator_if.h linked_list.h list_if.h \
-    obj.h regexp.h socket.h str.h tok.h types.h url.h vector_if.h
+    obj.h regexp.h socket.h str.h sysdefs.h tok.h types.h url.h vector_if.h
 
 install-exec-hook:
 	$(mkinstalldirs) $(DESTDIR)$(includedir)/$(PACKAGE)
@@ -10,9 +10,12 @@ install-exec-hook:
 	  $(INSTALL_DATA) $(srcdir)/$$i $(DESTDIR)$(includedir)/$(PACKAGE)/ ; \
 	done
 
-EXTRA_DIST = $(EXTRA_HEADERS) types.h.in
+EXTRA_DIST = $(EXTRA_HEADERS) sysdefs.h.in types.h.in
 
-all: types.h
+all: types.h sysdefs.h
 
 types.h: types.h.in
+	(cd $(top_srcdir) && ./config.status)
+
+sysdefs.h: sysdefs.h.in
 	(cd $(top_srcdir) && ./config.status)

@@ -23,7 +23,7 @@
 
 static const char cvs_ident[] = "$Id$";
 
-#ifdef HAVE_CONFIG_H
+#if defined(HAVE_CONFIG_H) && (HAVE_CONFIG_H != 0)
 # include <config.h>
 #endif
 
@@ -88,7 +88,7 @@ int
 perf_strings(void)
 {
     char *s1, *s2, *s3, *s4;
-#ifdef HAVE_REGEX_H
+#if HAVE_REGEX_H
     regex_t *r = NULL;
 #endif
     char **slist;
@@ -118,7 +118,7 @@ perf_strings(void)
 
     PERF_SET_REPS(10);
 
-#ifdef HAVE_REGEX_H
+#if HAVE_REGEX_H
     PERF_BEGIN("regexp_match() function");
     PERF_TEST(regexp_match("One particular string", "part"););
     PERF_TEST(regexp_match("Some other strange string", "^[A-Za-z]+$"););

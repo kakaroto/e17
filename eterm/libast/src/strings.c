@@ -32,13 +32,13 @@
 
 static const char cvs_ident[] = "$Id$";
 
-#ifdef HAVE_CONFIG_H
+#if defined(HAVE_CONFIG_H) && (HAVE_CONFIG_H != 0)
 # include <config.h>
 #endif
 
 #include <libast_internal.h>
 
-#ifndef HAVE_MEMMEM
+#if !(HAVE_MEMMEM)
 /* Find first occurance of bytestring needle of size needlelen in memory region
    haystack of size haystacklen */
 void *
@@ -58,7 +58,7 @@ memmem(const void *haystack, register size_t haystacklen, const void *needle, re
 }
 #endif
 
-#ifndef HAVE_STRNLEN
+#if !(HAVE_STRNLEN)
 size_t
 strnlen(register const char *s, size_t maxlen)
 {
@@ -71,7 +71,7 @@ strnlen(register const char *s, size_t maxlen)
 }
 #endif
 
-#ifndef HAVE_USLEEP
+#if !(HAVE_USLEEP)
 void
 usleep(unsigned long usec)
 {
@@ -86,7 +86,7 @@ usleep(unsigned long usec)
 #endif
 
 /***** Not needed ******
-#ifndef HAVE_NANOSLEEP
+#if !(HAVE_NANOSLEEP)
 __inline__ void
 nanosleep(unsigned long nsec) {
     usleep(nsec / 1000);
@@ -150,7 +150,7 @@ right_str(const char *str, unsigned long cnt)
 }
 
 /* Returns TRUE if str matches regular expression pattern, FALSE otherwise */
-#if defined(HAVE_REGEX_H)
+#if HAVE_REGEX_H
 spif_bool_t
 regexp_match(register const char *str, register const char *pattern)
 {
@@ -512,7 +512,7 @@ upcase_str(char *str)
     return (str);
 }
 
-#ifndef HAVE_STRCASESTR
+#if !(HAVE_STRCASESTR)
 char *
 strcasestr(const char *haystack, register const char *needle)
 {
@@ -528,7 +528,7 @@ strcasestr(const char *haystack, register const char *needle)
 }
 #endif
 
-#ifndef HAVE_STRCASECHR
+#if !(HAVE_STRCASECHR)
 char *
 strcasechr(const char *haystack, register const char needle)
 {
@@ -543,7 +543,7 @@ strcasechr(const char *haystack, register const char needle)
 }
 #endif
 
-#ifndef HAVE_STRCASEPBRK
+#if !(HAVE_STRCASEPBRK)
 char *
 strcasepbrk(const char *haystack, register const char *needle)
 {
@@ -558,7 +558,7 @@ strcasepbrk(const char *haystack, register const char *needle)
 }
 #endif
 
-#ifndef HAVE_STRREV
+#if !(HAVE_STRREV)
 char *
 strrev(register char *str)
 {
