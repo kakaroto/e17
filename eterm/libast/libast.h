@@ -44,6 +44,7 @@
 #include <stdlib.h>
 #include <time.h>
 #include <sys/types.h>
+#include <sys/stat.h>
 #include <unistd.h>
 #include <ctype.h>
 #include <string.h>
@@ -339,6 +340,9 @@ extern GC libast_x_create_gc(const char *, unsigned long, Display *, Drawable, u
 extern void libast_x_free_gc(const char *, const char *, unsigned long, Display *, GC);
 extern void libast_dump_gc_tables(void);
 #endif
+
+/* file.c */
+extern int libast_temp_file(char *, size_t);
 
 /* strings.c */
 extern char *left_str(const char *, unsigned long);

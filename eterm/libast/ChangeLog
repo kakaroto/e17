@@ -23,3 +23,10 @@ Thu Nov 16 16:38:55 PST 2000	Michael Jennings <mej@eterm.org>
 	leak under certain circumstances.
 	
 -------------------------------------------------------------------------------
+Tue Jan  2 18:22:25 PST 2001	Michael Jennings <mej@eterm.org>
+
+	Added file.c for any file routines I write.  The first one is a secure
+	temp file generator.  If portability issues arise from non-POSIX
+	systems, they will be addressed here.
+	
+-------------------------------------------------------------------------------
