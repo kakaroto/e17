@@ -20,6 +20,7 @@
 
 #include "config.h"
 
+
 /* Macros and #defines */
 #define CHECKS 16
 #define SPLASHSCREEN DATA_DIR "/ee2-alpha.png"
