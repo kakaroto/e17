@@ -1201,6 +1201,7 @@ typedef struct _emode
    char                warpsticky;
    char                warpshaded;
    char                warpiconified;
+   char                warpfocused;
    char                numdesktops;
    char                transientsfollowleader;
    char                switchfortransientmap;

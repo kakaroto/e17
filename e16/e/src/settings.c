@@ -327,6 +327,7 @@ static char         tmp_display_warp;
 static char         tmp_warpsticky;
 static char         tmp_warpshaded;
 static char         tmp_warpiconified;
+static char         tmp_warpfocused;
 static char         tmp_clickalways;
 
 static void         CB_ConfigureFocus(int val, void *data);
@@ -348,6 +349,7 @@ CB_ConfigureFocus(int val, void *data)
 	mode.warpsticky = tmp_warpsticky;
 	mode.warpshaded = tmp_warpshaded;
 	mode.warpiconified = tmp_warpiconified;
+	mode.warpfocused = tmp_warpfocused;
 #endif /* WITH_TARTY_WARP */
 	mode.clickalways = tmp_clickalways;
 	FixFocus();
@@ -383,6 +385,7 @@ SettingsFocus(void)
    tmp_warpsticky = mode.warpsticky;
    tmp_warpshaded = mode.warpshaded;
    tmp_warpiconified = mode.warpiconified;
+   tmp_warpfocused = mode.warpfocused;
 #endif /* WITH_TARTY_WARP */
    tmp_clickalways = mode.clickalways;
 
@@ -535,6 +538,14 @@ SettingsFocus(void)
 				_("Include iconified windows in focus list"));
    DialogItemCheckButtonSetState(di, tmp_warpiconified);
    DialogItemCheckButtonSetPtr(di, &tmp_warpiconified);
+
+   di = DialogAddItem(table, DITEM_CHECKBUTTON);
+   DialogItemSetPadding(di, 2, 2, 2, 2);
+   DialogItemSetFill(di, 1, 0);
+   DialogItemSetColSpan(di, 2);
+   DialogItemCheckButtonSetText(di, _("Focus windows while switching"));
+   DialogItemCheckButtonSetState(di, tmp_warpfocused);
+   DialogItemCheckButtonSetPtr(di, &tmp_warpfocused);
 
    di = DialogAddItem(table, DITEM_CHECKBUTTON);
    DialogItemSetPadding(di, 2, 2, 2, 2);

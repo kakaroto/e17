@@ -559,6 +559,7 @@ SetupX()
    mode.warpsticky = 1;
    mode.warpshaded = 1;
    mode.warpiconified = 0;
+   mode.warpfocused = 1;
    mode.edge_flip_resistance = 15;
    mode.context_ewin = NULL;
    mode.moveresize_pending_ewin = NULL;
@@ -750,7 +751,8 @@ SetupEnv()
    return;
 }
 
-Window MakeExtInitWin(void)
+Window
+MakeExtInitWin(void)
 {
    Display            *d2;
    Window              win;

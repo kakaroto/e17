@@ -172,6 +172,8 @@ WarpFocus(int delta)
 			     ewin->h / 2);
 	     /* if (mode.focusmode == FOCUS_CLICK) */
 	     /* FocusToEWin(ewin); */
+	     if (mode.warpfocused && !ewin->iconified)
+		FocusToEWin(ewin);
 	  }
 	WarpFocusShowTitle(ewin);
 	Efree(lst);
