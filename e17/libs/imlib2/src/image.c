@@ -941,7 +941,7 @@ __imlib_LoadImage(char *file,
 	  }
 	errno = 0;
      }
-   /* width is still 0 - the laoder didnt manage to do anything */
+   /* width is still 0 - the loader didnt manage to do anything */
    if (im->w == 0)
      {
 	ImlibLoader *l, *previous_l = NULL;
@@ -1007,7 +1007,6 @@ __imlib_LoadImage(char *file,
 	     previous_l->next = l->next;
 	     l->next = loaders;
 	     loaders = l;
-	     im->loader = l;
 	  }
      }
    else
@@ -1020,8 +1019,8 @@ __imlib_LoadImage(char *file,
 	return NULL;
      }
    
-   /* the laod succeeded - make sure the image is refernenced then add */
-   /* it to our cache if dont_cache isnt set */
+   /* the load succeeded - make sure the image is referenced then add */
+   /* it to our cache if dont_cache isn't set */
    im->references = 1;
    if (!dont_cache)
       __imlib_AddImageToCache(im);
