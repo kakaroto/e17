@@ -128,6 +128,7 @@ How will the libraries be used?
 	* window manager
 	* file managers
 	* login managers
+	* terminal emulator
 	* desktop applications
 	* embedded environments
 
@@ -141,6 +142,25 @@ Why should I use it?
 How can I get involved?
 
 	* Code
+		- Debug existing code
+		- Fill in TODO items
+		- Expand features
+		- Design new components
 	* Testing
+		- Unit testing of API's
+		- Debugging of autotools setup
+		- Narrowing down bug details
 	* Documentation
+		- User documents for setup, and configuration
+		- API Documentation
+		- Developer Tutorials
+		- Gain familiarity with the code
 	* PR
+		- Demo the applications
+		- Encourage use
+		- Contact publishers
+		- Organize events
+	* Financial
+		- Donations of all sizes accepted
+		- Corporate sponsorship
+		- Derivative products
