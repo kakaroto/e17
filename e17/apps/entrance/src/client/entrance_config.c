@@ -110,6 +110,10 @@ entrance_config_populate(Entrance_Config * e, E_DB_File * db)
    {
       syslog(LOG_WARNING, "Warning: No users found.");
    }
+   if (!e_db_int_get(db, "/entrance/user/remember", &e->users.remember))
+      e->users.remember = 1;
+   if (!e_db_int_get(db, "/entrance/user/remember_n", &e->users.remember_n))
+      e->users.remember_n = 5;
 
    /* session hash and font list */
    if (e_db_int_get(db, "/entrance/session/count", &num_session))
@@ -257,25 +261,41 @@ entrance_config_free(Entrance_Config * e)
 
 /**
  * entrance_config_user_list_write : Write out the possibly reordered user
- * list into the config db.  This still needs fixing.
- * FIXME: Nuke all old keys from the db relating to /entrance/user
- * FIXME: Check another config parameter whether we should write or not
- * FIXME: Check another config parameter so we only write n user
+ * list into the config db.
  * @e - a pointer to the config struct we want to write the user list for
  */
 void
 entrance_config_user_list_write(Entrance_Config * e)
 {
    int i = 0;
+   int count = 0;
    Evas_List *l = NULL;
    E_DB_File *db = NULL;
    Entrance_User *eu = NULL;
+   char **old_keys = NULL;
    char file[PATH_MAX], buf[PATH_MAX];
 
    snprintf(file, PATH_MAX, "%s/entrance_config.db", PACKAGE_CFG_DIR);
+   if (!e->users.remember)
+      return;
    if ((db = e_db_open(file)))
    {
-      for (l = e->users.keys; l; l = l->next, i++)
+      if ((old_keys = e_db_match_keys(db, "/entrance/user/", &count)))
+      {
+         for (i = 0; i < count; i++)
+         {
+            e_db_data_del(db, old_keys[i]);
+            free(old_keys[i]);
+         }
+         free(old_keys);
+         e_db_close(db);
+         e_db_flush();
+      }
+   }
+   if ((db = e_db_open(file)))
+   {
+      for (i = 0, l = e->users.keys; l && i < e->users.remember_n;
+           l = l->next, i++)
       {
          if ((eu = (Entrance_User *) l->data))
          {

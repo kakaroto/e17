@@ -79,6 +79,8 @@ struct _Entrance_Config
     */
    struct
    {
+      int remember;
+      int remember_n;
       Evas_Hash *hash;
       Evas_List *keys;
    } users;
