@@ -19,7 +19,7 @@
           }
           image {
             normal, "left-shadow.png";
+            border, 0 0 7 8;
           }
-          border, 0 0 7 8;
         }
       }

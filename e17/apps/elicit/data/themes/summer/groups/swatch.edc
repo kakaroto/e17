@@ -33,8 +33,8 @@ group {
         }
         image {
           normal, "swatch-shadow.png";
+          border, 3 3 4 4;
         }
-        border, 3 3 4 4;
       }
     }
 

@@ -18,8 +18,8 @@
       } \
       image { \
         normal, "scroll-trough.png"; \
+        border, 1 2 0 0; \
       } \
-      border, 1 2 0 0; \
     } \
   } \
  \
@@ -42,8 +42,8 @@
       } \
       image { \
         normal, "scroll-box.png"; \
+        border, 1 2 1 2; \
       } \
-      border, 1 2 1 2; \
     } \
   } \
   part { \
@@ -65,8 +65,8 @@
       } \
       image { \
         normal, "scroll-box.png"; \
+        border, 1 2 1 2; \
       } \
-      border, 1 2 1 2; \
     } \
   } \
  \
@@ -205,8 +205,8 @@
       } \
       image { \
         normal, "scroll-box.png"; \
+        border, 0 0 1 2; \
       } \
-      border, 0 0 1 2; \
     } \
   } 
 

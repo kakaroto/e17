@@ -14,12 +14,12 @@ part { \
     color, 255 255 255 128; \
     rel1 { \
       to, NAME"-left"; \
-      relative, 1 0, \
+      relative, 1 0; \
       offset, 0 1; \
     } \
     rel2 { \
       to, NAME"-right"; \
-      relative, 0 1, \
+      relative, 0 1; \
       offset, -1 -2; \
     } \
     image { \
@@ -188,18 +188,18 @@ part { \
     color, 255 255 255 128; \
     rel1 { \
       to, NAME"-left"; \
-      relative, 1 0, \
+      relative, 1 0; \
       offset, 0 1; \
     } \
     rel2 { \
       to, NAME"-right"; \
-      relative, 0 1, \
+      relative, 0 1; \
       offset, -1 -2; \
     } \
     image { \
       normal, "slider-bar.png"; \
+      border, 5 6 0 0; \
     } \
-    border, 5 6 0 0; \
   } \
 } \
 part { \

@@ -19,8 +19,8 @@
       }
       image {
         normal, "tab-base.png";
+        border, 0 2 0 0;
       }
-      border, 0 2 0 0;
     }
   }
 
