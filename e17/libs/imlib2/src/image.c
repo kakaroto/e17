@@ -1352,6 +1352,7 @@ __imlib_SaveImage(ImlibImage * im, const char *file,
    /* call the saver */
    e = l->save(im, progress, progress_granularity);
    /* set the filename back to the laoder image filename */
+   free(im->file);
    im->file = pfile;
 
    /* if there's an error return and the save faile (e = 0) figure it out */
