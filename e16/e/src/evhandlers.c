@@ -185,6 +185,7 @@ HandleClientMessage(XEvent * ev)
 	     EDBUG_RETURN_;
 	  }
      }
+
    if (mode.kde_support)
       KDE_ProcessClientMessage(&(ev->xclient));
 
@@ -1024,7 +1025,7 @@ HandleProperty(XEvent * ev)
 		UpdateBorderInfo(ewin);
 		CalcEwinSizes(ewin);
 		if (mode.kde_support)
-		   KDE_UpdateTitle(ewin);
+		   KDE_UpdateClient(ewin);
 	     }
 	if ((ewin->iconified) && (pm != ewin->client.icon_pmap))
 	  {
@@ -1052,6 +1053,8 @@ HandleProperty(XEvent * ev)
 	       }
 	  }
 	UngrabX();
+	if (mode.kde_support)
+	   KDE_ClientChange(win, ev->xproperty.atom);
      }
    else if (win == root.win)
      {
@@ -1061,14 +1064,9 @@ HandleProperty(XEvent * ev)
 	     KDE_HintChange(ev->xproperty.atom);
 	  }
      }
-   else
+   else if (mode.kde_support)
      {
-	/* could be a KDE hint change */
-	if (mode.kde_support)
-	  {
-	     KDE_ClientChange(win, ev->xproperty.atom);
-	  }
-
+	KDE_ClientChange(win, ev->xproperty.atom);
      }
    EDBUG_RETURN_;
 }

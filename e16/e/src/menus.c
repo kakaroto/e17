@@ -1714,7 +1714,7 @@ CreateMenuFromThemes(char *name, MenuStyle * ms)
    EDBUG_RETURN(m);
 }
 
-int 
+int
 BorderNameCompare(Border * b1, Border * b2)
 {
    if (b1 && b2)

@@ -173,7 +173,7 @@ KDE_UpdateFocusedWindow(void)
      }
    else
      {
-	if (getSimpleHint(root.win, KDE_ACTIVE_WINDOW))
+	if (*(getSimpleHint(root.win, KDE_ACTIVE_WINDOW)))
 	   deleteHint(root.win, KDE_ACTIVE_WINDOW);
      }
 
@@ -199,21 +199,47 @@ KDE_NewWindow(EWin * ewin)
    if (!ewin)
       EDBUG_RETURN_;
 
-   if (!getSimpleHint(ewin->client.win, KDE_WIN_TITLE))
+   if (!(ewin->internal))
      {
-	if (!(ewin->internal))
+	if (!ewin->kde_hint)
 	  {
 	     XChangeProperty(disp, ewin->client.win, KDE_WIN_TITLE,
 			     XA_STRING, 8, PropModeReplace,
 			     (unsigned char *)ewin->client.title,
 			     strlen(ewin->client.title) + 1);
-	     if (!ewin->kde_hint)
+
+	     if (ewin->sticky)
 	       {
-		  ewin->kde_hint = 1;
-		  KDE_SendMessagesToModules(KDE_MODULE_WIN_ADD, ewin->client.win);
+		  setSimpleHint(ewin->client.win, KDE_WIN_STICKY, 1);
 	       }
+	     else
+	       {
+		  setSimpleHint(ewin->client.win, KDE_WIN_STICKY, 0);
+	       }
+
+	     if (ewin->iconified)
+	       {
+		  setSimpleHint(ewin->client.win, KDE_WIN_ICONIFIED, 1);
+	       }
+	     else
+	       {
+		  setSimpleHint(ewin->client.win, KDE_WIN_ICONIFIED, 0);
+	       }
+
+	     if (ewin->toggle)
+	       {
+		  setSimpleHint(ewin->client.win, KDE_WIN_MAXIMIZED, 1);
+	       }
+	     else
+	       {
+		  setSimpleHint(ewin->client.win, KDE_WIN_MAXIMIZED, 0);
+	       }
+
+	     ewin->kde_hint = 1;
+	     KDE_SendMessagesToModules(KDE_MODULE_WIN_ADD, ewin->client.win);
 	  }
      }
+
    EDBUG_RETURN_;
 
 }
@@ -298,11 +324,53 @@ KDE_AddModule(Window win)
 		{
 		   if (!(lst[i]->internal))
 		     {
-			XChangeProperty(disp, lst[i]->client.win, KDE_WIN_TITLE,
+			XChangeProperty(disp, lst[i]->client.win,
+					KDE_WIN_TITLE,
 					XA_STRING, 8, PropModeReplace,
 					(unsigned char *)lst[i]->client.title,
 					strlen(lst[i]->client.title) + 1);
-
+			if (lst[i]->sticky)
+			  {
+			     if (!getSimpleHint(lst[i]->client.win,
+						KDE_WIN_STICKY))
+				setSimpleHint(lst[i]->client.win,
+					      KDE_WIN_STICKY, 1);
+			  }
+			else
+			  {
+			     if (getSimpleHint(lst[i]->client.win,
+					       KDE_WIN_STICKY))
+				setSimpleHint(lst[i]->client.win,
+					      KDE_WIN_STICKY, 0);
+			  }
+			if (lst[i]->iconified)
+			  {
+			     if (!getSimpleHint(lst[i]->client.win,
+						KDE_WIN_ICONIFIED))
+				setSimpleHint(lst[i]->client.win,
+					      KDE_WIN_ICONIFIED, 1);
+			  }
+			else
+			  {
+			     if (getSimpleHint(lst[i]->client.win,
+					       KDE_WIN_ICONIFIED))
+				setSimpleHint(lst[i]->client.win,
+					      KDE_WIN_ICONIFIED, 0);
+			  }
+			if (lst[i]->toggle)
+			  {
+			     if (!getSimpleHint(lst[i]->client.win,
+						KDE_WIN_MAXIMIZED))
+				setSimpleHint(lst[i]->client.win,
+					      KDE_WIN_MAXIMIZED, 1);
+			  }
+			else
+			  {
+			     if (getSimpleHint(lst[i]->client.win,
+					       KDE_WIN_MAXIMIZED))
+				setSimpleHint(lst[i]->client.win,
+					      KDE_WIN_MAXIMIZED, 0);
+			  }
 			KDE_ClientMessage(win, KDE_MODULE_WIN_ADD,
 					  lst[i]->client.win, CurrentTime);
 			lst[i]->kde_hint = 1;
@@ -498,7 +566,7 @@ KDE_Init(void)
 
    KDE_SetNumDesktops();
 
-   /* and we tell the root window to announce we're KDE compliant */
+/* and we tell the root window to announce we're KDE compliant */
    setSimpleHint(root.win, KDE_RUNNING, 1);
 
    mode.kde_support = 1;
@@ -558,7 +626,13 @@ KDE_Shutdown(void)
 	     {
 		if (getSimpleHint(lst[i]->win, KDE_WIN_TITLE))
 		   deleteHint(lst[i]->win, KDE_WIN_TITLE);
-
+		if (getSimpleHint(lst[i]->win, KDE_WIN_MAXIMIZED))
+		   deleteHint(lst[i]->win, KDE_WIN_MAXIMIZED);
+		if (getSimpleHint(lst[i]->win, KDE_WIN_ICONIFIED))
+		   deleteHint(lst[i]->win, KDE_WIN_ICONIFIED);
+		if (getSimpleHint(lst[i]->win, KDE_WIN_STICKY))
+		   deleteHint(lst[i]->win, KDE_WIN_STICKY);
+		lst[i]->kde_hint = 0;
 	     }
 	   Efree(lst);
 	}
@@ -618,31 +692,37 @@ KDE_ClientChange(Window win, Atom a)
 
    if (a == KDE_WIN_STICKY)
      {
-	if (getSimpleHint(win, KDE_WIN_STICKY))
+	if (*(getSimpleHint(win, KDE_WIN_STICKY)))
 	  {
-	     MakeWindowSticky(ewin);
+	     if (!(ewin->sticky))
+		MakeWindowSticky(ewin);
 	  }
 	else
 	  {
-	     MakeWindowUnSticky(ewin);
+	     if (ewin->sticky)
+		MakeWindowUnSticky(ewin);
 	  }
      }
    else if (a == KDE_WIN_MAXIMIZED)
      {
-	if (getSimpleHint(ewin->client.win, KDE_WIN_MAXIMIZED))
+	if (*(getSimpleHint(ewin->client.win, KDE_WIN_MAXIMIZED)))
 	  {
-	     ewin->toggle = 0;
-	     MaxSize(ewin, "conservative");
+	     if (!(ewin->toggle))
+	       {
+		  MaxSize(ewin, "conservative");
+	       }
 	  }
 	else
 	  {
-	     ewin->toggle = 1;
-	     MaxSize(ewin, "conservative");
+	     if (ewin->toggle)
+	       {
+		  MaxSize(ewin, "conservative");
+	       }
 	  }
      }
    else if (a == KDE_WIN_ICONIFIED)
      {
-	if (getSimpleHint(ewin->client.win, KDE_WIN_ICONIFIED))
+	if (*(getSimpleHint(ewin->client.win, KDE_WIN_ICONIFIED)))
 	  {
 	     if (!ewin->iconified)
 	       {
@@ -665,12 +745,12 @@ KDE_ClientChange(Window win, Atom a)
      {
 	if (getSimpleHint(win, KDE_WIN_DESKTOP))
 	  {
-	     long               *desktop;
+	     long                desktop;
 
-	     desktop = getSimpleHint(win, KDE_WIN_DESKTOP) - 1;
-	     if (ewin->desktop != *desktop)
+	     desktop = *(getSimpleHint(win, KDE_WIN_DESKTOP)) - 1;
+	     if (ewin->desktop != desktop)
 	       {
-		  MoveEwinToDesktop(ewin, *desktop);
+		  MoveEwinToDesktop(ewin, desktop);
 
 	       }
 	  }
@@ -954,7 +1034,7 @@ KDE_ProcessClientMessage(XClientMessageEvent * event)
      }
    else if (event->message_type == KDE_MODULE)
      {
-	if (getSimpleHint(event->data.l[0], KDE_MODULE))
+	if (*(getSimpleHint(event->data.l[0], KDE_MODULE)))
 	  {
 	     KDE_AddModule(event->data.l[0]);
 	  }
@@ -978,7 +1058,7 @@ KDE_ModuleAssert(Window win)
 
    EDBUG(6, "KDE_ModuleAssert");
 
-   if (getSimpleHint(win, KDE_MODULE))
+   if (*(getSimpleHint(win, KDE_MODULE)))
      {
 	KDE_AddModule(win);
      }
@@ -1042,7 +1122,8 @@ KDE_SetRootArea(void)
    EDBUG(6, "KDE_SetRootArea");
 
    if (getSimpleHint(root.win, KDE_CURRENT_DESKTOP))
-      if (*(getSimpleHint(root.win, KDE_CURRENT_DESKTOP)) == desks.current + 1)
+      if (*(getSimpleHint(root.win, KDE_CURRENT_DESKTOP)) ==
+	  desks.current + 1)
 	 EDBUG_RETURN_;
 
    setSimpleHint(root.win, KDE_CURRENT_DESKTOP, desks.current + 1);
@@ -1114,10 +1195,10 @@ KDE_HintChange(Atom a)
 }
 
 void
-KDE_UpdateTitle(EWin * ewin)
+KDE_UpdateClient(EWin * ewin)
 {
 
-   EDBUG(6, "KDE_UpdateTitle");
+   EDBUG(6, "KDE_UpdateClient");
 
    if (!ewin)
       EDBUG_RETURN_;
@@ -1126,6 +1207,36 @@ KDE_UpdateTitle(EWin * ewin)
 		   XA_STRING, 8, PropModeReplace,
 		   (unsigned char *)ewin->client.title,
 		   strlen(ewin->client.title) + 1);
+   if (ewin->sticky)
+     {
+	if (!getSimpleHint(ewin->client.win, KDE_WIN_STICKY))
+	   setSimpleHint(ewin->client.win, KDE_WIN_STICKY, 1);
+     }
+   else
+     {
+	if (*(getSimpleHint(ewin->client.win, KDE_WIN_STICKY)))
+	   setSimpleHint(ewin->client.win, KDE_WIN_STICKY, 0);
+     }
+   if (ewin->iconified)
+     {
+	if (!*(getSimpleHint(ewin->client.win, KDE_WIN_ICONIFIED)))
+	   setSimpleHint(ewin->client.win, KDE_WIN_ICONIFIED, 1);
+     }
+   else
+     {
+	if (*(getSimpleHint(ewin->client.win, KDE_WIN_ICONIFIED)))
+	   setSimpleHint(ewin->client.win, KDE_WIN_ICONIFIED, 0);
+     }
+   if (ewin->toggle)
+     {
+	if (!*(getSimpleHint(ewin->client.win, KDE_WIN_MAXIMIZED)))
+	   setSimpleHint(ewin->client.win, KDE_WIN_MAXIMIZED, 1);
+     }
+   else
+     {
+	if (*(getSimpleHint(ewin->client.win, KDE_WIN_MAXIMIZED)))
+	   setSimpleHint(ewin->client.win, KDE_WIN_MAXIMIZED, 0);
+     }
    if (!(ewin->internal))
       KDE_SendMessagesToModules(KDE_MODULE_WIN_CHANGE, ewin->client.win);
 
