@@ -33,16 +33,19 @@ main(int argc, char **argv)
    Evas_Object o[3], rect[NRECTS], rect_2;
 
    E_Font_Style  *e_font_style;
-   Etox_Bit      *e_etox_bit;
    Etox          *e_etox;
    Etox          *e_etox_2;
+   Etox          *et_up_label;
+   Etox          *et_down_label;
    XSetWindowAttributes att;
    Evas_Render_Method method;
+   E_Text_Color  *tcl;
    
    int down;
    double t1, t2;
    double etox_x, etox_y;
-   
+   int alpha_up_goal, alpha_down_goal;
+     
    Display *disp;
    Window   win;
    Window   root_win;
@@ -104,6 +107,8 @@ main(int argc, char **argv)
    etox_set_layer(e_etox, 10);
    e_etox->font = strdup("cinema");
    e_etox->font_size = 10;
+   e_etox->x = 0;
+   e_etox->y = 0;
    e_etox->w=450;
    e_etox->h=1000;
    etox_clip_rect_new(e_etox, 100, 80, 50, 400);
@@ -169,6 +174,7 @@ main(int argc, char **argv)
    strcat(txt,"despising and being despised by the true Engineers, ");
    strcat(txt,"the children of von Neumann. ");
    
+   etox_set_alpha_mod(e_etox, 255);
    etox_set_text(e_etox, txt);
    etox_x = 5; etox_y = 0;
    etox_move(e_etox, etox_x, etox_y);
@@ -180,7 +186,8 @@ main(int argc, char **argv)
    evas_move(e, rect[2], etox_x, etox_y);
    evas_set_layer(e, rect[2], 10);
    evas_show(e, rect[2]);
-
+   evas_lower(e, rect[2]);
+   
    e_etox_2 = Etox_new("Showoff");
    e_etox_2->evas = e;
    etox_set_font_style(e_etox_2, e_font_style);
@@ -189,9 +196,10 @@ main(int argc, char **argv)
    e_etox_2->font_size = 10;
    e_etox_2->w=210;
    e_etox_2->h=400;
+   etox_set_alpha_mod(e_etox_2, 255);
    
    strcpy(txt,"~color=fg 255 255 255~~color=ol 0 0 0~~color=sh 0 0 0~~valign=bottom~~font=notepad~~size=14~Various vertical and horizontal alignments:\n");
-   strcat(txt,"~color=fg 255 2 2~~color=ol 0 0 0~~color=sh 0 0 0~~valign=bottom~~font=morpheus~");
+   strcat(txt,"~color=fg 255 2 2~~color=ol 0 0 0~~color=sh 0 0 0~~valign=bottom~~font=cinema~");
    strcat(txt,"~valign=top~~align=left~~size=25~B~size=23~B~size=21~B~size=19~B~size=17~B\n");
    strcat(txt,"~valign=center~~align=center~~size=25~B~size=23~B~size=21~B~size=19~B~size=17~B\n");
    strcat(txt,"~valign=bottom~~align=right~~size=25~B~size=23~B~size=21~B~size=19~B~size=17~B\n");
@@ -208,11 +216,38 @@ main(int argc, char **argv)
    evas_set_layer(e, rect_2, 14);
    evas_show(e, rect_2);
 
+   tcl = malloc(sizeof(E_Text_Color));
+   tcl->fg.r = 255;
+   tcl->fg.g = 255;
+   tcl->fg.b = 255;
+   tcl->ol.r = 20;
+   tcl->ol.g = 20;
+   tcl->ol.b = 100;
+   tcl->sh.r = 100;
+   tcl->sh.g = 30;
+   tcl->sh.b = 30;
+   
+   et_up_label = Etox_new_all(e, "UP label", 400, 5, 200, 100, 
+			      60, "cinema", "sh_ol.style", 15, tcl,
+			      0, ALIGN_CENTER, ALIGN_BOTTOM);
+   etox_set_alpha_mod(et_up_label, 0);
+   etox_set_text(et_up_label, "GO UP !!!");   
+   etox_show(et_up_label);
+   
+   et_down_label = Etox_new_all(e, "DOWN label", 400, 430, 200, 100, 
+			      60, "cinema", "sh_ol.style", 15, tcl,
+			      0, ALIGN_CENTER, ALIGN_BOTTOM);
+   etox_set_alpha_mod(et_down_label, 0);
+   etox_set_text(et_down_label, "GO DOWN !!!");   
+   etox_show(et_down_label);
+      
    evas_move(e, o[0], 0, 0);
    evas_resize(e, o[0], win_w, win_h);
    evas_set_image_fill(e, o[0], 0, 0, win_w, win_h);
 
    t1 = get_time();
+   alpha_up_goal = 0;
+   alpha_down_goal = 0;
    for (;;)
      {
 	double x, y;
@@ -248,14 +283,29 @@ main(int argc, char **argv)
 			    if (obj == o[1])
 			      {
 				 etox_y += 25;
+				 alpha_up_goal = 255;
 			      }
 			    else if (obj == o[2])
 			      {
 				 etox_y -= 25;
+				 alpha_down_goal = 255;
 			      }
 			 }
 		       if (button == 3)
 			 {
+			    int i=0;
+			    
+			    etox_free(et_down_label);
+			    etox_free(et_up_label);
+			    etox_free(e_etox_2);
+			    etox_free(e_etox);
+			    free(tcl);
+			    for (i=0; i<3; i++)
+			      evas_del_object(e, o[i]);
+			    for (i=0; i<NRECTS; i++)
+			      evas_del_object(e, rect[i]);
+			    evas_del_object(e, rect_2);
+
 			    evas_free(e);
 			    exit(0);
 			 }
@@ -306,6 +356,22 @@ main(int argc, char **argv)
 			 }
 		    }
 	       }
+	     if (alpha_up_goal < etox_get_alpha_mod(et_up_label)) {
+		etox_set_alpha_mod(et_up_label, (etox_get_alpha_mod(et_up_label) - (shift * 10)) < 0 ? 0 : etox_get_alpha_mod(et_up_label) - (shift * 10));
+	     }	     
+	     if (alpha_up_goal > etox_get_alpha_mod(et_up_label)) {
+		etox_set_alpha_mod(et_up_label, etox_get_alpha_mod(et_up_label) + (shift * 10));
+		if (etox_get_alpha_mod(et_up_label) >= 255)
+		  alpha_up_goal = 0;
+	     }
+	     if (alpha_down_goal < etox_get_alpha_mod(et_down_label)) {
+		etox_set_alpha_mod(et_down_label, (etox_get_alpha_mod(et_down_label) - (shift * 10)) < 0 ? 0 : etox_get_alpha_mod(et_down_label) - (shift * 10));
+	     }	     
+	     if (alpha_down_goal > etox_get_alpha_mod(et_down_label)) {
+		etox_set_alpha_mod(et_down_label, etox_get_alpha_mod(et_down_label) + (shift * 10));
+		if (etox_get_alpha_mod(et_down_label) >= 255)
+		  alpha_down_goal = 0;
+	     }
 	     t1 = get_time();
 	  }
 	evas_render(e);

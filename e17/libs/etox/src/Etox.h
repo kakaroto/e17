@@ -92,6 +92,7 @@ typedef struct {
         E_Text_Color color;
         double padding;
         char vertical_align;
+        int alpha_mod;
    
 } Etox;
 
@@ -115,6 +116,8 @@ extern "C"
 	char etox_set_layer(Etox *e, int layer);
 	int  etox_get_layer(Etox *e);
 	void etox_set_color(Etox *e, E_Text_Color *cl);
+        void etox_set_alpha_mod(Etox *e, int amod);
+        int  etox_get_alpha_mod(Etox *e);
 	void etox_set_color_component(Etox *e, char *arg, E_Color component);
 	Etox_Bit *Etox_Bit_new(void);
 	Etox *Etox_new(char *name);
