@@ -9,6 +9,11 @@ extern "C" {
 
 typedef struct _Esmart_Trans_X11 Esmart_Trans_X11;
 
+typedef enum _Esmart_Trans_X11_Type {
+   Esmart_Trans_X11_Type_Background,
+   Esmart_Trans_X11_Type_Screengrab
+} Esmart_Trans_X11_Type;
+
 struct _Esmart_Trans_X11
 {
     Evas_Object *obj, *clip;
@@ -16,6 +21,8 @@ struct _Esmart_Trans_X11
 };
 
 Evas_Object * esmart_trans_x11_new(Evas *e);
+void esmart_trans_x11_type_set(Evas_Object *o, Esmart_Trans_X11_Type type);
+Esmart_Trans_X11_Type esmart_trans_x11_type_get(Evas_Object *o);
 void esmart_trans_x11_window_set(Evas_Object *o, Ecore_X_Window win);
 void esmart_trans_x11_freshen(Evas_Object *o, int x, int y, int w,
 int h);

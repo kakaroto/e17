@@ -137,6 +137,7 @@ main (int argc, char *argv[])
 
       evas = ecore_evas_get (ee);
       o = esmart_trans_x11_new (evas);
+      esmart_trans_x11_type_set(o, Esmart_Trans_X11_Type_Background);
       esmart_trans_x11_window_set(o, win);
       evas_object_move (o, 0, 0);
       evas_object_resize (o, 300, 120);

@@ -17,6 +17,7 @@
 typedef struct {
    int x, y, w, h;
    Evas_Object *obj;
+   Esmart_Trans_X11_Type type;
    Ecore_X_Window win;
    Ecore_X_Pixmap pmap_id;
    Ecore_Timer *timer;
@@ -74,6 +75,40 @@ _esmart_trans_x11_object_find(Evas_Object *o)
    }
 
    return eto;
+}
+
+static Evas_Object *
+_esmart_trans_x11_screengrab_get(Evas *evas, Evas_Object *old, int x, int y, int w, int h)
+{
+   Evas_Object          *new = NULL;
+   Imlib_Image          im;
+
+   if (old)
+      evas_object_del(old);
+
+   imlib_context_set_display(ecore_x_display_get());
+   imlib_context_set_visual(DefaultVisual(ecore_x_display_get(), DefaultScreen(ecore_x_display_get())));
+   imlib_context_set_colormap(DefaultColormap(ecore_x_display_get(), DefaultScreen(ecore_x_display_get())));
+   imlib_context_set_drawable(DefaultRootWindow(ecore_x_display_get()));
+   im = imlib_create_image_from_drawable(0, x, y, w, h, 1);
+   imlib_context_set_image(im);
+   imlib_image_set_format("argb");
+   new = evas_object_image_add(evas);
+   evas_object_image_alpha_set(new, 0);
+   evas_object_image_size_set(new, w, h);
+   evas_object_image_data_copy_set(new, imlib_image_get_data_for_reading_only());
+   imlib_image_set_format("png");
+   imlib_save_image("/home/ibukun/test.png");
+   imlib_free_image_and_decache();
+
+   evas_object_image_fill_set(new, 0, 0, w, h);
+   evas_object_resize(new, w, h);
+   evas_object_move(new, 0, 0);
+   evas_object_layer_set(new, -9999);
+   evas_object_image_data_update_add(new, 0, 0, w, h);
+   evas_object_show(new);
+
+   return new;
 }
 
 static Evas_Object *
@@ -267,9 +302,13 @@ esmart_trans_x11_freshen(Evas_Object *o, int x, int y, int w, int h)
         /* Update the trans object */
         if((data = evas_object_smart_data_get(o)))
         {
-           data->obj =
-           _esmart_trans_x11_pixmap_get(evas_object_evas_get(data->clip),
-                                        data->obj, x, y, w, h);
+           if (eto->type == Esmart_Trans_X11_Type_Background)
+              data->obj =
+                 _esmart_trans_x11_pixmap_get(evas_object_evas_get(data->clip),
+                                              data->obj, x, y, w, h);
+           else
+              data->obj = _esmart_trans_x11_screengrab_get(evas_object_evas_get(data->clip),
+                                                           data->obj, x, y, w, h);
            evas_object_pass_events_set(data->obj, 1);
            evas_object_clip_set(data->obj, data->clip);
            evas_object_move(data->clip, data->x, data->y);
@@ -324,9 +363,30 @@ esmart_trans_x11_new(Evas *e)
   /* Add to object list */
   eto = calloc(1, sizeof(Esmart_Trans_Object));
   eto->obj = x11_trans_object;
+  eto->type = Esmart_Trans_X11_Type_Background;
   ecore_list_append(_objects, eto);
 
   return x11_trans_object;
+}
+
+void
+esmart_trans_x11_type_set(Evas_Object *o, Esmart_Trans_X11_Type type)
+{
+   Esmart_Trans_Object *eto;
+
+   if ((eto = _esmart_trans_x11_object_find(o)))
+      eto->type = type;
+}
+
+Esmart_Trans_X11_Type
+esmart_trans_x11_type_get(Evas_Object *o)
+{
+   Esmart_Trans_Object *eto;
+
+   if ((eto = _esmart_trans_x11_object_find(o)))
+      return eto->type;
+   else
+      return Esmart_Trans_X11_Type_Background;
 }
 
 void
