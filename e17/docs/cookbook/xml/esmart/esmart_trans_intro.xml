@@ -129,12 +129,12 @@ static void _freshen_trans(Ecore_Evas *ee) {
 </programlisting>
 </example>
 <para>
-The _freshen_trans routine is a helper routine to update the image that the trans
+The <function>_freshen_trans</function> routine is a helper routine to update the image that the trans
 is shown. This will be called when we need to update our image to whats currently
 under the window.
 
 The function grabs the current size of the ecore_evas, and then gets the object
-with the name "bg" (this name is the same as the name we give our trans when
+with the name &quot;bg&quot; (this name is the same as the name we give our trans when
 we create it). Then, as long as the trans object exists, we tell esmart to 
 freshen the image being displayed.
 </para>
@@ -166,12 +166,12 @@ void win_resize_cb(Ecore_Evas *ee) {
 When the window is resized we need to update our evas to the correct size and then
 update the trans object to display that much of the background.
 
-We grab the current size of the window (ecore_evas_geometry_get) and the min/max 
+We grab the current size of the window <function>ecore_evas_geometry_get</function> and the min/max 
 size of the window. As long as our currently desired size is within the min/max
-bounds set for our window, we grab the "bg" (same as title again) object and
+bounds set for our window, we grab the &quot;bg&quot; (same as title again) object and
 resize it.
 
-Once the resizing is done, we call the _freshen_trans routine to update the image
+Once the resizing is done, we call the <function>_freshen_trans</function> routine to update the image
 displayed on the bg.
 </para>
 
@@ -236,10 +236,10 @@ grab the evas for the created Ecore_Evas.
 </example>
 <para>
 Once everything is setup we can create the trans object. The trans is to be created
-in the evas returned by ecore_evas_get. This initial creation is done by the call
-to esmart_trans_x11_new(evas). Once we have the object, we move it so it starts at 
+in the evas returned by <function>ecore_evas_get</function>. This initial creation is done by the call
+to <function>esmart_trans_x11_new</function>. Once we have the object, we move it so it starts at 
 position (0, 0) (the upper left corner), set the layer to -5 and name the object
-"bg" (as used above).
+&quot;bg&quot; (as used above).
 
 Then we grab the current size of the ecore_evas and use that to resize the trans
 object to the window size. Once everything is resized we show the trans and 

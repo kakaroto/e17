@@ -165,7 +165,7 @@ separate function to make the container code easier to locate in the example.
 </para>
 
 <para>
-Once everything is created we call ecore_main_loop_begin and wait for
+Once everything is created we call <function>ecore_main_loop_begin</function> and wait for
 events to occur.
 </para>
 
@@ -273,13 +273,13 @@ static void make_gui(const char *theme) {
 </example>
 <para>
 The GUI consists of the Ecore_Evas containing the canvas itself, and the Edje that
-we will be using to control our layout. The make_gui function sets up the callbacks 
+we will be using to control our layout. The <function>make_gui</function> function sets up the callbacks 
 defined above and creates the Ecore_Evas.
 </para>
 
 <para>
 Once we have the Evas and the callbacks are defined, we create the Edje object that
-will define our layout. The edje_object_add call is used to create the object on the Evas,
+will define our layout. The <function>edje_object_add</function> call is used to create the object on the Evas,
 and once thats done, we take the theme passed in by the user and set our Edje to
 use said theme, the &quot;container_ex&quot; parameter is the name of the group
 inside the EET that we are to use. 
@@ -331,8 +331,8 @@ static void container_build(int align, int direction, int fill_policy) {
 </programlisting>
 </example>
 <para>
-The container_build function will create the container and set our data elements in said
-container. The creation is easy enough with a call to esmart_container_new giving back the
+The <function>container_build</function> function will create the container and set our data elements in said
+container. The creation is easy enough with a call to <function>esmart_container_new</function> giving back the
 Evas_Object that is the container. Once the container is created we can set a name on the
 container to make reference easier.
 </para>
@@ -354,7 +354,7 @@ to a horizontal container, although center applies to both.
 
 <para>
 If we wanted to use a different layout scheme then the default, we could place a call to
-esmart_container_layout_plugin_set(container, "name") where the name is the name of
+<function>esmart_container_layout_plugin_set(container, "name")</function> where the name is the name of
 the plugin to use. The default setting is the container named &quot;default&quot;.
 </para>
 
@@ -422,8 +422,8 @@ into the container as a text part.
 
 <para>
 For each element we create a new Edje object on the Evas. We then need to know the
-name of the theme file used to create our main Edje, so we call edje_object_file_get
-which will set edjefile to said value.
+name of the theme file used to create our main Edje, so we call <function>edje_object_file_get</function>
+which will set edje file to said value.
 </para>
 
 <para>
@@ -438,7 +438,7 @@ value of the part to our current string and show the part.
 </para>
 
 <para>
-A callback is created through edje_object_signal_callback_add and attached to the
+A callback is created through <function>edje_object_signal_callback_add</function> and attached to the
 new element. This will be called if the &quot;item_selected&quot; signal is sent from the Edje.
 The i_ptr value shows how data can be attached to the element, when the user clicks
 on an element its number will be printed to the console.
@@ -451,7 +451,7 @@ element).
 
 <para>
 To finish, the container is show and we do some extra work to display information about
-the container in the header through the call _show_text.
+the container in the header through the call <function>_show_text</function>.
 </para>
 
 <example>
@@ -484,7 +484,7 @@ static void _set_text(int align, int direction) {
 </programlisting>
 </example>
 <para>
-The _set_text routine takes the current direction and alignment of the container and sets
+The <function>_set_text</function> routine takes the current direction and alignment of the container and sets
 some text in the header of the program. This is just a simple communication with the user
 of the current container settings.
 </para>
@@ -567,7 +567,7 @@ static void _item_selected(void* data, Evas_Object* o, const char* emmission,
 </programlisting>
 </example>
 <para>
-Finally the _item_selected callback will be executed when the user middle clicks
+Finally the <function>_item_selected</function> callback will be executed when the user middle clicks
 on an item in the container. The data will contain the number set for that element
 in the create routine above.
 </para>

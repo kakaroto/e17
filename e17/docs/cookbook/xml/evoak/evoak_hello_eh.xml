@@ -68,7 +68,7 @@ int main(int argc, char ** argv) {
 </programlisting>
 </example>
 <para>
-Evoak needs to be setup initially with a call to evoak_init(). This will
+Evoak needs to be setup initially with a call to <function>evoak_init</function>. This will
 setup all the internal libraries and requirements for Evoak.
 </para>
 
@@ -80,23 +80,24 @@ Evoak server. These will be discussed later when the actual callbacks are displa
 
 <para>
 Once the callbacks are in place we need to connect to the Evoak canvas server.
-This is done through the call to evoak_connect(). The parameters to evoak_connect()
+This is done through the call to <function>evoak_connect</function>. The parameters to
+<function>evoak_connect</function>
 are: the server to connect to, the client name and the client class. If the
 first argument is NULL, as in this example, the default Evoak server is connected too.
-The second argument to ecore_connect() is the clients name, this value should be
+The second argument to <function>ecore_connect</function> is the clients name, this value should be
 something unique as it will be used to distinguish the client from other clients.
 The final argument, the class, is the type of client, some of the possible values being:
-'background', 'panel', 'application' or 'custom'.
+&quot;background&quot;, &quot;panel&quot;, &quot;application&quot; or &quot;custom&quot;.
 </para>
 
 <para>
-If the call to evoak_connect() fails a NULL value will be returned. So, as long as
+If the call to <function>evoak_connect</function> fails a NULL value will be returned. So, as long as
 we receive a Evoak object back, we start the main ecore loop. When ecore finishes
-we call evoak_disconnect() to disconnect from the Evoak server.
+we call <function>evoak_disconnect</function> to disconnect from the Evoak server.
 </para>
 
 <para>
-We finish off by calling evoak_shutdown() to clean up after ourselves.
+We finish off by calling <function>evoak_shutdown</function> to clean up after ourselves.
 </para>
 
 <example>
@@ -159,16 +160,16 @@ For this example, the client only draws the text 'Hello Evoak, eh'.
 </para>
 
 <para>
-The first thing we do is call evoak_freeze(), this should keep us from getting
+The first thing we do is call <function>evoak_freeze</function>, this should keep us from getting
 any unwanted callbacks while we are setting up our interface. At the end of the
-function we call the reciprocal evoak_thaw() to undo the previous freeze.
+function we call the reciprocal <function>evoak_thaw</function> to undo the previous freeze.
 </para>
 
 <para>
-We then proceed to create a text object with evoak_object_text_add() and taking
+We then proceed to create a text object with <function>evoak_object_text_add</function> and taking
 that text object, set the font, colour and text contents with the calls to,
-evoak_object_text_font_set(), evoak_object_color_set(), and evoak_object_text_text_set()
-respectively.
+<function>evoak_object_text_font_set</function>, <function>evoak_object_color_set</function>, 
+and <function>evoak_object_text_text_set</function> respectively.
 </para>
 
 <example>

@@ -61,8 +61,9 @@ int main(int argc, char ** argv) {
 </example>
 <para>
 As you can see from this example the basic usage of Ecore_Config is simple. The system is initialized with
-a call to ecore_config_init(PROGRAM_NAME). The program name setting control where Ecore_Config will look for
-your configuration database. The directory and file name are: ~/.e/apps/PROGRAM_NAME/config.db.
+a call to <function>ecore_config_init</function>. The program name setting control where 
+Ecore_Config will look for your configuration database. The directory and file name 
+are: ~/.e/apps/PROGRAM_NAME/config.db.
 </para>
 
 <para>
@@ -73,14 +74,15 @@ must be unique over your program. The value passed is of the type appropriated f
 </para>
 
 <para>
-The ecore_config_load call will read the values from the config.db file into Ecore_Config. After which we can
+The <function>ecore_config_load</function> call will read the values from the config.db file into Ecore_Config. 
+After which we can
 access the files with the ecore_config_*_get methods (again * is the type of data desired). These routines
 take the key name for this item and return the value associated with that key. Each function returns a type
 that corresponds to the function call name.
 </para>
 
 <para>
-ecore_config_shutdown is then called to shutdown the Ecore_Config system before the program exits.
+<function>ecore_config_shutdown</function> is then called to shutdown the Ecore_Config system before the program exits.
 </para>
 
 <example>

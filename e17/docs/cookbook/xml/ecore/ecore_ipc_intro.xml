@@ -66,8 +66,9 @@ int main(int argc, char ** argv) {
 </example>
 <para>
 As mentioned earlier, even though we are writing a client app, we still use an Ecore_Ipc_Server
-object.  Using Ecore_Ipc requires the setup of Ecore itself. This is done with a simple call to ecore_init().
-Ecore_Ipc is then setup with a call to ecore_ipc_init(). If either of these return 0, the appropriate
+object.  Using Ecore_Ipc requires the setup of Ecore itself. This is done with a simple call to 
+<function>ecore_init</function>.
+Ecore_Ipc is then setup with a call to <function>ecore_ipc_init</function>. If either of these return 0, the appropriate
 action is taken to undo any initialization take to this point. The ECORE_EVENT_SIGNAL_EXIT callback
 is hooked up so we can exit gracefully if required.
 </para>
@@ -87,14 +88,15 @@ is hooked up so we can exit gracefully if required.
 </example>
 <para>
 In this example we are creating a remote connection to the server named "localhost" on the port 9999. This
-is done with the ecore_ipc_server_connect() method. The first parameter is the type of connection being made,
+is done with the <function>ecore_ipc_server_connect</function> method. 
+The first parameter is the type of connection being made,
 which can be one of: ECORE_IPC_REMOTE_SYSTEM, ECORE_IPC_LOCAL_SYSTEM, or ECORE_IPC_LOCAL_USER. If 
 OpenSSL was available when Ecore_Ipc was compiled, ECORE_IPC_USE_SSL can be or'd with the connection type
 to create an SSL connection.
 </para>
 
 <para>
-The three calls to ecore_event_handler_add() setup the callbacks for the different types of events
+The three calls to <function>ecore_event_handler_add</function> setup the callbacks for the different types of events
 we will be receiving from the server. A server was added, a server was deleted, or the server
 sent us data.
 </para>
@@ -115,8 +117,8 @@ sent us data.
 </example>
 <para>
 For the purposes of this example, the client is sending a message on startup to the server, which
-the server will respond to. The client message is sent with the ecore_ipc_server_send() command.
-ecore_ipc_server_send() takes the server to send to, the message major, message minor, a reference, 
+the server will respond to. The client message is sent with the <function>ecore_ipc_server_send</function> command.
+<function>ecore_ipc_server_send</function> takes the server to send to, the message major, message minor, a reference, 
 a reference to, a response, the data and a size. These parameters, except for the server are up the 
 the client and can refer to anything required. This hopefully gives the maximum flexibility 
 in creating client/server IPC apps.
@@ -125,7 +127,7 @@ in creating client/server IPC apps.
 <para>
 After the server message is sent we enter into the main ecore loop and wait for events. If 
 the main loop is exited we delete the server object, shutdown Ecore_Ipc with a call to 
-ecore_ipc_shutdown(), and shutdown ecore through ecore_shutdown().
+<function>ecore_ipc_shutdown</function>, and shutdown ecore through <function>ecore_shutdown</function>.
 </para>
 
 <example>
@@ -138,7 +140,7 @@ int sig_exit_cb(void *data, int ev_type, void *ev) {
 </programlisting>
 </example>
 <para>
-The sig_exit_cb() just tells ecore to quit the main loop.
+The <function>sig_exit_cb</function> just tells ecore to quit the main loop.
 </para>
 
 <example>
@@ -165,7 +167,8 @@ int handler_server_data(void *data, int ev_type, void *ev) {
 </programlisting>
 </example>
 <para>
-These three callbacks, handler_server_add(), handler_server_del(), and handler_server_data()
+These three callbacks, <function>handler_server_add</function>, 
+<function>handler_server_del</function>, and <function>handler_server_data</function>
 are body of the client handling all events related to the server we are connected to. Each
 of the callbacks has an associated event structure, Ecore_Ipc_Event_Server_Add, 
 Ecore_Ipc_Event_Server_Del and Ecore_Ipc_Event_Server_Data containing information on the
@@ -173,17 +176,17 @@ event itself.
 </para>
 
 <para>
-When we first connect to the server the handler_server_add() callback will be executed
+When we first connect to the server the <function>handler_server_add</function> callback will be executed
 allowing any setup to be accomplished.
 </para>
 
 <para>
-If the server breaks the connection the handler_server_del() callback will be executed
+If the server breaks the connection the <function>handler_server_del</function> callback will be executed
 allowing any required cleanup.
 </para>
 
 <para>
-When the server sends data to the client the handler_server_data callback will the executed.
+When the server sends data to the client the <function>handler_server_data</function> callback will the executed.
 Which in this example just prints some information about the message itself and the 
 message body.
 </para>
@@ -208,7 +211,7 @@ int handler_client_data(void *data, int ev_type, void *ev);
 <para>
 As with the client, the Ecore.h header is included to get access the to the exit signal. 
 The Ecore_Ipc.h header is required for apps making use of the Ecore_Ipc library. Each
-sign handler will be explained with its code.
+sig handler will be explained with its code.
 </para>
 
 <example>
@@ -246,7 +249,7 @@ This is the same as the client setup above.
 </example>
 <para>
 Unlike the client, for the server we add a listener to port 9999 on the machine "localhost" through
-the call ecore_ipc_server_add(). This will create and return the server object to us.
+the call <function>ecore_ipc_server_add</function>. This will create and return the server object to us.
 We then hook in the required signal handlers, the difference to the client being we want
 CLIENT events this time instead of SERVER events.
 </para>
@@ -273,7 +276,7 @@ This again is identical to the client shutdown, minus the sending of data to the
 </programlisting>
 </example>
 <para>
-The sig_exit_cb() is again identical to that seen in the client.
+The <function>sig_exit_cb</function> is again identical to that seen in the client.
 </para>
 
 <example>
@@ -313,7 +316,8 @@ when a client sends data to the server.
 </para>
 
 <para>
-At the end of the handler_client_data callback we do a call to ecore_ipc_client_send().
+At the end of the <function>handler_client_data</function> callback we do a call to 
+<function>ecore_ipc_client_send</function>.
 This sends data to the client. As with sending data to the server, the parameters are:
 the client to send to, major number, minor number, reference, reference to, response, 
 data and the data size.

@@ -5,9 +5,11 @@ Setting up key bindings in evas
 -->
 <section>
   <sectioninfo>
-	<firstname>Norman</firstname>
-	<surname>Walsh</surname>
+   <author>
+	<firstname>Ben</firstname>
+	<surname>Rockwood</surname>
 	<othername>technikolor</othername>
+   </author>
   </sectioninfo>
 <title>Recipe: Key Binds, using EVAS Key Events</title>
 
