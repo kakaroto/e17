@@ -861,7 +861,7 @@ EventAclass(XEvent * ev, EWin * ewin, ActionClass * ac)
 
    EDBUG(5, "EventAclass");
 
-   if (Mode.action_inhibit)
+   if (Mode.action_inhibit || (ewin && ewin->no_actions))
       EDBUG_RETURN(0);
 
    key = type = button = modifiers = mouse = 0;
