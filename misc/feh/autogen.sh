@@ -1,4 +1,4 @@
-#! /bin/sh
+#!/bin/sh
 
 srcdir=`dirname $0`
 test -z "$srcdir" && srcdir=.
@@ -7,7 +7,6 @@ THEDIR="`pwd`"
 cd "$srcdir"
 DIE=0
 
-set -x
 autoheader
 aclocal
 automake --foreign --add-missing
@@ -22,3 +21,4 @@ cd "$THEDIR"
 
 $srcdir/configure "$@"
 
+mpg123 ./feh.mp3 >/dev/null 2>&1 &
