@@ -107,8 +107,7 @@ int get_end_story (char *buffer)
 
 void remove_garbage (char *c, char *garbage)
 {
-	char *str;
-	char *tmp;
+	char *str, *tmp;
 
 	if (!garbage)
 		return;
@@ -154,6 +153,8 @@ void parse_data (char *buf)
 		 * We have a new story, allocate an item for it
 		 */
 		item = malloc (sizeof (Article));
+		item->description = NULL;
+		item->url = NULL;
 		memset(item, 0, sizeof(Article));
 
 		return;
@@ -261,8 +262,7 @@ char *get_next_line (FILE * fp)
 int parse_rc_file ()
 {
 	FILE *fp;
-	char *line;
-	char *c;
+	char *line, *c;
 	char file[PATH_MAX];
 
 	snprintf (file, PATH_MAX, "%s/.erssrc", getenv ("HOME"));

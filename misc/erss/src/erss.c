@@ -77,32 +77,10 @@ char *time_format ()
 	curtime = time(NULL);
 	ts = localtime(&curtime);
 
-	str = malloc (21);
-	
-	if (ts->tm_hour < 10 && ts->tm_min < 10 && ts->tm_sec < 10)
-		snprintf (str, 20, "0%d:0%d:0%d", 
-				ts->tm_hour, ts->tm_min, ts->tm_sec);
-	else if (ts->tm_hour < 10 && ts->tm_min < 10)
-		snprintf (str, 20, "0%d:0%d:%d",
-				ts->tm_hour, ts->tm_min, ts->tm_sec);
-	else if (ts->tm_hour < 10 && ts->tm_sec < 10)
-		snprintf (str, 20, "0%d:%d:0%d",
-				ts->tm_hour, ts->tm_min, ts->tm_sec);
-	else if (ts->tm_min < 10 && ts->tm_sec < 10)
-		snprintf (str, 20, "%d:0%d:0%d",
-				ts->tm_hour, ts->tm_min, ts->tm_sec);
-	else if (ts->tm_hour < 10)
-		snprintf (str, 20, "0%d:%d:%d",
-				ts->tm_hour, ts->tm_min, ts->tm_sec);
-	else if (ts->tm_min < 10)
-		snprintf (str, 20, "%d:0%d:%d",
-				ts->tm_hour, ts->tm_min, ts->tm_sec);
-	else if (ts->tm_sec < 10)
-		 snprintf (str, 20, "%d:%d:0%d",
-				 ts->tm_hour, ts->tm_min, ts->tm_sec);
-	else
-		snprintf (str, 20, "%d:%d:%d",
-				ts->tm_hour, ts->tm_min, ts->tm_sec);
+	str = malloc (11);
+
+	snprintf (str, 20, "%02d:%02d:%02d", 
+			ts->tm_hour, ts->tm_min, ts->tm_sec);
 
 	return str;
 }
