@@ -24,7 +24,6 @@
 #include "E.h"
 
 static void         ShowAlert(char *text);
-static void         AlertHandleClick(int button);
 
 static int          (*IgnoreFunction) (const void *) = NULL;
 static const void  *IgnoreParams = NULL;
@@ -176,6 +175,106 @@ AssignExitFunction(int (*FunctionToAssign) (const void *), const void *params)
    EDBUG_RETURN_;
 }
 
+#define DRAW_BOX_OUT(mdd, mgc, mwin, mx, my, mw, mh) \
+        AlertDrawBox(mdd, mgc, mwin, mx, my, mw, mh, \
+        colorful, cols[0], cols[2], cols[3])
+#define DRAW_BOX_IN(mdd, mgc, mwin, mx, my, mw, mh) \
+        AlertDrawBox(mdd, mgc, mwin, mx, my, mw, mh, \
+        colorful, cols[2], cols[0], cols[3])
+static void
+AlertDrawBox(Display * mdd, GC mgc, Window mwin, int mx, int my, int mw, int mh,
+	     int colorful, unsigned long c1, unsigned long c2, unsigned long cb)
+{
+   if (colorful)
+     {
+	XSetForeground(mdd, mgc, cb);
+	XDrawRectangle(mdd, mwin, mgc, mx, my, mw - 1, mh - 1);
+	XSetForeground(mdd, mgc, c1);
+	XDrawLine(mdd, mwin, mgc, mx + 1, my + 1, mx + mw - 3, my + 1);
+	XDrawLine(mdd, mwin, mgc, mx + 1, my + 1, mx + 1, my + mh - 3);
+	XSetForeground(mdd, mgc, c2);
+	XDrawLine(mdd, mwin, mgc, mx + 2, my + mh - 2, mx + mw - 2,
+		  my + mh - 2);
+	XDrawLine(mdd, mwin, mgc, mx + mw - 2, my + 2, mx + mw - 2,
+		  my + mh - 2);
+     }
+   else
+     {
+	XDrawRectangle(mdd, mwin, mgc, mx, my, mw - 1, mh - 1);
+     }
+}
+
+#define DRAW_THIN_BOX_IN(mdd, mgc, mwin, mx, my, mw, mh) \
+        AlertDrawThinBoxIn(mdd, mgc, mwin, mx, my, mw, mh, \
+        colorful, cols[2], cols[0])
+static void
+AlertDrawThinBoxIn(Display * mdd, GC mgc, Window mwin, int mx, int my, int mw,
+		   int mh, int colorful, unsigned long c1, unsigned long c2)
+{
+   if (colorful)
+     {
+	XSetForeground(mdd, mgc, c1);
+	XDrawLine(mdd, mwin, mgc, mx + 1, my + 1, mx + mw - 3, my + 1);
+	XDrawLine(mdd, mwin, mgc, mx + 1, my + 1, mx + 1, my + mh - 3);
+	XSetForeground(mdd, mgc, c2);
+	XDrawLine(mdd, mwin, mgc, mx + 2, my + mh - 2, mx + mw - 2,
+		  my + mh - 2);
+	XDrawLine(mdd, mwin, mgc, mx + mw - 2, my + 2, mx + mw - 2,
+		  my + mh - 2);
+     }
+}
+
+#define DRAW_HEADER(mdd, mgc, mwin, mx, my, mstr) \
+        AlertDrawHeader(mdd, mgc, mwin, mx, my, mstr, \
+        colorful, cols[2], cols[3], cols[4])
+static void
+AlertDrawHeader(Display * mdd, GC mgc, Window mwin, int mx, int my,
+		const char *mstr, int colorful, unsigned long cb,
+		unsigned long ct1, unsigned long ct2)
+{
+   int                 len = strlen(mstr);
+
+   if (colorful)
+     {
+	XSetForeground(mdd, mgc, cb);
+	XDrawString(mdd, mwin, mgc, mx + 1, my + 1, mstr, len);
+	XDrawString(mdd, mwin, mgc, mx + 2, my + 1, mstr, len);
+	XDrawString(mdd, mwin, mgc, mx + 2, my + 2, mstr, len);
+	XDrawString(mdd, mwin, mgc, mx + 1, my + 2, mstr, len);
+	XSetForeground(mdd, mgc, ct1);
+	XDrawString(mdd, mwin, mgc, mx - 1, my, mstr, len);
+	XDrawString(mdd, mwin, mgc, mx, my - 1, mstr, len);
+	XDrawString(mdd, mwin, mgc, mx + 1, my, mstr, len);
+	XDrawString(mdd, mwin, mgc, mx, my + 1, mstr, len);
+	XSetForeground(mdd, mgc, ct2);
+	XDrawString(mdd, mwin, mgc, mx, my, mstr, len);
+     }
+   else
+     {
+	XDrawString(mdd, mwin, mgc, mx, my, mstr, len);
+     }
+}
+
+#define DRAW_STRING(mdd, mgc, mwin, mx, my, mstr) \
+        AlertDrawString(mdd, mgc, mwin, mx, my, mstr, \
+        colorful, cols[3])
+static void
+AlertDrawString(Display * mdd, GC mgc, Window mwin, int mx, int my,
+		const char *mstr, int colorful, unsigned long ct1)
+{
+   int                 len = strlen(mstr);
+
+   if (colorful)
+     {
+	XSetForeground(mdd, mgc, ct1);
+	XDrawString(mdd, mwin, mgc, mx, my, mstr, len);
+     }
+   else
+     {
+	XDrawString(mdd, mwin, mgc, mx, my, mstr, len);
+     }
+}
+
 static void
 ShowAlert(char *text)
 {
@@ -190,16 +289,22 @@ ShowAlert(char *text)
    Font                font;
    XSetWindowAttributes att;
    char                colorful;
+   unsigned long       cols[256];
    XColor              xcl;
    Colormap            cmap;
-   int                 cols[256];
    int                 cnum, fh, x, y, ww, hh, mh;
    static char        *title = NULL, *str1 = NULL, *str2 = NULL, *str3 = NULL;
    KeyCode             key;
+   int                 button;
 
    EDBUG(8, "ShowAlert");
    if (!text)
       EDBUG_RETURN_;
+
+   /*
+    * We may get here from obscure places like an X-error or signal handler
+    * and things seem to work properly only if we do a new XOpenDisplay().
+    */
    dd = XOpenDisplay(NULL);
    if (!dd)
      {
@@ -207,6 +312,8 @@ ShowAlert(char *text)
 	fflush(stderr);
 	EDBUG_RETURN_;
      }
+   cmap = DefaultColormap(dd, DefaultScreen(dd));
+
    title = TitleText;
    str1 = IgnoreText;
    str2 = RestartText;
@@ -220,109 +327,39 @@ ShowAlert(char *text)
    if (!str3)
       str3 = _("Exit");
 
-#define DRAW_BOX_OUT(mdd, mgc, mwin, mx, my, mw, mh) \
-if (colorful) { \
-XSetForeground(mdd, mgc, cols[3]); \
-XDrawRectangle(mdd, mwin, mgc, mx, my, mw - 1, mh - 1); \
-XSetForeground(mdd, mgc, cols[0]); \
-XDrawLine(mdd, mwin, mgc, mx + 1, my + 1, mx + mw - 3, my + 1); \
-XDrawLine(mdd, mwin, mgc, mx + 1, my + 1, mx + 1, my + mh - 3); \
-XSetForeground(mdd, mgc, cols[2]); \
-XDrawLine(mdd, mwin, mgc, mx + 2, my + mh - 2, mx + mw - 2, my + mh - 2); \
-XDrawLine(mdd, mwin, mgc, mx + mw - 2, my + 2, mx + mw - 2, my + mh - 2); \
-} else { \
-XDrawRectangle(mdd, mwin, mgc, mx, my, mw - 1, mh - 1); \
-}
-
-#define DRAW_BOX_IN(mdd, mgc, mwin, mx, my, mw, mh) \
-if (colorful) { \
-XSetForeground(mdd, mgc, cols[3]); \
-XDrawRectangle(mdd, mwin, mgc, mx, my, mw - 1, mh - 1); \
-XSetForeground(mdd, mgc, cols[2]); \
-XDrawLine(mdd, mwin, mgc, mx + 1, my + 1, mx + mw - 3, my + 1); \
-XDrawLine(mdd, mwin, mgc, mx + 1, my + 1, mx + 1, my + mh - 3); \
-XSetForeground(mdd, mgc, cols[0]); \
-XDrawLine(mdd, mwin, mgc, mx + 2, my + mh - 2, mx + mw - 2, my + mh - 2); \
-XDrawLine(mdd, mwin, mgc, mx + mw - 2, my + 2, mx + mw - 2, my + mh - 2); \
-} else { \
-XDrawRectangle(mdd, mwin, mgc, mx, my, mw - 1, mh - 1); \
-}
-
-#define DRAW_THIN_BOX_IN(mdd, mgc, mwin, mx, my, mw, mh) \
-if (colorful) { \
-XSetForeground(mdd, mgc, cols[2]); \
-XDrawLine(mdd, mwin, mgc, mx + 1, my + 1, mx + mw - 3, my + 1); \
-XDrawLine(mdd, mwin, mgc, mx + 1, my + 1, mx + 1, my + mh - 3); \
-XSetForeground(mdd, mgc, cols[0]); \
-XDrawLine(mdd, mwin, mgc, mx + 2, my + mh - 2, mx + mw - 2, my + mh - 2); \
-XDrawLine(mdd, mwin, mgc, mx + mw - 2, my + 2, mx + mw - 2, my + mh - 2); \
-}
-
-#define DRAW_HEADER(mdd, mgc, mwin, mx, my, mstr) \
-if (colorful) { \
-XSetForeground(mdd, mgc, cols[2]); \
-XDrawString(mdd, mwin, mgc, mx + 1, my + 1, mstr, strlen(mstr)); \
-XDrawString(mdd, mwin, mgc, mx + 2, my + 1, mstr, strlen(mstr)); \
-XDrawString(mdd, mwin, mgc, mx + 2, my + 2, mstr, strlen(mstr)); \
-XDrawString(mdd, mwin, mgc, mx + 1, my + 2, mstr, strlen(mstr)); \
-XSetForeground(mdd, mgc, cols[3]); \
-XDrawString(mdd, mwin, mgc, mx - 1, my, mstr, strlen(mstr)); \
-XDrawString(mdd, mwin, mgc, mx, my - 1, mstr, strlen(mstr)); \
-XDrawString(mdd, mwin, mgc, mx + 1, my, mstr, strlen(mstr)); \
-XDrawString(mdd, mwin, mgc, mx, my + 1, mstr, strlen(mstr)); \
-XSetForeground(mdd, mgc, cols[4]); \
-XDrawString(mdd, mwin, mgc, mx, my, mstr, strlen(mstr)); \
-} else { \
-XDrawString(mdd, mwin, mgc, mx, my, mstr, strlen(mstr)); \
-}
-
-#define DRAW_STRING(mdd, mgc, mwin, mx, my, mstr) \
-if (colorful) { \
-XSetForeground(mdd, mgc, cols[3]); \
-XDrawString(mdd, mwin, mgc, mx, my, mstr, strlen(mstr)); \
-} else { \
-XDrawString(mdd, mwin, mgc, mx, my, mstr, strlen(mstr)); \
-}
-
-#define ALLOC_COLOR(d,m,c) \
-if (!XAllocColor(d, m, c)) \
-{ \
-colorful = 0; \
-goto CN; \
-}
-
    cnum = 0;
-   cmap = 0;
    colorful = 0;
    if (DefaultDepth(dd, DefaultScreen(dd)) > 4)
-      colorful = 1;
-   if (colorful)
      {
-	cmap = DefaultColormap(dd, DefaultScreen(dd));
 	ESetColor(&xcl, 220, 220, 220);
-	ALLOC_COLOR(dd, cmap, &xcl);
+	if (!XAllocColor(dd, cmap, &xcl))
+	   goto CN;
 	cols[cnum++] = xcl.pixel;
 	ESetColor(&xcl, 160, 160, 160);
-	ALLOC_COLOR(dd, cmap, &xcl);
+	if (!XAllocColor(dd, cmap, &xcl))
+	   goto CN;
 	cols[cnum++] = xcl.pixel;
 	ESetColor(&xcl, 100, 100, 100);
-	ALLOC_COLOR(dd, cmap, &xcl);
+	if (!XAllocColor(dd, cmap, &xcl))
+	   goto CN;
 	cols[cnum++] = xcl.pixel;
 	ESetColor(&xcl, 0, 0, 0);
-	ALLOC_COLOR(dd, cmap, &xcl);
+	if (!XAllocColor(dd, cmap, &xcl))
+	   goto CN;
 	cols[cnum++] = xcl.pixel;
 	ESetColor(&xcl, 255, 255, 255);
-	ALLOC_COLOR(dd, cmap, &xcl);
+	if (!XAllocColor(dd, cmap, &xcl))
+	   goto CN;
 	cols[cnum++] = xcl.pixel;
+	colorful = 1;
      }
  CN:
+
    wid = DisplayWidth(dd, DefaultScreen(dd));
    hih = DisplayHeight(dd, DefaultScreen(dd));
    w = (wid - 600) / 2;
    h = (hih - 440) / 2;
-   mask =
-      CWBackPixel | CWBorderPixel | CWOverrideRedirect | CWSaveUnder |
-      CWBackingStore;
+
    if (colorful)
       att.background_pixel = cols[1];
    else
@@ -334,10 +371,11 @@ goto CN; \
    att.backing_store = Always;
    att.save_under = True;
    att.override_redirect = True;
-   win =
-      XCreateWindow(dd, DefaultRootWindow(dd), -100, -100, 1, 1, 0,
-		    DefaultDepth(dd, DefaultScreen(dd)), InputOutput,
-		    DefaultVisual(dd, DefaultScreen(dd)), mask, &att);
+   mask = CWBackPixel | CWBorderPixel | CWOverrideRedirect | CWSaveUnder |
+      CWBackingStore;
+   win = XCreateWindow(dd, DefaultRootWindow(dd), -100, -100, 1, 1, 0,
+		       DefaultDepth(dd, DefaultScreen(dd)), InputOutput,
+		       DefaultVisual(dd, DefaultScreen(dd)), mask, &att);
 
    if (sscanf(str1, "%s", line) > 0)
      {
@@ -369,23 +407,23 @@ goto CN; \
    fh = 0;
    xfs = NULL;
    if (!xfs)
-     {
-	xfs = XLoadQueryFont(dd, "-*-helvetica-*-r-*-*-12-*-*-*-*-*-*-*");
-     }
+      xfs = XLoadQueryFont(dd, "-*-helvetica-*-r-*-*-12-*-*-*-*-*-*-*");
    if (!xfs)
-     {
-	xfs = XLoadQueryFont(dd, "fixed");
-     }
+      xfs = XLoadQueryFont(dd, "fixed");
    font = xfs->fid;
    fh = xfs->ascent + xfs->descent;
    XSetFont(dd, gc, font);
+
+   XSelectInput(dd, win, KeyPressMask | KeyReleaseMask | ExposureMask);
    XMapWindow(dd, win);
    XGrabPointer(dd, win, True, ButtonPressMask | ButtonReleaseMask,
 		GrabModeAsync, GrabModeAsync, None, None, CurrentTime);
    XGrabKeyboard(dd, win, True, GrabModeAsync, GrabModeAsync, CurrentTime);
    XSetInputFocus(dd, win, RevertToPointerRoot, CurrentTime);
+
    XGrabServer(dd);
    XSync(dd, False);
+
    for (i = 0; i < 600; i += 40)
      {
 	ww = i;
@@ -436,56 +474,9 @@ goto CN; \
 		     ButtonPressMask | ButtonReleaseMask | ExposureMask);
      }
    XSync(dd, False);
-   XSelectInput(dd, win, KeyPressMask | KeyReleaseMask | ExposureMask);
 
-#define DRAW_ALERT \
-w = XTextWidth(xfs, title, strlen(title)); \
-DRAW_HEADER(dd, gc, win, (600 - w) / 2, 5 + xfs->ascent, title); \
-DRAW_BOX_OUT(dd, gc, win, 0, 0, ww, fh + 10); \
-DRAW_BOX_OUT(dd, gc, win, 0, fh + 10 - 1, ww, hh - fh - fh - 30 + 2); \
-DRAW_BOX_OUT(dd, gc, win, 0, 440 - fh - 20, ww, fh + 20); \
-i = 0; \
-j = 0; \
-k = fh + 10; \
-while (text[i]) { \
-line[j++] = text[i++]; \
-if (line[j - 1] == '\n') { \
-line[j - 1] = 0; \
-j = 0; \
-DRAW_STRING(dd, gc, win, 6, 6 + k + fh, line); \
-k += fh + 2; \
-} \
-} \
-if (sscanf(str1, "%s", line) > 0) \
-{ \
-h = XTextWidth(xfs, str1, strlen(str1)); \
-w = 10 + (((580 - mh) * 0) / 4); \
-DRAW_HEADER(dd, gc, b1, 5 + (mh - h) / 2, fh + 5 - xfs->descent, str1); \
-DRAW_BOX_OUT(dd, gc, b1, 0, 0, mh + 10, fh + 10); \
-DRAW_THIN_BOX_IN(dd, gc, win, w - 7, 440 - 17 - fh, mh + 14, fh + 14); \
-} \
-if (sscanf(str2, "%s", line) > 0) \
-{ \
-h = XTextWidth(xfs, str2, strlen(str2)); \
-w = 10 + (((580 - mh) * 1) / 2); \
-DRAW_HEADER(dd, gc, b2, 5 + (mh - h) / 2, fh + 5 - xfs->descent, str2); \
-DRAW_BOX_OUT(dd, gc, b2, 0, 0, mh + 10, fh + 10); \
-DRAW_THIN_BOX_IN(dd, gc, win, w - 7, 440 - 17 - fh, mh + 14, fh + 14); \
-} \
-if (sscanf(str3, "%s", line) > 0) \
-{ \
-h = XTextWidth(xfs, str3, strlen(str3)); \
-w = 10 + (((580 - mh) * 2) / 2); \
-DRAW_HEADER(dd, gc, b3, 5 + (mh - h) / 2, fh + 5 - xfs->descent, str3); \
-DRAW_BOX_OUT(dd, gc, b3, 0, 0, mh + 10, fh + 10); \
-DRAW_THIN_BOX_IN(dd, gc, win, w - 7, 440 - 17 - fh, mh + 14, fh + 14); \
-XSync(dd, False); \
-}
-
-   DRAW_ALERT;
-
-   w = 1;
-   while (w == 1)
+   button = 0;
+   for (; button == 0;)
      {
 	XNextEvent(dd, &ev);
 	switch (ev.type)
@@ -498,9 +489,8 @@ XSync(dd, False); \
 		  XSync(dd, False);
 		  sleep(1);
 		  DRAW_BOX_OUT(dd, gc, b1, 0, 0, mh + 10, fh + 10);
-		  XSync(dd, False);
-		  AlertHandleClick(1);
-		  w = 0;
+		  button = 1;
+		  break;
 	       }
 	     key = XKeysymToKeycode(dd, XStringToKeysym("F2"));
 	     if (key == ev.xkey.keycode)
@@ -509,9 +499,8 @@ XSync(dd, False); \
 		  XSync(dd, False);
 		  sleep(1);
 		  DRAW_BOX_OUT(dd, gc, b2, 0, 0, mh + 10, fh + 10);
-		  XSync(dd, False);
-		  AlertHandleClick(2);
-		  w = 0;
+		  button = 2;
+		  break;
 	       }
 	     key = XKeysymToKeycode(dd, XStringToKeysym("F3"));
 	     if (key == ev.xkey.keycode)
@@ -520,11 +509,12 @@ XSync(dd, False); \
 		  XSync(dd, False);
 		  sleep(1);
 		  DRAW_BOX_OUT(dd, gc, b3, 0, 0, mh + 10, fh + 10);
-		  XSync(dd, False);
-		  AlertHandleClick(3);
-		  w = 0;
+		  button = 3;
+		  break;
 	       }
+	     XSync(dd, False);
 	     break;
+
 	  case ButtonPress:
 	     if (ev.xbutton.window == b1)
 	       {
@@ -538,70 +528,115 @@ XSync(dd, False); \
 	       {
 		  DRAW_BOX_IN(dd, gc, b3, 0, 0, mh + 10, fh + 10);
 	       }
-	     w = 1;
 	     XSync(dd, False);
 	     break;
+
 	  case ButtonRelease:
 	     if (ev.xbutton.window == b1)
 	       {
 		  DRAW_BOX_OUT(dd, gc, b1, 0, 0, mh + 10, fh + 10);
-		  XSync(dd, False);
-		  AlertHandleClick(1);
-		  w = 0;
+		  button = 1;
 	       }
 	     else if (ev.xbutton.window == b2)
 	       {
 		  DRAW_BOX_OUT(dd, gc, b2, 0, 0, mh + 10, fh + 10);
-		  XSync(dd, False);
-		  AlertHandleClick(2);
-		  w = 0;
+		  button = 2;
 	       }
 	     else if (ev.xbutton.window == b3)
 	       {
 		  DRAW_BOX_OUT(dd, gc, b3, 0, 0, mh + 10, fh + 10);
-		  XSync(dd, False);
-		  AlertHandleClick(3);
-		  w = 0;
+		  button = 3;
 	       }
+	     XSync(dd, False);
 	     break;
+
 	  case Expose:
-	     DRAW_ALERT;
-	     w = 1;
+	     /* Flush all other Expose events */
+	     while (XCheckTypedWindowEvent(dd, ev.xexpose.window, Expose, &ev))
+		w = XTextWidth(xfs, title, strlen(title));
+
+	     DRAW_HEADER(dd, gc, win, (600 - w) / 2, 5 + xfs->ascent, title);
+	     DRAW_BOX_OUT(dd, gc, win, 0, 0, ww, fh + 10);
+	     DRAW_BOX_OUT(dd, gc, win, 0, fh + 10 - 1, ww,
+			  hh - fh - fh - 30 + 2);
+	     DRAW_BOX_OUT(dd, gc, win, 0, 440 - fh - 20, ww, fh + 20);
+	     i = 0;
+	     j = 0;
+	     k = fh + 10;
+	     while (text[i])
+	       {
+		  line[j++] = text[i++];
+		  if (line[j - 1] == '\n')
+		    {
+		       line[j - 1] = 0;
+		       j = 0;
+		       DRAW_STRING(dd, gc, win, 6, 6 + k + fh, line);
+		       k += fh + 2;
+		    }
+	       }
+	     if (sscanf(str1, "%s", line) > 0)
+	       {
+		  h = XTextWidth(xfs, str1, strlen(str1));
+		  w = 10 + (((580 - mh) * 0) / 4);
+		  DRAW_HEADER(dd, gc, b1, 5 + (mh - h) / 2,
+			      fh + 5 - xfs->descent, str1);
+		  DRAW_BOX_OUT(dd, gc, b1, 0, 0, mh + 10, fh + 10);
+		  DRAW_THIN_BOX_IN(dd, gc, win, w - 7, 440 - 17 - fh, mh + 14,
+				   fh + 14);
+	       }
+	     if (sscanf(str2, "%s", line) > 0)
+	       {
+		  h = XTextWidth(xfs, str2, strlen(str2));
+		  w = 10 + (((580 - mh) * 1) / 2);
+		  DRAW_HEADER(dd, gc, b2, 5 + (mh - h) / 2,
+			      fh + 5 - xfs->descent, str2);
+		  DRAW_BOX_OUT(dd, gc, b2, 0, 0, mh + 10, fh + 10);
+		  DRAW_THIN_BOX_IN(dd, gc, win, w - 7, 440 - 17 - fh, mh + 14,
+				   fh + 14);
+	       }
+	     if (sscanf(str3, "%s", line) > 0)
+	       {
+		  h = XTextWidth(xfs, str3, strlen(str3));
+		  w = 10 + (((580 - mh) * 2) / 2);
+		  DRAW_HEADER(dd, gc, b3, 5 + (mh - h) / 2,
+			      fh + 5 - xfs->descent, str3);
+		  DRAW_BOX_OUT(dd, gc, b3, 0, 0, mh + 10, fh + 10);
+		  DRAW_THIN_BOX_IN(dd, gc, win, w - 7, 440 - 17 - fh, mh + 14,
+				   fh + 14);
+	       }
+	     XSync(dd, False);
 	     break;
+
 	  default:
 	     break;
 	  }
      }
+
+   switch (button)
+     {
+     case 1:
+	if (IgnoreFunction)
+	   IgnoreFunction(IgnoreParams);
+	break;
+     case 2:
+	if (RestartFunction)
+	   RestartFunction(RestartParams);
+	break;
+     case 3:
+	if (ExitFunction)
+	   ExitFunction(ExitParams);
+	break;
+     default:
+	break;
+     }
+
    XDestroyWindow(dd, win);
    XFreeGC(dd, gc);
    XFreeFont(dd, xfs);
    XUnloadFont(dd, font);
    if (cnum > 0)
-      XFreeColors(dd, cmap, (unsigned long *)cols, cnum, 0);
+      XFreeColors(dd, cmap, cols, cnum, 0);
    XCloseDisplay(dd);
-   EDBUG_RETURN_;
-}
 
-static void
-AlertHandleClick(int button)
-{
-   EDBUG(9, "AlertHandleClick");
-   switch (button)
-     {
-     case 1:
-	if (IgnoreFunction)
-	   (*(IgnoreFunction)) (IgnoreParams);
-	break;
-     case 2:
-	if (RestartFunction)
-	   (*(RestartFunction)) (RestartParams);
-	break;
-     case 3:
-	if (ExitFunction)
-	   (*(ExitFunction)) (ExitParams);
-	break;
-     default:
-	break;
-     }
    EDBUG_RETURN_;
 }
