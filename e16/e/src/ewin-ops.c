@@ -1337,7 +1337,8 @@ void
 EwinOpKill(EWin * ewin)
 {
    SoundPlay("SOUND_WINDOW_CLOSE");
-   EDestroyWindow(disp, ewin->client.win);
+   /* NB! Got to use X- not E- to get properly through the event handling. */
+   XDestroyWindow(disp, ewin->client.win);
 }
 
 void
