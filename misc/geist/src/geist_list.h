@@ -42,6 +42,8 @@ void geist_list_free(geist_list * l);
 geist_list *geist_list_add_front(geist_list * root, void *data);
 geist_list *geist_list_add_end(geist_list * root, void *data);
 geist_list *geist_list_pop_to_end(geist_list *root, geist_list * l);
+geist_list *geist_list_unlink(geist_list * root, geist_list * l);
+void geist_debug_print_list(geist_list * l);
 geist_list *geist_list_cat(geist_list * root, geist_list * l);
 int geist_list_length(geist_list * l);
 geist_list *geist_list_last(geist_list * l);

@@ -99,10 +99,24 @@ geist_list_add_end(geist_list * root, void *data)
 geist_list *
 geist_list_pop_to_end(geist_list *root, geist_list * l)
 {
+   geist_list *ll, *temp;
    D_ENTER(4);
 
-   root = geist_list_remove(root, l);
+   /*
+   D(5,("root is %p\n", root));
+   root = geist_list_unlink(root, l);
+   D(5,("root is %p\n", root));
    root = geist_list_add_end(root, l);
+   D(5,("root is %p\n", root));
+    */
+
+   ll = geist_list_last(l);
+   if(ll != l)
+   {
+      temp = l->data;
+      l->data = ll->data;
+      ll->data = temp;
+   }
    
    D_RETURN(4, root);
 }
@@ -138,6 +152,19 @@ geist_list_length(geist_list * l)
    }
    D(3, ("length is %d\n", length));
    D_RETURN(4, length);
+}
+
+void geist_debug_print_list(geist_list * l)
+{
+   D_ENTER(4);
+   D(3, ("\nroot is at %p\n", l));
+   while (l)
+   {
+      printf("Item %p data %p\n", l, l->data); 
+      l = l->next;
+   }
+   D_RETURN_(4);
+
 }
 
 geist_list *
@@ -286,21 +313,31 @@ geist_list_num(geist_list * root, geist_list * l)
 }
 
 geist_list *
-geist_list_remove(geist_list * root, geist_list * l)
-{
+geist_list_unlink(geist_list * root, geist_list * l)
+{  
    D_ENTER(4);
    if (!l)
       D_RETURN(4, root);
-
+   
    if ((!root) || ((l == root) && (!l->next)))
       D_RETURN(4, NULL);
-
+      
    if (l->prev)
       l->prev->next = l->next;
    if (l->next)
       l->next->prev = l->prev;
    if (root == l)
       root = root->next;
+   D(4, ("returning list %p, list->next %p\n", root, root->next));
+   D_RETURN(4, root);
+}  
+
+
+geist_list *
+geist_list_remove(geist_list * root, geist_list * l)
+{
+   D_ENTER(4);
+   root = geist_list_unlink(root, l);
    free(l);
    D(4, ("returning list %p, list->next %p\n", root, root->next));
    D_RETURN(4, root);

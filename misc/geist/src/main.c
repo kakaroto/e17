@@ -157,7 +157,7 @@ evbox_buttonpress_cb(GtkWidget * widget, GdkEventButton * event)
       D(2, ("setting object state DRAG\n"));
       geist_object_set_state(obj, DRAG);
       gtk_object_set_data_full(GTK_OBJECT(mainwin), "drag", obj, NULL);
-      /* geist_object_raise(doc, obj); */
+      geist_object_raise(doc, obj);
       doc->up =
          imlib_update_append_rect(doc->up, obj->x, obj->y, obj->w, obj->h);
       geist_document_render_updates(doc);
