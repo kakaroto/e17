@@ -100,7 +100,7 @@ static Epplet_window Epplet_window_get_from_Window(Window win);
 static Window       Epplet_internal_create_window(int w, int h,
 						  char *title, char vertical,
 						  char decorate);
-static void remember_stuff(void *data);
+static void         remember_stuff(void *data);
 
 #define MWM_HINTS_DECORATIONS         (1L << 1)
 typedef struct _mwmhints
@@ -545,8 +545,8 @@ Epplet_Init(char *name,
 
    wmDeleteWindow = XInternAtom(disp, "WM_DELETE_WINDOW", False);
 
-   Epplet_timer (remember_stuff, NULL, 10, "REMEMBER_TIMER");
-   
+   Epplet_timer(remember_stuff, NULL, 10, "REMEMBER_TIMER");
+
    sa.sa_handler = Epplet_handle_child;
    sa.sa_flags = SA_RESTART;
    sigemptyset(&sa.sa_mask);
@@ -882,12 +882,15 @@ Epplet_handle_delete_event(Window xwin)
      }
 }
 
-static void remember_stuff(void *data)
+static void 
+remember_stuff(void *data)
 {
-    if(need_remember)                    
-	  Epplet_remember(); 
-    need_remember = 0;
-    Epplet_timer (remember_stuff, NULL, 10, "REMEMBER_TIMER");
+   if (need_remember)
+      Epplet_remember();
+   need_remember = 0;
+   Epplet_timer(remember_stuff, NULL, 10, "REMEMBER_TIMER");
+   return;
+   data = NULL;
 }
 
 void
@@ -895,8 +898,8 @@ Epplet_cleanup(void)
 {
    char                s[1024];
 
-   if(need_remember)
-	 Epplet_remember();
+   if (need_remember)
+      Epplet_remember();
 
    /* remove lock file */
    Esnprintf(s, sizeof(s), "%s/.lock_%i", conf_dir, epplet_instance);
@@ -963,16 +966,18 @@ Epplet_show(void)
 void
 Epplet_remember(void)
 {
-    char                s[1024];
+   char                s[1024];
 
 #ifdef NEW_REMEMBER
 #ifndef NO_AUTO_RESPAWN
-    char                commandbuf[] = "command";
+   char                commandbuf[] = "command";
+
 #else
-    char                commandbuf[] = "";
+   char                commandbuf[] = "";
+
 #endif
-   Esnprintf(s, sizeof(s), "remember %x none layer border location " 
-	   "sticky shade group %s", (unsigned int)mainwin->win, commandbuf);
+   Esnprintf(s, sizeof(s), "remember %x none layer border location "
+	     "sticky shade group %s", (unsigned int)mainwin->win, commandbuf);
    ECommsSend(s);
 #else
    Esnprintf(s, sizeof(s), "remember %x none", (unsigned int)mainwin->win);
@@ -1324,13 +1329,13 @@ Epplet_handle_event(XEvent * ev)
 			 (XPointer *) & g) == XCNOENT)
 	   g = NULL;
 	if (g)
-	  Epplet_event(g, ev);
+	   Epplet_event(g, ev);
 	else
 	  {
 	     if (buttonpress_func)
-	       (*buttonpress_func) (buttonpress_data, ev->xbutton.window,
-				    ev->xbutton.x, ev->xbutton.y,
-				    ev->xbutton.button);
+		(*buttonpress_func) (buttonpress_data, ev->xbutton.window,
+				     ev->xbutton.x, ev->xbutton.y,
+				     ev->xbutton.button);
 	  }
 	break;
      case ButtonRelease:
@@ -3907,7 +3912,7 @@ Epplet_event(Epplet_gadget gadget, XEvent * ev)
 		GadButton          *g;
 
 		if (ev->xbutton.button > 3)
-		      break;
+		   break;
 		g = (GadButton *) gadget;
 		g->clicked = 1;
 		Epplet_draw_button(gadget);
@@ -3918,16 +3923,16 @@ Epplet_event(Epplet_gadget gadget, XEvent * ev)
 		GadHSlider         *g;
 
 		g = (GadHSlider *) gadget;
-		if(ev->xbutton.button<4)
-		      g->clicked = 1;
+		if (ev->xbutton.button < 4)
+		   g->clicked = 1;
 		if (ev->xbutton.window == g->win)
 		  {
-		      if (ev->xbutton.button == 4) 
-			  (*(g->val)) += g->jump;
-		      else if (ev->xbutton.button == 5)
-			  (*(g->val)) -= g->jump;
-		      else if (ev->xbutton.x > (((*(g->val)) * g->w) /
-			  (g->max - g->min + 1)))
+		     if (ev->xbutton.button == 4)
+			(*(g->val)) += g->jump;
+		     else if (ev->xbutton.button == 5)
+			(*(g->val)) -= g->jump;
+		     else if (ev->xbutton.x > (((*(g->val)) * g->w) /
+					       (g->max - g->min + 1)))
 			(*(g->val)) += g->jump;
 		     else
 			(*(g->val)) -= g->jump;
@@ -3946,16 +3951,16 @@ Epplet_event(Epplet_gadget gadget, XEvent * ev)
 		GadVSlider         *g;
 
 		g = (GadVSlider *) gadget;
-		if(ev->xbutton.button<4)
-		      g->clicked = 1;
+		if (ev->xbutton.button < 4)
+		   g->clicked = 1;
 		if (ev->xbutton.window == g->win)
-		{
-		     if (ev->xbutton.button == 4)  
-                          (*(g->val)) -= g->jump;
-                      else if (ev->xbutton.button == 5)
-                          (*(g->val)) += g->jump;
-                      else  if (ev->xbutton.y > (((*(g->val)) * g->h) /
-					  (g->max - g->min + 1)))
+		  {
+		     if (ev->xbutton.button == 4)
+			(*(g->val)) -= g->jump;
+		     else if (ev->xbutton.button == 5)
+			(*(g->val)) += g->jump;
+		     else if (ev->xbutton.y > (((*(g->val)) * g->h) /
+					       (g->max - g->min + 1)))
 			(*(g->val)) += g->jump;
 		     else
 			(*(g->val)) -= g->jump;
@@ -3974,7 +3979,7 @@ Epplet_event(Epplet_gadget gadget, XEvent * ev)
 		GadToggleButton    *g;
 
 		if (ev->xbutton.button > 3)
-		      break;
+		   break;
 		g = (GadToggleButton *) gadget;
 		g->clicked = 1;
 		Epplet_draw_togglebutton(gadget);
@@ -3985,7 +3990,7 @@ Epplet_event(Epplet_gadget gadget, XEvent * ev)
 		GadPopupButton     *g;
 
 		if (ev->xbutton.button > 3)
-		      break;
+		   break;
 		g = (GadPopupButton *) gadget;
 		g->clicked = 1;
 		Epplet_draw_popupbutton(gadget);
@@ -3995,71 +4000,71 @@ Epplet_event(Epplet_gadget gadget, XEvent * ev)
 	     break;
 	  case E_TEXTBOX:
 	     {
-	        GadTextBox         *g;
-		int                 tmp_x, tmp_y, width, length, index,
-		                    last_index, text_w, text_h, text_wl, text_wr;
+		GadTextBox         *g;
+		int                 tmp_x, tmp_y, width, length, index, last_index,
+		                    text_w, text_h, text_wl, text_wr;
 		Window              dummy;
-		char                buf, left=1, right=1;
+		char                buf, left = 1, right = 1;
 		float               delta;
 
 		g = (GadTextBox *) gadget;
 
 		if (g->contents == NULL)
-		  break;
+		   break;
 
-		XTranslateCoordinates(disp, g->win, root, 0, 0, &tmp_x, &tmp_y, &dummy); 
+		XTranslateCoordinates(disp, g->win, root, 0, 0, &tmp_x, &tmp_y, &dummy);
 		width = rx - tmp_x;
 		length = strlen(g->contents);
-		index = last_index = length/2;
-		delta = last_index/2;
+		index = last_index = length / 2;
+		delta = last_index / 2;
 
 		while (delta >= 1.0)
 		  {
-		    index = last_index;
-		    buf = g->contents[index];
-		    g->contents[index] = 0;
-		    Epplet_textbox_textsize(g, &text_w, &text_h, g->contents);
-		    g->contents[index] = buf; 
-		    if (text_w <= width)
-		      last_index += rint(delta);
-		    else
-		      last_index -= rint(delta);
-		    delta /= 2.0;
+		     index = last_index;
+		     buf = g->contents[index];
+		     g->contents[index] = 0;
+		     Epplet_textbox_textsize(g, &text_w, &text_h, g->contents);
+		     g->contents[index] = buf;
+		     if (text_w <= width)
+			last_index += rint(delta);
+		     else
+			last_index -= rint(delta);
+		     delta /= 2.0;
 		  }
-		
+
 		while (1)
 		  {
-		    if (left)
-		      {
-			buf = g->contents[index-1];
-			g->contents[index-1] = 0;
-			Epplet_textbox_textsize(g, &text_wl, &text_h, g->contents);
-			g->contents[index-1] = buf; 
-		      }
-		    if (right)
-		      {
-			buf = g->contents[index+1];
-			g->contents[index+1] = 0;
-			Epplet_textbox_textsize(g, &text_wr, &text_h, g->contents);
-			g->contents[index+1] = buf; 
-		      }
+		     if (left)
+		       {
+			  buf = g->contents[index - 1];
+			  g->contents[index - 1] = 0;
+			  Epplet_textbox_textsize(g, &text_wl, &text_h, g->contents);
+			  g->contents[index - 1] = buf;
+		       }
+		     if (right)
+		       {
+			  buf = g->contents[index + 1];
+			  g->contents[index + 1] = 0;
+			  Epplet_textbox_textsize(g, &text_wr, &text_h, g->contents);
+			  g->contents[index + 1] = buf;
+		       }
 
-		    if (abs(text_wl - width) < abs(text_w - width))
-		      {
-			right = 0;
-			text_wr = text_w;
-			text_w = text_wl;
-			index--;
-		      }
-		    else if (abs(text_wr - width) < abs(text_w - width))
-		      {
-			left = 0;
-			text_wl = text_w;
-			text_w = text_wr;
-			index++;
-		      }
-		    else
-		      break;
+		     if (abs(text_wl - width) < abs(text_w - width))
+		       {
+			  right = 0;
+			  text_wr = text_w;
+			  text_w = text_wl;
+			  index--;
+		       }
+		     else if (abs(text_wr - width) < abs(text_w - width))
+		       {
+			  left = 0;
+			  text_wl = text_w;
+			  text_w = text_wr;
+			  index++;
+		       }
+		     else
+			break;
 		  }
 		g->cursor_pos = index;
 		Epplet_draw_textbox(g);
@@ -4079,7 +4084,7 @@ Epplet_event(Epplet_gadget gadget, XEvent * ev)
 		GadButton          *g;
 
 		if (ev->xbutton.button > 3)
-		      break;
+		   break;
 		g = (GadButton *) gadget;
 		g->clicked = 0;
 		Epplet_draw_button(gadget);
@@ -4110,8 +4115,8 @@ Epplet_event(Epplet_gadget gadget, XEvent * ev)
 		GadHSlider         *g;
 
 		g = (GadHSlider *) gadget;
-		if(ev->xbutton.button<4)
-		    g->clicked = 0;
+		if (ev->xbutton.button < 4)
+		   g->clicked = 0;
 		Epplet_draw_hslider(gadget);
 	     }
 	     break;
@@ -4120,8 +4125,8 @@ Epplet_event(Epplet_gadget gadget, XEvent * ev)
 		GadVSlider         *g;
 
 		g = (GadVSlider *) gadget;
-		if(ev->xbutton.button<4)
-		      g->clicked = 0;
+		if (ev->xbutton.button < 4)
+		   g->clicked = 0;
 		Epplet_draw_vslider(gadget);
 	     }
 	     break;
@@ -4130,7 +4135,7 @@ Epplet_event(Epplet_gadget gadget, XEvent * ev)
 		GadToggleButton    *g;
 
 		if (ev->xbutton.button > 3)
-		      break;
+		   break;
 		g = (GadToggleButton *) gadget;
 		g->clicked = 0;
 		if (g->hilited)
@@ -4150,7 +4155,7 @@ Epplet_event(Epplet_gadget gadget, XEvent * ev)
 		GadPopupButton     *g;
 
 		if (ev->xbutton.button > 3)
-		      break;
+		   break;
 		g = (GadPopupButton *) gadget;
 		g->clicked = 0;
 		if (g->popped)
@@ -5088,53 +5093,56 @@ Epplet_free_rgb_buf(RGB_buf buf)
 #ifdef HAVE_LIBGL
 GLXContext
 Epplet_bind_double_GL(Epplet_gadget da, int red, int green, int blue,
-	int aux_buffers, int alpha, int depth, int stencil, int accum_red,
-	int accum_green, int accum_blue, int accum_alpha)
+	    int aux_buffers, int alpha, int depth, int stencil, int accum_red,
+		      int accum_green, int accum_blue, int accum_alpha)
 {
-	XVisualInfo *vi;
-	GLXContext cx;
-	Window  win;
-	/* This sets up our MINIMUM request list for glx values. If all
-		 the following minimums are not available, then a NULL is
-		 returned for cx. You also might get a LARGER value then you
-		 specify. */
+   XVisualInfo        *vi;
+   GLXContext          cx;
+   Window              win;
 
-	int attributeListDbl[]={GLX_RGBA, GLX_DOUBLEBUFFER,
-		GLX_RED_SIZE, red, GLX_GREEN_SIZE, green, GLX_BLUE_SIZE, blue,
-		GLX_ALPHA_SIZE, alpha, GLX_AUX_BUFFERS, aux_buffers,
-		GLX_DEPTH_SIZE, depth, GLX_STENCIL_SIZE, stencil,
-		GLX_ACCUM_RED_SIZE, accum_red, GLX_ACCUM_GREEN_SIZE, accum_green,
-		GLX_ACCUM_BLUE_SIZE, accum_blue, GLX_ACCUM_ALPHA_SIZE, accum_alpha,
-		None};
+   /* This sets up our MINIMUM request list for glx values. If all
+    * the following minimums are not available, then a NULL is
+    * returned for cx. You also might get a LARGER value then you
+    * specify. */
 
-	win = Epplet_get_drawingarea_window(da);
-	vi = glXChooseVisual(disp, DefaultScreen(disp), attributeListDbl);
-	cx = glXCreateContext(disp, vi, 0, GL_TRUE);
-	glXMakeCurrent(disp, win, cx);
+   int                 attributeListDbl[] =
+   {GLX_RGBA, GLX_DOUBLEBUFFER,
+    GLX_RED_SIZE, red, GLX_GREEN_SIZE, green, GLX_BLUE_SIZE, blue,
+    GLX_ALPHA_SIZE, alpha, GLX_AUX_BUFFERS, aux_buffers,
+    GLX_DEPTH_SIZE, depth, GLX_STENCIL_SIZE, stencil,
+    GLX_ACCUM_RED_SIZE, accum_red, GLX_ACCUM_GREEN_SIZE, accum_green,
+    GLX_ACCUM_BLUE_SIZE, accum_blue, GLX_ACCUM_ALPHA_SIZE, accum_alpha,
+    None};
 
-  return cx;
+   win = Epplet_get_drawingarea_window(da);
+   vi = glXChooseVisual(disp, DefaultScreen(disp), attributeListDbl);
+   cx = glXCreateContext(disp, vi, 0, GL_TRUE);
+   glXMakeCurrent(disp, win, cx);
+
+   return cx;
 }
 
 GLXContext
 Epplet_bind_single_GL(Epplet_gadget da, int red, int green, int blue,
-	int aux_buffers, int alpha, int depth, int stencil, int accum_red,
-	int accum_green, int accum_blue, int accum_alpha)
+	    int aux_buffers, int alpha, int depth, int stencil, int accum_red,
+		      int accum_green, int accum_blue, int accum_alpha)
 {
-  XVisualInfo *vi;
-	GLXContext cx;
-	Window  win;
-	int attributeListSgl[]={GLX_RGBA,
-		GLX_RED_SIZE, red, GLX_GREEN_SIZE, green, GLX_BLUE_SIZE, blue,
-		GLX_ALPHA_SIZE, alpha, GLX_AUX_BUFFERS, aux_buffers,
-		GLX_DEPTH_SIZE, depth, GLX_STENCIL_SIZE, stencil,
-		GLX_ACCUM_RED_SIZE, accum_red, GLX_ACCUM_GREEN_SIZE, accum_green,
-		GLX_ACCUM_BLUE_SIZE, accum_blue, GLX_ACCUM_ALPHA_SIZE, accum_alpha,
-		None};
-	
-	win = Epplet_get_drawingarea_window(da);
-	vi = glXChooseVisual(disp, DefaultScreen(disp), attributeListSgl);
-	cx = glXCreateContext(disp, vi, 0, GL_TRUE);
-	glXMakeCurrent(disp, win, cx);
+   XVisualInfo        *vi;
+   GLXContext          cx;
+   Window              win;
+   int                 attributeListSgl[] =
+   {GLX_RGBA,
+    GLX_RED_SIZE, red, GLX_GREEN_SIZE, green, GLX_BLUE_SIZE, blue,
+    GLX_ALPHA_SIZE, alpha, GLX_AUX_BUFFERS, aux_buffers,
+    GLX_DEPTH_SIZE, depth, GLX_STENCIL_SIZE, stencil,
+    GLX_ACCUM_RED_SIZE, accum_red, GLX_ACCUM_GREEN_SIZE, accum_green,
+    GLX_ACCUM_BLUE_SIZE, accum_blue, GLX_ACCUM_ALPHA_SIZE, accum_alpha,
+    None};
+
+   win = Epplet_get_drawingarea_window(da);
+   vi = glXChooseVisual(disp, DefaultScreen(disp), attributeListSgl);
+   cx = glXCreateContext(disp, vi, 0, GL_TRUE);
+   glXMakeCurrent(disp, win, cx);
 
    return cx;
 }
@@ -5142,7 +5150,7 @@ Epplet_bind_single_GL(Epplet_gadget da, int red, int green, int blue,
 GLXContext
 Epplet_default_bind_GL(Epplet_gadget da)
 {
-	return Epplet_bind_double_GL(da, 1, 1, 1, 0, 0, 8, 0, 0, 0, 0, 0);
+   return Epplet_bind_double_GL(da, 1, 1, 1, 0, 0, 8, 0, 0, 0, 0, 0);
 }
 
 void

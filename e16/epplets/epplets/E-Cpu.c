@@ -349,6 +349,8 @@ toggle_nice(void *data)
    sprintf(s, "%d", include_nice);
    Epplet_modify_config("nice", s);
    Epplet_save_config();
+   return;
+   data = NULL;
 }
 
 static int

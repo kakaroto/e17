@@ -40,9 +40,9 @@
 #include "epplet.h"
 #include <errno.h>
 #ifdef HAVE_STDARG_H
-# include <stdarg.h>
+#include <stdarg.h>
 #elif defined(HAVE_VARARGS_H)
-# include <varargs.h>
+#include <varargs.h>
 #endif
 
 /* 
@@ -90,7 +90,7 @@ Evsnprintf(char *str, size_t count, const char *fmt, va_list args)
 
 #ifdef HAVE_STDARG_H
 int
-Esnprintf(char *str, size_t count, const char *fmt, ...)
+Esnprintf(char *str, size_t count, const char *fmt,...)
 #else
 int
 Esnprintf(va_alist)

@@ -2000,3 +2000,9 @@ Mon Feb 28 19:50:20 GMT 2000
 
 64-bit fixes from Bob Arendt <rdarendt@cwcom.net>
 
+-------------------------------------------------------------------------------
+
+Fri Mar  3 14:43:37 PST 2000
+(KainX)
+
+Added Jerome De Greef's E-Exec patch and fixed several warnings.
