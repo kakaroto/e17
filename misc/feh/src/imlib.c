@@ -76,12 +76,6 @@ init_x_and_imlib(void)
    imlib_add_path_to_font_path(PREFIX "/share/feh/fonts");
    imlib_add_path_to_font_path("./ttfonts");
 
-   opt.menu_fn = imlib_load_font(opt.menu_font);
-   if (!opt.menu_fn)
-      eprintf
-         ("couldn't load menu font %s, did you make install?\nAre you specifying a nonexistant font?\nDid you tell feh where to find it with --fontpath?",
-          opt.menu_font);
-
    D_RETURN_(4);
 }
 

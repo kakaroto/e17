@@ -1,3 +1,13 @@
+Thu Aug 16 00:23:26 2001  Tom Gilbert  <gilbertt@linuxbrit.co.uk>
+
+	* Fook. Broke backgrounding in E for 1.0, enlightenment IPC does
+	NOT support "filename with a space" at all. You can't do
+	it. ARGH. Okay, so back that out.
+	* Add setting bg from commandline, quite useful because it'll use
+	E if it's there or fallback to X, i.e. it should always do the
+	right thing (hopes).
+	* FYI, it's --bg-scale, --bg-center, --bg-seamless, --bg-tile.
+
 Mon Aug 13 22:21:44 2001  Tom Gilbert  <gilbertt@linuxbrit.co.uk>
 
 	* Fixed bug when using -g to reduce image proportionally,

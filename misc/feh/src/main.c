@@ -61,6 +61,11 @@ main(int argc, char **argv)
       init_unloadables_mode();
    else if (opt.thumbs)
       init_thumbnail_mode();
+   else if(opt.bgmode)
+   {
+      feh_wm_set_bg_file(opt.output_file, opt.bgmode);
+      exit(0);
+   }
    else
    {
       /* Slideshow mode is the default. Because it's spiffy */

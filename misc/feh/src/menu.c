@@ -396,26 +396,26 @@ feh_menu_slide_all_menus_relative(int dx, int dy)
    double vector_len = 0;
    int stepx = 0;
    int stepy = 0;
-   
+
    D_ENTER(4);
-   vector_len =  sqrt( dx*dx + dy*dy );
+   vector_len = sqrt(dx * dx + dy * dy);
    if (vector_len)
    {
       if (dx)
-	 stepx = rint(dx / vector_len);
-      
+         stepx = rint(dx / vector_len);
+
       if (dy)
-	 stepy = rint(dy / vector_len);
+         stepy = rint(dy / vector_len);
 
    }
-   for (i=0; i< vector_len; i++) 
+   for (i = 0; i < vector_len; i++)
    {
-      for (m=menus;m;m=m->next)
+      for (m = menus; m; m = m->next)
       {
-	 if (m->menu->visible)
-	    feh_menu_move(m->menu, m->menu->x + stepx, m->menu->y + stepy); 
+         if (m->menu->visible)
+            feh_menu_move(m->menu, m->menu->x + stepx, m->menu->y + stepy);
 
-      }	 
+      }
       XWarpPointer(disp, None, None, 0, 0, 0, 0, stepx, stepy);
    }
    D_RETURN_(4);
@@ -990,8 +990,7 @@ feh_menu_init_main(void)
                       feh_menu_cb_save_filelist, NULL, NULL);
    feh_menu_add_entry(m, "Background", NULL, "BACKGROUND", NULL, NULL, NULL);
    feh_menu_add_entry(m, NULL, NULL, NULL, NULL, NULL, NULL);
-   feh_menu_add_entry(m, "Hide", NULL, NULL,
-                      feh_menu_cb_remove, NULL, NULL);
+   feh_menu_add_entry(m, "Hide", NULL, NULL, feh_menu_cb_remove, NULL, NULL);
    feh_menu_add_entry(m, "Delete", NULL, "CONFIRM", NULL, NULL, NULL);
 
    D_RETURN_(4);
@@ -1005,6 +1004,15 @@ feh_menu_init_common()
    feh_menu *m;
 
    D_ENTER(4);
+
+   if (!opt.menu_fn)
+   {
+      opt.menu_fn = imlib_load_font(opt.menu_font);
+      if (!opt.menu_fn)
+         eprintf
+            ("couldn't load menu font %s, did you make install?\nAre you specifying a nonexistant font?\nDid you tell feh where to find it with --fontpath?",
+             opt.menu_font);
+   }
 
    m = feh_menu_new();
    m->name = estrdup("SORT");
@@ -1173,8 +1181,8 @@ feh_menu_init_single_win(void)
    if (opt.multiwindow || opt.slideshow)
    {
       feh_menu_add_entry(m, NULL, NULL, NULL, NULL, NULL, NULL);
-      feh_menu_add_entry(m, "Hide", NULL, NULL,
-                         feh_menu_cb_remove, NULL, NULL);
+      feh_menu_add_entry(m, "Hide", NULL, NULL, feh_menu_cb_remove, NULL,
+                         NULL);
       feh_menu_add_entry(m, "Delete", NULL, "CONFIRM", NULL, NULL, NULL);
    }
 
@@ -1252,8 +1260,8 @@ feh_menu_init_thumbnail_viewer(void)
                       feh_menu_cb_save_filelist, NULL, NULL);
    feh_menu_add_entry(m, "Background", NULL, "BACKGROUND", NULL, NULL, NULL);
    feh_menu_add_entry(m, NULL, NULL, NULL, NULL, NULL, NULL);
-   feh_menu_add_entry(m, "Hide", NULL, NULL,
-                      feh_menu_cb_remove_thumb, NULL, NULL);
+   feh_menu_add_entry(m, "Hide", NULL, NULL, feh_menu_cb_remove_thumb, NULL,
+                      NULL);
    feh_menu_add_entry(m, "Delete", NULL, "THUMBVIEW_CONFIRM", NULL, NULL,
                       NULL);
    mi =

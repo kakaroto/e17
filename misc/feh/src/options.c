@@ -92,6 +92,9 @@ init_parse_options(int argc, char **argv)
 
    D(4, ("Options parsed\n"));
 
+   if(opt.bgmode)
+      D_RETURN_(4);
+
    if (feh_list_length(filelist) == 0)
       show_mini_usage();
 
@@ -298,7 +301,6 @@ static void
 feh_parse_option_array(int argc, char **argv)
 {
    static char stropts[] =
-
       "a:A:b:BcC:dD:e:f:Fg:GhH:iIj:klL:mM:nNo:O:pqQrR:sS:tT:uUvVwW:xXy:zZ1:2:4:56:78:90:";
    static struct option lopts[] = {
       /* actions */
@@ -368,6 +370,10 @@ feh_parse_option_array(int argc, char **argv)
       {"rcfile", 1, 0, '_'},
       {"debug-level", 1, 0, '+'},
       {"output-dir", 1, 0, 'j'},
+      {"bg-tile", 1, 0, 200},
+      {"bg-center", 1, 0, 201},
+      {"bg-scale", 1, 0, 202},
+      {"bg-seamless", 1, 0, 203},
       {0, 0, 0, 0}
    };
    int optch = 0, cmdx = 0, i = 0;
@@ -375,8 +381,7 @@ feh_parse_option_array(int argc, char **argv)
    D_ENTER(4);
 
    /* Now to pass some optionarinos */
-   while ((optch = getopt_long(argc, argv, stropts, lopts, &cmdx)) !=
-          EOF)
+   while ((optch = getopt_long(argc, argv, stropts, lopts, &cmdx)) != EOF)
    {
       D(5, ("Got option, getopt calls it %d, or %c\n", optch, optch));
       switch (optch)
@@ -437,7 +442,7 @@ feh_parse_option_array(int argc, char **argv)
            break;
         case 'g':
            XParseGeometry(optarg, &i, &i, &opt.geom_w, &opt.geom_h);
-           if((opt.geom_w > 1) && (opt.geom_h > 1))
+           if ((opt.geom_w > 1) && (opt.geom_h > 1))
               opt.geom = 1;
            break;
         case 'N':
@@ -616,6 +621,22 @@ feh_parse_option_array(int argc, char **argv)
            break;
         case 'j':
            opt.output_dir = estrdup(optarg);
+           break;
+        case 200:
+           opt.bgmode = BG_MODE_TILE;
+           opt.output_file = estrdup(optarg);
+           break;
+        case 201:
+           opt.bgmode = BG_MODE_CENTER;
+           opt.output_file = estrdup(optarg);
+           break;
+        case 202:
+           opt.bgmode = BG_MODE_SCALE;
+           opt.output_file = estrdup(optarg);
+           break;
+        case 203:
+           opt.bgmode = BG_MODE_SEAMLESS;
+           opt.output_file = estrdup(optarg);
            break;
         default:
            break;
@@ -836,6 +857,12 @@ show_usage(void)
            "                            a new viewing window\n"
            "  -I, --fullindex           Same as index mode, but below each thumbnail you\n"
            "                            get image name, size and dimensions\n"
+           "      --bg-tile FILE\n"
+           "      --bg-center FILE\n"
+           "      --bg-scale FILE\n"
+           "      --bg-seamless FILE    Set your desktop background to FILE\n"
+           "                            can use enlightenment IPC if you are running\n"
+           "                            it, or will fall back to X methods.\n"
            "      --fontpath PATH       Specify an extra directory to look in for fonts,\n"
            "                            can be used multiple times to add multiple paths.\n"
            "  -M, --menu-font FONT      Use FONT for the font in menus.\n"
@@ -918,11 +945,11 @@ show_usage(void)
            " When viewing a slideshow, the following keys may be used:\n"
            " p, P, <BACKSPACE>, <LEFT>  Goto previous slide\n"
            " n, N, <SPACE>, <RIGHT>     Goto next slide\n"
-		   " r, R                       Reload image (good for webcams)\n"
-		   " h, H                       Pause the slideshow (only useful when using\n"
+           " r, R                       Reload image (good for webcams)\n"
+           " h, H                       Pause the slideshow (only useful when using\n"
            " s, S                       Save current image to unique filename\n"
            " f, F                       Save current filelist to unique filename\n"
-		   "                            timed reloading or image changes)\n"
+           "                            timed reloading or image changes)\n"
            " <HOME>                     Goto first slide\n"
            " <END>                      Goto last slide\n"
            " +, =                       Increase reload delay\n"
@@ -998,15 +1025,15 @@ feh_create_default_config(char *rcfile)
            "# Add <img> tags to your html with ease :-)\n"
            "newimg -q -L \"<img src=\\\"%%f\\\" alt=\\\"feh\\\" border=\\\"0\\\" width=\\\"%%w\\\" height=\\\"%%h\\\">\"\n"
            "\n" "# Different menus\n" "chrome --menu-bg " PREFIX
-           "/share/feh/images/menubg_chrome.png\n" "brushed --menu-bg "
-           PREFIX "/share/feh/images/menubg_brushed.png\n" "pastel --menu-bg "
-           PREFIX "/share/feh/images/menubg_pastel.png\n" "aluminium --menu-bg "
+           "/share/feh/images/menubg_chrome.png\n" "brushed --menu-bg " PREFIX
+           "/share/feh/images/menubg_brushed.png\n" "pastel --menu-bg " PREFIX
+           "/share/feh/images/menubg_pastel.png\n" "aluminium --menu-bg "
            PREFIX "/share/feh/images/menubg_aluminium.png\n" "wood --menu-bg "
-           PREFIX "/share/feh/images/menubg_wood.png\n"
-           "aqua --menu-bg " PREFIX "/share/feh/images/menubg_aqua.png\n"
-           "orange --menu-bg " PREFIX "/share/feh/images/menubg_orange.png\n"
-           "light --menu-bg " PREFIX "/share/feh/images/menubg_light.png\n"
-           "britney --menu-bg " PREFIX "/share/feh/images/menubg_britney.png\n");
+           PREFIX "/share/feh/images/menubg_wood.png\n" "aqua --menu-bg "
+           PREFIX "/share/feh/images/menubg_aqua.png\n" "orange --menu-bg "
+           PREFIX "/share/feh/images/menubg_orange.png\n" "light --menu-bg "
+           PREFIX "/share/feh/images/menubg_light.png\n" "britney --menu-bg "
+           PREFIX "/share/feh/images/menubg_britney.png\n");
    fclose(fp);
 
    D_RETURN_(4);

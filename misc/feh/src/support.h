@@ -45,6 +45,8 @@ extern void feh_wm_set_bg(char *fil, Imlib_Image im, int centered, int scaled,
                           int desktop, int set);
 extern int feh_wm_get_num_desks(void);
 extern signed char feh_wm_get_wm_is_e(void);
+void
+feh_wm_set_bg_file(char *file, unsigned char bgmode);
 
 _XFUNCPROTOEND
 #endif
