@@ -22,6 +22,7 @@
  */
 #include <ctype.h>
 #include "E.h"
+#include "ewin-ops.h"
 
 #define SS(s) ((s) ? (s) : NoText)
 static const char   NoText[] = "-NONE-";
@@ -374,113 +375,6 @@ doMoveConstrainedNoGroup(EWin * ewin, const char *params)
 }
 #endif
 
-typedef enum
-{
-   EWIN_OP_INVALID,
-   EWIN_OP_CLOSE,
-   EWIN_OP_KILL,
-   EWIN_OP_ICONIFY,
-   EWIN_OP_OPACITY,
-   EWIN_OP_SHADOW,
-   EWIN_OP_SHADE,
-   EWIN_OP_STICK,
-   EWIN_OP_FIXED_POS,
-   EWIN_OP_NEVER_USE_AREA,
-   EWIN_OP_FOCUS_CLICK,
-   EWIN_OP_FOCUS_NEVER,
-   EWIN_OP_TITLE,
-   EWIN_OP_MAX_WIDTH,
-   EWIN_OP_MAX_HEIGHT,
-   EWIN_OP_MAX_SIZE,
-   EWIN_OP_RAISE,
-   EWIN_OP_LOWER,
-   EWIN_OP_LAYER,
-   EWIN_OP_BORDER,
-   EWIN_OP_DESK,
-   EWIN_OP_AREA,
-   EWIN_OP_MOVE,
-   EWIN_OP_SIZE,
-   EWIN_OP_MOVE_REL,
-   EWIN_OP_SIZE_REL,
-   EWIN_OP_FOCUS,
-   EWIN_OP_FULLSCREEN,
-   EWIN_OP_SKIP_LISTS,
-   EWIN_OP_ZOOM,
-   EWIN_OP_SNAP,
-} winop_e;
-
-typedef struct
-{
-   const char         *name;
-   char                len;
-   char                ok_ipc;
-   char                ok_match;
-   char                op;
-} WinOp;
-
-static const WinOp  winops[] = {
-   {"close", 2, 1, 1, EWIN_OP_CLOSE},
-   {"kill", 0, 1, 1, EWIN_OP_KILL},
-   {"iconify", 2, 1, 1, EWIN_OP_ICONIFY},
-   {"opacity", 2, 1, 1, EWIN_OP_OPACITY},
-   {"shadow", 0, 1, 1, EWIN_OP_SHADOW},	/* Place before "shade" */
-   {"shade", 2, 1, 1, EWIN_OP_SHADE},
-   {"stick", 2, 1, 1, EWIN_OP_STICK},
-   {"fixedpos", 0, 1, 1, EWIN_OP_FIXED_POS},
-   {"never_use_area", 0, 1, 1, EWIN_OP_NEVER_USE_AREA},
-   {"focusclick", 0, 1, 1, EWIN_OP_FOCUS_CLICK},
-   {"neverfocus", 0, 1, 1, EWIN_OP_FOCUS_NEVER},
-   {"title", 2, 1, 1, EWIN_OP_TITLE},
-   {"toggle_width", 0, 1, 1, EWIN_OP_MAX_WIDTH},
-   {"tw", 2, 1, 1, EWIN_OP_MAX_WIDTH},
-   {"toggle_height", 0, 1, 1, EWIN_OP_MAX_HEIGHT},
-   {"th", 0, 1, 1, EWIN_OP_MAX_HEIGHT},
-   {"toggle_size", 0, 1, 1, EWIN_OP_MAX_SIZE},
-   {"ts", 2, 1, 1, EWIN_OP_MAX_SIZE},
-   {"raise", 2, 1, 1, EWIN_OP_RAISE},
-   {"lower", 2, 1, 1, EWIN_OP_LOWER},
-   {"layer", 2, 1, 1, EWIN_OP_LAYER},
-   {"border", 2, 1, 1, EWIN_OP_BORDER},
-   {"desk", 2, 1, 1, EWIN_OP_DESK},
-   {"area", 2, 1, 1, EWIN_OP_AREA},
-   {"move", 2, 1, 1, EWIN_OP_MOVE},
-   {"resize", 0, 1, 1, EWIN_OP_SIZE},
-   {"sz", 2, 1, 1, EWIN_OP_SIZE},
-   {"move_relative", 0, 1, 1, EWIN_OP_MOVE_REL},
-   {"mr", 2, 1, 1, EWIN_OP_MOVE_REL},
-   {"resize_relative", 0, 1, 1, EWIN_OP_SIZE_REL},
-   {"sr", 2, 1, 1, EWIN_OP_SIZE_REL},
-   {"focus", 2, 1, 1, EWIN_OP_FOCUS},
-   {"fullscreen", 2, 1, 1, EWIN_OP_FULLSCREEN},
-   {"skiplists", 4, 1, 1, EWIN_OP_SKIP_LISTS},
-   {"zoom", 2, 1, 1, EWIN_OP_ZOOM},
-   {"snap", 0, 1, 1, EWIN_OP_SNAP},
-   {NULL, 0, 0, 0, EWIN_OP_INVALID}	/* Terminator */
-};
-
-static const WinOp *
-WinopFind(const char *op)
-{
-   const WinOp        *wop;
-
-   wop = winops;
-   for (; wop->name; wop++)
-     {
-	if (wop->len)
-	  {
-	     if (!strncmp(op, wop->name, wop->len))
-		break;
-	  }
-	else
-	  {
-	     if (!strcmp(op, wop->name))
-		break;
-	  }
-     }
-
-   return wop;
-}
-
 static void
 IPC_WinOps(const char *params, Client * c __UNUSED__)
 {
@@ -521,14 +415,19 @@ IPC_WinOps(const char *params, Client * c __UNUSED__)
 	goto done;
      }
 
-   wop = WinopFind(operation);
+   wop = EwinOpFind(operation);
+   if (!wop)
+     {
+	IpcPrintf("Error: unknown operation");
+	goto done;
+     }
 
    switch (wop->op)
      {
      default:
-     case EWIN_OP_INVALID:
+	/* We should not get here */
 	IpcPrintf("Error: unknown operation");
-	break;
+	return;
 
      case EWIN_OP_CLOSE:
 	EwinOpClose(ewin);

@@ -21,6 +21,7 @@ e16_SOURCES = \
 	econfig.h		\
 	ecore-e16.h		\
 	emodule.h		\
+	ewin-ops.h		\
 	timestamp.h		\
 	aclass.c		\
 	actions.c		\

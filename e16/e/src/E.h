@@ -2161,6 +2161,7 @@ int                 WindowMatchConfigLoad(FILE * fs);
 void               *WindowMatchEwin(EWin * ewin);
 Border             *WindowMatchEwinBorder(const EWin * ewin);
 const char         *WindowMatchEwinIcon(const EWin * ewin);
+void                WindowMatchEwinOps(EWin * ewin);
 
 /* x.c */
 Display            *EDisplayOpen(const char *dstr);

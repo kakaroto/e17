@@ -518,9 +518,10 @@ Adopt(EWin * ewin, Window win)
 #if 0				/* Do we want this? */
    MatchEwinToSM(ewin);
 #endif
-   MatchEwinToSnapInfo(ewin);
+   WindowMatchEwinOps(ewin);	/* Window matches */
+   MatchEwinToSnapInfo(ewin);	/* Saved settings */
    if (Mode.wm.startup)
-      EHintsGetInfo(ewin);
+      EHintsGetInfo(ewin);	/* E restart hints */
    ICCCM_MatchSize(ewin);
 
    EwinAdopt(ewin);
@@ -599,7 +600,8 @@ AdoptInternal(Window win, Border * border, int type)
 	ewin->client.no_resize_h = ewin->client.no_resize_v = 1;
 	break;
      }
-   MatchEwinToSnapInfo(ewin);
+   WindowMatchEwinOps(ewin);	/* Window matches */
+   MatchEwinToSnapInfo(ewin);	/* Saved settings */
    ICCCM_MatchSize(ewin);
 
    EwinAdopt(ewin);

@@ -21,8 +21,72 @@
  * CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 #include "E.h"
-#include "ecompmgr.h"
+#include "ecompmgr.h"		/* FIXME - Resize hack - to be removed */
+#include "ewin-ops.h"
 #include <sys/time.h>
+
+static const WinOp  winops[] = {
+   {"close", 2, 1, 0, EWIN_OP_CLOSE},
+   {"kill", 0, 1, 0, EWIN_OP_KILL},
+   {"iconify", 2, 1, 1, EWIN_OP_ICONIFY},
+   {"opacity", 2, 1, 1, EWIN_OP_OPACITY},
+   {"shadow", 0, 1, 1, EWIN_OP_SHADOW},	/* Place before "shade" */
+   {"shade", 2, 1, 1, EWIN_OP_SHADE},
+   {"stick", 2, 1, 1, EWIN_OP_STICK},
+   {"fixedpos", 0, 1, 1, EWIN_OP_FIXED_POS},
+   {"never_use_area", 0, 1, 1, EWIN_OP_NEVER_USE_AREA},
+   {"focusclick", 0, 1, 1, EWIN_OP_FOCUS_CLICK},
+   {"neverfocus", 0, 1, 1, EWIN_OP_FOCUS_NEVER},
+   {"title", 2, 1, 1, EWIN_OP_TITLE},
+   {"toggle_width", 0, 1, 0, EWIN_OP_MAX_WIDTH},
+   {"tw", 2, 1, 0, EWIN_OP_MAX_WIDTH},
+   {"toggle_height", 0, 1, 0, EWIN_OP_MAX_HEIGHT},
+   {"th", 0, 1, 0, EWIN_OP_MAX_HEIGHT},
+   {"toggle_size", 0, 1, 0, EWIN_OP_MAX_SIZE},
+   {"ts", 2, 1, 0, EWIN_OP_MAX_SIZE},
+   {"raise", 2, 1, 0, EWIN_OP_RAISE},
+   {"lower", 2, 1, 0, EWIN_OP_LOWER},
+   {"layer", 2, 1, 1, EWIN_OP_LAYER},
+   {"border", 2, 1, 0, EWIN_OP_BORDER},
+   {"desk", 2, 1, 1, EWIN_OP_DESK},
+   {"area", 2, 1, 1, EWIN_OP_AREA},
+   {"move", 2, 1, 1, EWIN_OP_MOVE},
+   {"resize", 0, 1, 1, EWIN_OP_SIZE},
+   {"sz", 2, 1, 1, EWIN_OP_SIZE},
+   {"move_relative", 0, 1, 0, EWIN_OP_MOVE_REL},
+   {"mr", 2, 1, 0, EWIN_OP_MOVE_REL},
+   {"resize_relative", 0, 1, 0, EWIN_OP_SIZE_REL},
+   {"sr", 2, 1, 0, EWIN_OP_SIZE_REL},
+   {"focus", 2, 1, 0, EWIN_OP_FOCUS},
+   {"fullscreen", 2, 1, 1, EWIN_OP_FULLSCREEN},
+   {"skiplists", 4, 1, 1, EWIN_OP_SKIP_LISTS},
+   {"zoom", 2, 1, 0, EWIN_OP_ZOOM},
+   {"snap", 0, 1, 0, EWIN_OP_SNAP},
+   {NULL, 0, 0, 0, EWIN_OP_INVALID}	/* Terminator */
+};
+
+const WinOp        *
+EwinOpFind(const char *op)
+{
+   const WinOp        *wop;
+
+   wop = winops;
+   for (; wop->name; wop++)
+     {
+	if (wop->len)
+	  {
+	     if (!strncmp(op, wop->name, wop->len))
+		return wop;
+	  }
+	else
+	  {
+	     if (!strcmp(op, wop->name))
+		return wop;
+	  }
+     }
+
+   return NULL;
+}
 
 void
 SlideEwinTo(EWin * ewin, int fx, int fy, int tx, int ty, int speed)

@@ -23,6 +23,9 @@
  */
 #include "E.h"
 #include "conf.h"
+#include "ewin-ops.h"
+
+static int          WindowMatchEwinOpsParse(EWin * ewin, const char *ops);
 
 struct _windowmatch
 {
@@ -298,19 +301,18 @@ WindowMatchConfigLoad(FILE * fs)
 static WindowMatch *
 WindowMatchDecode(const char *line)
 {
-   char                match[32], value[1024], op[32], args[1024];
+   char                match[32], value[1024], op[32];
+   const char         *args;
    WindowMatch        *wm = NULL;
    int                 err, num, w1, w2, h1, h2;
 
-   match[0] = value[0] = op[0] = args[0] = '\0';
-   num = sscanf(line, "%32s %1024s %32s %1024s", match, value, op, args);
-   if (num < 4)
+   match[0] = value[0] = op[0] = '\0';
+   num = sscanf(line, "%32s %1024s %32s %n", match, value, op, &w1);
+   if (num < 3)
       return NULL;
-
-#if 0
-   Eprintf("-- %s\n", s);
-   Eprintf("++ %s %s %s %s\n", match, value, op, args);
-#endif
+   args = line + w1;
+   if (*args == '\0')
+      return NULL;
 
    err = 0;
 
@@ -399,10 +401,17 @@ WindowMatchDecode(const char *line)
 	break;
 
      case MATCH_OP_ICON:
+	/* FIXME - Check if exists */
 	wm->args = Estrdup(args);
 	break;
 
      case MATCH_OP_WINOP:
+	if (WindowMatchEwinOpsParse(NULL, args))
+	  {
+	     Eprintf("WindowMatchDecode: Error (%s): %s\n", args, line);
+	     err = 1;
+	     goto done;
+	  }
 	wm->args = Estrdup(args);
 	break;
      }
@@ -584,22 +593,8 @@ WindowMatchType(const EWin * ewin, int type)
      {
 	wm = lst[i];
 
-	switch (type)
-	  {
-	  default:
-	     continue;
-
-	  case MATCH_OP_BORDER:
-	     if (!wm->border)
-		continue;
-	     break;
-
-	  case MATCH_OP_ICON:
-	  case MATCH_OP_WINOP:
-	     if (!wm->args)
-		continue;
-	     break;
-	  }
+	if (wm->op != type)
+	   continue;
 
 	if (!WindowMatchTest(ewin, lst[i]))
 	   continue;
@@ -642,6 +637,189 @@ WindowMatchEwinIcon(const EWin * ewin)
    if (wm)
       return wm->args;
    return NULL;
+}
+
+static int
+GetBoolean(const char *value)
+{
+   /* We set off if "0" or "off", otherwise on */
+   if (!value)
+      return 1;
+   else if (!strcmp(value, "0") || !strcmp(value, "off"))
+      return 0;
+   return 1;
+}
+
+#define WINOP_GET_BOOL(item, val) item = GetBoolean(val)
+
+static void
+WindowMatchEwinOpsAction(EWin * ewin, int op, const char *args)
+{
+   int                 a, b;
+
+   /* NB! This must only be used when a new client is being adopted */
+
+   switch (op)
+     {
+     default:
+	/* We should not get here */
+	return;
+
+     case EWIN_OP_ICONIFY:
+	WINOP_GET_BOOL(ewin->client.start_iconified, args);
+	break;
+
+     case EWIN_OP_SHADE:
+	WINOP_GET_BOOL(ewin->shaded, args);
+	break;
+
+     case EWIN_OP_STICK:
+	WINOP_GET_BOOL(ewin->o.sticky, args);
+	break;
+
+     case EWIN_OP_FIXED_POS:
+	WINOP_GET_BOOL(ewin->fixedpos, args);
+	break;
+
+     case EWIN_OP_NEVER_USE_AREA:
+	WINOP_GET_BOOL(ewin->never_use_area, args);
+	break;
+
+     case EWIN_OP_FOCUS_CLICK:
+	WINOP_GET_BOOL(ewin->focusclick, args);
+	break;
+
+     case EWIN_OP_FOCUS_NEVER:
+	WINOP_GET_BOOL(ewin->neverfocus, args);
+	break;
+
+     case EWIN_OP_FULLSCREEN:
+	WINOP_GET_BOOL(ewin->st.fullscreen, args);
+	break;
+
+     case EWIN_OP_SKIP_LISTS:
+	WINOP_GET_BOOL(ewin->skipwinlist, args);
+	ewin->skipfocus = ewin->skiptask = ewin->skipwinlist;
+	break;
+
+#if USE_COMPOSITE
+     case EWIN_OP_OPACITY:
+	EoSetOpacity(ewin, OpacityExt(atoi(args)));
+	break;
+
+     case EWIN_OP_SHADOW:
+	WINOP_GET_BOOL(ewin->o.shadow, args);
+	break;
+#endif
+
+     case EWIN_OP_TITLE:
+	_EFREE(ewin->icccm.wm_name);
+	ewin->icccm.wm_name = Estrdup(args);
+	break;
+
+     case EWIN_OP_LAYER:
+	EoSetLayer(ewin, atoi(args));
+	break;
+
+     case EWIN_OP_DESK:
+	EoSetDesk(ewin, atoi(args));
+	break;
+
+     case EWIN_OP_AREA:
+	a = b = 0;
+	if (sscanf(args, "%u %u", &a, &b) < 2)
+	   break;
+	MoveEwinToArea(ewin, a, b);	/* FIXME - We should not move here */
+	break;
+
+     case EWIN_OP_MOVE:
+	a = ewin->client.x;
+	b = ewin->client.y;
+	if (sscanf(args, "%i %i", &a, &b) < 2)
+	   break;
+	ewin->client.x = a;
+	ewin->client.y = b;
+	ewin->client.already_placed = 1;
+	break;
+
+     case EWIN_OP_SIZE:
+	a = ewin->client.w;
+	b = ewin->client.h;
+	if (sscanf(args, "%u %u", &a, &b) < 2)
+	   break;
+	ewin->client.w = a;
+	ewin->client.h = b;
+	break;
+     }
+}
+
+static int
+WindowMatchEwinOpsParse(EWin * ewin, const char *ops)
+{
+   int                 err, len;
+   const WinOp        *wop;
+   char               *ops2, *s, *p, op[32];
+
+   if (!ops)
+      return -1;
+
+   /* Parse ':' separated operations list, e.g. "layer 3:desk 1: shade" */
+   p = ops2 = Estrdup(ops);
+
+   err = 0;
+   for (; p; p = s)
+     {
+	/* Break at ':' */
+	s = strchr(p, ':');
+	if (s)
+	   *s++ = '\0';
+
+	len = 0;
+	sscanf(p, "%31s %n", op, &len);
+	if (len <= 0)
+	   break;
+	p += len;
+
+	wop = EwinOpFind(op);
+	if (!wop || !wop->ok_match)
+	  {
+	     err = -1;
+	     break;
+	  }
+
+	/* If ewin is NULL, we are validating the configuration */
+	if (ewin)
+	   WindowMatchEwinOpsAction(ewin, wop->op, p);
+     }
+
+   Efree(ops2);
+
+   return err;
+}
+
+void
+WindowMatchEwinOps(EWin * ewin)
+{
+   WindowMatch       **lst, *wm;
+   int                 i, num;
+
+   lst = (WindowMatch **) ListItemType(&num, LIST_TYPE_WINDOWMATCH);
+   for (i = 0; i < num; i++)
+     {
+	wm = lst[i];
+
+	if (wm->op != MATCH_OP_WINOP)
+	   continue;
+
+	if (!WindowMatchTest(ewin, lst[i]))
+	   continue;
+
+	/* Match found - do the ops */
+	WindowMatchEwinOpsParse(ewin, wm->args);
+     }
+
+   if (lst)
+      Efree(lst);
 }
 
 /*
