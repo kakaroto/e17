@@ -273,6 +273,7 @@ collections {
 
     group {
         name, "feed.list.item";
+        min: 90 40;
         parts {
             part {
                 name, "base";
@@ -281,7 +282,8 @@ collections {
 
                 description {
                     state, "default" 0.0;
-
+                    min: 90 40;
+                    aspect: 1.0 2.0;
                     rel1 {
                         relative, 0.0 0.0;
                         offset, 1 1;
@@ -518,12 +520,12 @@ collections {
                     state, "default" 0.0;
                     rel1 {
                         relative, 0.0 0.0;
-                        offset, 20 10;
+                        offset, 20 0;
                         to, "base";
                     }
                     rel2 {
-                        relative, 1.0 0.0;
-                        offset, -10 36;
+                        relative, 1.0 1.0;
+                        offset, -10 0;
                         to, "base";
                     }
                     color, 0 0 0 255;
@@ -533,7 +535,7 @@ collections {
                         font, "vera";
                         size, 10;
                         min, 1 1;
-                        align, 0.0 0.8;
+                        align, 0.0 0.7;
                     }
                 }
             }
