@@ -6,10 +6,6 @@
 #include <dirent.h>
 #include <string.h>
 
-#include "ewl_fileselector.h"
-#include "ewl_filedialog.h"
-
-
 /**
  * @param type: type of dialog to display
  * @return Returns a new filedialog in success, NULL on failure.
@@ -22,11 +18,14 @@ Ewl_Widget *ewl_filedialog_new(Ewl_Filedialog_Type type)
 	DENTER_FUNCTION(DLEVEL_STABLE);
 
 	fd = NEW(Ewl_Filedialog, 1);
-	if (!fd)
+	if (!fd) {
 		DRETURN_PTR(NULL, DLEVEL_STABLE);
+	}
 
-	ewl_filedialog_init(fd, type);
-
+	if (!ewl_filedialog_init(fd, type)) {
+		ewl_widget_destroy(EWL_WIDGET(fd));
+		fd = NULL;
+	}
 	DRETURN_PTR(EWL_WIDGET(fd), DLEVEL_STABLE);
 }
 
@@ -36,14 +35,14 @@ Ewl_Widget *ewl_filedialog_new(Ewl_Filedialog_Type type)
  * @return Returns no value.
  * @brief Initialize a new filedialog
  */
-void ewl_filedialog_init(Ewl_Filedialog * fd, Ewl_Filedialog_Type type)
+int ewl_filedialog_init(Ewl_Filedialog * fd, Ewl_Filedialog_Type type)
 {
 	Ewl_Widget *w;
 	Ewl_Widget *button;
 	Ewl_Widget *box;
 
 	DENTER_FUNCTION(DLEVEL_STABLE);
-	DCHECK_PARAM_PTR("fd", fd);
+	DCHECK_PARAM_PTR_RET("fd", fd, FALSE);
 
 	w = EWL_WIDGET(fd);
 
@@ -54,10 +53,11 @@ void ewl_filedialog_init(Ewl_Filedialog * fd, Ewl_Filedialog_Type type)
 
 	/* the file selector */
 	fd->fs = ewl_fileselector_new();
-	if (fd->fs) {
-		ewl_container_child_append(EWL_CONTAINER(fd), fd->fs);
-		ewl_widget_show(fd->fs);
+	if (!fd->fs) {
+		DRETURN_INT(FALSE, DLEVEL_STABLE);
 	}
+	ewl_container_child_append(EWL_CONTAINER(fd), fd->fs);
+	ewl_widget_show(fd->fs);
 
 	box = ewl_hbox_new();
 	ewl_object_alignment_set(EWL_OBJECT(box), EWL_FLAG_ALIGN_RIGHT);
@@ -84,7 +84,7 @@ void ewl_filedialog_init(Ewl_Filedialog * fd, Ewl_Filedialog_Type type)
 	ewl_container_child_append(EWL_CONTAINER(box), button);
 	ewl_widget_show(button);
 
-	DLEAVE_FUNCTION(DLEVEL_STABLE);
+	DRETURN_INT(TRUE, DLEVEL_STABLE);
 }
 
 /**

@@ -52,7 +52,7 @@ struct Ewl_Filedialog
 
 Ewl_Widget *ewl_filedialog_new      (Ewl_Filedialog_Type type);
 
-void        ewl_filedialog_init     (Ewl_Filedialog *fd, 
+int         ewl_filedialog_init     (Ewl_Filedialog *fd, 
 					    Ewl_Filedialog_Type type);
 char       *ewl_filedialog_path_get (Ewl_Filedialog *fd);
 char       *ewl_filedialog_file_get (Ewl_Filedialog *fd);
