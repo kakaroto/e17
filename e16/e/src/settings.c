@@ -1207,6 +1207,7 @@ SettingsAutoRaise(void)
 
 static char         tmp_tooltips;
 static int          tmp_tooltiptime;
+static char         tmp_roottip;
 
 static void         CB_ConfigureTooltips(int val, void *data);
 static void
@@ -1216,6 +1217,7 @@ CB_ConfigureTooltips(int val, void *data)
      {
 	mode.tooltips = tmp_tooltips;
 	mode.tiptime = ((double)tmp_tooltiptime) / 100;
+	mode.showroottooltip = tmp_roottip;
      }
    autosave();
    data = NULL;
@@ -1237,6 +1239,7 @@ SettingsTooltips(void)
 
    tmp_tooltips = mode.tooltips;
    tmp_tooltiptime = (int)(mode.tiptime * 100);
+   tmp_roottip = mode.showroottooltip;
 
    d = CreateDialog("CONFIGURE_TOOLTIPS");
    DialogSetTitle(d, "Tooltip Settings");
@@ -1265,15 +1268,23 @@ SettingsTooltips(void)
    DialogItemSetPadding(di, 2, 2, 2, 2);
    DialogItemSetFill(di, 1, 0);
    DialogItemSetColSpan(di, 2);
-   DialogItemCheckButtonSetText(di, "Display tooltips");
+   DialogItemCheckButtonSetText(di, "Display Tooltips");
    DialogItemCheckButtonSetState(di, tmp_tooltips);
    DialogItemCheckButtonSetPtr(di, &tmp_tooltips);
+
+   di = DialogAddItem(table, DITEM_CHECKBUTTON);
+   DialogItemSetPadding(di, 2, 2, 2, 2);
+   DialogItemSetFill(di, 1, 0);
+   DialogItemSetColSpan(di, 2);
+   DialogItemCheckButtonSetText(di, "Display Root Window Tips");
+   DialogItemCheckButtonSetState(di, tmp_roottip);
+   DialogItemCheckButtonSetPtr(di, &tmp_roottip);
 
    di = DialogAddItem(table, DITEM_TEXT);
    DialogItemSetPadding(di, 2, 2, 2, 2);
    DialogItemSetFill(di, 0, 0);
-   DialogItemSetAlign(di, 1024, 512);
-   DialogItemTextSetText(di, "Tooltip delay:\n");
+   DialogItemSetAlign(di, 0, 512);
+   DialogItemTextSetText(di, "Tooltip Delay:\n");
 
    di = DialogAddItem(table, DITEM_SLIDER);
    DialogItemSetPadding(di, 2, 2, 2, 2);

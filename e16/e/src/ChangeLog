@@ -3102,3 +3102,14 @@ Tue Oct  5 23:59:22 EST 1999
 
 Give help on the command line more easily. iirc --help
 is recommended by the GNU coding standards.
+
+-------------------------------------------------------------------------------
+
+Tue Oct  5 22:34:52 PDT 1999
+(Mandrake)
+
+added an option to never display tooltips if you're over the "root window" or
+desktop.  very annoying if you use sloppyfocus extensively.
+
+access it by using the rightmouse menu -> tooltip settings
+uncheck the 2nd item.

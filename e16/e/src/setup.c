@@ -490,6 +490,7 @@ SetupX()
    mode.py = 0;
    mode.x = 0;
    mode.y = 0;
+   mode.showroottooltip = 1;
    mode.focusmode = FOCUS_SLOPPY;
    mode.focuswin = NULL;
    mode.realfocuswin = NULL;

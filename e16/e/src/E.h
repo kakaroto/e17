@@ -1208,6 +1208,7 @@ typedef struct _emode
      char                clickalways;
      char                keybinds_changed;
      char                firsttime;
+     char                showroottooltip;
   }
 EMode;
 

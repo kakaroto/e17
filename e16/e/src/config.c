@@ -690,6 +690,9 @@ Config_Control(FILE * ConfigFile)
 	  case CONTROL_KDESUPPORT:
 	     mode.kde_support = i2;
 	     break;
+	  case CONTROL_SHOWROOTTOOLTIP:
+	     mode.showroottooltip = i2;
+	     break;
 	  case CONTROL_CLICK_ALWAYS:
 	     mode.clickalways = i2;
 	     break;
@@ -3669,6 +3672,7 @@ SaveUserControlConfig(FILE * autosavefile)
 	fprintf(autosavefile, "1365 %i\n", (int)mode.group_config.mirror);
 	fprintf(autosavefile, "1366 %i\n", (int)mode.kde_support);
 	fprintf(autosavefile, "1367 %i\n", (int)mode.clickalways);
+	fprintf(autosavefile, "1368 %i\n", (int)mode.showroottooltip);
 	fprintf(autosavefile, "1000\n");
 	fprintf(autosavefile, "1001 0\n");
 	if (mode.keybinds_changed)
