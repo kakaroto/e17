@@ -1,3 +1,10 @@
+Tue Dec 21 18:01:15 1999  Tom Gilbert  <gilbertt@tomgilbert.freeserve.co.uk>
+
+	* Encorporated modify.c, contributed by Andrew Glover
+	<aglover@axe.net>. These functions wrap imlib2 modification
+	functions, and will be handy when I make some menus :) We'll be
+	able to do scaling, tiling, color modifiers, and more.
+
 Tue Dec 21 03:28:30 1999  Tom Gilbert  <gilbertt@tomgilbert.freeserve.co.uk>
 
 	* And now the thing won't go mad when you hold down a change-slide

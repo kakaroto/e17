@@ -1,6 +1,15 @@
+Principle author.
 Tom Gilbert <gilbertt@tomgilbert.freeserve.co.uk>
 
+Image modification functions (modify.c)
+Andrew Glover <aglover@axe.net>
 
 Thanks to:
+Michael Jennings <mej@eterm.org>
+    - Makefile Fixes, moral support
 Alistair Sutton <metallica@freenet.co.uk>
     - rpm spec file for redhat.
+Laurence J. Lane <ljlane@debian.org>
+    - debian assimilation.
+The Rasterman <raster@rasterman.com>
+    - Imlib2, initial zooming code example. Enlightenment.
