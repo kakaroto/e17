@@ -1,0 +1,180 @@
+dnl# $Id$
+
+AC_INIT(api/epplet.h)
+AM_INIT_AUTOMAKE(Epplets, 0.1)
+
+dnl# Supply default CFLAGS, if not specified by `CFLAGS=flags ./configure'
+if test ! -z "${CFLAGS}" -o ! -z "${CCOPTS}"; then
+  CFLAGS_GIVEN=1
+else
+  CFLAGS_GIVEN=0
+fi
+
+if test -z "${CFLAGS}"; then
+    if test -z "${CCOPTS}"; then
+	CCOPTS="-O"
+    fi
+    CFLAGS="$CCOPTS"
+fi
+
+AC_PROG_CC
+AC_PROG_CPP
+
+dnl# These must be run after AC_PROG_CC but before any other macros that use
+dnl# the C compiler
+AC_AIX
+AC_ISC_POSIX
+AC_MINIX
+
+dnl# At least make the attempt to support CygWin32
+AC_CYGWIN
+AC_ARG_PROGRAM
+
+AM_PROG_LIBTOOL
+
+AC_GCC_TRADITIONAL
+
+dnl # If using gcc, use -O2.  If -g works with it, use that too
+if test "$GCC" = "yes"; then
+    if test "$ac_cv_prog_cc_g" = "yes"; then
+        CCOPTS='-g -O2'
+    else
+        CCOPTS='-O2'
+    fi
+    CFLAGS="$CCOPTS"
+fi
+
+AC_PROG_INSTALL
+
+dnl# Check the sanity of what we've done so far
+AM_SANITY_CHECK
+
+dnl# Most people don't want the developer-only clutter
+AM_MAINTAINER_MODE
+
+dnl# If it's there, what the hell?
+AM_WITH_DMALLOC
+
+dnl# Look for needed programs
+AC_CHECK_PROG(RM, rm, rm, true)
+AC_CHECK_PROG(CP, cp, cp, false)
+AC_CHECK_PROG(CHMOD, chmod, chmod, true)
+AC_CHECK_PROG(TAR, tar, tar, tar)
+AC_CHECK_PROG(MKDIR, mkdir, mkdir, false)
+AC_CHECK_PROG(AR, ar, ar, false)
+AC_CHECK_PROG(MV, mv, mv, true)
+AC_LN_S
+
+AC_C_CONST
+AC_C_INLINE
+AC_PATH_XTRA
+
+if test "$ac_cv_lib_socket_connect" = "yes" ; then
+  SUBLIBS="-lsocket"
+fi
+if test "$ac_cv_lib_nsl_gethostbyname" = "yes" ; then
+  SUBLIBS="$SUBLIBS -lnsl"
+fi
+
+dnl# Checks for header files.
+AC_HEADER_SYS_WAIT
+AC_CHECK_HEADERS(unistd.h time.h math.h pwd.h sys/types.h)
+AC_HEADER_TIME
+
+dnl# Missing typedefs and replacements
+AC_TYPE_MODE_T
+AC_TYPE_PID_T
+AC_TYPE_UID_T
+
+dnl# Checks for library functions.
+AC_TYPE_SIGNAL
+dnl#AC_CHECK_FUNCS()
+
+dnl#
+dnl# X LIBRARIES
+dnl#
+AC_CHECK_LIB(X11, XOpenDisplay, X_LIBS="$X_LIBS -lX11", [
+echo "ERROR:  You need libX11 to build Epplets.  Verify that you have libX11.a or";
+echo "        libX11.so installed and that it is located in the X libraries";
+echo "        directory shown above.  If it is in a different directory, try using";
+echo "        the --x-libraries parameter to configure.";
+             AC_MSG_ERROR([Fatal:  libX11 not found.])], $X_LIBS $SUBLIBS)
+AC_CHECK_LIB(Xext, XextAddDisplay, X_LIBS="-lXext $X_LIBS", [
+echo "ERROR:  You need libXext to build Epplets.  Verify that you have libXext.a or";
+echo "        libXext.so installed and that it is located in the X libraries";
+echo "        directory shown above.  If it is in a different directory, try using";
+echo "        the --x-libraries parameter to configure.";
+             AC_MSG_ERROR([Fatal:  libXext not found.])], $X_LIBS $SUBLIBS)
+
+AC_CHECK_PROG(IMLIB_CONFIG, imlib-config, imlib-config, no)
+
+if test "$IMLIB_CONFIG" != "no"; then
+
+  if test "$prefix" = "NONE"; then
+    AC_MSG_CHECKING(imlib-config for prefix)
+    prefix="`$IMLIB_CONFIG --prefix`"
+    AC_MSG_RESULT($prefix)
+  fi
+
+  AC_MSG_CHECKING(imlib-config for the value of CFLAGS)
+  CFLAGS="$CFLAGS `$IMLIB_CONFIG --cflags`"
+  AC_MSG_RESULT($CFLAGS)
+
+  AC_MSG_CHECKING(imlib-config for the value of GRLIBS)
+  GRLIBS="$GRLIBS `$IMLIB_CONFIG --libs`"
+  AC_MSG_RESULT($GRLIBS)
+
+  SAVE_LIBS="$LIBS"
+  LIBS="$GRLIBS"
+
+  AC_MSG_CHECKING(the sanity of new compile/link flags)
+  AC_TRY_LINK(, , echo "yes", echo "no" ; IMLIB_CONFIG="no" ; 
+              AC_WARN(Compile/link failed.  Reverting to manual method.)
+  )
+
+  LIBS="$SAVE_LIBS"
+
+fi
+
+if test "$IMLIB_CONFIG" = "no"; then
+
+  AC_CHECK_LIB(png, png_get_valid, GRLIBS="$GRLIBS -lpng -lz -lm", ,
+               $SUBLIBS $X_LIBS -lz -lm)
+  AC_CHECK_LIB(jpeg, jpeg_read_scanlines, GRLIBS="$GRLIBS -ljpeg", ,
+               $SUBLIBS $X_LIBS)
+  AC_CHECK_LIB(tiff, TIFFOpen, GRLIBS="$GRLIBS -ltiff", ,
+               $SUBLIBS $X_LIBS -lm)
+  AC_CHECK_LIB(gif, DGifOpenFileName, GRLIBS="$GRLIBS -lgif", ,
+               $SUBLIBS $X_LIBS)
+  AC_CHECK_LIB(ungif, DGifOpenFileName, GRLIBS="$GRLIBS -lungif", ,
+               $SUBLIBS $X_LIBS)
+  AC_CHECK_LIB(Imlib, Imlib_init, , [
+               echo "WARNING:  Imlib was not found or did not correctly link.";
+               echo "          Please check config.log to see what the error was.";
+               echo "          I will attempt to continue, but things may go wrong.";
+               AC_MSG_WARN([WARNING:  libImlib not found.  Attempting to continue anyway.])],
+               $GRLIBS $SUBLIBS $X_LIBS)
+
+fi
+
+AC_PREFIX(enlightenment)
+
+CFLAGS=${CFLAGS--O}
+LDFLAGS=${LDFLAGS--O}
+LIBS="$LIBS $GRLIBS"
+
+CPPFLAGS="$CPPFLAGS"
+AC_SUBST(CC)
+AC_SUBST(CFLAGS)
+AC_SUBST(CPPFLAGS)
+AC_SUBST(LDFLAGS)
+AC_SUBST(LIBS)
+AC_SUBST(THREADLIBS)
+
+basedir=.
+
+AM_CONFIG_HEADER(config.h)
+
+AC_OUTPUT(Makefile api/Makefile epplets/Makefile)
+
+echo "Now type 'make' to build $PACKAGE $VERSION."
