@@ -4,7 +4,6 @@
 #include<Edje.h>
 #include<Evas.h>
 #include<Ecore.h>
-#include<Ecore_X.h>
 #include<Ecore_Evas.h>
 #include<stdio.h>
 #include<limits.h>

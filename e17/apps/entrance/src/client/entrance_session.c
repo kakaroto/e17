@@ -275,8 +275,8 @@ entrance_session_start_user_session(Entrance_Session * e)
       syslog(LOG_CRIT, "Unable to set user id.");
 
    entrance_auth_free(e->auth); /* clear users's password out of memory */
-//   execl("/bin/sh", "/bin/sh", "-c", buf, NULL);
-   system(buf);
+   execl("/bin/sh", "/bin/sh", "-c", buf, NULL);
+/*   system(buf); */
    ecore_x_shutdown();
    ecore_shutdown();
    exit(0);
