@@ -241,6 +241,6 @@ mod_b(GtkWidget *widget, gint r, gint c, GdkEventButton *event, gpointer data)
 {
 	/* switch the pages */
 	if(r){
-    gtk_notebook_set_page(GTK_NOTEBOOK(ModMdi), (r - 1));
+    gtk_notebook_set_page(GTK_NOTEBOOK(ModMdi), r);
   }
 }
