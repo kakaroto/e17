@@ -1,9 +1,10 @@
-	part { name, "background"; type, RECT; 
+#define BG "background"
+
+	part { name, BG; type, RECT;
 	description { state, "default" 0.0; color, 249 249 251 255; }
 	// Enable line bellow if you want to hilite your playlist entry	
 	//description { state, "selected" 0.0; color, 225 222 229 255; }
 	description { state, "selected" 0.0; color, 249 249 251 255; } }
-	#define BG "background"
 //
 	part { name, "title"; type, TEXT; mouse_events, 1;
 	description { state, "default" 0.0; color, 31 31 55 128; max, 103 7;
