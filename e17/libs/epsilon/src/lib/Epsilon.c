@@ -30,10 +30,18 @@ epsilon_new(const char *file)
     Epsilon *result = NULL;
     if(file)
     {
-	result = malloc(sizeof(Epsilon));
-	memset(result, 0, sizeof(Epsilon));
-	result->src = strdup(file);
-	result->hash = epsilon_hash(result->src);
+	if(file[0] == '/')
+	{
+	    result = malloc(sizeof(Epsilon));
+	    memset(result, 0, sizeof(Epsilon));
+	    result->src = strdup(file);
+	    result->hash = epsilon_hash(result->src);
+	}
+	else
+	{
+	    fprintf(stderr, "Invalid filename given: %s\n", file);
+	    fprintf(stderr, "Epsilon expects the full path to file\n");
+	}
     }
     return(result);
 }
