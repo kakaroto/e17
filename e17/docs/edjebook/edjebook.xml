@@ -1,0 +1,43 @@
+<?xml version='1.0' encoding="UTF-8"?>
+<!DOCTYPE book PUBLIC "-//OASIS//DTD DocBook XML V4.3CR1//EN"
+        "file:///usr/share/sgml/docbook/xml-dtd-4.3CR1/docbookx.dtd" [
+<!ENTITY bookinfo SYSTEM "xml/bookinfo.xml">
+<!ENTITY overview SYSTEM "xml/overview.xml">
+<!ENTITY edc_tour  SYSTEM "xml/edc_tour.xml">
+<!ENTITY parts SYSTEM "xml/parts.xml">
+<!ENTITY positioning SYSTEM "xml/positioning.xml">
+<!ENTITY programs SYSTEM "xml/programs.xml">
+<!ENTITY edje_api SYSTEM "xml/edje_api.xml">
+<!ENTITY guidelines SYSTEM "xml/guidelines.xml">
+<!ENTITY preview SYSTEM "xml/preview.xml">
+<!ENTITY edc_ref SYSTEM "xml/edc_ref.xml">
+]>
+
+
+
+<book>
+
+&bookinfo;
+
+<!-- Chapters Go Here -->
+
+&overview;
+&edc_tour;
+
+&parts;
+&positioning;
+&programs;
+
+&edje_api;
+
+&guidelines;
+&preview;
+
+<!-- Appendix -->
+
+<appendix>
+&edc_ref;
+</appendix>
+
+
+</book>

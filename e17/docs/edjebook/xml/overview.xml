@@ -1,0 +1,73 @@
+<chapter>
+<title>Edje Overview</title>
+
+<section>
+<title>Introduction</title>
+
+<para>
+Edje is a componant of the Enlightenment Foundation Libraries which abstracts
+interface design and functionality from the application code itself.   An application using
+Edje is comprised of two componants, the code in the EVAS application which interacts with
+the interface, and a created EET which contains all the elements of the interface itself.
+These EET's are generated from an Edje EDC file in which diffrent parts of the interface
+are described and laid out, and how those parts interact with your application.  This
+allows for the interface to be completely changed simply by creating a new EDC and
+generating from it the EET that your application can use.  In more popular terms, Edje
+makes every application that uses it "skinable".  Raster describes Edje as "an attempt
+to find a middleground between themeing and programming without turning the theme
+itself into just yet another program".
+</para>
+
+</section>
+
+<section>
+<title>Edje Data Collections (EDC)</title>
+
+<para>
+The Edje EDC contains every detail about your interface.  An EDC is
+a simple text file that uses C like syntax.  The file is broken into
+three distinct section: images, data, and collections.  The image section contains
+a list of all the images your interface will use.  When you compile/generate your
+EDC into an EET all the images specified will be loaded into the EET itself allowing you
+to distribute your interface (or skin if you prefer) as a single file.  When
+specifying your images you can even specify the ammount  you want the images to
+be compressed when adding them into the EET to keep your EETs small and portable.
+The collections section actually describes the interface, how it's laid out and how it
+will interact with your application code. Optionally, a third section, data, can contain
+arbitrary data in key-value pairs to provide data to your application.
+</para>
+
+<para>
+The collections in an EDC are comprised of one or more groups.  Each group
+contains parts and programs.  A part is a single element of your interface, such
+as a text element, or a rectangle, or an image.  Each part is thuroughly described
+for one or more states.  For instance, an image part might actually have two images
+in it, each in a diffrent state, one for a normal state and one for a clicked (mouse down)
+state.  A part may have as many states defined as you like.
+</para>
+
+<para>
+These parts are then referenced in the programs.  Programs are descriptions about
+how the interface should respond to both the user and the application code itself.  A
+program can accept interface event (such as mouse button 1 down), and then change the state of
+a part described earlier (change to state clicked) to create an effect.  Programs
+can also emit signals to your application.  In your application code you would define
+a callback for that event.  Each program is concise and distinct.  For example, to
+create an animated button, you would create 3 programs, one to change the image state
+from normal to clicked on a mouse down event, one to emit a signal to your application on
+the mouse down event, and yet another to change state back to normal on a mouse up event.
+</para>
+
+<para>
+Because of the abstraction Edje provides, your applcation only needs to
+know the name of the EET to use, what signals it will recieve from
+the interface so that callbacks can be defined when that event is recieved, and
+what text parts in the interface can be modified.   This allows maximum flexability in
+interface design, including the ability to offload interface to graphic designers and
+themers freeing the application coders, allowing users of the application to modify the
+interface without hacking or forking your project, and a much quicker prototyping and design
+tool than modifying your C application directly.
+</para>
+
+</section>
+</chapter>

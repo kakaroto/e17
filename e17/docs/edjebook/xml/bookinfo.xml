@@ -1,0 +1,50 @@
+<bookinfo>
+        <title>Building Interfaces with Edje</title>
+        <subtitle>The Edje Developers Guide</subtitle>
+
+        <author>
+                <firstname>Ben</firstname>
+                <surname>Rockwood</surname>
+                <affiliation>
+                        <orgname>The Enlightenment Project</orgname>
+                        <address> <email>benr@cuddletech.com</email> </address>
+                </affiliation>
+        </author>
+
+        <revhistory>
+
+                <revision>
+                 <revnumber>v0.1</revnumber>
+                 <date>August 11th 2003</date>
+                 <authorinitials>br</authorinitials>
+                 <revremark>Initial document</revremark>
+                </revision>
+
+                <revision>
+                 <revnumber>v0.2</revnumber>
+                 <date>August 15th 2003</date>
+                 <authorinitials>br</authorinitials>
+                 <revremark>Conversion from article to book, reference complete to date</revremark>
+                </revision>
+
+                <revision>
+                 <revnumber>v0.3</revnumber>
+                 <date>Sep 29th 2003</date>
+                 <authorinitials>br</authorinitials>
+                 <revremark>Added Guidelines section</revremark>
+                </revision>
+
+
+        </revhistory>
+
+        <abstract>
+        <para>
+        A complete guide to designing interfaces using Edje and utilizing them 
+	effectively in your EVAS applications.  Includes complete overview of Edje 
+	Data Collections (EDC) and Edje API, including sample code and reference
+        material.  Utilizing Edje effectively can simplify and streamline application 
+	development and make nearly any application completely skinable by even non-programmers.
+        </para>
+        </abstract>
+
+</bookinfo>

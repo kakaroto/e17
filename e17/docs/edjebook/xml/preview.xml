@@ -1,0 +1,146 @@
+<chapter>
+<title>The Edje Preview Program</title>
+
+<para>
+The <command>edje</command> program serves provides an easy to use tool for previewing, testing and debugging EDCs.
+The tool accepts two arguments, the first is the name of the EET to use, the second is an optional argument specifying
+the Edje group to use specified within the EDC.  If no group name is supplied you will be presented with a list of
+all the groups within the specified EET, you may click on one of the groups to preview it.
+</para>
+
+<para>
+Within the <command>edje</command> source there are several printf() statements, which by default are commented out.
+Uncommenting these statements will cause the tool to print to STDOUT all events, signals and program starts and stops
+which is useful in debugging.  If you choose to use <command>edje</command> for debugging purposes it is highly recommended
+you enable this output.  You can find the source for the <command>edje</command> program in <filename>edje/src/bin/edje_main.c</filename>.
+</para>
+
+<para>
+It should be noted that the <command>edje</command> tool does not automatically resize to fit your interface as defined by
+min and max size for the group.  The default window size is 240x320.  In order to see your interface at the proper default size
+you should resize the preview window (the window inside your window managers window) larger and then resize it down till it stops
+on the minimum size of the interface.  [ NOTE: Hopefully this will be fixed in time. ]
+</para>
+
+<para>
+Because certain elements of Edje need to be specified in code, <command>edje</command> provides you with some code side elements you
+can draw on for design and debugging purposes.  It defines the EVAS font path to two locations: <filename>(data_dir)/data/test/fonts</filename>
+(typical <filename>/usr/local/share/</filename>) and <filename>./fonts/</filename>.  Therefore when using <command>edje</command>
+for debugging you should include all your custom fonts in a <filename>fonts/</filename> directory relative to where you preview it from.
+Several key events are accepted for testing purposes.  edje_object_play_set(edje, 1) is executed when the RETURN key is pressed, and
+edje_object_play_set(edje, 0) is executed when ESC is pressed.  edje_object_animation_set(edje, 1) is executed when key A is pressed,
+and edje_object_animation_set(edje, 0) when key S is pressed.  Using the directional keys UP, LEFT and RIGHT will change the text string
+of a text part named "text" to "String 1" for LEFT, "Buttox" for UP, and "You presed (KEY).." for RIGHT.  Further, four color classes
+are defined, each with the color class name "bg", using the F1, F2, F3 and F4 keys.
+</para>
+
+<table><title>Edje Tool Event Facilities</title>
+<tgroup cols='2' colsep='1' rowsep='1'>
+<colspec align='right'/>
+<colspec align='left'/>
+<thead>
+<row>
+  <entry>Key Press</entry>
+  <entry>Edje Function Called</entry>
+</row>
+</thead>
+
+<tbody>
+<row>
+  <entry>RETURN
+        </entry>
+  <entry>edje_object_play_set(edje, 1);
+        </entry>
+</row>
+
+<row>
+  <entry>ESC
+        </entry>
+  <entry>edje_object_play_set(edje, 0);
+        </entry>
+</row>
+
+<row>
+  <entry>a
+        </entry>
+  <entry>edje_object_animation_set(edje, 1);
+        </entry>
+</row>
+
+<row>
+  <entry>s
+        </entry>
+  <entry>edje_object_animation_set(edje, 0);
+        </entry>
+</row>
+
+<row>
+  <entry>LEFT_ARROW
+        </entry>
+  <entry>edje_object_part_text_set(edje, "text", "String 1");
+        </entry>
+</row>
+
+<row>
+  <entry>UP_ARROW
+        </entry>
+  <entry>edje_object_part_text_set(edje, "text", "Buttox");
+        </entry>
+</row>
+
+<row>
+  <entry>RIGHT_ARROW
+        </entry>
+  <entry>edje_object_part_text_set(edje, "text", "You pressed \"U\". Nice one stenchie!");
+        </entry>
+</row>
+
+<row>
+  <entry>F1
+        </entry>
+  <entry>edje_object_color_class_set(edje, "bg",
+                                           255, 255, 255, 255,
+                                           0, 0, 0, 0,
+                                           0, 0, 0, 0);
+        </entry>
+</row>
+
+<row>
+  <entry>F2
+        </entry>
+  <entry>edje_object_color_class_set(edje, "bg",
+                                           255, 200, 120, 255,
+                                           0, 0, 0, 0,
+                                           0, 0, 0, 0);
+        </entry>
+</row>
+
+<row>
+  <entry>F3
+        </entry>
+  <entry>edje_object_color_class_set(edje, "bg",
+                                           120, 200, 255, 200,
+                                           0, 0, 0, 0,
+                                           0, 0, 0, 0);
+        </entry>
+</row>
+
+<row>
+  <entry>F4
+        </entry>
+  <entry>edje_object_color_class_set(edje, "bg",
+                                           255, 200, 50, 100,
+                                           0, 0, 0, 0,
+                                           0, 0, 0, 0);
+        </entry>
+</row>
+
+</tbody>
+</tgroup>
+</table>
+
+<para>
+Effective use of the <command>edje</command> tool can significantly ease debugging of your Edje interface.
+</para>
+
+</chapter>

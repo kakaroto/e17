@@ -1,0 +1,14 @@
+<chapter>
+<title>Programs: Bring your interface to life</title>
+
+<para>Programs define how your interface reacts to events.  These events can come from Edje, user interaction, or
+an external force like your window manager.  All these events come to Edje as signals. Signals from user interaction
+would include mouse clicks, key presses and mouse movement.  Signals from an external source would include window
+moves, window resizes, window raises and lowers.  And signals from Edje internally would include programs starting or
+stopping, and the loading an EET.  Each signal must come from some place, whether it is a part or another program or
+in the case of a window manager move anywhere.  The place from which a signal come is known as the source.  If
+a user left clicks on an image part named "button", a "mouse,clicked,1" signal is generated from the source part "button".
+</para>
+
+</chapter>
+

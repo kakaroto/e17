@@ -1,0 +1,362 @@
+<chapter>
+<title>A quick tour of Edje EDC</title>
+
+<para>
+Whenever you design a graphical application you need to first determine
+what the application needs to do, and then you consider how it should look.
+When developing with Edje these two tasks are the seperate activities they should
+be.  When determining how to design your interface, it's common to use GIMP
+as a layout tool,  this is particularly helpful for designing your interface with
+Edje as you can see exactly how each element is going to be positioned and relate
+to other parts of your interface, which is espcially helpful when learning Edje.
+Next, it's time to actually build your real interface.  This starts by creating
+a file typically labeled with a .edc extension.  Once you've created your EDC,
+you will generate the EET that will be used by your application using edje_cc,
+the Edje Collection Compiler.  Edje_cc will pack your EDC plus all of the images
+your interface will need into one tight compact EDC, and will even compress
+images if you specified compression in your EDC.  This generated EET will
+be the file that your application code, using the Edje API, will access
+and interact with.  This allows you to share or transfer themes by moving
+just that one file, the EET, and not your entire image structure, or a
+tarball/zip like nearly every other themeing platform on the planet.  EET's
+can be previewed using the <command>edje</command> command as a way to debug and sample
+interfaces.
+</para>
+
+<para>
+Before starting off with Edje on your own, you should look at the example in
+the Edje source tree.  In the <filename class='directory'>edje/data</filename> directory you will find a script named
+<filename>e_logo.sh</filename>.
+Run that script and an EET will be generated.  The script simply runs <command>edje_cc</command> with the appropriate
+options to generate a valid EET.  You can then preview the interface  with the Edje command,
+<userinput>edje e_logo.eet test</userinput>.  You can look at the EDC in the <filename class='directory'>edje/data/src/</filename>
+directory, where you will also find another EDC named <filename>test.edc</filename>.  The <filename>test.edc</filename>
+is a wonderful reference, as its constantly updated to reflect all avalible options for EDCs.
+</para>
+
+
+<section>
+<title>Writting your first EDC</title>
+
+<para>
+Lets look at a small and simple EDC so we can explore its layout and options.
+</para>
+
+
+<example><title>A Simple Edje EDC</title>
+<programlisting>
+// Sample EDC
+images {
+        image,  "background.png" LOSSY 95;
+}
+
+collections {
+   group {
+      name, "test";
+      min, 32 32;
+      max, 1024 768;
+
+      parts {
+         part {
+                name,   "background";
+                type,   IMAGE;
+                mouse_events, 0;
+
+                description {
+                        state, "default" 0.0;
+
+                        rel1 {
+                                relative, 0.0 0.0;
+                                offset, 0 0;
+                        }
+                        rel2 {
+                                relative, 1.0 1.0;
+                                offset, -1 -1;
+                        }
+                        image {
+                                normal, "background.png";
+                        }
+                }
+        }
+
+        part {
+                name,   "button";
+                type,   RECT;
+                mouse_events, 1;
+
+                description {
+                        state, "default" 0.0;
+                        min, 100 50;
+                        max, 100 50;
+                        align, 0.5 0.5;
+
+                        color, 211 168 234 255;
+
+                        rel1 {
+                                relative, 0.0 0.0;
+                                offset, 0 0;
+                        }
+                        rel2 {
+                                relative, 1.0 1.0;
+                                offset, -1 -1;
+                        }
+                }
+                description {
+                        state, "clicked" 0.0;
+                        min, 100 50;
+                        max, 100 50;
+                        align, 0.5 0.5;
+
+                        color, 170 89 214 255;
+
+                        rel1 {
+                                relative, 0.0 0.0;
+                                offset, 0 0;
+                        }
+                        rel2 {
+                                relative, 1.0 1.0;
+                                offset, -1 -1;
+                        }
+                }
+        }
+        part {
+                name,   "text";
+                type,   TEXT;
+                mouse_events, 0;
+
+                description {
+                        state, "default" 0.0;
+
+                        rel1 {
+
+                                relative, 0.0 0.0;
+                                offset, 0 0;
+                                to, "button";
+                        }
+                        rel2 {
+                                relative, 1.0 1.0;
+                                offset, -1 -1;
+                                to, "button";
+                        }
+                        text {
+                                text, "Press Me";
+                                font, "redensek";
+                                size, 14;
+                                align, 0.5 0.5;
+                        }
+                }
+        }
+   } /* Close Parts */
+
+   programs {
+
+        program {
+                name, "button_click";
+                signal, "mouse,down,1";
+                source, "button";
+                action, STATE_SET "clicked" 0.0;
+                target, "button";
+                after,  "do_me";
+        }
+
+        program {
+                name, "button_unclick";
+                signal, "mouse,up,1";
+                source, "button";
+                action, STATE_SET "default" 0.0;
+                target, "button";
+                after,  "stop_doing_me";
+        }
+
+        program {
+                name, "do_me";
+                signal, "*";
+                source, "button_click";
+                action, SIGNAL_EMIT "PANTS ON" "button";
+                in, 1.0 0.0;
+                after, "do_me";
+        }
+
+        program {
+                name, "stop_doing_me";
+                signal, "*";
+                source, "button_unclick";
+                action, ACTION_STOP;
+                target, "do_me";
+        }
+
+   } /* Close Prog */
+ } /* Close Group */
+} /* Close Coll */
+</programlisting>
+</example>
+
+<para>
+The first thing to notice is that the syntax is very C like.  The second is that EDCs have two major
+sections: images and collections.  And lastly, that every directive is in the form: keyword, arg1 arg2 ...;.
+Now lets talk thru this EDC section by section.
+</para>
+
+<para>
+The images section is the first section to examine.  It simply contains a list of images that we with to
+include in our interface.  Each image will have a line describing how to store it, in the form: image, "filename" STORAGE_METHOD;.
+The storage method is a description of how Edje should store the file in the generated EET.  Valid storage methods are COMP, RAW,
+and LOSSY.  RAW stores the image in raw format, note that this doesn't mean unmodified format, a RAW stored PNG will
+be uncompressed and stored as the raw image, thus you tidy 1K PNG may be stode as an 8K raw image.
+The COMP method will use lossless compression on your image.  And the LOSSY method will use a lossy compression on
+your image.  The LOSSY method is followed by an integer between 0 and 100, defining the quality level.
+</para>
+
+<para>
+The next section is collections.  This section contains one or more groups.  Each group contains a complete interface.
+In this way, you could create two groups in your EDC each having a complete interfaces, for either diffrent parts of your
+applications interface or diffrent looks for your one interface, all in one EET for easy distribution.  Each group is given
+a name, in this case "test".  Any time you reference your EET you will specify both the EET file name, and the group to use so
+choose your name descriptively.  The next two lines are the min and max size of our interface in pixels.  The arguments to
+min and max are horizontal size then the verital size.  So our interface case a minimum size of 32x32 and maximum of 1024x768.
+</para>
+
+<para>
+Groups contain parts and programs.  Each part is a particular piece of your interface, such as a text label, or a rectangle,
+or an image.  Each part has an individual name for reference by other parts of your EDC, again choose this name as descriptively
+as you can.  Following the name we can define our part as one of the following types, IMAGE, RECT or TEXT.  Looking at our EDC
+example you can see that our first part is an image named "background".  The keyword "mouse_events" is a boolian value
+defining whether or not this part accepts mouse events (such as clicks, mouse overs, etc), 0 for no and 1 for yes.   More options
+than just these 3 can be used, please refer to the reference for other avalible options.
+</para>
+
+<para>
+A part will contain one or more description sections.  Each description is a diffrent state of our part.  The descriptions
+define how our part should look, what images or text the part uses, where it should be positioned, how it should be tiled, etc.
+In this case our background only needs one state, which we call default, using the state keyword.  The number following
+the state name defines an index value which is currently unused, simply use 0.0.  Next we see two sections define the
+positioning of our part, rel1 and rel2.  Each rel
+section will contain the keywords relative and offset, and optionally to.  If the to keyword is omited then the position
+is relative to the full size of the interface as described by min and max in the group section.  rel1 is the positioning of
+the top left corner of the part and rel2 is the positioning of the bottom right
+corner of the part.  The relative keyword is followed by two doubles ranging from 0.0 to 1.0.  As with min and max, the first
+value is the horizontal and the second is the vertical.  The offset specified the pixel deviation from the relative point.
+In the case of our background, the top left (rel1) of our part (image) is relative to the top left corner of the interface, with no
+offset.  The bottom right (rel2) of our part is relative to the bottom right of the interface, offset by 1 pixel left and 1 pixel
+up.  Therefore, this part fills the entire interface.  More information about positioning can before later in this guide.  The last
+section in this parts description is the image section.  This section describes which images to use.  One or more images
+can be specified, the image that is first seen is denoted by the keyword normal.  More images can be added using the
+keyword "tween" to form animations, but we will discuse that more later.
+</para>
+
+<para>
+While parts may seem confusing and complicated at first, hopefully you now can look at the part we just reviewed and simply
+say that it's an image part named background that doesn't accept mouse events, fills the interface completely using the
+image background.png.
+</para>
+
+<para>
+Our next part is a rectangle named button and it does accept mouse events.  This part has two descriptions, one
+for the default state and one for the clicked state.  The default state will define the normal look and positioning of the
+rectangle we will use as a button, or in otherwords, the unclicked state of our button.  The second state is the clicked
+state.  You'll notice that the default and clicked states look almost identical, the only change is the color and name.
+This means that when we change from state default to state clicked, the only thing that changes is the color of the rectangle.
+States are changed using programs, which we will discuse later.  You'll notice that the descriptions contain min and max keywords,
+these are used to define the size of the part.  If they are omited, like in the background part, the part will fill the maximum
+ammount of avalible space (ie: the whole interface, as limited by rel1 and rel2).  The alignment keyword specifies alignment
+of our part within its avalible space (container).  Values for align are again horizontal alignment followed by verital alignment,
+using doubles.  So in this case the rectangle will be an absolute 100x50 pixels, with a container the size of the whole interface
+(as defined by rel1/rel2), and is positioned in the middle of that container.  No matter how big or small the interface is the
+100x50 pixel rectangle will always stay in exactly the middle of the screen and never resize.  The color keyword is applicable
+only to rectangles and text, and describes the color of the rectangle in the form: color, red green blue alpha.
+</para>
+
+<para>
+The last part is a text part, named text.  It does not accept mouse events.  It has only one state, default.  Notice
+that the rel1 and rel2 sections use the to keyword, this modifies the meaning of the relativity.  This means that the top left
+corner (rel1) of the part is relative to the top left corner (0.0 0.0) of the part named button (to, "button";).  Likewise,
+the bottom right corner (rel2) of the part is relative to the bottom right corner (1.0 1.0) of the part named button, but moving
+the bottom right corner of the part by 1 pixel to the left and upwards from that point.  The text section  describes the text
+itself.  The text keyword describes the text to display ("Press Me"), the font to use ("redensek"), the size of that font (14), and
+the alignment of the text within the container as defined by rel1/rel2.  The font specified to be used must be added to
+your EVAS font path in your application, and the font name is the filename minus it's extention (ie: .ttf).
+</para>
+
+<para>
+A word about layering.  There is not specific keyword for layering in EDCs on a part-by-part basis.  Each
+new part is layered on top of the previous.  Therefore in our sample EDC the text is rendered ontop of the button, which
+sits atop the background.  If we had defined the button before the background it would not have been visable.  While
+this is common sense for the mostpart, it can be a common cause of confusion when modifying a large EDC if you aren't
+careful.  Whenever you modify or add parts to your EDCs check whats above and below it.
+</para>
+
+<para>
+The final section in our EDC is the programs section.   Programs breath life into the static parts that
+make up our interface.  Programs are largely based on the reception of signals.  Signals can be generated by user
+interfaction, Edje itself, or an external force (usually your window manager).  For instance, a user generated signal would be
+mouse in (when the user moves their pointer over a part), or mouse down (user depreses mouse button over a part).
+An Edje generated signal would include a "load" signal (Edje loads the EET), or
+"program,start" (when some other program starts running).  An externally generated signal would effect the entire Edje
+interface, generally from a window manager, such as "move" (your interface window is moved) or "show" (your interface is displayed).
+</para>
+
+<para>
+The first program in our example is to change the state of our button part when it is clicked on.  The program
+name is "button_click".  The program is run when it recieves the signal "mouse,down,1", meaning when the left mouse button is
+depressed over your part that accepts mouse events the program activates.  Signals are globable, meaning if we
+wanted the program to run when any mouse button is depressed on our part we could use the signal "mouse,down,*", in fact
+we could use the signal "*" meaning that ANY signal effecting the part would run the program.  The next keyword is source,
+which defines the part (or program) from which the signal will be recieved, in this case button.  Sources are also  globable.
+ The next keyword is
+action, this what the program actually does.  Actions can change part states, stop the action of other programs, and emit
+signals.  In this case the action STATE_SET still change state to "clicked".  The following double (0.0) is currently
+unused and should simply be set to 0.0.  The target argument that follows is the part or program on which the action acts
+apon.   The final keyword, after, optionally defines another program to be run after the current program completes.
+When a signal is recieved all the programs which accept the incoming signal and match the source will be run, and
+in this way very often the keyword "after" is not required, however it can still be used for some crafty purposes which we'll explore later.
+After's can also be used as a looping mechignism, by specifying the current program to re-run after it completes, however it
+should be noted that any signal specified for the program must be met on every run of that program, even if it loops back
+to itself.
+</para>
+
+<para>
+Looking at the first program again, we can now clearly see that the program "button_click" will be run when the left
+mouse button is depressed on our "button" rectangle.  It will change the state of the target "button" to "clicked" (which will change the color
+as noted earlier), and once it completes will run the "do_me" program.  Thus, looking at the next program "button_unclick" we can
+see that it will change the state of target "button" to the "default" state (back to its origonal color) when the
+left mouse button is released over the source part "button".  Hence we have an animated button!  Typically images would be used instead
+of simple rectangles, which would simply omit the color keyword and add an image section to both states, one image for the default
+state and one for the clicked state.  Lastly we see that the after keyword is used to run the program "stop_doing_me" after "button_unclick"
+completes running.  It should be noted that all program and part names are completely arbitrary, there is no
+restrictions on program or part state descriptions with the exception of the default state, which should always be named as such.
+Programs must always contain at least the keywords name, source, signal and action, even if source and signal are globbed to  match anything ("*").
+</para>
+
+<para>
+The third program as referenced by the "button_click" program.  This program will accept any signal (as denoted by a * for the
+signal).  The source is defined as a program in this case, rather than a part, so the program will run when any signal is accepted
+from the "button_click" program.  The action defined is SIGNAL_EMIT, which will send the specified signal, here "PANTS ON", which
+is typically used by your application code.  The third argument of of action for SIGNAL_EMIT is the source from which the signal came.
+In your application code this signal would be recieved by a callback handler, which would call a specified function based on the recipt of
+a specified signal from a specific source.  We'll learn more about these signals when we discuse the Edje API later.  The keyword
+"in" accepts two arguments, both doubles.   "in" specifies a delay on running your program, the first argument is the number of seconds
+to wait before running the program, and the second argument specifies a the maximum random delay which is added to the first argument.
+This is useful when you want the program to wait for a random amount of time that is at least a half a second but no more than 3 seconds,
+which would be described as "in, 0.5 3.0;".  Delays always occur before the action specified by the program is preformed.
+Our final keyword is after, which will run the program "do_me" after the current program completes, which in this case is a loop.
+Note that there is no target specified in this program, because the action isn't performed on any other program or part.  Because this
+is a loop we can say that this program will be run after the "button_click" program completes, and will emit the signal "PANTS ON"
+from the source "button" every one second.
+</para>
+
+<para>
+The final program is named "stop_doing_me", which is run after the program "button_unclick" completes and accepts any signal.
+The action "ACTION_STOP" is used to break a loop or other running program, as specified by the target, in this case "do_me".
+</para>
+
+<para>
+You should now take the sample EDC above, and use Edje_CC to build an eet.  You can get the background image here: BACKGROUNDIMG.
+Using the edje_cc build your EET like this: "edje_cc -v -id . sample.edc sample.eet", putting the image in the same directory with the EDC.
+You should put the font "redensek.ttf" in a directory named "fonts/" where your EET will be used with edje (the viewer) from.
+You can then preview that EET with Edje, specifying the EET filename and the group name: "edje sample.eet test".  Play with the EDC
+alittle untill you think you are familar with the syntax, layout and basic functionality of Edje EDCs.
+</para>
+
+</section>
+</chapter>
+

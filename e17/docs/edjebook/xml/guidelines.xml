@@ -1,0 +1,174 @@
+<chapter>
+<title>Edje Programmers Guidelines</title>
+
+<para>
+The purpose of Edje is to abstract as completely as possible the design of the interface from the application code.  Always
+keep this in mind when using Edje.  While at times Edje's API seems inadiquate or frustrating in its lack of customization, it
+is this way for a reason: to keep you as a coder from taking power away from the themer.   If at any point the API seems like
+a restriction realize that what you want to do is possible, but should be done in the EDC not in the application code.
+</para>
+
+<para>
+The following recommendations are just that, recommendations.  However observing them will make your application easier to
+work on and contribute to for all involved.
+</para>
+
+<section>
+<title>Edje Spec Files</title>
+
+<para>
+Once you have created you application and a default EDC you will want to make it as easy as possible for other developers and
+themers to create new interfaces for you application.  While developers can read your code and figure out what does what, many
+of the themers can not, therefore a standardized method of describing what the application requires and provides should be utilized.
+This is done by creating a flat text file named README.edje.  Below is an example of the format that should be used in your README.edje:
+</para>
+
+<figure>
+<title>Example of README.edje</title>
+
+<screen>
+------------------------------------------------
+EDJE Specfication
+------------------------------------------------
+
+Application: ePlayer
+Author: Ben Rockwood [ benr@cuddletech.com ]
+Last Update: 9/29/03
+Desciption: An OggVorbis audio player
+
+
+Signals accepted by application:
+-------------------------------
+
+Signal: PLAY_PREVIOUS
+Source: previous_button
+Desc: Signal starts playing the previous track in the playlist
+                and updates track information text parts.
+
+Signal: PLAY_NEXT
+Source: next_button
+Desc: Signal starts playing the next track in the playlist
+                and updates track information text parts.
+
+Signal: PLAY
+Source: play_button
+Desc: Signal to start playing the current track from current position,
+                negates pause signal
+
+Signal: PAUSE
+Source: pause_button
+Desc: Signal to pause the current playing track
+
+Signal: SEEK_FORWARD
+Source: forward_button
+Desc: Signal to seek forward in track by 5 seconds
+
+Signal: SEEK_BACK
+Source: back_button
+Desc: Signal to seek backwards in track by 5 seconds
+
+Signals sent by application:
+----------------------------
+
+Signal: BLINK_ALL
+Source: button
+Desc: Signal signifying an error state
+
+[ See "Signals accepted" above, application also sends these signals ]
+
+
+Text parts set by application:
+------------------------------
+
+Part: title
+Desc: Window title in border (ie: eVorbisPlayer v0.0)
+
+Part: artist_name
+Desc: Artist name from Ogg comments field
+
+Part: album_name
+Desc: Album name from Ogg comments field
+
+Part: song_name
+Desc: Song name from Ogg comments field
+
+Part: time_text
+Desc: Current position in track, displayed as negative
+                        value to end of track (ie: -01:02)
+
+Part: vol_display_text
+Desc: Current PCM volume level, 2 digit int.  Values
+                        range from 00 to 99
+
+Swallowed areas used by application:
+------------------------------------
+
+        None.
+
+Data fields used by application:
+--------------------------------
+
+        None.
+
+------------------------------------------------
+Features and Notes
+------------------------------------------------
+
+- Play list support currently only allows for a command line
+        supplied list.
+- At a bare minimum it is requested that all alternate
+        pants provide Artist and Track name, Play, Next and
+        Previous track.  Everything else is up to you.
+- A K-Jofol look-alike interface would be kool!
+
+------------------------------------------------
+Changelog:
+------------------------------------------------
+9/20/03: App now will set text part "vol_display_text" to a 2 digit int
+                representing PCM mixer volume level.
+9/7/03: App now accepts signal PAUSE
+9/5/03: Added new functions for the signals SEEK_FORWARD and SEEK_BACK
+9/1/03: Initial creation.
+
+</screen>
+</figure>
+
+<para>
+This scheme allows the themer to have an understanding of what functionality is avalible and what
+parts will be accessed by the application code and therefore must exist, even if hidden.  A changelog
+should be present to list the changes in the application that could effect themes past and present.
+A "Features and Notes" section is optional but allows a place to outline various functionality of the application
+as well as notes from the coder to the themer as to now the app is intended to be used, their wishes, etc.
+This file should be present in the top level directory of your codebase.
+</para>
+
+</section>
+
+<section>
+<title>Source Layout</title>
+
+<para>
+Themes are typically stored in the data/ directory in the toplevel directory of your codebase.  The structure
+of that directory is entirely of your own choosing.  While it is acceptable to include only a pre-compiled EET with
+your code, it is highly recommended that you also include the EDC and image sources as well.  This allows users with
+porting issues to rebuild the EETs themselves rather than submit needless bug reports, and for other themers to learn
+from your EDC or improve upon it.  This allows themers to be more effectively leveraged to provide an even better app.
+</para>
+</section>
+
+<section>
+<title>Theme  Distribution</title>
+
+<para>
+An important consideration for themeing was how to deal with distribution of themes.  Due to the ugly nature of using
+renamed tarballs for data distribution Edb and then EET came to live.  EET provides a simplistic manner of distributing
+complete themes and interfaces in a convinient single file package.  Because EET will compress your images there is no need
+to re-compress an EET, though it is the distributers discretion to do so.  When hosting themes pre-compiled EETs should be provided.
+The images and source EDC does not, but it is recommended that you make it avalible on request or in the same place as the EET
+using a simple and clear file convension such as: theme.eet and theme-src.tgz.  Providing the source gives back to the community
+not only a nice theme but also a valuable learning tool for others.  Themes should <emphasis>not</emphasis> be distributed in
+tarballs as it defeats the purpose of single file, one step distribution.
+</para>
+</section>
+
+</chapter>

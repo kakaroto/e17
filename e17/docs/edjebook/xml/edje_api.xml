@@ -1,0 +1,127 @@
+<chapter>
+<title>The Edje API: Putting your interface to work</title>
+
+<para>
+The API for Edje is simple and easy to use.  It should be noted from the outset that the API is designed to be restrictive.  If you
+can not accomplish something in code that you want to do it will almost always mean that you should have done it in the EDC.  This design
+ensures that even a lazy programmer doesn't deminish the power of an independant interface as designed by Edje.
+</para>
+
+<para>
+The Edje API includes an initialization function, time related functions, external object functions, and object functions for manipulating
+and interfacing with your EET as created using EDC.  Most commonly used will be the object functions, which provide the ability to add
+Edje interfaces as an EVAS object and modify animation cycles, resize, get or set values from text parts, define color classes, define
+and delete callbacks based on signals from your EET, and even emit signals that get sent back to your EET to trigger events.
+Lets look at a simple example of using Edje in your application, using Ecore and EVAS:
+</para>
+
+<screen>
+/* gcc `edje-config --cflags --libs` `ecore-config --cflags --libs` example.c -o example */
+/* A sample EDC can be had here: http://www.cuddletech.com/edje/edc/crossfade.edc */
+#include &lt;Ecore_Evas.h&gt;
+#include &lt;Ecore.h&gt;
+#include &lt;Edje.h&gt;
+
+int app_signal_exit(void *data, int type, void *event);
+
+        /* GLOBALS */
+        Ecore_Evas  *   ee;
+        Evas        *   evas;
+        Evas_Object *   edje;
+
+        double   edje_w, edje_h;
+
+
+int main(int argv, char *argc[]){
+
+        ecore_init();
+        ecore_event_handler_add(ECORE_EVENT_SIGNAL_EXIT, app_signal_exit, NULL);
+
+        ecore_evas_init();
+   ee = ecore_evas_software_x11_new(NULL, 0,  0, 0, 0, 0);
+        ecore_evas_title_set(ee, "TITLE");
+        ecore_evas_borderless_set(ee, 0);
+        ecore_evas_shaped_set(ee, 0);
+        ecore_evas_show(ee);
+   evas = ecore_evas_get(ee);
+        evas_font_path_append(evas, "/usr/local/share/edje/data/test/fonts/");
+
+        edje_init();
+   edje = edje_object_add(evas);
+        edje_object_file_set(edje, "crossfade.eet", "test");
+        evas_object_move(edje, 0, 0);
+        edje_object_size_min_get(edje, &amp;edje_w, &amp;edje_h);
+        evas_object_resize(edje, edje_w, edje_h);
+        evas_object_show(edje);
+
+        ecore_evas_resize(ee, (int)edje_w, (int)edje_h);
+        ecore_evas_show(ee);
+
+        ecore_main_loop_begin();
+
+        return 0;
+}
+
+
+int app_signal_exit(void *data, int type, void *event){
+
+        printf("DEBUG: Exit called, shutting down\n");
+        ecore_main_loop_quit();
+        return 1;
+}
+</screen>
+
+<para>
+In this example we see Edje being initialized with edje_init(), then the edje being added to the evas similiar to any other
+object being added to an evas.  The edje_object_file_set() function defines the EET to be used and the group name we wish to use
+as defined in our EDC.  Using evas_object_move() we ensure that the Edje is placed in the top left corner of the evas.
+Next, using edje_object_size_min_get() we return the values of the minimum width and height of the group so we can use
+evas_object_resize() to resize the evas to snuggly fit our edje interface.  And finally using evas_object_show() is the usual
+way we render the edje to the evas.  Following this we also resize the entire evas and re-show it to make things tidy.
+Notice that the evas was created having no width or height only because we later resized it using values from the EET group.
+</para>
+
+<section>
+<title>Signals and Callbacks</title>
+
+<para>
+Signals provide the communication between your interface and your application code.  When an Edje program emits a signal your
+application needs to catch that signal and then do something with it, this functionality is provided by Edje signal callbacks.
+The Edje API provides you with two calls, one to add and one to delete signal callbacks: edje_object_signal_callback_add() and
+edje_object_signal_callback_del().  Both functions take 4 arguments: the Evas_Object (your edje), the signal thats emited,
+the source of that emission, and the function that should be called when the signal is recieved.
+These functions will not allow you to pass NULL arguments, and therefore if you want to create callbacks for several sources that
+emit the same signal you will need to add a seperate callback for each of the sources.  The add function allows one more
+argument, a void pointer to any data you want passed to the callback function.
+</para>
+
+<screen>
+        edje_object_signal_callback_add(st_session->edje, "PLAY_PREVIOUS", "previous_button", prev_file, st_session);
+
+        ...
+
+void prev_file(player_session *data, Evas *e, Evas_Object *obj, void *event_info){
+
+        printf("DEBUG: Previous File Called\n");        /* Report what we're doing for debugging purposes */
+
+        ecore_idler_del(data->play_idler);      /* Stop the current playing stream */
+
+        data->play_list = evas_list_prev(data->play_list);      /* Get the previous list item */
+
+        if(file_is_ogg(evas_list_data(data->play_list))){       /* Make sure that the new item is really ogg */
+                setup_ao();                                     /* If so, seutp the audio out path */
+                get_vorbis(evas_list_data(data->play_list), data);      /* Setup the intrface with comments, etc */
+                ao_open();                                      /* Open the outbound audio path */
+                data->play_idler = ecore_idler_add(play_loop, data);    /* Start the play loop */
+        } else {
+                printf("File %s is not an OggVorbis file\n", evas_list_data(data->play_list)); /* Or, report an error */
+        }
+}
+</screen>
+
+<para>This is a pretty shitty example.......</para>
+
+</section>
+
+</chapter>
+
