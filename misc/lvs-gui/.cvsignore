@@ -1,2 +1,6 @@
 lvs-gui
 lvs-gui.spec
+ipvs
+.*.swp
+lvs-gui-*.tar.gz
+.dep

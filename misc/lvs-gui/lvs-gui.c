@@ -290,7 +290,7 @@ cb_tcp2_sel(GtkCList *clist, gint row, gint column, GdkEventButton *event,
 	    gpointer user_data)
 {
    GList *l;
-   gint   i;
+   int i;
    
    if (current_tcp)
      {
@@ -352,8 +352,6 @@ cb_del2(GtkButton *button, gpointer user_data)
 void
 cb_ok(GtkButton *button, gpointer user_data)
 {
-   gchar *file;
-   
    save_local_config();
    save_config("ipvs");
    exit(0);
@@ -362,8 +360,6 @@ cb_ok(GtkButton *button, gpointer user_data)
 void
 cb_apply(GtkButton *button, gpointer user_data)
 {
-   gchar *file;
-   
    save_local_config();
    save_config("ipvs");
 }
@@ -390,7 +386,7 @@ void
 gui_tcp(GtkWidget *win)
 {
    GtkWidget *hbox, *hbox2, *vbox, *vport, *list, *frame, *align, *button;
-   GtkWidget *hbox3, *entry, *label, *radio, *vbox2;
+   GtkWidget *hbox3, *entry, *radio, *vbox2;
    gchar *titles1[] = {"External address", "Port", "Scheduling Method", "Protocol"};
    gchar *titles2[] = {"Internal address", "Port", "Weight"};
    
@@ -988,7 +984,7 @@ save_transparent_proxy(char *host, GList *hosts)
 	if (hosts)
 	  {
 	     for (l = hosts; l; l = l->next)
-		fprintf(f, " %s", l->data);
+		fprintf(f, " %s", (char *)l->data);
 	  }
 	fprintf(f, "\"\n");
 	fprintf(f, 
@@ -1259,6 +1255,7 @@ load_local_config(void)
 	gtk_entry_set_text(GTK_ENTRY(cfg_tfile), s3);	
 	fclose(f);
      }
+  return(0);
 }
 
 /* main */
@@ -1287,4 +1284,5 @@ main(int argc, char **argv)
 	     NULL, "ipvs");
    load_config("ipvs");
    gtk_main();
+  return(0);
 }

@@ -29,7 +29,8 @@ MINOR    = 0
 PATCH    = 0
 RELEASE  = 1
 
-SRCS         = lvs-gui.c
+SRCS         = lvs-gui.c options.c
+HDRS         = options.h
 INIT_SCRIPTS = etc/rc.d/init.d/transparent_proxy etc/rc.d/init.d/ipvs
 EXTRA_DIST   = Makefile COPYING TODO ChangeLog AUTHORS README
 SPEC_FILE_IN = lvs-gui.spec.in
@@ -41,10 +42,12 @@ SPEC_FILE_IN = lvs-gui.spec.in
 DISTNAME     = $(PACKAGE)-$(MAJOR).$(MINOR).$(PATCH)
 RPMDISTNAME  = $(PACKAGE)-$(MAJOR).$(MINOR).$(PATCH)-$(RELEASE)
 SPEC_FILE    = $(SPEC_FILE_IN:.in=)
-DISTFILES    = $(SRCS) $(EXTRA_DIST) $(INIT_SCRIPTS) \
+DISTFILES    = $(SRCS) $(HDRS) $(EXTRA_DIST) $(INIT_SCRIPTS) \
 $(SPEC_FILE) $(SPEC_FILE_IN)
+DEPEND_FILE  = .dep
 
 
+CC       = gcc
 CP       = cp
 ECHO     = echo
 GZIP     = gzip --best
@@ -62,7 +65,14 @@ ETCDIR   = $(BUILD_ROOT)/etc
 INITDIR_SUFFIX=rc.d/init.d/
 INITDIR  = $(ETCDIR)/$(INITDIR_SUFFIX)
 BIN      = lvs-gui
-LIBS     = -L/usr/lcoal/lib `gtk-config --libs` `imlib-config --libs-gdk`
+LIBS     = \
+-L/usr/local/lib \
+`gtk-config --libs` \
+`imlib-config --libs-gdk`
+HEADERS = \
+-I/usr/local/include \
+`gtk-config --cflags` \
+`imlib-config --cflags-gdk`
 
 .PHONY = \
 clean \
@@ -72,15 +82,17 @@ install-server \
 install-strip \
 install-client-strip \
 install-server-strip \
-all
+all \
+dep \
+depend
 
 all: lvs-gui  $(SPEC_FILE)
 
-lvs-gui: $(OBJS)
-	$(CC) -o $@ $(OBJS) $(LIBS)
+lvs-gui: $(DEPEND_FILE) $(OBJS)
+	$(CC) -o $@ $(OBJS) $(LIBS) $(CFLAGS) $(HEADERS)
 
 clean:
-	$(RM) -f $(BIN) *.CKP *.ln *.BAK *.bak *.o core errs ,* *~ *.a .emacs_* tags TAGS make.log MakeOut  "#"* $(SPEC_FILE)
+	$(RM) -f $(BIN) *.CKP *.ln *.BAK *.bak *.o core errs ,* *~ *.a .emacs_* tags TAGS make.log MakeOut  "#"* $(SPEC_FILE) $(DEPEND_FILE)
 
 install: install-client install-server
 	if [ ! -e $(BINDIR) ]; then $(MKDIR) -p $(BINDIR); fi
@@ -103,6 +115,13 @@ install-server-strip: install-server
 
 install-client-strip: install-client
 	$(STRIP) $(BINDIR)/$(BIN)
+
+dep: depend
+
+depend: $(DEPEND_FILE)
+
+$(DEPEND_FILE): $(SRCS) $(HDRS)
+	$(CC) $(CFLAGS) -M $(SRCS) $(HEADERS) > $(DEPEND_FILE)
 
 dist: $(SPEC_FILE)
 	$(RM) -rf $(DISTNAME)/
@@ -133,5 +152,9 @@ dist: $(SPEC_FILE)
 		-e "s/@PATCH@/$(PATCH)/" \
 		-e "s/@RELEASE@/$(RELEASE)/" < $< > $@
 .c.o:
-	$(CC) -I/usr/local/include `gtk-config --cflags` `imlib-config --cflags-gdk` -O2 -c $< -o $@
+	$(CC) -I/usr/local/include $(CFLAGS) $(HEADERS) -c $< -o $@
+
+ifeq (.dep,$(wildcard $(DEPEND_FILE)))
+include $(DEPEND_FILE)
+endif
 
