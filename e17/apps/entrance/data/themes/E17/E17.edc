@@ -418,17 +418,15 @@ collections {
 	    mouse_events:  1;
 	    description {
 	       state:    "default" 0.0;
-	       min:      16 16;
+	       min:      64 64;
 	       max:      64 64;
-	       aspect:   1.0 1.0;
-	       aspect_preference: VERTICAL;
-	       align:    0.5 1.0;
+	       align:    1.0 1.0;
 	       rel1 {
-		  relative: 0.5  0.89;
+		  relative: 0.98  0.98;
 		  offset:   0     0;
 	       }
 	       rel2 {
-		  relative: 0.5  0.99;
+		  relative: 0.98  0.98;
 		  offset:   0     0;
 	       }
 	       image {
@@ -486,20 +484,16 @@ collections {
 	    mouse_events:  1;
 	    description {
 	       state:    "default" 0.0;
-	       min:      16 16;
+	       min:      64 64;
 	       max:      64 64;
-	       aspect:   1.0 1.0;
-	       aspect_preference: VERTICAL;
-	       align:    0.5 1.0;
+	       align:    0.0 1.0;
 	       rel1 {
-		  relative: 0.5   -1.0;
+		  relative: 0.02  0.98;
 		  offset:   0     0;
-		  to: "power_button";
 	       }
 	       rel2 {
-		  relative: 0.5   0.0;
-		  offset:   0     -1;
-		  to: "power_button";
+		  relative: 0.02  0.98;
+		  offset:   0     0;
 	       }
 	       image {
 		  normal: "reset_button_0.png";
