@@ -258,7 +258,7 @@ save (ImlibImage *im, ImlibProgressFunction progress,
       char progress_granularity)
 {
    int                 alpha = 0;
-   char                 file[4096], key[4096], *cp;
+   char                 file[4096], key[4096], *cp, *tmp;
    DATA32              *header;
    DATA32              *buf;
    E_DB_File           *db;
@@ -271,10 +271,16 @@ save (ImlibImage *im, ImlibProgressFunction progress,
       return 0;
    if (im->flags & F_HAS_ALPHA)
       alpha = 1;
-   if ((!im->file) || (!im->real_file) || (!im->key))
+   if ((!im->file) || (!im->real_file))
       return 0;
    strcpy(file, im->real_file);
-   strcpy(key, im->key);
+   
+   tmp = strrchr(file, ':');
+   if(!tmp)
+      return 0;
+   *tmp = '\0';
+   strcpy(key, tmp + 1);
+   
    if (exists(file))
      {
 	if (!can_write(file)) return 0;

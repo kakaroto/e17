@@ -14,6 +14,7 @@ char               *__imlib_FileHomeDir(int uid);
 char               *__imlib_FileField(char *s, int field);
 int                 __imlib_FilePermissions(const char *s, int raw);
 int                 __imlib_FileCanRead(const char *s, int raw);
+int                 __imlib_IsRealFile(const char *s);
 
 
 #endif

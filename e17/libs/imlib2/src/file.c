@@ -119,7 +119,7 @@ __imlib_FileExists(const char *s, int raw)
    char               *fl;
    
    if ((!s) || (!*s)) return 0;
-   if (raw) fl = strdup(s);
+   if (__imlib_IsRealFile(s)) fl = strdup(s);
    else fl = __imlib_FileRealFile(s);
    if (!fl) return 0;
    if (stat(fl, &st) < 0)
@@ -138,7 +138,7 @@ __imlib_FileIsFile(const char *s, int raw)
    char               *fl;
    
    if ((!s) || (!*s)) return 0;
-   if (raw) fl = strdup(s);
+   if (__imlib_IsRealFile(s)) fl = strdup(s);
    else fl = __imlib_FileRealFile(s);
    if (!fl) return 0;
    if (stat(fl, &st) < 0)
@@ -162,7 +162,7 @@ __imlib_FileIsDir(const char *s, int raw)
    char               *fl;
    
    if ((!s) || (!*s)) return 0;
-   if (raw) fl = strdup(s);
+   if (__imlib_IsRealFile(s)) fl = strdup(s);
    else fl = __imlib_FileRealFile(s);
    if (!fl) return 0;
    if (stat(fl, &st) < 0)
@@ -186,7 +186,7 @@ __imlib_FilePermissions(const char *s, int raw)
    char               *fl;
    
    if ((!s) || (!*s)) return 0;
-   if (raw) fl = strdup(s);
+   if (__imlib_IsRealFile(s)) fl = strdup(s);
    else fl = __imlib_FileRealFile(s);
    if (!fl) return 0;
    if (stat(fl, &st) < 0)
@@ -204,7 +204,7 @@ __imlib_FileCanRead(const char *s, int raw)
    char               *fl;
    int                 val;
    
-   if (raw) fl = strdup(s);
+   if (__imlib_IsRealFile(s)) fl = strdup(s);
    else fl = __imlib_FileRealFile(s);
    if (!fl) return 0;
    if (!(__imlib_FilePermissions(fl, 1) & (S_IRUSR | S_IRGRP | S_IROTH)))
@@ -306,6 +306,13 @@ __imlib_FileDel(char *s)
    return;
 }
 
+int
+__imlib_IsRealFile(const char *s)
+{
+   struct stat st;
+   return ((stat(s, &st) != -1) && (!S_ISREG(st.st_mode)));
+}
+
 time_t
 __imlib_FileModDate(const char *s, int raw)
 {
@@ -313,7 +320,7 @@ __imlib_FileModDate(const char *s, int raw)
    char               *fl;
    
    if ((!s) || (!*s)) return 0;
-   if (raw) fl = strdup(s);
+   if (__imlib_IsRealFile(s)) fl = strdup(s);
    else fl = __imlib_FileRealFile(s);
    if (!fl) return 0;
    if (stat(fl, &st) < 0)
