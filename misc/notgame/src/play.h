@@ -20,5 +20,6 @@
 /************ Variables ************/
 
 /************ Function Prototypes ************/
+extern void play_game(void);
 
 #endif	/* _PLAY_H_ */

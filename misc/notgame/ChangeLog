@@ -32,3 +32,10 @@ Mon Aug 30 18:45:20 PDT 1999	Michael Jennings <mej@eterm.org>
 	Not much yet as far as working functionality, though. :-)
 	
 -------------------------------------------------------------------------------
+Tue Aug 31 13:03:02 PDT 1999	Michael Jennings <mej@eterm.org>
+
+	This is the first point at which you can actually play the Not Game
+	with this program.  All the values are hard-coded, so configuring it
+	requires some source code hacking, but it's playable.
+	
+-------------------------------------------------------------------------------

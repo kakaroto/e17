@@ -309,6 +309,7 @@ static void
 button_cb(gpointer item, GtkWidget *w) {
 
   if (((int) item) == 1) {
+    play_game();
   } else {
   }
 }
@@ -317,6 +318,7 @@ static void
 gamemenu_cb(gpointer item, GtkWidget *w) {
 
   if (((int) item) == 1) {
+    play_game();
   } else {
   }
 }
