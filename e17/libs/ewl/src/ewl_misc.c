@@ -279,20 +279,39 @@ void ewl_configure_request(Ewl_Widget * w)
 	 * it's parent widget.
 	 */
 	if (w->parent) {
+		int obscured = 0;
 		int x, y;
 		int width, height;
 		Ewl_Widget *p = w->parent;
 
 		ewl_object_get_current_geometry(EWL_OBJECT(w), &x, &y, &width,
 				&height);
-		if ((int)(x + width) < CURRENT_X(p) ||
-				x > (int)(CURRENT_X(p) + CURRENT_W(p)) ||
-				(int)(y + height) < CURRENT_Y(p) ||
-				y > (int)(CURRENT_Y(p) + CURRENT_H(p)) ||
-				(int)(x + width) < CURRENT_X(emb) ||
-				x > (int)(CURRENT_X(emb) + CURRENT_W(emb)) ||
-				(int)(y + height) < CURRENT_Y(emb) ||
-				y > (int)(CURRENT_Y(emb) + CURRENT_H(emb))) {
+
+		if ((x + width) < CURRENT_X(p))
+			obscured = 1;
+
+		if (x > (CURRENT_X(p) + CURRENT_W(p)))
+			obscured = 1;
+
+		if ((y + height) < CURRENT_Y(p))
+			obscured = 1;
+
+		if (y > (CURRENT_Y(p) + CURRENT_H(p)))
+			obscured = 1;
+
+		if ((x + width) < CURRENT_X(emb))
+			obscured = 1;
+
+		if (x > (CURRENT_X(emb) + CURRENT_W(emb)))
+			obscured = 1;
+
+		if ((y + height) < CURRENT_Y(emb))
+			obscured = 1;
+
+		if (y > (CURRENT_Y(emb) + CURRENT_H(emb)))
+			obscured = 1;
+
+		if (obscured) {
 			ewl_object_add_visible(EWL_OBJECT(w),
 					EWL_FLAG_VISIBLE_OBSCURED);
 			if (w->fx_clip_box)

@@ -523,9 +523,10 @@ void ewl_widget_set_parent(Ewl_Widget * w, Ewl_Widget * p)
 		if (!op)
 			ewl_callback_prepend(w, EWL_CALLBACK_DESTROY,
 					__ewl_widget_child_destroy, NULL);
-		ewl_callback_call(w, EWL_CALLBACK_REPARENT);
-		if (REALIZED(w) && VISIBLE(w))
+		if (REALIZED(w) && VISIBLE(w)) {
+			ewl_callback_call(w, EWL_CALLBACK_REPARENT);
 			ewl_container_call_child_add(EWL_CONTAINER(p), w);
+		}
 	}
 
 	DLEAVE_FUNCTION(DLEVEL_STABLE);

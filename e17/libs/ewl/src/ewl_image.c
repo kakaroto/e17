@@ -3,6 +3,8 @@
 
 void            __ewl_image_realize(Ewl_Widget * w, void *ev_data,
 				    void *user_data);
+void            __ewl_image_unrealize(Ewl_Widget * w, void *ev_data,
+				      void *user_data);
 void            __ewl_image_configure(Ewl_Widget * w, void *ev_data,
 				      void *user_data);
 void            __ewl_image_mouse_down(Ewl_Widget * w, void *ev_data,
@@ -56,6 +58,8 @@ void ewl_image_init(Ewl_Image * i, char *path)
 	 * Append necessary callbacks.
 	 */
 	ewl_callback_append(w, EWL_CALLBACK_REALIZE, __ewl_image_realize, NULL);
+	ewl_callback_append(w, EWL_CALLBACK_UNREALIZE, __ewl_image_unrealize,
+			    NULL);
 	ewl_callback_append(w, EWL_CALLBACK_CONFIGURE,
 			    __ewl_image_configure, NULL);
 	ewl_callback_append(w, EWL_CALLBACK_MOUSE_DOWN,
@@ -283,6 +287,22 @@ void __ewl_image_realize(Ewl_Widget * w, void *ev_data, void *user_data)
 				ewl_object_get_preferred_h(EWL_OBJECT(i)));
 	else
 		ewl_image_scale(i, i->sw, i->sh);
+
+	DLEAVE_FUNCTION(DLEVEL_STABLE);
+}
+
+void __ewl_image_unrealize(Ewl_Widget * w, void *ev_data, void *user_data)
+{
+	Ewl_Image *i;
+
+	DENTER_FUNCTION(DLEVEL_STABLE);
+
+	i = EWL_IMAGE(w);
+
+	if (i->image) {
+		evas_object_del(i->image);
+		i->image = NULL;
+	}
 
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }

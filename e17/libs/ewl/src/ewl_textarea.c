@@ -1,12 +1,11 @@
-
 #include <Ewl.h>
 
 void            __ewl_textarea_realize(Ewl_Widget * w, void *ev_data,
 				       void *user_data);
+void            __ewl_textarea_unrealize(Ewl_Widget * w, void *ev_data,
+				       void *user_data);
 void            __ewl_textarea_configure(Ewl_Widget * w, void *ev_data,
 					 void *user_data);
-void            __ewl_textarea_reparent(Ewl_Widget * w, void *ev_data,
-					void *user_data);
 void            __ewl_textarea_update_size(Ewl_TextArea * ta);
 
 /**
@@ -51,9 +50,9 @@ void ewl_textarea_init(Ewl_TextArea * ta, char *text)
 
 	ewl_callback_append(w, EWL_CALLBACK_REALIZE, __ewl_textarea_realize,
 			    NULL);
-	ewl_callback_append(w, EWL_CALLBACK_CONFIGURE, __ewl_textarea_configure,
+	ewl_callback_append(w, EWL_CALLBACK_UNREALIZE, __ewl_textarea_unrealize,
 			    NULL);
-	ewl_callback_append(w, EWL_CALLBACK_REPARENT, __ewl_textarea_reparent,
+	ewl_callback_append(w, EWL_CALLBACK_CONFIGURE, __ewl_textarea_configure,
 			    NULL);
 
 	if (text)
@@ -229,6 +228,23 @@ void __ewl_textarea_realize(Ewl_Widget * w, void *ev_data, void *user_data)
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
 
+void __ewl_textarea_unrealize(Ewl_Widget * w, void *ev_data, void *user_data)
+{
+	Ewl_TextArea   *ta;
+
+	DENTER_FUNCTION(DLEVEL_STABLE);
+	DCHECK_PARAM_PTR("w", w);
+
+	ta = EWL_TEXTAREA(w);
+
+	ta->etox_context = etox_context_save(ta->etox);
+
+	evas_object_clip_unset(ta->etox);
+	evas_object_del(ta->etox);
+
+	DLEAVE_FUNCTION(DLEVEL_STABLE);
+}
+
 void __ewl_textarea_configure(Ewl_Widget * w, void *ev_data, void *user_data)
 {
 	Ewl_TextArea   *ta;
@@ -242,28 +258,9 @@ void __ewl_textarea_configure(Ewl_Widget * w, void *ev_data, void *user_data)
 	 * Update the etox position and size.
 	 */
 	if (ta->etox) {
-		evas_object_move(ta->etox, CURRENT_X(w) + INSET_LEFT(w),
-			  CURRENT_Y(w) + INSET_TOP(w));
+		evas_object_move(ta->etox, CURRENT_X(w), CURRENT_Y(w));
 		evas_object_layer_set(ta->etox, ewl_widget_get_layer_sum(w));
 	}
-
-	DLEAVE_FUNCTION(DLEVEL_STABLE);
-}
-
-void __ewl_textarea_reparent(Ewl_Widget * w, void *ev_data, void *user_data)
-{
-	Ewl_TextArea   *ta;
-
-	DENTER_FUNCTION(DLEVEL_STABLE);
-	DCHECK_PARAM_PTR("w", w);
-
-	ta = EWL_TEXTAREA(w);
-
-	/*
-	 * Change the clipping of the etox to the new parent.
-	 */
-	if (ta->etox)
-		evas_object_clip_set(ta->etox, w->fx_clip_box);
 
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
@@ -279,9 +276,6 @@ void __ewl_textarea_update_size(Ewl_TextArea * ta)
 	 * Adjust the properties of the widget to indicate the size of the text.
 	 */
 	evas_object_geometry_get(ta->etox, &x, &y, &width, &height);
-
-	width += INSET_LEFT(ta) + INSET_RIGHT(ta);
-	height += INSET_TOP(ta) + INSET_BOTTOM(ta);
 
 	/*
 	 * Set the preferred size to the size of the etox and request that
