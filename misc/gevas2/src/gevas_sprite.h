@@ -148,6 +148,32 @@ extern "C" {
                                                geTransAlphaWipe* trans );
     
 /* package */
+
+
+    /************************************************************/
+    /************************************************************/
+    /************************************************************/
+
+    /* Much better to move to using edje to do many timed events */
+    
+/*     struct _GevasSpriteGroupTimer */
+/*     { */
+/*         gint   default_frame_delay_ms; // default */
+/*         guint  m_timerID; */
+/*         GList* m_clients; */
+/*     }; */
+/*     typedef struct _GevasSpriteGroupTimer GevasSpriteGroupTimer; */
+    
+/*     GevasSpriteGroupTimer* */
+/*     new_gevas_group_timer( gint frame_delay ); */
+
+/*     void */
+/*     free_gevas_group_timer( GevasSpriteGroupTimer* gt ); */
+    
+/*     void gevas_group_timer_add_client( GevasSpriteGroupTimer* gt, */
+/*                                        GtkFunction fn, gpointer data ); */
+    
+/*     void gevas_sprite_attach_to_group_timer( GtkgEvasSprite* ev, GevasSpriteGroupTimer* gt ); */
     
 
 

@@ -37,6 +37,11 @@ AC_SUBST(edb_cflags)
 AC_SUBST(edb_libs)
 
 
+AC_PATH_GENERIC(edje, 0.5.0)
+AC_SUBST(EDJE_LIBS)
+AC_SUBST(EDJE_CFLAGS)
+
+
 dnl Set PACKAGE_DATA_DIR in config.h.
 if test "x${datadir}" = 'x${prefix}/share'; then
   if test "x${prefix}" = "xNONE"; then

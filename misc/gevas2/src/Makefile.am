@@ -6,9 +6,10 @@ AUTOMAKE_OPTIONS     = 1.4 foreign
 MAINTAINERCLEANFILES = Makefile.in
 
 LIBS_EVAS     = @evas_ldflags@
-LIBS_EXTRA    = -L/usr/local/lib @edb_libs@
+LIBS_EXTRA    = -L/usr/local/lib @edb_libs@ @EDJE_LIBS@
 
-CFLAGS_EVAS   = @evas_cflags@
+
+CFLAGS_EVAS   = @evas_cflags@ @EDJE_CFLAGS@
 CFLAGS_EXTRA  = -I$(includedir) -I$(top_srcdir) -I/usr/local/include @edb_cflags@
 
 LIBS_ALL      = $(LIBS_EVAS) $(LIBS_EXTRA)
@@ -34,6 +35,7 @@ gevasevh_popup.h          \
 gevasevh_to_gtk_signals.h \
 gevasgrad.h               \
 gevasimage.h              \
+gevasedje.h               \
 gevasobj.h                \
 gevastext.h               \
 gevastwin.h               \
@@ -57,6 +59,7 @@ gevasevh_popup.c          \
 gevasevh_to_gtk_signals.c \
 gevasgrad.c               \
 gevasimage.c              \
+gevasedje.c               \
 gevasobj.c                \
 gevastext.c               \
 gevastwin.c               \

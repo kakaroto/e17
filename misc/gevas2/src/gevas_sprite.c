@@ -1047,6 +1047,7 @@ gevas_sprite_set_default_frame_delay( GtkgEvasSprite* ev, gint ms )
     ev->default_frame_delay_ms = ms;
 }
 
+
 void gevas_sprite_set_inter_frame_delays(
     GtkgEvasSprite* ev,
     gint base,
@@ -1494,4 +1495,104 @@ void gevas_sprite_set_transition_function( GtkgEvasSprite* object,
     ev->frame_trans_f = g_array_insert_val( ev->frame_trans_f, framenum, trans );
     
 }
+
+
+/************************************************************/
+/************************************************************/
+/************************************************************/
+/************************************************************/
+
+
+
+/* static gint _gevas_group_timer_restart(gpointer data); */
+
+/* GevasSpriteGroupTimer* */
+/* new_gevas_group_timer( */
+/*     gint frame_delay */
+/*     ) */
+/* { */
+/*     GevasSpriteGroupTimer* ret = malloc( sizeof( GevasSpriteGroupTimer )); */
+
+/*     ret->default_frame_delay_ms = frame_delay; */
+/*     ret->m_timerID = 0; */
+/*     ret->m_clients = 0; */
+    
+/*     return ret; */
+/* } */
+
+/* struct _gevas_group_timer_client */
+/* { */
+/*     GtkFunction fn; */
+/*     gpointer data; */
+/* }; */
+/* typedef struct _gevas_group_timer_client gevas_group_timer_client; */
+
+/* static void */
+/* _gevas_group_timer_free( */
+/*     gpointer data, */
+/*     gpointer user_data */
+/*     ) */
+/* { */
+/*     gevas_group_timer_client* o = (gevas_group_timer_client*)data; */
+/*     free(o); */
+/* } */
+
+/* void */
+/* free_gevas_group_timer( GevasSpriteGroupTimer* gt ) */
+/* { */
+/*     if( gt->m_timerID ) */
+/*         g_source_remove( gt->m_timerID ); */
+    
+/*     g_list_foreach( gt->m_clients, _gevas_group_timer_free, gt ); */
+/*     g_list_free(gt->m_clients); */
+/*     free(gt); */
+/* } */
+
+
+
+
+/* void gevas_group_timer_add_client( GevasSpriteGroupTimer* gt, */
+/*                                    GtkFunction fn, gpointer data ) */
+/* { */
+/*     gevas_group_timer_client* o = malloc( sizeof( gevas_group_timer_client )); */
+/*     o->fn = fn; */
+/*     o->data = data; */
+/*     gt->m_clients = g_list_append (gt->m_clients, o ); */
+/* } */
+
+
+/* static void */
+/* _gevas_group_timer_call_client( */
+/*     gpointer data, */
+/*     gpointer user_data */
+/*     ) */
+/* { */
+/*     gevas_group_timer_client* o = (gevas_group_timer_client*)data; */
+/*     o->fn( o->data ); */
+/* } */
+
+/* static gint _gevas_group_timer_restart(gpointer data) */
+/* { */
+/*     GevasSpriteGroupTimer* gt = (GevasSpriteGroupTimer*)data; */
+/*     gint delay = gt->default_frame_delay_ms; */
+
+/*     if( gt->m_timerID ) */
+/*         g_source_remove( gt->m_timerID ); */
+/*     gt->m_timerID = gtk_timeout_add( delay, _gevas_group_timer_restart, data ); */
+
+/*     g_list_foreach( gt->m_clients, _gevas_group_timer_call_client, gt ); */
+    
+/*     return 1; */
+/* } */
+
+
+/* void */
+/* gevas_sprite_attach_to_group_timer( GtkgEvasSprite* ev, GevasSpriteGroupTimer* gt ) */
+/* { */
+/*  	g_return_if_fail(ev != NULL); */
+/* 	g_return_if_fail(GTK_IS_GEVAS_SPRITE(ev)); */
+
+/*     ev->frames_to_play = -1; */
+/*     gevas_group_timer_add_client( gt, clock_sprite, ev ); */
+/* } */
 
