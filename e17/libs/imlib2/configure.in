@@ -212,6 +212,7 @@ dnl here was freetype headers checking
 dnl /here was freetype headers checking
 
 AC_CHECK_LIB(dl, dlopen, dlopen_libs=-ldl)
+AC_CHECK_LIB(ltdl, lt_dlopen, ltdlopen_libs=-lltdl)
 
 EXTRA_LIBS="-L/usr/local/lib -L/usr/X11R6/lib"
 
@@ -403,6 +404,7 @@ AC_SUBST(x_includes)
 AC_SUBST(x_ldflags)
 AC_SUBST(x_libs)
 AC_SUBST(dlopen_libs)
+AC_SUBST(ltdlopen_libs)
 AC_SUBST(freetype_cflags)
 AC_SUBST(freetype_libs)
 

@@ -6,7 +6,7 @@
 #include <X11/Xlib.h>
 #endif
 
-#include "ltdl.h"		/* for lt_dlhandle definition */
+#include <ltdl.h>		/* for lt_dlhandle definition */
 
 typedef struct _imlibimage              ImlibImage;
 #ifndef X_DISPLAY_MISSING
