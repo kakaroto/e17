@@ -1,12 +1,14 @@
 ## Process this file with automake to produce Makefile.in
 
-## Created by Anjuta - will be overwritten
-## If you don't want it to overwrite it,
-## 	Please disable it in the Anjuta project configuration
+# application icon
+e16menuedit2_appicondir = $(prefix)/@NO_PREFIX_PACKAGE_PIXMAPS_DIR@
 
-e16menuedit2_pixmapsdir = $(prefix)/@NO_PREFIX_PACKAGE_PIXMAPS_DIR@
+e16menuedit2_appicon_DATA =\
+		e16menuedit2-icon.png	
+# other images
+e16menuedit2_pixmapsdir = ${PACKAGE_PIXMAPS_DIR}/${PACKAGE}
 
-e16menuedit2_pixmaps_DATA = \
-	e16menuedit2-icon.png
+e16menuedit2_pixmaps_DATA =
 
-EXTRA_DIST = $(e16menuedit2_pixmaps_DATA)
+EXTRA_DIST = $(e16menuedit2_pixmaps_DATA) \
+	     $(e16menuedit2_appicon_DATA)
