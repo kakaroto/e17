@@ -509,6 +509,140 @@ efsd_get_metadata(EfsdConnection *ec, char *key, char *filename,
 }
 
 
+EfsdDatatype   
+efsd_metadata_get_type(EfsdEvent *ee)
+{
+  D_ENTER;
+  
+  if ((ee->type != EFSD_EVENT_REPLY)         ||
+      (ee->efsd_reply_event.command.type !=
+       EFSD_CMD_GETMETA))
+    {
+      D_RETURN_(0);
+    }
+
+  D_RETURN_(ee->efsd_reply_event.command.
+	    efsd_get_metadata_cmd.datatype);
+}
+
+
+int            
+efsd_metadata_get_int(EfsdEvent *ee, int *val)
+{
+  D_ENTER;
+  
+  if ((!val)                                 ||
+      (ee->type != EFSD_EVENT_REPLY)         ||
+      (ee->efsd_reply_event.command.type !=
+       EFSD_CMD_GETMETA)                     ||
+      (ee->efsd_reply_event.command.
+       efsd_get_metadata_cmd.datatype != EFSD_INT)
+      )
+    {
+      D_RETURN_(0);
+    }
+
+  *val = *((int*)ee->efsd_reply_event.data);
+  D_RETURN_(1);
+}
+
+
+int            
+efsd_metadata_get_float(EfsdEvent *ee, float *val)
+{
+  D_ENTER;
+  
+  if ((!val)                                 ||
+      (ee->type != EFSD_EVENT_REPLY)         ||
+      (ee->efsd_reply_event.command.type !=
+       EFSD_CMD_GETMETA)                     ||
+      (ee->efsd_reply_event.command.
+       efsd_get_metadata_cmd.datatype != EFSD_FLOAT)
+      )
+    {
+      D_RETURN_(0);
+    }
+
+  *val = *((float*)ee->efsd_reply_event.data);
+  D_RETURN_(1);
+}
+
+
+char          *
+efsd_metadata_get_str(EfsdEvent *ee)
+{
+  D_ENTER;
+  
+  if ((ee->type != EFSD_EVENT_REPLY)         ||
+      (ee->efsd_reply_event.command.type !=
+       EFSD_CMD_GETMETA)                     ||
+      (ee->efsd_reply_event.command.
+       efsd_get_metadata_cmd.datatype != EFSD_STRING)
+      )
+    {
+      D_RETURN_(NULL);
+    }
+
+  D_RETURN_((char*)ee->efsd_reply_event.data);
+}
+
+
+void          *
+efsd_metadata_get_raw(EfsdEvent *ee, int *data_len)
+{
+  D_ENTER;
+  
+  if ((ee->type != EFSD_EVENT_REPLY)         ||
+      (ee->efsd_reply_event.command.type !=
+       EFSD_CMD_GETMETA)                     ||
+      (ee->efsd_reply_event.command.
+       efsd_get_metadata_cmd.datatype != EFSD_FLOAT)
+      )
+    {
+      D_RETURN_(NULL);
+    }
+  
+  if (data_len)
+    {
+      *data_len = ee->efsd_reply_event.data_len;
+    }
+  
+  D_RETURN_(ee->efsd_reply_event.data);
+}
+
+
+char          *
+efsd_metadata_get_key(EfsdEvent *ee)
+{
+  D_ENTER;
+  
+  if ((ee->type != EFSD_EVENT_REPLY) ||
+      (ee->efsd_reply_event.command.type !=
+       EFSD_CMD_GETMETA))
+    {
+      D_RETURN_(NULL);
+    }
+  
+  D_RETURN_(ee->efsd_reply_event.command.efsd_get_metadata_cmd.key);
+}
+
+
+char          *
+efsd_metadata_get_file(EfsdEvent *ee)
+{
+  D_ENTER;
+  
+  if ((ee->type != EFSD_EVENT_REPLY) ||
+      (ee->efsd_reply_event.command.type !=
+       EFSD_CMD_GETMETA))
+    {
+      D_RETURN_(NULL);
+    }
+  
+  D_RETURN_(ee->efsd_reply_event.command.efsd_get_metadata_cmd.file);
+}
+
+
 EfsdCmdId      
 efsd_start_monitor(EfsdConnection *ec, char *filename)
 {

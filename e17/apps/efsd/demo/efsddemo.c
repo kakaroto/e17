@@ -206,25 +206,35 @@ void handle_efsd_event(EfsdEvent *ee)
 
 	  if (ee->efsd_reply_event.status == SUCCESS)
 	    {
-	      switch (ee->efsd_reply_event.command.efsd_get_metadata_cmd.datatype)
+	      switch (efsd_metadata_get_type(ee))
 		{
 		case EFSD_INT:
-		  printf("File: %s, key: %s --> val: %i\n",
-			 ee->efsd_reply_event.command.efsd_get_metadata_cmd.file,
-			 ee->efsd_reply_event.command.efsd_get_metadata_cmd.key,
-			 *((int*)ee->efsd_reply_event.data));
+		  {
+		    int val;
+
+		    efsd_metadata_get_int(ee, &val);
+		    printf("File: %s, key: %s --> val: %i\n",
+			   efsd_metadata_get_file(ee),
+			   efsd_metadata_get_key(ee),
+			   val);
+		  }
 		  break;
 		case EFSD_FLOAT:
-		  printf("File: %s, key: %s --> val: %f\n",
-			 ee->efsd_reply_event.command.efsd_get_metadata_cmd.file,
-			 ee->efsd_reply_event.command.efsd_get_metadata_cmd.key,
-			 *((float*)ee->efsd_reply_event.data));
+		  {
+		    float val;
+
+		    efsd_metadata_get_float(ee, &val);
+		    printf("File: %s, key: %s --> val: %f\n",
+			   efsd_metadata_get_file(ee),
+			   efsd_metadata_get_key(ee),
+			   val);
+		  }
 		  break;
 		case EFSD_STRING:
 		  printf("File: %s, key: %s --> val: %s\n",
-			 ee->efsd_reply_event.command.efsd_get_metadata_cmd.file,
-			 ee->efsd_reply_event.command.efsd_get_metadata_cmd.key,
-			 (char*)ee->efsd_reply_event.data);
+			 efsd_metadata_get_file(ee),
+			 efsd_metadata_get_key(ee),
+			 efsd_metadata_get_str(ee));
 		  break;
 		default:
 		}

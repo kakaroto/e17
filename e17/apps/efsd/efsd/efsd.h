@@ -84,10 +84,10 @@ EfsdCommandType;
 
 typedef enum efsd_datatype
 {
-  EFSD_INT,
-  EFSD_FLOAT,
-  EFSD_STRING,
-  EFSD_RAW
+  EFSD_INT    = 1,
+  EFSD_FLOAT  = 2,
+  EFSD_STRING = 3,
+  EFSD_RAW    = 4
 }
 EfsdDatatype;
 

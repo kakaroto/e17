@@ -146,6 +146,25 @@ EfsdCmdId      efsd_del_metadata(EfsdConnection *ec, char *key,
 EfsdCmdId      efsd_get_metadata(EfsdConnection *ec, char *key,
 				 char *filename, EfsdDatatype datatype);
 
+/* Convenience functions for acessing the metadata
+   contained in a reply event. The return value is
+   zero or NULL, respectively, when the EfsdEvent is
+   not a reply to a command of type EFSD_CMD_GETMETA,
+   or when the type of the metadata does not match
+   the type requested, greater than zero otherwise.
+*/
+EfsdDatatype   efsd_metadata_get_type(EfsdEvent *ee);
+int            efsd_metadata_get_int(EfsdEvent *ee, int *val);
+int            efsd_metadata_get_float(EfsdEvent *ee, float *val);
+char          *efsd_metadata_get_str(EfsdEvent *ee);
+char          *efsd_metadata_get_key(EfsdEvent *ee);
+char          *efsd_metadata_get_file(EfsdEvent *ee);
+
+/* If you're for some reason not interested in the
+   data length, you can pass DATA_LEN as NULL.
+*/
+void          *efsd_metadata_get_raw(EfsdEvent *ee, int *data_len);
+
 /* Start/stop a FAM monitor for a given file or directory.
  */
 EfsdCmdId      efsd_start_monitor(EfsdConnection *ec, char *filename);
