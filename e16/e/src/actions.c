@@ -1179,11 +1179,11 @@ doMoveEnd(void *params)
 	     if (gwins[i]->floating)
 		MoveEwinToDesktopAt(gwins[i], d,
 				    gwins[i]->x - (desks.desk[d].x -
-						   desks.
-						   desk[gwins[i]->desktop].x),
+						   desks.desk[gwins[i]->
+							      desktop].x),
 				    gwins[i]->y - (desks.desk[d].y -
-						   desks.
-						   desk[gwins[i]->desktop].y));
+						   desks.desk[gwins[i]->
+							      desktop].y));
 	     else
 		MoveEwinToDesktopAt(gwins[i], d, gwins[i]->x, gwins[i]->y);
 	     gwins[i]->floating = 0;
@@ -2946,10 +2946,10 @@ doFocusSet(void *params)
    ewin = (EWin *) FindItem(NULL, win, LIST_FINDBY_ID, LIST_TYPE_EWIN);
    if (ewin)
      {
-	GotoDesktop(ewin->desktop);
-	SetCurrentArea(ewin->area_x, ewin->area_y);
 	if (ewin->iconified)
 	   DeIconifyEwin(ewin);
+	GotoDesktop(ewin->desktop);
+	SetCurrentArea(ewin->area_x, ewin->area_y);
 	if (mode.raise_on_next_focus || mode.raise_after_next_focus)
 	   RaiseEwin(ewin);
 	if (mode.warp_on_next_focus)

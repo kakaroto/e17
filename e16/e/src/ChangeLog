@@ -4631,3 +4631,10 @@ Mon Apr 10 15:01:10 PDT 2000
 (Mandrake)
 
 fixed the rest of xinerama menu usage (please test under non-xinerama)
+
+-------------------------------------------------------------------------------
+
+Mon Apr 10 15:43:56 PDT 2000
+(Mandrake)
+
+fix for bringing iconified windows to current head when using the tasklist.
