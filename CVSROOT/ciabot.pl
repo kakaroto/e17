@@ -119,7 +119,7 @@ $dirfiles[0] = "@files" or die "$0: no files specified\n";
 $_ = $dir[0];
 if((my $first, my $second, my $third) = /^e17\/(\w*)\/(\w*)\/(.*)/) {
     $module = "e17/" . $first . "/" . $second;
-} elsif(($first, $second, $third) = /^(e16|misc)\/(\w*)\/(.*)/) {
+} elsif(($first, $second, $third) = /^(e16|misc|eterm)\/(\w*)\/(.*)/) {
   $module = $first . "/" . $second;
 } else {
   $module = $dir[0];
