@@ -306,7 +306,7 @@ load (ImlibImage *im,
                             (y == (im->h - 1)))
                         {
                              l = y - pl;
-                             progress(im, per, 0, (y - l), im->w, l);
+                             progress(im, per, 0, im->h - y - 1, im->w, im->h - y + l);
                              pper = per;
                              pl = y;
                         }           
@@ -338,7 +338,7 @@ load (ImlibImage *im,
                             (y == (im->h - 1)))
                         {
                             l = y - pl;
-                            progress(im, per, 0, (y - l), im->w, l);
+                            progress(im, per, 0, im->h - y - 1, im->w, im->h - y + l);
                             pper = per;
                             pl = y;
                         }
@@ -426,7 +426,7 @@ load (ImlibImage *im,
                         (y == (im->h - 1)))
                     {
                         l = y - pl;
-                        progress(im, per, 0, (y - l), im->w, l);
+                        progress(im, per, 0, im->h - y - 1, im->w, im->h - y + l);
                         pper = per;
                         pl = y;
                     }
@@ -453,7 +453,7 @@ load (ImlibImage *im,
                             (y == (im->h - 1)))
                         {
                             l = y - pl;
-                            progress(im, per, 0, (y - l), im->w, l);
+                            progress(im, per, 0, im->h - y - 1, im->w, im->h - y + l);
                             pper = per;
                             pl = y;
                         }
@@ -482,7 +482,7 @@ load (ImlibImage *im,
                         (y == (im->h - 1)))
                     {
                         l = y - pl;
-                        progress(im, per, 0, (y - l), im->w, l);
+                        progress(im, per, 0, im->h - y - 1, im->w, im->h - y + l);
                         pper = per;
                         pl = y;
                     }
@@ -509,7 +509,7 @@ load (ImlibImage *im,
                         (y == (im->h - 1)))
                     {
                         l = y - pl;
-                        progress(im, per, 0, (y - l), im->w, l);
+                        progress(im, per, 0, im->h - y - 1, im->w, im->h - y + l);
                         pper = per;
                         pl = y;
                     }
@@ -538,7 +538,7 @@ load (ImlibImage *im,
                         (y == (im->h - 1)))
                     {
                         l = y - pl;
-                        progress(im, per, 0, (y - l), im->w, l);
+                        progress(im, per, 0, im->h - y - 1, im->w, im->h - y + l);
                         pper = per;
                         pl = y;
                     }
