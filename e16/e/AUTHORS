@@ -134,5 +134,8 @@ Ulf Carlsson <ulfc@cthulhu.engr.sgi.com>
 Dènis Riedijk <ried@si.tn.tudelft.nl>
 		gettext internationalisation patch for E
 
+Daniel Egger <Daniel.Egger@rz.fh-muenchen.de>
+		localised file finding patches
+
 And others whose names we probably forgot to add (email us and we'll put you
 in here)
