@@ -170,7 +170,7 @@ ewl_seeker_increase(Ewl_Seeker * s)
 
 	if (s->value > s->range)
 		s->value = s->range;
-	else if (!s->value < 0.0)
+	else if (s->value < 0.0)
 		s->value = 0.0;
 
 	ewl_widget_configure(EWL_WIDGET(s));
