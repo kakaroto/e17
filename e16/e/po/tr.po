@@ -5,7 +5,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: enlightenment 0.16.6\n"
-"POT-Creation-Date: 2003-11-08 02:05+0100\n"
+"POT-Creation-Date: 2003-11-09 00:49+0100\n"
 "PO-Revision-Date: 2000-07-30 22:39+0200\n"
 "Last-Translator: Fatih Demir <kabalak@gmx.net>\n"
 "Language-Team: Turkish <tr@li.org>\n"
@@ -13,18 +13,18 @@ msgstr ""
 "Content-Type: text/plain; charset=iso-8859-9\n"
 "Content-Transfer-Encoding: 8bit\n"
 
-#: src/actions.c:273 src/borders.c:2238 src/buttons.c:125 src/cmclass.c:97
-#: src/cursors.c:120 src/desktops.c:379 src/iclass.c:111 src/tclass.c:88
+#: src/actions.c:278 src/borders.c:2238 src/buttons.c:125 src/cmclass.c:97
+#: src/cursors.c:120 src/desktops.c:353 src/iclass.c:111 src/tclass.c:88
 #: src/tooltips.c:970
 #, c-format
 msgid "%u references remain\n"
 msgstr "%u bað geriye kaldý\n"
 
-#: src/actions.c:275
+#: src/actions.c:280
 msgid "ActionClass Error!"
 msgstr "ActionClass hatasý!"
 
-#: src/actions.c:670
+#: src/actions.c:675
 #, c-format
 msgid ""
 "There was an error running the program:\n"
@@ -37,7 +37,7 @@ msgstr ""
 "Bu uygulama çalýþtýrýlamadý .\n"
 "Zira , bu dosya yok .\n"
 
-#: src/actions.c:678
+#: src/actions.c:683
 #, c-format
 msgid ""
 "There was an error running the program:\n"
@@ -57,7 +57,7 @@ msgstr ""
 "komutanýn rehberine (man ..) bakýp o ´path´\n"
 "verimini geniþlet .\n"
 
-#: src/actions.c:698
+#: src/actions.c:703
 #, c-format
 msgid ""
 "There was an error running the program:\n"
@@ -74,7 +74,7 @@ msgstr ""
 "Bu dosya var ve senin çalýþtýrma hakkýn da\n"
 "var ?! ..\n"
 
-#: src/actions.c:709
+#: src/actions.c:714
 #, c-format
 msgid ""
 "There was an error running the program:\n"
@@ -89,7 +89,7 @@ msgstr ""
 "Bu uygulama var , ama senin bu uyulamayý \n"
 "çalýþtýrma hakkýn yok .\n"
 
-#: src/actions.c:725
+#: src/actions.c:730
 #, c-format
 msgid ""
 "There was an error running the program:\n"
@@ -102,7 +102,7 @@ msgstr ""
 "Bu uygulama çalýþtýrýlamadý .\n"
 "O dosya gercek'te bir dizin .\n"
 
-#: src/actions.c:733
+#: src/actions.c:738
 #, c-format
 msgid ""
 "There was an error running the program:\n"
@@ -115,16 +115,16 @@ msgstr ""
 "Bu uygulama çalýþtýrýlamadý .\n"
 "Zira bu normal bir dosya deðil .\n"
 
-#: src/actions.c:3224
+#: src/actions.c:3237
 #, c-format
 msgid "About Enlightenment %s"
 msgstr "Enlightenment %s hakkýnda bilgi "
 
-#: src/actions.c:3240
+#: src/actions.c:3253
 msgid "Welcome to the "
 msgstr "Hoþgeldin"
 
-#: src/actions.c:3240
+#: src/actions.c:3253
 msgid ""
 " version\n"
 "of the Enlightenment window manager.\n"
@@ -138,7 +138,7 @@ msgid ""
 "This code last updated on:\n"
 msgstr ""
 
-#: src/actions.c:3250
+#: src/actions.c:3263
 msgid ""
 "\n"
 "\n"
@@ -148,21 +148,21 @@ msgid ""
 "Mandrake - mandrake@mandrake.net\n"
 msgstr ""
 
-#: src/actions.c:3255 src/dialog.c:303 src/groups.c:693 src/settings.c:329
-#: src/settings.c:602 src/settings.c:974 src/settings.c:1182
-#: src/settings.c:1419 src/settings.c:1563 src/settings.c:1666
-#: src/settings.c:1774 src/settings.c:1854 src/settings.c:1945
-#: src/settings.c:2400 src/settings.c:3806 src/settings.c:4162
-#: src/settings.c:4465 src/settings.c:4643 src/settings.c:4863 src/snaps.c:551
+#: src/actions.c:3268 src/dialog.c:303 src/groups.c:693 src/settings.c:329
+#: src/settings.c:602 src/settings.c:974 src/settings.c:1199
+#: src/settings.c:1436 src/settings.c:1580 src/settings.c:1683
+#: src/settings.c:1791 src/settings.c:1871 src/settings.c:1962
+#: src/settings.c:2417 src/settings.c:3823 src/settings.c:4179
+#: src/settings.c:4482 src/settings.c:4660 src/settings.c:4880 src/snaps.c:551
 #: src/sound.c:262
 msgid "OK"
 msgstr "Oldu"
 
-#: src/actions.c:3407
+#: src/actions.c:3420
 msgid "  Pick the group the window will belong to:  \n"
 msgstr " Pencerenin eklencek olduðu kitleyi seç : \n"
 
-#: src/actions.c:3762
+#: src/actions.c:3775
 msgid ""
 "\n"
 "  There's no current group at the moment.  \n"
@@ -182,23 +182,23 @@ msgstr ""
 " Pencerenin eklenecek olduðu baþka bir kitle seç : \n"
 "\n"
 
-#: src/actions.c:3795
+#: src/actions.c:3808
 msgid "   Select the group to remove the window from.  "
 msgstr " Pencerenin silnecek olduðu kitleyi seç ."
 
-#: src/actions.c:3819
+#: src/actions.c:3832
 msgid "  Select the group to break  "
 msgstr " Kýrýlacak kitleyi seç "
 
-#: src/actions.c:3847
+#: src/actions.c:3860
 msgid "You have been warned about the dangers of Zoom mode\n"
 msgstr "Büyütme teþkilinin tehlikesine sana anlattýk gibi geliyor bana ...\n"
 
-#: src/actions.c:3850
+#: src/actions.c:3863
 msgid "Warning !!!"
 msgstr "IKAZ   !!!"
 
-#: src/actions.c:3851
+#: src/actions.c:3864
 msgid ""
 "This feature is heavily reliant on a feature of your\n"
 "X Server called the Vid Mode Extension. This feature exists\n"
@@ -276,20 +276,20 @@ msgstr ""
 msgid "E IPC Error"
 msgstr "E IPC hatasý"
 
-#: src/config.c:254 src/config.c:488 src/config.c:567 src/config.c:880
-#: src/config.c:997 src/config.c:1238 src/config.c:1366 src/config.c:1471
-#: src/config.c:1687 src/config.c:1935 src/config.c:2007 src/config.c:2102
-#: src/config.c:2360 src/config.c:2577 src/config.c:2841 src/config.c:2934
-#: src/config.c:2968 src/config.c:3117 src/config.c:3352
+#: src/config.c:254 src/config.c:488 src/config.c:567 src/config.c:883
+#: src/config.c:1000 src/config.c:1241 src/config.c:1369 src/config.c:1474
+#: src/config.c:1690 src/config.c:1938 src/config.c:2010 src/config.c:2105
+#: src/config.c:2363 src/config.c:2580 src/config.c:2844 src/config.c:2937
+#: src/config.c:2971 src/config.c:3120 src/config.c:3355
 #, c-format
 msgid "CONFIG: ignoring extra data in \"%s\"\n"
 msgstr "CONFIG : \"%s\"'nin ekstra bilgilerini gözardý ediyorum .\n"
 
-#: src/config.c:260 src/config.c:494 src/config.c:575 src/config.c:886
-#: src/config.c:1003 src/config.c:1244 src/config.c:1372 src/config.c:1479
-#: src/config.c:1695 src/config.c:1941 src/config.c:2013 src/config.c:2110
-#: src/config.c:2366 src/config.c:2585 src/config.c:2847 src/config.c:3123
-#: src/config.c:3360
+#: src/config.c:260 src/config.c:494 src/config.c:575 src/config.c:889
+#: src/config.c:1006 src/config.c:1247 src/config.c:1375 src/config.c:1482
+#: src/config.c:1698 src/config.c:1944 src/config.c:2016 src/config.c:2113
+#: src/config.c:2369 src/config.c:2588 src/config.c:2850 src/config.c:3126
+#: src/config.c:3363
 #, c-format
 msgid "CONFIG: missing required data in \"%s\"\n"
 msgstr "CONFIG : \"%s\"'de gerekli bilgi yok \n"
@@ -323,7 +323,7 @@ msgstr ""
 "Ikaz : Ayarlama kaydýrma bloðunun yükleminden önce\n"
 "bitmiþ . Sonuç hiç hoþ olmayabilir !\n"
 
-#: src/config.c:847
+#: src/config.c:850
 #, c-format
 msgid ""
 "Warning: unable to determine what to do with\n"
@@ -336,7 +336,7 @@ msgstr ""
 "´%s´ metniyle alakalý ne yapacaðýmý bilmiyorum \n"
 "Gözardý edip , devam ediyorum ...\n"
 
-#: src/config.c:854
+#: src/config.c:857
 msgid ""
 "Warning:  Configuration appears to have ended before we were\n"
 "Done loading a Control block.  Outcome is likely not good.\n"
@@ -344,7 +344,7 @@ msgstr ""
 "Ikaz : Ayarlama ayar bloðunun yükleminin bitiminden önce \n"
 "bitirilmiþ . Sonuç iyi olmayabilir .\n"
 
-#: src/config.c:964 src/config.c:1197
+#: src/config.c:967 src/config.c:1200
 msgid ""
 "Warning:  Configuration appears to have ended before we were\n"
 "Done loading a Menu block.  Outcome is likely not good.\n"
@@ -352,7 +352,7 @@ msgstr ""
 "Ikaz : Ayarlama mönü bloðunun yükleminin bitiminden önce \n"
 "bitirilmiþ . Sonuç iyi olmayabilir .\n"
 
-#: src/config.c:1334
+#: src/config.c:1337
 msgid ""
 "Warning:  Configuration appears to have ended before we were\n"
 "Done loading a BorderPart block.  Outcome is likely not good.\n"
@@ -360,7 +360,7 @@ msgstr ""
 "Ikaz : Ayarlama kenar ayarlarý bloðunun yükleminin bitiminden önce \n"
 "bitirilmiþ . Sonuç iyi olmayabilir .\n"
 
-#: src/config.c:1424
+#: src/config.c:1427
 msgid ""
 "Warning:  Configuration appears to have ended before we were\n"
 "Done loading a Main Border block.  Outcome is likely not good.\n"
@@ -368,7 +368,7 @@ msgstr ""
 "Ikaz : Ayarlama ana kenarý bloðunun yükleminin bitiminden önce \n"
 "bitirilmiþ . Sonuç iyi olmayabilir .\n"
 
-#: src/config.c:1643
+#: src/config.c:1646
 msgid ""
 "Warning:  Configuration appears to have ended before we were\n"
 "Done loading a Button block.  Outcome is likely not good.\n"
@@ -376,7 +376,7 @@ msgstr ""
 "Ikaz : Ayarlama basma bloðunun yükleminin bitiminden önce \n"
 "bitirilmiþ . Sonuç iyi olmayabilir .\n"
 
-#: src/config.c:1899 src/config.c:1982
+#: src/config.c:1902 src/config.c:1985
 msgid ""
 "Warning:  Configuration appears to have ended before we were\n"
 "Done loading a Desktop block.  Outcome is likely not good.\n"
@@ -384,11 +384,11 @@ msgstr ""
 "Ikaz : Ayarlama masaüstü bloðunun yükleminin bitiminden önce \n"
 "bitirilmiþ . Sonuç iyi olmayabilir .\n"
 
-#: src/config.c:1994
+#: src/config.c:1997
 msgid "Easter Egg!  Iconboxes aren't implemented yet.\n"
 msgstr "Nisan balýðý !!!!! Ikona kutusu þimdiye kadar yapýlmadý .\n"
 
-#: src/config.c:2025
+#: src/config.c:2028
 msgid ""
 "Warning:  Configuration appears to have ended before we were\n"
 "Done loading an Iconbox block.  Outcome is likely not good.\n"
@@ -396,7 +396,7 @@ msgstr ""
 "Ikaz : Ayarlama simge kutusu bloðunun yükleminin bitiminden önce \n"
 "bitirilmiþ . Sonuç iyi olmayabilir .\n"
 
-#: src/config.c:2061
+#: src/config.c:2064
 msgid ""
 "Warning:  Configuration appears to have ended before we were\n"
 "Done loading an Sound block.  Outcome is likely not good.\n"
@@ -404,7 +404,7 @@ msgstr ""
 "Ikaz : Ayarlama ses bloðunun yükleminin bitiminden önce \n"
 "bitirilmiþ . Sonuç iyi olmayabilir .\n"
 
-#: src/config.c:2315
+#: src/config.c:2318
 #, c-format
 msgid ""
 "Warning: unable to determine what to do with\n"
@@ -417,7 +417,7 @@ msgstr ""
 "Bu metine \"ActionClass\"ýnda rastlandý\n"
 "Gözardý edip, devam ediyorum ...\n"
 
-#: src/config.c:2330
+#: src/config.c:2333
 msgid ""
 "Warning:  Configuration appears to have ended before we were\n"
 "Done loading an Action Class block.  Outcome is likely not good.\n"
@@ -425,7 +425,7 @@ msgstr ""
 "Ikaz : Ayarlama eylemler bloðunun yükleminin bitiminden önce \n"
 "bitirilmiþ . Sonuç iyi olmayabilir .\n"
 
-#: src/config.c:2529
+#: src/config.c:2532
 #, c-format
 msgid ""
 "Warning: unable to determine what to do with\n"
@@ -438,7 +438,7 @@ msgstr ""
 "Bu metine \"ImageClass\"ýnda rastlandý\n"
 "Gözardý edip, devam ediyorum ...\n"
 
-#: src/config.c:2537
+#: src/config.c:2540
 msgid ""
 "Warning:  Configuration appears to have ended before we were\n"
 "Done loading an ImageClass block.  Outcome is likely not good.\n"
@@ -446,7 +446,7 @@ msgstr ""
 "Ikaz : Ayarlama resim  bloðunun yükleminin bitiminden önce \n"
 "bitirilmiþ . Sonuç iyi olmayabilir .\n"
 
-#: src/config.c:2777
+#: src/config.c:2780
 #, c-format
 msgid ""
 "Warning: unable to determine what to do with\n"
@@ -459,7 +459,7 @@ msgstr ""
 "Bu metine \"ColorModifierClass\"ýnda rastlandý\n"
 "Gözardý edip, devam ediyorum ...\n"
 
-#: src/config.c:2802
+#: src/config.c:2805
 msgid ""
 "Warning:  Configuration appears to have ended before we were\n"
 "Done loading an ColorModifier block.\n"
@@ -468,7 +468,7 @@ msgstr ""
 "Ikaz : Ayarlama renk deðiþkenler bloðunun yükleminin bitiminden önce \n"
 "bitirilmiþ . Sonuç iyi olmayabilir .\n"
 
-#: src/config.c:2894
+#: src/config.c:2897
 #, c-format
 msgid ""
 "Warning: unable to determine what to do with\n"
@@ -481,7 +481,7 @@ msgstr ""
 "Bu metine \"ToolTip\"lerde rastlandý\n"
 "Gözardý edip, devam ediyorum ...\n"
 
-#: src/config.c:2902
+#: src/config.c:2905
 msgid ""
 "Warning: Configuration appears to have ended before we were\n"
 "Done loading an ToolTip block.  Outcome is likely not good.\n"
@@ -489,7 +489,7 @@ msgstr ""
 "Ikaz : Ayarlama balon yardým bloðunun yükleminin bitiminden önce \n"
 "bitirilmiþ . Sonuç iyi olmayabilir .\n"
 
-#: src/config.c:2941
+#: src/config.c:2944
 msgid ""
 "Warning: Configuration appears to have ended before we were\n"
 "Done loading an FX block.  Outcome is likely not good.\n"
@@ -497,7 +497,7 @@ msgstr ""
 "Ikaz : Ayarlama efekler (\"FX\") bloðunun yükleminin bitiminden önce \n"
 "bitirilmiþ . Sonuç iyi olmayabilir .\n"
 
-#: src/config.c:3032
+#: src/config.c:3035
 #, c-format
 msgid ""
 "Warning: unable to determine what to do with\n"
@@ -510,7 +510,7 @@ msgstr ""
 " \n"
 "Gözardý edip , devam ediyorum ...\n"
 
-#: src/config.c:3041
+#: src/config.c:3044
 msgid ""
 "Warning: Configuration appears to have ended before we were\n"
 "Done loading an Iconbox block.  Outcome is likely not good.\n"
@@ -519,7 +519,7 @@ msgstr ""
 "önce \n"
 "bitirilmiþ . Sonuç iyi olmayabilir .\n"
 
-#: src/config.c:3078
+#: src/config.c:3081
 #, c-format
 msgid ""
 "Warning: unable to determine what to do with\n"
@@ -532,7 +532,7 @@ msgstr ""
 " \n"
 "Gözardý edip , devam ediyorum ...\n"
 
-#: src/config.c:3087
+#: src/config.c:3090
 msgid ""
 "Warning: Configuration appears to have ended before we were\n"
 "Done loading an Extras block.  Outcome is likely not good.\n"
@@ -540,7 +540,7 @@ msgstr ""
 "Ikaz : Ayarlama eklemler (\"Extras\") bloðunun yükleminin bitiminden önce \n"
 "bitirilmiþ . Sonuç iyi olmayabilir .\n"
 
-#: src/config.c:3194
+#: src/config.c:3197
 #, c-format
 msgid ""
 "Warning: unable to determine what to do with\n"
@@ -553,7 +553,7 @@ msgstr ""
 " \n"
 "Gözardý edip , devam ediyorum ...\n"
 
-#: src/config.c:3202
+#: src/config.c:3205
 msgid ""
 "Warning: Configuration appears to have ended before we were\n"
 "Done loading an WindowMatch block.  Outcome is likely not good.\n"
@@ -562,7 +562,7 @@ msgstr ""
 "bitiminden önce \n"
 "bitirilmiþ . Sonuç iyi olmayabilir .\n"
 
-#: src/config.c:3238
+#: src/config.c:3241
 #, c-format
 msgid ""
 "Help! Cannot find epp!\n"
@@ -579,23 +579,23 @@ msgstr ""
 "Bu ´epp´ uygulamasýnýn eksiðinden dolayý yada\n"
 "senin ´epp´ için çalýþtýrma hakkýn olmadýðý için olabilir .\n"
 
-#: src/config.c:3243
+#: src/config.c:3246
 msgid "error"
 msgstr "hata"
 
-#: src/config.c:3369
+#: src/config.c:3372
 msgid "Theme versioning ERROR"
 msgstr "Görünüm nesilleme hatasý"
 
-#: src/config.c:3370 src/config.c:3400
+#: src/config.c:3373 src/config.c:3403
 msgid "Restart with Defaults"
 msgstr "Önayarlý deðerlerle yeniden baþla"
 
-#: src/config.c:3371 src/config.c:3401
+#: src/config.c:3374 src/config.c:3404
 msgid "Abort and Exit"
 msgstr "Býrak ve Çýk"
 
-#: src/config.c:3373
+#: src/config.c:3376
 #, c-format
 msgid ""
 "ERROR:\n"
@@ -632,11 +632,11 @@ msgstr ""
 "yenilemedin ve bu görünüm yeni nesillerin bazý özelliklerinden\n"
 "faydalanýyor .\n"
 
-#: src/config.c:3399
+#: src/config.c:3402
 msgid "User Config Version ERROR"
 msgstr "Kullanýcý Ayarlama Nesili hatasý"
 
-#: src/config.c:3403
+#: src/config.c:3406
 #, c-format
 msgid ""
 "ERROR:\n"
@@ -664,7 +664,7 @@ msgstr ""
 "O zaman yeterince bir güven seviyesine ulaþýlmýþ ise\n"
 "ayar dosyalarýný deðiþtirebilirsin .\n"
 
-#: src/config.c:3692
+#: src/config.c:3695
 #, c-format
 msgid ""
 "WARNING!\n"
@@ -679,7 +679,7 @@ msgstr ""
 "Bu hata eksik boþ disk alaný, kota yada \n"
 "eksik olan ulaþým haklarýndan dolayý olabilir .\n"
 
-#: src/config.c:3701
+#: src/config.c:3704
 #, c-format
 msgid ""
 "Enlightenment has just experienced some major problems in\n"
@@ -716,27 +716,27 @@ msgstr ""
 "durumunun bir müþkili olabilir ve Enlightenment her baþladýðýnda\n"
 "yaklaþýk hiç bir ayarlamayý yüklemeyecek .\n"
 
-#: src/config.c:3768
+#: src/config.c:3771
 msgid "Enlightenment Starting..."
 msgstr "Enlightenment baþlýyor ...."
 
-#: src/config.c:4204
+#: src/config.c:4208
 msgid "Recover system config?"
 msgstr "Sistem ayarlarýný yeniden kurayým mý ?"
 
-#: src/config.c:4204
+#: src/config.c:4208
 msgid "Yes, Attempt recovery"
 msgstr "Evet , kurmayý dene"
 
-#: src/config.c:4205
+#: src/config.c:4209
 msgid "Restart and try again"
 msgstr "Yeniden baþla ve bir daha dene"
 
-#: src/config.c:4205
+#: src/config.c:4209
 msgid "Quit and give up"
 msgstr "Çýk ve unut"
 
-#: src/config.c:4207
+#: src/config.c:4211
 msgid ""
 "Enlightenment has encountered parsing errors in your autosaved\n"
 "configuration.\n"
@@ -760,11 +760,11 @@ msgstr ""
 msgid "ECursor Error!"
 msgstr "ECursor hatasý!"
 
-#: src/desktops.c:381
+#: src/desktops.c:355
 msgid "Background Error!"
 msgstr "Background hatasý!"
 
-#: src/desktops.c:1069
+#: src/desktops.c:1043
 msgid ""
 "Hold down the mouse button and drag\n"
 "the mouse to be able to drag the desktop\n"
@@ -782,7 +782,7 @@ msgstr ""
 "Orta fare tuþuyla yekin þu an çalýþan \n"
 "uygulamalarý görebilirsin .\n"
 
-#: src/desktops.c:1081
+#: src/desktops.c:1055
 msgid ""
 "This is the Root desktop.\n"
 "You cannot drag the root desktop around.\n"
@@ -798,7 +798,7 @@ msgstr ""
 "Orta fare tuþuyla yekin þu an çalýþan \n"
 "uygulamalarý görebilirsin .\n"
 
-#: src/desktops.c:1102
+#: src/desktops.c:1076
 msgid ""
 "Click here to raise this desktop\n"
 "to the top.\n"
@@ -806,7 +806,7 @@ msgstr ""
 "Bu masaüstünü baþa getirmek için \n"
 "buraya týkla .\n"
 
-#: src/desktops.c:1118
+#: src/desktops.c:1092
 msgid ""
 "Click here to lower this desktop\n"
 "to the bottom.\n"
@@ -1000,7 +1000,7 @@ msgstr ""
 "olmaktan mahrum . Bu pencereleri hiç bir kitleye\n"
 "ekleyemeyeceksin .\n"
 
-#: src/groups.c:599 src/groups.c:608 src/groups.c:616 src/settings.c:4285
+#: src/groups.c:599 src/groups.c:608 src/groups.c:616 src/settings.c:4302
 msgid "Window Group Error"
 msgstr "Pencere kitle hatasý"
 
@@ -1054,12 +1054,12 @@ msgstr ""
 "Enlightenment pencere kitlesi\n"
 "seçim diyaloðu\n"
 
-#: src/groups.c:694 src/pager.c:1283 src/settings.c:331 src/settings.c:604
-#: src/settings.c:976 src/settings.c:1184 src/settings.c:1421
-#: src/settings.c:1565 src/settings.c:1668 src/settings.c:1776
-#: src/settings.c:1856 src/settings.c:1947 src/settings.c:2402
-#: src/settings.c:3808 src/settings.c:4164 src/settings.c:4467
-#: src/settings.c:4645 src/settings.c:4865 src/snaps.c:553
+#: src/groups.c:694 src/pager.c:1300 src/settings.c:331 src/settings.c:604
+#: src/settings.c:976 src/settings.c:1201 src/settings.c:1438
+#: src/settings.c:1582 src/settings.c:1685 src/settings.c:1793
+#: src/settings.c:1873 src/settings.c:1964 src/settings.c:2419
+#: src/settings.c:3825 src/settings.c:4181 src/settings.c:4484
+#: src/settings.c:4662 src/settings.c:4882 src/snaps.c:553
 msgid "Close"
 msgstr "Kapat"
 
@@ -1675,11 +1675,11 @@ msgstr "Modül yüklü deðil.\n"
 msgid "Unknown Module Error.\n"
 msgstr "Bilinmeyen modül hatasý .\n"
 
-#: src/pager.c:528 src/pager.c:542 src/pager.c:556
+#: src/pager.c:532 src/pager.c:546 src/pager.c:560
 msgid "Warning!"
 msgstr "Ikaz !"
 
-#: src/pager.c:529
+#: src/pager.c:533
 msgid ""
 "\n"
 "You seem to have an X Server capable of Shared Memory\n"
@@ -1707,7 +1707,7 @@ msgstr ""
 "özelliðini kapatman tavsiye edilir .\n"
 "\n"
 
-#: src/pager.c:543
+#: src/pager.c:547
 msgid ""
 "\n"
 "Your X Server is capable of doing Shared Memory but you do\n"
@@ -1727,7 +1727,7 @@ msgstr ""
 "saðlayacaktýr ( özellikler gözey için çok iyidir ) .\n"
 "\n"
 
-#: src/pager.c:557
+#: src/pager.c:561
 msgid ""
 "\n"
 "You seem to be running Enlightenment over a network Connection\n"
@@ -1756,43 +1756,43 @@ msgstr ""
 "gösterme özelliðini kapatabilirsin .Sistemin sana teþekkür edecektir .\n"
 "\n"
 
-#: src/pager.c:1274
+#: src/pager.c:1291
 msgid "Window Options"
 msgstr "Pencere ayarlarý"
 
-#: src/pager.c:1280
+#: src/pager.c:1297
 msgid "Iconify"
 msgstr "Simgeleþtir"
 
-#: src/pager.c:1286
+#: src/pager.c:1303
 msgid "Annihilate"
 msgstr "Öldür"
 
-#: src/pager.c:1289
+#: src/pager.c:1306
 msgid "Stick / Unstick"
 msgstr "Yapýþtýr/Serbest'et"
 
-#: src/pager.c:1301
+#: src/pager.c:1318
 msgid "Desktop Options"
 msgstr "Masaüstü ayarlarý"
 
-#: src/pager.c:1306
+#: src/pager.c:1323
 msgid "Pager Settings..."
 msgstr "Gözey ayarlarý ..."
 
-#: src/pager.c:1310
+#: src/pager.c:1327
 msgid "Snapshotting On"
 msgstr "Ekranlamayý aç"
 
-#: src/pager.c:1314
+#: src/pager.c:1331
 msgid "Snapshotting Off"
 msgstr "Ekranlamayý kapat"
 
-#: src/pager.c:1320
+#: src/pager.c:1337
 msgid "High Quality On"
 msgstr "Yüksek kaliteyle"
 
-#: src/pager.c:1324
+#: src/pager.c:1341
 msgid "High Quality Off"
 msgstr "Yüksek kalitesiz"
 
@@ -1911,7 +1911,7 @@ msgid "Mouse button to select and drag windows:"
 msgstr "Pencereleri seçme ve taþýma tuþu :"
 
 #: src/settings.c:238 src/settings.c:270 src/settings.c:302
-#: src/settings.c:2248
+#: src/settings.c:2265
 msgid "Left"
 msgstr "Sol"
 
@@ -1920,7 +1920,7 @@ msgid "Middle"
 msgstr "Orta"
 
 #: src/settings.c:254 src/settings.c:286 src/settings.c:318
-#: src/settings.c:2255
+#: src/settings.c:2272
 msgid "Right"
 msgstr "Sað"
 
@@ -1933,11 +1933,11 @@ msgid "Mouse button to display pager menu:"
 msgstr "Gözey mönüsünü gösterten fare tuþu :"
 
 #: src/settings.c:330 src/settings.c:603 src/settings.c:975
-#: src/settings.c:1183 src/settings.c:1420 src/settings.c:1564
-#: src/settings.c:1667 src/settings.c:1775 src/settings.c:1855
-#: src/settings.c:1946 src/settings.c:2401 src/settings.c:3807
-#: src/settings.c:4163 src/settings.c:4466 src/settings.c:4644
-#: src/settings.c:4864 src/snaps.c:552
+#: src/settings.c:1200 src/settings.c:1437 src/settings.c:1581
+#: src/settings.c:1684 src/settings.c:1792 src/settings.c:1872
+#: src/settings.c:1963 src/settings.c:2418 src/settings.c:3824
+#: src/settings.c:4180 src/settings.c:4483 src/settings.c:4661
+#: src/settings.c:4881 src/snaps.c:552
 msgid "Apply"
 msgstr "Uygula"
 
@@ -2037,23 +2037,23 @@ msgstr "Taþýma þekli :"
 msgid "Resize Methods:"
 msgstr "Yeniden boyutlandýrma þekli :"
 
-#: src/settings.c:841 src/settings.c:849 src/settings.c:2109
+#: src/settings.c:841 src/settings.c:849 src/settings.c:2126
 msgid "Opaque"
 msgstr "Içli"
 
-#: src/settings.c:857 src/settings.c:865 src/settings.c:2124
+#: src/settings.c:857 src/settings.c:865 src/settings.c:2141
 msgid "Technical"
 msgstr "Teknik"
 
-#: src/settings.c:873 src/settings.c:881 src/settings.c:2139
+#: src/settings.c:873 src/settings.c:881 src/settings.c:2156
 msgid "Box"
 msgstr "Kutu olarak"
 
-#: src/settings.c:889 src/settings.c:897 src/settings.c:2154
+#: src/settings.c:889 src/settings.c:897 src/settings.c:2171
 msgid "Shaded"
 msgstr "Gölgeli"
 
-#: src/settings.c:905 src/settings.c:913 src/settings.c:2169
+#: src/settings.c:905 src/settings.c:913 src/settings.c:2186
 msgid "Semi-Solid"
 msgstr "Yarý-gözükür"
 
@@ -2077,21 +2077,21 @@ msgstr "Daima ekran köþesinde"
 msgid "Don't show"
 msgstr "Gösterme"
 
-#: src/settings.c:1092 src/settings.c:1154
+#: src/settings.c:1094 src/settings.c:1157
 #, c-format
 msgid "%i Desktops"
 msgstr "%i masaüstleri"
 
-#: src/settings.c:1094 src/settings.c:1156
+#: src/settings.c:1096 src/settings.c:1159
 #, c-format
 msgid "%i Desktop"
 msgstr "%i masaüstü"
 
-#: src/settings.c:1118
+#: src/settings.c:1121
 msgid "Multiple Desktop Settings"
 msgstr "Çoklu masaüstü ayarlarý"
 
-#: src/settings.c:1133
+#: src/settings.c:1136
 msgid ""
 "Enlightenment Multiple Desktop\n"
 "Settings Dialog\n"
@@ -2099,11 +2099,16 @@ msgstr ""
 "Enlightenment çoklu masaüstü\n"
 "ayarlarý diyaloðu\n"
 
-#: src/settings.c:1147
+#: src/settings.c:1150
 msgid "Number of virtual desktops:\n"
 msgstr "Sanal masaüstlerinin sayýsý :\n"
 
-#: src/settings.c:1271 src/settings.c:1340
+#: src/settings.c:1189
+#, fuzzy
+msgid "Wrap desktops around"
+msgstr "Sanal masaüstleri kenarda deðiþtir"
+
+#: src/settings.c:1288 src/settings.c:1357
 #, c-format
 msgid ""
 "%i x %i\n"
@@ -2112,7 +2117,7 @@ msgstr ""
 "%i * %i\n"
 "Ekran boyutlarý"
 
-#: src/settings.c:1274 src/settings.c:1343
+#: src/settings.c:1291 src/settings.c:1360
 msgid ""
 "1\n"
 "Screen in size"
@@ -2120,11 +2125,11 @@ msgstr ""
 "1\n"
 "Ekran boyutu"
 
-#: src/settings.c:1304
+#: src/settings.c:1321
 msgid "Virtual Desktop Settings"
 msgstr "Sanal masaüstü ayarlarý"
 
-#: src/settings.c:1322
+#: src/settings.c:1339
 msgid ""
 "Enlightenment Virtual Desktop\n"
 "Settings Dialog\n"
@@ -2132,27 +2137,27 @@ msgstr ""
 "Enlightenment sanal masaüstü\n"
 "ayarlarý diyaloðu\n"
 
-#: src/settings.c:1334
+#: src/settings.c:1351
 msgid "Virtual Desktop size:\n"
 msgstr "Sanal masaüstü boyutu :\n"
 
-#: src/settings.c:1388
+#: src/settings.c:1405
 msgid "Wrap virtual desktops around"
 msgstr "Sanal masaüstleri kenarda deðiþtir"
 
-#: src/settings.c:1395
+#: src/settings.c:1412
 msgid "Enable edge flip"
 msgstr "Kenar zýplamasýný aç"
 
-#: src/settings.c:1402
+#: src/settings.c:1419
 msgid "Resistance at edge of screen:\n"
 msgstr "Ekran kenarýnýn dayanýklýðý :\n"
 
-#: src/settings.c:1482
+#: src/settings.c:1499
 msgid "Window Placement Settings"
 msgstr "Pencere yerleþme ayarlarý"
 
-#: src/settings.c:1497
+#: src/settings.c:1514
 msgid ""
 "Enlightenment Window Placement\n"
 "Settings Dialog\n"
@@ -2160,32 +2165,32 @@ msgstr ""
 "Enlightenment pencere yerleþme\n"
 "ayarlarý diyaloðu\n"
 
-#: src/settings.c:1513
+#: src/settings.c:1530
 msgid "Dialog windows appear together with their owner"
 msgstr "Diyalok pencerelerini ana pencereleriyle beraber ayný masaüsütünde aç"
 
-#: src/settings.c:1522
+#: src/settings.c:1539
 msgid "Switch to desktop where dialog appears"
 msgstr "Yeni bir diyalok penceresinin açýldýðý masaüstüne geç"
 
-#: src/settings.c:1530
+#: src/settings.c:1547
 msgid "Place windows manually"
 msgstr "Pencereleri elden yerleþtir"
 
-#: src/settings.c:1538
+#: src/settings.c:1555
 msgid "Place windows under mouse"
 msgstr "Pencereleri farenin altýna yerleþtir"
 
-#: src/settings.c:1551
+#: src/settings.c:1568
 #, fuzzy
 msgid "Place windows on another head when full"
 msgstr "Pencereleri elden yerleþtir"
 
-#: src/settings.c:1612
+#: src/settings.c:1629
 msgid "Autoraise Settings"
 msgstr "Otomatik öne getirim"
 
-#: src/settings.c:1627
+#: src/settings.c:1644
 msgid ""
 "Enlightenment Automatic Raising\n"
 "of Windows Settings Dialog\n"
@@ -2193,19 +2198,19 @@ msgstr ""
 "Enlightenment otomatikman öne getirim\n"
 "ayarlarý diyaloðu\n"
 
-#: src/settings.c:1641
+#: src/settings.c:1658
 msgid "Raise Windows Automatically"
 msgstr "Pencereleri otomatikman öne geçir"
 
-#: src/settings.c:1649
+#: src/settings.c:1666
 msgid "Autoraise delay:"
 msgstr "Bekleme zamaný :"
 
-#: src/settings.c:1713
+#: src/settings.c:1730
 msgid "Tooltip Settings"
 msgstr "Balon yardýmý ayarlarý"
 
-#: src/settings.c:1728
+#: src/settings.c:1745
 msgid ""
 "Enlightenment Tooltip\n"
 "Settings Dialog\n"
@@ -2213,23 +2218,23 @@ msgstr ""
 "Enlightenment balon yardýmý\n"
 "ayarlarý diyaloðu\n"
 
-#: src/settings.c:1741
+#: src/settings.c:1758
 msgid "Display Tooltips"
 msgstr "Balon yardýmlarý göster"
 
-#: src/settings.c:1749
+#: src/settings.c:1766
 msgid "Display Root Window Tips"
 msgstr "Ana pencere yardýmlarýný göster"
 
-#: src/settings.c:1757
+#: src/settings.c:1774
 msgid "Tooltip Delay:\n"
 msgstr "Balon yardýmý gösterme zaman arasý :\n"
 
-#: src/settings.c:1815
+#: src/settings.c:1832
 msgid "Miscellaneous Settings"
 msgstr "Karýþýk ayarlar"
 
-#: src/settings.c:1830
+#: src/settings.c:1847
 msgid ""
 "Enlightenment Miscellaneous\n"
 "Settings Dialog\n"
@@ -2237,15 +2242,15 @@ msgstr ""
 "Enlightenment karýþýk ayarlar\n"
 "diyaloðu\n"
 
-#: src/settings.c:1844
+#: src/settings.c:1861
 msgid "Enable Dialog Headers"
 msgstr "Diyalok baþlýklarýný aç"
 
-#: src/settings.c:1898
+#: src/settings.c:1915
 msgid "Audio Settings"
 msgstr "Ses ayarlarý"
 
-#: src/settings.c:1913
+#: src/settings.c:1930
 msgid ""
 "Enlightenment Audio\n"
 "Settings Dialog\n"
@@ -2253,11 +2258,11 @@ msgstr ""
 "Enlightenment ses\n"
 "ayarlarý diyaloðu\n"
 
-#: src/settings.c:1926
+#: src/settings.c:1943
 msgid "Enable sounds"
 msgstr "Sesi aç"
 
-#: src/settings.c:1935
+#: src/settings.c:1952
 msgid ""
 "Audio not available since EsounD was not\n"
 "present at the time of compilation."
@@ -2265,11 +2270,11 @@ msgstr ""
 "Kurulum vaktinde EsounD bulunamadýðý\n"
 "için ses desteði yoktur ."
 
-#: src/settings.c:2058
+#: src/settings.c:2075
 msgid "Special FX Settings"
 msgstr "Özel efekler ayarlarý"
 
-#: src/settings.c:2073
+#: src/settings.c:2090
 msgid ""
 "Enlightenment Special Effects\n"
 "Settings Dialog\n"
@@ -2277,103 +2282,103 @@ msgstr ""
 "Enlightenment özel efekler\n"
 "ayarlarý diyaloðu\n"
 
-#: src/settings.c:2096
+#: src/settings.c:2113
 msgid "Slide Method:"
 msgstr "Kaydýrma þekli :"
 
-#: src/settings.c:2102
+#: src/settings.c:2119
 msgid "Slide desktops around when changing"
 msgstr "Masaüstü deðiþtirirken masaüstünü kaydýrt"
 
-#: src/settings.c:2117
+#: src/settings.c:2134
 msgid "Slide windows around when cleaning up"
 msgstr "Ekraný temizlerken pencereleri kaydýrt"
 
-#: src/settings.c:2132
+#: src/settings.c:2149
 msgid "Slide windows in when they appear"
 msgstr "Pencerler gözükürken pencereleri kaydýrt"
 
-#: src/settings.c:2147
+#: src/settings.c:2164
 msgid "Animated display of menus"
 msgstr "Mönüleri hareketlendir"
 
-#: src/settings.c:2162
+#: src/settings.c:2179
 msgid "Always pop up menus on screen"
 msgstr "Mönüleri her zaman ekranda aç"
 
-#: src/settings.c:2178
+#: src/settings.c:2195
 msgid "Warp pointer after moving menus"
 msgstr "Mönüleri taþýdýktan sonra göstergeyi zýplat"
 
-#: src/settings.c:2187
+#: src/settings.c:2204
 msgid "Use saveunders to reduce window exposures"
 msgstr "Pencere gösterimlerini \"saveunder\"'leri kullanýp azalt"
 
-#: src/settings.c:2196
+#: src/settings.c:2213
 msgid "Animate shading and unshading of windows"
 msgstr "Pencerelerin toplanmasýný hareketlendir"
 
-#: src/settings.c:2210
+#: src/settings.c:2227
 msgid "Display desktop dragbar"
 msgstr "Masaüstü çizgisini göster"
 
-#: src/settings.c:2219
+#: src/settings.c:2236
 msgid "Drag bar position:"
 msgstr "Masaüstü çizgisinin yeri :"
 
-#: src/settings.c:2230
+#: src/settings.c:2247
 msgid "Top"
 msgstr "Üst"
 
-#: src/settings.c:2237
+#: src/settings.c:2254
 msgid "Bottom"
 msgstr "Alt"
 
-#: src/settings.c:2274
+#: src/settings.c:2291
 msgid "Desktop Slide speed: (slow)\n"
 msgstr "Masaüstü kaydýrtma hýzý : (yavaþ)\n"
 
-#: src/settings.c:2290 src/settings.c:2312 src/settings.c:2334
-#: src/settings.c:2356
+#: src/settings.c:2307 src/settings.c:2329 src/settings.c:2351
+#: src/settings.c:2373
 msgid "(fast)\n"
 msgstr "(hýzlý)\n"
 
-#: src/settings.c:2296
+#: src/settings.c:2313
 msgid "Cleanup Slide speed: (slow)\n"
 msgstr "Temizleme kaydýrtma hýzý: (yavaþ)\n"
 
-#: src/settings.c:2318
+#: src/settings.c:2335
 msgid "Appear Slide speed: (slow)\n"
 msgstr "Görünme kaydýtma hýzý : (yavaþ)\n"
 
-#: src/settings.c:2340
+#: src/settings.c:2357
 msgid "Window Shading speed: (slow)\n"
 msgstr "Pencere toplama hýzý : (yavaþ)\n"
 
-#: src/settings.c:2369
+#: src/settings.c:2386
 msgid "Effects"
 msgstr ""
 
-#: src/settings.c:2375
+#: src/settings.c:2392
 #, fuzzy
 msgid "Enable Effect: Raindrops"
 msgstr "Yaðmur damlalarýný gösteremiyorum"
 
-#: src/settings.c:2382
+#: src/settings.c:2399
 msgid "Ripples"
 msgstr ""
 
-#: src/settings.c:2390
+#: src/settings.c:2407
 msgid "Waves"
 msgstr ""
 
-#: src/settings.c:2668 src/settings.c:2789 src/settings.c:3047
-#: src/settings.c:3170 src/settings.c:3792
+#: src/settings.c:2685 src/settings.c:2806 src/settings.c:3064
+#: src/settings.c:3187 src/settings.c:3809
 msgid "-NONE-"
 msgstr "-YOK-"
 
-#: src/settings.c:2671 src/settings.c:2792 src/settings.c:3050
-#: src/settings.c:3173 src/settings.c:3794
+#: src/settings.c:2688 src/settings.c:2809 src/settings.c:3067
+#: src/settings.c:3190 src/settings.c:3811
 #, c-format
 msgid ""
 "Background definition information:\n"
@@ -2384,7 +2389,7 @@ msgstr ""
 "Isim  : %s\n"
 "Dosya : %s\n"
 
-#: src/settings.c:2922 src/settings.c:2924
+#: src/settings.c:2939 src/settings.c:2941
 msgid ""
 "No\n"
 "Background"
@@ -2392,16 +2397,16 @@ msgstr ""
 "Ardalan\n"
 "yok"
 
-#: src/settings.c:3111 src/settings.c:3683
+#: src/settings.c:3128 src/settings.c:3700
 #, c-format
 msgid "Unused backgrounds freed after %2i:%02i:%02i"
 msgstr "Kullanýlmayan %2i:%02i:%02i dan sonra serbest'edilsin"
 
-#: src/settings.c:3444
+#: src/settings.c:3461
 msgid "Desktop Background Settings"
 msgstr "Ardalan ayarlarý"
 
-#: src/settings.c:3460
+#: src/settings.c:3477
 msgid ""
 "Enlightenment Desktop\n"
 "Background Settings Dialog\n"
@@ -2409,51 +2414,51 @@ msgstr ""
 "Enlightenment masaüstü\n"
 "ardalan ayarlarý diyaloðu\n"
 
-#: src/settings.c:3473
+#: src/settings.c:3490
 msgid "BG Colour\n"
 msgstr "Ardalan rengi\n"
 
-#: src/settings.c:3484
+#: src/settings.c:3501
 msgid "Move to Front\n"
 msgstr "Öne getir\n"
 
-#: src/settings.c:3491
+#: src/settings.c:3508
 msgid "Duplicate\n"
 msgstr "Kopyala\n"
 
-#: src/settings.c:3497
+#: src/settings.c:3514
 msgid "Unlist\n"
 msgstr "Listeden çýkar\n"
 
-#: src/settings.c:3503
+#: src/settings.c:3520
 msgid "Delete File\n"
 msgstr "Dosyayý sil\n"
 
-#: src/settings.c:3512
+#: src/settings.c:3529
 msgid "Red:\n"
 msgstr "Kýrmýzý :\n"
 
-#: src/settings.c:3526
+#: src/settings.c:3543
 msgid "Use background image"
 msgstr "Ardalan resmini kullan"
 
-#: src/settings.c:3534
+#: src/settings.c:3551
 msgid "Green:\n"
 msgstr "Yeþil :\n"
 
-#: src/settings.c:3548
+#: src/settings.c:3565
 msgid "Keep aspect on scale"
 msgstr "Büyütürken boyutlarý koru"
 
-#: src/settings.c:3556
+#: src/settings.c:3573
 msgid "Blue:\n"
 msgstr "Mavi :\n"
 
-#: src/settings.c:3570
+#: src/settings.c:3587
 msgid "Tile image across background"
 msgstr "Resmi ardalan'da tekrarla"
 
-#: src/settings.c:3586
+#: src/settings.c:3603
 msgid ""
 "Background\n"
 "Image\n"
@@ -2467,35 +2472,35 @@ msgstr ""
 "ve\n"
 "Taraflandýrma\n"
 
-#: src/settings.c:3667
+#: src/settings.c:3684
 msgid "Use dithering in Hi-Colour"
 msgstr "Yüksek renk sayýlarýnda titremi kur"
 
-#: src/settings.c:3674
+#: src/settings.c:3691
 msgid "Background overrides theme"
 msgstr "Ardalan görünümü geçer"
 
-#: src/settings.c:3730
+#: src/settings.c:3747
 msgid "Pre-scan BG's"
 msgstr "Ardalanlarý ön-tara"
 
-#: src/settings.c:3740
+#: src/settings.c:3757
 msgid "Sort by File"
 msgstr "Dosyaya göre sýrala"
 
-#: src/settings.c:3746
+#: src/settings.c:3763
 msgid "Sort by Attr."
 msgstr "Üzelliklere göre sýrala"
 
-#: src/settings.c:3752
+#: src/settings.c:3769
 msgid "Sort by Image"
 msgstr "Resme göre sýrala"
 
-#: src/settings.c:3913
+#: src/settings.c:3930
 msgid "Iconbox Settings"
 msgstr "Simge kutusu ayarlarý"
 
-#: src/settings.c:3931
+#: src/settings.c:3948
 msgid ""
 "Enlightenment Iconbox\n"
 "Settings Dialog\n"
@@ -2503,106 +2508,106 @@ msgstr ""
 "Enlightenment simge kutusu\n"
 "ayarlarý diyaloðu\n"
 
-#: src/settings.c:3942
+#: src/settings.c:3959
 msgid "Transparent background"
 msgstr "Transparan ardalan"
 
-#: src/settings.c:3949
+#: src/settings.c:3966
 msgid "Hide border around inner Iconbox"
 msgstr "Simge kutusunun içindeki kenarý sakla"
 
-#: src/settings.c:3956
+#: src/settings.c:3973
 msgid "Show icon names"
 msgstr "Simge isimlerini göster"
 
-#: src/settings.c:3963
+#: src/settings.c:3980
 msgid "Draw base image behind Icons"
 msgstr "Simgenin arkasýnda resim boya"
 
-#: src/settings.c:3970
+#: src/settings.c:3987
 msgid "Hide scrollbar when not needed"
 msgstr "Lazým deðilse kayd#_rima çubuðunu gizle"
 
-#: src/settings.c:3977
+#: src/settings.c:3994
 msgid "Automatically resize to fit Icons"
 msgstr "Simgelere göre boyutlandýr"
 
-#: src/settings.c:3985
+#: src/settings.c:4002
 msgid "Animate when iconifying to this Iconbox"
 msgstr "Simge kutusuna simgeleþirken hareketlendir"
 
-#: src/settings.c:3995
+#: src/settings.c:4012
 msgid "Alignment of anchoring when automatically resizing:"
 msgstr "Otomatikman yeniden boyutlandýrýrken demirlenecek yön :"
 
-#: src/settings.c:4017
+#: src/settings.c:4034
 msgid "Icon image display policy (if one operation fails, try the next):"
 msgstr ""
 "Ikona resmi gösterme taktiði ( birisi baþarýsýz olursa , baþkasýný dene ):"
 
-#: src/settings.c:4024
+#: src/settings.c:4041
 msgid "Snapshot Windows, Use application icon, Use Enlightenment Icon"
 msgstr ""
 "Pencereyi yakala, uygulama simgesini kullan, Enlightenment simgesini kullan"
 
-#: src/settings.c:4033
+#: src/settings.c:4050
 msgid "Use application icon, Use Enlightenment Icon, Snapshot Window"
 msgstr ""
 "Uygulama simgesini kullan, Enlightenment simgesini kullan, pencereyi yakala"
 
-#: src/settings.c:4041
+#: src/settings.c:4058
 msgid "Use Enlightenment Icon, Snapshot Window"
 msgstr "Enlightenment simgesini kullan, pencereyi yakala"
 
-#: src/settings.c:4055
+#: src/settings.c:4072
 msgid "Icon size"
 msgstr "Ikona boyutu"
 
-#: src/settings.c:4078
+#: src/settings.c:4095
 msgid "Orientation:"
 msgstr "Taraflama :"
 
-#: src/settings.c:4084
+#: src/settings.c:4101
 msgid "Scrollbar side:"
 msgstr "Kaydýrma çubuðu tarafý :"
 
-#: src/settings.c:4090
+#: src/settings.c:4107
 msgid "Scrollbar arrows:"
 msgstr "Kaydýrma çubuðu göstergesi :"
 
-#: src/settings.c:4095
+#: src/settings.c:4112
 msgid "Horizontal"
 msgstr "Ufki"
 
-#: src/settings.c:4102
+#: src/settings.c:4119
 msgid "Left / Top"
 msgstr "Sol / Üst"
 
-#: src/settings.c:4109
+#: src/settings.c:4126
 msgid "Start"
 msgstr "Baþla"
 
-#: src/settings.c:4116
+#: src/settings.c:4133
 msgid "Vertical"
 msgstr "Dikey"
 
-#: src/settings.c:4124
+#: src/settings.c:4141
 msgid "Right / Bottom"
 msgstr "Sað / Alt"
 
-#: src/settings.c:4132
+#: src/settings.c:4149
 msgid "Both ends"
 msgstr "Iki son da"
 
-#: src/settings.c:4142
+#: src/settings.c:4159
 msgid "End"
 msgstr "Son"
 
-#: src/settings.c:4152
+#: src/settings.c:4169
 msgid "None"
 msgstr "Hiç biri"
 
-#: src/settings.c:4287
+#: src/settings.c:4304
 msgid ""
 "\n"
 "  This window currently does not belong to any groups.  \n"
@@ -2612,11 +2617,11 @@ msgstr ""
 "  Bu pencere hiç bir kitlenin üyesi deðil .    \n"
 "\n"
 
-#: src/settings.c:4310
+#: src/settings.c:4327
 msgid "Window Group Settings"
 msgstr "Pencere kitlesi ayarlarý"
 
-#: src/settings.c:4325
+#: src/settings.c:4342
 msgid ""
 "Enlightenment Window Group\n"
 "Settings Dialog\n"
@@ -2624,11 +2629,11 @@ msgstr ""
 "Enlightenment pencere kitlesi\n"
 "ayarlarý diyaloðu\n"
 
-#: src/settings.c:4340
+#: src/settings.c:4357
 msgid "   Pick the group to configure:   "
 msgstr "   Ayarlanacak kitleyi seç :    "
 
-#: src/settings.c:4376
+#: src/settings.c:4393
 msgid ""
 "  The following actions are  \n"
 "  applied to all group members:  "
@@ -2636,43 +2641,43 @@ msgstr ""
 "  Bu eylemler bu kitlenin    \n"
 "  yekin üyelerine etkin edilecektir"
 
-#: src/settings.c:4385 src/settings.c:4556
+#: src/settings.c:4402 src/settings.c:4573
 msgid "Changing Border Style"
 msgstr "Kenar deðiþiklikleri"
 
-#: src/settings.c:4395 src/settings.c:4564
+#: src/settings.c:4412 src/settings.c:4581
 msgid "Iconifying"
 msgstr "Ikonalaþlým"
 
-#: src/settings.c:4405 src/settings.c:4572
+#: src/settings.c:4422 src/settings.c:4589
 msgid "Killing"
 msgstr "Öldürülme"
 
-#: src/settings.c:4415 src/settings.c:4580
+#: src/settings.c:4432 src/settings.c:4597
 msgid "Moving"
 msgstr "Taþýnma"
 
-#: src/settings.c:4425 src/settings.c:4588
+#: src/settings.c:4442 src/settings.c:4605
 msgid "Raising/Lowering"
 msgstr "Yükseltme/Alçaltma"
 
-#: src/settings.c:4435 src/settings.c:4596
+#: src/settings.c:4452 src/settings.c:4613
 msgid "Sticking"
 msgstr "Yapýþtýrma"
 
-#: src/settings.c:4445 src/settings.c:4604
+#: src/settings.c:4462 src/settings.c:4621
 msgid "Shading"
 msgstr "Toplanma"
 
-#: src/settings.c:4455 src/settings.c:4612
+#: src/settings.c:4472 src/settings.c:4629
 msgid "Mirror Shade/Iconify/Stick"
 msgstr "Toplama/Ikonalaþma/Yapýþ#_týrma aynalanmasý"
 
-#: src/settings.c:4514
+#: src/settings.c:4531
 msgid "Default Group Control Settings"
 msgstr "Önayarlý kitle kontrol ayarlarý"
 
-#: src/settings.c:4529
+#: src/settings.c:4546
 msgid ""
 "Enlightenment Default\n"
 "Group Control Settings Dialog\n"
@@ -2680,23 +2685,23 @@ msgstr ""
 "Enlightenment önayarlý kitle kontrol\n"
 "ayarlarý diyaloðu\n"
 
-#: src/settings.c:4544
+#: src/settings.c:4561
 msgid " Per-group settings: "
 msgstr " Kitleye ögzü ayarlar : "
 
-#: src/settings.c:4627
+#: src/settings.c:4644
 msgid " Global settings: "
 msgstr " Genel ayarlar : "
 
-#: src/settings.c:4633
+#: src/settings.c:4650
 msgid "Swap Window Locations"
 msgstr "Pencere yerlerini deðiþtir"
 
-#: src/settings.c:4762
+#: src/settings.c:4779
 msgid "Remembered Windows Settings"
 msgstr "Pencere ayarlarýný hatýrla"
 
-#: src/settings.c:4778
+#: src/settings.c:4795
 msgid ""
 "Enlightenment Remembered\n"
 "Windows Settings Dialog\n"
@@ -2704,11 +2709,11 @@ msgstr ""
 "Enlightenment hatýrlanan\n"
 "pencere ayarlarý diyaloðu\n"
 
-#: src/settings.c:4833
+#: src/settings.c:4850
 msgid "Remembered Settings..."
 msgstr "Hatýrlanan ayarlar ..."
 
-#: src/settings.c:4854
+#: src/settings.c:4871
 msgid "There are no active windows with remembered attributes."
 msgstr "Hatýrlanan ayarlarlý geçerli pencere yok."
 
@@ -2821,7 +2826,7 @@ msgstr ""
 "daha yeniyse , o zaman Enlightenment'in yazarlarýnýn\n"
 "hiç duymadýðý yada eriþemediði bir tanesi idir .\n"
 
-#: src/setup.c:527
+#: src/setup.c:528
 #, c-format
 msgid ""
 "The directory %s is apparently not a directory\n"
@@ -2832,7 +2837,7 @@ msgstr ""
 "Bu aðýr bir hataya yol açtý .\n"
 "Lütfen o dosyayý sil yada baþka bir yere taþý .\n"
 
-#: src/setup.c:534
+#: src/setup.c:535
 #, c-format
 msgid ""
 "Do not have execute access to %s\n"
@@ -2845,7 +2850,7 @@ msgstr ""
 "Lütfen bu dizinin sahipliðini ve ulaþým\n"
 "haklarýný bir gözden geçir .\n"
 
-#: src/setup.c:543
+#: src/setup.c:544
 #, c-format
 msgid ""
 "Do not have read access to %s\n"
@@ -2858,7 +2863,7 @@ msgstr ""
 "Lütfen bu dizinin sahipliðini ve ulaþým\n"
 "haklarýný bir gözden geçir .\n"
 
-#: src/setup.c:551
+#: src/setup.c:552
 #, c-format
 msgid ""
 "Do not have write access to %s\n"
