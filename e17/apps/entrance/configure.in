@@ -127,7 +127,7 @@ data/themes/BlueCrystal/Makefile
 data/themes/matrix0/Makefile
 ])
 
-AC_OUTPUT
+#AC_OUTPUT
 
 echo
 echo "$PACKAGE $VERSION"
