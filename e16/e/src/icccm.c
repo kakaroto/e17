@@ -652,11 +652,6 @@ ICCCM_GetGeoms(EWin * ewin, Atom atom_change)
 	  }
 	if (hint.flags & PBaseSize)
 	  {
-	     if (!(hint.flags & PMaxSize))
-	       {
-		  ewin->client.width.min = hint.base_width;
-		  ewin->client.height.min = hint.base_height;
-	       }
 	     ewin->client.base_w = hint.base_width;
 	     ewin->client.base_h = hint.base_height;
 	  }
@@ -665,10 +660,14 @@ ICCCM_GetGeoms(EWin * ewin, Atom atom_change)
 	     ewin->client.base_w = ewin->client.width.min;
 	     ewin->client.base_h = ewin->client.height.min;
 	  }
-	if (ewin->client.width.min < 1)
-	   ewin->client.width.min = 1;
-	if (ewin->client.height.min < 1)
-	   ewin->client.height.min = 1;
+	if (ewin->client.base_w < 1)
+	   ewin->client.base_w = 1;
+	if (ewin->client.base_h < 1)
+	   ewin->client.base_h = 1;
+	if (ewin->client.width.min < ewin->client.base_w)
+	   ewin->client.width.min = ewin->client.base_w;
+	if (ewin->client.height.min < ewin->client.base_h)
+	   ewin->client.height.min = ewin->client.base_h;
      }
    if (ewin->client.width.min == 0)
      {

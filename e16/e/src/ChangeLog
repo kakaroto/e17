@@ -4336,3 +4336,14 @@ Fri Mar 17 21:09:33 GMT 2000
 Another patch from Marius Aamodt Eriksen <marius@linux.com>. Adds the
 option to include iconified windows in the focuslist and uniconify them on
 selection. Flim.
+
+-------------------------------------------------------------------------------
+
+Fri Mar 17 23:01:24 PST 2000
+(KainX)
+
+I found the problem in icccm.c.  For some reason, somebody thought it
+would be a good idea to set minimum width/height equal to the base
+width/height if no *maximum* size was specified.  I think they meant to
+check for *minimum* size.  Anyway, I fixed that and added a more robust
+check for that kind of thing.
