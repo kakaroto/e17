@@ -19,7 +19,7 @@ geist_image_new(void)
 }
 
 geist_object *
-geist_image_new_from_file(char *filename)
+geist_image_new_from_file(int x, int y, char *filename)
 {
    geist_image *img;
    geist_object *obj;
@@ -28,6 +28,9 @@ geist_image_new_from_file(char *filename)
 
    obj = geist_image_new();
    img = (geist_image *) obj;
+
+   obj->x = x;
+   obj->y = y;
    
    if(!(geist_image_load_file(img, filename)))
    {
@@ -100,7 +103,7 @@ geist_image_render(geist_object * obj, Imlib_Image dest)
 
    D(3, ("Rendering image %p\n", obj));
    geist_imlib_blend_image_onto_image(dest, im->im, 0, 0, 0, sw, sh, obj->x,
-                                      obj->y, dw, dh, 1,
+                                      obj->y, sw, sh, 1,
                                       geist_imlib_image_has_alpha(im->im),
                                       im->alias);
 

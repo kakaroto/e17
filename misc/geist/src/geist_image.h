@@ -12,7 +12,7 @@ struct __geist_image {
 };
 
 geist_object *geist_image_new(void);
-geist_object *geist_image_new_from_file(char *filename);
+geist_object *geist_image_new_from_file(int x, int y, char *filename);
 void geist_image_init(geist_image *img);
 void geist_image_free(geist_object *obj);
 void geist_image_render(geist_object *obj, Imlib_Image dest);
