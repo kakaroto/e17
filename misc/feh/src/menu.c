@@ -49,6 +49,7 @@ static void feh_menu_cb_reload(feh_menu * m, feh_menu_item * i, void *data);
 static void feh_menu_cb_remove(feh_menu * m, feh_menu_item * i, void *data);
 static void feh_menu_cb_delete(feh_menu * m, feh_menu_item * i, void *data);
 static void feh_menu_cb_reset(feh_menu * m, feh_menu_item * i, void *data);
+
 /* FIXME if someone can tell me which option is causing indent to be
    braindead here, I will buy them a beer */
 static void feh_menu_cb_remove_thumb(feh_menu * m, feh_menu_item * i,
@@ -162,7 +163,7 @@ feh_menu_new(void)
    if (bg)
       m->bg = feh_imlib_clone_image(bg);
 
-   D_RETURN(4,m);
+   D_RETURN(4, m);
 }
 
 void
@@ -220,14 +221,14 @@ feh_menu_find_selected(feh_menu * m)
 
    D_ENTER(4);
 
-   D(5,("menu %p\n", m));
+   D(5, ("menu %p\n", m));
 
    for (i = m->items; i; i = i->next)
    {
       if (MENU_ITEM_IS_SELECTED(i))
-         D_RETURN(4,i);
+         D_RETURN(4, i);
    }
-   D_RETURN(4,NULL);
+   D_RETURN(4, NULL);
 }
 
 feh_menu_item *
@@ -236,17 +237,17 @@ feh_menu_find_at_xy(feh_menu * m, int x, int y)
    feh_menu_item *i;
 
    D_ENTER(4);
-   D(4,("looking for menu item at %d,%d\n", x, y));
+   D(4, ("looking for menu item at %d,%d\n", x, y));
    for (i = m->items; i; i = i->next)
    {
       if (XY_IN_RECT(x, y, i->x, i->y, i->w, i->h))
       {
-         D(4,("Found an item\n"));
-         D_RETURN(4,i);
+         D(4, ("Found an item\n"));
+         D_RETURN(4, i);
       }
    }
-   D(4,("didn't find an item\n"));
-   D_RETURN(4,NULL);
+   D(4, ("didn't find an item\n"));
+   D_RETURN(4, NULL);
 }
 
 void
@@ -262,7 +263,7 @@ feh_menu_deselect_selected(feh_menu * m)
    i = feh_menu_find_selected(m);
    if (i)
    {
-      D(4,("found a selected menu, deselecting it\n"));
+      D(4, ("found a selected menu, deselecting it\n"));
       MENU_ITEM_SET_NORMAL(i);
       m->updates =
          imlib_update_append_rect(m->updates, i->x, i->y, i->w, i->h);
@@ -307,7 +308,7 @@ feh_menu_show_at(feh_menu * m, int x, int y)
    {
       XSetWindowAttributes attr;
 
-      D(4,("creating menu cover window\n"));
+      D(4, ("creating menu cover window\n"));
       attr.override_redirect = True;
       attr.do_not_propagate_mask = True;
       menu_cover =
@@ -413,7 +414,7 @@ feh_menu_hide(feh_menu * m)
    {
       if (menu_cover)
       {
-         D(4,("DESTROYING menu cover\n"));
+         D(4, ("DESTROYING menu cover\n"));
          XDestroyWindow(disp, menu_cover);
          menu_cover = 0;
       }
@@ -471,7 +472,7 @@ feh_menu_add_entry(feh_menu * m, char *text, Imlib_Image icon, char *submenu,
       }
    }
    m->calc = 1;
-   D_RETURN(4,mi);
+   D_RETURN(4, mi);
 }
 
 
@@ -596,7 +597,7 @@ feh_menu_calc_size(feh_menu * m)
       XResizeWindow(disp, m->win, m->w, m->h);
       m->updates = imlib_update_append_rect(m->updates, 0, 0, m->w, m->h);
    }
-   D(4,("menu size calculated. w=%d h=%d\n", m->w, m->h));
+   D(4, ("menu size calculated. w=%d h=%d\n", m->w, m->h));
 
    /* Make sure bg is same size */
    if (m->bg)
@@ -610,7 +611,7 @@ feh_menu_calc_size(feh_menu * m)
       {
          Imlib_Image newim = imlib_create_image(m->w, m->h);
 
-         D(3,("resizing bg to %dx%d\n", m->w, m->h));
+         D(3, ("resizing bg to %dx%d\n", m->w, m->h));
 
          feh_imlib_blend_image_onto_image(newim, m->bg, 0, 0, 0, bg_w, bg_h,
                                           0, 0, m->w, m->h, 0, 0, 1);
@@ -636,19 +637,19 @@ feh_menu_draw_item(feh_menu * m, feh_menu_item * i, Imlib_Image im, int ox,
 
    if (i->text)
    {
-      D(5,("text item\n"));
+      D(5, ("text item\n"));
       fn = imlib_load_font(opt.menu_font);
       if (fn)
       {
          if (MENU_ITEM_IS_SELECTED(i))
          {
-            D(5,("selected item\n"));
+            D(5, ("selected item\n"));
             /* draw selected image */
             feh_menu_item_draw_at(i->x, i->y, i->w, i->h, im, ox, oy, 1);
          }
          else
          {
-            D(5,("unselected item\n"));
+            D(5, ("unselected item\n"));
             /* draw unselected image */
             feh_menu_item_draw_at(i->x, i->y, i->w, i->h, im, ox, oy, 0);
          }
@@ -672,7 +673,7 @@ feh_menu_draw_item(feh_menu * m, feh_menu_item * i, Imlib_Image im, int ox,
       {
          Imlib_Image im2;
 
-         D(5,("icon item\n"));
+         D(5, ("icon item\n"));
 
          im2 = i->icon;
          if (im2)
@@ -697,8 +698,8 @@ feh_menu_draw_item(feh_menu * m, feh_menu_item * i, Imlib_Image im, int ox,
             feh_imlib_blend_image_onto_image(im, im2, 0, 0, 0, iw, ih,
                                              i->x + i->icon_x - ox,
                                              i->y + FEH_MENUITEM_PAD_TOP +
-                                             (((i->
-                                                h - FEH_MENUITEM_PAD_TOP -
+                                             (((i->h
+                                                - FEH_MENUITEM_PAD_TOP -
                                                 FEH_MENUITEM_PAD_BOTTOM) -
                                                oh) / 2) - oy, ow, oh, 1, 1,
                                              1);
@@ -707,14 +708,14 @@ feh_menu_draw_item(feh_menu * m, feh_menu_item * i, Imlib_Image im, int ox,
       }
       if (i->submenu)
       {
-         D(5,("submenu item\n"));
+         D(5, ("submenu item\n"));
          if (MENU_ITEM_IS_SELECTED(i))
          {
-            D(5,("selected item\n"));
+            D(5, ("selected item\n"));
             feh_menu_draw_submenu_at(i->x + i->sub_x,
                                      i->y + FEH_MENUITEM_PAD_TOP +
-                                     ((i->
-                                       h - FEH_MENUITEM_PAD_TOP -
+                                     ((i->h
+                                       - FEH_MENUITEM_PAD_TOP -
                                        FEH_MENUITEM_PAD_BOTTOM -
                                        FEH_MENU_SUBMENU_H) / 2),
                                      FEH_MENU_SUBMENU_W, FEH_MENU_SUBMENU_H,
@@ -722,11 +723,11 @@ feh_menu_draw_item(feh_menu * m, feh_menu_item * i, Imlib_Image im, int ox,
          }
          else
          {
-            D(5,("unselected item\n"));
+            D(5, ("unselected item\n"));
             feh_menu_draw_submenu_at(i->x + i->sub_x,
                                      i->y + FEH_MENUITEM_PAD_TOP +
-                                     ((i->
-                                       h - FEH_MENUITEM_PAD_TOP -
+                                     ((i->h
+                                       - FEH_MENUITEM_PAD_TOP -
                                        FEH_MENUITEM_PAD_BOTTOM -
                                        FEH_MENU_SUBMENU_H) / 2),
                                      FEH_MENU_SUBMENU_W, FEH_MENU_SUBMENU_H,
@@ -736,7 +737,7 @@ feh_menu_draw_item(feh_menu * m, feh_menu_item * i, Imlib_Image im, int ox,
    }
    else
    {
-      D(5,("separator item\n"));
+      D(5, ("separator item\n"));
       feh_menu_draw_separator_at(i->x, i->y, i->w, i->h, im, ox, oy);
    }
    D_RETURN_(5);
@@ -761,14 +762,14 @@ feh_menu_redraw(feh_menu * m)
    m->updates = NULL;
    if (u)
    {
-      D(5,("I have updates to render\n"));
+      D(5, ("I have updates to render\n"));
       for (uu = u; u; u = imlib_updates_get_next(u))
       {
          int x, y, w, h;
          Imlib_Image im;
 
          imlib_updates_get_coordinates(u, &x, &y, &w, &h);
-         D(5,("update coords %d,%d %d*%d\n", x, y, w, h));
+         D(5, ("update coords %d,%d %d*%d\n", x, y, w, h));
          im = imlib_create_image(w, h);
          feh_imlib_image_fill_rectangle(im, 0, 0, w, h, 0, 0, 0, 0);
          if (im)
@@ -793,9 +794,9 @@ feh_menu_find(char *name)
    for (l = menus; l; l = l->next)
    {
       if ((l->menu->name) && (!strcmp(l->menu->name, name)))
-         D_RETURN(4,l->menu);
+         D_RETURN(4, l->menu);
    }
-   D_RETURN(4,NULL);
+   D_RETURN(4, NULL);
 }
 
 void
@@ -921,8 +922,8 @@ feh_menu_get_from_window(Window win)
    D_ENTER(5);
    for (l = menus; l; l = l->next)
       if (l->menu->win == win)
-         D_RETURN(5,l->menu);
-   D_RETURN(5,NULL);
+         D_RETURN(5, l->menu);
+   D_RETURN(5, NULL);
 }
 
 void
@@ -1148,9 +1149,12 @@ feh_menu_init_single_win(void)
    feh_menu_add_entry(m, "Reset", NULL, NULL, feh_menu_cb_reset, NULL, NULL);
    feh_menu_add_entry(m, "Reload", NULL, NULL, feh_menu_cb_reload, NULL,
                       NULL);
-   feh_menu_add_entry(m, "Remove from filelist", NULL, NULL,
-                      feh_menu_cb_remove, NULL, NULL);
-   feh_menu_add_entry(m, "Delete", NULL, "CONFIRM", NULL, NULL, NULL);
+   if (opt.multiwindow || opt.slideshow)
+   {
+      feh_menu_add_entry(m, "Remove from filelist", NULL, NULL,
+                         feh_menu_cb_remove, NULL, NULL);
+      feh_menu_add_entry(m, "Delete", NULL, "CONFIRM", NULL, NULL, NULL);
+   }
    feh_menu_add_entry(m, "Background", NULL, "BACKGROUND", NULL, NULL, NULL);
 
    mi =
@@ -1520,7 +1524,7 @@ feh_menu_func_gen_jump(feh_menu * m, feh_menu_item * i, void *data)
       feh_menu_add_entry(mm, FEH_FILE(l->data)->name, NULL, NULL,
                          feh_menu_cb_jump_to, l, NULL);
    }
-   D_RETURN(4,mm);
+   D_RETURN(4, mm);
    m = NULL;
    i = NULL;
    data = NULL;
@@ -1537,12 +1541,12 @@ feh_menu_func_gen_info(feh_menu * m, feh_menu_item * i, void *data)
    D_ENTER(4);
 
    if (!m->fehwin->file)
-      D_RETURN(4,NULL);
+      D_RETURN(4, NULL);
 
    file = FEH_FILE(m->fehwin->file->data);
    im = m->fehwin->im;
    if (!im)
-      D_RETURN(4,NULL);
+      D_RETURN(4, NULL);
 
    mm = feh_menu_new();
    mm->name = estrdup("INFO");
@@ -1568,7 +1572,7 @@ feh_menu_func_gen_info(feh_menu * m, feh_menu_item * i, void *data)
 
    mm->func_free = feh_menu_func_free_info;
 
-   D_RETURN(4,mm);
+   D_RETURN(4, mm);
    i = NULL;
    data = NULL;
 }
