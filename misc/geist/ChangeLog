@@ -1,3 +1,22 @@
+Thu Aug 24 21:25:25 2000  Tom Gilbert  <gilbertt@linuxbrit.co.uk>
+
+	* Urm. *spanks Till*. You don't efree() a geist_list :-) You
+	geist_list_free it :-) And you don't need to efree() a pointer
+	into said geist list ;-)
+	* Implemented img->alias, and a property dialog setting to
+	determine whether to antialias the image on resizing.
+	* Made opacity changing work better by storing the last value.
+	* Removed the demo1.xml document. Geist currently uses absolute
+	image paths, and you guys don't have those images ;-)
+	* The way this will work in the future is the choice of either
+	image linking (absolute path), or image "embedding". This will
+	create a directory containing the xml file and it's contained
+	images, with relative links. We then have the option of hiding
+	this in one file like a tar.gz, but using funky VFS to do it. This
+	gives the user "one file" for his document, but lets him get at
+	the XML and images and screw with them by hand if he/she wants.
+	* We'll do font embedding too, I'm sure.
+
 Wed Aug 23 21:23:40 2000  Tom Gilbert  <gilbertt@linuxbrit.co.uk>
 
 	* Image resizing :-) It seems to actually work too ;-)

@@ -46,8 +46,8 @@ geist_image_init(geist_image * img)
    obj->sizemode = SIZEMODE_ZOOM;
    obj->alignment = ALIGN_CENTER;
    obj->display_props = geist_image_display_props;
+   img->last.opacity = 0;
    img->opacity = FULL_OPACITY;
-
 
    D_RETURN_(5);
 }
@@ -200,8 +200,7 @@ geist_image_load_file(geist_image * img, char *filename)
    D_RETURN(5, ret);
 }
 
-Imlib_Image
-geist_image_get_rendered_image(geist_object * obj)
+Imlib_Image geist_image_get_rendered_image(geist_object * obj)
 {
    D_ENTER(3);
 
@@ -226,13 +225,12 @@ geist_image_duplicate(geist_object * obj)
       ret->h = obj->h;
       ret->w = obj->w;
       GEIST_IMAGE(ret)->opacity = img->opacity;
-      if (GEIST_IMAGE(ret)->opacity != FULL_OPACITY)
-         geist_image_change_opacity(ret, GEIST_IMAGE(ret)->opacity);
       ret->state = obj->state;
       ret->alias = obj->alias;
       ret->name =
          g_strjoin(" ", "Copy of", obj->name ? obj->name : "Untitled object",
                    NULL);
+      geist_object_update_positioning(GEIST_OBJECT(ret));
    }
 
    D_RETURN(3, ret);
@@ -302,8 +300,7 @@ img_load_cancel_cb(GtkWidget * widget, gpointer data)
 
 
 
-gboolean
-geist_image_select_file_cb(GtkWidget * widget, gpointer * data)
+gboolean geist_image_select_file_cb(GtkWidget * widget, gpointer * data)
 {
    cb_data *sel_cb_data = NULL;
    geist_object *obj = GEIST_OBJECT(data);
@@ -322,6 +319,32 @@ geist_image_select_file_cb(GtkWidget * widget, gpointer * data)
                       (gpointer) file_sel);
    gtk_widget_show(file_sel);
    return TRUE;
+}
+
+gboolean
+refresh_aa_cb(GtkWidget * widget, gpointer * data)
+{
+   geist_object *obj = NULL;
+   geist_list *l = NULL;
+   geist_list *list = NULL;
+
+   D_ENTER(3);
+
+   list = geist_document_get_selected_list(current_doc);
+   if (list)
+   {
+      for (l = list; l; l = l->next)
+      {
+         obj = l->data;
+         obj->alias = gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(widget));
+         geist_object_dirty(obj);
+         geist_object_update_positioning(obj);
+         geist_object_dirty(obj);
+      }
+      geist_list_free(list);
+      geist_document_render_updates(GEIST_OBJECT_DOC(obj));
+   }
+   D_RETURN(3, TRUE);
 }
 
 
@@ -358,9 +381,12 @@ geist_image_display_props(geist_object * obj)
    antialias_checkb = gtk_check_button_new_with_label("antialias");
    gtk_table_attach(GTK_TABLE(table), antialias_checkb, 0, 1, 4, 5,
                     GTK_FILL | GTK_EXPAND, 0, 2, 2);
-   gtk_widget_show(antialias_checkb);
+   gtk_signal_connect(GTK_OBJECT(antialias_checkb), "clicked",
+                      GTK_SIGNAL_FUNC(refresh_aa_cb), NULL);
    gtk_container_set_border_width(GTK_CONTAINER(antialias_checkb), 10);
-
+   gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(antialias_checkb),
+                                obj->alias);
+   gtk_widget_show(antialias_checkb);
 
    gtk_entry_set_text(GTK_ENTRY(file_entry), GEIST_IMAGE(obj)->filename);
    gtk_signal_connect(GTK_OBJECT(sel_file_btn), "clicked",
@@ -406,11 +432,19 @@ geist_image_apply_image_mods(geist_object * obj)
    h = geist_imlib_image_get_height(img->im);
 
    if ((obj->rendered_w != w) || (obj->rendered_h != h)
-       || (img->orig_im
-           && ((geist_imlib_image_get_width(img->orig_im) != obj->rendered_w)
-               || (geist_imlib_image_get_height(img->orig_im) !=
-                   obj->rendered_h)) && img->opacity != FULL_OPACITY))
+       || (obj->alias != obj->last.alias) || (img->orig_im
+                                              &&
+                                              ((geist_imlib_image_get_width
+                                                (img->orig_im) !=
+                                                obj->rendered_w)
+                                               ||
+                                               (geist_imlib_image_get_height
+                                                (img->orig_im) !=
+                                                obj->rendered_h))
+                                              && img->opacity !=
+                                              FULL_OPACITY))
    {
+      obj->last.alias = obj->alias;
       /* need to resize */
       if (!img->orig_im)
       {
@@ -429,8 +463,11 @@ geist_image_apply_image_mods(geist_object * obj)
                                                  obj->rendered_h, obj->alias);
    }
 
-   if (img->opacity != FULL_OPACITY)
+   if ((img->opacity != FULL_OPACITY)
+       && ((img->opacity != img->last.opacity) || (has_resized)))
    {
+      D(5, ("need to do opacity, it's %d\n", img->opacity));
+      img->last.opacity = img->opacity;
       /* need to apply opacity */
       if (!has_resized)
       {
@@ -462,7 +499,6 @@ geist_image_apply_image_mods(geist_object * obj)
       geist_imlib_apply_color_modifier_to_rectangle(img->im, 0, 0, w, h, NULL,
                                                     NULL, NULL, atab);
    }
-
    D_RETURN_(3);
 }
 

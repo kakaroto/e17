@@ -37,11 +37,13 @@ geist_object_init(geist_object * obj)
    obj->check_resize_click = geist_object_int_check_resize_click;
    obj->get_resize_box_coords = geist_object_int_get_resize_box_coords;
    obj->click_is_selection = geist_object_int_click_is_selection;
-	obj->update_position_relative = geist_object_int_update_position_relative;
-	obj->update_dimensions_relative = geist_object_int_update_dimensions_relative;
-    obj->update_positioning = geist_object_int_update_positioning;
+   obj->update_position_relative = geist_object_int_update_position_relative;
+   obj->update_dimensions_relative =
+      geist_object_int_update_dimensions_relative;
+   obj->update_positioning = geist_object_int_update_positioning;
    obj->get_updates = geist_object_int_get_updates;
    obj->name = estrdup("Untitled Object");
+   obj->last.alias = FALSE;
    obj->alias = TRUE;
 
    D_RETURN_(5);
@@ -76,8 +78,7 @@ geist_object_free(geist_object * obj)
    D_RETURN_(5);
 }
 
-geist_object_type
-geist_object_get_type(geist_object * obj)
+geist_object_type geist_object_get_type(geist_object * obj)
 {
    return obj->type;
 }
@@ -213,8 +214,7 @@ geist_object_add_to_object_list(geist_object * obj)
    D_RETURN_(3);
 }
 
-Imlib_Image
-geist_object_get_rendered_image(geist_object * obj)
+Imlib_Image geist_object_get_rendered_image(geist_object * obj)
 {
    D_ENTER(5);
 
@@ -222,8 +222,7 @@ geist_object_get_rendered_image(geist_object * obj)
 }
 
 
-Imlib_Image
-geist_object_int_get_rendered_image(geist_object * obj)
+Imlib_Image geist_object_int_get_rendered_image(geist_object * obj)
 {
    D_ENTER(5);
 
@@ -342,8 +341,7 @@ geist_object_int_render_selected(geist_object * obj, Imlib_Image dest,
    D_RETURN_(5);
 }
 
-Imlib_Updates
-geist_object_int_get_selection_updates(geist_object * obj)
+Imlib_Updates geist_object_int_get_selection_updates(geist_object * obj)
 {
    Imlib_Updates up = NULL;
 
@@ -496,8 +494,7 @@ geist_object_int_get_resize_box_coords(geist_object * obj, int resize, int *x,
    D_RETURN_(3);
 }
 
-Imlib_Updates
-geist_object_get_selection_updates(geist_object * obj)
+Imlib_Updates geist_object_get_selection_updates(geist_object * obj)
 {
    D_ENTER(3);
 
@@ -660,22 +657,24 @@ geist_object_resize_object(geist_object * obj, int x, int y)
    D_RETURN_(3);
 }
 
-void geist_object_update_positioning(geist_object *obj)
+void
+geist_object_update_positioning(geist_object * obj)
 {
    D_ENTER(3);
 
    obj->update_positioning(obj);
-   
+
    D_RETURN_(3);
 }
 
-void geist_object_int_update_positioning(geist_object * obj)
+void
+geist_object_int_update_positioning(geist_object * obj)
 {
    D_ENTER(3);
-   
+
    geist_object_update_sizemode(obj);
    geist_object_update_alignment(obj);
-   
+
    D_RETURN_(3);
 }
 
@@ -804,14 +803,15 @@ geist_object_dirty(geist_object * obj)
 {
    D_ENTER(3);
 
-   GEIST_OBJECT_DOC(obj)->up = imlib_updates_append_updates(GEIST_OBJECT_DOC(obj)->up, obj->get_updates(obj));
+   GEIST_OBJECT_DOC(obj)->up =
+      imlib_updates_append_updates(GEIST_OBJECT_DOC(obj)->up,
+                                   obj->get_updates(obj));
    geist_object_dirty_selection(obj);
 
    D_RETURN_(3);
 }
 
-Imlib_Updates
-geist_object_int_get_updates(geist_object * obj)
+Imlib_Updates geist_object_int_get_updates(geist_object * obj)
 {
    int x, y, w, h;
    Imlib_Updates up;
@@ -822,8 +822,7 @@ geist_object_int_get_updates(geist_object * obj)
 
    D(5, ("adding dirty rect %d,%d %dx%d\n", x, y, w, h));
 
-   up = imlib_update_append_rect(NULL, x - 1, y - 1, w + 2,
-                               h + 2);
+   up = imlib_update_append_rect(NULL, x - 1, y - 1, w + 2, h + 2);
    D_RETURN(5, up);
 }
 
@@ -981,54 +980,56 @@ unsigned char
 geist_object_int_click_is_selection(geist_object * obj, int x, int y)
 {
    int ox, oy, ow, oh;
+
    D_ENTER(3);
 
    geist_object_get_rendered_area(obj, &ox, &oy, &ow, &oh);
 
-   if(XY_IN_RECT(x, y, ox, oy, ow, oh))
+   if (XY_IN_RECT(x, y, ox, oy, ow, oh))
    {
       if (!geist_object_part_is_transparent(obj, x - ox, y - oy))
-            D_RETURN(3, 1);
+         D_RETURN(3, 1);
    }
 
    D_RETURN(3, 0);
 }
 
 void
-geist_object_update_dimensions_relative (geist_object *obj, int w_offset, int
-		h_offset)
+geist_object_update_dimensions_relative(geist_object * obj, int w_offset,
+                                        int h_offset)
 {
-	D_ENTER(3);
-	obj->update_dimensions_relative(obj, w_offset, h_offset);
-	D_RETURN_(3);
-}
-		
-void geist_object_int_update_dimensions_relative(geist_object *obj, 
-																int w_offset, int h_offset)
-{
-	D_ENTER(3);
-	obj->resize = RESIZE_BOTTOMRIGHT;
-	w_offset += obj->x + obj->w;
-	h_offset += obj->y + obj->h;
-	geist_object_resize_object(obj, w_offset, h_offset);
-	D_RETURN_(3);
+   D_ENTER(3);
+   obj->update_dimensions_relative(obj, w_offset, h_offset);
+   D_RETURN_(3);
 }
 
 void
-geist_object_update_position_relative (geist_object *obj, int x_offset,
-		 											int y_offset)
+geist_object_int_update_dimensions_relative(geist_object * obj, int w_offset,
+                                            int h_offset)
 {
-	D_ENTER(3);
-	obj->update_position_relative(obj, x_offset, y_offset);
-	D_RETURN_(3);
+   D_ENTER(3);
+   obj->resize = RESIZE_BOTTOMRIGHT;
+   w_offset += obj->x + obj->w;
+   h_offset += obj->y + obj->h;
+   geist_object_resize_object(obj, w_offset, h_offset);
+   D_RETURN_(3);
 }
 
 void
-geist_object_int_update_position_relative(geist_object *obj, int x_offset,
-														int y_offset)
+geist_object_update_position_relative(geist_object * obj, int x_offset,
+                                      int y_offset)
 {
-	D_ENTER(3);
-	obj->x = obj->x + x_offset;
-	obj->y = obj->y + y_offset;
-	D_RETURN_(3);
+   D_ENTER(3);
+   obj->update_position_relative(obj, x_offset, y_offset);
+   D_RETURN_(3);
+}
+
+void
+geist_object_int_update_position_relative(geist_object * obj, int x_offset,
+                                          int y_offset)
+{
+   D_ENTER(3);
+   obj->x = obj->x + x_offset;
+   obj->y = obj->y + y_offset;
+   D_RETURN_(3);
 }

@@ -12,6 +12,9 @@ struct __geist_image
    geist_object object;
    char *filename;
    Imlib_Image im, orig_im;
+   struct {
+      int opacity;
+   } last;
    int opacity;
 };
 

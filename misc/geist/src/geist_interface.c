@@ -346,24 +346,25 @@ geist_gtk_new_document_page(geist_document * doc)
    D_RETURN(3, darea);
 }
 
-gboolean mainwin_delete_cb(GtkWidget * widget, GdkEvent * event,
-                           gpointer user_data)
+gboolean
+mainwin_delete_cb(GtkWidget * widget, GdkEvent * event, gpointer user_data)
 {
    D_ENTER(3);
    gtk_exit(0);
    D_RETURN(3, FALSE);
 }
 
-gboolean mainwin_destroy_cb(GtkWidget * widget, GdkEvent * event,
-                            gpointer user_data)
+gboolean
+mainwin_destroy_cb(GtkWidget * widget, GdkEvent * event, gpointer user_data)
 {
    D_ENTER(3);
    gtk_exit(0);
    D_RETURN(3, FALSE);
 }
 
-gboolean configure_cb(GtkWidget * widget, GdkEventConfigure * event,
-                      gpointer user_data)
+gboolean
+configure_cb(GtkWidget * widget, GdkEventConfigure * event,
+             gpointer user_data)
 {
    geist_document *doc;
 
@@ -375,8 +376,9 @@ gboolean configure_cb(GtkWidget * widget, GdkEventConfigure * event,
    D_RETURN(3, TRUE);
 }
 
-gint evbox_buttonpress_cb(GtkWidget * widget, GdkEventButton * event,
-                          gpointer user_data)
+gint
+evbox_buttonpress_cb(GtkWidget * widget, GdkEventButton * event,
+                     gpointer user_data)
 {
    geist_object *obj = NULL;
    geist_document *doc;
@@ -505,8 +507,9 @@ gint evbox_buttonpress_cb(GtkWidget * widget, GdkEventButton * event,
    D_RETURN(5, 1);
 }
 
-gint evbox_buttonrelease_cb(GtkWidget * widget, GdkEventButton * event,
-                            gpointer user_data)
+gint
+evbox_buttonrelease_cb(GtkWidget * widget, GdkEventButton * event,
+                       gpointer user_data)
 {
    geist_list *list, *l;
    geist_object *obj;
@@ -554,8 +557,9 @@ gint evbox_buttonrelease_cb(GtkWidget * widget, GdkEventButton * event,
    D_RETURN(5, 1);
 }
 
-gint evbox_mousemove_cb(GtkWidget * widget, GdkEventMotion * event,
-                        gpointer user_data)
+gint
+evbox_mousemove_cb(GtkWidget * widget, GdkEventMotion * event,
+                   gpointer user_data)
 {
    geist_list *l, *list;
    geist_object *obj;
@@ -610,7 +614,8 @@ gint evbox_mousemove_cb(GtkWidget * widget, GdkEventMotion * event,
    D_RETURN(5, 1);
 }
 
-gboolean obj_load_cb(GtkWidget * widget, gpointer data)
+gboolean
+obj_load_cb(GtkWidget * widget, gpointer data)
 {
    geist_object *obj = NULL;
    char *path;
@@ -640,13 +645,15 @@ gboolean obj_load_cb(GtkWidget * widget, gpointer data)
    D_RETURN(3, TRUE);
 }
 
-gboolean obj_load_cancel_cb(GtkWidget * widget, gpointer data)
+gboolean
+obj_load_cancel_cb(GtkWidget * widget, gpointer data)
 {
    gtk_widget_destroy((GtkWidget *) data);
    return TRUE;
 }
 
-gboolean obj_imageadd_cb(GtkWidget * widget, gpointer * data)
+gboolean
+obj_imageadd_cb(GtkWidget * widget, gpointer * data)
 {
    GtkWidget *file_sel = gtk_file_selection_new("Add an Image");
 
@@ -662,7 +669,8 @@ gboolean obj_imageadd_cb(GtkWidget * widget, gpointer * data)
 }
 
 
-gboolean obj_cpy_cb(GtkWidget * widget, gpointer * data)
+gboolean
+obj_cpy_cb(GtkWidget * widget, gpointer * data)
 {
    geist_object *new;
    geist_list *l, *list;
@@ -696,7 +704,8 @@ gboolean obj_cpy_cb(GtkWidget * widget, gpointer * data)
    D_RETURN(3, TRUE);
 }
 
-gboolean obj_del_cb(GtkWidget * widget, gpointer * data)
+gboolean
+obj_del_cb(GtkWidget * widget, gpointer * data)
 {
    geist_object *obj;
    geist_list *l, *list;
@@ -725,8 +734,9 @@ gboolean obj_del_cb(GtkWidget * widget, gpointer * data)
 }
 
 
-gboolean obj_sel_cb(GtkWidget * widget, int row, int column,
-                    GdkEventButton * event, gpointer * data)
+gboolean
+obj_sel_cb(GtkWidget * widget, int row, int column, GdkEventButton * event,
+           gpointer * data)
 {
    GList *selection;
    geist_object *obj;
@@ -747,8 +757,9 @@ gboolean obj_sel_cb(GtkWidget * widget, int row, int column,
    D_RETURN(3, TRUE);
 }
 
-gboolean obj_unsel_cb(GtkWidget * widget, int row, int column,
-                      GdkEventButton * event, gpointer * data)
+gboolean
+obj_unsel_cb(GtkWidget * widget, int row, int column, GdkEventButton * event,
+             gpointer * data)
 {
    GList *selection;
    geist_object *obj;
@@ -769,7 +780,8 @@ gboolean obj_unsel_cb(GtkWidget * widget, int row, int column,
    D_RETURN(3, TRUE);
 }
 
-gboolean obj_addtext_cb(GtkWidget * widget, gpointer * data)
+gboolean
+obj_addtext_cb(GtkWidget * widget, gpointer * data)
 {
 
    int row;
@@ -791,7 +803,8 @@ gboolean obj_addtext_cb(GtkWidget * widget, gpointer * data)
 
 
 
-gboolean obj_addrect_cb(GtkWidget * widget, gpointer * data)
+gboolean
+obj_addrect_cb(GtkWidget * widget, gpointer * data)
 {
 
    int row;
@@ -810,7 +823,8 @@ gboolean obj_addrect_cb(GtkWidget * widget, gpointer * data)
    D_RETURN(3, TRUE);
 }
 
-gboolean obj_addline_cb(GtkWidget * widget, gpointer * data)
+gboolean
+obj_addline_cb(GtkWidget * widget, gpointer * data)
 {
 
    int row;
@@ -830,7 +844,8 @@ gboolean obj_addline_cb(GtkWidget * widget, gpointer * data)
 }
 
 
-gboolean menu_cb(GtkWidget * widget, gpointer * data)
+gboolean
+menu_cb(GtkWidget * widget, gpointer * data)
 {
    char *item;
 
@@ -888,8 +903,7 @@ obj_vis_cb(GtkWidget * widget, gpointer * data)
          geist_object_hide(obj);
    }
    geist_document_render_updates(GEIST_OBJECT_DOC(obj));
-   efree(l);
-   efree(list);
+   geist_list_free(list);
    D_RETURN_(3);
 }
 
@@ -910,7 +924,7 @@ refresh_name_cb(GtkWidget * widget, gpointer * data)
          efree(obj->name);
       obj->name = estrdup(gtk_entry_get_text(GTK_ENTRY(widget)));
    }
-   efree(list);
+   geist_list_free(list);
    D_RETURN_(3);
 }
 
@@ -934,8 +948,7 @@ refresh_sizemode_cb(GtkWidget * widget, gpointer * data)
       geist_object_dirty(obj);
    }
    geist_document_render_updates(GEIST_OBJECT_DOC(obj));
-   efree(l);
-   efree(list);
+   geist_list_free(list);
    D_RETURN_(3);
 }
 
@@ -960,8 +973,7 @@ refresh_alignment_cb(GtkWidget * widget, gpointer * data)
       geist_object_dirty(obj);
    }
    geist_document_render_updates(GEIST_OBJECT_DOC(obj));
-   efree(l);
-   efree(list);
+   geist_list_free(list);
    D_RETURN_(3);
 }
 
@@ -1012,7 +1024,7 @@ buttons_cb(GtkWidget * widget, gpointer * data)
    }
    geist_update_statusbar(current_doc);
    geist_document_render_updates(GEIST_OBJECT_DOC(obj));
-   efree(l);
+   geist_list_free(list);
    D_RETURN_(3);
 }
 
@@ -1245,7 +1257,6 @@ geist_update_obj_props_window(void)
                   sizemode_string = "";
             }
 
-            efree(l);
             gtk_entry_set_text(GTK_ENTRY(GTK_COMBO(alignment_combo)->entry),
                                align_string);
             gtk_entry_set_text(GTK_ENTRY(GTK_COMBO(sizemode_combo)->entry),
@@ -1276,11 +1287,10 @@ geist_update_obj_props_window(void)
             gtk_window_set_title(GTK_WINDOW(obj_win), obj->name);
             gtk_window_set_title(GTK_WINDOW(obj_props_window), obj->name);
          }
-
+         geist_list_free(list);
       }
       else
          geist_clear_obj_props_window();
-      efree(list);
       gtk_signal_handler_unblock_by_func(GTK_OBJECT(vis_toggle),
                                          GTK_SIGNAL_FUNC(obj_vis_cb), NULL);
       gtk_signal_handler_unblock_by_func(GTK_OBJECT(name), refresh_name_cb,
@@ -1507,7 +1517,8 @@ conf_cancel_cb(GtkWidget * widget, gpointer data)
    g_main_quit(dialog->loop);
 }
 
-gboolean geist_confirmation_dialog_new_with_text(char *text)
+gboolean
+geist_confirmation_dialog_new_with_text(char *text)
 {
    geist_confirmation_dialog_data *data;
    GMainLoop *loop;

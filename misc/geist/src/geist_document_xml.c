@@ -482,8 +482,6 @@ geist_parse_image_xml(xmlDocPtr doc, xmlNsPtr ns, xmlNodePtr cur)
       if (ret)
       {
          GEIST_IMAGE(ret)->opacity = opacity;
-         if (GEIST_IMAGE(ret)->opacity != FULL_OPACITY)
-            geist_image_change_opacity(ret, GEIST_IMAGE(ret)->opacity);
       }
       xmlFree(filename);
    }

@@ -68,6 +68,9 @@ struct __geist_object
    geist_object_type type;
    char *name;
    geist_layer *layer;
+   struct {
+      int alias;
+   } last;
    int alias;
    /* Object position/size */
    int x;
