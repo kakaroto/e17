@@ -265,9 +265,13 @@ HintsProcessPropertyChange(EWin * ewin, Atom atom_change)
 void
 HintsProcessClientMessage(XClientMessageEvent * event)
 {
-   char               *name = XGetAtomName(disp, event->message_type);
+   char               *name;
 
    EDBUG(6, "HintsHandleClientMessage");
+
+   name = XGetAtomName(disp, event->message_type);
+   if (name == NULL)
+      EDBUG_RETURN_;
 
    if (!memcmp(name, "WM_", 3))
       ICCCM_ProcessClientMessage(event);
@@ -286,5 +290,6 @@ HintsProcessClientMessage(XClientMessageEvent * event)
 	   KDE_ProcessClientMessage(event);
      }
 #endif
+   XFree(name);
    EDBUG_RETURN_;
 }
