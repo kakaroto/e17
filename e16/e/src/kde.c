@@ -79,7 +79,7 @@ KModuleList;
 
 static KModuleList *KModules = NULL;
 
-void 
+void
 KDE_ClientMessage(EWin * ewin, Atom atom, long data, Time timestamp)
 {
 
@@ -102,7 +102,7 @@ KDE_ClientMessage(EWin * ewin, Atom atom, long data, Time timestamp)
 
 }
 
-void 
+void
 KDE_ClientTextMessage(EWin * ewin, Atom atom, char *data)
 {
 
@@ -124,7 +124,7 @@ KDE_ClientTextMessage(EWin * ewin, Atom atom, char *data)
 
 }
 
-void 
+void
 KDE_SendMessagesToModules(Atom atom, long data)
 {
 
@@ -143,7 +143,7 @@ KDE_SendMessagesToModules(Atom atom, long data)
 
 }
 
-void 
+void
 KDE_AddModule(EWin * ewin)
 {
 
@@ -222,7 +222,7 @@ KDE_AddModule(EWin * ewin)
 
 }
 
-void 
+void
 KDE_RemoveModule(EWin * ewin)
 {
 
@@ -277,7 +277,7 @@ KDE_RemoveModule(EWin * ewin)
 
 }
 
-void 
+void
 KDE_Init(void)
 {
    /*
@@ -369,7 +369,7 @@ KDE_Init(void)
 
 }
 
-void 
+void
 KDE_Shutdown(void)
 {
 
@@ -381,7 +381,7 @@ KDE_Shutdown(void)
    EDBUG_RETURN_;
 }
 
-void 
+void
 KDE_ClientInit(EWin * ewin)
 {
 
@@ -411,7 +411,7 @@ KDE_ClientInit(EWin * ewin)
 
 }
 
-void 
+void
 KDE_ClientChange(EWin * ewin, XPropertyEvent * event)
 {
 
@@ -482,7 +482,7 @@ KDE_ClientChange(EWin * ewin, XPropertyEvent * event)
 
 }
 
-void 
+void
 KDE_GetDecorationHint(EWin * ewin, long *dechints)
 {
 
