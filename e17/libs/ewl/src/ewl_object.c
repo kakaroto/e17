@@ -321,18 +321,7 @@ ewl_object_set_minimum_size(Ewl_Object * o, int w, int h)
 	DENTER_FUNCTION(DLEVEL_STABLE);
 
 	o->minimum.w = w;
-	if (CURRENT_W(o) < w)
-		CURRENT_W(o) = w;
-
-	if (MAXIMUM_W(o) < w)
-		MAXIMUM_W(o) = w;
-
 	o->minimum.h = h;
-	if (CURRENT_H(o) < h)
-		CURRENT_H(o) = h;
-
-	if (MAXIMUM_H(o) < h)
-		MAXIMUM_H(o) = h;
 
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }

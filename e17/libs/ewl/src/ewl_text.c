@@ -194,7 +194,7 @@ __ewl_text_theme_update(Ewl_Widget * w, void *ev_data, void *user_data)
 {
 	Ewl_Text *t;
 	char key[PATH_LEN];
-	char *font = NULL, *style = NULL;
+	char *font = NULL /*, *style = NULL */ ;
 	int font_size = 0;
 
 	DENTER_FUNCTION(DLEVEL_STABLE);
@@ -448,7 +448,7 @@ ewl_text_get_letter_geometry(Ewl_Widget * w, int i,
 
 	t = EWL_TEXT(w);
 
-	etox_get_char_geometry_at(t->tox, i, xx, yy, ww, hh);
+	etox_get_at(t->tox, i, xx, yy, ww, hh);
 
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
@@ -465,7 +465,7 @@ ewl_text_get_letter_geometry_at(Ewl_Widget * w, double x, double y,
 
 	t = EWL_TEXT(w);
 
-	etox_get_char_geometry_at_position(t->tox, x, y, tx, ty, tw, th);
+	etox_get_at_position(t->tox, x, y, tx, ty, tw, th);
 
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
@@ -520,9 +520,7 @@ ewl_text_get_index_at(Ewl_Widget * w, double x, double y, int *index)
 
 	t = EWL_TEXT(w);
 
-	if (index)
-		*index = etox_get_char_geometry_at_position(t->tox, x, y,
-			NULL, NULL, NULL, NULL);
+	ret = etox_get_index_at(t->tox, x, y, index);
 
 	DRETURN_INT(ret, DLEVEL_STABLE);
 }

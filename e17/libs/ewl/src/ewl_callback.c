@@ -15,8 +15,8 @@ static int callback_id = 0;
  * callback chain.
  */
 int
-ewl_callback_append(Ewl_Widget * w, Ewl_Callback_Type t, Ewl_Cb_Func f,
-		    void *user_data)
+ewl_callback_append(Ewl_Widget * w, Ewl_Callback_Type t,
+		    Ewl_Callback_Function f, void *user_data)
 {
 	Ewl_Callback *cb;
 
@@ -55,8 +55,8 @@ ewl_callback_append(Ewl_Widget * w, Ewl_Callback_Type t, Ewl_Cb_Func f,
  * beginning of the callback chain.
  */
 int
-ewl_callback_prepend(Ewl_Widget * w, Ewl_Callback_Type t, Ewl_Cb_Func f,
-		     void *user_data)
+ewl_callback_prepend(Ewl_Widget * w, Ewl_Callback_Type t,
+		     Ewl_Callback_Function f, void *user_data)
 {
 	Ewl_Callback *cb;
 
@@ -157,7 +157,7 @@ ewl_callback_call_with_event_data(Ewl_Widget * w, Ewl_Callback_Type t,
  */
 void
 ewl_callback_set_user_data(Ewl_Widget * w, Ewl_Callback_Type type,
-			   Ewl_Cb_Func func, void *user_data)
+			   Ewl_Callback_Function func, void *user_data)
 {
 	Ewl_Callback *cb;
 
@@ -270,7 +270,7 @@ ewl_callback_clear(Ewl_Widget * w)
  * event @t occurs to widget @w.
  */
 void
-ewl_callback_del(Ewl_Widget * w, Ewl_Callback_Type t, Ewl_Cb_Func f)
+ewl_callback_del(Ewl_Widget * w, Ewl_Callback_Type t, Ewl_Callback_Function f)
 {
 	Ewl_Callback *cb;
 

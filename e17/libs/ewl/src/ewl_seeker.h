@@ -10,7 +10,7 @@ struct _ewl_seeker
 {
 	Ewl_Container container;
 	Ewl_Orientation orientation;
-	Ewl_Widget *drag_button;
+	Ewl_Widget *dragbar;
 	double value;
 	double range;
 	double step;
@@ -32,5 +32,7 @@ double ewl_seeker_get_range(Ewl_Seeker * s);
 void ewl_seeker_set_step(Ewl_Seeker * s, double step);
 double ewl_seeker_get_step(Ewl_Seeker * s);
 
+void ewl_seeker_decrease(Ewl_Seeker * s);
+void ewl_seeker_increase(Ewl_Seeker * s);
 
 #endif /* __EWL_SEEKER_H__ */

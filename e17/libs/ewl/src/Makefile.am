@@ -28,6 +28,7 @@ installed_headers_DATA = \
 	ewl_object.h \
 	ewl_radiobutton.h \
 	ewl_scrollbar.h \
+	ewl_scrollpane.h \
 	ewl_seeker.h \
 	ewl_selection.h \
 	ewl_separator.h \
@@ -56,6 +57,7 @@ libewl_la_SOURCES = \
 	ewl_object.c \
 	ewl_radiobutton.c \
 	ewl_scrollbar.c \
+	ewl_scrollpane.c \
 	ewl_seeker.c \
 	ewl_selection.c \
 	ewl_separator.c \

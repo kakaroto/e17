@@ -18,8 +18,8 @@ void __ewl_notebook_tab_mouse_down(Ewl_Widget * w, void *ev_data,
 static Ewl_NotebookPage *ewl_notebook_page_new(Ewl_Widget * t,
 					       Ewl_Widget * p);
 
-void __ewl_container_configure(Ewl_Widget * w, void *event_data,
-			       void *user_data);
+void __ewl_container_configure_clip_box(Ewl_Widget * w, void *event_data,
+					void *user_data);
 
 
 Ewl_NotebookPage *__ewl_notebook_page_create(Ewl_Notebook * n,
@@ -486,7 +486,7 @@ __ewl_notebook_init(Ewl_Notebook * n)
 			    __ewl_notebook_tab_box_configure, NULL);
 
 	ewl_callback_del(w, EWL_CALLBACK_CONFIGURE,
-			 __ewl_container_configure);
+			 __ewl_container_configure_clip_box);
 
 	n->pages = ewd_list_new();
 

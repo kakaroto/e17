@@ -2,8 +2,8 @@
 #include <Ewl.h>
 
 void __ewl_container_realize(Ewl_Widget * w, void *ev_data, void *user_data);
-void __ewl_container_configure(Ewl_Widget * w, void *ev_data,
-			       void *user_data);
+void __ewl_container_configure_clip_box(Ewl_Widget * w, void *ev_data,
+					void *user_data);
 void __ewl_container_reparent(Ewl_Widget * w, void *ev_data, void *user_data);
 void __ewl_container_destroy(Ewl_Widget * w, void *ev_data, void *user_data);
 void __ewl_container_destroy_recursive(Ewl_Widget * w, void *ev_data,
@@ -46,7 +46,7 @@ ewl_container_init(Ewl_Container * c, char *appearance)
 	 * children with necessary window and evas information.
 	 */
 	ewl_callback_append(w, EWL_CALLBACK_CONFIGURE,
-			    __ewl_container_configure, NULL);
+			    __ewl_container_configure_clip_box, NULL);
 	ewl_callback_append(w, EWL_CALLBACK_REALIZE,
 			    __ewl_container_realize, NULL);
 	ewl_callback_append(w, EWL_CALLBACK_REPARENT,
@@ -70,25 +70,32 @@ ewl_container_init(Ewl_Container * c, char *appearance)
 void
 ewl_container_append_child(Ewl_Container * pc, Ewl_Widget * child)
 {
+	Ewl_Container *c;
+
 	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR("pc", pc);
 	DCHECK_PARAM_PTR("child", child);
+
+	if (!pc->forward)
+		c = pc;
+	else
+		c = pc->forward;
 
 	/*
 	 * Set the child's parent field to this container, append it to the
 	 * list of the container's children and then notify the child that
 	 * it's parent has been changed.
 	 */
-	child->parent = EWL_WIDGET(pc);
-	ewd_list_append(pc->children, child);
+	child->parent = EWL_WIDGET(c);
+	ewd_list_append(c->children, child);
 
 	ewl_callback_prepend(child, EWL_CALLBACK_DESTROY,
 			     __ewl_container_child_destroy, NULL);
 
 	ewl_widget_reparent(child);
 
-	if (!pc->children || ewd_list_is_empty(pc->children))
-		evas_set_color(EWL_WIDGET(pc)->evas, pc->clip_box, 255,
+	if (!c->children || ewd_list_is_empty(c->children))
+		evas_set_color(EWL_WIDGET(c)->evas, c->clip_box, 255,
 			       255, 255, 255);
 
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
@@ -106,25 +113,32 @@ ewl_container_append_child(Ewl_Container * pc, Ewl_Widget * child)
 void
 ewl_container_prepend_child(Ewl_Container * pc, Ewl_Widget * child)
 {
+	Ewl_Container *c;
+
 	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR("pc", pc);
 	DCHECK_PARAM_PTR("child", child);
+
+	if (!pc->forward)
+		c = pc;
+	else
+		c = pc->forward;
 
 	/*
 	 * Set the child's parent field to this container, prepend it to the
 	 * list of the container's children and then notify the child that
 	 * it's parent has been changed.
 	 */
-	child->parent = EWL_WIDGET(pc);
-	ewd_list_prepend(pc->children, child);
+	child->parent = EWL_WIDGET(c);
+	ewd_list_prepend(c->children, child);
 
 	ewl_callback_prepend(child, EWL_CALLBACK_DESTROY,
 			     __ewl_container_child_destroy, NULL);
 
 	ewl_widget_reparent(child);
 
-	if (!pc->children || ewd_list_is_empty(pc->children))
-		evas_set_color(EWL_WIDGET(pc)->evas, pc->clip_box, 255,
+	if (!c->children || ewd_list_is_empty(c->children))
+		evas_set_color(EWL_WIDGET(c)->evas, c->clip_box, 255,
 			       255, 255, 255);
 
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
@@ -143,26 +157,33 @@ ewl_container_prepend_child(Ewl_Container * pc, Ewl_Widget * child)
 void
 ewl_container_insert_child(Ewl_Container * pc, Ewl_Widget * child, int index)
 {
+	Ewl_Container *c;
+
 	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR("pc", pc);
 	DCHECK_PARAM_PTR("child", child);
+
+	if (!pc->forward)
+		c = pc;
+	else
+		c = pc->forward;
 
 	/*
 	 * Set the child's parent field to this container, insert it on the
 	 * list of the container's children at the designated position and then
 	 * notify the child that it's parent has been changed.
 	 */
-	child->parent = EWL_WIDGET(pc);
-	ewd_list_goto_index(pc->children, index);
-	ewd_list_insert(pc->children, child);
+	child->parent = EWL_WIDGET(c);
+	ewd_list_goto_index(c->children, index);
+	ewd_list_insert(c->children, child);
 
 	ewl_callback_prepend(child, EWL_CALLBACK_DESTROY,
 			     __ewl_container_child_destroy, NULL);
 
 	ewl_widget_reparent(child);
 
-	if (!pc->children || ewd_list_is_empty(pc->children))
-		evas_set_color(EWL_WIDGET(pc)->evas, pc->clip_box, 255,
+	if (!c->children || ewd_list_is_empty(c->children))
+		evas_set_color(EWL_WIDGET(c)->evas, c->clip_box, 255,
 			       255, 255, 255);
 
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
@@ -287,6 +308,17 @@ ewl_container_get_child_at_recursive(Ewl_Container * widget, int x, int y)
 	DRETURN_PTR((child ? child : NULL), DLEVEL_STABLE);
 }
 
+void
+ewl_container_set_forward(Ewl_Container * c, Ewl_Container * c2)
+{
+	DENTER_FUNCTION(DLEVEL_STABLE);
+	DCHECK_PARAM_PTR("c", c);
+
+	c->forward = c2;
+
+	DLEAVE_FUNCTION(DLEVEL_STABLE);
+}
+
 /*
  * When reparenting a container, it's children need the updated information
  * about the container, such as evas and evas_window.
@@ -296,6 +328,7 @@ __ewl_container_reparent(Ewl_Widget * w, void *ev_data, void *user_data)
 {
 	Ewl_Widget *child;
 	Ewd_List *old;
+	Ewl_Container *of;
 
 	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR("w", w);
@@ -303,11 +336,17 @@ __ewl_container_reparent(Ewl_Widget * w, void *ev_data, void *user_data)
 	old = EWL_CONTAINER(w)->children;
 	EWL_CONTAINER(w)->children = ewd_list_new();
 
+	of = EWL_CONTAINER(w)->forward;
+
+	EWL_CONTAINER(w)->forward = NULL;
+
 	while ((child = ewd_list_remove_first(old)) != NULL)
 	  {
 		  ewl_container_append_child(EWL_CONTAINER(w), child);
 		  ewl_widget_reparent(child);
 	  }
+
+	EWL_CONTAINER(w)->forward = of;
 
 	ewd_list_destroy(old);
 }
@@ -356,6 +395,7 @@ __ewl_container_realize(Ewl_Widget * w, void *ev_data, void *user_data)
 	 * realize any of them that should be visible.
 	 */
 	ewd_list_goto_first(c->children);
+
 	while ((child = ewd_list_next(c->children)) != NULL)
 	  {
 		  ewl_widget_reparent(child);
@@ -366,7 +406,8 @@ __ewl_container_realize(Ewl_Widget * w, void *ev_data, void *user_data)
 }
 
 void
-__ewl_container_configure(Ewl_Widget * w, void *ev_data, void *user_data)
+__ewl_container_configure_clip_box(Ewl_Widget * w, void *ev_data,
+				   void *user_data)
 {
 	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR("w", w);

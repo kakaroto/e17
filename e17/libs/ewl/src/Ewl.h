@@ -6,7 +6,6 @@
 #include <Edb.h>
 #include <Evas.h>
 #include <Etox.h>
-#define LIBRARY_NAME "EWL"
 #include <Ewd.h>
 
 #include <stdio.h>
@@ -45,7 +44,6 @@
 #include <ewl_text.h>
 #include <ewl_entry.h>
 
-/* Playing around */
 #include <ewl_fx.h>
 
 #include <ewl_seeker.h>
@@ -59,5 +57,6 @@
 #include <ewl_selection.h>
 #include <ewl_separator.h>
 #include <ewl_notebook.h>
+#include <ewl_scrollpane.h>
 
 #endif
