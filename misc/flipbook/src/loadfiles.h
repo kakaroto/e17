@@ -2,7 +2,7 @@
 /* VA Linux Systems Flipbook demo                                            */
 /*****************************************************************************/
 /*
- * Copyright (C) 1999 Bradtham, Geoff Harrison, and VA Linux Systems
+ * Copyright (C) 2000 Bradtham, Geoff Harrison, and VA Linux Systems
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to
  * deal in the Software without restriction, including without limitation the
@@ -25,4 +25,8 @@
 
 
 void load_files(void);
-
+void unload_movie(void);
+void load_my_list_of_files(char *file_with_names);
+void launch_monitor(void);
+int get_current_index(void);
+GdkPixbuf *get_next_pic(int index);

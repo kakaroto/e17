@@ -2,7 +2,7 @@
 /* VA Linux Systems Flipbook demo                                            */
 /*****************************************************************************/
 /*
- * Copyright (C) 1999 Brad Grantham, Geoff Harrison, and VA Linux Systems
+ * Copyright (C) 2000 Brad Grantham, Geoff Harrison, and VA Linux Systems
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to
  * deal in the Software without restriction, including without limitation the
@@ -49,6 +49,22 @@ CreateBarSubMenu(GtkWidget *menu, char *szName) {
 	GtkWidget *submenu;
 
 	menuitem = gtk_menu_item_new_with_label(szName);
+	gtk_menu_bar_append(GTK_MENU_BAR(menu), menuitem);
+	gtk_widget_show(menuitem);
+	submenu = gtk_menu_new();
+	gtk_menu_item_set_submenu(GTK_MENU_ITEM(menuitem),submenu);
+
+	return submenu;
+
+}
+
+GtkWidget *
+CreateRightAlignBarSubMenu(GtkWidget *menu, char *szName) {
+	GtkWidget *menuitem;
+	GtkWidget *submenu;
+
+	menuitem = gtk_menu_item_new_with_label(szName);
+	gtk_menu_item_right_justify (GTK_MENU_ITEM (menuitem));
 	gtk_menu_bar_append(GTK_MENU_BAR(menu), menuitem);
 	gtk_widget_show(menuitem);
 	submenu = gtk_menu_new();

@@ -2,7 +2,7 @@
 /* VA Linux Systems Flipbook demo                                            */
 /*****************************************************************************/
 /*
- * Copyright (C) 1999 Brad Grantham, Geoff Harrison, and VA Linux Systems
+ * Copyright (C) 2000 Brad Grantham, Geoff Harrison, and VA Linux Systems
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to
  * deal in the Software without restriction, including without limitation the
@@ -35,11 +35,13 @@
 
 #include <gdk/gdkkeysyms.h>
 #include <gtk/gtk.h>
+#include <gdk-pixbuf/gdk-pixbuf.h>
 
 #include <stdlib.h>
 
 #include "hooks.h"
 #include "init.h"
+#include "controls.h"
 
 void initialize_player(void) {
 
@@ -47,5 +49,9 @@ void initialize_player(void) {
 	set_current_drawrate("000.00 MB/sec (000.00 Mpixel/sec)");
 	set_current_missed("0000 frames of 0000 (100%)");
 	set_framerate_base(24);
+	set_total_frames(0);
+	set_movie_name("No Movie Loaded");
+	fastasicanplay = 1;
+	lastpixmap = NULL;
 
 }

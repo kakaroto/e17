@@ -2,7 +2,7 @@
 /* VA Linux Systems Flipbook demo                                            */
 /*****************************************************************************/
 /*
- * Copyright (C) 1999 Brad Grantham, Geoff Harrison, and VA Linux Systems
+ * Copyright (C) 2000 Brad Grantham, Geoff Harrison, and VA Linux Systems
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to
  * deal in the Software without restriction, including without limitation the
@@ -44,3 +44,5 @@ void on_forward_button(GtkWidget *widget, gpointer user_data);
 
 void on_save_preferences(GtkWidget *widget, gpointer user_data);
 void on_chose_segment(GtkWidget *widget, gpointer user_data);
+void on_open_from_file_close(GtkWidget *widget, gpointer user_data);
+void on_close_movie(GtkWidget *widget, gpointer user_data);

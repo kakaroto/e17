@@ -2,7 +2,7 @@
 /* VA Linux Systems Flipbook demo                                            */
 /*****************************************************************************/
 /*
- * Copyright (C) 1999 Brad Grantham, Geoff Harrison, and VA Linux Systems
+ * Copyright (C) 2000 Brad Grantham, Geoff Harrison, and VA Linux Systems
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to
  * deal in the Software without restriction, including without limitation the
@@ -31,20 +31,69 @@
 #include <sys/types.h>
 #include <sys/stat.h>
 #include <unistd.h>
+#include <stdio.h>
 #include <string.h>
 
 #include <gdk/gdkkeysyms.h>
 #include <gtk/gtk.h>
+#include <gdk-pixbuf/gdk-pixbuf.h>
+
 
 #include <stdlib.h>
 
 #include "hooks.h"
+#include "loadfiles.h"
 #include "idle.h"
+#include "support.h"
+
+#include "controls.h"
+
+extern char fastasicanplay;
+extern GdkPixbuf *lastpixmap;
 
 gint play_movie(gpointer data) {
 
-	if(data)
-		return 1;
+	GdkPixbuf *pixbuf;
+	if(data) {
 
-	return 0;
+	}
+
+	pixbuf = get_next_pic(0);
+
+	if(pixbuf == lastpixmap) {
+		return 1;
+	}
+
+	lastpixmap = pixbuf;
+
+	if(!pixbuf) {
+		play_pixmap = create_pixmap(pause_pixmap, "play.xpm");
+		gtk_container_remove(GTK_CONTAINER(play_button),pause_pixmap);
+		gtk_widget_show(play_pixmap);
+		gtk_container_add(GTK_CONTAINER(play_button),play_pixmap);
+		return 0;
+	}
+
+	if(drawspot) {
+		gtk_object_set_data(GTK_OBJECT(drawspot), "pixbuf", pixbuf);
+		g_mutex_lock(gdk_threads_mutex);
+		gdk_draw_rgb_image(drawspot->window,
+				drawspot->style->white_gc,
+				0, 0,
+				get_width(),
+				get_height(),
+				GDK_RGB_DITHER_NORMAL,
+				pixbuf->art_pixbuf->pixels,
+				pixbuf->art_pixbuf->rowstride);
+		g_mutex_unlock(gdk_threads_mutex);
+		gtk_adjustment_set_value(adjust,get_current_index()+1);
+		gtk_adjustment_changed(adjust);
+	} else {
+		play_pixmap = create_pixmap(pause_pixmap, "play.xpm");
+		gtk_container_remove(GTK_CONTAINER(play_button),pause_pixmap);
+		gtk_widget_show(play_pixmap);
+		gtk_container_add(GTK_CONTAINER(play_button),play_pixmap);
+		return 0;
+	}
+	return 1;
 }

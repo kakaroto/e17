@@ -2,7 +2,7 @@
 /* VA Linux Systems Flipbook demo                                            */
 /*****************************************************************************/
 /*
- * Copyright (C) 1999 Brad Grantham, Geoff Harrison, and VA Linux Systems
+ * Copyright (C) 2000 Brad Grantham, Geoff Harrison, and VA Linux Systems
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to
  * deal in the Software without restriction, including without limitation the
@@ -35,13 +35,21 @@
 
 #include <gdk/gdkkeysyms.h>
 #include <gtk/gtk.h>
+#include <gdk-pixbuf/gdk-pixbuf.h>
 
 #include "callbacks.h"
 #include "interface.h"
 #include "support.h"
 #include "menus.h"
 #include "hooks.h"
+#include "controls.h"
 
+extern GtkWidget *control_slider;
+extern GtkWidget *percentdone;
+extern GtkWidget *play_button;
+extern GtkWidget *play_pixmap;
+extern GtkWidget *pause_pixmap;
+extern GtkWidget *status_text;
 
 GtkWidget *
  create_VA_Flipbook(void)
@@ -55,18 +63,13 @@ GtkWidget *
 	GtkWidget *help1;
 	GtkWidget *hbox9;
 	GtkWidget *rewind_button;
-	GtkWidget *play_button;
-	GtkWidget *hscale3;
 	GtkWidget *forward_button;
 	GtkWidget *hbox2;
-	GtkWidget *text1;
 	GtkWidget *pixmap1;
 	GtkWidget *pixmap2;
-	GtkWidget *pixmap3;
 	GtkWidget *pixmap4;
 	GtkWidget *hbox1;
 	GtkWidget *lodalabel_;
-	GtkWidget *percentdone;
 	GtkTooltips *tooltips;
 
 	tooltips = gtk_tooltips_new();
@@ -108,6 +111,8 @@ GtkWidget *
 		menuitem = CreateMenuItem(file1,NULL,NULL,NULL,NULL,NULL);
 		menuitem = CreateMenuItem(file1,"Close Movie","","Close an open Movie",
 				NULL,"close movie");
+		gtk_signal_connect (GTK_OBJECT (menuitem), "activate",
+			   	GTK_SIGNAL_FUNC (on_close_movie), NULL);
 		menuitem = CreateMenuItem(file1,"Exit","","Quit this application",
 				NULL,"exit");
 		gtk_signal_connect (GTK_OBJECT (menuitem), "activate",
@@ -149,10 +154,14 @@ GtkWidget *
 	}
 
 
-	help1 = gtk_menu_item_new_with_label ("Help");
-	gtk_widget_show (help1);
-	gtk_container_add (GTK_CONTAINER (menubar1), help1);
-	gtk_menu_item_right_justify (GTK_MENU_ITEM (help1));
+	help1 = CreateRightAlignBarSubMenu(menubar1,"Help");
+	{
+		GtkWidget *menuitem;
+		menuitem = CreateMenuItem(help1,"About VA Flipbook","",
+				"About VA Flipbook", NULL,"about va flipbook");
+		menuitem = CreateMenuItem(help1,"Documentation","",
+				"Read Documentation about VA Flipbook", NULL, "help");
+	}
 
 	hbox9 = gtk_hbox_new(FALSE, 0);
 	gtk_widget_show(hbox9);
@@ -168,20 +177,21 @@ GtkWidget *
 	gtk_signal_connect (GTK_OBJECT (rewind_button), "clicked",
 				            GTK_SIGNAL_FUNC (on_rewind_button), NULL);
 
-	pixmap3 = create_pixmap(VA_Flipbook, "play.xpm");
-	gtk_widget_show(pixmap3);
+	play_pixmap = create_pixmap(VA_Flipbook, "play.xpm");
+	gtk_widget_show(play_pixmap);
 
 	play_button = gtk_button_new();
-	gtk_container_add(GTK_CONTAINER(play_button), pixmap3);
+	gtk_container_add(GTK_CONTAINER(play_button), play_pixmap);
 	gtk_widget_show(play_button);
 	gtk_box_pack_start(GTK_BOX(hbox9), play_button, FALSE, FALSE, 0);
 	gtk_signal_connect (GTK_OBJECT (play_button), "clicked",
 				            GTK_SIGNAL_FUNC (on_play_button), NULL);
 
-	hscale3 = gtk_hscale_new(GTK_ADJUSTMENT(gtk_adjustment_new(0, 0, 101, 1,
-				   	1, 1)));
-	gtk_widget_show(hscale3);
-	gtk_box_pack_start(GTK_BOX(hbox9), hscale3, TRUE, TRUE, 0);
+	control_slider = gtk_hscale_new(GTK_ADJUSTMENT(gtk_adjustment_new(0, 0,
+				   	1, 1, 1, 1)));
+	gtk_scale_set_digits(GTK_SCALE(control_slider),0);
+	gtk_widget_show(control_slider);
+	gtk_box_pack_start(GTK_BOX(hbox9), control_slider, TRUE, TRUE, 0);
 
 	pixmap4 = create_pixmap(VA_Flipbook, "fastforward.xpm");
 	gtk_widget_show(pixmap4);
@@ -197,27 +207,21 @@ GtkWidget *
 	gtk_widget_show(hbox2);
 	gtk_box_pack_start(GTK_BOX(vbox1), hbox2, TRUE, TRUE, 0);
 
-	text1 = gtk_text_new(NULL, NULL);
-	gtk_widget_show(text1);
-	gtk_widget_set_usize(text1,5,5);
-	gtk_box_pack_start(GTK_BOX(hbox2), text1, TRUE, TRUE, 0);
-	gtk_tooltips_set_tip(tooltips, text1, "Current Movie Information", NULL);
-	gtk_widget_realize(text1);
+	status_text = gtk_text_new(NULL, NULL);
+	gtk_widget_show(status_text);
+	gtk_widget_set_usize(status_text,5,5);
+	gtk_box_pack_start(GTK_BOX(hbox2), status_text, TRUE, TRUE, 0);
+	gtk_tooltips_set_tip(tooltips, status_text, "Current Movie Information",
+		   	NULL);
+	gtk_widget_realize(status_text);
 	{
 		char my_string[255];
 		sprintf(my_string,"\n Framerate: %s\n Drawrate : %s\n Missed   : %s\n",
 				get_current_framerate(),get_current_drawrate(),
 				get_current_missed());
-		gtk_text_insert(GTK_TEXT(text1),NULL,NULL,NULL,my_string,
+		gtk_text_insert(GTK_TEXT(status_text),NULL,NULL,NULL,my_string,
 				strlen(my_string));
 	}
-	/*
-	gtk_text_insert(GTK_TEXT(text1), NULL, NULL, NULL,
-					"\n Framerate: ###.## frames/sec\n Drawrate : "
-					"###.## MB/sec "
-					"(###.## Mpixel/sec)\n Missed   : #### frames "
-					"of #### (## %)",115);
-					*/
 
 	pixmap1 = create_pixmap(VA_Flipbook, "valogo.xpm");
 	gtk_widget_show(pixmap1);
@@ -237,7 +241,7 @@ GtkWidget *
 	gtk_widget_show(progress_bar);
 	gtk_box_pack_start(GTK_BOX(hbox1), progress_bar, FALSE, FALSE, 0);
 
-	percentdone = gtk_label_new("##:##:## remaining\n##:##:## done");
+	percentdone = gtk_label_new("00:00:00:00 remaining\n00:00:00:00 done");
 	gtk_widget_show(percentdone);
 	gtk_box_pack_start(GTK_BOX(hbox1), percentdone, FALSE, FALSE, 3);
 	gtk_label_set_justify(GTK_LABEL(percentdone), GTK_JUSTIFY_LEFT);
@@ -338,6 +342,7 @@ GtkWidget *
 create_movie_info(void)
 {
 
+	char s[1024];
 	GtkWidget *movie_info;
 	GtkWidget *vbox;
 	GtkWidget *label;
@@ -355,23 +360,30 @@ create_movie_info(void)
 	gtk_widget_show(vbox);
 	gtk_container_add(GTK_CONTAINER(movie_info), vbox);
 
-	label = gtk_label_new("Opened From File: xxxxxxxxxxxxxxxxxx");
+	sprintf(s,"Opened From File: %s",get_movie_name());
+	label = gtk_label_new(s);
 	gtk_widget_show(label);
 	gtk_box_pack_start(GTK_BOX(vbox), label, FALSE, FALSE, 3);
 
-	label = gtk_label_new("xxxxxxxxxxxxxxxxxxxx Frames in Movie");
+	sprintf(s,"%d Frames in Movie",get_total_frames());
+	label = gtk_label_new(s);
 	gtk_widget_show(label);
 	gtk_box_pack_start(GTK_BOX(vbox), label, FALSE, FALSE, 3);
 
-	label = gtk_label_new("Width: XXXX              Height XXXX");
+	sprintf(s,"Width: %d     Height: %d",get_width(),get_height());
+	label = gtk_label_new(s);
 	gtk_widget_show(label);
 	gtk_box_pack_start(GTK_BOX(vbox), label, FALSE, FALSE, 3);
 
-	label = gtk_label_new("xxxxxx :     Megs Resident in Memory");
+	sprintf(s,"%d :  Megs Total in Movie",((get_width() * get_height() 
+				* 3 * get_total_frames()) / 1024) / 1024);
+	label = gtk_label_new(s);
 	gtk_widget_show(label);
 	gtk_box_pack_start(GTK_BOX(vbox), label, FALSE, FALSE, 3);
 
-	label = gtk_label_new("xxxxxx :     Megs Total in Movie    ");
+	sprintf(s,"%d :  Megs Total in Movie",((get_width() * get_height() 
+				* 3 * get_total_frames()) / 1024) / 1024);
+	label = gtk_label_new(s);
 	gtk_widget_show(label);
 	gtk_box_pack_start(GTK_BOX(vbox), label, FALSE, FALSE, 3);
 
@@ -653,6 +665,7 @@ GtkWidget *
 		gtk_widget_show(hbox);
 		gtk_container_add(GTK_CONTAINER(radiobutton1), hbox);
 		entry = gtk_entry_new();
+		gtk_entry_set_text(GTK_ENTRY(entry), "100");
 		gtk_widget_show(entry);
 		gtk_box_pack_start(GTK_BOX(hbox), entry, FALSE, FALSE, 0);
 		label = gtk_label_new("% of system memory");
@@ -661,10 +674,6 @@ GtkWidget *
 
 	}
 
-	/*
-	radiobutton1 = gtk_radio_button_new_with_label(alignment1_group,
-		   	"## % of system memory");
-		*/
 	alignment1_group = gtk_radio_button_group(GTK_RADIO_BUTTON(radiobutton1));
 	gtk_widget_show(radiobutton1);
 	gtk_table_attach(GTK_TABLE(table2), radiobutton1, 1, 2, 0, 1,
@@ -681,6 +690,7 @@ GtkWidget *
 		gtk_widget_show(hbox);
 		gtk_container_add(GTK_CONTAINER(radiobutton2), hbox);
 		entry = gtk_entry_new();
+		gtk_entry_set_text(GTK_ENTRY(entry), "500");
 		gtk_widget_show(entry);
 		gtk_box_pack_start(GTK_BOX(hbox), entry, FALSE, FALSE, 0);
 		label = gtk_label_new("Megabytes of system memory");
@@ -689,10 +699,6 @@ GtkWidget *
 
 	}
 
-	/*
-	radiobutton2 = gtk_radio_button_new_with_label(alignment1_group,
-		   	"## Megabytes of system memory");
-			*/
 	alignment1_group = gtk_radio_button_group(GTK_RADIO_BUTTON(radiobutton2));
 	gtk_widget_show(radiobutton2);
 	gtk_table_attach(GTK_TABLE(table2), radiobutton2, 1, 2, 1, 2,

@@ -23,7 +23,15 @@
  * CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 
+GtkWidget *control_slider;
+GtkAdjustment *adjust;
+GtkWidget *percentdone;
+GtkWidget *play_button;
+GtkWidget *play_pixmap;
+GtkWidget *pause_pixmap;
+GtkWidget *status_text;
 
-void get_jpeg_stats(char *path);
-unsigned char *load_jpeg_from_disk(char *path);
-GdkPixmap *PixmapFromData(unsigned char *data);
+char fastasicanplay;
+GdkPixbuf *lastpixmap;
+int get_current_index(void);
+

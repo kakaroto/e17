@@ -14,7 +14,13 @@ flipbook_SOURCES = \
 	loader.c loader.h \
 	callbacks.c callbacks.h \
 	hooks.c hooks.h \
-	menus.c menus.h
+	textload.c textload.h \
+	menus.c menus.h \
+	controls.h
 
-flipbook_LDADD = @GTK_LIBS@ -lgthread -ljpeg
+flipbook_LDADD = -L/usr/lib -L/usr/X11R6/lib -lgnomeui -lart_lgpl \
+-lgdk_imlib -lSM -lICE -lgtk -lgdk -lgmodule -lXext -lX11 -lgnome \
+-lgnomesupport -lesd -laudiofile -lm -ldb1 -lglib -ldl -lgthread -ljpeg \
+-lgdk_pixbuf
+
 

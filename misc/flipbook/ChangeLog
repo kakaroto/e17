@@ -183,3 +183,11 @@ Tue Jan  4 15:38:13 PST 2000
 
 fixing a few things that need fixing.  moving all the loading code to the
 appropriate places, also.
+
+---------------------------------------------------------------------------
+
+Tue Feb  1 12:03:14 PST 2000
+(Mandrake)
+
+putting this back in CVS.  most of the player for gdkrgb runs now.
+you'll need gdkrgb and gdkpixbuf now though

@@ -23,8 +23,5 @@ dist-hook:
 	  done \
 	fi
 
-extra: pixmaps/fastforward.xpm \
-	   pixmaps/play.xpm \
-       pixmaps/rewind.xpm \
-       pixmaps/valogo.xpm
-
+EXTRA_DIST = flipbook.spec \
+	   autogen.sh

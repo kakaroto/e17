@@ -2,7 +2,7 @@
 /* VA Linux Systems Flipbook demo                                            */
 /*****************************************************************************/
 /*
- * Copyright (C) 1999 Brad Grantham, Geoff Harrison, and VA Linux Systems
+ * Copyright (C) 2000 Brad Grantham, Geoff Harrison, and VA Linux Systems
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to
  * deal in the Software without restriction, including without limitation the
@@ -24,6 +24,7 @@
  */
 
 GtkWidget *CreateBarSubMenu(GtkWidget *menu, char *szName);
+GtkWidget *CreateRightAlignBarSubMenu(GtkWidget *menu, char *szName);
 GtkWidget * CreateMenuItem(GtkWidget *menu, char *szName, char *szAccel, 
 		char *szTip, GtkSignalFunc func, gpointer data);
 

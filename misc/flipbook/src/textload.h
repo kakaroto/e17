@@ -23,7 +23,5 @@
  * CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 
-
-void get_jpeg_stats(char *path);
-unsigned char *load_jpeg_from_disk(char *path);
-GdkPixmap *PixmapFromData(unsigned char *data);
+char *GetLine(char *s, int size, FILE * f);
+int IsWhitespace(const char *s);
