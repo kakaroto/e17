@@ -464,6 +464,24 @@ char *ewl_widget_appearance_get(Ewl_Widget * w)
 }
 
 /**
+ * @param w: the widget to retrieve the appearance key
+ * @return Returns a pointer to the last element of the appearance key string
+ * on success, NULL on failure.
+ * @brief Retrieve the last element of the appearance key of the widget
+ */
+char *ewl_widget_appearance_single_get(Ewl_Widget * w)
+{
+	char *ret;
+
+	DENTER_FUNCTION(DLEVEL_STABLE);
+	DCHECK_PARAM_PTR_RET("w", w, NULL);
+
+	ret = strdup( w->appearance ? w->appearance : "" );
+
+	DRETURN_PTR(ret, DLEVEL_STABLE);
+}
+
+/**
  * @param w: the widget to update the appearance
  * @param state: the new state of the widget
  * @return Returns no value.

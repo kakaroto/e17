@@ -63,23 +63,21 @@ void ewl_checkbutton_init(Ewl_CheckButton * cb, char *label)
 }
 
 /**
- * @param w: the widget to change the label positioning
+ * @param cb: the widget to change the label positioning
  * @param p: the new position of the label
  * @return Returns no value.
  * @brief Set the check buttons label position
  *
  * Changes the position of the label associated with the check button.
  */
-void ewl_checkbutton_label_position_set(Ewl_Widget * w, Ewl_Position p)
+void ewl_checkbutton_label_position_set(Ewl_CheckButton * cb, Ewl_Position p)
 {
 	Ewl_Button     *b;
-	Ewl_CheckButton *cb;
 
 	DENTER_FUNCTION(DLEVEL_STABLE);
-	DCHECK_PARAM_PTR("w", w);
+	DCHECK_PARAM_PTR("cb", cb);
 
-	b = EWL_BUTTON(w);
-	cb = EWL_CHECKBUTTON(w);
+	b = EWL_BUTTON(cb);
 
 	if (cb->label_position == p)
 		DRETURN(DLEVEL_STABLE);
@@ -103,7 +101,7 @@ void ewl_checkbutton_label_position_set(Ewl_Widget * w, Ewl_Position p)
 		ewl_container_child_append(EWL_CONTAINER(cb), cb->check);
 	}
 
-	ewl_widget_configure(w);
+	ewl_widget_configure(cb);
 
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }

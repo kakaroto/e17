@@ -60,7 +60,7 @@ void            ewl_checkbutton_init(Ewl_CheckButton * cb, char *label);
 #define ewl_checkbutton_is_checked(cb) \
 	ewl_check_is_checked(EWL_CHECK(EWL_CHECKBUTTON(cb)->check))
 
-void            ewl_checkbutton_label_position_set(Ewl_Widget * w,
+void            ewl_checkbutton_label_position_set(Ewl_CheckButton * cb,
 						   Ewl_Position p);
 
 void            ewl_checkbutton_clicked_cb(Ewl_Widget * w, void *ev_data,

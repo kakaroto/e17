@@ -125,6 +125,11 @@ void            ewl_widget_appearance_set(Ewl_Widget * w, char *appearance);
 char           *ewl_widget_appearance_get(Ewl_Widget * w);
 
 /*
+ * Retrieve the last element of the appearance string of a widget.
+ */
+char           *ewl_widget_appearance_single_get(Ewl_Widget * w);
+
+/*
  * Append to the inherited string 
  */
 void            ewl_widget_inherit(Ewl_Widget *widget, char *type);
