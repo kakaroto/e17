@@ -107,6 +107,7 @@ read_data(int sockfd, void *dest, int size)
 
       if (result == 0)
 	{
+	  D(("Read timed out...\n"));
 	  D_RETURN_(-1);
 	}
 
@@ -206,6 +207,7 @@ write_data(int sockfd, void *data, int size)
 
       if (result == 0)
 	{
+	  D(("Write timed out...\n"));
 	  D_RETURN_(-1);
 	}
 
@@ -213,7 +215,7 @@ write_data(int sockfd, void *data, int size)
 	{
 	  if (errno == EPIPE)
 	    {
-	      D(("Broken pipe in write_data()\n"));
+	      D(("Broken pipe in write_data() to fd %i\n", sockfd));
 	      D_RETURN_(-1);
 	    }
 	  else		
@@ -715,7 +717,8 @@ efsd_write_event(int sockfd, EfsdEvent *ee)
   switch (ee->type)
     {
     case EFSD_EVENT_FILECHANGE:
-      D(("Writing filechange event.\n"));
+      D(("Writing filechange event for file %s\n",
+	 ee->efsd_filechange_event.file));
       result = write_filechange_event(sockfd, ee);    
       break;
     case EFSD_EVENT_REPLY:

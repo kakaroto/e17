@@ -26,8 +26,9 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 # include <config.h>
 #endif
 
-#ifdef DEBUG
 #include <stdio.h>
+#include <sys/time.h>
+#include <unistd.h>
 
 int  efsd_debug_nest_level = 0;
 
@@ -39,4 +40,12 @@ void efsd_debug_whitespace(int num)
     printf("-");
 }
 
-#endif
+void 
+efsd_debug_print_timestamp(void)
+{
+  struct timeval tv;
+  
+  gettimeofday(&tv, NULL);
+  printf("%li.%li ", tv.tv_sec, tv.tv_usec);
+}
+

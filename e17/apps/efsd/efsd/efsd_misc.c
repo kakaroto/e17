@@ -41,6 +41,9 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 #include <efsd_debug.h>
 #include <efsd_misc.h>
 
+static mode_t         default_mode = (S_IRUSR | S_IWUSR | S_IXUSR | S_IRGRP |
+				      S_IXGRP | S_IROTH | S_IXOTH);
+
 int    
 efsd_misc_file_exists(char *filename)
 {
@@ -72,6 +75,23 @@ efsd_misc_file_is_dir(char *filename)
     D_RETURN_(0);
 
   D_RETURN_(S_ISDIR(st.st_mode));
+}
+
+
+int    
+efsd_misc_mkdir(char *filename)
+{
+  D_ENTER;
+
+  if (!filename)
+    D_RETURN_(0);
+
+  if (mkdir(filename, default_mode) < 0)
+    {
+      D_RETURN_(0);
+    }
+
+  D_RETURN_(1);
 }
 
 

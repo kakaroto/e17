@@ -47,8 +47,10 @@ EfsdConnection *efsd_open(void);
 
 /* Use this to close an efsd connection.
    Frees the allocated EfsdConnection.
+   Returns value < 0 if the the final
+   command could not be sent to Efsd.
  */
-void           efsd_close(EfsdConnection *ec);
+int            efsd_close(EfsdConnection *ec);
 
 
 /* Use this to get the file descriptor of an efsd
@@ -92,9 +94,11 @@ void           efsd_cleanup_event(EfsdEvent *ev);
 
 /* Various commands to operate on the fs.
 
-   Each command returns and efsd command ID, which is also
-   contained in the efsd events returned by the server so
-   that commands and the generated replies can be associated.
+   UNLESS there's a communication problem (e.g. clogged
+   buffers), each command returns and efsd command ID, which
+   is also contained in the efsd events returned by the server
+   so that commands and the generated replies can be associated.
+   In case of an error, a value < 0 is returned.
 
    Filenames are internally converted to fully canonical
    path names if not fully specified.
@@ -125,10 +129,11 @@ EfsdCmdId      efsd_makedir(EfsdConnection *ec, char *dirname);
  */
 EfsdCmdId      efsd_chmod(EfsdConnection *ec, char *filename,  mode_t mode);
 
-/* These aren't implemented yet.
+/* Metadata operations.
  */
 EfsdCmdId      efsd_set_metadata(EfsdConnection *ec, char *key, char *filename,
 				 EfsdDatatype datatype, int datalength, void *data);
+EfsdCmdId      efsd_del_metadata(EfsdConnection *ec, char *key, char *filename);
 EfsdCmdId      efsd_get_metadata(EfsdConnection *ec, char *key, char *filename);
 
 /* Start/stop a FAM monitor for a given file or directory.

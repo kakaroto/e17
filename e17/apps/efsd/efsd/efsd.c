@@ -148,7 +148,7 @@ efsd_handle_client_command(EfsdCommand *command, int client)
       result = efsd_stop_monitor(command, client);
       break;
     case EFSD_CMD_STAT:
-      D(("Handling STAT\n"));
+      D(("Handling STAT on %s\n", command->efsd_file_cmd.file));
       result = efsd_stat(command, client);
       break;
     case EFSD_CMD_READLINK:
@@ -410,7 +410,10 @@ efsd_cleanup(void)
   for (i = 0; i < EFSD_CLIENTS; i++)
     {
       if (clientfd[i] >= 0)
-	close(clientfd[i]);
+	{
+	  D(("Cleaning up client %i, fd %i\n", i, clientfd[i]));
+	  close(clientfd[i]);
+	}
     }
   
   close(listen_fd);

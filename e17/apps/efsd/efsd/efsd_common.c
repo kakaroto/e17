@@ -62,7 +62,11 @@ efsd_get_socket_file(void)
   if (!dir)
     dir = "/tmp";
 
-  snprintf(s, sizeof(s), "%s/.efsd", dir);
+  snprintf(s, sizeof(s), "%s/.e", dir);
+  if (!efsd_misc_file_is_dir(s))
+    efsd_misc_mkdir(s);
+
+  snprintf(s, sizeof(s), "%s/.e/efsd_socket", dir);
   s[sizeof(s)-1] = '\0';
 
   D_RETURN_(s);
