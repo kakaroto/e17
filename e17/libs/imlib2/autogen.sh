@@ -1,5 +1,16 @@
 #! /bin/sh
 
+(automake --version | grep 1.4) && (autoconf --version | grep 2.5)
+
+if test $? = 1; then
+  echo "Happy building ...";
+else
+  echo "Trobule!";
+  echo "You have automake 1.4 and autoconf 2.5. either downgrade autoconf to";
+  echo "2.13 or upgrade automake to 1.5";
+  exit
+fi
+
 if [ "$USER" = "root" ]; then
   echo "You cannot do this as "$USER" please use a normal user account"
   exit
