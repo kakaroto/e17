@@ -1119,6 +1119,7 @@ typedef struct
       char                manual;
       char                manual_mouse_pointer;
       char                ignore_struts;
+      char                raise_fullscreen;
    } place;
    struct
    {

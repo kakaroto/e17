@@ -3149,6 +3149,8 @@ EwinSetFullscreen(EWin * ewin, int on)
 {
    int                 x, y, w, h;
    Border             *b;
+   EWin              **lst;
+   int                 i, num;
 
    if (ewin->st.fullscreen == on)
       return;
@@ -3161,9 +3163,20 @@ EwinSetFullscreen(EWin * ewin, int on)
 	ewin->lh = ewin->client.h;
 	ewin->ll = ewin->layer;
 	ScreenGetAvailableArea(ewin->x, ewin->y, &x, &y, &w, &h);
-#if 0
-	ewin->layer = 10;
-#endif
+
+	if (Conf.place.raise_fullscreen)
+	  {
+	     ewin->layer = 8;
+	     lst = EwinListTransients(ewin, &num, 0);
+	     for (i = 0; i < num; i++)
+	       {
+		  lst[i]->ll = lst[i]->layer;
+		  lst[i]->layer += ewin->layer - ewin->ll;
+	       }
+	     if (lst)
+		Efree(lst);
+	  }
+
 	ewin->fixedpos = 1;
 	b = (Border *) FindItem("BORDERLESS", 0, LIST_FINDBY_NAME,
 				LIST_TYPE_BORDER);
@@ -3174,9 +3187,18 @@ EwinSetFullscreen(EWin * ewin, int on)
 	y = ewin->ly;
 	w = ewin->lw;
 	h = ewin->lh;
-	ewin->layer = ewin->ll;
 	ewin->fixedpos = 0;	/* Yeah - well */
 	b = ewin->normal_border;
+
+	if (Conf.place.raise_fullscreen)
+	  {
+	     lst = EwinListTransients(ewin, &num, 0);
+	     for (i = 0; i < num; i++)
+		lst[i]->layer = lst[i]->ll;
+	     if (lst)
+		Efree(lst);
+	  }
+	ewin->layer = ewin->ll;
      }
    ewin->st.fullscreen = on;
    RaiseEwin(ewin);

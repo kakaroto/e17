@@ -759,6 +759,9 @@ Config_Control(FILE * ConfigFile)
 	  case CONTROL_PLACE_IGNORE_STRUTS:
 	     Conf.place.ignore_struts = i2;
 	     break;
+	  case CONTROL_RAISE_FULLSCREEN:
+	     Conf.place.raise_fullscreen = i2;
+	     break;
 	  case CONTROL_RAISE_ON_NEXT_FOCUS:
 	     Conf.focus.raise_on_next = i2;
 	     break;
@@ -3894,6 +3897,7 @@ SaveUserControlConfig(FILE * autosavefile)
 	fprintf(autosavefile, "3360 %i\n",
 		(int)Conf.place.manual_mouse_pointer);
 	fprintf(autosavefile, "3361 %i\n", (int)Conf.place.ignore_struts);
+	fprintf(autosavefile, "3362 %i\n", (int)Conf.place.raise_fullscreen);
 	fprintf(autosavefile, "344 %i\n", (int)Conf.focus.raise_on_next);
 	fprintf(autosavefile, "345 %i\n", (int)Conf.focus.warp_on_next);
 	fprintf(autosavefile, "346 %i\n", (int)Conf.edge_flip_resistance);
