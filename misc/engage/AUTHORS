@@ -1,8 +1,11 @@
 genneth:
-origional code and ideas
+original code and ideas
 
 HandyAndE:
 update config, trans etc and added autofoo
+add embedded edje clocks
+add system tray
+maintenence
 
 lycos:
 added config file loading for icons (now removed in favour of e_app)
