@@ -24,7 +24,7 @@ char * entranced_cookie_new (void)
    char                    *cookie;
    Entranced_MD5_Context   *ctx = NULL;
 
-   entranced_md5_init(ctx);
+   entranced_md5_init(&ctx);
 
    ctime = ecore_time_get();
    entranced_md5_update(ctx, (unsigned char *) &ctime, sizeof(ctime));
