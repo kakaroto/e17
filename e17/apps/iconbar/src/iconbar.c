@@ -1,6 +1,5 @@
 #include "iconbar.h"
 #include "util.h"
-#include "container.h"
 #include <math.h>
 #include <time.h>
 /* smart object handlers */
@@ -22,7 +21,7 @@ void iconbar_clip_unset(Evas_Object *o);
 void iconbar_icon_move(Icon *icon);
 void iconbar_icons_fix(Iconbar *ib);
 void iconbar_icons_load(Iconbar *ib);
-void write_out_order(Iconbar *ib);
+void write_out_order(void *data);
 
 
 static int clock_timer(void *data);
@@ -396,7 +395,7 @@ iconbar_icons_load(Iconbar *ib)
   DIR *dirp;
   struct dirent *dp;
   char dir[PATH_MAX];
-  Evas_List *icons, *new = NULL;
+  Evas_List *icons = NULL, *new = NULL;
 
   snprintf(dir, sizeof(dir), "%s/icons", ib->path);
   dirp = opendir(dir);
@@ -485,37 +484,37 @@ iconbar_icons_load(Iconbar *ib)
 }
 
 void
-write_out_order(Iconbar *ib)
+write_out_order(void *data)
 {
   FILE *f;
   char buf[PATH_MAX];
   Evas_List *l, *ll;
-
-  snprintf(buf, sizeof(buf), "%s/order.txt", ib->path);
- 
-
-  f = fopen(buf, "w");
-
-  if (f)
+  Iconbar *ib = NULL;
+    
+  if((ib = (Iconbar*)data))
   {
-    printf("file opened ok\n");
-    for (l = e_container_elements_get(ib->cont); l; l = l->next)
+    snprintf(buf, sizeof(buf), "%s/order.txt", ib->path);
+    if ((f = fopen(buf, "w")))
     {
-      Evas_Object *obj = l->data;
-      Icon *ic = evas_object_data_get(obj, "Icon");
-      char *p;
+	printf("file opened ok\n");
+	for (l = e_container_elements_get(ib->cont); l; l = l->next)
+	{
+	    Evas_Object *obj = l->data;
+	    Icon *ic = evas_object_data_get(obj, "Icon");
+	    char *p;
 
-      p = strrchr(ic->file, '/');
-      if (p)
-      {
-        p++;
-        fputs(p, f);
-        fputs("\n", f);
-        printf("write: %s\n", p);
-      }
+	    p = strrchr(ic->file, '/');
+	    if (p)
+	    {
+		p++;
+		fputs(p, f);
+		fputs("\n", f);
+		printf("write: %s\n", p);
+	    }
+	}
+	fclose(f);
     }
   }
-    fclose(f);
 }
 
 

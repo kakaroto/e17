@@ -2,12 +2,12 @@
 #include <Ecore_X.h>
 #include <Ecore_Evas.h>
 #include <Evas.h>
-#include "iconbar.h"
-#include "bg.h"
-#include "util.h"
-#include "../config.h"
+#include <Esmart/Esmart_Trans.h>
 
-#define PACKAGE_DATA_DIR PKGDIR"/share/iconbar/data/"
+#include "iconbar.h"
+#include "util.h"
+#include "config.h"
+
 static void resize(Ecore_Evas *ee);
 static void window_leave(Ecore_Evas *ee);
 static int cb_exit(Ecore_Evas *ee);
@@ -48,14 +48,17 @@ main()
 
   evas_font_path_append(ecore_evas_get(ee), "/usr/local/share/elicit/data/font/");
 
-#ifdef TRANS_BG
+#ifdef HAVE_TRANS_BG
   {
     int x, y, w, h;
     ecore_evas_geometry_get(ee, &x, &y, &w, &h);
-    bg = transparency_get_pixmap(ecore_evas_get(ee), NULL, x, y, w, h);
+    bg = esmart_trans_x11_new(ecore_evas_get(ee));
     evas_object_layer_set(bg, 0);
     evas_object_move(bg, 0, 0);
     evas_object_resize(bg, w, h);
+    evas_object_name_set(bg, "trans");
+    
+    esmart_trans_x11_freshen(bg, x, y, w, h);
     evas_object_show(bg);
   }
 #endif
@@ -92,11 +95,12 @@ static void
 resize(Ecore_Evas *ee)
 {
   int x, y, w, h;
+  Evas_Object *o = NULL;
   ecore_evas_geometry_get(ee, &x, &y, &w, &h);
 
-#ifdef TRANS_BG
-  bg = transparency_get_pixmap(ecore_evas_get(ee), bg, x, y, w, h);
-  evas_object_resize(bg, w, h);
+#ifdef HAVE_TRANS_BG
+  if((o = evas_object_name_find(ecore_evas_get(ee), "trans")))
+    esmart_trans_x11_freshen(o, x, y, w, h);
 #endif
   evas_object_resize(iconbar, w, h); 
 }
