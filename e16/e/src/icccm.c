@@ -167,21 +167,21 @@ ICCCM_Delete(EWin * ewin)
 
    if (ewin->internal)
      {
-	XEvent              ev;
+	XEvent              xev;
 
 	if (ewin->menu)
 	   MenuHide(ewin->menu);
 	if (ewin->pager)
 	  {
 	     HideEwin(ewin);
-	     ev.xunmap.window = PagerGetWin(ewin->pager);
-	     HandleUnmap(&ev);
+	     xev.xunmap.window = PagerGetWin(ewin->pager);
+	     HandleUnmap(&xev);
 	  }
 	if (ewin->ibox)
 	  {
 	     HideEwin(ewin);
-	     ev.xunmap.window = IconboxGetWin(ewin->ibox);
-	     HandleUnmap(&ev);
+	     xev.xunmap.window = IconboxGetWin(ewin->ibox);
+	     HandleUnmap(&xev);
 	  }
 	if (ewin->dialog)
 	   DialogClose(ewin->dialog);
@@ -770,7 +770,7 @@ ICCCM_GetInfo(EWin * ewin, Atom atom_change)
 	else if (XGetCommand(disp, ewin->client.group, &cargv, &cargc))
 	  {
 	     EWin              **lst;
-	     int                 i, lnum, ok = 1;
+	     int                 lnum, ok = 1;
 
 	     lst = (EWin **) ListItemType(&lnum, LIST_TYPE_EWIN);
 	     if (lst)

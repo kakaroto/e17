@@ -565,7 +565,7 @@ MakeExtInitWin(void)
    Window              win;
    XGCValues           gcv;
    GC                  gc;
-   Pixmap              pmap;
+   Pixmap              pmap, mask;
    Atom                a;
    CARD32              val;
    int                 i;
@@ -674,15 +674,12 @@ MakeExtInitWin(void)
      {
 	Window              w2, ww;
 	char               *f, s[1024];
-	Pixmap              pmap, mask;
 	Imlib_Image        *im;
 	struct timeval      tv;
 	int                 dd, x, y;
 	unsigned int        mm;
 	Cursor              cs = 0;
 	XColor              cl;
-	GC                  gc;
-	XGCValues           gcv;
 
 	w2 = XCreateWindow(d2, win, 0, 0, 32, 32, 0, root.depth, InputOutput,
 			   root.vis,

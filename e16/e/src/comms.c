@@ -1470,11 +1470,11 @@ HandleComms(XClientMessageEvent * ev)
 	  }
 	if (dragbar_change)
 	  {
-	     Button             *b;
+	     Button             *btn;
 
-	     while ((b = RemoveItem("_DESKTOP_DRAG_CONTROL", 0,
-				    LIST_FINDBY_NAME, LIST_TYPE_BUTTON)))
-		ButtonDestroy(b);
+	     while ((btn = RemoveItem("_DESKTOP_DRAG_CONTROL", 0,
+				      LIST_FINDBY_NAME, LIST_TYPE_BUTTON)))
+		ButtonDestroy(btn);
 	     InitDesktopControls();
 	     ShowDesktopControls();
 	  }

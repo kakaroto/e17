@@ -3260,7 +3260,7 @@ SettingsBackground(Background * bg)
    DItem              *table, *di, *table2, *area, *slider, *slider2, *label;
    DItem              *w1, *w2, *w3, *w4, *w5, *w6;
    int                 num;
-   char                s[256];
+   char                s[1024];
 
    if ((d = FindItem("CONFIGURE_BG", 0, LIST_FINDBY_NAME, LIST_TYPE_DIALOG)))
      {
@@ -3272,8 +3272,6 @@ SettingsBackground(Background * bg)
 
    if ((!bg) || ((bg) && (!strcmp(bg->name, "NONE"))))
      {
-	char                s[1024];
-
 	Esnprintf(s, sizeof(s), "__NEWBG_%i\n", (unsigned)time(NULL));
 	bg = CreateDesktopBG(s, NULL, NULL, 1, 1, 0, 0, 0, 0, NULL, 1, 512, 512,
 			     0, 0);

@@ -24,6 +24,9 @@
 #include "E.h"
 #include <math.h>
 
+/* Silly hack to avoid name clash warning when using -Wshadow */
+#define y1 y1_
+
 static void         IconboxRedraw(Iconbox * ib);
 
 #define IB_ANIM_TIME 0.25
@@ -2493,7 +2496,7 @@ IconboxesHandleEvent(XEvent * ev)
 	       {
 		  EWin               *ewin;
 		  EWin              **gwins;
-		  int                 j, num;
+		  int                 j, numg;
 		  char                iconified;
 
 		  ib[i]->icon_clicked = 0;
@@ -2508,12 +2511,12 @@ IconboxesHandleEvent(XEvent * ev)
 			  HideToolTip(tt);
 		       gwins =
 			  ListWinGroupMembersForEwin(ewin, ACTION_ICONIFY,
-						     Mode.nogroup, &num);
+						     Mode.nogroup, &numg);
 		       iconified = ewin->iconified;
 
 		       if (gwins)
 			 {
-			    for (j = 0; j < num; j++)
+			    for (j = 0; j < numg; j++)
 			      {
 				 if ((gwins[j]->iconified) && (iconified))
 				    DeIconifyEwin(gwins[j]);

@@ -390,7 +390,7 @@ ActionsCall(unsigned int id, EWin * ewin, void *params)
 }
 
 static int
-handleAction(EWin * ewin, ActionType * Action)
+handleAction(EWin * ewin, ActionType * action)
 {
    /* This function will handle any type of action that is passed into
     * it.  ALL internal events should be passed through this function.
@@ -400,7 +400,7 @@ handleAction(EWin * ewin, ActionType * Action)
    int                 error;
 
    EDBUG(5, "handleAction");
-   error = ActionsCall(Action->Type, ewin, Action->params);
+   error = ActionsCall(action->Type, ewin, action->params);
 
    /* Did we just hose ourselves? if so, we'd best not stick around here */
    if (mode_action_destroy)
@@ -410,8 +410,8 @@ handleAction(EWin * ewin, ActionType * Action)
     * we're sure we didn't already die) perform it
     */
    if (!error)
-      if (Action->Next)
-	 error = handleAction(ewin, Action->Next);
+      if (action->Next)
+	 error = handleAction(ewin, action->Next);
 
    EDBUG_RETURN(error);
 }

@@ -308,7 +308,7 @@ PagerShow(Pager * p)
 {
    EWin               *ewin = NULL;
    XClassHint         *xch;
-   char                s[64];
+   char                s[4096];
    char                pq;
 
    if (!Conf.pagers.enable)
@@ -333,7 +333,6 @@ PagerShow(Pager * p)
 			      "PAGER", EWIN_TYPE_PAGER, p, PagerEwinInit);
    if (ewin)
      {
-	char                s[4096];
 	int                 ax, ay, w, h;
 	Snapshot           *sn;
 	double              aspect;
