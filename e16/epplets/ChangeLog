@@ -153,3 +153,10 @@ Epplet_query_config_def() instead and passing the default to that function.
 
 I also added the ability to right-justify label text by specifying a negative
 x coordinate.  See E-Time for a sample.
+
+-------------------------------------------------------------------------------
+
+Tue Oct 26 17:44:38 PDT 1999
+(KainX)
+
+E-Sys, an uptime epplet that actually *works*. :-)
