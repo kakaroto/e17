@@ -45,7 +45,7 @@ void setup_server(){
 			if(mysvr != NULL){
 				listenev = ecore_event_handler_add
 					(ECORE_IPC_EVENT_CLIENT_DATA,
-					 ipc_svr_data_recv, NULL);}}}
+					 ipc_svr_data_recv, mysvr);}}}
 
 /**
  * @param msg: The message to be sent.
@@ -72,17 +72,26 @@ send_to_server(char *msg)
  */
 int ipc_svr_data_recv(void *data, int type, void *event){
 	Ecore_Ipc_Event_Client_Data *e;
-	if((e=(Ecore_Ipc_Event_Client_Data*)event))
+  Ecore_Ipc_Server *server;
+
+  e = (Ecore_Ipc_Event_Client_Data *) event;
+  server = (Ecore_Ipc_Server *) data;
+  if (server != ecore_ipc_client_server_get(e->client))
+    return(1);
+	if(e)
 		handle_ipc_message((void*)e->data);
 	return(1);}
 
 void handle_ipc_message(void *data){
-	RecvMsg        *p=parse_message((char*)data);
+	RecvMsg        *p;
 	NoteStor       *note;
 	Ecore_Timer    *close;
 	char           *msg;
 	char           *content;
 
+  p = NULL;
+  if (data)
+    p = parse_message((char *)data);
 	if (p) {
 		if (p->cmd == NOTE) {
 			if (p->data) {
