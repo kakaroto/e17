@@ -3393,6 +3393,7 @@ Epplet_draw_label(Epplet_gadget eg, char un_only)
    XGCValues           gcv;
    int                 x;
 
+   GADGET_CONFIRM_TYPE(eg, E_LABEL);
    g = (GadLabel *) eg;
    gc = XCreateGC(disp, g->general.parent->bg_pmap, 0, &gcv);
    if (g->x < 0)
@@ -3794,6 +3795,7 @@ Epplet_draw_popupbutton(Epplet_gadget eg)
    GadPopupButton     *g;
    char               *state;
 
+   GADGET_CONFIRM_TYPE(eg, E_POPUPBUTTON);
    g = (GadPopupButton *) eg;
    if (g->hilited)
      {
@@ -3887,6 +3889,27 @@ Epplet_change_popbutton_popup(Epplet_gadget gadget, Epplet_gadget popup)
    Epplet_gadget_destroy(g->popup);
    g->popped = 0;
    g->popup = popup;
+   if (gg->visible != 0)
+      Epplet_draw_popupbutton(gadget);
+}
+
+void
+Epplet_change_popbutton_label(Epplet_gadget gadget, char *label)
+{
+   GadPopupButton     *g;
+   GadGeneral         *gg;
+
+   GADGET_CONFIRM_TYPE(gadget, E_POPUPBUTTON);
+   g = (GadPopupButton *) gadget;
+   gg = (GadGeneral *) gadget;
+   if (g->label)
+     {
+	if (label && !strcmp(g->label, label))
+	   return;		/* The labels are identical, so no sense in redrawing */
+	else
+	   free(g->label);	/* The labels are different.  Proceed. */
+     }
+   g->label = Estrdup(label);
    if (gg->visible != 0)
       Epplet_draw_popupbutton(gadget);
 }

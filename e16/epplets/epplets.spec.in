@@ -30,9 +30,10 @@ slideshow, a URL grabber, a panel-like toolbar, and more.
 
 %build
 if [ -z $GNOME_FRIENDLY ]; then
-CFLAGS="$RPM_OPT_FLAGS" ./configure --prefix=%{prefix}
+CFLAGS="$RPM_OPT_FLAGS" ./configure --prefix=%{prefix} --enable-fsstd
 else
-CFLAGS="$RPM_OPT_FLAGS" ./configure --prefix=%{prefix} --disable-autorespawn
+CFLAGS="$RPM_OPT_FLAGS" ./configure --prefix=%{prefix} \
+	--disable-autorespawn --enable-fsstd
 fi
 
 make

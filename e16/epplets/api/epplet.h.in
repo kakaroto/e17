@@ -434,6 +434,10 @@ void                Epplet_redraw(void);
 void                Epplet_change_popbutton_popup(Epplet_gadget gadget,
 						  Epplet_gadget popup);
 
+/* change the label string contents of the gadget popbutton */
+void                Epplet_change_popbutton_label(Epplet_gadget gadget,
+						  char *label);
+
 /* display the popup gadget above or below (dpeending where the window ww */
 /* is) the window ww, or if it's 0, deisplay where the pointer is */
 void                Epplet_pop_popup(Epplet_gadget gadget, Window ww);

@@ -238,12 +238,14 @@ install-data-hook:
 	$(mkinstalldirs) $(DESTDIR)$(EROOT)/epplet_data
 	@for i in `echo $(bin_PROGRAMS) | sed 's/\.epplet//g'`; do \
 	  if test -d $${i}-data ; then \
+	    echo $(mkinstalldirs) $(DESTDIR)$(EROOT)/epplet_data/$$i ; \
 	    $(mkinstalldirs) $(DESTDIR)$(EROOT)/epplet_data/$$i ; \
 	    data=`echo $$i-data/* | sed s#$$i-data/CVS##`;\
 	    echo $(INSTALL_DATA) $$data $(DESTDIR)$(EROOT)/epplet_data/$$i/ ; \
 	    $(INSTALL_DATA) $$data $(DESTDIR)$(EROOT)/epplet_data/$$i/ ; \
 	  fi ; \
 	  if test -d $${i}.ABOUT ; then \
+	    echo $(mkinstalldirs) $(DESTDIR)$(EROOT)/epplet_data/$$i/$${i}.ABOUT ; \
 	    $(mkinstalldirs) $(DESTDIR)$(EROOT)/epplet_data/$$i/$${i}.ABOUT ; \
 	    ABOUT=`echo $$i.ABOUT/* | sed s#$$i.ABOUT/CVS##`;\
 	    echo $(INSTALL_DATA) $$ABOUT $(DESTDIR)$(EROOT)/epplet_data/$$i/$${i}.ABOUT/ ; \
@@ -255,10 +257,14 @@ install-data-hook:
 	  fi ; \
 	done
 	@for i in $(NEED_BG) ; do \
+	  echo $(mkinstalldirs) $(DESTDIR)$(EROOT)/epplet_data/$$i/$${i}.ABOUT ; \
+	  $(mkinstalldirs) $(DESTDIR)$(EROOT)/epplet_data/$$i/$${i}.ABOUT ; \
 	  echo $(INSTALL_DATA) $(srcdir)/$(BG_SRC) $(DESTDIR)$(EROOT)/epplet_data/$$i/$${i}.ABOUT/ ; \
 	  $(INSTALL_DATA) $(srcdir)/$(BG_SRC) $(DESTDIR)$(EROOT)/epplet_data/$$i/$${i}.ABOUT/ || : ; \
 	done
 	@for i in $(NEED_FONT) ; do \
+	  echo $(mkinstalldirs) $(DESTDIR)$(EROOT)/epplet_data/$$i/$${i}.ABOUT ; \
+	  $(mkinstalldirs) $(DESTDIR)$(EROOT)/epplet_data/$$i/$${i}.ABOUT ; \
 	  echo $(INSTALL_DATA) $(srcdir)/$(FONT_SRC) $(DESTDIR)$(EROOT)/epplet_data/$$i/$${i}.ABOUT/ ; \
 	  $(INSTALL_DATA) $(srcdir)/$(FONT_SRC) $(DESTDIR)$(EROOT)/epplet_data/$$i/$${i}.ABOUT/ || : ; \
 	done
