@@ -21,6 +21,7 @@
 #define __EMBRACE_H
 
 #include <Evas.h>
+#include <Ecore.h>
 #include <Ecore_Evas.h>
 #include <Edje.h>
 #include <limits.h>
@@ -40,6 +41,8 @@ typedef struct {
 	Evas_List *mailboxes;
 	Evas_List *plugins;
 
+	Ecore_Event_Handler *evt_hup;
+
 	Gui gui;
 	Config cfg;
 } Embrace;
@@ -48,7 +51,10 @@ Embrace *embrace_new ();
 void embrace_free (Embrace *e);
 
 bool embrace_init (Embrace *e);
+void embrace_deinit (Embrace *e);
+
 void embrace_run (Embrace *e);
+void embrace_stop (Embrace *e);
 
 int embrace_signal_get ();
 void embrace_expand_path (char *str, char *dest, int destlen);

@@ -27,18 +27,13 @@
 
 #include "embrace.h"
 
-#define BAIL_OUT() {     \
-	if (e)               \
-		embrace_free(e); \
-	shutdown();          \
-	return 1;            \
-}
-
-static int on_signal_exit (void *udata, int type, void *event)
-{
-	ecore_main_loop_quit ();
-
-	return 1;
+#define BAIL_OUT() { \
+	if (e) {                \
+		embrace_deinit (e); \
+		embrace_free (e);   \
+	}                       \
+	shutdown();             \
+	return 1;               \
 }
 
 static bool init ()
@@ -49,9 +44,6 @@ static bool init ()
 	ecore_evas_init ();
 	edje_init ();
 	edje_frametime_set (1.0 / 60.0);
-
-	ecore_event_handler_add (ECORE_EVENT_SIGNAL_EXIT, on_signal_exit,
-	                         NULL);
 
 	if (lt_dlinit ()) {
 		fprintf (stderr, "Cannot initialize LTDL!\n");
@@ -92,14 +84,18 @@ int main (int argc, const char **argv)
 		BAIL_OUT ();
 	}
 
-	if (!embrace_init (e)) {
+	if (!embrace_init (e))
 		BAIL_OUT ();
-	}
 
 	embrace_run (e);
 	ecore_main_loop_begin ();
 
+	/* we don't need to call embrace_stop() here, since the timers
+	 * and the event handlers are free'd by ecore
+	 */
+	embrace_deinit (e);
 	embrace_free (e);
+
 	shutdown ();
 
 	return 0;

@@ -22,7 +22,6 @@
 #endif
 
 #include <Edb.h>
-#include <Ecore_Job.h>
 #include <Esmart/container.h>
 #include <Esmart/dragable.h>
 #include <stdio.h>
@@ -37,6 +36,8 @@
 #include "embrace.h"
 #include "mailbox.h"
 #include "embrace_plugin.h"
+
+static int last_signal;
 
 /**
  * Copies one string to another, but '~' is expanded.
@@ -242,7 +243,7 @@ static E_DB_File *open_edb (Embrace *e)
 	return e_db_open_read (file);
 }
 
-bool embrace_load_config (Embrace *e)
+static bool embrace_load_config (Embrace *e)
 {
 	E_DB_File *edb;
 	bool ret;
@@ -256,7 +257,7 @@ bool embrace_load_config (Embrace *e)
 	return ret;
 }
 
-bool embrace_load_mailboxes (Embrace *e)
+static bool embrace_load_mailboxes (Embrace *e)
 {
 	E_DB_File *edb;
 	bool ret;
@@ -418,12 +419,29 @@ bool embrace_load_ui (Embrace *e)
 	return ui_load_container (e);
 }
 
+static int on_sighup (void *udata, int type, void *event)
+{
+	Embrace *e = udata;
+
+	assert (e);
+
+	embrace_stop (e);
+	embrace_deinit (e);
+
+	if (embrace_init (e))
+		embrace_run (e);
+	else
+		ecore_main_loop_quit ();
+
+	return 0;
+}
+
 Embrace *embrace_new ()
 {
 	return calloc (1, sizeof (Embrace));
 }
 
-void embrace_free_mailboxes (Embrace *e)
+static void free_mailboxes (Embrace *e)
 {
 	MailBox *mb;
 
@@ -437,7 +455,7 @@ void embrace_free_mailboxes (Embrace *e)
 	}
 }
 
-void embrace_free_plugins (Embrace *e)
+static void free_plugins (Embrace *e)
 {
 	EmbracePlugin *ep;
 
@@ -449,10 +467,9 @@ void embrace_free_plugins (Embrace *e)
 		e->plugins = evas_list_remove (e->plugins, ep);
 		embrace_plugin_free (ep);
 	}
-
 }
 
-void embrace_free_ui (Embrace *e)
+static void free_ui (Embrace *e)
 {
 	assert (e);
 
@@ -468,20 +485,25 @@ void embrace_free_ui (Embrace *e)
 	}
 }
 
-void embrace_free (Embrace *e)
+void embrace_deinit (Embrace *e)
 {
 	assert (e);
 
-	embrace_free_mailboxes (e);
-	embrace_free_plugins (e);
-	embrace_free_ui (e);
+	free_mailboxes (e);
+	free_plugins (e);
+	free_ui (e);
+}
 
+void embrace_free (Embrace *e)
+{
 	free (e);
 }
 
 bool embrace_init (Embrace *e)
 {
 	assert (e);
+
+	last_signal = SIGRTMIN;
 
 	if (!embrace_load_config (e)) {
 		fprintf (stderr, "Cannot load config!\n");
@@ -514,6 +536,7 @@ static int check_mailboxes (void *udata)
 	for (l = e->mailboxes; l; l = l->next)
 		mailbox_check (l->data);
 
+	/* only exec once */
 	return 0;
 }
 
@@ -522,17 +545,27 @@ void embrace_run (Embrace *e)
 	assert (e);
 
 	ecore_evas_show (e->gui.ee);
-	ecore_timer_add (0.1, check_mailboxes, e);
+	ecore_idler_add (check_mailboxes, e);
+
+	e->evt_hup = ecore_event_handler_add (ECORE_EVENT_SIGNAL_HUP,
+	                                      on_sighup, e);
+	assert (e->evt_hup);
+}
+
+void embrace_stop (Embrace *e)
+{
+	assert (e);
+
+	assert (e->evt_hup);
+
+	ecore_event_handler_del (e->evt_hup);
+	e->evt_hup = NULL;
 }
 
 int embrace_signal_get ()
 {
-	static int sig;
+	last_signal++;
+	assert (last_signal > SIGRTMIN && last_signal != _NSIG);
 
-	if (!sig)
-		sig = SIGRTMIN;
-
-	assert (sig != _NSIG);
-
-	return ++sig;
+	return last_signal;
 }
