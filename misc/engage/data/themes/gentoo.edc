@@ -41,17 +41,77 @@ collections {
 
           color, 255 255 255 0;
           rel1 {
-            relative, 0.1 0.1;
-            offset, 3 3;
+            relative, 0.15 0.15;
+            offset, 6 6;
 	    to, "background";
           }
           rel2 {
-            relative, 0.9 0.9;
-            offset, -3 -3;
+            relative, 0.85 0.85;
+            offset, -4 -4;
 	    to, "background";
           } 
         }
+      } 
+      part {
+        name,   "EngageName";
+        type,   TEXT;
+        mouse_events, 0;
+	effect, OUTLINE_SOFT_SHADOW;
+	clip_to, "name_clip";
+	description {
+	    state, "default" 0.0;
+		rel1 {
+		    relative, 0.0 0.0;
+		    offset, 0 0;
+		    to, "name_clip";
+		} rel2 {
+		    relative, 1.0 1.0;
+		    offset, 0 0;
+		    to, "name_clip";
+		}
+		color, 255 255 255 255;
+		color2, 0 0 0 128;
+		color3, 100 100 100 192;
+		text {
+		    text, "";
+		    font, "VeraIt";
+		    size, 11;
+		    fit, 0 0;
+		    align, 0.5 1.0;
+		    }
+		}
       }
+	part {
+		name, "name_clip";
+		type, RECT;
+		mouse_events, 0;
+		description {
+		    state, "default" 0.0;
+		    min, 400 25;
+		    max, 400 25;
+		    rel1 {
+			relative, 0.0 0.0;
+			offset, 0 -30;
+		    } rel2 {
+			relative, 1.0 0.0;
+			offset, 0 -5;
+		    }
+		    color, 255 255 255 0;
+		}
+		description {
+		    state, "visible" 0.0;
+		    min, 400 25;
+		    max, 400 25;
+		    rel1 {
+			relative, 0.0 0.0;
+			offset, 0 -30;
+		    } rel2 {
+			relative, 1.0 0.0;
+			offset, 0 -5;
+		    }
+		    color, 255 255 255 255;
+		}
+	}
     } /* Close Parts */
     programs {
 	program {
@@ -73,6 +133,30 @@ collections {
 	    signal, "mouse,down,1,double";
 	    source, "background";
 	    action, SIGNAL_EMIT "engage,app,open" "";
+	}
+	program {
+	    name, "engage_icon_mouse_in";
+	    signal, "mouse,in";
+	    source, "background";
+	    action, STATE_SET "visible" 0.0;
+	    target, "name_clip";
+	    transition, ACCELERATE 0.5;
+	    in, 0.10 0.0;
+	}
+	program {
+	    name, "engage_icon_mouse_in_kill";
+	    signal, "mouse,out";
+	    source, "background";
+	    action, ACTION_STOP;
+	    target, "engage_icon_mouse_in";
+	}
+	program {
+	    name, "engage_icon_mouse_out";
+	    signal, "mouse,out";
+	    source, "background";
+	    action, STATE_SET "default" 0.0;
+	    target, "name_clip";
+	    transition, DECELERATE 0.6;
 	}
     }/* Close Programs */
   } /* Close Group */
