@@ -1,0 +1,9 @@
+eterm.app.eet
+galeon.app.eet
+evolution.app.eet
+gimp.app.eet
+gaim.app.eet
+irc.app.eet
+xmms.app.eet
+gnumeric.app.eet
+abiword.app.eet

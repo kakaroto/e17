@@ -1,0 +1,60 @@
+#####################
+#   Iconbar v0.5    #
+#####################
+
+This is a standalone iconbar based on the e17 iconbar by raster and rephorm.
+As of v0.5 the iconbar now uses Edje for both its theme and its icons. This allows for all sorts of animation and other effects. As of now, the included themes mimic the old iconbar behavior. Expect to see themes taking advantage of Edje's capabilities in the future.
+
+Also, as of v0.5 icons are moved by clicking and dragging with  the middle mouse button.
+
+  o Runs in its own window, and therefore can be used with any window manager.
+  o Uses edje for the bar and for icons
+  o Can be resized/moved like a window (alt-middle-click/alt-click in e)
+    If you resize it to be horizontal, icons rearrange to be horizontal.
+
+
+Dependencies
+------------
+Make sure you have all of the following libs installed:
+
+Eet
+Evas
+Imlib2
+Ecore (from SPLIT)
+Edje
+
+Installation
+------------
+Make sure you have the above mentioned dependencies.
+
+Edit Makefile and change PREFIX (if you wish to install somewhere other than "/usr/local/"
+If you wish to use the transparent bg hack, uncomment the second to last line of the Makefile. (note: this is no longer supported)
+
+
+make
+(as root)
+make install
+
+To run:
+iconbar
+
+
+
+Customization
+-------------
+Create ~/.e/iconbar/ and copy everything from /usr/local/share/iconbar/data (or wherever you installed it) to that dir.
+Edit build_icons.sh and run it. Reload the iconbar.
+
+To change the theme, simply copy an edje eet file over ~/.e/iconbar/iconbar.eet
+
+
+Theme Format
+------------
+
+For the iconbar, the group name must be "iconbar".
+The area for icons to be placed should be a part named "icons"
+If you want a clock, just have a text part named "clock"
+
+The only requirement for the icons is that if you want to execute something, emit a signal like "exec Eterm". Preferably, do this on "mouse,clicked,1" from "*", although, it IS possible to have one icon with different parts that launch different apps. Also, the middle button is used for moving icons around, so you probably want to avoid launching things on middle click.
+
+

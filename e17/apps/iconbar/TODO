@@ -1,0 +1,13 @@
+todo
+----
+o make some new themes that use edje animation more.
+
+done
+----
+o port iconbar to edje
+o "exec*" signals (e.g "exec Eterm -trephorm -e mutt")
+o get scroll working again
+o get icon moving working again
+o clean things up, get rid of commented out old code
+o make a new icon creator that creates pulse-ani edjes from an image and exec.
+o create and use a container smart object
