@@ -107,7 +107,7 @@ SetEwinBoolean(char *buf, int len, const char *txt, char *item,
 {
    int                 old, new;
 
-   new = old = *item;		/* Remember old value */
+   new = old = *item != 0;	/* Remember old value */
 
    if (value == NULL || value[0] == '\0')
       new = !old;
