@@ -1,0 +1,12 @@
+Makefile
+Makefile.in
+aclocal.m4
+autom4te.cache
+config.*
+configure
+intl
+libtool
+ltmain.sh
+m4
+stamp-h1
+e16menuedit2-*.tar.gz
