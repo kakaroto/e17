@@ -56,6 +56,9 @@
  *     PNG image data, 8 x 8, 8-bit/color RGBA, non-interlaced
  * minimize.png: 
  *     PNG image data, 7 x 2, 8-bit/color RGBA, non-interlaced
+ function-button-clicked.png: PNG image data, 54 x 20, 8-bit/color RGB, non-interlaced
+ function-button-normal.png:  PNG image data, 54 x 20, 8-bit/color RGB, non-interlaced
+
 
  */
 
@@ -84,6 +87,8 @@ images {
 	image, "button-off.png" RAW;
 	image, "close_button.png" RAW;
 	image, "minimize.png" RAW;
+	image, "function-button-clicked.png" RAW;
+	image, "function-button-normal.png" RAW;
 }
 
 collections {
@@ -1047,8 +1052,8 @@ collections {
 		}
 	}
 	group {
-		min, 200 300;
-		max, 200 300;
+		min, 200 320;
+		max, 200 320;
 		name, "eplayer";
 		parts {
 			/* Border Scaled Image for Background */
@@ -2236,7 +2241,7 @@ collections {
 
 					rel2 {
 						relative, 1.0 1.0;
-						offset, -6 -6;
+						offset, -6 -24;
 					}
 
 					image {
@@ -2272,6 +2277,279 @@ collections {
 					color, 0 0 0 0;
 				}
 			}
+
+			/********* PLAYLIST CONTROLS ****************************/
+                        /* Button Area */
+                        part {
+                                name, "controls_background";
+                                type, IMAGE;
+                                mouse_events, 0;
+                                description {
+                                        state,  "default" 0.0;
+
+                                        rel1 {
+                                                relative, 0.0 1.0;
+                                                offset, 0 1;
+                                                to, "playlist_backdrop";
+                                        }
+
+                                        rel2 {
+                                                relative, 1.0 1.0;
+                                                offset, -6 -3;
+                                                //to, "playlist_backdrop";
+                                        }
+
+                                        image {
+                                                normal, "controls-back.png";
+                                        }
+
+                                        border, 5 5 5 5;
+
+                                        fill {
+                                                smooth, 0;
+                                        }
+                                }
+                        }
+
+			part {
+				name, "add_button";
+				type, IMAGE;
+				mouse_events, 1;
+				
+				description {
+					state, "default" 0.0;
+						
+                                        rel1 {
+                                                relative, 0.0 1.0;
+                                                offset, 2 2;
+                                                to, "playlist_backdrop";
+                                        }
+
+                                        rel2 {
+                                                relative, 0.0 1.0;
+                                                offset, 56 20;
+                                                to, "playlist_backdrop";
+                                        }
+
+
+					image {
+						normal, "function-button-normal.png";
+					}	
+					border, 5 5 5 5;
+				}
+                                description {
+                                        state, "clicked" 0.0;
+
+                                        rel1 {
+                                                relative, 0.0 1.0;
+                                                offset, 2 2;
+                                                to, "playlist_backdrop";
+                                        }
+
+                                        rel2 {
+                                                relative, 0.0 1.0;
+                                                offset, 56 20;
+                                                to, "playlist_backdrop";
+                                        }
+
+                                        image {
+                                                normal, "function-button-clicked.png";
+                                        }
+                                        border, 5 5 5 5;
+                                }
+			}
+
+                        part {
+                                name, "del_button";
+                                type, IMAGE;
+                                mouse_events, 1;
+
+                                description {
+                                        state, "default" 0.0;
+
+                                        rel1 {
+                                                relative, 0.0 1.0;
+                                                offset, 67 2;
+                                                to, "playlist_backdrop";
+                                        }
+
+                                        rel2 {
+                                                relative, 0.0 1.0;
+                                                offset, 121 20;
+                                                to, "playlist_backdrop";
+                                        }
+
+                                        image {
+                                                normal, "function-button-normal.png";
+                                        }
+                                        border, 5 5 5 5;
+                                }
+                                description {
+                                        state, "clicked" 0.0;
+
+                                        rel1 {
+                                                relative, 0.0 1.0;
+                                                offset, 67 2;
+                                                to, "playlist_backdrop";
+                                        }
+
+                                        rel2 {
+                                                relative, 0.0 1.0;
+                                                offset, 121 20;
+                                                to, "playlist_backdrop";
+                                        }
+
+                                        image {
+                                                normal, "function-button-clicked.png";
+                                        }
+                                        border, 5 5 5 5;
+                                }
+                        }
+                        part {
+                                name, "edit_button";
+                                type, IMAGE;
+                                mouse_events, 1;
+
+                                description {
+                                        state, "default" 0.0;
+
+                                        rel1 {
+                                                relative, 0.0 1.0;
+                                                offset, 132 2;
+                                                to, "playlist_backdrop";
+                                        }
+
+                                        rel2 {
+                                                relative, 0.0 1.0;
+                                                offset, 188 20;
+                                                to, "playlist_backdrop";
+                                        }
+
+                                        image {
+                                                normal, "function-button-normal.png";
+                                        }
+                                        border, 5 5 5 5;
+                                }
+                                description {
+                                        state, "clicked" 0.0;
+
+                                        rel1 {
+                                                relative, 0.0 1.0;
+                                                offset, 132 2;
+                                                to, "playlist_backdrop";
+                                        }
+
+                                        rel2 {
+                                                relative, 0.0 1.0;
+                                                offset, 188 20;
+                                                to, "playlist_backdrop";
+                                        }
+
+                                        image {
+                                                normal, "function-button-clicked.png";
+                                        }
+                                        border, 5 5 5 5;
+                                }
+                        }
+
+			/*** CONTROL TEXT ***/	
+
+			part {
+				name, "add_text";
+				type, TEXT;
+				mouse_events, 0;
+
+				description {
+					state, "default" 0.0;
+					visible, 1;
+
+					rel1 { 
+						relative, 0.0 0.0;
+						offset, 0 0;
+						to, "add_button";
+					}
+	
+					rel2 {
+						relative, 1.0 1.0;
+						offset, -1 -1;
+						to, "add_button";
+					}
+
+					text {
+						text, "Add";
+						font, "Vera";
+						size, 6;
+						align, 0.5 0.7;
+					}
+
+					color, 255 255 255 255;
+				}
+			}
+						
+                        part {
+                                name, "del_text";
+                                type, TEXT;
+                                mouse_events, 0;
+
+                                description {
+                                        state, "default" 0.0;
+					visible, 1;
+
+                                        rel1 {
+                                                relative, 0.0 0.0;
+                                                offset, 0 0;
+                                                to, "del_button";
+                                        }
+
+                                        rel2 {
+                                                relative, 1.0 1.0;
+                                                offset, -1 -1;
+                                                to, "del_button";
+                                        }
+
+                                        text {
+                                                text, "Delete";
+                                                font, "Vera";
+                                                size, 6;
+                                                align, 0.5 0.7;
+                                        }
+
+					color, 255 255 255 255;
+				}
+                        }
+
+                        part {
+                                name, "edit_text";
+                                type, TEXT;
+                                mouse_events, 0;
+
+                                description {
+                                        state, "default" 0.0;
+					visible, 1;
+
+                                        rel1 {
+                                                relative, 0.0 0.0;
+                                                offset, 0 0;
+                                                to, "edit_button";
+                                        }
+
+                                        rel2 {
+                                                relative, 1.0 1.0;
+                                                offset, -1 -1;
+                                                to, "edit_button";
+                                        }
+
+                                        text {
+                                                text, "Edit";
+                                                font, "Vera";
+                                                size, 6;
+                                                align, 0.5 0.7;
+                                        }
+
+					color, 255 255 255 255;
+				}
+                        }
+
 
 		} /* Close Parts */
 
@@ -2633,6 +2911,62 @@ collections {
 				name, "repeat_toggle_signal";
 				action, SIGNAL_EMIT "TOGGLE_REPEAT_MODE" "repeat_mode";
 			}
+
+			/** Playlist control programs **/
+                        program {
+                                name,       "add_click";
+                                signal,     "mouse,down,1";
+                                source,     "add_button";
+                                action,     STATE_SET "clicked" 0.0;
+                                transition, LINEAR, 0.0;
+                                target,     "add_button";
+                        }
+                        program {
+                                name,       "add_unclick";
+                                signal,     "mouse,up,1";
+                                source,     "add_button";
+                                action,     STATE_SET "default" 0.0;
+                                transition, DECELERATE, 0.25;
+                                target,     "add_button";
+                        }
+
+                        program {
+                                name,       "del_click";
+                                signal,     "mouse,down,1";
+                                source,     "del_button";
+                                action,     STATE_SET "clicked" 0.0;
+                                transition, LINEAR, 0.0;
+                                target,     "del_button";
+                        }
+                        program {
+                                name,       "del_unclick";
+                                signal,     "mouse,up,1";
+                                source,     "del_button";
+                                action,     STATE_SET "default" 0.0;
+                                transition, DECELERATE, 0.25;
+                                target,     "del_button";
+			}
+
+                        program {
+                                name,       "edit_click";
+                                signal,     "mouse,down,1";
+                                source,     "edit_button";
+                                action,     STATE_SET "clicked" 0.0;
+                                transition, LINEAR, 0.0;
+                                target,     "edit_button";
+                        }
+                        program {
+                                name,       "edit_unclick";
+                                signal,     "mouse,up,1";
+                                source,     "edit_button";
+                                action,     STATE_SET "default" 0.0;
+                                transition, DECELERATE, 0.25;
+                                target,     "edit_button";
+                        }
+
+
+
+
 		} /* Close Programs */
 	} /* Close Group */
 
