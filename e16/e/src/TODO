@@ -5,9 +5,6 @@ raster: in E-docs interactive.sh gets hosed on make clean
 raster: must update dox docs fully
 mark: grab cursor and confine to root window when moving windows / resizing.
 mark: focus swtiching in multihead between the heads gets confused... :)
-user: If you increase the "Pager scanning speed" via the Pager Settings to
-over 100, the text above the slider goes funny and doesn't reflect
-accurately what is set.
 
 FEATURES:
 raster: add dnd to iconbox
@@ -21,3 +18,8 @@ user: add submenu resistance / timeout for running across to a submenu
 user: add "virtual" resistance boxes
 user: finer grained control on selecting icon display policy
 raster: need to lock .enlightenment dir for multiple logins etc.
+
+BUGS TO BE FIXED for 0.17:
+user: If you increase the "Pager scanning speed" via the Pager Settings to
+over 100, the text above the slider goes funny and doesn't reflect
+accurately what is set.
