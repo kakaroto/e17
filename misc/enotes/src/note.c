@@ -196,7 +196,7 @@ setup_note(Evas_List ** note, int width, int height, char *title, char *content)
 	p->emb = ewl_embed_new();
 	ewl_object_fill_policy_set((Ewl_Object *) p->emb, EWL_FLAG_FILL_FILL);
 	ewl_widget_show(p->emb);
-	p->eo = ewl_embed_evas_set((Ewl_Embed*)p->emb,
+	p->eo = ewl_embed_evas_set(EWL_EMBED(p->emb),
 				   ecore_evas_get(p->win), (void *)
 				   ecore_evas_software_x11_window_get(p->win));
 	evas_object_layer_set(p->eo, 2);
@@ -206,7 +206,6 @@ setup_note(Evas_List ** note, int width, int height, char *title, char *content)
 
 
 	evas_object_focus_set (p->eo, TRUE);
-	ewl_embed_focus_set ((Ewl_Embed*)p->emb, TRUE);
 
 
 	p->vbox = ewl_vbox_new();

@@ -26,21 +26,13 @@
 #include "debug.h"
 #include "config.h"
 
-#define SETTINGS_X 0
-#define SETTINGS_Y 0
-#define SETTINGS_W 450
-#define SETTINGS_H 350
-
 typedef struct {
 	Ewl_Widget     *caption;
 	Ewl_Widget     *entry;
 } Settings_Opt;
 
 typedef struct {
-	Ecore_Evas     *win;
-	Evas           *evas;
-	Evas_Object    *eo;
-	Ewl_Widget     *emb;
+	Ewl_Widget     *win;
 	Ewl_Widget     *vbox;
 	Ewl_Widget     *tree;
 	Ewl_Widget     *hbox;
@@ -70,8 +62,6 @@ Settings_Opt    setup_settings_opt_int(Ewl_Widget * tree,
 				       char *caption, int value);
 
 /* Callbacks */
-void            ecore_settings_resize(Ecore_Evas * ee);
-void            ecore_settings_close(Ecore_Evas * ee);
 void            ewl_settings_revert(Ewl_Widget * widget, void *ev_data,
 				    Ewl_Widget * p);
 void            ewl_settings_close(Ewl_Widget * o, void *ev_data,

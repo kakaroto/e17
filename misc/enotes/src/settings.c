@@ -13,7 +13,7 @@
 
 #include "settings.h"
 
-Settings       *settings;
+Settings       *settings=NULL;
 
 
 /* High Level */
@@ -48,40 +48,16 @@ setup_settings_win(Settings * s)
 	char           *headers[2];
 
 	/* Setup the Window */
-	s->win = ecore_evas_software_x11_new(NULL, 0, SETTINGS_X, SETTINGS_Y,
-					     SETTINGS_W, SETTINGS_H);
-	ecore_evas_title_set(s->win, "E-Notes Settings");
-	ecore_evas_show(s->win);
-
-	/* Setup the Canvas, Render-Method */
-	s->evas = ecore_evas_get(s->win);
-	evas_output_method_set(s->evas,
-			       evas_render_method_lookup(main_config->
-							 render_method));
-
-	/* Setup the EWL Widgets */
-	s->emb = ewl_embed_new();
-	ewl_object_fill_policy_set((Ewl_Object *) s->emb, EWL_FLAG_FILL_ALL);
-	ewl_widget_appearance_set(s->emb, "window");
-	ewl_widget_show(s->emb);
-
-	s->eo = ewl_embed_evas_set((Ewl_Embed *) s->emb, s->evas, (void *)
-				   ecore_evas_software_x11_window_get(s->win));
-	evas_object_name_set(s->eo, "eo");
-	evas_object_layer_set(s->eo, 0);
-	evas_object_move(s->eo, 0, 0);
-	evas_object_resize(s->eo, SETTINGS_W, SETTINGS_H);
-	evas_object_show(s->eo);
-
-	evas_object_focus_set (s->eo, TRUE);
-	ewl_embed_focus_set ((Ewl_Embed*)s->emb, TRUE);
+	s->win=ewl_window_new();
+	ewl_window_title_set((Ewl_Window*)s->win, "E-Notes Settings");
+	ewl_widget_show(s->win);
 
 	s->vbox = ewl_vbox_new();
-	ewl_container_child_append((Ewl_Container *) s->emb, s->vbox);
+	ewl_container_child_append((Ewl_Container *) s->win, s->vbox);
 	ewl_object_fill_policy_set((Ewl_Object *) s->vbox, EWL_FLAG_FILL_ALL);
 	ewl_widget_show(s->vbox);
 
-	ewl_callback_append(s->emb, EWL_CALLBACK_CONFIGURE, settings_move_embed,
+	ewl_callback_append(s->win, EWL_CALLBACK_CONFIGURE, settings_move_embed,
 			    s->vbox);
 
 	s->tree = ewl_tree_new(2);
@@ -104,15 +80,12 @@ setup_settings_win(Settings * s)
 	settings_setup_button(s->hbox, &(s->revertbtn), "Revert.");
 	settings_setup_button(s->hbox, &(s->closebtn), "Close.");
 
-	/* Ecore Callbacks */
-	ecore_evas_callback_resize_set(s->win, ecore_settings_resize);
-	ecore_evas_callback_delete_request_set(s->win, ecore_settings_close);
-	ecore_evas_callback_destroy_set(s->win, ecore_settings_close);
-
 	/* EWL Callbacks */
 	ewl_callback_append(s->revertbtn, EWL_CALLBACK_CLICKED,
 			    (void *) ewl_settings_revert, (void *) s->tree);
 	ewl_callback_append(s->closebtn, EWL_CALLBACK_CLICKED,
+			    (void *) ewl_settings_close, (void *) s->win);
+	ewl_callback_append(s->win, EWL_CALLBACK_DELETE_WINDOW,
 			    (void *) ewl_settings_close, (void *) s->win);
 	ewl_callback_append(s->savebtn, EWL_CALLBACK_CLICKED,
 			    (void *) ewl_settings_save, NULL);
@@ -223,39 +196,6 @@ setup_settings_opt_int(Ewl_Widget * tree, char *caption, int value)
 /* Callbacks */
 
 /**
- * @param ee: The Ecore_Evas which was resized.
- * @brief: Window resize callback, resizes the ewl embed to compensate.
- */
-void
-ecore_settings_resize(Ecore_Evas * ee)
-{
-	int             x, y, w, h;
-
-	dml("Resizing the Settings Window", 2);
-
-	ecore_evas_geometry_get(ee, &x, &y, &w, &h);
-	evas_object_resize(evas_object_name_find(ecore_evas_get(ee), "eo"),
-			   w, h);
-	return;
-}
-
-/**
- * @param ee: The Ecore_Evas which wants to be closed.
- * @brief: Callback for the wm wanting the settings window to be closed.
- *         We free the ecore_evas and free + NULL the structure.  This
- *         concequently makes the elibs free the rest up.
- */
-void
-ecore_settings_close(Ecore_Evas * ee)
-{
-	dml("Closing the Settings Window", 2);
-	ecore_evas_free(ee);
-	free(settings);
-	settings = NULL;
-	return;
-}
-
-/**
  * @param widget: The widget which was clicked (we don't use this).
  * @param ev_data: The event data.  We don't use this either.
  * @param p: The widget supplied during the callback definition, its the tree.
@@ -282,7 +222,9 @@ ewl_settings_revert(Ewl_Widget * widget, void *ev_data, Ewl_Widget * p)
 void
 ewl_settings_close(Ewl_Widget * o, void *ev_data, Ecore_Evas * ee)
 {
-	ecore_settings_close(ee);
+	ewl_widget_destroy(settings->win);
+	free(settings);
+	settings=NULL;
 	return;
 }
 

@@ -28,23 +28,10 @@
 #include "config.h"
 #include "../config.h"
 
-#define SAVELOAD_X 0
-#define SAVELOAD_Y 0
-#define SAVELOAD_W 450
-#define SAVELOAD_H 350
-
-#define LOAD_X 0
-#define LOAD_Y 0
-#define LOAD_W 450
-#define LOAD_H 350
-
 #define MAX_TITLE 500
 
 typedef struct {
-	Ecore_Evas     *win;
-	Evas           *evas;
-	Evas_Object    *eo;
-	Ewl_Widget     *emb;
+	Ewl_Widget     *win;
 	Ewl_Widget     *vbox;
 	Ewl_Widget     *txt_selected;
 	Ewl_Widget     *tree;
@@ -56,10 +43,7 @@ typedef struct {
 } SaveLoad;
 
 typedef struct {
-	Ecore_Evas     *win;
-	Evas           *evas;
-	Evas_Object    *eo;
-	Ewl_Widget     *emb;
+	Ewl_Widget     *win;
 	Ewl_Widget     *vbox;
 	Ewl_Widget     *txt_selected;
 	Ewl_Widget     *tree;
@@ -83,8 +67,6 @@ void            saveload_setup_button(Ewl_Widget * c, Ewl_Widget ** b,
 void            fill_saveload_tree(void);
 void            setup_saveload_opt(Ewl_Widget * tree, char *caption,
 				   Evas_List * p);
-void            ecore_saveload_resize(Ecore_Evas * ee);
-void            ecore_saveload_close(Ecore_Evas * ee);
 void            ewl_saveload_revert(Ewl_Widget * widget, void *ev_data,
 				    Ewl_Widget * p);
 void            ewl_saveload_close(Ewl_Widget * o, void *ev_data,
@@ -101,8 +83,6 @@ void            setup_load_win(void);
 void            load_setup_button(Ewl_Widget * c, Ewl_Widget ** b, char *label);
 void            fill_load_tree(void);
 void            setup_load_opt(Ewl_Widget * tree, char *caption);
-void            ecore_load_resize(Ecore_Evas * ee);
-void            ecore_load_close(Ecore_Evas * ee);
 void            ewl_load_revert(Ewl_Widget * widget, void *ev_data,
 				Ewl_Widget * p);
 void            ewl_load_close(Ewl_Widget * o, void *ev_data, Ecore_Evas * ee);

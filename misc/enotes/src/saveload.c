@@ -14,10 +14,10 @@
 #include "saveload.h"
 
 char           *saveload_selected;
-SaveLoad       *saveload;
+SaveLoad       *saveload=NULL;
 
 char           *load_selected;
-Load           *load;
+Load           *load=NULL;
 
 
 
@@ -51,47 +51,18 @@ setup_saveload_win(void)
 	Ecore_Timer    *revtim;
 
 	/* Setup the Window */
-	saveload->win =
-		ecore_evas_software_x11_new(NULL, 0, SAVELOAD_X, SAVELOAD_Y,
-					    SAVELOAD_W, SAVELOAD_H);
-	ecore_evas_title_set(saveload->win, "E-Notes: Save/Load");
-	ecore_evas_show(saveload->win);
-
-	/* Setup the Canvas, Render-Method */
-	saveload->evas = ecore_evas_get(saveload->win);
-	evas_output_method_set(saveload->evas,
-			       evas_render_method_lookup(main_config->
-							 render_method));
-
-	/* Setup the EWL Widgets */
-	saveload->emb = ewl_embed_new();
-	ewl_object_fill_policy_set((Ewl_Object *) saveload->emb,
-				   EWL_FLAG_FILL_FILL);
-	ewl_widget_appearance_set(saveload->emb, "window");
-	ewl_widget_show(saveload->emb);
-
-	saveload->eo =
-		ewl_embed_evas_set((Ewl_Embed *) saveload->emb, saveload->evas,
-				   (void *)
-				   ecore_evas_software_x11_window_get(saveload->
-								      win));
-	evas_object_name_set(saveload->eo, "eo");
-	evas_object_layer_set(saveload->eo, 0);
-	evas_object_move(saveload->eo, 0, 0);
-	evas_object_resize(saveload->eo, SAVELOAD_W, SAVELOAD_H);
-	evas_object_show(saveload->eo);
-
-	evas_object_focus_set (saveload->eo, TRUE);
-	ewl_embed_focus_set ((Ewl_Embed*)saveload->emb, TRUE);
+	saveload->win=ewl_window_new();
+	ewl_window_title_set((Ewl_Window*)saveload->win, "E-Notes Save/Load");
+	ewl_widget_show(saveload->win);
 
 	saveload->vbox = ewl_vbox_new();
-	ewl_container_child_append((Ewl_Container *) saveload->emb,
+	ewl_container_child_append((Ewl_Container *) saveload->win,
 				   saveload->vbox);
 	ewl_object_fill_policy_set((Ewl_Object *) saveload->vbox,
 				   EWL_FLAG_FILL_FILL);
 	ewl_widget_show(saveload->vbox);
 
-	ewl_callback_append(saveload->emb, EWL_CALLBACK_CONFIGURE,
+	ewl_callback_append(saveload->win, EWL_CALLBACK_CONFIGURE,
 			    save_and_load_move_embed, saveload->vbox);
 
 	saveload->tree = ewl_tree_new(1);
@@ -120,15 +91,8 @@ setup_saveload_win(void)
 
 	saveload_setup_button(saveload->hbox, &saveload->savebtn, "Save.");
 	saveload_setup_button(saveload->hbox, &saveload->loadbtn, "Load.");
-	saveload_setup_button(saveload->hbox, &saveload->refreshbtn,
-			      "Refresh.");
+	saveload_setup_button(saveload->hbox, &saveload->refreshbtn, "Refresh.");
 	saveload_setup_button(saveload->hbox, &saveload->closebtn, "Close.");
-
-	/* Ecore Callbacks */
-	ecore_evas_callback_resize_set(saveload->win, ecore_saveload_resize);
-	ecore_evas_callback_delete_request_set(saveload->win,
-					       ecore_saveload_close);
-	ecore_evas_callback_destroy_set(saveload->win, ecore_saveload_close);
 
 	/* EWL Callbacks */
 	ewl_callback_append(saveload->refreshbtn, EWL_CALLBACK_CLICKED,
@@ -137,6 +101,8 @@ setup_saveload_win(void)
 	ewl_callback_append(saveload->closebtn, EWL_CALLBACK_CLICKED,
 			    (void *) ewl_saveload_close,
 			    (void *) saveload->win);
+	ewl_callback_append(saveload->win, EWL_CALLBACK_DELETE_WINDOW,
+			    (void *) ewl_saveload_close, (void*)saveload->win);
 	ewl_callback_append(saveload->savebtn, EWL_CALLBACK_CLICKED,
 			    (void *) ewl_saveload_save, NULL);
 	ewl_callback_append(saveload->loadbtn, EWL_CALLBACK_CLICKED,
@@ -212,40 +178,6 @@ setup_saveload_opt(Ewl_Widget * tree, char *caption, Evas_List * p)
 /* Callbacks */
 
 /**
- * @param ee: The Ecore_Evas resized so we can get the new size to resize to.
- * @brief: Saveload window resize callback, resizes the ewl embed accordingly.
- */
-void
-ecore_saveload_resize(Ecore_Evas * ee)
-{
-	int             x, y, w, h;
-
-	dml("Resizing the Saveload Window", 2);
-
-	ecore_evas_geometry_get(ee, &x, &y, &w, &h);
-	evas_object_resize(evas_object_name_find(ecore_evas_get(ee), "eo"),
-			   w, h);
-	return;
-}
-
-/**
- * @param ee: The Ecore_Evas to free, and of course its contents.
- * @brief: Callback for wm requesting to close the window.  So we do so by
- *         free'ing the window and structure used, elibs free the rest.
- *         Set some NULL's so it works when they pull it back up again.
- */
-void
-ecore_saveload_close(Ecore_Evas * ee)
-{
-	dml("Closing the Saveload Window", 2);
-	ecore_evas_free(ee);
-	free(saveload);
-	saveload = NULL;
-	saveload_selected = NULL;
-	return;
-}
-
-/**
  * @param widget: The widget clicked (we don't use this).
  * @param ev_data: Event data, we don't use this either.
  * @param p: Thats our data, its the tree we're going to empty and refill.
@@ -275,7 +207,9 @@ ewl_saveload_revert(Ewl_Widget * widget, void *ev_data, Ewl_Widget * p)
 void
 ewl_saveload_close(Ewl_Widget * o, void *ev_data, Ecore_Evas * ee)
 {
-	ecore_saveload_close(ee);
+	ewl_widget_destroy (saveload->win);
+	free(saveload);
+	saveload=NULL;
 	return;
 }
 
@@ -382,44 +316,17 @@ setup_load_win(void)
 	char           *headers[1];
 
 	/* Setup the Window */
-	load->win = ecore_evas_software_x11_new(NULL, 0, LOAD_X, LOAD_Y,
-						LOAD_W, LOAD_H);
-	ecore_evas_title_set(load->win, "E-Notes: Load Note");
-	ecore_evas_show(load->win);
-
-	/* Setup the Canvas, Render-Method */
-	load->evas = ecore_evas_get(load->win);
-	evas_output_method_set(load->evas,
-			       evas_render_method_lookup(main_config->
-							 render_method));
-
-	/* Setup the EWL Widgets */
-	load->emb = ewl_embed_new();
-	ewl_object_fill_policy_set((Ewl_Object *) load->emb,
-				   EWL_FLAG_FILL_FILL);
-	ewl_widget_appearance_set(load->emb, "window");
-	ewl_widget_show(load->emb);
-
-	load->eo = ewl_embed_evas_set((Ewl_Embed *) load->emb, load->evas,
-				      (void *)
-				      ecore_evas_software_x11_window_get(load->
-									 win));
-	evas_object_name_set(load->eo, "eo");
-	evas_object_layer_set(load->eo, 0);
-	evas_object_move(load->eo, 0, 0);
-	evas_object_resize(load->eo, LOAD_W, LOAD_H);
-	evas_object_show(load->eo);
-
-	evas_object_focus_set (load->eo, TRUE);
-	ewl_embed_focus_set ((Ewl_Embed*)load->emb, TRUE);
+	load->win=ewl_window_new();
+	ewl_window_title_set((Ewl_Window*)load->win, "E-Notes Load");
+	ewl_widget_show(load->win);
 
 	load->vbox = ewl_vbox_new();
-	ewl_container_child_append((Ewl_Container *) load->emb, load->vbox);
+	ewl_container_child_append((Ewl_Container *) load->win, load->vbox);
 	ewl_object_fill_policy_set((Ewl_Object *) load->vbox,
 				   EWL_FLAG_FILL_FILL);
 	ewl_widget_show(load->vbox);
 
-	ewl_callback_append(load->emb, EWL_CALLBACK_CONFIGURE,
+	ewl_callback_append(load->win, EWL_CALLBACK_CONFIGURE,
 			    save_and_load_move_embed, load->vbox);
 
 	load->tree = ewl_tree_new(1);
@@ -449,16 +356,13 @@ setup_load_win(void)
 	load_setup_button(load->hbox, &load->refreshbtn, "Refresh.");
 	load_setup_button(load->hbox, &load->closebtn, "Close.");
 
-	/* Ecore Callbacks */
-	ecore_evas_callback_resize_set(load->win, ecore_load_resize);
-	ecore_evas_callback_delete_request_set(load->win, ecore_load_close);
-	ecore_evas_callback_destroy_set(load->win, ecore_load_close);
-
 	/* EWL Callbacks */
 	ewl_callback_append(load->refreshbtn, EWL_CALLBACK_CLICKED,
 			    (void *) ewl_load_revert, (void *) load->tree);
 	ewl_callback_append(load->closebtn, EWL_CALLBACK_CLICKED,
 			    (void *) ewl_load_close, (void *) load->win);
+	ewl_callback_append(load->win, EWL_CALLBACK_DELETE_WINDOW,
+			    (void *) ewl_load_close, (void*)load->win);
 	ewl_callback_append(load->loadbtn, EWL_CALLBACK_CLICKED,
 			    (void *) ewl_load_load, NULL);
 	ewl_callback_append(load->deletebtn, EWL_CALLBACK_CLICKED,
@@ -519,40 +423,6 @@ setup_load_opt(Ewl_Widget * tree, char *caption)
 	return;
 }
 
-/**
- * @param ee: The Ecore_Evas resized so we can get the new size to resize to.
- * @brief: Saveload window resize callback, resizes the ewl embed accordingly.
- */
-void
-ecore_load_resize(Ecore_Evas * ee)
-{
-	int             x, y, w, h;
-
-	dml("Resizing the Load Note Window", 2);
-
-	ecore_evas_geometry_get(ee, &x, &y, &w, &h);
-	evas_object_resize(evas_object_name_find(ecore_evas_get(ee), "eo"),
-			   w, h);
-	return;
-}
-
-/**
- * @param ee: The Ecore_Evas to free, and of course its contents.
- * @brief: Callback for wm requesting to close the window.  So we do so by
- *         free'ing the window and structure used, elibs free the rest.
- *         Set some NULL's so it works when they pull it back up again.
- */
-void
-ecore_load_close(Ecore_Evas * ee)
-{
-	dml("Closing the Load Note Window", 2);
-	ecore_evas_free(ee);
-	free(load);
-	load = NULL;
-	load_selected = NULL;
-	return;
-}
-
 /**                        
  * @param widget: The widget clicked (we don't use this).
  * @param ev_data: Event data, we don't use this either.
@@ -581,7 +451,9 @@ ewl_load_revert(Ewl_Widget * widget, void *ev_data, Ewl_Widget * p)
 void
 ewl_load_close(Ewl_Widget * o, void *ev_data, Ecore_Evas * ee)
 {
-	ecore_load_close(ee);
+	ewl_widget_destroy(load->win);
+	free(load);
+	load=NULL;
 	return;
 }
 
