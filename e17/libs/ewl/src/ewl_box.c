@@ -31,17 +31,17 @@ typedef struct
 /*
  * The information for the two different orientations
  */
-Box_Orientation *vertical = NULL, *horizontal = NULL;
+static Box_Orientation *ewl_box_vertical = NULL, *ewl_box_horizontal = NULL;
 
 /*
  * And a pointer to the currently used orientation
  */
-Box_Orientation *info = NULL;
+static Box_Orientation *ewl_box_info = NULL;
 
 /*
  * These lists are used to sort children when configured.
  */
-static Ecore_List *spread = NULL;
+static Ecore_List *ewl_box_spread = NULL;
 
 static void     ewl_box_setup();
 
@@ -99,8 +99,8 @@ int ewl_box_init(Ewl_Box * b, Ewl_Orientation o)
 	/*
 	 * Create the temporary layout lists now that they are needed.
 	 */
-	if (!spread)
-		spread = ecore_list_new();
+	if (!ewl_box_spread)
+		ewl_box_spread = ecore_list_new();
 
 	/*
 	 * Initialize the container portion of the box
@@ -127,7 +127,7 @@ int ewl_box_init(Ewl_Box * b, Ewl_Orientation o)
 	 * Check if the info structs have been created yet, if not create
 	 * them.
 	 */
-	if (!vertical)
+	if (!ewl_box_vertical)
 		ewl_box_setup();
 
 	/*
@@ -319,13 +319,13 @@ ewl_box_configure_cb(Ewl_Widget * w, void *ev_data, void *user_data)
 		fill_size = &width;
 		align = &y;
 		align_size = &height;
-		info = horizontal;
+		ewl_box_info = ewl_box_horizontal;
 	} else {
 		fill = &y;
 		fill_size = &height;
 		align = &x;
 		align_size = &width;
-		info = vertical;
+		ewl_box_info = ewl_box_vertical;
 	}
 
 	/*
@@ -449,27 +449,27 @@ ewl_box_configure_calc(Ewl_Box * b, int *fill_size, int *align_size)
 			/*
 			 * Set the initial fill size to the preferred size.
 			 */
-			info->fill_set(child, initial);
+			ewl_box_info->fill_set(child, initial);
 
 			/*
 			 * Figure out how much extra space is available for
 			 * filling widgets.
 			 */
 			change = *fill_size;
-			*fill_size -= info->fill_ask(child) + b->spacing;
+			*fill_size -= ewl_box_info->fill_ask(child) + b->spacing;
 
 			/*
 			 * Attempt to give the widget the full size, this will
 			 * fail if the fill policy or bounds don't allow it.
 			 */
-			info->align_set(child, *align_size);
+			ewl_box_info->align_set(child, *align_size);
 
 			/*
 			 * If it has a fill policy for a direction we're
 			 * concerned with, add it to the fill list.
 			 */
-			if (ewl_object_fill_policy_get(child) & info->f_policy)
-				ecore_list_append(spread, child);
+			if (ewl_object_fill_policy_get(child) & ewl_box_info->f_policy)
+				ecore_list_append(ewl_box_spread, child);
 		}
 	}
 
@@ -493,54 +493,54 @@ ewl_box_configure_fill(Ewl_Box * b, int *fill_size, int *align_size)
 	 * Calculate the space to give per child. Safeguard against divide by
 	 * zero.
 	 */
-	space = (ecore_list_is_empty(spread) ? 0 :
-		 *fill_size / ecore_list_nodes(spread));
+	space = (ecore_list_is_empty(ewl_box_spread) ? 0 :
+		 *fill_size / ecore_list_nodes(ewl_box_spread));
 
 	/*
 	 * As long as children keep accepting more space, we should loop
 	 * through and give them what's available.
 	 */
-	while (space && !ecore_list_is_empty(spread)) {
+	while (space && !ecore_list_is_empty(ewl_box_spread)) {
 
-		ecore_list_goto_first(spread);
-		while ((c = ecore_list_current(spread))) {
+		ecore_list_goto_first(ewl_box_spread);
+		while ((c = ecore_list_current(ewl_box_spread))) {
 
 			/*
 			 * Save the current size of the child, then
 			 * attempt to give it a portion of the space
 			 * available.
 			 */
-			temp = info->fill_ask(c);
-			info->fill_set(c, temp + space);
+			temp = ewl_box_info->fill_ask(c);
+			ewl_box_info->fill_set(c, temp + space);
 
 			/*
 			 * Determine if the child accepted any of the space
 			 */
-			temp = info->fill_ask(c) - temp;
+			temp = ewl_box_info->fill_ask(c) - temp;
 
 			/*
 			 * If the child did not accept any of the size, then
 			 * it's at it's max/min and is no longer useful.
 			 */
 			if (!temp || (*fill_size - temp < 0))
-				ecore_list_remove(spread);
+				ecore_list_remove(ewl_box_spread);
 			else {
 				*fill_size -= temp;
-				ecore_list_next(spread);
+				ecore_list_next(ewl_box_spread);
 			}
 		}
 
 		/*
 		 * Calculate the space to give per child.
 		 */
-		space = (ecore_list_is_empty(spread) ? 0 :
-			 *fill_size / ecore_list_nodes(spread));
+		space = (ecore_list_is_empty(ewl_box_spread) ? 0 :
+			 *fill_size / ecore_list_nodes(ewl_box_spread));
 	}
 
 	/*
 	 * Distribute any remaining fill space.
 	 */
-	while (*fill_size && !ecore_list_is_empty(spread)) {
+	while (*fill_size && !ecore_list_is_empty(ewl_box_spread)) {
 
 		/*
 		 * Determine the sign of the amount to be incremented.
@@ -550,23 +550,23 @@ ewl_box_configure_fill(Ewl_Box * b, int *fill_size, int *align_size)
 		/*
 		 * Add the remainder sign to each child.
 		 */
-		ecore_list_goto_first(spread);
-		while (*fill_size && (c = ecore_list_current(spread))) {
+		ecore_list_goto_first(ewl_box_spread);
+		while (*fill_size && (c = ecore_list_current(ewl_box_spread))) {
 
 			/*
 			 * Store the current size of the child.
 			 */
-			temp = info->fill_ask(c);
+			temp = ewl_box_info->fill_ask(c);
 
 			/*
 			 * Attempt to give it a portion of the remaining space
 			 */
-			info->fill_set(c, temp + remainder);
+			ewl_box_info->fill_set(c, temp + remainder);
 
 			/*
 			 * Determine if the child accepted the space
 			 */
-			temp = info->fill_ask(c) - temp;
+			temp = ewl_box_info->fill_ask(c) - temp;
 
 			/*
 			 * Remove the child if it didn't accept any space,
@@ -574,10 +574,10 @@ ewl_box_configure_fill(Ewl_Box * b, int *fill_size, int *align_size)
 			 * total.
 			 */
 			if (!temp || (*fill_size - temp < 0))
-				ecore_list_remove(spread);
+				ecore_list_remove(ewl_box_spread);
 			else {
 				*fill_size -= remainder;
-				ecore_list_next(spread);
+				ecore_list_next(ewl_box_spread);
 			}
 		}
 	}
@@ -585,7 +585,7 @@ ewl_box_configure_fill(Ewl_Box * b, int *fill_size, int *align_size)
 	/*
 	 * This contents of the list are no longer needed.
 	 */
-	ecore_list_clear(spread);
+	ecore_list_clear(ewl_box_spread);
 
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
@@ -615,7 +615,7 @@ ewl_box_configure_layout(Ewl_Box * b, int *x, int *y, int *fill,
 			/*
 			 * Move to the next position for the child.
 			 */
-			*fill += info->fill_ask(child) + b->spacing;
+			*fill += ewl_box_info->fill_ask(child) + b->spacing;
 		}
 	}
 
@@ -633,7 +633,7 @@ ewl_box_configure_child(Ewl_Box * b, Ewl_Object * c, int *x, int *y,
 	 * orientation. The first one is the simplest as it it a
 	 * direct use of the current coordinates.
 	 */
-	if (ewl_object_alignment_get(c) & info->a1_align) {
+	if (ewl_object_alignment_get(c) & ewl_box_info->a1_align) {
 		ewl_object_position_request(c, *x, *y);
 	}
 
@@ -641,19 +641,19 @@ ewl_box_configure_child(Ewl_Box * b, Ewl_Object * c, int *x, int *y,
 	 * The second one is aligned against the furthest edge, so
 	 * there is some calculation to be made.
 	 */
-	else if (ewl_object_alignment_get(c) & info->a3_align) {
-		*align += *align_size - info->align_ask(c);
+	else if (ewl_object_alignment_get(c) & ewl_box_info->a3_align) {
+		*align += *align_size - ewl_box_info->align_ask(c);
 		ewl_object_position_request(c, *x, *y);
-		*align -= *align_size - info->align_ask(c);
+		*align -= *align_size - ewl_box_info->align_ask(c);
 	}
 
 	/*
 	 * The final one is for centering the child.
 	 */
 	else {
-		*align += (*align_size - info->align_ask(c)) / 2;
+		*align += (*align_size - ewl_box_info->align_ask(c)) / 2;
 		ewl_object_position_request(c, *x, *y);
-		*align -= (*align_size - info->align_ask(c)) / 2;
+		*align -= (*align_size - ewl_box_info->align_ask(c)) / 2;
 	}
 
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
@@ -777,12 +777,12 @@ ewl_box_child_resize_cb(Ewl_Container * c, Ewl_Widget * w, int size,
 	if (EWL_BOX(c)->orientation == EWL_ORIENTATION_HORIZONTAL) {
 		fill_size = PREFERRED_W(c);
 		align_size = PREFERRED_H(c);
-		info = horizontal;
+		info = ewl_box_horizontal;
 	}
 	else {
 		fill_size = PREFERRED_H(c);
 		align_size = PREFERRED_W(c);
-		info = vertical;
+		info = ewl_box_vertical;
 	}
 
 	/*
@@ -810,85 +810,85 @@ ewl_box_setup()
 {
 	DENTER_FUNCTION(DLEVEL_STABLE);
 
-	if (!vertical) {
-		vertical = NEW(Box_Orientation, 1);
-		if (!vertical)
+	if (!ewl_box_vertical) {
+		ewl_box_vertical = NEW(Box_Orientation, 1);
+		if (!ewl_box_vertical)
 			DRETURN(DLEVEL_STABLE);
 
 		/*
 		 * This sets the aligments for filling direction.
 		 */
-		vertical->f1_align = EWL_FLAG_ALIGN_TOP;
-		vertical->f3_align = EWL_FLAG_ALIGN_BOTTOM;
+		ewl_box_vertical->f1_align = EWL_FLAG_ALIGN_TOP;
+		ewl_box_vertical->f3_align = EWL_FLAG_ALIGN_BOTTOM;
 
 		/*
 		 * These are the valid fill policies for this widget.
 		 */
-		vertical->f_policy =
+		ewl_box_vertical->f_policy =
 		    EWL_FLAG_FILL_VSHRINK | EWL_FLAG_FILL_VFILL;
 
 		/*
 		 * This sets the aligments for the non-filling direction.
 		 */
-		vertical->a1_align = EWL_FLAG_ALIGN_LEFT;
-		vertical->a3_align = EWL_FLAG_ALIGN_RIGHT;
+		ewl_box_vertical->a1_align = EWL_FLAG_ALIGN_LEFT;
+		ewl_box_vertical->a3_align = EWL_FLAG_ALIGN_RIGHT;
 
 		/*
 		 * These functions allow for asking the dimensions of the
 		 * children.
 		 */
-		vertical->fill_ask = ewl_object_current_h_get;
+		ewl_box_vertical->fill_ask = ewl_object_current_h_get;
 
-		vertical->align_ask = ewl_object_current_w_get;
+		ewl_box_vertical->align_ask = ewl_object_current_w_get;
 
 		/*
 		 * These functions allow for setting the dimensions of the
 		 * children.
 		 */
-		vertical->fill_set = ewl_object_h_request;
-		vertical->pref_fill_set = ewl_object_preferred_inner_h_set;
+		ewl_box_vertical->fill_set = ewl_object_h_request;
+		ewl_box_vertical->pref_fill_set = ewl_object_preferred_inner_h_set;
 
-		vertical->align_set = ewl_object_w_request;
+		ewl_box_vertical->align_set = ewl_object_w_request;
 	}
 
-	if (!horizontal) {
-		horizontal = NEW(Box_Orientation, 1);
-		if (!horizontal)
+	if (!ewl_box_horizontal) {
+		ewl_box_horizontal = NEW(Box_Orientation, 1);
+		if (!ewl_box_horizontal)
 			DRETURN(DLEVEL_STABLE);
 
 		/*
 		 * This sets the aligments for the filling direction.
 		 */
-		horizontal->f1_align = EWL_FLAG_ALIGN_LEFT;
-		horizontal->f3_align = EWL_FLAG_ALIGN_RIGHT;
+		ewl_box_horizontal->f1_align = EWL_FLAG_ALIGN_LEFT;
+		ewl_box_horizontal->f3_align = EWL_FLAG_ALIGN_RIGHT;
 
 		/*
 		 * These are the valid fill policies for this widget.
 		 */
-		horizontal->f_policy =
+		ewl_box_horizontal->f_policy =
 		    EWL_FLAG_FILL_HSHRINK | EWL_FLAG_FILL_HFILL;
 
 		/*
 		 * This sets the aligments for the non-filling direction.
 		 */
-		horizontal->a1_align = EWL_FLAG_ALIGN_TOP;
-		horizontal->a3_align = EWL_FLAG_ALIGN_BOTTOM;
+		ewl_box_horizontal->a1_align = EWL_FLAG_ALIGN_TOP;
+		ewl_box_horizontal->a3_align = EWL_FLAG_ALIGN_BOTTOM;
 
 		/*
 		 * These functions allow for asking the dimensions of the
 		 * children.
 		 */
-		horizontal->fill_ask = ewl_object_current_w_get;
+		ewl_box_horizontal->fill_ask = ewl_object_current_w_get;
 
-		horizontal->align_ask = ewl_object_current_h_get;
+		ewl_box_horizontal->align_ask = ewl_object_current_h_get;
 
 		/*
 		 * These functions allow for setting the dimensions of the
 		 * children.
 		 */
-		horizontal->fill_set = ewl_object_w_request;
-		horizontal->pref_fill_set = ewl_object_preferred_inner_w_set;
+		ewl_box_horizontal->fill_set = ewl_object_w_request;
+		ewl_box_horizontal->pref_fill_set = ewl_object_preferred_inner_w_set;
 
-		horizontal->align_set = ewl_object_h_request;
+		ewl_box_horizontal->align_set = ewl_object_h_request;
 	}
 }
