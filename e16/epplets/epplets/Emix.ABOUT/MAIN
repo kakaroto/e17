@@ -1,0 +1,16 @@
+<page columns=1 padding=16 name=front background=bg.png linkcolor=#88dddd>
+<font face=aircut3/32 color=#ffffff>
+<p align=50%>
+Emix
+<font face=aircut3/18 color=#88eeff>
+<p align=50%>
+Simple audio mixer
+<font face=aircut3/12 color=#ffffff>
+<p align=50%>
+(c) 1999 Roberto Machorro
+<p>
+There are four channels in this mixer, with them you can adjust the output volume of several devices. Each slider is a device, they are (from left to right): Master Volume, Synth Volume, PCM Volume and CD Audio Volume.
+<p>
+The buttons actions are (from top to botton): Close the Epplet, Mute all audio and Display this help.
+<p>
+This Epplet is provided as is, without any warranty nor promises. It may or may not work for you. It may or may not explode your soundcard. The source and all files are provided under license 2 of the GNU Public License agreement. Please read it to know what you can, and what you can't to with this thing.

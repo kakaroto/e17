@@ -2,7 +2,8 @@
 
 bindir = $(EBIN)
 
-bin_PROGRAMS = E-Load.epplet E-Clock.epplet E-Time.epplet E-Net.epplet E-Cpu.epplet EppletTest.epplet E-Biff.epplet E-Power.epplet
+bin_PROGRAMS = E-Load.epplet E-Clock.epplet E-Time.epplet E-Net.epplet \
+E-Cpu.epplet EppletTest.epplet E-Biff.epplet E-Power.epplet EMix.epplet
 
 E_Load_epplet_SOURCES = E-Load.c
 E_Load_epplet_DEPENDENCIES = $(top_srcdir)/api/libepplet.la
@@ -36,16 +37,23 @@ E_Biff_epplet_SOURCES = E-Biff.c mbox.c
 E_Biff_epplet_DEPENDENCIES = $(top_srcdir)/api/libepplet.la
 E_Biff_epplet_LDFLAGS = -rpath $(libdir):$(pkglibdir)
 
+EMix_epplet_SOURCES = Emix.c
+EMix_epplet_DEPENDENCIES = $(top_srcdir)/api/libepplet.la
+EMix_epplet_LDFLAGS = -rpath $(libdir):$(pkglibdir)
+
+
 INCLUDES = -I. -I$(top_srcdir)/api -I$(top_srcdir) -I.. -I$(includedir) -I$(prefix)/include $(X_CFLAGS)
 LDADD = $(top_builddir)/api/libepplet.la -L$(libdir) -L$(prefix)/lib $(LIBS) $(X_LIBS)
 
 ABOUT_DOCS = \
 E-Cpu.ABOUT/MAIN E-Cpu.ABOUT/bg.png E-Cpu.ABOUT/aircut3.ttf \
 E-Clock.ABOUT/MAIN E-Clock.ABOUT/bg.png E-Clock.ABOUT/aircut3.ttf \
-E-Power.ABOUT/MAIN E-Power.ABOUT/bg.png E-Power.ABOUT/aircut3.ttf
+E-Power.ABOUT/MAIN E-Power.ABOUT/bg.png E-Power.ABOUT/aircut3.ttf \
+EMix.ABOUT/MAIN EMix.ABOUT/bg.png EMix.ABOUT/aircut3.ttf \
 
 ICONS = \
-E-Load.icon E-Clock.icon E-Net.icon E-Cpu.icon E-Power.icon E-Biff.icon
+E-Load.icon E-Clock.icon E-Net.icon E-Cpu.icon E-Power.icon E-Biff.icon \
+EMix.icon
 
 IMAGES =\
 E-Clock-Image.png E-Power-Bat-0.png E-Power-Bat-10.png E-Power-Bat-20.png \
@@ -60,6 +68,7 @@ install-data-hook:
 	$(mkinstalldirs) $(EROOT)/epplet_icons/E-Cpu.ABOUT/
 	$(mkinstalldirs) $(EROOT)/epplet_icons/E-Clock.ABOUT/
 	$(mkinstalldirs) $(EROOT)/epplet_icons/E-Power.ABOUT/
+	$(mkinstalldirs) $(EROOT)/epplet_icons/EMix.ABOUT/
 	@for i in ${ICONS}; do \
 	  echo $(INSTALL_DATA) $(srcdir)/$$i $(EROOT)/epplet_icons/ ; \
 	  $(INSTALL_DATA) $(srcdir)/$$i $(EROOT)/epplet_icons/ ; \
