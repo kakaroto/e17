@@ -484,7 +484,7 @@ feh_set_bg(char *fil, Imlib_Image im, int centered, int scaled, int desktop,
    
    if (fil == NULL)
    {
-      snprintf(bgfil, sizeof(bgfil), "%s/.%s.jpg", getenv("HOME"), bgname);
+      snprintf(bgfil, sizeof(bgfil), "%s/.%s.png", getenv("HOME"), bgname);
       feh_imlib_save_image(im, bgfil);
       printf("bg saved as %s\n", bgfil);
       fil = bgfil;
