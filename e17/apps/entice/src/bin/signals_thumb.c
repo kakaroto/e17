@@ -46,7 +46,7 @@ hookup_entice_thumb_signals(Evas_Object * o, Evas_Object * im)
 {
    int i, count;
    E_Thumb *thumb = NULL;
-   char *signals[] = { "EnticeThumbPreview", "EnticeThumbLoad" };
+   char *signals[] = { "entice,thumb,preview", "entice,thumb,load" };
    void (*funcs[]) (void *data, Evas_Object * obj, const char *emission,
                     const char *source) =
    {

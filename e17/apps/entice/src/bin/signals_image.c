@@ -7,7 +7,7 @@ Edc snippets and function explanations.
 I want to add new functionality to Entice!
 @verbatim
 These are callbacks for all the signals Entice responds to
-If you want to add a new callback for EnticeImage do the following
+If you want to add a new callback for entice,image do the following
 1. Add a function to signals_image.[ch]
 2. Add a function to entice.[ch]
 3. Have your signals_image.c function call your entice.c function
@@ -19,7 +19,7 @@ Keep the data in entice.c and the request for state changes separate
 #include "signals_image.h"
 #include "entice.h"
 
-#define DEBUG 0
+#define DEBUG 1
 
 /**
  * Delete the current image in entice from the disk
@@ -30,7 +30,7 @@ Keep the data in entice.c and the request for state changes separate
  * 
  * There is currently no error checking done, or reporting saying
  * whether or not the deletion was successful.  The signal you want your
- * theme to emit to delete the file from disk is "EnticeImageDelete"
+ * theme to emit to delete the file from disk is "entice,imageDelete"
  *
  * Example .edc code to do this
  * @code 
@@ -39,7 +39,7 @@ Keep the data in entice.c and the request for state changes separate
  *	name, "DeleteFileRequest";
  * 	signal, "";
  *	source, "";
- *	action, SIGNAL_EMIT "EnticeImageDelete" "";
+ *	action, SIGNAL_EMIT "entice,image,current,delete" "";
  *  }
  * @endcode
  *
@@ -66,7 +66,7 @@ _entice_delete_current(void *data, Evas_Object * o, const char *emission,
  * The current image is removed, and the next image in the filelist is
  * loaded.  The signal you want your theme to emit to remove the
  * currently displayed image from entice's filelist is
- * "EnticeImageRmove"
+ * "entice,image,remove"
  *
  * Example .edc code to do this
  * @code 
@@ -75,7 +75,7 @@ _entice_delete_current(void *data, Evas_Object * o, const char *emission,
  *	name, "RemoveFileRequest";
  * 	signal, "";
  *	source, "";
- *	action, SIGNAL_EMIT "EnticeImageRemove" "";
+ *	action, SIGNAL_EMIT "entice,image,remove" "";
  *  }
  * @endcode
  *
@@ -101,7 +101,7 @@ _entice_remove_current(void *data, Evas_Object * o, const char *emission,
  * 
  * Load the next image in the filelist, if there's < 2 elements in the
  * list emitting this signal does nothing.  The signal you want your
- * theme to emit to load the next image is "EnticeImageNext" 
+ * theme to emit to load the next image is "entice,image,next" 
  *
  * Example .edc code to do this
  * @code 
@@ -110,7 +110,7 @@ _entice_remove_current(void *data, Evas_Object * o, const char *emission,
  *	name, "ImageNextRequest";
  * 	signal, "";
  *	source, "";
- *	action, SIGNAL_EMIT "EnticeImageNext" "";
+ *	action, SIGNAL_EMIT "entice,image,next" "";
  *  }
  * @endcode
  *
@@ -136,7 +136,7 @@ _entice_image_next(void *data, Evas_Object * o, const char *emission,
  * 
  * Load the previous image in the filelist, if there's < 2 elements in
  * the list emitting this signal does nothing.  The signal you want your
- * theme to emit to load the previous image is "EnticeImagePrev" 
+ * theme to emit to load the previous image is "entice,image,prev" 
  *
  * Example .edc code to do this
  * @code 
@@ -145,7 +145,7 @@ _entice_image_next(void *data, Evas_Object * o, const char *emission,
  *	name, "ImagePreviousRequest";
  * 	signal, "";
  *	source, "";
- *	action, SIGNAL_EMIT "EnticeImagePrev" "";
+ *	action, SIGNAL_EMIT "entice,image,prev" "";
  *  }
  * @endcode
  *
@@ -171,7 +171,7 @@ _entice_image_prev(void *data, Evas_Object * o, const char *emission,
  * 
  * Zoom in on the currently displayed image.  The signal you want your
  * theme to emit to zoom in on the currently displayed image is
- * "EnticeImageZoomIn"
+ * "entice,imageZoomIn"
  *
  * Example .edc code to do this
  * @code 
@@ -180,7 +180,7 @@ _entice_image_prev(void *data, Evas_Object * o, const char *emission,
  *	name, "ImageZoomInRequest";
  * 	signal, "";
  *	source, "";
- *	action, SIGNAL_EMIT "EnticeImageZoomIn" "";
+ *	action, SIGNAL_EMIT "entice,imageZoomIn" "";
  *  }
  * @endcode
  *
@@ -206,7 +206,7 @@ _entice_zoom_in(void *data, Evas_Object * o, const char *emission,
  * 
  * Zoom in on the currently displayed image.  The signal you want your
  * theme to emit to zoom in on the currently displayed image is
- * "EnticeImageZoomOut"
+ * "entice,imageZoomOut"
  *
  * Example .edc code to do this
  * @code 
@@ -215,7 +215,7 @@ _entice_zoom_in(void *data, Evas_Object * o, const char *emission,
  *	name, "ImageZoomInRequest";
  * 	signal, "";
  *	source, "";
- *	action, SIGNAL_EMIT "EnticeImageZoomOut" "";
+ *	action, SIGNAL_EMIT "entice,imageZoomOut" "";
  *  }
  * @endcode
  *
@@ -241,7 +241,7 @@ _entice_zoom_out(void *data, Evas_Object * o, const char *emission,
  * 
  * Set zoom to be 1:1 relative to the images original size.  The signal
  * you want your theme to emit to zoom in on the currently displayed
- * image is "EnticeImageZoomDefault"
+ * image is "entice,imageZoomDefault"
  *
  * Example .edc code to do this
  * @code 
@@ -250,7 +250,7 @@ _entice_zoom_out(void *data, Evas_Object * o, const char *emission,
  *	name, "ImageZoomDefaultRequest";
  * 	signal, "";
  *	source, "";
- *	action, SIGNAL_EMIT "EnticeImageZoomDefault" "";
+ *	action, SIGNAL_EMIT "entice,imageZoomDefault" "";
  *  }
  * @endcode
  *
@@ -267,7 +267,7 @@ _entice_zoom_default(void *data, Evas_Object * o, const char *emission,
    source = NULL;
 }
 
-/* EnticeImageZoomFit */
+/* entice,imageZoomFit */
 void
 _entice_zoom_fit(void *data, Evas_Object * o, const char *emission,
                  const char *source)
@@ -280,7 +280,7 @@ _entice_zoom_fit(void *data, Evas_Object * o, const char *emission,
    source = NULL;
 }
 
-/* EnticeImageZoomInFocused */
+/* entice,imageZoomInFocused */
 /* FIXME: get mouse coords from ecore, if image is under mouse center there */
 void
 _entice_zoom_in_focused(void *data, Evas_Object * o, const char *emission,
@@ -293,7 +293,7 @@ _entice_zoom_in_focused(void *data, Evas_Object * o, const char *emission,
    source = NULL;
 }
 
-/* EnticeImageZoomOutFocused */
+/* entice,imageZoomOutFocused */
 /* FIXME: get mouse coords from ecore, if image is under mouse center there */
 void
 _entice_zoom_out_focused(void *data, Evas_Object * o, const char *emission,
@@ -307,7 +307,7 @@ _entice_zoom_out_focused(void *data, Evas_Object * o, const char *emission,
 }
 
 /* FIXME: I'm not sure how to do this with edje
- * README.theme states EnticeImageFitWindow should resize the window to
+ * README.theme states entice,imageFitWindow should resize the window to
  * fit the image, for now I"m omitting this feature.
  */
 void
@@ -321,7 +321,7 @@ _entice_fit_window(void *data, Evas_Object * o, const char *emission,
    source = NULL;
 }
 
-/* EnticeImageRotateLeft */
+/* entice,imageRotateLeft */
 void
 _entice_rotate_left(void *data, Evas_Object * o, const char *emission,
                     const char *source)
@@ -334,7 +334,7 @@ _entice_rotate_left(void *data, Evas_Object * o, const char *emission,
    source = NULL;
 }
 
-/* EnticeImageRotateRight */
+/* entice,imageRotateRight */
 void
 _entice_rotate_right(void *data, Evas_Object * o, const char *emission,
                      const char *source)
@@ -347,7 +347,7 @@ _entice_rotate_right(void *data, Evas_Object * o, const char *emission,
    source = NULL;
 }
 
-/* EnticeImageFlipH */
+/* entice,imageFlipH */
 void
 _entice_flip_horizontal(void *data, Evas_Object * o, const char *emission,
                         const char *source)
@@ -360,7 +360,7 @@ _entice_flip_horizontal(void *data, Evas_Object * o, const char *emission,
    source = NULL;
 }
 
-/* EnticeImageFlipV */
+/* entice,imageFlipV */
 void
 _entice_flip_vertical(void *data, Evas_Object * o, const char *emission,
                       const char *source)
@@ -425,7 +425,7 @@ _entice_thumbs_scroll_stop(void *data, Evas_Object * o, const char *emission,
    source = NULL;
 }
 
-/* EnticeImageScrollEastStart */
+/* entice,imageScrollEastStart */
 void
 _entice_image_scroll_east_start(void *data, Evas_Object * o,
                                 const char *emission, const char *source)
@@ -441,7 +441,7 @@ _entice_image_scroll_east_start(void *data, Evas_Object * o,
    source = NULL;
 }
 
-/* EnticeImageScrollWestStart */
+/* entice,imageScrollWestStart */
 void
 _entice_image_scroll_west_start(void *data, Evas_Object * o,
                                 const char *emission, const char *source)
@@ -457,7 +457,7 @@ _entice_image_scroll_west_start(void *data, Evas_Object * o,
    source = NULL;
 }
 
-/* EnticeImageScrollNorthStart */
+/* entice,imageScrollNorthStart */
 void
 _entice_image_scroll_north_start(void *data, Evas_Object * o,
                                  const char *emission, const char *source)
@@ -473,7 +473,7 @@ _entice_image_scroll_north_start(void *data, Evas_Object * o,
    source = NULL;
 }
 
-/* EnticeImageScrollSouthStart */
+/* entice,imageScrollSouthStart */
 void
 _entice_image_scroll_south_start(void *data, Evas_Object * o,
                                  const char *emission, const char *source)
@@ -489,7 +489,7 @@ _entice_image_scroll_south_start(void *data, Evas_Object * o,
    source = NULL;
 }
 
-/* EnticeImageScrollStop */
+/* entice,imageScrollStop */
 void
 _entice_image_scroll_stop(void *data, Evas_Object * o, const char *emission,
                           const char *source)
@@ -515,7 +515,7 @@ _entice_quit(void *data, Evas_Object * o, const char *emission,
    source = NULL;
 }
 
-/* EnticeImageModified */
+/* entice,imageModified */
 void
 _entice_image_modified(void *data, Evas_Object * o, const char *emission,
                        const char *source)
@@ -530,7 +530,7 @@ _entice_image_modified(void *data, Evas_Object * o, const char *emission,
    source = NULL;
 }
 
-/* EnticeImageSave */
+/* entice,imageSave */
 void
 _entice_image_save(void *data, Evas_Object * o, const char *emission,
                    const char *source)
@@ -554,7 +554,7 @@ _entice_image_drag_stop(void *data, Evas_Object * o, const char *emission,
 #if DEBUG
    fprintf(stderr, "Drag stopped\n");
 #endif
-   if ((source) && !strcmp(source, "EnticeImage"))
+   if ((source) && !strcmp(source, "entice.image"))
       entice_dragable_image_set(0);
 }
 
@@ -565,6 +565,6 @@ _entice_image_drag_start(void *data, Evas_Object * o, const char *emission,
 #if DEBUG
    fprintf(stderr, "Drag started\n");
 #endif
-   if ((source) && !strcmp(source, "EnticeImage"))
+   if ((source) && !strcmp(source, "entice.image"))
       entice_dragable_image_set(1);
 }

@@ -29,7 +29,7 @@ static Entice *entice = NULL;
 static void entice_current_free(void);
 
 /**
- * hookup_edje_signals - Add signal callbacks for EnticeImage edje part
+ * hookup_edje_signals - Add signal callbacks for entice.image edje part
  * @o - a validly loaded edje object
  */
 static void
@@ -43,20 +43,34 @@ hookup_edje_signals(Evas_Object * o)
    }
    edje_callbacks;
 
-   char *signals[] = { "EnticeImageDelete", "EnticeImageRemove",
-      "EnticeImageNext", "EnticeImagePrev",
-      "EnticeImageZoomIn", "EnticeImageZoomOut",
-      "EnticeImageZoomInFocused", "EnticeImageZoomOutFocused",
-      "EnticeImageZoomDefault", "EnticeImageZoomFit",
-      "EnticeImageFitWindow", "EnticeImageRotateLeft",
-      "EnticeImageRotateRight", "EnticeImageFlipHorizontal",
-      "EnticeImageFlipVertical", "EnticeFullScreen",
-      "EnticeThumbsScrollNextStart", "EnticeThumbsScrollPrevStart",
-      "EnticeThumbsScrollStop",
-      "EnticeImageScrollEastStart", "EnticeImageScrollWestStart",
-      "EnticeImageScrollNorthStart", "EnticeImageScrollSouthStart",
-      "EnticeImageScrollStop", "EnticeImageModified",
-      "EnticeImageSave", "EnticeQuit", NULL
+   char *signals[] = {
+      "entice,image,current,delete",
+      "entice,image,current,remove",
+      "entice,image,next",
+      "entice,image,prev",
+      "entice,image,current,zoom,in",
+      "entice,image,current,zoom,out",
+      "entice,image,current,zoom,in,focused",
+      "entice,image,current,zoom,out,focused",
+      "entice,image,current,zoom,reset",
+      "entice,image,current,zoom,fit",
+      "entice,image,current,rotate,left",
+      "entice,image,current,rotate,right",
+      "entice,image,current,flip,horizontal",
+      "entice,image,current,flip,vertical",
+      "entice,image,current,scroll,start,east",
+      "entice,image,current,scroll,start,west",
+      "entice,image,current,scroll,start,north",
+      "entice,image,current,scroll,start,south",
+      "entice,image,current,scroll,stop",
+      "entice,image,current,modified",
+      "entice,image,current,save",
+      "entice,thumbnail,scroll,start,next",
+      "entice,thumbnail,scroll,start,prev",
+      "entice,thumbnail,scroll,stop",
+      "entice,window,fit,image",
+      "entice,window,fullscreen",
+      "entice,quit", NULL
    };
    void (*funcs[]) (void *data, Evas_Object * o, const char *emission,
                     const char *source) =
@@ -64,22 +78,22 @@ hookup_edje_signals(Evas_Object * o)
    _entice_delete_current, _entice_remove_current, _entice_image_next,
          _entice_image_prev, _entice_zoom_in, _entice_zoom_out,
          _entice_zoom_in_focused, _entice_zoom_out_focused,
-         _entice_zoom_default, _entice_zoom_fit, _entice_fit_window,
-         _entice_rotate_left, _entice_rotate_right,
-         _entice_flip_horizontal, _entice_flip_vertical,
-         _entice_fullscreen, _entice_thumbs_scroll_next_start,
-         _entice_thumbs_scroll_prev_start, _entice_thumbs_scroll_stop,
-         _entice_image_scroll_east_start, _entice_image_scroll_west_start,
-         _entice_image_scroll_north_start,
+         _entice_zoom_default, _entice_zoom_fit, _entice_rotate_left,
+         _entice_rotate_right, _entice_flip_horizontal,
+         _entice_flip_vertical, _entice_image_scroll_east_start,
+         _entice_image_scroll_west_start, _entice_image_scroll_north_start,
          _entice_image_scroll_south_start, _entice_image_scroll_stop,
-         _entice_image_modified, _entice_image_save, _entice_quit, NULL};
+         _entice_image_modified, _entice_image_save,
+         _entice_thumbs_scroll_next_start,
+         _entice_thumbs_scroll_prev_start, _entice_thumbs_scroll_stop,
+         _entice_fit_window, _entice_fullscreen, _entice_quit, NULL};
    count = sizeof(signals) / sizeof(char *);
    for (i = 0; i < count; i++)
       edje_object_signal_callback_add(o, signals[i], "", funcs[i], NULL);
 
-   edje_object_signal_callback_add(o, "drag,stop", "EnticeImage",
+   edje_object_signal_callback_add(o, "drag,stop", "entice.image",
                                    _entice_image_drag_stop, NULL);
-   edje_object_signal_callback_add(o, "drag,start", "EnticeImage",
+   edje_object_signal_callback_add(o, "drag,start", "entice.image",
                                    _entice_image_drag_start, NULL);
    return;
 }
@@ -153,9 +167,9 @@ entice_init(Ecore_Evas * ee)
       evas_object_layer_set(e->container, 0);
       evas_object_color_set(e->container, 255, 255, 255, 255);
 
-      if (edje_object_part_exists(e->edje, "EnticeThumbnailArea"))
+      if (edje_object_part_exists(e->edje, "entice.thumbnail.area"))
       {
-         edje_object_part_geometry_get(e->edje, "EnticeThumbnailArea", NULL,
+         edje_object_part_geometry_get(e->edje, "entice.thumbnail.area", NULL,
                                        NULL, &ew, &eh);
 
          if (ew > eh)
@@ -172,7 +186,7 @@ entice_init(Ecore_Evas * ee)
                                         CONTAINER_FILL_POLICY_KEEP_ASPECT);
             e_container_direction_set(e->container, 1);
          }
-         edje_object_part_swallow(e->edje, "EnticeThumbnailArea",
+         edje_object_part_swallow(e->edje, "entice.thumbnail.area",
                                   e->container);
       }
       if ((str = edje_object_data_get(o, "entice.window.type")))
@@ -289,9 +303,10 @@ _entice_thumb_load(void *_data, Evas * _e, Evas_Object * _o, void *_ev)
           && (thumb_edje =
               evas_hash_find(entice->thumb.hash,
                              entice_image_file_get(entice->current))))
-         edje_object_signal_emit(thumb_edje, "EnticeThumbUnLoaded", "");
+         edje_object_signal_emit(thumb_edje, "entice,thumb,unload", "");
 
-      edje_object_signal_emit(entice->edje, "EnticeImageDisplayPrep", "");
+      edje_object_signal_emit(entice->edje, "entice,image,display,before",
+                              "");
 
       tmp = e_thumb_evas_object_get(o);
       if ((new_current = entice_image_new(tmp)))
@@ -303,13 +318,13 @@ _entice_thumb_load(void *_data, Evas * _e, Evas_Object * _o, void *_ev)
 
          new_scroller =
             e_thumb_new(evas_object_evas_get(o), e_thumb_file_get(o));
-         edje_object_part_geometry_get(entice->edje, "EnticeImage", NULL,
+         edje_object_part_geometry_get(entice->edje, "entice.image", NULL,
                                        NULL, &w, &h);
          evas_object_resize(new_current, w, h);
          evas_object_show(new_current);
 
-         edje_object_part_geometry_get(entice->edje, "EnticeImageScroller",
-                                       NULL, NULL, &w, &h);
+         edje_object_part_geometry_get(entice->edje, "entice.scroller", NULL,
+                                       NULL, &w, &h);
          evas_object_resize(new_scroller, w, h);
          evas_object_show(new_scroller);
 
@@ -326,7 +341,7 @@ _entice_thumb_load(void *_data, Evas * _e, Evas_Object * _o, void *_ev)
               evas_hash_find(entice->thumb.hash,
                              entice_image_file_get(entice->current))))
          {
-            edje_object_signal_emit(thumb_edje, "EnticeThumbLoaded", "");
+            edje_object_signal_emit(thumb_edje, "entice,thumb,load", "");
             e_container_scroll_to(entice->container, thumb_edje);
          }
 
@@ -337,11 +352,14 @@ _entice_thumb_load(void *_data, Evas * _e, Evas_Object * _o, void *_ev)
          /* Set the text descriptions for this image */
          e_thumb_geometry_get(o, &iw, &ih);
          snprintf(buf, PATH_MAX, "%d x %d", iw, ih);
-         edje_object_part_text_set(entice->edje, "EnticeFileDimensions", buf);
-         edje_object_part_text_set(entice->edje, "EnticeFileName",
+         edje_object_part_text_set(entice->edje,
+                                   "entice.image.current.dimensions", buf);
+         edje_object_part_text_set(entice->edje,
+                                   "entice.image.current.filename.full",
                                    e_thumb_file_get(o));
          if ((tmpstr = strrchr(e_thumb_file_get(o), '/')))
-            edje_object_part_text_set(entice->edje, "EnticeFileShortName",
+            edje_object_part_text_set(entice->edje,
+                                      "entice.image.current.filename.short",
                                       tmpstr + 1);
          /* FIXME: Support FileSize also */
 
@@ -352,15 +370,15 @@ _entice_thumb_load(void *_data, Evas * _e, Evas_Object * _o, void *_ev)
             evas_list_find_list(entice->thumb.list, _data);
 
          /* swallow the images */
-         edje_object_part_swallow(entice->edje, "EnticeImage", new_current);
-         edje_object_part_swallow(entice->edje, "EnticeImageScroller",
+         edje_object_part_swallow(entice->edje, "entice.image", new_current);
+         edje_object_part_swallow(entice->edje, "entice.scroller",
                                   new_scroller);
 
          if (should_fit)
             entice_image_zoom_fit(new_current);
 
          /* let the app know it's ready to be displayed */
-         edje_object_signal_emit(entice->edje, "EnticeImageDisplay", "");
+         edje_object_signal_emit(entice->edje, "entice,image,display", "");
       }
       else
       {
@@ -396,18 +414,18 @@ entice_file_add(const char *file)
                                   evas_object_layer_get(entice->container));
             edje = edje_object_add(ecore_evas_get(entice->ee));
             if (edje_object_file_set
-                (edje, entice_config_theme_get(), "EnticeThumb"))
+                (edje, entice_config_theme_get(), "entice.thumb"))
             {
                evas_object_layer_set(edje,
                                      evas_object_layer_get(entice->
                                                            container));
-               if (edje_object_part_exists(edje, "EnticeThumb"))
+               if (edje_object_part_exists(edje, "entice.thumb"))
                {
                   entice->thumb.list =
                      evas_list_append(entice->thumb.list, o);
                   evas_object_resize(o, 48, 48);
                   hookup_entice_thumb_signals(edje, o);
-                  edje_object_part_swallow(edje, "EnticeThumb", o);
+                  edje_object_part_swallow(edje, "entice.thumb", o);
                   evas_object_show(edje);
                   evas_object_show(o);
 
@@ -554,7 +572,7 @@ entice_current_free(void)
       entice->current = evas_object_image_add(ecore_evas_get(entice->ee));
 
       /* clean up the old images */
-      swallowed = edje_object_part_swallow_get(entice->edje, "EnticeImage");
+      swallowed = edje_object_part_swallow_get(entice->edje, "entice.image");
       if (swallowed)
       {
          edje_object_part_unswallow(entice->edje, swallowed);
@@ -562,7 +580,7 @@ entice_current_free(void)
          swallowed = NULL;
       }
       swallowed =
-         edje_object_part_swallow_get(entice->edje, "EnticeImageScroller");
+         edje_object_part_swallow_get(entice->edje, "entice.scroller");
       if (swallowed)
       {
          edje_object_part_unswallow(entice->edje, swallowed);
@@ -601,7 +619,7 @@ entice_file_remove(const char *file)
          {
             entice->thumb.current = evas_list_last(entice->thumb.list);
          }
-         if ((obj = edje_object_part_swallow_get(o, "EnticeThumb")))
+         if ((obj = edje_object_part_swallow_get(o, "entice.thumb")))
          {
             entice->thumb.list = evas_list_remove(entice->thumb.list, obj);
             evas_object_del(obj);
@@ -611,9 +629,18 @@ entice_file_remove(const char *file)
          if (evas_list_count(entice->thumb.list) == 0)
          {
             entice->thumb.current = NULL;
-            edje_object_part_text_set(entice->edje, "EnticeFileDimensions",
+            edje_object_part_text_set(entice->edje,
+                                      "entice.image.current.filename.full",
                                       "");
-            edje_object_part_text_set(entice->edje, "EnticeFileName", "");
+            edje_object_part_text_set(entice->edje,
+                                      "entice.image.current.filename.short",
+                                      "");
+            edje_object_part_text_set(entice->edje,
+                                      "entice.image.current.dimensions", "");
+            edje_object_part_text_set(entice->edje,
+                                      "entice.image.current.height", "");
+            edje_object_part_text_set(entice->edje,
+                                      "entice.image.current.width", "");
             entice->thumb.list = evas_list_free(entice->thumb.list);
             entice_current_free();
          }
@@ -656,10 +683,11 @@ entice_delete_current(void)
    {
       int result = 0;
 
+      edje_object_freeze(entice->edje);
       result = entice_file_delete(entice_image_file_get(entice->current));
-
+      edje_object_thaw(entice->edje);
       if (!result)
-         edje_object_signal_emit(entice->edje, "EnticeImageNext", "");
+         edje_object_signal_emit(entice->edje, "entice,image,next", "");
    }
 }
 void
@@ -669,9 +697,11 @@ entice_remove_current(void)
    {
       int result = 0;
 
+      edje_object_freeze(entice->edje);
       result = entice_file_remove(entice_image_file_get(entice->current));
+      edje_object_thaw(entice->edje);
       if (!result)
-         edje_object_signal_emit(entice->edje, "EnticeImageNext", "");
+         edje_object_signal_emit(entice->edje, "entice,image,next", "");
    }
 
 }
@@ -789,7 +819,7 @@ entice_resize(int w, int h)
       double ww, hh;
 
       evas_object_resize(entice->edje, (double) w, (double) h);
-      edje_object_part_geometry_get(entice->edje, "EnticeImage", NULL, NULL,
+      edje_object_part_geometry_get(entice->edje, "entice.image", NULL, NULL,
                                     &ww, &hh);
       evas_object_resize(entice->current, ww, hh);
       if ((o = evas_object_name_find(ecore_evas_get(entice->ee), "trans")))
@@ -850,8 +880,7 @@ entice_preview_thumb(Evas_Object * o)
          if (entice->preview)
          {
             swallowed =
-               edje_object_part_swallow_get(entice->edje,
-                                            "EnticeImagePreview");
+               edje_object_part_swallow_get(entice->edje, "entice.preview");
             if (swallowed)
             {
                edje_object_part_unswallow(entice->edje, swallowed);
@@ -864,8 +893,7 @@ entice_preview_thumb(Evas_Object * o)
          if (entice->preview)
          {
             swallowed =
-               edje_object_part_swallow_get(entice->edje,
-                                            "EnticeImagePreview");
+               edje_object_part_swallow_get(entice->edje, "entice.preview");
             if (swallowed)
             {
                /* don't repreview the same image if cache is same */
@@ -880,9 +908,9 @@ entice_preview_thumb(Evas_Object * o)
            e_thumb_new(evas_object_evas_get(o), e_thumb_file_get(o))))
       {
 
-         edje_object_signal_emit(entice->edje, "EnticeImagePreviewPrep", "");
-         edje_object_part_geometry_get(entice->edje, "EnticeImagePreview", &x,
-                                       &y, &w, &h);
+         edje_object_signal_emit(entice->edje, "entice,preview,before", "");
+         edje_object_part_geometry_get(entice->edje, "entice.preview", &x, &y,
+                                       &w, &h);
 
          /* 
           * make it almost inivisble before swallowing, without this we get
@@ -890,11 +918,10 @@ entice_preview_thumb(Evas_Object * o)
           */
          evas_object_move(newpreview, -50, -50);
          evas_object_resize(newpreview, 48, 48);
-         edje_object_part_swallow(entice->edje, "EnticeImagePreview",
-                                  newpreview);
+         edje_object_part_swallow(entice->edje, "entice.preview", newpreview);
          evas_object_show(newpreview);
 
-         edje_object_signal_emit(entice->edje, "EnticeImagePreviewShow", "");
+         edje_object_signal_emit(entice->edje, "entice,preview,show", "");
       }
       else
       {
@@ -910,7 +937,7 @@ entice_rotate_image_right(void)
    {
       edje_freeze();
       if (entice_image_rotate(entice->current, 1))
-         edje_object_signal_emit(entice->edje, "EnticeImageModified", "");
+         edje_object_signal_emit(entice->edje, "entice,image,modified", "");
       edje_thaw();
    }
 }
@@ -921,7 +948,7 @@ entice_rotate_image_left(void)
    {
       edje_freeze();
       if (entice_image_rotate(entice->current, 3))
-         edje_object_signal_emit(entice->edje, "EnticeImageModified", "");
+         edje_object_signal_emit(entice->edje, "entice,image,modified", "");
       edje_thaw();
    }
 }
@@ -932,7 +959,7 @@ entice_flip_vertical(void)
    {
       edje_freeze();
       if (entice_image_flip(entice->current, 1))
-         edje_object_signal_emit(entice->edje, "EnticeImageModified", "");
+         edje_object_signal_emit(entice->edje, "entice,image,modified", "");
       edje_thaw();
    }
 }
@@ -943,7 +970,7 @@ entice_flip_horizontal(void)
    {
       edje_freeze();
       if (entice_image_flip(entice->current, 0))
-         edje_object_signal_emit(entice->edje, "EnticeImageModified", "");
+         edje_object_signal_emit(entice->edje, "entice,image,modified", "");
       edje_thaw();
    }
 }
@@ -970,15 +997,16 @@ entice_dragable_image_fix(Evas_Coord x, Evas_Coord y)
    if (entice && entice->current)
    {
       if ((swallowed =
-           edje_object_part_swallow_get(entice->edje, "EnticeImage")))
+           edje_object_part_swallow_get(entice->edje, "entice.image")))
       {
-         edje_object_part_geometry_get(entice->edje, "EnticeImage", &xx, &yy,
+         edje_object_part_geometry_get(entice->edje, "entice.image", &xx, &yy,
                                        NULL, NULL);
          dx = x - xx;
          dy = y - yy;
          entice_image_x_scroll_offset_add(entice->current, -dx);
          entice_image_y_scroll_offset_add(entice->current, -dy);
-         edje_object_part_drag_value_set(entice->edje, "EnticeImage", dx, dy);
+         edje_object_part_drag_value_set(entice->edje, "entice.image", dx,
+                                         dy);
          evas_object_geometry_get(entice->current, &x, &y, &w, &h);
          evas_damage_rectangle_add(ecore_evas_get(entice->ee), x, y, w, h);
       }
@@ -999,7 +1027,7 @@ entice_dragable_image_set(int state)
       }
       else
       {
-         edje_object_part_geometry_get(entice->edje, "EnticeImage", &x, &y,
+         edje_object_part_geometry_get(entice->edje, "entice.image", &x, &y,
                                        NULL, NULL);
       }
    }

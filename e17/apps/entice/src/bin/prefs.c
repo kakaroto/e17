@@ -189,7 +189,7 @@ entice_config_init(void)
       {
          entice_keys_init();
 
-         snprintf(buf, PATH_MAX, "%s/.e/apps/entice/entice.db",
+         snprintf(buf, PATH_MAX, "%s/.e/apps/entice/config.db",
                   getenv("HOME"));
          econfig->db = strdup(buf);
          /* make sure we have a db, if not generate it */
@@ -283,12 +283,14 @@ entice_config_generate_original_db(char *filename)
    char *dirs[] = { ".e", ".e/apps", ".e/apps/entice",
       ".e/apps/entice/themes"
    };
-   char *signals[] = { "EnticeImageZoomIn", "EnticeImageZoomOut",
-      "EnticeFullScreen",
-      "EnticeImageNext", "EnticeImagePrev", "EnticeImageZoomDefault",
-      "EnticeImageZoomFit", "EnticeQuit", "EnticeImageRotateLeft",
-      "EnticeImageRotateRight", "EnticeImageFlipHorizontal",
-      "EnticeImageFlipVertical", "EnticeImageRemove"
+   char *signals[] =
+      { "entice,image,current,zoom,in", "entice,image,current,zoom,out",
+      "entice,window,fullscreen", "entice,image,next", "entice,image,prev",
+      "entice,image,current,zoom,reset", "entice,image,current,zoom,fit",
+      "entice,quit", "entice,image,current,rotate,left",
+      "entice,image,current,rotate,right",
+      "entice,image,current,flip,horizontal",
+      "entice,image,current,flip,vertical", "entice,image,remove"
    };
    char *keys[] =
       { "equal", "minus", "f", "space", "BackSpace", "n", "w", "q", "Left",
