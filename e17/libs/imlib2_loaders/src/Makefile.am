@@ -5,7 +5,7 @@ AUTOMAKE_OPTIONS     = 1.4 foreign
 # A list of all the files in the current directory which can be regenerated
 MAINTAINERCLEANFILES = Makefile.in
 
-INCLUDES             = -DXCF_DBG $(X_CFLAGS)
+INCLUDES             = $(X_CFLAGS)
 
 pkgdir		     = $(libdir)/loaders/image
 pkg_LTLIBRARIES	     = xcf.la
