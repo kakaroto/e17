@@ -1,0 +1,125 @@
+<!-- ################################### -->
+<!-- EWL BUTTON -->
+<sect2 id="sec-EwlButton">
+<title>ewl_button</title>
+<para>
+The button widget is simply a widget with a label attached. When the 
+user clicks on the button the callback attached to 
+<literal>EWL_CALLBACK_CLICKED</literal> will be executed.
+</para>
+
+<para>
+ <figure>
+  <title>An Ewl Button</title>
+  <inlinemediaobject>
+   <imageobject>
+    <imagedata fileref="img/entry.png" format="png" />
+   </imageobject>
+   <textobject>
+    <phrase>Example of an EWL entry box</phrase>
+   </textobject>
+  </inlinemediaobject>
+ </figure>
+</para>
+
+<para>
+<example id="sec-EwlButtonCode">
+ <title>Creating a button</title>
+ <programlisting role="C">
+    Ewl_Widget *button = ewl_button_new("A button");
+    ewl_object_alignment_set(EWL_OBJECT(button), EWL_FLAG_ALIGN_CENTER);
+    ewl_callback_append(button, EWL_CALLBACK_CLICKED, button_cb, NULL);
+    ewl_widget_show(button);
+ </programlisting>
+</example>
+The label portion of the button can be aligned to any of the <literal>EWL_FLAG_ALIGN_*</literal>
+settings.
+</para>
+
+<para>
+<example id="sec-EwlButtonCB">
+ <title>Button Callback</title>
+ <programlisting role="C">
+void button_cb(Ewl_Widget *w, void *event, void *data) {
+    printf("button pressed\n");
+}
+ </programlisting>
+</example>
+</para>
+
+<para>
+The label on a button can be manipulated after the button has been created through
+the two calls:
+<itemizedlist mark="bullet" spacing="compact">
+ <listitem><para><function>char *ewl_button_label_get(EwlButton *)</function></para></listitem>
+ <listitem><para><function>void ewl_button_label_set(EwlButton *, char *)</function></para></listitem>
+</itemizedlist>
+</para>
+</sect2>
+
+<!-- ################################### -->
+<!-- EWL CHECKBUTTON -->
+<sect2 id="sec-EwlCheckButton">
+<title>ewl_checkbutton</title>
+<para>
+ <figure>
+  <title>An Ewl Checkbutton</title>
+  <inlinemediaobject>
+   <imageobject>
+    <imagedata fileref="img/checkbutton.png" format="png" />
+   </imageobject>
+   <textobject>
+    <phrase>Example of an EWL checkbutton</phrase>
+   </textobject>
+  </inlinemediaobject>
+ </figure>
+</para>
+
+<para>
+<example id="sec-EwlCheckButtonCode">
+ <title>Creating a checkbutton</title>
+ <programlisting role="C">
+    Ewl_Widget *cb = ewl_checkbutton_new("Label");
+    ewl_checkbutton_label_position_set(EWL_CHECKBUTTON(cb), EWL_FLAG_ALIGN_LEFT);
+    ewl_callback_append(cb, EWL_CALLBACK_VALUE_CHANGED, checkbutton_cb, NULL);
+    ewl_widget_show(cb);
+ </programlisting>
+</example>
+</para>
+
+<para>
+<example id="sec-EwlCheckButtonCB">
+ <title>Button Callback</title>
+ <programlisting role="C">
+void checkbutton_cb(Ewl_Widget *w, void *event, void *data) {
+    if (ewl_checkbutton_is_checked(EWL_CHECKBUTTON(w)))
+        printf("checked\n");
+    else
+        printf("Not checked\n");
+}
+ </programlisting>
+</example>
+</para>
+</sect2>
+
+<!-- ################################### -->
+<!-- EWL RADIO BUTTON -->
+<sect2 id="sec-Ewl-RadioButton">
+<title>ewl_radiobutton</title>
+<para>
+ <figure>
+  <title>An EWL radiobutton</title>
+  <inlinemediaobject>
+   <imageobject>
+    <imagedata fileref="img/radiobutton.png" format="png" />
+   </imageobject>
+   <textobject>
+    <phrase>Example of an EWL radiobutton</phrase>
+   </textobject>
+  </inlinemediaobject>
+ </figure>
+</para>
+<para>
+</para>
+</sect2>
+

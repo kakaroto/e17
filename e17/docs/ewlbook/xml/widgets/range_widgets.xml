@@ -1,0 +1,86 @@
+<!-- ################################### -->
+<!-- EWL PROGRESSBAR -->
+<sect2 id="sec-EwlProgressBar">
+<title>ewl_progressbar</title>
+<para>
+ <figure>
+  <title>An EWL progress bar</title>
+  <inlinemediaobject>
+   <imageobject>
+    <imagedata fileref="img/progressbar.png" format="png" />
+   </imageobject>
+   <textobject>
+    <phrase>Example of an EWL progress bar</phrase>
+   </textobject>
+  </inlinemediaobject>
+ </figure>
+</para>
+<para>
+</para>
+</sect2>
+
+<!-- ################################### -->
+<!-- EWL SEEKER -->
+<sect2 id="sec-EwlSeeker">
+<title>ewl_seeker</title>
+<para>
+ <figure>
+  <title>An EWL seeker</title>
+  <inlinemediaobject>
+   <imageobject>
+    <imagedata fileref="img/seeker.png" format="png" />
+   </imageobject>
+   <textobject>
+    <phrase>Example of an EWL seeker</phrase>
+   </textobject>
+  </inlinemediaobject>
+ </figure>
+</para>
+<para>
+<example>
+<title>Creating an EWL seeker</title>
+<programlisting role="C">
+    Ewl_Widget *s = ewl_seeker_new(EWL_ORIENTATION_HORIZONTAL);
+    ewl_seeker_value_set(EWL_SEEKER(s), 5.0);
+    ewl_seeker_range_set(EWL_SEEKER(s), 10.0);
+    ewl_seeker_step_set(EWL_SEEKER(s), 1);
+    ewl_callback_append(s, EWL_CALLBACK_VALUE_CHANGED, seeker_cb, NULL);
+    ewl_widget_show(s);
+</programlisting>
+</example>
+</para>
+
+<para>
+<example>
+<title>Ewl_Seeker callback</title>
+<programlisting role="C">
+void seeker_cb(Ewl_Widget *w, void *event, void *data) {
+    double val = ewl_seeker_value_get(EWL_SEEKER(w));
+    printf("%f\n", val);
+}
+</programlisting>
+</example>
+</para>
+</sect2>
+
+<!-- ################################### -->
+<!-- EWL SPINNER -->
+<sect2 id="sec-EwlSpinner">
+<title>ewl_spinner</title>
+<para>
+ <figure>
+  <title>An EWL spinner</title>
+  <inlinemediaobject>
+   <imageobject>
+    <imagedata fileref="img/spinner.png" format="png" />
+   </imageobject>
+   <textobject>
+    <phrase>Example of an EWL spinner</phrase>
+   </textobject>
+  </inlinemediaobject>
+ </figure>
+</para>
+<para>
+</para>
+</sect2>
+

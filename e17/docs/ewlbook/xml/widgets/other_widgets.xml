@@ -1,0 +1,617 @@
+<!-- ################################### -->
+<!-- EWL COMBO -->
+<sect2 id="sec-EwlCombo">
+<title>ewl_combo</title>
+<para>
+ <figure>
+  <title>An Ewl Combo box</title>
+  <inlinemediaobject>
+   <imageobject>
+    <imagedata fileref="img/combo.png" format="png" />
+   </imageobject>
+   <textobject>
+    <phrase>Example of an EWL combo box</phrase>
+   </textobject>
+  </inlinemediaobject>
+ </figure>
+</para>
+
+<para>
+<example id="sec-EwlComboCode">
+ <title>Creating a combo box</title>
+ <programlisting role="C">
+    Ewl_Widget *combo = ewl_combo_new("combo box");
+    ewl_callback_append(combo, EWL_CALLBACK_VALUE_CHANGED, 
+                                combo_change_cb, NULL);
+    ewl_widget_show(combo);
+
+    Ewl_widget *item1 = ewl_menu_item_new(NULL, "foo");
+    ewl_container_child_append(EWL_CONTAINER(combo));
+    ewl_widget_show(item1);
+ </programlisting>
+</example>
+</para>
+
+<para>
+<example id="sec-EwlComboCodeCB">
+ <title>combo box value changed callback</title>
+ <programlisting role="C">
+void combo_change_cb(Ewl_Widget *w, void *event, void *data) {
+    char *text = (char *)event;
+    printf("Value changed to %s\n", text);
+}
+ </programlisting>
+</example>
+</para>
+</sect2>
+
+<!-- ################################### -->
+<!-- EWL DIALOG -->
+<sect2 id="sec-EwlDialog">
+<title>ewl_dialog</title>
+<para>
+The <literal>Ewl_Dialog</literal> widget provides a way to display a simple
+dialog box to the user which can then prompt for a response, give warnings
+or just display simple messages.
+</para>
+
+<para>
+ <figure>
+  <title>An Ewl Dialog</title>
+  <inlinemediaobject>
+   <imageobject>
+    <imagedata fileref="img/dialog_box.png" format="png" />
+   </imageobject>
+   <textobject>
+    <phrase>Example of an EWL dialog box</phrase>
+   </textobject>
+  </inlinemediaobject>
+ </figure>
+</para>
+<para>
+<example id="sec-EwlDialogCode">
+<title>EWL Dialog code</title>
+<programlisting role="C">
+    Ewl_Widget *dialog = NULL;
+    Ewl_Widget *o = NULL;
+
+    o = ewl_text_new("a dialog eh");
+    ewl_object_alignment_set(EWL_OBJECT(o),
+    EWL_FLAG_ALIGN_CENTER);
+    ewl_widget_show(o);
+
+    dialog = ewl_dialog_new(EWL_POSITION_BOTTOM);
+    ewl_dialog_has_separator_set(EWL_DIALOG(dialog), 0);
+    ewl_dialog_widget_add(EWL_DIALOG(dialog), o);
+    ewl_object_alignment_set(EWL_OBJECT(dialog), EWL_FLAG_ALIGN_CENTER);
+    ewl_widget_show(dialog);
+
+    o = ewl_dialog_set_button(EWL_STOCK_OK, EWL_RESPONSE_OK);
+    ewl_container_child_append(EWL_CONTAINER(dialog), o);
+    ewl_callback_append(o, EWL_CALLBACK_CLICKED, dialog_clicked_cb, dialog);
+    ewl_widget_show(o);
+
+    o = ewl_dialog_set_button(EWL_STOCK_CANCEL, EWL_RESPONSE_CANCEL);
+    ewl_container_child_append(EWL_CONTAINER(dialog), o);
+    ewl_callback_append(o, EWL_CALLBACK_CLICKED, dialog_clicked_cb, dialog);
+    ewl_widget_show(o);
+</programlisting>
+</example>
+This example will create an <literal>Ewl_Dialog</literal> with two buttons:
+an OK button and a Cancel button. The dialog itself is created with the
+call to <function>ewl_dialog_new()</function> passing the position of the
+buttons relative to the window itself. The possible values are:
+<itemizedlist mark="bullet" spacing="compact">
+ <listitem><para>EWL_POSITION_TOP</para></listitem>
+ <listitem><para>EWL_POSITION_BOTTOM</para></listitem>
+ <listitem><para>EWL_POSITION_LEFT</para></listitem>
+ <listitem><para>EWL_POSITION_RIGHT</para></listitem>
+</itemizedlist> 
+</para>
+
+<para>
+A <literal>Ewl_Dialog</literal> can optionally have a horizontal line drawn
+to seperate the two sections of the dialog. The line is controlled with the
+<function>ewl_dialog_has_separator_set()</function> where 0 means do not
+draw separator and 1 means to draw the separator. There is a corresponding
+<function>ewl_dialog_has_separator_get()</function> returning 1 if there is
+a separator and 0 otherwise.
+</para>
+
+<para>
+The content of the main display area of the box is controlled through the
+function <function>ewl_dialog_widget_add()</function>. In this instance we
+add a <literal>Ewl_Text</literal> object into the dialog.
+</para>
+
+<para>
+Once the dialog is initialized we need to create any desired buttons. The
+buttons are created by calling <function>ewl_dialog_button_set()</function>
+this will create a button. The parameters are the label of the button and
+the response code to return from the button. There are several pre-defined
+labels, including:
+<itemizedlist mark="bullet" spacing="compact">
+ <listitem><para>EWL_STOCK_OK</para></listitem>
+ <listitem><para>EWL_STOCK_APPLY</para></listitem>
+ <listitem><para>EWL_STOCK_CANCEL</para></listitem>
+ <listitem><para>EWL_STOCK_OPEN</para></listitem>
+ <listitem><para>EWL_STOCK_SAVE</para></listitem>
+ <listitem><para>EWL_STOCK_PAUSE</para></listitem>
+ <listitem><para>EWL_STOCK_PLAY</para></listitem>
+ <listitem><para>EWL_STOCK_STOP</para></listitem>
+</itemizedlist>
+The pre-defined response codes are:
+<itemizedlist mark="bullet" spacing="compact">
+ <listitem><para>EWL_RESPONSE_OPEN</para></listitem>
+ <listitem><para>EWL_RESPONSE_SAVE</para></listitem>
+ <listitem><para>EWL_RESPONSE_OK</para></listitem>
+ <listitem><para>EWL_RESPONSE_CANCEL</para></listitem>
+ <listitem><para>EWL_RESPONSE_APPLY</para></listitem>
+ <listitem><para>EWL_RESPONSE_PLAY</para></listitem>
+ <listitem><para>EWL_RESPONSE_PAUSE</para></listitem>
+ <listitem><para>EWL_RESPONSE_STOP</para></listitem>
+</itemizedlist>
+Once the buttons are created they need to be added to the dialog and have a
+callback append for there <literal>EWL_CALLBACK_CLICKED</literal> state.
+</para>
+
+<para>
+<example id="sec-EwlDialogCB">
+<title>EWL Dialog callback</title>
+<programlisting role="C">
+void dialog_clicked_cb(Ewl_Widget *w, void *event, void *data) {
+    int d = EWL_BUTTON_STOCK(w)->response_id;
+
+    if (d == EWL_RESPONSE_OK)
+        printf("OK\n");
+    else if (d == EWL_RESPONSE_CANCEL)
+        printf("CANCEL\n");
+
+    ewl_widget_destroy(EWL_WIDGET(data));
+}
+</programlisting>
+</example>
+The response code of the button that was clicked is available from the
+<literal>Ewl_Button_Stock</literal> widget itself through its response_id
+parameter. Using this value we can determine which of the buttons was
+clicked. We also passed the <literal>Ewl_Dialog</literal> itself through the
+data parameter so that we could destroy the dialog when we were finished.
+</para>
+</sect2>
+
+<!-- ################################### -->
+<!-- EWL FILEDIALOG -->
+<sect2 id="sec-EwlFileDialog">
+<title>ewl_filedialog</title>
+<para>
+It is often desired to allow the user to open and save files. This can
+be easily accomplished through the use of the <literal>Ewl_Filedialog</literal>.
+</para>
+<para>
+ <figure>
+  <title>An EWL file dialog</title>
+  <inlinemediaobject>
+   <imageobject>
+    <imagedata fileref="img/file_dialog.png" format="png" />
+   </imageobject>
+   <textobject>
+    <phrase>Example of an EWL file dialog</phrase>
+   </textobject>
+  </inlinemediaobject>
+ </figure>
+This file dialog has been embedded into its own window, but it could have been
+placed in another window in the same fashion.
+</para>
+
+<para>
+ <example>
+  <title>Creating an EWL filedialog</title>
+  <programlisting role="C">
+   Ewl_Widget *filedialog = ewl_filedialog_new(EWL_FILEDIALOG_TYPE_OPEN);
+   ewl_callback_append(filedialog, EWL_CALLBACK_VALUE_CHANGED, 
+                            open_file_cb, NULL);
+   ewl_widget_show(filedialog);
+  </programlisting>
+ </example>
+When the file dialog is created you specify a type either 
+<literal>EWL_FILDIALOG_TYPE_OPEN</literal> or <literal>EWL_FILEDIALOG_TYPE_SAVE</literal>
+depending on the type of file dialog desired. The callback 
+<literal>EWL_CALLBACK_VALUE_CHANGED</literal> will be executed when the user clicks
+the 'Open' button in the dialog.
+</para>
+
+<para>
+It is also possible to pack other widgets into the filedialog itself. This is done through
+the normal <function>ewl_container_child_append()</function>. So, if you 
+needed, for example, to add a 'Home' button, you could create the button and pack it 
+into the file dialog where it will appear down the left side.
+</para>
+
+<para>
+You can change the directory that is currently being viewed in the file dialog by
+executing <function>void ewl_filedialog_set_directory(Ewl_Filedialog *, char *path)</function>
+where <literal>path</literal> is the full path to the desired directory.
+</para>
+
+<para>
+ <example>
+  <title>Ewl_Filedialog open callback</title>
+  <programlisting role="C">
+void open_file_cb(Ewl_Widget *w, void *event, void *data) {
+    char *filename = (char *)event;
+    printf("selected file %s\n", filename);
+}
+  </programlisting>
+ </example>
+The file that has been selected is passed to the callback as the <literal>event</literal>
+parameter. If you wish to remove the filedialog you can do something similar to 
+<literal>ewl_widget_hide(fd_win)</literal> where <literal>fd_win</literal> is the window
+object holding the file dialog.
+</para>
+</sect2>
+
+<!-- ################################### -->
+<!-- EWL ENTRY -->
+<sect2 id="sec-EwlEntry">
+<title>ewl_entry</title>
+<para>
+The EWL entry box is available when you need to retrieve text input from the user.
+The box works on single lines, and the callback is triggered when the user presses
+the 'Enter' key.
+</para>
+
+<para>
+ <figure>
+  <title>An EWL entry box</title>
+  <inlinemediaobject>
+   <imageobject>
+    <imagedata fileref="img/entry.png" format="png" />
+   </imageobject>
+   <textobject>
+    <phrase>Example of an EWL entry box</phrase>
+   </textobject>
+  </inlinemediaobject>
+ </figure>
+</para>
+
+<para>
+ <example>
+  <title>Creating an EWL entry box</title>
+  <programlisting role="C">
+   Ewl_Widget *entry = ewl_entry_new();
+   ewl_object_size_request(EWL_OBJECT(entry), 100, 15);
+   ewl_object_padding_set(EWL_OBJECT(entry), 1, 1, 1, 1);
+   ewl_callback_append(entry, EWL_CALLBACK_VALUE_CHANGED, entry_cb, NULL);
+   ewl_widget_show(entry);
+  </programlisting>
+ </example> 
+The <literal>Ewl_Entry</literal> is a fairly simple object to work with, about the
+only required setup is to create the new object and attach a callback for
+<literal>EWL_CALLBACK_VALUE_CHANGED</literal> events. This example takes the 
+extra steps of setting the size with <function>ewl_object_size_request()</function>
+and adding a little bit of padding to the widget with 
+<function>ewl_object_padding_set()</function>.
+</para>
+
+<para>
+ <example>
+  <title>Ewl_Entry value changed callback</title>
+  <programlisting role="C">
+void entry_cb(Ewl_Widget *w, void *event, void *data) {
+    char *s = ewl_entry_text_get(EWL_ENTRY(w));
+    printf("%s\n", s);
+
+    ewl_entry_text_set(EWL_ENTRY(w), "New Text");
+}
+  </programlisting>
+ </example>
+This callback grabs the current value of the entry widget with the call to
+<function>ewl_entry_text_get()</function> and then resets the text to the 
+value of 'New Text' by calling <function>ewl_entry_text_set()</function>.
+</para>
+
+<para>
+The <literal>Ewl_Entry</literal> object allows you to set whether or not the
+text is editable with a call to 
+<function>void ewl_entry_editable_set(Ewl_Entry *, unsigned int edit)</function>
+where <literal>edit</literal> is 0 for uneditable and editable otherwise.
+</para>
+</sect2>
+
+<!-- ################################### -->
+<!-- EWL PASSWORD -->
+<sect2 id="sec-EwlPassword">
+<title>ewl_password</title>
+<para>
+The <literal>Ewl_Password</literal> widget provides similar functionality to
+the <literal>Ewl_Text</literal> widget, except that any text entered will
+not be displayed, instead a configurable obscuring character will be
+displayed.
+</para>
+
+<para>
+ <figure>
+  <title>An EWL password dialog</title>
+  <inlinemediaobject>
+   <imageobject>
+    <imagedata fileref="img/passwd.png" format="png" />
+   </imageobject>
+   <textobject>
+    <phrase>Example of an EWL password dialog</phrase>
+   </textobject>
+  </inlinemediaobject>
+ </figure>
+</para>
+
+<para>
+<example>
+<title>Creating an EWL password</title>
+<programlisting role="C">
+    Ewl_Widget *p = ewl_password_new("default");
+    ewl_password_obscure_set(EWL_PASSWORD(p), "-");
+    ewl_callback_append(p, EWL_CALLBACK_VALUE_CHANGED, passwd_cb, NULL);
+    ewl_widget_show(p);
+</programlisting>
+</example>
+The default obscuring character used is a '*' character. This can be easily
+changed by calling 
+<function>ewl_password_obscure_set(Ewl_Password *, char)</function>.
+There is also a corresponding 
+<function>char ewl_password_obscure_get(Ewl_Password *)</function> to
+retrieve the current obscuring character. As with the
+<literal>ewl_text</literal> widget there are two functions to get and set
+the text of the widget: 
+<function>ewl_password_text_set(Ewl_Password *, char *)</function> and
+<function>char *ewl_password_text_get(Ewl_Password *)</function>.
+</para>
+
+<para>
+When the user presses the enter key in the password box a
+<literal>EWL_CALLBACK_VALUE_CHANGED</literal> will be triggered.
+<example>
+<title>Ewl_Password value changed callback</title>
+<programlisting role="C">
+void passwd_cb(Ewl_Widget *, void *event, void *data) {
+    char *text = ewl_password_text_get(EWL_PASSWORD(w));
+    printf("text: %s\n", text);
+}
+</programlisting>
+</example>
+</para>
+</sect2>
+
+<!-- ################################### -->
+<!-- EWL IMAGE -->
+<sect2 id="sec-EwlImage">
+<title>ewl_image</title>
+<para>
+<example>
+<title>Ewl_Image</title>
+<programlisting>
+    Ewl_Widget *i = ewl_image_new("/usr/foo/img.png", NULL);
+    ewl_widget_show(i);
+</programlisting>
+</example>
+The <function>ewl_image_new()</function> function takes two parameters, the
+path to the image to be loaded and a key for the image data. The key is used
+primarily to load edje groups or keyed data as the image.
+</para>
+</sect2>
+
+<!-- ################################### -->
+<!-- EWL TEXT -->
+<sect2 id="sec-EwlText">
+<title>ewl_text</title>
+<para>
+The <literal>Ewl_Text</literal> widget provides for a multi-line text layout
+widget. It can be utillized whenever the display of text is required in an
+application. It works well with the <literal>Ewl_Scrollpane</literal> to
+provide a scrollable text area.
+</para>
+<para>
+<example id="sec-EwlTextCode">
+<title>Ewl_Text code</title>
+<programlisting role="C">
+    Ewl_Widget *text = ewl_text_new("text");
+    ewl_widget_show(text);
+</programlisting>
+</example>
+Creating the basic <literal>Ewl_Text</literal> object is pretty simple, the
+object will be setup to diplay the parameter to
+<function>ewl_text_new()</function>.
+</para>
+
+<para>
+Once the text object is created you can change the text, retrieve the
+current text contents or get the text length with:
+<itemizedlist mark="bullet" spacing="compact">
+ <listitem><para><function>ewl_text_text_set(Ewl_Text *, char *)</function></para></listitem>
+ <listitem><para><function>ewl_text_text_prepend(Ewl_Text *, char *)</function></para></listitem>
+ <listitem><para><function>ewl_text_text_append(Ewl_Text *, char *)</function></para></listitem>
+ <listitem><para><function>ewl_text_text_insert(Ewl_Text *, char *, int index)</function></para></listitem>
+ <listitem><para><function>char *ewl_text_text_get(Ewl_Text *)</function></para></listitem>
+ <listitem><para><function>int ewl_text_length_get(Ewl_Text *)</function></para></listitem>
+</itemizedlist>
+</para>
+
+<para>
+The <literal>Ewl_Text</literal> widget allows you to preform styling changes
+to the text in the widget. Different portions of the text can be different
+colours, fonts or styles. The styling that is applied to a widget is based
+on what is setup when the text is added to the widget. So, if you want your
+text to be red, you need to set the colour of the
+<literal>Ewl_Text</literal> object <emphasis>before</emphasis> adding the
+text.
+</para>
+
+<para>
+The colour of the text can be manipulated with the
+<function>ewl_text_color_set(Ewl_Text *, int r, int g, int b, int a)</function>
+call while the current colour information can be retrieved with the
+<function>ewl_text_color_get(Ewl_Text *, int *r, int *g, int *b, int *a)</function>.
+</para>
+
+<para>
+The font settings of the text can be manipulated with the
+<function>ewl_text_font_set(Ewl_Text *, char *font, int size)</function>
+call. With the calls to get the current font name as size defined as:
+<function>char *ewl_text_font_get(Ewl_Text *)</function> and
+<function>int ewl_text_font_size_get(Ewl_Text *)</function>.
+</para>
+
+<para>
+To retrieve or set the alignment of the text widget there are the two
+functions: <function>ewl_text_align_set(Ewl_Text *, unsigned int align)</function>
+and <function>unsigned int ewl_text_align_get(Ewl_Text *)</function>. Where
+the align parameter is one of the EWL alignment flags:
+<itemizedlist mark="bullet" spacing="compact">
+ <listitem><para>EWL_FLAG_ALIGN_CENTER</para></listitem>
+ <listitem><para>EWL_FLAG_ALIGN_LEFT</para></listitem>
+ <listitem><para>EWL_FLAG_ALIGN_RIGHT</para></listitem>
+ <listitem><para>EWL_FLAG_ALIGN_TOP</para></listitem>
+ <listitem><para>EWL_FLAG_ALIGN_BOTTOM</para></listitem>
+</itemizedlist>
+</para>
+
+<para>
+It is also possible to set the style of the text. This can include things
+such as bolding the text or setting soft shadows. The styles that are
+available are shipped through the Etox library and currently include:
+<itemizedlist mark="bullet" spacing="compact">
+ <listitem><para>bold</para></listitem>
+ <listitem><para>outline</para></listitem>
+ <listitem><para>plain</para></listitem>
+ <listitem><para>raised</para></listitem>
+ <listitem><para>shadow</para></listitem>
+ <listitem><para>soft_shadow</para></listitem>
+</itemizedlist>
+</para>
+</sect2>
+
+<!-- ################################### -->
+<!-- EWL TOOLTIP -->
+<sect2 id="sec-EwlTooltip">
+<title>ewl_tooltip</title>
+<para>
+ <figure>
+  <title>An EWL tooltip</title>
+  <inlinemediaobject>
+   <imageobject>
+    <imagedata fileref="img/tooltip.png" format="png" />
+   </imageobject>
+   <textobject>
+    <phrase>Example of an EWL tooltip</phrase>
+   </textobject>
+  </inlinemediaobject>
+ </figure>
+</para>
+<para>
+</para>
+</sect2>
+
+<!-- ################################### -->
+<!-- EWL MEDIA -->
+<sect2 id="sec-EwlMedia">
+<title>ewl_media</title>
+<para>
+The <literal>Ewl_Media</literal> widget allows for the embedding of video
+objects into your application. This is done by wrapping around the Emotion
+library.
+</para>
+
+<para>
+ <figure>
+  <title>An EWL media object</title>
+  <inlinemediaobject>
+   <imageobject>
+    <imagedata fileref="img/ewl_media.png" format="png" />
+   </imageobject>
+   <textobject>
+    <phrase>Example of an EWL Media object</phrase>
+   </textobject>
+  </inlinemediaobject>
+ </figure>
+</para>
+
+<para>
+<example id="sec-EwlMediaCode">
+<title>Ewl_Media code</title>
+<programlisting role="C">
+    Ewl_Media *m = ewl_media_new(file);
+    ewl_callback_append(m, EWL_CALLBACK_REALIZE, video_realize_cb, NULL);
+    ewl_callback_append(m, EWL_CALLBACK_VALUE_CHANGED, video_change_cb, NULL);
+    ewl_widget_show(m);
+</programlisting>
+</example>
+Creating the basic video object is no harder then creating the object and
+showing it (assuming you've appended it to whatever container it is being
+placed into). We hook the two callbacks
+<literal>EWL_CALLBACK_REALIZE</literal> and
+<literal>EWL_CALLBACK_VALUE_CHANGED</literal>. We hook in the realize
+callback so we can determine the length of the video to be displayed if
+desired. This is only available after the video has been realized, and will
+return 0 until it has been realized. The value change callback will be
+called whenever emotion advances the video. This can be used to setup a
+timer, or a seek bar and have it auto advance for the video.
+</para>
+
+<para>
+<example>
+ <title>Ewl_Media callbacks</title>
+ <programlisting role="C">
+void video_realize_cb(Ewl_Widget *w, void *event, void *data) {
+    double len = ewl_media_length_get(EWL_MEDIA(video));
+}   
+
+void video_change_cb(Ewl_Widget *w, void *event, void *data) {
+    char buf[512];
+    int h, m;
+    double s;
+                
+    ewl_media_position_time_get(EWL_MEDIA(video), &amp;h, &amp;m, &amp;s);
+    snprintf(buf, sizeof(buf), "%02i:%02i:%02.0f", h, m, s);
+}
+ </programlisting>
+</example>
+</para>
+
+<para>
+The video that is being displayed can be changed by calling
+<function>ewl_media_media_set(Ewl_Media *, char *)</function> or if you just
+wish to know what is currently playing you can call
+<function>char *ewl_media_media_get(Ewl_Media *)</function>. The length of
+the current video can be retrieved by calling <function>int
+ewl_media_length_get(Ewl_Media *)</function>. The length can also be
+retrieved as a time value by calling
+<function>ewl_media_length_time_get(Ewl_Media *, int h, int m, double s)</function>.
+</para>
+
+<para>
+You can start the video playing by passing 1 to
+<function>ewl_media_play_set(Ewl_Media *, int)</function> or stop the video
+by passing 0 to the same function.
+</para>
+
+<para>
+To determine if the video codec allows for seeking in the video you can call
+<function>int ewl_media_seekable_get(Ewl_Media *)</function> which will
+return 1 if the video is seekable, 0 otherwise.
+<function>double ewl_media_position_get(Ewl_Media *)</function> is used to determine
+the current position in the video, while
+<function>ewl_media_position_set(Ewl_Media *, double position)</function>
+can be used to set the position in the video. This value can also be
+retrieved as a hours, minutes and seconds by calling
+<function>ewl_media_position_time_get(Ewl_Media *, int h, int m, double s)</function>.
+</para>
+
+<para>
+If you wish to change the audio settings of the video there are several
+functions available. These including the ability to get/set the current mute
+settings: <function>int ewl_media_audio_mute_get(Ewl_Media *)</function> and
+<function>ewl_media_audio_mute_set(Ewl_Media *, int)</function>. You can
+also get/set the volume of the video through the calls:
+<function>int ewl_media_audio_volume_get(Ewl_Media *)</function> and
+<function>ewl_media_audio_volume_set(Ewl_Media *, int)</function>.
+</para>
+</sect2>
+

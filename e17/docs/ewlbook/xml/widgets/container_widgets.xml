@@ -1,0 +1,194 @@
+<!-- ################################### -->
+<!-- EWL BOX -->
+<sect2 id="sec-EwlBox">
+<title>ewl_hbox and ewl_vbox</title>
+
+<para>
+The box widgets allow you to specify different ways in which the 
+application will be laid out. You can create either a horizontal (hbox)
+or vertical (vbox) box. A vertical box will have its children packed
+from top to bottom while a horizontal box will have its widgets
+packed from left to right.
+</para>
+
+<para>
+A box widget will not show up in the application itself, it is just
+used as a container for other widgets.
+</para>
+
+<para>
+ <example>
+  <title>Creating EWL boxes</title>
+  <programlisting role="C">
+   Ewl_Widget *hbox = ewl_hbox_new();
+   ewl_widget_show(hbox);
+
+   Ewl_Widget *vbox = ewl_vbox_new();
+   ewl_widget_show(vbox);
+  </programlisting>
+ </example>
+The box widgets are relativly simple to create and use, only requiring a call to the
+new function.
+</para>
+
+<para>
+The functions to manipulate the boxes include:
+<itemizedlist mark="bullet" spacing="compact">
+ <listitem><para><function>void ewl_box_orientation_set(Ewl_Box *, Ewl_Orientation)</function></para></listitem>
+ <listitem><para><function>Ewl_Orientation ewl_box_orientation_get(Ewl_Box *)</function></para></listitem>
+ <listitem><para><function>void ewl_box_spacing_set(Ewl_Box *, int)</function></para></listitem>
+ <listitem><para><function>void ewl_box_homogeneous_set(Ewl_Box *, int)</function></para></listitem>
+</itemizedlist>
+
+The <literal>Ewl_Orientation</literal> flag can be one of:
+<itemizedlist mark="bullet" spacing="compact">
+ <listitem><para>EWL_ORIENTATION_HORIZONTAL</para></listitem>
+ <listitem><para>EWL_ORIENTATION_VERTICAL</para></listitem>
+</itemizedlist>
+</para>
+
+<para>
+The <function>ewl_box_spacing_set()</function> will set the amount of spacing between the
+items in the box to the given value. While the <function>ewl_box_homogeneous_set()</function>
+will set the box to give all items in it the same size if this is set to true, otherwise
+they will have their required size.
+</para>
+
+</sect2>
+
+<!-- ################################### -->
+<!-- EWL NOTEBOOK -->
+<sect2 id="sec-EwlNotebook">
+<title>ewl_notebook</title>
+<para>
+ <figure>
+  <title>An EWL Notebook</title>
+  <inlinemediaobject>
+   <imageobject>
+    <imagedata fileref="img/notebook.png" format="png" />
+   </imageobject>
+   <textobject>
+    <phrase>Example of an EWL Notebook</phrase>
+   </textobject>
+  </inlinemediaobject>
+ </figure>
+</para>
+<para>
+</para>
+</sect2>
+
+<!-- ################################### -->
+<!-- EWL SCROLLPANE -->
+<sect2 id="sec-EwlScrollpane">
+<title>ewl_scrollpane</title>
+<para>
+</para>
+</sect2>
+
+<!-- ################################### -->
+<!-- EWL TABLE -->
+<sect2 id="sec-EwlTable">
+<title>ewl_table</title>
+<para>
+</para>
+</sect2>
+
+<!-- ################################### -->
+<!-- EWL TREE -->
+<sect2 id="sec-EwlTree">
+<title>ewl_tree</title>
+<para>
+</para>
+</sect2>
+
+<!-- ################################### -->
+<!-- EWL WINDOW -->
+<sect2 id="sec-EwlWindow">
+<title>ewl_window</title>
+<para>
+An ewl_window will be used by every EWL application. This is the window that
+will display all of the other desired EWL widgets.
+</para>
+
+<para>
+ <figure>
+  <title>An EWL Window</title>
+  <inlinemediaobject>
+   <imageobject>
+    <imagedata fileref="img/create_window.png" format="png" />
+   </imageobject>
+   <textobject>
+    <phrase>Example of an EWL window</phrase>
+   </textobject>
+  </inlinemediaobject>
+ </figure>
+</para>
+
+<para>
+ <example id="sec-EwlWindowCode">
+  <title>Creating a Window</title>
+  <programlisting role="C">
+    Ewl_Widget *window = ewl_window_new();
+    ewl_window_title_set(EWL_WINDOW(window), "foo window");
+    ewl_window_class_set(EWL_WINDOW(window), "foo_class");
+    ewl_window_name_set(EWL_WINDOW(window), "foo_name");
+    ewl_object_size_request(EWL_OBJECT(window), 300, 400);
+    ewl_callback_append(window, EWL_CALLBACK_DELETE_WINDOW, win_del_cb, NULL);
+    ewl_widget_show(window);
+  </programlisting>
+ </example>
+Setting up the basic window is pretty simple. We take the extra steps of
+calling: <function>ewl_window_title_set()</function>, 
+<function>ewl_window_name_set()</function> and <function>ewl_window_class_set()</function>
+to fill in the information the window manager uses.
+</para>
+
+<para>
+Since the window is a <literal>Ewl_Object</literal> like any other, we use the
+<function>ewl_object_size_request()</function> to request the starting size of
+our window. We could have also called <function>ewl_object_minimum_size_set()</function>
+and <function>ewl_object_maximum_size_set()</function> to constrain the 
+minimum/maximum sizes of our window.
+</para>
+
+<para>
+The main callback used by a Ewl_Window is the <literal>EWL_CALLBACK_DELETE_WINDOW</literal>.
+This will be called when the window is being destroyed by the 
+window manager. It should be used to cleanup any resources that the application has
+used before exiting the application.
+</para>
+
+<para>
+ <example id="sec-EwlWindowDestroyCb">
+ <title>Ewl Window destroy callback</title>
+ <programlisting role="C">
+void win_del_cb(Ewl_Widget *w, void *event, void *data) {
+    ewl_widget_destroy(w);
+    ewl_main_quit();
+}
+ </programlisting>
+ </example>
+</para>
+
+<para>
+Some of the other operations involving the Ewl_Window object are:
+<itemizedlist mark="bullet" spacing="compact">
+ <listitem><para><function>char *ewl_window_title_get(Ewl_Window *)</function></para></listitem>
+ <listitem><para><function>char *ewl_window_name_get(Ewl_Window *)</function></para></listitem>
+ <listitem><para><function>char *ewl_window_class_get(Ewl_Window *)</function></para></listitem>
+ <listitem><para><function>void ewl_window_borderless_set(Ewl_Window *)</function></para></listitem>
+ <listitem><para><function>void ewl_window_move(Ewl_Window *, int x, int y)</function></para></listitem>
+ <listitem><para>
+  <function>void ewl_window_position_get(Ewl_Window *, int *x, int *y)</function>
+ </para></listitem>
+</itemizedlist>
+The first three calls are pretty self explanatory. The <function>ewl_window_borderless_set()</function>
+can be used to tell the window manager not to display any decoration around the window, this includes
+the border and the title bar. The function <function>ewl_window_move()</function> is used to
+position the window to a specific place on the desktop, indexed from the top
+left corner. There is also a <function>ewl_window_position_get()</function> which will return the position 
+of the window on the desktop.
+</para>
+</sect2>
+
+
