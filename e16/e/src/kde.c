@@ -139,6 +139,31 @@ KDE_SendMessagesToModules(Atom atom, long data)
 }
 
 void
+KDE_UpdateFocusedWindow(void)
+{
+
+   EWin               *ewin;
+
+   EDBUG(6, "KDE_UpdateWindows");
+
+   ewin = GetFocusEwin();
+   if (ewin)
+     {
+	XChangeProperty(disp, root.win, KDE_ACTIVE_WINDOW, KDE_ACTIVE_WINDOW, 32,
+			PropModeReplace, (unsigned char *)&(ewin->win), 1);
+     }
+   else
+     {
+	XChangeProperty(disp, root.win, KDE_ACTIVE_WINDOW, KDE_ACTIVE_WINDOW, 32,
+			PropModeReplace, (unsigned char *)NULL, 1);
+
+     }
+
+   EDBUG_RETURN_;
+
+}
+
+void
 KDE_AddModule(Window win)
 {
 
@@ -382,6 +407,8 @@ KDE_Init(void)
    SETSTR(KWM_STRING_ONTOCURRENTDESKTOP, "Bring Here");
 
    /* and we tell the root window to announce we're KDE compliant */
+   setSimpleHint(root.win, KDE_NUMBER_OF_DESKTOPS, mode.numdesktops);
+
    setSimpleHint(root.win, KDE_RUNNING, 1);
 
    mode.kde_support = 1;
@@ -399,6 +426,8 @@ KDE_Shutdown(void)
 
    /* tell the root window we're not doing KDE compliance anymore */
    deleteHint(root.win, KDE_RUNNING);
+   deleteHint(root.win, KDE_ACTIVE_WINDOW);
+   deleteHint(root.win, KDE_NUMBER_OF_DESKTOPS);
 
    /* kill off the modules */
    ptr = KModules;
@@ -872,6 +901,8 @@ KDE_SetRootArea(void)
 
    setSimpleHint(root.win, KDE_CURRENT_DESKTOP, desks.current + 1);
    setSimpleHint(root.win, KDE_NUMBER_OF_DESKTOPS, mode.numdesktops);
+
+   KDE_SendMessagesToModules(KDE_MODULE_DESKTOP_CHANGE, desks.current + 1);
 
    EDBUG_RETURN_;
 

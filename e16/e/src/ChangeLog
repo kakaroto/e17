@@ -1839,3 +1839,12 @@ Thu Sep 16 13:59:43 PDT 1999
 (Raster)
 
 fix speed fo menu sliding/scrolling and cleanup sliding/scrolling.
+
+-------------------------------------------------------------------------------
+
+Thu Sep 16 14:16:43 PDT 1999
+(Mandrake)
+
+a few kde fixes - now some of the taskbar stuff should work a little better.
+still no names of windows / desktops / etc in there, but that'll all get
+updated soon enough.
