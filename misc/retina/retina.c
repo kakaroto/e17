@@ -29,7 +29,6 @@ main(int argc, char **argv)
 			img_count++;
 		}
 		cur_sel = 0;
-		printf("retina sees %d images, cur image: %d\n", img_count, cur_sel);
 		retina_img_load(retina_image_list[0]);
 	} else {
 		retina_img_load(PREFIX"images/retina.png");
