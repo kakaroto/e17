@@ -7,7 +7,7 @@ group {
         item, "inset/bottom" "3";
     }
     parts {
-        BUTTON();
+        BUTTON()
     }
 }
 

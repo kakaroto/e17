@@ -5,8 +5,8 @@ group {
 
 group {
     name, "vline";
-    min, 6, 6;
-    max, 6, 10000;
+    min, 6 6;
+    max, 6 10000;
     data {
         item, "pad/left" "2";
         item, "pad/right" "2";
@@ -20,8 +20,8 @@ group {
 
 group {
     name, "hline";
-    min, 6, 6;
-    max, 10000, 6;
+    min, 6 6;
+    max, 10000 6;
     data {
         item, "pad/left" "2";
         item, "pad/right" "2";

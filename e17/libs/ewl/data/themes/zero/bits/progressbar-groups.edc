@@ -7,7 +7,7 @@ group {
         item, "pad/bottom" "4";
     }
     parts {
-        BUTTON();
+        BUTTON()
     }
 }
 
@@ -15,7 +15,7 @@ group {
     name, "bar";
     min, 1 10;
     parts {
-        BUTTON_C(180, 180, 180, 255);
+        BUTTON_C(180, 180, 180, 255)
     }
 }
 

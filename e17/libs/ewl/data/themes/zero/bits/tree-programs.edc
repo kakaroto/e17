@@ -4,7 +4,7 @@ programs {
         signal, "expanded";
         source, "*";
         action, STATE_SET "open" 0.0;
-        transition, LINEAR, 0.0;
+        transition, LINEAR 0.0;
         target, "base";
     }
     program {
@@ -12,7 +12,7 @@ programs {
         signal, "checked";
         source, "*";
         action, STATE_SET "expandable" 0.0;
-        transition, LINEAR, 0.0;
+        transition, LINEAR 0.0;
         target, "visible";
     }
     program {
@@ -20,7 +20,7 @@ programs {
         signal, "unchecked";
         source, "*";
         action, STATE_SET "default" 0.0;
-        transition, LINEAR, 0.0;
+        transition, LINEAR 0.0;
         target, "visible";
     }
 }

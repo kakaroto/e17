@@ -1,5 +1,5 @@
 programs {
-    BUTTON_PROG();
+    BUTTON_PROG()
 
     program {
         name, "normal";

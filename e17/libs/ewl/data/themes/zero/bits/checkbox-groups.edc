@@ -1,6 +1,6 @@
 group {
     name, "checkbox";
-    max, 10, 10;
+    max, 10 10;
     data {
         item, "inset/left" "2";
         item, "inset/right" "2";
@@ -8,7 +8,7 @@ group {
         item, "inset/bottom" "1";
     }
     parts {
-        BUTTON();
+        BUTTON()
 
         part {
             name, "check";
