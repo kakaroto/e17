@@ -4,132 +4,37 @@
 
 #include <gtk/gtk.h>
 
+#include <stdio.h>
 #include "callbacks.h"
 #include "interface.h"
 #include "support.h"
 
 
-void on_file1_activate(GtkMenuItem * menuitem,
-					   gpointer user_data)
-{
-
-}
-
-
-void on_edit1_activate(GtkMenuItem * menuitem,
-					   gpointer user_data)
-{
-
-}
-
-
-void on_view1_activate(GtkMenuItem * menuitem,
-					   gpointer user_data)
-{
-
-}
-
-
-void on_help1_activate(GtkMenuItem * menuitem,
-					   gpointer user_data)
-{
-
-}
-
-
-void on_open_movie1_activate(GtkMenuItem * menuitem,
-							 gpointer user_data)
-{
-
-}
-
-
-void on_open_using_template1_activate(GtkMenuItem * menuitem,
-									  gpointer user_data)
-{
-
-}
-
-
-void on_open_using_list_in_file1_activate(GtkMenuItem * menuitem,
-										  gpointer user_data)
-{
-
-}
-
-
-void on_close1_activate(GtkMenuItem * menuitem,
-						gpointer user_data)
-{
-
-}
-
-
-void on_exit1_activate(GtkMenuItem * menuitem,
-					   gpointer user_data)
-{
-
-}
-
-
-void on_undo1_activate(GtkMenuItem * menuitem,
-					   gpointer user_data)
-{
-
-}
-
-
-void on_redo1_activate(GtkMenuItem * menuitem,
-					   gpointer user_data)
-{
-
-}
-
-
-void on_cut1_activate(GtkMenuItem * menuitem,
-					  gpointer user_data)
-{
-
-}
-
-
-void on_copy1_activate(GtkMenuItem * menuitem,
-					   gpointer user_data)
-{
-
-}
-
-
-void on_paste1_activate(GtkMenuItem * menuitem,
-						gpointer user_data)
-{
-
-}
-
-
 void on_preferences1_activate(GtkMenuItem * menuitem,
 							  gpointer user_data)
 {
+	GtkWidget *Preferences_Window;
+
+	if(user_data) {
+		menuitem = NULL;
+	}
+
+	Preferences_Window = create_Preferences_Window();
+	gtk_widget_show(Preferences_Window);
 
 }
-
-
-void on_item2_activate(GtkMenuItem * menuitem,
-					   gpointer user_data)
-{
-
-}
-
 
 void on_choose_movie_segment1_activate(GtkMenuItem * menuitem,
 									   gpointer user_data)
 {
 
-}
+	GtkWidget *choose_segment;
 
-
-void on_movie_info1_activate(GtkMenuItem * menuitem,
-							 gpointer user_data)
-{
+	if(user_data) {
+		menuitem = NULL;
+	}
+	
+	choose_segment = create_choose_segment();
+	gtk_widget_show(choose_segment);
 
 }

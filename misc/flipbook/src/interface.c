@@ -104,6 +104,8 @@ GtkWidget *
 		menuitem = CreateMenuItem(edit1,NULL,NULL,NULL,NULL,NULL);
 		menuitem = CreateMenuItem(edit1,"Preferences","",
 				"Edit your Preferences", NULL,"preferences");
+		gtk_signal_connect (GTK_OBJECT (menuitem), "activate",
+			   	GTK_SIGNAL_FUNC (on_preferences1_activate), NULL);
 	}
 
 	view1 = CreateBarSubMenu(menubar1,"View");
@@ -111,6 +113,8 @@ GtkWidget *
 		GtkWidget *menuitem;
 		menuitem = CreateMenuItem(view1,"Choose Movie Segment","",
 				"Choose a Movie Segment", NULL,"choose movie segment");
+		gtk_signal_connect (GTK_OBJECT (menuitem), "activate",
+			   	GTK_SIGNAL_FUNC (on_choose_movie_segment1_activate), NULL);
 		menuitem = CreateMenuItem(view1,"Movie Info","",
 				"Information about the current Movie", NULL, "movie info");
 	}

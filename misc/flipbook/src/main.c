@@ -18,8 +18,6 @@ extern GtkAccelGroup *accel_group;
 int main(int argc, char *argv[])
 {
 	GtkWidget *VA_Flipbook;
-	GtkWidget *choose_segment;
-	GtkWidget *Preferences_Window;
 
 	gtk_set_locale();
 	gtk_init(&argc, &argv);
@@ -37,10 +35,6 @@ int main(int argc, char *argv[])
 	 */
 	VA_Flipbook = create_VA_Flipbook();
 	gtk_widget_show(VA_Flipbook);
-	choose_segment = create_choose_segment();
-	gtk_widget_show(choose_segment);
-	Preferences_Window = create_Preferences_Window();
-	gtk_widget_show(Preferences_Window);
 
 	gtk_main();
 	return 0;
