@@ -37,7 +37,7 @@ E_SD_epplet_LDFLAGS = -rpath $(libdir):$(pkglibdir) -lesd
 
 E_Load_epplet_SOURCES = E-Load.c
 E_Load_epplet_DEPENDENCIES = $(top_srcdir)/api/libepplet.la
-E_Load_epplet_LDFLAGS = -rpath $(libdir):$(pkglibdir)
+E_Load_epplet_LDFLAGS = $(GTLIBS) -rpath $(libdir):$(pkglibdir)
 
 E_Clock_epplet_SOURCES = E-Clock.c
 E_Clock_epplet_DEPENDENCIES = $(top_srcdir)/api/libepplet.la
@@ -61,7 +61,7 @@ E_NetFlame_epplet_LDFLAGS = -rpath $(libdir):$(pkglibdir)
 
 E_Cpu_epplet_SOURCES = E-Cpu.c
 E_Cpu_epplet_DEPENDENCIES = $(top_srcdir)/api/libepplet.la
-E_Cpu_epplet_LDFLAGS = -rpath $(libdir):$(pkglibdir)
+E_Cpu_epplet_LDFLAGS = $(GTLIBS) -rpath $(libdir):$(pkglibdir)
 
 E_Power_epplet_SOURCES = E-Power.c
 E_Power_epplet_DEPENDENCIES = $(top_srcdir)/api/libepplet.la
@@ -81,7 +81,7 @@ E_Biff_epplet_LDFLAGS = -rpath $(libdir):$(pkglibdir)
 
 E_MemWatch_epplet_SOURCES = E-MemWatch.c
 E_MemWatch_epplet_DEPENDENCIES = $(top_srcdir)/api/libepplet.la
-E_MemWatch_epplet_LDFLAGS = -rpath $(libdir):$(pkglibdir)
+E_MemWatch_epplet_LDFLAGS = $(GTLIBS) -rpath $(libdir):$(pkglibdir)
 
 E_Disk_epplet_SOURCES = E-Disk.c
 E_Disk_epplet_DEPENDENCIES = $(top_srcdir)/api/libepplet.la
@@ -89,7 +89,7 @@ E_Disk_epplet_LDFLAGS = -rpath $(libdir):$(pkglibdir)
 
 E_Sys_epplet_SOURCES = E-Sys.c
 E_Sys_epplet_DEPENDENCIES = $(top_srcdir)/api/libepplet.la
-E_Sys_epplet_LDFLAGS = -rpath $(libdir):$(pkglibdir)
+E_Sys_epplet_LDFLAGS = $(GTLIBS) -rpath $(libdir):$(pkglibdir)
 
 E_Slides_epplet_SOURCES = E-Slides.c
 E_Slides_epplet_DEPENDENCIES = $(top_srcdir)/api/libepplet.la

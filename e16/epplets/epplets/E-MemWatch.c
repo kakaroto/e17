@@ -6,7 +6,7 @@
 #include <errno.h>
 #include "epplet.h"
 
-#ifdef HAVE_GLIBTOP
+#ifdef HAVE_LIBGTOP
 #include <glibtop.h>
 #include <glibtop/mem.h>
 #include <glibtop/swap.h>
@@ -35,7 +35,7 @@ timer_cb(void *data) {
   char buff[1024];
   unsigned long total, used, buffers, cached;
 
-#ifdef HAVE_GLIBTOP
+#ifdef HAVE_LIBGTOP
   int check=0;
   glibtop_mem mem;
   glibtop_swap swap;
@@ -73,7 +73,7 @@ timer_cb(void *data) {
   }
   Epplet_change_label(mem_label, buff);
 
-#ifdef HAVE_GLIBTOP
+#ifdef HAVE_LIBGTOP
   glibtop_get_swap (&swap);
   check=0;
 

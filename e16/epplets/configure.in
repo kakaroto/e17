@@ -162,7 +162,14 @@ if test "$IMLIB_CONFIG" = "no"; then
 
 fi
 
-AC_CHECK_PROG(LIBGTOP_CONFIG, libgtop-config, libgtop-config, no)
+AC_MSG_CHECKING(for Linux)
+if test "`uname -s`" != "Linux"; then
+  AC_MSG_RESULT(no)
+  AC_CHECK_PROG(LIBGTOP_CONFIG, libgtop-config, libgtop-config, no)
+else
+  AC_MSG_RESULT(yes)
+  LIBGTOP_CONFIG=no
+fi
 
 if test "$LIBGTOP_CONFIG" != "no"; then
   
@@ -171,7 +178,8 @@ if test "$LIBGTOP_CONFIG" != "no"; then
     . $LIBGTOP_CONF_SH
 
     AC_MSG_CHECKING(libgtop-config for the value of CFLAGS)
-    CFLAGS="$CFLAGS $LIBGTOP_INCS -DHAVE_LIBGTOP"
+    CFLAGS="$CFLAGS $LIBGTOP_INCS"
+    AC_DEFINE(HAVE_LIBGTOP)
     AC_MSG_RESULT($CFLAGS)
 
     AC_MSG_CHECKING(libgtop-config for the value of LIBS)
@@ -183,11 +191,13 @@ if test "$LIBGTOP_CONFIG" != "no"; then
 
     AC_MSG_CHECKING(the sanity of new compile/link flags)
     AC_TRY_LINK(, , echo "yes", echo "no" ; LIBGTOP_CONFIG="no" ; 
-                AC_WARN(Compile/link failed.  Reverting to manual method.)
+                AC_WARN(Compile/link failed.)
     )
 
     LIBS="$SAVE_LIBS"
   fi
+else
+  GTLIBS=""
 fi
 
 # Build test programs?
@@ -257,6 +267,7 @@ AC_SUBST(CFLAGS)
 AC_SUBST(CPPFLAGS)
 AC_SUBST(LDFLAGS)
 AC_SUBST(LIBS)
+AC_SUBST(GTLIBS)
 AC_SUBST(THREADLIBS)
 AC_SUBST(TEST_PROGS)
 

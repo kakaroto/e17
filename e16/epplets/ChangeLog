@@ -593,3 +593,10 @@ Tue Nov 16 17:10:44 EST 1999
 
 Added a textbox cursor.
 
+-------------------------------------------------------------------------------
+
+Wed Nov 17 14:18:42 PST 1999
+(KainX)
+
+Cleanups to the libgtop stuff.  Someone (Mark) please tell me if this doesn't
+work on Solaris....

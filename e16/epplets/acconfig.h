@@ -277,6 +277,9 @@
 #undef EROOT
 #undef EBIN
 
+/* Do we need libgtop? */
+#undef HAVE_LIBGTOP
+
 
 /* Leave that blank line there!!  Autoheader needs it.
    If you're adding to this file, keep in mind:

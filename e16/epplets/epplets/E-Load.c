@@ -1,6 +1,6 @@
 #include "epplet.h"
 
-#ifdef HAVE_GLIBTOP
+#ifdef HAVE_LIBGTOP
 #include <glibtop.h>
 #include <glibtop/loadavg.h>
 #include <glibtop/cpu.h>
@@ -19,7 +19,7 @@ int count_cpus(void);
 static void
 cb_timer(void *data)
 {
-#ifdef HAVE_GLIBTOP
+#ifdef HAVE_LIBGTOP
 
 /* libgtop only handles total load, not per-CPU load */
 
@@ -88,7 +88,7 @@ cb_close(void *data)
 int
 count_cpus(void)
 {
-#ifdef HAVE_GLIBTOP
+#ifdef HAVE_LIBGTOP
   int i,c = 0;
   int bits;
   glibtop_cpu cpu;

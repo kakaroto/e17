@@ -6,7 +6,7 @@
 #include <errno.h>
 #include <epplet.h>
 
-#ifdef HAVE_GLIBTOP
+#ifdef HAVE_LIBGTOP
 #include <glibtop.h>
 #include <glibtop/cpu.h>
 #include "proc.h"
@@ -200,7 +200,7 @@ draw_flame(void)
 static void
 cb_timer(void *data)
 {
-#ifdef HAVE_GLIBTOP
+#ifdef HAVE_LIBGTOP
 
     glibtop_cpu cpu;
     double val, val2;
@@ -317,7 +317,7 @@ cb_out(void *data, Window w)
 static int
 count_cpus(void)
 {
-#ifdef HAVE_GLIBTOP
+#ifdef HAVE_LIBGTOP
   int i,c = 0;
   int bits;
   glibtop_cpu cpu;

@@ -6,7 +6,7 @@
 #include <errno.h>
 #include "epplet.h"
 
-#ifdef HAVE_GLIBTOP
+#ifdef HAVE_LIBGTOP
 #include <glibtop.h>
 #include <glibtop/uptime.h>
 #include "proc.h"
@@ -35,7 +35,7 @@ timer_cb(void *data) {
   unsigned long days, hours, mins, secs;
   double total_secs, delay;
 
-#ifdef HAVE_GLIBTOP
+#ifdef HAVE_LIBGTOP
 
   glibtop_uptime uptime;
 
