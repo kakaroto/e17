@@ -1,12 +1,12 @@
 Summary: Library of Assorted Spiffy Things
 Name: libast
-Version: 0.6
-Release: 0.10
-Copyright: BSD
+Version: 0.6.1
+Release: 1
+License: BSD
 Group: System Environment/Libraries
 Source: %{name}-%{version}.tar.gz
 URL: http://www.eterm.org/
-BuildRoot: /var/tmp/%{name}-root
+BuildRoot: %{_tmppath}/%{name}-%{version}-root
 
 %description
 LibAST is the Library of Assorted Spiffy Things.  It contains various
@@ -17,20 +17,12 @@ well as some debugging aids and other similar tools.
 It's not documented yet, mostly because it's not finished.  Hence the
 version number that begins with 0.
 
-%changelog
-
 %prep
 %setup -q
 
 %build
-CFLAGS="$RPM_OPT_FLAGS"
-export CFLAGS
-if [ -e ./configure ]; then
-  %configure --prefix=%{_prefix} --bindir=%{_bindir} --libdir=%{_libdir} --includedir=%{_includedir} --datadir=%{_datadir} %{?acflags}
-else
-  ./autogen.sh --prefix=%{_prefix} --bindir=%{_bindir} --libdir=%{_libdir} --includedir=%{_includedir} --datadir=%{_datadir}
-fi
-%{__make} %{?mflags}
+%{configure} --prefix=%{_prefix} --bindir=%{_bindir} --libdir=%{_libdir} --includedir=%{_includedir} --datadir=%{_datadir} %{?acflags}
+%{__make} %{?_smp_mflags} %{?mflags}
 
 %install
 %{__make} install DESTDIR=$RPM_BUILD_ROOT %{?mflags_install}
@@ -51,3 +43,5 @@ rm -rf $RPM_BUILD_ROOT
 %{_libdir}/*
 %{_includedir}/*
 %{_datadir}/*
+
+%changelog

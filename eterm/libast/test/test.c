@@ -518,11 +518,11 @@ test_options(void)
     long color = 0;
     spif_uint32_t options = 0;
     char *argv2[] = {
-        "test", "-rt", "mytheme", "--name", "This is a name", "--exec=ssh foo@bar.com",
+        "test", "some", "stuff", "-rt", "mytheme", "--name", "This is a name", "--exec=ssh foo@bar.com",
         "--scrollbar", "--buttonbar", "no", "--login=0", "-mvd", "foo:0", "--color", "4",
         "--foo", "blah", "-d", "eatme", NULL
     };
-    int argc2 = 18;
+    int argc2 = 20;
     spifopt_t opts2[] = {
         SPIFOPT_STR_PP('d', "display", "X display to connect to", display),
         SPIFOPT_ARGS_PP('e', "exec", "command to run", exec),
@@ -582,12 +582,19 @@ test_options(void)
     TEST_FAIL_IF(strcmp(SPIF_CHARPTR_C(exec[1]), "foo@bar.com"));
     TEST_FAIL_IF(exec[2] != NULL);
     TEST_FAIL_IF(foo == NULL);
+    TEST_FAIL_IF(SPIF_PTR_ISNULL(foo[0]));
     TEST_FAIL_IF(strcmp(SPIF_CHARPTR_C(foo[0]), "blah"));
+    TEST_FAIL_IF(SPIF_PTR_ISNULL(foo[1]));
     TEST_FAIL_IF(strcmp(SPIF_CHARPTR_C(foo[1]), "-d"));
+    TEST_FAIL_IF(SPIF_PTR_ISNULL(foo[2]));
     TEST_FAIL_IF(strcmp(SPIF_CHARPTR_C(foo[2]), "eatme"));
     TEST_FAIL_IF(foo[3] != NULL);
     TEST_FAIL_IF(color != 4);
     TEST_FAIL_IF(options != 0x1e);
+    TEST_FAIL_IF(strcmp(argv2[0], "test"));
+    TEST_FAIL_IF(strcmp(argv2[1], "some"));
+    TEST_FAIL_IF(strcmp(argv2[2], "stuff"));
+    TEST_FAIL_IF(!SPIF_PTR_ISNULL(argv2[3]));
     FREE(display);
     FREE(name);
     FREE(theme);

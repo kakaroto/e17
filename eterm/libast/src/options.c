@@ -75,7 +75,7 @@ static const char __attribute__((unused)) cvs_ident[] = "$Id$";
  * @see @link DOXGRP_OPT Command Line Option Parser @endlink
  * @ingroup DOXGRP_OPT
  */
-spifopt_settings_t spifopt_settings = { 0 };
+spifopt_settings_t spifopt_settings = { NULL, 0, 0, 0, 0, 0, NULL };
 
 /**
  * Option-type-to-string translator.
@@ -498,6 +498,7 @@ handle_arglist(spif_int32_t n, spif_charptr_t val_ptr, unsigned char hasequal,
         for (k = 0; k < len; k++) {
             tmp[k] = SPIF_CAST(charptr) STRDUP(argv[k + i]);
             D_OPTIONS(("tmp[%d] == %s\n", k, tmp[k]));
+            argv[k + i] = NULL;
         }
         tmp[k] = SPIF_NULL_TYPE(charptr);
         *(SPIF_CAST_C(spif_charptr_t **) SPIFOPT_OPT_VALUE(n)) = tmp;
@@ -533,7 +534,10 @@ spifopt_parse(int argc, char *argv[])
 
         D_OPTIONS(("argv[%d] == \"%s\", opt == \"%s\"\n", i, argv[i], opt));
 
-        if (opt == SPIF_CHARPTR(argv[i])) {
+        if (SPIF_PTR_ISNULL(opt)) {
+            /* NEXT_ARG(); */
+            break;
+        } else if (opt == SPIF_CHARPTR(argv[i])) {
             /* If it's not an option, skip it. */
             if (*opt != '-') {
                 NEXT_ARG();
@@ -556,10 +560,13 @@ spifopt_parse(int argc, char *argv[])
                 NEXT_LETTER();
             }
         }
+        if (SPIFOPT_FLAGS_IS_SET(SPIFOPT_SETTING_POSTPARSE)) {
+            argv[i] = NULL;
+        }
 
         /* If a value was passed to this option, set val_ptr to point to it. */
         if (islong) {
-            val_ptr = find_value_long(SPIF_CHARPTR(argv[i]), SPIF_CHARPTR(argv[i + 1]), &hasequal);
+            val_ptr = find_value_long(SPIF_CHARPTR(opt), SPIF_CHARPTR(argv[i + 1]), &hasequal);
         } else {
             val_ptr = find_value_short(opt, SPIF_CHARPTR(argv[i + 1]));
         }
@@ -656,9 +663,25 @@ spifopt_parse(int argc, char *argv[])
                 ((spifopt_abstract_handler_t) SPIFOPT_OPT_VALUE(j))(val_ptr);
             }
         }
+        if (SPIFOPT_FLAGS_IS_SET(SPIFOPT_SETTING_POSTPARSE)) {
+            argv[i] = NULL;
+        }
         NEXT_LOOP();
     }
-    SPIFOPT_FLAGS_SET(SPIFOPT_SETTING_POSTPARSE);
+
+    if (SPIFOPT_FLAGS_IS_SET(SPIFOPT_SETTING_POSTPARSE)) {
+        for (i = 1, j = 1; i < argc; i++) {
+            if (argv[i]) {
+                argv[j] = argv[i];
+                j++;
+            }
+        }
+        if (j > 1) {
+            argv[j] = NULL;
+        }
+    } else {
+        SPIFOPT_FLAGS_SET(SPIFOPT_SETTING_POSTPARSE);
+    }
 }
 
 /**

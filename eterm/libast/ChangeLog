@@ -689,3 +689,8 @@ Tue Sep 14 11:45:40 2004                        Michael Jennings (mej)
 
 Patch from Dirk Tilger <dirk@ostec.org> for 0.5 compatibility.
 ----------------------------------------------------------------------
+Tue Oct 26 12:05:51 2004                        Michael Jennings (mej)
+
+Upon return from spifopt_parse()'s postparsing run, argv[] will now
+contain only the non-option arguments left on the command line.
+----------------------------------------------------------------------

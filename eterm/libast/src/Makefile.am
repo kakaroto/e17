@@ -9,4 +9,4 @@ libast_la_SOURCES =                                                     \
     linked_list.c mem.c msgs.c obj.c objpair.c options.c regexp.c       \
     socket.c str.c strings.c snprintf.c tok.c url.c
 
-libast_la_LDFLAGS = -version-info 2:0:0
+libast_la_LDFLAGS = -version-info 2:1:0
