@@ -548,3 +548,11 @@ Renamed "Rotator" to "Mesh", and added new cloak-animation, "Funky Mesh"
 
 I was bored. Ok?
 
+-------------------------------------------------------------------------------
+
+Sat Nov 13 21:03:02 GMT 1999
+(gilbertt)
+
+Added E-ScreenSave. Will control xscreensaver, but currently just locks the
+screen on demand.
+

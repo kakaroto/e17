@@ -18,7 +18,8 @@ bin_PROGRAMS = E-Load.epplet E-Clock.epplet E-Time.epplet E-Net.epplet \
 E-Cpu.epplet E-Biff.epplet E-Power.epplet Emix.epplet @TEST_PROGS@ \
 E-MemWatch.epplet E-Disk.epplet E-Areas.epplet \
 E-NetFlame.epplet E-Sys.epplet E-ScreenShoot.epplet E-Slides.epplet \
-E-Xss.epplet E-Mountbox.epplet E-Exec.epplet $(E_Mixer_prog) E-SD.epplet
+E-Xss.epplet E-Mountbox.epplet E-Exec.epplet $(E_Mixer_prog) E-SD.epplet \
+E-ScreenSave.epplet
 
 EXTRA_PROGRAMS = EppletTest.epplet EppletConfigTest.epplet
 
@@ -106,6 +107,11 @@ E_ScreenShoot_epplet_SOURCES = \
 E-ScreenShoot.c E-ScreenShoot.h cloak.c utils.c utils.h cloak.h
 E_ScreenShoot_epplet_DEPENDENCIES = $(top_srcdir)/api/libepplet.la
 E_ScreenShoot_epplet_LDFLAGS = -rpath $(libdir):$(pkglibdir)
+
+E_ScreenSave_epplet_SOURCES = \
+E-ScreenSave.c E-ScreenSave.h cloak.c utils.c utils.h cloak.h
+E_ScreenSave_epplet_DEPENDENCIES = $(top_srcdir)/api/libepplet.la
+E_ScreenSave_epplet_LDFLAGS = -rpath $(libdir):$(pkglibdir)
 
 E_Areas_epplet_SOURCES = E-Areas.c
 E_Areas_epplet_DEPENDENCIES = $(top_srcdir)/api/libepplet.la
