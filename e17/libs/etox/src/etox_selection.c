@@ -110,7 +110,7 @@ etox_selection_new(Etox *etox, Etox_Line *l1, Etox_Line *l2,
 void
 etox_selection_free(Etox_Selection *selected)
 {
-        if (!selected) return;
+        CHECK_PARAM_POINTER("selected", selected);
 
 	etox_context_free(selected->context);
 	active_selections = evas_list_remove(active_selections, selected);
@@ -127,8 +127,6 @@ etox_selection_free_by_etox(Evas_Object *obj)
 	Etox_Selection *selected;
 
 	CHECK_PARAM_POINTER("obj", obj);
-
-        if (!obj) return;
 
 	etox = evas_object_smart_data_get(obj);
 
