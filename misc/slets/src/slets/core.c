@@ -163,26 +163,34 @@ int core_put_in_slot(CORE_ROW *r, CORE_SLOT *s)
       **   - make the code more simple/readable
       */
 
-      if (((s->row1->x   ==
-            s->row2->x)  &&
-           (s->row2->x   ==
-            s->row3->x)) ||
-          ((s->row1->x   ==
-            s->row2->y)  &&
-           (s->row2->y   == 
-            s->row3->z)) )
+      if ((s->row1->x   ==
+           s->row2->x)  &&
+          (s->row2->x   ==
+           s->row3->x) )
+        {
+         core_total += core_points[s->row1->x];
+        }
+      
+      if ((s->row1->x   ==
+           s->row2->y)  &&
+          (s->row2->y   == 
+           s->row3->z) )
         {
          core_total += core_points[s->row1->x];
         }
 
-      if (((s->row1->z   ==
-            s->row2->z)  &&
-           (s->row2->z   ==
-            s->row3->z)) || 
-          ((s->row1->z   ==   
-            s->row2->y)  &&  
-           (s->row2->y   ==
-            s->row3->x)) )
+      if ((s->row1->z   ==
+           s->row2->z)  &&
+          (s->row2->z   ==
+           s->row3->z)  )
+        {
+         core_total += core_points[s->row1->z];
+        }
+ 
+      if ((s->row1->z   ==   
+           s->row2->y)  &&  
+          (s->row2->y   ==
+           s->row3->x) )
         {
          core_total += core_points[s->row1->z];
         }
