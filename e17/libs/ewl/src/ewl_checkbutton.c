@@ -57,7 +57,8 @@ ewl_checkbutton_is_checked(Ewl_Widget * w)
 {
 	Ewl_CheckButton *cb;
 
-	DENTER_FUNCTION DCHECK_PARAM_PTR("w", w);
+	DENTER_FUNCTION;
+	DCHECK_PARAM_PTR_RET("w", w, -1);
 
 	cb = EWL_CHECKBUTTON(w);
 

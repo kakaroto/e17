@@ -348,9 +348,9 @@ ewl_config_read_configs(void)
 	user_read = ewl_config_read_config(user_config, &user_settings);
 	system_read = ewl_config_read_config(system_config, &system_settings);
 
-	if (user_read)
+	if (user_read != -1)
 		ewl_config_read_config(user_config, &init_settings);
-	else if (system_read)
+	else if (system_read != -1)
 		ewl_config_read_config(system_config, &init_settings);
 	else if (!home)
 	  {
@@ -414,11 +414,12 @@ ewl_config_read_config(char *path, _Ewl_Config * conf)
 void
 ewl_set_settings(_Ewl_Config * c)
 {
-	if (!strncasecmp(c->render_method, "software", 8))
+	if (c->render_method && !strncasecmp(c->render_method, "software", 8))
 		ewl_radiobutton_set_checked(e_conf.render_method_software, 1);
-	else if (!strncasecmp(c->render_method, "hardware", 8))
+	else if (c->render_method
+		 && !strncasecmp(c->render_method, "hardware", 8))
 		ewl_radiobutton_set_checked(e_conf.render_method_hardware, 1);
-	else if (!strncasecmp(c->render_method, "x11", 3))
+	else if (c->render_method && !strncasecmp(c->render_method, "x11", 3))
 		ewl_radiobutton_set_checked(e_conf.render_method_x11, 1);
 	else
 		ewl_radiobutton_set_checked(e_conf.render_method_software, 1);
@@ -513,6 +514,7 @@ ewl_config_save_cb(Ewl_Widget * w, void *ev_data, void *user_data)
 {
 	_Ewl_Config *c;
 	char *home;
+	char pe[1024];
 	char user_config[1024];
 
 	home = getenv("HOME");
@@ -524,6 +526,13 @@ ewl_config_save_cb(Ewl_Widget * w, void *ev_data, void *user_data)
 			 "or setenv HOME in a sh like environment.\n");
 		  exit(-1);
 	  }
+
+	snprintf(pe, 1024, "%s/.e", home);
+	mkdir(pe, 0755);
+	snprintf(pe, 1024, "%s/.e/ewl", home);
+	mkdir(pe, 0755);
+	snprintf(pe, 1024, "%s/.e/ewl/config", home);
+	mkdir(pe, 0755);
 
 	snprintf(user_config, 1024, "%s/.e/ewl/config/system.db", home);
 

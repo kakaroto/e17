@@ -1,3 +1,8 @@
+Fri Sep  28 20:56:15 2001 Christopher Rosendahl <crosendahl@northernwatch.com>
+	* Fixed ewl_config, Needed to create ~/.e/ewl/config if it doesnt exist.
+	* Fixed segv in ewl_config when the user config did not exist.
+	* Fixed some autoconf/automake magic.
+
 Fri Sep  28 17:28:42 2001 Christopher Rosendahl <crosendahl@northernwatch.com>
 	* Forgot to configure the entry when deleting to left & right, fixed.
 	* Now it's only possible to entry numbers in a Ewl_Spinner,

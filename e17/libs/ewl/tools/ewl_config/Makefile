@@ -89,8 +89,6 @@ evas_cflags = -I/usr/local/e17/include -I/usr/X11R6/include -I/usr/local/e17/inc
 evas_libs = -L/usr/local/e17/lib -levas -L/usr/X11R6/lib -lXrender -lXext -lXext -lXext -L/usr/X11R6/lib -lX11 -lX11 -L/usr/local/e17/lib -lImlib2 -lttf -lm -ldl -lXext -lXext -lX11 -L/usr/X11R6/lib
 ewd_cflags = -I/usr/local/e17/include -I/usr/local/e17/include/ewd
 ewd_libs = -L/usr/local/e17/lib -lewd -lm -lpthread
-imlib2_cflags = -I/usr/local/e17/include -I/usr/X11R6/include
-imlib2_libs = -L/usr/local/e17/lib -lImlib2 -lttf -lm -ldl -lXext -lXext -lX11 -L/usr/X11R6/lib
 
 AUTOMAKE_OPTIONS = 1.4 foreign
 MAINTAINERCLEANFILES = Makefile.in

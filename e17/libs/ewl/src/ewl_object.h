@@ -48,6 +48,9 @@ inline void ewl_object_requested_geometry(Ewl_Object * o, int *x,
 					  int *y, int *w, int *h);
 
 void ewl_object_set_minimum_size(Ewl_Object * o, int w, int h);
+inline void ewl_object_set_minimum_width(Ewl_Object * o, int w);
+inline void ewl_object_set_minimum_height(Ewl_Object * o, int h);
+
 void ewl_object_get_minimum_size(Ewl_Object * o, int *w, int *h);
 
 void ewl_object_set_maximum_size(Ewl_Object * o, int w, int h);
@@ -81,5 +84,13 @@ inline Ewl_Fill_Policy ewl_object_get_fill_policy(Ewl_Object * o);
 #define ewl_object_set_custom_size(o, w, h) \
 	ewl_object_set_minimum_size(EWL_OBJECT(o), w, h); \
 	ewl_object_set_maximum_size(EWL_OBJECT(o), w, h);
+
+#define ewl_object_set_custom_width(o, w) \
+	ewl_object_set_maximum_width(o, w); \
+	ewl_object_set_minimum_width(o, w);
+
+#define ewl_object_set_custom_height(o, h) \
+	ewl_object_set_maximum_height(o, h); \
+	ewl_object_set_minimum_height(o, h);
 
 #endif /* __EWL_OBJECT_H__ */

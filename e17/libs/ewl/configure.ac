@@ -45,40 +45,77 @@ if test "x$GCC" = "xyes"; then
 fi
 changequote([,])dnl
 
-AC_SUBST(ebits_cflags)
-AC_SUBST(ebits_libs)
-ebits_cflags=`ebits-config --cflags`
+AC_ARG_WITH(ebits,
+        [  --with-ebits=DIR          use ebits in <DIR>],
+        [CFLAGS="$CFLAGS -I$withval/include"
+         LIBS="-L$withval/lib $LIBS"])
+
+AC_PATH_GENERIC(ebits,, [
+    AC_SUBST(ebits_libs)
+    AC_SUBST(ebits_cflags)],
+    AC_MSG_ERROR(Cannot find ebits: Is ebits-config in path?))
 ebits_libs=`ebits-config --libs`
+ebits_cflags=`ebits-config --cflags`
 
-AC_SUBST(edb_cflags)
-AC_SUBST(edb_libs)
-edb_cflags=`edb-config --cflags`
+AC_ARG_WITH(edb,
+        [  --with-edb=DIR          use edb in <DIR>],
+        [CFLAGS="$CFLAGS -I$withval/include"
+         LIBS="-L$withval/lib $LIBS"])
+
+AC_PATH_GENERIC(edb,, [
+    AC_SUBST(edb_libs)
+    AC_SUBST(edb_cflags)],
+    AC_MSG_ERROR(Cannot find edb: Is edb-config in path?))
 edb_libs=`edb-config --libs`
+edb_cflags=`edb-config --cflags`
 
-AC_SUBST(ecore_cflags)
-AC_SUBST(ecore_libs)
-ecore_cflags=`ecore-config --cflags`
+AC_ARG_WITH(ecore,
+        [  --with-ecore=DIR          use ecore in <DIR>],
+        [CFLAGS="$CFLAGS -I$withval/include"
+         LIBS="-L$withval/lib $LIBS"])
+
+AC_PATH_GENERIC(ecore,, [
+    AC_SUBST(ecore_libs)
+    AC_SUBST(ecore_cflags)],
+    AC_MSG_ERROR(Cannot find ecore: Is ecore-config in path?))
 ecore_libs=`ecore-config --libs`
+ecore_cflags=`ecore-config --cflags`
 
-AC_SUBST(evas_cflags)
-AC_SUBST(evas_libs)
-evas_cflags=`evas-config --cflags`
+AC_ARG_WITH(evas,
+        [  --with-evas=DIR          use evas in <DIR>],
+        [CFLAGS="$CFLAGS -I$withval/include"
+         LIBS="-L$withval/lib $LIBS"])
+
+AC_PATH_GENERIC(evas,, [
+    AC_SUBST(evas_libs)
+    AC_SUBST(evas_cflags)],
+    AC_MSG_ERROR(Cannot find evas: Is evas-config in path?))
 evas_libs=`evas-config --libs`
+evas_cflags=`evas-config --cflags`
 
-AC_SUBST(ewd_cflags)
-AC_SUBST(ewd_libs)
-ewd_cflags=`ewd-config --cflags`
-ewd_libs=`ewd-config --libs`
+AC_ARG_WITH(etox,
+        [  --with-etox=DIR          use etox in <DIR>],
+        [CFLAGS="$CFLAGS -I$withval/include"
+         LIBS="-L$withval/lib $LIBS"])
 
-AC_SUBST(etox_cflags)
-AC_SUBST(etox_libs)
-etox_cflags=`etox-config --cflags`
+AC_PATH_GENERIC(etox,, [
+    AC_SUBST(etox_libs)
+    AC_SUBST(etox_cflags)],
+    AC_MSG_ERROR(Cannot find etox: Is etox-config in path?))
 etox_libs=`etox-config --libs`
+etox_cflags=`etox-config --cflags`
 
-AC_SUBST(imlib2_cflags)
-AC_SUBST(imlib2_libs)
-imlib2_cflags=`imlib2-config --cflags`
-imlib2_libs=`imlib2-config --libs`
+AC_ARG_WITH(ewd,
+        [  --with-ewd=DIR           use ewd in <DIR>],
+        [CFLAGS="$CFLAGS -I$withval/include"
+         LIBS="-L$withval/lib $LIBS"])
+
+AC_PATH_GENERIC(ewd,, [
+    AC_SUBST(ewd_libs)
+    AC_SUBST(ewd_cflags)],
+    AC_MSG_ERROR(Cannot find ewd: Is ewd-config in path?))
+ewd_libs=`ewd-config --libs`
+ewd_cflags=`ewd-config --cflags`
 
 AC_CONFIG_FILES([
 Makefile

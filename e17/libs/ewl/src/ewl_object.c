@@ -168,6 +168,28 @@ ewl_object_set_minimum_size(Ewl_Object * o, int w, int h)
 		CURRENT_H(o) = h;
 }
 
+inline void
+ewl_object_set_minimum_width(Ewl_Object * o, int w)
+{
+	DENTER_FUNCTION;
+	DCHECK_PARAM_PTR("o", o);
+
+	o->minimum.w = w;
+
+	DLEAVE_FUNCTION;
+}
+
+inline void
+ewl_object_set_minimum_height(Ewl_Object * o, int h)
+{
+	DENTER_FUNCTION;
+	DCHECK_PARAM_PTR("o", o);
+
+	o->minimum.h = h;
+
+	DLEAVE_FUNCTION;
+}
+
 void
 ewl_object_get_minimum_size(Ewl_Object * o, int *w, int *h)
 {
