@@ -141,7 +141,8 @@ load (ImlibImage *im,
 		       int per;
 		       
 		       per = (l * 100) / h;
-		       if ((per - count) >=  progress_granularity)
+		       if (((per - count) >=  progress_granularity) ||
+			   ((h - l) <= cinfo.rec_outbuf_height))
 			 {
 			    count = per;
 			    progress(im, per, 0, prevy, w, scans + l - prevy);
@@ -178,7 +179,8 @@ load (ImlibImage *im,
 		       int per;
 		       
 		       per = (l * 100) / h;
-		       if ((per - count) >=  progress_granularity)
+		       if (((per - count) >=  progress_granularity) ||
+			   ((h - l) <= cinfo.rec_outbuf_height))
 			 {
 			    count = per;
 			    progress(im, per, 0, prevy, w, l + scans - prevy);
@@ -283,7 +285,8 @@ save (ImlibImage *im,
 	     int l;
 	     
 	     per = (char)((100 * y) / im->h);
-	     if ((per - pper) >= progress_granularity)
+	     if (((per - pper) >= progress_granularity) ||
+		 (y == (im->h - 1)))
 	       {
 		  l = y - pl;
 		  progress(im, per, 0, (y - l), im->w, l);

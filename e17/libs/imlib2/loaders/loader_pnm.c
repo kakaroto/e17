@@ -7,6 +7,7 @@
 #include <X11/Xlib.h>
 #include <X11/extensions/XShm.h>
 #include <X11/Xutil.h>
+#include <ctype.h>
 #include "image.h"
 
 char load (ImlibImage *im,
@@ -237,7 +238,8 @@ load (ImlibImage *im,
 		       int l;
 		       
 		       per = (char)((100 * y) / im->h);
-		       if ((per - pper) >= progress_granularity)
+		       if (((per - pper) >= progress_granularity) ||
+			   (y == (im->h - 1)))
 			 {
 			    l = y - pl;
 			    progress(im, per, 0, (y - l), im->w, l);
@@ -294,7 +296,8 @@ load (ImlibImage *im,
 		       int l;
 		       
 		       per = (char)((100 * y) / im->h);
-		       if ((per - pper) >= progress_granularity)
+		       if (((per - pper) >= progress_granularity) ||
+			   (y == (im->h - 1)))
 			 {
 			    l = y - pl;
 			    progress(im, per, 0, (y - l), im->w, l);
@@ -341,7 +344,8 @@ load (ImlibImage *im,
 		       int l;
 		       
 		       per = (char)((100 * y) / im->h);
-		       if ((per - pper) >= progress_granularity)
+		       if (((per - pper) >= progress_granularity) ||
+			   (y == (im->h - 1)))
 			 {
 			    l = y - pl;
 			    progress(im, per, 0, (y - l), im->w, l);
@@ -398,7 +402,8 @@ load (ImlibImage *im,
 		       int l;
 		       
 		       per = (char)((100 * y) / im->h);
-		       if ((per - pper) >= progress_granularity)
+		       if (((per - pper) >= progress_granularity) ||
+			   (y == (im->h - 1)))
 			 {
 			    l = y - pl;
 			    progress(im, per, 0, (y - l), im->w, l);
@@ -474,7 +479,8 @@ save (ImlibImage *im,
 		  int l;
 		  
 		  per = (char)((100 * y) / im->h);
-		  if ((per - pper) >= progress_granularity)
+		  if (((per - pper) >= progress_granularity) ||
+		      (y == (im->h - 1)))
 		    {
 		       l = y - pl;
 		       progress(im, per, 0, (y - l), im->w, l);
@@ -517,7 +523,8 @@ save (ImlibImage *im,
 		  int l;
 		  
 		  per = (char)((100 * y) / im->h);
-		  if ((per - pper) >= progress_granularity)
+		  if (((per - pper) >= progress_granularity) ||
+		      (y == (im->h - 1)))
 		    {
 		       l = y - pl;
 		       progress(im, per, 0, (y - l), im->w, l);

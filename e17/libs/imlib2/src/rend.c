@@ -213,12 +213,20 @@ __imlib_RenderImage(Display *d, ImlibImage *im,
 	     if (anitalias)
 	       {
 		  if (IMAGE_HAS_ALPHA(im))
-		     __imlib_ScaleAARGBA(ypoints, xpoints, buf, xapoints, yapoints, xup, yup, dx, dy + y, 0, 0, dw, hh, dw, im->w);
+		     __imlib_ScaleAARGBA(ypoints, xpoints, buf, xapoints, 
+					 yapoints, xup, yup, 
+					 ((sx * dw) / sw), ((sy * dh) / sh) + y, 
+					 0, 0, dw, hh, dw, im->w);
 		  else
-		     __imlib_ScaleAARGB(ypoints, xpoints, buf, xapoints, yapoints, xup, yup, dx, dy + y, 0, 0, dw, hh, dw, im->w);
+		     __imlib_ScaleAARGB(ypoints, xpoints, buf, xapoints, 
+					yapoints, xup, yup, 
+					((sx * dw) / sw), ((sy * dh) / sh) + y, 
+					0, 0, dw, hh, dw, im->w);
 	       }
 	     else
-		__imlib_ScaleSampleRGBA(ypoints, xpoints, buf, dx, dy + y, 0, 0, dw, hh, dw);
+		__imlib_ScaleSampleRGBA(ypoints, xpoints, buf, 
+					 ((sx * dw) / sw), ((sy * dh) / sh) + y, 
+					0, 0, dw, hh, dw);
 	     jump = 0;
 	     pointer = buf;
 	     if (cmod)
