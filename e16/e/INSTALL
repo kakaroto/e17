@@ -8,6 +8,7 @@ and are having trouble getting Enlightenment to come up after you have ran
 "make install" - please skip to the end of the file and read the 
 "Setting Up Enlightenment For My User" information.
 
+
 Basic Installation
 ==================
 
@@ -59,6 +60,7 @@ The simplest way to compile this package is:
      all sorts of other programs in order to regenerate files that came
      with the distribution.
 
+
 Compilers and Options
 =====================
 
@@ -71,6 +73,7 @@ this:
 
 Or on systems that have the `env' program, you can do it like this:
      env CPPFLAGS=-I/usr/local/include LDFLAGS=-s ./configure
+
 
 Compiling For Multiple Architectures
 ====================================
@@ -88,6 +91,7 @@ variable, you have to compile Enlightenment for one architecture at a time
 in the source code directory.  After you have installed Enlightenment for
 one architecture, use `make distclean' before reconfiguring for another
 architecture.
+
 
 Installation Names
 ==================
@@ -126,6 +130,7 @@ but if it doesn't, you can use the `configure' options `--x-includes=DIR' and
 the latest versions of esound and libaudiofile.  Information on these packages
 can be retreived at http://www.gnome.org
 
+
 Specifying the System Type
 ==========================
 
@@ -146,6 +151,7 @@ use the `--target=TYPE' option to select the type of system they will
 produce code for and the `--build=TYPE' option to select the type of
 system on which you are compiling Enlightenment.
 
+
 Sharing Defaults
 ================
 
@@ -156,6 +162,7 @@ default values for variables like `CC', `cache_file', and `prefix'.
 `PREFIX/etc/config.site' if it exists.  Or, you can set the
 `CONFIG_SITE' environment variable to the location of the site script.
 A warning: not all `configure' scripts look for a site script.
+
 
 Operation Controls
 ==================
@@ -198,6 +205,18 @@ operates.
      use /usr as your prefix).
 `configure' also accepts some other, not widely useful, options.
 
+
+Default themes and online documentation
+=======================================
+The default themes and the online documentation are provided in separate
+packages, etheme-<name>-<version>.tar.gz and edox-data-<version>.tar.gz,
+respectively.
+These (optional) packages can be installed just like Enlightenment, i.e.
+unpack, `cd' to source directory, `./configure', `make', and `make install'.
+`configure' should be done with the same path specifications (such as
+--prefix=<path> and --enable-fsstd) as when Enlightenment was configured.
+
+
 Setting Up Enlightenment For My User
 ====================================
 
@@ -237,6 +256,7 @@ in Enlightenment!
 
 If you have more questions on installation, please join the mailing list.  see
 http://www.enlightenment.org/mail.html for more details.
+
 
 Window Manager Hints
 ====================
