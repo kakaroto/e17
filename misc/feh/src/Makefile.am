@@ -9,3 +9,11 @@ bin_PROGRAMS      = feh
 feh_SOURCES       = main.c main.h feh.h options.c winwidget.c winwidget.h \
 filelist.c filelist.h multiwindow.c montage.c imlib.c index.c
 feh_LDADD         = -lX11 -lImlib2
+
+test:
+	@for i in test[0-9]* ; do \
+	  if test -x $$i ; then \
+	    echo "Executing test script $$i..." ; \
+	    ./$$i ; \
+	  fi ; \
+	done

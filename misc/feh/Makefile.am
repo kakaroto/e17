@@ -61,3 +61,6 @@ src/test15_slideshow_multiple_images
 EXTRA_DIST = $(testimages) $(testscripts) $(testfonts) README AUTHORS ChangeLog
 
 SUBDIRS = src
+
+test:
+	(cd src && $(MAKE) test)
