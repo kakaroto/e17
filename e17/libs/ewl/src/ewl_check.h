@@ -8,6 +8,11 @@
  */
 
 /**
+ * @themekey /check/file
+ * @themekey /check/group
+ */
+
+/**
  * A single purpose extension of Ewl_Widget to provide a checked state.
  */
 typedef struct Ewl_Check Ewl_Check;

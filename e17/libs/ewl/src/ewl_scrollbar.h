@@ -9,6 +9,23 @@
  */
 
 /**
+ * @themekey /hscrollbar/file
+ * @themekey /hscrollbar/group
+ * @themekey /vscrollbar/file
+ * @themekey /vscrollbar/group
+ *
+ * @themekey /hscrollbar/seeker/file
+ * @themekey /hscrollbar/seeker/group
+ * @themekey /vscrollbar/seeker/file
+ * @themekey /vscrollbar/seeker/group
+ *
+ * @themekey /hscrollbar/seeker/button/file
+ * @themekey /hscrollbar/seeker/button/group
+ * @themekey /vscrollbar/seeker/button/file
+ * @themekey /vscrollbar/seeker/button/group
+ */
+
+/**
  * Provides a seeker with increment and decrement buttons arranged in a
  * specified order.
  */

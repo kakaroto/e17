@@ -40,6 +40,11 @@ static void     __ewl_widget_mouse_move(Ewl_Widget * w, void *ev_data,
 				     void *user_data);
  */
 
+void __ewl_evas_object_del(void *data, Evas *e, Evas_Object *obj,
+		void *event_info);
+void __ewl_evas_clip_del(void *data, Evas *e, Evas_Object *obj,
+		void *event_info);
+
 void __ewl_widget_get_theme_padding(Ewl_Widget *w, int *l, int *r, int *t,
 		int *b);
 void __ewl_widget_get_theme_insets(Ewl_Widget *w, int *l, int *r, int *t,
@@ -130,6 +135,8 @@ void ewl_widget_realize(Ewl_Widget * w)
 	if (REALIZED(w))
 		DRETURN(DLEVEL_STABLE);
 
+	ewl_enter_realize_phase();
+
 	/*
 	 * The parent's realize function will get us here again.
 	 */
@@ -139,6 +146,8 @@ void ewl_widget_realize(Ewl_Widget * w)
 		ewl_callback_call(w, EWL_CALLBACK_REALIZE);
 		ewl_widget_show(w);
 	}
+
+	ewl_exit_realize_phase();
 
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
@@ -755,6 +764,8 @@ void __ewl_widget_realize(Ewl_Widget * w, void *ev_data, void *user_data)
 	 * entire contents of the widget
 	 */
 	w->fx_clip_box = evas_object_rectangle_add(emb->evas);
+	evas_object_event_callback_add(w->fx_clip_box, EVAS_CALLBACK_FREE,
+			__ewl_evas_clip_del, w);
 	evas_object_layer_set(w->fx_clip_box, ewl_widget_get_layer_sum(w));
 
 	pc = EWL_CONTAINER(w->parent);
@@ -817,6 +828,9 @@ void __ewl_widget_realize(Ewl_Widget * w, void *ev_data, void *user_data)
 		 * Load the theme object
 		 */
 		w->theme_object = edje_object_add(emb->evas);
+		evas_object_event_callback_add(w->theme_object,
+				EVAS_CALLBACK_FREE, __ewl_evas_object_del, w);
+		
 		edje_object_file_set(w->theme_object, i, group);
 		FREE(i);
 		IF_FREE(group);
@@ -895,7 +909,6 @@ void __ewl_widget_unrealize(Ewl_Widget * w, void *ev_data, void *user_data)
 	 */
 	if (w->fx_clip_box) {
 		evas_object_del(w->fx_clip_box);
-		w->fx_clip_box = NULL;
 	}
 
 	/*
@@ -1135,4 +1148,24 @@ __ewl_widget_child_destroy(Ewl_Widget * w, void *ev_data, void *user_data)
 		ewl_container_remove_child(EWL_CONTAINER(w->parent), w);
 
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
+}
+
+void
+__ewl_evas_object_del(void *data, Evas *e, Evas_Object *obj, void *event_info)
+{
+	Ewl_Widget *w;
+
+	w = EWL_WIDGET(data);
+	w->theme_object = NULL;
+	ewl_widget_destroy(w);
+}
+
+void
+__ewl_evas_clip_del(void *data, Evas *e, Evas_Object *obj, void *event_info)
+{
+	Ewl_Widget *w;
+
+	w = EWL_WIDGET(data);
+	w->fx_clip_box = NULL;
+	ewl_widget_destroy(w);
 }

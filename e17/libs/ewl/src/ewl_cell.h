@@ -9,6 +9,11 @@
  * @{
  */
 
+/**
+ * @themekey /cell/file
+ * @themekey /cell/group
+ */
+
 typedef struct Ewl_Cell Ewl_Cell;
 #define EWL_CELL(t) ((Ewl_Cell *)t)
 

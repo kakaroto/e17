@@ -11,6 +11,11 @@
  */
 
 /**
+ * @themekey /spacer/file
+ * @themekey /spacer/group
+ */
+
+/**
  * The Ewl_Spacer is a simple widget that is used to tweak spacing in an app.
  */
 typedef struct Ewl_Spacer Ewl_Spacer;

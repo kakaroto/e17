@@ -8,6 +8,11 @@
  * @{
  */
 
+/**
+ * @themekey /image/file
+ * @themekey /image/group
+ */
+
 typedef enum Ewl_Image_Type Ewl_Image_Type;
 
 enum Ewl_Image_Type

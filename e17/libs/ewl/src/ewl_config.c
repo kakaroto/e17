@@ -20,10 +20,10 @@ Ewl_Config ewl_config;
 extern Ewd_List *ewl_embed_list;
 
 /**
- * ewl_config_init - initialize the configuration system
+ * @return Returns true on success, false on failure.
+ * @brief Initialize the configuration system
  *
- * Returns true on success, false on failure. This sets up the necessary
- * configuration variables.
+ * This sets up the necessary configuration variables.
  */
 int ewl_config_init(void)
 {
@@ -40,13 +40,14 @@ int ewl_config_init(void)
 }
 
 /**
- * ewl_config_set_str - set the value of key to the specified string
- * @config: in what config to search for the key
- * @k: the key to set in the configuration database
- * @v: the string value that will be associated with the key
+ * @param config: in what config to search for the key
+ * @param k: the key to set in the configuration database
+ * @param v: the string value that will be associated with the key
+ * @return Returns TRUE on success, FALSE on failure.
+ * @brief set the value of key to the specified string
  *
- * Returns TRUE on success, FALSE on failure. Sets the string value associated
- * with the key @k to @v in the configuration database.
+ * Sets the string value associated with the key @a k to @a v in the
+ * configuration database.
  */
 int ewl_config_set_str(char *config, char *k, char *v)
 {
@@ -65,13 +66,14 @@ int ewl_config_set_str(char *config, char *k, char *v)
 
 
 /**
- * ewl_config_set_int - set the value of key to the specified integer
- * @config: in what config to search for the key
- * @k: the key to set in the configuration database
- * @v: the integer value that will be associated with the key
+ * @param config: in what config to search for the key
+ * @param k: the key to set in the configuration database
+ * @param v: the integer value that will be associated with the key
+ * @return Returns TRUE on success, FALSE on failure.
+ * @brief Set the value of key to the specified integer
  *
- * Returns TRUE on success, FALSE on failure. Sets the integer value associated
- * with the key @k to @v in the configuration database.
+ * Sets the integer value associated with the key @a k to @a v in the
+ * configuration database.
  */
 int ewl_config_set_int(char *config, char *k, int v)
 {
@@ -89,13 +91,14 @@ int ewl_config_set_int(char *config, char *k, int v)
 
 
 /**
- * ewl_config_set_float - set the value of key to the specified float
- * @config: in what config to search for the key
- * @k: the key to set in the configuration database
- * @v: the float value that will be associated with the key
+ * @param config: in what config to search for the key
+ * @param k: the key to set in the configuration database
+ * @param v: the float value that will be associated with the key
+ * @return Returns TRUE on success, FALSE on failure.
+ * @brief Set the value of key to the specified float
  *
- * Returns TRUE on success, FALSE on failure. Sets the float value associated
- * with the key @k to @v in the configuration database.
+ * Sets the float value associated with the key @a k to @a v in the
+ * configuration database.
  */
 int ewl_config_set_float(char *config, char *k, float v)
 {
@@ -113,12 +116,10 @@ int ewl_config_set_float(char *config, char *k, float v)
 
 
 /**
- * ewl_config_get_str - retrieve string value associated with a key
- * @config: in what config to search for the key
- * @k: the key to search
- *
- * Returns the string value associated with key @k in the configuration
- * database on success, NULL on failure.
+ * @param config: in what config to search for the key
+ * @param k: the key to search
+ * @return Returns the found string value on success, NULL on failure.
+ * @brief Retrieve string value associated with a key
  */
 char           *ewl_config_get_str(char *config, char *k)
 {
@@ -137,12 +138,10 @@ char           *ewl_config_get_str(char *config, char *k)
 
 
 /**
- * ewl_config_get_int - retrieve integer value associated with a key
- * @config: in what config to search for the key
- * @k: the key to search
- *
- * Returns the integer value associated with key @k in the configuration
- * database on success, 0 on failure.
+ * @param config: in what config to search for the key
+ * @param k: the key to search
+ * @return Returns the found integer value on success, 0 on failure.
+ * @brief Retrieve integer value associated with a key
  */
 int ewl_config_get_int(char *config, char *k)
 {
@@ -164,12 +163,10 @@ int ewl_config_get_int(char *config, char *k)
 }
 
 /**
- * ewl_config_get_float - retrieve floating point value associated with a key
- * @config: in what config to search for the key
- * @k: the key to search
- *
- * Returns the float value associated with key @k in the configuration
- * database on success, 0.0 on failure.
+ * @param config: in what config to search for the key
+ * @param k: the key to search
+ * @return Returns the found float value on success, 0.0 on failure.
+ * @brief Retrieve floating point value associated with a key
  */
 float ewl_config_get_float(char *config, char *k)
 {
@@ -191,9 +188,8 @@ float ewl_config_get_float(char *config, char *k)
 }
 
 /**
- * ewl_config_get_render_method - retrieve the render method of the evas
- *
- * Returns the found render method on success, software rendering on failure.
+ * @return Returns the found render method, default software render.
+ * @brief Retrieve the render method of the evas
  */
 int ewl_config_get_render_method()
 {
@@ -210,10 +206,11 @@ int ewl_config_get_render_method()
 }
 
 /**
- * ewl_config_reread_and_apply - reread the values of the configuration database
+ * @return Returns no value.
+ * @brief Reread the values of the configuration database
  *
- * Returns no value. Reads in the values of the configuration database and
- * applies them to the running ewl program.
+ * Reads in the values of the configuration database and applies them to the
+ * running ewl program.
  */
 void ewl_config_reread_and_apply(void)
 {

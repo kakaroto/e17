@@ -10,6 +10,11 @@
  */
 
 /**
+ * @themekey /imenu/file
+ * @themekey /imenu/group
+ */
+
+/**
  * A simple internal menu, it is limited to drawing within the current evas.
  */
 typedef struct Ewl_IMenu Ewl_IMenu;

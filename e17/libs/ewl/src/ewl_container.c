@@ -10,6 +10,9 @@ void            __ewl_container_reparent(Ewl_Widget * w, void *ev_data,
 void            __ewl_container_unrealize(Ewl_Widget *w, void *ev_data,
 					  void *user_data);
 
+void            __ewl_evas_clip_box_del(void *data, Evas *e, Evas_Object *obj,
+					void *event_info);
+
 /**
  * @param c: the container to initialize
  * @param appearance: the appearance key for this container
@@ -508,7 +511,7 @@ ewl_container_prefer_largest(Ewl_Container *c, Ewl_Orientation o)
 
 /**
  * @param c: the container receiving a new child widget
- * @w: the child widget added to the container
+ * @param w: the child widget added to the container
  * @return Returns no value.
  * @brief Triggers the child_add callback for the container @a c.
  */
@@ -601,6 +604,9 @@ void __ewl_container_realize(Ewl_Widget * w, void *ev_data, void *user_data)
 	 * to the wanted area.
 	 */
 	c->clip_box = evas_object_rectangle_add(emb->evas);
+
+	evas_object_event_callback_add(c->clip_box, EVAS_CALLBACK_FREE,
+			__ewl_evas_clip_box_del, c);
 	evas_object_move(c->clip_box, CURRENT_X(w), CURRENT_Y(w));
 	evas_object_resize(c->clip_box, CURRENT_W(w), CURRENT_H(w));
 	evas_object_clip_set(c->clip_box, w->fx_clip_box);
@@ -673,4 +679,14 @@ void __ewl_container_unrealize(Ewl_Widget *w, void *ev_data, void *user_data)
 	}
 
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
+}
+
+void
+__ewl_evas_clip_box_del(void *data, Evas *e, Evas_Object *obj, void *event_info)
+{
+	Ewl_Container *c;
+
+	c = EWL_CONTAINER(data);
+	c->clip_box = NULL;
+	ewl_widget_destroy(EWL_WIDGET(c));
 }

@@ -11,6 +11,11 @@
  */
 
 /**
+ * @themekey /floater/file
+ * @themekey /floater/group
+ */
+
+/**
  * The floater is a container for widgets that need to be drawn on top
  * of multiple widgets (ie. dropdownbox)
  */

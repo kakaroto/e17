@@ -9,6 +9,13 @@
  */
 
 /**
+ * @themekey /hseparator/file
+ * @themekey /hseparator/group
+ * @themekey /vseparator/file
+ * @themekey /vseparator/group
+ */
+
+/**
  * Provides an Ewl_Widget to simply act as a separator between other
  * Ewl_Widget's.
  */

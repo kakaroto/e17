@@ -10,6 +10,11 @@
  */
 
 /**
+ * @themekey /box/file
+ * @themekey /box/group
+ */
+
+/**
  * The box widget is an Ewl_Container and lays out Ewl_Widget's either
  * horizontally or vertically.
  */

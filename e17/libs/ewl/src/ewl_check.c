@@ -88,6 +88,8 @@ void ewl_check_init(Ewl_Check * cb)
 	ewl_object_set_preferred_size(EWL_OBJECT(w), 20, 20);
 
 	ewl_callback_append(w, EWL_CALLBACK_CLICKED, __ewl_check_clicked, NULL);
+	ewl_callback_append(w, EWL_CALLBACK_FOCUS_OUT, __ewl_check_update_check,
+			NULL);
 
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }

@@ -3,9 +3,10 @@
 
 int             ewl_idle_render(void *data);
 
-char           *xdisplay = NULL;
 extern Ewd_List *ewl_embed_list;
 
+unsigned int    phase_status = 0;
+char           *xdisplay = NULL;
 Ewd_List *configure_list = NULL;
 Ewd_List *realize_list = NULL;
 Ewd_List *destroy_list = NULL;
@@ -486,6 +487,42 @@ void ewl_realize_queue()
 			ewl_widget_realize(EWL_WIDGET(w));
 		}
 	}
+}
+
+/**
+ * @return Returns no value.
+ * @brief Marks that EWL is currently realizing a widget.
+ */
+void ewl_enter_realize_phase()
+{
+	DENTER_FUNCTION(DLEVEL_STABLE);
+
+	phase_status |= EWL_FLAG_QUEUED_RSCHEDULED;
+
+	DLEAVE_FUNCTION(DLEVEL_STABLE);
+}
+
+/**
+ * @return Returns no value.
+ * @brief Marks that EWL is not realizing a widget.
+ */
+void ewl_exit_realize_phase()
+{
+	DENTER_FUNCTION(DLEVEL_STABLE);
+
+	phase_status &= ~EWL_FLAG_QUEUED_RSCHEDULED;
+
+	DLEAVE_FUNCTION(DLEVEL_STABLE);
+}
+
+/**
+ * @return Returns TRUE if currently realizing a widget, FALSE otherwise.
+ * @brief Checks if EWL is currently in the process of realizing widgets.
+ */
+int ewl_in_realize_phase()
+{
+	DENTER_FUNCTION(DLEVEL_STABLE);
+	DRETURN_INT((phase_status & EWL_FLAG_QUEUED_RSCHEDULED), DLEVEL_STABLE);
 }
 
 void ewl_destroy_request(Ewl_Widget *w)

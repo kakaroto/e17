@@ -10,6 +10,11 @@
  */
 
 /**
+ * @themekey /cursor/file
+ * @themekey /cursor/group
+ */
+
+/**
  * The cursor indicates where in an Ewl_Entry typed text will be placed.
  */
 typedef struct Ewl_Cursor Ewl_Cursor;

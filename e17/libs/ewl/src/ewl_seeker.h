@@ -11,6 +11,13 @@
  */
 
 /**
+ * @themekey /hseeker/file
+ * @themekey /hseeker/group
+ * @themekey /vseeker/file
+ * @themekey /vseeker/group
+ */
+
+/**
  * The Ewl_Seeker provides a means to select a value from a range using a
  * draggable button.
  */

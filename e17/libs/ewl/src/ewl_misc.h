@@ -25,5 +25,8 @@ void            ewl_realize_request(Ewl_Widget *w);
 void            ewl_realize_queue();
 void 		ewl_destroy_request(Ewl_Widget *w);
 void 		ewl_garbage_collect();
+void            ewl_enter_realize_phase();
+void            ewl_exit_realize_phase();
+int             ewl_in_realize_phase();
 
 #endif				/* __EWL_MISC_H__ */

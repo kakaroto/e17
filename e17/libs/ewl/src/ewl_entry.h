@@ -9,6 +9,11 @@
  */
 
 /**
+ * @themekey /entry/file
+ * @themekey /entry/group
+ */
+
+/**
  * Inherits from the Ewl_Widget and provides single line editable text.
  */
 typedef struct Ewl_Entry Ewl_Entry;

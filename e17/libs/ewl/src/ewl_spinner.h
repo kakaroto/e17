@@ -10,6 +10,11 @@
  */
 
 /**
+ * @themekey /spinner/file
+ * @themekey /spinner/group
+ */
+
+/**
  * A combination of entry and increment/decrement buttons for adjusting
  * numerical values.
  */

@@ -10,6 +10,11 @@
  */
 
 /**
+ * @themekey /radiobutton/file
+ * @themekey /radiobutton/group
+ */
+
+/**
  * The radio button provides a means for selecting a single item from a group
  * of options.
  */

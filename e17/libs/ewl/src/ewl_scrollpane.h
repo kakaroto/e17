@@ -10,6 +10,11 @@
  */
 
 /**
+ * @themekey /scrollpane/file
+ * @themekey /scrollpane/group
+ */
+
+/**
  * The scrollpane provides a way to pan around large collections of images.
  */
 typedef struct Ewl_ScrollPane Ewl_ScrollPane;

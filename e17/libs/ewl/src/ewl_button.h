@@ -10,6 +10,11 @@
  */
 
 /**
+ * @themekey /button/file
+ * @themekey /button/group
+ */
+
+/**
  * The button provides a simple wrapper for creating a clickable Ewl_Widget
  * with an Ewl_Text displayed inside.
  */

@@ -10,6 +10,11 @@
  */
 
 /**
+ * @themekey /embed/file
+ * @themekey /embed/group
+ */
+
+/**
  * The embed structure is mostly a container for holding widgets and a
  * wrapper evas smart object.
  */

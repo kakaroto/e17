@@ -9,6 +9,11 @@
  */
 
 /**
+ * @themekey /menu/file
+ * @themekey /menu/group
+ */
+
+/**
  * A simple popup menu widget, with the capability of being nested inside
  * another menu.
  */
