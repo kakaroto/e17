@@ -878,6 +878,14 @@ imlib_blend_image_onto_image(Imlib_Image source_image, char merge_alpha,
    CHECK_PARAM_POINTER("imlib_blend_image_onto_image", "image", ctxt_image);
    CAST_IMAGE(im_src, source_image);
    CAST_IMAGE(im_dst, ctxt_image);
+   if ((!(im_src->data)) && (im_src->loader) && (im_src->loader->load))
+      im_src->loader->load(im_src, NULL, 0, 1);
+   if (!(im_src->data))
+      return;
+   if ((!(im_dst->data)) && (im_dst->loader) && (im_dst->loader->load))
+      im_dst->loader->load(im_dst, NULL, 0, 1);
+   if (!(im_dst->data))
+      return;
    __imlib_DirtyImage(im_dst);
    __imlib_DirtyPixmapsForImage(im_dst);
    /* FIXME: hack to get around infinite loops for scaling down too far */
@@ -1072,6 +1080,11 @@ imlib_copy_drawable_to_image(Pixmap mask, int x, int y, int width, int height,
    if (mask)
       domask = 1;
    CAST_IMAGE(im, ctxt_image);
+   
+   if ((!(im->data)) && (im->loader) && (im->loader->load))
+      im->loader->load(im, NULL, 0, 1);
+   if (!(im->data))
+      return 0;
 
    pre_adj = 0;
    if (x < 0)
@@ -1559,6 +1572,10 @@ imlib_text_draw(int x, int y, const char *text)
    CAST_IMAGE(im, ctxt_image);
    __imlib_DirtyImage(im);
    __imlib_DirtyPixmapsForImage(im);
+   if ((!(im->data)) && (im->loader) && (im->loader->load))
+      im->loader->load(im, NULL, 0, 1);
+   if (!(im->data))
+      return;
    __imlib_render_str(im, ctxt_font, x, y, text, (DATA8) ctxt_color.red,
                       (DATA8) ctxt_color.green, (DATA8) ctxt_color.blue,
                       (DATA8) ctxt_color.alpha, (char) ctxt_direction,
@@ -2006,7 +2023,7 @@ imlib_apply_color_modifier(void)
       return;
    __imlib_DirtyImage(im);
    __imlib_DirtyPixmapsForImage(im);
-   __imlib_DataCmodApply(im->data, im->w, im->h, 0, &im->flags,
+   __imlib_DataCmodApply(im->data, im->w, im->h, 0, &(im->flags),
                          (ImlibColorModifier *) ctxt_color_modifier);
 }
 
@@ -2049,7 +2066,7 @@ imlib_apply_color_modifier_to_rectangle(int x, int y, int width, int height)
    __imlib_DirtyImage(im);
    __imlib_DirtyPixmapsForImage(im);
    __imlib_DataCmodApply(im->data + (y * im->w) + x, width, height,
-                         im->w - width, &im->flags,
+                         im->w - width, &(im->flags),
                          (ImlibColorModifier *) ctxt_color_modifier);
 }
 
@@ -2454,7 +2471,6 @@ imlib_save_image_with_error_return(const char *filename,
 Imlib_Image imlib_create_rotated_image(double angle)
 {
    ImlibImage *im, *im_old;
-   DATA32 *data;
    int x, y, dx, dy, sz;
    double x1, y1, d;
 
@@ -2523,6 +2539,14 @@ imlib_blend_image_onto_image_at_angle(Imlib_Image source_image,
                        ctxt_image);
    CAST_IMAGE(im_src, source_image);
    CAST_IMAGE(im_dst, ctxt_image);
+   if ((!(im_src->data)) && (im_src->loader) && (im_src->loader->load))
+      im_src->loader->load(im_src, NULL, 0, 1);
+   if (!(im_src->data))
+      return;
+   if ((!(im_dst->data)) && (im_dst->loader) && (im_dst->loader->load))
+      im_dst->loader->load(im_dst, NULL, 0, 1);
+   if (!(im_dst->data))
+      return;
    __imlib_DirtyImage(im_dst);
    __imlib_DirtyPixmapsForImage(im_dst);
    __imlib_BlendImageToImageSkewed(im_src, im_dst, ctxt_anti_alias,
@@ -2550,6 +2574,14 @@ imlib_blend_image_onto_image_skewed(Imlib_Image source_image,
                        ctxt_image);
    CAST_IMAGE(im_src, source_image);
    CAST_IMAGE(im_dst, ctxt_image);
+   if ((!(im_src->data)) && (im_src->loader) && (im_src->loader->load))
+      im_src->loader->load(im_src, NULL, 0, 1);
+   if (!(im_src->data))
+      return;
+   if ((!(im_dst->data)) && (im_dst->loader) && (im_dst->loader->load))
+      im_dst->loader->load(im_dst, NULL, 0, 1);
+   if (!(im_dst->data))
+      return;
    __imlib_DirtyImage(im_dst);
    __imlib_DirtyPixmapsForImage(im_dst);
    __imlib_BlendImageToImageSkewed(im_src, im_dst, ctxt_anti_alias,
@@ -2723,10 +2755,14 @@ void
 imlib_apply_filter(char *script, ...)
 {
    va_list param_list;
-   Imlib_Image im;
+   ImlibImage *im;
 
    __imlib_dynamic_filters_init();
    CAST_IMAGE(im, ctxt_image);
+   if ((!(im->data)) && (im->loader) && (im->loader->load))
+      im->loader->load(im, NULL, 0, 1);
+   if (!(im->data))
+      return;
    __imlib_DirtyImage(im);
    __imlib_DirtyPixmapsForImage(im);
    va_start(param_list, script);
@@ -2880,6 +2916,6 @@ imlib_image_fill_ellipse(int xc, int yc, int a, int b)
 unsigned char
 imlib_polygon_contains_point(ImlibPolygon poly, int x, int y)
 {
-   CHECK_PARAM_POINTER("imlib_polygon_contains_point", "polygon", poly);
+   CHECK_PARAM_POINTER_RETURN("imlib_polygon_contains_point", "polygon", poly, 0);
    return __imlib_polygon_contains_point(poly, x, y);
 }
