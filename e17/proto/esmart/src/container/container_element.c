@@ -120,7 +120,6 @@ void e_container_element_destroy(Evas_Object *container, Evas_Object
 void e_container_empty (Evas_Object *container)
 {
   Container *cont;
-  Evas_List *l;
 
   cont = _container_fetch(container);
 

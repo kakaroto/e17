@@ -12,4 +12,6 @@ void _cb_element_down(void *data, Evas *e, Evas_Object *obj, void *event_info);
 void _cb_element_up(void *data, Evas *e, Evas_Object *obj, void *event_info);
 void _cb_element_move(void *data, Evas *e, Evas_Object *obj, void *event_info);
 
+void _container_scale_scroll(Container *cont, double old_length);
+
 #endif
