@@ -29,9 +29,8 @@ on_select_submenu_box (GtkWidget * widget, gpointer user_data)
 {
 
   if (user_data)
-    {
-      widget = NULL;
-    }
+    widget = NULL;
+
   if (execedit)
     {
       gtk_entry_set_editable (GTK_ENTRY (execfield), FALSE);
@@ -60,20 +59,13 @@ load_new_menu_from_disk (char *file_to_load, GtkCTreeNode * my_parent)
   if (!file_to_load)
     return;
   if (file_to_load[0] != '/')
-    {
-      sprintf (buf, "%s/.enlightenment/%s", homedir (getuid ()),
-	       file_to_load);
-    }
+    sprintf (buf, "%s/.enlightenment/%s", homedir (getuid ()), file_to_load);
   else
-    {
-      sprintf (buf, "%s", file_to_load);
-    }
-  /* printf("trying to open: %s\n",buf); */
+    sprintf (buf, "%s", file_to_load);
+
   menufile = fopen (buf, "r");
   if (!menufile)
-    {
-      return;
-    }
+    return;
 
   while (fgets (s, 4096, menufile))
     {
@@ -81,9 +73,7 @@ load_new_menu_from_disk (char *file_to_load, GtkCTreeNode * my_parent)
       if ((s[0] && s[0] != '#'))
 	{
 	  if (first)
-	    {
-	      first = 0;
-	    }
+	    first = 0;
 	  else
 	    {
 	      char *txt = NULL, *icon = NULL, *act = NULL, *params = NULL;
@@ -265,13 +255,9 @@ selection_made (GtkCTree * my_ctree, GList * node, gint column,
   gtk_entry_set_text (GTK_ENTRY (iconfield), col2);
   gtk_entry_set_text (GTK_ENTRY (execfield), col3);
   if (GTK_CTREE_ROW (last_node)->children)
-    {
-      gtk_toggle_button_set_active (GTK_TOGGLE_BUTTON (submenubutton), TRUE);
-    }
+    gtk_toggle_button_set_active (GTK_TOGGLE_BUTTON (submenubutton), TRUE);
   else
-    {
-      gtk_toggle_button_set_active (GTK_TOGGLE_BUTTON (submenubutton), FALSE);
-    }
+    gtk_toggle_button_set_active (GTK_TOGGLE_BUTTON (submenubutton), FALSE);
   dont_update = 0;
 }
 
@@ -446,9 +432,9 @@ create_main_window (void)
   execfield = entry = gtk_entry_new_with_max_length (200);
   gtk_widget_show (entry);
   gtk_table_attach (GTK_TABLE (table), entry, 1, 3, 2, 3,
-	  GTK_EXPAND | GTK_FILL, (GtkAttachOptions) (0), 0, 0);
+		    GTK_EXPAND | GTK_FILL, (GtkAttachOptions) (0), 0, 0);
   gtk_signal_connect_after (GTK_OBJECT (execfield), "key_press_event",
-                            GTK_SIGNAL_FUNC (entries_to_ctree), NULL);
+			    GTK_SIGNAL_FUNC (entries_to_ctree), NULL);
   execedit = 1;
 
   hbox = gtk_hbox_new (FALSE, 3);
@@ -485,20 +471,23 @@ create_main_window (void)
 void
 entries_to_ctree (GtkWidget * widget, gpointer user_data)
 {
-    GtkCTreeNode *node;
+  GtkCTreeNode *node;
 
-    node = GTK_CLIST(ctree)->selection->data;
+  node = GTK_CLIST (ctree)->selection->data;
 
-    if(!node)
-	  return;
-
-    gtk_ctree_node_set_text(GTK_CTREE(ctree), node, 0, gtk_entry_get_text(GTK_ENTRY(descriptionfield)));
-    gtk_ctree_node_set_text(GTK_CTREE(ctree), node, 1, gtk_entry_get_text(GTK_ENTRY(iconfield)));
-    gtk_ctree_node_set_text(GTK_CTREE(ctree), node, 2, gtk_entry_get_text(GTK_ENTRY(execfield)));
-    
+  if (!node)
     return;
-    widget = NULL;
-    user_data = NULL;
+
+  gtk_ctree_node_set_text (GTK_CTREE (ctree), node, 0,
+			   gtk_entry_get_text (GTK_ENTRY (descriptionfield)));
+  gtk_ctree_node_set_text (GTK_CTREE (ctree), node, 1,
+			   gtk_entry_get_text (GTK_ENTRY (iconfield)));
+  gtk_ctree_node_set_text (GTK_CTREE (ctree), node, 2,
+			   gtk_entry_get_text (GTK_ENTRY (execfield)));
+
+  return;
+  widget = NULL;
+  user_data = NULL;
 }
 
 void
@@ -506,7 +495,7 @@ insert_entry (GtkWidget * widget, gpointer user_data)
 {
   GtkCTreeNode *newparent = NULL;
   GtkCTreeNode *newnode = NULL;
-  GtkCTreeNode *newp, *news;
+  GtkCTreeNode *newp = NULL, *news = NULL;
   gchar *text[3];
 
   text[0] = duplicate ("New Entry");
@@ -526,11 +515,6 @@ insert_entry (GtkWidget * widget, gpointer user_data)
       news = GTK_CTREE_ROW (newparent)->sibling;
       if (news == newnode)
 	news = NULL;
-    }
-  else
-    {
-      newp = NULL;
-      news = NULL;
     }
 
   newnode =
@@ -586,13 +570,43 @@ save_menus (GtkWidget * widget, gpointer user_data)
   else
     printf ("Successful save\n");
 
-  g_free(buf);
-  
-  /* TODO This makes the entry_data structs leak */
+  g_free (buf);
+
+  destroy_node_data (node);
   g_node_destroy (node);
   return;
   widget = NULL;
   user_data = NULL;
+}
+
+/* recursive */
+void
+destroy_node_data (GNode * node)
+{
+  GNode *parent;
+  parent = node;
+  while (1)
+    {
+      if (parent->children)
+	destroy_node_data (parent->children);
+      if (parent->next)
+	parent = parent->next;
+      else
+	break;
+    }
+  if (node->data)
+    {
+      struct entry_data *data;
+      data = node->data;
+
+      if (data->desc)
+	g_free (data->desc);
+      if (data->icon)
+	g_free (data->icon);
+      if (data->params)
+	g_free (data->params);
+      g_free(data);
+    }
 }
 
 /* Get those annoyingly painful CTreeNodes into a useable format */
@@ -603,24 +617,17 @@ tree_to_gnode (GtkCTree * ctree,
 {
   struct entry_data *edata;
   gchar *col1, *col2, *col3;
-
-  edata = malloc (sizeof (struct entry_data));
-
+  edata = g_malloc (sizeof (struct entry_data));
   gtk_ctree_node_get_text (GTK_CTREE (ctree), GTK_CTREE_NODE (cnode), 1,
 			   &col2);
   gtk_ctree_node_get_text (GTK_CTREE (ctree), GTK_CTREE_NODE (cnode), 2,
 			   &col3);
-  gtk_ctree_get_node_info (GTK_CTREE (ctree), GTK_CTREE_NODE (cnode), &col1,
-			   NULL, NULL, NULL, NULL, NULL, NULL, NULL);
-
-  /* printf ("\nNODE\nDescription: %s\nIcon: %s\nParams: %s\n", col1, col2,
-   * col3); */
-
+  gtk_ctree_get_node_info (GTK_CTREE (ctree), GTK_CTREE_NODE (cnode),
+			   &col1, NULL, NULL, NULL, NULL, NULL, NULL, NULL);
   edata->desc = col1;
   edata->icon = col2;
   edata->params = col3;
   gnode->data = edata;
-
   return TRUE;
   depth = 0;
   data = NULL;
@@ -632,7 +639,6 @@ write_menu (GNode * node, gchar * file)
 {
   GNode *ptr;
   FILE *fp = NULL;
-
   if (!(node && file))
     {
       printf ("either node or file is null\n");
@@ -642,15 +648,12 @@ write_menu (GNode * node, gchar * file)
   if (file[0] != '/')
     {
       gchar *temp;
-
       /* Tarnation! A relative path */
       temp =
 	g_strjoin ("/", homedir (getuid ()), ".enlightenment", file, NULL);
       g_free (file);
       file = temp;
     }
-
-/*  printf ("creating file %s\n", file); */
 
   if ((fp = fopen (file, "w")) == NULL)
     {
@@ -659,11 +662,8 @@ write_menu (GNode * node, gchar * file)
     }
 
   g_free (file);
-
   write_menu_title (node, fp);
-
   node = node->children;
-
   for (ptr = node; ptr; ptr = ptr->next)
     if (write_menu_entry (ptr, fp))
       {
@@ -678,30 +678,18 @@ gint
 write_menu_entry (GNode * node, FILE * fp)
 {
   struct entry_data *dat;
-
   dat = (struct entry_data *) node->data;
-
   if (G_NODE_IS_LEAF (node))
     {
-/*      printf ("writing: \"%s\"\t%s\texec\t\"%s\"\n",
-	      dat->desc ? dat->desc : "",
-	      dat->icon[0] == '\0' ? "NULL" : dat->icon,
-	      dat->params ? dat->params : ""); */
-      if (fp)
-	fprintf (fp, "\"%s\"\t%s\texec\t\"%s\"\n", dat->desc ? dat->desc : "",
-		 dat->icon[0] == '\0' ? "NULL" : dat->icon,
-		 dat->params ? dat->params : "");
+      fprintf (fp, "\"%s\"\t%s\texec\t\"%s\"\n", dat->desc ? dat->desc : "",
+	       dat->icon[0] == '\0' ? "NULL" : dat->icon,
+	       dat->params ? dat->params : "");
     }
   else
     {
-      /*
-       * printf ("writing: \"%s\"\t%s\tmenu\t\"%s\"\n",
-       * dat->desc ? dat->desc : "", dat->icon ? dat->icon : "NULL",
-       * dat->params ? dat->params : ""); */
-      if (fp)
-	fprintf (fp, "\"%s\"\t%s\tmenu\t\"%s\"\n", dat->desc ? dat->desc : "",
-		 dat->icon[0] == '\0' ? "NULL" : dat->icon,
-		 dat->params ? dat->params : "");
+      fprintf (fp, "\"%s\"\t%s\tmenu\t\"%s\"\n", dat->desc ? dat->desc : "",
+	       dat->icon[0] == '\0' ? "NULL" : dat->icon,
+	       dat->params ? dat->params : "");
       if (write_menu (node, dat->params))
 	{
 	  printf ("error writing menu\n");
@@ -715,12 +703,7 @@ write_menu_entry (GNode * node, FILE * fp)
 void
 write_menu_title (GNode * node, FILE * fp)
 {
-  /*
-   * printf ("writing title \"%s\" to file\n",
-   * ((struct entry_data *) (node->data))->desc);
-   */
-  if (fp)
-    fprintf (fp, "%s\n", ((struct entry_data *) (node->data))->desc);
+  fprintf (fp, "%s\n", ((struct entry_data *) (node->data))->desc);
 }
 
 void
@@ -732,24 +715,19 @@ on_exit_application (GtkWidget * widget, gpointer user_data)
       widget = NULL;
     }
   gtk_exit (0);
-
 }
 
 int
 main (int argc, char *argv[])
 {
   GtkWidget *main_win;
-
   gtk_set_locale ();
   gtk_init (&argc, &argv);
   gdk_imlib_init ();
-
   tooltips = gtk_tooltips_new ();
   accel_group = gtk_accel_group_new ();
-
   gtk_widget_push_visual (gdk_imlib_get_visual ());
   gtk_widget_push_colormap (gdk_imlib_get_colormap ());
-
   main_win = create_main_window ();
   load_menus_from_disk ();
   gtk_widget_show (main_win);
@@ -757,8 +735,6 @@ main (int argc, char *argv[])
 		      GTK_SIGNAL_FUNC (on_exit_application), NULL);
   gtk_signal_connect (GTK_OBJECT (main_win), "delete_event",
 		      GTK_SIGNAL_FUNC (on_exit_application), NULL);
-
   gtk_main ();
-
   return 0;
 }
