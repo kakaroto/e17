@@ -2181,7 +2181,6 @@ E-Xss.  Right now it's hard-coded to run "xscreensaver-command -lock".  Anyone
 who'd like to make that configurable and has more time than me, have at it.
 :-)
 
-
 -------------------------------------------------------------------------------
 
 Wed Jun  7 20:11:10 PDT 2000
@@ -2189,3 +2188,10 @@ Wed Jun  7 20:11:10 PDT 2000
 
 New patch from Alan Schmitt <alan.schmitt@inria.fr> for a textual mail reader
 button.
+
+-------------------------------------------------------------------------------
+
+Fri Jun  9 21:29:32 PDT 2000
+(KainX)
+
+Finally got around to restructuring E-Biff.  I think you'll like the new look.

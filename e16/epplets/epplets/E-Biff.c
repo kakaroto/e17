@@ -48,7 +48,7 @@ extern void Epplet_redraw(void);
 #define BEGMATCH(a, b)  (!strncasecmp((a), (b), (sizeof(b) - 1)))
 #define NONULL(x)       ((x) ? (x) : (""))
 
-Epplet_gadget close_button, mp_button, cfg_button, nomail, newmail, seven, label, box_button;
+Epplet_gadget close_button, mp_button, cfg_button, nomail, newmail, seven, cnt_label;
 Epplet_gadget cfg_tb_mbox, cfg_tb_mailprog, cfg_tb_interval, cfg_tb_nomail, cfg_tb_newmail, cfg_tb_seven, cfg_tb_sound, cfg_tb_boxname;
 Window config_win = None;
 unsigned long new_cnt, total_cnt;
@@ -77,7 +77,8 @@ static void config_cb(void *data);
 static void process_conf(void);
 extern int mbox_folder_count(char *, int);
 
-void display_label(void)
+static void
+display_count(void)
 {
   char label_text[64];
   
@@ -85,15 +86,16 @@ void display_label(void)
     Esnprintf(label_text, sizeof(label_text), "%lu / %lu", new_cnt, total_cnt);
   else
     Esnprintf(label_text, sizeof(label_text), "%lu", new_cnt);
-  Epplet_change_label(label, label_text);
+  Epplet_change_label(cnt_label, label_text);
 }
 
-void display_box_name(void)
+static char *
+get_box_basename(char *mbox)
 {
-  if (boxname && box_visible)
-    Epplet_gadget_show(box_button);
-  else
-    Epplet_gadget_hide(box_button);
+  char *p;
+
+  p = strrchr(mbox, '/');
+  return (p ? (p + 1) : mbox);
 }
 
 static void
@@ -121,7 +123,7 @@ mailcheck_cb(void *data)
       Epplet_gadget_hide(seven);
       Epplet_gadget_show(nomail);
     }
-    display_label();
+    display_count();
   }
   Epplet_timer(mailcheck_cb, NULL, interval, "TIMER");
   return;
@@ -150,10 +152,7 @@ in_cb(void *data, Window w)
 {
   if (w == Epplet_get_main_window()) {
     Epplet_gadget_show(close_button);
-    if (!boxname)
-      Epplet_gadget_show(mp_button);
-    else if (!box_visible)
-      Epplet_gadget_show(box_button);
+    Epplet_gadget_show(mp_button);
     Epplet_gadget_show(cfg_button);
   }
   return;
@@ -165,10 +164,9 @@ out_cb(void *data, Window w)
 {
   if (w == Epplet_get_main_window()) {
     Epplet_gadget_hide(close_button);
-    if (!boxname)
+    if (!box_visible) {
       Epplet_gadget_hide(mp_button);
-    else if (!box_visible)
-      Epplet_gadget_hide(box_button);
+    }
     Epplet_gadget_hide(cfg_button);
   }
   return;
@@ -249,9 +247,10 @@ apply_config(void)
     if (!boxname || strcmp(boxname, buff)) {
       Epplet_modify_config("boxname", buff);
       boxname = Epplet_query_config("boxname");
-      Epplet_change_button_label(box_button, boxname);
+      Epplet_change_button_label(mp_button, boxname);
     }
   } else if (boxname) {
+    Epplet_change_button_label(mp_button, get_box_basename(folder_path));
     Epplet_modify_config("boxname", NULL);
     boxname = NULL;
   }
@@ -260,28 +259,18 @@ apply_config(void)
     box_visible = cfg_box_visible;
     sprintf(buff, "%d", box_visible);
     Epplet_modify_config("box_visible", buff);
-  }
-
-  display_box_name();
-  if (boxname && box_visible) {
-    Epplet_gadget_move(close_button, 2, 15);
-    Epplet_gadget_move(cfg_button, 34, 15);
-    Epplet_gadget_move(box_button, 2, 2);
-  } else {
-    Epplet_gadget_move(close_button, 2, 2);
-    Epplet_gadget_move(cfg_button, 34, 2);
-    Epplet_gadget_move(box_button, 2, 15);
+    if (box_visible) {
+      Epplet_gadget_show(mp_button);
+    } else {
+      Epplet_gadget_hide(mp_button);
+    }
   }
 
   if (show_total != cfg_total) {
     show_total = cfg_total;
     sprintf(buff, "%d", show_total);
     Epplet_modify_config("show_total", buff);
-    if (show_total)
-      Epplet_gadget_move(label, 6, 34);
-    else
-      Epplet_gadget_move(label, -6, 34);
-    display_label();
+    display_count();
   }
 
 }
@@ -351,7 +340,7 @@ config_cb(void *data)
   Epplet_gadget_show(Epplet_create_togglebutton(NULL, NULL, 4, 326, 12, 12, &cfg_beep, NULL, NULL));
   Epplet_gadget_show(Epplet_create_label(20, 326, "Beep when new mail arrives?", 2));
 
-  Epplet_gadget_show(Epplet_create_label(4, 346, "Text for mailbox button (leave empty for eject button):", 2));
+  Epplet_gadget_show(Epplet_create_label(4, 346, "Text for mailbox button (leave empty for mbox name):", 2));
   Epplet_gadget_show(cfg_tb_boxname = Epplet_create_textbox(NULL, boxname, 4, 360, 292, 20, 2, NULL, NULL));
 
   cfg_box_visible = box_visible;
@@ -402,7 +391,6 @@ int
 main(int argc, char **argv)
 {
   int prio;
-  int ybuttons1, ybuttons2;
 
   prio = getpriority(PRIO_PROCESS, getpid());
   setpriority(PRIO_PROCESS, getpid(), prio + 10);
@@ -433,34 +421,30 @@ main(int argc, char **argv)
       folder_path = Epplet_query_config("mailbox");
     }
   }
-  if (boxname && box_visible) {
-    ybuttons1 = 15;
-    ybuttons2 = 2;
-  } else {
-    ybuttons1 = 2;
-    ybuttons2 = 15;
-  }
-  close_button = Epplet_create_button(NULL, NULL, 2, ybuttons1, 0, 0, "CLOSE", 0, NULL, close_cb, NULL);
-  cfg_button = Epplet_create_button(NULL, NULL, 34, ybuttons1, 0, 0, "CONFIGURE", 0, NULL, config_cb, NULL);
-  mp_button = Epplet_create_button(NULL, NULL, 18, 2, 0, 0, "EJECT", 0, NULL, mailprog_cb, NULL);
+  close_button = Epplet_create_button(NULL, NULL, 2, 18, 0, 0, "CLOSE", 0, NULL, close_cb, NULL);
+  cfg_button = Epplet_create_button(NULL, NULL, 34, 18, 0, 0, "CONFIGURE", 0, NULL, config_cb, NULL);
 
-  box_button = Epplet_create_button(boxname, NULL, 2, ybuttons2, 44, 12, NULL, 0, NULL, mailprog_cb, NULL);
-
-  nomail = Epplet_create_image(2, 3, 44, 30, nomail_image);
-  newmail = Epplet_create_image(2, 3, 44, 30, newmail_image);
-  seven = Epplet_create_image(2, 3, 44, 30, seven_image);
+  nomail = Epplet_create_image(2, 3, 44, 32, nomail_image);
+  newmail = Epplet_create_image(2, 3, 44, 32, newmail_image);
+  seven = Epplet_create_image(2, 3, 44, 32, seven_image);
   Epplet_gadget_show(nomail);
-  if (boxname && box_visible) {
-    Epplet_gadget_show(box_button);
+
+  if (show_total) {
+    cnt_label = Epplet_create_label(-3, 36, "- / -", 1);
+  } else {
+    cnt_label = Epplet_create_label(-3, 36, "-", 1);
+  }
+  Epplet_gadget_show(cnt_label);
+
+  if (boxname) {
+    mp_button = Epplet_create_text_button(boxname, 2, 3, 44, 10, mailprog_cb, NULL);
+  } else {
+    mp_button = Epplet_create_text_button(get_box_basename(folder_path), 2, 3, 44, 10, mailprog_cb, NULL);
+  }
+  if (box_visible) {
+    Epplet_gadget_show(mp_button);
   }
 
-  if (show_total)
-    label = Epplet_create_label(6, 34, "- / -", 2);
-  else {
-    label = Epplet_create_label(6, 34, "-", 2);
-    Epplet_gadget_move(label, -4, 34);
-  }
-  Epplet_gadget_show(label);
   Epplet_show();
 
   Epplet_register_focus_in_handler(in_cb, NULL);
