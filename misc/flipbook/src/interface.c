@@ -297,6 +297,7 @@ create_open_template(void)
 
 
 	open_template = gtk_window_new(GTK_WINDOW_TOPLEVEL);
+	gtk_container_set_border_width(GTK_CONTAINER(open_template),5);
 	gtk_object_set_data(GTK_OBJECT(open_template), "open_template",
 		   	open_template);
 	gtk_window_set_title(GTK_WINDOW(open_template),
@@ -436,6 +437,7 @@ GtkWidget *
 	GtkWidget *segment_cancel;
 
 	choose_segment = gtk_window_new(GTK_WINDOW_TOPLEVEL);
+	gtk_container_set_border_width(GTK_CONTAINER(choose_segment),5);
 	gtk_object_set_data(GTK_OBJECT(choose_segment), "choose_segment",
 		   	choose_segment);
 	gtk_window_set_title(GTK_WINDOW(choose_segment), "Choose Movie Segment");
