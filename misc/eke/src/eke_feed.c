@@ -16,6 +16,7 @@ static Ecore_Event_Handler *add = NULL, *del = NULL, *data = NULL;
 static int eke_feed_server_add_cb(void *data, int type, void *ev);
 static int eke_feed_server_del_cb(void *data, int type, void *ev);
 static int eke_feed_server_data_cb(void *data, int type, void *ev);
+static char *eke_feed_cache_name_get(const char *name, const char *path);
 
 static void eke_feed_data_handle(Eke_Feed *feed);
 
@@ -146,7 +147,7 @@ eke_feed_new_from_uri(const char *uri)
     path = strdup(dest);
     FREE(dest);
 
-    feed = eke_feed_new(name, srv, port, path);
+    feed = eke_feed_new(NULL, srv, port, path);
 
     FREE(name);
     FREE(srv);
@@ -159,7 +160,7 @@ Eke_Feed *
 eke_feed_new(const char *name, const char *srv, int port, const char *path)
 {
     Eke_Feed *feed;
-    char tmp[PATH_MAX];
+    char *tmp;
 
     feed = NEW(Eke_Feed, 1);
 
@@ -171,7 +172,7 @@ eke_feed_new(const char *name, const char *srv, int port, const char *path)
     feed->update.interval = 5 MINUTES;
     feed->items = ecore_list_new();
 
-    snprintf(tmp, PATH_MAX, "%s/%s.xml", cache_dir, name);
+    tmp = eke_feed_cache_name_get(name, path);
     if (eke_file_exists(tmp)) {
         feed->update.last_time = eke_file_mtime_get(tmp);
         feed->update.crypt = eke_file_crypt_get(tmp);
@@ -179,6 +180,8 @@ eke_feed_new(const char *name, const char *srv, int port, const char *path)
         if (!feed->update.crypt)
             feed->update.last_time = 0;
     }
+    FREE(tmp);
+
     return feed;
 }
 
@@ -214,9 +217,7 @@ eke_feed_update(void *data)
     if ((feed->update.last_time + feed->update.interval) > now) {
         IF_FREE(feed->data.data);
 
-        feed->data.data = NEW(char, PATH_MAX);
-
-        snprintf(feed->data.data, PATH_MAX, "%s/%s.xml", cache_dir, feed->name);
+        feed->data.data = eke_feed_cache_name_get(feed->name, feed->server.path);
         feed->data.size = strlen(feed->data.data);
 
         eke_parse_file(feed);
@@ -232,7 +233,12 @@ eke_feed_update(void *data)
         }
         return 1;
     }
+    return eke_feed_update_execute(feed);
+}
 
+int
+eke_feed_update_execute(Eke_Feed *feed)
+{
     IF_FREE(feed->server.data.data);
     feed->server.data.size = 0;
 
@@ -324,7 +330,7 @@ eke_feed_data_handle(Eke_Feed *feed)
     char *ptr;
     float http_version;
     int ret_code;
-    char ret[256], name[PATH_MAX];
+    char ret[256], *name;
 
     IF_FREE(feed->data.data);
 
@@ -369,8 +375,9 @@ eke_feed_data_handle(Eke_Feed *feed)
     ptr += 4;
   
     /* write the cache file out */
-    snprintf(name, PATH_MAX, "%s/%s.xml", cache_dir, feed->name);
+    name = eke_feed_cache_name_get(feed->name, feed->server.path);
     eke_file_write(name, ptr);
+    FREE(name);
 
     feed->update.last_time = time(NULL);
 
@@ -405,7 +412,7 @@ eke_feed_data_handle(Eke_Feed *feed)
 
     eke_parse_memory(feed);
 }
-
+ 
 void
 eke_feed_event_free(void *data, void *ev)
 {
@@ -425,6 +432,35 @@ eke_feed_name_set(Eke_Feed *feed, const char *name)
 
     IF_FREE(feed->name);
     feed->name = strdup(name);
+}
+
+static char *
+eke_feed_cache_name_get(const char *name, const char *path)
+{
+    char c_name[PATH_MAX];
+    char *path_tmp, *t, *p;
+
+    if (!name) {
+        path_tmp = strdup(path);
+        if (path_tmp[strlen(path_tmp) - 1] == '/')
+            path_tmp[strlen(path_tmp) - 1] = '\0';
+
+        p = path_tmp + strlen("http://"); 
+        while ((t = strchr(p, '/')) != NULL)
+            *t = '_';
+
+        while ((t = strchr(p, '.')) != NULL)
+            *t = '_';
+
+    } else {
+        path_tmp = strdup(name);
+        p = path_tmp;
+    }
+
+    snprintf(c_name, PATH_MAX, "%s/%s.xml", cache_dir, p);
+    FREE(path_tmp);
+
+    return strdup(c_name);
 }
 
 
