@@ -1,10 +1,18 @@
 #ifndef __EWL_WIDGET_H__
 #define __EWL_WIDGET_H__
 
+/**
+ * @file ewl_widget.h
+ * Defines the widget class and it's accessor/modifier functions.
+ */
+
 typedef struct _ewl_widget Ewl_Widget;
 
 #define EWL_WIDGET(widget) ((Ewl_Widget *) widget)
 
+/**
+ * @struct Ewl_Widget
+ */
 struct _ewl_widget
 {
 	/*
@@ -26,7 +34,7 @@ struct _ewl_widget
 	char           *appearance;
 	int             layer;
 
-	/*
+	/**
 	 * And these are for keeping track of the appearance, behavior
 	 * states of the widget and the data attached to the widget.
 	 */
@@ -34,7 +42,7 @@ struct _ewl_widget
 	Ewd_Hash       *theme;
 	Ewd_Hash       *data;
 
-	/*
+	/**
 	 * Flags for determining the current visibility of the widget as well
 	 * as if it has been realized
 	 */

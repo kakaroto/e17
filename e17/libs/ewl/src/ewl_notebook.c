@@ -605,7 +605,7 @@ __ewl_notebook_add(Ewl_Container *c, Ewl_Widget *w)
 		if (VISIBLE(n->tab_box))
 			ewl_object_set_preferred_w(EWL_OBJECT(c),
 					PREFERRED_W(c) +
-					ewl_object_get_minimum_w(
+					ewl_object_get_preferred_w(
 						EWL_OBJECT(n->tab_box)));
 	}
 	else {
@@ -619,7 +619,7 @@ __ewl_notebook_add(Ewl_Container *c, Ewl_Widget *w)
 		if (VISIBLE(n->tab_box))
 			ewl_object_set_preferred_h(EWL_OBJECT(c),
 					PREFERRED_H(c) +
-					ewl_object_get_minimum_h(
+					ewl_object_get_preferred_w(
 						EWL_OBJECT(n->tab_box)));
 	}
 
@@ -650,7 +650,7 @@ __ewl_notebook_resize(Ewl_Container *c, Ewl_Widget *w, int size,
 		if (VISIBLE(n->tab_box))
 			ewl_object_set_preferred_w(EWL_OBJECT(c),
 					PREFERRED_W(c) +
-					ewl_object_get_minimum_w(
+					ewl_object_get_preferred_w(
 						EWL_OBJECT(n->tab_box)));
 	}
 	else {
@@ -664,7 +664,7 @@ __ewl_notebook_resize(Ewl_Container *c, Ewl_Widget *w, int size,
 		if (VISIBLE(n->tab_box))
 			ewl_object_set_preferred_h(EWL_OBJECT(c),
 					PREFERRED_H(c) +
-					ewl_object_get_minimum_h(
+					ewl_object_get_preferred_w(
 						EWL_OBJECT(n->tab_box)));
 	}
 

@@ -606,8 +606,8 @@ __ewl_entry_child_add(Ewl_Container * c, Ewl_Widget * w)
 
 	if (e->text == w) {
 		ewl_object_set_preferred_size(EWL_OBJECT(c),
-			   ewl_object_get_minimum_w(EWL_OBJECT(w)),
-			   ewl_object_get_minimum_h(EWL_OBJECT(w)));
+			   ewl_object_get_preferred_w(EWL_OBJECT(w)),
+			   ewl_object_get_preferred_h(EWL_OBJECT(w)));
 	}
 
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
@@ -628,10 +628,10 @@ __ewl_entry_child_resize(Ewl_Container * entry, Ewl_Widget * w, int size,
 
 	if (o == EWL_ORIENTATION_HORIZONTAL)
 		ewl_object_set_preferred_w(EWL_OBJECT(entry),
-			   ewl_object_get_minimum_w(text));
+			   ewl_object_get_preferred_w(text));
 	else
 		ewl_object_set_preferred_h(EWL_OBJECT(entry),
-			   ewl_object_get_minimum_h(text));
+			   ewl_object_get_preferred_h(text));
 
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }

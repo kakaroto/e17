@@ -6,6 +6,7 @@ int             ewl_idle_render(void *data);
 char           *xdisplay = NULL;
 extern Ewd_List *ewl_embed_list;
 static Ewd_List *configure_list = NULL;
+static Ewd_List *realize_list = NULL;
 
 void            __ewl_init_parse_options(int argc, char **argv);
 void            __ewl_parse_option_array(int argc, char **argv);
@@ -39,6 +40,7 @@ void ewl_init(int argc, char **argv)
 	DENTER_FUNCTION(DLEVEL_STABLE);
 
 	configure_list = ewd_list_new();
+	realize_list = ewd_list_new();
 	__ewl_init_parse_options(argc, argv);
 
 	ecore_init();
@@ -116,6 +118,18 @@ int ewl_idle_render(void *data)
 		DRETURN_INT(TRUE, DLEVEL_STABLE);
 
 	/*
+	 * First realize any widgets that require it, this looping should
+	 * avoid deep recursion.
+	 */
+	ewd_list_goto_first(realize_list);
+	while ((w = ewd_list_remove_first(realize_list))) {
+		if (VISIBLE(w) && !REALIZED(w)) {
+			w->flags &= ~EWL_FLAGS_RSCHEDULED;
+			ewl_widget_realize(EWL_WIDGET(w));
+		}
+	}
+
+	/*
 	 * Configure any widgets that need it.
 	 */
 	while ((w = ewd_list_remove_first(configure_list))) {
@@ -128,21 +142,10 @@ int ewl_idle_render(void *data)
 	}
 
 	/*
-	 * Rerender each embed and realize them as necessary. Done after
-	 * configuration to avoid multiple passes of the embed list when no
-	 * new embeds have been created.
+	 * Allow each embed to render itself.
 	 */
 	ewd_list_goto_first(ewl_embed_list);
 	while ((emb = ewd_list_next(ewl_embed_list)) != NULL) {
-		/*
-		 * If we have any unrealized embeds at this point, we want to
-		 * realize and configure them to layout the children correct.
-		 */
-		if (VISIBLE(emb) && !REALIZED(emb)) {
-			ewl_widget_realize(EWL_WIDGET(emb));
-			ewl_widget_configure(EWL_WIDGET(emb));
-		}
-
 		if (emb->evas)
 			evas_render(emb->evas);
 	}
@@ -388,4 +391,41 @@ void ewl_configure_cancel_request(Ewl_Widget *w)
 		ewd_list_remove(configure_list);
 
 	DLEAVE_FUNCTION(DLEVEL_TESTING);
+}
+
+/**
+ * ewl_realize_request - schedule a widget to be realized at idle time
+ * @w: widget to schedule for realization
+ *
+ * Returns no value. Places a widget on the queue to be realized at a later
+ * time.
+ */
+void ewl_realize_request(Ewl_Widget *w)
+{
+	Ewl_Widget *search;
+
+	if (w->flags & EWL_FLAGS_RSCHEDULED)
+		return;
+
+	w->flags |= EWL_FLAGS_RSCHEDULED;
+
+	/*
+	 * Search the list for a child widget of this widget.
+	 */
+	ewd_list_goto_first(realize_list);
+	while ((search = ewd_list_current(realize_list))) {
+		Ewl_Widget *parent;
+
+		parent = search;
+		while ((parent = parent->parent)) {
+			if (parent == w) {
+				ewd_list_insert(realize_list, w);
+				return;
+			}
+		}
+
+		ewd_list_next(realize_list);
+	}
+
+	ewd_list_append(realize_list, w);
 }

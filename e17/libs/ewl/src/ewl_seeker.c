@@ -1,7 +1,5 @@
 #include <Ewl.h>
 
-void            __ewl_seeker_realize(Ewl_Widget * w, void *ev_data,
-				     void *user_data);
 void            __ewl_seeker_configure(Ewl_Widget * w, void *ev_data,
 				       void *user_data);
 void            __ewl_seeker_theme_update(Ewl_Widget * w, void *ev_data,
@@ -91,6 +89,7 @@ void ewl_seeker_init(Ewl_Seeker * s, Ewl_Orientation orientation)
 	s->dragbar = ewl_button_new(NULL);
 	ewl_container_append_child(EWL_CONTAINER(s), s->dragbar);
 	ewl_widget_set_appearance(EWL_WIDGET(s->dragbar), "dragbar");
+	ewl_widget_show(s->dragbar);
 
 	/*
 	 * Set the starting orientation, range and values
@@ -103,8 +102,6 @@ void ewl_seeker_init(Ewl_Seeker * s, Ewl_Orientation orientation)
 	/*
 	 * Add necessary configuration callbacks
 	 */
-	ewl_callback_append(w, EWL_CALLBACK_REALIZE, __ewl_seeker_realize,
-			    NULL);
 	ewl_callback_append(w, EWL_CALLBACK_CONFIGURE, __ewl_seeker_configure,
 			    NULL);
 	ewl_callback_append(w, EWL_CALLBACK_MOUSE_DOWN, __ewl_seeker_mouse_down,
@@ -311,22 +308,6 @@ void ewl_seeker_decrease(Ewl_Seeker * s)
 
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
-
-
-
-/*
- * Draw the representation of the seeker
- */
-void __ewl_seeker_realize(Ewl_Widget * w, void *ev_data, void *user_data)
-{
-	DENTER_FUNCTION(DLEVEL_STABLE);
-	DCHECK_PARAM_PTR("w", w);
-
-	ewl_widget_realize(EWL_SEEKER(w)->dragbar);
-
-	DLEAVE_FUNCTION(DLEVEL_STABLE);
-}
-
 
 /*
  * On a configure event we need to adjust the seeker to fit into it's new

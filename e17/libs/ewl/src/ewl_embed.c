@@ -154,7 +154,8 @@ Evas_Object *ewl_embed_set_evas(Ewl_Embed *emb, Evas *evas)
 
 	w = EWL_WIDGET(emb);
 
-	ewl_widget_realize(w);
+	if (VISIBLE(w))
+		ewl_realize_request(w);
 
 	if (w->fx_clip_box) {
 		evas_object_clip_set(emb->smart, w->fx_clip_box);
@@ -364,7 +365,7 @@ void __ewl_embed_child_resize(Ewl_Container *c, Ewl_Widget *w,
 			ewl_object_request_y(child, CURRENT_Y(emb));
 
 		cs = ewl_object_get_current_x(child) +
-			ewl_object_get_minimum_w(child);
+			ewl_object_get_preferred_w(child);
 
 		/*
 		 * Check the width and x position vs. embed width.
@@ -373,7 +374,7 @@ void __ewl_embed_child_resize(Ewl_Container *c, Ewl_Widget *w,
 			maxw = cs;
 
 		cs = ewl_object_get_current_y(child) +
-			ewl_object_get_minimum_h(child);
+			ewl_object_get_preferred_h(child);
 
 		/*
 		 * Check the height and y position vs. embed height.

@@ -479,9 +479,9 @@ void __children_animator(Ewl_Widget * w, void *ev_data, void *user_data)
 			if (CURRENT_W(EWL_OBJECT(child)) < 2 ||
 			    CURRENT_H(EWL_OBJECT(child)) < 2) {
 				ewl_object_request_size(EWL_OBJECT(child),
-							ewl_object_get_minimum_w
+						ewl_object_get_preferred_w
 							(EWL_OBJECT(child)),
-							ewl_object_get_minimum_h
+						ewl_object_get_preferred_h
 							(EWL_OBJECT(child)));
 			}
 

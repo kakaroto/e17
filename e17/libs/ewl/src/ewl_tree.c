@@ -477,12 +477,12 @@ __ewl_tree_add(Ewl_Container *c, Ewl_Widget *w)
 {
 	int cw;
 
-	cw = ewl_object_get_minimum_w(EWL_OBJECT(w));
+	cw = ewl_object_get_preferred_w(EWL_OBJECT(w));
 	if (cw > PREFERRED_W(c))
 		ewl_object_set_preferred_w(EWL_OBJECT(c), cw);
 
 	ewl_object_set_preferred_h(EWL_OBJECT(c), PREFERRED_H(c) +
-			ewl_object_get_minimum_h(EWL_OBJECT(w)));
+			ewl_object_get_preferred_h(EWL_OBJECT(w)));
 }
 
 static void
@@ -490,7 +490,7 @@ __ewl_tree_child_resize(Ewl_Container *c, Ewl_Widget *w, int size,
 		Ewl_Orientation o)
 {
 	if (o == EWL_ORIENTATION_HORIZONTAL) {
-		if (ewl_object_get_minimum_w(EWL_OBJECT(w)) > PREFERRED_W(c))
+		if (ewl_object_get_preferred_w(EWL_OBJECT(w)) > PREFERRED_W(c))
 			ewl_object_set_preferred_w(EWL_OBJECT(c),
 					PREFERRED_W(c) + size);
 		/* FIXME: Should we only grow this in order to reduce list
@@ -525,7 +525,7 @@ __ewl_tree_configure(Ewl_Widget *w, void *ev_data, void *user_data)
 	y = CURRENT_Y(w);
 	ewd_list_goto_first(c->children);
 	while ((child = ewd_list_next(c->children))) {
-		h = ewl_object_get_minimum_h(child);
+		h = ewl_object_get_preferred_h(child);
 		ewl_object_request_geometry(child, CURRENT_X(w), y,
 				CURRENT_W(w), h);
 		y += h;
@@ -558,7 +558,7 @@ __ewl_tree_node_configure(Ewl_Widget * w, void *ev_data, void *user_data)
 	 * are lower nodes and rows.
 	 */
 	ewl_object_request_geometry(child, CURRENT_X(w), CURRENT_Y(w),
-			CURRENT_W(w), ewl_object_get_minimum_h(child));
+			CURRENT_W(w), ewl_object_get_preferred_h(child));
 	
 	y = CURRENT_Y(w) + ewl_object_get_current_h(child);
 	width = CURRENT_W(w) - CURRENT_X(w) + CURRENT_X(w);
@@ -568,7 +568,7 @@ __ewl_tree_node_configure(Ewl_Widget * w, void *ev_data, void *user_data)
 	 */
 	while ((child = ewd_list_next(c->children))) {
 		ewl_object_request_geometry(child, CURRENT_X(w), y, width,
-				ewl_object_get_minimum_h(child));
+				ewl_object_get_preferred_h(child));
 		y += ewl_object_get_current_h(child);
 	}
 
@@ -627,10 +627,10 @@ __ewl_tree_node_add(Ewl_Container *c, Ewl_Widget *w)
 	if (node->expanded || w == node->row) {
 		ewl_object_set_preferred_h(EWL_OBJECT(c),
 				PREFERRED_H(c) +
-				ewl_object_get_minimum_h(EWL_OBJECT(w)));
+				ewl_object_get_preferred_h(EWL_OBJECT(w)));
 	}
 
-	width = ewl_object_get_minimum_w(EWL_OBJECT(w));
+	width = ewl_object_get_preferred_w(EWL_OBJECT(w));
 	if (PREFERRED_W(c) < width)
 		ewl_object_set_minimum_w(EWL_OBJECT(c), width);
 
@@ -650,10 +650,10 @@ __ewl_tree_node_remove(Ewl_Container *c, Ewl_Widget *w)
 	if (node->expanded || w == node->row) {
 		ewl_object_set_preferred_h(EWL_OBJECT(c),
 				PREFERRED_H(c) -
-				ewl_object_get_minimum_h(EWL_OBJECT(w)));
+				ewl_object_get_preferred_h(EWL_OBJECT(w)));
 	}
 
-	width = ewl_object_get_minimum_w(EWL_OBJECT(w));
+	width = ewl_object_get_preferred_w(EWL_OBJECT(w));
 	if (PREFERRED_W(c) >= width)
 		ewl_container_prefer_largest(c, EWL_ORIENTATION_HORIZONTAL);
 

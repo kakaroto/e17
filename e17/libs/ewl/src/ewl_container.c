@@ -290,6 +290,9 @@ void ewl_container_resize_child(Ewl_Widget * w, int size, Ewl_Orientation o)
 
 	DCHECK_PARAM_PTR("w", w);
 
+	if (!size)
+		DRETURN(DLEVEL_STABLE);
+
 	/*
 	 * If there is no parent to this widget, or it hasn't really changed
 	 * size just exit. Also exit if it has no function to be notified for
@@ -518,11 +521,11 @@ ewl_container_prefer_largest(Ewl_Container *c, Ewl_Orientation o)
 	DCHECK_PARAM_PTR("c", c);
 
 	if (o == EWL_ORIENTATION_HORIZONTAL) {
-		get_size = ewl_object_get_minimum_w;
+		get_size = ewl_object_get_preferred_w;
 		set_size = ewl_object_set_preferred_w;
 	}
 	else {
-		get_size = ewl_object_get_minimum_h;
+		get_size = ewl_object_get_preferred_h;
 		set_size = ewl_object_set_preferred_h;
 	}
 
@@ -611,7 +614,7 @@ void __ewl_container_realize(Ewl_Widget * w, void *ev_data, void *user_data)
 	while ((child = ewd_list_goto_index(c->children, i))) {
 		ewl_widget_reparent(child);
 		if (VISIBLE(child))
-			ewl_widget_realize(child);
+			ewl_realize_request(child);
 		i++;
 	}
 

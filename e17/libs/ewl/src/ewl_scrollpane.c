@@ -194,8 +194,8 @@ void __ewl_scrollpane_configure(Ewl_Widget * w, void *ev_data, void *user_data)
 	/*
 	 * Get the space needed by the scrolbars.
 	 */
-	vs_width = ewl_object_get_minimum_w(EWL_OBJECT(s->vscrollbar));
-	hs_height = ewl_object_get_minimum_h(EWL_OBJECT(s->hscrollbar));
+	vs_width = ewl_object_get_preferred_w(EWL_OBJECT(s->vscrollbar));
+	hs_height = ewl_object_get_preferred_w(EWL_OBJECT(s->hscrollbar));
 
 	/*
 	 * Determine the space used by the contents.
@@ -331,13 +331,13 @@ __ewl_scrollpane_child_resize(Ewl_Container * parent, Ewl_Widget * child,
 	 */
 	if (o == EWL_ORIENTATION_HORIZONTAL) {
 		ewl_object_set_preferred_w(EWL_OBJECT(parent),
-				ewl_object_get_minimum_w(EWL_OBJECT(s->box)) +
-				ewl_object_get_minimum_w(EWL_OBJECT(s->vscrollbar)));
+				ewl_object_get_preferred_w(EWL_OBJECT(s->box)) +
+				ewl_object_get_preferred_h(EWL_OBJECT(s->vscrollbar)));
 	}
 	else
 		ewl_object_set_preferred_h(EWL_OBJECT(parent),
-				ewl_object_get_minimum_h(EWL_OBJECT(s->box)) +
-				ewl_object_get_minimum_h(EWL_OBJECT(s->hscrollbar)));
+				ewl_object_get_preferred_w(EWL_OBJECT(s->box)) +
+				ewl_object_get_preferred_h(EWL_OBJECT(s->hscrollbar)));
 
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }

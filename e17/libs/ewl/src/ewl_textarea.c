@@ -206,13 +206,13 @@ void __ewl_textarea_realize(Ewl_Widget * w, void *ev_data, void *user_data)
 		/*
 		 * Set the default style
 		 */
-		etox_context_set_style(ta->etox, style);
+		etox_context_set_style(etox_get_context(ta->etox), style);
 		IF_FREE(style);
 
 		/*
 		 * Set the default color for the text.
 		 */
-		etox_context_set_color(ta->etox, r, g, b, a);
+		etox_context_set_color(etox_get_context(ta->etox), r, g, b, a);
 	}
 
 	/*

@@ -92,8 +92,8 @@ __ewl_cell_add(Ewl_Container *c, Ewl_Widget *w)
 	}
 
 	ewl_object_set_preferred_size(EWL_OBJECT(c),
-			ewl_object_get_minimum_w(EWL_OBJECT(w)),
-			ewl_object_get_minimum_h(EWL_OBJECT(w)));
+			ewl_object_get_preferred_w(EWL_OBJECT(w)),
+			ewl_object_get_preferred_h(EWL_OBJECT(w)));
 
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
@@ -105,8 +105,8 @@ __ewl_cell_child_resize(Ewl_Container *c, Ewl_Widget *w, int size,
 	DENTER_FUNCTION(DLEVEL_STABLE);
 
 	ewl_object_set_preferred_size(EWL_OBJECT(c),
-			ewl_object_get_minimum_w(EWL_OBJECT(w)),
-			ewl_object_get_minimum_h(EWL_OBJECT(w)));
+			ewl_object_get_preferred_w(EWL_OBJECT(w)),
+			ewl_object_get_preferred_h(EWL_OBJECT(w)));
 
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }

@@ -191,8 +191,7 @@ void ewl_object_set_preferred_w(Ewl_Object * o, unsigned int w)
 	/*
 	 * Now update the widgets parent of the change in size.
 	 */
-	if (!(o->flags & EWL_FILL_POLICY_HSHRINK))
-		ewl_container_resize_child(EWL_WIDGET(o), new_size - old_size,
+	ewl_container_resize_child(EWL_WIDGET(o), new_size - old_size,
 				EWL_ORIENTATION_HORIZONTAL);
 
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
@@ -230,8 +229,7 @@ void ewl_object_set_preferred_h(Ewl_Object * o, unsigned int h)
 	/*
 	 * Notify the parent widgets of the change in size.
 	 */
-	if (!(o->flags & EWL_FILL_POLICY_VSHRINK))
-		ewl_container_resize_child(EWL_WIDGET(o), new_size - old_size,
+	ewl_container_resize_child(EWL_WIDGET(o), new_size - old_size,
 				EWL_ORIENTATION_VERTICAL);
 
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
@@ -826,17 +824,26 @@ ewl_object_get_maximum_size(Ewl_Object * o, unsigned int *w, unsigned int *h)
  */
 void ewl_object_set_padding(Ewl_Object * o, int l, int r, int t, int b)
 {
+	int dh, dv;
+
 	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR("o", o);
+
+	dh = (l - o->pad.l) + (r - o->pad.r);
+	dv = (t - o->pad.t) + (b - o->pad.t);
 
 	o->pad.l = l;
 	o->pad.r = r;
 	o->pad.t = t;
 	o->pad.b = b;
 
-	ewl_object_set_minimum_size(o, MINIMUM_W(o), MINIMUM_H(o));
-	ewl_object_set_maximum_size(o, MAXIMUM_W(o), MAXIMUM_H(o));
-	ewl_object_set_preferred_size(o, PREFERRED_W(o), PREFERRED_H(o));
+	/*
+	 * Now update the widgets parent of the change in size.
+	 */
+	ewl_container_resize_child(EWL_WIDGET(o), dh,
+				EWL_ORIENTATION_HORIZONTAL);
+	ewl_container_resize_child(EWL_WIDGET(o), dv,
+				EWL_ORIENTATION_VERTICAL);
 
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }

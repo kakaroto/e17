@@ -192,14 +192,14 @@ __ewl_row_add(Ewl_Container *c, Ewl_Widget *w)
 	/*
 	 * Adjust the preferred height to the largest widget added.
 	 */
-	size = ewl_object_get_minimum_w(EWL_OBJECT(w));
-	if (!row->max || ewl_object_get_minimum_h(row->max) > size) {
+	size = ewl_object_get_preferred_w(EWL_OBJECT(w));
+	if (!row->max || ewl_object_get_preferred_w(row->max) > size) {
 		row->max = EWL_OBJECT(w);
 		ewl_object_set_preferred_h(EWL_OBJECT(c), size);
 	}
 
 	ewl_object_set_preferred_w(EWL_OBJECT(c), PREFERRED_W(c) +
-			ewl_object_get_minimum_w(EWL_OBJECT(w)));
+			ewl_object_get_preferred_w(EWL_OBJECT(w)));
 }
 
 static void
@@ -222,7 +222,7 @@ __ewl_row_resize(Ewl_Container *c, Ewl_Widget *w, int size, Ewl_Orientation o)
 			 */
 			ewd_list_goto_first(c->children);
 			while ((child = ewd_list_next(c->children))) {
-				h = ewl_object_get_minimum_h(child);
+				h = ewl_object_get_preferred_h(child);
 				if (h > max_h) {
 					max_h = h;
 					row->max = child;
