@@ -5,6 +5,13 @@
  * You can also occasionally find me on efnet #e as hunchback. 
  * Modified by Rahsheen Porter (StriderZ) */
 
+#include <stdio.h>
+#include <sys/time.h>
+#include <sys/resource.h>
+#include <signal.h>
+#include <sys/wait.h>
+#include <errno.h>
+#include "config.h"
 #include "epplet.h"
 
 /* global variables */
@@ -31,7 +38,7 @@ unsigned int        out_color_hex = 0xc000c0;
 unsigned int        bg_color_hex = 0x000000;
 
 /* functions */
-static void 
+static void
 timer_draw(void *data)
 {
    char               *stupid_pointer = NULL;
@@ -195,7 +202,7 @@ timer_draw(void *data)
    data = NULL;
 }
 
-static void 
+static void
 cb_close(void *data)
 {
    Epplet_unremember();
@@ -205,7 +212,7 @@ cb_close(void *data)
    data = NULL;
 }
 
-static void 
+static void
 cb_in(void *data, Window w)
 {
    Epplet_gadget_show(close_button);
@@ -214,7 +221,7 @@ cb_in(void *data, Window w)
    w = (Window) 0;
 }
 
-static void 
+static void
 cb_out(void *data, Window w)
 {
    Epplet_gadget_hide(close_button);
@@ -223,30 +230,33 @@ cb_out(void *data, Window w)
    w = (Window) 0;
 }
 
-static void 
+static void
 load_config(void)
 {
-  char *s;
+   char               *s;
 
    device_string = Epplet_query_config_def("device", "ppp0");
    max_bytes_in_per_sec = atoi(Epplet_query_config_def("max_in", "150000"));
    max_bytes_out_per_sec = atoi(Epplet_query_config_def("max_out", "150000"));
    s = Epplet_query_config_def("in_color", "0x0040c0");
-   in_color_hex = strtol(s, (char **) NULL, 0);
+   in_color_hex = strtol(s, (char **)NULL, 0);
    s = Epplet_query_config_def("out_color", "0xc000c0");
-   out_color_hex = strtol(s, (char **) NULL, 0);
+   out_color_hex = strtol(s, (char **)NULL, 0);
    s = Epplet_query_config_def("bg_color", "0");
-   bg_color_hex = strtol(s, (char **) NULL, 0);
+   bg_color_hex = strtol(s, (char **)NULL, 0);
    if (strlen(Epplet_query_config_def("log_scale", "")))
       log_scale = 1;
 }
 
-int 
+int
 main(int argc, char **argv)
 {
    Epplet_gadget       drawingarea;
    int                 i = 1;
+   int                 prio;
 
+   prio = getpriority(PRIO_PROCESS, getpid());
+   setpriority(PRIO_PROCESS, getpid(), prio + 10);
    Epplet_Init("E-NetGraph", "0.2",
 	       "Enlightenment Network Activity epplet", 3, 3, argc, argv, 0);
 
