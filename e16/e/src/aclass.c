@@ -1029,6 +1029,26 @@ AclassIpc(const char *params, Client * c __UNUSED__)
    if (!p || cmd[0] == '?')
      {
      }
+   else if (!strncmp(cmd, "kb", 2))
+     {
+	ActionClass        *ac;
+	Action             *aa;
+
+	ac = FindItem("KEYBINDINGS", 0, LIST_FINDBY_NAME,
+		      LIST_TYPE_ACLASS_GLOBAL);
+	if (!ac || ac->num <= 0)
+	   return;
+
+	IpcPrintf("Aclass %s global\n", ac->name);
+	for (i = 0; i < ac->num; i++)
+	  {
+	     aa = ac->list[i];
+	     len = ActionEncode(aa, prm, sizeof(prm));
+	     if (len <= 0)
+		continue;
+	     IpcPrintf(prm);
+	  }
+     }
    else if (!strncmp(cmd, "list", 2))
      {
 	ActionClass       **lst;
@@ -1225,6 +1245,7 @@ IpcItem             AclassIpcArray[] = {
     AclassIpc,
     "aclass", "ac",
     "Action class functions",
+    "  aclass kb                 List key bindings\n"
     "  aclass list               List action classes\n"
     "  aclass load [all]         Reload user defined/all action classes\n"}
    ,
