@@ -1,4 +1,4 @@
-#include "layers.h"
+#include "geist_layer.h"
 
 geist_layer *
 geist_layer_new(void)

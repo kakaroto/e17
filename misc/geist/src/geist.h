@@ -83,6 +83,4 @@ extern Window root;
 extern Screen *scr;
 
 
-extern GtkWidget *darea;
-
 #endif

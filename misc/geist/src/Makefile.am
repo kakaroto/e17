@@ -13,7 +13,7 @@ geist_SOURCES = \
 	utils.c utils.h \
     debug.h \
     geist.h \
-    layers.c layers.h \
+    geist_layer.c geist_layer.h \
     geist_list.c geist_list.h \
     geist_object.h geist_object.c \
     structs.h \
@@ -22,7 +22,7 @@ geist_SOURCES = \
     geist_rect.c geist_rect.h \
     geist_imlib.c geist_imlib.h \
     geist_document.c geist_document.h \
-    geist_gtk.c geist_gtk.h \
+    geist_document_gtk.c geist_document_gtk.h \
     geist_fill.c geist_fill.h \
     imlib.c
 

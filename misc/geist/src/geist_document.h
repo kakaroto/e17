@@ -1,12 +1,12 @@
-#ifndef GEIST_GTK_H
-#define GEIST_GTK_H
+#ifndef GEIST_DOCUMENT_H
+#define GEIST_DOCUMENT_H
 
 #include "geist.h"
 #include "geist_list.h"
 #include "geist_object.h"
-#include "layers.h"
+#include "geist_layer.h"
 #include "geist_imlib.h"
-#include "geist_gtk.h"
+#include "geist_document_gtk.h"
 #include "geist_fill.h"
 
 
@@ -20,6 +20,7 @@ struct __geist_document
    Imlib_Image im;
    Pixmap pmap;
    Imlib_Updates up;
+   GtkWidget *darea;
 };
 
 geist_document *geist_document_new(int w, int h);

@@ -283,7 +283,7 @@ geist_document_render_updates(geist_document * d)
          geist_document_render_partial(d, x, y, w, h);
          geist_document_render_selection_partial(d, x, y, w, h);
          geist_document_render_pmap_partial(d, x, y, w, h);
-         geist_document_render_to_gtk_window_partial(d, darea, x, y, w, h);
+         geist_document_render_to_window_partial(d, x, y, w, h);
       }
       imlib_updates_free(d->up);
       d->up = NULL;

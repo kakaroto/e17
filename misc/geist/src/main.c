@@ -8,10 +8,10 @@
 #include "geist_document.h"
 #include "geist_object.h"
 #include "geist_image.h"
-#include "geist_gtk.h"
+#include "geist_document_gtk.h"
 #include "geist_text.h"
 #include "geist_rect.h"
-#include "layers.h"
+#include "geist_layer.h"
 
 int call_level = 0;
 GtkWidget *mainwin, *darea, *evbox, *scrollwin, *viewport;
@@ -141,17 +141,17 @@ main(int argc, char *argv[])
    gtk_scrolled_window_set_policy(GTK_SCROLLED_WINDOW(obj_scroll),
                                   GTK_POLICY_AUTOMATIC, GTK_POLICY_AUTOMATIC);
    obj_btn_hbox = gtk_hbox_new(FALSE, 0);
-   obj_btn = gtk_button_new_with_label("Add Image");
+   obj_btn = gtk_button_new_with_label("Add Image...");
    gtk_signal_connect(GTK_OBJECT(obj_btn), "clicked",
                       GTK_SIGNAL_FUNC(obj_add_cb), NULL);
    gtk_box_pack_start(GTK_BOX(obj_btn_hbox), obj_btn, TRUE, TRUE, 2);
    gtk_widget_show(obj_btn);
-   obj_btn = gtk_button_new_with_label("Add Text");
+   obj_btn = gtk_button_new_with_label("Add Text...");
    gtk_signal_connect(GTK_OBJECT(obj_btn), "clicked",
                       GTK_SIGNAL_FUNC(obj_addtext_cb), NULL);
    gtk_box_pack_start(GTK_BOX(obj_btn_hbox), obj_btn, TRUE, TRUE, 2);
    gtk_widget_show(obj_btn);
-   obj_btn = gtk_button_new_with_label("Add Rectangle");
+   obj_btn = gtk_button_new_with_label("Add Rectangle...");
    gtk_signal_connect(GTK_OBJECT(obj_btn), "clicked",
                       GTK_SIGNAL_FUNC(obj_addrect_cb), NULL);
    gtk_box_pack_start(GTK_BOX(obj_btn_hbox), obj_btn, TRUE, TRUE, 2);
@@ -167,7 +167,7 @@ main(int argc, char *argv[])
                       GTK_SIGNAL_FUNC(obj_del_cb), NULL);
    gtk_box_pack_start(GTK_BOX(obj_btn_hbox), obj_btn, TRUE, TRUE, 2);
    gtk_widget_show(obj_btn);
-   obj_btn = gtk_button_new_with_label("Edit");
+   obj_btn = gtk_button_new_with_label("Properties...");
    gtk_signal_connect(GTK_OBJECT(obj_btn), "clicked",
                       GTK_SIGNAL_FUNC(obj_edit_cb), NULL);
    gtk_box_pack_start(GTK_BOX(obj_btn_hbox), obj_btn, TRUE, TRUE, 2);
@@ -203,6 +203,7 @@ main(int argc, char *argv[])
    gtk_widget_set_sensitive(obj_name, FALSE);
 
    doc = geist_document_new(500, 500);
+   doc->darea = darea;
    doc->bg_fill->r = 155;
    doc->bg_fill->g = 216;
    doc->bg_fill->b = 237;
@@ -267,7 +268,7 @@ main(int argc, char *argv[])
    geist_document_render_pmap(doc);
    gtk_widget_set_usize(scrollwin, doc->w, doc->h);
 
-   geist_document_render_to_gtk_window(doc, darea);
+   geist_document_render_to_window(doc);
 
    gtk_main();
    D_RETURN(3, 0);
@@ -296,7 +297,7 @@ configure_cb(GtkWidget * widget, GdkEventConfigure * event,
 {
    D_ENTER(3);
 
-   geist_document_render_to_gtk_window(doc, darea);
+   geist_document_render_to_window(doc);
 
    D_RETURN(3, TRUE);
 }
