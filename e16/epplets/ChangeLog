@@ -18,3 +18,17 @@ Tue Oct 19 14:21:41 PDT 1999
 Added 7of9 mode to E-Biff just for raster. :-)
 Also fixed some bugs with the config file stuff.  If you're going to parse a
 config file, *honor* it for pete's sake! =P
+
+-------------------------------------------------------------------------------
+
+Fri Oct 22 21:43:33 PDT 1999
+(KainX)
+
+Alright, I've got the config stuff working as planned.  Epplet_Init() has the
+same parameters as it used to.  If you use config files, make sure to call
+Epplet_load_config() AFTER calling Epplet_Init() but BEFORE attempting to
+access config data.
+
+Also note the function name changes:  Epplet_save_config(),
+Epplet_query_config_data(), and Epplet_modify_config_data().
+

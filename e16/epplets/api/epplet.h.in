@@ -41,8 +41,8 @@ typedef struct _rgb_buf
 
 typedef struct _configitem
 {
-       char *key;
-       char *value;
+    char *key;
+    char *value;
 }
 ConfigItem;
 
@@ -55,22 +55,8 @@ ConfigItem;
 /* sized window. You also need to pass your argc and argv parameters your   */
 /* main() function gets. vertical is a flag as to if the app is vertical.   */
 /* Apps that are more horizontal than vertical should set this to 0.        */
-/* The last thing you need to provide is an array of ConfigItems and the    */
-/* length of that array. If you don't want to use this feature, just put    */
-/* NULL and 0 here. So your initialization could look like this:	    */
-/* 									    */
-/*  ConfigItem default_settings[] = {					    */
-/*     {"BG_COL", "0 0 0"},						    */
-/*     {"DEFAULT_ENTRY", "unknown"}					    */
-/*  };								    	    */
-/*     									    */
-/*  Epplet_Init("Clock_App", "0.2", "Enlightenment Mini-Clock Application", */
-/* 	       2, 2, argc, argv, 0, default_settings, 2);		    */
-/* 									    */
-
-void   Epplet_Init(char *name, char *version, char *info, int w, int h,
-		   int argc, char **argv, char vertical,
-		   ConfigItem *defaults, int defaults_number);
+void Epplet_Init(char *name, char *version, char *info, int w, int h,
+                 int argc, char **argv, char vertical);
 
 /****************************************************************************/
 /* Cleanup call                                                             */
@@ -351,19 +337,33 @@ int             Epplet_get_vslider_clicked(Epplet_gadget gadget);
 /****************************************************************************/
 /* Config file handling stuff                                               */
 /****************************************************************************/
+/* Load the config file (initializes the config data).  You can provide     */
+/* a list of default values for various keys by passing an array of         */
+/* ConfigItems and the number of ConfigItems in the array.  Pass NULL and 0 */
+/* if you don't want to establish defaults.  Here is an example:            */
+/* 									    */
+/*  ConfigItem default_settings[] = {					    */
+/*     {"BG_COL", "0 0 0"},						    */
+/*     {"DEFAULT_ENTRY", "unknown"}					    */
+/*  };								    	    */
+/*     									    */
+/*  Epplet_load_config(default_settings, 2);	                            */
+/* 									    */
+void            Epplet_load_config(ConfigItem *defaults, int num_defaults);
+
 /* This returns the instance of this epplet.				    */
 int             Epplet_get_instance(void);
 
 /* Here you can query a config setting.                                     */
-char           *Epplet_query_configs(char *key);
+char           *Epplet_query_config_data(char *key);
 
 /* Use this to change or add a config setting.                              */
-void            Epplet_modify_configs(char *key, char *value);
+void            Epplet_modify_config_data(char *key, char *value);
 
 /* This lets you save your current config settings. This is done automati-  */
 /* cally when you call Epplet_cleanup(), so you only need to call this when */
 /* you want to force the configs to disk for some reason.                   */
-void            Epplet_save_configs(void);
+void            Epplet_save_config(void);
 
 
 /****************************************************************************/

@@ -85,7 +85,7 @@ main(int argc, char **argv)
     Epplet_gadget b_up,b_down,b_left,b_right;
     Epplet_Init("E-Areas", "0.1", 
                 "A desktop areas navigator; John Slee <john@chirp.com.au>",
-	            3, 3, argc, argv, 0, NULL, 0);
+	            3, 3, argc, argv, 0);
     b_close = epp_create_std_button(18,18,"CLOSE",close_cb,NULL);
     
     b_up = epp_create_std_button(18,6,"ARROW_UP",arrow_cb,AREA_UP);

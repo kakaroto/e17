@@ -104,7 +104,7 @@ int
 main(int argc, char **argv)
 {
    Epplet_Init("E-Power", "0.1", "Enlightenment Laptop Power Epplet",
-	       3, 3, argc, argv, 0, NULL, 0);
+	       3, 3, argc, argv, 0);
    Epplet_timer(cb_timer, NULL, 30.0, "TIMER");
    b_close = Epplet_create_button(NULL, NULL,
 				  2, 2, 0, 0, "CLOSE", 0, NULL,

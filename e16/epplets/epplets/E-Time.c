@@ -58,7 +58,7 @@ int
 main(int argc, char **argv)
 {
    Epplet_Init("E-Time", "0.1", "Enlightenment Digital Clock Epplet",
-	       3, 3, argc, argv, 0, NULL, 0);
+	       3, 3, argc, argv, 0);
    Epplet_timer(timer_cb, NULL, 0.5, "TIMER");
    b_close = Epplet_create_button(NULL, NULL, 
 				  2, 2, 0, 0, "CLOSE", 0, NULL, 

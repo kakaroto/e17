@@ -83,8 +83,8 @@ struct _etimer
 /* The structures for the config file management ... */
 typedef struct _configdict
 {
-       ConfigItem *entries;
-       int         num_entries;
+    ConfigItem *entries;
+    int         num_entries;
 }
 ConfigDict;
 
@@ -125,7 +125,8 @@ static void    Epplet_draw_popupbutton(Epplet_gadget eg);
 static void    Epplet_popup_arrange_contents(Epplet_gadget gadget);
 static void    Epplet_prune_events(XEvent *ev, int num);
 static void    Epplet_handle_child(int num);
-static void    Epplet_setup_configs(char *name, ConfigItem *defaults, int num_defaults);
+static void    Epplet_find_instance(char *name);
+static void    Epplet_config_add_data(char *key, char *value);
 
 void 
 Epplet_send_ipc(char *s)
@@ -141,11 +142,10 @@ Epplet_wait_for_ipc(void)
 
 void
 Epplet_Init(char *name,
-	    char *version,
-	    char *info, 
-	    int w, int h,
-	    int argc, char **argv, char vertical,
-	    ConfigItem *defaults, int num_defaults)
+            char *version,
+            char *info, 
+            int w, int h,
+            int argc, char **argv, char vertical)
 {
    struct sigaction     sa;
    XEvent               ev;
@@ -171,8 +171,8 @@ Epplet_Init(char *name,
    ECommsSetup(disp);
    XSelectInput(disp, DefaultRootWindow(disp), PropertyChangeMask);
 
-   /* set up configuration handling */
-   Epplet_setup_configs(name, defaults, num_defaults);
+   /* Find the instance number for this instance and compose the name from it*/
+   Epplet_find_instance(name);
 
    /* create a window with everythign set */
    attr.backing_store     = NotUseful;
@@ -292,8 +292,10 @@ Epplet_cleanup(void)
      }
    
    /* save config settings */
-   Epplet_save_configs();
+   Epplet_save_config();
 
+   /* Freeing all this memory right before you exit is pretty pointless.... -- mej */
+#if 0
    /* free config stuff */
    if (config_dict)
      {
@@ -324,6 +326,7 @@ Epplet_cleanup(void)
        free(epplet_cfg_file);
        epplet_cfg_file = NULL;
      }
+#endif
 
 }
 
@@ -3664,22 +3667,18 @@ Epplet_dialog_ok(char *text)
    free(s);
 }
 
-int
-Epplet_get_instance(void)
+static void
+Epplet_find_instance(char *name)
 {
-   return epplet_instance;
-}
+  struct stat st;
+  char s[1024];
+  int i = 0;
+  FILE *fp;
 
-void
-Epplet_setup_configs(char *name, ConfigItem *defaults, int num_defaults)
-{
-  char s[1024], s2[1024], s3[1024];
-  struct stat   st;
-  int           i = 0;
-  FILE         *f = NULL;
+  epplet_instance = 1;
 
   /* make sure basic dir exists */
-  snprintf(s, 1024, "%s/.enlightenment/epplet_config", getenv("HOME"));
+  sprintf(s, "%s/.enlightenment/epplet_config", getenv("HOME"));
   if (stat(s, &st) < 0)
     {
       if (mkdir(s, S_IRWXU) < 0)
@@ -3693,7 +3692,7 @@ Epplet_setup_configs(char *name, ConfigItem *defaults, int num_defaults)
     }
 
   /* make sure this epplets config dir exists */
-  snprintf(s, 1024, "%s/.enlightenment/epplet_config/%s", getenv("HOME"), name);
+  sprintf(s, "%s/.enlightenment/epplet_config/%s", getenv("HOME"), name);
   conf_dir = strdup(s);
   if (stat(s, &st) < 0)
     {
@@ -3711,58 +3710,81 @@ Epplet_setup_configs(char *name, ConfigItem *defaults, int num_defaults)
   do
     {
       i++;
-      snprintf(s, 1024, "%s/.lock_%i", conf_dir, i);
+      sprintf(s, "%s/.lock_%i", conf_dir, i);
     }
   while (stat(s, &st) >= 0);
   epplet_instance = i;
   
   /* create lock file */
-  if (!(f = fopen(s, "w")))
+  if (!(fp = fopen(s, "w")))
     {
       char err[255];
       
-      sprintf(err, "Unable to create lock file %s -- %s.\n",
-	      s, strerror(errno));
+      sprintf(err, "Unable to create lock file %s -- %s.\n", s, strerror(errno));
       Epplet_dialog_ok(err);
     }
   else
-    fclose(f);
+    fclose(fp);
   
   /* find out epplet's name */
   if (epplet_instance > 1)
     {
-      snprintf(s, 1024, "%s-%i", name, epplet_instance);
+      sprintf(s, "%s-%i", name, epplet_instance);
       epplet_name = strdup(s);
     }
   else
     epplet_name = strdup(name);
-  
+}
+
+int
+Epplet_get_instance(void)
+{
+   return epplet_instance;
+}
+
+static void
+Epplet_config_add_data(char *key, char *value)
+{
+  config_dict->entries = realloc(config_dict->entries, sizeof(ConfigItem) * (config_dict->num_entries + 1));
+  config_dict->entries[config_dict->num_entries].key = strdup(key);
+  config_dict->entries[config_dict->num_entries].value = strdup(value);
+  config_dict->num_entries++;
+}
+
+void
+Epplet_load_config(ConfigItem *defaults, int num_defaults)
+{
+  char s[1024], s2[1024], s3[1024];
+  int           i = 0;
+  FILE         *f = NULL;
+
+  /* If they haven't initialized, abort */
+  if (epplet_instance == 0)
+    return;
+
   /* create config file name */
-  snprintf(s, 1024, "%s/%s.cfg", conf_dir, epplet_name, epplet_instance);
+  sprintf(s, "%s/%s.cfg", conf_dir, epplet_name);
   epplet_cfg_file = strdup(s);
   
   if ((f = fopen(epplet_cfg_file, "r")))
     {
       if (!config_dict)
 	{
-	  config_dict = (ConfigDict*)malloc(sizeof(ConfigDict));
+	  config_dict = (ConfigDict*) malloc(sizeof(ConfigDict));
 	}
       if (config_dict)
 	{
 	  config_dict->entries = NULL;
 	  config_dict->num_entries = 0;
 	  s2[0] = 0;
-	  while ((fscanf(f, "%s %[^\n]\n", (char*)&s2, (char*)&s3) != EOF))
-	    {
-	      if (s2[0] != '#')
-		{
-		  config_dict->num_entries++;
-		  config_dict->entries = realloc(config_dict->entries, sizeof(ConfigItem) * config_dict->num_entries);
-		  config_dict->entries[config_dict->num_entries-1].key = NULL;
-		  config_dict->entries[config_dict->num_entries-1].value = NULL;
-		  config_dict->entries[config_dict->num_entries-1].key = strdup(s2);
-		  config_dict->entries[config_dict->num_entries-1].value = strdup(s3);
-		}
+          for (; fgets(s, sizeof(s), f);)
+            {
+              sscanf(s, "%s %[^\n]\n", (char *) &s2, (char *) &s3);
+              if (!(*s2) || (!*s3) || (*s2 == '\n') || (*s2 == '#'))
+                {
+                  continue;
+                }
+              Epplet_config_add_data(s2, s3);
 	    }
 	  fclose(f);
 	  return;
@@ -3773,7 +3795,7 @@ Epplet_setup_configs(char *name, ConfigItem *defaults, int num_defaults)
       /* We need to fall back to default settings */
       if (!config_dict)
 	{
-	  config_dict = (ConfigDict*)malloc(sizeof(ConfigDict));
+	  config_dict = (ConfigDict*) malloc(sizeof(ConfigDict));
 	}
       if (config_dict)
 	{
@@ -3781,106 +3803,85 @@ Epplet_setup_configs(char *name, ConfigItem *defaults, int num_defaults)
 	  config_dict->num_entries = 0;
 	  for (i = 0; i < num_defaults; i++)
 	    {
-	      config_dict->num_entries++;
-	      config_dict->entries = realloc(config_dict->entries, sizeof(ConfigItem) * config_dict->num_entries);
-	      config_dict->entries[config_dict->num_entries-1].key = NULL;
-	      config_dict->entries[config_dict->num_entries-1].value = NULL;
-	      config_dict->entries[config_dict->num_entries-1].key = strdup(defaults[i].key);
-	      config_dict->entries[config_dict->num_entries-1].value = strdup(defaults[i].value);
+              ConfigItem *ci = defaults + i;
+
+              Epplet_config_add_data(ci->key, ci->value);
 	    }
 	}
     }
 }
 
 void
-Epplet_save_configs(void)
+Epplet_save_config(void)
 {
-   char s[1024];
    FILE *f;
    int i;
 
-   if (config_dict)
+   if ((config_dict) && (config_dict->num_entries > 0))
      {
-       if (config_dict->num_entries > 0)
-	 {
-	   if (!(f = fopen(epplet_cfg_file, "w")))
-	     {
-	       char err[255];
-	       
-	       sprintf(err, "Unable to write to config file %s -- %s.\n",
-		       s, strerror(errno));
-	       Epplet_dialog_ok(err);
-	     }
-	   else
-	     {
-	       fprintf(f, "### Automatically generated Epplet config file for %s.\n"
-		       "###               --- DO NOT EDIT! --- \n\n", epplet_name);
-	       
-	       if (config_dict)
-		 {
-		   for (i = 0; i < config_dict->num_entries; i++)
-		     {
-		       if (config_dict->entries[i].key)
-			 {
-			   fprintf(f, "%s %s\n", config_dict->entries[i].key, config_dict->entries[i].value);
-			 }
-		     }
-		 }       
-	       fclose(f);
-	     }
-	 }
+       if (!(f = fopen(epplet_cfg_file, "w")))
+         {
+           char err[255];
+           
+           sprintf(err, "Unable to write to config file %s -- %s.\n", epplet_cfg_file, strerror(errno));
+           Epplet_dialog_ok(err);
+         }
+       else
+         {
+           fprintf(f, "### Automatically generated Epplet config file for %s.\n\n", epplet_name);
+           for (i = 0; i < config_dict->num_entries; i++)
+             {
+               if (config_dict->entries[i].key)
+                 {
+                   fprintf(f, "%s %s\n", config_dict->entries[i].key, config_dict->entries[i].value);
+                 }
+             }
+           fclose(f);
+         }
      }
 }
 
 char *
-Epplet_query_configs(char *key)
+Epplet_query_config_data(char *key)
 {
   int i;
+  ConfigItem *ci;
 
   if (config_dict)
     {
       for (i = 0; i < config_dict->num_entries; i++)
 	{
-	  if (config_dict->entries[i].key)
-	    {
-	      if (!strcmp(key, config_dict->entries[i].key))
-		/* we've found the key */
-		return config_dict->entries[i].value;
-	    }
+          ci = &(config_dict->entries[i]);
+	  if ((ci->key) && !strcmp(key, ci->key))
+            /* we've found the key */
+            return (ci->value);
 	}
     }
-
-  return NULL;
+  return ((char *) NULL);
 }
 
 void
-Epplet_modify_configs(char *key, char *value)
+Epplet_modify_config_data(char *key, char *value)
 {
   int i;
+  ConfigItem *ci;
 
   if (config_dict)
     {
       for (i = 0; i < config_dict->num_entries; i++)
 	{
-	  if (config_dict->entries[i].key)
-	    {
-	      if (!strcmp(key, config_dict->entries[i].key))
-		/* we've found the key */
-		{
-		  free(config_dict->entries[i].value);
-		  config_dict->entries[i].value = strdup(value);
-		  return;
-		}
-	    }
+          ci = &(config_dict->entries[i]);
+	  if ((ci->key) && !strcmp(key, ci->key))
+            /* we've found the key */
+            {
+              free(ci->value);
+              ci->value = strdup(value);
+              return;
+            }
 	}
 
       /* so we couldn't find the key, thus add it ...*/
-      config_dict->num_entries++;
-      config_dict->entries = realloc(config_dict->entries, sizeof(ConfigItem) * config_dict->num_entries);
-      config_dict->entries[config_dict->num_entries-1].key = NULL;
-      config_dict->entries[config_dict->num_entries-1].value = NULL;
-      config_dict->entries[config_dict->num_entries-1].key = strdup(key);
-      config_dict->entries[config_dict->num_entries-1].value = strdup(value);
+      Epplet_config_add_data(key, value);
     }
   else
     {
@@ -3888,12 +3889,9 @@ Epplet_modify_configs(char *key, char *value)
       config_dict = (ConfigDict*)malloc(sizeof(ConfigDict));
       if (config_dict)
 	{
-	  config_dict->num_entries = 1;
+	  config_dict->num_entries = 0;
 	  config_dict->entries = malloc(sizeof(ConfigItem));
-	  config_dict->entries[0].key = NULL;
-	  config_dict->entries[0].value = NULL;
-	  config_dict->entries[0].key = strdup(key);
-	  config_dict->entries[0].value = strdup(value);
+          Epplet_config_add_data(key, value);
 	}
     }
 }

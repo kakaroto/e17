@@ -25,14 +25,15 @@ main(int argc, char **argv)
    int           use_count; 
 
    Epplet_Init("E-Config", "0.1", "Enlightenment Config Test Epplet",
-	       5, 2, argc, argv, 0, defaults, 1);
-   result = Epplet_query_configs("USE_COUNT");
+	       5, 2, argc, argv, 0);
+   Epplet_load_config(defaults, 1);
+   result = Epplet_query_config_data("USE_COUNT");
    if (result)
      {
        use_count = atoi(result);
        use_count++;
        snprintf(s, 1024, "%i", use_count);
-       Epplet_modify_configs("USE_COUNT", s); 
+       Epplet_modify_config_data("USE_COUNT", s); 
      }
 
    snprintf(s, 1024, "Instance %i", Epplet_get_instance()); 

@@ -52,7 +52,7 @@ main(int argc, char **argv)
    Epplet_gadget p;
    
    Epplet_Init("E-Clock", "0.1", "Enlightenment Clock Epplet",
-	       12, 4, argc, argv, 0, NULL, 0);
+	       12, 4, argc, argv, 0);
    Epplet_timer(cb_timer, NULL, 0.05, "TIMER");
    Epplet_gadget_show(Epplet_create_button("Test", NULL, 
 					   2, 2, 40, 12, NULL, 0, NULL, 

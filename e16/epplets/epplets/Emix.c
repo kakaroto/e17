@@ -112,7 +112,7 @@ int main(int argc, char *argv[])
       return 1;
    initialize_channels();
    
-   Epplet_Init("Emix", "0.9", "Audio mixer Epplet", 3, 3, argc, argv, 0, NULL, 0);   
+   Epplet_Init("Emix", "0.9", "Audio mixer Epplet", 3, 3, argc, argv, 0);   
    vs_master = Epplet_create_vslider(2, 2, 44, 0, 20, 1, 5,
 				     &channels[0].value, set_volume, &channels[0]);
    vs_pcm = Epplet_create_vslider(10, 2, 44, 0, 20, 1, 5,

@@ -205,8 +205,7 @@ main(int argc, char **argv)
   prio = getpriority(PRIO_PROCESS, getpid());
   setpriority(PRIO_PROCESS, getpid(), prio + 10);
   atexit(save_conf);
-  Epplet_Init("E-Biff", "0.4", "Enlightenment Mailbox Checker Epplet",
-	      3, 3, argc, argv, 0, NULL, 0);
+  Epplet_Init("E-Biff", "0.4", "Enlightenment Mailbox Checker Epplet", 3, 3, argc, argv, 0);
   load_conf();
   if (folder_path == NULL) {
     if ((folder_path = getenv("MAIL")) == NULL) {

@@ -356,7 +356,7 @@ main(int argc, char **argv)
    prev_val = malloc(sizeof(double) * cpus);
    
    Epplet_Init("E-Cpu", "0.1", "Enlightenment CPU Epplet",
-	       3, 3, argc, argv, 0, NULL, 0);
+	       3, 3, argc, argv, 0);
    Epplet_timer(cb_timer, NULL, 0.1, "TIMER");
    Epplet_gadget_show(da = Epplet_create_drawingarea(2, 2, 44, 44));
    win = Epplet_get_drawingarea_window(da);

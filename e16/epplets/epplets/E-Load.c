@@ -97,7 +97,7 @@ main(int argc, char **argv)
    load     = malloc(sizeof(Epplet_gadget) * cpus);
    
    Epplet_Init("E-Load", "0.1", "Enlightenment Load Epplet",
-	       5, cpus, argc, argv, 0, NULL, 0);
+	       5, cpus, argc, argv, 0);
    Epplet_timer(cb_timer, NULL, 0.333, "TIMER");
    Epplet_gadget_show(Epplet_create_button(NULL, NULL,
 					   2, 2, 0, 0, "CLOSE", 0, NULL,
