@@ -557,6 +557,44 @@ void ewl_entry_move_cursor_to_left(Ewl_Entry * e)
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
 
+/*
+ * Move the cursor to the previous word. This is internal, so the
+ * parameter is not checked.
+ */
+void ewl_entry_move_cursor_to_previous_word(Ewl_Entry * e)
+{
+	char                 *s;
+	int                   len = 0;
+	int                   bp;
+
+	DENTER_FUNCTION(DLEVEL_STABLE);
+	DCHECK_PARAM_PTR("e", e);
+  
+	len = ewl_text_length_get(EWL_TEXT(e->text));
+	bp = ewl_cursor_base_position_get(EWL_CURSOR(e->cursor));
+	
+	s = ewl_entry_get_text(e);
+
+	if ((bp >1) && (s[bp] != ' ') && (s[bp-1] == ' '))
+	  bp--;
+
+	if (bp >= 0)
+	  {
+	    if (s[bp] == ' ') {
+	      while ((--bp > 0) && (s[bp] == ' ')){}
+	    }
+	    while ((--bp > 0) && (s[bp] != ' ')){}
+	  }
+	if (bp <= len)
+		++bp;
+
+	ewl_cursor_base_set(EWL_CURSOR(e->cursor), bp);
+
+	ewl_widget_configure(EWL_WIDGET(e));
+
+	DLEAVE_FUNCTION(DLEVEL_STABLE);
+}
+
 void ewl_entry_move_cursor_to_right(Ewl_Entry * e)
 {
 	char           *str;
@@ -580,6 +618,41 @@ void ewl_entry_move_cursor_to_right(Ewl_Entry * e)
 		ewl_cursor_select_to(EWL_CURSOR(e->cursor), pos);
 	else
 		ewl_cursor_base_set(EWL_CURSOR(e->cursor), pos);
+
+	ewl_widget_configure(EWL_WIDGET(e));
+
+	DLEAVE_FUNCTION(DLEVEL_STABLE);
+}
+
+/*
+ * Move the cursor to the next word. This is internal, so the
+ * parameter is not checked.
+ */
+void ewl_entry_move_cursor_to_next_word(Ewl_Entry * e)
+{
+	char                 *s;
+	int                   len = 0;
+	int                   bp;
+
+	DENTER_FUNCTION(DLEVEL_STABLE);
+	DCHECK_PARAM_PTR("e", e);
+  
+	len = ewl_text_length_get(EWL_TEXT(e->text));
+	bp = ewl_cursor_base_position_get(EWL_CURSOR(e->cursor));
+	
+	s = ewl_entry_get_text(e);
+
+	if (bp <= len)
+	  {
+	    if (s[bp] != ' ') {
+	      while ((++bp < len) && (s[bp] != ' ')){}
+	    }
+	    while ((++bp < len) && (s[bp] == ' ')){}
+	  }
+	if (bp > len)
+	  bp = len;
+
+	ewl_cursor_base_set(EWL_CURSOR(e->cursor), bp);
 
 	ewl_widget_configure(EWL_WIDGET(e));
 

@@ -50,7 +50,9 @@ char           *ewl_entry_get_text(Ewl_Entry * e);
 void            ewl_entry_set_editable(Ewl_Entry *e, unsigned int edit);
 
 void ewl_entry_move_cursor_to_left(Ewl_Entry * e);
+void ewl_entry_move_cursor_to_previous_word(Ewl_Entry * e);
 void ewl_entry_move_cursor_to_right(Ewl_Entry * e);
+void ewl_entry_move_cursor_to_next_word(Ewl_Entry * e);
 void ewl_entry_move_cursor_to_home(Ewl_Entry * e);
 void ewl_entry_move_cursor_to_end(Ewl_Entry * e);
 void ewl_entry_insert_text(Ewl_Entry * e, char *s);
