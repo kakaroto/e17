@@ -134,11 +134,6 @@ entrance_session_user_reset(Entrance_Session e)
    {
       entrance_auth_free(e->auth);
       e->auth = entrance_auth_new();
-      if ((obj = edje_object_part_swallow_get(e->edje, "EntranceFace")))
-      {
-         edje_object_part_unswallow(e->edje, obj);
-         evas_object_del(obj);
-      }
       edje_object_signal_emit(e->edje, "In", "EntranceUserEntry");
       /* FIXME: we shouldn't emit UserAuthFail here, but it gets us back to
          the beginning */
@@ -442,9 +437,9 @@ _entrance_session_user_load(Entrance_Session e, char *key)
          snprintf(buf, PATH_MAX, "%s/users/%s", PACKAGE_DATA_DIR, icon);
       if ((result = edje_object_file_set(edje, buf, "User")) > 0)
       {
-         Evas_Coord w, h;
+         Evas_Coord w = 48, h = 48;
 
-         edje_object_size_min_get(edje, &w, &h);
+         /* edje_object_size_min_get(edje, &w, &h); */
          evas_object_move(edje, -w, -h);
          evas_object_resize(edje, w, h);
          evas_object_layer_set(edje, 0);
