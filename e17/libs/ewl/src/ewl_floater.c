@@ -21,7 +21,6 @@ Ewl_Widget     *ewl_floater_new(Ewl_Widget * parent)
 
 	ewl_floater_init(EWL_FLOATER(f), parent);
 
-
 	DRETURN_PTR(EWL_WIDGET(f), DLEVEL_STABLE);
 }
 
@@ -60,6 +59,8 @@ void ewl_floater_init(Ewl_Floater * f, Ewl_Widget * parent)
 	 */
 	ewl_callback_append(EWL_WIDGET(f->follows), EWL_CALLBACK_CONFIGURE,
 			    ewl_floater_parent_configure_cb, w);
+	ewl_callback_append(EWL_WIDGET(f), EWL_CALLBACK_DESTROY,
+			    ewl_floater_parent_destroy_cb, w);
 
 	f->x = CURRENT_X(EWL_OBJECT(parent));
 	f->y = CURRENT_Y(EWL_OBJECT(parent));
@@ -117,8 +118,9 @@ void ewl_floater_set_relative(Ewl_Floater * f, Ewl_Widget * w)
 	 * Remove the callback attached to the configure event for the
 	 * followed widget.
 	 */
-	ewl_callback_del(f->follows, EWL_CALLBACK_CONFIGURE,
-			 ewl_floater_parent_configure_cb);
+	if (f->follows)
+		ewl_callback_del(f->follows, EWL_CALLBACK_CONFIGURE,
+				 ewl_floater_parent_configure_cb);
 
 	/*
 	 * Set the widget that the floater follows.
@@ -186,6 +188,16 @@ ewl_floater_parent_configure_cb(Ewl_Widget * w, void *ev_data, void *user_data)
 	 * Now request the calculated coordinates for the floater.
 	 */
 	ewl_object_request_position(EWL_OBJECT(w), x, y);
+
+	DLEAVE_FUNCTION(DLEVEL_STABLE);
+}
+
+void
+ewl_floater_parent_destroy_cb(Ewl_Widget * w, void *ev_data, void *user_data)
+{
+	DENTER_FUNCTION(DLEVEL_STABLE);
+
+	EWL_FLOATER(w)->follows = NULL;
 
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }

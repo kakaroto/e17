@@ -92,6 +92,7 @@ void ewl_fileselector_init(Ewl_Fileselector * fs, Ewl_Callback_Function fc)
 	w = EWL_WIDGET(fs);
 
 	ewl_box_init(EWL_BOX(w), EWL_ORIENTATION_HORIZONTAL);
+	ewl_widget_set_appearance(w, "fileselector");
 	ewl_box_set_homogeneous(EWL_BOX(w), TRUE);
 	ewl_object_set_fill_policy(EWL_OBJECT(w), EWL_FLAG_FILL_SHRINK |
 				                  EWL_FLAG_FILL_FILL);

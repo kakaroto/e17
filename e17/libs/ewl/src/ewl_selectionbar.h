@@ -2,6 +2,11 @@
 #ifndef __EWL_SELECTIONBAR_H__
 #define __EWL_SELECTIONBAR_H__
 
+/*
+ * @themekey /selectionbar/file
+ * @themekey /selectionbar/group
+ */
+
 typedef struct _ewl_selectionbar Ewl_Selectionbar;
 
 #define EWL_SELECTIONBAR(selectionbar) ((Ewl_Selectionbar *) selectionbar)

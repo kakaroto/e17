@@ -9,6 +9,11 @@
  * @{
  */
 
+/**
+ * @themekey /tree/file
+ * @themekey /tree/group
+ */
+
 typedef struct Ewl_Tree Ewl_Tree;
 
 /**
@@ -83,6 +88,22 @@ Ewl_Widget *ewl_tree_add_text_row(Ewl_Tree *tree, Ewl_Row *prow, char **text);
 void ewl_tree_destroy_row(Ewl_Tree *tree, Ewl_Row *row);
 void ewl_tree_set_row_expand(Ewl_Row *row, Ewl_Tree_Node_Flags expanded);
 Ewl_Row *ewl_tree_find_row(Ewl_Tree *tree, int row);
+
+/*
+ * Internally used callbacks, override at your own risk.
+ */
+void ewl_tree_node_configure_cb(Ewl_Widget * w, void *ev_data,
+			     void *user_data);
+void ewl_tree_node_clicked_cb(Ewl_Widget * w, void *ev_data,
+			   void *user_data);
+
+void ewl_tree_node_add_cb(Ewl_Container *c, Ewl_Widget *w);
+void ewl_tree_node_remove_cb(Ewl_Container *c, Ewl_Widget *w);
+void ewl_tree_node_resize_cb(Ewl_Container *c, Ewl_Widget *w, int size,
+			     Ewl_Orientation o);
+
+
+void ewl_tree_row_select_cb(Ewl_Widget *w, void *ev_data, void *user_data);
 
 /**
  * @}

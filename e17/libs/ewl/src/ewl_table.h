@@ -2,6 +2,11 @@
 #ifndef __EWL_TABLE_H__
 #define __EWL_TABLE_H__
 
+/*
+ * @themekey /table/file
+ * @themekey /table/group
+ */
+
 typedef struct Ewl_Table Ewl_Table;
 
 #define EWL_TABLE(table) ((Ewl_Table *)table)

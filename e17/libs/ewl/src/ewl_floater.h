@@ -50,6 +50,8 @@ void            ewl_floater_init(Ewl_Floater * f, Ewl_Widget * parent);
  */
 void ewl_floater_parent_configure_cb(Ewl_Widget * w, void *ev_data,
 				     void *user_data);
+void ewl_floater_parent_destroy_cb(Ewl_Widget * w, void *ev_data,
+				   void *user_data);
 void ewl_floater_reparent_cb(Ewl_Widget * parent, void *ev_data,
 			     void *user_data);
 

@@ -266,6 +266,10 @@ ewl_menu_base_expand_cb(Ewl_Widget *w, void *ev_data, void *user_data)
 	ewl_container_append_child(EWL_CONTAINER(menu->popup), menu->popbox);
 	ewl_widget_show(menu->popup);
 
+	if (EWL_MENU_ITEM(w)->submenu)
+		ewl_object_set_minimum_w(EWL_OBJECT(menu->popup),
+					 CURRENT_W(menu));
+
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
 
@@ -292,7 +296,8 @@ ewl_menu_base_destroy_cb(Ewl_Widget * w, void *ev_data, void *user_data)
 
 	menu = EWL_MENU_BASE(w);
 
-	ewl_widget_destroy(menu->popup);
+	if (menu->popup)
+		ewl_widget_destroy(menu->popup);
 
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }

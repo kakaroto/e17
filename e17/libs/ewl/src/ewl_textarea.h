@@ -10,6 +10,11 @@
  */
 
 /**
+ * @themekey /textarea/file
+ * @themekey /textarea/group
+ */
+
+/**
  * Provides for layout of text across multiple lines, as well as formatting
  * portions of the text in different ways, and wrapping around obstacles.
  */

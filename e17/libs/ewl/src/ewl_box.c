@@ -717,9 +717,6 @@ ewl_box_child_resize_cb(Ewl_Container * c, Ewl_Widget * w, int size,
 
 	DENTER_FUNCTION(DLEVEL_STABLE);
 
-	if (o == EWL_ORIENTATION_VERTICAL)
-		printf("Resizing:\t%p\t%d\n", w, size);
-
 	/*
 	 * Get the appropriate dimension setting functions based on the
 	 * orientation.

@@ -1,6 +1,11 @@
 #ifndef __EWL_GRID_H__
 #define __EWL_GRID_H__
 
+/*
+ * @themekey /grid/file
+ * @themekey /grid/group
+ */
+
 typedef struct Ewl_Grid_Info Ewl_Grid_Info;
 
 struct Ewl_Grid_Info

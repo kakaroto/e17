@@ -3,6 +3,11 @@
 #define __EWL_SELECTIONBOOK_H__
 
 
+/*
+ * @themekey /selectionbook/file
+ * @themekey /selectionbook/group
+ */
+
 typedef struct _ewl_sbook_page Ewl_SbookPage;
 
 #define EWL_SBOOKPAGE(sbook_page) ((Ewl_SbookPage *) sbook_page)

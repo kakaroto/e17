@@ -1,6 +1,11 @@
 #ifndef __EWL_TOOLTIP_H__
 #define __EWL_TOOLTIP_H__
 
+/*
+ * @themekey /tooltip/file
+ * @themekey /tooltip/group
+ */
+
 typedef struct _ewl_tooltip Ewl_Tooltip;
 
 #define EWL_TOOLTIP(tt) ((Ewl_Tooltip *) tt)

@@ -1,6 +1,11 @@
 #ifndef _EWL_SPECTRUM_H
 #define _EWL_SPECTRUM_H
 
+/*
+ * @themekey /spectrum/file
+ * @themekey /spectrum/group
+ */
+
 enum {
 	PICK_MODE_RGB_RED,
 	PICK_MODE_RGB_GREEN,

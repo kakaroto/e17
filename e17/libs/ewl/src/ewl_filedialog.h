@@ -7,6 +7,11 @@
  */
 
 /**
+ * @themekey /filedialog/file
+ * @themekey /filedialog/group
+ */
+
+/**
  * The Ewl_Filedialog provides a filedialog
  */
 typedef struct Ewl_Filedialog Ewl_Filedialog;

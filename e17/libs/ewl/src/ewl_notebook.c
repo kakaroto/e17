@@ -577,7 +577,9 @@ void ewl_notebook_set_visible_page(Ewl_Notebook *n, int t)
 	i = 0;
 	ewd_list_goto_first(c->children);
 	while ((child = ewd_list_next(c->children))) {
-		if (child != n->tab_box) {
+		if (child != n->tab_box &&
+				ewl_object_get_flags(EWL_OBJECT(child),
+						EWL_FLAG_QUEUED_DSCHEDULED)) {
 			if (i == t)
 				break;
 			i++;

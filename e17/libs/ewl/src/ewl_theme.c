@@ -58,7 +58,7 @@ int ewl_theme_init(void)
 
 	snprintf(theme_path, PATH_MAX, "%s/.e/ewl/themes/%s", home, theme_name);
 
-	if (((stat(theme_path, &st)) == 0) || S_ISDIR(st.st_mode)) {
+	if (((stat(theme_path, &st)) == 0) && S_ISDIR(st.st_mode)) {
 		snprintf(theme_db_path, PATH_MAX, "%s/theme.db", theme_path);
 
 		theme_db = e_db_open_read(theme_db_path);

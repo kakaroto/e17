@@ -44,6 +44,18 @@ void ewl_imenu_init(Ewl_IMenu * menu, char *image, char *title)
 	ewl_callback_prepend(EWL_WIDGET(menu), EWL_CALLBACK_SELECT,
 			    ewl_imenu_expand_cb, NULL);
 
+	/*
+	 * Create the popup menu portion of the widget.
+	 */
+	menu->base.popup = ewl_floater_new(EWL_WIDGET(menu));
+	ewl_widget_set_appearance(EWL_WIDGET(menu->base.popup), "imenu");
+	ewl_box_set_orientation(EWL_BOX(menu->base.popup),
+				EWL_ORIENTATION_VERTICAL);
+	ewl_object_set_fill_policy(EWL_OBJECT(menu->base.popup),
+				   EWL_FLAG_FILL_NONE);
+	ewl_object_set_alignment(EWL_OBJECT(menu->base.popup),
+				 EWL_FLAG_ALIGN_LEFT | EWL_FLAG_ALIGN_TOP);
+
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
 
@@ -57,51 +69,25 @@ void ewl_imenu_expand_cb(Ewl_Widget * w, void *ev_data, void *user_data)
 
 	menu = EWL_IMENU(w);
 
-	/*
-	 * Create the popup menu portion of the menu. Do this prior to
-	 * initializing the rest of the fields to avoid the add callback being
-	 * called.
-	 */
-	menu->base.popup = ewl_floater_new(EWL_WIDGET(menu));
-	ewl_callback_append(menu->base.popup, EWL_CALLBACK_DESTROY,
-			ewl_imenu_floater_destroy_cb, menu);
-	ewl_widget_set_appearance(EWL_WIDGET(menu->base.popup), "imenu");
-	ewl_box_set_orientation(EWL_BOX(menu->base.popup),
-			EWL_ORIENTATION_VERTICAL);
-	ewl_object_set_fill_policy(EWL_OBJECT(menu->base.popup),
-				   EWL_FLAG_FILL_NONE);
-	ewl_object_set_alignment(EWL_OBJECT(menu->base.popup),
-				 EWL_FLAG_ALIGN_LEFT | EWL_FLAG_ALIGN_TOP);
-
-	emb = ewl_embed_find_by_widget(w);
-	ewl_container_append_child(EWL_CONTAINER(emb), menu->base.popup); 
+	if (!REALIZED(menu->base.popup)) {
+		emb = ewl_embed_find_by_widget(w);
+		ewl_container_append_child(EWL_CONTAINER(emb),
+					   menu->base.popup); 
+	}
 
 	/*
 	 * Position the popup menu relative to the menu.
 	 */
-	if (EWL_MENU_ITEM(w)->submenu)
+	if (EWL_MENU_ITEM(w)->submenu) {
 		ewl_floater_set_position(EWL_FLOATER(menu->base.popup),
 					 CURRENT_W(w), 0);
+	}
 	else {
 		ewl_floater_set_position(EWL_FLOATER(menu->base.popup), 0,
 					 CURRENT_H(w));
-		ewl_object_set_minimum_w(EWL_OBJECT(menu->base.popup),
-					     CURRENT_W(menu));
 	}
 
-	ewl_callback_del(w, EWL_CALLBACK_SELECT, ewl_imenu_expand_cb);
-
-	DLEAVE_FUNCTION(DLEVEL_STABLE);
-}
-
-void ewl_imenu_floater_destroy_cb(Ewl_Widget * w, void *ev_data, void *user_data)
-{
-	Ewl_IMenu *menu = user_data;
-
-	DENTER_FUNCTION(DLEVEL_STABLE);
-
-	if (menu->base.popup == w)
-		menu->base.popup = NULL;
+	ewl_widget_show(menu->base.popup);
 
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }

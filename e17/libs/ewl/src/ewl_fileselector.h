@@ -7,6 +7,11 @@
  */
 
 /**
+ * @themekey /fileselector/file
+ * @themekey /fileselector/group
+ */
+
+/**
  * The Ewl_Fileselector_Row provides data for a single row
  */
 typedef struct _ewl_fileselector_row Ewl_Fileselector_Row;

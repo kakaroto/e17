@@ -525,10 +525,9 @@ void ewl_widget_set_parent(Ewl_Widget * w, Ewl_Widget * p)
 				ewl_realize_request(w);
 			}
 		}
-	}
 
-	if (p)
 		ewl_widget_configure(p);
+	}
 
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
@@ -1102,7 +1101,6 @@ void ewl_widget_unrealize_cb(Ewl_Widget * w, void *ev_data, void *user_data)
 	 * First find it's parent embed so we can destroy the evas objects.
 	 */
 	emb = ewl_embed_find_by_widget(w);
-	ewl_embed_remove_tab_order(emb, w);
 
 	/*
 	 * Destroy the clip box used for fx.

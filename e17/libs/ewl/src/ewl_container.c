@@ -257,8 +257,11 @@ void ewl_container_remove_child(Ewl_Container * pc, Ewl_Widget * child)
 	 * If the child isn't found, then this isn't it's parent.
 	 */
 	if (!temp) {
+		/* FIXME: Test to see if this is correct. It doesn't seem that
+		 * it should be.
 		if (pc->clip_box)
 			evas_object_hide(pc->clip_box);
+			*/
 		DRETURN(DLEVEL_STABLE);
 	}
 
@@ -270,6 +273,8 @@ void ewl_container_remove_child(Ewl_Container * pc, Ewl_Widget * child)
 
 	if (ewd_list_is_empty(pc->children) && pc->clip_box)
 		evas_object_hide(pc->clip_box);
+
+	ewl_widget_configure(EWL_WIDGET(pc));
 
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
@@ -285,18 +290,21 @@ void ewl_container_resize_child(Ewl_Widget * w, int size, Ewl_Orientation o)
 {
 	int             old_w, old_h;
 	int             new_w, new_h;
+	Ewl_Container  *c;
 
 	DCHECK_PARAM_PTR("w", w);
 
 	if (!size || ewl_in_realize_phase() || !REALIZED(w))
 		DRETURN(DLEVEL_STABLE);
 
+	c = EWL_CONTAINER(w->parent);
+
 	/*
 	 * If there is no parent to this widget, or it hasn't really changed
 	 * size just exit. Also exit if it has no function to be notified for
 	 * child resizes.
 	 */
-	if (HIDDEN(w) || !w->parent || !EWL_CONTAINER(w->parent)->child_resize)
+	if (HIDDEN(w) || !c || !c->child_resize)
 		DRETURN(DLEVEL_STABLE);
 
 	/*
@@ -309,8 +317,7 @@ void ewl_container_resize_child(Ewl_Widget * w, int size, Ewl_Orientation o)
 	 * Run the parents child resize function to allow it to update it's
 	 * preferred size.
 	 */
-	EWL_CONTAINER(w->parent)->child_resize(EWL_CONTAINER(w->parent),
-			w, size, o);
+	c->child_resize(c, w, size, o);
 
 	/*
 	 * Get the new preferred size of the parent to see if it changed.
@@ -322,10 +329,10 @@ void ewl_container_resize_child(Ewl_Widget * w, int size, Ewl_Orientation o)
 	 * The parent will only end up on the configure queue if it didn't
 	 * change size (ie. it's parent isn't on the configure queue).
 	 */
-	if (w->parent->parent)
-		ewl_widget_configure(w->parent->parent);
+	if (EWL_WIDGET(c)->parent)
+		ewl_widget_configure(EWL_WIDGET(c)->parent);
 	else
-		ewl_widget_configure(w->parent);
+		ewl_widget_configure(EWL_WIDGET(c));
 }
 
 /**
@@ -605,6 +612,8 @@ void ewl_container_call_child_add(Ewl_Container *c, Ewl_Widget *w)
 
 	if (c->child_add && VISIBLE(w) && REALIZED(w))
 		c->child_add(c, w);
+
+	ewl_widget_configure(EWL_WIDGET(c));
 
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }

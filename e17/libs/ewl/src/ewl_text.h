@@ -10,6 +10,11 @@
  */
 
 /**
+ * @themekey /text/file
+ * @themekey /text/group
+ */
+
+/**
  * Inherits from the Ewl_Widget and provides single line text display.
  */
 typedef struct Ewl_Text Ewl_Text;

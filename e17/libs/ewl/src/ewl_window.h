@@ -11,6 +11,11 @@
  */
 
 /**
+ * @themekey /window/file
+ * @themekey /window/group
+ */
+
+/**
  * The window structure is mostly a container for holding widgets and a
  * wrapper around the xlib window.
  */

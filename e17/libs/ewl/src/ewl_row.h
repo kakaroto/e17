@@ -5,6 +5,11 @@ typedef struct _ewl_row Ewl_Row;
 #define EWL_ROW(t) ((Ewl_Row *)t)
 
 /*
+ * @themekey /row/file
+ * @themekey /row/group
+ */
+
+/*
  * Tree rows layout cells in a left to right fashion.
  */
 struct _ewl_row

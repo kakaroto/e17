@@ -52,6 +52,7 @@ struct Ewl_Container
 {
 	Ewl_Widget       widget; /**< Inherit the basics of the widget. */
 	Ewd_List        *children; /**< List of children that are contained. */
+	Ewd_List        *hidden; /**< Invisible children that are contained. */
 	Evas_Object     *clip_box; /**< Clip box to bound widgets inside. */
 	Ewl_Child_Add    child_add; /**< Function called on child add */
 	Ewl_Child_Add    child_remove; /**< Function called on child remove */
