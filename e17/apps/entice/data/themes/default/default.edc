@@ -1,4 +1,8 @@
 #include "images.edc"
+fonts {
+    font, "Vera.ttf" "Edje.Vera";
+    font, "VeraIt.ttf" "Edje.VeraI";
+}
 
 data {
     item, "container_layout" "entice";

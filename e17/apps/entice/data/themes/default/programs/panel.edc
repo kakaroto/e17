@@ -9,6 +9,20 @@
 	    }
 	    program
 	    {
+		name, 	"MouseWheelUp";
+		signal, "mouse,wheel,0,-1";
+		source, "PanelMouseArea";
+		action, SIGNAL_EMIT "EnticeImagePrev" "";
+	    }
+	    program
+	    {
+		name, 	"MouseWheelDown";
+		signal, "mouse,wheel,0,1";
+		source, "PanelMouseArea";
+		action, SIGNAL_EMIT "EnticeImageNext" "";
+	    }
+	    program
+	    {
 		name, 	"KillPanelTimers";
 		signal, "mouse,in";
 		source, "PanelMouseArea";
