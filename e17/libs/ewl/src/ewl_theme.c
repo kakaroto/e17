@@ -332,17 +332,10 @@ char           *ewl_theme_data_get_str(Ewl_Widget * w, char *k)
 			ret = ewd_hash_get(cached_theme_data, temp);
 
 		if (!ret) {
-			if (theme_db) {
-				/*
-				 * strdup here to stay consistent with edje
-				 */
+			if (theme_db)
 				ret = e_db_str_get(theme_db, temp);
-				if (ret)
-					ret = strdup(ret);
-			}
-			else {
+			else
 				ret = edje_file_data_get(theme_path, temp);
-			}
 
 			if (ret && ewl_config.theme.cache) {
 				if (!cached_theme_data)
