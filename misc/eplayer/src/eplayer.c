@@ -40,7 +40,7 @@ static void config_init(Config *cfg) {
 	         "software");
 	snprintf(cfg->output_plugin, sizeof(cfg->output_plugin),
 	         "OSS");
-	snprintf(cfg->theme, sizeof(cfg->theme), "eplayer");
+	snprintf(cfg->theme, sizeof(cfg->theme), "default");
 }
 
 static int config_load(Config *cfg, const char *file) {
@@ -110,7 +110,8 @@ static ePlayer *eplayer_new() {
 	/* load config */
 	config_init(&player->cfg);
 	
-	snprintf(cfg_file, sizeof(cfg_file), "%s/." PACKAGE ".db",
+	snprintf(cfg_file, sizeof(cfg_file),
+	         "%s/.e/apps/" PACKAGE ".db",
 	         getenv("HOME"));
 	
 	if (!config_load(&player->cfg, cfg_file)) {
