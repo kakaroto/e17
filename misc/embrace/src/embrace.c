@@ -22,7 +22,7 @@
 #endif
 
 #include <Edb.h>
-#include <Esmart/container.h>
+#include <Esmart/Esmart_Container.h>
 #include <Esmart/Esmart_Draggies.h>
 #include <Esmart/Esmart_Trans.h>
 #include <stdio.h>
@@ -269,7 +269,7 @@ static int load_mailboxes (Embrace *e, E_DB_File *edb)
 	for (i = 1; i <= num; i++)
 		if ((mailbox = load_mailbox (e, edb, i))) {
 			mailbox_emit_add (mailbox);
-			e_container_element_append (e->gui.container,
+			esmart_container_element_append (e->gui.container,
 			                            mailbox_edje_get (mailbox));
 
 			e->mailboxes = evas_list_append (e->mailboxes, mailbox);
@@ -448,12 +448,12 @@ static bool ui_load_container (Embrace *e)
 		return false;
 	}
 
-	if (!(e->gui.container = e_container_new (e->gui.evas)))
+	if (!(e->gui.container = esmart_container_new (e->gui.evas)))
 		return false;
 
-	e_container_direction_set (e->gui.container, 1);
-	e_container_spacing_set (e->gui.container, 0);
-	e_container_fill_policy_set (e->gui.container,
+	esmart_container_direction_set (e->gui.container, 1);
+	esmart_container_spacing_set (e->gui.container, 0);
+	esmart_container_fill_policy_set (e->gui.container,
 	                             CONTAINER_FILL_POLICY_FILL_X);
 
 	edje_object_part_swallow (e->gui.edje, "Container",
