@@ -1,7 +1,11 @@
 if FSSTD
+ENLIGHTENMENT_BIN=@bindir@
+ENLIGHTENMENT_ROOT=$(pkgdatadir)
 escriptsdatadir = @bindir@
 else
 escriptsdatadir = $(prefix)/enlightenment/bin
+ENLIGHTENMENT_BIN=$(prefix)/enlightenment/bin
+ENLIGHTENMENT_ROOT=$(prefix)/enlightenment
 endif
 
 escriptsdata_DATA =
