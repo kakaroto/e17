@@ -54,17 +54,33 @@ char *homedir (int uid)
           ((getenv ("TMPDIR") == NULL) ? "/tmp" : getenv ("TMPDIR")));
 }
 
-int compile_regex ()
+void compile_regex ()
 {
   int status;
+  char err_buf[ERR_BUF_SIZE];
 
   char pattern_mark[] = "\"([^\"]*)\"[[:space:]]*";
   char pattern_char[] = "([^[[:space:]]*)[[:space:]]*";
   char pattern_space[] = "[[:space:]]*(.*)";
 
   status = regcomp (&gv.re_mark, pattern_mark, REG_EXTENDED);
+  if (status != 0)
+  {
+    regerror (status, &gv.re_mark, err_buf, (size_t) ERR_BUF_SIZE);
+    printf ("regex compile: %s\n", err_buf);
+  }
   status = regcomp (&gv.re_char, pattern_char, REG_EXTENDED);
+  if (status != 0)
+  {
+    regerror (status, &gv.re_mark, err_buf, (size_t) ERR_BUF_SIZE);
+    printf ("regex compile: %s\n", err_buf);
+  }
   status = regcomp (&gv.re_space, pattern_space, REG_EXTENDED);
+  if (status != 0)
+  {
+    regerror (status, &gv.re_mark, err_buf, (size_t) ERR_BUF_SIZE);
+    printf ("regex compile: %s\n", err_buf);
+  }
 
   gv.pattern_mark = strdup (pattern_mark);
   gv.pattern_char = strdup (pattern_char);
@@ -77,7 +93,7 @@ int menu_regex (char *line, gchar ***data_ptr)
   int numsub = 0;
   int maxsub = 1;
   int status;
-  char err_buf[1024];
+  char err_buf[ERR_BUF_SIZE];
   char **data;
   int i, n;
 
@@ -86,7 +102,6 @@ int menu_regex (char *line, gchar ***data_ptr)
   *data_ptr = data;
 
   line = strdup (line);
-  printf ("%s\n", line);
 
   /* cut spaces */
   if (line[0] == ' ')
@@ -120,7 +135,7 @@ int menu_regex (char *line, gchar ***data_ptr)
                            &ss, maxsub, &numsub);
       if (status != 0)
       {
-        regerror (status, &gv.re_mark, err_buf, (size_t) 1024);
+        regerror (status, &gv.re_mark, err_buf, (size_t) ERR_BUF_SIZE);
         printf ("regex exec: %s\n", err_buf);
       }
 
@@ -140,8 +155,6 @@ int menu_regex (char *line, gchar ***data_ptr)
         free (ss[i].end);
       }
       free (ss);
-
-      printf ("match \": %s\n", data[n]);
     }
     else if (line[0] != ' ')
     {
@@ -149,7 +162,7 @@ int menu_regex (char *line, gchar ***data_ptr)
                            &ss, maxsub, &numsub);
       if (status != 0)
       {
-        regerror (status, &gv.re_char, err_buf, (size_t) 1024);
+        regerror (status, &gv.re_char, err_buf, (size_t) ERR_BUF_SIZE);
         printf ("regex exec: %s\n", err_buf);
       }
 
@@ -169,8 +182,6 @@ int menu_regex (char *line, gchar ***data_ptr)
         free (ss[i].end);
       }
       free (ss);
-
-      printf ("match char: %s\n", data[n]);
     }
   }
 

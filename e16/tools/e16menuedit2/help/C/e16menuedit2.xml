@@ -2,9 +2,9 @@
 <!DOCTYPE article PUBLIC "-//OASIS//DTD DocBook XML V4.1.2//EN" 
 "http://www.oasis-open.org/docbook/xml/4.1.2/docbookx.dtd" [
   <!ENTITY legal SYSTEM "legal.xml">
-  <!ENTITY appversion "0.0.1">
+  <!ENTITY appversion "0.0.2">
   <!ENTITY manrevision "1">
-  <!ENTITY date "August 2004">
+  <!ENTITY date "Januar 2005">
   <!ENTITY app "<application>E16 Menu Editor II</application>">
   <!-- Information about the entities
        The legal.xml file contains legal information, there is no need to edit the file. 
@@ -180,8 +180,3 @@
   </sect1>
   
 </article>
-
-
-
-
-

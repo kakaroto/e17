@@ -1,6 +1,6 @@
 Name: e16menuedit2
 Summary: e16menuedit2
-Version: 0.0.1
+Version: 0.0.2
 Release: 1
 License: BSD
 Group: System Environment/Libraries
@@ -58,4 +58,3 @@ rm -fr %{buildroot}
 %changelog
 * Mon Nov 1 2004 Didier F.B Casse <didier@microtronyx.com> 
 -Initial RPM Release
-

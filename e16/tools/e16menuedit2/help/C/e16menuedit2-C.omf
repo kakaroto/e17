@@ -10,7 +10,7 @@
     <date>
      2004-08-13
     </date>
-    <version identifier="0.0.1" date="2004-08-13" description="Second Release"/>
+    <version identifier="0.0.2" date="Januar 2005" description="Second Release"/>
     <subject category="GNOME|Utilities"/>
     <description>
       an Enlightenment 0.16.x menu editor

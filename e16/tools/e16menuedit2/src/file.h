@@ -45,6 +45,8 @@
 #include "e16menuedit2.h"
 #include "regex_func.h"
 
+#define ERR_BUF_SIZE 1024
+
 char *field (char *s, int field);
 void fword (char *s, int num, char *wd);
 char *homedir (int uid);
@@ -56,7 +58,7 @@ char *pkg_config_version (char *package);
 char *e16_version ();
 char *get_fallback_locale (char *locale);
 int run_help (char *help_app, char* help_dir, char *help_file);
-int compile_regex ();
+void compile_regex ();
 int menu_regex (char *line, gchar ***data_ptr);
 
 #endif /* _FILE_H */
