@@ -1092,7 +1092,6 @@ HandleDestroy(XEvent * ev)
 	   mode.ewin = NULL;
 	if (mode.dockapp_support && ewin->docked)
 	   DockDestroy(ewin);
-	DesktopRemoveEwin(ewin);
 	FreeEwin(ewin);
 	HintsSetClientList();
 	EDBUG_RETURN_;
@@ -1489,12 +1488,13 @@ HandleUnmap(XEvent * ev)
 			     ewin->client.y);
 	     ICCCM_Withdraw(ewin);
 	     RemoveItem(NULL, ewin->client.win, LIST_FINDBY_ID, LIST_TYPE_EWIN);
-	     DesktopRemoveEwin(ewin);
 	     FreeEwin(ewin);
 	     HintsSetClientList();
 	  }
 	else
-	   HideEwin(ewin);
+	  {
+	     HideEwin(ewin);
+	  }
      }
    EDBUG_RETURN_;
 }

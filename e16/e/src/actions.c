@@ -2797,7 +2797,6 @@ doSendToNextDesk(void *params)
    if (!ewin)
       EDBUG_RETURN(0);
 
-   DesktopRemoveEwin(ewin);
    MoveEwinToDesktop(ewin, ewin->desktop + 1);
    RaiseEwin(ewin);
    ICCCM_Configure(ewin);
@@ -2819,7 +2818,6 @@ doSendToPrevDesk(void *params)
    if (!ewin)
       EDBUG_RETURN(0);
 
-   DesktopRemoveEwin(ewin);
    MoveEwinToDesktop(ewin, ewin->desktop - 1);
    RaiseEwin(ewin);
    ICCCM_Configure(ewin);

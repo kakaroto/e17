@@ -4226,7 +4226,6 @@ IPC_WinOps(char *params, Client * c)
 			 {
 			    if (!strcmp(param1, "next"))
 			      {
-				 DesktopRemoveEwin(ewin);
 				 MoveEwinToDesktop(ewin, ewin->desktop + 1);
 				 RaiseEwin(ewin);
 				 ICCCM_Configure(ewin);
@@ -4234,7 +4233,6 @@ IPC_WinOps(char *params, Client * c)
 			      }
 			    else if (!strcmp(param1, "prev"))
 			      {
-				 DesktopRemoveEwin(ewin);
 				 MoveEwinToDesktop(ewin, ewin->desktop - 1);
 				 RaiseEwin(ewin);
 				 ICCCM_Configure(ewin);
@@ -4247,7 +4245,6 @@ IPC_WinOps(char *params, Client * c)
 			      }
 			    else
 			      {
-				 DesktopRemoveEwin(ewin);
 				 MoveEwinToDesktop(ewin, atoi(param1));
 				 RaiseEwin(ewin);
 				 ICCCM_Configure(ewin);
