@@ -305,9 +305,8 @@ char           *ewl_theme_image_get(Ewl_Widget * w, char *k)
 	DCHECK_PARAM_PTR_RET("w", w, NULL);
 	DCHECK_PARAM_PTR_RET("k", k, NULL);
 
-	if (theme_db)
-		data = ewl_theme_data_get_str(w, k);
-	else
+	data = ewl_theme_data_get_str(w, k);
+	if (!data && !theme_db)
 		data = strdup(theme_path);
 
 	if (!data)
