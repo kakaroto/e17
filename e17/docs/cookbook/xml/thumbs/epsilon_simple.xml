@@ -1,0 +1,89 @@
+<section>
+<sectioninfo>
+  <author>
+    <firstname>Ben</firstname>
+    <surname>Rockwood</surname>
+    <email>benr@cuddletech.com</email>
+    <othername>'technikolor'</othername>
+  </author>
+  <date>11 July 2004</date>
+</sectioninfo>
+
+<title>Recipe: Simple Thumbnailing with Epsilon</title>
+
+<para>
+Epsilon creates thumbnails that conform to the freedesktop.org <ulink url='http://triq.net/~jens/thumbnail-spec/index.html'>Thumbnail Managing Standard</ulink>.  Thumbnails can be created for a variety of formats, including native PNG support, Epeg support, or any format supported by Imlib2.  Lets look at a simple Epsilon application similar to the earlier Epeg example.
+</para>
+
+
+<example>
+<title>Epsilon Simple Thumbnail</title>
+<programlisting>
+#include &lt;stdio.h&gt;
+#include &lt;Epsilon.h&gt;
+
+int main(int argc, char *argv[]){
+
+        Epsilon * image = NULL;
+        Epsilon_Info *info;
+
+        if(argc &lt; 1) {
+                printf("Usage: %s input_image\n", argv[0]);
+                return(1);
+        }
+
+        epsilon_init();
+
+        image = epsilon_new(argv[1]);
+
+        info = epsilon_info_get(image);
+        printf("%s -  Width: %d, Height: %d\n", argv[1], info-&gt;w, info-&gt;h);
+
+
+        if (epsilon_generate(image) == EPSILON_OK) {
+                printf("Thumbnail created!\n");
+        } else {
+                printf("Generation failed\n");
+        }
+        epsilon_free(image);
+
+        return(0);
+}
+</programlisting>
+</example>
+
+<para>
+It can be compiled in the following way:
+</para>
+
+<example>
+<programlisting>
+gcc `epsilon-config --libs --cflags` epsilon-simple.c -o epsilon-simple
+</programlisting>
+</example>
+
+<para>
+You'll notice almost immediately that no output filename is accepted, nor is any output function used.  The freedesktop.org Thumbnail Managing Standard specifies that all thumbnails are to be created in the ~/.thumbnail directory tree.  This centralized thumbnail storage allows for sharing of thumbnails between multiple applications that adhere to the standard.  After compiling and running the example code against an image look for the thumbnail in ~/.thumbnails/large.  Thumbnails are also named according to the standard, replacing the origonal name with an MD5 checksum so that even if the image is renamed the thumbnail doesn't need to be regenerated.
+</para>
+
+<para>
+In our example we start by verifying that we get an input image to thumbnail and then initialize Epsilon using the <function>epsilon_init</function> function.  <function>epsilon_new</function> accepts a single argument, the image to be thumbnailed, and returns an epsilon pointer which is used by the other functions. 
+</para>
+
+<para>
+Epsilon has the ability to pull some basic information from your images.  In the above example we use <function>epsilon_info_get</function> to return a <returnvalue>Epsilon_Info structure</returnvalue> containing the input images modification time (mtime), location (URI), width, height, and MIME type.  Here we simply report the image width and height using the info structures <varname>w</varname> and <varname>h</varname> elements.
+</para>
+
+<para>
+<function>epsilon_generate</function> is the heavy lifter.  This function will actually generate the thumbnail and place it in the proper location.  Its return value indicates success, which the Epsilon header provides CPP macro definations for: <varname>EPSILON_FAIL</varname> and <varname>EPSILON_OK</varname>.
+</para>
+
+<para>
+Clean up is provides by <function>epsilon_free</function>.
+</para>
+
+<para>
+Epsilon, as seen here, is very simple to use and integrate into any application relying on thumbnails.  Not only is a simple API provided but integration with the reigning standard used for thumbnailing at no extra cost.  For additional information about Epsilon, see the Epsilon Doxygen on Enlightenment.org.
+</para>
+
+</section>

@@ -43,6 +43,7 @@
 
  <!-- Thumbs, aka: Epeg and Epsilon -->
  <!ENTITY epeg_simple SYSTEM "xml/thumbs/epeg_simple.xml">
+ <!ENTITY epsilon_simple SYSTEM "xml/thumbs/epsilon_simple.xml">
 
  <!-- edb -->
  <!ENTITY edb_shell_file_create SYSTEM "xml/edb/edb_shell_file_create.xml">
