@@ -1241,15 +1241,29 @@ doCleanup(void *params)
 		  fixed[k].x = ((EWin *) lst[i])->x;
 		  fixed[k].y = ((EWin *) lst[i])->y;
 		  fixed[k].w = ((EWin *) lst[i])->w;
-		  if (!((EWin *) lst[i])->never_use_area)
+		  fixed[k].h = ((EWin *) lst[i])->h;
+		  if (fixed[k].x < 0)
 		    {
-		       fixed[k].p = ((EWin *) lst[i])->layer;
+		       fixed[k].x += fixed[k].w;
+		       fixed[k].x = 0;
 		    }
-		  else
+		  if ((fixed[k].x + fixed[k].w) > root.w)
+		     fixed[k].w = root.w - fixed[k].x;
+		  if (fixed[k].y < 0)
 		    {
-		       fixed[k].p = 99;
+		       fixed[k].y += fixed[k].h;
+		       fixed[k].y = 0;
 		    }
-		  fixed[k++].h = ((EWin *) lst[i])->h;
+		  if ((fixed[k].y + fixed[k].h) > root.h)
+		     fixed[k].h = root.h - fixed[k].y;
+		  if ((fixed[k].w > 0) && (fixed[k].h > 0))
+		    {
+		       if (!((EWin *) lst[i])->never_use_area)
+			  fixed[k].p = ((EWin *) lst[i])->layer;
+		       else
+			  fixed[k].p = 99;
+		       k++;
+		    }
 	       }
 	  }
 
@@ -1268,15 +1282,29 @@ doCleanup(void *params)
 		       fixed[k].x = blst[i]->x;
 		       fixed[k].y = blst[i]->y;
 		       fixed[k].w = blst[i]->w;
-		       if (blst[i]->sticky)
+		       fixed[k].h = blst[i]->h;
+		       if (fixed[k].x < 0)
 			 {
-			    fixed[i].p = 50;
+			    fixed[k].x += fixed[k].w;
+			    fixed[k].x = 0;
 			 }
-		       else
+		       if ((fixed[k].x + fixed[k].w) > root.w)
+			  fixed[k].w = root.w - fixed[k].x;
+		       if (fixed[k].y < 0)
 			 {
-			    fixed[i].p = 0;
+			    fixed[k].y += fixed[k].h;
+			    fixed[k].y = 0;
 			 }
-		       fixed[k++].h = blst[i]->h;
+		       if ((fixed[k].y + fixed[k].h) > root.h)
+			  fixed[k].h = root.h - fixed[k].y;
+		       if ((fixed[k].w > 0) && (fixed[k].h > 0))
+			 {
+			    if (blst[i]->sticky)
+			       fixed[k].p = 50;
+			    else
+			       fixed[k].p = 0;
+			    k++;
+			 }
 		    }
 	       }
 	     Efree(blst);
@@ -2525,6 +2553,11 @@ doFocusSet(void *params)
 	SetCurrentArea(ewin->area_x, ewin->area_y);
 	if (ewin->iconified)
 	   DeIconifyEwin(ewin);
+	if (mode.raise_on_next_focus)
+	   RaiseEwin(ewin);
+	if (mode.warp_on_next_focus)
+	   XWarpPointer(disp, None, ewin->win, 0, 0, 0, 0,
+			ewin->w / 2, ewin->h / 2);
 	FocusToEWin(ewin);
      }
    EDBUG_RETURN(0);

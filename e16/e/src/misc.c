@@ -2,7 +2,7 @@
 
 void                EdgeTimeout(int val, void *data);
 
-static char *dir = NULL;
+static char        *dir = NULL;
 
 void
 SetEDir(char *d)
@@ -10,20 +10,20 @@ SetEDir(char *d)
    dir = duplicate(d);
 }
 
-char *
+char               *
 UserEDir(void)
 {
    if (dir)
       return dir;
 
-     {
-	char *home, buf[4096];
-	
-	home = homedir(getuid());
-	Esnprintf(buf, sizeof(buf), "%s/.enlightenment", home);
-	Efree(home);
-	dir = duplicate(buf);
-     }
+   {
+      char               *home, buf[4096];
+
+      home = homedir(getuid());
+      Esnprintf(buf, sizeof(buf), "%s/.enlightenment", home);
+      Efree(home);
+      dir = duplicate(buf);
+   }
    return dir;
 }
 

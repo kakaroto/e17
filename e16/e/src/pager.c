@@ -603,15 +603,6 @@ PagerShow(Pager * p)
 	ewin->client.height.max = 240 * ay;
 	ewin->pager = p;
 	ewin->desktop = desks.current;
-	/*
-	 * if (!pager_group)
-	 * {
-	 * BuildWindowGroup(&ewin, 1);
-	 * pager_group = ewin->group;
-	 * }
-	 * else
-	 * AddEwinToGroup(ewin, pager_group);
-	 */
 	p->ewin = ewin;
 	p->visible = 1;
 	DesktopRemoveEwin(ewin);
@@ -625,10 +616,9 @@ PagerShow(Pager * p)
 	  }
 	/* no snapshots ? first time ? make a row on the bottom left up */
 	else
-	   MoveEwin(ewin, 0, 
+	   MoveEwin(ewin, 0,
 		    root.h - ((mode.numdesktops - p->desktop) * ewin->h));
-	DesktopAddEwinToTop(ewin);
-	RestackEwin(ewin);
+	ConformEwinToDesktop(ewin);
 	/* force a redraw & resize */
 	pw = p->w;
 	ph = p->h;
@@ -638,13 +628,7 @@ PagerShow(Pager * p)
 	PagerRedraw(p, 1);
 	/* show the pager ewin */
 	ShowEwin(ewin);
-	SnapshotEwinBorder(ewin);
-	SnapshotEwinDesktop(ewin);
-	SnapshotEwinSize(ewin);
-	SnapshotEwinLocation(ewin);
-	SnapshotEwinLayer(ewin);
-	SnapshotEwinSticky(ewin);
-	SnapshotEwinShade(ewin);
+	RememberImportantInfoForEwin(ewin);
 	if (SNAP)
 	  {
 	     Esnprintf(s, sizeof(s), "__.%x", p->win);
@@ -913,7 +897,7 @@ PagerRedraw(Pager * p, char newbg)
 		  uniq = GetUniqueBGString(desks.desk[p->desktop].bg);
 		  Esnprintf(s, sizeof(s),
 			    "%s/cached/pager/%s.%i.%i.%s",
-			    UserEDir(), desks.desk[p->desktop].bg->name, (p->w / ax),
+		     UserEDir(), desks.desk[p->desktop].bg->name, (p->w / ax),
 			    (p->h / ay), uniq);
 		  Efree(uniq);
 
@@ -1579,7 +1563,6 @@ NewPagerForDesktop(int desk)
 void
 EnableSinglePagerForDesktop(int desk)
 {
-
    Pager              *p;
    Pager             **pl;
    char                s[1024];
@@ -1598,25 +1581,19 @@ EnableSinglePagerForDesktop(int desk)
 	  }
      }
    else
-     {
-	Efree(pl);
-     }
-
+      Efree(pl);
 }
 
 void
 EnableAllPagers(void)
 {
-
    int                 i;
 
    if (!mode.show_pagers)
      {
 	mode.show_pagers = 1;
 	for (i = 0; i < mode.numdesktops; i++)
-	  {
-	     EnableSinglePagerForDesktop(i);
-	  }
+	   EnableSinglePagerForDesktop(i);
 	UpdatePagerSel();
      }
    return;
@@ -1630,11 +1607,8 @@ PagerForDesktop(int desk)
 
    pl = PagersForDesktop(desk, &num);
    if (pl)
-     {
-	Efree(pl);
-     }
+      Efree(pl);
    return num;
-
 }
 
 void
@@ -1659,15 +1633,12 @@ DisablePagersForDesktop(int desk)
 void
 DisableAllPagers(void)
 {
-
    int                 i;
 
    if (mode.show_pagers)
      {
 	for (i = 0; i < mode.numdesktops; i++)
-	  {
-	     DisablePagersForDesktop(i);
-	  }
+	   DisablePagersForDesktop(i);
 	mode.show_pagers = 0;
      }
    return;

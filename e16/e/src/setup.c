@@ -585,7 +585,7 @@ SetupDirs()
       md(s);
    Esnprintf(s, sizeof(s), "%s/backgrounds", UserEDir());
    if (!exists(s))
-      md(s);   
+      md(s);
    Esnprintf(s, sizeof(s), "%s/cached", UserEDir());
    if (!exists(s))
       md(s);

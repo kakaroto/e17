@@ -6,6 +6,7 @@ user: finer grained control on selecting icon display policy
 kainx: translucent and group window moves if move != opaque - fix :)
 kainx: new tooltip stuff doesnt saccoutn for 2x extra in calculating iconbox
 kainx: reduce need for tooltip text to have auto gened tooltips work
+raster: must update dox docs fully
 raster: group properties are not remembered :(
 raster: tooltips fro pager names and iconbox names runs off right edge
 raster: add dnd to iconbox
@@ -13,4 +14,3 @@ raster: icoify animation suport
 raster: changing virtual desktop size screws up pager content draws.
 raster: double "close sound" playing atthe moment - fix.
 raster: need to lock .enlightenment dir for multiple logins etc.
-

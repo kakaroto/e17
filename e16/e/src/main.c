@@ -175,19 +175,14 @@ main(int argc, char **argv)
 
    /* make all of our fallback classes */
    SetupFallbackClasses();
-
    UngrabX();
-
    /* We'll set up what the buttons do now, too */
    /* again?  why are we doing this twice? */
    AssignRestartFunction((*doExit), duplicate("restart"));
    AssignExitFunction((*EExit), (void *)1);
-
    desks.desk[0].viewable = 0;
-
    /* now we're going to load the configuration/theme */
    LoadEConfig(themepath);
-
    /* multihead - let children continue after stop */
    {
       int                 i;
@@ -197,9 +192,7 @@ main(int argc, char **argv)
    }
 
    desks.desk[0].viewable = 1;
-
    RefreshDesktop(0);
-
    if (mode.sound)
      {
 	ApplySclass(FindItem("SOUND_STARTUP", 0,
@@ -209,7 +202,6 @@ main(int argc, char **argv)
      }
    /* toss down the dragbar and related */
    InitDesktopControls();
-
    /* then draw all the buttons that belong on the desktop */
    {
       Button            **lst;
@@ -226,33 +218,26 @@ main(int argc, char **argv)
 	   Efree(lst);
 	}
    }
-
    /* gnome hints stuff & session initialization here */
    GNOME_SetHints();
    SessionInit();
    ShowDesktopControls();
    CheckEvent();
-
    if (mode.mapslide)
       CreateStartupDisplay(0);
-
    /* retreive stuff from last time we were loaded if we're restarting */
    ICCCM_GetMainEInfo();
    MapUnmap(1);
-
    /* set some more stuff for gnome */
    GNOME_SetCurrentArea();
-
    /* if we didn't have an external window piped to us, we'll do some stuff */
    if (!init_win_ext)
       SpawnSnappedCmds();
-
    desks.current = 0;
-
    /* test the gnome pager stuff */
    HandlePager();
-
    /* Set up the internal pagers */
+   IB_Setup();
    if (mode.show_pagers)
      {
 	mode.show_pagers = 0;
@@ -260,29 +245,21 @@ main(int argc, char **argv)
 	EnableAllPagers();
 	queue_up = 1;
      }
-   IB_Setup();
-
    if (!mode.mapslide)
       CreateStartupDisplay(0);
-
    if (getpid() == master_pid && init_win_ext)
      {
 	XKillClient(disp, init_win_ext);
 	init_win_ext = 0;
      }
-
    GNOME_SetClientList();
    XSync(disp, False);
-
    queue_up = 1;
-
    /* hello!  we don't have a resizemode of 5! */
    if (mode.resizemode == 5)
       mode.resizemode = 0;
-
    /* of course, we have to set the cursors */
    {
-
       ECursor            *ec = NULL;
 
       ec = FindItem("DEFAULT", 0, LIST_FINDBY_NAME, LIST_TYPE_ECURSOR);
@@ -293,93 +270,16 @@ main(int argc, char **argv)
 	   ec->inroot = 1;
 	}
    }
-
    mode.startup = 0;
    /*  SC_Kill(); */
-
-#if 0
-   {
-      /* This is some test code beneath here up until the main event loop */
-
-      Dialog             *d;
-      DItem              *table, *di;
-
-      d = CreateDialog("TEST");
-      DialogSetTitle(d, "Test Dialog");
-      DialogAddButton(d, "Hit This Button", NULL, 1);
-
-      table = DialogInitItem(d);
-      DialogItemTableSetOptions(table, 3, 0, 0, 0);
-
-      di = DialogAddItem(table, DITEM_IMAGE);
-      DialogItemImageSetFile(di, "gnome-money.png");
-
-      di = DialogAddItem(table, DITEM_TEXT);
-      DialogItemSetPadding(di, 8, 8, 8, 8);
-      DialogItemTextSetText(di,
-			    "Here is a text\n"
-			    "label that is multiple\n"
-			    "lines in length so there :-P\n");
-
-      di = DialogAddItem(table, DITEM_BUTTON);
-      DialogItemSetFill(di, 0, 0);
-      DialogItemButtonSetText(di, "Test 1");
-
-      di = DialogAddItem(table, DITEM_BUTTON);
-      DialogItemButtonSetText(di, "Button Test 2");
-
-      di = DialogAddItem(table, DITEM_BUTTON);
-      DialogItemButtonSetText(di, "Long Text Button");
-
-      di = DialogAddItem(table, DITEM_BUTTON);
-      DialogItemButtonSetText(di, "Blum");
-
-      di = DialogAddItem(table, DITEM_BUTTON);
-      DialogItemSetFill(di, 0, 0);
-      DialogItemButtonSetText(di, "Frub");
-
-      di = DialogAddItem(table, DITEM_CHECKBUTTON);
-      DialogItemCheckButtonSetText(di, "Check Button");
-
-      di = DialogAddItem(table, DITEM_SLIDER);
-      DialogItemSetFill(di, 0, 0);
-      DialogItemSliderSetOrientation(di, 0);
-
-      di = DialogAddItem(table, DITEM_SLIDER);
-      DialogItemSetFill(di, 0, 0);
-      DialogItemSliderSetVal(di, 50);
-      DialogItemSliderSetUnits(di, 1);
-      DialogItemSliderSetJump(di, 10);
-
-      table = DialogAddItem(table, DITEM_TABLE);
-      DialogItemTableSetOptions(table, 2, 0, 0, 0);
-
-      di = DialogAddItem(table, DITEM_CHECKBUTTON);
-      DialogItemCheckButtonSetText(di, "Check Button1");
-
-      di = DialogAddItem(table, DITEM_CHECKBUTTON);
-      DialogItemCheckButtonSetText(di, "Check Button2");
-
-      di = DialogAddItem(table, DITEM_CHECKBUTTON);
-      DialogItemCheckButtonSetText(di, "Check Button3");
-
-      di = DialogAddItem(table, DITEM_CHECKBUTTON);
-      DialogItemCheckButtonSetText(di, "Check Button4");
-
-      ShowDialog(d);
-   }
-#endif
-
    /* ok - paranoia - save current settings to disk */
    autosave();
-
    /* let's make sure we set this up and go to our desk anyways */
+   ICCCM_GetMainEInfo();
    GotoDesktop(desks.current);
-
    /* The primary event loop */
    for (;;)
       WaitEvent();
-
    /* Of course, we should NEVER get to this point */
    EDBUG_RETURN(0);
 }

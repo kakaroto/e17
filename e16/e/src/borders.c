@@ -452,11 +452,29 @@ AddToFamily(Window win)
 		       fixed[j].x = (lst[i])->x;
 		       fixed[j].y = (lst[i])->y;
 		       fixed[j].w = (lst[i])->w;
-		       if (!(lst[i])->never_use_area)
-			  fixed[j].p = (lst[i])->layer;
-		       else
-			  fixed[j].p = 50;
-		       fixed[j++].h = (lst[i])->h;
+		       fixed[j].h = (lst[i])->h;
+		       if (fixed[j].x < 0)
+			 {
+			    fixed[j].x += fixed[j].w;
+			    fixed[j].x = 0;
+			 }
+		       if ((fixed[j].x + fixed[j].w) > root.w)
+			  fixed[j].w = root.w - fixed[j].x;
+		       if (fixed[j].y < 0)
+			 {
+			    fixed[j].y += fixed[j].h;
+			    fixed[j].y = 0;
+			 }
+		       if ((fixed[j].y + fixed[j].h) > root.h)
+			  fixed[j].h = root.h - fixed[j].y;
+		       if ((fixed[j].w > 0) && (fixed[j].h > 0))
+			 {
+			    if (!(lst[i])->never_use_area)
+			       fixed[j].p = (lst[i])->layer;
+			    else
+			       fixed[j].p = 50;
+			    j++;
+			 }
 		    }
 	       }
 	     blst = (Button **) ListItemType(&num, LIST_TYPE_BUTTON);
@@ -474,11 +492,29 @@ AddToFamily(Window win)
 			    fixed[j].x = blst[i]->x;
 			    fixed[j].y = blst[i]->y;
 			    fixed[j].w = blst[i]->w;
-			    if (blst[i]->sticky)
-			       fixed[j].p = 50;
-			    else
-			       fixed[j].p = 0;
-			    fixed[j++].h = blst[i]->h;
+			    fixed[j].h = blst[i]->h;
+			    if (fixed[j].x < 0)
+			      {
+				 fixed[j].x += fixed[j].w;
+				 fixed[j].x = 0;
+			      }
+			    if ((fixed[j].x + fixed[j].w) > root.w)
+			       fixed[j].w = root.w - fixed[j].x;
+			    if (fixed[j].y < 0)
+			      {
+				 fixed[j].y += fixed[j].h;
+				 fixed[j].y = 0;
+			      }
+			    if ((fixed[j].y + fixed[j].h) > root.h)
+			       fixed[j].h = root.h - fixed[j].y;
+			    if ((fixed[j].w > 0) && (fixed[j].h > 0))
+			      {
+				 if (blst[i]->sticky)
+				    fixed[j].p = 50;
+				 else
+				    fixed[j].p = 0;
+				 j++;
+			      }
 			 }
 		    }
 		  Efree(blst);

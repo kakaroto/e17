@@ -63,17 +63,17 @@ BreakWindowGroup(EWin * ewin)
 void
 BuildWindowGroup(EWin ** ewins, int num)
 {
-   
+
    int                 i;
    Group              *g;
-   
+
    g = CreateGroup();
    AddItem(g, NULL, g->index, LIST_TYPE_GROUP);
    current_group = g;
-   
+
    g->members = Emalloc(sizeof(EWin *) * num);
    g->num_members = num;
-   
+
    for (i = 0; i < num; i++)
      {
 	RemoveEwinFromGroup(ewins[i]);
@@ -83,15 +83,14 @@ BuildWindowGroup(EWin ** ewins, int num)
      }
 }
 
-
-int 
-EwinInGroup(EWin * ewin, Group * g) 
+int
+EwinInGroup(EWin * ewin, Group * g)
 {
-   int i;
-   
-   if (ewin && g) 
+   int                 i;
+
+   if (ewin && g)
      {
-	for (i=0; i < g->num_members; i++) 
+	for (i = 0; i < g->num_members; i++)
 	  {
 	     if (g->members[i] == ewin)
 		return 1;
@@ -105,9 +104,9 @@ AddEwinToGroup(EWin * ewin, Group * g)
 {
    if (ewin && g)
      {
-	if (!EwinInGroup(ewin, g)) 
+	if (!EwinInGroup(ewin, g))
 	  {
-	     /*RemoveEwinFromGroup(ewin);*/
+	     /*RemoveEwinFromGroup(ewin); */
 	     ewin->group = g;
 	     g->num_members++;
 	     g->members = Erealloc(g->members, sizeof(EWin *) * g->num_members);
@@ -125,7 +124,7 @@ RemoveEwinFromGroup(EWin * ewin)
    if (ewin)
      {
 	if (ewin->group)
-	  {	     
+	  {
 	     for (i = 0; i < ewin->group->num_members; i++)
 	       {
 		  if (ewin->group->members[i] == ewin)

@@ -1332,6 +1332,7 @@ HandleUnmap(XEvent * ev)
 	   mode.mouse_over_win = NULL;
 	if (ewin == mode.ewin)
 	   mode.ewin = NULL;
+	RemoveEwinFromGroup(ewin);
 	if (!ewin->iconified)
 	  {
 	     XTranslateCoordinates(disp, ewin->client.win, root.win,
@@ -1349,7 +1350,6 @@ HandleUnmap(XEvent * ev)
 	  }
 	else
 	   HideEwin(ewin);
-	RemoveEwinFromGroup(ewin);
      }
    EDBUG_RETURN_;
 }

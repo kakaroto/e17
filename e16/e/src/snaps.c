@@ -99,7 +99,7 @@ NewSnapshot(char *name)
 
 /* clear all information out of a snapshot and set its refernce use to 0 */
 void
-ClearSnapshot(Snapshot *sn)
+ClearSnapshot(Snapshot * sn)
 {
    if (sn->border_name)
       Efree(sn->border_name);
@@ -129,7 +129,7 @@ ClearSnapshot(Snapshot *sn)
    sn->cmd = NULL;
    sn->group = 0;
    sn->used = 0;
-   ListChangeItemID(LIST_TYPE_SNAPSHOT, sn, 0);   
+   ListChangeItemID(LIST_TYPE_SNAPSHOT, sn, 0);
 }
 
 static void         CB_ApplySnapEscape(int val, void *data);
@@ -194,8 +194,8 @@ CB_ApplySnap(int val, void *data)
 		 (!tmp_snap_cmd) &&
 		 (!tmp_snap_group))
 	       {
-		  Snapshot *sn;
-		  
+		  Snapshot           *sn;
+
 		  sn = GetSnapshot(ewin);
 		  ClearSnapshot(sn);
 		  UnsnapshotEwin(ewin);
@@ -970,8 +970,8 @@ MatchEwinToSnapInfo(EWin * ewin)
    if (sn->group)
      {
 	Group              *g;
-	
-	g = (Group *) FindItem(NULL, sn->group, LIST_FINDBY_ID, 
+
+	g = (Group *) FindItem(NULL, sn->group, LIST_FINDBY_ID,
 			       LIST_TYPE_GROUP);
 	if (!g)
 	  {
@@ -1063,8 +1063,8 @@ MatchEwinToSnapInfoAfter(EWin * ewin)
    if ((sn->group) && (!ewin->group))
      {
 	Group              *g;
-	
-	g = (Group *) FindItem(NULL, sn->group, LIST_FINDBY_ID, 
+
+	g = (Group *) FindItem(NULL, sn->group, LIST_FINDBY_ID,
 			       LIST_TYPE_GROUP);
 	if (!g)
 	  {
@@ -1078,7 +1078,7 @@ MatchEwinToSnapInfoAfter(EWin * ewin)
 }
 
 void
-RememberImportantInfoForEwin(EWin *ewin)
+RememberImportantInfoForEwin(EWin * ewin)
 {
    if ((ewin->pager) || (ewin->ibox))
      {
@@ -1098,11 +1098,11 @@ RememberImportantInfoForEwin(EWin *ewin)
 }
 
 void
-RememberImportantInfoForEwins(EWin *ewin)
+RememberImportantInfoForEwins(EWin * ewin)
 {
-   int i, num;
-   EWin **gwins;
-   
+   int                 i, num;
+   EWin              **gwins;
+
    gwins = ListWinGroupMembersForEwin(ewin, ACTION_MOVE, &num);
    if (gwins)
      {
@@ -1123,7 +1123,7 @@ RememberImportantInfoForEwins(EWin *ewin)
 		     SnapshotEwinGroup(gwins[i], 0);
 		  SaveSnapInfo();
 	       }
-	  }	
+	  }
 	Efree(gwins);
      }
 }

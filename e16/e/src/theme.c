@@ -69,8 +69,7 @@ append_merge_dir(char *dir, char ***list, int *count)
 char              **
 ListThemes(int *number)
 {
-   char                s[FILEPATH_LEN_MAX], **list = NULL, *def = NULL,
-                      *def2 = NULL;
+   char                s[FILEPATH_LEN_MAX], **list = NULL, *def = NULL, *def2 = NULL;
    int                 count = 0;
 
    Esnprintf(s, sizeof(s), "%s/themes", UserEDir());

@@ -304,21 +304,28 @@ ShowMenu(Menu * m, char noshow)
    wy = 0;
    if (mode.menusonscreen)
      {
-	if (mode.x - x - ((int)w / 2) > (int)root.w)
-	   wx = 0 + ((int)mw - (int)w);
-	else if (mode.x + (int)w > (int)root.w)
-	   wx = root.w - (int)mw - ((int)mw - (int)w);
-	else
-	   wx = mode.x - x - ((int)w / 2);
-	if ((wx - ((int)w / 2)) < 0)
-	   wx = 0;
-	   
-	if (mode.y + (int)mh > (int)root.h)
-	   wy = (int)root.h - (int)mh;
-	else
-	   wy = mode.y - y - ((int)h / 2);
-	if ((wy - ((int)h / 2)) < 0)
-	   wy = 0;
+	Border             *b;
+
+	b = (Border *) FindItem(m->style->border_name, 0, LIST_FINDBY_NAME,
+				LIST_TYPE_BORDER);
+	if (b)
+	  {
+	     if (mode.x - x - ((int)mw / 2) > (int)root.w)
+		wx = 0 + (int)b->border.left;
+	     else if (mode.x + ((int)mw / 2) > (int)root.w)
+		wx = root.w - (int)mw - (int)b->border.right;
+	     else
+		wx = mode.x - x - ((int)w / 2);
+	     if ((wx - ((int)w / 2)) < 0)
+		wx = (int)b->border.left;
+
+	     if (mode.y + (int)mh > (int)root.h)
+		wy = (int)root.h - (int)mh - (int)b->border.bottom;
+	     else
+		wy = mode.y - y - ((int)h / 2);
+	     if ((wy - ((int)h / 2) - (int)b->border.top) < 0)
+		wy = (int)b->border.top;
+	  }
      }
 
    if ((mode.x >= 0) && (mode.y >= 0))
@@ -956,7 +963,7 @@ CreateMenuFromDirectory(char *name, MenuStyle * ms, char *dir)
 	else
 	   cc = st.st_ctime;
 	Esnprintf(cs, sizeof(cs),
-	 "%s/cached/img/.%c%c%c%c%c%c%c%c%c%c%c%c%c%c%c%c%c%c",
+		  "%s/cached/img/.%c%c%c%c%c%c%c%c%c%c%c%c%c%c%c%c%c%c",
 		  UserEDir(),
 		  chmap[(aa >> 0) & 0x3f],
 		  chmap[(aa >> 6) & 0x3f],
@@ -1699,7 +1706,7 @@ CreateMenuFromAllEWins(char *name, MenuStyle * ms)
      {
 	for (i = 0; i < num; i++)
 	  {
-	     if ((!lst[i]->menu) && (!lst[i]->pager) && (!lst[i]->skipwinlist))
+	     if ((!lst[i]->menu) && (!lst[i]->pager) && (!lst[i]->skipwinlist) && (lst[i]->client.title) && (!lst[i]->ibox))
 	       {
 		  Esnprintf(s, sizeof(s), "%i", (int)(lst[i]->client.win));
 		  mi = CreateMenuItem(lst[i]->client.title, NULL, ACTION_FOCUS_SET, s, NULL);
@@ -1731,7 +1738,7 @@ CreateMenuFromDesktopEWins(char *name, MenuStyle * ms, int desk)
 	for (i = 0; i < num; i++)
 	  {
 	     if (((lst[i]->desktop == desk) || (lst[i]->sticky)) &&
-		 (!lst[i]->menu) && (!lst[i]->pager) && (!lst[i]->skipwinlist))
+		 (!lst[i]->menu) && (!lst[i]->pager) && (!lst[i]->skipwinlist) && (lst[i]->client.title) && (!lst[i]->ibox))
 	       {
 		  Esnprintf(s, sizeof(s), "%i", (int)(lst[i]->client.win));
 		  mi = CreateMenuItem(lst[i]->client.title, NULL, ACTION_FOCUS_SET, s, NULL);
@@ -1769,7 +1776,7 @@ CreateMenuFromDesktops(char *name, MenuStyle * ms)
 	for (i = 0; i < num; i++)
 	  {
 	     if (((lst[i]->desktop == j) || (lst[i]->sticky)) &&
-		 (!lst[i]->menu) && (!lst[i]->pager) && (!lst[i]->skipwinlist))
+		 (!lst[i]->menu) && (!lst[i]->pager) && (!lst[i]->skipwinlist) && (lst[i]->client.title) && (!lst[i]->ibox))
 	       {
 		  Esnprintf(s, sizeof(s), "%i", (int)(lst[i]->client.win));
 		  mi = CreateMenuItem(lst[i]->client.title, NULL, ACTION_FOCUS_SET, s, NULL);

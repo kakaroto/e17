@@ -3116,7 +3116,7 @@ SettingsIconbox(char *name)
    DialogItemCheckButtonSetText(di, "Hide border around inner Iconbox");
    DialogItemCheckButtonSetState(di, tmp_ib_cover_hide);
    DialogItemCheckButtonSetPtr(di, &tmp_ib_cover_hide);
-   
+
    di = DialogAddItem(table, DITEM_CHECKBUTTON);
    DialogItemSetPadding(di, 2, 2, 2, 2);
    DialogItemSetFill(di, 1, 0);

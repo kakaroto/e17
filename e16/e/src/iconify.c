@@ -33,7 +33,7 @@ IconifyEwin(EWin * ewin)
 	was_shaded = ewin->shaded;
 	if (ib)
 	   UpdateAppIcon(ewin, ib->icon_mode);
-        HideEwin(ewin);
+	HideEwin(ewin);
 	if (was_shaded != ewin->shaded)
 	   InstantShadeEwin(ewin);
 	MakeIcon(ewin);
@@ -72,7 +72,7 @@ void
 DeIconifyEwin(EWin * ewin)
 {
    static int          call_depth = 0;
-   Iconbox *ib;
+   Iconbox            *ib;
 
    call_depth++;
    if (call_depth > 256)
@@ -270,7 +270,13 @@ ShowIconbox(Iconbox * ib)
 {
    EWin               *ewin = NULL;
    XClassHint         *xch;
+   XTextProperty       xtp;
 
+   xtp.encoding = XA_STRING;
+   xtp.format = 8;
+   xtp.value = (unsigned char *)("Iconbox");
+   xtp.nitems = strlen((char *)(xtp.value));
+   XSetWMName(disp, ib->win, &xtp);
    xch = XAllocClassHint();
    xch->res_name = ib->name;
    xch->res_class = "Enlightenment_IconBox";
@@ -330,16 +336,9 @@ ShowIconbox(Iconbox * ib)
 	  }
 	else
 	   MoveEwin(ewin, root.w - (ewin->w), root.h - (ewin->h));
-	DesktopAddEwinToTop(ewin);
-	RestackEwin(ewin);
+	ConformEwinToDesktop(ewin);
 	ShowEwin(ewin);
-	SnapshotEwinBorder(ewin);
-	SnapshotEwinDesktop(ewin);
-	SnapshotEwinSize(ewin);
-	SnapshotEwinLocation(ewin);
-	SnapshotEwinLayer(ewin);
-	SnapshotEwinSticky(ewin);
-	SnapshotEwinShade(ewin);
+	RememberImportantInfoForEwin(ewin);
      }
    IconboxResize(ib, ib->ewin->client.w, ib->ewin->client.h);
 }
@@ -2166,12 +2165,12 @@ IconboxHandleEvent(XEvent * ev)
 	else if (ev->xany.window == ib[i]->icon_win)
 	  {
 	     static EWin        *name_ewin = NULL;
-	     
+
 	     if ((ev->type == MotionNotify) || (ev->type == EnterNotify))
 	       {
 		  EWin               *ewin = NULL;
 		  ToolTip            *tt = NULL;
-		  
+
 		  if (ev->type == MotionNotify)
 		    {
 		       ewin = IB_FindIcon(ib[i], ev->xmotion.x, ev->xmotion.y);
@@ -2196,20 +2195,20 @@ IconboxHandleEvent(XEvent * ev)
 			      {
 				 if ((ewin->client.icon_name) &&
 				     (strlen(ewin->client.icon_name) > 0))
-				    ShowToolTip(tt, ewin->client.icon_name, 
+				    ShowToolTip(tt, ewin->client.icon_name,
 						NULL, mode.x, mode.y);
 				 else
-				    ShowToolTip(tt, ewin->client.title, 
+				    ShowToolTip(tt, ewin->client.title,
 						NULL, mode.x, mode.y);
 			      }
 			 }
 		    }
-		  
+
 	       }
 	     else if (ev->type == LeaveNotify)
 	       {
 		  ToolTip            *tt = NULL;
-		  
+
 		  tt = FindItem("ICONBOX", 0, LIST_FINDBY_NAME,
 				LIST_TYPE_TOOLTIP);
 		  if (tt)
@@ -2237,7 +2236,7 @@ IconboxHandleEvent(XEvent * ev)
 		  if (ewin)
 		    {
 		       ToolTip            *tt = NULL;
-		       
+
 		       tt = FindItem("ICONBOX", 0, LIST_FINDBY_NAME,
 				     LIST_TYPE_TOOLTIP);
 		       if (tt)

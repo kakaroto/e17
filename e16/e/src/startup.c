@@ -139,7 +139,7 @@ CreateStartupDisplay(char start)
 {
    static Window       w1, w2, win1, win2, b1, b2;
    static Background  *bg = NULL;
-   static Background  *bg_sideways = NULL; /* currently used to determine if the startup screen should slide sideways */
+   static Background  *bg_sideways = NULL;	/* currently used to determine if the startup screen should slide sideways */
    static ImageClass  *ic = NULL;
    char                pq;
 
@@ -149,7 +149,7 @@ CreateStartupDisplay(char start)
    if (start)
      {
 	bg_sideways = (Background *) FindItem("STARTUP_BACKGROUND_SIDEWAYS", 0, LIST_FINDBY_NAME,
-				     LIST_TYPE_BACKGROUND);
+					      LIST_TYPE_BACKGROUND);
 	ic = (ImageClass *) FindItem("DESKTOP_DRAGBUTTON_HORIZ", 0, LIST_FINDBY_NAME,
 				     LIST_TYPE_ICLASS);
 	bg = (Background *) FindItem("STARTUP_BACKGROUND", 0, LIST_FINDBY_NAME,
@@ -158,19 +158,19 @@ CreateStartupDisplay(char start)
 	   EDBUG_RETURN_;
 
 	if (bg_sideways)
-		{
-		w1 = ECreateWindow(root.win, (root.w / 2), 0, root.w, root.h, 1);
-		w2 = ECreateWindow(root.win, -(root.w / 2), 0, root.w, root.h, 1);
-		win1 = ECreateWindow(w1, -(root.w / 2), 0, root.w, root.h, 0);
-		win2 = ECreateWindow(w2, (root.w / 2), 0, root.w, root.h, 0);
-		}
+	  {
+	     w1 = ECreateWindow(root.win, (root.w / 2), 0, root.w, root.h, 1);
+	     w2 = ECreateWindow(root.win, -(root.w / 2), 0, root.w, root.h, 1);
+	     win1 = ECreateWindow(w1, -(root.w / 2), 0, root.w, root.h, 0);
+	     win2 = ECreateWindow(w2, (root.w / 2), 0, root.w, root.h, 0);
+	  }
 	else
-		{
-		w1 = ECreateWindow(root.win, 0, -(root.h / 2), root.w, root.h, 1);
-		w2 = ECreateWindow(root.win, 0, (root.h / 2), root.w, root.h, 1);
-		win1 = ECreateWindow(w1, 0, (root.h / 2), root.w, root.h, 0);
-		win2 = ECreateWindow(w2, 0, -(root.h / 2), root.w, root.h, 0);
-		}
+	  {
+	     w1 = ECreateWindow(root.win, 0, -(root.h / 2), root.w, root.h, 1);
+	     w2 = ECreateWindow(root.win, 0, (root.h / 2), root.w, root.h, 1);
+	     win1 = ECreateWindow(w1, 0, (root.h / 2), root.w, root.h, 0);
+	     win2 = ECreateWindow(w2, 0, -(root.h / 2), root.w, root.h, 0);
+	  }
 
 	EMapWindow(disp, win1);
 	EMapWindow(disp, win2);
@@ -198,8 +198,10 @@ CreateStartupDisplay(char start)
      }
    else
      {
-	int	k, spd, x, y, xOffset, yOffset, ty, fy, min, speed;
-		/* we have this many so that we save on lines o code - eAndroid */
+	int                 k, spd, x, y, xOffset, yOffset, ty, fy, min,
+	                    speed;
+
+	/* we have this many so that we save on lines o code - eAndroid */
 	struct timeval      timev1, timev2;
 	int                 dsec, dusec;
 	double              tm;
@@ -213,38 +215,40 @@ CreateStartupDisplay(char start)
 	fy = 0;
 
 	for (k = 0; k <= 1024; k += spd)
-	{
-		if (bg_sideways) /* so we can have two different slide methods */
-		{
-			ty = (root.w / 2);
-			xOffset = ((fy * (1024 - k)) + (ty * k)) >> 10;
-			x = ty;
-			yOffset = 0;
-			y = 0;
-		} else {
-			ty = (root.h / 2);
-			xOffset = 0;
-			x = 0;
-			yOffset = ((fy * (1024 - k)) + (ty * k)) >> 10;
-			y = ty;
-		}
-		gettimeofday(&timev1, NULL);
-		EMoveWindow(disp, w1, x + xOffset, -y - yOffset);
-		EMoveWindow(disp, w2, -x - xOffset, y + yOffset);
-		XSync(disp, False);
-		gettimeofday(&timev2, NULL);
-		dsec = timev2.tv_sec - timev1.tv_sec;
-		dusec = timev2.tv_usec - timev1.tv_usec;
-		if (dusec < 0)
-		{
-			dsec--;
-			dusec += 1000000;
-		}
-		tm = (double)dsec + (((double)dusec) / 1000000);
-		spd = (int)((double)speed * tm);
-		if (spd < min)
-			spd = min;
-	}
+	  {
+	     if (bg_sideways)	/* so we can have two different slide methods */
+	       {
+		  ty = (root.w / 2);
+		  xOffset = ((fy * (1024 - k)) + (ty * k)) >> 10;
+		  x = ty;
+		  yOffset = 0;
+		  y = 0;
+	       }
+	     else
+	       {
+		  ty = (root.h / 2);
+		  xOffset = 0;
+		  x = 0;
+		  yOffset = ((fy * (1024 - k)) + (ty * k)) >> 10;
+		  y = ty;
+	       }
+	     gettimeofday(&timev1, NULL);
+	     EMoveWindow(disp, w1, x + xOffset, -y - yOffset);
+	     EMoveWindow(disp, w2, -x - xOffset, y + yOffset);
+	     XSync(disp, False);
+	     gettimeofday(&timev2, NULL);
+	     dsec = timev2.tv_sec - timev1.tv_sec;
+	     dusec = timev2.tv_usec - timev1.tv_usec;
+	     if (dusec < 0)
+	       {
+		  dsec--;
+		  dusec += 1000000;
+	       }
+	     tm = (double)dsec + (((double)dusec) / 1000000);
+	     spd = (int)((double)speed * tm);
+	     if (spd < min)
+		spd = min;
+	  }
 
 	EDestroyWindow(disp, w1);
 	EDestroyWindow(disp, w2);
