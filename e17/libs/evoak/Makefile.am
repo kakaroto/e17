@@ -9,4 +9,4 @@ MAINTAINERCLEANFILES = Makefile.in aclocal.m4 config.guess \
 
 bin_SCRIPTS = evoak-config
 
-EXTRA_DIST = README AUTHORS COPYING COPYING-PLAIN evoak.spec evoak.c.in gendoc Doxyfile evoak_docs.tar.gz
+EXTRA_DIST = README AUTHORS COPYING COPYING-PLAIN evoak.spec evoak.c.in gendoc Doxyfile

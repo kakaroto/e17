@@ -1,28 +1,21 @@
-# Note that this is NOT a relocatable package
-%define ver      0.0.1
-%define rel      1
-%define prefix   /usr
-
-Summary: evoak
+Summary: Evas-based Canvas Server
 Name: evoak
-Version: %ver
-Release: %rel
+Version: 0.0.1
+Release: 1
 Copyright: BSD
 Group: System Environment/Libraries
-Source: ftp://ftp.enlightenment.org/pub/evoak/evoak-%{ver}.tar.gz
-BuildRoot: /var/tmp/evoak-root
-Packager: The Rasterman <raster@rasterman.com>
 URL: http://www.enlightenment.org/
-BuildRequires: libjpeg-devel
-BuildRequires: zlib-devel
-Requires: libjpeg
-Requires: zlib
-
-Docdir: %{prefix}/doc
+Source: ftp://ftp.enlightenment.org/pub/evoak/%{name}-%{version}.tar.gz
+Packager: Michael Jennings <mej@eterm.org>
+#BuildSuggests: libjpeg-devel
+#BuildSuggests: zlib-devel
+BuildRoot: %{_tmppath}/%{name}-%{version}-root
 
 %description
-
-Evoak is a Canvas Server
+Evoak is a canvas server. This is similar to an X server that serves
+out a display and graphics operations. Evoak serves out a single
+canvas to be shared by multiple applications (clients) allowing each
+client to manipulate its set of objects.
 
 %package devel
 Summary: Evoak headers, static libraries, documentation and test programs
@@ -33,48 +26,37 @@ Requires: %{name} = %{version}
 Headers, static libraries, test programs and documentation for Eet
 
 %prep
-rm -rf $RPM_BUILD_ROOT
-
 %setup -q
 
 %build
-./configure --prefix=%prefix
-
-if [ "$SMP" != "" ]; then
-  (make "MAKE=make -k -j $SMP"; exit 0)
-  make
-else
-  make
-fi
-###########################################################################
+%{configure} --prefix=%{_prefix}
+%{__make} %{?_smp_mflags} %{?mflags}
 
 %install
-make DESTDIR=$RPM_BUILD_ROOT install
-
-%clean
-rm -rf $RPM_BUILD_ROOT
+%{__make} %{?mflags_install} DESTDIR=$RPM_BUILD_ROOT install
+test -x `which doxygen` && sh gendoc || :
 
 %post
-/sbin/ldconfig
+/sbin/ldconfig || :
 
 %postun
-/sbin/ldconfig
+/sbin/ldconfig || :
+
+%clean
+test "x$RPM_BUILD_ROOT" != "x/" && rm -rf $RPM_BUILD_ROOT
 
 %files
-%defattr(-,root,root)
-%attr(755,root,root) %{prefix}/lib/libevoak.so*
-%attr(755,root,root) %{prefix}/lib/libevoak.la
+%defattr(-, root, root)
+%doc AUTHORS COPYING* README
+%{_libdir}/libevoak.so*
+%{_libdir}/libevoak.la
 
 %files devel
-%attr(755,root,root) %{prefix}/lib/libevoak.a
-%attr(755,root,root) %{prefix}/bin/evoak*
-%{prefix}/include/Evoak*
+%defattr(-, root, root)
+%doc doc/html
+%{_libdir}/libevoak.a
+%{_bindir}/evoak*
+%{_includedir}/Evoak*
 %{_datadir}/evoak
-%doc AUTHORS
-%doc COPYING
-%doc README
-%doc evoak_docs.tar.gz
 
 %changelog
-* Sat Jun 23 2001 The Rasterman <raster@rasterman.com>
-- Created spec file
