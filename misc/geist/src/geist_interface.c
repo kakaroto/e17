@@ -285,8 +285,6 @@ geist_gtk_new_document_window(geist_document * doc)
    gtk_signal_connect(GTK_OBJECT(mainwin), "enter_notify_event",
                       GTK_SIGNAL_FUNC(docwin_enter_cb), NULL);
    gtk_object_set_data(GTK_OBJECT(mainwin), "doc", doc);
-   
-   doc_list = geist_list_add_end(doc_list, doc);
 
    mvbox = gtk_vbox_new(FALSE, 0);
    gtk_widget_show(mvbox);
@@ -347,6 +345,8 @@ gboolean docwin_delete_cb(GtkWidget * widget, GdkEvent * event,
    if(doc)
      	geist_document_free(doc);
    geist_document_reset_object_list(NULL);
+   geist_clear_obj_props_window();
+   geist_clear_document_props_window();
 	
 	D_RETURN(3, FALSE);
 }
@@ -1579,6 +1579,8 @@ geist_update_document_props_window(void)
    D_ENTER(3);
    if (doc_props_active)
    {
+      gtk_widget_show(doc_hbox);
+
       gtk_signal_handler_block_by_func(GTK_OBJECT(doc_name),
                                        refresh_doc_name_cb, NULL);
       gtk_signal_handler_block_by_func(GTK_OBJECT(doc_file_name),

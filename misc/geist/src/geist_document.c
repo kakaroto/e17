@@ -21,6 +21,8 @@ geist_document_new(int w, int h)
    d->name = estrdup("New document");
    geist_document_add_layer(d);
 
+   doc_list = geist_list_add_end(doc_list, d);
+   
    D_RETURN(3, d);
 }
 
@@ -30,7 +32,15 @@ geist_document_free(geist_document * document)
    geist_list *l;
 
    D_ENTER(3);
-
+   
+   for (l=doc_list;l;l=l->next)
+   {
+       if (GEIST_DOCUMENT(l->data) == document)
+       {
+	   doc_list = geist_list_unlink(doc_list, l);
+       }
+   }
+ 
    for (l = document->layers; l; l = l->next)
       geist_layer_free((geist_layer *) l->data);
 
