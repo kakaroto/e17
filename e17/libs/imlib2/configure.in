@@ -49,5 +49,5 @@ fi
 LTLIBOBJS=`echo "$LIBOBJS" | sed 's,.o ,.lo ,g;s,.o$,.lo,'`
 AC_SUBST(LTLIBOBJS)
 
-AC_OUTPUT(Makefile loaders/Makefile src/Makefile,
+AC_OUTPUT(Makefile loaders/Makefile src/Makefile test/Makefile,
 [test -z "$CONFIG_HEADERS" || echo timestamp > stamp-h])
