@@ -4934,6 +4934,19 @@ Epplet_paste_buf(RGB_buf buf, Window win, int x, int y)
 		     buf->im->rgb_width, buf->im->rgb_height);
 }
 
+void
+Epplet_free_rgb_buf(RGB_buf buf)
+{
+  if (buf)
+    {
+      if (buf->im)
+	{
+	  Imlib_destroy_image(id, buf->im);
+	}
+      free(buf);
+    }
+}
+
 static void
 Epplet_handle_child(int num)
 {

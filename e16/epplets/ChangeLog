@@ -1701,3 +1701,16 @@ Thu Dec 16 19:56:24 PST 1999
 API changes here, all in order to make E-Disk and E-MemWatch be able to toggle
 between the old arrangement and the new.  So basically, you can now move
 gadgets to new locations.
+
+-------------------------------------------------------------------------------
+
+Mon Dec 20 18:28:37 EST 1999
+(Christian)
+
+Added a destructor for RGB_buf's. From epplet.h:
+
+/* free an RGB buffer */
+void            Epplet_free_rgb_buf(RGB_buf buf);
+
+I think the user shouldn't have to think about the internals of an RGB_buf
+in order to free it.

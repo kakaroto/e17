@@ -250,7 +250,7 @@ Epplet_gadget       Epplet_create_textbox(char *image, char *contents, int x,
                                           void (*func) (void *data),
                                           void *data);
 
-/* Retreive the current contents of the textbox */
+/* Retrieve the current contents of the textbox */
 char               *Epplet_textbox_contents(Epplet_gadget g);
 
 /* Reset the textbox */
@@ -428,6 +428,8 @@ RGB_buf         Epplet_make_rgb_buf(int w, int h);
 unsigned char  *Epplet_get_rgb_pointer(RGB_buf buf);
 /* render & paste the RGB buffer to a window at x, y */
 void            Epplet_paste_buf(RGB_buf buf, Window win, int x, int y);
+/* free an RGB buffer */
+void            Epplet_free_rgb_buf(RGB_buf buf);
 
 
 
