@@ -1910,9 +1910,13 @@ __imlib_fill_ellipse(ImlibImage * im, int xc, int yc, int aa, int bb,
    int y;
    int x, dec;
    int miny, maxy;
+   int clip = 0;
 
    edgeRec *table1, *table2;
 
+   if((clip_xmin != 0) && (clip_ymin != 0) && (clip_xmax != -1) && (clip_ymax != -1))
+      clip = 1;
+   
    table1 = malloc(sizeof(edgeRec) * (im->h + 1));
    table2 = malloc(sizeof(edgeRec) * (im->h + 1));
    memset(table1, 0, sizeof(edgeRec) * (im->h + 1));
@@ -1965,7 +1969,7 @@ __imlib_fill_ellipse(ImlibImage * im, int xc, int yc, int aa, int bb,
    __spanlist_clip(table1, table2, &miny, &maxy, 0, im->w - 1, 0, im->h - 1);
 
    /* clip to clip rect if it's there */
-   if (clip_xmin != clip_xmax)
+   if (clip)
       __spanlist_clip(table1, table2, &miny, &maxy, clip_xmin, clip_xmax,
                       clip_ymin, clip_ymax);
 
@@ -1984,17 +1988,19 @@ __imlib_fill_ellipse(ImlibImage * im, int xc, int yc, int aa, int bb,
      }
    if (maxy >= im->h) maxy = im->h - 1;
    {
-
       do
       {
 	 int x1, x2;
 	 
 	 x1 = table1[miny].x;
 	 x2 = table2[miny].x;
-	 if (x1 < clip_xmin) x1 = clip_xmin;
-	 if (x2 > clip_xmax) x2 = clip_xmax;
-         span(im, miny, x1, x2, r, g, b, a, op);
-         miny++;
+     if(clip)
+     {
+  	   if (x1 < clip_xmin) x1 = clip_xmin;
+       if (x2 > clip_xmax) x2 = clip_xmax;
+     }
+     span(im, miny, x1, x2, r, g, b, a, op);
+     miny++;
       }
       while (miny < maxy);
    }
