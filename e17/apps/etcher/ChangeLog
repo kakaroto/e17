@@ -1,3 +1,8 @@
+Sat Mar 02 19:58:40 2002 Christopher Rosendahl <crosendahl@northernwatch.com>
+	* Added a rectangle to the workspace that layers beneath everything
+	  else, this fixes the problem with the workspace getting artifacts
+	  when no grid image is found.
+
 Sat Mar 02 19:18:28 2002 Christopher Rosendahl <crosendahl@northernwatch.com>
 	* Made the lower and raise apply directly so you dont have to
 	  press the apply button.

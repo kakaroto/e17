@@ -37,7 +37,7 @@ typedef struct workspace {
 	int             new_evas;
 
 	struct {
-		Evas_Object     grid;
+		Evas_Object     grid, bg_rect;
 
 		struct {
 			Evas_Object     tl, tr, bl, br;
@@ -1695,6 +1695,14 @@ workspace_expose_event(GtkWidget * widget, GdkEventExpose * ev)
 
 		evas_set_font_cache(ws.view_evas, 1 * 1024 * 1024);
 		evas_set_image_cache(ws.view_evas, 8 * 1024 * 1024);
+
+		ws.obj.bg_rect = evas_add_rectangle(ws.view_evas);
+		evas_set_layer(ws.view_evas, ws.obj.bg_rect, -9999);
+		evas_set_color(ws.view_evas, ws.obj.bg_rect, 255, 255, 255,
+			       255);
+		evas_move(ws.view_evas, ws.obj.bg_rect, 0, 0);
+		evas_resize(ws.view_evas, ws.obj.bg_rect, 9999, 9999);
+		evas_show(ws.view_evas, ws.obj.bg_rect);
 		{
 			char           *tile = NULL;
 			int             ok = 0, r, g, b;
