@@ -6,18 +6,18 @@ Known bugs, feature requests, and miscellaneous issues
 Known bugs
 ----------
 
+- Remembered settings only work for the first instance (WM_CLASS) of an
+  application.
+
 - E may lose control over a window if it is iconified and de-iconified
   shortly after.
 
 - Switching desktop changes stacking (sticky windows raised above non-sticky).
 
-- The pager mini-window tooltips are sometimes not unmapped when they should be.
-
-- When right clicking a zoomed pager mini-window to get the menu, the
-  mini-window and tooltip are not unmapped.
-
 - Various minor focus issues.
   Exact steps to reproduce are welcome.
+
+- xclock weirdness with manual window placement.
 
 - Window placement when low on space could be improved.
   In particular, we should try harder not to cover the dont-cover windows.
@@ -26,6 +26,15 @@ Known bugs
   confined to the zoomed window.
 ! May be impossible to fix due to limitations in X (vidmode extension, mouse
   grabs).
+
+
+Fixed in CVS
+~~~~~~~~~~~~
+
+- The pager mini-window tooltips are sometimes not unmapped when they should be.
+
+- When right clicking a zoomed pager mini-window to get the menu, the
+  mini-window and tooltip are not unmapped.
 
 
 Fixed in E 16.6
@@ -105,8 +114,6 @@ Feature requests
 --------------------
 Miscellaneous issues
 --------------------
-
-- Port to imlib2.
 
 - Port to freetype2.
 

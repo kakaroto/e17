@@ -2264,3 +2264,12 @@ Attempt to fix "walking" iconboxes in certain themes when not anchored
 left or top.
 Re-enable iconifying by dragging from pager to iconbox.
 Iconbox namespace and code shuffling.
+
+-------------------------------------------------------------------------------
+
+Sun Nov 30 16:37:42 CET 2003
+(Kim)
+
+Pager fixups after imlib2 port.
+Fix pager mini-window and tooltip unmapping.
+Pager code shuffling.
