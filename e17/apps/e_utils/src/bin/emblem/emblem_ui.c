@@ -78,7 +78,8 @@ emblem_ui_init(Emblem *em)
     double l;
 
     ee = ecore_evas_software_x11_new(em->display, 0, 0, 0, WIDTH, HEIGHT);
-    ecore_evas_title_set(ee, PACKAGE);
+    ecore_evas_name_class_set(ee, "Emblem", "Emblem");
+    ecore_evas_title_set(ee, "Emblem");
     ecore_evas_callback_resize_set(ee, emblem_ui_resize_cb);
     ecore_evas_data_set(ee, "emblem", em);
     ecore_evas_show(ee);
