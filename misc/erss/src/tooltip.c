@@ -35,7 +35,7 @@ static Erss_Tooltip *erss_tooltip_new (char *description)
 {
 	Erss_Tooltip *tt;
 	int x, y, w, h;
-	double ew, eh;
+	Evas_Coord ew, eh;
 
 	if(description == NULL)
 		return NULL;
