@@ -22,4 +22,9 @@ install-data-hook:
 	    $(INSTALL_DATA) $(srcdir)/$$i $(DESTDIR)$(macrodir)/ ; \
 	done
 
+uninstall-hook:
+	for i in $(MACROS) ; do \
+	    rm -f $(DESTDIR)$(macrodir)/$$i ; \
+	done
+
 .PHONY: test

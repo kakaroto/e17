@@ -10,6 +10,9 @@ install-exec-hook:
 	    $(INSTALL_DATA) $(srcdir)/$$i $(DESTDIR)$(includedir)/$(PACKAGE)/ ; \
 	done
 
+uninstall-hook:
+	rm -rf $(DESTDIR)$(includedir)/$(PACKAGE)
+
 EXTRA_DIST = $(EXTRA_HEADERS) sysdefs.h.in types.h.in
 
 all: types.h sysdefs.h
