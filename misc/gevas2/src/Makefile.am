@@ -22,49 +22,50 @@ INCLUDES	     = $(CFLGAS_ALL)           \
 
 lib_LTLIBRARIES      = libgevas.la
 include_HEADERS      = \
-gevas.h \
-gevasev_handler.h \
-gevasevh_alpha.h \
-gevasevh_clicks.h \
-gevasevh_drag.h \
-gevasevh_emouse_over.h \
-gevasevh_obj_changer.h \
-gevasevh_popup.h  \
+gevas.h                   \
+gevasev_handler.h         \
+gevasevh_alpha.h          \
+gevasevh_clicks.h         \
+gevasevh_drag.h           \
+gevasevh_emouse_over.h    \
+gevasevh_throb.h          \
+gevasevh_obj_changer.h    \
+gevasevh_popup.h          \
 gevasevh_to_gtk_signals.h \
-gevasgrad.h \
-gevasimage.h \
-gevasobj.h \
-gevastext.h \
-gevastwin.h \
-gevasevh_selectable.h \
+gevasgrad.h               \
+gevasimage.h              \
+gevasobj.h                \
+gevastext.h               \
+gevastwin.h               \
+gevasevh_selectable.h     \
 gevasevh_group_selector.h \
-gevas_obj_collection.h \
-gevas_sprite.h \
-gevas_util.h 
+gevas_obj_collection.h    \
+gevas_sprite.h            \
+gevas_util.h              
 
-
-libgevas_la_SOURCES   = \
-gevas.c \
-gevasev_handler.c \
-gevasevh_alpha.c \
-gevasevh_clicks.c \
-gevasevh_drag.c \
-gevasevh_emouse_over.c \
-gevasevh_obj_changer.c \
-gevasevh_popup.c \
+libgevas_la_SOURCES   =   \
+gevas.c                   \
+gevasev_handler.c         \
+gevasevh_alpha.c          \
+gevasevh_clicks.c         \
+gevasevh_drag.c           \
+gevasevh_emouse_over.c    \
+gevasevh_throb.c          \
+gevasevh_obj_changer.c    \
+gevasevh_popup.c          \
 gevasevh_to_gtk_signals.c \
-gevasgrad.c \
-gevasimage.c \
-gevasobj.c \
-gevastext.c \
-gevastwin.c \
-gevasevh_selectable.c \
+gevasgrad.c               \
+gevasimage.c              \
+gevasobj.c                \
+gevastext.c               \
+gevastwin.c               \
+gevasevh_selectable.c     \
 gevasevh_group_selector.c \
-gevas_obj_collection.c \
-gevas_sprite.c \
-gevas_util.c \
-project.c \
-project.h
+gevas_obj_collection.c    \
+gevas_sprite.c            \
+gevas_util.c              \
+project.c                 \
+project.h                 
 
 libgevas_la_LIBADD       = $(LIBS_ALL)  @GTK_LIBS@
 libgevas_la_LDFLAGS      = -version-info 1:0:0

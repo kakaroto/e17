@@ -1007,6 +1007,21 @@ void make_twin(GtkWidget * gevas)
 }
 
 
+void make_e_throbber(GtkWidget * gevas)
+{
+	GtkgEvasObj *ct;
+
+	ct = GTK_GEVASOBJ(gevasimage_new());
+	GtkgEvasObj *go = GTK_GEVASOBJ( ct );
+	gevasobj_set_gevas(ct, gevas);
+	gevasimage_set_image_name(ct, PACKAGE_DATA_DIR "/e_logo.png");
+	gevasobj_move(ct, 500, 500);
+	gevasobj_set_layer(ct, 100);
+	gevasobj_show(ct);
+//    make_selectable( ct );
+
+	gevasevh_throb_new( go );
+}
 
 
 int main(int argc, char *argv[])
@@ -1096,7 +1111,10 @@ int main(int argc, char *argv[])
 
     fprintf(stderr,"setting up a twin object\n");
  	make_twin(gevas); 
-    
+
+    fprintf(stderr,"setting up a throbbing e logo\n");
+    make_e_throbber(gevas); 
+
     fprintf(stderr,"setting middle button scrolls\n");
 
 	gevas_set_middleb_scrolls(GTK_GEVAS(gevas), 1,

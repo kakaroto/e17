@@ -44,9 +44,9 @@ extern "C" {
 #define GTK_GEVASEVH_CLASS(klass)  GTK_CHECK_CLASS_CAST (klass, gevasevh_get_type (), GtkgEvasEvHClass)
 #define GTK_IS_GEVASEVH(obj)       GTK_CHECK_TYPE (obj, gevasevh_get_type ())
 #define GTK_GEVASEVH_GEVASOBJ		"GtkgEvasEvH::gevas_object"
-#define gevasimage_set_gevasobj( gevaso, val ) \
-	gtk_object_set(GTK_OBJECT(gevaso), \
-        	GTK_GEVASEVH_GEVASOBJ, (gpointer) val, NULL);
+#define gevasevh_set_gevasobj( evh, go ) \
+	gtk_object_set(GTK_OBJECT( evh), \
+        	GTK_GEVASEVH_GEVASOBJ, (gpointer) go, NULL);
 
 enum _GEVASEV_HANDLER_RET {
 	GEVASEV_HANDLER_RET_NEXT,

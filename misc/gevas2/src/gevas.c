@@ -408,8 +408,8 @@ guint gevas_get_type(void)
 			sizeof(GtkgEvasClass),
 			(GtkClassInitFunc)  gevas_class_init,
 			(GtkObjectInitFunc) gevas_init,
-            (gpointer) gevas_set_arg,
-            (gpointer) gevas_get_arg,
+            NULL,
+            NULL,
 			(GtkClassInitFunc) NULL,
 		};
 
