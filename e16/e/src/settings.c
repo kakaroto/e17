@@ -1074,7 +1074,7 @@ CB_DesktopDisplayRedraw(int val, void *data)
 
 		  pmap = ECreatePixmap(disp, wins[i], 64, 48, root.depth);
 		  ESetWindowBackgroundPixmap(disp, wins[i], pmap);
-		  SetBackgroundTo(pmap, desks.desk[i].bg, 0);
+		  BackgroundApply(desks.desk[i].bg, pmap, 0);
 		  EFreePixmap(disp, pmap);
 	       }
 	  }
@@ -2466,7 +2466,7 @@ CB_ConfigureBG(int val, void *data)
 	tmp_bg->bg.xperc = tmp_bg_xperc;
 	tmp_bg->bg.yperc = 1024 - tmp_bg_yperc;
 	if (!tmp_bg_image)
-	   RemoveImagesFromBG(tmp_bg);
+	   BackgroundImagesRemove(tmp_bg);
 	for (i = 0; i < ENLIGHTENMENT_CONF_NUM_DESKTOPS; i++)
 	  {
 	     if (desks.desk[i].bg == tmp_bg)
@@ -2490,7 +2490,7 @@ CB_ConfigureBG(int val, void *data)
 	   Esnprintf(s, sizeof(s), "%s/cached/bgsel/%s", EDirUserCache(),
 		     tmp_bg->name);
 	   p2 = ECreatePixmap(disp, root.win, 64, 48, root.depth);
-	   SetBackgroundTo(p2, tmp_bg, 0);
+	   BackgroundApply(tmp_bg, p2, 0);
 	   imlib_context_set_drawable(p2);
 	   im = imlib_create_image_from_drawable(0, 0, 0, 64, 48, 0);
 	   imlib_context_set_image(im);
@@ -2503,14 +2503,14 @@ CB_ConfigureBG(int val, void *data)
      }
    if (val != 1)
      {
-	KeepBGimages(tmp_bg, 0);
+	BackgroundImagesKeep(tmp_bg, 0);
      }
    if (tbg)
      {
-	FreeDesktopBG(tbg);
+	BackgroundDestroy(tbg);
 	tbg = NULL;
      }
-   DesktopAccounting();
+   BackgroundsAccounting();
    autosave();
    /* This is kind of a hack - somehow it loses the correct current desktop
     * information when we actually open up the dialog box, so this
@@ -2541,22 +2541,22 @@ CB_DesktopMiniDisplayRedraw(int val, void *data)
      {
 	if (!tmp_bg_image)
 	   tbg =
-	      CreateDesktopBG("TEMP", &xclr, NULL, tmp_bg_tile,
-			      tmp_bg_keep_aspect, tmp_bg_xjust,
-			      1024 - tmp_bg_yjust, tmp_bg_xperc,
-			      1024 - tmp_bg_yperc, tmp_bg->top.file,
-			      tmp_bg->top.keep_aspect, tmp_bg->top.xjust,
-			      tmp_bg->top.yjust, tmp_bg->top.xperc,
-			      tmp_bg->top.yperc);
+	      BackgroundCreate("TEMP", &xclr, NULL, tmp_bg_tile,
+			       tmp_bg_keep_aspect, tmp_bg_xjust,
+			       1024 - tmp_bg_yjust, tmp_bg_xperc,
+			       1024 - tmp_bg_yperc, tmp_bg->top.file,
+			       tmp_bg->top.keep_aspect, tmp_bg->top.xjust,
+			       tmp_bg->top.yjust, tmp_bg->top.xperc,
+			       tmp_bg->top.yperc);
 	else
 	   tbg =
-	      CreateDesktopBG("TEMP", &xclr, tmp_bg->bg.file, tmp_bg_tile,
-			      tmp_bg_keep_aspect, tmp_bg_xjust,
-			      1024 - tmp_bg_yjust, tmp_bg_xperc,
-			      1024 - tmp_bg_yperc, tmp_bg->top.file,
-			      tmp_bg->top.keep_aspect, tmp_bg->top.xjust,
-			      tmp_bg->top.yjust, tmp_bg->top.xperc,
-			      tmp_bg->top.yperc);
+	      BackgroundCreate("TEMP", &xclr, tmp_bg->bg.file, tmp_bg_tile,
+			       tmp_bg_keep_aspect, tmp_bg_xjust,
+			       1024 - tmp_bg_yjust, tmp_bg_xperc,
+			       1024 - tmp_bg_yperc, tmp_bg->top.file,
+			       tmp_bg->top.keep_aspect, tmp_bg->top.xjust,
+			       tmp_bg->top.yjust, tmp_bg->top.xperc,
+			       tmp_bg->top.yperc);
      }
    else
      {
@@ -2587,10 +2587,10 @@ CB_DesktopMiniDisplayRedraw(int val, void *data)
 	tbg->bg.xperc = tmp_bg_xperc;
 	tbg->bg.yperc = 1024 - tmp_bg_yperc;
      }
-   KeepBGimages(tbg, 1);
+   BackgroundImagesKeep(tbg, 1);
    pmap = ECreatePixmap(disp, win, w, h, root.depth);
    ESetWindowBackgroundPixmap(disp, win, pmap);
-   SetBackgroundTo(pmap, tbg, 0);
+   BackgroundApply(tbg, pmap, 0);
    XClearWindow(disp, win);
    EFreePixmap(disp, pmap);
    val = 0;
@@ -2607,7 +2607,7 @@ BG_DoDialog(void)
    else
       tmp_bg_image = 0;
 
-   KeepBGimages(tmp_bg, 1);
+   BackgroundImagesKeep(tmp_bg, 1);
 
    if (tmp_bg->bg.file)
       stmp = fullfileof(tmp_bg->bg.file);
@@ -2639,7 +2639,7 @@ BG_DoDialog(void)
    DialogItemSliderSetVal(tmp_w[9], tmp_bg_xperc);
    if (tbg)
      {
-	FreeDesktopBG(tbg);
+	BackgroundDestroy(tbg);
 	tbg = NULL;
      }
    CB_DesktopMiniDisplayRedraw(0, bg_mini_disp);
@@ -2655,12 +2655,12 @@ CB_ConfigureNewBG(int val, void *data)
 
    Esnprintf(s, sizeof(s), "__NEWBG_%i\n", (unsigned)time(NULL));
    ESetColor(&xclr, tmp_bg_r, tmp_bg_g, tmp_bg_b);
-   bg = CreateDesktopBG(s, &xclr, tmp_bg->bg.file, tmp_bg_tile,
-			tmp_bg_keep_aspect, tmp_bg_xjust, 1024 - tmp_bg_yjust,
-			tmp_bg_xperc, 1024 - tmp_bg_yperc, tmp_bg->top.file,
-			tmp_bg->top.keep_aspect, tmp_bg->top.xjust,
-			tmp_bg->top.yjust, tmp_bg->top.xperc,
-			tmp_bg->top.yperc);
+   bg = BackgroundCreate(s, &xclr, tmp_bg->bg.file, tmp_bg_tile,
+			 tmp_bg_keep_aspect, tmp_bg_xjust, 1024 - tmp_bg_yjust,
+			 tmp_bg_xperc, 1024 - tmp_bg_yperc, tmp_bg->top.file,
+			 tmp_bg->top.keep_aspect, tmp_bg->top.xjust,
+			 tmp_bg->top.yjust, tmp_bg->top.xperc,
+			 tmp_bg->top.yperc);
    AddItem(bg, bg->name, 0, LIST_TYPE_BACKGROUND);
    tmp_bg = bg;
    desks.desk[desks.current].bg = bg;
@@ -2708,7 +2708,7 @@ CB_ConfigureRemBG(int val, void *data)
 		     tmp_bg = bglist[i - 1];
 		  i = num;
 		  if (bg)
-		     FreeDesktopBG(bg);
+		     BackgroundDestroy(bg);
 		  BG_DoDialog();
 	       }
 	  }
@@ -2781,7 +2781,7 @@ CB_ConfigureDelBG(int val, void *data)
 				 Efree(f);
 			      }
 			 }
-		       FreeDesktopBG(bg);
+		       BackgroundDestroy(bg);
 		    }
 		  BG_DoDialog();
 	       }
@@ -2898,7 +2898,7 @@ BG_RedrawView(char nuke_old)
 		       Esnprintf(s, sizeof(s), "%s/cached/bgsel/%s",
 				 EDirUserCache(), bglist[i]->name);
 		       p2 = ECreatePixmap(disp, pmap, 64, 48, root.depth);
-		       SetBackgroundTo(p2, bglist[i], 0);
+		       BackgroundApply(bglist[i], p2, 0);
 		       XCopyArea(disp, p2, pmap, gc, 0, 0, 64, 48, x + 4, 4);
 		       imlib_context_set_drawable(p2);
 		       im =
@@ -2986,7 +2986,7 @@ CB_BGAreaEvent(int val, void *data)
 	tmp_bg_selected = x;
 	if ((tmp_bg_selected >= 0) && (tmp_bg_selected < num))
 	  {
-	     KeepBGimages(tmp_bg, 0);
+	     BackgroundImagesKeep(tmp_bg, 0);
 	     tmp_bg = bglist[tmp_bg_selected];
 	     BG_DoDialog();
 	     desks.desk[desks.current].bg = tmp_bg;
@@ -3050,7 +3050,7 @@ BGSettingsGoTo(Background * bg)
 				  99999);
 		  DialogItemCallCallback(bg_sel_slider);
 		  tmp_bg_selected = i;
-		  KeepBGimages(tmp_bg, 0);
+		  BackgroundImagesKeep(tmp_bg, 0);
 		  tmp_bg = bglist[tmp_bg_selected];
 		  BG_DoDialog();
 		  BG_RedrawView(0);
@@ -3273,8 +3273,8 @@ SettingsBackground(Background * bg)
    if ((!bg) || ((bg) && (!strcmp(bg->name, "NONE"))))
      {
 	Esnprintf(s, sizeof(s), "__NEWBG_%i\n", (unsigned)time(NULL));
-	bg = CreateDesktopBG(s, NULL, NULL, 1, 1, 0, 0, 0, 0, NULL, 1, 512, 512,
-			     0, 0);
+	bg = BackgroundCreate(s, NULL, NULL, 1, 1, 0, 0, 0, 0, NULL, 1,
+			      512, 512, 0, 0);
 	AddItem(bg, bg->name, 0, LIST_TYPE_BACKGROUND);
 	/*
 	 * desks.desk[desks.current].bg = bg;

@@ -41,22 +41,6 @@ static int          error_base_randr = 0;
 
 char                throw_move_events_away = 0;
 
-static char         diddeskaccount = 1;
-
-static void
-DeskAccountTimeout(int val, void *data)
-{
-   EDBUG(5, "DeskAccountTimeout");
-
-   DesktopAccounting();
-   diddeskaccount = 1;
-   EDBUG_RETURN_;
-   data = NULL;
-   val = 0;
-
-   EDBUG_RETURN_;
-}
-
 void
 EventsInit(void)
 {
@@ -247,12 +231,6 @@ HandleEvent(XEvent * ev)
 
    /* Should not be "global" */
    IconboxesHandleEvent(ev);
-
-   if (diddeskaccount)
-     {
-	DoIn("DESKTOP_ACCOUNTING_TIMEOUT", 30.0, DeskAccountTimeout, 0, NULL);
-	diddeskaccount = 0;
-     }
 
    EDBUG_RETURN_;
 }

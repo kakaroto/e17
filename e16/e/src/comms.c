@@ -537,7 +537,7 @@ HandleComms(XClientMessageEvent * ev)
 			       desks.desk[i].bg->last_viewed = 0;
 			    view = desks.desk[i].viewable;
 			    desks.desk[i].viewable = 0;
-			    DesktopAccounting();
+			    BackgroundsAccounting();
 			    desks.desk[i].viewable = view;
 			    desks.desk[i].bg = bg;
 			    if (i < Conf.desks.num)
@@ -577,7 +577,7 @@ HandleComms(XClientMessageEvent * ev)
 			  desks.desk[i].bg->last_viewed = 0;
 		       view = desks.desk[i].viewable;
 		       desks.desk[i].viewable = 0;
-		       DesktopAccounting();
+		       BackgroundsAccounting();
 		       desks.desk[i].viewable = view;
 		       desks.desk[i].bg = NULL;
 		       if (i < Conf.desks.num)
@@ -1157,9 +1157,9 @@ HandleComms(XClientMessageEvent * ev)
 	     word(s, 13, w);
 	     if (strcmp("(null)", w))
 		topf = Estrdup(w);
-	     bg = CreateDesktopBG(name, &xclr, bgf, tile, keep_aspect, xjust,
-				  yjust, xperc, yperc, topf, tkeep_aspect,
-				  txjust, tyjust, txperc, typerc);
+	     bg = BackgroundCreate(name, &xclr, bgf, tile, keep_aspect, xjust,
+				   yjust, xperc, yperc, topf, tkeep_aspect,
+				   txjust, tyjust, txperc, typerc);
 	     if (name)
 		Efree(name);
 	     if (bgf)
@@ -1178,7 +1178,7 @@ HandleComms(XClientMessageEvent * ev)
 	bg = (Background *) FindItem(w, 0, LIST_FINDBY_NAME,
 				     LIST_TYPE_BACKGROUND);
 	if (bg)
-	   SetBackgroundTo(win, bg, 0);
+	   BackgroundApply(bg, win, 0);
 	CommsSend(c, "done");
      }
    else if (!strcmp(w, "set_controls"))

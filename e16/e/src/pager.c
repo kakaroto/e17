@@ -660,7 +660,8 @@ PagerRedraw(Pager * p, char newbg)
 		       Imlib_Image        *im;
 		       Pixmap              mask;
 
-		       uniq = GetUniqueBGString(desks.desk[p->desktop].bg);
+		       uniq =
+			  BackgroundGetUniqueString(desks.desk[p->desktop].bg);
 		       Esnprintf(s, sizeof(s), "%s/cached/pager/%s.%i.%i.%s",
 				 EDirUserCache(),
 				 desks.desk[p->desktop].bg->name, (p->w / ax),
@@ -683,8 +684,8 @@ PagerRedraw(Pager * p, char newbg)
 			 }
 		       else
 			 {
-			    SetBackgroundTo(p->bgpmap,
-					    desks.desk[p->desktop].bg, 0);
+			    BackgroundApply(desks.desk[p->desktop].bg,
+					    p->bgpmap, 0);
 			    imlib_context_set_drawable(p->bgpmap);
 			    im =
 			       imlib_create_image_from_drawable(0, 0, 0,

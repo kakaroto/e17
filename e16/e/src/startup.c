@@ -216,8 +216,8 @@ CreateStartupDisplay(char start)
 	IclassApply(ic, b1, root.w, Conf.desks.dragbar_width, 0, 0, 0, 0);
 	IclassApply(ic, b2, root.w, Conf.desks.dragbar_width, 0, 0, 0, 0);
 	Mode.queue_up = pq;
-	SetBackgroundTo(win1, bg, 1);
-	SetBackgroundTo(win2, bg, 1);
+	BackgroundApply(bg, win1, 1);
+	BackgroundApply(bg, win2, 1);
 	if (bg->pmap)
 	   imlib_free_pixmap_and_mask(bg->pmap);
 	bg->pmap = 0;

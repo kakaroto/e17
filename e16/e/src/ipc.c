@@ -1075,8 +1075,8 @@ IPC_Background(const char *params, Client * c)
 
 		  if (!bg)
 		    {
-		       bg = CreateDesktopBG(Estrdup(name), NULL, NULL, 0, 0, 0,
-					    0, 0, 0, NULL, 0, 0, 0, 0, 0);
+		       bg = BackgroundCreate(Estrdup(name), NULL, NULL, 0, 0, 0,
+					     0, 0, 0, NULL, 0, 0, 0, 0, 0);
 		       AddItem(bg, bg->name, 0, LIST_TYPE_BACKGROUND);
 		    }
 		  if (!bg)
@@ -1178,7 +1178,7 @@ IPC_Background(const char *params, Client * c)
 		    {
 		       RemoveItem(name, 0,
 				  LIST_FINDBY_NAME, LIST_TYPE_BACKGROUND);
-		       FreeDesktopBG(bg);
+		       BackgroundDestroy(bg);
 		    }
 		  else
 		     Esnprintf(buf, sizeof(buf),

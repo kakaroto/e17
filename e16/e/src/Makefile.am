@@ -21,6 +21,7 @@ enlightenment_SOURCES = \
 	areas.c                 \
 	arrange.c		\
 	atoms.c			\
+	backgrounds.c		\
 	borders.c		\
 	buttons.c		\
 	clone.c                 \

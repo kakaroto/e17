@@ -2638,7 +2638,7 @@ doBackgroundSet(EWin * edummy, const void *params)
 	   desks.desk[desk].bg->last_viewed = 0;
 	view = desks.desk[desk].viewable;
 	desks.desk[desk].viewable = 0;
-	DesktopAccounting();
+	BackgroundsAccounting();
 	desks.desk[desk].viewable = view;
 	BGSettingsGoTo(bg);
 	pq = Mode.queue_up;

@@ -1121,10 +1121,10 @@ MenuCreateFromDirectory(const char *name, MenuStyle * ms, const char *dir)
 				      keep_asp = 1;
 				   }
 				 ESetColor(&xclr, 0, 0, 0);
-				 bg = CreateDesktopBG(s3, &xclr, ss, tile,
-						      keep_asp, justx, justy,
-						      scalex, scaley, NULL, 0,
-						      0, 0, 0, 0);
+				 bg = BackgroundCreate(s3, &xclr, ss, tile,
+						       keep_asp, justx, justy,
+						       scalex, scaley, NULL, 0,
+						       0, 0, 0, 0);
 				 AddItem(bg, bg->name, 0, LIST_TYPE_BACKGROUND);
 			      }
 			    else
@@ -1333,9 +1333,9 @@ MenuCreateFromDirectory(const char *name, MenuStyle * ms, const char *dir)
 				 keep_asp = 1;
 			      }
 			    ESetColor(&xclr, 0, 0, 0);
-			    bg = CreateDesktopBG(s3, &xclr, ss, tile, keep_asp,
-						 512, 512, scalex, scaley, NULL,
-						 0, 0, 0, 0, 0);
+			    bg = BackgroundCreate(s3, &xclr, ss, tile, keep_asp,
+						  512, 512, scalex, scaley,
+						  NULL, 0, 0, 0, 0, 0);
 			    AddItem(bg, bg->name, 0, LIST_TYPE_BACKGROUND);
 			 }
 		       else

@@ -127,8 +127,8 @@ SetupFallbackClasses(void)
    AddItem(b, b->name, 0, LIST_TYPE_BORDER);
 
    /* create a fallback background in case no background is found */
-   bg = CreateDesktopBG("NONE", NULL, NULL, 0, 0, 0, 0, 0, 0, NULL, 0, 0, 0, 0,
-			0);
+   bg = BackgroundCreate("NONE", NULL, NULL, 0, 0, 0, 0, 0, 0, NULL, 0, 0, 0, 0,
+			 0);
    AddItem(bg, bg->name, 0, LIST_TYPE_BACKGROUND);
 
    /* create a fallback textclass in case no textclass is found */

@@ -1824,9 +1824,9 @@ Config_Desktop(FILE * ConfigFile)
 			 }
 		       if (ok)
 			 {
-			    bg = CreateDesktopBG(name, &xclr, bg1, i1, i2, i3,
-						 i4, i5, i6, bg2, j1, j2, j3,
-						 j4, j5);
+			    bg = BackgroundCreate(name, &xclr, bg1, i1, i2, i3,
+						  i4, i5, i6, bg2, j1, j2, j3,
+						  j4, j5);
 			    AddItem(bg, bg->name, 0, LIST_TYPE_BACKGROUND);
 			    if (cm)
 			      {
@@ -1879,9 +1879,9 @@ Config_Desktop(FILE * ConfigFile)
 #endif
 			    if (!bg)
 			      {
-				 bg = CreateDesktopBG(name, &xclr, bg1, i1, i2,
-						      i3, i4, i5, i6, bg2, j1,
-						      j2, j3, j4, j5);
+				 bg = BackgroundCreate(name, &xclr, bg1, i1, i2,
+						       i3, i4, i5, i6, bg2, j1,
+						       j2, j3, j4, j5);
 				 AddItem(bg, bg->name, 0, LIST_TYPE_BACKGROUND);
 			      }
 			    if (!strcmp(bg->name, "NONE"))

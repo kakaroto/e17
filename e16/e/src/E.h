@@ -572,6 +572,7 @@ typedef struct _group Group;
 typedef struct _button Button;
 typedef struct _slideout Slideout;
 typedef struct _soundclass SoundClass;
+typedef struct _background Background;
 
 typedef struct _efont Efont;
 
@@ -1048,7 +1049,7 @@ typedef struct
 }
 BgPart;
 
-typedef struct _background
+struct _background
 {
    char               *name;
    Pixmap              pmap;
@@ -1060,8 +1061,7 @@ typedef struct _background
    ColorModifierClass *cmclass;
    char                keepim;
    unsigned int        ref_count;
-}
-Background;
+};
 
 typedef struct _desk
 {
@@ -1646,6 +1646,21 @@ void                setSimpleHint(Window win, Atom atom, long value);
 long               *getSimpleHint(Window win, Atom atom);
 void                deleteHint(Window win, Atom atom);
 
+/* backgrounds.c */
+char               *BackgroundGetUniqueString(Background * bg);
+void                BackgroundImagesKeep(Background * bg, char onoff);
+void                BackgroundImagesRemove(Background * bg);
+void                BackgroundDestroy(Background * bg);
+Background         *BackgroundCreate(const char *name, XColor * solid,
+				     const char *bg, char tile,
+				     char keep_aspect, int xjust, int yjust,
+				     int xperc, int yperc, const char *top,
+				     char tkeep_aspect, int txjust, int tyjust,
+				     int txperc, int typerc);
+void                BackgroundApply(Background * bg, Window win, int setbg);
+void                BackgroundsAccounting(void);
+void                BackgroundsInit(void);
+
 /* borders.c */
 #define EWIN_CHANGE_NAME        (1<<0)
 #define EWIN_CHANGE_ICON_NAME   (1<<1)
@@ -1813,7 +1828,6 @@ void                ApplyECursor(Window win, ECursor * ec);
 void                FreeECursor(ECursor * ec);
 
 /* desktops.c */
-char               *GetUniqueBGString(Background * bg);
 void                ChangeNumberOfDesktops(int quantity);
 void                ShowDesktopControls(void);
 void                ShowDesktopTabs(void);
@@ -1823,18 +1837,8 @@ void                MoveToDeskTop(int num);
 void                MoveToDeskBottom(int num);
 void                SlideWindowTo(Window win, int fx, int fy, int tx, int ty,
 				  int speed);
-void                KeepBGimages(Background * bg, char onoff);
-void                RemoveImagesFromBG(Background * bg);
-void                FreeDesktopBG(Background * bg);
-Background         *CreateDesktopBG(const char *name, XColor * solid,
-				    const char *bg, char tile, char keep_aspect,
-				    int xjust, int yjust, int xperc, int yperc,
-				    const char *top, char tkeep_aspect,
-				    int txjust, int tyjust, int txperc,
-				    int typerc);
 void                RefreshCurrentDesktop(void);
 void                RefreshDesktop(int num);
-void                SetBackgroundTo(Window win, Background * dsk, char setbg);
 void                InitDesktopBgs(void);
 void                InitDesktopControls(void);
 void                SetDesktopBg(int desk, Background * bg);
@@ -1855,7 +1859,6 @@ void                DesktopAddEwinToTop(EWin * ewin);
 void                MoveEwinToDesktopAt(EWin * ewin, int num, int x, int y);
 void                GotoDesktopByEwin(EWin * ewin);
 void                FloatEwinAboveDesktops(EWin * ewin);
-void                DesktopAccounting(void);
 
 /* dialog.c */
 Dialog             *DialogCreate(const char *name);

@@ -346,10 +346,10 @@ main(int argc, char **argv)
 
    if ((bg = RemoveItem("STARTUP_BACKGROUND_SIDEWAYS", 0,
 			LIST_FINDBY_NAME, LIST_TYPE_BACKGROUND)))
-      FreeDesktopBG(bg);
+      BackgroundDestroy(bg);
    if ((bg = RemoveItem("STARTUP_BACKGROUND", 0,
 			LIST_FINDBY_NAME, LIST_TYPE_BACKGROUND)))
-      FreeDesktopBG(bg);
+      BackgroundDestroy(bg);
 
 #ifdef SIGCONT
    for (i = 0; i < child_count; i++)
@@ -365,9 +365,13 @@ main(int argc, char **argv)
    Mode.startup = 0;
 
    ThemeBadDialog();
+
+   BackgroundsInit();		/* Start the background accounting */
+
    /* The primary event loop */
    for (;;)
       WaitEvent();
+
    /* Of course, we should NEVER get to this point */
    EDBUG_RETURN(0);
 }
