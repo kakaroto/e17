@@ -10,9 +10,6 @@ Ewl_Widget *display;
 char tmp[BUFLEN];
 char disp[BUFLEN];
 
-// needed 'cos generated h files suck
-double yyresult (void);
-
 typedef struct equate_button
 {
   int row;
@@ -30,6 +27,8 @@ void calc_clear (Ewl_Widget * w, void *ev_data, void *user_data);
 void calc_op (Ewl_Widget * w, void *ev_data, void *user_data);
 void calc_exec (void);
 
+static int basic_width=98;
+static int basic_height=138;
 static equate_button basic_buttons[] = {
   {2, 1, 1, 1, "c", "c", (void *) calc_clear, NULL},
   {2, 2, 1, 1, "/", "/", (void *) calc_append, NULL},
@@ -52,6 +51,8 @@ static equate_button basic_buttons[] = {
   {6, 3, 1, 1, ".", ".", (void *) calc_append, NULL},
 };
 
+static int sci_width=120;
+static int sci_height=160;
 static equate_button sci_buttons[] = {
   {2, 1, 1, 1, "/", "/", (void *) calc_append, NULL},
   {2, 2, 1, 1, "*", "*", (void *) calc_append, NULL},
@@ -183,15 +184,21 @@ void
 draw_interface (mode draw_mode)
 {
   int count;
+  int width, height;
+  
   if (draw_mode == SCI)
     {
       buttons = sci_buttons;
       count = sizeof (sci_buttons);
+      width=sci_width;
+      height=sci_height;
     }
   else
     {
       buttons = basic_buttons;
       count = sizeof (basic_buttons);
+      width=basic_width;
+      height=basic_height;
     }
 
   count /= sizeof (equate_button);
@@ -206,7 +213,7 @@ draw_interface (mode draw_mode)
 
   main_win = ewl_window_new ();
   ewl_window_set_title (EWL_WINDOW (main_win), "Equate");
-  ewl_object_set_minimum_size (EWL_OBJECT (main_win), 120, 160);
+  ewl_object_set_minimum_size (EWL_OBJECT (main_win), width, height);
   ewl_callback_append (main_win, EWL_CALLBACK_DELETE_WINDOW,
 		       destroy_main_window, NULL);
 

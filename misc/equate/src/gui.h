@@ -6,6 +6,9 @@ typedef enum
   SCI
 } mode;
 
+// needed 'cos generated h files suck
+double yyresult (void);
+
 void update_display (char *text);
 
 void draw_interface (mode draw_mode);

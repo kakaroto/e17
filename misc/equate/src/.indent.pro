@@ -5,13 +5,14 @@
 -ce
 -cdw
 -di16
--i8
+-i3
 -l80
 -nbbo
 -nbc
 -nbfda
 -npcs
 -nss
+-nut
 -saf
 -sai
 -saw
