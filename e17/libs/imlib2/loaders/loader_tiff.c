@@ -26,8 +26,7 @@ struct TIFFRGBAImage_Extra
 	tileContigRoutine	put_contig;
 	tileSeparateRoutine	put_separate;
 	ImlibImage			*image;
-	void (*progress)(ImlibImage *im, char percent, int update_x, int update_y, 
-		       int update_w, int update_h);
+        ImlibProgressFunction progress;
 	char			   	pper;
 	char				progress_granularity;
 	uint32				num_pixels;
@@ -44,15 +43,9 @@ static	void put_separate_and_raster(TIFFRGBAImage*, uint32*,
 static void raster(TIFFRGBAImage_Extra* img, uint32* raster,
     uint32 x, uint32 y, uint32 w, uint32 h);
 static void error_handler(const char *module, const char *fmt, va_list ap);
-char load (ImlibImage *im,
-	   void (*progress)(ImlibImage *im, char percent,
-			    int update_x, int update_y,
-			    int update_w, int update_h),
+char load (ImlibImage *im, ImlibProgressFunction progress,
 	   char progress_granularity, char immediate_load);
-char save (ImlibImage *im,
-	   void (*progress)(ImlibImage *im, char percent,
-			    int update_x, int update_y,
-			    int update_w, int update_h),
+char save (ImlibImage *im, ImlibProgressFunction progress,
 	   char progress_granularity);
 void formats (ImlibLoader *l);
 
@@ -146,10 +139,7 @@ raster(TIFFRGBAImage_Extra *img, uint32* rast,
 
 
 char 
-load (ImlibImage *im,
-      void (*progress)(ImlibImage *im, char percent, 
-		       int update_x, int update_y, 
-		       int update_w, int update_h),
+load (ImlibImage *im, ImlibProgressFunction progress,
       char progress_granularity, char immediate_load)
 {
 	TIFF				*tif = NULL;
@@ -283,10 +273,7 @@ load (ImlibImage *im,
 /* this is a problem in libtiff */
 
 char
-save (ImlibImage *im,
-      void (*progress)(ImlibImage *im, char percent, 
-		       int update_x, int update_y, 
-		       int update_w, int update_h),
+save (ImlibImage *im, ImlibProgressFunction progress,
       char progress_granularity)
 {
 	TIFF		*tif = NULL;

@@ -15,23 +15,14 @@
 /* PNG stuff */
 #define PNG_BYTES_TO_CHECK 4
 
-char load (ImlibImage *im,
-	   void (*progress)(ImlibImage *im, char percent,
-			    int update_x, int update_y,
-			    int update_w, int update_h),
+char load (ImlibImage *im, ImlibProgressFunction progress,
 	   char progress_granularity, char immediate_load);
-char save (ImlibImage *im,
-	   void (*progress)(ImlibImage *im, char percent,
-			    int update_x, int update_y,
-			    int update_w, int update_h),
+char save (ImlibImage *im, ImlibProgressFunction progress,
 	   char progress_granularity);
 void formats (ImlibLoader *l);
 
 char 
-load (ImlibImage *im,
-      void (*progress)(ImlibImage *im, char percent, 
-		       int update_x, int update_y, 
-		       int update_w, int update_h),
+load (ImlibImage *im, ImlibProgressFunction progress,
       char progress_granularity, char immediate_load)
 {
    png_uint_32         w32, h32;
@@ -252,10 +243,7 @@ load (ImlibImage *im,
 }
 
 char 
-save (ImlibImage *im,
-      void (*progress)(ImlibImage *im, char percent, 
-		       int update_x, int update_y, 
-		       int update_w, int update_h),
+save (ImlibImage *im, ImlibProgressFunction progress,
       char progress_granularity)
 {
    FILE               *f;

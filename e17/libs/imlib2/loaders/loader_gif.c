@@ -14,14 +14,12 @@
 #include "image.h"
 #include <gif_lib.h>
 
-typedef void (progress_func)(ImlibImage *, char, int, int, int, int);
-
-char load(ImlibImage *im, progress_func *progress, char progress_granularity, char immediate_load);
-char save(ImlibImage *im, progress_func *progress, char progress_granularity);
+char load(ImlibImage *im, ImlibProgressFunction progress,char progress_granularity, char immediate_load);
+char save(ImlibImage *im, ImlibProgressFunction progress, char progress_granularity);
 void formats(ImlibLoader *l);
 
 char 
-load(ImlibImage *im, progress_func *progress, char progress_granularity, char immediate_load)
+load(ImlibImage *im, ImlibProgressFunction progress, char progress_granularity, char immediate_load)
 {
   DATA32             *ptr;
   GifFileType        *gif;
@@ -169,7 +167,7 @@ load(ImlibImage *im, progress_func *progress, char progress_granularity, char im
 }
 
 char 
-save(ImlibImage *im, progress_func *progress, char progress_granularity)
+save(ImlibImage *im, ImlibProgressFunction progress, char progress_granularity)
 {
    return 0;
    im = NULL;

@@ -15,15 +15,9 @@
 #include <X11/Xutil.h>
 #include "image.h"
 
-char load (ImlibImage *im,
-	   void (*progress)(ImlibImage *im, char percent,
-			    int update_x, int update_y,
-			    int update_w, int update_h),
+char load (ImlibImage *im, ImlibProgressFunction progress,
 	   char progress_granularity, char immediate_load);
-char save (ImlibImage *im,
-	   void (*progress)(ImlibImage *im, char percent,
-			    int update_x, int update_y,
-			    int update_w, int update_h),
+char save (ImlibImage *im, ImlibProgressFunction progress,
 	   char progress_granularity);
 void formats (ImlibLoader *l);
 
@@ -64,10 +58,7 @@ int ReadleLong(FILE *file, unsigned long *ret)
 }
 
 char 
-load (ImlibImage *im,
-      void (*progress)(ImlibImage *im, char percent, 
-		       int update_x, int update_y, 
-		       int update_w, int update_h),
+load (ImlibImage *im, ImlibProgressFunction progress,
       char progress_granularity, char immediate_load)
 {
    FILE *f;
@@ -556,10 +547,7 @@ load (ImlibImage *im,
 }
 
 char 
-save (ImlibImage *im,
-      void (*progress)(ImlibImage *im, char percent, 
-		       int update_x, int update_y, 
-		       int update_w, int update_h),
+save (ImlibImage *im, ImlibProgressFunction progress,
       char progress_granularity)
 {
     return 0;

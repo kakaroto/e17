@@ -21,15 +21,9 @@ typedef struct ImLib_JPEG_error_mgr *emptr;
 void _JPEGFatalErrorHandler(j_common_ptr cinfo);
 void _JPEGErrorHandler(j_common_ptr cinfo);
 void _JPEGErrorHandler2(j_common_ptr cinfo, int msg_level);
-char load (ImlibImage *im,
-	   void (*progress)(ImlibImage *im, char percent,
-			    int update_x, int update_y,
-			    int update_w, int update_h),
+char load (ImlibImage *im, ImlibProgressFunction progress,
 	   char progress_granularity, char immediate_load);
-char save (ImlibImage *im,
-	   void (*progress)(ImlibImage *im, char percent,
-			    int update_x, int update_y,
-			    int update_w, int update_h),
+char save (ImlibImage *im, ImlibProgressFunction progress,
 	   char progress_granularity);
 void formats (ImlibLoader *l);
 
@@ -68,10 +62,7 @@ _JPEGErrorHandler2(j_common_ptr cinfo, int msg_level)
 }
 
 char 
-load (ImlibImage *im,
-      void (*progress)(ImlibImage *im, char percent, 
-		       int update_x, int update_y, 
-		       int update_w, int update_h),
+load (ImlibImage *im, ImlibProgressFunction progress,
       char progress_granularity, char immediate_load)
 {
    int                  w, h;
@@ -225,10 +216,7 @@ load (ImlibImage *im,
 }
 
 char 
-save (ImlibImage *im,
-      void (*progress)(ImlibImage *im, char percent, 
-		       int update_x, int update_y, 
-		       int update_w, int update_h),
+save (ImlibImage *im, ImlibProgressFunction progress,
       char progress_granularity)
 {
    struct              jpeg_compress_struct cinfo;

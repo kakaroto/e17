@@ -2841,3 +2841,13 @@ file at some point... :)
 
 _______________________________________________
 
+Thu Apr 27 02:59:57 GMT 2000
+(gilbertt)
+
+Well, I'm gonna use the damn ChangeLog anyhow ;-)
+
+Changed all the loaders to use ImlibProgressFunction instead of defining it
+themselves. This is so I can change them all at once tomorrow.
+
+_______________________________________________
+
