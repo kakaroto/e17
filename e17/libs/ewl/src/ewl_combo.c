@@ -117,7 +117,7 @@ void ewl_combo_init(Ewl_Combo * combo, char *title)
  * @return Returns no value
  * @brief Set the currently selected item
  */
-void ewl_combo_set_selected(Ewl_Combo * combo, char *item )
+void ewl_combo_selected_set(Ewl_Combo * combo, char *item )
 {
 	DENTER_FUNCTION(DLEVEL_STABLE);
 
@@ -136,7 +136,7 @@ void ewl_combo_set_selected(Ewl_Combo * combo, char *item )
  * @return Returns the currently selected item (possibly NULL)
  * @brief Gets the currently selected item
  */
-char *ewl_combo_get_selected(Ewl_Combo * combo )
+char *ewl_combo_selected_get(Ewl_Combo * combo )
 {
 	char *val = NULL;
 
