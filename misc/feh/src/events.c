@@ -551,6 +551,7 @@ feh_event_handle_MotionNotify(XEvent * ev)
          }
          else if (winwid->type == WIN_TYPE_THUMBNAIL)
          {
+            static feh_thumbnail *last_thumb = NULL;
             feh_thumbnail *thumbnail;
             int x, y;
 
@@ -561,30 +562,29 @@ feh_event_handle_MotionNotify(XEvent * ev)
             x /= winwid->zoom;
             y /= winwid->zoom;
             thumbnail = feh_thumbnail_get_thumbnail_from_coords(x, y);
-            D(("He steps up for the kick...\n"));
-            if (thumbnail)
+            if (thumbnail != last_thumb)
             {
-               Imlib_Image origwin;
+               if (thumbnail)
+               {
+                  Imlib_Image origwin;
 
-               D((stderr, "It's good\n"));
-
-               D((stderr, "Who's your daddy\n"));
-               origwin = feh_imlib_clone_image(winwid->im);
-               imlib_context_set_image(winwid->im);
-               feh_imlib_image_fill_rectangle(winwid->im, thumbnail->x,
-                                              thumbnail->y, thumbnail->w,
-                                              thumbnail->h, 50, 255, 50, 100);
-               feh_imlib_render_image_on_drawable(winwid->win, winwid->im, 0,
-                                                  0, 0, 1, 1);
-               feh_imlib_free_image_and_decache(winwid->im);
-               winwid->im = origwin;
-               /*imlib_free_image(); */
+                  origwin = feh_imlib_clone_image(winwid->im);
+                  imlib_context_set_image(winwid->im);
+                  feh_imlib_image_fill_rectangle(winwid->im, thumbnail->x,
+                                                 thumbnail->y, thumbnail->w,
+                                                 thumbnail->h, 50, 255, 50,
+                                                 100);
+                  /* feh_imlib_render_image_on_drawable(winwid->win, winwid->im, 0,
+                     0, 0, 1, 1); */
+                  winwidget_render_image(winwid, 0, 1);
+                  feh_imlib_free_image_and_decache(winwid->im);
+                  winwid->im = origwin;
+               }
+               else
+                  winwidget_render_image(winwid, 0, 1);
             }
-
-
+            last_thumb = thumbnail;
          }
-
-
       }
    }
    D_RETURN_;
