@@ -296,3 +296,7 @@ Sun Aug  4 22:47:33 2002                        Michael Jennings (mej)
 
 Fix the cache variable name.
 ----------------------------------------------------------------------
+Sat Aug 10 12:06:50 2002                        Michael Jennings (mej)
+
+Undefined symbol fix.  Got overzealous with my s///.
+----------------------------------------------------------------------

@@ -123,13 +123,13 @@ spif_regexp_show(spif_regexp_t self, spif_charptr_t name, spif_regexp_t buff, si
     memset(tmp, ' ', indent);
     snprintf(tmp + indent, sizeof(tmp) - indent, "(spif_regexp_t) %s:  %8p {\n", name, self);
     if (SPIF_REGEXP_ISNULL(buff)) {
-        buff = spif_regexp_new_from_ptr(tmp);
+        buff = spif_str_new_from_ptr(tmp);
     } else {
-        spif_regexp_append_from_ptr(buff, tmp);
+        spif_str_append_from_ptr(buff, tmp);
     }
 
     snprintf(tmp, sizeof(tmp), "}\n");
-    spif_regexp_append_from_ptr(buff, tmp);
+    spif_str_append_from_ptr(buff, tmp);
     return buff;
 }
 
