@@ -3,9 +3,9 @@
 #include <Ecore_X.h>
 #include <Esmart/Esmart_Trans_X11.h>
 
+#include <X11/Xlib.h>
 #include <X11/Xatom.h>
 #include <X11/Xutil.h>
-#include <X11/Xlib.h>
 #ifdef XINERAMA
 #include <X11/extensions/Xinerama.h>
 #endif

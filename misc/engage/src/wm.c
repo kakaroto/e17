@@ -1,6 +1,7 @@
 #include "engage.h"
 #include "config.h"
 #include "Ecore_X.h"
+#include <X11/Xlib.h>
 #include <X11/Xatom.h>
 #include <X11/Xutil.h>
 #ifdef DMALLOC
