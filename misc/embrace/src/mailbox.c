@@ -183,7 +183,7 @@ void mailbox_unseen_set (MailBox *mb, int unseen)
 
 	mb->unseen = unseen;
 
-	snprintf (buf, sizeof (buf), "%i new", mb->unseen);
+	snprintf (buf, sizeof (buf), "%i unread", mb->unseen);
 	edje_object_part_text_set (mb->edje, "MailBoxCountUnseen", buf);
 
 	sig = unseen ? "MAILBOX_SET_DIRTY" : "MAILBOX_SET_DEFAULT";
