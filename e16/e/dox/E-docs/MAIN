@@ -1479,6 +1479,9 @@ KDE support in your copy of Enlightenment.   This setting will automatically
 save for the next time you launch Enlightenment.  You should be able to launch
 any of KDE's or GNOME's applications and have them supported fairly well,
 including (but not limited to) the panel or kpanel, and gmc and kfm.
+<p>
+Please see the _Frequently_Asked_Questions(faq) for more information on how to
+set up enlightenment to work with GNOME and KDE by default.
 
 
 
