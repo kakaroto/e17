@@ -1,9 +1,6 @@
 #include "erss.h"
 #include "parse.h"
-
-int erss_connect (void *data);
-char *time_format ();
-int set_time (void *data);
+#include "parse_config.h"
 
 Evas *evas = NULL;
 Ecore_Evas *ee = NULL;
@@ -62,13 +59,20 @@ int erss_connect (void *data)
 	}
 
 	total_connects++;
-	last_time = strdup (time_format ());
-	set_time (NULL);
+	last_time = strdup (erss_time_format ());
+	erss_set_time (NULL);
 
 	return TRUE;
 }
 
-char *time_format () 
+int erss_alphasort (const void *a, const void *b)
+{
+	struct dirent **ad = (struct dirent **)a;
+	struct dirent **bd = (struct dirent **)b;
+	return (strcmp((*bd)->d_name, (*ad)->d_name));
+}
+
+char *erss_time_format () 
 {
 	char    *str;
 	struct  tm  *ts;
@@ -85,11 +89,11 @@ char *time_format ()
 	return str;
 }
 
-int set_time (void *data) {
+int erss_set_time (void *data) {
 	char *str;
 	char text[100];
 
-	str = time_format ();
+	str = erss_time_format ();
 	if (last_time)
 		snprintf (text, sizeof (text), "Time now: %s  Last update: %s", 
 				str, last_time);
@@ -246,7 +250,7 @@ int handler_server_del (void *data, int type, void *event)
 	return 1;
 }
 
-void window_move_cb (Ecore_Evas * ee)
+void erss_window_move (Ecore_Evas * ee)
 {
 	int x, y, w, h;
 	Evas_Object *o = NULL;
@@ -257,7 +261,7 @@ void window_move_cb (Ecore_Evas * ee)
 			esmart_trans_x11_freshen(o, x, y, w, h);
 }
 
-void window_resize_cb(Ecore_Evas *ee)
+void erss_window_resize(Ecore_Evas *ee)
 {
 	int x, y, w, h;
 	Evas_Object *o = NULL;
@@ -307,14 +311,8 @@ void cb_mouse_out (void *data, Evas *e, Evas_Object *obj,
 
 } 
 
-int erss_alphasort (const void *a, const void *b)
-{
-	struct dirent **ad = (struct dirent **)a;
-	struct dirent **bd = (struct dirent **)b;
-	return (strcmp((*bd)->d_name, (*ad)->d_name));
-}
 
-void list_config_files (int output)
+void erss_list_config_files (int output)
 {
 	char *str;
 	char *ptr;
@@ -411,7 +409,7 @@ void list_config_files (int output)
 	ewd_list_destroy (paths);
 }
 
-void display_default_usage ()
+void erss_display_default_usage ()
 {
 	fprintf (stderr, "Usage: %s [OPTION] ...\n", PACKAGE);
 	fprintf (stderr, "Try `%s -h` for more information\n", PACKAGE);
@@ -441,12 +439,12 @@ int main (int argc, char * const argv[])
 	{
 		switch (c) {
 			case 'l':
-				list_config_files (TRUE);
+				erss_list_config_files (TRUE);
 				exit (-1);
 			case 'c':
 				
 				if(optind >= argc) 
-					display_default_usage ();
+					erss_display_default_usage ();
 				
 				got_config_file = TRUE;
 				snprintf (config_file, PATH_MAX, "%s", (char *) argv[optind]);
@@ -474,19 +472,19 @@ int main (int argc, char * const argv[])
 				
 	}
 
-	if (parse_rc_file ()) 
+	if (erss_parse_rc_file ()) 
 		got_rc_file = TRUE;
 		
 	if(!got_config_file) {
 		
 		if (!got_rc_file) {
-			display_default_usage ();
+			erss_display_default_usage ();
 		}
 		 else 
-			parse_config_file (rc->config);
+			erss_parse_config_file (rc->config);
 
 	} else {
-		parse_config_file (config_file);
+		erss_parse_config_file (config_file);
 	}
 	
 	if (!got_theme_file) {
@@ -568,8 +566,8 @@ int main (int argc, char * const argv[])
 
 	ecore_event_handler_add (ECORE_EVENT_SIGNAL_EXIT,
 							 handler_signal_exit, NULL);
-	ecore_evas_callback_move_set (ee, window_move_cb);
-	ecore_evas_callback_resize_set(ee, window_resize_cb);
+	ecore_evas_callback_move_set (ee, erss_window_move);
+	ecore_evas_callback_resize_set(ee, erss_window_resize);
 
 	cont = e_container_new(evas);
 	evas_object_move(cont, 0, 0);
@@ -603,10 +601,9 @@ int main (int argc, char * const argv[])
 		e_container_element_append(cont, tid);
 	}
 
-	
 	erss_connect (NULL);
 	ecore_timer_add (cfg->update_rate, erss_connect, NULL); 
-	ecore_timer_add (1, set_time, NULL);
+	ecore_timer_add (1, erss_set_time, NULL);
 	
 	ecore_main_loop_begin ();
 

@@ -5,47 +5,9 @@ typedef struct _article {
 	char *description;
 } Article;
 
-typedef struct _config {
-	char *header;
-	char *hostname;
-	char *url;
-
-	char *item_root;
-	char *item_start;
-	char *item_title;
-	char *item_url;
-	char *item_description;
-
-	int update_rate;
-	int clock;
-	int num_stories;
-
-	int x;
-	int y;
-
-	int borderless;
-
-	char *prefix;
-
-	char *theme;
-	char *config;
-} Config;
-
-typedef struct _rc_config {
-	char *config;
-	char *theme;
-	char *browser;
-	char *proxy;
-	int proxy_port;
-	char *enc_from;
-	char *enc_to;
-} Rc_Config;
-
-int parse_rc_file ();
-void parse_data (char *buf);
-void parse_config_file (char *file);
-
-extern int objects_placed;
-extern Config *cfg;
 extern Article *item;
-extern Rc_Config *rc;
+
+void erss_story_new ();
+void erss_story_end ();
+void erss_parse_story (xmlDocPtr doc, xmlNodePtr cur);
+void erss_parse (xmlDocPtr doc);
