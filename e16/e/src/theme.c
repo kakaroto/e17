@@ -236,8 +236,6 @@ ExtractTheme(char *theme)
    EDBUG_RETURN(NULL);
 }
 
-static char        *badtheme = NULL;
-
 char               *
 FindTheme(char *theme)
 {
@@ -245,6 +243,7 @@ FindTheme(char *theme)
    char               *ret = NULL;
 
    EDBUG(6, "FindTheme");
+   badreason = "Unknown\n";
    if (!theme[0])
      {
 	Esnprintf(s, sizeof(s), "%s/themes/DEFAULT", ENLIGHTENMENT_ROOT);
@@ -257,11 +256,15 @@ FindTheme(char *theme)
 	Esnprintf(s, sizeof(s), "%s/themes/%s", UserEDir(), theme);
 	if (exists(s))
 	   ret = ExtractTheme(s);
+	else
+	   badreason = "Theme file/direcotry does not exist\n";
 	if (!ret)
 	  {
 	     Esnprintf(s, sizeof(s), "%s/themes/%s", ENLIGHTENMENT_ROOT, theme);
 	     if (exists(s))
 		ret = ExtractTheme(s);
+	     else
+		badreason = "Theme file/direcotry does not exist\n";
 	     if (!ret)
 	       {
 		  ret = GetDefaultTheme();
@@ -284,6 +287,10 @@ BadThemeDialog(void)
 	     "The theme:\n"
 	     "%s\n"
 	     "Is a badly formed theme package and is thus not being used.\n"
-	     "Enlightenment has fallen back to using the DEFAULT theme.\n");
+	     "Enlightenment has fallen back to using the DEFAULT theme.\n"
+	     "\n"
+	     "The reason this theme is bad is:\n"
+	     "%s",
+	     badtheme, badreason);
    DIALOG_OK("Bad Theme", s);
 }

@@ -3381,3 +3381,11 @@ Sun Oct 10 01:32:17 PDT 1999
 (Mandrake)
 
 pretty much finished up shinymetal now.  what a pita.
+
+-------------------------------------------------------------------------------
+
+Sun Oct 10 01:43:18 PDT 1999
+(Raster)
+
+cleaned up a possible race condition when setting up IPC (discovered it 
+coudl be a possible race condition whilsyt testign epplets starting on login)

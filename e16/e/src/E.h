@@ -2961,6 +2961,8 @@ extern int          scrollock_mask;
 extern int          mask_mod_combos[8];
 extern Group       *current_group;
 extern char        *dstr;
+extern char        *badtheme;
+extern char        *badreason;
 
 /* This turns on E's internal stack tracking system for coarse debugging */
 /* and being able to trace E for profiling/optimisation purposes (which */

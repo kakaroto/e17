@@ -267,9 +267,6 @@ main(int argc, char **argv)
    MapUnmap(1);
    /* set some more stuff for gnome */
    GNOME_SetCurrentArea();
-   /* if we didn't have an external window piped to us, we'll do some stuff */
-   if (!init_win_ext)
-      SpawnSnappedCmds();
    desks.current = 0;
    /* Set up the internal pagers */
    IB_Setup();
@@ -346,6 +343,9 @@ main(int argc, char **argv)
 	   desks.slidein = ps;
      }
    XSync(disp, False);
+   /* if we didn't have an external window piped to us, we'll do some stuff */
+   if (!init_win_ext)
+      SpawnSnappedCmds();
    if (!mode.mapslide)
       CreateStartupDisplay(0);
    if ((bg = RemoveItem("STARTUP_BACKGROUND_SIDEWAYS", 0, LIST_FINDBY_NAME,

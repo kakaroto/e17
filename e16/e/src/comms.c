@@ -30,11 +30,12 @@ CommsSetup()
 
    EDBUG(5, "CommsSetup");
    comms_win = XCreateSimpleWindow(disp, root.win, -100, -100, 5, 5, 0, 0, 0);
+   XSelectInput(disp, comms_win, StructureNotifyMask | SubstructureNotifyMask);
    Esnprintf(s, sizeof(s), "WINID %8x", (int)comms_win);
    a = XInternAtom(disp, "ENLIGHTENMENT_COMMS", False);
-   XChangeProperty(disp, root.win, a, XA_STRING, 8, PropModeReplace,
-		   (unsigned char *)s, strlen(s));
    XChangeProperty(disp, comms_win, a, XA_STRING, 8, PropModeReplace,
+		   (unsigned char *)s, strlen(s));
+   XChangeProperty(disp, root.win, a, XA_STRING, 8, PropModeReplace,
 		   (unsigned char *)s, strlen(s));
    if (!a)
       a = XInternAtom(disp, "ENL_MSG", False);
