@@ -1,0 +1,58 @@
+<page columns=1 padding=16 name=front background=bg.png linkcolor=#88dddd>
+<font face=aircut3/32 color=#ffffff>
+<p align=50%>
+E-SD
+<font face=aircut3/18 color=#88eeff>
+<p align=50%>
+An Enlightenment Url Watcher.
+<font face=aircut3/12 color=#ffffff>
+<p align=50%>
+By Tom Gilbert - 1999
+<p>
+Welcome to E-UrlWatcher. This epplet is designed to help you deal with urls.
+Less typing, more browsing. There are currently two main features to
+E-UrlWatch.
+<p>
+_Url_Launcher(launcher)
+<br>
+_Url_Catcher(catcher)
+
+<page columns=1 padding=16 name=launcher background=bg.png linkcolor=#88dddd>
+<font face=aircut3/18 color=#88eeff>
+<p align=50%>
+Url Launching.
+<font face=aircut3/12 color=#ffffff>
+<p>
+Ok. The three buttons: www, ftp, get all run a command (configurable via the
+config) on a url in the X paste buffer.  
+<p>
+Eg. You highlight a url, so it
+goes into the paste buffer, and press WWW, and it will be launched by
+netscape. You could configure ftp to be gftp instead of netscape, and by
+default, get uses wget. So depending on whether you want to see a page,
+browse ftp, or download a file, you choose a button.
+<p>
+_Url_Catcher(catcher)
+
+<page columns=1 padding=16 name=catcher background=bg.png linkcolor=#88dddd>
+<font face=aircut3/18 color=#88eeff>
+<p align=50%>
+File Watching.
+<font face=aircut3/12 color=#ffffff>
+<p>
+The second feature is the url catcher bit. I use TE for IRC, which is a
+script running on EPIC. This catches urls from conversations, and sticks
+them in ~/.te/.urls
+<p>
+The epplet watches this file, and when a new url appears, shows a button and
+plays a sound, allowing you to launch the url without typing, copying or
+pasting. It works really well, someone types hey, go to
+www.wherever.com, and the epplet goes "Whoosh" and a button
+appears allowing you to go there :) You can even tell it to launch every url
+that appears in there, but it is set not to by default.
+
+So. If you load the epplet and close it, you will get a config
+file in ~/.enlightenment/epplet_config/E-UrlWatch/E-UrlWatch.cfg
+
+Edit this file to change your prefs. If you don't use TE, any other URL list
+can be watched by editing the cfg.

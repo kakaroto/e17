@@ -140,7 +140,8 @@ E-Cpu.ABOUT/bg.png E-Mixer.ABOUT/MAIN E-MoonClock.ABOUT/MAIN E-Mountbox.ABOUT/MA
 E-Mountbox.ABOUT/shot.png E-Mountbox.ABOUT/shot_unmounted.png E-NetFlame.ABOUT/MAIN  \
 E-Power.ABOUT/MAIN E-SD.ABOUT/MAIN E-ScreenSave.ABOUT/MAIN  \
 E-ScreenShoot.ABOUT/E_ScreenShoot_buttons.png  \
-E-ScreenShoot.ABOUT/E_ScreenShoot_cloak.png E-ScreenShoot.ABOUT/MAIN Emix.ABOUT/MAIN
+E-ScreenShoot.ABOUT/E_ScreenShoot_cloak.png E-ScreenShoot.ABOUT/MAIN \
+Emix.ABOUT/MAIN E-UrlWatch.ABOUT/MAIN
 
 # ICONS = `(cd epplets && ls -1d icons/*.icon | grep -v CVS)`
 ICONS = icons/E-Biff.icon icons/E-Clock.icon icons/E-Cpu.icon icons/E-Disk.icon \
@@ -200,8 +201,8 @@ Emix-data/Emix.README Emix-data/Emix.TODO E-UrlWatch-data/wooeep.wav
 
 EXTRA_DIST = ${ICONS} ${ABOUT_DOCS} ${DATA_FILES}
 
-NEED_FONT = E-Clock E-Mixer E-MoonClock E-Mountbox E-NetFlame E-Power E-SD E-ScreenSave E-ScreenShoot Emix
-NEED_BG = E-Clock E-Mixer E-MoonClock E-Mountbox E-NetFlame E-Power E-SD E-ScreenSave E-ScreenShoot Emix
+NEED_FONT = E-Clock E-Mixer E-MoonClock E-Mountbox E-NetFlame E-Power E-SD E-ScreenSave E-ScreenShoot Emix E-UrlWatch
+NEED_BG = E-Clock E-Mixer E-MoonClock E-Mountbox E-NetFlame E-Power E-SD E-ScreenSave E-ScreenShoot Emix E-UrlWatch
 BG_SRC = E-Cpu.ABOUT/bg.png
 FONT_SRC = E-Cpu.ABOUT/aircut3.ttf
 
