@@ -119,7 +119,10 @@ spif_obj_new(void)
     spif_obj_t self;
 
     self = SPIF_ALLOC(obj);
-    spif_obj_init(self);
+    if (!spif_obj_init(self)) {
+        SPIF_DEALLOC(self);
+        self = SPIF_NULL_TYPE(obj);
+    }
     return self;
 }
 
@@ -139,10 +142,13 @@ spif_obj_new(void)
 spif_bool_t
 spif_obj_del(spif_obj_t self)
 {
-    D_OBJ(("Deleting object %010p\n", self));
-    spif_obj_done(self);
+    spif_bool_t t;
+
+    ASSERT_RVAL(!SPIF_OBJ_ISNULL(self), FALSE);
+
+    t = spif_obj_done(self);
     SPIF_DEALLOC(self);
-    return TRUE;
+    return t;
 }
 
 /**
@@ -170,6 +176,7 @@ spif_obj_del(spif_obj_t self)
 spif_bool_t
 spif_obj_init(spif_obj_t self)
 {
+    ASSERT_RVAL(!SPIF_OBJ_ISNULL(self), FALSE);
     spif_obj_set_class(self, SPIF_CLASS_VAR(obj));
     return TRUE;
 }
@@ -189,7 +196,7 @@ spif_obj_init(spif_obj_t self)
 spif_bool_t
 spif_obj_done(spif_obj_t self)
 {
-    USE_VAR(self);
+    ASSERT_RVAL(!SPIF_OBJ_ISNULL(self), FALSE);
     return TRUE;
 }
 
@@ -301,6 +308,7 @@ spif_obj_dup(spif_obj_t self)
 {
     spif_obj_t tmp;
 
+    ASSERT_RVAL(!SPIF_OBJ_ISNULL(self), SPIF_NULL_TYPE(obj));
     tmp = spif_obj_new();
     memcpy(tmp, self, SPIF_SIZEOF_TYPE(obj));
     return tmp;
@@ -323,6 +331,7 @@ spif_obj_dup(spif_obj_t self)
 spif_classname_t
 spif_obj_type(spif_obj_t self)
 {
+    ASSERT_RVAL(!SPIF_OBJ_ISNULL(self), SPIF_NULL_TYPE(classname));
     return SPIF_OBJ_CLASSNAME(self);
 }
 
@@ -349,7 +358,8 @@ spif_obj_type(spif_obj_t self)
 spif_class_t
 spif_obj_get_class(spif_obj_t self)
 {
-    return ((self) ? SPIF_OBJ_CLASS(self) : SPIF_NULL_TYPE(class));
+    ASSERT_RVAL(!SPIF_OBJ_ISNULL(self), SPIF_NULL_TYPE(class));
+    return SPIF_OBJ_CLASS(self);
 }
 
 /**
@@ -376,9 +386,7 @@ spif_obj_get_class(spif_obj_t self)
 spif_bool_t
 spif_obj_set_class(spif_obj_t self, spif_class_t cls)
 {
-    if (SPIF_OBJ_ISNULL(self)) {
-        return FALSE;
-    }
+    ASSERT_RVAL(!SPIF_OBJ_ISNULL(self), FALSE);
     SPIF_OBJ_CLASS(self) = cls;
     return TRUE;
 }

@@ -50,10 +50,12 @@
 /* An tok object is a string tokenizer */
 SPIF_DECL_OBJ(tok) {
     SPIF_DECL_PARENT_TYPE(obj);
-    spif_str_t src;
-    spif_char_t quote, dquote, escape;
-    spif_list_t tokens;
-    spif_str_t sep;
+    SPIF_DECL_PROPERTY(str, src);
+    SPIF_DECL_PROPERTY(char, quote);
+    SPIF_DECL_PROPERTY(char, dquote);
+    SPIF_DECL_PROPERTY(char, escape);
+    SPIF_DECL_PROPERTY(str, sep);
+    SPIF_DECL_PROPERTY(list, tokens);
 };
 
 extern spif_class_t SPIF_CLASS_VAR(tok);
@@ -72,16 +74,11 @@ extern spif_str_t spif_tok_show(spif_tok_t, spif_charptr_t, spif_str_t, size_t);
 extern spif_cmp_t spif_tok_comp(spif_tok_t, spif_tok_t);
 extern spif_tok_t spif_tok_dup(spif_tok_t);
 extern spif_classname_t spif_tok_type(spif_tok_t);
-extern spif_str_t spif_tok_get_src(spif_tok_t);
-extern spif_bool_t spif_tok_set_src(spif_tok_t, spif_str_t);
-extern spif_char_t spif_tok_get_quote(spif_tok_t);
-extern spif_bool_t spif_tok_set_quote(spif_tok_t, spif_char_t);
-extern spif_char_t spif_tok_get_dquote(spif_tok_t);
-extern spif_bool_t spif_tok_set_dquote(spif_tok_t, spif_char_t);
-extern spif_char_t spif_tok_get_escape(spif_tok_t);
-extern spif_bool_t spif_tok_set_escape(spif_tok_t, spif_char_t);
-extern spif_str_t spif_tok_get_sep(spif_tok_t);
-extern spif_bool_t spif_tok_set_sep(spif_tok_t, spif_str_t);
-extern spif_list_t spif_tok_get_tokens(spif_tok_t);
+SPIF_DECL_PROPERTY_FUNC(tok, str, src);
+SPIF_DECL_PROPERTY_FUNC(tok, char, quote);
+SPIF_DECL_PROPERTY_FUNC(tok, char, dquote);
+SPIF_DECL_PROPERTY_FUNC(tok, char, escape);
+SPIF_DECL_PROPERTY_FUNC(tok, str, sep);
+SPIF_DECL_PROPERTY_FUNC(tok, list, tokens);
 
 #endif /* _LIBAST_TOK_H_ */

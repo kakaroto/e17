@@ -221,13 +221,19 @@ SPIF_DECL_OBJ(objpair) {
 
 extern spif_class_t SPIF_CLASS_VAR(objpair);
 extern spif_objpair_t spif_objpair_new(void);
-extern spif_bool_t spif_objpair_del(spif_objpair_t);
-extern spif_bool_t spif_objpair_init(spif_objpair_t);
-extern spif_bool_t spif_objpair_done(spif_objpair_t);
-extern spif_str_t spif_objpair_show(spif_objpair_t, spif_charptr_t, spif_str_t, size_t);
-extern spif_cmp_t spif_objpair_comp(spif_objpair_t, spif_objpair_t);
-extern spif_objpair_t spif_objpair_dup(spif_objpair_t);
-extern spif_classname_t spif_objpair_type(spif_objpair_t);
+extern spif_objpair_t spif_objpair_new_from_left(spif_obj_t left);
+extern spif_objpair_t spif_objpair_new_from_right(spif_obj_t right);
+extern spif_objpair_t spif_objpair_new_from_both(spif_obj_t left, spif_obj_t right);
+extern spif_bool_t spif_objpair_del(spif_objpair_t self);
+extern spif_bool_t spif_objpair_init(spif_objpair_t self);
+extern spif_bool_t spif_objpair_init_from_left(spif_objpair_t self, spif_obj_t left);
+extern spif_bool_t spif_objpair_init_from_right(spif_objpair_t self, spif_obj_t right);
+extern spif_bool_t spif_objpair_init_from_both(spif_objpair_t self, spif_obj_t left, spif_obj_t right);
+extern spif_bool_t spif_objpair_done(spif_objpair_t self);
+extern spif_str_t spif_objpair_show(spif_objpair_t self, spif_charptr_t name, spif_str_t buff, size_t indent);
+extern spif_cmp_t spif_objpair_comp(spif_objpair_t self, spif_objpair_t other);
+extern spif_objpair_t spif_objpair_dup(spif_objpair_t self);
+extern spif_classname_t spif_objpair_type(spif_objpair_t self);
 SPIF_DECL_PROPERTY_FUNC(objpair, obj, left);
 SPIF_DECL_PROPERTY_FUNC(objpair, obj, right);
 

@@ -318,6 +318,21 @@
 #define SPIF_NULL_TYPE_C(type)            (SPIF_CAST_C(type) (NULL))
 
 /**
+ * Returns a NULL pointer to an object of the specified base type.
+ *
+ * This macro returns a NULL pointer to an object of the type
+ * specified by the given basename.  It is generally used for
+ * initializing object member variables and for returning
+ * correctly-typed NULL objects.
+ *
+ * @param type The type basename.
+ * @return     A NULL pointer to an object of the specified type.
+ *
+ * @see @link DOXGRP_TYPES Portable Data Types @endlink, SPIF_CAST()
+ */
+#define SPIF_NULL_TYPE_PTR(type)          (SPIF_CAST_PTR(type) (NULL))
+
+/**
  * Returns a string representing a NULL value of the specified base
  * type.
  *

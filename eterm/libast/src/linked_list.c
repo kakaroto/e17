@@ -483,6 +483,12 @@ spif_linked_list_get(spif_linked_list_t self, spif_listidx_t idx)
     spif_listidx_t i;
     spif_linked_list_item_t current;
 
+    if (idx < 0) {
+        /* Negative indexes go backward from the end of the list. */
+        idx += self->len;
+    }
+    REQUIRE_RVAL(idx >= 0, SPIF_NULL_TYPE(obj));
+    REQUIRE_RVAL(idx < self->len, SPIF_NULL_TYPE(obj));
     for (current = self->head, i = 0; current && i < idx; i++, current = current->next);
     return (current ? (current->data) : SPIF_NULL_TYPE(obj));
 }
@@ -527,21 +533,28 @@ spif_linked_list_insert_at(spif_linked_list_t self, spif_obj_t obj, spif_listidx
     spif_listidx_t i;
     spif_linked_list_item_t item, current;
 
+    if (idx < 0) {
+        /* Negative indexes go backward from the end of the list. */
+        idx += self->len;
+    }
+    REQUIRE_RVAL((idx + 1) >= 0, FALSE);
+
     if (idx == 0 || SPIF_LINKED_LIST_ITEM_ISNULL(self->head)) {
         return spif_linked_list_prepend(self, obj);
     }
     for (current = self->head, i = 1; current->next && i < idx; i++, current = current->next);
-    if (i == idx) {
-        item = spif_linked_list_item_new();
-        spif_linked_list_item_set_data(item, obj);
-
-        item->next = current->next;
-        current->next = item;
+    for (; i < idx; i++, current = current->next) {
+        current->next = spif_linked_list_item_new();
         self->len++;
-        return TRUE;
-    } else {
-        return FALSE;
     }
+
+    item = spif_linked_list_item_new();
+    spif_linked_list_item_set_data(item, obj);
+
+    item->next = current->next;
+    current->next = item;
+    self->len++;
+    return TRUE;
 }
 
 static spif_iterator_t
@@ -601,6 +614,13 @@ spif_linked_list_remove_at(spif_linked_list_t self, spif_listidx_t idx)
     spif_listidx_t i;
     spif_linked_list_item_t item, current;
     spif_obj_t tmp;
+
+    if (idx < 0) {
+        /* Negative indexes go backward from the end of the list. */
+        idx += self->len;
+    }
+    REQUIRE_RVAL(idx >= 0, SPIF_NULL_TYPE(obj));
+    REQUIRE_RVAL(idx < self->len, SPIF_NULL_TYPE(obj));
 
     if (SPIF_LINKED_LIST_ITEM_ISNULL(self->head)) {
         return SPIF_NULL_TYPE(obj);

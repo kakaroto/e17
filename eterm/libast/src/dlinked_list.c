@@ -495,9 +495,14 @@ spif_dlinked_list_get(spif_dlinked_list_t self, spif_listidx_t idx)
     spif_listidx_t i;
     spif_dlinked_list_item_t current;
 
-    if (idx >= self->len) {
-        return SPIF_NULL_TYPE(obj);
-    } else if (idx > (self->len / 2)) {
+    if (idx < 0) {
+        /* Negative indexes go backward from the end of the list. */
+        idx += self->len;
+    }
+    REQUIRE_RVAL(idx >= 0, SPIF_NULL_TYPE(obj));
+    REQUIRE_RVAL(idx < self->len, SPIF_NULL_TYPE(obj));
+
+    if (idx > (self->len / 2)) {
         for (current = self->tail, i = self->len - 1; current && i > idx; i--, current = current->prev);
         return (current ? (current->data) : SPIF_NULL_TYPE(obj));
     } else {
@@ -553,9 +558,20 @@ spif_dlinked_list_insert_at(spif_dlinked_list_t self, spif_obj_t obj, spif_listi
     spif_listidx_t i;
     spif_dlinked_list_item_t item, current;
 
+    if (idx < 0) {
+        /* Negative indexes go backward from the end of the list. */
+        idx += self->len;
+    }
+    REQUIRE_RVAL((idx + 1) >= 0, FALSE);
+
     if (idx == 0 || SPIF_DLINKED_LIST_ITEM_ISNULL(self->head)) {
         return spif_dlinked_list_prepend(self, obj);
     } else if (idx == (self->len - 1) || SPIF_DLINKED_LIST_ITEM_ISNULL(self->tail)) {
+        return spif_dlinked_list_append(self, obj);
+    } else if (idx > self->len) {
+        for (i = self->len; i < idx; i++) {
+            spif_dlinked_list_append(self, SPIF_NULL_TYPE(obj));
+        }
         return spif_dlinked_list_append(self, obj);
     } else if (idx > (self->len / 2)) {
         for (current = self->tail, i = self->len - 1; current->prev && i > idx; i--, current = current->prev);
@@ -651,6 +667,13 @@ spif_dlinked_list_remove_at(spif_dlinked_list_t self, spif_listidx_t idx)
     if (SPIF_DLINKED_LIST_ITEM_ISNULL(self->head)) {
         return SPIF_NULL_TYPE(obj);
     }
+
+    if (idx < 0) {
+        /* Negative indexes go backward from the end of the list. */
+        idx += self->len;
+    }
+    REQUIRE_RVAL(idx >= 0, SPIF_NULL_TYPE(obj));
+    REQUIRE_RVAL(idx < self->len, SPIF_NULL_TYPE(obj));
 
     if (idx > (self->len / 2)) {
         for (current = self->tail, i = self->len - 1; current && i > idx; i--, current = current->prev);

@@ -50,7 +50,10 @@ spif_tok_new(void)
     spif_tok_t self;
 
     self = SPIF_ALLOC(tok);
-    spif_tok_init(self);
+    if (!spif_tok_init(self)) {
+        SPIF_DEALLOC(self);
+        self = SPIF_NULL_TYPE(tok);
+    }
     return self;
 }
 
@@ -60,7 +63,10 @@ spif_tok_new_from_ptr(spif_charptr_t old)
     spif_tok_t self;
 
     self = SPIF_ALLOC(tok);
-    spif_tok_init_from_ptr(self, old);
+    if (!spif_tok_init_from_ptr(self, old)) {
+        SPIF_DEALLOC(self);
+        self = SPIF_NULL_TYPE(tok);
+    }
     return self;
 }
 
@@ -70,7 +76,10 @@ spif_tok_new_from_fp(FILE * fp)
     spif_tok_t self;
 
     self = SPIF_ALLOC(tok);
-    spif_tok_init_from_fp(self, fp);
+    if (!spif_tok_init_from_fp(self, fp)) {
+        SPIF_DEALLOC(self);
+        self = SPIF_NULL_TYPE(tok);
+    }
     return self;
 }
 
@@ -80,23 +89,33 @@ spif_tok_new_from_fd(int fd)
     spif_tok_t self;
 
     self = SPIF_ALLOC(tok);
-    spif_tok_init_from_fd(self, fd);
+    if (!spif_tok_init_from_fd(self, fd)) {
+        SPIF_DEALLOC(self);
+        self = SPIF_NULL_TYPE(tok);
+    }
     return self;
 }
 
 spif_bool_t
 spif_tok_del(spif_tok_t self)
 {
-    spif_tok_done(self);
+    spif_bool_t t;
+
+    ASSERT_RVAL(!SPIF_TOK_ISNULL(self), FALSE);
+    t = spif_tok_done(self);
     SPIF_DEALLOC(self);
-    return TRUE;
+    return t;
 }
 
 spif_bool_t
 spif_tok_init(spif_tok_t self)
 {
-    spif_obj_init(SPIF_OBJ(self));
-    spif_obj_set_class(SPIF_OBJ(self), SPIF_CLASS_VAR(tok));
+    ASSERT_RVAL(!SPIF_TOK_ISNULL(self), FALSE);
+    if (!spif_obj_init(SPIF_OBJ(self))) {
+        return FALSE;
+    } else if (!spif_obj_set_class(SPIF_OBJ(self), SPIF_CLASS_VAR(tok))) {
+        return FALSE;
+    }
     self->src = SPIF_NULL_TYPE(str);
     self->quote = '\'';
     self->dquote = '\"';
@@ -109,48 +128,61 @@ spif_tok_init(spif_tok_t self)
 spif_bool_t
 spif_tok_init_from_ptr(spif_tok_t self, spif_charptr_t old)
 {
-    spif_obj_init(SPIF_OBJ(self));
-    spif_obj_set_class(SPIF_OBJ(self), SPIF_CLASS_VAR(tok));
+    ASSERT_RVAL(!SPIF_TOK_ISNULL(self), FALSE);
+    if (!spif_obj_init(SPIF_OBJ(self))) {
+        return FALSE;
+    } else if (!spif_obj_set_class(SPIF_OBJ(self), SPIF_CLASS_VAR(tok))) {
+        return FALSE;
+    }
     self->src = spif_str_new_from_ptr(old);
     self->quote = '\'';
     self->dquote = '\"';
     self->escape = '\\';
     self->tokens = SPIF_NULL_TYPE(list);
     self->sep = SPIF_NULL_TYPE(str);
-    return TRUE;
+    return ((SPIF_STR_ISNULL(self->src)) ? (FALSE) : (TRUE));
 }
 
 spif_bool_t
 spif_tok_init_from_fp(spif_tok_t self, FILE * fp)
 {
-    spif_obj_init(SPIF_OBJ(self));
-    spif_obj_set_class(SPIF_OBJ(self), SPIF_CLASS_VAR(tok));
+    ASSERT_RVAL(!SPIF_TOK_ISNULL(self), FALSE);
+    if (!spif_obj_init(SPIF_OBJ(self))) {
+        return FALSE;
+    } else if (!spif_obj_set_class(SPIF_OBJ(self), SPIF_CLASS_VAR(tok))) {
+        return FALSE;
+    }
     self->src = spif_str_new_from_fp(fp);
     self->quote = '\'';
     self->dquote = '\"';
     self->escape = '\\';
     self->tokens = SPIF_NULL_TYPE(list);
     self->sep = SPIF_NULL_TYPE(str);
-    return TRUE;
+    return ((SPIF_STR_ISNULL(self->src)) ? (FALSE) : (TRUE));
 }
 
 spif_bool_t
 spif_tok_init_from_fd(spif_tok_t self, int fd)
 {
-    spif_obj_init(SPIF_OBJ(self));
-    spif_obj_set_class(SPIF_OBJ(self), SPIF_CLASS_VAR(tok));
+    ASSERT_RVAL(!SPIF_TOK_ISNULL(self), FALSE);
+    if (!spif_obj_init(SPIF_OBJ(self))) {
+        return FALSE;
+    } else if (!spif_obj_set_class(SPIF_OBJ(self), SPIF_CLASS_VAR(tok))) {
+        return FALSE;
+    }
     self->src = spif_str_new_from_fd(fd);
     self->quote = '\'';
     self->dquote = '\"';
     self->escape = '\\';
     self->tokens = SPIF_NULL_TYPE(list);
     self->sep = SPIF_NULL_TYPE(str);
-    return TRUE;
+    return ((SPIF_STR_ISNULL(self->src)) ? (FALSE) : (TRUE));
 }
 
 spif_bool_t
 spif_tok_done(spif_tok_t self)
 {
+    ASSERT_RVAL(!SPIF_TOK_ISNULL(self), FALSE);
     if (!SPIF_LIST_ISNULL(self->tokens)) {
         SPIF_LIST_DEL(self->tokens);
         self->tokens = SPIF_NULL_TYPE(list);
@@ -169,6 +201,83 @@ spif_tok_done(spif_tok_t self)
     return TRUE;
 }
 
+spif_str_t
+spif_tok_show(spif_tok_t self, spif_charptr_t name, spif_str_t buff, size_t indent)
+{
+    char tmp[4096];
+
+    if (SPIF_TOK_ISNULL(self)) {
+        SPIF_OBJ_SHOW_NULL(tok, name, buff, indent, tmp);
+        return buff;
+    }
+
+    memset(tmp, ' ', indent);
+    snprintf(tmp + indent, sizeof(tmp) - indent, "(spif_tok_t) %s:  %010p {\n", name, self);
+    if (SPIF_STR_ISNULL(buff)) {
+        buff = spif_str_new_from_ptr(tmp);
+    } else {
+        spif_str_append_from_ptr(buff, tmp);
+    }
+    buff = spif_str_show(SPIF_STR(self->src), "src", buff, indent + 2);
+    buff = spif_str_show(SPIF_STR(self->sep), "sep", buff, indent + 2);
+
+    indent += 2;
+    memset(tmp, ' ', indent);
+    snprintf(tmp + indent, sizeof(tmp) - indent, "(spif_char_t) quote:  '%c' (0x%02x)\n",
+             (char) self->quote, (unsigned int) self->quote);
+    spif_str_append_from_ptr(buff, tmp);
+    snprintf(tmp + indent, sizeof(tmp) - indent, "(spif_char_t) dquote:  '%c' (0x%02x)\n",
+             (char) self->dquote, (unsigned int) self->dquote);
+    spif_str_append_from_ptr(buff, tmp);
+    snprintf(tmp + indent, sizeof(tmp) - indent, "(spif_char_t) escape:  '%c' (0x%02x)\n",
+             (char) self->escape, (unsigned int) self->escape);
+    spif_str_append_from_ptr(buff, tmp);
+
+    SPIF_LIST_SHOW(self->tokens, buff, indent);
+    indent -= 2;
+
+    snprintf(tmp + indent, sizeof(tmp) - indent, "}\n");
+    spif_str_append_from_ptr(buff, tmp);
+    return buff;
+}
+
+spif_cmp_t
+spif_tok_comp(spif_tok_t self, spif_tok_t other)
+{
+    if (SPIF_TOK_ISNULL(self) && SPIF_TOK_ISNULL(other)) {
+        return SPIF_CMP_EQUAL;
+    } else if (SPIF_TOK_ISNULL(self)) {
+        return SPIF_CMP_LESS;
+    } else if (SPIF_TOK_ISNULL(other)) {
+        return SPIF_CMP_GREATER;
+    }
+    return spif_str_cmp(self->src, other->src);
+}
+
+spif_tok_t
+spif_tok_dup(spif_tok_t self)
+{
+    spif_tok_t tmp;
+
+    ASSERT_RVAL(!SPIF_TOK_ISNULL(self), SPIF_NULL_TYPE(tok));
+    tmp = spif_tok_new();
+    tmp->src = spif_str_dup(SPIF_STR(self->src));
+    tmp->quote = self->quote;
+    tmp->dquote = self->dquote;
+    tmp->escape = self->escape;
+    tmp->tokens = SPIF_LIST_DUP(self->tokens);
+    tmp->sep = spif_str_dup(SPIF_STR(self->sep));
+
+    return tmp;
+}
+
+spif_classname_t
+spif_tok_type(spif_tok_t self)
+{
+    ASSERT_RVAL(!SPIF_TOK_ISNULL(self), SPIF_NULL_TYPE(classname));
+    return SPIF_OBJ_CLASSNAME(self);
+}
+
 #define IS_DELIM(c)  ((delim != NULL) ? (strchr(delim, (c)) != NULL) : (isspace(c)))
 #define IS_QUOTE(c)  (quote && quote == (c))
 
@@ -180,9 +289,9 @@ spif_tok_eval(spif_tok_t self)
     char quote;
     size_t len;
 
-    if (SPIF_STR_ISNULL(self->src)) {
-        return FALSE;
-    }
+    ASSERT_RVAL(!SPIF_TOK_ISNULL(self), FALSE);
+    REQUIRE_RVAL(!SPIF_STR_ISNULL(self->src), FALSE);
+
     pstr = SPIF_CAST_C(const char *) SPIF_STR_STR(SPIF_STR(self->src));
     len = spif_str_get_len(SPIF_STR(self->src));
 
@@ -243,173 +352,9 @@ spif_tok_eval(spif_tok_t self)
     return TRUE;
 }
 
-spif_str_t
-spif_tok_show(spif_tok_t self, spif_charptr_t name, spif_str_t buff, size_t indent)
-{
-    char tmp[4096];
-
-    if (SPIF_TOK_ISNULL(self)) {
-        SPIF_OBJ_SHOW_NULL(tok, name, buff, indent, tmp);
-        return buff;
-    }
-
-    memset(tmp, ' ', indent);
-    snprintf(tmp + indent, sizeof(tmp) - indent, "(spif_tok_t) %s:  %010p {\n", name, self);
-    if (SPIF_STR_ISNULL(buff)) {
-        buff = spif_str_new_from_ptr(tmp);
-    } else {
-        spif_str_append_from_ptr(buff, tmp);
-    }
-    buff = spif_str_show(SPIF_STR(self->src), "src", buff, indent + 2);
-    buff = spif_str_show(SPIF_STR(self->sep), "sep", buff, indent + 2);
-
-    indent += 2;
-    memset(tmp, ' ', indent);
-    snprintf(tmp + indent, sizeof(tmp) - indent, "(spif_char_t) quote:  '%c' (0x%02x)\n",
-             (char) self->quote, (unsigned int) self->quote);
-    spif_str_append_from_ptr(buff, tmp);
-    snprintf(tmp + indent, sizeof(tmp) - indent, "(spif_char_t) dquote:  '%c' (0x%02x)\n",
-             (char) self->dquote, (unsigned int) self->dquote);
-    spif_str_append_from_ptr(buff, tmp);
-    snprintf(tmp + indent, sizeof(tmp) - indent, "(spif_char_t) escape:  '%c' (0x%02x)\n",
-             (char) self->escape, (unsigned int) self->escape);
-    spif_str_append_from_ptr(buff, tmp);
-
-    SPIF_LIST_SHOW(self->tokens, buff, indent);
-    indent -= 2;
-
-    snprintf(tmp + indent, sizeof(tmp) - indent, "}\n");
-    spif_str_append_from_ptr(buff, tmp);
-    return buff;
-}
-
-spif_cmp_t
-spif_tok_comp(spif_tok_t self, spif_tok_t other)
-{
-    return spif_str_cmp(SPIF_STR(self), SPIF_STR(other));
-}
-
-spif_tok_t
-spif_tok_dup(spif_tok_t self)
-{
-    spif_tok_t tmp;
-
-    tmp = spif_tok_new();
-    tmp->src = spif_str_dup(SPIF_STR(self->src));
-    tmp->quote = self->quote;
-    tmp->dquote = self->dquote;
-    tmp->escape = self->escape;
-    tmp->tokens = SPIF_LIST_DUP(self->tokens);
-    tmp->sep = spif_str_dup(SPIF_STR(self->sep));
-
-    return tmp;
-}
-
-spif_classname_t
-spif_tok_type(spif_tok_t self)
-{
-    return SPIF_OBJ_CLASSNAME(self);
-}
-
-spif_str_t
-spif_tok_get_src(spif_tok_t self)
-{
-    return ((SPIF_OBJ_IS_TOK(self)) ? (SPIF_STR(self->src)) : (SPIF_NULL_TYPE(str)));
-}
-
-spif_bool_t
-spif_tok_set_src(spif_tok_t self, spif_str_t new_src)
-{
-    if (SPIF_OBJ_IS_TOK(self) && SPIF_OBJ_IS_STR(new_src)) {
-        if (!SPIF_STR_ISNULL(self->src)) {
-            spif_str_done(self->src);
-        }
-        self->src = spif_str_dup(new_src);
-        return TRUE;
-    } else {
-        return FALSE;
-    }
-}
-
-spif_char_t
-spif_tok_get_quote(spif_tok_t self)
-{
-    return ((SPIF_OBJ_IS_TOK(self)) ? (SPIF_CAST(char) self->quote) : (SPIF_CAST(char) 0));
-}
-
-spif_bool_t
-spif_tok_set_quote(spif_tok_t self, spif_char_t c)
-{
-    if (SPIF_OBJ_IS_TOK(self)) {
-        self->quote = c;
-        return TRUE;
-    } else {
-        return FALSE;
-    }
-}
-
-spif_char_t
-spif_tok_get_dquote(spif_tok_t self)
-{
-    return ((SPIF_OBJ_IS_TOK(self)) ? (SPIF_CAST(char) self->dquote) : (SPIF_CAST(char) 0));
-}
-
-spif_bool_t
-spif_tok_set_dquote(spif_tok_t self, spif_char_t c)
-{
-    if (SPIF_OBJ_IS_TOK(self)) {
-        self->dquote = c;
-        return TRUE;
-    } else {
-        return FALSE;
-    }
-}
-
-spif_char_t
-spif_tok_get_escape(spif_tok_t self)
-{
-    return ((SPIF_OBJ_IS_TOK(self)) ? (SPIF_CAST(char) self->escape) : (SPIF_CAST(char) 0));
-}
-
-spif_bool_t
-spif_tok_set_escape(spif_tok_t self, spif_char_t c)
-{
-    if (SPIF_OBJ_IS_TOK(self)) {
-        self->escape = c;
-        return TRUE;
-    } else {
-        return FALSE;
-    }
-}
-
-spif_str_t
-spif_tok_get_sep(spif_tok_t self)
-{
-    return ((SPIF_OBJ_IS_TOK(self)) ? (SPIF_STR(self->sep)) : (SPIF_NULL_TYPE(str)));
-}
-
-spif_bool_t
-spif_tok_set_sep(spif_tok_t self, spif_str_t new_sep)
-{
-    if (SPIF_OBJ_IS_TOK(self) && SPIF_OBJ_IS_STR(new_sep)) {
-        if (!SPIF_STR_ISNULL(self->sep)) {
-            spif_str_done(self->sep);
-        }
-        self->sep = spif_str_dup(new_sep);
-        return TRUE;
-    } else {
-        return FALSE;
-    }
-}
-
-spif_list_t
-spif_tok_get_tokens(spif_tok_t self)
-{
-    if (!SPIF_OBJ_IS_TOK(self)) {
-        return SPIF_NULL_TYPE(list);
-    }
-    if (SPIF_LIST_ISNULL(self->tokens)) {
-        spif_tok_eval(self);
-    }
-    return self->tokens;
-}
+SPIF_DEFINE_PROPERTY_FUNC(tok, str, src);
+SPIF_DEFINE_PROPERTY_FUNC_NONOBJ(tok, char, quote);
+SPIF_DEFINE_PROPERTY_FUNC_NONOBJ(tok, char, dquote);
+SPIF_DEFINE_PROPERTY_FUNC_NONOBJ(tok, char, escape);
+SPIF_DEFINE_PROPERTY_FUNC(tok, str, sep);
+SPIF_DEFINE_PROPERTY_FUNC(tok, list, tokens);

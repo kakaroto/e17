@@ -1132,7 +1132,8 @@ test_list(void)
         TEST_BEGIN("SPIF_LIST_INSERT_AT() macro");
         SPIF_LIST_INSERT_AT(testlist, spif_str_new_from_ptr("MOO"), 0);
         SPIF_LIST_INSERT_AT(testlist, spif_str_new_from_ptr("GRIN"), 4);
-        TEST_FAIL_IF(SPIF_LIST_COUNT(testlist) != 10);
+        SPIF_LIST_INSERT_AT(testlist, spif_str_new_from_ptr("BOB"), 12);
+        TEST_FAIL_IF(SPIF_LIST_COUNT(testlist) != 13);
         s = spif_str_new_from_ptr("MOO");
         TEST_FAIL_IF(SPIF_LIST_INDEX(testlist, s) != 0);
         spif_str_done(s);
@@ -1147,6 +1148,11 @@ test_list(void)
         spif_str_done(s);
         spif_str_init_from_ptr(s, "5");
         TEST_FAIL_IF(SPIF_LIST_INDEX(testlist, s) != 9);
+        spif_str_done(s);
+        TEST_FAIL_IF(!SPIF_OBJ_ISNULL(SPIF_LIST_GET(testlist, 10)));
+        TEST_FAIL_IF(!SPIF_OBJ_ISNULL(SPIF_LIST_GET(testlist, 11)));
+        spif_str_init_from_ptr(s, "BOB");
+        TEST_FAIL_IF(SPIF_LIST_INDEX(testlist, s) != 12);
         spif_str_del(s);
         TEST_PASS();
 
@@ -1155,9 +1161,8 @@ test_list(void)
             spif_str_t tmp;
 
             tmp = SPIF_CAST(str) SPIF_ITERATOR_NEXT(it);
-            TEST_FAIL_IF(SPIF_STR_ISNULL(tmp));
         }
-        TEST_FAIL_IF(j != 10);
+        TEST_FAIL_IF(j != 13);
         TEST_FAIL_IF(SPIF_ITERATOR_HAS_NEXT(it));
         TEST_FAIL_IF(!SPIF_OBJ_ISNULL(SPIF_ITERATOR_NEXT(it)));
         TEST_PASS();
@@ -1169,6 +1174,11 @@ test_list(void)
         spif_str_del(s2);
         spif_str_done(s);
         spif_str_init_from_ptr(s, "GRIN");
+        s2 = SPIF_CAST(str) SPIF_LIST_REMOVE(testlist, s);
+        TEST_FAIL_IF(SPIF_OBJ_ISNULL(s2));
+        spif_str_del(s2);
+        spif_str_done(s);
+        spif_str_init_from_ptr(s, "BOB");
         s2 = SPIF_CAST(str) SPIF_LIST_REMOVE(testlist, s);
         TEST_FAIL_IF(SPIF_OBJ_ISNULL(s2));
         spif_str_del(s2);
@@ -1192,9 +1202,15 @@ test_list(void)
         TEST_PASS();
 
         TEST_BEGIN("SPIF_LIST_REMOVE_AT() macro");
+        s2 = SPIF_CAST(str) SPIF_LIST_REMOVE_AT(testlist, 11);
+        TEST_FAIL_IF(!SPIF_STR_ISNULL(s2));
+        s2 = SPIF_CAST(str) SPIF_LIST_REMOVE_AT(testlist, 11);
+        TEST_FAIL_IF(!SPIF_STR_ISNULL(s2));
         s2 = SPIF_CAST(str) SPIF_LIST_REMOVE_AT(testlist, 6);
+        TEST_FAIL_IF(SPIF_STR_ISNULL(s2));
         spif_str_del(s2);
         s2 = SPIF_CAST(str) SPIF_LIST_REMOVE_AT(testlist, 3);
+        TEST_FAIL_IF(SPIF_STR_ISNULL(s2));
         spif_str_del(s2);
 
         s = spif_str_new_from_ptr("0");

@@ -582,3 +582,10 @@ Sat Jan 24 13:54:02 2004                        Michael Jennings (mej)
 
 Added map interface (unimplemented) and a paired object class.
 ----------------------------------------------------------------------
+Fri Jan 30 17:55:47 2004                        Michael Jennings (mej)
+
+Working on adding assertions/requires for NULL object checks.
+
+Also making sure list elements can be NULL so insert_at() can resize
+a list.
+----------------------------------------------------------------------
