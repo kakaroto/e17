@@ -6,8 +6,7 @@
 typedef struct {
 
 	/*
-	 * These keep track of the alignments that determine which list a
-	 * child falls on.
+	 * Alignment is only done in the align direction.
 	 */
 	int             f1_align, f3_align;
 	int             a1_align, a3_align;
@@ -127,8 +126,8 @@ ewl_box_init(Ewl_Box * b, Ewl_Orientation o)
 				   "/appearance/box/horizontal",
 				   __ewl_box_add, __ewl_box_child_resize);
 
-	ewl_callback_prepend(w, EWL_CALLBACK_CONFIGURE,
-			     __ewl_box_configure, NULL);
+	ewl_callback_prepend(w, EWL_CALLBACK_CONFIGURE, __ewl_box_configure,
+			     NULL);
 
 	/*
 	 * Check if the info structs have been created yet, if not create
@@ -138,7 +137,8 @@ ewl_box_init(Ewl_Box * b, Ewl_Orientation o)
 		__ewl_box_setup();
 
 	/*
-	 * Set the box's appropriate orientation
+	 * Set the box's appropriate orientation, set to a garbage value so
+	 * that the orientation does it's job.
 	 */
 	b->orientation = 0xdeadbeef;
 	ewl_box_set_orientation(b, o);
@@ -695,8 +695,8 @@ __ewl_box_setup()
 		/*
 		 * These are the valid fill policies for this widget.
 		 */
-		vertical->f_policy = EWL_FILL_POLICY_VSHRINK |
-			EWL_FILL_POLICY_VFILL;
+		vertical->f_policy =
+			EWL_FILL_POLICY_VSHRINK | EWL_FILL_POLICY_VFILL;
 
 		/*
 		 * This sets the aligments for the non-filling direction.
@@ -748,8 +748,8 @@ __ewl_box_setup()
 		/*
 		 * These are the valid fill policies for this widget.
 		 */
-		horizontal->f_policy = EWL_FILL_POLICY_HSHRINK |
-			EWL_FILL_POLICY_HFILL;
+		horizontal->f_policy =
+			EWL_FILL_POLICY_HSHRINK | EWL_FILL_POLICY_HFILL;
 
 		/*
 		 * This sets the aligments for the non-filling direction.

@@ -63,16 +63,16 @@ ewl_widget_init(Ewl_Widget * w, char *appearance)
 	ewl_callback_append(w, EWL_CALLBACK_HIDE, __ewl_widget_hide, NULL);
 	ewl_callback_append(w, EWL_CALLBACK_REALIZE, __ewl_widget_realize,
 			    NULL);
-	ewl_callback_append(w, EWL_CALLBACK_CONFIGURE,
-			    __ewl_widget_configure, NULL);
+	ewl_callback_append(w, EWL_CALLBACK_CONFIGURE, __ewl_widget_configure,
+			    NULL);
 	ewl_callback_append(w, EWL_CALLBACK_THEME_UPDATE,
 			    __ewl_widget_theme_update, NULL);
 	ewl_callback_append(w, EWL_CALLBACK_DESTROY, __ewl_widget_destroy,
 			    NULL);
-	ewl_callback_append(w, EWL_CALLBACK_REPARENT,
-			    __ewl_widget_reparent, NULL);
-	ewl_callback_append(w, EWL_CALLBACK_WIDGET_ENABLE,
-			    __ewl_widget_enable, NULL);
+	ewl_callback_append(w, EWL_CALLBACK_REPARENT, __ewl_widget_reparent,
+			    NULL);
+	ewl_callback_append(w, EWL_CALLBACK_WIDGET_ENABLE, __ewl_widget_enable,
+			    NULL);
 	ewl_callback_append(w, EWL_CALLBACK_WIDGET_DISABLE,
 			    __ewl_widget_disable, NULL);
 
@@ -345,8 +345,8 @@ ewl_widget_set_appearance(Ewl_Widget * w, char *appearance)
 
 	ewl_widget_theme_update(w);
 
-	ewl_callback_call_with_event_data(w,
-					  EWL_CALLBACK_APPEARANCE_CHANGED, oap);
+	ewl_callback_call_with_event_data(w, EWL_CALLBACK_APPEARANCE_CHANGED,
+					  oap);
 
 	IF_FREE(oap);
 

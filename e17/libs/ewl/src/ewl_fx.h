@@ -51,11 +51,6 @@ void            ewl_fx_init_widget(Ewl_Widget * w);
 void            ewl_fx_deinit_widget(Ewl_Widget * w);
 
 int
-
-
-
-
-
                 ewl_fx_add_proto(char *name,
 				 Ewl_FX_Function fx_start,
 				 Ewl_FX_Timer_Function fx_cont,

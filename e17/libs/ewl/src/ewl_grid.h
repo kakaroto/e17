@@ -51,8 +51,8 @@ Ewl_Widget     *ewl_grid_new(int cols, int rows);
 void            ewl_grid_init(Ewl_Grid * g, int cols, int rows);
 
 void            ewl_grid_add(Ewl_Grid * g, Ewl_Widget * w,
-			     int start_col, int end_col,
-			     int start_row, int end_row);
+			     int start_col, int end_col, int start_row,
+			     int end_row);
 
 void            ewl_grid_set_col_w(Ewl_Grid * g, int col, int width);
 void            ewl_grid_set_row_h(Ewl_Grid * g, int row, int height);

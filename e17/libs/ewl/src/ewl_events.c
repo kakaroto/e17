@@ -117,8 +117,8 @@ ewl_ev_window_configure(Ecore_Event * _ev)
 	 * Configure events really only need to occur on resize.
 	 */
 	if (CURRENT_W(window) != ev->w || CURRENT_H(window) != ev->h) {
-		ewl_object_request_geometry(EWL_OBJECT(window), 0, 0,
-					    ev->w, ev->h);
+		ewl_object_request_geometry(EWL_OBJECT(window), 0, 0, ev->w,
+					    ev->h);
 		ewl_widget_configure(EWL_WIDGET(window));
 	}
 
@@ -228,8 +228,8 @@ ewl_ev_key_up(Ecore_Event * _ev)
 	 * matching key up event
 	 */
 	if (last_key)
-		ewl_callback_call_with_event_data(last_key,
-						  EWL_CALLBACK_KEY_UP, ev);
+		ewl_callback_call_with_event_data(last_key, EWL_CALLBACK_KEY_UP,
+						  ev);
 
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }

@@ -185,10 +185,10 @@ ewl_spinner_init(Ewl_Spinner * s)
 
 	w->recursive = TRUE;
 
-	ewl_callback_append(w, EWL_CALLBACK_REALIZE,
-			    __ewl_spinner_realize, NULL);
-	ewl_callback_append(w, EWL_CALLBACK_CONFIGURE,
-			    __ewl_spinner_configure, NULL);
+	ewl_callback_append(w, EWL_CALLBACK_REALIZE, __ewl_spinner_realize,
+			    NULL);
+	ewl_callback_append(w, EWL_CALLBACK_CONFIGURE, __ewl_spinner_configure,
+			    NULL);
 
 	s->min_val = -50.0;
 	s->max_val = 50.0;

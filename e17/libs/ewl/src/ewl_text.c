@@ -78,12 +78,12 @@ ewl_text_init(Ewl_Text * t)
 	 */
 	ewl_callback_prepend(w, EWL_CALLBACK_REALIZE, __ewl_text_realize, NULL);
 	ewl_callback_prepend(w, EWL_CALLBACK_DESTROY, __ewl_text_destroy, NULL);
-	ewl_callback_append(w, EWL_CALLBACK_CONFIGURE,
-			    __ewl_text_configure, NULL);
+	ewl_callback_append(w, EWL_CALLBACK_CONFIGURE, __ewl_text_configure,
+			    NULL);
 	ewl_callback_append(w, EWL_CALLBACK_THEME_UPDATE,
 			    __ewl_text_theme_update, NULL);
-	ewl_callback_append(w, EWL_CALLBACK_REPARENT,
-			    __ewl_text_reparent, NULL);
+	ewl_callback_append(w, EWL_CALLBACK_REPARENT, __ewl_text_reparent,
+			    NULL);
 
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }

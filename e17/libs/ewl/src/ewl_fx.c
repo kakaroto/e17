@@ -162,8 +162,8 @@ ewl_fx_init_widget(Ewl_Widget * w)
 		 * Now determine the number of callbacks for that specific
 		 * effect.
 		 */
-		snprintf(key, PATH_LEN, "/user/%s/%i/callbacks/count",
-			 wname, i);
+		snprintf(key, PATH_LEN, "/user/%s/%i/callbacks/count", wname,
+			 i);
 		cb_count = ewl_config_get_int("fx", key);
 
 		/*
@@ -175,16 +175,16 @@ ewl_fx_init_widget(Ewl_Widget * w)
 			 * Determine the starting event.
 			 */
 			snprintf(key, PATH_LEN,
-				 "/user/%s/%i/callbacks/%i/cb_start",
-				 wname, i, j);
+				 "/user/%s/%i/callbacks/%i/cb_start", wname, i,
+				 j);
 			start = ewl_config_get_int("fx", key);
 
 			/*
 			 * Determine the ending event.
 			 */
 			snprintf(key, PATH_LEN,
-				 "/user/%s/%i/callbacks/%i/cb_stop",
-				 wname, i, j);
+				 "/user/%s/%i/callbacks/%i/cb_stop", wname, i,
+				 j);
 			end = ewl_config_get_int("fx", key);
 
 			/*
@@ -1139,8 +1139,8 @@ __ewl_fx_widget_appearance_changed(Ewl_Widget * w, void *ev_data,
 		/*
 		 * Determine the number of callbacks for this effect.
 		 */
-		snprintf(key, PATH_LEN, "/user/%s/%i/callbacks/count",
-			 wname, i);
+		snprintf(key, PATH_LEN, "/user/%s/%i/callbacks/count", wname,
+			 i);
 		cb_count = ewl_config_get_int("fx", key);
 
 		/*
@@ -1152,16 +1152,16 @@ __ewl_fx_widget_appearance_changed(Ewl_Widget * w, void *ev_data,
 			 * Determine the event that starts this effect.
 			 */
 			snprintf(key, PATH_LEN,
-				 "/user/%s/%i/callbacks/%i/cb_start",
-				 wname, i, j);
+				 "/user/%s/%i/callbacks/%i/cb_start", wname, i,
+				 j);
 			start = ewl_config_get_int("fx", key);
 
 			/*
 			 * Determine the event that stops this effect.
 			 */
 			snprintf(key, PATH_LEN,
-				 "/user/%s/%i/callbacks/%i/cb_stop",
-				 wname, i, j);
+				 "/user/%s/%i/callbacks/%i/cb_stop", wname, i,
+				 j);
 			end = ewl_config_get_int("fx", key);
 
 			/*

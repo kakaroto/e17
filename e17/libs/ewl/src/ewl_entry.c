@@ -27,10 +27,6 @@ void            __ewl_entry_delete_to_left(Ewl_Widget * w);
 void            __ewl_entry_delete_to_right(Ewl_Widget * w);
 
 void
-
-
-
-
                 __ewl_entry_update_selected_region(Ewl_Widget * w, void *user_data,
 						   void *ev_data);
 
@@ -132,12 +128,12 @@ ewl_entry_init(Ewl_Entry * e)
 	ewl_callback_append(w, EWL_CALLBACK_REALIZE, __ewl_entry_realize, NULL);
 	ewl_callback_append(w, EWL_CALLBACK_CONFIGURE,
 			    __ewl_entry_configure, NULL);
-	ewl_callback_append(w, EWL_CALLBACK_KEY_DOWN,
-			    __ewl_entry_key_down, NULL);
-	ewl_callback_append(w, EWL_CALLBACK_MOUSE_DOWN,
-			    __ewl_entry_mouse_down, NULL);
-	ewl_callback_append(w, EWL_CALLBACK_MOUSE_MOVE,
-			    __ewl_entry_mouse_move, NULL);
+	ewl_callback_append(w, EWL_CALLBACK_KEY_DOWN, __ewl_entry_key_down,
+			    NULL);
+	ewl_callback_append(w, EWL_CALLBACK_MOUSE_DOWN, __ewl_entry_mouse_down,
+			    NULL);
+	ewl_callback_append(w, EWL_CALLBACK_MOUSE_MOVE, __ewl_entry_mouse_move,
+			    NULL);
 	ewl_callback_append(w, EWL_CALLBACK_SELECT, __ewl_entry_select, NULL);
 	ewl_callback_append(w, EWL_CALLBACK_DESELECT, __ewl_entry_deselect,
 			    NULL);
@@ -261,8 +257,8 @@ __ewl_entry_configure(Ewl_Widget * w, void *ev_data, void *user_data)
 
 		}
 
-		ewl_object_request_geometry(EWL_OBJECT(e->selection), xx,
-					    yy, ww, hh);
+		ewl_object_request_geometry(EWL_OBJECT(e->selection), xx, yy,
+					    ww, hh);
 		ewl_widget_configure(e->selection);
 	}
 
@@ -367,8 +363,8 @@ __ewl_entry_mouse_move(Ewl_Widget * w, void *ev_data, void *user_data)
 			index = ewl_text_get_index_at(EWL_TEXT(e->text),
 						      (ev->x),
 						      (CURRENT_Y(e->text) +
-						       (CURRENT_H(e->text)
-							/ 2)));
+						       (CURRENT_H(e->text) /
+							2)));
 
 			ee = index - ss;
 

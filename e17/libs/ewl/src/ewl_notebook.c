@@ -585,12 +585,12 @@ ewl_notebook_init(Ewl_Notebook * n)
 	/*
 	 * Attach the necessary callbacks for the notebook
 	 */
-	ewl_callback_append(w, EWL_CALLBACK_REALIZE,
-			    __ewl_notebook_realize, NULL);
-	ewl_callback_append(w, EWL_CALLBACK_CONFIGURE,
-			    __ewl_notebook_configure, NULL);
-	ewl_callback_prepend(w, EWL_CALLBACK_DESTROY,
-			     __ewl_notebook_destroy, NULL);
+	ewl_callback_append(w, EWL_CALLBACK_REALIZE, __ewl_notebook_realize,
+			    NULL);
+	ewl_callback_append(w, EWL_CALLBACK_CONFIGURE, __ewl_notebook_configure,
+			    NULL);
+	ewl_callback_prepend(w, EWL_CALLBACK_DESTROY, __ewl_notebook_destroy,
+			     NULL);
 	ewl_callback_del(w, EWL_CALLBACK_CONFIGURE,
 			 __ewl_container_configure_clip_box);
 
@@ -774,8 +774,8 @@ __ewl_notebook_configure(Ewl_Widget * w, void *ev_data, void *user_data)
 
 		}
 
-		ewl_object_request_geometry(EWL_OBJECT(n->tab_box), rx, ry,
-					    rw, rh);
+		ewl_object_request_geometry(EWL_OBJECT(n->tab_box), rx, ry, rw,
+					    rh);
 		ewl_widget_configure(n->tab_box);
 	}
 

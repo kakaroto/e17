@@ -674,8 +674,7 @@ _getopt_internal(argc, argv, optstring, longopts, longind, long_only)
 							 ||
 							 !my_index
 							 (optstring,
-							  argv[optind]
-							  [1]))))) {
+							  argv[optind][1]))))) {
 		char           *nameend;
 		const struct option *p;
 		const struct option *pfound = NULL;
@@ -741,8 +740,7 @@ _getopt_internal(argc, argv, optstring, longopts, longind, long_only)
 					optarg = nameend + 1;
 				else {
 					if (opterr)
-						if (argv[optind - 1]
-						    [1] == '-')
+						if (argv[optind - 1][1] == '-')
 							/*
 							 * --option 
 							 */
@@ -759,8 +757,7 @@ _getopt_internal(argc, argv, optstring, longopts, longind, long_only)
 								_
 								("%s: option `%c%s' doesn't allow an argument\n"),
 								argv[0],
-								argv[optind
-								     -
+								argv[optind -
 								     1][0],
 								pfound->name);
 
@@ -817,8 +814,8 @@ _getopt_internal(argc, argv, optstring, longopts, longind, long_only)
 					fprintf(stderr,
 						_
 						("%s: unrecognized option `%c%s'\n"),
-						argv[0],
-						argv[optind][0], nextchar);
+						argv[0], argv[optind][0],
+						nextchar);
 			}
 			nextchar = (char *) "";
 			optind++;
@@ -848,13 +845,11 @@ _getopt_internal(argc, argv, optstring, longopts, longind, long_only)
 					 * 1003.2 specifies the format of this message.  
 					 */
 					fprintf(stderr,
-						_
-						("%s: illegal option -- %c\n"),
+						_("%s: illegal option -- %c\n"),
 						argv[0], c);
 				else
 					fprintf(stderr,
-						_
-						("%s: invalid option -- %c\n"),
+						_("%s: invalid option -- %c\n"),
 						argv[0], c);
 			}
 			optopt = c;
@@ -981,8 +976,8 @@ _getopt_internal(argc, argv, optstring, longopts, longind, long_only)
 								_
 								("%s: option `%s' requires an argument\n"),
 								argv[0],
-								argv[optind
-								     - 1]);
+								argv[optind -
+								     1]);
 						nextchar += strlen(nextchar);
 						return optstring[0] ==
 							':' ? ':' : '?';

@@ -421,11 +421,11 @@ ewl_container_get_child_at_recursive(Ewl_Container * widget, int x, int y)
 	 * Now move down through the tree of widgets until the bottom layer is
 	 * found.
 	 */
-	while ((child2 = ewl_container_get_child_at(EWL_CONTAINER(child),
-						    x, y))) {
+	while ((child2 =
+		ewl_container_get_child_at(EWL_CONTAINER(child), x, y))) {
 		if (child2->recursive) {
-			child = ewl_container_get_child_at(EWL_CONTAINER
-							   (child), x, y);
+			child = ewl_container_get_child_at(EWL_CONTAINER(child),
+							   x, y);
 
 			if (!child)
 				DRETURN_PTR(child2, DLEVEL_STABLE);

@@ -137,10 +137,10 @@ ewl_image_init(Ewl_Image * i)
 			    __ewl_image_configure, NULL);
 	ewl_callback_append(w, EWL_CALLBACK_MOUSE_DOWN,
 			    __ewl_image_mouse_down, NULL);
-	ewl_callback_append(w, EWL_CALLBACK_MOUSE_UP,
-			    __ewl_image_mouse_up, NULL);
-	ewl_callback_append(w, EWL_CALLBACK_MOUSE_MOVE,
-			    __ewl_image_mouse_move, NULL);
+	ewl_callback_append(w, EWL_CALLBACK_MOUSE_UP, __ewl_image_mouse_up,
+			    NULL);
+	ewl_callback_append(w, EWL_CALLBACK_MOUSE_MOVE, __ewl_image_mouse_move,
+			    NULL);
 
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
@@ -213,7 +213,7 @@ __ewl_image_configure(Ewl_Widget * w, void *ev_data, void *user_data)
 /*
  * Determine the type of the file based on the filename.
  */
-static Ewl_Image_Type
+static          Ewl_Image_Type
 __ewl_image_get_type(const char *i)
 {
 	int             l;

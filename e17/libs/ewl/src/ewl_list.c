@@ -182,8 +182,8 @@ __ewl_list_init(Ewl_List * list)
 	ewl_callback_append(w, EWL_CALLBACK_REALIZE, __ewl_list_realize, NULL);
 	ewl_callback_append(w, EWL_CALLBACK_SHOW, __ewl_list_show, NULL);
 	ewl_callback_append(w, EWL_CALLBACK_HIDE, __ewl_list_hide, NULL);
-	ewl_callback_append(w, EWL_CALLBACK_CONFIGURE,
-			    __ewl_list_configure, NULL);
+	ewl_callback_append(w, EWL_CALLBACK_CONFIGURE, __ewl_list_configure,
+			    NULL);
 
 }
 

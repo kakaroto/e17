@@ -50,12 +50,12 @@ ewl_textarea_init(Ewl_TextArea * ta, char *text)
 
 	ewl_widget_init(EWL_WIDGET(w), "/appearance/textarea/default");
 
-	ewl_callback_append(w, EWL_CALLBACK_REALIZE,
-			    __ewl_textarea_realize, NULL);
-	ewl_callback_append(w, EWL_CALLBACK_CONFIGURE,
-			    __ewl_textarea_configure, NULL);
-	ewl_callback_append(w, EWL_CALLBACK_REPARENT,
-			    __ewl_textarea_reparent, NULL);
+	ewl_callback_append(w, EWL_CALLBACK_REALIZE, __ewl_textarea_realize,
+			    NULL);
+	ewl_callback_append(w, EWL_CALLBACK_CONFIGURE, __ewl_textarea_configure,
+			    NULL);
+	ewl_callback_append(w, EWL_CALLBACK_REPARENT, __ewl_textarea_reparent,
+			    NULL);
 
 	if (text)
 		ewl_textarea_set_text(ta, text);
@@ -88,6 +88,7 @@ ewl_textarea_set_text(Ewl_TextArea * ta, char *text)
 	 * Update the etox and the sizing of the textarea widget.
 	 */
 	if (ta->etox) {
+
 		etox_set_text(ta->etox, text);
 		__ewl_textarea_update_size(ta);
 	}
@@ -124,6 +125,40 @@ ewl_textarea_get_etox(Ewl_TextArea * ta)
 	DRETURN_PTR(ta->etox, DLEVEL_STABLE);
 }
 
+/**
+ * ewl_textarea_set_context - put a context into the textarea for etox creation
+ * @ta: the textarea to be assigned a context
+ * @context: the context to be set for the text area
+ *
+ * Returns no value. Uses @context when creating/modifying the etox in @ta.
+ */
+void
+ewl_textarea_set_context(Ewl_TextArea * ta, Etox_Context * context)
+{
+	DENTER_FUNCTION(DLEVEL_STABLE);
+
+	DCHECK_PARAM_PTR("ta", ta);
+
+	ta->etox_context = context;
+
+	DLEAVE_FUNCTION(DLEVEL_STABLE);
+}
+
+/**
+ * ewl_textarea_get_context - return the setup context for the text area
+ * @ta: the textarea to retrieve it's assigned context
+ *
+ * Returns a pointer to the assigned context in @ta if one exists, otherwise
+ * NULL.
+ */
+Etox_Context   *
+ewl_textarea_get_context(Ewl_TextArea * ta)
+{
+	DENTER_FUNCTION(DLEVEL_STABLE);
+
+	DRETURN_PTR(ta->etox_context, DLEVEL_STABLE);
+}
+
 void
 __ewl_textarea_realize(Ewl_Widget * w, void *ev_data, void *user_data)
 {
@@ -143,32 +178,47 @@ __ewl_textarea_realize(Ewl_Widget * w, void *ev_data, void *user_data)
 	win = ewl_window_find_window_by_widget(w);
 
 	/*
-	 * Get the default style and color based on the theme.
-	 */
-	style = ewl_theme_data_get_str(w,
-				       "/appearance/textarea/default/base/style");
-	r = ewl_theme_data_get_int(w, "/appearance/textarea/default/base/r");
-	g = ewl_theme_data_get_int(w, "/appearance/textarea/default/base/g");
-	b = ewl_theme_data_get_int(w, "/appearance/textarea/default/base/b");
-	a = ewl_theme_data_get_int(w, "/appearance/textarea/default/base/a");
-
-	/*
 	 * Create the etox
 	 */
 	ta->etox = etox_new(win->evas);
 
 	/*
-	 * Set the default style
+	 * If the user setup their own context, use that.
 	 */
-	if (style) {
-		etox_context_set_style(ta->etox, style);
-		FREE(style);
+	if (ta->etox_context) {
+		etox_context_load(ta->etox, ta->etox_context);
+		etox_context_free(ta->etox_context);
+		ta->etox_context = NULL;
 	}
+	else {
 
-	/*
-	 * Set the default color for the text.
-	 */
-	etox_context_set_color(ta->etox, r, g, b, a);
+		/*
+		 * Get the default style and color based on the theme.
+		 */
+		style = ewl_theme_data_get_str(w,
+				"/appearance/textarea/default/base/style");
+		r = ewl_theme_data_get_int(w,
+				"/appearance/textarea/default/base/r");
+		g = ewl_theme_data_get_int(w,
+				"/appearance/textarea/default/base/g");
+		b = ewl_theme_data_get_int(w,
+				"/appearance/textarea/default/base/b");
+		a = ewl_theme_data_get_int(w,
+				"/appearance/textarea/default/base/a");
+
+		/*
+		 * Set the default style
+		 */
+		if (style) {
+			etox_context_set_style(ta->etox, style);
+			FREE(style);
+		}
+
+		/*
+		 * Set the default color for the text.
+		 */
+		etox_context_set_color(ta->etox, r, g, b, a);
+	}
 
 	/*
 	 * Now set the text and display it.

@@ -120,8 +120,8 @@ ewl_seeker_init(Ewl_Seeker * s, Ewl_Orientation orientation)
 			    NULL);
 	ewl_callback_append(w, EWL_CALLBACK_THEME_UPDATE,
 			    __ewl_seeker_theme_update, NULL);
-	ewl_callback_append(w, EWL_CALLBACK_MOUSE_DOWN,
-			    __ewl_seeker_mouse_down, NULL);
+	ewl_callback_append(w, EWL_CALLBACK_MOUSE_DOWN, __ewl_seeker_mouse_down,
+			    NULL);
 	ewl_callback_append(w, EWL_CALLBACK_APPEARANCE_CHANGED,
 			    __ewl_seeker_appearance_changed, NULL);
 

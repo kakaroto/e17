@@ -435,7 +435,6 @@ __ewl_callback_compare(void *key1, void *key2)
 
 	DCHECK_PARAM_PTR_RET("key1", key1, -1)
 		DCHECK_PARAM_PTR_RET("key2", key2, -1)
-
 		if (cb1->func == cb2->func && cb1->user_data == cb2->user_data)
 		DRETURN_INT(0, DLEVEL_STABLE);
 

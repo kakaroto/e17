@@ -369,8 +369,8 @@ ewl_object_request_w(Ewl_Object * o, int w)
 	 * Bound the width by the preferred size first.
 	 */
 	if ((w < o->preferred.w && !(o->fill_policy & EWL_FILL_POLICY_HSHRINK))
-	    || (w > o->preferred.w
-		&& !(o->fill_policy & EWL_FILL_POLICY_HFILL)))
+	    || (w > o->preferred.w &&
+		!(o->fill_policy & EWL_FILL_POLICY_HFILL)))
 		w = o->preferred.w;
 
 	/*
@@ -402,8 +402,8 @@ ewl_object_request_h(Ewl_Object * o, int h)
 	 * Bound the width by the preferred size first.
 	 */
 	if ((h < o->preferred.h && !(o->fill_policy & EWL_FILL_POLICY_VSHRINK))
-	    || (h > o->preferred.h
-		&& !(o->fill_policy & EWL_FILL_POLICY_VFILL)))
+	    || (h > o->preferred.h &&
+		!(o->fill_policy & EWL_FILL_POLICY_VFILL)))
 		h = o->preferred.h;
 
 	/*
@@ -900,7 +900,7 @@ ewl_object_set_fill_policy(Ewl_Object * o, Ewl_Fill_Policy fill)
  *
  * Returns the value stored in the objects alignment attribute.
  */
-inline Ewl_Alignment
+inline          Ewl_Alignment
 ewl_object_get_alignment(Ewl_Object * o)
 {
 	DCHECK_PARAM_PTR_RET("o", o, EWL_ALIGNMENT_LEFT);
@@ -916,7 +916,7 @@ ewl_object_get_alignment(Ewl_Object * o)
  *
  * Returns the value stored in the objects fill policy attribute.
  */
-inline Ewl_Fill_Policy
+inline          Ewl_Fill_Policy
 ewl_object_get_fill_policy(Ewl_Object * o)
 {
 	DCHECK_PARAM_PTR_RET("o", o, EWL_FILL_POLICY_NORMAL);

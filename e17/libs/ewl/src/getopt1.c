@@ -68,8 +68,8 @@ getopt_long(argc, argv, options, long_options, opt_index)
      const struct option *long_options;
      int            *opt_index;
 {
-	return _getopt_internal(argc, argv, options, long_options,
-				opt_index, 0);
+	return _getopt_internal(argc, argv, options, long_options, opt_index,
+				0);
 }
 
 /* Like getopt_long, but '-' as well as '--' can indicate a long option.
@@ -85,8 +85,8 @@ getopt_long_only(argc, argv, options, long_options, opt_index)
      const struct option *long_options;
      int            *opt_index;
 {
-	return _getopt_internal(argc, argv, options, long_options,
-				opt_index, 1);
+	return _getopt_internal(argc, argv, options, long_options, opt_index,
+				1);
 }
 
 

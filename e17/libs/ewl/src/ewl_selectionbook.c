@@ -3,16 +3,16 @@
 #include "ewl_selectionbook.h"
 
 
-void __ewl_selectionbook_configure(Ewl_Widget * w, void *ev_data,
-				   void *user_data);
-void __ewl_selectionbook_realize(Ewl_Widget * w, void *ev_data,
-				 void *user_data);
-void __ewl_selectionbook_destroy(Ewl_Widget * w, void *ev_data,
-				 void *user_data);
+void            __ewl_selectionbook_configure(Ewl_Widget * w, void *ev_data,
+					      void *user_data);
+void            __ewl_selectionbook_realize(Ewl_Widget * w, void *ev_data,
+					    void *user_data);
+void            __ewl_selectionbook_destroy(Ewl_Widget * w, void *ev_data,
+					    void *user_data);
 
 
-void __ewl_selectionbook_page_switch(Ewl_Widget * w, void *ev_data,
-				     void *user_data);
+void            __ewl_selectionbook_page_switch(Ewl_Widget * w, void *ev_data,
+						void *user_data);
 
 /**
  * ewl_selectionbook_new - create a new selectionbook
@@ -20,7 +20,8 @@ void __ewl_selectionbook_page_switch(Ewl_Widget * w, void *ev_data,
  * 
  * Returns a newly allocated selectionbook on success, NULL on failure.
  */
-Ewl_Widget *ewl_selectionbook_new()
+Ewl_Widget     *
+ewl_selectionbook_new()
 {
 	Ewl_Selectionbook *s;
 
@@ -46,9 +47,10 @@ Ewl_Widget *ewl_selectionbook_new()
  * Returns no value. Sets the fields and callbacks of the selectionbook
  * @s to their default values.
  */
-void ewl_selectionbook_init(Ewl_Selectionbook * s)
+void
+ewl_selectionbook_init(Ewl_Selectionbook * s)
 {
-	Ewl_Widget *w;
+	Ewl_Widget     *w;
 
 	DENTER_FUNCTION(DLEVEL_STABLE);
 
@@ -67,18 +69,18 @@ void ewl_selectionbook_init(Ewl_Selectionbook * s)
 			    __ewl_selectionbook_realize, NULL);
 	ewl_callback_append(w, EWL_CALLBACK_DESTROY,
 			    __ewl_selectionbook_destroy, NULL);
-	ewl_theme_data_set_str(w, 
-			"/appearance/box/vertical/base/visible", "no");
+	ewl_theme_data_set_str(w, "/appearance/box/vertical/base/visible",
+			       "no");
 
 
-	
+
 	s->tab_bar = ewl_selectionbar_new(w);
-	
+
 	s->pages = ewd_list_new();
 	s->current_page = NULL;
 	s->num_pages = 0;
 
-	
+
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
 
@@ -88,7 +90,7 @@ void
 ewl_selectionbook_add_page(Ewl_Selectionbook * s, Ewl_Widget * tab,
 			   Ewl_Widget * page)
 {
-	Ewl_SbookPage *p;
+	Ewl_SbookPage  *p;
 
 	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR("s", s);
@@ -108,7 +110,7 @@ ewl_selectionbook_add_page(Ewl_Selectionbook * s, Ewl_Widget * tab,
 			    __ewl_selectionbook_page_switch, s);
 
 	ewl_widget_set_data(tab, (void *) s, (void *) p);
-	
+
 	if (!s->current_page) {
 		s->current_page = p;
 		ewl_callback_del(p->tab, EWL_CALLBACK_CLICKED,
@@ -134,13 +136,14 @@ ewl_selectionbook_add_page(Ewl_Selectionbook * s, Ewl_Widget * tab,
 void
 ewl_selectionbook_rem_page(Ewl_Selectionbook * s, int num, int destroy)
 {
-	Ewl_SbookPage *p;;
+	Ewl_SbookPage  *p;;
 
 	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR("s", s);
 
 	if (s->num_pages < num)
 		return;
+
 /*
 	ewd_list_goto_index(s->pages, num);
 
@@ -184,12 +187,14 @@ ewl_selectionbook_rem_page(Ewl_Selectionbook * s, int num, int destroy)
 }
 
 
-void ewl_selectionbook_rem_current_page(Ewl_Selectionbook * s, int destroy)
+void
+ewl_selectionbook_rem_current_page(Ewl_Selectionbook * s, int destroy)
 {
-	Ewl_SbookPage *p;
+	Ewl_SbookPage  *p;
 
 	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR("s", s);
+
 /*
 	p = s->current_page;
 	ewd_list_goto_first(s->pages);
@@ -231,33 +236,32 @@ __ewl_selectionbook_realize(Ewl_Widget * w, void *ev_data, void *user_data)
 
 	s = EWL_SELECTIONBOOK(w);
 
-//	ewl_container_remove_child(EWL_CONTAINER(s), s->tab_bar);
+//      ewl_container_remove_child(EWL_CONTAINER(s), s->tab_bar);
 	ewl_widget_show(s->tab_bar);
 
-	
+
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
 
 void
-__ewl_selectionbook_configure(Ewl_Widget * w, void *ev_data,
-			      void *user_data)
+__ewl_selectionbook_configure(Ewl_Widget * w, void *ev_data, void *user_data)
 {
 	Ewl_Selectionbook *s;
-	Ewl_Widget *child;
-	int layer;
-	
+	Ewl_Widget     *child;
+	int             layer;
+
 	DENTER_FUNCTION(DLEVEL_STABLE);
 
 	s = EWL_SELECTIONBOOK(w);
 
 	printf("in selectionbook configure %p\n", w);
 
-	if(s->current_page) {
-		ewl_object_request_geometry(EWL_OBJECT(s->current_page->page), 
-				CURRENT_X(EWL_OBJECT(s)), 
-				CURRENT_Y(EWL_OBJECT(s)),
-				CURRENT_W(EWL_OBJECT(s)),
-				CURRENT_H(EWL_OBJECT(s)));
+	if (s->current_page) {
+		ewl_object_request_geometry(EWL_OBJECT(s->current_page->page),
+					    CURRENT_X(EWL_OBJECT(s)),
+					    CURRENT_Y(EWL_OBJECT(s)),
+					    CURRENT_W(EWL_OBJECT(s)),
+					    CURRENT_H(EWL_OBJECT(s)));
 
 		ewl_widget_configure(s->current_page->page);
 	}
@@ -273,7 +277,7 @@ void
 __ewl_selectionbook_destroy(Ewl_Widget * w, void *ev_data, void *user_data)
 {
 	Ewl_Selectionbook *s;
-	Ewl_SbookPage *p;
+	Ewl_SbookPage  *p;
 
 	DENTER_FUNCTION(DLEVEL_STABLE);
 
@@ -281,8 +285,7 @@ __ewl_selectionbook_destroy(Ewl_Widget * w, void *ev_data, void *user_data)
 
 	if (s->pages) {
 		ewd_list_goto_first(s->pages);
-		while ((p =
-			(Ewl_SbookPage *) ewd_list_next(s->pages)) != NULL)
+		while ((p = (Ewl_SbookPage *) ewd_list_next(s->pages)) != NULL)
 			ewl_widget_destroy(p->page);
 	}
 
@@ -297,11 +300,10 @@ __ewl_selectionbook_destroy(Ewl_Widget * w, void *ev_data, void *user_data)
 
 
 void
-__ewl_selectionbook_page_switch(Ewl_Widget * w, void *ev_data,
-				void *user_data)
+__ewl_selectionbook_page_switch(Ewl_Widget * w, void *ev_data, void *user_data)
 {
 	Ewl_Selectionbook *s;
-	Ewl_SbookPage *p;
+	Ewl_SbookPage  *p;
 
 	DENTER_FUNCTION(DLEVEL_STABLE);
 
@@ -311,11 +313,9 @@ __ewl_selectionbook_page_switch(Ewl_Widget * w, void *ev_data,
 	if (s->current_page) {
 		ewl_callback_append(p->tab,
 				    EWL_CALLBACK_CLICKED,
-				    __ewl_selectionbook_page_switch,
-				    s);
+				    __ewl_selectionbook_page_switch, s);
 		ewl_widget_hide(p->page);
-		ewl_container_remove_child(EWL_CONTAINER(s),
-					   p->page);
+		ewl_container_remove_child(EWL_CONTAINER(s), p->page);
 		//ewl_widget_hide(p->page);
 	}
 

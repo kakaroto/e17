@@ -68,12 +68,12 @@ ewl_button_init(Ewl_Button * b, char *label)
 	 */
 	ewl_callback_append(w, EWL_CALLBACK_MOUSE_DOWN,
 			    __ewl_button_mouse_down, NULL);
-	ewl_callback_append(w, EWL_CALLBACK_MOUSE_UP,
-			    __ewl_button_mouse_up, NULL);
-	ewl_callback_append(w, EWL_CALLBACK_FOCUS_IN,
-			    __ewl_button_focus_in, NULL);
-	ewl_callback_append(w, EWL_CALLBACK_FOCUS_OUT,
-			    __ewl_button_focus_out, NULL);
+	ewl_callback_append(w, EWL_CALLBACK_MOUSE_UP, __ewl_button_mouse_up,
+			    NULL);
+	ewl_callback_append(w, EWL_CALLBACK_FOCUS_IN, __ewl_button_focus_in,
+			    NULL);
+	ewl_callback_append(w, EWL_CALLBACK_FOCUS_OUT, __ewl_button_focus_out,
+			    NULL);
 	ewl_callback_append(w, EWL_CALLBACK_SHOW, __ewl_button_show, NULL);
 	ewl_callback_append(w, EWL_CALLBACK_THEME_UPDATE,
 			    __ewl_button_theme_update, NULL);

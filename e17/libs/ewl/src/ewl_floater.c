@@ -94,8 +94,8 @@ ewl_floater_init(Ewl_Floater * f, Ewl_Widget * parent)
 	 */
 	ewl_callback_prepend(w, EWL_CALLBACK_CONFIGURE,
 			     __ewl_floater_configure, NULL);
-	ewl_callback_prepend(w, EWL_CALLBACK_REALIZE,
-			     __ewl_floater_realize, NULL);
+	ewl_callback_prepend(w, EWL_CALLBACK_REALIZE, __ewl_floater_realize,
+			     NULL);
 	ewl_callback_append(w, EWL_CALLBACK_DESTROY, __ewl_floater_destroy,
 			    NULL);
 	ewl_callback_insert_after(w, EWL_CALLBACK_REPARENT,

@@ -411,8 +411,8 @@ __ewl_grid_configure(Ewl_Widget * w, void *ev_data, void *user_data)
 			c_y += g->row_size[i].size;
 
 
-		ewl_object_request_geometry(EWL_OBJECT(child),
-					    c_x, c_y, c_w, c_h);
+		ewl_object_request_geometry(EWL_OBJECT(child), c_x, c_y, c_w,
+					    c_h);
 		ewl_widget_configure(child);
 
 		/* reset geometry values for the next child */
@@ -622,14 +622,14 @@ __ewl_grid_auto_resize(Ewl_Container * p, Ewl_Widget * child, int size,
 	 */
 	if (o == EWL_ORIENTATION_HORIZONTAL) {
 		info = g->col_size;
-		start_off = (unsigned int) &cdata->start_col -
-			(unsigned int) cdata;
+		start_off =
+			(unsigned int) &cdata->start_col - (unsigned int) cdata;
 		end_off = (unsigned int) &cdata->end_col - (unsigned int) cdata;
 		widget_size = ewl_object_get_preferred_w;
 	} else {
 		info = g->row_size;
-		start_off = (unsigned int) &cdata->start_row -
-			(unsigned int) cdata;
+		start_off =
+			(unsigned int) &cdata->start_row - (unsigned int) cdata;
 		end_off = (unsigned int) &cdata->end_row - (unsigned int) cdata;
 		widget_size = ewl_object_get_preferred_h;
 	}
@@ -654,8 +654,7 @@ __ewl_grid_auto_resize(Ewl_Container * p, Ewl_Widget * child, int size,
 	 */
 	give = size / num_spread;
 	for (i = *(int *) (cdata + start_off) - 1;
-	     i < *(int *) (cdata + end_off)
-	     && num_spread; i++) {
+	     i < *(int *) (cdata + end_off) && num_spread; i++) {
 		if (!info[i].override) {
 
 			/*
