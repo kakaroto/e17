@@ -29,6 +29,8 @@ static const char cvs_ident[] = "$Id$";
 
 #include <libast_internal.h>
 
+spifopt_settings_t spifopt_settings;
+
 static void
 usage(void)
 {
