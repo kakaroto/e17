@@ -294,6 +294,10 @@ exp_eb_command_handle(Exp *exp, char **cmds)
   {
 
   }
+  else if (!strcmp(cmds[0], "list_services_done"))
+  {
+
+  }
   /* contact functions */
   else if (!strcmp(cmds[0], "list_group"))
   {
