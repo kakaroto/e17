@@ -88,7 +88,7 @@ image: IMAGE COLON STRING image_type SEMICOLON {
 		printf("got image '%s' of type %s\n", $3, $4);
 	}
 	| IMAGE COLON STRING image_type FLOAT SEMICOLON {
-		printf("got image '%s' of type %s (%f)\n", $3, $4, $5);
+		printf("got image '%s' of type %d (%f)\n", $3, $4, $5);
 	}
 	;
 
