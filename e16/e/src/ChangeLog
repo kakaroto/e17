@@ -1964,3 +1964,10 @@ Fri Sep 17 15:33:29 PDT 1999
 (Mandrake)
 
 when we change desktops and/or areas, unfocus the currently focused window.
+
+-------------------------------------------------------------------------------
+
+Fri Sep 17 15:55:05 PDT 1999
+(Mandrake)
+
+fix minor casting bug

@@ -638,7 +638,8 @@ KDE_GetDecorationHint(Window win, long *dechints)
    if (!ewin)
       EDBUG_RETURN_;
 
-   ewin->skipfocus = *dechints & KDE_NO_FOCUS;
+   if (*dechints & KDE_NO_FOCUS)
+      ewin->skipfocus = 1;
 
    switch (*dechints & ~KDE_NO_FOCUS)
      {
