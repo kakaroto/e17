@@ -184,9 +184,11 @@ GetContextEwin(void)
 
    EDBUG(4, "GetContextEwin");
 
+#if 0
    ewin = Mode.mouse_over_win;
    if (ewin && !ewin->menu)
       EDBUG_RETURN(ewin);
+#endif
 
    ewin = Mode.focuswin;
    if (ewin && !ewin->menu)
