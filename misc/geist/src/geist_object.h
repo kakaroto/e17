@@ -8,8 +8,8 @@ geist_object_state;
 struct __geist_object
 {
    char *name;
-   int width;
-   int height;
+   int w;
+   int h;
    int x;
    int y;
    int visible;
@@ -31,8 +31,8 @@ void geist_object_free(geist_object * obj);
 void geist_object_render(geist_object * obj, Imlib_Image dest);
 void geist_object_show(geist_object * obj);
 void geist_object_int_free(geist_object * obj);
-#define geist_object_set_state(obj, state) (obj->state |=  state)
-#define geist_object_unset_state(obj, state) (obj->state &= ^state)
-#define geist_object_get_state(obj, state) (obj->state & state)
+#define geist_object_set_state(o, s) (o->state |=  s)
+#define geist_object_unset_state(o, s) (o->state &= ^s)
+#define geist_object_get_state(o, s) (o->state & s)
 
 #endif

@@ -63,3 +63,21 @@ geist_layer_add_object(geist_layer * layer, geist_object * obj)
 
    D_RETURN_(3);
 }
+
+geist_object *
+geist_layer_find_clicked_object(geist_layer * layer, int x, int y)
+{
+   geist_list *l;
+   geist_object *ret = NULL, *obj;
+
+   D_ENTER(4);
+
+   for (l = layer->objects; l; l = l->next)
+   {
+      obj = ((geist_object *) l->data);
+      if (XY_IN_RECT(x, y, obj->x, obj->y, obj->w, obj->h))
+         ret = obj;
+   }
+
+   D_RETURN(4, ret);
+}

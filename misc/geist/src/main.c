@@ -1,21 +1,5 @@
 
-/*  geist - a project scheduling tool.  Part of the GNOME project.
- *  Copyright (C) 2000.  Tom Gilbert & Michael Davies.
- *
- *  This program is free software; you can redistribute it and/or modify
- *  it under the terms of the GNU General Public License as published by
- *  the Free Software Foundation; either version 2 of the License, or
- *  (at your option) any later version.
- *
- *  This program is distributed in the hope that it will be useful,
- *  but WITHOUT ANY WARRANTY; without even the implied warranty of
- *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- *  GNU General Public License for more details.
- *
- *  You should have received a copy of the GNU General Public License
- *  along with this program; if not, write to the Free Software
- *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
- */
+/*  main.c  */
 
 #include <gtk/gtk.h>
 
@@ -66,8 +50,6 @@ main(int argc, char *argv[])
                       GTK_SIGNAL_FUNC(mainwin_destroy_cb), NULL);
    gtk_widget_show(mainwin);
 
-
-
    scrollwin = gtk_scrolled_window_new(NULL, NULL);
    gtk_widget_show(scrollwin);
    gtk_container_add(GTK_CONTAINER(mainwin), scrollwin);
@@ -98,6 +80,7 @@ main(int argc, char *argv[])
 
 
    doc = geist_document_new(400, 400);
+   
    geist_document_add_layer(doc);
 
    geist_document_add_object(doc,
@@ -158,7 +141,15 @@ gint evbox_buttonpress_cb(GtkWidget * widget, GdkEventButton * event)
    geist_object *obj;
    D_ENTER(5);
 
-
+   if(event->button == 1)
+   {
+      obj = geist_document_find_clicked_object(doc, event->x, event->y);
+      if(!obj)
+         D_RETURN(5, 1);
+      D(2, ("setting object state SELECTED\n"));
+      printf("selecting object %p\n", obj);
+      /* geist_object_set_state(obj, SELECTED); */
+   }
    
    D_RETURN(5, 1);
 }
