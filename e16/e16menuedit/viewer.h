@@ -34,3 +34,5 @@ void real_save_menus (gint exit);
 void cb_icon_browse (GtkWidget * widget, gpointer user_data);
 void cb_icon_browse_ok (GtkWidget * widget, gpointer user_data);
 void cb_icon_browse_cancel (GtkWidget * widget, gpointer user_data);
+void destroy_dlg_cb (GtkWidget *widget, gpointer user_data);
+void ok_dialog (gchar * message);

@@ -13,6 +13,7 @@
 
 extern GtkTooltips *tooltips;
 extern GtkAccelGroup *accel_group;
+GtkWidget *win;
 GtkWidget *txt_description;
 GtkWidget *txt_icon;
 GtkWidget *txt_exec;
@@ -114,7 +115,7 @@ load_menus_from_disk (void)
     {
       printf ("hmm. looks like you have some \"issues\" as you don't have\n"
 	      "a %s file.  Sucks to be you\n", buf);
-      exit (1);
+      gtk_exit (1);
     }
 
   while (fgets (s, 4096, menufile))
@@ -242,7 +243,6 @@ selection_made (GtkCTree * my_ctree, GList * node, gint column,
 GtkWidget *
 create_main_window (void)
 {
-  GtkWidget *win;
   GtkWidget *bigvbox;
   GtkWidget *menubar;
   GtkWidget *panes;
@@ -556,12 +556,13 @@ real_save_menus (gint exit)
     }
 
   if (retval)
-    printf ("Drat. Something went Pete Tong....\n");
+    ok_dialog ("Couldn't save all entries.\n");
   else
     {
-      printf ("Successful save\n");
       if (exit)
 	gtk_exit (0);
+      else
+	ok_dialog ("Successful save\n");
     }
 }
 
@@ -612,8 +613,9 @@ tree_to_gnode (GtkCTree * ctree,
   if ((col1 == NULL) || col1[0] == '\0')
     {
       printf ("e16keyedit ERROR\n");
-      printf ("Entry with description %s, icon %s, and parameters %s\n", col1,
-	      col2, col3);
+      printf
+	("Entry with description ->%s<-, icon ->%s<-, and parameters ->%s<-\n",
+	 col1, col2, col3);
       printf ("You can't have a description-less entry!\n"
 	      "That just won't do. I'm omitting this entry.\n");
       return FALSE;
@@ -621,8 +623,9 @@ tree_to_gnode (GtkCTree * ctree,
   else if ((col3 == NULL) || (col3[0] == '\0'))
     {
       printf ("e16keyedit ERROR\n");
-      printf ("Entry with description %s, icon %s, and parameters %s\n", col1,
-	      col2, col3);
+      printf
+	("Entry with description ->%s<-, icon ->%s<-, and parameters ->%s<-\n",
+	 col1, col2, col3);
       printf ("You can't have an entry with no parameters!\n"
 	      "If it's a submenu, you *must* specify a file to "
 	      "store the submenu in.\nI'm omitting this entry.\n");
@@ -639,8 +642,7 @@ tree_to_gnode (GtkCTree * ctree,
 }
 
 /* Next two functions are co-recursing */
-gint
-write_menu (GNode * node, gchar * file)
+gint write_menu (GNode * node, gchar * file)
 {
   GNode *ptr;
   FILE *fp = NULL;
@@ -680,8 +682,7 @@ write_menu (GNode * node, gchar * file)
   return 0;
 }
 
-gint
-write_menu_entry (GNode * node, FILE * fp)
+gint write_menu_entry (GNode * node, FILE * fp)
 {
   struct entry_data *dat;
 
@@ -801,4 +802,48 @@ cb_icon_browse_ok (GtkWidget * widget, gpointer user_data)
   return;
   widget = NULL;
   user_data = NULL;
+}
+
+void
+ok_dialog (gchar * message)
+{
+  GtkWidget *label;
+  GtkWidget *button;
+  GtkWidget *dialog_window;
+
+  dialog_window = gtk_dialog_new ();
+  gtk_window_set_transient_for (GTK_WINDOW (dialog_window), GTK_WINDOW (win));
+  gtk_window_set_position(GTK_WINDOW (dialog_window), GTK_WIN_POS_CENTER_ALWAYS);
+
+  gtk_signal_connect (GTK_OBJECT (dialog_window), "destroy",
+		      GTK_SIGNAL_FUNC (gtk_widget_destroyed), &dialog_window);
+
+  gtk_window_set_title (GTK_WINDOW (dialog_window), "GtkDialog");
+  gtk_container_set_border_width (GTK_CONTAINER (dialog_window), 0);
+  gtk_widget_set_usize (dialog_window, 200, 110);
+
+  button = gtk_button_new_with_label ("OK");
+  GTK_WIDGET_SET_FLAGS (button, GTK_CAN_DEFAULT);
+  gtk_box_pack_start (GTK_BOX (GTK_DIALOG (dialog_window)->action_area),
+		      button, TRUE, TRUE, 0);
+  gtk_signal_connect (GTK_OBJECT (button), "clicked",
+		      GTK_SIGNAL_FUNC (destroy_dlg_cb), dialog_window);
+  gtk_widget_grab_default (button);
+  gtk_widget_show (button);
+
+  label = gtk_label_new (message);
+  gtk_misc_set_padding (GTK_MISC (label), 10, 10);
+  gtk_box_pack_start (GTK_BOX (GTK_DIALOG (dialog_window)->vbox),
+		      label, TRUE, TRUE, 0);
+  gtk_widget_show (label);
+
+  gtk_widget_show (dialog_window);
+}
+
+void
+destroy_dlg_cb (GtkWidget * widget, gpointer user_data)
+{
+  gtk_widget_destroy (GTK_WIDGET (user_data));
+  return;
+  widget = NULL;
 }
