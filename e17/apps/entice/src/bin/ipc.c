@@ -104,7 +104,7 @@ ipc_client_data(void *data, int type, void *event)
       snprintf(buf, e->size, "%s", e->data);
       entice_file_add(buf);
       /* 
-         printf ("!! Client sent: [%i] [%i] (%i) \"%s\"\n", e->major,
+         printf("!! Client sent: [%i] [%i] (%i) \"%s\"\n", e->major,
          e->minor, e->size, buf); */
    }
    return (1);

@@ -118,14 +118,14 @@ entice_init(Ecore_Evas * ee)
          {
             e_container_fill_policy_set(e->container,
                                         CONTAINER_FILL_POLICY_FILL_Y |
-					CONTAINER_FILL_POLICY_KEEP_ASPECT);
+                                        CONTAINER_FILL_POLICY_KEEP_ASPECT);
             e_container_direction_set(e->container, 0);
          }
          else
          {
             e_container_fill_policy_set(e->container,
                                         CONTAINER_FILL_POLICY_FILL_X |
-					CONTAINER_FILL_POLICY_KEEP_ASPECT);
+                                        CONTAINER_FILL_POLICY_KEEP_ASPECT);
             e_container_direction_set(e->container, 1);
          }
          edje_object_part_swallow(e->edje, "EnticeThumbnailArea",
@@ -161,6 +161,7 @@ entice_free(void)
          ecore_evas_free(entice->ee);
       free(entice);
       entice = NULL;
+      entice_ipc_shutdown();
    }
 }
 
@@ -217,7 +218,7 @@ _entice_thumb_load(void *_data, Evas * _e, Evas_Object * _o, void *_ev)
          entice->current = NULL;
 
          /* clean up the old images */
-        swallowed =
+         swallowed =
             edje_object_part_swallow_get(entice->preview, "EnticeImage");
          if (swallowed)
          {

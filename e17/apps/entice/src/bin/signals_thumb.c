@@ -140,11 +140,11 @@ hookup_entice_thumb_signals(Evas_Object * o, Evas_Object * im)
    for (i = 0; i < count; i++)
       edje_object_signal_callback_add(o, signals[i], "", funcs[i].func, im);
 
-    /*  
-     *  this is weird, but we intercept callbacks and feed them to edje, for
-     *  some reason i can't get the mouse callbacks to be handled properly
-     *  for a swallowed smart object w/o this
-     */
+   /* 
+    *  this is weird, but we intercept callbacks and feed them to edje, for
+    *  some reason i can't get the mouse callbacks to be handled properly
+    *  for a swallowed smart object w/o this
+    */
    if ((thumb = (E_Thumb *) evas_object_smart_data_get(im)))
    {
       evas_object_event_callback_add(thumb->image, EVAS_CALLBACK_MOUSE_IN,

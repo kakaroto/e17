@@ -25,29 +25,31 @@ const char *
 entice_config_theme_get(void)
 {
    char buf[PATH_MAX];
+
    if (econfig && econfig->theme)
    {
-       struct stat status;
+      struct stat status;
 
-	/* theme doesn't exist by abs/relative path in db */
-       if(stat(econfig->theme, &status) != 0)
-       {
-	    snprintf(buf, PATH_MAX, "%s/.entice/%s", 
-		getenv("HOME"), econfig->theme);   
-	    if(stat(buf, &status) != 0)
-	    {
-		snprintf(buf, PATH_MAX, "%s/themes/%s", 
-		    PACKAGE_DATA_DIR, econfig->theme);   
-		if(stat(buf, &status) != 0)
-		{
-		    snprintf(buf, PATH_MAX, "%s/themes/default.eet", 
-						PACKAGE_DATA_DIR);
-		}
-	    }
-	    if(econfig->theme) free(econfig->theme);
-	    econfig->theme = strdup(buf);
-       }
-       return(econfig->theme);
+      /* theme doesn't exist by abs/relative path in db */
+      if (stat(econfig->theme, &status) != 0)
+      {
+         snprintf(buf, PATH_MAX, "%s/.entice/%s", getenv("HOME"),
+                  econfig->theme);
+         if (stat(buf, &status) != 0)
+         {
+            snprintf(buf, PATH_MAX, "%s/themes/%s", PACKAGE_DATA_DIR,
+                     econfig->theme);
+            if (stat(buf, &status) != 0)
+            {
+               snprintf(buf, PATH_MAX, "%s/themes/default.eet",
+                        PACKAGE_DATA_DIR);
+            }
+         }
+         if (econfig->theme)
+            free(econfig->theme);
+         econfig->theme = strdup(buf);
+      }
+      return (econfig->theme);
    }
    return (NULL);
 }
@@ -108,14 +110,14 @@ entice_config_init(void)
       {
          entice_keys_init();
          snprintf(buf, PATH_MAX, "%s/.entice.db", getenv("HOME"));
-	 
-	 /* make sure we have a db, if not generate it */
-	 if ((db = e_db_open_read(buf)) == NULL)
-	     entice_config_generate_original_db(buf);
-	 else
-	     e_db_close(db);
 
-	 /* now actually read the config */
+         /* make sure we have a db, if not generate it */
+         if ((db = e_db_open_read(buf)) == NULL)
+            entice_config_generate_original_db(buf);
+         else
+            e_db_close(db);
+
+         /* now actually read the config */
          if ((db = e_db_open_read(buf)))
          {
             if ((str = e_db_str_get(db, "/entice/theme")))
@@ -169,35 +171,36 @@ entice_config_init(void)
 static void
 entice_config_generate_original_db(char *filename)
 {
-    int i, count;
-    char buf[PATH_MAX];
-    E_DB_File *db = NULL;
+   int i, count;
+   char buf[PATH_MAX];
+   E_DB_File *db = NULL;
 
-    char *signals[] = { "EnticeZoomIn", "EnticeZoomOut", "EnticeFullScreen",
-			"EnticeImageNext", "EnticeImagePrev",
-			"EnticeZoomDefault", "EnticeZoomFit",
-			"EnticeQuit" };
-    char *keys[] = 
-	{ "equal", "minus", "f", "space", "BackSpace", "n", "w", "q" };
-    count = sizeof(signals) / sizeof(char*);
+   char *signals[] = { "EnticeZoomIn", "EnticeZoomOut", "EnticeFullScreen",
+      "EnticeImageNext", "EnticeImagePrev",
+      "EnticeZoomDefault", "EnticeZoomFit",
+      "EnticeQuit"
+   };
+   char *keys[] =
+      { "equal", "minus", "f", "space", "BackSpace", "n", "w", "q" };
+   count = sizeof(signals) / sizeof(char *);
 
-    if(filename)
-    {
-	if((db = e_db_open(filename)))
-	{
-	    e_db_str_set(db, "/entice/theme", "default.eet");
-	    e_db_int_set(db, "/entice/engine", 0);
+   if (filename)
+   {
+      if ((db = e_db_open(filename)))
+      {
+         e_db_str_set(db, "/entice/theme", "default.eet");
+         e_db_int_set(db, "/entice/engine", 0);
 
-	    for(i = 0; i < count; i++)
-	    {
-		snprintf(buf, PATH_MAX, "/entice/keys/up/%i/symbol", i);
-		e_db_str_set(db, buf, keys[i]);
-		snprintf(buf, PATH_MAX, "/entice/keys/up/%i/signal", i);
-		e_db_str_set(db, buf, signals[i]);
-	    }
-	    e_db_int_set(db, "/entice/keys/up/count", count);
-	    e_db_close(db);
-	    e_db_flush();
-	}
-    }
+         for (i = 0; i < count; i++)
+         {
+            snprintf(buf, PATH_MAX, "/entice/keys/up/%i/symbol", i);
+            e_db_str_set(db, buf, keys[i]);
+            snprintf(buf, PATH_MAX, "/entice/keys/up/%i/signal", i);
+            e_db_str_set(db, buf, signals[i]);
+         }
+         e_db_int_set(db, "/entice/keys/up/count", count);
+         e_db_close(db);
+         e_db_flush();
+      }
+   }
 }
