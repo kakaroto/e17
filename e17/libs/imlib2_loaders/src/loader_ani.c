@@ -55,7 +55,7 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  (((x) & 0xff000000 ) >> 24))
 
 #ifdef WORDS_BIGENDIAN
-#define ENDIAN_SWAP(x) (SWAP(x))
+#define ENDIAN_SWAP(x) (SWAP32(x))
 #else
 #define ENDIAN_SWAP(x) (x)
 #endif
