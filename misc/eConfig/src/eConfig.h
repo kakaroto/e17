@@ -18,6 +18,7 @@
  * usage: #include <eConfig.h>
  */
 
+/* This macro is useful for getting a numeric value (ptr format) from disk. */
 
 #define econf_get_integer(loc) \
 {\
@@ -27,11 +28,15 @@
 	return *tmp; \
 }
 
+/* This macro is useful for getting a string (char * format) from disk. */
+
 #define econf_get_string() \
 { \
 	unsigned long tmp; \
 	return (char *) eConfigGetData(loc,&tmp); \
 }
+
+/* This macro is useful for saving a numeric value (ptr format) to disk. */
 
 #define econf_save_integer(path,loc,data) \
 {\
@@ -39,6 +44,8 @@
 	tmp = htonl(*data); \
 	return eConfigStoreData(loc,&tmp,sizeof(unsigned long),path); \
 }
+
+/* This macro is useful for saving a string (char * format) to disk. */
 
 #define econf_save_string(path,loc,string) \
 { \
