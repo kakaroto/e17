@@ -550,54 +550,34 @@ monitor_remove_client(EfsdCommand *com, int client, int dir_mode)
   else
     {
       EfsdMonitorRequest    *emr;
-      EfsdList              *l2;
+      EfsdList              *l;
       
       /* Use count not zero -- remove given client
 	 from list of monitoring clients. */
-      for (l2 = efsd_list_head(m->clients); l2; l2 = efsd_list_next(l2))
+      for (l = efsd_list_head(m->clients); l; l = efsd_list_next(l))
 	{
-	  emr = (EfsdMonitorRequest*)efsd_list_data(l2);
+	  emr = (EfsdMonitorRequest*)efsd_list_data(l);
 
 	  if (emr->client != client)
 	    continue;
+
+	  if (client == EFSD_CLIENT_INTERNAL && m->internal_use_count > 0)
+	    break;
 	  
-	  if (client == EFSD_CLIENT_INTERNAL)
+	  D("Use count on %s is (%i/%i) -- removing client %i.\n",
+	    m->filename, m->internal_use_count, m->client_use_count, client);
+	  
+	  if (!m->is_receiving_exist_events)
 	    {
-	      if (m->internal_use_count == 0)
-		{
- 		  D("Use count on %s is (%i/%i) -- removing internal.\n",
-		    m->filename, m->internal_use_count, m->client_use_count);
-		  
-		  if (!m->is_receiving_exist_events)
-		    {
-		      m->clients = efsd_list_remove(m->clients, l2,
-						    (EfsdFunc)efsd_monitor_request_free);
-		    }
-		  else
-		    {
-		      D("Client %i is currently receiving exist events. Marking as finished.\n", client);
-		      emr->is_finished = TRUE;
-		    }
-		}
+	      m->clients = efsd_list_remove(m->clients, l,
+					    (EfsdFunc)efsd_monitor_request_free);
 	    }
 	  else
 	    {
-	      D("Use count on %s is (%i/%i) -- removing client %i.\n",
-		m->filename, m->internal_use_count, m->client_use_count, client);
-
-	      if (!m->is_receiving_exist_events)
-		{
-		  m->clients = efsd_list_remove(m->clients, l2,
-						(EfsdFunc)efsd_monitor_request_free);
-		}
-	      else
-		{
- 		  D("Client %i is currently receiving exist events. Marking as finished.\n", client);
-		  emr->is_finished = TRUE;
-		}
+	      D("Client %i is currently receiving exist events. Marking as finished.\n", client);
+	      emr->is_finished = TRUE;
 	    }
 	  
-	  l2 = NULL;
 	  break;
 	}
     }
