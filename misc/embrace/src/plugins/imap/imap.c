@@ -77,7 +77,7 @@ static int on_server_data (void *udata, int type, void *event)
 	if (!strncmp(buf, "A001 OK LOGIN", 13)) {
 		len = snprintf (buf, sizeof (realbuf),
 		                "A002 STATUS %s (MESSAGES UNSEEN)\r\n",
-		                mailbox_property_get (mb, "path"));
+		                (char *) mailbox_property_get (mb, "path"));
 		ecore_con_server_send (ev->server, buf, len);
 
 		return 0;
