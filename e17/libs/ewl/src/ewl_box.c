@@ -195,7 +195,12 @@ __ewl_vbox_configure_normal(Ewl_Widget * w, int *rh)
 		  else
 			  REQUEST_W(c) = CURRENT_W(c);
 
-		  REQUEST_H(c) = CURRENT_H(c);
+		  if (MAXIMUM_H(c) && MAXIMUM_H(c) < CURRENT_H(c))
+			  REQUEST_H(c) = MAXIMUM_H(c);
+		  else if (MINIMUM_H(c) && MINIMUM_H(c) > CURRENT_H(c))
+			  REQUEST_H(c) = MINIMUM_H(c);
+		  else
+			  REQUEST_H(c) = CURRENT_H(c);
 
 		  *rh -= REQUEST_H(c) + box->spacing;
 		  *rh -= c->object.padd.t + c->object.padd.b;
@@ -212,6 +217,8 @@ __ewl_vbox_configure_fillers(Ewl_Widget * w, Ewd_List * f, int rh)
 	Ewl_Box *b;
 	Ewl_Widget *c;
 	int nh, ll = 0, rr = 0, tt = 0, bb = 0;
+	int children = 0, rchildren = 0;
+	int nfh = 0;
 
 	DENTER_FUNCTION;
 	DCHECK_PARAM_PTR("w", w);
@@ -221,10 +228,33 @@ __ewl_vbox_configure_fillers(Ewl_Widget * w, Ewd_List * f, int rh)
 	if (w->ebits_object)
 		ebits_get_insets(w->ebits_object, &ll, &rr, &tt, &bb);
 
-	ewd_list_goto_first(f);
+	children = ewd_list_nodes(f);
+	rchildren = children;
 
-	nh = (rh -
-	      ((ewd_list_nodes(f) - 1) * b->spacing)) / ewd_list_nodes(f);
+	nh = (rh - (rchildren - 1) * b->spacing) / children;
+
+	if (children > 1)
+	  {
+		  ewd_list_goto_first(f);
+
+		  while ((c = ewd_list_next(f)) != NULL)
+		    {
+			    if (MAXIMUM_H(c) && MAXIMUM_H(c) < nh)
+				    nfh += MAXIMUM_H(c);
+			    else if (MINIMUM_H(c) && MINIMUM_H(c) > nh)
+				    nfh -= MINIMUM_H(c);
+			    else
+				    continue;
+
+			    --children;
+		    }
+
+	  }
+
+	if (children)
+		nh = ((rh - nfh) - (rchildren - 1) * b->spacing) / children;
+
+	ewd_list_goto_first(f);
 
 	while ((c = ewd_list_next(f)) != NULL)
 	  {
@@ -373,12 +403,17 @@ __ewl_hbox_configure_normal(Ewl_Widget * w, int *rw)
 
 		  if (MAXIMUM_H(c) < REQUEST_H(w) - tt - bb)
 			  REQUEST_H(c) = MAXIMUM_H(c);
-		  else if (MINIMUM_W(c) > REQUEST_W(w))
-			  REQUEST_W(c) = MINIMUM_W(c);
+		  else if (MINIMUM_H(c) > REQUEST_H(w))
+			  REQUEST_H(c) = MINIMUM_H(c);
 		  else
 			  REQUEST_H(c) = CURRENT_H(c);
 
-		  REQUEST_W(c) = CURRENT_W(c);
+		  if (MAXIMUM_W(c) < CURRENT_W(c))
+			  REQUEST_W(c) = MAXIMUM_W(c);
+		  else if (MINIMUM_W(c) > CURRENT_W(c))
+			  REQUEST_W(c) = MINIMUM_W(c);
+		  else
+			  REQUEST_W(c) = CURRENT_W(c);
 
 		  *rw -= REQUEST_W(c) + box->spacing;
 		  *rw -= c->object.padd.l + c->object.padd.r;
@@ -395,6 +430,8 @@ __ewl_hbox_configure_fillers(Ewl_Widget * w, Ewd_List * f, int rw)
 	Ewl_Box *b;
 	Ewl_Widget *c;
 	int nw, ll = 0, rr = 0, tt = 0, bb = 0;
+	int children = 0, rchildren = 0;
+	int nfw = 0;
 
 	DENTER_FUNCTION;
 	DCHECK_PARAM_PTR("w", w);
@@ -404,9 +441,33 @@ __ewl_hbox_configure_fillers(Ewl_Widget * w, Ewd_List * f, int rw)
 	if (w->ebits_object)
 		ebits_get_insets(w->ebits_object, &ll, &rr, &tt, &bb);
 
-	ewd_list_goto_first(f);
+	children = ewd_list_nodes(f);
+	rchildren = children;
 
-	nw = (rw - (ewd_list_nodes(f) - 1) * b->spacing) / ewd_list_nodes(f);
+	nw = (rw - (rchildren - 1) * b->spacing) / children;
+
+	if (children > 1)
+	  {
+		  ewd_list_goto_first(f);
+
+		  while ((c = ewd_list_next(f)) != NULL)
+		    {
+			    if (MAXIMUM_W(c) && MAXIMUM_W(c) < nw)
+				    nfw += MAXIMUM_W(c);
+			    else if (MINIMUM_W(c) && MINIMUM_W(c) > nw)
+				    nfw -= MINIMUM_W(c);
+			    else
+				    continue;
+
+			    --children;
+		    }
+
+	  }
+
+	if (children)
+		nw = ((rw - nfw) - (rchildren - 1) * b->spacing) / children;
+
+	ewd_list_goto_first(f);
 
 	while ((c = ewd_list_next(f)) != NULL)
 	  {
