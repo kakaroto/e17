@@ -202,6 +202,7 @@ TextStateLoadFont(TextState * ts)
 		  XFreeStringList(missing_list);
 		  /* EDBUG_RETURN_; */
 	       }
+
 	     if (!ts->xfontset)
 	       {
 		  ts->xfontset =
@@ -210,12 +211,15 @@ TextStateLoadFont(TextState * ts)
 		  if (missing_cnt)
 		     XFreeStringList(missing_list);
 	       }
-	     EDBUG_RETURN_;
 
-	     ts->xfontset_ascent = 0;
-	     font_cnt = XFontsOfFontSet(ts->xfontset, &fs, &fn);
-	     for (i = 0; i < font_cnt; i++)
-		ts->xfontset_ascent = MAX(fs[i]->ascent, ts->xfontset_ascent);
+	     if (ts->xfontset)
+	       {
+		  ts->xfontset_ascent = 0;
+		  font_cnt = XFontsOfFontSet(ts->xfontset, &fs, &fn);
+		  for (i = 0; i < font_cnt; i++)
+		     ts->xfontset_ascent =
+			MAX(fs[i]->ascent, ts->xfontset_ascent);
+	       }
 	  }
 	if (!ts->xfont)
 	   ts->xfont = XLoadQueryFont(disp, "fixed");
