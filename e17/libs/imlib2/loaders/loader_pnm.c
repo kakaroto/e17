@@ -29,7 +29,6 @@ load (ImlibImage *im,
       char progress_granularity, char immediate_load)
 {
    char                 ascii = 0, alpha = 0, color = 0, mono = 0;
-   char                 
    int                  w, h;
    FILE               *f;
    
@@ -57,17 +56,10 @@ load (ImlibImage *im,
 	im->w = w;
 	im->h = h;
 	
-	data = malloc(w * 3);
-	if (!data)
-	  {
-	     fclose(f);
-	     return 0;
-	  }
 	/* must set the im->data member before callign progress function */
 	ptr2 = im->data = malloc(w * h * sizeof(DATA32));
 	if (!im->data)
 	  {
-	     free(data);
 	     fclose(f);
 	     return 0;
 	  }
@@ -81,7 +73,6 @@ load (ImlibImage *im,
 		  progress(im, per, 0, y, w, 1);
 	       }
 	  }
-	free(data);	
      }
    fclose(f);
    return 1;
