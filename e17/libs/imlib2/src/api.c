@@ -1840,7 +1840,7 @@ imlib_apply_color_modifier(void)
       return;
    __imlib_DirtyImage(im);
    __imlib_DirtyPixmapsForImage(im);
-   __imlib_DataCmodApply(im->data, im->w, im->h, 0, 
+   __imlib_DataCmodApply(im->data, im->w, im->h, 0, &im->flags,
 			 (ImlibColorModifier *)ctxt_color_modifier);
 }
 
@@ -1881,7 +1881,7 @@ imlib_apply_color_modifier_to_rectangle(int x, int y, int width, int height)
    __imlib_DirtyImage(im);
    __imlib_DirtyPixmapsForImage(im);
    __imlib_DataCmodApply(im->data + (y * im->w) + x, width, height, 
-			 im->w - width, 
+			 im->w - width, &im->flags,
 			 (ImlibColorModifier *)ctxt_color_modifier);
 }
 
@@ -2441,6 +2441,8 @@ void imlib_apply_filter( char *script, ... )
    
    __imlib_dynamic_filters_init();
    CAST_IMAGE(im, ctxt_image);   
+   __imlib_DirtyImage(im);
+   __imlib_DirtyPixmapsForImage(im);
    va_start( param_list, script );
    __imlib_script_parse( im, script, param_list );
    va_end( param_list );

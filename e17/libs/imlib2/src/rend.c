@@ -11,7 +11,6 @@
 #include "grab.h"
 #include "blend.h"
 #include "rend.h"
-#include "colormod.h"
 
 /* size of the lines per segment we scale / render at a time */
 #define LINESIZE 16
@@ -189,7 +188,7 @@ __imlib_RenderImage(Display *d, ImlibImage *im,
 	     jump = 0;
 	     pointer = buf;
 	     if (cmod)
-		__imlib_DataCmodApply(buf, dw, hh, 0, cmod);
+		__imlib_DataCmodApply(buf, dw, hh, 0, NULL, cmod);
 	  }
 	else
 	  {
@@ -208,7 +207,7 @@ __imlib_RenderImage(Display *d, ImlibImage *im,
 		    }
 		  memcpy(buf, im->data + ((y + sy) * im->w) + sx,
 			 im->w * hh * sizeof(DATA32));
-		  __imlib_DataCmodApply(buf, dw, hh, im->w - dw, cmod);
+		  __imlib_DataCmodApply(buf, dw, hh, im->w - dw, NULL, cmod);
 		  pointer = buf;
 		  jump = 0;
 	       }

@@ -77,12 +77,33 @@ __imlib_CmodReset(ImlibColorModifier *cm)
 
 void
 __imlib_DataCmodApply(DATA32 *data, int w, int h, int jump, 
-		      ImlibColorModifier *cm)
+		      int *fl, ImlibColorModifier *cm)
 {
    int     x, y;
    DATA32 *p;
    DATA8   r, g, b, a;
    
+   /*\ We might be adding alpha \*/
+   if (!(*fl & F_HAS_ALPHA))
+     {
+	p = data;
+	for (y = 0; y < h; y++)
+	  {
+	     for (x = 0; x < w; x++)
+	       {
+		  R_VAL(p) = R_CMOD(cm, R_VAL(p));
+		  G_VAL(p) = G_CMOD(cm, G_VAL(p));
+		  B_VAL(p) = B_CMOD(cm, B_VAL(p));
+		  A_VAL(p) = A_CMOD(cm, 255);
+		  p++;
+	       }
+	     p += jump;
+	  }
+	if (A_CMOD(cm, 255) != 255)
+	   *fl |= F_HAS_ALPHA;
+	return;
+     }
+
    p = data;
    for (y = 0; y < h; y++)
      {

@@ -12,7 +12,7 @@ INCLUDES	     = -I/usr/X11R6/include -I$(top_srcdir)/libltdl \
 		       -I$(top_srcdir)/loaders
 
 pkgdir		     = $(libdir)/loaders/filter
-pkg_LTLIBRARIES	     = testfilter.la bump_map.la
+pkg_LTLIBRARIES	     = testfilter.la bump_map.la colormod.la
 
 testfilter_la_SOURCES    = filter_test.c
 testfilter_la_LDFLAGS    = -no-undefined -module -avoid-version
@@ -21,3 +21,7 @@ testfilter_la_LIBADD     =
 bump_map_la_SOURCES    = filter_bumpmap.c
 bump_map_la_LDFLAGS    = -no-undefined -module -avoid-version
 bump_map_la_LIBADD     =
+
+colormod_la_SOURCES    = filter_colormod.c
+colormod_la_LDFLAGS    = -no-undefined -module -avoid-version
+colormod_la_LIBADD     =
