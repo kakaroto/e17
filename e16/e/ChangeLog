@@ -2112,3 +2112,15 @@ Sun Aug 17 15:28:17 CEST 2003
 (Kim)
 
 Removed possibility to use readline in eesh (readline is GPL, not LGPL).
+
+-------------------------------------------------------------------------------
+
+Tue Aug 19 00:24:41 CEST 2003
+(Kim)
+
+Gathered signal stuff in handlers.c.
+
+Implemented _NET_WORKAREA, patch from Roger Luethi <rl@hellgate.ch>.
+
+Attempted to sort out weirdness with ...e_session-XXXXXX.clients.?.
+Not entirely sure about this - please yell if it causes trouble.
