@@ -22,6 +22,8 @@
  */
 #include "E.h"
 
+#define DISABLE_PAGER_ICONBOX_GROUPING 0
+
 Group              *
 CreateGroup()
 {
@@ -109,16 +111,18 @@ BuildWindowGroup(EWin ** ewins, int num)
 
    for (i = 0; i < num; i++)
      {
+#if DISABLE_PAGER_ICONBOX_GROUPING
 	/* disable iconboxes and pagers to go into groups */
-	if (!((ewins[i]->ibox) || (ewins[i]->pager)))
-	   AddEwinToGroup(ewins[i], g);
-	else
+	if ((ewins[i]->ibox) || (ewins[i]->pager))
 	  {
 	     DialogOK(_("Cannot comply"),
 		      _("Iconboxes and Pagers are disallowed from being\n"
 			"members of a group. You cannot add these windows\n"
 			"to a group.\n"));
+	     return;
 	  }
+#endif
+	AddEwinToGroup(ewins[i], g);
      }
 }
 
@@ -129,28 +133,28 @@ AddEwinToGroup(EWin * ewin, Group * g)
 
    if (ewin && g)
      {
+#if DISABLE_PAGER_ICONBOX_GROUPING
 	/* disable iconboxes and pagers to go into groups */
-	if (!((ewin->ibox) || (ewin->pager)))
-	  {
-	     for (i = 0; i < ewin->num_groups; i++)
-		if (ewin->groups[i] == g)
-		   return;
-	     ewin->num_groups++;
-	     ewin->groups =
-		Erealloc(ewin->groups, sizeof(Group *) * ewin->num_groups);
-	     ewin->groups[ewin->num_groups - 1] = g;
-	     g->num_members++;
-	     g->members = Erealloc(g->members, sizeof(EWin *) * g->num_members);
-	     g->members[g->num_members - 1] = ewin;
-	     RememberImportantInfoForEwin(ewin);
-	  }
-	else
+	if ((ewin->ibox) || (ewin->pager))
 	  {
 	     DialogOK(_("Cannot comply"),
 		      _("Iconboxes and Pagers are disallowed from being\n"
 			"members of a group. You cannot add these windows\n"
 			"to a group.\n"));
+	     return;
 	  }
+#endif
+	for (i = 0; i < ewin->num_groups; i++)
+	   if (ewin->groups[i] == g)
+	      return;
+	ewin->num_groups++;
+	ewin->groups =
+	   Erealloc(ewin->groups, sizeof(Group *) * ewin->num_groups);
+	ewin->groups[ewin->num_groups - 1] = g;
+	g->num_members++;
+	g->members = Erealloc(g->members, sizeof(EWin *) * g->num_members);
+	g->members[g->num_members - 1] = ewin;
+	RememberImportantInfoForEwin(ewin);
      }
 }
 
