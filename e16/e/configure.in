@@ -82,9 +82,9 @@ AC_ARG_ENABLE(upgrade, [  --enable-upgrade    compile with auto-upgrade support
 [default=yes]], ,enable_upgrade=yes)
 
 if test "x$enable_sound" = "xyes"; then
-AM_PATH_ESD(0.2.12,AC_DEFINE(HAVE_LIBESD),[
+AM_PATH_ESD(0.2.13,AC_DEFINE(HAVE_LIBESD),[
 echo "WARNING: Enlightenment needs a system with libesd.so (EsounD)"
-echo "0.2.12 or higher to use sound support."
+echo "0.2.13 or higher to use sound support."
 echo "Enlightenment can use EsounD (ESD) to be installed to compile."
 echo "Sound will be disabled in this binary. If you ever want sound"
 echo "You will need to get and install EsounD then recompile Enlightenment"
@@ -161,6 +161,8 @@ AC_CHECK_LIB(Xxf86vm, XF86VidModeQueryExtension, AC_DEFINE(WITH_ZOOM), , $X_LIBS
 AC_CHECK_LIB(Xxf86vm, XF86VidModeQueryExtension, XVM_LIBS=-lXxf86vm, , $X_LIBS)
 AC_SUBST(XVM_LIBS)
 AC_SUBST(XKB)
+AC_SUBST(ENLIGHTENMENT_ROOT)
+AC_SUBST(ENLIGHTENMENT_BIN)
 
 AC_CHECK_LIB(Fridge,mass_quantities_of_bass_ale)
 AC_CHECK_LIB(Fridge,mass_quantities_of_any_ale, , [
