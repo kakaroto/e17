@@ -10,12 +10,11 @@ DEPENDS ="task-bootstrap \
 	  ttf-bitstream-vera \
 	  xrandr \
 	  xmodmap \
-	  xset \
+	  rxvt-unicode \
 	  "
 #	  xpm \
 #	  xcalibrate \
 #	  rxvt \
-#	  rxvt-unicode \
 #	  xtscal \
 #	  xstroke \
 #	  xkbd \
