@@ -197,7 +197,6 @@ int main (int argc, char **argv)
 	  }
      }
    disp = XOpenDisplay(NULL);
-   imlib_init();
    printf("load\n");
    im = malloc(sizeof(Imlib_Image) * (argc - start));
    for (i = start; i < argc; i++)
@@ -209,8 +208,8 @@ int main (int argc, char **argv)
    __imlib_SetMaxXImageCount(disp, 0);  
    XSync(disp, False);
    printf("init\n");
-   w = imlib_get_image_width(im[0]);
-   h = imlib_get_image_height(im[0]);   
+   w = imlib_image_get_width(im[0]);
+   h = imlib_image_get_height(im[0]);   
 /*   
    gc = XCreateGC(disp, win, 0, &gcv);
    back = XCreatePixmap(disp, win, w, h, depth);
@@ -222,8 +221,8 @@ int main (int argc, char **argv)
 					   x, y, w, h);
    tmp = imlib_clone_image(grab);
    
-   data1 = imlib_get_image_data(grab);
-   data2 = imlib_get_image_data(tmp);
+   data1 = imlib_image_get_data(grab);
+   data2 = imlib_image_get_data(tmp);
    
    printf("animate\n");
    for(;;)

@@ -233,7 +233,8 @@ __imlib_ConsumeImagePixmap(ImlibImagePixmap *ip)
 ImlibImagePixmap *
 __imlib_FindCachedImagePixmap(ImlibImage *im, int w, int h, Display *d, Visual *v,
 			      int depth, int sx, int sy, int sw, int sh, Colormap cm,
-			      char aa, char hiq, char dmask)
+			      char aa, char hiq, char dmask, 
+			      long long modification_count)
 {
    ImlibImagePixmap *ip, *previous_ip;
    
@@ -249,6 +250,7 @@ __imlib_FindCachedImagePixmap(ImlibImage *im, int w, int h, Display *d, Visual *
 	    (ip->source_x == sx) && (ip->source_x == sy) &&
 	    (ip->source_w == sw) && (ip->source_h == sh) &&
 	    (ip->colormap == cm) && (ip->antialias == aa) &&
+	    (ip->modification_count == modification_count) &&
 	    (ip->dither_mask == dmask) && 
 	    (ip->border.left == im->border.left) && 
 	    (ip->border.right == im->border.right) &&

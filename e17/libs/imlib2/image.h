@@ -8,6 +8,7 @@ typedef struct _imlibimage              ImlibImage;
 typedef struct _imlibimagepixmap        ImlibImagePixmap;
 typedef struct _imlibborder             ImlibBorder;
 typedef struct _imlibloader             ImlibLoader;
+typedef struct _imlib_color_modifier    ImlibColorModifier;
 
 enum _iflags
 {
@@ -17,6 +18,14 @@ enum _iflags
    F_UNCACHEABLE       = (1 << 2),
    F_ALWAYS_CHECK_DISK = (1 << 3),
    F_INVALID           = (1 << 4)
+};
+
+struct _imlib_color_modifier
+{
+   DATA8     red_mapping[256];
+   DATA8     green_mapping[256];
+   DATA8     blue_mapping[256];
+   long long modification_count;
 };
 
 struct _imlibborder
@@ -52,6 +61,7 @@ struct _imlibimagepixmap
    ImlibImage       *image;
    char              dirty;
    int               references;
+   long long         modification_count;
    ImlibImagePixmap *next;
 };
 
@@ -86,10 +96,11 @@ void              __imlib_CleanupImageCache(void);
 ImlibImagePixmap *__imlib_ProduceImagePixmap(void);
 void              __imlib_ConsumeImagePixmap(ImlibImagePixmap *ip);
 ImlibImagePixmap *__imlib_FindCachedImagePixmap(ImlibImage *im, int w, int h, 
-					Display *d, Visual *v,
-					int depth, int sx, int sy, 
-					int sw, int sh, Colormap cm,
-					char aa, char hiq, char dmask);
+						Display *d, Visual *v,
+						int depth, int sx, int sy, 
+						int sw, int sh, Colormap cm,
+						char aa, char hiq, char dmask,
+						long long modification_count);
 void              __imlib_AddImagePixmapToCache(ImlibImagePixmap *ip);
 void              __imlib_RemoveImagePixmapFromCache(ImlibImagePixmap *ip);
 void              __imlib_CleanupImagePixmapCache(void);

@@ -10,14 +10,19 @@ __imlib_CreatePixmapsForImage(Display *d, Drawable w, Visual *v, int depth,
 			      Colormap cm, ImlibImage *im, Pixmap *p, Mask *m,
 			      int sx, int sy, int sw, int sh,
 			      int dw, int dh,
-			      char anitalias, char hiq, char dither_mask)
+			      char anitalias, char hiq, char dither_mask,
+			      ImlibColorModifier *cmod)
 {
    ImlibImagePixmap *ip = NULL;
    Pixmap pmap = 0;
    Pixmap mask = 0;
-
-   ip = __imlib_FindCachedImagePixmap(im, dw, dh, d, v, depth, sx, sy, sw, sh, cm, 
-				      anitalias, hiq, dither_mask);
+   long long mod_count = 0;
+   
+   if (cmod)
+      mod_count = cmod->modification_count;
+   ip = __imlib_FindCachedImagePixmap(im, dw, dh, d, v, depth, sx, sy, 
+				      sw, sh, cm, anitalias, hiq, dither_mask,
+				      mod_count);
    if (ip)
      {
 	if (p)

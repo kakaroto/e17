@@ -17,12 +17,6 @@
 typedef void (*Imlib_Internal_Progress_Function)(ImlibImage*, char, 
 						 int, int, int, int);
 
-char 
-imlib_init(void)
-{
-   return 1;
-}
-
 int 
 imlib_get_cache_size(void)
 {
@@ -117,7 +111,7 @@ imlib_free_image_and_decache(Imlib_Image image)
 }
 
 int 
-imlib_get_image_width(Imlib_Image image)
+imlib_image_get_width(Imlib_Image image)
 {
    ImlibImage *im;
 
@@ -126,7 +120,7 @@ imlib_get_image_width(Imlib_Image image)
 }
 
 int 
-imlib_get_image_height(Imlib_Image image)
+imlib_image_get_height(Imlib_Image image)
 {
    ImlibImage *im;
 
@@ -135,7 +129,7 @@ imlib_get_image_height(Imlib_Image image)
 }
 
 DATA32 *
-imlib_get_image_data(Imlib_Image image)
+imlib_image_get_data(Imlib_Image image)
 {
    ImlibImage *im;
 
@@ -148,7 +142,7 @@ imlib_get_image_data(Imlib_Image image)
 }
 
 void 
-imlib_put_back_image_data(Imlib_Image image)
+imlib_image_put_back_data(Imlib_Image image)
 {
    ImlibImage *im;
 
@@ -207,6 +201,17 @@ imlib_image_set_border(Imlib_Image image, Imlib_Border *border)
    __imlib_DirtyPixmapsForImage(im);
 }
 
+void 
+imlib_image_set_format(Imlib_Image image, char *format)
+{
+   ImlibImage *im;
+
+   CAST_IMAGE(im, image);
+   if (im->format)
+      free(im->format);
+   im->format = strdup(format);
+}
+
 char *
 imlib_image_format(Imlib_Image image)
 {
@@ -233,17 +238,21 @@ imlib_render_pixmaps_for_whole_image(Imlib_Image image, Display *display,
 				     Pixmap *mask_return,
 				     char anti_aliased_scaling,
 				     char dithered_rendering,
-				     char create_dithered_mask)
+				     char create_dithered_mask,
+				     Imlib_Color_Modifier color_modifier)
 {
    ImlibImage *im;
+   ImlibColorModifier *cm;
 
    CAST_IMAGE(im, image);
+   cm = (ImlibColorModifier *)color_modifier;
    __imlib_CreatePixmapsForImage(display, drawable, visual, depth, colormap, 
 				 im, pixmap_return, mask_return, 0, 0, 
 				 im->w, im->h, im->w, im->h,
 				 anti_aliased_scaling,
 				 dithered_rendering,
-				 create_dithered_mask);
+				 create_dithered_mask,
+				 color_modifier);
 }
 
 void 
@@ -255,17 +264,21 @@ imlib_render_pixmaps_for_whole_image_at_size(Imlib_Image image, Display *display
 					     char anti_aliased_scaling,
 					     char dithered_rendering,
 					     char create_dithered_mask,
-					     int width, int height)
+					     int width, int height,
+					     Imlib_Color_Modifier color_modifier)
 {
    ImlibImage *im;
+   ImlibColorModifier *cm;
 
    CAST_IMAGE(im, image);
+   cm = (ImlibColorModifier *)color_modifier;
    __imlib_CreatePixmapsForImage(display, drawable, visual, depth, colormap, 
 				 im, pixmap_return, mask_return, 0, 0, 
 				 im->w, im->h, width, height,
 				 anti_aliased_scaling,
 				 dithered_rendering,
-				 create_dithered_mask);
+				 create_dithered_mask,
+				 color_modifier);
 }
 
 void 
@@ -350,7 +363,7 @@ imlib_create_image_using_copied_data(int width, int height,
    
    im = __imlib_CreateImage(width, height, NULL);
    if (!im)
-      return;
+      return NULL;
    im->data = malloc(width * height *sizeof(DATA32));
    if (data)
      {
@@ -391,6 +404,4 @@ imlib_clone_image(Imlib_Image image)
    memcpy(im->data, im_old->data, im->w * im->h *sizeof(DATA32));
    return (Imlib_Image)im;
 }
-
-
 

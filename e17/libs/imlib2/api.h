@@ -10,6 +10,7 @@
 
 /* data types - guess what - no transparent datatypes - all hidden */
 typedef void * Imlib_Image;
+typedef void * Imlib_Color_Modifier;
 typedef struct _imlib_border Imlib_Border;
 
 struct _imlib_border
@@ -22,7 +23,6 @@ typedef void (*Imlib_Progress_Function)(Imlib_Image *im, char percent,
 					int update_w, int update_h);
 
 /* init and setup functions */
-char        imlib_init(void);
 int         imlib_get_cache_size(void);
 void        imlib_set_cache_size(int bytes);
 int         imlib_get_color_usage(void);
@@ -45,16 +45,17 @@ void imlib_free_image(Imlib_Image image);
 void imlib_free_image_and_decache(Imlib_Image image);
 
 /* image information retrieval and basic manipulation functions */
-int     imlib_get_image_width(Imlib_Image image);
-int     imlib_get_image_height(Imlib_Image image);
-DATA32 *imlib_get_image_data(Imlib_Image image);
+int     imlib_image_get_width(Imlib_Image image);
+int     imlib_image_get_height(Imlib_Image image);
+DATA32 *imlib_image_get_data(Imlib_Image image);
 char    imlib_image_has_alpha(Imlib_Image image);
 char   *imlib_image_format(Imlib_Image image);
-void    imlib_put_back_image_data(Imlib_Image image);
+void    imlib_image_put_back_data(Imlib_Image image);
 void    imlib_image_set_has_alpha(Imlib_Image image, char has_alpha);
 void    imlib_image_set_never_changes_on_disk(Imlib_Image image);
 void    imlib_image_get_border(Imlib_Image image, Imlib_Border *border);
 void    imlib_image_set_border(Imlib_Image image, Imlib_Border *border);
+void    imlib_image_set_format(Imlib_Image image, char *format);
 
 /* image drawing/rendering functions */
 
@@ -65,7 +66,8 @@ void imlib_render_pixmaps_for_whole_image(Imlib_Image image, Display *display,
 					  Pixmap *mask_return,
 					  char anti_aliased_scaling,
 					  char dithered_rendering,
-					  char create_dithered_mask);
+					  char create_dithered_mask,
+					  Imlib_Color_Modifier color_modifier);
 void imlib_render_pixmaps_for_whole_image_at_size(Imlib_Image image, Display *display,
 						  Drawable drawable, Visual *visual,
 						  Colormap colormap, int depth,
@@ -74,7 +76,8 @@ void imlib_render_pixmaps_for_whole_image_at_size(Imlib_Image image, Display *di
 						  char anti_aliased_scaling,
 						  char dithered_rendering,
 						  char create_dithered_mask,
-						  int width, int height);
+						  int width, int height,
+						  Imlib_Color_Modifier color_modifier);
 void imlib_render_image_on_drawable(Imlib_Image image, Display *display,
 				    Drawable drawable, Visual *visual,
 				    Colormap colormap, int depth,
@@ -97,8 +100,13 @@ void imlib_blend_image_onto_image(Imlib_Image source_image,
 				  int destination_x, int destination_y,
 				  int destination_width, int destination_height);
 
+#if 0
+
+/* FIXME: */
 /* draw line, polygon, rect - with option of drawing in rgb or alpha or both */
 /* apply alpha of one image to another */
+
+#endif
 
 /* image creation and grabbing */
 Imlib_Image imlib_create_image(int width, int height);
@@ -113,6 +121,7 @@ Imlib_Image imlib_create_image_from_drawable(Display *display,
 					     int x, int y, 
 					     int width, int height);
 Imlib_Image imlib_clone_image(Imlib_Image image);
+
 #if 0
 Imlib_image imlib_create_cropped_image(Imlib_Image image,
 				       int x, int y, int width, int height);
@@ -122,6 +131,11 @@ Imlib_image imlib_create_cropped_scaled_image(Imlib_Image image,
 					      int source_height,
 					      int destination_width,
 					      int destination_height);
+Imlib_image imlib_create_image_from_xpm_data(unsigned char *data);
+
+/* color stuff */
+int imlib_match_color(int red, int green, int blue);
+
 /* image modification - geometry */
 void imlib_create_cropped_image(Imlib_Image image, int x, int y, int width, 
 				int height);
@@ -129,13 +143,42 @@ void imlib_cropp_scale_image(Imlib_Image image, int source_x, int source_y,
 			     int source_width, int source_height);
 
 /* image modification - color */
+Imlib_Color_Modifier imlib_create_color_modifier(void);
+void imlib_free_color_modifier(Imlib_Color_Modifier color_modifier);
+void imlib_set_color_modifier_gamma(Imlib_Color_Modifier color_modifier,
+				    double gamma_value);
+void imlib_set_color_modifier_brightness(Imlib_Color_Modifier color_modifier,
+					 double brightness_value);
+void imlib_set_color_modifier_contrast(Imlib_Color_Modifier color_modifier,
+				       double contrast_value);
+void imlib_set_color_modifier_tables(Imlib_Color_Modifier color_modifier,
+				     DATA8 *red_table,
+				     DATA8 *green_table,
+				     DATA8 *blue_table);
+void imlib_apply_color_modifier(Imlib_Image image, 
+				Imlib_Color_Modifier color_modifier);
 
-/* image modification - rotation */
+/* image modification - rotation / flipping */
+void imlib_image_flip_horizontal(Imlib_Image image);
+void imlib_image_flip_vertical(Imlib_Image image);
+void imlib_image_flip_diagonal(Imlib_Image image);
 
 /* image modification - blur / sharpen */
+void imlib_image_blur(Imlib_Image image, int radius);
+void imlib_image_sharpen(Imlib_Image image, int radius);
 
 /* image modification - special (seamless tile (h, v & both) etc) */
+void imlib_image_tile_horizontal(Imlib_Image image);
+void imlib_image_tile_vertical(Imlib_Image image);
+void imlib_image_tile(Imlib_Image image);
 
 /* image saving functions */
+void imlib_save_image(Imlib_Image image, char *filename);
+
+/* FIXME: have to figure out generic saving mechanism that lets savers have */
+/* options like quality, color , compression etc. */
+
 #endif
+
+
 #endif
