@@ -7,7 +7,7 @@
 #include <Ecore_Evas.h>
 #include <Ecore_Config.h>
 #include <Edje.h>
-#include <Esmart/dragable.h>
+#include <Esmart/Esmart_Draggies.h>
 #include <X11/Xlib.h>
 #include <Imlib2.h>
 #include <stdlib.h>
