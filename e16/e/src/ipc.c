@@ -4166,9 +4166,17 @@ IPC_WinOps(char *params, Client * c)
 		  else if (!strcmp(operation, "layer"))
 		    {
 		       word(params, 3, param1);
-		       ewin->layer = atoi(param1);
-		       RaiseEwin(ewin);
-		       RememberImportantInfoForEwin(ewin);
+		       if (!strcmp(param1, "?"))
+			 {
+			    Esnprintf(buf, sizeof(buf),
+				      "window layer: %d", ewin->layer);
+			 }
+		       else
+			 {
+			    ewin->layer = atoi(param1);
+			    RaiseEwin(ewin);
+			    RememberImportantInfoForEwin(ewin);
+			 }
 		    }
 		  else if (!strcmp(operation, "border"))
 		    {
