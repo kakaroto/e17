@@ -3715,10 +3715,10 @@ Epplet_handle_child(int num)
    num = 0;
 }
 
-void
+int
 Epplet_run_command(char *cmd)
 {
-   system(cmd);
+   return system(cmd);
 }
 
 char *
