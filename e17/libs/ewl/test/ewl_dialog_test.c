@@ -34,7 +34,7 @@ __create_window_response (Ewl_Widget *w, int *id, void *data)
 	ewl_window_title_set (EWL_WINDOW (win_ok), "OK Window");
 	ewl_window_name_set (EWL_WINDOW (win_ok), "EWL Test Application");
 	ewl_window_class_set (EWL_WINDOW (win_ok), "EFL Test Application");
-	ewl_object_padding_set (EWL_OBJECT (win_ok), 5, 5, 5, 5);
+	ewl_object_insets_set (EWL_OBJECT (win_ok), 5, 5, 5, 5);
 	ewl_callback_append (win_ok, EWL_CALLBACK_DELETE_WINDOW,
 			     __destroy_test_window, NULL);
 
@@ -60,7 +60,7 @@ __create_window_response (Ewl_Widget *w, int *id, void *data)
 	ewl_window_title_set (EWL_WINDOW (win_cancel), "CANCEL Window");
 	ewl_window_name_set (EWL_WINDOW (win_cancel), "EWL Test Application");
 	ewl_window_class_set (EWL_WINDOW (win_cancel), "EFL Test Application");
-	ewl_object_padding_set (EWL_OBJECT (win_cancel), 5, 5, 5, 5);
+	ewl_object_insets_set (EWL_OBJECT (win_cancel), 5, 5, 5, 5);
 	ewl_callback_append (win_cancel, EWL_CALLBACK_DELETE_WINDOW,
 			     __destroy_test_window, NULL);
 
@@ -109,7 +109,7 @@ __create_dialog_test_window (Ewl_Widget * w,
   ewl_window_title_set (EWL_WINDOW (dialog_win), "Dialog Test");
   ewl_window_name_set (EWL_WINDOW (dialog_win), "EWL Test Application");
   ewl_window_class_set (EWL_WINDOW (dialog_win), "EFL Test Application");
-  ewl_object_padding_set (EWL_OBJECT (dialog_win), 5, 5, 5, 5);
+  ewl_object_insets_set (EWL_OBJECT (dialog_win), 5, 5, 5, 5);
   ewl_callback_append (dialog_win, EWL_CALLBACK_DELETE_WINDOW,
 		       EWL_CALLBACK_FUNCTION (__destroy_dialog_test_window), NULL);
 
