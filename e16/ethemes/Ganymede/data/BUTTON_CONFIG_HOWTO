@@ -1,0 +1,115 @@
+
+  T  H  E      G  A  N  Y  M  E  D  E      T  H  E  M  E
+____________________________________________________________
+
+
+			   o.3
+          -~= HOW TO CONFIGURE THE PULLDOWNS =~-
+
+
+Well, first of  all,  let  me  say  that I've begun to write
+a nice GUI for this, so it will  hopefully become far easier
+soon.  There  are three different things things you may want
+to do with the buttons:
+
+
+:) Change the menu contents
+---------------------------
+
+That's the easiest thing. Look at the button's label, and if
+it is "Editors", for example, then load
+
+~/.enlightenment/ganymede.editors.menu
+
+into your favourite editor. It looks somewhat like this:
+
+"Ganymede Editors"
+XEmacs          EDITOR  exec "xemacs"
+Emacs           EDITOR  exec "emacs"
+GEdit           EDITOR  exec "gedit"
+
+The first item is the menu  name,  that's not very important
+for now.  In  the following lines, the first column contains
+the text that will be shown in  the  menu.  The  second item
+(EDITOR in this case) defines the icon that is shown next to
+the text. You can use one of the few that come with Ganymede
+or simply put filenames there, e.g. dont/know/where/pic.png.
+Don't touch the "exec"  token.  The last column contains the
+command that is executed when the item is selected.
+
+
+
+:) Change a button's label
+--------------------------
+
+Look at the button's  label and load the file buttons.cfg in
+ your editor.  Look  for the definition of that button  (the
+name should be PULLDOWN_<label>). Look for the line 
+
+__LABEL "<whatever>"
+
+in the definition. Change that as you prefer to. Restart E.
+
+
+
+:) Add a completely new button
+------------------------------
+
+Ok, that's a bit tricky,  so  be  sure you know what you are
+doing.  You'll  have  to  edit the config files,  and if you
+mess them up, strange things can happen. What you need to do
+is
+
+*) add a new button to button.cfg
+*) add a new action to actionclasses.cfg
+*) add a new menu to menustyles.cfg
+*) add the new file to your ~/enlightenment.
+
+As an example, let's say you want a button with label
+"Audio". Then you add
+
+__BUTTON __BGN
+  __NAME PULLDOWN_AUDIO
+  __ICLASS PULLDOWN
+  __ACLASS ACTION_PULLDOWN_AUDIO
+  __TCLASS GANYMEDE_CENTERED
+  __LABEL "Audio"
+  __KEEP_ON_TOP __OFF
+  __Y_ABSOLUTE 0
+  __X_ORIGIN 1023
+  __X_PERCENTAGE 1023
+  __X_ABSOLUTE -340
+  __USE_SIZE_OF_IMAGE __ON
+  __MAKE_STICKY __ON
+__END
+
+to buttons.cfg.  Then  you  add  the  action  which is to be
+performed to actionclasses.cfg:
+
+__ACLASS __BGN
+   __NAME ACTION_PULLDOWN_OTHER
+   __TOOLTIP_TEXT "Tooltip text goes here."
+   __TYPE __TYPE_NORMAL
+   __ALLOW_ANY_BUTTON __ON
+   __EVENT __MOUSE_RELEASE
+   __ACTION __A_SHOW_MENU "named GANYMEDE_AUDIO"
+__END
+
+Now register the menu in menustyles.cfg:
+
+BEGIN_NEW_FILE_MENU("GANYMEDE_AUDIO",
+     "EMPTY", HOME_DIR"/.enlightenment/ganymede.audio.menu")
+END_MENU
+
+And finally,  put  ganymede.audio.menu into your home E dir,
+with syntax & semantics like above.  Actually,  there is far
+more you can do, like rotated fonts etc,  but that's another
+story.
+
+If you still need help, mail me at chrisk@engr.uconn.edu
+
+				    Have fun,
+			     Christian Kreibich, July 99.
+
+____________________________________________________________
+(c) Christian Kreibich 1999     mailto:chrisk@engr.uconn.edu

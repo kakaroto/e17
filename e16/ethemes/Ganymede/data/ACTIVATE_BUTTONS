@@ -1,0 +1,18 @@
+#! /bin/sh
+
+rm -f buttons.cfg
+
+if test ! -d ~/.enlightenment; then
+  (mkdir ~/.enlightenment)
+fi
+
+cat > ~/.enlightenment/buttons.cfg << EOF
+#include <definitions>
+__E_CFG_VERSION 0
+
+#include <buttons/buttons.cfg>
+EOF
+
+cp --backup --suffix .old Pulldowns/* ~/.enlightenment
+
+eesh -e restart

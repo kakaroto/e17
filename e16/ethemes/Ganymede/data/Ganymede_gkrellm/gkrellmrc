@@ -1,0 +1,167 @@
+# gkrellmrc theme configuration file template.
+
+# Uncomment and modify configuration options in this file to change the
+# GKrellM defaults.  Uncomment means remove the '#' at the beginning of a
+# configuration line.
+
+# You can restrict the adjustment range allowed for chart width depending
+# on how LED's, labels, PPP timer/button etc. fit or look.
+# If allow_scaling is true, then LED position and size is scaled according
+# to the chart_width/chart_width_ref ratio.  chart_width_ref is the width
+# you use for designing images and placing LEDs.  PPP button width will
+# also be scaled.
+
+#frame_width  = 4
+#chart_width_min  = 50
+#chart_width_max  = 200
+#chart_width_ref  = 60
+#allow_scaling    = true
+
+# Set the colors plotted on the charts.  The xxx_color_grid colors are
+# drawn where the plotted data crosses a grid line and at the out to in
+# color transition.  This allows grid lines to "show through" on high density
+# charts and highlights the transition envelope.  The '#' in front of these
+# colors must be present (they are not comments, they are hex numbers).
+
+chart_in_color       = #a0a0e3
+#chart_in_color_grid  = #00a3a3
+#chart_out_color      = #f4ac4a
+#chart_out_color_grid = #b47c20
+
+
+# Some tweaking on drawing the grid lines.  0 is normal and 1 inhibits
+# grid line drawing at the top and bottom of charts.
+# This is useful for bg_chart pixmaps that have 3D shading at the top and
+# bottom and is a cosmetic effect (try examples/amber).
+
+#chart_grid_mode = 0
+
+# Label font and colors set here.  The alt_font is for miscellaneous
+# extra labelling and should be a smaller font than the label_font.
+# The label_color and alt1_color are used for font draws on panel backgrounds,
+# while alt2_color is used for font draws in the bg_chart area.
+# The large font is used for clock/calendar digits and uses time_color.
+
+#large_font = "-adobe-courier-medium-r-normal-*-*-120-*-*-m-*-iso8859-1"
+#label_font = "-adobe-courier-medium-r-normal-*-*-100-*-*-m-*-iso8859-1"
+#alt_font   = "-adobe-helvetica-medium-r-normal-*-*-80-*-*-p-*-iso8859-1"
+
+#label_draw_effect = shadow
+#time_draw_effect  = shadow
+#meter_draw_effect = none
+#alt1_draw_effect  = shadow
+#alt2_draw_effect  = shadow
+
+label_color = #c0d0ff
+meter_color = #9090d0
+#time_color  = #ffeac4
+alt1_color  = #ffffff
+#alt2_color  = #c0c0ff
+
+# Negative x values here mean justify x pixels from right frame.
+# Positive x values mean justify x pixels from left frame.
+# Where to put the LEDs of each net interface monitor in its panel:
+
+#rx_led_x = 2
+#rx_led_y = 6
+#tx_led_x = -2
+#tx_led_y = 6
+
+
+# If bg_timer image exists in theme dir, it will be placed under the timer
+# only.  If no bg_timer image exists, set what to do with ppp_border_mode.
+#  0: no border   1: put timer in bg_bordered   2: put timer and button in
+#  bg_bordered
+#ppp_border_mode = 0
+
+# Where to put the PPP time-on-line display and the PPP button in the
+# PPP panel.  Most Gtk themes put a 3 pixel border around button pixmaps.
+# About the only use for these next two is to switch the button and
+# timer positions.
+
+#ppp_timer_x = 0
+#ppp_button_x = -2
+
+
+# Borders for images are specified with comma separated numbers in the order:
+#    left border, right border, top border, bottom border
+
+# Borders for bg_chart and bg_chart_xxx images
+#style  chart.chart_border = 0,0,0,0
+#style      chart.cpu.chart_border = 0,0,0,0
+#style      chart.disk.chart_border = 0,0,0,0
+#style      chart.net.chart_border = 0,0,0,0
+#style      chart.proc.chart_border = 0,0,0,0
+
+# Borders for bg_panel and bg_panel.xxx images for charts
+#style  chart.panel_border = 0,0,3,1
+#style      chart.cpu.panel_border = 0,0,0,0
+#style      chart.disk.panel_border = 0,0,0,0
+#style      chart.net.panel_border = 0,0,0,0
+#style      chart.proc.panel_border = 0,0,0,0
+
+# Borders for bg_meter and bg_meter_xxx
+#style  meter.panel_border = 3,3,3,3
+#style      meter.mem.panel_border = 0,0,0,0
+#style      meter.swap.panel_border = 0,0,0,0
+
+# Border for bg_bordered
+#bordered_border = 3,3,3,3
+
+# Border for the optional bg_timer
+#timer_border = 3,3,3,3
+
+#bg_spacer has no border
+
+# For backwards compatibility, these are still recognized. Label_border
+# is mapped to chart.panel_border, chart_border to chart.chart_border, and
+# meter_border to meter.panel_border.
+#meter_border = 3,3,3,3
+#label_border = 0,0,0,0
+#chart_border = 0,0,0,0
+
+
+# Label values are center, none, or a number between 0-100 which is the label
+# midpoint as a percent of the chart width. So, center is equivalent to 50.
+# Typical use would be to set chart.net.label to 30 or 40 if you want to
+# have room to place both rx and tx leds to the right of the label.
+
+#style  chart.label = center
+#style      chart.cpu.label = center
+#style      chart.disk.label = center
+#style      chart.net.label = center
+#style      chart.proc.label = center
+#style  meter.label = 50				# Equivalent to center
+#style      meter.mem.label = center
+#style      meter.swap.label = center
+
+
+
+# -----------------------------------------------------------------------
+# See the Themes file for comments on krells.
+
+#style  chart.krell_depth = 4;				# Frames in the krell
+#style      chart.cpu.krell_depth = 4
+#style      chart.disk.krell_depth = 4
+#style      chart.net.krell_depth = 4
+#style      chart.proc.krell_depth = 4
+#style  chart.krell_x_hot = 2				# -1 means center
+#style      chart.cpu.krell_x_hot = -1
+#style      chart.disk.krell_x_hot = -1
+#style      chart.net.krell_x_hot = -1
+#style      chart.proc.krell_x_hot = -1
+#style  chart.krell_yoff = 0
+#style      chart.cpu.krell_yoff = 0
+#style      chart.disk.krell_yoff = 0
+#style      chart.net.krell_yoff = 0
+#style      chart.proc.krell_yoff = 0
+
+#style  meter.krell_depth = 1
+#style      meter.mem.krell_depth = 1
+#style      meter.swap.krell_depth = 1
+#style  meter.krell_x_hot = -1				# -1 means center
+#style      meter.mem.krell_x_hot = -1
+#style      meter.swap.krell_x_hot = -1
+#style  meter.krell_yoff = 0
+#style      meter.mem.krell_yoff = 0
+#style      meter.swap.krell_yoff = 0

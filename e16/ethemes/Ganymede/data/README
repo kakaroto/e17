@@ -1,0 +1,53 @@
+
+  T  H  E      G  A  N  Y  M  E  D  E      T  H  E  M  E
+
+                   Enlightenment v0.16
+____________________________________________________________
+
+
+			   o.5
+                      -~= README =~-
+
+
+Hi there, thanks for using this theme!  Here  are some notes
+on how to install The Ganymede Theme on your machine:
+
+1. If you are looking at this README  only because you don't
+   have any buttons on your  desktop,  please run the script
+   ACTIVATE_BUTTONS  which  is located in the same directory
+   as this file.
+
+   This will not only activate the  buttons but also install
+   some default menus in your ~/.enlightenment. Feel free to
+   adapt them to your needs like any other file menu, but do
+   not change the name of the files.
+
+2. The subdirectory "Ganymede"  contains a small Eterm theme
+   that looks great (well, IMHO) with the  E theme.   Put it
+   where you have your other Eterm themes and fire up Eterms
+   using "Eterm -t Ganymede". NOTE: this theme is now inten-
+   ded for Eterm 0.9.
+
+3. The subdirectory "Ganymede_gkrellm"  contains a theme for
+   the system monitor gkrellm, available at
+   http://web.wt.net/~billw/gkrellm/gkrellm.html. 
+
+You can get further help by clicking the  "About this theme"
+item in your root menu.
+
+If you are wondering about the name,  well,  it's one of the
+satellites of Jupiter, actually the 7th and largest. I guess
+that's all. Oh, and Ganymede was an incredibly handsome boy
+from Troyan, kidnapped by the man of many liaisons himself,
+Zeus. But that's another story.
+
+Btw, there's also a Gtk theme up on gtk.themes.org.
+
+Feel free to mail any comments, questions  &  suggestions to
+the author at chrisk@engr.uconn.edu or kreibich@in.tum.de.
+
+				    Have fun,
+			   Christian Kreibich, December 99.
+
+____________________________________________________________
+(c) Christian Kreibich 1999     mailto:chrisk@engr.uconn.edu
