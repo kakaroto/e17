@@ -223,6 +223,16 @@ HintsSetWindowState(EWin * ewin)
 }
 
 void
+HintsSetWindowOpacity(EWin * ewin, unsigned int opacity)
+{
+   EDBUG(6, "HintsSetWindowOpacity");
+#if ENABLE_EWMH
+   EWMH_SetWindowOpacity(ewin, opacity);
+#endif
+   EDBUG_RETURN_;
+}
+
+void
 HintsSetWindowHints(EWin * ewin)
 {
    EDBUG(6, "HintsSetWindowHints");

@@ -874,6 +874,7 @@ struct _ewin
    struct
    {
       unsigned            vroot:1;	/* Virtual root window */
+      unsigned int        opacity;
    } props;
    struct
    {
@@ -2043,6 +2044,7 @@ void                EWMH_SetShowingDesktop(int on);
 void                EWMH_SetWindowName(Window win, const char *name);
 void                EWMH_SetWindowDesktop(const EWin * ewin);
 void                EWMH_SetWindowState(const EWin * ewin);
+void                EWMH_SetWindowOpacity(EWin * ewin, unsigned int opacity);
 void                EWMH_GetWindowName(EWin * ewin);
 void                EWMH_GetWindowIconName(EWin * ewin);
 void                EWMH_GetWindowDesktop(EWin * ewin);
@@ -2224,6 +2226,7 @@ void                HintsSetWindowClass(Window win, const char *name,
 void                HintsSetWindowDesktop(EWin * ewin);
 void                HintsSetWindowArea(EWin * ewin);
 void                HintsSetWindowState(EWin * ewin);
+void                HintsSetWindowOpacity(EWin * ewin, unsigned int opacity);
 void                HintsSetWindowHints(EWin * ewin);
 void                HintsSetWindowBorder(EWin * ewin);
 void                HintsGetWindowHints(EWin * ewin);

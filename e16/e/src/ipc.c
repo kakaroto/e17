@@ -3091,7 +3091,7 @@ IPC_WinOps(const char *params, Client * c)
    char                windowid[FILEPATH_LEN_MAX];
    char                operation[FILEPATH_LEN_MAX];
    char                param1[FILEPATH_LEN_MAX];
-   unsigned int        win;
+   unsigned int        win, val;
 
    if (params == NULL)
      {
@@ -3253,6 +3253,21 @@ IPC_WinOps(const char *params, Client * c)
 	     ewin->layer = atoi(param1);
 	     RaiseEwin(ewin);
 	     RememberImportantInfoForEwin(ewin);
+	  }
+     }
+   else if (!strncmp(operation, "opacity", 2))
+     {
+	if (!strcmp(param1, "?"))
+	  {
+	     Esnprintf(buf, sizeof(buf), "opacity: %u",
+		       ewin->props.opacity >> 24);
+	  }
+	else
+	  {
+	     val = 0xff;
+	     sscanf(param1, "%i", &val);
+	     val = (val << 24) | (val << 16) | (val << 8) | val;
+	     HintsSetWindowOpacity(ewin, val);
 	  }
      }
    else if (!strncmp(operation, "border", 2))

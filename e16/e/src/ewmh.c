@@ -131,6 +131,8 @@ Atom                _NET_WM_STATE_FULLSCREEN;
 Atom                _NET_WM_STATE_ABOVE;
 Atom                _NET_WM_STATE_BELOW;
 
+Atom                _NET_WM_WINDOW_OPACITY;
+
 /* Window state property change actions */
 #define _NET_WM_STATE_REMOVE    0
 #define _NET_WM_STATE_ADD       1
@@ -243,6 +245,8 @@ EWMH_Init(Window win_wm_check)
    _ATOM_INIT(_NET_WM_STATE_FULLSCREEN);
    _ATOM_INIT(_NET_WM_STATE_ABOVE);
    _ATOM_INIT(_NET_WM_STATE_BELOW);
+
+   _ATOM_INIT(_NET_WM_WINDOW_OPACITY);
 
    _ATOM_INIT(_NET_WM_STRUT);
 
@@ -525,6 +529,15 @@ EWMH_SetWindowState(const EWin * ewin)
    EDBUG_RETURN_;
 }
 
+void
+EWMH_SetWindowOpacity(EWin * ewin, unsigned int opacity)
+{
+   CARD32              val = opacity;
+
+   ewin->props.opacity = opacity;
+   _ATOM_SET_CARD32(_NET_WM_WINDOW_OPACITY, ewin->win, &val, 1);
+}
+
 /*
  * Functions that set E-window internals from X11-properties
  */
@@ -735,6 +748,23 @@ EWMH_GetWindowMisc(EWin * ewin)
 	ewin->props.vroot = 1;
 	Efree(val);
      }
+}
+
+static void
+EWMH_GetWindowOpacity(EWin * ewin)
+{
+   CARD32             *val;
+   int                 size;
+
+   EDBUG(6, "EWMH_GetWindowOpacity");
+
+   val = AtomGet(ewin->client.win, _NET_WM_WINDOW_OPACITY, XA_CARDINAL, &size);
+   if (val)
+     {
+	ewin->props.opacity = val[0];
+	EWMH_SetWindowOpacity(ewin, val[0]);
+	Efree(val);
+     }
 
    EDBUG_RETURN_;
 }
@@ -768,6 +798,7 @@ EWMH_GetWindowHints(EWin * ewin)
 {
    EDBUG(6, "EWMH_GetWindowHints");
    EWMH_GetWindowMisc(ewin);
+   EWMH_GetWindowOpacity(ewin);
    EWMH_GetWindowName(ewin);
    EWMH_GetWindowIconName(ewin);
    EWMH_GetWindowDesktop(ewin);
@@ -1010,6 +1041,8 @@ EWMH_ProcessPropertyChange(EWin * ewin, Atom atom_change)
       EWMH_GetWindowIconName(ewin);
    else if (atom_change == _NET_WM_STRUT)
       EWMH_GetWindowStrut(ewin);
+   else if (atom_change == _NET_WM_WINDOW_OPACITY)
+      EWMH_GetWindowOpacity(ewin);
 
    EDBUG_RETURN_;
 }
