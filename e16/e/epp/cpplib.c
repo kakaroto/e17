@@ -580,7 +580,7 @@ quote_string(pfile, src)
 	      CPP_PUTC_Q(pfile, c);
 	   else
 	     {
-		sprintf(CPP_PWRITTEN(pfile), "\\%03o", c);
+		sprintf((char *) CPP_PWRITTEN(pfile), "\\%03o", c);
 		CPP_ADJUST_WRITTEN(pfile, 4);
 	     }
 	   break;
@@ -651,7 +651,7 @@ cpp_define(pfile, str)
 	unsigned char             *q;
 
 	/* Copy the entire option so we can modify it.  */
-	buf = (unsigned char *) alloca(2 * strlen(str) + 1);
+	buf = (unsigned char *) alloca(2 * strlen((char *)str) + 1);
 	strncpy(buf, str, p - str);
 	/* Change the = to a space.  */
 	buf[p - str] = ' ';
@@ -668,7 +668,7 @@ cpp_define(pfile, str)
 	*q = 0;
      }
 
-   do_define(pfile, NULL, buf, buf + strlen(buf));
+   do_define(pfile, NULL, buf, buf + strlen((char *) buf));
 }
 
 /* Process the string STR as if it appeared as the body of a #assert.
@@ -684,7 +684,7 @@ make_assertion(pfile, option, str)
    unsigned char             *buf, *p, *q;
 
    /* Copy the entire option so we can modify it.  */
-   buf = (unsigned char *) alloca(strlen(str) + 1);
+   buf = (unsigned char *) alloca(strlen((char *)str) + 1);
    strcpy((char *)buf, str);
    /* Scan for any backslash-newline and remove it.  */
    p = q = buf;
@@ -708,7 +708,7 @@ make_assertion(pfile, option, str)
 	cpp_error(pfile, "malformed option `%s %s'", option, str);
 	return;
      }
-   ip = cpp_push_buffer(pfile, buf, strlen(buf));
+   ip = cpp_push_buffer(pfile, buf, strlen((char *)buf));
    do_assert(pfile, NULL, NULL, NULL);
    cpp_pop_buffer(pfile);
 }
@@ -784,7 +784,7 @@ deps_output(pfile, string, spacer)
      }
    if (spacer == ' ' && pfile->deps_column > 0)
       pfile->deps_buffer[pfile->deps_size++] = ' ';
-   bcopy(string, &pfile->deps_buffer[pfile->deps_size], size);
+   memcpy(&pfile->deps_buffer[pfile->deps_size], string, size);
    pfile->deps_size += size;
    pfile->deps_column += size;
    if (spacer == ':')
@@ -825,7 +825,7 @@ path_include(pfile, path)
 	     {
 		/* Otherwise use the directory that is named.  */
 		name = (char *)xmalloc(q - p + 1);
-		bcopy(p, name, q - p);
+		memcpy(name, p, q - p);
 		name[q - p] = 0;
 	     }
 
@@ -852,7 +852,7 @@ void
 init_parse_options(opts)
      struct cpp_options *opts;
 {
-   bzero((char *)opts, sizeof *opts);
+   memset((char *)opts,0, sizeof *opts);
    opts->in_fname = NULL;
    opts->out_fname = NULL;
 
@@ -1697,7 +1697,7 @@ create_definition(buf, limit, pfile, predefinition)
 
 	   for (temp = arg_ptrs; temp; temp = temp->next)
 	     {
-		bcopy(temp->name, &defn->args.argnames[i], temp->length);
+		memcpy(&defn->args.argnames[i], temp->name, temp->length);
 		i += temp->length;
 		if (temp->next != 0)
 		  {
@@ -1805,7 +1805,7 @@ check_macro_name(pfile, symname, usage)
 	unsigned char             *msg;	/* what pain... */
 
 	msg = (unsigned char *) alloca(sym_length + 1);
-	bcopy(symname, msg, sym_length);
+	memcpy(msg,symname, sym_length);
 	msg[sym_length] = 0;
 	cpp_error(pfile, "invalid %s name `%s'", usage, msg);
      }
@@ -1955,7 +1955,7 @@ do_define(pfile, keyword, buf, limit)
 
 	     msg = (unsigned char *) alloca(mdef.symlen + 22);
 	     *msg = '`';
-	     bcopy(mdef.symnam, msg + 1, mdef.symlen);
+	     memcpy(msg + 1, mdef.symnam, mdef.symlen);
 	     strcpy((char *)(msg + mdef.symlen + 1), "' redefined");
 	     cpp_pedwarn(pfile, msg);
 	     if (hp->type == T_MACRO)
@@ -2018,12 +2018,12 @@ cpp_push_buffer(pfile, buffer, length)
    if (buf == pfile->buffer_stack)
       fatal("macro or `#include' recursion too deep");
    buf--;
-   bzero((char *)buf, sizeof(cpp_buffer));
+   memset((char *)buf,0, sizeof(cpp_buffer));
    CPP_BUFFER(pfile) = buf;
 #else
    register cpp_buffer *buf = (cpp_buffer *) xmalloc(sizeof(cpp_buffer));
 
-   bzero((char *)buf, sizeof(cpp_buffer));
+   memset((char *)buf,0, sizeof(cpp_buffer));
    CPP_PREV_BUFFER(buf) = CPP_BUFFER(pfile);
    CPP_BUFFER(pfile) = buf;
 #endif
@@ -2269,8 +2269,8 @@ output_line_command(pfile, conditional, file_change)
       CPP_PUTS_Q(pfile, sharp_line, sizeof(sharp_line) - 1);
    }
 
-   sprintf(CPP_PWRITTEN(pfile), "%d ", (int)line);
-   CPP_ADJUST_WRITTEN(pfile, strlen(CPP_PWRITTEN(pfile)));
+   sprintf((char *)CPP_PWRITTEN(pfile), "%d ", (int)line);
+   CPP_ADJUST_WRITTEN(pfile, strlen((char *) CPP_PWRITTEN(pfile)));
 
    quote_string(pfile, ip->nominal_fname);
    if (file_change != same_file)
@@ -3007,7 +3007,7 @@ macroexpand(pfile, hp)
 			    else
 			      {
 				 CPP_RESERVE(pfile, 4);
-				 sprintf(CPP_PWRITTEN(pfile), "\\%03o",
+				 sprintf((char *) CPP_PWRITTEN(pfile), "\\%03o",
 					 (unsigned int)c);
 				 CPP_ADJUST_WRITTEN(pfile, 4);
 			      }
@@ -3080,8 +3080,8 @@ macroexpand(pfile, hp)
 	       }
 	     if (ap->stringify != 0)
 	       {
-		  bcopy(ARG_BASE + arg->stringified,
-			xbuf + totlen, arg->stringified_length);
+		  memcpy(xbuf + totlen,ARG_BASE + arg->stringified,
+				  arg->stringified_length);
 		  totlen += arg->stringified_length;
 	       }
 	     else if (ap->raw_before || ap->raw_after || CPP_TRADITIONAL(pfile))
@@ -3123,7 +3123,7 @@ macroexpand(pfile, hp)
 			       break;
 			 }
 		    }
-		  bcopy(p1, xbuf + totlen, l1 - p1);
+		  memcpy(xbuf + totlen, p1, l1 - p1);
 		  totlen += l1 - p1;
 	       }
 	     else
@@ -3137,7 +3137,7 @@ macroexpand(pfile, hp)
 		       xbuf[totlen++] = '@';
 		       xbuf[totlen++] = ' ';
 		    }
-		  bcopy(expanded, xbuf + totlen, arg->expand_length);
+		  memcpy(xbuf + totlen, expanded, arg->expand_length);
 		  totlen += arg->expand_length;
 
 		  if (!ap->raw_after && totlen > 0 && offset < defn->length
@@ -3887,7 +3887,7 @@ do_line(pfile, keyword)
    /* The Newline at the end of this line remains to be processed.
     * To put the next line at the specified line number,
     * we must store a line number now that is one less.  */
-   new_lineno = atoi(pfile->token_buffer + old_written) - 1;
+   new_lineno = atoi((char *)(pfile->token_buffer + old_written)) - 1;
    CPP_SET_WRITTEN(pfile, old_written);
 
    /* NEW_LINENO is one less than the actual line number here.  */
@@ -3970,7 +3970,7 @@ do_line(pfile, keyword)
 
 	     hp->length = fname_length;
 	     ip->nominal_fname = hp->value.cpval = ((char *)hp) + sizeof(HASHNODE);
-	     bcopy(fname, hp->value.cpval, fname_length);
+	     memcpy(hp->value.cpval,fname, fname_length);
 	  }
      }
    else if (token != CPP_VSPACE && token != CPP_EOF)
@@ -4042,7 +4042,7 @@ do_error(pfile, keyword, buf, limit)
    unsigned char             *copy = (unsigned char *) xmalloc(length + 1);
 
    keyword = NULL;
-   bcopy(buf, copy, length);
+   memcpy(copy, buf, length);
    copy[length] = 0;
    SKIP_WHITE_SPACE(copy);
    cpp_error(pfile, "#error %s", copy);
@@ -4065,7 +4065,7 @@ do_warning(pfile, keyword, buf, limit)
    unsigned char             *copy = (unsigned char *) xmalloc(length + 1);
 
    keyword = NULL;
-   bcopy(buf, copy, length);
+   memcpy(copy, buf, length);
    copy[length] = 0;
    SKIP_WHITE_SPACE(copy);
    cpp_warning(pfile, "#warning %s", copy);
@@ -4160,7 +4160,7 @@ do_pragma(pfile, keyword, buf, limit)
 
 	fname = p + 1;
 	p = (unsigned char *) index(fname, '\"');
-	fname_len = p != NULL ? p - fname : strlen(fname);
+	fname_len = p != NULL ? p - fname : strlen((char *)fname);
 
 	for (ptr = pfile->all_include_files; ptr; ptr = ptr->next)
 	  {
@@ -4330,7 +4330,7 @@ do_xifdef(pfile, keyword, unused1, unused2)
 	if (start_of_file && !skip)
 	  {
 	     control_macro = (unsigned char *) xmalloc(ident_length + 1);
-	     bcopy(ident, control_macro, ident_length + 1);
+	     memcpy(control_macro, ident, ident_length + 1);
 	  }
      }
    else
@@ -5276,7 +5276,7 @@ cpp_get_token(pfile)
 		     xbuf_len = CPP_WRITTEN(pfile) - before_name_written;
 		     xbuf = (unsigned char *) xmalloc(xbuf_len + 1);
 		     CPP_SET_WRITTEN(pfile, before_name_written);
-		     bcopy(CPP_PWRITTEN(pfile), xbuf, xbuf_len + 1);
+		     memcpy(xbuf, CPP_PWRITTEN(pfile), xbuf_len + 1);
 		     push_macro_expansion(pfile, xbuf, xbuf_len, hp);
 		  }
 		else
@@ -5469,7 +5469,7 @@ lookup_import(pfile, filename, searchptr)
 	  {
 	     /* Compare the inode and the device.
 	      * Supposedly on some systems the inode is not a scalar.  */
-	     if (!bcmp((char *)&i->inode, (char *)&sb.st_ino, sizeof(sb.st_ino))
+	     if (!memcmp((char *)&i->inode, (char *)&sb.st_ino, sizeof(sb.st_ino))
 		 && i->dev == sb.st_dev)
 	       {
 		  close(fd);
@@ -5500,7 +5500,7 @@ add_import(pfile, fd, fname)
 
    i->name = (char *)xmalloc(strlen(fname) + 1);
    strcpy(i->name, fname);
-   bcopy((char *)&sb.st_ino, (char *)&i->inode, sizeof(sb.st_ino));
+   memcpy((char *)&i->inode, (char *)&sb.st_ino, sizeof(sb.st_ino));
    i->dev = sb.st_dev;
    i->next = pfile->import_hash_table[hashval];
    pfile->import_hash_table[hashval] = i;
@@ -5709,7 +5709,7 @@ open_include_file(pfile, filename, searchptr)
    else
      {
 	dir = (char *)alloca(p - filename + 1);
-	bcopy(filename, dir, p - filename);
+	memcpy(dir,filename, p - filename);
 	dir[p - filename] = '\0';
 	from = p + 1;
      }
@@ -5769,7 +5769,7 @@ finclude(pfile, f, fname, system_header_p, dirptr)
 
 	/* Read the file contents, knowing that st_size is an upper bound
 	 * on the number of bytes we can read.  */
-	length = safe_read(f, fp->buf, st_size);
+	length = safe_read(f, (char *)fp->buf, st_size);
 	fp->rlimit = fp->buf + length;
 	if (length < 0)
 	   goto nope;
@@ -5793,7 +5793,7 @@ finclude(pfile, f, fname, system_header_p, dirptr)
 
 	for (;;)
 	  {
-	     i = safe_read(f, fp->buf + st_size, bsize - st_size);
+	     i = safe_read(f, (char *) (fp->buf + st_size), bsize - st_size);
 	     if (i < 0)
 		goto nope;	/* error! */
 	     st_size += i;
@@ -5898,7 +5898,7 @@ push_parse_file(pfile, fname)
 		     *p++ = 0;
 		  if (opts->debug_output)
 		     output_line_command(pfile, 0, same_file);
-		  cpp_define(pfile, q);
+		  cpp_define(pfile, (unsigned char *)q);
 		  while (*p == ' ' || *p == '\t')
 		     p++;
 	       }
@@ -5969,12 +5969,13 @@ push_parse_file(pfile, fname)
 	       case 'U':
 		  if (opts->debug_output)
 		     output_line_command(pfile, 0, same_file);
-		  do_undef(pfile, NULL, pend->arg, pend->arg + strlen(pend->arg));
+		  do_undef(pfile, NULL, (unsigned char *) pend->arg,
+				 (unsigned char *) pend->arg + strlen(pend->arg));
 		  break;
 	       case 'D':
 		  if (opts->debug_output)
 		     output_line_command(pfile, 0, same_file);
-		  cpp_define(pfile, pend->arg);
+		  cpp_define(pfile, (unsigned char *)pend->arg);
 		  break;
 	       case 'A':
 		  make_assertion(pfile, "-A", pend->arg);
@@ -6046,9 +6047,8 @@ push_parse_file(pfile, fname)
 		   endp++;
 	     }
 	   /* Put the usual defaults back in at the end.  */
-	   bcopy((char *)include_defaults_array,
-		 (char *)&include_defaults[num_dirs],
-		 sizeof(include_defaults_array));
+	   memcpy( (char *)&include_defaults[num_dirs],
+		 (char *)include_defaults_array,sizeof(include_defaults_array));
 	}
    }
 
@@ -6211,7 +6211,7 @@ push_parse_file(pfile, fname)
 	  {
 	     opts->deps_target = s + 1;
 	     output_file = (char *)xmalloc(s - spec + 1);
-	     bcopy(spec, output_file, s - spec);
+	     memcpy(output_file, spec, s - spec);
 	     output_file[s - spec] = 0;
 	  }
 	else
@@ -6331,7 +6331,7 @@ init_parse_file(pfile)
      cpp_reader         *pfile;
 
 {
-   bzero((char *)pfile, sizeof(cpp_reader));
+   memset((char *)pfile,0, sizeof(cpp_reader));
    pfile->get_token = cpp_get_token;
 
    pfile->token_buffer_size = 200;
@@ -7232,8 +7232,8 @@ read_token_list(pfile, error_flag)
 	   xmalloc(sizeof(struct arglist) + length + 1);
 
 	temp->name = (unsigned char *) (temp + 1);
-	bcopy((char *)(pfile->token_buffer + name_written),
-	      (char *)temp->name, length);
+	memcpy( (char *)temp->name, (char *)(pfile->token_buffer + name_written),
+			length);
 	temp->name[length] = 0;
 	temp->next = token_ptrs;
 	token_ptrs = temp;

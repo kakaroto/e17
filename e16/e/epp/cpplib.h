@@ -266,7 +266,7 @@ struct cpp_reader {
 /* Append string STR (of length N) to PFILE's output buffer.
    Assume there is enough space. */
 #define CPP_PUTS_Q(PFILE, STR, N) \
-  (bcopy (STR, (PFILE)->limit, (N)), (PFILE)->limit += (N))
+  (memcpy ((PFILE)->limit, STR, (N)), (PFILE)->limit += (N))
 /* Append string STR (of length N) to PFILE's output buffer.  Make space. */
 #define CPP_PUTS(PFILE, STR, N) CPP_RESERVE(PFILE, N), CPP_PUTS_Q(PFILE, STR,N)
 /* Append character CH to PFILE's output buffer.  Assume sufficient space. */

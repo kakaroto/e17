@@ -317,7 +317,7 @@ cpp_lex(pfile)
      case CPP_COMMENT:
 	goto retry;
      case CPP_NUMBER:
-	return parse_number(pfile, tok_start, tok_end - tok_start);
+	return parse_number(pfile, (char *)tok_start, tok_end - tok_start);
      case CPP_STRING:
 	cpp_error(pfile, "string constants not allowed in #if expressions");
 	op.op = ERROR;
@@ -1065,7 +1065,7 @@ cpp_parse_expr(pfile)
 	     else
 	       {
 		  new_stack = (struct operation *)xmalloc(new_size);
-		  bcopy((char *)stack, (char *)new_stack, old_size);
+		  memcpy((char *)new_stack,(char *)stack, old_size);
 	       }
 	     stack = new_stack;
 	     top = (struct operation *)((char *)new_stack + old_size);
