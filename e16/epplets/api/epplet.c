@@ -1480,7 +1480,9 @@ Epplet_change_textbox(Epplet_gadget eg, char *new_contents)
 	len = strlen(new_contents);
 	g = (GadTextBox *) eg;
 
-	if(g->contents != NULL)
+	if(g->contents == new_contents)
+		return;
+	else if(g->contents != NULL)
 		free(g->contents);
 
 	g->contents = Estrdup(new_contents);

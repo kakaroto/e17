@@ -37,7 +37,7 @@ run_contents(void *data)
 	   for(i=0; i < MAX_HIST_LEN; i++)
 		   command_history[i] = command_history[i+1];
 
-	   command_history[MAX_HIST_LEN] = strdup(command);
+	   command_history[MAX_HIST_LEN-1] = strdup(command);
    }
 
    current_command = num_commands;
@@ -63,6 +63,11 @@ hist_next(void *data)
 {
   if (current_command < num_commands-1)
     Epplet_change_textbox(textbox, command_history[++current_command]);
+  else if (current_command == num_commands-1) 
+  {
+	  current_command++;
+	  Epplet_change_textbox(textbox, "");
+  }
 
   return;
   data = NULL;

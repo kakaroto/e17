@@ -455,3 +455,13 @@ E-Memwatch.c
 Using atexit(Epplet_cleanup) prevents all those "mulitple spawning on
 startup problems" people get.
 
+-------------------------------------------------------------------------------
+
+
+Fri Nov 12 13:02:56 EST 1999
+(StriderZ)
+
+Changed some stuff in E-Exec (thanks Ian), to make it safer and fun for all ages. Also hopefully
+fixed a potential bug in Epplet_change_config (same one Epplet_modify_config used to have).
+
+
