@@ -402,7 +402,7 @@ spif_objpair_comp(spif_objpair_t self, spif_obj_t other)
 {
     SPIF_OBJ_COMP_CHECK_NULL(self, other);
     if (SPIF_OBJ_IS_OBJPAIR(other)) {
-        return SPIF_OBJ_COMP(self->key, other->key);
+        return SPIF_OBJ_COMP(self->key, SPIF_OBJPAIR(other)->key);
     } else {
         return SPIF_OBJ_COMP(self->key, other);
     }
