@@ -2570,3 +2570,10 @@ Thu Sep 30 19:28:13 PDT 1999
 
 add some mroe window matched to brushed metal to accoutn for dialogs
 and have the dialog code and ewin match function work better...
+
+-------------------------------------------------------------------------------
+
+Thu Sep 30 20:43:54 PDT 1999
+(Mandrake)
+
+fixed a warning caused in borders.c due to lack of a cast

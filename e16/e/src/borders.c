@@ -1280,7 +1280,8 @@ AdoptInternal(Window win, Border * border, int type, void *ptr)
  * else if (type == 2)
  * MatchEwinToSnapInfoIconbox(ewin, (Iconbox *)ptr);
  * else  */
-   b = MatchEwinByFunction(ewin, MatchEwinBorder);
+   b = MatchEwinByFunction(ewin, (void *(*)(EWin *, WindowMatch *))
+			   MatchEwinBorder);
    if (b)
       ewin->border = b;
    MatchEwinToSnapInfo(ewin);
