@@ -1,8 +1,8 @@
-ee2 (0.1.0-0.2000030701) unstable; urgency=low
+ee2 (0.1.0-0.2000031001) unstable; urgency=low
 
   * A CVS release.
 
- -- Laurence J. Lane <ljlane@debian.org>  Tue,  7 Mar 2000 19:39:00 -0500
+ -- Laurence J. Lane <ljlane@debian.org>  Fri, 10 Mar 2000 18:13:51 -0500
 
 Local variables:
 mode: debian-changelog
