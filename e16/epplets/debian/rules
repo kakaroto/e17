@@ -12,7 +12,7 @@ INSTALL = /usr/bin/install
 
 build:
 	dh_testdir
-	test -x autogen.sh && ./autogen.sh $(cfg)  || ./configure $(cfg)
+	test -x ./configure && ./configure $(cfg)  || ./autogen.sh $(cfg)
 	
 	# temp dir
 	$(INSTALL) -d debian/pmt
@@ -49,9 +49,10 @@ install: build
 	# bin package, epplets
 	$(MAKE) install DESTDIR=$(pwd)/debian/epplets/
 	mkdir -p debian/epplets/usr/share/doc/epplets
-	cp -v COPYING debian/epplets/usr/share/doc/epplets/copyright
+	test -f COPYING && test -f debian/copyright-info && test -f epplets/Emix-data/Emix.COPYING && echo "Emix:" | cat debian/copyright-info COPYING - epplets/Emix-data/Emix.COPYING > debian/epplets/usr/share/doc/epplets/copyright || touch debian/epplets/usr/share/doc/epplets/copyright
+	rm debian/epplets/usr/share/enlightenment/epplet_data/Emix/Emix.COPYING # accounted for above
 	mkdir -p debian/epplets/usr/share/man/man1
-	cp -v epplets/man/epplets.1 debian/epplets/usr/share/man/man1/epplets.1
+	test -f epplets/man/epplets.1 && cp -v epplets/man/epplets.1 debian/epplets/usr/share/man/man1/epplets.1 || touch debian/epplets/usr/share/man/man1/epplets.1
 	dh_link usr/share/man/man1/epplets.1 usr/share/man/man1/E-Areas.epplet.1
 	dh_link usr/share/man/man1/epplets.1 usr/share/man/man1/E-LoadMeter.epplet.1
 	dh_link usr/share/man/man1/epplets.1 usr/share/man/man1/E-NetGraph.epplet.1
@@ -88,7 +89,7 @@ install: build
 	mv -v debian/epplets/usr/lib/libepplet.{so,a} debian/libepplet-dev/usr/lib
 	mv -v debian/epplets/usr/include debian/libepplet-dev/usr/include
 	mkdir -p debian/libepplet-dev/usr/share/doc/libepplet-dev
-	cp -v COPYING debian/libepplet-dev/usr/share/doc/libepplet-dev/copyright
+	test -f COPYING && test -f debian/copyright-info && cat debian/copyright-info COPYING > debian/libepplet-dev/usr/share/doc/libepplet-dev/copyright || touch debian/libepplet-dev/usr/share/doc/libepplet-dev/copyright
 
 	# lib package, libepplet0
 	$(INSTALL) -d debian/libepplet0/usr/lib
@@ -96,7 +97,7 @@ install: build
 	mv -v debian/epplets/usr/lib/libepplet.so* debian/libepplet0/usr/lib/
 	chmod -x debian/libepplet0/usr/lib/*
 	mkdir -p debian/libepplet0/usr/share/doc/libepplet0
-	cp -v COPYING debian/libepplet0/usr/share/doc/libepplet0/copyright
+	test -f COPYING && test -f debian/copyright-info && cat debian/copyright-info COPYING > debian/libepplet0/usr/share/doc/libepplet0/copyright || touch debian/libepplet0/usr/share/doc/libepplet0/copyright
 	
 	# remove leftovers
 	rm -rfv debian/epplets/usr/lib/
