@@ -83,7 +83,7 @@ init(Elation_Module *em)
    em->unfocus = unfocus;
    em->action = action;
 
-   pr->device = strdup("/dev/dvd");
+   pr->device = strdup("/dev/cdrom");
      {
 	int fds_in[2], fds_out[2];
 	pid_t pid;
@@ -263,7 +263,7 @@ init(Elation_Module *em)
 			    int i;
 			    printf("eject disk!\n");
 			    
-			    for (i = 0; i < 5; i++)
+			    for (i = 0; i < 10; i++)
 			      {
 				 if (ioctl(fd, CDROMEJECT, 0) == 0) break;
 				 perror("ioctl");
