@@ -1,4 +1,4 @@
-pkgdir = @libdir@/@PACKAGE@
+pkgdir = @libdir@
 pkg_LTLIBRARIES = libesmart_text_entry.la
 
 INCLUDES = -I. \

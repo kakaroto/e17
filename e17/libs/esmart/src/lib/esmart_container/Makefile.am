@@ -1,6 +1,6 @@
 SUBDIRS = layout
 
-pkgdir = @libdir@/@PACKAGE@
+pkgdir = @libdir@
 pkg_LTLIBRARIES = libesmart_container.la
 
 INCLUDES = -I. \
