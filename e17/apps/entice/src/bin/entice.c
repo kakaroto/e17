@@ -28,6 +28,7 @@
 static Entice *entice = NULL;
 
 static void entice_current_free(void);
+static char *filesize_as_string(const char *filename);
 
 /**
  * hookup_edje_signals - Add signal callbacks for entice.image edje part
@@ -117,8 +118,11 @@ entice_init(Ecore_Evas * ee)
       epsilon_init();
       ecore_evas_geometry_get(ee, &x, &y, &w, &h);
       o = edje_object_add(ecore_evas_get(ee));
-      /* FIXME: Check the return value */
-      edje_object_file_set(o, entice_config_theme_get(), "entice");
+      if (!edje_object_file_set(o, entice_config_theme_get(), "entice"))
+      {
+         evas_object_del(o);
+         return;
+      }
       evas_object_name_set(o, "EnticeEdje");
       evas_object_move(o, 0, 0);
       evas_object_resize(o, (Evas_Coord) w, (Evas_Coord) h);
@@ -294,6 +298,7 @@ entice_current_image_set(const char *file)
 void
 _entice_thumb_load(void *_data, Evas * _e, Evas_Object * _o, void *_ev)
 {
+   char *str = NULL;
    const char *tmpstr = NULL;
    Evas_Object *o = NULL;
    Evas_Object *tmp = NULL;
@@ -384,7 +389,12 @@ _entice_thumb_load(void *_data, Evas * _e, Evas_Object * _o, void *_ev)
             edje_object_part_text_set(entice->edje,
                                       "entice.image.current.filename.short",
                                       tmpstr + 1);
-         /* FIXME: Support FileSize also */
+         if ((str = filesize_as_string(esmart_thumb_file_get(o))))
+         {
+            edje_object_part_text_set(entice->edje,
+                                      "entice.image.current.filesize", str);
+            free(str);
+         }
 
          snprintf(buf, PATH_MAX, "Entice: %s", esmart_thumb_file_get(o));
          ecore_evas_title_set(entice->ee, buf);
@@ -480,9 +490,9 @@ entice_file_add(const char *file)
             }
          }
          else
-	 {
+         {
             result = 1;
-	 }
+         }
       }
       else
          result = 2;
@@ -1020,4 +1030,46 @@ entice_image_vertical_align_set(double align)
                                       0.0, align);
       evas_object_resize(entice->current, w, h);
    }
+}
+
+static char *
+filesize_as_string(const char *filename)
+{
+   char *str = NULL;
+   struct stat file;
+
+   if (!stat(filename, &file))
+   {
+      char buf[PATH_MAX];
+      int depth = 0;
+      float remainder = 0.0;
+      int bytes = (int) file.st_size;
+
+      char *types[] = {
+         "Bytes",
+         "KB",
+         "MB",
+         "GB",
+         "TB"
+      };
+
+      while (bytes > 1024)
+      {
+         int c;
+
+         c = bytes % 1024;
+         remainder += ((float) c / 1024.0);
+         bytes = bytes / 1024;
+         depth++;
+      }
+      remainder += (float) bytes;
+      snprintf(buf, PATH_MAX, "%0.2f %s", remainder, types[depth]);
+      str = strdup(buf);
+   }
+   else
+   {
+      fprintf(stderr, "Error stating %s\n", filename);
+
+   }
+   return (str);
 }
