@@ -1039,3 +1039,10 @@ Mon Aug 23 16:17:33 PDT 1999
 
 menus stay onscreen with menusonscreen on top and left sides now. :) also side
 ways starup screen patch in :)
+
+-------------------------------------------------------------------------------
+
+Mon Aug 30 17:04:20 PDT 1999
+(Mandrake)
+
+removed config.h

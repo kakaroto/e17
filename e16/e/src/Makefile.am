@@ -32,7 +32,6 @@ enlightenment_SOURCES = \
 	comms.c			\
 	conf.h			\
 	config.c		\
-	config.h		\
 	containers.c		\
 	coords.c                \
 	cursors.c		\
