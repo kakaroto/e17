@@ -1,6 +1,6 @@
 #!/bin/sh -e
 DB="./elogin_config.db"
-
+rm $DB
 edb_ed $DB add /elogin/welcome/mess str "Enter Your Username"
 edb_ed $DB add /elogin/welcome/font/name str "notepad.ttf"
 edb_ed $DB add /elogin/welcome/font/size int 20
