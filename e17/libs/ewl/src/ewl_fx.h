@@ -40,7 +40,5 @@ void ewl_fx_add(Ewl_Widget * widget,
 		Ewl_FX_Type type,
 		void (*func) (Ewl_Widget * widget,
 			      void *func_data), void *func_data);
-void ewl_fx_clip_box_create(Ewl_Widget * widget);
-void ewl_fx_clip_box_resize(Ewl_Widget * widget);
 
 #endif /* __EWL_FX_H__ */
