@@ -95,6 +95,8 @@ static void    _engage_bar_cb_menu_zoom(void *data, E_Menu *m, E_Menu_Item *mi);
 
 static void    zoom_function(double d, double *zoom, double *disp, Engage_Bar *eb);
 
+E_App         *_engage_unmatched_app;
+
 /* public module routines. all modules must have these */
 void *
 init(E_Module *m)
@@ -173,6 +175,10 @@ _engage_new()
    bar_count = 0;
    e = E_NEW(Engage, 1);
    if (!e) return NULL;
+   
+   _engage_unmatched_app = e_app_new(PACKAGE_DATA_DIR "/icons/xapp.eapp", 0);
+   if (!_engage_unmatched_app)
+     printf("Error, engage cannot find default icon - you need to make isntall\n");
 
    conf_bar_edd = E_CONFIG_DD_NEW("Engage_Config_Bar", Config_Bar);
 #undef T
@@ -422,8 +428,7 @@ _engage_bar_new(Engage *e, E_Container *con)
    eb->evas = con->bg_evas;
 
    eb->x = eb->y = eb->w = eb->h = -1;
-   /* FIXME this needs to be set on a timer */
-   eb->zoom = 2.0;
+   eb->zoom = 1.0;
 
    evas_event_freeze(eb->evas);
    o = edje_object_add(eb->evas);
@@ -462,6 +467,7 @@ _engage_bar_new(Engage *e, E_Container *con)
 	     ic = _engage_icon_new(eb, a, 0);
 	  }
      }
+
    eb->align_req = 0.5;
    eb->align = 0.5;
    e_box_align_set(eb->box_object, 0.5, 0.5);
@@ -735,14 +741,15 @@ _engage_cb_event_border_iconify(void *data, int type, void *event)
 
    e = event;
    eb = data;
-   /*FIXME
-    * check that were are the bar in the right zone
-    */
+   if (e->border->container != eb->con)
+     return;
    
    if (!e->border->iconic)
      return;
    app = e_app_window_name_class_find(e->border->client.icccm.name,
 				      e->border->client.icccm.class);
+   if (!app)
+     app = _engage_unmatched_app;
    if (app)
      {
 	ic = _engage_icon_new(eb, app, 1);
@@ -750,15 +757,11 @@ _engage_cb_event_border_iconify(void *data, int type, void *event)
 	ic->border = e->border;
 	e_object_ref(E_OBJECT(e->border));
      }
-   else
-     printf("FIXME WE HAVE NO ICON TO DISPLAY\n");
 }
 
 static int
 _engage_cb_event_border_uniconify(void *data, int type, void *event)
 {
-   printf("not implemented uniconify listener\n");
-
    Engage_Bar *eb;
    Engage_Icon *ic;
    E_Event_Border_Show *e;
@@ -768,9 +771,9 @@ _engage_cb_event_border_uniconify(void *data, int type, void *event)
    e = event;
    eb = data;
 
-   /*FIXME
-    * check that were are the bar in the right zone
-    */
+   if (e->border->container != eb->con)
+     return;
+
    icons = eb->min_icons;
    while (icons)
      {
