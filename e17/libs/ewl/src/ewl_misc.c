@@ -5,9 +5,10 @@ int             ewl_idle_render(void *data);
 
 char           *xdisplay = NULL;
 extern Ewd_List *ewl_embed_list;
-static Ewd_List *configure_list = NULL;
-static Ewd_List *realize_list = NULL;
-static Ewd_List *destroy_list = NULL;
+
+Ewd_List *configure_list = NULL;
+Ewd_List *realize_list = NULL;
+Ewd_List *destroy_list = NULL;
 
 void            __ewl_init_parse_options(int argc, char **argv);
 void            __ewl_parse_option_array(int argc, char **argv);
@@ -132,18 +133,18 @@ int ewl_idle_render(void *data)
 	if (ewd_list_is_empty(ewl_embed_list))
 		DRETURN_INT(TRUE, DLEVEL_STABLE);
 
+	edje_freeze();
+
 	/*
 	 * First realize any widgets that require it, this looping should
 	 * avoid deep recursion.
 	 */
 	ewd_list_goto_first(realize_list);
 	while ((w = ewd_list_remove_first(realize_list))) {
-		edje_freeze();
 		if (VISIBLE(w) && !REALIZED(w)) {
 			w->flags &= ~EWL_FLAGS_RSCHEDULED;
 			ewl_widget_realize(EWL_WIDGET(w));
 		}
-		edje_thaw();
 	}
 
 	/*
@@ -157,6 +158,7 @@ int ewl_idle_render(void *data)
 		w->flags &= ~EWL_FLAGS_CSCHEDULED;
 		ewl_callback_call(w, EWL_CALLBACK_CONFIGURE);
 	}
+	edje_thaw();
 
 	/*
 	 * Allow each embed to render itself.

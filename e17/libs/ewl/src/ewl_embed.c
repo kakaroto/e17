@@ -93,6 +93,7 @@ int ewl_embed_init(Ewl_Embed * w)
 			   __ewl_embed_child_add, __ewl_embed_child_resize,
 			   NULL);
 	ewl_object_set_fill_policy(EWL_OBJECT(w), EWL_FILL_POLICY_NONE);
+	EWL_WIDGET(w)->flags |= EWL_FLAGS_TOPLEVEL;
 
 	ewl_callback_append(EWL_WIDGET(w), EWL_CALLBACK_UNREALIZE,
 			     __ewl_embed_unrealize, NULL);
@@ -255,6 +256,9 @@ Ewl_Embed     *ewl_embed_find_by_widget(Ewl_Widget * w)
 
 	while (w->parent)
 		w = w->parent;
+
+	if (!(w->flags & EWL_FLAGS_TOPLEVEL))
+		w = NULL;
 
 	DRETURN_PTR(EWL_EMBED(w), DLEVEL_STABLE);
 }

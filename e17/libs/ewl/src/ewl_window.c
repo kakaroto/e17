@@ -237,7 +237,8 @@ void __ewl_window_realize(Ewl_Widget * w, void *ev_data, void *user_data)
 
 	ecore_x_window_prop_name_class_set(window->window, "EWL", "EWL!");
 	ecore_x_window_prop_title_set(window->window, window->title);
-	ecore_x_window_prop_delete_request_set(window->window, 1);
+	ecore_x_window_prop_protocol_set(window->window,
+			ECORE_X_WM_PROTOCOL_DELETE_REQUEST,1);
 
 	embed->evas = evas_new();
 	evas_output_method_set(embed->evas,

@@ -130,12 +130,15 @@ void ewl_widget_realize(Ewl_Widget * w)
 	if (REALIZED(w))
 		DRETURN(DLEVEL_STABLE);
 
+	/*
+	 * The parent's realize function will get us here again.
+	 */
 	if (w->parent && !REALIZED(w->parent))
 		ewl_widget_realize(w->parent);
-
-	ewl_callback_call(w, EWL_CALLBACK_REALIZE);
-
-	ewl_widget_show(w);
+	else if (w->parent || w->flags & EWL_FLAGS_TOPLEVEL) {
+		ewl_callback_call(w, EWL_CALLBACK_REALIZE);
+		ewl_widget_show(w);
+	}
 
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
