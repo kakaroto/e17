@@ -35,7 +35,7 @@ LIBS="$LIBS -lm"
 
 AC_CHECK_LIB(ugly,huge_nekkid_pics_of_pabs_mom, , [
 echo "WARNING: You appear to be missing terrabyte pr0n pictures of"
-echo "         Paul Duncan's mother. While these are not required"
+echo "         Tom Gilbert's mother. While these are not required"
 echo "         to compile ewl, they would at least distract you"
 echo "         while it builds..."])
 
