@@ -35,10 +35,19 @@ s{<font face=aircut3/10 color=#112222>(.*?)<font.*?>}{make_lit($1)}ges;
 s/\n{2,}\s*((?:[A-Z]\w+ *)+)\n{2,}/\n\n=head2 $1\n\n/g;
 s/\s+\.\n/. /gm;
 s/\(more on next page \.\.\.\)\n//g;
+s/More on the next page.\n\n//g;
 s/<font\b[^>]*>//g;
 s/ +$//gm;
 s/\n{3,}/\n\n/g;
-
+s/Frequently Asked Questions: Page .\n//g;
+s/\n\nGNOME Setup Part 2\n//g;
+s/\nnext page\n//g;
+s/\n<br align=75\%>//g;
+s/\n_.*\(faq.*\)\n\n/\n/g;
+s/\n_.*\(faq.*\)\n\n/\n/g;
+s/\n_.*\(faq.*\)\n\n/\n/g;
+s/\n_.*\(faq.*\)\n\n/\n/g;
+s/Documentation Index/Welcome To Enlightenment/g;
 print;
 
 print "\n\n\n\n=head1 FOR MORE INFORMATION\n\n\n";
