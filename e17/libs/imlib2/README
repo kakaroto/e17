@@ -17,7 +17,6 @@ for more information.
 
 Imlib2 requires several libraries to be already installed. These are:
 
-edb              ftp://ftp.enlightenment.org/pub/e/e17/libs/
 libjpeg          http://www.ijg.org/
 libpng           http://www.libpng.org/pub/png/libpng.html
 freetype 1.2     http://www.freetype.org/
