@@ -64,6 +64,11 @@ handle_keypress_event(XEvent * ev, Window win)
               doomed = current_file;
               slideshow_change_image(winwid, SLIDE_NEXT);
               filelist = feh_file_rm_and_free(filelist, doomed);
+              if(!filelist)
+              {
+                  /* No more images. Game over ;-) */
+                  winwidget_destroy(winwid);
+              }
               if (winwid->name)
                  free(winwid->name);
               winwid->name = slideshow_create_name(winwid->file->filename);

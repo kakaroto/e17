@@ -1,3 +1,8 @@
+Sat Apr 29 04:52:20 2000  Tom Gilbert  <gilbertt@btinternet.com>
+
+	* Heh. Sanely handle deleting the only/last image in the
+	slideshow.
+
 Thu Apr 27 16:10:35 2000  Tom Gilbert  <gilbertt@btinternet.com>
 
 	* You can delete files using ctrl-del in multiwindow mode too now.
