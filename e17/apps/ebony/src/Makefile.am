@@ -1,20 +1,28 @@
-## Process this file with automake to produce Makefile.in
+# Process this file with automake to produce Makefile.in
 
 INCLUDES = \
-	-I$(top_srcdir)/intl \
 	@BONUS_INCS@ \
-	@GTK_CFLAGS@
+	@GTK_CFLAGS@ \
+	@GLIB_CFLAGS@ \
+	@evas_cflags@ \
+	@imlib2_cflags@ \
+	@ebg_cflags@ \
+	@edb_cflags@ 
 
 bin_PROGRAMS = ebony
 
 ebony_SOURCES = \
-	main.c \
-	support.c support.h \
-	interface.c interface.h \
-	callbacks.c callbacks.h \
-	utils.c utils.h
+    advanced.c advanced.h \
+    callbacks.c callbacks.h \
+    interface.c interface.h \
+    util.c util.h \
+    main.c
 
 ebony_LDADD = \
-@GTK_LIBS@ $(INTLLIBS) \
-@BONUS_LIBS@
-
+	@BONUS_LIBS@ \
+	@GTK_LIBS@ \
+	@GLIB_CFLAGS@ \
+	@evas_libs@ \
+	@imlib2_libs@ \
+	@ebg_libs@ \
+	@edb_libs@ 
