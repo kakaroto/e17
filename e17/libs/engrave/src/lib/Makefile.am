@@ -1,5 +1,8 @@
 ## Process this file with automake to produce Makefile.in
 
+.o.so:  
+	$(CC) $(INCLUDES) $(LDFLAGS) $< -o $@
+
 # A list of all the files in the current directory which can be regenerated
 MAINTAINERCLEANFILES = Makefile.in
 
