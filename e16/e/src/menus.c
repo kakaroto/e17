@@ -163,6 +163,9 @@ MenuEwinMoveResize(EWin * ewin, int resize __UNUSED__)
    if (!m)
       return;
 
+   if (Conf.theme.transparency)
+      m->redraw = 1;
+
    if ((!m->style->use_item_bg && m->pmm.pmap == 0) || m->redraw)
       MenuRedraw(m);
 }
@@ -545,8 +548,7 @@ MenuRepack(Menu * m)
 
    EDBUG(5, "MenuRepack");
 
-   m->redraw = (Conf.theme.transparency ||
-		IclassIsTransparent(m->style->bg_iclass)) ? 1 : -1;
+   m->redraw = 1;
    if (m->win)
       MenuRealize(m);
 
@@ -801,8 +803,7 @@ MenuRealize(Menu * m)
 	mmh += m->style->bg_iclass->padding.bottom;
      }
 
-   m->redraw = (Conf.theme.transparency ||
-		IclassIsTransparent(m->style->bg_iclass)) ? 1 : -1;
+   m->redraw = 1;
    EResizeWindow(disp, m->win, mmw, mmh);
 
    Mode.queue_up = pq;
@@ -812,7 +813,18 @@ MenuRealize(Menu * m)
 static void
 MenuRedraw(Menu * m)
 {
-   int                 i, w, h;
+   int                 i, j, w, h;
+
+   if (m->redraw)
+     {
+	for (i = 0; i < m->num; i++)
+	  {
+	     for (j = 0; j < 3; j++)
+		FreePmapMask(&(m->items[i]->pmm[j]));
+
+	  }
+	m->redraw = 0;
+     }
 
    if (!m->style->use_item_bg)
      {
@@ -832,9 +844,6 @@ MenuRedraw(Menu * m)
 	   MenuDrawItem(m, m->items[i], 0);
 	PropagateShapes(m->win);
      }
-
-   if (m->redraw < 0)
-      m->redraw = 0;
 }
 
 static void
@@ -848,9 +857,6 @@ MenuDrawItem(Menu * m, MenuItem * mi, char shape)
    Mode.queue_up = 0;
 
    mi_pmm = &(mi->pmm[(int)(mi->state)]);
-
-   if (m->redraw)
-      FreePmapMask(mi_pmm);
 
    if (!mi_pmm->pmap)
      {
