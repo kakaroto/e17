@@ -1627,33 +1627,35 @@ Epplet_textbox_handle_keyevent(XEvent *ev, Epplet_gadget gadget)
       g->cursor_pos++;
     }
       
-      switch (g->size)
-	{
-	case 0:
-	  Epplet_textclass_get_size("EPPLET_BUTTON", &char_width, &h, kbuf);
-	  Epplet_textclass_get_size("EPPLET_BUTTON", &text_width, &h, g->contents);
-	  break;
-	case 1:
-	  Epplet_textclass_get_size("EPPLET_TEXT_TINY", &char_width, &h, kbuf);
-	  Epplet_textclass_get_size("EPPLET_TEXT_TINY", &text_width, &h, g->contents);
-	  break;
-	case 2:
-	  Epplet_textclass_get_size("EPPLET_TEXT_MEDIUM", &char_width, &h, kbuf);
-	  Epplet_textclass_get_size("EPPLET_TEXT_MEDIUM", &text_width, &h, g->contents);
-	  break;
-	case 3:
-	  Epplet_textclass_get_size("EPPLET_TEXT_LARGE", &char_width, &h, kbuf);
-	  Epplet_textclass_get_size("EPPLET_TEXT_LARGE", &text_width, &h, g->contents);
-	  break;
-	}
+  switch (g->size) {
+    case 0:
+      Epplet_textclass_get_size("EPPLET_BUTTON", &char_width, &h, kbuf);
+      Epplet_textclass_get_size("EPPLET_BUTTON", &text_width, &h, g->contents);
+      break;
+    case 1:
+      Epplet_textclass_get_size("EPPLET_TEXT_TINY", &char_width, &h, kbuf);
+      Epplet_textclass_get_size("EPPLET_TEXT_TINY", &text_width, &h, g->contents);
+      break;
+     case 2:
+       Epplet_textclass_get_size("EPPLET_TEXT_MEDIUM", &char_width, &h, kbuf);
+       Epplet_textclass_get_size("EPPLET_TEXT_MEDIUM", &text_width, &h, g->contents);
+       break;
+    case 3:
+      Epplet_textclass_get_size("EPPLET_TEXT_LARGE", &char_width, &h, kbuf);
+      Epplet_textclass_get_size("EPPLET_TEXT_LARGE", &text_width, &h, g->contents);
+      break;
+  }
 
-      if( (text_width + char_width) > g->w)
-      {
-        if( (*kbuf == '\b') && g->contents && *(g->contents) )
-		g->text_offset > 0 ? g->text_offset-- : "";
-	else
-	      	g->text_offset++;
-      }
+  if ((text_width + char_width) > g->w)
+    {
+      if ((*kbuf == '\b') && g->contents && *(g->contents))
+        {
+          if (g->text_offset > 0)
+            g->text_offset--;
+        }
+      else
+        g->text_offset++;
+    }
 }
 
 Epplet_gadget 
