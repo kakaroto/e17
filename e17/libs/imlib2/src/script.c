@@ -119,7 +119,7 @@ IFunctionParam *__imlib_script_parse_parameters( Imlib_Image im, char *parameter
    
    rootptr = malloc( sizeof( IFunctionParam ) );
    rootptr->key = strdup( "NO-KEY" );
-   rootptr->type = 0;
+   rootptr->type = VAR_CHAR;
    rootptr->data = strdup( "NO-VALUE" );
    rootptr->next = NULL;
    ptr = rootptr;
