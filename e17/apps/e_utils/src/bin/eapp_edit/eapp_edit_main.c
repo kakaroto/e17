@@ -148,7 +148,10 @@ _eapp_edit_write(Eet_File *ef, char *key, char *lang, Ewl_Widget *source,
     size_ret = 1;
   } else {
     ret = ewl_entry_text_get(EWL_ENTRY(source));
-    size_ret = strlen(ret);
+    if (ret)
+      size_ret = strlen(ret);
+    else
+      size_ret = 0;
     if (size_ret == 0)
       delete = 1;
   }
