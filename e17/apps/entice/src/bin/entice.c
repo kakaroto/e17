@@ -124,7 +124,7 @@ entice_init(Ecore_Evas * ee)
       ecore_evas_geometry_get(ee, &x, &y, &w, &h);
       o = edje_object_add(ecore_evas_get(ee));
       /* FIXME: Check the return value */
-      edje_object_file_set(o, entice_config_theme_get(), "Entice");
+      edje_object_file_set(o, entice_config_theme_get(), "entice");
       evas_object_name_set(o, "EnticeEdje");
       evas_object_move(o, 0, 0);
       evas_object_resize(o, w, h);
