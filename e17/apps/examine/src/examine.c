@@ -12,6 +12,7 @@
 #include <ctype.h>
 
 #include <sys/types.h>
+#include <sys/stat.h>
 #include <dirent.h>
 
 #include "examine_client.h"
@@ -37,6 +38,7 @@ Ewl_Widget     *notebook;
 examine_panel  *panels;
 
 char           *examine_separators = ".\\/\0";
+char           *examine_search_path;
 
 /*****************************************************************************/
 
@@ -285,34 +287,49 @@ draw_tree(examine_prop * prop_item)
       ewl_callback_append(EWL_ENTRY(entries[1])->text,
                           EWL_CALLBACK_VALUE_CHANGED, cb_set_str, prop_item);
     } else if (prop_item->type == PT_THM) {
+      struct stat     st;
       struct dirent  *next;
       DIR            *dp;
-      char           *dir, *fulldir;
+      char           *search_path, *path, *ptr, *end;
       char           *file;
 
       entries[1] = ewl_hbox_new();
 
-      // FIXME - only looking in /usr/local/share - should be settable
-      dir = "/usr/local/share/";
-      fulldir = malloc(strlen(dir) + strlen(app_name) + strlen("/themes/") + 1);
-      strcpy(fulldir, dir);
-      strcat(fulldir, app_name);
-      strcat(fulldir, "/themes/");
-      dp = opendir((const char *) fulldir);
-      while (next = readdir(dp)) {
-        if (!strcmp(next->d_name, ".") || !strcmp(next->d_name, ".."))
-          continue;
-        file = malloc(strlen(fulldir) + strlen(next->d_name) + 1);
-        strcpy(file, fulldir);
-        strcat(file, next->d_name);
-        tmp = ewl_image_new(file, (char *) prop_item->data);
-        ewl_widget_show(tmp);
-        ewl_container_append_child(EWL_CONTAINER(entries[1]), tmp);
-        ewl_callback_append(tmp, EWL_CALLBACK_CLICKED, cb_choose_theme,
-                            prop_item);
-        ewl_object_set_padding(EWL_OBJECT(tmp), 2, 2, 2, 2);
-      }
+      search_path = strdup(__examine_client_theme_search_path);
+      ptr = search_path;
+      end = search_path + strlen(search_path);
+      path = search_path;
+      while (ptr && ptr < end) {
+        while (*ptr != '|' && ptr < end)
+          ptr++;
+        if (ptr < end)
+          *ptr = '\0';
 
+        if (stat(path, &st) != 0) {
+          ptr++;
+          path = ptr;
+          continue;
+        }
+        dp = opendir((const char *) path);
+        while (next = readdir(dp)) {
+          if (!strcmp(next->d_name, ".") || !strcmp(next->d_name, ".."))
+            continue;
+          file = malloc(strlen(path) + strlen(next->d_name) + 2); /* 2=/+\0 */
+          strcpy(file, path);
+          strcat(file, "/");
+          strcat(file, next->d_name);
+
+          tmp = ewl_image_new(file, (char *) prop_item->data);
+          ewl_widget_show(tmp);
+          ewl_container_append_child(EWL_CONTAINER(entries[1]), tmp);
+          ewl_callback_append(tmp, EWL_CALLBACK_CLICKED, cb_choose_theme,
+                              prop_item);
+          ewl_object_set_padding(EWL_OBJECT(tmp), 2, 2, 2, 2);
+        }
+        ptr++;
+	path = ptr;
+      }
+      free(search_path);
     } else
       entries[1] = ewl_entry_new("unknown");
     prop_item->w = entries[1];
@@ -348,7 +365,7 @@ render_ewl(void)
   ewl_container_append_child(EWL_CONTAINER(main_box), notebook);
   ewl_widget_show(notebook);
 
-  examine_client_list_props();
+  examine_client_theme_search_path_get();
 
   row = ewl_hbox_new();
   ewl_container_append_child(EWL_CONTAINER(main_box), row);

@@ -16,7 +16,8 @@
 typedef enum Examine_Callback_Type {
   EX_DATA_SET = 0,
   EX_DATA_GET = 1,
-  EX_DATA_LIST = 2
+  EX_DATA_LIST = 2,
+  EX_SEARCH_PATH = 3
 } Examine_Callback_Type;
 
 Examine_Callback_Type expected_type;
@@ -27,6 +28,7 @@ examine_prop   *prop_list;
 
 
 void            examine_client_list_props_cb(void);
+void            examine_client_theme_search_path_get_cb(void);
 void            examine_client_get_val_cb(void);
 /*****************************************************************************/
 
@@ -82,6 +84,8 @@ ecore_config_ipc_server_sent(void *data, int type, void *event)
   case EX_DATA_LIST:
     examine_client_list_props_cb();
     break;
+  case EX_SEARCH_PATH:
+    examine_client_theme_search_path_get_cb();
   default:
     break;
   }
@@ -159,6 +163,42 @@ examine_client_send(call * c, char *key, char *val)
   ret = ecore_config_ipc_send(&examine_client_server, c->id, serial, m, l);
   if (m)
     free(m);
+}
+
+void
+examine_client_theme_search_path_get(void)
+{
+  call           *c;
+
+  c = find_call("prop-get");
+  examine_client_send(c, "/e/themes/search_path", NULL);
+
+  expected_type = EX_SEARCH_PATH;
+}
+
+void
+examine_client_theme_search_path_get_cb(void)
+{
+  char          *ret, *tmp, *end;
+  if (examine_client_buf && (strlen(examine_client_buf) > 0)) {
+
+    ret = strstr(examine_client_buf, "=") + 1;
+    if (*ret == '"') {
+      ret++;
+      if (end = strstr(ret, "\""))
+        *end = '\0';
+    }
+
+    if (*(ret + strlen(ret) - 1) == '\n')
+      *(ret + strlen(ret) - 1) = '\0';
+    tmp = strstr(examine_client_buf, ":");
+    *tmp = '\0';
+  
+    __examine_client_theme_search_path = strdup(ret);
+
+    free(examine_client_buf);
+    examine_client_list_props();
+  }
 }
 
 void

@@ -74,10 +74,11 @@ static call     calls[] = {
 
 };
 
-
+char           *__examine_client_theme_search_path;
 
 int             examine_client_send(call * c, char *key, char *val);
 void            examine_client_list_props(void);
+void            examine_client_theme_search_path_get(void);
 void            examine_client_revert_list(void);
 void            examine_client_revert(examine_prop * target);
 void            examine_client_save_list(void);
