@@ -34,7 +34,8 @@ AC_ARG_WITH(imlib2,
 
 AC_CHECK_LIB(Imlib2, imlib_context_set_display, 
 	[ imlib2_libs=`${imlib2_path}imlib2-config --libs`;
-		CFLAGS="$CFLAGS `${imlib2_path}imlib2-config --libs --cflags`"],
+		CFLAGS="$CFLAGS `${imlib2_path}imlib2-config --cflags`";
+		LIBS="$LIBS `${imlib2_path}imlib2-config --libs`"],
 	AC_MSG_ERROR(
 	""
 	"**********************************************************************"
