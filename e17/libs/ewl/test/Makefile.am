@@ -30,5 +30,5 @@ ewl_test_SOURCES		=	ewl_test.h \
 					ewl_tooltip_test.c \
 					ewl_tree_test.c
 
-ewl_test_LDFLAGS		=	-pg
+# ewl_test_LDFLAGS		=	
 ewl_test_LDADD			=	$(top_builddir)/src/libewl.la @edje_libs@ @ecore_libs@ @evas_libs@ @ewd_libs@

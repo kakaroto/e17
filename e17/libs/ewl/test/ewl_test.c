@@ -38,7 +38,7 @@ main(int argc, char **argv)
 		{ "Filedialog", __create_filedialog_test_window },
 		{ "Floater", __create_floater_test_window },
 		{ "Image", __create_image_test_window },
-		{ "Menu", __create_menu_test_window },
+		{ "IMenu", __create_imenu_test_window },
 		{ "Notebook", __create_notebook_test_window },
 		{ "Password", __create_password_test_window },
 		{ "Progressbar", __create_progressbar_test_window },
@@ -100,7 +100,7 @@ main(int argc, char **argv)
 		ewl_widget_show(button[i]);
 
 		for (j = 1; j < argc; j++) {
-			if (!strcmp(argv[j], tests[i].name))
+			if (!strcasecmp(argv[j], tests[i].name))
 				tests[i].func(button[i], NULL, NULL);
 		}
 
