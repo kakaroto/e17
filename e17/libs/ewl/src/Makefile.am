@@ -30,6 +30,7 @@ EWLHEADERS = \
 	ewl_grid.h \
 	ewl_image.h \
 	ewl_imenu.h \
+	ewl_media.h \
 	ewl_menu.h \
 	ewl_macros.h \
 	ewl_menu_base.h \
@@ -81,6 +82,7 @@ libewl_la_SOURCES = \
 	ewl_grid.c \
 	ewl_image.c \
 	ewl_imenu.c \
+	ewl_media.c \
 	ewl_menu.c \
 	ewl_menu_base.c \
 	ewl_misc.c \

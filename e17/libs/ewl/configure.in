@@ -242,6 +242,41 @@ AC_ARG_WITH(edje-config,
   fi
 ])
 
+EMOTION_CONFIG="emotion-config"
+AC_ARG_WITH(emotion-config,
+[  --with-emotion-config=FILE   emotion-config script to use (eg /usr/bin/emotion-config)],
+[
+   EMOTION_CONFIG=$withval
+   AC_CHECK_PROG(EMOTION_CONFIG_IN_PATH, $EMOTION_CONFIG, yes, no)
+   if test $EMOTION_CONFIG_IN_PATH = no; then
+      echo "ERROR:"
+      echo "The emotion-config development script you specified:"
+      echo "$EMOTION_CONFIG"
+      echo "was not found.  Please check the path and make sure "
+      echo "the script exists and is executable."
+      AC_MSG_ERROR([Fatal Error: no emotion-config detected.])
+      exit;
+   fi
+   ],
+[
+  AC_CHECK_PROG(EMOTION_CONFIG_IN_PATH, $EMOTION_CONFIG, yes, no)
+  if test $EMOTION_CONFIG_IN_PATH = no; then
+    echo "ERROR:"
+    echo "The emotion-config development script was not found in your execute"
+    echo "path. This may mean one of several things"
+    echo "1. You may not have installed the emotion-devel (or emotion-dev)"
+    echo "   packages."
+    echo "2. You may have emotion installed somewhere not covered by your path."
+    echo ""
+    echo "If this is the case make sure you have the packages installed, AND"
+    echo "that the emotion-config script is in your execute path (see your"
+    echo "shell's manual page on setting the \$PATH environment variable), OR"
+    echo "alternatively, specify the script to use with --with-emotion-config."
+    AC_MSG_ERROR([Fatal Error: no emotion-config detected.])
+    exit;
+  fi
+])
+
 AC_SUBST(edb_cflags)
 AC_SUBST(edb_libs)
 edb_cflags=`$EDB_CONFIG --cflags`
@@ -267,7 +302,12 @@ AC_SUBST(edje_libs)
 edje_cflags=`$EDJE_CONFIG --cflags`
 edje_libs=`$EDJE_CONFIG --libs`
 
-requirements="evas ecore edb etox edje"
+AC_SUBST(emotion_cflags)
+AC_SUBST(emotion_libs)
+emotion_cflags=`$EMOTION_CONFIG --cflags`
+emotion_libs=`$EMOTION_CONFIG --libs`
+
+requirements="evas ecore edb etox edje emotion"
 AC_SUBST(requirements)
 
 AC_OUTPUT([
