@@ -54,7 +54,7 @@ POSIX  |  GNU             | TYPE  | DESCRITION\n\
 
 #define USAGE_VERSION "E-Notes Version:\n%s\n"
 
-#define OPTSTR "v?hc:r:t:i:R:d:A:w:"
+#define OPTSTR "v?hc:r:t:i:R:d:A:w:C:"
 
 static struct option long_options[] = {
 	{"help", 0, 0, '?'},

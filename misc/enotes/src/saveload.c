@@ -53,14 +53,16 @@ setup_saveload_win(void)
 	/* Setup the Window */
 	saveload->win = ewl_window_new();
 	ewl_window_title_set((Ewl_Window *) saveload->win, "E-Notes Save/Load");
-	ewl_object_fill_policy_set((Ewl_Object*)saveload->win, EWL_FLAG_FILL_ALL);
-	ewl_object_size_request((Ewl_Object*)saveload->win, 400,350);
+	ewl_object_fill_policy_set((Ewl_Object *) saveload->win,
+				   EWL_FLAG_FILL_ALL);
+	ewl_object_size_request((Ewl_Object *) saveload->win, 400, 350);
 	ewl_widget_show(saveload->win);
 
 	saveload->vbox = ewl_vbox_new();
 	ewl_container_child_append((Ewl_Container *) saveload->win,
 				   saveload->vbox);
-	ewl_object_fill_policy_set((Ewl_Object*)saveload->vbox, EWL_FLAG_FILL_ALL);
+	ewl_object_fill_policy_set((Ewl_Object *) saveload->vbox,
+				   EWL_FLAG_FILL_ALL);
 	ewl_widget_show(saveload->vbox);
 
 	ewl_callback_append(saveload->win, EWL_CALLBACK_CONFIGURE,
@@ -84,8 +86,10 @@ setup_saveload_win(void)
 	saveload->hbox = ewl_hbox_new();
 	ewl_container_child_append((Ewl_Container *) saveload->vbox,
 				   saveload->hbox);
-	ewl_object_fill_policy_set((Ewl_Object*)saveload->hbox,EWL_FLAG_FILL_VSHRINK);
-	ewl_object_fill_policy_set((Ewl_Object*)saveload->hbox,EWL_FLAG_FILL_HFILL);
+	ewl_object_fill_policy_set((Ewl_Object *) saveload->hbox,
+				   EWL_FLAG_FILL_VSHRINK);
+	ewl_object_fill_policy_set((Ewl_Object *) saveload->hbox,
+				   EWL_FLAG_FILL_HFILL);
 	ewl_widget_show(saveload->hbox);
 
 	saveload_setup_button(saveload->hbox, &saveload->savebtn, "Save.");
@@ -170,11 +174,12 @@ setup_saveload_opt(Ewl_Widget * tree, char *caption, Evas_List * p)
 	capt = (Ewl_Widget *) ewl_text_new(caption);
 	ewl_callback_append(capt, EWL_CALLBACK_CLICKED,
 			    (void *) ewl_saveload_listitem_click, NULL);
-	ewl_object_fill_policy_set((Ewl_Object*)capt, EWL_FLAG_FILL_ALL);
+	ewl_object_fill_policy_set((Ewl_Object *) capt, EWL_FLAG_FILL_ALL);
 	ewl_widget_show(capt);
 	d->saveload_row =
 		(Ewl_Row *) ewl_tree_row_add((Ewl_Tree *) tree, 0, &capt);
-	ewl_object_fill_policy_set((Ewl_Object*)d->saveload_row, EWL_FLAG_FILL_ALL);
+	ewl_object_fill_policy_set((Ewl_Object *) d->saveload_row,
+				   EWL_FLAG_FILL_ALL);
 	return;
 }
 
@@ -321,8 +326,8 @@ setup_load_win(void)
 	/* Setup the Window */
 	load->win = ewl_window_new();
 	ewl_window_title_set((Ewl_Window *) load->win, "E-Notes Load");
-	ewl_object_fill_policy_set((Ewl_Object*)load->win, EWL_FLAG_FILL_ALL);
-	ewl_object_size_request((Ewl_Object*)load->win, 400,350);
+	ewl_object_fill_policy_set((Ewl_Object *) load->win, EWL_FLAG_FILL_ALL);
+	ewl_object_size_request((Ewl_Object *) load->win, 400, 350);
 	ewl_widget_show(load->win);
 
 	load->vbox = ewl_vbox_new();

@@ -71,6 +71,10 @@ main(int argc, char *argv[])
 		if (main_config->controlcentre == 1) {
 			setup_cc();
 			dml("Control Centre Setup", 1);
+		} else {
+			dml("No Control Centre - Displaying Notice", 1);
+			msgbox("E-Notes is Running",
+			       "Since the Control Centre is turned off,\nthis message is being displayed to say:\n\nE-Notes is running.");
 		}
 
 		/* Display the Introduction Note */

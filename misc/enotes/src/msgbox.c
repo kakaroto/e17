@@ -18,18 +18,6 @@
 /**
  * @param title: The titlebar content of the window.
  * @param content: The content string to display in the window.
- * @brief: Opens up a message box.
- */
-void
-msgbox(char *title, char *content)
-{
-	msgbox_manual(title, content, 0, 0, 300, 50);
-	return;
-}
-
-/**
- * @param title: The titlebar content of the window.
- * @param content: The content string to display in the window.
  * @param x: X co-ordinate to place the window at.
  * @param y: Y co-ordinate to place the window at.
  * @param width: Width of window.
@@ -37,23 +25,22 @@ msgbox(char *title, char *content)
  * @brief: Opens up a message box.
  */
 void
-msgbox_manual(char *title, char *content, int x, int y, int width, int height)
+msgbox(char *title, char *content)
 {
 	MsgBox         *mb = malloc(sizeof(MsgBox));
 
 	/* Setup the Window */
-	mb->win=ewl_window_new();
-	ewl_window_title_set((Ewl_Window*)mb->win, title);
+	mb->win = ewl_window_new();
+	ewl_window_title_set((Ewl_Window *) mb->win, title);
 	ewl_widget_show(mb->win);
 
 	mb->vbox = ewl_vbox_new();
 	ewl_container_child_append((Ewl_Container *) mb->win, mb->vbox);
-	ewl_object_fill_policy_set((Ewl_Object *) mb->vbox, EWL_FLAG_FILL_FILL);
+	ewl_object_padding_set((Ewl_Object *) mb->vbox, 5, 10, 5, 10);
 	ewl_widget_show(mb->vbox);
 
 	mb->msg = ewl_text_new(content);
 	ewl_container_child_append((Ewl_Container *) mb->vbox, mb->msg);
-	ewl_object_fill_policy_set((Ewl_Object *) mb->msg, EWL_FLAG_FILL_FILL);
 	ewl_widget_show(mb->msg);
 
 	mb->hbox = ewl_hbox_new();
@@ -81,7 +68,7 @@ msgbox_manual(char *title, char *content, int x, int y, int width, int height)
  * @brief: Closes the msgbox window ee.
  */
 void
-msgbox_close(MsgBox *p)
+msgbox_close(MsgBox * p)
 {
 	ewl_widget_destroy(p->win);
 	free(p);
