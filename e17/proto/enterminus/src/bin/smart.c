@@ -215,10 +215,10 @@ void term_smart_resize(Evas_Object *o, Evas_Coord w, Evas_Coord h) {
       gl->text = evas_object_text_add(term->evas);
       evas_object_layer_set(gl->text, 2);
       evas_object_show(gl->text);
-      gl->bg = evas_object_rectangle_add(term->evas);
-      evas_object_resize(gl->bg, term->font.width, term->font.height);
-      evas_object_color_set(gl->bg, 100, 50, 50, 150);
-      evas_object_layer_set(gl->bg, 1);
+      //gl->bg = evas_object_rectangle_add(term->evas);
+      //evas_object_resize(gl->bg, term->font.width, term->font.height);
+      //evas_object_color_set(gl->bg, 100, 50, 50, 150);
+      //evas_object_layer_set(gl->bg, 1);
    }
    
    if(ioctl(term->cmd_fd.sys, TIOCSWINSZ, get_font_dim(term)) < 0) {

@@ -122,7 +122,7 @@ void term_redraw(void *data) {
 	 evas_object_move(gl->text, j*term->font.width, i*term->font.height);
 	 //evas_object_show(gl->text);
 	 //evas_object_layer_set(gl->bg,1);
-	 evas_object_move(gl->bg, j*term->font.width, i*term->font.height);
+	 //evas_object_move(gl->bg, j*term->font.width, i*term->font.height);
 	 //evas_object_show(gl->bg);
 	 tgl->changed = 0;
       }
