@@ -385,6 +385,11 @@ note_edje_minimise(Evas_List * note, Evas_Object * o,
 	dml("Minimising a Note", 2);
 
 	p = evas_list_data(note);
+
+	/* FIXME: The line below should be removed when
+	 * ecore_evas is fixed. */
+	ecore_evas_iconified_set(p->win,0);
+	
 	ecore_evas_iconified_set(p->win, 1);
 
 	return;

@@ -322,6 +322,10 @@ cc_settings(void *data)
 void
 cc_minimize(void *data)
 {
+	/* FIXME: The line below should be removed when
+	 *          * ecore_evas is fixed. */
+        ecore_evas_iconified_set((Ecore_Evas*)data,0);
+		
 	ecore_evas_iconified_set((Ecore_Evas *) data, 1);
 	return;
 }
