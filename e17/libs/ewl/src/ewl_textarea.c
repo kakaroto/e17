@@ -555,6 +555,10 @@ static void ewl_text_update_size(Ewl_Text * ta)
 	 * Adjust the properties of the widget to indicate the size of the text.
 	 */
 	evas_object_geometry_get(ta->etox, &x, &y, &width, &height);
+	if (!width)
+		width = 1;
+	if (!height)
+		height = 1;
 
 	/*
 	 * Set the preferred size to the size of the etox and request that
