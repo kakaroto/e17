@@ -45,7 +45,6 @@ main (int argc, char **argv)
   edje_init();
   edje_frametime_set(1.0 / 60.0);
 
-
   /* get the evas from the Ecore_Evas) */
   el->evas = ecore_evas_get(el->ee);
 
@@ -112,6 +111,13 @@ setup(int argc, char **argv, Elicit *el)
   evas_object_name_set(el->swatch, "swatch");
   evas_object_show(el->swatch);
 
+  el->draggie = esmart_draggies_new(el->ee);
+  esmart_draggies_button_set(el->draggie, 1);
+  evas_object_layer_set(el->draggie, -1);
+  evas_object_move(el->draggie, 0, 0);
+  evas_object_name_set(el->draggie, "draggie");
+  evas_object_show(el->draggie);
+
   elicit_ui_theme_set(el, elicit_config_theme_get(el), "elicit");
   elicit_ui_update_text(el);
   return 0;
@@ -129,14 +135,11 @@ elicit_ui_theme_set(Elicit *el, char *theme, char *group)
     return;
   }
 
-  printf("theme set\n");
-
   /* set the default window size */
   edje_object_size_min_get(el->gui, &mw, &mh);
   ecore_evas_size_min_set(el->ee, mw, mh);
   if (mw != 0 && mh != 0)
   {
-    printf("resize to: %.2f x %.2f\n", mw, mh);
     evas_object_resize(el->gui, mw, mh);
     ecore_evas_resize(el->ee, mw, mh);
   }

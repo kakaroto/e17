@@ -1,5 +1,6 @@
       part {
         name, "rgb-inset";
+        mouse_events, 0;
         description {
           state, "default" 0.0;
           min, 10 10;
@@ -23,6 +24,7 @@
 
       part {
         name, "button-inset";
+        mouse_events, 0;
         description {
           state, "default" 0.0;
           min, 10 10;
@@ -33,9 +35,10 @@
             offset, -31 3;
           }
           rel2 {
-            to, "main";
-            relative, 1.0 1.0;
-            offset, -4 -4;
+            to_x, "main";
+            to_y, "edit-inset";
+            relative, 1.0 0.0;
+            offset, -4 -2;
           }
           image {
             normal, "inset.png";
@@ -67,6 +70,7 @@
       }
       part {
         name, "shot-border";
+        mouse_events, 0;
         description {
           state, "default" 0.0;
           min, 0 0;
@@ -79,9 +83,9 @@
           }
           rel2 {
             to_x, "button-inset";
-            to_y, "main";
-            relative, 0.0 1.0;
-            offset, -2 -4;
+            to_y, "edit-inset";
+            relative, 0.0 0.0;
+            offset, -2 -2;
           }
           image {
             normal, "inset-border.png";
@@ -114,19 +118,22 @@
       }
       part {
         name, "swatch-border";
+        mouse_events, 0;
         description {
           state, "default" 0.0;
           min, 10 10;
           max, 50 50;
           rel1 {
-            to, "main";
-            relative, 0.0 1.0;
-            offset, 3 -33;
+            to_x, "main";
+            to_y, "edit-inset";
+            relative, 0.0 0.0;
+            offset, 3 -31;
           }
           rel2 {
-            to, "main";
-            relative, 0.0 1.0;
-            offset, 32 -4;
+            to_x, "main";
+            to_y, "edit-inset";
+            relative, 0.0 0.0;
+            offset, 32 -2;
           }
           image {
             normal, "inset-border.png";
@@ -135,4 +142,48 @@
         }
       }
 
+      part {
+        name, "edit-inset";
+        mouse_events, 0;
+        description {
+          state, "default" 0.0;
+          min, 0 0;
+          max, 9999 9999;
+          color, 255 255 255 0;
+          rel1 {
+            to, "main";
+            relative, 0.0 1.0;
+            offset, 3 -2;
+          }
+          rel2 {
+            to, "main";
+            relative, 1 1.0;
+            offset, -4 -3;
+          }
+          image {
+            normal, "inset-border.png";
+          }
+          border, 7 8 7 8;
+        }
+        description {
+          state, "expanded" 0.0;
+          min, 0 0;
+          max, 9999 9999;
+          color, 255 255 255 255;
+          rel1 {
+            to, "main";
+            relative, 0.0 1.0;
+            offset, 3 -103;
+          }
+          rel2 {
+            to, "main";
+            relative, 1 1.0;
+            offset, -4 -4;
+          }
+          image {
+            normal, "inset-border.png";
+          }
+          border, 7 8 7 8;
+        }
+      }
 

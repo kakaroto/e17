@@ -2,6 +2,12 @@ program {
   name, "expand.1";
   signal, "expand";
   source, "*";
+  action, STATE_SET "block" 0.0;
+  target, "toggle-blocker";
+  after, "expand.1.5";
+}
+program {
+  name, "expand.1.5";
   action, SIGNAL_EMIT "elicit,resize,+0,+100" "";
   after, "expand.2";
 }
@@ -15,8 +21,22 @@ program {
 program {
   name, "expand.3";
   action, STATE_SET "default" 0.0;
-  transition, DECELERATE 1.0;
+  transition, DECELERATE 0.5;
   target, "main";
+  after, "expand.4";
+}
+program {
+  name, "expand.4";
+  action, STATE_SET "expanded" 0.0;
+  transition, DECELERATE 0.5;
+  target, "edit-inset";
+  after, "expand.5";
+}
+program {
+  name, "expand.5";
+  action, STATE_SET "default" 0.0;
+  transition, LINEAR 0.0;
+  target, "toggle-blocker";
 }
 
 
@@ -27,12 +47,19 @@ program {
   action, STATE_SET "block" 0.0;
   transition, LINEAR 0.0;
   target, "toggle-blocker";
+  after, "contract.1.25";
+}
+program {
+  name, "contract.1.25";
+  action, STATE_SET "default" 0.0;
+  transition, DECELERATE 0.5;
+  target, "edit-inset";
   after, "contract.1.5";
 }
 program {
   name, "contract.1.5";
   action, STATE_SET "start" 0.0;
-  transition, DECELERATE 1.0;
+  transition, DECELERATE 0.5;
   target, "main";
   after, "contract.2";
 }

@@ -1,6 +1,7 @@
       // center panel
       part {
         name, "center";
+        mouse_events, 0;
         description {
           state, "default" 0.0;
           min, 104 113;

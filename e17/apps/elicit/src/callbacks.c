@@ -14,15 +14,17 @@ elicit_cb_resize(Ecore_Evas *ee)
 {
   int w, h;
   double sw, sh;
-  Evas_Object *gui, *shot;
+  Evas_Object *gui, *shot, *draggie;
 
   /* keep the gui the same size as the window */
   ecore_evas_geometry_get(ee, NULL, NULL, &w, &h);
 
   gui = evas_object_name_find(ecore_evas_get(ee), "gui");
   shot = evas_object_name_find(ecore_evas_get(ee), "shot");
+  draggie = evas_object_name_find(ecore_evas_get(ee), "draggie");
 
   evas_object_resize(gui, w, h);
+  evas_object_resize(draggie, w, h);
 
   /* keep the shot filling its bounds */
   evas_object_geometry_get(shot, NULL, NULL, &sw, &sh);
@@ -145,7 +147,7 @@ elicit_cb_resize_sig(void *data, Evas_Object *o, const char *sig, const char *sr
   {
     wstr = arg;
     sub = strstr(arg, ",");
-    printf("arg: %s :: sub: %s\n", arg, sub);
+    //printf("arg: %s :: sub: %s\n", arg, sub);
     sub[0] = '\0';
     hstr = sub + 1;
 
@@ -154,14 +156,14 @@ elicit_cb_resize_sig(void *data, Evas_Object *o, const char *sig, const char *sr
     if (hstr[0] == '+') hoff = 1;
     else if (hstr[0] == '-') hoff = -1;
 
-    printf("h: %s, w: %s off:(%d,%d)\n", hstr, wstr, hoff, woff);
+    //printf("h: %s, w: %s off:(%d,%d)\n", hstr, wstr, hoff, woff);
     if (woff != 0) wstr = wstr + 1;
     if (hoff != 0) hstr = hstr + 1;
-    printf("h: %s, w: %s off:(%d,%d)\n", hstr, wstr, hoff, woff);
+    //printf("h: %s, w: %s off:(%d,%d)\n", hstr, wstr, hoff, woff);
     w = atoi(wstr);
     h = atoi(hstr);
 
-    printf("resize: (%d, %d) (%d, %d)\n", w, h, woff, hoff);
+    //printf("resize: (%d, %d) (%d, %d)\n", w, h, woff, hoff);
     ecore_evas_resize(el->ee,
                       woff ? ow + w * woff : w,
                       hoff ? oh + h * hoff : h);

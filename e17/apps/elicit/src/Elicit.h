@@ -7,6 +7,7 @@
 #include <Ecore_Evas.h>
 #include <Ecore_Config.h>
 #include <Edje.h>
+#include <Esmart/dragable.h>
 #include <X11/Xlib.h>
 #include <Imlib2.h>
 #include <stdlib.h>
@@ -31,6 +32,7 @@ struct _Elicit
   Evas *evas;
   Evas_Object *gui;
 
+  Evas_Object *draggie;
   Evas_Object *shot, *swatch;
   
   struct {
