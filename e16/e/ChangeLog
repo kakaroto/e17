@@ -2199,3 +2199,11 @@ Fix problem with applications that de-iconify their windows. This fix
 re-introduces a problem where E may lose control over a window that is
 iconified and de-iconified immediately after. Since this is an old bug
 we should be able to live with it until it is fixed properly.
+
+-------------------------------------------------------------------------------
+
+Wed Nov  5 18:58:51 CET 2003
+(Kim)
+
+Copyrights->2003.
+BUGS final touch.
