@@ -101,6 +101,13 @@ extern options_t opt;
 
 /* callbacks */
 void
+cb_main_close(GtkWidget * w, void *data)
+{
+   gui_save_config();
+   exit(0);
+}
+
+void
 cb_close(GtkWidget * w, void *data)
 {
    gtk_widget_destroy(GTK_WIDGET(w));
@@ -367,6 +374,7 @@ cb_ok(GtkButton *button, gpointer user_data)
 {
    gui_save_config();
    save_config("ipvs");
+   gui_save_config();
    exit(0);
 }
 
@@ -783,7 +791,7 @@ gui(void)
    GdkPixmap *pm, *mm;
    
    win = gtk_window_new(GTK_WINDOW_TOPLEVEL);
-   CONNECT(win, "delete_event", cb_close, win);
+   CONNECT(win, "delete_event", cb_main_close, win);
    gtk_window_set_wmclass(GTK_WINDOW(win), "LVS-Gui", "LVS");
    gtk_window_set_title(GTK_WINDOW(win), "LVS Configuration");
    gtk_container_border_width(GTK_CONTAINER(win), 2);
