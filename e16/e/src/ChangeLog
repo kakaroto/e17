@@ -1832,3 +1832,10 @@ Thu Sep 16 16:33:08 EDT 1999
 
 Don't snapshot group borders.
 
+
+-------------------------------------------------------------------------------
+
+Thu Sep 16 13:59:43 PDT 1999
+(Raster)
+
+fix speed fo menu sliding/scrolling and cleanup sliding/scrolling.

@@ -1277,6 +1277,7 @@ doCleanup(void *params)
 	     (!((EWin *) lst[i])->sticky) && (!((EWin *) lst[i])->floating) &&
 		 (!((EWin *) lst[i])->iconified) &&
 		 (!((EWin *) lst[i])->ignorearrange) &&
+		 (!((EWin *) lst[i])->menu) &&
 		 (((EWin *) lst[i])->area_x ==
 		  desks.desk[((EWin *) lst[i])->desktop].current_area_x) &&
 		 (((EWin *) lst[i])->area_y ==
@@ -1296,7 +1297,8 @@ doCleanup(void *params)
 			   (((EWin *) lst[i])->sticky)
 			) &&
 			(((EWin *) lst[i])->layer != 4) &&
-			(((EWin *) lst[i])->layer != 0)
+			(((EWin *) lst[i])->layer != 0) &&
+			(!((EWin *) lst[i])->menu)
 		)
 	       {
 		  fixed = Erealloc(fixed, sizeof(RectBox) * (k + 1));

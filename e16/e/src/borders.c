@@ -195,7 +195,10 @@ SlideEwinTo(EWin * ewin, int fx, int fy, int tx, int ty, int speed)
 	tmpy = y;
 	tmpw = ewin->client.w;
 	tmph = ewin->client.h;
-	DrawEwinShape(ewin, mode.slidemode, tmpx, tmpy, tmpw, tmph, firstlast);
+	if (mode.slidemode == 0)
+	   EMoveWindow(disp, ewin->win, tmpx, tmpy);
+	else
+	   DrawEwinShape(ewin, mode.slidemode, tmpx, tmpy, tmpw, tmph, firstlast);
 	if (firstlast == 0)
 	   firstlast = 1;
 	XSync(disp, False);
@@ -262,7 +265,10 @@ SlideEwinsTo(EWin ** ewin, int *fx, int *fy, int *tx, int *ty,
 		  tmpy = y[i];
 		  tmpw = ewin[i]->client.w;
 		  tmph = ewin[i]->client.h;
-		  DrawEwinShape(ewin[i], 0, tmpx, tmpy, tmpw, tmph, firstlast);
+		  if (ewin[i]->menu)
+		     EMoveWindow(disp, ewin[i]->win, tmpx, tmpy);
+		  else
+		     DrawEwinShape(ewin[i], 0, tmpx, tmpy, tmpw, tmph, firstlast);
 		  if (firstlast == 0)
 		     firstlast = 1;
 		  XSync(disp, False);

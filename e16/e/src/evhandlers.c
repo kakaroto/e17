@@ -475,60 +475,6 @@ HandleMotion(XEvent * ev)
 			gwins[i]->reqy = pry + dy;
 		  }
 	     }
-#if 0
-	     for (i = 0; i < num; i++)
-	       {
-		  /* make our ewin resist other ewins around the place */
-		  SnapEwin(gwins[i], dx, dy, &ndx, &ndy);
-		  /* if in constrained mode set the screen edge resist */
-		  /* to something huge so it doesnt have any effect */
-		  screen_snap_dist = mode.constrained ? (root.w + root.h)
-		     : mode.screen_snap_dist;
-		  prx = gwins[i]->reqx;
-		  pry = gwins[i]->reqy;
-		  /* snap the window to the screen edges horizontally */
-		  if ((ndx != dx) &&
-		      (((gwins[i]->x == 0) &&
-			(!(IN_RANGE(gwins[i]->reqx, gwins[i]->x, screen_snap_dist)))) ||
-		       ((gwins[i]->x == (root.w - gwins[i]->w)) &&
-			(!(IN_RANGE(gwins[i]->reqx, gwins[i]->x, screen_snap_dist)))) ||
-		       ((gwins[i]->x != 0) && (gwins[i]->x != (root.w - gwins[i]->w) &&
-					       (!(IN_RANGE(gwins[i]->reqx, gwins[i]->x, mode.edge_snap_dist)))))))
-		    {
-		       ndx = gwins[i]->reqx - gwins[i]->x + dx;
-		       prx = gwins[i]->x;
-		       dx = 0;
-		       dox = 1;
-		    }
-		  /* snap the window to the screen edges vertically */
-		  if ((ndy != dy) &&
-		      (((gwins[i]->y == 0) &&
-			(!(IN_RANGE(gwins[i]->reqy, gwins[i]->y, screen_snap_dist)))) ||
-		       ((gwins[i]->y == (root.h - gwins[i]->h)) &&
-			(!(IN_RANGE(gwins[i]->reqy, gwins[i]->y, screen_snap_dist)))) ||
-		       ((gwins[i]->y != 0) && (gwins[i]->y != (root.h - gwins[i]->h) &&
-					       (!(IN_RANGE(gwins[i]->reqy, gwins[i]->y, mode.edge_snap_dist)))))))
-		    {
-		       ndy = gwins[i]->reqy - gwins[i]->y + dy;
-		       pry = gwins[i]->y;
-		       dy = 0;
-		       doy = 1;
-		    }
-		  /* if its opaque move mode check to see if we have to float */
-		  /* the window aboe all desktops (reparent to root) */
-		  if (mode.movemode == 0)
-		     DetermineEwinFloat(gwins[i], ndx, ndy);
-		  /* draw the new position of the window */
-		  DrawEwinShape(gwins[i], mode.movemode, gwins[i]->x + ndx, gwins[i]->y + ndy,
-		      gwins[i]->client.w, gwins[i]->client.h, mode.firstlast);
-		  /* if we didnt jump the winow after a reist at the edge */
-		  /* reset the requested x to be the prev requested + delta */
-		  if (!(dox))
-		     gwins[i]->reqx = prx + dx;
-		  if (!(doy))
-		     gwins[i]->reqy = pry + dy;
-	       }
-#endif
 	     Efree(gwins);
 	  }
 	break;
