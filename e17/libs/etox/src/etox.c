@@ -1106,6 +1106,9 @@ void _etox_unwrap_lines(Etox *et)
 
 	CHECK_PARAM_POINTER("et", et);
 
+	if (!et->lines)
+		return;
+
 	prevline = et->lines->data;
 
 	for (l = et->lines->next; l; l = l->next) {

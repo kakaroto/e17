@@ -283,8 +283,7 @@ void etox_context_set_style(Etox * et, char *name)
 	 * Release this instance of the old style, and then get an instance of
 	 * the new style.
 	 */
-	if (et->context->style)
-		FREE(et->context->style);
+	IF_FREE(et->context->style);
 
 	if (name && *name)
 		et->context->style = strdup(name);
