@@ -1,7 +1,7 @@
 
 #include <Ewl.h>
 
-static Ewl_Image_Type  ewl_image_get_type(const char *i);
+static Ewl_Image_Type  ewl_image_type_get(const char *i);
 
 /**
  * @param i: the path to the image to be displayed by the image widget
@@ -66,7 +66,7 @@ void ewl_image_init(Ewl_Image * i, char *path, char *key)
 	i->sw = 1.0;
 	i->sh = 1.0;
 
-	ewl_image_set_file(i, path, key);
+	ewl_image_file_set(i, path, key);
 
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
@@ -76,7 +76,7 @@ void ewl_image_init(Ewl_Image * i, char *path, char *key)
  * @return Returns the currently set filename
  * @brief get the filename this image uses
  */
-char *ewl_image_get_file(Ewl_Image * i)
+char *ewl_image_file_get(Ewl_Image * i)
 {
 	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR_RET("i", i, NULL);
@@ -93,7 +93,7 @@ char *ewl_image_get_file(Ewl_Image * i)
  *
  * Set the image displayed by @a i to the one found at the path @a im.
  */
-void ewl_image_set_file(Ewl_Image * i, char *im, char *key)
+void ewl_image_file_set(Ewl_Image * i, char *im, char *key)
 {
 	int             old_type;
 	Ewl_Widget     *w;
@@ -114,7 +114,7 @@ void ewl_image_set_file(Ewl_Image * i, char *im, char *key)
 	 */
 	old_type = i->type;
 	if (im) {
-		i->type = ewl_image_get_type(im);
+		i->type = ewl_image_type_get(im);
 		i->path = strdup(im);
 		if (key)
 			i->key = strdup(key);
@@ -158,7 +158,7 @@ void ewl_image_set_file(Ewl_Image * i, char *im, char *key)
  * Changes the flag indicating if the image is scaled proportionally.
  */
 void
-ewl_image_set_proportional(Ewl_Image *i, char p)
+ewl_image_proportional_set(Ewl_Image *i, char p)
 {
 	DENTER_FUNCTION(DLEVEL_STABLE);
 
@@ -378,7 +378,7 @@ void ewl_image_configure_cb(Ewl_Widget * w, void *ev_data, void *user_data)
 /*
  * Determine the type of the file based on the filename.
  */
-static Ewl_Image_Type ewl_image_get_type(const char *i)
+static Ewl_Image_Type ewl_image_type_get(const char *i)
 {
 	int             l;
 

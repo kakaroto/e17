@@ -216,7 +216,7 @@ char *
 ewl_menu_item_image_get( Ewl_Menu_Item *item )
 {
 	if (item->icon && ewl_widget_type_is(item->icon, "image"))
-		DRETURN_PTR(ewl_image_get_file(EWL_IMAGE(item->icon)), DLEVEL_STABLE);
+		DRETURN_PTR(ewl_image_file_get(EWL_IMAGE(item->icon)), DLEVEL_STABLE);
 	DRETURN_PTR(NULL, DLEVEL_STABLE);
 }
 
@@ -229,7 +229,7 @@ void
 ewl_menu_item_image_set( Ewl_Menu_Item *item, char *image )
 {
 	if (item->icon && ewl_widget_type_is(item->icon, "image"))
-		ewl_image_set_file(EWL_IMAGE(item->icon), image, NULL);
+		ewl_image_file_set(EWL_IMAGE(item->icon), image, NULL);
 	else {
 		ewl_menu_item_image_create( item, image,
                                     ewl_text_text_get(EWL_TEXT(item->text)) );
