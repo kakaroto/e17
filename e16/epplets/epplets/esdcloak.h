@@ -15,3 +15,4 @@ void draw_ball(void);
 void draw_atoms(void);
 void draw_text(void);
 void draw_history(void);
+void draw_history_bar(void);

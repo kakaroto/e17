@@ -157,6 +157,12 @@ cloak_draw (void *data)
 	Epplet_timer (cloak_draw, NULL, opt.draw_interval, "DRAW_TIMER");
 	break;
       }
+       case 10:
+      {
+        draw_history_bar ();
+        Epplet_timer (cloak_draw, NULL, opt.draw_interval, "DRAW_TIMER");
+        break;
+      }
     default:
       {
 	blank_buf ();
@@ -470,6 +476,8 @@ create_epplet_layout (void)
 			  (void *) (&(cloak_anims[8])));
   Epplet_add_popup_entry (p, "History", NULL, cb_cloak_anim,
 			  (void *) (&(cloak_anims[9])));
+  Epplet_add_popup_entry (p, "History Bar", NULL, cb_cloak_anim,
+			  (void *) (&(cloak_anims[10])));
 
   ctimer_p = Epplet_create_popup ();
   Epplet_add_popup_entry (ctimer_p, "Cloak Delay", NULL, NULL, NULL);

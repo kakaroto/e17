@@ -586,6 +586,25 @@ draw_history (void)
   set_col_pixel (39, 39-((load_val*36)/100), 255, 115, 255, 165);
 }
 
+void
+draw_history_bar (void)
+{
+  static int setup = 0;
+
+  if (!setup)
+    {
+      blank_buf ();
+      setup = 1;
+    }
+  else
+    scroll_buf ();
+
+  aa_line (39, 39-((load_val*36)/100),39,39, 255, 80, 255, 125);
+}
+
+
+/* ************************* */
+
 /* ************************* */
 /* Utility drawing functions */
 /* ************************* */
