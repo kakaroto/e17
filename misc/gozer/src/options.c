@@ -54,6 +54,8 @@ init_parse_options(int argc, char **argv)
    opt.bg_tile = 0;
    opt.bg_scale = 0;
 
+   opt.quality = 75;
+
    home = getenv("HOME");
    if (!home)
       weprintf("D'oh! Please define HOME in your environment!"
@@ -97,6 +99,7 @@ gozer_parse_option_array(int argc, char **argv)
       {"line-spacing", 1, 0, 'l'},
       {"fontpath", 1, 0, 'p'},
       {"pipe", 0, 0, 'P'},
+      {"quality", 1, 0, 'q'},
       {"rc-file", 1, 0, 'r'},
       {"style", 1, 0, 's'},
       {"text", 1, 0, 't'},
@@ -158,8 +161,11 @@ gozer_parse_option_array(int argc, char **argv)
         case 'p':
            gib_imlib_parse_fontpath(optarg);
            break;
-		case 'P':
+	    	case 'P':
            opt.pipe = 1;
+           break;
+        case 'q':
+           opt.quality = atoi(optarg);
            break;
         case 'r':
            opt.rc_file = estrdup(optarg);
@@ -267,6 +273,10 @@ show_usage(void)
            " -p, --fontpath STR       colon seperated list of font directories to\n"
            "                          search for fonts in. Best used in the RCFILE\n"
            "                          to save typing it each time.\n"
+           " -q, --quality NUM        Image quality (1-100) high value means\n"
+           "                          high size, low compression. Default: 75.\n"
+           "                          For lossless compression formats, like png,\n"
+           "                          low quality means high compression.\n"
            " -P, --pipe               Pipe input text from standard in instead of\n"
            "                          reading it from a file\n"
            " -r, --rc-file STR        use STR as an rc file to read for extra options.\n"

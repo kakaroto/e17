@@ -58,6 +58,7 @@ struct __gozeroptions
    int justification;
    int to_stdout;
    int cgi;
+   int quality;
    int x,y;
 };
 

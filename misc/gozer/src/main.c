@@ -216,6 +216,9 @@ main(int argc, char **argv)
       l = l->next;
    }
 
+   imlib_context_set_image(image);
+   imlib_image_attach_data_value("quality", NULL, opt.quality, NULL);
+
    gib_imlib_save_image_with_error_return(image, opt.output_file, &err);
    if (err)
       eprintf("Saving to file %s failed", opt.output_file);
