@@ -826,6 +826,7 @@ struct _ewin
    int                 desktop;
    Group             **groups;
    int                 num_groups;
+   char                visibility;
    char                docked;
    char                sticky;
    char                shown;

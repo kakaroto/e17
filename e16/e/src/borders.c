@@ -40,7 +40,7 @@
 #define EWIN_CLIENT_EVENT_MASK \
   (EnterWindowMask | LeaveWindowMask | FocusChangeMask | \
    StructureNotifyMask | ResizeRedirectMask | \
-   PropertyChangeMask | ColormapChangeMask)
+   PropertyChangeMask | ColormapChangeMask | VisibilityChangeMask)
 
 static void         EwinBorderSetTo(EWin * ewin, Border * b);
 static EWin        *EwinCreate(Window win);
@@ -1624,8 +1624,9 @@ EwinEventUnmap(EWin * ewin)
 }
 
 void
-EwinEventVisibility(EWin * ewin __UNUSED__, int state __UNUSED__)
+EwinEventVisibility(EWin * ewin, int state)
 {
+   ewin->visibility = state;
 }
 
 static void

@@ -55,7 +55,7 @@ static Pager       *mode_context_pager = NULL;
 #define HIQ Conf.pagers.hiq
 
 static void
-PagerUpdateTimeout(int val, void *data)
+PagerUpdateTimeout(int val __UNUSED__, void *data)
 {
    Pager              *p;
    char                s[4096];
@@ -84,6 +84,8 @@ PagerUpdateTimeout(int val, void *data)
    if (!Conf.pagers.snap)
       return;
    if (!p->visible)
+      return;
+   if (p->ewin && p->ewin->visibility == VisibilityFullyObscured)
       return;
    if (p->desktop != desks.current)
       return;
@@ -115,8 +117,6 @@ PagerUpdateTimeout(int val, void *data)
 
 	p->update_phase = 0;
      }
-   return;
-   val = 0;
 }
 
 Pager              *
