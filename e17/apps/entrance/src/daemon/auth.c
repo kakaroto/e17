@@ -22,16 +22,26 @@
 
 char * entranced_cookie_new (void) 
 {
-   int fd;
-   int r, i;
-   unsigned char buf[BUFSIZE];
-   unsigned char digest[MD5_HASHBYTES];
-   char *cookie;
-   Entranced_MD5_Context *ctx = NULL;
+   int                     fd;
+   int                     r, i;
+   unsigned char           buf[BUFSIZE];
+   unsigned char           digest[MD5_HASHBYTES];
+   double                  ctime;
+   pid_t                   pid;
+   char                    *cookie;
+   Entranced_MD5_Context   *ctx = NULL;
 
    entranced_md5_init(ctx);
 
-   if ((fd = open("/dev/urandom", O_RDONLY|O_NONBLOCK)) < 0) {
+   ctime = ecore_time_get();
+   entranced_md5_update(ctx, (unsigned char *) &ctime, sizeof(ctime));
+   pid = getpid();
+   entranced_md5_update(ctx, (unsigned char *) &pid, sizeof(pid));
+   pid = getppid();
+   entranced_md5_update(ctx, (unsigned char *) &pid, sizeof(pid));
+   
+
+   if ((fd = open("/dev/random", O_RDONLY|O_NONBLOCK)) < 0) {
       entranced_debug("Cookie generation failed: could not open /dev/urandom\n");
       return NULL;
    }
@@ -285,7 +295,7 @@ entranced_auth_display_secure (Entranced_Display *d)
 }
 
 int
-entranced_auth_user_add(Entranced_Display *d, uid_t user, const char *homedir)
+entranced_auth_user_add(Entranced_Display *d, const char *homedir)
 {
    FILE              *auth_file;
    int               ret = TRUE;
@@ -295,7 +305,7 @@ entranced_auth_user_add(Entranced_Display *d, uid_t user, const char *homedir)
    if (!d || !homedir)
       return FALSE;
 
-   entranced_debug("entranced_auth_user_add: Adding auth cookie for UID %d\n", user);
+   entranced_debug("entranced_auth_user_add: Adding auth cookie\n");
 
    while(1)
    {
@@ -367,10 +377,49 @@ entranced_auth_user_add(Entranced_Display *d, uid_t user, const char *homedir)
 
    fclose(auth_file);
    XauUnlockAuth(d->user_authfile);
-   entranced_debug("entranced_auth_user_add: Finished writing auth entries for uid %s", user);
+   entranced_debug("entranced_auth_user_add: Finished writing auth entries to %s", d->user_authfile);
 
    return ret;
       
+}
+
+void
+entranced_auth_user_remove (Entranced_Display *d)
+{
+   FILE     *auth_file;
+
+   if (!d || !d->user_authfile)
+      return;
+
+   entranced_debug("entranced_auth_user_remove: Removing cookie from %s\n", d->user_authfile);
+
+   /* TODO: Permissions check on auth file */
+   /* Get a lock */
+   if (XauLockAuth(d->user_authfile, 3, 3, 0) != LOCK_SUCCESS)
+   {
+      free(d->user_authfile);
+      d->user_authfile = NULL;
+      return;
+   }
+
+   /* Open the file */
+   if (!(auth_file = fopen(d->user_authfile, "a+")))
+   {
+      XauUnlockAuth(d->user_authfile);
+      free(d->user_authfile);
+      d->user_authfile = NULL;
+      return;
+   }
+
+   /* Remove cookies for this display */
+   _entranced_auth_purge(d, auth_file);
+   
+   /* Close and unlock */
+   fclose(auth_file);
+   XauUnlockAuth(d->user_authfile);
+
+   free(d->user_authfile);
+   d->user_authfile = NULL;
 }
 
 
