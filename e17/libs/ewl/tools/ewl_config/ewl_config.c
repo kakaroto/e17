@@ -317,10 +317,7 @@ main(int argc, char **argv)
 					     e_conf.plugins_label);
 		  ewl_widget_show(e_conf.plugins_label);
 
-		  e_conf.effects_table = ewl_table_new_all(FALSE,
-							   3,
-							   ewd_list_nodes
-							   (avail), 3, 5);
+		  e_conf.effects_table = ewl_grid_new(3, ewd_list_nodes(avail));
 		  ewl_container_append_child(EWL_CONTAINER(e_conf.page_fx),
 					     e_conf.effects_table);
 		  ewl_widget_show(e_conf.effects_table);
@@ -345,7 +342,7 @@ main(int argc, char **argv)
 
 			    label = ewl_text_new();
 			    ewl_text_set_text(EWL_TEXT(label), name);
-			    ewl_table_attach(EWL_TABLE(e_conf.effects_table),
+			    ewl_grid_add(EWL_GRID(e_conf.effects_table),
 					     label, 1, 1, i, i);
 			    ewl_widget_show(label);
 
@@ -366,7 +363,7 @@ main(int argc, char **argv)
 			    else
 				    ewl_widget_disable(settings_button);
 
-			    ewl_table_attach(EWL_TABLE(e_conf.effects_table),
+			    ewl_grid_add(EWL_GRID(e_conf.effects_table),
 					     settings_button, 2, 2, i, i);
 			    ewl_widget_show(settings_button);
 
@@ -387,7 +384,7 @@ main(int argc, char **argv)
 			    else
 				    ewl_widget_disable(about_button);
 
-			    ewl_table_attach(EWL_TABLE(e_conf.effects_table),
+			    ewl_grid_add(EWL_GRID(e_conf.effects_table),
 					     about_button, 3, 3, i, i);
 			    ewl_widget_show(about_button);
 		    }
@@ -664,7 +661,7 @@ ewl_config_exit_cb(Ewl_Widget * w, void *user_data, void *ev_data)
 		ewl_config_create_confirm_dialog();
 	else
 	  {
-		  ewl_widget_destroy_recursive(e_conf.main_win);
+		  ewl_widget_destroy(e_conf.main_win);
 
 		  ewl_main_quit();
 	  }
@@ -741,7 +738,7 @@ ewl_config_destroy_confirm_dialog(Ewl_Widget * w, void *ev_data,
 				  void *user_data)
 {
 	if (confirm.win)
-		ewl_widget_destroy_recursive(confirm.win);
+		ewl_widget_destroy(confirm.win);
 
 	confirm.win = NULL;
 
