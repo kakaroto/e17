@@ -8,3 +8,13 @@ Split the mode struct into configuration and state stuff.
 - Although purely cosmetical, this was quite a large change measured by
   amount of changed lines.
   However, over time I've had a lot of trouble figuring out which was what.
+
+-------------------------------------------------------------------------------
+
+Mon Jan 12 22:36:38 CET 2004
+(Kim)
+
+Split the mode struct into configuration and state stuff.
+- Although purely cosmetical, this was quite a large change measured by
+  amount of changed lines.
+  However, over time I've had a lot of trouble figuring out which was what.
