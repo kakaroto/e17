@@ -112,6 +112,8 @@ sub toggle_show_details {
 				} else {
 					$$item{checkbox}->show();
 				}
+			} else {
+				$$item{checkbox}->show();
 			}
 		}
 	} else {
@@ -128,6 +130,8 @@ sub toggle_show_details {
 				} else {
 					$$item{checkbox}->show();
 				}
+			} else {
+				$$item{checkbox}->show();
 			}
 		}
 	}
