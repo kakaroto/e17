@@ -76,8 +76,8 @@ void ewl_menu_configure_cb(Ewl_Widget *w, void *ev_data, void *user_data)
 	emb = ewl_embed_widget_find(w);
 
 	ewl_window_position_get(EWL_WINDOW(emb), &x, &y);
-	x += CURRENT_X(w);
-	y += CURRENT_Y(w);
+	menu->popup_x = x + CURRENT_X(w);
+	menu->popup_y = y + CURRENT_Y(w);
 
 	/*
 	 * Position the popup menu relative to the menu.
