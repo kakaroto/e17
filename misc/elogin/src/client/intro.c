@@ -104,7 +104,7 @@ elogin_update_time(int val, void *data)
 
       current = localtime(&_t);
       if (val)
-         strftime(buf, PATH_MAX, "%I:%M %Z", current);
+         strftime(buf, PATH_MAX, "%l:%M %Z", current);
       else
          strftime(buf, PATH_MAX, "%b %e %Y", current);
       estyle_set_text((Estyle *) data, buf);
