@@ -21,8 +21,11 @@
  * CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 #include "E.h"
+
 #ifdef HAVE_LIBESD
+#include <esd.h>
 #include <audiofile.h>
+
 #ifdef WORDS_BIGENDIAN
 #define SWAP_SHORT( x ) x = ( ( x & 0x00ff ) << 8 ) | ( ( x >> 8 ) & 0x00ff )
 #define SWAP_LONG( x ) x = ( ( ( x & 0x000000ff ) << 24 ) |\

@@ -311,10 +311,6 @@ int                 Esnprintf(va_alist);
   putenv(envvar);\
 }
 
-#ifdef HAVE_LIBESD
-#include <esd.h>
-#endif
-
 /* This is a start to providing internationalization by means */
 /* of gettext */
 
