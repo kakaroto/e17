@@ -151,6 +151,7 @@ geist_document_render_partial(geist_document * document, int x, int y, int w,
 
    D_ENTER(3);
 
+   printf("Doc render partial, %d,%d %dx%d\n", x, y, w, h);
    geist_imlib_image_fill_rectangle(document->im, x, y, w, h, 255, 255, 255,
                                     255);
 
