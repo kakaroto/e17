@@ -558,6 +558,14 @@ IconboxRefresh(EWin * ewin)
    IconboxRedraw(ib);
 }
 
+static void
+IconboxEwinInit(EWin * ewin, void *ptr)
+{
+   ewin->ibox = (Iconbox *) ptr;
+   ewin->MoveResize = IconboxMoveResize;
+   ewin->Refresh = IconboxRefresh;
+}
+
 void
 IconboxShow(Iconbox * ib)
 {
@@ -579,16 +587,14 @@ IconboxShow(Iconbox * ib)
    XSetClassHint(disp, ib->win, xch);
    XFree(xch);
    MatchToSnapInfoIconbox(ib);
-   ewin = AddInternalToFamily(ib->win, 1, "ICONBOX", EWIN_TYPE_ICONBOX, ib);
+   ewin = AddInternalToFamily(ib->win, "ICONBOX", EWIN_TYPE_ICONBOX, ib,
+			      IconboxEwinInit);
    if (ewin)
      {
 	Snapshot           *sn;
 	int                 w, h;
 
 	ib->ewin = ewin;
-	ewin->ibox = ib;
-	ewin->MoveResize = IconboxMoveResize;
-	ewin->Refresh = IconboxRefresh;
 
 	IB_Reconfigure(ib);
 	sn = FindSnapshot(ewin);

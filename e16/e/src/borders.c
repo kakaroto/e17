@@ -26,6 +26,8 @@
 static void         EwinSetBorderInit(EWin * ewin);
 static void         EwinSetBorderTo(EWin * ewin, Border * b);
 static void         DetermineEwinArea(EWin * ewin);
+EWin               *Adopt(Window win);
+EWin               *AdoptInternal(Window win, Border * border, int type);
 
 #if 0
 #define DELETE_EWIN_REFERENCE(ew, ew_ref) \
@@ -208,10 +210,8 @@ SlideEwinTo(EWin * ewin, int fx, int fy, int tx, int ty, int speed)
    int                 dsec, dusec;
    double              tm;
    char                firstlast;
-   Window              winid;
 
    EDBUG(3, "SlideEwinTo");
-   winid = ewin->client.win;
    spd = 16;
    min = 2;
    firstlast = 0;
@@ -351,7 +351,6 @@ AddToFamily(Window win)
    int                 i, k, num, speed, fx, fy, x, y;
    char                doslide, manplace;
    char                pq;
-   Window              winid;
    char                cangrab = 0;
 
    EDBUG(3, "AddToFamily");
@@ -376,7 +375,6 @@ AddToFamily(Window win)
      }
    /* grab that server */
    GrabX();
-   winid = win;
    speed = conf.slidespeedmap;
    doslide = conf.mapslide;
    manplace = 0;
@@ -687,16 +685,14 @@ AddToFamily(Window win)
 }
 
 EWin               *
-AddInternalToFamily(Window win, char noshow, char *bname, int type, void *ptr)
+AddInternalToFamily(Window win, char *bname, int type, void *ptr,
+		    void (*init) (EWin * ewin, void *ptr))
 {
    EWin               *ewin;
-   int                 x, y;
    char                pq;
-   Window              winid;
    Border             *b;
 
    EDBUG(3, "AddInternalToFamily");
-   winid = win;
    b = NULL;
 
    if (bname)
@@ -705,27 +701,28 @@ AddInternalToFamily(Window win, char noshow, char *bname, int type, void *ptr)
 	if (!b)
 	   b = FindItem("DEFAULT", 0, LIST_FINDBY_NAME, LIST_TYPE_BORDER);
      }
-   ewin = AdoptInternal(win, b, type, ptr);
-   ResizeEwin(ewin, ewin->client.w, ewin->client.h);
+   ewin = AdoptInternal(win, b, type);
+   AddItem(ewin, "EWIN", ewin->client.win, LIST_TYPE_EWIN);
+
    if (ewin->desktop < 0)
       ewin->desktop = desks.current;
    else
       ewin->desktop = DESKTOPS_WRAP_NUM(ewin->desktop);
-   x = ewin->client.x - ewin->border->border.left;
-   y = ewin->client.y - ewin->border->border.top;
-   AddItem(ewin, "EWIN", ewin->client.win, LIST_TYPE_EWIN);
+   DesktopAddEwinToTop(ewin);
+
+   if (init)
+      init(ewin, ptr);		/* Type specific initialisation */
+
+   ICCCM_Configure(ewin);
+
    pq = queue_up;
    queue_up = 0;
    DrawEwin(ewin);
    PropagateShapes(ewin->win);
    queue_up = pq;
-   MoveEwinToDesktopAt(ewin, ewin->desktop, x, y);
-   RaiseEwin(ewin);
-   StackDesktops();
-   if (!noshow)
-      ShowEwin(ewin);
-   ICCCM_Configure(ewin);
+
    UngrabX();
+
    EDBUG_RETURN(ewin);
 }
 
@@ -1205,7 +1202,7 @@ Adopt(Window win)
 }
 
 EWin               *
-AdoptInternal(Window win, Border * border, int type, void *ptr)
+AdoptInternal(Window win, Border * border, int type)
 {
    EWin               *ewin;
 

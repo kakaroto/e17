@@ -280,6 +280,14 @@ PagerRefresh(EWin * ewin)
 {
 }
 
+static void
+PagerEwinInit(EWin * ewin, void *ptr)
+{
+   ewin->pager = (Pager *) ptr;
+   ewin->MoveResize = PagerMoveResize;
+   ewin->Refresh = PagerRefresh;
+}
+
 void
 PagerShow(Pager * p)
 {
@@ -306,9 +314,8 @@ PagerShow(Pager * p)
    pq = queue_up;
    queue_up = 0;
    MatchToSnapInfoPager(p);
-   ewin = AddInternalToFamily(p->win, 1,
-			      (p->border_name) ? p->border_name : "PAGER",
-			      EWIN_TYPE_PAGER, p);
+   ewin = AddInternalToFamily(p->win, (p->border_name) ? p->border_name :
+			      "PAGER", EWIN_TYPE_PAGER, p, PagerEwinInit);
    if (ewin)
      {
 	char                s[4096];
@@ -326,9 +333,6 @@ PagerShow(Pager * p)
 	ewin->client.height.min = 8 * ay;
 	ewin->client.width.max = 320 * ax;
 	ewin->client.height.max = 240 * ay;
-	ewin->pager = p;
-	ewin->MoveResize = PagerMoveResize;
-	ewin->Refresh = PagerRefresh;
 
 	p->ewin = ewin;
 	p->visible = 1;

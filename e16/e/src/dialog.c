@@ -583,6 +583,14 @@ DialogRefresh(EWin * ewin)
    DialogMoveResize(ewin, 0);
 }
 
+static void
+DialogEwinInit(EWin * ewin, void *ptr)
+{
+   ewin->dialog = (Dialog *) ptr;
+   ewin->MoveResize = DialogMoveResize;
+   ewin->Refresh = DialogRefresh;
+}
+
 void
 ShowDialog(Dialog * d)
 {
@@ -665,14 +673,13 @@ ShowDialog(Dialog * d)
    pq = queue_up;
    queue_up = 0;
 
-   ewin = AddInternalToFamily(d->win, 1, NULL, EWIN_TYPE_DIALOG, d);
+   ewin = AddInternalToFamily(d->win, NULL, EWIN_TYPE_DIALOG, d,
+			      DialogEwinInit);
    XSelectInput(disp, d->win,
 		ExposureMask | PointerMotionMask | EnterWindowMask |
 		LeaveWindowMask | FocusChangeMask | KeyPressMask);
    if (ewin)
      {
-	DesktopRemoveEwin(ewin);
-	DesktopAddEwinToTop(ewin);
 	sn = FindSnapshot(ewin);
 	/* get the size right damnit! */
 	if (sn && sn->use_wh)
@@ -683,16 +690,12 @@ ShowDialog(Dialog * d)
 	  }
 	else
 	  {
-	     if (FindADialog())
+	     if (FindADialog() > 1)
 		ArrangeEwin(ewin);
 	     else
 		ArrangeEwinCentered(ewin, 0);
 	  }
-	RestackEwin(ewin);
 	ShowEwin(ewin);
-	ewin->dialog = d;
-	ewin->MoveResize = DialogMoveResize;
-	ewin->Refresh = DialogRefresh;
      }
 
    if (!FindDialog(d->win))
@@ -2306,6 +2309,7 @@ DialogEventExpose(XEvent * ev)
    GetWinXY(win, &x, &y);
    GetWinWH(win, (unsigned int *)&w, (unsigned int *)&h);
    DialogDrawArea(d, x, y, w, h);
+
    if (di == NULL)
       goto exit;
 

@@ -23,6 +23,8 @@
 #define DECLARE_STRUCT_MENU 1
 #include "E.h"
 
+static void         MenuDrawItem(Menu * m, MenuItem * mi, char shape);
+
 static void         FileMenuUpdate(int val, void *data);
 static void         FillFlatFileMenu(Menu * m, MenuStyle * ms, char *name,
 				     char *file, Menu * parent);
@@ -108,6 +110,7 @@ MenuHide(Menu * m)
    EWin               *ewin;
 
    EDBUG(5, "MenuHide");
+
    if (m->win)
       EUnmapWindow(disp, m->win);
 
@@ -134,6 +137,7 @@ MenuHide(Menu * m)
    EDBUG_RETURN_;
 }
 
+void                MenuRedraw(Menu * m);
 static void
 MenuMoveResize(EWin * ewin, int resize)
 {
@@ -143,13 +147,21 @@ MenuMoveResize(EWin * ewin, int resize)
       return;
 
    if (conf.theme.transparency || IclassIsTransparent(m->style->bg_iclass))
-      MenuRealize(m);
+      MenuRedraw(m);
 }
 
 static void
 MenuRefresh(EWin * ewin)
 {
    MenuMoveResize(ewin, 0);
+}
+
+static void
+MenuEwinInit(EWin * ewin, void *ptr)
+{
+   ewin->menu = (Menu *) ptr;
+   ewin->MoveResize = MenuMoveResize;
+   ewin->Refresh = MenuRefresh;
 }
 
 void
@@ -301,29 +313,21 @@ MenuShow(Menu * m, char noshow)
 	EMoveWindow(disp, m->win, -mode.x, -mode.y);
      }
 
-   ewin =
-      AddInternalToFamily(m->win, 1, m->style->border_name, EWIN_TYPE_MENU, m);
+   ewin = AddInternalToFamily(m->win, m->style->border_name, EWIN_TYPE_MENU, m,
+			      MenuEwinInit);
    if (ewin)
      {
-	DesktopRemoveEwin(ewin);
 	ewin->head = head_num;
-	DesktopAddEwinToTop(ewin);
-	if (ewin->desktop != 0)
-	   MoveEwin(ewin, ewin->x - desks.desk[ewin->desktop].x,
-		    ewin->y - desks.desk[ewin->desktop].y);
-	RestackEwin(ewin);
 	if (conf.menuslide)
 	   InstantShadeEwin(ewin, 0);
 	ICCCM_Cmap(NULL);
+	MoveEwin(ewin, ewin->x, ewin->y);
 	if (!noshow)
 	  {
 	     ShowEwin(ewin);
 	     if (conf.menuslide)
 		UnShadeEwin(ewin);
 	  }
-	ewin->menu = m;
-	ewin->MoveResize = MenuMoveResize;
-	ewin->Refresh = MenuRefresh;
      }
 
    m->stuck = 0;
@@ -503,9 +507,9 @@ MenuDestroy(Menu * m)
 
    if (m->items)
       Efree(m->items);
-
    if (m->data)
       Efree(m->data);
+   FreePmapMask(&m->pmm);
 
    Efree(m);
 
@@ -738,11 +742,13 @@ MenuRealize(Menu * m)
 	x = m->style->bg_iclass->padding.left;
 	y = m->style->bg_iclass->padding.top;
      }
+
    r = 0;
    mmw = 0;
    mmh = 0;
    pq = queue_up;
    queue_up = 0;
+
    for (i = 0; i < m->num; i++)
      {
 	EMoveResizeWindow(disp, m->items[i]->win, x, y, maxw, maxh);
@@ -814,9 +820,20 @@ MenuRealize(Menu * m)
      }
    EResizeWindow(disp, m->win, mmw, mmh);
 
+   queue_up = pq;
+   EDBUG_RETURN_;
+}
+
+void
+MenuRedraw(Menu * m)
+{
+   int                 i, w, h;
+
    if (!m->style->use_item_bg)
      {
-	IclassApplyCopy(m->style->bg_iclass, m->win, mmw, mmh, 0, 0,
+	GetWinWH(m->win, &w, &h);
+	FreePmapMask(&m->pmm);
+	IclassApplyCopy(m->style->bg_iclass, m->win, w, h, 0, 0,
 			STATE_NORMAL, &m->pmm, 1);
 	ESetWindowBackgroundPixmap(disp, m->win, m->pmm.pmap);
 	EShapeCombineMask(disp, m->win, ShapeBounding, 0, 0, m->pmm.mask,
@@ -830,9 +847,6 @@ MenuRealize(Menu * m)
 	   MenuDrawItem(m, m->items[i], 0);
 	PropagateShapes(m->win);
      }
-
-   queue_up = pq;
-   EDBUG_RETURN_;
 }
 
 void
@@ -850,7 +864,7 @@ MenuDrawItem(Menu * m, MenuItem * mi, char shape)
    queue_up = 0;
 
    mi_pmm = &(mi->pmm[(int)(mi->state)]);
-   if (IclassIsTransparent(m->style->bg_iclass))
+   if (conf.theme.transparency || IclassIsTransparent(m->style->bg_iclass))
       FreePmapMask(mi_pmm);
    if (!mi_pmm->pmap)
      {
@@ -1852,6 +1866,30 @@ MenuCreateFromDesktops(char *name, MenuStyle * ms)
    EDBUG_RETURN(m);
 }
 
+#if 0
+Menu               *
+MenuCreateMoveToDesktop(char *name, MenuStyle * ms)
+{
+   Menu               *m;
+   int                 i;
+   char                s1[256], s2[256];
+
+   MenuItem           *mi;
+
+   EDBUG(5, "MenuCreateDesktops");
+   m = MenuCreate(name);
+   m->style = ms;
+   for (i = 0; i < mode.numdesktops; i++)
+     {
+	Esnprintf(s1, sizeof(s1), _("Desktop %i"), i);
+	Esnprintf(s2, sizeof(s2), "%i", i);
+	mi = MenuItemCreate(s1, NULL, ACTION_MOVE_TO_DESK, s2, NULL);
+	MenuAddItem(m, mi);
+     }
+   EDBUG_RETURN(m);
+}
+#endif
+
 Menu               *
 MenuCreateFromGroups(char *name, MenuStyle * ms)
 {
@@ -2375,6 +2413,7 @@ SubmenuShowTimeout(int val, void *dat)
       return;
    if (!FindEwinByMenu(data->m))
       return;
+
    GetWinXY(data->mi->win, &mx, &my);
    GetWinWH(data->mi->win, &mw, &mh);
    MenuShow(data->mi->child, 1);

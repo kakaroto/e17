@@ -1693,16 +1693,14 @@ void                SlideEwinTo(EWin * ewin, int fx, int fy, int tx, int ty,
 void                SlideEwinsTo(EWin ** ewin, int *fx, int *fy, int *tx,
 				 int *ty, int num_wins, int speed);
 void                AddToFamily(Window win);
-EWin               *AddInternalToFamily(Window win, char noshow, char *bname,
-					int type, void *ptr);
+EWin               *AddInternalToFamily(Window win, char *bname, int type,
+					void *ptr,
+					void (*init) (EWin * ewin, void *ptr));
 void                HonorIclass(char *s, int id);
 void                SyncBorderToEwin(EWin * ewin);
 int                 ChangeEwinWinpart(EWin * ewin, int i);
 void                DrawEwin(EWin * ewin);
 int                 ChangeEwinWinpartContents(EWin * ewin, int i);
-EWin               *Adopt(Window win);
-EWin               *AdoptInternal(Window win, Border * border, int type,
-				  void *ptr);
 EWin               *CreateEwin(void);
 void                FreeEwin(EWin * ewin);
 void                EwinSetArea(EWin * ewin, int ax, int ay);
@@ -2092,7 +2090,7 @@ EWin              **ListGroupMembers(Window win, int *num);
 EWin               *FindEwinByDialog(Dialog * d);
 Dialog             *FindDialogButton(Window win, int *bnum);
 Dialog             *FindDialog(Window win);
-char                FindADialog(void);
+int                 FindADialog(void);
 EWin               *FindEwinSpawningMenu(Menu * m);
 Pager              *FindPager(Window win);
 DItem              *FindDialogItem(Window win, Dialog ** dret);
@@ -2317,7 +2315,6 @@ void                MenuAddName(Menu * menu, const char *name);
 void                MenuAddTitle(Menu * menu, const char *title);
 void                MenuAddStyle(Menu * menu, const char *style);
 void                MenuRealize(Menu * m);
-void                MenuDrawItem(Menu * m, MenuItem * mi, char shape);
 Menu               *MenuCreateFromDirectory(char *name, MenuStyle * ms,
 					    char *dir);
 Menu               *MenuCreateFromFlatFile(char *name, MenuStyle * ms,

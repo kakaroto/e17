@@ -436,23 +436,20 @@ FindEwinByDialog(Dialog * d)
    EDBUG_RETURN(NULL);
 }
 
-char
+int
 FindADialog(void)
 {
    EWin              **ewins;
-   int                 i, num;
+   int                 i, num, n;
 
    EDBUG(6, "FindADialog");
    ewins = (EWin **) ListItemType(&num, LIST_TYPE_EWIN);
-   for (i = 0; i < num; i++)
+   for (i = n = 0; i < num; i++)
      {
 	if (ewins[i]->dialog)
-	  {
-	     Efree(ewins);
-	     EDBUG_RETURN(1);
-	  }
+	   n++;
      }
    if (ewins)
       Efree(ewins);
-   EDBUG_RETURN(0);
+   EDBUG_RETURN(n);
 }
