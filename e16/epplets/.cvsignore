@@ -12,6 +12,7 @@ config.status
 config.h
 libtool
 stamp-h
+stamp-h.in
 config.h.in
 missing
 mkinstalldirs
