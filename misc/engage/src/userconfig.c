@@ -10,42 +10,17 @@
 #define engage_conf "/.e/apps/engage/applinks"
 #define engage_mappings "/.e/apps/engage/mappings"
 
-int
-userconfig_load()
+static void
+userconfig_mappings_load(FILE * fp)
 {
-  FILE           *fd = NULL;
-  char           *homepath = NULL;
-  char           *filename = NULL;
   char           *line = NULL;
-  char           *exe = NULL;
+  size_t          len = 0;
+  size_t          read = 0;
   char           *name = NULL;
   char           *class = NULL;
   char           *icon = NULL;
-  size_t          len = 0;
-  size_t          read = 0;
 
-  /* getting user environement */
-  homepath = (char *) getenv("HOME");
-
-
-  /* malloc for the config filename */
-  filename =
-    (char *) malloc(sizeof(char) *
-                    (strlen(homepath) + strlen(engage_mappings)) + 1);
-  memset(filename, 0, (strlen(homepath) + strlen(engage_mappings) + 1));
-
-  /* filename is the string containing the full path for config file */
-  filename = strcat(filename, homepath);
-  filename = strcat(filename, engage_mappings);
-
-  /* opening filename in read mode */
-  fd = fopen(filename, "r");
-
-  /* check that filename is open(able) */
-  if (fd == NULL)
-    return (1);
-  /* reading filename while EOF */
-  while ((read = getline(&line, &len, fd)) != -1) {
+  while ((read = getline(&line, &len, fp)) != -1) {
     if (*line == '#' || *line == '\n')
       continue;
     /* stripping line return */
@@ -67,34 +42,19 @@ userconfig_load()
   if (line)
     free(line);
   line = NULL;
+}
 
-  if (filename)
-    free(filename);
+static void
+userconfig_applinks_load(FILE * fp)
+{
+  char           *line = NULL;
+  size_t          len = 0;
+  size_t          read = 0;
+  char           *exe = NULL;
+  char           *name = NULL;
+  char           *icon = NULL;
 
-  /* close filename */
-  fclose(fd);
-
-
-
-
-  /* malloc for the config filename */
-  filename =
-    (char *) malloc(sizeof(char) * (strlen(homepath) + strlen(engage_conf)) +
-                    1);
-  memset(filename, 0, (strlen(homepath) + strlen(engage_conf) + 1));
-
-  /* filename is the string containing the full path for config file */
-  filename = strcat(filename, homepath);
-  filename = strcat(filename, engage_conf);
-
-  /* opening filename in read mode */
-  fd = fopen(filename, "r");
-
-  /* check that filename is open(able) */
-  if (fd == NULL)
-    return (1);
-  /* reading filename while EOF */
-  while ((read = getline(&line, &len, fd)) != -1) {
+  while ((read = getline(&line, &len, fp)) != -1) {
     if (*line == '#' || *line == '\n')
       continue;
     /* stripping line return */
@@ -119,13 +79,24 @@ userconfig_load()
   /* cleaning memory */
   if (line)
     free(line);
+}
 
-  if (filename)
-    free(filename);
+int
+userconfig_load()
+{
+  FILE           *fd = NULL;
+  char            filename[PATH_MAX];
 
-  /* close filename */
-  fclose(fd);
-
+  snprintf(filename, PATH_MAX, "%s/.e/apps/engage/mappings", getenv("HOME"));
+  if ((fd = fopen(filename, "r"))) {
+    userconfig_mappings_load(fd);
+    fclose(fd);
+  }
+  snprintf(filename, PATH_MAX, "%s/.e/apps/engage/applinks", getenv("HOME"));
+  if ((fd = fopen(filename, "r"))) {
+    userconfig_applinks_load(fd);
+    fclose(fd);
+  }
   /* nothing special */
   return (0);
 }
