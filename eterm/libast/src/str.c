@@ -29,13 +29,19 @@ static const char cvs_ident[] = "$Id$";
 
 #include <libast_internal.h>
 
+/* *INDENT-OFF* */
 spif_const_class_t SPIF_CLASS_VAR(str) = {
-SPIF_DECL_CLASSNAME(str),
-        (spif_newfunc_t) spif_str_new,
-        (spif_memberfunc_t) spif_str_init,
-        (spif_memberfunc_t) spif_str_done,
-        (spif_memberfunc_t) spif_str_del,
-        (spif_func_t) spif_str_show, (spif_func_t) spif_str_cmp, (spif_func_t) spif_str_dup, (spif_func_t) spif_str_type};
+    SPIF_DECL_CLASSNAME(str),
+    (spif_newfunc_t) spif_str_new,
+    (spif_memberfunc_t) spif_str_init,
+    (spif_memberfunc_t) spif_str_done,
+    (spif_memberfunc_t) spif_str_del,
+    (spif_func_t) spif_str_show,
+    (spif_func_t) spif_str_cmp,
+    (spif_func_t) spif_str_dup,
+    (spif_func_t) spif_str_type
+};
+/* *INDENT-ON* */
 
 const size_t buff_inc = 4096;
 

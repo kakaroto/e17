@@ -180,7 +180,8 @@ conf_free_subsystem(void)
     FREE(context);
 }
 
-static conf_var_t *conf_new_var(void)
+static conf_var_t *
+conf_new_var(void)
 {
     conf_var_t *v;
 

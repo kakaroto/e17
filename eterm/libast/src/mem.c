@@ -80,7 +80,8 @@ memrec_add_var(memrec_t *memrec, const char *filename, unsigned long line, void 
     p->line = line;
 }
 
-static ptr_t *memrec_find_var(memrec_t *memrec, const void *ptr)
+static ptr_t *
+memrec_find_var(memrec_t *memrec, const void *ptr)
 {
     register ptr_t *p;
     register unsigned long i;

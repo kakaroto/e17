@@ -55,28 +55,33 @@ static spif_bool_t spif_linked_list_prepend(spif_linked_list_t, spif_obj_t);
 static spif_obj_t spif_linked_list_remove(spif_linked_list_t);
 static spif_obj_t spif_linked_list_remove_at(spif_linked_list_t, size_t);
 
+/* *INDENT-OFF* */
 SPIF_DECL_IFCLASS(list, linked_list) = {
     {
-SPIF_DECL_CLASSNAME(linked_list),
-            (spif_newfunc_t) spif_linked_list_new,
-            (spif_memberfunc_t) spif_linked_list_init,
-            (spif_memberfunc_t) spif_linked_list_done,
-            (spif_memberfunc_t) spif_linked_list_del,
-            (spif_func_t) spif_linked_list_show,
-            (spif_func_t) spif_linked_list_comp,
-            (spif_func_t) spif_linked_list_dup,
-            (spif_func_t) spif_linked_list_type},
-        (spif_memberfunc_t) spif_linked_list_append,
-        (spif_memberfunc_t) spif_linked_list_contains,
-        (spif_memberfunc_t) spif_linked_list_count,
-        (spif_memberfunc_t) spif_linked_list_get,
-        (spif_memberfunc_t) spif_linked_list_index,
-        (spif_memberfunc_t) spif_linked_list_insert,
-        (spif_memberfunc_t) spif_linked_list_insert_at,
-        (spif_memberfunc_t) spif_linked_list_iterator,
-        (spif_memberfunc_t) spif_linked_list_next,
-        (spif_memberfunc_t) spif_linked_list_prepend,
-        (spif_memberfunc_t) spif_linked_list_remove, (spif_memberfunc_t) spif_linked_list_remove_at};
+        SPIF_DECL_CLASSNAME(linked_list),
+        (spif_newfunc_t) spif_linked_list_new,
+        (spif_memberfunc_t) spif_linked_list_init,
+        (spif_memberfunc_t) spif_linked_list_done,
+        (spif_memberfunc_t) spif_linked_list_del,
+        (spif_func_t) spif_linked_list_show,
+        (spif_func_t) spif_linked_list_comp,
+        (spif_func_t) spif_linked_list_dup,
+        (spif_func_t) spif_linked_list_type
+    },
+    (spif_memberfunc_t) spif_linked_list_append,
+    (spif_memberfunc_t) spif_linked_list_contains,
+    (spif_memberfunc_t) spif_linked_list_count,
+    (spif_memberfunc_t) spif_linked_list_get,
+    (spif_memberfunc_t) spif_linked_list_index,
+    (spif_memberfunc_t) spif_linked_list_insert,
+    (spif_memberfunc_t) spif_linked_list_insert_at,
+    (spif_memberfunc_t) spif_linked_list_iterator,
+    (spif_memberfunc_t) spif_linked_list_next,
+    (spif_memberfunc_t) spif_linked_list_prepend,
+    (spif_memberfunc_t) spif_linked_list_remove,
+    (spif_memberfunc_t) spif_linked_list_remove_at
+};
+/* *INDENT-ON* */
 
 static spif_linked_list_item_t
 spif_linked_list_item_new(void)

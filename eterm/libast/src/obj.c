@@ -29,14 +29,19 @@ static const char cvs_ident[] = "$Id$";
 
 #include <libast_internal.h>
 
+/* *INDENT-OFF* */
 spif_const_class_t SPIF_CLASS_VAR(obj) = {
-SPIF_DECL_CLASSNAME(obj),
-        (spif_newfunc_t) spif_obj_new,
-        (spif_memberfunc_t) spif_obj_init,
-        (spif_memberfunc_t) spif_obj_done,
-        (spif_memberfunc_t) spif_obj_del,
-        (spif_func_t) spif_obj_show, (spif_func_t) spif_obj_comp, (spif_func_t) spif_obj_dup, (spif_func_t) spif_obj_type};
-
+    SPIF_DECL_CLASSNAME(obj),
+    (spif_newfunc_t) spif_obj_new,
+    (spif_memberfunc_t) spif_obj_init,
+    (spif_memberfunc_t) spif_obj_done,
+    (spif_memberfunc_t) spif_obj_del,
+    (spif_func_t) spif_obj_show,
+    (spif_func_t) spif_obj_comp,
+    (spif_func_t) spif_obj_dup,
+    (spif_func_t) spif_obj_type
+};
+/* *INDENT-ON* */
 
 spif_nullobj_t
 spif_nullobj_new(void)
