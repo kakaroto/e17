@@ -15,6 +15,8 @@ test_basic (void *_data, Evas _e, Evas_Object _o, int _b, int _x, int _y)
 
   etox_set_text (e_msg, msg);
 
+  etox_set_text (e_test, "");
+
   /* Create "Next" button */
   button_next_new_all (evas);
 
@@ -113,5 +115,12 @@ test_basic_append (void *_data, Evas _e, Evas_Object _o, int _b, int _x, int _y)
 void
 test_style (void *_data, Evas _e, Evas_Object _o, int _b, int _x, int _y)
 {
-  printf ("Style button clicked");
+  char msg[] = 
+    "Not implemented yet.";
+  
+  etox_set_text (e_msg, msg);
+
+  etox_set_text (e_test, "");
+
+  button_next_new(_e);
 }

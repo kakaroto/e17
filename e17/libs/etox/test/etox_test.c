@@ -154,6 +154,7 @@ setup (void)
   ecore_event_filter_idle_handler_add (e_idle, NULL);
   /* create a toplevel window */
   win = ecore_window_new (0, 0, 0, win_w, win_h);
+  ecore_window_set_title (win, "Etox Test");
   ecore_window_set_min_size (win, win_w, win_h);
   ecore_window_set_max_size (win, win_w, win_h);
   main_win = win;
