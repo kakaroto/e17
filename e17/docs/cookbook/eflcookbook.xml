@@ -19,6 +19,7 @@
 
  <!-- ecore -->
  <!ENTITY ecore_config_intro SYSTEM "xml/ecore/ecore_config_intro.xml">
+ <!ENTITY ecore_config_listener SYSTEM "xml/ecore/ecore_config_listener.xml">
  <!ENTITY ecore_ipc_intro SYSTEM "xml/ecore/ecore_ipc_intro.xml">
 
  <!-- evas -->
