@@ -1,4 +1,4 @@
-#SUBDIRS = default
+SUBDIRS = default
 MAINTAINERCLEANFILES = Makefile.in
 
 EDCS =  default.edc
@@ -15,4 +15,4 @@ all: $(EETS)
 
 SUFFIXES = .edc .eet
 .edc.eet:
-	edje_cc -v -id default/bits/images $< $@
+	edje_cc -v -id $(@:%.eet=%)/bits/images $< $@
