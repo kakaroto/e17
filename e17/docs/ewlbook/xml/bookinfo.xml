@@ -1,10 +1,11 @@
 <bookinfo>
- <title>The EWL book</title>
+ <title>The Enlightened Widget Library (EWL) book</title>
  <authorgroup>
   <author>
    <firstname>dan</firstname>
    <surname>sinclair</surname>
    <othername>'dj2'</othername>
+   <email>zero@everburning.com</email>
   </author>
  </authorgroup>
 
@@ -44,9 +45,9 @@
  <abstract>
   <para>
   A developers guide to the Enlightened Widget Library (EWL). This book
-  attempts to show how to use the EWL ranging from simply creating a new
-  window to writing a full video player. Along with introducing the EWL the
-  book aims to serve as a complete reference to the library including with
+  attempts to show how to use the EWL, from simply creating a window to 
+  writing a full video player. Along with introducing the EWL the
+  book aims to serve as a complete reference to the library including 
   code examples for each of the different widgets.
   </para>
  </abstract>

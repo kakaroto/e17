@@ -2,36 +2,40 @@
 <title>Introduction</title>
 
 <para>
-The EWL (Enlightened Widget Library) is a library for creating
-graphical user interfaces based upon the EFL (Enlightenment Foundation Libraries).
+The EWL is a library for creating graphical user interfaces based upon the 
+Enlightenment Foundation Libraries (EFL). The library aims to ease the pain
+of creating graphical interfaces. With that in mind the library aims for
+simplicity and elegance.
 </para>
 
 <para>
- The primary author of EWL is:
+ The EWL is authored primarily by:
 </para>
 <itemizedlist spacing="compact">
  <listitem><simpara>Nathan 'RbdPngn' Ingersoll</simpara></listitem>
 </itemizedlist>
 
 <para>
-EWL works in a similar fashion to other widget libraries, as it is 
+The EWL works in a similar fashion to other widget libraries, in that it is 
 based on a callback system. As elements are created and added to the 
-interface, any desired event callbacks are registered, these functions
-will be triggered when the specified event happens.
+interface any desired event callbacks are registered and these functions
+will be triggered when the specified events happen. This simple callback
+method makes it possible to build very complex interfaces from a relitively
+simple set of base primitives.
 </para>
 
 <para>
 This tutorial is an attempt to familiarize the user with the different
-aspects of the EWL system. The tutorial will probably never completely
+aspects of the EWL. The tutorial will probably never completely
 document all aspects of EWL as the system continues to grow. A good
 understanding of C programming is assumed throughout the tutorial.
 </para>
 
 <para>
-If you have any troubles with either this tutoral, or using EWL
-in general, any feedback is greatly appreciated as it would help improve either
-the tutorial or EWL itself. Please see <link linkend="ch-Contributing">Contributing</link>
-section for more information.
+If you have any troubles with either this tutoral, or using the EWL
+in general any feedback is greatly appreciated as it would help improve either
+the tutorial or the EWL itself. Please see the 
+<link linkend="ch-Contributing">Contributing</link> section for more information.
 </para>
 
 </chapter>
