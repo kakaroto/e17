@@ -35,6 +35,7 @@ EOF
 exit 1;
 fi;
 
+dnl EDB CHECK START
 AC_ARG_WITH(edb,
         [  --with-edb=DIR       use edb in <DIR>],
         [CFLAGS="$CFLAGS -I$withcal/include"
@@ -47,6 +48,7 @@ AC_PATH_GENERIC(edb, 1.0.2, [
 edb_libs=`edb-config --libs`
 edb_cflags=`edb-config --cflags`
 
+dnl EDB END
 
 AC_SUBST(edb_cflags)
 AC_SUBST(edb_libs)
@@ -88,9 +90,11 @@ AC_PATH_PROG(EDB_ED, edb_ed)
 
 AC_OUTPUT([
 Makefile
+efsd-config
 efsd/Makefile
 demo/Makefile
 tools/Makefile
 tools/magic2db
+], [
+chmod +x efsd-config
 ])
-
