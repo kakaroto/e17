@@ -41,6 +41,10 @@ you may edit src/client/entrance.h and specify #define X_TESTING 1
 (instead of 0). This will cause Entrance to launch in a 640x480 window,
 and xterm will be executed instead of the selected session.
 
+WARNING: Do not attempt to launch entranced from an existing session. It
+will cause all sorts of havoc and may even blow a hole in the back of
+your monitor. Run "entrance" instead.
+
 To set up your sessions, edit the build_config.sh script in the data/config
 directory to specify the names of the X sessions on your machine. For
 example, debian's sessions typically start with lowercase letters, so
