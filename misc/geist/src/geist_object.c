@@ -170,54 +170,6 @@ geist_object_render_selected(geist_object * obj, Imlib_Image dest,
 }
 
 void
-geist_object_int_render_selected(geist_object * obj, Imlib_Image dest,
-                                 unsigned char multiple)
-{
-   D_ENTER(3);
-
-   if (multiple)
-   {
-      geist_imlib_image_draw_rectangle(dest, obj->x - HALF_SEL_WIDTH,
-                                       obj->y - HALF_SEL_HEIGHT,
-                                       2 * HALF_SEL_WIDTH,
-                                       2 * HALF_SEL_HEIGHT, 0, 0, 0, 255);
-      geist_imlib_image_draw_rectangle(dest, obj->x - HALF_SEL_WIDTH + obj->w,
-                                       obj->y - HALF_SEL_HEIGHT,
-                                       2 * HALF_SEL_WIDTH,
-                                       2 * HALF_SEL_HEIGHT, 0, 0, 0, 255);
-      geist_imlib_image_draw_rectangle(dest, obj->x - HALF_SEL_WIDTH,
-                                       obj->y - HALF_SEL_HEIGHT + obj->h,
-                                       2 * HALF_SEL_WIDTH,
-                                       2 * HALF_SEL_HEIGHT, 0, 0, 0, 255);
-      geist_imlib_image_draw_rectangle(dest, obj->x - HALF_SEL_WIDTH + obj->w,
-                                       obj->y - HALF_SEL_HEIGHT + obj->h,
-                                       2 * HALF_SEL_WIDTH,
-                                       2 * HALF_SEL_HEIGHT, 0, 0, 0, 255);
-   }
-   else
-   {
-      geist_imlib_image_fill_rectangle(dest, obj->x - HALF_SEL_WIDTH,
-                                       obj->y - HALF_SEL_HEIGHT,
-                                       2 * HALF_SEL_WIDTH,
-                                       2 * HALF_SEL_HEIGHT, 0, 0, 0, 255);
-      geist_imlib_image_fill_rectangle(dest, obj->x - HALF_SEL_WIDTH + obj->w,
-                                       obj->y - HALF_SEL_HEIGHT,
-                                       2 * HALF_SEL_WIDTH,
-                                       2 * HALF_SEL_HEIGHT, 0, 0, 0, 255);
-      geist_imlib_image_fill_rectangle(dest, obj->x - HALF_SEL_WIDTH,
-                                       obj->y - HALF_SEL_HEIGHT + obj->h,
-                                       2 * HALF_SEL_WIDTH,
-                                       2 * HALF_SEL_HEIGHT, 0, 0, 0, 255);
-      geist_imlib_image_fill_rectangle(dest, obj->x - HALF_SEL_WIDTH + obj->w,
-                                       obj->y - HALF_SEL_HEIGHT + obj->h,
-                                       2 * HALF_SEL_WIDTH,
-                                       2 * HALF_SEL_HEIGHT, 0, 0, 0, 255);
-   }
-
-   D_RETURN_(3);
-}
-
-void
 geist_object_add_to_object_list(geist_object * obj)
 {
    int row = 0;
@@ -283,6 +235,93 @@ geist_object_unselect(geist_document * d, geist_object * obj)
    D_RETURN_(5);
 }
 
+void
+geist_object_int_render_selected(geist_object * obj, Imlib_Image dest,
+                                 unsigned char multiple)
+{
+   D_ENTER(3);
+
+   if (multiple)
+   {
+      geist_imlib_image_draw_rectangle(dest, obj->x - HALF_SEL_WIDTH,
+                                       obj->y - HALF_SEL_HEIGHT,
+                                       2 * HALF_SEL_WIDTH,
+                                       2 * HALF_SEL_HEIGHT, 0, 0, 0, 255);
+      geist_imlib_image_draw_rectangle(dest, obj->x - HALF_SEL_WIDTH + obj->w,
+                                       obj->y - HALF_SEL_HEIGHT,
+                                       2 * HALF_SEL_WIDTH,
+                                       2 * HALF_SEL_HEIGHT, 0, 0, 0, 255);
+      geist_imlib_image_draw_rectangle(dest, obj->x - HALF_SEL_WIDTH,
+                                       obj->y - HALF_SEL_HEIGHT + obj->h,
+                                       2 * HALF_SEL_WIDTH,
+                                       2 * HALF_SEL_HEIGHT, 0, 0, 0, 255);
+      geist_imlib_image_draw_rectangle(dest, obj->x - HALF_SEL_WIDTH + obj->w,
+                                       obj->y - HALF_SEL_HEIGHT + obj->h,
+                                       2 * HALF_SEL_WIDTH,
+                                       2 * HALF_SEL_HEIGHT, 0, 0, 0, 255);
+
+      geist_imlib_image_draw_rectangle(dest,
+                                       obj->x - HALF_SEL_WIDTH + (obj->w / 2),
+                                       obj->y - HALF_SEL_HEIGHT,
+                                       2 * HALF_SEL_WIDTH,
+                                       2 * HALF_SEL_HEIGHT, 0, 0, 0, 255);
+      geist_imlib_image_draw_rectangle(dest, obj->x - HALF_SEL_WIDTH + obj->w,
+                                       obj->y - HALF_SEL_HEIGHT +
+                                       (obj->h / 2), 2 * HALF_SEL_WIDTH,
+                                       2 * HALF_SEL_HEIGHT, 0, 0, 0, 255);
+      geist_imlib_image_draw_rectangle(dest, obj->x - HALF_SEL_WIDTH,
+                                       obj->y - HALF_SEL_HEIGHT +
+                                       (obj->h / 2), 2 * HALF_SEL_WIDTH,
+                                       2 * HALF_SEL_HEIGHT, 0, 0, 0, 255);
+      geist_imlib_image_draw_rectangle(dest,
+                                       obj->x - HALF_SEL_WIDTH + (obj->w / 2),
+                                       obj->y - HALF_SEL_HEIGHT + obj->h,
+                                       2 * HALF_SEL_WIDTH,
+                                       2 * HALF_SEL_HEIGHT, 0, 0, 0, 255);
+   }
+   else
+   {
+      geist_imlib_image_fill_rectangle(dest, obj->x - HALF_SEL_WIDTH,
+                                       obj->y - HALF_SEL_HEIGHT,
+                                       2 * HALF_SEL_WIDTH,
+                                       2 * HALF_SEL_HEIGHT, 0, 0, 0, 255);
+      geist_imlib_image_fill_rectangle(dest, obj->x - HALF_SEL_WIDTH + obj->w,
+                                       obj->y - HALF_SEL_HEIGHT,
+                                       2 * HALF_SEL_WIDTH,
+                                       2 * HALF_SEL_HEIGHT, 0, 0, 0, 255);
+      geist_imlib_image_fill_rectangle(dest, obj->x - HALF_SEL_WIDTH,
+                                       obj->y - HALF_SEL_HEIGHT + obj->h,
+                                       2 * HALF_SEL_WIDTH,
+                                       2 * HALF_SEL_HEIGHT, 0, 0, 0, 255);
+      geist_imlib_image_fill_rectangle(dest, obj->x - HALF_SEL_WIDTH + obj->w,
+                                       obj->y - HALF_SEL_HEIGHT + obj->h,
+                                       2 * HALF_SEL_WIDTH,
+                                       2 * HALF_SEL_HEIGHT, 0, 0, 0, 255);
+
+      geist_imlib_image_fill_rectangle(dest,
+                                       obj->x - HALF_SEL_WIDTH + (obj->w / 2),
+                                       obj->y - HALF_SEL_HEIGHT,
+                                       2 * HALF_SEL_WIDTH,
+                                       2 * HALF_SEL_HEIGHT, 0, 0, 0, 255);
+      geist_imlib_image_fill_rectangle(dest, obj->x - HALF_SEL_WIDTH + obj->w,
+                                       obj->y - HALF_SEL_HEIGHT +
+                                       (obj->h / 2), 2 * HALF_SEL_WIDTH,
+                                       2 * HALF_SEL_HEIGHT, 0, 0, 0, 255);
+      geist_imlib_image_fill_rectangle(dest, obj->x - HALF_SEL_WIDTH,
+                                       obj->y - HALF_SEL_HEIGHT +
+                                       (obj->h / 2), 2 * HALF_SEL_WIDTH,
+                                       2 * HALF_SEL_HEIGHT, 0, 0, 0, 255);
+      geist_imlib_image_fill_rectangle(dest,
+                                       obj->x - HALF_SEL_WIDTH + (obj->w / 2),
+                                       obj->y - HALF_SEL_HEIGHT + obj->h,
+                                       2 * HALF_SEL_WIDTH,
+                                       2 * HALF_SEL_HEIGHT, 0, 0, 0, 255);
+
+   }
+
+   D_RETURN_(3);
+}
+
 Imlib_Updates geist_object_int_get_selection_updates(geist_object * obj)
 {
    Imlib_Updates up = NULL;
@@ -305,6 +344,24 @@ Imlib_Updates geist_object_int_get_selection_updates(geist_object * obj)
       imlib_update_append_rect(up, obj->x - HALF_SEL_WIDTH + obj->w,
                                obj->y - HALF_SEL_HEIGHT + obj->h,
                                2 * HALF_SEL_WIDTH, 2 * HALF_SEL_HEIGHT);
+
+   up =
+      imlib_update_append_rect(up, obj->x - HALF_SEL_WIDTH + (obj->w / 2),
+                               obj->y - HALF_SEL_HEIGHT, 2 * HALF_SEL_WIDTH,
+                               2 * HALF_SEL_HEIGHT);
+   up =
+      imlib_update_append_rect(up, obj->x - HALF_SEL_WIDTH + obj->w,
+                               obj->y - HALF_SEL_HEIGHT + (obj->h / 2),
+                               2 * HALF_SEL_WIDTH, 2 * HALF_SEL_HEIGHT);
+   up =
+      imlib_update_append_rect(up, obj->x - HALF_SEL_WIDTH,
+                               obj->y - HALF_SEL_HEIGHT + (obj->h / 2),
+                               2 * HALF_SEL_WIDTH, 2 * HALF_SEL_HEIGHT);
+   up =
+      imlib_update_append_rect(up, obj->x - HALF_SEL_WIDTH + (obj->w / 2),
+                               obj->y - HALF_SEL_HEIGHT + obj->h,
+                               2 * HALF_SEL_WIDTH, 2 * HALF_SEL_HEIGHT);
+
 
    D_RETURN(3, up);
 }

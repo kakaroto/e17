@@ -23,7 +23,7 @@ missing
 mkinstalldirs
 stamp-h
 stamp-h.in 
-prag*.tar.gz
+geist*.tar.gz
 *~
-pragmatist.spec
+geist.spec
 *.bak
