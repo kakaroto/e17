@@ -1,14 +1,15 @@
 body
 {
- //background-image: url("i/e_corner.png");
+ background-image: url("img/E-top-whole.png");
  background-repeat: no-repeat;
- background-position: right bottom;
+ background-attachment: scroll;
+ background-position: left top;
  background-color: #dddddd;
  color: #000000;
  font-family: sans-serif;
- padding: 8px;
- margin: 0;
- background-attachment: fixed;
+ padding: 0px;
+ margin: 0px;
+ margin-top: 140px;
 }
 h1
 {
@@ -95,6 +96,7 @@ div.nav
  padding: 1px;
  text-align: center;
  vertical-align: center;
+ margin-top: 170px;
  font-size: 12;
 }
 div.fragment
@@ -123,6 +125,7 @@ div.qindex
  background-position: left top;
  border: thin solid #888888;
  background-color: #eeeeee;
+ margin-top: 80px;
  padding: 4px;
  text-align: left;
  vertical-align: center;
