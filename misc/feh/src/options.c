@@ -215,7 +215,7 @@ show_usage (void)
 	   "                            instead of opening multiple files in slideshow\n"
 	   "                            mode, multiple windows will be opened.\n"
 	   "  -P, --noprogressive       Disable progressive loading and display of images\n"
-	   "  -D, --slideshow-delay     For slideshow mode, specifies time delay (seconds)\n"
+	   "  -D, --slideshow-delay NUM For slideshow mode, specifies time delay (seconds)\n"
 	   "                            between automatically changing slides.\n"
 	   "  -m, --montage             Enable montage mode. Montage mode creates a new\n"
 	   "                            image consisting of a grid of thumbnails of the\n"
