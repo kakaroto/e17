@@ -1,6 +1,4 @@
-#ifndef __LCLINT__
 #include "config.h"
-#endif
 #include "epplet.h"
 #include <errno.h>
 #include <sys/utsname.h>
