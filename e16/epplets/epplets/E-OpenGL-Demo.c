@@ -35,9 +35,10 @@
 Epplet_gadget da, b_close, b_help, b_config, pop;
 Window	win;
 Display *dpy;
-static GLfloat spin = 0.0;
-GLuint squareList, cubeList;
-int	whichRotate=1;
+
+static GLfloat gSpin = 0.0;
+GLuint gSquareList, gCubeList;
+int	gWhichRotate=1, gLighting=0;
 
 static void cb_in(void *data, Window w);
 static void cb_out(void *data, Window w);
@@ -46,6 +47,8 @@ static void cb_close(void *data);
 static void cb_help(void *data);
 static void cb_config(void *data);
 static void cb_set_object(void *data);
+static void save_conf(void);
+static void load_conf(void);
 static void setup_rotating_square(void);
 static void setup_rotating_cube(void);
 static void draw_rotating(void);
@@ -56,7 +59,7 @@ static void draw_rotating(void);
 
 static int object_type_table[] =
 {
-	1, 2
+	SQUARE, CUBE 
 };
 
 /* All setup_rotating_* fucntions compile our display lists. Since most
@@ -68,8 +71,8 @@ setup_rotating_square(void)
 {
 	GLfloat x=40.0;
 
-	squareList = glGenLists(1);
-	glNewList(squareList, GL_COMPILE);
+	gSquareList = glGenLists(1);
+	glNewList(gSquareList, GL_COMPILE);
 		glBegin(GL_QUADS);
 			glColor3f(1.0, 0, 0);
 			glVertex3f(-x, -x, 0);
@@ -87,9 +90,17 @@ setup_rotating_square(void)
 static void
 setup_rotating_cube(void)
 {
-  static GLfloat x=30.0;
-	static GLfloat y=30.0;
-	static GLfloat z=30.0;
+	/* coordinates for out cube... since im using + and -, the cube
+		 is actually 2*coords */
+  static GLfloat x=32.0;
+	static GLfloat y=32.0;
+	static GLfloat z=32.0;
+
+	/* Set up lighting info. */
+	GLfloat mat_specular[] = {1.0, 1.0, 1.0, 1.0};
+	GLfloat mat_shininess[] = {50.0};
+	GLfloat light_position[] = {0.0, 0.0, 1200.0, 0.0};
+	GLfloat white_light[] = {1.0, 1.0, 1.0, 1.0};
 
 	/* These are our 6 faces * 4 vertexes per face = 24 vertex
      coordinates. Its a bit messy, but its a hell of alot
@@ -101,9 +112,19 @@ setup_rotating_cube(void)
 	-x, -y, z, x, -y, z, x, -y, -z, -x, -y, -z,
 	-x, -y, z, -x, y, z, -x, y, -z, -x, -y, -z,
 	x, -y, z, x, y, z, x, y, -z, x, -y, -z};
-	
-	cubeList = glGenLists(1);
-	glNewList(cubeList, GL_COMPILE);
+
+	glMaterialfv(GL_FRONT, GL_SPECULAR, mat_specular);
+	glMaterialfv(GL_FRONT, GL_SHININESS, mat_shininess);
+	glLightfv(GL_LIGHT0, GL_POSITION, light_position);
+	glLightfv(GL_LIGHT0, GL_DIFFUSE, white_light);
+	glLightfv(GL_LIGHT0, GL_SPECULAR, white_light);
+
+	glEnable(GL_LIGHTING);
+	glEnable(GL_LIGHT0);
+	glEnable(GL_DEPTH_TEST);
+
+	gCubeList = glGenLists(1);
+	glNewList(gCubeList, GL_COMPILE);
 	glColor3f(.447, .243, .678);
 
 	glEnableClientState(GL_VERTEX_ARRAY);
@@ -119,15 +140,15 @@ setup_rotating_cube(void)
 static void
 draw_rotating(void)
 {
-	glClear(GL_COLOR_BUFFER_BIT);
+	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 	glPushMatrix();
-	glRotatef(spin, .5, 1, .5);
-	switch(whichRotate) {
+	glRotatef(gSpin, .5, 1, .5);
+	switch(gWhichRotate) {
 	case SQUARE:
-		glCallList(squareList);
+		glCallList(gSquareList);
 		break;
 	case CUBE:
-		glCallList(cubeList);
+		glCallList(gCubeList);
 		//testme();
 		break;
 	}
@@ -137,9 +158,9 @@ draw_rotating(void)
 static void
 cb_timer(void *data)
 {
-	spin = spin +.5;
-	if (spin > 360.0)
-		spin = spin - 360.0;
+	gSpin = gSpin +.5;
+	if (gSpin > 360.0)
+		gSpin = gSpin - 360.0;
 
 	draw_rotating();
 	Epplet_timer(cb_timer, NULL, 0, "TIMER");   
@@ -197,8 +218,28 @@ cb_set_object(void *data)
 	int *d;
 
 	d = (int *)data;
-	whichRotate = *d;
+	gWhichRotate = *d;
+	save_conf();
 	Epplet_gadget_hide(pop);
+}
+
+static void
+save_conf(void)
+{
+	char s[32];
+
+	Esnprintf(s, sizeof(s), "%im %i", gWhichRotate, gLighting);
+	Epplet_modify_config("globals", s);
+	Epplet_save_config();
+}
+
+static void
+load_conf(void)
+{
+	char *str;
+
+	str = Epplet_query_config_def("globals", "1, 0");
+	sscanf(str, "%i, %i", &gWhichRotate, &gLighting);
 }
 
 int
@@ -214,6 +255,7 @@ main(int argc, char **argv)
    
 	Epplet_Init("E-OpenGL-Demo", "0.1", "Enlightenment OpenGL Demo",
 		4, 4, argc, argv, 0);
+	Epplet_load_config();
 	Epplet_timer(cb_timer, NULL, 0, "TIMER");
 	Epplet_gadget_show(da = Epplet_create_drawingarea(2, 2, 60, 60));
 
@@ -236,6 +278,8 @@ main(int argc, char **argv)
 	pop = Epplet_create_popupbutton("Objects", NULL, 6, 24, 36, 12, NULL, p);
   Epplet_register_focus_in_handler(cb_in, NULL);
   Epplet_register_focus_out_handler(cb_out, NULL);
+	
+	load_conf();
 
 	cx = Epplet_bind_double_GL(da);
 
