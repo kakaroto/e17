@@ -45,11 +45,16 @@
 #define NEXT_PIC()      ((void) 0)
 #define INC_PIC()       do {idx++; if (idx == image_cnt) idx = 0;} while (0)
 
+#define AUTOBG_OFF      0
+#define AUTOBG_TILED    1
+#define AUTOBG_SCALED   2
+#define AUTOBG_PSCALED  3
+
 Epplet_gadget close_button, play_button, pause_button, prev_button, next_button, zoom_button, bg_popup, bg_button, picture;
 unsigned long idx = 0, image_cnt = 0;
 double delay = 5.0;
 char **filenames = NULL, *path, *zoom_cmd;
-unsigned char paused = 0;
+unsigned char paused = 0, auto_setbg = AUTOBG_OFF;
 Window zoom_win = None;
 int w = 3, h = 3;
 
@@ -164,31 +169,22 @@ set_background(int tiled, int keep_aspect) {
   Esnprintf(bg_name, sizeof(bg_name), "E_SLIDES_BG_%s", filenames[CUR_PIC()]);
 
   Esnprintf(buff, sizeof(buff), "background %s bg.file %s/%s", bg_name, path, filenames[CUR_PIC()]);
-  fprintf(stderr, "%s\n", buff);
   Epplet_send_ipc(buff);
   Esnprintf(buff, sizeof(buff), "background %s bg.solid 0 0 0", bg_name);
-  fprintf(stderr, "%s\n", buff);
   Epplet_send_ipc(buff);
   Esnprintf(buff, sizeof(buff), "background %s bg.tile %d", bg_name, tiled);
-  fprintf(stderr, "%s\n", buff);
   Epplet_send_ipc(buff);
   Esnprintf(buff, sizeof(buff), "background %s bg.keep_aspect %d", bg_name, keep_aspect);
-  fprintf(stderr, "%s\n", buff);
   Epplet_send_ipc(buff);
   Esnprintf(buff, sizeof(buff), "background %s bg.xperc %d", bg_name, (tiled ? 0 : 1024));
-  fprintf(stderr, "%s\n", buff);
   Epplet_send_ipc(buff);
   Esnprintf(buff, sizeof(buff), "background %s bg.yperc %d", bg_name, (tiled ? 0 : 1024));
-  fprintf(stderr, "%s\n", buff);
   Epplet_send_ipc(buff);
   Esnprintf(buff, sizeof(buff), "background %s bg.xjust %d", bg_name, (tiled ? 0 : 512));
-  fprintf(stderr, "%s\n", buff);
   Epplet_send_ipc(buff);
   Esnprintf(buff, sizeof(buff), "background %s bg.yjust %d", bg_name, (tiled ? 0 : 512));
-  fprintf(stderr, "%s\n", buff);
   Epplet_send_ipc(buff);
   Esnprintf(buff, sizeof(buff), "use_bg %s %d", bg_name, current_desk);
-  fprintf(stderr, "%s\n", buff);
   Epplet_send_ipc(buff);
   Esync();
 }
@@ -208,6 +204,12 @@ change_image(void *data) {
 
   Epplet_change_image(picture, (w * 16 - 6), (h * 16 - 6), filenames[idx]);
   INC_PIC();
+  switch (auto_setbg) {
+    case AUTOBG_TILED:    set_background(1, 1); break;
+    case AUTOBG_SCALED:   set_background(0, 0); break;
+    case AUTOBG_PSCALED:  set_background(0, 1); break;
+    default:            break;
+  }
 
   Epplet_remove_timer("CHANGE_IMAGE");
   if (!paused) {
@@ -337,6 +339,14 @@ parse_config(void) {
     Epplet_add_config("delay", "5.0");
   }
   zoom_cmd = Epplet_query_config_def("zoom_prog", "ee %s");
+  s = Epplet_query_config_def("auto_setbg", "off");
+  if (!strcasecmp(s, "tiled")) {
+    auto_setbg = AUTOBG_TILED;
+  } else if (!strcasecmp(s, "scaled")) {
+    auto_setbg = AUTOBG_SCALED;
+  } else if (!strcasecmp(s, "scaled_with_aspect")) {
+    auto_setbg = AUTOBG_PSCALED;
+  }
 }
 
 int
