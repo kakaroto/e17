@@ -46,7 +46,7 @@ void ewl_button_init(Ewl_Button * b, char *label)
 	if (label) {
 		b->label_object = ewl_text_new(label);
 		ewl_object_set_alignment(EWL_OBJECT(b->label_object),
-					 EWL_ALIGNMENT_CENTER);
+					 EWL_FLAG_ALIGN_CENTER);
 		ewl_container_append_child(EWL_CONTAINER(b), b->label_object);
 		ewl_widget_show(b->label_object);
 	}

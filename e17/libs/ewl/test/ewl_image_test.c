@@ -158,7 +158,7 @@ __create_image_test_window(Ewl_Widget * w, void *ev_data, void *user_data)
 
 	image = ewl_image_new(image_file);
 	ewl_object_set_padding(EWL_OBJECT(image), 0, 0, 5, 0);
-	ewl_object_set_alignment(EWL_OBJECT(image), EWL_ALIGNMENT_CENTER);
+	ewl_object_set_alignment(EWL_OBJECT(image), EWL_FLAG_ALIGN_CENTER);
 	ewl_container_append_child(EWL_CONTAINER(scrollpane), image);
 	ewl_widget_show(image);
 
@@ -171,7 +171,7 @@ __create_image_test_window(Ewl_Widget * w, void *ev_data, void *user_data)
 
 	button_hbox = ewl_hbox_new();
 	ewl_box_set_spacing(EWL_BOX(button_hbox), 5);
-	ewl_object_set_alignment(EWL_OBJECT(button_hbox), EWL_ALIGNMENT_CENTER);
+	ewl_object_set_alignment(EWL_OBJECT(button_hbox), EWL_FLAG_ALIGN_CENTER);
 	ewl_object_set_custom_size(EWL_OBJECT(button_hbox), 300, 26);
 	ewl_container_append_child(EWL_CONTAINER(image_box), button_hbox);
 	ewl_widget_show(button_hbox);
@@ -248,7 +248,7 @@ __create_image_test_window(Ewl_Widget * w, void *ev_data, void *user_data)
 
 	note_box = ewl_hbox_new();
 	ewl_container_append_child(EWL_CONTAINER(image_box), note_box);
-	ewl_object_set_alignment(EWL_OBJECT(note_box), EWL_ALIGNMENT_CENTER);
+	ewl_object_set_alignment(EWL_OBJECT(note_box), EWL_FLAG_ALIGN_CENTER);
 	ewl_object_set_maximum_h(EWL_OBJECT(note_box), 20);
 	ewl_widget_show(note_box);
 

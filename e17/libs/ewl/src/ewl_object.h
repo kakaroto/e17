@@ -50,12 +50,12 @@ typedef struct Ewl_Object Ewl_Object;
  *
  * As illustrated, the fill policy determines how much space an object will
  * use when the request for a specific size is made. When the fill policy
- * contains EWL_FILL_POLICY_HSHRINK, EWL_FILL_POLICY_VSHRINK or both, the
+ * contains EWL_FLAG_FILL_HSHRINK, EWL_FLAG_FILL_VSHRINK or both, the
  * Ewl_Object can be resized down to it's minimum size in width, height or both
  * respectively.
  *
- * The opposite is true for a fill policy containing EWL_FILL_POLICY_HFILL,
- * EWL_FILL_POLICY_VFILL or both, The Ewl_Object will now expand to fill the
+ * The opposite is true for a fill policy containing EWL_FLAG_FILL_HFILL,
+ * EWL_FLAG_FILL_VFILL or both, The Ewl_Object will now expand to fill the
  * space up to it's maximum size in the respective direction.
  */
 struct Ewl_Object
@@ -140,13 +140,30 @@ void            ewl_object_get_maximum_size(Ewl_Object * o, unsigned int *w,
 inline unsigned int	ewl_object_get_maximum_w(Ewl_Object * o);
 inline unsigned	int	ewl_object_get_maximum_h(Ewl_Object * o);
 
-inline void     ewl_object_set_alignment(Ewl_Object * o, Ewl_Alignment align);
+inline void     ewl_object_set_alignment(Ewl_Object * o, unsigned int align);
 void            ewl_object_place(Ewl_Object *o, int x, int y, unsigned
 				 int w, unsigned int h);
-inline		Ewl_Alignment ewl_object_get_alignment(Ewl_Object * o);
-inline void     ewl_object_set_fill_policy(Ewl_Object * o,
-					   Ewl_Fill_Policy fill);
-inline		Ewl_Fill_Policy ewl_object_get_fill_policy(Ewl_Object * o);
+
+/**
+ * @def ewl_object_get_alignment(o)
+ * @param o: the object to retrieve the alignment value
+ * @return Returns the value stored in the objects alignment attribute.
+ * @brief Retrieve the value of the objects alignment
+ */
+#define ewl_object_get_alignment(o) \
+	ewl_object_get_flags(o, EWL_FLAGS_ALIGN_MASK)
+
+
+inline void     ewl_object_set_fill_policy(Ewl_Object * o, unsigned int fill);
+
+/**
+ * @def ewl_object_get_fill_policy(o)
+ * @param o: the object to retrieve the fill policy value
+ * @return Returns the value stored in the objects fill policy attribute.
+ * @brief Retrieve the value of the objects fill policy
+ */
+#define ewl_object_get_fill_policy(o) \
+	ewl_object_get_flags(o, EWL_FLAGS_FILL_MASK)
 
 /*
  * Padding setting and retrieval functions.
@@ -171,6 +188,87 @@ int             ewl_object_top_insets(Ewl_Object * o);
 int             ewl_object_bottom_insets(Ewl_Object * o);
 int             ewl_object_left_insets(Ewl_Object * o);
 int             ewl_object_right_insets(Ewl_Object * o);
+
+void            ewl_object_add_flags(Ewl_Object *o, unsigned int flags,
+				     unsigned int mask);
+void            ewl_object_remove_flags(Ewl_Object *o, unsigned int flags,
+					unsigned int mask);
+unsigned int    ewl_object_has_flags(Ewl_Object *o, unsigned int flags,
+				     unsigned int mask);
+unsigned int    ewl_object_get_flags(Ewl_Object *o, unsigned int mask);
+
+/**
+ * @def ewl_object_set_recursive(o)
+ * @param o: the object to change the recursive flag
+ * @val: a boolean indicating the value of the recursive flag
+ * @return Returns no value.
+ * @brief Changes the recursive flag value to match @a val.
+ */
+#define ewl_object_set_recursive(o, val) \
+	(val ? ewl_object_add_flags(o, EWL_FLAG_PROPERTY_RECURSIVE, \
+				    EWL_FLAGS_PROPERTY_MASK) : \
+	 ewl_object_remove_flags(o, EWL_FLAG_PROPERTY_RECURSIVE, \
+				    EWL_FLAGS_PROPERTY_MASK));
+
+/**
+ * @def ewl_object_get_recursive(o)
+ * @param o: the parameter to retrieve the current value of recursive flag
+ * @return Returns the current setting of the recursive flag for @a o.
+ * @brief Retrieves the current setting of the recursive flag for @a o.
+ */
+#define ewl_object_get_recursive(o) \
+	(ewl_object_get_flags(o, EWL_FLAGS_PROPERTY_MASK) & \
+	 EWL_FLAG_PROPERTY_RECURSIVE)
+
+/**
+ * @def ewl_object_set_toplevel(o, val)
+ * @param o: the object to change the top level flag
+ * @val: a boolean indicating the value of the top level flag
+ * @return Returns no value.
+ * @brief Changes the top level flag value to match @a val.
+ */
+#define ewl_object_set_toplevel(o, val) \
+	(val ? ewl_object_add_flags(o, EWL_FLAG_PROPERTY_TOPLEVEL, \
+				    EWL_FLAGS_PROPERTY_MASK) : \
+	 ewl_object_remove_flags(o, EWL_FLAG_PROPERTY_RECURSIVE, \
+				    EWL_FLAGS_PROPERTY_MASK));
+
+/**
+ * @def ewl_object_get_toplevel(o)
+ * @param o: the parameter to retrieve the current value of top level flag
+ * @return Returns the current setting of the top level flag for @a o.
+ * @brief Retrieves the current setting of the top level flag for @a o.
+ */
+#define ewl_object_get_toplevel(o) \
+	(ewl_object_get_flags(o, EWL_FLAGS_PROPERTY_MASK) & \
+	 EWL_FLAG_PROPERTY_TOPLEVEL)
+
+#define ewl_object_add_state(o, state) \
+	ewl_object_add_flags(o, state, EWL_FLAGS_STATE_MASK)
+#define ewl_object_remove_state(o, state) \
+	ewl_object_remove_flags(o, state, EWL_FLAGS_STATE_MASK)
+#define ewl_object_has_state(o, state) \
+	ewl_object_has_flags(o, state, EWL_FLAGS_STATE_MASK)
+#define ewl_object_get_state(o, state) \
+	ewl_object_get_flags(o, state, EWL_FLAGS_STATE_MASK)
+
+#define ewl_object_add_queued(o, queued) \
+	ewl_object_add_flags(o, queued, EWL_FLAGS_QUEUED_MASK)
+#define ewl_object_remove_queued(o, queued) \
+	ewl_object_remove_flags(o, queued, EWL_FLAGS_QUEUED_MASK)
+#define ewl_object_has_queued(o, queued) \
+	ewl_object_has_flags(o, queued, EWL_FLAGS_QUEUED_MASK)
+#define ewl_object_get_queued(o, queued) \
+	ewl_object_get_flags(o, queued, EWL_FLAGS_QUEUED_MASK)
+
+#define ewl_object_add_visible(o, visible) \
+	ewl_object_add_flags(o, visible, EWL_FLAGS_VISIBLE_MASK)
+#define ewl_object_remove_visible(o, visible) \
+	ewl_object_remove_flags(o, visible, EWL_FLAGS_VISIBLE_MASK)
+#define ewl_object_has_visible(o, visible) \
+	ewl_object_has_flags(o, visible, EWL_FLAGS_VISIBLE_MASK)
+#define ewl_object_get_visible(o, visible) \
+	ewl_object_get_flags(o, visible, EWL_FLAGS_VISIBLE_MASK)
 
 #define PADDING_TOP(o) EWL_OBJECT(o)->pad.t
 #define PADDING_BOTTOM(o) EWL_OBJECT(o)->pad.b
@@ -205,18 +303,48 @@ int             ewl_object_right_insets(Ewl_Object * o);
 #define ewl_object_set_custom_size(o, w, h) \
 	ewl_object_set_minimum_size(o, w, h); \
 	ewl_object_set_maximum_size(o, w, h); \
-	ewl_object_set_fill_policy(o, EWL_FILL_POLICY_NONE);
+	ewl_object_set_fill_policy(o, EWL_FLAG_FILL_NONE);
 
 #define ewl_object_set_custom_w(o, w) \
 	ewl_object_set_maximum_w(o, w); \
 	ewl_object_set_minimum_w(o, w); \
 	ewl_object_set_fill_policy(o, ewl_object_get_fill_policy(o) & \
-			~(EWL_FILL_POLICY_HFILL | EWL_FILL_POLICY_HSHRINK));
+			~(EWL_FLAG_FILL_HFILL | EWL_FLAG_FILL_HSHRINK));
 
 #define ewl_object_set_custom_h(o, h) \
 	ewl_object_set_maximum_h(o, h); \
 	ewl_object_set_minimum_h(o, h); \
 	ewl_object_set_fill_policy(o, ewl_object_get_fill_policy(o) & \
-			~(EWL_FILL_POLICY_VFILL | EWL_FILL_POLICY_VSHRINK));
+			~(EWL_FLAG_FILL_VFILL | EWL_FLAG_FILL_VSHRINK));
+
+/**
+ * @def RECURSIVE(o)
+ * Used to test if a widget is recursive, aka. an Ewl_Container
+ */
+#define RECURSIVE(o) (EWL_OBJECT(o)->flags & EWL_FLAG_PROPERTY_RECURSIVE)
+
+/**
+ * @def REALIZED(o)
+ * Used to test if a widget has been realized.
+ */
+#define REALIZED(o) (EWL_OBJECT(o)->flags & EWL_FLAG_VISIBLE_REALIZED)
+
+/**
+ * @def VISIBLE(o)
+ * Used to test if a widget is visible.
+ */
+#define VISIBLE(o) (EWL_OBJECT(o)->flags & EWL_FLAG_VISIBLE_SHOWN)
+
+/**
+ * @def OBSCURED(o)
+ * Used to determine if a widget is marked as obscured.
+ */
+#define OBSCURED(o) (EWL_OBJECT(o)->flags & EWL_FLAG_VISIBLE_OBSCURED)
+
+/**
+ * @def HIDDEN(o)
+ * Used to determine if a widget is hidden.
+ */
+#define HIDDEN(o) (!(EWL_OBJECT(o)->flags & EWL_FLAG_VISIBLE_SHOWN))
 
 #endif				/* __EWL_OBJECT_H__ */

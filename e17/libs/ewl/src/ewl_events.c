@@ -182,7 +182,8 @@ int ewl_ev_key_down(void *data, int type, void *_ev)
 	 */
 	temp = last_key;
 	while (temp) {
-		if (!(temp->state & EWL_STATE_DISABLED))
+		if (!(ewl_object_has_state(EWL_OBJECT(temp),
+					EWL_FLAG_STATE_DISABLED)))
 			ewl_callback_call_with_event_data(temp,
 					EWL_CALLBACK_KEY_DOWN, ev);
 		temp = temp->parent;
@@ -258,12 +259,15 @@ int ewl_ev_mouse_down(void *data, int type, void *_ev)
 	 */
 	if (widget != last_selected) {
 		if (last_selected) {
-			last_selected->state &= ~EWL_STATE_SELECTED;
+			ewl_object_remove_state(EWL_OBJECT(last_selected),
+					EWL_FLAG_STATE_SELECTED);
 			ewl_callback_call(last_selected, EWL_CALLBACK_DESELECT);
 		}
 
-		if (widget && !(widget->state & EWL_STATE_DISABLED)) {
-			widget->state |= EWL_STATE_SELECTED;
+		if (widget && !(ewl_object_has_state(EWL_OBJECT(widget),
+					EWL_FLAG_STATE_DISABLED))) {
+			ewl_object_add_state(EWL_OBJECT(widget),
+					EWL_FLAG_STATE_SELECTED);
 			ewl_callback_call(widget, EWL_CALLBACK_SELECT);
 		}
 	}
@@ -274,8 +278,10 @@ int ewl_ev_mouse_down(void *data, int type, void *_ev)
 	 */
 	temp = widget;
 	while (temp) {
-		if (!(widget->state & EWL_STATE_DISABLED)) {
-			temp->state |= EWL_STATE_PRESSED;
+		if (!(ewl_object_has_state(EWL_OBJECT(widget),
+					EWL_FLAG_STATE_DISABLED))) {
+			ewl_object_add_state(EWL_OBJECT(temp),
+					EWL_FLAG_STATE_PRESSED);
 			ewl_callback_call_with_event_data(temp,
 					EWL_CALLBACK_MOUSE_DOWN, ev);
 		}
@@ -318,8 +324,10 @@ int ewl_ev_mouse_up(void *data, int type, void *_ev)
 	 */
 	temp = last_selected;
 	while (temp) {
-		if (!(temp->state & EWL_STATE_DISABLED)) {
-			temp->state &= ~EWL_STATE_PRESSED;
+		if (!(ewl_object_has_state(EWL_OBJECT(temp),
+				EWL_FLAG_STATE_DISABLED))) {
+			ewl_object_remove_state(EWL_OBJECT(temp),
+					EWL_FLAG_STATE_PRESSED);
 			ewl_callback_call_with_event_data(temp,
 					EWL_CALLBACK_MOUSE_UP, ev);
 		}
@@ -361,7 +369,8 @@ int ewl_ev_mouse_move(void *data, int type, void *_ev)
 	 */
 	while (last_focused && (widget != last_focused) &&
 			!ewl_container_parent_of(last_focused, widget)) {
-		last_focused->state &= ~EWL_STATE_HILITED;
+		ewl_object_remove_state(EWL_OBJECT(last_focused),
+				EWL_FLAG_STATE_HILITED);
 		ewl_callback_call(last_focused, EWL_CALLBACK_FOCUS_OUT);
 		last_focused = last_focused->parent;
 	}
@@ -373,13 +382,16 @@ int ewl_ev_mouse_move(void *data, int type, void *_ev)
 	last_focused = widget;
 	while (last_focused) {
 
-		if (!(last_focused->state & EWL_STATE_DISABLED)) {
+		if (!(ewl_object_has_state(EWL_OBJECT(last_focused),
+					EWL_FLAG_STATE_DISABLED))) {
 
 			/*
 			 * First mouse move event in a widget marks it focused.
 			 */
-			if (!(last_focused->state & EWL_STATE_HILITED)) {
-				last_focused->state |= EWL_STATE_HILITED;
+			if (!(ewl_object_has_state(EWL_OBJECT(last_focused),
+						EWL_FLAG_STATE_HILITED))) {
+				ewl_object_add_state(EWL_OBJECT(last_focused),
+						EWL_FLAG_STATE_HILITED);
 				ewl_callback_call(last_focused,
 						EWL_CALLBACK_FOCUS_IN);
 			}
@@ -392,11 +404,13 @@ int ewl_ev_mouse_move(void *data, int type, void *_ev)
 
 	last_focused = widget;
 
-	if (dnd_widget && dnd_widget->state & EWL_STATE_DND)
+	if (dnd_widget && ewl_object_has_state(EWL_OBJECT(dnd_widget),
+				EWL_FLAG_STATE_DND))
 		ewl_callback_call_with_event_data(dnd_widget,
 						  EWL_CALLBACK_MOUSE_MOVE, ev);
 
-	if (last_selected && last_selected->state & EWL_STATE_PRESSED)
+	if (last_selected && ewl_object_has_state(EWL_OBJECT(last_selected),
+				EWL_FLAG_STATE_PRESSED))
 		ewl_callback_call_with_event_data(last_selected,
 						  EWL_CALLBACK_MOUSE_MOVE, ev);
 	else

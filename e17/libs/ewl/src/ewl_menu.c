@@ -87,7 +87,7 @@ void __expand_menu(Ewl_Widget * w, void *ev_data, void *user_data)
 	menu->base.popup = ewl_window_new();
 	ewl_window_set_borderless(EWL_WINDOW(menu->base.popup));
 	ewl_object_set_fill_policy(EWL_OBJECT(menu->base.popup),
-				   EWL_FILL_POLICY_NONE);
+				   EWL_FLAG_FILL_NONE);
 
 	/* FIXME: We will need a real function for doing this from the embed
 	 * perspective.

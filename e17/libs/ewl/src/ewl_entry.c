@@ -71,10 +71,8 @@ void ewl_entry_init(Ewl_Entry * e, char *text)
 
 	ewl_container_init(EWL_CONTAINER(w), "entry", __ewl_entry_child_add,
 			__ewl_entry_child_resize, NULL);
-	ewl_object_set_fill_policy(EWL_OBJECT(w), EWL_FILL_POLICY_HSHRINK |
-			EWL_FILL_POLICY_HFILL);
-
-	w->flags &= ~EWL_FLAGS_RECURSIVE;
+	ewl_object_set_fill_policy(EWL_OBJECT(w), EWL_FLAG_FILL_HSHRINK |
+			EWL_FLAG_FILL_HFILL);
 
 	e->text = ewl_text_new(text);
 	ewl_container_append_child(EWL_CONTAINER(e), e->text);
@@ -355,7 +353,7 @@ void __ewl_entry_mouse_move(Ewl_Widget * w, void *ev_data, void *user_data)
 	/*
 	 * Check for the button pressed state, otherwise, do nothing.
 	 */
-	if (!(w->state & EWL_STATE_PRESSED))
+	if (!(ewl_object_has_state(EWL_OBJECT(e), EWL_FLAG_STATE_PRESSED)))
 		DRETURN(DLEVEL_STABLE);
 
 	if (ev->x < CURRENT_X(e->text))

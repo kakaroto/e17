@@ -57,7 +57,7 @@ __create_menu_test_window(Ewl_Widget * w, void *ev_data, void *user_data)
 	 * Create the main box for holding the widgets
 	 */
 	menu_box = ewl_vbox_new();
-	ewl_object_set_fill_policy(EWL_OBJECT(menu_box), EWL_FILL_POLICY_FILL);
+	ewl_object_set_fill_policy(EWL_OBJECT(menu_box), EWL_FLAG_FILL_FILL);
 	ewl_container_append_child(EWL_CONTAINER(menu_win), menu_box);
 	ewl_theme_data_set_str(menu_box,
 			       "/appearance/box/vertical/base/visible", "yes");

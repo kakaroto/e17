@@ -30,8 +30,8 @@ Ewl_Widget *ewl_notebook_remove_page(Ewl_Notebook * n, int i);
 Ewl_Widget *ewl_notebook_remove_visible(Ewl_Notebook * n);
 
 void            ewl_notebook_set_tabs_alignment(Ewl_Notebook * n,
-						Ewl_Alignment a);
-Ewl_Alignment   ewl_notebook_get_tabs_alignment(Ewl_Notebook * n);
+						unsigned int a);
+unsigned int    ewl_notebook_get_tabs_alignment(Ewl_Notebook * n);
 
 void            ewl_notebook_set_tabs_position(Ewl_Notebook * n,
 					       Ewl_Position p);

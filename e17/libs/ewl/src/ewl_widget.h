@@ -39,11 +39,8 @@ struct Ewl_Widget
 	char           *appearance; /**< Key to lookup appearance in theme */
 	int             layer; /**< Current layer of widget on canvas */
 
-	Ewl_State       state; /**< Present widget state bitmask */
 	Ewd_Hash       *theme; /**< Overriding theme settings of this widget */
 	Ewd_Hash       *data; /**< Arbitrary data attached to this widget */
-
-	Ewl_Widget_Flags flags; /**< Bitmask indicating visibility and status */
 };
 
 /*
@@ -146,37 +143,7 @@ void            ewl_widget_set_layer(Ewl_Widget *w, int layer);
 int             ewl_widget_get_layer(Ewl_Widget *w);
 
 /**
- * @def RECURSIVE(w)
- * Used to test if a widget is recursive, aka. an Ewl_Container
- */
-#define RECURSIVE(w) (EWL_WIDGET(w)->flags & EWL_FLAGS_RECURSIVE)
-
-/**
- * @def REALIZED(w)
- * Used to test if a widget has been realized.
- */
-#define REALIZED(w) (EWL_WIDGET(w)->flags & EWL_FLAGS_REALIZED)
-
-/**
- * @def VISIBLE(w)
- * Used to test if a widget is visible.
- */
-#define VISIBLE(w) (EWL_WIDGET(w)->flags & EWL_FLAGS_SHOWN)
-
-/**
- * @def OBSCURED(w)
- * Used to determine if a widget is marked as obscured.
- */
-#define OBSCURED(w) (EWL_WIDGET(w)->flags & EWL_FLAGS_OBSCURED)
-
-/**
- * @def HIDDEN(w)
- * Used to determine if a widget is hidden.
- */
-#define HIDDEN(w) (!(EWL_WIDGET(w)->flags & EWL_FLAGS_SHOWN))
-
-/**
- * @def HIDDEN(w)
+ * @def LAYER(w)
  * Used to retrieve the layer of a widget.
  */
 #define LAYER(w) EWL_WIDGET(w)->layer

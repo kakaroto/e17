@@ -756,20 +756,20 @@ __ewl_box_setup()
 		/*
 		 * This sets the aligments for filling direction.
 		 */
-		vertical->f1_align = EWL_ALIGNMENT_TOP;
-		vertical->f3_align = EWL_ALIGNMENT_BOTTOM;
+		vertical->f1_align = EWL_FLAG_ALIGN_TOP;
+		vertical->f3_align = EWL_FLAG_ALIGN_BOTTOM;
 
 		/*
 		 * These are the valid fill policies for this widget.
 		 */
 		vertical->f_policy =
-		    EWL_FILL_POLICY_VSHRINK | EWL_FILL_POLICY_VFILL;
+		    EWL_FLAG_FILL_VSHRINK | EWL_FLAG_FILL_VFILL;
 
 		/*
 		 * This sets the aligments for the non-filling direction.
 		 */
-		vertical->a1_align = EWL_ALIGNMENT_LEFT;
-		vertical->a3_align = EWL_ALIGNMENT_RIGHT;
+		vertical->a1_align = EWL_FLAG_ALIGN_LEFT;
+		vertical->a3_align = EWL_FLAG_ALIGN_RIGHT;
 
 		/*
 		 * These functions allow for asking the dimensions of the
@@ -796,20 +796,20 @@ __ewl_box_setup()
 		/*
 		 * This sets the aligments for the filling direction.
 		 */
-		horizontal->f1_align = EWL_ALIGNMENT_LEFT;
-		horizontal->f3_align = EWL_ALIGNMENT_RIGHT;
+		horizontal->f1_align = EWL_FLAG_ALIGN_LEFT;
+		horizontal->f3_align = EWL_FLAG_ALIGN_RIGHT;
 
 		/*
 		 * These are the valid fill policies for this widget.
 		 */
 		horizontal->f_policy =
-		    EWL_FILL_POLICY_HSHRINK | EWL_FILL_POLICY_HFILL;
+		    EWL_FLAG_FILL_HSHRINK | EWL_FLAG_FILL_HFILL;
 
 		/*
 		 * This sets the aligments for the non-filling direction.
 		 */
-		horizontal->a1_align = EWL_ALIGNMENT_TOP;
-		horizontal->a3_align = EWL_ALIGNMENT_BOTTOM;
+		horizontal->a1_align = EWL_FLAG_ALIGN_TOP;
+		horizontal->a3_align = EWL_FLAG_ALIGN_BOTTOM;
 
 		/*
 		 * These functions allow for asking the dimensions of the

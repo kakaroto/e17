@@ -73,7 +73,7 @@ void ewl_spinner_init(Ewl_Spinner * s)
 	ewl_container_init(EWL_CONTAINER(w), "spinner",
 			__ewl_spinner_child_add, __ewl_spinner_child_resize,
 			NULL);
-	ewl_object_set_fill_policy(EWL_OBJECT(w), EWL_FILL_POLICY_HFILL);
+	ewl_object_set_fill_policy(EWL_OBJECT(w), EWL_FLAG_FILL_HFILL);
 
 	ewl_callback_append(w, EWL_CALLBACK_REALIZE, __ewl_spinner_realize,
 			    NULL);
@@ -88,14 +88,14 @@ void ewl_spinner_init(Ewl_Spinner * s)
 	ewl_container_append_child(EWL_CONTAINER(s), s->button_increase);
 	ewl_widget_set_appearance(s->button_increase, "button_increment");
 	ewl_object_set_fill_policy(EWL_OBJECT(s->button_increase),
-			EWL_FILL_POLICY_NONE);
+			EWL_FLAG_FILL_NONE);
 	ewl_widget_show(s->button_increase);
 
 	s->button_decrease = ewl_button_new(NULL);
 	ewl_container_append_child(EWL_CONTAINER(s), s->button_decrease);
 	ewl_widget_set_appearance(s->button_decrease, "button_decrement");
 	ewl_object_set_fill_policy(EWL_OBJECT(s->button_decrease),
-			EWL_FILL_POLICY_NONE);
+			EWL_FLAG_FILL_NONE);
 	ewl_widget_show(s->button_decrease);
 
 	s->min_val = -50.0;

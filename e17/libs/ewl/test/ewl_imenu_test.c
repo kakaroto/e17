@@ -63,7 +63,7 @@ __create_imenu_test_window(Ewl_Widget * w, void *ev_data, void *user_data)
 	 * Create the main box for holding the widgets
 	 */
 	imenu_box = ewl_vbox_new();
-	ewl_object_set_fill_policy(EWL_OBJECT(imenu_box), EWL_FILL_POLICY_FILL);
+	ewl_object_set_fill_policy(EWL_OBJECT(imenu_box), EWL_FLAG_FILL_FILL);
 	ewl_container_append_child(EWL_CONTAINER(imenu_win), imenu_box);
 	ewl_widget_show(imenu_box);
 
@@ -116,10 +116,6 @@ __create_imenu_test_window(Ewl_Widget * w, void *ev_data, void *user_data)
 	ewl_container_append_child(EWL_CONTAINER(imenu2), item);
 	ewl_callback_append(item, EWL_CALLBACK_SELECT, __imenu_select, NULL);
 	ewl_widget_show(item);
-
-	/*
-	 * ewl_imenu_set_title_expandable(EWL_IMENU(imenu));
-	 */
 
 	return;
 	w = NULL;

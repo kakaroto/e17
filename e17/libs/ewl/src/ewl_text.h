@@ -68,7 +68,7 @@ void            ewl_text_get_letter_geometry(Ewl_Text * t, int index, int *xx,
 int             ewl_text_get_letter_geometry_at(Ewl_Text * t, int x, int y,
 						int *tx, int *ty, int *tw,
 						int *th);
-void            ewl_text_set_alignment(Ewl_Text * t, Ewl_Alignment a);
+void            ewl_text_set_alignment(Ewl_Text * t, unsigned int a);
 int             ewl_text_get_index_at(Ewl_Text * t, int x, int y);
 
 /**

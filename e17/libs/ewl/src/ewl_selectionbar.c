@@ -85,8 +85,8 @@ void ewl_selectionbar_init(Ewl_Selectionbar * s, Ewl_Widget * parent)
 
 	ewl_container_init(EWL_CONTAINER(s->bar), "/selectionbar", NULL, NULL,
 			NULL);
-	ewl_object_set_fill_policy(EWL_OBJECT(s->bar), EWL_FILL_POLICY_HFILL |
-				   EWL_FILL_POLICY_HSHRINK);
+	ewl_object_set_fill_policy(EWL_OBJECT(s->bar), EWL_FLAG_FILL_HFILL |
+				   EWL_FLAG_FILL_HSHRINK);
 	ewl_container_append_child(EWL_CONTAINER(w), EWL_WIDGET(s->bar));
 	ewl_callback_append(EWL_WIDGET(s->bar), EWL_CALLBACK_FOCUS_OUT,
 			    __focus_out, w);
@@ -180,7 +180,6 @@ void
 __ewl_selectionbar_configure(Ewl_Widget * w, void *ev_data, void *user_data)
 {
 	Ewl_Selectionbar *s;
-	Ewl_Widget     *child;
 	Ewd_List       *children;
 
 	DENTER_FUNCTION(DLEVEL_STABLE);

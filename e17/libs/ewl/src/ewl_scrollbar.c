@@ -56,9 +56,9 @@ void ewl_scrollbar_init(Ewl_Scrollbar * s, Ewl_Orientation orientation)
 	 */
 	s->button_decrement = ewl_button_new(NULL);
 	ewl_object_set_alignment(EWL_OBJECT(s->button_decrement),
-			EWL_ALIGNMENT_CENTER);
+			EWL_FLAG_ALIGN_CENTER);
 	ewl_object_set_fill_policy(EWL_OBJECT(s->button_decrement),
-				   EWL_FILL_POLICY_NONE);
+				   EWL_FLAG_FILL_NONE);
 	ewl_widget_show(s->button_decrement);
 
 	/*
@@ -66,9 +66,9 @@ void ewl_scrollbar_init(Ewl_Scrollbar * s, Ewl_Orientation orientation)
 	 */
 	s->button_increment = ewl_button_new(NULL);
 	ewl_object_set_alignment(EWL_OBJECT(s->button_increment),
-			EWL_ALIGNMENT_CENTER);
+			EWL_FLAG_ALIGN_CENTER);
 	ewl_object_set_fill_policy(EWL_OBJECT(s->button_increment),
-				   EWL_FILL_POLICY_NONE);
+				   EWL_FLAG_FILL_NONE);
 	ewl_widget_show(s->button_increment);
 
 	/*
@@ -102,9 +102,9 @@ void ewl_scrollbar_init(Ewl_Scrollbar * s, Ewl_Orientation orientation)
 	 * Set the default alignment for the buttons.
 	 */
 	ewl_object_set_alignment(EWL_OBJECT(s->button_decrement),
-				 EWL_ALIGNMENT_CENTER);
+				 EWL_FLAG_ALIGN_CENTER);
 	ewl_object_set_alignment(EWL_OBJECT(s->button_increment),
-				 EWL_ALIGNMENT_CENTER);
+				 EWL_FLAG_ALIGN_CENTER);
 
 	/*
 	 * Set the default amount of space that the seeker should fill.
@@ -143,7 +143,7 @@ void ewl_scrollbar_init(Ewl_Scrollbar * s, Ewl_Orientation orientation)
 	 */
 	if (orientation == EWL_ORIENTATION_HORIZONTAL) {
 
-		if (s->buttons_alignment & EWL_ALIGNMENT_LEFT) {
+		if (s->buttons_alignment & EWL_FLAG_ALIGN_LEFT) {
 
 			/*
 			 * Place in decrement, increment, seeker order.
@@ -154,7 +154,7 @@ void ewl_scrollbar_init(Ewl_Scrollbar * s, Ewl_Orientation orientation)
 						   s->button_increment);
 			ewl_container_append_child(EWL_CONTAINER(s), s->seeker);
 		}
-		else if (s->buttons_alignment & EWL_ALIGNMENT_RIGHT) {
+		else if (s->buttons_alignment & EWL_FLAG_ALIGN_RIGHT) {
 
 			/*
 			 * Place in seeker, decrement, increment order.
@@ -183,11 +183,11 @@ void ewl_scrollbar_init(Ewl_Scrollbar * s, Ewl_Orientation orientation)
 		ewl_seeker_set_value(EWL_SEEKER(s->seeker), 0);
 		ewl_widget_set_appearance(w, "hscrollbar");
 		ewl_object_set_fill_policy(EWL_OBJECT(s),
-				EWL_FILL_POLICY_HFILL);
+				EWL_FLAG_FILL_HFILL);
 	}
 	else {
 
-		if (s->buttons_alignment & EWL_ALIGNMENT_TOP) {
+		if (s->buttons_alignment & EWL_FLAG_ALIGN_TOP) {
 
 			/*
 			 * Place in increment, decrement, seeker order.
@@ -198,7 +198,7 @@ void ewl_scrollbar_init(Ewl_Scrollbar * s, Ewl_Orientation orientation)
 						   s->button_decrement);
 			ewl_container_append_child(EWL_CONTAINER(s), s->seeker);
 		}
-		else if (s->buttons_alignment & EWL_ALIGNMENT_BOTTOM) {
+		else if (s->buttons_alignment & EWL_FLAG_ALIGN_BOTTOM) {
 
 			/*
 			 * Place in seeker, increment, decrement order.
@@ -227,7 +227,7 @@ void ewl_scrollbar_init(Ewl_Scrollbar * s, Ewl_Orientation orientation)
 		ewl_seeker_set_value(EWL_SEEKER(s->seeker), 0);
 		ewl_widget_set_appearance(w, "vscrollbar");
 		ewl_object_set_fill_policy(EWL_OBJECT(s),
-				EWL_FILL_POLICY_VFILL);
+				EWL_FLAG_FILL_VFILL);
 	}
 
 	DLEAVE_FUNCTION(DLEVEL_STABLE);

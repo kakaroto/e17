@@ -30,7 +30,8 @@ void ewl_object_init(Ewl_Object * o)
 	/*
 	 * Set the default fill policy and alignment for the object.
 	 */
-	o->flags = EWL_FILL_POLICY_NORMAL | EWL_ALIGNMENT_LEFT | EWL_ALIGNMENT_TOP;
+	o->flags = EWL_FLAG_FILL_NORMAL | EWL_FLAG_ALIGN_LEFT |
+		   EWL_FLAG_ALIGN_TOP;
 }
 
 /**
@@ -115,10 +116,22 @@ int ewl_object_get_current_y(Ewl_Object * o)
  */
 unsigned int ewl_object_get_current_w(Ewl_Object * o)
 {
+	int w;
+
 	DCHECK_PARAM_PTR_RET("o", o, 0);
 
-	DRETURN_INT(CURRENT_W(o) + PADDING_HORIZONTAL(o) + INSET_HORIZONTAL(o),
-			DLEVEL_STABLE);
+	w = CURRENT_W(o) + PADDING_HORIZONTAL(o) + INSET_HORIZONTAL(o);
+	if (w < MINIMUM_W(o))
+		w = MINIMUM_W(o);
+
+	if (w < PREFERRED_W(o) && !(ewl_object_get_fill_policy(o) &
+				EWL_FLAG_FILL_HSHRINK))
+		w = PREFERRED_W(o);
+
+	if (w > MAXIMUM_W(o))
+		w = MAXIMUM_W(o);
+
+	DRETURN_INT(w, DLEVEL_STABLE);
 }
 
 /**
@@ -128,10 +141,22 @@ unsigned int ewl_object_get_current_w(Ewl_Object * o)
  */
 unsigned int ewl_object_get_current_h(Ewl_Object * o)
 {
+	int h;
+
 	DCHECK_PARAM_PTR_RET("o", o, 0);
 
-	DRETURN_INT(CURRENT_H(o) + PADDING_VERTICAL(o) + INSET_VERTICAL(o),
-			DLEVEL_STABLE);
+	h = CURRENT_H(o) + PADDING_VERTICAL(o) + INSET_VERTICAL(o);
+	if (h < MINIMUM_H(o))
+		h = MINIMUM_H(o);
+
+	if (h < PREFERRED_H(o) && !(ewl_object_get_fill_policy(o) &
+				EWL_FLAG_FILL_VSHRINK))
+		h = PREFERRED_H(o);
+
+	if (h > MAXIMUM_H(o))
+		h = MAXIMUM_H(o);
+
+	DRETURN_INT(h, DLEVEL_STABLE);
 }
 
 /**
@@ -192,7 +217,7 @@ void ewl_object_set_preferred_w(Ewl_Object * o, unsigned int w)
 	/*
 	 * Now update the widgets parent of the change in size.
 	 */
-	if (REALIZED(o) && !(o->flags & EWL_FILL_POLICY_HSHRINK))
+	if (REALIZED(o) && !(o->flags & EWL_FLAG_FILL_HSHRINK))
 		ewl_container_resize_child(EWL_WIDGET(o), new_size - old_size,
 				EWL_ORIENTATION_HORIZONTAL);
 
@@ -232,7 +257,7 @@ void ewl_object_set_preferred_h(Ewl_Object * o, unsigned int h)
 	/*
 	 * Notify the parent widgets of the change in size.
 	 */
-	if (REALIZED(o) && !(o->flags & EWL_FILL_POLICY_VSHRINK))
+	if (REALIZED(o) && !(o->flags & EWL_FLAG_FILL_VSHRINK))
 		ewl_container_resize_child(EWL_WIDGET(o), new_size - old_size,
 				EWL_ORIENTATION_VERTICAL);
 
@@ -433,13 +458,17 @@ void ewl_object_request_w(Ewl_Object * o, unsigned int w)
 	DCHECK_PARAM_PTR("o", o);
 
 	w -= PADDING_HORIZONTAL(o) + INSET_HORIZONTAL(o);
+	if ((signed int)w < 0) {
+		printf("FIXME: Negative width requested check child add/resize"
+				"/remove functions\n");
+	}
 
 	/*
 	 * Bound the width by the preferred size first.
 	 */
-	if ((w < o->preferred.w && !(o->flags & EWL_FILL_POLICY_HSHRINK))
+	if ((w < o->preferred.w && !(o->flags & EWL_FLAG_FILL_HSHRINK))
 	    || (w > o->preferred.w &&
-		!(o->flags & EWL_FILL_POLICY_HFILL)))
+		!(o->flags & EWL_FLAG_FILL_HFILL)))
 		w = o->preferred.w;
 
 	/*
@@ -472,13 +501,18 @@ void ewl_object_request_h(Ewl_Object * o, unsigned int h)
 	DCHECK_PARAM_PTR("o", o);
 
 	h -= PADDING_VERTICAL(o) + INSET_VERTICAL(o);
+	if ((signed int)h < 0) {
+		printf("FIXME: Negative height requested check child add/resize"
+				"/remove functions\n");
+		h = 0;
+	}
 
 	/*
 	 * Bound the width by the preferred size first.
 	 */
-	if ((h < o->preferred.h && !(o->flags & EWL_FILL_POLICY_VSHRINK))
+	if ((h < o->preferred.h && !(o->flags & EWL_FLAG_FILL_VSHRINK))
 	    || (h > o->preferred.h &&
-		!(o->flags & EWL_FILL_POLICY_VFILL)))
+		!(o->flags & EWL_FLAG_FILL_VFILL)))
 		h = o->preferred.h;
 
 	/*
@@ -543,7 +577,9 @@ inline void ewl_object_set_minimum_w(Ewl_Object * o, unsigned int w)
 		MAXIMUM_W(o) = w;
 
 	if (PREFERRED_W(o) < MINIMUM_W(o))
-		ewl_object_set_preferred_w(o, PREFERRED_W(o));
+		ewl_container_resize_child(EWL_WIDGET(o), MINIMUM_W(o) -
+					PREFERRED_W(o),
+					EWL_ORIENTATION_HORIZONTAL);
 
 	if (CURRENT_W(o) < w)
 		ewl_object_request_w(o, w);
@@ -577,7 +613,9 @@ inline void ewl_object_set_minimum_h(Ewl_Object * o, unsigned int h)
 		MAXIMUM_H(o) = h;
 
 	if (PREFERRED_H(o) < MINIMUM_H(o))
-		ewl_object_set_preferred_h(o, PREFERRED_H(o));
+		ewl_container_resize_child(EWL_WIDGET(o), MINIMUM_W(o) -
+					PREFERRED_W(o),
+					EWL_ORIENTATION_VERTICAL);
 
 	if (CURRENT_H(o) < h)
 		ewl_object_request_h(o, h);
@@ -597,7 +635,7 @@ inline unsigned int ewl_object_get_minimum_w(Ewl_Object * o)
 	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR_RET("o", o, 0);
 
-	if (o->flags & EWL_FILL_POLICY_HSHRINK || MINIMUM_W(o) > PREFERRED_W(o))
+	if (o->flags & EWL_FLAG_FILL_HSHRINK || MINIMUM_W(o) > PREFERRED_W(o))
 		val = MINIMUM_W(o);
 	else
 		val = PREFERRED_W(o);
@@ -618,7 +656,7 @@ inline unsigned int ewl_object_get_minimum_h(Ewl_Object * o)
 	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR_RET("o", o, 0);
 
-	if (o->flags & EWL_FILL_POLICY_VSHRINK || MINIMUM_H(o) > PREFERRED_H(o))
+	if (o->flags & EWL_FLAG_FILL_VSHRINK || MINIMUM_H(o) > PREFERRED_H(o))
 		val = MINIMUM_H(o);
 	else
 		val = PREFERRED_H(o);
@@ -749,7 +787,7 @@ inline unsigned int ewl_object_get_maximum_w(Ewl_Object * o)
 	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR_RET("o", o, 0);
 
-	if (o->flags & EWL_FILL_POLICY_HFILL)
+	if (o->flags & EWL_FLAG_FILL_HFILL)
 		val = MAXIMUM_W(o);
 	else
 		val = PREFERRED_W(o);
@@ -771,7 +809,7 @@ inline unsigned int ewl_object_get_maximum_h(Ewl_Object * o)
 	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR_RET("o", o, 0);
 
-	if (o->flags & EWL_FILL_POLICY_VFILL)
+	if (o->flags & EWL_FLAG_FILL_VFILL)
 		val = MAXIMUM_H(o);
 	else
 		val = PREFERRED_H(o);
@@ -1050,16 +1088,13 @@ int ewl_object_right_insets(Ewl_Object * o)
  * Stores the new alignment value into the object for use
  * when laying out the object.
  */
-inline void ewl_object_set_alignment(Ewl_Object * o, Ewl_Alignment align)
+inline void ewl_object_set_alignment(Ewl_Object * o, unsigned int align)
 {
 	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR("o", o);
 
-	/*
-	 * Keep the fill policy portion and fill in the alignment.
-	 */
-	o->flags &= EWL_FILL_POLICY_MASK;
-	o->flags |= align;
+	ewl_object_remove_flags(o, EWL_FLAGS_ALIGN_MASK, EWL_FLAGS_ALIGN_MASK);
+	ewl_object_add_flags(o, align, EWL_FLAGS_ALIGN_MASK);
 
 	if (EWL_WIDGET(o)->parent)
 		ewl_widget_configure(EWL_WIDGET(o)->parent);
@@ -1093,9 +1128,9 @@ ewl_object_place(Ewl_Object *o, int x, int y, unsigned int w, unsigned int h)
 	/*
 	 * Horizontal position
 	 */
-	if (o->flags & EWL_ALIGNMENT_LEFT)
+	if (o->flags & EWL_FLAG_ALIGN_LEFT)
 		x_pos = x;
-	else if (o->flags & EWL_ALIGNMENT_RIGHT)
+	else if (o->flags & EWL_FLAG_ALIGN_RIGHT)
 		x_pos = x + w - w_accept;
 	else
 		x_pos = x + ((w - w_accept) / 2);
@@ -1103,9 +1138,9 @@ ewl_object_place(Ewl_Object *o, int x, int y, unsigned int w, unsigned int h)
 	/*
 	 * Vertical position
 	 */
-	if (o->flags & EWL_ALIGNMENT_TOP)
+	if (o->flags & EWL_FLAG_ALIGN_TOP)
 		y_pos = y;
-	else if (o->flags & EWL_ALIGNMENT_BOTTOM)
+	else if (o->flags & EWL_FLAG_ALIGN_BOTTOM)
 		y_pos = y + h - h_accept;
 	else
 		y_pos = y + ((h - h_accept) / 2);
@@ -1124,7 +1159,7 @@ ewl_object_place(Ewl_Object *o, int x, int y, unsigned int w, unsigned int h)
  * Stores the new fill policy value into the object for use when laying out
  * the object.
  */
-inline void ewl_object_set_fill_policy(Ewl_Object * o, Ewl_Fill_Policy fill)
+inline void ewl_object_set_fill_policy(Ewl_Object * o, unsigned int fill)
 {
 	unsigned int old_mask;
 
@@ -1132,41 +1167,41 @@ inline void ewl_object_set_fill_policy(Ewl_Object * o, Ewl_Fill_Policy fill)
 
 	DCHECK_PARAM_PTR("o", o);
 
-	if ((o->flags & EWL_FILL_POLICY_MASK) == fill)
+	if ((o->flags & EWL_FLAGS_FILL_MASK) == fill)
 		DRETURN(DLEVEL_STABLE);
 
 	old_mask = o->flags;
-
-	/*
-	 * Keep the alignment portion and fill in the fill policy.
-	 */
-	o->flags &= EWL_ALIGNMENT_MASK;
-	o->flags |= fill;
+	ewl_object_remove_flags(o, EWL_FLAGS_FILL_MASK, EWL_FLAGS_FILL_MASK);
+	ewl_object_add_flags(o, fill, EWL_FLAGS_FILL_MASK);
 
 	/*
 	 * Notify the parent of a resize if the fill policy causes the returned
 	 * minimum size to change. Check horizontal change first.
 	 */
-	if ((old_mask & EWL_FILL_POLICY_HSHRINK) &&
-			!(fill & EWL_FILL_POLICY_HSHRINK))
+	/* FIXME:
+	if ((old_mask & EWL_FLAG_FILL_HSHRINK) &&
+			!(fill & EWL_FLAG_FILL_HSHRINK))
 		ewl_container_resize_child(EWL_WIDGET(o), PREFERRED_W(o) -
 				MINIMUM_W(o), EWL_ORIENTATION_HORIZONTAL);
-	else if (!(old_mask & EWL_FILL_POLICY_HSHRINK) &&
-			(fill & EWL_FILL_POLICY_HSHRINK))
+	else if (!(old_mask & EWL_FLAG_FILL_HSHRINK) &&
+			(fill & EWL_FLAG_FILL_HSHRINK))
 		ewl_container_resize_child(EWL_WIDGET(o), MINIMUM_W(o) -
 				PREFERRED_W(o), EWL_ORIENTATION_HORIZONTAL);
+	*/
 
 	/*
 	 * Now the vertical change
 	 */
-	if ((old_mask & EWL_FILL_POLICY_VSHRINK) &&
-			!(fill & EWL_FILL_POLICY_VSHRINK))
+	/* FIXME:
+	if ((old_mask & EWL_FLAG_FILL_VSHRINK) &&
+			!(fill & EWL_FLAG_FILL_VSHRINK))
 		ewl_container_resize_child(EWL_WIDGET(o), PREFERRED_H(o) -
 				MINIMUM_H(o), EWL_ORIENTATION_VERTICAL);
-	else if (!(old_mask & EWL_FILL_POLICY_VSHRINK) &&
-			(fill & EWL_FILL_POLICY_VSHRINK))
+	else if (!(old_mask & EWL_FLAG_FILL_VSHRINK) &&
+			(fill & EWL_FLAG_FILL_VSHRINK))
 		ewl_container_resize_child(EWL_WIDGET(o), MINIMUM_H(o) -
 				PREFERRED_H(o), EWL_ORIENTATION_VERTICAL);
+	*/
 
 	if (EWL_WIDGET(o)->parent)
 		ewl_widget_configure(EWL_WIDGET(o)->parent);
@@ -1175,31 +1210,66 @@ inline void ewl_object_set_fill_policy(Ewl_Object * o, Ewl_Fill_Policy fill)
 }
 
 /**
- * @param o: the object to retrieve the alignment value
- * @return Returns the value stored in the objects alignment attribute.
- * @brief Retrieve the value of the objects alignment
- *
+ * @param o: the object to set the specified object flags
+ * @param flags: a bitmask of new flags to be set in the object
+ * @param mask: a bitmask limiting added flags to a certain set
+ * @return Returns no value.
+ * @brief Add the set of flags specified in @a flags to @a o.
  */
-inline          Ewl_Alignment ewl_object_get_alignment(Ewl_Object * o)
+void ewl_object_add_flags(Ewl_Object *o, unsigned int flags, unsigned int mask)
 {
 	DENTER_FUNCTION(DLEVEL_STABLE);
+	DCHECK_PARAM_PTR("o", o);
 
-	DCHECK_PARAM_PTR_RET("o", o, EWL_ALIGNMENT_LEFT);
+	o->flags |= (flags & mask);
 
-	DRETURN_INT((o->flags & EWL_ALIGNMENT_MASK), DLEVEL_STABLE);
+	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
 
-
 /**
- * @param o: the object to retrieve the fill policy value
- * @return Returns the value stored in the objects fill policy attribute.
- * @brief Retrieve the value of the objects fill policy
+ * @param o: the object to remove specified state flags
+ * @param state: a bitmask of state flags to be removed from the object
+ * @param mask: a bitmask limiting removed flags to a certain set
+ * @return Returns no value.
+ * @brief Removes the set of state flags specified in @a flags from @a o.
  */
-inline          Ewl_Fill_Policy ewl_object_get_fill_policy(Ewl_Object * o)
+void
+ewl_object_remove_flags(Ewl_Object *o, unsigned int flags, unsigned int mask)
 {
 	DENTER_FUNCTION(DLEVEL_STABLE);
+	DCHECK_PARAM_PTR("o", o);
 
-	DCHECK_PARAM_PTR_RET("o", o, EWL_FILL_POLICY_NORMAL);
+	o->flags &= ~(flags & mask);
 
-	DRETURN_INT((o->flags & EWL_FILL_POLICY_MASK), DLEVEL_STABLE);
+	DLEAVE_FUNCTION(DLEVEL_STABLE);
+}
+
+/**
+ * @param o: the parameter to retrieve the current value of object flags
+ * @param mask: get only the flags specified in mask
+ * @return Returns the current setting of the object flags for @a o.
+ * @brief Retrieves the current setting of the object flags for @a o.
+ */
+unsigned int ewl_object_get_flags(Ewl_Object *o, unsigned int mask)
+{
+	DENTER_FUNCTION(DLEVEL_STABLE);
+	DCHECK_PARAM_PTR_RET("o", o, 0);
+
+	DRETURN_INT(o->flags & mask, DLEVEL_STABLE);
+}
+
+/**
+ * @param o: the object to check for a specified flags
+ * @param flags: the bitmask of flags to check on the object
+ * @return Returns TRUE if the specified flags are set, FALSE otherwise.
+ * @brief Determines if an object has the requested @a flags set.
+ */
+unsigned int
+ewl_object_has_flags(Ewl_Object *o, unsigned int flags, unsigned int mask)
+{
+	DENTER_FUNCTION(DLEVEL_STABLE);
+	DCHECK_PARAM_PTR_RET("o", o, 0);
+
+	DRETURN_INT((o->flags & (flags & mask)) == (flags & mask),
+			DLEVEL_STABLE);
 }

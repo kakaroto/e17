@@ -51,11 +51,11 @@ ewl_text_init(Ewl_Text * t, char *text)
 	w = EWL_WIDGET(t);
 
 	ewl_widget_init(w, "text");
-	ewl_object_set_fill_policy(EWL_OBJECT(w), EWL_FILL_POLICY_NONE);
+	ewl_object_set_fill_policy(EWL_OBJECT(w), EWL_FLAG_FILL_NONE);
 
 	t->text = (text ? strdup(text) : strdup(""));
 	t->length = strlen(t->text);
-	t->align = EWL_ALIGNMENT_TOP | EWL_ALIGNMENT_LEFT;
+	t->align = EWL_FLAG_ALIGN_TOP | EWL_FLAG_ALIGN_LEFT;
 
 	/*
 	 * Set up appropriate callbacks for specific events
@@ -526,7 +526,7 @@ ewl_text_get_letter_geometry_at(Ewl_Text * t, int x, int y,
  * Changes the alignment of the text in @a t to @a a.
  */
 void
-ewl_text_set_alignment(Ewl_Text * t, Ewl_Alignment a)
+ewl_text_set_alignment(Ewl_Text * t, unsigned int a)
 {
 	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR("t", t);
@@ -644,8 +644,10 @@ __ewl_text_unrealize(Ewl_Widget * w, void *ev_data, void *user_data)
 
 	t = EWL_TEXT(w);
 
-	if (t->estyle)
+	if (t->estyle) {
 		evas_object_del(t->estyle);
+		t->estyle = NULL;
+	}
 
 	IF_FREE(t->text);
 	IF_FREE(t->font);

@@ -32,7 +32,7 @@ struct Ewl_Scrollbar
 	Ewl_Widget     *seeker; /**< The internal Ewl_Seeker */
 	Ewl_Widget     *button_decrement; /**< The internal decrement button */
 	Ewl_Widget     *button_increment; /**< The internal increment button */
-	Ewl_Alignment   buttons_alignment; /**< The ordering of buttons */
+	unsigned int    buttons_alignment; /**< The ordering of buttons */
 
 	double          fill_percentage; /**< The ratio of size for draggable */
 	Ewl_ScrollBar_Flags flag; /**< Flags to indicate part visibility */

@@ -9,8 +9,6 @@ void            __ewl_container_reparent(Ewl_Widget * w, void *ev_data,
 					 void *user_data);
 void            __ewl_container_unrealize(Ewl_Widget *w, void *ev_data,
 					  void *user_data);
-void            __ewl_container_destroy(Ewl_Widget * w, void *ev_data,
-					void *user_data);
 
 /**
  * @param c: the container to initialize
@@ -39,7 +37,7 @@ ewl_container_init(Ewl_Container * c, char *appearance, Ewl_Child_Add add,
 	 * Initialize the fields inherited from the widget class
 	 */
 	ewl_widget_init(w, appearance);
-	w->flags |= EWL_FLAGS_RECURSIVE;
+	ewl_object_set_recursive(EWL_OBJECT(w), TRUE);
 
 	/*
 	 * Initialize the fields specific to the container class.
@@ -61,8 +59,6 @@ ewl_container_init(Ewl_Container * c, char *appearance, Ewl_Child_Add add,
 			    __ewl_container_unrealize, NULL);
 	ewl_callback_append(w, EWL_CALLBACK_REPARENT,
 			    __ewl_container_reparent, NULL);
-	ewl_callback_prepend(w, EWL_CALLBACK_DESTROY,
-			     __ewl_container_destroy, NULL);
 
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
@@ -522,6 +518,36 @@ void ewl_container_call_child_add(Ewl_Container *c, Ewl_Widget *w)
 		c->child_add(c, w);
 }
 
+/**
+ * @param c: the container to destroy children
+ * @return Returns no value.
+ * @brief Destroy all the sub-children of the container.
+ */
+void ewl_container_destroy(Ewl_Container * c)
+{
+	Ewl_Widget     *child;
+
+	DENTER_FUNCTION(DLEVEL_STABLE);
+	DCHECK_PARAM_PTR("c", c);
+
+	if (c->children) {
+		/*
+		 * Destroy any children still in the container.
+		 */
+		ewd_list_goto_first(c->children);
+		while ((child = ewd_list_remove_last(c->children)))
+			ewl_widget_destroy(child);
+
+		/*
+		 * Destroy the container list and set it to NULL.
+		 */
+		ewd_list_destroy(c->children);
+		c->children = NULL;
+	}
+
+	DLEAVE_FUNCTION(DLEVEL_STABLE);
+}
+
 /*
  * When reparenting a container, it's children need the updated information
  * about the container, such as evas and evas_window.
@@ -644,34 +670,6 @@ void __ewl_container_unrealize(Ewl_Widget *w, void *ev_data, void *user_data)
 	if (c->clip_box) {
 		evas_object_del(c->clip_box);
 		c->clip_box = NULL;
-	}
-
-	DLEAVE_FUNCTION(DLEVEL_STABLE);
-}
-
-void __ewl_container_destroy(Ewl_Widget * w, void *ev_data, void *user_data)
-{
-	Ewl_Container  *c;
-	Ewl_Widget     *child;
-
-	DENTER_FUNCTION(DLEVEL_STABLE);
-	DCHECK_PARAM_PTR("w", w);
-
-	c = EWL_CONTAINER(w);
-
-	if (c->children) {
-		/*
-		 * Destroy any children still in the container.
-		 */
-		ewd_list_goto_first(c->children);
-		while ((child = ewd_list_remove_last(c->children)))
-			ewl_widget_destroy(child);
-
-		/*
-		 * Destroy the container list and set it to NULL.
-		 */
-		ewd_list_destroy(EWL_CONTAINER(w)->children);
-		EWL_CONTAINER(w)->children = NULL;
 	}
 
 	DLEAVE_FUNCTION(DLEVEL_STABLE);

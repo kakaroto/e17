@@ -37,17 +37,17 @@ __notebook_change_alignment(Ewl_Widget * w, void *ev_data, void *user_data)
 
 	/*
 	if (w == button_aleft)
-		ewl_notebook_set_tabs_alignment(user_data, EWL_ALIGNMENT_LEFT);
+		ewl_notebook_set_tabs_alignment(user_data, EWL_FLAG_ALIGN_LEFT);
 	else if (w == button_acenter)
 		ewl_notebook_set_tabs_alignment(user_data,
-						EWL_ALIGNMENT_CENTER);
+						EWL_FLAG_ALIGN_CENTER);
 	else if (w == button_aright)
-		ewl_notebook_set_tabs_alignment(user_data, EWL_ALIGNMENT_RIGHT);
+		ewl_notebook_set_tabs_alignment(user_data, EWL_FLAG_ALIGN_RIGHT);
 	else if (w == button_atop)
-		ewl_notebook_set_tabs_alignment(user_data, EWL_ALIGNMENT_TOP);
+		ewl_notebook_set_tabs_alignment(user_data, EWL_FLAG_ALIGN_TOP);
 	else if (w == button_abottom)
 		ewl_notebook_set_tabs_alignment(user_data,
-						EWL_ALIGNMENT_BOTTOM);
+						EWL_FLAG_ALIGN_BOTTOM);
 						*/
 
 	return;
@@ -95,12 +95,12 @@ void __notebook_create_main_page(Ewl_Widget * notebook)
 	ewl_widget_show(main_vbox);
 
 	text = ewl_text_new("Main");
-	ewl_object_set_alignment(EWL_OBJECT(text), EWL_ALIGNMENT_CENTER);
+	ewl_object_set_alignment(EWL_OBJECT(text), EWL_FLAG_ALIGN_CENTER);
 	ewl_container_append_child(EWL_CONTAINER(main_vbox), text);
 	ewl_widget_show(text);
 
 	avbox = ewl_vbox_new();
-	ewl_object_set_alignment(EWL_OBJECT(avbox), EWL_ALIGNMENT_CENTER);
+	ewl_object_set_alignment(EWL_OBJECT(avbox), EWL_FLAG_ALIGN_CENTER);
 	ewl_container_append_child(EWL_CONTAINER(main_vbox), avbox);
 	ewl_widget_show(avbox);
 
@@ -144,7 +144,7 @@ void __notebook_create_main_page(Ewl_Widget * notebook)
 	ewl_widget_show(button_abottom);
 
 	pvbox = ewl_vbox_new();
-	ewl_object_set_alignment(EWL_OBJECT(pvbox), EWL_ALIGNMENT_CENTER);
+	ewl_object_set_alignment(EWL_OBJECT(pvbox), EWL_FLAG_ALIGN_CENTER);
 	ewl_container_append_child(EWL_CONTAINER(main_vbox), pvbox);
 	ewl_widget_show(pvbox);
 
@@ -206,14 +206,14 @@ __notebook_generate_page(Ewl_Widget * notebook)
 	ewl_widget_show(main_vbox);
 
 	text = ewl_text_new(label);
-	ewl_object_set_alignment(EWL_OBJECT(text), EWL_ALIGNMENT_CENTER);
+	ewl_object_set_alignment(EWL_OBJECT(text), EWL_FLAG_ALIGN_CENTER);
 	ewl_container_append_child(EWL_CONTAINER(main_vbox), text);
 	ewl_widget_show(text);
 
 	hbox = ewl_hbox_new();
 	ewl_box_set_spacing(EWL_BOX(hbox), 5);
 	ewl_object_set_padding(EWL_OBJECT(hbox), 0, 0, 20, 0);
-	ewl_object_set_alignment(EWL_OBJECT(hbox), EWL_ALIGNMENT_CENTER);
+	ewl_object_set_alignment(EWL_OBJECT(hbox), EWL_FLAG_ALIGN_CENTER);
 	ewl_container_append_child(EWL_CONTAINER(main_vbox), hbox);
 	ewl_widget_show(hbox);
 
@@ -230,7 +230,7 @@ __notebook_generate_page(Ewl_Widget * notebook)
 	ewl_widget_show(button[1]);
 
 	button[2] = ewl_button_new("Remove This Page");
-	ewl_object_set_alignment(EWL_OBJECT(button[2]), EWL_ALIGNMENT_CENTER);
+	ewl_object_set_alignment(EWL_OBJECT(button[2]), EWL_FLAG_ALIGN_CENTER);
 	ewl_container_append_child(EWL_CONTAINER(main_vbox), button[2]);
 	ewl_callback_append(button[2], EWL_CALLBACK_CLICKED,
 			    __notebook_remove_visible_page, notebook);

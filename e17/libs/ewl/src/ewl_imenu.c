@@ -76,9 +76,9 @@ void __ewl_imenu_expand(Ewl_Widget * w, void *ev_data, void *user_data)
 	ewl_box_set_orientation(EWL_BOX(menu->base.popup),
 			EWL_ORIENTATION_VERTICAL);
 	ewl_object_set_fill_policy(EWL_OBJECT(menu->base.popup),
-				   EWL_FILL_POLICY_NONE);
+				   EWL_FLAG_FILL_NONE);
 	ewl_object_set_alignment(EWL_OBJECT(menu->base.popup),
-				 EWL_ALIGNMENT_LEFT | EWL_ALIGNMENT_TOP);
+				 EWL_FLAG_ALIGN_LEFT | EWL_FLAG_ALIGN_TOP);
 
 	emb = ewl_embed_find_by_widget(w);
 	ewl_container_append_child(EWL_CONTAINER(emb), menu->base.popup); 

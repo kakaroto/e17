@@ -31,7 +31,7 @@ struct Ewl_Seeker
 {
 	Ewl_Container   container; /**< Inherit from Ewl_Container */
 	Ewl_Orientation orientation; /**< Indicates layout direction */
-	Ewl_Widget     *dragbar; /**< Draggable widget for selecting value */
+	Ewl_Widget     *button; /**< Draggable widget for selecting value */
 	double          value; /**< Currently chosen value */
 	double          range; /**< Total selectable range */
 	double          step; /**< Size of increments in the range */

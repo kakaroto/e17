@@ -69,80 +69,85 @@ enum Ewl_Orientation
 	EWL_ORIENTATION_VERTICAL
 };
 
-/**
- * The state enum specifies the current state of a widget, ie. has it been
- * clicked, does it have the keyboard focus, etc.
- */
-typedef enum Ewl_State Ewl_State;
-
-enum Ewl_State
+enum Ewl_Flags
 {
-	EWL_STATE_NORMAL = (0x1 << 0),
-	EWL_STATE_HILITED = (0x1 << 1),
-	EWL_STATE_PRESSED = (0x1 << 2),
-	EWL_STATE_SELECTED = (0x1 << 3),
-	EWL_STATE_DND = (0x1 << 4),
-	EWL_STATE_DISABLED = (0x1 << 5)
+	/*
+	 * The alignment enumeration allows for specifying how an element is
+	 * aligned within it's container.
+	 */
+	EWL_FLAG_ALIGN_CENTER = ETOX_ALIGN_CENTER,
+	EWL_FLAG_ALIGN_LEFT = ETOX_ALIGN_LEFT,
+	EWL_FLAG_ALIGN_RIGHT = ETOX_ALIGN_RIGHT,
+	EWL_FLAG_ALIGN_TOP = ETOX_ALIGN_TOP,
+	EWL_FLAG_ALIGN_BOTTOM = ETOX_ALIGN_BOTTOM,
+
+	/*
+	 * Fill policy identifies to containers whether child widgets should be
+	 * stretched to fill available space or keep their current size.
+	 */
+	EWL_FLAG_FILL_NONE = 0,
+	EWL_FLAG_FILL_HSHRINK = 0x1000,
+	EWL_FLAG_FILL_VSHRINK = 0x2000,
+	EWL_FLAG_FILL_SHRINK =
+	    EWL_FLAG_FILL_HSHRINK | EWL_FLAG_FILL_VSHRINK,
+	EWL_FLAG_FILL_HFILL = 0x4000,
+	EWL_FLAG_FILL_VFILL = 0x8000,
+	EWL_FLAG_FILL_FILL = EWL_FLAG_FILL_HFILL | EWL_FLAG_FILL_VFILL,
+	EWL_FLAG_FILL_ALL = EWL_FLAG_FILL_FILL | EWL_FLAG_FILL_SHRINK,
+
+	/*
+	 * Flags identifying the visibility status of the widget
+	 */
+	EWL_FLAG_VISIBLE_HIDDEN = 0,
+	EWL_FLAG_VISIBLE_SHOWN = 0x10000,
+	EWL_FLAG_VISIBLE_REALIZED = 0x20000,
+	EWL_FLAG_VISIBLE_OBSCURED = 0x40000,
+
+	EWL_FLAG_PROPERTY_RECURSIVE = 0x80000,
+	EWL_FLAG_PROPERTY_TOPLEVEL = 0x100000,
+
+	/*
+	 * Flags to indicate queues this object is on.
+	 */
+	EWL_FLAG_QUEUED_CSCHEDULED = 0x200000,
+	EWL_FLAG_QUEUED_RSCHEDULED = 0x400000,
+	EWL_FLAG_QUEUED_DSCHEDULED = 0x800000,
+
+	/*
+	 * The state enum specifies the current state of a widget, ie. has it
+	 * been clicked, does it have the keyboard focus, etc.
+	 */
+	EWL_FLAG_STATE_NORMAL = 0,
+	EWL_FLAG_STATE_HILITED = 0x1000000,
+	EWL_FLAG_STATE_PRESSED = 0x2000000,
+	EWL_FLAG_STATE_SELECTED = 0x4000000,
+	EWL_FLAG_STATE_DND = 0x8000000,
+	EWL_FLAG_STATE_DISABLED = 0x10000000
 };
 
+#define EWL_FLAG_FILL_NORMAL (EWL_FLAG_FILL_FILL)
 
-/**
- * The alignment enumeration allows for specifying how an element is aligned
- * within it's container.
- */
-typedef enum Ewl_Alignment Ewl_Alignment;
-#define EWL_ALIGNMENT_MASK 0xFF
+#define EWL_FLAGS_ALIGN_MASK (EWL_FLAG_ALIGN_CENTER | EWL_FLAG_ALIGN_LEFT | \
+		EWL_FLAG_ALIGN_RIGHT | EWL_FLAG_ALIGN_TOP | \
+		EWL_FLAG_ALIGN_BOTTOM)
 
-enum Ewl_Alignment
-{
-	EWL_ALIGNMENT_CENTER = ETOX_ALIGN_CENTER,
-	EWL_ALIGNMENT_LEFT = ETOX_ALIGN_LEFT,
-	EWL_ALIGNMENT_RIGHT = ETOX_ALIGN_RIGHT,
-	EWL_ALIGNMENT_TOP = ETOX_ALIGN_TOP,
-	EWL_ALIGNMENT_BOTTOM = ETOX_ALIGN_BOTTOM
-};
+#define EWL_FLAGS_FILL_MASK (EWL_FLAG_FILL_NONE | EWL_FLAG_FILL_SHRINK | \
+		EWL_FLAG_FILL_FILL)
 
-/**
- * Fill policy identifies to containers whether child widgets should be
- * stretched to fill available space or keep their current size.
- */
-typedef enum Ewl_Fill_Policy Ewl_Fill_Policy;
-#define EWL_FILL_POLICY_MASK 0xFF00
+#define EWL_FLAGS_VISIBLE_MASK (EWL_FLAG_VISIBLE_HIDDEN | \
+		EWL_FLAG_VISIBLE_SHOWN | EWL_FLAG_VISIBLE_REALIZED | \
+		EWL_FLAG_VISIBLE_OBSCURED)
 
-enum Ewl_Fill_Policy
-{
-	EWL_FILL_POLICY_NONE = 0,
-	EWL_FILL_POLICY_HSHRINK = 0x1000,
-	EWL_FILL_POLICY_VSHRINK = 0x2000,
-	EWL_FILL_POLICY_SHRINK =
-	    EWL_FILL_POLICY_HSHRINK | EWL_FILL_POLICY_VSHRINK,
-	EWL_FILL_POLICY_HFILL = 0x4000,
-	EWL_FILL_POLICY_VFILL = 0x8000,
-	EWL_FILL_POLICY_FILL = EWL_FILL_POLICY_HFILL | EWL_FILL_POLICY_VFILL,
-	EWL_FILL_POLICY_ALL = EWL_FILL_POLICY_FILL | EWL_FILL_POLICY_SHRINK
-};
+#define  EWL_FLAGS_PROPERTY_MASK (EWL_FLAG_PROPERTY_RECURSIVE | \
+		EWL_FLAG_PROPERTY_TOPLEVEL)
 
-#define EWL_FILL_POLICY_NORMAL (EWL_FILL_POLICY_FILL)
+#define  EWL_FLAGS_QUEUED_MASK (EWL_FLAG_QUEUED_CSCHEDULED | \
+		EWL_FLAG_QUEUED_RSCHEDULED | EWL_FLAG_QUEUED_DSCHEDULED)
 
-/**
- * Flags identifying whether a widget is shown, has been realized, or is
- * recursive (ie. a container).
- */
-typedef enum Ewl_Widget_Flags Ewl_Widget_Flags;
-
-enum Ewl_Widget_Flags
-{
-	EWL_FLAGS_HIDDEN = 0x0,
-	EWL_FLAGS_SHOWN = 0x1,
-	EWL_FLAGS_REALIZED = 0x2,
-	EWL_FLAGS_OBSCURED = 0x4,
-	EWL_FLAGS_RECURSIVE = 0x8,
-	EWL_FLAGS_TOPLEVEL = 0x10,
-	EWL_FLAGS_CSCHEDULED = 0x20,
-	EWL_FLAGS_RSCHEDULED = 0x40,
-	EWL_FLAGS_DSCHEDULED = 0x80,
-};
-
+#define  EWL_FLAGS_STATE_MASK (EWL_FLAG_STATE_NORMAL | \
+		EWL_FLAG_STATE_HILITED | EWL_FLAG_STATE_PRESSED | \
+		EWL_FLAG_STATE_SELECTED | EWL_FLAG_STATE_DND | \
+		EWL_FLAG_STATE_DISABLED)
 
 typedef enum Ewl_Position Ewl_Position;
 

@@ -45,7 +45,7 @@ void ewl_menu_base_init(Ewl_Menu_Base * menu, char *image, char *title)
 	 */
 	menu->popbox = ewl_vbox_new();
 	ewl_object_set_alignment(EWL_OBJECT(menu->popbox),
-				 EWL_ALIGNMENT_LEFT | EWL_ALIGNMENT_TOP);
+				 EWL_FLAG_ALIGN_LEFT | EWL_FLAG_ALIGN_TOP);
 	ewl_widget_show(menu->popbox);
 
 	/*
@@ -103,7 +103,7 @@ void ewl_menu_item_init(Ewl_Menu_Item * item, char *image, char *text)
 	 */
 	ewl_box_init(EWL_BOX(item), EWL_ORIENTATION_HORIZONTAL);
 	ewl_widget_set_appearance(EWL_WIDGET(item), "menuitem");
-	ewl_object_set_fill_policy(EWL_OBJECT(item), EWL_FILL_POLICY_HFILL);
+	ewl_object_set_fill_policy(EWL_OBJECT(item), EWL_FLAG_FILL_HFILL);
 
 	ewl_container_intercept_callback(EWL_CONTAINER(item),
 			EWL_CALLBACK_CLICKED);
@@ -134,7 +134,7 @@ void ewl_menu_item_init(Ewl_Menu_Item * item, char *image, char *text)
 	 */
 	if (item->icon) {
 		ewl_object_set_alignment(EWL_OBJECT(item->icon),
-				EWL_ALIGNMENT_CENTER);
+				EWL_FLAG_ALIGN_CENTER);
 		ewl_object_set_maximum_size(EWL_OBJECT(item->icon), 20, 20);
 		ewl_container_append_child(EWL_CONTAINER(item), item->icon);
 		ewl_widget_show(item->icon);
@@ -147,7 +147,7 @@ void ewl_menu_item_init(Ewl_Menu_Item * item, char *image, char *text)
 		item->text = ewl_text_new(text);
 		ewl_container_append_child(EWL_CONTAINER(item), item->text);
 		ewl_object_set_alignment(EWL_OBJECT(item->text),
-				EWL_ALIGNMENT_LEFT);
+				EWL_FLAG_ALIGN_LEFT);
 		ewl_widget_show(item->text);
 	}
 

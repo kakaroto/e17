@@ -2,11 +2,11 @@
 
 void            __ewl_seeker_configure(Ewl_Widget * w, void *ev_data,
 				       void *user_data);
-void            __ewl_seeker_dragbar_mouse_down(Ewl_Widget * w, void *ev_data,
+void            __ewl_seeker_button_mouse_down(Ewl_Widget * w, void *ev_data,
 						void *user_data);
-void            __ewl_seeker_dragbar_mouse_up(Ewl_Widget * w, void *ev_data,
+void            __ewl_seeker_button_mouse_up(Ewl_Widget * w, void *ev_data,
 					      void *user_data);
-void            __ewl_seeker_dragbar_mouse_move(Ewl_Widget * w, void *ev_data,
+void            __ewl_seeker_button_mouse_move(Ewl_Widget * w, void *ev_data,
 						void *user_data);
 void            __ewl_seeker_mouse_down(Ewl_Widget * w, void *ev_data,
 					void *user_data);
@@ -14,8 +14,6 @@ void            __ewl_seeker_focus_in(Ewl_Widget * w, void *ev_data,
 				      void *user_data);
 void            __ewl_seeker_focus_out(Ewl_Widget * w, void *ev_data,
 				       void *user_data);
-void            __ewl_seeker_appearance_changed(Ewl_Widget * w, void *ev_data,
-						void *user_data);
 
 
 /**
@@ -67,26 +65,24 @@ void ewl_seeker_init(Ewl_Seeker * s, Ewl_Orientation orientation)
 		ewl_container_init(EWL_CONTAINER(w), "hseeker",
 				NULL, NULL, NULL);
 
-		ewl_object_set_fill_policy(EWL_OBJECT(w),
-				EWL_FILL_POLICY_HFILL |
-				EWL_FILL_POLICY_HSHRINK);
+		ewl_object_set_fill_policy(EWL_OBJECT(w), EWL_FLAG_FILL_HFILL |
+				EWL_FLAG_FILL_HSHRINK);
 	}
 	else {
 		ewl_container_init(EWL_CONTAINER(w), "vseeker", NULL, NULL,
 				   NULL);
 
 		ewl_object_set_fill_policy(EWL_OBJECT(w),
-				EWL_FILL_POLICY_VFILL |
-				EWL_FILL_POLICY_VSHRINK);
+				EWL_FLAG_FILL_VFILL |
+				EWL_FLAG_FILL_VSHRINK);
 	}
 
 	/*
-	 * Create and add the dragbar portion of the seeker
+	 * Create and add the button portion of the seeker
 	 */
-	s->dragbar = ewl_button_new(NULL);
-	ewl_container_append_child(EWL_CONTAINER(s), s->dragbar);
-	ewl_widget_set_appearance(EWL_WIDGET(s->dragbar), "dragbar");
-	ewl_widget_show(s->dragbar);
+	s->button = ewl_button_new(NULL);
+	ewl_container_append_child(EWL_CONTAINER(s), s->button);
+	ewl_widget_show(s->button);
 
 	/*
 	 * Set the starting orientation, range and values
@@ -104,19 +100,19 @@ void ewl_seeker_init(Ewl_Seeker * s, Ewl_Orientation orientation)
 	ewl_callback_append(w, EWL_CALLBACK_MOUSE_DOWN, __ewl_seeker_mouse_down,
 			    NULL);
 	ewl_callback_append(w, EWL_CALLBACK_MOUSE_MOVE,
-			    __ewl_seeker_dragbar_mouse_move, NULL);
+			    __ewl_seeker_button_mouse_move, NULL);
 
 	/*
-	 * Append a callback for catching mouse movements on the dragbar and
-	 * add the dragbar to the seeker
+	 * Append a callback for catching mouse movements on the button and
+	 * add the button to the seeker
 	 */
-	ewl_callback_append(s->dragbar, EWL_CALLBACK_MOUSE_DOWN,
-			    __ewl_seeker_dragbar_mouse_down, NULL);
-	ewl_callback_append(s->dragbar, EWL_CALLBACK_MOUSE_UP,
-			    __ewl_seeker_dragbar_mouse_up, NULL);
+	ewl_callback_append(s->button, EWL_CALLBACK_MOUSE_DOWN,
+			    __ewl_seeker_button_mouse_down, NULL);
+	ewl_callback_append(s->button, EWL_CALLBACK_MOUSE_UP,
+			    __ewl_seeker_button_mouse_up, NULL);
 
 	/*
-	 * We want to catch mouse movement events from the dragbar.
+	 * We want to catch mouse movement events from the button.
 	 */
 	ewl_container_notify_callback(EWL_CONTAINER(s),
 			EWL_CALLBACK_MOUSE_MOVE);
@@ -253,7 +249,7 @@ double ewl_seeker_get_step(Ewl_Seeker * s)
  * @brief Changes the autohide setting on the seeker to @a v.
  *
  * Alter the autohide boolean of the seeker @a s to value @a v. If @a v is
- * TRUE, the seeker will be hidden whenever the dragbar is the full size of
+ * TRUE, the seeker will be hidden whenever the button is the full size of
  * the seeker.
  */
 void ewl_seeker_set_autohide(Ewl_Seeker *s, int v)
@@ -347,7 +343,7 @@ void ewl_seeker_decrease(Ewl_Seeker * s)
 
 /*
  * On a configure event we need to adjust the seeker to fit into it's new
- * coords and position as well as move the dragbar to the correct size and
+ * coords and position as well as move the button to the correct size and
  * position.
  */
 void __ewl_seeker_configure(Ewl_Widget * w, void *ev_data, void *user_data)
@@ -361,7 +357,7 @@ void __ewl_seeker_configure(Ewl_Widget * w, void *ev_data, void *user_data)
 	DCHECK_PARAM_PTR("w", w);
 
 	s = EWL_SEEKER(w);
-	if (!s->dragbar)
+	if (!s->button)
 		DRETURN(DLEVEL_STABLE);
 
 	dx = CURRENT_X(s);
@@ -371,8 +367,8 @@ void __ewl_seeker_configure(Ewl_Widget * w, void *ev_data, void *user_data)
 
 	/*
 	 * First determine the size based on the number of steps to span from
-	 * min to max values. Then reduce the total scale to keep the dragbar on
-	 * the seeker, then position the dragbar.
+	 * min to max values. Then reduce the total scale to keep the button on
+	 * the seeker, then position the button.
 	 */
 	s1 = s->step / s->range;
 	if (s->autohide && s1 >= 1.0) {
@@ -390,14 +386,14 @@ void __ewl_seeker_configure(Ewl_Widget * w, void *ev_data, void *user_data)
 		dx += (CURRENT_W(s) - dw) * s2;
 	}
 
-	ewl_object_request_geometry(EWL_OBJECT(s->dragbar), dx, dy, dw, dh);
+	ewl_object_request_geometry(EWL_OBJECT(s->button), dx, dy, dw, dh);
 
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
 
 
 void
-__ewl_seeker_dragbar_mouse_down(Ewl_Widget * w, void *ev_data, void *user_data)
+__ewl_seeker_button_mouse_down(Ewl_Widget * w, void *ev_data, void *user_data)
 {
 	Ecore_X_Event_Mouse_Button_Down *ev;
 	Ewl_Seeker     *s;
@@ -423,7 +419,7 @@ __ewl_seeker_dragbar_mouse_down(Ewl_Widget * w, void *ev_data, void *user_data)
 
 
 void
-__ewl_seeker_dragbar_mouse_up(Ewl_Widget * w, void *ev_data, void *user_data)
+__ewl_seeker_button_mouse_up(Ewl_Widget * w, void *ev_data, void *user_data)
 {
 	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR("w", w);
@@ -438,7 +434,7 @@ __ewl_seeker_dragbar_mouse_up(Ewl_Widget * w, void *ev_data, void *user_data)
  * Move the cursor to the correct position
  */
 void
-__ewl_seeker_dragbar_mouse_move(Ewl_Widget * w, void *ev_data, void *user_data)
+__ewl_seeker_button_mouse_move(Ewl_Widget * w, void *ev_data, void *user_data)
 {
 	Ecore_X_Event_Mouse_Move *ev;
 	Ewl_Seeker *s;
@@ -455,9 +451,10 @@ __ewl_seeker_dragbar_mouse_move(Ewl_Widget * w, void *ev_data, void *user_data)
 	s = EWL_SEEKER(w);
 
 	/*
-	 * If the dragbar is not pressed we don't care about mouse movements.
+	 * If the button is not pressed we don't care about mouse movements.
 	 */
-	if (!(s->dragbar->state & EWL_STATE_PRESSED))
+	if (!ewl_object_has_state(EWL_OBJECT(s->button),
+					EWL_FLAG_STATE_PRESSED))
 		DRETURN(DLEVEL_STABLE);
 
 	if (s->dragstart < 1)
@@ -476,7 +473,7 @@ __ewl_seeker_dragbar_mouse_move(Ewl_Widget * w, void *ev_data, void *user_data)
 	if (s->orientation == EWL_ORIENTATION_HORIZONTAL) {
 		unsigned int adjust;
 
-		adjust = ewl_object_get_current_w(EWL_OBJECT(s->dragbar));
+		adjust = ewl_object_get_current_w(EWL_OBJECT(s->button));
 		dw -= adjust;
 		adjust /= 2;
 		dx += adjust;
@@ -495,7 +492,7 @@ __ewl_seeker_dragbar_mouse_move(Ewl_Widget * w, void *ev_data, void *user_data)
 	else {
 		unsigned int adjust;
 
-		adjust = ewl_object_get_current_h(EWL_OBJECT(s->dragbar));
+		adjust = ewl_object_get_current_h(EWL_OBJECT(s->button));
 		dh -= adjust;
 		adjust /= 2;
 		dy += adjust;
@@ -528,14 +525,14 @@ void __ewl_seeker_mouse_down(Ewl_Widget * w, void *ev_data, void *user_data)
 
 	s = EWL_SEEKER(w);
 
-	ewl_object_get_current_geometry(EWL_OBJECT(s->dragbar),
+	ewl_object_get_current_geometry(EWL_OBJECT(s->button),
 					&xx, &yy, &ww, &hh);
 
 	value = s->value;
 
 	/*
 	 * Increment or decrement the value based on the position of the click
-	 * relative to the dragbar and the orientation of the seeker.
+	 * relative to the button and the orientation of the seeker.
 	 */
 	if (s->orientation == EWL_ORIENTATION_HORIZONTAL) {
 		if (ev->x < xx)

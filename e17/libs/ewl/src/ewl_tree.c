@@ -70,8 +70,8 @@ int ewl_tree_init(Ewl_Tree *tree, unsigned short columns)
 
 	ewl_box_init(EWL_BOX(tree), EWL_ORIENTATION_VERTICAL);
 	ewl_widget_set_appearance(EWL_WIDGET(tree), "tree");
-	ewl_object_set_fill_policy(EWL_OBJECT(tree), EWL_FILL_POLICY_SHRINK |
-			EWL_FILL_POLICY_FILL);
+	ewl_object_set_fill_policy(EWL_OBJECT(tree), EWL_FLAG_FILL_SHRINK |
+			EWL_FLAG_FILL_FILL);
 
 	tree->ncols = columns;
 
@@ -81,8 +81,8 @@ int ewl_tree_init(Ewl_Tree *tree, unsigned short columns)
 		ewl_box_set_orientation(EWL_BOX(button),
 				EWL_ORIENTATION_VERTICAL);
 		ewl_object_set_fill_policy(EWL_OBJECT(button),
-				EWL_FILL_POLICY_HSHRINK |
-				EWL_FILL_POLICY_HFILL);
+				EWL_FLAG_FILL_HSHRINK |
+				EWL_FLAG_FILL_HFILL);
 		ewl_container_append_child(EWL_CONTAINER(row), button);
 		ewl_widget_show(button);
 	}

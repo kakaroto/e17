@@ -41,8 +41,8 @@ void ewl_separator_init(Ewl_Separator * s, Ewl_Orientation o)
 	else
 		ewl_widget_init(w, "vseparator");
 
-	ewl_object_set_alignment(EWL_OBJECT(s), EWL_ALIGNMENT_LEFT);
-	ewl_object_set_fill_policy(EWL_OBJECT(s), EWL_FILL_POLICY_FILL);
+	ewl_object_set_alignment(EWL_OBJECT(s), EWL_FLAG_ALIGN_LEFT);
+	ewl_object_set_fill_policy(EWL_OBJECT(s), EWL_FLAG_FILL_FILL);
 
 	s->orientation = o;
 

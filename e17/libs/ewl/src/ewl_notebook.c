@@ -52,7 +52,7 @@ void ewl_notebook_init(Ewl_Notebook * n)
 	ewl_container_init(EWL_CONTAINER(w), "tnotebook", __ewl_notebook_add,
 			__ewl_notebook_resize, __ewl_notebook_add);
 
-	ewl_object_set_fill_policy(EWL_OBJECT(w), EWL_FILL_POLICY_FILL);
+	ewl_object_set_fill_policy(EWL_OBJECT(w), EWL_FLAG_FILL_FILL);
 
 	/*
 	 * Set the default position of the tabs.
@@ -65,9 +65,9 @@ void ewl_notebook_init(Ewl_Notebook * n)
 	 */
 	n->tab_box = ewl_hbox_new();
 	ewl_object_set_fill_policy(EWL_OBJECT(n->tab_box),
-				   EWL_FILL_POLICY_HFILL);
-	ewl_object_set_alignment(EWL_OBJECT(n->tab_box), EWL_ALIGNMENT_LEFT |
-			EWL_ALIGNMENT_TOP);
+				   EWL_FLAG_FILL_HFILL);
+	ewl_object_set_alignment(EWL_OBJECT(n->tab_box), EWL_FLAG_ALIGN_LEFT |
+			EWL_FLAG_ALIGN_TOP);
 	ewl_container_append_child(EWL_CONTAINER(n), n->tab_box);
 	ewl_widget_show(n->tab_box);
 
@@ -360,7 +360,7 @@ Ewl_Widget *ewl_notebook_remove_visible(Ewl_Notebook * n)
  * Returns no value. Changes the alignment of the tabs on @n to @a, and
  * updates the display.
  */
-void ewl_notebook_set_tabs_alignment(Ewl_Notebook * n, Ewl_Alignment a)
+void ewl_notebook_set_tabs_alignment(Ewl_Notebook * n, unsigned int a)
 {
 	Ewl_Widget     *w;
 
@@ -382,7 +382,7 @@ void ewl_notebook_set_tabs_alignment(Ewl_Notebook * n, Ewl_Alignment a)
  *
  * Returns the tab alignment of the notebook @n on success, 0 on failure.
  */
-Ewl_Alignment ewl_notebook_get_tabs_alignment(Ewl_Notebook * n)
+unsigned int ewl_notebook_get_tabs_alignment(Ewl_Notebook * n)
 {
 	Ewl_Widget     *w;
 
@@ -421,21 +421,21 @@ void ewl_notebook_set_tabs_position(Ewl_Notebook * n, Ewl_Position p)
 			ewl_box_set_orientation(EWL_BOX(n->tab_box),
 					EWL_ORIENTATION_VERTICAL);
 			ewl_object_set_fill_policy(EWL_OBJECT(n->tab_box),
-					EWL_FILL_POLICY_VFILL);
+					EWL_FLAG_FILL_VFILL);
 			break;
 		case EWL_POSITION_RIGHT:
 			snprintf(file, PATH_MAX, "rnotebook");
 			ewl_box_set_orientation(EWL_BOX(n->tab_box),
 					EWL_ORIENTATION_VERTICAL);
 			ewl_object_set_fill_policy(EWL_OBJECT(n->tab_box),
-					EWL_FILL_POLICY_VFILL);
+					EWL_FLAG_FILL_VFILL);
 			break;
 		case EWL_POSITION_BOTTOM:
 			snprintf(file, PATH_MAX, "bnotebook");
 			ewl_box_set_orientation(EWL_BOX(n->tab_box),
 					EWL_ORIENTATION_HORIZONTAL);
 			ewl_object_set_fill_policy(EWL_OBJECT(n->tab_box),
-					EWL_FILL_POLICY_HFILL);
+					EWL_FLAG_FILL_HFILL);
 			break;
 		case EWL_POSITION_TOP:
 		default:
@@ -443,7 +443,7 @@ void ewl_notebook_set_tabs_position(Ewl_Notebook * n, Ewl_Position p)
 			ewl_box_set_orientation(EWL_BOX(n->tab_box),
 					EWL_ORIENTATION_HORIZONTAL);
 			ewl_object_set_fill_policy(EWL_OBJECT(n->tab_box),
-					EWL_FILL_POLICY_HFILL);
+					EWL_FLAG_FILL_HFILL);
 			break;
 	}
 

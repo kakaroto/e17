@@ -252,9 +252,9 @@ main(int argc, char **argv)
 	for (i = 0; i < BUTTONS; i++) {
 		ewl_container_append_child(EWL_CONTAINER(main_box), button[i]);
 		ewl_object_set_fill_policy(EWL_OBJECT(button[i]),
-					   EWL_FILL_POLICY_NONE);
+					   EWL_FLAG_FILL_NONE);
 		ewl_object_set_alignment(EWL_OBJECT(button[i]),
-					 EWL_ALIGNMENT_CENTER);
+					 EWL_FLAG_ALIGN_CENTER);
 		ewl_widget_show(button[i]);
 	}
 

@@ -102,7 +102,7 @@ void __open_dialog_init(Ewl_Filedialog * fd, Ewl_Callback_Function cb)
 
 	fd->selector = ewl_fileselector_new(cb);
 	ewl_object_set_fill_policy(EWL_OBJECT(fd->selector),
-				   EWL_FILL_POLICY_FILL);
+				   EWL_FLAG_FILL_FILL);
 	ewl_container_append_child(EWL_CONTAINER(fd), fd->selector);
 
 
@@ -115,12 +115,12 @@ void __open_dialog_init(Ewl_Filedialog * fd, Ewl_Callback_Function cb)
 	ewl_box_set_spacing(EWL_BOX(od->box), 4);
 	ewl_object_set_padding(EWL_OBJECT(od->box), 10, 10, 10, 10);
 	ewl_object_set_fill_policy(EWL_OBJECT(od->box),
-				   EWL_FILL_POLICY_VSHRINK);
-	ewl_object_set_alignment(EWL_OBJECT(od->box), EWL_ALIGNMENT_RIGHT);
+				   EWL_FLAG_FILL_VSHRINK);
+	ewl_object_set_alignment(EWL_OBJECT(od->box), EWL_FLAG_ALIGN_RIGHT);
 
 	od->open = ewl_button_new("Open");
 	ewl_object_set_fill_policy(EWL_OBJECT(od->open),
-				   EWL_FILL_POLICY_SHRINK);
+				   EWL_FLAG_FILL_SHRINK);
 	ewl_callback_append(od->open, EWL_CALLBACK_CLICKED, cb, fd->selector);
 	ewl_callback_append(od->open, EWL_CALLBACK_CLICKED,
 			    __destroy_dialog, NULL);
@@ -130,7 +130,7 @@ void __open_dialog_init(Ewl_Filedialog * fd, Ewl_Callback_Function cb)
 
 	od->cancel = ewl_button_new("Cancel");
 	ewl_object_set_fill_policy(EWL_OBJECT(od->cancel),
-				   EWL_FILL_POLICY_SHRINK);
+				   EWL_FLAG_FILL_SHRINK);
 	ewl_callback_append(od->cancel, EWL_CALLBACK_CLICKED,
 			    __destroy_dialog, NULL);
 	ewl_container_append_child(EWL_CONTAINER(od->box), od->cancel);
@@ -161,7 +161,7 @@ void __save_dialog_init(Ewl_Filedialog * fd, Ewl_Callback_Function cb)
 
 	fd->selector = ewl_fileselector_new(cb);
 	ewl_object_set_fill_policy(EWL_OBJECT(fd->selector),
-				   EWL_FILL_POLICY_FILL);
+				   EWL_FLAG_FILL_FILL);
 	ewl_container_append_child(EWL_CONTAINER(fd), fd->selector);
 
 

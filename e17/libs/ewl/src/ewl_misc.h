@@ -19,8 +19,10 @@ void            ewl_init(int argc, char **argv);
 void            ewl_main(void);
 void            ewl_main_quit(void);
 void            ewl_configure_request(Ewl_Widget * w);
+void            ewl_configure_queue();
 void            ewl_configure_cancel_request(Ewl_Widget *w);
 void            ewl_realize_request(Ewl_Widget *w);
+void            ewl_realize_queue();
 void 		ewl_destroy_request(Ewl_Widget *w);
 void 		ewl_garbage_collect();
 

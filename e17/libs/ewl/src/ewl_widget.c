@@ -73,7 +73,7 @@ void ewl_widget_init(Ewl_Widget * w, char *appearance)
 	 */
 	ewl_theme_init_widget(w);
 
-	w->state = EWL_STATE_NORMAL;
+	ewl_object_remove_state(EWL_OBJECT(w), EWL_FLAGS_STATE_MASK);
 	LAYER(w) = 10;
 
 	/*
@@ -135,7 +135,7 @@ void ewl_widget_realize(Ewl_Widget * w)
 	 */
 	if (w->parent && !REALIZED(w->parent))
 		ewl_widget_realize(w->parent);
-	else if (w->parent || w->flags & EWL_FLAGS_TOPLEVEL) {
+	else if (w->parent || ewl_object_get_toplevel(EWL_OBJECT(w))) {
 		ewl_callback_call(w, EWL_CALLBACK_REALIZE);
 		ewl_widget_show(w);
 	}
@@ -160,7 +160,7 @@ void ewl_widget_unrealize(Ewl_Widget * w)
 
 	ewl_callback_call(w, EWL_CALLBACK_UNREALIZE);
 
-	w->flags &= ~EWL_FLAGS_REALIZED;
+	ewl_object_remove_visible(EWL_OBJECT(w), EWL_FLAG_VISIBLE_REALIZED);
 
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
@@ -182,7 +182,7 @@ void ewl_widget_show(Ewl_Widget * w)
 
 	pc = EWL_CONTAINER(w->parent);
 	if (HIDDEN(w)) {
-		w->flags |= EWL_FLAGS_SHOWN;
+		ewl_object_add_visible(EWL_OBJECT(w), EWL_FLAG_VISIBLE_SHOWN);
 		if (pc)
 			ewl_container_call_child_add(pc, w);
 	}
@@ -218,8 +218,7 @@ void ewl_widget_hide(Ewl_Widget * w)
 	if (pc && pc->child_remove)
 		pc->child_remove(EWL_CONTAINER(w->parent), w);
 
-	w->flags &= ~EWL_FLAGS_SHOWN;
-
+	ewl_object_remove_visible(EWL_OBJECT(w), EWL_FLAG_VISIBLE_SHOWN);
 	ewl_callback_call(w, EWL_CALLBACK_HIDE);
 
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
@@ -238,7 +237,7 @@ void ewl_widget_destroy(Ewl_Widget * w)
 	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR("w", w);
 
-	if (w->flags & EWL_FLAGS_DSCHEDULED)
+	if (ewl_object_has_queued(EWL_OBJECT(w), EWL_FLAG_QUEUED_DSCHEDULED))
 		DRETURN(DLEVEL_STABLE);
 
 	if (last_selected == w)
@@ -523,10 +522,11 @@ void ewl_widget_enable(Ewl_Widget * w)
 	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR("w", w);
 
-	if (!(w->state & EWL_STATE_DISABLED))
+	if (!ewl_object_has_state(EWL_OBJECT(w), EWL_FLAG_STATE_DISABLED))
 		return;
 	else {
-		w->state = EWL_STATE_NORMAL;
+		ewl_object_remove_state(EWL_OBJECT(w), EWL_FLAGS_STATE_MASK);
+		ewl_object_add_state(EWL_OBJECT(w), EWL_FLAG_STATE_NORMAL);
 		ewl_callback_call(w, EWL_CALLBACK_WIDGET_ENABLE);
 	}
 
@@ -545,10 +545,11 @@ void ewl_widget_disable(Ewl_Widget * w)
 	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR("w", w);
 
-	if (w->state & EWL_STATE_DISABLED)
+	if (ewl_object_has_state(EWL_OBJECT(w), EWL_FLAG_STATE_DISABLED))
 		return;
 	else {
-		w->state = EWL_STATE_DISABLED;
+		ewl_object_remove_state(EWL_OBJECT(w), EWL_FLAGS_STATE_MASK);
+		ewl_object_add_state(EWL_OBJECT(w), EWL_FLAG_STATE_DISABLED);
 		ewl_callback_call(w, EWL_CALLBACK_WIDGET_DISABLE);
 	}
 
@@ -844,7 +845,8 @@ void __ewl_widget_realize(Ewl_Widget * w, void *ev_data, void *user_data)
 		ewl_object_set_padding(EWL_OBJECT(w), l + p_l, r + p_r, t + p_t,
 				b + p_b);
 
-		if (w->state & EWL_STATE_DISABLED)
+		if (ewl_object_has_state(EWL_OBJECT(w),
+					EWL_FLAG_STATE_DISABLED))
 			edje_object_signal_emit(w->theme_object, "disabled", "EWL");
 
 		/*
@@ -874,7 +876,7 @@ void __ewl_widget_realize(Ewl_Widget * w, void *ev_data, void *user_data)
 			ewl_object_set_maximum_h(EWL_OBJECT(w), i_t);
 	}
 
-	w->flags |= EWL_FLAGS_REALIZED;
+	ewl_object_add_visible(EWL_OBJECT(w), EWL_FLAG_VISIBLE_REALIZED);
 	ewl_widget_configure(w);
 
 	DRETURN(DLEVEL_STABLE);
@@ -891,8 +893,10 @@ void __ewl_widget_unrealize(Ewl_Widget * w, void *ev_data, void *user_data)
 	/*
 	 * Destroy the clip box used for fx.
 	 */
-	if (w->fx_clip_box)
+	if (w->fx_clip_box) {
 		evas_object_del(w->fx_clip_box);
+		w->fx_clip_box = NULL;
+	}
 
 	/*
 	 * Destroy old image (if any) 
@@ -1015,10 +1019,10 @@ void __ewl_widget_disable(Ewl_Widget * w, void *ev_data, void *user_data)
 static void
 __ewl_widget_focus_in(Ewl_Widget *w, void *ev_data, void *user_data)
 {
-	if (w->state & EWL_STATE_DISABLED)
+	if (ewl_object_has_state(EWL_OBJECT(w), EWL_FLAG_STATE_DISABLED))
 		DRETURN(DLEVEL_STABLE);
 
-	if (w->state & EWL_STATE_PRESSED)
+	if (ewl_object_has_state(EWL_OBJECT(w), EWL_FLAG_STATE_PRESSED))
 		ewl_widget_set_state(w, "clicked");
 	else
 		ewl_widget_set_state(w, "hilited");
@@ -1027,7 +1031,7 @@ __ewl_widget_focus_in(Ewl_Widget *w, void *ev_data, void *user_data)
 static void
 __ewl_widget_focus_out(Ewl_Widget *w, void *ev_data, void *user_data)
 {
-	if (w->state & EWL_STATE_DISABLED)
+	if (ewl_object_has_state(EWL_OBJECT(w), EWL_FLAG_STATE_DISABLED))
 		DRETURN(DLEVEL_STABLE);
 
 	ewl_widget_set_state(w, "normal");
@@ -1036,7 +1040,7 @@ __ewl_widget_focus_out(Ewl_Widget *w, void *ev_data, void *user_data)
 static void
 __ewl_widget_mouse_down(Ewl_Widget *w, void *ev_data, void *user_data)
 {
-	if (w->state & EWL_STATE_DISABLED)
+	if (ewl_object_has_state(EWL_OBJECT(w), EWL_FLAG_STATE_DISABLED))
 		DRETURN(DLEVEL_STABLE);
 
 	ewl_widget_set_state(w, "clicked");
@@ -1045,10 +1049,10 @@ __ewl_widget_mouse_down(Ewl_Widget *w, void *ev_data, void *user_data)
 static void
 __ewl_widget_mouse_up(Ewl_Widget *w, void *ev_data, void *user_data)
 {
-	if (w->state & EWL_STATE_DISABLED)
+	if (ewl_object_has_state(EWL_OBJECT(w), EWL_FLAG_STATE_DISABLED))
 		DRETURN(DLEVEL_STABLE);
 
-	if (w->state & EWL_STATE_HILITED) {
+	if (ewl_object_has_state(EWL_OBJECT(w), EWL_FLAG_STATE_HILITED)) {
 		ewl_widget_set_state(w, "hilited");
 		ewl_callback_call(w, EWL_CALLBACK_CLICKED);
 	} else

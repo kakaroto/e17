@@ -105,9 +105,9 @@ main(int argc, char **argv)
 	e_conf.button_hbox = ewl_hbox_new();
 	ewl_box_set_spacing(EWL_BOX(e_conf.button_hbox), 5);
 	ewl_object_set_alignment(EWL_OBJECT(e_conf.button_hbox),
-				 EWL_ALIGNMENT_CENTER);
+				 EWL_FLAG_ALIGN_CENTER);
 	ewl_object_set_fill_policy(EWL_OBJECT(e_conf.button_hbox),
-				   EWL_FILL_POLICY_NORMAL);
+				   EWL_FLAG_FILL_NORMAL);
 	ewl_container_append_child(EWL_CONTAINER(e_conf.main_vbox),
 				   e_conf.button_hbox);
 	ewl_widget_show(e_conf.button_hbox);
@@ -529,7 +529,7 @@ ewl_config_create_confirm_dialog(void)
 	confirm.text = ewl_text_new("You have made modifications."
 			"What would you like to do?");
 	ewl_object_set_alignment(EWL_OBJECT(confirm.text),
-				 EWL_ALIGNMENT_CENTER);
+				 EWL_FLAG_ALIGN_CENTER);
 	ewl_container_append_child(EWL_CONTAINER(confirm.main_vbox),
 				   confirm.text);
 	ewl_widget_show(confirm.text);
@@ -537,7 +537,7 @@ ewl_config_create_confirm_dialog(void)
 	confirm.button_hbox = ewl_hbox_new();
 	ewl_box_set_spacing(EWL_BOX(confirm.button_hbox), 5);
 	ewl_object_set_alignment(EWL_OBJECT(confirm.button_hbox),
-				 EWL_ALIGNMENT_CENTER);
+				 EWL_FLAG_ALIGN_CENTER);
 	ewl_container_append_child(EWL_CONTAINER(confirm.main_vbox),
 				   confirm.button_hbox);
 	ewl_widget_show(confirm.button_hbox);

@@ -183,7 +183,7 @@ int ewl_window_init(Ewl_Window * w)
 	 */
 	ewl_embed_init(EWL_EMBED(w));
 	ewl_widget_set_appearance(EWL_WIDGET(w), "window");
-	ewl_object_set_fill_policy(EWL_OBJECT(w), EWL_FILL_POLICY_FILL);
+	ewl_object_set_fill_policy(EWL_OBJECT(w), EWL_FLAG_FILL_FILL);
 
 	w->title = strdup("EWL!");
 

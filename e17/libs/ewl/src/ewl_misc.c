@@ -114,7 +114,6 @@ void ewl_main(void)
  */
 int ewl_idle_render(void *data)
 {
-	Ewl_Widget     *w;
 	Ewl_Embed      *emb;
 
 	DENTER_FUNCTION(DLEVEL_STABLE);
@@ -124,40 +123,25 @@ int ewl_idle_render(void *data)
 		exit(-1);
 	}
 
-	/*
-	 * Clean out the unused widgets first, to avoid them being drawn or
-	 * unnecessary work done from configuration.
-	 */
-	ewl_garbage_collect();
-
 	if (ewd_list_is_empty(ewl_embed_list))
 		DRETURN_INT(TRUE, DLEVEL_STABLE);
 
 	edje_freeze();
 
 	/*
-	 * First realize any widgets that require it, this looping should
-	 * avoid deep recursion.
+	 * Clean out the unused widgets first, to avoid them being drawn or
+	 * unnecessary work done from configuration. Then display new widgets,
+	 * finally layout the widgets.
 	 */
-	ewd_list_goto_first(realize_list);
-	while ((w = ewd_list_remove_first(realize_list))) {
-		if (VISIBLE(w) && !REALIZED(w)) {
-			w->flags &= ~EWL_FLAGS_RSCHEDULED;
-			ewl_widget_realize(EWL_WIDGET(w));
-		}
-	}
+	if (!ewd_list_is_empty(destroy_list))
+		ewl_garbage_collect();
 
-	/*
-	 * Configure any widgets that need it.
-	 */
-	while ((w = ewd_list_remove_first(configure_list))) {
-		/*
-		 * Remove the flag that the widget is scheduled for
-		 * configuration.
-		 */
-		w->flags &= ~EWL_FLAGS_CSCHEDULED;
-		ewl_callback_call(w, EWL_CALLBACK_CONFIGURE);
-	}
+	if (!ewd_list_is_empty(realize_list))
+		ewl_realize_queue();
+
+	if (!ewd_list_is_empty(configure_list))
+		ewl_configure_queue();
+
 	edje_thaw();
 
 	/*
@@ -283,6 +267,8 @@ void ewl_configure_request(Ewl_Widget * w)
 	DCHECK_PARAM_PTR("w", w);
 
 	emb = ewl_embed_find_by_widget(w);
+	if (!emb)
+		DRETURN(DLEVEL_STABLE);
 
 	/*
 	 * We don't need to configure if it's outside the viewable space in
@@ -303,14 +289,24 @@ void ewl_configure_request(Ewl_Widget * w)
 				x > (int)(CURRENT_X(emb) + CURRENT_W(emb)) ||
 				(int)(y + height) < CURRENT_Y(emb) ||
 				y > (int)(CURRENT_Y(emb) + CURRENT_H(emb))) {
-			w->flags |= EWL_FLAGS_OBSCURED;
+			ewl_object_add_visible(EWL_OBJECT(w),
+					EWL_FLAG_VISIBLE_OBSCURED);
 			if (w->fx_clip_box)
 				evas_object_hide(w->fx_clip_box);
+			/* FIXME: This might be a good idea.
+			if (w->theme_object)
+				edje_object_freeze(w->theme_object);
+			*/
 		}
 		else {
-			w->flags &= ~EWL_FLAGS_OBSCURED;
+			ewl_object_remove_visible(EWL_OBJECT(w),
+					EWL_FLAG_VISIBLE_OBSCURED);
 			if (w->fx_clip_box)
 				evas_object_show(w->fx_clip_box);
+			/* FIXME: This might be a good idea.
+			if (w->theme_object)
+				edje_object_thaw(w->theme_object);
+			*/
 		}
 	}
 
@@ -318,12 +314,14 @@ void ewl_configure_request(Ewl_Widget * w)
 	 * Check this first, and remove an obscured widget from the configure
 	 * list, if it's already scheduled.
 	 */
-	if (w->flags & EWL_FLAGS_OBSCURED) {
-		if (w->flags & EWL_FLAGS_CSCHEDULED) {
+	if (ewl_object_has_visible(EWL_OBJECT(w), EWL_FLAG_VISIBLE_OBSCURED)) {
+		if (ewl_object_has_queued(EWL_OBJECT(w),
+					EWL_FLAG_QUEUED_CSCHEDULED)) {
 			ewd_list_goto_first(configure_list);
 			while ((search = ewd_list_current(configure_list))) {
 				if (search == w) {
-					w->flags &= ~EWL_FLAGS_CSCHEDULED;
+					ewl_object_remove_queued(EWL_OBJECT(w),
+						EWL_FLAG_QUEUED_CSCHEDULED);
 					ewd_list_remove(configure_list);
 					break;
 				}
@@ -337,7 +335,7 @@ void ewl_configure_request(Ewl_Widget * w)
 	/*
 	 * Easy case, we know this is on the list already.
 	 */
-	if (w->flags & EWL_FLAGS_CSCHEDULED)
+	if (ewl_object_has_queued(EWL_OBJECT(w), EWL_FLAG_QUEUED_CSCHEDULED))
 		DRETURN(DLEVEL_TESTING);
 
 	/*
@@ -345,7 +343,8 @@ void ewl_configure_request(Ewl_Widget * w)
 	 * configuration. This is the easiest way to test if we can avoid
 	 * adding this widget to the configuration list.
 	 */
-	if (EWL_WIDGET(emb)->flags & EWL_FLAGS_CSCHEDULED)
+	if (ewl_object_has_queued(EWL_OBJECT(emb),
+			EWL_FLAG_QUEUED_CSCHEDULED))
 		DRETURN(DLEVEL_TESTING);
 
 	/*
@@ -353,7 +352,8 @@ void ewl_configure_request(Ewl_Widget * w)
 	 */
 	search = w;
 	while ((search = search->parent)) {
-		if (search->flags & EWL_FLAGS_CSCHEDULED)
+		if (ewl_object_has_queued(EWL_OBJECT(search),
+					EWL_FLAG_QUEUED_CSCHEDULED))
 			DRETURN(DLEVEL_TESTING);
 	}
 
@@ -361,7 +361,7 @@ void ewl_configure_request(Ewl_Widget * w)
 	 * No parent of this widget is queued so add it to the queue. All
 	 * children widgets should have been removed by this point.
 	 */
-	w->flags |= EWL_FLAGS_CSCHEDULED;
+	ewl_object_add_queued(EWL_OBJECT(w), EWL_FLAG_QUEUED_CSCHEDULED);
 	ewd_list_append(configure_list, w);
 
 	/*
@@ -375,7 +375,8 @@ void ewl_configure_request(Ewl_Widget * w)
 		parent = search;
 		while ((parent = parent->parent)) {
 			if (parent == w) {
-				search->flags &= ~EWL_FLAGS_CSCHEDULED;
+				ewl_object_remove_queued(EWL_OBJECT(search),
+						EWL_FLAG_QUEUED_CSCHEDULED);
 				ewd_list_remove(configure_list);
 				break;
 			}
@@ -385,7 +386,7 @@ void ewl_configure_request(Ewl_Widget * w)
 	}
 
 	/*
-	 * FIXME: Remove this once we get things stabilized a bit more.
+	 * FIXME: Remove this once we get things stabilize a bit more.
 	 */
 	if (ewd_list_nodes(configure_list) > longest) {
 		longest = ewd_list_nodes(configure_list);
@@ -393,6 +394,24 @@ void ewl_configure_request(Ewl_Widget * w)
 	}
 
 	DLEAVE_FUNCTION(DLEVEL_TESTING);
+}
+
+void ewl_configure_queue()
+{
+	Ewl_Widget *w;
+
+	/*
+	 * Configure any widgets that need it.
+	 */
+	while ((w = ewd_list_remove_first(configure_list))) {
+		/*
+		 * Remove the flag that the widget is scheduled for
+		 * configuration.
+		 */
+		ewl_object_remove_queued(EWL_OBJECT(w),
+				EWL_FLAG_QUEUED_CSCHEDULED);
+		ewl_callback_call(w, EWL_CALLBACK_CONFIGURE);
+	}
 }
 
 /**
@@ -425,10 +444,10 @@ void ewl_realize_request(Ewl_Widget *w)
 {
 	Ewl_Widget *search;
 
-	if (w->flags & EWL_FLAGS_RSCHEDULED)
+	if (ewl_object_has_queued(EWL_OBJECT(w), EWL_FLAG_QUEUED_RSCHEDULED))
 		return;
 
-	w->flags |= EWL_FLAGS_RSCHEDULED;
+	ewl_object_add_queued(EWL_OBJECT(w), EWL_FLAG_QUEUED_RSCHEDULED);
 
 	/*
 	 * Search the list for a child widget of this widget.
@@ -451,13 +470,41 @@ void ewl_realize_request(Ewl_Widget *w)
 	ewd_list_append(realize_list, w);
 }
 
+void ewl_realize_queue()
+{
+	Ewl_Widget *w;
+
+	/*
+	 * First realize any widgets that require it, this looping should
+	 * avoid deep recursion.
+	 */
+	ewd_list_goto_first(realize_list);
+	while ((w = ewd_list_remove_first(realize_list))) {
+		if (VISIBLE(w) && !REALIZED(w)) {
+			ewl_object_remove_queued(EWL_OBJECT(w),
+					EWL_FLAG_QUEUED_RSCHEDULED);
+			ewl_widget_realize(EWL_WIDGET(w));
+		}
+	}
+}
+
 void ewl_destroy_request(Ewl_Widget *w)
 {
-	if (w->flags & EWL_FLAGS_DSCHEDULED)
+	if (ewl_object_has_queued(EWL_OBJECT(w), EWL_FLAG_QUEUED_DSCHEDULED))
 		DRETURN(DLEVEL_STABLE);
 
-	w->flags |= EWL_FLAGS_DSCHEDULED;
-	ewd_list_append(destroy_list, w);
+	ewl_object_add_queued(EWL_OBJECT(w), EWL_FLAG_QUEUED_DSCHEDULED);
+
+	/*
+	 * Must prepend to ensure children are freed before parents.
+	 */
+	ewd_list_prepend(destroy_list, w);
+
+	/*
+	 * Schedule child widgets for destruction.
+	 */
+	if (ewl_object_get_recursive(EWL_OBJECT(w)))
+		ewl_container_destroy(EWL_CONTAINER(w));
 }
 
 void ewl_garbage_collect()

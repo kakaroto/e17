@@ -44,28 +44,28 @@ __create_selectionbook_test_window(Ewl_Widget * w, void *ev_data,
 	ewl_widget_show(sbook_win);
 
 	sbook = ewl_selectionbook_new();
-	ewl_object_set_fill_policy(EWL_OBJECT(sbook), EWL_FILL_POLICY_FILL);
+	ewl_object_set_fill_policy(EWL_OBJECT(sbook), EWL_FLAG_FILL_FILL);
 	ewl_container_append_child(EWL_CONTAINER(sbook_win), sbook);
 	ewl_widget_show(sbook);
 
 	tab[0] = ewl_button_new("Tab - ONE");
-	ewl_object_set_alignment(EWL_OBJECT(tab[0]), EWL_ALIGNMENT_LEFT);
+	ewl_object_set_alignment(EWL_OBJECT(tab[0]), EWL_FLAG_ALIGN_LEFT);
 	ewl_object_set_custom_size(EWL_OBJECT(tab[0]), 100, 17);
 
 	tab[1] = ewl_button_new("Tab - TWO");
-	ewl_object_set_alignment(EWL_OBJECT(tab[1]), EWL_ALIGNMENT_LEFT);
+	ewl_object_set_alignment(EWL_OBJECT(tab[1]), EWL_FLAG_ALIGN_LEFT);
 	ewl_object_set_custom_size(EWL_OBJECT(tab[1]), 100, 17);
 
 
 	panel[0] = ewl_vbox_new();
-	ewl_object_set_fill_policy(EWL_OBJECT(panel[0]), EWL_FILL_POLICY_FILL);
-	ewl_object_set_alignment(EWL_OBJECT(panel[0]), EWL_ALIGNMENT_LEFT);
+	ewl_object_set_fill_policy(EWL_OBJECT(panel[0]), EWL_FLAG_FILL_FILL);
+	ewl_object_set_alignment(EWL_OBJECT(panel[0]), EWL_FLAG_ALIGN_LEFT);
 	ewl_theme_data_set_str(panel[0],
 			       "/appearance/box/vertical/base/visible", "yes");
 
 	panel[1] = ewl_vbox_new();
-	ewl_object_set_fill_policy(EWL_OBJECT(panel[1]), EWL_FILL_POLICY_FILL);
-	ewl_object_set_alignment(EWL_OBJECT(panel[1]), EWL_ALIGNMENT_LEFT);
+	ewl_object_set_fill_policy(EWL_OBJECT(panel[1]), EWL_FLAG_FILL_FILL);
+	ewl_object_set_alignment(EWL_OBJECT(panel[1]), EWL_FLAG_ALIGN_LEFT);
 	ewl_theme_data_set_str(panel[1],
 			       "/appearance/box/vertical/base/visible", "yes");
 

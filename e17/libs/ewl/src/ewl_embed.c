@@ -92,8 +92,8 @@ int ewl_embed_init(Ewl_Embed * w)
 	ewl_container_init(EWL_CONTAINER(w), "embed",
 			   __ewl_embed_child_add, __ewl_embed_child_resize,
 			   NULL);
-	ewl_object_set_fill_policy(EWL_OBJECT(w), EWL_FILL_POLICY_NONE);
-	EWL_WIDGET(w)->flags |= EWL_FLAGS_TOPLEVEL;
+	ewl_object_set_fill_policy(EWL_OBJECT(w), EWL_FLAG_FILL_NONE);
+	ewl_object_set_toplevel(EWL_OBJECT(w), EWL_FLAG_PROPERTY_TOPLEVEL);
 
 	ewl_callback_append(EWL_WIDGET(w), EWL_CALLBACK_UNREALIZE,
 			     __ewl_embed_unrealize, NULL);
@@ -147,8 +147,10 @@ Evas_Object *ewl_embed_set_evas(Ewl_Embed *emb, Evas *evas)
 			__ewl_embed_smart_clip_unset, NULL);
 	}
 
-	if (emb->smart)
+	if (emb->smart) {
 		evas_object_del(emb->smart);
+		emb->smart = NULL;
+	}
 
 	emb->smart = evas_object_smart_add(emb->evas, embedded_smart);
 	evas_object_smart_data_set(emb->smart, emb);
@@ -257,7 +259,7 @@ Ewl_Embed     *ewl_embed_find_by_widget(Ewl_Widget * w)
 	while (w->parent)
 		w = w->parent;
 
-	if (!(w->flags & EWL_FLAGS_TOPLEVEL))
+	if (!ewl_object_get_toplevel(EWL_OBJECT(w)))
 		w = NULL;
 
 	DRETURN_PTR(EWL_EMBED(w), DLEVEL_STABLE);
@@ -300,8 +302,10 @@ void __ewl_embed_unrealize(Ewl_Widget *w, void *ev_data, void *user_data)
 {
 	DENTER_FUNCTION(DLEVEL_STABLE);
 
-	if (EWL_EMBED(w)->smart)
+	if (EWL_EMBED(w)->smart) {
 		evas_object_del(EWL_EMBED(w)->smart);
+		EWL_EMBED(w)->smart = NULL;
+	}
 
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }

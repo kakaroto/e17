@@ -21,15 +21,15 @@ __destroy_box_test_window(Ewl_Widget * w, void *ev_data, void *user_data)
 void
 __toggle_child_fill(Ewl_Widget * w, void *ev_data, void *user_data)
 {
-	Ewl_Fill_Policy f;
+	unsigned int f;
 
 	f = ewl_object_get_fill_policy(EWL_OBJECT(w));
 
-	if (f == EWL_FILL_POLICY_NONE) {
-		ewl_object_set_fill_policy(EWL_OBJECT(w), EWL_FILL_POLICY_FILL);
+	if (f == EWL_FLAG_FILL_NONE) {
+		ewl_object_set_fill_policy(EWL_OBJECT(w), EWL_FLAG_FILL_FILL);
 		ewl_button_set_label(EWL_BUTTON(w), "Fill");
 	} else {
-		ewl_object_set_fill_policy(EWL_OBJECT(w), EWL_FILL_POLICY_NONE);
+		ewl_object_set_fill_policy(EWL_OBJECT(w), EWL_FLAG_FILL_NONE);
 		ewl_button_set_label(EWL_BUTTON(w), "None");
 	}
 
@@ -41,19 +41,19 @@ __toggle_child_fill(Ewl_Widget * w, void *ev_data, void *user_data)
 void
 __toggle_child_shrink(Ewl_Widget * w, void *ev_data, void *user_data)
 {
-	Ewl_Fill_Policy f;
+	unsigned int f;
 
 	f = ewl_object_get_fill_policy(EWL_OBJECT(w));
 
-	if (f == EWL_FILL_POLICY_NONE) {
+	if (f == EWL_FLAG_FILL_NONE) {
 		ewl_button_set_label(EWL_BUTTON(w),
 				     "Shrink This Box To Fit It's Parent");
 		ewl_object_set_fill_policy(EWL_OBJECT(w),
-					   EWL_FILL_POLICY_HSHRINK);
+					   EWL_FLAG_FILL_HSHRINK);
 	} else {
 		ewl_button_set_label(EWL_BUTTON(w),
 				     "Don't shrink this box");
-		ewl_object_set_fill_policy(EWL_OBJECT(w), EWL_FILL_POLICY_NONE);
+		ewl_object_set_fill_policy(EWL_OBJECT(w), EWL_FLAG_FILL_NONE);
 	}
 
 	return;
@@ -64,19 +64,19 @@ __toggle_child_shrink(Ewl_Widget * w, void *ev_data, void *user_data)
 void
 __toggle_child_horizontal_align(Ewl_Widget * w, void *ev_data, void *user_data)
 {
-	Ewl_Alignment   a;
+	unsigned int   a;
 	char            l[10];
 
 	a = ewl_object_get_alignment(EWL_OBJECT(w));
 
-	if (a == EWL_ALIGNMENT_LEFT) {
-		a = EWL_ALIGNMENT_CENTER;
+	if (a == EWL_FLAG_ALIGN_LEFT) {
+		a = EWL_FLAG_ALIGN_CENTER;
 		snprintf(l, 10, "Center");
-	} else if (a == EWL_ALIGNMENT_CENTER) {
-		a = EWL_ALIGNMENT_RIGHT;
+	} else if (a == EWL_FLAG_ALIGN_CENTER) {
+		a = EWL_FLAG_ALIGN_RIGHT;
 		snprintf(l, 10, "Right");
-	} else if (a == EWL_ALIGNMENT_RIGHT) {
-		a = EWL_ALIGNMENT_LEFT;
+	} else if (a == EWL_FLAG_ALIGN_RIGHT) {
+		a = EWL_FLAG_ALIGN_LEFT;
 		snprintf(l, 10, "Left");
 	}
 
@@ -92,19 +92,19 @@ __toggle_child_horizontal_align(Ewl_Widget * w, void *ev_data, void *user_data)
 void
 __toggle_child_vertical_align(Ewl_Widget * w, void *ev_data, void *user_data)
 {
-	Ewl_Alignment   a;
+	unsigned int   a;
 	char            l[10];
 
 	a = ewl_object_get_alignment(EWL_OBJECT(w));
 
-	if (a == EWL_ALIGNMENT_TOP) {
-		a = EWL_ALIGNMENT_CENTER;
+	if (a == EWL_FLAG_ALIGN_TOP) {
+		a = EWL_FLAG_ALIGN_CENTER;
 		snprintf(l, 10, "Center");
-	} else if (a == EWL_ALIGNMENT_CENTER) {
-		a = EWL_ALIGNMENT_BOTTOM;
+	} else if (a == EWL_FLAG_ALIGN_CENTER) {
+		a = EWL_FLAG_ALIGN_BOTTOM;
 		snprintf(l, 10, "Bottom");
-	} else if (a == EWL_ALIGNMENT_BOTTOM) {
-		a = EWL_ALIGNMENT_TOP;
+	} else if (a == EWL_FLAG_ALIGN_BOTTOM) {
+		a = EWL_FLAG_ALIGN_TOP;
 		snprintf(l, 10, "Top");
 	}
 
@@ -166,9 +166,9 @@ __create_box_test_window(Ewl_Widget * w, void *ev_data, void *user_data)
 	vbox_button[0][0] = ewl_button_new("Left");
 	ewl_container_append_child(EWL_CONTAINER(vbox[0]), vbox_button[0][0]);
 	ewl_object_set_fill_policy(EWL_OBJECT(vbox_button[0][0]),
-				   EWL_FILL_POLICY_NONE);
+				   EWL_FLAG_FILL_NONE);
 	ewl_object_set_alignment(EWL_OBJECT(vbox_button[0][0]),
-				 EWL_ALIGNMENT_LEFT);
+				 EWL_FLAG_ALIGN_LEFT);
 	ewl_callback_append(vbox_button[0][0], EWL_CALLBACK_CLICKED,
 			    __toggle_child_horizontal_align, NULL);
 	ewl_widget_show(vbox_button[0][0]);
@@ -179,9 +179,9 @@ __create_box_test_window(Ewl_Widget * w, void *ev_data, void *user_data)
 	vbox_button[0][1] = ewl_button_new("Center");
 	ewl_container_append_child(EWL_CONTAINER(vbox[0]), vbox_button[0][1]);
 	ewl_object_set_fill_policy(EWL_OBJECT(vbox_button[0][1]),
-				   EWL_FILL_POLICY_NONE);
+				   EWL_FLAG_FILL_NONE);
 	ewl_object_set_alignment(EWL_OBJECT(vbox_button[0][1]),
-				 EWL_ALIGNMENT_CENTER);
+				 EWL_FLAG_ALIGN_CENTER);
 	ewl_callback_append(vbox_button[0][1], EWL_CALLBACK_CLICKED,
 			    __toggle_child_horizontal_align, NULL);
 	ewl_widget_show(vbox_button[0][1]);
@@ -192,9 +192,9 @@ __create_box_test_window(Ewl_Widget * w, void *ev_data, void *user_data)
 	vbox_button[0][2] = ewl_button_new("Right");
 	ewl_container_append_child(EWL_CONTAINER(vbox[0]), vbox_button[0][2]);
 	ewl_object_set_fill_policy(EWL_OBJECT(vbox_button[0][2]),
-				   EWL_FILL_POLICY_NONE);
+				   EWL_FLAG_FILL_NONE);
 	ewl_object_set_alignment(EWL_OBJECT(vbox_button[0][2]),
-				 EWL_ALIGNMENT_RIGHT);
+				 EWL_FLAG_ALIGN_RIGHT);
 	ewl_callback_append(vbox_button[0][2], EWL_CALLBACK_CLICKED,
 			    __toggle_child_horizontal_align, NULL);
 	ewl_widget_show(vbox_button[0][2]);
@@ -213,11 +213,11 @@ __create_box_test_window(Ewl_Widget * w, void *ev_data, void *user_data)
 	vbox_button[1][0] = ewl_button_new("None");
 	ewl_container_append_child(EWL_CONTAINER(vbox[1]), vbox_button[1][0]);
 	ewl_object_set_fill_policy(EWL_OBJECT(vbox_button[1][0]),
-				   EWL_FILL_POLICY_NONE);
+				   EWL_FLAG_FILL_NONE);
 	ewl_box_set_orientation(EWL_BOX(vbox_button[1][0]),
 			EWL_ORIENTATION_VERTICAL);
 	ewl_object_set_alignment(EWL_OBJECT(EWL_BUTTON(vbox_button[1][0])->label_object),
-				 EWL_ALIGNMENT_CENTER);
+				 EWL_FLAG_ALIGN_CENTER);
 	ewl_callback_append(vbox_button[1][0], EWL_CALLBACK_CLICKED,
 			    __toggle_child_fill, NULL);
 	ewl_widget_show(vbox_button[1][0]);
@@ -230,9 +230,9 @@ __create_box_test_window(Ewl_Widget * w, void *ev_data, void *user_data)
 	ewl_box_set_orientation(EWL_BOX(vbox_button[1][1]),
 			EWL_ORIENTATION_VERTICAL);
 	ewl_object_set_fill_policy(EWL_OBJECT(vbox_button[1][1]),
-				   EWL_FILL_POLICY_FILL);
+				   EWL_FLAG_FILL_FILL);
 	ewl_object_set_alignment(EWL_OBJECT(EWL_BUTTON(vbox_button[1][1])->label_object),
-				 EWL_ALIGNMENT_CENTER);
+				 EWL_FLAG_ALIGN_CENTER);
 	ewl_callback_append(vbox_button[1][1], EWL_CALLBACK_CLICKED,
 			    __toggle_child_fill, NULL);
 	ewl_widget_show(vbox_button[1][1]);
@@ -245,9 +245,9 @@ __create_box_test_window(Ewl_Widget * w, void *ev_data, void *user_data)
 	ewl_box_set_orientation(EWL_BOX(vbox_button[1][2]),
 			EWL_ORIENTATION_VERTICAL);
 	ewl_object_set_fill_policy(EWL_OBJECT(vbox_button[1][2]),
-				   EWL_FILL_POLICY_NONE);
+				   EWL_FLAG_FILL_NONE);
 	ewl_object_set_alignment(EWL_OBJECT(EWL_BUTTON(vbox_button[1][2])->label_object),
-				 EWL_ALIGNMENT_CENTER);
+				 EWL_FLAG_ALIGN_CENTER);
 	ewl_callback_append(vbox_button[1][2], EWL_CALLBACK_CLICKED,
 			    __toggle_child_fill, NULL);
 	ewl_widget_show(vbox_button[1][2]);
@@ -266,9 +266,9 @@ __create_box_test_window(Ewl_Widget * w, void *ev_data, void *user_data)
 	hbox_button[0][0] = ewl_button_new("Top");
 	ewl_container_append_child(EWL_CONTAINER(hbox[1]), hbox_button[0][0]);
 	ewl_object_set_fill_policy(EWL_OBJECT(hbox_button[0][0]),
-				   EWL_FILL_POLICY_NONE);
+				   EWL_FLAG_FILL_NONE);
 	ewl_object_set_alignment(EWL_OBJECT(hbox_button[0][0]),
-				 EWL_ALIGNMENT_TOP);
+				 EWL_FLAG_ALIGN_TOP);
 	ewl_callback_append(hbox_button[0][0], EWL_CALLBACK_CLICKED,
 			    __toggle_child_vertical_align, NULL);
 	ewl_widget_show(hbox_button[0][0]);
@@ -279,9 +279,9 @@ __create_box_test_window(Ewl_Widget * w, void *ev_data, void *user_data)
 	hbox_button[0][1] = ewl_button_new("Center");
 	ewl_container_append_child(EWL_CONTAINER(hbox[1]), hbox_button[0][1]);
 	ewl_object_set_fill_policy(EWL_OBJECT(hbox_button[0][1]),
-				   EWL_FILL_POLICY_NONE);
+				   EWL_FLAG_FILL_NONE);
 	ewl_object_set_alignment(EWL_OBJECT(hbox_button[0][1]),
-				 EWL_ALIGNMENT_CENTER);
+				 EWL_FLAG_ALIGN_CENTER);
 	ewl_callback_append(hbox_button[0][1], EWL_CALLBACK_CLICKED,
 			    __toggle_child_vertical_align, NULL);
 	ewl_widget_show(hbox_button[0][1]);
@@ -292,9 +292,9 @@ __create_box_test_window(Ewl_Widget * w, void *ev_data, void *user_data)
 	hbox_button[0][2] = ewl_button_new("Bottom");
 	ewl_container_append_child(EWL_CONTAINER(hbox[1]), hbox_button[0][2]);
 	ewl_object_set_fill_policy(EWL_OBJECT(hbox_button[0][2]),
-				   EWL_FILL_POLICY_NONE);
+				   EWL_FLAG_FILL_NONE);
 	ewl_object_set_alignment(EWL_OBJECT(hbox_button[0][2]),
-				 EWL_ALIGNMENT_BOTTOM);
+				 EWL_FLAG_ALIGN_BOTTOM);
 	ewl_callback_append(hbox_button[0][2], EWL_CALLBACK_CLICKED,
 			    __toggle_child_vertical_align, NULL);
 	ewl_widget_show(hbox_button[0][2]);
@@ -305,7 +305,7 @@ __create_box_test_window(Ewl_Widget * w, void *ev_data, void *user_data)
 
 	hbox[2] = ewl_hbox_new();
 	ewl_container_append_child(EWL_CONTAINER(box_box), hbox[2]);
-	ewl_object_set_fill_policy(EWL_OBJECT(hbox[2]), EWL_FILL_POLICY_HFILL);
+	ewl_object_set_fill_policy(EWL_OBJECT(hbox[2]), EWL_FLAG_FILL_HFILL);
 	ewl_widget_show(hbox[2]);
 
 	/*
@@ -314,7 +314,7 @@ __create_box_test_window(Ewl_Widget * w, void *ev_data, void *user_data)
 	hbox_button[1][0] =
 		ewl_button_new("Shrink This Box To Fit It's Parent");
 	ewl_object_set_fill_policy(EWL_OBJECT(hbox_button[1][0]),
-				   EWL_FILL_POLICY_HSHRINK);
+				   EWL_FLAG_FILL_HSHRINK);
 	ewl_container_append_child(EWL_CONTAINER(hbox[2]), hbox_button[1][0]);
 	ewl_callback_append(hbox_button[1][0], EWL_CALLBACK_CLICKED,
 			    __toggle_child_shrink, NULL);
@@ -326,7 +326,7 @@ __create_box_test_window(Ewl_Widget * w, void *ev_data, void *user_data)
 	hbox_button[1][1] =
 		ewl_button_new("Shrink This Box To Fit It's Parent");
 	ewl_object_set_fill_policy(EWL_OBJECT(hbox_button[1][1]),
-				   EWL_FILL_POLICY_HSHRINK);
+				   EWL_FLAG_FILL_HSHRINK);
 	ewl_container_append_child(EWL_CONTAINER(hbox[2]), hbox_button[1][1]);
 	ewl_callback_append(hbox_button[1][1], EWL_CALLBACK_CLICKED,
 			    __toggle_child_shrink, NULL);
@@ -337,7 +337,7 @@ __create_box_test_window(Ewl_Widget * w, void *ev_data, void *user_data)
 	 */
 	hbox_button[1][2] = ewl_button_new("Don't shrink this box at all");
 	ewl_object_set_fill_policy(EWL_OBJECT(hbox_button[1][2]),
-				   EWL_FILL_POLICY_NONE);
+				   EWL_FLAG_FILL_NONE);
 	ewl_container_append_child(EWL_CONTAINER(hbox[2]), hbox_button[1][2]);
 	ewl_callback_append(hbox_button[1][2], EWL_CALLBACK_CLICKED,
 			    __toggle_child_shrink, NULL);

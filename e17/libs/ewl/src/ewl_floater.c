@@ -64,7 +64,7 @@ void ewl_floater_init(Ewl_Floater * f, Ewl_Widget * parent)
 	 * normal, and the widget to follow.
 	 */
 	ewl_box_init(EWL_BOX(w), EWL_ORIENTATION_VERTICAL);
-	ewl_object_set_fill_policy(EWL_OBJECT(w), EWL_FILL_POLICY_NORMAL);
+	ewl_object_set_fill_policy(EWL_OBJECT(w), EWL_FLAG_FILL_NORMAL);
 	ewl_widget_set_appearance(w, "floater");
 	f->follows = parent;
 
@@ -199,18 +199,18 @@ __ewl_floater_parent_configure(Ewl_Widget * w, void *ev_data, void *user_data)
 	/*
 	 * Determine the horizontal placement of the widget based on alignment
 	 */
-	if (align & EWL_ALIGNMENT_RIGHT) {
+	if (align & EWL_FLAG_ALIGN_RIGHT) {
 		x -= CURRENT_W(w);
-	} else if (!(align & EWL_ALIGNMENT_LEFT)) {
+	} else if (!(align & EWL_FLAG_ALIGN_LEFT)) {
 		x -= CURRENT_W(w) / 2;
 	}
 
 	/*
 	 * Determine the vertical placement of the widget based on alignment
 	 */
-	if (align & EWL_ALIGNMENT_BOTTOM) {
+	if (align & EWL_FLAG_ALIGN_BOTTOM) {
 		y -= CURRENT_H(w);
-	} else if (!(align & EWL_ALIGNMENT_TOP)) {
+	} else if (!(align & EWL_FLAG_ALIGN_TOP)) {
 		y -= CURRENT_H(w) / 2;
 	}
 

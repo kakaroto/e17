@@ -43,7 +43,7 @@ __create_selectionbar_test_window(Ewl_Widget * w, void *ev_data,
 	ewl_widget_show(sbar_win);
 
 	box = ewl_vbox_new();
-	ewl_object_set_fill_policy(EWL_OBJECT(box), EWL_FILL_POLICY_FILL);
+	ewl_object_set_fill_policy(EWL_OBJECT(box), EWL_FLAG_FILL_FILL);
 	ewl_container_append_child(EWL_CONTAINER(sbar_win), box);
 	ewl_theme_data_set_str(box, 
 			"/appearance/box/vertical/base/visible", "yes");
@@ -51,12 +51,12 @@ __create_selectionbar_test_window(Ewl_Widget * w, void *ev_data,
 	
 	box_button = ewl_button_new("test test test");
 	ewl_object_set_fill_policy(EWL_OBJECT(box_button),
-			EWL_FILL_POLICY_SHRINK);
+			EWL_FLAG_FILL_SHRINK);
 	ewl_container_append_child(EWL_CONTAINER(box), box_button);
 	ewl_widget_show(box_button);
 	
 	sbar = ewl_selectionbar_new(box);
-	ewl_object_set_fill_policy(EWL_OBJECT(sbar), EWL_FILL_POLICY_FILL);
+	ewl_object_set_fill_policy(EWL_OBJECT(sbar), EWL_FLAG_FILL_FILL);
 	ewl_container_append_child(EWL_CONTAINER(sbar_win), sbar);
 	ewl_widget_show(sbar);
 

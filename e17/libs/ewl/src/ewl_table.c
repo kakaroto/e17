@@ -62,7 +62,7 @@ void ewl_table_init(Ewl_Table * t, int cols, int rows, char **col_headers)
 	 * Iniitialize the tables inherited fields
 	 */
 	ewl_container_init(EWL_CONTAINER(t), "table", NULL, NULL, NULL);
-	ewl_object_set_fill_policy(EWL_OBJECT(t), EWL_FILL_POLICY_FILL);
+	ewl_object_set_fill_policy(EWL_OBJECT(t), EWL_FLAG_FILL_FILL);
 
 	/*
 	 * Create a new grid

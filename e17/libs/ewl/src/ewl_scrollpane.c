@@ -54,15 +54,15 @@ void ewl_scrollpane_init(Ewl_ScrollPane * s)
 
 	ewl_container_init(EWL_CONTAINER(s), "scrollpane", __ewl_scrollpane_add,
 			__ewl_scrollpane_child_resize, NULL);
-	ewl_object_set_fill_policy(EWL_OBJECT(s), EWL_FILL_POLICY_FILL |
-			EWL_FILL_POLICY_SHRINK);
+	ewl_object_set_fill_policy(EWL_OBJECT(s), EWL_FLAG_FILL_FILL |
+			EWL_FLAG_FILL_SHRINK);
 
 	/*
 	 * Create the container to hold the contents and it's configure
 	 * callback to position it's child.
 	 */
 	s->box = ewl_vbox_new();
-	ewl_object_set_fill_policy(EWL_OBJECT(s->box), EWL_FILL_POLICY_SHRINK);
+	ewl_object_set_fill_policy(EWL_OBJECT(s->box), EWL_FLAG_FILL_SHRINK);
 
 	/*
 	 * Create the scrollbars for the scrollpane.
@@ -190,8 +190,8 @@ void __ewl_scrollpane_configure(Ewl_Widget * w, void *ev_data, void *user_data)
 	/*
 	 * Get the space needed by the scrolbars.
 	 */
-	vs_width = ewl_object_get_preferred_w(EWL_OBJECT(s->vscrollbar));
-	hs_height = ewl_object_get_preferred_w(EWL_OBJECT(s->hscrollbar));
+	vs_width = ewl_object_get_current_w(EWL_OBJECT(s->vscrollbar));
+	hs_height = ewl_object_get_current_h(EWL_OBJECT(s->hscrollbar));
 
 	/*
 	 * Determine the space used by the contents.
