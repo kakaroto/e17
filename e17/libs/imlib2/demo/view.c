@@ -7,7 +7,10 @@
 #include <stdio.h>
 #include <string.h>
 #include <stdlib.h>
+#include <sys/time.h>
+#include <sys/types.h>
 #include <unistd.h>
+#include <errno.h>
 #include "Imlib2.h"
 
 Display *disp;
@@ -135,113 +138,178 @@ main (int argc, char **argv)
      }
    for(;;)
      {
-	int x, y, b;
+	int x, y, b, count, fdsize, xfd, timeout = 0;
 	XEvent ev;
 	static int zoom_mode = 0, zx, zy;
 	static double zoom = 1.0;
 	char   aa = 0, dith = 0;
+	struct timeval tval;
+	fd_set         fdset;
+	double t1;
 	
-	XNextEvent(disp, &ev);
-	switch (ev.type)
+	XFlush(disp);
+        while (XPending(disp))
 	  {
-	  case ButtonPress:
-	     b = ev.xbutton.button;
-	     x = ev.xbutton.x;
-	     y = ev.xbutton.y;
-	     if (b == 3)
+	     XNextEvent(disp, &ev);
+	     switch (ev.type)
 	       {
-		  zoom_mode = 1;
-		  zx = x;
-		  zy = y;
-		  imlib_render_image_part_on_drawable_at_size
-		     (bg_im, 
-		      disp, pm, vis, cm, depth, 
-		      0, 1, 0,
-		      0, 0, image_width, image_height, 
-		      0, 0, image_width, image_height,
-		      NULL, IMLIB_OP_COPY);
-		  XSetWindowBackgroundPixmap(disp, win, pm);
-		  XClearWindow(disp, win);
-	       }
-	     break;
-	  case ButtonRelease:
-	     b = ev.xbutton.button;
-	     x = ev.xbutton.x;
-	     y = ev.xbutton.y;
-	     if (b == 3)
-		zoom_mode = 0;
-	     if (b == 1)
-	       {
-		  no++;
-		  if (no == argc)
-		     exit(0);
-		  file = argv[no];
-		  image_width = 0;
-		  zoom = 1.0;
-		  zoom_mode = 0;
-		  imlib_free_image_and_decache(im);
-		  im = imlib_load_image_with_progress_callback(file, progress, 10);
-		  while (!im)
+	       case ButtonPress:
+		  b = ev.xbutton.button;
+		  x = ev.xbutton.x;
+		  y = ev.xbutton.y;
+		  if (b == 3)
+		    {
+		       zoom_mode = 1;
+		       zx = x;
+		       zy = y;
+		       imlib_render_image_part_on_drawable_at_size
+			  (bg_im, 
+			   disp, pm, vis, cm, depth, 
+			   0, 1, 0,
+			   0, 0, image_width, image_height, 
+			   0, 0, image_width, image_height,
+			   NULL, IMLIB_OP_COPY);
+		       XSetWindowBackgroundPixmap(disp, win, pm);
+		       XClearWindow(disp, win);
+		    }
+		  break;
+	       case ButtonRelease:
+		  b = ev.xbutton.button;
+		  x = ev.xbutton.x;
+		  y = ev.xbutton.y;
+		  if (b == 3)
+		     zoom_mode = 0;
+		  if (b == 1)
 		    {
 		       no++;
 		       if (no == argc)
 			  exit(0);
 		       file = argv[no];
 		       image_width = 0;
+		       zoom = 1.0;
+		       zoom_mode = 0;
+		       imlib_free_image_and_decache(im);
 		       im = imlib_load_image_with_progress_callback(file, progress, 10);
+		       while (!im)
+			 {
+			    no++;
+			    if (no == argc)
+			       exit(0);
+			    file = argv[no];
+			    image_width = 0;
+			    im = imlib_load_image_with_progress_callback(file, progress, 10);
+			 }
 		    }
+		  break;
+	       case MotionNotify:
+		  while (XCheckTypedWindowEvent(disp, win, MotionNotify, &ev));
+		  x = ev.xmotion.x;
+		  y = ev.xmotion.y;
+		  if (zoom_mode)
+		    {
+		       int sx, sy, sw, sh, dx, dy, dw, dh;
+		       
+		       zoom = ((double)x - (double)zx) / 32.0;
+		       if (zoom < 0)
+			  zoom = 1.0 + ((zoom * 32.0) / ((double)(zx + 1)));
+		       else
+			  zoom += 1.0;
+		       if (zoom <= 0.0001)
+			  zoom = 0.0001;
+		       if (zoom > 1.0)
+			 {
+			    dx = 0;
+			    dy = 0;
+			    dw = image_width;
+			    dh = image_height;
+			    
+			    sx = zx - (zx / zoom);
+			    sy = zy - (zy / zoom);
+			    sw = image_width / zoom;
+			    sh = image_height / zoom;
+			 }
+		       else
+			 {
+			    dx = zx - (zx * zoom);
+			    dy = zy - (zy * zoom);
+			    dw = image_width * zoom;
+			    dh = image_height * zoom;
+			    
+			    sx = 0;
+			    sy = 0;
+			    sw = image_width;
+			    sh = image_height;
+			 }
+		       imlib_render_image_part_on_drawable_at_size
+			  (bg_im, 
+			   disp, pm, vis, cm, depth, 
+			   aa, dith, 0,
+			   sx, sy, sw, sh, dx, dy, dw, dh,
+			   NULL, IMLIB_OP_COPY);
+		       XSetWindowBackgroundPixmap(disp, win, pm);
+		       XClearWindow(disp, win);
+		       timeout = 1;
+		    }
+	       default:
+		  break;		  
 	       }
-	     break;
-	  case MotionNotify:
-	     while (XCheckTypedWindowEvent(disp, win, MotionNotify, &ev));
-	     x = ev.xmotion.x;
-	     y = ev.xmotion.y;
-	     if (zoom_mode)
+	     t1 = 0.5;
+	     tval.tv_sec = (long)t1;
+	     tval.tv_usec = (long)((t1 - ((double)tval.tv_sec)) * 1000000);
+	     xfd = ConnectionNumber(disp);
+	     fdsize = xfd + 1;
+	     FD_ZERO(&fdset);
+	     FD_SET(xfd, &fdset);
+	     if (timeout)
+		count = select(fdsize, &fdset, NULL, NULL, &tval);
+	     else
+		count = select(fdsize, &fdset, NULL, NULL, NULL);
+	     if (count < 0)
 	       {
-		  int sx, sy, sw, sh, dx, dy, dw, dh;
-		  
-		  zoom = ((double)x - (double)zx) / 32.0;
-		  if (zoom < 0)
-		     zoom = 1.0 + ((zoom * 32.0) / ((double)(zx + 1)));
-		  else
-		     zoom += 1.0;
-		  if (zoom <= 0.0001)
-		     zoom = 0.0001;
-		  if (zoom > 1.0)
-		    {
-		       dx = 0;
-		       dy = 0;
-		       dw = image_width;
-		       dh = image_height;
-		       
-		       sx = zx - (zx / zoom);
-		       sy = zy - (zy / zoom);
-		       sw = image_width / zoom;
-		       sh = image_height / zoom;
-		    }
-		  else
-		    {
-		       dx = zx - (zx * zoom);
-		       dy = zy - (zy * zoom);
-		       dw = image_width * zoom;
-		       dh = image_height * zoom;
-		       
-		       sx = 0;
-		       sy = 0;
-		       sw = image_width;
-		       sh = image_height;
-		    }
-		  imlib_render_image_part_on_drawable_at_size
-		     (bg_im, 
-		      disp, pm, vis, cm, depth, 
-		      aa, dith, 0,
-		      sx, sy, sw, sh, dx, dy, dw, dh,
-		      NULL, IMLIB_OP_COPY);
-		  XSetWindowBackgroundPixmap(disp, win, pm);
-		  XClearWindow(disp, win);
+		  if ((errno == ENOMEM) || (errno == EINVAL) || (errno == EBADF))
+		     exit(1);
 	       }
-	  default:
-	     break;
+	     else
+	       {
+		  if ((count == 0) && (timeout))
+		    {
+		       int sx, sy, sw, sh, dx, dy, dw, dh;
+		       
+		       if (zoom > 1.0)
+			 {
+			    dx = 0;
+			    dy = 0;
+			    dw = image_width;
+			    dh = image_height;
+			    
+			    sx = zx - (zx / zoom);
+			    sy = zy - (zy / zoom);
+			    sw = image_width / zoom;
+			    sh = image_height / zoom;
+			 }
+		       else
+			 {
+			    dx = zx - (zx * zoom);
+			    dy = zy - (zy * zoom);
+			    dw = image_width * zoom;
+			    dh = image_height * zoom;
+			    
+			    sx = 0;
+			    sy = 0;
+			    sw = image_width;
+			    sh = image_height;
+			 }
+		       imlib_render_image_part_on_drawable_at_size
+			  (bg_im, 
+			   disp, pm, vis, cm, depth, 
+			   1, 1, 0,
+			   sx, sy, sw, sh, dx, dy, dw, dh,
+			   NULL, IMLIB_OP_COPY);
+		       XSetWindowBackgroundPixmap(disp, win, pm);
+		       XClearWindow(disp, win);
+		       timeout = 0;
+		    }
+	       }
 	     
 	  }
      }
