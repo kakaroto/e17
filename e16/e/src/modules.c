@@ -34,14 +34,12 @@
 /* modules.c - generic module loader / unloader */
 
 /* This is the Modules List that we maintain */
-typedef struct _ModuleMember
-{
+typedef struct _ModuleMember {
 
    char               *ModuleName;
    void               *handle;
 
-}
-ModuleMember;
+} ModuleMember;
 
 int                 ListLength = 0;
 ModuleMember       *ModuleList;
@@ -70,22 +68,22 @@ LoadModule(char *module_name)
       char                pathoffiletoload[FILEPATH_LEN_MAX];
 
       Esnprintf(pathoffiletoload, sizeof(pathoffiletoload), "%s/%s",
-		FindModulePath(module_name), module_name);
+                FindModulePath(module_name), module_name);
       handle = dlopen(pathoffiletoload, RTLD_LAZY);
 
       if (!handle)
-	 return (MODULE_LOAD_FAIL);
+         return (MODULE_LOAD_FAIL);
    }
 
    /* create or append to ModuleList? */
    if (ModuleList)
      {
-	ModuleList = Erealloc(ModuleList, ++ListLength * sizeof(ModuleMember));
+        ModuleList = Erealloc(ModuleList, ++ListLength * sizeof(ModuleMember));
      }
    else
      {
-	ModuleList = Emalloc(sizeof(ModuleMember));
-	ListLength = 1;
+        ModuleList = Emalloc(sizeof(ModuleMember));
+        ListLength = 1;
      }
 
    /* Now we'll chunk everything useful into the ModuleList */
@@ -117,8 +115,8 @@ UnloadModule(char *module_name)
 
    for (i = ModuleID; i < ListLength; i++)
      {
-	ModuleList[i].ModuleName = ModuleList[i + 1].ModuleName;
-	ModuleList[i].handle = ModuleList[i + 1].handle;
+        ModuleList[i].ModuleName = ModuleList[i + 1].ModuleName;
+        ModuleList[i].handle = ModuleList[i + 1].handle;
      }
 
    ModuleList = Erealloc(ModuleList, --ListLength * sizeof(ModuleMember));
@@ -134,16 +132,16 @@ ModuleErrorCodeToString(int error_code)
    switch (error_code)
      {
 
-     case MODULE_ALREADY_LOADED:
-	return (_("Module is Already Loaded.\n"));
-     case MODULE_LOAD_FAIL:
-	return (_("Module Failed During Load.\n"));
-     case MODULE_UNLOAD_FAIL:
-	return (_("Module Unload Failed.\n"));
-     case MODULE_NOT_LOADED:
-	return (_("Module is not Loaded.\n"));
-     default:
-	return (_("Unknown Module Error.\n"));
+       case MODULE_ALREADY_LOADED:
+          return (_("Module is Already Loaded.\n"));
+       case MODULE_LOAD_FAIL:
+          return (_("Module Failed During Load.\n"));
+       case MODULE_UNLOAD_FAIL:
+          return (_("Module Unload Failed.\n"));
+       case MODULE_NOT_LOADED:
+          return (_("Module is not Loaded.\n"));
+       default:
+          return (_("Unknown Module Error.\n"));
 
      }
 
@@ -162,8 +160,8 @@ ModuleListAsString(void)
    strcat(returnList, "");
    for (i = 0; i < ListLength; i++)
      {
-	strcat(returnList, ModuleList[i].ModuleName);
-	strcat(returnList, "\n");
+        strcat(returnList, ModuleList[i].ModuleName);
+        strcat(returnList, "\n");
 
      }
 
@@ -185,10 +183,10 @@ IsLoadedModule(char *module_name)
 
    for (i = 0; i < ListLength; i++)
      {
-	if (!strcmp(ModuleList[i].ModuleName, module_name))
-	  {
-	     return (i + 1);
-	  }
+        if (!strcmp(ModuleList[i].ModuleName, module_name))
+          {
+             return (i + 1);
+          }
      }
 
    return (0);
@@ -201,7 +199,7 @@ FindModulePath(char *module_name)
 
    /* yeah yeah so it's hard-coded for now.  BITE ME */
    /* *** FIXME *** */
-   module_name = module_name;	/* suppress warning until we actually use the module name for something */
+   module_name = module_name;   /* suppress warning until we actually use the module name for something */
 
    return (ENLIGHTENMENT_ROOT "/modules");
 

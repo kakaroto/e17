@@ -50,29 +50,29 @@ CB_ConfigurePager(int val, void *data)
 {
    if (val < 2)
      {
-	if ((!mode.show_pagers) && (tmp_show_pagers))
-	   EnableAllPagers();
-	else if ((mode.show_pagers) && (!tmp_show_pagers))
-	   DisableAllPagers();
-	if (mode.pager_hiq != tmp_pager_hiq)
-	   PagerSetHiQ(tmp_pager_hiq);
-	mode.pager_zoom = tmp_pager_zoom;
-	mode.pager_title = tmp_pager_title;
-	mode.pager_sel_button = tmp_pager_sel_button;
-	mode.pager_win_button = tmp_pager_win_button;
-	mode.pager_menu_button = tmp_pager_menu_button;
-	if ((mode.pager_scanspeed != tmp_pager_scan_speed)
-	    || ((!tmp_pager_do_scan) && (mode.pager_scanspeed > 0))
-	    || ((tmp_pager_do_scan) && (mode.pager_scanspeed == 0)))
-	  {
-	     if (tmp_pager_do_scan)
-		mode.pager_scanspeed = tmp_pager_scan_speed;
-	     else
-		mode.pager_scanspeed = 0;
-	     PagerSetSnap(tmp_pager_snap);
-	  }
-	if (mode.pager_snap != tmp_pager_snap)
-	   PagerSetSnap(tmp_pager_snap);
+        if ((!mode.show_pagers) && (tmp_show_pagers))
+           EnableAllPagers();
+        else if ((mode.show_pagers) && (!tmp_show_pagers))
+           DisableAllPagers();
+        if (mode.pager_hiq != tmp_pager_hiq)
+           PagerSetHiQ(tmp_pager_hiq);
+        mode.pager_zoom = tmp_pager_zoom;
+        mode.pager_title = tmp_pager_title;
+        mode.pager_sel_button = tmp_pager_sel_button;
+        mode.pager_win_button = tmp_pager_win_button;
+        mode.pager_menu_button = tmp_pager_menu_button;
+        if ((mode.pager_scanspeed != tmp_pager_scan_speed)
+            || ((!tmp_pager_do_scan) && (mode.pager_scanspeed > 0))
+            || ((tmp_pager_do_scan) && (mode.pager_scanspeed == 0)))
+          {
+             if (tmp_pager_do_scan)
+                mode.pager_scanspeed = tmp_pager_scan_speed;
+             else
+                mode.pager_scanspeed = 0;
+             PagerSetSnap(tmp_pager_snap);
+          }
+        if (mode.pager_snap != tmp_pager_snap)
+           PagerSetSnap(tmp_pager_snap);
      }
    autosave();
    data = NULL;
@@ -85,10 +85,10 @@ CB_PagerScanSlide(int val, void *data)
    char                s[256];
 
    Esnprintf(s, sizeof(s), "%s %03i %s", _("Pager scanning speed:"),
-	     tmp_pager_scan_speed, _("lines per second"));
+             tmp_pager_scan_speed, _("lines per second"));
    DialogItemTextSetText(pager_scan_speed_label, s);
    DialogDrawItems(pager_settings_dialog, pager_scan_speed_label, 0, 0, 99999,
-		   99999);
+                   99999);
    val = 0;
    data = NULL;
 }
@@ -102,9 +102,9 @@ SettingsPager(void)
 
    if ((d = FindItem("CONFIGURE_PAGER", 0, LIST_FINDBY_NAME, LIST_TYPE_DIALOG)))
      {
-	AUDIO_PLAY("SOUND_SETTINGS_ACTIVE");
-	ShowDialog(d);
-	return;
+        AUDIO_PLAY("SOUND_SETTINGS_ACTIVE");
+        ShowDialog(d);
+        return;
      }
    AUDIO_PLAY("SOUND_SETTINGS_PAGER");
 
@@ -130,22 +130,22 @@ SettingsPager(void)
 
    if (mode.dialog_headers)
      {
-	di = DialogAddItem(table, DITEM_IMAGE);
-	DialogItemSetPadding(di, 2, 2, 2, 2);
-	DialogItemImageSetFile(di, "pix/pager.png");
+        di = DialogAddItem(table, DITEM_IMAGE);
+        DialogItemSetPadding(di, 2, 2, 2, 2);
+        DialogItemImageSetFile(di, "pix/pager.png");
 
-	di = DialogAddItem(table, DITEM_TEXT);
-	DialogItemSetPadding(di, 2, 2, 2, 2);
-	DialogItemSetFill(di, 1, 0);
-	DialogItemTextSetText(di,
-			      _("Enlightenment Desktop & Area\n"
-				"Pager Settings Dialog\n"));
+        di = DialogAddItem(table, DITEM_TEXT);
+        DialogItemSetPadding(di, 2, 2, 2, 2);
+        DialogItemSetFill(di, 1, 0);
+        DialogItemTextSetText(di,
+                              _("Enlightenment Desktop & Area\n"
+                                "Pager Settings Dialog\n"));
 
-	di = DialogAddItem(table, DITEM_SEPARATOR);
-	DialogItemSetColSpan(di, 2);
-	DialogItemSetPadding(di, 2, 2, 2, 2);
-	DialogItemSetFill(di, 1, 0);
-	DialogItemSeparatorSetOrientation(di, 0);
+        di = DialogAddItem(table, DITEM_SEPARATOR);
+        DialogItemSetColSpan(di, 2);
+        DialogItemSetPadding(di, 2, 2, 2, 2);
+        DialogItemSetFill(di, 1, 0);
+        DialogItemSeparatorSetOrientation(di, 0);
      }
 
    di = DialogAddItem(table, DITEM_CHECKBUTTON);
@@ -161,7 +161,7 @@ SettingsPager(void)
    DialogItemSetFill(di, 1, 0);
    DialogItemSetColSpan(di, 2);
    DialogItemCheckButtonSetText(di,
-				_("Make miniature snapshots of the screen"));
+                                _("Make miniature snapshots of the screen"));
    DialogItemCheckButtonSetState(di, tmp_pager_snap);
    DialogItemCheckButtonSetPtr(di, &tmp_pager_snap);
 
@@ -170,8 +170,8 @@ SettingsPager(void)
    DialogItemSetFill(di, 1, 0);
    DialogItemSetColSpan(di, 2);
    DialogItemCheckButtonSetText(di,
-				_
-				("Smooth high quality snapshots in snapshot mode"));
+                                _
+                                ("Smooth high quality snapshots in snapshot mode"));
    DialogItemCheckButtonSetState(di, tmp_pager_hiq);
    DialogItemCheckButtonSetPtr(di, &tmp_pager_hiq);
 
@@ -180,8 +180,8 @@ SettingsPager(void)
    DialogItemSetFill(di, 1, 0);
    DialogItemSetColSpan(di, 2);
    DialogItemCheckButtonSetText(di,
-				_
-				("Zoom in on pager windows when mouse is over them"));
+                                _
+                                ("Zoom in on pager windows when mouse is over them"));
    DialogItemCheckButtonSetState(di, tmp_pager_zoom);
    DialogItemCheckButtonSetPtr(di, &tmp_pager_zoom);
 
@@ -190,8 +190,8 @@ SettingsPager(void)
    DialogItemSetFill(di, 1, 0);
    DialogItemSetColSpan(di, 2);
    DialogItemCheckButtonSetText(di,
-				_
-				("Pop up window title when mouse is over the window"));
+                                _
+                                ("Pop up window title when mouse is over the window"));
    DialogItemCheckButtonSetState(di, tmp_pager_title);
    DialogItemCheckButtonSetPtr(di, &tmp_pager_title);
 
@@ -200,7 +200,7 @@ SettingsPager(void)
    DialogItemSetFill(di, 1, 0);
    DialogItemSetColSpan(di, 2);
    DialogItemCheckButtonSetText(di,
-				_("Continuously scan screen to update pager"));
+                                _("Continuously scan screen to update pager"));
    DialogItemCheckButtonSetState(di, tmp_pager_do_scan);
    DialogItemCheckButtonSetPtr(di, &tmp_pager_do_scan);
 
@@ -210,7 +210,7 @@ SettingsPager(void)
    DialogItemSetColSpan(di, 2);
    DialogItemSetAlign(di, 0, 512);
    Esnprintf(s, sizeof(s), "%s %03i %s", _("Pager scanning speed:"),
-	     tmp_pager_scan_speed, _("lines per second"));
+             tmp_pager_scan_speed, _("lines per second"));
    DialogItemTextSetText(di, s);
 
    di = DialogAddItem(table, DITEM_SLIDER);
@@ -356,23 +356,23 @@ CB_ConfigureFocus(int val, void *data)
 {
    if (val < 2)
      {
-	mode.focusmode = tmp_focus;
-	mode.all_new_windows_get_focus = tmp_new_focus;
-	mode.new_transients_get_focus = tmp_popup_focus;
-	mode.new_transients_get_focus_if_group_focused = tmp_owner_popup_focus;
-	mode.raise_on_next_focus = tmp_raise_focus;
-	mode.warp_on_next_focus = tmp_warp_focus;
+        mode.focusmode = tmp_focus;
+        mode.all_new_windows_get_focus = tmp_new_focus;
+        mode.new_transients_get_focus = tmp_popup_focus;
+        mode.new_transients_get_focus_if_group_focused = tmp_owner_popup_focus;
+        mode.raise_on_next_focus = tmp_raise_focus;
+        mode.warp_on_next_focus = tmp_warp_focus;
 #ifdef WITH_TARTY_WARP
-	mode.warp_after_next_focus = tmp_warp_after_focus;
-	mode.raise_after_next_focus = tmp_raise_after_focus;
-	mode.display_warp = tmp_display_warp;
-	mode.warpsticky = tmp_warpsticky;
-	mode.warpshaded = tmp_warpshaded;
-	mode.warpiconified = tmp_warpiconified;
-	mode.warpfocused = tmp_warpfocused;
+        mode.warp_after_next_focus = tmp_warp_after_focus;
+        mode.raise_after_next_focus = tmp_raise_after_focus;
+        mode.display_warp = tmp_display_warp;
+        mode.warpsticky = tmp_warpsticky;
+        mode.warpshaded = tmp_warpshaded;
+        mode.warpiconified = tmp_warpiconified;
+        mode.warpfocused = tmp_warpfocused;
 #endif /* WITH_TARTY_WARP */
-	mode.clickalways = tmp_clickalways;
-	FixFocus();
+        mode.clickalways = tmp_clickalways;
+        FixFocus();
      }
    autosave();
    data = NULL;
@@ -386,9 +386,9 @@ SettingsFocus(void)
 
    if ((d = FindItem("CONFIGURE_FOCUS", 0, LIST_FINDBY_NAME, LIST_TYPE_DIALOG)))
      {
-	AUDIO_PLAY("SOUND_SETTINGS_ACTIVE");
-	ShowDialog(d);
-	return;
+        AUDIO_PLAY("SOUND_SETTINGS_ACTIVE");
+        ShowDialog(d);
+        return;
      }
    AUDIO_PLAY("SOUND_SETTINGS_FOCUS");
 
@@ -417,21 +417,21 @@ SettingsFocus(void)
 
    if (mode.dialog_headers)
      {
-	di = DialogAddItem(table, DITEM_IMAGE);
-	DialogItemSetPadding(di, 2, 2, 2, 2);
-	DialogItemImageSetFile(di, "pix/focus.png");
+        di = DialogAddItem(table, DITEM_IMAGE);
+        DialogItemSetPadding(di, 2, 2, 2, 2);
+        DialogItemImageSetFile(di, "pix/focus.png");
 
-	di = DialogAddItem(table, DITEM_TEXT);
-	DialogItemSetPadding(di, 2, 2, 2, 2);
-	DialogItemSetFill(di, 1, 0);
-	DialogItemTextSetText(di,
-			      _("Enlightenment Focus\n" "Settings Dialog\n"));
+        di = DialogAddItem(table, DITEM_TEXT);
+        DialogItemSetPadding(di, 2, 2, 2, 2);
+        DialogItemSetFill(di, 1, 0);
+        DialogItemTextSetText(di,
+                              _("Enlightenment Focus\n" "Settings Dialog\n"));
 
-	di = DialogAddItem(table, DITEM_SEPARATOR);
-	DialogItemSetColSpan(di, 2);
-	DialogItemSetPadding(di, 2, 2, 2, 2);
-	DialogItemSetFill(di, 1, 0);
-	DialogItemSeparatorSetOrientation(di, 0);
+        di = DialogAddItem(table, DITEM_SEPARATOR);
+        DialogItemSetColSpan(di, 2);
+        DialogItemSetPadding(di, 2, 2, 2, 2);
+        DialogItemSetFill(di, 1, 0);
+        DialogItemSeparatorSetOrientation(di, 0);
      }
 
    radio = di = DialogAddItem(table, DITEM_RADIOBUTTON);
@@ -500,8 +500,8 @@ SettingsFocus(void)
    DialogItemSetFill(di, 1, 0);
    DialogItemSetColSpan(di, 2);
    DialogItemCheckButtonSetText(di,
-				_
-				("Only new dialogs whose owner is focused get the focus"));
+                                _
+                                ("Only new dialogs whose owner is focused get the focus"));
    DialogItemCheckButtonSetState(di, tmp_owner_popup_focus);
    DialogItemCheckButtonSetPtr(di, &tmp_owner_popup_focus);
 
@@ -518,8 +518,8 @@ SettingsFocus(void)
    DialogItemSetFill(di, 1, 0);
    DialogItemSetColSpan(di, 2);
    DialogItemCheckButtonSetText(di,
-				_
-				("Send mouse pointer to window on focus switch"));
+                                _
+                                ("Send mouse pointer to window on focus switch"));
    DialogItemCheckButtonSetState(di, tmp_warp_focus);
    DialogItemCheckButtonSetPtr(di, &tmp_warp_focus);
 
@@ -559,7 +559,7 @@ SettingsFocus(void)
    DialogItemSetFill(di, 1, 0);
    DialogItemSetColSpan(di, 2);
    DialogItemCheckButtonSetText(di,
-				_("Include iconified windows in focus list"));
+                                _("Include iconified windows in focus list"));
    DialogItemCheckButtonSetState(di, tmp_warpiconified);
    DialogItemCheckButtonSetPtr(di, &tmp_warpiconified);
 
@@ -584,8 +584,8 @@ SettingsFocus(void)
    DialogItemSetFill(di, 1, 0);
    DialogItemSetColSpan(di, 2);
    DialogItemCheckButtonSetText(di,
-				_
-				("Send mouse pointer to window after focus switch"));
+                                _
+                                ("Send mouse pointer to window after focus switch"));
    DialogItemCheckButtonSetState(di, tmp_warp_after_focus);
    DialogItemCheckButtonSetPtr(di, &tmp_warp_after_focus);
 #endif /* WITH_TARTY_WARP */
@@ -628,19 +628,18 @@ CB_ConfigureMoveResize(int val, void *data)
 
    if (val < 2)
      {
-	mode.movemode = tmp_move;
-	mode.resizemode = tmp_resize;
-	mode.geominfomode = tmp_geominfo;
+        mode.movemode = tmp_move;
+        mode.resizemode = tmp_resize;
+        mode.geominfomode = tmp_geominfo;
      }
    if (val)
-      if (
-	  (d =
-	   FindItem("CONFIGURE_MOVERESIZE_EXAMPLE", 0, LIST_FINDBY_NAME,
-		    LIST_TYPE_DIALOG)))
-	{
-	   DialogClose(d);
-	   /* je_moveend(je_prevmode, (void *)1); */
-	}
+      if ((d =
+           FindItem("CONFIGURE_MOVERESIZE_EXAMPLE", 0, LIST_FINDBY_NAME,
+                    LIST_TYPE_DIALOG)))
+        {
+           DialogClose(d);
+           /* je_moveend(je_prevmode, (void *)1); */
+        }
    autosave();
    data = NULL;
 }
@@ -781,14 +780,13 @@ SettingsMoveResize(void)
    /* Dialog             *dexp; */
    DItem              *table, *di, *radio1, *radio2, *radio3;
 
-   if (
-       (d =
-	FindItem("CONFIGURE_MOVERESIZE", 0, LIST_FINDBY_NAME,
-		 LIST_TYPE_DIALOG)))
+   if ((d =
+        FindItem("CONFIGURE_MOVERESIZE", 0, LIST_FINDBY_NAME,
+                 LIST_TYPE_DIALOG)))
      {
-	AUDIO_PLAY("SOUND_SETTINGS_ACTIVE");
-	ShowDialog(d);
-	return;
+        AUDIO_PLAY("SOUND_SETTINGS_ACTIVE");
+        ShowDialog(d);
+        return;
      }
    AUDIO_PLAY("SOUND_SETTINGS_MOVERESIZE");
 
@@ -804,22 +802,22 @@ SettingsMoveResize(void)
 
    if (mode.dialog_headers)
      {
-	di = DialogAddItem(table, DITEM_IMAGE);
-	DialogItemSetPadding(di, 2, 2, 2, 2);
-	DialogItemImageSetFile(di, "pix/moveres.png");
+        di = DialogAddItem(table, DITEM_IMAGE);
+        DialogItemSetPadding(di, 2, 2, 2, 2);
+        DialogItemImageSetFile(di, "pix/moveres.png");
 
-	di = DialogAddItem(table, DITEM_TEXT);
-	DialogItemSetPadding(di, 2, 2, 2, 2);
-	DialogItemSetFill(di, 1, 0);
-	DialogItemTextSetText(di,
-			      _("Enlightenment Move & Resize\n"
-				"Method Settings Dialog\n"));
+        di = DialogAddItem(table, DITEM_TEXT);
+        DialogItemSetPadding(di, 2, 2, 2, 2);
+        DialogItemSetFill(di, 1, 0);
+        DialogItemTextSetText(di,
+                              _("Enlightenment Move & Resize\n"
+                                "Method Settings Dialog\n"));
 
-	di = DialogAddItem(table, DITEM_SEPARATOR);
-	DialogItemSetColSpan(di, 2);
-	DialogItemSetPadding(di, 2, 2, 2, 2);
-	DialogItemSetFill(di, 1, 0);
-	DialogItemSeparatorSetOrientation(di, 0);
+        di = DialogAddItem(table, DITEM_SEPARATOR);
+        DialogItemSetColSpan(di, 2);
+        DialogItemSetPadding(di, 2, 2, 2, 2);
+        DialogItemSetFill(di, 1, 0);
+        DialogItemSeparatorSetOrientation(di, 0);
      }
 
    di = DialogAddItem(table, DITEM_TEXT);
@@ -1017,7 +1015,7 @@ CB_ConfigureDesktops(int val, void *data)
 {
    if (val < 2)
      {
-	ChangeNumberOfDesktops(tmp_desktops);
+        ChangeNumberOfDesktops(tmp_desktops);
      }
    autosave();
    data = NULL;
@@ -1046,45 +1044,44 @@ CB_DesktopDisplayRedraw(int val, void *data)
    DialogItemAreaGetSize(di, &w, &h);
    if (!called)
      {
-	ImageClass         *ic;
+        ImageClass         *ic;
 
-	ic =
-	   FindItem("SETTINGS_DESKTOP_AREA", 0, LIST_FINDBY_NAME,
-		    LIST_TYPE_ICLASS);
-	if (ic)
-	   IclassApply(ic, win, w, h, 0, 0, STATE_NORMAL, 0);
-	for (i = 0; i < ENLIGHTENMENT_CONF_NUM_DESKTOPS; i++)
-	   wins[i] = 0;
-	called = 1;
+        ic = FindItem("SETTINGS_DESKTOP_AREA", 0, LIST_FINDBY_NAME,
+                      LIST_TYPE_ICLASS);
+        if (ic)
+           IclassApply(ic, win, w, h, 0, 0, STATE_NORMAL, 0);
+        for (i = 0; i < ENLIGHTENMENT_CONF_NUM_DESKTOPS; i++)
+           wins[i] = 0;
+        called = 1;
      }
    for (i = 0; i < tmp_desktops; i++)
      {
-	if (!wins[i])
-	  {
-	     wins[i] = ECreateWindow(win, 0, 0, 64, 48, 0);
-	     XSetWindowBorderWidth(disp, wins[i], 1);
-	     if (desks.desk[i].bg)
-	       {
-		  Pixmap              pmap;
+        if (!wins[i])
+          {
+             wins[i] = ECreateWindow(win, 0, 0, 64, 48, 0);
+             XSetWindowBorderWidth(disp, wins[i], 1);
+             if (desks.desk[i].bg)
+               {
+                  Pixmap              pmap;
 
-		  pmap = ECreatePixmap(disp, wins[i], 64, 48, root.depth);
-		  ESetWindowBackgroundPixmap(disp, wins[i], pmap);
-		  SetBackgroundTo(id, pmap, desks.desk[i].bg, 0);
-		  EFreePixmap(disp, pmap);
-	       }
-	  }
+                  pmap = ECreatePixmap(disp, wins[i], 64, 48, root.depth);
+                  ESetWindowBackgroundPixmap(disp, wins[i], pmap);
+                  SetBackgroundTo(id, pmap, desks.desk[i].bg, 0);
+                  EFreePixmap(disp, pmap);
+               }
+          }
      }
    for (i = (tmp_desktops - 1); i >= 0; i--)
      {
-	int                 num;
+        int                 num;
 
-	num = tmp_desktops - 1;
-	if (num < 1)
-	   num = 1;
-	XRaiseWindow(disp, wins[i]);
-	EMoveWindow(disp, wins[i], (i * (w - 64 - 2)) / num,
-		    (i * (h - 48 - 2)) / num);
-	EMapWindow(disp, wins[i]);
+        num = tmp_desktops - 1;
+        if (num < 1)
+           num = 1;
+        XRaiseWindow(disp, wins[i]);
+        EMoveWindow(disp, wins[i], (i * (w - 64 - 2)) / num,
+                    (i * (h - 48 - 2)) / num);
+        EMapWindow(disp, wins[i]);
      }
    for (i = tmp_desktops; i < ENLIGHTENMENT_CONF_NUM_DESKTOPS; i++)
       EUnmapWindow(disp, wins[i]);
@@ -1103,13 +1100,12 @@ SettingsDesktops(void)
    DItem              *table, *di, *area, *slider;
    char                s[64];
 
-   if (
-       (d =
-	FindItem("CONFIGURE_DESKTOPS", 0, LIST_FINDBY_NAME, LIST_TYPE_DIALOG)))
+   if ((d =
+        FindItem("CONFIGURE_DESKTOPS", 0, LIST_FINDBY_NAME, LIST_TYPE_DIALOG)))
      {
-	AUDIO_PLAY("SOUND_SETTINGS_ACTIVE");
-	ShowDialog(d);
-	return;
+        AUDIO_PLAY("SOUND_SETTINGS_ACTIVE");
+        ShowDialog(d);
+        return;
      }
    AUDIO_PLAY("SOUND_SETTINGS_DESKTOPS");
 
@@ -1123,22 +1119,22 @@ SettingsDesktops(void)
 
    if (mode.dialog_headers)
      {
-	di = DialogAddItem(table, DITEM_IMAGE);
-	DialogItemSetPadding(di, 2, 2, 2, 2);
-	DialogItemImageSetFile(di, "pix/desktops.png");
+        di = DialogAddItem(table, DITEM_IMAGE);
+        DialogItemSetPadding(di, 2, 2, 2, 2);
+        DialogItemImageSetFile(di, "pix/desktops.png");
 
-	di = DialogAddItem(table, DITEM_TEXT);
-	DialogItemSetPadding(di, 2, 2, 2, 2);
-	DialogItemSetFill(di, 1, 0);
-	DialogItemTextSetText(di,
-			      _("Enlightenment Multiple Desktop\n"
-				"Settings Dialog\n"));
+        di = DialogAddItem(table, DITEM_TEXT);
+        DialogItemSetPadding(di, 2, 2, 2, 2);
+        DialogItemSetFill(di, 1, 0);
+        DialogItemTextSetText(di,
+                              _("Enlightenment Multiple Desktop\n"
+                                "Settings Dialog\n"));
 
-	di = DialogAddItem(table, DITEM_SEPARATOR);
-	DialogItemSetColSpan(di, 2);
-	DialogItemSetPadding(di, 2, 2, 2, 2);
-	DialogItemSetFill(di, 1, 0);
-	DialogItemSeparatorSetOrientation(di, 0);
+        di = DialogAddItem(table, DITEM_SEPARATOR);
+        DialogItemSetColSpan(di, 2);
+        DialogItemSetPadding(di, 2, 2, 2, 2);
+        DialogItemSetFill(di, 1, 0);
+        DialogItemSeparatorSetOrientation(di, 0);
      }
 
    di = DialogAddItem(table, DITEM_TEXT);
@@ -1205,17 +1201,17 @@ CB_ConfigureAreas(int val, void *data)
 {
    if (val < 2)
      {
-	SetNewAreaSize(tmp_area_x, 9 - tmp_area_y);
-	mode.area_wraparound = tmp_area_wraparound;
-	if (tmp_edge_flip)
-	  {
-	     if (tmp_edge_resist < 1)
-		tmp_edge_resist = 1;
-	     mode.edge_flip_resistance = tmp_edge_resist;
-	  }
-	else
-	   mode.edge_flip_resistance = 0;
-	ShowEdgeWindows();
+        SetNewAreaSize(tmp_area_x, 9 - tmp_area_y);
+        mode.area_wraparound = tmp_area_wraparound;
+        if (tmp_edge_flip)
+          {
+             if (tmp_edge_resist < 1)
+                tmp_edge_resist = 1;
+             mode.edge_flip_resistance = tmp_edge_resist;
+          }
+        else
+           mode.edge_flip_resistance = 0;
+        ShowEdgeWindows();
      }
    autosave();
    data = NULL;
@@ -1244,35 +1240,33 @@ CB_AreaDisplayRedraw(int val, void *data)
    DialogItemAreaGetSize(di, &w, &h);
    if (!called)
      {
-	ImageClass         *ic;
-	Pixmap              pmap;
+        ImageClass         *ic;
+        Pixmap              pmap;
 
-	ic =
-	   FindItem("SETTINGS_AREA_AREA", 0, LIST_FINDBY_NAME,
-		    LIST_TYPE_ICLASS);
-	if (ic)
-	   IclassApply(ic, win, w, h, 0, 0, STATE_NORMAL, 0);
-	awin = ECreateWindow(win, 0, 0, 18, 14, 0);
-	ic =
-	   FindItem("SETTINGS_AREADESK_AREA", 0, LIST_FINDBY_NAME,
-		    LIST_TYPE_ICLASS);
-	if (ic)
-	  {
-	     IclassApplyCopy(ic, awin, 18, 14, 0, 0, STATE_NORMAL, &pmap, NULL);
-	     ESetWindowBackgroundPixmap(disp, awin, pmap);
-	     Imlib_free_pixmap(id, pmap);
-	  }
-	XClearWindow(disp, awin);
-	called = 1;
+        ic = FindItem("SETTINGS_AREA_AREA", 0, LIST_FINDBY_NAME,
+                      LIST_TYPE_ICLASS);
+        if (ic)
+           IclassApply(ic, win, w, h, 0, 0, STATE_NORMAL, 0);
+        awin = ECreateWindow(win, 0, 0, 18, 14, 0);
+        ic = FindItem("SETTINGS_AREADESK_AREA", 0, LIST_FINDBY_NAME,
+                      LIST_TYPE_ICLASS);
+        if (ic)
+          {
+             IclassApplyCopy(ic, awin, 18, 14, 0, 0, STATE_NORMAL, &pmap, NULL);
+             ESetWindowBackgroundPixmap(disp, awin, pmap);
+             Imlib_free_pixmap(id, pmap);
+          }
+        XClearWindow(disp, awin);
+        called = 1;
      }
    EMoveResizeWindow(disp, awin, ((w / 2) - (9 * tmp_area_x)),
-		     ((h / 2) - (7 * (9 - tmp_area_y))), 18 * tmp_area_x,
-		     14 * (9 - tmp_area_y));
+                     ((h / 2) - (7 * (9 - tmp_area_y))), 18 * tmp_area_x,
+                     14 * (9 - tmp_area_y));
    EMapWindow(disp, awin);
 
    if ((tmp_area_x > 1) || ((9 - tmp_area_y) > 1))
       Esnprintf(s, sizeof(s), _("%i x %i\nScreens in size"), tmp_area_x,
-		9 - tmp_area_y);
+                9 - tmp_area_y);
    else
       Esnprintf(s, sizeof(s), _("1\nScreen in size"));
    DialogItemTextSetText(tmp_area_text, s);
@@ -1288,9 +1282,9 @@ SettingsArea(void)
 
    if ((d = FindItem("CONFIGURE_AREA", 0, LIST_FINDBY_NAME, LIST_TYPE_DIALOG)))
      {
-	AUDIO_PLAY("SOUND_SETTINGS_ACTIVE");
-	ShowDialog(d);
-	return;
+        AUDIO_PLAY("SOUND_SETTINGS_ACTIVE");
+        ShowDialog(d);
+        return;
      }
    AUDIO_PLAY("SOUND_SETTINGS_AREA");
 
@@ -1311,24 +1305,24 @@ SettingsArea(void)
 
    if (mode.dialog_headers)
      {
-	table2 = DialogAddItem(table, DITEM_TABLE);
-	DialogItemTableSetOptions(table2, 2, 0, 0, 0);
+        table2 = DialogAddItem(table, DITEM_TABLE);
+        DialogItemTableSetOptions(table2, 2, 0, 0, 0);
 
-	di = DialogAddItem(table2, DITEM_IMAGE);
-	DialogItemSetPadding(di, 2, 2, 2, 2);
-	DialogItemImageSetFile(di, "pix/areas.png");
+        di = DialogAddItem(table2, DITEM_IMAGE);
+        DialogItemSetPadding(di, 2, 2, 2, 2);
+        DialogItemImageSetFile(di, "pix/areas.png");
 
-	di = DialogAddItem(table2, DITEM_TEXT);
-	DialogItemSetPadding(di, 2, 2, 2, 2);
-	DialogItemSetFill(di, 1, 0);
-	DialogItemTextSetText(di,
-			      _("Enlightenment Virtual Desktop\n"
-				"Settings Dialog\n"));
+        di = DialogAddItem(table2, DITEM_TEXT);
+        DialogItemSetPadding(di, 2, 2, 2, 2);
+        DialogItemSetFill(di, 1, 0);
+        DialogItemTextSetText(di,
+                              _("Enlightenment Virtual Desktop\n"
+                                "Settings Dialog\n"));
 
-	di = DialogAddItem(table, DITEM_SEPARATOR);
-	DialogItemSetPadding(di, 2, 2, 2, 2);
-	DialogItemSetFill(di, 1, 0);
-	DialogItemSeparatorSetOrientation(di, 0);
+        di = DialogAddItem(table, DITEM_SEPARATOR);
+        DialogItemSetPadding(di, 2, 2, 2, 2);
+        DialogItemSetFill(di, 1, 0);
+        DialogItemSeparatorSetOrientation(di, 0);
      }
 
    di = DialogAddItem(table, DITEM_TEXT);
@@ -1341,7 +1335,7 @@ SettingsArea(void)
    DialogItemSetFill(di, 1, 0);
    if ((tmp_area_x > 1) || (tmp_area_y > 1))
       Esnprintf(s, sizeof(s), _("%i x %i\nScreens in size"), tmp_area_x,
-		9 - tmp_area_y);
+                9 - tmp_area_y);
    else
       Esnprintf(s, sizeof(s), _("1\nScreen in size"));
    DialogItemTextSetText(di, s);
@@ -1444,14 +1438,14 @@ CB_ConfigurePlacement(int val, void *data)
 {
    if (val < 2)
      {
-	mode.transientsfollowleader = tmp_with_leader;
-	mode.switchfortransientmap = tmp_switch_popup;
-	mode.manual_placement = tmp_manual_placement;
-	mode.manual_placement_mouse_pointer =
-	   tmp_manual_placement_mouse_pointer;
+        mode.transientsfollowleader = tmp_with_leader;
+        mode.switchfortransientmap = tmp_switch_popup;
+        mode.manual_placement = tmp_manual_placement;
+        mode.manual_placement_mouse_pointer =
+            tmp_manual_placement_mouse_pointer;
 #ifdef HAS_XINERAMA
-	if (xinerama_active)
-	   mode.extra_head = tmp_extra_head;
+        if (xinerama_active)
+           mode.extra_head = tmp_extra_head;
 #endif
      }
    autosave();
@@ -1464,13 +1458,12 @@ SettingsPlacement(void)
    Dialog             *d;
    DItem              *table, *di;
 
-   if (
-       (d =
-	FindItem("CONFIGURE_PLACEMENT", 0, LIST_FINDBY_NAME, LIST_TYPE_DIALOG)))
+   if ((d =
+        FindItem("CONFIGURE_PLACEMENT", 0, LIST_FINDBY_NAME, LIST_TYPE_DIALOG)))
      {
-	AUDIO_PLAY("SOUND_SETTINGS_ACTIVE");
-	ShowDialog(d);
-	return;
+        AUDIO_PLAY("SOUND_SETTINGS_ACTIVE");
+        ShowDialog(d);
+        return;
      }
    AUDIO_PLAY("SOUND_SETTINGS_PLACEMENT");
 
@@ -1490,22 +1483,22 @@ SettingsPlacement(void)
 
    if (mode.dialog_headers)
      {
-	di = DialogAddItem(table, DITEM_IMAGE);
-	DialogItemSetPadding(di, 2, 2, 2, 2);
-	DialogItemImageSetFile(di, "pix/place.png");
+        di = DialogAddItem(table, DITEM_IMAGE);
+        DialogItemSetPadding(di, 2, 2, 2, 2);
+        DialogItemImageSetFile(di, "pix/place.png");
 
-	di = DialogAddItem(table, DITEM_TEXT);
-	DialogItemSetPadding(di, 2, 2, 2, 2);
-	DialogItemSetFill(di, 1, 0);
-	DialogItemTextSetText(di,
-			      _("Enlightenment Window Placement\n"
-				"Settings Dialog\n"));
+        di = DialogAddItem(table, DITEM_TEXT);
+        DialogItemSetPadding(di, 2, 2, 2, 2);
+        DialogItemSetFill(di, 1, 0);
+        DialogItemTextSetText(di,
+                              _("Enlightenment Window Placement\n"
+                                "Settings Dialog\n"));
 
-	di = DialogAddItem(table, DITEM_SEPARATOR);
-	DialogItemSetColSpan(di, 2);
-	DialogItemSetPadding(di, 2, 2, 2, 2);
-	DialogItemSetFill(di, 1, 0);
-	DialogItemSeparatorSetOrientation(di, 0);
+        di = DialogAddItem(table, DITEM_SEPARATOR);
+        DialogItemSetColSpan(di, 2);
+        DialogItemSetPadding(di, 2, 2, 2, 2);
+        DialogItemSetFill(di, 1, 0);
+        DialogItemSeparatorSetOrientation(di, 0);
      }
 
    di = DialogAddItem(table, DITEM_CHECKBUTTON);
@@ -1513,8 +1506,8 @@ SettingsPlacement(void)
    DialogItemSetFill(di, 1, 0);
    DialogItemSetColSpan(di, 2);
    DialogItemCheckButtonSetText(di,
-				_
-				("Dialog windows appear together with their owner"));
+                                _
+                                ("Dialog windows appear together with their owner"));
    DialogItemCheckButtonSetState(di, tmp_with_leader);
    DialogItemCheckButtonSetPtr(di, &tmp_with_leader);
 
@@ -1523,7 +1516,7 @@ SettingsPlacement(void)
    DialogItemSetFill(di, 1, 0);
    DialogItemSetColSpan(di, 2);
    DialogItemCheckButtonSetText(di,
-				_("Switch to desktop where dialog appears"));
+                                _("Switch to desktop where dialog appears"));
    DialogItemCheckButtonSetState(di, tmp_switch_popup);
    DialogItemCheckButtonSetPtr(di, &tmp_switch_popup);
 
@@ -1546,15 +1539,15 @@ SettingsPlacement(void)
 #ifdef HAS_XINERAMA
    if (xinerama_active)
      {
-	di = DialogAddItem(table, DITEM_CHECKBUTTON);
-	DialogItemSetPadding(di, 2, 2, 2, 2);
-	DialogItemSetFill(di, 1, 0);
-	DialogItemSetColSpan(di, 2);
-	DialogItemCheckButtonSetText(di,
-				     _
-				     ("Place windows on another head when full"));
-	DialogItemCheckButtonSetState(di, tmp_extra_head);
-	DialogItemCheckButtonSetPtr(di, &tmp_extra_head);
+        di = DialogAddItem(table, DITEM_CHECKBUTTON);
+        DialogItemSetPadding(di, 2, 2, 2, 2);
+        DialogItemSetFill(di, 1, 0);
+        DialogItemSetColSpan(di, 2);
+        DialogItemCheckButtonSetText(di,
+                                     _
+                                     ("Place windows on another head when full"));
+        DialogItemCheckButtonSetState(di, tmp_extra_head);
+        DialogItemCheckButtonSetPtr(di, &tmp_extra_head);
      }
 #endif
 
@@ -1587,8 +1580,8 @@ CB_ConfigureAutoraise(int val, void *data)
 {
    if (val < 2)
      {
-	mode.autoraise = tmp_autoraise;
-	mode.autoraisetime = ((double)tmp_autoraisetime) / 100;
+        mode.autoraise = tmp_autoraise;
+        mode.autoraisetime = ((double)tmp_autoraisetime) / 100;
      }
    autosave();
    data = NULL;
@@ -1600,13 +1593,12 @@ SettingsAutoRaise(void)
    Dialog             *d;
    DItem              *table, *di;
 
-   if (
-       (d =
-	FindItem("CONFIGURE_AUTORAISE", 0, LIST_FINDBY_NAME, LIST_TYPE_DIALOG)))
+   if ((d =
+        FindItem("CONFIGURE_AUTORAISE", 0, LIST_FINDBY_NAME, LIST_TYPE_DIALOG)))
      {
-	AUDIO_PLAY("SOUND_SETTINGS_ACTIVE");
-	ShowDialog(d);
-	return;
+        AUDIO_PLAY("SOUND_SETTINGS_ACTIVE");
+        ShowDialog(d);
+        return;
      }
    AUDIO_PLAY("SOUND_SETTINGS_AUTORAISE");
 
@@ -1621,22 +1613,22 @@ SettingsAutoRaise(void)
 
    if (mode.dialog_headers)
      {
-	di = DialogAddItem(table, DITEM_IMAGE);
-	DialogItemSetPadding(di, 2, 2, 2, 2);
-	DialogItemImageSetFile(di, "pix/raise.png");
+        di = DialogAddItem(table, DITEM_IMAGE);
+        DialogItemSetPadding(di, 2, 2, 2, 2);
+        DialogItemImageSetFile(di, "pix/raise.png");
 
-	di = DialogAddItem(table, DITEM_TEXT);
-	DialogItemSetPadding(di, 2, 2, 2, 2);
-	DialogItemSetFill(di, 1, 0);
-	DialogItemTextSetText(di,
-			      _("Enlightenment Automatic Raising\n"
-				"of Windows Settings Dialog\n"));
+        di = DialogAddItem(table, DITEM_TEXT);
+        DialogItemSetPadding(di, 2, 2, 2, 2);
+        DialogItemSetFill(di, 1, 0);
+        DialogItemTextSetText(di,
+                              _("Enlightenment Automatic Raising\n"
+                                "of Windows Settings Dialog\n"));
 
-	di = DialogAddItem(table, DITEM_SEPARATOR);
-	DialogItemSetColSpan(di, 2);
-	DialogItemSetPadding(di, 2, 2, 2, 2);
-	DialogItemSetFill(di, 1, 0);
-	DialogItemSeparatorSetOrientation(di, 0);
+        di = DialogAddItem(table, DITEM_SEPARATOR);
+        DialogItemSetColSpan(di, 2);
+        DialogItemSetPadding(di, 2, 2, 2, 2);
+        DialogItemSetFill(di, 1, 0);
+        DialogItemSeparatorSetOrientation(di, 0);
      }
 
    di = DialogAddItem(table, DITEM_CHECKBUTTON);
@@ -1687,9 +1679,9 @@ CB_ConfigureTooltips(int val, void *data)
 {
    if (val < 2)
      {
-	mode.tooltips = tmp_tooltips;
-	mode.tiptime = ((double)tmp_tooltiptime) / 100;
-	mode.showroottooltip = tmp_roottip;
+        mode.tooltips = tmp_tooltips;
+        mode.tiptime = ((double)tmp_tooltiptime) / 100;
+        mode.showroottooltip = tmp_roottip;
      }
    autosave();
    data = NULL;
@@ -1701,13 +1693,12 @@ SettingsTooltips(void)
    Dialog             *d;
    DItem              *table, *di;
 
-   if (
-       (d =
-	FindItem("CONFIGURE_TOOLTIPS", 0, LIST_FINDBY_NAME, LIST_TYPE_DIALOG)))
+   if ((d =
+        FindItem("CONFIGURE_TOOLTIPS", 0, LIST_FINDBY_NAME, LIST_TYPE_DIALOG)))
      {
-	AUDIO_PLAY("SOUND_SETTINGS_ACTIVE");
-	ShowDialog(d);
-	return;
+        AUDIO_PLAY("SOUND_SETTINGS_ACTIVE");
+        ShowDialog(d);
+        return;
      }
    AUDIO_PLAY("SOUND_SETTINGS_TOOLTIPS");
 
@@ -1723,21 +1714,21 @@ SettingsTooltips(void)
 
    if (mode.dialog_headers)
      {
-	di = DialogAddItem(table, DITEM_IMAGE);
-	DialogItemSetPadding(di, 2, 2, 2, 2);
-	DialogItemImageSetFile(di, "pix/tips.png");
+        di = DialogAddItem(table, DITEM_IMAGE);
+        DialogItemSetPadding(di, 2, 2, 2, 2);
+        DialogItemImageSetFile(di, "pix/tips.png");
 
-	di = DialogAddItem(table, DITEM_TEXT);
-	DialogItemSetPadding(di, 2, 2, 2, 2);
-	DialogItemSetFill(di, 1, 0);
-	DialogItemTextSetText(di,
-			      _("Enlightenment Tooltip\n" "Settings Dialog\n"));
+        di = DialogAddItem(table, DITEM_TEXT);
+        DialogItemSetPadding(di, 2, 2, 2, 2);
+        DialogItemSetFill(di, 1, 0);
+        DialogItemTextSetText(di,
+                              _("Enlightenment Tooltip\n" "Settings Dialog\n"));
 
-	di = DialogAddItem(table, DITEM_SEPARATOR);
-	DialogItemSetColSpan(di, 2);
-	DialogItemSetPadding(di, 2, 2, 2, 2);
-	DialogItemSetFill(di, 1, 0);
-	DialogItemSeparatorSetOrientation(di, 0);
+        di = DialogAddItem(table, DITEM_SEPARATOR);
+        DialogItemSetColSpan(di, 2);
+        DialogItemSetPadding(di, 2, 2, 2, 2);
+        DialogItemSetFill(di, 1, 0);
+        DialogItemSeparatorSetOrientation(di, 0);
      }
 
    di = DialogAddItem(table, DITEM_CHECKBUTTON);
@@ -1794,14 +1785,14 @@ CB_ConfigureKDE(int val, void *data)
 {
    if (val < 2)
      {
-	if (tmp_kde != mode.kde_support)
-	  {
-	     mode.kde_support = tmp_kde;
-	     if (mode.kde_support)
-		KDE_Init();
-	     else if (!mode.kde_support)
-		KDE_Shutdown();
-	  }
+        if (tmp_kde != mode.kde_support)
+          {
+             mode.kde_support = tmp_kde;
+             if (mode.kde_support)
+                KDE_Init();
+             else if (!mode.kde_support)
+                KDE_Shutdown();
+          }
      }
    autosave();
    data = NULL;
@@ -1815,9 +1806,9 @@ SettingsKDE(void)
 
    if ((d = FindItem("CONFIGURE_KDE", 0, LIST_FINDBY_NAME, LIST_TYPE_DIALOG)))
      {
-	AUDIO_PLAY("SOUND_SETTINGS_ACTIVE");
-	ShowDialog(d);
-	return;
+        AUDIO_PLAY("SOUND_SETTINGS_ACTIVE");
+        ShowDialog(d);
+        return;
      }
    AUDIO_PLAY("SOUND_SETTINGS_KDE");
 
@@ -1831,20 +1822,20 @@ SettingsKDE(void)
 
    if (mode.dialog_headers)
      {
-	di = DialogAddItem(table, DITEM_IMAGE);
-	DialogItemSetPadding(di, 2, 2, 2, 2);
-	DialogItemImageSetFile(di, "pix/kde.png");
+        di = DialogAddItem(table, DITEM_IMAGE);
+        DialogItemSetPadding(di, 2, 2, 2, 2);
+        DialogItemImageSetFile(di, "pix/kde.png");
 
-	di = DialogAddItem(table, DITEM_TEXT);
-	DialogItemSetPadding(di, 2, 2, 2, 2);
-	DialogItemSetFill(di, 1, 0);
-	DialogItemTextSetText(di, _("Enlightenment KDE\n" "Settings Dialog\n"));
+        di = DialogAddItem(table, DITEM_TEXT);
+        DialogItemSetPadding(di, 2, 2, 2, 2);
+        DialogItemSetFill(di, 1, 0);
+        DialogItemTextSetText(di, _("Enlightenment KDE\n" "Settings Dialog\n"));
 
-	di = DialogAddItem(table, DITEM_SEPARATOR);
-	DialogItemSetColSpan(di, 2);
-	DialogItemSetPadding(di, 2, 2, 2, 2);
-	DialogItemSetFill(di, 1, 0);
-	DialogItemSeparatorSetOrientation(di, 0);
+        di = DialogAddItem(table, DITEM_SEPARATOR);
+        DialogItemSetColSpan(di, 2);
+        DialogItemSetPadding(di, 2, 2, 2, 2);
+        DialogItemSetFill(di, 1, 0);
+        DialogItemSeparatorSetOrientation(di, 0);
      }
 
    di = DialogAddItem(table, DITEM_CHECKBUTTON);
@@ -1878,7 +1869,7 @@ CB_ConfigureMiscellaneous(int val, void *data)
 {
    if (val < 2)
      {
-	mode.dialog_headers = tmp_dialog_headers;
+        mode.dialog_headers = tmp_dialog_headers;
      }
    autosave();
    data = NULL;
@@ -1890,14 +1881,13 @@ SettingsMiscellaneous(void)
    Dialog             *d;
    DItem              *table, *di;
 
-   if (
-       (d =
-	FindItem("CONFIGURE_MISCELLANEOUS", 0, LIST_FINDBY_NAME,
-		 LIST_TYPE_DIALOG)))
+   if ((d =
+        FindItem("CONFIGURE_MISCELLANEOUS", 0, LIST_FINDBY_NAME,
+                 LIST_TYPE_DIALOG)))
      {
-	AUDIO_PLAY("SOUND_SETTINGS_ACTIVE");
-	ShowDialog(d);
-	return;
+        AUDIO_PLAY("SOUND_SETTINGS_ACTIVE");
+        ShowDialog(d);
+        return;
      }
    AUDIO_PLAY("SOUND_SETTINGS_MISCELLANEOUS");
 
@@ -1911,22 +1901,22 @@ SettingsMiscellaneous(void)
 
    if (mode.dialog_headers)
      {
-	di = DialogAddItem(table, DITEM_IMAGE);
-	DialogItemSetPadding(di, 2, 2, 2, 2);
-	DialogItemImageSetFile(di, "pix/miscellaneous.png");
+        di = DialogAddItem(table, DITEM_IMAGE);
+        DialogItemSetPadding(di, 2, 2, 2, 2);
+        DialogItemImageSetFile(di, "pix/miscellaneous.png");
 
-	di = DialogAddItem(table, DITEM_TEXT);
-	DialogItemSetPadding(di, 2, 2, 2, 2);
-	DialogItemSetFill(di, 1, 0);
-	DialogItemTextSetText(di,
-			      _("Enlightenment Miscellaneous\n"
-				"Settings Dialog\n"));
+        di = DialogAddItem(table, DITEM_TEXT);
+        DialogItemSetPadding(di, 2, 2, 2, 2);
+        DialogItemSetFill(di, 1, 0);
+        DialogItemTextSetText(di,
+                              _("Enlightenment Miscellaneous\n"
+                                "Settings Dialog\n"));
 
-	di = DialogAddItem(table, DITEM_SEPARATOR);
-	DialogItemSetColSpan(di, 2);
-	DialogItemSetPadding(di, 2, 2, 2, 2);
-	DialogItemSetFill(di, 1, 0);
-	DialogItemSeparatorSetOrientation(di, 0);
+        di = DialogAddItem(table, DITEM_SEPARATOR);
+        DialogItemSetColSpan(di, 2);
+        DialogItemSetPadding(di, 2, 2, 2, 2);
+        DialogItemSetFill(di, 1, 0);
+        DialogItemSeparatorSetOrientation(di, 0);
      }
 
    di = DialogAddItem(table, DITEM_CHECKBUTTON);
@@ -1960,11 +1950,11 @@ CB_ConfigureAudio(int val, void *data)
 {
    if (val < 2)
      {
-	mode.sound = tmp_audio;
-	if ((mode.sound) && (sound_fd < 0))
-	   SoundInit();
-	else if ((!mode.sound) && (sound_fd >= 0))
-	   SoundExit();
+        mode.sound = tmp_audio;
+        if ((mode.sound) && (sound_fd < 0))
+           SoundInit();
+        else if ((!mode.sound) && (sound_fd >= 0))
+           SoundExit();
      }
    autosave();
    data = NULL;
@@ -1978,9 +1968,9 @@ SettingsAudio(void)
 
    if ((d = FindItem("CONFIGURE_AUDIO", 0, LIST_FINDBY_NAME, LIST_TYPE_DIALOG)))
      {
-	AUDIO_PLAY("SOUND_SETTINGS_ACTIVE");
-	ShowDialog(d);
-	return;
+        AUDIO_PLAY("SOUND_SETTINGS_ACTIVE");
+        ShowDialog(d);
+        return;
      }
    AUDIO_PLAY("SOUND_SETTINGS_AUDIO");
 
@@ -1994,21 +1984,21 @@ SettingsAudio(void)
 
    if (mode.dialog_headers)
      {
-	di = DialogAddItem(table, DITEM_IMAGE);
-	DialogItemSetPadding(di, 2, 2, 2, 2);
-	DialogItemImageSetFile(di, "pix/sound.png");
+        di = DialogAddItem(table, DITEM_IMAGE);
+        DialogItemSetPadding(di, 2, 2, 2, 2);
+        DialogItemImageSetFile(di, "pix/sound.png");
 
-	di = DialogAddItem(table, DITEM_TEXT);
-	DialogItemSetPadding(di, 2, 2, 2, 2);
-	DialogItemSetFill(di, 1, 0);
-	DialogItemTextSetText(di,
-			      _("Enlightenment Audio\n" "Settings Dialog\n"));
+        di = DialogAddItem(table, DITEM_TEXT);
+        DialogItemSetPadding(di, 2, 2, 2, 2);
+        DialogItemSetFill(di, 1, 0);
+        DialogItemTextSetText(di,
+                              _("Enlightenment Audio\n" "Settings Dialog\n"));
 
-	di = DialogAddItem(table, DITEM_SEPARATOR);
-	DialogItemSetColSpan(di, 2);
-	DialogItemSetPadding(di, 2, 2, 2, 2);
-	DialogItemSetFill(di, 1, 0);
-	DialogItemSeparatorSetOrientation(di, 0);
+        di = DialogAddItem(table, DITEM_SEPARATOR);
+        DialogItemSetColSpan(di, 2);
+        DialogItemSetPadding(di, 2, 2, 2, 2);
+        DialogItemSetFill(di, 1, 0);
+        DialogItemSeparatorSetOrientation(di, 0);
      }
 #ifdef HAVE_LIBESD
    di = DialogAddItem(table, DITEM_CHECKBUTTON);
@@ -2024,8 +2014,8 @@ SettingsAudio(void)
    DialogItemSetColSpan(di, 2);
    DialogItemSetFill(di, 1, 0);
    DialogItemTextSetText(di,
-			 _("Audio not available since EsounD was not\n"
-			   "present at the time of compilation."));
+                         _("Audio not available since EsounD was not\n"
+                           "present at the time of compilation."));
 #endif
 
    di = DialogAddItem(table, DITEM_SEPARATOR);
@@ -2065,39 +2055,40 @@ CB_ConfigureFX(int val, void *data)
 {
    if (val < 2)
      {
-	mode.save_under = tmp_saveunders;
-	mode.warpmenus = tmp_warpmenus;
-	mode.menuslide = tmp_animated_menus;
-	mode.menusonscreen = tmp_menusonscreen;
-	mode.mapslide = tmp_map_slide;
-	mode.cleanupslide = tmp_cleanup_slide;
-	desks.slidein = tmp_desktop_slide;
-	mode.animate_shading = tmp_animate_shading;
-	mode.shadespeed = tmp_shade_speed;
-	mode.slidemode = tmp_slide_mode;
-	mode.slidespeedmap = tmp_map_slide_speed;
-	mode.slidespeedcleanup = tmp_cleanup_slide_speed;
-	desks.slidespeed = tmp_desktop_slide_speed;
-	if ((desks.dragdir != tmp_dragdir)
-	    || ((tmp_dragbar) && (desks.dragbar_width < 1)) || ((!tmp_dragbar)
-								&&
-								(desks.dragbar_width
-								 > 0)))
-	  {
-	     Button             *b;
+        mode.save_under = tmp_saveunders;
+        mode.warpmenus = tmp_warpmenus;
+        mode.menuslide = tmp_animated_menus;
+        mode.menusonscreen = tmp_menusonscreen;
+        mode.mapslide = tmp_map_slide;
+        mode.cleanupslide = tmp_cleanup_slide;
+        desks.slidein = tmp_desktop_slide;
+        mode.animate_shading = tmp_animate_shading;
+        mode.shadespeed = tmp_shade_speed;
+        mode.slidemode = tmp_slide_mode;
+        mode.slidespeedmap = tmp_map_slide_speed;
+        mode.slidespeedcleanup = tmp_cleanup_slide_speed;
+        desks.slidespeed = tmp_desktop_slide_speed;
+        if ((desks.dragdir != tmp_dragdir)
+            || ((tmp_dragbar) && (desks.dragbar_width < 1)) || ((!tmp_dragbar)
+                                                                &&
+                                                                (desks.
+                                                                 dragbar_width >
+                                                                 0)))
+          {
+             Button             *b;
 
-	     if (tmp_dragbar)
-		desks.dragbar_width = 16;
-	     else
-		desks.dragbar_width = -1;
-	     desks.dragdir = tmp_dragdir;
-	     while (
-		    (b =
-		     RemoveItem("_DESKTOP_DRAG_CONTROL", 0, LIST_FINDBY_NAME,
-				LIST_TYPE_BUTTON))) DestroyButton(b);
-	     InitDesktopControls();
-	     ShowDesktopControls();
-	  }
+             if (tmp_dragbar)
+                desks.dragbar_width = 16;
+             else
+                desks.dragbar_width = -1;
+             desks.dragdir = tmp_dragdir;
+             while ((b =
+                     RemoveItem("_DESKTOP_DRAG_CONTROL", 0, LIST_FINDBY_NAME,
+                                LIST_TYPE_BUTTON)))
+                DestroyButton(b);
+             InitDesktopControls();
+             ShowDesktopControls();
+          }
      }
    autosave();
    data = NULL;
@@ -2111,9 +2102,9 @@ SettingsSpecialFX(void)
 
    if ((d = FindItem("CONFIGURE_FX", 0, LIST_FINDBY_NAME, LIST_TYPE_DIALOG)))
      {
-	AUDIO_PLAY("SOUND_SETTINGS_ACTIVE");
-	ShowDialog(d);
-	return;
+        AUDIO_PLAY("SOUND_SETTINGS_ACTIVE");
+        ShowDialog(d);
+        return;
      }
    AUDIO_PLAY("SOUND_SETTINGS_FX");
 
@@ -2144,26 +2135,26 @@ SettingsSpecialFX(void)
 
    if (mode.dialog_headers)
      {
-	di = DialogAddItem(table, DITEM_IMAGE);
-	DialogItemSetPadding(di, 2, 2, 2, 2);
-	DialogItemImageSetFile(di, "pix/fx.png");
+        di = DialogAddItem(table, DITEM_IMAGE);
+        DialogItemSetPadding(di, 2, 2, 2, 2);
+        DialogItemImageSetFile(di, "pix/fx.png");
 
-	di = DialogAddItem(table, DITEM_TEXT);
-	DialogItemSetPadding(di, 2, 2, 2, 2);
-	DialogItemSetFill(di, 1, 0);
-	DialogItemTextSetText(di,
-			      _("Enlightenment Special Effects\n"
-				"Settings Dialog\n"));
+        di = DialogAddItem(table, DITEM_TEXT);
+        DialogItemSetPadding(di, 2, 2, 2, 2);
+        DialogItemSetFill(di, 1, 0);
+        DialogItemTextSetText(di,
+                              _("Enlightenment Special Effects\n"
+                                "Settings Dialog\n"));
 
-	di = DialogAddItem(table, DITEM_NONE);
+        di = DialogAddItem(table, DITEM_NONE);
 
-	di = DialogAddItem(table, DITEM_NONE);
+        di = DialogAddItem(table, DITEM_NONE);
 
-	di = DialogAddItem(table, DITEM_SEPARATOR);
-	DialogItemSetColSpan(di, 4);
-	DialogItemSetPadding(di, 2, 2, 2, 2);
-	DialogItemSetFill(di, 1, 0);
-	DialogItemSeparatorSetOrientation(di, 0);
+        di = DialogAddItem(table, DITEM_SEPARATOR);
+        DialogItemSetColSpan(di, 4);
+        DialogItemSetPadding(di, 2, 2, 2, 2);
+        DialogItemSetFill(di, 1, 0);
+        DialogItemSeparatorSetOrientation(di, 0);
      }
 
    di = DialogAddItem(table, DITEM_NONE);
@@ -2266,7 +2257,7 @@ SettingsSpecialFX(void)
    DialogItemSetFill(di, 1, 0);
    DialogItemSetColSpan(di, 4);
    DialogItemCheckButtonSetText(di,
-				_("Use saveunders to reduce window exposures"));
+                                _("Use saveunders to reduce window exposures"));
    DialogItemCheckButtonSetState(di, tmp_saveunders);
    DialogItemCheckButtonSetPtr(di, &tmp_saveunders);
 
@@ -2275,7 +2266,7 @@ SettingsSpecialFX(void)
    DialogItemSetFill(di, 1, 0);
    DialogItemSetColSpan(di, 4);
    DialogItemCheckButtonSetText(di,
-				_("Animate shading and unshading of windows"));
+                                _("Animate shading and unshading of windows"));
    DialogItemCheckButtonSetState(di, tmp_animate_shading);
    DialogItemCheckButtonSetPtr(di, &tmp_animate_shading);
 
@@ -2485,62 +2476,62 @@ CB_ConfigureBG(int val, void *data)
 
    if (val < 2)
      {
-	mode.desktop_bg_timeout = tmp_bg_timeout;
-	desks.hiqualitybg = tmp_hiq;
-	mode.user_bg = tmp_userbg;
-	tmp_bg->bg.solid.r = tmp_bg_r;
-	tmp_bg->bg.solid.g = tmp_bg_g;
-	tmp_bg->bg.solid.b = tmp_bg_b;
-	tmp_bg->bg.tile = tmp_bg_tile;
-	tmp_bg->bg.keep_aspect = tmp_bg_keep_aspect;
-	tmp_bg->bg.xjust = tmp_bg_xjust;
-	tmp_bg->bg.yjust = 1024 - tmp_bg_yjust;
-	tmp_bg->bg.xperc = tmp_bg_xperc;
-	tmp_bg->bg.yperc = 1024 - tmp_bg_yperc;
-	if (!tmp_bg_image)
-	   RemoveImagesFromBG(tmp_bg);
-	if (tmp_bg->pmap)
-	   Imlib_free_pixmap(id, tmp_bg->pmap);
-	tmp_bg->pmap = 0;
-	for (i = 0; i < ENLIGHTENMENT_CONF_NUM_DESKTOPS; i++)
-	  {
-	     if (desks.desk[i].bg == tmp_bg)
-	       {
-		  if (desks.desk[i].viewable)
-		     RefreshDesktop(i);
-		  if (i == desks.current)
-		    {
-		       RedrawPagersForDesktop(i, 2);
-		       ForceUpdatePagersForDesktop(i);
-		    }
-		  else
-		     RedrawPagersForDesktop(i, 1);
-	       }
-	  }
-	{
-	   char                s[4096];
-	   ImlibImage         *im;
-	   Pixmap              p2;
+        mode.desktop_bg_timeout = tmp_bg_timeout;
+        desks.hiqualitybg = tmp_hiq;
+        mode.user_bg = tmp_userbg;
+        tmp_bg->bg.solid.r = tmp_bg_r;
+        tmp_bg->bg.solid.g = tmp_bg_g;
+        tmp_bg->bg.solid.b = tmp_bg_b;
+        tmp_bg->bg.tile = tmp_bg_tile;
+        tmp_bg->bg.keep_aspect = tmp_bg_keep_aspect;
+        tmp_bg->bg.xjust = tmp_bg_xjust;
+        tmp_bg->bg.yjust = 1024 - tmp_bg_yjust;
+        tmp_bg->bg.xperc = tmp_bg_xperc;
+        tmp_bg->bg.yperc = 1024 - tmp_bg_yperc;
+        if (!tmp_bg_image)
+           RemoveImagesFromBG(tmp_bg);
+        if (tmp_bg->pmap)
+           Imlib_free_pixmap(id, tmp_bg->pmap);
+        tmp_bg->pmap = 0;
+        for (i = 0; i < ENLIGHTENMENT_CONF_NUM_DESKTOPS; i++)
+          {
+             if (desks.desk[i].bg == tmp_bg)
+               {
+                  if (desks.desk[i].viewable)
+                     RefreshDesktop(i);
+                  if (i == desks.current)
+                    {
+                       RedrawPagersForDesktop(i, 2);
+                       ForceUpdatePagersForDesktop(i);
+                    }
+                  else
+                     RedrawPagersForDesktop(i, 1);
+               }
+          }
+        {
+           char                s[4096];
+           ImlibImage         *im;
+           Pixmap              p2;
 
-	   Esnprintf(s, sizeof(s), "%s/cached/bgsel/%s", UserCacheDir(),
-		     tmp_bg->name);
-	   p2 = ECreatePixmap(disp, root.win, 64, 48, root.depth);
-	   SetBackgroundTo(id, p2, tmp_bg, 0);
-	   im = Imlib_create_image_from_drawable(id, p2, 0, 0, 0, 64, 48);
-	   Imlib_save_image_to_ppm(id, im, s);
-	   Imlib_kill_image(id, im);
-	   EFreePixmap(disp, p2);
-	   BG_RedrawView(1);
-	}
+           Esnprintf(s, sizeof(s), "%s/cached/bgsel/%s", UserCacheDir(),
+                     tmp_bg->name);
+           p2 = ECreatePixmap(disp, root.win, 64, 48, root.depth);
+           SetBackgroundTo(id, p2, tmp_bg, 0);
+           im = Imlib_create_image_from_drawable(id, p2, 0, 0, 0, 64, 48);
+           Imlib_save_image_to_ppm(id, im, s);
+           Imlib_kill_image(id, im);
+           EFreePixmap(disp, p2);
+           BG_RedrawView(1);
+        }
      }
    if (val != 1)
      {
-	KeepBGimages(tmp_bg, 0);
+        KeepBGimages(tmp_bg, 0);
      }
    if (tbg)
      {
-	FreeDesktopBG(tbg);
-	tbg = NULL;
+        FreeDesktopBG(tbg);
+        tbg = NULL;
      }
    DesktopAccounting();
    autosave();
@@ -2574,52 +2565,52 @@ CB_DesktopMiniDisplayRedraw(int val, void *data)
    icl.b = tmp_bg_b;
    if (!tbg)
      {
-	if (!tmp_bg_image)
-	   tbg =
-	      CreateDesktopBG("TEMP", &icl, NULL, tmp_bg_tile,
-			      tmp_bg_keep_aspect, tmp_bg_xjust,
-			      1024 - tmp_bg_yjust, tmp_bg_xperc,
-			      1024 - tmp_bg_yperc, tmp_bg->top.file,
-			      tmp_bg->top.keep_aspect, tmp_bg->top.xjust,
-			      tmp_bg->top.yjust, tmp_bg->top.xperc,
-			      tmp_bg->top.yperc);
-	else
-	   tbg =
-	      CreateDesktopBG("TEMP", &icl, tmp_bg->bg.file, tmp_bg_tile,
-			      tmp_bg_keep_aspect, tmp_bg_xjust,
-			      1024 - tmp_bg_yjust, tmp_bg_xperc,
-			      1024 - tmp_bg_yperc, tmp_bg->top.file,
-			      tmp_bg->top.keep_aspect, tmp_bg->top.xjust,
-			      tmp_bg->top.yjust, tmp_bg->top.xperc,
-			      tmp_bg->top.yperc);
+        if (!tmp_bg_image)
+           tbg =
+               CreateDesktopBG("TEMP", &icl, NULL, tmp_bg_tile,
+                               tmp_bg_keep_aspect, tmp_bg_xjust,
+                               1024 - tmp_bg_yjust, tmp_bg_xperc,
+                               1024 - tmp_bg_yperc, tmp_bg->top.file,
+                               tmp_bg->top.keep_aspect, tmp_bg->top.xjust,
+                               tmp_bg->top.yjust, tmp_bg->top.xperc,
+                               tmp_bg->top.yperc);
+        else
+           tbg =
+               CreateDesktopBG("TEMP", &icl, tmp_bg->bg.file, tmp_bg_tile,
+                               tmp_bg_keep_aspect, tmp_bg_xjust,
+                               1024 - tmp_bg_yjust, tmp_bg_xperc,
+                               1024 - tmp_bg_yperc, tmp_bg->top.file,
+                               tmp_bg->top.keep_aspect, tmp_bg->top.xjust,
+                               tmp_bg->top.yjust, tmp_bg->top.xperc,
+                               tmp_bg->top.yperc);
      }
    else
      {
-	if (tbg->pmap)
-	   Imlib_free_pixmap(id, tbg->pmap);
-	tbg->bg.solid.r = tmp_bg_r;
-	tbg->bg.solid.g = tmp_bg_g;
-	tbg->bg.solid.b = tmp_bg_b;
-	if (tbg->bg.file)
-	   Efree(tbg->bg.file);
-	tbg->bg.file = NULL;
-	if (tmp_bg_image)
-	   tbg->bg.file = duplicate(tmp_bg->bg.file);
-	else
-	  {
-	     if (tbg->bg.im)
-		Imlib_destroy_image(id, tbg->bg.im);
-	     tbg->bg.im = NULL;
-	  }
-	if (tbg->bg.real_file)
-	   Efree(tbg->bg.real_file);
-	tbg->bg.real_file = NULL;
-	tbg->bg.tile = tmp_bg_tile;
-	tbg->bg.keep_aspect = tmp_bg_keep_aspect;
-	tbg->bg.xjust = tmp_bg_xjust;
-	tbg->bg.yjust = 1024 - tmp_bg_yjust;
-	tbg->bg.xperc = tmp_bg_xperc;
-	tbg->bg.yperc = 1024 - tmp_bg_yperc;
+        if (tbg->pmap)
+           Imlib_free_pixmap(id, tbg->pmap);
+        tbg->bg.solid.r = tmp_bg_r;
+        tbg->bg.solid.g = tmp_bg_g;
+        tbg->bg.solid.b = tmp_bg_b;
+        if (tbg->bg.file)
+           Efree(tbg->bg.file);
+        tbg->bg.file = NULL;
+        if (tmp_bg_image)
+           tbg->bg.file = duplicate(tmp_bg->bg.file);
+        else
+          {
+             if (tbg->bg.im)
+                Imlib_destroy_image(id, tbg->bg.im);
+             tbg->bg.im = NULL;
+          }
+        if (tbg->bg.real_file)
+           Efree(tbg->bg.real_file);
+        tbg->bg.real_file = NULL;
+        tbg->bg.tile = tmp_bg_tile;
+        tbg->bg.keep_aspect = tmp_bg_keep_aspect;
+        tbg->bg.xjust = tmp_bg_xjust;
+        tbg->bg.yjust = 1024 - tmp_bg_yjust;
+        tbg->bg.xperc = tmp_bg_xperc;
+        tbg->bg.yperc = 1024 - tmp_bg_yperc;
      }
    KeepBGimages(tbg, 1);
    pmap = ECreatePixmap(disp, win, w, h, root.depth);
@@ -2642,12 +2633,12 @@ CB_ConfigureNewBG(int val, void *data)
    icl.r = tmp_bg_r;
    icl.g = tmp_bg_g;
    icl.b = tmp_bg_b;
-   bg =
-      CreateDesktopBG(s, &icl, tmp_bg->bg.file, tmp_bg_tile,
-		      tmp_bg_keep_aspect, tmp_bg_xjust, 1024 - tmp_bg_yjust,
-		      tmp_bg_xperc, 1024 - tmp_bg_yperc, tmp_bg->top.file,
-		      tmp_bg->top.keep_aspect, tmp_bg->top.xjust,
-		      tmp_bg->top.yjust, tmp_bg->top.xperc, tmp_bg->top.yperc);
+   bg = CreateDesktopBG(s, &icl, tmp_bg->bg.file, tmp_bg_tile,
+                        tmp_bg_keep_aspect, tmp_bg_xjust, 1024 - tmp_bg_yjust,
+                        tmp_bg_xperc, 1024 - tmp_bg_yperc, tmp_bg->top.file,
+                        tmp_bg->top.keep_aspect, tmp_bg->top.xjust,
+                        tmp_bg->top.yjust, tmp_bg->top.xperc,
+                        tmp_bg->top.yperc);
    AddItem(bg, bg->name, 0, LIST_TYPE_BACKGROUND);
    tmp_bg = bg;
    desks.desk[desks.current].bg = bg;
@@ -2675,86 +2666,85 @@ CB_ConfigureRemBG(int val, void *data)
    bglist = (Background **) ListItemType(&num, LIST_TYPE_BACKGROUND);
    if ((bglist) && (num > 1))
      {
-	bg_sel_slider->item.slider.upper -= 4;
-	if (bg_sel_slider->item.slider.val > bg_sel_slider->item.slider.upper)
-	  {
-	     bg_sel_slider->item.slider.val = bg_sel_slider->item.slider.upper;
-	     if (bg_sel_slider->item.slider.val_ptr)
-		*(bg_sel_slider->item.slider.val_ptr) =
-		   bg_sel_slider->item.slider.val;
-	  }
-	for (i = 0; i < num; i++)
-	  {
-	     if (bglist[i] == tmp_bg)
-	       {
-		  bg =
-		     RemoveItem((char *)tmp_bg, 0, LIST_FINDBY_POINTER,
-				LIST_TYPE_BACKGROUND);
-		  if (i < (num - 1))
-		     tmp_bg = bglist[i + 1];
-		  else
-		     tmp_bg = bglist[i - 1];
-		  i = num;
-		  if (bg)
-		     FreeDesktopBG(bg);
-		  if (tmp_bg->bg.file)
-		     tmp_bg_image = 1;
-		  else
-		     tmp_bg_image = 0;
-		  KeepBGimages(tmp_bg, 1);
+        bg_sel_slider->item.slider.upper -= 4;
+        if (bg_sel_slider->item.slider.val > bg_sel_slider->item.slider.upper)
+          {
+             bg_sel_slider->item.slider.val = bg_sel_slider->item.slider.upper;
+             if (bg_sel_slider->item.slider.val_ptr)
+                *(bg_sel_slider->item.slider.val_ptr) =
+                    bg_sel_slider->item.slider.val;
+          }
+        for (i = 0; i < num; i++)
+          {
+             if (bglist[i] == tmp_bg)
+               {
+                  bg = RemoveItem((char *)tmp_bg, 0, LIST_FINDBY_POINTER,
+                                  LIST_TYPE_BACKGROUND);
+                  if (i < (num - 1))
+                     tmp_bg = bglist[i + 1];
+                  else
+                     tmp_bg = bglist[i - 1];
+                  i = num;
+                  if (bg)
+                     FreeDesktopBG(bg);
+                  if (tmp_bg->bg.file)
+                     tmp_bg_image = 1;
+                  else
+                     tmp_bg_image = 0;
+                  KeepBGimages(tmp_bg, 1);
 
-		  {
-		     char               *stmp;
-		     char                s[1024];
+                  {
+                     char               *stmp;
+                     char                s[1024];
 
-		     if (tmp_bg->bg.file)
-			stmp = fullfileof(tmp_bg->bg.file);
-		     else
-			stmp = duplicate(_("-NONE-"));
-		     Esnprintf(s, sizeof(s),
-			       _
-			       ("Background definition information:\nName: %s\nFile: %s\n"),
-			       tmp_bg->name, stmp);
-		     Efree(stmp);
-		     DialogItemTextSetText(bg_filename, s);
-		     DialogDrawItems(bg_sel_dialog, bg_filename, 0, 0, 99999,
-				     99999);
-		  }
-		  tmp_bg_r = tmp_bg->bg.solid.r;
-		  tmp_bg_g = tmp_bg->bg.solid.g;
-		  tmp_bg_b = tmp_bg->bg.solid.b;
-		  tmp_bg_tile = tmp_bg->bg.tile;
-		  tmp_bg_keep_aspect = tmp_bg->bg.keep_aspect;
-		  tmp_bg_xjust = tmp_bg->bg.xjust;
-		  tmp_bg_yjust = 1024 - tmp_bg->bg.yjust;
-		  tmp_bg_xperc = tmp_bg->bg.xperc;
-		  tmp_bg_yperc = 1024 - tmp_bg->bg.yperc;
-		  tmp_w[0]->item.slider.val = tmp_bg_r;
-		  tmp_w[1]->item.check_button.onoff = tmp_bg_image;
-		  tmp_w[2]->item.slider.val = tmp_bg_g;
-		  tmp_w[3]->item.check_button.onoff = tmp_bg_keep_aspect;
-		  tmp_w[4]->item.slider.val = tmp_bg_b;
-		  tmp_w[5]->item.check_button.onoff = tmp_bg_tile;
-		  tmp_w[6]->item.slider.val = tmp_bg_xjust;
-		  tmp_w[7]->item.slider.val = tmp_bg_yjust;
-		  tmp_w[8]->item.slider.val = tmp_bg_yperc;
-		  tmp_w[9]->item.slider.val = tmp_bg_xperc;
-		  if (tbg)
-		    {
-		       FreeDesktopBG(tbg);
-		       tbg = NULL;
-		    }
-		  CB_DesktopMiniDisplayRedraw(0, bg_mini_disp);
-	       }
-	  }
-	desks.desk[desks.current].bg = tmp_bg;
-	RedrawPagersForDesktop(desks.current, 2);
-	ForceUpdatePagersForDesktop(desks.current);
-	RefreshCurrentDesktop();
-	BG_RedrawView(0);
-	for (i = 0; i < 10; i++)
-	   DialogDrawItems(bg_sel_dialog, tmp_w[i], 0, 0, 99999, 99999);
-	autosave();
+                     if (tmp_bg->bg.file)
+                        stmp = fullfileof(tmp_bg->bg.file);
+                     else
+                        stmp = duplicate(_("-NONE-"));
+                     Esnprintf(s, sizeof(s),
+                               _
+                               ("Background definition information:\nName: %s\nFile: %s\n"),
+                               tmp_bg->name, stmp);
+                     Efree(stmp);
+                     DialogItemTextSetText(bg_filename, s);
+                     DialogDrawItems(bg_sel_dialog, bg_filename, 0, 0, 99999,
+                                     99999);
+                  }
+                  tmp_bg_r = tmp_bg->bg.solid.r;
+                  tmp_bg_g = tmp_bg->bg.solid.g;
+                  tmp_bg_b = tmp_bg->bg.solid.b;
+                  tmp_bg_tile = tmp_bg->bg.tile;
+                  tmp_bg_keep_aspect = tmp_bg->bg.keep_aspect;
+                  tmp_bg_xjust = tmp_bg->bg.xjust;
+                  tmp_bg_yjust = 1024 - tmp_bg->bg.yjust;
+                  tmp_bg_xperc = tmp_bg->bg.xperc;
+                  tmp_bg_yperc = 1024 - tmp_bg->bg.yperc;
+                  tmp_w[0]->item.slider.val = tmp_bg_r;
+                  tmp_w[1]->item.check_button.onoff = tmp_bg_image;
+                  tmp_w[2]->item.slider.val = tmp_bg_g;
+                  tmp_w[3]->item.check_button.onoff = tmp_bg_keep_aspect;
+                  tmp_w[4]->item.slider.val = tmp_bg_b;
+                  tmp_w[5]->item.check_button.onoff = tmp_bg_tile;
+                  tmp_w[6]->item.slider.val = tmp_bg_xjust;
+                  tmp_w[7]->item.slider.val = tmp_bg_yjust;
+                  tmp_w[8]->item.slider.val = tmp_bg_yperc;
+                  tmp_w[9]->item.slider.val = tmp_bg_xperc;
+                  if (tbg)
+                    {
+                       FreeDesktopBG(tbg);
+                       tbg = NULL;
+                    }
+                  CB_DesktopMiniDisplayRedraw(0, bg_mini_disp);
+               }
+          }
+        desks.desk[desks.current].bg = tmp_bg;
+        RedrawPagersForDesktop(desks.current, 2);
+        ForceUpdatePagersForDesktop(desks.current);
+        RefreshCurrentDesktop();
+        BG_RedrawView(0);
+        for (i = 0; i < 10; i++)
+           DialogDrawItems(bg_sel_dialog, tmp_w[i], 0, 0, 99999, 99999);
+        autosave();
      }
    if (bglist)
       Efree(bglist);
@@ -2773,110 +2763,109 @@ CB_ConfigureDelBG(int val, void *data)
    bglist = (Background **) ListItemType(&num, LIST_TYPE_BACKGROUND);
    if ((bglist) && (num > 1))
      {
-	bg_sel_slider->item.slider.upper -= 4;
-	if (bg_sel_slider->item.slider.val > bg_sel_slider->item.slider.upper)
-	  {
-	     bg_sel_slider->item.slider.val = bg_sel_slider->item.slider.upper;
-	     if (bg_sel_slider->item.slider.val_ptr)
-		*(bg_sel_slider->item.slider.val_ptr) =
-		   bg_sel_slider->item.slider.val;
-	  }
-	for (i = 0; i < num; i++)
-	  {
-	     if (bglist[i] == tmp_bg)
-	       {
-		  bg =
-		     RemoveItem((char *)tmp_bg, 0, LIST_FINDBY_POINTER,
-				LIST_TYPE_BACKGROUND);
-		  if (i < (num - 1))
-		     tmp_bg = bglist[i + 1];
-		  else
-		     tmp_bg = bglist[i - 1];
-		  i = num;
-		  if (bg)
-		    {
-		       if (bg->bg.file)
-			 {
-			    char               *f;
+        bg_sel_slider->item.slider.upper -= 4;
+        if (bg_sel_slider->item.slider.val > bg_sel_slider->item.slider.upper)
+          {
+             bg_sel_slider->item.slider.val = bg_sel_slider->item.slider.upper;
+             if (bg_sel_slider->item.slider.val_ptr)
+                *(bg_sel_slider->item.slider.val_ptr) =
+                    bg_sel_slider->item.slider.val;
+          }
+        for (i = 0; i < num; i++)
+          {
+             if (bglist[i] == tmp_bg)
+               {
+                  bg = RemoveItem((char *)tmp_bg, 0, LIST_FINDBY_POINTER,
+                                  LIST_TYPE_BACKGROUND);
+                  if (i < (num - 1))
+                     tmp_bg = bglist[i + 1];
+                  else
+                     tmp_bg = bglist[i - 1];
+                  i = num;
+                  if (bg)
+                    {
+                       if (bg->bg.file)
+                         {
+                            char               *f;
 
-			    f = FindFile(bg->bg.file);
-			    if (f)
-			      {
-				 rm(f);
-				 Efree(f);
-			      }
-			 }
-		       if (bg->top.file)
-			 {
-			    char               *f;
+                            f = FindFile(bg->bg.file);
+                            if (f)
+                              {
+                                 rm(f);
+                                 Efree(f);
+                              }
+                         }
+                       if (bg->top.file)
+                         {
+                            char               *f;
 
-			    f = FindFile(bg->top.file);
-			    if (f)
-			      {
-				 rm(f);
-				 Efree(f);
-			      }
-			 }
-		       FreeDesktopBG(bg);
-		    }
-		  if (tmp_bg->bg.file)
-		     tmp_bg_image = 1;
-		  else
-		     tmp_bg_image = 0;
-		  KeepBGimages(tmp_bg, 1);
+                            f = FindFile(bg->top.file);
+                            if (f)
+                              {
+                                 rm(f);
+                                 Efree(f);
+                              }
+                         }
+                       FreeDesktopBG(bg);
+                    }
+                  if (tmp_bg->bg.file)
+                     tmp_bg_image = 1;
+                  else
+                     tmp_bg_image = 0;
+                  KeepBGimages(tmp_bg, 1);
 
-		  {
-		     char               *stmp;
-		     char                s[1024];
+                  {
+                     char               *stmp;
+                     char                s[1024];
 
-		     if (tmp_bg->bg.file)
-			stmp = fullfileof(tmp_bg->bg.file);
-		     else
-			stmp = duplicate(_("-NONE-"));
-		     Esnprintf(s, sizeof(s),
-			       _
-			       ("Background definition information:\nName: %s\nFile: %s\n"),
-			       tmp_bg->name, stmp);
-		     Efree(stmp);
-		     DialogItemTextSetText(bg_filename, s);
-		     DialogDrawItems(bg_sel_dialog, bg_filename, 0, 0, 99999,
-				     99999);
-		  }
-		  tmp_bg_r = tmp_bg->bg.solid.r;
-		  tmp_bg_g = tmp_bg->bg.solid.g;
-		  tmp_bg_b = tmp_bg->bg.solid.b;
-		  tmp_bg_tile = tmp_bg->bg.tile;
-		  tmp_bg_keep_aspect = tmp_bg->bg.keep_aspect;
-		  tmp_bg_xjust = tmp_bg->bg.xjust;
-		  tmp_bg_yjust = 1024 - tmp_bg->bg.yjust;
-		  tmp_bg_xperc = tmp_bg->bg.xperc;
-		  tmp_bg_yperc = 1024 - tmp_bg->bg.yperc;
-		  tmp_w[0]->item.slider.val = tmp_bg_r;
-		  tmp_w[1]->item.check_button.onoff = tmp_bg_image;
-		  tmp_w[2]->item.slider.val = tmp_bg_g;
-		  tmp_w[3]->item.check_button.onoff = tmp_bg_keep_aspect;
-		  tmp_w[4]->item.slider.val = tmp_bg_b;
-		  tmp_w[5]->item.check_button.onoff = tmp_bg_tile;
-		  tmp_w[6]->item.slider.val = tmp_bg_xjust;
-		  tmp_w[7]->item.slider.val = tmp_bg_yjust;
-		  tmp_w[8]->item.slider.val = tmp_bg_yperc;
-		  tmp_w[9]->item.slider.val = tmp_bg_xperc;
-		  if (tbg)
-		    {
-		       FreeDesktopBG(tbg);
-		       tbg = NULL;
-		    }
-		  CB_DesktopMiniDisplayRedraw(0, bg_mini_disp);
-	       }
-	  }
-	desks.desk[desks.current].bg = tmp_bg;
-	RedrawPagersForDesktop(desks.current, 2);
-	ForceUpdatePagersForDesktop(desks.current);
-	RefreshCurrentDesktop();
-	BG_RedrawView(0);
-	for (i = 0; i < 10; i++)
-	   DialogDrawItems(bg_sel_dialog, tmp_w[i], 0, 0, 99999, 99999);
-	autosave();
+                     if (tmp_bg->bg.file)
+                        stmp = fullfileof(tmp_bg->bg.file);
+                     else
+                        stmp = duplicate(_("-NONE-"));
+                     Esnprintf(s, sizeof(s),
+                               _
+                               ("Background definition information:\nName: %s\nFile: %s\n"),
+                               tmp_bg->name, stmp);
+                     Efree(stmp);
+                     DialogItemTextSetText(bg_filename, s);
+                     DialogDrawItems(bg_sel_dialog, bg_filename, 0, 0, 99999,
+                                     99999);
+                  }
+                  tmp_bg_r = tmp_bg->bg.solid.r;
+                  tmp_bg_g = tmp_bg->bg.solid.g;
+                  tmp_bg_b = tmp_bg->bg.solid.b;
+                  tmp_bg_tile = tmp_bg->bg.tile;
+                  tmp_bg_keep_aspect = tmp_bg->bg.keep_aspect;
+                  tmp_bg_xjust = tmp_bg->bg.xjust;
+                  tmp_bg_yjust = 1024 - tmp_bg->bg.yjust;
+                  tmp_bg_xperc = tmp_bg->bg.xperc;
+                  tmp_bg_yperc = 1024 - tmp_bg->bg.yperc;
+                  tmp_w[0]->item.slider.val = tmp_bg_r;
+                  tmp_w[1]->item.check_button.onoff = tmp_bg_image;
+                  tmp_w[2]->item.slider.val = tmp_bg_g;
+                  tmp_w[3]->item.check_button.onoff = tmp_bg_keep_aspect;
+                  tmp_w[4]->item.slider.val = tmp_bg_b;
+                  tmp_w[5]->item.check_button.onoff = tmp_bg_tile;
+                  tmp_w[6]->item.slider.val = tmp_bg_xjust;
+                  tmp_w[7]->item.slider.val = tmp_bg_yjust;
+                  tmp_w[8]->item.slider.val = tmp_bg_yperc;
+                  tmp_w[9]->item.slider.val = tmp_bg_xperc;
+                  if (tbg)
+                    {
+                       FreeDesktopBG(tbg);
+                       tbg = NULL;
+                    }
+                  CB_DesktopMiniDisplayRedraw(0, bg_mini_disp);
+               }
+          }
+        desks.desk[desks.current].bg = tmp_bg;
+        RedrawPagersForDesktop(desks.current, 2);
+        ForceUpdatePagersForDesktop(desks.current);
+        RefreshCurrentDesktop();
+        BG_RedrawView(0);
+        for (i = 0; i < 10; i++)
+           DialogDrawItems(bg_sel_dialog, tmp_w[i], 0, 0, 99999, 99999);
+        autosave();
      }
    if (bglist)
       Efree(bglist);
@@ -2916,105 +2905,102 @@ BG_RedrawView(char nuke_old)
    bglist = (Background **) ListItemType(&num, LIST_TYPE_BACKGROUND);
    if (bglist)
      {
-	int                 x;
-	Pixmap              pmap;
-	GC                  gc;
-	XGCValues           gcv;
+        int                 x;
+        Pixmap              pmap;
+        GC                  gc;
+        XGCValues           gcv;
 
-	pmap = ECreatePixmap(disp, win, w, h, root.depth);
-	gc = XCreateGC(disp, pmap, 0, &gcv);
-	XSetForeground(disp, gc, BlackPixel(disp, root.scr));
-	XFillRectangle(disp, pmap, gc, 0, 0, w, h);
-	ESetWindowBackgroundPixmap(disp, win, pmap);
-	x = -(tmp_bg_sel_sliderval * (64 + 8) / 4);
-	if (x < (w - ((64 + 8) * num)))
-	   x = w - ((64 + 8) * num);
-	for (i = 0; i < num; i++)
-	  {
-	     if (((x + 64 + 8) >= 0) && (x < w))
-	       {
-		  Pixmap              p2;
-		  ImageClass         *ic;
-		  ImlibImage         *im;
-		  char                s[4096];
+        pmap = ECreatePixmap(disp, win, w, h, root.depth);
+        gc = XCreateGC(disp, pmap, 0, &gcv);
+        XSetForeground(disp, gc, BlackPixel(disp, root.scr));
+        XFillRectangle(disp, pmap, gc, 0, 0, w, h);
+        ESetWindowBackgroundPixmap(disp, win, pmap);
+        x = -(tmp_bg_sel_sliderval * (64 + 8) / 4);
+        if (x < (w - ((64 + 8) * num)))
+           x = w - ((64 + 8) * num);
+        for (i = 0; i < num; i++)
+          {
+             if (((x + 64 + 8) >= 0) && (x < w))
+               {
+                  Pixmap              p2;
+                  ImageClass         *ic;
+                  ImlibImage         *im;
+                  char                s[4096];
 
-		  ic =
-		     FindItem("DIALOG_BUTTON", 0, LIST_FINDBY_NAME,
-			      LIST_TYPE_ICLASS);
-		  if (ic)
-		    {
-		       Pixmap              pbg;
+                  ic = FindItem("DIALOG_BUTTON", 0, LIST_FINDBY_NAME,
+                                LIST_TYPE_ICLASS);
+                  if (ic)
+                    {
+                       Pixmap              pbg;
 
-		       if (i == tmp_bg_selected)
-			  IclassApplyCopy(ic, pmap, 64 + 8, 48 + 8, 0, 0,
-					  STATE_CLICKED, &pbg, NULL);
-		       else
-			  IclassApplyCopy(ic, pmap, 64 + 8, 48 + 8, 0, 0,
-					  STATE_NORMAL, &pbg, NULL);
-		       XCopyArea(disp, pbg, pmap, gc, 0, 0, 64 + 8, 48 + 8, x,
-				 0);
-		       Imlib_free_pixmap(id, pbg);
-		    }
-		  if (!strcmp(bglist[i]->name, "NONE"))
-		    {
-		       TextClass          *tc;
+                       if (i == tmp_bg_selected)
+                          IclassApplyCopy(ic, pmap, 64 + 8, 48 + 8, 0, 0,
+                                          STATE_CLICKED, &pbg, NULL);
+                       else
+                          IclassApplyCopy(ic, pmap, 64 + 8, 48 + 8, 0, 0,
+                                          STATE_NORMAL, &pbg, NULL);
+                       XCopyArea(disp, pbg, pmap, gc, 0, 0, 64 + 8, 48 + 8, x,
+                                 0);
+                       Imlib_free_pixmap(id, pbg);
+                    }
+                  if (!strcmp(bglist[i]->name, "NONE"))
+                    {
+                       TextClass          *tc;
 
-		       tc =
-			  FindItem("DIALOG", 0, LIST_FINDBY_NAME,
-				   LIST_TYPE_TCLASS);
-		       if (tc)
-			 {
-			    int                 tw, th;
+                       tc = FindItem("DIALOG", 0, LIST_FINDBY_NAME,
+                                     LIST_TYPE_TCLASS);
+                       if (tc)
+                         {
+                            int                 tw, th;
 
-			    TextSize(tc, 0, 0, STATE_NORMAL,
-				     _("No\nBackground"), &tw, &th, 17);
-			    TextDraw(tc, pmap, 0, 0, STATE_NORMAL,
-				     _("No\nBackground"), x + 4,
-				     4 + ((48 - th) / 2), 64, 48, 17, 512);
-			 }
-		    }
-		  else
-		    {
-		       Esnprintf(s, sizeof(s), "%s/cached/bgsel/%s",
-				 UserCacheDir(), bglist[i]->name);
-		       im = ELoadImage(s);
-		       if (!im)
-			 {
-			    Esnprintf(s, sizeof(s), "%s/cached/bgsel/%s",
-				      UserCacheDir(), bglist[i]->name);
-			    p2 = ECreatePixmap(disp, pmap, 64, 48, id->x.depth);
-			    SetBackgroundTo(id, p2, bglist[i], 0);
-			    XCopyArea(disp, p2, pmap, gc, 0, 0, 64, 48, x + 4,
-				      4);
-			    im =
-			       Imlib_create_image_from_drawable(id, p2, 0, 0, 0,
-								64, 48);
-			    Imlib_save_image_to_ppm(id, im, s);
-			    Imlib_kill_image(id, im);
-			    EFreePixmap(disp, p2);
-			 }
-		       else
-			 {
-			    if (nuke_old)
-			      {
-				 Imlib_changed_image(id, im);
-				 Imlib_kill_image(id, im);
-				 im = ELoadImage(s);
-			      }
-			    if (im)
-			      {
-				 Imlib_paste_image(id, im, pmap, x + 4, 4, 64,
-						   48);
-				 Imlib_destroy_image(id, im);
-			      }
-			 }
-		    }
-	       }
-	     x += (64 + 8);
-	  }
-	XFreeGC(disp, gc);
-	EFreePixmap(disp, pmap);
-	Efree(bglist);
+                            TextSize(tc, 0, 0, STATE_NORMAL,
+                                     _("No\nBackground"), &tw, &th, 17);
+                            TextDraw(tc, pmap, 0, 0, STATE_NORMAL,
+                                     _("No\nBackground"), x + 4,
+                                     4 + ((48 - th) / 2), 64, 48, 17, 512);
+                         }
+                    }
+                  else
+                    {
+                       Esnprintf(s, sizeof(s), "%s/cached/bgsel/%s",
+                                 UserCacheDir(), bglist[i]->name);
+                       im = ELoadImage(s);
+                       if (!im)
+                         {
+                            Esnprintf(s, sizeof(s), "%s/cached/bgsel/%s",
+                                      UserCacheDir(), bglist[i]->name);
+                            p2 = ECreatePixmap(disp, pmap, 64, 48, id->x.depth);
+                            SetBackgroundTo(id, p2, bglist[i], 0);
+                            XCopyArea(disp, p2, pmap, gc, 0, 0, 64, 48, x + 4,
+                                      4);
+                            im = Imlib_create_image_from_drawable(id, p2, 0, 0,
+                                                                  0, 64, 48);
+                            Imlib_save_image_to_ppm(id, im, s);
+                            Imlib_kill_image(id, im);
+                            EFreePixmap(disp, p2);
+                         }
+                       else
+                         {
+                            if (nuke_old)
+                              {
+                                 Imlib_changed_image(id, im);
+                                 Imlib_kill_image(id, im);
+                                 im = ELoadImage(s);
+                              }
+                            if (im)
+                              {
+                                 Imlib_paste_image(id, im, pmap, x + 4, 4, 64,
+                                                   48);
+                                 Imlib_destroy_image(id, im);
+                              }
+                         }
+                    }
+               }
+             x += (64 + 8);
+          }
+        XFreeGC(disp, gc);
+        EFreePixmap(disp, pmap);
+        Efree(bglist);
      }
    XClearWindow(disp, win);
 }
@@ -3040,13 +3026,13 @@ CB_BGScan(int val, void *data)
 
    while (bg_sel_slider->item.slider.val <= bg_sel_slider->item.slider.upper)
      {
-	DialogDrawItems(bg_sel_dialog, bg_sel_slider, 0, 0, 99999, 99999);
-	if (bg_sel_slider->func)
-	   (bg_sel_slider->func) (bg_sel_slider->val, bg_sel_slider->data);
-	bg_sel_slider->item.slider.val += 8;
-	if (bg_sel_slider->item.slider.val_ptr)
-	   *(bg_sel_slider->item.slider.val_ptr) =
-	      bg_sel_slider->item.slider.val;
+        DialogDrawItems(bg_sel_dialog, bg_sel_slider, 0, 0, 99999, 99999);
+        if (bg_sel_slider->func)
+           (bg_sel_slider->func) (bg_sel_slider->val, bg_sel_slider->data);
+        bg_sel_slider->item.slider.val += 8;
+        if (bg_sel_slider->item.slider.val_ptr)
+           *(bg_sel_slider->item.slider.val_ptr) =
+               bg_sel_slider->item.slider.val;
      }
    val = 0;
    data = NULL;
@@ -3064,83 +3050,84 @@ CB_BGAreaEvent(int val, void *data)
    DialogItemAreaGetSize(bg_sel, &w, &h);
    switch (ev->type)
      {
-     case ButtonPress:
-	bglist = (Background **) ListItemType(&num, LIST_TYPE_BACKGROUND);
-	x = (tmp_bg_sel_sliderval * (64 + 8) / 4);
-	if (x > ((num * (64 + 8)) - w))
-	   x = ((num * (64 + 8)) - w);
-	x += ev->xbutton.x;
-	x = x / (64 + 8);
-	tmp_bg_selected = x;
-	if ((tmp_bg_selected >= 0) && (tmp_bg_selected < num))
-	  {
-	     KeepBGimages(tmp_bg, 0);
-	     tmp_bg = bglist[tmp_bg_selected];
-	     if (tmp_bg->bg.file)
-		tmp_bg_image = 1;
-	     else
-		tmp_bg_image = 0;
-	     KeepBGimages(tmp_bg, 1);
+       case ButtonPress:
+          bglist = (Background **) ListItemType(&num, LIST_TYPE_BACKGROUND);
+          x = (tmp_bg_sel_sliderval * (64 + 8) / 4);
+          if (x > ((num * (64 + 8)) - w))
+             x = ((num * (64 + 8)) - w);
+          x += ev->xbutton.x;
+          x = x / (64 + 8);
+          tmp_bg_selected = x;
+          if ((tmp_bg_selected >= 0) && (tmp_bg_selected < num))
+            {
+               KeepBGimages(tmp_bg, 0);
+               tmp_bg = bglist[tmp_bg_selected];
+               if (tmp_bg->bg.file)
+                  tmp_bg_image = 1;
+               else
+                  tmp_bg_image = 0;
+               KeepBGimages(tmp_bg, 1);
 
-	     {
-		char               *stmp;
-		char                s[1024];
+               {
+                  char               *stmp;
+                  char                s[1024];
 
-		if (tmp_bg->bg.file)
-		   stmp = fullfileof(tmp_bg->bg.file);
-		else
-		   stmp = duplicate(_("-NONE-"));
-		Esnprintf(s, sizeof(s),
-			  _
-			  ("Background definition information:\nName: %s\nFile: %s\n"),
-			  tmp_bg->name, stmp);
-		Efree(stmp);
-		DialogItemTextSetText(bg_filename, s);
-		DialogDrawItems(bg_sel_dialog, bg_filename, 0, 0, 99999, 99999);
-	     }
-	     tmp_bg_r = tmp_bg->bg.solid.r;
-	     tmp_bg_g = tmp_bg->bg.solid.g;
-	     tmp_bg_b = tmp_bg->bg.solid.b;
-	     tmp_bg_tile = tmp_bg->bg.tile;
-	     tmp_bg_keep_aspect = tmp_bg->bg.keep_aspect;
-	     tmp_bg_xjust = tmp_bg->bg.xjust;
-	     tmp_bg_yjust = 1024 - tmp_bg->bg.yjust;
-	     tmp_bg_xperc = tmp_bg->bg.xperc;
-	     tmp_bg_yperc = 1024 - tmp_bg->bg.yperc;
-	     tmp_w[0]->item.slider.val = tmp_bg_r;
-	     tmp_w[1]->item.check_button.onoff = tmp_bg_image;
-	     tmp_w[2]->item.slider.val = tmp_bg_g;
-	     tmp_w[3]->item.check_button.onoff = tmp_bg_keep_aspect;
-	     tmp_w[4]->item.slider.val = tmp_bg_b;
-	     tmp_w[5]->item.check_button.onoff = tmp_bg_tile;
-	     tmp_w[6]->item.slider.val = tmp_bg_xjust;
-	     tmp_w[7]->item.slider.val = tmp_bg_yjust;
-	     tmp_w[8]->item.slider.val = tmp_bg_yperc;
-	     tmp_w[9]->item.slider.val = tmp_bg_xperc;
-	     if (tbg)
-	       {
-		  FreeDesktopBG(tbg);
-		  tbg = NULL;
-	       }
-	     CB_DesktopMiniDisplayRedraw(0, bg_mini_disp);
-	     desks.desk[desks.current].bg = tmp_bg;
-	     RedrawPagersForDesktop(desks.current, 2);
-	     ForceUpdatePagersForDesktop(desks.current);
-	     RefreshCurrentDesktop();
-	     BG_RedrawView(0);
-	     for (x = 0; x < 10; x++)
-		DialogDrawItems(bg_sel_dialog, tmp_w[x], 0, 0, 99999, 99999);
-	     autosave();
-	  }
-	if (bglist)
-	   Efree(bglist);
-	break;
-     case ButtonRelease:
-	tmp_bg_selected = -1;
-	BG_RedrawView(0);
-	break;
-     default:
-	break;
+                  if (tmp_bg->bg.file)
+                     stmp = fullfileof(tmp_bg->bg.file);
+                  else
+                     stmp = duplicate(_("-NONE-"));
+                  Esnprintf(s, sizeof(s),
+                            _
+                            ("Background definition information:\nName: %s\nFile: %s\n"),
+                            tmp_bg->name, stmp);
+                  Efree(stmp);
+                  DialogItemTextSetText(bg_filename, s);
+                  DialogDrawItems(bg_sel_dialog, bg_filename, 0, 0, 99999,
+                                  99999);
+               }
+               tmp_bg_r = tmp_bg->bg.solid.r;
+               tmp_bg_g = tmp_bg->bg.solid.g;
+               tmp_bg_b = tmp_bg->bg.solid.b;
+               tmp_bg_tile = tmp_bg->bg.tile;
+               tmp_bg_keep_aspect = tmp_bg->bg.keep_aspect;
+               tmp_bg_xjust = tmp_bg->bg.xjust;
+               tmp_bg_yjust = 1024 - tmp_bg->bg.yjust;
+               tmp_bg_xperc = tmp_bg->bg.xperc;
+               tmp_bg_yperc = 1024 - tmp_bg->bg.yperc;
+               tmp_w[0]->item.slider.val = tmp_bg_r;
+               tmp_w[1]->item.check_button.onoff = tmp_bg_image;
+               tmp_w[2]->item.slider.val = tmp_bg_g;
+               tmp_w[3]->item.check_button.onoff = tmp_bg_keep_aspect;
+               tmp_w[4]->item.slider.val = tmp_bg_b;
+               tmp_w[5]->item.check_button.onoff = tmp_bg_tile;
+               tmp_w[6]->item.slider.val = tmp_bg_xjust;
+               tmp_w[7]->item.slider.val = tmp_bg_yjust;
+               tmp_w[8]->item.slider.val = tmp_bg_yperc;
+               tmp_w[9]->item.slider.val = tmp_bg_xperc;
+               if (tbg)
+                 {
+                    FreeDesktopBG(tbg);
+                    tbg = NULL;
+                 }
+               CB_DesktopMiniDisplayRedraw(0, bg_mini_disp);
+               desks.desk[desks.current].bg = tmp_bg;
+               RedrawPagersForDesktop(desks.current, 2);
+               ForceUpdatePagersForDesktop(desks.current);
+               RefreshCurrentDesktop();
+               BG_RedrawView(0);
+               for (x = 0; x < 10; x++)
+                  DialogDrawItems(bg_sel_dialog, tmp_w[x], 0, 0, 99999, 99999);
+               autosave();
+            }
+          if (bglist)
+             Efree(bglist);
+          break;
+       case ButtonRelease:
+          tmp_bg_selected = -1;
+          BG_RedrawView(0);
+          break;
+       default:
+          break;
      }
    val = 0;
 }
@@ -3154,9 +3141,9 @@ CB_DesktopTimeout(int val, void *data)
 
    di = (DItem *) data;
    Esnprintf(s, sizeof(s), _("Unused backgrounds freed after %2i:%02i:%02i"),
-	     tmp_bg_timeout / 3600,
-	     (tmp_bg_timeout / 60) - (60 * (tmp_bg_timeout / 3600)),
-	     (tmp_bg_timeout) - (60 * (tmp_bg_timeout / 60)));
+             tmp_bg_timeout / 3600,
+             (tmp_bg_timeout / 60) - (60 * (tmp_bg_timeout / 3600)),
+             (tmp_bg_timeout) - (60 * (tmp_bg_timeout / 60)));
    DialogItemTextSetText(di, s);
    DialogDrawItems(bg_sel_dialog, di, 0, 0, 99999, 99999);
    return;
@@ -3175,88 +3162,88 @@ BGSettingsGoTo(Background * bg)
    bglist = (Background **) ListItemType(&num, LIST_TYPE_BACKGROUND);
    if (bglist)
      {
-	for (i = 0; i < num; i++)
-	  {
-	     if (bglist[i] == bg)
-	       {
-		  bg_sel_slider->item.slider.val = (4 * i);
-		  if (bg_sel_slider->item.slider.lower >
-		      bg_sel_slider->item.slider.val)
-		     bg_sel_slider->item.slider.val =
-			bg_sel_slider->item.slider.lower;
-		  if (bg_sel_slider->item.slider.upper <
-		      bg_sel_slider->item.slider.val)
-		     bg_sel_slider->item.slider.val =
-			bg_sel_slider->item.slider.upper;
-		  if (bg_sel_slider->item.slider.val_ptr)
-		     *(bg_sel_slider->item.slider.val_ptr) =
-			bg_sel_slider->item.slider.val;
-		  DialogDrawItems(bg_sel_dialog, bg_sel_slider, 0, 0, 99999,
-				  99999);
-		  if (bg_sel_slider->func)
-		     (bg_sel_slider->func) (bg_sel_slider->val,
-					    bg_sel_slider->data);
-		  tmp_bg_selected = i;
-		  KeepBGimages(tmp_bg, 0);
-		  tmp_bg = bglist[tmp_bg_selected];
-		  if (tmp_bg->bg.file)
-		     tmp_bg_image = 1;
-		  else
-		     tmp_bg_image = 0;
-		  KeepBGimages(tmp_bg, 1);
+        for (i = 0; i < num; i++)
+          {
+             if (bglist[i] == bg)
+               {
+                  bg_sel_slider->item.slider.val = (4 * i);
+                  if (bg_sel_slider->item.slider.lower >
+                      bg_sel_slider->item.slider.val)
+                     bg_sel_slider->item.slider.val =
+                         bg_sel_slider->item.slider.lower;
+                  if (bg_sel_slider->item.slider.upper <
+                      bg_sel_slider->item.slider.val)
+                     bg_sel_slider->item.slider.val =
+                         bg_sel_slider->item.slider.upper;
+                  if (bg_sel_slider->item.slider.val_ptr)
+                     *(bg_sel_slider->item.slider.val_ptr) =
+                         bg_sel_slider->item.slider.val;
+                  DialogDrawItems(bg_sel_dialog, bg_sel_slider, 0, 0, 99999,
+                                  99999);
+                  if (bg_sel_slider->func)
+                     (bg_sel_slider->func) (bg_sel_slider->val,
+                                            bg_sel_slider->data);
+                  tmp_bg_selected = i;
+                  KeepBGimages(tmp_bg, 0);
+                  tmp_bg = bglist[tmp_bg_selected];
+                  if (tmp_bg->bg.file)
+                     tmp_bg_image = 1;
+                  else
+                     tmp_bg_image = 0;
+                  KeepBGimages(tmp_bg, 1);
 
-		  {
-		     char               *stmp;
-		     char                s[1024];
+                  {
+                     char               *stmp;
+                     char                s[1024];
 
-		     if (tmp_bg->bg.file)
-			stmp = fullfileof(tmp_bg->bg.file);
-		     else
-			stmp = duplicate(_("-NONE-"));
-		     Esnprintf(s, sizeof(s),
-			       _
-			       ("Background definition information:\nName: %s\nFile: %s\n"),
-			       tmp_bg->name, stmp);
-		     Efree(stmp);
-		     DialogItemTextSetText(bg_filename, s);
-		     DialogDrawItems(bg_sel_dialog, bg_filename, 0, 0, 99999,
-				     99999);
-		  }
-		  tmp_bg_r = tmp_bg->bg.solid.r;
-		  tmp_bg_g = tmp_bg->bg.solid.g;
-		  tmp_bg_b = tmp_bg->bg.solid.b;
-		  tmp_bg_tile = tmp_bg->bg.tile;
-		  tmp_bg_keep_aspect = tmp_bg->bg.keep_aspect;
-		  tmp_bg_xjust = tmp_bg->bg.xjust;
-		  tmp_bg_yjust = 1024 - tmp_bg->bg.yjust;
-		  tmp_bg_xperc = tmp_bg->bg.xperc;
-		  tmp_bg_yperc = 1024 - tmp_bg->bg.yperc;
-		  tmp_w[0]->item.slider.val = tmp_bg_r;
-		  tmp_w[1]->item.check_button.onoff = tmp_bg_image;
-		  tmp_w[2]->item.slider.val = tmp_bg_g;
-		  tmp_w[3]->item.check_button.onoff = tmp_bg_keep_aspect;
-		  tmp_w[4]->item.slider.val = tmp_bg_b;
-		  tmp_w[5]->item.check_button.onoff = tmp_bg_tile;
-		  tmp_w[6]->item.slider.val = tmp_bg_xjust;
-		  tmp_w[7]->item.slider.val = tmp_bg_yjust;
-		  tmp_w[8]->item.slider.val = tmp_bg_yperc;
-		  tmp_w[9]->item.slider.val = tmp_bg_xperc;
-		  if (tbg)
-		    {
-		       FreeDesktopBG(tbg);
-		       tbg = NULL;
-		    }
-		  CB_DesktopMiniDisplayRedraw(0, bg_mini_disp);
-		  BG_RedrawView(0);
-		  for (x = 0; x < 10; x++)
-		     DialogDrawItems(bg_sel_dialog, tmp_w[x], 0, 0, 99999,
-				     99999);
-		  Efree(bglist);
-		  tmp_bg_selected = -1;
-		  return;
-	       }
-	  }
-	Efree(bglist);
+                     if (tmp_bg->bg.file)
+                        stmp = fullfileof(tmp_bg->bg.file);
+                     else
+                        stmp = duplicate(_("-NONE-"));
+                     Esnprintf(s, sizeof(s),
+                               _
+                               ("Background definition information:\nName: %s\nFile: %s\n"),
+                               tmp_bg->name, stmp);
+                     Efree(stmp);
+                     DialogItemTextSetText(bg_filename, s);
+                     DialogDrawItems(bg_sel_dialog, bg_filename, 0, 0, 99999,
+                                     99999);
+                  }
+                  tmp_bg_r = tmp_bg->bg.solid.r;
+                  tmp_bg_g = tmp_bg->bg.solid.g;
+                  tmp_bg_b = tmp_bg->bg.solid.b;
+                  tmp_bg_tile = tmp_bg->bg.tile;
+                  tmp_bg_keep_aspect = tmp_bg->bg.keep_aspect;
+                  tmp_bg_xjust = tmp_bg->bg.xjust;
+                  tmp_bg_yjust = 1024 - tmp_bg->bg.yjust;
+                  tmp_bg_xperc = tmp_bg->bg.xperc;
+                  tmp_bg_yperc = 1024 - tmp_bg->bg.yperc;
+                  tmp_w[0]->item.slider.val = tmp_bg_r;
+                  tmp_w[1]->item.check_button.onoff = tmp_bg_image;
+                  tmp_w[2]->item.slider.val = tmp_bg_g;
+                  tmp_w[3]->item.check_button.onoff = tmp_bg_keep_aspect;
+                  tmp_w[4]->item.slider.val = tmp_bg_b;
+                  tmp_w[5]->item.check_button.onoff = tmp_bg_tile;
+                  tmp_w[6]->item.slider.val = tmp_bg_xjust;
+                  tmp_w[7]->item.slider.val = tmp_bg_yjust;
+                  tmp_w[8]->item.slider.val = tmp_bg_yperc;
+                  tmp_w[9]->item.slider.val = tmp_bg_xperc;
+                  if (tbg)
+                    {
+                       FreeDesktopBG(tbg);
+                       tbg = NULL;
+                    }
+                  CB_DesktopMiniDisplayRedraw(0, bg_mini_disp);
+                  BG_RedrawView(0);
+                  for (x = 0; x < 10; x++)
+                     DialogDrawItems(bg_sel_dialog, tmp_w[x], 0, 0, 99999,
+                                     99999);
+                  Efree(bglist);
+                  tmp_bg_selected = -1;
+                  return;
+               }
+          }
+        Efree(bglist);
      }
 }
 
@@ -3270,20 +3257,20 @@ CB_BGPrev(int val, void *data)
    bglist = (Background **) ListItemType(&num, LIST_TYPE_BACKGROUND);
    if (bglist)
      {
-	for (i = 0; i < num; i++)
-	  {
-	     if ((bglist[i] == tmp_bg) && (i > 0))
-	       {
-		  desks.desk[desks.current].bg = bglist[i - 1];
-		  BGSettingsGoTo(bglist[i - 1]);
-		  RedrawPagersForDesktop(desks.current, 2);
-		  ForceUpdatePagersForDesktop(desks.current);
-		  RefreshCurrentDesktop();
-		  Efree(bglist);
-		  return;
-	       }
-	  }
-	Efree(bglist);
+        for (i = 0; i < num; i++)
+          {
+             if ((bglist[i] == tmp_bg) && (i > 0))
+               {
+                  desks.desk[desks.current].bg = bglist[i - 1];
+                  BGSettingsGoTo(bglist[i - 1]);
+                  RedrawPagersForDesktop(desks.current, 2);
+                  ForceUpdatePagersForDesktop(desks.current);
+                  RefreshCurrentDesktop();
+                  Efree(bglist);
+                  return;
+               }
+          }
+        Efree(bglist);
      }
    val = 0;
    data = NULL;
@@ -3299,20 +3286,20 @@ CB_BGNext(int val, void *data)
    bglist = (Background **) ListItemType(&num, LIST_TYPE_BACKGROUND);
    if (bglist)
      {
-	for (i = 0; i < num; i++)
-	  {
-	     if ((bglist[i] == tmp_bg) && (i < (num - 1)))
-	       {
-		  desks.desk[desks.current].bg = bglist[i + 1];
-		  BGSettingsGoTo(bglist[i + 1]);
-		  RedrawPagersForDesktop(desks.current, 2);
-		  ForceUpdatePagersForDesktop(desks.current);
-		  RefreshCurrentDesktop();
-		  Efree(bglist);
-		  return;
-	       }
-	  }
-	Efree(bglist);
+        for (i = 0; i < num; i++)
+          {
+             if ((bglist[i] == tmp_bg) && (i < (num - 1)))
+               {
+                  desks.desk[desks.current].bg = bglist[i + 1];
+                  BGSettingsGoTo(bglist[i + 1]);
+                  RedrawPagersForDesktop(desks.current, 2);
+                  ForceUpdatePagersForDesktop(desks.current);
+                  RefreshCurrentDesktop();
+                  Efree(bglist);
+                  return;
+               }
+          }
+        Efree(bglist);
      }
    val = 0;
    data = NULL;
@@ -3342,21 +3329,21 @@ CB_BGSortFile(int val, void *data)
    bglist = (Background **) ListItemType(&num, LIST_TYPE_BACKGROUND);
    if (bglist)
      {
-	/* remove them all from the list */
-	for (i = 0; i < num; i++)
-	   RemoveItem((char *)(bglist[i]), 0, LIST_FINDBY_POINTER,
-		      LIST_TYPE_BACKGROUND);
-	Quicksort((void **)bglist, 0, num - 1,
-		  (int (*)(void *d1, void *d2))BG_SortFileCompare);
-	for (i = 0; i < num; i++)
-	  {
-	     Background         *bg;
+        /* remove them all from the list */
+        for (i = 0; i < num; i++)
+           RemoveItem((char *)(bglist[i]), 0, LIST_FINDBY_POINTER,
+                      LIST_TYPE_BACKGROUND);
+        Quicksort((void **)bglist, 0, num - 1,
+                  (int (*)(void *d1, void *d2))BG_SortFileCompare);
+        for (i = 0; i < num; i++)
+          {
+             Background         *bg;
 
-	     bg = bglist[i];
-	     AddItem(bg, bg->name, 0, LIST_TYPE_BACKGROUND);
-	  }
-	Efree(bglist);
-	BGSettingsGoTo(tmp_bg);
+             bg = bglist[i];
+             AddItem(bg, bg->name, 0, LIST_TYPE_BACKGROUND);
+          }
+        Efree(bglist);
+        BGSettingsGoTo(tmp_bg);
      }
    autosave();
    val = 0;
@@ -3373,35 +3360,35 @@ CB_BGSortAttrib(int val, void *data)
    bglist = (Background **) ListItemType(&num, LIST_TYPE_BACKGROUND);
    if (bglist)
      {
-	/* remove them all from the list */
-	for (i = 0; i < num; i++)
-	   RemoveItem((char *)(bglist[i]), 0, LIST_FINDBY_POINTER,
-		      LIST_TYPE_BACKGROUND);
-	for (i = 0; i < num; i++)
-	  {
-	     Background         *bg;
+        /* remove them all from the list */
+        for (i = 0; i < num; i++)
+           RemoveItem((char *)(bglist[i]), 0, LIST_FINDBY_POINTER,
+                      LIST_TYPE_BACKGROUND);
+        for (i = 0; i < num; i++)
+          {
+             Background         *bg;
 
-	     bg = bglist[i];
-	     if ((bg) && (bg->bg.tile) && (bg->bg.xperc == 0)
-		 && (bg->bg.yperc == 0))
-	       {
-		  AddItem(bg, bg->name, 0, LIST_TYPE_BACKGROUND);
-		  bglist[i] = NULL;
-	       }
-	  }
-	for (i = 0; i < num; i++)
-	  {
-	     Background         *bg;
+             bg = bglist[i];
+             if ((bg) && (bg->bg.tile) && (bg->bg.xperc == 0)
+                 && (bg->bg.yperc == 0))
+               {
+                  AddItem(bg, bg->name, 0, LIST_TYPE_BACKGROUND);
+                  bglist[i] = NULL;
+               }
+          }
+        for (i = 0; i < num; i++)
+          {
+             Background         *bg;
 
-	     bg = bglist[i];
-	     if (bg)
-	       {
-		  AddItem(bg, bg->name, 0, LIST_TYPE_BACKGROUND);
-		  bglist[i] = NULL;
-	       }
-	  }
-	Efree(bglist);
-	BGSettingsGoTo(tmp_bg);
+             bg = bglist[i];
+             if (bg)
+               {
+                  AddItem(bg, bg->name, 0, LIST_TYPE_BACKGROUND);
+                  bglist[i] = NULL;
+               }
+          }
+        Efree(bglist);
+        BGSettingsGoTo(tmp_bg);
      }
    autosave();
    val = 0;
@@ -3418,18 +3405,18 @@ CB_BGSortContent(int val, void *data)
    bglist = (Background **) ListItemType(&num, LIST_TYPE_BACKGROUND);
    if (bglist)
      {
-	/* remove them all from the list */
-	for (i = 0; i < num; i++)
-	   RemoveItem((char *)(bglist[i]), 0, LIST_FINDBY_POINTER,
-		      LIST_TYPE_BACKGROUND);
-	for (i = 0; i < num; i++)
-	  {
-	     Background         *bg;
+        /* remove them all from the list */
+        for (i = 0; i < num; i++)
+           RemoveItem((char *)(bglist[i]), 0, LIST_FINDBY_POINTER,
+                      LIST_TYPE_BACKGROUND);
+        for (i = 0; i < num; i++)
+          {
+             Background         *bg;
 
-	     bg = bglist[i];
-	     AddItem(bg, bg->name, 0, LIST_TYPE_BACKGROUND);
-	  }
-	Efree(bglist);
+             bg = bglist[i];
+             AddItem(bg, bg->name, 0, LIST_TYPE_BACKGROUND);
+          }
+        Efree(bglist);
      }
    autosave();
    val = 0;
@@ -3447,24 +3434,23 @@ SettingsBackground(Background * bg)
 
    if ((d = FindItem("CONFIGURE_BG", 0, LIST_FINDBY_NAME, LIST_TYPE_DIALOG)))
      {
-	AUDIO_PLAY("SOUND_SETTINGS_ACTIVE");
-	ShowDialog(d);
-	return;
+        AUDIO_PLAY("SOUND_SETTINGS_ACTIVE");
+        ShowDialog(d);
+        return;
      }
    AUDIO_PLAY("SOUND_SETTINGS_BG");
 
    if ((!bg) || ((bg) && (!strcmp(bg->name, "NONE"))))
      {
-	char                s[1024];
+        char                s[1024];
 
-	Esnprintf(s, sizeof(s), "__NEWBG_%i\n", time(NULL));
-	bg =
-	   CreateDesktopBG(s, NULL, NULL, 1, 1, 0, 0, 0, 0, NULL, 1, 512, 512,
-			   0, 0);
-	AddItem(bg, bg->name, 0, LIST_TYPE_BACKGROUND);
-	/*
-	 * desks.desk[desks.current].bg = bg;
-	 */
+        Esnprintf(s, sizeof(s), "__NEWBG_%i\n", time(NULL));
+        bg = CreateDesktopBG(s, NULL, NULL, 1, 1, 0, 0, 0, 0, NULL, 1, 512, 512,
+                             0, 0);
+        AddItem(bg, bg->name, 0, LIST_TYPE_BACKGROUND);
+        /*
+         * desks.desk[desks.current].bg = bg;
+         */
      }
    tmp_bg = bg;
    if (bg->bg.file)
@@ -3494,23 +3480,23 @@ SettingsBackground(Background * bg)
 
    if (mode.dialog_headers)
      {
-	di = DialogAddItem(table, DITEM_IMAGE);
-	DialogItemSetColSpan(di, 2);
-	DialogItemSetPadding(di, 2, 2, 2, 2);
-	DialogItemImageSetFile(di, "pix/bg.png");
+        di = DialogAddItem(table, DITEM_IMAGE);
+        DialogItemSetColSpan(di, 2);
+        DialogItemSetPadding(di, 2, 2, 2, 2);
+        DialogItemImageSetFile(di, "pix/bg.png");
 
-	di = DialogAddItem(table, DITEM_TEXT);
-	DialogItemSetPadding(di, 2, 2, 2, 2);
-	DialogItemSetFill(di, 1, 0);
-	DialogItemTextSetText(di,
-			      _("Enlightenment Desktop\n"
-				"Background Settings Dialog\n"));
+        di = DialogAddItem(table, DITEM_TEXT);
+        DialogItemSetPadding(di, 2, 2, 2, 2);
+        DialogItemSetFill(di, 1, 0);
+        DialogItemTextSetText(di,
+                              _("Enlightenment Desktop\n"
+                                "Background Settings Dialog\n"));
 
-	di = DialogAddItem(table, DITEM_SEPARATOR);
-	DialogItemSetColSpan(di, 3);
-	DialogItemSetPadding(di, 2, 2, 2, 2);
-	DialogItemSetFill(di, 1, 0);
-	DialogItemSeparatorSetOrientation(di, 0);
+        di = DialogAddItem(table, DITEM_SEPARATOR);
+        DialogItemSetColSpan(di, 3);
+        DialogItemSetPadding(di, 2, 2, 2, 2);
+        DialogItemSetFill(di, 1, 0);
+        DialogItemSeparatorSetOrientation(di, 0);
      }
 
    di = DialogAddItem(table, DITEM_TEXT);
@@ -3629,8 +3615,8 @@ SettingsBackground(Background * bg)
    DialogItemSetAlign(di, 512, 512);
    DialogItemSetColSpan(di, 2);
    DialogItemTextSetText(di,
-			 _("Background\n" "Image\n" "Scaling\n" "and\n"
-			   "Alignment\n"));
+                         _("Background\n" "Image\n" "Scaling\n" "and\n"
+                           "Alignment\n"));
 
    table2 = DialogAddItem(table, DITEM_TABLE);
    DialogItemSetPadding(table2, 2, 2, 2, 2);
@@ -3727,9 +3713,9 @@ SettingsBackground(Background * bg)
    DialogItemSetFill(di, 1, 0);
    DialogItemSetAlign(di, 512, 512);
    Esnprintf(s, sizeof(s), _("Unused backgrounds freed after %2i:%02i:%02i"),
-	     tmp_bg_timeout / 3600,
-	     (tmp_bg_timeout / 60) - (60 * (tmp_bg_timeout / 3600)),
-	     (tmp_bg_timeout) - (60 * (tmp_bg_timeout / 60)));
+             tmp_bg_timeout / 3600,
+             (tmp_bg_timeout / 60) - (60 * (tmp_bg_timeout / 3600)),
+             (tmp_bg_timeout) - (60 * (tmp_bg_timeout / 60)));
    DialogItemTextSetText(di, s);
 
    di = DialogAddItem(table, DITEM_SLIDER);
@@ -3811,7 +3797,7 @@ SettingsBackground(Background * bg)
 
       bglist = (Background **) ListItemType(&num, LIST_TYPE_BACKGROUND);
       if (bglist)
-	 Efree(bglist);
+         Efree(bglist);
    }
    di = bg_sel_slider = DialogAddItem(table, DITEM_SLIDER);
    DialogItemSetColSpan(di, 3);
@@ -3833,12 +3819,12 @@ SettingsBackground(Background * bg)
       char               *stmp;
 
       if (tmp_bg->bg.file)
-	 stmp = fullfileof(tmp_bg->bg.file);
+         stmp = fullfileof(tmp_bg->bg.file);
       else
-	 stmp = duplicate(_("-NONE-"));
+         stmp = duplicate(_("-NONE-"));
       Esnprintf(s, sizeof(s),
-		_("Background definition information:\nName: %s\nFile: %s\n"),
-		tmp_bg->name, stmp);
+                _("Background definition information:\nName: %s\nFile: %s\n"),
+                tmp_bg->name, stmp);
       Efree(stmp);
       DialogItemTextSetText(bg_filename, s);
    }
@@ -3890,28 +3876,28 @@ CB_ConfigureIconbox(int val, void *data)
 {
    if (val < 2)
      {
-	Iconbox            *ib;
+        Iconbox            *ib;
 
-	if (!tmp_ib_name)
-	   return;
-	ib = FindItem(tmp_ib_name, 0, LIST_FINDBY_NAME, LIST_TYPE_ICONBOX);
-	if (!ib)
-	   return;
+        if (!tmp_ib_name)
+           return;
+        ib = FindItem(tmp_ib_name, 0, LIST_FINDBY_NAME, LIST_TYPE_ICONBOX);
+        if (!ib)
+           return;
 
-	ib->nobg = tmp_ib_nobg;
-	ib->shownames = tmp_ib_shownames;
-	ib->orientation = tmp_ib_vert;
-	ib->scrollbar_side = tmp_ib_side;
-	ib->arrow_side = tmp_ib_arrows;
-	ib->iconsize = tmp_ib_iconsize;
-	ib->icon_mode = tmp_ib_mode;
-	ib->auto_resize = tmp_ib_auto_resize;
-	ib->draw_icon_base = tmp_ib_draw_icon_base;
-	ib->scrollbar_hide = tmp_ib_scrollbar_hide;
-	ib->cover_hide = tmp_ib_cover_hide;
-	ib->auto_resize_anchor = tmp_ib_autoresize_anchor;
-	ib->animate = tmp_ib_animate;
-	IB_CompleteRedraw(ib);
+        ib->nobg = tmp_ib_nobg;
+        ib->shownames = tmp_ib_shownames;
+        ib->orientation = tmp_ib_vert;
+        ib->scrollbar_side = tmp_ib_side;
+        ib->arrow_side = tmp_ib_arrows;
+        ib->iconsize = tmp_ib_iconsize;
+        ib->icon_mode = tmp_ib_mode;
+        ib->auto_resize = tmp_ib_auto_resize;
+        ib->draw_icon_base = tmp_ib_draw_icon_base;
+        ib->scrollbar_hide = tmp_ib_scrollbar_hide;
+        ib->cover_hide = tmp_ib_cover_hide;
+        ib->auto_resize_anchor = tmp_ib_autoresize_anchor;
+        ib->animate = tmp_ib_animate;
+        IB_CompleteRedraw(ib);
      }
    autosave();
    data = NULL;
@@ -3924,13 +3910,12 @@ SettingsIconbox(char *name)
    DItem              *table, *di, *radio1, *radio2, *radio3, *radio4, *table2;
    Iconbox            *ib;
 
-   if (
-       (d =
-	FindItem("CONFIGURE_ICONBOX", 0, LIST_FINDBY_NAME, LIST_TYPE_DIALOG)))
+   if ((d =
+        FindItem("CONFIGURE_ICONBOX", 0, LIST_FINDBY_NAME, LIST_TYPE_DIALOG)))
      {
-	AUDIO_PLAY("SOUND_SETTINGS_ACTIVE");
-	ShowDialog(d);
-	return;
+        AUDIO_PLAY("SOUND_SETTINGS_ACTIVE");
+        ShowDialog(d);
+        return;
      }
    AUDIO_PLAY("SOUND_SETTINGS_ICONBOX");
 
@@ -3964,23 +3949,23 @@ SettingsIconbox(char *name)
 
    if (mode.dialog_headers)
      {
-	table2 = DialogAddItem(table, DITEM_TABLE);
-	DialogItemTableSetOptions(table2, 2, 0, 0, 0);
+        table2 = DialogAddItem(table, DITEM_TABLE);
+        DialogItemTableSetOptions(table2, 2, 0, 0, 0);
 
-	di = DialogAddItem(table2, DITEM_IMAGE);
-	DialogItemSetPadding(di, 2, 2, 2, 2);
-	DialogItemImageSetFile(di, "pix/iconbox.png");
+        di = DialogAddItem(table2, DITEM_IMAGE);
+        DialogItemSetPadding(di, 2, 2, 2, 2);
+        DialogItemImageSetFile(di, "pix/iconbox.png");
 
-	di = DialogAddItem(table2, DITEM_TEXT);
-	DialogItemSetPadding(di, 2, 2, 2, 2);
-	DialogItemSetFill(di, 1, 0);
-	DialogItemTextSetText(di,
-			      _("Enlightenment Iconbox\n" "Settings Dialog\n"));
+        di = DialogAddItem(table2, DITEM_TEXT);
+        DialogItemSetPadding(di, 2, 2, 2, 2);
+        DialogItemSetFill(di, 1, 0);
+        DialogItemTextSetText(di,
+                              _("Enlightenment Iconbox\n" "Settings Dialog\n"));
 
-	di = DialogAddItem(table, DITEM_SEPARATOR);
-	DialogItemSetPadding(di, 2, 2, 2, 2);
-	DialogItemSetFill(di, 1, 0);
-	DialogItemSeparatorSetOrientation(di, 0);
+        di = DialogAddItem(table, DITEM_SEPARATOR);
+        DialogItemSetPadding(di, 2, 2, 2, 2);
+        DialogItemSetFill(di, 1, 0);
+        DialogItemSeparatorSetOrientation(di, 0);
      }
 
    di = DialogAddItem(table, DITEM_CHECKBUTTON);
@@ -4029,7 +4014,7 @@ SettingsIconbox(char *name)
    DialogItemSetPadding(di, 2, 2, 2, 2);
    DialogItemSetFill(di, 1, 0);
    DialogItemCheckButtonSetText(di,
-				_("Animate when iconifying to this Iconbox"));
+                                _("Animate when iconifying to this Iconbox"));
    DialogItemCheckButtonSetState(di, tmp_ib_animate);
    DialogItemCheckButtonSetPtr(di, &tmp_ib_animate);
 
@@ -4038,8 +4023,8 @@ SettingsIconbox(char *name)
    DialogItemSetFill(di, 0, 0);
    DialogItemSetAlign(di, 0, 0);
    DialogItemTextSetText(di,
-			 _
-			 ("Alignment of anchoring when automatically resizing:"));
+                         _
+                         ("Alignment of anchoring when automatically resizing:"));
 
    di = DialogAddItem(table, DITEM_SLIDER);
    DialogItemSetPadding(di, 2, 2, 2, 2);
@@ -4060,15 +4045,15 @@ SettingsIconbox(char *name)
    DialogItemSetFill(di, 0, 0);
    DialogItemSetAlign(di, 0, 0);
    DialogItemTextSetText(di,
-			 _
-			 ("Icon image display policy (if one operation fails, try the next):"));
+                         _
+                         ("Icon image display policy (if one operation fails, try the next):"));
 
    radio4 = di = DialogAddItem(table, DITEM_RADIOBUTTON);
    DialogItemSetPadding(di, 2, 2, 2, 2);
    DialogItemSetFill(di, 1, 0);
    DialogItemRadioButtonSetText(di,
-				_
-				("Snapshot Windows, Use application icon, Use Enlightenment Icon"));
+                                _
+                                ("Snapshot Windows, Use application icon, Use Enlightenment Icon"));
    DialogItemRadioButtonSetFirst(di, radio4);
    DialogItemRadioButtonGroupSetVal(di, 0);
 
@@ -4076,8 +4061,8 @@ SettingsIconbox(char *name)
    DialogItemSetPadding(di, 2, 2, 2, 2);
    DialogItemSetFill(di, 1, 0);
    DialogItemRadioButtonSetText(di,
-				_
-				("Use application icon, Use Enlightenment Icon, Snapshot Window"));
+                                _
+                                ("Use application icon, Use Enlightenment Icon, Snapshot Window"));
    DialogItemRadioButtonSetFirst(di, radio4);
    DialogItemRadioButtonGroupSetVal(di, 1);
 
@@ -4085,7 +4070,7 @@ SettingsIconbox(char *name)
    DialogItemSetPadding(di, 2, 2, 2, 2);
    DialogItemSetFill(di, 1, 0);
    DialogItemRadioButtonSetText(di,
-				_("Use Enlightenment Icon, Snapshot Window"));
+                                _("Use Enlightenment Icon, Snapshot Window"));
    DialogItemRadioButtonSetFirst(di, radio4);
    DialogItemRadioButtonGroupSetVal(di, 2);
    DialogItemRadioButtonGroupSetValPtr(radio4, &tmp_ib_mode);
@@ -4237,9 +4222,9 @@ CB_ConfigureGroupEscape(int val, void *data)
 {
    if (tmp_cfgs)
      {
-	ShowHideWinGroups(tmp_ewin, tmp_groups[tmp_current_group], SET_OFF);
-	Efree(tmp_cfgs);
-	tmp_cfgs = NULL;
+        ShowHideWinGroups(tmp_ewin, tmp_groups[tmp_current_group], SET_OFF);
+        Efree(tmp_cfgs);
+        tmp_cfgs = NULL;
      }
    DialogClose((Dialog *) data);
    val = 0;
@@ -4253,14 +4238,14 @@ CB_ConfigureGroup(int val, void *data)
 
    if (val < 2)
      {
-	for (i = 0; i < tmp_ewin->num_groups; i++)
-	   CopyGroupConfig(&(tmp_cfgs[i]), &(tmp_ewin->groups[i]->cfg));
+        for (i = 0; i < tmp_ewin->num_groups; i++)
+           CopyGroupConfig(&(tmp_cfgs[i]), &(tmp_ewin->groups[i]->cfg));
      }
    if (((val == 0) || (val == 2)) && tmp_cfgs)
      {
-	ShowHideWinGroups(tmp_ewin, tmp_groups[tmp_current_group], SET_OFF);
-	Efree(tmp_cfgs);
-	tmp_cfgs = NULL;
+        ShowHideWinGroups(tmp_ewin, tmp_groups[tmp_current_group], SET_OFF);
+        Efree(tmp_cfgs);
+        tmp_cfgs = NULL;
      }
    autosave();
    data = NULL;
@@ -4288,32 +4273,32 @@ GroupFeatureChangeCallback(int val, void *data)
 {
    switch (val)
      {
-     case GROUP_FEATURE_BORDER:
-	tmp_cfgs[tmp_current_group].set_border = *((char *)data);
-	break;
-     case GROUP_FEATURE_KILL:
-	tmp_cfgs[tmp_current_group].kill = *((char *)data);
-	break;
-     case GROUP_FEATURE_MOVE:
-	tmp_cfgs[tmp_current_group].move = *((char *)data);
-	break;
-     case GROUP_FEATURE_RAISE:
-	tmp_cfgs[tmp_current_group].raise = *((char *)data);
-	break;
-     case GROUP_FEATURE_ICONIFY:
-	tmp_cfgs[tmp_current_group].iconify = *((char *)data);
-	break;
-     case GROUP_FEATURE_STICK:
-	tmp_cfgs[tmp_current_group].stick = *((char *)data);
-	break;
-     case GROUP_FEATURE_SHADE:
-	tmp_cfgs[tmp_current_group].shade = *((char *)data);
-	break;
-     case GROUP_FEATURE_MIRROR:
-	tmp_cfgs[tmp_current_group].mirror = *((char *)data);
-	break;
-     default:
-	break;
+       case GROUP_FEATURE_BORDER:
+          tmp_cfgs[tmp_current_group].set_border = *((char *)data);
+          break;
+       case GROUP_FEATURE_KILL:
+          tmp_cfgs[tmp_current_group].kill = *((char *)data);
+          break;
+       case GROUP_FEATURE_MOVE:
+          tmp_cfgs[tmp_current_group].move = *((char *)data);
+          break;
+       case GROUP_FEATURE_RAISE:
+          tmp_cfgs[tmp_current_group].raise = *((char *)data);
+          break;
+       case GROUP_FEATURE_ICONIFY:
+          tmp_cfgs[tmp_current_group].iconify = *((char *)data);
+          break;
+       case GROUP_FEATURE_STICK:
+          tmp_cfgs[tmp_current_group].stick = *((char *)data);
+          break;
+       case GROUP_FEATURE_SHADE:
+          tmp_cfgs[tmp_current_group].shade = *((char *)data);
+          break;
+       case GROUP_FEATURE_MIRROR:
+          tmp_cfgs[tmp_current_group].mirror = *((char *)data);
+          break;
+       default:
+          break;
      }
 }
 
@@ -4329,16 +4314,16 @@ SettingsGroups(EWin * ewin)
       return;
    if (ewin->num_groups == 0)
      {
-	DIALOG_OK(_("Window Group Error"),
-		  _
-		  ("\n  This window currently does not belong to any groups.  \n\n"));
-	return;
+        DIALOG_OK(_("Window Group Error"),
+                  _
+                  ("\n  This window currently does not belong to any groups.  \n\n"));
+        return;
      }
    if ((d = FindItem("CONFIGURE_GROUP", 0, LIST_FINDBY_NAME, LIST_TYPE_DIALOG)))
      {
-	AUDIO_PLAY("GROUP_SETTINGS_ACTIVE");
-	ShowDialog(d);
-	return;
+        AUDIO_PLAY("GROUP_SETTINGS_ACTIVE");
+        ShowDialog(d);
+        return;
      }
    AUDIO_PLAY("SOUND_SETTINGS_GROUP");
 
@@ -4347,7 +4332,7 @@ SettingsGroups(EWin * ewin)
    tmp_cfgs = (GroupConfig *) Emalloc(ewin->num_groups * sizeof(GroupConfig));
    tmp_current_group = 0;
    group_member_strings =
-      GetWinGroupMemberNames(ewin->groups, ewin->num_groups);
+       GetWinGroupMemberNames(ewin->groups, ewin->num_groups);
    ShowHideWinGroups(ewin, ewin->groups[0], SET_ON);
 
    for (i = 0; i < ewin->num_groups; i++)
@@ -4361,22 +4346,22 @@ SettingsGroups(EWin * ewin)
 
    if (mode.dialog_headers)
      {
-	di = DialogAddItem(table, DITEM_IMAGE);
-	DialogItemSetPadding(di, 2, 2, 2, 2);
-	DialogItemImageSetFile(di, "pix/group.png");
+        di = DialogAddItem(table, DITEM_IMAGE);
+        DialogItemSetPadding(di, 2, 2, 2, 2);
+        DialogItemImageSetFile(di, "pix/group.png");
 
-	di = DialogAddItem(table, DITEM_TEXT);
-	DialogItemSetPadding(di, 2, 2, 2, 2);
-	DialogItemSetFill(di, 1, 0);
-	DialogItemTextSetText(di,
-			      _("Enlightenment Window Group\n"
-				"Settings Dialog\n"));
+        di = DialogAddItem(table, DITEM_TEXT);
+        DialogItemSetPadding(di, 2, 2, 2, 2);
+        DialogItemSetFill(di, 1, 0);
+        DialogItemTextSetText(di,
+                              _("Enlightenment Window Group\n"
+                                "Settings Dialog\n"));
 
-	di = DialogAddItem(table, DITEM_SEPARATOR);
-	DialogItemSetColSpan(di, 2);
-	DialogItemSetPadding(di, 2, 2, 2, 2);
-	DialogItemSetFill(di, 1, 0);
-	DialogItemSeparatorSetOrientation(di, 0);
+        di = DialogAddItem(table, DITEM_SEPARATOR);
+        DialogItemSetColSpan(di, 2);
+        DialogItemSetPadding(di, 2, 2, 2, 2);
+        DialogItemSetFill(di, 1, 0);
+        DialogItemSeparatorSetOrientation(di, 0);
      }
 
    di = DialogAddItem(table, DITEM_TEXT);
@@ -4397,14 +4382,14 @@ SettingsGroups(EWin * ewin)
 
    for (i = 1; i < ewin->num_groups; i++)
      {
-	di = DialogAddItem(table, DITEM_RADIOBUTTON);
-	DialogItemSetColSpan(di, 2);
-	DialogItemSetPadding(di, 2, 2, 2, 2);
-	DialogItemSetFill(di, 1, 0);
-	DialogItemSetCallback(di, &GroupSelectCallback, i, (void *)d);
-	DialogItemRadioButtonSetText(di, group_member_strings[i]);
-	DialogItemRadioButtonSetFirst(di, radio);
-	DialogItemRadioButtonGroupSetVal(di, i);
+        di = DialogAddItem(table, DITEM_RADIOBUTTON);
+        DialogItemSetColSpan(di, 2);
+        DialogItemSetPadding(di, 2, 2, 2, 2);
+        DialogItemSetFill(di, 1, 0);
+        DialogItemSetCallback(di, &GroupSelectCallback, i, (void *)d);
+        DialogItemRadioButtonSetText(di, group_member_strings[i]);
+        DialogItemRadioButtonSetFirst(di, radio);
+        DialogItemRadioButtonGroupSetVal(di, i);
      }
    DialogItemRadioButtonGroupSetValPtr(radio, &tmp_index);
 
@@ -4420,15 +4405,15 @@ SettingsGroups(EWin * ewin)
    DialogItemSetFill(di, 1, 0);
    DialogItemSetAlign(di, 0, 512);
    DialogItemTextSetText(di,
-			 _("  The following actions are  \n"
-			   "  applied to all group members:  "));
+                         _("  The following actions are  \n"
+                           "  applied to all group members:  "));
 
    di_border = di = DialogAddItem(table, DITEM_CHECKBUTTON);
    DialogItemSetPadding(di, 2, 2, 2, 2);
    DialogItemSetFill(di, 1, 0);
    DialogItemSetColSpan(di, 2);
    DialogItemSetCallback(di, &GroupFeatureChangeCallback, GROUP_FEATURE_BORDER,
-			 &(tmp_cfg.set_border));
+                         &(tmp_cfg.set_border));
    DialogItemCheckButtonSetText(di, _("Changing Border Style"));
    DialogItemCheckButtonSetState(di, tmp_cfgs[0].set_border);
    DialogItemCheckButtonSetPtr(di, &(tmp_cfg.set_border));
@@ -4438,7 +4423,7 @@ SettingsGroups(EWin * ewin)
    DialogItemSetFill(di, 1, 0);
    DialogItemSetColSpan(di, 2);
    DialogItemSetCallback(di, &GroupFeatureChangeCallback,
-			 GROUP_FEATURE_ICONIFY, &(tmp_cfg.iconify));
+                         GROUP_FEATURE_ICONIFY, &(tmp_cfg.iconify));
    DialogItemCheckButtonSetText(di, _("Iconifying"));
    DialogItemCheckButtonSetState(di, tmp_cfgs[0].iconify);
    DialogItemCheckButtonSetPtr(di, &(tmp_cfg.iconify));
@@ -4448,7 +4433,7 @@ SettingsGroups(EWin * ewin)
    DialogItemSetFill(di, 1, 0);
    DialogItemSetColSpan(di, 2);
    DialogItemSetCallback(di, &GroupFeatureChangeCallback, GROUP_FEATURE_KILL,
-			 &(tmp_cfg.kill));
+                         &(tmp_cfg.kill));
    DialogItemCheckButtonSetText(di, _("Killing"));
    DialogItemCheckButtonSetState(di, tmp_cfgs[0].kill);
    DialogItemCheckButtonSetPtr(di, &(tmp_cfg.kill));
@@ -4458,7 +4443,7 @@ SettingsGroups(EWin * ewin)
    DialogItemSetFill(di, 1, 0);
    DialogItemSetColSpan(di, 2);
    DialogItemSetCallback(di, &GroupFeatureChangeCallback, GROUP_FEATURE_MOVE,
-			 &(tmp_cfg.move));
+                         &(tmp_cfg.move));
    DialogItemCheckButtonSetText(di, _("Moving"));
    DialogItemCheckButtonSetState(di, tmp_cfgs[0].move);
    DialogItemCheckButtonSetPtr(di, &(tmp_cfg.move));
@@ -4468,7 +4453,7 @@ SettingsGroups(EWin * ewin)
    DialogItemSetFill(di, 1, 0);
    DialogItemSetColSpan(di, 2);
    DialogItemSetCallback(di, &GroupFeatureChangeCallback, GROUP_FEATURE_RAISE,
-			 &(tmp_cfg.raise));
+                         &(tmp_cfg.raise));
    DialogItemCheckButtonSetText(di, _("Raising/Lowering"));
    DialogItemCheckButtonSetState(di, tmp_cfgs[0].raise);
    DialogItemCheckButtonSetPtr(di, &(tmp_cfg.raise));
@@ -4478,7 +4463,7 @@ SettingsGroups(EWin * ewin)
    DialogItemSetFill(di, 1, 0);
    DialogItemSetColSpan(di, 2);
    DialogItemSetCallback(di, &GroupFeatureChangeCallback, GROUP_FEATURE_STICK,
-			 &(tmp_cfg.stick));
+                         &(tmp_cfg.stick));
    DialogItemCheckButtonSetText(di, _("Sticking"));
    DialogItemCheckButtonSetState(di, tmp_cfgs[0].stick);
    DialogItemCheckButtonSetPtr(di, &(tmp_cfg.stick));
@@ -4488,7 +4473,7 @@ SettingsGroups(EWin * ewin)
    DialogItemSetFill(di, 1, 0);
    DialogItemSetColSpan(di, 2);
    DialogItemSetCallback(di, &GroupFeatureChangeCallback, GROUP_FEATURE_SHADE,
-			 &(tmp_cfg.shade));
+                         &(tmp_cfg.shade));
    DialogItemCheckButtonSetText(di, _("Shading"));
    DialogItemCheckButtonSetState(di, tmp_cfgs[0].shade);
    DialogItemCheckButtonSetPtr(di, &(tmp_cfg.shade));
@@ -4498,7 +4483,7 @@ SettingsGroups(EWin * ewin)
    DialogItemSetFill(di, 1, 0);
    DialogItemSetColSpan(di, 2);
    DialogItemSetCallback(di, &GroupFeatureChangeCallback, GROUP_FEATURE_MIRROR,
-			 &(tmp_cfg.mirror));
+                         &(tmp_cfg.mirror));
    DialogItemCheckButtonSetText(di, _("Mirror Shade/Iconify/Stick"));
    DialogItemCheckButtonSetState(di, tmp_cfgs[0].mirror);
    DialogItemCheckButtonSetPtr(di, &(tmp_cfg.mirror));
@@ -4531,8 +4516,8 @@ CB_ConfigureDefaultGroupSettings(int val, void *data)
 {
    if (val < 2)
      {
-	CopyGroupConfig(&tmp_group_cfg, &(mode.group_config));
-	mode.group_swapmove = tmp_group_swap;
+        CopyGroupConfig(&tmp_group_cfg, &(mode.group_config));
+        mode.group_swapmove = tmp_group_swap;
      }
    autosave();
    data = NULL;
@@ -4544,14 +4529,13 @@ SettingsDefaultGroupControl(void)
    Dialog             *d;
    DItem              *table, *di;
 
-   if (
-       (d =
-	FindItem("CONFIGURE_DEFAULT_GROUP_CONTROL", 0, LIST_FINDBY_NAME,
-		 LIST_TYPE_DIALOG)))
+   if ((d =
+        FindItem("CONFIGURE_DEFAULT_GROUP_CONTROL", 0, LIST_FINDBY_NAME,
+                 LIST_TYPE_DIALOG)))
      {
-	AUDIO_PLAY("SOUND_SETTINGS_ACTIVE");
-	ShowDialog(d);
-	return;
+        AUDIO_PLAY("SOUND_SETTINGS_ACTIVE");
+        ShowDialog(d);
+        return;
      }
    AUDIO_PLAY("SOUND_SETTINGS_GROUP");
 
@@ -4566,22 +4550,22 @@ SettingsDefaultGroupControl(void)
 
    if (mode.dialog_headers)
      {
-	di = DialogAddItem(table, DITEM_IMAGE);
-	DialogItemSetPadding(di, 2, 2, 2, 2);
-	DialogItemImageSetFile(di, "pix/group.png");
+        di = DialogAddItem(table, DITEM_IMAGE);
+        DialogItemSetPadding(di, 2, 2, 2, 2);
+        DialogItemImageSetFile(di, "pix/group.png");
 
-	di = DialogAddItem(table, DITEM_TEXT);
-	DialogItemSetPadding(di, 2, 2, 2, 2);
-	DialogItemSetFill(di, 1, 0);
-	DialogItemTextSetText(di,
-			      _("Enlightenment Default\n"
-				"Group Control Settings Dialog\n"));
+        di = DialogAddItem(table, DITEM_TEXT);
+        DialogItemSetPadding(di, 2, 2, 2, 2);
+        DialogItemSetFill(di, 1, 0);
+        DialogItemTextSetText(di,
+                              _("Enlightenment Default\n"
+                                "Group Control Settings Dialog\n"));
 
-	di = DialogAddItem(table, DITEM_SEPARATOR);
-	DialogItemSetColSpan(di, 2);
-	DialogItemSetPadding(di, 2, 2, 2, 2);
-	DialogItemSetFill(di, 1, 0);
-	DialogItemSeparatorSetOrientation(di, 0);
+        di = DialogAddItem(table, DITEM_SEPARATOR);
+        DialogItemSetColSpan(di, 2);
+        DialogItemSetPadding(di, 2, 2, 2, 2);
+        DialogItemSetFill(di, 1, 0);
+        DialogItemSeparatorSetOrientation(di, 0);
      }
 
    di = DialogAddItem(table, DITEM_TEXT);
@@ -4709,11 +4693,11 @@ RemoveRememberedWindow(EWin * ewin)
 
    for (rd = rd_ewin_list[0]; rd; rd++)
       if (rd->ewin == ewin)
-	{
-	   rd->ewin = 0;
-	   rd->remember = 0;
-	   break;
-	}
+        {
+           rd->ewin = 0;
+           rd->remember = 0;
+           break;
+        }
 
    return;
 }
@@ -4729,29 +4713,29 @@ CB_ApplyRemember(int val, void *data)
 
    if (val < 2 && rd_ewin_list)
      {
-	for (i = 0; rd_ewin_list[i]; i++)
-	  {
-	     if (rd_ewin_list[i])
-	       {
-		  if (rd_ewin_list[i]->ewin && !rd_ewin_list[i]->remember)
-		    {
-		       UnsnapshotEwin(rd_ewin_list[i]->ewin);
-		       /* would this be a better way to do things? */
-		       /* sn = FindSnapshot(rd_ewin_list[i]->ewin); */
-		       /* ClearSnapshot(sn); */
-		       /* rd_ewin_list[i]->ewin->snap = 0; */
-		    }
-	       }
-	  }
-	/* save snapshot info to disk */
-	SaveSnapInfo();
+        for (i = 0; rd_ewin_list[i]; i++)
+          {
+             if (rd_ewin_list[i])
+               {
+                  if (rd_ewin_list[i]->ewin && !rd_ewin_list[i]->remember)
+                    {
+                       UnsnapshotEwin(rd_ewin_list[i]->ewin);
+                       /* would this be a better way to do things? */
+                       /* sn = FindSnapshot(rd_ewin_list[i]->ewin); */
+                       /* ClearSnapshot(sn); */
+                       /* rd_ewin_list[i]->ewin->snap = 0; */
+                    }
+               }
+          }
+        /* save snapshot info to disk */
+        SaveSnapInfo();
      }
    if (((val == 0) || (val == 2)) && rd_ewin_list)
      {
-	for (i = 0; rd_ewin_list[i]; i++)
-	   Efree(rd_ewin_list[i]);
-	Efree(rd_ewin_list);
-	rd_ewin_list = 0;
+        for (i = 0; rd_ewin_list[i]; i++)
+           Efree(rd_ewin_list[i]);
+        Efree(rd_ewin_list);
+        rd_ewin_list = 0;
      }
 }
 
@@ -4765,10 +4749,10 @@ CB_ApplyRememberEscape(int val, void *data)
    val = 0;
    if (rd_ewin_list)
      {
-	for (i = 0; rd_ewin_list[i]; i++)
-	   Efree(rd_ewin_list[i]);
-	Efree(rd_ewin_list);
-	rd_ewin_list = 0;
+        for (i = 0; rd_ewin_list[i]; i++)
+           Efree(rd_ewin_list[i]);
+        Efree(rd_ewin_list);
+        rd_ewin_list = 0;
      }
 }
 
@@ -4800,9 +4784,9 @@ SettingsRemember()
    /* init remember window */
    if ((d = FindItem("REMEMBER_WINDOW", 0, LIST_FINDBY_NAME, LIST_TYPE_DIALOG)))
      {
-	AUDIO_PLAY("SOUND_SETTINGS_ACTIVE");
-	ShowDialog(d);
-	return;
+        AUDIO_PLAY("SOUND_SETTINGS_ACTIVE");
+        ShowDialog(d);
+        return;
      }
    AUDIO_PLAY("SOUND_SETTINGS_REMEMBER");
 
@@ -4814,23 +4798,23 @@ SettingsRemember()
 
    if (mode.dialog_headers)
      {
-	di = DialogAddItem(table, DITEM_IMAGE);
-	DialogItemSetPadding(di, 2, 2, 2, 2);
-	DialogItemImageSetFile(di, "pix/snapshots.png");
+        di = DialogAddItem(table, DITEM_IMAGE);
+        DialogItemSetPadding(di, 2, 2, 2, 2);
+        DialogItemImageSetFile(di, "pix/snapshots.png");
 
-	di = DialogAddItem(table, DITEM_TEXT);
-	DialogItemSetColSpan(di, 2);
-	DialogItemSetPadding(di, 2, 2, 2, 2);
-	DialogItemSetFill(di, 1, 0);
-	DialogItemTextSetText(di,
-			      _("Enlightenment Remembered\n"
-				"Windows Settings Dialog\n"));
+        di = DialogAddItem(table, DITEM_TEXT);
+        DialogItemSetColSpan(di, 2);
+        DialogItemSetPadding(di, 2, 2, 2, 2);
+        DialogItemSetFill(di, 1, 0);
+        DialogItemTextSetText(di,
+                              _("Enlightenment Remembered\n"
+                                "Windows Settings Dialog\n"));
 
-	di = DialogAddItem(table, DITEM_SEPARATOR);
-	DialogItemSetColSpan(di, 3);
-	DialogItemSetPadding(di, 2, 2, 2, 2);
-	DialogItemSetFill(di, 1, 0);
-	DialogItemSeparatorSetOrientation(di, 0);
+        di = DialogAddItem(table, DITEM_SEPARATOR);
+        DialogItemSetColSpan(di, 3);
+        DialogItemSetPadding(di, 2, 2, 2, 2);
+        DialogItemSetFill(di, 1, 0);
+        DialogItemSeparatorSetOrientation(di, 0);
      }
 
    /* there's a much more efficient way of doing this, but this will work
@@ -4840,51 +4824,51 @@ SettingsRemember()
    ri = 0;
    if ((lst) && (num > 0))
      {
-	for (i = 0; i < num; i++)
-	  {
-	     ewin = lst[i];
-	     if (!ewin || !FindSnapshot(ewin)
-		 || !(ewin->client.title || ewin->client.name
-		      || ewin->client.class))
-	       {
-		  /* fprintf(stderr,"Skipping window #%d \"%s\".\n",
-		   * i, ewin->client.title?ewin->client.title:"null"); */
-	       }
-	     else
-	       {
-		  rd_ewin_list[ri] = Emalloc(sizeof(RememberWinList));
-		  rd_ewin_list[ri]->ewin = ewin;
-		  rd_ewin_list[ri]->remember = 1;
-		  /* fprintf(stderr," Window #%d \"%s\" is remembered (ri==%d)\n",
-		   * i, ewin->client.title?ewin->client.title:"null", ri);
-		   * fprintf(stderr,"  title:\t%s\n  name:\t%s\n  class:\t%s\n  command:\t%s\n",
-		   * ewin->client.title?ewin->client.title:"null",
-		   * ewin->client.name?ewin->client.name:"null",
-		   * ewin->client.class?ewin->client.class:"null",
-		   * ewin->client.command?ewin->client.command:"null"
-		   * ); */
+        for (i = 0; i < num; i++)
+          {
+             ewin = lst[i];
+             if (!ewin || !FindSnapshot(ewin)
+                 || !(ewin->client.title || ewin->client.name
+                      || ewin->client.class))
+               {
+                  /* fprintf(stderr,"Skipping window #%d \"%s\".\n",
+                   * i, ewin->client.title?ewin->client.title:"null"); */
+               }
+             else
+               {
+                  rd_ewin_list[ri] = Emalloc(sizeof(RememberWinList));
+                  rd_ewin_list[ri]->ewin = ewin;
+                  rd_ewin_list[ri]->remember = 1;
+                  /* fprintf(stderr," Window #%d \"%s\" is remembered (ri==%d)\n",
+                   * i, ewin->client.title?ewin->client.title:"null", ri);
+                   * fprintf(stderr,"  title:\t%s\n  name:\t%s\n  class:\t%s\n  command:\t%s\n",
+                   * ewin->client.title?ewin->client.title:"null",
+                   * ewin->client.name?ewin->client.name:"null",
+                   * ewin->client.class?ewin->client.class:"null",
+                   * ewin->client.command?ewin->client.command:"null"
+                   * ); */
 
-		  di = DialogAddItem(table, DITEM_CHECKBUTTON);
-		  DialogItemSetColSpan(di, 2);
-		  DialogItemSetPadding(di, 2, 2, 2, 2);
-		  DialogItemSetFill(di, 1, 0);
-		  DialogItemSetAlign(di, 0, 512);
-		  DialogItemCheckButtonSetText(di, ewin->client.title);
-		  DialogItemCheckButtonSetState(di, rd_ewin_list[ri]->remember);
-		  DialogItemCheckButtonSetPtr(di,
-					      &(rd_ewin_list[ri]->remember));
+                  di = DialogAddItem(table, DITEM_CHECKBUTTON);
+                  DialogItemSetColSpan(di, 2);
+                  DialogItemSetPadding(di, 2, 2, 2, 2);
+                  DialogItemSetFill(di, 1, 0);
+                  DialogItemSetAlign(di, 0, 512);
+                  DialogItemCheckButtonSetText(di, ewin->client.title);
+                  DialogItemCheckButtonSetState(di, rd_ewin_list[ri]->remember);
+                  DialogItemCheckButtonSetPtr(di,
+                                              &(rd_ewin_list[ri]->remember));
 
-		  di = DialogAddItem(table, DITEM_BUTTON);
-		  DialogItemSetPadding(di, 2, 2, 2, 2);
-		  DialogItemSetFill(di, 1, 0);
-		  DialogItemSetAlign(di, 1024, 512);
-		  DialogItemButtonSetText(di, _("Remembered Settings..."));
-		  DialogItemSetCallback(di, CB_RememberWindowSettings, 0,
-					(char *)rd_ewin_list[ri]);
+                  di = DialogAddItem(table, DITEM_BUTTON);
+                  DialogItemSetPadding(di, 2, 2, 2, 2);
+                  DialogItemSetFill(di, 1, 0);
+                  DialogItemSetAlign(di, 1024, 512);
+                  DialogItemButtonSetText(di, _("Remembered Settings..."));
+                  DialogItemSetCallback(di, CB_RememberWindowSettings, 0,
+                                        (char *)rd_ewin_list[ri]);
 
-		  ri++;
-	       }
-	  }
+                  ri++;
+               }
+          }
      }
    if (lst)
       Efree(lst);
@@ -4893,13 +4877,13 @@ SettingsRemember()
    /* finish remember window */
    if (!ri)
      {
-	di = DialogAddItem(table, DITEM_TEXT);
-	DialogItemSetColSpan(di, 3);
-	DialogItemSetPadding(di, 2, 2, 2, 2);
-	DialogItemSetFill(di, 1, 0);
-	DialogItemTextSetText(di,
-			      _
-			      ("There are no active windows with remembered attributes."));
+        di = DialogAddItem(table, DITEM_TEXT);
+        DialogItemSetColSpan(di, 3);
+        DialogItemSetPadding(di, 2, 2, 2, 2);
+        DialogItemSetFill(di, 1, 0);
+        DialogItemTextSetText(di,
+                              _
+                              ("There are no active windows with remembered attributes."));
      }
 
    di = DialogAddItem(table, DITEM_SEPARATOR);

@@ -34,9 +34,9 @@ CreateCurve(ModCurve * c)
 
    if (c->num == 0)
      {
-	for (i = 0; i < 256; i++)
-	   c->map[i] = i;
-	EDBUG_RETURN_;
+        for (i = 0; i < 256; i++)
+           c->map[i] = i;
+        EDBUG_RETURN_;
      }
 
    cx = 0;
@@ -44,21 +44,21 @@ CreateCurve(ModCurve * c)
 
    for (i = 1; i < c->num; i++)
      {
-	v1 = c->py[i - 1];
-	v2 = c->py[i];
-	dist = c->px[i] - c->px[i - 1];
-	if (dist < 2)
-	  {
-	     c->map[cx++] = v2;
-	  }
-	else
-	  {
-	     for (j = 0; j < dist; j++)
-	       {
-		  val = ((v2 * j) + (v1 * (dist - j - 1))) / (dist - 1);
-		  c->map[cx++] = (unsigned char)val;
-	       }
-	  }
+        v1 = c->py[i - 1];
+        v2 = c->py[i];
+        dist = c->px[i] - c->px[i - 1];
+        if (dist < 2)
+          {
+             c->map[cx++] = v2;
+          }
+        else
+          {
+             for (j = 0; j < dist; j++)
+               {
+                  val = ((v2 * j) + (v1 * (dist - j - 1))) / (dist - 1);
+                  c->map[cx++] = (unsigned char)val;
+               }
+          }
      }
 
    EDBUG_RETURN_;
@@ -92,13 +92,13 @@ FreeCMClass(ColorModifierClass * cm)
 
    if (cm->ref_count > 0)
      {
-	char                stuff[255];
+        char                stuff[255];
 
-	Esnprintf(stuff, sizeof(stuff), _("%u references remain\n"),
-		  cm->ref_count);
-	DIALOG_OK(_("ColorModClass Error!"), stuff);
+        Esnprintf(stuff, sizeof(stuff), _("%u references remain\n"),
+                  cm->ref_count);
+        DIALOG_OK(_("ColorModClass Error!"), stuff);
 
-	EDBUG_RETURN_;
+        EDBUG_RETURN_;
 
      }
 
@@ -115,9 +115,9 @@ FreeCMClass(ColorModifierClass * cm)
 
 ColorModifierClass *
 CreateCMClass(char *name, int rnum, unsigned char *rpx,
-	      unsigned char *rpy, int gnum,
-	      unsigned char *gpx, unsigned char *gpy,
-	      int bnum, unsigned char *bpx, unsigned char *bpy)
+              unsigned char *rpy, int gnum,
+              unsigned char *gpx, unsigned char *gpy,
+              int bnum, unsigned char *bpx, unsigned char *bpy)
 {
    ColorModifierClass *cm;
 
@@ -138,41 +138,41 @@ CreateCMClass(char *name, int rnum, unsigned char *rpx,
 
    if (rnum < 2)
      {
-	cm->red.num = 0;
+        cm->red.num = 0;
      }
    else
      {
-	cm->red.num = rnum;
-	cm->red.px = Emalloc(rnum);
-	memcpy(cm->red.px, rpx, rnum);
-	cm->red.py = Emalloc(rnum);
-	memcpy(cm->red.py, rpy, rnum);
+        cm->red.num = rnum;
+        cm->red.px = Emalloc(rnum);
+        memcpy(cm->red.px, rpx, rnum);
+        cm->red.py = Emalloc(rnum);
+        memcpy(cm->red.py, rpy, rnum);
      }
 
    if (gnum < 2)
      {
-	cm->green.num = 0;
+        cm->green.num = 0;
      }
    else
      {
-	cm->green.num = gnum;
-	cm->green.px = Emalloc(gnum);
-	memcpy(cm->green.px, gpx, gnum);
-	cm->green.py = Emalloc(gnum);
-	memcpy(cm->green.py, gpy, gnum);
+        cm->green.num = gnum;
+        cm->green.px = Emalloc(gnum);
+        memcpy(cm->green.px, gpx, gnum);
+        cm->green.py = Emalloc(gnum);
+        memcpy(cm->green.py, gpy, gnum);
      }
 
    if (bnum < 2)
      {
-	cm->blue.num = 0;
+        cm->blue.num = 0;
      }
    else
      {
-	cm->blue.num = bnum;
-	cm->blue.px = Emalloc(bnum);
-	memcpy(cm->blue.px, bpx, bnum);
-	cm->blue.py = Emalloc(bnum);
-	memcpy(cm->blue.py, bpy, bnum);
+        cm->blue.num = bnum;
+        cm->blue.px = Emalloc(bnum);
+        memcpy(cm->blue.px, bpx, bnum);
+        cm->blue.py = Emalloc(bnum);
+        memcpy(cm->blue.py, bpy, bnum);
      }
 
    CreateCurve(&(cm->red));
@@ -185,15 +185,14 @@ CreateCMClass(char *name, int rnum, unsigned char *rpx,
 
 void
 ModifyCMClass(char *name, int rnum, unsigned char *rpx, unsigned char *rpy,
-	      int gnum, unsigned char *gpx, unsigned char *gpy, int bnum,
-	      unsigned char *bpx, unsigned char *bpy)
+              int gnum, unsigned char *gpx, unsigned char *gpy, int bnum,
+              unsigned char *bpx, unsigned char *bpy)
 {
    ColorModifierClass *cm;
 
    EDBUG(5, "ModifyCMCLass");
-   cm =
-      (ColorModifierClass *) FindItem(name, 0, LIST_FINDBY_NAME,
-				      LIST_TYPE_COLORMODIFIER);
+   cm = (ColorModifierClass *) FindItem(name, 0, LIST_FINDBY_NAME,
+                                        LIST_TYPE_COLORMODIFIER);
    if (!cm)
       EDBUG_RETURN_;
 
@@ -219,41 +218,41 @@ ModifyCMClass(char *name, int rnum, unsigned char *rpx, unsigned char *rpy,
 
    if (rnum < 2)
      {
-	cm->red.num = 0;
+        cm->red.num = 0;
      }
    else
      {
-	cm->red.num = rnum;
-	cm->red.px = Emalloc(rnum);
-	memcpy(cm->red.px, rpx, rnum);
-	cm->red.py = Emalloc(rnum);
-	memcpy(cm->red.py, rpy, rnum);
+        cm->red.num = rnum;
+        cm->red.px = Emalloc(rnum);
+        memcpy(cm->red.px, rpx, rnum);
+        cm->red.py = Emalloc(rnum);
+        memcpy(cm->red.py, rpy, rnum);
      }
 
    if (gnum < 2)
      {
-	cm->green.num = 0;
+        cm->green.num = 0;
      }
    else
      {
-	cm->green.num = gnum;
-	cm->green.px = Emalloc(gnum);
-	memcpy(cm->green.px, gpx, gnum);
-	cm->green.py = Emalloc(gnum);
-	memcpy(cm->green.py, gpy, gnum);
+        cm->green.num = gnum;
+        cm->green.px = Emalloc(gnum);
+        memcpy(cm->green.px, gpx, gnum);
+        cm->green.py = Emalloc(gnum);
+        memcpy(cm->green.py, gpy, gnum);
      }
 
    if (bnum < 2)
      {
-	cm->blue.num = 0;
+        cm->blue.num = 0;
      }
    else
      {
-	cm->blue.num = bnum;
-	cm->blue.px = Emalloc(bnum);
-	memcpy(cm->blue.px, bpx, bnum);
-	cm->blue.py = Emalloc(bnum);
-	memcpy(cm->blue.py, bpy, bnum);
+        cm->blue.num = bnum;
+        cm->blue.px = Emalloc(bnum);
+        memcpy(cm->blue.px, bpx, bnum);
+        cm->blue.py = Emalloc(bnum);
+        memcpy(cm->blue.py, bpy, bnum);
      }
 
    CreateCurve(&(cm->red));

@@ -54,42 +54,40 @@ SetCoords(int x, int y, int w, int h)
    ch += (ic->padding.top + ic->padding.bottom);
    if (ewin)
      {
-	md = 0;
-	if (mode.mode == MODE_MOVE)
-	   md = mode.movemode;
-	else
-	   md = mode.resizemode;
-	if ((md > 0) && ((cw >= (ewin->w)) || (ch >= (ewin->h))))
-	  {
-	     cx = 0;
-	     cy = 0;
-	  }
-	else
-	  {
-	     cx = 0;
-	     cy = 0;
-	     if (mode.geominfomode == 1)
-	       {
-		  switch (md)
-		    {
-		    case 0:
-		    case 1:
-		    case 2:
-		       cx =
-			  ewin->x + ((ewin->w - cw) / 2) +
-			  desks.desk[ewin->desktop].x;
-		       cy =
-			  ewin->y + ((ewin->h - ch) / 2) +
-			  desks.desk[ewin->desktop].y;
-		       break;
-		    }
-	       }
-	  }
+        md = 0;
+        if (mode.mode == MODE_MOVE)
+           md = mode.movemode;
+        else
+           md = mode.resizemode;
+        if ((md > 0) && ((cw >= (ewin->w)) || (ch >= (ewin->h))))
+          {
+             cx = 0;
+             cy = 0;
+          }
+        else
+          {
+             cx = 0;
+             cy = 0;
+             if (mode.geominfomode == 1)
+               {
+                  switch (md)
+                    {
+                      case 0:
+                      case 1:
+                      case 2:
+                         cx = ewin->x + ((ewin->w - cw) / 2) +
+                             desks.desk[ewin->desktop].x;
+                         cy = ewin->y + ((ewin->h - ch) / 2) +
+                             desks.desk[ewin->desktop].y;
+                         break;
+                    }
+               }
+          }
      }
    else
      {
-	cx = 0;
-	cy = 0;
+        cx = 0;
+        cy = 0;
      }
    if (!coords_visible)
       EMapWindow(disp, c_win);

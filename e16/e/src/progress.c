@@ -44,8 +44,8 @@ CreateProgressbar(char *name, int width, int height)
    p->h = height;
    p->win = ECreateWindow(root.win, p->x, p->y, p->w - (p->h * 5), p->h, 1);
    p->n_win =
-      ECreateWindow(root.win, p->x + p->w - (p->h * 5), p->y, (p->h * 5),
-		    p->h, 1);
+       ECreateWindow(root.win, p->x + p->w - (p->h * 5), p->y, (p->h * 5),
+                     p->h, 1);
    p->p_win = ECreateWindow(root.win, p->x, p->y + p->h, 1, p->h, 1);
    /* FIXME: need to use other image and textclasses */
 
@@ -66,7 +66,7 @@ CreateProgressbar(char *name, int width, int height)
       p->tc->ref_count++;
 
    p->tnc =
-      FindItem("PROGRESS_TEXT_NUMBER", 0, LIST_FINDBY_NAME, LIST_TYPE_TCLASS);
+       FindItem("PROGRESS_TEXT_NUMBER", 0, LIST_FINDBY_NAME, LIST_TYPE_TCLASS);
    if (p->tnc)
       p->tnc->ref_count++;
 
@@ -96,7 +96,7 @@ SetProgressbar(Progressbar * p, int progress)
    pq = queue_up;
    queue_up = 0;
    TclassApply(p->inc, p->n_win, p->h * 5, p->h, 0, 0, STATE_CLICKED, 0,
-	       p->tnc, s);
+               p->tnc, s);
    IclassApply(p->inc, p->p_win, w, p->h, 1, 0, STATE_NORMAL, 0);
    EResizeWindow(disp, p->p_win, w, p->h);
    queue_up = pq;
@@ -127,7 +127,7 @@ ShowProgressbar(Progressbar * p)
    EMapRaised(disp, p->p_win);
    XSync(disp, False);
    TclassApply(p->ic, p->win, p->w - (p->h * 5), p->h, 0, 0, STATE_NORMAL, 0,
-	       p->tc, p->name);
+               p->tc, p->name);
    queue_up = pq;
    EDBUG_RETURN_;
 }
@@ -160,21 +160,21 @@ FreeProgressbar(Progressbar * p)
 
    for (i = 0; i < pnum; i++)
      {
-	if (plist[i] == p)
-	  {
-	     for (j = i; j < (pnum - 1); j++)
-	       {
-		  plist[j] = plist[j + 1];
-		  plist[j]->y -= p->h;
-		  EMoveWindow(disp, p->win, plist[j]->x, plist[j]->y);
-		  EMoveWindow(disp, p->n_win,
-			      plist[j]->x + plist[j]->w - (plist[j]->h * 5),
-			      plist[j]->y);
-		  EMoveWindow(disp, p->p_win, plist[j]->x,
-			      plist[j]->y + plist[j]->h);
-	       }
-	     i = pnum;
-	  }
+        if (plist[i] == p)
+          {
+             for (j = i; j < (pnum - 1); j++)
+               {
+                  plist[j] = plist[j + 1];
+                  plist[j]->y -= p->h;
+                  EMoveWindow(disp, p->win, plist[j]->x, plist[j]->y);
+                  EMoveWindow(disp, p->n_win,
+                              plist[j]->x + plist[j]->w - (plist[j]->h * 5),
+                              plist[j]->y);
+                  EMoveWindow(disp, p->p_win, plist[j]->x,
+                              plist[j]->y + plist[j]->h);
+               }
+             i = pnum;
+          }
      }
 
    if (p->ic)
@@ -195,14 +195,14 @@ FreeProgressbar(Progressbar * p)
    pnum--;
    if (pnum <= 0)
      {
-	pnum = 0;
-	if (plist)
-	   Efree(plist);
-	plist = NULL;
+        pnum = 0;
+        if (plist)
+           Efree(plist);
+        plist = NULL;
      }
    else
      {
-	plist = Erealloc(plist, pnum * sizeof(Progressbar *));
+        plist = Erealloc(plist, pnum * sizeof(Progressbar *));
      }
 
    EDBUG_RETURN_;
@@ -217,15 +217,15 @@ ListProgressWindows(int *num)
    *num = pnum * 3;
    if (pnum > 0)
      {
-	j = 0;
-	wl = Emalloc(sizeof(Window) * pnum * 3);
-	for (i = 0; i < pnum; i++)
-	  {
-	     wl[j++] = plist[i]->win;
-	     wl[j++] = plist[i]->n_win;
-	     wl[j++] = plist[i]->p_win;
-	  }
-	return wl;
+        j = 0;
+        wl = Emalloc(sizeof(Window) * pnum * 3);
+        for (i = 0; i < pnum; i++)
+          {
+             wl[j++] = plist[i]->win;
+             wl[j++] = plist[i]->n_win;
+             wl[j++] = plist[i]->p_win;
+          }
+        return wl;
      }
 
    return NULL;
@@ -238,9 +238,9 @@ RaiseProgressbars(void)
 
    for (i = 0; i < pnum; i++)
      {
-	XRaiseWindow(disp, plist[i]->win);
-	XRaiseWindow(disp, plist[i]->n_win);
-	XRaiseWindow(disp, plist[i]->p_win);
+        XRaiseWindow(disp, plist[i]->win);
+        XRaiseWindow(disp, plist[i]->n_win);
+        XRaiseWindow(disp, plist[i]->p_win);
      }
 
    return;

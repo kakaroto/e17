@@ -96,14 +96,14 @@ MatchEwinBorder(EWin * ewin, WindowMatch * b)
 
    if (TestWindowMatch(ewin, b))
      {
-	if (b->make_sticky)
-	   ewin->sticky = 1;
+        if (b->make_sticky)
+           ewin->sticky = 1;
 
-	EDBUG_RETURN(b->border);
+        EDBUG_RETURN(b->border);
      }
    else
      {
-	EDBUG_RETURN(0);
+        EDBUG_RETURN(0);
      }
 }
 
@@ -113,14 +113,14 @@ MatchEwinIcon(EWin * ewin, WindowMatch * b)
    EDBUG(4, "MatchEwinIcon");
    if (TestWindowMatch(ewin, b))
      {
-	if (b->make_sticky)
-	   ewin->sticky = 1;
+        if (b->make_sticky)
+           ewin->sticky = 1;
 
-	EDBUG_RETURN(b->icon);
+        EDBUG_RETURN(b->icon);
      }
    else
      {
-	EDBUG_RETURN(0);
+        EDBUG_RETURN(0);
      }
 }
 
@@ -130,20 +130,20 @@ MatchEwinDesktop(EWin * ewin, WindowMatch * b)
    EDBUG(4, "MatchEwinDesktop");
    if (TestWindowMatch(ewin, b))
      {
-	if (b->make_sticky)
-	   ewin->sticky = 1;
+        if (b->make_sticky)
+           ewin->sticky = 1;
 
-	EDBUG_RETURN(b->desk);
+        EDBUG_RETURN(b->desk);
      }
    else
      {
-	EDBUG_RETURN(0);
+        EDBUG_RETURN(0);
      }
 }
 
 void               *
 MatchEwinByFunction(EWin * ewin,
-		    void *(*FunctionToTest) (EWin *, WindowMatch *))
+                    void *(*FunctionToTest) (EWin *, WindowMatch *))
 {
    WindowMatch       **lst;
    int                 i, num;
@@ -155,14 +155,14 @@ MatchEwinByFunction(EWin * ewin,
    lst = (WindowMatch **) ListItemType(&num, LIST_TYPE_WINDOWMATCH);
    if (lst)
      {
-	for (i = 0; i < num; i++)
-	  {
-	     if ((retval = (*FunctionToTest) (ewin, lst[i])))
-	       {
-		  i = num;
-	       }
-	  }
-	Efree(lst);
+        for (i = 0; i < num; i++)
+          {
+             if ((retval = (*FunctionToTest) (ewin, lst[i])))
+               {
+                  i = num;
+               }
+          }
+        Efree(lst);
      }
 
    EDBUG_RETURN(retval);

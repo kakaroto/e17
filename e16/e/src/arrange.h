@@ -28,17 +28,14 @@
 #define ARRANGE_BY_SIZE     1
 #define ARRANGE_BY_POSITION 2
 
-typedef struct _rectbox
-{
+typedef struct _rectbox {
    void               *data;
    int                 x, y, w, h;
    int                 p;
-}
-RectBox;
+} RectBox;
 
 void                ArrangeRects(RectBox * fixed, int fixed_count,
-				 RectBox * floating, int floating_count,
-				 RectBox * sorted, int startx, int starty,
-				 int width, int height, int policy,
-
-				 char initial_window);
+                                 RectBox * floating, int floating_count,
+                                 RectBox * sorted, int startx, int starty,
+                                 int width, int height, int policy,
+                                 char initial_window);

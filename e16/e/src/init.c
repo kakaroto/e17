@@ -177,20 +177,19 @@ SetupFallbackClasses(void)
    b->border.top = 8;
    b->border.bottom = 8;
    AddBorderPart(b, ic, ac, NULL, NULL, 1, FLAG_BUTTON, 0, 8, 99999, 8, 99999,
-		 -1, 0, 0, 0, 0, -1, 1024, -1, 0, 7, 1);
+                 -1, 0, 0, 0, 0, -1, 1024, -1, 0, 7, 1);
    AddBorderPart(b, ic, ac, NULL, NULL, 1, FLAG_BUTTON, 0, 8, 99999, 8, 99999,
-		 -1, 0, 0, 1024, -8, -1, 1024, -1, 1024, -1, 1);
+                 -1, 0, 0, 1024, -8, -1, 1024, -1, 1024, -1, 1);
    AddBorderPart(b, ic, ac, NULL, NULL, 1, FLAG_BUTTON, 0, 8, 99999, 8, 99999,
-		 -1, 0, 0, 0, 8, -1, 0, 7, 1024, -9, 1);
+                 -1, 0, 0, 0, 8, -1, 0, 7, 1024, -9, 1);
 
    AddBorderPart(b, ic, ac, NULL, NULL, 1, FLAG_BUTTON, 0, 8, 99999, 8, 99999,
-		 -1, 1024, -8, 0, 8, -1, 1024, -1, 1024, -9, 1);
+                 -1, 1024, -8, 0, 8, -1, 1024, -1, 1024, -9, 1);
    AddItem(b, b->name, 0, LIST_TYPE_BORDER);
 
    /* create a fallback background in case no background is found */
-   bg =
-      CreateDesktopBG("NONE", &icl, NULL, 0, 0, 0, 0, 0, 0, NULL, 0, 0, 0, 0,
-		      0);
+   bg = CreateDesktopBG("NONE", &icl, NULL, 0, 0, 0, 0, 0, 0, NULL, 0, 0, 0, 0,
+                        0);
    AddItem(bg, bg->name, 0, LIST_TYPE_BACKGROUND);
 
    /* create a fallback textclass in case no textclass is found */
@@ -198,7 +197,7 @@ SetupFallbackClasses(void)
    tc->name = "__FALLBACK_TCLASS";
    tc->norm.normal = CreateTextState();
    tc->norm.normal->fontname =
-      duplicate("-*-helvetica-medium-r-*-*-12-*-*-*-*-*-*-*");
+       duplicate("-*-helvetica-medium-r-*-*-12-*-*-*-*-*-*-*");
    tc->norm.normal->fg_col.r = 0;
    tc->norm.normal->fg_col.g = 0;
    tc->norm.normal->fg_col.b = 0;

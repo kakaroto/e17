@@ -23,7 +23,7 @@
 #include "E.h"
 #include <errno.h>
 #ifdef __EMX__
-#include <io.h>			/* EMX select() */
+#include <io.h>                 /* EMX select() */
 #endif
 
 char                throw_move_events_away = 0;
@@ -99,17 +99,17 @@ NukeBoringevents(XEvent * ev, int num)
    for (i = 0; i < num; i++)
      {
 /*      DebugEvent(&(ev[i])); */
-	ok[i] = 1;
+        ok[i] = 1;
      }
    /* get rid of all but the last motion event */
    last = -1;
    for (i = 0; i < num; i++)
      {
-	if (ev[i].type == MotionNotify)
-	  {
-	     ok[i] = 0;
-	     last = i;
-	  }
+        if (ev[i].type == MotionNotify)
+          {
+             ok[i] = 0;
+             last = i;
+          }
      }
    if ((last >= 0) && (!throw_move_events_away))
       ok[last] = 1;
@@ -118,23 +118,23 @@ NukeBoringevents(XEvent * ev, int num)
    /* as beign valid */
    for (i = 0; i < num; i++)
      {
-	if (ev[i].type == event_base_shape + ShapeNotify)
-	  {
-	     Window              win;
+        if (ev[i].type == event_base_shape + ShapeNotify)
+          {
+             Window              win;
 
-	     last = i;
-	     win = ev[i].xany.window;
-	     for (j = i; j < num; j++)
-	       {
-		  if ((ev[j].type == event_base_shape + ShapeNotify)
-		      && (ev[j].xany.window == win))
-		    {
-		       ok[j] = 0;
-		       last = j;
-		    }
-	       }
-	     ok[last] = 1;
-	  }
+             last = i;
+             win = ev[i].xany.window;
+             for (j = i; j < num; j++)
+               {
+                  if ((ev[j].type == event_base_shape + ShapeNotify)
+                      && (ev[j].xany.window == win))
+                    {
+                       ok[j] = 0;
+                       last = j;
+                    }
+               }
+             ok[last] = 1;
+          }
      }
    /* FIXME: add maprequest compression */
    /* FIXME: add configurerequest compression */
@@ -150,111 +150,111 @@ DebugEvent(XEvent * ev)
       fprintf(stderr, "EV: ShapeNotify:\n");
    else
      {
-	switch (ev->type)
-	  {
-	  case KeyPress:
-	     fprintf(stderr, "EV: KeyPress:\n");
-	     break;
-	  case KeyRelease:
-	     fprintf(stderr, "EV: KeyRelease:\n");
-	     break;
-	  case ButtonPress:
-	     fprintf(stderr, "EV: ButtonPress:\n");
-	     break;
-	  case ButtonRelease:
-	     fprintf(stderr, "EV: ButtonRelease:\n");
-	     break;
-	  case MotionNotify:
-	     fprintf(stderr, "EV: MotionNotify:\n");
-	     break;
-	  case EnterNotify:
-	     fprintf(stderr, "EV: EnterNotify:\n");
-	     break;
-	  case LeaveNotify:
-	     fprintf(stderr, "EV: LeaveNotify:\n");
-	     break;
-	  case FocusIn:
-	     fprintf(stderr, "EV: FocusIn:\n");
-	     break;
-	  case FocusOut:
-	     fprintf(stderr, "EV: FocusOut:\n");
-	     break;
-	  case KeymapNotify:
-	     fprintf(stderr, "EV: KeymapNotify:\n");
-	     break;
-	  case Expose:
-	     fprintf(stderr, "EV: Expose:\n");
-	     break;
-	  case GraphicsExpose:
-	     fprintf(stderr, "EV: GraphicsExpose:\n");
-	     break;
-	  case NoExpose:
-	     fprintf(stderr, "EV: NoExpose:\n");
-	     break;
-	  case VisibilityNotify:
-	     fprintf(stderr, "EV: VisibilityNotify:\n");
-	     break;
-	  case CreateNotify:
-	     fprintf(stderr, "EV: CreateNotify:\n");
-	     break;
-	  case DestroyNotify:
-	     fprintf(stderr, "EV: DestroyNotify:\n");
-	     break;
-	  case UnmapNotify:
-	     fprintf(stderr, "EV: UnmapNotify:\n");
-	     break;
-	  case MapNotify:
-	     fprintf(stderr, "EV: MapNotify:\n");
-	     break;
-	  case MapRequest:
-	     fprintf(stderr, "EV: MapRequest:\n");
-	     break;
-	  case ReparentNotify:
-	     fprintf(stderr, "EV: ReparentNotify:\n");
-	     break;
-	  case ConfigureNotify:
-	     fprintf(stderr, "EV: ConfigureNotify:\n");
-	     break;
-	  case ConfigureRequest:
-	     fprintf(stderr, "EV: ConfigureRequest:\n");
-	     break;
-	  case GravityNotify:
-	     fprintf(stderr, "EV: GravityNotify:\n");
-	     break;
-	  case ResizeRequest:
-	     fprintf(stderr, "EV: ResizeRequest:\n");
-	     break;
-	  case CirculateNotify:
-	     fprintf(stderr, "EV: CirculateNotify:\n");
-	     break;
-	  case CirculateRequest:
-	     fprintf(stderr, "EV: CirculateRequest:\n");
-	     break;
-	  case PropertyNotify:
-	     fprintf(stderr, "EV: PropertyNotify:\n");
-	     break;
-	  case SelectionClear:
-	     fprintf(stderr, "EV: SelectionClear:\n");
-	     break;
-	  case SelectionRequest:
-	     fprintf(stderr, "EV: SelectionRequest:\n");
-	     break;
-	  case SelectionNotify:
-	     fprintf(stderr, "EV: SelectionNotify:\n");
-	     break;
-	  case ColormapNotify:
-	     fprintf(stderr, "EV: ColormapNotify:\n");
-	     break;
-	  case ClientMessage:
-	     fprintf(stderr, "EV: ClientMessage:\n");
-	     break;
-	  case MappingNotify:
-	     fprintf(stderr, "EV: MappingNotify:\n");
-	     break;
-	  default:
-	     fprintf(stderr, "EV: ???\n");
-	     break;
-	  }
+        switch (ev->type)
+          {
+            case KeyPress:
+               fprintf(stderr, "EV: KeyPress:\n");
+               break;
+            case KeyRelease:
+               fprintf(stderr, "EV: KeyRelease:\n");
+               break;
+            case ButtonPress:
+               fprintf(stderr, "EV: ButtonPress:\n");
+               break;
+            case ButtonRelease:
+               fprintf(stderr, "EV: ButtonRelease:\n");
+               break;
+            case MotionNotify:
+               fprintf(stderr, "EV: MotionNotify:\n");
+               break;
+            case EnterNotify:
+               fprintf(stderr, "EV: EnterNotify:\n");
+               break;
+            case LeaveNotify:
+               fprintf(stderr, "EV: LeaveNotify:\n");
+               break;
+            case FocusIn:
+               fprintf(stderr, "EV: FocusIn:\n");
+               break;
+            case FocusOut:
+               fprintf(stderr, "EV: FocusOut:\n");
+               break;
+            case KeymapNotify:
+               fprintf(stderr, "EV: KeymapNotify:\n");
+               break;
+            case Expose:
+               fprintf(stderr, "EV: Expose:\n");
+               break;
+            case GraphicsExpose:
+               fprintf(stderr, "EV: GraphicsExpose:\n");
+               break;
+            case NoExpose:
+               fprintf(stderr, "EV: NoExpose:\n");
+               break;
+            case VisibilityNotify:
+               fprintf(stderr, "EV: VisibilityNotify:\n");
+               break;
+            case CreateNotify:
+               fprintf(stderr, "EV: CreateNotify:\n");
+               break;
+            case DestroyNotify:
+               fprintf(stderr, "EV: DestroyNotify:\n");
+               break;
+            case UnmapNotify:
+               fprintf(stderr, "EV: UnmapNotify:\n");
+               break;
+            case MapNotify:
+               fprintf(stderr, "EV: MapNotify:\n");
+               break;
+            case MapRequest:
+               fprintf(stderr, "EV: MapRequest:\n");
+               break;
+            case ReparentNotify:
+               fprintf(stderr, "EV: ReparentNotify:\n");
+               break;
+            case ConfigureNotify:
+               fprintf(stderr, "EV: ConfigureNotify:\n");
+               break;
+            case ConfigureRequest:
+               fprintf(stderr, "EV: ConfigureRequest:\n");
+               break;
+            case GravityNotify:
+               fprintf(stderr, "EV: GravityNotify:\n");
+               break;
+            case ResizeRequest:
+               fprintf(stderr, "EV: ResizeRequest:\n");
+               break;
+            case CirculateNotify:
+               fprintf(stderr, "EV: CirculateNotify:\n");
+               break;
+            case CirculateRequest:
+               fprintf(stderr, "EV: CirculateRequest:\n");
+               break;
+            case PropertyNotify:
+               fprintf(stderr, "EV: PropertyNotify:\n");
+               break;
+            case SelectionClear:
+               fprintf(stderr, "EV: SelectionClear:\n");
+               break;
+            case SelectionRequest:
+               fprintf(stderr, "EV: SelectionRequest:\n");
+               break;
+            case SelectionNotify:
+               fprintf(stderr, "EV: SelectionNotify:\n");
+               break;
+            case ColormapNotify:
+               fprintf(stderr, "EV: ColormapNotify:\n");
+               break;
+            case ClientMessage:
+               fprintf(stderr, "EV: ClientMessage:\n");
+               break;
+            case MappingNotify:
+               fprintf(stderr, "EV: MappingNotify:\n");
+               break;
+            default:
+               fprintf(stderr, "EV: ???\n");
+               break;
+          }
      }
    EDBUG_RETURN_;
 }
@@ -273,25 +273,25 @@ HandleEvent(XEvent * ev)
        || (ev->type == ButtonPress) || (ev->type == ButtonRelease)
        || (ev->type == EnterNotify) || (ev->type == LeaveNotify))
      {
-	if (((ev->type == KeyPress) || (ev->type == KeyRelease))
-	    && (ev->xkey.root != root.win))
-	  {
-	     XSetInputFocus(disp, ev->xkey.root, RevertToPointerRoot,
-			    CurrentTime);
-	     XSync(disp, False);
-	     ev->xkey.time = CurrentTime;
-	     XSendEvent(disp, ev->xkey.root, False, 0, ev);
-	  }
-	else
-	  {
-	     lst = ListItemType(&num, LIST_TYPE_ACLASS_GLOBAL);
-	     if (lst)
-	       {
-		  for (i = 0; i < num; i++)
-		     EventAclass(ev, (ActionClass *) lst[i]);
-		  Efree(lst);
-	       }
-	  }
+        if (((ev->type == KeyPress) || (ev->type == KeyRelease))
+            && (ev->xkey.root != root.win))
+          {
+             XSetInputFocus(disp, ev->xkey.root, RevertToPointerRoot,
+                            CurrentTime);
+             XSync(disp, False);
+             ev->xkey.time = CurrentTime;
+             XSendEvent(disp, ev->xkey.root, False, 0, ev);
+          }
+        else
+          {
+             lst = ListItemType(&num, LIST_TYPE_ACLASS_GLOBAL);
+             if (lst)
+               {
+                  for (i = 0; i < num; i++)
+                     EventAclass(ev, (ActionClass *) lst[i]);
+                  Efree(lst);
+               }
+          }
      }
    if (ev->type <= 35)
       HArray[ev->type].func(ev);
@@ -299,8 +299,8 @@ HandleEvent(XEvent * ev)
 
    if (diddeskaccount)
      {
-	DoIn("DESKTOP_ACCOUNTING_TIMEOUT", 30.0, DeskAccountTimeout, 0, NULL);
-	diddeskaccount = 0;
+        DoIn("DESKTOP_ACCOUNTING_TIMEOUT", 30.0, DeskAccountTimeout, 0, NULL);
+        diddeskaccount = 0;
      }
    EDBUG_RETURN_;
 }
@@ -313,8 +313,8 @@ CheckEvent()
    EDBUG(7, "CheckEvent");
    while (XPending(disp))
      {
-	XNextEvent(disp, &ev);
-	HandleEvent(&ev);
+        XNextEvent(disp, &ev);
+        HandleEvent(&ev);
      }
    EDBUG_RETURN_;
 }
@@ -382,27 +382,27 @@ WaitEvent()
    count = 0;
    while (XPending(disp))
      {
-	count++;
-	if (count > evq_num)
-	  {
-	     evq_num += 16;
-	     if (!evq)
-		evq = Emalloc(sizeof(XEvent) * evq_num);
-	     else
-		evq = Erealloc(evq, sizeof(XEvent) * evq_num);
-	  }
-	XNextEvent(disp, &(evq[count - 1]));
+        count++;
+        if (count > evq_num)
+          {
+             evq_num += 16;
+             if (!evq)
+                evq = Emalloc(sizeof(XEvent) * evq_num);
+             else
+                evq = Erealloc(evq, sizeof(XEvent) * evq_num);
+          }
+        XNextEvent(disp, &(evq[count - 1]));
      }
    /* remove multiple extraneous events here */
    ok = NukeBoringevents(evq, count);
    if (ok)
      {
-	for (i = 0; i < count; i++)
-	  {
-	     if (ok[i])
-		HandleEvent(&(evq[i]));
-	  }
-	Efree(ok);
+        for (i = 0; i < count; i++)
+          {
+             if (ok[i])
+                HandleEvent(&(evq[i]));
+          }
+        Efree(ok);
      }
 
    DBUG_STACKCHECK;
@@ -416,27 +416,27 @@ WaitEvent()
    count = 0;
    while (XPending(disp))
      {
-	count++;
-	if (count > evq_num)
-	  {
-	     evq_num += 16;
-	     if (!evq)
-		evq = Emalloc(sizeof(XEvent) * evq_num);
-	     else
-		evq = Erealloc(evq, sizeof(XEvent) * evq_num);
-	  }
-	XNextEvent(disp, &(evq[count - 1]));
+        count++;
+        if (count > evq_num)
+          {
+             evq_num += 16;
+             if (!evq)
+                evq = Emalloc(sizeof(XEvent) * evq_num);
+             else
+                evq = Erealloc(evq, sizeof(XEvent) * evq_num);
+          }
+        XNextEvent(disp, &(evq[count - 1]));
      }
    /* remove multiple extraneous events here */
    ok = NukeBoringevents(evq, count);
    if (ok)
      {
-	for (i = 0; i < count; i++)
-	  {
-	     if (ok[i])
-		HandleEvent(&(evq[i]));
-	  }
-	Efree(ok);
+        for (i = 0; i < count; i++)
+          {
+             if (ok[i])
+                HandleEvent(&(evq[i]));
+          }
+        Efree(ok);
      }
    if (count > 0)
       XFlush(disp);
@@ -445,9 +445,9 @@ WaitEvent()
       count = pcount;
    if ((evq) && ((evq_num - count) > 64))
      {
-	evq_num = 0;
-	Efree(evq);
-	evq = NULL;
+        evq_num = 0;
+        Efree(evq);
+        evq = NULL;
      }
 
    DBUG_STACKCHECK;
@@ -460,27 +460,27 @@ WaitEvent()
    qe = GetHeadTimerQueue();
    if (qe)
      {
-	if (qe->just_added)
-	  {
-	     qe->just_added = 0;
-	     time1 = qe->in_time;
-	  }
-	else
-	  {
-	     time1 = qe->in_time - time2;
-	     if (time1 < 0.0)
-		time1 = 0.0;
-	     qe->in_time = time1;
-	  }
-	tval.tv_sec = (long)time1;
-	tval.tv_usec = (long)((time1 - ((double)tval.tv_sec)) * 1000000);
-	count = select(fdsize, &fdset, NULL, NULL, &tval);
+        if (qe->just_added)
+          {
+             qe->just_added = 0;
+             time1 = qe->in_time;
+          }
+        else
+          {
+             time1 = qe->in_time - time2;
+             if (time1 < 0.0)
+                time1 = 0.0;
+             qe->in_time = time1;
+          }
+        tval.tv_sec = (long)time1;
+        tval.tv_usec = (long)((time1 - ((double)tval.tv_sec)) * 1000000);
+        count = select(fdsize, &fdset, NULL, NULL, &tval);
      }
    else
       count = select(fdsize, &fdset, NULL, NULL, NULL);
    if (count < 0)
      {
-	EDBUG_RETURN_;
+        EDBUG_RETURN_;
      }
    if ((smfd >= 0) && (count > 0) && (FD_ISSET(smfd, &fdset)))
       ProcessICEMSGS();
@@ -505,14 +505,14 @@ HKeyPress(XEvent * ev)
    d = FindDialog(ev->xkey.window);
    if (d)
      {
-	int                 i;
+        int                 i;
 
-	for (i = 0; i < d->num_bindings; i++)
-	  {
-	     if (ev->xkey.keycode == d->keybindings[i].key)
-		(d->keybindings[i].func) (d->keybindings[i].val,
-					  d->keybindings[i].data);
-	  }
+        for (i = 0; i < d->num_bindings; i++)
+          {
+             if (ev->xkey.keycode == d->keybindings[i].key)
+                (d->keybindings[i].func) (d->keybindings[i].val,
+                                          d->keybindings[i].data);
+          }
      }
    EDBUG_RETURN_;
 }
@@ -526,8 +526,7 @@ HKeyRelease(XEvent * ev)
 }
 
 #if 0
-struct _pbuf
-{
+struct _pbuf {
    int                 w, h, depth;
    Pixmap              id;
    void               *stack[32];
@@ -542,7 +541,7 @@ HButtonPress(XEvent * ev)
 {
    EDBUG(7, "HButtonPress");
    ApplySclass(FindItem
-	       ("SOUND_BUTTON_CLICK", 0, LIST_FINDBY_NAME, LIST_TYPE_SCLASS));
+               ("SOUND_BUTTON_CLICK", 0, LIST_FINDBY_NAME, LIST_TYPE_SCLASS));
    HandleMouseDown(ev);
 #if 0
    {
@@ -558,41 +557,41 @@ HButtonPress(XEvent * ev)
       y = 0;
       XClearWindow(disp, root.win);
       for (pb = pbuf; pb; pb = pb->next)
-	{
-	   ww = pb->w;
-	   hh = pb->h;
-	   if (ww > 64)
-	      ww = 64;
-	   if (hh > 64)
-	      hh = 64;
-	   if (x + ww > root.w)
-	     {
-		x = 0;
-		y += maxh;
-		maxh = 0;
-	     }
-	   XCopyArea(disp, pb->id, root.win, gc, 0, 0, ww, hh, x, y);
-	   XDrawRectangle(disp, root.win, gc, x, y, ww, hh);
-	   x += ww;
-	   if (hh > maxh)
-	      maxh = hh;
-	   count++;
-	   if (pb->depth == 1)
-	      mcount++;
-	   fprintf(stderr,
-		   "%08x (%5ix%5i %i) : " "%x %x %x %x %x %x %x %x "
-		   "%x %x %x %x %x %x %x %x " "%x %x %x %x %x %x %x %x "
-		   "%x %x %x %x %x %x %x %x\n", pb->id, pb->w, pb->h,
-		   pb->depth, pb->stack[0], pb->stack[1], pb->stack[2],
-		   pb->stack[3], pb->stack[4], pb->stack[5], pb->stack[6],
-		   pb->stack[7], pb->stack[8], pb->stack[9], pb->stack[10],
-		   pb->stack[11], pb->stack[12], pb->stack[13], pb->stack[14],
-		   pb->stack[15], pb->stack[16], pb->stack[17], pb->stack[18],
-		   pb->stack[19], pb->stack[20], pb->stack[21], pb->stack[22],
-		   pb->stack[23], pb->stack[24], pb->stack[25], pb->stack[26],
-		   pb->stack[27], pb->stack[28], pb->stack[29], pb->stack[30],
-		   pb->stack[31]);
-	}
+        {
+           ww = pb->w;
+           hh = pb->h;
+           if (ww > 64)
+              ww = 64;
+           if (hh > 64)
+              hh = 64;
+           if (x + ww > root.w)
+             {
+                x = 0;
+                y += maxh;
+                maxh = 0;
+             }
+           XCopyArea(disp, pb->id, root.win, gc, 0, 0, ww, hh, x, y);
+           XDrawRectangle(disp, root.win, gc, x, y, ww, hh);
+           x += ww;
+           if (hh > maxh)
+              maxh = hh;
+           count++;
+           if (pb->depth == 1)
+              mcount++;
+           fprintf(stderr,
+                   "%08x (%5ix%5i %i) : " "%x %x %x %x %x %x %x %x "
+                   "%x %x %x %x %x %x %x %x " "%x %x %x %x %x %x %x %x "
+                   "%x %x %x %x %x %x %x %x\n", pb->id, pb->w, pb->h,
+                   pb->depth, pb->stack[0], pb->stack[1], pb->stack[2],
+                   pb->stack[3], pb->stack[4], pb->stack[5], pb->stack[6],
+                   pb->stack[7], pb->stack[8], pb->stack[9], pb->stack[10],
+                   pb->stack[11], pb->stack[12], pb->stack[13], pb->stack[14],
+                   pb->stack[15], pb->stack[16], pb->stack[17], pb->stack[18],
+                   pb->stack[19], pb->stack[20], pb->stack[21], pb->stack[22],
+                   pb->stack[23], pb->stack[24], pb->stack[25], pb->stack[26],
+                   pb->stack[27], pb->stack[28], pb->stack[29], pb->stack[30],
+                   pb->stack[31]);
+        }
       fprintf(stderr, "Total %i, %i of them bitmaps\n", count, mcount);
       XFreeGC(disp, gc);
    }
@@ -605,7 +604,7 @@ HButtonRelease(XEvent * ev)
 {
    EDBUG(7, "HButtonRelease");
    ApplySclass(FindItem
-	       ("SOUND_BUTTON_RAISE", 0, LIST_FINDBY_NAME, LIST_TYPE_SCLASS));
+               ("SOUND_BUTTON_RAISE", 0, LIST_FINDBY_NAME, LIST_TYPE_SCLASS));
    HandleMouseUp(ev);
    EDBUG_RETURN_;
 }
@@ -624,21 +623,21 @@ HEnterNotify(XEvent * ev)
    EDBUG(7, "HEnterNotify");
    if (mode.mode == MODE_NONE)
      {
-	/*
-	 * multi screen handling -- root windows receive
-	 * enter / leave notify
-	 */
-	if (ev->xany.window == root.win)
-	  {
-	     PagerHideAllHi();
-	     if (!mode.focuswin || FOCUS_POINTER == mode.focusmode)
-		HandleFocusWindow(root.focuswin);
-	  }
-	else
-	  {
-	     HandleMouseIn(ev);
-	     HandleFocusWindow(ev->xcrossing.window);
-	  }
+        /*
+         * multi screen handling -- root windows receive
+         * enter / leave notify
+         */
+        if (ev->xany.window == root.win)
+          {
+             PagerHideAllHi();
+             if (!mode.focuswin || FOCUS_POINTER == mode.focusmode)
+                HandleFocusWindow(root.focuswin);
+          }
+        else
+          {
+             HandleMouseIn(ev);
+             HandleFocusWindow(ev->xcrossing.window);
+          }
      }
    EDBUG_RETURN_;
 }
@@ -649,21 +648,21 @@ HLeaveNotify(XEvent * ev)
    EDBUG(7, "HLeaveNotify");
    if (mode.mode == MODE_NONE)
      {
-	HandleMouseOut(ev);
+        HandleMouseOut(ev);
 
-	/*
-	 * If we are leaving the root window, we are switching
-	 * screens on a multi screen system - need to unfocus
-	 * to allow other desk to grab focus...
-	 */
-	if (ev->xcrossing.window == root.win)
-	  {
-	     if (ev->xcrossing.mode == NotifyNormal
-		 && ev->xcrossing.detail != NotifyInferior && mode.focuswin)
-		HandleFocusWindow(root.focuswin);
-	     else
-		HandleFocusWindow(ev->xcrossing.window);
-	  }
+        /*
+         * If we are leaving the root window, we are switching
+         * screens on a multi screen system - need to unfocus
+         * to allow other desk to grab focus...
+         */
+        if (ev->xcrossing.window == root.win)
+          {
+             if (ev->xcrossing.mode == NotifyNormal
+                 && ev->xcrossing.detail != NotifyInferior && mode.focuswin)
+                HandleFocusWindow(root.focuswin);
+             else
+                HandleFocusWindow(ev->xcrossing.window);
+          }
 /* THIS caused the "emacs focus bug" ? */
 /*      else */
 /*      HandleFocusWindow(ev->xcrossing.window); */
@@ -686,16 +685,16 @@ HFocusOut(XEvent * ev)
    EDBUG(7, "HFocusOut");
    if (ev->xfocus.detail == NotifyNonlinear)
      {
-	Window              rt, ch;
-	int                 d;
-	unsigned int        ud;
+        Window              rt, ch;
+        int                 d;
+        unsigned int        ud;
 
-	XQueryPointer(disp, root.win, &rt, &ch, &d, &d, &d, &d, &ud);
-	if (rt != root.win)
-	  {
+        XQueryPointer(disp, root.win, &rt, &ch, &d, &d, &d, &d, &ud);
+        if (rt != root.win)
+          {
 /*           fprintf(stderr, "HandleFocusWindowIn\n"); */
-	     HandleFocusWindowIn(0);
-	  }
+             HandleFocusWindowIn(0);
+          }
      }
    EDBUG_RETURN_;
 }

@@ -36,16 +36,14 @@ DockIt(EWin * ewin)
    ic = FindItem("DEFAULT_DOCK_BUTTON", 0, LIST_FINDBY_NAME, LIST_TYPE_ICLASS);
    if (mode.dockstartx >= 0)
      {
-	bt =
-	   CreateButton(id, ic, ac, NULL, NULL, 1, 0, 64, 64, 64, 64, 0, 0,
-			mode.dockstartx, 0, mode.dockstarty, 0, 0, 0, 0, 0, 1,
-			0, 1);
+        bt = CreateButton(id, ic, ac, NULL, NULL, 1, 0, 64, 64, 64, 64, 0, 0,
+                          mode.dockstartx, 0, mode.dockstarty, 0, 0, 0, 0, 0, 1,
+                          0, 1);
      }
    else
      {
-	bt =
-	   CreateButton(id, ic, ac, NULL, NULL, 1, 0, 64, 64, 64, 64, 0, 2046,
-			0, 0, 0, 1023, 0, 0, 0, 0, 1, 0, 1);
+        bt = CreateButton(id, ic, ac, NULL, NULL, 1, 0, 64, 64, 64, 64, 0, 2046,
+                          0, 0, 0, 1023, 0, 0, 0, 0, 1, 0, 1);
      }
    UngrabX();
 
@@ -74,6 +72,6 @@ DockDestroy(EWin * ewin)
    bt = FindItem(NULL, ewin->client.win, LIST_FINDBY_ID, LIST_TYPE_BUTTON);
    if (bt)
       DestroyButton(RemoveItem
-		    (NULL, ewin->client.win, LIST_FINDBY_ID, LIST_TYPE_BUTTON));
+                    (NULL, ewin->client.win, LIST_FINDBY_ID, LIST_TYPE_BUTTON));
    EDBUG_RETURN_;
 }

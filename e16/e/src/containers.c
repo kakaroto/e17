@@ -32,7 +32,7 @@
 
 Container          *
 InitializeContainer(char *name, ImageClass * iclass, int width,
-		    int height, char orientation)
+                    int height, char orientation)
 {
    Container          *bc;
 
@@ -64,13 +64,13 @@ AddButtonToContainer(Container * bc, Button * b)
 
    if (!bc->ButtonList)
      {
-	bc->ButtonList = Emalloc(sizeof(Container *));
+        bc->ButtonList = Emalloc(sizeof(Container *));
      }
    else
      {
-	bc->ButtonList =
-	   Erealloc(bc->ButtonList,
-		    (bc->numofbuttonsinlist + 1) * sizeof(Container *));
+        bc->ButtonList =
+            Erealloc(bc->ButtonList,
+                     (bc->numofbuttonsinlist + 1) * sizeof(Container *));
      }
    bc->ButtonList[bc->numofbuttonsinlist++] = b;
    b->ref_count++;
@@ -95,29 +95,29 @@ RemoveButtonFromContainer(Container * bc, Button * b)
 
    for (i = 0; i < bc->numofbuttonsinlist; i++)
      {
-	if (bc->ButtonList[i] == b)
-	  {
-	     j = i;
-	     found = 1;
-	  }
+        if (bc->ButtonList[i] == b)
+          {
+             j = i;
+             found = 1;
+          }
      }
    if (found && ((bc->numofbuttonsinlist - 1) > 0))
      {
-	bc->ButtonList =
-	   Erealloc(bc->ButtonList,
-		    (bc->numofbuttonsinlist * sizeof(Container *)));
-	for (i = 0; i <= bc->numofbuttonsinlist; i++)
-	  {
-	     if (i != j)
-		bc->ButtonList[j++] = MyButtonList[i];
-	  }
-	bc->numofbuttonsinlist--;
+        bc->ButtonList =
+            Erealloc(bc->ButtonList,
+                     (bc->numofbuttonsinlist * sizeof(Container *)));
+        for (i = 0; i <= bc->numofbuttonsinlist; i++)
+          {
+             if (i != j)
+                bc->ButtonList[j++] = MyButtonList[i];
+          }
+        bc->numofbuttonsinlist--;
      }
    else if (found && (bc->numofbuttonsinlist - 1) == 0)
      {
-	Efree(bc->ButtonList);
-	bc->ButtonList = NULL;
-	bc->numofbuttonsinlist = 0;
+        Efree(bc->ButtonList);
+        bc->ButtonList = NULL;
+        bc->numofbuttonsinlist = 0;
      }
    Efree(MyButtonList);
    b->ref_count--;
@@ -130,9 +130,9 @@ RemoveContainer(Container * bc)
    EDBUG(5, "RemoveContainer");
    if (bc)
      {
-	if (bc->name)
-	   Efree(bc->name);
-	Efree(bc);
+        if (bc->name)
+           Efree(bc->name);
+        Efree(bc);
      }
    EDBUG_RETURN_;
 }

@@ -37,20 +37,20 @@ CompareNetVersion(int major, int minor, int patchlevel, char *date)
 
    if (mode.autoupgrade)
      {
-	if (mode.autoupgrade > 1)
-	  {
-	     if (major > atoi(ENLIGHTENMENT_MAJOR))
-		return 1;
-	     else if (minor > atoi(ENLIGHTENMENT_MINOR))
-		return 1;
-	     else if (patchlevel > atoi(ENLIGHTENMENT_MICRO))
-		return 1;
-	  }
-	else
-	  {
-	     if (strcmp(date, E_CHECKOUT_DATE))
-		return 1;
-	  }
+        if (mode.autoupgrade > 1)
+          {
+             if (major > atoi(ENLIGHTENMENT_MAJOR))
+                return 1;
+             else if (minor > atoi(ENLIGHTENMENT_MINOR))
+                return 1;
+             else if (patchlevel > atoi(ENLIGHTENMENT_MICRO))
+                return 1;
+          }
+        else
+          {
+             if (strcmp(date, E_CHECKOUT_DATE))
+                return 1;
+          }
      }
 #else
    major = 0;
@@ -69,7 +69,7 @@ RetrieveUpdate(int major, int minor, int patchlevel, char *date)
 
    if (mode.autoupgrade)
      {
-	return 1;
+        return 1;
 
      }
 #endif
@@ -88,7 +88,7 @@ InstallUpdate(void)
    if (mode.autoupgrade)
      {
 
-	return 1;
+        return 1;
      }
 #endif
    return 0;
@@ -122,21 +122,21 @@ TestForUpdate(void)
 #ifdef AUTOUPGRADE
    if (mode.autoupgrade)
      {
-	if (mode.activenetwork)
-	  {
-	     if (mode.autoupgrade > 1)
-	       {
+        if (mode.activenetwork)
+          {
+             if (mode.autoupgrade > 1)
+               {
 
-	       }
-	     else
-	       {
+               }
+             else
+               {
 
-	       }
-	  }
-	else
-	  {
-	     SpawnNetworkTester();
-	  }
+               }
+          }
+        else
+          {
+             SpawnNetworkTester();
+          }
      }
 #endif
    return;
@@ -155,24 +155,24 @@ CheckForNewMOTD(int val, void *data)
 #ifdef AUTOUPGRADE
    if (mode.motd)
      {
-	if (mode.activenetwork)
-	  {
-	     if (GetNetFileDate(MOTDFILE) > mode.motddate)
-	       {
-		  char               *MOTD = GetNetText(MOTDFILE);
+        if (mode.activenetwork)
+          {
+             if (GetNetFileDate(MOTDFILE) > mode.motddate)
+               {
+                  char               *MOTD = GetNetText(MOTDFILE);
 
-		  if (MOTD)
-		    {
-		       DIALOG_OK(_("Enlightenment's message of the day"), MOTD);
-		       Efree(MOTD);
-		    }
-	       }
-	     DoIn("MOTD_CHECK", 3600.0, CheckForNewMOTD, 0, NULL);
-	  }
-	else
-	  {
-	     SpawnNetworkTester();
-	  }
+                  if (MOTD)
+                    {
+                       DIALOG_OK(_("Enlightenment's message of the day"), MOTD);
+                       Efree(MOTD);
+                    }
+               }
+             DoIn("MOTD_CHECK", 3600.0, CheckForNewMOTD, 0, NULL);
+          }
+        else
+          {
+             SpawnNetworkTester();
+          }
      }
 #endif
    return;
