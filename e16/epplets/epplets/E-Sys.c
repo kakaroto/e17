@@ -95,6 +95,7 @@ main(int argc, char **argv) {
 
   int prio;
 
+  atexit(Epplet_cleanup);
   prio = getpriority(PRIO_PROCESS, getpid());
   setpriority(PRIO_PROCESS, getpid(), prio + 10);
   Epplet_Init("E-Sys", "0.1", "Enlightenment Uptime Epplet", 3, 3, argc, argv, 0);

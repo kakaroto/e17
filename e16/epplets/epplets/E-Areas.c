@@ -45,7 +45,6 @@ close_cb(void *data)
 {
    Epplet_unremember();
    Esync();
-   Epplet_cleanup();
    data = NULL;
    exit(0);
 }
@@ -91,6 +90,7 @@ int
 main(int argc, char **argv)
 {
     Epplet_gadget b_up,b_down,b_left,b_right;
+    atexit(Epplet_cleanup);
     Epplet_Init("E-Areas", "0.1", 
                 "A desktop areas navigator; John Slee <john@chirp.com.au>",
 	            3, 3, argc, argv, 0);

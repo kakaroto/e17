@@ -840,6 +840,7 @@ SetupGraphx(void)
 int
 main(int argc, char** argv)
  {
+   atexit(Epplet_cleanup);
    Epplet_Init("E-Mountbox", "0.1", "Enlightenment Mount Epplet",
 	       3, 3, argc, argv, 0);
    Epplet_load_config();

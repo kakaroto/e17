@@ -41,7 +41,6 @@ cb_close(void *data)
 {
    Epplet_unremember();
    Esync();
-   Epplet_cleanup();
    data = NULL;
    exit(0);
 }
@@ -114,6 +113,7 @@ draw_arms(void)
 int
 main(int argc, char **argv)
 {
+   atexit(Epplet_cleanup);
    Epplet_Init("E-Clock", "0.1", "Enlightenment Clock Epplet",
 	       3, 3, argc, argv, 0);
    Epplet_timer(cb_timer, NULL, 0.5, "TIMER");

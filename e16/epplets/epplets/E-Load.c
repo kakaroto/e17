@@ -50,7 +50,6 @@ cb_close(void *data)
 {
    Epplet_unremember();
    Esync();
-   Epplet_cleanup();
    data = NULL;
    exit(0);
 }
@@ -92,6 +91,7 @@ main(int argc, char **argv)
 {
    int i;
    
+   atexit(Epplet_cleanup);
    cpus = count_cpus();
    load_val = malloc(sizeof(int) * cpus);
    prev_val = malloc(sizeof(double) * cpus);

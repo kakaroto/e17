@@ -30,7 +30,6 @@ static void cb_close(void *data)
 {
    Epplet_unremember();
    close(fd_mixer);
-   Epplet_cleanup();
    data = NULL;
    exit(0);
 }
@@ -117,6 +116,7 @@ int main(int argc, char *argv[])
       return 1;
    initialize_channels();
    
+   atexit(Epplet_cleanup);
    Epplet_Init("Emix", "0.9", "Audio mixer Epplet", 3, 3, argc, argv, 0);   
    vs_master = Epplet_create_vslider(2, 2, 44, 0, 20, 1, 5,
 				     &channels[0].value, set_volume, &channels[0]);

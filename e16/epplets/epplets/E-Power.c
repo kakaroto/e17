@@ -114,7 +114,6 @@ cb_close(void *data)
 {
    Epplet_unremember();
    Esync();
-   Epplet_cleanup();
    data = NULL;
    exit(0);
 }
@@ -150,6 +149,7 @@ cb_help(void *data)
 int
 main(int argc, char **argv)
 {
+   atexit(Epplet_cleanup);
    Epplet_Init("E-Power", "0.1", "Enlightenment Laptop Power Epplet",
 	       3, 3, argc, argv, 0);
    Epplet_timer(cb_timer, NULL, 30.0, "TIMER");
