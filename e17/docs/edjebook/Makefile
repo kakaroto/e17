@@ -37,6 +37,7 @@ FO_ARGS = --stringparam fop.extensions 1
 
 #HTML_XSL = $(PREFIX)/docbook-xsl-1.61.3/html/tldp-html.xsl
 HTML_XSL = $(PREFIX)/docbook-xsl-1.64.0/html/docbook.xsl	# Gentoo DB HTML
+HTML_CHUNK_XSL = $(PREFIX)/docbook-xsl-1.64.0/html/chunk.xsl	# Gentoo DB HTML CHUNK
 
 all: pdf html
 
@@ -60,6 +61,9 @@ txt:
 
 html:
 	$(XSLTPROC) -o $(FILE).html $(HTML_XSL) $(FILE).xml
+
+html-multi-file:
+	$(XSLTPROC) -o $(FILE).html $(HTML_CHUNK_XSL) $(FILE).xml
 
 
 clean:
