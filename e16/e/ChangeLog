@@ -1693,3 +1693,10 @@ Thu Feb 17 11:02:30 PST 2000
 (Mandrake)
 
 patch from Bob Arendt <rdarendt@cwcom.net> to fix a problem in eesh with tru64
+
+-------------------------------------------------------------------------------
+
+Thu Feb 17 11:11:46 PST 2000
+(Mandrake)
+
+removed some warnings, still a few left in dox/file.c

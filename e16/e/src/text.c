@@ -460,7 +460,7 @@ TextDraw(TextClass * tclass, Window win, int active, int sticky, int state,
 		  char               *new_line;
 		  int                 nuke_count = 0;
 		  int                 len;
-		  wchar_t            *wc_line;
+		  wchar_t            *wc_line = NULL;
 		  int                 wc_len;
 
 		  len = strlen(lines[i]);

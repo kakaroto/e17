@@ -668,7 +668,7 @@ RenderPage(Window win, int page_num, int w, int h)
 		  int                 sx, sy, ssx, ssy;
 		  char                link_txt[1024];
 		  char                link_link[1024];
-		  int                 spaceflag, oldwc;
+		  int                 spaceflag, oldwc=0;
 
 		  wd[0] = 0;
 		  if ( MB_CUR_MAX > 1 )                 /* If multibyte locale,... */

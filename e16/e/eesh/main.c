@@ -32,6 +32,7 @@
 extern char         waitonly;
 
 static int stdin_state;
+void restore_stdin_state(void);
 void restore_stdin_state(void) {
    fcntl(0, F_SETFL, stdin_state);
 }
