@@ -678,9 +678,11 @@ efsd_write_event(int sockfd, EfsdEvent *ee)
   switch (ee->type)
     {
     case EFSD_EVENT_FILECHANGE:
+      D(("Writing filechange event.\n"));
       result = write_filechange_event(sockfd, ee);    
       break;
     case EFSD_EVENT_REPLY:
+      D(("Writing reply event.\n"));
       result = write_reply_event(sockfd, ee);    
       break;
     default:
