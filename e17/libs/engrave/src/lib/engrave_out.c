@@ -531,6 +531,57 @@ _engrave_output_state(Engrave_Part_State *state, Engrave_Part *part, void *data)
 
     engrave_out_end(out);
   }
+
+  {
+      int smooth;
+      double orig_x, orig_y;
+      int orig_off_x, orig_off_y;
+      double size_x, size_y;
+      int size_off_x, size_off_y;
+
+      smooth = engrave_part_state_fill_smooth_get(state);
+      engrave_part_state_fill_origin_relative_get(state, &orig_x, &orig_y);
+      engrave_part_state_fill_origin_offset_get(state, &orig_off_x, &orig_off_y);
+      engrave_part_state_fill_size_relative_get(state, &size_x, &size_y);
+      engrave_part_state_fill_size_offset_get(state, &size_off_x, &size_off_y);
+
+      if ((smooth != 1) || (orig_x != 0.0) || (orig_y != 0.0) ||
+              (orig_off_x != 0) || (orig_off_y != 0) || (size_x != 1.0) ||
+              (size_y != 1.0) || (size_off_x != 0) || (size_off_y != 0)) 
+      {
+          engrave_out_start(out, "fill");
+
+          if (smooth != 1)
+              engrave_out_data(out, "smooth", "%d", smooth);
+
+          if ((orig_x != 0.0) || (orig_y != 0.0) 
+                  || (orig_off_x != 0) || (orig_off_y != 0))
+          {
+              engrave_out_start(out, "origin");
+              if ((orig_x != 0.0) || (orig_y != 0.0))
+                  engrave_out_data(out, "relative", "%f %f", orig_x, orig_y);
+
+              if ((orig_off_x != 0) || (orig_off_y != 0))
+                  engrave_out_data(out, "offset", "%d %d", orig_off_x, orig_off_y);
+
+              engrave_out_end(out);
+          }
+
+          if ((size_x != 0.0) || (size_y != 0.0) 
+                  || (size_off_x != 0) || (size_off_y != 0))
+          {
+              engrave_out_start(out, "size");
+              if ((size_x != 0.0) || (size_y != 0.0))
+                  engrave_out_data(out, "relative", "%f %f", size_x, size_y);
+
+              if ((size_off_x != 0) || (size_off_y != 0))
+                  engrave_out_data(out, "offset", "%d %d", size_off_x, size_off_y);
+
+              engrave_out_end(out);
+          }
+          engrave_out_end(out);
+      }
+  }
   engrave_out_end(out);
 }
 
