@@ -18,6 +18,20 @@
  * usage: #include <eConfig.h>
  */
 
+
+#define econf_get_integer() \
+eConfigGetData();
+
+#define econf_get_string() \
+eConfigGetData();
+
+#define econf_save_integer() \
+eConfigStoreData();
+
+#define econf_save_string() \
+eConfigStoreData();
+
+
 int              eConfigAddPath(char *path);
 int              eConfigRemovePath(char *path);
 char           **eConfigPaths(int *num);

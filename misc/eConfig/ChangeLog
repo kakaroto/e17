@@ -187,3 +187,10 @@ Thu Nov  4 11:53:36 PST 1999
 (Mandrake)
 
 added a failure check in disk.c
+
+-------------------------------------------------------------------------------
+
+Thu Nov  4 14:02:44 PST 1999
+(Mandrake)
+
+Adding some convenience macros.
