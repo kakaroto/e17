@@ -497,7 +497,17 @@ gib_imlib_save_image(Imlib_Image im, char *file)
    imlib_context_set_image(im);
    tmp = strrchr(file, '.');
    if (tmp)
-      imlib_image_set_format(tmp + 1);
+   {
+     char *p, *pp;
+     p = estrdup(tmp + 1);
+     pp = p;
+     while(*pp) {
+       *pp = tolower(*pp);
+       pp++;
+     }
+     imlib_image_set_format(p);
+     efree(p);
+   }
    imlib_save_image(file);
 }
 

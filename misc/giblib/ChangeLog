@@ -1,3 +1,7 @@
+Sun Jan 13 21:20:16 2002  Tom Gilbert  <tom@linuxbrit.co.uk>
+
+	* Fix for set_format dumbness.
+
 Fri May  4 18:40:04 PDT 2001  Michael Jennings  <mej@eterm.org>
 
 	* Fixed initial creation of the config header.

@@ -31,6 +31,7 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 #include <X11/Xlib.h>
 #include <Imlib2.h>
 #include <stdarg.h>
+#include <ctype.h>
 #include <giblib/giblib_config.h>
 #include <giblib/gib_style.h>
 
