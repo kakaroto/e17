@@ -24,10 +24,19 @@ if [ ! -r $IDIR"/mini/kcontrol.xpm" ]; then
   IDIR=/opt/kde/icons
 fi
 if [ ! -r $IDIR"/mini/kcontrol.xpm" ]; then
+  IDIR=/opt/kde/share/icons
+fi
+if [ ! -r $IDIR"/mini/kcontrol.xpm" ]; then
   IDIR=/usr/local/kde/icons
 fi
 if [ ! -r $IDIR"/mini/kcontrol.xpm" ]; then
+  IDIR=/usr/local/kde/share/icons
+fi
+if [ ! -r $IDIR"/mini/kcontrol.xpm" ]; then
   IDIR=/usr/kde/icons
+fi
+if [ ! -r $IDIR"/mini/kcontrol.xpm" ]; then
+  IDIR=/usr/kde/share/icons
 fi
 if [ ! -r $IDIR"/mini/kcontrol.xpm" ]; then
   IDIR=/usr/share/kde/icons
@@ -47,10 +56,19 @@ else
     DIR=/opt/kde/applnk
   fi
   if [ ! -r $DIR"/KControl.kdelnk" ]; then
+    DIR=/opt/kde/share/applnk
+  fi
+  if [ ! -r $DIR"/KControl.kdelnk" ]; then
     DIR=/usr/local/kde/applnk
   fi
   if [ ! -r $DIR"/KControl.kdelnk" ]; then
+    DIR=/usr/local/kde/share/applnk
+  fi
+  if [ ! -r $DIR"/KControl.kdelnk" ]; then
     DIR=/usr/kde/applnk
+  fi
+  if [ ! -r $DIR"/KControl.kdelnk" ]; then
+    DIR=/usr/kde/share/applnk
   fi
   if [ ! -r $DIR"/KControl.kdelnk" ]; then
     DIR=/usr/share/kde/applnk
