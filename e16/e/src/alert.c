@@ -494,6 +494,13 @@ ShowAlert(char *text)
 	  }
      }
 
+   XDestroyWindow(dd, win);
+   XFreeGC(dd, gc);
+   XFreeFontSet(dd, xfs);
+   if (cnum > 0)
+      XFreeColors(dd, cmap, cols, cnum, 0);
+   XCloseDisplay(dd);
+
    switch (button)
      {
      case 1:
@@ -509,13 +516,6 @@ ShowAlert(char *text)
      default:
 	break;
      }
-
-   XDestroyWindow(dd, win);
-   XFreeGC(dd, gc);
-   XFreeFontSet(dd, xfs);
-   if (cnum > 0)
-      XFreeColors(dd, cmap, cols, cnum, 0);
-   XCloseDisplay(dd);
 }
 
 static void
