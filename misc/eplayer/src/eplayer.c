@@ -266,8 +266,7 @@ int main(int argc, const char **argv) {
 
 	eplayer_free(player);
 
-	ecore_evas_shutdown();
-	ecore_shutdown();
+	ui_deinit();
 	
 	return 0;
 }

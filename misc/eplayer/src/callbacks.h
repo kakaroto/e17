@@ -3,53 +3,36 @@
 
 #include <Evas.h>
 
-void cb_play(void *udata, Evas_Object *obj,
-             const char *emission, const char *src);
-void cb_pause(void *udata, Evas_Object *obj,
-              const char *emission, const char *src);
-void cb_stop(void *udata, Evas_Object *obj,
-             const char *emission, const char *src);
+#define EDJE_CB(name) \
+	void cb_##name(ePlayer *player, Evas_Object *obj, \
+	               const char *emission, const char *src)
 
-void cb_track_next(void *udata, Evas_Object *obj,
-                   const char *emission, const char *src);
-void cb_track_prev(void *udata, Evas_Object *obj,
-                   const char *emission, const char *src);
+EDJE_CB(play);
+EDJE_CB(pause);
+EDJE_CB(stop);
 
-void cb_time_display_toggle(void *udata, Evas_Object *obj,
-                            const char *emission, const char *src);
+EDJE_CB(seek_forward);
+EDJE_CB(seek_backward);
 
-void cb_repeat_mode_toggle(void *udata, Evas_Object *obj,
-                           const char *emission, const char *src);
+EDJE_CB(track_next);
+EDJE_CB(track_prev);
 
-void cb_volume_raise(void *udata, Evas_Object *obj,
-                     const char *emission, const char *src);
-void cb_volume_lower(void *udata, Evas_Object *obj,
-                     const char *emission, const char *src);
+EDJE_CB(time_display_toggle);
+EDJE_CB(repeat_mode_toggle);
 
-void cb_playlist_scroll_up(void *udata, Evas_Object *obj,
-                           const char *emission, const char *src);
-void cb_playlist_scroll_down(void *udata, Evas_Object *obj,
-                             const char *emission, const char *src);
+EDJE_CB(volume_raise);
+EDJE_CB(volume_lower);
 
-void cb_playlist_item_play(void *udata, Evas_Object *obj,
-                           const char *emission, const char *src);
-void cb_playlist_item_remove(void *udata, Evas_Object *obj,
-                             const char *emission, const char *src);
-void cb_playlist_item_selected(void *udata, Evas_Object *obj,
-                               const char *emission, const char *src);
+EDJE_CB(playlist_scroll_up);
+EDJE_CB(playlist_scroll_down);
 
-void cb_seek_forward(void *udata, Evas_Object *obj,
-                     const char *emission, const char *src);
-void cb_seek_backward(void *udata, Evas_Object *obj,
-                      const char *emission, const char *src);
+EDJE_CB(playlist_item_play);
+EDJE_CB(playlist_item_remove);
+EDJE_CB(playlist_item_selected);
 
-void cb_eplayer_quit(void *udata, Evas_Object *obj,
-                     const char *emission, const char *src);
-void cb_eplayer_raise(void *udata, Evas_Object *obj,
-                      const char *emission, const char *src);
-
-void cb_switch_group(void *udata, Evas_Object *obj,
-                     const char *emission, const char *src);
+EDJE_CB(eplayer_quit);
+EDJE_CB(eplayer_raise);
+EDJE_CB(switch_group);
 
 #endif
 

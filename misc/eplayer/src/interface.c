@@ -3,12 +3,22 @@
 #include "eplayer.h"
 #include <Esmart/container.h>
 #include <Edje.h>
+#include <Ewl.h>
 #include "callbacks.h"
 #include "track.h"
 #include "utils.h"
 #include "interface.h"
 
+typedef void (*EdjeCb)(void *udata, Evas_Object *o,
+                       const char *emission, const char *source);
+typedef struct {
+	char *name;
+	char *src;
+	EdjeCb func;
+} EdjeCallback;
+
 static void setup_playlist(ePlayer *player);
+static void register_callbacks(ePlayer *player);
 
 static int app_signal_exit(void *data, int type, void *event) {
 	debug(DEBUG_LEVEL_INFO, "Exit called, shutting down\n");
@@ -44,8 +54,10 @@ int ui_init(ePlayer *player) {
 
 	ecore_init();
 	ecore_evas_init();
+	ewl_init(0, NULL);
 	ecore_event_handler_add(ECORE_EVENT_SIGNAL_EXIT, app_signal_exit,
 	                        NULL);
+	
 
 	if (!strcasecmp(player->cfg.evas_engine, "gl"))
 		player->gui.ee = ecore_evas_gl_x11_new(NULL, 0,  0, 0,
@@ -83,6 +95,12 @@ int ui_init(ePlayer *player) {
 		return 0;
 
 	return 1;
+}
+
+void ui_deinit() {
+	ewl_deinit();
+	ecore_evas_shutdown();
+	ecore_shutdown();
 }
 
 void ui_fill_track_info(ePlayer *player) {
@@ -137,57 +155,49 @@ int ui_init_edje(ePlayer *player, const char *name) {
 	ui_fill_playlist(player);
 	ui_fill_track_info(player);
 	ui_refresh_volume(player);
-	
-	/*** Edje Callbacks ***************************/
-	edje_object_signal_callback_add(player->gui.edje,
-	                                "QUIT", "quit",
-	                                cb_eplayer_quit, player);
-	edje_object_signal_callback_add(player->gui.edje,
-	                                "RAISE", "*",
-	                                cb_eplayer_raise, player);
-	
-	edje_object_signal_callback_add(player->gui.edje,
-	                                "PLAY_PREVIOUS", "previous_button",
-	                                cb_track_prev, player);
-	edje_object_signal_callback_add(player->gui.edje,
-	                                "PLAY_NEXT", "next_button",
-	                                cb_track_next, player);
-	edje_object_signal_callback_add(player->gui.edje,
-	                                "SEEK_BACK", "seekback_button",
-	                                cb_seek_backward, player);
-	edje_object_signal_callback_add(player->gui.edje,
-	                                "SEEK_FORWARD", "seekforward_button",
-	                                cb_seek_forward, player);
-	edje_object_signal_callback_add(player->gui.edje,
-	                                "PLAY", "play_button",
-	                                cb_play, player);
-	edje_object_signal_callback_add(player->gui.edje,
-	                                "PAUSE", "pause_button",
-	                                cb_pause, player);
-	edje_object_signal_callback_add(player->gui.edje,
-	                                "STOP", "stop_button",
-	                                cb_stop, player);
-	
-	edje_object_signal_callback_add(player->gui.edje,
-	                                "VOL_INCR", "vol_incr_button",
-	                                cb_volume_raise, player);
-	edje_object_signal_callback_add(player->gui.edje,
-	                                "VOL_DECR", "vol_decr_button",
-	                                cb_volume_lower, player);
 
-	edje_object_signal_callback_add(player->gui.edje,
-	                                "TOGGLE_TIME_DISPLAY_MODE", "time_text",
-	                                cb_time_display_toggle, player);
-
-	edje_object_signal_callback_add(player->gui.edje,
-	                                "TOGGLE_REPEAT_MODE", "repeat_mode",
-	                                cb_repeat_mode_toggle, player);
-
-	edje_object_signal_callback_add(player->gui.edje,
-	                                "SWITCH_GROUP", "*",
-	                                cb_switch_group, player);
+	register_callbacks(player);
 
 	return 1;
+}
+
+static void register_callbacks(ePlayer *player) {
+	Evas_Object *e = player->gui.edje;
+	int i;
+	EdjeCallback cb[] = {
+		{"QUIT", "quit",
+		 (EdjeCb) cb_eplayer_quit},
+		{"RAISE", "*",
+		 (EdjeCb) cb_eplayer_raise},
+		{"PLAY_PREVIOUS", "previous_button",
+		 (EdjeCb) cb_track_prev},
+		{"PLAY_NEXT", "next_button",
+		 (EdjeCb) cb_track_next},
+		{"SEEK_BACK", "seekback_button",
+		 (EdjeCb) cb_seek_backward},
+		{"SEEK_FORWARD", "seekforward_button",
+		 (EdjeCb) cb_seek_forward},
+		{"PLAY", "play_button",
+		 (EdjeCb) cb_play},
+		{"PAUSE", "pause_button",
+		 (EdjeCb) cb_pause},
+		{"STOP", "stop_button",
+		 (EdjeCb) cb_stop},
+		{"VOL_INCR", "vol_incr_button",
+		 (EdjeCb) cb_volume_raise},
+		{"VOL_DECR", "vol_decr_button",
+		 (EdjeCb) cb_volume_lower},
+		{"TOGGLE_TIME_DISPLAY_MODE", "time_text",
+		 (EdjeCb) cb_time_display_toggle},
+		{"TOGGLE_REPEAT_MODE", "repeat_mode",
+		 (EdjeCb) cb_repeat_mode_toggle},
+		{"SWITCH_GROUP", "*",
+		 (EdjeCb) cb_switch_group},
+	};
+
+	for (i = 0; i < sizeof (cb) / sizeof (EdjeCallback); i++)
+		edje_object_signal_callback_add(e, cb[i].name, cb[i].src,
+		                                cb[i].func, player);
 }
 
 static void setup_playlist(ePlayer *player) {
@@ -238,15 +248,15 @@ static void show_playlist_item(ePlayer *player, PlayListItem *pli) {
 	
 	/* add playlist item callbacks */
 	edje_object_signal_callback_add(o, "PLAYLIST_SCROLL_UP", "",
-			                        cb_playlist_scroll_up, player);
+			                        (EdjeCb) cb_playlist_scroll_up, player);
 	edje_object_signal_callback_add(o, "PLAYLIST_SCROLL_DOWN", "",
-			                        cb_playlist_scroll_down, player);
+			                        (EdjeCb) cb_playlist_scroll_down, player);
 	edje_object_signal_callback_add(o, "PLAYLIST_ITEM_PLAY", "",
-			                        cb_playlist_item_play, player);
+			                        (EdjeCb) cb_playlist_item_play, player);
 	edje_object_signal_callback_add(o, "PLAYLIST_ITEM_SELECTED", "",
-	                                cb_playlist_item_selected, player);
+	                                (EdjeCb) cb_playlist_item_selected, player);
 	edje_object_signal_callback_add(o, "PLAYLIST_ITEM_REMOVE", "",
-	                                cb_playlist_item_remove, player);
+	                                (EdjeCb) cb_playlist_item_remove, player);
 }
 
 void ui_fill_playlist(ePlayer *player) {

@@ -6,6 +6,7 @@
 #include "track.h"
 #include "interface.h"
 #include "utils.h"
+#include "callbacks.h"
 
 typedef enum {
 	PLAYBACK_STATE_STOPPED,
@@ -24,8 +25,7 @@ static PlaybackState state = PLAYBACK_STATE_STOPPED;
  * @param o
  * @param event
  */
-void cb_play(ePlayer *player, Evas_Object *obj,
-             const char *emission, const char *src) {
+EDJE_CB(play) {
 	debug(DEBUG_LEVEL_INFO, "Play callback entered\n");
 
 	switch (state) {
@@ -53,8 +53,7 @@ void cb_play(ePlayer *player, Evas_Object *obj,
  * @param o
  * @param event
  */
-void cb_stop(ePlayer *player, Evas_Object *obj,
-             const char *emission, const char *src) {
+EDJE_CB(stop) {
 	debug(DEBUG_LEVEL_INFO, "Stop callback entered\n");
 
 	eplayer_playback_stop(player);
@@ -70,8 +69,7 @@ void cb_stop(ePlayer *player, Evas_Object *obj,
  * @param o
  * @param event
  */
-void cb_pause(ePlayer *player, Evas_Object *obj,
-              const char *emission, const char *src) {
+EDJE_CB(pause) {
 	debug(DEBUG_LEVEL_INFO, "Pause callback entered\n");
 
 	switch (state) {
@@ -101,8 +99,7 @@ void cb_pause(ePlayer *player, Evas_Object *obj,
  * @param o
  * @param event
  */
-void cb_track_next(ePlayer *player, Evas_Object *o,
-                   const char *emission, const char *src) {
+EDJE_CB(track_next) {
 	int play = 1;
 	
 	debug(DEBUG_LEVEL_INFO, "Next File Called\n");
@@ -132,8 +129,7 @@ void cb_track_next(ePlayer *player, Evas_Object *o,
  * @param o
  * @param event
  */
-void cb_track_prev(ePlayer *player, Evas_Object *obj,
-                   const char *emission, const char *src) {
+EDJE_CB(track_prev) {
 	debug(DEBUG_LEVEL_INFO, "Previous File Called\n");
 
 	/* first item on the list: do nothing */
@@ -149,8 +145,7 @@ void cb_track_prev(ePlayer *player, Evas_Object *obj,
 	state = PLAYBACK_STATE_PLAYING;
 }
 
-void cb_volume_raise(ePlayer *player, Evas_Object *obj,
-                     const char *emission, const char *src) {
+EDJE_CB(volume_raise) {
 	int left = 0, right = 0;
 	
 	debug(DEBUG_LEVEL_INFO, "Raising volume\n");
@@ -162,8 +157,7 @@ void cb_volume_raise(ePlayer *player, Evas_Object *obj,
 	ui_refresh_volume(player);
 }
 
-void cb_volume_lower(ePlayer *player, Evas_Object *obj,
-                     const char *emission, const char *src) {
+EDJE_CB(volume_lower) {
 	int left = 0, right = 0;
 	
 	debug(DEBUG_LEVEL_INFO, "Lowering volume\n");
@@ -175,38 +169,28 @@ void cb_volume_lower(ePlayer *player, Evas_Object *obj,
 	ui_refresh_volume(player);
 }
 
-void cb_time_display_toggle(ePlayer *player, Evas_Object *obj,
-                            const char *emission, const char *src) {
+EDJE_CB(time_display_toggle) {
 	player->cfg.time_display = !player->cfg.time_display;
 	track_update_time(player);
 }
 
-void cb_repeat_mode_toggle(ePlayer *player, Evas_Object *obj,
-                           const char *emission, const char *src) {
+EDJE_CB(repeat_mode_toggle) {
 	player->cfg.repeat = !player->cfg.repeat;
 }
 
-void cb_playlist_scroll_up(void *udata, Evas_Object *obj,
-                           const char *emission, const char *src) {
-	ePlayer *player = udata;
-
+EDJE_CB(playlist_scroll_up) {
 	/* it's * 3 because we're scrolling 3 elements at once */
 	e_container_scroll(player->gui.playlist,
 	                   player->gui.playlist_font_size * 3);
 }
 
-void cb_playlist_scroll_down(void *udata, Evas_Object *obj,
-                             const char *emission, const char *src) {
-	ePlayer *player = udata;
-
+EDJE_CB(playlist_scroll_down) {
 	/* it's * 3 because we're scrolling 3 elements at once */
 	e_container_scroll(player->gui.playlist,
 	                   player->gui.playlist_font_size * -3);
 }
 
-void cb_playlist_item_play(void *udata, Evas_Object *obj,
-                           const char *emission, const char *src) {
-	ePlayer *player = udata;
+EDJE_CB(playlist_item_play) {
 	PlayListItem *pli = evas_object_data_get(obj, "PlayListItem");
 
 	eplayer_playback_stop(player);
@@ -216,10 +200,8 @@ void cb_playlist_item_play(void *udata, Evas_Object *obj,
 	state = PLAYBACK_STATE_PLAYING;
 }
 
-void cb_playlist_item_remove(void *udata, Evas_Object *obj,
-                             const char *emission, const char *src) {
+EDJE_CB(playlist_item_remove) {
 	int ok = 0;
-	ePlayer *player = udata;
 	PlayListItem *pli = evas_object_data_get(obj, "PlayListItem");
 	
 	e_container_element_remove(player->gui.playlist, obj);
@@ -242,9 +224,7 @@ void cb_playlist_item_remove(void *udata, Evas_Object *obj,
 	playlist_remove_item(player->playlist, pli);
 }
 
-void cb_playlist_item_selected(void *udata, Evas_Object *obj,
-                               const char *emission, const char *src) {
-	ePlayer *player = udata;
+EDJE_CB(playlist_item_selected) {
 	Evas_List *items = e_container_elements_get(player->gui.playlist);
 	Evas_List *l;
 
@@ -254,9 +234,7 @@ void cb_playlist_item_selected(void *udata, Evas_Object *obj,
 			                        "PLAYLIST_ITEM_UNSELECTED", "");
 }
 
-void cb_seek_forward(void *udata, Evas_Object *obj,
-                     const char *emission, const char *src) {
-	ePlayer *player = udata;
+EDJE_CB(seek_forward) {
 	PlayListItem *pli = playlist_current_item_get(player->playlist);
 
 	debug(DEBUG_LEVEL_INFO, "Seeking forward\n");
@@ -270,9 +248,7 @@ void cb_seek_forward(void *udata, Evas_Object *obj,
 	state = PLAYBACK_STATE_PLAYING;
 }
 
-void cb_seek_backward(void *udata, Evas_Object *obj,
-                      const char *emission, const char *src) {
-	ePlayer *player = udata;
+EDJE_CB(seek_backward) {
 	PlayListItem *pli = playlist_current_item_get(player->playlist);
 	int cur_time  = pli->plugin->get_current_pos();
 	
@@ -291,22 +267,15 @@ void cb_seek_backward(void *udata, Evas_Object *obj,
 	state = PLAYBACK_STATE_PLAYING;
 }
 
-void cb_eplayer_quit(void *udata, Evas_Object *obj,
-                     const char *emission, const char *src) {
+EDJE_CB(eplayer_quit) {
 	ecore_main_loop_quit();
 }
 
-void cb_eplayer_raise(void *udata, Evas_Object *obj,
-                      const char *emission, const char *src) {
-	ePlayer *player = udata;
-
+EDJE_CB(eplayer_raise) {
 	ecore_evas_raise(player->gui.ee);
 }
 
-void cb_switch_group(void *udata, Evas_Object *obj,
-                     const char *emission, const char *src) {
-	ePlayer *player = udata;
-	
+EDJE_CB(switch_group) {
 	evas_object_del(player->gui.edje);
 	ui_init_edje(player, src);
 }

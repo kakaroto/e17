@@ -49,6 +49,9 @@ AC_PATH_GENERIC(edje, , ,
 AC_PATH_GENERIC(esmart, , ,
 	AC_MSG_ERROR(Cannot find esmart: Is esmart-config in path?))
 
+AC_PATH_GENERIC(ewl, , ,
+	AC_MSG_ERROR(Cannot find ewl: Is ewl-config in path?))
+
 dnl Check for libdl
 tmp=$LIBS
 AC_CHECK_HEADERS(dlfcn.h, , AC_MSG_ERROR(Cannot find dlfcn.h))
