@@ -81,10 +81,9 @@ int ewl_embed_init(Ewl_Embed * w)
 	/*
 	 * Initialize the fields of the inherited container class
 	 */
-	if (!ewl_container_init(EWL_CONTAINER(w), "embed",
-				ewl_embed_child_add_cb,
-				ewl_embed_child_resize_cb, NULL))
+	if (!ewl_overlay_init(EWL_OVERLAY(w)))
 		DRETURN_INT(FALSE, DLEVEL_STABLE);
+	ewl_widget_set_appearance(EWL_WIDGET(w), "embed");
 
 	ewl_object_set_fill_policy(EWL_OBJECT(w), EWL_FLAG_FILL_NONE);
 	ewl_object_set_toplevel(EWL_OBJECT(w), EWL_FLAG_PROPERTY_TOPLEVEL);
@@ -93,13 +92,6 @@ int ewl_embed_init(Ewl_Embed * w)
 			     ewl_embed_unrealize_cb, NULL);
 	ewl_callback_prepend(EWL_WIDGET(w), EWL_CALLBACK_DESTROY,
 			     ewl_embed_destroy_cb, NULL);
-
-	/*
-	 * Override the default configure callbacks since the embed
-	 * has special needs for placement.
-	 */
-	ewl_callback_prepend(EWL_WIDGET(w), EWL_CALLBACK_CONFIGURE,
-			     ewl_embed_configure_cb, NULL);
 
 	LAYER(w) = -1000;
 
@@ -366,36 +358,6 @@ void ewl_embed_coord_to_screen(Ewl_Embed *e, int xx, int yy, int *x, int *y)
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
 
-void ewl_embed_configure_cb(Ewl_Widget *w, void *ev_data, void *user_data)
-{
-	Ewl_Object *o;
-	Ewl_Object *child;
-
-	DENTER_FUNCTION(DLEVEL_STABLE);
-
-	o = EWL_OBJECT(w);
-
-	/*
-	 * Configure each of the child widgets.
-	 */
-	ewd_list_goto_first(EWL_CONTAINER(w)->children);
-	while ((child = ewd_list_next(EWL_CONTAINER(w)->children))) {
-		/*
-		 * Try to give the child the full size of the window from it's
-		 * base position. The object will constrict it based on the
-		 * fill policy. Don't add the TOP and LEFT insets since
-		 * they've already been accounted for.
-		 */
-		ewl_object_request_size(child,
-					CURRENT_W(w) -
-					ewl_object_get_current_x(child),
-					CURRENT_H(w) -
-					ewl_object_get_current_y(child));
-	}
-
-	DLEAVE_FUNCTION(DLEVEL_STABLE);
-}
-
 void ewl_embed_unrealize_cb(Ewl_Widget *w, void *ev_data, void *user_data)
 {
 	DENTER_FUNCTION(DLEVEL_STABLE);
@@ -423,86 +385,6 @@ void ewl_embed_destroy_cb(Ewl_Widget * w, void *ev_data, void *user_data)
 
 	ewd_list_destroy(emb->tab_order);
 	emb->tab_order = NULL;
-
-	DLEAVE_FUNCTION(DLEVEL_STABLE);
-}
-
-void ewl_embed_child_add_cb(Ewl_Container * emb, Ewl_Widget * child)
-{
-	int size;
-
-	DENTER_FUNCTION(DLEVEL_STABLE);
-
-	/*
-	 * Move the child within the bounsd of the embed.
-	 */
-	if (ewl_object_get_current_x(EWL_OBJECT(child)) < CURRENT_X(emb))
-		ewl_object_request_x(EWL_OBJECT(child), CURRENT_X(emb));
-	if (ewl_object_get_current_y(EWL_OBJECT(child)) < CURRENT_Y(emb))
-		ewl_object_request_y(EWL_OBJECT(child), CURRENT_Y(emb));
-
-	size = ewl_object_get_current_x(EWL_OBJECT(child)) +
-		ewl_object_get_preferred_w(EWL_OBJECT(child)) - CURRENT_X(emb);
-	if (size > PREFERRED_W(emb))
-		ewl_object_set_preferred_w(EWL_OBJECT(emb), size);
-
-	size = ewl_object_get_current_y(EWL_OBJECT(child)) +
-		ewl_object_get_preferred_h(EWL_OBJECT(child)) - CURRENT_Y(emb);
-	if (size > PREFERRED_H(emb))
-		ewl_object_set_preferred_h(EWL_OBJECT(emb), size);
-
-	DLEAVE_FUNCTION(DLEVEL_STABLE);
-}
-
-void ewl_embed_child_resize_cb(Ewl_Container *c, Ewl_Widget *w,
-			       int size, Ewl_Orientation o)
-{
-	int            maxw = 0, maxh = 0;
-	Ewl_Embed     *emb;
-	Ewl_Object    *child;
-
-	DENTER_FUNCTION(DLEVEL_STABLE);
-
-	child = EWL_OBJECT(w);
-	emb = EWL_EMBED(c);
-
-	ewd_list_goto_first(EWL_CONTAINER(emb)->children);
-	while ((child = ewd_list_next(EWL_CONTAINER(emb)->children))) {
-		int             cs;
-
-		/*
-		 * FIXME: Do we really want to do this?
-		 * Move children within the bounds of the viewable area
-		 */
-		if (ewl_object_get_current_x(child) < CURRENT_X(emb))
-			ewl_object_request_x(child, CURRENT_X(emb));
-		if (ewl_object_get_current_y(child) < CURRENT_Y(emb))
-			ewl_object_request_y(child, CURRENT_Y(emb));
-
-		cs = ewl_object_get_current_x(child) +
-			ewl_object_get_preferred_w(child);
-
-		/*
-		 * Check the width and x position vs. embed width.
-		 */
-		if (maxw < cs)
-			maxw = cs;
-
-		cs = ewl_object_get_current_y(child) +
-			ewl_object_get_preferred_h(child);
-
-		/*
-		 * Check the height and y position vs. embed height.
-		 */
-		if (maxh < cs)
-			maxh = cs;
-
-	}
-
-	ewl_object_set_preferred_size(EWL_OBJECT(emb), maxw, maxh);
-	ewl_object_request_size(EWL_OBJECT(c),
-				ewl_object_get_current_w(EWL_OBJECT(c)),
-				ewl_object_get_current_h(EWL_OBJECT(c)));
 
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }

@@ -276,6 +276,7 @@ extern"C" {
 #include <ewl_fileselector.h>
 #include <ewl_floater.h>
 #include <ewl_filedialog.h>
+#include <ewl_overlay.h>
 #include <ewl_embed.h>
 #include <ewl_window.h>
 #include <ewl_text.h>

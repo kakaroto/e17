@@ -33,7 +33,7 @@ typedef struct Ewl_Embed Ewl_Embed;
  */
 struct Ewl_Embed
 {
-	Ewl_Container   container; /**< Inherits from the Ewl_Container class */
+	Ewl_Overlay     overlay; /**< Inherits from the Ewl_Overlay class */
 
 	Evas           *evas; /**< Evas where drawing takes place. */
 	Ecore_X_Window  evas_window; /**< The window holding the evas. */
@@ -59,12 +59,7 @@ void            ewl_embed_coord_to_screen(Ewl_Embed *e, int xx, int yy,
  * Internally used callbacks, override at your own risk.
  */
 void ewl_embed_unrealize_cb(Ewl_Widget *w, void *ev_data, void *user_data);
-void ewl_embed_configure_cb(Ewl_Widget *w, void *ev_data, void *user_data);
 void ewl_embed_destroy_cb(Ewl_Widget *w, void *ev_data, void *user_data);
-
-void ewl_embed_child_add_cb(Ewl_Container * emb, Ewl_Widget * child);
-void ewl_embed_child_resize_cb(Ewl_Container *c, Ewl_Widget *w, int size,
-			       Ewl_Orientation o);
 
 /**
  * @}
