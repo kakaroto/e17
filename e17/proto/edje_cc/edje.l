@@ -1,4 +1,5 @@
 %{
+#include <string.h>
 #include <stdio.h>
 #include "Etcher.h"
 #include "edje_cc.tab.h"
@@ -8,23 +9,39 @@
     int col = 0;
     static int comment = 0, cpp_comment = 0;
     static int script_level = 0;
-    char *script;
+    static char *script;
 
     #define COMMENT_START() BEGIN(SC_COMMENT); comment++; 
+
     #define COMMENT_END()   comment--; \
                             if (comment <= 0) { comment = 0; BEGIN(INITIAL); }
     #define CPP_COMMENT()   comment = 1; cpp_comment = 1;
 
-    #define SCRIPT_START()  BEGIN(SC_SCRIPT); /* FIXME initialize script */
-    #define SCRIPT_END()    BEGIN(INITIAL); /* FIXME return script */
-    #define SCRIPT_PIECE()  ; /* FIXME add piece to script */
+    #define SCRIPT_START()  BEGIN(SC_SCRIPT); 
+
+    #define SCRIPT_END()    BEGIN(INITIAL); \
+							if (script) { \
+								yylval.string = strdup(script); \
+								free(script); \
+							} \
+							script = NULL; \
+							VAL_RETURN(SCRIPT);
+
+    #define SCRIPT_PIECE()  if (script == NULL) { \
+								script = strdup(yytext); \
+							} else { \
+								realloc(script, strlen(script) + yyleng + 1); \
+								strncat(script, yytext, yyleng); \
+							} 
+
     #define SCRIPT_NEW_LINE() lnum ++; SCRIPT_PIECE(); 
+
     #define SCRIPT_OPEN_BRACE() script_level++; \
                                 if (script_level > 1) SCRIPT_PIECE();
+
     #define SCRIPT_CLOSE_BRACE() script_level--;\
                                  if (script_level > 0) { SCRIPT_PIECE();}\
                                  else {script_level = 0; SCRIPT_END();}\
-                                   
 
     #define WHITE_SPACE()   col += yyleng;
 
@@ -44,7 +61,7 @@
     #define STRING_RETURN() yylval.string = (char *)malloc(yyleng - 1); \
                             { \
                                 char *c = yytext; \
-                                strncpy(yylval.string, ++c, yyleng - 2); \
+                                snprintf(yylval.string, yyleng - 1, "%s", ++c); \
                             } \
                             VAL_RETURN(STRING);
 
@@ -73,6 +90,7 @@ after				{ KEYWORD_RETURN(AFTER); }
 align				{ KEYWORD_RETURN(ALIGN); }
 aspect				{ KEYWORD_RETURN(ASPECT); }
 aspect_preference	{ KEYWORD_RETURN(ASPECT_PREFERENCE); }
+BOTH				{ KEYWORD_RETURN(BOTH); }
 border				{ KEYWORD_RETURN(BORDER); }
 clip_to				{ KEYWORD_RETURN(CLIP_TO); }
 collections			{ KEYWORD_RETURN(COLLECTIONS); }
@@ -95,38 +113,51 @@ fit					{ KEYWORD_RETURN(FIT); }
 font				{ KEYWORD_RETURN(FONT); }
 fonts				{ KEYWORD_RETURN(FONTS); }
 group				{ KEYWORD_RETURN(GROUP); }
+HORIZONTAL			{ KEYWORD_RETURN(HORIZONTAL); }
 image				{ KEYWORD_RETURN(IMAGE); }
 images				{ KEYWORD_RETURN(IMAGES); }
 in					{ KEYWORD_RETURN(IN); }
 item				{ KEYWORD_RETURN(ITEM); }
+IMAGE				{ KEYWORD_RETURN(IMAGE); }
 LINEAR				{ KEYWORD_RETURN(LINEAR); }
 LOSSY				{ KEYWORD_RETURN(LOSSY); }
 max					{ KEYWORD_RETURN(MAX); }
 min					{ KEYWORD_RETURN(MIN); }
 mouse_events		{ KEYWORD_RETURN(MOUSE_EVENTS); }
 name				{ KEYWORD_RETURN(NAME); }
+NONE				{ KEYWORD_RETURN(NONE); }
 normal				{ KEYWORD_RETURN(NORMAL); }
 offset				{ KEYWORD_RETURN(OFFSET); }
 origin				{ KEYWORD_RETURN(ORIGIN); }
+OUTLINE				{ KEYWORD_RETURN(OUTLINE); }
+OUTLINE_SHADOW		{ KEYWORD_RETURN(OUTLINE_SHADOW); }
+OUTLINE_SOFT_SHADOW { KEYWORD_RETURN(OUTLINE_SOFT_SHADOW); }
 part				{ KEYWORD_RETURN(PART); }
 parts				{ KEYWORD_RETURN(PARTS); }
+PLAIN				{ KEYWORD_RETURN(PLAIN); }
 program				{ KEYWORD_RETURN(PROGRAM); }
 programs			{ KEYWORD_RETURN(PROGRAMS); }
 RAW					{ KEYWORD_RETURN(RAW); }
+RECT				{ KEYWORD_RETURN(RECT); }
 rel1				{ KEYWORD_RETURN(REL1); }
 rel2				{ KEYWORD_RETURN(REL2); }
 relative			{ KEYWORD_RETURN(RELATIVE); }
 repeat_events		{ KEYWORD_RETURN(REPEAT_EVENTS); }
+SHADOW				{ KEYWORD_RETURN(SHADOW); }
 signal				{ KEYWORD_RETURN(SIGNAL); }
 SIGNAL_EMIT			{ KEYWORD_RETURN(SIGNAL_EMIT); }
 SINUSOIDAL			{ KEYWORD_RETURN(SINUSOIDAL); }
 size				{ KEYWORD_RETURN(SIZE); }
 smooth				{ KEYWORD_RETURN(SMOOTH); }
+SOFT_OUTLINE		{ KEYWORD_RETURN(SOFT_OUTLINE); }
+SOFT_SHADOW			{ KEYWORD_RETURN(SOFT_SHADOW); }
 source				{ KEYWORD_RETURN(SOURCE); }
 state				{ KEYWORD_RETURN(STATE); }
 STATE_SET			{ KEYWORD_RETURN(STATE_SET); }
 step				{ KEYWORD_RETURN(STEP); }
+SWALLOW				{ KEYWORD_RETURN(SWALLOW); }
 target				{ KEYWORD_RETURN(TARGET); }
+TEXT				{ KEYWORD_RETURN(TEXT); }
 text				{ KEYWORD_RETURN(TEXT); }
 text_class			{ KEYWORD_RETURN(TEXT_CLASS); }
 to					{ KEYWORD_RETURN(TO); }
@@ -135,6 +166,7 @@ to_y				{ KEYWORD_RETURN(TO_Y); }
 transition			{ KEYWORD_RETURN(TRANSITION); }
 tween				{ KEYWORD_RETURN(TWEEN); }
 type				{ KEYWORD_RETURN(TYPE); }
+VERTICAL			{ KEYWORD_RETURN(VERTICAL); }
 visible				{ KEYWORD_RETURN(VISIBLE); }
 x					{ KEYWORD_RETURN(X); }
 y					{ KEYWORD_RETURN(Y); }
@@ -142,9 +174,9 @@ y					{ KEYWORD_RETURN(Y); }
 {floating_constant} { FLOAT_RETURN(); }
 \}                  { KEYWORD_RETURN(CLOSE_BRACE); }
 \{                  { KEYWORD_RETURN(OPEN_BRACE); }
-[:,]		    { KEYWORD_RETURN(COLON); }
-;		    { KEYWORD_RETURN(SEMICOLON); }
-\"		    { KEYWORD_RETURN(QUOTE); }
+[:,]		        { KEYWORD_RETURN(COLON); }
+;		    	    { KEYWORD_RETURN(SEMICOLON); }
+\"		            { KEYWORD_RETURN(QUOTE); }
 [ \t]+              { WHITE_SPACE(); }
 \n                  { NEW_LINE(); }
 

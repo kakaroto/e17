@@ -8,6 +8,7 @@ typedef enum _Etcher_Part_Type Etcher_Part_Type;
 typedef enum _Etcher_Text_Effect Etcher_Text_Effect;
 typedef enum _Etcher_Action Etcher_Action;
 typedef enum _Etcher_Transition Etcher_Transition;
+typedef enum _Etcher_Aspect_Preference Etcher_Aspect_Preference;
 
 typedef struct _Etcher_File Etcher_File;
 typedef struct _Etcher_Data Etcher_Data;
@@ -41,6 +42,7 @@ enum _Etcher_Text_Effect
   ETCHER_TEXT_EFFECT_NONE,
   ETCHER_TEXT_EFFECT_PLAIN,
   ETCHER_TEXT_EFFECT_OUTLINE,
+  ETCHER_TEXT_EFFECT_SOFT_OUTLINE,
   ETCHER_TEXT_EFFECT_SHADOW,
   ETCHER_TEXT_EFFECT_OUTLINE_SHADOW,
   ETCHER_TEXT_EFFECT_SOFT_SHADOW,
@@ -64,6 +66,14 @@ enum _Etcher_Transition
   ETCHER_TRANSITION_SINUSOIDAL,
   ETCHER_TRANSITION_ACCELERATE,
   ETCHER_TRANSITION_DECELERATE
+};
+
+enum _Etcher_Aspect_Preference
+{
+  ETCHER_ASPECT_PREFERENCE_NONE,
+  ETCHER_ASPECT_PREFERENCE_VERTICAL,
+  ETCHER_ASPECT_PREFERENCE_HORIZONTAL,
+  ETCHER_ASPECT_PREFERENCE_BOTH
 };
 
 struct _Etcher_File
