@@ -2929,3 +2929,24 @@ Sun Jun 20 11:18:00 CEST 2004
 
 Selective Transparency - config updates (Jaron Omega <jaron@sock-stream.net>).
 Enable continuing startup when there are errors in ...e_session-XXXXXX.
+
+-------------------------------------------------------------------------------
+
+Wed Jun 30 10:29:59 CEST 2004
+(Kim)
+
+Make buttons opaque (button transparency handling is missing).
+Cache borderpart ImageState (primarily to avoid flickering text on enter/leave).
+Fix several window placement bugs.
+Fix/align dox/src imlib2 TT font rendering stuff.
+Make compile with imlib1 + trivial fixes.
+Get the window placement right, I hope.
+Fix repositioning on border change.
+Fix edge flip with fullscreen windows.
+Fix initial window stacking if not on desk 0 + trivial stuff.
+Fix placement of windows with StaticGravity.
+Disable old x11amp hack (fixes broken rhythmbox "Small Display").
+Enable configuring no-input windows using menus + cosmetics.
+Fix minor glitch with coordinate window being mapped too early + cosmetics.
+Fix area updates (caused incorrect area switch on transient pop-up).
+Make FreeBSD happy.
