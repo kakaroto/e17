@@ -97,15 +97,6 @@ main(int argc, char *argv[])
 
    geist_document_render_full(doc);
 
-   doc = geist_document_new(400,300);
-   geist_document_rename(doc, "Second document");
-   geist_gtk_new_document_page(doc);
-   geist_document_add_object(doc,
-                             geist_text_new_with_text(15, 15, "20thcent", 20,
-                                                      "Wow! 2 documents? Neato ;-)",
-                                                      255, 0, 100, 255));
-   geist_document_render_full(doc);
-
    gtk_clist_thaw(GTK_CLIST(obj_list));
    gtk_main();
    D_RETURN(3, 0);

@@ -77,6 +77,7 @@ geist_document_get_selected_list(geist_document * doc)
       for (ll = GEIST_LAYER(l->data)->objects; ll; ll = ll->next)
       {
          obj = GEIST_OBJECT(ll->data);
+		
          if (geist_object_get_state(obj, SELECTED))
          {
             D(5, ("selected object found\n"));
@@ -84,7 +85,6 @@ geist_document_get_selected_list(geist_document * doc)
          }
       }
    }
-
    D_RETURN(3, ret);
 }
 

@@ -103,7 +103,8 @@ geist_object_free(geist_object * obj)
    D_RETURN_(5);
 }
 
-geist_object_type geist_object_get_type(geist_object * obj)
+geist_object_type
+geist_object_get_type(geist_object * obj)
 {
    return obj->type;
 }
@@ -239,7 +240,8 @@ geist_object_add_to_object_list(geist_object * obj)
    D_RETURN_(3);
 }
 
-Imlib_Image geist_object_get_rendered_image(geist_object * obj)
+Imlib_Image
+geist_object_get_rendered_image(geist_object * obj)
 {
    D_ENTER(5);
 
@@ -247,7 +249,8 @@ Imlib_Image geist_object_get_rendered_image(geist_object * obj)
 }
 
 
-Imlib_Image geist_object_int_get_rendered_image(geist_object * obj)
+Imlib_Image
+geist_object_int_get_rendered_image(geist_object * obj)
 {
    D_ENTER(5);
 
@@ -366,7 +369,8 @@ geist_object_int_render_selected(geist_object * obj, Imlib_Image dest,
    D_RETURN_(5);
 }
 
-Imlib_Updates geist_object_int_get_selection_updates(geist_object * obj)
+Imlib_Updates
+geist_object_int_get_selection_updates(geist_object * obj)
 {
    Imlib_Updates up = NULL;
 
@@ -502,7 +506,8 @@ geist_object_get_resize_box_coords(geist_object * obj, int resize, int *x,
    D_RETURN_(3);
 }
 
-Imlib_Updates geist_object_get_selection_updates(geist_object * obj)
+Imlib_Updates
+geist_object_get_selection_updates(geist_object * obj)
 {
    D_ENTER(3);
 
@@ -724,13 +729,6 @@ geist_object_update_alignment(geist_object * obj)
    D_RETURN_(5);
 }
 
-void
-geist_object_display_props(geist_object * obj)
-{
-   D_ENTER(5);
-   if (!obj->props_window)
-      geist_object_show_properties(obj);
-}
 
 GtkWidget *
 geist_object_int_display_props(geist_object * obj)
@@ -772,151 +770,299 @@ geist_object_dirty_selection(geist_object * obj)
 }
 
 
+
 static void
-obj_vis_cb(GtkWidget * widget, gpointer * obj)
+obj_vis_cb(GtkWidget * widget, gpointer * data)
 {
+   geist_object *obj = NULL;
+   geist_list *l = NULL;
+   geist_list *list = (geist_list *) data;
+
    D_ENTER(3);
-   if (gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(widget)))
-      geist_object_show(GEIST_OBJECT(obj));
+
+   if (geist_list_length(list) > 1)
+   {
+      for (l = list; l; l = l->next)
+      {
+         obj = l->data;
+
+         if (geist_object_get_state(obj, VISIBLE))
+            geist_object_hide(obj);
+         else
+            geist_object_show(obj);
+      }
+   }
    else
-      geist_object_hide(GEIST_OBJECT(obj));
-
-   geist_document_render_updates(GEIST_OBJECT_DOC(GEIST_OBJECT(obj)));
-   D_RETURN_(3);
-}
-
-void
-refresh_name_cb(GtkWidget * widget, gpointer * obj)
-{
-   D_ENTER(3);
-   if (GEIST_OBJECT(obj)->name)
-      efree(GEIST_OBJECT(obj)->name);
-   GEIST_OBJECT(obj)->name = estrdup(gtk_entry_get_text(GTK_ENTRY(widget)));
-   D_RETURN_(3);
-}
-
-void
-refresh_sizemode_cb(GtkWidget * widget, gpointer * obj)
-{
-   int i;
-
-   D_ENTER(3);
-   geist_object_dirty(GEIST_OBJECT(obj));
-
-   for (i = 0; i < SIZEMODE_MAX; i++)
    {
-      if (strcmp(gtk_entry_get_text(GTK_ENTRY(widget)), object_sizemodes[i])
-          == 0)
-         GEIST_OBJECT(obj)->sizemode = i;
+      obj = list->data;
+      if (gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(widget)))
+         geist_object_show(obj);
+      else
+         geist_object_hide(obj);
    }
-   geist_object_update_sizemode(GEIST_OBJECT(obj));
-   geist_object_dirty(GEIST_OBJECT(obj));
    geist_document_render_updates(GEIST_OBJECT_DOC(obj));
+   efree(l);
    D_RETURN_(3);
 }
 
-
 void
-refresh_alignment_cb(GtkWidget * widget, gpointer * obj)
+refresh_name_cb(GtkWidget * widget, gpointer * data)
 {
-   int i;
+   geist_object *obj = NULL;
+   geist_list *list = (geist_list *) data;
 
    D_ENTER(3);
-   geist_object_dirty(GEIST_OBJECT(obj));
-   for (i = 0; i < ALIGN_MAX; i++)
+
+   if (geist_list_length(list) > 1)
+      printf("Implement me!\n");
+   else
    {
-      if (strcmp(gtk_entry_get_text(GTK_ENTRY(widget)), object_alignments[i])
-          == 0)
-         GEIST_OBJECT(obj)->alignment = i;
+      obj = list->data;
+      if (obj->name)
+         efree(obj->name);
+
+      obj->name = estrdup(gtk_entry_get_text(GTK_ENTRY(widget)));
    }
-   geist_object_update_alignment(GEIST_OBJECT(obj));
-   geist_object_dirty(GEIST_OBJECT(obj));
-   geist_document_render_updates(GEIST_OBJECT_DOC(obj));
    D_RETURN_(3);
 }
 
-
 void
-refresh_x_cb(GtkWidget * widget, gpointer * obj)
+refresh_sizemode_cb(GtkWidget * widget, gpointer * data)
 {
+   geist_object *obj = NULL;
+   geist_list *l = NULL;
+   geist_list *list = (geist_list *) data;
+
    D_ENTER(3);
-   geist_object_dirty(GEIST_OBJECT(obj));
-   GEIST_OBJECT(obj)->x =
-      gtk_spin_button_get_value_as_int(GTK_SPIN_BUTTON(widget));
-   geist_object_dirty(GEIST_OBJECT(obj));
+
+   for (l = list; l; l = l->next)
+   {
+      obj = l->data;
+      geist_object_dirty(obj);
+      obj->sizemode =
+         geist_object_get_sizemode_from_string(gtk_entry_get_text
+                                               (GTK_ENTRY(widget)));
+      geist_object_update_sizemode(obj);
+      geist_object_dirty(obj);
+   }
    geist_document_render_updates(GEIST_OBJECT_DOC(obj));
+   efree(l);
    D_RETURN_(3);
 }
 
+
 void
-refresh_y_cb(GtkWidget * widget, gpointer * obj)
+refresh_alignment_cb(GtkWidget * widget, gpointer * data)
 {
+   geist_object *obj = NULL;
+   geist_list *l = NULL;
+   geist_list *list = (geist_list *) data;
+
    D_ENTER(3);
-   geist_object_dirty(GEIST_OBJECT(obj));
-   GEIST_OBJECT(obj)->y =
-      gtk_spin_button_get_value_as_int(GTK_SPIN_BUTTON(widget));
-   geist_object_dirty(GEIST_OBJECT(obj));
+
+   for (l = list; l; l = l->next)
+   {
+      obj = l->data;
+      geist_object_dirty(obj);
+      obj->alignment =
+         geist_object_get_alignment_from_string(gtk_entry_get_text
+                                                (GTK_ENTRY(widget)));
+      geist_object_update_alignment(obj);
+      geist_object_dirty(obj);
+   }
    geist_document_render_updates(GEIST_OBJECT_DOC(obj));
+   efree(l);
    D_RETURN_(3);
 }
 
+
 void
-refresh_w_cb(GtkWidget * widget, gpointer * obj)
+move_up_cb(GtkWidget * widget, gpointer * data)
 {
+   geist_object *obj = NULL;
+   geist_list *l = NULL;
+   geist_list *list = (geist_list *) data;
+
    D_ENTER(3);
-   geist_object_dirty(GEIST_OBJECT(obj));
-   GEIST_OBJECT(obj)->w =
-      gtk_spin_button_get_value_as_int(GTK_SPIN_BUTTON(widget));
-   geist_object_update_alignment(GEIST_OBJECT(obj));
-   geist_object_update_sizemode(GEIST_OBJECT(obj));
-   geist_object_dirty(GEIST_OBJECT(obj));
+
+   for (l = list; l; l = l->next)
+   {
+      obj = l->data;
+      geist_object_dirty(obj);
+      obj->y = obj->y - 1;
+      geist_object_dirty(obj);
+   }
    geist_document_render_updates(GEIST_OBJECT_DOC(obj));
+   efree(l);
    D_RETURN_(3);
 }
 
 void
-refresh_h_cb(GtkWidget * widget, gpointer * obj)
+move_down_cb(GtkWidget * widget, gpointer * data)
 {
+   geist_object *obj = NULL;
+   geist_list *l = NULL;
+   geist_list *list = (geist_list *) data;
+
    D_ENTER(3);
-   geist_object_dirty(GEIST_OBJECT(obj));
-   GEIST_OBJECT(obj)->h =
-      gtk_spin_button_get_value_as_int(GTK_SPIN_BUTTON(widget));
-   geist_object_update_alignment(GEIST_OBJECT(obj));
-   geist_object_update_sizemode(GEIST_OBJECT(obj));
-   geist_object_dirty(GEIST_OBJECT(obj));
+
+   for (l = list; l; l = l->next)
+   {
+      obj = l->data;
+      geist_object_dirty(obj);
+      obj->y++;
+      geist_object_dirty(obj);
+   }
    geist_document_render_updates(GEIST_OBJECT_DOC(obj));
+   efree(l);
    D_RETURN_(3);
 }
 
-static gboolean
-delete_event_cb(GtkWidget * widget, GdkEvent * event, gpointer * data)
+void
+move_left_cb(GtkWidget * widget, gpointer * data)
 {
-   gtk_widget_destroy((GtkWidget *) GEIST_OBJECT(data)->props_window);
-   GEIST_OBJECT(data)->props_window = NULL;
-   return TRUE;
+   geist_object *obj = NULL;
+   geist_list *l = NULL;
+   geist_list *list = (geist_list *) data;
+
+   D_ENTER(3);
+
+   for (l = list; l; l = l->next)
+   {
+      obj = l->data;
+      geist_object_dirty(obj);
+      obj->x--;
+      geist_object_dirty(obj);
+   }
+   geist_document_render_updates(GEIST_OBJECT_DOC(obj));
+   efree(l);
+   D_RETURN_(3);
 }
 
-gboolean props_ok_cb(GtkWidget * widget, gpointer * data)
+void
+move_right_cb(GtkWidget * widget, gpointer * data)
 {
-   gtk_widget_destroy((GtkWidget *) GEIST_OBJECT(data)->props_window);
-   GEIST_OBJECT(data)->props_window = NULL;
-   return TRUE;
+   geist_object *obj = NULL;
+   geist_list *l = NULL;
+   geist_list *list = (geist_list *) data;
+
+   D_ENTER(3);
+
+   for (l = list; l; l = l->next)
+   {
+      obj = l->data;
+      geist_object_dirty(obj);
+      obj->x++;
+      geist_object_dirty(obj);
+   }
+   geist_document_render_updates(GEIST_OBJECT_DOC(obj));
+   efree(l);
+   D_RETURN_(3);
+}
+
+void
+height_plus_cb(GtkWidget * widget, gpointer * data)
+{
+   geist_object *obj = NULL;
+   geist_list *l = NULL;
+   geist_list *list = (geist_list *) data;
+
+   D_ENTER(3);
+
+   for (l = list; l; l = l->next)
+   {
+      obj = l->data;
+      geist_object_dirty(obj);
+      obj->h++;
+      geist_object_update_alignment(obj);
+      geist_object_update_sizemode(obj);
+      geist_object_dirty(obj);
+   }
+   geist_document_render_updates(GEIST_OBJECT_DOC(obj));
+   efree(l);
+   D_RETURN_(3);
 }
 
 
 void
-geist_object_show_properties(geist_object * obj)
+height_minus_cb(GtkWidget * widget, gpointer * data)
 {
-   GtkWidget *generic_props;
-   GtkWidget *table, *obj_hbox, *name_l, *hbox, *x_l, *y_l, *w_l, *h_l,
+   geist_object *obj = NULL;
+   geist_list *l = NULL;
+   geist_list *list = (geist_list *) data;
 
-      *ok_btn;
+   D_ENTER(3);
+
+   for (l = list; l; l = l->next)
+   {
+      obj = l->data;
+      geist_object_dirty(obj);
+      obj->h--;
+      geist_object_update_alignment(obj);
+      geist_object_update_sizemode(obj);
+      geist_object_dirty(obj);
+   }
+   geist_document_render_updates(GEIST_OBJECT_DOC(obj));
+   efree(l);
+   D_RETURN_(3);
+}
+
+
+void
+width_minus_cb(GtkWidget * widget, gpointer * data)
+{
+   geist_object *obj = NULL;
+   geist_list *l = NULL;
+   geist_list *list = (geist_list *) data;
+
+   D_ENTER(3);
+
+   for (l = list; l; l = l->next)
+   {
+      obj = l->data;
+      geist_object_dirty(obj);
+      obj->w--;
+      geist_object_update_alignment(obj);
+      geist_object_update_sizemode(obj);
+      geist_object_dirty(obj);
+   }
+   geist_document_render_updates(GEIST_OBJECT_DOC(obj));
+   efree(l);
+   D_RETURN_(3);
+}
+
+void
+width_plus_cb(GtkWidget * widget, gpointer * data)
+{
+   geist_object *obj = NULL;
+   geist_list *l = NULL;
+   geist_list *list = (geist_list *) data;
+
+   D_ENTER(3);
+
+   for (l = list; l; l = l->next)
+   {
+      obj = l->data;
+      geist_object_dirty(obj);
+      obj->w++;
+      geist_object_update_alignment(obj);
+      geist_object_update_sizemode(obj);
+      geist_object_dirty(obj);
+   }
+   geist_document_render_updates(GEIST_OBJECT_DOC(obj));
+   efree(l);
+   D_RETURN_(3);
+}
+
+
+GtkWidget *
+geist_object_generic_properties(geist_list * list)
+{
+   GtkWidget *gen_props;
+   GtkWidget *table, *name_l;
    GtkWidget *name;
-   GtkWidget *x;
-   GtkWidget *y;
-   GtkWidget *w;
-   GtkWidget *h;
-   GtkAdjustment *a1, *a2, *a3, *a4;
+   GtkWidget *up, *down, *left, *right;
+   GtkWidget *width_plus, *width_minus, *height_plus, *height_minus;
    GtkWidget *sizemode_l;
    GtkWidget *alignment_l;
    GtkWidget *sizemode_combo;
@@ -925,31 +1071,22 @@ geist_object_show_properties(geist_object * obj)
    GList *align_list = g_list_alloc();
    GList *sizemode_list = g_list_alloc();
    int i;
+   geist_object *obj, *obj_first;
+   geist_list *l;
+   char *align_string = NULL;
+   char *sizemode_string = NULL;
 
    D_ENTER(3);
 
-   a1 =
-      (GtkAdjustment *) gtk_adjustment_new(0, 0, GEIST_OBJECT_DOC(obj)->w, 1,
-                                           2, 3);
-   a2 =
-      (GtkAdjustment *) gtk_adjustment_new(0, 0, GEIST_OBJECT_DOC(obj)->h, 1,
-                                           2, 3);
-   a3 =
-      (GtkAdjustment *) gtk_adjustment_new(0, 0, GEIST_OBJECT_DOC(obj)->w, 1,
-                                           2, 3);
-   a4 =
-      (GtkAdjustment *) gtk_adjustment_new(0, 0, GEIST_OBJECT_DOC(obj)->h, 1,
-                                           2, 3);
+   gen_props = gtk_hbox_new(FALSE, 0);
 
-   generic_props = gtk_window_new(GTK_WINDOW_TOPLEVEL);
+   table = gtk_table_new(8, 6, FALSE);
 
-   table = gtk_table_new(4, 4, FALSE);
-
-   gtk_container_set_border_width(GTK_CONTAINER(generic_props), 5);
-   gtk_container_add(GTK_CONTAINER(generic_props), table);
+   gtk_container_set_border_width(GTK_CONTAINER(gen_props), 5);
+   gtk_container_add(GTK_CONTAINER(gen_props), table);
 
    vis_toggle = gtk_check_button_new_with_label("Visible");
-   gtk_table_attach(GTK_TABLE(table), vis_toggle, 0, 1, 0, 1,
+   gtk_table_attach(GTK_TABLE(table), vis_toggle, 0, 4, 0, 1,
                     GTK_FILL | GTK_EXPAND, 0, 2, 2);
 
    gtk_widget_show(vis_toggle);
@@ -961,7 +1098,7 @@ geist_object_show_properties(geist_object * obj)
    gtk_widget_show(name_l);
 
    name = gtk_entry_new();
-   gtk_table_attach(GTK_TABLE(table), name, 1, 4, 1, 2, GTK_FILL | GTK_EXPAND,
+   gtk_table_attach(GTK_TABLE(table), name, 1, 6, 1, 2, GTK_FILL | GTK_EXPAND,
                     0, 2, 2);
    gtk_widget_show(name);
 
@@ -971,7 +1108,7 @@ geist_object_show_properties(geist_object * obj)
    gtk_widget_show(sizemode_l);
 
    sizemode_combo = gtk_combo_new();
-   gtk_table_attach(GTK_TABLE(table), sizemode_combo, 1, 4, 2, 3,
+   gtk_table_attach(GTK_TABLE(table), sizemode_combo, 1, 6, 2, 3,
                     GTK_FILL | GTK_EXPAND, 0, 2, 2);
    gtk_container_set_border_width(GTK_CONTAINER(sizemode_combo), 5);
    gtk_widget_show(sizemode_combo);
@@ -982,76 +1119,53 @@ geist_object_show_properties(geist_object * obj)
    gtk_widget_show(alignment_l);
 
    alignment_combo = gtk_combo_new();
-   gtk_table_attach(GTK_TABLE(table), alignment_combo, 1, 4, 3, 4,
+   gtk_table_attach(GTK_TABLE(table), alignment_combo, 1, 6, 3, 4,
                     GTK_FILL | GTK_EXPAND, 0, 2, 2);
    gtk_container_set_border_width(GTK_CONTAINER(alignment_combo), 5);
    gtk_widget_show(alignment_combo);
 
-   hbox = gtk_hbox_new(FALSE, 0);
-   gtk_table_attach(GTK_TABLE(table), hbox, 0, 4, 4, 5, GTK_FILL | GTK_EXPAND,
+   up = gtk_button_new_with_label("Up");
+   gtk_table_attach(GTK_TABLE(table), up, 1, 2, 4, 5, GTK_FILL | GTK_EXPAND,
                     0, 2, 2);
+   gtk_widget_show(up);
 
-   x_l = gtk_label_new("x:");
-   gtk_misc_set_alignment(GTK_MISC(x_l), 1.0, 0.5);
-   gtk_box_pack_start(GTK_BOX(hbox), x_l, TRUE, FALSE, 2);
-   gtk_widget_show(x_l);
-   x = gtk_spin_button_new(GTK_ADJUSTMENT(a1), 1, 0);
+   down = gtk_button_new_with_label("Down");
+   gtk_table_attach(GTK_TABLE(table), down, 1, 2, 6, 7, GTK_FILL | GTK_EXPAND,
+                    0, 2, 2);
+   gtk_widget_show(down);
 
-   gtk_box_pack_start(GTK_BOX(hbox), x, TRUE, FALSE, 2);
-   gtk_widget_show(x);
+   left = gtk_button_new_with_label("Left");
+   gtk_table_attach(GTK_TABLE(table), left, 0, 1, 5, 6, GTK_FILL | GTK_EXPAND,
+                    0, 2, 2);
+   gtk_widget_show(left);
 
-
-   y_l = gtk_label_new("y:");
-   gtk_misc_set_alignment(GTK_MISC(y_l), 1.0, 0.5);
-   gtk_box_pack_start(GTK_BOX(hbox), y_l, TRUE, FALSE, 2);
-   gtk_widget_show(y_l);
-   y = gtk_spin_button_new(GTK_ADJUSTMENT(a3), 1, 0);
-   gtk_box_pack_start(GTK_BOX(hbox), y, TRUE, FALSE, 2);
-   gtk_widget_show(y);
-
-   w_l = gtk_label_new("w:");
-   gtk_misc_set_alignment(GTK_MISC(w_l), 1.0, 0.5);
-   gtk_box_pack_start(GTK_BOX(hbox), w_l, TRUE, FALSE, 2);
-   gtk_widget_show(w_l);
-   w = gtk_spin_button_new(GTK_ADJUSTMENT(a2), 1, 0);
-   gtk_box_pack_start(GTK_BOX(hbox), w, TRUE, FALSE, 2);
-   gtk_widget_show(w);
-
-
-   h_l = gtk_label_new("h:");
-   gtk_misc_set_alignment(GTK_MISC(h_l), 1.0, 0.5);
-   gtk_box_pack_start(GTK_BOX(hbox), h_l, TRUE, FALSE, 2);
-   gtk_widget_show(h_l);
-   h = gtk_spin_button_new(GTK_ADJUSTMENT(a4), 1, 0);
-   gtk_box_pack_start(GTK_BOX(hbox), h, TRUE, FALSE, 2);
-   gtk_widget_show(h);
-
-   gtk_container_set_border_width(GTK_CONTAINER(hbox), 5);
-
-   gtk_widget_show(hbox);
-
-   /*Import the object type specific properties */
-   obj_hbox = obj->display_props(obj);
-
-   /*Assign the window to the opbject */
-   obj->props_window = generic_props;
-
-   gtk_table_attach(GTK_TABLE(table), obj_hbox, 0, 4, 5, 6,
+   right = gtk_button_new_with_label("Right");
+   gtk_table_attach(GTK_TABLE(table), right, 2, 3, 5, 6,
                     GTK_FILL | GTK_EXPAND, 0, 2, 2);
+   gtk_widget_show(right);
 
-   ok_btn = gtk_button_new_with_label("Ok");
-   gtk_table_attach(GTK_TABLE(table), ok_btn, 1, 3, 6, 7,
+
+   width_plus = gtk_button_new_with_label("Width +");
+   gtk_table_attach(GTK_TABLE(table), width_plus, 5, 6, 5, 6,
                     GTK_FILL | GTK_EXPAND, 0, 2, 2);
+   gtk_widget_show(width_plus);
 
-   gtk_widget_show(obj_hbox);
-   gtk_widget_show(ok_btn);
+   width_minus = gtk_button_new_with_label("Width -");
+   gtk_table_attach(GTK_TABLE(table), width_minus, 3, 4, 5, 6,
+                    GTK_FILL | GTK_EXPAND, 0, 2, 2);
+   gtk_widget_show(width_minus);
+
+   height_plus = gtk_button_new_with_label("Height +");
+   gtk_table_attach(GTK_TABLE(table), height_plus, 4, 5, 4, 5,
+                    GTK_FILL | GTK_EXPAND, 0, 2, 2);
+   gtk_widget_show(height_plus);
+
+   height_minus = gtk_button_new_with_label("Height -");
+   gtk_table_attach(GTK_TABLE(table), height_minus, 4, 5, 6, 7,
+                    GTK_FILL | GTK_EXPAND, 0, 2, 2);
+   gtk_widget_show(height_minus);
 
    gtk_widget_show(table);
-
-   gtk_spin_button_set_value(GTK_SPIN_BUTTON(x), obj->x);
-   gtk_spin_button_set_value(GTK_SPIN_BUTTON(y), obj->y);
-   gtk_spin_button_set_value(GTK_SPIN_BUTTON(w), obj->w);
-   gtk_spin_button_set_value(GTK_SPIN_BUTTON(h), obj->h);
 
 
    for (i = 0; i < ALIGN_MAX; i++)
@@ -1069,48 +1183,87 @@ geist_object_show_properties(geist_object * obj)
 
    gtk_combo_set_popdown_strings(GTK_COMBO(sizemode_combo), sizemode_list);
 
-   if (geist_object_get_state(obj, VISIBLE))
-      gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(vis_toggle), TRUE);
+   if (geist_list_length(list) > 1)
+   {
+      /*grey out the name entry box */
+      gtk_widget_set_sensitive(GTK_WIDGET(name), FALSE);
 
-   if (obj->name)
-      gtk_entry_set_text(GTK_ENTRY(name), obj->name);
+      obj_first = list->data;
 
-   gtk_entry_set_text(GTK_ENTRY(GTK_COMBO(alignment_combo)->entry),
-                      geist_object_get_alignment_string(obj));
-   gtk_entry_set_text(GTK_ENTRY(GTK_COMBO(sizemode_combo)->entry),
-                      geist_object_get_sizemode_string(obj));
+      /*check wether all objects have the same alignment or sizemode, and if
+         so, set the combo boxes, if not leave them empty */
+      for (l = list; l; l = l->next)
+      {
+         obj = l->data;
+         if (obj->alignment == obj_first->alignment)
+            align_string = geist_object_get_alignment_string(obj);
+         else
+            align_string = "";
 
+         if (obj->sizemode == obj_first->sizemode)
+            sizemode_string = geist_object_get_sizemode_string(obj);
+         else
+            sizemode_string = "";
+      }
+      efree(l);
+      gtk_entry_set_text(GTK_ENTRY(GTK_COMBO(alignment_combo)->entry),
+                         align_string);
+      gtk_entry_set_text(GTK_ENTRY(GTK_COMBO(sizemode_combo)->entry),
+                         sizemode_string);
+   }
+   else
+   {
+      obj = list->data;
+
+
+      if (obj->name)
+         gtk_entry_set_text(GTK_ENTRY(name), obj->name);
+
+      gtk_entry_set_text(GTK_ENTRY(GTK_COMBO(alignment_combo)->entry),
+                         geist_object_get_alignment_string(obj));
+      gtk_entry_set_text(GTK_ENTRY(GTK_COMBO(sizemode_combo)->entry),
+                         geist_object_get_sizemode_string(obj));
+
+      if (geist_object_get_state(obj, VISIBLE))
+         gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(vis_toggle), TRUE);
+   }
 
    gtk_signal_connect(GTK_OBJECT(vis_toggle), "clicked",
-                      GTK_SIGNAL_FUNC(obj_vis_cb), (gpointer) obj);
+                      GTK_SIGNAL_FUNC(obj_vis_cb), (gpointer) list);
 
-   gtk_signal_connect(GTK_OBJECT(x), "changed", GTK_SIGNAL_FUNC(refresh_x_cb),
-                      (gpointer) obj);
-   gtk_signal_connect(GTK_OBJECT(y), "changed", GTK_SIGNAL_FUNC(refresh_y_cb),
-                      (gpointer) obj);
-   gtk_signal_connect(GTK_OBJECT(w), "changed", GTK_SIGNAL_FUNC(refresh_w_cb),
-                      (gpointer) obj);
-   gtk_signal_connect(GTK_OBJECT(h), "changed", GTK_SIGNAL_FUNC(refresh_h_cb),
-                      (gpointer) obj);
+   gtk_signal_connect(GTK_OBJECT(up), "clicked", GTK_SIGNAL_FUNC(move_up_cb),
+                      (gpointer) list);
+   gtk_signal_connect(GTK_OBJECT(down), "clicked",
+                      GTK_SIGNAL_FUNC(move_down_cb), (gpointer) list);
+   gtk_signal_connect(GTK_OBJECT(right), "clicked",
+                      GTK_SIGNAL_FUNC(move_right_cb), (gpointer) list);
+   gtk_signal_connect(GTK_OBJECT(left), "clicked",
+                      GTK_SIGNAL_FUNC(move_left_cb), (gpointer) list);
+
+   gtk_signal_connect(GTK_OBJECT(height_plus), "clicked",
+                      GTK_SIGNAL_FUNC(height_plus_cb), (gpointer) list);
+   gtk_signal_connect(GTK_OBJECT(height_minus), "clicked",
+                      GTK_SIGNAL_FUNC(height_minus_cb), (gpointer) list);
+   gtk_signal_connect(GTK_OBJECT(width_plus), "clicked",
+                      GTK_SIGNAL_FUNC(width_plus_cb), (gpointer) list);
+   gtk_signal_connect(GTK_OBJECT(width_minus), "clicked",
+                      GTK_SIGNAL_FUNC(width_minus_cb), (gpointer) list);
+
    gtk_signal_connect(GTK_OBJECT(name), "changed",
-                      GTK_SIGNAL_FUNC(refresh_name_cb), (gpointer) obj);
+                      GTK_SIGNAL_FUNC(refresh_name_cb), (gpointer) list);
 
    gtk_signal_connect(GTK_OBJECT(GTK_COMBO(alignment_combo)->entry),
                       "changed", GTK_SIGNAL_FUNC(refresh_alignment_cb),
-                      (gpointer) obj);
+                      (gpointer) list);
    gtk_signal_connect(GTK_OBJECT(GTK_COMBO(sizemode_combo)->entry), "changed",
-                      GTK_SIGNAL_FUNC(refresh_sizemode_cb), (gpointer) obj);
+                      GTK_SIGNAL_FUNC(refresh_sizemode_cb), (gpointer) list);
 
 
-   gtk_signal_connect(GTK_OBJECT(ok_btn), "clicked",
-                      GTK_SIGNAL_FUNC(props_ok_cb), (gpointer) obj);
-
-   gtk_signal_connect(GTK_OBJECT(generic_props), "delete_event",
-                      GTK_SIGNAL_FUNC(delete_event_cb), (gpointer) obj);
-
-   gtk_widget_show(generic_props);
+   return (gen_props);
 
 }
+
+
 
 char *
 geist_object_get_type_string(geist_object * obj)
@@ -1181,4 +1334,3 @@ geist_object_get_type_from_string(char *s)
    }
    D_RETURN(3, 0);
 }
-

@@ -22,7 +22,7 @@ gint evbox_buttonrelease_cb(GtkWidget * widget, GdkEventButton * event,
 gint evbox_mousemove_cb(GtkWidget * widget, GdkEventMotion * event,
 
                         gpointer user_data);
-gboolean obj_add_cb(GtkWidget * widget, gpointer * data);
+gboolean obj_imageadd_cb(GtkWidget * widget, gpointer * data);
 gboolean obj_cpy_cb(GtkWidget * widget, gpointer * data);
 gboolean obj_del_cb(GtkWidget * widget, gpointer * data);
 gboolean obj_edit_cb(GtkWidget * widget, gpointer * data);
@@ -42,6 +42,9 @@ geist_gtk_new_document_page(geist_document *doc);
 void nbook_switch_page_cb(GtkNotebook * notebook, GtkNotebookPage * page,
                      guint page_num);
 
-
+void geist_display_props_window(void);
+void geist_hide_props_window(void);
+void geist_update_props_window(void);
+void geist_clear_props_window(void);
 
 #endif
