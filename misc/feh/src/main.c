@@ -71,7 +71,7 @@ main_loop (void)
 		    winwidget_destroy (winwid);
 		  break;
 		case 3:
-		  winwidget_destroy_all();
+		  winwidget_destroy_all ();
 		  break;
 		default:
 		  break;

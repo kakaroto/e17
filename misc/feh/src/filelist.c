@@ -50,42 +50,42 @@ add_file_to_filelist_recursively (char *path)
     {
       D (("   It is a directory\n"));
       if (opt.recursive)
-        {
-          struct dirent *de;
-          DIR *dir;
-          if ((dir = opendir (path)) == NULL)
-            {
-              fprintf (stderr, "Error opening dir %s\n", path);
-              exit (1);
-            }
-          de = readdir (dir);
-          while (de != NULL)
-            {
-              if (strcmp (de->d_name, ".") && strcmp (de->d_name, ".."))
-                {
-                  char *file;
-                  int len = 0;
+	{
+	  struct dirent *de;
+	  DIR *dir;
+	  if ((dir = opendir (path)) == NULL)
+	    {
+	      fprintf (stderr, "Error opening dir %s\n", path);
+	      exit (1);
+	    }
+	  de = readdir (dir);
+	  while (de != NULL)
+	    {
+	      if (strcmp (de->d_name, ".") && strcmp (de->d_name, ".."))
+		{
+		  char *file;
+		  int len = 0;
 
-                  len = strlen (path) + strlen (de->d_name) + 2;
-                  if ((file = malloc (len)) == NULL)
-                    {
-                      fprintf (stderr, "Out of memory\n");
-                      exit (1);
-                    }
-                  /* Remember NOT to free this. add_file_to_filelist doesn't
-                   * duplicate and we need the filelist for the lifetime of the
-                   * app. */
-                  snprintf (file, len, "%s/%s", path, de->d_name);
+		  len = strlen (path) + strlen (de->d_name) + 2;
+		  if ((file = malloc (len)) == NULL)
+		    {
+		      fprintf (stderr, "Out of memory\n");
+		      exit (1);
+		    }
+		  /* Remember NOT to free this. add_file_to_filelist doesn't
+		   * duplicate and we need the filelist for the lifetime of the
+		   * app. */
+		  snprintf (file, len, "%s/%s", path, de->d_name);
 
-                  add_file_to_filelist_recursively (file);
-                }
-              de = readdir (dir);
-            }
-        }
+		  add_file_to_filelist_recursively (file);
+		}
+	      de = readdir (dir);
+	    }
+	}
       else
-        {
-          D (("   But I am ignoring it as recurse is not set\n"));
-        }
+	{
+	  D (("   But I am ignoring it as recurse is not set\n"));
+	}
     }
   else if (S_ISREG (st.st_mode))
     {

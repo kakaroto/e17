@@ -121,8 +121,8 @@ init_parse_options (int argc, char **argv)
 	  add_file_to_filelist_recursively (argv[i]);
 	}
     }
-  if(file_num==0)
-	show_mini_usage();
+  if (file_num == 0)
+    show_mini_usage ();
 }
 
 void
@@ -172,7 +172,7 @@ show_usage (void)
 	   "  -s, --stretch             Normally, if an image is smaller than the specified\n"
 	   "                            thumbnail size, it will not be enlarged. If this\n"
 	   "                            option is set, the image will be scaled up to fit\n"
-           "                            the thumnail size. (Aspect ratio will be maintained\n"
+	   "                            the thumnail size. (Aspect ratio will be maintained\n"
 	   "                            unless --ignoreaspect is specified)\n"
 	   "      --thumb-width NUM     Set thumbnail width in pixels\n"
 	   "      --thumb-height NUM    Set thumbnail height in pixels\n"

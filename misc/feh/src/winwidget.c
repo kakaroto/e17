@@ -40,7 +40,8 @@ winwidget_allocate (void)
   return ret;
 }
 
-winwidget winwidget_create_from_image (Imlib_Image * im)
+winwidget
+winwidget_create_from_image (Imlib_Image * im)
 {
   winwidget ret = NULL;
 
@@ -63,7 +64,8 @@ winwidget winwidget_create_from_image (Imlib_Image * im)
   return ret;
 }
 
-winwidget winwidget_create_from_file (char *filename)
+winwidget
+winwidget_create_from_file (char *filename)
 {
   winwidget ret = NULL;
 
@@ -239,7 +241,8 @@ winwidget_unregister (winwidget win)
     }
 }
 
-winwidget winwidget_get_from_window (Window win)
+winwidget
+winwidget_get_from_window (Window win)
 {
   /* Loop through windows */
   int i;

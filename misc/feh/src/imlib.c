@@ -54,59 +54,59 @@ feh_load_image (Imlib_Image ** im, char *filename)
     {
       /* Check error code */
       fprintf (stderr,
-               PACKAGE " - error while loading image: %s\n      ", filename);
+	       PACKAGE " - error while loading image: %s\n      ", filename);
       switch (err)
-        {
-        case IMLIB_LOAD_ERROR_FILE_DOES_NOT_EXIST:
-          fprintf (stderr, "File does not exist\n");
-          break;
-        case IMLIB_LOAD_ERROR_FILE_IS_DIRECTORY:
-          fprintf (stderr, "Directory specified for image filename\n");
-          break;
-        case IMLIB_LOAD_ERROR_PERMISSION_DENIED_TO_READ:
-          fprintf (stderr, "You do not have read access to that directory\n");
-          break;
-        case IMLIB_LOAD_ERROR_NO_LOADER_FOR_FILE_FORMAT:
-          fprintf (stderr,
-                   "Imlib2 cannot find a loader for that file format\n");
-          break;
-        case IMLIB_LOAD_ERROR_PATH_TOO_LONG:
-          fprintf (stderr, "Path specified is too long\n");
-          break;
-        case IMLIB_LOAD_ERROR_PATH_COMPONENT_NON_EXISTANT:
-          fprintf (stderr, "Path component does not exist\n");
-          break;
-        case IMLIB_LOAD_ERROR_PATH_COMPONENT_NOT_DIRECTORY:
-          fprintf (stderr, "Path component is not a directory\n");
-          break;
-        case IMLIB_LOAD_ERROR_PATH_POINTS_OUTSIDE_ADDRESS_SPACE:
-          /* wtf? :) */
-          fprintf (stderr, "Path points outside address space\n");
-          break;
-        case IMLIB_LOAD_ERROR_TOO_MANY_SYMBOLIC_LINKS:
-          fprintf (stderr, "Too many levels of symbolic links\n");
-          break;
-        case IMLIB_LOAD_ERROR_OUT_OF_MEMORY:
-          fprintf (stderr, "Out of memory\n");
-          must_exit = 1;
-          break;
-        case IMLIB_LOAD_ERROR_OUT_OF_FILE_DESCRIPTORS:
-          fprintf (stderr, "Out of file descriptors\n");
-          must_exit = 1;
-          break;
-        case IMLIB_LOAD_ERROR_PERMISSION_DENIED_TO_WRITE:
-          fprintf (stderr, "Cannot write to directory\n");
-          break;
-        case IMLIB_LOAD_ERROR_OUT_OF_DISK_SPACE:
-          fprintf (stderr, "Cannot write - out of disk space\n");
-          break;
-        case IMLIB_LOAD_ERROR_UNKNOWN:
-        default:
-          fprintf (stderr, "Unknown error. Attempting to continue\n");
-          break;
-        }
+	{
+	case IMLIB_LOAD_ERROR_FILE_DOES_NOT_EXIST:
+	  fprintf (stderr, "File does not exist\n");
+	  break;
+	case IMLIB_LOAD_ERROR_FILE_IS_DIRECTORY:
+	  fprintf (stderr, "Directory specified for image filename\n");
+	  break;
+	case IMLIB_LOAD_ERROR_PERMISSION_DENIED_TO_READ:
+	  fprintf (stderr, "You do not have read access to that directory\n");
+	  break;
+	case IMLIB_LOAD_ERROR_NO_LOADER_FOR_FILE_FORMAT:
+	  fprintf (stderr,
+		   "Imlib2 cannot find a loader for that file format\n");
+	  break;
+	case IMLIB_LOAD_ERROR_PATH_TOO_LONG:
+	  fprintf (stderr, "Path specified is too long\n");
+	  break;
+	case IMLIB_LOAD_ERROR_PATH_COMPONENT_NON_EXISTANT:
+	  fprintf (stderr, "Path component does not exist\n");
+	  break;
+	case IMLIB_LOAD_ERROR_PATH_COMPONENT_NOT_DIRECTORY:
+	  fprintf (stderr, "Path component is not a directory\n");
+	  break;
+	case IMLIB_LOAD_ERROR_PATH_POINTS_OUTSIDE_ADDRESS_SPACE:
+	  /* wtf? :) */
+	  fprintf (stderr, "Path points outside address space\n");
+	  break;
+	case IMLIB_LOAD_ERROR_TOO_MANY_SYMBOLIC_LINKS:
+	  fprintf (stderr, "Too many levels of symbolic links\n");
+	  break;
+	case IMLIB_LOAD_ERROR_OUT_OF_MEMORY:
+	  fprintf (stderr, "Out of memory\n");
+	  must_exit = 1;
+	  break;
+	case IMLIB_LOAD_ERROR_OUT_OF_FILE_DESCRIPTORS:
+	  fprintf (stderr, "Out of file descriptors\n");
+	  must_exit = 1;
+	  break;
+	case IMLIB_LOAD_ERROR_PERMISSION_DENIED_TO_WRITE:
+	  fprintf (stderr, "Cannot write to directory\n");
+	  break;
+	case IMLIB_LOAD_ERROR_OUT_OF_DISK_SPACE:
+	  fprintf (stderr, "Cannot write - out of disk space\n");
+	  break;
+	case IMLIB_LOAD_ERROR_UNKNOWN:
+	default:
+	  fprintf (stderr, "Unknown error. Attempting to continue\n");
+	  break;
+	}
       if (must_exit)
-        exit (1);
+	exit (1);
       return 0;
     }
   return 1;

@@ -31,6 +31,6 @@ init_multiwindow_mode (void)
   for (i = 0; i < file_num; i++)
     {
       if ((w = winwidget_create_from_file (files[i])) != NULL)
-        winwidget_show (w);
+	winwidget_show (w);
     }
 }
