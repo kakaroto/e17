@@ -1605,3 +1605,10 @@ Tue Oct 19 03:55:52 PDT 1999
 
 RPM builds with --enable-upgrade=no by default.
 
+-------------------------------------------------------------------------------
+
+Sat Nov  6 10:21:24 PST 1999
+(Mandrake)
+
+added --disable-zoom configure option for people on alphas/etc.
+
