@@ -72,7 +72,8 @@ winwidget_allocate(void)
    D_RETURN(ret);
 }
 
-winwidget winwidget_create_from_image(Imlib_Image im, char *name, char type)
+winwidget
+winwidget_create_from_image(Imlib_Image im, char *name, char type)
 {
    winwidget ret = NULL;
 
@@ -99,7 +100,8 @@ winwidget winwidget_create_from_image(Imlib_Image im, char *name, char type)
    D_RETURN(ret);
 }
 
-winwidget winwidget_create_from_file(feh_file * file, char *name, char type)
+winwidget
+winwidget_create_from_file(feh_file * file, char *name, char type)
 {
    winwidget ret = NULL;
 
@@ -309,6 +311,12 @@ winwidget_render_image(winwidget winwid, int resize, int alias)
       winwid->zoom = 1.0;
    }
 
+   /* bounds checks for panning */
+   if (winwid->im_x > winwid->w)
+      winwid->im_x = winwid->w;
+   if (winwid->im_y > winwid->h)
+      winwid->im_y = winwid->h;
+
    winwidget_setup_pixmaps(winwid);
 
    if (!opt.full_screen
@@ -360,6 +368,10 @@ winwidget_render_image(winwidget winwid, int resize, int alias)
    /* Now we ensure only to render the area we're looking at */
    dx = winwid->im_x;
    dy = winwid->im_y;
+   if(dx < 0)
+      dx = 0;
+   if(dy < 0)
+      dy = 0;
 
    if (winwid->im_x < 0)
    {
@@ -387,29 +399,24 @@ winwidget_render_image(winwidget winwid, int resize, int alias)
    if (calc_w < dw)
       dw = calc_w;
    if (calc_h < dh)
-      dh = calc_h;
+   dh = calc_h;
+   if(dw > winwid->w)
+      dw = winwid->w;
+   if(dh > winwid->h)
+      dh = winwid->h;
+
    sw = dw / winwid->zoom;
    sh = dh / winwid->zoom;
 
+   D(("-----------\nRender image:\nsx: %d\nsy: %d\nsw: %d\nsh: %d\ndx: %d\ndy: %d\ndw: %d\ndh: %d\n", sx, sy, sw, sh, dx, dy, dw, dh));
+   
    D(
      (stderr, "winwidget_render(): winwid->im_angle = %f\n",
       winwid->im_angle));
    if (winwid->im_angle != 0.0)
-      feh_imlib_render_image_part_on_drawable_at_size_with_rotation(winwid->
-                                                                    bg_pmap,
-                                                                    winwid->
-                                                                    im, sx,
-                                                                    sy, sw,
-                                                                    sh, dx,
-                                                                    dy, dw,
-                                                                    dh,
-                                                                    winwid->
-                                                                    im_angle,
-                                                                    1,
-                                                                    feh_imlib_image_has_alpha
-                                                                    (winwid->
-                                                                     im),
-                                                                    alias);
+      feh_imlib_render_image_part_on_drawable_at_size_with_rotation
+         (winwid->bg_pmap, winwid->im, sx, sy, sw, sh, dx, dy, dw, dh,
+          winwid->im_angle, 1, feh_imlib_image_has_alpha(winwid->im), alias);
    else
       feh_imlib_render_image_part_on_drawable_at_size(winwid->bg_pmap,
                                                       winwid->im, sx, sy, sw,
@@ -440,8 +447,7 @@ feh_calc_needed_zoom(double *zoom, int orig_w, int orig_h, int dest_w,
    D_RETURN(ratio);
 }
 
-Pixmap
-feh_create_checks(void)
+Pixmap feh_create_checks(void)
 {
    static Pixmap checks_pmap = None;
    Imlib_Image checks = NULL;
@@ -627,7 +633,8 @@ winwidget_unregister(winwidget win)
    D_RETURN_;
 }
 
-winwidget winwidget_get_from_window(Window win)
+winwidget
+winwidget_get_from_window(Window win)
 {
    winwidget ret = NULL;
 

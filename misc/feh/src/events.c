@@ -401,8 +401,10 @@ feh_event_handle_MotionNotify(XEvent * ev)
             enable zooming to the clicked spot... */
          /* TODO */
          /* for now, center around im_click_offset_x and im_click_offset_y */
-         winwid->im_x = (winwid->w / 2) - (winwid->im_click_offset_x * winwid->zoom);
-         winwid->im_y = (winwid->h / 2) - (winwid->im_click_offset_y * winwid->zoom);
+         winwid->im_x =
+            (winwid->w / 2) - (winwid->im_click_offset_x * winwid->zoom);
+         winwid->im_y =
+            (winwid->h / 2) - (winwid->im_click_offset_y * winwid->zoom);
 
          winwidget_render_image(winwid, 0, 0);
       }
@@ -441,11 +443,6 @@ feh_event_handle_MotionNotify(XEvent * ev)
             winwid->im_y = yy;
          else
             winwid->im_y = y;
-
-         if (winwid->im_x > winwid->w)
-            winwid->im_x = winwid->w;
-         if (winwid->im_y > winwid->h)
-            winwid->im_y = winwid->h;
 
          if ((winwid->im_x != orig_x) || (winwid->im_y != orig_y))
             winwidget_render_image(winwid, 0, 0);
