@@ -335,8 +335,10 @@ void estyle_style_move(Estyle *es)
 	 */
 	while ((layer = ewd_sheap_item(info->layers, i++)) &&
 			(ob = ewd_list_next(es->style->bits)))
-		evas_move(es->evas, ob, (double)(es->x + layer->x_offset),
-				(double)(es->y + layer->y_offset));
+		evas_move(es->evas, ob, (double)(es->x + layer->x_offset +
+					info->left_push),
+				(double)(es->y + layer->y_offset +
+					 info->right_push));
 }
 
 /*
@@ -515,8 +517,10 @@ static Evas_Object _estyle_style_layer_draw(Estyle_Style_Layer * layer,
 	ret = evas_add_text(es->evas, es->font,
 			es->font_size + layer->size_change, text);
 
-	evas_move(es->evas, ret, (double)(es->x + layer->x_offset),
-			(double)(es->y + layer->y_offset));
+	evas_move(es->evas, ret, (double)(es->x + layer->x_offset +
+				 es->style->info->left_push),
+			(double)(es->y + layer->y_offset +
+				 es->style->info->top_push));
 
 	/*
 	 * Now determine if it has relative or absolute color and change it's
@@ -650,6 +654,22 @@ static void _estyle_style_read(Estyle_Style_Info * info)
 
 		sprintf(key, "/layers/%d/color/b", i);
 		e_db_int_get(info->style_db, key, &layer->b);
+
+		/*
+		 * Adjust the push of the left and right edges of the estyle.
+		 */
+		if (layer->x_offset > info->right_push)
+			info->right_push = layer->x_offset;
+		else if (-layer->x_offset > info->left_push)
+			info->left_push = -layer->x_offset;
+
+		/*
+		 * Adjust the push of the top and bottom edges of the estyle.
+		 */
+		if (layer->y_offset > info->bottom_push)
+			info->bottom_push = layer->y_offset;
+		else if (-layer->y_offset > info->top_push)
+			info->top_push = -layer->y_offset;
 
 		ewd_sheap_insert(info->layers, layer);
 	}

@@ -19,6 +19,8 @@ struct _estyle_style_info {
 	char *name;
 	E_DB_File *style_db;
 	Ewd_Sheap *layers;
+	int left_push, right_push, top_push, bottom_push;
+
 	int references;
 };
 
