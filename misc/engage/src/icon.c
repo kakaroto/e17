@@ -37,7 +37,8 @@ od_icon_new_applnk(E_App *app, char *name_override, char *class_override)
 
   ret = od_icon_new(app, name_override, class_override, application_link);
 
-  ret->data.applnk.command = strdup(app->exe);
+  if (app->exe)
+    ret->data.applnk.command = strdup(app->exe);
   if (app->win_class)
     ret->data.applnk.winclass = strdup(class_override? class_override : app->win_class);
   ret->data.applnk.count = 0;
@@ -419,8 +420,11 @@ od_icon_edje_app_cb(void *data, Evas_Object * obj, const char *emission, const
     if (!strcmp(emission, "engage,app,open")) {
       switch (icon->type) {
       case application_link:
-        edje_object_signal_emit(obj, "engage,app,open,ok", "");
-        ecore_exe_run(icon->data.applnk.command, NULL);
+        if (icon->data.applnk.command) {
+          edje_object_signal_emit(obj, "engage,app,open,ok", "");
+          ecore_exe_run(icon->data.applnk.command, NULL);
+        } else
+          printf("ERROR: no command stored in icon\n");
         break;
       case minimised_window:
         break;
