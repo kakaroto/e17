@@ -169,6 +169,7 @@ void __ewl_entry_configure(Ewl_Widget * w, void *ev_data, void *user_data)
 	 */
 	xx = CURRENT_X(w);
 	yy = CURRENT_Y(w);
+	hh = CURRENT_H(w);
 
 	/*
 	 * First position the text.
@@ -178,29 +179,28 @@ void __ewl_entry_configure(Ewl_Widget * w, void *ev_data, void *user_data)
 			ewl_object_get_preferred_w(EWL_OBJECT(e->text)),
 			ewl_object_get_preferred_h(EWL_OBJECT(e->text)));
 
-	/*
-	 * Now position the cursor based on the current position in the text.
-	 */
-	c_spos = ewl_cursor_get_start_position(EWL_CURSOR(e->cursor));
-	ewl_text_get_letter_geometry(EWL_TEXT(e->text), --c_spos, &sx,
-				     &sy, NULL, NULL);
-
-	c_epos = ewl_cursor_get_start_position(EWL_CURSOR(e->cursor));
-	ewl_text_get_letter_geometry(EWL_TEXT(e->text), --c_epos, &ex,
-				     &ey, &ew, &eh);
-
 	str = EWL_TEXT(e->text)->text;
+	c_spos = ewl_cursor_get_start_position(EWL_CURSOR(e->cursor));
 
-	if (str && (l = strlen(str)) && c_spos >= l) {
+	if (str && (l = strlen(str)) && c_spos > l) {
 		xx += ewl_object_get_current_w(EWL_OBJECT(e->text));
 		ww = 5;
 	} else {
-		xx += sx;
+
+		/*
+		 * Now position the cursor based on the current position in the
+		 * text.
+		 */
+		ewl_text_get_letter_geometry(EWL_TEXT(e->text), --c_spos, &sx,
+					     &sy, NULL, NULL);
+
+		c_epos = ewl_cursor_get_start_position(EWL_CURSOR(e->cursor));
+		ewl_text_get_letter_geometry(EWL_TEXT(e->text), --c_epos, &ex,
+					     &ey, &ew, &eh);
+
+		xx = sx;
 		ww = (ex + ew) - sx;
 	}
-
-	yy += ey;
-	hh = ewl_object_get_current_h(EWL_OBJECT(e->text));
 
 	ewl_object_request_geometry(EWL_OBJECT(e->cursor), xx, yy, ww, hh);
 
