@@ -16,4 +16,5 @@ euphoria_SOURCES = \
 
 euphoria_LDADD = \
 	@ECORE_LIBS@ @EVAS_LIBS@ @EDJE_LIBS@ @ESMART_LIBS@ @EWL_LIBS@ \
-	-lxmmsclient -lxmmsclient-ecore
+	-lxmmsclient -lxmmsclient-ecore -lesmart_container \
+	-lesmart_draggies -lesmart_trans_x11 -lesmart_file_dialog
