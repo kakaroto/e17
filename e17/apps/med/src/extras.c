@@ -227,7 +227,7 @@ med_setup_entries(Evas e_in)
   /*e_icon = evas_add_image_from_file(e, "/opt/gnome/share/pixmaps/gnome-image-jpeg.png" );*/
   e_icon = evas_add_image_from_file(e, "" );
   evas_get_image_size(e, e_icon, &iw, &ih);
-  evas_move(e, e_icon, 360, 250);
+  evas_move(e, e_icon, 360, 280);
   iw = ih = 48;
   evas_resize(e, e_icon, iw, ih);
   evas_set_layer(e, e_icon, 102);
@@ -378,14 +378,20 @@ med_return_cb(E_Entry *_entry, void *_data)
 }
 
 
-void
-med_delete_mi_at(E_Menu_Item *mi)
+int
+med_delete_mi_at(E_Menu_Item *mi, E_Menu_Item *mi_track)
 {
   E_DB_File *db;
   int mc, in, num_m, num_m2, renumber_sm = 0;
+  int track_out_index = 0;
   E_Menu_Item *mnew;
 
   db = med_db_open();
+
+  if(mi_track)
+    {
+      track_out_index = mi_track->db_num2;
+    }
 
   mc = get_menu_count( db, mi->db_num1 );
   num_m = num_m2 = get_num_menus(db);
@@ -410,6 +416,11 @@ med_delete_mi_at(E_Menu_Item *mi)
     {
       mnew = get_mi( db, mi->db_num1, in );
       set_mi( db, mi->db_num1, in-1, mnew );
+
+      if(mi_track && mi_track->db_num2 == in)
+	{
+	  track_out_index = in-1;
+	}
     }
 
   /* Delete last item & dec. menu item count */
@@ -419,6 +430,7 @@ med_delete_mi_at(E_Menu_Item *mi)
   /* close here - flush is done when loading menu again */
   e_db_close( db );
 
+  return track_out_index;
 }
 
 
@@ -443,7 +455,7 @@ med_insert_mi_at_dnd(E_Menu_Item *mi, int num_files, char **files)
 	  mnew->str = exe;
 	}
 
-      med_insert_mi(mi, mnew);
+      med_insert_mi(mi, mnew, -1);
     }
 }
 
@@ -472,23 +484,28 @@ med_insert_mi_at(E_Menu_Item *mi, med_tool_type tt )
       break;
     }
 
-  med_insert_mi(mi, mnew);
+  med_insert_mi(mi, mnew, -1);
 }
 
 
 void
-med_insert_mi(E_Menu_Item *mi, E_Menu_Item *mnew )
+med_insert_mi(E_Menu_Item *mi, E_Menu_Item *mnew, int move_index )
 {
-  int mc, in;
+  int mc, in, st_num;
   E_DB_File *db;
   E_Menu_Item *mprev;
 
   db = med_db_open();
   mc = get_menu_count( db, mi->db_num1 );
 
+  if(move_index == -1)
+    st_num = mi->db_num2;
+  else
+    st_num = move_index;
+
   /* save the entry we are replacing */
   /* insert mi and roll items down */
-  for(in = mi->db_num2; in < mc; in++ )
+  for(in = st_num; in < mc; in++ )
     {
       mprev = get_mi( db, mi->db_num1, in );
       set_mi( db, mi->db_num1, in, mnew );
@@ -944,6 +961,7 @@ med_entry_in_cb(void *_data, Evas _e, Evas_Object _o, int _b, int _x, int _y)
    E_Entry *entry;
 
    entry = _data;
+
    med_entry_check_dnd_status(entry, 1);
 
 
@@ -962,6 +980,7 @@ med_entry_out_cb(void *_data, Evas _e, Evas_Object _o, int _b, int _x, int _y)
    E_Entry *entry;
 
    entry = _data;
+
    med_entry_check_dnd_status(entry, 0);
 
 
@@ -986,10 +1005,13 @@ med_entry_check_dnd_status(E_Entry *entry, int enter)
 {
   if(enter)
     {
-      /* flag drag in progress */
-      med_drop_pending = entry;
-      /* hilight the target */
-      med_entry_indicate_drop(entry, 1);
+      if(med_check_dnd_motion_pend())
+	{
+	  /* flag drag in progress */
+	  med_drop_pending = entry;
+	  /* hilight the target */
+	  med_entry_indicate_drop(entry, 1);
+	}
     }
   else
     {
@@ -1024,6 +1046,37 @@ med_entry_handle_drop(int dnd_num_files, char **dnd_files)
 
       med_mark_entry_dirty(med_drop_pending);
       med_drop_pending = NULL;
+    }
+}
+
+
+void
+med_move_mi(E_Menu_Item *mi, E_Menu_Item *mi_dest)
+{
+
+  if(mi && mi_dest)
+    {
+      E_DB_File *db;
+      E_Menu_Item *msav;
+
+      db = med_db_open();
+      msav = get_mi( db, mi->db_num1, mi->db_num2 );
+      e_db_close( db );
+
+      /* If seperate submenus, then just delete and add */
+      if(mi->db_num1 != mi_dest->db_num1)
+	{
+	  med_delete_mi_at(mi, NULL);
+	  med_insert_mi(mi_dest, msav, -1);
+	}
+      else
+	{
+	  int mdest_index;
+
+	  mdest_index = med_delete_mi_at(mi, mi_dest);
+	  med_insert_mi(mi_dest, msav, mdest_index);
+
+	}
     }
 }
 

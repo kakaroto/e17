@@ -27,7 +27,7 @@ extern "C" {
 
   void med_commit_entry_changes(E_Entry *_entry);
 
-  void med_delete_mi_at(E_Menu_Item *mi);
+  int med_delete_mi_at(E_Menu_Item *mi, E_Menu_Item *mi_track);
 
   void med_insert_mi_at(E_Menu_Item *mi, med_tool_type tt);
 
@@ -37,7 +37,7 @@ extern "C" {
 
   void med_insert_mi_at_dnd(E_Menu_Item *mi, int num_files, char **files);
 
-  void med_insert_mi(E_Menu_Item *mi, E_Menu_Item *mnew );
+  void med_insert_mi(E_Menu_Item *mi, E_Menu_Item *mnew, int move_index );
 
   Evas med_entry_get_evas(void);
 

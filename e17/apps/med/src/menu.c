@@ -631,7 +631,7 @@ e_menu_item_in_cb(void *_data, Evas _e, Evas_Object _o, int _b, int _x, int _y)
 	   /* kjb - display it */
 	   med_display( MED_MENU_ITEM, mi);
 	 }
-       med_check_dnd_status(mi->menu, 1);
+       med_check_dnd_status(1);
      }
    else
      {
@@ -658,7 +658,7 @@ e_menu_item_out_cb(void *_data, Evas _e, Evas_Object _o, int _b, int _x, int _y)
        mi->selected = 0;
        mi->menu->redo_sel = 1;
        mi->menu->changed = 1;
-       med_check_dnd_status(mi->menu, 0);
+       med_check_dnd_status(0);
      }
    return;
    UN(_e);
@@ -2185,7 +2185,7 @@ med_dnd_drop_request_free(void)
 
 
 void
-med_check_dnd_status(E_Menu *m, int enter)
+med_check_dnd_status(int enter)
 {
   if(enter)
     {
@@ -2201,6 +2201,19 @@ med_check_dnd_status(E_Menu *m, int enter)
     {
       med_drop_pending = 0;
     }
+}
+
+
+int
+med_check_dnd_motion_pend( void )
+{
+  if(med_dnd_source_win)
+    {
+      med_dnd_source_win = 0;
+      return 1;
+    }
+  else
+    return 0;
 }
 
 

@@ -1,4 +1,8 @@
-Feb  3, 2002		External drag and drop into menu and individual menu 
+Feb  3, 2002		dnd to move menu items within the menu.  There is a
+			remaining bug dragging from submenus, it doesn't
+			work yet. Fixed a hilite bug in the text entries.
+			--
+			External drag and drop into menu and individual menu 
 			entries.  Dragging a app from a view into the menu
 			will insert a new menu item with the name as the menu
 			text, and the full path/exe as the executable.

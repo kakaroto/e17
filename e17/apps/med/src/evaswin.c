@@ -246,12 +246,8 @@ med_tool_mouse_up(void *_data, Evas _e, Evas_Object _o, int _b, int _x, int _y)
 
   if(mi_in) m = mi_in->menu;
 
-  /*printf( "Release\n" );*/
-
-  /*  if( _o == onew )*/
   if( m && dragging )
     {
-
       E_Menu_Item *mi;
       
       ecore_window_destroy(drag_win);
@@ -259,8 +255,6 @@ med_tool_mouse_up(void *_data, Evas _e, Evas_Object _o, int _b, int _x, int _y)
 
       /* get selection, edit menu... */
       mi = med_get_selected_mi();
-
-      /*printf( "up: m-%s\n", mi ? "Sel!" : "Off menu" );*/
 
       /* Did the drag start from a insertion tool? */
       if( m->edit_tool )
@@ -271,21 +265,14 @@ med_tool_mouse_up(void *_data, Evas _e, Evas_Object _o, int _b, int _x, int _y)
       else if( mi )
 	{
 	  /* Dropped on menu */
-#if 0
-	  /* segfaults - need to work on this case */
-	  if(mi_in) med_delete_mi_at(mi_in);
-	  if(mi) med_insert_mi(mi, mi_in);
-	  printf("drop-internal\n");
-#endif
+	  med_move_mi(mi_in, mi);
 	}
       else
 	{
 	  /* Dropped outside menu */
 	  if(mi_in) med_delete_mi_at(mi_in);
 	}
-
     }
-
 }
 
 
