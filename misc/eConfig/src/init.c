@@ -1,3 +1,4 @@
+
 /*****************************************************************************/
 /* eConfig - the configuration library that just wouldn't die (yet)          */
 /*****************************************************************************/
@@ -15,13 +16,15 @@
 #include "eConfig.internal.h"
 #include "eConfig.h"
 
-void eConfigInit(void) {
+void 
+eConfigInit(void)
+{
 
-	/* This function just initializes a bunch of pointers and such. */
+   /* This function just initializes a bunch of pointers and such. */
 
-	eConfig.paths = NULL;
-	eConfig.data = NULL;
+   eConfig.paths = NULL;
+   eConfig.data = NULL;
 
-	return;
+   return;
 
 }

@@ -54,28 +54,25 @@
 	code = eConfigStoreData(loc,string,strlen(string),path); \
 }
 
+int                 eConfigAddPath(char *path);
+int                 eConfigRemovePath(char *path);
+char              **eConfigPaths(int *num);
 
-int              eConfigAddPath(char *path);
-int              eConfigRemovePath(char *path);
-char           **eConfigPaths(int *num);
+void                eConfigInit(void);
 
+void               *eConfigGetData(char *loc, unsigned long *length);
+void               *eConfigRefreshData(char *loc, unsigned long *length);
+int                 eConfigUnloadData(char *loc);
+int                 eConfigStoreData(char *loc, void *data, unsigned long length,
+				     char *path);
+int                 eConfigStoreDataToFirstAvailablePath(char *loc, void *data,
+							 unsigned long length);
 
-void             eConfigInit(void);
+int                 eConfigExportData(char *loc, char local);
 
-void            *eConfigGetData(char *loc, unsigned long *length);
-void            *eConfigRefreshData(char *loc, unsigned long *length);
-int              eConfigUnloadData(char *loc);
-int              eConfigStoreData(char *loc, void *data, unsigned long length,
-                                  char *path);
-int              eConfigStoreDataToFirstAvailablePath(char *loc, void *data,
-                                                      unsigned long length);
+void                eConfigSetCacheSize(unsigned long newsize);
+unsigned long       eConfigGetCacheSize(void);
+unsigned long       eConfigGetCacheFilled(void);
+int                 eConfigUpdateCache(void);
 
-
-int              eConfigExportData(char *loc,char local);
-
-void             eConfigSetCacheSize(unsigned long newsize);
-unsigned long    eConfigGetCacheSize(void);
-unsigned long    eConfigGetCacheFilled(void);
-int              eConfigUpdateCache(void);
-
-int              eConfigFsckPath(char *path);
+int                 eConfigFsckPath(char *path);

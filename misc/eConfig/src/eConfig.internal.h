@@ -1,3 +1,4 @@
+
 /*****************************************************************************/
 /* eConfig - the configuration library that just wouldn't die (yet)          */
 /*****************************************************************************/
@@ -33,58 +34,66 @@
 #define FILEPATH_LEN_MAX 4096
 #include "../config.h"
 
-typedef struct _pathstruct {
+typedef struct _pathstruct
+  {
 
-    char *path;
-    struct _pathstruct *next;
+     char               *path;
+     struct _pathstruct *next;
 
-} PathStruct;
+  }
+PathStruct;
 
-typedef struct _econfdata {
+typedef struct _econfdata
+  {
 
-    char              *loc;
-    void              *data;
-    unsigned long      length;
-    int                refcount;
-    struct _econfdata *next;
+     char               *loc;
+     void               *data;
+     unsigned long       length;
+     int                 refcount;
+     struct _econfdata  *next;
 
-} eConfigData;
+  }
+eConfigData;
 
-typedef struct _econffat {
+typedef struct _econffat
+  {
 
-    char            loc[FILEPATH_LEN_MAX];
-    unsigned long   position;
-    unsigned long   length;
-    unsigned long   usage_index;
-    unsigned long   updated_on;
+     char                loc[FILEPATH_LEN_MAX];
+     unsigned long       position;
+     unsigned long       length;
+     unsigned long       usage_index;
+     unsigned long       updated_on;
 
-} eConfigFAT;
+  }
+eConfigFAT;
 
-typedef struct {
+typedef struct
+  {
 
-    PathStruct   *paths;
-    eConfigData  *data;
-    unsigned long cachesize;
+     PathStruct         *paths;
+     eConfigData        *data;
+     unsigned long       cachesize;
 
-} eConfigType;
+  }
+eConfigType;
 
-extern eConfigType eConfig; 
+extern eConfigType  eConfig;
 
-unsigned long _econf_finddatapointerinpath(char *path,char *loc,
-                                           unsigned long *position,
-                                           unsigned long *timestamp);
-void * _econf_get_data_from_disk(char *loc,unsigned long *length);
-int _econf_save_data_to_disk(void *data, char *loc, unsigned long length,
-                             char *path);
-int _econf_purge_data_from_disk(char *loc);
-int _econf_purge_data_from_disk_at_path(char *loc, char *path);
-int _econf_save_data_to_disk_at_position(unsigned long position,char *path,
-                                         unsigned long length, void *data);
-unsigned long _econf_append_data_to_disk_at_path(char *path,
-                                                 unsigned long length,
-                                                 void *data);
-int _econf_new_fat_entry_to_disk(char *loc, unsigned long length, char *path);
-unsigned long _econf_timestamp(void);
-int _econf_replace_fat_entry_to_disk(char *loc, unsigned long length,
-                                     char *path);
-int _econf_create_new_data_repository(char *path); 
+unsigned long       _econf_finddatapointerinpath(char *path, char *loc,
+						 unsigned long *position,
+						 unsigned long *timestamp);
+void               *_econf_get_data_from_disk(char *loc, unsigned long *length);
+int                 _econf_save_data_to_disk(void *data, char *loc, unsigned long length,
+					     char *path);
+int                 _econf_purge_data_from_disk(char *loc);
+int                 _econf_purge_data_from_disk_at_path(char *loc, char *path);
+int                 _econf_save_data_to_disk_at_position(unsigned long position, char *path,
+					    unsigned long length, void *data);
+unsigned long       _econf_append_data_to_disk_at_path(char *path,
+						       unsigned long length,
+						       void *data);
+int                 _econf_new_fat_entry_to_disk(char *loc, unsigned long length, char *path);
+unsigned long       _econf_timestamp(void);
+int                 _econf_replace_fat_entry_to_disk(char *loc, unsigned long length,
+						     char *path);
+int                 _econf_create_new_data_repository(char *path);
