@@ -3326,3 +3326,27 @@ Enable additional theme dir paths.
 Desktop fixes, namespace cleanups.
 Fix some memleaks.
 Handle startup window stacking via object stack.
+
+-------------------------------------------------------------------------------
+
+Sat Mar 19 12:02:15 CET 2005
+(Kim)
+
+--- 0.16.8 0.06 ---
+Event handling fixes and tweaks (avoid graphics exposure events). Cleanups.
+Use imlib2 for pager updates.
+Fix moving between offset desktops.
+Remember (certain types of) dockapps as such across restart.
+Fix button state saving. Save background and button configurations separately.
+Fix some startup/desk switch focusing issues.
+Fix background timeouts with offset desks.
+Use more ecore_x atom functions.
+Fix menu segv. Eliminate GetWinXY/WH.
+Fix bug causing lockups in multibyte locale's.
+Fix bad initial window geometry calculations.
+Add warp pointer to other screen command.
+Fix remembering command when it contains shell special or blank chars.
+Remove obsolete memory debugging feature.
+GSOD: Don't show unused buttons, don't try restarting/exiting E after forking.
+Don't show icons for iconified window transients in iconbox after restart.
+Initial hint setup tweaks.

@@ -1,7 +1,7 @@
 Summary: The Enlightenment window manager.
 Name: e16
 Version: 0.16.8
-Release: 0.05%{?_vendorsuffix:.%{_vendorsuffix}}
+Release: 0.06%{?_vendorsuffix:.%{_vendorsuffix}}
 License: BSD
 Group: User Interface/Desktops
 URL: http://www.enlightenment.org/
