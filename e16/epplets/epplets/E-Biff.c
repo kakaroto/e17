@@ -48,15 +48,15 @@ extern void Epplet_redraw(void);
 #define BEGMATCH(a, b)  (!strncasecmp((a), (b), (sizeof(b) - 1)))
 #define NONULL(x)       ((x) ? (x) : (""))
 
-Epplet_gadget close_button, mp_button, cfg_button, nomail, newmail, seven, label;
-Epplet_gadget cfg_tb_mbox, cfg_tb_mailprog, cfg_tb_interval, cfg_tb_nomail, cfg_tb_newmail, cfg_tb_seven, cfg_tb_sound;
+Epplet_gadget close_button, mp_button, cfg_button, nomail, newmail, seven, label, box_button;
+Epplet_gadget cfg_tb_mbox, cfg_tb_mailprog, cfg_tb_interval, cfg_tb_nomail, cfg_tb_newmail, cfg_tb_seven, cfg_tb_sound, cfg_tb_boxname;
 Window config_win = None;
 unsigned long new_cnt, total_cnt;
 size_t file_size;
 time_t file_mtime;
 char *folder_path = NULL, *mailprog = MAIL_PROG, *sound = NULL,
   *nomail_image = NOMAIL_IMAGE, *newmail_image = NEWMAIL_IMAGE,
-  *seven_image = SEVEN_IMAGE;
+  *seven_image = SEVEN_IMAGE, *boxname = NULL;
 int mp_pid = 0;
 int beep = 1, cfg_beep;
 int show_total = 1, cfg_total;
@@ -141,7 +141,10 @@ in_cb(void *data, Window w)
 {
   if (w == Epplet_get_main_window()) {
     Epplet_gadget_show(close_button);
-    Epplet_gadget_show(mp_button);
+    if (!boxname)
+      Epplet_gadget_show(mp_button);
+    else
+      Epplet_gadget_show(box_button);      
     Epplet_gadget_show(cfg_button);
   }
   return;
@@ -153,7 +156,10 @@ out_cb(void *data, Window w)
 {
   if (w == Epplet_get_main_window()) {
     Epplet_gadget_hide(close_button);
-    Epplet_gadget_hide(mp_button);
+    if (!boxname)
+      Epplet_gadget_hide(mp_button);
+    else
+      Epplet_gadget_hide(box_button);      
     Epplet_gadget_hide(cfg_button);
   }
   return;
@@ -229,6 +235,18 @@ apply_config(void)
     Epplet_modify_config("beep", buff);
   }
 
+  strcpy(buff, Epplet_textbox_contents(cfg_tb_boxname));
+  if (strlen(buff)) {
+    if (!boxname || strcmp(boxname, buff)) {
+      Epplet_modify_config("boxname", buff);
+      boxname = Epplet_query_config("boxname");
+      Epplet_change_button_label(box_button, boxname);
+    }
+  } else if (boxname) {
+    Epplet_modify_config("boxname", NULL);
+    boxname = NULL;
+  }
+
   if (show_total != cfg_total) {
     show_total = cfg_total;
     sprintf(buff, "%d", show_total);
@@ -279,7 +297,7 @@ config_cb(void *data)
     return;
   }
 
-  config_win = Epplet_create_window_config(300, 386, "E-Biff Configuration", ok_cb, NULL, apply_cb, NULL, cancel_cb, NULL);
+  config_win = Epplet_create_window_config(300, 432, "E-Biff Configuration", ok_cb, NULL, apply_cb, NULL, cancel_cb, NULL);
 
   Epplet_gadget_show(Epplet_create_label(4, 4, "Mailbox path:", 2));
   Epplet_gadget_show(cfg_tb_mbox = Epplet_create_textbox(NULL, folder_path, 4, 18, 292, 20, 2, NULL, NULL));
@@ -307,9 +325,12 @@ config_cb(void *data)
   Epplet_gadget_show(Epplet_create_togglebutton(NULL, NULL, 4, 326, 12, 12, &cfg_beep, NULL, NULL));
   Epplet_gadget_show(Epplet_create_label(20, 326, "Beep when new mail arrives?", 2));
 
+  Epplet_gadget_show(Epplet_create_label(4, 346, "Text for mailbox button (leave empty for eject button):", 2));
+  Epplet_gadget_show(cfg_tb_boxname = Epplet_create_textbox(NULL, boxname, 4, 360, 292, 20, 2, NULL, NULL));
+
   cfg_total = show_total;
-  Epplet_gadget_show(Epplet_create_togglebutton(NULL, NULL, 4, 346, 12, 12, &cfg_total, NULL, NULL));
-  Epplet_gadget_show(Epplet_create_label(20, 346, "Show total number of messages?", 2));
+  Epplet_gadget_show(Epplet_create_togglebutton(NULL, NULL, 4, 392, 12, 12, &cfg_total, NULL, NULL));
+  Epplet_gadget_show(Epplet_create_label(20, 392, "Show total number of messages?", 2));
 
   Epplet_window_show(config_win);
   Epplet_window_pop_context();
@@ -341,6 +362,8 @@ process_conf(void) {
   seven_image = s;
   s = Epplet_query_config("sound");
   sound = s;
+  s = Epplet_query_config("boxname");
+  boxname = s;
 }
 
 int
@@ -378,8 +401,10 @@ main(int argc, char **argv)
     }
   }
   close_button = Epplet_create_button(NULL, NULL, 2, 2, 0, 0, "CLOSE", 0, NULL, close_cb, NULL);
-  cfg_button = Epplet_create_button(NULL, NULL, 18, 2, 0, 0, "CONFIGURE", 0, NULL, config_cb, NULL);
-  mp_button = Epplet_create_button(NULL, NULL, 34, 2, 0, 0, "EJECT", 0, NULL, mailprog_cb, NULL);
+  cfg_button = Epplet_create_button(NULL, NULL, 34, 2, 0, 0, "CONFIGURE", 0, NULL, config_cb, NULL);
+  mp_button = Epplet_create_button(NULL, NULL, 18, 2, 0, 0, "EJECT", 0, NULL, mailprog_cb, NULL);
+
+  box_button = Epplet_create_button(boxname, NULL, 2, 15, 42, 12, NULL, 0, NULL, mailprog_cb, NULL);
 
   nomail = Epplet_create_image(2, 3, 44, 30, nomail_image);
   newmail = Epplet_create_image(2, 3, 44, 30, newmail_image);
