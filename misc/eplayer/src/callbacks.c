@@ -177,6 +177,18 @@ void cb_playlist_item_play(void *udata, Evas_Object *obj,
 	paused = 0;
 }
 
+void cb_playlist_item_selected(void *udata, Evas_Object *obj,
+                               const char *emission, const char *src) {
+	ePlayer *player = udata;
+	Evas_List *items = e_container_elements_get(player->gui.playlist);
+	Evas_List *l;
+
+	for (l = items; l; l = l->next)
+		if (l->data != obj)
+			edje_object_signal_emit(l->data,
+			                        "PLAYLIST_ITEM_UNSELECTED", "");
+}
+
 void cb_seek_forward(void *udata, Evas_Object *obj,
                      const char *emission, const char *src) {
 	ePlayer *player = udata;

@@ -1128,10 +1128,11 @@ collections {
 			name, "quit";
 			type, TEXT;
 			mouse_events, 1;
-
+			effect, SOFT_OUTLINE;
 			description {
 				state, "default" 0.0;
 				color, 255 255 255 255;
+				align, 0.5 0.5;
 				rel1 {
 					relative, 1.0 0.0;
 					offset,   -25 0;
@@ -1150,7 +1151,7 @@ collections {
 			description {
 				state, "active" 0.0;
 				color, 255 0 0 255;
-
+				align, 0.5 0.5;
 				rel1 {
 					relative, 1.0 0.0;
 					offset, -25 0;
@@ -1544,10 +1545,10 @@ collections {
 					color, 0 0 0 0;
 				}
 
-				/*description {
+				description {
 					state, "selected" 0.0;
-					color, 73 104 111 64;
-				}*/
+					color, 73 104 111 128;
+				}
 			}
 
 			part {
@@ -1590,14 +1591,30 @@ collections {
 		}
 
 		programs {
-			/*program {
-				name, "clicked";
+			program {
+				name, "selected_mouse";
 				signal, "mouse,clicked,1";
 				source, "*";
+				action, SIGNAL_EMIT "PLAYLIST_ITEM_SELECTED" "";
+			}
+
+			program {
+				name, "selected";
+				signal, "PLAYLIST_ITEM_SELECTED";
+				source, "";
 				action, STATE_SET "selected" 0.0;
-				transition, LINEAR, 0.0;
+				transition, LINEAR, 0.2;
 				target, "background";
-			}*/
+			}
+
+			program {
+				name, "unselected";
+				signal, "PLAYLIST_ITEM_UNSELECTED";
+				source, "";
+				action, STATE_SET "default" 0.0;
+				transition, LINEAR, 0.2;
+				target, "background";
+			}
 
 			program {
 				name, "dbl_clicked";

@@ -171,6 +171,8 @@ void show_playlist_item(PlayListItem *pli, void *data) {
 			                        cb_playlist_scroll_down, player);
 	edje_object_signal_callback_add(o, "PLAYLIST_ITEM_PLAY", "",
 			                        cb_playlist_item_play, player);
+	edje_object_signal_callback_add(o, "PLAYLIST_ITEM_SELECTED", "",
+	                                cb_playlist_item_selected, player);
 }
 
 int refresh_volume(void *udata) {
