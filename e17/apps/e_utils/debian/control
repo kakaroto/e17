@@ -1,0 +1,14 @@
+Source: eutils
+Section: x11
+Priority: optional
+Maintainer: Blake Barnett <shadoi@soulmachine.net>
+Build-Depends: debhelper (>= 4.0.0)
+Build-Depends: libeet0-dev, libengrave0-dev, libengrave0-dev, debhelper (>> 4.0.0)
+Standards-Version: 3.6.1.0
+
+Package: eutils
+Section: x11
+Architecture: i386
+Depends: ${shlibs:Depends}
+Description: A collection of utilities for use with e17 and EFL applications. 
+ eapp_editor - An application icon editor for e17 and engage.
