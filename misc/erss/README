@@ -9,6 +9,10 @@ make install
 USAGE:
 erss /usr/local/share/erss/config/osnews.cfg
 
+
+NOTE:
+If the slashdot.cfg is not working try HandyAndE's mirror (handyande.cfg).
+
 For testing you can use the config files named radius.cfg.
 (You risk getting banned if you hammer /. every 5th min for a period of time)
 
