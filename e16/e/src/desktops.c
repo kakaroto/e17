@@ -639,7 +639,7 @@ ConformEwinToDesktop(EWin * ewin)
 	     ewin->desktop = 0;
 	  }
 	XRaiseWindow(disp, ewin->win);
-	ShowEdgeWindows();
+	EdgeWindowsShow();
 	ICCCM_Configure(ewin);
      }
    else if (ewin->parent != desks.desk[ewin->desktop].win)
@@ -1169,7 +1169,7 @@ StackDesktop(int desk)
 	   Eprintf(" win=%#10lx parent=%#10lx\n", wl[i], GetWinParent(wl[i]));
      }
    XRestackWindows(disp, wl, tot);
-   ShowEdgeWindows();
+   EdgeWindowsShow();
    RaiseProgressbars();
    HintsSetClientStacking();
 

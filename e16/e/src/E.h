@@ -2050,8 +2050,8 @@ void                DrawEwinShape(EWin * ewin, int md, int x, int y, int w,
 void                PropagateShapes(Window win);
 
 /* edge.c */
-void                ShowEdgeWindows(void);
-void                HideEdgeWindows(void);
+void                EdgeWindowsShow(void);
+void                EdgeWindowsHide(void);
 void                EdgeHandleEnter(XEvent * ev);
 void                EdgeHandleLeave(XEvent * ev);
 void                EdgeHandleMotion(XEvent * ev);

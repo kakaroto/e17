@@ -342,7 +342,7 @@ SetCurrentArea(int ax, int ay)
    FX_DeskChange();
 
    /* update which "edge flip resistance" detector windows are visible */
-   ShowEdgeWindows();
+   EdgeWindowsShow();
 
    /* update our pager */
    UpdatePagerSel();

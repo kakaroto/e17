@@ -95,13 +95,13 @@ EdgeTimeout(int val, void *data)
 }
 
 void
-ShowEdgeWindows(void)
+EdgeWindowsShow(void)
 {
    int                 ax, ay, cx, cy;
 
    if (Conf.edge_flip_resistance <= 0)
      {
-	HideEdgeWindows();
+	EdgeWindowsHide();
 	return;
      }
 
@@ -146,7 +146,7 @@ ShowEdgeWindows(void)
 }
 
 void
-HideEdgeWindows(void)
+EdgeWindowsHide(void)
 {
    if (w1)
      {

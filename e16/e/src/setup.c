@@ -87,7 +87,7 @@ MapUnmap(int start)
 				   }
 				 if (init_win_ext)
 				    XRaiseWindow(disp, init_win_ext);
-				 ShowEdgeWindows();
+				 EdgeWindowsShow();
 				 RaiseProgressbars();
 				 EMapWindow(disp, wlist[i]);
 			      }

@@ -5520,7 +5520,7 @@ IPC_ControlsSet(const char *s, Client * c __UNUSED__)
 	  {
 	     word(s, wd, w);
 	     Conf.edge_flip_resistance = atoi(w);
-	     ShowEdgeWindows();
+	     EdgeWindowsShow();
 	  }
 	else if (!strcmp(w, "AREA_SIZE:"))
 	  {

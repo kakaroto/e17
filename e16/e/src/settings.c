@@ -1234,7 +1234,7 @@ CB_ConfigureAreas(int val, void *data)
 	  }
 	else
 	   Conf.edge_flip_resistance = 0;
-	ShowEdgeWindows();
+	EdgeWindowsShow();
      }
    autosave();
    data = NULL;
