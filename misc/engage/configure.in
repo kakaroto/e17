@@ -92,6 +92,19 @@ esmart_libs=`$ESMART_CONFIG --libs`
 AC_SUBST(esmart_cflags)
 AC_SUBST(esmart_libs)
 
+PROG="imlib2-config";
+AC_PATH_PROG(IMLIB_CONFIG, $PROG, "", $PATH)
+if [ test -z $IMLIB_CONFIG ]; then
+  echo $PROG " is not in your \$PATH. Please ensure it is.";
+  echo "Read the manual page for you shell as to how to extend your path.";
+  echo "FATAL ERROR. ABORT.";
+  exit -1;
+fi
+imlib_cflags=`$IMLIB_CONFIG --cflags`
+imlib_libs=`$IMLIB_CONFIG --libs`
+AC_SUBST(imlib_cflags)
+AC_SUBST(imlib_libs)
+        
 
 dnl Set PACKAGE_SOURCE_DIR in config.h.
 #packagesrcdir=`cd $srcdir && pwd`
@@ -113,7 +126,16 @@ AC_CHECK_HEADER( Esmart/Esmart_Trans.h,
   [ AC_DEFINE(HAVE_TRANS_BG, [], [Esmart Pseudo-transparency support]) 
     have_esmart_trans="yes"  
   ])
-        
+
+have_imlib="no"
+dnl Make sure the imlib header/lib is available
+AC_CHECK_HEADER( Imlib2.h,
+  [ AC_DEFINE(HAVE_IMLIB, [], [Imlib Image Manipulation support])
+    have_imlib="yes"
+  ])
+
+
+
 AC_OUTPUT([
 Makefile
 src/Makefile

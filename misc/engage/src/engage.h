@@ -2,6 +2,7 @@
 #define _OD_ENGAGE_H
 
 #include <Ecore.h>
+#include <Ecore_X.h>
 #include <Ecore_Evas.h>
 #include <Ecore_Config.h>
 #include <stdlib.h>

@@ -1,5 +1,11 @@
 #include "engage.h"
 #include "limits.h"
+#include "config.h"
+#include <X11/Xlib.h>
+#include <X11/Xutil.h>
+#ifdef HAVE_IMLIB
+#include <Imlib2.h>
+#endif
 // for stat
 #include <sys/types.h>
 #include <sys/stat.h>
@@ -12,6 +18,9 @@ Evas_List      *icon_mappings = NULL;
 Evas_List      *icon_paths = NULL;
 
 static OD_Icon *od_icon_new(const char *name, const char *icon_path);
+#ifdef HAVE_IMLIB
+static OD_Icon *od_icon_grab(const char *name, Ecore_X_Window win);
+#endif
 static void     od_icon_mapping_get(const char *winclass, char **name, char **icon_name);       // DON'T free returned
 static char    *od_icon_path_get(const char *icon_name);
 
@@ -58,8 +67,15 @@ od_icon_new_minwin(Ecore_X_Window win)
 
   od_icon_mapping_get(winclass, &name, &icon_name);
   char           *icon_path = od_icon_path_get(icon_name);
+#if 0
+#  ifdef HAVE_IMLIB
+  OD_Icon        *ret = od_icon_grab(title, win);
+#  else
   OD_Icon        *ret = od_icon_new(title, icon_path);
-
+#  endif
+#else
+  OD_Icon        *ret = od_icon_new(title, icon_path);
+#endif
   fprintf(stderr, "new minwin: icon_path=\"%s\"\n", icon_path);
   ret->type = minimised_window;
   ret->data.minwin.window = win;
@@ -68,6 +84,38 @@ od_icon_new_minwin(Ecore_X_Window win)
   free(icon_path);
   return ret;
 }
+
+#ifdef HAVE_IMLIB
+OD_Icon        *
+od_icon_grab(const char *name, Ecore_X_Window win)
+{
+  XWMHints *hints;
+  Imlib_Image img;
+  Display    *dsp;
+  int         scr, x, y, w, h;
+  OD_Icon        *ret = od_icon_new(name, od_icon_path_get(""));
+
+  dsp = ecore_x_display_get();
+  scr = DefaultScreen(dsp);
+  hints = XGetWMHints(dsp, win);
+  imlib_context_set_display(dsp);
+  imlib_context_set_visual(DefaultVisual(dsp, scr));
+  imlib_context_set_colormap(DefaultColormap(dsp, scr));
+  imlib_context_set_dither_mask(0);
+  imlib_context_set_drawable(hints->icon_pixmap);
+  
+  ecore_x_pixmap_geometry_get(hints->icon_pixmap, &x, &y, &w, &h);
+  printf("size is %d, %d, %d, %d\n", x, y, w, h);
+  //XSync(dsp, False);
+  img = imlib_create_image_from_drawable(hints->icon_mask, x, y, w, h, 0);
+      
+  //evas_object_image_pixels_import(ret->icon, imlib_image_get_data());
+  //imlib_free_image();
+
+  XFree(hints);
+  return ret;
+}
+#endif
 
 OD_Icon        *
 od_icon_new(const char *name, const char *icon_file)

@@ -6,7 +6,8 @@ INCLUDES = \
 -I$(top_srcdir)/lib \
 @evas_cflags@ \
 @ecore_cflags@ \
-@esmart_cflags@
+@esmart_cflags@ \
+@imlib_cflags@
 
 bin_PROGRAMS = engage
 
@@ -20,5 +21,5 @@ window.c \
 userconfig.c
 
 
-engage_LDADD = @evas_libs@ @ecore_libs@ @esmart_libs@
+engage_LDADD = @evas_libs@ @ecore_libs@ @esmart_libs@ @imlib_libs@
 
