@@ -89,15 +89,29 @@ slideshow_next_image (winwidget winwid)
       opt.cur_slide++;
       if (opt.cur_slide >= file_num)
 	opt.cur_slide = 0;
+      if (opt.progressive)
+	{
+	  progwin = winwid;
+	  imlib_context_set_progress_function (progress);
+	  imlib_context_set_progress_granularity (10);
+	  winwid->im_w = 0;
+	  winwid->im_h = 0;
+	  winwid->w = 0;
+	  winwid->h = 0;
+	}
       if ((feh_load_image (&(winwid->im), files[opt.cur_slide])) != 0)
 	{
-	  imlib_context_set_image (winwid->im);
-	  winwid->im_w = imlib_image_get_width ();
-	  winwid->im_h = imlib_image_get_height ();
 	  winwid->zoom_mode = 0;
 	  winwid->zoom = 0.0;
-	  winwidget_render_image (winwid);
-	  winwidget_create_blank_bg (winwid);
+	  if (!opt.progressive)
+	    {
+	      imlib_context_set_image (winwid->im);
+	      winwid->im_w = imlib_image_get_width ();
+	      winwid->im_h = imlib_image_get_height ();
+	      winwidget_render_image (winwid);
+	      winwidget_create_blank_bg (winwid);
+	    }
+
 	  if (winwid->name)
 	    {
 	      free (winwid->name);

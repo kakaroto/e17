@@ -73,7 +73,8 @@ winwidget winwidget_create_from_image (Imlib_Image * im, char *name)
   else
     ret->name = strdup (PACKAGE);
 
-  winwidget_create_window (ret);
+  winwidget_create_window (ret, ret->w, ret->h);
+  winwidget_render_image (ret);
 
   return ret;
 }
@@ -93,16 +94,30 @@ winwidget winwidget_create_from_file (char *filename, char *name)
   else
     ret->name = strdup (filename);
 
+  if (opt.progressive)
+    {
+      progwin = ret;
+      imlib_context_set_progress_function (progress);
+      imlib_context_set_progress_granularity (10);
+      winwidget_create_window (ret, 10, 10);
+    }
+
   if (winwidget_loadimage (ret, filename) == 0)
-    return NULL;
+    {
+      if (opt.progressive)
+	winwidget_destroy (ret);
+      return NULL;
+    }
 
-  imlib_context_set_image (ret->im);
-  ret->w = ret->im_w = imlib_image_get_width ();
-  ret->h = ret->im_h = imlib_image_get_height ();
-
-  winwidget_create_blank_bg (ret);
-
-  winwidget_create_window (ret);
+  if (!opt.progressive)
+    {
+      imlib_context_set_image (ret->im);
+      ret->w = ret->im_w = imlib_image_get_width ();
+      ret->h = ret->im_h = imlib_image_get_height ();
+      winwidget_create_blank_bg (ret);
+      winwidget_create_window (ret, ret->w, ret->h);
+      winwidget_render_image (ret);
+    }
 
   return ret;
 }
@@ -138,7 +153,7 @@ winwidget_create_blank_bg (winwidget ret)
 }
 
 static void
-winwidget_create_window (winwidget ret)
+winwidget_create_window (winwidget ret, int w, int h)
 {
   XSetWindowAttributes attr;
   XClassHint *xch;
@@ -158,7 +173,7 @@ winwidget_create_window (winwidget ret)
     ExposureMask | FocusChangeMask | PropertyChangeMask |
     VisibilityChangeMask;
   ret->win =
-    XCreateWindow (disp, DefaultRootWindow (disp), 0, 0, ret->w, ret->h, 0,
+    XCreateWindow (disp, DefaultRootWindow (disp), 0, 0, w, h, 0,
 		   depth, InputOutput, vis,
 		   CWOverrideRedirect | CWSaveUnder | CWBackingStore |
 		   CWColormap | CWBackPixel | CWBorderPixel | CWEventMask,
@@ -174,12 +189,12 @@ winwidget_create_window (winwidget ret)
   XFree (xch);
   /* set the size hints */
   sh.flags = PSize | PMinSize | PMaxSize;
-  sh.width = ret->w;
-  sh.height = ret->h;
-  sh.min_width = ret->w;
-  sh.min_height = ret->h;
-  sh.max_width = ret->w;
-  sh.max_height = ret->h;
+  sh.width = w;
+  sh.height = h;
+  sh.min_width = w;
+  sh.min_height = h;
+  sh.max_width = w;
+  sh.max_height = h;
   XSetWMNormalHints (disp, ret->win, &sh);
 
   /* set the icons name property */
@@ -189,7 +204,6 @@ winwidget_create_window (winwidget ret)
 
   winwidget_register (ret);
 
-  winwidget_render_image (ret);
 }
 
 void

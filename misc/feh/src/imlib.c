@@ -112,6 +112,7 @@ feh_load_image (Imlib_Image ** im, char *filename)
 	exit (1);
       return 0;
     }
+  D (("Loaded ok\n"));
   return 1;
 }
 
@@ -121,6 +122,7 @@ void
 progress (Imlib_Image im, char percent, int update_x, int update_y,
 	  int update_w, int update_h)
 {
+  D (("In progressive loading callback\n"));
   if (!progwin)
     return;
 
@@ -132,13 +134,14 @@ progress (Imlib_Image im, char percent, int update_x, int update_y,
   if (progwin->im_w == 0)
     {
       imlib_context_set_image (im);
-      progwin->im_w = imlib_image_get_width ();
-      progwin->im_h = imlib_image_get_height ();
+      progwin->w = progwin->im_w = imlib_image_get_width ();
+      progwin->h = progwin->im_h = imlib_image_get_height ();
       if (progwin->bg_pmap)
 	XFreePixmap (disp, progwin->bg_pmap);
       progwin->bg_pmap =
 	XCreatePixmap (disp, progwin->win, progwin->im_w, progwin->im_h,
 		       depth);
+      winwidget_create_blank_bg (progwin);
       imlib_context_set_drawable (progwin->bg_pmap);
 
       imlib_context_set_image (progwin->blank_im);
@@ -151,7 +154,7 @@ progress (Imlib_Image im, char percent, int update_x, int update_y,
   imlib_context_set_anti_alias (0);
   imlib_context_set_dither (0);
   imlib_context_set_blend (1);
-  imlib_blend_image_onto_image (progwin->im, 0,
+  imlib_blend_image_onto_image (im, 0,
 				update_x, update_y,
 				update_w, update_h,
 				update_x, update_y, update_w, update_h);

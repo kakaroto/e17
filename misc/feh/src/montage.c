@@ -34,7 +34,7 @@ init_montage_mode (void)
   Imlib_Image *bg_im = NULL;
 
   D (("In init_montage_mode\n"));
-  
+
   /* Use bg image dimensions for default size */
   if (opt.bg && opt.bg_file)
     {

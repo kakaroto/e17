@@ -1,3 +1,10 @@
+Sat Dec 18 22:11:02 1999  Tom Gilbert  <gilbertt@tomgilbert.freeserve.co.uk>
+
+	* Whee. Progressive loading works :) It can be disabled with -P,
+	--noprogressive, if you don't want it. Can't think why though. It
+	rocks. Thanks again go to Raster. Progressive loading callbacks
+	*rule*.
+
 Sat Dec 18 18:15:18 1999  Tom Gilbert  <gilbertt@tomgilbert.freeserve.co.uk>
 
 	* The fonts are now installed, and loaded from the installation

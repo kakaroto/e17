@@ -52,6 +52,7 @@ init_parse_options (int argc, char **argv)
   opt.stretch = 0;
   opt.font = NULL;
   opt.title_font = NULL;
+  opt.progressive = 1;
 
   opt.thumb_w = 60;
   opt.thumb_h = 60;
@@ -73,6 +74,9 @@ init_parse_options (int argc, char **argv)
 	opt.verbose = 1;
       else if ((!strcmp (argv[i], "--stretch")) || (!strcmp (argv[i], "-s")))
 	opt.stretch = 1;
+      else if ((!strcmp (argv[i], "--noprogressive"))
+	       || (!strcmp (argv[i], "-P")))
+	opt.progressive = 0;
       else if ((!strcmp (argv[i], "--ignoreaspect"))
 	       || (!strcmp (argv[i], "-A")))
 	opt.aspect = 0;
@@ -174,6 +178,7 @@ show_usage (void)
 	   "                            of opening multiple windows for multiple image\n"
 	   "                            files, one window will be opened. Press mouse\n"
 	   "                            button one to flick through the images.\n"
+	   "  -P, --noprogressive       Disable progressive loading and display of images\n"
 	   "  -m, --montage             Enable montage mode. Montage mode creates a new\n"
 	   "                            image consisting of a grid of thumbnails of the\n"
 	   "                            images specified using FILE... When montage mode\n"

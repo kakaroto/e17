@@ -52,7 +52,7 @@ init_index_mode (void)
 
   /* Time to set up the font stuff */
   imlib_add_path_to_font_path (".");
-  imlib_add_path_to_font_path (PREFIX"/share/feh/fonts/");
+  imlib_add_path_to_font_path (PREFIX "/share/feh/fonts/");
   if (opt.font)
     {
       fn = imlib_load_font (opt.font);

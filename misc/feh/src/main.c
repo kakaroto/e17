@@ -57,7 +57,7 @@ main_loop (void)
   double t1;
   int xfd, count, fdsize, j;
 
-  D (("In main_loop\n"));
+  D (("In main_loop, window_num is %d\n", window_num));
   if (window_num == 0)
     exit (0);
   for (;;)
@@ -108,6 +108,7 @@ main_loop (void)
 		      XSetWindowBackgroundPixmap (disp, winwid->win,
 						  winwid->bg_pmap);
 		      XClearWindow (disp, winwid->win);
+		      XFlush (disp);
 		    }
 		  break;
 		default:
@@ -215,6 +216,8 @@ main_loop (void)
 	    default:
 	      break;
 	    }
+	  if (window_num == 0)
+	    exit (0);
 	  t1 = 0.2;
 	  tval.tv_sec = (long) t1;
 	  tval.tv_usec = (long) ((t1 - ((double) tval.tv_sec)) * 1000000);
@@ -225,7 +228,7 @@ main_loop (void)
 
 	  /* See if any windows need updating */
 	  for (j = 0; j < window_num; j++)
-	    if (windows[j]->timeout)
+	    if (windows[j]->timeout && (!windows[j]->zoom_mode))
 	      {
 		timeout = 1;
 		D (("A window has timeout set\n"));
@@ -244,7 +247,8 @@ main_loop (void)
 	    {
 	      for (j = 0; j < window_num; j++)
 		{
-		  if ((count == 0) && (windows[j]->timeout))
+		  if ((count >= 0) && (windows[j]->timeout)
+		      && (!windows[j]->zoom_mode))
 		    {
 		      int sx, sy, sw, sh, dx, dy, dw, dh;
 

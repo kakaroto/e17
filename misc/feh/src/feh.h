@@ -96,6 +96,7 @@ typedef struct cmdlineoptions
   unsigned char alpha_level;
   unsigned char aspect;
   unsigned char stretch;
+  unsigned char progressive;
 
   char *output_file;
   char *bg_file;
