@@ -1849,3 +1849,11 @@ Sun May  4 21:14:35 EDT 2003
 (KainX)
 
 Fix a seg fault during restart.  Also some cleanups.
+
+-------------------------------------------------------------------------------
+
+Wed May 14 21:37:17 CEST 2003
+(Kim)
+
+EWMH: String atoms should be UTF-8.
+Avoid compiler warnings due to include path (/usr/include) that shouldn't be given explicitly.
