@@ -2,13 +2,16 @@ Source: imlib2-loaders
 Section: libs
 Priority: optional
 Maintainer: Laurence J. Lane <ljlane@debian.org>
-Build-Depends: debhelper (>= 3.0)
-Standards-Version: 3.2.1.0
+Build-Depends: debhelper (>= 3.0), libimlib2-dev, libedb1-dev, libeet0-dev
+Standards-Version: 3.5.8.0
 
 Package: imlib2-loaders
 Architecture: any
 Section: libs
-Depends: ${shlibs:Depends}
-Description: imlib2_loaders description
- imlib2_loaders extended description
+Depends: libimlib2, ${shlibs:Depends}
+Description: Additional loaders for Imlib2
+ This package contains XCF, Edb, Eet and Microsoft ico and ani loaders for
+ Imlib2. Install it if you would like to use such files in Imlib2-based
+ applications. Enlightenment DR 0.17 (e17) and later require the Edb and Eet
+ loaders.
  
