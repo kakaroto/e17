@@ -310,7 +310,7 @@ int
 __imlib_IsRealFile(const char *s)
 {
    struct stat st;
-   return ((stat(s, &st) != -1) && (!S_ISREG(st.st_mode)));
+   return ((stat(s, &st) != -1) && (S_ISREG(st.st_mode)));
 }
 
 time_t
