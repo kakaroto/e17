@@ -77,26 +77,41 @@ evas_cflags=`evas-config --cflags`
 AC_SUBST(evas_libs)
 AC_SUBST(evas_cflags)
 
+have_ecore=no
+AC_CHECK_HEADER(Ecore.h,, 
+   AC_MSG_ERROR([Ecore.h not found! Have you installed Ecore?]))
+AC_CHECK_LIB(ecore, ecore_list_new, 
+   [have_ecore=yes],
+   AC_MSG_ERROR([Ecore check failed! Make sure you have the latest version of Ecore installed.]))
+
 have_ecore_evas=no
-AC_CHECK_HEADERS(Ecore.h Ecore_Evas.h,,
-    AC_MSG_ERROR(Cannot find Ecore headers!))
+AC_CHECK_HEADER(Ecore_Evas.h,,
+   AC_MSG_ERROR([Ecore_Evas.h not found! Did you compile Ecore with Evas support?]))
 
 AC_CHECK_LIB(ecore_evas, main, [
-	ecore_libs="-lecore -lecore_evas"
 	have_ecore_evas=yes],
-    AC_MSG_ERROR(Cannot find ecore_evas!))
+   AC_MSG_ERROR([Cannot find Ecore_Evas!]))
 
 have_ecore_software_x11=no
 AC_CHECK_LIB(ecore_evas, ecore_evas_software_x11_new, [
     have_ecore_software_x11=yes],
-    AC_MSG_ERROR(Ecore_Evas does not have Software/X11 support!))
+    AC_MSG_ERROR([Ecore_Evas does not have Software/X11 support!]))
 
 have_ecore_gl_x11=no
 AC_CHECK_LIB(ecore_evas, ecore_evas_gl_x11_new, [
     have_ecore_gl_x11=yes
     AC_DEFINE(HAVE_ECORE_GL_X11, 1, [OpenGL support])])
 
+have_ecore_ipc=no
+AC_CHECK_HEADER(Ecore_Ipc.h,,
+    AC_MSG_ERROR([Ecore_Ipc.h not found! Did you compile Ecore with IPC support?]))
+
+AC_CHECK_LIB(ecore_ipc, ecore_ipc_init, [
+    have_ecore_ipc=yes],
+    AC_MSG_ERROR([Cannot find Ecore_Ipc!]))
+
 ecore_cflags=`ecore-config --cflags`
+ecore_libs=`ecore-config --libs`
 AC_SUBST(ecore_libs)
 AC_SUBST(ecore_cflags)
 
