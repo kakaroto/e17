@@ -526,6 +526,22 @@ EBlendPixImg(EWin * ewin, PixImg * s1, PixImg * s2, PixImg * dst, int x, int y, 
 		    }
 	       }
 	     break;
+	  case 24:
+	     for (j = 0; j < h; j++)
+	       {
+		  for (i = 0; i < w; i++)
+		    {
+		       unsigned int        p1, p2;
+
+		       p1 = XGetPixel(s1->xim, (i + x), (j + y));
+		       p2 = XGetPixel(s2->xim, (i + ox), (j + oy));
+		       XPutPixel(dst->xim, (i + ox), (j + oy),
+				 (((p1 >> 1) & 0x7f7f7f7f) +
+				  ((p2 >> 1) & 0x7f7f7f7f) +
+				  (p1 & p2 & 0x01010101)));
+		    }
+	       }
+	     break;
 	  case 16:
 	     if (id->x.render_depth != 15)
 	       {

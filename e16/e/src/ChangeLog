@@ -3795,3 +3795,10 @@ Wed Oct 27 13:43:23 PDT 1999
 (Mandrake)
 
 hmm.  lets see if this fixes the coredump when trying to iconify a menu
+
+-------------------------------------------------------------------------------
+
+Wed Oct 27 16:11:27 PDT 1999
+(Raster)
+
+fix translucent move for 24bpp packed.. ugly.. ergh.. code is slow... but works
