@@ -1,7 +1,7 @@
 Summary:	Documentation for the Enlightenment window manager.
-Name:		enlightenment-docs
-Version:	0.16.7
-Release:	1
+Name:		e16-docs
+Version:	0.16.8
+Release:	0.%(date '+%y%m%d')
 License:	BSD
 Group:		User Interface/Desktops
 Source0:	http://prdownloads.sourceforge.net/enlightenment/%{name}-%{version}.tar.gz
@@ -10,8 +10,9 @@ BuildArch:	noarch
 BuildRoot:	%{_tmppath}/%{name}-%{version}-%{release}-root
 URL:		http://www.enlightenment.org/
 
-Requires: enlightenment >= 0.16.7
+Requires: e16 >= 0.16.8
 Obsoletes: edox-data
+Obsoletes: enlightenment-docs < 0.16.8
 
 %description
 These are the DOX data files.
@@ -41,7 +42,7 @@ rm -rf $RPM_BUILD_ROOT
 %files
 %defattr(-, root, root)
 %doc AUTHORS COPYING INSTALL README
-%{_datadir}/enlightenment/*
+%{_datadir}/e16/*
 
 %changelog
 

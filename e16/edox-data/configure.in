@@ -1,6 +1,6 @@
 AC_INIT(edox-data.spec)
 
-AM_INIT_AUTOMAKE(enlightenment-docs, 0.16.7)
+AM_INIT_AUTOMAKE(e16-docs, 0.16.8)
 AM_MAINTAINER_MODE
 
 dnl reasonable guesses for where stuff is installed
@@ -20,7 +20,7 @@ AC_ARG_ENABLE(fsstd,
 if test "x$enable_fsstd" != "xyes"; then
   datadir=${prefix}
 fi
-ENLIGHTENMENT_ROOT=`eval echo ${datadir}/enlightenment`
+ENLIGHTENMENT_ROOT=`eval echo ${datadir}/e16`
 AC_SUBST(ENLIGHTENMENT_ROOT)
 
 edocdata=`ls -1 $srcdir/E-docs | egrep -v '(Makefile|CVS|^misc|\.sh$)'`
