@@ -148,3 +148,10 @@ Tue Nov  2 12:37:06 PST 1999
 some more api changes - changed eConfigStoreData() and added
 eConfigStoreDataToFirstAvailablePath().
 
+-------------------------------------------------------------------------------
+
+Tue Nov  2 13:30:03 PST 1999
+(Mandrake)
+
+Put copyright notices through everything.  Fleshing out all the final FIXME:
+notes in disk.c, too

@@ -1,3 +1,17 @@
+/*****************************************************************************/
+/* eConfig - the configuration library that just wouldn't die (yet)          */
+/*****************************************************************************/
+/* Copyright (C) 1999 - 1999 Carsten Haitzler (The Rasterman)                */
+/*                       and Geoff Harrison   (Mandrake)                     */
+/*                                                                           */
+/* This program and utilites is free software; you can redistribute it       */
+/* and/or modify it under the terms of the License shown in COPYING          */
+/*                                                                           */
+/* This software is distributed in the hope that it will be useful,          */
+/* but WITHOUT ANY WARRANTY; without even the implied warranty of            */
+/* MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.                      */
+/*****************************************************************************/
+
 #include "eConfig.internal.h"
 #include "eConfig.h"
 
@@ -378,11 +392,38 @@ _econf_create_new_data_repository(char *path)
 	/* This function will create all the stub files necessary for a new
 	 * repository, as well as create the directory they're housed in.
 	 * This function is internal to eConfig
-	 * FIXME: this function doesn't do anything yet.
 	 */
 
+	struct stat         st;
+
 	if(!path)
-		return 0;
+		return -1;
+
+	if (stat(path, &st) < 0) {
+		/* the physical path doesn't exist so we'll have to create it */
+		if(mkdir(path,S_IRWXU) < 0) {
+			/* we couldn't make the directory -  return an error */
+			return -4;
+
+		}
+		stat(path, &st);
+	}
+
+	if(!S_ISDIR(st.st_mode)) {
+		/* we're obviously not a directory, so what is the problem? */
+		if (S_ISREG(st.st_mode)) {
+			/* The directory is a regular file.  this is not a good thing.
+			 * return a -2 error
+			 */
+			return -2;
+		}
+		/* some other oddity here happened, return "unknown issue" error */
+		return -3;
+	}
+
+	/* now we have a directory, it's time to populate it with some files */
+
+	
 
 	return 0;
 
