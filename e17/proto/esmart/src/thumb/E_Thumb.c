@@ -143,6 +143,7 @@ e_thumb_evas_object_get (Evas_Object * o)
 	      evas_object_image_alpha_set (result, 1);
 	      e->file.w = imlib_image_get_width ();
 	      e->file.h = imlib_image_get_height ();
+	      e->format = strdup(imlib_image_format());
 	      evas_object_image_size_set (result, e->file.w, e->file.h);
 
 	      evas_object_image_data_copy_set (result,
@@ -155,6 +156,18 @@ e_thumb_evas_object_get (Evas_Object * o)
   return (result);
 }
 
+const char *
+e_thumb_format_get(Evas_Object *o)
+{
+  char *result = NULL;
+  if (o)
+    {
+      E_Thumb *e = NULL;
+      if ((e = (E_Thumb *) evas_object_smart_data_get (o)))
+	    result = e->format;
+    }
+    return(result);
+}
 /*==========================================================================
  * Smart Object Functions
  *========================================================================*/

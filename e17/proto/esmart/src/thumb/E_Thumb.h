@@ -64,4 +64,12 @@ void e_thumb_geometry_get(Evas_Object *o, int *w, int *h);
  * Returns a valid Evas_Object if imlib2 or evas can load the file
  */
 Evas_Object *e_thumb_evas_object_get(Evas_Object *o);
+
+/**
+ * e_thumb_format_get - get the format of the image this thumb is for
+ * @o - The smart object we want the format for
+ * NOTE: Don't free this string, dupe it if you wanna keep it around
+ */
+const char * e_thumb_format_get(Evas_Object *o);
+
 #endif
