@@ -142,11 +142,3 @@ SetupFallbackClasses(void)
 
    EDBUG_RETURN_;
 }
-
-void
-SetupInit(void)
-{
-   EDBUG(5, "SetupInit");
-
-   EDBUG_RETURN_;
-}

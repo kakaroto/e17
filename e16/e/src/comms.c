@@ -2053,21 +2053,3 @@ HandleComms(XClientMessageEvent * ev)
    Efree(s);
    EDBUG_RETURN_;
 }
-
-void
-DisplayClientInfo(Client * c, int onoff)
-{
-   EDBUG(6, "DisplayClientInfo");
-   if (!c)
-      EDBUG_RETURN_;
-
-   onoff = 0;
-   EDBUG_RETURN_;
-}
-
-void
-HideClientInfo(void)
-{
-   EDBUG(6, "HideClientInfo");
-   EDBUG_RETURN_;
-}
