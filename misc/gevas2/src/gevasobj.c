@@ -37,6 +37,7 @@
 #include "config.h"
 #include <gevasobj.h>
 
+#include <stdio.h>
 
 #include "project.h"
 #include "gevas_sprite.h"
@@ -637,6 +638,29 @@ static void gevasobj_finalize(GObject * object)
 void gevasobj_set_color(GtkgEvasObj * object, int r, int g, int b, int a)
 {
 	VTAB->set_color(object, r, g, b, a);
+}
+void gevasobj_set_color_from_string(GtkgEvasObj * object, const gchar* s )
+{
+	g_return_if_fail( s != NULL);
+	g_return_if_fail( strlen(s) );
+    
+    GtkgEvasObj *ev;
+    g_return_if_fail(object != NULL);
+    g_return_if_fail(GTK_IS_GEVASOBJ(object));
+    ev = GTK_GEVASOBJ(object);
+
+/*     fprintf( stderr, "gevasobj_set_color_from_string() s:%s s.len:%ld\n", s, strlen(s));  */
+    if( s[0] == '#' )
+    {
+        if( strlen( s ) >= 7 )
+        {
+            int r=0,g=0,b=0;
+            sscanf( s+1, "%2x%2x%2x", &r, &g, &b );
+/*             fprintf( stderr, "font-color r:%x g:%x b:%x a:%x\n", r, g, b, */
+/*                      gevasobj_get_alpha(object)); */
+            gevasobj_set_color( object, r, g, b, gevasobj_get_alpha(object));
+        }
+    }
 }
 void gevasobj_set_alpha(GtkgEvasObj * object, int a)
 {

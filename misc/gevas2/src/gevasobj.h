@@ -145,6 +145,7 @@ extern "C" {
 	void* gevasobj_get_data( GtkgEvasObj * object, const char* key ); 
 
 	void gevasobj_set_color(GtkgEvasObj * object, int r, int g, int b, int a);
+	void gevasobj_set_color_from_string(GtkgEvasObj * object, const gchar* s );
 	void gevasobj_set_alpha(GtkgEvasObj * object, int a);
 	void gevasobj_set_zoom_scale(GtkgEvasObj * object, int scale);
 	void gevasobj_set_layer(GtkgEvasObj * object, int l);
