@@ -125,7 +125,14 @@ engrave_canvas_redraw(Evas_Object *o, Engrave_Canvas *ec)
 static void
 engrave_canvas_part_redraw(Engrave_Part *ep, void *data)
 {
-    engrave_part_state_foreach(ep, engrave_canvas_part_state_redraw, data);
+    Engrave_Part_State *eps;
+
+    /* 
+     * only want to draw one state for a part. The default one for now.
+     * XXX need to fix this tho to draw the selected visible state ...
+    */
+    eps = engrave_part_state_by_name_value_find(ep, "default", 0.0);
+    engrave_canvas_part_state_redraw(eps, ep, data);
 }
 
 static void
