@@ -144,6 +144,7 @@ test -x /sbin/ldconfig && /sbin/ldconfig
 %defattr(-,root,root,0755)
 %{_libdir}/libImlib2.so
 %{_libdir}/*.a
+%{_libdir}/*.la
 %{_libdir}/pkgconfig/imlib2.pc
 %{_includedir}/*
 

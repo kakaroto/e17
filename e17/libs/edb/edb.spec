@@ -11,7 +11,7 @@ Source: ftp://ftp.enlightenment.org/enlightenment/e17/libs/%{name}-%{version}.ta
 BuildRoot: /var/tmp/%{name}-root
 BuildRequires: zlib-devel
 BuildRequires: ncurses-devel
-BuildRequires: gtk+-devel
+BuildRequires: gtk-devel
 Requires: zlib
 
 %description
@@ -43,7 +43,7 @@ A command-line db editor for Edb
 Summary: Edb command-line editor
 Group: System Environment/Libraries
 Requires: %{name} = %{version}
-Requires: gtk+
+Requires: gtk
 
 %description gtk_ed
 A GTK+ gui db editor for Edb
@@ -92,6 +92,7 @@ rm -rf $RPM_BUILD_ROOT
 %attr(755,root,root) %{_libdir}/libedb.so
 %attr(755,root,root) %{_libdir}/libedb.a
 %attr(755,root,root) %{_bindir}/edb-config
+%{_prefix}/lib/pkgconfig/edb.pc
 %{_includedir}/Edb*
 %doc AUTHORS
 %doc COPYING
