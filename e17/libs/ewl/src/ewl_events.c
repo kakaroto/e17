@@ -54,7 +54,7 @@ int ewl_ev_init(void)
 	unsigned int engine;
 	DENTER_FUNCTION(DLEVEL_STABLE);
 
-	engine = ewl_get_engine_mask();
+	engine = ewl_engine_mask_get();
 #ifdef HAVE_EVAS_ENGINE_SOFTWARE_X11_H
 	/*
 	 * Register dispatching functions for window events.

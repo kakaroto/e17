@@ -26,10 +26,10 @@ void            ewl_realize_request(Ewl_Widget *w);
 void            ewl_realize_queue(void);
 void            ewl_destroy_request(Ewl_Widget *w);
 void            ewl_garbage_collect(void);
-void            ewl_enter_realize_phase(void);
-void            ewl_exit_realize_phase(void);
+void            ewl_realize_phase_enter(void);
+void            ewl_realize_phase_exit(void);
 int             ewl_in_realize_phase(void);
-unsigned int    ewl_get_engine_mask();
+unsigned int    ewl_engine_mask_get();
 void            ewl_evas_destroy(Evas *evas);
 void            ewl_evas_object_destroy(Evas_Object *obj);
 

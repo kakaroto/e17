@@ -427,7 +427,7 @@ void ewl_window_realize_cb(Ewl_Widget * w, void *ev_data, void *user_data)
 	 */
 #ifdef HAVE_EVAS_ENGINE_SOFTWARE_X11_H
 	if (strstr(render, "x11") &&
-			(ewl_get_engine_mask() & (EWL_ENGINE_SOFTWARE_X11 |
+			(ewl_engine_mask_get() & (EWL_ENGINE_SOFTWARE_X11 |
 						  EWL_ENGINE_GL_X11))) {
 		window->window = (void *)ecore_x_window_new(0, window->x,
 						window->y,
@@ -451,7 +451,7 @@ void ewl_window_realize_cb(Ewl_Widget * w, void *ev_data, void *user_data)
 	 */
 #ifdef HAVE_EVAS_ENGINE_GL_X11_H
 	if (!strcmp(render, "gl_x11") &&
-			(ewl_get_engine_mask() & EWL_ENGINE_GL_X11)) {
+			(ewl_engine_mask_get() & EWL_ENGINE_GL_X11)) {
 		Evas_Engine_Info_GL_X11 *glinfo;
 
 		glinfo = (Evas_Engine_Info_GL_X11 *)info;
@@ -472,7 +472,7 @@ void ewl_window_realize_cb(Ewl_Widget * w, void *ev_data, void *user_data)
 #endif
 #ifdef HAVE_EVAS_ENGINE_FB_H
 	if (!strcmp(render, "fb") &&
-			(ewl_get_engine_mask() & EWL_ENGINE_FB)) {
+			(ewl_engine_mask_get() & EWL_ENGINE_FB)) {
 		Evas_Engine_Info_FB *fbinfo;
 
 		window->window = fbinfo = (Evas_Engine_Info_FB *)info;
@@ -488,7 +488,7 @@ void ewl_window_realize_cb(Ewl_Widget * w, void *ev_data, void *user_data)
 #endif
 #ifdef HAVE_EVAS_ENGINE_SOFTWARE_X11_H
 	if (!strcmp(render, "software_x11") && 
-			(ewl_get_engine_mask() & EWL_ENGINE_SOFTWARE_X11)) {
+			(ewl_engine_mask_get() & EWL_ENGINE_SOFTWARE_X11)) {
 		Evas_Engine_Info_Software_X11 *sinfo;
 
 		sinfo = (Evas_Engine_Info_Software_X11 *)info;

@@ -625,7 +625,7 @@ void ewl_realize_queue()
 
 	DENTER_FUNCTION(DLEVEL_STABLE);
 
-	ewl_enter_realize_phase();
+	ewl_realize_phase_enter();
 
 	/*
 	 * First realize any widgets that require it, this looping should
@@ -655,7 +655,7 @@ void ewl_realize_queue()
 					 EWL_FLAG_QUEUED_RSCHEDULED);
 	}
 
-	ewl_exit_realize_phase();
+	ewl_realize_phase_exit();
 
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
@@ -664,7 +664,7 @@ void ewl_realize_queue()
  * @return Returns no value.
  * @brief Marks that EWL is currently realizing a widget.
  */
-void ewl_enter_realize_phase()
+void ewl_realize_phase_enter()
 {
 	DENTER_FUNCTION(DLEVEL_STABLE);
 
@@ -677,7 +677,7 @@ void ewl_enter_realize_phase()
  * @return Returns no value.
  * @brief Marks that EWL is not realizing a widget.
  */
-void ewl_exit_realize_phase()
+void ewl_realize_phase_exit()
 {
 	DENTER_FUNCTION(DLEVEL_STABLE);
 
@@ -696,7 +696,7 @@ int ewl_in_realize_phase()
 	DRETURN_INT((phase_status & EWL_FLAG_QUEUED_RSCHEDULED), DLEVEL_STABLE);
 }
 
-unsigned int ewl_get_engine_mask()
+unsigned int ewl_engine_mask_get()
 {
 	DENTER_FUNCTION(DLEVEL_STABLE);
 	DRETURN_INT(use_engine, DLEVEL_STABLE);
