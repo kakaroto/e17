@@ -13,6 +13,8 @@
 
 #include "main.h"
 
+MainConfig     *main_config;
+
 /* The Main Function */
 
 /**
@@ -31,25 +33,23 @@ main(int argc, char *argv[])
 	ecore_ipc_init();
 	dml("IPC Initiated Successfully", 1);
 	/* autoload (if on) will increment this if there are notes
-	   if not we may need to create a blank one */
+	 * if not we may need to create a blank one */
 	note_count = 0;
+
+	if ((ecore_config_init("enotes")) == ECORE_CONFIG_ERR_FAIL) {
+		ecore_ipc_shutdown();
+		return (-1);
+	}
+	ecore_app_args_set(argc, (const char **) argv);
 
 	/* Read the Usage and Configurations */
 	main_config = mainconfig_new();
-	spec_conf = read_usage_for_configuration_fn(argc, argv);
-	if (spec_conf != NULL) {
-		read_configuration(main_config, spec_conf);
-		free(spec_conf);
-	} else {
-		read_global_configuration(main_config);
-		check_local_configuration();
-		read_local_configuration(main_config);
-	}
-	read_usage_configuration(main_config, argc, argv);
-
-	if (dispusage == 1) {
+	if (read_configuration(main_config) == -1) {
+		ecore_config_shutdown();
+		ecore_ipc_shutdown();
+		ecore_shutdown();
 		mainconfig_free(main_config);
-		return (0);
+		return (-1);
 	}
 
 	dml("Successfully Read Configurations and Usage", 1);
@@ -57,17 +57,17 @@ main(int argc, char *argv[])
 	if (find_server() == 0) {
 		dml("Server wasn't found.. Creating one", 1);
 		/* Setup Server */
-		setup_server();
+//              setup_server();
 
 		/* Initialise the E-Libs */
 		ecore_init();
 		ecore_x_init(NULL);
 		ecore_app_args_set(argc, (const char **) argv);
-		if (!ecore_evas_init()) {	/* Initialises Evas.. I hope. :) */
+		if (!ecore_evas_init()) {
 			mainconfig_free(main_config);
 			return -1;
 		}
-		ewl_init(&argc, argv);	/* Initialises Edje.. I hope. :) */
+		ewl_init(&argc, argv);
 		edje_init();
 
 		dml("Efl Successfully Initiated", 1);
@@ -119,7 +119,9 @@ main(int argc, char *argv[])
 	ecore_ipc_shutdown();
 	dml("IPC Shutdown", 1);
 
-	/* Free the Configuration */
+	/* Save and Free the Configuration */
+	ecore_config_save();
+	dml("Configuration Saved", 1);
 	mainconfig_free(main_config);
 	dml("Configuration Structure Free'd", 1);
 

@@ -27,7 +27,8 @@
 #include "controlcentre.h"
 
 #define IPC_NAME "enotes"
-#define IPC_PORT 2323
+//#define IPC_PORT 2323
+#define IPC_PORT 1234
 
 typedef enum {			/* More to come. :-) */
 	NOTE,

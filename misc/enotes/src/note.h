@@ -25,6 +25,7 @@
 #include "controlcentre.h"
 #include "saveload.h"
 #include "ipc.h"
+#include "menu.h"
 #include "../config.h"
 
 
@@ -66,6 +67,7 @@ typedef struct _note {
 	Evas           *evas;
 	Evas_Object    *edje;
 	Evas_Object    *dragger;
+	Evas_Object    *eventer;
 
 	Evas_Object    *eo;
 	Ewl_Widget     *emb;
@@ -73,11 +75,17 @@ typedef struct _note {
 	Ewl_Widget     *pane;
 
 	Ewl_Row        *saveload_row;
+	Menu           *menu;
 
 	/* Comparison Strings and Timer */
 	Ecore_Timer    *timcomp;
 	char           *txt_title;
 } _note;
+
+typedef struct {
+	int             x, y, w, h;
+	char           *content;
+} NoteInfo;
 
 Evas_List      *gbl_notes;
 
@@ -93,6 +101,12 @@ void            remove_note(Evas_List * note);
 /* GUI Setup */
 void            setup_note(Evas_List ** note, int x, int y, int width,
 			   int height, char *content);
+void            configure_scrollbars(Ewl_Widget * pane, char *edjefn);
+
+/* Menu Callbacks */
+void            cb_menu_rightclick(Note * p, Evas * e, Evas_Object * obj,
+				   void *ev_info);
+void            cb_ewl_new_note(void *data);
 
 /* Ecore Callbacks */
 void            note_ecore_close(Ecore_Evas * ee);
@@ -109,9 +123,12 @@ char           *get_date_string(void);
 int             note_edje_close_timer(void *p);
 int             timer_val_compare(void *data);
 void            note_move_embed(Ewl_Widget * w, void *ev_data, void *user_data);
+void            notes_update_themes(void);
 
 
 /* External Interaction */
+int             get_note_count();
+
 Evas_List      *get_note_by_title(char *title);
 Evas_List      *get_note_by_content(char *content);
 

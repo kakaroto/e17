@@ -28,6 +28,7 @@
 
 #include "debug.h"
 #include "config.h"
+#include "note.h"
 #include "../config.h"
 
 
@@ -67,6 +68,7 @@ extern MainConfig *main_config;
 
 /* Setting the Control Centre up */
 void            setup_cc(void);
+void            setup_cc_with_pos(int x, int y);
 
 /* Configuration */
 CCPos          *get_cc_pos();
@@ -79,5 +81,8 @@ void            cc_saveload(void *data);
 void            cc_newnote(void *data);
 void            cc_settings(void *data);
 void            cc_minimize(void *data);
+
+/*  Theme Change  */
+void            cc_update_theme();
 
 #endif

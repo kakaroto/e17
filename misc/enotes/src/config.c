@@ -56,33 +56,14 @@ mainconfig_free(MainConfig * p)
 	return;
 }
 
-/**
- * @param p: The MainConfig variable to store the read settings into.
- * @brief: Reads the global configuration settings and stores them into p.
- */
-void
-read_global_configuration(MainConfig * p)
+/* LISTENERS */
+
+theme_listener(const char *key, const Ecore_Config_Type type, const int tag,
+	       void *data)
 {
-	char           *locfn = malloc(PATH_MAX);
-
-	snprintf(locfn, PATH_MAX, "%s/config.xml", PACKAGE_DATA_DIR);
-	read_configuration(p, locfn);
-	free(locfn);
-	return;
-}
-
-/**
- * @param p: The MainConfig variable to store the read settings into.
- * @brief: Reads the local configuration and stores the settings into p.
- */
-void
-read_local_configuration(MainConfig * p)
-{
-	char           *locfn = malloc(PATH_MAX);
-
-	snprintf(locfn, PATH_MAX, DEF_CONFIG_LOC, getenv("HOME"));
-	read_configuration(p, locfn);
-	free(locfn);
+	main_config->theme = ecore_config_theme_get(key);
+	cc_update_theme();
+	notes_update_themes();
 	return;
 }
 
@@ -92,103 +73,49 @@ read_local_configuration(MainConfig * p)
  * @brief: Reads the configuration file pointed to by fn, and stores the
  *         settings into p.
  */
-void
-read_configuration(MainConfig * p, char *fn)
+int
+read_configuration(MainConfig * p)
 {
-	XmlReadHandle  *h;
-	XmlEntry       *tmp;
+	ecore_config_int_create("enotes.debug", 0, 'd', "debug",
+				"Debugging Level [0-2]");
+	ecore_config_string_create("enotes.engine", "software", 'r',
+				   "render-method",
+				   "Rendering Method [GL/Software]");
+	ecore_config_boolean_create("enotes.autosave", 0, 'A', "auto-save",
+				    "Use the Autosave Feature?");
+	ecore_config_boolean_create("enotes.controlcentre", 1, 'C',
+				    "control-centre",
+				    "Use the Control Centre?");
+	ecore_config_boolean_create("enotes.welcome", 1, 'w', "welcome",
+				    "Display the Welcome Message?");
+	ecore_config_boolean_create("enotes.ontop", 1, 'o', "ontop",
+				    "Keep Enotes Windows Ontop?");
+	ecore_config_boolean_create("enotes.sticky", 1, 's', "sticky",
+				    "Make E-Notes Sticky?");
 
-	h = xml_read(fn);
-	while (h->cur != NULL) {
-		tmp = xml_read_entry_get_entry(h);
-		processopt(tmp, p);
-		free_xmlentry(tmp);
-		xml_read_next_entry(h);
-	}
-	xml_read_end(h);
-	return;
-}
+	ecore_config_theme_create("enotes.theme", "postit", 't', "theme",
+				  "GUI Theme");
+	ecore_config_theme_preview_group_set("enotes.theme", "preview");
+	ecore_config_theme_search_path_append(PACKAGE_DATA_DIR "/themes/");
 
-/**
- * @param info: The xml tag to process.
- * @param p: The MainConfig variable to apply the value to.
- * @brief: Processed an xml tag and applies the individual setting
- *         it reads to p.
- */
-void
-processopt(XmlEntry * info, MainConfig * p)
-{
-	if (!strcmp(info->name, "render_method")) {
-		if (p->render_method != NULL)
-			free(p->render_method);
-		p->render_method = strdup(info->value);
-	} else if (!strcmp(info->name, "theme")) {
-		if (p->theme != NULL)
-			free(p->theme);
-		p->theme = strdup(info->value);
-	} else if (!strcmp(info->name, "controlcentre")) {
-		if (info->value != NULL)
-			p->controlcentre = atoi(info->value);
-	} else if (!strcmp(info->name, "debug")) {
-		if (info->value != NULL)
-			p->debug = atoi(info->value);
-	} else if (!strcmp(info->name, "autosave")) {
-		if (info->value != NULL)
-			p->autosave = atoi(info->value);
-	} else if (!strcmp(info->name, "welcome")) {
-		if (info->value != NULL)
-			p->welcome = atoi(info->value);
-	} else if (!strcmp(info->name, "sticky")) {
-		if (info->value != NULL)
-			p->sticky = atoi(info->value);
-	} else if (!strcmp(info->name, "ontop")) {
-		if (info->value != NULL)
-			p->ontop = atoi(info->value);
+	ecore_config_load();
+
+	if (ecore_config_args_parse() != ECORE_CONFIG_PARSE_CONTINUE) {
+		return (-1);
 	}
 
-	return;
-}
+	p->render_method = ecore_config_string_get("enotes.engine");
+	p->theme = ecore_config_theme_get("enotes.theme");
+	p->controlcentre = ecore_config_boolean_get("enotes.controlcentre");
+	p->debug = ecore_config_boolean_get("enotes.debug");
+	p->autosave = ecore_config_boolean_get("enotes.autosave");
+	p->welcome = ecore_config_boolean_get("enotes.welcome");
+	p->ontop = ecore_config_boolean_get("enotes.ontop");
+	p->sticky = ecore_config_boolean_get("enotes.sticky");
 
-/**
- * @brief: Check whether a local configuration exists, and if not it
- *         will create the necessary files and folders so the user can
- *         immediately begin to edit his/her configuration.
- */
-void
-check_local_configuration(void)
-{
-	char           *homedir_e = malloc(PATH_MAX);
-	char           *homedir_e_notes = malloc(PATH_MAX);
-	char           *homedir_e_notes_config = malloc(PATH_MAX);
-	char           *global_config = malloc(PATH_MAX);
-	char           *execstr = malloc(PATH_MAX * 2);
-	FILE           *input;
-	char            buf;
-	XmlReadHandle  *p;
+	printf("Welcome: %d\n", p->welcome);
 
-	snprintf(homedir_e, PATH_MAX, "%s/.e", getenv("HOME"));
-	snprintf(homedir_e_notes, PATH_MAX, "%s/.e/notes", getenv("HOME"));
-	snprintf(homedir_e_notes_config, PATH_MAX,
-		 "%s/.e/notes/config.xml", getenv("HOME"));
-	snprintf(global_config, PATH_MAX, "%s/config.xml", PACKAGE_DATA_DIR);
+	ecore_config_listen("theme", "enotes.theme", theme_listener, 0, NULL);
 
-	mkdir(homedir_e, 0700);
-	mkdir(homedir_e_notes, 0700);
-
-	snprintf(execstr, PATH_MAX * 2, "%s %s %s", COPY_COMMAND,
-		 global_config, homedir_e_notes_config);
-
-	if ((input = fopen(homedir_e_notes_config, "r")) == NULL) {
-		system(execstr);
-	} else {
-		fclose(input);
-	}
-
-	free(homedir_e);
-	free(homedir_e_notes);
-	free(homedir_e_notes_config);
-	free(global_config);
-	free(execstr);
-
-	return;
+	return (0);
 }

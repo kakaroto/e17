@@ -22,6 +22,13 @@ ControlCentre  *controlcentre;
 void
 setup_cc(void)
 {
+	setup_cc_with_pos(-1, -1);
+	return;
+}
+
+void
+setup_cc_with_pos(int x, int y)
+{
 	ControlCentre  *cc;
 	char           *edjefn = malloc(PATH_MAX);
 	char           *fontpath = malloc(PATH_MAX);
@@ -32,6 +39,11 @@ setup_cc(void)
 	controlcentre = cc;
 
 	pos = get_cc_pos();
+
+	if (x >= 0 || y >= 0) {
+		pos->x = x;
+		pos->y = y;
+	}
 
 	/* Setup the Window */
 	if (!strcmp(main_config->render_method, "gl")) {
@@ -302,7 +314,7 @@ cc_saveload(void *data)
 void
 cc_newnote(void *data)
 {
-	new_note(NOTE_CONTENT);
+	new_note();
 	return;
 }
 
@@ -315,7 +327,8 @@ cc_newnote(void *data)
 void
 cc_settings(void *data)
 {
-	setup_settings();
+	if (!ecore_exe_run("examine enotes", NULL))
+		msgbox("No Examine", "Please Install Examine for Settings!");
 	return;
 }
 
@@ -332,5 +345,33 @@ cc_minimize(void *data)
 	ecore_evas_iconified_set((Ecore_Evas *) data, 0);
 
 	ecore_evas_iconified_set((Ecore_Evas *) data, 1);
+	return;
+}
+
+/*  Theme Change  */
+void
+cc_update_theme()
+{
+	int             edje_w, edje_h;
+	char           *edjefn;
+
+	if (controlcentre == NULL)
+		return;
+
+	edjefn = malloc(PATH_MAX);
+	snprintf(edjefn,
+		 PATH_MAX, NOTE_EDJE, PACKAGE_DATA_DIR, main_config->theme);
+	edje_object_file_set(controlcentre->edje, edjefn, CC_PART);
+	free(edjefn);
+
+	/* EDJE and ECORE min, max and resizing */
+	edje_object_size_max_get(controlcentre->edje, &edje_w, &edje_h);
+	ecore_evas_size_max_set(controlcentre->win, edje_w, edje_h);
+	edje_object_size_min_get(controlcentre->edje, &edje_w, &edje_h);
+	ecore_evas_size_min_set(controlcentre->win, edje_w, edje_h);
+	ecore_evas_resize(controlcentre->win, (int) edje_w, (int) edje_h);
+	evas_object_resize(controlcentre->edje, edje_w, edje_h);
+	evas_object_resize(controlcentre->dragger, edje_w, edje_h);
+
 	return;
 }

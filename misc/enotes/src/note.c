@@ -165,8 +165,9 @@ setup_note(Evas_List ** note, int x, int y, int width, int height,
 		p->win = ecore_evas_software_x11_new(NULL, 0, x, y, width,
 						     height);
 
+	ecore_evas_borderless_set(p->win, 1);
+	ecore_evas_shaped_set(p->win, 1);
 	ecore_evas_title_set(p->win, "An E-Note");
-	ecore_evas_name_class_set(p->win, "Enotes", "Enotes");
 
 	if (main_config->ontop == 1)
 		if (!strcmp(main_config->render_method, "gl")) {
@@ -184,8 +185,6 @@ setup_note(Evas_List ** note, int x, int y, int width, int height,
 	else
 		ecore_evas_sticky_set(p->win, 0);
 
-	ecore_evas_borderless_set(p->win, 1);
-	ecore_evas_shaped_set(p->win, 1);
 	ecore_evas_show(p->win);
 
 
@@ -214,6 +213,17 @@ setup_note(Evas_List ** note, int x, int y, int width, int height,
 	evas_object_color_set(p->dragger, 255, 255, 255, 0);
 	esmart_draggies_button_set(p->dragger, 1);
 	evas_object_show(p->dragger);
+
+	p->eventer = evas_object_rectangle_add(p->win);
+	evas_object_color_set(p->eventer, 0, 0, 0, 0);
+	evas_object_resize(p->eventer, width, height);
+	evas_object_move(p->eventer, 0.0, 0.0);
+	evas_object_layer_set(p->eventer, 9999);
+	evas_object_repeat_events_set(p->eventer, 1);
+	evas_object_show(p->eventer);
+
+	evas_object_event_callback_add(p->eventer, EVAS_CALLBACK_MOUSE_DOWN,
+				       (void *) cb_menu_rightclick, p);
 
 	/* Setup the Edje */
 	p->edje = edje_object_add(p->evas);
@@ -263,52 +273,7 @@ setup_note(Evas_List ** note, int x, int y, int width, int height,
 	ewl_container_child_append((Ewl_Container *) p->emb, p->pane);
 
 	if (edje_object_data_get(p->edje, EDJE_INFO_SCROLLBARS) != NULL) {
-		ewl_theme_data_str_set(p->pane,
-				       "/vscrollbar/button_increment/file",
-				       edjefn);
-		ewl_theme_data_str_set(p->pane,
-				       "/vscrollbar/button_decrement/file",
-				       edjefn);
-		ewl_theme_data_str_set(p->pane, "/vscrollbar/vseeker/file",
-				       edjefn);
-		ewl_theme_data_str_set(p->pane,
-				       "/vscrollbar/vseeker/button/file",
-				       edjefn);
-		ewl_theme_data_str_set(p->pane,
-				       "/hscrollbar/button_increment/file",
-				       edjefn);
-		ewl_theme_data_str_set(p->pane,
-				       "/hscrollbar/button_decrement/file",
-				       edjefn);
-		ewl_theme_data_str_set(p->pane, "/hscrollbar/hseeker/file",
-				       edjefn);
-		ewl_theme_data_str_set(p->pane,
-				       "/hscrollbar/hseeker/button/file",
-				       edjefn);
-
-		ewl_theme_data_str_set(p->pane,
-				       "/vscrollbar/button_increment/group",
-				       EDJE_VSCROLLBAR_BTN_INCR);
-		ewl_theme_data_str_set(p->pane,
-				       "/vscrollbar/button_decrement/group",
-				       EDJE_VSCROLLBAR_BTN_DECR);
-		ewl_theme_data_str_set(p->pane, "/vscrollbar/vseeker/group",
-				       EDJE_VSCROLLBAR_SEEKER);
-		ewl_theme_data_str_set(p->pane,
-				       "/vscrollbar/vseeker/button/group",
-				       EDJE_SCROLLBAR_BUTTON);
-		ewl_theme_data_str_set(p->pane,
-				       "/hscrollbar/button_increment/group",
-				       EDJE_HSCROLLBAR_BTN_INCR);
-		ewl_theme_data_str_set(p->pane,
-				       "/hscrollbar/button_decrement/group",
-				       EDJE_HSCROLLBAR_BTN_DECR);
-		ewl_theme_data_str_set(p->pane, "/hscrollbar/hseeker/group",
-				       EDJE_HSCROLLBAR_SEEKER);
-		ewl_theme_data_str_set(p->pane,
-				       "/hscrollbar/hseeker/button/group",
-				       EDJE_SCROLLBAR_BUTTON);
-
+		configure_scrollbars(p->pane, edjefn);
 	}
 
 	ewl_widget_show(p->pane);
@@ -371,6 +336,64 @@ setup_note(Evas_List ** note, int x, int y, int width, int height,
 	}
 
 	return;
+}
+
+void
+configure_scrollbars(Ewl_Widget * pane, char *edjefn)
+{
+	ewl_theme_data_str_set(pane,
+			       "/vscrollbar/button_increment/file", edjefn);
+	ewl_theme_data_str_set(pane,
+			       "/vscrollbar/button_decrement/file", edjefn);
+	ewl_theme_data_str_set(pane, "/vscrollbar/vseeker/file", edjefn);
+	ewl_theme_data_str_set(pane, "/vscrollbar/vseeker/button/file", edjefn);
+	ewl_theme_data_str_set(pane,
+			       "/hscrollbar/button_increment/file", edjefn);
+	ewl_theme_data_str_set(pane,
+			       "/hscrollbar/button_decrement/file", edjefn);
+	ewl_theme_data_str_set(pane, "/hscrollbar/hseeker/file", edjefn);
+	ewl_theme_data_str_set(pane, "/hscrollbar/hseeker/button/file", edjefn);
+
+	ewl_theme_data_str_set(pane,
+			       "/vscrollbar/button_increment/group",
+			       EDJE_VSCROLLBAR_BTN_INCR);
+	ewl_theme_data_str_set(pane,
+			       "/vscrollbar/button_decrement/group",
+			       EDJE_VSCROLLBAR_BTN_DECR);
+	ewl_theme_data_str_set(pane, "/vscrollbar/vseeker/group",
+			       EDJE_VSCROLLBAR_SEEKER);
+	ewl_theme_data_str_set(pane,
+			       "/vscrollbar/vseeker/button/group",
+			       EDJE_SCROLLBAR_BUTTON);
+	ewl_theme_data_str_set(pane,
+			       "/hscrollbar/button_increment/group",
+			       EDJE_HSCROLLBAR_BTN_INCR);
+	ewl_theme_data_str_set(pane,
+			       "/hscrollbar/button_decrement/group",
+			       EDJE_HSCROLLBAR_BTN_DECR);
+	ewl_theme_data_str_set(pane, "/hscrollbar/hseeker/group",
+			       EDJE_HSCROLLBAR_SEEKER);
+	ewl_theme_data_str_set(pane,
+			       "/hscrollbar/hseeker/button/group",
+			       EDJE_SCROLLBAR_BUTTON);
+	return;
+}
+
+/* MENU Callbacks */
+
+void
+cb_menu_rightclick(Note * p, Evas * e, Evas_Object * obj, void *ev_info)
+{
+	Menu           *menu = menu_create();
+
+	menu_item_add(p->menu, "New Note", (void *) cb_ewl_new_note, NULL);
+	menu_show(menu);
+	return;
+}
+
+void
+cb_ewl_new_note(void *data)
+{
 }
 
 /* ECORE Callbacks */
@@ -540,6 +563,70 @@ timer_val_compare(void *data)
 }
 
 /* External Interaction */
+
+int
+get_note_count()
+{
+	int             a;
+	Evas_List      *p;
+
+	p = get_cycle_begin();
+	if (p == NULL)
+		return (0);
+	else
+		a = 1;
+	while ((p = get_cycle_next_note(p)) != NULL)
+		a++;
+
+	return (a);
+}
+
+void
+notes_update_themes(void)
+{
+	int             edje_w, edje_h;
+	Evas_List      *working;
+	Note           *note;
+	int             count = get_note_count();
+
+	char           *edjefn = malloc(PATH_MAX);
+
+	snprintf(edjefn,
+		 PATH_MAX, NOTE_EDJE, PACKAGE_DATA_DIR, main_config->theme);
+
+	working = get_cycle_begin();
+	if (working != NULL) {
+		while (working != NULL) {
+			note = (Note *) evas_list_data(working);
+			if (note != NULL) {
+				edje_object_file_set(note->edje, edjefn,
+						     NOTE_PART);
+				edje_object_size_max_get(note->edje, &edje_w,
+							 &edje_h);
+				ecore_evas_size_max_set(note->win, edje_w,
+							edje_h);
+				edje_object_size_min_get(note->edje, &edje_w,
+							 &edje_h);
+				ecore_evas_size_min_set(note->win, edje_w,
+							edje_h);
+				edje_object_part_swallow(note->edje,
+							 EDJE_CONTAINER,
+							 note->eo);
+				if (edje_object_data_get
+				    (note->edje,
+				     EDJE_INFO_SCROLLBARS) != NULL) {
+					/* FIXME: What the fuck is happening when
+					 * we enable this?: */
+//                                      configure_scrollbars(note->pane,edjefn);
+				}
+			}
+			working = get_cycle_next_note(working);
+		}
+	}
+
+	free(edjefn);
+	return;
+}
 
 /**
  * @param title: The title to search for.

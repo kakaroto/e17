@@ -21,12 +21,12 @@
 #include <Ecore.h>
 #include <Ecore_Evas.h>
 #include <Ecore_Ipc.h>
+#include <Ecore_Config.h>
 #include <Edje.h>
 
 #include "config.h"
 #include "note.h"
 #include "storage.h"
-#include "usage.h"
 #include "debug.h"
 #include "welcome.h"
 
@@ -39,6 +39,6 @@ int             main(int argc, char *argv[]);
 
 /* External Variables */
 extern int      dispusage;
-MainConfig     *main_config;
+extern MainConfig *main_config;
 
 #endif

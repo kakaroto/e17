@@ -16,14 +16,10 @@ controlcentre.c \
 controlcentre.h \
 storage.c \
 storage.h \
-usage.c \
-usage.h \
 msgbox.c \
 msgbox.h \
 saveload.c \
 saveload.h \
-settings.h \
-settings.c \
 ipc.c \
 ipc.h \
 xml.c \
@@ -31,6 +27,8 @@ xml.h \
 debug.c \
 debug.h \
 welcome.c \
-welcome.h
+welcome.h \
+menu.c \
+menu.h
 
 enotes_LDADD = @ewl_libs@ @ecore_libs@ @evas_libs@ @edje_libs@ @edb_libs@ @imlib2_libs@ @libxml2_libs@ @esmart_libs@ -lesmart_draggies

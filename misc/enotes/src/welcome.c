@@ -112,10 +112,11 @@ open_credits()
 			    (void *) close_credits_cb, (void *) NULL);
 
 	credits->credits = ewl_text_new("");
+	ewl_object_padding_set((Ewl_Object *) credits->credits, 5, 5, 5, 5);
 	ewl_text_font_set((Ewl_Text *) credits->credits, "vera", 12);
 	ewl_text_color_set((Ewl_Text *) credits->credits, 0, 0, 0, 255);
 	ewl_text_text_set((Ewl_Text *) credits->credits,
-			  "Credits:\n\nDeveloper: Thomas [Fletch]er\nArtwork: Corey Donohoe (Atmos)\n");
+			  "Credits:\n\nDeveloper: Thomas [Fletch]er\nArtwork: Corey Donohoe (Atmos)\nArtwork: Andrew Elcock (HandyAndE)\n");
 	ewl_container_child_append((Ewl_Container *) credits->win,
 				   credits->credits);
 	ewl_widget_show(credits->credits);

@@ -18,13 +18,12 @@
 #include <string.h>
 #include <limits.h>
 
+#include <Ecore.h>
+#include <Ecore_Config.h>
+
 #include "debug.h"
 #include "../config.h"
 #include "xml.h"
-
-
-#define DEF_CONFIG_LOC "%s/.e/notes/config.xml"
-#define COPY_COMMAND "cp"
 
 typedef struct {
 	char           *render_method;
@@ -37,22 +36,11 @@ typedef struct {
 	int             sticky;
 } MainConfig;
 
-#ifndef XMLENTRY_DEF
-#define XMLENTRY_DEF 1
-typedef struct {
-	char           *name;
-	char           *value;
-} XmlEntry;
-#endif
+extern MainConfig *main_config;
 
 MainConfig     *mainconfig_new(void);
 void            mainconfig_free(MainConfig * p);
 
-void            read_global_configuration(MainConfig * p);
-void            read_local_configuration(MainConfig * p);
-void            read_configuration(MainConfig * p, char *fn);
-void            check_local_configuration(void);
-
-void            processopt(XmlEntry * info, MainConfig * p);
+int             read_configuration(MainConfig * p);
 
 #endif
