@@ -538,8 +538,8 @@ AddToFamily(Window win)
      }				/* ((!ewin->client.already_placed) && (!manplace)) */
    else
      {
-	x = ewin->client.x;
-	y = ewin->client.y;
+	x = ewin->x;
+	y = ewin->y;
 	switch (ewin->client.grav)
 	  {
 	  case NorthWestGravity:
@@ -1150,10 +1150,10 @@ HonorIclass(char *s, int id)
 }
 
 static void
-EwinGetSize(EWin * ewin)
+EwinGetGeometry(EWin * ewin)
 {
-   ewin->x = ewin->client.x - ewin->border->border.left;
-   ewin->y = ewin->client.y - ewin->border->border.top;
+   ewin->shape_x = ewin->x = ewin->client.x - ewin->border->border.left;
+   ewin->shape_y = ewin->y = ewin->client.y - ewin->border->border.top;
    ewin->w = ewin->client.w +
       ewin->border->border.left + ewin->border->border.right;
    ewin->h = ewin->client.h +
@@ -1183,15 +1183,14 @@ Adopt(Window win)
    MatchEwinToSnapInfo(ewin);
    if (Mode.wm.startup)
       ICCCM_GetEInfo(ewin);
+   ICCCM_MatchSize(ewin);
+   ICCCM_Adopt(ewin);
 
    if (!ewin->border)
       EwinSetBorderInit(ewin);
    EwinSetBorderTo(ewin, NULL);
 
-   ICCCM_MatchSize(ewin);
-   ICCCM_Adopt(ewin);
-
-   EwinGetSize(ewin);
+   EwinGetGeometry(ewin);
    EwinEventsConfigure(ewin, 0);
 
    UngrabX();
@@ -1258,15 +1257,14 @@ AdoptInternal(Window win, Border * border, int type)
 	break;
      }
    MatchEwinToSnapInfo(ewin);
+   ICCCM_MatchSize(ewin);
+   ICCCM_Adopt(ewin);
 
    if (!ewin->border)
       EwinSetBorderInit(ewin);
    EwinSetBorderTo(ewin, NULL);
 
-   ICCCM_MatchSize(ewin);
-   ICCCM_Adopt(ewin);
-
-   EwinGetSize(ewin);
+   EwinGetGeometry(ewin);
    EwinEventsConfigure(ewin, 0);
 
    UngrabX();
@@ -1575,7 +1573,7 @@ static void
 EwinSetBorderTo(EWin * ewin, Border * b)
 {
    int                 i;
-   int                 px = -1, py = -1;
+   int                 px = 0, py = 0;
    char                s[1024];
 
    AwaitIclass        *await;
@@ -1693,12 +1691,7 @@ EwinSetBorderTo(EWin * ewin, Border * b)
 
    if (!ewin->shaded)
       EMoveWindow(disp, ewin->win_container, b->border.left, b->border.top);
-   if ((px >= 0) && (py >= 0))
-     {
-	MoveEwin(ewin, ewin->x + (px - ewin->border->border.left),
-		 ewin->y + (py - ewin->border->border.top));
-     }
-   ICCCM_Configure(ewin);
+
    CalcEwinSizes(ewin);
    PropagateShapes(ewin->win);
 
@@ -1716,6 +1709,7 @@ EwinSetBorder(EWin * ewin, Border * b, int apply)
 	if (ewin->border != b)
 	  {
 	     EwinSetBorderTo(ewin, b);
+	     EwinGetGeometry(ewin);
 	     ICCCM_MatchSize(ewin);
 	     MoveResizeEwin(ewin, ewin->x, ewin->y, ewin->client.w,
 			    ewin->client.h);
@@ -1857,8 +1851,8 @@ doMoveResizeEwin(EWin * ewin, int x, int y, int w, int h, int flags)
 	   move = 1;
 	ewin->x = x;
 	ewin->y = y;
-	ewin->client.x += dx;
-	ewin->client.y += dy;
+	ewin->client.x = x + ewin->border->border.left;
+	ewin->client.y = y + ewin->border->border.top;
      }
 
    if (flags & MR_FLAGS_RESIZE)

@@ -74,6 +74,9 @@ ActionMoveStart(EWin * ewin, const void *params, char constrained, int nogroup)
 	   DrawEwinShape(gwins[i], Conf.movemode, gwins[i]->x, gwins[i]->y,
 			 gwins[i]->client.w, gwins[i]->client.h, 0);
 #endif
+	/* This shouldn't be necessary ... will figure it out some other time */
+	gwins[i]->shape_x = gwins[i]->x;
+	gwins[i]->shape_y = gwins[i]->y;
      }
    Efree(gwins);
    move_swapcoord_x = ewin->x;

@@ -370,7 +370,7 @@ PagerShow(Pager * p)
 	ewin->client.h = 1;
 	if (sn)
 	  {
-	     ResizeEwin(ewin, w, h);
+	     MoveResizeEwin(ewin, ewin->x, ewin->y, w, h);
 	  }
 	else
 	  {
