@@ -49,6 +49,8 @@ signals emitted by entice:
 signal			source	description
 ------			------	-----------
 EnticeImageDisplay	""	when a new image is displayed
+EnticeImageDisplayPrep	""	Right before a new image is displayed
+				(i.e. used for outgoing effects)
 EnticeImageModified	""	When the image in memory is no longer
 				is consistent with the disk image
 EnticeImagePreviewPrep	""	Emitted before, preview show

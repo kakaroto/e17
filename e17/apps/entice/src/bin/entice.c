@@ -200,6 +200,8 @@ _entice_thumb_load(void *_data, Evas * _e, Evas_Object * _o, void *_ev)
               evas_hash_find(entice->thumb.hash,
                              entice_image_file_get(entice->current))))
          edje_object_signal_emit(thumb_edje, "EnticeThumbUnLoaded", "");
+      
+      edje_object_signal_emit(entice->edje, "EnticeImageDisplayPrep", "");
 
       tmp = e_thumb_evas_object_get(o);
       new_current = entice_image_new(tmp);
