@@ -12,3 +12,11 @@ Wed Jan  5 15:12:34 2005                        Michael Jennings (mej)
 
 Oops, wrong imlib. :)
 ----------------------------------------------------------------------
+Thu Feb 10 23:27:41 2005                        Michael Jennings (mej)
+
+Rename package back to just "epplets."
+
+Allow for ~/.e16 in addition to ~/.enlightenment.
+
+Fix E-Disk for 2.6 kernels.
+----------------------------------------------------------------------

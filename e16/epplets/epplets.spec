@@ -1,21 +1,22 @@
-%define use_gnome %{?_with_gnome}0
+%define use_gnome %{?_with_gnome:1}0
 
 Summary: Enlightenment Epplets
-Name: enlightenment-epplets
+Name: epplets
 Version: 0.8
 Release: 0.%(date '+%Y%m%d')
 License: BSD
 Group: User Interface/X
 URL: http://www.enlightenment.org/
-Source0: http://prdownloads.sourceforge.net/enlightenment/%{name}-%{version}.tar.gz
-Packager: %{?_packager:%{_packager}}%{!?_packager:%{_vendor}}
-Vendor: %{?_vendorinfo:%{_vendorinfo}}%{!?_vendorinfo:%{_vendor}}
+Source: http://prdownloads.sourceforge.net/enlightenment/%{name}-%{version}.tar.gz
+Packager: %{?_packager:%{_packager}}%{!?_packager:Michael Jennings <mej@eterm.org>}
+Vendor: %{?_vendorinfo:%{_vendorinfo}}%{!?_vendorinfo:The Enlightenment Project (http://www.enlightenment.org/)}
 Distribution: %{?_distribution:%{_distribution}}%{!?_distribution:%{_vendor}}
 #BuildSuggests: freeglut-devel xorg-x11-devel
 BuildRequires: imlib-devel XFree86-devel
 Requires: enlightenment >= 0.16.0
-Provides: epplets = %{version}
-Obsoletes: epplets
+Provides: enlightenment-epplets = %{version}
+Provides: e16-epplets = %{version}
+Obsoletes: enlightenment-epplets
 BuildRoot: %{_tmppath}/%{name}-%{version}-%{release}-root
 
 %description
@@ -40,6 +41,7 @@ export CFLAGS
 %{__make} %{?_smp_mflags} %{?mflags}
 
 %install
+test "x$RPM_BUILD_ROOT" != "x/" && rm -rf $RPM_BUILD_ROOT
 %{__make} install DESTDIR=$RPM_BUILD_ROOT %{?mflags_install}
 
 %ifos linux
@@ -51,7 +53,7 @@ export CFLAGS
 %endif
 
 %clean
-rm -rf $RPM_BUILD_ROOT
+test "x$RPM_BUILD_ROOT" != "x/" && rm -rf $RPM_BUILD_ROOT
 
 %files
 %defattr(-, root, root)

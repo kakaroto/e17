@@ -5495,12 +5495,25 @@ static void
 Epplet_find_instance(char *name)
 {
    struct stat         st;
-   char                s[1024];
+   char                s[1024], *tmpdir;
    int                 i = 0, fd;
    pid_t               pid;
 
+   /* Find E dir */
+   Esnprintf(s, sizeof(s), "%s/.e16", getenv("HOME"));
+   if (stat(s, &st) < 0)
+     {
+         Esnprintf(s, sizeof(s), "%s/.enlightenment", getenv("HOME"));
+         if (stat(s, &st) < 0)
+             {
+                 Esnprintf(s, sizeof(s), "%s/.enlightenment", getenv("HOME"));
+                 mkdir(s, S_IRWXU);
+             }
+     }
+   tmpdir = strdup(s);
+
    /* make sure basic dir exists */
-   Esnprintf(s, sizeof(s), "%s/.enlightenment/epplet_config", getenv("HOME"));
+   Esnprintf(s, sizeof(s), "%s/epplet_config", tmpdir);
    if (stat(s, &st) < 0)
      {
 	if (mkdir(s, S_IRWXU) < 0)
@@ -5512,14 +5525,16 @@ Epplet_find_instance(char *name)
 		       s, strerror(errno));
 	     Epplet_dialog_ok(err);
 	     epplet_instance = 1;
+         free(tmpdir);
 	     return;
 	  }
      }
 
-   /* make sure this epplets config dir exists */
-   Esnprintf(s, sizeof(s), "%s/.enlightenment/epplet_config/%s",
-	     getenv("HOME"), name);
+   /* make sure this epplet's config dir exists */
+   Esnprintf(s, sizeof(s), "%s/epplet_config/%s", tmpdir, name);
    conf_dir = strdup(s);
+   free(tmpdir);
+
    if (stat(s, &st) < 0)
      {
 	if (mkdir(s, S_IRWXU) < 0)
