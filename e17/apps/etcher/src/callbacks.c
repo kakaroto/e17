@@ -380,42 +380,6 @@ on_3d_hardware_clicked(GtkButton * button, gpointer user_data)
    gtk_main_quit();
 }
 
-/*void
-on_browse_clicked_clicked              (GtkButton       *button,
-                                        gpointer         user_data)
-{
-  filedialog_show(ClickedImageMode);
-}
-
-void
-on_borwse_hilited_clicked              (GtkButton       *button,
-                                        gpointer         user_data)
-{
-  filedialog_show(HilitedImageMode);
-}
-
-void
-on_browse_normal_clicked               (GtkButton       *button,
-                                        gpointer         user_data)
-{
-  filedialog_show(NormalImageMode);
-}
-
-void
-on_browse_selected_clicked             (GtkButton       *button,
-                                        gpointer         user_data)
-{
-  filedialog_show(SelectedImageMode);
-}
-
-void
-on_browse_disabled_clicked             (GtkButton       *button,
-                                        gpointer         user_data)
-{
-  filedialog_show(DisabledImageMode);
-}
-*/
-
 gboolean
 on_preferences_delete_event(GtkWidget * widget,
 			    GdkEvent * event, gpointer user_data)

@@ -1593,6 +1593,7 @@ ebits_load(char *file)
 
 	     ss_d->name = strdup(state_d->name);
 	     ss_d->state_d = state_d;
+	     state_d->ss_d = ss_d;
 
 	     snprintf(image, sizeof(image), EBITS_FILE_REDIRECT,
 		      realf, state_d->image);
