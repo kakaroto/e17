@@ -1,4 +1,3 @@
-
 <page columns=1 padding=16 name=front background=Edoc_bg.png linkcolor=#88dddd>
 <img src=E_logo.png x=32 y=77>
 <font face=rothwell/25 color=#ffffff>
@@ -962,6 +961,39 @@ from this dialog.  You may choose to change the anchor of
 alignment for resizes - play with it until it resizes appropriately for your
 Iconbox location.
 
+<page columns=1 padding=16 name=iconbox3 background=Edoc_bg.png linkcolor=#88dddd>
+<font face=aircut3/12 color=#ffffff>
+<p>
+If you want to customize the images used for the icons in your iconbox, there 
+is already an example configuration supplied. To make your own configuration
+copy the icondefs.cfg file installed in your enlightenment system config 
+directory (/usr/local/enlightenment/config/icondefs.cfg or 
+/usr/share/enlightenment/config/icondefs.cfg) to your ~/.enlightenment 
+directory and then edit it. On each line you will find 4 fields. The first
+field is the image file to be used. The image is searched for in the usual 
+search path if it is not an absolute path to the image file. The search path
+is in order: ~/.enlightenment, THEME_DIR/, ENLIGHTENMENT_ROOT/config.
+<p>
+The 2nd field on the line is a shell-glob like match for the title of a window.
+If this field is irrelevant NULL is used instead. NB: the only valid wildcard
+in the glob pattern is "*". The 3rd field is the NAME property of the window
+and the 4this the CLASS. The order of search priority is last to first, so the
+last entry in the file that matches a window's title, name and class globs will
+use the icon image defined on the first line.
+
+<page columns=1 padding=16 name=iconbox4 background=Edoc_bg.png linkcolor=#88dddd>
+<font face=aircut3/12 color=#ffffff>
+<p>
+If you want all windows to have an icon then use:
+<p>
+"pix/pimage.png" NULL NULL NULL
+<p>
+Is the most general match for an icon and will match ALL windows. If you
+use this make sure it's at the start of the file so it will only match if no 
+other matches are found.
+<p>
+There are several examples of using the globbing and matching in the system
+icondefs.cfg file. Use that as a reference for your own additions.
 
 <page columns=1 padding=16 name=minimized background=Edoc_bg.png linkcolor=#88dddd>
 <font face=rothwell/25 color=#ffffff>
