@@ -2,13 +2,18 @@
 
 src/actions.c
 src/alert.c
+src/borders.c
+src/buttons.c
+src/cmclass.c
 src/comms.c
 src/config.c
+src/cursors.c
 src/desktops.c
 src/dialog.c
 src/fx.c
 src/groups.c
 src/handlers.c
+src/iclass.c
 src/iconify.c
 src/ipc.c
 src/main.c
@@ -22,5 +27,7 @@ src/settings.c
 src/setup.c
 src/snaps.c
 src/sound.c
+src/tclass.c
 src/theme.c
+src/tooltips.c
 src/update.c
