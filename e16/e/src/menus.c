@@ -1614,7 +1614,7 @@ SubmenuShowTimeout(int val __UNUSED__, void *dat)
    if (!ewin)
       return;
    if (!ewin->shown)
-	return;
+      return;
 
    mi = data->mi;
    MenuShow(mi->child, 1);
