@@ -6,6 +6,10 @@
 # architecture-dependant package, as well as an architecture-independent
 # package.
 
+# This file uses bash-isms, and you might have ash installed,
+# whose Debian package has /bin/sh pointing to it.
+export SHELL=/bin/bash
+
 export DH_COMPAT=2
 
 export DH_OPTIONS

@@ -44,6 +44,7 @@
 #include <stdlib.h>
 #include <time.h>
 #include <sys/stat.h>
+#include <sys/wait.h>
 #include <unistd.h>
 #include <ctype.h>
 #include <string.h>
@@ -51,6 +52,7 @@
 #include <dirent.h>
 #include <errno.h>
 #include <signal.h>
+#include <limits.h>
 #ifdef TIME_WITH_SYS_TIME
 # include <sys/time.h>
 #endif

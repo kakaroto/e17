@@ -23,6 +23,8 @@ version number that begins with 0.
 %setup -q
 
 %build
+CFLAGS="$RPM_OPT_FLAGS"
+export CFLAGS
 if [ -e ./configure ]
 then
   %configure --prefix=%{_prefix} --bindir=%{_bindir} --libdir=%{_libdir} --includedir=%{_includedir} --datadir=%{_datadir}

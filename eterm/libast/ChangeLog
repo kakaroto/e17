@@ -322,3 +322,8 @@ Mon Sep 30 11:53:59 2002                        Michael Jennings (mej)
 
 Final commit for release of libast 0.5.
 ----------------------------------------------------------------------
+Fri Oct 25 15:07:21 2002                        Michael Jennings (mej)
+
+Patch from Darren Stuart Embry <dse@webonastick.com> to fix building
+on Debian systems with ash installed.
+----------------------------------------------------------------------
